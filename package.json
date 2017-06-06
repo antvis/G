@@ -1,0 +1,44 @@
+{
+  "name": "@antv/g",
+  "version": "2.0.0",
+  "description": "A canvas library which providing 2d draw for G2.",
+  "keywords": [
+    "canvas",
+    "G2",
+    "2d draw"
+  ],
+  "main": "index.js",
+  "homepage": "http://gitlab.alibaba-inc.com/datavis/g",
+  "author": "https://github.com/orgs/antvis/people",
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.alibaba-inc.com:datavis/g.git"
+  },
+  "bugs": {
+    "url": "http://gitlab.alibaba-inc.com/datavis/g/issues"
+  },
+  "devDependencies": {
+
+  },
+  "scripts": {
+
+  },
+  "pre-commit": {
+    "run": [
+      "test"
+    ],
+    "silent": false
+  },
+  "entry": {
+    "index": "./index"
+  },
+  "dependencies": {
+
+  },
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "publishConfig": {
+    "registry": "http://registry.npm.alibaba-inc.com"
+  }
+}
