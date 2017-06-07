@@ -70,6 +70,49 @@ module.exports = {
     return container.childNodes[0];
   },
   /**
+   * 获取屏幕像素比
+   */
+  getRatio() {
+    return window.devicePixelRatio ? window.devicePixelRatio : 2;
+  },
+  /**
+   * 获取宽度
+   * @param  {HTMLElement} el  dom节点
+   * @return {Number} 宽度
+   */
+  getWidth(el) {
+    let width = Util.getStyle(el, 'width');
+    if (width === 'auto') {
+      width = el.offsetWidth;
+    }
+    return parseFloat(width);
+  },
+  /**
+   * 获取高度
+   * @param  {HTMLElement} el  dom节点
+   * @return {Number} 高度
+   */
+  getHeight(el) {
+    let height = Util.getStyle(el, 'height');
+    if (height === 'auto') {
+      height = el.offsetHeight;
+    }
+    return parseFloat(height);
+  },
+  /**
+   * 获取外层高度
+   * @param  {HTMLElement} el  dom节点
+   * @return {Number} 高度
+   */
+  getOuterHeight(el) {
+    const height = Util.getHeight(el);
+    const bTop = parseFloat(Util.getStyle(el, 'borderTopWidth')) || 0;
+    const pTop = parseFloat(Util.getStyle(el, 'paddingTop'));
+    const pBottom = parseFloat(Util.getStyle(el, 'paddingBottom'));
+    const bBottom = parseFloat(Util.getStyle(el, 'borderBottomWidth')) || 0;
+    return height + bTop + bBottom + pTop + pBottom;
+  },
+  /**
    * TODO: 应该移除的
    * 添加时间监听器
    * @param  {object} DOM对象
