@@ -1,4 +1,4 @@
-var Util = require('@ali/g-util');
+var Util = require('../util/index');
 var Event = require('./event');
 
 module.exports = {
@@ -63,13 +63,13 @@ module.exports = {
     var listeners = this.__listeners;
 
     if (arguments.length === 0) {
-      if (!Util.isBlank(listeners)) {
+      if (!Util.isEmpty(listeners)) {
         return true;
       }
     }
 
     if (arguments.length === 1) {
-      if (listeners[type] && !Util.isBlank(listeners[type])) {
+      if (listeners[type] && !Util.isEmpty(listeners[type])) {
         return true;
       }
     }
@@ -87,7 +87,7 @@ module.exports = {
     var listeners = self.__listeners;
     var listenersArray = listeners[event.type];
     event.target = self;
-    if (Util.notNull(listenersArray)) {
+    if (!Util.isNull(listenersArray)) {
       listenersArray.forEach(function(listener) {
         listener.call(self, event);
       });

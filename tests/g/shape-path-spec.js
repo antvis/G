@@ -1,6 +1,5 @@
 var expect = require('@ali/expect.js');
 var G = require('../../src/g/index');
-var Util = require('@ali/g-util');
 var gMath = require('@ali/g-math');
 var pathUtil = require('@ali/g-path-util');
 var Canvas = require('../../src/canvas');
@@ -9,7 +8,7 @@ div.id = 'canvas-path';
 document.body.appendChild(div);
 
 describe('Path', function() {
- 
+
   var canvas = new Canvas({
     containerId: 'canvas-path',
     width: 800,

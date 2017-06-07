@@ -1,13 +1,12 @@
 var expect = require('@ali/expect.js');
 var G = require('../../src/g/index');
-var Util = require('@ali/g-util');
 var Canvas = require('../../src/canvas');
 var div = document.createElement('div');
 div.id = 'canvas-line';
 document.body.appendChild(div);
 
 describe('Line', function() {
-  
+
   var canvas = new Canvas({
     containerId: 'canvas-line',
     width: 200,

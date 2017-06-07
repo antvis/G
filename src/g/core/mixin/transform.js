@@ -1,4 +1,4 @@
-var Util = require('@ali/g-util');
+var Util = require('../../../util/index');
 var Matrix3 = require('@ali/g-matrix').Matrix3;
 
 // 是否未改变

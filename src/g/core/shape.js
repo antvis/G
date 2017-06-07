@@ -1,4 +1,4 @@
-var Util = require('@ali/g-util');
+var Util = require('../../util/index');
 var Element = require('./element');
 var Inside = require('../shape/util/inside');
 var Vector3 = require('@ali/g-matrix').Vector3;

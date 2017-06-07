@@ -3,7 +3,7 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Util = require('@ali/g-util');
+var Util = require('../../util/index');
 var Shape = require('../core/shape');
 var Inside = require('./util/inside');
 var Arrow = require('./util/arrow');

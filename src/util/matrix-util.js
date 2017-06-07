@@ -5,10 +5,10 @@ module.exports = {
    * @param  {Array} ts 变换数组同
    * @return  {Object} this 回调函数
    */
-  transform: function(m, ts) {
+  transform(m, ts) {
     m = m.clone();
-    for (var i = 0, len = ts.length; i < len; i++) {
-      var t = ts[i];
+    for (let i = 0, len = ts.length; i < len; i++) {
+      const t = ts[i];
       switch (t[0]) {
         case 't':
           m.translate(t[1], t[2]);
@@ -36,7 +36,7 @@ module.exports = {
    * @param  {Number} x 坐标点
    * @param  {Number} y 坐标点
    */
-  scale: function(m, sx, sy, x, y) {
+  scale(m, sx, sy, x, y) {
     m = m.clone();
     m.translate(-1 * x, -1 * y);
     m.scale(sx, sy);
@@ -50,7 +50,7 @@ module.exports = {
    * @param  {Number} x 坐标点
    * @param  {Number} y 坐标点
    */
-  rotate: function(m, r, x, y) {
+  rotate(m, r, x, y) {
     m = m.clone();
     m.translate(-1 * x, -1 * y);
     m.rotate(r);
@@ -62,7 +62,7 @@ module.exports = {
    * @param  {Object} m 矩阵
    * @return {Boolean}
    */
-  isMatrix3: function(m) {
+  isMatrix3(m) {
     return m.type === 'matrix3';
   }
 };

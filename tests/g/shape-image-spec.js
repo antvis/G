@@ -1,13 +1,12 @@
 var expect = require('@ali/expect.js');
 var G = require('../../src/g/index');
-var Util = require('@ali/g-util');
 var Canvas = require('../../src/canvas');
 var div = document.createElement('div');
 div.id = 'canvas-img';
 document.body.appendChild(div);
 
 describe('Image', function() {
-  
+
   var can1 = document.createElement('canvas');
   can1.id = 'img1';
   can1.width = 800;

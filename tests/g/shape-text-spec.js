@@ -1,6 +1,5 @@
 var expect = require('@ali/expect.js');
 var G = require('../../src/g/index');
-var Util = require('@ali/g-util');
 var Canvas = require('../../src/canvas');
 var div = document.createElement('div');
 div.id = 'canvas-text';
@@ -389,7 +388,7 @@ describe('Text', function() {
       }
     });
     expect(text3.attr('fontFamily')).to.be('宋体');
-    
+
     canvas.set('fontFamily', null);
     var text4 = canvas.addShape('text', {
       attrs: {
@@ -405,7 +404,7 @@ describe('Text', function() {
 });
 
 describe('Text \n', function() {
-  
+
   var canvas = new Canvas({
     containerId: 'canvas-text',
     width: 200,
@@ -457,7 +456,7 @@ describe('Text \n', function() {
 });
 
 describe('Text 不存在', function() {
-  
+
   var canvas = new Canvas({
     containerId: 'canvas-text',
     width: 200,

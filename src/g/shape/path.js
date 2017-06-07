@@ -5,7 +5,7 @@
  * @see http://www.w3.org/TR/2011/REC-SVG11-20110816/paths.html#PathData
  * @ignore
  */
-var Util = require('@ali/g-util');
+var Util = require('../../util/index');
 var Shape = require('../core/shape');
 var PathSegment = require('./util/pathSegment');
 var Format = require('../format');

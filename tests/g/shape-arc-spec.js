@@ -1,6 +1,6 @@
 var expect = require('@ali/expect.js');
 var G = require('../../src/g/index');
-var Util = require('@ali/g-util');
+var Util = require('../../src/util/index');
 var gMath = require('@ali/g-math');
 var Canvas = require('../../src/canvas');
 var div = document.createElement('div');
@@ -8,10 +8,10 @@ div.id = 'canvas-arc';
 document.body.appendChild(div);
 var ratio = Util.getRatio();
 describe('Arc line', function() {
-  
+
   var canvas = new Canvas({
     containerId: 'canvas-arc',
-    width: 200, 
+    width: 200,
     height: 200
   });
 

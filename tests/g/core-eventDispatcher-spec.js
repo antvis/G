@@ -1,5 +1,5 @@
 var expect = require('@ali/expect.js');
-var Util = require('@ali/g-util');
+var Util = require('../../src/util/index');
 var Dispatcher = require('../../src/event/eventDispatcher');
 var Element = function() {
   this.initEventDispatcher();

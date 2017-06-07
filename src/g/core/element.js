@@ -4,7 +4,7 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Util = require('@ali/g-util');
+var Util = require('../../util/index');
 var Attributes = require('./mixin/attributes');
 var Transform = require('./mixin/transform');
 var Animate = require('./mixin/animate');
@@ -38,7 +38,7 @@ var Element = function(cfg) {
     destroyed: false
   }; // 配置存放地
 
-  Util.simpleMix(this.__cfg, this.getDefaultCfg(), cfg); // Element.CFG不合并，提升性能 合并默认配置，用户配置->继承默认配置->Element默认配置
+  Util.assign(this.__cfg, this.getDefaultCfg(), cfg); // Element.CFG不合并，提升性能 合并默认配置，用户配置->继承默认配置->Element默认配置
   this.initAttrs(this.__cfg.attrs); // 初始化绘图属性
   this.initTransform(); // 初始化变换
   this.initEventDispatcher();
@@ -119,7 +119,7 @@ Util.augment(Element, Attributes, EventDispatcher, Transform, Animate, {
    * @protected
    */
   set: function(name, value) {
-    var m = '__set' + Util.ucfirst(name);
+    var m = '__set' + Util.upperFirst(name);
 
     if (this[m]) {
       value = this[m](value);
@@ -252,7 +252,7 @@ Util.augment(Element, Attributes, EventDispatcher, Transform, Animate, {
   },
   __setZIndex: function(zIndex) {
     this.__cfg.zIndex = zIndex;
-    if (Util.notNull(this.get('parent'))) {
+    if (!Util.isNull(this.get('parent'))) {
       this.get('parent').sort();
     }
     return zIndex;

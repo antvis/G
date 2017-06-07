@@ -4,7 +4,7 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Util = require('@ali/g-util');
+var Util = require('../../../util/index');
 var GMath = require('@ali/g-math');
 var Inside = require('./inside');
 var Cubic = require('../math/cubic');

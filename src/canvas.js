@@ -1,6 +1,6 @@
 'use strict';
 
-var Util = require('./util/util');
+var Util = require('./util/index');
 var MouseEvent = require('./event/mouse-event');
 var G = require('./g/index');
 
@@ -170,7 +170,7 @@ Util.augment(Canvas, {
    */
   _setLayer: function() {
     var containerDOM = this.get('containerDOM');
-    var canvasId = Util.guid('canvas_');
+    var canvasId = Util.uniqueId('canvas_');
     if (containerDOM) {
       var canvasDOM = Util.createDom('<canvas id="' + canvasId + '"></canvas>');
       containerDOM.appendChild(canvasDOM);

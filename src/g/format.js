@@ -1,4 +1,4 @@
-var Util = require('@ali/g-util');
+var Util = require('../util/index');
 var GMath = require('@ali/g-math');
 var GColor = require('@ali/g-color');
 

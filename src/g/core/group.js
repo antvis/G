@@ -1,4 +1,4 @@
-var Util = require('@ali/g-util');
+var Util = require('../../util/index');
 var Vector3 = require('@ali/g-matrix').Vector3;
 var Element = require('./element');
 var Shape = require('../shape/index');
@@ -45,8 +45,8 @@ function initClassCfgs(c) {
   }
   c.__cfg = {};
 
-  Util.mix(true, c.__cfg, superCon.__cfg);
-  Util.mix(true, c.__cfg, c.CFG);
+  Util.merge(c.__cfg, superCon.__cfg);
+  Util.merge(c.__cfg, c.CFG);
 }
 
 Util.extend(Group, Element);
@@ -57,7 +57,7 @@ Util.augment(Group, {
   canStroke: true,
   getDefaultCfg: function() {
     initClassCfgs(this.constructor);
-    return Util.mix(true, {}, this.constructor.__cfg);
+    return Util.merge({}, this.constructor.__cfg);
   },
   // 渲染组件前
   _beforeRenderUI: function() {},
@@ -76,7 +76,7 @@ Util.augment(Group, {
     cfg = cfg || {};
     var shapeType = SHAPE_MAP[type];
     if (!shapeType) {
-      shapeType = Util.ucfirst(type);
+      shapeType = Util.upperFirst(type);
       SHAPE_MAP[type] = shapeType;
     }
     if (cfg.attrs) {
@@ -102,7 +102,7 @@ Util.augment(Group, {
   addGroup: function(param, cfg) {
     var canvas = this.get('canvas');
     var rst;
-    cfg = Util.mix({}, cfg);
+    cfg = Util.merge({}, cfg);
     if (Util.isFunction(param)) {
       if (cfg) {
         cfg.canvas = canvas;
@@ -136,7 +136,7 @@ Util.augment(Group, {
     var backShape = this.get('backShape');
     var innerBox = this.getBBox();
     var parent = this.get('parent'); // getParent
-    Util.mix(attrs, {
+    Util.merge(attrs, {
       x: innerBox.minX - padding[3],
       y: innerBox.minY - padding[0],
       width: innerBox.width + padding[1] + padding[3],

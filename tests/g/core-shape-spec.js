@@ -1,6 +1,5 @@
 var expect = require('@ali/expect.js');
 var Shape = require('../../src/g/core/shape');
-var Util = require('@ali/g-util');
 
 describe('Shape', function() {
   it('constructor', function() {

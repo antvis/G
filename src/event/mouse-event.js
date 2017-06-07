@@ -6,7 +6,7 @@
 
 'use strict';
 
-var Util = require('@ali/g-util');
+var Util = require('../util/index');
 var Event = require('@ali/g-event');
 
 var MouseEvent = function(canvas) {

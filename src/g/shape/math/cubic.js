@@ -5,7 +5,7 @@
  */
 var Vector2 = require('@ali/g-matrix').Vector2;
 var GMath = require('@ali/g-math');
-var Util = require('@ali/g-util');
+var Util = require('../../../util/index');
 
 function cubicAt(p0, p1, p2, p3, t) {
   var onet = 1 - t;

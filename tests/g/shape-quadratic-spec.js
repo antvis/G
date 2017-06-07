@@ -1,6 +1,5 @@
 var expect = require('@ali/expect.js');
 var G = require('../../src/g/index');
-var Util = require('@ali/g-util');
 var gMath = require('@ali/g-math');
 var Canvas = require('../../src/canvas');
 var div = document.createElement('div');
@@ -9,7 +8,7 @@ document.body.appendChild(div);
 
 
 describe('Quadratic line', function() {
-  
+
   var canvas = new Canvas({
     containerId: 'canvas-quadratic',
     width: 200,

@@ -4,7 +4,7 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Util = require('@ali/g-util');
+var Util = require('../../util/index');
 var Shape = require('../core/shape');
 var Inside = require('./util/inside');
 
@@ -151,10 +151,10 @@ Util.augment(CImage, {
         return;
       }
       if (
-        Util.notNull(sx) &&
-        Util.notNull(sy) &&
-        Util.notNull(swidth) &&
-        Util.notNull(sheight)
+        !Util.isNull(sx) &&
+        !Util.isNull(sy) &&
+        !Util.isNull(swidth) &&
+        !Util.isNull(sheight)
       ) {
         context.drawImage(img, sx, sy, swidth, sheight, x, y, width, height);
         return;

@@ -5,7 +5,7 @@
  * @ignore
  */
 
-var Util = require('@ali/g-util');
+var Util = require('../../util/index');
 var Vector2 = require('@ali/g-matrix').Vector2;
 var Shape = require('../core/shape');
 var Inside = require('./util/inside');

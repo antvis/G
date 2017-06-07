@@ -1,4 +1,4 @@
-var Util = require('@ali/g-util');
+var Util = require('../../../util/index');
 var Tween = require('@ali/g-tween');
 var tween = new Tween();
 
@@ -6,7 +6,7 @@ module.exports = {
   tween: tween,
   animate: function(toProps, duration, easing, callBack) {
     var now = tween.getNow();
-    var cfg = Util.mix({}, toProps, {
+    var cfg = Util.merge({}, toProps, {
       duration: duration
     });
     tween.animate(this).append(now, cfg, easing, callBack);

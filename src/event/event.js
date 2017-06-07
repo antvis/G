@@ -6,7 +6,7 @@
 
 'use strict';
 
-var Util = require('@ali/g-util');
+var Util = require('../util/index');
 var Event = function(type, event, bubbles, cancelable) {
   this.type = type; // 事件类型
   this.target = null; // 目标

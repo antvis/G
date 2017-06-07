@@ -1,6 +1,5 @@
 var expect = require('@ali/expect.js');
 var G = require('../../src/g/index');
-var Util = require('@ali/g-util');
 var Canvas = require('../../src/canvas');
 var div = document.createElement('div');
 div.id = 'canvas-rect';

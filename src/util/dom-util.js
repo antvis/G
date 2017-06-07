@@ -1,13 +1,13 @@
-var table = document.createElement('table');
-var tableRow = document.createElement('tr');
-var FRAGMENTRE = /^\s*<(\w+|!)[^>]*>/;
-var CONTAINERS = {
+const TABLE = document.createElement('table');
+const TABLE_TR = document.createElement('tr');
+const FRAGMENT_REG = /^\s*<(\w+|!)[^>]*>/;
+const CONTAINERS = {
   'tr': document.createElement('tbody'),
-  'tbody': table,
-  'thead': table,
-  'tfoot': table,
-  'td': tableRow,
-  'th': tableRow,
+  'tbody': TABLE,
+  'thead': TABLE,
+  'tfoot': TABLE,
+  'td': TABLE_TR,
+  'th': TABLE_TR,
   '*': document.createElement('div')
 };
 
@@ -17,10 +17,10 @@ module.exports = {
    * @param  {HTMLElement} DOM 节点
    * @return {Object}  DOM 节点
    */
-  getBoundingClientRect: function(node) {
-    var rect = node.getBoundingClientRect();
-    var top = document.documentElement.clientTop;
-    var left = document.documentElement.clientLeft;
+  getBoundingClientRect(node) {
+    const rect = node.getBoundingClientRect();
+    const top = document.documentElement.clientTop;
+    const left = document.documentElement.clientLeft;
     return {
       top: rect.top - top,
       bottom: rect.bottom - top,
@@ -34,11 +34,11 @@ module.exports = {
    * @param  {String} name 样式名
    * @return {String} 属性值
    */
-  getStyle: function(DOM, name) {
+  getStyle(dom, name) {
     if (window.getComputedStyle) {
-      return window.getComputedStyle(DOM, null)[name];
+      return window.getComputedStyle(dom, null)[name];
     }
-    return DOM.currentStyle[name];
+    return dom.currentStyle[name];
   },
   /**
    * 修改CSS
@@ -46,25 +46,25 @@ module.exports = {
    * @param  {Object} CSS键值对
    * @return {Object} DOM
    */
-  modiCSS: function(DOM, CSS) {
-    for (var key in CSS) {
-      if (CSS.hasOwnProperty(key)) {
-        DOM.style[key] = CSS[key];
+  modiCSS(dom, css) {
+    for (let key in css) {
+      if (css.hasOwnProperty(key)) {
+        dom.style[key] = css[key];
       }
     }
-    return DOM;
+    return dom;
   },
   /**
    * 创建DOM 节点
    * @param  {String} str Dom 字符串
    * @return {HTMLElement}  DOM 节点
    */
-  createDom: function(str) {
-    var name = FRAGMENTRE.test(str) && RegExp.$1;
+  createDom(str) {
+    let name = FRAGMENT_REG.test(str) && RegExp.$1;
     if (!(name in CONTAINERS)) {
       name = '*';
     }
-    var container = CONTAINERS[name];
+    const container = CONTAINERS[name];
     str = str.replace(/(^\s*)|(\s*$)/g, '');
     container.innerHTML = '' + str;
     return container.childNodes[0];
@@ -77,21 +77,34 @@ module.exports = {
    * @param  {funtion} 回调函数
    * @return {Object} 返回对象
    */
-  addEventListener: function(target, eventType, callback) {
+  addEventListener(target, eventType, callback) {
     if (target.addEventListener) {
       target.addEventListener(eventType, callback, false);
       return {
-        remove: function() {
+        remove() {
           target.removeEventListener(eventType, callback, false);
         }
       };
     } else if (target.attachEvent) {
       target.attachEvent('on' + eventType, callback);
       return {
-        remove: function() {
+        remove() {
           target.detachEvent('on' + eventType, callback);
         }
       };
     }
+  },
+  requestAnimationFrame(fn) {
+    const method = window.requestAnimationFrame || window.webkitRequestAnimationFrame || function(fn) {
+      return setTimeout(fn, 16);
+    };
+
+    return method(fn);
+  },
+  cancelAnimationFrame(id) {
+    const method = window.cancelAnimationFrame || window.webkitCancelAnimationFrame || function(id) {
+      return clearTimeout(id);
+    };
+    return method(id);
   }
 };

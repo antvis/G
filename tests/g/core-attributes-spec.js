@@ -1,6 +1,5 @@
 var expect = require('@ali/expect.js');
 var Elements = require('../../src/g/core/element');
-var Util = require('@ali/g-util');
 describe('Attributes', function() {
   it ('init', function() {
     var e = new Elements({

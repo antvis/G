@@ -1,4 +1,4 @@
-var Util = require('@ali/g-util');
+var Util = require('../../../util/index');
 var Vector3 = require('@ali/g-matrix').Vector3;
 
 var ALIAS_ATTRS = ['strokeStyle', 'fillStyle', 'globalAlpha'];
@@ -60,7 +60,7 @@ module.exports = {
       fillOpacity: 1,
       strokeOpacity: 1
     };
-    this.attr(Util.simpleMix(this.getDefaultAttrs(), attrs));
+    this.attr(Util.assign(this.getDefaultAttrs(), attrs));
     return this;
   },
   getDefaultAttrs: function() {
