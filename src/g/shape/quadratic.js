@@ -43,9 +43,9 @@ Util.augment(Quadratic, {
     var l;
 
     if (
-      Util.isNull(p1) ||
-      Util.isNull(p2) ||
-      Util.isNull(p3)
+      Util.isNil(p1) ||
+      Util.isNil(p2) ||
+      Util.isNil(p3)
     ) {
       return null;
     }
@@ -95,9 +95,9 @@ Util.augment(Quadratic, {
     var arrow = attrs.arrow;
 
     if (
-      Util.isNull(p1) ||
-      Util.isNull(p2) ||
-      Util.isNull(p3)
+      Util.isNil(p1) ||
+      Util.isNil(p2) ||
+      Util.isNil(p3)
     ) {
       return;
     }

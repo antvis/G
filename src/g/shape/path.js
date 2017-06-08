@@ -39,7 +39,7 @@ Util.augment(Path, {
   },
   __afterSetAttrPath: function(path) {
     var self = this;
-    if (Util.isNull(path)) {
+    if (Util.isNil(path)) {
       self.setSilent('segments', null);
       self.setSilent('box', undefined);
       return;
@@ -230,7 +230,7 @@ Util.augment(Path, {
       }
     });
     seg = curve[index];
-    if (Util.isNull(seg) || Util.isNull(index)) {
+    if (Util.isNil(seg) || Util.isNil(index)) {
       return null;
     }
     l = seg.length;

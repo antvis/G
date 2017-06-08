@@ -1,12 +1,11 @@
 var expect = require('@ali/expect.js');
 var Util = require('../../src/util/index');
-var Dispatcher = require('../../src/event/eventDispatcher');
+var Dispatcher = require('../../src/g/core/mixin/event-dispatcher');
 var Element = function() {
   this.initEventDispatcher();
 };
 
 Util.augment(Element, Dispatcher);
-
 
 describe('EventDispatcher', function() {
 

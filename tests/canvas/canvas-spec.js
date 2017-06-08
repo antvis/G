@@ -37,9 +37,6 @@ describe('Layer', function() {
     canvas.changeSize(200, 200);
   });
 
-  it('通过CSS 改变尺寸 change size by css', function() {
-    canvas.changeSizeByCss('10em', '10em');
-  });
 
   it('清空图层 clear layer', function() {
     canvas.clear();

@@ -1,5 +1,6 @@
 var Util = require('../../util/index');
 var Vector3 = require('@ali/g-matrix').Vector3;
+// import {vec3} from 'gl-matrix';
 var Element = require('./element');
 var Shape = require('../shape/index');
 var SHAPE_MAP = {}; // 缓存图形类型

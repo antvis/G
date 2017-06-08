@@ -7,7 +7,6 @@
 var Util = require('../../util/index');
 var Shape = require('../core/shape');
 var Inside = require('./util/inside');
-var gMath = require('@ali/g-math');
 var ArcMath = require('./math/arc');
 var Matrix = require('@ali/g-matrix');
 var Vector2 = Matrix.Vector2;
@@ -102,7 +101,7 @@ Util.augment(Fan, {
 
     var angle1 = ArcMath.nearAngle(angle, startAngle, endAngle, clockwise);
 
-    if (gMath.equal(angle, angle1)) {
+    if (Util.isNumberEqual(angle, angle1)) {
       var ls = subv.lengthSq();
       if (rs * rs <= ls && ls <= re * re) {
         return true;

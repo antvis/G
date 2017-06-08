@@ -1,15 +1,12 @@
-'use strict';
+import Util from './util/index';
+import MouseEvent from './mouse-event';
+import G from './g/index';
 
-var Util = require('./util/index');
-var MouseEvent = require('./event/mouse-event');
-var G = require('./g/index');
-
-var Canvas = function(cfg) {
+const Canvas = function(cfg) {
   Canvas.superclass.constructor.call(this, cfg);
 };
 
 Canvas.CFG = {
-
   eventEnable: true,
   /**
    * 像素宽度
@@ -181,24 +178,7 @@ Util.augment(Canvas, {
    * 设置初始画布参数
    */
   _setInitSize: function() {
-    if (this.get('widthStyle')) {
-      this.changeSizeByCss(this.get('widthStyle'), this.get('heightStyle'));
-    } else if (this.get('width')) {
-      this.changeSize(this.get('width'), this.get('height'));
-    }
-  },
-  /**
-   * 获取像素长度
-   */
-  _getPx: function(edge, value) {
-    var canvasDOM = this.get('canvasDOM');
-    canvasDOM.style[edge] = value;
-    var clientRect = Util.getBoundingClientRect(canvasDOM);
-    if (edge === 'width') {
-      return clientRect.right - clientRect.left;
-    } else if (edge === 'height') {
-      return clientRect.bottom - clientRect.top;
-    }
+    this.changeSize(this.get('width'), this.get('height'));
   },
   /**
    * 重设画布尺寸
@@ -230,26 +210,6 @@ Util.augment(Canvas, {
     var pixelRatio = this.get('pixelRatio');
     var height = this.get('height');
     return height * pixelRatio;
-  },
-  /**
-   * 通过css设置画布尺寸
-   * @param  {String} CSS width
-   * @param  {String} CSS height
-   */
-  changeSizeByCss: function(width, height) {
-    var pixelRatio = this.get('pixelRatio');
-    width = this._getPx('width', width);
-    height = this._getPx('height', height);
-    var widthCanvas = width * pixelRatio;
-    var heightCanvas = height * pixelRatio;
-
-    this.set('widthStyle', width);
-    this.set('heightStyle', height);
-    this.set('widthCanvas', widthCanvas);
-    this.set('heightCanvas', heightCanvas);
-    this.set('width', width);
-    this.set('height', height);
-    this._reSize();
   },
   /**
    * 设置画布尺寸

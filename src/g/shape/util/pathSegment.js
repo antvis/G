@@ -5,7 +5,6 @@
  * @ignore
  */
 var Util = require('../../../util/index');
-var GMath = require('@ali/g-math');
 var Inside = require('./inside');
 var Cubic = require('../math/cubic');
 var Quadratic = require('../math/quadratic');
@@ -45,7 +44,7 @@ function vAngle(u, v) {
 }
 
 function getArcParams(point1, point2, fa, fs, rx, ry, psiDeg) {
-  var psi = GMath.mod(GMath.degreeToRad(psiDeg), Math.PI * 2);
+  var psi = Util.mod(Util.toRadian(psiDeg), Math.PI * 2);
   var x1 = point1.x;
   var y1 = point1.y;
   var x2 = point2.x;

@@ -1,5 +1,5 @@
-import CommonUtil from './common-util';
-import DomUtil from './dom-util';
+import CommonUtil from './common';
+import DomUtil from './dom';
 
 const Util = {};
 

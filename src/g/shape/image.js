@@ -142,19 +142,19 @@ Util.augment(CImage, {
 
     if (img instanceof Image || (img instanceof HTMLElement && Util.isString(img.nodeName) && img.nodeName.toUpperCase() === 'CANVAS')) {
       if (
-        Util.isNull(sx) ||
-        Util.isNull(sy) ||
-        Util.isNull(swidth) ||
-        Util.isNull(sheight)
+        Util.isNil(sx) ||
+        Util.isNil(sy) ||
+        Util.isNil(swidth) ||
+        Util.isNil(sheight)
       ) {
         context.drawImage(img, x, y, width, height);
         return;
       }
       if (
-        !Util.isNull(sx) &&
-        !Util.isNull(sy) &&
-        !Util.isNull(swidth) &&
-        !Util.isNull(sheight)
+        !Util.isNil(sx) &&
+        !Util.isNil(sy) &&
+        !Util.isNil(swidth) &&
+        !Util.isNil(sheight)
       ) {
         context.drawImage(img, sx, sy, swidth, sheight, x, y, width, height);
         return;

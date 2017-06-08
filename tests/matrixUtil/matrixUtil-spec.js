@@ -1,7 +1,7 @@
 var $ = require('jquery');
 
 var expect = require('@ali/expect.js');
-var matrixUtil = require('../../src/util/matrix-util');
+var matrixUtil = require('../../src/util/matrix');
 var Matrix = require('@ali/g-matrix');
 var Matrix3 = Matrix.Matrix3;
 var Canvas = require('../../src/canvas');

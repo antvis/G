@@ -4,7 +4,6 @@
  * @ignore
  */
 var Vector2 = require('@ali/g-matrix').Vector2;
-var GMath = require('@ali/g-math');
 var Util = require('../../../util/index');
 
 function cubicAt(p0, p1, p2, p3, t) {
@@ -101,8 +100,8 @@ function cubicExtrema(p0, p1, p2, p3) {
   var t2;
   var discSqrt;
 
-  if (GMath.equal(a, 0)) {
-    if (!GMath.equal(b, 0)) {
+  if (Util.isNumberEqual(a, 0)) {
+    if (!Util.isNumberEqual(b, 0)) {
       t1 = -c / b;
       if (t1 >= 0 && t1 <= 1) {
         extrema.push(t1);
@@ -110,7 +109,7 @@ function cubicExtrema(p0, p1, p2, p3) {
     }
   } else {
     var disc = b * b - 4 * a * c;
-    if (GMath.equal(disc, 0)) {
+    if (Util.isNumberEqual(disc, 0)) {
       extrema.push(-b / (2 * a));
     } else if (disc > 0) {
       discSqrt = Math.sqrt(disc);
@@ -134,7 +133,7 @@ function base3(t, p1, p2, p3, p4) {
 }
 
 function cubiclLen(x1, y1, x2, y2, x3, y3, x4, y4, z) {
-  if (Util.isNull(z)) {
+  if (Util.isNil(z)) {
     z = 1;
   }
   z = z > 1 ? 1 : z < 0 ? 0 : z;

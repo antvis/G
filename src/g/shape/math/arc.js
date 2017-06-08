@@ -4,7 +4,6 @@
  * @ignore
  */
 var Vector2 = require('@ali/g-matrix').Vector2;
-var GMath = require('@ali/g-math');
 var Util = require('../../../util/index');
 
 function circlePoint(cx, cy, r, angle) {
@@ -38,9 +37,9 @@ function nearAngle(angle, startAngle, endAngle, clockwise) {
   if (endAngle - startAngle >= Math.PI * 2) {
     plus = Math.PI * 2;
   }
-  startAngle = GMath.mod(startAngle, Math.PI * 2);
-  endAngle = GMath.mod(endAngle, Math.PI * 2) + plus;
-  angle = GMath.mod(angle, Math.PI * 2);
+  startAngle = Util.mod(startAngle, Math.PI * 2);
+  endAngle = Util.mod(endAngle, Math.PI * 2) + plus;
+  angle = Util.mod(angle, Math.PI * 2);
   if (clockwise) {
     if (startAngle >= endAngle) {
       if (angle > endAngle && angle < startAngle) {

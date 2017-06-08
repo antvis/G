@@ -209,7 +209,7 @@ Util.augment(CText, {
     context.beginPath();
     if (self.hasFill()) {
       var fillOpacity = attrs.fillOpacity;
-      if (!Util.isNull(fillOpacity) && fillOpacity !== 1) {
+      if (!Util.isNil(fillOpacity) && fillOpacity !== 1) {
         context.globalAlpha = fillOpacity;
       }
       if (textArr) {
@@ -246,7 +246,7 @@ Util.augment(CText, {
     var measureWidth;
     var width = 0;
 
-    if (Util.isNull(text)) return undefined;
+    if (Util.isNil(text)) return undefined;
     var context = Common.backupContext;
     context.save();
     context.font = font;

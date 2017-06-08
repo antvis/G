@@ -43,10 +43,10 @@ Util.augment(Cubic, {
     var l;
 
     if (
-      Util.isNull(p1) ||
-      Util.isNull(p2) ||
-      Util.isNull(p3) ||
-      Util.isNull(p4)
+      Util.isNil(p1) ||
+      Util.isNil(p2) ||
+      Util.isNil(p3) ||
+      Util.isNil(p4)
     ) {
       return null;
     }
@@ -96,10 +96,10 @@ Util.augment(Cubic, {
     var arrow = attrs.arrow;
     context = context || self.get('context');
     if (
-      Util.isNull(p1) ||
-      Util.isNull(p2) ||
-      Util.isNull(p3) ||
-      Util.isNull(p4)
+      Util.isNil(p1) ||
+      Util.isNil(p2) ||
+      Util.isNil(p3) ||
+      Util.isNil(p4)
     ) {
       return;
     }

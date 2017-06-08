@@ -8,9 +8,8 @@ var Util = require('../../util/index');
 var Attributes = require('./mixin/attributes');
 var Transform = require('./mixin/transform');
 var Animate = require('./mixin/animate');
+var EventDispatcher = require('./mixin/event-dispatcher');
 var Format = require('../format');
-// var Vector3 = require('@ali/g-matrix').Vector3;
-var EventDispatcher = require('../../event/eventDispatcher');
 
 var SHAPE_ATTRS = [
   'fillStyle',
@@ -252,7 +251,7 @@ Util.augment(Element, Attributes, EventDispatcher, Transform, Animate, {
   },
   __setZIndex: function(zIndex) {
     this.__cfg.zIndex = zIndex;
-    if (!Util.isNull(this.get('parent'))) {
+    if (!Util.isNil(this.get('parent'))) {
       this.get('parent').sort();
     }
     return zIndex;

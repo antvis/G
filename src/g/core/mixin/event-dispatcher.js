@@ -1,5 +1,5 @@
-var Util = require('../util/index');
-var Event = require('./event');
+const Util = require('../../../util/index');
+const Event = require('@ali/g-event');
 
 module.exports = {
   /**
@@ -15,9 +15,9 @@ module.exports = {
    * @return {Object} this
    */
   on: function(type, listener) {
-    var listeners = this.__listeners;
+    const listeners = this.__listeners;
 
-    if (Util.isNull(listeners[type])) {
+    if (Util.isNil(listeners[type])) {
       listeners[type] = [];
     }
 
@@ -87,7 +87,7 @@ module.exports = {
     var listeners = self.__listeners;
     var listenersArray = listeners[event.type];
     event.target = self;
-    if (!Util.isNull(listenersArray)) {
+    if (!Util.isNil(listenersArray)) {
       listenersArray.forEach(function(listener) {
         listener.call(self, event);
       });

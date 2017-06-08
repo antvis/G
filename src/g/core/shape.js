@@ -21,7 +21,7 @@ Util.augment(Shape, {
     var originOpacity = context.globalAlpha;
     if (self.hasFill()) {
       var fillOpacity = attrs.fillOpacity;
-      if (!Util.isNull(fillOpacity) && fillOpacity !== 1) {
+      if (!Util.isNil(fillOpacity) && fillOpacity !== 1) {
         context.globalAlpha = fillOpacity;
         context.fill();
         context.globalAlpha = originOpacity;
@@ -33,7 +33,7 @@ Util.augment(Shape, {
       var lineWidth = self.__attrs.lineWidth;
       if (lineWidth > 0) {
         var strokeOpacity = attrs.strokeOpacity;
-        if (!Util.isNull(strokeOpacity) && strokeOpacity !== 1) {
+        if (!Util.isNil(strokeOpacity) && strokeOpacity !== 1) {
           context.globalAlpha = strokeOpacity;
         }
         context.stroke();

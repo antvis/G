@@ -1,5 +1,4 @@
 var Util = require('../util/index');
-var GMath = require('@ali/g-math');
 var GColor = require('@ali/g-color');
 
 var regexTags = /[MLHVQTCSAZ]([^MLHVQTCSAZ]*)/ig;
@@ -35,7 +34,7 @@ function addStop(steps, gradient, opacity) {
 
 function parseLineGradient(color, self, opacity) {
   var arr = regexLG.exec(color);
-  var angle = GMath.mod(GMath.degreeToRad(parseFloat(arr[1])), Math.PI * 2);
+  var angle = Util.mod(Util.toRadian(parseFloat(arr[1])), Math.PI * 2);
   var steps = arr[2];
   var box = self.getBBox();
   var start;
@@ -169,7 +168,7 @@ module.exports = {
           return parsePattern(color, self);
         }
       }
-      if (Util.isNull(opacity)) {
+      if (Util.isNil(opacity)) {
         return color;
       }
       return multiplyOpacity(color, opacity);

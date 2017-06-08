@@ -13,8 +13,8 @@ Canvas.PathUtil = {
   pathToAbsolute: toAbsolute, // Util.path2Absolute
   catmullRom2bezier: catmullRomToBezier,
 };
-Canvas.MatrixUtil = require('./src/util/matrix-util');
-Canvas.DomUtil = require('./src/util/dom-util');
+Canvas.MatrixUtil = require('./src/util/matrix');
+Canvas.DomUtil = require('./src/util/dom');
 Canvas.Matrix = require('@ali/g-matrix');
 
 module.exports = Canvas;

@@ -51,13 +51,13 @@
     "index": "./index"
   },
   "dependencies": {
-    "@ali/g-interpolation": "~0.0.0",
-    "@ali/g-matrix": "~0.0.0",
-    "@ali/g-math": "~1.0.0",
     "@ali/g-color": "~0.0.7",
     "@ali/g-event": "~0.0.0",
+    "@ali/g-interpolation": "~0.0.0",
+    "@ali/g-matrix": "~0.0.0",
+    "@ali/g-path-util": "~1.0.0",
     "@ali/g-tween": "~0.3.1-beta.1",
-    "@ali/g-path-util": "~1.0.0"
+    "gl-matrix": "^2.3.2"
   },
   "pre-commit": {
     "run": [

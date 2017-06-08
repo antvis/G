@@ -4,7 +4,7 @@
  * @ignore
  */
 var Vector2 = require('@ali/g-matrix').Vector2;
-var GMath = require('@ali/g-math');
+var Util = require('../../../util/index');
 
 function quadraticAt(p0, p1, p2, t) {
   var onet = 1 - t;
@@ -84,7 +84,7 @@ function quadraticProjectPoint(x1, y1, x2, y2, x3, y3, x, y, out) {
 
 function quadraticExtrema(p0, p1, p2) {
   var a = p0 + p2 - 2 * p1;
-  if (GMath.equal(a, 0)) {
+  if (Util.isNumberEqual(a, 0)) {
     return [0.5];
   }
   var rst = (p0 - p1) / a;

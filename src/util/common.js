@@ -2,8 +2,7 @@ import {
   isFunction,
   isObject,
   isBoolean,
-  isNull,
-  isUndefined,
+  isNil,
   isString,
   isArray,
   isEmpty,
@@ -17,13 +16,15 @@ import {
   toArray,
 } from 'lodash';
 
+const PRECISION = 0.00001; // 常量，据的精度，小于这个精度认为是0
+const RADIAN = Math.PI / 180;
+const DEGREE = 180 / Math.PI;
+
 module.exports = {
   isFunction,
   isObject,
   isBoolean,
-  isNull(param) {
-    return isNull(param) || isUndefined(param);
-  },
+  isNil,
   isString,
   isArray,
   isEmpty, // isBlank
@@ -76,4 +77,37 @@ module.exports = {
       merge(c.prototype, obj);
     }
   },
+  /**
+   * 判断两个数是否相等
+   * @param {Number} a 数
+   * @param {Number} b 数
+   * @return {Boolean} 是否相等
+   **/
+  isNumberEqual(a, b) {
+    return Math.abs((a - b)) < PRECISION;
+  },
+  /**
+   * 获取角度对应的弧度
+   * @param {Number} degree 角度
+   * @return {Number} 弧度
+   **/
+  toRadian(degree) {
+    return RADIAN * degree;
+  },
+  /**
+   * 获取弧度对应的角度
+   * @param {Number} rad 弧度
+   * @return {Number} 角度
+   **/
+  toDegree(radian) {
+    return DEGREE * radian;
+  },
+  /**
+   * 广义取模运算
+   * @param {Number} v 被取模的值
+   * @param {Number} m 模
+   */
+  mod(n, m) {
+    return ( ( n % m ) + m ) % m;
+  }
 };
