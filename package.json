@@ -18,37 +18,42 @@
     "url": "http://gitlab.alibaba-inc.com/datavis/g/issues"
   },
   "devDependencies": {
-    "atool-build": "0.6.x",
-    "atool-doc": "0.3.0-beta0",
-    "atool-test": "~0.4.10",
-    "babel-cli": "~6.6.4",
-    "babel-core": "~6.7.4",
-    "babel-plugin-add-module-exports": "~0.1.2",
-    "babel-preset-es2015": "~6.6.0",
-    "babel-preset-stage-0": "~6.5.0",
-    "dora": "0.3.x",
-    "@ali/expect.js": "~0.3.1",
-    "jquery": "~2.1.4",
-    "less": "~2.6.0",
-    "pre-commit": "^1.1.2",
-    "eslint": "~1.10.3",
-    "eslint-config-airbnb": "~4.0.0",
-    "@ali/g-coord": "^1.2.3-beta",
+    "babel-eslint": "^7.2.3",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-es2015-loose-rollup": "^7.0.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "chai": "^4.0.1",
+    "electron": "^1.7.2",
+    "electron-mocha": "^3.4.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-config-egg": "^4.2.0",
+    "pre-commit": "^1.2.2",
+    "rollup": "^0.42.0",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "uglify-js": "^3.0.15",
     "spm-sinon": "^1.6.0",
-    "event-simulate": "^1.0.0"
+    "event-simulate": "^1.0.0",
+    "jquery": "~2.1.4"
   },
   "scripts": {
-    "transpiler": "rm -rf lib && babel src --out-dir lib",
-    "build": "atool-build",
-    "lint": "eslint --ext .js src",
-    "test": "atool-test --no-chai",
-    "test-keep": "atool-test --no-chai --keep --no-coverage",
-    "doc": "atool-doc",
-    "doc-build": "atool-doc --build",
-    "ci": "tnpm run lint && tnpm run test"
+    "lint": "eslint ./",
+    "lint-fix": "eslint --fix ./",
+    "build": "rollup -c -- index.js",
+    "pretest": "rm -rf build && mkdir build && npm run build",
+    "test": "electron-mocha --renderer --recursive ./test/unit",
+    "test-live": "npm run pretest && electron-mocha --opts ./test/support/mocha.opts --renderer --interactive --recursive ./test/unit",
+    "dist": "rm -rf dist && mkdir dist && uglifyjs --compress --mangle --output dist/g2.min.js -- build/g2.js",
+    "ci": "tnpm run test"
   },
-  "entry": {
-    "index": "./index"
+  "pre-commit": {
+    "run": [
+      "lint",
+      "test"
+    ],
+    "silent": false
   },
   "dependencies": {
     "@ali/g-color": "~0.0.7",
@@ -58,17 +63,5 @@
     "@ali/g-path-util": "~1.0.0",
     "@ali/g-tween": "~0.3.1-beta.1",
     "gl-matrix": "^2.3.2"
-  },
-  "pre-commit": {
-    "run": [
-      "test"
-    ],
-    "silent": false
-  },
-  "engines": {
-    "node": ">=4.0.0"
-  },
-  "publishConfig": {
-    "registry": "http://registry.npm.alibaba-inc.com"
   }
 }

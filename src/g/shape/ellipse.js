@@ -4,14 +4,14 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Util = require('../../util/index');
-var Shape = require('../core/shape');
-var Inside = require('./util/inside');
-var Matrix = require('@ali/g-matrix');
-var Matrix3 = Matrix.Matrix3;
-var Vector3 = Matrix.Vector3;
+const Util = require('../../util/index');
+const Shape = require('../core/shape');
+const Inside = require('./util/inside');
+const Matrix = require('@ali/g-matrix');
+const Matrix3 = Matrix.Matrix3;
+const Vector3 = Matrix.Vector3;
 
-var Ellipse = function(cfg) {
+const Ellipse = function(cfg) {
   Ellipse.superclass.constructor.call(this, cfg);
 };
 
@@ -29,20 +29,20 @@ Util.augment(Ellipse, {
   canFill: true,
   canStroke: true,
   type: 'ellipse',
-  getDefaultAttrs: function() {
+  getDefaultAttrs() {
     return {
       lineWidth: 1
     };
   },
-  calculateBox: function() {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var rx = attrs.rx;
-    var ry = attrs.ry;
-    var lineWidth = attrs.lineWidth;
-    var halfXWidth = rx + lineWidth / 2;
-    var halfYWidth = ry + lineWidth / 2;
+  calculateBox() {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const rx = attrs.rx;
+    const ry = attrs.ry;
+    const lineWidth = attrs.lineWidth;
+    const halfXWidth = rx + lineWidth / 2;
+    const halfYWidth = ry + lineWidth / 2;
 
     return {
       minX: cx - halfXWidth,
@@ -51,9 +51,9 @@ Util.augment(Ellipse, {
       maxY: cy + halfYWidth
     };
   },
-  isPointInPath: function(x, y) {
-    var fill = this.hasFill();
-    var stroke = this.hasStroke();
+  isPointInPath(x, y) {
+    const fill = this.hasFill();
+    const stroke = this.hasStroke();
 
     if (fill && stroke) {
       return this.__isPointInFill(x, y) || this.__isPointInStroke(x, y);
@@ -69,63 +69,63 @@ Util.augment(Ellipse, {
 
     return false;
   },
-  __isPointInFill: function(x, y) {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var rx = attrs.rx;
-    var ry = attrs.ry;
+  __isPointInFill(x, y) {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const rx = attrs.rx;
+    const ry = attrs.ry;
 
-    var r = (rx > ry) ? rx : ry;
-    var scaleX = (rx > ry) ? 1 : rx / ry;
-    var scaleY = (rx > ry) ? ry / rx : 1;
+    const r = (rx > ry) ? rx : ry;
+    const scaleX = (rx > ry) ? 1 : rx / ry;
+    const scaleY = (rx > ry) ? ry / rx : 1;
 
-    var p = new Vector3(x, y, 1);
-    var m = new Matrix3();
+    const p = new Vector3(x, y, 1);
+    const m = new Matrix3();
     m.scale(scaleX, scaleY);
     m.translate(cx, cy);
-    var inm = m.getInverse();
+    const inm = m.getInverse();
     p.applyMatrix(inm);
 
     return Inside.circle(0, 0, r, p.x, p.y);
   },
-  __isPointInStroke: function(x, y) {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var rx = attrs.rx;
-    var ry = attrs.ry;
-    var lineWidth = attrs.lineWidth;
+  __isPointInStroke(x, y) {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const rx = attrs.rx;
+    const ry = attrs.ry;
+    const lineWidth = attrs.lineWidth;
 
-    var r = (rx > ry) ? rx : ry;
-    var scaleX = (rx > ry) ? 1 : rx / ry;
-    var scaleY = (rx > ry) ? ry / rx : 1;
+    const r = (rx > ry) ? rx : ry;
+    const scaleX = (rx > ry) ? 1 : rx / ry;
+    const scaleY = (rx > ry) ? ry / rx : 1;
 
-    var p = new Vector3(x, y, 1);
-    var m = new Matrix3();
+    const p = new Vector3(x, y, 1);
+    const m = new Matrix3();
     m.scale(scaleX, scaleY);
     m.translate(cx, cy);
-    var inm = m.getInverse();
+    const inm = m.getInverse();
     p.applyMatrix(inm);
 
     return Inside.arcline(0, 0, r, 0, Math.PI * 2, false, lineWidth, p.x, p.y);
   },
-  createPath: function(context) {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var rx = attrs.rx;
-    var ry = attrs.ry;
+  createPath(context) {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const rx = attrs.rx;
+    const ry = attrs.ry;
 
     context = context || self.get('context');
-    var r = (rx > ry) ? rx : ry;
-    var scaleX = (rx > ry) ? 1 : rx / ry;
-    var scaleY = (rx > ry) ? ry / rx : 1;
+    const r = (rx > ry) ? rx : ry;
+    const scaleX = (rx > ry) ? 1 : rx / ry;
+    const scaleY = (rx > ry) ? ry / rx : 1;
 
-    var m = new Matrix3();
+    const m = new Matrix3();
     m.scale(scaleX, scaleY);
     m.translate(cx, cy);
-    var mo = m.to2DObject();
+    const mo = m.to2DObject();
     context.beginPath();
     context.save();
     context.transform(mo.a, mo.b, mo.c, mo.d, mo.e, mo.f);

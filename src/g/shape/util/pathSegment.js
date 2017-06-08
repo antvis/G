@@ -4,18 +4,18 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Util = require('../../../util/index');
-var Inside = require('./inside');
-var Cubic = require('../math/cubic');
-var Quadratic = require('../math/quadratic');
-var Ellipse = require('../math/ellipse');
-var Matrix = require('@ali/g-matrix');
-var Vector2 = Matrix.Vector2;
-var Vector3 = Matrix.Vector3;
-var Matrix3 = Matrix.Matrix3;
+const Util = require('../../../util/index');
+const Inside = require('./inside');
+const Cubic = require('../math/cubic');
+const Quadratic = require('../math/quadratic');
+const Ellipse = require('../math/ellipse');
+const Matrix = require('@ali/g-matrix');
+const Vector2 = Matrix.Vector2;
+const Vector3 = Matrix.Vector3;
+const Matrix3 = Matrix.Matrix3;
 
 
-var ARR_CMD = ['m', 'l', 'c', 'a', 'q', 'h', 'v', 't', 's', 'z'];
+const ARR_CMD = [ 'm', 'l', 'c', 'a', 'q', 'h', 'v', 't', 's', 'z' ];
 
 function toAbsolute(x, y, curPoint) { // 获取绝对坐标
   return {
@@ -44,21 +44,21 @@ function vAngle(u, v) {
 }
 
 function getArcParams(point1, point2, fa, fs, rx, ry, psiDeg) {
-  var psi = Util.mod(Util.toRadian(psiDeg), Math.PI * 2);
-  var x1 = point1.x;
-  var y1 = point1.y;
-  var x2 = point2.x;
-  var y2 = point2.y;
-  var xp = Math.cos(psi) * (x1 - x2) / 2.0 + Math.sin(psi) * (y1 - y2) / 2.0;
-  var yp = -1 * Math.sin(psi) * (x1 - x2) / 2.0 + Math.cos(psi) * (y1 - y2) / 2.0;
-  var lambda = (xp * xp) / (rx * rx) + (yp * yp) / (ry * ry);
+  const psi = Util.mod(Util.toRadian(psiDeg), Math.PI * 2);
+  const x1 = point1.x;
+  const y1 = point1.y;
+  const x2 = point2.x;
+  const y2 = point2.y;
+  const xp = Math.cos(psi) * (x1 - x2) / 2.0 + Math.sin(psi) * (y1 - y2) / 2.0;
+  const yp = -1 * Math.sin(psi) * (x1 - x2) / 2.0 + Math.cos(psi) * (y1 - y2) / 2.0;
+  const lambda = (xp * xp) / (rx * rx) + (yp * yp) / (ry * ry);
 
   if (lambda > 1) {
     rx *= Math.sqrt(lambda);
     ry *= Math.sqrt(lambda);
   }
 
-  var f = Math.sqrt((((rx * rx) * (ry * ry)) - ((rx * rx) * (yp * yp)) - ((ry * ry) * (xp * xp))) / ((rx * rx) * (yp * yp) + (ry * ry) * (xp * xp)));
+  let f = Math.sqrt((((rx * rx) * (ry * ry)) - ((rx * rx) * (yp * yp)) - ((ry * ry) * (xp * xp))) / ((rx * rx) * (yp * yp) + (ry * ry) * (xp * xp)));
 
   if (fa === fs) {
     f *= -1;
@@ -67,16 +67,16 @@ function getArcParams(point1, point2, fa, fs, rx, ry, psiDeg) {
     f = 0;
   }
 
-  var cxp = f * rx * yp / ry;
-  var cyp = f * -ry * xp / rx;
+  const cxp = f * rx * yp / ry;
+  const cyp = f * -ry * xp / rx;
 
-  var cx = (x1 + x2) / 2.0 + Math.cos(psi) * cxp - Math.sin(psi) * cyp;
-  var cy = (y1 + y2) / 2.0 + Math.sin(psi) * cxp + Math.cos(psi) * cyp;
+  const cx = (x1 + x2) / 2.0 + Math.cos(psi) * cxp - Math.sin(psi) * cyp;
+  const cy = (y1 + y2) / 2.0 + Math.sin(psi) * cxp + Math.cos(psi) * cyp;
 
-  var theta = vAngle([1, 0], [(xp - cxp) / rx, (yp - cyp) / ry]);
-  var u = [(xp - cxp) / rx, (yp - cyp) / ry];
-  var v = [(-1 * xp - cxp) / rx, (-1 * yp - cyp) / ry];
-  var dTheta = vAngle(u, v);
+  const theta = vAngle([ 1, 0 ], [ (xp - cxp) / rx, (yp - cyp) / ry ]);
+  const u = [ (xp - cxp) / rx, (yp - cyp) / ry ];
+  const v = [ (-1 * xp - cxp) / rx, (-1 * yp - cyp) / ry ];
+  let dTheta = vAngle(u, v);
 
   if (vRatio(u, v) <= -1) {
     dTheta = Math.PI;
@@ -90,35 +90,35 @@ function getArcParams(point1, point2, fa, fs, rx, ry, psiDeg) {
   if (fs === 1 && dTheta < 0) {
     dTheta = dTheta + 2 * Math.PI;
   }
-  return [point1, cx, cy, rx, ry, theta, dTheta, psi, fs];
+  return [ point1, cx, cy, rx, ry, theta, dTheta, psi, fs ];
 }
 
-var PathSegment = function(item, preSegment, isLast) {
+const PathSegment = function(item, preSegment, isLast) {
   this.preSegment = preSegment;
   this.isLast = isLast;
   this.init(item, preSegment);
 };
 
 Util.augment(PathSegment, {
-  init: function(item, preSegment) {
-    var command = item[0];
+  init(item, preSegment) {
+    const command = item[0];
     preSegment = preSegment || {
       endPoint: {
         x: 0,
         y: 0
       }
     };
-    var relative = ARR_CMD.indexOf(command) >= 0; // /[a-z]/.test(command);
-    var cmd = relative ? command.toUpperCase() : command;
-    var p = item;
-    var point1;
-    var point2;
-    var point3;
-    var point;
-    var preEndPoint = preSegment.endPoint;
+    const relative = ARR_CMD.indexOf(command) >= 0; // /[a-z]/.test(command);
+    const cmd = relative ? command.toUpperCase() : command;
+    const p = item;
+    let point1;
+    let point2;
+    let point3;
+    let point;
+    const preEndPoint = preSegment.endPoint;
 
-    var p1 = p[1];
-    var p2 = p[2];
+    const p1 = p[1];
+    const p2 = p[2];
     switch (cmd) {
       default: break;
       case 'M':
@@ -131,7 +131,7 @@ Util.augment(PathSegment, {
           };
         }
         this.command = 'M';
-        this.params = [preEndPoint, point];
+        this.params = [ preEndPoint, point ];
         this.subStart = point;
         this.endPoint = point;
         break;
@@ -145,7 +145,7 @@ Util.augment(PathSegment, {
           };
         }
         this.command = 'L';
-        this.params = [preEndPoint, point];
+        this.params = [ preEndPoint, point ];
         this.subStart = preSegment.subStart;
         this.endPoint = point;
         if (this.isLast) {
@@ -164,7 +164,7 @@ Util.augment(PathSegment, {
           };
         }
         this.command = 'L';
-        this.params = [preEndPoint, point];
+        this.params = [ preEndPoint, point ];
         this.subStart = preSegment.subStart;
         this.endPoint = point;
         this.endTangent = function() {
@@ -181,7 +181,7 @@ Util.augment(PathSegment, {
           };
         }
         this.command = 'L';
-        this.params = [preEndPoint, point];
+        this.params = [ preEndPoint, point ];
         this.subStart = preSegment.subStart;
         this.endPoint = point;
         this.endTangent = function() {
@@ -203,7 +203,7 @@ Util.augment(PathSegment, {
           };
         }
         this.command = 'Q';
-        this.params = [preEndPoint, point1, point2];
+        this.params = [ preEndPoint, point1, point2 ];
         this.subStart = preSegment.subStart;
         this.endPoint = point2;
         this.endTangent = function() {
@@ -222,7 +222,7 @@ Util.augment(PathSegment, {
         if (preSegment.command === 'Q') {
           point1 = toSymmetry(preSegment.params[1], preEndPoint);
           this.command = 'Q';
-          this.params = [preEndPoint, point1, point2];
+          this.params = [ preEndPoint, point1, point2 ];
           this.subStart = preSegment.subStart;
           this.endPoint = point2;
           this.endTangent = function() {
@@ -230,7 +230,7 @@ Util.augment(PathSegment, {
           };
         } else {
           this.command = 'TL';
-          this.params = [preEndPoint, point2];
+          this.params = [ preEndPoint, point2 ];
           this.subStart = preSegment.subStart;
           this.endPoint = point2;
           this.endTangent = function() {
@@ -259,7 +259,7 @@ Util.augment(PathSegment, {
           };
         }
         this.command = 'C';
-        this.params = [preEndPoint, point1, point2, point3];
+        this.params = [ preEndPoint, point1, point2, point3 ];
         this.subStart = preSegment.subStart;
         this.endPoint = point3;
         this.endTangent = function() {
@@ -283,7 +283,7 @@ Util.augment(PathSegment, {
         if (preSegment.command === 'C') {
           point1 = toSymmetry(preSegment.params[2], preEndPoint);
           this.command = 'C';
-          this.params = [preEndPoint, point1, point2, point3];
+          this.params = [ preEndPoint, point1, point2, point3 ];
           this.subStart = preSegment.subStart;
           this.endPoint = point3;
           this.endTangent = function() {
@@ -291,7 +291,7 @@ Util.augment(PathSegment, {
           };
         } else {
           this.command = 'SQ';
-          this.params = [preEndPoint, point2, point3];
+          this.params = [ preEndPoint, point2, point3 ];
           this.subStart = preSegment.subStart;
           this.endPoint = point3;
           this.endTangent = function() {
@@ -299,12 +299,12 @@ Util.augment(PathSegment, {
           };
         }
         break;
-      case 'A':
-        var rx = p1;
-        var ry = p2;
-        var psi = p[3];
-        var fa = p[4];
-        var fs = p[5];
+      case 'A': {
+        const rx = p1;
+        const ry = p2;
+        const psi = p[3];
+        const fa = p[4];
+        const fs = p[5];
         if (relative) {
           point = toAbsolute(p[6], p[7], preEndPoint);
         } else {
@@ -319,18 +319,20 @@ Util.augment(PathSegment, {
         this.subStart = preSegment.subStart;
         this.endPoint = point;
         break;
-      case 'Z':
+      }
+      case 'Z': {
         this.command = 'Z';
-        this.params = [preEndPoint, preSegment.subStart];
+        this.params = [ preEndPoint, preSegment.subStart ];
         this.subStart = preSegment.subStart;
         this.endPoint = preSegment.subStart;
+      }
     }
   },
-  isInside: function(x, y, lineWidth) {
-    var self = this;
-    var command = self.command;
-    var params = self.params;
-    var box = self.box;
+  isInside(x, y, lineWidth) {
+    const self = this;
+    const command = self.command;
+    const params = self.params;
+    const box = self.box;
     if (box) {
       if (!Inside.box(box.minX, box.maxX, box.minY, box.maxY, x, y)) {
         return false;
@@ -356,7 +358,7 @@ Util.augment(PathSegment, {
           params[2].x, params[2].y,
           lineWidth, x, y
         );
-      case 'C':
+      case 'C': {
         return Inside.cubicline(
           params[0].x, params[0].y,
           params[1].x, params[1].y,
@@ -364,37 +366,39 @@ Util.augment(PathSegment, {
           params[3].x, params[3].y,
           lineWidth, x, y
         );
-      case 'A':
-        var p = params;
-        var cx = p[1];
-        var cy = p[2];
-        var rx = p[3];
-        var ry = p[4];
-        var theta = p[5];
-        var dTheta = p[6];
-        var psi = p[7];
-        var fs = p[8];
+      }
+      case 'A': {
+        let p = params;
+        const cx = p[1];
+        const cy = p[2];
+        const rx = p[3];
+        const ry = p[4];
+        const theta = p[5];
+        const dTheta = p[6];
+        const psi = p[7];
+        const fs = p[8];
 
-        var r = (rx > ry) ? rx : ry;
-        var scaleX = (rx > ry) ? 1 : rx / ry;
-        var scaleY = (rx > ry) ? ry / rx : 1;
+        const r = (rx > ry) ? rx : ry;
+        const scaleX = (rx > ry) ? 1 : rx / ry;
+        const scaleY = (rx > ry) ? ry / rx : 1;
 
         p = new Vector3(x, y, 1);
-        var m = new Matrix3();
+        const m = new Matrix3();
         m.translate(-cx, -cy);
         m.rotate(-psi);
         m.scale(1 / scaleX, 1 / scaleY);
         p.applyMatrix(m);
         return Inside.arcline(0, 0, r, theta, theta + dTheta, 1 - fs, lineWidth, p.x, p.y);
+      }
     }
     return false;
   },
-  draw: function(context) {
-    var command = this.command;
-    var params = this.params;
-    var point1;
-    var point2;
-    var point3;
+  draw(context) {
+    const command = this.command;
+    const params = this.params;
+    let point1;
+    let point2;
+    let point3;
 
     switch (command) {
       default: break;
@@ -417,22 +421,22 @@ Util.augment(PathSegment, {
         point3 = params[3];
         context.bezierCurveTo(point1.x, point1.y, point2.x, point2.y, point3.x, point3.y);
         break;
-      case 'A':
-        var p = params;
-        var p1 = p[1];
-        var p2 = p[2];
-        var cx = p1;
-        var cy = p2;
-        var rx = p[3];
-        var ry = p[4];
-        var theta = p[5];
-        var dTheta = p[6];
-        var psi = p[7];
-        var fs = p[8];
+      case 'A': {
+        const p = params;
+        const p1 = p[1];
+        const p2 = p[2];
+        const cx = p1;
+        const cy = p2;
+        const rx = p[3];
+        const ry = p[4];
+        const theta = p[5];
+        const dTheta = p[6];
+        const psi = p[7];
+        const fs = p[8];
 
-        var r = (rx > ry) ? rx : ry;
-        var scaleX = (rx > ry) ? 1 : rx / ry;
-        var scaleY = (rx > ry) ? ry / rx : 1;
+        const r = (rx > ry) ? rx : ry;
+        const scaleX = (rx > ry) ? 1 : rx / ry;
+        const scaleY = (rx > ry) ? ry / rx : 1;
 
         context.translate(cx, cy);
         context.rotate(psi);
@@ -442,18 +446,19 @@ Util.augment(PathSegment, {
         context.rotate(-psi);
         context.translate(-cx, -cy);
         break;
+      }
       case 'Z':
         context.closePath();
         break;
     }
   },
-  getBBox: function(lineWidth) {
-    var halfWidth = lineWidth / 2;
-    var params = this.params;
-    var yDims;
-    var xDims;
-    var i;
-    var l;
+  getBBox(lineWidth) {
+    const halfWidth = lineWidth / 2;
+    const params = this.params;
+    let yDims;
+    let xDims;
+    let i;
+    let l;
 
     switch (this.command) {
       default:
@@ -506,26 +511,26 @@ Util.augment(PathSegment, {
           maxY: Math.max.apply(Math, yDims) + halfWidth
         };
         break;
-      case 'A':
+      case 'A': {
         // todo 待优化
-        var p = params;
-        var cx = p[1];
-        var cy = p[2];
-        var rx = p[3];
-        var ry = p[4];
-        var theta = p[5];
-        var dTheta = p[6];
-        var psi = p[7];
-        var fs = p[8];
-        var start = theta;
-        var end = theta + dTheta;
+        const p = params;
+        const cx = p[1];
+        const cy = p[2];
+        const rx = p[3];
+        const ry = p[4];
+        const theta = p[5];
+        const dTheta = p[6];
+        const psi = p[7];
+        const fs = p[8];
+        const start = theta;
+        const end = theta + dTheta;
 
-        var xDim = Ellipse.xExtrema(psi, rx, ry);
-        var minX = Infinity;
-        var maxX = -Infinity;
-        var xs = [start, end];
+        const xDim = Ellipse.xExtrema(psi, rx, ry);
+        let minX = Infinity;
+        let maxX = -Infinity;
+        const xs = [ start, end ];
         for (i = -Math.PI * 2; i <= Math.PI * 2; i += Math.PI) {
-          var xAngle = xDim + i;
+          const xAngle = xDim + i;
           if (fs === 1) {
             if (start < xAngle && xAngle < end) {
               xs.push(xAngle);
@@ -538,7 +543,7 @@ Util.augment(PathSegment, {
         }
 
         for (i = 0, l = xs.length; i < l; i++) {
-          var x = Ellipse.xAt(psi, rx, ry, cx, xs[i]);
+          const x = Ellipse.xAt(psi, rx, ry, cx, xs[i]);
           if (x < minX) {
             minX = x;
           }
@@ -547,12 +552,12 @@ Util.augment(PathSegment, {
           }
         }
 
-        var yDim = Ellipse.yExtrema(psi, rx, ry);
-        var minY = Infinity;
-        var maxY = -Infinity;
-        var ys = [start, end];
+        const yDim = Ellipse.yExtrema(psi, rx, ry);
+        let minY = Infinity;
+        let maxY = -Infinity;
+        const ys = [ start, end ];
         for (i = -Math.PI * 2; i <= Math.PI * 2; i += Math.PI) {
-          var yAngle = yDim + i;
+          const yAngle = yDim + i;
           if (fs === 1) {
             if (start < yAngle && yAngle < end) {
               ys.push(yAngle);
@@ -565,7 +570,7 @@ Util.augment(PathSegment, {
         }
 
         for (i = 0, l = ys.length; i < l; i++) {
-          var y = Ellipse.yAt(psi, rx, ry, cy, ys[i]);
+          const y = Ellipse.yAt(psi, rx, ry, cy, ys[i]);
           if (y < minY) {
             minY = y;
           }
@@ -580,6 +585,7 @@ Util.augment(PathSegment, {
           maxY: maxY + halfWidth
         };
         break;
+      }
     }
   }
 });

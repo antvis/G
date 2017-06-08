@@ -1,12 +1,12 @@
-var Vector2 = require('@ali/g-matrix').Vector2;
+const Vector2 = require('@ali/g-matrix').Vector2;
 
-var THETA = Math.PI / 6;
+const THETA = Math.PI / 6;
 
 function calculatePoints(vector, end, lineWidth) {
-  var angle = (new Vector2(1, 0)).angleTo(vector);
-  var downAngle = angle - THETA;
-  var upAngle = angle + THETA;
-  var length = 6 + lineWidth * 3;
+  const angle = (new Vector2(1, 0)).angleTo(vector);
+  const downAngle = angle - THETA;
+  const upAngle = angle + THETA;
+  const length = 6 + lineWidth * 3;
   return [
     {
       x: end.x - length * Math.cos(downAngle),
@@ -31,13 +31,13 @@ function makeArrow(context, vector, end, lineWidth) {
 }
 
 function getEndPoint(vector, end, lineWidth) {
-  var miterLimit = lineWidth / Math.sin(THETA);
+  const miterLimit = lineWidth / Math.sin(THETA);
   vector.setLength(miterLimit / 2);
   end.sub(vector);
   return end;
 }
 
 module.exports = {
-  makeArrow: makeArrow,
-  getEndPoint: getEndPoint
+  makeArrow,
+  getEndPoint
 };

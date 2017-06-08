@@ -4,11 +4,11 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Util = require('../../util/index');
-var Shape = require('../core/shape');
-var Inside = require('./util/inside');
+const Util = require('../../util/index');
+const Shape = require('../core/shape');
+const Inside = require('./util/inside');
 
-var Polygon = function(cfg) {
+const Polygon = function(cfg) {
   Polygon.superclass.constructor.call(this, cfg);
 };
 
@@ -23,27 +23,27 @@ Util.augment(Polygon, {
   canFill: true,
   canStroke: true,
   type: 'polygon',
-  getDefaultAttrs: function() {
+  getDefaultAttrs() {
     return {
       lineWidth: 1
     };
   },
-  calculateBox: function() {
-    var self = this;
-    var attrs = self.__attrs;
-    var points = attrs.points;
-    var lineWidth = attrs.lineWidth;
+  calculateBox() {
+    const self = this;
+    const attrs = self.__attrs;
+    const points = attrs.points;
+    const lineWidth = attrs.lineWidth;
     if (!points || points.length === 0) {
       return null;
     }
-    var minX = Infinity;
-    var minY = Infinity;
-    var maxX = -Infinity;
-    var maxY = -Infinity;
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
 
     Util.each(points, function(point) {
-      var x = point[0];
-      var y = point[1];
+      const x = point[0];
+      const y = point[1];
       if (x < minX) {
         minX = x;
       }
@@ -60,7 +60,7 @@ Util.augment(Polygon, {
       }
     });
 
-    var halfWidth = lineWidth / 2;
+    const halfWidth = lineWidth / 2;
     return {
       minX: minX - halfWidth,
       minY: minY - halfWidth,
@@ -68,10 +68,10 @@ Util.augment(Polygon, {
       maxY: maxY + halfWidth
     };
   },
-  isPointInPath: function(x, y) {
-    var self = this;
-    var fill = self.hasFill();
-    var stroke = self.hasStroke();
+  isPointInPath(x, y) {
+    const self = this;
+    const fill = self.hasFill();
+    const stroke = self.hasStroke();
 
     if (fill && stroke) {
       return self.__isPointInFill(x, y) || self.__isPointInStroke(x, y);
@@ -87,31 +87,31 @@ Util.augment(Polygon, {
 
     return false;
   },
-  __isPointInFill: function(x, y) {
-    var self = this;
-    var context = self.get('context');
+  __isPointInFill(x, y) {
+    const self = this;
+    const context = self.get('context');
     self.createPath();
     return context.isPointInPath(x, y);
   },
-  __isPointInStroke: function(x, y) {
-    var self = this;
-    var attrs = self.__attrs;
-    var points = attrs.points;
+  __isPointInStroke(x, y) {
+    const self = this;
+    const attrs = self.__attrs;
+    const points = attrs.points;
     if (points.length < 2) {
       return false;
     }
-    var lineWidth = attrs.lineWidth;
-    var outPoints = points.slice(0);
+    const lineWidth = attrs.lineWidth;
+    const outPoints = points.slice(0);
     if (points.length >= 3) {
       outPoints.push(points[0]);
     }
 
     return Inside.polyline(outPoints, lineWidth, x, y);
   },
-  createPath: function(context) {
-    var self = this;
-    var attrs = self.__attrs;
-    var points = attrs.points;
+  createPath(context) {
+    const self = this;
+    const attrs = self.__attrs;
+    const points = attrs.points;
     if (points.length < 2) {
       return;
     }

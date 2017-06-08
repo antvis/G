@@ -3,26 +3,26 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Vector2 = require('@ali/g-matrix').Vector2;
-var Util = require('../../../util/index');
+const Vector2 = require('@ali/g-matrix').Vector2;
+const Util = require('../../../util/index');
 
 function quadraticAt(p0, p1, p2, t) {
-  var onet = 1 - t;
+  const onet = 1 - t;
   return onet * (onet * p0 + 2 * t * p1) + t * t * p2;
 }
 
 function quadraticProjectPoint(x1, y1, x2, y2, x3, y3, x, y, out) {
-  var t;
-  var interval = 0.005;
-  var d = Infinity;
-  var d1;
-  var v1;
-  var v2;
-  var _t;
-  var d2;
-  var i;
-  var EPSILON = 0.0001;
-  var v0 = new Vector2(x, y);
+  let t;
+  let interval = 0.005;
+  let d = Infinity;
+  let d1;
+  let v1;
+  let v2;
+  let _t;
+  let d2;
+  let i;
+  const EPSILON = 0.0001;
+  const v0 = new Vector2(x, y);
 
   for (_t = 0; _t < 1; _t += 0.05) {
     v1 = new Vector2(
@@ -43,8 +43,8 @@ function quadraticProjectPoint(x1, y1, x2, y2, x3, y3, x, y, out) {
       break;
     }
 
-    var prev = t - interval;
-    var next = t + interval;
+    const prev = t - interval;
+    const next = t + interval;
 
     v1 = new Vector2(
       quadraticAt(x1, x2, x3, prev),
@@ -83,21 +83,21 @@ function quadraticProjectPoint(x1, y1, x2, y2, x3, y3, x, y, out) {
 
 
 function quadraticExtrema(p0, p1, p2) {
-  var a = p0 + p2 - 2 * p1;
+  const a = p0 + p2 - 2 * p1;
   if (Util.isNumberEqual(a, 0)) {
-    return [0.5];
+    return [ 0.5 ];
   }
-  var rst = (p0 - p1) / a;
+  const rst = (p0 - p1) / a;
   if (rst <= 1 && rst >= 0) {
-    return [rst];
+    return [ rst ];
   }
   return [];
 }
 
 module.exports = {
   at: quadraticAt,
-  projectPoint: function(x1, y1, x2, y2, x3, y3, x, y) {
-    var rst = {};
+  projectPoint(x1, y1, x2, y2, x3, y3, x, y) {
+    const rst = {};
     quadraticProjectPoint(x1, y1, x2, y2, x3, y3, x, y, rst);
     return rst;
   },

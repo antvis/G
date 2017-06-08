@@ -1,9 +1,9 @@
-var Util = require('../../../util/index');
-var Vector3 = require('@ali/g-matrix').Vector3;
+const Util = require('../../../util/index');
+const Vector3 = require('@ali/g-matrix').Vector3;
 
-var ALIAS_ATTRS = ['strokeStyle', 'fillStyle', 'globalAlpha'];
-var CLIP_SHAPES = ['circle', 'ellipse', 'fan', 'polygon', 'rect', 'path'];
-var CAPITALIZED_ATTRS_MAP = {
+const ALIAS_ATTRS = [ 'strokeStyle', 'fillStyle', 'globalAlpha' ];
+const CLIP_SHAPES = [ 'circle', 'ellipse', 'fan', 'polygon', 'rect', 'path' ];
+const CAPITALIZED_ATTRS_MAP = {
   r: 'R',
   opacity: 'Opacity',
   lineWidth: 'LineWidth',
@@ -45,7 +45,7 @@ var CAPITALIZED_ATTRS_MAP = {
   endAngle: 'EndAngle',
   path: 'Path'
 };
-var ALIAS_ATTRS_MAP = {
+const ALIAS_ATTRS_MAP = {
   stroke: 'strokeStyle',
   fill: 'fillStyle',
   opacity: 'globalAlpha'
@@ -54,7 +54,7 @@ var ALIAS_ATTRS_MAP = {
 module.exports = {
   canFill: false,
   canStroke: false,
-  initAttrs: function(attrs) {
+  initAttrs(attrs) {
     this.__attrs = {
       opacity: 1,
       fillOpacity: 1,
@@ -63,7 +63,7 @@ module.exports = {
     this.attr(Util.assign(this.getDefaultAttrs(), attrs));
     return this;
   },
-  getDefaultAttrs: function() {
+  getDefaultAttrs() {
     return {};
   },
   /**
@@ -77,16 +77,16 @@ module.exports = {
    * @param  {*} value 属性值
    * @return {*} 属性值
    */
-  attr: function(name, value) {
-    var self = this;
+  attr(name, value) {
+    const self = this;
     if (arguments.length === 0) {
       return self.__attrs;
     }
 
     if (Util.isObject(name)) {
-      for (var k in name) {
+      for (const k in name) {
         if (ALIAS_ATTRS.indexOf(k) === -1) {
-          var v = name[k];
+          const v = name[k];
           self._setAttr(k, v);
         }
       }
@@ -99,7 +99,7 @@ module.exports = {
     }
     if (arguments.length === 2) {
       if (self._setAttr(name, value) !== false) {
-        var m = '__afterSetAttr' + CAPITALIZED_ATTRS_MAP[name];
+        const m = '__afterSetAttr' + CAPITALIZED_ATTRS_MAP[name];
         if (self[m]) {
           self[m](value);
         }
@@ -110,52 +110,52 @@ module.exports = {
     }
     return self._getAttr(name);
   },
-  clearBBox: function() {
+  clearBBox() {
     this.setSilent('box', null);
   },
-  __afterSetAttrAll: function() {
+  __afterSetAttrAll() {
 
   },
   // 属性获取触发函数
-  _getAttr: function(name) {
+  _getAttr(name) {
     return this.__attrs[name];
   },
   // 属性设置触发函数
-  _setAttr: function(name, value) {
-    var self = this;
+  _setAttr(name, value) {
+    const self = this;
     if (name === 'clip') {
       self.__setAttrClip(value);
       self.__attrs.clip = value;
     } else {
       self.__attrs[name] = value;
-      var alias = ALIAS_ATTRS_MAP[name];
+      const alias = ALIAS_ATTRS_MAP[name];
       if (alias) {
         self.__attrs[alias] = value;
       }
     }
     return self;
   },
-  hasFill: function() {
+  hasFill() {
     return this.canFill && this.__attrs.fillStyle;
   },
-  hasStroke: function() {
+  hasStroke() {
     return this.canStroke && this.__attrs.strokeStyle;
   },
   // 设置透明度
-  __setAttrOpacity: function(v) {
+  __setAttrOpacity(v) {
     this.__attrs.globalAlpha = v;
     return v;
   },
-  __setAttrClip: function(clip) {
-    var self = this;
+  __setAttrClip(clip) {
+    const self = this;
     if (clip && (CLIP_SHAPES.indexOf(clip.type) > -1)) {
       if (clip.get('canvas') === null) {
         clip = Util.clone(clip);
       }
       clip.set('parent', self.get('parent'));
       clip.set('context', self.get('context'));
-      clip.inside = function (x, y) {
-        var v = new Vector3(x, y, 1);
+      clip.inside = function(x, y) {
+        const v = new Vector3(x, y, 1);
         clip.invert(v, self.get('canvas')); // 已经在外面转换
         return clip.__isPointInFill(v.x, v.y);
       };

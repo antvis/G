@@ -5,17 +5,17 @@
  * @see http://www.w3.org/TR/2011/REC-SVG11-20110816/paths.html#PathData
  * @ignore
  */
-var Util = require('../../util/index');
-var Shape = require('../core/shape');
-var PathSegment = require('./util/pathSegment');
-var Format = require('../format');
-var Arrow = require('./util/arrow');
-var pathUtil = require('@ali/g-path-util');
-var CubicMath = require('./math/cubic');
-var Matrix = require('@ali/g-matrix');
-var Vector2 = Matrix.Vector2;
+const Util = require('../../util/index');
+const Shape = require('../core/shape');
+const PathSegment = require('./util/pathSegment');
+const Format = require('../format');
+const Arrow = require('./util/arrow');
+const pathUtil = require('@ali/g-path-util');
+const CubicMath = require('./math/cubic');
+const Matrix = require('@ali/g-matrix');
+const Vector2 = Matrix.Vector2;
 
-var Path = function(cfg) {
+const Path = function(cfg) {
   Path.superclass.constructor.call(this, cfg);
 };
 
@@ -32,21 +32,21 @@ Util.augment(Path, {
   canFill: true,
   canStroke: true,
   type: 'path',
-  getDefaultAttrs: function() {
+  getDefaultAttrs() {
     return {
       lineWidth: 1
     };
   },
-  __afterSetAttrPath: function(path) {
-    var self = this;
+  __afterSetAttrPath(path) {
+    const self = this;
     if (Util.isNil(path)) {
       self.setSilent('segments', null);
       self.setSilent('box', undefined);
       return;
     }
-    var pathArray = Format.parsePath(path);
-    var preSegment;
-    var segments = [];
+    const pathArray = Format.parsePath(path);
+    let preSegment;
+    const segments = [];
 
     if (!Util.isArray(pathArray) ||
       pathArray.length === 0 ||
@@ -55,9 +55,9 @@ Util.augment(Path, {
     ) {
       return;
     }
-    var count = pathArray.length;
-    for (var i = 0; i < pathArray.length; i++) {
-      var item = pathArray[i];
+    const count = pathArray.length;
+    for (let i = 0; i < pathArray.length; i++) {
+      const item = pathArray[i];
       preSegment = new PathSegment(item, preSegment, i === count - 1);
       segments.push(preSegment);
     }
@@ -65,29 +65,29 @@ Util.augment(Path, {
     self.set('tCache', null);
     this.setSilent('box', null);
   },
-  __afterSetAttrAll: function(objs) {
+  __afterSetAttrAll(objs) {
     if (objs.path) {
       this.__afterSetAttrPath(objs.path);
     }
   },
-  calculateBox: function() {
-    var self = this;
-    var attrs = self.__attrs;
-    var lineWidth = attrs.lineWidth;
-    var lineAppendWidth = attrs.lineAppendWidth || 0;
-    var segments = self.get('segments');
+  calculateBox() {
+    const self = this;
+    const attrs = self.__attrs;
+    let lineWidth = attrs.lineWidth;
+    const lineAppendWidth = attrs.lineAppendWidth || 0;
+    const segments = self.get('segments');
 
     if (!segments) {
       return null;
     }
     lineWidth += lineAppendWidth;
-    var minX = Infinity;
-    var maxX = -Infinity;
-    var minY = Infinity;
-    var maxY = -Infinity;
+    let minX = Infinity;
+    let maxX = -Infinity;
+    let minY = Infinity;
+    let maxY = -Infinity;
     Util.each(segments, function(segment) {
       segment.getBBox(lineWidth);
-      var box = segment.box;
+      const box = segment.box;
       if (box) {
         if (box.minX < minX) {
           minX = box.minX;
@@ -107,16 +107,16 @@ Util.augment(Path, {
       }
     });
     return {
-      minX: minX,
-      minY: minY,
-      maxX: maxX,
-      maxY: maxY
+      minX,
+      minY,
+      maxX,
+      maxY
     };
   },
-  isPointInPath: function(x, y) {
-    var self = this;
-    var fill = self.hasFill();
-    var stroke = self.hasStroke();
+  isPointInPath(x, y) {
+    const self = this;
+    const fill = self.hasFill();
+    const stroke = self.hasStroke();
 
     if (fill && stroke) {
       return self.__isPointInFill(x, y) || self.__isPointInStroke(x, y);
@@ -132,21 +132,21 @@ Util.augment(Path, {
 
     return false;
   },
-  __isPointInFill: function(x, y) {
-    var self = this;
-    var context = self.get('context');
+  __isPointInFill(x, y) {
+    const self = this;
+    const context = self.get('context');
     if (!context) return undefined;
     self.createPath();
     return context.isPointInPath(x, y);
   },
-  __isPointInStroke: function(x, y) {
-    var self = this;
-    var segments = self.get('segments');
-    var attrs = self.__attrs;
-    var lineWidth = attrs.lineWidth;
-    var appendWidth = attrs.lineAppendWidth || 0;
+  __isPointInStroke(x, y) {
+    const self = this;
+    const segments = self.get('segments');
+    const attrs = self.__attrs;
+    let lineWidth = attrs.lineWidth;
+    const appendWidth = attrs.lineAppendWidth || 0;
     lineWidth += appendWidth;
-    for (var i = 0, l = segments.length; i < l; i++) {
+    for (let i = 0, l = segments.length; i < l; i++) {
       if (segments[i].isInside(x, y, lineWidth)) {
         return true;
       }
@@ -154,15 +154,15 @@ Util.augment(Path, {
 
     return false;
   },
-  __setTcache: function() {
-    var totalLength = 0;
-    var tempLength = 0;
-    var tCache = [];
-    var segmentT;
-    var segmentL;
-    var segmentN;
-    var l;
-    var curve = this.curve;
+  __setTcache() {
+    let totalLength = 0;
+    let tempLength = 0;
+    const tCache = [];
+    let segmentT;
+    let segmentL;
+    let segmentN;
+    let l;
+    const curve = this.curve;
 
     if (!curve) {
       return;
@@ -191,20 +191,16 @@ Util.augment(Path, {
 
     this.tCache = tCache;
   },
-  __calculateCurve: function() {
-    var self = this;
-    var attrs = self.__attrs;
-    var path = attrs.path;
+  __calculateCurve() {
+    const self = this;
+    const attrs = self.__attrs;
+    const path = attrs.path;
     this.curve = pathUtil.toCurve(path);
   },
-  getPoint: function(t) {
-    var tCache = this.tCache;
-    var curve;
-    var subt;
-    var index;
-    var seg;
-    var l;
-    var nextSeg;
+  getPoint(t) {
+    let tCache = this.tCache;
+    let subt;
+    let index;
 
     if (!tCache) {
       this.__calculateCurve();
@@ -212,7 +208,7 @@ Util.augment(Path, {
       tCache = this.tCache;
     }
 
-    curve = this.curve;
+    const curve = this.curve;
 
     if (!tCache) {
       if (curve) {
@@ -229,38 +225,38 @@ Util.augment(Path, {
         index = i;
       }
     });
-    seg = curve[index];
+    const seg = curve[index];
     if (Util.isNil(seg) || Util.isNil(index)) {
       return null;
     }
-    l = seg.length;
-    nextSeg = curve[index + 1];
+    const l = seg.length;
+    const nextSeg = curve[index + 1];
     return {
       x: CubicMath.at(seg[l - 2], nextSeg[1], nextSeg[3], nextSeg[5], 1 - subt),
       y: CubicMath.at(seg[l - 1], nextSeg[2], nextSeg[4], nextSeg[6], 1 - subt)
     };
   },
-  createPath: function(context) {
-    var self = this;
-    var attrs = self.__attrs;
-    var segments = self.get('segments');
-    var lineWidth = attrs.lineWidth;
-    var arrow = attrs.arrow;
+  createPath(context) {
+    const self = this;
+    const attrs = self.__attrs;
+    const segments = self.get('segments');
+    const lineWidth = attrs.lineWidth;
+    const arrow = attrs.arrow;
 
     if (!Util.isArray(segments)) return;
     context = context || self.get('context');
     context.beginPath();
-    for (var i = 0, l = segments.length; i < l; i++) {
+    for (let i = 0, l = segments.length; i < l; i++) {
       if (i === l - 1 && arrow) {
-        var lastSeg = segments[i];
-        var endTangent = segments[i].endTangent;
-        var endPoint = {
+        const lastSeg = segments[i];
+        const endTangent = segments[i].endTangent;
+        const endPoint = {
           x: lastSeg.params[lastSeg.params.length - 1].x,
           y: lastSeg.params[lastSeg.params.length - 1].y
         };
         if (lastSeg && Util.isFunction(endTangent)) {
-          var v = endTangent();
-          var end = Arrow.getEndPoint(v, new Vector2(endPoint.x, endPoint.y), lineWidth);
+          const v = endTangent();
+          const end = Arrow.getEndPoint(v, new Vector2(endPoint.x, endPoint.y), lineWidth);
           lastSeg.params[lastSeg.params.length - 1] = end;
           segments[i].draw(context);
           Arrow.makeArrow(context, v, end, lineWidth);

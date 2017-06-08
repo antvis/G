@@ -1,43 +1,26 @@
-import {
-  isFunction,
-  isObject,
-  isBoolean,
-  isNil,
-  isString,
-  isArray,
-  isEmpty,
-  uniqueId,
-  clone,
-  assign,
-  merge,
-  upperFirst,
-  pull,
-  forEach,
-  toArray,
-} from 'lodash';
-
 const PRECISION = 0.00001; // 常量，据的精度，小于这个精度认为是0
 const RADIAN = Math.PI / 180;
 const DEGREE = 180 / Math.PI;
 
 module.exports = {
-  isFunction,
-  isObject,
-  isBoolean,
-  isNil,
-  isString,
-  isArray,
-  isEmpty, // isBlank
-  uniqueId,
-  clone,
-  assign, // simpleMix
-  merge, // mix
-  upperFirst, // ucfirst
-  remove: pull,
-  each: forEach,
+  isFunction: require('lodash/isFunction'),
+  isObject: require('lodash/isObject'),
+  isBoolean: require('lodash/isBoolean'),
+  isNil: require('lodash/isNil'),
+  isString: require('lodash/isString'),
+  isArray: require('lodash/isArray'),
+  isEmpty: require('lodash/isEmpty'), // isBlank
+  uniqueId: require('lodash/uniqueId'),
+  clone: require('lodash/clone'),
+  assign: require('lodash/assign'), // simpleMix
+  merge: require('lodash/merge'), // mix
+  upperFirst: require('lodash/upperFirst'), // ucfirst
+  remove: require('lodash/pull'),
+  each: require('lodash/forEach'),
+  toArray: require('lodash/toArray'),
   extend(subclass, superclass, overrides, staticOverrides) {
-    //如果只提供父类构造函数，则自动生成子类构造函数
-    if (!isFunction(superclass)) {
+    // 如果只提供父类构造函数，则自动生成子类构造函数
+    if (!this.isFunction(superclass)) {
       overrides = superclass;
       superclass = subclass;
       subclass = function() {};
@@ -60,21 +43,21 @@ module.exports = {
         return o;
       };
 
-    const superObj = create(superclass.prototype, subclass); //new superclass(),//实例化父类作为子类的prototype
-    subclass.prototype = merge(superObj, subclass.prototype); //指定子类的prototype
+    const superObj = create(superclass.prototype, subclass); // new superclass(),//实例化父类作为子类的prototype
+    subclass.prototype = this.merge(superObj, subclass.prototype); // 指定子类的prototype
     subclass.superclass = create(superclass.prototype, superclass);
-    merge(superObj, overrides);
-    merge(subclass, staticOverrides);
+    this.merge(superObj, overrides);
+    this.merge(subclass, staticOverrides);
     return subclass;
   },
   augment(c) {
-    const args = toArray(arguments);
+    const args = this.toArray(arguments);
     for (let i = 1; i < args.length; i++) {
       let obj = args[i];
-      if (isFunction(obj)) {
+      if (this.isFunction(obj)) {
         obj = obj.prototype;
       }
-      merge(c.prototype, obj);
+      this.merge(c.prototype, obj);
     }
   },
   /**
@@ -96,7 +79,7 @@ module.exports = {
   },
   /**
    * 获取弧度对应的角度
-   * @param {Number} rad 弧度
+   * @param {Number} radian 弧度
    * @return {Number} 角度
    **/
   toDegree(radian) {
@@ -104,10 +87,11 @@ module.exports = {
   },
   /**
    * 广义取模运算
-   * @param {Number} v 被取模的值
+   * @param {Number} n 被取模的值
    * @param {Number} m 模
+   * @return {Number} 返回n 被 m 取模的结果
    */
   mod(n, m) {
-    return ( ( n % m ) + m ) % m;
+    return ((n % m) + m) % m;
   }
 };

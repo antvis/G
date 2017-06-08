@@ -4,11 +4,11 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Util = require('../../util/index');
-var Shape = require('../core/shape');
-var Inside = require('./util/inside');
+const Util = require('../../util/index');
+const Shape = require('../core/shape');
+const Inside = require('./util/inside');
 
-var Rect = function(cfg) {
+const Rect = function(cfg) {
   Rect.superclass.constructor.call(this, cfg);
 };
 
@@ -27,22 +27,22 @@ Util.augment(Rect, {
   canFill: true,
   canStroke: true,
   type: 'rect',
-  getDefaultAttrs: function() {
+  getDefaultAttrs() {
     return {
       lineWidth: 1,
       radius: 0
     };
   },
-  calculateBox: function() {
-    var self = this;
-    var attrs = self.__attrs;
-    var x = attrs.x;
-    var y = attrs.y;
-    var width = attrs.width;
-    var height = attrs.height;
-    var lineWidth = attrs.lineWidth;
+  calculateBox() {
+    const self = this;
+    const attrs = self.__attrs;
+    const x = attrs.x;
+    const y = attrs.y;
+    const width = attrs.width;
+    const height = attrs.height;
+    const lineWidth = attrs.lineWidth;
 
-    var halfWidth = lineWidth / 2;
+    const halfWidth = lineWidth / 2;
     return {
       minX: x - halfWidth,
       minY: y - halfWidth,
@@ -50,10 +50,10 @@ Util.augment(Rect, {
       maxY: y + height + halfWidth
     };
   },
-  isPointInPath: function(x, y) {
-    var self = this;
-    var fill = self.hasFill();
-    var stroke = self.hasStroke();
+  isPointInPath(x, y) {
+    const self = this;
+    const fill = self.hasFill();
+    const stroke = self.hasStroke();
 
     if (fill && stroke) {
       return self.__isPointInFill(x, y) || self.__isPointInStroke(x, y);
@@ -69,25 +69,25 @@ Util.augment(Rect, {
 
     return false;
   },
-  __isPointInFill: function(x, y) {
-    var context = this.get('context');
+  __isPointInFill(x, y) {
+    const context = this.get('context');
 
     if (!context) return false;
     this.createPath();
     return context.isPointInPath(x, y);
   },
-  __isPointInStroke: function(x, y) {
-    var self = this;
-    var attrs = self.__attrs;
-    var rx = attrs.x;
-    var ry = attrs.y;
-    var width = attrs.width;
-    var height = attrs.height;
-    var radius = attrs.radius;
-    var lineWidth = attrs.lineWidth;
+  __isPointInStroke(x, y) {
+    const self = this;
+    const attrs = self.__attrs;
+    const rx = attrs.x;
+    const ry = attrs.y;
+    const width = attrs.width;
+    const height = attrs.height;
+    const radius = attrs.radius;
+    const lineWidth = attrs.lineWidth;
 
     if (radius === 0) {
-      var halfWidth = lineWidth / 2;
+      const halfWidth = lineWidth / 2;
       return Inside.line(rx - halfWidth, ry, rx + width + halfWidth, ry, lineWidth, x, y) ||
         Inside.line(rx + width, ry - halfWidth, rx + width, ry + height + halfWidth, lineWidth, x, y) ||
         Inside.line(rx + width + halfWidth, ry + height, rx - halfWidth, ry + height, lineWidth, x, y) ||
@@ -103,14 +103,14 @@ Util.augment(Rect, {
       Inside.arcline(rx + radius, ry + height - radius, radius, 0.5 * Math.PI, Math.PI, false, lineWidth, x, y) ||
       Inside.arcline(rx + radius, ry + radius, radius, Math.PI, 1.5 * Math.PI, false, lineWidth, x, y);
   },
-  createPath: function(context) {
-    var self = this;
-    var attrs = self.__attrs;
-    var x = attrs.x;
-    var y = attrs.y;
-    var width = attrs.width;
-    var height = attrs.height;
-    var radius = attrs.radius;
+  createPath(context) {
+    const self = this;
+    const attrs = self.__attrs;
+    const x = attrs.x;
+    const y = attrs.y;
+    const width = attrs.width;
+    const height = attrs.height;
+    const radius = attrs.radius;
     context = context || self.get('context');
 
     context.beginPath();

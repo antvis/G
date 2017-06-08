@@ -1,18 +1,18 @@
-var Util = require('../../util/index');
-var Shape = require('../core/shape');
-var Inside = require('./util/inside');
+const Util = require('../../util/index');
+const Shape = require('../core/shape');
+const Inside = require('./util/inside');
 
-var Marker = function(cfg) {
+const Marker = function(cfg) {
   Marker.superclass.constructor.call(this, cfg);
 };
 
 Marker.Symbols = {
   // 圆
-  circle: function(x, y, r, ctx) {
+  circle(x, y, r, ctx) {
     ctx.arc(x, y, r, 0, Math.PI * 2, false);
   },
   // 正方形
-  square: function(x, y, r, ctx) {
+  square(x, y, r, ctx) {
     ctx.moveTo(x - r, y - r);
     ctx.lineTo(x + r, y - r);
     ctx.lineTo(x + r, y + r);
@@ -20,7 +20,7 @@ Marker.Symbols = {
     ctx.closePath();
   },
   // 菱形
-  diamond: function(x, y, r, ctx) {
+  diamond(x, y, r, ctx) {
     ctx.moveTo(x - r, y);
     ctx.lineTo(x, y - r);
     ctx.lineTo(x + r, y);
@@ -28,9 +28,9 @@ Marker.Symbols = {
     ctx.closePath();
   },
   // 三角形
-  triangle: function(x, y, r, ctx) {
-    var diffX = r / 0.966;
-    var diffY = r;
+  triangle(x, y, r, ctx) {
+    const diffX = r / 0.966;
+    const diffY = r;
     ctx.moveTo(x, y - r);
     ctx.lineTo(x + diffX, y + diffY);
     ctx.lineTo(x - diffX, y + diffY);
@@ -38,8 +38,8 @@ Marker.Symbols = {
   },
   // 倒三角形
   'triangle-down': function(x, y, r, ctx) {
-    var diffX = r / 0.966;
-    var diffY = r;
+    const diffX = r / 0.966;
+    const diffY = r;
     ctx.moveTo(x, y + r);
     ctx.lineTo(x + diffX, y - diffY);
     ctx.lineTo(x - diffX, y - diffY);
@@ -58,20 +58,20 @@ Util.augment(Marker, {
   type: 'marker',
   canFill: true,
   canStroke: true,
-  getDefaultAttrs: function() {
+  getDefaultAttrs() {
     return {
       x: 0,
       y: 0,
       lineWidth: 1
     };
   },
-  calculateBox: function() {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var r = attrs.radius;
-    var lineWidth = attrs.lineWidth;
-    var halfWidth = lineWidth / 2 + r;
+  calculateBox() {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const r = attrs.radius;
+    const lineWidth = attrs.lineWidth;
+    const halfWidth = lineWidth / 2 + r;
     return {
       minX: cx - halfWidth,
       minY: cy - halfWidth,
@@ -79,20 +79,20 @@ Util.augment(Marker, {
       maxY: cy + halfWidth
     };
   },
-  isPointInPath: function(x, y) {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var r = attrs.radius;
+  isPointInPath(x, y) {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const r = attrs.radius;
     return Inside.circle(cx, cy, r, x, y);
   },
-  createPath: function(context) {
-    var attrs = this.__attrs;
-    var x = attrs.x;
-    var y = attrs.y;
-    var r = attrs.radius;
-    var symbol = attrs.symbol || 'circle';
-    var method;
+  createPath(context) {
+    const attrs = this.__attrs;
+    const x = attrs.x;
+    const y = attrs.y;
+    const r = attrs.radius;
+    const symbol = attrs.symbol || 'circle';
+    let method;
     if (Util.isFunction(symbol)) {
       method = symbol;
     } else {

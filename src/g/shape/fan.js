@@ -4,14 +4,14 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Util = require('../../util/index');
-var Shape = require('../core/shape');
-var Inside = require('./util/inside');
-var ArcMath = require('./math/arc');
-var Matrix = require('@ali/g-matrix');
-var Vector2 = Matrix.Vector2;
+const Util = require('../../util/index');
+const Shape = require('../core/shape');
+const Inside = require('./util/inside');
+const ArcMath = require('./math/arc');
+const Matrix = require('@ali/g-matrix');
+const Vector2 = Matrix.Vector2;
 
-var Fan = function(cfg) {
+const Fan = function(cfg) {
   Fan.superclass.constructor.call(this, cfg);
 };
 
@@ -32,7 +32,7 @@ Util.augment(Fan, {
   canFill: true,
   canStroke: true,
   type: 'fan',
-  getDefaultAttrs: function() {
+  getDefaultAttrs() {
     return {
       clockwise: false,
       lineWidth: 1,
@@ -40,26 +40,26 @@ Util.augment(Fan, {
       re: 0
     };
   },
-  calculateBox: function() {
-    var self = this;
-    var attrs = self.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var rs = attrs.rs;
-    var re = attrs.re;
-    var startAngle = attrs.startAngle;
-    var endAngle = attrs.endAngle;
-    var clockwise = attrs.clockwise;
-    var lineWidth = attrs.lineWidth;
+  calculateBox() {
+    const self = this;
+    const attrs = self.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const rs = attrs.rs;
+    const re = attrs.re;
+    const startAngle = attrs.startAngle;
+    const endAngle = attrs.endAngle;
+    const clockwise = attrs.clockwise;
+    const lineWidth = attrs.lineWidth;
 
-    var boxs = ArcMath.box(cx, cy, rs, startAngle, endAngle, clockwise);
-    var boxe = ArcMath.box(cx, cy, re, startAngle, endAngle, clockwise);
-    var minX = Math.min(boxs.minX, boxe.minX);
-    var minY = Math.min(boxs.minY, boxe.minY);
-    var maxX = Math.max(boxs.maxX, boxe.maxX);
-    var maxY = Math.max(boxs.maxY, boxe.maxY);
+    const boxs = ArcMath.box(cx, cy, rs, startAngle, endAngle, clockwise);
+    const boxe = ArcMath.box(cx, cy, re, startAngle, endAngle, clockwise);
+    const minX = Math.min(boxs.minX, boxe.minX);
+    const minY = Math.min(boxs.minY, boxe.minY);
+    const maxX = Math.max(boxs.maxX, boxe.maxX);
+    const maxY = Math.max(boxs.maxY, boxe.maxY);
 
-    var halfWidth = lineWidth / 2;
+    const halfWidth = lineWidth / 2;
     return {
       minX: minX - halfWidth,
       minY: minY - halfWidth,
@@ -67,9 +67,9 @@ Util.augment(Fan, {
       maxY: maxY + halfWidth
     };
   },
-  isPointInPath: function(x, y) {
-    var fill = this.hasFill();
-    var stroke = this.hasStroke();
+  isPointInPath(x, y) {
+    const fill = this.hasFill();
+    const stroke = this.hasStroke();
 
     if (fill && stroke) {
       return this.__isPointInFill(x, y) || this.__isPointInStroke(x, y);
@@ -84,55 +84,55 @@ Util.augment(Fan, {
     }
     return false;
   },
-  __isPointInFill: function(x, y) {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var rs = attrs.rs;
-    var re = attrs.re;
-    var startAngle = attrs.startAngle;
-    var endAngle = attrs.endAngle;
-    var clockwise = attrs.clockwise;
+  __isPointInFill(x, y) {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const rs = attrs.rs;
+    const re = attrs.re;
+    const startAngle = attrs.startAngle;
+    const endAngle = attrs.endAngle;
+    const clockwise = attrs.clockwise;
 
-    var v1 = new Vector2(1, 0);
-    var subv = new Vector2(x - cx, y - cy);
-    var angle = v1.angleTo(subv);
+    const v1 = new Vector2(1, 0);
+    const subv = new Vector2(x - cx, y - cy);
+    const angle = v1.angleTo(subv);
 
 
-    var angle1 = ArcMath.nearAngle(angle, startAngle, endAngle, clockwise);
+    const angle1 = ArcMath.nearAngle(angle, startAngle, endAngle, clockwise);
 
     if (Util.isNumberEqual(angle, angle1)) {
-      var ls = subv.lengthSq();
+      const ls = subv.lengthSq();
       if (rs * rs <= ls && ls <= re * re) {
         return true;
       }
     }
     return false;
   },
-  __isPointInStroke: function(x, y) {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var rs = attrs.rs;
-    var re = attrs.re;
-    var startAngle = attrs.startAngle;
-    var endAngle = attrs.endAngle;
-    var clockwise = attrs.clockwise;
-    var lineWidth = attrs.lineWidth;
+  __isPointInStroke(x, y) {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const rs = attrs.rs;
+    const re = attrs.re;
+    const startAngle = attrs.startAngle;
+    const endAngle = attrs.endAngle;
+    const clockwise = attrs.clockwise;
+    const lineWidth = attrs.lineWidth;
 
-    var ssp = {
+    const ssp = {
       x: Math.cos(startAngle) * rs + cx,
       y: Math.sin(startAngle) * rs + cy
     };
-    var sep = {
+    const sep = {
       x: Math.cos(startAngle) * re + cx,
       y: Math.sin(startAngle) * re + cy
     };
-    var esp = {
+    const esp = {
       x: Math.cos(endAngle) * rs + cx,
       y: Math.sin(endAngle) * rs + cy
     };
-    var eep = {
+    const eep = {
       x: Math.cos(endAngle) * re + cx,
       y: Math.sin(endAngle) * re + cy
     };
@@ -155,25 +155,25 @@ Util.augment(Fan, {
 
     return false;
   },
-  createPath: function(context) {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var rs = attrs.rs;
-    var re = attrs.re;
-    var startAngle = attrs.startAngle;
-    var endAngle = attrs.endAngle;
-    var clockwise = attrs.clockwise;
+  createPath(context) {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const rs = attrs.rs;
+    const re = attrs.re;
+    const startAngle = attrs.startAngle;
+    const endAngle = attrs.endAngle;
+    const clockwise = attrs.clockwise;
 
-    var ssp = {
+    const ssp = {
       x: Math.cos(startAngle) * rs + cx,
       y: Math.sin(startAngle) * rs + cy
     };
-    var sep = {
+    const sep = {
       x: Math.cos(startAngle) * re + cx,
       y: Math.sin(startAngle) * re + cy
     };
-    var esp = {
+    const esp = {
       x: Math.cos(endAngle) * rs + cx,
       y: Math.sin(endAngle) * rs + cy
     };

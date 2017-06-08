@@ -5,7 +5,7 @@ module.exports = {
   /**
    * 事件分发器的处理函数
    */
-  initEventDispatcher: function() {
+  initEventDispatcher() {
     this.__listeners = {};
   },
   /**
@@ -14,7 +14,7 @@ module.exports = {
    * @param  {Function} listener 回调函数
    * @return {Object} this
    */
-  on: function(type, listener) {
+  on(type, listener) {
     const listeners = this.__listeners;
 
     if (Util.isNil(listeners[type])) {
@@ -36,8 +36,8 @@ module.exports = {
    * @param  {Function} listener 回调函数
    * @return {Object} this
    */
-  off: function(type, listener) {
-    var listeners = this.__listeners;
+  off(type, listener) {
+    const listeners = this.__listeners;
     if (arguments.length === 0) {
       this.__listeners = {};
       return this;
@@ -59,8 +59,8 @@ module.exports = {
    * @param  {Function} listener 回调函数
    * @return {Object} this
    */
-  has: function(type, listener) {
-    var listeners = this.__listeners;
+  has(type, listener) {
+    const listeners = this.__listeners;
 
     if (arguments.length === 0) {
       if (!Util.isEmpty(listeners)) {
@@ -82,10 +82,10 @@ module.exports = {
 
     return false;
   },
-  trigger: function(event) {
-    var self = this;
-    var listeners = self.__listeners;
-    var listenersArray = listeners[event.type];
+  trigger(event) {
+    const self = this;
+    const listeners = self.__listeners;
+    const listenersArray = listeners[event.type];
     event.target = self;
     if (!Util.isNil(listenersArray)) {
       listenersArray.forEach(function(listener) {
@@ -93,7 +93,7 @@ module.exports = {
       });
     }
     if (event.bubbles) {
-      var parent = self.get('parent');
+      const parent = self.get('parent');
       if (parent && !event.propagationStopped) {
         parent.trigger(event);
       }
@@ -103,9 +103,10 @@ module.exports = {
   /**
    * fire the event
    * @param  {String} eventType event type
+   * @param {Object} [eventObj] event
    */
-  fire: function(eventType, eventObj) {
-    var event = new Event(eventType);
+  fire(eventType, eventObj) {
+    const event = new Event(eventType);
     Util.each(eventObj, function(v, k) {
       event[k] = v;
     });

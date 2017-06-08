@@ -1,5 +1,5 @@
-import Util from './util/index';
-import Event from '@ali/g-event';
+const Util = require('./util/index');
+const Event = require('@ali/g-event');
 
 const MouseEvent = function(canvas) {
   this.canvas = canvas;
@@ -9,21 +9,21 @@ const MouseEvent = function(canvas) {
 };
 
 Util.augment(MouseEvent, {
-  tryTrigger: function(element, event) {
+  tryTrigger(element, event) {
     if (element.__listeners) {
       element.trigger(event);
     } else {
       return;
     }
   },
-  getCurrent: function(e) {
+  getCurrent(e) {
     const canvas = this.canvas;
     const point = canvas.getPointByClient(e.clientX, e.clientY);
     this.point = point;
     this.pre = this.current;
     this.current = canvas.getShape(point.x, point.y);
   },
-  mousemove: function(e) {
+  mousemove(e) {
     this.getCurrent(e);
     const point = this.point;
     const canvas = this.canvas;
@@ -70,7 +70,7 @@ Util.augment(MouseEvent, {
       }
     }
   },
-  mousedown: function(e) {
+  mousedown(e) {
     const point = this.point;
     const canvas = this.canvas;
 
@@ -96,7 +96,7 @@ Util.augment(MouseEvent, {
       this.tryTrigger(this.current, mousedown);
     }
   },
-  mouseup: function(e) {
+  mouseup(e) {
     const point = this.point;
     const canvas = this.canvas;
     if (canvas.has('canvas-mouseup')) {
@@ -119,7 +119,7 @@ Util.augment(MouseEvent, {
       this.tryTrigger(this.current, mouseup);
     }
   },
-  click: function(e) {
+  click(e) {
     this.getCurrent(e);
     const point = this.point;
     const canvas = this.canvas;
@@ -144,7 +144,7 @@ Util.augment(MouseEvent, {
       this.tryTrigger(this.current, click);
     }
   },
-  dblclick: function(e) {
+  dblclick(e) {
     const point = this.point;
     const canvas = this.canvas;
 
@@ -170,7 +170,7 @@ Util.augment(MouseEvent, {
       this.tryTrigger(this.current, dblclick);
     }
   },
-  mouseout: function(e) {
+  mouseout(e) {
     const point = this.point;
     const canvas = this.canvas;
 
@@ -180,7 +180,7 @@ Util.augment(MouseEvent, {
     canvasmouseleave.currentTarget = canvas;
     this.tryTrigger(canvas, canvasmouseleave);
   },
-  mouseover: function(e) {
+  mouseover(e) {
     const canvas = this.canvas;
 
     const canvasmouseenter = new Event('canvas-mouseenter', e, true, true);

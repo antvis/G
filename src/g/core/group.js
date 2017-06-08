@@ -1,14 +1,13 @@
-var Util = require('../../util/index');
-var Vector3 = require('@ali/g-matrix').Vector3;
-// import {vec3} from 'gl-matrix';
-var Element = require('./element');
-var Shape = require('../shape/index');
-var SHAPE_MAP = {}; // 缓存图形类型
+const Util = require('../../util/index');
+const Vector3 = require('@ali/g-matrix').Vector3;
+const Element = require('./element');
+const Shape = require('../shape/index');
+const SHAPE_MAP = {}; // 缓存图形类型
 
 function find(children, x, y) {
-  var rst;
-  for (var i = children.length - 1; i >= 0; i--) {
-    var child = children[i];
+  let rst;
+  for (let i = children.length - 1; i >= 0; i--) {
+    const child = children[i];
     if (child.__cfg.visible && child.__cfg.capture) {
       if (child.isGroup) {
         rst = child.getShape(x, y);
@@ -23,7 +22,7 @@ function find(children, x, y) {
   return rst;
 }
 
-var Group = function(cfg) {
+const Group = function(cfg) {
   Group.superclass.constructor.call(this, cfg);
   this.set('children', []);
 
@@ -32,15 +31,11 @@ var Group = function(cfg) {
   this._bindUI();
 };
 
-/**
- * 混合原型链CFG
- * @param   {Object} c 函数对象
- */
 function initClassCfgs(c) {
   if (c.__cfg || c === Group) {
     return;
   }
-  var superCon = c.superclass.constructor;
+  const superCon = c.superclass.constructor;
   if (superCon && !superCon.__cfg) {
     initClassCfgs(superCon);
   }
@@ -56,34 +51,25 @@ Util.augment(Group, {
   isGroup: true,
   canFill: true,
   canStroke: true,
-  getDefaultCfg: function() {
+  getDefaultCfg() {
     initClassCfgs(this.constructor);
     return Util.merge({}, this.constructor.__cfg);
   },
-  // 渲染组件前
-  _beforeRenderUI: function() {},
-  // 渲染组件
-  _renderUI: function() {},
-  // 绑定事件
-  _bindUI: function() {},
-  /** 添加图形
-   * @param  {String} type
-   * @param  {Object} cfg
-   * @return {Object} rst 图形
-   */
-  addShape: function(type, cfg) {
-    var canvas = this.get('canvas');
-    var rst;
+  _beforeRenderUI() {},
+  _renderUI() {},
+  _bindUI() {},
+  addShape(type, cfg) {
+    const canvas = this.get('canvas');
     cfg = cfg || {};
-    var shapeType = SHAPE_MAP[type];
+    let shapeType = SHAPE_MAP[type];
     if (!shapeType) {
       shapeType = Util.upperFirst(type);
       SHAPE_MAP[type] = shapeType;
     }
     if (cfg.attrs) {
-      var attrs = cfg.attrs;
+      const attrs = cfg.attrs;
       if (type === 'text') { // 临时解决
-        var topFontFamily = canvas.get('fontFamily');
+        const topFontFamily = canvas.get('fontFamily');
         if (topFontFamily) {
           attrs.fontFamily = attrs.fontFamily ? attrs.fontFamily : topFontFamily;
         }
@@ -91,7 +77,7 @@ Util.augment(Group, {
     }
     cfg.canvas = canvas;
     cfg.type = type;
-    rst = new Shape[shapeType](cfg);
+    const rst = new Shape[shapeType](cfg);
     this.add(rst);
     return rst;
   },
@@ -100,9 +86,9 @@ Util.augment(Group, {
    * @param  {Object} cfg 配置项
    * @return {Object} rst 图组
    */
-  addGroup: function(param, cfg) {
-    var canvas = this.get('canvas');
-    var rst;
+  addGroup(param, cfg) {
+    const canvas = this.get('canvas');
+    let rst;
     cfg = Util.merge({}, cfg);
     if (Util.isFunction(param)) {
       if (cfg) {
@@ -111,7 +97,7 @@ Util.augment(Group, {
         rst = new param(cfg);
       } else {
         rst = new param({
-          canvas: canvas,
+          canvas,
           parent: this
         });
       }
@@ -132,11 +118,12 @@ Util.augment(Group, {
    * @param  {Array} padding 内边距
    * @param  {Attrs} attrs 图形属性
    * @param  {Shape} backShape 背景图形
+   * @return {Object} 背景层对象
    */
-  renderBack: function(padding, attrs) {
-    var backShape = this.get('backShape');
-    var innerBox = this.getBBox();
-    var parent = this.get('parent'); // getParent
+  renderBack(padding, attrs) {
+    let backShape = this.get('backShape');
+    const innerBox = this.getBBox();
+    const parent = this.get('parent'); // getParent
     Util.merge(attrs, {
       x: innerBox.minX - padding[3],
       y: innerBox.minY - padding[0],
@@ -148,18 +135,14 @@ Util.augment(Group, {
     } else {
       backShape = parent.addShape('rect', {
         zIndex: -1,
-        attrs: attrs
+        attrs
       });
     }
     this.set('backShape', backShape);
     parent.sort();
     return backShape;
   },
-  /**
-   * 从组中移除 shape 或者 group
-   * @param {Object} item 图形或者分组, 如果item存在则移除item
-   */
-  removeChild: function(item, destroy) {
+  removeChild(item, destroy) {
     if (arguments.length >= 2) {
       if (this.contain(item)) {
         item.remove(destroy);
@@ -185,14 +168,15 @@ Util.augment(Group, {
   },
   /**
    * 向组中添加shape或者group
-   * @param {Object} item 图形或者分组
+   * @param {Object} items 图形或者分组
+   * @return {Object} group 本尊
    */
-  add: function(items) {
-    var self = this;
-    var children = self.get('children');
+  add(items) {
+    const self = this;
+    const children = self.get('children');
     if (Util.isArray(items)) {
       Util.each(items, function(item) {
-        var parent = item.get('parent');
+        const parent = item.get('parent');
         if (parent) {
           parent.removeChild(item, false);
         }
@@ -200,8 +184,8 @@ Util.augment(Group, {
       });
       children.push.apply(children, items);
     } else {
-      var item = items;
-      var parent = item.get('parent');
+      const item = items;
+      const parent = item.get('parent');
       if (parent) {
         parent.removeChild(item, false);
       }
@@ -210,74 +194,65 @@ Util.augment(Group, {
     }
     return self;
   },
-  /**
-   * 当前 group 是否拥有某个 item
-   **/
-  contain: function(item) {
-    var children = this.get('children');
+  contain(item) {
+    const children = this.get('children');
     return children.indexOf(item) > -1;
   },
-  /** 获取第N个子元素
-   */
-  getChildByIndex: function(index) {
-    var children = this.get('children');
+  getChildByIndex(index) {
+    const children = this.get('children');
     return children[index];
   },
-  getFirst: function() {
+  getFirst() {
     return this.getChildByIndex(0);
   },
-  getLast: function() {
-    var lastIndex = this.get('children').length - 1;
+  getLast() {
+    const lastIndex = this.get('children').length - 1;
     return this.getChildByIndex(lastIndex);
   },
-  /**
-   * 设置子元素及子孙元素的环境属性
-   * @private
-   */
-  __setEvn: function(item) {
-    var self = this;
+  __setEvn(item) {
+    const self = this;
     item.__cfg.parent = self;
     item.__cfg.context = self.__cfg.context;
     item.__cfg.canvas = self.__cfg.canvas;
-    var clip = item.__attrs.clip;
+    const clip = item.__attrs.clip;
     if (clip) {
       clip.setSilent('parent', self);
       clip.setSilent('context', self.get('context'));
     }
-    var children = item.__cfg.children;
+    const children = item.__cfg.children;
     if (children) {
       Util.each(children, function(child) {
         item.__setEvn(child);
       });
     }
   },
-  getBBox: function() {
-    var self = this;
-    var minX = Infinity;
-    var maxX = -Infinity;
-    var minY = Infinity;
-    var maxY = -Infinity;
-    var children = self.get('children');
+  getBBox() {
+    const self = this;
+    let minX = Infinity;
+    let maxX = -Infinity;
+    let minY = Infinity;
+    let maxY = -Infinity;
+    const children = self.get('children');
     Util.each(children, function(child) {
       if (child.get('visible')) {
-        var box = child.getBBox();
+        const box = child.getBBox();
         if (!box) {
           return true;
         }
-        var leftTop = new Vector3(box.minX, box.minY, 1);
-        var leftBottom = new Vector3(box.minX, box.maxY, 1);
-        var rightTop = new Vector3(box.maxX, box.minY, 1);
-        var rightBottom = new Vector3(box.maxX, box.maxY, 1);
+        const leftTop = new Vector3(box.minX, box.minY, 1);
+        const leftBottom = new Vector3(box.minX, box.maxY, 1);
+        const rightTop = new Vector3(box.maxX, box.minY, 1);
+        const rightBottom = new Vector3(box.maxX, box.maxY, 1);
 
         child.apply(leftTop);
         child.apply(leftBottom);
         child.apply(rightTop);
         child.apply(rightBottom);
 
-        var boxMinX = Math.min(leftTop.x, leftBottom.x, rightTop.x, rightBottom.x);
-        var boxMaxX = Math.max(leftTop.x, leftBottom.x, rightTop.x, rightBottom.x);
-        var boxMinY = Math.min(leftTop.y, leftBottom.y, rightTop.y, rightBottom.y);
-        var boxMaxY = Math.max(leftTop.y, leftBottom.y, rightTop.y, rightBottom.y);
+        const boxMinX = Math.min(leftTop.x, leftBottom.x, rightTop.x, rightBottom.x);
+        const boxMaxX = Math.max(leftTop.x, leftBottom.x, rightTop.x, rightBottom.x);
+        const boxMinY = Math.min(leftTop.y, leftBottom.y, rightTop.y, rightBottom.y);
+        const boxMaxY = Math.max(leftTop.y, leftBottom.y, rightTop.y, rightBottom.y);
 
         if (boxMinX < minX) {
           minX = boxMinX;
@@ -296,11 +271,11 @@ Util.augment(Group, {
         }
       }
     });
-    var box = {
-      minX: minX,
-      minY: minY,
-      maxX: maxX,
-      maxY: maxY
+    const box = {
+      minX,
+      minY,
+      maxX,
+      maxY
     };
     box.x = box.minX;
     box.y = box.minY;
@@ -308,35 +283,25 @@ Util.augment(Group, {
     box.height = box.maxY - box.minY;
     return box;
   },
-  /**
-   * @protected
-   * 绘制内部图形
-   */
-  drawInner: function(context) {
-    var children = this.get('children');
-    for (var i = 0; i < children.length; i++) {
-      var child = children[i];
+  drawInner(context) {
+    const children = this.get('children');
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
       child.draw(context);
     }
     return this;
   },
-  /**
-   * 获得子元素的个数
-   */
-  getCount: function() {
+  getCount() {
     return this.get('children').length;
   },
-  /**
-   * 将子元素按照zIndex排序
-   */
-  sort: function() {
-    var children = this.get('children');
+  sort() {
+    const children = this.get('children');
     children.sort(function(obj1, obj2) {
       return obj1.get('zIndex') - obj2.get('zIndex');
     });
     return this;
   },
-  find: function(id) {
+  find(id) {
     return this.findBy(function(item) {
       return item.get('id') === id;
     });
@@ -346,9 +311,9 @@ Util.augment(Group, {
    * @param  {Function} fn 匹配函数
    * @return {Canvas.Base} 分组或者图形
    */
-  findBy: function(fn) {
-    var children = this.get('children');
-    var rst = null;
+  findBy(fn) {
+    const children = this.get('children');
+    let rst = null;
 
     Util.each(children, function(item) {
       if (fn(item)) {
@@ -362,10 +327,10 @@ Util.augment(Group, {
     });
     return rst;
   },
-  findAllBy: function(fn) {
-    var children = this.get('children');
-    var rst = [];
-    var childRst = [];
+  findAllBy(fn) {
+    const children = this.get('children');
+    let rst = [];
+    let childRst = [];
     Util.each(children, function(item) {
       if (fn(item)) {
         rst.push(item);
@@ -383,11 +348,11 @@ Util.augment(Group, {
    * @param  {Number} y y坐标
    * @return {Object}  最上面的图形
    */
-  getShape: function(x, y) {
-    var self = this;
-    var clip = self.__attrs.clip;
-    var children = self.__cfg.children;
-    var rst;
+  getShape(x, y) {
+    const self = this;
+    const clip = self.__attrs.clip;
+    const children = self.__cfg.children;
+    let rst;
     if (clip) {
       if (clip.inside(x, y)) {
         rst = find(children, x, y);
@@ -397,33 +362,26 @@ Util.augment(Group, {
     }
     return rst;
   },
-  // 连同一起清理子元素的矩阵
-  clearTotalMatrix: function() {
-    var m = this.get('totalMatrix');
+  clearTotalMatrix() {
+    const m = this.get('totalMatrix');
     if (m) {
       this.setSilent('totalMatrix', null);
-      var children = this.__cfg.children;
-      for (var i = 0; i < children.length; i++) {
-        var child = children[i];
+      const children = this.__cfg.children;
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i];
         child.clearTotalMatrix();
       }
     }
   },
-  /**
-   * 清除容器内的图形或者分组
-   */
-  clear: function() {
-    var children = this.get('children');
+  clear() {
+    const children = this.get('children');
 
     while (children.length !== 0) {
       children[children.length - 1].remove();
     }
     return this;
   },
-  /**
-   * 析构函数
-   */
-  destroy: function() {
+  destroy() {
     if (this.get('destroyed')) {
       return;
     }

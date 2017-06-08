@@ -3,8 +3,8 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Vector2 = require('@ali/g-matrix').Vector2;
-var Util = require('../../../util/index');
+const Vector2 = require('@ali/g-matrix').Vector2;
+const Util = require('../../../util/index');
 
 function circlePoint(cx, cy, r, angle) {
   return {
@@ -14,8 +14,8 @@ function circlePoint(cx, cy, r, angle) {
 }
 
 function angleNearTo(angle, min, max, out) {
-  var v1;
-  var v2;
+  let v1;
+  let v2;
   if (out) {
     if (angle < min) {
       v1 = min - angle;
@@ -33,7 +33,7 @@ function angleNearTo(angle, min, max, out) {
 }
 
 function nearAngle(angle, startAngle, endAngle, clockwise) {
-  var plus = 0;
+  let plus = 0;
   if (endAngle - startAngle >= Math.PI * 2) {
     plus = Math.PI * 2;
   }
@@ -65,29 +65,29 @@ function nearAngle(angle, startAngle, endAngle, clockwise) {
 }
 
 function arcProjectPoint(cx, cy, r, startAngle, endAngle, clockwise, x, y, out) {
-  var v = new Vector2(x, y);
-  var v0 = new Vector2(cx, cy);
-  var v1 = new Vector2(1, 0);
-  var subv = Vector2.sub(v, v0);
-  var angle = v1.angleTo(subv);
+  const v = new Vector2(x, y);
+  const v0 = new Vector2(cx, cy);
+  const v1 = new Vector2(1, 0);
+  const subv = Vector2.sub(v, v0);
+  let angle = v1.angleTo(subv);
 
   angle = nearAngle(angle, startAngle, endAngle, clockwise);
-  var vpoint = new Vector2(r * Math.cos(angle) + cx, r * Math.sin(angle) + cy);
+  const vpoint = new Vector2(r * Math.cos(angle) + cx, r * Math.sin(angle) + cy);
   if (out) {
     out.x = vpoint.x;
     out.y = vpoint.y;
   }
-  var d = v.distanceTo(vpoint);
+  const d = v.distanceTo(vpoint);
   return d;
 }
 
 function arcBox(cx, cy, r, startAngle, endAngle, clockwise) {
-  var angleRight = 0;
-  var angleBottom = Math.PI / 2;
-  var angleLeft = Math.PI;
-  var angleTop = Math.PI * 3 / 2;
-  var points = [];
-  var angle = nearAngle(angleRight, startAngle, endAngle, clockwise);
+  const angleRight = 0;
+  const angleBottom = Math.PI / 2;
+  const angleLeft = Math.PI;
+  const angleTop = Math.PI * 3 / 2;
+  const points = [];
+  let angle = nearAngle(angleRight, startAngle, endAngle, clockwise);
   if (angle === angleRight) {
     points.push(circlePoint(cx, cy, r, angleRight));
   }
@@ -109,10 +109,10 @@ function arcBox(cx, cy, r, startAngle, endAngle, clockwise) {
 
   points.push(circlePoint(cx, cy, r, startAngle));
   points.push(circlePoint(cx, cy, r, endAngle));
-  var minX = Infinity;
-  var maxX = -Infinity;
-  var minY = Infinity;
-  var maxY = -Infinity;
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
   Util.each(points, function(point) {
     if (minX > point.x) {
       minX = point.x;
@@ -129,17 +129,17 @@ function arcBox(cx, cy, r, startAngle, endAngle, clockwise) {
   });
 
   return {
-    minX: minX,
-    minY: minY,
-    maxX: maxX,
-    maxY: maxY
+    minX,
+    minY,
+    maxX,
+    maxY
   };
 }
 
 module.exports = {
-  nearAngle: nearAngle,
-  projectPoint: function(cx, cy, r, startAngle, endAngle, clockwise, x, y) {
-    var rst = {};
+  nearAngle,
+  projectPoint(cx, cy, r, startAngle, endAngle, clockwise, x, y) {
+    const rst = {};
     arcProjectPoint(cx, cy, r, startAngle, endAngle, clockwise, x, y, rst);
     return rst;
   },

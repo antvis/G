@@ -35,6 +35,7 @@ module.exports = {
    * @param  {Number} sy y缩放
    * @param  {Number} x 坐标点
    * @param  {Number} y 坐标点
+   * @return {Matrix} 返回变换后的矩阵
    */
   scale(m, sx, sy, x, y) {
     m = m.clone();
@@ -49,6 +50,7 @@ module.exports = {
    * @param  {Number} r 旋转角度，用弧度表示
    * @param  {Number} x 坐标点
    * @param  {Number} y 坐标点
+   * @return {Matrix} 返回变换后的矩阵
    */
   rotate(m, r, x, y) {
     m = m.clone();
@@ -60,7 +62,7 @@ module.exports = {
   /**
    * 判断是否是3阶矩阵
    * @param  {Object} m 矩阵
-   * @return {Boolean}
+   * @return {Boolean} 返回是否是三阶矩阵
    */
   isMatrix3(m) {
     return m.type === 'matrix3';
