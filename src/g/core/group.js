@@ -1,5 +1,5 @@
 const Util = require('../../util/index');
-const Vector3 = require('@ali/g-matrix').Vector3;
+const vec3 = require('../../util/matrix').vec3;
 const Element = require('./element');
 const Shape = require('../shape/index');
 const SHAPE_MAP = {}; // 缓存图形类型
@@ -239,20 +239,21 @@ Util.augment(Group, {
         if (!box) {
           return true;
         }
-        const leftTop = new Vector3(box.minX, box.minY, 1);
-        const leftBottom = new Vector3(box.minX, box.maxY, 1);
-        const rightTop = new Vector3(box.maxX, box.minY, 1);
-        const rightBottom = new Vector3(box.maxX, box.maxY, 1);
+
+        const leftTop = vec3.fromValues(box.minX, box.minY, 1);
+        const leftBottom = vec3.fromValues(box.minX, box.maxY, 1);
+        const rightTop = vec3.fromValues(box.maxX, box.minY, 1);
+        const rightBottom = vec3.fromValues(box.maxX, box.maxY, 1);
 
         child.apply(leftTop);
         child.apply(leftBottom);
         child.apply(rightTop);
         child.apply(rightBottom);
 
-        const boxMinX = Math.min(leftTop.x, leftBottom.x, rightTop.x, rightBottom.x);
-        const boxMaxX = Math.max(leftTop.x, leftBottom.x, rightTop.x, rightBottom.x);
-        const boxMinY = Math.min(leftTop.y, leftBottom.y, rightTop.y, rightBottom.y);
-        const boxMaxY = Math.max(leftTop.y, leftBottom.y, rightTop.y, rightBottom.y);
+        const boxMinX = Math.min(leftTop[0], leftBottom[0], rightTop[0], rightBottom[0]);
+        const boxMaxX = Math.max(leftTop[0], leftBottom[0], rightTop[0], rightBottom[0]);
+        const boxMinY = Math.min(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
+        const boxMaxY = Math.max(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
 
         if (boxMinX < minX) {
           minX = boxMinX;

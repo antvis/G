@@ -3,8 +3,8 @@
  * @author hankaiai@126.com
  * @ignore
  */
-const Vector2 = require('@ali/g-matrix').Vector2;
 const Util = require('../../../util/index');
+const vec2 = require('../../../util/matrix').vec2;
 
 function circlePoint(cx, cy, r, angle) {
   return {
@@ -65,19 +65,19 @@ function nearAngle(angle, startAngle, endAngle, clockwise) {
 }
 
 function arcProjectPoint(cx, cy, r, startAngle, endAngle, clockwise, x, y, out) {
-  const v = new Vector2(x, y);
-  const v0 = new Vector2(cx, cy);
-  const v1 = new Vector2(1, 0);
-  const subv = Vector2.sub(v, v0);
-  let angle = v1.angleTo(subv);
+  const v = vec2.fromValues(x, y);
+  const v0 = vec2.fromValues(cx, cy);
+  const v1 = vec2.fromValues(1, 0);
+  const subv = vec2.subtract([], v, v0);
+  let angle = vec2.angleTo(v1, subv);
 
   angle = nearAngle(angle, startAngle, endAngle, clockwise);
-  const vpoint = new Vector2(r * Math.cos(angle) + cx, r * Math.sin(angle) + cy);
+  const vpoint = vec2.fromValues(r * Math.cos(angle) + cx, r * Math.sin(angle) + cy);
   if (out) {
-    out.x = vpoint.x;
-    out.y = vpoint.y;
+    out.x = vpoint[0];
+    out.y = vpoint[1];
   }
-  const d = v.distanceTo(vpoint);
+  const d = vec2.distance(vpoint, v);
   return d;
 }
 

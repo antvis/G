@@ -9,8 +9,7 @@ const Shape = require('../core/shape');
 const Inside = require('./util/inside');
 const Arrow = require('./util/arrow');
 const LineMath = require('./math/line');
-const Matrix = require('@ali/g-matrix');
-const Vector2 = Matrix.Vector2;
+const vec2 = require('../../util/matrix').vec2;
 
 const Line = function(cfg) {
   Line.superclass.constructor.call(this, cfg);
@@ -71,9 +70,9 @@ Util.augment(Line, {
     context.beginPath();
     context.moveTo(x1, y1);
     if (arrow) {
-      const v = new Vector2(x2 - x1, y2 - y1);
-      const end = Arrow.getEndPoint(v, new Vector2(x2, y2), lineWidth);
-      context.lineTo(end.x, end.y);
+      const v = vec2.fromValues(x2 - x1, y2 - y1);
+      const end = Arrow.getEndPoint(v, vec2.fromValues(x2, y2), lineWidth);
+      context.lineTo(end[0], end[1]);
       Arrow.makeArrow(context, v, end, lineWidth);
     } else {
       context.lineTo(x2, y2);

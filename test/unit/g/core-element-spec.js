@@ -1,7 +1,8 @@
 const expect = require('chai').expect;
 const Element = require('../../../src/g/core/element');
-const Matrix = require('@ali/g-matrix');
-const Matrix3 = Matrix.Matrix3;
+// const Matrix = require('@ali/g-matrix');
+// const Matrix3 = Matrix.Matrix3;
+const mat3 = require('../../../src/util/matrix').mat3;
 
 describe('Element', function() {
   it('constructor', function() {
@@ -20,9 +21,9 @@ describe('Element', function() {
     expect(e.__attrs.width).to.equal(20);
     expect(e.__attrs.height).to.equal(30);
     expect(e.__m).not.to.be.undefined;
-    const m = new Matrix3();
-    expect(e.__m.equal(m)).to.be.true;
-    // expect(e.__listeners).not.to.be.undefined;
+    const m = mat3.create();
+    // expect(e.__m.equal(m)).to.be.true;
+    expect(mat3.exactEquals(e.__m, m)).to.be.true;
   });
 
   it('set and get', function() {

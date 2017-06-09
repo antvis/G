@@ -6,7 +6,7 @@
  */
 
 const Util = require('../../util/index');
-const Vector2 = require('@ali/g-matrix').Vector2;
+const vec2 = require('../../util/matrix').vec2;
 const Shape = require('../core/shape');
 const Inside = require('./util/inside');
 const ArcMath = require('./math/arc');
@@ -97,9 +97,9 @@ Util.augment(Arc, {
         y: cy + r * Math.sin(endAngle)
       };
 
-      const v = new Vector2(-r * Math.sin(endAngle), r * Math.cos(endAngle));
+      const v = vec2.fromValues(-r * Math.sin(endAngle), r * Math.cos(endAngle));
       if (clockwise) {
-        v.multiplyScaler(-1);
+        vec2.scale(v, v, -1);
       }
       Arrow.makeArrow(context, v, end, lineWidth);
     }

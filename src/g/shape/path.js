@@ -12,8 +12,7 @@ const Format = require('../format');
 const Arrow = require('./util/arrow');
 const pathUtil = require('@ali/g-path-util');
 const CubicMath = require('./math/cubic');
-const Matrix = require('@ali/g-matrix');
-const Vector2 = Matrix.Vector2;
+const vec2 = require('../../util/matrix').vec2;
 
 const Path = function(cfg) {
   Path.superclass.constructor.call(this, cfg);
@@ -256,7 +255,7 @@ Util.augment(Path, {
         };
         if (lastSeg && Util.isFunction(endTangent)) {
           const v = endTangent();
-          const end = Arrow.getEndPoint(v, new Vector2(endPoint.x, endPoint.y), lineWidth);
+          const end = Arrow.getEndPoint(v, vec2.fromValues(endPoint.x, endPoint.y), lineWidth);
           lastSeg.params[lastSeg.params.length - 1] = end;
           segments[i].draw(context);
           Arrow.makeArrow(context, v, end, lineWidth);

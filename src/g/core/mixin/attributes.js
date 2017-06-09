@@ -1,5 +1,5 @@
 const Util = require('../../../util/index');
-const Vector3 = require('@ali/g-matrix').Vector3;
+const vec3 = require('../../../util/matrix').vec3;
 
 const ALIAS_ATTRS = [ 'strokeStyle', 'fillStyle', 'globalAlpha' ];
 const CLIP_SHAPES = [ 'circle', 'ellipse', 'fan', 'polygon', 'rect', 'path' ];
@@ -155,9 +155,9 @@ module.exports = {
       clip.set('parent', self.get('parent'));
       clip.set('context', self.get('context'));
       clip.inside = function(x, y) {
-        const v = new Vector3(x, y, 1);
+        const v = vec3.fromValues(x, y, 1);
         clip.invert(v, self.get('canvas')); // 已经在外面转换
-        return clip.__isPointInFill(v.x, v.y);
+        return clip.__isPointInFill(v[0], v[1]);
       };
       return clip;
     }

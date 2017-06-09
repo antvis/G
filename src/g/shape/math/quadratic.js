@@ -3,8 +3,8 @@
  * @author hankaiai@126.com
  * @ignore
  */
-const Vector2 = require('@ali/g-matrix').Vector2;
 const Util = require('../../../util/index');
+const vec2 = require('../../../util/matrix').vec2;
 
 function quadraticAt(p0, p1, p2, t) {
   const onet = 1 - t;
@@ -22,15 +22,15 @@ function quadraticProjectPoint(x1, y1, x2, y2, x3, y3, x, y, out) {
   let d2;
   let i;
   const EPSILON = 0.0001;
-  const v0 = new Vector2(x, y);
+  const v0 = vec2.fromValues(x, y);
 
   for (_t = 0; _t < 1; _t += 0.05) {
-    v1 = new Vector2(
+    v1 = vec2.fromValues(
       quadraticAt(x1, x2, x3, _t),
       quadraticAt(y1, y2, y3, _t)
     );
 
-    d1 = v1.distanceToSquared(v0);
+    d1 = vec2.squaredDistance(v0, v1);
     if (d1 < d) {
       t = _t;
       d = d1;
@@ -46,23 +46,23 @@ function quadraticProjectPoint(x1, y1, x2, y2, x3, y3, x, y, out) {
     const prev = t - interval;
     const next = t + interval;
 
-    v1 = new Vector2(
+    v1 = vec2.fromValues(
       quadraticAt(x1, x2, x3, prev),
       quadraticAt(y1, y2, y3, prev)
     );
 
-    d1 = v1.distanceToSquared(v0);
+    d1 = vec2.squaredDistance(v0, v1);
 
     if (prev >= 0 && d1 < d) {
       t = prev;
       d = d1;
     } else {
-      v2 = new Vector2(
+      v2 = vec2.fromValues(
         quadraticAt(x1, x2, x3, next),
         quadraticAt(y1, y2, y3, next)
       );
 
-      d2 = v2.distanceToSquared(v0);
+      d2 = vec2.squaredDistance(v0, v2);
 
       if (next <= 1 && d2 < d) {
         t = next;

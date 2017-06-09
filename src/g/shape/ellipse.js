@@ -7,9 +7,8 @@
 const Util = require('../../util/index');
 const Shape = require('../core/shape');
 const Inside = require('./util/inside');
-const Matrix = require('@ali/g-matrix');
-const Matrix3 = Matrix.Matrix3;
-const Vector3 = Matrix.Vector3;
+const mat3 = require('../../util/matrix').mat3;
+const vec3 = require('../../util/matrix').vec3;
 
 const Ellipse = function(cfg) {
   Ellipse.superclass.constructor.call(this, cfg);
@@ -80,14 +79,14 @@ Util.augment(Ellipse, {
     const scaleX = (rx > ry) ? 1 : rx / ry;
     const scaleY = (rx > ry) ? ry / rx : 1;
 
-    const p = new Vector3(x, y, 1);
-    const m = new Matrix3();
-    m.scale(scaleX, scaleY);
-    m.translate(cx, cy);
-    const inm = m.getInverse();
-    p.applyMatrix(inm);
+    const p = vec3.fromValues(x, y, 1);
+    const m = mat3.create();
+    mat3.scale(m, m, [ scaleX, scaleY ]);
+    mat3.translate(m, m, [ cx, cy ]);
+    const inm = mat3.invert([], m);
+    vec3.transformMat3(p, p, inm);
 
-    return Inside.circle(0, 0, r, p.x, p.y);
+    return Inside.circle(0, 0, r, p[0], p[1]);
   },
   __isPointInStroke(x, y) {
     const attrs = this.__attrs;
@@ -100,15 +99,14 @@ Util.augment(Ellipse, {
     const r = (rx > ry) ? rx : ry;
     const scaleX = (rx > ry) ? 1 : rx / ry;
     const scaleY = (rx > ry) ? ry / rx : 1;
+    const p = vec3.fromValues(x, y, 1);
+    const m = mat3.create();
+    mat3.scale(m, m, [ scaleX, scaleY ]);
+    mat3.translate(m, m, [ cx, cy ]);
+    const inm = mat3.invert([], m);
+    vec3.transformMat3(p, p, inm);
 
-    const p = new Vector3(x, y, 1);
-    const m = new Matrix3();
-    m.scale(scaleX, scaleY);
-    m.translate(cx, cy);
-    const inm = m.getInverse();
-    p.applyMatrix(inm);
-
-    return Inside.arcline(0, 0, r, 0, Math.PI * 2, false, lineWidth, p.x, p.y);
+    return Inside.arcline(0, 0, r, 0, Math.PI * 2, false, lineWidth, p[0], p[1]);
   },
   createPath(context) {
     const attrs = this.__attrs;
@@ -122,13 +120,12 @@ Util.augment(Ellipse, {
     const scaleX = (rx > ry) ? 1 : rx / ry;
     const scaleY = (rx > ry) ? ry / rx : 1;
 
-    const m = new Matrix3();
-    m.scale(scaleX, scaleY);
-    m.translate(cx, cy);
-    const mo = m.to2DObject();
+    const m = mat3.create();
+    mat3.scale(m, m, [ scaleX, scaleY ]);
+    mat3.translate(m, m, [ cx, cy ]);
     context.beginPath();
     context.save();
-    context.transform(mo.a, mo.b, mo.c, mo.d, mo.e, mo.f);
+    context.transform(m[0], m[1], m[3], m[4], m[6], m[7]);
     context.arc(0, 0, r, 0, Math.PI * 2);
     context.restore();
     context.closePath();

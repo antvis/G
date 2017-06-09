@@ -3,22 +3,22 @@
  * @author hankaiai@126.com
  * @ignore
  */
-const Vector2 = require('@ali/g-matrix').Vector2;
+const vec2 = require('../../../util/matrix').vec2;
 
 module.exports = {
   at(p1, p2, t) {
     return (p2 - p1) * t + p1;
   },
   pointDistance(x1, y1, x2, y2, x, y) {
-    const d = new Vector2(x2 - x1, y2 - y1);
-    if (d.isZero()) {
+    const d = vec2.fromValues(x2 - x1, y2 - y1);
+    if (vec2.exactEquals(d, [ 0, 0 ])) {
       return NaN;
     }
 
-    const u = d.vertical();
-    u.normalize();
-    const a = new Vector2(x - x1, y - y1);
-    return Math.abs(a.dot(u));
+    const u = vec2.fromValues(-d[1], d[0]);
+    vec2.normalize(u, u);
+    const a = vec2.fromValues(x - x1, y - y1);
+    return Math.abs(vec2.dot(a, u));
   },
   box(x1, y1, x2, y2, lineWidth) {
     const halfWidth = lineWidth / 2;

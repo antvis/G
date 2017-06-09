@@ -9,11 +9,9 @@ const Inside = require('./inside');
 const Cubic = require('../math/cubic');
 const Quadratic = require('../math/quadratic');
 const Ellipse = require('../math/ellipse');
-const Matrix = require('@ali/g-matrix');
-const Vector2 = Matrix.Vector2;
-const Vector3 = Matrix.Vector3;
-const Matrix3 = Matrix.Matrix3;
-
+const vec2 = require('../../../util/matrix').vec2;
+const vec3 = require('../../../util/matrix').vec3;
+const mat3 = require('../../../util/matrix').mat3;
 
 const ARR_CMD = [ 'm', 'l', 'c', 'a', 'q', 'h', 'v', 't', 's', 'z' ];
 
@@ -150,7 +148,7 @@ Util.augment(PathSegment, {
         this.endPoint = point;
         if (this.isLast) {
           this.endTangent = function() {
-            return new Vector2(point.x - preEndPoint.x, point.y - preEndPoint.y);
+            return vec2.fromValues(point.x - preEndPoint.x, point.y - preEndPoint.y);
           };
         }
         break;
@@ -168,7 +166,7 @@ Util.augment(PathSegment, {
         this.subStart = preSegment.subStart;
         this.endPoint = point;
         this.endTangent = function() {
-          return new Vector2(point.x - preEndPoint.x, point.y - preEndPoint.y);
+          return vec2.fromValues(point.x - preEndPoint.x, point.y - preEndPoint.y);
         };
         break;
       case 'V':
@@ -185,7 +183,7 @@ Util.augment(PathSegment, {
         this.subStart = preSegment.subStart;
         this.endPoint = point;
         this.endTangent = function() {
-          return new Vector2(point.x - preEndPoint.x, point.y - preEndPoint.y);
+          return vec2.fromValues(point.x - preEndPoint.x, point.y - preEndPoint.y);
         };
         break;
       case 'Q':
@@ -207,7 +205,7 @@ Util.augment(PathSegment, {
         this.subStart = preSegment.subStart;
         this.endPoint = point2;
         this.endTangent = function() {
-          return new Vector2(point2.x - point1.x, point2.y - point1.y);
+          return vec2.fromValues(point2.x - point1.x, point2.y - point1.y);
         };
         break;
       case 'T':
@@ -226,7 +224,7 @@ Util.augment(PathSegment, {
           this.subStart = preSegment.subStart;
           this.endPoint = point2;
           this.endTangent = function() {
-            return new Vector2(point2.x - point1.x, point2.y - point1.y);
+            return vec2.fromValues(point2.x - point1.x, point2.y - point1.y);
           };
         } else {
           this.command = 'TL';
@@ -234,7 +232,7 @@ Util.augment(PathSegment, {
           this.subStart = preSegment.subStart;
           this.endPoint = point2;
           this.endTangent = function() {
-            return new Vector2(point2.x - preEndPoint.x, point2.y - preEndPoint.y);
+            return vec2.fromValues(point2.x - preEndPoint.x, point2.y - preEndPoint.y);
           };
         }
 
@@ -263,7 +261,7 @@ Util.augment(PathSegment, {
         this.subStart = preSegment.subStart;
         this.endPoint = point3;
         this.endTangent = function() {
-          return new Vector2(point3.x - point2.x, point3.y - point2.y);
+          return vec2.fromValues(point3.x - point2.x, point3.y - point2.y);
         };
         break;
       case 'S':
@@ -287,7 +285,7 @@ Util.augment(PathSegment, {
           this.subStart = preSegment.subStart;
           this.endPoint = point3;
           this.endTangent = function() {
-            return new Vector2(point3.x - point2.x, point3.y - point2.y);
+            return vec2.fromValues(point3.x - point2.x, point3.y - point2.y);
           };
         } else {
           this.command = 'SQ';
@@ -295,7 +293,7 @@ Util.augment(PathSegment, {
           this.subStart = preSegment.subStart;
           this.endPoint = point3;
           this.endTangent = function() {
-            return new Vector2(point3.x - point2.x, point3.y - point2.y);
+            return vec2.fromValues(point3.x - point2.x, point3.y - point2.y);
           };
         }
         break;
@@ -382,13 +380,13 @@ Util.augment(PathSegment, {
         const scaleX = (rx > ry) ? 1 : rx / ry;
         const scaleY = (rx > ry) ? ry / rx : 1;
 
-        p = new Vector3(x, y, 1);
-        const m = new Matrix3();
-        m.translate(-cx, -cy);
-        m.rotate(-psi);
-        m.scale(1 / scaleX, 1 / scaleY);
-        p.applyMatrix(m);
-        return Inside.arcline(0, 0, r, theta, theta + dTheta, 1 - fs, lineWidth, p.x, p.y);
+        p = vec3.fromValues(x, y, 1);
+        const m = mat3.create();
+        mat3.translate(m, m, [ -cx, -cy ]);
+        mat3.rotate(m, m, -psi);
+        mat3.scale(m, m, [ 1 / scaleX, 1 / scaleY ]);
+        vec3.transformMat3(p, p, m);
+        return Inside.arcline(0, 0, r, theta, theta + dTheta, 1 - fs, lineWidth, p[0], p[1]);
       }
     }
     return false;

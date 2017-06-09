@@ -1,7 +1,7 @@
 const Util = require('../../util/index');
 const Element = require('./element');
 const Inside = require('../shape/util/inside');
-const Vector3 = require('@ali/g-matrix').Vector3;
+const vec3 = require('../../util/matrix').vec3;
 
 const Shape = function(cfg) {
   Shape.superclass.constructor.call(this, cfg);
@@ -64,22 +64,22 @@ Util.augment(Shape, {
    */
   isHit(x, y) {
     const self = this;
-    const v = new Vector3(x, y, 1);
+    const v = vec3.fromValues(x, y, 1);
     self.invert(v); // canvas
 
     if (self.isHitBox()) {
       const box = self.getBBox();
-      if (box && !Inside.box(box.minX, box.maxX, box.minY, box.maxY, v.x, v.y)) {
+      if (box && !Inside.box(box.minX, box.maxX, box.minY, box.maxY, v[0], v[1])) {
         return false;
       }
     }
     const clip = self.__attrs.clip;
     if (clip) {
       if (clip.inside(x, y)) {
-        return self.isPointInPath(v.x, v.y);
+        return self.isPointInPath(v[0], v[1]);
       }
     } else {
-      return self.isPointInPath(v.x, v.y);
+      return self.isPointInPath(v[0], v[1]);
     }
     return false;
   },

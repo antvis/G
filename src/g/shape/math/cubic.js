@@ -3,8 +3,8 @@
  * @author hankaiai@126.com
  * @ignore
  */
-const Vector2 = require('@ali/g-matrix').Vector2;
 const Util = require('../../../util/index');
+const vec2 = require('../../../util/matrix').vec2;
 
 function cubicAt(p0, p1, p2, p3, t) {
   const onet = 1 - t;
@@ -31,16 +31,15 @@ function cubicProjectPoint(x1, y1, x2, y2, x3, y3, x4, y4, x, y, out) {
   let prev;
   let next;
   const EPSILON = 0.0001;
-  const v0 = new Vector2(x, y);
+  const v0 = vec2.fromValues(x, y);
 
   for (_t = 0; _t < 1; _t += 0.05) {
-    v1 = new Vector2(
+    v1 = vec2.fromValues(
       cubicAt(x1, x2, x3, x4, _t),
       cubicAt(y1, y2, y3, y4, _t)
     );
 
-
-    d1 = v1.distanceToSquared(v0);
+    d1 = vec2.squaredDistance(v0, v1);
     if (d1 < d) {
       t = _t;
       d = d1;
@@ -56,23 +55,24 @@ function cubicProjectPoint(x1, y1, x2, y2, x3, y3, x4, y4, x, y, out) {
     prev = t - interval;
     next = t + interval;
 
-    v1 = new Vector2(
+    v1 = vec2.fromValues(
       cubicAt(x1, x2, x3, x4, prev),
       cubicAt(y1, y2, y3, y4, prev)
     );
 
-    d1 = v1.distanceToSquared(v0);
+    d1 = vec2.squaredDistance(v0, v1);
+
 
     if (prev >= 0 && d1 < d) {
       t = prev;
       d = d1;
     } else {
-      v2 = new Vector2(
+      v2 = vec2.fromValues(
         cubicAt(x1, x2, x3, x4, next),
         cubicAt(y1, y2, y3, y4, next)
       );
 
-      d2 = v2.distanceToSquared(v0);
+      d2 = vec2.squaredDistance(v0, v2);
 
       if (next <= 1 && d2 < d) {
         t = next;

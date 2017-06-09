@@ -9,8 +9,7 @@ const Shape = require('../core/shape');
 const Inside = require('./util/inside');
 const Arrow = require('./util/arrow');
 const LineMath = require('./math/line');
-const Matrix = require('@ali/g-matrix');
-const Vector2 = Matrix.Vector2;
+const vec2 = require('../../util/matrix').vec2;
 
 const Polyline = function(cfg) {
   Polyline.superclass.constructor.call(this, cfg);
@@ -140,9 +139,9 @@ Util.augment(Polyline, {
       context.lineTo(points[i][0], points[i][1]);
     }
     if (arrow) {
-      const v = new Vector2(points[l][0] - points[l - 1][0], points[l][1] - points[l - 1][1]);
-      const end = Arrow.getEndPoint(v, new Vector2(points[l][0], points[l][1]), lineWidth);
-      context.lineTo(end.x, end.y);
+      const v = vec2.fromValues(points[l][0] - points[l - 1][0], points[l][1] - points[l - 1][1]);
+      const end = Arrow.getEndPoint(v, vec2.fromValues(points[l][0], points[l][1]), lineWidth);
+      context.lineTo(end[0], end[1]);
       Arrow.makeArrow(context, v, end, lineWidth);
     } else {
       context.lineTo(points[l][0], points[l][1]);

@@ -8,8 +8,7 @@ const Util = require('../../util/index');
 const Shape = require('../core/shape');
 const Inside = require('./util/inside');
 const ArcMath = require('./math/arc');
-const Matrix = require('@ali/g-matrix');
-const Vector2 = Matrix.Vector2;
+const vec2 = require('../../util/matrix').vec2;
 
 const Fan = function(cfg) {
   Fan.superclass.constructor.call(this, cfg);
@@ -93,16 +92,15 @@ Util.augment(Fan, {
     const startAngle = attrs.startAngle;
     const endAngle = attrs.endAngle;
     const clockwise = attrs.clockwise;
-
-    const v1 = new Vector2(1, 0);
-    const subv = new Vector2(x - cx, y - cy);
-    const angle = v1.angleTo(subv);
+    const v1 = vec2.fromValues(1, 0);
+    const subv = vec2.fromValues(x - cx, y - cy);
+    const angle = vec2.angleTo(v1, subv);
 
 
     const angle1 = ArcMath.nearAngle(angle, startAngle, endAngle, clockwise);
 
     if (Util.isNumberEqual(angle, angle1)) {
-      const ls = subv.lengthSq();
+      const ls = vec2.squaredLength(subv);
       if (rs * rs <= ls && ls <= re * re) {
         return true;
       }

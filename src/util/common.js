@@ -93,5 +93,21 @@ module.exports = {
    */
   mod(n, m) {
     return ((n % m) + m) % m;
+  },
+  /**
+   * 把a夹在min，max中间, 低于min的返回min，高于max的返回max，否则返回自身
+   * @param {Number} a 数
+   * @param {Number} min 下限
+   * @param {Number} max 上限
+   * @return {Number} 返回结果值
+   **/
+  clamp(a, min, max) {
+    if (a < min) {
+      return min;
+    } else if (a > max) {
+      return max;
+    }
+
+    return a;
   }
 };

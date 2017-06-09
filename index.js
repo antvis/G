@@ -14,6 +14,5 @@ Canvas.PathUtil = {
 };
 Canvas.MatrixUtil = require('./src/util/matrix');
 Canvas.DomUtil = require('./src/util/dom');
-Canvas.Matrix = require('@ali/g-matrix');
 
 module.exports = Canvas;

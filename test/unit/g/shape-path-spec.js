@@ -375,93 +375,6 @@ describe('Path', function() {
     expect(path1.isHit(300, 300)).to.be.true;
     expect(path1.isHit(400, 400)).to.be.true;
     expect(path1.isHit(400, 300)).to.be.true;
-
-   /* var img = new Image();
-
-    img.onload = function() {
-
-    };
-
-    var path2 = new G.Path({
-      attrs: {
-        path: [
-          ['M', 300, 300],
-          ['A', 50, 50, 0, 1, 1, 300, 400],
-          ['z']
-        ],
-        stroke: 'p a img'
-      }
-    });
-    expect(path2.isHit(300, 300)).to.be.true;
-    expect(path2.isHit(300, 400)).to.be.true;
-    expect(path2.isHit(350, 350)).to.be.true;
-    expect(path2.isHit(300, 350)).to.be.true;
-    canvas.add(path2);
-    canvas.draw();
-    path2.set('attrs', {
-      path: [
-        ['M', 300, 300],
-        ['A', 50, 50, 0, 1, 1, 300, 400],
-        ['z']
-      ],
-      stroke: 'p x img'
-    });
-    path2.hide();
-    path2.show();
-    canvas.draw();
-
-    var path3 = new G.Path({
-      attrs: {
-        path: [
-          ['M', 300, 300],
-          ['A', 50, 50, 0, 1, 1, 300, 400],
-          ['z']
-        ],
-        stroke: 'p y img'
-      }
-    });
-    canvas.add(path3);
-    canvas.draw();
-
-    var path4 = new G.Path({
-      attrs: {
-        path: [
-          ['M', 300, 300],
-          ['A', 50, 50, 0, 1, 1, 300, 400],
-          ['z']
-        ],
-        stroke: 'p n img'
-      }
-    });
-    canvas.add(path4);
-    canvas.draw();
-
-
-    var path5 = new G.Path({
-      attrs: {
-        path: [
-          ['M', 300, 300],
-          ['A', 50, 50, 0, 1, 1, 300, 400],
-          ['z']
-        ],
-        stroke: 'p e img'
-      }
-    });
-    canvas.add(path5);
-    canvas.draw();
-
-    var path6 = new G.Path({
-      attrs: {
-        path: [
-          ['M', 300, 300],
-          ['A', 50, 50, 0, 1, 1, 300, 400],
-          ['z']
-        ],
-        stroke: 'p a img'
-      }
-    });
-    canvas.add(path6);
-    */
     canvas.draw();
   });
 
@@ -482,25 +395,7 @@ describe('Path', function() {
     const point1 = path7.getPoint(0.5);
     const point2 = path7.getPoint(1);
     const point3 = path7.getPoint(0.225);
-    // var point = point3;
-    // var circle = new G.Circle({
-    //   attrs:{
-    //     x: point.x,
-    //     y: point.y,
-    //     r: 3,
-    //     fill: 'blue'
-    //   }
-    // });
-    // var path7Cureve = new G.Path({
-    //   attrs: {
-    //     path: curve,
-    //     stroke: 'blue'
-    //   }
-    // });
-    // path7Cureve.translate(100, 200);
     canvas.add(path7);
-    // canvas.add(path7Cureve);
-    // canvas.add(circle);
     canvas.draw();
     expect(point0).to.eql({ x: 300, y: 300 });
     expect(point1).to.eql({ x: 174.99999999999997, y: 50 });
