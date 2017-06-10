@@ -1,10 +1,3 @@
-/**
- * @fileOverview Path
- * @author dxq613@gmail.com
- * @author hankaiai@126.com
- * @see http://www.w3.org/TR/2011/REC-SVG11-20110816/paths.html#PathData
- * @ignore
- */
 const Util = require('../../util/index');
 const Shape = require('../core/shape');
 const PathSegment = require('./util/pathSegment');

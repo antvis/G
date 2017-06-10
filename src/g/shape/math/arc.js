@@ -1,8 +1,3 @@
-/**
- * @fileOverview 圆弧线算法
- * @author hankaiai@126.com
- * @ignore
- */
 const Util = require('../../../util/index');
 const vec2 = require('../../../util/matrix').vec2;
 

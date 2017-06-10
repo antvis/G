@@ -1,9 +1,3 @@
-/**
- * @fileOverview isInside
- * @author dxq613@gmail.com
- * @author hankaiai@126.com
- * @ignore
- */
 const Line = require('../math/line');
 const Quadratic = require('../math/quadratic');
 const Cubic = require('../math/cubic');
