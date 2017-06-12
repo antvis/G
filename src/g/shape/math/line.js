@@ -1,8 +1,3 @@
-/**
- * @fileOverview 直线算法
- * @author hankaiai@126.com
- * @ignore
- */
 const vec2 = require('../../../util/matrix').vec2;
 
 module.exports = {

@@ -1,9 +1,3 @@
-/**
- * @fileOverview ellipse math
- * @author dxq613@gmail.com
- * @author hankaiai@126.com
- * @ignore
- */
 module.exports = {
   xAt(psi, rx, ry, cx, t) {
     return rx * Math.cos(psi) * Math.cos(t) - ry * Math.sin(psi) * Math.sin(t) + cx;

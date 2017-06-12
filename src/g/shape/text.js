@@ -1,9 +1,3 @@
-/**
- * @fileOverview text 文本
- * @author dxq613@gmail.com
- * @author hankaiai@126.com
- * @ignore
- */
 const Util = require('../../util/index');
 const Shape = require('../core/shape');
 const Inside = require('./util/inside');
