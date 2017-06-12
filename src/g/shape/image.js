@@ -4,11 +4,11 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Util = require('@ali/g-util');
-var Shape = require('../core/shape');
-var Inside = require('./util/inside');
+const Util = require('../../util/index');
+const Shape = require('../core/shape');
+const Inside = require('./util/inside');
 
-var CImage = function(cfg) {
+const CImage = function(cfg) {
   CImage.superclass.constructor.call(this, cfg);
 };
 
@@ -28,23 +28,23 @@ Util.extend(CImage, Shape);
 
 Util.augment(CImage, {
   type: 'image',
-  __afterSetAttrImg: function(img) {
+  __afterSetAttrImg(img) {
     this.__setAttrImg(img);
   },
-  __afterSetAttrAll: function(params) {
+  __afterSetAttrAll(params) {
     if (params.img) {
       this.__setAttrImg(params.img);
     }
   },
-  isHitBox: function() {
+  isHitBox() {
     return false;
   },
-  calculateBox: function() {
-    var attrs = this.__attrs;
-    var x = attrs.x;
-    var y = attrs.y;
-    var width = attrs.width;
-    var height = attrs.height;
+  calculateBox() {
+    const attrs = this.__attrs;
+    const x = attrs.x;
+    const y = attrs.y;
+    const width = attrs.width;
+    const height = attrs.height;
 
     return {
       minX: x,
@@ -53,35 +53,35 @@ Util.augment(CImage, {
       maxY: y + height
     };
   },
-  isPointInPath: function(x, y) {
-    var attrs = this.__attrs;
+  isPointInPath(x, y) {
+    const attrs = this.__attrs;
     if (this.get('toDraw') || !attrs.img) {
       return false;
     }
-    var rx = attrs.x;
-    var ry = attrs.y;
-    var width = attrs.width;
-    var height = attrs.height;
+    const rx = attrs.x;
+    const ry = attrs.y;
+    const width = attrs.width;
+    const height = attrs.height;
     return Inside.rect(rx, ry, width, height, x, y);
   },
-  __setLoading: function(loading) {
-    var canvas = this.get('canvas');
+  __setLoading(loading) {
+    const canvas = this.get('canvas');
     if (loading === false && this.get('toDraw') === true) {
       this.__cfg.loading = false;
       canvas.draw();
     }
     return loading;
   },
-  __setAttrImg: function(img) {
-    var self = this;
-    var attrs = self.__attrs;
+  __setAttrImg(img) {
+    const self = this;
+    const attrs = self.__attrs;
     if (Util.isString(img)) {
-      var image = new Image();
+      const image = new Image();
       image.onload = function() {
         if (self.get('destroyed')) return false;
         self.attr('imgSrc', img);
         self.attr('img', image);
-        var callback = self.get('callback');
+        const callback = self.get('callback');
         if (callback) {
           callback.call(self);
         }
@@ -120,41 +120,41 @@ Util.augment(CImage, {
       return null;
     }
   },
-  drawInner: function(context) {
+  drawInner(context) {
     if (this.get('loading')) {
       this.set('toDraw', true);
       return;
     }
     this.__drawImage(context);
   },
-  __drawImage: function(context) {
-    var attrs = this.__attrs;
-    var x = attrs.x;
-    var y = attrs.y;
-    var img = attrs.img;
-    var width = attrs.width;
-    var height = attrs.height;
-    var sx = attrs.sx;
-    var sy = attrs.sy;
-    var swidth = attrs.swidth;
-    var sheight = attrs.sheight;
+  __drawImage(context) {
+    const attrs = this.__attrs;
+    const x = attrs.x;
+    const y = attrs.y;
+    const img = attrs.img;
+    const width = attrs.width;
+    const height = attrs.height;
+    const sx = attrs.sx;
+    const sy = attrs.sy;
+    const swidth = attrs.swidth;
+    const sheight = attrs.sheight;
     this.set('toDraw', false);
 
     if (img instanceof Image || (img instanceof HTMLElement && Util.isString(img.nodeName) && img.nodeName.toUpperCase() === 'CANVAS')) {
       if (
-        Util.isNull(sx) ||
-        Util.isNull(sy) ||
-        Util.isNull(swidth) ||
-        Util.isNull(sheight)
+        Util.isNil(sx) ||
+        Util.isNil(sy) ||
+        Util.isNil(swidth) ||
+        Util.isNil(sheight)
       ) {
         context.drawImage(img, x, y, width, height);
         return;
       }
       if (
-        Util.notNull(sx) &&
-        Util.notNull(sy) &&
-        Util.notNull(swidth) &&
-        Util.notNull(sheight)
+        !Util.isNil(sx) &&
+        !Util.isNil(sy) &&
+        !Util.isNil(swidth) &&
+        !Util.isNil(sheight)
       ) {
         context.drawImage(img, sx, sy, swidth, sheight, x, y, width, height);
         return;

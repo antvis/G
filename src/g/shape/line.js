@@ -4,15 +4,14 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Util = require('@ali/g-util');
-var Shape = require('../core/shape');
-var Inside = require('./util/inside');
-var Arrow = require('./util/arrow');
-var LineMath = require('./math/line');
-var Matrix = require('@ali/g-matrix');
-var Vector2 = Matrix.Vector2;
+const Util = require('../../util/index');
+const Shape = require('../core/shape');
+const Inside = require('./util/inside');
+const Arrow = require('./util/arrow');
+const LineMath = require('./math/line');
+const vec2 = require('../../util/matrix').vec2;
 
-var Line = function(cfg) {
+const Line = function(cfg) {
   Line.superclass.constructor.call(this, cfg);
 };
 
@@ -30,57 +29,57 @@ Util.extend(Line, Shape);
 Util.augment(Line, {
   canStroke: true,
   type: 'line',
-  getDefaultAttrs: function() {
+  getDefaultAttrs() {
     return {
       lineWidth: 1,
       arrow: false
     };
   },
-  calculateBox: function() {
-    var attrs = this.__attrs;
-    var x1 = attrs.x1;
-    var y1 = attrs.y1;
-    var x2 = attrs.x2;
-    var y2 = attrs.y2;
-    var lineWidth = attrs.lineWidth;
+  calculateBox() {
+    const attrs = this.__attrs;
+    const x1 = attrs.x1;
+    const y1 = attrs.y1;
+    const x2 = attrs.x2;
+    const y2 = attrs.y2;
+    const lineWidth = attrs.lineWidth;
 
     return LineMath.box(x1, y1, x2, y2, lineWidth);
   },
-  isPointInPath: function(x, y) {
-    var attrs = this.__attrs;
-    var x1 = attrs.x1;
-    var y1 = attrs.y1;
-    var x2 = attrs.x2;
-    var y2 = attrs.y2;
-    var lineWidth = attrs.lineWidth;
+  isPointInPath(x, y) {
+    const attrs = this.__attrs;
+    const x1 = attrs.x1;
+    const y1 = attrs.y1;
+    const x2 = attrs.x2;
+    const y2 = attrs.y2;
+    const lineWidth = attrs.lineWidth;
     if (this.hasStroke()) {
       return Inside.line(x1, y1, x2, y2, lineWidth, x, y);
     }
 
     return false;
   },
-  createPath: function(context) {
-    var attrs = this.__attrs;
-    var x1 = attrs.x1;
-    var y1 = attrs.y1;
-    var x2 = attrs.x2;
-    var y2 = attrs.y2;
-    var arrow = attrs.arrow;
-    var lineWidth = attrs.lineWidth;
+  createPath(context) {
+    const attrs = this.__attrs;
+    const x1 = attrs.x1;
+    const y1 = attrs.y1;
+    const x2 = attrs.x2;
+    const y2 = attrs.y2;
+    const arrow = attrs.arrow;
+    const lineWidth = attrs.lineWidth;
     context = context || self.get('context');
     context.beginPath();
     context.moveTo(x1, y1);
     if (arrow) {
-      var v = new Vector2(x2 - x1, y2 - y1);
-      var end = Arrow.getEndPoint(v, new Vector2(x2, y2), lineWidth);
-      context.lineTo(end.x, end.y);
+      const v = vec2.fromValues(x2 - x1, y2 - y1);
+      const end = Arrow.getEndPoint(v, vec2.fromValues(x2, y2), lineWidth);
+      context.lineTo(end[0], end[1]);
       Arrow.makeArrow(context, v, end, lineWidth);
     } else {
       context.lineTo(x2, y2);
     }
   },
-  getPoint: function(t) {
-    var attrs = this.__attrs;
+  getPoint(t) {
+    const attrs = this.__attrs;
     return {
       x: LineMath.at(attrs.x1, attrs.x2, t),
       y: LineMath.at(attrs.y1, attrs.y2, t)

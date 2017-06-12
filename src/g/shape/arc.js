@@ -5,14 +5,14 @@
  * @ignore
  */
 
-var Util = require('@ali/g-util');
-var Vector2 = require('@ali/g-matrix').Vector2;
-var Shape = require('../core/shape');
-var Inside = require('./util/inside');
-var ArcMath = require('./math/arc');
-var Arrow = require('./util/arrow');
+const Util = require('../../util/index');
+const vec2 = require('../../util/matrix').vec2;
+const Shape = require('../core/shape');
+const Inside = require('./util/inside');
+const ArcMath = require('./math/arc');
+const Arrow = require('./util/arrow');
 
-var Arc = function(cfg) {
+const Arc = function(cfg) {
   Arc.superclass.constructor.call(this, cfg);
 };
 
@@ -32,7 +32,7 @@ Util.extend(Arc, Shape);
 Util.augment(Arc, {
   canStroke: true,
   type: 'arc',
-  getDefaultAttrs: function() {
+  getDefaultAttrs() {
     return {
       x: 0,
       y: 0,
@@ -44,62 +44,62 @@ Util.augment(Arc, {
       arrow: false
     };
   },
-  calculateBox: function() {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var r = attrs.r;
-    var startAngle = attrs.startAngle;
-    var endAngle = attrs.endAngle;
-    var clockwise = attrs.clockwise;
-    var lineWidth = attrs.lineWidth;
-    var halfWidth = lineWidth / 2;
-    var box = ArcMath.box(cx, cy, r, startAngle, endAngle, clockwise);
+  calculateBox() {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const r = attrs.r;
+    const startAngle = attrs.startAngle;
+    const endAngle = attrs.endAngle;
+    const clockwise = attrs.clockwise;
+    const lineWidth = attrs.lineWidth;
+    const halfWidth = lineWidth / 2;
+    const box = ArcMath.box(cx, cy, r, startAngle, endAngle, clockwise);
     box.minX -= halfWidth;
     box.minY -= halfWidth;
     box.maxX += halfWidth;
     box.maxY += halfWidth;
     return box;
   },
-  isPointInPath: function(x, y) {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var r = attrs.r;
-    var startAngle = attrs.startAngle;
-    var endAngle = attrs.endAngle;
-    var clockwise = attrs.clockwise;
-    var lineWidth = attrs.lineWidth;
+  isPointInPath(x, y) {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const r = attrs.r;
+    const startAngle = attrs.startAngle;
+    const endAngle = attrs.endAngle;
+    const clockwise = attrs.clockwise;
+    const lineWidth = attrs.lineWidth;
 
     if (this.hasStroke()) {
       return Inside.arcline(cx, cy, r, startAngle, endAngle, clockwise, lineWidth, x, y);
     }
     return false;
   },
-  createPath: function(context) {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var r = attrs.r;
-    var startAngle = attrs.startAngle;
-    var endAngle = attrs.endAngle;
-    var clockwise = attrs.clockwise;
-    var lineWidth = attrs.lineWidth;
-    var arrow = attrs.arrow;
+  createPath(context) {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const r = attrs.r;
+    const startAngle = attrs.startAngle;
+    const endAngle = attrs.endAngle;
+    const clockwise = attrs.clockwise;
+    const lineWidth = attrs.lineWidth;
+    const arrow = attrs.arrow;
     context = context || self.get('context');
 
     context.beginPath();
     context.arc(cx, cy, r, startAngle, endAngle, clockwise);
 
     if (arrow) {
-      var end = {
+      const end = {
         x: cx + r * Math.cos(endAngle),
         y: cy + r * Math.sin(endAngle)
       };
 
-      var v = new Vector2(-r * Math.sin(endAngle), r * Math.cos(endAngle));
+      const v = vec2.fromValues(-r * Math.sin(endAngle), r * Math.cos(endAngle));
       if (clockwise) {
-        v.multiplyScaler(-1);
+        vec2.scale(v, v, -1);
       }
       Arrow.makeArrow(context, v, end, lineWidth);
     }

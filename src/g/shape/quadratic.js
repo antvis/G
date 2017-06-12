@@ -3,14 +3,14 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Util = require('@ali/g-util');
-var Shape = require('../core/shape');
-var Inside = require('./util/inside');
-var Arrow = require('./util/arrow');
-var QuadraticMath = require('./math/quadratic');
-var Vector2 = require('@ali/g-matrix').Vector2;
+const Util = require('../../util/index');
+const Shape = require('../core/shape');
+const Inside = require('./util/inside');
+const Arrow = require('./util/arrow');
+const QuadraticMath = require('./math/quadratic');
+const vec2 = require('../../util/matrix').vec2;
 
-var Quadratic = function(cfg) {
+const Quadratic = function(cfg) {
   Quadratic.superclass.constructor.call(this, cfg);
 };
 
@@ -27,37 +27,37 @@ Util.extend(Quadratic, Shape);
 Util.augment(Quadratic, {
   canStroke: true,
   type: 'quadratic',
-  getDefaultAttrs: function() {
+  getDefaultAttrs() {
     return {
       lineWidth: 1,
       arrow: false
     };
   },
-  calculateBox: function() {
-    var self = this;
-    var attrs = self.__attrs;
-    var p1 = attrs.p1;
-    var p2 = attrs.p2;
-    var p3 = attrs.p3;
-    var i;
-    var l;
+  calculateBox() {
+    const self = this;
+    const attrs = self.__attrs;
+    const p1 = attrs.p1;
+    const p2 = attrs.p2;
+    const p3 = attrs.p3;
+    let i;
+    let l;
 
     if (
-      Util.isNull(p1) ||
-      Util.isNull(p2) ||
-      Util.isNull(p3)
+      Util.isNil(p1) ||
+      Util.isNil(p2) ||
+      Util.isNil(p3)
     ) {
       return null;
     }
-    var halfWidth = attrs.lineWidth / 2;
+    const halfWidth = attrs.lineWidth / 2;
 
 
-    var xDims = QuadraticMath.extrema(p1[0], p2[0], p3[0]);
+    const xDims = QuadraticMath.extrema(p1[0], p2[0], p3[0]);
     for (i = 0, l = xDims.length; i < l; i++) {
       xDims[i] = QuadraticMath.at(p1[0], p2[0], p3[0], xDims[i]);
     }
     xDims.push(p1[0], p3[0]);
-    var yDims = QuadraticMath.extrema(p1[1], p2[1], p3[1]);
+    const yDims = QuadraticMath.extrema(p1[1], p2[1], p3[1]);
     for (i = 0, l = yDims.length; i < l; i++) {
       yDims[i] = QuadraticMath.at(p1[1], p2[1], p3[1], yDims[i]);
     }
@@ -70,13 +70,13 @@ Util.augment(Quadratic, {
       maxY: Math.max.apply(Math, yDims) + halfWidth
     };
   },
-  isPointInPath: function(x, y) {
-    var self = this;
-    var attrs = self.__attrs;
-    var p1 = attrs.p1;
-    var p2 = attrs.p2;
-    var p3 = attrs.p3;
-    var lineWidth = attrs.lineWidth;
+  isPointInPath(x, y) {
+    const self = this;
+    const attrs = self.__attrs;
+    const p1 = attrs.p1;
+    const p2 = attrs.p2;
+    const p3 = attrs.p3;
+    const lineWidth = attrs.lineWidth;
 
     return Inside.quadraticline(
       p1[0], p1[1],
@@ -85,19 +85,19 @@ Util.augment(Quadratic, {
       lineWidth, x, y
     );
   },
-  createPath: function(context) {
-    var self = this;
-    var attrs = self.__attrs;
-    var p1 = attrs.p1;
-    var p2 = attrs.p2;
-    var p3 = attrs.p3;
-    var lineWidth = attrs.lineWidth;
-    var arrow = attrs.arrow;
+  createPath(context) {
+    const self = this;
+    const attrs = self.__attrs;
+    const p1 = attrs.p1;
+    const p2 = attrs.p2;
+    const p3 = attrs.p3;
+    const lineWidth = attrs.lineWidth;
+    const arrow = attrs.arrow;
 
     if (
-      Util.isNull(p1) ||
-      Util.isNull(p2) ||
-      Util.isNull(p3)
+      Util.isNil(p1) ||
+      Util.isNil(p2) ||
+      Util.isNil(p3)
     ) {
       return;
     }
@@ -107,16 +107,16 @@ Util.augment(Quadratic, {
 
 
     if (arrow) {
-      var v = new Vector2(p3[0] - p2[0], p3[1] - p2[1]);
-      var end = Arrow.getEndPoint(v, new Vector2(p3[0], p3[1]), lineWidth);
-      context.quadraticCurveTo(p2[0], p2[1], end.x, end.y);
+      const v = vec2.fromValues(p3[0] - p2[0], p3[1] - p2[1]);
+      const end = Arrow.getEndPoint(v, vec2.fromValues(p3[0], p3[1]), lineWidth);
+      context.quadraticCurveTo(p2[0], p2[1], end[0], end[1]);
       Arrow.makeArrow(context, v, end, lineWidth);
     } else {
       context.quadraticCurveTo(p2[0], p2[1], p3[0], p3[1]);
     }
   },
-  getPoint: function(t) {
-    var attrs = this.__attrs;
+  getPoint(t) {
+    const attrs = this.__attrs;
     return {
       x: QuadraticMath.at(attrs.p1[0], attrs.p2[0], attrs.p3[0], t),
       y: QuadraticMath.at(attrs.p1[1], attrs.p2[1], attrs.p3[1], t)

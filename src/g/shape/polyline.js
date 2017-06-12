@@ -4,15 +4,14 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Util = require('@ali/g-util');
-var Shape = require('../core/shape');
-var Inside = require('./util/inside');
-var Arrow = require('./util/arrow');
-var LineMath = require('./math/line');
-var Matrix = require('@ali/g-matrix');
-var Vector2 = Matrix.Vector2;
+const Util = require('../../util/index');
+const Shape = require('../core/shape');
+const Inside = require('./util/inside');
+const Arrow = require('./util/arrow');
+const LineMath = require('./math/line');
+const vec2 = require('../../util/matrix').vec2;
 
-var Polyline = function(cfg) {
+const Polyline = function(cfg) {
   Polyline.superclass.constructor.call(this, cfg);
 };
 
@@ -29,28 +28,28 @@ Util.augment(Polyline, {
   canStroke: true,
   type: 'polyline',
   tCache: null, // 缓存各点的t
-  getDefaultAttrs: function() {
+  getDefaultAttrs() {
     return {
       lineWidth: 1,
       arrow: false
     };
   },
-  calculateBox: function() {
-    var self = this;
-    var attrs = self.__attrs;
-    var lineWidth = attrs.lineWidth;
-    var points = attrs.points;
+  calculateBox() {
+    const self = this;
+    const attrs = self.__attrs;
+    const lineWidth = attrs.lineWidth;
+    const points = attrs.points;
     if (!points || points.length === 0) {
       return null;
     }
-    var minX = Infinity;
-    var minY = Infinity;
-    var maxX = -Infinity;
-    var maxY = -Infinity;
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
 
     Util.each(points, function(point) {
-      var x = point[0];
-      var y = point[1];
+      const x = point[0];
+      const y = point[1];
       if (x < minX) {
         minX = x;
       }
@@ -67,7 +66,7 @@ Util.augment(Polyline, {
       }
     });
 
-    var halfWidth = lineWidth / 2;
+    const halfWidth = lineWidth / 2;
     return {
       minX: minX - halfWidth,
       minY: minY - halfWidth,
@@ -75,15 +74,15 @@ Util.augment(Polyline, {
       maxY: maxY + halfWidth
     };
   },
-  __setTcache: function() {
-    var self = this;
-    var attrs = self.__attrs;
-    var points = attrs.points;
-    var totalLength = 0;
-    var tempLength = 0;
-    var tCache = [];
-    var segmentT;
-    var segmentL;
+  __setTcache() {
+    const self = this;
+    const attrs = self.__attrs;
+    const points = attrs.points;
+    let totalLength = 0;
+    let tempLength = 0;
+    const tCache = [];
+    let segmentT;
+    let segmentL;
     if (!points || points.length === 0) {
       return;
     }
@@ -108,27 +107,27 @@ Util.augment(Polyline, {
     });
     this.tCache = tCache;
   },
-  isPointInPath: function(x, y) {
-    var self = this;
-    var attrs = self.__attrs;
+  isPointInPath(x, y) {
+    const self = this;
+    const attrs = self.__attrs;
     if (self.hasStroke()) {
-      var points = attrs.points;
+      const points = attrs.points;
       if (points.length < 2) {
         return false;
       }
-      var lineWidth = attrs.lineWidth;
+      const lineWidth = attrs.lineWidth;
       return Inside.polyline(points, lineWidth, x, y);
     }
     return false;
   },
-  createPath: function(context) {
-    var self = this;
-    var attrs = self.__attrs;
-    var points = attrs.points;
-    var arrow = attrs.arrow;
-    var lineWidth = attrs.lineWidth;
-    var l;
-    var i;
+  createPath(context) {
+    const self = this;
+    const attrs = self.__attrs;
+    const points = attrs.points;
+    const arrow = attrs.arrow;
+    const lineWidth = attrs.lineWidth;
+    let l;
+    let i;
 
     if (points.length < 2) {
       return;
@@ -140,20 +139,20 @@ Util.augment(Polyline, {
       context.lineTo(points[i][0], points[i][1]);
     }
     if (arrow) {
-      var v = new Vector2(points[l][0] - points[l - 1][0], points[l][1] - points[l - 1][1]);
-      var end = Arrow.getEndPoint(v, new Vector2(points[l][0], points[l][1]), lineWidth);
-      context.lineTo(end.x, end.y);
+      const v = vec2.fromValues(points[l][0] - points[l - 1][0], points[l][1] - points[l - 1][1]);
+      const end = Arrow.getEndPoint(v, vec2.fromValues(points[l][0], points[l][1]), lineWidth);
+      context.lineTo(end[0], end[1]);
       Arrow.makeArrow(context, v, end, lineWidth);
     } else {
       context.lineTo(points[l][0], points[l][1]);
     }
   },
-  getPoint: function(t) {
-    var attrs = this.__attrs;
-    var points = attrs.points;
-    var tCache = this.tCache;
-    var subt;
-    var index;
+  getPoint(t) {
+    const attrs = this.__attrs;
+    const points = attrs.points;
+    let tCache = this.tCache;
+    let subt;
+    let index;
     if (!tCache) {
       this.__setTcache();
       tCache = this.tCache;

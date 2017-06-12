@@ -1,6 +1,6 @@
-var Common = require('./common');
+const Common = require('./common');
 
-var G = {
+const G = {
   Group: require('./core/group'),
   Shape: require('./core/shape'),
   Rect: require('./shape/rect'),
@@ -17,7 +17,7 @@ var G = {
   Cubic: require('./shape/cubic'),
   Quadratic: require('./shape/quadratic'),
   Marker: require('./shape/marker'),
-  debug: function(debug) {
+  debug(debug) {
     Common.debug = debug;
   }
 };

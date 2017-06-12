@@ -1,23 +1,21 @@
 {
-  "extends": "airbnb/legacy",
+  "extends": [
+    "egg"
+  ],
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module"
+  },
   "rules": {
-    "no-console": [
+    "no-bitwise": [
       0
     ],
-    "space-before-function-paren": [
+    "experimentalDecorators": [
       0
     ],
-    "comma-dangle": [2, "never"],
-    "vars-on-top": 0,
-    "no-param-reassign": 0,
-    "max-len": 0,
-    "new-cap": 0,
-    "func-names": 0,
-    "no-unused-expressions": 0,
-    "dot-notation": [2, {"allowKeywords": false}],
-    "quote-props": 0,
-    "no-nested-ternary": 0,
-    "no-new": 0,
-    "no-cond-assign": 0
+    "comma-dangle": [
+      "error",
+      "never"
+    ]
   }
 }

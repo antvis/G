@@ -4,11 +4,11 @@
  * @author hankaiai@126.com
  * @ignore
  */
-var Util = require('@ali/g-util');
-var Shape = require('../core/shape');
-var Inside = require('./util/inside');
+const Util = require('../../util/index');
+const Shape = require('../core/shape');
+const Inside = require('./util/inside');
 
-var Circle = function(cfg) {
+const Circle = function(cfg) {
   Circle.superclass.constructor.call(this, cfg);
 };
 
@@ -25,18 +25,18 @@ Util.augment(Circle, {
   canFill: true,
   canStroke: true,
   type: 'circle',
-  getDefaultAttrs: function() {
+  getDefaultAttrs() {
     return {
       lineWidth: 1
     };
   },
-  calculateBox: function() {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var r = attrs.r;
-    var lineWidth = attrs.lineWidth;
-    var halfWidth = lineWidth / 2 + r;
+  calculateBox() {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const r = attrs.r;
+    const lineWidth = attrs.lineWidth;
+    const halfWidth = lineWidth / 2 + r;
     return {
       minX: cx - halfWidth,
       minY: cy - halfWidth,
@@ -44,9 +44,9 @@ Util.augment(Circle, {
       maxY: cy + halfWidth
     };
   },
-  isPointInPath: function(x, y) {
-    var fill = this.hasFill();
-    var stroke = this.hasStroke();
+  isPointInPath(x, y) {
+    const fill = this.hasFill();
+    const stroke = this.hasStroke();
     if (fill && stroke) {
       return this.__isPointInFill(x, y) || this.__isPointInStroke(x, y);
     }
@@ -61,28 +61,28 @@ Util.augment(Circle, {
 
     return false;
   },
-  __isPointInFill: function(x, y) {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var r = attrs.r;
+  __isPointInFill(x, y) {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const r = attrs.r;
 
     return Inside.circle(cx, cy, r, x, y);
   },
-  __isPointInStroke: function(x, y) {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var r = attrs.r;
-    var lineWidth = attrs.lineWidth;
+  __isPointInStroke(x, y) {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const r = attrs.r;
+    const lineWidth = attrs.lineWidth;
 
     return Inside.arcline(cx, cy, r, 0, Math.PI * 2, false, lineWidth, x, y);
   },
-  createPath: function(context) {
-    var attrs = this.__attrs;
-    var cx = attrs.x;
-    var cy = attrs.y;
-    var r = attrs.r;
+  createPath(context) {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const r = attrs.r;
     context = context || self.get('context');
 
     context.beginPath();

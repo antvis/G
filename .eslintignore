@@ -1,0 +1,4 @@
+build/
+dist/
+mocks/
+node_modules/
