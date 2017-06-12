@@ -57,7 +57,6 @@
   },
   "dependencies": {
     "@ali/g-event": "~0.0.0",
-    "@ali/g-path-util": "~1.0.0",
     "gl-matrix": "^2.3.2",
     "lodash": "^4.17.4"
   }

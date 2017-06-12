@@ -3,7 +3,7 @@ const Shape = require('../core/shape');
 const PathSegment = require('./util/pathSegment');
 const Format = require('../format');
 const Arrow = require('./util/arrow');
-const pathUtil = require('@ali/g-path-util');
+const PathUtil = require('../../util/path');
 const CubicMath = require('./math/cubic');
 const vec2 = require('../../util/matrix').vec2;
 
@@ -187,7 +187,7 @@ Util.augment(Path, {
     const self = this;
     const attrs = self.__attrs;
     const path = attrs.path;
-    this.curve = pathUtil.toCurve(path);
+    this.curve = PathUtil.pathTocurve(path);
   },
   getPoint(t) {
     let tCache = this.tCache;
