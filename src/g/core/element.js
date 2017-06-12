@@ -1,7 +1,6 @@
 const Util = require('../../util/index');
 const Attributes = require('./mixin/attributes');
 const Transform = require('./mixin/transform');
-const Animate = require('./mixin/animate');
 const EventDispatcher = require('./mixin/event-dispatcher');
 const Format = require('../format');
 
@@ -85,7 +84,7 @@ Element.CFG = {
   destroyed: false
 };
 
-Util.augment(Element, Attributes, EventDispatcher, Transform, Animate, {
+Util.augment(Element, Attributes, EventDispatcher, Transform, {
   init() {
     this.setSilent('animable', true);
     const attrs = this.__attrs;

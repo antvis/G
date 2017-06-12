@@ -122,18 +122,5 @@ module.exports = {
         }
       };
     }
-  },
-  requestAnimationFrame(fn) {
-    const method = window.requestAnimationFrame || window.webkitRequestAnimationFrame || function(fn) {
-      return setTimeout(fn, 16);
-    };
-
-    return method(fn);
-  },
-  cancelAnimationFrame(id) {
-    const method = window.cancelAnimationFrame || window.webkitCancelAnimationFrame || function(id) {
-      return clearTimeout(id);
-    };
-    return method(id);
   }
 };

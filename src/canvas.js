@@ -221,13 +221,13 @@ Util.augment(Canvas, {
   draw() {
     const self = this;
     function drawInner() {
-      self.set('animateHandler', Util.requestAnimationFrame(function() {
-        self.set('animateHandler', undefined);
-        if (self.get('toDraw')) {
-          drawInner();
-        }
-      }));
-      self.beforeDraw();
+      // self.set('animateHandler', Util.requestAnimationFrame(function() {
+      //   self.set('animateHandler', undefined);
+      //   if (self.get('toDraw')) {
+      //     drawInner();
+      //   }
+      // }));
+      // self.beforeDraw();
       try {
         const context = self.get('context');
         Canvas.superclass.draw.call(self, context);
@@ -243,11 +243,12 @@ Util.augment(Canvas, {
     if (self.get('destroyed')) {
       return;
     }
-    if (self.get('animateHandler')) {
-      this._beginDraw();
-    } else {
-      drawInner();
-    }
+    // if (self.get('animateHandler')) {
+    //   this._beginDraw();
+    // } else {
+    //   drawInner();
+    // }
+    drawInner();
   },
   destroy() {
     const containerDOM = this.get('containerDOM');
