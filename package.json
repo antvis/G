@@ -56,7 +56,6 @@
     "silent": false
   },
   "dependencies": {
-    "@ali/g-color": "~0.0.7",
     "@ali/g-event": "~0.0.0",
     "@ali/g-interpolation": "~0.0.0",
     "@ali/g-path-util": "~1.0.0",
