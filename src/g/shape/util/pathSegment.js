@@ -1,9 +1,3 @@
-/**
- * @fileOverview Path
- * @author dxq613@gmail.com
- * @author hankaiai@126.com
- * @ignore
- */
 const Util = require('../../../util/index');
 const Inside = require('./inside');
 const Cubic = require('../math/cubic');

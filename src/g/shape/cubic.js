@@ -1,8 +1,3 @@
-/**
- * @fileOverview Cubic
- * @author hankaiai@126.com
- * @ignore
- */
 const Util = require('../../util/index');
 const Shape = require('../core/shape');
 const Inside = require('./util/inside');

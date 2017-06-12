@@ -1,5 +1,4 @@
 const Util = require('../util/index');
-const GColor = require('@ali/g-color');
 
 const regexTags = /[MLHVQTCSAZ]([^MLHVQTCSAZ]*)/ig;
 const regexDot = /[^\s\,]+/ig;
@@ -9,30 +8,15 @@ const regexPR = /^p\s*([axyn])\s+(.*)/i;
 const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/ig;
 const numColorCache = {};
 
-function multiplyOpacity(color, opacity) {
-  if (opacity === undefined) {
-    return color;
-  }
-  color = new GColor(color);
-  color.multiplyA(opacity);
-  const type = color.getType();
-  if (type === 'hsl') {
-    return color.getHSLStyle();
-  } else if (type === 'rgb') {
-    return color.getRGBStyle();
-  }
-}
-
-function addStop(steps, gradient, opacity) {
+function addStop(steps, gradient) {
   const arr = steps.match(regexColorStop);
   Util.each(arr, function(item) {
     item = item.split(':');
-    const color = multiplyOpacity(item[1], opacity);
-    gradient.addColorStop(item[0], color);
+    gradient.addColorStop(item[0], item[1]);
   });
 }
 
-function parseLineGradient(color, self, opacity) {
+function parseLineGradient(color, self) {
   const arr = regexLG.exec(color);
   const angle = Util.mod(Util.toRadian(parseFloat(arr[1])), Math.PI * 2);
   const steps = arr[2];
@@ -85,11 +69,11 @@ function parseLineGradient(color, self, opacity) {
   const y = tanTheta * ((end.x - start.x) + tanTheta * (end.y - start.y)) / (tanTheta2 + 1) + start.y;
   const context = self.get('context');
   const gradient = context.createLinearGradient(start.x, start.y, x, y);
-  addStop(steps, gradient, opacity);
+  addStop(steps, gradient);
   return gradient;
 }
 
-function parseRadialGradient(color, self, opacity) {
+function parseRadialGradient(color, self) {
   const arr = regexRG.exec(color);
   const fx = parseFloat(arr[1]);
   const fy = parseFloat(arr[2]);
@@ -101,7 +85,7 @@ function parseRadialGradient(color, self, opacity) {
   const height = box.maxY - box.minY;
   const r = Math.sqrt(width * width + height * height) / 2;
   const gradient = context.createRadialGradient(box.minX + width * fx, box.minY + height * fy, fr, box.minX + width / 2, box.minY + height / 2, r);
-  addStop(steps, gradient, opacity);
+  addStop(steps, gradient);
   return gradient;
 }
 
@@ -157,21 +141,18 @@ module.exports = {
       return path;
     }
   },
-  parseStyle(color, self, opacity) {
+  parseStyle(color, self) {
     if (Util.isString(color)) {
       if (color[1] === '(' || color[2] === '(') {
         if (color[0] === 'l') { // regexLG.test(color)
-          return parseLineGradient(color, self, opacity);
+          return parseLineGradient(color, self);
         } else if (color[0] === 'r') { // regexRG.test(color)
-          return parseRadialGradient(color, self, opacity);
+          return parseRadialGradient(color, self);
         } else if (color[0] === 'p') { // regexPR.test(color)
           return parsePattern(color, self);
         }
       }
-      if (Util.isNil(opacity)) {
-        return color;
-      }
-      return multiplyOpacity(color, opacity);
+      return color;
     }
   },
   numberToColor(num) {
