@@ -1,4 +1,4 @@
-var Shape = {
+const Shape = {
   Rect: require('./rect'),
   Circle: require('./circle'),
   Ellipse: require('./ellipse'),

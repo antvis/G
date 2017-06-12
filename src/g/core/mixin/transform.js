@@ -1,45 +1,44 @@
-var Util = require('@ali/g-util');
-var Matrix3 = require('@ali/g-matrix').Matrix3;
+const Util = require('../../../util/index');
+const mat3 = require('../../../util/matrix').mat3;
+const vec3 = require('../../../util/matrix').vec3;
 
 // 是否未改变
 function isUnchanged(m) {
-  var elements = m.elements;
-  return elements[0] === 1 && elements[1] === 0 && elements[3] === 0 && elements[4] === 1 && elements[6] === 0 && elements[7] === 0;
+  return m[0] === 1 && m[1] === 0 && m[3] === 0 && m[4] === 1 && m[6] === 0 && m[7] === 0;
 }
 
 // 是否仅仅是scale
 function isScale(m) {
-  var elements = m.elements;
-  return elements[1] === 0 && elements[3] === 0 && elements[6] === 0 && elements[7] === 0;
+  return m[1] === 0 && m[3] === 0 && m[6] === 0 && m[7] === 0;
 }
 
 function multiple(m1, m2) {
   if (!isUnchanged(m2)) {
     if (isScale(m2)) {
-      m1.elements[0] *= m2.elements[0];
-      m1.elements[4] *= m2.elements[4];
+      m1[0] *= m2[0];
+      m1[4] *= m2[4];
     } else {
-      m1.multiply(m2);
+      mat3.multiply(m1, m2, m1);
     }
   }
 }
 
 module.exports = {
-  initTransform: function() {
-    this.__m = new Matrix3();
+  initTransform() {
+    this.__m = mat3.create();
   },
-  translate: function(tx, ty) {
-    this.__m.translate(tx, ty);
+  translate(tx, ty) {
+    mat3.translate(this.__m, this.__m, [ tx, ty ]);
     this.clearTotalMatrix();
     return this;
   },
-  rotate: function(angle) {
-    this.__m.rotate(angle); // 仅支持弧度，不再支持角度
+  rotate(radian) {
+    mat3.rotate(this.__m, this.__m, radian);
     this.clearTotalMatrix();
     return this;
   },
-  scale: function(s1, s2) {
-    this.__m.scale(s1, s2);
+  scale(s1, s2) {
+    mat3.scale(this.__m, this.__m, [ s1, s2 ]);
     this.clearTotalMatrix();
     return this;
   },
@@ -47,16 +46,16 @@ module.exports = {
    * 绕起始点旋转
    * @param  {Number} rotate 0～360
    */
-  rotateAtStart: function(rotate) {
-    var x = this.attr('x');
-    var y = this.attr('y');
+  rotateAtStart(rotate) {
+    const x = this.attr('x');
+    const y = this.attr('y');
     if (Math.abs(rotate) > Math.PI * 2) {
       rotate = rotate / 180 * Math.PI;
     }
     this.transform([
-      ['t', -x, -y],
-      ['r', rotate],
-      ['t', x, y]
+      [ 't', -x, -y ],
+      [ 'r', rotate ],
+      [ 't', x, y ]
     ]);
   },
   /**
@@ -64,15 +63,15 @@ module.exports = {
    * @param  {Number} x 移动到x
    * @param  {Number} y 移动到y
    */
-  move: function(x, y) {
-    var cx = this.get('x') || 0; // 当前的x
-    var cy = this.get('y') || 0; // 当前的y
+  move(x, y) {
+    const cx = this.get('x') || 0; // 当前的x
+    const cy = this.get('y') || 0; // 当前的y
     this.translate(x - cx, y - cy);
     this.set('x', x);
     this.set('y', y);
   },
-  transform: function(ts) {
-    var self = this;
+  transform(ts) {
+    const self = this;
     Util.each(ts, function(t) {
       switch (t[0]) {
         case 't':
@@ -85,7 +84,7 @@ module.exports = {
           self.rotate(t[1]);
           break;
         case 'm':
-          self.__m = Matrix3.multiply(t[1], self.__m);
+          self.__m = mat3.multiply([], self.__m, t[1]);
           self.clearTotalMatrix();
           break;
         default:
@@ -94,34 +93,34 @@ module.exports = {
     });
     return self;
   },
-  setTransform: function(ts) {
-    this.__m.identity();
+  setTransform(ts) {
+    this.__m = mat3.create();
     return this.transform(ts);
   },
-  getMatrix: function() {
+  getMatrix() {
     return this.__m;
   },
-  setMatrix: function(m) {
+  setMatrix(m) {
     this.__m = m;
     this.clearTotalMatrix();
     return this;
   },
-  apply: function(v, root) {
-    var m;
+  apply(v, root) {
+    let m;
     if (root) {
       m = this._getMatrixByRoot(root);
     } else {
       m = this.__m;
     }
-    v.applyMatrix(m);
+    vec3.transformMat3(v, v, m);
     return this;
   },
   // 获取到达指定根节点的矩阵
-  _getMatrixByRoot: function(root) {
-    var self = this;
+  _getMatrixByRoot(root) {
+    const self = this;
     root = root || self;
-    var parent = self;
-    var parents = [];
+    let parent = self;
+    const parents = [];
 
     while (parent !== root) {
       parents.unshift(parent);
@@ -129,9 +128,9 @@ module.exports = {
     }
     parents.unshift(parent);
 
-    var m = new Matrix3();
+    const m = mat3.create();
     Util.each(parents, function(child) {
-      m.multiply(child.__m);
+      mat3.multiply(m, child.__m, m);
     });
     return m;
   },
@@ -139,47 +138,42 @@ module.exports = {
    * 应用到当前元素上的总的矩阵
    * @return {Matrix} 矩阵
    */
-  getTotalMatrix: function() {
-    var m = this.__cfg.totalMatrix;
+  getTotalMatrix() {
+    let m = this.__cfg.totalMatrix;
     if (!m) {
-      m = new Matrix3();
-      var parent = this.__cfg.parent;
+      m = mat3.create();
+      const parent = this.__cfg.parent;
       if (parent) {
-        var pm = parent.getTotalMatrix();
-        /* if (!isUnchanged(pm)) {
-          m.multiply(pm);
-        } */
+        const pm = parent.getTotalMatrix();
         multiple(m, pm);
       }
-      /* if (!isUnchanged(this.__m)) {
-        m.multiply(this.__m);
-      } */
+
       multiple(m, this.__m);
       this.__cfg.totalMatrix = m;
     }
     return m;
   },
   // 清除当前的矩阵
-  clearTotalMatrix: function() {
+  clearTotalMatrix() {
     // this.__cfg.totalMatrix = null;
   },
-  invert: function(v) {
-    var m = this.getTotalMatrix();
+  invert(v) {
+    const m = this.getTotalMatrix();
     // 单精屏幕下大多数矩阵没变化
     if (isScale(m)) {
-      v.x /= m.elements[0];
-      v.y /= m.elements[4];
+      v[0] /= m[0];
+      v[1] /= m[4];
     } else {
-      var inm = m.getInverse();
-      v.applyMatrix(inm);
+      const inm = mat3.invert([], m);
+      vec3.transformMat3(v, v, inm);
     }
     return this;
   },
-  resetTransform: function(context) {
-    var mo = this.__m.to2DObject();
+  resetTransform(context) {
+    const mo = this.__m;
     // 不改变时
-    if (!isUnchanged(this.__m)) {
-      context.transform(mo.a, mo.b, mo.c, mo.d, mo.e, mo.f);
+    if (!isUnchanged(mo)) {
+      context.transform(mo[0], mo[1], mo[3], mo[4], mo[6], mo[7]);
     }
   }
 };

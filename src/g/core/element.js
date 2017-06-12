@@ -1,18 +1,11 @@
-/**
- * @fileOverview 图形控件或者分组的基类
- * @author dxq613@gmail.com
- * @author hankaiai@126.com
- * @ignore
- */
-var Util = require('@ali/g-util');
-var Attributes = require('./mixin/attributes');
-var Transform = require('./mixin/transform');
-var Animate = require('./mixin/animate');
-var Format = require('../format');
-// var Vector3 = require('@ali/g-matrix').Vector3;
-var EventDispatcher = require('../../event/eventDispatcher');
+const Util = require('../../util/index');
+const Attributes = require('./mixin/attributes');
+const Transform = require('./mixin/transform');
+const Animate = require('./mixin/animate');
+const EventDispatcher = require('./mixin/event-dispatcher');
+const Format = require('../format');
 
-var SHAPE_ATTRS = [
+const SHAPE_ATTRS = [
   'fillStyle',
   'font',
   'globalAlpha',
@@ -30,7 +23,7 @@ var SHAPE_ATTRS = [
   'lineDash'
 ];
 
-var Element = function(cfg) {
+const Element = function(cfg) {
   this.__cfg = {
     zIndex: 0,
     capture: true,
@@ -38,7 +31,7 @@ var Element = function(cfg) {
     destroyed: false
   }; // 配置存放地
 
-  Util.simpleMix(this.__cfg, this.getDefaultCfg(), cfg); // Element.CFG不合并，提升性能 合并默认配置，用户配置->继承默认配置->Element默认配置
+  Util.assign(this.__cfg, this.getDefaultCfg(), cfg); // Element.CFG不合并，提升性能 合并默认配置，用户配置->继承默认配置->Element默认配置
   this.initAttrs(this.__cfg.attrs); // 初始化绘图属性
   this.initTransform(); // 初始化变换
   this.initEventDispatcher();
@@ -72,6 +65,7 @@ Element.CFG = {
    * false 不能
    * 对象默认是都可以被捕捉的, 当capture为false时，group.getShape(x, y)方法无法获得该元素
    * 通过将不必要捕捉的元素的该属性设置成false, 来提高捕捉性能
+   * @type {Boolean}
    **/
   capture: true,
   /**
@@ -92,18 +86,14 @@ Element.CFG = {
 };
 
 Util.augment(Element, Attributes, EventDispatcher, Transform, Animate, {
-  /**
-   * @protected
-   * 初始化
-   */
-  init: function() {
+  init() {
     this.setSilent('animable', true);
-    var attrs = this.__attrs;
+    const attrs = this.__attrs;
     if (attrs && attrs.rotate) {
       this.rotateAtStart(attrs.rotate);
     }
   },
-  getParent: function() {
+  getParent() {
     return this.get('parent');
   },
   /**
@@ -111,15 +101,11 @@ Util.augment(Element, Attributes, EventDispatcher, Transform, Animate, {
    * @protected
    * @return {Object} 默认的属性
    */
-  getDefaultCfg: function() {
+  getDefaultCfg() {
     return {};
   },
-  /**
-   * 设置属性信息
-   * @protected
-   */
-  set: function(name, value) {
-    var m = '__set' + Util.ucfirst(name);
+  set(name, value) {
+    const m = '__set' + Util.upperFirst(name);
 
     if (this[m]) {
       value = this[m](value);
@@ -127,24 +113,13 @@ Util.augment(Element, Attributes, EventDispatcher, Transform, Animate, {
     this.__cfg[name] = value;
     return this;
   },
-  /**
-   * 设置属性信息,不进行特殊处理
-   * @protected
-   */
-  setSilent: function(name, value) {
+  setSilent(name, value) {
     this.__cfg[name] = value;
   },
-  /**
-   * 获取属性信息
-   * @protected
-   */
-  get: function(name) {
+  get(name) {
     return this.__cfg[name];
   },
-  /**
-   * 绘制自身
-   */
-  draw: function(context) {
+  draw(context) {
     if (this.get('destroyed')) {
       return;
     }
@@ -154,8 +129,8 @@ Util.augment(Element, Attributes, EventDispatcher, Transform, Animate, {
       this.restoreContext(context);
     }
   },
-  setContext: function(context) {
-    var clip = this.__attrs.clip;
+  setContext(context) {
+    const clip = this.__attrs.clip;
     context.save();
     if (clip) {
       // context.save();
@@ -167,21 +142,17 @@ Util.augment(Element, Attributes, EventDispatcher, Transform, Animate, {
     this.resetContext(context);
     this.resetTransform(context);
   },
-  restoreContext: function(context) {
+  restoreContext(context) {
     context.restore();
   },
-  /**
-   * @protected
-   * 设置绘图属性
-   */
-  resetContext: function(context) {
-    var elAttrs = this.__attrs;
+  resetContext(context) {
+    const elAttrs = this.__attrs;
     // var canvas = this.get('canvas');
     if (!this.isGroup) {
       // canvas.registShape(this); // 快速拾取方案暂时不执行
-      for (var k in elAttrs) {
+      for (const k in elAttrs) {
         if (SHAPE_ATTRS.indexOf(k) > -1) { // 非canvas属性不附加
-          var v = elAttrs[k];
+          let v = elAttrs[k];
           if (k === 'fillStyle') {
             v = Format.parseStyle(v, this);
           }
@@ -201,33 +172,25 @@ Util.augment(Element, Attributes, EventDispatcher, Transform, Animate, {
       }
     }
   },
-  /**
-   * @protected
-   * 绘制内部图形
-   */
-  drawInner: function(/* context */) {
+  drawInner(/* context */) {
 
   },
-  show: function() {
+  show() {
     this.set('visible', true);
     return this;
   },
-  hide: function() {
+  hide() {
     this.set('visible', false);
     return this;
   },
-  /**
-   * 删除自己, 从父元素中删除自己
-   * @param  {Boolean} [destroy=true]
-   */
-  remove: function(destroy) {
+  remove(destroy) {
     if (destroy === undefined) {
       destroy = true;
     }
 
     if (this.get('parent')) {
-      var parent = this.get('parent');
-      var children = parent.get('children');
+      const parent = this.get('parent');
+      const children = parent.get('children');
       Util.remove(children, this);
       // this.set('parent', null);
     }
@@ -238,8 +201,8 @@ Util.augment(Element, Attributes, EventDispatcher, Transform, Animate, {
 
     return this;
   },
-  destroy: function() {
-    var destroyed = this.get('destroyed');
+  destroy() {
+    const destroyed = this.get('destroyed');
 
     if (destroyed) {
       return;
@@ -250,21 +213,21 @@ Util.augment(Element, Attributes, EventDispatcher, Transform, Animate, {
     this.__m = null;
     this.set('destroyed', true);
   },
-  __setZIndex: function(zIndex) {
+  __setZIndex(zIndex) {
     this.__cfg.zIndex = zIndex;
-    if (Util.notNull(this.get('parent'))) {
+    if (!Util.isNil(this.get('parent'))) {
       this.get('parent').sort();
     }
     return zIndex;
   },
-  __setAttrs: function(attrs) {
+  __setAttrs(attrs) {
     this.attr(attrs);
     return attrs;
   },
-  clone: function() {
+  clone() {
     return Util.clone(this);
   },
-  getBBox: function() {
+  getBBox() {
     return {
       minX: 0,
       maxX: 0,
