@@ -73,8 +73,8 @@ Util.augment(Ellipse, {
     const scaleX = (rx > ry) ? 1 : rx / ry;
     const scaleY = (rx > ry) ? ry / rx : 1;
 
-    const p = vec3.fromValues(x, y, 1);
-    const m = mat3.create();
+    const p = [ x, y, 1 ];
+    const m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
     mat3.scale(m, m, [ scaleX, scaleY ]);
     mat3.translate(m, m, [ cx, cy ]);
     const inm = mat3.invert([], m);
@@ -93,8 +93,8 @@ Util.augment(Ellipse, {
     const r = (rx > ry) ? rx : ry;
     const scaleX = (rx > ry) ? 1 : rx / ry;
     const scaleY = (rx > ry) ? ry / rx : 1;
-    const p = vec3.fromValues(x, y, 1);
-    const m = mat3.create();
+    const p = [ x, y, 1 ];
+    const m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
     mat3.scale(m, m, [ scaleX, scaleY ]);
     mat3.translate(m, m, [ cx, cy ]);
     const inm = mat3.invert([], m);
@@ -114,7 +114,7 @@ Util.augment(Ellipse, {
     const scaleX = (rx > ry) ? 1 : rx / ry;
     const scaleY = (rx > ry) ? ry / rx : 1;
 
-    const m = mat3.create();
+    const m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
     mat3.scale(m, m, [ scaleX, scaleY ]);
     mat3.translate(m, m, [ cx, cy ]);
     context.beginPath();

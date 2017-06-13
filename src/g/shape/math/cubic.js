@@ -26,13 +26,13 @@ function cubicProjectPoint(x1, y1, x2, y2, x3, y3, x4, y4, x, y, out) {
   let prev;
   let next;
   const EPSILON = 0.0001;
-  const v0 = vec2.fromValues(x, y);
+  const v0 = [ x, y ];
 
   for (_t = 0; _t < 1; _t += 0.05) {
-    v1 = vec2.fromValues(
+    v1 = [
       cubicAt(x1, x2, x3, x4, _t),
       cubicAt(y1, y2, y3, y4, _t)
-    );
+    ];
 
     d1 = vec2.squaredDistance(v0, v1);
     if (d1 < d) {
@@ -50,10 +50,10 @@ function cubicProjectPoint(x1, y1, x2, y2, x3, y3, x4, y4, x, y, out) {
     prev = t - interval;
     next = t + interval;
 
-    v1 = vec2.fromValues(
+    v1 = [
       cubicAt(x1, x2, x3, x4, prev),
       cubicAt(y1, y2, y3, y4, prev)
-    );
+    ];
 
     d1 = vec2.squaredDistance(v0, v1);
 
@@ -62,10 +62,10 @@ function cubicProjectPoint(x1, y1, x2, y2, x3, y3, x4, y4, x, y, out) {
       t = prev;
       d = d1;
     } else {
-      v2 = vec2.fromValues(
+      v2 = [
         cubicAt(x1, x2, x3, x4, next),
         cubicAt(y1, y2, y3, y4, next)
-      );
+      ];
 
       d2 = vec2.squaredDistance(v0, v2);
 

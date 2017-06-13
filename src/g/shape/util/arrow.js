@@ -3,7 +3,7 @@ const vec2 = require('.././../../util/matrix').vec2;
 const THETA = Math.PI / 6;
 
 function calculatePoints(vector, end, lineWidth) {
-  const angle = vec2.angleTo(vec2.fromValues(1, 0), vector);
+  const angle = vec2.angleTo([ 1, 0 ], vector);
   const downAngle = angle - THETA;
   const upAngle = angle + THETA;
   const length = 6 + lineWidth * 3;
@@ -32,8 +32,8 @@ function makeArrow(context, vector, end, lineWidth) {
 
 function getEndPoint(vector, end, lineWidth) {
   const miterLimit = lineWidth / Math.sin(THETA);
-  const vectorLength = vec2.length();
-  vec2.scale(miterLimit / (2 * vectorLength));
+  const vectorLength = vec2.length(vector);
+  vec2.scale(vector, vector, miterLimit / (2 * vectorLength));
   vec2.subtract(end, end, vector);
   return end;
 }

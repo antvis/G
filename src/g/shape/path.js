@@ -5,7 +5,6 @@ const Format = require('../format');
 const Arrow = require('./util/arrow');
 const PathUtil = require('../../util/path');
 const CubicMath = require('./math/cubic');
-const vec2 = require('../../util/matrix').vec2;
 
 const Path = function(cfg) {
   Path.superclass.constructor.call(this, cfg);
@@ -248,7 +247,7 @@ Util.augment(Path, {
         };
         if (lastSeg && Util.isFunction(endTangent)) {
           const v = endTangent();
-          const end = Arrow.getEndPoint(v, vec2.fromValues(endPoint.x, endPoint.y), lineWidth);
+          const end = Arrow.getEndPoint(v, [ endPoint.x, endPoint.y ], lineWidth);
           lastSeg.params[lastSeg.params.length - 1] = end;
           segments[i].draw(context);
           Arrow.makeArrow(context, v, end, lineWidth);
