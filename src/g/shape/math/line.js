@@ -5,14 +5,14 @@ module.exports = {
     return (p2 - p1) * t + p1;
   },
   pointDistance(x1, y1, x2, y2, x, y) {
-    const d = vec2.fromValues(x2 - x1, y2 - y1);
+    const d = [ x2 - x1, y2 - y1 ];
     if (vec2.exactEquals(d, [ 0, 0 ])) {
       return NaN;
     }
 
-    const u = vec2.fromValues(-d[1], d[0]);
+    const u = [ -d[1], d[0] ];
     vec2.normalize(u, u);
-    const a = vec2.fromValues(x - x1, y - y1);
+    const a = [ x - x1, y - y1 ];
     return Math.abs(vec2.dot(a, u));
   },
   box(x1, y1, x2, y2, lineWidth) {

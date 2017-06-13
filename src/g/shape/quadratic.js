@@ -3,7 +3,6 @@ const Shape = require('../core/shape');
 const Inside = require('./util/inside');
 const Arrow = require('./util/arrow');
 const QuadraticMath = require('./math/quadratic');
-const vec2 = require('../../util/matrix').vec2;
 
 const Quadratic = function(cfg) {
   Quadratic.superclass.constructor.call(this, cfg);
@@ -102,8 +101,8 @@ Util.augment(Quadratic, {
 
 
     if (arrow) {
-      const v = vec2.fromValues(p3[0] - p2[0], p3[1] - p2[1]);
-      const end = Arrow.getEndPoint(v, vec2.fromValues(p3[0], p3[1]), lineWidth);
+      const v = [ p3[0] - p2[0], p3[1] - p2[1] ];
+      const end = Arrow.getEndPoint(v, [ p3[0], p3[1] ], lineWidth);
       context.quadraticCurveTo(p2[0], p2[1], end[0], end[1]);
       Arrow.makeArrow(context, v, end, lineWidth);
     } else {

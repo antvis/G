@@ -1,5 +1,4 @@
 const Util = require('../../util/index');
-const vec3 = require('../../util/matrix').vec3;
 const Element = require('./element');
 const Shape = require('../shape/index');
 const SHAPE_MAP = {}; // 缓存图形类型
@@ -240,10 +239,10 @@ Util.augment(Group, {
           return true;
         }
 
-        const leftTop = vec3.fromValues(box.minX, box.minY, 1);
-        const leftBottom = vec3.fromValues(box.minX, box.maxY, 1);
-        const rightTop = vec3.fromValues(box.maxX, box.minY, 1);
-        const rightBottom = vec3.fromValues(box.maxX, box.maxY, 1);
+        const leftTop = [ box.minX, box.minY, 1 ];
+        const leftBottom = [ box.minX, box.maxY, 1 ];
+        const rightTop = [ box.maxX, box.minY, 1 ];
+        const rightBottom = [ box.maxX, box.maxY, 1 ];
 
         child.apply(leftTop);
         child.apply(leftBottom);
