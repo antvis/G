@@ -280,10 +280,10 @@ describe('canvas 事件', function() {
     }
   });
   canvas.draw();
-  it('canvas.on(\'canvas-mousedown\')', function() {
+  it('canvas.on(\'mousedown\')', function() {
     const canvasDOM = canvas.get('el');
     let target;
-    canvas.on('canvas-mousedown', function(ev) {
+    canvas.on('mousedown', function(ev) {
       target = ev.target;
     });
 
