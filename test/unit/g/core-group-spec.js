@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const G = require('../../../src/g/index');
-const Event = require('@ali/g-event');
+const Event = require('../../../src/event/event');
 const Canvas = require('../../../src/canvas');
 const div = document.createElement('div');
 div.id = 'canvas-group-1';
@@ -332,7 +332,7 @@ describe('Group', function() {
     canvas.draw();
     expect(canvas.getShape(0, 120)).not.to.be.undefined;
     expect(canvas.getShape(100, 100)).to.be.undefined;
-  /**/
+
   });
 
   it('group event', function() {
@@ -341,17 +341,16 @@ describe('Group', function() {
     group.add(circle);
     const e = new Event('group', {}, true, true);
     e.currentTarget = circle;
-    circle.trigger(e);
     let aa = 0;
     const handler = function(e) {
       expect(e.currentTarget).to.eql(circle);
-      expect(e.target).to.eql(group);
       e.stopPropagation();
       aa++;
     };
     group.on('group', handler);
-    group.on('group', handler);
     circle.trigger(e);
+    expect(aa).to.equal(0);
+    group.trigger('group', [ e ]);
     expect(aa).to.equal(1);
   });
 

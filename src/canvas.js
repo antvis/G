@@ -1,5 +1,5 @@
 const Util = require('./util/index');
-const MouseEvent = require('./mouse-event');
+const Event = require('./event/event');
 const G = require('./g/index');
 
 const Canvas = function(cfg) {
@@ -69,37 +69,62 @@ Util.augment(Canvas, {
       this._registEvents();
     }
   },
+  _triggerEvent(type, e) {
+    const point = this.getPointByClient(e.clientX, e.clientY);
+    const shape = this.getShape(point.x, point.y);
+
+    const event = new Event(type, e, true, true);
+    event.x = point.x;
+    event.y = point.y;
+    event.clientX = e.clientX;
+    event.clientY = e.clientY;
+    event.currentTarget = shape || this;
+    event.target = shape || this;
+    this.trigger(type, [ event ]);
+  },
   _registEvents() {
     const self = this;
     const el = self.get('el');
-    const mouseEvent = new MouseEvent(self);
 
     el.addEventListener('mouseout', function(e) {
-      mouseEvent.mouseout(e);
+      self._triggerEvent('mouseleave', e);
     }, false);
 
     el.addEventListener('mouseover', function(e) {
-      mouseEvent.mouseover(e);
+      self._triggerEvent('mouseenter', e);
     }, false);
 
     el.addEventListener('mousemove', function(e) {
-      mouseEvent.mousemove(e);
+      self._triggerEvent('mousemove', e);
     }, false);
 
     el.addEventListener('mousedown', function(e) {
-      mouseEvent.mousedown(e);
+      self._triggerEvent('mousedown', e);
     }, false);
 
     el.addEventListener('mouseup', function(e) {
-      mouseEvent.mouseup(e);
+      self._triggerEvent('mouseup', e);
     }, false);
 
     el.addEventListener('click', function(e) {
-      mouseEvent.click(e);
+      self._triggerEvent('click', e);
     }, false);
 
     el.addEventListener('dblclick', function(e) {
-      mouseEvent.dblclick(e);
+      self._triggerEvent('dblclick', e);
+    }, false);
+
+    // TODO 添加 touch 事件支持
+    el.addEventListener('touchstart', function(e) {
+      self._triggerEvent('touchstart', e);
+    }, false);
+
+    el.addEventListener('touchmove', function(e) {
+      self._triggerEvent('touchmove', e);
+    }, false);
+
+    el.addEventListener('touchend', function(e) {
+      self._triggerEvent('touchend', e);
     }, false);
   },
   _scale() {
