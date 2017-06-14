@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const G = require('../../../src/g/index');
-const Event = require('@ali/g-event');
+const Event = require('../../../src/event/event');
 const Canvas = require('../../../src/canvas');
 const div = document.createElement('div');
 div.id = 'canvas-group-1';

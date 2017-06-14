@@ -87,44 +87,44 @@ Util.augment(Canvas, {
     const el = self.get('el');
 
     el.addEventListener('mouseout', function(e) {
-      self._triggerEvent('canvas-mouseleave', e);
+      self._triggerEvent('mouseleave', e);
     }, false);
 
     el.addEventListener('mouseover', function(e) {
-      self._triggerEvent('canvas-mouseenter', e);
+      self._triggerEvent('mouseenter', e);
     }, false);
 
     el.addEventListener('mousemove', function(e) {
-      self._triggerEvent('canvas-mousemove', e);
+      self._triggerEvent('mousemove', e);
     }, false);
 
     el.addEventListener('mousedown', function(e) {
-      self._triggerEvent('canvas-mousedown', e);
+      self._triggerEvent('mousedown', e);
     }, false);
 
     el.addEventListener('mouseup', function(e) {
-      self._triggerEvent('canvas-mouseup', e);
+      self._triggerEvent('mouseup', e);
     }, false);
 
     el.addEventListener('click', function(e) {
-      self._triggerEvent('canvas-click', e);
+      self._triggerEvent('click', e);
     }, false);
 
     el.addEventListener('dblclick', function(e) {
-      self._triggerEvent('canvas-dblclick', e);
+      self._triggerEvent('dblclick', e);
     }, false);
 
     // TODO 添加 touch 事件支持
     el.addEventListener('touchstart', function(e) {
-      self._triggerEvent('canvas-touchstart', e);
+      self._triggerEvent('touchstart', e);
     }, false);
 
     el.addEventListener('touchmove', function(e) {
-      self._triggerEvent('canvas-touchmove', e);
+      self._triggerEvent('touchmove', e);
     }, false);
 
     el.addEventListener('touchend', function(e) {
-      self._triggerEvent('canvas-touchend', e);
+      self._triggerEvent('touchend', e);
     }, false);
   },
   _scale() {
