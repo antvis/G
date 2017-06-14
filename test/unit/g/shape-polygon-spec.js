@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../../src/g/index');
+const G = require('../../../index');
 const Canvas = require('../../../src/canvas');
 const div = document.createElement('div');
 div.id = 'canvas-polygon';
@@ -14,7 +14,7 @@ describe('Polygon', function() {
     height: 200,
     pixelRatio: 1
   });
-  G.debug(true);
+
   const polygon = new G.Polygon();
   it('init attr', function() {
     expect(polygon.attr('points')).to.be.undefined;

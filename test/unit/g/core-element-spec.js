@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const Element = require('../../../src/g/core/element');
+const Element = require('../../../src/core/element');
 const mat3 = require('gl-matrix').mat3;
 
 describe('Element', function() {

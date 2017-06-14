@@ -1,6 +1,6 @@
 const Util = require('./util/index');
-const Event = require('./event/event');
-const G = require('./g/index');
+const Event = require('./event');
+const Group = require('./core/group');
 
 const Canvas = function(cfg) {
   Canvas.superclass.constructor.call(this, cfg);
@@ -55,7 +55,7 @@ Canvas.CFG = {
   pixelRatio: null
 };
 
-Util.extend(Canvas, G.Group);
+Util.extend(Canvas, Group);
 
 Util.augment(Canvas, {
   init() {

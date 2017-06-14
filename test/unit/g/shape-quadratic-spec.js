@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../../src/g/index');
+const G = require('../../../index');
 const Util = require('../../../src/util/index');
 const Canvas = require('../../../src/canvas');
 const div = document.createElement('div');
@@ -15,7 +15,7 @@ describe('Quadratic line', function() {
     height: 200,
     pixelRatio: 1
   });
-  G.debug(true);
+
   const quadratic = new G.Quadratic();
   it('init quadratic', function() {
     expect(quadratic.attr('p1')).to.be.undefined;

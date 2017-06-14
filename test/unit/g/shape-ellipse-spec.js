@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../../src/g/index');
+const G = require('../../../index');
 const Canvas = require('../../../src/canvas');
 const div = document.createElement('div');
 div.id = 'canvas-ellipse';
@@ -23,7 +23,7 @@ describe('Ellipse', function() {
       ry: 1
     }
   });
-  G.debug(true);
+
   it('init attr', function() {
     expect(ellipse.attr('x')).to.equal(0);
     expect(ellipse.attr('y')).to.equal(0);

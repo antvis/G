@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const Elements = require('../../../src/g/core/element');
+const Elements = require('../../../src/core/element');
 describe('Attributes', function() {
   it('init', function() {
     const e = new Elements({
