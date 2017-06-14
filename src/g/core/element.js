@@ -1,8 +1,8 @@
 const Util = require('../../util/index');
 const Attributes = require('./mixin/attributes');
 const Transform = require('./mixin/transform');
-const EventDispatcher = require('./mixin/event-dispatcher');
 const Format = require('../format');
+const EventEmitter = require('wolfy87-eventemitter');
 
 const SHAPE_ATTRS = [
   'fillStyle',
@@ -33,7 +33,6 @@ const Element = function(cfg) {
   Util.assign(this.__cfg, this.getDefaultCfg(), cfg); // Element.CFG不合并，提升性能 合并默认配置，用户配置->继承默认配置->Element默认配置
   this.initAttrs(this.__cfg.attrs); // 初始化绘图属性
   this.initTransform(); // 初始化变换
-  this.initEventDispatcher();
   this.init(); // 类型初始化
 };
 
@@ -84,7 +83,7 @@ Element.CFG = {
   destroyed: false
 };
 
-Util.augment(Element, Attributes, EventDispatcher, Transform, {
+Util.augment(Element, Attributes, Transform, EventEmitter, {
   init() {
     this.setSilent('animable', true);
     const attrs = this.__attrs;
@@ -208,7 +207,7 @@ Util.augment(Element, Attributes, EventDispatcher, Transform, {
     }
     this.__cfg = {};
     this.__attrs = null;
-    this.__listeners = null;
+    this.removeEvent(); // 移除所有的事件
     this.__m = null;
     this.set('destroyed', true);
   },
