@@ -90,7 +90,7 @@ Util.augment(Arc, {
         y: cy + r * Math.sin(endAngle)
       };
 
-      const v = vec2.fromValues(-r * Math.sin(endAngle), r * Math.cos(endAngle));
+      const v = [ -r * Math.sin(endAngle), r * Math.cos(endAngle) ];
       if (clockwise) {
         vec2.scale(v, v, -1);
       }

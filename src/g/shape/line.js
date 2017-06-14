@@ -3,7 +3,6 @@ const Shape = require('../core/shape');
 const Inside = require('./util/inside');
 const Arrow = require('./util/arrow');
 const LineMath = require('./math/line');
-const vec2 = require('../../util/matrix').vec2;
 
 const Line = function(cfg) {
   Line.superclass.constructor.call(this, cfg);
@@ -64,8 +63,8 @@ Util.augment(Line, {
     context.beginPath();
     context.moveTo(x1, y1);
     if (arrow) {
-      const v = vec2.fromValues(x2 - x1, y2 - y1);
-      const end = Arrow.getEndPoint(v, vec2.fromValues(x2, y2), lineWidth);
+      const v = [ x2 - x1, y2 - y1 ];
+      const end = Arrow.getEndPoint(v, [ x2, y2 ], lineWidth);
       context.lineTo(end[0], end[1]);
       Arrow.makeArrow(context, v, end, lineWidth);
     } else {

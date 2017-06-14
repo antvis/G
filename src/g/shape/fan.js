@@ -86,8 +86,8 @@ Util.augment(Fan, {
     const startAngle = attrs.startAngle;
     const endAngle = attrs.endAngle;
     const clockwise = attrs.clockwise;
-    const v1 = vec2.fromValues(1, 0);
-    const subv = vec2.fromValues(x - cx, y - cy);
+    const v1 = [ 1, 0 ];
+    const subv = [ x - cx, y - cy ];
     const angle = vec2.angleTo(v1, subv);
 
 

@@ -1,6 +1,6 @@
 {
-  "name": "@antv/g",
-  "version": "2.0.0",
+  "name": "@ali/g",
+  "version": "2.0.0-beta.1",
   "description": "A canvas library which providing 2d draw for G2.",
   "keywords": [
     "canvas",
@@ -65,5 +65,8 @@
     "@ali/g-event": "~0.0.0",
     "gl-matrix": "^2.3.2",
     "lodash": "^4.17.4"
+  },
+  "publishConfig": {
+    "registry": "http://registry.npm.alibaba-inc.com"
   }
 }

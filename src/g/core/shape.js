@@ -1,7 +1,6 @@
 const Util = require('../../util/index');
 const Element = require('./element');
 const Inside = require('../shape/util/inside');
-const vec3 = require('../../util/matrix').vec3;
 
 const Shape = function(cfg) {
   Shape.superclass.constructor.call(this, cfg);
@@ -64,7 +63,7 @@ Util.augment(Shape, {
    */
   isHit(x, y) {
     const self = this;
-    const v = vec3.fromValues(x, y, 1);
+    const v = [ x, y, 1 ];
     self.invert(v); // canvas
 
     if (self.isHitBox()) {

@@ -3,7 +3,6 @@ const Inside = require('./inside');
 const Cubic = require('../math/cubic');
 const Quadratic = require('../math/quadratic');
 const Ellipse = require('../math/ellipse');
-const vec2 = require('../../../util/matrix').vec2;
 const vec3 = require('../../../util/matrix').vec3;
 const mat3 = require('../../../util/matrix').mat3;
 
@@ -142,7 +141,7 @@ Util.augment(PathSegment, {
         this.endPoint = point;
         if (this.isLast) {
           this.endTangent = function() {
-            return vec2.fromValues(point.x - preEndPoint.x, point.y - preEndPoint.y);
+            return [ point.x - preEndPoint.x, point.y - preEndPoint.y ];
           };
         }
         break;
@@ -160,7 +159,7 @@ Util.augment(PathSegment, {
         this.subStart = preSegment.subStart;
         this.endPoint = point;
         this.endTangent = function() {
-          return vec2.fromValues(point.x - preEndPoint.x, point.y - preEndPoint.y);
+          return [ point.x - preEndPoint.x, point.y - preEndPoint.y ];
         };
         break;
       case 'V':
@@ -177,7 +176,7 @@ Util.augment(PathSegment, {
         this.subStart = preSegment.subStart;
         this.endPoint = point;
         this.endTangent = function() {
-          return vec2.fromValues(point.x - preEndPoint.x, point.y - preEndPoint.y);
+          return [ point.x - preEndPoint.x, point.y - preEndPoint.y ];
         };
         break;
       case 'Q':
@@ -199,7 +198,7 @@ Util.augment(PathSegment, {
         this.subStart = preSegment.subStart;
         this.endPoint = point2;
         this.endTangent = function() {
-          return vec2.fromValues(point2.x - point1.x, point2.y - point1.y);
+          return [ point2.x - point1.x, point2.y - point1.y ];
         };
         break;
       case 'T':
@@ -218,7 +217,7 @@ Util.augment(PathSegment, {
           this.subStart = preSegment.subStart;
           this.endPoint = point2;
           this.endTangent = function() {
-            return vec2.fromValues(point2.x - point1.x, point2.y - point1.y);
+            return [ point2.x - point1.x, point2.y - point1.y ];
           };
         } else {
           this.command = 'TL';
@@ -226,7 +225,7 @@ Util.augment(PathSegment, {
           this.subStart = preSegment.subStart;
           this.endPoint = point2;
           this.endTangent = function() {
-            return vec2.fromValues(point2.x - preEndPoint.x, point2.y - preEndPoint.y);
+            return [ point2.x - preEndPoint.x, point2.y - preEndPoint.y ];
           };
         }
 
@@ -255,7 +254,7 @@ Util.augment(PathSegment, {
         this.subStart = preSegment.subStart;
         this.endPoint = point3;
         this.endTangent = function() {
-          return vec2.fromValues(point3.x - point2.x, point3.y - point2.y);
+          return [ point3.x - point2.x, point3.y - point2.y ];
         };
         break;
       case 'S':
@@ -279,7 +278,7 @@ Util.augment(PathSegment, {
           this.subStart = preSegment.subStart;
           this.endPoint = point3;
           this.endTangent = function() {
-            return vec2.fromValues(point3.x - point2.x, point3.y - point2.y);
+            return [ point3.x - point2.x, point3.y - point2.y ];
           };
         } else {
           this.command = 'SQ';
@@ -287,7 +286,7 @@ Util.augment(PathSegment, {
           this.subStart = preSegment.subStart;
           this.endPoint = point3;
           this.endTangent = function() {
-            return vec2.fromValues(point3.x - point2.x, point3.y - point2.y);
+            return [ point3.x - point2.x, point3.y - point2.y ];
           };
         }
         break;
@@ -374,8 +373,8 @@ Util.augment(PathSegment, {
         const scaleX = (rx > ry) ? 1 : rx / ry;
         const scaleY = (rx > ry) ? ry / rx : 1;
 
-        p = vec3.fromValues(x, y, 1);
-        const m = mat3.create();
+        p = [ x, y, 1 ];
+        const m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
         mat3.translate(m, m, [ -cx, -cy ]);
         mat3.rotate(m, m, -psi);
         mat3.scale(m, m, [ 1 / scaleX, 1 / scaleY ]);

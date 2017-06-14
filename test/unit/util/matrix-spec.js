@@ -6,17 +6,6 @@ const vec3 = Matrix.vec3;
 const vec2 = Matrix.vec2;
 
 describe('Matrix', function() {
-  it('vec2.create()', function() {
-    const vector = vec2.create();
-    expect(vector).to.be.an('array');
-    expect(vector.length).to.equal(2);
-  });
-  it('vec2.fromValues(x, y)', function() {
-    const vector = vec2.fromValues(1, 1);
-    expect(vector).to.be.an('array');
-    expect(vector.length).to.equal(2);
-    expect(vector).to.eql([ 1, 1 ]);
-  });
   it('vec2.direction(v1, v2)', function() {
     const v1 = vec2.fromValues(0, 1);
     const v2 = vec2.fromValues(1, 0);
@@ -40,28 +29,6 @@ describe('Matrix', function() {
     expect(Util.isNumberEqual(vec2.angleTo(v1, v2, true), Math.PI / 2 * 3)).to.be.true;
   });
 
-  it('vec3.create()', function() {
-    const vector = vec3.create();
-    expect(vector).to.be.an('array');
-    expect(vector.length).to.equal(3);
-  });
-  it('vec3.fromValues(x, y)', function() {
-    const vector = vec3.fromValues(1, 1, 1);
-    expect(vector).to.be.an('array');
-    expect(vector.length).to.equal(3);
-    expect(vector).to.eql([ 1, 1, 1 ]);
-  });
-  it('mat3.create()', function() {
-    const matrix3 = mat3.create();
-    expect(matrix3).to.be.an('array');
-    expect(matrix3.length).to.equal(9);
-  });
-  it('mat3.fromValues(m00, m01, m02, m10, m11, m12, m20, m21, m22)', function() {
-    const matrix3 = mat3.fromValues(1, 1, 1, 1, 1, 1, 1, 1, 1);
-    expect(matrix3).to.be.an('array');
-    expect(matrix3.length).to.equal(9);
-    expect(matrix3[4]).to.equal(1);
-  });
   it('mat3.translate(out, a, v)', function() {
     const m = mat3.create();
     mat3.translate(m, m, [ 30, 40 ]);

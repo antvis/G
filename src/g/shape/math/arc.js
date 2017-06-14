@@ -60,14 +60,14 @@ function nearAngle(angle, startAngle, endAngle, clockwise) {
 }
 
 function arcProjectPoint(cx, cy, r, startAngle, endAngle, clockwise, x, y, out) {
-  const v = vec2.fromValues(x, y);
-  const v0 = vec2.fromValues(cx, cy);
-  const v1 = vec2.fromValues(1, 0);
+  const v = [ x, y ];
+  const v0 = [ cx, cy ];
+  const v1 = [ 1, 0 ];
   const subv = vec2.subtract([], v, v0);
   let angle = vec2.angleTo(v1, subv);
 
   angle = nearAngle(angle, startAngle, endAngle, clockwise);
-  const vpoint = vec2.fromValues(r * Math.cos(angle) + cx, r * Math.sin(angle) + cy);
+  const vpoint = [ r * Math.cos(angle) + cx, r * Math.sin(angle) + cy ];
   if (out) {
     out.x = vpoint[0];
     out.y = vpoint[1];
