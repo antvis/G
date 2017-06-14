@@ -1,23 +1,23 @@
 const $ = require('jquery');
 const expect = require('chai').expect;
-// const Matrix = require('gl-matrix');
-// const sinon = require('spm-sinon');
 const Canvas = require('../../src/canvas');
 const G = require('../../src/g/index');
+const Simulate = require('event-simulate');
 
 $('<div id="c1"></div>').appendTo('body');
 
-describe('Layer', function() {
-  it('新建图层 new Layer', function() {
+describe('Canvas 容器操作', function() {
+  it('new canvas', function() {
     const canvas = new Canvas({
       containerId: 'c1',
       width: 500,
       height: 500
     });
     expect(canvas).to.be.an.instanceof(Canvas);
+    canvas.destroy();
   });
 
-  it('改变尺寸 change size', function() {
+  it('changesize', function() {
     const canvas = new Canvas({
       containerId: 'c1',
       width: 500,
@@ -26,10 +26,11 @@ describe('Layer', function() {
     canvas.changeSize(200, 200);
     expect(canvas.get('widthStyle')).to.equal('200px');
     expect(canvas.get('heightStyle')).to.equal('200px');
+    canvas.destroy();
   });
 
 
-  it('清空图层 clear layer', function() {
+  it('clear canvas', function() {
     const canvas = new Canvas({
       containerId: 'c1',
       width: 500,
@@ -37,6 +38,7 @@ describe('Layer', function() {
     });
     canvas.clear();
     expect(canvas.get('children')).to.be.an('array').that.is.empty;
+    canvas.destroy();
   });
 
 });
@@ -127,6 +129,7 @@ describe('拓展图形 标记 Marker', function() {
       }
     });
     canvas.draw();
+    canvas.destroy();
   });
 });
 
@@ -182,6 +185,8 @@ describe('组拓展方法', function() {
     const children = canvas.get('children');
     it('第N个子元素', function() {
       expect(canvas.getChildByIndex(2)).to.eql(children[2]);
+      canvas.destroy();
+
     });
     canvas.draw();
   });
@@ -246,26 +251,47 @@ describe('元素拓展方法', function() {
     });
     canvas.draw();
     expect(rect.attr('rotate')).to.equal(45 / 180 * Math.PI);
+    canvas.destroy();
+
   });
-  // it('图形动画、属性动画 Props animate', function() {
-  //   const callBack = sinon.spy();
-  //   const rect = canvas.addShape('Rect', {
-  //     attrs: {
-  //       x: 0,
-  //       y: 0,
-  //       width: 200,
-  //       height: 200,
-  //       fill: '#FED23C'
-  //     },
-  //     name: 'rect2'
-  //   });
-  //   rect.animate({
-  //     x: 100,
-  //     y: 200,
-  //     fill: '#4794CA'
-  //   }, 200, 'linear', callBack);
-  //   setTimeout(function() {
-  //     expect(callBack.called).to.be.true;
-  //   }, 1050);
-  // });
+});
+
+describe('canvas 事件', function() {
+  const canvas = new Canvas({
+    containerId: 'c1',
+    width: 500,
+    height: 500
+  });
+  canvas.addShape('Circle', {
+    attrs: {
+      x: 100,
+      y: 100,
+      r: 100,
+      fill: 'red'
+    }
+  });
+  canvas.addShape('rect', {
+    attrs: {
+      x: 250,
+      y: 250,
+      width: 50,
+      height: 50,
+      fill: 'black'
+    }
+  });
+  canvas.draw();
+  it('canvas.on(\'canvas-mousedown\')', function() {
+    const canvasDOM = canvas.get('el');
+    let target;
+    canvas.on('canvas-mousedown', function(ev) {
+      target = ev.target;
+    });
+
+    Simulate.simulate(canvasDOM, 'mousedown', {
+      clientX: 154,
+      clientY: 276
+    });
+
+    expect(target).not.to.be.undefined;
+  });
 });
