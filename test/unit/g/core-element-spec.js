@@ -1,8 +1,6 @@
 const expect = require('chai').expect;
 const Element = require('../../../src/g/core/element');
-// const Matrix = require('@ali/g-matrix');
-// const Matrix3 = Matrix.Matrix3;
-const mat3 = require('../../../src/util/matrix').mat3;
+const mat3 = require('gl-matrix').mat3;
 
 describe('Element', function() {
   it('constructor', function() {
@@ -22,7 +20,6 @@ describe('Element', function() {
     expect(e.__attrs.height).to.equal(30);
     expect(e.__m).not.to.be.undefined;
     const m = mat3.create();
-    // expect(e.__m.equal(m)).to.be.true;
     expect(mat3.exactEquals(e.__m, m)).to.be.true;
   });
 
@@ -37,5 +34,27 @@ describe('Element', function() {
     e.set('test', 1111);
     expect(e.get('test')).to.equal(1110);
     expect(a).to.equal(321);
+  });
+
+  it('eventEmitter', function() {
+    const ele = new Element();
+    console.log(ele);
+    expect(ele.on).to.be.a('function');
+    expect(ele.off).to.be.a('function');
+    expect(ele.trigger).to.be.a('function');
+  });
+
+  it('add event listener', function() {
+    const ele = new Element();
+    let count = 1;
+    ele.on('test', function(v) {
+      count += v;
+    });
+    ele.trigger('test', [ 12 ]);
+    expect(count).to.equal(13);
+    expect(ele._events).to.have.own.property('test');
+
+    ele.destroy();
+    expect(ele._events).to.be.undefined;
   });
 });

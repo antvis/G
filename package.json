@@ -38,7 +38,8 @@
     "uglify-js": "^3.0.15",
     "spm-sinon": "^1.6.0",
     "event-simulate": "^1.0.0",
-    "jquery": "~2.1.4"
+    "jquery": "~2.1.4",
+    "event-simulate": "^1.0.0"
   },
   "scripts": {
     "lint": "eslint ./",
@@ -62,9 +63,9 @@
     "silent": false
   },
   "dependencies": {
-    "@ali/g-event": "~0.0.0",
     "gl-matrix": "^2.3.2",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "wolfy87-eventemitter": "^5.1.0"
   },
   "publishConfig": {
     "registry": "http://registry.npm.alibaba-inc.com"
