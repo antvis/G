@@ -3,7 +3,6 @@ const Shape = require('../core/shape');
 const Inside = require('./util/inside');
 const Arrow = require('./util/arrow');
 const CubicMath = require('./math/cubic');
-const vec2 = require('../../util/matrix').vec2;
 
 const Cubic = function(cfg) {
   Cubic.superclass.constructor.call(this, cfg);
@@ -103,8 +102,8 @@ Util.augment(Cubic, {
     context.moveTo(p1[0], p1[1]);
 
     if (arrow) {
-      const v = vec2.fromValues(p4[0] - p3[0], p4[1] - p3[1]);
-      const end = Arrow.getEndPoint(v, vec2.fromValues(p4[0], p4[1]), lineWidth);
+      const v = [ p4[0] - p3[0], p4[1] - p3[1] ];
+      const end = Arrow.getEndPoint(v, [ p4[0], p4[1] ], lineWidth);
       context.bezierCurveTo(p2[0], p2[1], p3[0], p3[1], end[0], end[1]);
       Arrow.makeArrow(context, v, end, lineWidth);
     } else {

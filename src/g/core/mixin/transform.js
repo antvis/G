@@ -25,7 +25,7 @@ function multiple(m1, m2) {
 
 module.exports = {
   initTransform() {
-    this.__m = mat3.create();
+    this.__m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
   },
   translate(tx, ty) {
     mat3.translate(this.__m, this.__m, [ tx, ty ]);
@@ -94,7 +94,7 @@ module.exports = {
     return self;
   },
   setTransform(ts) {
-    this.__m = mat3.create();
+    this.__m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
     return this.transform(ts);
   },
   getMatrix() {
@@ -128,7 +128,7 @@ module.exports = {
     }
     parents.unshift(parent);
 
-    const m = mat3.create();
+    const m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
     Util.each(parents, function(child) {
       mat3.multiply(m, child.__m, m);
     });
@@ -141,7 +141,7 @@ module.exports = {
   getTotalMatrix() {
     let m = this.__cfg.totalMatrix;
     if (!m) {
-      m = mat3.create();
+      m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
       const parent = this.__cfg.parent;
       if (parent) {
         const pm = parent.getTotalMatrix();
