@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const Arc = require('../../../src/g/shape/math/arc');
+const Arc = require('../../../src/shape/math/arc');
 const Util = require('../../../src/util/index');
 
 

@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../../src/g/index');
+const G = require('../../../index');
 const Canvas = require('../../../src/canvas');
 const Util = require('../../../src/util/index');
 const div = document.createElement('div');
@@ -14,7 +14,7 @@ describe('CFan', function() {
     heigth: 200,
     pixelRatio: 1
   });
-  G.debug(true);
+
   const fan = new G.Fan({
     attrs: {
       x: 0,

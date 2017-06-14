@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../../src/g/index');
+const G = require('../../../index');
 const Canvas = require('../../../src/canvas');
 const div = document.createElement('div');
 div.id = 'canvas-text';
@@ -20,7 +20,7 @@ describe('Text', function() {
       y: 0
     }
   });
-  G.debug(true);
+
   it('init attrs', function() {
     expect(text.attr('x')).to.equal(0);
     expect(text.attr('y')).to.equal(0);
@@ -432,7 +432,7 @@ describe('Text \n', function() {
     }
   });
 
-  G.debug(true);
+
   it('text /n', function() {
     expect(text.attr('x')).to.equal(50);
     expect(text.attr('y')).to.equal(50);
@@ -482,7 +482,7 @@ describe('Text 不存在', function() {
     }
   });
 
-  G.debug(true);
+
   it('text 空 "" ', function() {
     expect(text.attr('x')).to.equal(50);
     expect(text.attr('y')).to.equal(50);
