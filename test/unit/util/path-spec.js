@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const Util = require('../../../src/util/common');
 const PathUtil = require('../../../src/util/path');
-const Canvas = require('../../../index');
+const Canvas = require('../../../index').Canvas;
 
 const dom = document.createElement('div');
 document.body.appendChild(dom);
