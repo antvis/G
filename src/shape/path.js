@@ -1,6 +1,6 @@
 const Util = require('../util/index');
 const Shape = require('../core/shape');
-const PathSegment = require('./util/pathSegment');
+const PathSegment = require('./util/path-segment');
 const Format = require('../util/format');
 const Arrow = require('./util/arrow');
 const PathUtil = require('../util/path');
