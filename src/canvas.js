@@ -252,7 +252,7 @@ Util.augment(Canvas, {
       //     drawInner();
       //   }
       // }));
-      // self.beforeDraw();
+      self.beforeDraw();
       try {
         const context = self.get('context');
         Canvas.superclass.draw.call(self, context);
