@@ -32,6 +32,17 @@ vec2.angleTo = function(v1, v2, direct) {
   }
   return Math.PI * 2 - angle;
 };
+vec2.vertical = function(out, v, flag) {
+  if (flag) {
+    out[0] = v[1];
+    out[1] = -1 * v[0];
+  } else {
+    out[0] = -1 * v[1];
+    out[1] = v[0];
+  }
+
+  return out;
+};
 
 mat3.translate = function(out, a, v) {
   const transMat = new Array(9);
