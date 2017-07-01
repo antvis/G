@@ -18,7 +18,7 @@ function multiple(m1, m2) {
       m1[0] *= m2[0];
       m1[4] *= m2[4];
     } else {
-      mat3.multiply(m1, m2, m1);
+      mat3.multiply(m1, m1, m2);
     }
   }
 }
