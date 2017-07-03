@@ -69,10 +69,23 @@ Util.augment(Canvas, {
       this._registEvents();
     }
   },
+  getEmitter(element, event) {
+    if (element) {
+      if (Util.isEmpty(element._getEvents())) {
+        const parent = element.get('parent');
+        if (parent && !event.propagationStopped) {
+          return this.getEmitter(parent, event);
+        }
+      } else {
+        return element;
+      }
+    }
+  },
   _triggerEvent(type, e) {
     const point = this.getPointByClient(e.clientX, e.clientY);
     const shape = this.getShape(point.x, point.y);
 
+    const emitObj = this.getEmitter(shape, e) || this;
     const event = new Event(type, e, true, true);
     event.x = point.x;
     event.y = point.y;
@@ -80,7 +93,8 @@ Util.augment(Canvas, {
     event.clientY = e.clientY;
     event.currentTarget = shape || this;
     event.target = shape || this;
-    this.trigger(type, [ event ]);
+
+    emitObj.trigger(type, [ event ]);
   },
   _registEvents() {
     const self = this;
