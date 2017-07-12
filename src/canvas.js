@@ -94,6 +94,10 @@ Util.augment(Canvas, {
     event.currentTarget = shape || this;
     event.target = shape || this;
 
+    // 处理鼠标手势
+    const el = this.get('el');
+    el.style.cursor = shape && shape.get('cursor') ? shape.get('cursor') : 'default';
+
     emitObj.trigger(type, [ event ]);
   },
   _registEvents() {
