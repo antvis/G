@@ -133,13 +133,15 @@ Util.augment(Path, {
   __isPointInStroke(x, y) {
     const self = this;
     const segments = self.get('segments');
-    const attrs = self.__attrs;
-    let lineWidth = attrs.lineWidth;
-    const appendWidth = attrs.lineAppendWidth || 0;
-    lineWidth += appendWidth;
-    for (let i = 0, l = segments.length; i < l; i++) {
-      if (segments[i].isInside(x, y, lineWidth)) {
-        return true;
+    if (!Util.isEmpty(segments)) {
+      const attrs = self.__attrs;
+      let lineWidth = attrs.lineWidth;
+      const appendWidth = attrs.lineAppendWidth || 0;
+      lineWidth += appendWidth;
+      for (let i = 0, l = segments.length; i < l; i++) {
+        if (segments[i].isInside(x, y, lineWidth)) {
+          return true;
+        }
       }
     }
 
