@@ -122,7 +122,7 @@ Util.augment(Group, {
   renderBack(padding, attrs) {
     let backShape = this.get('backShape');
     const innerBox = this.getBBox();
-    const parent = this.get('parent'); // getParent
+    // const parent = this.get('parent'); // getParent
     Util.merge(attrs, {
       x: innerBox.minX - padding[3],
       y: innerBox.minY - padding[0],
@@ -132,13 +132,13 @@ Util.augment(Group, {
     if (backShape) {
       backShape.attr(attrs);
     } else {
-      backShape = parent.addShape('rect', {
+      backShape = this.addShape('rect', {
         zIndex: -1,
         attrs
       });
     }
     this.set('backShape', backShape);
-    parent.sort();
+    this.sort();
     return backShape;
   },
   removeChild(item, destroy) {
