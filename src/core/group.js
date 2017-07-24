@@ -2,6 +2,7 @@ const Util = require('../util/index');
 const Element = require('./element');
 const Shape = require('../shape/index');
 const SHAPE_MAP = {}; // 缓存图形类型
+const INDEX = '_INDEX';
 
 function find(children, x, y) {
   let rst;
@@ -19,6 +20,13 @@ function find(children, x, y) {
     }
   }
   return rst;
+}
+
+function getComparer(compare) {
+  return function(left, right) {
+    const result = compare(left, right);
+    return result === 0 ? left[INDEX] - right[INDEX] : result;
+  };
 }
 
 const Group = function(cfg) {
@@ -296,9 +304,16 @@ Util.augment(Group, {
   },
   sort() {
     const children = this.get('children');
-    children.sort(function(obj1, obj2) {
-      return obj1.get('zIndex') - obj2.get('zIndex');
+    // 稳定排序
+    Util.each(children, (child, index) => {
+      child[INDEX] = index;
+      return child;
     });
+
+    children.sort(getComparer(function(obj1, obj2) {
+      return obj1.get('zIndex') - obj2.get('zIndex');
+    }));
+
     return this;
   },
   find(id) {

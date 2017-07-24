@@ -213,6 +213,7 @@ Util.augment(Element, Attribute, Transform, EventEmitter, {
   },
   __setZIndex(zIndex) {
     this.__cfg.zIndex = zIndex;
+
     if (!Util.isNil(this.get('parent'))) {
       this.get('parent').sort();
     }
@@ -221,6 +222,10 @@ Util.augment(Element, Attribute, Transform, EventEmitter, {
   __setAttrs(attrs) {
     this.attr(attrs);
     return attrs;
+  },
+  setZIndex(zIndex) {
+    this.__cfg.zIndex = zIndex;
+    return zIndex;
   },
   clone() {
     return Util.clone(this);
