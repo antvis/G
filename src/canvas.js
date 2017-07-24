@@ -81,24 +81,51 @@ Util.augment(Canvas, {
       }
     }
   },
-  _triggerEvent(type, e) {
-    const point = this.getPointByClient(e.clientX, e.clientY);
-    const shape = this.getShape(point.x, point.y);
-
-    const emitObj = this.getEmitter(shape, e) || this;
+  _getEventObj(type, e, point, target) {
     const event = new Event(type, e, true, true);
     event.x = point.x;
     event.y = point.y;
     event.clientX = e.clientX;
     event.clientY = e.clientY;
-    event.currentTarget = shape || this;
-    event.target = shape || this;
+    event.currentTarget = target;
+    event.target = target;
+    return event;
+  },
+  _triggerEvent(type, e) {
+    const point = this.getPointByClient(e.clientX, e.clientY);
+    const shape = this.getShape(point.x, point.y);
+    let emitObj;
+    if (type === 'mousemove') {
+      const canvasmousemove = this._getEventObj('mousemove', e, point, this);
+      this.emit('mousemove', canvasmousemove);
 
-    // 处理鼠标手势
+      const preShape = this.get('preShape');
+      if (preShape && preShape !== shape) {
+        const mouseleave = this._getEventObj('mouseleave', e, point, preShape);
+        emitObj = this.getEmitter(preShape, e);
+        emitObj && emitObj.emit('mouseleave', mouseleave);
+      }
+
+      if (shape) {
+        const mousemove = this._getEventObj('mousemove', e, point, shape);
+        emitObj = this.getEmitter(shape, e);
+        emitObj && emitObj.emit('mousemove', mousemove);
+
+        if (preShape !== shape) {
+          const mouseenter = this._getEventObj('mouseenter', e, point, shape);
+          emitObj && emitObj.emit('mouseenter', mouseenter, e);
+        }
+      }
+
+      this.set('preShape', shape);
+    } else {
+      emitObj = this.getEmitter(shape, e) || this;
+      const event = this._getEventObj(type, e, point, shape || this);
+      emitObj.emit(type, event);
+    }
+
     const el = this.get('el');
     el.style.cursor = shape && shape.get('cursor') ? shape.get('cursor') : 'default';
-
-    emitObj.trigger(type, [ event ]);
   },
   _registEvents() {
     const self = this;
