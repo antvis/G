@@ -102,15 +102,11 @@ Util.augment(Element, Attribute, Transform, EventEmitter, {
   getDefaultCfg() {
     return {};
   },
-  set(name, value, flag) {
+  set(name, value) {
     const m = '__set' + Util.upperFirst(name);
 
     if (this[m]) {
-      if (name === 'zIndex') {
-        value = this[m](value, flag);
-      } else {
-        value = this[m](value);
-      }
+      value = this[m](value);
     }
     this.__cfg[name] = value;
     return this;
@@ -215,10 +211,10 @@ Util.augment(Element, Attribute, Transform, EventEmitter, {
     this.__m = null;
     this.set('destroyed', true);
   },
-  __setZIndex(zIndex, flag = true) {
+  __setZIndex(zIndex) {
     this.__cfg.zIndex = zIndex;
 
-    if (flag && !Util.isNil(this.get('parent'))) {
+    if (!Util.isNil(this.get('parent'))) {
       this.get('parent').sort();
     }
     return zIndex;
@@ -226,6 +222,10 @@ Util.augment(Element, Attribute, Transform, EventEmitter, {
   __setAttrs(attrs) {
     this.attr(attrs);
     return attrs;
+  },
+  setZIndex(zIndex) {
+    this.__cfg.zIndex = zIndex;
+    return zIndex;
   },
   clone() {
     return Util.clone(this);
