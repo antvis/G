@@ -65,5 +65,27 @@ mat3.scale = function(out, a, v) {
 module.exports = {
   mat3,
   vec2,
-  vec3
+  vec3,
+  transform(m, ts) {
+    m = CommonUtil.clone(m);
+    CommonUtil.each(ts, t => {
+      switch (t[0]) {
+        case 't':
+          mat3.translate(m, m, [ t[1], t[2] ]);
+          break;
+        case 's':
+          mat3.scale(m, m, [ t[1], t[2] ]);
+          break;
+        case 'r':
+          mat3.rotate(m, m, t[1]);
+          break;
+        case 'm':
+          mat3.multiply(m, m, t[1]);
+          break;
+        default:
+          return false;
+      }
+    });
+    return m;
+  }
 };
