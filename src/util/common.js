@@ -9,6 +9,7 @@ module.exports = {
   isNil: require('lodash/isNil'),
   isString: require('lodash/isString'),
   isArray: require('lodash/isArray'),
+  isNumber: require('lodash/isNumber'),
   isEmpty: require('lodash/isEmpty'), // isBlank
   uniqueId: require('lodash/uniqueId'),
   clone: require('lodash/clone'),
@@ -17,6 +18,7 @@ module.exports = {
   upperFirst: require('lodash/upperFirst'), // ucfirst
   remove: require('lodash/pull'),
   each: require('lodash/forEach'),
+  isEqual: require('lodash/isEqual'),
   toArray: require('lodash/toArray'),
   extend(subclass, superclass, overrides, staticOverrides) {
     // 如果只提供父类构造函数，则自动生成子类构造函数
