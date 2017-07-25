@@ -1,0 +1,120 @@
+const MatrixUtil = require('../../util/matrix');
+const PathUtil = require('../../util/path');
+const Util = require('../../util/index');
+const d3Ease = require('d3-ease');
+const { interpolate, interpolateArray } = require('d3-interpolate'); // 目前整体动画只需要数值和数组的差值计算
+
+module.exports = {
+  animate(toProps, duration, easing, callback) {
+    const self = this;
+    this.addAnimCount(); // TODO：后续优化动画时，替换为 d3-timer
+    const startTime = +new Date();
+    const formatProps = getFormatProps(toProps);
+    const toAttrs = formatProps.attrs;
+    const toM = formatProps.M;
+    const fromAttrs = getfromAttrs(toAttrs);
+    const fromM = Util.clone(self.getMatrix());
+    const count = self.get('animCount');
+    easing = easing ? easing : 'easeLinear';
+    setTimeout(function() {
+      count === self.get('animCount') && update();
+    }, 6);
+
+    function update() {
+      const time = +new Date();
+      const elapsed = time - startTime; // 逝去时间
+      const cProps = {}; // 此刻属性
+      const canvas = self.get('canvas');
+      let interf; //  差值函数
+      let ratio = elapsed / duration;
+      if (ratio <= 0) {
+        ratio = 0;
+      } else if (ratio >= 1) {
+        ratio = 1;
+      }
+
+      ratio = d3Ease[easing](ratio);
+
+      for (const k in toAttrs) {
+        if (!Util.isEqual(fromAttrs[k], toAttrs[k])) {
+          if (k === 'path') {
+            const toPath = PathUtil.parsePathString(toAttrs[k]); // 终点状态
+            const fromPath = PathUtil.parsePathString(fromAttrs[k]); // 起始状态
+            cProps[k] = [];
+            for (let i = 0; i < toPath.length; i++) {
+              const toPathPoint = toPath[i];
+              const fromPathPoint = fromPath[i];
+              const cPathPoint = [];
+              for (let j = 0; j < toPathPoint.length; j++) {
+                if (Util.isNumber(toPathPoint[j])) {
+                  interf = interpolate(toPathPoint[j], fromPathPoint[j]);
+                  cPathPoint.push(interf(ratio));
+                } else {
+                  cPathPoint.push(toPathPoint[j]);
+                }
+              }
+              cProps[k].push(cPathPoint);
+            }
+          } else {
+            interf = interpolate(fromAttrs[k], toAttrs[k]);
+            cProps[k] = interf(ratio);
+          }
+        }
+      }
+      if (toM) {
+        const mf = interpolateArray(fromM, toM);
+        const cM = mf(ratio);
+        self.setMatrix(cM);
+      }
+      self.attr(cProps);
+      canvas.draw();
+      Util.requestAnimationFrame(function() {
+        if (count !== self.get('animCount') || !self.get('animable')) {
+          return;
+        } else if (ratio >= 0 && ratio < 1) {
+          update();
+        } else if (ratio >= 1) {
+          return callback && callback();
+        }
+      });
+    }
+
+    function getFormatProps(props) {
+      const rst = {
+        M: null,
+        attrs: {}
+      };
+      for (const k in props) {
+        if (k === 'transform') {
+          rst.M = MatrixUtil.transform(self.getMatrix(), props[k]);
+        } else if (k === 'matrix') {
+          rst.M = props[k];
+        } else {
+          rst.attrs[k] = props[k];
+        }
+      }
+      return rst;
+    }
+
+    function getfromAttrs(toAttrs) {
+      const rst = {};
+      for (const k in toAttrs) {
+        rst[k] = self.attr(k);
+      }
+      return rst;
+    }
+  },
+
+  stopAnimate() {
+    this.set('animable', false);
+  },
+
+  addAnimCount() {
+    let animCount = this.get('animCount');
+    if (animCount < 10000) {
+      this.set('animCount', ++animCount);
+    } else {
+      this.set('animCount', 0);
+    }
+  }
+};

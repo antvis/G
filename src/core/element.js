@@ -1,6 +1,7 @@
 const Util = require('../util/index');
 const Attribute = require('./mixin/attribute');
 const Transform = require('./mixin/transform');
+const Animate = require('./mixin/animate');
 const Format = require('../util/format');
 const EventEmitter = require('wolfy87-eventemitter');
 
@@ -83,7 +84,7 @@ Element.CFG = {
   destroyed: false
 };
 
-Util.augment(Element, Attribute, Transform, EventEmitter, {
+Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
   init() {
     this.setSilent('animable', true);
     const attrs = this.__attrs;
