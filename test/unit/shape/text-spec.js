@@ -192,6 +192,23 @@ describe('Text', function() {
     canvas.draw();
   });
 
+  it('fontSize < 12', function() {
+    const text = new G.Text({
+      attrs: {
+        fontSize: 10,
+        text: '你好啊啊',
+        x: 100,
+        y: 180,
+        stroke: '#000'
+      }
+    });
+    expect(text.attr('fontSize')).to.equal(10);
+    expect(text.attr('font')).to.equal('normal normal normal 10px sans-serif');
+    expect(text.getMatrix()).not.eql([ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
+    canvas.add(text);
+    canvas.draw();
+  });
+
   it('fontStyle', function() {
     expect(text.attr('fontStyle')).to.equal('normal');
     text.attr('fontStyle', 'italic');
