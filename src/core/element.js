@@ -191,7 +191,6 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
       const parent = this.get('parent');
       const children = parent.get('children');
       Util.remove(children, this);
-      // this.set('parent', null);
     }
 
     if (destroy) {
@@ -209,7 +208,6 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
     this.__cfg = {};
     this.__attrs = null;
     this.removeEvent(); // 移除所有的事件
-    this.__m = null;
     this.set('destroyed', true);
   },
   __setZIndex(zIndex) {
