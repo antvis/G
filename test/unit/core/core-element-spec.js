@@ -18,9 +18,9 @@ describe('Element', function() {
     expect(e.__attrs).not.to.be.undefined;
     expect(e.__attrs.width).to.equal(20);
     expect(e.__attrs.height).to.equal(30);
-    expect(e.__m).not.to.be.undefined;
+    expect(e.attr('matrix')).not.to.be.undefined;
     const m = mat3.create();
-    expect(mat3.exactEquals(e.__m, m)).to.be.true;
+    expect(mat3.exactEquals(e.attr('matrix'), m)).to.be.true;
   });
 
   it('set and get', function() {
