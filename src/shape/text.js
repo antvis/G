@@ -40,6 +40,17 @@ Util.augment(CText, {
       textBaseline: 'bottom'
     };
   },
+  initTransform() {
+    this.attr('matrix', [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
+    const fontSize = this.__attrs.fontSize;
+    if (fontSize && +fontSize < 12) { // 小于 12 像素的文本进行 scale 处理
+      this.transform([
+        [ 't', -1 * this.__attrs.x, -1 * this.__attrs.y ],
+        [ 's', +fontSize / 12, +fontSize / 12 ],
+        [ 't', this.__attrs.x, this.__attrs.y ]
+      ]);
+    }
+  },
   __assembleFont() {
     // var self = this;
     const attrs = this.__attrs;
