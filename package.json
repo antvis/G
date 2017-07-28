@@ -18,55 +18,53 @@
     "url": "http://gitlab.alibaba-inc.com/datavis/g/issues"
   },
   "devDependencies": {
+    "@lite-js/torch": "^0.2.0-beta1",
     "babel-eslint": "^7.2.3",
-    "babel-plugin-external-helpers": "^6.22.0",
-    "babel-preset-es2015-loose-rollup": "^7.0.0",
-    "babel-preset-stage-0": "^6.24.1",
+    "babel-loader": "^7.1.1",
+    "babel-plugin-transform-remove-strict-mode": "0.0.2",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-stage-0": "^6.24.0",
     "chai": "^4.0.1",
-    "electron": "^1.7.2",
-    "electron-mocha": "^3.4.0",
+    "electron": "~1.6.11",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.1",
     "eslint-config-egg": "^4.2.0",
-    "is-electron-renderer": "^2.0.1",
-    "istanbul": "^0.4.5",
-    "pre-commit": "^1.2.2",
-    "rollup": "^0.42.0",
-    "rollup-plugin-babel": "^2.7.1",
-    "rollup-plugin-commonjs": "^8.0.2",
-    "rollup-plugin-node-resolve": "^3.0.0",
-    "shelljs": "^0.7.8",
-    "uglify-js": "^3.0.15",
-    "spm-sinon": "^1.6.0",
     "event-simulate": "^1.0.0",
+    "istanbul": "^0.4.5",
     "jquery": "~2.1.4",
-    "event-simulate": "^1.0.0"
+    "pre-commit": "^1.2.2",
+    "shelljs": "^0.7.8",
+    "spm-sinon": "^1.6.0",
+    "uglify-js": "^3.0.15",
+    "webpack": "^3.4.1"
   },
   "scripts": {
-    "build": "rollup -c rollup.config.js -- index.js",
+    "build": "webpack",
     "ci": "tnpm run lint && tnpm run test",
-    "compress": "uglifyjs --compress --mangle --output dist/data-set.min.js -- build/data-set.js",
-    "coverage": "./bin/coverage.js",
+    "compress": "uglifyjs --compress --mangle --output dist/g-$npm_package_version.min.js -- build/g.js",
+    "coverage": "npm run coverage-generator && npm run coverage-viewer",
+    "coverage-viewer": "torch-coverage",
+    "coverage-generator": "torch --coverage --compile --renderer --recursive test/unit",
+    "dev": "webpack --config webpack-dev.config.js",
     "dist": "rm -rf dist && mkdir dist && npm run build && npm run compress",
     "lint": "eslint ./",
     "lint-fix": "eslint --fix ./",
-    "test": "electron-mocha --renderer --recursive ./test/unit",
-    "test-live": "electron-mocha --opts ./test/support/mocha.opts --renderer --interactive --recursive ./test/unit"
+    "test": "torch --compile --renderer --recursive ./test/unit",
+    "test-live": "torch --compile --renderer --interactive --recursive ./test/unit"
   },
   "pre-commit": {
     "run": [
       "lint",
-      "build",
       "test"
     ],
     "silent": false
   },
   "dependencies": {
+    "d3-ease": "^1.0.3",
+    "d3-interpolate": "^1.1.5",
     "gl-matrix": "^2.3.2",
     "lodash": "^4.17.4",
-    "wolfy87-eventemitter": "^5.1.0",
-    "d3-interpolate": "^1.1.5",
-    "d3-ease": "^1.0.3"
+    "wolfy87-eventemitter": "^5.1.0"
   },
   "publishConfig": {
     "registry": "http://registry.npm.alibaba-inc.com"
