@@ -25,21 +25,27 @@ function multiple(m1, m2) {
 
 module.exports = {
   initTransform() {
-    this.__m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
+    this.attr('matrix', [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
   },
   translate(tx, ty) {
-    mat3.translate(this.__m, this.__m, [ tx, ty ]);
+    const matrix = this.attr('matrix');
+    mat3.translate(matrix, matrix, [ tx, ty ]);
     this.clearTotalMatrix();
+    this.attr('matrix', matrix);
     return this;
   },
   rotate(radian) {
-    mat3.rotate(this.__m, this.__m, radian);
+    const matrix = this.attr('matrix');
+    mat3.rotate(matrix, matrix, radian);
     this.clearTotalMatrix();
+    this.attr('matrix', matrix);
     return this;
   },
   scale(s1, s2) {
-    mat3.scale(this.__m, this.__m, [ s1, s2 ]);
+    const matrix = this.attr('matrix');
+    mat3.scale(matrix, matrix, [ s1, s2 ]);
     this.clearTotalMatrix();
+    this.attr('matrix', matrix);
     return this;
   },
   /**
@@ -72,6 +78,8 @@ module.exports = {
   },
   transform(ts) {
     const self = this;
+    const matrix = self.attr('matrix');
+
     Util.each(ts, function(t) {
       switch (t[0]) {
         case 't':
@@ -84,7 +92,7 @@ module.exports = {
           self.rotate(t[1]);
           break;
         case 'm':
-          self.__m = mat3.multiply([], self.__m, t[1]);
+          self.attr('matrix', mat3.multiply([], matrix, t[1]));
           self.clearTotalMatrix();
           break;
         default:
@@ -94,14 +102,14 @@ module.exports = {
     return self;
   },
   setTransform(ts) {
-    this.__m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
+    this.attr('matrix', [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
     return this.transform(ts);
   },
   getMatrix() {
-    return this.__m;
+    return this.attr('matrix');
   },
   setMatrix(m) {
-    this.__m = m;
+    this.attr('matrix', m);
     this.clearTotalMatrix();
     return this;
   },
@@ -110,7 +118,7 @@ module.exports = {
     if (root) {
       m = this._getMatrixByRoot(root);
     } else {
-      m = this.__m;
+      m = this.attr('matrix');
     }
     vec3.transformMat3(v, v, m);
     return this;
@@ -130,7 +138,7 @@ module.exports = {
 
     const m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
     Util.each(parents, function(child) {
-      mat3.multiply(m, child.__m, m);
+      mat3.multiply(m, child.attr('matrix'), m);
     });
     return m;
   },
@@ -148,7 +156,7 @@ module.exports = {
         multiple(m, pm);
       }
 
-      multiple(m, this.__m);
+      multiple(m, this.attr('matrix'));
       this.__cfg.totalMatrix = m;
     }
     return m;
@@ -170,7 +178,7 @@ module.exports = {
     return this;
   },
   resetTransform(context) {
-    const mo = this.__m;
+    const mo = this.attr('matrix');
     // 不改变时
     if (!isUnchanged(mo)) {
       context.transform(mo[0], mo[1], mo[3], mo[4], mo[6], mo[7]);
