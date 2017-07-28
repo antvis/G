@@ -1,6 +1,6 @@
 {
   "name": "@ali/g",
-  "version": "2.0.0-beta.14",
+  "version": "2.0.0-beta.15",
   "description": "A canvas library which providing 2d draw for G2.",
   "keywords": [
     "canvas",
@@ -18,7 +18,7 @@
     "url": "http://gitlab.alibaba-inc.com/datavis/g/issues"
   },
   "devDependencies": {
-    "@lite-js/torch": "^0.2.0-beta1",
+    "@lite-js/torch": "^0.2.0-beta2",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.1.1",
     "babel-plugin-transform-remove-strict-mode": "0.0.2",
