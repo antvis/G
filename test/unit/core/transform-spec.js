@@ -8,7 +8,6 @@ describe('Transform', function() {
 
   it('translate and apply', function() {
     const e = new Element();
-    // const point = new Vector3(0, 0, 1);
     const point = vec3.fromValues(0, 0, 1);
     e.translate(10, 4);
     e.apply(point);
@@ -18,7 +17,6 @@ describe('Transform', function() {
 
   it('rotate', function() {
     const e = new Element();
-    // const point = new Vector3(10, 0, 0);
     const point = vec3.fromValues(10, 0, 0);
     e.rotate(45 / 180 * Math.PI);
     e.apply(point);
@@ -35,7 +33,6 @@ describe('Transform', function() {
 
   it('scale', function() {
     const e = new Element();
-    // const point = new Vector3(10, 10, 1);
     const point = vec3.fromValues(10, 10, 1);
     e.scale(0.5, 0.5);
     e.apply(point);
@@ -49,7 +46,6 @@ describe('Transform', function() {
 
   it('complex', function() {
     const e = new Element();
-    // const point1 = new Vector3(10, 10, 1);
     const point1 = vec3.fromValues(10, 10, 1);
     e.translate(10, 10);
     e.rotate(Math.PI / 2);
@@ -64,7 +60,6 @@ describe('Transform', function() {
   it('transform', function() {
     const e = new Element();
     e.transform([[ 'r', Math.PI / 2 ], [ 't', 10, 10 ], [ 'r', -Math.PI / 2 ]]);
-    // const point = new Vector3(0, 0, 1);
     const point = vec3.fromValues(0, 0, 1);
     e.apply(point);
     expect(Util.isNumberEqual(point[0], 10)).to.be.true;
@@ -75,7 +70,6 @@ describe('Transform', function() {
     const e = new Element();
     e.translate(10, 10);
     e.setTransform([[ 'r', Math.PI / 2 ], [ 't', 10, 10 ], [ 'r', -Math.PI / 2 ], [ 's', 0.5, 0.3 ]]);
-    // const point = new Vector3(0, 0, 1);
     const point = vec3.fromValues(0, 0, 1);
     e.apply(point);
     expect(Util.isNumberEqual(point[0], 5)).to.be.true;
@@ -84,7 +78,7 @@ describe('Transform', function() {
     expect(Util.isNumberEqual(point[0], 0)).to.be.true;
     expect(Util.isNumberEqual(point[1], 0)).to.be.true;
     const e1 = new Element();
-    e1.setTransform([[ 'm', e.__m ]]);
+    e1.setTransform([[ 'm', e.attr('matrix') ]]);
     e1.apply(point);
     expect(Util.isNumberEqual(point[0], 5)).to.be.true;
     expect(Util.isNumberEqual(point[1], -3)).to.be.true;
@@ -96,9 +90,7 @@ describe('Transform', function() {
   it('getMatrix', function() {
     const e = new Element();
     const m = e.getMatrix();
-    // const m1 = new Matrix3();
     const m1 = mat3.create();
-    // expect(m.equal(m1)).to.be.true;
     expect(mat3.exactEquals(m, m1)).to.be.true;
   });
 });
