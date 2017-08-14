@@ -297,8 +297,8 @@ Util.augment(Canvas, {
   draw() {
     const self = this;
     function drawInner() {
-      self.set('animateHandler', requestAnimationFrame(() => {
-        self.set('animateHandler', undefined);
+      self.setSilent('animateHandler', requestAnimationFrame(() => {
+        self.setSilent('animateHandler', undefined);
         if (self.get('toDraw')) {
           drawInner();
         }
