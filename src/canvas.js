@@ -1,6 +1,7 @@
 const Util = require('./util/index');
 const Event = require('./event');
 const Group = require('./core/group');
+const d3Timer = require('d3-timer');
 
 const Canvas = function(cfg) {
   Canvas.superclass.constructor.call(this, cfg);
@@ -291,12 +292,12 @@ Util.augment(Canvas, {
   draw() {
     const self = this;
     function drawInner() {
-      // self.set('animateHandler', Util.requestAnimationFrame(function() {
-      //   self.set('animateHandler', undefined);
-      //   if (self.get('toDraw')) {
-      //     drawInner();
-      //   }
-      // }));
+      self.set('animateHandler', d3Timer.timer(() => {
+        self.set('animateHandler', undefined);
+        if (self.get('toDraw')) {
+          drawInner();
+        }
+      }));
       self.beforeDraw();
       try {
         const context = self.get('context');
@@ -313,12 +314,11 @@ Util.augment(Canvas, {
     if (self.get('destroyed')) {
       return;
     }
-    // if (self.get('animateHandler')) {
-    //   this._beginDraw();
-    // } else {
-    //   drawInner();
-    // }
-    drawInner();
+    if (self.get('animateHandler')) {
+      this._beginDraw();
+    } else {
+      drawInner();
+    }
   },
   destroy() {
     const containerDOM = this.get('containerDOM');
