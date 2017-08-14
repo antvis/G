@@ -125,6 +125,8 @@ module.exports = {
     if (name === 'clip') {
       self.__setAttrClip(value);
       self.__attrs.clip = value;
+    } else if (name === 'transform') {
+      self.__setAttrTrans(value);
     } else {
       self.__attrs[name] = value;
       const alias = ALIAS_ATTRS_MAP[name];
@@ -161,5 +163,8 @@ module.exports = {
       return clip;
     }
     return null;
+  },
+  __setAttrTrans(value) {
+    return this.transform(value);
   }
 };
