@@ -125,9 +125,12 @@ Util.augment(Canvas, {
 
       this.set('preShape', shape);
     } else {
-      emitObj = this.getEmitter(shape, e) || this;
       const event = this._getEventObj(type, e, point, shape || this);
-      emitObj.emit(type, event);
+      emitObj = this.getEmitter(shape, e);
+      if (emitObj && emitObj !== this) {
+        emitObj.emit(type, event);
+      }
+      this.emit(type, event);
     }
 
     const el = this.get('el');
@@ -165,17 +168,22 @@ Util.augment(Canvas, {
       self._triggerEvent('dblclick', e);
     }, false);
 
-    // TODO 添加 touch 事件支持
     el.addEventListener('touchstart', function(e) {
-      self._triggerEvent('touchstart', e);
+      if (!Util.isEmpty(e.touches)) {
+        self._triggerEvent('touchstart', e.touches[0]);
+      }
     }, false);
 
     el.addEventListener('touchmove', function(e) {
-      self._triggerEvent('touchmove', e);
+      if (!Util.isEmpty(e.touches)) {
+        self._triggerEvent('touchmove', e.touches[0]);
+      }
     }, false);
 
     el.addEventListener('touchend', function(e) {
-      self._triggerEvent('touchend', e);
+      if (!Util.isEmpty(e.changedTouches)) {
+        self._triggerEvent('touchend', e.changedTouches[0]);
+      }
     }, false);
   },
   _scale() {
@@ -297,8 +305,8 @@ Util.augment(Canvas, {
   draw() {
     const self = this;
     function drawInner() {
-      self.set('animateHandler', requestAnimationFrame(() => {
-        self.set('animateHandler', undefined);
+      self.setSilent('animateHandler', requestAnimationFrame(() => {
+        self.setSilent('animateHandler', undefined);
         if (self.get('toDraw')) {
           drawInner();
         }
