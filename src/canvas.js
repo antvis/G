@@ -1,8 +1,13 @@
 const Util = require('./util/index');
 const Event = require('./event');
 const Group = require('./core/group');
-const d3Timer = require('d3-timer');
 
+function requestAnimationFrame(fn) {
+  const method = window.requestAnimationFrame || window.webkitRequestAnimationFrame || function(fn) {
+    return setTimeout(fn, 16);
+  };
+  return method(fn);
+}
 const Canvas = function(cfg) {
   Canvas.superclass.constructor.call(this, cfg);
 };
@@ -292,7 +297,7 @@ Util.augment(Canvas, {
   draw() {
     const self = this;
     function drawInner() {
-      self.set('animateHandler', d3Timer.timer(() => {
+      self.set('animateHandler', requestAnimationFrame(() => {
         self.set('animateHandler', undefined);
         if (self.get('toDraw')) {
           drawInner();
