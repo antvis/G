@@ -29,6 +29,7 @@ module.exports = {
       }
       canvas.draw();
     });
+    d3Timer.timerFlush(); // 防止闪烁
 
     function update(ratio) {
       const cProps = {}; // 此刻属性
