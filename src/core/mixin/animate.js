@@ -6,7 +6,15 @@ const d3Timer = require('d3-timer');
 const { interpolate, interpolateArray } = require('d3-interpolate'); // 目前整体动画只需要数值和数组的差值计算
 
 module.exports = {
-  animate(toProps, duration, easing, callback) {
+  /**
+   * 执行动画
+   * @param  {Object}   toProps  动画最终状态
+   * @param  {Number}   duration 动画执行时间
+   * @param  {Number}   delay    动画延迟时间
+   * @param  {String}   easing   动画缓动效果
+   * @param  {Function} callback 动画执行后的回调
+   */
+  animate(toProps, duration, delay = 0, easing, callback) {
     const self = this;
     const canvas = self.get('canvas');
 
@@ -28,7 +36,7 @@ module.exports = {
         timer.stop();
       }
       canvas.draw();
-    });
+    }, delay);
     d3Timer.timerFlush(); // 防止闪烁
 
     function update(ratio) {
