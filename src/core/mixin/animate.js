@@ -10,14 +10,13 @@ module.exports = {
    * 执行动画
    * @param  {Object}   toProps  动画最终状态
    * @param  {Number}   duration 动画执行时间
-   * @param  {Number}   delay    动画延迟时间
    * @param  {String}   easing   动画缓动效果
    * @param  {Function} callback 动画执行后的回调
+   * @param  {Number}   delay    动画延迟时间
    */
-  animate(toProps, duration, delay = 0, easing, callback) {
+  animate(toProps, duration, easing, callback, delay = 0) {
     const self = this;
     const canvas = self.get('canvas');
-
     const formatProps = getFormatProps(toProps);
     const toAttrs = formatProps.attrs;
     const toM = formatProps.M;
@@ -25,24 +24,26 @@ module.exports = {
     const fromM = Util.clone(self.getMatrix());
     easing = easing ? easing : 'easeLinear';
 
-    const timer = d3Timer.timer(elapsed => {
+    // 执行动画
+    d3Timer.timer(elapsed => {
       let ratio = elapsed / duration;
-
       if (ratio <= 1) {
         ratio = d3Ease[easing](ratio);
         update(ratio);
       } else {
+        update(1); // 保证最后一帧的绘制
         callback && callback();
-        timer.stop();
+        return true;
       }
-      canvas.draw();
     }, delay);
-    d3Timer.timerFlush(); // 防止闪烁
 
     function update(ratio) {
       const cProps = {}; // 此刻属性
-      if (self.get('destroyed')) {
+      if (self.get('destroyed') || self.get('stopAnimation')) {
         return;
+      }
+      if (Util.isEqual(ratio, 1)) {
+        self.set('stopAnimation', true);
       }
       let interf; //  差值函数
 
@@ -78,6 +79,7 @@ module.exports = {
         self.setMatrix(cM);
       }
       self.attr(cProps);
+      canvas.draw();
     }
 
     function getFormatProps(props) {
