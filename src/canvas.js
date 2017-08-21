@@ -134,7 +134,9 @@ Util.augment(Canvas, {
     }
 
     const el = this.get('el');
-    el.style.cursor = shape && shape.attr('cursor') ? shape.attr('cursor') : 'default';
+    if (shape && !shape.get('destroyed')) {
+      el.style.cursor = shape.attr('cursor') || 'default';
+    }
   },
   _registEvents() {
     const self = this;
