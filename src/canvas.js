@@ -134,7 +134,7 @@ Util.augment(Canvas, {
     }
 
     const el = this.get('el');
-    el.style.cursor = shape && shape.get('cursor') ? shape.get('cursor') : 'default';
+    el.style.cursor = shape && shape.attr('cursor') ? shape.attr('cursor') : 'default';
   },
   _registEvents() {
     const self = this;
