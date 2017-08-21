@@ -25,25 +25,22 @@ module.exports = {
     easing = easing ? easing : 'easeLinear';
 
     // 执行动画
-    d3Timer.timer(elapsed => {
+    const timer = d3Timer.timer(elapsed => {
       let ratio = elapsed / duration;
-      if (ratio <= 1) {
+      if (ratio < 1) {
         ratio = d3Ease[easing](ratio);
         update(ratio);
       } else {
         update(1); // 保证最后一帧的绘制
         callback && callback();
-        return true;
+        timer.stop();
       }
     }, delay);
 
     function update(ratio) {
       const cProps = {}; // 此刻属性
-      if (self.get('destroyed') || self.get('stopAnimation')) {
+      if (self.get('destroyed')) {
         return;
-      }
-      if (Util.isEqual(ratio, 1)) {
-        self.set('stopAnimation', true);
       }
       let interf; //  差值函数
 
