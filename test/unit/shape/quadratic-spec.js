@@ -22,7 +22,8 @@ describe('Quadratic line', function() {
     expect(quadratic.attr('p2')).to.be.undefined;
     expect(quadratic.attr('p3')).to.be.undefined;
     expect(quadratic.attr('lineWidth')).to.equal(1);
-    expect(quadratic.attr('arrow')).to.be.false;
+    expect(quadratic.attr('startArrow')).to.be.false;
+    expect(quadratic.attr('endArrow')).to.be.false;
 
     expect(quadratic.getBBox()).to.be.null;
   });
@@ -98,6 +99,19 @@ describe('Quadratic line', function() {
     expect(Util.isNumberEqual(box.maxY, 55.144144144144136)).to.be.true;
     canvas.draw();
   });
+
+  it('arrow', function() {
+    quadratic.attr('startArrow', true);
+    quadratic.attr('endArrow', true);
+    // quadratic.attr('arrowRadius', 15);
+    quadratic.attr('arrowAngle', 45);
+    expect(quadratic.attr('startArrow')).to.be.true;
+    expect(quadratic.attr('endArrow')).to.be.true;
+    expect(quadratic.attr('arrowRadius')).to.be.undefined;
+    expect(quadratic.attr('arrowAngle')).to.equal(45);
+    canvas.draw();
+  });
+
 
   it('isHit', function() {
     expect(quadratic.isHit(70, 39)).to.be.true;
