@@ -9,12 +9,13 @@ const Cubic = function(cfg) {
 };
 
 Cubic.ATTRS = {
-  p1: null,
-  p2: null,
-  p3: null,
-  p4: null,
+  p1: null, // 起始点
+  p2: null, // 第一个控制点
+  p3: null, // 第二个控制点
+  p4: null, // 终点
   lineWidth: 1,
-  arrow: false
+  startArrow: false,
+  endArrow: false
 };
 
 Util.extend(Cubic, Shape);
@@ -24,15 +25,14 @@ Util.augment(Cubic, {
   type: 'cubic',
   getDefaultAttrs() {
     return {
-      lineWidth: 1
+      lineWidth: 1,
+      startArrow: false,
+      endArrow: false
     };
   },
   calculateBox() {
     const attrs = this.__attrs;
-    const p1 = attrs.p1;
-    const p2 = attrs.p2;
-    const p3 = attrs.p3;
-    const p4 = attrs.p4;
+    const { p1, p2, p3, p4, lineWidth } = attrs;
     let i;
     let l;
 
@@ -44,7 +44,7 @@ Util.augment(Cubic, {
     ) {
       return null;
     }
-    const halfWidth = attrs.lineWidth / 2;
+    const halfWidth = lineWidth / 2;
 
     const xDim = CubicMath.extrema(p1[0], p2[0], p3[0], p4[0]);
     for (i = 0, l = xDim.length; i < l; i++) {
@@ -66,11 +66,7 @@ Util.augment(Cubic, {
   },
   isPointInPath(x, y) {
     const attrs = this.__attrs;
-    const p1 = attrs.p1;
-    const p2 = attrs.p2;
-    const p3 = attrs.p3;
-    const p4 = attrs.p4;
-    const lineWidth = attrs.lineWidth;
+    const { p1, p2, p3, p4, lineWidth } = attrs;
 
     return Inside.cubicline(
       p1[0], p1[1],
@@ -82,12 +78,7 @@ Util.augment(Cubic, {
   },
   createPath(context) {
     const attrs = this.__attrs;
-    const p1 = attrs.p1;
-    const p2 = attrs.p2;
-    const p3 = attrs.p3;
-    const p4 = attrs.p4;
-    const lineWidth = attrs.lineWidth;
-    const arrow = attrs.arrow;
+    const { p1, p2, p3, p4 } = attrs;
     context = context || self.get('context');
     if (
       Util.isNil(p1) ||
@@ -99,16 +90,11 @@ Util.augment(Cubic, {
     }
 
     context.beginPath();
-    context.moveTo(p1[0], p1[1]);
 
-    if (arrow) {
-      const v = [ p4[0] - p3[0], p4[1] - p3[1] ];
-      const end = Arrow.getEndPoint(v, [ p4[0], p4[1] ], lineWidth);
-      context.bezierCurveTo(p2[0], p2[1], p3[0], p3[1], end[0], end[1]);
-      Arrow.makeArrow(context, v, end, lineWidth);
-    } else {
-      context.bezierCurveTo(p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]);
-    }
+    Arrow.addStartArrow(context, attrs, p2[0], p2[1], p1[0], p1[1]);
+    context.moveTo(p1[0], p1[1]);
+    context.bezierCurveTo(p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]);
+    Arrow.addEndArrow(context, attrs, p3[0], p3[1], p4[0], p4[1]);
   },
   getPoint(t) {
     const attrs = this.__attrs;

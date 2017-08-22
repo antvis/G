@@ -1,44 +1,61 @@
-const vec2 = require('../../util/matrix').vec2;
+const PI = Math.PI;
+const sin = Math.sin;
+const cos = Math.cos;
+const atan2 = Math.atan2;
+const DEFAULT_RADIUS = 10;
+const DEFAULT_ANGLE = PI / 3;
 
-const THETA = Math.PI / 6;
+function _addArrow(ctx, attrs, x1, y1, x2, y2) {
+  let leftX;
+  let leftY;
+  let rightX;
+  let rightY;
+  let offsetX;
+  let offsetY;
+  let angle;
 
-function calculatePoints(vector, end, lineWidth) {
-  const angle = vec2.angleTo([ 1, 0 ], vector);
-  const downAngle = angle - THETA;
-  const upAngle = angle + THETA;
-  const length = 6 + lineWidth * 3;
-  return [
-    {
-      x: end.x - length * Math.cos(downAngle),
-      y: end.y - length * Math.sin(downAngle)
-    },
-    end,
-    {
-      x: end.x - length * Math.cos(upAngle),
-      y: end.y - length * Math.sin(upAngle)
-    }
-  ];
-}
+  if (!attrs.closed) {
+    const arrowRadius = attrs.arrowRadius || DEFAULT_RADIUS;
+    const arrowAngle = attrs.arrowAngle ? (attrs.arrowAngle * PI) / 180 : DEFAULT_ANGLE; // 转换为弧度
 
-function arrow(context, points) {
-  context.moveTo(points[0].x, points[0].y);
-  context.lineTo(points[1].x, points[1].y);
-  context.lineTo(points[2].x, points[2].y);
-}
+    // Calculate angle
+    angle = atan2((y2 - y1), (x2 - x1));
+    // Adjust angle correctly
+    angle -= PI;
+    // Calculate offset to place arrow at edge of path
+    offsetX = (attrs.lineWidth * cos(angle));
+    offsetY = (attrs.lineWidth * sin(angle));
 
-function makeArrow(context, vector, end, lineWidth) {
-  arrow(context, calculatePoints(vector, end, lineWidth));
-}
+    // Calculate coordinates for left half of arrow
+    leftX = x2 + (arrowRadius * cos(angle + (arrowAngle / 2)));
+    leftY = y2 + (arrowRadius * sin(angle + (arrowAngle / 2)));
+    // Calculate coordinates for right half of arrow
+    rightX = x2 + (arrowRadius * cos(angle - (arrowAngle / 2)));
+    rightY = y2 + (arrowRadius * sin(angle - (arrowAngle / 2)));
 
-function getEndPoint(vector, end, lineWidth) {
-  const miterLimit = lineWidth / Math.sin(THETA);
-  const vectorLength = vec2.length(vector);
-  vec2.scale(vector, vector, miterLimit / (2 * vectorLength));
-  vec2.subtract(end, end, vector);
-  return end;
+    // Draw left half of arrow
+    ctx.moveTo(leftX - offsetX, leftY - offsetY);
+    ctx.lineTo(x2 - offsetX, y2 - offsetY);
+    // Draw right half of arrow
+    ctx.lineTo(rightX - offsetX, rightY - offsetY);
+
+    // Visually connect arrow to path
+    ctx.moveTo(x2 - offsetX, y2 - offsetY);
+    ctx.lineTo(x2 + offsetX, y2 + offsetY);
+    // Move back to end of path
+    ctx.moveTo(x2, y2);
+  }
 }
 
 module.exports = {
-  makeArrow,
-  getEndPoint
+  addStartArrow(ctx, attrs, x1, y1, x2, y2) {
+    if (attrs.startArrow) {
+      _addArrow(ctx, attrs, x1, y1, x2, y2);
+    }
+  },
+  addEndArrow(ctx, attrs, x1, y1, x2, y2) {
+    if (attrs.endArrow) {
+      _addArrow(ctx, attrs, x1, y1, x2, y2);
+    }
+  }
 };

@@ -13,14 +13,12 @@ describe('Line', function() {
     height: 200,
     pixelRatio: 1
   });
-
   const line = new G.Line({
     attrs: {
       x1: 0,
       x2: 0,
       y1: 0,
-      y2: 0,
-      arrow: false
+      y2: 0
     }
   });
   it('init attrs', function() {
@@ -31,7 +29,8 @@ describe('Line', function() {
     expect(line.attr('lineWidth')).to.equal(1);
     expect(line.attr('stroke')).to.be.undefined;
     expect(line.attr('fill')).to.be.undefined;
-    expect(line.attr('arrow')).to.be.false;
+    expect(line.attr('startArrow')).to.be.false;
+    expect(line.attr('endArrow')).to.be.false;
     const box = line.getBBox();
     expect(box.minX).to.equal(-0.5);
     expect(box.maxX).to.equal(0.5);
@@ -109,8 +108,13 @@ describe('Line', function() {
   });
 
   it('arrow', function() {
-    line.attr('arrow', true);
-    expect(line.attr('arrow')).to.be.true;
+    line.attr({
+      startArrow: true,
+      endArrow: true,
+      arrowRadius: 15
+    });
+    expect(line.attr('startArrow')).to.be.true;
+    expect(line.attr('arrowRadius')).to.equal(15);
     canvas.draw();
   });
 

@@ -104,7 +104,7 @@ describe('Arc line', function() {
 
   it('stroke', function() {
     arc.attr({
-      startAngle: -Math.PI / 2,
+      startAngle: -Math.PI,
       endAngle: Math.PI / 2,
       clockwise: false,
       x: 60,
@@ -114,6 +114,19 @@ describe('Arc line', function() {
     arc.attr('stroke', 'l (0) 0:#ff00ff 1:#00ffff');
     expect(arc.attr('stroke')).to.equal('l (0) 0:#ff00ff 1:#00ffff');
     canvas.add(arc);
+    canvas.draw();
+  });
+
+  it('arrow', function() {
+    arc.attr('startArrow', true);
+    arc.attr('endArrow', true);
+    arc.attr('arrowRadius', 5);
+    arc.attr('lineWidth', 1);
+    arc.attr('arrowAngle', 90);
+    expect(arc.attr('startArrow')).to.be.true;
+    expect(arc.attr('endArrow')).to.be.true;
+    expect(arc.attr('arrowRadius')).to.equal(5);
+    expect(arc.attr('arrowAngle')).to.equal(90);
     canvas.draw();
   });
 
