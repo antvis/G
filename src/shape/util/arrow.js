@@ -14,7 +14,7 @@ function _addArrow(ctx, attrs, x1, y1, x2, y2) {
   let offsetY;
   let angle;
 
-  if (!attrs.closed) {
+  if (!attrs.fill) { // 闭合的不绘制箭头
     const arrowRadius = attrs.arrowRadius || DEFAULT_RADIUS;
     const arrowAngle = attrs.arrowAngle ? (attrs.arrowAngle * PI) / 180 : DEFAULT_ANGLE; // 转换为弧度
 
