@@ -72,6 +72,21 @@ describe('Path', function() {
     canvas.draw();
   });
 
+  it('arrow', function() {
+    path.attr({
+      // startArrow: true,
+      endArrow: true,
+      arrowAngle: 90,
+      arrowRadius: 30
+    });
+    expect(path.attr('endArrow')).to.true;
+    expect(path.attr('arrowAngle')).to.equal(90);
+    expect(path.attr('arrowRadius')).to.equal(30);
+
+    canvas.add(path);
+    canvas.draw();
+  });
+
   it('fill', function() {
     const path = new G.Path({
       attrs: {
@@ -125,7 +140,7 @@ describe('Path', function() {
         ],
         stroke: 'red',
         fill: 'green',
-        arrow: true
+        startArrow: true
       }
     });
     expect(path.isHit(400, 400)).to.be.true;
@@ -146,7 +161,7 @@ describe('Path', function() {
           [ 'h', 100 ]
         ],
         stroke: 'red',
-        arrow: true
+        startArrow: true
       }
     });
     expect(path.isHit(200, 400)).to.be.true;

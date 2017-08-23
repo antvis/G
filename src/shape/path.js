@@ -14,7 +14,9 @@ Path.ATTRS = {
   path: null,
   lineWidth: 1,
   curve: null, // 曲线path
-  tCache: null
+  tCache: null,
+  startArrow: false,
+  endArrow: false
 };
 
 Util.extend(Path, Shape);
@@ -25,7 +27,9 @@ Util.augment(Path, {
   type: 'path',
   getDefaultAttrs() {
     return {
-      lineWidth: 1
+      lineWidth: 1,
+      startArrow: false,
+      endArrow: false
     };
   },
   __afterSetAttrPath(path) {
@@ -233,31 +237,36 @@ Util.augment(Path, {
     const self = this;
     const attrs = self.__attrs;
     const segments = self.get('segments');
-    const lineWidth = attrs.lineWidth;
-    const arrow = attrs.arrow;
 
     if (!Util.isArray(segments)) return;
+
     context = context || self.get('context');
+
     context.beginPath();
-    for (let i = 0, l = segments.length; i < l; i++) {
-      if (i === l - 1 && arrow) {
-        const lastSeg = segments[i];
-        const endTangent = segments[i].endTangent;
-        const endPoint = {
-          x: lastSeg.params[lastSeg.params.length - 1].x,
-          y: lastSeg.params[lastSeg.params.length - 1].y
-        };
-        if (lastSeg && Util.isFunction(endTangent)) {
-          const v = endTangent();
-          const end = Arrow.getEndPoint(v, [ endPoint.x, endPoint.y ], lineWidth);
-          lastSeg.params[lastSeg.params.length - 1] = end;
-          segments[i].draw(context);
-          Arrow.makeArrow(context, v, end, lineWidth);
-          lastSeg.params[lastSeg.params.length - 1] = endPoint;
-        }
-      } else {
-        segments[i].draw(context);
-      }
+
+    const path = attrs.path;
+    let startPoint;
+    let endPoint;
+    let closed = false;
+    if (path[path.length - 1] === 'z' || path[path.length - 1] === 'Z' || attrs.fill) { // 闭合路径不绘制箭头
+      closed = true;
+    }
+
+    const segmentsLen = segments.length;
+    if (segmentsLen > 1 && !closed) {
+      startPoint = segments[0].endPoint;
+      endPoint = segments[1].endPoint;
+      Arrow.addStartArrow(context, attrs, endPoint.x, endPoint.y, startPoint.x, startPoint.y);
+    }
+
+    for (let i = 0, l = segmentsLen; i < l; i++) {
+      segments[i].draw(context);
+    }
+
+    if (segmentsLen > 1 && !closed) {
+      startPoint = segments[ segmentsLen - 2 ].endPoint;
+      endPoint = segments[ segmentsLen - 1 ].endPoint;
+      Arrow.addEndArrow(context, attrs, startPoint.x, startPoint.y, endPoint.x, endPoint.y);
     }
   }
 });
