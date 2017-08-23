@@ -77,11 +77,11 @@ describe('Path', function() {
       // startArrow: true,
       endArrow: true,
       arrowAngle: 90,
-      arrowRadius: 30
+      arrowLength: 30
     });
     expect(path.attr('endArrow')).to.true;
     expect(path.attr('arrowAngle')).to.equal(90);
-    expect(path.attr('arrowRadius')).to.equal(30);
+    expect(path.attr('arrowLength')).to.equal(30);
 
     canvas.add(path);
     canvas.draw();

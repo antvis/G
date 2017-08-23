@@ -103,11 +103,11 @@ describe('Quadratic line', function() {
   it('arrow', function() {
     quadratic.attr('startArrow', true);
     quadratic.attr('endArrow', true);
-    // quadratic.attr('arrowRadius', 15);
+    // quadratic.attr('arrowLength', 15);
     quadratic.attr('arrowAngle', 45);
     expect(quadratic.attr('startArrow')).to.be.true;
     expect(quadratic.attr('endArrow')).to.be.true;
-    expect(quadratic.attr('arrowRadius')).to.be.undefined;
+    expect(quadratic.attr('arrowLength')).to.be.undefined;
     expect(quadratic.attr('arrowAngle')).to.equal(45);
     canvas.draw();
   });
