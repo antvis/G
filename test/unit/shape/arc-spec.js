@@ -120,12 +120,12 @@ describe('Arc line', function() {
   it('arrow', function() {
     arc.attr('startArrow', true);
     arc.attr('endArrow', true);
-    arc.attr('arrowRadius', 5);
+    arc.attr('arrowLength', 5);
     arc.attr('lineWidth', 1);
     arc.attr('arrowAngle', 90);
     expect(arc.attr('startArrow')).to.be.true;
     expect(arc.attr('endArrow')).to.be.true;
-    expect(arc.attr('arrowRadius')).to.equal(5);
+    expect(arc.attr('arrowLength')).to.equal(5);
     expect(arc.attr('arrowAngle')).to.equal(90);
     canvas.draw();
   });

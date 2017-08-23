@@ -111,10 +111,10 @@ describe('Line', function() {
     line.attr({
       startArrow: true,
       endArrow: true,
-      arrowRadius: 15
+      arrowLength: 15
     });
     expect(line.attr('startArrow')).to.be.true;
-    expect(line.attr('arrowRadius')).to.equal(15);
+    expect(line.attr('arrowLength')).to.equal(15);
     canvas.draw();
   });
 

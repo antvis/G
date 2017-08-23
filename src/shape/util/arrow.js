@@ -2,7 +2,7 @@ const PI = Math.PI;
 const sin = Math.sin;
 const cos = Math.cos;
 const atan2 = Math.atan2;
-const DEFAULT_RADIUS = 10;
+const DEFAULT_LENGTH = 10;
 const DEFAULT_ANGLE = PI / 3;
 
 function _addArrow(ctx, attrs, x1, y1, x2, y2) {
@@ -15,7 +15,7 @@ function _addArrow(ctx, attrs, x1, y1, x2, y2) {
   let angle;
 
   if (!attrs.fill) { // 闭合的不绘制箭头
-    const arrowRadius = attrs.arrowRadius || DEFAULT_RADIUS;
+    const arrowLength = attrs.arrowLength || DEFAULT_LENGTH;
     const arrowAngle = attrs.arrowAngle ? (attrs.arrowAngle * PI) / 180 : DEFAULT_ANGLE; // 转换为弧度
 
     // Calculate angle
@@ -27,11 +27,11 @@ function _addArrow(ctx, attrs, x1, y1, x2, y2) {
     offsetY = (attrs.lineWidth * sin(angle));
 
     // Calculate coordinates for left half of arrow
-    leftX = x2 + (arrowRadius * cos(angle + (arrowAngle / 2)));
-    leftY = y2 + (arrowRadius * sin(angle + (arrowAngle / 2)));
+    leftX = x2 + (arrowLength * cos(angle + (arrowAngle / 2)));
+    leftY = y2 + (arrowLength * sin(angle + (arrowAngle / 2)));
     // Calculate coordinates for right half of arrow
-    rightX = x2 + (arrowRadius * cos(angle - (arrowAngle / 2)));
-    rightY = y2 + (arrowRadius * sin(angle - (arrowAngle / 2)));
+    rightX = x2 + (arrowLength * cos(angle - (arrowAngle / 2)));
+    rightY = y2 + (arrowLength * sin(angle - (arrowAngle / 2)));
 
     // Draw left half of arrow
     ctx.moveTo(leftX - offsetX, leftY - offsetY);
