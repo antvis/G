@@ -9,11 +9,12 @@ const Quadratic = function(cfg) {
 };
 
 Quadratic.ATTRS = {
-  p1: null,
-  p2: null,
-  p3: null,
+  p1: null, // 起始点
+  p2: null, // 控制点
+  p3: null, // 结束点
   lineWidth: 1,
-  arrow: false
+  startArrow: false,
+  endArrow: false
 };
 
 Util.extend(Quadratic, Shape);
@@ -24,15 +25,14 @@ Util.augment(Quadratic, {
   getDefaultAttrs() {
     return {
       lineWidth: 1,
-      arrow: false
+      startArrow: false,
+      endArrow: false
     };
   },
   calculateBox() {
     const self = this;
     const attrs = self.__attrs;
-    const p1 = attrs.p1;
-    const p2 = attrs.p2;
-    const p3 = attrs.p3;
+    const { p1, p2, p3, lineWidth } = attrs;
     let i;
     let l;
 
@@ -43,9 +43,7 @@ Util.augment(Quadratic, {
     ) {
       return null;
     }
-    const halfWidth = attrs.lineWidth / 2;
-
-
+    const halfWidth = lineWidth / 2;
     const xDims = QuadraticMath.extrema(p1[0], p2[0], p3[0]);
     for (i = 0, l = xDims.length; i < l; i++) {
       xDims[i] = QuadraticMath.at(p1[0], p2[0], p3[0], xDims[i]);
@@ -67,10 +65,7 @@ Util.augment(Quadratic, {
   isPointInPath(x, y) {
     const self = this;
     const attrs = self.__attrs;
-    const p1 = attrs.p1;
-    const p2 = attrs.p2;
-    const p3 = attrs.p3;
-    const lineWidth = attrs.lineWidth;
+    const { p1, p2, p3, lineWidth } = attrs;
 
     return Inside.quadraticline(
       p1[0], p1[1],
@@ -82,11 +77,7 @@ Util.augment(Quadratic, {
   createPath(context) {
     const self = this;
     const attrs = self.__attrs;
-    const p1 = attrs.p1;
-    const p2 = attrs.p2;
-    const p3 = attrs.p3;
-    const lineWidth = attrs.lineWidth;
-    const arrow = attrs.arrow;
+    const { p1, p2, p3 } = attrs;
 
     if (
       Util.isNil(p1) ||
@@ -97,17 +88,11 @@ Util.augment(Quadratic, {
     }
     context = context || self.get('context');
     context.beginPath();
+
+    Arrow.addStartArrow(context, attrs, p2[0], p2[1], p1[0], p1[1]);
     context.moveTo(p1[0], p1[1]);
-
-
-    if (arrow) {
-      const v = [ p3[0] - p2[0], p3[1] - p2[1] ];
-      const end = Arrow.getEndPoint(v, [ p3[0], p3[1] ], lineWidth);
-      context.quadraticCurveTo(p2[0], p2[1], end[0], end[1]);
-      Arrow.makeArrow(context, v, end, lineWidth);
-    } else {
-      context.quadraticCurveTo(p2[0], p2[1], p3[0], p3[1]);
-    }
+    context.quadraticCurveTo(p2[0], p2[1], p3[0], p3[1]);
+    Arrow.addEndArrow(context, attrs, p2[0], p2[1], p3[0], p3[1]);
   },
   getPoint(t) {
     const attrs = this.__attrs;
