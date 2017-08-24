@@ -21,7 +21,8 @@ describe('Cubic line', function() {
     expect(cubic.attr('p3')).to.be.undefined;
     expect(cubic.attr('p4')).to.be.undefined;
     expect(cubic.attr('lineWidth')).to.equal(1);
-    expect(cubic.attr('arrow')).to.be.undefined;
+    expect(cubic.attr('startArrow')).to.be.false;
+    expect(cubic.attr('endArrow')).to.be.false;
 
     expect(cubic.getBBox()).to.be.null;
   });
@@ -112,6 +113,19 @@ describe('Cubic line', function() {
     expect(Util.isNumberEqual(box.maxX, 151)).to.be.true;
     expect(Util.isNumberEqual(box.minY, 38)).to.be.true;
     expect(Util.isNumberEqual(box.maxY, 91)).to.be.true;
+    canvas.draw();
+  });
+
+  it('arrow', function() {
+    cubic.attr('startArrow', true);
+    cubic.attr('endArrow', true);
+    cubic.attr('arrowLength', 5);
+    cubic.attr('lineWidth', 1);
+    cubic.attr('arrowAngle', 90);
+    expect(cubic.attr('startArrow')).to.be.true;
+    expect(cubic.attr('endArrow')).to.be.true;
+    expect(cubic.attr('arrowLength')).to.equal(5);
+    expect(cubic.attr('arrowAngle')).to.equal(90);
     canvas.draw();
   });
 

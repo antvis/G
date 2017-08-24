@@ -14,7 +14,8 @@ Line.ATTRS = {
   x2: 0,
   y2: 0,
   lineWidth: 1,
-  arrow: false
+  startArrow: false,
+  endArrow: false
 };
 
 Util.extend(Line, Shape);
@@ -25,26 +26,20 @@ Util.augment(Line, {
   getDefaultAttrs() {
     return {
       lineWidth: 1,
-      arrow: false
+      startArrow: false,
+      endArrow: false
     };
   },
   calculateBox() {
     const attrs = this.__attrs;
-    const x1 = attrs.x1;
-    const y1 = attrs.y1;
-    const x2 = attrs.x2;
-    const y2 = attrs.y2;
-    const lineWidth = attrs.lineWidth;
+    const { x1, y1, x2, y2, lineWidth } = attrs;
 
     return LineMath.box(x1, y1, x2, y2, lineWidth);
   },
   isPointInPath(x, y) {
     const attrs = this.__attrs;
-    const x1 = attrs.x1;
-    const y1 = attrs.y1;
-    const x2 = attrs.x2;
-    const y2 = attrs.y2;
-    const lineWidth = attrs.lineWidth;
+    const { x1, y1, x2, y2, lineWidth } = attrs;
+
     if (this.hasStroke()) {
       return Inside.line(x1, y1, x2, y2, lineWidth, x, y);
     }
@@ -53,23 +48,14 @@ Util.augment(Line, {
   },
   createPath(context) {
     const attrs = this.__attrs;
-    const x1 = attrs.x1;
-    const y1 = attrs.y1;
-    const x2 = attrs.x2;
-    const y2 = attrs.y2;
-    const arrow = attrs.arrow;
-    const lineWidth = attrs.lineWidth;
+    const { x1, y1, x2, y2 } = attrs;
     context = context || self.get('context');
     context.beginPath();
+
+    Arrow.addStartArrow(context, attrs, x1, y1, x2, y2);
     context.moveTo(x1, y1);
-    if (arrow) {
-      const v = [ x2 - x1, y2 - y1 ];
-      const end = Arrow.getEndPoint(v, [ x2, y2 ], lineWidth);
-      context.lineTo(end[0], end[1]);
-      Arrow.makeArrow(context, v, end, lineWidth);
-    } else {
-      context.lineTo(x2, y2);
-    }
+    context.lineTo(x2, y2);
+    Arrow.addEndArrow(context, attrs, x2, y2, x1, y1);
   },
   getPoint(t) {
     const attrs = this.__attrs;
