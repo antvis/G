@@ -24,6 +24,7 @@ module.exports = {
     const fromM = Util.clone(self.getMatrix());
     easing = easing ? easing : 'easeLinear';
 
+    self.setSilent('animating', true); // 处于动画状态
     // 执行动画
     const timer = d3Timer.timer(elapsed => {
       let ratio = elapsed / duration;
@@ -33,6 +34,7 @@ module.exports = {
       } else {
         update(1); // 保证最后一帧的绘制
         callback && callback();
+        self.setSilent('animating', false); // 动画停止
         timer.stop();
       }
     }, delay);
