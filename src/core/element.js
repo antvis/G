@@ -87,6 +87,7 @@ Element.CFG = {
 Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
   init() {
     this.setSilent('animable', true);
+    this.setSilent('animating', false); // 初始时不处于动画状态
     const attrs = this.__attrs;
     if (attrs && attrs.rotate) {
       this.rotateAtStart(attrs.rotate);
