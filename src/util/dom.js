@@ -35,7 +35,7 @@ module.exports = {
     }
     return dom.currentStyle[name];
   },
-  modiCSS(dom, css) {
+  modifyCSS(dom, css) {
     for (const key in css) {
       if (css.hasOwnProperty(key)) {
         dom.style[key] = css[key];
