@@ -216,7 +216,7 @@ Util.augment(Canvas, {
       containerDOM = document.getElementById(containerId);
       this.set('containerDOM', containerDOM);
     }
-    Util.modiCSS(containerDOM, {
+    Util.modifyCSS(containerDOM, {
       position: 'relative'
     });
   },
