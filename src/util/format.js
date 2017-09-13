@@ -4,7 +4,7 @@ const regexTags = /[MLHVQTCSAZ]([^MLHVQTCSAZ]*)/ig;
 const regexDot = /[^\s\,]+/ig;
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;
-const regexPR = /^p\s*([axyn])\s+(.*)/i;
+const regexPR = /^p\s*\(\s*([axyn])\s*\)\s*(.*)/i;
 const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/ig;
 const numColorCache = {};
 
@@ -90,9 +90,24 @@ function parseRadialGradient(color, self) {
 }
 
 function parsePattern(color, self) {
+  if (self.get('patternSource') && self.get('patternSource') === color) {
+    return self.get('pattern');
+  }
+  let pattern;
+  let img;
   const arr = regexPR.exec(color);
   let repeat = arr[1];
-  const id = arr[2];
+  const source = arr[2];
+
+  // Function to be called when pattern loads
+  function onload() {
+    // Create pattern
+    const context = self.get('context');
+    pattern = context.createPattern(img, repeat);
+    self.setSilent('pattern', pattern); // be a cache
+    self.setSilent('patternSource', color);
+  }
+
   switch (repeat) {
     case 'a':
       repeat = 'repeat';
@@ -109,9 +124,23 @@ function parsePattern(color, self) {
     default:
       repeat = 'no-repeat';
   }
-  const img = document.getElementById(id);
-  const context = self.get('context');
-  const pattern = context.createPattern(img, repeat);
+
+  img = new Image();
+  // If source URL is not a data URL
+  if (!source.match(/^data:/i)) {
+    // Set crossOrigin for this image
+    img.crossOrigin = 'Anonymous';
+  }
+  img.src = source;
+
+  if (img.complete) {
+    onload();
+  } else {
+    img.onload = onload;
+    // Fix onload() bug in IE9
+    img.src = img.src;
+  }
+
   return pattern;
 }
 
