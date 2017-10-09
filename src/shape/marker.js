@@ -99,7 +99,7 @@ Util.augment(Marker, {
       method = Marker.Symbols[symbol];
     }
     context.beginPath();
-    method(x, y, r, context);
+    method(x, y, r, context, this);
   }/**/
 });
 
