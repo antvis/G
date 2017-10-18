@@ -1,5 +1,5 @@
 {
-  "name": "@ali/g",
+  "name": "@antv/g",
   "version": "2.0.0-beta.27",
   "description": "A canvas library which providing 2d draw for G2.",
   "keywords": [
@@ -18,7 +18,7 @@
     "url": "http://gitlab.alibaba-inc.com/datavis/g/issues"
   },
   "devDependencies": {
-    "@lite-js/torch": "^0.2.0-beta2",
+    "@lite-js/torch": "^0.2.6",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.1.1",
     "babel-plugin-transform-remove-strict-mode": "0.0.2",
@@ -47,6 +47,7 @@
     "coverage-generator": "torch --coverage --compile --renderer --recursive test/unit",
     "dev": "webpack --config webpack-dev.config.js",
     "dist": "rm -rf dist && mkdir dist && npm run build && npm run compress",
+    "prepublishOnly": "npm run dist",
     "lint": "eslint ./",
     "lint-fix": "eslint --fix ./",
     "test": "torch --compile --renderer --recursive ./test/unit",
@@ -66,8 +67,5 @@
     "gl-matrix": "^2.3.2",
     "lodash": "^4.17.4",
     "wolfy87-eventemitter": "^5.1.0"
-  },
-  "publishConfig": {
-    "registry": "http://registry.npm.alibaba-inc.com"
   }
 }
