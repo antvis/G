@@ -29,20 +29,18 @@ Marker.Symbols = {
   },
   // 三角形
   triangle(x, y, r, ctx) {
-    const diffX = r / 0.966;
-    const diffY = r;
-    ctx.moveTo(x, y - r);
-    ctx.lineTo(x + diffX, y + diffY);
-    ctx.lineTo(x - diffX, y + diffY);
+    const diffY = r * Math.sin((1 / 3) * Math.PI);
+    ctx.moveTo(x - r, y + diffY);
+    ctx.lineTo(x, y - diffY);
+    ctx.lineTo(x + r, y + diffY);
     ctx.closePath();
   },
   // 倒三角形
   'triangle-down': function(x, y, r, ctx) {
-    const diffX = r / 0.966;
-    const diffY = r;
-    ctx.moveTo(x, y + r);
-    ctx.lineTo(x + diffX, y - diffY);
-    ctx.lineTo(x - diffX, y - diffY);
+    const diffY = r * Math.sin((1 / 3) * Math.PI);
+    ctx.moveTo(x - r, y - diffY);
+    ctx.lineTo(x + r, y - diffY);
+    ctx.lineTo(x, y + diffY);
     ctx.closePath();
   }
 };
@@ -100,7 +98,7 @@ Util.augment(Marker, {
     }
     context.beginPath();
     method(x, y, r, context, this);
-  }/**/
+  }
 });
 
 module.exports = Marker;
