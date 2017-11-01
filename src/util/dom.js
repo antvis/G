@@ -99,10 +99,22 @@ module.exports = {
     return height + bTop + bBottom + pTop + pBottom;
   },
   /**
-   * TODO: 应该移除的
-   * 添加时间监听器
+   * 获取外层宽度
+   * @param  {HTMLElement} el dom节点
+   * @return {Number} 宽度
+   */
+  getOuterWidth(el) {
+    const width = this.getWidth(el);
+    const bLeft = parseFloat(this.getStyle(el, 'borderLeftWidth')) || 0;
+    const pLeft = parseFloat(this.getStyle(el, 'paddingLeft'));
+    const pRight = parseFloat(this.getStyle(el, 'paddingRight'));
+    const bRight = parseFloat(this.getStyle(el, 'borderRightWidth')) || 0;
+    return width + bLeft + bRight + pLeft + pRight;
+  },
+  /**
+   * 添加事件监听器
    * @param  {Object} target DOM对象
-   * @param  {Object} eventType 事件名
+   * @param  {String} eventType 事件名
    * @param  {Funtion} callback 回调函数
    * @return {Object} 返回对象
    */
