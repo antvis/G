@@ -84,7 +84,7 @@ function parseRadialGradient(color, self) {
   const width = box.maxX - box.minX;
   const height = box.maxY - box.minY;
   const r = Math.sqrt(width * width + height * height) / 2;
-  const gradient = context.createRadialGradient(box.minX + width * fx, box.minY + height * fy, fr, box.minX + width / 2, box.minY + height / 2, r);
+  const gradient = context.createRadialGradient(box.minX + width * fx, box.minY + height * fy, fr * r, box.minX + width / 2, box.minY + height / 2, r);
   addStop(steps, gradient);
   return gradient;
 }
