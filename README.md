@@ -2,7 +2,7 @@
 
 ## Installing
 
-
+`npm i @antv/g`
 
 ## Contributing
 

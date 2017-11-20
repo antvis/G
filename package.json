@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "2.0.0-beta.30",
+  "version": "2.0.0",
   "description": "A canvas library which providing 2d draw for G2.",
   "keywords": [
     "canvas",
@@ -8,14 +8,14 @@
     "2d draw"
   ],
   "main": "index.js",
-  "homepage": "http://gitlab.alibaba-inc.com/datavis/g",
+  "homepage": "https://github.com/antvis/g",
   "author": "https://github.com/orgs/antvis/people",
   "repository": {
     "type": "git",
-    "url": "git@gitlab.alibaba-inc.com:datavis/g.git"
+    "url": "git@github.com:antvis/g.git"
   },
   "bugs": {
-    "url": "http://gitlab.alibaba-inc.com/datavis/g/issues"
+    "url": "https://github.com/antvis/g/issues"
   },
   "devDependencies": {
     "@lite-js/torch": "^0.2.6",
@@ -40,7 +40,7 @@
   },
   "scripts": {
     "build": "webpack",
-    "ci": "tnpm run lint && tnpm run test",
+    "ci": "npm run lint && npm run test",
     "compress": "uglifyjs --compress --mangle --output dist/g-$npm_package_version.min.js -- build/g.js",
     "coverage": "npm run coverage-generator && npm run coverage-viewer",
     "coverage-viewer": "torch-coverage",
