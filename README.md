@@ -1,11 +1,13 @@
 # G: a canvas library which providing 2d draw for G2
 
-## Installing
+## Install
 
 `npm i @antv/g`
 
-## Contributing
+## Development
 
-- project structure
-- core style guide
-- work flow
+```shell
+$ git clone git@github.com:antvis/g.git
+$ npm install
+$ npm run dev
+```
