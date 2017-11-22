@@ -11,7 +11,8 @@ const Polyline = function(cfg) {
 Polyline.ATTRS = {
   points: null,
   lineWidth: 1,
-  arrow: false,
+  startArrow: false,
+  endArrow: false,
   tCache: null
 };
 
@@ -24,7 +25,8 @@ Util.augment(Polyline, {
   getDefaultAttrs() {
     return {
       lineWidth: 1,
-      arrow: false
+      startArrow: false,
+      endArrow: false
     };
   },
   calculateBox() {
@@ -117,8 +119,6 @@ Util.augment(Polyline, {
     const self = this;
     const attrs = self.__attrs;
     const points = attrs.points;
-    const arrow = attrs.arrow;
-    const lineWidth = attrs.lineWidth;
     let l;
     let i;
 
@@ -127,18 +127,14 @@ Util.augment(Polyline, {
     }
     context = context || self.get('context');
     context.beginPath();
+
+    Arrow.addStartArrow(context, attrs, points[1][0], points[1][1], points[0][0], points[0][1]);
     context.moveTo(points[0][0], points[0][1]);
     for (i = 1, l = points.length - 1; i < l; i++) {
       context.lineTo(points[i][0], points[i][1]);
     }
-    if (arrow) {
-      const v = [ points[l][0] - points[l - 1][0], points[l][1] - points[l - 1][1] ];
-      const end = Arrow.getEndPoint(v, [ points[l][0], points[l][1] ], lineWidth);
-      context.lineTo(end[0], end[1]);
-      Arrow.makeArrow(context, v, end, lineWidth);
-    } else {
-      context.lineTo(points[l][0], points[l][1]);
-    }
+    context.lineTo(points[l][0], points[l][1]);
+    Arrow.addEndArrow(context, attrs, points[l - 1][0], points[l - 1][1], points[l][0], points[l][1]);
   },
   getPoint(t) {
     const attrs = this.__attrs;
