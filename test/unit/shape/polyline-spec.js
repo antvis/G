@@ -19,7 +19,8 @@ describe('Polyline', function() {
   it('init attrs', function() {
     expect(polyline.attr('points')).to.be.undefined;
     expect(polyline.attr('lineWidth')).to.equal(1);
-    expect(polyline.attr('arrow')).to.be.false;
+    expect(polyline.attr('startArrow')).to.be.false;
+    expect(polyline.attr('endArrow')).to.be.false;
     const box = polyline.getBBox();
     expect(box).to.be.null;
   });
@@ -102,8 +103,8 @@ describe('Polyline', function() {
   });
 
   it('arrow', function() {
-    polyline.attr('arrow', true);
-    expect(polyline.attr('arrow')).to.be.true;
+    polyline.attr('startArrow', true);
+    expect(polyline.attr('startArrow')).to.be.true;
     canvas.draw();
   });
 
