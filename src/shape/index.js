@@ -1,18 +1,18 @@
-const Shape = {
-  Rect: require('./rect'),
-  Circle: require('./circle'),
-  Ellipse: require('./ellipse'),
-  Path: require('./path'),
-  Text: require('./text'),
-  Line: require('./line'),
-  Image: require('./image'),
-  Polygon: require('./polygon'),
-  Polyline: require('./polyline'),
-  Arc: require('./arc'),
-  Fan: require('./fan'),
-  Cubic: require('./cubic'),
-  Quadratic: require('./quadratic'),
-  Marker: require('./marker')
-};
+const Shape = require('../core/shape');
+Shape.Rect = require('./rect');
+Shape.Rect = require('./rect');
+Shape.Circle = require('./circle');
+Shape.Ellipse = require('./ellipse');
+Shape.Path = require('./path');
+Shape.Text = require('./text');
+Shape.Line = require('./line');
+Shape.Image = require('./image');
+Shape.Polygon = require('./polygon');
+Shape.Polyline = require('./polyline');
+Shape.Arc = require('./arc');
+Shape.Fan = require('./fan');
+Shape.Cubic = require('./cubic');
+Shape.Quadratic = require('./quadratic');
+Shape.Marker = require('./marker');
 
 module.exports = Shape;
