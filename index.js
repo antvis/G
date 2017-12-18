@@ -18,6 +18,7 @@ module.exports = {
   Marker: require('./src/shape/marker'),
   PathUtil: require('./src/util/path'),
   MatrixUtil: require('./src/util/matrix'),
+  CommonUtil: require('./src/util/common'),
   DomUtil: require('./src/util/dom'),
   Event: require('./src/event')
 };

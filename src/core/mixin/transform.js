@@ -173,7 +173,9 @@ module.exports = {
       v[1] /= m[4];
     } else {
       const inm = mat3.invert([], m);
-      vec3.transformMat3(v, v, inm);
+      if (inm) {
+        vec3.transformMat3(v, v, inm);
+      }
     }
     return this;
   },
