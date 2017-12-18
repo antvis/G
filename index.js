@@ -1,8 +1,3 @@
-const ShapeIndex = require('./src/shape/');
-const registerShape = (NewShape, newShapeName) => {
-  ShapeIndex[newShapeName] = NewShape;
-};
-
 module.exports = {
   Canvas: require('./src/canvas'),
   Group: require('./src/core/group'),
@@ -25,6 +20,5 @@ module.exports = {
   MatrixUtil: require('./src/util/matrix'),
   CommonUtil: require('./src/util/common'),
   DomUtil: require('./src/util/dom'),
-  Event: require('./src/event'),
-  registerShape
+  Event: require('./src/event')
 };
