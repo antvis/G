@@ -146,7 +146,7 @@ Util.augment(CText, {
     const height = self.__getTextHeight(); // attrs.height
     const textAlign = attrs.textAlign;
     const textBaseline = attrs.textBaseline;
-    const lineWidth = attrs.lineWidth;
+    const lineWidth = self.getHitLineWidth();
     const point = {
       x,
       y: y - height

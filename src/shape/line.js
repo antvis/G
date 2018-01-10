@@ -32,13 +32,14 @@ Util.augment(Line, {
   },
   calculateBox() {
     const attrs = this.__attrs;
-    const { x1, y1, x2, y2, lineWidth } = attrs;
-
+    const { x1, y1, x2, y2 } = attrs;
+    const lineWidth = this.getHitLineWidth();
     return LineMath.box(x1, y1, x2, y2, lineWidth);
   },
   isPointInPath(x, y) {
     const attrs = this.__attrs;
-    const { x1, y1, x2, y2, lineWidth } = attrs;
+    const { x1, y1, x2, y2 } = attrs;
+    const lineWidth = this.getHitLineWidth();
 
     if (this.hasStroke()) {
       return Inside.line(x1, y1, x2, y2, lineWidth, x, y);

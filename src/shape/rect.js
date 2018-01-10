@@ -34,7 +34,7 @@ Util.augment(Rect, {
     const y = attrs.y;
     const width = attrs.width;
     const height = attrs.height;
-    const lineWidth = attrs.lineWidth;
+    const lineWidth = this.getHitLineWidth();
 
     const halfWidth = lineWidth / 2;
     return {
@@ -78,7 +78,7 @@ Util.augment(Rect, {
     const width = attrs.width;
     const height = attrs.height;
     const radius = attrs.radius;
-    const lineWidth = attrs.lineWidth;
+    const lineWidth = this.getHitLineWidth();
 
     if (radius === 0) {
       const halfWidth = lineWidth / 2;

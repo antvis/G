@@ -32,7 +32,8 @@ Util.augment(Cubic, {
   },
   calculateBox() {
     const attrs = this.__attrs;
-    const { p1, p2, p3, p4, lineWidth } = attrs;
+    const { p1, p2, p3, p4 } = attrs;
+    const lineWidth = this.getHitLineWidth();
     let i;
     let l;
 
@@ -66,8 +67,8 @@ Util.augment(Cubic, {
   },
   isPointInPath(x, y) {
     const attrs = this.__attrs;
-    const { p1, p2, p3, p4, lineWidth } = attrs;
-
+    const { p1, p2, p3, p4 } = attrs;
+    const lineWidth = this.getHitLineWidth();
     return Inside.cubicline(
       p1[0], p1[1],
       p2[0], p2[1],
