@@ -32,7 +32,7 @@ Util.augment(Polyline, {
   calculateBox() {
     const self = this;
     const attrs = self.__attrs;
-    const lineWidth = attrs.lineWidth;
+    const lineWidth = this.getHitLineWidth();
     const points = attrs.points;
     if (!points || points.length === 0) {
       return null;

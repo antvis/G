@@ -29,7 +29,7 @@ Util.augment(Circle, {
     const cx = attrs.x;
     const cy = attrs.y;
     const r = attrs.r;
-    const lineWidth = attrs.lineWidth;
+    const lineWidth = this.getHitLineWidth();
     const halfWidth = lineWidth / 2 + r;
     return {
       minX: cx - halfWidth,
@@ -68,7 +68,7 @@ Util.augment(Circle, {
     const cx = attrs.x;
     const cy = attrs.y;
     const r = attrs.r;
-    const lineWidth = attrs.lineWidth;
+    const lineWidth = this.getHitLineWidth();
 
     return Inside.arcline(cx, cy, r, 0, Math.PI * 2, false, lineWidth, x, y);
   },

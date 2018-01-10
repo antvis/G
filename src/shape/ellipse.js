@@ -33,7 +33,7 @@ Util.augment(Ellipse, {
     const cy = attrs.y;
     const rx = attrs.rx;
     const ry = attrs.ry;
-    const lineWidth = attrs.lineWidth;
+    const lineWidth = this.getHitLineWidth();
     const halfXWidth = rx + lineWidth / 2;
     const halfYWidth = ry + lineWidth / 2;
 
@@ -88,7 +88,7 @@ Util.augment(Ellipse, {
     const cy = attrs.y;
     const rx = attrs.rx;
     const ry = attrs.ry;
-    const lineWidth = attrs.lineWidth;
+    const lineWidth = this.getHitLineWidth();
 
     const r = (rx > ry) ? rx : ry;
     const scaleX = (rx > ry) ? 1 : rx / ry;

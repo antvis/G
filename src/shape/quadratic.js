@@ -32,7 +32,8 @@ Util.augment(Quadratic, {
   calculateBox() {
     const self = this;
     const attrs = self.__attrs;
-    const { p1, p2, p3, lineWidth } = attrs;
+    const { p1, p2, p3 } = attrs;
+    const lineWidth = this.getHitLineWidth();
     let i;
     let l;
 
@@ -65,7 +66,8 @@ Util.augment(Quadratic, {
   isPointInPath(x, y) {
     const self = this;
     const attrs = self.__attrs;
-    const { p1, p2, p3, lineWidth } = attrs;
+    const { p1, p2, p3 } = attrs;
+    const lineWidth = this.getHitLineWidth();
 
     return Inside.quadraticline(
       p1[0], p1[1],

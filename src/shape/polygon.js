@@ -26,7 +26,7 @@ Util.augment(Polygon, {
     const self = this;
     const attrs = self.__attrs;
     const points = attrs.points;
-    const lineWidth = attrs.lineWidth;
+    const lineWidth = this.getHitLineWidth();
     if (!points || points.length === 0) {
       return null;
     }
@@ -94,7 +94,7 @@ Util.augment(Polygon, {
     if (points.length < 2) {
       return false;
     }
-    const lineWidth = attrs.lineWidth;
+    const lineWidth = this.getHitLineWidth();
     const outPoints = points.slice(0);
     if (points.length >= 3) {
       outPoints.push(points[0]);

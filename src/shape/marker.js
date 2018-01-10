@@ -68,7 +68,7 @@ Util.augment(Marker, {
     const cx = attrs.x;
     const cy = attrs.y;
     const r = attrs.radius;
-    const lineWidth = attrs.lineWidth;
+    const lineWidth = this.getHitLineWidth();
     const halfWidth = lineWidth / 2 + r;
     return {
       minX: cx - halfWidth,
@@ -82,7 +82,8 @@ Util.augment(Marker, {
     const cx = attrs.x;
     const cy = attrs.y;
     const r = attrs.radius;
-    return Inside.circle(cx, cy, r, x, y);
+    const lineWidth = this.getHitLineWidth();
+    return Inside.circle(cx, cy, r + lineWidth / 2, x, y);
   },
   createPath(context) {
     const attrs = this.__attrs;

@@ -90,6 +90,16 @@ Util.augment(Shape, {
   calculateBox() {
     return null;
   },
+  // 获取拾取时线的宽度，需要考虑附加的线的宽度
+  getHitLineWidth() {
+    const attrs = this.__attrs;
+    // if (!attrs.stroke) {
+    //   return 0;
+    // }
+    const lineAppendWidth = attrs.lineAppendWidth || 0;
+    const lineWidth = attrs.lineWidth || 0;
+    return lineWidth + lineAppendWidth;
+  },
   // 清除当前的矩阵
   clearTotalMatrix() {
     this.__cfg.totalMatrix = null;
