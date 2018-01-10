@@ -67,15 +67,12 @@ Util.augment(Path, {
   },
   calculateBox() {
     const self = this;
-    const attrs = self.__attrs;
-    let lineWidth = attrs.lineWidth;
-    const lineAppendWidth = attrs.lineAppendWidth || 0;
     const segments = self.get('segments');
 
     if (!segments) {
       return null;
     }
-    lineWidth += lineAppendWidth;
+    const lineWidth = this.getHitLineWidth();
     let minX = Infinity;
     let maxX = -Infinity;
     let minY = Infinity;
@@ -138,10 +135,7 @@ Util.augment(Path, {
     const self = this;
     const segments = self.get('segments');
     if (!Util.isEmpty(segments)) {
-      const attrs = self.__attrs;
-      let lineWidth = attrs.lineWidth;
-      const appendWidth = attrs.lineAppendWidth || 0;
-      lineWidth += appendWidth;
+      const lineWidth = self.getHitLineWidth();
       for (let i = 0, l = segments.length; i < l; i++) {
         if (segments[i].isInside(x, y, lineWidth)) {
           return true;

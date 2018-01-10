@@ -43,7 +43,7 @@ Util.augment(Fan, {
     const startAngle = attrs.startAngle;
     const endAngle = attrs.endAngle;
     const clockwise = attrs.clockwise;
-    const lineWidth = attrs.lineWidth;
+    const lineWidth = this.getHitLineWidth();
 
     const boxs = ArcMath.box(cx, cy, rs, startAngle, endAngle, clockwise);
     const boxe = ArcMath.box(cx, cy, re, startAngle, endAngle, clockwise);
@@ -110,7 +110,7 @@ Util.augment(Fan, {
     const startAngle = attrs.startAngle;
     const endAngle = attrs.endAngle;
     const clockwise = attrs.clockwise;
-    const lineWidth = attrs.lineWidth;
+    const lineWidth = this.getHitLineWidth();
 
     const ssp = {
       x: Math.cos(startAngle) * rs + cx,

@@ -47,7 +47,8 @@ Util.augment(Arc, {
   },
   calculateBox() {
     const attrs = this.__attrs;
-    const { x, y, r, startAngle, endAngle, clockwise, lineWidth } = attrs;
+    const { x, y, r, startAngle, endAngle, clockwise } = attrs;
+    const lineWidth = this.getHitLineWidth();
     const halfWidth = lineWidth / 2;
     const box = ArcMath.box(x, y, r, startAngle, endAngle, clockwise);
     box.minX -= halfWidth;
@@ -60,8 +61,8 @@ Util.augment(Arc, {
     const attrs = this.__attrs;
     const cx = attrs.x;
     const cy = attrs.y;
-    const { r, startAngle, endAngle, clockwise, lineWidth } = attrs;
-
+    const { r, startAngle, endAngle, clockwise } = attrs;
+    const lineWidth = this.getHitLineWidth();
     if (this.hasStroke()) {
       return Inside.arcline(cx, cy, r, startAngle, endAngle, clockwise, lineWidth, x, y);
     }
