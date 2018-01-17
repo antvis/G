@@ -17,6 +17,7 @@ module.exports = {
   Quadratic: require('./src/shape/quadratic'),
   Marker: require('./src/shape/marker'),
   PathUtil: require('./src/util/path'),
+  PathSegment: require('./src/shape/util/path-segment'),
   MatrixUtil: require('./src/util/matrix'),
   CommonUtil: require('./src/util/common'),
   DomUtil: require('./src/util/dom'),
