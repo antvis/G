@@ -122,7 +122,7 @@ var canvas = new Canvas({
 #### 属性
 
 * zIndex 层次索引值，决定分组在父容器中的位置
-* visibile 是否可见
+* visible 是否可见
 * children 嵌套的图形元素，只读
 
 #### 方法
@@ -167,7 +167,7 @@ var canvas = new Canvas({
 #### 属性
 
 * zIndex 层次索引值，决定分组在父容器中的位置
-* visibile 是否可见
+* visible 是否可见
 * attrs 图形属性，通用的图形属性如下：
   + transform 进行几何变换的矩阵
   + 通用的图形属性，见[绘图属性](https://antv.alipay.com/zh-cn/g2/3.x/api/graphic.html)
