@@ -6,6 +6,29 @@ const d3Timer = require('d3-timer');
 const { interpolate, interpolateArray } = require('d3-interpolate'); // 目前整体动画只需要数值和数组的差值计算
 
 module.exports = {
+  stopAnimate() {
+    const self = this;
+    const canvas = self.get('canvas');
+    if (self.get('destroyed')) {
+      return;
+    }
+    if (self.get('animating')) {
+      const timer = self.get('animateTimer');
+      timer && timer.stop();
+      const animateCfg = self.get('animateCfg');
+      self.attr(animateCfg.toAttrs);
+      if (animateCfg.toM) {
+        self.setMatrix(animateCfg.toM);
+      }
+      if (animateCfg.callback) {
+        animateCfg.callback();
+      }
+      self.setSilent('animating', false); // 动画停止
+      self.setSilent('animateCfg', null);
+      self.setSilent('animateTimer', null);
+      canvas.draw();
+    }
+  },
   /**
    * 执行动画
    * @param  {Object}   toProps  动画最终状态
@@ -22,9 +45,25 @@ module.exports = {
     const toM = formatProps.M;
     const fromAttrs = getfromAttrs(toAttrs);
     const fromM = Util.clone(self.getMatrix());
-    easing = easing ? easing : 'easeLinear';
+    // 可能不设置 easing
+    if (Util.isNumber(callback)) {
+      delay = callback;
+      callback = null;
+    }
+    if (Util.isFunction(easing)) {
+      callback = easing;
+      easing = 'easeLinear';
+    } else {
+      easing = easing ? easing : 'easeLinear';
+    }
 
     self.setSilent('animating', true); // 处于动画状态
+    self.setSilent('animateCfg', {
+      toAttrs,
+      toM,
+      callback
+    });
+
     // 执行动画
     const timer = d3Timer.timer(elapsed => {
       let ratio = elapsed / duration;
@@ -35,9 +74,13 @@ module.exports = {
         update(1); // 保证最后一帧的绘制
         callback && callback();
         self.setSilent('animating', false); // 动画停止
+        self.setSilent('animateCfg', null);
+        self.setSilent('animateTimer', null);
         timer.stop();
       }
     }, delay);
+
+    self.setSilent('animateTimer', timer);
 
     function update(ratio) {
       const cProps = {}; // 此刻属性
