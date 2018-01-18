@@ -202,9 +202,13 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
   },
   destroy() {
     const destroyed = this.get('destroyed');
-
     if (destroyed) {
       return;
+    }
+    // 如果正在执行动画，清理动画
+    if (this.get('animating')) {
+      const timer = this.get('animateTimer');
+      timer && timer.stop();
     }
     this.__cfg = {};
     this.__attrs = null;
