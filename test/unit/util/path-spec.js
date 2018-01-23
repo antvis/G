@@ -6,13 +6,11 @@ const Canvas = require('../../../index').Canvas;
 describe('path util test', function() {
   const dom = document.createElement('div');
   document.body.appendChild(dom);
-  
   const canvas = new Canvas({
     containerDOM: dom,
     width: 800,
     height: 800
   });
-  
   function drawPoints(arr, canvas) {
     Util.each(arr, function(v) {
       canvas.addShape('circle', {
