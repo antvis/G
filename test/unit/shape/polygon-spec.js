@@ -2,8 +2,6 @@ const expect = require('chai').expect;
 const G = require('../../../index');
 const Canvas = require('../../../src/canvas');
 
-
-
 describe('Polygon', function() {
   const div = document.createElement('div');
   div.id = 'canvas-polygon';

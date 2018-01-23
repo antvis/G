@@ -5,7 +5,7 @@ const d3Ease = require('d3-ease');
 const d3Timer = require('d3-timer');
 const { interpolate, interpolateArray } = require('d3-interpolate'); // 目前整体动画只需要数值和数组的差值计算
 const ReservedProps = {
-  delay: 'delay',
+  delay: 'delay'
 };
 module.exports = {
   stopAnimate() {
@@ -71,7 +71,7 @@ module.exports = {
 
     // 执行动画
     timer = d3Timer.timer(elapsed => {
-      if(repeat){
+      if (repeat) {
         excuteRepeat(elapsed);
       } else {
         excuteOnce(elapsed);
@@ -81,7 +81,7 @@ module.exports = {
     self.setSilent('animateTimer', timer);
 
     function excuteRepeat(elapsed) {
-      let ratio = (elapsed % duration)/duration;
+      let ratio = (elapsed % duration) / duration;
       ratio = d3Ease[easing](ratio);
       update(ratio);
     }
