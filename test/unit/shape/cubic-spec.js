@@ -2,11 +2,11 @@ const expect = require('chai').expect;
 const G = require('../../../index');
 const Canvas = require('../../../src/canvas');
 const Util = require('../../../src/util/index');
-const div = document.createElement('div');
-div.id = 'canvas-cubic';
-document.body.appendChild(div);
 
 describe('Cubic line', function() {
+  const div = document.createElement('div');
+  div.id = 'canvas-cubic';
+  document.body.appendChild(div);
   const canvas = new Canvas({
     containerId: 'canvas-cubic',
     width: 200,

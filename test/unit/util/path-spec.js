@@ -3,31 +3,29 @@ const Util = require('../../../src/util/common');
 const PathUtil = require('../../../src/util/path');
 const Canvas = require('../../../index').Canvas;
 
-const dom = document.createElement('div');
-document.body.appendChild(dom);
-
-const canvas = new Canvas({
-  containerDOM: dom,
-  width: 800,
-  height: 800
-});
-
-function drawPoints(arr, canvas) {
-  Util.each(arr, function(v) {
-    canvas.addShape('circle', {
-      attrs: {
-        x: v.x,
-        y: v.y,
-        r: 5,
-        stroke: 'green',
-        lineWidth: 2
-      }
-    });
-  });
-}
-
 describe('path util test', function() {
-
+  const dom = document.createElement('div');
+  document.body.appendChild(dom);
+  
+  const canvas = new Canvas({
+    containerDOM: dom,
+    width: 800,
+    height: 800
+  });
+  
+  function drawPoints(arr, canvas) {
+    Util.each(arr, function(v) {
+      canvas.addShape('circle', {
+        attrs: {
+          x: v.x,
+          y: v.y,
+          r: 5,
+          stroke: 'green',
+          lineWidth: 2
+        }
+      });
+    });
+  }
   it('path to array', function() {
     const path = 'M 100 100 L 200 200 V 100 H100C 40 10, 65 10, 95 80 S 150 150 180 80Q 95 10 180 80T 180 80L 110 215A 30 50 0 0 1 162.55 162.45L 172.55 152.45A 30 50 -45 0 1 215.1 109.9L 315 10A 45 45, 0, 0, 0, 125 125L 125 80A 45 45, 0, 1, 0, 275 125A 45 45, 0, 0, 1, 125 275A 45 45, 0, 1, 1, 275 275R100 200 50 100 30 40Z';
     expect(PathUtil.parsePathString(path).length).to.equal(20);

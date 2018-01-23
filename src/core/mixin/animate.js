@@ -4,7 +4,9 @@ const Util = require('../../util/index');
 const d3Ease = require('d3-ease');
 const d3Timer = require('d3-timer');
 const { interpolate, interpolateArray } = require('d3-interpolate'); // 目前整体动画只需要数值和数组的差值计算
-
+const ReservedProps = {
+  delay: 'delay',
+};
 module.exports = {
   stopAnimate() {
     const self = this;
@@ -45,6 +47,9 @@ module.exports = {
     const toM = formatProps.M;
     const fromAttrs = getfromAttrs(toAttrs);
     const fromM = Util.clone(self.getMatrix());
+    const repeat = toProps.repeat;
+    let timer = self.get('animateTimer');
+    timer && timer.stop();
     // 可能不设置 easing
     if (Util.isNumber(callback)) {
       delay = callback;
@@ -65,7 +70,23 @@ module.exports = {
     });
 
     // 执行动画
-    const timer = d3Timer.timer(elapsed => {
+    timer = d3Timer.timer(elapsed => {
+      if(repeat){
+        excuteRepeat(elapsed);
+      } else {
+        excuteOnce(elapsed);
+      }
+    }, delay);
+
+    self.setSilent('animateTimer', timer);
+
+    function excuteRepeat(elapsed) {
+      let ratio = (elapsed % duration)/duration;
+      ratio = d3Ease[easing](ratio);
+      update(ratio);
+    }
+
+    function excuteOnce(elapsed) {
       let ratio = elapsed / duration;
       if (ratio < 1) {
         ratio = d3Ease[easing](ratio);
@@ -78,9 +99,7 @@ module.exports = {
         self.setSilent('animateTimer', null);
         timer.stop();
       }
-    }, delay);
-
-    self.setSilent('animateTimer', timer);
+    }
 
     function update(ratio) {
       const cProps = {}; // 此刻属性
@@ -134,7 +153,7 @@ module.exports = {
           rst.M = MatrixUtil.transform(self.getMatrix(), props[k]);
         } else if (k === 'matrix') {
           rst.M = props[k];
-        } else {
+        } else if (!ReservedProps[k]) {
           rst.attrs[k] = props[k];
         }
       }

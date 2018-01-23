@@ -1,11 +1,10 @@
 const expect = require('chai').expect;
 const Canvas = require('../../../src/canvas');
-const div = document.createElement('div');
-div.id = 'canvas-marker';
-document.body.appendChild(div);
-
 
 describe('Marker', function() {
+  const div = document.createElement('div');
+  div.id = 'canvas-marker';
+  document.body.appendChild(div);
   const canvas = new Canvas({
     containerId: 'canvas-marker',
     width: 200,
