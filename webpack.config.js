@@ -1,11 +1,10 @@
 const webpack = require('webpack');
-const {
-  resolve
-} = require('path');
+const resolve = require('path').resolve;
+const pkg = require('./package.json');
 
 module.exports = {
   entry: {
-    g: './index.js'
+    g: './src/index.js'
   },
   output: {
     filename: '[name].js',
@@ -21,19 +20,17 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            babelrc: false,
-            plugins: [
-              'transform-remove-strict-mode'
-            ],
-            presets: [
-              [
-                'es2015', {
-                  loose: true,
-                  modules: false
-                }
-              ],
-              'stage-0'
-            ]
+            babelrc: true
+          }
+        }
+      },
+      {
+        test: /index\.js$/,
+        use: {
+          loader: 'string-replace-loader',
+          options: {
+            search: '____G_VERSION____',
+            replace: pkg.version
           }
         }
       }

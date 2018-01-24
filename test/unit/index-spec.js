@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../index');
+const G = require('../../src/index');
 
 describe('index', () => {
   it('G', () => {
