@@ -1,15 +1,14 @@
+const G = require('../../../index');
+const Canvas = require('../../../src/canvas');
 const expect = require('chai').expect;
 const {
   resolve
 } = require('path');
-const G = require('../../../index');
-const Canvas = require('../../../src/canvas');
-const div = document.createElement('div');
-div.id = 'canvas-img';
-document.body.appendChild(div);
 
 describe('Image', function() {
-
+  const div = document.createElement('div');
+  div.id = 'canvas-img';
+  document.body.appendChild(div);
   const can1 = document.createElement('canvas');
   can1.id = 'img1';
   can1.width = 800;

@@ -2,7 +2,6 @@ const expect = require('chai').expect;
 const Arc = require('../../../src/shape/math/arc');
 const Util = require('../../../src/util/index');
 
-
 describe('Arc math', function() {
   it('nearAngle', function() {
     const angle = Util.toRadian(20);
