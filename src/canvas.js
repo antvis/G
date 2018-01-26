@@ -2,12 +2,6 @@ const Util = require('./util/index');
 const Event = require('./event');
 const Group = require('./core/group');
 
-function requestAnimationFrame(fn) {
-  const method = window.requestAnimationFrame || window.webkitRequestAnimationFrame || function(fn) {
-    return setTimeout(fn, 16);
-  };
-  return method(fn);
-}
 const Canvas = function(cfg) {
   Canvas.superclass.constructor.call(this, cfg);
 };
@@ -307,7 +301,7 @@ Util.augment(Canvas, {
   draw() {
     const self = this;
     function drawInner() {
-      self.setSilent('animateHandler', requestAnimationFrame(() => {
+      self.setSilent('animateHandler', Util.requestAnimationFrame(() => {
         self.setSilent('animateHandler', undefined);
         if (self.get('toDraw')) {
           drawInner();
