@@ -71,7 +71,9 @@ module.exports = {
     const container = CONTAINERS[name];
     str = str.replace(/(^\s*)|(\s*$)/g, '');
     container.innerHTML = '' + str;
-    return container.childNodes[0];
+    const dom = container.childNodes[0];
+    container.removeChild(dom);
+    return dom;
   },
   getRatio() {
     return window.devicePixelRatio ? window.devicePixelRatio : 2;
