@@ -139,11 +139,12 @@ Util.augment(PathSegment, {
         this.params = [ preEndPoint, point ];
         this.subStart = preSegment.subStart;
         this.endPoint = point;
-        if (this.isLast) {
-          this.endTangent = function() {
-            return [ point.x - preEndPoint.x, point.y - preEndPoint.y ];
-          };
-        }
+        this.endTangent = function() {
+          return [ point.x - preEndPoint.x, point.y - preEndPoint.y ];
+        };
+        this.startTangent = function() {
+          return [ preEndPoint.x - point.x, preEndPoint.y - point.y ];
+        };
         break;
       case 'H':
         if (relative) {
@@ -161,6 +162,9 @@ Util.augment(PathSegment, {
         this.endTangent = function() {
           return [ point.x - preEndPoint.x, point.y - preEndPoint.y ];
         };
+        this.startTangent = function() {
+          return [ preEndPoint.x - point.x, preEndPoint.y - point.y ];
+        };
         break;
       case 'V':
         if (relative) {
@@ -177,6 +181,9 @@ Util.augment(PathSegment, {
         this.endPoint = point;
         this.endTangent = function() {
           return [ point.x - preEndPoint.x, point.y - preEndPoint.y ];
+        };
+        this.startTangent = function() {
+          return [ preEndPoint.x - point.x, preEndPoint.y - point.y ];
         };
         break;
       case 'Q':
@@ -200,6 +207,9 @@ Util.augment(PathSegment, {
         this.endTangent = function() {
           return [ point2.x - point1.x, point2.y - point1.y ];
         };
+        this.startTangent = function() {
+          return [ preEndPoint.x - point1.x, preEndPoint.y - point1.y ];
+        };
         break;
       case 'T':
         if (relative) {
@@ -219,6 +229,9 @@ Util.augment(PathSegment, {
           this.endTangent = function() {
             return [ point2.x - point1.x, point2.y - point1.y ];
           };
+          this.startTangent = function() {
+            return [ preEndPoint.x - point1.x, preEndPoint.y - point1.y ];
+          };
         } else {
           this.command = 'TL';
           this.params = [ preEndPoint, point2 ];
@@ -226,6 +239,9 @@ Util.augment(PathSegment, {
           this.endPoint = point2;
           this.endTangent = function() {
             return [ point2.x - preEndPoint.x, point2.y - preEndPoint.y ];
+          };
+          this.startTangent = function() {
+            return [ preEndPoint.x - point2.x, preEndPoint.y - point2.y ];
           };
         }
 
@@ -256,6 +272,9 @@ Util.augment(PathSegment, {
         this.endTangent = function() {
           return [ point3.x - point2.x, point3.y - point2.y ];
         };
+        this.startTangent = function() {
+          return [ preEndPoint.x - point1.x, preEndPoint.y - point1.y ];
+        };
         break;
       case 'S':
         if (relative) {
@@ -280,6 +299,9 @@ Util.augment(PathSegment, {
           this.endTangent = function() {
             return [ point3.x - point2.x, point3.y - point2.y ];
           };
+          this.startTangent = function() {
+            return [ preEndPoint.x - point1.x, preEndPoint.y - point1.y ];
+          };
         } else {
           this.command = 'SQ';
           this.params = [ preEndPoint, point2, point3 ];
@@ -287,6 +309,9 @@ Util.augment(PathSegment, {
           this.endPoint = point3;
           this.endTangent = function() {
             return [ point3.x - point2.x, point3.y - point2.y ];
+          };
+          this.startTangent = function() {
+            return [ preEndPoint.x - point2.x, preEndPoint.y - point2.y ];
           };
         }
         break;
