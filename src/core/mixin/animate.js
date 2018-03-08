@@ -15,19 +15,28 @@ module.exports = {
       return;
     }
     if (self.get('animating')) {
-      const timer = self.get('animateTimer');
-      timer && timer.stop();
-      const animateCfg = self.get('animateCfg');
-      self.attr(animateCfg.toAttrs);
-      if (animateCfg.toM) {
-        self.setMatrix(animateCfg.toM);
+      const clip = self.attr('clip');
+      // 如果 clip 在执行动画
+      if (clip && clip.get('animating')) {
+        clip.stopAnimate();
       }
-      if (animateCfg.callback) {
-        animateCfg.callback();
+      const timer = self.get('animateTimer');
+      if (timer) {
+        timer.stop();
+        self.setSilent('animateTimer', null);
+      }
+      const animateCfg = self.get('animateCfg');
+      if (animateCfg) {
+        self.attr(animateCfg.toAttrs);
+        if (animateCfg.toM) {
+          self.setMatrix(animateCfg.toM);
+        }
+        if (animateCfg.callback) {
+          animateCfg.callback();
+        }
+        self.setSilent('animateCfg', null);
       }
       self.setSilent('animating', false); // 动画停止
-      self.setSilent('animateCfg', null);
-      self.setSilent('animateTimer', null);
       canvas.draw();
     }
   },
