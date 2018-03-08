@@ -1,11 +1,12 @@
 const expect = require('chai').expect;
-const Canvas = require('../../../src/canvas');
+const G = require('../../../src/index');
+
 
 describe('animate', function() {
   const div = document.createElement('div');
   div.id = 'canvas-animate';
   document.body.appendChild(div);
-  const canvas = new Canvas({
+  const canvas = new G.Canvas({
     containerId: 'canvas-animate',
     width: 500,
     height: 500
@@ -104,5 +105,40 @@ describe('animate', function() {
       expect(called).equal(false);
       done();
     }, 350);
+  });
+
+  it('with clip animate', function(done) {
+    const clip = new G.Circle({
+      attrs: {
+        x: 100,
+        y: 100,
+        r: 10,
+        fill: 'blue'
+      },
+      canvas
+    });
+    const shape = canvas.addShape('rect', {
+      attrs: {
+        x: 90,
+        y: 90,
+        clip,
+        width: 20,
+        height: 20,
+        fill: 'red'
+      }
+    });
+    canvas.draw();
+    shape.set('animating', true);
+    clip.animate({
+      r: 20,
+      repeat: true
+    }, 1000);
+
+    setTimeout(function() {
+      shape.stopAnimate();
+      expect(shape.get('animating', false));
+      expect(clip.get('animating', false));
+      done();
+    }, 1000);
   });
 });
