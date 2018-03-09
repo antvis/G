@@ -398,8 +398,6 @@ const a2c = function(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, 
 };
 
 const pathTocurve = function(path, path2) {
-  const pcoms1 = []; // path commands of original path p
-  const pcoms2 = []; // path commands of original path p2
   const p = pathToAbsolute(path);
   const p2 = path2 && pathToAbsolute(path2);
   const attrs = {
@@ -422,9 +420,14 @@ const pathTocurve = function(path, path2) {
     qx: null,
     qy: null
   };
+  const pcoms1 = []; // path commands of original path p
+  const pcoms2 = []; // path commands of original path p2
+  let pfirst = ''; // temporary holder for original path command
+  let pcom = ''; // holder for previous path command of original path
+  let ii;
   const processPath = function(path, d, pcom) {
-    let nx;
-    let ny;
+    let nx,
+      ny;
     if (!path) {
       return [ 'C', d.x, d.y, d.x, d.y, d.x, d.y ];
     }!(path[0] in {
@@ -477,7 +480,7 @@ const pathTocurve = function(path, path2) {
         path = [ 'C' ].concat(l2c(d.x, d.y, d.X, d.Y));
         break;
       default:
-        path = []; // for lint
+        break;
     }
     return path;
   };
@@ -491,7 +494,7 @@ const pathTocurve = function(path, path2) {
         pp.splice(i++, 0, [ 'C' ].concat(pi.splice(0, 6)));
       }
       pp.splice(i, 1);
-      // ii = Math.max(p.length, p2 && p2.length || 0);
+      ii = Math.max(p.length, p2 && p2.length || 0);
     }
   };
   const fixM = function(path1, path2, a1, a2, i) {
@@ -501,12 +504,12 @@ const pathTocurve = function(path, path2) {
       a1.by = 0;
       a1.x = path1[i][1];
       a1.y = path1[i][2];
-      // ii = Math.max(p.length, p2 && p2.length || 0);
+      ii = Math.max(p.length, p2 && p2.length || 0);
     }
   };
-  let pfirst = ''; // temporary holder for original path command
-  let pcom = ''; // holder for previous path command of original path
-  for (let i = 0, ii = Math.max(p.length, p2 && p2.length || 0); i < ii; i++) {
+  ii = Math.max(p.length, p2 && p2.length || 0);
+  for (let i = 0; i < ii; i++) {
+
     p[i] && (pfirst = p[i][0]); // save current path command
 
     if (pfirst !== 'C') { // C is not saved yet, because it may be result of conversion
