@@ -20,7 +20,8 @@ const SHAPE_ATTRS = [
   'strokeStyle',
   'textAlign',
   'textBaseline',
-  'lineDash'
+  'lineDash',
+  'lineDashOffset'
 ];
 
 const Element = function(cfg) {
