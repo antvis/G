@@ -27,7 +27,7 @@
     "babel-plugin-transform-remove-strict-mode": "~0.0.2",
     "babel-preset-env": "~1.6.1",
     "chai": "~4.0.1",
-    "electron": "~1.6.11",
+    "electron": "~1.8.4",
     "eslint": "~3.19.0",
     "eslint-config-airbnb": "~15.0.1",
     "eslint-config-egg": "~4.2.0",
