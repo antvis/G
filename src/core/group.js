@@ -213,6 +213,7 @@ Util.augment(Group, {
     const self = this;
     item.__cfg.parent = self;
     item.__cfg.canvas = self.__cfg.canvas;
+    item.__cfg.defs = self.__cfg.defs;
     const clip = item.__attrs.clip;
     if (clip) {
       clip.setSilent('parent', self);

@@ -1,5 +1,5 @@
 const Util = require('../../util/index');
-const Defs = require('../defs');
+const Defs = require('../defs-singleton');
 const ALIAS_ATTRS = [ 'strokeStyle', 'fillStyle', 'globalAlpha' ];
 const CLIP_SHAPES = [ 'circle', 'ellipse', 'fan', 'polygon', 'rect', 'path' ];
 const CAPITALIZED_ATTRS_MAP = {
@@ -201,13 +201,14 @@ module.exports = {
   __setAttrGradients(name, value) {
     this.__attrs[name] = value;
     name = name.replace('Style', '');
-    const defs = this.get('defs') || new Defs();
-    const id = defs.find('gradient', value);
-    if (id) {
-      this.get('el').setAttribute(name, `url(#${id})`);
-    } else {
-      defs.addGradient(value);
+    const defs = this.get('defs');
+    console.log(defs);
+    if (!defs) return;
+    let id = defs.find('gradient', value);
+    if (!id) {
+      id = defs.addGradient(value, this);
     }
+    this.get('el').setAttribute(name, `url(#${id})`);
   },
   // 设置透明度
   __setAttrOpacity(v) {
