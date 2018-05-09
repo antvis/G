@@ -65,6 +65,7 @@ describe('拓展图形 标记 Marker', function() {
     canvas.addShape('Marker', {
       attrs: {
         symbol: 'circle',
+        fill: '#000',
         stroke: 'red',
         x: 30,
         y: 20,
@@ -129,7 +130,6 @@ describe('拓展图形 标记 Marker', function() {
       }
     });
     canvas.draw();
-    canvas.destroy();
   });
 });
 
@@ -252,7 +252,6 @@ describe('元素拓展方法', function() {
     canvas.draw();
     expect(rect.attr('rotate')).to.equal(45 / 180 * Math.PI);
     canvas.destroy();
-
   });
 });
 
@@ -262,7 +261,7 @@ describe('canvas 事件', function() {
     width: 500,
     height: 500
   });
-  canvas.addShape('Circle', {
+  canvas.addShape('circle', {
     attrs: {
       x: 100,
       y: 100,
@@ -276,7 +275,8 @@ describe('canvas 事件', function() {
       y: 250,
       width: 50,
       height: 50,
-      fill: 'black'
+      fill: 'black',
+      radius: 10
     }
   });
   canvas.draw();
@@ -291,7 +291,6 @@ describe('canvas 事件', function() {
       clientX: 154,
       clientY: 276
     });
-
     expect(target).not.to.be.undefined;
   });
 });

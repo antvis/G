@@ -21,21 +21,8 @@ Util.augment(Circle, {
   type: 'circle',
   getDefaultAttrs() {
     return {
-      lineWidth: 1
-    };
-  },
-  calculateBox() {
-    const attrs = this.__attrs;
-    const cx = attrs.x;
-    const cy = attrs.y;
-    const r = attrs.r;
-    const lineWidth = this.getHitLineWidth();
-    const halfWidth = lineWidth / 2 + r;
-    return {
-      minX: cx - halfWidth,
-      minY: cy - halfWidth,
-      maxX: cx + halfWidth,
-      maxY: cy + halfWidth
+      lineWidth: 1,
+      fill: 'none'
     };
   },
   isPointInPath(x, y) {

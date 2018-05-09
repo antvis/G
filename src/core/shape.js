@@ -1,6 +1,7 @@
 const Util = require('../util/index');
 const Element = require('./element');
 const Inside = require('../shape/util/inside');
+const SHAPES = ['circle', 'ellipse', 'fan', 'image', 'line', 'marker', 'path', 'polygon', 'rect', 'text'];
 
 const Shape = function(cfg) {
   Shape.superclass.constructor.call(this, cfg);
@@ -13,6 +14,16 @@ Util.extend(Shape, Element);
 Util.augment(Shape, {
   isShape: true,
   createPath() {},
+  init(id) {
+    Shape.superclass.init.call(this);
+    if (~SHAPES.indexOf(this.type)) {
+      const shape = document.createElementNS('http://www.w3.org/2000/svg', this.type);
+      id = id || Util.uniqueId(this.type + '_');
+      shape.setAttribute('id', id);
+      this.setSilent('el', shape);
+      this.setSilent('id', id);
+    }
+  },
   drawInner(context) {
     const self = this;
     const attrs = self.__attrs;
@@ -84,6 +95,7 @@ Util.augment(Shape, {
   },
   /**
    * @protected
+   * @protected
    * 计算包围盒
    * @return {Object} 包围盒
    */
@@ -109,21 +121,6 @@ Util.augment(Shape, {
     this.__cfg.box = null;
     this.__cfg.region = null;
   },
-  getBBox() {
-    let box = this.__cfg.box;
-    // 延迟计算
-    if (!box) {
-      box = this.calculateBox();
-      if (box) {
-        box.x = box.minX;
-        box.y = box.minY;
-        box.width = box.maxX - box.minX;
-        box.height = box.maxY - box.minY;
-      }
-      this.__cfg.box = box;
-    }
-    return box;
-  }
 });
 
 module.exports = Shape;

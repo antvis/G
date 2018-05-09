@@ -1,447 +1,113 @@
 const expect = require('chai').expect;
-const {
-  resolve
-} = require('path');
-const G = require('../../../src/index');
-const Canvas = require('../../../src/canvas');
-const div = document.createElement('div');
-div.id = 'canvas-path';
-document.body.appendChild(div);
+const Util = require('../../../src/util/common');
+const PathUtil = require('../../../src/util/path');
+const Canvas = require('../../../src/index').Canvas;
 
-describe('Path', function() {
+const dom = document.createElement('div');
+document.body.appendChild(dom);
 
-  const canvas = new Canvas({
-    containerId: 'canvas-path',
-    width: 800,
-    height: 800,
-    pixelRatio: 1
-  });
-
-  const img = document.createElement('img');
-  img.src = resolve(process.cwd(), './test/fixtures/test1.jpg');
-  img.id = 'img';
-  document.body.appendChild(img);
-
-  const path = new G.Path();
-
-  it('init attrs', function() {
-    expect(path.attr('path')).to.undefined;
-    expect(path.attr('lineWidth')).to.equal(1);
-    expect(path.getBBox()).to.be.null;
-    canvas.add(path);
-    canvas.draw();
-  });
-
-  it('path', function() {
-    path.attr('path', null);
-    expect(path.getBBox()).to.be.null;
-    path.attr('path', []);
-    expect(path.getBBox()).to.be.null;
-    path.attr('path', [
-      [ 'a' ]
-    ]);
-    expect(path.getBBox()).to.be.null;
-    path.attr('path', [
-      [ 'M', 200, 200 ],
-      [ 'L', 300, 300 ]
-    ]);
-
-    expect(path.get('segments').length).to.equal(2);
-    const box = path.getBBox();
-    expect(box.minX).to.equal(199.5);
-    expect(box.maxX).to.equal(300.5);
-    expect(box.minY).to.equal(199.5);
-    expect(box.maxY).to.equal(300.5);
-  });
-
-  it('lineWidth', function() {
-    expect(path.attr('lineWidth')).to.equal(1);
-    path.attr('lineWidth', 2);
-    expect(path.attr('lineWidth')).to.equal(2);
-    const box = path.getBBox();
-    expect(box.minX).to.equal(199);
-    expect(box.maxX).to.equal(301);
-    expect(box.minY).to.equal(199);
-    expect(box.maxY).to.equal(301);
-  });
-
-  it('stroke', function() {
-    path.attr('stroke', 'l (0) 0:#fff000 1:#000fff');
-    expect(path.attr('stroke')).to.equal('l (0) 0:#fff000 1:#000fff');
-    canvas.add(path);
-    canvas.draw();
-  });
-
-  it('arrow', function() {
-    path.attr({
-      // startArrow: true,
-      endArrow: true,
-      arrowAngle: 90,
-      arrowLength: 30
-    });
-    expect(path.attr('endArrow')).to.true;
-    expect(path.attr('arrowAngle')).to.equal(90);
-    expect(path.attr('arrowLength')).to.equal(30);
-
-    canvas.add(path);
-    canvas.draw();
-  });
-
-  it('fill', function() {
-    const path = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 200, 200 ],
-          [ 'L', 300, 200 ],
-          [ 'L', 300, 300 ],
-          [ 'Z' ]
-        ],
-        fill: 'red'
-      }
-    });
-    expect(path.attr('fill')).to.equal('red');
-    canvas.add(path);
-    canvas.draw();
-  });
-
-  it('path string', function() {
-    const path = new G.Path({
-      attrs: {
-        path: 'M100,600' +
-              'l 50,-25' +
-              'a25,25 -30 0,1 50,-25' +
-              'l 50,-25' +
-              'a25,50 -30 0,1 50,-25' +
-              'l 50,-25' +
-              'a25,75 -30 0,1 50,-25' +
-              'l 50,-25' +
-              'a25,100 -30 0,1 50,-25' +
-              'l 50,-25' +
-              'l 0, 200,' +
-              'z',
-        lineWidth: 10,
-        lineJoin: 'round',
-        stroke: 'red'
-      }
-    });
-
-    canvas.add(path);
-    canvas.draw();
-  });
-
-  it('l and L', function() {
-    const path = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 400, 400 ],
-          [ 'L', 400, 500 ],
-          [ 'l', 50, 50 ],
-          [ 'Z' ]
-        ],
-        stroke: 'red',
-        fill: 'green',
-        startArrow: true
-      }
-    });
-    expect(path.isHit(400, 400)).to.be.true;
-    expect(path.isHit(400, 500)).to.be.true;
-    expect(path.isHit(450, 550)).to.be.true;
-    expect(path.isHit(405, 450)).to.be.false;
-    canvas.add(path);
-    expect(path.isHit(405, 450)).to.be.true;
-    canvas.draw();
-  });
-
-  it('h and H', function() {
-    const path = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 200, 400 ],
-          [ 'H', 400 ],
-          [ 'h', 100 ]
-        ],
-        stroke: 'red',
-        startArrow: true
-      }
-    });
-    expect(path.isHit(200, 400)).to.be.true;
-    expect(path.isHit(300, 400)).to.be.true;
-    expect(path.isHit(400, 400)).to.be.true;
-    expect(path.isHit(500, 400)).to.be.true;
-    canvas.add([ path ]);
-    canvas.draw();
-  });
-
-  it('v and V', function() {
-    const path = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 200, 400 ],
-          [ 'V', 600 ],
-          [ 'v', 100 ]
-        ],
-        stroke: 'red',
-        arrow: true
-      }
-    });
-    expect(path.isHit(200, 400)).to.be.true;
-    expect(path.isHit(200, 500)).to.be.true;
-    expect(path.isHit(200, 600)).to.be.true;
-    expect(path.isHit(200, 700)).to.be.true;
-    canvas.add([ path ]);
-    canvas.draw();
-  });
-
-  it('q and Q', function() {
-    const path = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 200, 400 ],
-          [ 'Q', 300, 300, 400, 400 ]
-        ],
-        stroke: 'red',
-        arrow: true
-      }
-    });
-    expect(path.isHit(200, 400)).to.be.true;
-    expect(path.isHit(300, 350)).to.be.true;
-    expect(path.isHit(400, 400)).to.be.true;
-
-    const path1 = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 200, 400 ],
-          [ 'q', 50, 50, 100, 0 ]
-        ],
-        stroke: 'red',
-        arrow: true
-      }
-    });
-
-    expect(path1.isHit(200, 400)).to.be.true;
-    expect(path1.isHit(250, 425)).to.be.true;
-    expect(path1.isHit(300, 400)).to.be.true;
-    canvas.add([ path, path1 ]);
-    canvas.draw();
-  });
-
-  it('t and T', function() {
-    const path = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 200, 400 ],
-          [ 'Q', 300, 300, 400, 400 ],
-          [ 'T', 600, 400 ]
-        ],
-        stroke: 'red',
-        arrow: true
-      }
-    });
-    expect(path.isHit(200, 400)).to.be.true;
-    expect(path.isHit(300, 350)).to.be.true;
-    expect(path.isHit(400, 400)).to.be.true;
-    expect(path.isHit(500, 450)).to.be.true;
-    expect(path.isHit(600, 400)).to.be.true;
-
-    const path1 = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 200, 400 ],
-          [ 'Q', 300, 300, 400, 400 ],
-          [ 't', 100, 0 ]
-        ],
-        stroke: 'red',
-        arrow: true
-      }
-    });
-    expect(path1.isHit(200, 400)).to.be.true;
-    expect(path1.isHit(300, 350)).to.be.true;
-    expect(path1.isHit(400, 400)).to.be.true;
-    expect(path1.isHit(475, 450)).to.be.true;
-    expect(path1.isHit(500, 400)).to.be.true;
-
-
-    const path2 = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 200, 400 ],
-          [ 'L', 400, 400 ],
-          [ 't', 100, 0 ]
-        ],
-        stroke: 'red',
-        arrow: true
-      }
-    });
-    expect(path2.isHit(200, 400)).to.be.true;
-    expect(path2.isHit(400, 400)).to.be.true;
-    expect(path2.isHit(475, 450)).to.be.false;
-    expect(path2.isHit(500, 400)).to.be.true;
-    canvas.add([ path, path1, path2 ]);
-    canvas.draw();
-  });
-
-  it('c and C', function() {
-    const path = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 200, 400 ],
-          [ 'C', 300, 300, 400, 500, 500, 400 ]
-        ],
-        stroke: 'red',
-        arrow: true
-      }
-    });
-
-    expect(path.isHit(200, 400)).to.be.true;
-    expect(path.isHit(350, 400)).to.be.true;
-    expect(path.isHit(500, 400)).to.be.true;
-
-    const path1 = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 200, 400 ],
-          [ 'c', 100, -100, 200, 100, 300, 0 ]
-        ],
-        stroke: 'red'
-      }
-    });
-
-    expect(path1.isHit(200, 400)).to.be.true;
-    expect(path1.isHit(350, 400)).to.be.true;
-    expect(path1.isHit(500, 400)).to.be.true;
-    canvas.add([ path, path1 ]);
-    canvas.draw();
-  });
-
-  it('s and S', function() {
-    const path = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 200, 400 ],
-          [ 'C', 300, 300, 400, 500, 500, 400 ],
-          [ 'S', 700, 500, 800, 400 ]
-        ],
-        stroke: 'red'
-      }
-    });
-    expect(path.isHit(200, 400)).to.be.true;
-    expect(path.isHit(350, 400)).to.be.true;
-    expect(path.isHit(500, 400)).to.be.true;
-    expect(path.isHit(650, 400)).to.be.true;
-    expect(path.isHit(800, 400)).to.be.true;
-
-    const path1 = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 200, 400 ],
-          [ 'C', 300, 300, 400, 500, 500, 400 ],
-          [ 's', 200, 100, 300, 0 ]
-        ],
-        stroke: 'blue'
-      }
-    });
-    expect(path1.isHit(200, 400)).to.be.true;
-    expect(path1.isHit(350, 400)).to.be.true;
-    expect(path1.isHit(500, 400)).to.be.true;
-    expect(path1.isHit(650, 400)).to.be.true;
-    expect(path1.isHit(800, 400)).to.be.true;
-
-    const path2 = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 200, 400 ],
-          [ 'L', 500, 400 ],
-          [ 's', 200, 100, 300, 0 ]
-        ],
-        stroke: 'red',
-        arrow: true
-      }
-    });
-    expect(path2.isHit(200, 400)).to.be.true;
-    expect(path2.isHit(500, 400)).to.be.true;
-    expect(path2.isHit(650, 400)).to.be.false;
-    expect(path2.isHit(675, 450)).to.be.true;
-    expect(path2.isHit(800, 400)).to.be.true;
-    canvas.add([ path, path1, path2 ]);
-    canvas.draw();
-  });
-
-  it('a And A', function() {
-    const path = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 300, 300 ],
-          [ 'A', 50, 50, 0, 0, 1, 400, 400 ]
-        ],
-        stroke: 'red'
-      }
-    });
-
-    expect(path.isHit(300, 300)).to.be.true;
-    expect(path.isHit(400, 400)).to.be.true;
-    expect(path.isHit(400, 300)).to.be.true;
-
-    const path1 = new G.Path({
-      attrs: {
-        path: [
-          [ 'M', 300, 300 ],
-          [ 'A', 50, 50, 0, 0, 1, 400, 400 ]
-        ],
-        stroke: 'red'
-      }
-    });
-    expect(path1.isHit(300, 300)).to.be.true;
-    expect(path1.isHit(400, 400)).to.be.true;
-    expect(path1.isHit(400, 300)).to.be.true;
-    canvas.draw();
-  });
-
-  it('getPoint', function() {
-    const path = [
-      [ 'M', 300, 300 ],
-      [ 'L', 300, 50 ],
-      [ 'L', 50, 50 ],
-      [ 'L', 50, 300 ]
-    ];
-    const path7 = new G.Path({
-      attrs: {
-        path,
-        stroke: 'red'
-      }
-    });
-    const point0 = path7.getPoint(0);
-    const point1 = path7.getPoint(0.5);
-    const point2 = path7.getPoint(1);
-    const point3 = path7.getPoint(0.225);
-    canvas.add(path7);
-    canvas.draw();
-    expect(point0).to.eql({ x: 300, y: 300 });
-    expect(point1).to.eql({ x: 174.99999999999997, y: 50 });
-    expect(point2).to.eql({ x: 50, y: 300 });
-    expect(point3).to.eql({ x: 300, y: 112.0546875 });
-  });
-
-  it('appendWidth', function() {
-    const path = [
-      [ 'M', 200, 200 ],
-      [ 'L', 200, 50 ],
-      [ 'L', 50, 50 ],
-      [ 'L', 50, 300 ]
-    ];
-
-    const path8 = new G.Path({
-      attrs: {
-        path,
-        lineAppendWidth: 10,
-        stroke: 'blue'
-      }
-    });
-
-    expect(path8.isHit(196, 200)).to.be.true;
-    expect(path8.isHit(52, 250)).to.be.true;
-
-    canvas.add(path8);
-    canvas.draw();
-  });
-
+const canvas = new Canvas({
+  containerDOM: dom,
+  width: 800,
+  height: 800
 });
+
+function drawPoints(arr, canvas) {
+  Util.each(arr, function(v) {
+    canvas.addShape('circle', {
+      attrs: {
+        x: v.x,
+        y: v.y,
+        r: 5,
+        stroke: 'green',
+        lineWidth: 2
+      }
+    });
+  });
+}
+
+describe('path util test', function() {
+
+  it('path to array', function() {
+    const path = 'M 100 100 L 200 200 V 100 H100C 40 10, 65 10, 95 80 S 150 150 180 80Q 95 10 180 80T 180 80L 110 215A 30 50 0 0 1 162.55 162.45L 172.55 152.45A 30 50 -45 0 1 215.1 109.9L 315 10A 45 45, 0, 0, 0, 125 125L 125 80A 45 45, 0, 1, 0, 275 125A 45 45, 0, 0, 1, 125 275A 45 45, 0, 1, 1, 275 275R100 200 50 100 30 40Z';
+    expect(PathUtil.parsePathString(path).length).to.equal(20);
+  });
+
+  it('arr to path', function() {
+    const path = 'M 100 100 L 200 200 V 100 H100C 40 10, 65 10, 95 80 S 150 150 180 80Q 95 10 180 80T 180 80L 110 215A 30 50 0 0 1 162.55 162.45L 172.55 152.45A 30 50 -45 0 1 215.1 109.9L 315 10A 45 45, 0, 0, 0, 125 125L 125 80A 45 45, 0, 1, 0, 275 125A 45 45, 0, 0, 1, 125 275A 45 45, 0, 1, 1, 275 275R100 200 50 100 30 40Z';
+    const arr = PathUtil.parsePathString(path);
+    const str = PathUtil.parsePathArray(arr);
+    expect(str).to.equal('M100,100L200,200V100H100C40,10,65,10,95,80S150,150,180,80Q95,10,180,80T180,80L110,215A30,50,0,0,1,162.55,162.45L172.55,152.45A30,50,-45,0,1,215.1,109.9L315,10A45,45,0,0,0,125,125L125,80A45,45,0,1,0,275,125A45,45,0,0,1,125,275A45,45,0,1,1,275,275R100,200,50,100,30,40Z');
+  });
+
+  it('path to absolute', function() {
+    const path = 'M 100 100 l 20 20 v 10 c 40 10 20 20 30 30';
+    const str = PathUtil.parsePathArray(PathUtil.pathToAbsolute(path));
+    expect(str).to.equal('M100,100L120,120V130C160,140,140,150,150,160');
+  });
+  it('path to RomToBezier', function() {
+    const arr = [ 100, 200, 50, 100, 30, 40 ];
+    const rst = PathUtil.catmullRomToBezier(arr);
+    expect(PathUtil.parsePathArray(rst)).to.equal('C91.66666666666667,183.33333333333334,61.666666666666664,126.66666666666667,50,100C38.333333333333336,73.33333333333333,33.333333333333336,50,30,40');
+  });
+
+  it('path to RomToBezier with circle', function() {
+    const arr = [ 100, 200, 50, 100, 30, 40 ];
+    const rst = PathUtil.catmullRomToBezier(arr, true);
+    expect(PathUtil.parsePathArray(rst)).to.equal('C103.33333333333333,210,61.666666666666664,126.66666666666667,50,100C38.333333333333336,73.33333333333333,21.666666666666668,23.333333333333332,30,40C38.333333333333336,56.666666666666664,96.66666666666667,190,100,200');
+  });
+
+  it('path Insert', function() {
+    const pathStr1 = PathUtil.rectPath(100, 100, 100, 100);
+    const pathStr2 = 'M 200 0 L 90 130 M 200 0 L 110 150';
+    const rst = PathUtil.intersection(pathStr1, pathStr2);
+    canvas.addShape('path', {
+      attrs: {
+        path: pathStr1,
+        stroke: 'red'
+      }
+    });
+    canvas.addShape('path', {
+      attrs: {
+        path: pathStr2,
+        stroke: 'blue'
+      }
+    });
+    drawPoints(rst, canvas);
+    canvas.draw();
+  });
+
+  it('path Insert', function() {
+    const pathStr1 = PathUtil.rectPath(100, 100, 100, 100);
+    const pathStr2 = [
+      [ 'M', 200, 0 ],
+      [ 'C', 200, 0, 200, 150, 150, 150 ],
+      [ 'M', 0, 0 ],
+      [ 'C', 150, 0, 150, 300, 300, 300 ],
+      [ 'M', 0, 150 ],
+      [ 'L', 150, 150 ],
+      [ 'M', 100, 300 ],
+      [ 'L', 220, 100 ],
+      [ 'M', 300, 150 ],
+      [ 'L', 200, 150 ],
+      [ 'M', 300, 200 ],
+      [ 'L', 190, 200 ]
+    ];
+    const rst = PathUtil.intersection(pathStr1, pathStr2);
+    canvas.addShape('path', {
+      attrs: {
+        path: pathStr1,
+        stroke: 'red'
+      }
+    });
+    canvas.addShape('path', {
+      attrs: {
+        path: pathStr2,
+        stroke: 'blue'
+      }
+    });
+    drawPoints(rst, canvas);
+    canvas.draw();
+  });
+});
+

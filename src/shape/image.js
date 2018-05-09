@@ -33,20 +33,6 @@ Util.augment(CImage, {
   isHitBox() {
     return false;
   },
-  calculateBox() {
-    const attrs = this.__attrs;
-    const x = attrs.x;
-    const y = attrs.y;
-    const width = attrs.width;
-    const height = attrs.height;
-
-    return {
-      minX: x,
-      minY: y,
-      maxX: x + width,
-      maxY: y + height
-    };
-  },
   isPointInPath(x, y) {
     const attrs = this.__attrs;
     if (this.get('toDraw') || !attrs.img) {
@@ -58,40 +44,20 @@ Util.augment(CImage, {
     const height = attrs.height;
     return Inside.rect(rx, ry, width, height, x, y);
   },
-  __setLoading(loading) {
-    const canvas = this.get('canvas');
-    if (loading === false && this.get('toDraw') === true) {
-      this.__cfg.loading = false;
-      canvas.draw();
-    }
-    return loading;
-  },
   __setAttrImg(img) {
     const self = this;
+    const el = this.get('el');
     const attrs = self.__attrs;
     if (Util.isString(img)) {
-      const image = new Image();
-      image.onload = function() {
-        if (self.get('destroyed')) return false;
-        self.attr('imgSrc', img);
-        self.attr('img', image);
-        const callback = self.get('callback');
-        if (callback) {
-          callback.call(self);
-        }
-        self.set('loading', false);
-      };
-      image.src = img;
-      self.set('loading', true);
+      el.setAttribute('href', img);
     } else if (img instanceof Image) {
       if (!attrs.width) {
         self.attr('width', img.width);
       }
-
       if (!attrs.height) {
         self.attr('height', img.height);
       }
-      return img;
+      el.setAttribute('href', img.src);
     } else if (img instanceof HTMLElement && Util.isString(img.nodeName) && img.nodeName.toUpperCase() === 'CANVAS') {
       if (!attrs.width) {
         self.attr('width', Number(img.getAttribute('width')));
@@ -100,8 +66,13 @@ Util.augment(CImage, {
       if (!attrs.height) {
         self.attr('height', Number(img.getAttribute('height')));
       }
-      return img;
+      el.setAttribute('href', img.getAttribute('src'));
     } else if (img instanceof ImageData) {
+      // todo canvas的ImageData，在高清屏上会模糊
+      const canvas = document.createElement('canvas');
+      canvas.style.width = img.width;
+      canvas.style.height = img.height;
+      canvas.getContext('2d').putImageData(img, 0, 0);
       if (!attrs.width) {
         self.attr('width', img.width);
       }
@@ -109,56 +80,10 @@ Util.augment(CImage, {
       if (!attrs.height) {
         self.attr('height', img.height);
       }
-      return img;
-    } else {
-      return null;
+      el.setAttribute('href', canvas.toDataURL());
     }
   },
-  drawInner(context) {
-    if (this.get('loading')) {
-      this.set('toDraw', true);
-      return;
-    }
-    this.__drawImage(context);
-  },
-  __drawImage(context) {
-    const attrs = this.__attrs;
-    const x = attrs.x;
-    const y = attrs.y;
-    const img = attrs.img;
-    const width = attrs.width;
-    const height = attrs.height;
-    const sx = attrs.sx;
-    const sy = attrs.sy;
-    const swidth = attrs.swidth;
-    const sheight = attrs.sheight;
-    this.set('toDraw', false);
-
-    if (img instanceof Image || (img instanceof HTMLElement && Util.isString(img.nodeName) && img.nodeName.toUpperCase() === 'CANVAS')) {
-      if (
-        Util.isNil(sx) ||
-        Util.isNil(sy) ||
-        Util.isNil(swidth) ||
-        Util.isNil(sheight)
-      ) {
-        context.drawImage(img, x, y, width, height);
-        return;
-      }
-      if (
-        !Util.isNil(sx) &&
-        !Util.isNil(sy) &&
-        !Util.isNil(swidth) &&
-        !Util.isNil(sheight)
-      ) {
-        context.drawImage(img, sx, sy, swidth, sheight, x, y, width, height);
-        return;
-      }
-    } else if (img instanceof ImageData) {
-      context.putImageData(img, x, y, sx || 0, sy || 0, swidth || width, sheight || height);
-      return;
-    }
-    return;
-  }
+  drawInner() {}
 });
 
 module.exports = CImage;

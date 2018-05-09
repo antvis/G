@@ -1,6 +1,7 @@
 const Util = require('./util/index');
 const Event = require('./event');
 const Group = require('./core/group');
+const Defs = require('./core/defs');
 
 const Canvas = function(cfg) {
   Canvas.superclass.constructor.call(this, cfg);
@@ -63,8 +64,7 @@ Util.augment(Canvas, {
     this._setGlobalParam();
     this._setDOM();
     this._setInitSize();
-    this._setCanvas();
-    this._scale();
+    // this._scale();
     if (this.get('eventEnable')) {
       this._registEvents();
     }
@@ -93,7 +93,7 @@ Util.augment(Canvas, {
   },
   _triggerEvent(type, e) {
     const point = this.getPointByClient(e.clientX, e.clientY);
-    const shape = this.getShape(point.x, point.y);
+    const shape = this.findShape(e.target);
     let emitObj;
     if (type === 'mousemove') {
       const canvasmousemove = this._getEventObj('mousemove', e, point, this);
@@ -182,16 +182,10 @@ Util.augment(Canvas, {
       }
     }, false);
   },
-  _scale() {
+/*  _scale() {
     const pixelRatio = this.get('pixelRatio');
     this.scale(pixelRatio, pixelRatio);
-  },
-  _setCanvas() {
-    const canvasDOM = this.get('canvasDOM');
-    this.set('el', canvasDOM);
-    this.set('context', canvasDOM.getContext('2d'));
-    this.set('canvas', this);
-  },
+  },*/
   _setGlobalParam() {
     const pixelRatio = this.get('pixelRatio');
     if (!pixelRatio) {
@@ -216,12 +210,21 @@ Util.augment(Canvas, {
   },
   _setLayer() {
     const containerDOM = this.get('containerDOM');
-    const canvasId = Util.uniqueId('canvas_');
+    const canvasId = Util.uniqueId('svg_');
     if (containerDOM) {
-      const canvasDOM = Util.createDom('<canvas id="' + canvasId + '"></canvas>');
+      const canvasDOM = Util.createDom('<svg id="' + canvasId + '"></svg>');
+      const defs = new Defs();
       containerDOM.appendChild(canvasDOM);
       this.set('canvasDOM', canvasDOM);
+      this.set('el', canvasDOM);
+      this.set('defs', defs);
+      this.set('canvas', this);
     }
+    const canvasDOM = this.get('canvasDOM');
+
+    // TODO canvas的context是getContext的, 在各种操作中都传递的context，svg时先用dom
+    this.set('context', canvasDOM);
+
   },
   _setInitSize() {
     this.changeSize(this.get('width'), this.get('height'));
@@ -288,9 +291,9 @@ Util.augment(Canvas, {
     };
   },
   beforeDraw() {
-    const context = this.get('context');
     const el = this.get('el');
-    context && context.clearRect(0, 0, el.width, el.height);
+    // canvas版本用盖一个canvas大小的矩阵清空画布，svg换成清空html
+    el.innerHTML = '';
   },
   _beginDraw() {
     this.setSilent('toDraw', true);
@@ -298,37 +301,8 @@ Util.augment(Canvas, {
   _endDraw() {
     this.setSilent('toDraw', false);
   },
-  draw() {
-    const self = this;
-    function drawInner() {
-      self.setSilent('animateHandler', Util.requestAnimationFrame(() => {
-        self.setSilent('animateHandler', undefined);
-        if (self.get('toDraw')) {
-          drawInner();
-        }
-      }));
-      self.beforeDraw();
-      try {
-        const context = self.get('context');
-        Canvas.superclass.draw.call(self, context);
-        // self._drawCanvas();
-      } catch (ev) { // 绘制时异常，中断重绘
-        console.warn('error in draw canvas, detail as:');
-        console.warn(ev);
-        self._endDraw();
-      }
-      self._endDraw();
-    }
-
-    if (self.get('destroyed')) {
-      return;
-    }
-    if (self.get('animateHandler')) {
-      this._beginDraw();
-    } else {
-      drawInner();
-    }
-  },
+  // svg实时渲染，兼容canvas版本留个空接口
+  draw() { },
   destroy() {
     const containerDOM = this.get('containerDOM');
     const canvasDOM = this.get('canvasDOM');

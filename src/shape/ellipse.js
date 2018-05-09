@@ -27,23 +27,6 @@ Util.augment(Ellipse, {
       lineWidth: 1
     };
   },
-  calculateBox() {
-    const attrs = this.__attrs;
-    const cx = attrs.x;
-    const cy = attrs.y;
-    const rx = attrs.rx;
-    const ry = attrs.ry;
-    const lineWidth = this.getHitLineWidth();
-    const halfXWidth = rx + lineWidth / 2;
-    const halfYWidth = ry + lineWidth / 2;
-
-    return {
-      minX: cx - halfXWidth,
-      minY: cy - halfYWidth,
-      maxX: cx + halfXWidth,
-      maxY: cy + halfYWidth
-    };
-  },
   isPointInPath(x, y) {
     const fill = this.hasFill();
     const stroke = this.hasStroke();
@@ -102,28 +85,7 @@ Util.augment(Ellipse, {
 
     return Inside.arcline(0, 0, r, 0, Math.PI * 2, false, lineWidth, p[0], p[1]);
   },
-  createPath(context) {
-    const attrs = this.__attrs;
-    const cx = attrs.x;
-    const cy = attrs.y;
-    const rx = attrs.rx;
-    const ry = attrs.ry;
-
-    context = context || self.get('context');
-    const r = (rx > ry) ? rx : ry;
-    const scaleX = (rx > ry) ? 1 : rx / ry;
-    const scaleY = (rx > ry) ? ry / rx : 1;
-
-    const m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
-    mat3.scale(m, m, [ scaleX, scaleY ]);
-    mat3.translate(m, m, [ cx, cy ]);
-    context.beginPath();
-    context.save();
-    context.transform(m[0], m[1], m[3], m[4], m[6], m[7]);
-    context.arc(0, 0, r, 0, Math.PI * 2);
-    context.restore();
-    context.closePath();
-  }
+  createPath(context) {}
 });
 
 module.exports = Ellipse;

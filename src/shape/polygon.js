@@ -19,47 +19,8 @@ Util.augment(Polygon, {
   type: 'polygon',
   getDefaultAttrs() {
     return {
-      lineWidth: 1
-    };
-  },
-  calculateBox() {
-    const self = this;
-    const attrs = self.__attrs;
-    const points = attrs.points;
-    const lineWidth = this.getHitLineWidth();
-    if (!points || points.length === 0) {
-      return null;
-    }
-    let minX = Infinity;
-    let minY = Infinity;
-    let maxX = -Infinity;
-    let maxY = -Infinity;
-
-    Util.each(points, function(point) {
-      const x = point[0];
-      const y = point[1];
-      if (x < minX) {
-        minX = x;
-      }
-      if (x > maxX) {
-        maxX = x;
-      }
-
-      if (y < minY) {
-        minY = y;
-      }
-
-      if (y > maxY) {
-        maxY = y;
-      }
-    });
-
-    const halfWidth = lineWidth / 2;
-    return {
-      minX: minX - halfWidth,
-      minY: minY - halfWidth,
-      maxX: maxX + halfWidth,
-      maxY: maxY + halfWidth
+      lineWidth: 1,
+      fill: 'none'
     };
   },
   isPointInPath(x, y) {
@@ -102,24 +63,24 @@ Util.augment(Polygon, {
 
     return Inside.polyline(outPoints, lineWidth, x, y);
   },
-  createPath(context) {
-    const self = this;
-    const attrs = self.__attrs;
-    const points = attrs.points;
-    if (points.length < 2) {
-      return;
+  __afterSetAttrPoints() {
+    const value = this.__attrs.points;
+    const el = this.get('el');
+    let points = value;
+    if (!value || value.length === 0) {
+      points  = '';
+    } else if (Util.isArray(value)) {
+      points = points.map(point => point[0] + ',' + point[1]);
+      points = points.join(' ');
     }
-    context = context || self.get('context');
-    context.beginPath();
-    Util.each(points, function(point, index) {
-      if (index === 0) {
-        context.moveTo(point[0], point[1]);
-      } else {
-        context.lineTo(point[0], point[1]);
-      }
-    });
-    context.closePath();
-  }
+    el.setAttribute('points', points);
+  },
+  __afterSetAttrAll(obj) {
+    if ('points' in obj) {
+      this.__afterSetAttrPoints();
+    }
+  },
+  createPath(context) {}
 });
 
 module.exports = Polygon;
