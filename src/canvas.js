@@ -215,6 +215,7 @@ Util.augment(Canvas, {
       const canvasDOM = Util.createDom('<svg id="' + canvasId + '"></svg>');
       const defs = new Defs();
       containerDOM.appendChild(canvasDOM);
+      canvasDOM.appendChild(defs.get('el'));
       this.set('canvasDOM', canvasDOM);
       this.set('el', canvasDOM);
       this.set('defs', defs);
