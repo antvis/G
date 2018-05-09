@@ -2,6 +2,7 @@ const expect = require('chai').expect;
 const G = require('../../../src/index');
 const Event = require('../../../src/event');
 const Canvas = require('../../../src/canvas');
+const Shape = require('../../../src/shape');
 const div = document.createElement('div');
 div.id = 'canvas-group-1';
 document.body.appendChild(div);
@@ -19,7 +20,6 @@ describe('Group', function() {
     const g = new G.Group({
       id: 'g1'
     });
-
     expect(g.isGroup).to.be.true;
     expect(g.get('children')).not.to.be.undefined;
     expect(g.get('children').length).to.equal(0);
@@ -36,9 +36,7 @@ describe('Group', function() {
     const g2 = new G.Group({
       id: 'g2'
     });
-
     g2.add(e);
-
     expect(e.get('parent')).to.eql(g2);
     expect(g2.getCount()).to.equal(1);
     const g3 = new G.Group({
@@ -105,7 +103,7 @@ describe('Group', function() {
     expect(e1.get('destroyed')).to.be.true;
   });
 
-  it('destroy', function() {
+  /*it('destroy', function() {
     const g = new G.Group({
       id: 'g'
     });
@@ -183,7 +181,7 @@ describe('Group', function() {
     g1.removeChild();
     expect(g2.getCount()).to.equal(0);
     expect(g1.get('destroyed')).to.be.true;
-  });
+  });*/
 
   it('zIndex', function() {
     const g = new G.Group({
@@ -212,7 +210,7 @@ describe('Group', function() {
     g.add(e2);
     g.sort();
     expect(g.get('children')[1]).to.eql(e2);
-
+    canvas.add(g);
     e2.set('zIndex', 5);
     expect(g.get('children')[1]).to.eql(e3);
     expect(g.get('children')[2]).to.eql(e2);
@@ -247,10 +245,10 @@ describe('Group', function() {
     g1.add(e1);
     g2.add(e2);
     g2.add(e3);
-
-    expect(g1.findBy(function(item) {
+    const inst = g1.findBy(function(item) {
       return item.get('zIndex') === 3;
-    })).to.eql(e3);
+    });
+    expect(inst).to.eql(e3);
 
     expect(g1.find('e1')).to.eql(e1);
   });

@@ -44,6 +44,42 @@ const CAPITALIZED_ATTRS_MAP = {
   endAngle: 'EndAngle',
   path: 'Path'
 };
+const SVG_ATTR_MAP = {
+  opacity: 'opacity',
+  clip: 'clip',
+  stroke: 'stroke',
+  fill: 'fill',
+  strokeOpacity: 'stroke-opacity',
+  fillOpacity: 'fill-opacity',
+  strokeOpacity: 'Stroke',
+  fillOpacity: 'Fill',
+  x: 'x',
+  y: 'y',
+  r: 'r',
+  rx: 'rx',
+  ry: 'ry',
+  re: 're',
+  rs: 'rs',
+  width: 'width',
+  height: 'height',
+  image: 'href',
+  x1: 'x1',
+  x2: 'x2',
+  y1: 'y1',
+  y2: 'y2',
+  lineCap: 'stroke-linecap',
+  lineJoin: 'stroke-linejoin',
+  lineWidth: 'stroke-width',
+  lineDash: 'stroke-dasharray',
+  miterLimit: 'stroke-miterlimit',
+  font: 'font',
+  fontSize: 'font-size',
+  fontStyle: 'font-style',
+  fontVariant: 'font-variant',
+  fontWeight: 'font-weight',
+  fontFamily: 'font-family',
+  preserveAspectRatio: 'preserveAspectRatio'
+};
 const ALIAS_ATTRS_MAP = {
   stroke: 'strokeStyle',
   fill: 'fillStyle',
@@ -81,7 +117,6 @@ module.exports = {
     if (arguments.length === 0) {
       return self.__attrs;
     }
-
     if (Util.isObject(name)) {
       for (const k in name) {
         if (ALIAS_ATTRS.indexOf(k) === -1) {
@@ -97,13 +132,11 @@ module.exports = {
       return self;
     }
     if (arguments.length === 2) {
-      if (self._setAttr(name, value) !== false) {
-        const m = '__afterSetAttr' + CAPITALIZED_ATTRS_MAP[name];
-        if (self[m]) {
-          self[m](value);
-        }
+      self._setAttr(name, value);
+      const m = '__afterSetAttr' + CAPITALIZED_ATTRS_MAP[name];
+      if (CAPITALIZED_ATTRS_MAP[name] && self[m]) {
+        self[m](value);
       }
-      // self.setSilent('box', null);
       self.clearBBox();
       return self;
     }
@@ -122,16 +155,37 @@ module.exports = {
   // 属性设置触发函数
   _setAttr(name, value) {
     const self = this;
+    const el = self.get('el');
+    // TODO clip & transform & shadow blah blah..
     if (name === 'clip') {
       self.__setAttrClip(value);
       self.__attrs.clip = value;
     } else if (name === 'transform') {
       self.__setAttrTrans(value);
     } else {
+      // 先存好属性，然后对一些svg和canvas中不同的属性进行特判
       self.__attrs[name] = value;
-      const alias = ALIAS_ATTRS_MAP[name];
-      if (alias) {
-        self.__attrs[alias] = value;
+      if (['circle', 'ellipse', 'marker'].indexOf(self.type) >= 0 && ['x', 'y'].indexOf(name) >= 0) {
+        /**
+         * 本来考虑想写到对应图形里面的，但是x,y又是svg通用属性，这样会同时存在x，y, cx,cy
+         * 如果在下面svgAttr设置的时候还是要特判，不如就在这边特殊处理一下吧
+         */
+        if (self.type !== 'marker') {
+          el.setAttribute('c' + name, value);
+        }
+      } else {
+        let svgAttr = SVG_ATTR_MAP[name];
+        if (el && svgAttr) {
+          el.setAttribute(svgAttr, value);
+        }
+        const alias = ALIAS_ATTRS_MAP[name];
+        if (alias) {
+          svgAttr = SVG_ATTR_MAP[alias];
+          if (el && svgAttr) {
+            el.setAttribute(svgAttr, value);
+          }
+          self.__attrs[alias] = value;
+        }
       }
     }
     return self;
@@ -145,6 +199,7 @@ module.exports = {
   // 设置透明度
   __setAttrOpacity(v) {
     this.__attrs.globalAlpha = v;
+    this.get('el').setAttribute('opacity', v);
     return v;
   },
   __setAttrClip(clip) {

@@ -4,24 +4,6 @@ const Shape = require('../shape/index');
 const SHAPE_MAP = {}; // 缓存图形类型
 const INDEX = '_INDEX';
 
-function find(children, x, y) {
-  let rst;
-  for (let i = children.length - 1; i >= 0; i--) {
-    const child = children[i];
-    if (child.__cfg.visible && child.__cfg.capture) {
-      if (child.isGroup) {
-        rst = child.getShape(x, y);
-      } else if (child.isHit(x, y)) {
-        rst = child;
-      }
-    }
-    if (rst) {
-      break;
-    }
-  }
-  return rst;
-}
-
 function getComparer(compare) {
   return function(left, right) {
     const result = compare(left, right);
@@ -58,6 +40,14 @@ Util.augment(Group, {
   isGroup: true,
   canFill: true,
   canStroke: true,
+  init(id) {
+    Group.superclass.init.call(this);
+    const shape = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    id = id || Util.uniqueId('g_');
+    shape.setAttribute('id', id);
+    this.setSilent('el', shape);
+    this.setSilent('id', id);
+  },
   getDefaultCfg() {
     initClassCfgs(this.constructor);
     return Util.merge({}, this.constructor.__cfg);
@@ -78,7 +68,7 @@ Util.augment(Group, {
       if (type === 'text') { // 临时解决
         const topFontFamily = canvas.get('fontFamily');
         if (topFontFamily) {
-          attrs.fontFamily = attrs.fontFamily ? attrs.fontFamily : topFontFamily;
+          attrs.fontFamily = attrs.fontFamily || topFontFamily;
         }
       }
     }
@@ -181,6 +171,7 @@ Util.augment(Group, {
   add(items) {
     const self = this;
     const children = self.get('children');
+    const el = self.get('el');
     if (Util.isArray(items)) {
       Util.each(items, function(item) {
         const parent = item.get('parent');
@@ -188,6 +179,7 @@ Util.augment(Group, {
           parent.removeChild(item, false);
         }
         self.__setEvn(item);
+        el.appendChild(item.get('el'));
       });
       children.push.apply(children, items);
     } else {
@@ -197,6 +189,7 @@ Util.augment(Group, {
         parent.removeChild(item, false);
       }
       self.__setEvn(item);
+      el.appendChild(item.get('el'));
       children.push(item);
     }
     return self;
@@ -219,7 +212,6 @@ Util.augment(Group, {
   __setEvn(item) {
     const self = this;
     item.__cfg.parent = self;
-    item.__cfg.context = self.__cfg.context;
     item.__cfg.canvas = self.__cfg.canvas;
     const clip = item.__attrs.clip;
     if (clip) {
@@ -232,72 +224,6 @@ Util.augment(Group, {
         item.__setEvn(child);
       });
     }
-  },
-  getBBox() {
-    const self = this;
-    let minX = Infinity;
-    let maxX = -Infinity;
-    let minY = Infinity;
-    let maxY = -Infinity;
-    const children = self.get('children');
-    Util.each(children, function(child) {
-      if (child.get('visible')) {
-        const box = child.getBBox();
-        if (!box) {
-          return true;
-        }
-
-        const leftTop = [ box.minX, box.minY, 1 ];
-        const leftBottom = [ box.minX, box.maxY, 1 ];
-        const rightTop = [ box.maxX, box.minY, 1 ];
-        const rightBottom = [ box.maxX, box.maxY, 1 ];
-
-        child.apply(leftTop);
-        child.apply(leftBottom);
-        child.apply(rightTop);
-        child.apply(rightBottom);
-
-        const boxMinX = Math.min(leftTop[0], leftBottom[0], rightTop[0], rightBottom[0]);
-        const boxMaxX = Math.max(leftTop[0], leftBottom[0], rightTop[0], rightBottom[0]);
-        const boxMinY = Math.min(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
-        const boxMaxY = Math.max(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
-
-        if (boxMinX < minX) {
-          minX = boxMinX;
-        }
-
-        if (boxMaxX > maxX) {
-          maxX = boxMaxX;
-        }
-
-        if (boxMinY < minY) {
-          minY = boxMinY;
-        }
-
-        if (boxMaxY > maxY) {
-          maxY = boxMaxY;
-        }
-      }
-    });
-    const box = {
-      minX,
-      minY,
-      maxX,
-      maxY
-    };
-    box.x = box.minX;
-    box.y = box.minY;
-    box.width = box.maxX - box.minX;
-    box.height = box.maxY - box.minY;
-    return box;
-  },
-  drawInner(context) {
-    const children = this.get('children');
-    for (let i = 0; i < children.length; i++) {
-      const child = children[i];
-      child.draw(context);
-    }
-    return this;
   },
   getCount() {
     return this.get('children').length;
@@ -375,7 +301,30 @@ Util.augment(Group, {
     } else {
       rst = find(children, x, y);
     }
-    return rst;
+    return find(children, x, y);
+  },
+  /**
+   * 根据点击事件的element获取对应的图形对象
+   */
+  findShape(el) {
+    if (this.__cfg.visible && this.__cfg.capture && this.get('el') === el) {
+      return this;
+    }
+    const children = this.__cfg.children;
+    let shape = null;
+    for (let i = children.length -1; i >= 0; i--) {
+      const child = children[i];
+      if (child.isGroup) {
+        shape = child.findShape(el);
+        shape = child.findShape(el);
+      } else if(child.get('visible') && child.get('el') === el) {
+        shape = child;
+      }
+      if (shape) {
+        break;
+      }
+    }
+    return shape;
   },
   clearTotalMatrix() {
     const m = this.get('totalMatrix');

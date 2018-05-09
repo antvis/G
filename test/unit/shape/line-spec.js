@@ -1,3 +1,6 @@
+/**
+ * Created by Elaine on 2018/5/4.
+ */
 const expect = require('chai').expect;
 const G = require('../../../src/index');
 const Canvas = require('../../../src/canvas');
@@ -21,6 +24,8 @@ describe('Line', function() {
       y2: 0
     }
   });
+  // TODO 只是实例化一个shape并不添加到svg中，该元素的bbox为0
+  canvas.add(line);
   it('init attrs', function() {
     expect(line.attr('x1')).to.equal(0);
     expect(line.attr('y1')).to.equal(0);
@@ -32,42 +37,42 @@ describe('Line', function() {
     expect(line.attr('startArrow')).to.be.false;
     expect(line.attr('endArrow')).to.be.false;
     const box = line.getBBox();
-    expect(box.minX).to.equal(-0.5);
-    expect(box.maxX).to.equal(0.5);
-    expect(box.minY).to.equal(-0.5);
-    expect(box.maxY).to.equal(0.5);
+    expect(box.minX).to.equal(0);
+    expect(box.maxX).to.equal(0);
+    expect(box.minY).to.equal(0);
+    expect(box.maxY).to.equal(0);
   });
 
   it('x1', function() {
     line.attr('x1', 10);
     expect(line.attr('x1')).to.equal(10);
     const box = line.getBBox();
-    expect(box.minX).to.equal(-0.5);
-    expect(box.maxX).to.equal(10.5);
+    expect(box.minX).to.equal(0);
+    expect(box.maxX).to.equal(10);
   });
 
   it('y1', function() {
     line.attr('y1', 15);
     expect(line.attr('y1')).to.equal(15);
     const box = line.getBBox();
-    expect(box.minY).to.equal(-0.5);
-    expect(box.maxY).to.equal(15.5);
+    expect(box.minY).to.equal(0);
+    expect(box.maxY).to.equal(15);
   });
 
   it('x2', function() {
     line.attr('x2', 59);
     expect(line.attr('x2')).to.equal(59);
     const box = line.getBBox();
-    expect(box.minX).to.equal(9.5);
-    expect(box.maxX).to.equal(59.5);
+    expect(box.minX).to.equal(10);
+    expect(box.maxX).to.equal(59);
   });
 
   it('y2', function() {
     line.attr('y2', 80);
     expect(line.attr('y2')).to.equal(80);
     const box = line.getBBox();
-    expect(box.minY).to.equal(14.5);
-    expect(box.maxY).to.equal(80.5);
+    expect(box.minY).to.equal(15);
+    expect(box.maxY).to.equal(80);
   });
 
   it('lineWidth', function() {
@@ -75,10 +80,10 @@ describe('Line', function() {
     line.attr('lineWidth', 2);
     expect(line.attr('lineWidth')).to.equal(2);
     const box = line.getBBox();
-    expect(box.minX).to.equal(9);
-    expect(box.maxX).to.equal(60);
-    expect(box.minY).to.equal(14);
-    expect(box.maxY).to.equal(81);
+    expect(box.minX).to.equal(10);
+    expect(box.maxX).to.equal(59);
+    expect(box.minY).to.equal(15);
+    expect(box.maxY).to.equal(80);
   });
 
   it('stroke', function() {

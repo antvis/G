@@ -1,3 +1,6 @@
+/**
+ * Created by Elaine on 2018/5/9.
+ */
 const expect = require('chai').expect;
 const Canvas = require('../../../src/canvas');
 

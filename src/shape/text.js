@@ -6,6 +6,8 @@ const CText = function(cfg) {
   CText.superclass.constructor.call(this, cfg);
 };
 
+const SPECIAL_ATTRS = ['text', 'textAlign', 'textBaseLine'];
+
 CText.ATTRS = {
   x: 0,
   y: 0,
@@ -52,7 +54,7 @@ Util.augment(CText, {
     }
   },
   __assembleFont() {
-    // var self = this;
+    const el = this.get('el');
     const attrs = this.__attrs;
     const fontSize = attrs.fontSize;
     const fontFamily = attrs.fontFamily;
@@ -60,7 +62,10 @@ Util.augment(CText, {
     const fontStyle = attrs.fontStyle; // self.attr('fontStyle');
     const fontVariant = attrs.fontVariant; // self.attr('fontVariant');
     // self.attr('font', [fontStyle, fontVariant, fontWeight, fontSize + 'px', fontFamily].join(' '));
-    attrs.font = [ fontStyle, fontVariant, fontWeight, fontSize + 'px', fontFamily ].join(' ');
+    const font = [ fontStyle, fontVariant, fontWeight, fontSize + 'px', fontFamily ].join(' ');
+    attrs.font = font;
+    el.setAttribute('font', attrs.font);
+
   },
   __afterSetAttrFontSize() {
     /* this.attr({
@@ -80,12 +85,23 @@ Util.augment(CText, {
   __afterSetAttrFontVariant() {
     this.__assembleFont();
   },
-  __afterSetAttrFont() {
-    // this.attr('width', this.measureText());
+  __afterSetAttrTextAlign() {
+    // todo left 和 right不支持，要看看怎么改
+    let attr = this.__attrs.textAlign;
+    const el = this.get('el');
+    if ('left' === attr) {
+      attr = 'start';
+    }
+    if ('right' === attr) {
+      attr = 'end';
+    }
+    el.setAttribute('text-anchor', attr);
   },
-  __afterSetAttrText() {
+  __afterSetAttrTextBaseLine() {
+    // todo 这个完全不资瓷
+  },
+  __afterSetAttrText(text) {
     const attrs = this.__attrs;
-    const text = attrs.text;
     let textArr;
     if (Util.isString(text) && (text.indexOf('\n') !== -1)) {
       textArr = text.split('\n');
@@ -93,8 +109,12 @@ Util.augment(CText, {
       attrs.lineCount = lineCount;
       attrs.textArr = textArr;
     }
-    // attrs.height = this.__getTextHeight();
-    // attrs.width = this.measureText();
+    const el = this.get('el');
+    if (~['undefined', 'null', 'NaN'].indexOf(String(text)) && el) {
+      el.innerHTML = '';
+    } else {
+      el.innerHTML = text;
+    }
   },
   __getTextHeight() {
     const attrs = this.__attrs;
@@ -109,6 +129,7 @@ Util.augment(CText, {
   // 计算浪费，效率低，待优化
   __afterSetAttrAll(objs) {
     const self = this;
+    const el = this.get('el');
     if (
       'fontSize' in objs ||
       'fontWeight' in objs ||
@@ -118,64 +139,18 @@ Util.augment(CText, {
     ) {
       self.__assembleFont();
     }
-
-    if (
-      'text' in objs
-    ) {
+    if ('textAlign' in objs) {
+      this.__afterSetAttrTextAlign();
+    }
+    if ('textBaseLine' in objs) {
+      this.__afterSetAttrTextBaseLine();
+    }
+    if ('text' in objs) {
       self.__afterSetAttrText(objs.text);
     }
   },
   isHitBox() {
     return false;
-  },
-  calculateBox() {
-    const self = this;
-    const attrs = self.__attrs;
-    const x = attrs.x;
-    const y = attrs.y;
-    const width = self.measureText(); // attrs.width
-    if (!width) {
-      // 如果width不存在，四点共其实点
-      return {
-        minX: x,
-        minY: y,
-        maxX: x,
-        maxY: y
-      };
-    }
-    const height = self.__getTextHeight(); // attrs.height
-    const textAlign = attrs.textAlign;
-    const textBaseline = attrs.textBaseline;
-    const lineWidth = self.getHitLineWidth();
-    const point = {
-      x,
-      y: y - height
-    };
-
-    if (textAlign) {
-      if (textAlign === 'end' || textAlign === 'right') {
-        point.x -= width;
-      } else if (textAlign === 'center') {
-        point.x -= width / 2;
-      }
-    }
-
-    if (textBaseline) {
-      if (textBaseline === 'top') {
-        point.y += height;
-      } else if (textBaseline === 'middle') {
-        point.y += height / 2;
-      }
-    }
-
-    this.set('startPoint', point);
-    const halfWidth = lineWidth / 2;
-    return {
-      minX: point.x - halfWidth,
-      minY: point.y - halfWidth,
-      maxX: point.x + width + halfWidth,
-      maxY: point.y + height + halfWidth
-    };
   },
   __getSpaceingY() {
     const attrs = this.__attrs;
