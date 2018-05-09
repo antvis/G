@@ -1,30 +1,50 @@
 /**
- * DefsÃ»ÓĞ×ßÖ÷Á÷³Ì£¬¶øÊÇĞ´³ÉÁËµ¥ÀıÄ£Ê½
- * ÊÇ¿¼ÂÇµ½Í¨¹ınew G.{shape}¹¹Ôì³öµÄÊµÀı
- * Ã»ÓĞaddµ½canvas»ògroupÏÂµÄÊ±ºòÆäÊµÄÃ²»µ½»­²¼µÄcontext
- * ÊÇ¿ÉÒÔĞÂ½¨Ò»¸ödefsÀ´¶¨ÒåµÄ£¬µ«ÊÇÕâÑù²»ÀûÓÚ¸´ÓÃ£¬ÀË·Ñ±êÇ©ÁË
- * Õâ²¿·Ö´úÂë´ıÔÙ×éÖ¯
+ * Created by Elaine on 2018/5/9.
  */
 const Util = require('../util/index');
+const Element = require('./element');
 const LinearGradient = require('../defs/linearGradient');
 
-const Defs = (function () {
-  let _inst = null;
-  Defs.prototype.init = function () {
+const Defs = function (cfg) {
+  Defs.superclass.constructor.call(this, cfg);
+  this.set('children', []);
+}
+
+Util.extend(Defs, Element);
+
+Util.augment(Defs, {
+  isGroup: false,
+  canFill: false,
+  canStroke: false,
+  capture: false,
+  visible: false,
+  init() {
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
     const id = Util.uniqueId('defs_');
     el.setAttribute('id', id);
     this.set('el', el);
     this.set('children', []);
-  };
-  Defs.prototype.get = function(name) {
-    return _inst.__cfg[name];
-  };
-  Defs.prototype.set = function(name, value) {
-    _inst.__cfg[name] = value;
-    return _inst;
-  };
-  Defs.prototype.add = function(items) {
+  },
+  find(type, attr) {
+    const children = this.get('children');
+    let result = null;
+    for(let i = 0; i < children.length; i++) {
+      if (children[i].match(type, attr)) {
+        result = children.get('id');
+        break;
+      }
+    }
+    return result;
+  },
+  findById(id) {
+    const children = this.get('children');
+    let flag = null;
+    Util.each(children, function(child) {
+      flag = child.get('id') === id ? child : null;
+    });
+    return flag;
+  },
+  add(items) {
     const el = this.get('el');
     const self = this;
     const children = this.get('children');
@@ -50,44 +70,24 @@ const Defs = (function () {
     self._setContext(items);
     el.appendChild(items.get('el'));
     return self;
-  };
-  Defs.prototype.addGradient = function(cfg) {
-    // todo
-  };
-  Defs.prototype.find = function(type, attr) {
-    const children = this.get('children');
-    let result = null;
-    for(let i = 0; i < children.length; i++) {
-      if (children.match(type, attr)) {
-        result = children.get('id');
-      }
-    }
-    return result;
-  };
-  Defs.prototype.findById = function(id) {
-    const children = this.get('children');
-    let flag = false;
-    Util.each(children, function(child) {
-      flag = child.get('id') === id;
-    });
-    return flag;
-  };
-  Defs.prototype._setContext = function(item) {
+  },
+  _setContext(item) {
     item.__cfg.parent = this;
     item.__cfg.defs = this;
     item.__cfg.canvas = this.__cfg.canvas;
     item.__cfg.mounted = true;
-  };
-  function Defs(args) {
-    if (_inst == null) {
-      _inst = this;
-      _inst.__attrs = {};
-      _inst.__cfg = {};
+  },
+  addGradient(cfg) {
+    if (cfg.toLowerCase().startsWith('l')) {
+      // çº¿æ€§æ¸å˜
+      const gradient = new LinearGradient(cfg);
+      this.__cfg.el.appendChild(gradient.__attrs.el);
+      this.get('children').push(gradient);
+      console.log(this.__cfg.el);
+      return gradient.__attrs.id;
     }
-    _inst.init(args);
-    return _inst;
+    // todo ç¯å½¢æ¸å˜
   }
-  return Defs;
-})();
+});
 
 module.exports = Defs;
