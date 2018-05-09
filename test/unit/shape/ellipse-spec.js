@@ -1,3 +1,6 @@
+/**
+ * Created by Elaine on 2018/5/7.
+ */
 const expect = require('chai').expect;
 const G = require('../../../src/index');
 const Canvas = require('../../../src/canvas');
@@ -23,7 +26,7 @@ describe('Ellipse', function() {
       ry: 1
     }
   });
-
+  canvas.add(ellipse);
   it('init attr', function() {
     expect(ellipse.attr('x')).to.equal(0);
     expect(ellipse.attr('y')).to.equal(0);
@@ -33,52 +36,32 @@ describe('Ellipse', function() {
     expect(ellipse.attr('stroke')).to.be.undefined;
     expect(ellipse.attr('fill')).to.be.undefined;
     const box = ellipse.getBBox();
-    expect(box.minX).to.equal(-1.5);
-    expect(box.maxX).to.equal(1.5);
-    expect(box.minY).to.equal(-1.5);
-    expect(box.maxY).to.equal(1.5);
+    expect(box.minX).to.equal(-1);
+    expect(box.maxX).to.equal(1);
+    expect(box.minY).to.equal(-1);
+    expect(box.maxY).to.equal(1);
   });
 
   it('x', function() {
     ellipse.attr('x', 20);
     expect(ellipse.attr('x')).to.equal(20);
-    const box = ellipse.getBBox();
-    expect(box.minX).to.equal(18.5);
-    expect(box.maxX).to.equal(21.5);
-    expect(box.minY).to.equal(-1.5);
-    expect(box.maxY).to.equal(1.5);
   });
 
   it('y', function() {
     ellipse.attr('y', 30);
     expect(ellipse.attr('y')).to.equal(30);
-    const box = ellipse.getBBox();
-    expect(box.minX).to.equal(18.5);
-    expect(box.maxX).to.equal(21.5);
-    expect(box.minY).to.equal(28.5);
-    expect(box.maxY).to.equal(31.5);
   });
 
   it('rx', function() {
     expect(ellipse.attr('rx')).to.equal(1);
     ellipse.attr('rx', 5);
     expect(ellipse.attr('rx')).to.equal(5);
-    const box = ellipse.getBBox();
-    expect(box.minX).to.equal(14.5);
-    expect(box.maxX).to.equal(25.5);
-    expect(box.minY).to.equal(28.5);
-    expect(box.maxY).to.equal(31.5);
   });
 
   it('ry', function() {
     expect(ellipse.attr('ry')).to.equal(1);
     ellipse.attr('ry', 10);
     expect(ellipse.attr('ry')).to.equal(10);
-    const box = ellipse.getBBox();
-    expect(box.minX).to.equal(14.5);
-    expect(box.maxX).to.equal(25.5);
-    expect(box.minY).to.equal(19.5);
-    expect(box.maxY).to.equal(40.5);
   });
 
 
@@ -86,11 +69,6 @@ describe('Ellipse', function() {
     expect(ellipse.attr('lineWidth')).to.equal(1);
     ellipse.attr('lineWidth', 2);
     expect(ellipse.attr('lineWidth')).to.equal(2);
-    const box = ellipse.getBBox();
-    expect(box.minX).to.equal(14);
-    expect(box.maxX).to.equal(26);
-    expect(box.minY).to.equal(19);
-    expect(box.maxY).to.equal(41);
   });
 
   it('stroke', function() {

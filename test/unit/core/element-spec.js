@@ -12,7 +12,6 @@ describe('Element', function() {
         stroke: '#231'
       }
     });
-
     expect(e.__cfg).not.to.be.undefined;
     expect(e.__cfg.id).to.equal('aaa');
     expect(e.__attrs).not.to.be.undefined;
@@ -38,7 +37,6 @@ describe('Element', function() {
 
   it('eventEmitter', function() {
     const ele = new Element();
-    console.log(ele);
     expect(ele.on).to.be.a('function');
     expect(ele.off).to.be.a('function');
     expect(ele.trigger).to.be.a('function');

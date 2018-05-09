@@ -33,9 +33,10 @@ const Element = function(cfg) {
   }; // 配置存放地
 
   Util.assign(this.__cfg, this.getDefaultCfg(), cfg); // Element.CFG不合并，提升性能 合并默认配置，用户配置->继承默认配置->Element默认配置
+  // 在子元素的init中创建新svg元素，然后设置属性和变换。在这边设置id而不是attr里，是考虑id一旦设置后应不能修改
+  this.init(cfg ? cfg.id : null); // 类型初始化
   this.initAttrs(this.__cfg.attrs); // 初始化绘图属性
   this.initTransform(); // 初始化变换
-  this.init(); // 类型初始化
 };
 
 Element.CFG = {
@@ -89,10 +90,6 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
   init() {
     this.setSilent('animable', true);
     this.setSilent('animating', false); // 初始时不处于动画状态
-    const attrs = this.__attrs;
-    if (attrs && attrs.rotate) {
-      this.rotateAtStart(attrs.rotate);
-    }
   },
   getParent() {
     return this.get('parent');
@@ -236,11 +233,33 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
     return Util.clone(this);
   },
   getBBox() {
+    const el = this.get('el');
+    if (el) {
+      const bbox = el.getBBox();
+      bbox.minX =
+      bbox.minY = bbox.y;
+      bbox.maxX = bbox.x + bbox.width;
+      bbox.maxY = bbox.y + bbox.height;
+      return {
+        minX: bbox.x,
+        minY: bbox.y,
+        maxX: bbox.x + bbox.width,
+        maxY: bbox.y + bbox.height,
+        width: bbox.width,
+        height: bbox.height,
+        x: bbox.x,
+        y: bbox.y,
+      };
+    }
     return {
       minX: 0,
-      maxX: 0,
       minY: 0,
-      maxY: 0
+      maxX: 0,
+      maxY: 0,
+      width: 0,
+      height: 0,
+      x: 0,
+      y:0
     };
   }
 });

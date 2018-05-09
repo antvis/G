@@ -30,12 +30,6 @@ Util.augment(Line, {
       endArrow: false
     };
   },
-  calculateBox() {
-    const attrs = this.__attrs;
-    const { x1, y1, x2, y2 } = attrs;
-    const lineWidth = this.getHitLineWidth();
-    return LineMath.box(x1, y1, x2, y2, lineWidth);
-  },
   isPointInPath(x, y) {
     const attrs = this.__attrs;
     const { x1, y1, x2, y2 } = attrs;
@@ -47,17 +41,7 @@ Util.augment(Line, {
 
     return false;
   },
-  createPath(context) {
-    const attrs = this.__attrs;
-    const { x1, y1, x2, y2 } = attrs;
-    context = context || self.get('context');
-    context.beginPath();
-
-    Arrow.addStartArrow(context, attrs, x1, y1, x2, y2);
-    context.moveTo(x1, y1);
-    context.lineTo(x2, y2);
-    Arrow.addEndArrow(context, attrs, x2, y2, x1, y1);
-  },
+  createPath(context) {},
   getPoint(t) {
     const attrs = this.__attrs;
     return {

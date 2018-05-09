@@ -8,40 +8,38 @@ const Marker = function(cfg) {
 
 Marker.Symbols = {
   // 圆
-  circle(x, y, r, ctx) {
-    ctx.arc(x, y, r, 0, Math.PI * 2, false);
+  circle(x, y, r) {
+    return `M${x},${y}
+            m${-r},0
+            a ${r},${r},0,1,0,${r * 2},0
+            a ${r},${r},0,1,0,${-r * 2},0`;
   },
   // 正方形
-  square(x, y, r, ctx) {
-    ctx.moveTo(x - r, y - r);
-    ctx.lineTo(x + r, y - r);
-    ctx.lineTo(x + r, y + r);
-    ctx.lineTo(x - r, y + r);
-    ctx.closePath();
+  square(x, y, r) {
+    return `M${x - r},${y - r}
+            H${x + r}V${y + r}
+            H${x - r}Z`;
   },
   // 菱形
-  diamond(x, y, r, ctx) {
-    ctx.moveTo(x - r, y);
-    ctx.lineTo(x, y - r);
-    ctx.lineTo(x + r, y);
-    ctx.lineTo(x, y + r);
-    ctx.closePath();
+  diamond(x, y, r) {
+    return  `M${x - r},${y}
+             L${x},${y - r}
+             L${x + r},${y},
+             L${x},${y + r}Z`;
   },
   // 三角形
-  triangle(x, y, r, ctx) {
-    const diffY = r * Math.sin((1 / 3) * Math.PI);
-    ctx.moveTo(x - r, y + diffY);
-    ctx.lineTo(x, y - diffY);
-    ctx.lineTo(x + r, y + diffY);
-    ctx.closePath();
+  triangle(x, y, r) {
+    const diff = r * Math.sin((1 / 3) * Math.PI);
+    return `M${x - r},${y + diff}
+            L${x},${y - diff}
+            L${x + r},${y + diff}Z`;
   },
   // 倒三角形
-  'triangle-down': function(x, y, r, ctx) {
-    const diffY = r * Math.sin((1 / 3) * Math.PI);
-    ctx.moveTo(x - r, y - diffY);
-    ctx.lineTo(x + r, y - diffY);
-    ctx.lineTo(x, y + diffY);
-    ctx.closePath();
+  'triangle-down': function(x, y, r) {
+    const diff = r * Math.sin((1 / 3) * Math.PI);
+    return `M${x - r},${y - diff}
+            L${x + r},${y - diff}
+            L${x},${y + diff}Z`;
   }
 };
 
@@ -56,26 +54,56 @@ Util.augment(Marker, {
   type: 'marker',
   canFill: true,
   canStroke: true,
+  init(id) {
+    Marker.superclass.init.call(this);
+    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    id = id || Util.uniqueId(this.type + '_');
+    marker.setAttribute('id', id);
+    this.setSilent('el', marker);
+  },
   getDefaultAttrs() {
     return {
       x: 0,
       y: 0,
-      lineWidth: 1
+      lineWidth: 1,
+      fill: 'none'
     };
   },
-  calculateBox() {
+  __afterSetX() {
+    this.__assembleShape();
+  },
+  __afterSetY() {
+    this.__assembleShape();
+  },
+  __afterSetRadius() {
+    this.__assembleShape();
+  },
+  __afterSetAttrAll(objs) {
+    if ('x' in objs || 'y' in objs || 'radius' in objs) {
+      this.__assembleShape();
+    }
+  },
+  __assembleShape() {
     const attrs = this.__attrs;
-    const cx = attrs.x;
-    const cy = attrs.y;
-    const r = attrs.radius;
-    const lineWidth = this.getHitLineWidth();
-    const halfWidth = lineWidth / 2 + r;
-    return {
-      minX: cx - halfWidth,
-      minY: cy - halfWidth,
-      maxX: cx + halfWidth,
-      maxY: cy + halfWidth
-    };
+    let r = attrs.r;
+    if (typeof attrs.r === 'undefined') {
+      r = attrs.radius;
+    }
+    if (isNaN(Number(attrs.x)) || isNaN(Number(attrs.y)) || isNaN(Number(r))) {
+      return;
+    }
+    let d = '';
+    if (typeof attrs.symbol === 'function') {
+      let d = attrs.symbol(attrs.x, attrs.y, r);
+      if (Util.isArray(d)) {
+        d = d.map((path) => {
+          return path.join(' ');
+        }).join('');
+      }
+    } else {
+      const d = Marker.Symbols[attrs.symbol || 'circle'](attrs.x, attrs.y, r);
+    }
+    this.get('el').setAttribute('d', d);
   },
   isPointInPath(x, y) {
     const attrs = this.__attrs;
@@ -85,21 +113,7 @@ Util.augment(Marker, {
     const lineWidth = this.getHitLineWidth();
     return Inside.circle(cx, cy, r + lineWidth / 2, x, y);
   },
-  createPath(context) {
-    const attrs = this.__attrs;
-    const x = attrs.x;
-    const y = attrs.y;
-    const r = attrs.radius;
-    const symbol = attrs.symbol || 'circle';
-    let method;
-    if (Util.isFunction(symbol)) {
-      method = symbol;
-    } else {
-      method = Marker.Symbols[symbol];
-    }
-    context.beginPath();
-    method(x, y, r, context, this);
-  }
+  createPath(context) {}
 });
 
 module.exports = Marker;

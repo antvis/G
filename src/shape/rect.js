@@ -12,7 +12,8 @@ Rect.ATTRS = {
   width: 0,
   height: 0,
   radius: 0,
-  lineWidth: 1
+  lineWidth: 1,
+  fill: 'none'
 };
 
 Util.extend(Rect, Shape);
@@ -27,23 +28,19 @@ Util.augment(Rect, {
       radius: 0
     };
   },
-  calculateBox() {
-    const self = this;
-    const attrs = self.__attrs;
-    const x = attrs.x;
-    const y = attrs.y;
-    const width = attrs.width;
-    const height = attrs.height;
-    const lineWidth = this.getHitLineWidth();
-
-    const halfWidth = lineWidth / 2;
-    return {
-      minX: x - halfWidth,
-      minY: y - halfWidth,
-      maxX: x + width + halfWidth,
-      maxY: y + height + halfWidth
-    };
+  __afterSetRadius() {
+    const el = this.get('el');
+    el.setAttribute('rx', this.__attrs.radius);
+    el.setAttribute('ry', this.__attrs.radius);
   },
+  __afterSetAttrAll(objs) {
+    if ('radius' in objs) {
+      const el = this.get('el');
+      el.setAttribute('rx', objs.radius);
+      el.setAttribute('ry', objs.radius);
+    }
+  },
+  // TODO 图形拾取除了在事件中之外是否有别的用处？
   isPointInPath(x, y) {
     const self = this;
     const fill = self.hasFill();
@@ -96,33 +93,6 @@ Util.augment(Rect, {
       Inside.arcline(rx + width - radius, ry + height - radius, radius, 0, 0.5 * Math.PI, false, lineWidth, x, y) ||
       Inside.arcline(rx + radius, ry + height - radius, radius, 0.5 * Math.PI, Math.PI, false, lineWidth, x, y) ||
       Inside.arcline(rx + radius, ry + radius, radius, Math.PI, 1.5 * Math.PI, false, lineWidth, x, y);
-  },
-  createPath(context) {
-    const self = this;
-    const attrs = self.__attrs;
-    const x = attrs.x;
-    const y = attrs.y;
-    const width = attrs.width;
-    const height = attrs.height;
-    const radius = attrs.radius;
-    context = context || self.get('context');
-
-    context.beginPath();
-    if (radius === 0) {
-      // 改成原生的rect方法
-      context.rect(x, y, width, height);
-    } else {
-      context.moveTo(x + radius, y);
-      context.lineTo(x + width - radius, y);
-      context.arc(x + width - radius, y + radius, radius, -Math.PI / 2, 0, false);
-      context.lineTo(x + width, y + height - radius);
-      context.arc(x + width - radius, y + height - radius, radius, 0, Math.PI / 2, false);
-      context.lineTo(x + radius, y + height);
-      context.arc(x + radius, y + height - radius, radius, Math.PI / 2, Math.PI, false);
-      context.lineTo(x, y + radius);
-      context.arc(x + radius, y + radius, radius, Math.PI, Math.PI * 3 / 2, false);
-      context.closePath();
-    }
   }
 });
 
