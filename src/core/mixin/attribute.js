@@ -1,5 +1,5 @@
 const Util = require('../../util/index');
-
+const Defs = require('../defs');
 const ALIAS_ATTRS = [ 'strokeStyle', 'fillStyle', 'globalAlpha' ];
 const CLIP_SHAPES = [ 'circle', 'ellipse', 'fan', 'polygon', 'rect', 'path' ];
 const CAPITALIZED_ATTRS_MAP = {
@@ -162,6 +162,8 @@ module.exports = {
       self.__attrs.clip = value;
     } else if (name === 'transform') {
       self.__setAttrTrans(value);
+    } else if (~['stroke', 'strokeStyle', 'fill', 'fillStyle'].indexOf(name) && /^[r,R,L,l]{1}[\s]+\(/.test(value.trim())) {
+      self.__setAttrGradients(name, value.trim());
     } else {
       // 先存好属性，然后对一些svg和canvas中不同的属性进行特判
       self.__attrs[name] = value;
@@ -195,6 +197,17 @@ module.exports = {
   },
   hasStroke() {
     return this.canStroke && this.__attrs.strokeStyle;
+  },
+  __setAttrGradients(name, value) {
+    this.__attrs[name] = value;
+    name = name.replace('Style', '');
+    const defs = this.get('defs') || new Defs();
+    const id = defs.find('gradient', value);
+    if (id) {
+      this.get('el').setAttribute(name, `url(#${id})`);
+    } else {
+      defs.addGradient(value);
+    }
   },
   // 设置透明度
   __setAttrOpacity(v) {
