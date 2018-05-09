@@ -24,7 +24,6 @@ describe('Line', function() {
       y2: 0
     }
   });
-  // TODO 只是实例化一个shape并不添加到svg中，该元素的bbox为0
   canvas.add(line);
   it('init attrs', function() {
     expect(line.attr('x1')).to.equal(0);
