@@ -34,6 +34,7 @@ Util.augment(CText, {
       lineWidth: 1,
       lineCount: 1,
       fontSize: 12,
+      fill: '#000',
       fontFamily: 'sans-serif',
       fontStyle: 'normal',
       fontWeight: 'normal',
