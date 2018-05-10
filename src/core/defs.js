@@ -4,6 +4,7 @@
 const Util = require('../util/index');
 const Element = require('./element');
 const Gradient = require('../defs/gradient');
+const Shadow = require('../defs/shadow');
 
 const Defs = function (cfg) {
   Defs.superclass.constructor.call(this, cfg);
@@ -30,7 +31,7 @@ Util.augment(Defs, {
     let result = null;
     for(let i = 0; i < children.length; i++) {
       if (children[i].match(type, attr)) {
-        result = children.get('id');
+        result = children.__cfg.id;
         break;
       }
     }
@@ -40,7 +41,7 @@ Util.augment(Defs, {
     const children = this.get('children');
     let flag = null;
     Util.each(children, function(child) {
-      flag = child.get('id') === id ? child : null;
+      flag = child.__cfg.id === id ? child : null;
     });
     return flag;
   },
@@ -73,6 +74,7 @@ Util.augment(Defs, {
   },
   _add(item) {
     this.get('el').appendChild(item.__cfg.el);
+    this.get('children').push(item);
     item.__cfg.parent = this;
     item.__cfg.defs = this;
     item.__cfg.canvas = this.__cfg.canvas;
@@ -81,6 +83,11 @@ Util.augment(Defs, {
     const gradient = new Gradient(cfg);
     this._add(gradient);
     return gradient.__cfg.id;
+  },
+  addShadow(cfg) {
+    const shadow = new Shadow(cfg);
+    this._add(shadow);
+    return shadow.__cfg.id;
   }
 });
 
