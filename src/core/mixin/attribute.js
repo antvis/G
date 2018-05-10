@@ -1,5 +1,4 @@
 const Util = require('../../util/index');
-const Defs = require('../defs-singleton');
 const ALIAS_ATTRS = [ 'strokeStyle', 'fillStyle', 'globalAlpha' ];
 const CLIP_SHAPES = [ 'circle', 'ellipse', 'fan', 'polygon', 'rect', 'path' ];
 const CAPITALIZED_ATTRS_MAP = {
@@ -202,7 +201,11 @@ module.exports = {
     this.__attrs[name] = value;
     name = name.replace('Style', '');
     const defs = this.get('defs');
-    if (!defs) return;
+    if (!defs) {
+      this.__cfg.dependencies = this.__cfg.dependencies? this.__cfg.dependencies : [];
+      this.__cfg.dependencies.push({ name, value });
+      return;
+    }
     let id = defs.find('gradient', value);
     if (!id) {
       id = defs.addGradient(value, this);
