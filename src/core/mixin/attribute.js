@@ -202,8 +202,7 @@ module.exports = {
     name = name.replace('Style', '');
     const defs = this.get('defs');
     if (!defs) {
-      this.__cfg.dependencies = this.__cfg.dependencies? this.__cfg.dependencies : [];
-      this.__cfg.dependencies.push({ name, value });
+      this.__setAttrDependency(name, value);
       return;
     }
     let id = defs.find('gradient', value);
@@ -211,6 +210,14 @@ module.exports = {
       id = defs.addGradient(value, this);
     }
     this.get('el').setAttribute(name, `url(#${id})`);
+  },
+  __setAttrDependency(name, value) {
+    let dependencies = this.get('dependencies');
+    if (!dependencies) {
+      dependencies = {};
+    }
+    dependencies[name] = value;
+    this.__cfg.dependencies = dependencies;
   },
   // 设置透明度
   __setAttrOpacity(v) {

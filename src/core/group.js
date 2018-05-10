@@ -180,7 +180,7 @@ Util.augment(Group, {
           parent.removeChild(item, false);
         }
         if (self.get('dependencies')) {
-          self.__setDependency();
+          self.__addDependency();
         }
         self.__setEvn(item);
         el.appendChild(item.get('el'));
@@ -218,10 +218,8 @@ Util.augment(Group, {
   },
   __addDependency(item) {
     const dependencies = item.get('dependencies');
-    Util.each(dependencies, function(attr) {
-      item.attr(attr.name, attr.value);
-    });
-    item.__cfg.dependencies = [];
+    item.attr(dependencies);
+    item.__cfg.dependencies = {};
   },
   __setEvn(item) {
     const self = this;
