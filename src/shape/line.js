@@ -26,6 +26,7 @@ Util.augment(Line, {
   getDefaultAttrs() {
     return {
       lineWidth: 1,
+      stroke: '#000',
       startArrow: false,
       endArrow: false
     };

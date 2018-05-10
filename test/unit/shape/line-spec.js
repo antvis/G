@@ -31,7 +31,7 @@ describe('Line', function() {
     expect(line.attr('x2')).to.equal(0);
     expect(line.attr('y2')).to.equal(0);
     expect(line.attr('lineWidth')).to.equal(1);
-    expect(line.attr('stroke')).to.be.undefined;
+    expect(line.attr('stroke')).to.equal('#000');
     expect(line.attr('fill')).to.be.undefined;
     expect(line.attr('startArrow')).to.be.false;
     expect(line.attr('endArrow')).to.be.false;

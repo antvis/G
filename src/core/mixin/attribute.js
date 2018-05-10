@@ -84,6 +84,7 @@ const ALIAS_ATTRS_MAP = {
   fill: 'fillStyle',
   opacity: 'globalAlpha'
 };
+const SHADOW_ATTR = ['shadowColor', 'shadowBlur', 'shadowOffsetX', 'shadowOffsetY'];
 
 module.exports = {
   canFill: false,
@@ -161,6 +162,8 @@ module.exports = {
       self.__attrs.clip = value;
     } else if (name === 'transform') {
       self.__setAttrTrans(value);
+    } else if(name.startsWith('shadow')) {
+      self.__setAttrShadow(name, value);
     } else if (~['stroke', 'strokeStyle', 'fill', 'fillStyle'].indexOf(name) && /^[r,R,L,l]{1}[\s]+\(/.test(value.trim())) {
       self.__setAttrGradients(name, value.trim());
     } else {
@@ -196,6 +199,35 @@ module.exports = {
   },
   hasStroke() {
     return this.canStroke && this.__attrs.strokeStyle;
+  },
+  __setAttrShadow(name, value) {
+    const attrs = this.__attrs;
+    attrs[name] = value;
+    let filter = this.get('filter');
+    const defs = this.get('defs');
+    if (filter) {
+      defs.findById(filter).update(name, value);
+      return;
+    }
+    if (!defs) {
+      this.__setAttrDependency(name, value);
+      return;
+    }
+    const cfg  = {
+      dx: this.__attrs.shadowOffsetX,
+      dy: this.__attrs.shadowOffsetY,
+      blur: this.__attrs.shadowBlur,
+      color: this.__attrs.shadowColor
+    };
+    if (isNaN(Number(cfg.dx)) || isNaN(Number(cfg.dy))) {
+      return;
+    }
+    let id = defs.find('filter', cfg);
+    if (!id) {
+      id = defs.addShadow(cfg, this);
+    }
+    this.__cfg.filter = id;
+    this.get('el').setAttribute('filter', `url(#${id})`);
   },
   __setAttrGradients(name, value) {
     this.__attrs[name] = value;
