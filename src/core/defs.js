@@ -4,6 +4,7 @@
 const Util = require('../util/index');
 const Element = require('./element');
 const LinearGradient = require('../defs/linearGradient');
+const RadialGradient = require('../defs/radialGradient');
 
 const Defs = function (cfg) {
   Defs.superclass.constructor.call(this, cfg);
@@ -75,18 +76,18 @@ Util.augment(Defs, {
     item.__cfg.parent = this;
     item.__cfg.defs = this;
     item.__cfg.canvas = this.__cfg.canvas;
-    item.__cfg.mounted = true;
   },
   addGradient(cfg) {
+    let gradient = null;
     if (cfg.toLowerCase().startsWith('l')) {
       // 线性渐变
-      const gradient = new LinearGradient(cfg);
-      this.__cfg.el.appendChild(gradient.__attrs.el);
-      this.get('children').push(gradient);
-      console.log(this.__cfg.el);
-      return gradient.__attrs.id;
+      gradient = new LinearGradient(cfg);
+    } else {
+      gradient = new RadialGradient(cfg);
     }
-    // todo 环形渐变
+    this.get('el').appendChild(gradient.__cfg.el);
+    this._setContext(gradient);
+    return gradient.__cfg.id;
   }
 });
 
