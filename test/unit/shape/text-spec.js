@@ -150,6 +150,9 @@ describe('Text', function() {
 
   it('stroke', function() {
     text.attr({
+      x: 50,
+      y: 20,
+      text: 'stroke渐变测试',
       stroke: 'l (0) 0:#ffff00 1:rgb(0, 255, 255)'
     });
     expect(text.attr('stroke')).to.equal('l (0) 0:#ffff00 1:rgb(0, 255, 255)');
@@ -158,19 +161,18 @@ describe('Text', function() {
   });
 
   it('fill', function() {
-    const text1 = new G.Text({
+    console.log('fill');
+    const grad = new G.Text({
       attrs: {
         x: 50,
         y: 150,
-        text: 'fill测试',
+        text: 'fill渐变测试',
         font: '40px Arial',
         fill: 'r (0.5, 0.5, 0) 0:rgb(255, 0, 255) 0.5:#dddddd'
       }
     });
-    expect(text1.attr('fill')).to.equal('r (0.5, 0.5, 0) 0:rgb(255, 0, 255) 0.5:#dddddd');
-    canvas.add(text1);
-
-
+    expect(grad.attr('fill')).to.equal('r (0.5, 0.5, 0) 0:rgb(255, 0, 255) 0.5:#dddddd');
+    canvas.add(grad);
     canvas.draw();
   });
 

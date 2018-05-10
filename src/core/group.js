@@ -73,6 +73,7 @@ Util.augment(Group, {
       }
     }
     cfg.canvas = canvas;
+    cfg.defs = this.get('defs');
     cfg.type = type;
     const rst = new Shape[shapeType](cfg);
     this.add(rst);
@@ -178,6 +179,9 @@ Util.augment(Group, {
         if (parent) {
           parent.removeChild(item, false);
         }
+        if (self.get('dependencies')) {
+          self.__setDependency();
+        }
         self.__setEvn(item);
         el.appendChild(item.get('el'));
       });
@@ -189,6 +193,9 @@ Util.augment(Group, {
         parent.removeChild(item, false);
       }
       self.__setEvn(item);
+      if (item.get('dependencies')) {
+        self.__addDependency(item);
+      }
       el.appendChild(item.get('el'));
       children.push(item);
     }
@@ -209,8 +216,16 @@ Util.augment(Group, {
     const lastIndex = this.get('children').length - 1;
     return this.getChildByIndex(lastIndex);
   },
+  __addDependency(item) {
+    const dependencies = item.get('dependencies');
+    Util.each(dependencies, function(attr) {
+      item.attr(attr.name, attr.value);
+    });
+    item.__cfg.dependencies = [];
+  },
   __setEvn(item) {
     const self = this;
+    item.__cfg.parent = self;
     item.__cfg.parent = self;
     item.__cfg.canvas = self.__cfg.canvas;
     item.__cfg.defs = self.__cfg.defs;

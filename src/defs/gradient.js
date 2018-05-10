@@ -1,9 +1,13 @@
 /**
+ * Created by Elaine on 2018/5/10.
+ */
+/**
  * Created by Elaine on 2018/5/9.
  */
 const Util = require('../util/index');
 
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
+const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/ig;
 
 function addStop(steps) {
@@ -73,21 +77,39 @@ function parseLineGradient(color, el) {
   el.innerHTML = addStop(steps);
 };
 
-const LinearGradient = function(cfg) {
-    const el = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
-    const id = Util.uniqueId('linear' + '_');
-    el.setAttribute('id', id);
-    parseLineGradient(cfg, el);
-    this.__cfg = { el, id };
-    this.__attrs = { config: cfg };
-    return this;
+function parseRadialGradient(color, self) {
+  const arr = regexRG.exec(color);
+  const cx = parseFloat(arr[1]);
+  const cy = parseFloat(arr[2]);
+  const r = parseFloat(arr[3]);
+  const steps = arr[4];
+  self.setAttribute('cx', cx);
+  self.setAttribute('cy', cy);
+  self.setAttribute('r', r);
+  self.innerHTML = addStop(steps);
 };
 
-Util.augment(LinearGradient, {
+const Gradient = function(cfg) {
+  let el = null;
+  const id = Util.uniqueId('gradient' + '_');
+  if (cfg.toLowerCase().startsWith('l')) {
+    el = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+    parseLineGradient(cfg, el);
+  } else {
+    el = document.createElementNS('http://www.w3.org/2000/svg', 'radialGradient');
+    parseRadialGradient(cfg, el);
+  }
+  el.setAttribute('id', id);
+  this.__cfg = { el, id };
+  this.__attrs = { config: cfg };
+  return this;
+};
+
+Util.augment(Gradient, {
   type: 'gradient',
   match(type, attr) {
     return this.type === type && this.__attrs.config === attr;
   }
 });
 
-module.exports = LinearGradient;
+module.exports = Gradient;
