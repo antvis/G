@@ -129,7 +129,6 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
   },
   setContext(context) {
     const clip = this.__attrs.clip;
-    context.save();
     if (clip) {
       // context.save();
       clip.resetTransform(context);
@@ -137,7 +136,7 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
       context.clip();
       // context.restore();
     }
-    this.resetContext(context);
+    // this.resetContext(context);
     this.resetTransform(context);
   },
   restoreContext(context) {

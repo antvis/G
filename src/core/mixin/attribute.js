@@ -202,7 +202,6 @@ module.exports = {
     this.__attrs[name] = value;
     name = name.replace('Style', '');
     const defs = this.get('defs');
-    console.log(defs);
     if (!defs) return;
     let id = defs.find('gradient', value);
     if (!id) {
