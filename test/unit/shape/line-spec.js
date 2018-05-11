@@ -114,11 +114,9 @@ describe('Line', function() {
   it('arrow', function() {
     line.attr({
       startArrow: true,
-      endArrow: true,
-      arrowLength: 15
+      endArrow: true
     });
     expect(line.attr('startArrow')).to.be.true;
-    expect(line.attr('arrowLength')).to.equal(15);
     canvas.draw();
   });
 

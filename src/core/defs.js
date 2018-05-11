@@ -5,6 +5,7 @@ const Util = require('../util/index');
 const Element = require('./element');
 const Gradient = require('../defs/gradient');
 const Shadow = require('../defs/shadow');
+const Arrow = require('../defs/arrow');
 
 const Defs = function (cfg) {
   Defs.superclass.constructor.call(this, cfg);
@@ -88,6 +89,11 @@ Util.augment(Defs, {
     const shadow = new Shadow(cfg);
     this._add(shadow);
     return shadow.__cfg.id;
+  },
+  addArrow(name, cfg) {
+    const arrow = new Arrow(name, cfg);
+    this._add(arrow);
+    return arrow.__cfg.id;
   }
 });
 
