@@ -221,13 +221,9 @@ module.exports = {
       self.get('el').removeAttribute(name);
       return;
     }
-    if (id) {
-      defs.findById(id).update(name, value);
-      return;
-    }
-    id = defs.find(name, value);
+    id = defs.find(name, { value, stroke: self.__attrs.stroke });
     if (!id) {
-      id = defs.addArrow(name, value);
+      id = defs.addArrow(name, value, self.__attrs.stroke);
     }
     self.__cfg[name] = id;
     self.get('el').setAttribute(name, `url(#${id})`);
