@@ -47,7 +47,7 @@ const Arrow = function(name, cfg, stroke) {
   const el = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
   const id = Util.uniqueId('marker' + '_');
   el.setAttribute('id', id);
-  this.__cfg = { el, id, stroke };
+  this.__cfg = { el, id, stroke: stroke || '#000' };
   this.__cfg[name] = true;
   let child = null;
   if (typeof cfg === 'boolean' && cfg) {
@@ -64,25 +64,19 @@ const Arrow = function(name, cfg, stroke) {
 Util.augment(Arrow, {
   type: 'arrow',
   match(type, attr) {
-    const child = this.__cfg.child.__attrs;
     if(type !== this.type) {
       return false;
     }
     if (!this.__cfg[name]) {
       return false;
     }
-    if (this.__cfg.stroke !== attr.stroke) {
+    if (attr.stroke !== '#000') {
       return false;
     }
     if (typeof attr === 'boolean' && !this.__cfg.default) {
       return false;
     }
-    const shape = attr.value.shape;
-    const attrs = shape.__attrs;
-    return attrs.symbol === child.symbol &&
-        attrs.x === child.x &&
-        attrs.y === child.y &&
-        attrs.r === child.r;
+    return true;
   },
   _setChild(child, isDefault) {
     this.__cfg.child = child;
