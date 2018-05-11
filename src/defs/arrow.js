@@ -3,11 +3,14 @@
  */
 const Util = require('../util/index');
 
-const DEFAULT_PATH = 'M 0 0 L 6.445174776667712 2 L 0 4 z';
+const DEFAULT_PATH = {
+  'marker-start': 'M0 2 L6.445174776667712 0 L 6.445174776667712 4',
+  'marker-end': 'M 0 0 L 6.445174776667712 2 L 0 4 z',
+};
 
-function setDefaultPath (parent) {
+function setDefaultPath (parent, name) {
   const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  el.setAttribute('d', DEFAULT_PATH);
+  el.setAttribute('d', DEFAULT_PATH[name]);
   parent.appendChild(el);
   parent.setAttribute('refX', 3.22);
   parent.setAttribute('refY', 2);
@@ -17,10 +20,10 @@ function setDefaultPath (parent) {
   return el;
 }
 
-function setMarker(cfg, parent) {
+function setMarker(cfg, parent, name) {
   const shape = cfg.shape;
   if (!shape) {
-    return setDefaultPath();
+    return setDefaultPath(parent, name);
   }
   if (shape.type !== 'marker') {
     throw "the shape of an arrow should be an instance of Marker";
@@ -42,12 +45,13 @@ const Arrow = function(name, cfg) {
   const id = Util.uniqueId('marker' + '_');
   el.setAttribute('id', id);
   this.__cfg = { el, id };
+  this.__cfg[name] = true;
   let child = null;
   if (typeof cfg === 'boolean' && cfg) {
-    child = setDefaultPath(el);
+    child = setDefaultPath(el, name);
     this.__cfg.default = true;
   } else if(typeof cfg === 'object') {
-    child = setMarker(cfg);
+    child = setMarker(cfg, el, name);
     this.__cfg.default = false;
   }
   this.__cfg.child = child;
@@ -60,6 +64,9 @@ Util.augment(Arrow, {
   match(type, attr) {
     const child = this.__cfg.child.__attrs;
     if(type !== this.type) {
+      return false;
+    }
+    if (!this.__cfg[name]) {
       return false;
     }
     if (typeof attr === 'boolean' && !this.__cfg.default) {
