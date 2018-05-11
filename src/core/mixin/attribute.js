@@ -225,7 +225,7 @@ module.exports = {
       defs.findById(id).update(name, value);
       return;
     }
-    id = defs.find('filter', value);
+    id = defs.find(name, value);
     if (!id) {
       id = defs.addArrow(name, value);
     }
