@@ -32,7 +32,7 @@ Util.augment(Defs, {
     let result = null;
     for(let i = 0; i < children.length; i++) {
       if (children[i].match(type, attr)) {
-        result = children.__cfg.id;
+        result = children[i].__cfg.id;
         break;
       }
     }
@@ -41,9 +41,12 @@ Util.augment(Defs, {
   findById(id) {
     const children = this.get('children');
     let flag = null;
-    Util.each(children, function(child) {
-      flag = child.__cfg.id === id ? child : null;
-    });
+    for(let i = 0; i < children.length; i++) {
+      if(children[i].__cfg.id === id) {
+        flag = children[i];
+        break;
+      }
+    }
     return flag;
   },
   add(items) {

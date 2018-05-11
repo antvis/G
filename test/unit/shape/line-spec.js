@@ -117,6 +117,7 @@ describe('Line', function() {
       endArrow: true
     });
     expect(line.attr('startArrow')).to.be.true;
+    line.attr('stroke', '#f00');
     canvas.draw();
   });
 
