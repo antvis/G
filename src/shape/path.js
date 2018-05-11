@@ -33,6 +33,16 @@ Util.augment(Path, {
       endArrow: false
     };
   },
+  __afterSetAttrStroke(value) {
+    const start = this.get('marker-start');
+    const end = this.get('marker-end');
+    if (start) {
+        this.get('defs').findById(start).update(null, value);
+    }
+    if (end) {
+      this.get('defs').findById(end).update(null, value);
+    }
+  },
   __afterSetAttrPath(value) {
     const el = this.get('el');
     let d = value;
@@ -46,6 +56,9 @@ Util.augment(Path, {
   __afterSetAttrAll(objs) {
     if (objs.path) {
       this.__afterSetAttrPath(objs.path);
+    }
+    if (objs.stroke) {
+      this.__afterSetAttrStroke(objs.stroke);
     }
   },
   isPointInPath(x, y) {
