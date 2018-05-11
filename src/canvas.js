@@ -31,6 +31,7 @@ Canvas.CFG = {
   heightCanvas: null,
   /**
    * CSS宽
+   * CSS宽
    * @type {String}
    */
   widthStyle: null,
@@ -49,11 +50,6 @@ Canvas.CFG = {
    * @type {Object}
    */
   canvasDOM: null,
-  /**
-   * 屏幕像素比
-   * @type {Number}
-   */
-  pixelRatio: null
 };
 
 Util.extend(Canvas, Group);
@@ -61,7 +57,7 @@ Util.extend(Canvas, Group);
 Util.augment(Canvas, {
   init() {
     Canvas.superclass.init.call(this);
-    this._setGlobalParam();
+    //this._setGlobalParam();
     this._setDOM();
     this._setInitSize();
     // this._scale();
@@ -182,17 +178,6 @@ Util.augment(Canvas, {
       }
     }, false);
   },
-/*  _scale() {
-    const pixelRatio = this.get('pixelRatio');
-    this.scale(pixelRatio, pixelRatio);
-  },*/
-  _setGlobalParam() {
-    const pixelRatio = this.get('pixelRatio');
-    if (!pixelRatio) {
-      this.set('pixelRatio', Util.getRatio());
-    }
-    return;
-  },
   _setDOM() {
     this._setContainer();
     this._setLayer();
@@ -243,22 +228,14 @@ Util.augment(Canvas, {
     canvasDOM.setAttribute('height', heightCanvas);
   },
   getWidth() {
-    const pixelRatio = this.get('pixelRatio');
-    const width = this.get('width');
-    return width * pixelRatio;
+    return this.get('width');
   },
   getHeight() {
-    const pixelRatio = this.get('pixelRatio');
-    const height = this.get('height');
-    return height * pixelRatio;
+    return this.get('height');
   },
   changeSize(width, height) {
-    const pixelRatio = this.get('pixelRatio');
-    const widthCanvas = width * pixelRatio;
-    const heightCanvas = height * pixelRatio;
-
-    this.set('widthCanvas', widthCanvas);
-    this.set('heightCanvas', heightCanvas);
+    this.set('widthCanvas', width);
+    this.set('heightCanvas', width);
     this.set('widthStyle', width + 'px');
     this.set('heightStyle', height + 'px');
     this.set('width', width);

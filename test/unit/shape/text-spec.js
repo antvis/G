@@ -174,7 +174,6 @@ describe('Text', function() {
     });
     expect(grad.attr('fill')).to.equal('r (0.5, 0.5, 0) 0:rgb(255, 0, 255) 0.5:#dddddd');
     canvas.add(grad);
-    console.log(grad);
     canvas.draw();
   });
 

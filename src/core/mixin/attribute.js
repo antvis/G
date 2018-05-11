@@ -77,6 +77,8 @@ const SVG_ATTR_MAP = {
   fontVariant: 'font-variant',
   fontWeight: 'font-weight',
   fontFamily: 'font-family',
+  startArrow: 'marker-start',
+  endArrow: 'marker-end',
   preserveAspectRatio: 'preserveAspectRatio'
 };
 const ALIAS_ATTRS_MAP = {
@@ -166,6 +168,8 @@ module.exports = {
       self.__setAttrShadow(name, value);
     } else if (~['stroke', 'strokeStyle', 'fill', 'fillStyle'].indexOf(name) && /^[r,R,L,l]{1}[\s]+\(/.test(value.trim())) {
       self.__setAttrGradients(name, value.trim());
+    } else if (~name.toLowerCase().indexOf('arrow')) {
+      self.__setAttrArrow(name, value);
     } else {
       // 先存好属性，然后对一些svg和canvas中不同的属性进行特判
       self.__attrs[name] = value;
@@ -199,6 +203,34 @@ module.exports = {
   },
   hasStroke() {
     return this.canStroke && this.__attrs.strokeStyle;
+  },
+  __setAttrArrow(name, value) {
+    const self = this;
+    this.__attrs[name] = value;
+    const defs = self.get('defs');
+    name = SVG_ATTR_MAP[name];
+    if (!name) {
+      return;
+    }
+    let id = self.get(name);
+    if (!defs) {
+      this.__setAttrDependency(name, value);
+      return;
+    }
+    if (!value) {
+      self.get('el').removeAttribute(name);
+      return;
+    }
+    if (id) {
+      defs.findById(id).update(name, value);
+      return;
+    }
+    id = defs.find('filter', value);
+    if (!id) {
+      id = defs.addArrow(name, value);
+    }
+    self.__cfg[name] = id;
+    self.get('el').setAttribute(name, `url(#${id})`);
   },
   __setAttrShadow(name, value) {
     const attrs = this.__attrs;
