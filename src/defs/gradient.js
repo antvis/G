@@ -1,7 +1,4 @@
 /**
- * Created by Elaine on 2018/5/10.
- */
-/**
  * Created by Elaine on 2018/5/9.
  */
 const Util = require('../util/index');
