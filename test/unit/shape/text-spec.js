@@ -365,12 +365,6 @@ describe('Text', function() {
     expect(box.minY).to.equal(-2);
   });
 
-  xit('isHit', function() {
-    expect(text.isHit(48, 0)).to.be.true;
-    expect(text.isHit(48, 24)).to.be.false;
-  });
-
-
   it('normal use', function() {
     const text = new G.Text({
       attrs: {

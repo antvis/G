@@ -71,7 +71,7 @@ describe('Image', function() {
   });
 
 
-  // todo ÊÇ·ñÖ§³Öcanvas¶ÔÏó£¿
+  // todo æ˜¯å¦éœ€è¦æ”¯æŒç›´æ¥å¼•ç”¨ä¸€ä¸ªcanvasçš„åœºæ™¯
     /*it('canvas', function() {
     const image = new G.Image({
       attrs: {
@@ -149,7 +149,7 @@ describe('Image', function() {
     canvas.draw();
   });
 
-  // todo ÊÇ·ñÖ§³ÖÏÔÊ¾×ÓÍ¼£¿
+  // todo æ˜¯å¦éœ€è¦æ”¯æŒå­å›¾å’Œä½ç§»åŠŸèƒ½ï¼Ÿ
   /* it('sx, sy, swidth, sheight', function() {
     image.attr({
       sx: 20,
@@ -175,13 +175,6 @@ describe('Image', function() {
     canvas.draw();
   });
 */
-  it('isHit', function() {
-    expect(image.isHit(10, 10)).to.be.true;
-    expect(image.isHit(210, 210)).to.be.true;
-    expect(image.isHit(20, 20)).to.be.true;
-    expect(image.isHit(31, 43)).to.be.true;
-    expect(image.isHit(300, 300)).to.be.false;
-  });
 
    it('image onload && image.remove(true)', function() {
     const image = new G.Image({

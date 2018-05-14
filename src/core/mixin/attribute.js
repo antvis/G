@@ -1,6 +1,5 @@
 const Util = require('../../util/index');
 const ALIAS_ATTRS = [ 'strokeStyle', 'fillStyle', 'globalAlpha' ];
-const CLIP_SHAPES = [ 'circle', 'ellipse', 'fan', 'polygon', 'rect', 'path' ];
 const CAPITALIZED_ATTRS_MAP = {
   r: 'R',
   opacity: 'Opacity',
@@ -50,8 +49,8 @@ const SVG_ATTR_MAP = {
   fill: 'fill',
   strokeOpacity: 'stroke-opacity',
   fillOpacity: 'fill-opacity',
-  strokeOpacity: 'Stroke',
-  fillOpacity: 'Fill',
+  strokeStyle: 'stroke',
+  fillStyle: 'fill',
   x: 'x',
   y: 'y',
   r: 'r',
@@ -162,13 +161,15 @@ module.exports = {
     if (name === 'clip') {
       self.__setAttrClip(name, value);
     } else if (name === 'transform') {
-      // todo
       self.__setAttrTrans(value);
     } else if(name.startsWith('shadow')) {
       self.__setAttrShadow(name, value);
     } else if (~['stroke', 'strokeStyle', 'fill', 'fillStyle'].indexOf(name) && /^[r,R,L,l]{1}[\s]+\(/.test(value.trim())) {
       self.__setAttrGradients(name, value.trim());
     } else if (~name.toLowerCase().indexOf('arrow')) {
+      if (!value) {
+        return self;
+      }
       self.__setAttrArrow(name, value);
     } else {
       // 先存好属性，然后对一些svg和canvas中不同的属性进行特判
@@ -208,7 +209,7 @@ module.exports = {
     const defs = self.get('defs');
     if (!defs) {
       this.__setAttrDependency(name, value);
-      return;
+      return this;
     }
     name = SVG_ATTR_MAP[name];
     if (!name) {
@@ -230,13 +231,17 @@ module.exports = {
     const attrs = this.__attrs;
     let filter = this.get('filter');
     const defs = this.get('defs');
+    if (!value) {
+      this.get('el').removeAttribute('filter');
+      return this;
+    }
     if (filter) {
       defs.findById(filter).update(name, value);
-      return;
+      return this;
     }
     if (!defs) {
       this.__setAttrDependency(name, value);
-      return;
+      return this;
     }
     const cfg  = {
       dx: attrs.shadowOffsetX,
@@ -245,7 +250,7 @@ module.exports = {
       color: attrs.shadowColor
     };
     if (isNaN(Number(cfg.dx)) || isNaN(Number(cfg.dy))) {
-      return;
+      return this;
     }
     let id = defs.find('filter', cfg);
     if (!id) {
@@ -257,9 +262,13 @@ module.exports = {
   __setAttrGradients(name, value) {
     name = name.replace('Style', '');
     const defs = this.get('defs');
+    if (!value) {
+      this.get('el').removeAttribute('gradient');
+      return this;
+    }
     if (!defs) {
       this.__setAttrDependency(name, value);
-      return;
+      return this;
     }
     let id = defs.find('gradient', value);
     if (!id) {
@@ -274,6 +283,7 @@ module.exports = {
     }
     dependencies[name] = value;
     this.__cfg.dependencies = dependencies;
+    return this;
   },
   // 设置透明度
   __setAttrOpacity(v) {
@@ -283,14 +293,26 @@ module.exports = {
   },
   __setAttrClip(name, value) {
     const defs = this.get('defs');
+    if (!value) {
+      this.get('el').removeAttribute('clip-path');
+      return this;
+    }
     if (!defs) {
       this.__setAttrDependency(name, value);
-      return;
+      return this;
     }
+
     const id = defs.addClip(value);
     this.get('el').setAttribute('clip-path', `url(#${id})`);
   },
   __setAttrTrans(value) {
-    return this.transform(value);
+     this.transform(value);
+     const matrix = this.__attrs.matrix;
+     if(!Util.isArray(matrix)) {
+       this.get('el').setAttribute('transform', '');
+     }
+     const val = matrix.slice(0, 6).join(',');
+     this.get('el').setAttribute('transform', `matrix(${val})`);
+     return this;
   }
 };
