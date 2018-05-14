@@ -35,11 +35,6 @@ describe('Ellipse', function() {
     expect(ellipse.attr('lineWidth')).to.equal(1);
     expect(ellipse.attr('stroke')).to.be.undefined;
     expect(ellipse.attr('fill')).to.be.undefined;
-    const box = ellipse.getBBox();
-    expect(box.minX).to.equal(-1);
-    expect(box.maxX).to.equal(1);
-    expect(box.minY).to.equal(-1);
-    expect(box.maxY).to.equal(1);
   });
 
   it('x', function() {
@@ -95,17 +90,6 @@ describe('Ellipse', function() {
       }
     });
 
-    expect(ellipse1.isHit(-150, 50)).to.be.false;
-    expect(ellipse1.isHit(50, -50)).to.be.false;
-    expect(ellipse1.isHit(250, 50)).to.be.false;
-    expect(ellipse1.isHit(50, 150)).to.be.false;
-
-    ellipse1.attr('stroke', 'red');
-    expect(ellipse1.isHit(-150, 50)).to.be.true;
-    expect(ellipse1.isHit(50, -50)).to.be.true;
-    expect(ellipse1.isHit(250, 50)).to.be.true;
-    expect(ellipse1.isHit(50, 150)).to.be.true;
-
     const ellipse2 = new G.Ellipse({
       attrs: {
         x: 100,
@@ -114,18 +98,6 @@ describe('Ellipse', function() {
         ry: 80
       }
     });
-
-    expect(ellipse2.isHit(70, 200)).to.be.false;
-    expect(ellipse2.isHit(100, 150)).to.be.false;
-    expect(ellipse2.isHit(130, 200)).to.be.false;
-    expect(ellipse2.isHit(100, 230)).to.be.false;
-
-    ellipse2.attr('fill', 'green');
-
-    expect(ellipse2.isHit(70, 200)).to.be.true;
-    expect(ellipse2.isHit(100, 150)).to.be.true;
-    expect(ellipse2.isHit(130, 200)).to.be.true;
-    expect(ellipse2.isHit(100, 230)).to.be.true;
 
     const ellipse3 = new G.Ellipse({
       attrs: {
@@ -136,19 +108,10 @@ describe('Ellipse', function() {
       }
     });
 
-    expect(ellipse3.isHit(150, 200)).to.be.false;
-    expect(ellipse3.isHit(250, 200)).to.be.false;
-    expect(ellipse3.isHit(200, 100)).to.be.false;
-    expect(ellipse3.isHit(200, 300)).to.be.false;
-    expect(ellipse3.isHit(170, 200)).to.be.false;
     ellipse3.attr({
       fill: 'green',
       stroke: 'red'
     });
-    expect(ellipse3.isHit(150, 200)).to.be.true;
-    expect(ellipse3.isHit(250, 200)).to.be.true;
-    expect(ellipse3.isHit(200, 100)).to.be.true;
-    expect(ellipse3.isHit(200, 300)).to.be.true;
-    expect(ellipse3.isHit(170, 200)).to.be.true;
+    canvas.add(ellipse3);
   });
 });

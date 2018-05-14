@@ -117,58 +117,7 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
   get(name) {
     return this.__cfg[name];
   },
-  draw(context) {
-    if (this.get('destroyed')) {
-      return;
-    }
-    if (this.get('visible')) {
-      this.setContext(context);
-      this.drawInner(context);
-      this.restoreContext(context);
-    }
-  },
-  setContext(context) {
-    const clip = this.__attrs.clip;
-    if (clip) {
-      // context.save();
-      clip.resetTransform(context);
-      clip.createPath(context);
-      context.clip();
-      // context.restore();
-    }
-    // this.resetContext(context);
-    this.resetTransform(context);
-  },
-  restoreContext(context) {
-    context.restore();
-  },
-  resetContext(context) {
-    const elAttrs = this.__attrs;
-    // var canvas = this.get('canvas');
-    if (!this.isGroup) {
-      // canvas.registShape(this); // 快速拾取方案暂时不执行
-      for (const k in elAttrs) {
-        if (SHAPE_ATTRS.indexOf(k) > -1) { // 非canvas属性不附加
-          let v = elAttrs[k];
-          if (k === 'fillStyle') {
-            v = Format.parseStyle(v, this);
-          }
-          if (k === 'strokeStyle') {
-            v = Format.parseStyle(v, this);
-          }
-          if (k === 'lineDash' && context.setLineDash) {
-            if (Util.isArray(v)) {
-              context.setLineDash(v);
-            } else if (Util.isString(v)) {
-              context.setLineDash(v.split(' '));
-            }
-          } else {
-            context[k] = v;
-          }
-        }
-      }
-    }
-  },
+  draw(context) {},
   drawInner(/* context */) {
 
   },
