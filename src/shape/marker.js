@@ -78,6 +78,9 @@ Util.augment(Marker, {
   __afterSetRadius() {
     this.__assembleShape();
   },
+  __afterSetR() {
+    this.__assembleShape();
+  },
   __afterSetAttrAll(objs) {
     if ('x' in objs || 'y' in objs || 'radius' in objs) {
       this.__assembleShape();
@@ -101,7 +104,7 @@ Util.augment(Marker, {
         }).join('');
       }
     } else {
-      const d = Marker.Symbols[attrs.symbol || 'circle'](attrs.x, attrs.y, r);
+      d = Marker.Symbols[attrs.symbol || 'circle'](attrs.x, attrs.y, r);
     }
     this.get('el').setAttribute('d', d);
   },

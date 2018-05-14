@@ -93,8 +93,8 @@ Util.augment(Defs, {
     this._add(shadow);
     return shadow.__cfg.id;
   },
-  addArrow(name, cfg) {
-    const arrow = new Arrow(name, cfg);
+  addArrow(name, cfg, stroke) {
+    const arrow = new Arrow(name, cfg, stroke);
     this._add(arrow);
     return arrow.__cfg.id;
   }

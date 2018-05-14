@@ -122,15 +122,26 @@ describe('Line', function() {
   });
 
   it('getPoint', function() {
+    console.log(111);
     const line = new G.Line({
       attrs: {
-        x1: 0,
-        y1: 0,
+        x1: 100,
+        y1: 100,
         x2: 200,
-        y2: 300
+        y2: 300,
+        startArrow: {
+          shape: new G.Marker({
+            attrs: {
+              x: 20,
+              y: 20,
+              radius: 10,
+              symbol: 'circle'
+            }
+          })
+        },
       }
     });
-
+    canvas.add(line);
     const point = line.getPoint(0.5);
     expect(point.x).to.equal(100);
     expect(point.y).to.equal(150);

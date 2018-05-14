@@ -158,6 +158,7 @@ module.exports = {
   _setAttr(name, value) {
     const self = this;
     const el = self.get('el');
+    self.__attrs[name] = value;
     // TODO clip & transform & shadow blah blah..
     if (name === 'clip') {
       self.__setAttrClip(value);
@@ -172,7 +173,6 @@ module.exports = {
       self.__setAttrArrow(name, value);
     } else {
       // 先存好属性，然后对一些svg和canvas中不同的属性进行特判
-      self.__attrs[name] = value;
       if (['circle', 'ellipse', 'marker'].indexOf(self.type) >= 0 && ['x', 'y'].indexOf(name) >= 0) {
         /**
          * 本来考虑想写到对应图形里面的，但是x,y又是svg通用属性，这样会同时存在x，y, cx,cy
@@ -206,17 +206,16 @@ module.exports = {
   },
   __setAttrArrow(name, value) {
     const self = this;
-    this.__attrs[name] = value;
     const defs = self.get('defs');
+    if (!defs) {
+      this.__setAttrDependency(name, value);
+      return;
+    }
     name = SVG_ATTR_MAP[name];
     if (!name) {
       return;
     }
     let id = self.get(name);
-    if (!defs) {
-      this.__setAttrDependency(name, value);
-      return;
-    }
     if (!value) {
       self.get('el').removeAttribute(name);
       return;
@@ -230,7 +229,6 @@ module.exports = {
   },
   __setAttrShadow(name, value) {
     const attrs = this.__attrs;
-    attrs[name] = value;
     let filter = this.get('filter');
     const defs = this.get('defs');
     if (filter) {
@@ -242,10 +240,10 @@ module.exports = {
       return;
     }
     const cfg  = {
-      dx: this.__attrs.shadowOffsetX,
-      dy: this.__attrs.shadowOffsetY,
-      blur: this.__attrs.shadowBlur,
-      color: this.__attrs.shadowColor
+      dx: attrs.shadowOffsetX,
+      dy: attrs.shadowOffsetY,
+      blur: attrs.shadowBlur,
+      color: attrs.shadowColor
     };
     if (isNaN(Number(cfg.dx)) || isNaN(Number(cfg.dy))) {
       return;
@@ -258,7 +256,6 @@ module.exports = {
     this.get('el').setAttribute('filter', `url(#${id})`);
   },
   __setAttrGradients(name, value) {
-    this.__attrs[name] = value;
     name = name.replace('Style', '');
     const defs = this.get('defs');
     if (!defs) {
