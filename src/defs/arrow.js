@@ -32,11 +32,10 @@ function setMarker(cfg, parent, name, stroke) {
   }
   shape.attr({ stroke: 'none', fill: stroke });
   parent.append(shape.get('el'));
-  const r = shape.__attrs.r || shape.__attrs.radius;
-  const width = shape.__attrs.x + r;
-  const height = shape.__attrs.y + r;
-  parent.setAttribute('refX', width * 0.5);
-  parent.setAttribute('refY', height * 0.5);
+  const width = shape.__attrs.x;
+  const height = shape.__attrs.y;
+  parent.setAttribute('refX', width);
+  parent.setAttribute('refY', height);
   parent.setAttribute('markerWidth', width * 2);
   parent.setAttribute('markerHeight', height * 2);
   parent.setAttribute('orient', 'auto');
@@ -53,7 +52,7 @@ const Arrow = function(name, cfg, stroke) {
   if (typeof cfg === 'boolean' && cfg) {
     child = setDefaultPath(el, name, stroke);
     this._setChild(child, true);
-  } else if(typeof cfg === 'object') {
+  } else if(typeof cfg=== 'object') {
     child = setMarker(cfg, el, name, stroke);
     this._setChild(child, false);
   }
