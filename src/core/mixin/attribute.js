@@ -159,11 +159,10 @@ module.exports = {
     const self = this;
     const el = self.get('el');
     self.__attrs[name] = value;
-    // TODO clip & transform & shadow blah blah..
     if (name === 'clip') {
-      self.__setAttrClip(value);
-      self.__attrs.clip = value;
+      self.__setAttrClip(name, value);
     } else if (name === 'transform') {
+      // todo
       self.__setAttrTrans(value);
     } else if(name.startsWith('shadow')) {
       self.__setAttrShadow(name, value);
@@ -282,22 +281,14 @@ module.exports = {
     this.get('el').setAttribute('opacity', v);
     return v;
   },
-  __setAttrClip(clip) {
-    const self = this;
-    if (clip && (CLIP_SHAPES.indexOf(clip.type) > -1)) {
-      if (clip.get('canvas') === null) {
-        clip = Util.clone(clip);
-      }
-      clip.set('parent', self.get('parent'));
-      clip.set('context', self.get('context'));
-      clip.inside = function(x, y) {
-        const v = [ x, y, 1 ];
-        clip.invert(v, self.get('canvas')); // 已经在外面转换
-        return clip.__isPointInFill(v[0], v[1]);
-      };
-      return clip;
+  __setAttrClip(name, value) {
+    const defs = this.get('defs');
+    if (!defs) {
+      this.__setAttrDependency(name, value);
+      return;
     }
-    return null;
+    const id = defs.addClip(value);
+    this.get('el').setAttribute('clip-path', `url(#${id})`);
   },
   __setAttrTrans(value) {
     return this.transform(value);
