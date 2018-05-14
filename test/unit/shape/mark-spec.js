@@ -35,27 +35,9 @@ describe('Marker', function() {
         y: 20,
         radius: 10,
         fill: 'blue',
-        symbol: 'circle'
+        symbol: 'diamond'
       }
     });
-    expect(marker.isHit(20, 20)).to.be.true;
-    expect(marker.isHit(10, 10)).to.be.false;
-  });
 
-  it('hit with lineWidth', function() {
-    const marker = canvas.addShape('marker', {
-      attrs: {
-        x: 100,
-        y: 100,
-        radius: 5,
-        lineWidth: 6,
-        fill: 'blue',
-        symbol: 'circle'
-      }
-    });
-    expect(marker.isHit(100, 100)).to.be.true;
-    expect(marker.isHit(95, 95)).to.be.true;
-    marker.attr('lineAppendWidth', 6);
-    expect(marker.isHit(94, 94)).to.be.true;
   });
 });

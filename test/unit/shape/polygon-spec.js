@@ -88,31 +88,7 @@ describe('Polygon', function() {
     expect(polygon.attr('fill')).to.equal('r (0.3, 0.2, 0) 0:#edda2f 1:#23edfa');
     canvas.draw();
   });
-
-  it('isHit', function() {
-    expect(polygon.isHit(30, 30)).to.be.true;
-    expect(polygon.isHit(40, 20)).to.be.true;
-    expect(polygon.isHit(30, 50)).to.be.true;
-    expect(polygon.isHit(60, 100)).to.be.true;
-
-    const polygon1 = new G.Polygon({
-      attrs: {
-        points: [[ 31, 23 ], [ 43, 12 ], [ 53, 23 ], [ 64, 33 ]],
-        lineWidth: 2,
-        stroke: 'red'
-      }
-    });
-    expect(polygon1.isHit(30, 23)).to.be.true;
-    expect(polygon1.isHit(31, 23)).to.be.true;
-    expect(polygon1.isHit(43, 12)).to.be.true;
-    expect(polygon1.isHit(53, 23)).to.be.true;
-    expect(polygon1.isHit(64, 33)).to.be.true;
-    expect(polygon1.isHit(37, 17.5)).to.be.true;
-    expect(polygon1.isHit(48, 17.5)).to.be.true;
-    expect(polygon1.isHit(47.5, 28)).to.be.true;
-    expect(polygon1.isHit(42.5, 17.5)).to.be.false;
-
-    const polygon2 = new G.Polygon({
+  const polygon2 = new G.Polygon({
       attrs: {
         points: [[ 31, 23 ], [ 43, 12 ], [ 53, 23 ], [ 64, 33 ]],
         lineWidth: 2,
@@ -120,14 +96,6 @@ describe('Polygon', function() {
       }
     });
     canvas.add(polygon2);
-    expect(polygon2.isHit(30, 23)).to.be.false;
-    expect(polygon2.isHit(32, 23)).to.be.true;
-    expect(polygon2.isHit(43, 13)).to.be.true;
-    expect(polygon2.isHit(53, 23)).to.be.true;
-    expect(polygon2.isHit(37, 17.5)).to.be.true;
-    expect(polygon2.isHit(48, 17.5)).to.be.true;
-    expect(polygon2.isHit(47.5, 28)).to.be.true;
-    expect(polygon2.isHit(42.5, 17.5)).to.be.true;
 
     const polygon3 = new G.Polygon({
       attrs: {
@@ -138,16 +106,5 @@ describe('Polygon', function() {
       }
     });
     canvas.add(polygon3);
-    expect(polygon3.isHit(30, 23)).to.be.true;
-    expect(polygon3.isHit(31, 23)).to.be.true;
-    expect(polygon3.isHit(43, 12)).to.be.true;
-    expect(polygon3.isHit(53, 23)).to.be.true;
-    expect(polygon3.isHit(64, 33)).to.be.true;
-    expect(polygon3.isHit(37, 17.5)).to.be.true;
-    expect(polygon3.isHit(48, 17.5)).to.be.true;
-    expect(polygon3.isHit(47.5, 28)).to.be.true;
-    expect(polygon3.isHit(42.5, 17.5)).to.be.true;
-  });
-
 });
 

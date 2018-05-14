@@ -27,25 +27,31 @@ module.exports = {
   initTransform() {
     this.attr('matrix', [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
   },
-  translate(tx, ty) {
+  translate(tx, ty, perform) {
     const matrix = this.attr('matrix');
     mat3.translate(matrix, matrix, [ tx, ty ]);
-    this.clearTotalMatrix();
     this.attr('matrix', matrix);
+    if (arguments.length === 2 || perform) {
+      this.__performTransform();
+    }
     return this;
   },
-  rotate(radian) {
+  rotate(radian, perform) {
     const matrix = this.attr('matrix');
     mat3.rotate(matrix, matrix, radian);
-    this.clearTotalMatrix();
     this.attr('matrix', matrix);
+    if (arguments.length === 1 || perform) {
+      this.__performTransform();
+    }
     return this;
   },
-  scale(s1, s2) {
+  scale(s1, s2, perform) {
     const matrix = this.attr('matrix');
     mat3.scale(matrix, matrix, [ s1, s2 ]);
-    this.clearTotalMatrix();
     this.attr('matrix', matrix);
+    if (arguments.length === 2 || perform) {
+      this.__performTransform();
+    }
     return this;
   },
   /**
@@ -76,6 +82,17 @@ module.exports = {
     this.set('x', x);
     this.set('y', y);
   },
+  __performTransform() {
+    const matrix = this.__attrs.matrix.slice(0, 6);
+    let transform = [];
+    for (let i = 0; i < 3; i++) {
+        transform.push(matrix[i] + ',' + matrix[i + 3]);
+    }
+    const el = this.get('el');
+    if (el) {
+      el.setAttribute('transform', `matrix(${transform.join(',')})`);
+    }
+  },
   transform(ts) {
     const self = this;
     const matrix = self.attr('matrix');
@@ -83,22 +100,22 @@ module.exports = {
     Util.each(ts, function(t) {
       switch (t[0]) {
         case 't':
-          self.translate(t[1], t[2]);
+          self.translate(t[1], t[2], false);
           break;
         case 's':
-          self.scale(t[1], t[2]);
+          self.scale(t[1], t[2], false);
           break;
         case 'r':
-          self.rotate(t[1]);
+          self.rotate(t[1], false);
           break;
         case 'm':
           self.attr('matrix', mat3.multiply([], matrix, t[1]));
-          self.clearTotalMatrix();
           break;
         default:
           break;
       }
     });
+    this.__performTransform();
     return self;
   },
   setTransform(ts) {
@@ -123,50 +140,8 @@ module.exports = {
     vec3.transformMat3(v, v, m);
     return this;
   },
-  // 获取到达指定根节点的矩阵
-  _getMatrixByRoot(root) {
-    const self = this;
-    root = root || self;
-    let parent = self;
-    const parents = [];
-
-    while (parent !== root) {
-      parents.unshift(parent);
-      parent = parent.get('parent');
-    }
-    parents.unshift(parent);
-
-    const m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
-    Util.each(parents, function(child) {
-      mat3.multiply(m, child.attr('matrix'), m);
-    });
-    return m;
-  },
-  /**
-   * 应用到当前元素上的总的矩阵
-   * @return {Matrix} 矩阵
-   */
-  getTotalMatrix() {
-    let m = this.__cfg.totalMatrix;
-    if (!m) {
-      m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
-      const parent = this.__cfg.parent;
-      if (parent) {
-        const pm = parent.getTotalMatrix();
-        multiple(m, pm);
-      }
-
-      multiple(m, this.attr('matrix'));
-      this.__cfg.totalMatrix = m;
-    }
-    return m;
-  },
-  // 清除当前的矩阵
-  clearTotalMatrix() {
-    // this.__cfg.totalMatrix = null;
-  },
   invert(v) {
-    const m = this.getTotalMatrix();
+    const m = this.attr('matrix');
     // 单精屏幕下大多数矩阵没变化
     if (isScale(m)) {
       v[0] /= m[0];
