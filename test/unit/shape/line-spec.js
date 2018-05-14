@@ -122,7 +122,6 @@ describe('Line', function() {
   });
 
   it('getPoint', function() {
-    console.log(111);
     const line = new G.Line({
       attrs: {
         x1: 100,
