@@ -83,10 +83,10 @@ module.exports = {
     this.set('y', y);
   },
   __performTransform() {
-    const matrix = this.__attrs.matrix.slice(0, 6);
+    const matrix = this.__attrs.matrix;
     let transform = [];
-    for (let i = 0; i < 3; i++) {
-        transform.push(matrix[i] + ',' + matrix[i + 3]);
+    for (let i = 0; i < 9; i += 3) {
+      transform.push(matrix[i] + ',' + matrix[i + 1]);
     }
     const el = this.get('el');
     if (el) {

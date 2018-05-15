@@ -169,7 +169,9 @@ describe('Text', function() {
         font: '40px Arial',
         fill: 'r (0.5, 0.5, 0) 0:rgb(255, 0, 255) 0.5:#dddddd',
         shadowOffsetX: 2,
-        shadowOffsetY: 2
+        shadowOffsetY: 2,
+        shadowBlur:2,
+        shadowColor: '#ccc'
       }
     });
     expect(grad.attr('fill')).to.equal('r (0.5, 0.5, 0) 0:rgb(255, 0, 255) 0.5:#dddddd');

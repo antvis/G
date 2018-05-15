@@ -96,8 +96,7 @@ describe('clip', function() {
     });
 
     shape.attr('clip', path);
-    shape.rotate(Math.PI / 4);
-    // shape.attr('transform', [[ 'r', Math.PI / 4]]);
+    shape.rotate(Math.PI / 6);
     canvas.draw();
   });
 
