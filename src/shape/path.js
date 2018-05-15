@@ -1,9 +1,5 @@
 const Util = require('../util/index');
 const Shape = require('../core/shape');
-const PathSegment = require('./util/path-segment');
-const Format = require('../util/format');
-const Arrow = require('./util/arrow');
-const PathUtil = require('../util/path');
 const CubicMath = require('./math/cubic');
 
 const Path = function(cfg) {
@@ -60,46 +56,6 @@ Util.augment(Path, {
     if (objs.stroke) {
       this.__afterSetAttrStroke(objs.stroke);
     }
-  },
-  isPointInPath(x, y) {
-    const self = this;
-    const fill = self.hasFill();
-    const stroke = self.hasStroke();
-
-    if (fill && stroke) {
-      return self.__isPointInFill(x, y) || self.__isPointInStroke(x, y);
-    }
-
-    if (fill) {
-      return self.__isPointInFill(x, y);
-    }
-
-    if (stroke) {
-      return self.__isPointInStroke(x, y);
-    }
-
-    return false;
-  },
-  __isPointInFill(x, y) {
-    const self = this;
-    const context = self.get('context');
-    if (!context) return undefined;
-    self.createPath();
-    return context.isPointInPath(x, y);
-  },
-  __isPointInStroke(x, y) {
-    const self = this;
-    const segments = self.get('segments');
-    if (!Util.isEmpty(segments)) {
-      const lineWidth = self.getHitLineWidth();
-      for (let i = 0, l = segments.length; i < l; i++) {
-        if (segments[i].isInside(x, y, lineWidth)) {
-          return true;
-        }
-      }
-    }
-
-    return false;
   },
   getPoint(t) {
     let tCache = this.tCache;

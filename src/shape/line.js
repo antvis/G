@@ -1,7 +1,5 @@
 const Util = require('../util/index');
 const Shape = require('../core/shape');
-const Inside = require('./util/inside');
-const Arrow = require('./util/arrow');
 const LineMath = require('./math/line');
 
 const Line = function(cfg) {
@@ -45,17 +43,6 @@ Util.augment(Line, {
     if (objs.stroke) {
       this.__afterSetAttrStroke(objs.stroke);
     }
-  },
-  isPointInPath(x, y) {
-    const attrs = this.__attrs;
-    const { x1, y1, x2, y2 } = attrs;
-    const lineWidth = this.getHitLineWidth();
-
-    if (this.hasStroke()) {
-      return Inside.line(x1, y1, x2, y2, lineWidth, x, y);
-    }
-
-    return false;
   },
   createPath(context) {},
   getPoint(t) {
