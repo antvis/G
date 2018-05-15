@@ -2,8 +2,8 @@ const expect = require('chai').expect;
 const Element = require('../../../src/core/element');
 const mat3 = require('gl-matrix').mat3;
 
-describe('Element', function() {
-  it('constructor', function() {
+describe('Element', () => {
+  it('constructor', () => {
     const e = new Element({
       id: 'aaa',
       attrs: {
@@ -22,7 +22,7 @@ describe('Element', function() {
     expect(mat3.exactEquals(e.attr('matrix'), m)).to.be.true;
   });
 
-  it('set and get', function() {
+  it('set and get', () => {
     const e = new Element();
     let a = 123;
     expect(a).to.equal(123);
@@ -35,17 +35,17 @@ describe('Element', function() {
     expect(a).to.equal(321);
   });
 
-  it('eventEmitter', function() {
+  it('eventEmitter', () => {
     const ele = new Element();
     expect(ele.on).to.be.a('function');
     expect(ele.off).to.be.a('function');
     expect(ele.trigger).to.be.a('function');
   });
 
-  it('add event listener', function() {
+  it('add event listener', () => {
     const ele = new Element();
     let count = 1;
-    ele.on('test', function(v) {
+    ele.on('test', v => {
       count += v;
     });
     ele.trigger('test', [ 12 ]);

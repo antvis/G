@@ -33,7 +33,7 @@ Util.augment(Path, {
     const start = this.get('marker-start');
     const end = this.get('marker-end');
     if (start) {
-        this.get('defs').findById(start).update(null, value);
+      this.get('defs').findById(start).update(null, value);
     }
     if (end) {
       this.get('defs').findById(end).update(null, value);
@@ -43,11 +43,11 @@ Util.augment(Path, {
     const el = this.get('el');
     let d = value;
     if (Util.isArray(d)) {
-      d = d.map((path) => {
+      d = d.map(path => {
         return path.join(' ');
       }).join('');
     }
-    this.get('el').setAttribute('d', d);
+    el.setAttribute('d', d);
   },
   __afterSetAttrAll(objs) {
     if (objs.path) {
@@ -79,7 +79,7 @@ Util.augment(Path, {
       }
       return null;
     }
-    Util.each(tCache, function(v, i) {
+    Util.each(tCache, (v, i) => {
       if (t >= v[0] && t <= v[1]) {
         subt = (t - v[0]) / (v[1] - v[0]);
         index = i;
@@ -96,7 +96,7 @@ Util.augment(Path, {
       y: CubicMath.at(seg[l - 1], nextSeg[2], nextSeg[4], nextSeg[6], 1 - subt)
     };
   },
-  createPath(context) {}
+  createPath() {}
 });
 
 module.exports = Path;

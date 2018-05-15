@@ -10,12 +10,12 @@ const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/ig;
 function addStop(steps) {
   const arr = steps.match(regexColorStop);
   let stops = '';
-  Util.each(arr, function(item) {
+  Util.each(arr, item => {
     item = item.split(':');
     stops += `<stop offset="${item[0]}" stop-color="${item[1]}"></stop>`;
   });
   return stops;
-};
+}
 
 function parseLineGradient(color, el) {
   const arr = regexLG.exec(color);
@@ -72,7 +72,7 @@ function parseLineGradient(color, el) {
   el.setAttribute('x2', x);
   el.setAttribute('y2', y);
   el.innerHTML = addStop(steps);
-};
+}
 
 function parseRadialGradient(color, self) {
   const arr = regexRG.exec(color);
@@ -84,11 +84,11 @@ function parseRadialGradient(color, self) {
   self.setAttribute('cy', cy);
   self.setAttribute('r', r);
   self.innerHTML = addStop(steps);
-};
+}
 
 const Gradient = function(cfg) {
   let el = null;
-  const id = Util.uniqueId('gradient' + '_');
+  const id = Util.uniqueId('gradient_');
   if (cfg.toLowerCase().startsWith('l')) {
     el = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
     parseLineGradient(cfg, el);
@@ -110,3 +110,4 @@ Util.augment(Gradient, {
 });
 
 module.exports = Gradient;
+

@@ -4,12 +4,13 @@
 const expect = require('chai').expect;
 const G = require('../../../src/index');
 const Canvas = require('../../../src/canvas');
+
 const div = document.createElement('div');
 div.id = 'canvas-text';
 document.body.appendChild(div);
 
 
-describe('Text', function() {
+describe('Text', () => {
   const canvas = new Canvas({
     containerId: 'canvas-text',
     width: 200,
@@ -25,7 +26,7 @@ describe('Text', function() {
     }
   });
   canvas.add(text);
-  it('init attrs', function() {
+  it('init attrs', () => {
     expect(text.attr('x')).to.equal(0);
     expect(text.attr('y')).to.equal(0);
     expect(text.attr('text')).to.be.undefined;
@@ -49,7 +50,7 @@ describe('Text', function() {
     });
   });
 
-  xit('text', function() {
+  xit('text', () => {
     text.attr('text', '你好啊');
     let box = text.getBBox();
     expect(box).not.to.be.undefined;
@@ -72,7 +73,7 @@ describe('Text', function() {
     expect(box.maxY).to.equal(0.5);
   });
 
-  xit('x', function() {
+  xit('x', () => {
     text.attr('x', 10);
     let box = text.getBBox();
     expect(box.minX).to.equal(9.5);
@@ -111,7 +112,7 @@ describe('Text', function() {
     expect(box.maxY).to.equal(0.5);
   });
 
-  xit('y', function() {
+  xit('y', () => {
     text.attr('y', 20);
     let box = text.getBBox();
     expect(box.minX).to.equal(9.5);
@@ -148,7 +149,7 @@ describe('Text', function() {
     expect(box.maxY).to.equal(20.5);
   });
 
-  it('stroke', function() {
+  it('stroke', () => {
     text.attr({
       x: 50,
       y: 20,
@@ -160,7 +161,7 @@ describe('Text', function() {
     canvas.draw();
   });
 
-  it('fill', function() {
+  it('fill', () => {
     const grad = new G.Text({
       attrs: {
         x: 50,
@@ -170,7 +171,7 @@ describe('Text', function() {
         fill: 'r (0.5, 0.5, 0) 0:rgb(255, 0, 255) 0.5:#dddddd',
         shadowOffsetX: 2,
         shadowOffsetY: 2,
-        shadowBlur:2,
+        shadowBlur: 2,
         shadowColor: '#ccc'
       }
     });
@@ -180,7 +181,7 @@ describe('Text', function() {
   });
 
 
-  it('fontSize', function() {
+  it('fontSize', () => {
     expect(text.attr('fontSize')).to.equal(12);
     expect(text.attr('font')).to.equal('normal normal normal 12px Arial');
     text.attr('fontSize', 20);
@@ -201,7 +202,7 @@ describe('Text', function() {
     canvas.draw();
   });
 
-  it('fontSize < 12', function() {
+  it('fontSize < 12', () => {
     const text = new G.Text({
       attrs: {
         fontSize: 10,
@@ -218,7 +219,7 @@ describe('Text', function() {
     canvas.draw();
   });
 
-  it('fontStyle', function() {
+  it('fontStyle', () => {
     expect(text.attr('fontStyle')).to.equal('normal');
     text.attr('fontStyle', 'italic');
     expect(text.attr('fontStyle')).to.equal('italic');
@@ -230,7 +231,7 @@ describe('Text', function() {
     canvas.draw();
   });
 
-  it('fontWeight', function() {
+  it('fontWeight', () => {
     expect(text.attr('fontWeight')).to.equal('normal');
     text.attr('fontWeight', 'bolder');
     expect(text.attr('fontWeight')).to.equal('bolder');
@@ -238,7 +239,7 @@ describe('Text', function() {
     canvas.draw();
   });
 
-  it('fontVariant', function() {
+  it('fontVariant', () => {
     expect(text.attr('fontVariant')).to.equal('normal');
     text.attr('fontVariant', 'small-caps');
     expect(text.attr('fontVariant')).to.equal('small-caps');
@@ -246,14 +247,14 @@ describe('Text', function() {
     canvas.draw();
   });
 
-  it('fontFamily', function() {
+  it('fontFamily', () => {
     text.attr('fontFamily', '宋体');
     expect(text.attr('fontFamily')).to.equal('宋体');
     expect(text.attr('font')).to.equal('oblique small-caps bolder 20px 宋体');
     canvas.draw();
   });
 
-  xit('textAlign', function() {
+  xit('textAlign', () => {
     expect(text.attr('textAlign')).to.equal('start');
     text.attr('textAlign', 'right');
     let box = text.getBBox();
@@ -308,7 +309,7 @@ describe('Text', function() {
     expect(box.maxX).to.equal(18.5);
   });
 
-  xit('textBaseline', function() {
+  xit('textBaseline', () => {
     expect(text.attr('textBaseline')).to.equal('bottom');
     text.attr('textBaseline', 'top');
     let box = text.getBBox();
@@ -355,7 +356,7 @@ describe('Text', function() {
     expect(box.maxY).to.equal(6.5);
   });
 
-  xit('lineWidth', function() {
+  xit('lineWidth', () => {
     expect(text.attr('lineWidth')).to.equal(1);
     text.attr('lineWidth', 4);
     expect(text.attr('lineWidth')).to.equal(4);
@@ -366,7 +367,7 @@ describe('Text', function() {
     expect(box.minY).to.equal(-2);
   });
 
-  it('normal use', function() {
+  it('normal use', () => {
     const text = new G.Text({
       attrs: {
         text: 'hello world',
@@ -379,7 +380,7 @@ describe('Text', function() {
     canvas.draw();
   });
 
-  it('add text fontFamily', function() {
+  it('add text fontFamily', () => {
     const text1 = canvas.addShape('text', {
       attrs: {
         x: 0,
@@ -422,7 +423,7 @@ describe('Text', function() {
 
 });
 
-describe('Text \n', function() {
+describe('Text \n', () => {
 
   const canvas = new Canvas({
     containerId: 'canvas-text',
@@ -452,7 +453,7 @@ describe('Text \n', function() {
   });
 
 
-  it('text /n', function() {
+  it('text /n', () => {
     expect(text.attr('x')).to.equal(50);
     expect(text.attr('y')).to.equal(50);
     expect(text.attr('text')).to.equal('你好\nHello\nworld');
@@ -472,7 +473,7 @@ describe('Text \n', function() {
   canvas.draw();
 });
 
-describe('Text 不存在', function() {
+describe('Text 不存在', () => {
 
   const canvas = new Canvas({
     containerId: 'canvas-text',
@@ -504,7 +505,7 @@ describe('Text 不存在', function() {
   canvas.add(text);
   canvas.draw();
 
-  it('text outline', function() {
+  it('text outline', () => {
     const text = new G.Text({
       attrs: {
         x: 100,
@@ -520,7 +521,7 @@ describe('Text 不存在', function() {
     });
     canvas.add(text);
   });
-  /*it('text 空 "" ', function() {
+  /* it('text 空 "" ', () => {
     expect(text.attr('x')).to.equal(50);
     expect(text.attr('y')).to.equal(50);
     expect(text.attr('text')).to.equal('');
@@ -548,7 +549,7 @@ describe('Text 不存在', function() {
   canvas.add(rect);
   canvas.add(text);
   canvas.draw();
-  it('text null ', function() {
+  it('text null ', () => {
     text.attr('text', null);
     expect(text.attr('x')).to.equal(50);
     expect(text.attr('y')).to.equal(50);
@@ -573,7 +574,7 @@ describe('Text 不存在', function() {
       height: 0
     });
   });
-  it('text undefined ', function() {
+  it('text undefined ', () => {
     text.attr('text', undefined);
     expect(text.attr('x')).to.equal(50);
     expect(text.attr('y')).to.equal(50);

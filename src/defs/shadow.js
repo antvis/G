@@ -12,11 +12,11 @@ const ATTR_MAP = {
 };
 
 function parseShadow(config, el) {
-  let child = `<feDropShadow 
+  const child = `<feDropShadow 
       dx="${config.dx}" 
       dy="${config.dy}" 
-      stdDeviation="${config.blur ? config.blur: 0}"
-      flood-color="${config.color ? config.color: '#000'}"
+      stdDeviation="${config.blur ? config.blur : 0}"
+      flood-color="${config.color ? config.color : '#000'}"
       flood-opacity="${config.opacity ? config.opacity : 1}"
       />`;
   el.innerHTML = child;
@@ -24,7 +24,7 @@ function parseShadow(config, el) {
 
 const Shadow = function(cfg) {
   const el = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
-  const id = Util.uniqueId('filter' + '_');
+  const id = Util.uniqueId('filter_');
   el.setAttribute('id', id);
   parseShadow(cfg, el);
   this.__cfg = { el, id };
@@ -39,9 +39,9 @@ Util.augment(Shadow, {
     }
     let flag = false;
     const config = this.__attrs.config;
-    Util.each(Object.keys(config), function (attr) {
+    Util.each(Object.keys(config), attr => {
       if (!flag) {
-        config[attr] === cfg[attr];
+        flag = config[attr] === cfg[attr];
       }
     });
     return flag;
@@ -55,3 +55,4 @@ Util.augment(Shadow, {
 });
 
 module.exports = Shadow;
+

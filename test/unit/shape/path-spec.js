@@ -13,7 +13,7 @@ const canvas = new Canvas({
 });
 
 function drawPoints(arr, canvas) {
-  Util.each(arr, function(v) {
+  Util.each(arr, v => {
     canvas.addShape('circle', {
       attrs: {
         x: v.x,
@@ -26,38 +26,38 @@ function drawPoints(arr, canvas) {
   });
 }
 
-describe('path util test', function() {
+describe('path util test', () => {
 
-  it('path to array', function() {
+  it('path to array', () => {
     const path = 'M 100 100 L 200 200 V 100 H100C 40 10, 65 10, 95 80 S 150 150 180 80Q 95 10 180 80T 180 80L 110 215A 30 50 0 0 1 162.55 162.45L 172.55 152.45A 30 50 -45 0 1 215.1 109.9L 315 10A 45 45, 0, 0, 0, 125 125L 125 80A 45 45, 0, 1, 0, 275 125A 45 45, 0, 0, 1, 125 275A 45 45, 0, 1, 1, 275 275R100 200 50 100 30 40Z';
     expect(PathUtil.parsePathString(path).length).to.equal(20);
   });
 
-  it('arr to path', function() {
+  it('arr to path', () => {
     const path = 'M 100 100 L 200 200 V 100 H100C 40 10, 65 10, 95 80 S 150 150 180 80Q 95 10 180 80T 180 80L 110 215A 30 50 0 0 1 162.55 162.45L 172.55 152.45A 30 50 -45 0 1 215.1 109.9L 315 10A 45 45, 0, 0, 0, 125 125L 125 80A 45 45, 0, 1, 0, 275 125A 45 45, 0, 0, 1, 125 275A 45 45, 0, 1, 1, 275 275R100 200 50 100 30 40Z';
     const arr = PathUtil.parsePathString(path);
     const str = PathUtil.parsePathArray(arr);
     expect(str).to.equal('M100,100L200,200V100H100C40,10,65,10,95,80S150,150,180,80Q95,10,180,80T180,80L110,215A30,50,0,0,1,162.55,162.45L172.55,152.45A30,50,-45,0,1,215.1,109.9L315,10A45,45,0,0,0,125,125L125,80A45,45,0,1,0,275,125A45,45,0,0,1,125,275A45,45,0,1,1,275,275R100,200,50,100,30,40Z');
   });
 
-  it('path to absolute', function() {
+  it('path to absolute', () => {
     const path = 'M 100 100 l 20 20 v 10 c 40 10 20 20 30 30';
     const str = PathUtil.parsePathArray(PathUtil.pathToAbsolute(path));
     expect(str).to.equal('M100,100L120,120V130C160,140,140,150,150,160');
   });
-  it('path to RomToBezier', function() {
+  it('path to RomToBezier', () => {
     const arr = [ 100, 200, 50, 100, 30, 40 ];
     const rst = PathUtil.catmullRomToBezier(arr);
     expect(PathUtil.parsePathArray(rst)).to.equal('C91.66666666666667,183.33333333333334,61.666666666666664,126.66666666666667,50,100C38.333333333333336,73.33333333333333,33.333333333333336,50,30,40');
   });
 
-  it('path to RomToBezier with circle', function() {
+  it('path to RomToBezier with circle', () => {
     const arr = [ 100, 200, 50, 100, 30, 40 ];
     const rst = PathUtil.catmullRomToBezier(arr, true);
     expect(PathUtil.parsePathArray(rst)).to.equal('C103.33333333333333,210,61.666666666666664,126.66666666666667,50,100C38.333333333333336,73.33333333333333,21.666666666666668,23.333333333333332,30,40C38.333333333333336,56.666666666666664,96.66666666666667,190,100,200');
   });
 
-  it('path Insert', function() {
+  it('path Insert', () => {
     const pathStr1 = PathUtil.rectPath(100, 100, 100, 100);
     const pathStr2 = 'M 200 0 L 90 130 M 200 0 L 110 150';
     const rst = PathUtil.intersection(pathStr1, pathStr2);
@@ -77,7 +77,7 @@ describe('path util test', function() {
     canvas.draw();
   });
 
-  it('path Insert', function() {
+  it('path Insert', () => {
     const pathStr1 = PathUtil.rectPath(100, 100, 100, 100);
     const pathStr2 = [
       [ 'M', 200, 0 ],

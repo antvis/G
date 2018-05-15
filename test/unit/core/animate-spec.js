@@ -1,8 +1,7 @@
 const expect = require('chai').expect;
 const G = require('../../../src/index');
 
-
-describe('animate', function() {
+describe('animate', () => {
   const div = document.createElement('div');
   div.id = 'canvas-animate';
   document.body.appendChild(div);
@@ -26,7 +25,7 @@ describe('animate', function() {
       repeat: true
     }, 2000);
   });
-  it('start animate', function(done) {
+  it('start animate', done => {
     let called = false;
     const shape = canvas.addShape('circle', {
       attrs: {
@@ -39,12 +38,12 @@ describe('animate', function() {
     shape.animate({
       x: 100,
       y: 100
-    }, 500, function() {
+    }, 500, () => {
       called = true;
     });
 
     expect(shape.attr('x')).equal(0);
-    setTimeout(function() {
+    setTimeout(() => {
       expect(shape.attr('x')).equal(100);
       expect(shape.attr('y')).equal(100);
       expect(called).equal(true);
@@ -52,7 +51,7 @@ describe('animate', function() {
     }, 600);
   });
 
-  it('start delay and stop', function(done) {
+  it('start delay and stop', done => {
     let called = false;
     const shape = canvas.addShape('rect', {
       attrs: {
@@ -68,14 +67,14 @@ describe('animate', function() {
     shape.animate({
       x: 200,
       width: 20
-    }, 500, function() {
+    }, 500, () => {
       called = true;
     }, 100);
-    setTimeout(function() {
+    setTimeout(() => {
       expect(shape.attr('x')).equal(10);
       expect(called).equal(false);
       shape.stopAnimate();
-      setTimeout(function() {
+      setTimeout(() => {
         expect(shape.attr('x')).equal(200);
         expect(called).equal(true);
         done();
@@ -83,7 +82,7 @@ describe('animate', function() {
     }, 50);
   });
 
-  it('destory', function(done) {
+  it('destory', done => {
     let called = false;
     const shape = canvas.addShape('rect', {
       attrs: {
@@ -94,20 +93,20 @@ describe('animate', function() {
         fill: 'pink'
       }
     });
-    shape.animate({ fill: 'red' }, 300, function() {
+    shape.animate({ fill: 'red' }, 300, () => {
       called = true;
     });
 
     expect(() => {
       shape.destroy();
     }).not.to.throw();
-    setTimeout(function() {
+    setTimeout(() => {
       expect(called).equal(false);
       done();
     }, 350);
   });
 
-  it('with clip animate', function(done) {
+  it('with clip animate', done => {
     const clip = new G.Circle({
       attrs: {
         x: 100,
@@ -134,7 +133,7 @@ describe('animate', function() {
       repeat: true
     }, 1000);
 
-    setTimeout(function() {
+    setTimeout(() => {
       shape.stopAnimate();
       expect(shape.get('animating', false));
       expect(clip.get('animating', false));
