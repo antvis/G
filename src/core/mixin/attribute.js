@@ -168,9 +168,6 @@ module.exports = {
     } else if (~['stroke', 'strokeStyle', 'fill', 'fillStyle'].indexOf(name) && /^[r,R,L,l]{1}[\s]+\(/.test(value.trim())) {
       self.__setAttrGradients(name, value.trim());
     } else if (~name.toLowerCase().indexOf('arrow')) {
-      if (!value) {
-        return self;
-      }
       self.__setAttrArrow(name, value);
     } else {
       // 先存好属性，然后对一些svg和canvas中不同的属性进行特判
@@ -207,6 +204,7 @@ module.exports = {
   },
   __setAttrArrow(name, value) {
     const self = this;
+    const el = self.get('el');
     const defs = self.get('defs');
     if (!defs) {
       this.__setAttrDependency(name, value);
@@ -214,14 +212,13 @@ module.exports = {
     }
     name = SVG_ATTR_MAP[name];
     if (!name) {
-      return;
+      return this;
     }
-    let id = self.get(name);
     if (!value) {
-      self.get('el').removeAttribute(name);
-      return;
+      el.removeAttribute(name);
+      return this;
     }
-    id = defs.find(name, { value, stroke: self.__attrs.stroke });
+    let id = defs.find(name, { value, stroke: self.__attrs.stroke });
     if (!id) {
       id = defs.addArrow(name, value, self.__attrs.stroke);
     }
@@ -286,12 +283,6 @@ module.exports = {
     this.__cfg.dependencies = dependencies;
     return this;
   },
-  // 设置透明度
-  __setAttrOpacity(v) {
-    this.__attrs.globalAlpha = v;
-    this.get('el').setAttribute('opacity', v);
-    return v;
-  },
   __setAttrClip(name, value) {
     const defs = this.get('defs');
     if (!value) {
@@ -309,7 +300,7 @@ module.exports = {
   __setAttrTrans(name, value) {
     const attrs = this.__attrs;
     if (!value) {
-      this.get('el').setAttribute('transform', '');
+      this.get('el').removeAttribute('transform');
     }
     if (!attrs.matrix) {
       this.initTransform();
