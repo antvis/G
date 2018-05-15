@@ -266,6 +266,7 @@ describe('canvas 事件', function() {
       x: 100,
       y: 100,
       r: 100,
+      strokeWidth: 20,
       fill: 'red'
     }
   });
@@ -277,6 +278,16 @@ describe('canvas 事件', function() {
       height: 50,
       fill: 'black',
       radius: 10
+    }
+  });
+  canvas.addShape('rect', {
+    attrs: {
+      x: 300,
+      y: 10,
+      width: 20,
+      height: 20,
+      rotate: Math.PI / 4,
+      fill: '#FED23C'
     }
   });
   canvas.draw();

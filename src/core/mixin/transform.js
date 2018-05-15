@@ -55,22 +55,6 @@ module.exports = {
     return this;
   },
   /**
-   * 绕起始点旋转
-   * @param  {Number} rotate 0～360
-   */
-  rotateAtStart(rotate) {
-    const x = this.attr('x');
-    const y = this.attr('y');
-    if (Math.abs(rotate) > Math.PI * 2) {
-      rotate = rotate / 180 * Math.PI;
-    }
-    this.transform([
-      [ 't', -x, -y ],
-      [ 'r', rotate ],
-      [ 't', x, y ]
-    ]);
-  },
-  /**
    * 移动的到位置
    * @param  {Number} x 移动到x
    * @param  {Number} y 移动到y

@@ -160,8 +160,8 @@ module.exports = {
     self.__attrs[name] = value;
     if (name === 'clip') {
       self.__setAttrClip(name, value);
-    } else if (name === 'transform') {
-      self.__setAttrTrans(value);
+    } else if (name === 'transform' || name === 'rotate') {
+      self.__setAttrTrans(name, value);
     } else if(name.startsWith('shadow')) {
       self.__setAttrShadow(name, value);
     } else if (~['stroke', 'strokeStyle', 'fill', 'fillStyle'].indexOf(name) && /^[r,R,L,l]{1}[\s]+\(/.test(value.trim())) {
@@ -305,14 +305,23 @@ module.exports = {
     const id = defs.addClip(value);
     this.get('el').setAttribute('clip-path', `url(#${id})`);
   },
-  __setAttrTrans(value) {
-     this.transform(value);
-     const matrix = this.__attrs.matrix;
-     if(!Util.isArray(matrix)) {
-       this.get('el').setAttribute('transform', '');
-     }
-     const val = matrix.slice(0, 6).join(',');
-     this.get('el').setAttribute('transform', `matrix(${val})`);
-     return this;
+  __setAttrTrans(name, value) {
+    const attrs = this.__attrs;
+    if (!value) {
+      this.get('el').setAttribute('transform', '');
+    }
+    if (!attrs.matrix) {
+      this.initTransform();
+    }
+    if (name === 'transform') {
+      this.transform(value);
+    } else {
+      this.transform([
+        [ 't', -attrs.x, -attrs.y ],
+        [ 'r', value ],
+        [ 't', attrs.x, attrs.y ]
+      ]);
+    }
+    return this;
   }
 };
