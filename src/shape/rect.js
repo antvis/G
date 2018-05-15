@@ -35,9 +35,7 @@ Util.augment(Rect, {
   },
   __afterSetAttrAll(objs) {
     if ('radius' in objs) {
-      const el = this.get('el');
-      el.setAttribute('rx', objs.radius);
-      el.setAttribute('ry', objs.radius);
+      this.__afterSetRadius();
     }
   },
   // TODO 图形拾取除了在事件中之外是否有别的用处？
