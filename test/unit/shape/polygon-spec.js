@@ -4,12 +4,13 @@
 const expect = require('chai').expect;
 const G = require('../../../src/index');
 const Canvas = require('../../../src/canvas');
+
 const div = document.createElement('div');
 div.id = 'canvas-polygon';
 document.body.appendChild(div);
 
 
-describe('Polygon', function() {
+describe('Polygon', () => {
 
   const canvas = new Canvas({
     containerId: 'canvas-polygon',
@@ -20,14 +21,14 @@ describe('Polygon', function() {
 
   const polygon = new G.Polygon();
   canvas.add(polygon);
-  it('init attr', function() {
+  it('init attr', () => {
     expect(polygon.attr('points')).to.be.undefined;
     expect(polygon.attr('lineWidth')).to.equal(1);
     expect(polygon.attr('stroke')).to.be.undefined;
     expect(polygon.attr('fill')).to.be.equal('none');
   });
 
-  it('points', function() {
+  it('points', () => {
     polygon.attr('points', []);
     expect(polygon.attr('points').length).to.equal(0);
     // expect(polygon.getBBox()).to.be.null;
@@ -52,7 +53,7 @@ describe('Polygon', function() {
     expect(box.maxY).to.equal(190);
   });
 
-  it('lineWidth', function() {
+  it('lineWidth', () => {
     expect(polygon.attr('lineWidth')).to.equal(1);
     polygon.attr('lineWidth', 2);
     expect(polygon.attr('lineWidth')).to.equal(2);
@@ -76,35 +77,35 @@ describe('Polygon', function() {
     expect(box.maxY).to.equal(190);
   });
 
-  it('stroke', function() {
+  it('stroke', () => {
     polygon.attr('stroke', 'l (90) 0:#f0ff0f 1:#ff0e0d');
     expect(polygon.attr('stroke')).to.equal('l (90) 0:#f0ff0f 1:#ff0e0d');
     canvas.add(polygon);
     canvas.draw();
   });
 
-  it('fill', function() {
+  it('fill', () => {
     polygon.attr('fill', 'r (0.3, 0.2, 0) 0:#edda2f 1:#23edfa');
     expect(polygon.attr('fill')).to.equal('r (0.3, 0.2, 0) 0:#edda2f 1:#23edfa');
     canvas.draw();
   });
   const polygon2 = new G.Polygon({
-      attrs: {
-        points: [[ 31, 23 ], [ 43, 12 ], [ 53, 23 ], [ 64, 33 ]],
-        lineWidth: 2,
-        fill: 'red'
-      }
-    });
-    canvas.add(polygon2);
+    attrs: {
+      points: [[ 31, 23 ], [ 43, 12 ], [ 53, 23 ], [ 64, 33 ]],
+      lineWidth: 2,
+      fill: 'red'
+    }
+  });
+  canvas.add(polygon2);
 
-    const polygon3 = new G.Polygon({
-      attrs: {
-        points: [[ 31, 23 ], [ 43, 12 ], [ 53, 23 ], [ 64, 33 ]],
-        lineWidth: 2,
-        stroke: 'green',
-        fill: 'red'
-      }
-    });
-    canvas.add(polygon3);
+  const polygon3 = new G.Polygon({
+    attrs: {
+      points: [[ 31, 23 ], [ 43, 12 ], [ 53, 23 ], [ 64, 33 ]],
+      lineWidth: 2,
+      stroke: 'green',
+      fill: 'red'
+    }
+  });
+  canvas.add(polygon3);
 });
 

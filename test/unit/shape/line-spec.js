@@ -4,11 +4,12 @@
 const expect = require('chai').expect;
 const G = require('../../../src/index');
 const Canvas = require('../../../src/canvas');
+
 const div = document.createElement('div');
 div.id = 'canvas-line';
 document.body.appendChild(div);
 
-describe('Line', function() {
+describe('Line', () => {
 
   const canvas = new Canvas({
     containerId: 'canvas-line',
@@ -25,7 +26,7 @@ describe('Line', function() {
     }
   });
   canvas.add(line);
-  it('init attrs', function() {
+  it('init attrs', () => {
     expect(line.attr('x1')).to.equal(0);
     expect(line.attr('y1')).to.equal(0);
     expect(line.attr('x2')).to.equal(0);
@@ -42,7 +43,7 @@ describe('Line', function() {
     expect(box.maxY).to.equal(0);
   });
 
-  it('x1', function() {
+  it('x1', () => {
     line.attr('x1', 10);
     expect(line.attr('x1')).to.equal(10);
     const box = line.getBBox();
@@ -50,7 +51,7 @@ describe('Line', function() {
     expect(box.maxX).to.equal(10);
   });
 
-  it('y1', function() {
+  it('y1', () => {
     line.attr('y1', 15);
     expect(line.attr('y1')).to.equal(15);
     const box = line.getBBox();
@@ -58,7 +59,7 @@ describe('Line', function() {
     expect(box.maxY).to.equal(15);
   });
 
-  it('x2', function() {
+  it('x2', () => {
     line.attr('x2', 59);
     expect(line.attr('x2')).to.equal(59);
     const box = line.getBBox();
@@ -66,7 +67,7 @@ describe('Line', function() {
     expect(box.maxX).to.equal(59);
   });
 
-  it('y2', function() {
+  it('y2', () => {
     line.attr('y2', 80);
     expect(line.attr('y2')).to.equal(80);
     const box = line.getBBox();
@@ -74,7 +75,7 @@ describe('Line', function() {
     expect(box.maxY).to.equal(80);
   });
 
-  it('lineWidth', function() {
+  it('lineWidth', () => {
     expect(line.attr('lineWidth')).to.equal(1);
     line.attr('lineWidth', 2);
     expect(line.attr('lineWidth')).to.equal(2);
@@ -85,14 +86,14 @@ describe('Line', function() {
     expect(box.maxY).to.equal(80);
   });
 
-  it('stroke', function() {
+  it('stroke', () => {
     line.attr('stroke', 'l (0) 0.1:#0fedae 1:#6542da');
     expect(line.attr('stroke')).to.equal('l (0) 0.1:#0fedae 1:#6542da');
     canvas.add(line);
     canvas.draw();
   });
 
-  it('stroke', function() {
+  it('stroke', () => {
     const line1 = new G.Line({
       attrs: {
         x1: 0,
@@ -107,7 +108,7 @@ describe('Line', function() {
     expect(line1.attr('fill')).to.equal('#000');
   });
 
-  it('arrow', function() {
+  it('arrow', () => {
     line.attr({
       startArrow: true,
       endArrow: true
@@ -117,8 +118,7 @@ describe('Line', function() {
     canvas.draw();
   });
 
-  // todo getPoint是否需要支持？
-  it('getPoint', function() {
+  it('getPoint', () => {
     const line = new G.Line({
       attrs: {
         x1: 100,
@@ -134,7 +134,7 @@ describe('Line', function() {
               symbol: 'circle'
             }
           })
-        },
+        }
       }
     });
     canvas.add(line);

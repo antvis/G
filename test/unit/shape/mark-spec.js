@@ -4,7 +4,7 @@
 const expect = require('chai').expect;
 const Canvas = require('../../../src/canvas');
 
-describe('Marker', function() {
+describe('Marker', () => {
   const div = document.createElement('div');
   div.id = 'canvas-marker';
   document.body.appendChild(div);
@@ -14,7 +14,7 @@ describe('Marker', function() {
     height: 200,
     pixelRatio: 1
   });
-  it('init', function() {
+  it('init', () => {
     const marker = canvas.addShape('marker', {
       attrs: {
         x: 10,
@@ -28,8 +28,8 @@ describe('Marker', function() {
     expect(marker.attr('y')).to.equal(10);
   });
 
-  it('hit', function() {
-    const marker = canvas.addShape('marker', {
+  it('hit', () => {
+    canvas.addShape('marker', {
       attrs: {
         x: 20,
         y: 20,

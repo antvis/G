@@ -6,8 +6,8 @@ const Simulate = require('event-simulate');
 
 $('<div id="c1"></div>').appendTo('body');
 
-describe('Canvas 容器操作', function() {
-  it('new canvas', function() {
+describe('Canvas 容器操作', () => {
+  it('new canvas', () => {
     const canvas = new Canvas({
       containerId: 'c1',
       width: 500,
@@ -17,7 +17,7 @@ describe('Canvas 容器操作', function() {
     canvas.destroy();
   });
 
-  it('changesize', function() {
+  it('changesize', () => {
     const canvas = new Canvas({
       containerId: 'c1',
       width: 500,
@@ -30,7 +30,7 @@ describe('Canvas 容器操作', function() {
   });
 
 
-  it('clear canvas', function() {
+  it('clear canvas', () => {
     const canvas = new Canvas({
       containerId: 'c1',
       width: 500,
@@ -43,13 +43,13 @@ describe('Canvas 容器操作', function() {
 
 });
 
-describe('拓展图形 标记 Marker', function() {
+describe('拓展图形 标记 Marker', () => {
   const canvas = new Canvas({
     containerId: 'c1',
     width: 500,
     height: 500
   });
-  it('diamond', function() {
+  it('diamond', () => {
     canvas.addShape('Marker', {
       attrs: {
         symbol: 'diamond',
@@ -61,7 +61,7 @@ describe('拓展图形 标记 Marker', function() {
     });
     canvas.draw();
   });
-  it('circle', function() {
+  it('circle', () => {
     canvas.addShape('Marker', {
       attrs: {
         symbol: 'circle',
@@ -75,7 +75,7 @@ describe('拓展图形 标记 Marker', function() {
     });
     canvas.draw();
   });
-  it('square', function() {
+  it('square', () => {
     canvas.addShape('Marker', {
       attrs: {
         symbol: 'square',
@@ -87,7 +87,7 @@ describe('拓展图形 标记 Marker', function() {
     });
     canvas.draw();
   });
-  it('triangle', function() {
+  it('triangle', () => {
     canvas.addShape('Marker', {
       attrs: {
         symbol: 'triangle',
@@ -99,7 +99,7 @@ describe('拓展图形 标记 Marker', function() {
     });
     canvas.draw();
   });
-  it('triangle-down', function() {
+  it('triangle-down', () => {
     canvas.addShape('Marker', {
       attrs: {
         symbol: 'triangle-down',
@@ -111,13 +111,13 @@ describe('拓展图形 标记 Marker', function() {
     });
     canvas.draw();
   });
-  it('custom', function() {
+  it('custom', () => {
     canvas.addShape('Marker', {
       attrs: {
         symbol(x, y, r) {
           return [
             [ 'M', x - r, y ],
-            [ 'L', x, y - r * 4 ],
+            [ 'L', x, y - (r * 4) ],
             [ 'L', x + r, y ],
             [ 'L', x, y + r ],
             [ 'z' ]
@@ -133,7 +133,7 @@ describe('拓展图形 标记 Marker', function() {
   });
 });
 
-describe('组拓展方法', function() {
+describe('组拓展方法', () => {
   const canvas = new Canvas({
     containerId: 'c1',
     width: 500,
@@ -147,8 +147,8 @@ describe('组拓展方法', function() {
       fill: '#231'
     }
   });
-  describe('查找元素', function() {
-    it('通过方法查找元素 findAllBy', function() {
+  describe('查找元素', () => {
+    it('通过方法查找元素 findAllBy', () => {
       const group = canvas.addGroup();
       const group1 = group.addGroup();
       const rect = group1.addShape('rect', {
@@ -161,7 +161,7 @@ describe('组拓展方法', function() {
           stroke: '#ff00ff'
         }
       });
-      const rst = group.findAllBy(function(item) {
+      const rst = group.findAllBy(item => {
         if (item.get('cls') === 'heh') {
           return true;
         }
@@ -172,18 +172,18 @@ describe('组拓展方法', function() {
     });
   });
 
-  describe('判断是否是子元素', function() {
-    it('非子元素', function() {
+  describe('判断是否是子元素', () => {
+    it('非子元素', () => {
       expect(canvas.contain(circle)).to.be.false;
     });
-    it('非元素', function() {
+    it('非元素', () => {
       expect(canvas.contain(12)).to.be.false;
     });
     canvas.draw();
   });
-  describe('查找子元素', function() {
+  describe('查找子元素', () => {
     const children = canvas.get('children');
-    it('第N个子元素', function() {
+    it('第N个子元素', () => {
       expect(canvas.getChildByIndex(2)).to.eql(children[2]);
       canvas.destroy();
 
@@ -192,7 +192,7 @@ describe('组拓展方法', function() {
   });
 });
 
-describe('元素拓展方法', function() {
+describe('元素拓展方法', () => {
   const canvas = new Canvas({
     containerId: 'c1',
     width: 500,
@@ -206,7 +206,7 @@ describe('元素拓展方法', function() {
       fill: 'red'
     }
   });
-  it('测试BBox方法', function() {
+  it('测试BBox方法', () => {
     const rect = canvas.addShape('Rect', {
       attrs: {
         x: 0,
@@ -223,7 +223,7 @@ describe('元素拓展方法', function() {
     expect(bbox.width).to.equal(100);
     expect(bbox.height).to.equal(100);
   });
-  it('测试BBox方法－无bbox', function() {
+  it('测试BBox方法－无bbox', () => {
     const text = canvas.addShape('Text', {
       attrs: {
         x: 0,
@@ -238,14 +238,14 @@ describe('元素拓展方法', function() {
     expect(bbox.height).to.equal(0);
   });
 
-  it('属性旋转', function() {
+  it('属性旋转', () => {
     const rect = canvas.addShape('Rect', {
       attrs: {
         x: 300,
         y: 10,
         width: 20,
         height: 20,
-        rotate: 45 / 180 * Math.PI,
+        rotate: (45 / 180) * Math.PI,
         fill: '#FED23C'
       }
     });
@@ -255,7 +255,7 @@ describe('元素拓展方法', function() {
   });
 });
 
-describe('canvas 事件', function() {
+describe('canvas 事件', () => {
   const canvas = new Canvas({
     containerId: 'c1',
     width: 500,
@@ -291,10 +291,10 @@ describe('canvas 事件', function() {
     }
   });
   canvas.draw();
-  it('canvas.on(\'mousedown\')', function() {
+  it('canvas.on(\'mousedown\')', () => {
     const canvasDOM = canvas.get('el');
     let target;
-    canvas.on('mousedown', function(ev) {
+    canvas.on('mousedown', ev => {
       target = ev.target;
     });
 

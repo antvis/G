@@ -5,10 +5,10 @@ const Util = require('../util/index');
 
 const Clip = function(cfg) {
   const el = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
-  const id = Util.uniqueId('clip' + '_');
+  const id = Util.uniqueId('clip_');
   if (cfg.get('el')) {
     el.appendChild(cfg.get('el'));
-  } else if(Util.isString(cfg.nodeName)) {
+  } else if (Util.isString(cfg.nodeName)) {
     el.appendChild(cfg);
   } else {
     throw 'clip element should be a instance of Shape or a SVG node';
@@ -21,9 +21,10 @@ const Clip = function(cfg) {
 
 Util.augment(Clip, {
   type: 'clip',
-  match(type, attr) {
+  match() {
     return false;
   }
 });
 
 module.exports = Clip;
+

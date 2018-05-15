@@ -44,7 +44,7 @@ Util.augment(Line, {
       this.__afterSetAttrStroke(objs.stroke);
     }
   },
-  createPath(context) {},
+  createPath() {},
   getPoint(t) {
     const attrs = this.__attrs;
     return {

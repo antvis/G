@@ -4,9 +4,9 @@ const Util = require('../../../src/util/index');
 const mat3 = require('../../../src/util/matrix').mat3;
 const vec3 = require('../../../src/util/matrix').vec3;
 
-describe('Transform', function() {
+describe('Transform', () => {
 
-  it('translate and apply', function() {
+  it('translate and apply', () => {
     const e = new Element();
     const point = vec3.fromValues(0, 0, 1);
     e.translate(10, 4);
@@ -15,7 +15,7 @@ describe('Transform', function() {
     expect(Util.isNumberEqual(point[1], 4)).to.be.true;
   });
 
-  it('rotate', function() {
+  it('rotate', () => {
     const e = new Element();
     const point = vec3.fromValues(10, 0, 0);
     e.rotate(45 / 180 * Math.PI);
@@ -31,7 +31,7 @@ describe('Transform', function() {
     expect(Util.isNumberEqual(point[1], 0)).to.be.true;
   });
 
-  it('scale', function() {
+  it('scale', () => {
     const e = new Element();
     const point = vec3.fromValues(10, 10, 1);
     e.scale(0.5, 0.5);
@@ -44,7 +44,7 @@ describe('Transform', function() {
     expect(Util.isNumberEqual(point[1], 5)).to.be.true;
   });
 
-  it('complex', function() {
+  it('complex', () => {
     const e = new Element();
     const point1 = vec3.fromValues(10, 10, 1);
     e.translate(10, 10);
@@ -57,7 +57,7 @@ describe('Transform', function() {
     expect(Util.isNumberEqual(point1[1], 5)).to.be.true;
   });
 
-  it('transform', function() {
+  it('transform', () => {
     const e = new Element();
     e.transform([[ 'r', Math.PI / 2 ], [ 't', 10, 10 ], [ 'r', -Math.PI / 2 ]]);
     const point = vec3.fromValues(0, 0, 1);
@@ -66,7 +66,7 @@ describe('Transform', function() {
     expect(Util.isNumberEqual(point[1], -10)).to.be.true;
   });
 
-  it('setTransform and invert', function() {
+  it('setTransform and invert', () => {
     const e = new Element();
     e.translate(10, 10);
     e.setTransform([[ 'r', Math.PI / 2 ], [ 't', 10, 10 ], [ 'r', -Math.PI / 2 ], [ 's', 0.5, 0.3 ]]);
@@ -87,7 +87,7 @@ describe('Transform', function() {
     expect(Util.isNumberEqual(point[1], 0)).to.be.true;
   });
 
-  it('getMatrix', function() {
+  it('getMatrix', () => {
     const e = new Element();
     const m = e.getMatrix();
     const m1 = mat3.create();

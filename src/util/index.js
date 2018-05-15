@@ -10,7 +10,7 @@ CommonUtil.merge(Util, CommonUtil, DomUtil, {
       c._mixins = mixins;
       c[Param] = c[Param] || {};
       const temp = {};
-      Util.each(mixins, function(mixin) {
+      Util.each(mixins, mixin => {
         Util.augment(c, mixin);
         const attrs = mixin[Param];
         if (attrs) {

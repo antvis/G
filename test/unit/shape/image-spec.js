@@ -7,11 +7,12 @@ const {
 } = require('path');
 const G = require('../../../src/index');
 const Canvas = require('../../../src/canvas');
+
 const div = document.createElement('div');
 div.id = 'canvas-img';
 document.body.appendChild(div);
 
-describe('Image', function() {
+describe('Image', () => {
 
   const can1 = document.createElement('canvas');
   can1.id = 'img1';
@@ -19,7 +20,7 @@ describe('Image', function() {
   can1.height = 800;
   const ctx = can1.getContext('2d');
   ctx.lineWidth = 5;
-  ctx.rect(20,20,150,100);
+  ctx.rect(20, 20, 150, 100);
   ctx.stroke();
 
   const canvas = new Canvas({
@@ -37,7 +38,7 @@ describe('Image', function() {
       height: 0
     }
   });
-  it('init attr', function() {
+  it('init attr', () => {
     expect(image.attr('x')).to.equal(0);
     expect(image.attr('y')).to.equal(0);
     expect(image.attr('img')).to.be.undefined;
@@ -54,9 +55,9 @@ describe('Image', function() {
     expect(box.maxY).to.equal(0);
   });
 
-  it('img', function(done) {
+  it('img', done => {
     const img = new Image();
-    img.onload = function() {
+    img.onload = () => {
       image.attr('img', img);
       canvas.add(image);
       canvas.draw();
@@ -72,7 +73,7 @@ describe('Image', function() {
 
 
   // todo 是否需要支持直接引用一个canvas的场景
-    /*it('canvas', function() {
+    /* it('canvas', () => {
     const image = new G.Image({
       attrs: {
         x: 0,
@@ -91,7 +92,7 @@ describe('Image', function() {
 
   });*/
 
-  it('imageData', function(done) {
+  it('imageData', done => {
     const image = new G.Image({
       attrs: {
         x: 0,
@@ -111,7 +112,7 @@ describe('Image', function() {
     done();
   });
 
-  it('width', function() {
+  it('width', () => {
     expect(image.attr('width')).to.equal(768);
     image.attr('width', 200);
     expect(image.attr('width')).to.equal(200);
@@ -121,7 +122,7 @@ describe('Image', function() {
     canvas.draw();
   });
 
-  it('height', function() {
+  it('height', () => {
     expect(image.attr('height')).to.equal(1024);
     image.attr('height', 200);
     expect(image.attr('height')).to.equal(200);
@@ -131,7 +132,7 @@ describe('Image', function() {
     canvas.draw();
   });
 
-  it('x', function() {
+  it('x', () => {
     image.attr('x', 10);
     expect(image.attr('x')).to.equal(10);
     const box = image.getBBox();
@@ -140,7 +141,7 @@ describe('Image', function() {
     canvas.draw();
   });
 
-  it('y', function() {
+  it('y', () => {
     image.attr('y', 10);
     expect(image.attr('y')).to.equal(10);
     const box = image.getBBox();
@@ -150,7 +151,7 @@ describe('Image', function() {
   });
 
   // todo 是否需要支持子图和位移功能？
-  /* it('sx, sy, swidth, sheight', function() {
+  /* it('sx, sy, swidth, sheight', () => {
     image.attr({
       sx: 20,
       sy: 20,
@@ -160,7 +161,7 @@ describe('Image', function() {
     canvas.draw();
   });
 
-  it('normal use', function() {
+  it('normal use', () => {
     const image1 = new G.Image({
       attrs: {
         x: 300,
@@ -175,8 +176,7 @@ describe('Image', function() {
     canvas.draw();
   });
 */
-
-   it('image onload && image.remove(true)', function() {
+  it('image onload && image.remove(true)', () => {
     const image = new G.Image({
       attrs: {
         img: 'http://alipay-rmsdeploy-assets-private.cn-hangzhou.alipay.aliyun-inc.com/rmsportal/IHJtPedUbTUPQCx.png'

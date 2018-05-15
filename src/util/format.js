@@ -69,14 +69,14 @@ module.exports = {
 
     if (Util.isString(path)) {
       path = path.match(regexTags);
-      Util.each(path, function(item, index) {
+      Util.each(path, (item, index) => {
         item = item.match(regexDot);
         if (item[0].length > 1) {
           const tag = item[0].charAt(0);
           item.splice(1, 0, item[0].substr(1));
           item[0] = tag;
         }
-        Util.each(item, function(sub, i) {
+        Util.each(item, (sub, i) => {
           if (!isNaN(sub)) {
             item[i] = +sub;
           }

@@ -4,11 +4,12 @@
 const expect = require('chai').expect;
 const G = require('../../../src/index');
 const Canvas = require('../../../src/canvas');
+
 const div = document.createElement('div');
 div.id = 'canvas-rect';
 document.body.appendChild(div);
 
-describe('Rect', function () {
+describe('Rect', () => {
   const canvas = new Canvas({
     containerId: 'canvas-rect',
     width: 200,
@@ -25,7 +26,7 @@ describe('Rect', function () {
     }
   });
 
-  it('init attrs', function () {
+  it('init attrs', () => {
     expect(rect.attr('x')).to.equal(0);
     expect(rect.attr('y')).to.equal(0);
     expect(rect.attr('width')).to.equal(0);
@@ -36,7 +37,7 @@ describe('Rect', function () {
     expect(rect.attr('fill')).to.equal('none');
   });
   canvas.add(rect);
-  it('width', function () {
+  it('width', () => {
     expect(rect.attr('width')).to.equal(0);
     rect.attr('width', 10);
     expect(rect.attr('width')).to.equal(10);
@@ -62,7 +63,7 @@ describe('Rect', function () {
     expect(rect2.attr('width')).to.equal(15);
   });
 
-  it('height', function () {
+  it('height', () => {
     expect(rect.attr('height')).to.equal(0);
     rect.attr('height', 20);
     expect(rect.attr('height')).to.equal(20);
@@ -87,7 +88,7 @@ describe('Rect', function () {
     expect(rect2.attr('height')).to.equal(25);
   });
 
-  it('x', function () {
+  it('x', () => {
     rect.attr('x', 10);
     expect(rect.attr('x')).to.equal(10);
     const rect1 = new G.Rect({
@@ -111,7 +112,7 @@ describe('Rect', function () {
     expect(rect2.attr('x')).to.equal(20);
   });
 
-  it('y', function () {
+  it('y', () => {
     rect.attr('y', 20);
     expect(rect.attr('y')).to.equal(20);
 
@@ -136,7 +137,7 @@ describe('Rect', function () {
     expect(rect2.attr('y')).to.equal(12);
   });
 
-  it('lineWidth', function () {
+  it('lineWidth', () => {
     expect(rect.attr('lineWidth')).to.equal(1);
     rect.attr('lineWidth', 2);
     expect(rect.attr('lineWidth')).to.equal(2);
@@ -167,20 +168,20 @@ describe('Rect', function () {
     expect(rect2.attr('lineWidth')).to.equal(2);
   });
 
-  it('radius', function () {
+  it('radius', () => {
     expect(rect.attr('radius')).to.be.undefined;
     rect.attr('radius', 3);
     expect(rect.attr('radius')).to.equal(3);
   });
 
-  it('stroke', function () {
+  it('stroke', () => {
     rect.attr('stroke', 'l (0) 0:#ff00ff 1:#00ff00');
     expect(rect.attr('stroke')).to.equal('l (0) 0:#ff00ff 1:#00ff00');
     canvas.add(rect);
     canvas.draw();
   });
 
-  it('fill', function () {
+  it('fill', () => {
     rect.attr('fill', 'l (45) 0:#00ffff 1:#ffff00');
     expect(rect.attr('fill')).to.equal('l (45) 0:#00ffff 1:#ffff00');
     canvas.draw();

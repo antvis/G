@@ -27,7 +27,7 @@ Util.augment(Polygon, {
     const el = this.get('el');
     let points = value;
     if (!value || value.length === 0) {
-      points  = '';
+      points = '';
     } else if (Util.isArray(value)) {
       points = points.map(point => point[0] + ',' + point[1]);
       points = points.join(' ');
@@ -39,7 +39,7 @@ Util.augment(Polygon, {
       this.__afterSetAttrPoints();
     }
   },
-  createPath(context) {}
+  createPath() {}
 });
 
 module.exports = Polygon;
