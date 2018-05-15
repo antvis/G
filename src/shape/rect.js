@@ -24,7 +24,7 @@ Util.augment(Rect, {
   getDefaultAttrs() {
     return {
       lineWidth: 1,
-       fill: 'none'
+      fill: 'none'
     };
   },
   __afterSetRadius() {

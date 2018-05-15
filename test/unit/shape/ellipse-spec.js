@@ -4,12 +4,13 @@
 const expect = require('chai').expect;
 const G = require('../../../src/index');
 const Canvas = require('../../../src/canvas');
+
 const div = document.createElement('div');
 div.id = 'canvas-ellipse';
 document.body.appendChild(div);
 
 
-describe('Ellipse', function() {
+describe('Ellipse', () => {
 
   const canvas = new Canvas({
     containerId: 'canvas-ellipse',
@@ -27,7 +28,7 @@ describe('Ellipse', function() {
     }
   });
   canvas.add(ellipse);
-  it('init attr', function() {
+  it('init attr', () => {
     expect(ellipse.attr('x')).to.equal(0);
     expect(ellipse.attr('y')).to.equal(0);
     expect(ellipse.attr('rx')).to.equal(1);
@@ -37,51 +38,51 @@ describe('Ellipse', function() {
     expect(ellipse.attr('fill')).to.be.undefined;
   });
 
-  it('x', function() {
+  it('x', () => {
     ellipse.attr('x', 20);
     expect(ellipse.attr('x')).to.equal(20);
   });
 
-  it('y', function() {
+  it('y', () => {
     ellipse.attr('y', 30);
     expect(ellipse.attr('y')).to.equal(30);
   });
 
-  it('rx', function() {
+  it('rx', () => {
     expect(ellipse.attr('rx')).to.equal(1);
     ellipse.attr('rx', 5);
     expect(ellipse.attr('rx')).to.equal(5);
   });
 
-  it('ry', function() {
+  it('ry', () => {
     expect(ellipse.attr('ry')).to.equal(1);
     ellipse.attr('ry', 10);
     expect(ellipse.attr('ry')).to.equal(10);
   });
 
 
-  it('lineWidth', function() {
+  it('lineWidth', () => {
     expect(ellipse.attr('lineWidth')).to.equal(1);
     ellipse.attr('lineWidth', 2);
     expect(ellipse.attr('lineWidth')).to.equal(2);
   });
 
-  it('stroke', function() {
+  it('stroke', () => {
     ellipse.attr('stroke', 'l (0) 0:#959231 1:#00cd54');
     expect(ellipse.attr('stroke')).to.equal('l (0) 0:#959231 1:#00cd54');
     canvas.add(ellipse);
     canvas.draw();
   });
 
-  it('fill', function() {
+  it('fill', () => {
     ellipse.attr('fill', 'l (90) 0:#959231 1:#00cd54');
     expect(ellipse.attr('fill')).to.equal('l (90) 0:#959231 1:#00cd54');
     canvas.draw();
   });
 
 
-  it('isHit', function() {
-    const ellipse1 = new G.Ellipse({
+  it('isHit', () => {
+    new G.Ellipse({
       attrs: {
         x: 50,
         y: 50,
@@ -90,7 +91,7 @@ describe('Ellipse', function() {
       }
     });
 
-    const ellipse2 = new G.Ellipse({
+    new G.Ellipse({
       attrs: {
         x: 100,
         y: 200,

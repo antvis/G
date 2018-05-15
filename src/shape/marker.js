@@ -21,7 +21,7 @@ Marker.Symbols = {
   },
   // 菱形
   diamond(x, y, r) {
-    return  `M${x - r},${y}
+    return `M${x - r},${y}
              L${x},${y - r}
              L${x + r},${y},
              L${x},${y + r}Z`;
@@ -98,7 +98,7 @@ Util.augment(Marker, {
     if (typeof attrs.symbol === 'function') {
       let d = attrs.symbol(attrs.x, attrs.y, r);
       if (Util.isArray(d)) {
-        d = d.map((path) => {
+        d = d.map(path => {
           return path.join(' ');
         }).join('');
       }

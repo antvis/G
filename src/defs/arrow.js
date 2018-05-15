@@ -5,10 +5,10 @@ const Util = require('../util/index');
 
 const DEFAULT_PATH = {
   'marker-start': 'M0 2 L6.445174776667712 0 L 6.445174776667712 4z',
-  'marker-end': 'M 0 0 L 6.445174776667712 2 L 0 4 z',
+  'marker-end': 'M 0 0 L 6.445174776667712 2 L 0 4 z'
 };
 
-function setDefaultPath (parent, name, stroke) {
+function setDefaultPath(parent, name, stroke) {
   const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   el.setAttribute('d', DEFAULT_PATH[name]);
   el.setAttribute('stroke', 'none');
@@ -28,7 +28,7 @@ function setMarker(cfg, parent, name, stroke) {
     return setDefaultPath(parent, name);
   }
   if (shape.type !== 'marker') {
-    throw "the shape of an arrow should be an instance of Marker";
+    throw new TypeError('the shape of an arrow should be an instance of Marker');
   }
   shape.attr({ stroke: 'none', fill: stroke });
   parent.append(shape.get('el'));
@@ -44,7 +44,7 @@ function setMarker(cfg, parent, name, stroke) {
 
 const Arrow = function(name, cfg, stroke) {
   const el = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
-  const id = Util.uniqueId('marker' + '_');
+  const id = Util.uniqueId('marker_');
   el.setAttribute('id', id);
   this.__cfg = { el, id, stroke: stroke || '#000' };
   this.__cfg[name] = true;
@@ -52,7 +52,7 @@ const Arrow = function(name, cfg, stroke) {
   if (typeof cfg === 'boolean' && cfg) {
     child = setDefaultPath(el, name, stroke);
     this._setChild(child, true);
-  } else if(typeof cfg=== 'object') {
+  } else if (typeof cfg === 'object') {
     child = setMarker(cfg, el, name, stroke);
     this._setChild(child, false);
   }
@@ -63,7 +63,7 @@ const Arrow = function(name, cfg, stroke) {
 Util.augment(Arrow, {
   type: 'arrow',
   match(type, attr) {
-    if(type !== this.type) {
+    if (type !== this.type) {
       return false;
     }
     if (!this.__cfg[name]) {
@@ -88,7 +88,8 @@ Util.augment(Arrow, {
     } else {
       child.setAttribute('fill', fill);
     }
-  },
+  }
 });
 
 module.exports = Arrow;
+

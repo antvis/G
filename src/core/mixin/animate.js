@@ -4,6 +4,7 @@ const Util = require('../../util/index');
 const d3Ease = require('d3-ease');
 const d3Timer = require('d3-timer');
 const { interpolate, interpolateArray } = require('d3-interpolate'); // 目前整体动画只需要数值和数组的差值计算
+
 const ReservedProps = {
   delay: 'delay'
 };
@@ -68,7 +69,7 @@ module.exports = {
       callback = easing;
       easing = 'easeLinear';
     } else {
-      easing = easing ? easing : 'easeLinear';
+      easing = easing || 'easeLinear';
     }
 
     self.setSilent('animating', true); // 处于动画状态

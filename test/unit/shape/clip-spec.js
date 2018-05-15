@@ -1,11 +1,11 @@
-const expect = require('chai').expect;
 const G = require('../../../src/index');
 const Canvas = require('../../../src/canvas');
+
 const div = document.createElement('div');
 div.id = 'canvas-clip';
 document.body.appendChild(div);
 
-describe('clip', function() {
+describe('clip', () => {
 
   const canvas = new Canvas({
     containerId: 'canvas-clip',
@@ -25,7 +25,7 @@ describe('clip', function() {
 
   canvas.add(shape);
 
-  it('shape rect', function() {
+  it('shape rect', () => {
     const rect = new G.Rect({
       attrs: {
         x: 50,
@@ -38,7 +38,7 @@ describe('clip', function() {
     canvas.draw();
   });
 
-  it('shape circle', function() {
+  it('shape circle', () => {
     const circle = new G.Circle({
       attrs: {
         x: 50,
@@ -51,7 +51,7 @@ describe('clip', function() {
     canvas.draw();
   });
 
-  it('shape ellipse', function() {
+  it('shape ellipse', () => {
     const ellipse = new G.Ellipse({
       attrs: {
         x: 100,
@@ -65,7 +65,7 @@ describe('clip', function() {
     canvas.draw();
   });
 
-  it('shape ploygon', function() {
+  it('shape ploygon', () => {
     const polygon = new G.Polygon({
       attrs: {
         points: [
@@ -81,7 +81,7 @@ describe('clip', function() {
     canvas.draw();
   });
 
-  it('shape path', function() {
+  it('shape path', () => {
     const path = new G.Path({
       attrs: {
         path: [
@@ -103,7 +103,7 @@ describe('clip', function() {
   const group = new G.Group();
   canvas.add(group);
 
-  it('group rect', function() {
+  it('group rect', () => {
     const rect = new G.Rect({
       attrs: {
         x: 80,
@@ -121,7 +121,7 @@ describe('clip', function() {
     // expect(canvas.getShape(150, 150)).to.be(fan);
   });
 
-  it('group circle', function() {
+  it('group circle', () => {
     const circle = new G.Circle({
       attrs: {
         x: 130,
@@ -134,7 +134,7 @@ describe('clip', function() {
     canvas.draw();
   });
 
-  it('group ellipse', function() {
+  it('group ellipse', () => {
     const ellipse = new G.Ellipse({
       attrs: {
         x: 130,
@@ -148,7 +148,7 @@ describe('clip', function() {
     canvas.draw();
   });
 
-  it('group polygon', function() {
+  it('group polygon', () => {
     const polygon = new G.Polygon({
       attrs: {
         points: [

@@ -1,7 +1,8 @@
 const Util = require('../util/index');
 const Element = require('./element');
 const Inside = require('../shape/util/inside');
-const SHAPES = ['circle', 'ellipse', 'fan', 'image', 'line', 'marker', 'path', 'polygon', 'rect', 'text'];
+
+const SHAPES = [ 'circle', 'ellipse', 'fan', 'image', 'line', 'marker', 'path', 'polygon', 'rect', 'text' ];
 
 const Shape = function(cfg) {
   Shape.superclass.constructor.call(this, cfg);
@@ -22,32 +23,6 @@ Util.augment(Shape, {
       shape.setAttribute('id', id);
       this.setSilent('el', shape);
       this.setSilent('id', id);
-    }
-  },
-  drawInner(context) {
-    const self = this;
-    const attrs = self.__attrs;
-    self.createPath(context);
-    const originOpacity = context.globalAlpha;
-    if (self.hasFill()) {
-      const fillOpacity = attrs.fillOpacity;
-      if (!Util.isNil(fillOpacity) && fillOpacity !== 1) {
-        context.globalAlpha = fillOpacity;
-        context.fill();
-        context.globalAlpha = originOpacity;
-      } else {
-        context.fill();
-      }
-    }
-    if (self.hasStroke()) {
-      const lineWidth = self.__attrs.lineWidth;
-      if (lineWidth > 0) {
-        const strokeOpacity = attrs.strokeOpacity;
-        if (!Util.isNil(strokeOpacity) && strokeOpacity !== 1) {
-          context.globalAlpha = strokeOpacity;
-        }
-        context.stroke();
-      }
     }
   },
   /**
@@ -120,7 +95,7 @@ Util.augment(Shape, {
   clearBBox() {
     this.__cfg.box = null;
     this.__cfg.region = null;
-  },
+  }
 });
 
 module.exports = Shape;

@@ -11,7 +11,7 @@ const BASELINE_MAP = {
   bottom: 'after-edge',
   alphabetic: 'baseline',
   hanging: 'hanging'
-}
+};
 
 CText.ATTRS = {
   x: 0,
@@ -95,16 +95,16 @@ Util.augment(CText, {
     // 由于本身不支持设置direction，所以left = start, right = end。之后看是否需要根据direction判断
     let attr = this.__attrs.textAlign;
     const el = this.get('el');
-    if ('left' === attr) {
+    if (attr === 'left') {
       attr = 'start';
     }
-    if ('right' === attr) {
+    if (attr === 'right') {
       attr = 'end';
     }
     el.setAttribute('text-anchor', attr);
   },
   __afterSetAttrTextBaseLine() {
-    let attr = this.__attrs.textBaseline;
+    const attr = this.__attrs.textBaseline;
     this.get('el').setAttribute('alignment-baseline', BASELINE_MAP[attr] || 'baseline');
   },
   __afterSetAttrText(text) {
@@ -117,15 +117,15 @@ Util.augment(CText, {
       attrs.textArr = textArr;
     }
     const el = this.get('el');
-    if (~['undefined', 'null', 'NaN'].indexOf(String(text)) && el) {
+    if (~[ 'undefined', 'null', 'NaN' ].indexOf(String(text)) && el) {
       el.innerHTML = '';
-    } else if(~text.indexOf('\n')) {
+    } else if (~text.indexOf('\n')) {
       textArr = text.split('\n');
       attrs.lineCount = textArr.length;
       attrs.textArr = textArr;
       let arr = '';
-      Util.each(textArr, function(segment, i) {
-          arr += `<tspan x="0" y="${i + 1}em">${segment}</tspan>`;
+      Util.each(textArr, (segment, i) => {
+        arr += `<tspan x="0" y="${i + 1}em">${segment}</tspan>`;
       });
       el.innerHTML = arr;
     } else {

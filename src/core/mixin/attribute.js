@@ -1,4 +1,5 @@
 const Util = require('../../util/index');
+
 const ALIAS_ATTRS = [ 'strokeStyle', 'fillStyle', 'globalAlpha' ];
 const CAPITALIZED_ATTRS_MAP = {
   r: 'R',
@@ -86,7 +87,6 @@ const ALIAS_ATTRS_MAP = {
   fill: 'fillStyle',
   opacity: 'globalAlpha'
 };
-const SHADOW_ATTR = ['shadowColor', 'shadowBlur', 'shadowOffsetX', 'shadowOffsetY'];
 
 module.exports = {
   canFill: false,
@@ -163,15 +163,15 @@ module.exports = {
       self.__setAttrClip(name, value);
     } else if (name === 'transform' || name === 'rotate') {
       self.__setAttrTrans(name, value);
-    } else if(name.startsWith('shadow')) {
+    } else if (name.startsWith('shadow')) {
       self.__setAttrShadow(name, value);
-    } else if (~['stroke', 'strokeStyle', 'fill', 'fillStyle'].indexOf(name) && /^[r,R,L,l]{1}[\s]+\(/.test(value.trim())) {
+    } else if (~[ 'stroke', 'strokeStyle', 'fill', 'fillStyle' ].indexOf(name) && /^[r,R,L,l]{1}[\s]+\(/.test(value.trim())) {
       self.__setAttrGradients(name, value.trim());
     } else if (~name.toLowerCase().indexOf('arrow')) {
       self.__setAttrArrow(name, value);
     } else {
       // 先存好属性，然后对一些svg和canvas中不同的属性进行特判
-      if (['circle', 'ellipse', 'marker'].indexOf(self.type) >= 0 && ['x', 'y'].indexOf(name) >= 0) {
+      if (~[ 'circle', 'ellipse', 'marker' ].indexOf(self.type) && ~[ 'x', 'y' ].indexOf(name)) {
         /**
          * 本来考虑想写到对应图形里面的，但是x,y又是svg通用属性，这样会同时存在x，y, cx,cy
          * 如果在下面svgAttr设置的时候还是要特判，不如就在这边特殊处理一下吧
@@ -227,7 +227,7 @@ module.exports = {
   },
   __setAttrShadow(name, value) {
     const attrs = this.__attrs;
-    let filter = this.get('filter');
+    const filter = this.get('filter');
     const defs = this.get('defs');
     if (!value) {
       this.get('el').removeAttribute('filter');
@@ -241,7 +241,7 @@ module.exports = {
       this.__setAttrDependency(name, value);
       return this;
     }
-    const cfg  = {
+    const cfg = {
       dx: attrs.shadowOffsetX,
       dy: attrs.shadowOffsetY,
       blur: attrs.shadowBlur,

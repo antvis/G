@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const Elements = require('../../../src/core/element');
-describe('Attributes', function() {
-  it('init', function() {
+describe('Attributes', () => {
+  it('init', () => {
     const e = new Elements({
       attrs: {
         width: 100,
@@ -14,7 +14,7 @@ describe('Attributes', function() {
     expect(e.__attrs.height).to.equal(50);
   });
 
-  it('attr get', function() {
+  it('attr get', () => {
     const e = new Elements({
       attrs: {
         width: 100,
@@ -26,7 +26,7 @@ describe('Attributes', function() {
     expect(e.attr('height')).to.equal(50);
   });
 
-  it('attr set', function() {
+  it('attr set', () => {
     const e = new Elements();
 
     e.attr('width', 300);
@@ -41,7 +41,7 @@ describe('Attributes', function() {
     expect(e.attr('text')).to.equal('123');
   });
 
-  it('attr fill', function() {
+  it('attr fill', () => {
     const e = new Elements({
       attrs: {
         fill: '#333333'
@@ -56,7 +56,7 @@ describe('Attributes', function() {
     expect(e.__attrs.fillStyle).to.equal('red');
   });
 
-  it('attr stroke', function() {
+  it('attr stroke', () => {
     const e = new Elements({
       attrs: {
         stroke: 'black'
@@ -71,7 +71,7 @@ describe('Attributes', function() {
     expect(e.__attrs.strokeStyle).to.equal('#999');
   });
 
-  it('attr opacity', function() {
+  it('attr opacity', () => {
     const e = new Elements({
       attrs: {
         opacity: 0.1
@@ -87,7 +87,7 @@ describe('Attributes', function() {
     expect(e.__attrs.globalAlpha).to.equal(0.3);
   });
 
-  it('attrAll', function() {
+  it('attrAll', () => {
     const e = new Elements({
       attrs: {
         width: 100,

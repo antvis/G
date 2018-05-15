@@ -8,10 +8,10 @@ const Shadow = require('../defs/shadow');
 const Arrow = require('../defs/arrow');
 const Clip = require('../defs/clip');
 
-const Defs = function (cfg) {
+const Defs = function(cfg) {
   Defs.superclass.constructor.call(this, cfg);
   this.set('children', []);
-}
+};
 
 Util.extend(Defs, Element);
 
@@ -31,7 +31,7 @@ Util.augment(Defs, {
   find(type, attr) {
     const children = this.get('children');
     let result = null;
-    for(let i = 0; i < children.length; i++) {
+    for (let i = 0; i < children.length; i++) {
       if (children[i].match(type, attr)) {
         result = children[i].__cfg.id;
         break;
@@ -42,8 +42,8 @@ Util.augment(Defs, {
   findById(id) {
     const children = this.get('children');
     let flag = null;
-    for(let i = 0; i < children.length; i++) {
-      if(children[i].__cfg.id === id) {
+    for (let i = 0; i < children.length; i++) {
+      if (children[i].__cfg.id === id) {
         flag = children[i];
         break;
       }
@@ -55,7 +55,7 @@ Util.augment(Defs, {
     const self = this;
     const children = this.get('children');
     if (Util.isArray(items)) {
-      Util.each(items, function(item) {
+      Util.each(items, item => {
         const parent = item.get('parent');
         if (parent) {
           parent.removeChild(item, false);

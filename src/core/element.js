@@ -97,10 +97,8 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
   get(name) {
     return this.__cfg[name];
   },
-  draw(context) {},
-  drawInner(/* context */) {
-
-  },
+  draw() {},
+  drawInner() {},
   show() {
     this.set('visible', true);
     return this;
@@ -164,7 +162,7 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
     const el = this.get('el');
     if (el) {
       const bbox = el.getBBox();
-      bbox.minX =
+      bbox.minX = bbox.x;
       bbox.minY = bbox.y;
       bbox.maxX = bbox.x + bbox.width;
       bbox.maxY = bbox.y + bbox.height;
@@ -176,7 +174,7 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
         width: bbox.width,
         height: bbox.height,
         x: bbox.x,
-        y: bbox.y,
+        y: bbox.y
       };
     }
     return {
@@ -187,7 +185,7 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
       width: 0,
       height: 0,
       x: 0,
-      y:0
+      y: 0
     };
   }
 });

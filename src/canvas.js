@@ -49,7 +49,7 @@ Canvas.CFG = {
    * 当前Canvas的DOM
    * @type {Object}
    */
-  canvasDOM: null,
+  canvasDOM: null
 };
 
 Util.extend(Canvas, Group);
@@ -57,7 +57,6 @@ Util.extend(Canvas, Group);
 Util.augment(Canvas, {
   init() {
     Canvas.superclass.init.call(this);
-    //this._setGlobalParam();
     this._setDOM();
     this._setInitSize();
     // this._scale();
@@ -132,47 +131,47 @@ Util.augment(Canvas, {
     const self = this;
     const el = self.get('el');
 
-    el.addEventListener('mouseout', function(e) {
+    el.addEventListener('mouseout', e => {
       self._triggerEvent('mouseleave', e);
     }, false);
 
-    el.addEventListener('mouseover', function(e) {
+    el.addEventListener('mouseover', e => {
       self._triggerEvent('mouseenter', e);
     }, false);
 
-    el.addEventListener('mousemove', function(e) {
+    el.addEventListener('mousemove', e => {
       self._triggerEvent('mousemove', e);
     }, false);
 
-    el.addEventListener('mousedown', function(e) {
+    el.addEventListener('mousedown', e => {
       self._triggerEvent('mousedown', e);
     }, false);
 
-    el.addEventListener('mouseup', function(e) {
+    el.addEventListener('mouseup', e => {
       self._triggerEvent('mouseup', e);
     }, false);
 
-    el.addEventListener('click', function(e) {
+    el.addEventListener('click', e => {
       self._triggerEvent('click', e);
     }, false);
 
-    el.addEventListener('dblclick', function(e) {
+    el.addEventListener('dblclick', e => {
       self._triggerEvent('dblclick', e);
     }, false);
 
-    el.addEventListener('touchstart', function(e) {
+    el.addEventListener('touchstart', e => {
       if (!Util.isEmpty(e.touches)) {
         self._triggerEvent('touchstart', e.touches[0]);
       }
     }, false);
 
-    el.addEventListener('touchmove', function(e) {
+    el.addEventListener('touchmove', e => {
       if (!Util.isEmpty(e.touches)) {
         self._triggerEvent('touchmove', e.touches[0]);
       }
     }, false);
 
-    el.addEventListener('touchend', function(e) {
+    el.addEventListener('touchend', e => {
       if (!Util.isEmpty(e.changedTouches)) {
         self._triggerEvent('touchend', e.changedTouches[0]);
       }
@@ -262,8 +261,8 @@ Util.augment(Canvas, {
     const width = bbox.right - bbox.left;
     const height = bbox.bottom - bbox.top;
     return {
-      clientX: x / (el.width / width) + bbox.left,
-      clientY: y / (el.height / height) + bbox.top
+      clientX: (x / (el.width / width)) + bbox.left,
+      clientY: (y / (el.height / height)) + bbox.top
     };
   },
   beforeDraw() {

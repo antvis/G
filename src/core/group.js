@@ -1,6 +1,7 @@
 const Util = require('../util/index');
 const Element = require('./element');
 const Shape = require('../shape/index');
+
 const SHAPE_MAP = {}; // 缓存图形类型
 const INDEX = '_INDEX';
 
@@ -174,7 +175,7 @@ Util.augment(Group, {
     const children = self.get('children');
     const el = self.get('el');
     if (Util.isArray(items)) {
-      Util.each(items, function(item) {
+      Util.each(items, item => {
         const parent = item.get('parent');
         if (parent) {
           parent.removeChild(item, false);
@@ -234,7 +235,7 @@ Util.augment(Group, {
     }
     const children = item.__cfg.children;
     if (children) {
-      Util.each(children, function(child) {
+      Util.each(children, child => {
         item.__setEvn(child);
       });
     }
@@ -250,14 +251,14 @@ Util.augment(Group, {
       return child;
     });
 
-    children.sort(getComparer(function(obj1, obj2) {
+    children.sort(getComparer((obj1, obj2) => {
       return obj1.get('zIndex') - obj2.get('zIndex');
     }));
 
     return this;
   },
   find(id) {
-    return this.findBy(function(item) {
+    return this.findBy(item => {
       return item.get('id') === id;
     });
   },
@@ -270,7 +271,7 @@ Util.augment(Group, {
     const children = this.get('children');
     let rst = null;
 
-    Util.each(children, function(item) {
+    Util.each(children, item => {
       if (fn(item)) {
         rst = item;
       } else if (item.findBy) {
@@ -286,7 +287,7 @@ Util.augment(Group, {
     const children = this.get('children');
     let rst = [];
     let childRst = [];
-    Util.each(children, function(item) {
+    Util.each(children, item => {
       if (fn(item)) {
         rst.push(item);
       }
@@ -305,20 +306,13 @@ Util.augment(Group, {
    */
   getShape(x, y) {
     const self = this;
-    const clip = self.__attrs.clip;
     const children = self.__cfg.children;
-    let rst;
-    if (clip) {
-      if (clip.inside(x, y)) {
-        rst = find(children, x, y);
-      }
-    } else {
-      rst = find(children, x, y);
-    }
     return find(children, x, y);
   },
   /**
    * 根据点击事件的element获取对应的图形对象
+   * @param  {Object} el 点击的dom元素
+   * @return {Object}  对应图形对象
    */
   findShape(el) {
     if (this.__cfg.visible && this.__cfg.capture && this.get('el') === el) {
@@ -326,12 +320,12 @@ Util.augment(Group, {
     }
     const children = this.__cfg.children;
     let shape = null;
-    for (let i = children.length -1; i >= 0; i--) {
+    for (let i = children.length - 1; i >= 0; i--) {
       const child = children[i];
       if (child.isGroup) {
         shape = child.findShape(el);
         shape = child.findShape(el);
-      } else if(child.get('visible') && child.get('el') === el) {
+      } else if (child.get('visible') && child.get('el') === el) {
         shape = child;
       }
       if (shape) {

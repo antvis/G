@@ -12,7 +12,7 @@ function isScale(m) {
   return m[1] === 0 && m[3] === 0 && m[6] === 0 && m[7] === 0;
 }
 
-function multiple(m1, m2) {
+/* function multiple(m1, m2) {
   if (!isUnchanged(m2)) {
     if (isScale(m2)) {
       m1[0] *= m2[0];
@@ -21,7 +21,7 @@ function multiple(m1, m2) {
       mat3.multiply(m1, m1, m2);
     }
   }
-}
+}*/
 
 module.exports = {
   initTransform() {
@@ -68,7 +68,7 @@ module.exports = {
   },
   __performTransform() {
     const matrix = this.__attrs.matrix;
-    let transform = [];
+    const transform = [];
     for (let i = 0; i < 9; i += 3) {
       transform.push(matrix[i] + ',' + matrix[i + 1]);
     }
@@ -81,7 +81,7 @@ module.exports = {
     const self = this;
     const matrix = self.attr('matrix');
 
-    Util.each(ts, function(t) {
+    Util.each(ts, t => {
       switch (t[0]) {
         case 't':
           self.translate(t[1], t[2], false);
