@@ -30,10 +30,10 @@ describe('Rect', function () {
     expect(rect.attr('y')).to.equal(0);
     expect(rect.attr('width')).to.equal(0);
     expect(rect.attr('height')).to.equal(0);
-    expect(rect.attr('radius')).to.equal(0);
+    expect(rect.attr('radius')).to.be.undefined;
     expect(rect.attr('lineWidth')).to.equal(1);
     expect(rect.attr('stroke')).to.be.undefined;
-    expect(rect.attr('fill')).to.be.undefined;
+    expect(rect.attr('fill')).to.equal('none');
   });
   canvas.add(rect);
   it('width', function () {
@@ -168,7 +168,7 @@ describe('Rect', function () {
   });
 
   it('radius', function () {
-    expect(rect.attr('radius')).to.equal(0);
+    expect(rect.attr('radius')).to.be.undefined;
     rect.attr('radius', 3);
     expect(rect.attr('radius')).to.equal(3);
   });

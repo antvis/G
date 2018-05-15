@@ -20,6 +20,7 @@ describe('animate', function() {
         r: 10
       }
     });
+    shape.rotate(Math.PI / 4);
     shape.animate({
       x: 100,
       y: 100,
