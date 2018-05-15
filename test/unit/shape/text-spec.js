@@ -435,7 +435,7 @@ describe('Text \n', function() {
     attrs: {
       x: 50,
       y: 50,
-      text: '你好\nHello\nworkd',
+      text: '你好\nHello\nworld',
       fill: 'black',
       stroke: 'red',
       textBaseline: 'top'
@@ -456,7 +456,7 @@ describe('Text \n', function() {
   it('text /n', function() {
     expect(text.attr('x')).to.equal(50);
     expect(text.attr('y')).to.equal(50);
-    expect(text.attr('text')).to.equal('你好\nHello\nworkd');
+    expect(text.attr('text')).to.equal('你好\nHello\nworld');
     expect(text.attr('textAlign')).to.equal('start');
     expect(text.attr('fontSize')).to.equal(12);
     expect(text.attr('fill')).to.equal('black');
@@ -504,6 +504,23 @@ describe('Text 不存在', function() {
   canvas.add(rect);
   canvas.add(text);
   canvas.draw();
+
+  it('text outline', function() {
+    const text = new G.Text({
+      attrs: {
+        x: 100,
+        y: 100,
+        fontSize: 20,
+        text: 'outline',
+        outline: {
+          fill: 'peachpuff',
+          stroke: 'crimson',
+          lineWidth: 2
+        }
+      }
+    });
+    canvas.add(text);
+  });
   // TODO text在为空的时候取的BBox都是0，就算有内容，BBox的值也不是用户指定到的x,y。。。
   /*it('text 空 "" ', function() {
     expect(text.attr('x')).to.equal(50);
