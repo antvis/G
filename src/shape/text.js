@@ -117,20 +117,23 @@ Util.augment(CText, {
       el.innerHTML = text;
     }
   },
-  __getTextHeight() {
-    const attrs = this.__attrs;
-    const lineCount = attrs.lineCount;
-    const fontSize = attrs.fontSize * 1;
-    if (lineCount > 1) {
-      const spaceingY = this.__getSpaceingY();
-      return fontSize * lineCount + spaceingY * (lineCount - 1);
+  __afterSetAttrOutline(val) {
+    const el = this.get('el');
+    if (!val) {
+      el.setAttribute('paint-order', 'normal');
     }
-    return fontSize;
+    const stroke = val.stroke || '#000';
+    const fill = val.fill || this.__attrs.stroke;
+    const lineWidth = val.lineWidth || this.__attrs.lineWidth * 2;
+    el.setAttribute('paint-order', 'stroke');
+    el.setAttribute('style', 'stroke-linecap:butt; stroke-linejoin:miter;');
+    el.setAttribute('stroke', stroke);
+    el.setAttribute('fill', fill);
+    el.setAttribute('stroke-width', lineWidth);
   },
   // 计算浪费，效率低，待优化
   __afterSetAttrAll(objs) {
     const self = this;
-    const el = this.get('el');
     if (
       'fontSize' in objs ||
       'fontWeight' in objs ||
@@ -148,6 +151,9 @@ Util.augment(CText, {
     }
     if ('text' in objs) {
       self.__afterSetAttrText(objs.text);
+    }
+    if ('outline' in objs) {
+      self.__afterSetAttrOutline(objs.outline);
     }
   },
   isHitBox() {
