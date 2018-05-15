@@ -68,10 +68,12 @@ Util.augment(CImage, {
       }
       el.setAttribute('href', img.getAttribute('src'));
     } else if (img instanceof ImageData) {
-      // todo canvas的ImageData，在高清屏上会模糊
       const canvas = document.createElement('canvas');
-      canvas.style.width = img.width;
-      canvas.style.height = img.height;
+      const ratio = window.devicePixelRatio;
+      canvas.setAttribute('width', img.width);
+      canvas.setAttribute('height', img.height);
+      canvas.style.width = img.width * ratio;
+      canvas.style.height = img.height * ratio;
       canvas.getContext('2d').putImageData(img, 0, 0);
       if (!attrs.width) {
         self.attr('width', img.width);
