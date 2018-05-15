@@ -1,6 +1,5 @@
 const Util = require('../util/index');
 const Shape = require('../core/shape');
-const Inside = require('./util/inside');
 
 const Marker = function(cfg) {
   Marker.superclass.constructor.call(this, cfg);
@@ -107,16 +106,7 @@ Util.augment(Marker, {
       d = Marker.Symbols[attrs.symbol || 'circle'](attrs.x, attrs.y, r);
     }
     this.get('el').setAttribute('d', d);
-  },
-  isPointInPath(x, y) {
-    const attrs = this.__attrs;
-    const cx = attrs.x;
-    const cy = attrs.y;
-    const r = attrs.radius;
-    const lineWidth = this.getHitLineWidth();
-    return Inside.circle(cx, cy, r + lineWidth / 2, x, y);
-  },
-  createPath(context) {}
+  }
 });
 
 module.exports = Marker;

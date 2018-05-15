@@ -520,7 +520,6 @@ describe('Text 不存在', function() {
     });
     canvas.add(text);
   });
-  // TODO text在为空的时候取的BBox都是0，就算有内容，BBox的值也不是用户指定到的x,y。。。
   /*it('text 空 "" ', function() {
     expect(text.attr('x')).to.equal(50);
     expect(text.attr('y')).to.equal(50);

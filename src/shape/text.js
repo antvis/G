@@ -1,6 +1,5 @@
 const Util = require('../util/index');
 const Shape = require('../core/shape');
-const Inside = require('./util/inside');
 
 const CText = function(cfg) {
   CText.superclass.constructor.call(this, cfg);
@@ -93,7 +92,7 @@ Util.augment(CText, {
     this.__assembleFont();
   },
   __afterSetAttrTextAlign() {
-    // todo left 和 right不支持，要看看怎么改
+    // 由于本身不支持设置direction，所以left = start, right = end。之后看是否需要根据direction判断
     let attr = this.__attrs.textAlign;
     const el = this.get('el');
     if ('left' === attr) {
@@ -170,22 +169,6 @@ Util.augment(CText, {
     }
     if ('outline' in objs) {
       self.__afterSetAttrOutline(objs.outline);
-    }
-  },
-  isHitBox() {
-    return false;
-  },
-  __getSpaceingY() {
-    const attrs = this.__attrs;
-    const lineHeight = attrs.lineHeight;
-    const fontSize = attrs.fontSize * 1;
-    return lineHeight ? (lineHeight - fontSize) : fontSize * 0.14;
-  },
-  isPointInPath(x, y) {
-    const self = this;
-    const box = self.getBBox();
-    if (self.hasFill() || self.hasStroke()) {
-      return Inside.box(box.minX, box.maxX, box.minY, box.maxY, x, y);
     }
   }
 });
