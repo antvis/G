@@ -6,7 +6,13 @@ const CText = function(cfg) {
   CText.superclass.constructor.call(this, cfg);
 };
 
-const SPECIAL_ATTRS = ['text', 'textAlign', 'textBaseLine'];
+const BASELINE_MAP = {
+  top: 'before-edge',
+  middle: 'central',
+  bottom: 'after-edge',
+  alphabetic: 'baseline',
+  hanging: 'hanging'
+}
 
 CText.ATTRS = {
   x: 0,
@@ -99,7 +105,8 @@ Util.augment(CText, {
     el.setAttribute('text-anchor', attr);
   },
   __afterSetAttrTextBaseLine() {
-    // todo 这个完全不资瓷
+    let attr = this.__attrs.textBaseline;
+    this.get('el').setAttribute('alignment-baseline', BASELINE_MAP[attr] || 'baseline');
   },
   __afterSetAttrText(text) {
     const attrs = this.__attrs;
