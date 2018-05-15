@@ -207,8 +207,6 @@ Util.augment(Canvas, {
       this.set('canvas', this);
     }
     const canvasDOM = this.get('canvasDOM');
-
-    // TODO canvas的context是getContext的, 在各种操作中都传递的context，svg时先用dom
     this.set('context', canvasDOM);
 
   },
