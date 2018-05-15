@@ -2,27 +2,7 @@ const Util = require('../util/index');
 const Attribute = require('./mixin/attribute');
 const Transform = require('./mixin/transform');
 const Animate = require('./mixin/animate');
-const Format = require('../util/format');
 const EventEmitter = require('wolfy87-eventemitter');
-
-const SHAPE_ATTRS = [
-  'fillStyle',
-  'font',
-  'globalAlpha',
-  'lineCap',
-  'lineWidth',
-  'lineJoin',
-  'miterLimit',
-  'shadowBlur',
-  'shadowColor',
-  'shadowOffsetX',
-  'shadowOffsetY',
-  'strokeStyle',
-  'textAlign',
-  'textBaseline',
-  'lineDash',
-  'lineDashOffset'
-];
 
 const Element = function(cfg) {
   this.__cfg = {
