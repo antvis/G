@@ -40,7 +40,8 @@ const CAPITALIZED_ATTRS_MAP = {
   clockwise: 'Clockwise',
   startAngle: 'StartAngle',
   endAngle: 'EndAngle',
-  path: 'Path'
+  path: 'Path',
+  outline: 'Outline'
 };
 const SVG_ATTR_MAP = {
   opacity: 'opacity',
