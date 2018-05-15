@@ -5,20 +5,20 @@ const Util = require('../util/index');
 
 const ATTR_MAP = {
   shadowColor: 'color',
+  shadowOpacity: 'opacity',
   shadowBlur: 'blur',
   shadowOffsetX: 'dx',
   shadowOffsetY: 'dy'
 };
 
 function parseShadow(config, el) {
-  // todo color貌似不支持
-  let child = `<feOffset result="offOut" in="SourceGraphic" dx="${config.dx}" dy="${config.dy}" />`;
-  if (!isNaN(Number(config.blur))) {
-    child += `<feGaussianBlur result="blurOut" in="offOut" stdDeviation="${config.blur}" />`;
-    child += '<feBlend in="SourceGraphic" in2="blurOut" mode="normal" />';
-  } else {
-    child += '<feBlend in="SourceGraphic" in2="offOut" mode="normal" />';
-  }
+  let child = `<feDropShadow 
+      dx="${config.dx}" 
+      dy="${config.dy}" 
+      stdDeviation="${config.blur ? config.blur: 0}"
+      flood-color="${config.color ? config.color: '#000'}"
+      flood-opacity="${config.opacity ? config.opacity : 1}"
+      />`;
   el.innerHTML = child;
 }
 
