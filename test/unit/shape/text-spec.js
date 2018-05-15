@@ -276,7 +276,6 @@ describe('Text', function() {
     expect(box.minX, 9.5);
     expect(box.maxX, 70.5);
 
-
     const text1 = new G.Text({
       attrs: {
         x: 0,
