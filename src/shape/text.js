@@ -120,6 +120,15 @@ Util.augment(CText, {
     const el = this.get('el');
     if (~['undefined', 'null', 'NaN'].indexOf(String(text)) && el) {
       el.innerHTML = '';
+    } else if(~text.indexOf('\n')) {
+      textArr = text.split('\n');
+      attrs.lineCount = textArr.length;
+      attrs.textArr = textArr;
+      let arr = '';
+      Util.each(textArr, function(segment, i) {
+          arr += `<tspan x="0" y="${i + 1}em">${segment}</tspan>`;
+      });
+      el.innerHTML = arr;
     } else {
       el.innerHTML = text;
     }
