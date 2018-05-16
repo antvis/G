@@ -34,7 +34,9 @@ Util.augment(CImage, {
     const el = this.get('el');
     const attrs = self.__attrs;
     if (Util.isString(img)) {
+      // 如果传入的
       el.setAttribute('href', img);
+
     } else if (img instanceof Image) {
       if (!attrs.width) {
         self.attr('width', img.width);
@@ -54,7 +56,7 @@ Util.augment(CImage, {
       el.setAttribute('href', img.getAttribute('src'));
     } else if (img instanceof ImageData) {
       const canvas = document.createElement('canvas');
-      const ratio = window.devicePixelRatio;
+      const ratio = window.devicePixelRatio || 1;
       canvas.setAttribute('width', img.width);
       canvas.setAttribute('height', img.height);
       canvas.style.width = img.width * ratio;
