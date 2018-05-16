@@ -474,7 +474,7 @@ describe('Text \n', function() {
         x: 100,
         y: 130,
         fontSize: 20,
-        text: 'outline2',
+        text: 'out\nline',
         fill: '#fff',
         stroke: '#000',
         outline: true
