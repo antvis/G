@@ -450,6 +450,39 @@ describe('Text \n', function() {
     }
   });
 
+  it('text outline', () => {
+    const text = new G.Text({
+      attrs: {
+        x: 100,
+        y: 100,
+        fontSize: 20,
+        text: 'outline',
+        outline: {
+          fill: 'peachpuff',
+          stroke: 'crimson',
+          lineWidth: 2
+        }
+      }
+    });
+    canvas.add(text);
+    canvas.draw();
+  });
+
+  it('text outline with default attrs', () => {
+    const text = new G.Text({
+      attrs: {
+        x: 100,
+        y: 130,
+        fontSize: 20,
+        text: 'outline2',
+        fill: '#fff',
+        stroke: '#000',
+        outline: true
+      }
+    });
+    canvas.add(text);
+    canvas.draw();
+  });
 
   it('text /n', function() {
     expect(text.attr('x')).to.equal(50);

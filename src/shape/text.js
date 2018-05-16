@@ -198,31 +198,35 @@ Util.augment(CText, {
       return;
     }
     const textArr = attrs.textArr;
-    const fontSize = attrs.fontSize * 1;
-    const spaceingY = self.__getSpaceingY();
     const x = attrs.x;
     const y = attrs.y;
-    const textBaseline = attrs.textBaseline;
-    let height;
-    if (textArr) {
-      const box = self.getBBox();
-      height = box.maxY - box.minY;
-    }
-    let subY;
 
     context.beginPath();
+    if (attrs.outline) {
+      context.lineWidth = attrs.outline.lineWidth || attrs.lineWidth * 2;
+      context.strokeStyle = attrs.outline.stroke || attrs.outline.strokeStyle || attrs.stroke;
+      if (textArr) {
+        self.__drawTextArr(context, false);
+      } else {
+        context.strokeText(text, x, y);
+      }
+      context.lineJoin = 'miter';
+      context.miterLimit = 2;
+      context.fillStyle = attrs.outline.fill || attrs.outline.fillStyle || attrs.fill;
+      if (textArr) {
+        self.__drawTextArr(context, true);
+      } else {
+        context.fillText(text, x, y);
+      }
+      return;
+    }
     if (self.hasFill()) {
       const fillOpacity = attrs.fillOpacity;
       if (!Util.isNil(fillOpacity) && fillOpacity !== 1) {
         context.globalAlpha = fillOpacity;
       }
       if (textArr) {
-        Util.each(textArr, function(subText, index) {
-          subY = y + index * (spaceingY + fontSize) - height + fontSize; // bottom;
-          if (textBaseline === 'middle') subY += height - fontSize - (height - fontSize) / 2;
-          if (textBaseline === 'top') subY += height - fontSize;
-          context.fillText(subText, x, subY);
-        });
+        self.__drawTextArr(context, true);
       } else {
         context.fillText(text, x, y);
       }
@@ -230,16 +234,33 @@ Util.augment(CText, {
 
     if (self.hasStroke()) {
       if (textArr) {
-        Util.each(textArr, function(subText, index) {
-          subY = y + index * (spaceingY + fontSize) - height + fontSize; // bottom;
-          if (textBaseline === 'middle') subY += height - fontSize - (height - fontSize) / 2;
-          if (textBaseline === 'top') subY += height - fontSize;
-          context.strokeText(subText, x, subY);
-        });
+        self.__drawTextArr(context, false);
       } else {
         context.strokeText(text, x, y);
       }
     }
+  },
+  __drawTextArr(context, fill) {
+    const textArr = this.__attrs.textArr;
+    const textBaseline = this.__attrs.textBaseline;
+    const fontSize = this.__attrs.fontSize * 1;
+    const spaceingY = this.__getSpaceingY();
+    const x = this.__attrs.x;
+    const y = this.__attrs.y;
+    const box = this.getBBox();
+    const height  = box.maxY - box.minY;;
+    let subY;
+
+    Util.each(textArr, function(subText, index) {
+      subY = y + index * (spaceingY + fontSize) - height + fontSize; // bottom;
+      if (textBaseline === 'middle') subY += height - fontSize - (height - fontSize) / 2;
+      if (textBaseline === 'top') subY += height - fontSize;
+      if (fill) {
+        context.fillText(subText, x, subY);
+      } else {
+        context.strokeText(subText, x, y);
+      }
+    });
   },
   measureText() {
     const self = this;
