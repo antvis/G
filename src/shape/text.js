@@ -210,6 +210,7 @@ Util.augment(CText, {
       } else {
         context.strokeText(text, x, y);
       }
+      // 没有定义连接方式的话会有点毛边
       context.lineJoin = 'miter';
       context.miterLimit = 2;
       context.fillStyle = attrs.outline.fill || attrs.outline.fillStyle || attrs.fill;
@@ -258,7 +259,7 @@ Util.augment(CText, {
       if (fill) {
         context.fillText(subText, x, subY);
       } else {
-        context.strokeText(subText, x, y);
+        context.strokeText(subText, x, subY);
       }
     });
   },
