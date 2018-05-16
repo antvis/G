@@ -2,7 +2,18 @@ const Util = require('../util/index');
 const Element = require('./element');
 const Inside = require('../shape/util/inside');
 
-const SHAPES = [ 'circle', 'ellipse', 'fan', 'image', 'line', 'marker', 'path', 'polygon', 'rect', 'text' ];
+const SHAPES = {
+  rect: 'rect',
+  circle: 'circle',
+  line: 'line',
+  path: 'path',
+  marker: 'marker',
+  text: 'text',
+  polygon: 'polygon',
+  image: 'image',
+  ellipse: 'ellipse',
+  dom: 'foreignObject'
+};
 
 const Shape = function(cfg) {
   Shape.superclass.constructor.call(this, cfg);
@@ -17,8 +28,9 @@ Util.augment(Shape, {
   createPath() {},
   init(id) {
     Shape.superclass.init.call(this);
-    if (~SHAPES.indexOf(this.type)) {
-      const shape = document.createElementNS('http://www.w3.org/2000/svg', this.type);
+    const type = SHAPES[this.type];
+    if (type) {
+      const shape = document.createElementNS('http://www.w3.org/2000/svg', type);
       id = id || Util.uniqueId(this.type + '_');
       shape.setAttribute('id', id);
       this.setSilent('el', shape);

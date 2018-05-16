@@ -11,6 +11,7 @@ module.exports = {
   Image: require('./shape/image'),
   Polygon: require('./shape/polygon'),
   Marker: require('./shape/marker'),
+  Dom: require('./shape/dom'),
   PathUtil: require('./util/path'),
   PathSegment: require('./shape/util/path-segment'),
   MatrixUtil: require('./util/matrix'),
