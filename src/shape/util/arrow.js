@@ -66,11 +66,11 @@ function _addMarker(ctx, attrs, x1, y1, x2, y2, arrow) {
     if (x < 0) {
       deg = Math.PI / 2;
     } else {
-      deg = 270 * Math.PI / 180;
+      deg = (270 * Math.PI) / 180;
     }
-  } else  if (x >= 0 && y > 0) {
-    deg = - Math.atan(x / y);
-  } else if (x <= 0 &&  y < 0) {
+  } else if (x >= 0 && y > 0) {
+    deg = -Math.atan(x / y);
+  } else if (x <= 0 && y < 0) {
     deg = Math.PI - Math.atan(x / y);
   } else if (x > 0 && y < 0) {
     deg = Math.PI + Math.atan(-x / y);
