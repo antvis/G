@@ -109,12 +109,96 @@ describe('Line', function() {
 
   it('arrow', function() {
     line.attr({
-      startArrow: true,
-      endArrow: true,
-      arrowLength: 15
+      startArrow: {
+        shape: new G.Marker({
+          attrs: {
+            symbol: 'triangle'
+          }
+        })
+      },
+      endArrow: {
+        shape: new G.Marker({
+          attrs: {
+            symbol: 'triangle'
+          }
+        }),
+      },
     });
-    expect(line.attr('startArrow')).to.be.true;
-    expect(line.attr('arrowLength')).to.equal(15);
+    canvas.addShape('line', {
+      attrs: {
+        startArrow: {
+          shape: new G.Marker({
+            attrs: {
+              symbol: 'triangle'
+            }
+          })
+        },
+        endArrow: {
+          shape: new G.Marker({
+            attrs: {
+              symbol: 'triangle'
+            }
+          }),
+        },
+        arrowLength: 15,
+        x1: 80,
+        y1: 80,
+        x2: 150,
+        y2: 60,
+        stroke: 'l (0) 0.1:#0fedae 1:#6542da',
+        lineWidth: 8
+      }
+    });
+    canvas.addShape('line', {
+      attrs: {
+        startArrow: {
+          shape: new G.Marker({
+            attrs: {
+              symbol: 'circle'
+            }
+          })
+        },
+        endArrow: {
+          shape: new G.Marker({
+            attrs: {
+              symbol: 'square'
+            }
+          }),
+        },
+        arrowLength: 15,
+        x1: 180,
+        y1: 60,
+        x2: 180,
+        y2: 150,
+        stroke: '#000',
+        lineWidth: 2,
+      }
+    });
+    canvas.addShape('line', {
+      attrs: {
+        startArrow: {
+          shape: new G.Marker({
+            attrs: {
+              symbol: 'triangle'
+            }
+          })
+        },
+        endArrow: {
+          shape: new G.Marker({
+            attrs: {
+              symbol: 'diamond'
+            }
+          }),
+        },
+        arrowLength: 15,
+        x1: 30,
+        y1: 30,
+        x2: 180,
+        y2: 30,
+        stroke: '#000',
+        lineWidth: 2,
+      }
+    });
     canvas.draw();
   });
 
