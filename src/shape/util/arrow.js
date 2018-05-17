@@ -53,15 +53,15 @@ function _addMarker(ctx, attrs, x1, y1, x2, y2, arrow) {
   const shape = arrow.shape;
   const marker = shape.__attrs;
   let method = marker.symbol;
-  const markerX = marker.x || x1;
-  const markerY = marker.y || y1;
+  const markerX = marker.x || x2;
+  const markerY = marker.y || y2;
   const markerR = marker.r || attrs.lineWidth;
   if (!Util.isFunction(method)) {
     method = Marker.Symbols[method || 'triangle'];
   }
   let deg;
-  const x = x2 - x1;
-  const y = y2 - y1;
+  const x = x1 - x2;
+  const y = y1 - y2;
   if (y === 0) {
     if (x < 0) {
       deg = Math.PI / 2;

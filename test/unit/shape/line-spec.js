@@ -109,13 +109,7 @@ describe('Line', function() {
 
   it('arrow', function() {
     line.attr({
-      startArrow: {
-        shape: new G.Marker({
-          attrs: {
-            symbol: 'triangle'
-          }
-        })
-      },
+      startArrow: true,
       endArrow: {
         shape: new G.Marker({
           attrs: {
@@ -183,13 +177,7 @@ describe('Line', function() {
             }
           })
         },
-        endArrow: {
-          shape: new G.Marker({
-            attrs: {
-              symbol: 'diamond'
-            }
-          }),
-        },
+        endArrow: true,
         arrowLength: 15,
         x1: 30,
         y1: 30,
