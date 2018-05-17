@@ -53,10 +53,10 @@ Util.augment(Line, {
     context = context || self.get('context');
     context.beginPath();
 
-    Arrow.addStartArrow(context, attrs, x1, y1, x2, y2);
+    Arrow.addStartArrow(context, attrs, x2, y2, x1, y1);
     context.moveTo(x1, y1);
     context.lineTo(x2, y2);
-    Arrow.addEndArrow(context, attrs, x2, y2, x1, y1);
+    Arrow.addEndArrow(context, attrs, x1, y1, x2, y2);
   },
   getPoint(t) {
     const attrs = this.__attrs;
