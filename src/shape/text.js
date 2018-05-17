@@ -249,10 +249,10 @@ Util.augment(CText, {
     const x = this.__attrs.x;
     const y = this.__attrs.y;
     const box = this.getBBox();
-    const height  = box.maxY - box.minY;;
+    const height = box.maxY - box.minY;
     let subY;
 
-    Util.each(textArr, function(subText, index) {
+    Util.each(textArr, (subText, index) => {
       subY = y + index * (spaceingY + fontSize) - height + fontSize; // bottom;
       if (textBaseline === 'middle') subY += height - fontSize - (height - fontSize) / 2;
       if (textBaseline === 'top') subY += height - fontSize;
@@ -277,7 +277,7 @@ Util.augment(CText, {
     context.save();
     context.font = font;
     if (textArr) {
-      Util.each(textArr, function(subText) {
+      Util.each(textArr, subText => {
         measureWidth = context.measureText(subText).width;
         if (width < measureWidth) {
           width = measureWidth;
