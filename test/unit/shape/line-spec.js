@@ -115,8 +115,8 @@ describe('Line', function() {
           attrs: {
             symbol: 'triangle'
           }
-        }),
-      },
+        })
+      }
     });
     canvas.addShape('line', {
       attrs: {
@@ -132,7 +132,7 @@ describe('Line', function() {
             attrs: {
               symbol: 'triangle'
             }
-          }),
+          })
         },
         arrowLength: 15,
         x1: 80,
@@ -157,7 +157,7 @@ describe('Line', function() {
             attrs: {
               symbol: 'square'
             }
-          }),
+          })
         },
         arrowLength: 15,
         x1: 180,
@@ -165,7 +165,7 @@ describe('Line', function() {
         x2: 180,
         y2: 150,
         stroke: '#000',
-        lineWidth: 2,
+        lineWidth: 2
       }
     });
     canvas.addShape('line', {
@@ -184,7 +184,7 @@ describe('Line', function() {
         x2: 180,
         y2: 30,
         stroke: '#000',
-        lineWidth: 2,
+        lineWidth: 2
       }
     });
     canvas.draw();
