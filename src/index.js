@@ -1,22 +1,4 @@
 module.exports = {
-  Canvas: require('./canvas'),
-  Group: require('./core/group'),
-  Shape: require('./core/shape'),
-  Rect: require('./shape/rect'),
-  Circle: require('./shape/circle'),
-  Ellipse: require('./shape/ellipse'),
-  Path: require('./shape/path'),
-  Text: require('./shape/text'),
-  Line: require('./shape/line'),
-  Image: require('./shape/image'),
-  Polygon: require('./shape/polygon'),
-  Marker: require('./shape/marker'),
-  Dom: require('./shape/dom'),
-  PathUtil: require('./util/path'),
-  PathSegment: require('./shape/util/path-segment'),
-  MatrixUtil: require('./util/matrix'),
-  CommonUtil: require('./util/common'),
-  DomUtil: require('./util/dom'),
-  Event: require('./event'),
-  version: '____G_VERSION____'
+  svg: require('./svg/index'),
+  canvas: require('./canvas/index')
 };
