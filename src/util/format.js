@@ -2,8 +2,92 @@ const Util = require('../util/index');
 
 const regexTags = /[MLHVQTCSAZ]([^MLHVQTCSAZ]*)/ig;
 const regexDot = /[^\s\,]+/ig;
+const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
+const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexPR = /^p\s*\(\s*([axyn])\s*\)\s*(.*)/i;
+const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/ig;
 const numColorCache = {};
+
+function addStop(steps, gradient) {
+  const arr = steps.match(regexColorStop);
+  Util.each(arr, function(item) {
+    item = item.split(':');
+    gradient.addColorStop(item[0], item[1]);
+  });
+}
+
+function parseLineGradient(color, self) {
+  const arr = regexLG.exec(color);
+  const angle = Util.mod(Util.toRadian(parseFloat(arr[1])), Math.PI * 2);
+  const steps = arr[2];
+  const box = self.getBBox();
+  let start;
+  let end;
+
+  if (angle >= 0 && angle < 0.5 * Math.PI) {
+    start = {
+      x: box.minX,
+      y: box.minY
+    };
+    end = {
+      x: box.maxX,
+      y: box.maxY
+    };
+  } else if (0.5 * Math.PI <= angle && angle < Math.PI) {
+    start = {
+      x: box.maxX,
+      y: box.minY
+    };
+    end = {
+      x: box.minX,
+      y: box.maxY
+    };
+  } else if (Math.PI <= angle && angle < 1.5 * Math.PI) {
+    start = {
+      x: box.maxX,
+      y: box.maxY
+    };
+    end = {
+      x: box.minX,
+      y: box.minY
+    };
+  } else {
+    start = {
+      x: box.minX,
+      y: box.maxY
+    };
+    end = {
+      x: box.maxX,
+      y: box.minY
+    };
+  }
+
+  const tanTheta = Math.tan(angle);
+  const tanTheta2 = tanTheta * tanTheta;
+
+  const x = ((end.x - start.x) + tanTheta * (end.y - start.y)) / (tanTheta2 + 1) + start.x;
+  const y = tanTheta * ((end.x - start.x) + tanTheta * (end.y - start.y)) / (tanTheta2 + 1) + start.y;
+  const context = self.get('context');
+  const gradient = context.createLinearGradient(start.x, start.y, x, y);
+  addStop(steps, gradient);
+  return gradient;
+}
+
+function parseRadialGradient(color, self) {
+  const arr = regexRG.exec(color);
+  const fx = parseFloat(arr[1]);
+  const fy = parseFloat(arr[2]);
+  const fr = parseFloat(arr[3]);
+  const steps = arr[4];
+  const box = self.getBBox();
+  const context = self.get('context');
+  const width = box.maxX - box.minX;
+  const height = box.maxY - box.minY;
+  const r = Math.sqrt(width * width + height * height) / 2;
+  const gradient = context.createRadialGradient(box.minX + width * fx, box.minY + height * fy, fr * r, box.minX + width / 2, box.minY + height / 2, r);
+  addStop(steps, gradient);
+  return gradient;
+}
 
 function parsePattern(color, self) {
   if (self.get('patternSource') && self.get('patternSource') === color) {
@@ -69,14 +153,14 @@ module.exports = {
 
     if (Util.isString(path)) {
       path = path.match(regexTags);
-      Util.each(path, (item, index) => {
+      Util.each(path, function(item, index) {
         item = item.match(regexDot);
         if (item[0].length > 1) {
           const tag = item[0].charAt(0);
           item.splice(1, 0, item[0].substr(1));
           item[0] = tag;
         }
-        Util.each(item, (sub, i) => {
+        Util.each(item, function(sub, i) {
           if (!isNaN(sub)) {
             item[i] = +sub;
           }
@@ -84,6 +168,20 @@ module.exports = {
         path[index] = item;
       });
       return path;
+    }
+  },
+  parseStyle(color, self) {
+    if (Util.isString(color)) {
+      if (color[1] === '(' || color[2] === '(') {
+        if (color[0] === 'l') { // regexLG.test(color)
+          return parseLineGradient(color, self);
+        } else if (color[0] === 'r') { // regexRG.test(color)
+          return parseRadialGradient(color, self);
+        } else if (color[0] === 'p') { // regexPR.test(color)
+          return parsePattern(color, self);
+        }
+      }
+      return color;
     }
   },
   numberToColor(num) {
