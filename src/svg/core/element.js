@@ -108,6 +108,7 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
     return this;
   },
   remove(destroy) {
+    const el = this.get('el');
     if (destroy === undefined) {
       destroy = true;
     }
@@ -116,6 +117,7 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
       const parent = this.get('parent');
       const children = parent.get('children');
       Util.remove(children, this);
+      el.parentNode.removeChild(el);
     }
 
     if (destroy) {
