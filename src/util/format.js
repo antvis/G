@@ -18,7 +18,7 @@ function addStop(steps, gradient) {
 
 function parseLineGradient(color, self) {
   const arr = regexLG.exec(color);
-  const angle = Util.mod(Util.toRadian(parseFloat(arr[1])), Math.PI * 2);
+  const angle = Util.mathUtil.mod(Util.mathUtil.toRadian(parseFloat(arr[1])), Math.PI * 2);
   const steps = arr[2];
   const box = self.getBBox();
   let start;
@@ -79,6 +79,11 @@ function parseRadialGradient(color, self) {
   const fy = parseFloat(arr[2]);
   const fr = parseFloat(arr[3]);
   const steps = arr[4];
+  // 环半径为0时，默认无渐变，取渐变序列的最后一个颜色
+  if (fr === 0) {
+    const colors = steps.match(regexColorStop);
+    return colors[colors.length - 1].split(':')[1];
+  }
   const box = self.getBBox();
   const context = self.get('context');
   const width = box.maxX - box.minX;
