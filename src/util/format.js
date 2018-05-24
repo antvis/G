@@ -18,7 +18,7 @@ function addStop(steps, gradient) {
 
 function parseLineGradient(color, self) {
   const arr = regexLG.exec(color);
-  const angle = Util.mathUtil.mod(Util.mathUtil.toRadian(parseFloat(arr[1])), Math.PI * 2);
+  const angle = Util.mod(Util.toRadian(parseFloat(arr[1])), Math.PI * 2);
   const steps = arr[2];
   const box = self.getBBox();
   let start;
