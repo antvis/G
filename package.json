@@ -66,6 +66,7 @@
     "silent": false
   },
   "dependencies": {
+    "@antv/util": "~1.0.2",
     "d3-ease": "~1.0.3",
     "d3-interpolate": "~1.1.5",
     "d3-timer": "~1.0.6",
