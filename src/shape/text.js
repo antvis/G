@@ -202,24 +202,12 @@ Util.augment(CText, {
     const y = attrs.y;
 
     context.beginPath();
-    if (attrs.outline) {
-      context.lineWidth = attrs.outline.lineWidth || attrs.lineWidth * 2;
-      context.strokeStyle = attrs.outline.stroke || attrs.outline.strokeStyle || attrs.stroke;
+    if (self.hasStroke()) {
       if (textArr) {
         self.__drawTextArr(context, false);
       } else {
         context.strokeText(text, x, y);
       }
-      // 没有定义连接方式的话会有点毛边
-      context.lineJoin = 'miter';
-      context.miterLimit = 2;
-      context.fillStyle = attrs.outline.fill || attrs.outline.fillStyle || attrs.fill;
-      if (textArr) {
-        self.__drawTextArr(context, true);
-      } else {
-        context.fillText(text, x, y);
-      }
-      return;
     }
     if (self.hasFill()) {
       const fillOpacity = attrs.fillOpacity;
@@ -230,14 +218,6 @@ Util.augment(CText, {
         self.__drawTextArr(context, true);
       } else {
         context.fillText(text, x, y);
-      }
-    }
-
-    if (self.hasStroke()) {
-      if (textArr) {
-        self.__drawTextArr(context, false);
-      } else {
-        context.strokeText(text, x, y);
       }
     }
   },

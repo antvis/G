@@ -433,7 +433,7 @@ describe('Text \n', function() {
     attrs: {
       x: 50,
       y: 50,
-      text: '你好\nHello\nworkd',
+      text: '你好\nHello\nworld',
       fill: 'black',
       stroke: 'red',
       textBaseline: 'top'
@@ -457,37 +457,17 @@ describe('Text \n', function() {
         y: 100,
         fontSize: 20,
         text: 'outline',
-        outline: {
-          fill: 'peachpuff',
-          stroke: 'crimson',
-          lineWidth: 2
-        }
+        fill: 'peachpuff',
+        stroke: 'crimson'
       }
     });
     canvas.add(text);
     canvas.draw();
   });
-
-  it('text outline with default attrs', () => {
-    const text = new G.Text({
-      attrs: {
-        x: 100,
-        y: 130,
-        fontSize: 20,
-        text: 'out\nline',
-        fill: '#fff',
-        stroke: '#000',
-        outline: true
-      }
-    });
-    canvas.add(text);
-    canvas.draw();
-  });
-
   it('text /n', function() {
     expect(text.attr('x')).to.equal(50);
     expect(text.attr('y')).to.equal(50);
-    expect(text.attr('text')).to.equal('你好\nHello\nworkd');
+    expect(text.attr('text')).to.equal('你好\nHello\nworld');
     expect(text.attr('textAlign')).to.equal('start');
     expect(text.attr('fontSize')).to.equal(12);
     expect(text.attr('fill')).to.equal('black');
