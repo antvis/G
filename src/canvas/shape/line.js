@@ -58,7 +58,7 @@ Util.augment(Line, {
   afterPath(context) {
     const attrs = this.__attrs;
     const { x1, y1, x2, y2 } = attrs;
-    context = context || self.get('context');
+    context = context || this.get('context');
     if (attrs.startArrow) {
       Arrow.addStartArrow(context, attrs, x2, y2, x1, y1);
     }

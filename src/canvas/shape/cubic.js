@@ -96,7 +96,7 @@ Util.augment(Cubic, {
   afterPath(context) {
     const attrs = this.__attrs;
     const { p1, p2, p3, p4 } = attrs;
-    context = context || self.get('context');
+    context = context || this.get('context');
     if (attrs.startArrow) {
       Arrow.addStartArrow(context, attrs, p2[0], p2[1], p1[0], p1[1]);
     }
