@@ -22,6 +22,7 @@ describe('Marker', function() {
         symbol: 'circle'
       }
     });
+    canvas.draw();
     expect(marker.attr('x')).to.equal(10);
     expect(marker.attr('y')).to.equal(10);
   });
@@ -33,9 +34,10 @@ describe('Marker', function() {
         y: 20,
         radius: 10,
         fill: 'blue',
-        symbol: 'circle'
+        symbol: 'diamond'
       }
     });
+    canvas.draw();
     expect(marker.isHit(20, 20)).to.be.true;
     expect(marker.isHit(10, 10)).to.be.false;
   });
@@ -51,6 +53,7 @@ describe('Marker', function() {
         symbol: 'circle'
       }
     });
+    canvas.draw();
     expect(marker.isHit(100, 100)).to.be.true;
     expect(marker.isHit(95, 95)).to.be.true;
     marker.attr('lineAppendWidth', 6);

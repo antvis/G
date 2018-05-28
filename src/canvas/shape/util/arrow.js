@@ -79,12 +79,12 @@ function _addMarker(ctx, attrs, x1, y1, x2, y2, arrow) {
     deg = Math.atan(x / -y);
   }
   ctx.save();
-  ctx.beginPath();
   ctx.translate(markerX, markerY);
   ctx.rotate(deg);
   ctx.translate(-markerX, -markerY);
   ctx.translate(-arrow.dx || 0, -arrow.dy || 0);
-  method(markerX, markerY, markerR, ctx, shape);
+  shape.attr({ x: markerX, y: markerY, r: markerR });
+  shape.createPath(ctx);
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = shape.attr('fill') || ctx.strokeStyle;
   ctx.fill();
