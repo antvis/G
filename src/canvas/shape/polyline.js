@@ -128,13 +128,26 @@ Util.augment(Polyline, {
     context = context || self.get('context');
     context.beginPath();
 
-    Arrow.addStartArrow(context, attrs, points[1][0], points[1][1], points[0][0], points[0][1]);
     context.moveTo(points[0][0], points[0][1]);
     for (i = 1, l = points.length - 1; i < l; i++) {
       context.lineTo(points[i][0], points[i][1]);
     }
     context.lineTo(points[l][0], points[l][1]);
-    Arrow.addEndArrow(context, attrs, points[l - 1][0], points[l - 1][1], points[l][0], points[l][1]);
+
+  },
+  afterPath(context) {
+    const self = this;
+    const attrs = self.__attrs;
+    const points = attrs.points;
+    const l = points.length - 1;
+    context = context || self.get('context');
+
+    if (attrs.startArrow) {
+      Arrow.addStartArrow(context, attrs, points[1][0], points[1][1], points[0][0], points[0][1]);
+    }
+    if (attrs.endArrow) {
+      Arrow.addEndArrow(context, attrs, points[l - 1][0], points[l - 1][1], points[l][0], points[l][1]);
+    }
   },
   getPoint(t) {
     const attrs = this.__attrs;

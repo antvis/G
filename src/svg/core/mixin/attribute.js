@@ -159,10 +159,13 @@ module.exports = {
   _setAttr(name, value) {
     const self = this;
     const el = self.get('el');
-    self.__attrs[name] = value;
+
     if (name === 'clip') {
       self.__setAttrClip(name, value);
-    } else if (name === 'transform' || name === 'rotate') {
+      return;
+    }
+    self.__attrs[name] = value;
+    if (name === 'transform' || name === 'rotate') {
       self.__setAttrTrans(name, value);
     } else if (name.startsWith('shadow')) {
       self.__setAttrShadow(name, value);
@@ -294,7 +297,6 @@ module.exports = {
       this.__setAttrDependency(name, value);
       return this;
     }
-
     const id = defs.addClip(value);
     this.get('el').setAttribute('clip-path', `url(#${id})`);
   },

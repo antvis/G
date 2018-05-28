@@ -13,6 +13,7 @@ Util.extend(Shape, Element);
 Util.augment(Shape, {
   isShape: true,
   createPath() {},
+  afterPath() {},
   drawInner(context) {
     const self = this;
     const attrs = self.__attrs;
@@ -38,6 +39,7 @@ Util.augment(Shape, {
         context.stroke();
       }
     }
+    self.afterPath(context);
   },
   /**
    * 节点是否在图形中
