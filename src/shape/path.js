@@ -229,35 +229,41 @@ Util.augment(Path, {
   },
   createPath(context) {
     const self = this;
-    const attrs = self.__attrs;
     const segments = self.get('segments');
-
     if (!Util.isArray(segments)) return;
 
     context = context || self.get('context');
 
     context.beginPath();
-
-    const path = attrs.path;
-    let startPoint;
-    let endPoint;
-    let closed = false;
-    if (path[path.length - 1] === 'z' || path[path.length - 1] === 'Z' || attrs.fill) { // 闭合路径不绘制箭头
-      closed = true;
-    }
-
     const segmentsLen = segments.length;
-    if (segmentsLen > 1 && !closed) {
+
+    for (let i = 0; i < segmentsLen; i++) {
+      segments[i].draw(context);
+    }
+  },
+  afterPath(context) {
+    const self = this;
+    const attrs = self.__attrs;
+    const segments = self.get('segments');
+    const path = attrs.path;
+    let startPoint,
+      endPoint;
+    context = context || self.get('context');
+    if (!Util.isArray(segments)) return;
+    if (!attrs.startArrow && !attrs.endArrow) {
+      return;
+    }
+    if (path[path.length - 1] === 'z' || path[path.length - 1] === 'Z' || attrs.fill) { // 闭合路径不绘制箭头
+      return;
+    }
+    const segmentsLen = segments.length;
+    if (segmentsLen > 1) {
       startPoint = segments[0].endPoint;
       endPoint = segments[1].endPoint;
       Arrow.addStartArrow(context, attrs, endPoint.x, endPoint.y, startPoint.x, startPoint.y);
-    }
 
-    for (let i = 0, l = segmentsLen; i < l; i++) {
-      segments[i].draw(context);
     }
-
-    if (segmentsLen > 1 && !closed) {
+    if (segmentsLen > 1) {
       startPoint = segments[ segmentsLen - 2 ].endPoint;
       endPoint = segments[ segmentsLen - 1 ].endPoint;
       Arrow.addEndArrow(context, attrs, startPoint.x, startPoint.y, endPoint.x, endPoint.y);
