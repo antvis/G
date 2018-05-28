@@ -90,11 +90,23 @@ Util.augment(Quadratic, {
     }
     context = context || self.get('context');
     context.beginPath();
-
-    Arrow.addStartArrow(context, attrs, p2[0], p2[1], p1[0], p1[1]);
     context.moveTo(p1[0], p1[1]);
     context.quadraticCurveTo(p2[0], p2[1], p3[0], p3[1]);
-    Arrow.addEndArrow(context, attrs, p2[0], p2[1], p3[0], p3[1]);
+
+  },
+  afterPath(context) {
+    const self = this;
+    const attrs = self.__attrs;
+    const { p1, p2, p3 } = attrs;
+    context = context || self.get('context');
+
+    if (attrs.startArrow) {
+      Arrow.addStartArrow(context, attrs, p2[0], p2[1], p1[0], p1[1]);
+    }
+
+    if (attrs.endArrow) {
+      Arrow.addEndArrow(context, attrs, p2[0], p2[1], p3[0], p3[1]);
+    }
   },
   getPoint(t) {
     const attrs = this.__attrs;

@@ -117,11 +117,17 @@ describe('Path', function() {
               'l 50,-25' +
               'a25,100 -30 0,1 50,-25' +
               'l 50,-25' +
-              'l 0, 200,' +
-              'z',
+              'l 0, 200',
         lineWidth: 10,
         lineJoin: 'round',
-        stroke: 'red'
+        stroke: 'red',
+        endArrow: {
+          shape: new G.Marker({
+            attrs: {
+              symbol: 'diamond'
+            }
+          })
+        }
       }
     });
 
