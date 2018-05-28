@@ -75,7 +75,6 @@ describe('path util test', function() {
     });
     drawPoints(rst, canvas);
     canvas.draw();
-    console.log(rst);
   });
 
   it('path Insert', function() {
