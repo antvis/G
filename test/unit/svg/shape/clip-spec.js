@@ -98,11 +98,11 @@ describe('clip', () => {
     });
 
     shape.attr('clip', path);
-    shape.rotate(Math.PI / 6);
     canvas.draw();
   });
 
   const group = new G.Group();
+  group.add(shape);
   canvas.add(group);
 
   it('group rect', () => {
