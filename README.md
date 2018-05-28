@@ -293,7 +293,20 @@ canvas.addShape('rect', {
 
 * 通用的图形属性见：[绘图属性](https://antv.alipay.com/zh-cn/g2/3.x/api/graphic.html)
 * path：路径，支持 字符串或者数组两种方式，详情参考 [svg path](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths)
-* arrow 是否显示箭头 ture / false
+* arrow 箭头设置
+    * true / false: 显示 / 取消默认箭头
+    * 支持定义Marker形状的箭头，箭头中心位于线段的端点
+    ```js
+    canvas.addShape('path', {
+    startArrow: {
+      shape: new Marker({
+      attrs: { ... } 
+      }),
+      dx: 0,   // 箭头当前方向上x偏移量
+      dy: 0    // 箭头当前方向上y偏移量
+    }
+    });
+    ```
 
   ```js
     const path = group.addShape('path', {
@@ -335,7 +348,20 @@ canvas.addShape('rect', {
 * y1 起始点的 y 坐标
 * x2 结束点的 x 坐标
 * y2 结束点的 y 坐标
-* arrow 是否显示箭头 ture / false
+* arrow 箭头设置
+    * true / false: 显示 / 取消默认箭头
+    * 支持定义Marker形状的箭头，箭头中心位于线段的端点
+    ```js
+    canvas.addShape('line', {
+    startArrow: {
+      shape: new Marker({
+      attrs: { ... } 
+      }),
+      dx: 0,   // 箭头当前方向上x偏移量
+      dy: 0    // 箭头当前方向上y偏移量
+    }
+    });
+    ```
 
 ```js
   canvas.addShape('line', {
