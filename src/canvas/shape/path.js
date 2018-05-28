@@ -230,14 +230,14 @@ Util.augment(Path, {
   createPath(context) {
     const self = this;
     const segments = self.get('segments');
-
     if (!Util.isArray(segments)) return;
 
     context = context || self.get('context');
 
     context.beginPath();
     const segmentsLen = segments.length;
-    for (let i = 0, l = segmentsLen; i < l; i++) {
+
+    for (let i = 0; i < segmentsLen; i++) {
       segments[i].draw(context);
     }
   },

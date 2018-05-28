@@ -92,7 +92,6 @@ describe('Cubic line', function() {
   });
 
   it('p4', function() {
-    console.log(cubic.getBBox());
     cubic.attr('p4', [ 150, 90 ]);
     expect(cubic.attr('p4')[0]).to.equal(150);
     expect(cubic.attr('p4')[1]).to.equal(90);
