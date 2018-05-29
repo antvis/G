@@ -63,10 +63,7 @@ const Arrow = function(name, cfg, stroke) {
 Util.augment(Arrow, {
   type: 'arrow',
   match(type, attr) {
-    if (type !== this.type) {
-      return false;
-    }
-    if (!this.__cfg[name]) {
+    if (!this.__cfg[type]) {
       return false;
     }
     if (attr.stroke !== '#000') {
