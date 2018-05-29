@@ -4,8 +4,8 @@
 const Util = require('../../util/index');
 
 const DEFAULT_PATH = {
-  'marker-start': 'M0 2 L6.445174776667712 0 L 6.445174776667712 4z',
-  'marker-end': 'M 0 0 L 6.445174776667712 2 L 0 4 z'
+  'marker-start': 'M6,0 L0,3 L6,6 L3,3Z',
+  'marker-end': 'M0,0 L6,3 L0,6 L3,3Z'
 };
 
 function setDefaultPath(parent, name, stroke) {
@@ -14,10 +14,10 @@ function setDefaultPath(parent, name, stroke) {
   el.setAttribute('stroke', 'none');
   el.setAttribute('fill', stroke || '#000');
   parent.appendChild(el);
-  parent.setAttribute('refX', 3.22);
-  parent.setAttribute('refY', 2);
-  parent.setAttribute('markerWidth', 20);
-  parent.setAttribute('markerHeight', 20);
+  parent.setAttribute('refX', 3);
+  parent.setAttribute('refY', 3);
+  parent.setAttribute('markerWidth', 16);
+  parent.setAttribute('markerHeight', 16);
   parent.setAttribute('orient', 'auto');
   return el;
 }
