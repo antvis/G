@@ -22,8 +22,7 @@ function setDefaultPath(parent, name, stroke) {
   return el;
 }
 
-function setMarker(cfg, parent, name, stroke) {
-  const shape = cfg.shape;
+function setMarker(shape, parent, name, stroke) {
   if (!shape) {
     return setDefaultPath(parent, name);
   }
