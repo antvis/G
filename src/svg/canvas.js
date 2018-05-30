@@ -248,21 +248,17 @@ Util.augment(Canvas, {
   getPointByClient(clientX, clientY) {
     const el = this.get('el');
     const bbox = el.getBoundingClientRect();
-    const width = bbox.right - bbox.left;
-    const height = bbox.bottom - bbox.top;
     return {
-      x: (clientX - bbox.left) * (el.width / width),
-      y: (clientY - bbox.top) * (el.height / height)
+      x: clientX - bbox.left,
+      y: clientY - bbox.top
     };
   },
   getClientByPoint(x, y) {
     const el = this.get('el');
     const bbox = el.getBoundingClientRect();
-    const width = bbox.right - bbox.left;
-    const height = bbox.bottom - bbox.top;
     return {
-      clientX: (x / (el.width / width)) + bbox.left,
-      clientY: (y / (el.height / height)) + bbox.top
+      clientX: x + bbox.left,
+      clientY: y + bbox.top
     };
   },
   beforeDraw() {
