@@ -101,10 +101,18 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
   drawInner() {},
   show() {
     this.set('visible', true);
+    const el = this.get('el');
+    if (el) {
+      el.setAttribute('visibility', 'visible');
+    }
     return this;
   },
   hide() {
     this.set('visible', false);
+    const el = this.get('el');
+    if (el) {
+      el.setAttribute('visibility', 'hidden');
+    }
     return this;
   },
   remove(destroy) {
