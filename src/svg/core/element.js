@@ -1,6 +1,6 @@
 const Util = require('../../util/index');
 const Attribute = require('./mixin/attribute');
-const Transform = require('../../util/mixin/transform');
+const Transform = require('./mixin/transform');
 const Animate = require('../../util/mixin/animate');
 const EventEmitter = require('wolfy87-eventemitter');
 
