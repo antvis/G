@@ -1,6 +1,3 @@
-const Marker = require('../marker');
-const Util = require('../../../util/index');
-
 const PI = Math.PI;
 const sin = Math.sin;
 const cos = Math.cos;
@@ -51,15 +48,10 @@ function _addArrow(ctx, attrs, x1, y1, x2, y2) {
 }
 
 function _addMarker(ctx, attrs, x1, y1, x2, y2, arrow) {
-  const shape = arrow.shape;
-  const marker = shape.__attrs;
-  let method = marker.symbol;
+  const marker = arrow.__attrs;
   const markerX = marker.x || x2;
   const markerY = marker.y || y2;
   const markerR = marker.r || attrs.lineWidth;
-  if (!Util.isFunction(method)) {
-    method = Marker.Symbols[method || 'triangle'];
-  }
   let deg = 0;
   const x = x1 - x2;
   const y = y1 - y2;
@@ -82,11 +74,10 @@ function _addMarker(ctx, attrs, x1, y1, x2, y2, arrow) {
   ctx.translate(markerX, markerY);
   ctx.rotate(deg);
   ctx.translate(-markerX, -markerY);
-  ctx.translate(-arrow.dx || 0, -arrow.dy || 0);
-  shape.attr({ x: markerX, y: markerY, r: markerR });
-  shape.createPath(ctx);
+  arrow.attr({ x: markerX, y: markerY, r: markerR });
+  arrow.createPath(ctx);
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.fillStyle = shape.attr('fill') || ctx.strokeStyle;
+  ctx.fillStyle = arrow.attr('fill') || ctx.strokeStyle;
   ctx.fill();
   ctx.restore();
 }
