@@ -165,12 +165,21 @@ module.exports = {
       return;
     }
     self.__attrs[name] = value;
+    if (self.get('destroyed')) {
+      return;
+    }
     if (name === 'transform' || name === 'rotate') {
       self.__setAttrTrans(name, value);
     } else if (name.startsWith('shadow')) {
       self.__setAttrShadow(name, value);
-    } else if (~[ 'stroke', 'strokeStyle', 'fill', 'fillStyle' ].indexOf(name) && /^[r,R,L,l]{1}[\s]+\(/.test(value.trim())) {
-      self.__setAttrGradients(name, value.trim());
+    } else if (~[ 'stroke', 'strokeStyle', 'fill', 'fillStyle' ].indexOf(name) && el) {
+      if (!value) {
+        el.setAttribute(SVG_ATTR_MAP[name], 'none');
+      } else if (/^[r,R,L,l]{1}[\s]+\(/.test(value.trim())) {
+        self.__setAttrGradients(name, value.trim());
+      } else {
+        el.setAttribute(SVG_ATTR_MAP[name], value);
+      }
     } else if (~name.toLowerCase().indexOf('arrow')) {
       self.__setAttrArrow(name, value);
     } else {
