@@ -1,6 +1,3 @@
-/**
- * Created by Elaine on 2018/5/7.
- */
 const expect = require('chai').expect;
 const G = require('../../../../src/index').svg;
 const Canvas = G.Canvas;
@@ -8,7 +5,6 @@ const Canvas = G.Canvas;
 const div = document.createElement('div');
 div.id = 'canvas-polygon';
 document.body.appendChild(div);
-
 
 describe('Polygon', () => {
 

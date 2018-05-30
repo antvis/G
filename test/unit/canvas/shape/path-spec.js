@@ -121,19 +121,17 @@ describe('Path', function() {
         lineWidth: 10,
         lineJoin: 'round',
         stroke: 'l (0) 0.1:#0fedae 1:#6542da',
-        endArrow: {
-          dy: 15,
-          shape: new G.Marker({
-            attrs: {
-              fill: '#ccc',
-              symbol: 'diamond'
-            }
-          })
-        }
+        endArrow: new G.Marker({
+          attrs: {
+            fill: '#ccc',
+            symbol: 'diamond'
+          }
+        })
       }
     });
 
     canvas.add(path);
+    path.scale(1.5);
     canvas.draw();
   });
 

@@ -102,7 +102,7 @@ describe('Quadratic line', function() {
 
   it('arrow', function() {
     quadratic.attr('startArrow', true);
-    quadratic.attr('endArrow', { shape: new G.Marker({ symbol: 'triangle' }), dx: 0, dy: 2 });
+    quadratic.attr('endArrow', new G.Marker({ symbol: 'triangle' }));
     // quadratic.attr('arrowLength', 15);
     quadratic.attr('arrowAngle', 45);
     expect(quadratic.attr('startArrow')).to.be.true;
