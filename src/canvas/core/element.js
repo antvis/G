@@ -155,7 +155,6 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
         if (SHAPE_ATTRS.indexOf(k) > -1) { // 非canvas属性不附加
           let v = elAttrs[k];
           if (k === 'fillStyle') {
-            23;
             v = Format.parseStyle(v, this);
           }
           if (k === 'strokeStyle') {

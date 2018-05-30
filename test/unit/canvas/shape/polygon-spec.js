@@ -1,10 +1,10 @@
 const expect = require('chai').expect;
 const G = require('../../../../src/index').canvas;
 const Canvas = G.Canvas;
+
 const div = document.createElement('div');
 div.id = 'canvas-polygon';
 document.body.appendChild(div);
-
 
 describe('Polygon', function() {
 
