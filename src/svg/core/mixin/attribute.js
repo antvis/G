@@ -175,7 +175,7 @@ module.exports = {
     } else if (~[ 'stroke', 'strokeStyle', 'fill', 'fillStyle' ].indexOf(name) && el) {
       if (!value) {
         el.setAttribute(SVG_ATTR_MAP[name], 'none');
-      } else if (/^[r,R,L,l]{1}[\s]+\(/.test(value.trim())) {
+      } else if (/^[r,R,L,l]{1}[\s]*\(/.test(value.trim())) {
         self.__setAttrGradients(name, value.trim());
       } else {
         el.setAttribute(SVG_ATTR_MAP[name], value);
