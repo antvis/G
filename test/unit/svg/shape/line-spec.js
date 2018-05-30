@@ -127,16 +127,14 @@ describe('Line', () => {
         y1: 100,
         x2: 200,
         y2: 300,
-        startArrow: {
-          shape: new G.Marker({
-            attrs: {
-              x: 20,
-              y: 20,
-              radius: 10,
-              symbol: 'circle'
-            }
-          })
-        }
+        startArrow: new G.Marker({
+          attrs: {
+            x: 20,
+            y: 20,
+            radius: 10,
+            symbol: 'circle'
+          }
+        })
       }
     });
     canvas.add(line);

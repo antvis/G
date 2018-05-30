@@ -117,7 +117,7 @@ describe('Cubic line', function() {
 
   it('arrow', function() {
     cubic.attr('startArrow', true);
-    cubic.attr('endArrow', { shape: new G.Marker({ symbol: 'triangle' }) });
+    cubic.attr('endArrow', new G.Marker({ symbol: 'triangle' }));
     cubic.attr('arrowLength', 5);
     cubic.attr('lineWidth', 1);
     cubic.attr('arrowAngle', 90);

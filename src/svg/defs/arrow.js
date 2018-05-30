@@ -65,10 +65,13 @@ Util.augment(Arrow, {
     if (!this.__cfg[type]) {
       return false;
     }
+    if (typeof attr.value === 'object') {
+      return false;
+    }
     if (attr.stroke !== '#000') {
       return false;
     }
-    if (typeof attr === 'boolean' && !this.__cfg.default) {
+    if (typeof attr.value === 'boolean' && !this.__cfg.default) {
       return false;
     }
     return true;
@@ -79,6 +82,7 @@ Util.augment(Arrow, {
   },
   update(fill) {
     const child = this.__cfg.child;
+    this.__cfg.default = false;
     if (child.attr) {
       child.attr('fill', fill);
     } else {

@@ -298,13 +298,11 @@ canvas.addShape('rect', {
     * 支持定义Marker形状的箭头，箭头中心位于线段的端点
     ```js
     canvas.addShape('path', {
-    startArrow: {
-      shape: new Marker({
-      attrs: { ... } 
-      }),
-      dx: 0,   // 箭头当前方向上x偏移量
-      dy: 0    // 箭头当前方向上y偏移量
-    }
+      attrs: {
+        startArrow: new Marker({
+           attrs: { ... }  
+        })
+      }
     });
     ```
 
@@ -353,14 +351,12 @@ canvas.addShape('rect', {
     * 支持定义Marker形状的箭头，箭头中心位于线段的端点
     ```js
     canvas.addShape('line', {
-    startArrow: {
-      shape: new Marker({
-      attrs: { ... } 
-      }),
-      dx: 0,   // 箭头当前方向上x偏移量
-      dy: 0    // 箭头当前方向上y偏移量
-    }
-    });
+          attrs: {
+            startArrow: new Marker({
+               attrs: { ... }  
+            })
+          }
+        });
     ```
 
 ```js
