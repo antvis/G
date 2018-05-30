@@ -49,7 +49,12 @@ Canvas.CFG = {
    * 当前Canvas的DOM
    * @type {Object}
    */
-  canvasDOM: null
+  canvasDOM: null,
+  /**
+   * 屏幕像素比
+   * @type {Number}
+   */
+  pixelRatio: 1
 };
 
 Util.extend(Canvas, Group);
@@ -211,6 +216,7 @@ Util.augment(Canvas, {
   },
   _setInitSize() {
     this.changeSize(this.get('width'), this.get('height'));
+    this.set('pixelRatio', 1);
   },
   _reSize() {
     const canvasDOM = this.get('canvasDOM');

@@ -298,16 +298,9 @@ Util.augment(Group, {
     });
     return rst;
   },
-  /**
-   * 根据x，y轴坐标获取对应的图形
-   * @param  {Number} x x坐标
-   * @param  {Number} y y坐标
-   * @return {Object}  最上面的图形
-   */
-  getShape(x, y) {
-    const self = this;
-    const children = self.__cfg.children;
-    return find(children, x, y);
+  // svg不进行拾取，仅保留接口
+  getShape() {
+    return null;
   },
   /**
    * 根据点击事件的element获取对应的图形对象
