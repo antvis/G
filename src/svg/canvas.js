@@ -93,12 +93,9 @@ Util.augment(Canvas, {
   },
   _triggerEvent(type, e) {
     const point = this.getPointByClient(e.clientX, e.clientY);
-    const shape = this.findShape(e.target);
+    const shape = this.findShape(e.srcElement);
     let emitObj;
     if (type === 'mousemove') {
-      const canvasmousemove = this._getEventObj('mousemove', e, point, this);
-      this.emit('mousemove', canvasmousemove);
-
       const preShape = this.get('preShape');
       if (preShape && preShape !== shape) {
         const mouseleave = this._getEventObj('mouseleave', e, point, preShape);
@@ -115,8 +112,10 @@ Util.augment(Canvas, {
           const mouseenter = this._getEventObj('mouseenter', e, point, shape);
           emitObj && emitObj.emit('mouseenter', mouseenter, e);
         }
+      } else {
+        const canvasmousemove = this._getEventObj('mousemove', e, point, this);
+        this.emit('mousemove', canvasmousemove);
       }
-
       this.set('preShape', shape);
     } else {
       const event = this._getEventObj(type, e, point, shape || this);
