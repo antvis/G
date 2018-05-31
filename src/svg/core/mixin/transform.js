@@ -111,6 +111,7 @@ module.exports = {
   },
   setMatrix(m) {
     this.attr('matrix', m);
+    this.__performTransform();
     this.clearTotalMatrix();
     return this;
   },
