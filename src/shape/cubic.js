@@ -89,13 +89,20 @@ Util.augment(Cubic, {
     ) {
       return;
     }
-
     context.beginPath();
-
-    Arrow.addStartArrow(context, attrs, p2[0], p2[1], p1[0], p1[1]);
     context.moveTo(p1[0], p1[1]);
     context.bezierCurveTo(p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]);
-    Arrow.addEndArrow(context, attrs, p3[0], p3[1], p4[0], p4[1]);
+  },
+  afterPath(context) {
+    const attrs = this.__attrs;
+    const { p1, p2, p3, p4 } = attrs;
+    context = context || this.get('context');
+    if (attrs.startArrow) {
+      Arrow.addStartArrow(context, attrs, p2[0], p2[1], p1[0], p1[1]);
+    }
+    if (attrs.endArrow) {
+      Arrow.addEndArrow(context, attrs, p3[0], p3[1], p4[0], p4[1]);
+    }
   },
   getPoint(t) {
     const attrs = this.__attrs;

@@ -71,37 +71,38 @@ Util.augment(Arc, {
   createPath(context) {
     const attrs = this.__attrs;
     const { x, y, r, startAngle, endAngle, clockwise } = attrs;
+    context = context || self.get('context');
+
+    context.beginPath();
+    context.arc(x, y, r, startAngle, endAngle, clockwise);
+  },
+  afterPath(context) {
+    const attrs = this.__attrs;
+    const { x, y, r, startAngle, endAngle, clockwise } = attrs;
+    context = context || this.get('context');
     let diff;
     let x1;
     let y1;
     let x2;
     let y2;
 
-    context = context || self.get('context');
-    context.beginPath();
-
     if (attrs.startArrow) {
       diff = Math.PI / 180;
       if (clockwise) {
         diff *= -1;
       }
-
-      // Calculate coordinates for start arrow
       x1 = _getArcX(x, r, startAngle + diff);
       y1 = _getArcY(y, r, startAngle + diff);
       x2 = _getArcX(x, r, startAngle);
       y2 = _getArcY(y, r, startAngle);
       Arrow.addStartArrow(context, attrs, x1, y1, x2, y2);
     }
-    context.arc(x, y, r, startAngle, endAngle, clockwise);
 
     if (attrs.endArrow) {
       diff = Math.PI / 180;
       if (clockwise) {
         diff *= -1;
       }
-
-      // Calculate coordinates for start arrow
       x1 = _getArcX(x, r, endAngle + diff);
       y1 = _getArcY(y, r, endAngle + diff);
       x2 = _getArcX(x, r, endAngle);

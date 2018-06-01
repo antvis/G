@@ -229,38 +229,56 @@ Util.augment(Path, {
   },
   createPath(context) {
     const self = this;
-    const attrs = self.__attrs;
     const segments = self.get('segments');
-
     if (!Util.isArray(segments)) return;
 
     context = context || self.get('context');
 
     context.beginPath();
-
-    const path = attrs.path;
-    let startPoint;
-    let endPoint;
-    let closed = false;
-    if (path[path.length - 1] === 'z' || path[path.length - 1] === 'Z' || attrs.fill) { // 闭合路径不绘制箭头
-      closed = true;
-    }
-
     const segmentsLen = segments.length;
-    if (segmentsLen > 1 && !closed) {
-      startPoint = segments[0].endPoint;
-      endPoint = segments[1].endPoint;
-      Arrow.addStartArrow(context, attrs, endPoint.x, endPoint.y, startPoint.x, startPoint.y);
-    }
 
-    for (let i = 0, l = segmentsLen; i < l; i++) {
+    for (let i = 0; i < segmentsLen; i++) {
       segments[i].draw(context);
     }
-
-    if (segmentsLen > 1 && !closed) {
+  },
+  afterPath(context) {
+    const self = this;
+    const attrs = self.__attrs;
+    const segments = self.get('segments');
+    const path = attrs.path;
+    let startPoint,
+      endPoint,
+      tangent;
+    context = context || self.get('context');
+    if (!Util.isArray(segments)) return;
+    if (!attrs.startArrow && !attrs.endArrow) {
+      return;
+    }
+    if (path[path.length - 1] === 'z' || path[path.length - 1] === 'Z' || attrs.fill) { // 闭合路径不绘制箭头
+      return;
+    }
+    const segmentsLen = segments.length;
+    if (segmentsLen > 1) {
+      startPoint = segments[0].endPoint;
+      endPoint = segments[1].endPoint;
+      tangent = segments[1].startTangent;
+      if (Util.isFunction(tangent)) {
+        const v = tangent();
+        Arrow.addStartArrow(context, attrs, startPoint.x - v[0], startPoint.y - v[1], startPoint.x, startPoint.y);
+      } else {
+        Arrow.addStartArrow(context, attrs, endPoint.x, endPoint.y, startPoint.x, startPoint.y);
+      }
+    }
+    if (segmentsLen > 1) {
       startPoint = segments[ segmentsLen - 2 ].endPoint;
       endPoint = segments[ segmentsLen - 1 ].endPoint;
-      Arrow.addEndArrow(context, attrs, startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+      tangent = segments[segmentsLen - 1].endTangent;
+      if (Util.isFunction(tangent)) {
+        const v = tangent();
+        Arrow.addEndArrow(context, attrs, endPoint.x - v[0], endPoint.y - v[1], endPoint.x, endPoint.y, tangent());
+      } else {
+        Arrow.addEndArrow(context, attrs, startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+      }
     }
   }
 });

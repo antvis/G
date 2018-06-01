@@ -118,12 +118,18 @@ describe('Cubic line', function() {
 
   it('arrow', function() {
     cubic.attr('startArrow', true);
-    cubic.attr('endArrow', true);
+    cubic.attr('endArrow', new G.Marker({
+      attrs: {
+        symbol: 'triangle',
+        r: 5,
+        fill: 'red'
+      }
+    }));
     cubic.attr('arrowLength', 5);
     cubic.attr('lineWidth', 1);
     cubic.attr('arrowAngle', 90);
     expect(cubic.attr('startArrow')).to.be.true;
-    expect(cubic.attr('endArrow')).to.be.true;
+    expect(cubic.attr('endArrow')).not.to.be.undefined;
     expect(cubic.attr('arrowLength')).to.equal(5);
     expect(cubic.attr('arrowAngle')).to.equal(90);
     canvas.draw();
