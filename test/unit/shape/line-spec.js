@@ -110,30 +110,24 @@ describe('Line', function() {
   it('arrow', function() {
     line.attr({
       startArrow: true,
-      endArrow: {
-        shape: new G.Marker({
-          attrs: {
-            symbol: 'triangle'
-          }
-        })
-      }
+      endArrow: new G.Marker({
+        attrs: {
+          symbol: 'triangle'
+        }
+      })
     });
     canvas.addShape('line', {
       attrs: {
-        startArrow: {
-          shape: new G.Marker({
-            attrs: {
-              symbol: 'triangle'
-            }
-          })
-        },
-        endArrow: {
-          shape: new G.Marker({
-            attrs: {
-              symbol: 'triangle'
-            }
-          })
-        },
+        startArrow: new G.Marker({
+          attrs: {
+            symbol: 'triangle'
+          }
+        }),
+        endArrow: new G.Marker({
+          attrs: {
+            symbol: 'triangle'
+          }
+        }),
         arrowLength: 15,
         x1: 80,
         y1: 80,
@@ -145,20 +139,16 @@ describe('Line', function() {
     });
     canvas.addShape('line', {
       attrs: {
-        startArrow: {
-          shape: new G.Marker({
-            attrs: {
-              symbol: 'circle'
-            }
-          })
-        },
-        endArrow: {
-          shape: new G.Marker({
-            attrs: {
-              symbol: 'square'
-            }
-          })
-        },
+        startArrow: new G.Marker({
+          attrs: {
+            symbol: 'circle'
+          }
+        }),
+        endArrow: new G.Marker({
+          attrs: {
+            symbol: 'square'
+          }
+        }),
         arrowLength: 15,
         x1: 180,
         y1: 60,
@@ -170,13 +160,11 @@ describe('Line', function() {
     });
     canvas.addShape('line', {
       attrs: {
-        startArrow: {
-          shape: new G.Marker({
-            attrs: {
-              symbol: 'triangle'
-            }
-          })
-        },
+        startArrow: new G.Marker({
+          attrs: {
+            symbol: 'triangle'
+          }
+        }),
         endArrow: true,
         arrowLength: 15,
         x1: 30,
