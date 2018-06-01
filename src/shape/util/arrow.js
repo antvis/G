@@ -50,8 +50,7 @@ function _addArrow(ctx, attrs, x1, y1, x2, y2) {
   }
 }
 
-function _addMarker(ctx, attrs, x1, y1, x2, y2, arrow) {
-  const shape = arrow.shape;
+function _addMarker(ctx, attrs, x1, y1, x2, y2, shape) {
   const marker = shape.__attrs;
   let method = marker.symbol;
   const markerX = marker.x || x2;
@@ -83,7 +82,6 @@ function _addMarker(ctx, attrs, x1, y1, x2, y2, arrow) {
   ctx.translate(markerX, markerY);
   ctx.rotate(deg);
   ctx.translate(-markerX, -markerY);
-  ctx.translate(-arrow.dx || 0, -arrow.dy || 0);
   method(markerX, markerY, markerR, ctx, shape);
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = shape.attr('fill') || ctx.strokeStyle;

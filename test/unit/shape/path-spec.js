@@ -119,13 +119,11 @@ describe('Path', function() {
         lineWidth: 10,
         lineJoin: 'round',
         stroke: 'red',
-        endArrow: {
-          shape: new G.Marker({
-            attrs: {
-              symbol: 'diamond'
-            }
-          })
-        }
+        endArrow: new G.Marker({
+          attrs: {
+            symbol: 'diamond'
+          }
+        })
       }
     });
 
