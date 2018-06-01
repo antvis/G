@@ -38,7 +38,6 @@ describe('Element', function() {
 
   it('eventEmitter', function() {
     const ele = new Element();
-    console.log(ele);
     expect(ele.on).to.be.a('function');
     expect(ele.off).to.be.a('function');
     expect(ele.trigger).to.be.a('function');

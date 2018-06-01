@@ -34,7 +34,7 @@ function _addArrow(ctx, attrs, x1, y1, x2, y2) {
     // Calculate coordinates for right half of arrow
     rightX = x2 + (arrowLength * cos(angle - (arrowAngle / 2)));
     rightY = y2 + (arrowLength * sin(angle - (arrowAngle / 2)));
-
+    ctx.beginPath();
     // Draw left half of arrow
     ctx.moveTo(leftX - offsetX, leftY - offsetY);
     ctx.lineTo(x2 - offsetX, y2 - offsetY);
@@ -46,11 +46,11 @@ function _addArrow(ctx, attrs, x1, y1, x2, y2) {
     ctx.lineTo(x2 + offsetX, y2 + offsetY);
     // Move back to end of path
     ctx.moveTo(x2, y2);
+    ctx.stroke();
   }
 }
 
-function _addMarker(ctx, attrs, x1, y1, x2, y2, arrow) {
-  const shape = arrow.shape;
+function _addMarker(ctx, attrs, x1, y1, x2, y2, shape) {
   const marker = shape.__attrs;
   let method = marker.symbol;
   const markerX = marker.x || x2;
@@ -59,7 +59,7 @@ function _addMarker(ctx, attrs, x1, y1, x2, y2, arrow) {
   if (!Util.isFunction(method)) {
     method = Marker.Symbols[method || 'triangle'];
   }
-  let deg;
+  let deg = 0;
   const x = x1 - x2;
   const y = y1 - y2;
   if (y === 0) {
@@ -77,14 +77,16 @@ function _addMarker(ctx, attrs, x1, y1, x2, y2, arrow) {
   } else if (x < 0 && y > 0) {
     deg = Math.atan(x / -y);
   }
+  ctx.save();
+  ctx.beginPath();
   ctx.translate(markerX, markerY);
   ctx.rotate(deg);
   ctx.translate(-markerX, -markerY);
-  ctx.translate(-arrow.dx || 0, -arrow.dy || 0);
   method(markerX, markerY, markerR, ctx, shape);
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.fillStyle = ctx.strokeStyle;
+  ctx.fillStyle = shape.attr('fill') || ctx.strokeStyle;
   ctx.fill();
+  ctx.restore();
 }
 
 module.exports = {
