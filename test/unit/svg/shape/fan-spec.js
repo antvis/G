@@ -16,8 +16,8 @@ describe('CFan', function() {
 
   const fan = new G.Fan({
     attrs: {
-      cx: 0,
-      cy: 0,
+      x: 0,
+      y: 0,
       rs: 0,
       re: 0,
       startAngle: 0,
@@ -36,13 +36,13 @@ describe('CFan', function() {
   });
 
   it('x', function() {
-    fan.attr('cx', 10);
-    expect(fan.attr('cx')).to.equal(10);
+    fan.attr('x', 10);
+    expect(fan.attr('x')).to.equal(10);
   });
 
   it('y', function() {
-    fan.attr('cy', 20);
-    expect(fan.attr('cy')).to.equal(20);
+    fan.attr('y', 20);
+    expect(fan.attr('y')).to.equal(20);
   });
 
   it('startAngle', function() {
@@ -82,8 +82,8 @@ describe('CFan', function() {
 
   it('stroke', function() {
     fan.attr({
-      cx: 100,
-      cy: 100
+      x: 100,
+      y: 100
     });
     fan.attr('stroke', 'l (210) 0:#ff0000 1:#ffffff');
     expect(fan.attr('stroke')).to.equal('l (210) 0:#ff0000 1:#ffffff');
@@ -93,7 +93,6 @@ describe('CFan', function() {
   it('fill', function() {
     fan.attr('fill', 'l (130) 0:#0000ff 1:#ffffff');
     expect(fan.attr('fill')).to.equal('l (130) 0:#0000ff 1:#ffffff');
-    console.log(fan);
     canvas.draw();
   });
 });

@@ -34,13 +34,14 @@ Util.augment(Fan, {
       clockwise: false,
       lineWidth: 1,
       rs: 0,
-      re: 0
+      re: 0,
+      fill: 'none'
     };
   },
-  __afterSetAttrCx() {
+  __afterSetAttrX() {
     this.__calculatePath();
   },
-  __afterSetAttrCy() {
+  __afterSetAttrY() {
     this.__calculatePath();
   },
   __afterSetAttrRs() {
@@ -59,8 +60,8 @@ Util.augment(Fan, {
     this.__calculatePath();
   },
   __afterSetAttrAll(obj) {
-    if ('cx' in obj ||
-      'cy' in obj ||
+    if ('x' in obj ||
+      'y' in obj ||
       'rs' in obj ||
       're' in obj ||
       'startAngle' in obj ||
@@ -74,8 +75,8 @@ Util.augment(Fan, {
     const self = this;
     const attrs = self.__attrs;
     const center = {
-      x: attrs.cx,
-      y: attrs.cy
+      x: attrs.x,
+      y: attrs.y
     };
     const d = [];
     const startAngle = attrs.startAngle;
@@ -116,38 +117,6 @@ Util.augment(Fan, {
       d.push('Z');
     }
     self.get('el').setAttribute('d', d.join(' '));
-  },
-  createPath(context) {
-    const attrs = this.__attrs;
-    const cx = attrs.x;
-    const cy = attrs.y;
-    const rs = attrs.rs;
-    const re = attrs.re;
-    const startAngle = attrs.startAngle;
-    const endAngle = attrs.endAngle;
-    const clockwise = attrs.clockwise;
-
-    const ssp = {
-      x: Math.cos(startAngle) * rs + cx,
-      y: Math.sin(startAngle) * rs + cy
-    };
-    const sep = {
-      x: Math.cos(startAngle) * re + cx,
-      y: Math.sin(startAngle) * re + cy
-    };
-    const esp = {
-      x: Math.cos(endAngle) * rs + cx,
-      y: Math.sin(endAngle) * rs + cy
-    };
-
-    context = context || self.get('context');
-    context.beginPath();
-    context.moveTo(ssp.x, ssp.y);
-    context.lineTo(sep.x, sep.y);
-    context.arc(cx, cy, re, startAngle, endAngle, clockwise);
-    context.lineTo(esp.x, esp.y);
-    context.arc(cx, cy, rs, endAngle, startAngle, !clockwise);
-    context.closePath();
   }
 });
 
