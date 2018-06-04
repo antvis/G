@@ -181,6 +181,9 @@ module.exports = {
         el.setAttribute(SVG_ATTR_MAP[name], value);
       }
     } else if (~name.toLowerCase().indexOf('arrow')) {
+      if (!value) {
+        return self;
+      }
       self.__setAttrArrow(name, value);
     } else {
       // 先存好属性，然后对一些svg和canvas中不同的属性进行特判
@@ -218,10 +221,15 @@ module.exports = {
   __setAttrArrow(name, value) {
     const self = this;
     const el = self.get('el');
-    const defs = self.get('defs');
+    let defs = self.get('defs');
     if (!defs) {
-      this.__setAttrDependency(name, value);
-      return this;
+      const canvas = self.get('canvas');
+      if (!canvas) {
+        this.__setAttrDependency(name, value);
+        return this;
+      }
+      defs = canvas.get('defs');
+
     }
     name = SVG_ATTR_MAP[name];
     if (!name) {
@@ -241,7 +249,7 @@ module.exports = {
   __setAttrShadow(name, value) {
     const attrs = this.__attrs;
     const filter = this.get('filter');
-    const defs = this.get('defs');
+    let defs = this.get('defs');
     if (!value) {
       this.get('el').removeAttribute('filter');
       return this;
@@ -251,8 +259,13 @@ module.exports = {
       return this;
     }
     if (!defs) {
-      this.__setAttrDependency(name, value);
-      return this;
+      const canvas = this.get('canvas');
+      if (!canvas) {
+        this.__setAttrDependency(name, value);
+        return this;
+      }
+      defs = canvas.get('defs');
+
     }
     const cfg = {
       dx: attrs.shadowOffsetX,
@@ -272,14 +285,19 @@ module.exports = {
   },
   __setAttrGradients(name, value) {
     name = name.replace('Style', '');
-    const defs = this.get('defs');
+    let defs = this.get('defs');
     if (!value) {
       this.get('el').removeAttribute('gradient');
       return this;
     }
     if (!defs) {
-      this.__setAttrDependency(name, value);
-      return this;
+      const canvas = this.get('canvas');
+      if (!canvas) {
+        this.__setAttrDependency(name, value);
+        return this;
+      }
+      defs = canvas.get('defs');
+
     }
     let id = defs.find('gradient', value);
     if (!id) {
@@ -297,14 +315,19 @@ module.exports = {
     return this;
   },
   __setAttrClip(name, value) {
-    const defs = this.get('defs');
+    let defs = this.get('defs');
     if (!value) {
       this.get('el').removeAttribute('clip-path');
       return this;
     }
     if (!defs) {
-      this.__setAttrDependency(name, value);
-      return this;
+      const canvas = this.get('canvas');
+      if (!canvas) {
+        this.__setAttrDependency(name, value);
+        return this;
+      }
+      defs = canvas.get('defs');
+
     }
     const id = defs.addClip(value);
     this.get('el').setAttribute('clip-path', `url(#${id})`);
