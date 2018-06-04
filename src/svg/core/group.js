@@ -184,8 +184,8 @@ Util.augment(Group, {
         if (parent) {
           parent.removeChild(item, false);
         }
-        if (self.get('dependencies')) {
-          self.__addDependency();
+        if (item.get('dependencies')) {
+          self.__addDependency(item);
         }
         self.__setEvn(item);
         el.appendChild(item.get('el'));
