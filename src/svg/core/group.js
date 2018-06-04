@@ -76,7 +76,11 @@ Util.augment(Group, {
     cfg.canvas = canvas;
     cfg.defs = this.get('defs');
     cfg.type = type;
-    const rst = new Shape[shapeType](cfg);
+    const shape = Shape[shapeType];
+    if (!shape) {
+      throw new TypeError(`the shape ${shapeType} is not supported by svg version, use canvas instead`);
+    }
+    const rst = new shape(cfg);
     this.add(rst);
     return rst;
   },

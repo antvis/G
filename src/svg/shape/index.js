@@ -9,5 +9,6 @@ Shape.Image = require('./image');
 Shape.Polygon = require('./polygon');
 Shape.Marker = require('./marker');
 Shape.Dom = require('./dom');
+Shape.Fa = require('./fan');
 
 module.exports = Shape;
