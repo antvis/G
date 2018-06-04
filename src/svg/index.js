@@ -12,6 +12,7 @@ module.exports = {
   Polygon: require('./shape/polygon'),
   Marker: require('./shape/marker'),
   Dom: require('./shape/dom'),
+  Fan: require('./shape/fan'),
   PathUtil: require('../util/path'),
   MatrixUtil: require('../util/matrix'),
   CommonUtil: require('../util/common'),
