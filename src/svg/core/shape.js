@@ -11,7 +11,8 @@ const SHAPES = {
   polygon: 'polygon',
   image: 'image',
   ellipse: 'ellipse',
-  dom: 'foreignObject'
+  dom: 'foreignObject',
+  fan: 'path'
 };
 
 const Shape = function(cfg) {
