@@ -78,7 +78,6 @@ module.exports = {
       toM,
       callback
     });
-
     // 执行动画
     timer = d3Timer.timer(elapsed => {
       if (repeat) {
@@ -122,7 +121,8 @@ module.exports = {
         if (!Util.isEqual(fromAttrs[k], toAttrs[k])) {
           if (k === 'path') {
             const toPath = PathUtil.parsePathString(toAttrs[k]); // 终点状态
-            const fromPath = PathUtil.parsePathString(fromAttrs[k]); // 起始状态
+            let fromPath = PathUtil.parsePathString(fromAttrs[k]); // 起始状态
+            fromPath = PathUtil.pathTocurve(fromPath, toPath);
             cProps[k] = [];
             for (let i = 0; i < toPath.length; i++) {
               const toPathPoint = toPath[i];
