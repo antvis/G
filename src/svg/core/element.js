@@ -170,32 +170,41 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
   },
   getBBox() {
     const el = this.get('el');
-    if (el) {
-      const bbox = el.getBBox();
-      bbox.minX = bbox.x;
-      bbox.minY = bbox.y;
-      bbox.maxX = bbox.x + bbox.width;
-      bbox.maxY = bbox.y + bbox.height;
+    if (!el) {
       return {
-        minX: bbox.x,
-        minY: bbox.y,
-        maxX: bbox.x + bbox.width,
-        maxY: bbox.y + bbox.height,
-        width: bbox.width,
-        height: bbox.height,
-        x: bbox.x,
-        y: bbox.y
+        minX: 0,
+        minY: 0,
+        maxX: 0,
+        maxY: 0,
+        width: 0,
+        height: 0,
+        x: 0,
+        y: 0
       };
     }
+    let bbox = el.getBBox();
+    if (!el.parentNode || (bbox.width === 0 && bbox.height === 0)) {
+      const node = el.cloneNode();
+      node.innerHTML = el.innerHTML;
+      node.setAttribute('visible', 'hidden');
+      const svg = document.getElementsByTagName('svg')[0];
+      svg.appendChild(node);
+      bbox = node.getBBox();
+      svg.removeChild(node);
+    }
+    bbox.minX = bbox.x;
+    bbox.minY = bbox.y;
+    bbox.maxX = bbox.x + bbox.width;
+    bbox.maxY = bbox.y + bbox.height;
     return {
-      minX: 0,
-      minY: 0,
-      maxX: 0,
-      maxY: 0,
-      width: 0,
-      height: 0,
-      x: 0,
-      y: 0
+      minX: bbox.x,
+      minY: bbox.y,
+      maxX: bbox.x + bbox.width,
+      maxY: bbox.y + bbox.height,
+      width: bbox.width,
+      height: bbox.height,
+      x: bbox.x,
+      y: bbox.y
     };
   }
 });
