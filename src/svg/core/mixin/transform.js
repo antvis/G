@@ -39,6 +39,9 @@ module.exports = {
   },
   rotate(radian, perform) {
     const matrix = this.attr('matrix');
+    if (Math.abs(radian) > Math.PI * 2) {
+      radian = radian / 180 * Math.PI;
+    }
     mat3.rotate(matrix, matrix, radian);
     this.attr('matrix', matrix);
     if (arguments.length === 1 || perform) {
@@ -97,7 +100,6 @@ module.exports = {
   transform(ts) {
     const self = this;
     const matrix = self.attr('matrix');
-
     Util.each(ts, t => {
       switch (t[0]) {
         case 't':
