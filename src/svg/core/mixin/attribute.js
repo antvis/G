@@ -340,14 +340,14 @@ module.exports = {
     if (!attrs.matrix) {
       this.initTransform();
     }
+    if (typeof attrs.x === 'undefined' || typeof attrs.y === 'undefined') {
+      this.__setAttrDependency(name, value);
+      return this;
+    }
     if (name === 'transform') {
       this.transform(value);
     } else {
-      this.transform([
-        [ 't', -attrs.x, -attrs.y ],
-        [ 'r', value ],
-        [ 't', attrs.x, attrs.y ]
-      ]);
+      this.rotateAtStart(value);
     }
     return this;
   }
