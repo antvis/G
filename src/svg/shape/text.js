@@ -161,7 +161,7 @@ Util.augment(CText, {
     if ('textAlign' in objs) {
       this.__afterSetAttrTextAlign();
     }
-    if ('textBaseLine' in objs) {
+    if ('textBaseline' in objs) {
       this.__afterSetAttrTextBaseLine();
     }
     if ('text' in objs) {
