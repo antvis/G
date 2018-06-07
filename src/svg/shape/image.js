@@ -29,10 +29,13 @@ Util.augment(CImage, {
       this.__setAttrImg(params.img);
     }
   },
-  __setAttrImg(img) {
+  __setAttrImg(image) {
     const self = this;
     const el = this.get('el');
     const attrs = self.__attrs;
+    const img = image;
+
+
     if (Util.isString(img)) {
       // 如果传入的
       el.setAttribute('href', img);
@@ -46,21 +49,11 @@ Util.augment(CImage, {
       }
       el.setAttribute('href', img.src);
     } else if (img instanceof HTMLElement && Util.isString(img.nodeName) && img.nodeName.toUpperCase() === 'CANVAS') {
-      if (!attrs.width) {
-        self.attr('width', Number(img.getAttribute('width')));
-      }
-
-      if (!attrs.height) {
-        self.attr('height', Number(img.getAttribute('height')));
-      }
-      el.setAttribute('href', img.getAttribute('src'));
+      el.setAttribute('href', img.toDataURL());
     } else if (img instanceof ImageData) {
       const canvas = document.createElement('canvas');
-      const ratio = this.get('canvas') ? this.get('canvas').get('pixelRatio') : window.devicePixelRatio;
       canvas.setAttribute('width', img.width);
       canvas.setAttribute('height', img.height);
-      canvas.style.width = img.width * ratio;
-      canvas.style.height = img.height * ratio;
       canvas.getContext('2d').putImageData(img, 0, 0);
       if (!attrs.width) {
         self.attr('width', img.width);
