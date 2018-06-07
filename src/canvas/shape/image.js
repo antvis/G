@@ -125,7 +125,7 @@ Util.augment(CImage, {
     const attrs = this.__attrs;
     const x = attrs.x;
     const y = attrs.y;
-    const img = attrs.img;
+    const image = attrs.img;
     const width = attrs.width;
     const height = attrs.height;
     const sx = attrs.sx;
@@ -134,6 +134,11 @@ Util.augment(CImage, {
     const sheight = attrs.sheight;
     this.set('toDraw', false);
 
+    let img = image;
+    if (img instanceof ImageData) {
+      img = new Image();
+      img.src = image;
+    }
     if (img instanceof Image || (img instanceof HTMLElement && Util.isString(img.nodeName) && img.nodeName.toUpperCase() === 'CANVAS')) {
       if (
         Util.isNil(sx) ||
@@ -153,9 +158,6 @@ Util.augment(CImage, {
         context.drawImage(img, sx, sy, swidth, sheight, x, y, width, height);
         return;
       }
-    } else if (img instanceof ImageData) {
-      context.putImageData(img, x, y, sx || 0, sy || 0, swidth || width, sheight || height);
-      return;
     }
     return;
   }
