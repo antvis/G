@@ -56,7 +56,7 @@ Util.augment(CImage, {
       el.setAttribute('href', img.getAttribute('src'));
     } else if (img instanceof ImageData) {
       const canvas = document.createElement('canvas');
-      const ratio = window.devicePixelRatio || 1;
+      const ratio = this.get('canvas') ? this.get('canvas').get('pixelRatio') : window.devicePixelRatio;
       canvas.setAttribute('width', img.width);
       canvas.setAttribute('height', img.height);
       canvas.style.width = img.width * ratio;
