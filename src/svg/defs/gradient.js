@@ -10,6 +10,11 @@ const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/ig;
 function addStop(steps) {
   const arr = steps.match(regexColorStop);
   let stops = '';
+  arr.sort(function(a, b) {
+    a = a.split(':');
+    b = b.split(':');
+    return Number(a[0]) - Number(b[0]);
+  });
   Util.each(arr, item => {
     item = item.split(':');
     stops += `<stop offset="${item[0]}" stop-color="${item[1]}"></stop>`;
