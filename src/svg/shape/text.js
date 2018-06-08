@@ -13,6 +13,14 @@ const BASELINE_MAP = {
   hanging: 'hanging'
 };
 
+const ANCHOR_MAP = {
+  left: 'left',
+  start: 'left',
+  center: 'middle',
+  right: 'end',
+  end: 'end'
+};
+
 CText.ATTRS = {
   x: 0,
   y: 0,
@@ -93,15 +101,9 @@ Util.augment(CText, {
   },
   __afterSetAttrTextAlign() {
     // 由于本身不支持设置direction，所以left = start, right = end。之后看是否需要根据direction判断
-    let attr = this.__attrs.textAlign;
+    const attr = this.__attrs.textAlign;
     const el = this.get('el');
-    if (attr === 'left') {
-      attr = 'start';
-    }
-    if (attr === 'right') {
-      attr = 'end';
-    }
-    el.setAttribute('text-anchor', attr);
+    el.setAttribute('text-anchor', ANCHOR_MAP[attr]);
   },
   __afterSetAttrTextBaseLine() {
     const attr = this.__attrs.textBaseline;
