@@ -238,7 +238,7 @@ Util.augment(Canvas, {
   },
   changeSize(width, height) {
     this.set('widthCanvas', width);
-    this.set('heightCanvas', width);
+    this.set('heightCanvas', height);
     this.set('widthStyle', width + 'px');
     this.set('heightStyle', height + 'px');
     this.set('width', width);
