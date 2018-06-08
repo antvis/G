@@ -154,6 +154,7 @@ module.exports = {
         clip = Util.clone(clip);
       }
       clip.set('parent', self.get('parent'));
+      clip.set('canvas', self.get('canvas'));
       clip.set('context', self.get('context'));
       clip.inside = function(x, y) {
         const v = [ x, y, 1 ];
