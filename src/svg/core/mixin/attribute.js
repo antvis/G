@@ -316,6 +316,7 @@ module.exports = {
   },
   __setAttrClip(name, value) {
     let defs = this.get('defs');
+    const canvas = this.get('canvas');
     if (!value) {
       this.get('el').removeAttribute('clip-path');
       return this;
@@ -327,8 +328,8 @@ module.exports = {
         return this;
       }
       defs = canvas.get('defs');
-
     }
+    value.__cfg.canvas = canvas;
     const id = defs.addClip(value);
     this.get('el').setAttribute('clip-path', `url(#${id})`);
   },
