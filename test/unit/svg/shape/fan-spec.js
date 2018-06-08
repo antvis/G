@@ -10,7 +10,7 @@ describe('CFan', function() {
   const canvas = new Canvas({
     containerId: 'canvas-fan',
     width: 200,
-    heigth: 200,
+    height: 200,
     pixelRatio: 1
   });
 
