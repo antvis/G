@@ -43,13 +43,12 @@ function getArcParams(point1, point2, fa, fs, rx, ry, psiDeg) {
   const xp = Math.cos(psi) * (x1 - x2) / 2.0 + Math.sin(psi) * (y1 - y2) / 2.0;
   const yp = -1 * Math.sin(psi) * (x1 - x2) / 2.0 + Math.cos(psi) * (y1 - y2) / 2.0;
   const lambda = (xp * xp) / (rx * rx) + (yp * yp) / (ry * ry);
-
   if (lambda > 1) {
     rx *= Math.sqrt(lambda);
     ry *= Math.sqrt(lambda);
   }
-
-  let f = Math.sqrt((((rx * rx) * (ry * ry)) - ((rx * rx) * (yp * yp)) - ((ry * ry) * (xp * xp))) / ((rx * rx) * (yp * yp) + (ry * ry) * (xp * xp)));
+  const diff = (rx * rx) * (yp * yp) + (ry * ry) * (xp * xp);
+  let f = Math.sqrt((((rx * rx) * (ry * ry)) - diff) / diff);
 
   if (fa === fs) {
     f *= -1;
@@ -68,13 +67,6 @@ function getArcParams(point1, point2, fa, fs, rx, ry, psiDeg) {
   const u = [ (xp - cxp) / rx, (yp - cyp) / ry ];
   const v = [ (-1 * xp - cxp) / rx, (-1 * yp - cyp) / ry ];
   let dTheta = vAngle(u, v);
-
-  if (vRatio(u, v) <= -1) {
-    dTheta = Math.PI;
-  }
-  if (vRatio(u, v) >= 1) {
-    dTheta = 0;
-  }
   if (fs === 0 && dTheta > 0) {
     dTheta = dTheta - 2 * Math.PI;
   }
@@ -331,9 +323,37 @@ Util.augment(PathSegment, {
         }
 
         this.command = 'A';
-        this.params = getArcParams(preEndPoint, point, fa, fs, rx, ry, psi);
-        this.subStart = preSegment.subStart;
+        const params = getArcParams(preEndPoint, point, fa, fs, rx, ry, psi);
+        this.params = params;
+        const start = preSegment.subStart;
+        this.subStart = start;
         this.endPoint = point;
+        let startAngle = params[5] % (Math.PI * 2);
+        if (Util.isNumberEqual(startAngle, Math.PI * 2)) {
+          startAngle = 0;
+        }
+        let endAngle = params[6] % (Math.PI * 2);
+        if (Util.isNumberEqual(endAngle, Math.PI * 2)) {
+          endAngle = 0;
+        }
+        let d = 0.001;
+        this.startTangent = function() {
+          if (fs === 0) {
+            d *= -1;
+          }
+          const dx = params[3] * Math.cos(startAngle - d) + params[1];
+          const dy = params[4] * Math.sin(startAngle - d) + params[2];
+          return [ dx - start.x, dy - start.y ];
+        };
+        this.endTangent = function() {
+          let endAngle = params[6];
+          if (endAngle - Math.PI * 2 < 0.0001) {
+            endAngle = 0;
+          }
+          const dx = params[3] * Math.cos(startAngle + endAngle + d) + params[1];
+          const dy = params[4] * Math.sin(startAngle + endAngle - d) + params[2];
+          return [ preEndPoint.x - dx, preEndPoint.y - dy ];
+        };
         break;
       }
       case 'Z': {
