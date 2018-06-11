@@ -96,14 +96,14 @@ Util.augment(Marker, {
     }
     let d = '';
     if (typeof attrs.symbol === 'function') {
-      let d = attrs.symbol(attrs.x, attrs.y, r);
-      if (Util.isArray(d)) {
-        d = d.map(path => {
-          return path.join(' ');
-        }).join('');
-      }
+      d = attrs.symbol(attrs.x, attrs.y, r);
     } else {
       d = Marker.Symbols[attrs.symbol || 'circle'](attrs.x, attrs.y, r);
+    }
+    if (Util.isArray(d)) {
+      d = d.map(path => {
+        return path.join(' ');
+      }).join('');
     }
     this.get('el').setAttribute('d', d);
   }
