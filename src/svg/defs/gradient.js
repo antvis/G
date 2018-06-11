@@ -9,6 +9,9 @@ const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/ig;
 
 function addStop(steps) {
   const arr = steps.match(regexColorStop);
+  if (!arr) {
+    return '';
+  }
   let stops = '';
   arr.sort(function(a, b) {
     a = a.split(':');
