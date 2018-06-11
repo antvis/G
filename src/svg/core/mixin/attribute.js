@@ -165,6 +165,9 @@ module.exports = {
       return;
     }
     self.__attrs[name] = value;
+    if (typeof value === 'number' && isNaN(value)) {
+      return;
+    }
     if (self.get('destroyed')) {
       return;
     }
@@ -192,7 +195,7 @@ module.exports = {
          * 本来考虑想写到对应图形里面的，但是x,y又是svg通用属性，这样会同时存在x，y, cx,cy
          * 如果在下面svgAttr设置的时候还是要特判，不如就在这边特殊处理一下吧
          */
-        if (self.type !== 'marker' && typeof value !== 'undefined') {
+        if (self.type !== 'marker' && typeof value === 'number') {
           el.setAttribute('c' + name, value);
         }
       } else {
