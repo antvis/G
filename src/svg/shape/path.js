@@ -51,7 +51,11 @@ Util.augment(Path, {
         return path.join(' ');
       }).join('');
     }
-    el.setAttribute('d', d);
+    if (~d.indexOf('NaN')) {
+      el.setAttribute('d', '');
+    } else {
+      el.setAttribute('d', d);
+    }
   },
   __afterSetAttrAll(objs) {
     if (objs.path) {
