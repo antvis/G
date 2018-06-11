@@ -192,7 +192,7 @@ module.exports = {
          * 本来考虑想写到对应图形里面的，但是x,y又是svg通用属性，这样会同时存在x，y, cx,cy
          * 如果在下面svgAttr设置的时候还是要特判，不如就在这边特殊处理一下吧
          */
-        if (self.type !== 'marker') {
+        if (self.type !== 'marker' && typeof value !== 'undefined') {
           el.setAttribute('c' + name, value);
         }
       } else {
