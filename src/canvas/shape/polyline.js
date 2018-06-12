@@ -69,7 +69,7 @@ Util.augment(Polyline, {
       maxY: maxY + halfWidth
     };
   },
-  __setTcache() {
+  _setTcache() {
     const self = this;
     const attrs = self.__attrs;
     const points = attrs.points;
@@ -156,7 +156,7 @@ Util.augment(Polyline, {
     let subt;
     let index;
     if (!tCache) {
-      this.__setTcache();
+      this._setTcache();
       tCache = this.tCache;
     }
     Util.each(tCache, function(v, i) {

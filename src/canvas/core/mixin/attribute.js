@@ -89,8 +89,8 @@ module.exports = {
           self._setAttr(k, v);
         }
       }
-      if (self.__afterSetAttrAll) {
-        self.__afterSetAttrAll(name);
+      if (self._afterSetAttrAll) {
+        self._afterSetAttrAll(name);
       }
       // self.setSilent('box', null);
       self.clearBBox();
@@ -98,7 +98,7 @@ module.exports = {
     }
     if (arguments.length === 2) {
       if (self._setAttr(name, value) !== false) {
-        const m = '__afterSetAttr' + CAPITALIZED_ATTRS_MAP[name];
+        const m = '_afterSetAttr' + CAPITALIZED_ATTRS_MAP[name];
         if (self[m]) {
           self[m](value);
         }
@@ -112,7 +112,7 @@ module.exports = {
   clearBBox() {
     this.setSilent('box', null);
   },
-  __afterSetAttrAll() {
+  _afterSetAttrAll() {
 
   },
   // 属性获取触发函数
@@ -123,10 +123,10 @@ module.exports = {
   _setAttr(name, value) {
     const self = this;
     if (name === 'clip') {
-      self.__setAttrClip(value);
+      self._setAttrClip(value);
       self.__attrs.clip = value;
     } else if (name === 'transform') {
-      self.__setAttrTrans(value);
+      self._setAttrTrans(value);
     } else {
       self.__attrs[name] = value;
       const alias = ALIAS_ATTRS_MAP[name];
@@ -143,11 +143,11 @@ module.exports = {
     return this.canStroke && this.__attrs.strokeStyle;
   },
   // 设置透明度
-  __setAttrOpacity(v) {
+  _setAttrOpacity(v) {
     this.__attrs.globalAlpha = v;
     return v;
   },
-  __setAttrClip(clip) {
+  _setAttrClip(clip) {
     const self = this;
     if (clip && (CLIP_SHAPES.indexOf(clip.type) > -1)) {
       if (clip.get('canvas') === null) {
@@ -159,13 +159,13 @@ module.exports = {
       clip.inside = function(x, y) {
         const v = [ x, y, 1 ];
         clip.invert(v, self.get('canvas')); // 已经在外面转换
-        return clip.__isPointInFill(v[0], v[1]);
+        return clip._isPointInFill(v[0], v[1]);
       };
       return clip;
     }
     return null;
   },
-  __setAttrTrans(value) {
+  _setAttrTrans(value) {
     return this.transform(value);
   }
 };

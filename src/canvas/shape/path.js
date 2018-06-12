@@ -32,7 +32,7 @@ Util.augment(Path, {
       endArrow: false
     };
   },
-  __afterSetAttrPath(path) {
+  _afterSetAttrPath(path) {
     const self = this;
     if (Util.isNil(path)) {
       self.setSilent('segments', null);
@@ -60,9 +60,9 @@ Util.augment(Path, {
     self.set('tCache', null);
     this.setSilent('box', null);
   },
-  __afterSetAttrAll(objs) {
+  _afterSetAttrAll(objs) {
     if (objs.path) {
-      this.__afterSetAttrPath(objs.path);
+      this._afterSetAttrPath(objs.path);
     }
   },
   calculateBox() {
@@ -111,27 +111,27 @@ Util.augment(Path, {
     const stroke = self.hasStroke();
 
     if (fill && stroke) {
-      return self.__isPointInFill(x, y) || self.__isPointInStroke(x, y);
+      return self._isPointInFill(x, y) || self._isPointInStroke(x, y);
     }
 
     if (fill) {
-      return self.__isPointInFill(x, y);
+      return self._isPointInFill(x, y);
     }
 
     if (stroke) {
-      return self.__isPointInStroke(x, y);
+      return self._isPointInStroke(x, y);
     }
 
     return false;
   },
-  __isPointInFill(x, y) {
+  _isPointInFill(x, y) {
     const self = this;
     const context = self.get('context');
     if (!context) return undefined;
     self.createPath();
     return context.isPointInPath(x, y);
   },
-  __isPointInStroke(x, y) {
+  _isPointInStroke(x, y) {
     const self = this;
     const segments = self.get('segments');
     if (!Util.isEmpty(segments)) {
@@ -145,7 +145,7 @@ Util.augment(Path, {
 
     return false;
   },
-  __setTcache() {
+  _setTcache() {
     let totalLength = 0;
     let tempLength = 0;
     const tCache = [];
@@ -182,7 +182,7 @@ Util.augment(Path, {
 
     this.tCache = tCache;
   },
-  __calculateCurve() {
+  _calculateCurve() {
     const self = this;
     const attrs = self.__attrs;
     const path = attrs.path;
@@ -194,8 +194,8 @@ Util.augment(Path, {
     let index;
 
     if (!tCache) {
-      this.__calculateCurve();
-      this.__setTcache();
+      this._calculateCurve();
+      this._setTcache();
       tCache = this.tCache;
     }
 

@@ -22,12 +22,12 @@ Util.extend(CImage, Shape);
 
 Util.augment(CImage, {
   type: 'image',
-  __afterSetAttrImg(img) {
-    this.__setAttrImg(img);
+  _afterSetAttrImg(img) {
+    this._setAttrImg(img);
   },
-  __afterSetAttrAll(params) {
+  _afterSetAttrAll(params) {
     if (params.img) {
-      this.__setAttrImg(params.img);
+      this._setAttrImg(params.img);
     }
   },
   isHitBox() {
@@ -58,7 +58,7 @@ Util.augment(CImage, {
     const height = attrs.height;
     return Inside.rect(rx, ry, width, height, x, y);
   },
-  __setLoading(loading) {
+  _setLoading(loading) {
     const canvas = this.get('canvas');
     if (loading === false && this.get('toDraw') === true) {
       this.__cfg.loading = false;
@@ -66,7 +66,7 @@ Util.augment(CImage, {
     }
     return loading;
   },
-  __setAttrImg(img) {
+  _setAttrImg(img) {
     const self = this;
     const attrs = self.__attrs;
     if (Util.isString(img)) {
@@ -119,9 +119,9 @@ Util.augment(CImage, {
       this.set('toDraw', true);
       return;
     }
-    this.__drawImage(context);
+    this._drawImage(context);
   },
-  __drawImage(context) {
+  _drawImage(context) {
     const attrs = this.__attrs;
     const x = attrs.x;
     const y = attrs.y;

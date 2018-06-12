@@ -51,7 +51,7 @@ Util.augment(CText, {
       ]);
     }
   },
-  __assembleFont() {
+  _assembleFont() {
     // var self = this;
     const attrs = this.__attrs;
     const fontSize = attrs.fontSize;
@@ -62,28 +62,28 @@ Util.augment(CText, {
     // self.attr('font', [fontStyle, fontVariant, fontWeight, fontSize + 'px', fontFamily].join(' '));
     attrs.font = [ fontStyle, fontVariant, fontWeight, fontSize + 'px', fontFamily ].join(' ');
   },
-  __afterSetAttrFontSize() {
+  _afterSetAttrFontSize() {
     /* this.attr({
       height: this.__getTextHeight()
     }); */
-    this.__assembleFont();
+    this._assembleFont();
   },
-  __afterSetAttrFontFamily() {
-    this.__assembleFont();
+  _afterSetAttrFontFamily() {
+    this._assembleFont();
   },
-  __afterSetAttrFontWeight() {
-    this.__assembleFont();
+  _afterSetAttrFontWeight() {
+    this._assembleFont();
   },
-  __afterSetAttrFontStyle() {
-    this.__assembleFont();
+  _afterSetAttrFontStyle() {
+    this._assembleFont();
   },
-  __afterSetAttrFontVariant() {
-    this.__assembleFont();
+  _afterSetAttrFontVariant() {
+    this._assembleFont();
   },
-  __afterSetAttrFont() {
+  _afterSetAttrFont() {
     // this.attr('width', this.measureText());
   },
-  __afterSetAttrText() {
+  _afterSetAttrText() {
     const attrs = this.__attrs;
     const text = attrs.text;
     let textArr;
@@ -96,18 +96,18 @@ Util.augment(CText, {
     // attrs.height = this.__getTextHeight();
     // attrs.width = this.measureText();
   },
-  __getTextHeight() {
+  _getTextHeight() {
     const attrs = this.__attrs;
     const lineCount = attrs.lineCount;
     const fontSize = attrs.fontSize * 1;
     if (lineCount > 1) {
-      const spaceingY = this.__getSpaceingY();
+      const spaceingY = this._getSpaceingY();
       return fontSize * lineCount + spaceingY * (lineCount - 1);
     }
     return fontSize;
   },
   // 计算浪费，效率低，待优化
-  __afterSetAttrAll(objs) {
+  _afterSetAttrAll(objs) {
     const self = this;
     if (
       'fontSize' in objs ||
@@ -116,13 +116,13 @@ Util.augment(CText, {
       'fontVariant' in objs ||
       'fontFamily' in objs
     ) {
-      self.__assembleFont();
+      self._assembleFont();
     }
 
     if (
       'text' in objs
     ) {
-      self.__afterSetAttrText(objs.text);
+      self._afterSetAttrText(objs.text);
     }
   },
   isHitBox() {
@@ -143,7 +143,7 @@ Util.augment(CText, {
         maxY: y
       };
     }
-    const height = self.__getTextHeight(); // attrs.height
+    const height = self._getTextHeight(); // attrs.height
     const textAlign = attrs.textAlign;
     const textBaseline = attrs.textBaseline;
     const lineWidth = self.getHitLineWidth();
@@ -177,7 +177,7 @@ Util.augment(CText, {
       maxY: point.y + height + halfWidth
     };
   },
-  __getSpaceingY() {
+  _getSpaceingY() {
     const attrs = this.__attrs;
     const lineHeight = attrs.lineHeight;
     const fontSize = attrs.fontSize * 1;
@@ -204,7 +204,7 @@ Util.augment(CText, {
     context.beginPath();
     if (self.hasStroke()) {
       if (textArr) {
-        self.__drawTextArr(context, false);
+        self._drawTextArr(context, false);
       } else {
         context.strokeText(text, x, y);
       }
@@ -215,17 +215,17 @@ Util.augment(CText, {
         context.globalAlpha = fillOpacity;
       }
       if (textArr) {
-        self.__drawTextArr(context, true);
+        self._drawTextArr(context, true);
       } else {
         context.fillText(text, x, y);
       }
     }
   },
-  __drawTextArr(context, fill) {
+  _drawTextArr(context, fill) {
     const textArr = this.__attrs.textArr;
     const textBaseline = this.__attrs.textBaseline;
     const fontSize = this.__attrs.fontSize * 1;
-    const spaceingY = this.__getSpaceingY();
+    const spaceingY = this._getSpaceingY();
     const x = this.__attrs.x;
     const y = this.__attrs.y;
     const box = this.getBBox();

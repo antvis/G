@@ -27,7 +27,7 @@ describe('Element', function() {
     const e = new Element();
     let a = 123;
     expect(a).to.equal(123);
-    e.__setTest = function(v) {
+    e._beforeSetTest = function(v) {
       a = 321;
       return v - 1;
     };

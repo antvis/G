@@ -50,27 +50,27 @@ Util.augment(Rect, {
     const stroke = self.hasStroke();
 
     if (fill && stroke) {
-      return self.__isPointInFill(x, y) || self.__isPointInStroke(x, y);
+      return self._isPointInFill(x, y) || self._isPointInStroke(x, y);
     }
 
     if (fill) {
-      return self.__isPointInFill(x, y);
+      return self._isPointInFill(x, y);
     }
 
     if (stroke) {
-      return self.__isPointInStroke(x, y);
+      return self._isPointInStroke(x, y);
     }
 
     return false;
   },
-  __isPointInFill(x, y) {
+  _isPointInFill(x, y) {
     const context = this.get('context');
 
     if (!context) return false;
     this.createPath();
     return context.isPointInPath(x, y);
   },
-  __isPointInStroke(x, y) {
+  _isPointInStroke(x, y) {
     const self = this;
     const attrs = self.__attrs;
     const rx = attrs.x;
