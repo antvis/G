@@ -49,20 +49,20 @@ Util.augment(Ellipse, {
     const stroke = this.hasStroke();
 
     if (fill && stroke) {
-      return this.__isPointInFill(x, y) || this.__isPointInStroke(x, y);
+      return this._isPointInFill(x, y) || this._isPointInStroke(x, y);
     }
 
     if (fill) {
-      return this.__isPointInFill(x, y);
+      return this._isPointInFill(x, y);
     }
 
     if (stroke) {
-      return this.__isPointInStroke(x, y);
+      return this._isPointInStroke(x, y);
     }
 
     return false;
   },
-  __isPointInFill(x, y) {
+  _isPointInFill(x, y) {
     const attrs = this.__attrs;
     const cx = attrs.x;
     const cy = attrs.y;
@@ -82,7 +82,7 @@ Util.augment(Ellipse, {
 
     return Inside.circle(0, 0, r, p[0], p[1]);
   },
-  __isPointInStroke(x, y) {
+  _isPointInStroke(x, y) {
     const attrs = this.__attrs;
     const cx = attrs.x;
     const cy = attrs.y;

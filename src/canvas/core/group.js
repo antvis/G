@@ -187,7 +187,7 @@ Util.augment(Group, {
         if (parent) {
           parent.removeChild(item, false);
         }
-        self.__setEvn(item);
+        self._setEvn(item);
       });
       children.push.apply(children, items);
     } else {
@@ -196,7 +196,7 @@ Util.augment(Group, {
       if (parent) {
         parent.removeChild(item, false);
       }
-      self.__setEvn(item);
+      self._setEvn(item);
       children.push(item);
     }
     return self;
@@ -216,7 +216,7 @@ Util.augment(Group, {
     const lastIndex = this.get('children').length - 1;
     return this.getChildByIndex(lastIndex);
   },
-  __setEvn(item) {
+  _setEvn(item) {
     const self = this;
     item.__cfg.parent = self;
     item.__cfg.context = self.__cfg.context;
@@ -229,7 +229,7 @@ Util.augment(Group, {
     const children = item.__cfg.children;
     if (children) {
       Util.each(children, function(child) {
-        item.__setEvn(child);
+        item._setEvn(child);
       });
     }
   },

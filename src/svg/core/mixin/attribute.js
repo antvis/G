@@ -124,7 +124,7 @@ module.exports = {
       for (const k in name) {
         if (ALIAS_ATTRS.indexOf(k) === -1) {
           const v = name[k];
-          self._setAttr(k, v);
+          self.__setAttr(k, v);
         }
       }
       if (self.__afterSetAttrAll) {
@@ -135,7 +135,7 @@ module.exports = {
       return self;
     }
     if (arguments.length === 2) {
-      self._setAttr(name, value);
+      self.__setAttr(name, value);
       const m = '__afterSetAttr' + CAPITALIZED_ATTRS_MAP[name];
       if (CAPITALIZED_ATTRS_MAP[name] && self[m]) {
         self[m](value);
@@ -143,7 +143,7 @@ module.exports = {
       self.clearBBox();
       return self;
     }
-    return self._getAttr(name);
+    return self.__getAttr(name);
   },
   clearBBox() {
     this.setSilent('box', null);
@@ -152,11 +152,11 @@ module.exports = {
 
   },
   // 属性获取触发函数
-  _getAttr(name) {
+  __getAttr(name) {
     return this.__attrs[name];
   },
   // 属性设置触发函数
-  _setAttr(name, value) {
+  __setAttr(name, value) {
     const self = this;
     const el = self.get('el');
 
