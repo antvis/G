@@ -316,8 +316,8 @@ Util.augment(Group, {
 
     return this;
   },
-  find(id) {
-    return this.findBy(function(item) {
+  findById(id) {
+    return this.find(function(item) {
       return item.get('id') === id;
     });
   },
@@ -325,6 +325,49 @@ Util.augment(Group, {
    * 根据查找函数查找分组或者图形
    * @param  {Function} fn 匹配函数
    * @return {Canvas.Base} 分组或者图形
+   */
+  find(fn) {
+    if (Util.isString(fn)) {
+      return this.findById(fn);
+    }
+    const children = this.get('children');
+    let rst = null;
+
+    Util.each(children, function(item) {
+      if (fn(item)) {
+        rst = item;
+      } else if (item.find) {
+        rst = item.find(fn);
+      }
+      if (rst) {
+        return false;
+      }
+    });
+    return rst;
+  },
+  /**
+   * @param  {Function} fn filter mathod
+   * @return {Array} all the matching shapes and groups
+   */
+  findAll(fn) {
+    const children = this.get('children');
+    let rst = [];
+    let childRst = [];
+    Util.each(children, function(item) {
+      if (fn(item)) {
+        rst.push(item);
+      }
+      if (item.findAllBy) {
+        childRst = item.findAllBy(fn);
+        rst = rst.concat(childRst);
+      }
+    });
+    return rst;
+  },
+  /**
+   * @Deprecated
+   * @param  {Function} fn filter method
+   * @return {Object} found shape or group
    */
   findBy(fn) {
     const children = this.get('children');
@@ -342,6 +385,11 @@ Util.augment(Group, {
     });
     return rst;
   },
+  /**
+   * @Deprecated
+   * @param  {Function} fn filter mathod
+   * @return {Array} all the matching shapes and groups
+   */
   findAllBy(fn) {
     const children = this.get('children');
     let rst = [];
