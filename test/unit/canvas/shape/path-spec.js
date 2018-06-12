@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const { resolve } = require('path');
-const G = require('../../../src/index');
-const Canvas = require('../../../src/canvas');
+const G = require('../../../../src/index').canvas;
+const Canvas = G.Canvas;
 const div = document.createElement('div');
 div.id = 'canvas-path';
 document.body.appendChild(div);

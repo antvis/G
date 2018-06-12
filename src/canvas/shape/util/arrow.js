@@ -1,5 +1,5 @@
 const Marker = require('../marker');
-const Util = require('../../util/index');
+const Util = require('../../../util/index');
 
 const PI = Math.PI;
 const sin = Math.sin;
