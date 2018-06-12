@@ -16,11 +16,6 @@ module.exports = {
   Cubic: require('./shape/cubic'),
   Quadratic: require('./shape/quadratic'),
   Marker: require('./shape/marker'),
-  PathUtil: require('../util/path'),
   PathSegment: require('./shape/util/path-segment'),
-  MatrixUtil: require('../util/matrix'),
-  CommonUtil: require('../util/common'),
-  DomUtil: require('../util/dom'),
-  Event: require('./event'),
-  version: '____G_VERSION____'
+  Event: require('./event')
 };
