@@ -27,14 +27,14 @@ Util.augment(Rect, {
       fill: 'none'
     };
   },
-  __afterSetRadius() {
+  _afterSetRadius() {
     const el = this.get('el');
     el.setAttribute('rx', this.__attrs.radius);
     el.setAttribute('ry', this.__attrs.radius);
   },
-  __afterSetAttrAll(objs) {
+  _afterSetAttrAll(objs) {
     if ('radius' in objs) {
-      this.__afterSetRadius();
+      this._afterSetRadius();
     }
   }
 });

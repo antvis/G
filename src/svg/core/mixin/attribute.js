@@ -124,44 +124,44 @@ module.exports = {
       for (const k in name) {
         if (ALIAS_ATTRS.indexOf(k) === -1) {
           const v = name[k];
-          self.__setAttr(k, v);
+          self._setAttr(k, v);
         }
       }
-      if (self.__afterSetAttrAll) {
-        self.__afterSetAttrAll(name);
+      if (self._afterSetAttrAll) {
+        self._afterSetAttrAll(name);
       }
       // self.setSilent('box', null);
       self.clearBBox();
       return self;
     }
     if (arguments.length === 2) {
-      self.__setAttr(name, value);
-      const m = '__afterSetAttr' + CAPITALIZED_ATTRS_MAP[name];
+      self._setAttr(name, value);
+      const m = '_afterSetAttr' + CAPITALIZED_ATTRS_MAP[name];
       if (CAPITALIZED_ATTRS_MAP[name] && self[m]) {
         self[m](value);
       }
       self.clearBBox();
       return self;
     }
-    return self.__getAttr(name);
+    return self._getAttr(name);
   },
   clearBBox() {
     this.setSilent('box', null);
   },
-  __afterSetAttrAll() {
+  _afterSetAttrAll() {
 
   },
   // 属性获取触发函数
-  __getAttr(name) {
+  _getAttr(name) {
     return this.__attrs[name];
   },
   // 属性设置触发函数
-  __setAttr(name, value) {
+  _setAttr(name, value) {
     const self = this;
     const el = self.get('el');
 
     if (name === 'clip') {
-      self.__setAttrClip(name, value);
+      self._setAttrClip(name, value);
       return;
     }
     self.__attrs[name] = value;
@@ -172,14 +172,14 @@ module.exports = {
       return;
     }
     if (name === 'transform' || name === 'rotate') {
-      self.__setAttrTrans(name, value);
+      self._setAttrTrans(name, value);
     } else if (name.startsWith('shadow')) {
-      self.__setAttrShadow(name, value);
+      self._setAttrShadow(name, value);
     } else if (~[ 'stroke', 'strokeStyle', 'fill', 'fillStyle' ].indexOf(name) && el) {
       if (!value) {
         el.setAttribute(SVG_ATTR_MAP[name], 'none');
       } else if (/^[r,R,L,l]{1}[\s]*\(/.test(value.trim())) {
-        self.__setAttrGradients(name, value.trim());
+        self._setAttrGradients(name, value.trim());
       } else {
         el.setAttribute(SVG_ATTR_MAP[name], value);
       }
@@ -187,7 +187,7 @@ module.exports = {
       if (!value) {
         return self;
       }
-      self.__setAttrArrow(name, value);
+      self._setAttrArrow(name, value);
     } else {
       // 先存好属性，然后对一些svg和canvas中不同的属性进行特判
       if (~[ 'circle', 'ellipse', 'marker' ].indexOf(self.type) && ~[ 'x', 'y' ].indexOf(name)) {
@@ -221,14 +221,14 @@ module.exports = {
   hasStroke() {
     return this.canStroke && this.__attrs.strokeStyle;
   },
-  __setAttrArrow(name, value) {
+  _setAttrArrow(name, value) {
     const self = this;
     const el = self.get('el');
     let defs = self.get('defs');
     if (!defs) {
       const canvas = self.get('canvas');
       if (!canvas) {
-        this.__setAttrDependency(name, value);
+        this._setAttrDependency(name, value);
         return this;
       }
       defs = canvas.get('defs');
@@ -249,7 +249,7 @@ module.exports = {
     self.__cfg[name] = id;
     self.get('el').setAttribute(name, `url(#${id})`);
   },
-  __setAttrShadow(name, value) {
+  _setAttrShadow(name, value) {
     const attrs = this.__attrs;
     const filter = this.get('filter');
     let defs = this.get('defs');
@@ -264,7 +264,7 @@ module.exports = {
     if (!defs) {
       const canvas = this.get('canvas');
       if (!canvas) {
-        this.__setAttrDependency(name, value);
+        this._setAttrDependency(name, value);
         return this;
       }
       defs = canvas.get('defs');
@@ -286,7 +286,7 @@ module.exports = {
     this.__cfg.filter = id;
     this.get('el').setAttribute('filter', `url(#${id})`);
   },
-  __setAttrGradients(name, value) {
+  _setAttrGradients(name, value) {
     name = name.replace('Style', '');
     let defs = this.get('defs');
     if (!value) {
@@ -296,7 +296,7 @@ module.exports = {
     if (!defs) {
       const canvas = this.get('canvas');
       if (!canvas) {
-        this.__setAttrDependency(name, value);
+        this._setAttrDependency(name, value);
         return this;
       }
       defs = canvas.get('defs');
@@ -308,7 +308,7 @@ module.exports = {
     }
     this.get('el').setAttribute(name, `url(#${id})`);
   },
-  __setAttrDependency(name, value) {
+  _setAttrDependency(name, value) {
     let dependencies = this.get('dependencies');
     if (!dependencies) {
       dependencies = {};
@@ -317,7 +317,7 @@ module.exports = {
     this.__cfg.dependencies = dependencies;
     return this;
   },
-  __setAttrClip(name, value) {
+  _setAttrClip(name, value) {
     let defs = this.get('defs');
     const canvas = this.get('canvas');
     if (!value) {
@@ -327,7 +327,7 @@ module.exports = {
     if (!defs) {
       const canvas = this.get('canvas');
       if (!canvas) {
-        this.__setAttrDependency(name, value);
+        this._setAttrDependency(name, value);
         return this;
       }
       defs = canvas.get('defs');
@@ -336,7 +336,7 @@ module.exports = {
     const id = defs.addClip(value);
     this.get('el').setAttribute('clip-path', `url(#${id})`);
   },
-  __setAttrTrans(name, value) {
+  _setAttrTrans(name, value) {
     const attrs = this.__attrs;
     if (!value) {
       this.get('el').removeAttribute('transform');
@@ -348,7 +348,7 @@ module.exports = {
       this.transform(value);
     } else {
       if (typeof attrs.x === 'undefined' || typeof attrs.y === 'undefined') {
-        this.__setAttrDependency(name, value);
+        this._setAttrDependency(name, value);
         return this;
       }
       this.rotateAtStart(value);

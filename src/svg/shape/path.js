@@ -33,7 +33,7 @@ Util.augment(Path, {
       endArrow: false
     };
   },
-  __afterSetAttrStroke(value) {
+  _afterSetAttrStroke(value) {
     const start = this.get('marker-start');
     const end = this.get('marker-end');
     if (start) {
@@ -43,7 +43,7 @@ Util.augment(Path, {
       this.get('defs').findById(end).update(null, value);
     }
   },
-  __afterSetAttrPath(value) {
+  _afterSetAttrPath(value) {
     const el = this.get('el');
     let d = value;
     if (Util.isArray(d)) {
@@ -57,12 +57,12 @@ Util.augment(Path, {
       el.setAttribute('d', d);
     }
   },
-  __afterSetAttrAll(objs) {
+  _afterSetAttrAll(objs) {
     if (objs.path) {
-      this.__afterSetAttrPath(objs.path);
+      this._afterSetAttrPath(objs.path);
     }
     if (objs.stroke) {
-      this.__afterSetAttrStroke(objs.stroke);
+      this._afterSetAttrStroke(objs.stroke);
     }
   },
   getPoint(t) {
@@ -71,8 +71,8 @@ Util.augment(Path, {
     let index;
 
     if (!tCache) {
-      this.__calculateCurve();
-      this.__setTcache();
+      this._calculateCurve();
+      this._setTcache();
       tCache = this.tCache;
     }
 

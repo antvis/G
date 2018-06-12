@@ -21,15 +21,15 @@ Util.extend(CImage, Shape);
 
 Util.augment(CImage, {
   type: 'image',
-  __afterSetAttrImg(img) {
-    this.__setAttrImg(img);
+  _afterSetAttrImg(img) {
+    this._setAttrImg(img);
   },
-  __afterSetAttrAll(params) {
+  _afterSetAttrAll(params) {
     if (params.img) {
-      this.__setAttrImg(params.img);
+      this._setAttrImg(params.img);
     }
   },
-  __setAttrImg(image) {
+  _setAttrImg(image) {
     const self = this;
     const el = this.get('el');
     const attrs = self.__attrs;

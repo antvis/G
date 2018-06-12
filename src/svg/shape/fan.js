@@ -38,28 +38,28 @@ Util.augment(Fan, {
       fill: 'none'
     };
   },
-  __afterSetAttrX() {
-    this.__calculatePath();
+  _afterSetAttrX() {
+    this._calculatePath();
   },
-  __afterSetAttrY() {
-    this.__calculatePath();
+  _afterSetAttrY() {
+    this._calculatePath();
   },
-  __afterSetAttrRs() {
-    this.__calculatePath();
+  _afterSetAttrRs() {
+    this._calculatePath();
   },
-  __afterSetAttrRe() {
-    this.__calculatePath();
+  _afterSetAttrRe() {
+    this._calculatePath();
   },
-  __afterSetAttrStartAngle() {
-    this.__calculatePath();
+  _afterSetAttrStartAngle() {
+    this._calculatePath();
   },
-  __afterSetAttrEndAngle() {
-    this.__calculatePath();
+  _afterSetAttrEndAngle() {
+    this._calculatePath();
   },
-  __afterSetAttrClockwise() {
-    this.__calculatePath();
+  _afterSetAttrClockwise() {
+    this._calculatePath();
   },
-  __afterSetAttrAll(obj) {
+  _afterSetAttrAll(obj) {
     if ('x' in obj ||
       'y' in obj ||
       'rs' in obj ||
@@ -68,10 +68,10 @@ Util.augment(Fan, {
       'endAngle' in obj ||
       'clockwise' in obj
     ) {
-      this.__calculatePath();
+      this._calculatePath();
     }
   },
-  __calculatePath() {
+  _calculatePath() {
     const self = this;
     const attrs = self.__attrs;
     const center = {

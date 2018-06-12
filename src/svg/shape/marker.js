@@ -68,24 +68,24 @@ Util.augment(Marker, {
       fill: 'none'
     };
   },
-  __afterSetX() {
-    this.__assembleShape();
+  _afterSetX() {
+    this._assembleShape();
   },
-  __afterSetY() {
-    this.__assembleShape();
+  _afterSetY() {
+    this._assembleShape();
   },
-  __afterSetRadius() {
-    this.__assembleShape();
+  _afterSetRadius() {
+    this._assembleShape();
   },
-  __afterSetR() {
-    this.__assembleShape();
+  _afterSetR() {
+    this._assembleShape();
   },
-  __afterSetAttrAll(objs) {
+  _afterSetAttrAll(objs) {
     if ('x' in objs || 'y' in objs || 'radius' in objs) {
-      this.__assembleShape();
+      this._assembleShape();
     }
   },
-  __assembleShape() {
+  _assembleShape() {
     const attrs = this.__attrs;
     let r = attrs.r;
     if (typeof attrs.r === 'undefined') {
