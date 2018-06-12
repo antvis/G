@@ -159,6 +159,11 @@ var canvas = new Canvas({
 * sort() 对内部图形元素进行排序，根据图形元素的 zIndex 进行排序
 * clear() 清空画布
 * destroy() 销毁
+* find(fn) 在当前group中递归查找满足fn的shape或group
+* findAll(fn) 在当前group中递归查找所有满足fn的shape和group
+* findById(id) 在当前group中递归查找id匹配的shape或group
+* findBy(fn) 接口已废弃
+* find(id) 接口已废弃
 
 ### Shape
 
@@ -375,7 +380,8 @@ canvas.addShape('rect', {
       y1: 300 + 20,
       x2: 280,
       y2: 300 + 280,
-      arrow: true,                                             // 显示箭头
+      startArrow: true, 
+      endArrow: true,                                             // 显示箭头
       stroke: '#00ff00'                   // 6位十六进制
     }
   });
@@ -385,7 +391,8 @@ canvas.addShape('rect', {
       y2: 300 + 20,
       x1: 300 + 280,
       y1: 300 + 280,
-      arrow: true,                                             // 显示箭头
+      startArrow: true, 
+      endArrow: true,                                             // 显示箭头
       stroke: '#00f'                      // 3位十六进制
     }
   });

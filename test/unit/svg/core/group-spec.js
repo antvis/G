@@ -247,11 +247,11 @@ describe('Group', () => {
     g1.add(e1);
     g2.add(e2);
     g2.add(e3);
-    const inst = g1.findBy(item => {
+    const inst = g1.find(item => {
       return item.get('zIndex') === 3;
     });
     expect(inst).to.eql(e3);
-    expect(g1.find('e1')).to.eql(e1);
+    expect(g1.findById('e1')).to.eql(e1);
   });
 /*
   it('fill', () => {
