@@ -185,9 +185,9 @@ Util.augment(Group, {
           parent.removeChild(item, false);
         }
         if (item.get('dependencies')) {
-          self.__addDependency(item);
+          self._addDependency(item);
         }
-        self.__setEvn(item);
+        self._setEvn(item);
         el.appendChild(item.get('el'));
       });
       children.push.apply(children, items);
@@ -197,9 +197,9 @@ Util.augment(Group, {
       if (parent) {
         parent.removeChild(item, false);
       }
-      self.__setEvn(item);
+      self._setEvn(item);
       if (item.get('dependencies')) {
-        self.__addDependency(item);
+        self._addDependency(item);
       }
       el.appendChild(item.get('el'));
       children.push(item);
@@ -221,12 +221,12 @@ Util.augment(Group, {
     const lastIndex = this.get('children').length - 1;
     return this.getChildByIndex(lastIndex);
   },
-  __addDependency(item) {
+  _addDependency(item) {
     const dependencies = item.get('dependencies');
     item.attr(dependencies);
     item.__cfg.dependencies = {};
   },
-  __setEvn(item) {
+  _setEvn(item) {
     const self = this;
     item.__cfg.parent = self;
     item.__cfg.parent = self;
@@ -240,7 +240,7 @@ Util.augment(Group, {
     const children = item.__cfg.children;
     if (children) {
       Util.each(children, child => {
-        item.__setEvn(child);
+        item._setEvn(child);
       });
     }
   },

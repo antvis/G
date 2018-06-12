@@ -67,7 +67,7 @@ Util.augment(CText, {
       ]);
     }
   },
-  __assembleFont() {
+  _assembleFont() {
     const el = this.get('el');
     const attrs = this.__attrs;
     const fontSize = attrs.fontSize;
@@ -81,35 +81,35 @@ Util.augment(CText, {
     el.setAttribute('font', attrs.font);
 
   },
-  __afterSetAttrFontSize() {
+  _afterSetAttrFontSize() {
     /* this.attr({
-      height: this.__getTextHeight()
+      height: this._getTextHeight()
     }); */
-    this.__assembleFont();
+    this._assembleFont();
   },
-  __afterSetAttrFontFamily() {
-    this.__assembleFont();
+  _afterSetAttrFontFamily() {
+    this._assembleFont();
   },
-  __afterSetAttrFontWeight() {
-    this.__assembleFont();
+  _afterSetAttrFontWeight() {
+    this._assembleFont();
   },
-  __afterSetAttrFontStyle() {
-    this.__assembleFont();
+  _afterSetAttrFontStyle() {
+    this._assembleFont();
   },
-  __afterSetAttrFontVariant() {
-    this.__assembleFont();
+  _afterSetAttrFontVariant() {
+    this._assembleFont();
   },
-  __afterSetAttrTextAlign() {
+  _afterSetAttrTextAlign() {
     // 由于本身不支持设置direction，所以left = start, right = end。之后看是否需要根据direction判断
     const attr = this.__attrs.textAlign;
     const el = this.get('el');
     el.setAttribute('text-anchor', ANCHOR_MAP[attr]);
   },
-  __afterSetAttrTextBaseLine() {
+  _afterSetAttrTextBaseLine() {
     const attr = this.__attrs.textBaseline;
     this.get('el').setAttribute('alignment-baseline', BASELINE_MAP[attr] || 'baseline');
   },
-  __afterSetAttrText(text) {
+  _afterSetAttrText(text) {
     const attrs = this.__attrs;
     let textArr;
     if (Util.isString(text) && (text.indexOf('\n') !== -1)) {
@@ -134,7 +134,7 @@ Util.augment(CText, {
       el.innerHTML = text;
     }
   },
-  __afterSetAttrOutline(val) {
+  _afterSetAttrOutline(val) {
     const el = this.get('el');
     if (!val) {
       el.setAttribute('paint-order', 'normal');
@@ -149,7 +149,7 @@ Util.augment(CText, {
     el.setAttribute('stroke-width', lineWidth);
   },
   // 计算浪费，效率低，待优化
-  __afterSetAttrAll(objs) {
+  _afterSetAttrAll(objs) {
     const self = this;
     if (
       'fontSize' in objs ||
@@ -158,19 +158,19 @@ Util.augment(CText, {
       'fontVariant' in objs ||
       'fontFamily' in objs
     ) {
-      self.__assembleFont();
+      self._assembleFont();
     }
     if ('textAlign' in objs) {
-      this.__afterSetAttrTextAlign();
+      this._afterSetAttrTextAlign();
     }
     if ('textBaseline' in objs) {
-      this.__afterSetAttrTextBaseLine();
+      this._afterSetAttrTextBaseLine();
     }
     if ('text' in objs) {
-      self.__afterSetAttrText(objs.text);
+      self._afterSetAttrText(objs.text);
     }
     if ('outline' in objs) {
-      self.__afterSetAttrOutline(objs.outline);
+      self._afterSetAttrOutline(objs.outline);
     }
   }
 });

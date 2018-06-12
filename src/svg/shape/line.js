@@ -28,7 +28,7 @@ Util.augment(Line, {
       endArrow: false
     };
   },
-  __afterSetAttrStroke(value) {
+  _afterSetAttrStroke(value) {
     const start = this.get('marker-start');
     const end = this.get('marker-end');
     if (start) {
@@ -38,9 +38,9 @@ Util.augment(Line, {
       this.get('defs').findById(end).update(value);
     }
   },
-  __afterSetAttrAll(objs) {
+  _afterSetAttrAll(objs) {
     if (objs.stroke) {
-      this.__afterSetAttrStroke(objs.stroke);
+      this._afterSetAttrStroke(objs.stroke);
     }
   },
   createPath() {},

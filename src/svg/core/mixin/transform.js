@@ -33,7 +33,7 @@ module.exports = {
     mat3.translate(matrix, matrix, [ tx, ty ]);
     this.attr('matrix', matrix);
     if (arguments.length === 2 || perform) {
-      this.__performTransform();
+      this._performTransform();
     }
     return this;
   },
@@ -45,7 +45,7 @@ module.exports = {
     mat3.rotate(matrix, matrix, radian);
     this.attr('matrix', matrix);
     if (arguments.length === 1 || perform) {
-      this.__performTransform();
+      this._performTransform();
     }
     return this;
   },
@@ -70,7 +70,7 @@ module.exports = {
     mat3.scale(matrix, matrix, [ s1, s2 ]);
     this.attr('matrix', matrix);
     if (arguments.length === 2 || perform) {
-      this.__performTransform();
+      this._performTransform();
     }
     return this;
   },
@@ -86,7 +86,7 @@ module.exports = {
     this.set('x', x);
     this.set('y', y);
   },
-  __performTransform() {
+  _performTransform() {
     const matrix = this.__attrs.matrix;
     const transform = [];
     for (let i = 0; i < 9; i += 3) {
@@ -118,7 +118,7 @@ module.exports = {
           break;
       }
     });
-    this.__performTransform();
+    this._performTransform();
     return self;
   },
   setTransform(ts) {
@@ -130,7 +130,7 @@ module.exports = {
   },
   setMatrix(m) {
     this.attr('matrix', m);
-    this.__performTransform();
+    this._performTransform();
     this.clearTotalMatrix();
     return this;
   },
