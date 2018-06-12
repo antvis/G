@@ -249,11 +249,11 @@ describe('Group', function() {
     g2.add(e2);
     g2.add(e3);
 
-    expect(g1.findBy(function(item) {
+    expect(g1.find(function(item) {
       return item.get('zIndex') === 3;
     })).to.eql(e3);
 
-    expect(g1.find('e1')).to.eql(e1);
+    expect(g1.findById('e1')).to.eql(e1);
   });
 /*
   it('fill', function() {
