@@ -13,10 +13,5 @@ module.exports = {
   Marker: require('./shape/marker'),
   Dom: require('./shape/dom'),
   Fan: require('./shape/fan'),
-  PathUtil: require('../util/path'),
-  MatrixUtil: require('../util/matrix'),
-  CommonUtil: require('../util/common'),
-  DomUtil: require('../util/dom'),
-  Event: require('./event'),
-  version: '____G_VERSION____'
+  Event: require('./event')
 };
