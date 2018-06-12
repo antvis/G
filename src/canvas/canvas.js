@@ -226,7 +226,7 @@ Util.augment(Canvas, {
   _setInitSize() {
     this.changeSize(this.get('width'), this.get('height'));
   },
-  _reSize() {
+  _resize() {
     const canvasDOM = this.get('canvasDOM');
     const widthCanvas = this.get('widthCanvas');
     const heightCanvas = this.get('heightCanvas');
@@ -259,7 +259,7 @@ Util.augment(Canvas, {
     this.set('heightStyle', height + 'px');
     this.set('width', width);
     this.set('height', height);
-    this._reSize();
+    this._resize();
   },
   /**
    * 将窗口坐标转变成 canvas 坐标
