@@ -11,7 +11,7 @@ Util.augment(Dom, {
   canFill: true,
   canStroke: true,
   type: 'dom',
-  __afterSetAttrHtml() {
+  _afterSetAttrHtml() {
     const html = this.__attrs.html;
     const el = this.get('el');
     if (typeof html === 'string') {
@@ -21,9 +21,9 @@ Util.augment(Dom, {
       el.appendChild(html);
     }
   },
-  __afterSetAttrAll(objs) {
+  _afterSetAttrAll(objs) {
     if ('html' in objs) {
-      this.__afterSetAttrHtml();
+      this._afterSetAttrHtml();
     }
   }
 });

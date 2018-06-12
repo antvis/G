@@ -83,7 +83,7 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
     return {};
   },
   set(name, value) {
-    const m = '__set' + Util.upperFirst(name);
+    const m = '_beforeSet' + Util.upperFirst(name);
 
     if (this[m]) {
       value = this[m](value);
@@ -149,7 +149,7 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
     this.removeEvent(); // 移除所有的事件
     this.set('destroyed', true);
   },
-  __setZIndex(zIndex) {
+  _beforeSetZIndex(zIndex) {
     this.__cfg.zIndex = zIndex;
 
     if (!Util.isNil(this.get('parent'))) {
@@ -157,7 +157,7 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
     }
     return zIndex;
   },
-  __setAttrs(attrs) {
+  _setAttrs(attrs) {
     this.attr(attrs);
     return attrs;
   },

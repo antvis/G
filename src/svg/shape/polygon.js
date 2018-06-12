@@ -22,7 +22,7 @@ Util.augment(Polygon, {
       fill: 'none'
     };
   },
-  __afterSetAttrPoints() {
+  _afterSetAttrPoints() {
     const value = this.__attrs.points;
     const el = this.get('el');
     let points = value;
@@ -34,9 +34,9 @@ Util.augment(Polygon, {
     }
     el.setAttribute('points', points);
   },
-  __afterSetAttrAll(obj) {
+  _afterSetAttrAll(obj) {
     if ('points' in obj) {
-      this.__afterSetAttrPoints();
+      this._afterSetAttrPoints();
     }
   },
   createPath() {}
