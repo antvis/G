@@ -135,48 +135,33 @@ Util.augment(Canvas, {
   _registEvents() {
     const self = this;
     const el = self.get('el');
+    const events = [ 'mouseout',
+      'mouseover',
+      'mousemove',
+      'mousedown',
+      'mouseup',
+      'click',
+      'dblclick'
+    ];
 
-    el.addEventListener('mouseout', function(e) {
-      self._triggerEvent('mouseleave', e);
-    }, false);
-
-    el.addEventListener('mouseover', function(e) {
-      self._triggerEvent('mouseenter', e);
-    }, false);
-
-    el.addEventListener('mousemove', function(e) {
-      self._triggerEvent('mousemove', e);
-    }, false);
-
-    el.addEventListener('mousedown', function(e) {
-      self._triggerEvent('mousedown', e);
-    }, false);
-
-    el.addEventListener('mouseup', function(e) {
-      self._triggerEvent('mouseup', e);
-    }, false);
-
-    el.addEventListener('click', function(e) {
-      self._triggerEvent('click', e);
-    }, false);
-
-    el.addEventListener('dblclick', function(e) {
-      self._triggerEvent('dblclick', e);
-    }, false);
-
-    el.addEventListener('touchstart', function(e) {
+    Util.each(events, event => {
+      el.addEventListener(event, e => {
+        self._triggerEvent(event, e);
+      }, false);
+    });
+    el.addEventListener('touchstart', e => {
       if (!Util.isEmpty(e.touches)) {
         self._triggerEvent('touchstart', e.touches[0]);
       }
     }, false);
 
-    el.addEventListener('touchmove', function(e) {
+    el.addEventListener('touchmove', e => {
       if (!Util.isEmpty(e.touches)) {
         self._triggerEvent('touchmove', e.touches[0]);
       }
     }, false);
 
-    el.addEventListener('touchend', function(e) {
+    el.addEventListener('touchend', e => {
       if (!Util.isEmpty(e.changedTouches)) {
         self._triggerEvent('touchend', e.changedTouches[0]);
       }

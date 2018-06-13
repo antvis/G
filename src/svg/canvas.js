@@ -136,35 +136,20 @@ Util.augment(Canvas, {
   _registEvents() {
     const self = this;
     const el = self.get('el');
+    const events = [ 'mouseout',
+      'mouseover',
+      'mousemove',
+      'mousedown',
+      'mouseup',
+      'click',
+      'dblclick'
+    ];
 
-    el.addEventListener('mouseout', e => {
-      self._triggerEvent('mouseleave', e);
-    }, false);
-
-    el.addEventListener('mouseover', e => {
-      self._triggerEvent('mouseenter', e);
-    }, false);
-
-    el.addEventListener('mousemove', e => {
-      self._triggerEvent('mousemove', e);
-    }, false);
-
-    el.addEventListener('mousedown', e => {
-      self._triggerEvent('mousedown', e);
-    }, false);
-
-    el.addEventListener('mouseup', e => {
-      self._triggerEvent('mouseup', e);
-    }, false);
-
-    el.addEventListener('click', e => {
-      self._triggerEvent('click', e);
-    }, false);
-
-    el.addEventListener('dblclick', e => {
-      self._triggerEvent('dblclick', e);
-    }, false);
-
+    Util.each(events, event => {
+      el.addEventListener(event, e => {
+        self._triggerEvent(event, e);
+      }, false);
+    });
     el.addEventListener('touchstart', e => {
       if (!Util.isEmpty(e.touches)) {
         self._triggerEvent('touchstart', e.touches[0]);
