@@ -161,7 +161,7 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
     this.attr(attrs);
     return attrs;
   },
-  _setZIndex(zIndex) {
+  setZIndex(zIndex) {
     this.__cfg.zIndex = zIndex;
     return zIndex;
   },
