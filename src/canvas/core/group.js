@@ -240,45 +240,53 @@ Util.augment(Group, {
     let minY = Infinity;
     let maxY = -Infinity;
     const children = self.get('children');
-    Util.each(children, function(child) {
-      if (child.get('visible')) {
-        const box = child.getBBox();
-        if (!box) {
-          return true;
+    if (children.length > 0) {
+      Util.each(children, function(child) {
+        if (child.get('visible')) {
+          const box = child.getBBox();
+          if (!box) {
+            return true;
+          }
+
+          const leftTop = [ box.minX, box.minY, 1 ];
+          const leftBottom = [ box.minX, box.maxY, 1 ];
+          const rightTop = [ box.maxX, box.minY, 1 ];
+          const rightBottom = [ box.maxX, box.maxY, 1 ];
+
+          child.apply(leftTop);
+          child.apply(leftBottom);
+          child.apply(rightTop);
+          child.apply(rightBottom);
+
+          const boxMinX = Math.min(leftTop[0], leftBottom[0], rightTop[0], rightBottom[0]);
+          const boxMaxX = Math.max(leftTop[0], leftBottom[0], rightTop[0], rightBottom[0]);
+          const boxMinY = Math.min(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
+          const boxMaxY = Math.max(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
+
+          if (boxMinX < minX) {
+            minX = boxMinX;
+          }
+
+          if (boxMaxX > maxX) {
+            maxX = boxMaxX;
+          }
+
+          if (boxMinY < minY) {
+            minY = boxMinY;
+          }
+
+          if (boxMaxY > maxY) {
+            maxY = boxMaxY;
+          }
         }
+      });
+    } else {
+      minX = 0;
+      maxX = 0;
+      minY = 0;
+      maxY = 0;
+    }
 
-        const leftTop = [ box.minX, box.minY, 1 ];
-        const leftBottom = [ box.minX, box.maxY, 1 ];
-        const rightTop = [ box.maxX, box.minY, 1 ];
-        const rightBottom = [ box.maxX, box.maxY, 1 ];
-
-        child.apply(leftTop);
-        child.apply(leftBottom);
-        child.apply(rightTop);
-        child.apply(rightBottom);
-
-        const boxMinX = Math.min(leftTop[0], leftBottom[0], rightTop[0], rightBottom[0]);
-        const boxMaxX = Math.max(leftTop[0], leftBottom[0], rightTop[0], rightBottom[0]);
-        const boxMinY = Math.min(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
-        const boxMaxY = Math.max(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
-
-        if (boxMinX < minX) {
-          minX = boxMinX;
-        }
-
-        if (boxMaxX > maxX) {
-          maxX = boxMaxX;
-        }
-
-        if (boxMinY < minY) {
-          minY = boxMinY;
-        }
-
-        if (boxMaxY > maxY) {
-          maxY = boxMaxY;
-        }
-      }
-    });
     const box = {
       minX,
       minY,
