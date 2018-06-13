@@ -106,9 +106,8 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
     return {};
   },
   set(name, value) {
-    const m = '_beforeSet' + Util.upperFirst(name);
-    if (this[m]) {
-      value = this[m](value);
+    if (name === 'zIndex') {
+      this._beforeSetZIndex(value);
     }
     this.__cfg[name] = value;
     return this;
