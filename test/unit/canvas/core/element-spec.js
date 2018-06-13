@@ -23,7 +23,8 @@ describe('Element', function() {
     expect(mat3.exactEquals(e.attr('matrix'), m)).to.be.true;
   });
 
-  it('set and get', function() {
+  /* @deprecated
+  it('set and get', () => {
     const e = new Element();
     let a = 123;
     expect(a).to.equal(123);
@@ -34,7 +35,7 @@ describe('Element', function() {
     e.set('test', 1111);
     expect(e.get('test')).to.equal(1110);
     expect(a).to.equal(321);
-  });
+  });*/
 
   it('eventEmitter', function() {
     const ele = new Element();
