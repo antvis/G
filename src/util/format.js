@@ -79,6 +79,11 @@ function parseRadialGradient(color, self) {
   const fy = parseFloat(arr[2]);
   const fr = parseFloat(arr[3]);
   const steps = arr[4];
+  // 环半径为0时，默认无渐变，取渐变序列的最后一个颜色
+  if (fr === 0) {
+    const colors = steps.match(regexColorStop);
+    return colors[colors.length - 1].split(':')[1];
+  }
   const box = self.getBBox();
   const context = self.get('context');
   const width = box.maxX - box.minX;
