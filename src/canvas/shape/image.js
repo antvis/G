@@ -58,7 +58,7 @@ Util.augment(CImage, {
     const height = attrs.height;
     return Inside.rect(rx, ry, width, height, x, y);
   },
-  _setLoading(loading) {
+  _beforeSetLoading(loading) {
     const canvas = this.get('canvas');
     if (loading === false && this.get('toDraw') === true) {
       this.__cfg.loading = false;

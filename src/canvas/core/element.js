@@ -106,8 +106,11 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
     return {};
   },
   set(name, value) {
-    if (name === 'zIndex') {
+    if (name === 'zIndex' && this._beforeSetZIndex) {
       this._beforeSetZIndex(value);
+    }
+    if (name === 'loading' && this._beforeSetLoading) {
+      this._beforeSetLoading(value);
     }
     this.__cfg[name] = value;
     return this;
