@@ -1,15 +1,15 @@
 {
   "name": "@antv/g",
-  "version": "2.0.7-beta.6",
+  "version": "3.0.0-beta.1",
   "description": "A canvas library which providing 2d draw for G2.",
   "keywords": [
     "canvas",
     "G2",
     "2d draw"
   ],
-  "main": "build/g.js",
   "browser": "build/g.js",
-  "module": "lib/index.js",
+  "main": "lib/index.js",
+  "module": "src/index.js",
   "homepage": "https://github.com/antvis/g",
   "author": "https://github.com/orgs/antvis/people",
   "repository": {
@@ -20,14 +20,14 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "devDependencies": {
-    "@lite-js/torch": "~0.2.6",
+    "torchjs": "~2.0.3",
     "babel-cli": "~6.26.0",
     "babel-eslint": "~7.2.3",
     "babel-loader": "~7.1.1",
     "babel-plugin-transform-remove-strict-mode": "~0.0.2",
     "babel-preset-env": "~1.6.1",
     "chai": "~4.0.1",
-    "electron": "~1.8.4",
+    "electron": "~2.0.2",
     "eslint": "~3.19.0",
     "eslint-config-airbnb": "~15.0.1",
     "eslint-config-egg": "~4.2.0",
@@ -52,7 +52,8 @@
     "coverage-generator": "torch --coverage --compile --renderer --recursive test/unit",
     "dev": "webpack --config webpack-dev.config.js",
     "dist": "rm -rf dist && mkdir dist && npm run build && npm run compress",
-    "prepublishOnly": "npm run build-lib && npm run dist",
+    "prepublishOnly": "npm run postinstall",
+    "postinstall": "npm run build-lib && npm run dist",
     "lint": "eslint ./",
     "lint-fix": "eslint --fix ./",
     "test": "torch --compile --renderer --recursive ./test/unit",
@@ -66,11 +67,11 @@
     "silent": false
   },
   "dependencies": {
+    "@antv/util": "~1.0.2",
     "d3-ease": "~1.0.3",
     "d3-interpolate": "~1.1.5",
     "d3-timer": "~1.0.6",
-    "gl-matrix": "~2.3.2",
-    "lodash": "~4.17.4",
+    "gl-matrix": "~2.6.1",
     "wolfy87-eventemitter": "~5.1.0"
   }
 }

@@ -159,6 +159,11 @@ var canvas = new Canvas({
 * sort() 对内部图形元素进行排序，根据图形元素的 zIndex 进行排序
 * clear() 清空画布
 * destroy() 销毁
+* find(fn) 在当前group中递归查找满足fn的shape或group
+* findAll(fn) 在当前group中递归查找所有满足fn的shape和group
+* findById(id) 在当前group中递归查找id匹配的shape或group
+* findBy(fn) 接口已废弃
+* find(id) 接口已废弃
 
 ### Shape
 
@@ -293,7 +298,18 @@ canvas.addShape('rect', {
 
 * 通用的图形属性见：[绘图属性](https://antv.alipay.com/zh-cn/g2/3.x/api/graphic.html)
 * path：路径，支持 字符串或者数组两种方式，详情参考 [svg path](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths)
-* arrow 是否显示箭头 ture / false
+* arrow 箭头设置
+    * true / false: 显示 / 取消默认箭头
+    * 支持定义Marker形状的箭头，箭头中心位于线段的端点
+    ```js
+    canvas.addShape('path', {
+      attrs: {
+        startArrow: new Marker({
+           attrs: { ... }  
+        })
+      }
+    });
+    ```
 
   ```js
     const path = group.addShape('path', {
@@ -335,7 +351,18 @@ canvas.addShape('rect', {
 * y1 起始点的 y 坐标
 * x2 结束点的 x 坐标
 * y2 结束点的 y 坐标
-* arrow 是否显示箭头 ture / false
+* arrow 箭头设置
+    * true / false: 显示 / 取消默认箭头
+    * 支持定义Marker形状的箭头，箭头中心位于线段的端点
+    ```js
+    canvas.addShape('line', {
+          attrs: {
+            startArrow: new Marker({
+               attrs: { ... }  
+            })
+          }
+        });
+    ```
 
 ```js
   canvas.addShape('line', {
@@ -353,7 +380,8 @@ canvas.addShape('rect', {
       y1: 300 + 20,
       x2: 280,
       y2: 300 + 280,
-      arrow: true,                                             // 显示箭头
+      startArrow: true, 
+      endArrow: true,                                             // 显示箭头
       stroke: '#00ff00'                   // 6位十六进制
     }
   });
@@ -363,7 +391,8 @@ canvas.addShape('rect', {
       y2: 300 + 20,
       x1: 300 + 280,
       y1: 300 + 280,
-      arrow: true,                                             // 显示箭头
+      startArrow: true, 
+      endArrow: true,                                             // 显示箭头
       stroke: '#00f'                      // 3位十六进制
     }
   });
