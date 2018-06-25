@@ -82,6 +82,7 @@ Util.augment(CImage, {
         self.set('loading', false);
       };
       image.src = img;
+      image.crossOrigin = 'Anonymous';
       self.set('loading', true);
     } else if (img instanceof Image) {
       if (!attrs.width) {
