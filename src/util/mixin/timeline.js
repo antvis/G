@@ -7,7 +7,9 @@ const { interpolate, interpolateArray } = require('d3-interpolate'); // 目前�
 const Timeline = function() {
   // 待执行动画的队列
   this._animators = [];
+  // 当前时间
   this._current = 0;
+  // 计时器实例
   this._timer = null;
 };
 
@@ -56,6 +58,7 @@ function _update(self, animator, ratio) {
 
 function update(shape, animator, elapsed) {
   const startTime = animator.startTime;
+  // 如果还没有开始执行或暂停，先不更新
   if (elapsed < (startTime + animator.delay) || animator.isPaused) {
     return false;
   }
@@ -63,6 +66,7 @@ function update(shape, animator, elapsed) {
   let isFinished = false;
   const duration = animator.duration;
   const easing = animator.easing;
+  // 已执行时间
   elapsed = elapsed - startTime - animator.delay;
   if (animator.toAttrs.repeat) {
     ratio = (elapsed % duration) / duration;
@@ -97,6 +101,7 @@ Util.augment(Timeline, {
         for (let i = this._animators.length - 1; i >= 0; i--) {
           shape = this._animators[i];
           if (shape.get('destroyed')) {
+            // 如果已经被销毁，直接移出队列
             self.removeAnimator(i);
             continue;
           }
