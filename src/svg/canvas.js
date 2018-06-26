@@ -2,6 +2,7 @@ const Util = require('../util/index');
 const Event = require('./event');
 const Group = require('./core/group');
 const Defs = require('./core/defs');
+const Timeline = require('../util/mixin/timeline');
 
 const Canvas = function(cfg) {
   Canvas.superclass.constructor.call(this, cfg);
@@ -196,6 +197,8 @@ Util.augment(Canvas, {
       this.set('canvas', this);
     }
     const canvasDOM = this.get('canvasDOM');
+    const timeline = new Timeline();
+    this.setSilent('timeline', timeline);
     this.set('context', canvasDOM);
 
   },
