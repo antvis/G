@@ -140,4 +140,46 @@ describe('animate', function() {
       done();
     }, 1000);
   });
+  it('animate pause & resume', done => {
+    const shape = canvas.addShape('rect', {
+      attrs: {
+        x: 150,
+        y: 90,
+        width: 20,
+        height: 20,
+        fill: 'red'
+      }
+    });
+    shape.animate({ height: 100 }, 1000);
+    setTimeout(() => {
+      shape.pauseAnimate();
+      expect(shape.attr('height'), 60);
+    }, 500);
+    setTimeout(() => {
+      expect(shape.attr('height'), 60);
+      shape.resumeAnimate();
+    }, 700);
+    setTimeout(() => {
+      expect(shape.attr('height'), 100);
+      done();
+    }, 1000);
+  });
+  it('overlap animating attrs', done => {
+    const shape = canvas.addShape('rect', {
+      attrs: {
+        x: 200,
+        y: 90,
+        width: 20,
+        height: 20,
+        fill: 'red'
+      }
+    });
+    shape.animate({ width: 100, height: 100 }, 1000);
+    shape.animate({ width: 50 }, 1000);
+    setTimeout(() => {
+      expect(shape.attr('height'), 100);
+      expect(shape.attr('width'), 50);
+      done();
+    }, 1000);
+  });
 });
