@@ -39,10 +39,25 @@ module.exports = {
    */
   animate(toProps, duration, easing, callback, delay = 0) {
     const self = this;
-    const timeline = self.get('timeline');
+    self.set('animating', true);
+    let timeline = self.get('timeline');
+    if (!timeline) {
+      timeline = self.get('canvas').get('timeline');
+      self.setSilent('timeline', timeline);
+    }
     const animators = self.get('animators') || [];
     if (!timeline._timer) {
       timeline.initTimer();
+    }
+    if (Util.isNumber(callback)) {
+      delay = callback;
+      callback = null;
+    }
+    if (Util.isFunction(easing)) {
+      callback = easing;
+      easing = 'easeLinear';
+    } else {
+      easing = easing ? easing : 'easeLinear';
     }
     const formatProps = getFormatProps(toProps);
     const animator = {
@@ -62,19 +77,27 @@ module.exports = {
       // 先检查是否需要合并属性。若有相同的动画，将该属性从前一个动画中删除,直接用后一个动画中
 
     } else {
-      timeline.addAnimator(self, animator);
+      timeline.addAnimator(self);
     }
     animators.push(animator);
     self.setSilent('animators', animators);
+    self.setSilent('pause', { isPaused: false });
   },
   stopAnimate() {
-    const timeline = this.get('timeline');
-    const animator = this.get('animator');
-    timeline.removeAnimator(animator.id);
+    const animators = this.get('animators');
+    Util.each(animators, animator => {
+      this.attr(animator.toAttrs);
+      if (animator.callback) {
+        animator.callback();
+      }
+    });
+    this.set('animating', false);
+    this.set('animators', []);
     this.setSilent('animator', null);
   },
   pauseAnimate() {
     const self = this;
+    self.set('animating', false);
     const timeline = self.get('timeline');
     self.setSilent('pause', {
       isPaused: true,
@@ -84,6 +107,7 @@ module.exports = {
   },
   resumeAnimate() {
     const self = this;
+    self.set('animating', true);
     const timeline = self.get('timeline');
     const current = timeline.getTime();
     const animators = self.get('animators');
