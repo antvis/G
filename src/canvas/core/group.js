@@ -218,12 +218,15 @@ Util.augment(Group, {
   },
   _setEvn(item) {
     const self = this;
+    const cfg = self.__cfg;
     item.__cfg.parent = self;
-    item.__cfg.context = self.__cfg.context;
-    item.__cfg.canvas = self.__cfg.canvas;
+    item.__cfg.context = cfg.context;
+    item.__cfg.canvas = cfg.canvas;
     const clip = item.__attrs.clip;
     if (clip) {
       clip.setSilent('parent', self);
+      clip.setSilent('canvas', cfg.canvas);
+      clip.setSilent('timeline', cfg.timeline);
       clip.setSilent('context', self.get('context'));
     }
     const children = item.__cfg.children;

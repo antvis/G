@@ -1,7 +1,7 @@
 const Util = require('../../util/index');
 const Attribute = require('./mixin/attribute');
 const Transform = require('../../util/mixin/transform');
-const Animate = require('../../util/mixin/animate');
+const Animate = require('../../util/mixin/animation');
 const Format = require('../../util/format');
 const EventEmitter = require('wolfy87-eventemitter');
 
