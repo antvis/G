@@ -46,6 +46,7 @@ module.exports = {
       self.setSilent('timeline', timeline);
     }
     const animators = self.get('animators') || [];
+    // 初始化tick
     if (!timeline._timer) {
       timeline.initTimer();
     }
@@ -60,6 +61,7 @@ module.exports = {
       easing = easing ? easing : 'easeLinear';
     }
     const formatProps = getFormatProps(toProps);
+    // 记录动画属性
     const animator = {
       fromAttrs: getFromAttrs(toProps, self),
       toAttrs: formatProps.attrs,
@@ -72,11 +74,13 @@ module.exports = {
       startTime: timeline.getTime(),
       id: Util.uniqueId()
     };
+    // 如果动画队列中已经有这个图形了
     if (animators.length > 0) {
       // todo 合并属性
       // 先检查是否需要合并属性。若有相同的动画，将该属性从前一个动画中删除,直接用后一个动画中
 
     } else {
+      // 否则将图形添加到队列
       timeline.addAnimator(self);
     }
     animators.push(animator);
@@ -85,20 +89,20 @@ module.exports = {
   },
   stopAnimate() {
     const animators = this.get('animators');
+    // 将动画执行到最后一帧，执行回调
     Util.each(animators, animator => {
       this.attr(animator.toAttrs);
       if (animator.callback) {
         animator.callback();
       }
     });
-    this.set('animating', false);
-    this.set('animators', []);
-    this.setSilent('animator', null);
+    this.setSilent('animating', false);
+    this.setSilent('animators', []);
   },
   pauseAnimate() {
     const self = this;
-    self.set('animating', false);
     const timeline = self.get('timeline');
+    // 记录下是在什么时候暂停的
     self.setSilent('pause', {
       isPaused: true,
       pauseTime: timeline.getTime()
@@ -107,12 +111,13 @@ module.exports = {
   },
   resumeAnimate() {
     const self = this;
-    self.set('animating', true);
     const timeline = self.get('timeline');
     const current = timeline.getTime();
     const animators = self.get('animators');
+    const pauseTime = self.get('pause').pauseTime;
+    // 之后更新属性需要计算动画已经执行的时长，如果暂停了，就把初始时间调后
     Util.each(animators, animator => {
-      animator.startTime = animator.startTime + (current - animator._pauseTime);
+      animator.startTime = animator.startTime + (current - pauseTime);
       animator._paused = false;
       animator._pauseTime = null;
     });
