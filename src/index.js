@@ -8,5 +8,5 @@ module.exports = {
   MatrixUtil: require('./util/matrix'),
   PathUtil: require('./util/path'),
   // version, etc.
-  version: '3.0.0-beta.5'
+  version: '3.0.0-beta.6'
 };
