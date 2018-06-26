@@ -6,7 +6,7 @@ const { interpolate, interpolateArray } = require('d3-interpolate'); // 目前�
 
 const Timeline = function() {
   // 待执行动画的队列
-  this._animators = {};
+  this._animators = [];
   this._current = 0;
   this._timer = null;
 };
@@ -56,14 +56,14 @@ function _update(self, animator, ratio) {
 
 function update(shape, animator, elapsed) {
   const startTime = animator.startTime;
-  if (elapsed < startTime + animator.delay || animator.isPaused) {
-    return true;
+  if (elapsed < (startTime + animator.delay) || animator.isPaused) {
+    return false;
   }
   let ratio;
   let isFinished = false;
   const duration = animator.duration;
   const easing = animator.easing;
-  elapsed = elapsed - animator.startTime;
+  elapsed = elapsed - startTime - animator.delay;
   if (animator.toAttrs.repeat) {
     ratio = (elapsed % duration) / duration;
     ratio = d3Ease[easing](ratio);
@@ -73,6 +73,9 @@ function update(shape, animator, elapsed) {
       ratio = d3Ease[easing](ratio);
     } else {
       ratio = 1;
+      if (animator.callback) {
+        animator.callback();
+      }
       isFinished = true;
     }
   }
@@ -83,7 +86,7 @@ function update(shape, animator, elapsed) {
 Util.augment(Timeline, {
   initTimer() {
     const self = this;
-    let isAnmating = false;
+    let isFinished = false;
     let shape,
       animators,
       animator,
@@ -93,17 +96,22 @@ Util.augment(Timeline, {
       if (this._animators.length > 0) {
         for (let i = this._animators.length - 1; i >= 0; i--) {
           shape = this._animators[i];
+          if (shape.get('destroyed')) {
+            self.removeAnimator(i);
+            continue;
+          }
+          animators = shape.get('animators');
           if (!canvas) {
             canvas = shape.get('canvas');
           }
-          animators = shape.get('animators');
           if (!shape.get('pause').isPaused) {
             animators = shape.get('animators');
             for (let j = animators.length - 1; j >= 0; j--) {
               animator = animators[j];
-              isAnmating = update(shape, animator, elapsed);
-              if (!isAnmating) {
+              isFinished = update(shape, animator, elapsed);
+              if (isFinished) {
                 animators.splice(j, 1);
+                isFinished = false;
               }
             }
           }
@@ -111,7 +119,9 @@ Util.augment(Timeline, {
             self.removeAnimator(i);
           }
         }
-        canvas.draw();
+        if (canvas) {
+          canvas.draw();
+        }
       }
     });
   },
@@ -131,3 +141,5 @@ Util.augment(Timeline, {
     return this._current;
   }
 });
+
+module.exports = Timeline;
