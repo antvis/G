@@ -28,6 +28,19 @@ function getFormatProps(props, shape) {
   return rst;
 }
 
+function checkExistedAttrs(animators, animator) {
+  const hasOwnProperty = Object.prototype.hasOwnProperty;
+  Util.each(animator.toAttrs, (v, k) => {
+    Util.each(animators, animator => {
+      if (hasOwnProperty.call(animator.toAttrs, k)) {
+        delete animator.toAttrs[k];
+        delete animator.fromAttrs[k];
+      }
+    });
+  });
+  return animators;
+}
+
 module.exports = {
   /**
    * 执行动画
@@ -45,7 +58,7 @@ module.exports = {
       timeline = self.get('canvas').get('timeline');
       self.setSilent('timeline', timeline);
     }
-    const animators = self.get('animators') || [];
+    let animators = self.get('animators') || [];
     // 初始化tick
     if (!timeline._timer) {
       timeline.initTimer();
@@ -76,9 +89,8 @@ module.exports = {
     };
     // 如果动画队列中已经有这个图形了
     if (animators.length > 0) {
-      // todo 合并属性
       // 先检查是否需要合并属性。若有相同的动画，将该属性从前一个动画中删除,直接用后一个动画中
-
+      animators = checkExistedAttrs(animators, animator);
     } else {
       // 否则将图形添加到队列
       timeline.addAnimator(self);
