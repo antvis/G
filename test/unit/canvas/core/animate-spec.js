@@ -69,7 +69,7 @@ describe('animate', function() {
       width: 20
     }, 500, function() {
       called = true;
-    }, 100);
+    }, 1000);
     setTimeout(function() {
       expect(shape.attr('x')).equal(10);
       expect(called).equal(false);
@@ -78,8 +78,8 @@ describe('animate', function() {
         expect(shape.attr('x')).equal(200);
         expect(called).equal(true);
         done();
-      }, 80);
-    }, 50);
+      }, 500);
+    }, 500);
   });
 
   it('destory', function(done) {
