@@ -81,6 +81,7 @@ Util.augment(Circle, {
 
     context.beginPath();
     context.arc(cx, cy, r, 0, Math.PI * 2, false);
+    context.closePath();
   }
 });
 
