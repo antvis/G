@@ -7,8 +7,8 @@ describe('animate', function() {
   document.body.appendChild(div);
   const canvas = new G.Canvas({
     containerId: 'canvas-animate',
-    width: 500,
-    height: 500
+    width: 1000,
+    height: 1000
   });
   it('repeat', () => {
     const shape = canvas.addShape('circle', {
@@ -181,5 +181,22 @@ describe('animate', function() {
       expect(shape.attr('width'), 50);
       done();
     }, 1000);
+  });
+  it('animate of a large amount of shapes', () => {
+    const MAX_COUNT = 3000;
+    let circle;
+    for (let i = 0; i < MAX_COUNT; i++) {
+      circle = canvas.addShape('circle', {
+        attrs: {
+          r: Math.random() * 10,
+          x: Math.random() * 1000,
+          y: Math.random() * 1000,
+          // stroke: '#333',
+          fill: '#333'
+        }
+      });
+      circle.animate({ x: Math.random() * 1000, y: Math.random() * 1000, repeat: true }, 2000);
+    }
+    canvas.draw();
   });
 });
