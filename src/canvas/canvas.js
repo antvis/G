@@ -136,7 +136,8 @@ Util.augment(Canvas, {
   _registEvents() {
     const self = this;
     const el = self.get('el');
-    const events = [ 'mouseout',
+    const events = [
+      'mouseout',
       'mouseover',
       'mousemove',
       'mousedown',
@@ -144,12 +145,19 @@ Util.augment(Canvas, {
       'click',
       'dblclick'
     ];
-
     Util.each(events, event => {
       el.addEventListener(event, e => {
         self._triggerEvent(event, e);
       }, false);
     });
+    // special cases
+    el.addEventListener('mouseout', function(e) {
+      self._triggerEvent('mouseleave', e);
+    }, false);
+    el.addEventListener('mouseover', function(e) {
+      self._triggerEvent('mouseenter', e);
+    }, false);
+
     el.addEventListener('touchstart', e => {
       if (!Util.isEmpty(e.touches)) {
         self._triggerEvent('touchstart', e.touches[0]);
