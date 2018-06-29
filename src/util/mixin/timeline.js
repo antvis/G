@@ -140,7 +140,7 @@ Util.augment(Timeline, {
     this._animators = [];
   },
   isAnimating() {
-    return !this._animators.length;
+    return !!this._animators.length;
   },
   getTime() {
     return this._current;
