@@ -105,7 +105,6 @@ Util.augment(Timeline, {
             self.removeAnimator(i);
             continue;
           }
-          animators = shape.get('animators');
           if (!canvas) {
             canvas = shape.get('canvas');
           }
