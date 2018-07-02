@@ -13,14 +13,15 @@ function getFromAttrs(toAttrs, shape) {
 
 function getFormatProps(props, shape) {
   const rst = {
-    M: null,
+    matrix: null,
     attrs: {}
   };
   for (const k in props) {
     if (k === 'transform') {
-      rst.M = MatrixUtil.transform(shape.getMatrix(), props[k]);
+      rst.matrix = MatrixUtil.transform(shape.getMatrix(), props[k]);
     } else if (k === 'matrix') {
-      rst.M = props[k];
+      console.log(k);
+      rst.matrix = props[k];
     } else if (!ReservedProps[k]) {
       rst.attrs[k] = props[k];
     }
@@ -78,8 +79,8 @@ module.exports = {
     const animator = {
       fromAttrs: getFromAttrs(toProps, self),
       toAttrs: formatProps.attrs,
-      fromM: Util.clone(self.getMatrix()),
-      toM: formatProps.toM,
+      fromMatrix: Util.clone(self.getMatrix()),
+      toMatrix: formatProps.matrix,
       duration,
       easing,
       callback,
