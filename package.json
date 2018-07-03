@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "3.0.0-beta.6",
+  "version": "3.0.0-beta.7",
   "description": "A canvas library which providing 2d draw for G2.",
   "keywords": [
     "canvas",
@@ -20,7 +20,7 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "devDependencies": {
-    "torchjs": "~2.0.3",
+    "torchjs": "~2.0.4",
     "babel-cli": "~6.26.0",
     "babel-eslint": "~7.2.3",
     "babel-loader": "~7.1.1",
@@ -55,7 +55,7 @@
     "lint": "eslint ./",
     "lint-fix": "eslint --fix ./",
     "test": "torch --compile --renderer --recursive ./test/unit",
-    "test-live": "torch --compile --renderer --interactive --recursive ./test/"
+    "test-live": "torch --compile --renderer --interactive --recursive ./test/s"
   },
   "pre-commit": {
     "run": [
