@@ -1,7 +1,7 @@
 const Util = require('../../util/index');
 const Attribute = require('./mixin/attribute');
 const Transform = require('./mixin/transform');
-const Animate = require('../../util/mixin/animate');
+const Animate = require('../../util/mixin/animation');
 const EventEmitter = require('wolfy87-eventemitter');
 
 const Element = function(cfg) {
@@ -136,11 +136,6 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
     const destroyed = this.get('destroyed');
     if (destroyed) {
       return;
-    }
-    // 如果正在执行动画，清理动画
-    if (this.get('animating')) {
-      const timer = this.get('animateTimer');
-      timer && timer.stop();
     }
     this.__cfg = {};
     this.__attrs = null;

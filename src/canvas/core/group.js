@@ -187,7 +187,7 @@ Util.augment(Group, {
         if (parent) {
           parent.removeChild(item, false);
         }
-        self._setEvn(item);
+        self._setCfgProperty(item);
       });
       children.push.apply(children, items);
     } else {
@@ -196,7 +196,7 @@ Util.augment(Group, {
       if (parent) {
         parent.removeChild(item, false);
       }
-      self._setEvn(item);
+      self._setCfgProperty(item);
       children.push(item);
     }
     return self;
@@ -216,20 +216,23 @@ Util.augment(Group, {
     const lastIndex = this.get('children').length - 1;
     return this.getChildByIndex(lastIndex);
   },
-  _setEvn(item) {
+  _setCfgProperty(item) {
     const self = this;
+    const cfg = self.__cfg;
     item.__cfg.parent = self;
-    item.__cfg.context = self.__cfg.context;
-    item.__cfg.canvas = self.__cfg.canvas;
+    item.__cfg.context = cfg.context;
+    item.__cfg.canvas = cfg.canvas;
     const clip = item.__attrs.clip;
     if (clip) {
       clip.setSilent('parent', self);
+      clip.setSilent('canvas', cfg.canvas);
+      clip.setSilent('timeline', cfg.timeline);
       clip.setSilent('context', self.get('context'));
     }
     const children = item.__cfg.children;
     if (children) {
       Util.each(children, function(child) {
-        item._setEvn(child);
+        item._setCfgProperty(child);
       });
     }
   },

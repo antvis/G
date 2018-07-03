@@ -9,8 +9,8 @@ describe('animate', () => {
   document.body.appendChild(div);
   const canvas = new G.Canvas({
     containerId: 'canvas-animate',
-    width: 500,
-    height: 500
+    width: 1000,
+    height: 1000
   });
   it('repeat', () => {
     const shape = canvas.addShape('circle', {
@@ -65,13 +65,13 @@ describe('animate', () => {
         lineWidth: 3
       }
     });
-    canvas.draw();
+    canvas.draw('svg');
     shape.animate({
       x: 200,
       width: 20
     }, 500, () => {
       called = true;
-    }, 100);
+    }, 1000);
     setTimeout(() => {
       expect(shape.attr('x')).equal(10);
       expect(called).equal(false);
@@ -80,8 +80,8 @@ describe('animate', () => {
         expect(shape.attr('x')).equal(200);
         expect(called).equal(true);
         done();
-      }, 80);
-    }, 50);
+      }, 500);
+    }, 500);
   });
 
   it('destory', done => {
@@ -142,4 +142,63 @@ describe('animate', () => {
       done();
     }, 1000);
   });
+  it('animate pause & resume', done => {
+    const shape = canvas.addShape('rect', {
+      attrs: {
+        x: 150,
+        y: 90,
+        width: 20,
+        height: 20,
+        fill: 'red'
+      }
+    });
+    shape.animate({ height: 100 }, 1000);
+    setTimeout(() => {
+      shape.pauseAnimate();
+      expect(shape.attr('height'), 60);
+    }, 500);
+    setTimeout(() => {
+      expect(shape.attr('height'), 60);
+      shape.resumeAnimate();
+    }, 700);
+    setTimeout(() => {
+      expect(shape.attr('height'), 100);
+      done();
+    }, 1000);
+  });
+  it('overlap animating attrs', done => {
+    const shape = canvas.addShape('rect', {
+      attrs: {
+        x: 200,
+        y: 90,
+        width: 20,
+        height: 20,
+        fill: 'red'
+      }
+    });
+    shape.animate({ width: 100, height: 100 }, 1000);
+    shape.animate({ width: 50 }, 1000);
+    setTimeout(() => {
+      expect(shape.attr('height'), 100);
+      expect(shape.attr('width'), 50);
+      done();
+    }, 1000);
+  });
+  /* it('animate of a large amount of shapes', () => {
+    const MAX_COUNT = 3000;
+    let circle;
+
+    for (let i = 0; i < MAX_COUNT; i++) {
+      circle = canvas.addShape('circle', {
+        attrs: {
+          r: Math.random() * 10,
+          x: Math.random() * 1000,
+          y: Math.random() * 1000,
+          fill: '#333'
+        }
+      });
+      circle.animate({ x: Math.random() * 1000, y: Math.random() * 1000, repeat: true }, 2000);
+    }
+    canvas.draw();
+  });*/
 });
