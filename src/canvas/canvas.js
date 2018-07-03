@@ -1,6 +1,7 @@
 const Util = require('../util/index');
 const Event = require('./event');
 const Group = require('./core/group');
+const Timeline = require('../util/mixin/timeline');
 
 const Canvas = function(cfg) {
   Canvas.superclass.constructor.call(this, cfg);
@@ -181,9 +182,11 @@ Util.augment(Canvas, {
   },
   _setCanvas() {
     const canvasDOM = this.get('canvasDOM');
-    this.set('el', canvasDOM);
-    this.set('context', canvasDOM.getContext('2d'));
-    this.set('canvas', this);
+    const timeline = new Timeline();
+    this.setSilent('el', canvasDOM);
+    this.setSilent('timeline', timeline);
+    this.setSilent('context', canvasDOM.getContext('2d'));
+    this.setSilent('canvas', this);
   },
   _setGlobalParam() {
     const pixelRatio = this.get('pixelRatio');
