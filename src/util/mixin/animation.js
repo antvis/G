@@ -20,7 +20,6 @@ function getFormatProps(props, shape) {
     if (k === 'transform') {
       rst.matrix = MatrixUtil.transform(shape.getMatrix(), props[k]);
     } else if (k === 'matrix') {
-      console.log(k);
       rst.matrix = props[k];
     } else if (!ReservedProps[k]) {
       rst.attrs[k] = props[k];
@@ -74,7 +73,7 @@ module.exports = {
     } else {
       easing = easing ? easing : 'easeLinear';
     }
-    const formatProps = getFormatProps(toProps);
+    const formatProps = getFormatProps(toProps, self);
     // 记录动画属性
     const animator = {
       fromAttrs: getFromAttrs(toProps, self),
