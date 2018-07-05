@@ -1,6 +1,6 @@
-const Util = require('../index');
-const mat3 = require('../matrix').mat3;
-const vec3 = require('../matrix').vec3;
+const Util = require('../../util/index');
+const mat3 = require('../../util/matrix').mat3;
+const vec3 = require('../../util/matrix').vec3;
 
 // 是否未改变
 function isUnchanged(m) {
@@ -139,23 +139,23 @@ module.exports = {
    * @return {Matrix} 矩阵
    */
   getTotalMatrix() {
-    let m = this.__cfg.totalMatrix;
+    let m = this._cfg.totalMatrix;
     if (!m) {
       m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
-      const parent = this.__cfg.parent;
+      const parent = this._cfg.parent;
       if (parent) {
         const pm = parent.getTotalMatrix();
         multiple(m, pm);
       }
 
       multiple(m, this.attr('matrix'));
-      this.__cfg.totalMatrix = m;
+      this._cfg.totalMatrix = m;
     }
     return m;
   },
   // 清除当前的矩阵
   clearTotalMatrix() {
-    // this.__cfg.totalMatrix = null;
+    // this._cfg.totalMatrix = null;
   },
   invert(v) {
     const m = this.getTotalMatrix();

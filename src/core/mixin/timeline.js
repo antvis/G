@@ -1,4 +1,4 @@
-const Util = require('../index');
+const Util = require('../../util/index');
 const PathUtil = require('../path');
 const d3Timer = require('d3-timer');
 const d3Ease = require('d3-ease');
