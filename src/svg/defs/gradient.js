@@ -97,7 +97,7 @@ function parseRadialGradient(color, self) {
 const Gradient = function(cfg) {
   let el = null;
   const id = Util.uniqueId('gradient_');
-  if (cfg.toLowerCase().startsWith('l')) {
+  if (cfg.toLowerCase()[0] === 'l') {
     el = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
     parseLineGradient(cfg, el);
   } else {
