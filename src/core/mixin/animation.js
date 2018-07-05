@@ -1,5 +1,5 @@
-const Util = require('../index');
-const MatrixUtil = require('../matrix');
+const Util = require('../../util/index');
+const MatrixUtil = require('../../util/matrix');
 
 const ReservedProps = { delay: 'delay' };
 
