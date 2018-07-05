@@ -17,7 +17,7 @@ function _update(self, animator, ratio) {
   const cProps = {}; // 此刻属性
   const toAttrs = animator.toAttrs;
   const fromAttrs = animator.fromAttrs;
-  const toM = animator.toM;
+  const toMatrix = animator.toMatrix;
   if (self.get('destroyed')) {
     return;
   }
@@ -48,8 +48,8 @@ function _update(self, animator, ratio) {
       }
     }
   }
-  if (toM) {
-    const mf = interpolateArray(animator.fromM, toM);
+  if (toMatrix) {
+    const mf = interpolateArray(animator.fromMatrix, toMatrix);
     const cM = mf(ratio);
     self.setMatrix(cM);
   }
