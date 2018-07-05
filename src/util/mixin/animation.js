@@ -73,7 +73,7 @@ module.exports = {
     } else {
       easing = easing ? easing : 'easeLinear';
     }
-    const formatProps = getFormatProps(toProps);
+    const formatProps = getFormatProps(toProps, self);
     // 记录动画属性
     const animator = {
       fromAttrs: getFromAttrs(toProps, self),
