@@ -1,6 +1,6 @@
-const Util = require('../../util/index');
+const Util = require('../util/index');
 const Element = require('./element');
-const Inside = require('../shape/util/inside');
+const Inside = require('../shapes/util/inside');
 
 const Shape = function(cfg) {
   Shape.superclass.constructor.call(this, cfg);
@@ -12,6 +12,34 @@ Util.extend(Shape, Element);
 
 Util.augment(Shape, {
   isShape: true,
+  drawInner(context) {
+    const self = this;
+    const attrs = self._attrs;
+    self.createPath(context);
+    const originOpacity = context.globalAlpha;
+    if (self.hasFill()) {
+      const fillOpacity = attrs.fillOpacity;
+      if (!Util.isNil(fillOpacity) && fillOpacity !== 1) {
+        context.globalAlpha = fillOpacity;
+        context.fill();
+        context.globalAlpha = originOpacity;
+      } else {
+        context.fill();
+      }
+    }
+    if (self.hasStroke()) {
+      const lineWidth = self._attrs.lineWidth;
+      if (lineWidth > 0) {
+        const strokeOpacity = attrs.strokeOpacity;
+        if (!Util.isNil(strokeOpacity) && strokeOpacity !== 1) {
+          context.globalAlpha = strokeOpacity;
+        }
+        context.stroke();
+      }
+    }
+    self.afterPath(context);
+  },
+  afterPath() {},
   /**
    * 节点是否在图形中
    * @param  {Number}  x x 坐标
@@ -45,7 +73,7 @@ Util.augment(Shape, {
         return false;
       }
     }
-    const clip = self.__attrs.clip;
+    const clip = self._attrs.clip;
     if (clip) {
       if (clip.inside(x, y)) {
         return self.isPointInPath(v[0], v[1]);
@@ -65,7 +93,7 @@ Util.augment(Shape, {
   },
   // 获取拾取时线的宽度，需要考虑附加的线的宽度
   getHitLineWidth() {
-    const attrs = this.__attrs;
+    const attrs = this._attrs;
     // if (!attrs.stroke) {
     //   return 0;
     // }
@@ -75,15 +103,15 @@ Util.augment(Shape, {
   },
   // 清除当前的矩阵
   clearTotalMatrix() {
-    this.__cfg.totalMatrix = null;
-    this.__cfg.region = null;
+    this._cfg.totalMatrix = null;
+    this._cfg.region = null;
   },
   clearBBox() {
-    this.__cfg.box = null;
-    this.__cfg.region = null;
+    this._cfg.box = null;
+    this._cfg.region = null;
   },
   getBBox() {
-    let box = this.__cfg.box;
+    let box = this._cfg.box;
     // 延迟计算
     if (!box) {
       box = this.calculateBox();
@@ -93,7 +121,7 @@ Util.augment(Shape, {
         box.width = box.maxX - box.minX;
         box.height = box.maxY - box.minY;
       }
-      this.__cfg.box = box;
+      this._cfg.box = box;
     }
     return box;
   }

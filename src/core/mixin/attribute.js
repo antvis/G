@@ -1,4 +1,4 @@
-const Util = require('../../../util/index');
+const Util = require('../../util/index');
 
 module.exports = {
   canFill: false,
@@ -11,7 +11,7 @@ module.exports = {
     };
     this.attr(Util.assign(this.getDefaultAttrs(), attrs));
     if (!this._attrs.id) {
-      this._attrs.id = Util.Util.uniqueId('g_');
+      this._attrs.id = Util.uniqueId('g_');
     }
     return this;
   },
@@ -37,15 +37,30 @@ module.exports = {
 
     if (Util.isObject(name)) {
       self._attrs = Util.assign(this.getDefaultAttrs(), name);
+      if ('fill' in name) {
+        self._attrs.fillStyle = name.fill;
+      }
+      if ('stroke' in name) {
+        self._attrs.strokeStyle = name.stroke;
+      }
+      if ('opacity' in name) {
+        self._attrs.globalAlpha = name.opacity;
+      }
       self.clearBBox();
       return self;
     }
     if (arguments.length === 2) {
       self._attrs[name] = value;
+      if (name === 'fill' || name === 'stroke') {
+        self._attrs[name + 'Style'] = value;
+      }
+      if (name === 'opacity') {
+        self._attrs.globalAlpha = value;
+      }
       self.clearBBox();
       return self;
     }
-    return self._attrs(name);
+    return self._attrs[name];
   },
   clearBBox() {
     this.setSilent('box', null);
