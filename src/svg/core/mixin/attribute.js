@@ -173,7 +173,7 @@ module.exports = {
     }
     if (name === 'transform' || name === 'rotate') {
       self._setAttrTrans(name, value);
-    } else if (name.startsWith('shadow')) {
+    } else if (~name.indexOf('shadow')) {
       self._setAttrShadow(name, value);
     } else if (~[ 'stroke', 'strokeStyle', 'fill', 'fillStyle' ].indexOf(name) && el) {
       if (!value) {

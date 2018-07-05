@@ -8,8 +8,6 @@ const Canvas = function(cfg) {
   Canvas.superclass.constructor.call(this, cfg);
 };
 
-const defs = new Defs();
-
 Canvas.CFG = {
   eventEnable: true,
   /**
@@ -190,6 +188,7 @@ Util.augment(Canvas, {
     if (containerDOM) {
       const canvasDOM = Util.createDom('<svg id="' + canvasId + '"></svg>');
       containerDOM.appendChild(canvasDOM);
+      const defs = new Defs();
       canvasDOM.appendChild(defs.get('el'));
       this.set('canvasDOM', canvasDOM);
       this.set('el', canvasDOM);
