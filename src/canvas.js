@@ -1,7 +1,8 @@
-const Util = require('../util/index');
+const Util = require('./util/index');
 const Event = require('./event');
 const Group = require('./core/group');
-const Timeline = require('../util/mixin/timeline');
+const Timeline = require('./util/mixin/timeline');
+const renderers = require('./renderers/index');
 
 const Canvas = function(cfg) {
   Canvas.superclass.constructor.call(this, cfg);
@@ -53,7 +54,12 @@ Canvas.CFG = {
    * 屏幕像素比
    * @type {Number}
    */
-  pixelRatio: null
+  pixelRatio: null,
+  /**
+   * 渲染器，默认是canvas
+   * @type {String}
+   */
+  renderer: 'canvas'
 };
 
 Util.extend(Canvas, Group);
@@ -62,9 +68,8 @@ Util.augment(Canvas, {
   init() {
     Canvas.superclass.init.call(this);
     this._setGlobalParam();
-    this._setDOM();
-    this._setInitSize();
-    this._setCanvas();
+    this._setContainer();
+    this._initPainter();
     this._scale();
     if (this.get('eventEnable')) {
       this._registEvents();
@@ -94,7 +99,7 @@ Util.augment(Canvas, {
   },
   _triggerEvent(type, e) {
     const point = this.getPointByClient(e.clientX, e.clientY);
-    const shape = this.getShape(point.x, point.y);
+    const shape = this.getShape(point.x, point.y, e);
     let emitObj;
     if (type === 'mousemove') {
       const preShape = this.get('preShape');
@@ -151,13 +156,6 @@ Util.augment(Canvas, {
       }, false);
     });
     // special cases
-    el.addEventListener('mouseout', function(e) {
-      self._triggerEvent('mouseleave', e);
-    }, false);
-    el.addEventListener('mouseover', function(e) {
-      self._triggerEvent('mouseenter', e);
-    }, false);
-
     el.addEventListener('touchstart', e => {
       if (!Util.isEmpty(e.touches)) {
         self._triggerEvent('touchstart', e.touches[0]);
@@ -179,25 +177,17 @@ Util.augment(Canvas, {
   _scale() {
     const pixelRatio = this.get('pixelRatio');
     this.scale(pixelRatio, pixelRatio);
-    console.log(this._attrs.matrix);
-  },
-  _setCanvas() {
-    const canvasDOM = this.get('canvasDOM');
-    const timeline = new Timeline();
-    this.setSilent('el', canvasDOM);
-    this.setSilent('timeline', timeline);
-    this.setSilent('canvas', this);
   },
   _setGlobalParam() {
     const pixelRatio = this.get('pixelRatio');
     if (!pixelRatio) {
       this.set('pixelRatio', Util.getRatio());
     }
-    return;
-  },
-  _setDOM() {
-    this._setContainer();
-    this._setLayer();
+    const renderer = renderers[this.get('renderer') || 'canvas'];
+    this._cfg.renderer = renderer;
+    this._cfg.canvas = this;
+    const timeline = new Timeline(this);
+    this._cfg.timeline = timeline;
   },
   _setContainer() {
     const containerId = this.get('containerId');
@@ -210,16 +200,11 @@ Util.augment(Canvas, {
       position: 'relative'
     });
   },
-  _setLayer() {
+  _initPainter() {
     const containerDOM = this.get('containerDOM');
-    const canvasId = Util.uniqueId('canvas_');
-    if (containerDOM) {
-      const canvasDOM = Util.createDom('<canvas id="' + canvasId + '"></canvas>');
-      containerDOM.appendChild(canvasDOM);
-      this.set('canvasDOM', canvasDOM);
-    }
-  },
-  _setInitSize() {
+    const painter = new this._cfg.renderer.painter(containerDOM);
+    this._cfg.painter = painter;
+    this._cfg.canvasDOM = this._cfg.el = painter.canvas;
     this.changeSize(this.get('width'), this.get('height'));
   },
   _resize() {
@@ -283,47 +268,14 @@ Util.augment(Canvas, {
       clientY: y / (el.height / height) + bbox.top
     };
   },
-  beforeDraw() {
-    const context = this.get('context');
-    const el = this.get('el');
-    context && context.clearRect(0, 0, el.width, el.height);
-  },
-  _beginDraw() {
-    this.setSilent('toDraw', true);
-  },
-  _endDraw() {
-    this.setSilent('toDraw', false);
-  },
   draw() {
-    const self = this;
-    function drawInner() {
-      self.setSilent('animateHandler', Util.requestAnimationFrame(() => {
-        self.setSilent('animateHandler', undefined);
-        if (self.get('toDraw')) {
-          drawInner();
-        }
-      }));
-      self.beforeDraw();
-      try {
-        const context = self.get('context');
-        Canvas.superclass.draw.call(self, context);
-        // self._drawCanvas();
-      } catch (ev) { // 绘制时异常，中断重绘
-        console.warn('error in draw canvas, detail as:');
-        console.warn(ev);
-        self._endDraw();
-      }
-      self._endDraw();
+    this._cfg.painter.draw(this);
+  },
+  getShape(x, y, e) {
+    if (arguments.length === 3 && this._cfg.renderer.getShape) {
+      return this._cfg.renderer.getShape.call(this, x, y, e);
     }
-
-    if (self.get('destroyed')) {
-      return;
-    }
-    if (self.get('animateHandler')) {
-      this._beginDraw();
-    } else {
-      drawInner();
-    }
+    return Canvas.superclass.getShape.call(this, x, y);
   },
   destroy() {
     const containerDOM = this.get('containerDOM');

@@ -1,6 +1,5 @@
 const Util = require('../util/index');
 const Shape = require('../core/shape');
-const Inside = require('./util/inside');
 const Arrow = require('./util/arrow');
 const QuadraticMath = require('./math/quadratic');
 
@@ -62,19 +61,6 @@ Util.augment(Quadratic, {
       minY: Math.min.apply(Math, yDims) - halfWidth,
       maxY: Math.max.apply(Math, yDims) + halfWidth
     };
-  },
-  isPointInPath(x, y) {
-    const self = this;
-    const attrs = self._attrs;
-    const { p1, p2, p3 } = attrs;
-    const lineWidth = this.getHitLineWidth();
-
-    return Inside.quadraticline(
-      p1[0], p1[1],
-      p2[0], p2[1],
-      p3[0], p3[1],
-      lineWidth, x, y
-    );
   },
   createPath(context) {
     const self = this;

@@ -105,46 +105,6 @@ Util.augment(Path, {
       maxY
     };
   },
-  isPointInPath(x, y) {
-    const self = this;
-    const fill = self.hasFill();
-    const stroke = self.hasStroke();
-
-    if (fill && stroke) {
-      return self._isPointInFill(x, y) || self._isPointInStroke(x, y);
-    }
-
-    if (fill) {
-      return self._isPointInFill(x, y);
-    }
-
-    if (stroke) {
-      return self._isPointInStroke(x, y);
-    }
-
-    return false;
-  },
-  _isPointInFill(x, y) {
-    const self = this;
-    const context = self.get('context');
-    if (!context) return undefined;
-    self.createPath();
-    return context.isPointInPath(x, y);
-  },
-  _isPointInStroke(x, y) {
-    const self = this;
-    const segments = self.get('segments');
-    if (!Util.isEmpty(segments)) {
-      const lineWidth = self.getHitLineWidth();
-      for (let i = 0, l = segments.length; i < l; i++) {
-        if (segments[i].isInside(x, y, lineWidth)) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  },
   _setTcache() {
     let totalLength = 0;
     let tempLength = 0;
@@ -230,8 +190,9 @@ Util.augment(Path, {
   createPath(context) {
     const self = this;
     const segments = self.get('segments');
-    if (!Util.isArray(segments)) return;
-
+    if (!Util.isArray(segments)) {
+      return;
+    }
     context = context || self.get('context');
 
     context.beginPath();
@@ -250,7 +211,9 @@ Util.augment(Path, {
       endPoint,
       tangent;
     context = context || self.get('context');
-    if (!Util.isArray(segments)) return;
+    if (!Util.isArray(segments)) {
+      return;
+    }
     if (!attrs.startArrow && !attrs.endArrow) {
       return;
     }

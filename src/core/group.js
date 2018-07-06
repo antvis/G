@@ -4,6 +4,13 @@ const Shape = require('../shapes/index');
 const SHAPE_MAP = {}; // 缓存图形类型
 const INDEX = '_INDEX';
 
+function getComparer(compare) {
+  return function(left, right) {
+    const result = compare(left, right);
+    return result === 0 ? left[INDEX] - right[INDEX] : result;
+  };
+}
+
 function find(children, x, y) {
   let rst;
   for (let i = children.length - 1; i >= 0; i--) {
@@ -20,13 +27,6 @@ function find(children, x, y) {
     }
   }
   return rst;
-}
-
-function getComparer(compare) {
-  return function(left, right) {
-    const result = compare(left, right);
-    return result === 0 ? left[INDEX] - right[INDEX] : result;
-  };
 }
 
 const Group = function(cfg) {
@@ -187,7 +187,7 @@ Util.augment(Group, {
         if (parent) {
           parent.removeChild(item, false);
         }
-        item.set('parent', self);
+        self._setCfgProperty(item);
       });
       children.push.apply(children, items);
     } else {
@@ -196,10 +196,19 @@ Util.augment(Group, {
       if (parent) {
         parent.removeChild(item, false);
       }
-      item.set('parent', self);
+      self._setCfgProperty(item);
       children.push(item);
     }
     return self;
+  },
+  _setCfgProperty(item) {
+    item.set('parent', this);
+    const cfg = this._cfg;
+    if (cfg.timeline) {
+      item.set('timeline', cfg.timeline);
+      item.set('canvas', cfg.canvas);
+      item.set('renderer', cfg.renderer);
+    }
   },
   contain(item) {
     const children = this.get('children');
@@ -387,19 +396,15 @@ Util.augment(Group, {
     });
     return rst;
   },
-  /**
-   * 根据x，y轴坐标获取对应的图形
-   * @param  {Number} x x坐标
-   * @param  {Number} y y坐标
-   * @return {Object}  最上面的图形
-   */
   getShape(x, y) {
     const self = this;
     const clip = self._attrs.clip;
     const children = self._cfg.children;
     let rst;
     if (clip) {
-      if (clip.inside(x, y)) {
+      const v = [ x, y, 1 ];
+      clip.invert(v, self.get('canvas')); // 已经在外面转换
+      if (clip.isPointInPath(v[0], v[1])) {
         rst = find(children, x, y);
       }
     } else {
