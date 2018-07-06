@@ -4,13 +4,15 @@ const d3Timer = require('d3-timer');
 const d3Ease = require('d3-ease');
 const { interpolate, interpolateArray } = require('d3-interpolate'); // 目前整体动画只需要数值和数组的差值计算
 
-const Timeline = function() {
+const Timeline = function(canvas) {
   // 待执行动画的队列
   this._animators = [];
   // 当前时间
   this._current = 0;
   // 计时器实例
   this._timer = null;
+  // 画布
+  this.canvas = canvas;
 };
 
 function _update(self, animator, ratio) {
@@ -93,8 +95,7 @@ Util.augment(Timeline, {
     let isFinished = false;
     let shape,
       animators,
-      animator,
-      canvas;
+      animator;
     self._timer = d3Timer.timer(elapsed => {
       self._current = elapsed;
       if (this._animators.length > 0) {
@@ -104,9 +105,6 @@ Util.augment(Timeline, {
             // 如果已经被销毁，直接移出队列
             self.removeAnimator(i);
             continue;
-          }
-          if (!canvas) {
-            canvas = shape.get('canvas');
           }
           if (!shape.get('pause').isPaused) {
             animators = shape.get('animators');
@@ -123,9 +121,7 @@ Util.augment(Timeline, {
             self.removeAnimator(i);
           }
         }
-        if (canvas) {
-          canvas.draw();
-        }
+        this.canvas.draw();
       }
     });
   },

@@ -1,6 +1,5 @@
 const Util = require('../util/index');
 const Shape = require('../core/shape');
-const Inside = require('./util/inside');
 const Arrow = require('./util/arrow');
 const LineMath = require('./math/line');
 
@@ -101,19 +100,6 @@ Util.augment(Polyline, {
       }
     });
     this.tCache = tCache;
-  },
-  isPointInPath(x, y) {
-    const self = this;
-    const attrs = self._attrs;
-    if (self.hasStroke()) {
-      const points = attrs.points;
-      if (points.length < 2) {
-        return false;
-      }
-      const lineWidth = attrs.lineWidth;
-      return Inside.polyline(points, lineWidth, x, y);
-    }
-    return false;
   },
   createPath(context) {
     const self = this;

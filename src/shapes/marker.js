@@ -1,6 +1,5 @@
 const Util = require('../util/index');
 const Shape = require('../core/shape');
-const Inside = require('./util/inside');
 const Format = require('../util/format');
 const PathSegment = require('./util/path-segment');
 
@@ -92,20 +91,20 @@ Util.augment(Marker, {
       maxY: cy + halfWidth
     };
   },
-  isPointInPath(x, y) {
-    const attrs = this._attrs;
-    const cx = attrs.x;
-    const cy = attrs.y;
-    const r = attrs.radius || attrs.r;
-    const lineWidth = this.getHitLineWidth();
-    return Inside.circle(cx, cy, r + lineWidth / 2, x, y);
-  },
   createPath(context) {
     const attrs = this._attrs;
     const x = attrs.x;
     const y = attrs.y;
     const r = attrs.radius || attrs.r;
     const symbol = attrs.symbol || 'circle';
+    let segments = this._cfg.segments;
+    if (segments) {
+      context.beginPath();
+      for (let i = 0; i < segments.length; i++) {
+        segments[i].draw(context);
+      }
+      return;
+    }
     let method;
     if (Util.isFunction(symbol)) {
       method = symbol;
@@ -116,11 +115,14 @@ Util.augment(Marker, {
     path = Format.parsePath(path);
     context.beginPath();
     let preSegment;
+    segments = [];
     for (let i = 0; i < path.length; i++) {
       const item = path[i];
       preSegment = new PathSegment(item, preSegment, i === path.length - 1);
+      segments.push(preSegment);
       preSegment.draw(context);
     }
+    this._cfg.segments = segments;
   }
 });
 

@@ -1,0 +1,21 @@
+module.exports = {
+  Canvas: require('./canvas'),
+  Group: require('./core/group'),
+  Shape: require('./core/shape'),
+  Rect: require('./shapes/rect'),
+  Circle: require('./shapes/circle'),
+  Ellipse: require('./shapes/ellipse'),
+  Path: require('./shapes/path'),
+  Text: require('./shapes/text'),
+  Line: require('./shapes/line'),
+  Image: require('./shapes/image'),
+  Polygon: require('./shapes/polygon'),
+  Polyline: require('./shapes/polyline'),
+  Arc: require('./shapes/arc'),
+  Fan: require('./shapes/fan'),
+  Cubic: require('./shapes/cubic'),
+  Quadratic: require('./shapes/quadratic'),
+  Marker: require('./shapes/marker'),
+  PathSegment: require('./shapes/util/path-segment'),
+  Event: require('./event')
+};

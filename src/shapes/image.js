@@ -1,6 +1,5 @@
 const Util = require('../util/index');
 const Shape = require('../core/shape');
-const Inside = require('./util/inside');
 
 const CImage = function(cfg) {
   CImage.superclass.constructor.call(this, cfg);
@@ -46,17 +45,6 @@ Util.augment(CImage, {
       maxX: x + width,
       maxY: y + height
     };
-  },
-  isPointInPath(x, y) {
-    const attrs = this._attrs;
-    if (this.get('toDraw') || !attrs.img) {
-      return false;
-    }
-    const rx = attrs.x;
-    const ry = attrs.y;
-    const width = attrs.width;
-    const height = attrs.height;
-    return Inside.rect(rx, ry, width, height, x, y);
   },
   _beforeSetLoading(loading) {
     const canvas = this.get('canvas');

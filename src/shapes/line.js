@@ -1,6 +1,5 @@
 const Util = require('../util/index');
 const Shape = require('../core/shape');
-const Inside = require('./util/inside');
 const Arrow = require('./util/arrow');
 const LineMath = require('./math/line');
 
@@ -35,17 +34,6 @@ Util.augment(Line, {
     const { x1, y1, x2, y2 } = attrs;
     const lineWidth = this.getHitLineWidth();
     return LineMath.box(x1, y1, x2, y2, lineWidth);
-  },
-  isPointInPath(x, y) {
-    const attrs = this._attrs;
-    const { x1, y1, x2, y2 } = attrs;
-    const lineWidth = this.getHitLineWidth();
-
-    if (this.hasStroke()) {
-      return Inside.line(x1, y1, x2, y2, lineWidth, x, y);
-    }
-
-    return false;
   },
   createPath(context) {
     const attrs = this._attrs;

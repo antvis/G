@@ -1,6 +1,5 @@
 const Util = require('../util/index');
 const Shape = require('../core/shape');
-const Inside = require('./util/inside');
 
 const Polygon = function(cfg) {
   Polygon.superclass.constructor.call(this, cfg);
@@ -61,46 +60,6 @@ Util.augment(Polygon, {
       maxX: maxX + halfWidth,
       maxY: maxY + halfWidth
     };
-  },
-  isPointInPath(x, y) {
-    const self = this;
-    const fill = self.hasFill();
-    const stroke = self.hasStroke();
-
-    if (fill && stroke) {
-      return self._isPointInFill(x, y) || self._isPointInStroke(x, y);
-    }
-
-    if (fill) {
-      return self._isPointInFill(x, y);
-    }
-
-    if (stroke) {
-      return self._isPointInStroke(x, y);
-    }
-
-    return false;
-  },
-  _isPointInFill(x, y) {
-    const self = this;
-    const context = self.get('context');
-    self.createPath();
-    return context.isPointInPath(x, y);
-  },
-  _isPointInStroke(x, y) {
-    const self = this;
-    const attrs = self._attrs;
-    const points = attrs.points;
-    if (points.length < 2) {
-      return false;
-    }
-    const lineWidth = this.getHitLineWidth();
-    const outPoints = points.slice(0);
-    if (points.length >= 3) {
-      outPoints.push(points[0]);
-    }
-
-    return Inside.polyline(outPoints, lineWidth, x, y);
   },
   createPath(context) {
     const self = this;

@@ -1,6 +1,5 @@
 const Util = require('../util/index');
 const Shape = require('../core/shape');
-const Inside = require('./util/inside');
 
 const CText = function(cfg) {
   CText.superclass.constructor.call(this, cfg);
@@ -182,13 +181,6 @@ Util.augment(CText, {
     const lineHeight = attrs.lineHeight;
     const fontSize = attrs.fontSize * 1;
     return lineHeight ? (lineHeight - fontSize) : fontSize * 0.14;
-  },
-  isPointInPath(x, y) {
-    const self = this;
-    const box = self.getBBox();
-    if (self.hasFill() || self.hasStroke()) {
-      return Inside.box(box.minX, box.maxX, box.minY, box.maxY, x, y);
-    }
   },
   drawInner(context) {
     const self = this;

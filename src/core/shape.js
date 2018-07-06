@@ -1,4 +1,5 @@
 const Util = require('../util/index');
+const isPointInPath = require('../util/mixin/isPointInPath');
 const Element = require('./element');
 const Inside = require('../shapes/util/inside');
 
@@ -10,7 +11,7 @@ Shape.ATTRS = {};
 
 Util.extend(Shape, Element);
 
-Util.augment(Shape, {
+Util.augment(Shape, isPointInPath, {
   isShape: true,
   drawInner(context) {
     const self = this;
@@ -41,15 +42,6 @@ Util.augment(Shape, {
   },
   afterPath() {},
   /**
-   * 节点是否在图形中
-   * @param  {Number}  x x 坐标
-   * @param  {Number}  y y 坐标
-   * @return {Boolean}  是否在图形中
-   */
-  isPointInPath() {
-    return false;
-  },
-  /**
    * 击中图形时是否进行包围盒判断
    * @return {Boolean} [description]
    */
@@ -75,7 +67,8 @@ Util.augment(Shape, {
     }
     const clip = self._attrs.clip;
     if (clip) {
-      if (clip.inside(x, y)) {
+      clip.invert(v, self.get('canvas'));
+      if (clip.isPointInPath(v[0], v[1])) {
         return self.isPointInPath(v[0], v[1]);
       }
     } else {
