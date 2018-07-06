@@ -1,7 +1,7 @@
 const $ = require('jquery');
 const expect = require('chai').expect;
-const Canvas = require('../../../src/canvas/canvas');
-const G = require('../../../src/index').canvas;
+const Canvas = require('../../../src/canvas');
+const G = require('../../../src/g');
 const Simulate = require('event-simulate');
 
 $('<div id="c1"></div>').appendTo('body');
@@ -10,6 +10,7 @@ describe('Canvas 容器操作', function() {
   it('new canvas', function() {
     const canvas = new Canvas({
       containerId: 'c1',
+      renderer: 'canvas',
       width: 500,
       height: 500
     });

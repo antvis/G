@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
-const G = require('../../../../src/index').canvas;
-const Event = require('../../../../src/canvas/event');
+const G = require('../../../../src/g');
+const Event = require('../../../../src/event');
 
 const Canvas = G.Canvas;
 const div = document.createElement('div');
@@ -39,7 +39,6 @@ describe('Group', function() {
     });
 
     g2.add(e);
-
     expect(e.get('parent')).to.eql(g2);
     expect(g2.getCount()).to.equal(1);
     const g3 = new G.Group({
@@ -47,7 +46,6 @@ describe('Group', function() {
     });
 
     g3.add(e);
-
     expect(e.get('parent')).to.eql(g3);
     expect(g3.getCount()).to.equal(1);
     expect(g2.getCount()).to.equal(0);
@@ -255,66 +253,7 @@ describe('Group', function() {
 
     expect(g1.findById('e1')).to.eql(e1);
   });
-/*
-  it('fill', function() {
-    var g = new G.Group({
-      attrs: {
-        fill: 'green'
-      }
-    });
 
-    var circle = new G.Circle({
-      attrs: {
-        x: 100,
-        y: 100,
-        r: 50
-      }
-    });
-    expect(circle.hasFill()).to.be.undefined;
-    g.add(circle);
-    expect(circle.hasFill()).to.be('green');
-    expect(circle.attr('fill')).to.be.undefined;
-    var arc = new G.Arc({
-      attrs: {
-        x: 100,
-        y: 100,
-        r: 70,
-        startAngle: 0,
-        endAngle: 120,
-        stroke: 'red'
-      }
-    });
-    expect(arc.hasFill()).to.be.undefined;
-    g.add(arc);
-    expect(arc.hasFill()).to.be.undefined;
-    expect(arc.hasStroke()).to.be('red');
-    canvas.add(g);
-    canvas.draw();
-  });
-
-  it('stroke', function() {
-    var g = new G.Group({
-      attrs: {
-        stroke: 'l (0) 0:#00ffff 1:#ffff00'
-      }
-    });
-
-    var arc = new G.Arc({
-      attrs: {
-        x: 100,
-        y: 100,
-        r: 70,
-        startAngle: 180,
-        endAngle: 300
-      }
-    });
-    expect(arc.hasStroke()).to.be.undefined;
-    g.add(arc);
-    expect(arc.hasStroke()).to.be('l (0) 0:#00ffff 1:#ffff00');
-    canvas.add(g);
-    canvas.draw();
-  });
-*/
   it('transform', function() {
     const arc = new G.Circle({
       attrs: {
