@@ -109,6 +109,10 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
   },
   remove(destroy) {
     this._cfg.removed = true;
+    const parent = this.get('parent');
+    if (parent) {
+      Util.remove(parent.get('children'), this);
+    }
     if (destroy || destroy === undefined) {
       this.destroy();
     }

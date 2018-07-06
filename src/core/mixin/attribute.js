@@ -31,12 +31,13 @@ module.exports = {
    */
   attr(name, value) {
     const self = this;
+    this._cfg.hasUpdate = true;
     if (arguments.length === 0) {
       return self._attrs;
     }
 
     if (Util.isObject(name)) {
-      self._attrs = Util.assign(this.getDefaultAttrs(), name);
+      self._attrs = Util.assign(self._attrs, name);
       if ('fill' in name) {
         self._attrs.fillStyle = name.fill;
       }
@@ -45,6 +46,12 @@ module.exports = {
       }
       if ('opacity' in name) {
         self._attrs.globalAlpha = name.opacity;
+      }
+      if ('clip' in name) {
+        self._setClip(name.clip);
+      }
+      if ('path' in name && self._afterSetAttrPath) {
+        self._afterSetAttrPath(name.path);
       }
       self.clearBBox();
       return self;
@@ -56,6 +63,12 @@ module.exports = {
       }
       if (name === 'opacity') {
         self._attrs.globalAlpha = value;
+      }
+      if (name === 'clip') {
+        self._setClip(value);
+      }
+      if (name === 'path' && self._afterSetAttrPath) {
+        self._afterSetAttrPath(value);
       }
       self.clearBBox();
       return self;
@@ -70,5 +83,11 @@ module.exports = {
   },
   hasStroke() {
     return this.canStroke && this._attrs.strokeStyle;
+  },
+  _setClip(item) {
+    item._cfg.renderer = this._cfg.renderer;
+    item._cfg.canvas = this._cfg.canvas;
+    item._cfg.parent = this._cfg.parent;
+    item.hasFill = function() { return true; };
   }
 };

@@ -1,8 +1,6 @@
 const Util = require('../util/index');
 const Shape = require('../core/shape');
-const Inside = require('./util/inside');
 const ArcMath = require('./math/arc');
-const vec2 = require('../util/matrix').vec2;
 
 const Fan = function(cfg) {
   Fan.superclass.constructor.call(this, cfg);
@@ -59,93 +57,6 @@ Util.augment(Fan, {
       maxX: maxX + halfWidth,
       maxY: maxY + halfWidth
     };
-  },
-  isPointInPath(x, y) {
-    const fill = this.hasFill();
-    const stroke = this.hasStroke();
-
-    if (fill && stroke) {
-      return this._isPointInFill(x, y) || this._isPointInStroke(x, y);
-    }
-
-    if (fill) {
-      return this._isPointInFill(x, y);
-    }
-
-    if (stroke) {
-      return this._isPointInStroke(x, y);
-    }
-    return false;
-  },
-  _isPointInFill(x, y) {
-    const attrs = this._attrs;
-    const cx = attrs.x;
-    const cy = attrs.y;
-    const rs = attrs.rs;
-    const re = attrs.re;
-    const startAngle = attrs.startAngle;
-    const endAngle = attrs.endAngle;
-    const clockwise = attrs.clockwise;
-    const v1 = [ 1, 0 ];
-    const subv = [ x - cx, y - cy ];
-    const angle = vec2.angleTo(v1, subv);
-
-
-    const angle1 = ArcMath.nearAngle(angle, startAngle, endAngle, clockwise);
-
-    if (Util.isNumberEqual(angle, angle1)) {
-      const ls = vec2.squaredLength(subv);
-      if (rs * rs <= ls && ls <= re * re) {
-        return true;
-      }
-    }
-    return false;
-  },
-  _isPointInStroke(x, y) {
-    const attrs = this._attrs;
-    const cx = attrs.x;
-    const cy = attrs.y;
-    const rs = attrs.rs;
-    const re = attrs.re;
-    const startAngle = attrs.startAngle;
-    const endAngle = attrs.endAngle;
-    const clockwise = attrs.clockwise;
-    const lineWidth = this.getHitLineWidth();
-
-    const ssp = {
-      x: Math.cos(startAngle) * rs + cx,
-      y: Math.sin(startAngle) * rs + cy
-    };
-    const sep = {
-      x: Math.cos(startAngle) * re + cx,
-      y: Math.sin(startAngle) * re + cy
-    };
-    const esp = {
-      x: Math.cos(endAngle) * rs + cx,
-      y: Math.sin(endAngle) * rs + cy
-    };
-    const eep = {
-      x: Math.cos(endAngle) * re + cx,
-      y: Math.sin(endAngle) * re + cy
-    };
-
-    if (Inside.line(ssp.x, ssp.y, sep.x, sep.y, lineWidth, x, y)) {
-      return true;
-    }
-
-    if (Inside.line(esp.x, esp.y, eep.x, eep.y, lineWidth, x, y)) {
-      return true;
-    }
-
-    if (Inside.arcline(cx, cy, rs, startAngle, endAngle, clockwise, lineWidth, x, y)) {
-      return true;
-    }
-
-    if (Inside.arcline(cx, cy, re, startAngle, endAngle, clockwise, lineWidth, x, y)) {
-      return true;
-    }
-
-    return false;
   },
   createPath(context) {
     const attrs = this._attrs;

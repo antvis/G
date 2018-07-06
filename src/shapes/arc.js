@@ -1,6 +1,5 @@
 const Util = require('../util/index');
 const Shape = require('../core/shape');
-const Inside = require('./util/inside');
 const ArcMath = require('./math/arc');
 const Arrow = require('./util/arrow');
 
@@ -56,17 +55,6 @@ Util.augment(Arc, {
     box.maxX += halfWidth;
     box.maxY += halfWidth;
     return box;
-  },
-  isPointInPath(x, y) {
-    const attrs = this._attrs;
-    const cx = attrs.x;
-    const cy = attrs.y;
-    const { r, startAngle, endAngle, clockwise } = attrs;
-    const lineWidth = this.getHitLineWidth();
-    if (this.hasStroke()) {
-      return Inside.arcline(cx, cy, r, startAngle, endAngle, clockwise, lineWidth, x, y);
-    }
-    return false;
   },
   createPath(context) {
     const attrs = this._attrs;
