@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const Element = require('../../../../src/canvas/core/element');
+const Element = require('../../../../src/core/element');
 const mat3 = require('gl-matrix').mat3;
 
 describe('Element', function() {
@@ -13,11 +13,11 @@ describe('Element', function() {
       }
     });
 
-    expect(e.__cfg).not.to.be.undefined;
-    expect(e.__cfg.id).to.equal('aaa');
-    expect(e.__attrs).not.to.be.undefined;
-    expect(e.__attrs.width).to.equal(20);
-    expect(e.__attrs.height).to.equal(30);
+    expect(e._cfg).not.to.be.undefined;
+    expect(e._cfg.id).to.equal('aaa');
+    expect(e._attrs).not.to.be.undefined;
+    expect(e._attrs.width).to.equal(20);
+    expect(e._attrs.height).to.equal(30);
     expect(e.attr('matrix')).not.to.be.undefined;
     const m = mat3.create();
     expect(mat3.exactEquals(e.attr('matrix'), m)).to.be.true;

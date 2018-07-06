@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
-const G = require('../../../../src/index').canvas;
-const Canvas = G.Canvas;
+const Canvas = require('../../../../src/canvas');
+const G = require('../../../../src/g');
 const div = document.createElement('div');
 div.id = 'canvas-circle';
 document.body.appendChild(div);
