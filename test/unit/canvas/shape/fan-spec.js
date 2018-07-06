@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../../../src/index').canvas;
+const G = require('../../../../src/g');
 const Canvas = G.Canvas;
 const Util = require('../../../../src/util/index');
 const div = document.createElement('div');

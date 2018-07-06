@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const Arc = require('../../../../src/canvas/shape/math/arc');
+const Arc = require('../../../../src/shapes/math/arc');
 const Util = require('../../../../src/util/index');
 
 describe('Arc math', function() {
