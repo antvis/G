@@ -19,7 +19,6 @@ const SHAPE_TO_TAGS = {
 
 const SVG_ATTR_MAP = {
   opacity: 'opacity',
-  clip: 'clip',
   stroke: 'stroke-width',
   fill: 'fill',
   strokeOpacity: 'stroke-opacity',
@@ -170,6 +169,23 @@ class Painter {
       el.setAttribute('c' + name, parseInt(value, 10));
       return;
     }
+    // 圆角矩形
+    if (type === 'react' && name === 'r') {
+      el.setAttribute('rx', value);
+      el.setAttribute('ry', value);
+      return;
+    }
+    // 多边形
+    if (type === 'polygon' && name === 'points') {
+      if (!value || value.length === 0) {
+        value = '';
+      }
+      if (Util.isArray(value)) {
+        value = value.map(point => point[0] + ',' + point[1]);
+        value = value.join(' ');
+      }
+      el.setAttribute('points', value);
+    }
     // 设置path
     if (name === 'path' && Util.isArray(value)) {
       el.setAttribute('d', this._formatPath(value));
@@ -217,6 +233,9 @@ class Painter {
     }
     if (~name.indexOf('shadow')) {
       // todo 阴影
+    }
+    if (~name.indexOf('Arrow')) {
+      // todo 添加or更新箭头
     }
     if (name === 'stroke' && (attrs.startArrow || attrs.endArrow)) {
       // todo 更新箭头颜色
@@ -297,7 +316,6 @@ class Painter {
       if (!attrs.width) {
         self.attr('width', img.width);
       }
-
       if (!attrs.height) {
         self.attr('height', img.height);
       }
