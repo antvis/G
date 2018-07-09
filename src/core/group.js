@@ -56,6 +56,7 @@ Util.extend(Group, Element);
 
 Util.augment(Group, {
   isGroup: true,
+  type: 'group',
   canFill: true,
   canStroke: true,
   getDefaultCfg() {
