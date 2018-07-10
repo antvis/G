@@ -14,6 +14,10 @@ class Defs {
     el.id = id;
     canvas.appendChild(el);
     this.children = [];
+    this.defaultArrow = {
+      'marker-start': {},
+      'marker-end': {}
+    };
     this.el = el;
     this.canvas = canvas;
   }
@@ -45,14 +49,22 @@ class Defs {
     item.canvas = this.canvas;
     item.parent = this;
   }
+  getDefaultArrow(attrs, name) {
+    const stroke = attrs.stroke || attrs.strokeStyle;
+    if (this.defaultArrow[name][stroke]) {
+      return this.defaultArrow[name][stroke].id;
+    }
+    const arrow = new Arrow(attrs, name);
+    this.defaultArrow[name][stroke] = arrow;
+    return arrow.id;
+  }
   addGradient(cfg) {
     const gradient = new Gradient(cfg);
     this.add(gradient);
     return gradient.id;
   }
-  addArrow(name, cfg, stroke) {
-    const arrow = new Arrow(name, cfg, stroke);
-    this.add(arrow);
+  addArrow(attrs, name) {
+    const arrow = new Arrow(attrs, name);
     return arrow.id;
   }
   addShadow(cfg) {
