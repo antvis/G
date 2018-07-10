@@ -53,6 +53,8 @@ const SVG_ATTR_MAP = {
   startArrow: 'marker-start',
   endArrow: 'marker-end',
   path: 'd',
+  class: 'class',
+  style: 'style',
   preserveAspectRatio: 'preserveAspectRatio'
 };
 
@@ -138,6 +140,7 @@ class Painter {
       self._updateText(model);
       return;
     }
+    // todo 阴影涉及好多个属性，在外面处理。怎么判断是个问题。。
     for (const key in attrs) {
       if (attrs[key] !== formerAttrs[key]) {
         self._setAttribute(model, key, attrs[key]);
@@ -156,6 +159,7 @@ class Painter {
     const type = model.type;
     const attrs = model._attrs;
     const el = model._cfg.el;
+    const defs = this.context;
 
     // 计算marker路径
     if (type === 'marker' && ~[ 'x', 'y', 'radius', 'r' ].indexOf(name) && attrs.hasUpdate) {
@@ -218,27 +222,54 @@ class Painter {
       this._setTransform(model);
       return;
     }
-    if (~[ 'stroke', 'strokeStyle', 'fill', 'fillStyle' ].indexOf(name)) {
+    if (name === 'fill' || name === 'stroke') {
       if (!value) {
         el.removeAttribute(SVG_ATTR_MAP[name]);
-      } else if (/^[r,R,L,l]{1}[\s]*\(/.test(value.trim())) {
-        // todo 渐变色
-      } else {
-        el.setAttribute(SVG_ATTR_MAP[name], value);
         return;
       }
+      if (/^[r,R,L,l]{1}[\s]*\(/.test(value.trim())) {
+        let id = defs.find('gradient', value);
+        if (!id) {
+          id = defs.addGradient(value, this);
+        }
+        el.setAttribute('gradient', `url(#${id})`);
+      } else {
+        el.setAttribute(SVG_ATTR_MAP[name], value);
+      }
+      return;
     }
     if (name === 'clip') {
-      // todo 裁剪
-    }
-    if (~name.indexOf('shadow')) {
-      // todo 阴影
+      this._setClip(model, value);
+      return;
     }
     if (~name.indexOf('Arrow')) {
-      // todo 添加or更新箭头
+      name = SVG_ATTR_MAP[name];
+      if (!value) {
+        model._cfg[name] = null;
+        el.removeAttribute(name);
+      } else {
+        let id = null;
+        if (typeof value === 'boolean') {
+          id = defs.getDefaultArrow(attrs, name);
+        } else {
+          this._createDom(value);
+          this._updateShape(value);
+          id = defs.addArrow(attrs, name);
+        }
+        el.setAttribute(name, `url(#${id})`);
+        model._cfg[name] = id;
+      }
+      return;
     }
-    if (name === 'stroke' && (attrs.startArrow || attrs.endArrow)) {
-      // todo 更新箭头颜色
+
+    // foreignObject
+    if (name === 'html') {
+      if (typeof value === 'string') {
+        el.innerHTML = value;
+      } else {
+        el.innerHTML = '';
+        el.appendChild(value);
+      }
     }
   }
   _createDom(model) {
@@ -350,6 +381,7 @@ class Painter {
         el.setAttribute(SVG_ATTR_MAP[attr], attrs[attr]);
       }
     }
+    model._cfg.attrs = model._attrs;
   }
   _setText(model, text) {
     const el = model._cfg.el;
@@ -366,6 +398,17 @@ class Painter {
     } else {
       el.innerHTML = text;
     }
+  }
+  _setClip(model, value) {
+    const el = model._cfg.el;
+    if (!value) {
+      el.removeAttribute('clip-path');
+      return;
+    }
+    this._createDom(value);
+    this._updateShape(value);
+    const id = this.context.addClip(value);
+    el.setAttribute('clip-path', `url(#${id})`);
   }
 }
 
