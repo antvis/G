@@ -151,9 +151,15 @@ Util.augment(Group, {
     return backShape;
   },
   removeChild(item, destroy) {
+    const children = this._cfg.children;
     if (arguments.length >= 2) {
       if (this.contain(item)) {
-        item.remove(destroy);
+        const index = children.indexOf(item);
+        children.splice(index, 1);
+        item._cfg.parent = null;
+        if (destroy) {
+          item.remove();
+        }
       }
     } else {
       if (arguments.length === 1) {
@@ -161,7 +167,9 @@ Util.augment(Group, {
           destroy = item;
         } else {
           if (this.contain(item)) {
-            item.remove(true);
+            const index = children.indexOf(item);
+            children.splice(index, 1);
+            item._cfg.parent = null;
           }
           return this;
         }
