@@ -44,7 +44,6 @@ class Defs {
     return flag;
   }
   add(item) {
-    this.el.appendChild(item.el);
     this.children.push(item);
     item.canvas = this.canvas;
     item.parent = this;
@@ -56,24 +55,29 @@ class Defs {
     }
     const arrow = new Arrow(attrs, name);
     this.defaultArrow[name][stroke] = arrow;
+    this.el.appendChild(arrow.el);
     return arrow.id;
   }
   addGradient(cfg) {
     const gradient = new Gradient(cfg);
+    this.el.appendChild(gradient.el);
     this.add(gradient);
     return gradient.id;
   }
   addArrow(attrs, name) {
     const arrow = new Arrow(attrs, name);
+    this.el.appendChild(arrow.el);
     return arrow.id;
   }
   addShadow(cfg) {
     const shadow = new Shadow(cfg);
+    this.el.appendChild(shadow.el);
     this.add(shadow);
     return shadow.id;
   }
   addClip(cfg) {
     const clip = new Clip(cfg);
+    this.el.appendChild(clip.el);
     this.add(clip);
     return clip.id;
   }

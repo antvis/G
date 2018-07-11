@@ -17,12 +17,12 @@ class Arrow {
     this.id = id;
     this.cfg = attrs[type === 'marker-start' ? 'startArrow' : 'endArrow'];
     this.stroke = attrs.stroke || '#000';
-    if (typeof attrs[type] === true) {
+    if (this.cfg === true) {
       this._setDefaultPath(type);
     } else {
       this._setMarker(attrs[type]);
     }
-    return id;
+    return this;
   }
   match() {
     return false;
