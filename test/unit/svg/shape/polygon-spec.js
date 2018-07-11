@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../../../src/index').svg;
+const G = require('../../../../src/g');
 const Canvas = G.Canvas;
 
 const div = document.createElement('div');
@@ -12,7 +12,8 @@ describe('Polygon', () => {
     containerId: 'canvas-polygon',
     width: 200,
     height: 200,
-    pixelRatio: 1
+    pixelRatio: 1,
+    renderer: 'svg'
   });
 
   const polygon = new G.Polygon();
@@ -21,7 +22,8 @@ describe('Polygon', () => {
     expect(polygon.attr('points')).to.be.undefined;
     expect(polygon.attr('lineWidth')).to.equal(1);
     expect(polygon.attr('stroke')).to.be.undefined;
-    expect(polygon.attr('fill')).to.be.equal('none');
+    expect(polygon.attr('fill')).to.be.undefined;
+    expect(polygon.getBBox()).to.be.null;
   });
 
   it('points', () => {
@@ -31,22 +33,21 @@ describe('Polygon', () => {
     polygon.attr('points', [[ 30, 30 ], [ 40, 20 ], [ 30, 50 ], [ 60, 100 ]]);
     expect(polygon.attr('points').length).to.equal(4);
     let box = polygon.getBBox();
-    expect(box.minX).to.equal(30);
-    expect(box.maxX).to.equal(60);
-    expect(box.minY).to.equal(20);
-    expect(box.maxY).to.equal(100);
+    expect(box.minX).to.equal(29.5);
+    expect(box.maxX).to.equal(60.5);
+    expect(box.minY).to.equal(19.5);
+    expect(box.maxY).to.equal(100.5);
 
     const polygon1 = new G.Polygon({
       attrs: {
         points: [[ 58, 60 ], [ 80, 190 ], [ 32, 53 ], [ 45, 32 ]]
       }
     });
-    canvas.add(polygon1);
     box = polygon1.getBBox();
-    expect(box.minX).to.equal(32);
-    expect(box.minY).to.equal(32);
-    expect(box.maxX).to.equal(80);
-    expect(box.maxY).to.equal(190);
+    expect(box.minX).to.equal(31.5);
+    expect(box.minY).to.equal(31.5);
+    expect(box.maxX).to.equal(80.5);
+    expect(box.maxY).to.equal(190.5);
   });
 
   it('lineWidth', () => {
@@ -54,10 +55,10 @@ describe('Polygon', () => {
     polygon.attr('lineWidth', 2);
     expect(polygon.attr('lineWidth')).to.equal(2);
     let box = polygon.getBBox();
-    expect(box.minX).to.equal(30);
-    expect(box.maxX).to.equal(60);
-    expect(box.minY).to.equal(20);
-    expect(box.maxY).to.equal(100);
+    expect(box.minX).to.equal(29);
+    expect(box.maxX).to.equal(61);
+    expect(box.minY).to.equal(19);
+    expect(box.maxY).to.equal(101);
 
     const polygon1 = new G.Polygon({
       attrs: {
@@ -65,12 +66,11 @@ describe('Polygon', () => {
         lineWidth: 2
       }
     });
-    canvas.add(polygon1);
     box = polygon1.getBBox();
-    expect(box.minX).to.equal(32);
-    expect(box.minY).to.equal(32);
-    expect(box.maxX).to.equal(80);
-    expect(box.maxY).to.equal(190);
+    expect(box.minX).to.equal(31);
+    expect(box.minY).to.equal(31);
+    expect(box.maxX).to.equal(81);
+    expect(box.maxY).to.equal(191);
   });
 
   it('stroke', () => {
@@ -85,11 +85,12 @@ describe('Polygon', () => {
     expect(polygon.attr('fill')).to.equal('r (0.3, 0.2, 0) 0:#edda2f 1:#23edfa');
     canvas.draw();
   });
+
   const polygon2 = new G.Polygon({
     attrs: {
       points: [[ 31, 23 ], [ 43, 12 ], [ 53, 23 ], [ 64, 33 ]],
       lineWidth: 2,
-      fill: 'red'
+      fill: 'r (0.3, 0.2, 0) 0:#edda2f 1:#23edfa'
     }
   });
   canvas.add(polygon2);
@@ -98,8 +99,8 @@ describe('Polygon', () => {
     attrs: {
       points: [[ 31, 23 ], [ 43, 12 ], [ 53, 23 ], [ 64, 33 ]],
       lineWidth: 2,
-      stroke: 'green',
-      fill: 'red'
+      stroke: 'l (90) 0:#f0ff0f 1:#ff0e0d',
+      fill: 'r (0.3, 0.2, 0) 0:#edda2f 1:#23edfa'
     }
   });
   canvas.add(polygon3);

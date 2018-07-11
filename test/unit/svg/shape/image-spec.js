@@ -5,9 +5,7 @@ const expect = require('chai').expect;
 const {
   resolve
 } = require('path');
-const g = require('../../../../src/index');
-
-const G = g.svg;
+const G = require('../../../../src/g');
 const Canvas = G.Canvas;
 
 const div = document.createElement('div');
@@ -29,7 +27,8 @@ describe('Image', () => {
     containerId: 'canvas-img',
     width: 800,
     height: 800,
-    pixelRatio: 1
+    pixelRatio: 1,
+    renderer: 'svg'
   });
 
   const image = new G.Image({

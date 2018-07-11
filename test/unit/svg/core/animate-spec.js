@@ -1,7 +1,5 @@
 const expect = require('chai').expect;
-const g = require('../../../../src/index');
-
-const G = g.svg;
+const G = require('../../../../src/g');
 
 describe('animate', () => {
   const div = document.createElement('div');
@@ -10,7 +8,8 @@ describe('animate', () => {
   const canvas = new G.Canvas({
     containerId: 'canvas-animate',
     width: 1000,
-    height: 1000
+    height: 1000,
+    renderer: 'svg'
   });
   it('repeat', () => {
     const shape = canvas.addShape('circle', {

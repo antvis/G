@@ -2,9 +2,7 @@
  * Created by Elaine on 2018/5/4.
  */
 const expect = require('chai').expect;
-const g = require('../../../../src/index');
-
-const G = g.svg;
+const G = require('../../../../src/g');
 const Canvas = G.Canvas;
 
 const div = document.createElement('div');
@@ -17,7 +15,8 @@ describe('Line', () => {
     containerId: 'canvas-line',
     width: 200,
     height: 200,
-    pixelRatio: 1
+    pixelRatio: 1,
+    renderer: 'svg'
   });
   const line = new G.Line({
     attrs: {
@@ -27,65 +26,64 @@ describe('Line', () => {
       y2: 0
     }
   });
-  canvas.add(line);
   it('init attrs', () => {
     expect(line.attr('x1')).to.equal(0);
     expect(line.attr('y1')).to.equal(0);
     expect(line.attr('x2')).to.equal(0);
     expect(line.attr('y2')).to.equal(0);
     expect(line.attr('lineWidth')).to.equal(1);
-    expect(line.attr('stroke')).to.equal('#000');
+    expect(line.attr('stroke')).to.be.undefined;
     expect(line.attr('fill')).to.be.undefined;
     expect(line.attr('startArrow')).to.be.false;
     expect(line.attr('endArrow')).to.be.false;
     const box = line.getBBox();
-    expect(box.minX).to.equal(0);
-    expect(box.maxX).to.equal(0);
-    expect(box.minY).to.equal(0);
-    expect(box.maxY).to.equal(0);
+    expect(box.minX).to.equal(-0.5);
+    expect(box.maxX).to.equal(0.5);
+    expect(box.minY).to.equal(-0.5);
+    expect(box.maxY).to.equal(0.5);
   });
 
-  it('x1', () => {
+  it('x1', function() {
     line.attr('x1', 10);
     expect(line.attr('x1')).to.equal(10);
     const box = line.getBBox();
-    expect(box.minX).to.equal(0);
-    expect(box.maxX).to.equal(10);
+    expect(box.minX).to.equal(-0.5);
+    expect(box.maxX).to.equal(10.5);
   });
 
-  it('y1', () => {
+  it('y1', function() {
     line.attr('y1', 15);
     expect(line.attr('y1')).to.equal(15);
     const box = line.getBBox();
-    expect(box.minY).to.equal(0);
-    expect(box.maxY).to.equal(15);
+    expect(box.minY).to.equal(-0.5);
+    expect(box.maxY).to.equal(15.5);
   });
 
-  it('x2', () => {
+  it('x2', function() {
     line.attr('x2', 59);
     expect(line.attr('x2')).to.equal(59);
     const box = line.getBBox();
-    expect(box.minX).to.equal(10);
-    expect(box.maxX).to.equal(59);
+    expect(box.minX).to.equal(9.5);
+    expect(box.maxX).to.equal(59.5);
   });
 
-  it('y2', () => {
+  it('y2', function() {
     line.attr('y2', 80);
     expect(line.attr('y2')).to.equal(80);
     const box = line.getBBox();
-    expect(box.minY).to.equal(15);
-    expect(box.maxY).to.equal(80);
+    expect(box.minY).to.equal(14.5);
+    expect(box.maxY).to.equal(80.5);
   });
 
-  it('lineWidth', () => {
+  it('lineWidth', function() {
     expect(line.attr('lineWidth')).to.equal(1);
     line.attr('lineWidth', 2);
     expect(line.attr('lineWidth')).to.equal(2);
     const box = line.getBBox();
-    expect(box.minX).to.equal(10);
-    expect(box.maxX).to.equal(59);
-    expect(box.minY).to.equal(15);
-    expect(box.maxY).to.equal(80);
+    expect(box.minX).to.equal(9);
+    expect(box.maxX).to.equal(60);
+    expect(box.minY).to.equal(14);
+    expect(box.maxY).to.equal(81);
   });
 
   it('stroke', () => {
@@ -123,8 +121,8 @@ describe('Line', () => {
   it('getPoint', () => {
     const line = new G.Line({
       attrs: {
-        x1: 100,
-        y1: 100,
+        x1: 0,
+        y1: 0,
         x2: 200,
         y2: 300,
         startArrow: new G.Marker({
@@ -138,9 +136,9 @@ describe('Line', () => {
       }
     });
     canvas.add(line);
-    // const point = line.getPoint(0.5);
-    // expect(point.x).to.equal(100);
-    // expect(point.y).to.equal(150);
+    const point = line.getPoint(0.5);
+    expect(point.x).to.equal(100);
+    expect(point.y).to.equal(150);
   });
 });
 
