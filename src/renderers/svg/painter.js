@@ -249,8 +249,6 @@ class Painter {
         if (typeof value === 'boolean') {
           id = defs.getDefaultArrow(attrs, name);
         } else {
-          this._createDom(value);
-          this._updateShape(value);
           id = defs.addArrow(attrs, name);
         }
         el.setAttribute(name, `url(#${id})`);
