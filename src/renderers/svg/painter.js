@@ -19,12 +19,10 @@ const SHAPE_TO_TAGS = {
 
 const SVG_ATTR_MAP = {
   opacity: 'opacity',
-  stroke: 'stroke-width',
-  fill: 'fill',
+  fillStyle: 'fill',
   strokeOpacity: 'stroke-opacity',
   fillOpacity: 'fill-opacity',
-  strokeStyle: 'stroke-width',
-  fillStyle: 'fill',
+  strokeStyle: 'stroke',
   x: 'x',
   y: 'y',
   r: 'r',
@@ -34,7 +32,6 @@ const SVG_ATTR_MAP = {
   rs: 'rs',
   width: 'width',
   height: 'height',
-  image: 'href',
   x1: 'x1',
   x2: 'x2',
   y1: 'y1',
@@ -54,6 +51,7 @@ const SVG_ATTR_MAP = {
   endArrow: 'marker-end',
   path: 'd',
   class: 'class',
+  id: 'id',
   style: 'style',
   preserveAspectRatio: 'preserveAspectRatio'
 };
@@ -89,16 +87,15 @@ class Painter {
     return this;
   }
   draw(model) {
-    this._drawGroup(model);
+    this._drawChildren(model._cfg.children);
   }
   _drawGroup(model) {
-    const self = this;
-    const cfg = model._cfg;
-    const children = cfg.children;
-    let shape;
-
     this._drawShape(model);
-
+    this._drawChildren(model._cfg.children);
+  }
+  _drawChildren(children) {
+    const self = this;
+    let shape;
     for (let i = 0; i < children.length; i++) {
       shape = children[i];
       if (shape.isGroup) {
@@ -110,6 +107,7 @@ class Painter {
   }
   _drawShape(model) {
     const self = this;
+    const attrs = model._attrs;
     const cfg = model._cfg;
 
     // 删除
@@ -125,29 +123,40 @@ class Painter {
     }
 
     // 更新
-    if (model._attrs.hasUpdate) {
+    if (cfg.hasUpdate) {
       self._updateShape(model);
+    }
+    if (attrs.clip && attrs.clip._cfg.hasUpdate) {
+      self._updateShape(attrs.clip);
     }
   }
   _updateShape(model) {
     const self = this;
     const attrs = model._attrs;
     const formerAttrs = model._cfg.attrs;
+    if (!formerAttrs) {
+      return;
+    }
     if (!model._cfg.el) {
       self._createDom(model);
+    }
+    if ('clip' in attrs) {
+      this._setClip(model, attrs.clip);
+    }
+    if ('shadowOffsetX' in attrs || 'shadowOffsetY' in attrs || 'shadowBlur' in attrs || 'shadowColor' in attrs) {
+      this._setShadow(model);
     }
     if (model.type === 'text') {
       self._updateText(model);
       return;
     }
-    // todo 阴影涉及好多个属性，在外面处理。怎么判断是个问题。。
     for (const key in attrs) {
       if (attrs[key] !== formerAttrs[key]) {
         self._setAttribute(model, key, attrs[key]);
       }
     }
-    model._cfg.attrs = model._attrs;
-    model._attrs.hasUpdate = false;
+    model._cfg.attrs = Object.assign({}, model._attrs);
+    model._cfg.hasUpdate = false;
   }
   _removeShape(model) {
     const el = model._cfg.el;
@@ -189,6 +198,7 @@ class Painter {
         value = value.join(' ');
       }
       el.setAttribute('points', value);
+      return;
     }
     // 设置path
     if (name === 'path' && Util.isArray(value)) {
@@ -196,7 +206,7 @@ class Painter {
       return;
     }
     // 设置图片
-    if (name === 'image') {
+    if (name === 'img') {
       this._setImage(model, value);
       return;
     }
@@ -222,24 +232,11 @@ class Painter {
       this._setTransform(model);
       return;
     }
-    if (name === 'fill' || name === 'stroke') {
-      if (!value) {
-        el.removeAttribute(SVG_ATTR_MAP[name]);
-        return;
-      }
-      if (/^[r,R,L,l]{1}[\s]*\(/.test(value.trim())) {
-        let id = defs.find('gradient', value);
-        if (!id) {
-          id = defs.addGradient(value, this);
-        }
-        el.setAttribute('gradient', `url(#${id})`);
-      } else {
-        el.setAttribute(SVG_ATTR_MAP[name], value);
-      }
+    if (name === 'fillStyle' || name === 'strokeStyle') {
+      this._setColor(model, name, value);
       return;
     }
     if (name === 'clip') {
-      this._setClip(model, value);
       return;
     }
     if (~name.indexOf('Arrow')) {
@@ -261,7 +258,6 @@ class Painter {
       }
       return;
     }
-
     // foreignObject
     if (name === 'html') {
       if (typeof value === 'string') {
@@ -271,9 +267,13 @@ class Painter {
         el.appendChild(value);
       }
     }
+    if (SVG_ATTR_MAP[name]) {
+      el.setAttribute(SVG_ATTR_MAP[name], value);
+    }
   }
   _createDom(model) {
     const type = SHAPE_TO_TAGS[model.type];
+    const attrs = model._attrs;
     if (!type) {
       throw new Error('the type' + model.type + 'is not supported by svg');
     }
@@ -281,7 +281,20 @@ class Painter {
     const id = model._attrs.id || Util.uniqueId(this.type + '_');
     shape.id = id;
     model._cfg.el = shape;
-    model._cfg.parent.get('el').appendChild(shape);
+    if (model._cfg.parent) {
+      model._cfg.parent.get('el').appendChild(shape);
+    }
+    if (model.type === 'text') {
+      shape.setAttribute('paint-order', 'stroke');
+      shape.setAttribute('style', 'stroke-linecap:butt; stroke-linejoin:miter;');
+    } else {
+      if (!attrs.stroke && !attrs.strokeStyle) {
+        attrs.strokeStyle = 'none';
+      }
+      if (!attrs.fill && !attrs.fillStyle) {
+        attrs.fillStyle = 'none';
+      }
+    }
     model._cfg.attrs = {};
     return shape;
   }
@@ -331,10 +344,12 @@ class Painter {
       el.setAttribute('href', img);
     } else if (img instanceof Image) {
       if (!attrs.width) {
-        self.attr('width', img.width);
+        el.setAttribute('width', img.width);
+        model._attrs.width = img.width;
       }
       if (!attrs.height) {
-        self.attr('height', img.height);
+        el.setAttribute('height', img.height);
+        model._attrs.height = img.height;
       }
       el.setAttribute('href', img.src);
     } else if (img instanceof HTMLElement && Util.isString(img.nodeName) && img.nodeName.toUpperCase() === 'CANVAS') {
@@ -345,10 +360,12 @@ class Painter {
       canvas.setAttribute('height', img.height);
       canvas.getContext('2d').putImageData(img, 0, 0);
       if (!attrs.width) {
-        self.attr('width', img.width);
+        el.setAttribute('width', img.width);
+        model._attrs.width = img.width;
       }
       if (!attrs.height) {
-        self.attr('height', img.height);
+        el.setAttribute('height', img.height);
+        model._attrs.height = img.height;
       }
       el.setAttribute('href', canvas.toDataURL());
     }
@@ -362,26 +379,41 @@ class Painter {
     for (const attr in attrs) {
       if (attrs[attr] !== formerAttrs[attr]) {
         if (attr === 'text') {
-          self._setText(attrs[attr]);
+          self._setText(model, attrs[attr]);
           continue;
         }
-        if (attr === 'textBaseline') {
-          el.setAttribute('alignment-baseline', BASELINE_MAP[attr]);
+        if (attr === 'fillStyle' || attr === 'strokeStyle') {
+          this._setColor(model, attr, attrs[attr]);
           continue;
         }
-        if (attr === 'textAlign') {
-          el.setAttribute('text-anchor', ANCHOR_MAP[attr]);
+        if (attr === 'matrix') {
+          this._setTransform(model);
           continue;
         }
-        if (attr === 'outline') {
-          el.setAttribute('paint-order', 'stroke');
-          el.setAttribute('style', 'stroke-linecap:butt; stroke-linejoin:miter;');
-          continue;
+        if (SVG_ATTR_MAP[attr]) {
+          el.setAttribute(SVG_ATTR_MAP[attr], attrs[attr]);
         }
-        el.setAttribute(SVG_ATTR_MAP[attr], attrs[attr]);
       }
     }
-    model._cfg.attrs = model._attrs;
+    model._cfg.attrs = Object.assign({}, model._attrs);
+    model._cfg.hasUpdate = false;
+  }
+  _assembleFont(model) {
+    const el = model.get('el');
+    const attrs = model._attrs;
+    const fontSize = attrs.fontSize;
+
+    el.setAttribute('alignment-baseline', BASELINE_MAP[attrs.textBaseline] || 'baseline');
+    el.setAttribute('text-anchor', ANCHOR_MAP[attrs.textAlign] || 'left');
+    el.setAttribute('font', attrs.font);
+    if (fontSize && +fontSize < 12) { // 小于 12 像素的文本进行 scale 处理
+      attrs.matrix = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
+      model.transform([
+        [ 't', -attrs.x, -attrs.y ],
+        [ 's', +fontSize / 12, +fontSize / 12 ],
+        [ 't', attrs.x, attrs.y ]
+      ]);
+    }
   }
   _setText(model, text) {
     const el = model._cfg.el;
@@ -405,10 +437,46 @@ class Painter {
       el.removeAttribute('clip-path');
       return;
     }
-    this._createDom(value);
-    this._updateShape(value);
-    const id = this.context.addClip(value);
-    el.setAttribute('clip-path', `url(#${id})`);
+    if (!el.hasAttribute('clip-path')) {
+      this._createDom(value);
+      this._updateShape(value);
+      const id = this.context.addClip(value);
+      el.setAttribute('clip-path', `url(#${id})`);
+    } else if (value._cfg.hasUpdate) {
+      this._updateShape(value);
+    }
+  }
+  _setColor(model, name, value) {
+    const el = model._cfg.el;
+    const defs = this.context;
+    if (!value) {
+      el.setAttribute(SVG_ATTR_MAP[name], 'none');
+      return;
+    }
+    if (/^[r,R,L,l]{1}[\s]*\(/.test(value.trim())) {
+      let id = defs.find('gradient', value);
+      if (!id) {
+        id = defs.addGradient(value);
+      }
+      el.setAttribute(SVG_ATTR_MAP[name], `url(#${id})`);
+    } else {
+      el.setAttribute(SVG_ATTR_MAP[name], value);
+    }
+  }
+  _setShadow(model) {
+    const el = model._cfg.el;
+    const attrs = model._attrs;
+    const cfg = {
+      dx: attrs.shadowOffsetX,
+      dy: attrs.shadowOffsetY,
+      blur: attrs.shadowBlur,
+      color: attrs.shadowColor
+    };
+    let id = this.context.find('filter', cfg);
+    if (!id) {
+      id = this.context.addShadow(cfg, this);
+    }
+    el.setAttribute('filter', `url(#${id})`);
   }
 }
 
