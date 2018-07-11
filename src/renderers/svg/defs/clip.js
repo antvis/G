@@ -7,6 +7,7 @@ class Clip {
   constructor(cfg) {
     this.type = 'clip';
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+    this.el = el;
     this.id = Util.uniqueId('clip_');
     el.id = this.id;
     el.appendChild(cfg._cfg.el);
