@@ -1,5 +1,4 @@
-const canvas = require('./canvas');
-
 module.exports = {
-  canvas
+  canvas: require('./canvas'),
+  svg: require('./svg')
 };
