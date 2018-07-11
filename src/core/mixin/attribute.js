@@ -31,11 +31,9 @@ module.exports = {
    */
   attr(name, value) {
     const self = this;
-    this._cfg.hasUpdate = true;
     if (arguments.length === 0) {
       return self._attrs;
     }
-
     if (Util.isObject(name)) {
       self._attrs = Util.assign(self._attrs, name);
       if ('fill' in name) {
@@ -54,6 +52,7 @@ module.exports = {
         self._afterSetAttrPath(name.path);
       }
       self.clearBBox();
+      this._cfg.hasUpdate = true;
       return self;
     }
     if (arguments.length === 2) {
@@ -71,6 +70,7 @@ module.exports = {
         self._afterSetAttrPath(value);
       }
       self.clearBBox();
+      this._cfg.hasUpdate = true;
       return self;
     }
     return self._attrs[name];

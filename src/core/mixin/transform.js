@@ -64,8 +64,8 @@ module.exports = {
     const cx = this.get('x') || 0; // 当前的x
     const cy = this.get('y') || 0; // 当前的y
     this.translate(x - cx, y - cy);
-    this.set('x', x);
-    this.set('y', y);
+    this.attr('x', x);
+    this.attr('y', y);
     return this;
   },
   transform(ts) {
