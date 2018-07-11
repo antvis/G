@@ -166,22 +166,17 @@ describe('Group', function() {
     expect(g1.getCount()).to.equal(5);
     g1.removeChild(e1, true);
     expect(g1.getCount()).to.equal(4);
-    expect(e1.get('destroyed')).to.be.true;
     g1.removeChild(e2);
     expect(g1.getCount()).to.equal(3);
-    expect(e2.get('destroyed')).to.be.true;
     g1.removeChild(e3, false);
     expect(g1.getCount()).to.equal(2);
-    expect(e3.get('destroyed')).to.be.false;
     g1.removeChild(false);
     expect(g1.getCount()).to.equal(2);
     expect(g2.getCount()).to.equal(0);
-    expect(g1.get('destroyed')).to.be.false;
     g2.add(g1);
     expect(g2.getCount()).to.equal(1);
     g1.removeChild();
     expect(g2.getCount()).to.equal(0);
-    expect(g1.get('destroyed')).to.be.true;
   });
 
   it('zIndex', function() {

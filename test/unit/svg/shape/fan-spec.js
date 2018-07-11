@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../../../src/index').svg;
+const G = require('../../../../src/g');
 const Canvas = G.Canvas;
 const Util = require('../../../../src/util/index');
 const div = document.createElement('div');
@@ -11,7 +11,8 @@ describe('CFan', function() {
     containerId: 'canvas-fan',
     width: 200,
     height: 200,
-    pixelRatio: 1
+    pixelRatio: 1,
+    renderer: 'svg'
   });
 
   const fan = new G.Fan({

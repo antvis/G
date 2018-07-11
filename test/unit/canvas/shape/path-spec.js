@@ -26,6 +26,7 @@ describe('Path', function() {
     expect(path.attr('path')).to.undefined;
     expect(path.attr('lineWidth')).to.equal(1);
     expect(path.getBBox()).to.be.null;
+
     canvas.add(path);
     canvas.draw();
   });

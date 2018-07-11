@@ -2,9 +2,7 @@
  * Created by Elaine on 2018/5/7.
  */
 const expect = require('chai').expect;
-const g = require('../../../../src/index');
-
-const G = g.svg;
+const G = require('../../../../src/g');
 const Canvas = G.Canvas;
 
 const div = document.createElement('div');
@@ -18,7 +16,8 @@ describe('Ellipse', () => {
     containerId: 'canvas-ellipse',
     width: 200,
     height: 200,
-    pixelRatio: 1
+    pixelRatio: 1,
+    renderer: 'svg'
   });
 
   const ellipse = new G.Ellipse({

@@ -1,9 +1,8 @@
 const $ = require('jquery');
 const expect = require('chai').expect;
-const g = require('../../../src/index');
+const G = require('../../../src/g');
 const Simulate = require('event-simulate');
 
-const G = g.svg;
 const Canvas = G.Canvas;
 
 $('<div id="c1"></div>').appendTo('body');

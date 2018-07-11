@@ -1,7 +1,5 @@
 const expect = require('chai').expect;
-const g = require('../../../../src/index');
-
-const G = g.svg;
+const G = require('../../../../src/g');
 const Canvas = G.Canvas;
 
 const div = document.createElement('div');
@@ -12,7 +10,8 @@ describe('Circle', () => {
     containerId: 'canvas-circle',
     width: 200,
     height: 200,
-    pixelRatio: 1
+    pixelRatio: 1,
+    renderer: 'svg'
   });
 
   const circle = new G.Circle({
@@ -26,32 +25,31 @@ describe('Circle', () => {
   it('init attr', () => {
     expect(circle.attr('lineWidth')).to.equal(1);
     expect(circle.attr('stroke')).to.be.undefined;
-    expect(circle.attr('fill')).to.equal('none');
     const box = circle.getBBox();
-    expect(box.minX).to.equal(0);
-    expect(box.maxX).to.equal(0);
-    expect(box.minY).to.equal(0);
-    expect(box.maxY).to.equal(0);
+    expect(box.minX).to.equal(-0.5);
+    expect(box.maxX).to.equal(0.5);
+    expect(box.minY).to.equal(-0.50);
+    expect(box.maxY).to.equal(0.5);
   });
 
   it('x', () => {
     circle.attr('x', 10);
     expect(circle.attr('x')).to.equal(10);
     const box = circle.getBBox();
-    expect(box.minX).to.equal(10);
-    expect(box.maxX).to.equal(10);
-    expect(box.minY).to.equal(0);
-    expect(box.maxY).to.equal(0);
+    expect(box.minX).to.equal(9.5);
+    expect(box.maxX).to.equal(10.5);
+    expect(box.minY).to.equal(-0.5);
+    expect(box.maxY).to.equal(0.5);
   });
 
   it('y', () => {
     circle.attr('y', 20);
     expect(circle.attr('y')).to.equal(20);
     const box = circle.getBBox();
-    expect(box.minX).to.equal(10);
-    expect(box.maxX).to.equal(10);
-    expect(box.minY).to.equal(20);
-    expect(box.maxY).to.equal(20);
+    expect(box.minX).to.equal(9.5);
+    expect(box.maxX).to.equal(10.5);
+    expect(box.minY).to.equal(19.5);
+    expect(box.maxY).to.equal(20.5);
   });
 
   it('r', () => {
@@ -59,10 +57,10 @@ describe('Circle', () => {
     circle.attr('r', 10);
     expect(circle.attr('r')).to.equal(10);
     const box = circle.getBBox();
-    expect(box.minX).to.equal(0);
-    expect(box.maxX).to.equal(20);
-    expect(box.minY).to.equal(10);
-    expect(box.maxY).to.equal(30);
+    expect(box.minX).to.equal(-0.5);
+    expect(box.maxX).to.equal(20.5);
+    expect(box.minY).to.equal(9.5);
+    expect(box.maxY).to.equal(30.5);
   });
 
   it('lineWidth', () => {
@@ -70,23 +68,23 @@ describe('Circle', () => {
     circle.attr('lineWidth', 2);
     expect(circle.attr('lineWidth')).to.equal(2);
     const box = circle.getBBox();
-    expect(box.minX).to.equal(0);
-    expect(box.maxX).to.equal(20);
-    expect(box.minY).to.equal(10);
-    expect(box.maxY).to.equal(30);
+    expect(box.minX).to.equal(-1);
+    expect(box.maxX).to.equal(21);
+    expect(box.minY).to.equal(9);
+    expect(box.maxY).to.equal(31);
   });
 
   it('stroke', () => {
     circle.attr('stroke', 'l (30) 0:#00ffff 1:#ff00ff');
     expect(circle.attr('stroke')).to.equal('l (30) 0:#00ffff 1:#ff00ff');
     canvas.add(circle);
-    canvas.draw(circle);
+    canvas.draw();
   });
 
   it('fill', () => {
     circle.attr('fill', 'r (0.5, 0.5, 0) 0:#00ffff 1:#ffff00');
     expect(circle.attr('fill')).to.equal('r (0.5, 0.5, 0) 0:#00ffff 1:#ffff00');
-    canvas.draw(circle);
+    canvas.draw();
   });
 
   it('strokeOpactiy', () => {
