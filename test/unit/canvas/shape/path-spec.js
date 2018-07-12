@@ -149,9 +149,8 @@ describe('Path', function() {
     expect(path.isHit(400, 400)).to.be.true;
     expect(path.isHit(400, 500)).to.be.true;
     expect(path.isHit(450, 550)).to.be.true;
-    expect(path.isHit(405, 450)).to.be.false;
-    canvas.add(path);
     expect(path.isHit(405, 450)).to.be.true;
+    canvas.add(path);
     canvas.draw();
   });
 

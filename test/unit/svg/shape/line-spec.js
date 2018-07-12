@@ -4,13 +4,11 @@
 const expect = require('chai').expect;
 const G = require('../../../../src/g');
 const Canvas = G.Canvas;
-
 const div = document.createElement('div');
 div.id = 'canvas-line';
 document.body.appendChild(div);
 
 describe('Line', () => {
-
   const canvas = new Canvas({
     containerId: 'canvas-line',
     width: 200,
@@ -26,7 +24,7 @@ describe('Line', () => {
       y2: 0
     }
   });
-  it('init attrs', () => {
+  it('init attrs', function() {
     expect(line.attr('x1')).to.equal(0);
     expect(line.attr('y1')).to.equal(0);
     expect(line.attr('x2')).to.equal(0);
@@ -86,56 +84,118 @@ describe('Line', () => {
     expect(box.maxY).to.equal(81);
   });
 
-  it('stroke', () => {
+  it('stroke', function() {
     line.attr('stroke', 'l (0) 0.1:#0fedae 1:#6542da');
     expect(line.attr('stroke')).to.equal('l (0) 0.1:#0fedae 1:#6542da');
     canvas.add(line);
     canvas.draw();
   });
 
-  it('stroke', () => {
+  it('isHit', function() {
+    expect(line.isHit(9, 14)).to.be.true;
+    expect(line.isHit(34.5, 47.5)).to.be.true;
+    expect(line.isHit(8, 11)).to.be.false;
     const line1 = new G.Line({
       attrs: {
         x1: 0,
         y1: 0,
         x2: 100,
-        y2: 100,
-        fill: '#000'
+        y2: 100
       }
     });
+    expect(line1.isHit(101, 101)).to.be.false;
+    expect(line1.isHit(100, 100)).to.be.false;
     line1.attr('stroke', 'red');
-    expect(line1.attr('stroke')).to.equal('red');
-    expect(line1.attr('fill')).to.equal('#000');
+    expect(line1.isHit(101, 101)).to.be.false;
+    expect(line1.isHit(100, 100)).to.be.true;
   });
 
-  it('arrow', () => {
+  it('arrow', function() {
     line.attr({
       startArrow: true,
-      endArrow: true
+      endArrow: new G.Marker({
+        attrs: {
+          symbol: 'triangle'
+        }
+      })
     });
-    expect(line.attr('startArrow')).to.be.true;
-    line.attr('stroke', '#f00');
+    canvas.addShape('line', {
+      attrs: {
+        startArrow: new G.Marker({
+          attrs: {
+            symbol: 'triangle',
+            r: 2
+          }
+        }),
+        endArrow: new G.Marker({
+          attrs: {
+            symbol: 'triangle',
+            r: 2
+          }
+        }),
+        arrowLength: 15,
+        x1: 80,
+        y1: 80,
+        x2: 150,
+        y2: 60,
+        stroke: 'l (0) 0.1:#0fedae 1:#6542da',
+        lineWidth: 8
+      }
+    });
+    canvas.addShape('line', {
+      attrs: {
+        startArrow: new G.Marker({
+          attrs: {
+            symbol: 'circle',
+            r: 2
+          }
+        }),
+        endArrow: new G.Marker({
+          attrs: {
+            symbol: 'square',
+            r: 2
+          }
+        }),
+        arrowLength: 15,
+        x1: 180,
+        y1: 60,
+        x2: 180,
+        y2: 150,
+        stroke: '#000',
+        lineWidth: 2
+      }
+    });
+    canvas.addShape('line', {
+      attrs: {
+        startArrow: new G.Marker({
+          attrs: {
+            symbol: 'triangle',
+            r: 2
+          }
+        }),
+        endArrow: true,
+        arrowLength: 15,
+        x1: 30,
+        y1: 30,
+        x2: 180,
+        y2: 30,
+        stroke: '#000',
+        lineWidth: 2
+      }
+    });
     canvas.draw();
   });
 
-  it('getPoint', () => {
+  it('getPoint', function() {
     const line = new G.Line({
       attrs: {
         x1: 0,
         y1: 0,
         x2: 200,
-        y2: 300,
-        startArrow: new G.Marker({
-          attrs: {
-            x: 20,
-            y: 20,
-            radius: 10,
-            symbol: 'circle'
-          }
-        })
+        y2: 300
       }
     });
-    canvas.add(line);
+
     const point = line.getPoint(0.5);
     expect(point.x).to.equal(100);
     expect(point.y).to.equal(150);
