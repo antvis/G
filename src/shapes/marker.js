@@ -91,12 +91,21 @@ Util.augment(Marker, {
       maxY: cy + halfWidth
     };
   },
-  createPath(context) {
+  _getPath() {
     const attrs = this._attrs;
     const x = attrs.x;
     const y = attrs.y;
     const r = attrs.radius || attrs.r;
     const symbol = attrs.symbol || 'circle';
+    let method;
+    if (Util.isFunction(symbol)) {
+      method = symbol;
+    } else {
+      method = Marker.Symbols[symbol];
+    }
+    return method(x, y, r);
+  },
+  createPath(context) {
     let segments = this._cfg.segments;
     if (segments) {
       context.beginPath();
@@ -105,14 +114,8 @@ Util.augment(Marker, {
       }
       return;
     }
-    let method;
-    if (Util.isFunction(symbol)) {
-      method = symbol;
-    } else {
-      method = Marker.Symbols[symbol];
-    }
-    let path = method(x, y, r);
-    path = Format.parsePath(path);
+
+    const path = Format.parsePath(this._getPath());
     context.beginPath();
     let preSegment;
     segments = [];
