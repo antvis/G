@@ -1,5 +1,5 @@
 const Util = require('../../util/index');
-const PathUtil = require('../path');
+const PathUtil = require('../../util/path');
 const d3Timer = require('d3-timer');
 const d3Ease = require('d3-ease');
 const { interpolate, interpolateArray } = require('d3-interpolate'); // 目前整体动画只需要数值和数组的差值计算
@@ -19,7 +19,7 @@ function _update(self, animator, ratio) {
   const cProps = {}; // 此刻属性
   const toAttrs = animator.toAttrs;
   const fromAttrs = animator.fromAttrs;
-  const toM = animator.toM;
+  const toMatrix = animator.toMatrix;
   if (self.get('destroyed')) {
     return;
   }
@@ -50,8 +50,8 @@ function _update(self, animator, ratio) {
       }
     }
   }
-  if (toM) {
-    const mf = interpolateArray(animator.fromM, toM);
+  if (toMatrix) {
+    const mf = interpolateArray(animator.fromMatrix, toMatrix);
     const cM = mf(ratio);
     self.setMatrix(cM);
   }
