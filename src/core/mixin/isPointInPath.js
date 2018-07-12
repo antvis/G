@@ -1,8 +1,8 @@
-const Util = require('../index');
+const Util = require('../../util/index');
 const Inside = require('../../shapes/util/inside');
-const mat3 = require('../matrix').mat3;
-const vec2 = require('../matrix').vec2;
-const vec3 = require('../matrix').vec3;
+const mat3 = require('../../util/matrix').mat3;
+const vec2 = require('../../util/matrix').vec2;
+const vec3 = require('../../util/matrix').vec3;
 const mathUtl = {
   arc: require('../../shapes/math/arc'),
   cubic: require('../../shapes/math/cubic'),
