@@ -186,6 +186,9 @@ const image = function image(x, y) {
   if (this.get('toDraw') || !attrs.img) {
     return false;
   }
+  if (!this._cfg.attrs || this._cfg.attrs.img !== attrs.img) {
+    this._setAttrImg();
+  }
   const rx = attrs.x;
   const ry = attrs.y;
   const width = attrs.width;
