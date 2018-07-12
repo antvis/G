@@ -2,7 +2,7 @@
  * Created by Elaine on 2018/5/7.
  */
 const expect = require('chai').expect;
-const G = require('../../../../src/g');
+const G = require('../../../../src/index');
 const Canvas = G.Canvas;
 
 const div = document.createElement('div');

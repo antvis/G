@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 const {
   resolve
 } = require('path');
-const G = require('../../../../src/g');
+const G = require('../../../../src/index');
 const Canvas = G.Canvas;
 const div = document.createElement('div');
 div.id = 'canvas-img';
