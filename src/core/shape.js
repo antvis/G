@@ -1,5 +1,5 @@
 const Util = require('../util/index');
-const isPointInPath = require('../util/mixin/isPointInPath');
+const isPointInPath = require('./mixin/isPointInPath');
 const Element = require('./element');
 const Inside = require('../shapes/util/inside');
 
