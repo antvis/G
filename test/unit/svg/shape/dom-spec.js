@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../../../src/g');
+const G = require('../../../../src/index');
 const Canvas = G.Canvas;
 
 const div = document.createElement('div');
@@ -22,6 +22,7 @@ describe('dom', () => {
     }
   });
   canvas.add(dom);
+  canvas.draw();
   it('init attrs', () => {
     expect(dom.attr('x')).to.equal(0);
     expect(dom.attr('y')).to.equal(0);
@@ -63,6 +64,7 @@ describe('dom', () => {
 
   it('dom string', () => {
     dom.attr('html', '<div><p>dom字符串</p></div>');
+    canvas.draw();
     expect(dom.attr('html')).to.equal('<div><p>dom字符串</p></div>');
   });
 
@@ -81,6 +83,7 @@ describe('dom', () => {
       }
     });
     canvas.add(dom2);
+    canvas.draw();
     expect(dom2.attr('html')).to.equal(div);
   });
 });
