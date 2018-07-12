@@ -21,6 +21,8 @@ describe('Text', function() {
       fontFamily: 'Arial'
     }
   });
+  canvas.add(text);
+  canvas.draw();
 
   it('init attrs', function() {
     expect(text.attr('x')).to.equal(0);
@@ -172,12 +174,13 @@ describe('Text', function() {
   });
 
 
-  it('fontSize', function() {
+  it('fontSize', function(done) {
     expect(text.attr('fontSize')).to.equal(12);
     expect(text.attr('font')).to.equal('normal normal normal 12px Arial');
     text.attr('fontSize', 20);
+    canvas.draw();
     expect(text.attr('fontSize')).to.equal(20);
-    expect(text.attr('font')).to.equal('normal normal normal 20px Arial');
+    // expect(text.attr('font')).to.equal('normal normal normal 20px Arial');
     const text1 = new G.Text({
       attrs: {
         fontSize: 20,
@@ -187,10 +190,14 @@ describe('Text', function() {
         stroke: '#000'
       }
     });
-    expect(text1.attr('fontSize')).to.equal(20);
-    expect(text1.attr('font')).to.equal('normal normal normal 20px sans-serif');
     canvas.add(text1);
-    canvas.draw();
+    setTimeout(() => {
+      canvas.draw();
+      expect(text1.attr('fontSize')).to.equal(20);
+      expect(text1.attr('font')).to.equal('normal normal normal 20px sans-serif');
+      done();
+    }, 16);
+
   });
 
   it('fontSize < 12', function() {
@@ -203,46 +210,55 @@ describe('Text', function() {
         stroke: '#000'
       }
     });
-    expect(text.attr('fontSize')).to.equal(10);
-    expect(text.attr('font')).to.equal('normal normal normal 10px sans-serif');
-    expect(text.getMatrix()).not.eql([ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
     canvas.add(text);
     canvas.draw();
+    expect(text.attr('fontSize')).to.equal(10);
+    // expect(text.attr('font')).to.equal('normal normal normal 10px sans-serif');
+    expect(text.getMatrix()).not.eql([ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
   });
 
-  it('fontStyle', function() {
-    expect(text.attr('fontStyle')).to.equal('normal');
-    text.attr('fontStyle', 'italic');
-    expect(text.attr('fontStyle')).to.equal('italic');
-    expect(text.attr('font')).to.equal('italic normal normal 20px Arial');
-    canvas.draw();
-    text.attr('fontStyle', 'oblique');
-    expect(text.attr('fontStyle')).to.equal('oblique');
-    expect(text.attr('font')).to.equal('oblique normal normal 20px Arial');
-    canvas.draw();
+  it('fontStyle', function(done) {
+    setTimeout(() => {
+      expect(text.attr('fontStyle')).to.equal('normal');
+      text.attr('fontStyle', 'italic');
+      canvas.draw();
+      expect(text.attr('fontStyle')).to.equal('italic');
+      expect(text.attr('font')).to.equal('italic normal normal 20px Arial');
+      done();
+    }, 16);
   });
 
-  it('fontWeight', function() {
-    expect(text.attr('fontWeight')).to.equal('normal');
-    text.attr('fontWeight', 'bolder');
-    expect(text.attr('fontWeight')).to.equal('bolder');
-    expect(text.attr('font')).to.equal('oblique normal bolder 20px Arial');
-    canvas.draw();
+  it('fontWeight', function(done) {
+    setTimeout(() => {
+      expect(text.attr('fontWeight')).to.equal('normal');
+      text.attr('fontWeight', 'bolder');
+      text.attr('fontStyle', 'oblique');
+      canvas.draw();
+      expect(text.attr('fontWeight')).to.equal('bolder');
+      expect(text.attr('font')).to.equal('oblique normal bolder 20px Arial');
+      done();
+    }, 16);
   });
 
-  it('fontVariant', function() {
-    expect(text.attr('fontVariant')).to.equal('normal');
-    text.attr('fontVariant', 'small-caps');
-    expect(text.attr('fontVariant')).to.equal('small-caps');
-    expect(text.attr('font')).to.equal('oblique small-caps bolder 20px Arial');
-    canvas.draw();
+  it('fontVariant', function(done) {
+    setTimeout(() => {
+      expect(text.attr('fontVariant')).to.equal('normal');
+      text.attr('fontVariant', 'small-caps');
+      canvas.draw();
+      expect(text.attr('fontVariant')).to.equal('small-caps');
+      expect(text.attr('font')).to.equal('oblique small-caps bolder 20px Arial');
+      done();
+    }, 16);
   });
 
-  it('fontFamily', function() {
-    text.attr('fontFamily', '宋体');
-    expect(text.attr('fontFamily')).to.equal('宋体');
-    expect(text.attr('font')).to.equal('oblique small-caps bolder 20px 宋体');
-    canvas.draw();
+  it('fontFamily', function(done) {
+    setTimeout(() => {
+      text.attr('fontFamily', '宋体');
+      canvas.draw();
+      expect(text.attr('fontFamily')).to.equal('宋体');
+      expect(text.attr('font')).to.equal('oblique small-caps bolder 20px 宋体');
+      done();
+    }, 16);
   });
 
   xit('textAlign', function() {
@@ -465,6 +481,9 @@ describe('Text \n', function() {
     canvas.draw();
   });
   it('text /n', function() {
+    canvas.add(rect);
+    canvas.add(text);
+    canvas.draw();
     expect(text.attr('x')).to.equal(50);
     expect(text.attr('y')).to.equal(50);
     expect(text.attr('text')).to.equal('你好\nHello\nworld');
@@ -479,9 +498,6 @@ describe('Text \n', function() {
     expect(text.attr('textBaseline')).to.equal('top');
     expect(text.attr('lineWidth')).to.equal(1);
   });
-  canvas.add(rect);
-  canvas.add(text);
-  canvas.draw();
 });
 
 describe('Text 不存在', function() {
