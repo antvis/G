@@ -61,28 +61,7 @@ Util.augment(CText, {
     // self.attr('font', [fontStyle, fontVariant, fontWeight, fontSize + 'px', fontFamily].join(' '));
     attrs.font = [ fontStyle, fontVariant, fontWeight, fontSize + 'px', fontFamily ].join(' ');
   },
-  _afterSetAttrFontSize() {
-    /* this.attr({
-      height: this._getTextHeight()
-    }); */
-    this._assembleFont();
-  },
-  _afterSetAttrFontFamily() {
-    this._assembleFont();
-  },
-  _afterSetAttrFontWeight() {
-    this._assembleFont();
-  },
-  _afterSetAttrFontStyle() {
-    this._assembleFont();
-  },
-  _afterSetAttrFontVariant() {
-    this._assembleFont();
-  },
-  _afterSetAttrFont() {
-    // this.attr('width', this.measureText());
-  },
-  _afterSetAttrText() {
+  _setAttrText() {
     const attrs = this._attrs;
     const text = attrs.text;
     let textArr;
@@ -105,31 +84,17 @@ Util.augment(CText, {
     }
     return fontSize;
   },
-  // 计算浪费，效率低，待优化
-  _afterSetAttrAll(objs) {
-    const self = this;
-    if (
-      'fontSize' in objs ||
-      'fontWeight' in objs ||
-      'fontStyle' in objs ||
-      'fontVariant' in objs ||
-      'fontFamily' in objs
-    ) {
-      self._assembleFont();
-    }
-
-    if (
-      'text' in objs
-    ) {
-      self._afterSetAttrText(objs.text);
-    }
-  },
   isHitBox() {
     return false;
   },
   calculateBox() {
     const self = this;
     const attrs = self._attrs;
+    const cfg = this._cfg;
+    if (!cfg.attrs || cfg.hasUpdate) {
+      this._assembleFont();
+      this._setAttrText();
+    }
     const x = attrs.x;
     const y = attrs.y;
     const width = self.measureText(); // attrs.width
@@ -185,6 +150,11 @@ Util.augment(CText, {
   drawInner(context) {
     const self = this;
     const attrs = self._attrs;
+    const cfg = this._cfg;
+    if (!cfg.attrs || cfg.hasUpdate) {
+      this._assembleFont();
+      this._setAttrText();
+    }
     const text = attrs.text;
     if (!text) {
       return;
