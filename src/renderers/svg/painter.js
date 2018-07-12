@@ -150,6 +150,9 @@ class Painter {
       self._updateText(model);
       return;
     }
+    if (model.type === 'marker') {
+      model._cfg.el.setAttribute('d', self._assembleMarker(attrs));
+    }
     for (const key in attrs) {
       if (attrs[key] !== formerAttrs[key]) {
         self._setAttribute(model, key, attrs[key]);
@@ -171,10 +174,7 @@ class Painter {
     const defs = this.context;
 
     // 计算marker路径
-    if (type === 'marker' && ~[ 'x', 'y', 'radius', 'r' ].indexOf(name) && attrs.hasUpdate) {
-      el.setAttribute('d', this._assembleMarker(attrs));
-      // 避免多次计算shape
-      attrs.hasUpdate = false;
+    if (type === 'marker' && ~[ 'x', 'y', 'radius', 'r' ].indexOf(name)) {
       return;
     }
     // 圆和椭圆不是x, y， 是cx, cy。 marker的x,y 用于计算marker的路径，不需要写到dom
@@ -183,7 +183,7 @@ class Painter {
       return;
     }
     // 圆角矩形
-    if (type === 'react' && name === 'r') {
+    if (type === 'rect' && name === 'radius') {
       el.setAttribute('rx', value);
       el.setAttribute('ry', value);
       return;
