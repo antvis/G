@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const Util = require('../../../../src/util/index');
-const G = require('../../../../src/g');
+const G = require('../../../../src/index');
 const Canvas = G.Canvas;
 const div = document.createElement('div');
 div.id = 'canvas-quadratic';

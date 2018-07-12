@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../../../src/g');
+const G = require('../../../../src/index');
 const Event = require('../../../../src/event');
 
 const Canvas = G.Canvas;

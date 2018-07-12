@@ -1,6 +1,6 @@
 const $ = require('jquery');
 const expect = require('chai').expect;
-const G = require('../../../src/g');
+const G = require('../../../src/index');
 const Simulate = require('event-simulate');
 
 const Canvas = G.Canvas;
