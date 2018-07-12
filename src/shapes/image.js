@@ -34,6 +34,10 @@ Util.augment(CImage, {
   },
   calculateBox() {
     const attrs = this._attrs;
+
+    if (!this._cfg.attrs || this._cfg.attrs.img !== attrs.img) {
+      this._setAttrImg();
+    }
     const x = attrs.x;
     const y = attrs.y;
     const width = attrs.width;
@@ -54,9 +58,10 @@ Util.augment(CImage, {
     }
     return loading;
   },
-  _setAttrImg(img) {
+  _setAttrImg() {
     const self = this;
     const attrs = self._attrs;
+    const img = attrs.img;
     if (Util.isString(img)) {
       const image = new Image();
       image.onload = function() {
@@ -107,6 +112,9 @@ Util.augment(CImage, {
     if (this.get('loading')) {
       this.set('toDraw', true);
       return;
+    }
+    if (!this._cfg.attrs || this._cfg.attrs.img !== this._attrs.img) {
+      this._setAttrImg();
     }
     this._drawImage(context);
   },
