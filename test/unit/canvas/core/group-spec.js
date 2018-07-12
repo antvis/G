@@ -13,7 +13,8 @@ describe('Group', function() {
     containerId: 'canvas-group-1',
     width: 200,
     height: 200,
-    pixelRatio: 1
+    pixelRatio: 1,
+    renderer: 'svg'
   });
 
   it('constructor', function() {
