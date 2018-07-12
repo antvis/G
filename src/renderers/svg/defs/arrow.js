@@ -14,6 +14,7 @@ class Arrow {
     el.appendChild(shape);
     el.setAttribute('markerWidth', 16);
     el.setAttribute('markerHeight', 16);
+    el.setAttribute('orient', 'auto-start-reverse');
     this.el = el;
     this.child = shape;
     this.id = id;
@@ -34,7 +35,6 @@ class Arrow {
     el.setAttribute('d', 'M0,0 L6,3 L0,6 L3,3Z');
     parent.setAttribute('refX', 3);
     parent.setAttribute('refY', 3);
-    parent.setAttribute('orient', 'auto-start-reverse');
   }
   _setMarker(r, el) {
     const parent = this.el;
@@ -62,7 +62,6 @@ class Arrow {
     parent.appendChild(el);
     parent.setAttribute('refX', attrs.x);
     parent.setAttribute('refY', attrs.y);
-    parent.setAttribute('orient', 'auto');
   }
   update(fill) {
     const child = this.child;
