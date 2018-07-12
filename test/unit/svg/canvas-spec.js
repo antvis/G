@@ -12,7 +12,8 @@ describe('Canvas 容器操作', () => {
     const canvas = new Canvas({
       containerId: 'c1',
       width: 500,
-      height: 500
+      height: 500,
+      renderer: 'svg'
     });
     expect(canvas).to.be.an.instanceof(Canvas);
     canvas.destroy();
@@ -22,7 +23,8 @@ describe('Canvas 容器操作', () => {
     const canvas = new Canvas({
       containerId: 'c1',
       width: 500,
-      height: 500
+      height: 500,
+      renderer: 'svg'
     });
     canvas.changeSize(200, 200);
     expect(canvas.get('widthStyle')).to.equal('200px');
@@ -35,7 +37,8 @@ describe('Canvas 容器操作', () => {
     const canvas = new Canvas({
       containerId: 'c1',
       width: 500,
-      height: 500
+      height: 500,
+      renderer: 'svg'
     });
     canvas.clear();
     expect(canvas.get('children')).to.be.an('array').that.is.empty;
@@ -48,7 +51,8 @@ describe('拓展图形 标记 Marker', () => {
   const canvas = new Canvas({
     containerId: 'c1',
     width: 500,
-    height: 500
+    height: 500,
+    renderer: 'svg'
   });
   it('diamond', () => {
     canvas.addShape('Marker', {
@@ -138,7 +142,8 @@ describe('组拓展方法', () => {
   const canvas = new Canvas({
     containerId: 'c1',
     width: 500,
-    height: 500
+    height: 500,
+    renderer: 'svg'
   });
   const circle = new G.Circle({
     attrs: {
@@ -197,7 +202,8 @@ describe('元素拓展方法', () => {
   const canvas = new Canvas({
     containerId: 'c1',
     width: 500,
-    height: 500
+    height: 500,
+    renderer: 'svg'
   });
   canvas.addShape('Circle', {
     attrs: {
@@ -260,7 +266,8 @@ describe('canvas 事件', () => {
   const canvas = new Canvas({
     containerId: 'c1',
     width: 500,
-    height: 500
+    height: 500,
+    renderer: 'svg'
   });
   canvas.addShape('circle', {
     attrs: {
