@@ -1,7 +1,7 @@
 const Util = require('./util/index');
 const Event = require('./event');
 const Group = require('./core/group');
-const Timeline = require('./util/mixin/timeline');
+const Timeline = require('./core/mixin/timeline');
 const renderers = require('./renderers/index');
 
 const Canvas = function(cfg) {
