@@ -89,6 +89,7 @@ class Painter {
     shape.drawInner(this.context);
     this.restoreContext(shape);
     shape._cfg.attrs = shape._attrs;
+    shape._cfg.hasUpdate = false;
   }
   setContext(shape) {
     const context = this.context;
