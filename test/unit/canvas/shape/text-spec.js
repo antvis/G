@@ -217,48 +217,36 @@ describe('Text', function() {
     expect(text.getMatrix()).not.eql([ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
   });
 
-  it('fontStyle', function(done) {
-    setTimeout(() => {
-      expect(text.attr('fontStyle')).to.equal('normal');
-      text.attr('fontStyle', 'italic');
-      canvas.draw();
-      expect(text.attr('fontStyle')).to.equal('italic');
-      expect(text.attr('font')).to.equal('italic normal normal 20px Arial');
-      done();
-    }, 16);
+  it('fontStyle', function() {
+    expect(text.attr('fontStyle')).to.equal('normal');
+    text.attr('fontStyle', 'italic');
+    canvas.draw();
+    expect(text.attr('fontStyle')).to.equal('italic');
+    // expect(text.attr('font')).to.equal('italic normal normal 20px Arial');
   });
 
-  it('fontWeight', function(done) {
-    setTimeout(() => {
-      expect(text.attr('fontWeight')).to.equal('normal');
-      text.attr('fontWeight', 'bolder');
-      text.attr('fontStyle', 'oblique');
-      canvas.draw();
-      expect(text.attr('fontWeight')).to.equal('bolder');
-      expect(text.attr('font')).to.equal('oblique normal bolder 20px Arial');
-      done();
-    }, 16);
+  it('fontWeight', function() {
+    expect(text.attr('fontWeight')).to.equal('normal');
+    text.attr('fontWeight', 'bolder');
+    text.attr('fontStyle', 'oblique');
+    canvas.draw();
+    expect(text.attr('fontWeight')).to.equal('bolder');
+    // expect(text.attr('font')).to.equal('oblique normal bolder 20px Arial');
   });
 
-  it('fontVariant', function(done) {
-    setTimeout(() => {
-      expect(text.attr('fontVariant')).to.equal('normal');
-      text.attr('fontVariant', 'small-caps');
-      canvas.draw();
-      expect(text.attr('fontVariant')).to.equal('small-caps');
-      expect(text.attr('font')).to.equal('oblique small-caps bolder 20px Arial');
-      done();
-    }, 16);
+  it('fontVariant', function() {
+    expect(text.attr('fontVariant')).to.equal('normal');
+    text.attr('fontVariant', 'small-caps');
+    canvas.draw();
+    expect(text.attr('fontVariant')).to.equal('small-caps');
+    // expect(text.attr('font')).to.equal('oblique small-caps bolder 20px Arial');
   });
 
-  it('fontFamily', function(done) {
-    setTimeout(() => {
-      text.attr('fontFamily', '宋体');
-      canvas.draw();
-      expect(text.attr('fontFamily')).to.equal('宋体');
-      expect(text.attr('font')).to.equal('oblique small-caps bolder 20px 宋体');
-      done();
-    }, 16);
+  it('fontFamily', function() {
+    text.attr('fontFamily', '宋体');
+    canvas.draw();
+    expect(text.attr('fontFamily')).to.equal('宋体');
+    // expect(text.attr('font')).to.equal('oblique small-caps bolder 20px 宋体');
   });
 
   xit('textAlign', function() {
