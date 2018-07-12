@@ -403,7 +403,6 @@ class Painter {
 
     el.setAttribute('alignment-baseline', BASELINE_MAP[attrs.textBaseline] || 'baseline');
     el.setAttribute('text-anchor', ANCHOR_MAP[attrs.textAlign] || 'left');
-    el.setAttribute('font', attrs.font);
     if (fontSize && +fontSize < 12) { // 小于 12 像素的文本进行 scale 处理
       attrs.matrix = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
       model.transform([
@@ -415,14 +414,14 @@ class Painter {
   }
   _setText(model, text) {
     const el = model._cfg.el;
-
     if (!text) {
       el.innerHTML = '';
     } else if (~text.indexOf('\n')) {
+      const x = model._attrs.x;
       const textArr = text.split('\n');
       let arr = '';
-      Util.each(textArr, (segment, i) => {
-        arr += `<tspan x="0" y="${i + 1}em">${segment}</tspan>`;
+      Util.each(textArr, segment => {
+        arr += `<tspan x="${x}" dy="1em">${segment}</tspan>`;
       });
       el.innerHTML = arr;
     } else {
