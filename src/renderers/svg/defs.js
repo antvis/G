@@ -14,10 +14,7 @@ class Defs {
     el.id = id;
     canvas.appendChild(el);
     this.children = [];
-    this.defaultArrow = {
-      'marker-start': {},
-      'marker-end': {}
-    };
+    this.defaultArrow = {};
     this.el = el;
     this.canvas = canvas;
   }
@@ -50,11 +47,11 @@ class Defs {
   }
   getDefaultArrow(attrs, name) {
     const stroke = attrs.stroke || attrs.strokeStyle;
-    if (this.defaultArrow[name][stroke]) {
-      return this.defaultArrow[name][stroke].id;
+    if (this.defaultArrow[stroke]) {
+      return this.defaultArrow[stroke].id;
     }
     const arrow = new Arrow(attrs, name);
-    this.defaultArrow[name][stroke] = arrow;
+    this.defaultArrow[stroke] = arrow;
     this.el.appendChild(arrow.el);
     return arrow.id;
   }
