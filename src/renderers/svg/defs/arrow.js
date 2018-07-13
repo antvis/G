@@ -12,8 +12,7 @@ class Arrow {
     shape.setAttribute('stroke', 'none');
     shape.setAttribute('fill', attrs.stroke || '#000');
     el.appendChild(shape);
-    el.setAttribute('markerWidth', 16);
-    el.setAttribute('markerHeight', 16);
+    el.setAttribute('overflow', 'visible');
     el.setAttribute('orient', 'auto-start-reverse');
     this.el = el;
     this.child = shape;
