@@ -1,3 +1,4 @@
 module.exports = {
-  painter: require('./painter')
+  painter: require('./painter'),
+  getShape: require('./getShape')
 };
