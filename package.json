@@ -55,7 +55,7 @@
     "lint": "eslint ./",
     "lint-fix": "eslint --fix ./",
     "test": "torch --compile --renderer --recursive ./test/unit",
-    "test-live": "torch --compile --renderer --interactive --recursive ./test/"
+    "test-live": "torch --compile --renderer --interactive --recursive ./test/unit/canvas/core/animate-spec.js"
   },
   "pre-commit": {
     "run": [
