@@ -13,8 +13,6 @@ module.exports = {
   Polyline: require('./shapes/polyline'),
   Arc: require('./shapes/arc'),
   Fan: require('./shapes/fan'),
-  Cubic: require('./shapes/cubic'),
-  Quadratic: require('./shapes/quadratic'),
   Marker: require('./shapes/marker'),
   Dom: require('./shapes/dom'),
   PathSegment: require('./shapes/util/path-segment'),
