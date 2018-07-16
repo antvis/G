@@ -311,9 +311,5 @@ describe('canvas 事件', () => {
       clientY: 276
     });
     expect(target).not.to.be.undefined;
-
-    canvas.on('mousemove', ev => {
-      console.log(ev);
-    });
   });
 });
