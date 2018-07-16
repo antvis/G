@@ -1,3 +1,6 @@
+const Format = require('../../util/format');
+const PathSegment = require('../util/path-segment');
+
 const PI = Math.PI;
 const sin = Math.sin;
 const cos = Math.cos;
@@ -47,46 +50,67 @@ function _addArrow(ctx, attrs, x1, y1, x2, y2) {
   }
 }
 
-function _addMarker(ctx, attrs, x1, y1, x2, y2, shape) {
-  const marker = shape._attrs;
-  let markerX,
-    markerY;
-  if (!marker.x) {
-    markerX = marker.x = x2;
-  }
-  if (!marker.y) {
-    markerY = marker.y = y2;
-  }
-  if (!marker.r) {
-    marker.r = attrs.lineWidth;
-  }
+function parsePath(attrs) {
+  const segments = [];
+  const pathArray = Format.parsePath(attrs.path);
+  let preSegment;
 
+  if (!Array.isArray(pathArray) ||
+    pathArray.length === 0 ||
+    (pathArray[0][0] !== 'M' &&
+      pathArray[0][0] !== 'm')
+  ) {
+    return false;
+  }
+  const count = pathArray.length;
+  for (let i = 0; i < pathArray.length; i++) {
+    const item = pathArray[i];
+    preSegment = new PathSegment(item, preSegment, i === count - 1);
+    segments.push(preSegment);
+  }
+  return segments;
+}
+
+function _addCustomizedArrow(ctx, attrs, x1, y1, x2, y2, isStart) {
+  const shape = isStart ? attrs.startArrow : attrs.endArrow;
+  const d = shape.d;
   let deg = 0;
-  const x = x1 - x2;
-  const y = y1 - y2;
-  if (y === 0) {
-    if (x < 0) {
-      deg = Math.PI / 2;
+  const x = x2 - x1;
+  const y = y2 - y1;
+  const tan = Math.atan(x / y);
+  if (y === 0 && x < 0) {
+    deg = Math.PI;
+  } else if (x > 0 && y > 0) {
+    deg = Math.PI / 2 - tan;
+  } else if (x < 0 && y < 0) {
+    deg = -Math.PI / 2 - tan;
+  } else if (x >= 0 && y < 0) {
+    deg = -tan - Math.PI / 2;
+  } else if (x <= 0 && y > 0) {
+    deg = Math.PI / 2 - tan;
+  }
+  const path = parsePath(shape);
+  if (!path) {
+    return;
+  }
+  if (d) {
+    if (isStart) {
+      x2 = x2 + Math.sin(Math.abs(tan)) * d;
+      y2 = y2 + Math.cos(Math.abs(tan)) * d - 0.5 * ctx.lineWidth;
     } else {
-      deg = (270 * Math.PI) / 180;
+      x2 = x2 - Math.sin(Math.abs(tan)) * d;
+      y2 = y2 - Math.cos(Math.abs(tan)) * d + 0.5 * ctx.lineWidth;
     }
-  } else if (x >= 0 && y > 0) {
-    deg = -Math.atan(x / y);
-  } else if (x <= 0 && y < 0) {
-    deg = Math.PI - Math.atan(x / y);
-  } else if (x > 0 && y < 0) {
-    deg = Math.PI + Math.atan(-x / y);
-  } else if (x < 0 && y > 0) {
-    deg = Math.atan(x / -y);
   }
   ctx.save();
   ctx.beginPath();
-  ctx.translate(markerX, markerY);
+  ctx.translate(x2, y2);
   ctx.rotate(deg);
-  ctx.translate(-markerX, -markerY);
-  shape.createPath(ctx);
+  for (let i = 0; i < path.length; i++) {
+    path[i].draw(ctx);
+  }
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.fillStyle = shape.attr('fill') || ctx.strokeStyle;
+  ctx.fillStyle = ctx.strokeStyle;
   ctx.fill();
   ctx.restore();
 }
@@ -94,14 +118,14 @@ function _addMarker(ctx, attrs, x1, y1, x2, y2, shape) {
 module.exports = {
   addStartArrow(ctx, attrs, x1, y1, x2, y2) {
     if (typeof attrs.startArrow === 'object') {
-      _addMarker(ctx, attrs, x1, y1, x2, y2, attrs.startArrow);
+      _addCustomizedArrow(ctx, attrs, x1, y1, x2, y2, true);
     } else if (attrs.startArrow) {
       _addArrow(ctx, attrs, x1, y1, x2, y2);
     }
   },
   addEndArrow(ctx, attrs, x1, y1, x2, y2) {
     if (typeof attrs.endArrow === 'object') {
-      _addMarker(ctx, attrs, x1, y1, x2, y2, attrs.endArrow);
+      _addCustomizedArrow(ctx, attrs, x1, y1, x2, y2, false);
     } else if (attrs.endArrow) {
       _addArrow(ctx, attrs, x1, y1, x2, y2);
     }
