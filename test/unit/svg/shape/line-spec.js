@@ -113,26 +113,21 @@ describe('Line', () => {
   it('arrow', function() {
     line.attr({
       startArrow: true,
-      endArrow: new G.Marker({
-        attrs: {
-          symbol: 'triangle'
-        }
-      })
+      endArrow: {
+        path: 'M 2,0 L -2,-2 L -2,2 Z',
+        d: 10
+      }
     });
     canvas.addShape('line', {
       attrs: {
-        startArrow: new G.Marker({
-          attrs: {
-            symbol: 'triangle',
-            r: 2
-          }
-        }),
-        endArrow: new G.Marker({
-          attrs: {
-            symbol: 'triangle',
-            r: 2
-          }
-        }),
+        startArrow: {
+          path: 'M 2,0 L -2,-2 L -2,2 Z',
+          d: 10
+        },
+        endArrow: {
+          path: 'M 1,0 L -1,-1 L -1,1 Z',
+          d: 10
+        },
         arrowLength: 15,
         x1: 80,
         y1: 80,
@@ -144,18 +139,14 @@ describe('Line', () => {
     });
     canvas.addShape('line', {
       attrs: {
-        startArrow: new G.Marker({
-          attrs: {
-            symbol: 'circle',
-            r: 2
-          }
-        }),
-        endArrow: new G.Marker({
-          attrs: {
-            symbol: 'square',
-            r: 2
-          }
-        }),
+        startArrow: {
+          path: 'M 2,0 L -2,-2 L -2,2 Z',
+          d: 10
+        },
+        endArrow: {
+          path: 'M 2,0 L -2,-2 L -2,2 Z',
+          d: 10
+        },
         arrowLength: 15,
         x1: 180,
         y1: 60,
@@ -167,12 +158,10 @@ describe('Line', () => {
     });
     canvas.addShape('line', {
       attrs: {
-        startArrow: new G.Marker({
-          attrs: {
-            symbol: 'triangle',
-            r: 2
-          }
-        }),
+        startArrow: {
+          path: 'M 2,0 L -2,-2 L -2,2 Z',
+          d: 10
+        },
         endArrow: true,
         arrowLength: 15,
         x1: 30,
