@@ -37,21 +37,9 @@ class Arrow {
   }
   _setMarker(r, el) {
     const parent = this.el;
-    const shape = this.cfg;
-    const attrs = shape._attrs;
-    if (shape.type !== 'marker') {
-      throw new TypeError('the shape of an arrow should be an instance of Marker');
-    }
-    if (!attrs.x) {
-      attrs.x = r;
-    }
-    if (!attrs.y) {
-      attrs.y = r;
-    }
-    if (!attrs.r && !attrs.radius) {
-      attrs.r = r;
-    }
-    let path = shape._getPath();
+    let path = this.cfg.path;
+    const d = this.cfg.d;
+
     if (Util.isArray(path)) {
       path = path.map(segment => {
         return segment.join(' ');
@@ -59,8 +47,9 @@ class Arrow {
     }
     el.setAttribute('d', path);
     parent.appendChild(el);
-    parent.setAttribute('refX', attrs.x);
-    parent.setAttribute('refY', attrs.y);
+    if (d) {
+      parent.setAttribute('refX', d / r);
+    }
   }
   update(fill) {
     const child = this.child;
