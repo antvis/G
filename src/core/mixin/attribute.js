@@ -31,25 +31,40 @@ module.exports = {
    */
   attr(name, value) {
     const self = this;
+    const attrs = self._attrs;
     if (arguments.length === 0) {
       return self._attrs;
     }
     if (Util.isObject(name)) {
-      self._attrs = Util.assign(self._attrs, name);
+      self._attrs = Util.assign(attrs, name);
       if ('fill' in name) {
-        self._attrs.fillStyle = name.fill;
+        attrs.fillStyle = name.fill;
       }
       if ('stroke' in name) {
-        self._attrs.strokeStyle = name.stroke;
+        attrs.strokeStyle = name.stroke;
       }
       if ('opacity' in name) {
-        self._attrs.globalAlpha = name.opacity;
+        attrs.globalAlpha = name.opacity;
       }
       if ('clip' in name) {
-        self._setClip(name.clip);
+        if (name.clip) {
+          self._setClip(name.clip);
+        }
       }
       if ('path' in name && self._afterSetAttrPath) {
         self._afterSetAttrPath(name.path);
+      }
+      if ('transform' in name) {
+        if (!attrs.matrix) {
+          attrs.matrix = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
+        }
+        self.transform(name.transform);
+      }
+      if ('rotate' in name) {
+        if (!attrs.matrix) {
+          attrs.matrix = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
+        }
+        self.rotateAtStart(name.rotate);
       }
       self.clearBBox();
       this._cfg.hasUpdate = true;
@@ -63,11 +78,23 @@ module.exports = {
       if (name === 'opacity') {
         self._attrs.globalAlpha = value;
       }
-      if (name === 'clip') {
+      if (name === 'clip' && value) {
         self._setClip(value);
       }
       if (name === 'path' && self._afterSetAttrPath) {
         self._afterSetAttrPath(value);
+      }
+      if (name === 'transform') {
+        if (!attrs.matrix) {
+          attrs.matrix = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
+        }
+        self.transform(value);
+      }
+      if (name === 'rotate') {
+        if (!attrs.matrix) {
+          attrs.matrix = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
+        }
+        self.rotateAtStart(value);
       }
       self.clearBBox();
       this._cfg.hasUpdate = true;
