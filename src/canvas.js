@@ -250,12 +250,11 @@ Util.augment(Canvas, {
    */
   getPointByClient(clientX, clientY) {
     const el = this.get('el');
+    const pixelRatio = this.get('pixelRatio') || 1;
     const bbox = el.getBoundingClientRect();
-    const width = bbox.right - bbox.left;
-    const height = bbox.bottom - bbox.top;
     return {
-      x: (clientX - bbox.left) * (el.width / width),
-      y: (clientY - bbox.top) * (el.height / height)
+      x: (clientX - bbox.left) * pixelRatio,
+      y: (clientY - bbox.top) * pixelRatio
     };
   },
   getClientByPoint(x, y) {
