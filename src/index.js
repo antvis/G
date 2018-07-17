@@ -21,6 +21,7 @@ module.exports = {
   DomUtil: require('./util/dom'),
   MatrixUtil: require('./util/matrix'),
   PathUtil: require('./util/path'),
+  Event: require('./event'),
   // version, etc.
   version: '3.0.0-beta.7'
 };
