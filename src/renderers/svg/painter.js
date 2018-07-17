@@ -26,10 +26,6 @@ const SVG_ATTR_MAP = {
   x: 'x',
   y: 'y',
   r: 'r',
-  rx: 'rx',
-  ry: 'ry',
-  re: 're',
-  rs: 'rs',
   width: 'width',
   height: 'height',
   x1: 'x1',
@@ -157,6 +153,9 @@ class Painter {
     if (model.type === 'text') {
       self._updateText(model);
       return;
+    }
+    if (model.type === 'fan') {
+      self._updateFan(model);
     }
     if (model.type === 'marker') {
       model._cfg.el.setAttribute('d', self._assembleMarker(attrs));
@@ -367,6 +366,50 @@ class Painter {
       }
       el.setAttribute('href', canvas.toDataURL());
     }
+  }
+  _updateFan(model) {
+    function getPoint(angle, radius, center) {
+      return {
+        x: radius * Math.cos(angle) + center.x,
+        y: radius * Math.sin(angle) + center.y
+      };
+    }
+    const attrs = model._attrs;
+    const cfg = model._cfg;
+    const center = {
+      x: attrs.x,
+      y: attrs.y
+    };
+    const d = [];
+    const startAngle = attrs.startAngle;
+    let endAngle = attrs.endAngle;
+    if (Util.isNumberEqual((endAngle - startAngle), Math.PI * 2)) {
+      endAngle -= 0.00001;
+    }
+    const outerStart = getPoint(startAngle, attrs.re, center);
+    const outerEnd = getPoint(endAngle, attrs.re, center);
+    const fa = endAngle > startAngle ? 1 : 0;
+    const fs = Math.abs(endAngle - startAngle) > Math.PI ? 1 : 0;
+    const rs = attrs.rs;
+    const re = attrs.re;
+    const innerStart = getPoint(startAngle, attrs.rs, center);
+    const innerEnd = getPoint(endAngle, attrs.rs, center);
+    if (attrs.rs > 0) {
+      d.push(`M ${outerEnd.x},${outerEnd.y}`);
+      d.push(`L ${innerEnd.x},${innerEnd.y}`);
+      d.push(`A ${rs},${rs},0,${fs},${fa === 1 ? 0 : 1},${innerStart.x},${innerStart.y}`);
+      d.push(`L ${outerStart.x} ${outerStart.y}`);
+    } else {
+      d.push(`M ${center.x},${center.y}`);
+      d.push(`L ${outerStart.x},${outerStart.y}`);
+    }
+    d.push(`A ${re},${re},0,${fs},${fa},${outerEnd.x},${outerEnd.y}`);
+    if (attrs.rs > 0) {
+      d.push(`L ${innerEnd.x},${innerEnd.y}`);
+    } else {
+      d.push('Z');
+    }
+    cfg.el.setAttribute('d', d.join(' '));
   }
   _updateText(model) {
     const self = this;
