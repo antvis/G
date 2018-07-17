@@ -72,10 +72,6 @@ const ANCHOR_MAP = {
   end: 'end'
 };
 
-function isUnchanged(m) {
-  return m[0] === 1 && m[1] === 0 && m[3] === 0 && m[4] === 1 && m[6] === 0 && m[7] === 0;
-}
-
 class Painter {
   constructor(dom) {
     if (!dom) {
@@ -158,10 +154,6 @@ class Painter {
     if ('shadowOffsetX' in attrs || 'shadowOffsetY' in attrs || 'shadowBlur' in attrs || 'shadowColor' in attrs) {
       this._setShadow(model);
     }
-    if (!isUnchanged(attrs.matrix)) {
-      this._setTransform(model);
-      return;
-    }
     if (model.type === 'text') {
       self._updateText(model);
       return;
@@ -174,7 +166,7 @@ class Painter {
         self._setAttribute(model, key, attrs[key]);
       }
     }
-    model._cfg.attrs = Object.assign({}, model._attrs);
+    model._cfg.attrs = Util.deepMix({}, model._attrs);
     model._cfg.hasUpdate = false;
   }
   _setAttribute(model, name, value) {
@@ -233,6 +225,10 @@ class Painter {
         el.removeAttribute('transform');
         return;
       }
+      this._setTransform(model);
+      return;
+    }
+    if (name === 'matrix') {
       this._setTransform(model);
       return;
     }
