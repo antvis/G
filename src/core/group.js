@@ -74,7 +74,7 @@ Util.augment(Group, {
       shapeType = Util.upperFirst(type);
       SHAPE_MAP[type] = shapeType;
     }
-    if (cfg.attrs) {
+    if (cfg.attrs && canvas) {
       const attrs = cfg.attrs;
       if (type === 'text') { // 临时解决
         const topFontFamily = canvas.get('fontFamily');
