@@ -43,8 +43,8 @@ class Shadow {
   }
   _parseShadow(config, el) {
     const child = `<feDropShadow 
-      dx="${config.dx}" 
-      dy="${config.dy}" 
+      dx="${config.dx || 0}" 
+      dy="${config.dy || 0}" 
       stdDeviation="${config.blur ? config.blur / 10 : 0}"
       flood-color="${config.color ? config.color : '#000'}"
       flood-opacity="${config.opacity ? config.opacity : 1}"
