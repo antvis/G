@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>测试</title>
+  </head>
+  <body>
+    <script>
+      function mix(dist, obj) {
+        for (var k in obj) {
+          if (obj.hasOwnProperty(k) && k !== 'constructor' && obj[k] !== undefined) {
+            dist[k] = obj[k];
+          }
+        }
+      }
+      var count = 10000;
+      var t = performance.now();
+      for(var i = 0; i < count; i++) {
+        var obj = {a: 123, b: 233, c: 223,d: 2333};
+        mix({}, obj);
+      }
+      console.log('mix',performance.now() - t);
+
+      var t = performance.now();
+      for(var i = 0; i < count; i++) {
+        var obj = {a: 123, b: 233, c: 223,d: 2333};
+        Object.assign({}, obj);
+      }
+      console.log('assign',performance.now() - t);
+
+    </script>
+  </body>
+</html>
