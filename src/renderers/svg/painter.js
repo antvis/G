@@ -78,7 +78,7 @@ class Painter {
       return null;
     }
     const svgId = Util.uniqueId('canvas_');
-    const canvasDom = Util.createDom(`<svg id="${svgId}" width=></svg>`);
+    const canvasDom = Util.createDom(`<svg id="${svgId}"></svg>`);
     dom.appendChild(canvasDom);
     this.type = 'svg';
     this.canvas = canvasDom;
@@ -112,7 +112,9 @@ class Painter {
 
     // 删除
     if (cfg.removed || cfg.destroyed) {
-      self._removeShape(model);
+      if (cfg.el) {
+        cfg.el.parentNode.removeChild(cfg.el);
+      }
       return;
     }
 
@@ -121,6 +123,13 @@ class Painter {
       self._createDom(model);
       self._updateShape(model);
     }
+
+    if (cfg.visible === false) {
+      cfg.el.setAttribute('visibility', 'hidden');
+      return;
+    }
+    cfg.el.setAttribute('visibility', 'visible');
+
 
     // 更新
     if (cfg.hasUpdate) {
@@ -160,12 +169,6 @@ class Painter {
     }
     model._cfg.attrs = Object.assign({}, model._attrs);
     model._cfg.hasUpdate = false;
-  }
-  _removeShape(model) {
-    const el = model._cfg.el;
-    if (el) {
-      model._cfg.parent.get('el').removeChild(el);
-    }
   }
   _setAttribute(model, name, value) {
     const type = model.type;
@@ -371,7 +374,7 @@ class Painter {
     const attrs = model._attrs;
     const formerAttrs = model._cfg.attrs;
     const el = model._cfg.el;
-
+    this._setFont(model);
     for (const attr in attrs) {
       if (attrs[attr] !== formerAttrs[attr]) {
         if (attr === 'text') {
@@ -394,7 +397,7 @@ class Painter {
     model._cfg.attrs = Object.assign({}, model._attrs);
     model._cfg.hasUpdate = false;
   }
-  _assembleFont(model) {
+  _setFont(model) {
     const el = model.get('el');
     const attrs = model._attrs;
     const fontSize = attrs.fontSize;
