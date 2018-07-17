@@ -27,7 +27,7 @@ class Shadow {
       return false;
     }
     let flag = false;
-    const config = this.__attrs.config;
+    const config = this.cfg;
     Util.each(Object.keys(config), attr => {
       if (!flag) {
         flag = config[attr] === cfg[attr];
