@@ -215,7 +215,6 @@ class Painter {
         el.removeAttribute('transform');
         return;
       }
-      model.transform(value);
       this._setTransform(model);
       return;
     }
@@ -224,7 +223,6 @@ class Painter {
         el.removeAttribute('transform');
         return;
       }
-      model.rotateAtStart(value);
       this._setTransform(model);
       return;
     }
