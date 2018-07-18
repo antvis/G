@@ -155,6 +155,7 @@ Util.augment(CText, {
       this._assembleFont();
       this._setAttrText();
     }
+    context.font = attrs.font;
     const text = attrs.text;
     if (!text) {
       return;
@@ -165,11 +166,16 @@ Util.augment(CText, {
 
     context.beginPath();
     if (self.hasStroke()) {
+      const strokeOpacity = attrs.strokeOpacity;
+      if (!Util.isNil(strokeOpacity) && strokeOpacity !== 1) {
+        context.globalAlpha = strokeOpacity;
+      }
       if (textArr) {
         self._drawTextArr(context, false);
       } else {
         context.strokeText(text, x, y);
       }
+      context.globalAlpha = 1;
     }
     if (self.hasFill()) {
       const fillOpacity = attrs.fillOpacity;
@@ -182,6 +188,7 @@ Util.augment(CText, {
         context.fillText(text, x, y);
       }
     }
+    cfg.hasUpdate = false;
   },
   _drawTextArr(context, fill) {
     const textArr = this._attrs.textArr;
