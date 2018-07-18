@@ -8,7 +8,7 @@ const atan2 = Math.atan2;
 const DEFAULT_LENGTH = 10;
 const DEFAULT_ANGLE = PI / 3;
 
-function _addArrow(ctx, attrs, x1, y1, x2, y2) {
+function _addArrow(ctx, attrs, x1, y1, x2, y2, isStart) {
   let leftX;
   let leftY;
   let rightX;
@@ -21,13 +21,16 @@ function _addArrow(ctx, attrs, x1, y1, x2, y2) {
     const arrowLength = attrs.arrowLength || DEFAULT_LENGTH;
     const arrowAngle = attrs.arrowAngle ? (attrs.arrowAngle * PI) / 180 : DEFAULT_ANGLE; // 转换为弧
     // Calculate angle
-    angle = atan2((y2 - y1), (x2 - x1));
-    // Adjust angle correctly
-    angle -= PI;
+    angle = atan2((y1 - y2), (x1 - x2));
+    /* // Adjust angle correctly
+    angle -= PI;*/
     // Calculate offset to place arrow at edge of path
-    offsetX = (attrs.lineWidth * cos(angle));
-    offsetY = (attrs.lineWidth * sin(angle));
-
+    offsetX = Math.abs(attrs.lineWidth * cos(angle)) / 2;
+    offsetY = Math.abs(attrs.lineWidth * sin(angle)) / 2;
+    if (isStart) {
+      offsetX = -offsetX;
+      offsetY = -offsetY;
+    }
     // Calculate coordinates for left half of arrow
     leftX = x2 + (arrowLength * cos(angle + (arrowAngle / 2)));
     leftY = y2 + (arrowLength * sin(angle + (arrowAngle / 2)));
@@ -120,14 +123,14 @@ module.exports = {
     if (typeof attrs.startArrow === 'object') {
       _addCustomizedArrow(ctx, attrs, x1, y1, x2, y2, true);
     } else if (attrs.startArrow) {
-      _addArrow(ctx, attrs, x1, y1, x2, y2);
+      _addArrow(ctx, attrs, x1, y1, x2, y2, true);
     }
   },
   addEndArrow(ctx, attrs, x1, y1, x2, y2) {
     if (typeof attrs.endArrow === 'object') {
       _addCustomizedArrow(ctx, attrs, x1, y1, x2, y2, false);
     } else if (attrs.endArrow) {
-      _addArrow(ctx, attrs, x1, y1, x2, y2);
+      _addArrow(ctx, attrs, x1, y1, x2, y2, false);
     }
   }
 };
