@@ -203,11 +203,16 @@ Util.augment(CText, {
 
     context.beginPath();
     if (self.hasStroke()) {
+      const strokeOpacity = attrs.strokeOpacity;
+      if (!Util.isNil(strokeOpacity) && strokeOpacity !== 1) {
+        context.globalAlpha = strokeOpacity;
+      }
       if (textArr) {
         self._drawTextArr(context, false);
       } else {
         context.strokeText(text, x, y);
       }
+      context.globalAlpha = 1;
     }
     if (self.hasFill()) {
       const fillOpacity = attrs.fillOpacity;
