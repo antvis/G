@@ -56,6 +56,50 @@ Util.augment(Arc, {
     box.maxY += halfWidth;
     return box;
   },
+  getStartTangent() {
+    const attrs = this._attrs;
+    const { x, y, startAngle, r, clockwise } = attrs;
+    let diff = Math.PI / 180;
+    if (clockwise) {
+      diff *= -1;
+    }
+    const result = [];
+    const x1 = _getArcX(x, r, startAngle + diff);
+    const y1 = _getArcY(y, r, startAngle + diff);
+    const x2 = _getArcX(x, r, startAngle);
+    const y2 = _getArcY(y, r, startAngle);
+    result.push([ x1, y1 ]);
+    result.push([ x2, y2 ]);
+    return result;
+
+  },
+  getEndTangent() {
+    const attrs = this._attrs;
+    const { x, y, endAngle, r, clockwise } = attrs;
+    let diff = Math.PI / 180;
+    const result = [];
+    if (clockwise) {
+      diff *= -1;
+    }
+    const x1 = _getArcX(x, r, endAngle + diff);
+    const y1 = _getArcY(y, r, endAngle + diff);
+    const x2 = _getArcX(x, r, endAngle);
+    const y2 = _getArcY(y, r, endAngle);
+    result.push([ x2, y2 ]);
+    result.push([ x1, y1 ]);
+    return result;
+  },
+  isPointInPath(x, y) {
+    const attrs = this.__attrs;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const { r, startAngle, endAngle, clockwise } = attrs;
+    const lineWidth = this.getHitLineWidth();
+    if (this.hasStroke()) {
+      return Inside.arcline(cx, cy, r, startAngle, endAngle, clockwise, lineWidth, x, y);
+    }
+    return false;
+  },
   createPath(context) {
     const attrs = this._attrs;
     const { x, y, r, startAngle, endAngle, clockwise } = attrs;
@@ -68,34 +112,15 @@ Util.augment(Arc, {
     const attrs = this._attrs;
     const { x, y, r, startAngle, endAngle, clockwise } = attrs;
     context = context || this.get('context');
-    let diff;
-    let x1;
-    let y1;
-    let x2;
-    let y2;
 
     if (attrs.startArrow) {
-      diff = Math.PI / 180;
-      if (clockwise) {
-        diff *= -1;
-      }
-      x1 = _getArcX(x, r, startAngle + diff);
-      y1 = _getArcY(y, r, startAngle + diff);
-      x2 = _getArcX(x, r, startAngle);
-      y2 = _getArcY(y, r, startAngle);
-      Arrow.addStartArrow(context, attrs, x1, y1, x2, y2);
+      const startPoints = this.getStartTangent();
+      Arrow.addStartArrow(context, attrs, startPoints[0][0], startPoints[0][1], startPoints[1][0], startPoints[1][1]);
     }
 
     if (attrs.endArrow) {
-      diff = Math.PI / 180;
-      if (clockwise) {
-        diff *= -1;
-      }
-      x1 = _getArcX(x, r, endAngle + diff);
-      y1 = _getArcY(y, r, endAngle + diff);
-      x2 = _getArcX(x, r, endAngle);
-      y2 = _getArcY(y, r, endAngle);
-      Arrow.addEndArrow(context, attrs, x2, y2, x1, y1);
+      const endPoints = this.getEndTangent();
+      Arrow.addEndArrow(context, attrs, endPoints[0][0], endPoints[0][1], endPoints[1][0], endPoints[1][1]);
     }
   }
 });

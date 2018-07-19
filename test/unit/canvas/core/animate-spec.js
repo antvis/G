@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../../../src/index');
+const G = require('../../../../src/canvas/index');
 
 describe('animate', function() {
   const div = document.createElement('div');
@@ -66,7 +66,8 @@ describe('animate', function() {
     canvas.draw();
     shape.animate({
       x: 200,
-      width: 20
+      width: 20,
+      matrix: [ 2, 0, 0, 0, 2, 0, 0, 0, 1 ]
     }, 500, function() {
       called = true;
     }, 1000);
@@ -75,6 +76,9 @@ describe('animate', function() {
       expect(called).equal(false);
       shape.stopAnimate();
       setTimeout(function() {
+        expect(shape.attr('matrix')[0]).equal(2);
+        expect(shape.attr('matrix')[1]).equal(0);
+        expect(shape.attr('matrix')[4]).equal(2);
         expect(shape.attr('x')).equal(200);
         expect(called).equal(true);
         done();
@@ -182,24 +186,7 @@ describe('animate', function() {
       done();
     }, 1000);
   });
-  it('animate with transform', done => {
-    const shape = canvas.addShape('rect', {
-      attrs: {
-        x: 200,
-        y: 90,
-        width: 20,
-        height: 20,
-        fill: 'red'
-      }
-    });
-    shape.animate({ transform: [[ 't', -20, -20 ], [ 's', 2, 2 ], [ 't', 20, 20 ]] }, 1000);
-    setTimeout(() => {
-      expect(shape.getMatrix()[0], 2);
-      expect(shape.getMatrix()[4], 2);
-      done();
-    }, 1000);
-  });
-  /* it('animate of a large amount of shapes', () => {
+  /*it('animate of a large amount of shapes', () => {
     const MAX_COUNT = 3000;
     let circle;
     for (let i = 0; i < MAX_COUNT; i++) {
@@ -214,7 +201,6 @@ describe('animate', function() {
       });
       circle.animate({ x: Math.random() * 1000, y: Math.random() * 1000, repeat: true }, 2000);
     }
-    console.log(canvas);
     canvas.draw();
   });*/
 });

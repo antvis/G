@@ -148,6 +148,51 @@ Util.augment(Path, {
     const path = attrs.path;
     this.curve = PathUtil.pathTocurve(path);
   },
+  getStartTangent() {
+    const segments = this.get('segments');
+    let startPoint,
+      endPoint,
+      tangent,
+      result;
+    if (segments.length > 1) {
+      startPoint = segments[0].endPoint;
+      endPoint = segments[1].endPoint;
+      tangent = segments[1].startTangent;
+      result = [];
+      if (Util.isFunction(tangent)) {
+        const v = tangent();
+        result.push([ startPoint.x - v[0], startPoint.y - v[1] ]);
+        result.push([ startPoint.x, startPoint.y ]);
+      } else {
+        result.push([ endPoint.x, endPoint.y ]);
+        result.push([ startPoint.x, startPoint.y ]);
+      }
+    }
+    return result;
+  },
+  getEndTangent() {
+    const segments = this.get('segments');
+    const segmentsLen = segments.length;
+    let startPoint,
+      endPoint,
+      tangent,
+      result;
+    if (segmentsLen > 1) {
+      startPoint = segments[ segmentsLen - 2 ].endPoint;
+      endPoint = segments[ segmentsLen - 1 ].endPoint;
+      tangent = segments[segmentsLen - 1].endTangent;
+      result = [];
+      if (Util.isFunction(tangent)) {
+        const v = tangent();
+        result.push([ endPoint.x - v[0], endPoint.y - v[1] ]);
+        result.push([ endPoint.x, endPoint.y ]);
+      } else {
+        result.push([ startPoint.x, startPoint.y ]);
+        result.push([ endPoint.x, endPoint.y ]);
+      }
+    }
+    return result;
+  },
   getPoint(t) {
     let tCache = this.tCache;
     let subt;
@@ -207,9 +252,6 @@ Util.augment(Path, {
     const attrs = self._attrs;
     const segments = self.get('segments');
     const path = attrs.path;
-    let startPoint,
-      endPoint,
-      tangent;
     context = context || self.get('context');
     if (!Util.isArray(segments)) {
       return;
@@ -220,30 +262,11 @@ Util.augment(Path, {
     if (path[path.length - 1] === 'z' || path[path.length - 1] === 'Z' || attrs.fill) { // 闭合路径不绘制箭头
       return;
     }
-    const segmentsLen = segments.length;
-    if (segmentsLen > 1) {
-      startPoint = segments[0].endPoint;
-      endPoint = segments[1].endPoint;
-      tangent = segments[1].startTangent;
-      if (Util.isFunction(tangent)) {
-        const v = tangent();
-        Arrow.addStartArrow(context, attrs, startPoint.x - v[0], startPoint.y - v[1], startPoint.x, startPoint.y);
-      } else {
-        Arrow.addStartArrow(context, attrs, endPoint.x, endPoint.y, startPoint.x, startPoint.y);
-      }
-    }
+    const startPoints = self.getStartTangent();
+    Arrow.addStartArrow(context, attrs, startPoints[0][0], startPoints[0][1], startPoints[1][0], startPoints[1][1]);
 
-    if (segmentsLen > 1 && !closed) {
-      startPoint = segments[ segmentsLen - 2 ].endPoint;
-      endPoint = segments[ segmentsLen - 1 ].endPoint;
-      tangent = segments[segmentsLen - 1].endTangent;
-      if (Util.isFunction(tangent)) {
-        const v = tangent();
-        Arrow.addEndArrow(context, attrs, endPoint.x - v[0], endPoint.y - v[1], endPoint.x, endPoint.y, tangent());
-      } else {
-        Arrow.addEndArrow(context, attrs, startPoint.x, startPoint.y, endPoint.x, endPoint.y);
-      }
-    }
+    const endPoints = self.getEndTangent();
+    Arrow.addEndArrow(context, attrs, endPoints[0][0], endPoints[0][1], endPoints[1][0], endPoints[1][1]);
   }
 });
 
