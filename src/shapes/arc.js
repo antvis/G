@@ -89,17 +89,6 @@ Util.augment(Arc, {
     result.push([ x1, y1 ]);
     return result;
   },
-  isPointInPath(x, y) {
-    const attrs = this.__attrs;
-    const cx = attrs.x;
-    const cy = attrs.y;
-    const { r, startAngle, endAngle, clockwise } = attrs;
-    const lineWidth = this.getHitLineWidth();
-    if (this.hasStroke()) {
-      return Inside.arcline(cx, cy, r, startAngle, endAngle, clockwise, lineWidth, x, y);
-    }
-    return false;
-  },
   createPath(context) {
     const attrs = this._attrs;
     const { x, y, r, startAngle, endAngle, clockwise } = attrs;
@@ -110,7 +99,6 @@ Util.augment(Arc, {
   },
   afterPath(context) {
     const attrs = this._attrs;
-    const { x, y, r, startAngle, endAngle, clockwise } = attrs;
     context = context || this.get('context');
 
     if (attrs.startArrow) {
