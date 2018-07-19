@@ -3,22 +3,15 @@
  */
 const Util = require('../../util/index');
 
-const DEFAULT_PATH = {
-  'marker-start': 'M6,0 L0,3 L6,6 L3,3Z',
-  'marker-end': 'M0,0 L6,3 L0,6 L3,3Z'
-};
-
 function setDefaultPath(parent, name, stroke) {
   const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  el.setAttribute('d', DEFAULT_PATH[name]);
+  el.setAttribute('d', 'M0,0 L6,3 L0,6 L3,3Z');
   el.setAttribute('stroke', 'none');
   el.setAttribute('fill', stroke || '#000');
   parent.appendChild(el);
   parent.setAttribute('refX', 3);
   parent.setAttribute('refY', 3);
-  parent.setAttribute('markerWidth', 16);
-  parent.setAttribute('markerHeight', 16);
-  parent.setAttribute('orient', 'auto');
+
   return el;
 }
 
@@ -35,9 +28,6 @@ function setMarker(shape, parent, name, stroke) {
   const height = shape.__attrs.y;
   parent.setAttribute('refX', width);
   parent.setAttribute('refY', height);
-  parent.setAttribute('markerWidth', width * 2);
-  parent.setAttribute('markerHeight', height * 2);
-  parent.setAttribute('orient', 'auto');
   return shape;
 }
 
@@ -45,6 +35,8 @@ const Arrow = function(name, cfg, stroke) {
   const el = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
   const id = Util.uniqueId('marker_');
   el.setAttribute('id', id);
+  el.setAttribute('overflow', 'visible');
+  el.setAttribute('orient', 'auto-start-reverse');
   this.__cfg = { el, id, stroke: stroke || '#000' };
   this.__cfg[name] = true;
   let child = null;
