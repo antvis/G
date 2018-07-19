@@ -66,7 +66,8 @@ describe('animate', function() {
     canvas.draw();
     shape.animate({
       x: 200,
-      width: 20
+      width: 20,
+      matrix: [ 2, 0, 0, 0, 2, 0, 0, 0, 1 ]
     }, 500, function() {
       called = true;
     }, 1000);
@@ -75,6 +76,9 @@ describe('animate', function() {
       expect(called).equal(false);
       shape.stopAnimate();
       setTimeout(function() {
+        expect(shape.attr('matrix')[0]).equal(2);
+        expect(shape.attr('matrix')[1]).equal(0);
+        expect(shape.attr('matrix')[4]).equal(2);
         expect(shape.attr('x')).equal(200);
         expect(called).equal(true);
         done();
