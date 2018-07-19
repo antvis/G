@@ -1,6 +1,3 @@
-const Marker = require('../marker');
-const Util = require('../../../util/index');
-
 const PI = Math.PI;
 const sin = Math.sin;
 const cos = Math.cos;
@@ -52,37 +49,37 @@ function _addArrow(ctx, attrs, x1, y1, x2, y2) {
 
 function _addMarker(ctx, attrs, x1, y1, x2, y2, shape) {
   const marker = shape.__attrs;
-  let method = marker.symbol;
-  const markerX = marker.x || x2;
-  const markerY = marker.y || y2;
-  const markerR = marker.r || attrs.lineWidth;
-  if (!Util.isFunction(method)) {
-    method = Marker.Symbols[method || 'triangle'];
+  if (!marker.x) {
+    marker.x = x2;
   }
+  if (!marker.y) {
+    marker.y = y2;
+  }
+  if (!marker.r) {
+    marker.r = attrs.lineWidth;
+  }
+
   let deg = 0;
-  const x = x1 - x2;
-  const y = y1 - y2;
-  if (y === 0) {
-    if (x < 0) {
-      deg = Math.PI / 2;
-    } else {
-      deg = (270 * Math.PI) / 180;
-    }
-  } else if (x >= 0 && y > 0) {
-    deg = -Math.atan(x / y);
-  } else if (x <= 0 && y < 0) {
-    deg = Math.PI - Math.atan(x / y);
-  } else if (x > 0 && y < 0) {
-    deg = Math.PI + Math.atan(-x / y);
-  } else if (x < 0 && y > 0) {
-    deg = Math.atan(x / -y);
+  const x = x2 - x1;
+  const y = y2 - y1;
+  const tan = Math.atan(x / y);
+  if (y === 0 && x < 0) {
+    deg = Math.PI;
+  } else if (x > 0 && y > 0) {
+    deg = Math.PI / 2 - tan;
+  } else if (x < 0 && y < 0) {
+    deg = -Math.PI / 2 - tan;
+  } else if (x >= 0 && y < 0) {
+    deg = -tan - Math.PI / 2;
+  } else if (x <= 0 && y > 0) {
+    deg = Math.PI / 2 - tan;
   }
   ctx.save();
   ctx.beginPath();
-  ctx.translate(markerX, markerY);
+  ctx.translate(marker.x, marker.y);
   ctx.rotate(deg);
-  ctx.translate(-markerX, -markerY);
-  method(markerX, markerY, markerR, ctx, shape);
+  ctx.translate(-marker.x, -marker.y);
+  shape.createPath(ctx);
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = shape.attr('fill') || ctx.strokeStyle;
   ctx.fill();
