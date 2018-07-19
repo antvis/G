@@ -104,6 +104,9 @@ module.exports = {
     // 将动画执行到最后一帧，执行回调
     Util.each(animators, animator => {
       this.attr(animator.toAttrs);
+      if (animator.toMatrix) {
+        this.attr('matrix', animator.toMatrix);
+      }
       if (animator.callback) {
         animator.callback();
       }
