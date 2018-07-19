@@ -133,7 +133,21 @@ Util.augment(Polyline, {
       context.lineTo(points[i][0], points[i][1]);
     }
     context.lineTo(points[l][0], points[l][1]);
-
+  },
+  getStartTangent() {
+    const points = this.__attrs.points;
+    const result = [];
+    result.push([ points[1][0], points[1][1] ]);
+    result.push([ points[0][0], points[0][1] ]);
+    return result;
+  },
+  getEndTangent() {
+    const points = this.__attrs.points;
+    const l = points.length - 1;
+    const result = [];
+    result.push([ points[l - 1][0], points[l - 1][1] ]);
+    result.push([ points[l][0], points[l][1] ]);
+    return result;
   },
   afterPath(context) {
     const self = this;
