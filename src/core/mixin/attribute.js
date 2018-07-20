@@ -7,7 +7,8 @@ module.exports = {
     this._attrs = {
       opacity: 1,
       fillOpacity: 1,
-      strokeOpacity: 1
+      strokeOpacity: 1,
+      matrix: [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]
     };
     this.attr(Util.assign(this.getDefaultAttrs(), attrs));
     if (!this._attrs.id) {
@@ -55,15 +56,9 @@ module.exports = {
         self._afterSetAttrPath(name.path);
       }
       if ('transform' in name) {
-        if (!attrs.matrix) {
-          attrs.matrix = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
-        }
         self.transform(name.transform);
       }
       if ('rotate' in name) {
-        if (!attrs.matrix) {
-          attrs.matrix = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
-        }
         self.rotateAtStart(name.rotate);
       }
       self.clearBBox();
