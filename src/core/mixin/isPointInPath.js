@@ -277,9 +277,6 @@ const marker = function marker(x, y) {
   const cy = attrs.y;
   const r = attrs.radius || attrs.r;
   const lineWidth = this.getHitLineWidth();
-  if (this._cfg.segments) {
-    return path.call(this, x, y);
-  }
   return Inside.circle(cx, cy, r + lineWidth / 2, x, y);
 };
 
