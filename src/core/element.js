@@ -128,11 +128,16 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
     if (destroyed) {
       return;
     }
+    // 如果正在执行动画，清理动画
+    if (this.get('animating')) {
+      const timer = this.get('animateTimer');
+      timer && timer.stop();
+    }
+    this._attrs = null;
+    this.removeEvent(); // 移除所有的事件
     this._cfg = {
       destroyed: true
     };
-    this._attrs = null;
-    this.removeEvent(); // 移除所有的事件
   },
   _beforeSetZIndex(zIndex) {
     this._cfg.zIndex = zIndex;

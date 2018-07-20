@@ -151,15 +151,9 @@ Util.augment(Group, {
     return backShape;
   },
   removeChild(item, destroy) {
-    const children = this._cfg.children;
     if (arguments.length >= 2) {
       if (this.contain(item)) {
-        const index = children.indexOf(item);
-        children.splice(index, 1);
-        item._cfg.parent = null;
-        if (destroy) {
-          item.remove();
-        }
+        item.remove(destroy);
       }
     } else {
       if (arguments.length === 1) {
@@ -167,9 +161,7 @@ Util.augment(Group, {
           destroy = item;
         } else {
           if (this.contain(item)) {
-            const index = children.indexOf(item);
-            children.splice(index, 1);
-            item._cfg.parent = null;
+            item.remove(true);
           }
           return this;
         }
@@ -198,7 +190,7 @@ Util.augment(Group, {
         }
         self._setCfgProperty(item);
       });
-      children.push.apply(children, items);
+      self._cfg.children = children.concat(items);
     } else {
       const item = items;
       const parent = item.get('parent');
@@ -433,11 +425,11 @@ Util.augment(Group, {
     }
   },
   clear() {
-    const children = this.get('children');
-
-    while (children.length !== 0) {
-      children[children.length - 1].remove();
+    const children = this._cfg.children;
+    for (let i = children.length - 1; i >= 0; i--) {
+      children[i].remove();
     }
+    this._cfg.children = [];
     return this;
   },
   destroy() {
