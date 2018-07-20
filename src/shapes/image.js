@@ -21,14 +21,6 @@ Util.extend(CImage, Shape);
 
 Util.augment(CImage, {
   type: 'image',
-  _afterSetAttrImg(img) {
-    this._setAttrImg(img);
-  },
-  _afterSetAttrAll(params) {
-    if (params.img) {
-      this._setAttrImg(params.img);
-    }
-  },
   isHitBox() {
     return false;
   },
@@ -109,12 +101,12 @@ Util.augment(CImage, {
     }
   },
   drawInner(context) {
+    if (!this._cfg.attrs || this._cfg.attrs.img !== this._attrs.img) {
+      this._setAttrImg();
+    }
     if (this.get('loading')) {
       this.set('toDraw', true);
       return;
-    }
-    if (!this._cfg.attrs || this._cfg.attrs.img !== this._attrs.img) {
-      this._setAttrImg();
     }
     this._drawImage(context);
   },

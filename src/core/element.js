@@ -15,6 +15,7 @@ const Element = function(cfg) {
   Util.assign(this._cfg, this.getDefaultCfg(), cfg); // Element.CFG不合并，提升性能 合并默认配置，用户配置->继承默认配置->Element默认配置
   // 在子元素的init中创建新svg元素，然后设置属性和变换。在这边设置id而不是attr里，是考虑id一旦设置后应不能修改
   this.initAttrs(this._cfg.attrs); // 初始化绘图属性
+  this._cfg.attrs = null;
   this.initTransform(); // 初始化变换
   this.init(); // 类型初始化
 };

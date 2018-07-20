@@ -292,7 +292,6 @@ class Painter {
         attrs.fillStyle = 'none';
       }
     }
-    model._cfg.attrs = {};
     return shape;
   }
   _assembleMarker(attrs) {
