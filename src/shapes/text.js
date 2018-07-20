@@ -40,7 +40,6 @@ Util.augment(CText, {
     };
   },
   initTransform() {
-    this.attr('matrix', [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
     const fontSize = this._attrs.fontSize;
     if (fontSize && +fontSize < 12) { // 小于 12 像素的文本进行 scale 处理
       this.transform([
