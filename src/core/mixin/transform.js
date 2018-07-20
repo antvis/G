@@ -24,33 +24,31 @@ function multiple(m1, m2) {
 }
 
 module.exports = {
-  initTransform() {
-    this.attr('matrix', [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
-  },
+  initTransform() {},
   translate(tx, ty) {
-    const matrix = this.attr('matrix');
+    const matrix = this._attrs.matrix;
     mat3.translate(matrix, matrix, [ tx, ty ]);
     this.clearTotalMatrix();
     this.attr('matrix', matrix);
     return this;
   },
   rotate(radian) {
-    const matrix = this.attr('matrix');
+    const matrix = this._attrs.matrix;
     mat3.rotate(matrix, matrix, radian);
     this.clearTotalMatrix();
     this.attr('matrix', matrix);
     return this;
   },
   scale(s1, s2) {
-    const matrix = this.attr('matrix');
+    const matrix = this._attrs.matrix;
     mat3.scale(matrix, matrix, [ s1, s2 ]);
     this.clearTotalMatrix();
     this.attr('matrix', matrix);
     return this;
   },
   rotateAtStart(rotate) {
-    const x = this.attr('x');
-    const y = this.attr('y');
+    const x = this._attrs.x;
+    const y = this._attrs.y;
     if (Math.abs(rotate) > Math.PI * 2) {
       rotate = rotate / 180 * Math.PI;
     }
@@ -71,7 +69,7 @@ module.exports = {
   },
   transform(ts) {
     const self = this;
-    const matrix = self.attr('matrix');
+    const matrix = this._attrs.matrix;
 
     Util.each(ts, function(t) {
       switch (t[0]) {
