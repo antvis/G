@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const Element = require('../../../../src/svg/core/element');
-const mat3 = require('gl-matrix').mat3;
+const mat3 = require('@antv/gl-matrix/lib/gl-matrix/mat3');
 
 describe('Element', () => {
   it('constructor', () => {
