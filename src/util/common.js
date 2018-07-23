@@ -1,4 +1,4 @@
-const Util = require('@antv/util');
+const Util = require('@antv/util/lib');
 
 module.exports = {
   isFunction: Util.isFunction,
