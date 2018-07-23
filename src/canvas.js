@@ -146,6 +146,8 @@ Util.augment(Canvas, {
       'mouseover',
       'mousemove',
       'mousedown',
+      'mouseleave',
+      'mouseover',
       'mouseup',
       'click',
       'dblclick'
