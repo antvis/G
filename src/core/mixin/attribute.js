@@ -36,6 +36,7 @@ module.exports = {
       return self._attrs;
     }
     if (Util.isObject(name)) {
+      // self._attrs = Util.deepMix(self._attrs, name);
       for (const k in name) {
         this._setAttr(k, name[k]);
       }
@@ -57,26 +58,25 @@ module.exports = {
     attrs[name] = value;
     if (name === 'fill' || name === 'stroke') {
       attrs[name + 'Style'] = value;
+      return;
     }
     if (name === 'opacity') {
       attrs.globalAlpha = value;
+      return;
     }
     if (name === 'clip' && value) {
       self._setClip(value);
+      return;
     }
     if (name === 'path' && self._afterSetAttrPath) {
       self._afterSetAttrPath(value);
+      return;
     }
     if (name === 'transform') {
-      if (!attrs.matrix) {
-        attrs.matrix = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
-      }
       self.transform(value);
+      return;
     }
     if (name === 'rotate') {
-      if (!attrs.matrix) {
-        attrs.matrix = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
-      }
       self.rotateAtStart(value);
     }
   },
