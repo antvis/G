@@ -62,12 +62,11 @@ module.exports = {
     ]);
   },
   move(x, y) {
-    const attrs = this._attrs;
-    const cx = attrs.x || 0; // 当前的x
-    const cy = attrs.y || 0; // 当前的y
+    const cx = this.get('x') || 0; // 当前的x
+    const cy = this.get('y') || 0; // 当前的y
     this.translate(x - cx, y - cy);
-    this.attr('x', x);
-    this.attr('y', y);
+    this.set('x', x);
+    this.set('y', y);
     return this;
   },
   transform(ts) {
