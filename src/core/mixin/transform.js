@@ -25,6 +25,9 @@ function multiple(m1, m2) {
 
 module.exports = {
   initTransform() {},
+  resetMatrix() {
+    this.attr('matrix', [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
+  },
   translate(tx, ty) {
     const matrix = this._attrs.matrix;
     mat3.translate(matrix, matrix, [ tx, ty ]);
