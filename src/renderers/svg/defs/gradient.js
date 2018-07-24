@@ -112,7 +112,7 @@ class Gradient {
     return this;
   }
   match(type, attr) {
-    return this.type === type && this.config === attr;
+    return this.cfg === attr;
   }
 }
 

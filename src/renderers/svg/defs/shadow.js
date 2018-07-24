@@ -26,11 +26,12 @@ class Shadow {
     if (this.type !== type) {
       return false;
     }
-    let flag = false;
+    let flag = true;
     const config = this.cfg;
     Util.each(Object.keys(config), attr => {
-      if (!flag) {
-        flag = config[attr] === cfg[attr];
+      if (config[attr] !== cfg[attr]) {
+        flag = false;
+        return false;
       }
     });
     return flag;
