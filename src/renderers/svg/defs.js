@@ -6,6 +6,7 @@ const Gradient = require('./defs/gradient');
 const Shadow = require('./defs/shadow');
 const Arrow = require('./defs/arrow');
 const Clip = require('./defs/clip');
+const Pattern = require('./defs/pattern');
 
 class Defs {
   constructor(canvas) {
@@ -71,6 +72,12 @@ class Defs {
     this.el.appendChild(shadow.el);
     this.add(shadow);
     return shadow.id;
+  }
+  addPattern(cfg) {
+    const pattern = new Pattern(cfg);
+    this.el.appendChild(pattern.el);
+    this.add(pattern);
+    return pattern.id;
   }
   addClip(cfg) {
     const clip = new Clip(cfg);
