@@ -50,8 +50,8 @@ module.exports = {
     return this;
   },
   rotateAtStart(rotate) {
-    const x = this._attrs.x;
-    const y = this._attrs.y;
+    const x = this._attrs.x || this._cfg.attrs.x;
+    const y = this._attrs.y || this._cfg.attrs.y;
     if (Math.abs(rotate) > Math.PI * 2) {
       rotate = rotate / 180 * Math.PI;
     }
