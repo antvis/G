@@ -1,12 +1,13 @@
 const Util = require('../../util/index');
 const MatrixUtil = require('../../util/matrix');
 
-const ReservedProps = { delay: 'delay', rotate: 'rotate' };
+const ReservedProps = { delay: 'delay', rotate: 'rotate', id: 'id' };
 
 function getFromAttrs(toAttrs, shape) {
   const rst = {};
-  for (const k in toAttrs) {
-    rst[k] = shape.attr(k);
+  const attrs = shape._attrs;
+  for (const k in toAttrs.attrs) {
+    rst[k] = attrs[k];
   }
   return rst;
 }
@@ -75,9 +76,10 @@ module.exports = {
       easing = easing ? easing : 'easeLinear';
     }
     const formatProps = getFormatProps(toProps, self);
+
     // 记录动画属性
     const animator = {
-      fromAttrs: getFromAttrs(toProps, self),
+      fromAttrs: getFromAttrs(formatProps, self),
       toAttrs: formatProps.attrs,
       fromMatrix: Util.clone(self.getMatrix()),
       toMatrix: formatProps.matrix,
