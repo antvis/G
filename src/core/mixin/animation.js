@@ -1,7 +1,7 @@
 const Util = require('../../util/index');
 const MatrixUtil = require('../../util/matrix');
 
-const ReservedProps = { delay: 'delay' };
+const ReservedProps = { delay: 'delay', rotate: 'rotate' };
 
 function getFromAttrs(toAttrs, shape) {
   const rst = {};
@@ -16,12 +16,13 @@ function getFormatProps(props, shape) {
     matrix: null,
     attrs: {}
   };
+  const attrs = shape._attrs;
   for (const k in props) {
     if (k === 'transform') {
       rst.matrix = MatrixUtil.transform(shape.getMatrix(), props[k]);
     } else if (k === 'matrix') {
       rst.matrix = props[k];
-    } else if (!ReservedProps[k]) {
+    } else if (!ReservedProps[k] && attrs[k] !== props[k]) {
       rst.attrs[k] = props[k];
     }
   }
