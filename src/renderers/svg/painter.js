@@ -488,14 +488,21 @@ class Painter {
   _setColor(model, name, value) {
     const el = model._cfg.el;
     const defs = this.context;
+    value = value.trim();
     if (!value) {
       el.setAttribute(SVG_ATTR_MAP[name], 'none');
       return;
     }
-    if (/^[r,R,L,l]{1}[\s]*\(/.test(value.trim())) {
+    if (/^[r,R,L,l]{1}[\s]*\(/.test(value)) {
       let id = defs.find('gradient', value);
       if (!id) {
         id = defs.addGradient(value);
+      }
+      el.setAttribute(SVG_ATTR_MAP[name], `url(#${id})`);
+    } else if (/^[p,P]{1}[\s]*\(/.test(value)) {
+      let id = defs.find('pattern', value);
+      if (!id) {
+        id = defs.addPattern(value);
       }
       el.setAttribute(SVG_ATTR_MAP[name], `url(#${id})`);
     } else {
