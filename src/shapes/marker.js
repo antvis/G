@@ -107,7 +107,7 @@ Util.augment(Marker, {
   },
   createPath(context) {
     let segments = this._cfg.segments;
-    if (segments) {
+    if (segments && !this._cfg.hasUpdate) {
       context.beginPath();
       for (let i = 0; i < segments.length; i++) {
         segments[i].draw(context);
