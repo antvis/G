@@ -488,11 +488,11 @@ class Painter {
   _setColor(model, name, value) {
     const el = model._cfg.el;
     const defs = this.context;
-    value = value.trim();
     if (!value) {
       el.setAttribute(SVG_ATTR_MAP[name], 'none');
       return;
     }
+    value = value.trim();
     if (/^[r,R,L,l]{1}[\s]*\(/.test(value)) {
       let id = defs.find('gradient', value);
       if (!id) {
