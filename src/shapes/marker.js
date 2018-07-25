@@ -126,6 +126,7 @@ Util.augment(Marker, {
       preSegment.draw(context);
     }
     this._cfg.segments = segments;
+    this._cfg.hasUpdate = false;
   }
 });
 
