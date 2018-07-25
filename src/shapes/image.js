@@ -101,7 +101,7 @@ Util.augment(CImage, {
     }
   },
   drawInner(context) {
-    if (!this._cfg.attrs || this._cfg.attrs.img !== this._attrs.img) {
+    if (this._cfg.hasUpdate) {
       this._setAttrImg();
     }
     if (this.get('loading')) {
@@ -109,6 +109,7 @@ Util.augment(CImage, {
       return;
     }
     this._drawImage(context);
+    this._cfg.hasUpdate = false;
   },
   _drawImage(context) {
     const attrs = this._attrs;
