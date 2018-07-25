@@ -60,11 +60,6 @@ Util.augment(Path, {
     self.set('tCache', null);
     this.setSilent('box', null);
   },
-  _afterSetAttrAll(objs) {
-    if (objs.path) {
-      this._afterSetAttrPath(objs.path);
-    }
-  },
   calculateBox() {
     const self = this;
     const segments = self.get('segments');
