@@ -4,6 +4,6 @@ module.exports = function getShape(x, y, e) {
     return this;
   }
   return this.find(item => {
-    return item._attrs.id === id;
+    return item.attrs && item._attrs.id === id;
   });
 };
