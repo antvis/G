@@ -23,5 +23,5 @@ module.exports = {
   PathUtil: require('./util/path'),
   Event: require('./event'),
   // version, etc.
-  version: '3.0.0-beta.10'
+  version: '3.0.0-beta.12'
 };
