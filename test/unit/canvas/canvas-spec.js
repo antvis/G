@@ -1,7 +1,7 @@
 const $ = require('jquery');
 const expect = require('chai').expect;
-const Canvas = require('../../../src/canvas/canvas');
-const G = require('../../../src/index').canvas;
+const G = require('../../../src/index');
+const Canvas = G.Canvas;
 const Simulate = require('event-simulate');
 
 $('<div id="c1"></div>').appendTo('body');
@@ -10,6 +10,7 @@ describe('Canvas 容器操作', function() {
   it('new canvas', function() {
     const canvas = new Canvas({
       containerId: 'c1',
+      renderer: 'canvas',
       width: 500,
       height: 500
     });
@@ -276,7 +277,8 @@ describe('canvas 事件', function() {
       y: 250,
       width: 50,
       height: 50,
-      fill: 'black'
+      fill: 'black',
+      radius: 10
     }
   });
   canvas.draw();

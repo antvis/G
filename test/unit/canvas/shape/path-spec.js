@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const { resolve } = require('path');
-const G = require('../../../../src/index').canvas;
+const G = require('../../../../src/index');
 const Canvas = G.Canvas;
 const div = document.createElement('div');
 div.id = 'canvas-path';
@@ -26,6 +26,7 @@ describe('Path', function() {
     expect(path.attr('path')).to.undefined;
     expect(path.attr('lineWidth')).to.equal(1);
     expect(path.getBBox()).to.be.null;
+
     canvas.add(path);
     canvas.draw();
   });
@@ -148,9 +149,8 @@ describe('Path', function() {
     expect(path.isHit(400, 400)).to.be.true;
     expect(path.isHit(400, 500)).to.be.true;
     expect(path.isHit(450, 550)).to.be.true;
-    expect(path.isHit(405, 450)).to.be.false;
-    canvas.add(path);
     expect(path.isHit(405, 450)).to.be.true;
+    canvas.add(path);
     canvas.draw();
   });
 

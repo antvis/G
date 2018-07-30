@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const Util = require('../../../../src/util/common');
 const PathUtil = require('../../../../src/util/path');
-const Canvas = require('../../../../src/svg/index').Canvas;
+const Canvas = require('../../../../src/index').Canvas;
 
 const dom = document.createElement('div');
 document.body.appendChild(dom);
@@ -9,7 +9,8 @@ document.body.appendChild(dom);
 const canvas = new Canvas({
   containerDOM: dom,
   width: 800,
-  height: 800
+  height: 800,
+  renderer: 'svg'
 });
 
 function drawPoints(arr, canvas) {
