@@ -11,6 +11,7 @@ module.exports = {
   isEmpty: Util.isEmpty, // isBlank
   uniqueId: Util.uniqueId,
   clone: Util.clone,
+  deepMix: Util.deepMix,
   assign: Util.mix, // simpleMix
   merge: Util.deepMix, // mix
   upperFirst: Util.upperFirst, // ucfirst

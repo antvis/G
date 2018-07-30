@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../../../src/index').canvas;
+const G = require('../../../../src/index');
 const Canvas = G.Canvas;
 const div = document.createElement('div');
 div.id = 'canvas-line';
@@ -109,25 +109,25 @@ describe('Line', function() {
 
   it('arrow', function() {
     line.attr({
-      startArrow: true,
-      endArrow: new G.Marker({
-        attrs: {
-          symbol: 'triangle'
-        }
-      })
+      startArrow: {
+        path: 'M 10,0 L -10,-10 L -10,10 Z',
+        d: 10
+      },
+      endArrow: {
+        path: 'M 10,0 L -10,-10 L -10,10 Z',
+        d: 10
+      }
     });
     canvas.addShape('line', {
       attrs: {
-        startArrow: new G.Marker({
-          attrs: {
-            symbol: 'triangle'
-          }
-        }),
-        endArrow: new G.Marker({
-          attrs: {
-            symbol: 'triangle'
-          }
-        }),
+        startArrow: {
+          path: 'M 10,0 L -10,-10 L -10,10 Z',
+          d: 10
+        },
+        endArrow: {
+          path: 'M 10,0 L -10,-10 L -10,10 Z',
+          d: 10
+        },
         arrowLength: 15,
         x1: 80,
         y1: 80,
@@ -139,16 +139,13 @@ describe('Line', function() {
     });
     canvas.addShape('line', {
       attrs: {
-        startArrow: new G.Marker({
-          attrs: {
-            symbol: 'circle'
-          }
-        }),
-        endArrow: new G.Marker({
-          attrs: {
-            symbol: 'square'
-          }
-        }),
+        startArrow: {
+          path: 'M 10,0 L -10,-10 L -10,10 Z',
+          d: 10
+        },
+        endArrow: {
+          path: 'M 10,0 L -10,-10 L -10,10 Z'
+        },
         arrowLength: 15,
         x1: 180,
         y1: 60,
@@ -160,11 +157,9 @@ describe('Line', function() {
     });
     canvas.addShape('line', {
       attrs: {
-        startArrow: new G.Marker({
-          attrs: {
-            symbol: 'triangle'
-          }
-        }),
+        startArrow: {
+          path: 'M 10,0 L -10,-10 L -10,10 Z'
+        },
         endArrow: true,
         arrowLength: 15,
         x1: 30,

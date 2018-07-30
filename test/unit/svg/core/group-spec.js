@@ -1,9 +1,7 @@
 const expect = require('chai').expect;
-const g = require('../../../../src/index');
-const Event = require('../../../../src/canvas/event');
-
-const G = g.svg;
-const Canvas = G.Canvas;
+const G = require('../../../../src/index');
+const Event = require('../../../../src/event');
+const Canvas = require('../../../../src/canvas');
 
 const div = document.createElement('div');
 div.id = 'canvas-group-1';
@@ -15,7 +13,8 @@ describe('Group', () => {
     containerId: 'canvas-group-1',
     width: 200,
     height: 200,
-    pixelRatio: 1
+    pixelRatio: 1,
+    renderer: 'svg'
   });
 
   it('constructor', () => {

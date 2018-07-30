@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../../../src/index').canvas;
+const G = require('../../../../src/index');
 const Canvas = G.Canvas;
 const div = document.createElement('div');
 div.id = 'canvas-circle';
@@ -77,13 +77,13 @@ describe('Circle', function() {
     circle.attr('stroke', 'l (30) 0:#00ffff 1:#ff00ff');
     expect(circle.attr('stroke')).to.equal('l (30) 0:#00ffff 1:#ff00ff');
     canvas.add(circle);
-    canvas.draw(circle);
+    canvas.draw();
   });
 
   it('fill', function() {
     circle.attr('fill', 'r (0.5, 0.5, 0) 0:#00ffff 1:#ffff00');
     expect(circle.attr('fill')).to.equal('r (0.5, 0.5, 0) 0:#00ffff 1:#ffff00');
-    canvas.draw(circle);
+    canvas.draw();
   });
 
   it('isHit', function() {
