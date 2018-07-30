@@ -5,10 +5,8 @@ const vec2 = require('../../util/matrix').vec2;
 const vec3 = require('../../util/matrix').vec3;
 const mathUtl = {
   arc: require('../../shapes/math/arc'),
-  cubic: require('../../shapes/math/cubic'),
   ellipse: require('../../shapes/math/ellipse'),
-  line: require('../../shapes/math/line'),
-  quadratic: require('../../shapes/math/quadratic')
+  line: require('../../shapes/math/line')
 };
 
 const canvas = Util.createDom('<canvas width="500" height="500"></canvas>');
@@ -52,18 +50,6 @@ const circle = function circle(x, y) {
     return Inside.arcline(cx, cy, r, 0, Math.PI * 2, false, lineWidth, x, y);
   }
   return false;
-};
-
-const cubic = function cubic(x, y) {
-  const { p1, p2, p3, p4 } = this._attrs;
-  const lineWidth = this.getHitLineWidth();
-  return Inside.cubicline(
-    p1[0], p1[1],
-    p2[0], p2[1],
-    p3[0], p3[1],
-    p4[0], p4[1],
-    lineWidth, x, y
-  );
 };
 
 const ellipse = function ellipse(x, y) {
@@ -295,20 +281,6 @@ const polyline = function polyline(x, y) {
   return false;
 };
 
-const quadratic = function quadratic(x, y) {
-  const self = this;
-  const attrs = self._attrs;
-  const { p1, p2, p3 } = attrs;
-  const lineWidth = this.getHitLineWidth();
-
-  return Inside.quadraticline(
-    p1[0], p1[1],
-    p2[0], p2[1],
-    p3[0], p3[1],
-    lineWidth, x, y
-  );
-};
-
 const rect = function rect(x, y) {
   const self = this;
   const fill = self.hasFill();
@@ -365,7 +337,7 @@ const text = function text(x, y) {
 const shapes = {
   arc,
   circle,
-  cubic,
+  dom: rect,
   ellipse,
   fan,
   image,
@@ -374,7 +346,6 @@ const shapes = {
   marker,
   polygon,
   polyline,
-  quadratic,
   rect,
   text
 };
