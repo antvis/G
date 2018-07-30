@@ -1,7 +1,7 @@
 const CommonUtil = require('./common');
-const mat3 = require('gl-matrix/src/gl-matrix/mat3');
-const vec3 = require('gl-matrix/src/gl-matrix/vec3');
-const vec2 = require('gl-matrix/src/gl-matrix/vec2');
+const mat3 = require('@antv/gl-matrix/lib/gl-matrix/mat3');
+const vec3 = require('@antv/gl-matrix/lib/gl-matrix/vec3');
+const vec2 = require('@antv/gl-matrix/lib/gl-matrix/vec2');
 
 vec2.angle = function(v1, v2) {
   const theta = vec2.dot(v1, v2) / (vec2.length(v1) * vec2.length(v2));
