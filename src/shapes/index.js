@@ -1,15 +1,16 @@
 const Shape = require('../core/shape');
-Shape.Rect = require('./rect');
+Shape.Arc = require('./arc');
 Shape.Circle = require('./circle');
+Shape.Dom = require('./dom');
 Shape.Ellipse = require('./ellipse');
-Shape.Path = require('./path');
-Shape.Text = require('./text');
-Shape.Line = require('./line');
+Shape.Fan = require('./fan');
 Shape.Image = require('./image');
+Shape.Line = require('./line');
+Shape.Marker = require('./marker');
+Shape.Path = require('./path');
 Shape.Polygon = require('./polygon');
 Shape.Polyline = require('./polyline');
-Shape.Arc = require('./arc');
-Shape.Fan = require('./fan');
-Shape.Marker = require('./marker');
-
+Shape.Rect = require('./rect');
+Shape.Text = require('./text');
 module.exports = Shape;
+
