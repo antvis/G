@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../../../src/canvas/index');
+const G = require('../../../../src/index');
 
 describe('animate', function() {
   const div = document.createElement('div');
@@ -186,7 +186,7 @@ describe('animate', function() {
       done();
     }, 1000);
   });
-  it('animate of a large amount of shapes', () => {
+  /* it('animate of a large amount of shapes', () => {
     const MAX_COUNT = 3000;
     let circle;
     for (let i = 0; i < MAX_COUNT; i++) {
@@ -202,22 +202,5 @@ describe('animate', function() {
       circle.animate({ x: Math.random() * 1000, y: Math.random() * 1000, repeat: true }, 2000);
     }
     canvas.draw();
-  });
-  it('animate with transform', done => {
-    const shape = canvas.addShape('rect', {
-      attrs: {
-        x: 200,
-        y: 90,
-        width: 20,
-        height: 20,
-        fill: 'red'
-      }
-    });
-    shape.animate({ transform: [[ 't', -20, -20 ], [ 's', 2, 2 ], [ 't', 20, 20 ]] }, 1000);
-    setTimeout(() => {
-      expect(shape.getMatrix()[0], 2);
-      expect(shape.getMatrix()[4], 2);
-      done();
-    }, 1000);
-  });
+  });*/
 });

@@ -1,6 +1,4 @@
-const g = require('../../../../src/index');
-
-const G = g.svg;
+const G = require('../../../../src/index');
 const Canvas = G.Canvas;
 
 const div = document.createElement('div');
@@ -13,7 +11,8 @@ describe('clip', () => {
     containerId: 'canvas-clip',
     width: 200,
     height: 200,
-    pixelRatio: 1
+    pixelRatio: 1,
+    renderer: 'svg'
   });
 
   const shape = new G.Circle({

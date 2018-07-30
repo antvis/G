@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const G = require('../../../../src/index').canvas;
+const G = require('../../../../src/index');
 const Canvas = G.Canvas;
 const div = document.createElement('div');
 div.id = 'canvas-rect';
@@ -275,12 +275,12 @@ describe('Rect', function() {
     expect(rect2.isHit(90, 100)).to.be.false;
     expect(rect2.isHit(89, 99)).to.be.false;
     rect2.attr('fill', 'blue');
-    expect(rect2.isHit(50, 50)).to.be.false;
+    expect(rect2.isHit(50, 50)).to.be.true;
     expect(rect2.isHit(49.5, 50)).to.be.false;
-    expect(rect2.isHit(50, 51)).to.be.false;
-    expect(rect2.isHit(51, 51)).to.be.false;
-    expect(rect2.isHit(90, 100)).to.be.false;
-    expect(rect2.isHit(89, 99)).to.be.false;
+    expect(rect2.isHit(50, 51)).to.be.true;
+    expect(rect2.isHit(51, 51)).to.be.true;
+    expect(rect2.isHit(90, 100)).to.be.true;
+    expect(rect2.isHit(89, 99)).to.be.true;
     canvas.add(rect2);
     expect(rect2.isHit(50, 50)).to.be.true;
     expect(rect2.isHit(49.5, 50)).to.be.false;
