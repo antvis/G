@@ -21,6 +21,8 @@ function getFormatProps(props, shape) {
   for (const k in props) {
     if (k === 'transform') {
       rst.matrix = MatrixUtil.transform(shape.getMatrix(), props[k]);
+    } else if (k === 'rotate') {
+      rst.matrix = MatrixUtil.transform(shape.getMatrix(), [[ 'r', props[k] ]]);
     } else if (k === 'matrix') {
       rst.matrix = props[k];
     } else if (!ReservedProps[k] && attrs[k] !== props[k]) {
