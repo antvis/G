@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "3.0.0-beta.10",
+  "version": "3.0.0-beta.11",
   "description": "A canvas library which providing 2d draw for G2.",
   "keywords": [
     "canvas",
@@ -65,11 +65,11 @@
     "silent": false
   },
   "dependencies": {
-    "@antv/util": "~1.0.2",
+    "@antv/gl-matrix": "~2.7.1",
+    "@antv/util": "~1.0.11",
     "d3-ease": "~1.0.3",
     "d3-interpolate": "~1.1.5",
     "d3-timer": "~1.0.6",
-    "gl-matrix": "~2.6.1",
     "wolfy87-eventemitter": "~5.1.0"
   }
 }
