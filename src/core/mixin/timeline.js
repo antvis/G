@@ -137,6 +137,11 @@ Util.augment(Timeline, {
   isAnimating() {
     return !!this._animators.length;
   },
+  stop() {
+    if (this._timer) {
+      this._timer.stop();
+    }
+  },
   getTime() {
     return this._current;
   }
