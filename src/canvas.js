@@ -279,11 +279,13 @@ Util.augment(Canvas, {
     return Canvas.superclass.getShape.call(this, x, y);
   },
   destroy() {
-    const containerDOM = this.get('containerDOM');
-    const canvasDOM = this.get('canvasDOM');
+    const cfg = this._cfg;
+    const containerDOM = cfg.containerDOM;
+    const canvasDOM = cfg.canvasDOM;
     if (canvasDOM && containerDOM) {
       containerDOM.removeChild(canvasDOM);
     }
+    cfg.timeline.stop();
     Canvas.superclass.destroy.call(this);
   }
 });
