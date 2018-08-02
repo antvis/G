@@ -1,5 +1,6 @@
 module.exports = function getShape(x, y, e) {
-  const id = e.srcElement.id;
+  const target = e.target || e.srcElement;
+  const id = target.id;
   if (this._attrs.id === id) {
     return this;
   }
