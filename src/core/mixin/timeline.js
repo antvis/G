@@ -131,9 +131,6 @@ Util.augment(Timeline, {
   removeAnimator(index) {
     this._animators.splice(index, 1);
   },
-  clear() {
-    this._animators = [];
-  },
   isAnimating() {
     return !!this._animators.length;
   },
