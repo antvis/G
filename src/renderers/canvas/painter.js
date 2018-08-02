@@ -39,30 +39,29 @@ class Painter {
     this.context && this.context.clearRect(0, 0, el.width, el.height);
   }
   draw(model) {
-    this._drawGroup(model);
-    // const self = this;
-    // function drawInner() {
-    //   self.animateHandler = Util.requestAnimationFrame(() => {
-    //     self.animateHandler = undefined;
-    //     if (self.toDraw) {
-    //       drawInner();
-    //     }
-    //   });
-    //   self.beforeDraw();
-    //   try {
-    //     self._drawGroup(model);
-    //   } catch (ev) { // 绘制时异常，中断重绘
-    //     console.warn('error in draw canvas, detail as:');
-    //     console.warn(ev);
-    //     self.toDraw = false;
-    //   }
-    //   self.toDraw = false;
-    // }
-    // if (self.animateHandler) {
-    //   self.toDraw = true;
-    // } else {
-    //   drawInner();
-    // }
+    const self = this;
+    function drawInner() {
+      self.animateHandler = Util.requestAnimationFrame(() => {
+        self.animateHandler = undefined;
+        if (self.toDraw) {
+          drawInner();
+        }
+      });
+      self.beforeDraw();
+      try {
+        self._drawGroup(model);
+      } catch (ev) { // 绘制时异常，中断重绘
+        console.warn('error in draw canvas, detail as:');
+        console.warn(ev);
+        self.toDraw = false;
+      }
+      self.toDraw = false;
+    }
+    if (self.animateHandler) {
+      self.toDraw = true;
+    } else {
+      drawInner();
+    }
   }
   _drawGroup(group) {
     if (group._cfg.removed || group._cfg.destroyed || !group._cfg.visible) {
