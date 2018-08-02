@@ -25,5 +25,6 @@ module.exports = {
   toRadian: Util.toRadian,
   toDegree: Util.toDegree,
   mod: Util.mod,
-  clamp: Util.clamp
+  clamp: Util.clamp,
+  throttle: require('lodash/throttle')
 };
