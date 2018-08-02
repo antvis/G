@@ -74,6 +74,11 @@ Util.augment(Canvas, {
     if (this.get('eventEnable')) {
       this._registEvents();
     }
+    this.draw = Util.throttle(() => {
+      this.emit('beforedraw');
+      this._cfg.painter.draw(this);
+      this.emit('afterdraw');
+    }, 16);
   },
   getEmitter(element, event) {
     if (element) {
@@ -268,9 +273,6 @@ Util.augment(Canvas, {
       clientX: x / (el.width / width) + bbox.left,
       clientY: y / (el.height / height) + bbox.top
     };
-  },
-  draw() {
-    this._cfg.painter.draw(this);
   },
   getShape(x, y, e) {
     if (arguments.length === 3 && this._cfg.renderer.getShape) {
