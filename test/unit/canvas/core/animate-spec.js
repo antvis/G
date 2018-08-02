@@ -186,6 +186,24 @@ describe('animate', function() {
       done();
     }, 1000);
   });
+  it('stop animation on timeline', done => {
+    const shape = canvas.addShape('rect', {
+      attrs: {
+        x: 200,
+        y: 90,
+        width: 20,
+        height: 20,
+        fill: 'red'
+      }
+    });
+    shape.animate({ width: 100, height: 100 }, 1000);
+    setTimeout(() => {
+      canvas._cfg.timeline.stopAllAnimations();
+      expect(shape._attrs.width, 100);
+      expect(shape._attrs.height, 100);
+      done();
+    }, 200);
+  });
   /* it('animate of a large amount of shapes', () => {
     const MAX_COUNT = 3000;
     let circle;
