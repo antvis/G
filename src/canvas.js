@@ -78,7 +78,7 @@ Util.augment(Canvas, {
       this.emit('beforedraw');
       this._cfg.painter.draw(this);
       this.emit('afterdraw');
-    });
+    }, 16);
   },
   getEmitter(element, event) {
     if (element) {
