@@ -131,9 +131,6 @@ Util.augment(Timeline, {
   removeAnimator(index) {
     this._animators.splice(index, 1);
   },
-  clear() {
-    this._animators = [];
-  },
   isAnimating() {
     return !!this._animators.length;
   },
@@ -141,6 +138,12 @@ Util.augment(Timeline, {
     if (this._timer) {
       this._timer.stop();
     }
+  },
+  stopAllAnimations() {
+    this._animators.forEach(animator => {
+      animator.stopAnimate();
+    });
+    this._animators = [];
   },
   getTime() {
     return this._current;
