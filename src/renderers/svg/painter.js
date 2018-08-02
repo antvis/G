@@ -83,7 +83,28 @@ class Painter {
     return this;
   }
   draw(model) {
-    this._drawChildren(model._cfg.children);
+    const self = this;
+    function drawInner() {
+      self.animateHandler = Util.requestAnimationFrame(() => {
+        self.animateHandler = undefined;
+        if (self.toDraw) {
+          drawInner();
+        }
+      });
+      try {
+        self._drawChildren(model._cfg.children);
+      } catch (ev) { // 绘制时异常，中断重绘
+        console.warn('error in draw canvas, detail as:');
+        console.warn(ev);
+        self.toDraw = false;
+      }
+      self.toDraw = false;
+    }
+    if (self.animateHandler) {
+      self.toDraw = true;
+    } else {
+      drawInner();
+    }
   }
   _drawGroup(model) {
     this._drawShape(model);
