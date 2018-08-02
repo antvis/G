@@ -142,6 +142,12 @@ Util.augment(Timeline, {
       this._timer.stop();
     }
   },
+  stopAllAnimations() {
+    this._animators.forEach(animator => {
+      animator.stopAnimate();
+    });
+    this._animators = [];
+  },
   getTime() {
     return this._current;
   }
