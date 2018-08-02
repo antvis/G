@@ -144,6 +144,7 @@ Util.augment(Timeline, {
       animator.stopAnimate();
     });
     this._animators = [];
+    this.canvas.draw();
   },
   getTime() {
     return this._current;
