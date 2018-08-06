@@ -108,8 +108,18 @@ class Painter {
     }
   }
   _drawGroup(model) {
+    if (model._cfg.tobeRemoved) {
+      Util.each(model._cfg.tobeRemoved, item => {
+        if (item.parentNode) {
+          item.parentNode.removeChild(item);
+        }
+      });
+      model._cfg.tobeRemoved = [];
+    }
     this._drawShape(model);
-    this._drawChildren(model._cfg.children);
+    if (model._cfg.children && model._cfg.children.length > 0) {
+      this._drawChildren(model._cfg.children);
+    }
   }
   _drawChildren(children) {
     const self = this;
@@ -303,6 +313,7 @@ class Painter {
     if (model._cfg.parent) {
       model._cfg.parent.get('el').appendChild(shape);
     }
+    model._cfg.attrs = {};
     if (model.type === 'text') {
       shape.setAttribute('paint-order', 'stroke');
       shape.setAttribute('style', 'stroke-linecap:butt; stroke-linejoin:miter;');
