@@ -153,6 +153,23 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
       cfg.el = null;
     }
   },
+  toBack() {
+    const cfg = this._cfg;
+    const parent = cfg.parent;
+    if (!parent) {
+      return;
+    }
+    const children = parent._cfg.children;
+    const el = cfg.el;
+    const index = children.indexOf(this);
+    children.splice(index, 1);
+    children.unshift(this);
+    if (el) {
+      const parentNode = el.parentNode;
+      parentNode.removeChild(el);
+      parentNode.insertBefore(el, parentNode.firstChild);
+    }
+  },
   _beforeSetZIndex(zIndex) {
     this._cfg.zIndex = zIndex;
 
