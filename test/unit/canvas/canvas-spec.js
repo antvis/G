@@ -263,7 +263,7 @@ describe('canvas 事件', function() {
     width: 500,
     height: 500
   });
-  canvas.addShape('Circle', {
+  const circle = canvas.addShape('Circle', {
     attrs: {
       x: 100,
       y: 100,
@@ -295,5 +295,18 @@ describe('canvas 事件', function() {
     });
 
     expect(target).not.to.be.undefined;
+  });
+  it('toFront', () => {
+    canvas.addShape('circle', {
+      attrs: {
+        x: 100,
+        y: 100,
+        r: 100,
+        strokeWidth: 20,
+        fill: '#ccc'
+      }
+    });
+    circle.toFront();
+    canvas.draw();
   });
 });
