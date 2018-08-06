@@ -324,5 +324,13 @@ describe('canvas 事件', () => {
     });
     circle.toFront();
     canvas.draw();
+    const children = canvas._cfg.children;
+    expect(children[children.length - 1].attr('id')).to.equal(circle._attrs.id);
+  });
+  it('toBack', () => {
+    circle.toBack();
+    canvas.draw();
+    const children = canvas._cfg.children;
+    expect(children[0].attr('id')).to.equal(circle._attrs.id);
   });
 });
