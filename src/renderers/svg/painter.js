@@ -36,6 +36,7 @@ const SVG_ATTR_MAP = {
   lineJoin: 'stroke-linejoin',
   lineWidth: 'stroke-width',
   lineDash: 'stroke-dasharray',
+  lineDashOffset: 'stroke-dashoffset',
   miterLimit: 'stroke-miterlimit',
   font: 'font',
   fontSize: 'font-size',
@@ -477,14 +478,30 @@ class Painter {
   }
   _setText(model, text) {
     const el = model._cfg.el;
+    const baseline = model._attrs.textBaseline || 'bottom';
     if (!text) {
       el.innerHTML = '';
     } else if (~text.indexOf('\n')) {
       const x = model._attrs.x;
       const textArr = text.split('\n');
+      const textLen = textArr.length - 1;
       let arr = '';
-      Util.each(textArr, segment => {
-        arr += `<tspan x="${x}" dy="1em">${segment}</tspan>`;
+      Util.each(textArr, (segment, i) => {
+        if (i === 0) {
+          if (baseline === 'alphabetic') {
+            arr += `<tspan x="${x}" dy="${-textLen}em">${segment}</tspan>`;
+          } else if (baseline === 'top') {
+            arr += `<tspan x="${x}" dy="${textLen}em">${segment}</tspan>`;
+          } else if (baseline === 'middle') {
+            arr += `<tspan x="${x}" dy="0">${segment}</tspan>`;
+          } else if (baseline === 'bottom') {
+            arr += `<tspan x="${x}" dy="-${textLen + 0.2}em">${segment}</tspan>`;
+          } else if (baseline === 'hanging') {
+            arr += `<tspan x="${x}" dy="-0.2em">${segment}</tspan>`;
+          }
+        } else {
+          arr += `<tspan x="${x}" dy="1em">${segment}</tspan>`;
+        }
       });
       el.innerHTML = arr;
     } else {
