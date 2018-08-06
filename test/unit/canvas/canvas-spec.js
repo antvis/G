@@ -267,7 +267,7 @@ describe('canvas 事件', function() {
     attrs: {
       x: 100,
       y: 100,
-      r: 100,
+      r: 50,
       fill: 'red'
     }
   });
@@ -316,5 +316,11 @@ describe('canvas 事件', function() {
     canvas.draw();
     const children = canvas._cfg.children;
     expect(children[0].attr('id')).to.equal(circle._attrs.id);
+  });
+  it('zIndex', () => {
+    circle.setZIndex(5);
+    canvas.draw();
+    const children = canvas._cfg.children;
+    expect(children[children.length - 1].attr('id')).to.equal(circle._attrs.id);
   });
 });

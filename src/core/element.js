@@ -171,10 +171,23 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
     }
   },
   _beforeSetZIndex(zIndex) {
-    this._cfg.zIndex = zIndex;
+    const parent = this._cfg.parent;
 
-    if (!Util.isNil(this.get('parent'))) {
-      this.get('parent').sort();
+    this._cfg.zIndex = zIndex;
+    if (!Util.isNil(parent)) {
+      parent.sort();
+    }
+    const el = this._cfg.el;
+    if (el) {
+      const children = parent._cfg.children;
+      const index = children.indexOf(this);
+      const parentNode = el.parentNode;
+      parentNode.removeChild(el);
+      if (index === children.length - 1) {
+        parentNode.appendChild(el);
+      } else {
+        parentNode.insertBefore(el, parentNode.childNodes[index]);
+      }
     }
     return zIndex;
   },
