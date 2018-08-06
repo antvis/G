@@ -269,11 +269,11 @@ describe('canvas 事件', () => {
     height: 500,
     renderer: 'svg'
   });
-  canvas.addShape('circle', {
+  const circle = canvas.addShape('circle', {
     attrs: {
       x: 100,
       y: 100,
-      r: 100,
+      r: 50,
       strokeWidth: 20,
       fill: 'red'
     }
@@ -311,5 +311,18 @@ describe('canvas 事件', () => {
       clientY: 276
     });
     expect(target).not.to.be.undefined;
+  });
+  it('toFront', () => {
+    canvas.addShape('circle', {
+      attrs: {
+        x: 100,
+        y: 100,
+        r: 100,
+        strokeWidth: 20,
+        fill: '#ccc'
+      }
+    });
+    circle.toFront();
+    canvas.draw();
   });
 });
