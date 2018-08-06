@@ -32,6 +32,7 @@ function find(children, x, y) {
 const Group = function(cfg) {
   Group.superclass.constructor.call(this, cfg);
   this.set('children', []);
+  this.set('tobeRemoved', []);
 
   this._beforeRenderUI();
   this._renderUI();
