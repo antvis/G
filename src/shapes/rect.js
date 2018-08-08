@@ -51,6 +51,10 @@ Util.augment(Rect, {
     const width = attrs.width;
     const height = attrs.height;
     const radius = attrs.radius;
+    let r1,
+      r2,
+      r3,
+      r4;
     context = context || self.get('context');
 
     context.beginPath();
@@ -58,15 +62,34 @@ Util.augment(Rect, {
       // 改成原生的rect方法
       context.rect(x, y, width, height);
     } else {
-      context.moveTo(x + radius, y);
-      context.lineTo(x + width - radius, y);
-      context.arc(x + width - radius, y + radius, radius, -Math.PI / 2, 0, false);
-      context.lineTo(x + width, y + height - radius);
-      context.arc(x + width - radius, y + height - radius, radius, 0, Math.PI / 2, false);
-      context.lineTo(x + radius, y + height);
-      context.arc(x + radius, y + height - radius, radius, Math.PI / 2, Math.PI, false);
-      context.lineTo(x, y + radius);
-      context.arc(x + radius, y + radius, radius, Math.PI, Math.PI * 3 / 2, false);
+      if (Util.isArray(radius)) {
+        if (radius.length === 1) {
+          r1 = r2 = r3 = r4 = radius[0];
+        } else if (radius.length === 2) {
+          r1 = r3 = radius[0];
+          r2 = r4 = radius[1];
+        } else if (radius.length === 3) {
+          r1 = radius[0];
+          r2 = r4 = radius[1];
+          r3 = radius[2];
+        } else {
+          r1 = radius[0];
+          r2 = radius[1];
+          r3 = radius[2];
+          r4 = radius[3];
+        }
+      } else {
+        r1 = r2 = r3 = r4 = radius;
+      }
+      context.moveTo(x + r1, y);
+      context.lineTo(x + width - r2, y);
+      r2 !== 0 && context.arc(x + width - r2, y + r2, r2, -Math.PI / 2, 0);
+      context.lineTo(x + width, y + height - r3);
+      r3 !== 0 && context.arc(x + width - r3, y + height - r3, r3, 0, Math.PI / 2);
+      context.lineTo(x + r4, y + height);
+      r4 !== 0 && context.arc(x + r4, y + height - r4, r4, Math.PI / 2, Math.PI);
+      context.lineTo(x, y + r1);
+      r1 !== 0 && context.arc(x + r1, y + r1, r1, Math.PI, Math.PI * 1.5);
       context.closePath();
     }
   }
