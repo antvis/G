@@ -1,4 +1,5 @@
 const Util = require('../../util');
+const { parseRadius } = require('../../util/format');
 const Marker = require('../../shapes/marker');
 const Defs = require('./defs');
 
@@ -373,39 +374,36 @@ class Painter {
     if (!radius) {
       return `M ${x},${y} l ${w},0 l 0,${h} l${-w} 0 z`;
     }
-    let r1 = 0;
-    let r2 = 0;
-    let r3 = 0;
-    let r4 = 0;
+    const r = parseRadius(radius);
     if (Util.isArray(radius)) {
       if (radius.length === 1) {
-        r1 = r2 = r3 = r4 = radius[0];
+        r.r1 = r.r2 = r.r3 = r.r4 = radius[0];
       } else if (radius.length === 2) {
-        r1 = r3 = radius[0];
-        r2 = r4 = radius[1];
+        r.r1 = r.r3 = radius[0];
+        r.r2 = r.r4 = radius[1];
       } else if (radius.length === 3) {
-        r1 = radius[0];
-        r2 = r4 = radius[1];
-        r3 = radius[2];
+        r.r1 = radius[0];
+        r.r2 = r.r4 = radius[1];
+        r.r3 = radius[2];
       } else {
-        r1 = radius[0];
-        r2 = radius[1];
-        r3 = radius[2];
-        r4 = radius[3];
+        r.r1 = radius[0];
+        r.r2 = radius[1];
+        r.r3 = radius[2];
+        r.r4 = radius[3];
       }
     } else {
-      r1 = r2 = r3 = r4 = radius;
+      r.r1 = r.r2 = r.r3 = r.r4 = radius;
     }
     const d = [
-      [ `M ${x + r1},${y}` ],
-      [ `l ${w - r1 - r2},0` ],
-      [ `a ${r2},${r2},0,0,1,${r2},${r2}` ],
-      [ `l 0,${h - r2 - r3}` ],
-      [ `a ${r3},${r3},0,0,1,${-r3},${r3}` ],
-      [ `l ${r3 + r4 - w},0` ],
-      [ `a ${r4},${r4},0,0,1,${-r4},${-r4}` ],
-      [ `l 0,${r4 + r1 - h}` ],
-      [ `a ${r1},${r1},0,0,1,${r1},${-r1}` ],
+      [ `M ${x + r.r1},${y}` ],
+      [ `l ${w - r.r1 - r.r2},0` ],
+      [ `a ${r.r2},${r.r2},0,0,1,${r.r2},${r.r2}` ],
+      [ `l 0,${h - r.r2 - r.r3}` ],
+      [ `a ${r.r3},${r.r3},0,0,1,${-r.r3},${r.r3}` ],
+      [ `l ${r.r3 + r.r4 - w},0` ],
+      [ `a ${r.r4},${r.r4},0,0,1,${-r.r4},${-r.r4}` ],
+      [ `l 0,${r.r4 + r.r1 - h}` ],
+      [ `a ${r.r1},${r.r1},0,0,1,${r.r1},${-r.r1}` ],
       [ 'z' ]
     ];
     return d.join(' ');
