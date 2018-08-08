@@ -285,7 +285,7 @@ describe('canvas 事件', () => {
       width: 50,
       height: 50,
       fill: 'black',
-      radius: 10
+      radius: [ 5, 15 ]
     }
   });
   canvas.addShape('rect', {
