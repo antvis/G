@@ -158,6 +158,16 @@ class Painter {
       self._updateShape(model);
     }
 
+    el = cfg.el;
+
+    if (cfg.visible === false) {
+      el.setAttribute('visibility', 'hidden');
+      return;
+    }
+    if (cfg.visible && el.hasAttribute('visibility')) {
+      el.removeAttribute('visibility');
+    }
+
     // 更新
     if (cfg.hasUpdate) {
       self._updateShape(model);
