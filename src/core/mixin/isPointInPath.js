@@ -334,10 +334,15 @@ const text = function text(x, y) {
   }
 };
 
+const dom = function dom(x, y) {
+  const box = this._cfg.el.getBBox();
+  return Inside.box(box.minX, box.maxX, box.minY, box.maxY, x, y);
+};
+
 const shapes = {
   arc,
   circle,
-  dom: rect,
+  dom,
   ellipse,
   fan,
   image,
