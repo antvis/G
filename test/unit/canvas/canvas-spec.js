@@ -278,7 +278,7 @@ describe('canvas 事件', function() {
       width: 50,
       height: 50,
       fill: 'black',
-      radius: 10
+      radius: [ 5, 10, 15, 20 ]
     }
   });
   canvas.draw();
