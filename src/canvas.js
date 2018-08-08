@@ -265,8 +265,8 @@ Util.augment(Canvas, {
     const width = bbox.right - bbox.left;
     const height = bbox.bottom - bbox.top;
     return {
-      clientX: x / (el.width / width) + bbox.left,
-      clientY: y / (el.height / height) + bbox.top
+      clientX: x / (bbox.width / width) + bbox.left,
+      clientY: y / (bbox.height / height) + bbox.top
     };
   },
   draw() {
