@@ -285,7 +285,7 @@ describe('canvas 事件', () => {
       width: 50,
       height: 50,
       fill: 'black',
-      radius: 10
+      radius: [ 5, 15 ]
     }
   });
   canvas.addShape('rect', {
@@ -338,5 +338,8 @@ describe('canvas 事件', () => {
     canvas.draw();
     const children = canvas._cfg.children;
     expect(children[children.length - 1].attr('id')).to.equal(circle._attrs.id);
+  });
+  it('getClientByPoint', () => {
+    expect(canvas.getClientByPoint(100, 100).clientX).to.equal(100);
   });
 });
