@@ -49,6 +49,7 @@ class Painter {
       });
       self.beforeDraw();
       try {
+        console.log('draw:' + self.canvas.id, model);
         self._drawGroup(model);
       } catch (ev) { // 绘制时异常，中断重绘
         console.warn('error in draw canvas, detail as:');
@@ -62,6 +63,10 @@ class Painter {
     } else {
       drawInner();
     }
+  }
+  drawSync(model) {
+    this.beforeDraw();
+    this._drawGroup(model);
   }
   _drawGroup(group) {
     if (group._cfg.removed || group._cfg.destroyed || !group._cfg.visible) {

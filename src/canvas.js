@@ -278,6 +278,9 @@ Util.augment(Canvas, {
     }
     return Canvas.superclass.getShape.call(this, x, y);
   },
+  _drawSync() {
+    this._cfg.painter.drawSync(this);
+  },
   destroy() {
     const cfg = this._cfg;
     const containerDOM = cfg.containerDOM;
