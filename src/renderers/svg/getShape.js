@@ -11,19 +11,18 @@ const TAG_MAP = {
 };
 
 module.exports = function getShape(x, y, e) {
-  const target = e.target || e.srcElement;
-  let id = target.id;
-  if (!id || !TAG_MAP[target.tagName]) {
+  let target = e.target || e.srcElement;
+  if (!TAG_MAP[target.tagName]) {
     let parent = target.parentNode;
     while (parent && !TAG_MAP[parent.tagName]) {
       parent = parent.parentNode;
     }
-    id = parent.id;
+    target = parent;
   }
-  if (this._attrs.id === id) {
+  if (this._cfg.el === target) {
     return this;
   }
   return this.find(item => {
-    return item._attrs && item._attrs.id === id;
+    return item._cfg && item._cfg.el === target;
   });
 };
