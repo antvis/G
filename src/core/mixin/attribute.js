@@ -11,9 +11,6 @@ module.exports = {
       matrix: [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]
     };
     this.attr(Util.assign(this.getDefaultAttrs(), attrs));
-    if (!this._attrs.id) {
-      this._attrs.id = Util.uniqueId('g_');
-    }
     return this;
   },
   getDefaultAttrs() {

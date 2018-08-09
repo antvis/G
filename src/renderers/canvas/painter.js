@@ -49,7 +49,6 @@ class Painter {
       });
       self.beforeDraw();
       try {
-        console.log('draw:' + self.canvas.id, model);
         self._drawGroup(model);
       } catch (ev) { // 绘制时异常，中断重绘
         console.warn('error in draw canvas, detail as:');
