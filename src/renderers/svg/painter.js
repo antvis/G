@@ -159,7 +159,7 @@ class Painter {
 
     // 重绘节点
     if (redraw && el) {
-      el.parentNode.removeChild(el);
+      el.parentNode && el.parentNode.removeChild(el);
       el = null;
     }
 
