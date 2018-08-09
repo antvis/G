@@ -108,6 +108,9 @@ class Painter {
       drawInner();
     }
   }
+  drawSync(model) {
+    this._drawChildren(model._cfg.children, false);
+  }
   _drawGroup(model, redraw) {
     const cfg = model._cfg;
     /**
