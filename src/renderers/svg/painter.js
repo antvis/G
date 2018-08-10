@@ -108,6 +108,9 @@ class Painter {
       drawInner();
     }
   }
+  drawSync(model) {
+    this._drawChildren(model._cfg.children, false);
+  }
   _drawGroup(model, redraw) {
     const cfg = model._cfg;
     /**
@@ -156,7 +159,7 @@ class Painter {
 
     // 重绘节点
     if (redraw && el) {
-      el.parentNode.removeChild(el);
+      el.parentNode && el.parentNode.removeChild(el);
       el = null;
     }
 
