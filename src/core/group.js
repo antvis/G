@@ -208,8 +208,6 @@ Util.augment(Group, {
     const cfg = this._cfg;
     if (cfg.timeline) {
       item.set('timeline', cfg.timeline);
-      item.set('canvas', cfg.canvas);
-      item.set('renderer', cfg.renderer);
     }
   },
   contain(item) {

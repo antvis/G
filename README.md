@@ -256,7 +256,10 @@ var canvas = new Canvas({
 * y 起始点 y 坐标
 * width 宽度
 * height 高度
-* radius 圆角
+* radius 圆角: 支持整数或数组形式， 分别对应左上、右上、右下、左下角的半径。
+  * radius缩写为 1或 [ 1 ] 相当于 [ 1, 1, 1, 1 ]
+  * radius 缩写为 [ 1, 2 ] 相当于 [ 1, 2, 1, 2 ]
+  * radius 缩写为 [ 1, 2, 3 ] 相当于 [ 1, 2, 3, 2 ]
 
 ```js
 canvas.addShape('rect', {

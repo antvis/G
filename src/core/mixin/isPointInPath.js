@@ -336,7 +336,7 @@ const text = function text(x, y) {
 
 const dom = function dom(x, y) {
   const box = this._cfg.el.getBBox();
-  return Inside.box(box.minX, box.maxX, box.minY, box.maxY, x, y);
+  return Inside.box(box.x, box.x + box.width, box.y, box.y + box.height, x, y);
 };
 
 const shapes = {
