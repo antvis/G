@@ -35,7 +35,7 @@ function _update(self, animator, ratio) {
           const fromPathPoint = fromPath[i];
           const cPathPoint = [];
           for (let j = 0; j < toPathPoint.length; j++) {
-            if (Util.isNumber(toPathPoint[j]) && fromPathPoint) {
+            if (Util.isNumber(toPathPoint[j]) && fromPathPoint && Util.isNumber(fromPathPoint[j])) {
               interf = interpolate(fromPathPoint[j], toPathPoint[j]);
               cPathPoint.push(interf(ratio));
             } else {
@@ -79,12 +79,10 @@ function update(shape, animator, elapsed) {
       ratio = d3Ease[easing](ratio);
     } else {
       ratio = 1;
-      if (animator.callback) {
-        animator.callback();
-      }
       isFinished = true;
     }
   }
+
   _update(shape, animator, ratio);
   return isFinished;
 }
@@ -114,6 +112,9 @@ Util.augment(Timeline, {
               if (isFinished) {
                 animators.splice(j, 1);
                 isFinished = false;
+                if (animator.callback) {
+                  animator.callback();
+                }
               }
             }
           }
