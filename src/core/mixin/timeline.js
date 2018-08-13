@@ -43,6 +43,12 @@ function getSegmentPoints(segment) {
       points.push([ segment[3], segment[4] ]);
       points.push([ segment[1], segment[2] ]);
       break;
+    case 'H':
+      points.push([ segment[1], segment[1] ]);
+      break;
+    case 'V':
+      points.push([ segment[1], segment[1] ]);
+      break;
     default:
 
   }
