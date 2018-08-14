@@ -15,127 +15,6 @@ const Timeline = function(canvas) {
   this.canvas = canvas;
 };
 
-function getSegmentPoints(segment) {
-  const points = [];
-  switch (segment[0]) {
-    case 'M':
-      points.push([ segment[1], segment[2] ]);
-      break;
-    case 'L':
-      points.push([ segment[1], segment[2] ]);
-      break;
-    case 'A':
-      points.push([ segment[6], segment[7] ]);
-      break;
-    case 'Q':
-      points.push([ segment[3], segment[4] ]);
-      points.push([ segment[1], segment[2] ]);
-      break;
-    case 'T':
-      points.push([ segment[1], segment[2] ]);
-      break;
-    case 'C':
-      points.push([ segment[5], segment[6] ]);
-      points.push([ segment[1], segment[2] ]);
-      points.push([ segment[3], segment[4] ]);
-      break;
-    case 'S':
-      points.push([ segment[3], segment[4] ]);
-      points.push([ segment[1], segment[2] ]);
-      break;
-    case 'H':
-      points.push([ segment[1], segment[1] ]);
-      break;
-    case 'V':
-      points.push([ segment[1], segment[1] ]);
-      break;
-    default:
-
-  }
-  return points;
-}
-
-function splitPoints(points, former, count) {
-  const result = [].concat(points);
-  let index;
-  let t = 1 / (count + 1);
-  const formerEnd = getSegmentPoints(former)[0];
-  for (let i = 1; i <= count; i++) {
-    t *= i;
-    index = Math.floor(points.length * t);
-    if (index === 0) {
-      result.unshift([ formerEnd[0] * t + points[index][0] * (1 - t), formerEnd[1] * t + points[index][1] * (1 - t) ]);
-    } else {
-      result.splice(index, 0, [ formerEnd[0] * t + points[index][0] * (1 - t), formerEnd[1] * t + points[index][1] * (1 - t) ]);
-    }
-  }
-  return result;
-}
-
-function _formatPath(fromPath, toPath) {
-  if (fromPath.length <= 1) {
-    return fromPath;
-  }
-  let points;
-  for (let i = 0; i < toPath.length; i++) {
-    if (fromPath[i][0] !== toPath[i][0]) {
-      points = getSegmentPoints(fromPath[i]);
-      switch (toPath[i][0]) {
-        case 'M':
-          fromPath[i] = [ 'M' ].concat(points[0]);
-          break;
-        case 'L':
-          fromPath[i] = [ 'L' ].concat(points[0]);
-          break;
-        case 'A':
-          fromPath[i] = [].concat(toPath[i]);
-          fromPath[i][6] = points[0][0];
-          fromPath[i][7] = points[0][1];
-          break;
-        case 'Q':
-          if (points.length < 2) {
-            if (i > 0) {
-              points = splitPoints(points, fromPath[i - 1], 1);
-            } else {
-              fromPath[i] = toPath[i];
-              break;
-            }
-          }
-          fromPath[i] = [ 'Q' ].concat(points.reduce((arr, i) => { return arr.concat(i); }, []));
-          break;
-        case 'T':
-          fromPath[i] = [ 'T' ].concat(points[0]);
-          break;
-        case 'C':
-          if (points.length < 3) {
-            if (i > 0) {
-              points = splitPoints(points, fromPath[i - 1], 2);
-            } else {
-              fromPath[i] = toPath[i];
-              break;
-            }
-          }
-          fromPath[i] = [ 'C' ].concat(points.reduce((arr, i) => { return arr.concat(i); }, []));
-          break;
-        case 'S':
-          if (points.length < 2) {
-            if (i > 0) {
-              points = splitPoints(points, fromPath[i - 1], 1);
-            } else {
-              fromPath[i] = toPath[i];
-              break;
-            }
-          }
-          fromPath[i] = [ 'S' ].concat(points.reduce((arr, i) => { return arr.concat(i); }, []));
-          break;
-        default:
-          fromPath[i] = toPath[i];
-      }
-    }
-  }
-  return fromPath;
-}
-
 function _update(self, animator, ratio) {
   const cProps = {}; // 此刻属性
   const toAttrs = animator.toAttrs;
@@ -150,14 +29,15 @@ function _update(self, animator, ratio) {
       if (k === 'path') {
         let toPath = toAttrs[k];
         let fromPath = fromAttrs[k];
+        console.log(fromPath, toPath);
         if (toPath.length !== fromPath.length) {
           toPath = PathUtil.parsePathString(toAttrs[k]); // 终点状态
           fromPath = PathUtil.parsePathString(fromAttrs[k]); // 起始状态
           if (toPath.length > fromPath.length) {
             // TODO 为了保证动画完成时路径与用户指定路径一致，暂时只考虑from比to点少的情况
-            fromPath = PathUtil.fillPath(fromPath, toPath);
+            fromPath = PathUtil.fillPathByDiff(fromPath, toPath);
           }
-          fromPath = _formatPath(fromPath, toPath);
+          fromPath = PathUtil.formatPath(fromPath, toPath);
           animator.fromAttrs.path = fromPath;
           animator.toAttrs.path = toPath;
         }
@@ -197,7 +77,7 @@ function update(shape, animator, elapsed) {
     return false;
   }
   let ratio;
-  let isFinished = false;
+  const isFinished = false;
   const duration = animator.duration;
   const easing = animator.easing;
   // 已执行时间
@@ -210,11 +90,14 @@ function update(shape, animator, elapsed) {
     if (ratio < 1) {
       ratio = d3Ease[easing](ratio);
     } else {
-      ratio = 1;
+      shape.attr(animator.toAttrs);
+      if (animator.toMatrix) {
+        shape.setMatrix(animator.toMatrix);
+      }
       if (animator.callback) {
         animator.callback();
       }
-      isFinished = true;
+      return true;
     }
   }
   _update(shape, animator, ratio);

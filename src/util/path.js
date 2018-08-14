@@ -1095,15 +1095,15 @@ const isEqual = function(obj1, obj2) {
   return result;
 };
 function getMinDiff(del, add, modify) {
-  let type = 'del';
-  let min = del;
+  let type = null;
+  let min = modify;
   if (add < min) {
     min = add;
     type = 'add';
   }
-  if (modify < min) {
-    min = modify;
-    type = null;
+  if (del < min) {
+    min = del;
+    type = 'del';
   }
   return {
     type,
@@ -1149,29 +1149,25 @@ const levenshteinDistance = function(source, target) {
 
 const fillPathByDiff = function(source, target) {
   const diffMatrix = levenshteinDistance(source, target);
-  const sourceLen = source.length;
+  let sourceLen = source.length;
   const targetLen = target.length;
   const changes = [];
   let index = 1;
+  let minPos = 1;
   for (let i = 1; i <= sourceLen; i++) {
-    let min = diffMatrix[i][index].min;
+    let min = diffMatrix[i][i].min;
+    minPos = i;
     for (let j = index; j <= targetLen; j++) {
       if (diffMatrix[i][j].min < min) {
         min = diffMatrix[i][j].min;
-        index = j;
+        minPos = j;
       }
     }
+    index = minPos;
     if (diffMatrix[i][index].type) {
       changes.push({ index: i - 1, type: diffMatrix[i][index].type });
     }
   }
-
-  if (index < targetLen) {
-    for (let i = index + 1; i <= targetLen; i++) {
-      source.push(source[sourceLen - 1]);
-    }
-  }
-
   for (let i = changes.length - 1; i >= 0; i--) {
     index = changes[i].index;
     if (changes[i].type === 'add') {
@@ -1180,8 +1176,139 @@ const fillPathByDiff = function(source, target) {
       source.splice(index, 1);
     }
   }
-  console.log(source);
+  sourceLen = source.length;
+  if (sourceLen < targetLen) {
+    for (let i = 0; i < (targetLen - sourceLen); i++) {
+      if (source[sourceLen - 1][0] === 'z' || source[sourceLen - 1][0] === 'Z') {
+        source.splice(sourceLen - 2, 0, source[sourceLen - 2]);
+      } else {
+        source.push(source[sourceLen - 1]);
+      }
+
+    }
+  }
   return source;
+};
+
+function _splitPoints(points, former, count) {
+  const result = [].concat(points);
+  let index;
+  let t = 1 / (count + 1);
+  const formerEnd = _getSegmentPoints(former)[0];
+  for (let i = 1; i <= count; i++) {
+    t *= i;
+    index = Math.floor(points.length * t);
+    if (index === 0) {
+      result.unshift([ formerEnd[0] * t + points[index][0] * (1 - t), formerEnd[1] * t + points[index][1] * (1 - t) ]);
+    } else {
+      result.splice(index, 0, [ formerEnd[0] * t + points[index][0] * (1 - t), formerEnd[1] * t + points[index][1] * (1 - t) ]);
+    }
+  }
+  return result;
+}
+
+function _getSegmentPoints(segment) {
+  const points = [];
+  switch (segment[0]) {
+    case 'M':
+      points.push([ segment[1], segment[2] ]);
+      break;
+    case 'L':
+      points.push([ segment[1], segment[2] ]);
+      break;
+    case 'A':
+      points.push([ segment[6], segment[7] ]);
+      break;
+    case 'Q':
+      points.push([ segment[3], segment[4] ]);
+      points.push([ segment[1], segment[2] ]);
+      break;
+    case 'T':
+      points.push([ segment[1], segment[2] ]);
+      break;
+    case 'C':
+      points.push([ segment[5], segment[6] ]);
+      points.push([ segment[1], segment[2] ]);
+      points.push([ segment[3], segment[4] ]);
+      break;
+    case 'S':
+      points.push([ segment[3], segment[4] ]);
+      points.push([ segment[1], segment[2] ]);
+      break;
+    case 'H':
+      points.push([ segment[1], segment[1] ]);
+      break;
+    case 'V':
+      points.push([ segment[1], segment[1] ]);
+      break;
+    default:
+
+  }
+  return points;
+}
+
+const formatPath = function(fromPath, toPath) {
+  if (fromPath.length <= 1) {
+    return fromPath;
+  }
+  let points;
+  for (let i = 0; i < toPath.length; i++) {
+    if (fromPath[i][0] !== toPath[i][0]) {
+      points = _getSegmentPoints(fromPath[i]);
+      switch (toPath[i][0]) {
+        case 'M':
+          fromPath[i] = [ 'M' ].concat(points[0]);
+          break;
+        case 'L':
+          fromPath[i] = [ 'L' ].concat(points[0]);
+          break;
+        case 'A':
+          fromPath[i] = [].concat(toPath[i]);
+          fromPath[i][6] = points[0][0];
+          fromPath[i][7] = points[0][1];
+          break;
+        case 'Q':
+          if (points.length < 2) {
+            if (i > 0) {
+              points = _splitPoints(points, fromPath[i - 1], 1);
+            } else {
+              fromPath[i] = toPath[i];
+              break;
+            }
+          }
+          fromPath[i] = [ 'Q' ].concat(points.reduce((arr, i) => { return arr.concat(i); }, []));
+          break;
+        case 'T':
+          fromPath[i] = [ 'T' ].concat(points[0]);
+          break;
+        case 'C':
+          if (points.length < 3) {
+            if (i > 0) {
+              points = _splitPoints(points, fromPath[i - 1], 2);
+            } else {
+              fromPath[i] = toPath[i];
+              break;
+            }
+          }
+          fromPath[i] = [ 'C' ].concat(points.reduce((arr, i) => { return arr.concat(i); }, []));
+          break;
+        case 'S':
+          if (points.length < 2) {
+            if (i > 0) {
+              points = _splitPoints(points, fromPath[i - 1], 1);
+            } else {
+              fromPath[i] = toPath[i];
+              break;
+            }
+          }
+          fromPath[i] = [ 'S' ].concat(points.reduce((arr, i) => { return arr.concat(i); }, []));
+          break;
+        default:
+          fromPath[i] = toPath[i];
+      }
+    }
+  }
+  return fromPath;
 };
 
 module.exports = {
@@ -1193,5 +1320,6 @@ module.exports = {
   rectPath,
   fillPath,
   fillPathByDiff,
+  formatPath,
   intersection: pathIntersection
 };
