@@ -340,6 +340,7 @@ describe('canvas 事件', () => {
     expect(children[children.length - 1].attr('id')).to.equal(circle._attrs.id);
   });
   it('getClientByPoint', () => {
-    expect(canvas.getClientByPoint(100, 100).clientX).to.equal(100);
+    const pixelRatio = canvas.get('pixelRatio');
+    expect(canvas.getClientByPoint(100, 100).clientX).to.equal(100 / pixelRatio);
   });
 });
