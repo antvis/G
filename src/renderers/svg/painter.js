@@ -138,6 +138,7 @@ class Painter {
   _drawChildren(children, redraw) {
     const self = this;
     let shape;
+    // 防止在画children的时候，父group已经被destroy
     if (!children) {
       return;
     }
@@ -521,7 +522,7 @@ class Painter {
     for (const attr in attrs) {
       if (attrs[attr] !== formerAttrs[attr]) {
         if (attr === 'text') {
-          self._setText(model, String(attrs[attr]));
+          self._setText(model, `${attrs[attr]}`);
           continue;
         }
         if (attr === 'fillStyle' || attr === 'strokeStyle') {
