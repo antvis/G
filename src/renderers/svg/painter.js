@@ -113,6 +113,9 @@ class Painter {
   }
   _drawGroup(model, redraw) {
     const cfg = model._cfg;
+    if (cfg.removed || cfg.destroyed) {
+      return;
+    }
     /**
      * FIXME redraw: 为了使元素置顶的临时解决方案
      * 如果直接将dom元素重排可以解决部分问题。但是如果重排后的group中有新增的shape，置顶效果就没有了
@@ -129,12 +132,16 @@ class Painter {
     }
     this._drawShape(model, redraw);
     if (cfg.children && cfg.children.length > 0) {
-      this._drawChildren(model._cfg.children, redraw);
+      this._drawChildren(cfg.children, redraw);
     }
   }
   _drawChildren(children, redraw) {
     const self = this;
     let shape;
+    // 防止在画children的时候，父group已经被destroy
+    if (!children) {
+      return;
+    }
     for (let i = 0; i < children.length; i++) {
       shape = children[i];
       if (shape.isGroup) {
@@ -515,7 +522,7 @@ class Painter {
     for (const attr in attrs) {
       if (attrs[attr] !== formerAttrs[attr]) {
         if (attr === 'text') {
-          self._setText(model, attrs[attr]);
+          self._setText(model, `${attrs[attr]}`);
           continue;
         }
         if (attr === 'fillStyle' || attr === 'strokeStyle') {
