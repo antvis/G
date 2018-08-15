@@ -11,20 +11,32 @@ describe('animate', () => {
     height: 1000,
     renderer: 'svg'
   });
-  it('repeat', () => {
-    const shape = canvas.addShape('circle', {
+  it.only('repeat', () => {
+    /* const shape = canvas.addShape('circle', {
       attrs: {
         x: 0,
         y: 0,
         fill: 'red',
         r: 10
       }
+    });*/
+    const group = canvas.addGroup();
+    const shape = group.addShape('circle', {
+      attrs: {
+        x: 100,
+        y: 100,
+        r: 50,
+        fill: 'red'
+      }
     });
+
+    canvas.draw();
+    console.log(canvas);
+
     shape.animate({
-      x: 100,
-      y: 100,
-      repeat: true
-    }, 2000);
+      x: 50,
+      y: 50
+    }, 5000, 'easeLinear', () => { }, 1000);
   });
   it('start animate', done => {
     let called = false;
