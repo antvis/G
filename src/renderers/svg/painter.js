@@ -121,7 +121,9 @@ class Painter {
      * 如果直接将dom元素重排可以解决部分问题。但是如果重排后的group中有新增的shape，置顶效果就没有了
      * 所以只能删除原有节点，新增节点以及所有子节点。这时候哪怕shape有el，也需要判断一下是否需要重绘
      */
-    redraw = redraw || !!cfg.el;
+    if (!cfg.el && cfg.attrs) {
+      redraw = true;
+    }
     if (cfg.tobeRemoved) {
       Util.each(cfg.tobeRemoved, item => {
         if (item.parentNode) {
@@ -333,8 +335,6 @@ class Painter {
       throw new Error('the type' + model.type + 'is not supported by svg');
     }
     const shape = document.createElementNS('http://www.w3.org/2000/svg', type);
-    const id = model._attrs.id || Util.uniqueId(this.type + '_');
-    shape.id = id;
     model._cfg.el = shape;
     if (model._cfg.parent) {
       model._cfg.parent.get('el').appendChild(shape);

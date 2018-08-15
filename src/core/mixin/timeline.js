@@ -27,8 +27,21 @@ function _update(self, animator, ratio) {
   for (const k in toAttrs) {
     if (!Util.isEqual(fromAttrs[k], toAttrs[k])) {
       if (k === 'path') {
-        const toPath = PathUtil.parsePathString(toAttrs[k]); // 终点状态
-        const fromPath = PathUtil.parsePathString(fromAttrs[k]); // 起始状态
+        let toPath = toAttrs[k];
+        let fromPath = fromAttrs[k];
+        if (toPath.length > fromPath.length) {
+          toPath = PathUtil.parsePathString(toAttrs[k]); // 终点状态
+          fromPath = PathUtil.parsePathString(fromAttrs[k]); // 起始状态
+          fromPath = PathUtil.fillPathByDiff(fromPath, toPath);
+          fromPath = PathUtil.formatPath(fromPath, toPath);
+          animator.fromAttrs.path = fromPath;
+          animator.toAttrs.path = toPath;
+        } else if (!animator.pathFormatted) {
+          fromPath = PathUtil.formatPath(fromPath, toPath);
+          animator.fromAttrs.path = fromPath;
+          animator.toAttrs.path = toPath;
+          animator.pathFormatted = true;
+        }
         cProps[k] = [];
         for (let i = 0; i < toPath.length; i++) {
           const toPathPoint = toPath[i];
@@ -65,7 +78,6 @@ function update(shape, animator, elapsed) {
     return false;
   }
   let ratio;
-  let isFinished = false;
   const duration = animator.duration;
   const easing = animator.easing;
   // 已执行时间
@@ -78,13 +90,16 @@ function update(shape, animator, elapsed) {
     if (ratio < 1) {
       ratio = d3Ease[easing](ratio);
     } else {
-      ratio = 1;
-      isFinished = true;
+      shape.attr(animator.toAttrs);
+      if (animator.toMatrix) {
+        shape.setMatrix(animator.toMatrix);
+      }
+      return true;
     }
   }
 
   _update(shape, animator, ratio);
-  return isFinished;
+  return false;
 }
 
 Util.augment(Timeline, {

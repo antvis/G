@@ -204,8 +204,9 @@ Util.augment(Group, {
     return self;
   },
   _setCfgProperty(item) {
-    item.set('parent', this);
     const cfg = this._cfg;
+    item.set('parent', this);
+    item.set('canvas', cfg.canvas);
     if (cfg.timeline) {
       item.set('timeline', cfg.timeline);
     }
