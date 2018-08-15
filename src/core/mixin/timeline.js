@@ -29,17 +29,18 @@ function _update(self, animator, ratio) {
       if (k === 'path') {
         let toPath = toAttrs[k];
         let fromPath = fromAttrs[k];
-        console.log(fromPath, toPath);
-        if (toPath.length !== fromPath.length) {
+        if (toPath.length > fromPath.length) {
           toPath = PathUtil.parsePathString(toAttrs[k]); // 终点状态
           fromPath = PathUtil.parsePathString(fromAttrs[k]); // 起始状态
-          if (toPath.length > fromPath.length) {
-            // TODO 为了保证动画完成时路径与用户指定路径一致，暂时只考虑from比to点少的情况
-            fromPath = PathUtil.fillPathByDiff(fromPath, toPath);
-          }
+          fromPath = PathUtil.fillPathByDiff(fromPath, toPath);
           fromPath = PathUtil.formatPath(fromPath, toPath);
           animator.fromAttrs.path = fromPath;
           animator.toAttrs.path = toPath;
+        } else if (!animator.pathFormated) {
+          fromPath = PathUtil.formatPath(fromPath, toPath);
+          animator.fromAttrs.path = fromPath;
+          animator.toAttrs.path = toPath;
+          animator.pathFormated = true;
         }
         cProps[k] = [];
         for (let i = 0; i < toPath.length; i++) {
