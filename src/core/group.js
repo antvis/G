@@ -32,6 +32,7 @@ function find(children, x, y) {
 const Group = function(cfg) {
   Group.superclass.constructor.call(this, cfg);
   this.set('children', []);
+  this.set('tobeRemoved', []);
 
   this._beforeRenderUI();
   this._renderUI();
@@ -207,8 +208,6 @@ Util.augment(Group, {
     const cfg = this._cfg;
     if (cfg.timeline) {
       item.set('timeline', cfg.timeline);
-      item.set('canvas', cfg.canvas);
-      item.set('renderer', cfg.renderer);
     }
   },
   contain(item) {
