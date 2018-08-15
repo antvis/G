@@ -1111,6 +1111,10 @@ function getMinDiff(del, add, modify) {
   };
 }
 
+/*
+ * https://en.wikipedia.org/wiki/Levenshtein_distance
+ * 计算两条path的编辑距离
+ */
 const levenshteinDistance = function(source, target) {
   const sourceLen = source.length;
   const targetLen = target.length;
@@ -1154,28 +1158,35 @@ const fillPathByDiff = function(source, target) {
   const changes = [];
   let index = 1;
   let minPos = 1;
-  for (let i = 1; i <= sourceLen; i++) {
-    let min = diffMatrix[i][i].min;
-    minPos = i;
-    for (let j = index; j <= targetLen; j++) {
-      if (diffMatrix[i][j].min < min) {
-        min = diffMatrix[i][j].min;
-        minPos = j;
+  // 如果source和target不是完全不相等
+  if (diffMatrix[sourceLen][targetLen] !== sourceLen) {
+    // 获取从source到target所需改动
+    for (let i = 1; i <= sourceLen; i++) {
+      let min = diffMatrix[i][i].min;
+      minPos = i;
+      for (let j = index; j <= targetLen; j++) {
+        if (diffMatrix[i][j].min < min) {
+          min = diffMatrix[i][j].min;
+          minPos = j;
+        }
+      }
+      index = minPos;
+      if (diffMatrix[i][index].type) {
+        changes.push({ index: i - 1, type: diffMatrix[i][index].type });
       }
     }
-    index = minPos;
-    if (diffMatrix[i][index].type) {
-      changes.push({ index: i - 1, type: diffMatrix[i][index].type });
+    // 对source进行增删path
+    for (let i = changes.length - 1; i >= 0; i--) {
+      index = changes[i].index;
+      if (changes[i].type === 'add') {
+        source.splice(index, 0, [].concat(source[index]));
+      } else {
+        source.splice(index, 1);
+      }
     }
   }
-  for (let i = changes.length - 1; i >= 0; i--) {
-    index = changes[i].index;
-    if (changes[i].type === 'add') {
-      source.splice(index, 0, [].concat(source[index]));
-    } else {
-      source.splice(index, 1);
-    }
-  }
+
+  // source尾部补齐
   sourceLen = source.length;
   if (sourceLen < targetLen) {
     for (let i = 0; i < (targetLen - sourceLen); i++) {
@@ -1190,6 +1201,7 @@ const fillPathByDiff = function(source, target) {
   return source;
 };
 
+// 将两个点均分成count个点
 function _splitPoints(points, former, count) {
   const result = [].concat(points);
   let index;
@@ -1207,6 +1219,12 @@ function _splitPoints(points, former, count) {
   return result;
 }
 
+/*
+ * 抽取pathSegment中的关键点
+ * M,L,A,Q,H,V一个端点
+ * Q, S抽取一个端点，一个控制点
+ * C抽取一个端点，两个控制点
+ */
 function _getSegmentPoints(segment) {
   const points = [];
   switch (segment[0]) {
@@ -1254,6 +1272,7 @@ const formatPath = function(fromPath, toPath) {
   let points;
   for (let i = 0; i < toPath.length; i++) {
     if (fromPath[i][0] !== toPath[i][0]) {
+      // 获取fromPath的pathSegment的端点，根据toPath的指令对其改造
       points = _getSegmentPoints(fromPath[i]);
       switch (toPath[i][0]) {
         case 'M':
