@@ -303,13 +303,16 @@ canvas.addShape('rect', {
 * path：路径，支持 字符串或者数组两种方式，详情参考 [svg path](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths)
 * arrow 箭头设置
     * true / false: 显示 / 取消默认箭头
-    * 支持定义Marker形状的箭头，箭头中心位于线段的端点
+    * 支持定义箭头样式，箭头中心位于(0, 0)点，箭头指向与x轴正方向相同
+      * path: 箭头样式
+      * d: path方向上箭头的位移
     ```js
     canvas.addShape('path', {
       attrs: {
-        startArrow: new Marker({
-           attrs: { ... }  
-        })
+        startArrow: {
+          path: 'M 10,0 L -10,-10 L -10,10 Z',
+          d: 10
+        }
       }
     });
     ```
