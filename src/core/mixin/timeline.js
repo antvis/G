@@ -36,11 +36,11 @@ function _update(self, animator, ratio) {
           fromPath = PathUtil.formatPath(fromPath, toPath);
           animator.fromAttrs.path = fromPath;
           animator.toAttrs.path = toPath;
-        } else if (!animator.pathFormated) {
+        } else if (!animator.pathFormatted) {
           fromPath = PathUtil.formatPath(fromPath, toPath);
           animator.fromAttrs.path = fromPath;
           animator.toAttrs.path = toPath;
-          animator.pathFormated = true;
+          animator.pathFormatted = true;
         }
         cProps[k] = [];
         for (let i = 0; i < toPath.length; i++) {
