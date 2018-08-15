@@ -251,6 +251,9 @@ Util.augment(Path, {
     if (!Util.isArray(segments)) {
       return;
     }
+    if (segments.length === 1) {
+      return;
+    }
     if (!attrs.startArrow && !attrs.endArrow) {
       return;
     }
