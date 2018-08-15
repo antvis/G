@@ -63,6 +63,10 @@ class Painter {
       drawInner();
     }
   }
+  drawSync(model) {
+    this.beforeDraw();
+    this._drawGroup(model);
+  }
   _drawGroup(group) {
     if (group._cfg.removed || group._cfg.destroyed || !group._cfg.visible) {
       return;

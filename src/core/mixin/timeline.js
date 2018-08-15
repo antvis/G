@@ -48,7 +48,7 @@ function _update(self, animator, ratio) {
           const fromPathPoint = fromPath[i];
           const cPathPoint = [];
           for (let j = 0; j < toPathPoint.length; j++) {
-            if (Util.isNumber(toPathPoint[j]) && fromPathPoint) {
+            if (Util.isNumber(toPathPoint[j]) && fromPathPoint && Util.isNumber(fromPathPoint[j])) {
               interf = interpolate(fromPathPoint[j], toPathPoint[j]);
               cPathPoint.push(interf(ratio));
             } else {
@@ -78,7 +78,6 @@ function update(shape, animator, elapsed) {
     return false;
   }
   let ratio;
-  const isFinished = false;
   const duration = animator.duration;
   const easing = animator.easing;
   // 已执行时间
@@ -95,14 +94,12 @@ function update(shape, animator, elapsed) {
       if (animator.toMatrix) {
         shape.setMatrix(animator.toMatrix);
       }
-      if (animator.callback) {
-        animator.callback();
-      }
       return true;
     }
   }
+
   _update(shape, animator, ratio);
-  return isFinished;
+  return false;
 }
 
 Util.augment(Timeline, {
@@ -130,6 +127,9 @@ Util.augment(Timeline, {
               if (isFinished) {
                 animators.splice(j, 1);
                 isFinished = false;
+                if (animator.callback) {
+                  animator.callback();
+                }
               }
             }
           }
@@ -147,9 +147,6 @@ Util.augment(Timeline, {
   removeAnimator(index) {
     this._animators.splice(index, 1);
   },
-  clear() {
-    this._animators = [];
-  },
   isAnimating() {
     return !!this._animators.length;
   },
@@ -157,6 +154,13 @@ Util.augment(Timeline, {
     if (this._timer) {
       this._timer.stop();
     }
+  },
+  stopAllAnimations() {
+    this._animators.forEach(animator => {
+      animator.stopAnimate();
+    });
+    this._animators = [];
+    this.canvas.draw();
   },
   getTime() {
     return this._current;

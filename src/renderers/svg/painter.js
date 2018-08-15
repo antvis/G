@@ -1,9 +1,10 @@
 const Util = require('../../util');
+const { parseRadius } = require('../../util/format');
 const Marker = require('../../shapes/marker');
 const Defs = require('./defs');
 
 const SHAPE_TO_TAGS = {
-  rect: 'rect',
+  rect: 'path',
   circle: 'circle',
   line: 'line',
   path: 'path',
@@ -36,6 +37,7 @@ const SVG_ATTR_MAP = {
   lineJoin: 'stroke-linejoin',
   lineWidth: 'stroke-width',
   lineDash: 'stroke-dasharray',
+  lineDashOffset: 'stroke-dashoffset',
   miterLimit: 'stroke-miterlimit',
   font: 'font',
   fontSize: 'font-size',
@@ -83,53 +85,112 @@ class Painter {
     return this;
   }
   draw(model) {
-    this._drawChildren(model._cfg.children);
+    const self = this;
+    function drawInner() {
+      self.animateHandler = Util.requestAnimationFrame(() => {
+        self.animateHandler = undefined;
+        if (self.toDraw) {
+          drawInner();
+        }
+      });
+      try {
+        self._drawChildren(model._cfg.children, false);
+      } catch (ev) { // 绘制时异常，中断重绘
+        console.warn('error in draw canvas, detail as:');
+        console.warn(ev);
+        self.toDraw = false;
+      }
+      self.toDraw = false;
+    }
+    if (self.animateHandler) {
+      self.toDraw = true;
+    } else {
+      drawInner();
+    }
   }
-  _drawGroup(model) {
-    this._drawShape(model);
-    this._drawChildren(model._cfg.children);
+  drawSync(model) {
+    this._drawChildren(model._cfg.children, false);
   }
-  _drawChildren(children) {
+  _drawGroup(model, redraw) {
+    const cfg = model._cfg;
+    if (cfg.removed || cfg.destroyed) {
+      return;
+    }
+    /**
+     * FIXME redraw: 为了使元素置顶的临时解决方案
+     * 如果直接将dom元素重排可以解决部分问题。但是如果重排后的group中有新增的shape，置顶效果就没有了
+     * 所以只能删除原有节点，新增节点以及所有子节点。这时候哪怕shape有el，也需要判断一下是否需要重绘
+     */
+    redraw = redraw || !!cfg.el;
+    if (cfg.tobeRemoved) {
+      Util.each(cfg.tobeRemoved, item => {
+        if (item.parentNode) {
+          item.parentNode.removeChild(item);
+        }
+      });
+      cfg.tobeRemoved = [];
+    }
+    this._drawShape(model, redraw);
+    if (cfg.children && cfg.children.length > 0) {
+      this._drawChildren(cfg.children, redraw);
+    }
+  }
+  _drawChildren(children, redraw) {
     const self = this;
     let shape;
+    // 防止在画children的时候，父group已经被destroy
+    if (!children) {
+      return;
+    }
     for (let i = 0; i < children.length; i++) {
       shape = children[i];
       if (shape.isGroup) {
-        self._drawGroup(shape);
+        self._drawGroup(shape, redraw);
       } else {
-        self._drawShape(shape);
+        self._drawShape(shape, redraw);
       }
     }
   }
-  _drawShape(model) {
+  _drawShape(model, redraw) {
     const self = this;
     const attrs = model._attrs;
     const cfg = model._cfg;
+    let el = cfg.el;
     // 删除
     if (cfg.removed || cfg.destroyed) {
-      if (cfg.el) {
-        cfg.el.parentNode.removeChild(cfg.el);
+      if (el) {
+        el.parentNode.removeChild(cfg.el);
       }
       return;
     }
 
+    // 重绘节点
+    if (redraw && el) {
+      el.parentNode && el.parentNode.removeChild(el);
+      el = null;
+    }
+
     // 新增节点
-    if (!cfg.el && cfg.parent) {
+    if (!el && cfg.parent) {
       self._createDom(model);
       self._updateShape(model);
     }
 
+    el = cfg.el;
+
     if (cfg.visible === false) {
-      cfg.el.setAttribute('visibility', 'hidden');
+      el.setAttribute('visibility', 'hidden');
       return;
     }
-    cfg.el.setAttribute('visibility', 'visible');
-
+    if (cfg.visible && el.hasAttribute('visibility')) {
+      el.removeAttribute('visibility');
+    }
 
     // 更新
     if (cfg.hasUpdate) {
       self._updateShape(model);
     }
+
     if (attrs.clip && attrs.clip._cfg.hasUpdate) {
       self._updateShape(attrs.clip);
     }
@@ -160,6 +221,9 @@ class Painter {
     if (model.type === 'marker') {
       model._cfg.el.setAttribute('d', self._assembleMarker(attrs));
     }
+    if (model.type === 'rect') {
+      model._cfg.el.setAttribute('d', self._assembleRect(attrs));
+    }
     for (const key in attrs) {
       if (attrs[key] !== formerAttrs[key]) {
         self._setAttribute(model, key, attrs[key]);
@@ -175,18 +239,12 @@ class Painter {
     const defs = this.context;
 
     // 计算marker路径
-    if (type === 'marker' && ~[ 'x', 'y', 'radius', 'r' ].indexOf(name)) {
+    if ((type === 'marker' || type === 'rect') && ~[ 'x', 'y', 'radius', 'r' ].indexOf(name)) {
       return;
     }
     // 圆和椭圆不是x, y， 是cx, cy。 marker的x,y 用于计算marker的路径，不需要写到dom
     if (~[ 'circle', 'ellipse' ].indexOf(type) && ~[ 'x', 'y' ].indexOf(name)) {
       el.setAttribute('c' + name, parseInt(value, 10));
-      return;
-    }
-    // 圆角矩形
-    if (type === 'rect' && name === 'radius') {
-      el.setAttribute('rx', value);
-      el.setAttribute('ry', value);
       return;
     }
     // 多边形
@@ -281,6 +339,7 @@ class Painter {
     if (model._cfg.parent) {
       model._cfg.parent.get('el').appendChild(shape);
     }
+    model._cfg.attrs = {};
     if (model.type === 'text') {
       shape.setAttribute('paint-order', 'stroke');
       shape.setAttribute('style', 'stroke-linecap:butt; stroke-linejoin:miter;');
@@ -314,6 +373,50 @@ class Painter {
       }).join('');
     }
     return d;
+  }
+  _assembleRect(attrs) {
+    const x = attrs.x;
+    const y = attrs.y;
+    const w = attrs.width;
+    const h = attrs.height;
+    const radius = attrs.radius;
+
+    if (!radius) {
+      return `M ${x},${y} l ${w},0 l 0,${h} l${-w} 0 z`;
+    }
+    const r = parseRadius(radius);
+    if (Util.isArray(radius)) {
+      if (radius.length === 1) {
+        r.r1 = r.r2 = r.r3 = r.r4 = radius[0];
+      } else if (radius.length === 2) {
+        r.r1 = r.r3 = radius[0];
+        r.r2 = r.r4 = radius[1];
+      } else if (radius.length === 3) {
+        r.r1 = radius[0];
+        r.r2 = r.r4 = radius[1];
+        r.r3 = radius[2];
+      } else {
+        r.r1 = radius[0];
+        r.r2 = radius[1];
+        r.r3 = radius[2];
+        r.r4 = radius[3];
+      }
+    } else {
+      r.r1 = r.r2 = r.r3 = r.r4 = radius;
+    }
+    const d = [
+      [ `M ${x + r.r1},${y}` ],
+      [ `l ${w - r.r1 - r.r2},0` ],
+      [ `a ${r.r2},${r.r2},0,0,1,${r.r2},${r.r2}` ],
+      [ `l 0,${h - r.r2 - r.r3}` ],
+      [ `a ${r.r3},${r.r3},0,0,1,${-r.r3},${r.r3}` ],
+      [ `l ${r.r3 + r.r4 - w},0` ],
+      [ `a ${r.r4},${r.r4},0,0,1,${-r.r4},${-r.r4}` ],
+      [ `l 0,${r.r4 + r.r1 - h}` ],
+      [ `a ${r.r1},${r.r1},0,0,1,${r.r1},${-r.r1}` ],
+      [ 'z' ]
+    ];
+    return d.join(' ');
   }
   _formatPath(value) {
     value = value.map(path => {
@@ -419,7 +522,7 @@ class Painter {
     for (const attr in attrs) {
       if (attrs[attr] !== formerAttrs[attr]) {
         if (attr === 'text') {
-          self._setText(model, attrs[attr]);
+          self._setText(model, `${attrs[attr]}`);
           continue;
         }
         if (attr === 'fillStyle' || attr === 'strokeStyle') {
@@ -456,14 +559,30 @@ class Painter {
   }
   _setText(model, text) {
     const el = model._cfg.el;
+    const baseline = model._attrs.textBaseline || 'bottom';
     if (!text) {
       el.innerHTML = '';
     } else if (~text.indexOf('\n')) {
       const x = model._attrs.x;
       const textArr = text.split('\n');
+      const textLen = textArr.length - 1;
       let arr = '';
-      Util.each(textArr, segment => {
-        arr += `<tspan x="${x}" dy="1em">${segment}</tspan>`;
+      Util.each(textArr, (segment, i) => {
+        if (i === 0) {
+          if (baseline === 'alphabetic') {
+            arr += `<tspan x="${x}" dy="${-textLen}em">${segment}</tspan>`;
+          } else if (baseline === 'top') {
+            arr += `<tspan x="${x}" dy="${textLen}em">${segment}</tspan>`;
+          } else if (baseline === 'middle') {
+            arr += `<tspan x="${x}" dy="0">${segment}</tspan>`;
+          } else if (baseline === 'bottom') {
+            arr += `<tspan x="${x}" dy="-${textLen + 0.2}em">${segment}</tspan>`;
+          } else if (baseline === 'hanging') {
+            arr += `<tspan x="${x}" dy="-0.2em">${segment}</tspan>`;
+          }
+        } else {
+          arr += `<tspan x="${x}" dy="1em">${segment}</tspan>`;
+        }
       });
       el.innerHTML = arr;
     } else {
