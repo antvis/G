@@ -1124,9 +1124,9 @@ const levenshteinDistance = function(source, target) {
   if (sourceLen === 0 || targetLen === 0) {
     return null;
   }
-  const dist = new Array(sourceLen + 1);
+  const dist = [];
   for (let i = 0; i <= sourceLen; i++) {
-    dist[i] = new Array(targetLen + 1);
+    dist[i] = [];
     dist[i][0] = { min: i };
   }
   for (let j = 0; j <= targetLen; j++) {
