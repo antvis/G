@@ -262,11 +262,10 @@ Util.augment(Canvas, {
   getClientByPoint(x, y) {
     const el = this.get('el');
     const bbox = el.getBoundingClientRect();
-    const width = bbox.right - bbox.left;
-    const height = bbox.bottom - bbox.top;
+    const pixelRatio = this.get('pixelRatio') || 1;
     return {
-      clientX: x / (el.width / width) + bbox.left,
-      clientY: y / (el.height / height) + bbox.top
+      clientX: x / pixelRatio + bbox.left,
+      clientY: y / pixelRatio + bbox.top
     };
   },
   draw() {
@@ -277,6 +276,9 @@ Util.augment(Canvas, {
       return this._cfg.renderer.getShape.call(this, x, y, e);
     }
     return Canvas.superclass.getShape.call(this, x, y);
+  },
+  _drawSync() {
+    this._cfg.painter.drawSync(this);
   },
   destroy() {
     const cfg = this._cfg;

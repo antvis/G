@@ -1,4 +1,5 @@
 const Util = require('../util/index');
+const { parseRadius } = require('../util/format');
 const Shape = require('../core/shape');
 
 const Rect = function(cfg) {
@@ -58,15 +59,16 @@ Util.augment(Rect, {
       // 改成原生的rect方法
       context.rect(x, y, width, height);
     } else {
-      context.moveTo(x + radius, y);
-      context.lineTo(x + width - radius, y);
-      context.arc(x + width - radius, y + radius, radius, -Math.PI / 2, 0, false);
-      context.lineTo(x + width, y + height - radius);
-      context.arc(x + width - radius, y + height - radius, radius, 0, Math.PI / 2, false);
-      context.lineTo(x + radius, y + height);
-      context.arc(x + radius, y + height - radius, radius, Math.PI / 2, Math.PI, false);
-      context.lineTo(x, y + radius);
-      context.arc(x + radius, y + radius, radius, Math.PI, Math.PI * 3 / 2, false);
+      const r = parseRadius(radius);
+      context.moveTo(x + r.r1, y);
+      context.lineTo(x + width - r.r2, y);
+      r.r2 !== 0 && context.arc(x + width - r.r2, y + r.r2, r.r2, -Math.PI / 2, 0);
+      context.lineTo(x + width, y + height - r.r3);
+      r.r3 !== 0 && context.arc(x + width - r.r3, y + height - r.r3, r.r3, 0, Math.PI / 2);
+      context.lineTo(x + r.r4, y + height);
+      r.r4 !== 0 && context.arc(x + r.r4, y + height - r.r4, r.r4, Math.PI / 2, Math.PI);
+      context.lineTo(x, y + r.r1);
+      r.r1 !== 0 && context.arc(x + r.r1, y + r.r1, r.r1, Math.PI, Math.PI * 1.5);
       context.closePath();
     }
   }

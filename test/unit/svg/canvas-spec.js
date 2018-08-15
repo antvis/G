@@ -269,11 +269,11 @@ describe('canvas 事件', () => {
     height: 500,
     renderer: 'svg'
   });
-  canvas.addShape('circle', {
+  const circle = canvas.addShape('circle', {
     attrs: {
       x: 100,
       y: 100,
-      r: 100,
+      r: 50,
       strokeWidth: 20,
       fill: 'red'
     }
@@ -285,7 +285,7 @@ describe('canvas 事件', () => {
       width: 50,
       height: 50,
       fill: 'black',
-      radius: 10
+      radius: [ 5, 15 ]
     }
   });
   canvas.addShape('rect', {
@@ -311,5 +311,36 @@ describe('canvas 事件', () => {
       clientY: 276
     });
     expect(target).not.to.be.undefined;
+  });
+  it('toFront', () => {
+    canvas.addShape('circle', {
+      attrs: {
+        x: 100,
+        y: 100,
+        r: 100,
+        strokeWidth: 20,
+        fill: '#ccc'
+      }
+    });
+    circle.toFront();
+    canvas.draw();
+    const children = canvas._cfg.children;
+    expect(children[children.length - 1].attr('id')).to.equal(circle._attrs.id);
+  });
+  it('toBack', () => {
+    circle.toBack();
+    canvas.draw();
+    const children = canvas._cfg.children;
+    expect(children[0].attr('id')).to.equal(circle._attrs.id);
+  });
+  it('zIndex', () => {
+    circle.setZIndex(5);
+    canvas.draw();
+    const children = canvas._cfg.children;
+    expect(children[children.length - 1].attr('id')).to.equal(circle._attrs.id);
+  });
+  it('getClientByPoint', () => {
+    const pixelRatio = canvas.get('pixelRatio');
+    expect(canvas.getClientByPoint(100, 100).clientX).to.equal(100 / pixelRatio);
   });
 });

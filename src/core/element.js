@@ -113,11 +113,14 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
     const parent = cfg.parent;
     const el = cfg.el;
     if (parent) {
+      if (el) {
+        parent._cfg.tobeRemoved.push(el);
+      }
       Util.remove(parent.get('children'), this);
     }
-    if (el) {
+    /* if (el) {
       el.parentNode.removeChild(el);
-    }
+    }*/
     if (destroy || destroy === undefined) {
       this.destroy();
     }
@@ -134,11 +137,57 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
       destroyed: true
     };
   },
+  toFront() {
+    const cfg = this._cfg;
+    const parent = cfg.parent;
+    if (!parent) {
+      return;
+    }
+    const children = parent._cfg.children;
+    const el = cfg.el;
+    const index = children.indexOf(this);
+    children.splice(index, 1);
+    children.push(this);
+    if (el) {
+      el.parentNode.removeChild(el);
+      cfg.el = null;
+    }
+  },
+  toBack() {
+    const cfg = this._cfg;
+    const parent = cfg.parent;
+    if (!parent) {
+      return;
+    }
+    const children = parent._cfg.children;
+    const el = cfg.el;
+    const index = children.indexOf(this);
+    children.splice(index, 1);
+    children.unshift(this);
+    if (el) {
+      const parentNode = el.parentNode;
+      parentNode.removeChild(el);
+      parentNode.insertBefore(el, parentNode.firstChild);
+    }
+  },
   _beforeSetZIndex(zIndex) {
-    this._cfg.zIndex = zIndex;
+    const parent = this._cfg.parent;
 
-    if (!Util.isNil(this.get('parent'))) {
-      this.get('parent').sort();
+    this._cfg.zIndex = zIndex;
+    if (!Util.isNil(parent)) {
+      parent.sort();
+    }
+    const el = this._cfg.el;
+    if (el) {
+      const children = parent._cfg.children;
+      const index = children.indexOf(this);
+      const parentNode = el.parentNode;
+      parentNode.removeChild(el);
+      if (index === children.length - 1) {
+        parentNode.appendChild(el);
+      } else {
+        parentNode.insertBefore(el, parentNode.childNodes[index]);
+      }
     }
     return zIndex;
   },

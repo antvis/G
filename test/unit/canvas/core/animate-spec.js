@@ -186,11 +186,28 @@ describe('animate', function() {
       done();
     }, 1000);
   });
-  it('animate with path', () => {
+  it('stop animation on timeline', done => {
+    const shape = canvas.addShape('rect', {
+      attrs: {
+        x: 200,
+        y: 90,
+        width: 20,
+        height: 20,
+        fill: 'red'
+      }
+    });
+    shape.animate({ width: 100, height: 100 }, 1000);
+    setTimeout(() => {
+      canvas._cfg.timeline.stopAllAnimations();
+      expect(shape._attrs.width, 100);
+      expect(shape._attrs.height, 100);
+      done();
+    }, 200);
+  });
+  it('path animate with different length', done => {
     const shape = canvas.addShape('path', {
       attrs: {
-        stroke: '#000',
-        strokeWidth: 2,
+        stroke: 'red',
         path: [[ 'M', 245.7373046875, 242.89436666666668 ], [ 'L', 611.5791015625, 35.262968333333305 ]]
       }
     });
@@ -204,11 +221,41 @@ describe('animate', function() {
       [ 'C', 666.9548971278014, 228.79681892341995, 742.2511160714286, 156.03904899999998, 742.2511160714286, 156.03904899999998 ]
     ];
     shape.animate({
-      path: toPath,
-      repeat: true
-    }, 1000);
-  });
+      path: toPath
+    }, 200, function() {
+      expect(parseInt(shape._attrs.path[1][1])).eqls(parseInt(toPath[1][1]));
+      expect(shape._attrs.path[1][2]).eqls(toPath[1][2]);
+      expect(shape._attrs.path[1][3]).eqls(toPath[1][3]);
+      expect(shape._attrs.path[1][4]).eqls(toPath[1][4]);
+      expect(shape._attrs.path[1][5]).eqls(toPath[1][5]);
+      shape.remove();
+      done();
+    });
 
+  });
+  /* it.only('when callback throw error', (done) => {
+    const shape = canvas.addShape('path', {
+      attrs: {
+        stroke: 'red',
+        path: [[ 'M', 245.7373046875, 242.89436666666668 ], [ 'L', 611.5791015625, 35.262968333333305 ]]
+      }
+    });
+    const toPath = [["M",115.26450892857142,225.14576114285714],["C",115.26450892857142,225.14576114285714,178.7633443159541,245.64869959397348,219.76227678571428,242.25132142857143],["C",262.3615586016684,238.72133025111634,290.04645452446687,233.03905902988083,324.2600446428571,207.8273377857143],["C",373.64466881018114,171.43620274416654,382.1815853644091,130.67553707530774,428.7578125,88.2441807142857],["C",465.77979965012344,54.51682178959344,502.6525532983182,11.5,533.2555803571429,17.430549571428543],["C",586.2507675840325,48.159742424458955,583.3566828420871,173.35341915199137,637.7533482142858,209.42998],["C",666.9548971278014,228.79681892341995,742.2511160714286,156.03904899999998,742.2511160714286,156.03904899999998]]
+;
+    shape.animate({
+      path: toPath
+    }, 200, function() {
+      expect(shape._attrs.path[1]).eqls(toPath[1]);
+       expect(1).eqls(2);
+      done();
+    });
+    shape.animate({
+      stroke: 'yellow'
+    }, 5000);
+    setTimeout(function() {
+      shape.stopAnimate();
+    }, 50);
+  });*/
   /* it('animate of a large amount of shapes', () => {
     const MAX_COUNT = 3000;
     let circle;

@@ -1,7 +1,7 @@
 const Util = require('../../util/index');
 const MatrixUtil = require('../../util/matrix');
 
-const ReservedProps = { delay: 'delay', rotate: 'rotate', id: 'id' };
+const ReservedProps = { delay: 'delay', rotate: 'rotate' };
 
 function getFromAttrs(toAttrs, shape) {
   const rst = {};
