@@ -121,7 +121,9 @@ class Painter {
      * 如果直接将dom元素重排可以解决部分问题。但是如果重排后的group中有新增的shape，置顶效果就没有了
      * 所以只能删除原有节点，新增节点以及所有子节点。这时候哪怕shape有el，也需要判断一下是否需要重绘
      */
-    redraw = redraw || !!cfg.el;
+    if (!cfg.el && cfg.attrs) {
+      redraw = true;
+    }
     if (cfg.tobeRemoved) {
       Util.each(cfg.tobeRemoved, item => {
         if (item.parentNode) {
