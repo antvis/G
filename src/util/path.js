@@ -954,6 +954,382 @@ const pathIntersection = function(path1, path2) {
   return interPathHelper(path1, path2);
 };
 
+function decasteljau(points, t) {
+  const left = [];
+  const right = [];
+
+  function recurse(points, t) {
+    if (points.length === 1) {
+      left.push(points[0]);
+      right.push(points[0]);
+    } else {
+      const middlePoints = [];
+      for (let i = 0; i < points.length - 1; i++) {
+        if (i === 0) {
+          left.push(points[0]);
+        }
+        if (i === points.length - 2) {
+          right.push(points[i + 1]);
+        }
+        middlePoints[i] = [ (1 - t) * points[i][0] + t * points[i + 1][0], (1 - t) * points[i][1] + t * points[i + 1][1] ];
+      }
+      recurse(middlePoints, t);
+    }
+  }
+  if (points.length) {
+    recurse(points, t);
+  }
+  return { left, right: right.reverse() };
+}
+
+function splitCurve(start, end, count) {
+  const points = [[ start[1], start[2] ]];
+  count = count || 2;
+  const segments = [];
+  if (end[0] === 'A') {
+    points.push(end[6]);
+    points.push(end[7]);
+  } else if (end[0] === 'C') {
+    points.push([ end[1], end[2] ]);
+    points.push([ end[3], end[4] ]);
+    points.push([ end[5], end[6] ]);
+  } else if (end[0] === 'S' || end[0] === 'Q') {
+    points.push([ end[1], end[2] ]);
+    points.push([ end[3], end[4] ]);
+  } else {
+    points.push([ end[1], end[2] ]);
+  }
+
+  let leftSegments = points;
+  const t = 1 / count;
+
+  for (let i = 0; i < count - 1; i++) {
+    const rt = t / (1 - t * i);
+    const split = decasteljau(leftSegments, rt);
+    segments.push(split.left);
+    leftSegments = split.right;
+  }
+  segments.push(leftSegments);
+  const result = segments.map(segment => {
+    let cmd = [];
+    if (segment.length === 4) {
+      cmd.push('C');
+      cmd = cmd.concat(segment[2]);
+    }
+    if (segment.length >= 3) {
+      if (segment.length === 3) {
+        cmd.push('Q');
+      }
+      cmd = cmd.concat(segment[1]);
+    }
+    if (segment.length === 2) {
+      cmd.push('L');
+    }
+    cmd = cmd.concat(segment[segment.length - 1]);
+    return cmd;
+  });
+  return result;
+}
+
+const splitSegment = function(start, end, count) {
+  if (count === 1) {
+    return [ [].concat(start) ];
+  }
+  let segments = [];
+  if (end[0] === 'L' || end[0] === 'C' || end[0] === 'Q') {
+    segments = segments.concat(splitCurve(start, end, count));
+  } else {
+    const temp = [].concat(start);
+    if (temp[0] === 'M') {
+      temp[0] = 'L';
+    }
+    for (let i = 0; i <= count - 1; i++) {
+      segments.push(temp);
+    }
+  }
+  return segments;
+};
+
+const fillPath = function(source, target) {
+  if (source.length === 1) {
+    return source;
+  }
+  const sourceLen = source.length - 1;
+  const targetLen = target.length - 1;
+  const ratio = sourceLen / targetLen;
+  const segmentsToFill = [];
+  if (source.length === 1 && source[0][0] === 'M') {
+    for (let i = 0; i < targetLen - sourceLen; i++) {
+      source.push(source[0]);
+    }
+    return source;
+  }
+  for (let i = 0; i < targetLen; i++) {
+    const index = Math.floor(ratio * i);
+    segmentsToFill[index] = (segmentsToFill[index] || 0) + 1;
+  }
+  const filled = segmentsToFill.reduce((filled, count, i) => {
+    if (i === sourceLen) {
+      return filled.concat(source[sourceLen]);
+    }
+    return filled.concat(splitSegment(source[i], source[i + 1], count));
+  }, []);
+  filled.unshift(source[0]);
+  if (target[targetLen] === 'Z' || target[targetLen] === 'z') {
+    filled.push('Z');
+  }
+  return filled;
+};
+
+const isEqual = function(obj1, obj2) {
+  if (obj1.length !== obj2.length) {
+    return false;
+  }
+  let result = true;
+  Util.each(obj1, (item, i) => {
+    if (item !== obj2[i]) {
+      result = false;
+      return false;
+    }
+  });
+  return result;
+};
+function getMinDiff(del, add, modify) {
+  let type = null;
+  let min = modify;
+  if (add < min) {
+    min = add;
+    type = 'add';
+  }
+  if (del < min) {
+    min = del;
+    type = 'del';
+  }
+  return {
+    type,
+    min
+  };
+}
+
+/*
+ * https://en.wikipedia.org/wiki/Levenshtein_distance
+ * 计算两条path的编辑距离
+ */
+const levenshteinDistance = function(source, target) {
+  const sourceLen = source.length;
+  const targetLen = target.length;
+  let sourceSegment,
+    targetSegment;
+  let temp = 0;
+  if (sourceLen === 0 || targetLen === 0) {
+    return null;
+  }
+  const dist = [];
+  for (let i = 0; i <= sourceLen; i++) {
+    dist[i] = [];
+    dist[i][0] = { min: i };
+  }
+  for (let j = 0; j <= targetLen; j++) {
+    dist[0][j] = { min: j };
+  }
+
+  for (let i = 1; i <= sourceLen; i++) {
+    sourceSegment = source[i - 1];
+    for (let j = 1; j <= targetLen; j++) {
+      targetSegment = target[j - 1];
+      if (isEqual(sourceSegment, targetSegment)) {
+        temp = 0;
+      } else {
+        temp = 1;
+      }
+      const del = dist[i - 1][j].min + 1;
+      const add = dist[i][j - 1].min + 1;
+      const modify = dist[i - 1][j - 1].min + temp;
+      dist[i][j] = getMinDiff(del, add, modify);
+    }
+  }
+  return dist;
+};
+
+const fillPathByDiff = function(source, target) {
+  const diffMatrix = levenshteinDistance(source, target);
+  let sourceLen = source.length;
+  const targetLen = target.length;
+  const changes = [];
+  let index = 1;
+  let minPos = 1;
+  // 如果source和target不是完全不相等
+  if (diffMatrix[sourceLen][targetLen] !== sourceLen) {
+    // 获取从source到target所需改动
+    for (let i = 1; i <= sourceLen; i++) {
+      let min = diffMatrix[i][i].min;
+      minPos = i;
+      for (let j = index; j <= targetLen; j++) {
+        if (diffMatrix[i][j].min < min) {
+          min = diffMatrix[i][j].min;
+          minPos = j;
+        }
+      }
+      index = minPos;
+      if (diffMatrix[i][index].type) {
+        changes.push({ index: i - 1, type: diffMatrix[i][index].type });
+      }
+    }
+    // 对source进行增删path
+    for (let i = changes.length - 1; i >= 0; i--) {
+      index = changes[i].index;
+      if (changes[i].type === 'add') {
+        source.splice(index, 0, [].concat(source[index]));
+      } else {
+        source.splice(index, 1);
+      }
+    }
+  }
+
+  // source尾部补齐
+  sourceLen = source.length;
+  if (sourceLen < targetLen) {
+    for (let i = 0; i < (targetLen - sourceLen); i++) {
+      if (source[sourceLen - 1][0] === 'z' || source[sourceLen - 1][0] === 'Z') {
+        source.splice(sourceLen - 2, 0, source[sourceLen - 2]);
+      } else {
+        source.push(source[sourceLen - 1]);
+      }
+
+    }
+  }
+  return source;
+};
+
+// 将两个点均分成count个点
+function _splitPoints(points, former, count) {
+  const result = [].concat(points);
+  let index;
+  let t = 1 / (count + 1);
+  const formerEnd = _getSegmentPoints(former)[0];
+  for (let i = 1; i <= count; i++) {
+    t *= i;
+    index = Math.floor(points.length * t);
+    if (index === 0) {
+      result.unshift([ formerEnd[0] * t + points[index][0] * (1 - t), formerEnd[1] * t + points[index][1] * (1 - t) ]);
+    } else {
+      result.splice(index, 0, [ formerEnd[0] * t + points[index][0] * (1 - t), formerEnd[1] * t + points[index][1] * (1 - t) ]);
+    }
+  }
+  return result;
+}
+
+/*
+ * 抽取pathSegment中的关键点
+ * M,L,A,Q,H,V一个端点
+ * Q, S抽取一个端点，一个控制点
+ * C抽取一个端点，两个控制点
+ */
+function _getSegmentPoints(segment) {
+  const points = [];
+  switch (segment[0]) {
+    case 'M':
+      points.push([ segment[1], segment[2] ]);
+      break;
+    case 'L':
+      points.push([ segment[1], segment[2] ]);
+      break;
+    case 'A':
+      points.push([ segment[6], segment[7] ]);
+      break;
+    case 'Q':
+      points.push([ segment[3], segment[4] ]);
+      points.push([ segment[1], segment[2] ]);
+      break;
+    case 'T':
+      points.push([ segment[1], segment[2] ]);
+      break;
+    case 'C':
+      points.push([ segment[5], segment[6] ]);
+      points.push([ segment[1], segment[2] ]);
+      points.push([ segment[3], segment[4] ]);
+      break;
+    case 'S':
+      points.push([ segment[3], segment[4] ]);
+      points.push([ segment[1], segment[2] ]);
+      break;
+    case 'H':
+      points.push([ segment[1], segment[1] ]);
+      break;
+    case 'V':
+      points.push([ segment[1], segment[1] ]);
+      break;
+    default:
+
+  }
+  return points;
+}
+
+const formatPath = function(fromPath, toPath) {
+  if (fromPath.length <= 1) {
+    return fromPath;
+  }
+  let points;
+  for (let i = 0; i < toPath.length; i++) {
+    if (fromPath[i][0] !== toPath[i][0]) {
+      // 获取fromPath的pathSegment的端点，根据toPath的指令对其改造
+      points = _getSegmentPoints(fromPath[i]);
+      switch (toPath[i][0]) {
+        case 'M':
+          fromPath[i] = [ 'M' ].concat(points[0]);
+          break;
+        case 'L':
+          fromPath[i] = [ 'L' ].concat(points[0]);
+          break;
+        case 'A':
+          fromPath[i] = [].concat(toPath[i]);
+          fromPath[i][6] = points[0][0];
+          fromPath[i][7] = points[0][1];
+          break;
+        case 'Q':
+          if (points.length < 2) {
+            if (i > 0) {
+              points = _splitPoints(points, fromPath[i - 1], 1);
+            } else {
+              fromPath[i] = toPath[i];
+              break;
+            }
+          }
+          fromPath[i] = [ 'Q' ].concat(points.reduce((arr, i) => { return arr.concat(i); }, []));
+          break;
+        case 'T':
+          fromPath[i] = [ 'T' ].concat(points[0]);
+          break;
+        case 'C':
+          if (points.length < 3) {
+            if (i > 0) {
+              points = _splitPoints(points, fromPath[i - 1], 2);
+            } else {
+              fromPath[i] = toPath[i];
+              break;
+            }
+          }
+          fromPath[i] = [ 'C' ].concat(points.reduce((arr, i) => { return arr.concat(i); }, []));
+          break;
+        case 'S':
+          if (points.length < 2) {
+            if (i > 0) {
+              points = _splitPoints(points, fromPath[i - 1], 1);
+            } else {
+              fromPath[i] = toPath[i];
+              break;
+            }
+          }
+          fromPath[i] = [ 'S' ].concat(points.reduce((arr, i) => { return arr.concat(i); }, []));
+          break;
+        default:
+          fromPath[i] = toPath[i];
+      }
+    }
+  }
+  return fromPath;
+};
+
 module.exports = {
   parsePathString,
   parsePathArray,
@@ -961,5 +1337,8 @@ module.exports = {
   pathToAbsolute,
   catmullRomToBezier: catmullRom2bezier,
   rectPath,
+  fillPath,
+  fillPathByDiff,
+  formatPath,
   intersection: pathIntersection
 };
