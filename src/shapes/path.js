@@ -13,8 +13,6 @@ const Path = function(cfg) {
 Path.ATTRS = {
   path: null,
   lineWidth: 1,
-  curve: null, // 曲线path
-  tCache: null,
   startArrow: false,
   endArrow: false
 };
@@ -57,8 +55,8 @@ Util.augment(Path, {
       segments.push(preSegment);
     }
     self.setSilent('segments', segments);
-    self.set('tCache', null);
-    this.setSilent('box', null);
+    self.setSilent('tCache', null);
+    self.setSilent('box', null);
   },
   calculateBox() {
     const self = this;
@@ -108,7 +106,7 @@ Util.augment(Path, {
     let segmentL;
     let segmentN;
     let l;
-    const curve = this.curve;
+    const curve = this._cfg.curve;
 
     if (!curve) {
       return;
@@ -135,13 +133,13 @@ Util.augment(Path, {
       }
     });
 
-    this.tCache = tCache;
+    this._cfg.tCache = tCache;
   },
   _calculateCurve() {
     const self = this;
     const attrs = self._attrs;
     const path = attrs.path;
-    this.curve = PathUtil.pathTocurve(path);
+    this._cfg.curve = PathUtil.pathTocurve(path);
   },
   getStartTangent() {
     const segments = this.get('segments');
@@ -189,17 +187,17 @@ Util.augment(Path, {
     return result;
   },
   getPoint(t) {
-    let tCache = this.tCache;
+    let tCache = this._cfg.tCache;
     let subt;
     let index;
 
     if (!tCache) {
       this._calculateCurve();
       this._setTcache();
-      tCache = this.tCache;
+      tCache = this._cfg.tCache;
     }
 
-    const curve = this.curve;
+    const curve = this._cfg.curve;
 
     if (!tCache) {
       if (curve) {
