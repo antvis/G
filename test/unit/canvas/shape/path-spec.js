@@ -479,5 +479,26 @@ describe('Path', function() {
     canvas.add(path8);
     canvas.draw();
   });
-
+  it('getPoint', () => {
+    const path = canvas.addShape('path', {
+      attrs: {
+        path: [
+          [ 'M', 0, 0 ],
+          [ 'L', 50, 50 ]
+        ]
+      }
+    });
+    expect(path.getPoint(0.5)).eql({
+      x: 25,
+      y: 25
+    });
+    path.attr('path', [
+      [ 'M', 0, 0 ],
+      [ 'L', 100, 100 ]
+    ]);
+    expect(path.getPoint(0.5)).eql({
+      x: 50,
+      y: 50
+    });
+  });
 });
