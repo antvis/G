@@ -37,6 +37,8 @@ function _update(self, animator, ratio) {
           animator.fromAttrs.path = fromPath;
           animator.toAttrs.path = toPath;
         } else if (!animator.pathFormatted) {
+          toPath = PathUtil.parsePathString(toAttrs[k]);
+          fromPath = PathUtil.parsePathString(fromAttrs[k]);
           fromPath = PathUtil.formatPath(fromPath, toPath);
           animator.fromAttrs.path = fromPath;
           animator.toAttrs.path = toPath;

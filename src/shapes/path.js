@@ -57,8 +57,8 @@ Util.augment(Path, {
       segments.push(preSegment);
     }
     self.setSilent('segments', segments);
-    self.set('tCache', null);
-    this.setSilent('box', null);
+    self.tCache = null;
+    self.setSilent('box', null);
   },
   calculateBox() {
     const self = this;
