@@ -293,8 +293,21 @@ describe('canvas 事件', function() {
       clientX: 154,
       clientY: 276
     });
-
     expect(target).not.to.be.undefined;
+    const bbox = canvasDOM.getBoundingClientRect();
+    canvas.on('mouseenter', e => { e.target.attr('cursor', 'crosshair'); });
+
+    Simulate.simulate(canvasDOM, 'mousemove', {
+      clientX: bbox.left + 100,
+      clientY: bbox.top + 100
+    });
+    expect(canvasDOM.style.cursor).to.equal('crosshair');
+    Simulate.simulate(canvasDOM, 'mousemove', {
+      clientX: bbox.left,
+      clientY: bbox.top
+    });
+    expect(canvasDOM.style.cursor).to.equal('default');
+
   });
   it('toFront', () => {
     canvas.addShape('circle', {
