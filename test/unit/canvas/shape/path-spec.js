@@ -501,4 +501,26 @@ describe('Path', function() {
       y: 50
     });
   });
+  it('empty path bbox', () => {
+    const path = canvas.addShape('path', {
+      attrs: {
+        path: []
+      }
+    });
+    expect(path.getBBox()).to.equal(null);
+  });
+  it('0px path bbox', () => {
+    const path = canvas.addShape('path', {
+      attrs: {
+        path: [
+          [ 'M', 100, 100 ],
+          [ 'A', 100, 100, 0, 0, 1, 100, 100 ]
+        ]
+      }
+    });
+    expect(path.getBBox().x).to.equal(0);
+    expect(path.getBBox().y).to.equal(0);
+    expect(path.getBBox().width).to.equal(0);
+    expect(path.getBBox().height).to.equal(0);
+  });
 });
