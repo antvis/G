@@ -70,6 +70,7 @@ Util.augment(Path, {
     let maxX = -Infinity;
     let minY = Infinity;
     let maxY = -Infinity;
+
     Util.each(segments, function(segment) {
       segment.getBBox(lineWidth);
       const box = segment.box;
@@ -91,6 +92,14 @@ Util.augment(Path, {
         }
       }
     });
+    if (minX === Infinity || minY === Infinity) {
+      return {
+        minX: 0,
+        minY: 0,
+        maxX: 0,
+        maxY: 0
+      };
+    }
     return {
       minX,
       minY,
