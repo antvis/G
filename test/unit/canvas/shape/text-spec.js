@@ -541,10 +541,11 @@ describe('Text 不存在', function() {
       width: 0,
       height: 0
     });
+    canvas.add(rect);
+    canvas.add(text);
+    canvas.draw();
   });
-  canvas.add(rect);
-  canvas.add(text);
-  canvas.draw();
+
   it('text null ', function() {
     text.attr('text', null);
     expect(text.attr('x')).to.equal(50);
@@ -597,8 +598,22 @@ describe('Text 不存在', function() {
       width: 0,
       height: 0
     });
+    canvas.add(rect);
+    canvas.add(text);
+    canvas.draw();
   });
-  canvas.add(rect);
-  canvas.add(text);
-  canvas.draw();
+  it('modify multi-lines text', done => {
+    const text = new G.Text({
+      attrs: { text: 'line1\nline2' }
+    });
+    canvas.add(text);
+    canvas.draw();
+    setTimeout(() => {
+      expect(text._attrs.textArr.length).to.equal(2);
+      text.attr('text', 'line');
+      canvas.draw();
+      expect(text.attr('textArr')).to.equal(null);
+      done();
+    }, 100);
+  });
 });

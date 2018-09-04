@@ -100,6 +100,7 @@ Util.augment(Canvas, {
   _triggerEvent(type, e) {
     const point = this.getPointByClient(e.clientX, e.clientY);
     const shape = this.getShape(point.x, point.y, e);
+    const el = this.get('el');
     let emitObj;
     if (type === 'mousemove') {
       const preShape = this.get('preShape');
@@ -107,6 +108,7 @@ Util.augment(Canvas, {
         const mouseleave = this._getEventObj('mouseleave', e, point, preShape);
         emitObj = this.getEmitter(preShape, e);
         emitObj && emitObj.emit('mouseleave', mouseleave);
+        el.style.cursor = 'default';
       }
 
       if (shape) {
@@ -133,7 +135,6 @@ Util.augment(Canvas, {
       this.emit(type, event);
     }
 
-    const el = this.get('el');
     if (shape && !shape.get('destroyed')) {
       el.style.cursor = shape.attr('cursor') || 'default';
     }
