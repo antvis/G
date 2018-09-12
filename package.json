@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "3.1.3",
+  "version": "3.1.4",
   "description": "A canvas library which providing 2d draw for G2.",
   "keywords": [
     "canvas",
@@ -56,12 +56,14 @@
     "lint": "eslint ./",
     "lint-fix": "eslint --fix ./",
     "test": "torch --compile --renderer --recursive ./test/unit",
+    "test-bugs": "torch --compile --renderer --recursive ./test/bugs",
     "test-live": "torch --compile --renderer --interactive --recursive ./test/unit/"
   },
   "pre-commit": {
     "run": [
       "lint",
-      "test"
+      "test",
+      "test-bugs"
     ],
     "silent": false
   },
