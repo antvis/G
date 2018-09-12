@@ -255,7 +255,7 @@ Util.augment(Group, {
           const boxMinY = Math.min(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
           const boxMaxY = Math.max(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
 
-          if (boxMinX < minX) {
+          if (boxMinX < minX && boxMinX > 0) {
             minX = boxMinX;
           }
 
@@ -263,7 +263,7 @@ Util.augment(Group, {
             maxX = boxMaxX;
           }
 
-          if (boxMinY < minY) {
+          if (boxMinY < minY && boxMaxY > 0) {
             minY = boxMinY;
           }
 
