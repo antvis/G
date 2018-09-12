@@ -33,15 +33,25 @@ function getFormatProps(props, shape) {
 }
 
 function checkExistedAttrs(animators, animator) {
+  const delay = animator.delay;
   const hasOwnProperty = Object.prototype.hasOwnProperty;
   Util.each(animator.toAttrs, (v, k) => {
     Util.each(animators, animator => {
-      if (hasOwnProperty.call(animator.toAttrs, k)) {
-        delete animator.toAttrs[k];
-        delete animator.fromAttrs[k];
+      if (delay < animator.startTime + animator.duration) {
+        if (hasOwnProperty.call(animator.toAttrs, k)) {
+          delete animator.toAttrs[k];
+          delete animator.fromAttrs[k];
+        }
       }
     });
   });
+  if (animator.toMatrix) {
+    Util.each(animators, animator => {
+      if (delay < (animator.startTime + animator.duration) && animator.toMatrix) {
+        delete animator.toMatrix;
+      }
+    });
+  }
   return animators;
 }
 
