@@ -1,8 +1,6 @@
 const Util = require('../../util/index');
 const Inside = require('../../shapes/util/inside');
-const mat3 = require('../../util/matrix').mat3;
-const vec2 = require('../../util/matrix').vec2;
-const vec3 = require('../../util/matrix').vec3;
+
 const mathUtl = {
   arc: require('../../shapes/math/arc'),
   ellipse: require('../../shapes/math/ellipse'),
@@ -66,10 +64,10 @@ const ellipse = function ellipse(x, y) {
   const scaleY = (rx > ry) ? ry / rx : 1;
   const p = [ x, y, 1 ];
   const m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
-  mat3.scale(m, m, [ scaleX, scaleY ]);
-  mat3.translate(m, m, [ cx, cy ]);
-  const inm = mat3.invert([], m);
-  vec3.transformMat3(p, p, inm);
+  Util.mat3.scale(m, m, [ scaleX, scaleY ]);
+  Util.mat3.translate(m, m, [ cx, cy ]);
+  const inm = Util.mat3.invert([], m);
+  Util.vec3.transformMat3(p, p, inm);
 
   if (fill && stroke) {
     return Inside.circle(0, 0, r, p[0], p[1]) || Inside.arcline(0, 0, r, 0, Math.PI * 2, false, lineWidth, p[0], p[1]);
@@ -100,13 +98,13 @@ const fan = function fan(x, y) {
   const clockwise = attrs.clockwise;
   const v1 = [ 1, 0 ];
   const subv = [ x - cx, y - cy ];
-  const angle = vec2.angleTo(v1, subv);
+  const angle = Util.vec2.angleTo(v1, subv);
 
   function _isPointInFill() {
     const angle1 = mathUtl.arc.nearAngle(angle, startAngle, endAngle, clockwise);
 
     if (Util.isNumberEqual(angle, angle1)) {
-      const ls = vec2.squaredLength(subv);
+      const ls = Util.vec2.squaredLength(subv);
       if (rs * rs <= ls && ls <= re * re) {
         return true;
       }

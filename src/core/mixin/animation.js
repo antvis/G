@@ -1,5 +1,4 @@
 const Util = require('../../util/index');
-const MatrixUtil = require('../../util/matrix');
 
 const ReservedProps = { delay: 'delay', rotate: 'rotate' };
 
@@ -20,9 +19,9 @@ function getFormatProps(props, shape) {
   const attrs = shape._attrs;
   for (const k in props) {
     if (k === 'transform') {
-      rst.matrix = MatrixUtil.transform(shape.getMatrix(), props[k]);
+      rst.matrix = Util.transform(shape.getMatrix(), props[k]);
     } else if (k === 'rotate') {
-      rst.matrix = MatrixUtil.transform(shape.getMatrix(), [[ 'r', props[k] ]]);
+      rst.matrix = Util.transform(shape.getMatrix(), [[ 'r', props[k] ]]);
     } else if (k === 'matrix') {
       rst.matrix = props[k];
     } else if (!ReservedProps[k] && attrs[k] !== props[k]) {
@@ -33,15 +32,25 @@ function getFormatProps(props, shape) {
 }
 
 function checkExistedAttrs(animators, animator) {
+  const delay = animator.delay;
   const hasOwnProperty = Object.prototype.hasOwnProperty;
   Util.each(animator.toAttrs, (v, k) => {
     Util.each(animators, animator => {
-      if (hasOwnProperty.call(animator.toAttrs, k)) {
-        delete animator.toAttrs[k];
-        delete animator.fromAttrs[k];
+      if (delay < animator.startTime + animator.duration) {
+        if (hasOwnProperty.call(animator.toAttrs, k)) {
+          delete animator.toAttrs[k];
+          delete animator.fromAttrs[k];
+        }
       }
     });
   });
+  if (animator.toMatrix) {
+    Util.each(animators, animator => {
+      if (delay < (animator.startTime + animator.duration) && animator.toMatrix) {
+        delete animator.toMatrix;
+      }
+    });
+  }
   return animators;
 }
 

@@ -1,6 +1,5 @@
 const Util = require('../util/index');
 const Shape = require('../core/shape');
-const mat3 = require('../util/matrix').mat3;
 
 const Ellipse = function(cfg) {
   Ellipse.superclass.constructor.call(this, cfg);
@@ -55,8 +54,8 @@ Util.augment(Ellipse, {
     const scaleY = (rx > ry) ? ry / rx : 1;
 
     const m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
-    mat3.scale(m, m, [ scaleX, scaleY ]);
-    mat3.translate(m, m, [ cx, cy ]);
+    Util.mat3.scale(m, m, [ scaleX, scaleY ]);
+    Util.mat3.translate(m, m, [ cx, cy ]);
     context.beginPath();
     context.save();
     context.transform(m[0], m[1], m[3], m[4], m[6], m[7]);

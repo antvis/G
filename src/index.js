@@ -16,12 +16,7 @@ module.exports = {
   Rect: require('./shapes/rect'),
   Text: require('./shapes/text'),
   PathSegment: require('./shapes/util/path-segment'),
-  // utils
-  CommonUtil: require('./util/common'),
-  DomUtil: require('./util/dom'),
-  MatrixUtil: require('./util/matrix'),
   PathUtil: require('./util/path'),
-  Event: require('./event'),
   // version, etc.
-  version: '3.1.3'
+  version: '3.2.0'
 };

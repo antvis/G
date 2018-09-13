@@ -2,6 +2,7 @@ const expect = require('chai').expect;
 const { resolve } = require('path');
 const G = require('../../../../src/index');
 const Canvas = G.Canvas;
+const PathSegment = require('../../../../src/shapes/util/path-segment');
 const div = document.createElement('div');
 div.id = 'canvas-path';
 document.body.appendChild(div);
@@ -478,6 +479,36 @@ describe('Path', function() {
 
     canvas.add(path8);
     canvas.draw();
+  });
+  it('parse half circle arc', () => {
+    const path = [
+      [ 'M', 519.7930819138209, 118.03002699452074 ],
+      [ 'A', 74.00000092500001, 74.00000092500001, 0, 0, 1, 372.20691808617914, 106.96997300547932 ],
+      [ 'L', 353.7586496831543, 105.58746641238116 ],
+      [ 'A', 92.49999907500003, 92.49999907500003, 0, 0, 0, 538.2413503168457, 119.41253358761891 ],
+      [ 'L', 519.7930819138209, 118.03002699452074 ],
+      [ 'z' ]
+    ];
+    const segments = [];
+    let preSegment;
+    for (let i = 0; i < path.length; i++) {
+      const item = path[i];
+      preSegment = new PathSegment(item, preSegment, i === path.length - 1);
+      segments.push(preSegment);
+    }
+    const arc = segments[1];
+    const params = arc.params;
+    expect(arc.command).to.equal('A');
+    expect(params[0].x).to.equal(519.7930819138209);
+    expect(params[0].y).to.equal(118.03002699452074);
+    expect(params[1]).to.equal(446);
+    expect(params[2]).to.equal(112.50000000000003);
+    expect(params[3]).to.equal(74.00000092500001);
+    expect(params[4]).to.equal(74.00000092500001);
+    expect(params[5]).to.equal(0.07479982508547003);
+    expect(params[6]).to.equal(3.141592653589793);
+    expect(params[7]).to.equal(0);
+    expect(params[8]).to.equal(1);
   });
   it('getPoint', () => {
     const path = canvas.addShape('path', {
