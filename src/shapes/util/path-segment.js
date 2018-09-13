@@ -3,8 +3,8 @@ const Inside = require('./inside');
 const Cubic = require('../math/cubic');
 const Quadratic = require('../math/quadratic');
 const Ellipse = require('../math/ellipse');
-const vec3 = require('../../util/matrix').vec3;
-const mat3 = require('../../util/matrix').mat3;
+const vec3 = Util.vec3;
+const mat3 = Util.mat3;
 
 const ARR_CMD = [ 'm', 'l', 'c', 'a', 'q', 'h', 'v', 't', 's', 'z' ];
 
@@ -43,6 +43,7 @@ function getArcParams(point1, point2, fa, fs, rx, ry, psiDeg) {
   const xp = Math.cos(psi) * (x1 - x2) / 2.0 + Math.sin(psi) * (y1 - y2) / 2.0;
   const yp = -1 * Math.sin(psi) * (x1 - x2) / 2.0 + Math.cos(psi) * (y1 - y2) / 2.0;
   const lambda = (xp * xp) / (rx * rx) + (yp * yp) / (ry * ry);
+
   if (lambda > 1) {
     rx *= Math.sqrt(lambda);
     ry *= Math.sqrt(lambda);
@@ -67,6 +68,13 @@ function getArcParams(point1, point2, fa, fs, rx, ry, psiDeg) {
   const u = [ (xp - cxp) / rx, (yp - cyp) / ry ];
   const v = [ (-1 * xp - cxp) / rx, (-1 * yp - cyp) / ry ];
   let dTheta = vAngle(u, v);
+
+  if (vRatio(u, v) <= -1) {
+    dTheta = Math.PI;
+  }
+  if (vRatio(u, v) >= 1) {
+    dTheta = 0;
+  }
   if (fs === 0 && dTheta > 0) {
     dTheta = dTheta - 2 * Math.PI;
   }
