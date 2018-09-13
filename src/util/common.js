@@ -25,5 +25,15 @@ module.exports = {
   toRadian: Util.toRadian,
   toDegree: Util.toDegree,
   mod: Util.mod,
-  clamp: Util.clamp
+  clamp: Util.clamp,
+  createDom: Util.createDom,
+  modifyCSS: Util.modifyCSS,
+  requestAnimationFrame: Util.requestAnimationFrame,
+  getRatio: function getRatio() {
+    return window.devicePixelRatio ? window.devicePixelRatio : 2;
+  },
+  mat3: Util.mat3,
+  vec2: Util.vec2,
+  vec3: Util.vec3,
+  transform: Util.transform
 };

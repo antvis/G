@@ -1,8 +1,8 @@
 const expect = require('chai').expect;
 const Element = require('../../../../src/core/element');
 const Util = require('../../../../src/util/index');
-const mat3 = require('../../../../src/util/matrix').mat3;
-const vec3 = require('../../../../src/util/matrix').vec3;
+const mat3 = Util.mat3;
+const vec3 = Util.vec3;
 
 describe('Transform', () => {
 

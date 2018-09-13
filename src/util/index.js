@@ -1,9 +1,7 @@
 const CommonUtil = require('./common');
-const DomUtil = require('./dom');
-
 const Util = {};
 
-CommonUtil.merge(Util, CommonUtil, DomUtil, {
+CommonUtil.merge(Util, CommonUtil, {
   mixin(c, mixins) {
     const Param = c.CFG ? 'CFG' : 'ATTRS';
     if (c && mixins) {

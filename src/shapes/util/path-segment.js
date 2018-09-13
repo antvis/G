@@ -3,8 +3,8 @@ const Inside = require('./inside');
 const Cubic = require('../math/cubic');
 const Quadratic = require('../math/quadratic');
 const Ellipse = require('../math/ellipse');
-const vec3 = require('../../util/matrix').vec3;
-const mat3 = require('../../util/matrix').mat3;
+const vec3 = Util.vec3;
+const mat3 = Util.mat3;
 
 const ARR_CMD = [ 'm', 'l', 'c', 'a', 'q', 'h', 'v', 't', 's', 'z' ];
 
