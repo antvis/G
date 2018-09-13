@@ -17,6 +17,7 @@ module.exports = {
   Text: require('./shapes/text'),
   PathSegment: require('./shapes/util/path-segment'),
   PathUtil: require('./util/path'),
+  Event: require('./event'),
   // version, etc.
   version: '3.2.0'
 };
