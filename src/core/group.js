@@ -236,6 +236,9 @@ Util.augment(Group, {
     if (children.length > 0) {
       Util.each(children, function(child) {
         if (child.get('visible')) {
+          if (child.isGroup && child.get('children').length === 0) {
+            return;
+          }
           const box = child.getBBox();
           if (!box) {
             return true;
@@ -255,7 +258,7 @@ Util.augment(Group, {
           const boxMinY = Math.min(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
           const boxMaxY = Math.max(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
 
-          if (boxMinX < minX && boxMinX > 0) {
+          if (boxMinX < minX) {
             minX = boxMinX;
           }
 
@@ -263,7 +266,7 @@ Util.augment(Group, {
             maxX = boxMaxX;
           }
 
-          if (boxMinY < minY && boxMaxY > 0) {
+          if (boxMinY < minY) {
             minY = boxMinY;
           }
 
