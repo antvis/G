@@ -1,4 +1,4 @@
-const vec2 = require('../../util/matrix').vec2;
+const vec2 = require('../../util/index').vec2;
 
 module.exports = {
   at(p1, p2, t) {

@@ -1,6 +1,4 @@
 const Util = require('../../util/index');
-const mat3 = require('../../util/matrix').mat3;
-const vec3 = require('../../util/matrix').vec3;
 
 // 是否未改变
 function isUnchanged(m) {
@@ -18,7 +16,7 @@ function multiple(m1, m2) {
       m1[0] *= m2[0];
       m1[4] *= m2[4];
     } else {
-      mat3.multiply(m1, m1, m2);
+      Util.mat3.multiply(m1, m1, m2);
     }
   }
 }
@@ -30,21 +28,21 @@ module.exports = {
   },
   translate(tx, ty) {
     const matrix = this._attrs.matrix;
-    mat3.translate(matrix, matrix, [ tx, ty ]);
+    Util.mat3.translate(matrix, matrix, [ tx, ty ]);
     this.clearTotalMatrix();
     this.attr('matrix', matrix);
     return this;
   },
   rotate(radian) {
     const matrix = this._attrs.matrix;
-    mat3.rotate(matrix, matrix, radian);
+    Util.mat3.rotate(matrix, matrix, radian);
     this.clearTotalMatrix();
     this.attr('matrix', matrix);
     return this;
   },
   scale(s1, s2) {
     const matrix = this._attrs.matrix;
-    mat3.scale(matrix, matrix, [ s1, s2 ]);
+    Util.mat3.scale(matrix, matrix, [ s1, s2 ]);
     this.clearTotalMatrix();
     this.attr('matrix', matrix);
     return this;
@@ -85,7 +83,7 @@ module.exports = {
           self.rotate(t[1]);
           break;
         case 'm':
-          self.attr('matrix', mat3.multiply([], matrix, t[1]));
+          self.attr('matrix', Util.mat3.multiply([], matrix, t[1]));
           self.clearTotalMatrix();
           break;
         default:
@@ -113,7 +111,7 @@ module.exports = {
     } else {
       m = this.attr('matrix');
     }
-    vec3.transformMat3(v, v, m);
+    Util.vec3.transformMat3(v, v, m);
     return this;
   },
   // 获取到达指定根节点的矩阵
@@ -131,7 +129,7 @@ module.exports = {
 
     const m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
     Util.each(parents, function(child) {
-      mat3.multiply(m, child.attr('matrix'), m);
+      Util.mat3.multiply(m, child.attr('matrix'), m);
     });
     return m;
   },
@@ -165,9 +163,9 @@ module.exports = {
       v[0] /= m[0];
       v[1] /= m[4];
     } else {
-      const inm = mat3.invert([], m);
+      const inm = Util.mat3.invert([], m);
       if (inm) {
-        vec3.transformMat3(v, v, inm);
+        Util.vec3.transformMat3(v, v, inm);
       }
     }
     return this;

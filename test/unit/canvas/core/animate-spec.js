@@ -144,6 +144,24 @@ describe('animate', function() {
       done();
     }, 1000);
   });
+  it('overlap animation with delays', done => {
+    const shape = canvas.addShape('rect', {
+      attrs: {
+        x: 150,
+        y: 90,
+        width: 20,
+        height: 20,
+        fill: 'red'
+      }
+    });
+    shape.animate({ height: 100 }, 1000, 'easeLinear', function() {
+      expect(shape.attr('height')).to.equal(100);
+    }, 0);
+    shape.animate({ height: 150 }, 1000, 'easeLinear', function() {
+      expect(shape.attr('height')).to.equal(150);
+      done();
+    });
+  }, 1000);
   it('animate pause & resume', done => {
     const shape = canvas.addShape('rect', {
       attrs: {

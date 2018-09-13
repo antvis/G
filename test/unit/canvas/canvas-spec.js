@@ -340,4 +340,20 @@ describe('canvas 事件', function() {
     const pixelRatio = canvas.get('pixelRatio');
     expect(canvas.getClientByPoint(100, 100).clientX).to.equal(100 / pixelRatio);
   });
+  it('group bbox with empty child group', () => {
+    const group = new G.Group();
+    group.addShape('rect', {
+      attrs: {
+        x: 100,
+        y: 100,
+        width: 100,
+        height: 100
+      }
+    });
+    group.addGroup();
+    expect(group._cfg.children.length).to.equal(2);
+    const bbox = group.getBBox();
+    expect(bbox.minX).to.equal(99.5);
+    expect(bbox.minY).to.equal(99.5);
+  });
 });

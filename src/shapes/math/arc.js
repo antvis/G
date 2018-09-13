@@ -1,5 +1,4 @@
 const Util = require('../../util/index');
-const vec2 = require('../../util/matrix').vec2;
 
 function circlePoint(cx, cy, r, angle) {
   return {
@@ -63,8 +62,8 @@ function arcProjectPoint(cx, cy, r, startAngle, endAngle, clockwise, x, y, out) 
   const v = [ x, y ];
   const v0 = [ cx, cy ];
   const v1 = [ 1, 0 ];
-  const subv = vec2.subtract([], v, v0);
-  let angle = vec2.angleTo(v1, subv);
+  const subv = Util.vec2.subtract([], v, v0);
+  let angle = Util.vec2.angleTo(v1, subv);
 
   angle = nearAngle(angle, startAngle, endAngle, clockwise);
   const vpoint = [ r * Math.cos(angle) + cx, r * Math.sin(angle) + cy ];
@@ -72,7 +71,7 @@ function arcProjectPoint(cx, cy, r, startAngle, endAngle, clockwise, x, y, out) 
     out.x = vpoint[0];
     out.y = vpoint[1];
   }
-  const d = vec2.distance(vpoint, v);
+  const d = Util.vec2.distance(vpoint, v);
   return d;
 }
 

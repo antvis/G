@@ -1,5 +1,5 @@
 const Util = require('../../util/index');
-const vec2 = require('../../util/matrix').vec2;
+const vec2 = Util.vec2;
 
 function cubicAt(p0, p1, p2, p3, t) {
   const onet = 1 - t;
