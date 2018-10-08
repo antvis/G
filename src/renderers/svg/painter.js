@@ -18,6 +18,8 @@ const SHAPE_TO_TAGS = {
   group: 'g'
 };
 
+const LETTER_SPACING = 0.3;
+
 const SVG_ATTR_MAP = {
   opacity: 'opacity',
   fillStyle: 'fill',
@@ -572,13 +574,13 @@ class Painter {
           if (baseline === 'alphabetic') {
             arr += `<tspan x="${x}" dy="${-textLen}em">${segment}</tspan>`;
           } else if (baseline === 'top') {
-            arr += `<tspan x="${x}" dy="${textLen}em">${segment}</tspan>`;
+            arr += `<tspan x="${x}" dy="0.9em">${segment}</tspan>`;
           } else if (baseline === 'middle') {
-            arr += `<tspan x="${x}" dy="0">${segment}</tspan>`;
+            arr += `<tspan x="${x}" dy="${-(textLen - 1) / 2}em">${segment}</tspan>`;
           } else if (baseline === 'bottom') {
-            arr += `<tspan x="${x}" dy="-${textLen + 0.2}em">${segment}</tspan>`;
+            arr += `<tspan x="${x}" dy="-${textLen + LETTER_SPACING}em">${segment}</tspan>`;
           } else if (baseline === 'hanging') {
-            arr += `<tspan x="${x}" dy="-0.2em">${segment}</tspan>`;
+            arr += `<tspan x="${x}" dy="${-(textLen - 1) - LETTER_SPACING}em">${segment}</tspan>`;
           }
         } else {
           arr += `<tspan x="${x}" dy="1em">${segment}</tspan>`;
