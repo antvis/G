@@ -1,6 +1,7 @@
 const Util = require('../../util/index');
 
 const ReservedProps = { delay: 'delay', rotate: 'rotate' };
+const colorRalaredProps = { fill: 'fill', stroke: 'stroke', fillStyle: 'fillStyle', strokeStyle: 'strokeStyle' };
 
 function getFromAttrs(toAttrs, shape) {
   const rst = {};
@@ -24,6 +25,9 @@ function getFormatProps(props, shape) {
       rst.matrix = Util.transform(shape.getMatrix(), [[ 'r', props[k] ]]);
     } else if (k === 'matrix') {
       rst.matrix = props[k];
+    } else if (colorRalaredProps[k] && /^[r,R,L,l]{1}[\s]*\(/.test(props[k])) {
+      // 渐变色不支持动画
+      continue;
     } else if (!ReservedProps[k] && attrs[k] !== props[k]) {
       rst.attrs[k] = props[k];
     }
