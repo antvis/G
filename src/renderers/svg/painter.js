@@ -96,7 +96,7 @@ class Painter {
         }
       });
       try {
-        self._drawChildren(model._cfg.children, false);
+        self._drawChildren(model, false);
       } catch (ev) { // 绘制时异常，中断重绘
         console.warn('error in draw canvas, detail as:');
         console.warn(ev);
@@ -111,7 +111,7 @@ class Painter {
     }
   }
   drawSync(model) {
-    this._drawChildren(model._cfg.children, false);
+    this._drawChildren(model, false);
   }
   _drawGroup(model, redraw) {
     const cfg = model._cfg;
@@ -136,15 +136,24 @@ class Painter {
     }
     this._drawShape(model, redraw);
     if (cfg.children && cfg.children.length > 0) {
-      this._drawChildren(cfg.children, redraw);
+      this._drawChildren(model, redraw);
     }
   }
-  _drawChildren(children, redraw) {
+  _drawChildren(parent, redraw) {
     const self = this;
+    const children = parent._cfg.children;
     let shape;
     // 防止在画children的时候，父group已经被destroy
     if (!children) {
       return;
+    }
+
+    if (parent._cfg.el && !redraw) {
+      // FIXME 这边是为了解决一个group中有元素已经生成el，还有一些没生成el时，没生成el的置底效果不work
+      const childLen = parent._cfg.el.childNodes.length + 1;
+      if (childLen !== 0 && childLen !== children.length) {
+        redraw = true;
+      }
     }
     for (let i = 0; i < children.length; i++) {
       shape = children[i];
