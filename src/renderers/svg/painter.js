@@ -347,10 +347,10 @@ class Painter {
       shape.setAttribute('style', 'stroke-linecap:butt; stroke-linejoin:miter;');
     } else {
       if (!attrs.stroke && !attrs.strokeStyle) {
-        attrs.strokeStyle = 'none';
+        shape.setAttribute('stroke', 'none');
       }
       if (!attrs.fill && !attrs.fillStyle) {
-        attrs.fillStyle = 'none';
+        shape.setAttribute('fill', 'none');
       }
     }
     return shape;
