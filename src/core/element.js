@@ -107,19 +107,20 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
     this._cfg.visible = false;
     return this;
   },
-  remove(destroy) {
+  remove(destroy, delayRemove) {
     const cfg = this._cfg;
     const parent = cfg.parent;
     const el = cfg.el;
     if (parent) {
-      if (el) {
-        parent._cfg.tobeRemoved.push(el);
-      }
       Util.remove(parent.get('children'), this);
     }
-    /* if (el) {
-      el.parentNode.removeChild(el);
-    }*/
+    if (el) {
+      if (delayRemove) {
+        parent && parent._cfg.tobeRemoved.push(el);
+      } else {
+        el.parentNode.removeChild(el);
+      }
+    }
     if (destroy || destroy === undefined) {
       this.destroy();
     }
