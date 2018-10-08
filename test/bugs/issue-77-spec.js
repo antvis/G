@@ -6,7 +6,7 @@ const div = document.createElement('div');
 div.id = 'c1';
 document.body.appendChild(div);
 
-describe.only('#77', () => {
+describe('#77', () => {
   const canvas = new Canvas({
     containerId: 'c1',
     renderer: 'svg',
@@ -27,7 +27,6 @@ describe.only('#77', () => {
     const canvasDOM = canvas.get('el');
     canvas.on('click', () => {
       dom.remove();
-      console.log(canvas.getShape(150, 150));
       canvas.addShape('dom', {
         attrs: {
           x: 100,
