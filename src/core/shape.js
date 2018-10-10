@@ -145,6 +145,8 @@ Util.augment(Shape, isPointInPath, {
       }
     });
     clone = new self.constructor({ attrs });
+    // zIndex也是绘图属性，但是在cfg中，特殊处理
+    clone._cfg.zIndex = self._cfg.zIndex;
     return clone;
   }
 });

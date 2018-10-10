@@ -444,14 +444,8 @@ Util.augment(Group, {
   },
   clone() {
     const self = this;
-    const parent = self._cfg.parent;
     const children = self._cfg.children;
-    let clone = null;
-    if (parent) {
-      clone = parent.addGroup();
-    } else {
-      clone = new Group();
-    }
+    const clone = new Group();
     Util.each(children, child => {
       clone.add(child.clone());
     });
