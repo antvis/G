@@ -11,9 +11,14 @@ Shape.ATTRS = {};
 
 Util.extend(Shape, Element);
 
-const ARRAY_ATTRS = [ 'matrix', 'path', 'points', 'lineDash' ];
+const ARRAY_ATTRS = {
+  matrix: 'matrix',
+  path: 'path',
+  points: 'points',
+  lineDash: 'lineDash'
+};
 
-function cloneArray(arr) {
+function _cloneArrayAttr(arr) {
   const result = [];
   for (let i = 0; i < arr.length; i++) {
     if (Util.isArray(arr[i])) {
@@ -138,8 +143,8 @@ Util.augment(Shape, isPointInPath, {
     const _attrs = self._attrs;
     const attrs = {};
     Util.each(_attrs, (i, k) => {
-      if (~ARRAY_ATTRS.indexOf(k) && Util.isArray(_attrs[k])) {
-        attrs[k] = cloneArray(_attrs[k]);
+      if (ARRAY_ATTRS[k] && Util.isArray(_attrs[k])) {
+        attrs[k] = _cloneArrayAttr(_attrs[k]);
       } else {
         attrs[k] = _attrs[k];
       }
