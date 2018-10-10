@@ -321,4 +321,18 @@ describe('Group', function() {
     group1.removeChild(r1);
     expect(group1.contain(r1)).to.be.false;
   });
+  it('clone', function() {
+    const group = new G.Group();
+    const r1 = new G.Rect();
+    group.add(r1);
+    const text = new G.Text({ zIndex: 4 });
+    group.add(text);
+    const clone = group.clone();
+    expect(clone).not.to.be.undefined;
+    const children = clone._cfg.children;
+    expect(children.length).to.equal(2);
+    expect(children[0]._cfg.parent).to.equal(clone);
+    expect(children[1]._cfg.parent).to.equal(clone);
+    expect(children[1]._cfg.zIndex).to.equal(4);
+  });
 });
