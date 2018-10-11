@@ -441,6 +441,15 @@ Util.augment(Group, {
     }
     this.clear();
     Group.superclass.destroy.call(this);
+  },
+  clone() {
+    const self = this;
+    const children = self._cfg.children;
+    const clone = new Group();
+    Util.each(children, child => {
+      clone.add(child.clone());
+    });
+    return clone;
   }
 });
 

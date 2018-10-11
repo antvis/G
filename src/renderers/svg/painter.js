@@ -18,6 +18,8 @@ const SHAPE_TO_TAGS = {
   group: 'g'
 };
 
+const LETTER_SPACING = 0.3;
+
 const SVG_ATTR_MAP = {
   opacity: 'opacity',
   fillStyle: 'fill',
@@ -94,7 +96,7 @@ class Painter {
         }
       });
       try {
-        self._drawChildren(model._cfg.children, false);
+        self._drawChildren(model, false);
       } catch (ev) { // 绘制时异常，中断重绘
         console.warn('error in draw canvas, detail as:');
         console.warn(ev);
@@ -109,7 +111,7 @@ class Painter {
     }
   }
   drawSync(model) {
-    this._drawChildren(model._cfg.children, false);
+    this._drawChildren(model, false);
   }
   _drawGroup(model, redraw) {
     const cfg = model._cfg;
@@ -134,15 +136,24 @@ class Painter {
     }
     this._drawShape(model, redraw);
     if (cfg.children && cfg.children.length > 0) {
-      this._drawChildren(cfg.children, redraw);
+      this._drawChildren(model, redraw);
     }
   }
-  _drawChildren(children, redraw) {
+  _drawChildren(parent, redraw) {
     const self = this;
+    const children = parent._cfg.children;
     let shape;
     // 防止在画children的时候，父group已经被destroy
     if (!children) {
       return;
+    }
+
+    if (parent._cfg.el && !redraw) {
+      // FIXME 这边是为了解决一个group中有元素已经生成el，还有一些没生成el时，没生成el的置底效果不work
+      const childLen = parent._cfg.el.childNodes.length + 1;
+      if (childLen !== 0 && childLen !== children.length) {
+        redraw = true;
+      }
     }
     for (let i = 0; i < children.length; i++) {
       shape = children[i];
@@ -345,10 +356,10 @@ class Painter {
       shape.setAttribute('style', 'stroke-linecap:butt; stroke-linejoin:miter;');
     } else {
       if (!attrs.stroke && !attrs.strokeStyle) {
-        attrs.strokeStyle = 'none';
+        shape.setAttribute('stroke', 'none');
       }
       if (!attrs.fill && !attrs.fillStyle) {
-        attrs.fillStyle = 'none';
+        shape.setAttribute('fill', 'none');
       }
     }
     return shape;
@@ -572,13 +583,13 @@ class Painter {
           if (baseline === 'alphabetic') {
             arr += `<tspan x="${x}" dy="${-textLen}em">${segment}</tspan>`;
           } else if (baseline === 'top') {
-            arr += `<tspan x="${x}" dy="${textLen}em">${segment}</tspan>`;
+            arr += `<tspan x="${x}" dy="0.9em">${segment}</tspan>`;
           } else if (baseline === 'middle') {
-            arr += `<tspan x="${x}" dy="0">${segment}</tspan>`;
+            arr += `<tspan x="${x}" dy="${-(textLen - 1) / 2}em">${segment}</tspan>`;
           } else if (baseline === 'bottom') {
-            arr += `<tspan x="${x}" dy="-${textLen + 0.2}em">${segment}</tspan>`;
+            arr += `<tspan x="${x}" dy="-${textLen + LETTER_SPACING}em">${segment}</tspan>`;
           } else if (baseline === 'hanging') {
-            arr += `<tspan x="${x}" dy="-0.2em">${segment}</tspan>`;
+            arr += `<tspan x="${x}" dy="${-(textLen - 1) - LETTER_SPACING}em">${segment}</tspan>`;
           }
         } else {
           arr += `<tspan x="${x}" dy="1em">${segment}</tspan>`;
