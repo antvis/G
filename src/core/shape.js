@@ -11,6 +11,25 @@ Shape.ATTRS = {};
 
 Util.extend(Shape, Element);
 
+const ARRAY_ATTRS = {
+  matrix: 'matrix',
+  path: 'path',
+  points: 'points',
+  lineDash: 'lineDash'
+};
+
+function _cloneArrayAttr(arr) {
+  const result = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (Util.isArray(arr[i])) {
+      result.push([].concat(arr[i]));
+    } else {
+      result.push(arr[i]);
+    }
+  }
+  return result;
+}
+
 Util.augment(Shape, isPointInPath, {
   isShape: true,
   drawInner(context) {
@@ -117,6 +136,23 @@ Util.augment(Shape, isPointInPath, {
       this._cfg.box = box;
     }
     return box;
+  },
+  clone() {
+    const self = this;
+    let clone = null;
+    const _attrs = self._attrs;
+    const attrs = {};
+    Util.each(_attrs, (i, k) => {
+      if (ARRAY_ATTRS[k] && Util.isArray(_attrs[k])) {
+        attrs[k] = _cloneArrayAttr(_attrs[k]);
+      } else {
+        attrs[k] = _attrs[k];
+      }
+    });
+    clone = new self.constructor({ attrs });
+    // zIndex也是绘图属性，但是在cfg中，特殊处理
+    clone._cfg.zIndex = self._cfg.zIndex;
+    return clone;
   }
 });
 

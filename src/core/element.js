@@ -172,7 +172,6 @@ Util.augment(Element, Attribute, Transform, EventEmitter, Animate, {
   },
   _beforeSetZIndex(zIndex) {
     const parent = this._cfg.parent;
-
     this._cfg.zIndex = zIndex;
     if (!Util.isNil(parent)) {
       parent.sort();

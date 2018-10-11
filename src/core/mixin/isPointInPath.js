@@ -333,6 +333,9 @@ const text = function text(x, y) {
 };
 
 const dom = function dom(x, y) {
+  if (!this._cfg.el) {
+    return false;
+  }
   const box = this._cfg.el.getBBox();
   return Inside.box(box.x, box.x + box.width, box.y, box.y + box.height, x, y);
 };

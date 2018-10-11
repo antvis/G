@@ -92,6 +92,9 @@ Util.augment(CText, {
       this._assembleFont();
       this._setAttrText();
     }
+    if (!attrs.textArr) {
+      this._setAttrText();
+    }
     const x = attrs.x;
     const y = attrs.y;
     const width = self.measureText(); // attrs.width
@@ -120,7 +123,6 @@ Util.augment(CText, {
         point.x -= width / 2;
       }
     }
-
     if (textBaseline) {
       if (textBaseline === 'top') {
         point.y += height;

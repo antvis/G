@@ -46,7 +46,7 @@
     "build": "webpack",
     "build-lib": "babel src --out-dir lib",
     "ci": "npm run lint && npm run test",
-    "compress": "uglifyjs --compress --mangle --output dist/g-$npm_package_version.min.js -- build/g.js",
+    "compress": "uglifyjs --compress --mangle --output dist/g.min.js -- build/g.js",
     "coverage": "npm run coverage-generator && npm run coverage-viewer",
     "coverage-viewer": "torch-coverage",
     "coverage-generator": "torch --coverage --compile --renderer --recursive test/unit",
@@ -57,7 +57,8 @@
     "lint-fix": "eslint --fix ./",
     "test": "torch --compile --renderer --recursive ./test/unit",
     "test-bugs": "torch --compile --renderer --recursive ./test/bugs",
-    "test-live": "torch --compile --renderer --interactive --recursive ./test/unit/"
+    "test-live": "torch --compile --renderer --interactive --recursive ./test/unit/",
+    "test-bugs-live": "torch --compile --renderer --interactive --recursive ./test/bugs"
   },
   "pre-commit": {
     "run": [
