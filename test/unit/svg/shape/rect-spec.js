@@ -309,5 +309,25 @@ describe('Rect', function() {
     expect(rect3.isHit(18, 28)).to.be.true;
     expect(rect3.isHit(50, 70)).to.be.true;
   });
-
+  it('rect with shadow', () => {
+    rect.attr({
+      width: 500,
+      height: 500
+    });
+    canvas.add(rect);
+    const bbox = rect.getBBox();
+    rect.attr({
+      shadowOffsetX: 10,
+      shadowOffsetY: 10,
+      shadowBlur: 10
+    });
+    canvas.draw();
+    const shadowBBox = rect.getBBox();
+    const el = rect.get('el');
+    expect(el.getAttribute('filter')).not.to.be.undefined;
+    expect(bbox.minX).to.equal(shadowBBox.minX);
+    expect(bbox.minY).to.equal(shadowBBox.minY);
+    expect(bbox.maxX).to.equal(shadowBBox.maxX);
+    expect(bbox.maxY).to.equal(shadowBBox.maxY);
+  });
 });
