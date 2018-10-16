@@ -11,10 +11,22 @@ const ATTR_MAP = {
   shadowOffsetY: 'dy'
 };
 
+const SHADOW_DIMENSION = {
+  x: '-40%',
+  y: '-40%',
+  width: '200%',
+  height: '200%'
+
+};
+
 class Shadow {
   constructor(cfg) {
-    this.type = 'shadow';
+    this.type = 'filter';
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+    // expand the filter region to fill in shadows
+    Util.each(SHADOW_DIMENSION, function(v, k) {
+      el.setAttribute(k, v);
+    });
     this.el = el;
     this.id = Util.uniqueId('filter_');
     this.el.id = this.id;
