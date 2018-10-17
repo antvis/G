@@ -115,14 +115,6 @@ class Painter {
   }
   _drawGroup(model, redraw) {
     const cfg = model._cfg;
-    if (cfg.tobeRemoved) {
-      Util.each(cfg.tobeRemoved, item => {
-        if (item.parentNode) {
-          item.parentNode.removeChild(item);
-        }
-      });
-      cfg.tobeRemoved = [];
-    }
     if (cfg.removed || cfg.destroyed) {
       return;
     }
@@ -133,6 +125,14 @@ class Painter {
      */
     if (!cfg.el && cfg.attrs) {
       redraw = true;
+    }
+    if (cfg.tobeRemoved) {
+      Util.each(cfg.tobeRemoved, item => {
+        if (item.parentNode) {
+          item.parentNode.removeChild(item);
+        }
+      });
+      cfg.tobeRemoved = [];
     }
     this._drawShape(model, redraw);
     if (cfg.children && cfg.children.length > 0) {
