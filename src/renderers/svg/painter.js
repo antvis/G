@@ -96,6 +96,7 @@ class Painter {
         }
       });
       try {
+        model.resetMatrix();
         self._drawGroup(model, false);
       } catch (ev) { // 绘制时异常，中断重绘
         console.warn('error in draw canvas, detail as:');
