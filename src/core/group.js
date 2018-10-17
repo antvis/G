@@ -427,10 +427,10 @@ Util.augment(Group, {
       }
     }
   },
-  clear() {
+  clear(delayRemove) {
     const children = this._cfg.children;
     for (let i = children.length - 1; i >= 0; i--) {
-      children[i].remove();
+      children[i].remove(true, delayRemove);
     }
     this._cfg.children = [];
     return this;
