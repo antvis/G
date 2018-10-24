@@ -447,8 +447,10 @@ class Painter {
       transform.push(matrix[i] + ',' + matrix[i + 1]);
     }
     transform = transform.join(',');
-    if (transform.indexOf('NaN') < 0) {
+    if (transform.indexOf('NaN') === -1) {
       el.setAttribute('transform', `matrix(${transform})`);
+    } else {
+      console.warn('invalid matrix:', matrix);
     }
   }
   _setImage(model, img) {
