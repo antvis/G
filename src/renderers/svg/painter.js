@@ -442,11 +442,16 @@ class Painter {
   _setTransform(model) {
     const matrix = model._attrs.matrix;
     const el = model._cfg.el;
-    const transform = [];
+    let transform = [];
     for (let i = 0; i < 9; i += 3) {
       transform.push(matrix[i] + ',' + matrix[i + 1]);
     }
-    el.setAttribute('transform', `matrix(${transform.join(',')})`);
+    transform = transform.join(',');
+    if (transform.indexOf('NaN') === -1) {
+      el.setAttribute('transform', `matrix(${transform})`);
+    } else {
+      console.warn('invalid matrix:', matrix);
+    }
   }
   _setImage(model, img) {
     const attrs = model._attrs;
@@ -649,11 +654,15 @@ class Painter {
       blur: attrs.shadowBlur,
       color: attrs.shadowColor
     };
-    let id = this.context.find('filter', cfg);
-    if (!id) {
-      id = this.context.addShadow(cfg, this);
+    if (!cfg.dx && !cfg.dy && !cfg.blur && !cfg.color) {
+      el.removeAttribute('filter');
+    } else {
+      let id = this.context.find('filter', cfg);
+      if (!id) {
+        id = this.context.addShadow(cfg, this);
+      }
+      el.setAttribute('filter', `url(#${id})`);
     }
-    el.setAttribute('filter', `url(#${id})`);
   }
 }
 
