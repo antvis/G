@@ -652,11 +652,15 @@ class Painter {
       blur: attrs.shadowBlur,
       color: attrs.shadowColor
     };
-    let id = this.context.find('filter', cfg);
-    if (!id) {
-      id = this.context.addShadow(cfg, this);
+    if (!cfg.dx && !cfg.dy && !cfg.blur && !cfg.color) {
+      el.removeAttribute('filter');
+    } else {
+      let id = this.context.find('filter', cfg);
+      if (!id) {
+        id = this.context.addShadow(cfg, this);
+      }
+      el.setAttribute('filter', `url(#${id})`);
     }
-    el.setAttribute('filter', `url(#${id})`);
   }
 }
 
