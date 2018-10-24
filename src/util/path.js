@@ -1185,17 +1185,17 @@ const fillPathByDiff = function(source, target) {
       }
     }
   }
-
   // source尾部补齐
   sourceLen = source.length;
+  const diff = targetLen - sourceLen;
   if (sourceLen < targetLen) {
-    for (let i = 0; i < (targetLen - sourceLen); i++) {
+    for (let i = 0; i < diff; i++) {
       if (source[sourceLen - 1][0] === 'z' || source[sourceLen - 1][0] === 'Z') {
         source.splice(sourceLen - 2, 0, source[sourceLen - 2]);
       } else {
         source.push(source[sourceLen - 1]);
       }
-
+      sourceLen += 1;
     }
   }
   return source;
