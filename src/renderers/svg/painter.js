@@ -442,11 +442,14 @@ class Painter {
   _setTransform(model) {
     const matrix = model._attrs.matrix;
     const el = model._cfg.el;
-    const transform = [];
+    let transform = [];
     for (let i = 0; i < 9; i += 3) {
       transform.push(matrix[i] + ',' + matrix[i + 1]);
     }
-    el.setAttribute('transform', `matrix(${transform.join(',')})`);
+    transform = transform.join(',');
+    if (transform.indexOf('NaN') < 0) {
+      el.setAttribute('transform', `matrix(${transform})`);
+    }
   }
   _setImage(model, img) {
     const attrs = model._attrs;
