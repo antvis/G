@@ -148,14 +148,6 @@ class Painter {
     if (!children) {
       return;
     }
-
-    if (parent._cfg.el && !redraw) {
-      // FIXME 这边是为了解决一个group中有元素已经生成el，还有一些没生成el时，没生成el的置底效果不work
-      const childLen = parent._cfg.el.childNodes.length + 1;
-      if (childLen !== 0 && childLen !== children.length) {
-        redraw = true;
-      }
-    }
     for (let i = 0; i < children.length; i++) {
       shape = children[i];
       if (shape.isGroup) {
