@@ -16,6 +16,10 @@ describe('Canvas 容器操作', () => {
       renderer: 'svg'
     });
     expect(canvas).to.be.an.instanceof(Canvas);
+    expect(canvas.getRenderer()).to.equal('svg');
+    const matrix = canvas._attrs.matrix;
+    expect(matrix[0]).to.equal(1);
+    expect(matrix[4]).to.equal(1);
     canvas.destroy();
   });
 
