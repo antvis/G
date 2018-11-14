@@ -13,7 +13,7 @@ const canvas = new Canvas({
   height: 500
 });
 
-describe.only('svg shape diff efficiency', () => {
+describe('svg shape diff efficiency', () => {
   const group = canvas.addGroup();
   for (let index = 0; index < 300; index++) {
     group.addShape('rect', {
@@ -42,6 +42,7 @@ describe.only('svg shape diff efficiency', () => {
     expect(group._attrs.matrix[6]).to.equal(100);
     expect(group._attrs.matrix[7]).to.equal(100);
     canvas.draw();
+    expect(group._cfg.el.getAttribute('transform')).to.equal('matrix(1,0,0,1,100,100)');
     expect(shape._attrs.fill).to.equal('red');
     expect(shape._cfg.el.getAttribute('fill')).to.equal('blue');
   });
