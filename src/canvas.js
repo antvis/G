@@ -177,15 +177,22 @@ Util.augment(Canvas, {
     }, false);
   },
   _scale() {
-    const pixelRatio = this.get('pixelRatio');
-    this.scale(pixelRatio, pixelRatio);
+    if (this._cfg.renderType !== 'svg') {
+      const pixelRatio = this.get('pixelRatio');
+      this.scale(pixelRatio, pixelRatio);
+    }
   },
   _setGlobalParam() {
-    const pixelRatio = this.get('pixelRatio');
-    if (!pixelRatio) {
-      this.set('pixelRatio', Util.getRatio());
+    const renderType = this.get('renderer') || 'canvas';
+    if (!this.get('pixelRatio')) {
+      if (renderType === 'svg') {
+        this.set('pixelRatio', 1);
+      } else {
+        this.set('pixelRatio', Util.getRatio());
+      }
     }
-    const renderer = renderers[this.get('renderer') || 'canvas'];
+    this._cfg.renderType = renderType;
+    const renderer = renderers[renderType];
     this._cfg.renderer = renderer;
     this._cfg.canvas = this;
     const timeline = new Timeline(this);
@@ -276,6 +283,9 @@ Util.augment(Canvas, {
       return this._cfg.renderer.getShape.call(this, x, y, e);
     }
     return Canvas.superclass.getShape.call(this, x, y);
+  },
+  getRenderer() {
+    return this._cfg.renderType;
   },
   _drawSync() {
     this._cfg.painter.drawSync(this);
