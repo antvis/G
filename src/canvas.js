@@ -184,12 +184,10 @@ Util.augment(Canvas, {
   },
   _setGlobalParam() {
     const renderType = this.get('renderer') || 'canvas';
-    if (!this.get('pixelRatio')) {
-      if (renderType === 'svg') {
-        this.set('pixelRatio', 1);
-      } else {
-        this.set('pixelRatio', Util.getRatio());
-      }
+    if (renderType === 'svg') {
+      this.set('pixelRatio', 1);
+    } else if (!this.get('pixelRatio')) {
+      this.set('pixelRatio', Util.getRatio());
     }
     this._cfg.renderType = renderType;
     const renderer = renderers[renderType];
