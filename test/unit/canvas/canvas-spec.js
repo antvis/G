@@ -12,9 +12,14 @@ describe('Canvas 容器操作', function() {
       containerId: 'c1',
       renderer: 'canvas',
       width: 500,
-      height: 500
+      height: 500,
+      pixelRatio: 2
     });
     expect(canvas).to.be.an.instanceof(Canvas);
+    expect(canvas.getRenderer()).to.equal('canvas');
+    const matrix = canvas._attrs.matrix;
+    expect(matrix[0]).to.equal(2);
+    expect(matrix[4]).to.equal(2);
     canvas.destroy();
   });
 
