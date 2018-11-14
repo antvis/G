@@ -6,7 +6,7 @@ const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexPR = /^p\s*\(\s*([axyn])\s*\)\s*(.*)/i;
 const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/ig;
-const numColorCache = {};
+// const numColorCache = {};
 
 function addStop(steps, gradient) {
   const arr = steps.match(regexColorStop);
@@ -185,7 +185,8 @@ module.exports = {
       }
       return color;
     }
-  },
+  }
+  /* ,
   numberToColor(num) {
     // 增加缓存
     let color = numColorCache[num];
@@ -198,6 +199,6 @@ module.exports = {
       numColorCache[num] = color;
     }
     return color;
-  }
+  }*/
 };
 
