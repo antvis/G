@@ -96,8 +96,7 @@ class Painter {
         }
       });
       try {
-        model.resetMatrix();
-        self._drawGroup(model, false);
+        self._drawChildren(model);
       } catch (ev) { // 绘制时异常，中断重绘
         console.warn('error in draw canvas, detail as:');
         console.warn(ev);
@@ -112,20 +111,12 @@ class Painter {
     }
   }
   drawSync(model) {
-    this._drawChildren(model, false);
+    this._drawChildren(model);
   }
-  _drawGroup(model, redraw) {
+  _drawGroup(model, index) {
     const cfg = model._cfg;
     if (cfg.removed || cfg.destroyed) {
       return;
-    }
-    /**
-     * FIXME redraw: 为了使元素置顶的临时解决方案
-     * 如果直接将dom元素重排可以解决部分问题。但是如果重排后的group中有新增的shape，置顶效果就没有了
-     * 所以只能删除原有节点，新增节点以及所有子节点。这时候哪怕shape有el，也需要判断一下是否需要重绘
-     */
-    if (!cfg.el && cfg.attrs) {
-      redraw = true;
     }
     if (cfg.tobeRemoved) {
       Util.each(cfg.tobeRemoved, item => {
@@ -135,12 +126,12 @@ class Painter {
       });
       cfg.tobeRemoved = [];
     }
-    this._drawShape(model, redraw);
+    this._drawShape(model, index);
     if (cfg.children && cfg.children.length > 0) {
-      this._drawChildren(model, redraw);
+      this._drawChildren(model);
     }
   }
-  _drawChildren(parent, redraw) {
+  _drawChildren(parent) {
     const self = this;
     const children = parent._cfg.children;
     let shape;
@@ -148,24 +139,16 @@ class Painter {
     if (!children) {
       return;
     }
-
-    if (parent._cfg.el && !redraw) {
-      // FIXME 这边是为了解决一个group中有元素已经生成el，还有一些没生成el时，没生成el的置底效果不work
-      const childLen = parent._cfg.el.childNodes.length + 1;
-      if (childLen !== 0 && childLen !== children.length) {
-        redraw = true;
-      }
-    }
     for (let i = 0; i < children.length; i++) {
       shape = children[i];
       if (shape.isGroup) {
-        self._drawGroup(shape, redraw);
+        self._drawGroup(shape, i);
       } else {
-        self._drawShape(shape, redraw);
+        self._drawShape(shape, i);
       }
     }
   }
-  _drawShape(model, redraw) {
+  _drawShape(model, index) {
     const self = this;
     const attrs = model._attrs;
     const cfg = model._cfg;
@@ -178,15 +161,9 @@ class Painter {
       return;
     }
 
-    // 重绘节点
-    if (redraw && el) {
-      el.parentNode && el.parentNode.removeChild(el);
-      el = null;
-    }
-
     // 新增节点
     if (!el && cfg.parent) {
-      self._createDom(model);
+      self._createDom(model, index);
       self._updateShape(model);
     }
 
@@ -340,16 +317,31 @@ class Painter {
       el.setAttribute(SVG_ATTR_MAP[name], value);
     }
   }
-  _createDom(model) {
+  _createDom(model, index) {
     const type = SHAPE_TO_TAGS[model.type];
     const attrs = model._attrs;
+    const parent = model._cfg.parent;
+    const parentNode = parent._cfg.el;
     if (!type) {
       throw new Error('the type' + model.type + 'is not supported by svg');
     }
     const shape = document.createElementNS('http://www.w3.org/2000/svg', type);
     model._cfg.el = shape;
-    if (model._cfg.parent) {
-      model._cfg.parent.get('el').appendChild(shape);
+    if (parent) {
+      if (typeof index === 'undefined') {
+        parentNode.appendChild(shape);
+      } else {
+        const childNodes = parent._cfg.el.childNodes;
+       // svg下天然有defs作为子节点，svg下子元素index需要+1
+        if (parentNode.tagName === 'svg') {
+          index += 1;
+        }
+        if (childNodes.length <= index) {
+          parentNode.appendChild(shape);
+        } else {
+          parentNode.insertBefore(shape, childNodes[index]);
+        }
+      }
     }
     model._cfg.attrs = {};
     if (model.type === 'text') {
