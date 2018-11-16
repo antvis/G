@@ -100,9 +100,9 @@ class Painter {
       } catch (ev) { // 绘制时异常，中断重绘
         console.warn('error in draw canvas, detail as:');
         console.warn(ev);
+      } finally {
         self.toDraw = false;
       }
-      self.toDraw = false;
     }
     if (self.animateHandler) {
       self.toDraw = true;
