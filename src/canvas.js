@@ -150,7 +150,8 @@ Util.augment(Canvas, {
       'mouseleave',
       'mouseup',
       'click',
-      'dblclick'
+      'dblclick',
+      'contextmenu'
     ];
     Util.each(events, event => {
       el.addEventListener(event, e => {
