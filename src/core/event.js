@@ -14,6 +14,8 @@ const EVENTS = [
 ];
 
 let preShape = null;
+let mousedown = null;
+let dragging = null;
 
 module.exports = {
   registerEvent() {
@@ -84,17 +86,27 @@ module.exports = {
         }
         el.style.cursor = 'default';
       }
+      // 拖拽过程中不会触发mousemove事件
+      if (dragging) {
+        this._emitEvent('drag', e, point, dragging);
+      }
       if (shape) {
-        const mousemove = this._getEventObj('mousemove', e, point, shape);
-        emitObj = this._getEmitter(shape, e);
-        emitObj && emitObj.emit('mousemove', mousemove);
-
+        if (!dragging) {
+          if (mousedown === shape) {
+            dragging = shape;
+            mousedown = null;
+            this._emitEvent('dragstart', e, point, shape);
+          } else {
+            this._emitEvent('mousemove', e, point, shape);
+          }
+        }
         if (preShape !== shape) {
           const mouseenter = this._getEventObj('mouseenter', e, point, shape);
+          emitObj = this._getEmitter(shape, e);
           if (emitObj) {
             emitObj.emit('mouseenter', mouseenter, e);
             while (emitObj) {
-              emitObj.emit('mouseover', mouseenter);
+              emitObj.emit('mouseover', mouseenter, e);
               emitObj = emitObj._cfg.parent;
             }
           }
@@ -106,6 +118,18 @@ module.exports = {
       preShape = shape;
     } else {
       emitObj = this._emitEvent(type, e, point, shape || this);
+      if (!dragging && type === 'mousedown') {
+        mousedown = shape;
+      }
+      if (type === 'mouseup') {
+        mousedown = null;
+        if (dragging) {
+          dragging._cfg.capture = true;
+          this._emitEvent('dragend', e, point, dragging);
+          dragging = null;
+          this._emitEvent('drop', e, point, shape || this);
+        }
+      }
     }
     if (shape && !shape.destroyed) {
       el.style.cursor = shape.attr('cursor') || 'default';
@@ -125,4 +149,3 @@ module.exports = {
     return emitShape;
   }
 };
-
