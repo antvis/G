@@ -53,6 +53,7 @@ describe('event', () => {
       clientY: bbox.top + 5,
       clientX: bbox.left + 5
     });
+    rect.removeEvent('click');
     expect(clicked1).to.be.true;
     expect(clicked2).to.be.true;
   });
@@ -70,6 +71,8 @@ describe('event', () => {
       clientY: bbox.top + 5,
       clientX: bbox.left + 5
     });
+    rect.removeEvent('mousedown');
+    group.removeEvent('mousedown');
     expect(rectClicked).to.be.true;
     expect(groupClicked).to.be.true;
   });
@@ -105,6 +108,8 @@ describe('event', () => {
     expect(rectLeave).to.be.true;
     expect(groupEnter).to.be.false;
     expect(groupLeave).to.be.false;
+    rect.removeAllListeners();
+    group.removeAllListeners();
   });
   it('mouseover & mouseout do propagate', () => {
     const bbox = canvas._cfg.el.getBoundingClientRect();
@@ -180,5 +185,55 @@ describe('event', () => {
       clientX: bbox.left + 5
     });
     expect(count).to.equal(2);
+  });
+  it('dragstart & dragend', () => {
+    const bbox = canvas._cfg.el.getBoundingClientRect();
+    let rectDrag = false;
+    let groupDrag = false;
+    let rectEnd = false;
+    let groupEnd = false;
+    let count = 0;
+    rect.on('dragstart', () => {
+      rectDrag = true;
+    });
+    group.on('dragstart', () => {
+      groupDrag = true;
+    });
+    rect.on('dragend', () => {
+      rectEnd = true;
+    });
+    group.on('dragend', () => {
+      groupEnd = true;
+    });
+    rect.on('drag', () => {
+      ++count;
+    });
+    Simulate.simulate(canvas._cfg.el, 'mousedown', {
+      clientY: bbox.top + 5,
+      clientX: bbox.left + 5
+    });
+    expect(rectDrag).to.be.false;
+    expect(groupDrag).to.be.false;
+    expect(rectEnd).to.be.false;
+    expect(groupEnd).to.be.false;
+    Simulate.simulate(canvas._cfg.el, 'mousemove', {
+      clientY: bbox.top + 5,
+      clientX: bbox.left + 5
+    });
+    expect(rectDrag).to.be.true;
+    expect(groupDrag).to.be.true;
+    expect(rectEnd).to.be.false;
+    expect(groupEnd).to.be.false;
+    Simulate.simulate(canvas._cfg.el, 'mousemove', {
+      clientY: bbox.top + 10,
+      clientX: bbox.left + 10
+    });
+    expect(count).to.equal(1);
+    Simulate.simulate(canvas._cfg.el, 'mouseup', {
+      clientY: bbox.top + 12,
+      clientX: bbox.left + 12
+    });
+    expect(rectEnd).to.be.true;
+    expect(groupEnd).to.be.true;
   });
 });
