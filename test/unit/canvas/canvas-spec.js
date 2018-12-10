@@ -289,17 +289,16 @@ describe('canvas 事件', function() {
   canvas.draw();
   it('canvas.on(\'mousedown\')', function() {
     const canvasDOM = canvas.get('el');
+    const bbox = canvasDOM.getBoundingClientRect();
     let target;
     canvas.on('mousedown', function(ev) {
       target = ev.target;
     });
-
     Simulate.simulate(canvasDOM, 'mousedown', {
-      clientX: 154,
-      clientY: 276
+      clientX: bbox.left + 260,
+      clientY: bbox.top + 260
     });
     expect(target).not.to.be.undefined;
-    const bbox = canvasDOM.getBoundingClientRect();
     canvas.on('mouseenter', e => { e.target.attr('cursor', 'crosshair'); });
 
     Simulate.simulate(canvasDOM, 'mousemove', {
@@ -308,8 +307,8 @@ describe('canvas 事件', function() {
     });
     expect(canvasDOM.style.cursor).to.equal('crosshair');
     Simulate.simulate(canvasDOM, 'mousemove', {
-      clientX: bbox.left,
-      clientY: bbox.top
+      clientX: bbox.left + 1,
+      clientY: bbox.top + 1
     });
     expect(canvasDOM.style.cursor).to.equal('default');
 

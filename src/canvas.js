@@ -1,5 +1,5 @@
 const Util = require('./util/index');
-const Event = require('./event');
+const Event = require('./core/event');
 const Group = require('./core/group');
 const Timeline = require('./core/mixin/timeline');
 const renderers = require('./renderers/index');
@@ -64,7 +64,7 @@ Canvas.CFG = {
 
 Util.extend(Canvas, Group);
 
-Util.augment(Canvas, {
+Util.augment(Canvas, Event, {
   init() {
     Canvas.superclass.init.call(this);
     this._setGlobalParam();
@@ -72,110 +72,8 @@ Util.augment(Canvas, {
     this._initPainter();
     this._scale();
     if (this.get('eventEnable')) {
-      this._registEvents();
+      this.registerEvent(this);
     }
-  },
-  getEmitter(element, event) {
-    if (element) {
-      if (Util.isEmpty(element._getEvents())) {
-        const parent = element.get('parent');
-        if (parent && !event.propagationStopped) {
-          return this.getEmitter(parent, event);
-        }
-      } else {
-        return element;
-      }
-    }
-  },
-  _getEventObj(type, e, point, target) {
-    const event = new Event(type, e, true, true);
-    event.x = point.x;
-    event.y = point.y;
-    event.clientX = e.clientX;
-    event.clientY = e.clientY;
-    event.currentTarget = target;
-    event.target = target;
-    return event;
-  },
-  _triggerEvent(type, e) {
-    const point = this.getPointByClient(e.clientX, e.clientY);
-    const shape = this.getShape(point.x, point.y, e);
-    const el = this.get('el');
-    let emitObj;
-    if (type === 'mousemove') {
-      const preShape = this.get('preShape');
-      if (preShape && preShape !== shape) {
-        const mouseleave = this._getEventObj('mouseleave', e, point, preShape);
-        emitObj = this.getEmitter(preShape, e);
-        emitObj && emitObj.emit('mouseleave', mouseleave);
-        el.style.cursor = 'default';
-      }
-
-      if (shape) {
-        const mousemove = this._getEventObj('mousemove', e, point, shape);
-        emitObj = this.getEmitter(shape, e);
-        emitObj && emitObj.emit('mousemove', mousemove);
-
-        if (preShape !== shape) {
-          const mouseenter = this._getEventObj('mouseenter', e, point, shape);
-          emitObj && emitObj.emit('mouseenter', mouseenter, e);
-        }
-      } else {
-        const canvasmousemove = this._getEventObj('mousemove', e, point, this);
-        this.emit('mousemove', canvasmousemove);
-      }
-
-      this.set('preShape', shape);
-    } else {
-      const event = this._getEventObj(type, e, point, shape || this);
-      emitObj = this.getEmitter(shape, e);
-      if (emitObj && emitObj !== this) {
-        emitObj.emit(type, event);
-      }
-      this.emit(type, event);
-    }
-
-    if (shape && !shape.get('destroyed')) {
-      el.style.cursor = shape.attr('cursor') || 'default';
-    }
-  },
-  _registEvents() {
-    const self = this;
-    const el = self.get('el');
-    const events = [
-      'mouseout',
-      'mouseover',
-      'mousemove',
-      'mousedown',
-      'mouseleave',
-      'mouseup',
-      'click',
-      'dblclick',
-      'contextmenu'
-    ];
-    Util.each(events, event => {
-      el.addEventListener(event, e => {
-        self._triggerEvent(event, e);
-      }, false);
-    });
-    // special cases
-    el.addEventListener('touchstart', e => {
-      if (!Util.isEmpty(e.touches)) {
-        self._triggerEvent('touchstart', e.touches[0]);
-      }
-    }, false);
-
-    el.addEventListener('touchmove', e => {
-      if (!Util.isEmpty(e.touches)) {
-        self._triggerEvent('touchmove', e.touches[0]);
-      }
-    }, false);
-
-    el.addEventListener('touchend', e => {
-      if (!Util.isEmpty(e.changedTouches)) {
-        self._triggerEvent('touchend', e.changedTouches[0]);
-      }
-    }, false);
   },
   _scale() {
     if (this._cfg.renderType !== 'svg') {
