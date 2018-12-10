@@ -428,6 +428,9 @@ Util.augment(Group, {
     }
   },
   clear(delayRemove) {
+    if (this.get('destroyed')) {
+      return;
+    }
     const children = this._cfg.children;
     for (let i = children.length - 1; i >= 0; i--) {
       children[i].remove(true, delayRemove);
