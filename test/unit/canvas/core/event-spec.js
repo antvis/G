@@ -233,7 +233,44 @@ describe('event', () => {
       clientY: bbox.top + 12,
       clientX: bbox.left + 12
     });
+    rect.removeAllListeners();
+    group.removeAllListeners();
     expect(rectEnd).to.be.true;
     expect(groupEnd).to.be.true;
+  });
+  it('drop shape', () => {
+    const bbox = canvas._cfg.el.getBoundingClientRect();
+    const circle = canvas.addShape('circle', {
+      attrs: {
+        x: 50,
+        y: 50,
+        r: 30,
+        fill: '#ccc'
+      }
+    });
+    canvas.draw();
+    let target = null;
+    circle.on('drop', evt => {
+      target = evt.currentTarget;
+    });
+    Simulate.simulate(canvas._cfg.el, 'mousedown', {
+      clientY: bbox.top + 5,
+      clientX: bbox.left + 5
+    });
+    Simulate.simulate(canvas._cfg.el, 'mousemove', {
+      clientY: bbox.top + 10,
+      clientX: bbox.left + 10
+    });
+    Simulate.simulate(canvas._cfg.el, 'mousemove', {
+      clientY: bbox.top + 15,
+      clientX: bbox.left + 15
+    });
+    Simulate.simulate(canvas._cfg.el, 'mouseup', {
+      clientY: bbox.top + 50,
+      clientX: bbox.left + 50
+    });
+    expect(target).not.to.be.undefined;
+    expect(target).to.equal(circle);
+    circle.removeEvent('drop');
   });
 });
