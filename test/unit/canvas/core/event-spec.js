@@ -238,6 +238,48 @@ describe('event', () => {
     expect(rectEnd).to.be.true;
     expect(groupEnd).to.be.true;
   });
+  it('dragover & dragout', () => {
+    const bbox = canvas._cfg.el.getBoundingClientRect();
+    const circle = canvas.addShape('circle', {
+      attrs: {
+        x: 50,
+        y: 50,
+        r: 30,
+        fill: '#ccc'
+      }
+    });
+    let over = false;
+    let out = false;
+    canvas.draw();
+    circle.on('dragover', () => {
+      over = true;
+    });
+    circle.on('dragout', () => {
+      out = true;
+    });
+    Simulate.simulate(canvas._cfg.el, 'mousedown', {
+      clientY: bbox.top + 5,
+      clientX: bbox.left + 5
+    });
+    Simulate.simulate(canvas._cfg.el, 'mousemove', {
+      clientY: bbox.top + 10,
+      clientX: bbox.left + 10
+    });
+    Simulate.simulate(canvas._cfg.el, 'mousemove', {
+      clientY: bbox.top + 15,
+      clientX: bbox.left + 15
+    });
+    Simulate.simulate(canvas._cfg.el, 'mousemove', {
+      clientY: bbox.top + 50,
+      clientX: bbox.left + 50
+    });
+    Simulate.simulate(canvas._cfg.el, 'mousemove', {
+      clientY: bbox.top + 250,
+      clientX: bbox.left + 250
+    });
+    expect(over).to.be.true;
+    expect(out).to.be.true;
+  });
   it('drop shape', () => {
     const bbox = canvas._cfg.el.getBoundingClientRect();
     const circle = canvas.addShape('circle', {
