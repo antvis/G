@@ -2,14 +2,15 @@ const Util = require('../util/index');
 const Attribute = require('./mixin/attribute');
 const Transform = require('./mixin/transform');
 const Animate = require('./mixin/animation');
-const EventEmitter = require('wolfy87-eventemitter');
+const EventEmitter = require('./mixin/event');
 
 const Element = function(cfg) {
   this._cfg = {
     zIndex: 0,
     capture: true,
     visible: true,
-    destroyed: false
+    destroyed: false,
+    _events: {}
   }; // 配置存放地
 
   Util.assign(this._cfg, this.getDefaultCfg(), cfg); // Element.CFG不合并，提升性能 合并默认配置，用户配置->继承默认配置->Element默认配置

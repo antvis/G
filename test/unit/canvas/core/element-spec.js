@@ -47,14 +47,14 @@ describe('Element', function() {
   it('add event listener', function() {
     const ele = new Element();
     let count = 1;
-    ele.on('test', function(v) {
-      count += v;
+    ele.on('test', function(v1, v2) {
+      count += (v1 + v2);
     });
-    ele.trigger('test', [ 12 ]);
-    expect(count).to.equal(13);
-    expect(ele._events).to.have.own.property('test');
+    ele.trigger('test', 12, 13);
+    expect(count).to.equal(26);
+    expect(ele._cfg._events).to.have.own.property('test');
 
     ele.destroy();
-    expect(ele._events).to.be.undefined;
+    expect(ele._cfg._events).to.be.undefined;
   });
 });
