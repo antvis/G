@@ -81,6 +81,9 @@ module.exports = {
           emitObj.emit('mouseleave', mouseleave);
           while (emitObj) {
             emitObj.emit('mouseout', mouseleave);
+            if (dragging) {
+              emitObj.emit('dragout', mouseleave);
+            }
             emitObj = emitObj._cfg.parent;
           }
         }
@@ -107,6 +110,9 @@ module.exports = {
             emitObj.emit('mouseenter', mouseenter, e);
             while (emitObj) {
               emitObj.emit('mouseover', mouseenter, e);
+              if (dragging) {
+                emitObj.emit('dragover', mouseenter, e);
+              }
               emitObj = emitObj._cfg.parent;
             }
           }
