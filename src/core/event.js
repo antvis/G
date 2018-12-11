@@ -70,7 +70,7 @@ module.exports = {
   },
   _triggerEvent(type, e) {
     const point = this.getPointByClient(e.clientX, e.clientY);
-    const shape = this.getShape(point.x, point.y, e);
+    let shape = this.getShape(point.x, point.y, e);
     const el = this.get('el');
     let emitObj;
     if (type === 'mousemove') {
@@ -124,6 +124,10 @@ module.exports = {
       if (type === 'mouseup') {
         mousedown = null;
         if (dragging) {
+          // svg不走数学拾取，原生事件取不到drop
+          if (this.getRenderer() === 'svg') {
+            shape = this.getShape(point.x, point.y);
+          }
           dragging._cfg.capture = true;
           this._emitEvent('dragend', e, point, dragging);
           dragging = null;
