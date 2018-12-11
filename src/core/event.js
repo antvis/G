@@ -72,24 +72,16 @@ module.exports = {
     const point = this.getPointByClient(e.clientX, e.clientY);
     let shape = this.getShape(point.x, point.y, e);
     const el = this.get('el');
-    let emitObj;
     // svg原生事件取不到dragover, dragout, drop等事件的对象。这边需要走数学拾取。
     if (dragging && this.getRenderer() === 'svg') {
       shape = this.getShape(point.x, point.y);
     }
     if (type === 'mousemove') {
       if (preShape && preShape !== shape) {
-        const mouseleave = this._getEventObj('mouseleave', e, point, preShape);
-        emitObj = this._getEmitter(preShape, e);
-        if (emitObj) {
-          emitObj.emit('mouseleave', mouseleave);
-          while (emitObj) {
-            emitObj.emit('mouseout', mouseleave);
-            if (dragging) {
-              emitObj.emit('dragleave', mouseleave);
-            }
-            emitObj = emitObj._cfg.parent;
-          }
+        this._emitEvent('mouseout', e, point, preShape);
+        this._emitEvent('mouseleave', e, point, preShape);
+        if (dragging) {
+          this._emitEvent('dragleave', e, point, preShape);
         }
         el.style.cursor = 'default';
       }
@@ -108,17 +100,10 @@ module.exports = {
           }
         }
         if (preShape !== shape) {
-          const mouseenter = this._getEventObj('mouseenter', e, point, shape);
-          emitObj = this._getEmitter(shape, e);
-          if (emitObj) {
-            emitObj.emit('mouseenter', mouseenter, e);
-            while (emitObj) {
-              emitObj.emit('mouseover', mouseenter, e);
-              if (dragging) {
-                emitObj.emit('dragenter', mouseenter, e);
-              }
-              emitObj = emitObj._cfg.parent;
-            }
+          this._emitEvent('mouseenter', e, point, shape);
+          this._emitEvent('mouseover', e, point, shape);
+          if (dragging) {
+            this._emitEvent('dragenter', e, point, shape);
           }
         }
       } else {
@@ -127,7 +112,7 @@ module.exports = {
       }
       preShape = shape;
     } else {
-      emitObj = this._emitEvent(type, e, point, shape || this);
+      this._emitEvent(type, e, point, shape || this);
       if (!dragging && type === 'mousedown') {
         mousedown = shape;
       }
@@ -147,15 +132,8 @@ module.exports = {
   },
   _emitEvent(type, evt, point, shape) {
     const event = this._getEventObj(type, evt, point, shape);
-    let emitShape = this._getEmitter(shape, evt);
-    while (emitShape && !emitShape.destroyed && !emitShape.removed) {
-      emitShape.emit(type, event);
-      if (emitShape._cfg && emitShape._cfg.parent) {
-        emitShape = emitShape._cfg.parent;
-      } else {
-        emitShape = null;
-      }
-    }
+    const emitShape = this._getEmitter(shape, evt);
+    emitShape && emitShape.emit(type, event);
     return emitShape;
   }
 };

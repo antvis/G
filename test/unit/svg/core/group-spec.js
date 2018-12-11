@@ -348,7 +348,7 @@ describe('Group', () => {
     group.on('group', handler);
     circle.trigger(e);
     expect(aa).to.equal(0);
-    group.trigger('group', [ e ]);
+    group.trigger('group', e);
     expect(aa).to.equal(1);
   });
 
