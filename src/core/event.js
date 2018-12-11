@@ -73,6 +73,10 @@ module.exports = {
     let shape = this.getShape(point.x, point.y, e);
     const el = this.get('el');
     let emitObj;
+    // svg原生事件取不到dragover, dragout, drop等事件的对象。这边需要走数学拾取。
+    if (dragging && this.getRenderer() === 'svg') {
+      shape = this.getShape(point.x, point.y);
+    }
     if (type === 'mousemove') {
       if (preShape && preShape !== shape) {
         const mouseleave = this._getEventObj('mouseleave', e, point, preShape);
@@ -130,10 +134,6 @@ module.exports = {
       if (type === 'mouseup') {
         mousedown = null;
         if (dragging) {
-          // svg不走数学拾取，原生事件取不到drop
-          if (this.getRenderer() === 'svg') {
-            shape = this.getShape(point.x, point.y);
-          }
           dragging._cfg.capture = true;
           this._emitEvent('dragend', e, point, dragging);
           dragging = null;
