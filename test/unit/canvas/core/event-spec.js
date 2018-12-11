@@ -3,10 +3,10 @@ const G = require('../../../../src/index');
 const Simulate = require('event-simulate');
 
 const div = document.createElement('div');
-div.id = 'canvas-animate';
+div.id = 'canvas-event';
 document.body.appendChild(div);
 const canvas = new G.Canvas({
-  containerId: 'canvas-animate',
+  containerId: 'canvas-event',
   width: 1000,
   height: 1000,
   pixelRatio: 2
@@ -23,7 +23,40 @@ const rect = group.addShape('rect', {
   }
 });
 canvas.draw();
-describe('event', () => {
+describe('event emitter', () => {
+  let count = 0;
+  const fn1 = () => { count++; };
+  const fn2 = () => { count++; };
+  const fn3 = () => { count++; };
+  it('on & emit & off', () => {
+    const path = new G.Path();
+    expect(path._cfg._events).not.to.be.undefined;
+    path.on('event', fn1);
+    expect(path._cfg._events.event).not.to.be.undefined;
+    expect(path._cfg._events.event.length).to.equal(1);
+    expect(path._cfg._events.event[0].callback).to.equal(fn1);
+    expect(!!path._cfg._events.event[0].one).to.be.false;
+    path.on('event', fn2, true);
+    expect(path._cfg._events.event.length).to.equal(2);
+    expect(path._cfg._events.event[1].callback).to.equal(fn2);
+    expect(!!path._cfg._events.event[1].one).to.be.true;
+    path.on('event', fn3);
+    expect(path._cfg._events.event.length).to.equal(3);
+    expect(path._cfg._events.event[2].callback).to.equal(fn3);
+    expect(!!path._cfg._events.event[2].one).to.be.false;
+    path.emit('event');
+    expect(path._cfg._events.event.length).to.equal(2);
+    expect(path._cfg._events.event[0].callback).to.equal(fn1);
+    expect(path._cfg._events.event[1].callback).to.equal(fn3);
+    expect(count).to.equal(3);
+    path.off('event', fn1);
+    expect(path._cfg._events.event.length).to.equal(1);
+    expect(path._cfg._events.event[0].callback).to.equal(fn3);
+    path.removeEvent('event');
+    expect(path._cfg._events.event).to.be.undefined;
+  });
+});
+describe('event dispatcher', () => {
   it('single event of a type', () => {
     const bbox = canvas._cfg.el.getBoundingClientRect();
     let clicked = false;
@@ -108,8 +141,8 @@ describe('event', () => {
     expect(rectLeave).to.be.true;
     expect(groupEnter).to.be.false;
     expect(groupLeave).to.be.false;
-    rect.removeAllListeners();
-    group.removeAllListeners();
+    rect.removeEvent();
+    group.removeEvent();
   });
   it('mouseover & mouseout do propagate', () => {
     const bbox = canvas._cfg.el.getBoundingClientRect();
@@ -233,8 +266,8 @@ describe('event', () => {
       clientY: bbox.top + 12,
       clientX: bbox.left + 12
     });
-    rect.removeAllListeners();
-    group.removeAllListeners();
+    rect.removeEvent();
+    group.removeEvent();
     expect(rectEnd).to.be.true;
     expect(groupEnd).to.be.true;
   });
