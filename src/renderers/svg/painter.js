@@ -325,6 +325,9 @@ class Painter {
       throw new Error('the type' + model.type + 'is not supported by svg');
     }
     const shape = document.createElementNS('http://www.w3.org/2000/svg', type);
+    if (model._cfg.id) {
+      shape.id = model._cfg.id;
+    }
     model._cfg.el = shape;
     if (parent) {
       const parentNode = parent._cfg.el;
