@@ -71,7 +71,7 @@ module.exports = {
     if (args.length >= 2 && args[1] instanceof Event && args[1].propagationStopped) {
       return;
     }
-    if (~PROPOGATE_EVENTS.indexOf(evt)) {
+    if (PROPOGATE_EVENTS.indexOf(evt) >= 0) {
       let shape = this._cfg.parent;
       while (shape && !shape.removed && !shape.destroyed) {
         shape.emit.apply(shape, args);

@@ -83,7 +83,9 @@ module.exports = {
         if (dragging) {
           this._emitEvent('dragleave', e, point, preShape);
         }
-        el.style.cursor = 'default';
+        if (!preShape.destroyed && !preShape.removed) {
+          el.style.cursor = preShape.attr('cursor') || 'default';
+        }
       }
       // 拖拽过程中不会触发mousemove事件
       if (dragging) {
