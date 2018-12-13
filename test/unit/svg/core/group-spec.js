@@ -49,7 +49,6 @@ describe('Group', () => {
     expect(e.get('parent')).to.eql(g3);
     expect(g3.getCount()).to.equal(1);
     expect(g2.getCount()).to.equal(0);
-
     const g4 = new G.Group({
       id: 'g4'
     });
@@ -348,7 +347,7 @@ describe('Group', () => {
     group.on('group', handler);
     circle.trigger(e);
     expect(aa).to.equal(0);
-    group.trigger('group', [ e ]);
+    group.trigger('group', e);
     expect(aa).to.equal(1);
   });
 

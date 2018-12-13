@@ -321,13 +321,16 @@ class Painter {
     const type = SHAPE_TO_TAGS[model.type];
     const attrs = model._attrs;
     const parent = model._cfg.parent;
-    const parentNode = parent._cfg.el;
     if (!type) {
       throw new Error('the type' + model.type + 'is not supported by svg');
     }
     const shape = document.createElementNS('http://www.w3.org/2000/svg', type);
+    if (model._cfg.id) {
+      shape.id = model._cfg.id;
+    }
     model._cfg.el = shape;
     if (parent) {
+      const parentNode = parent._cfg.el;
       if (typeof index === 'undefined') {
         parentNode.appendChild(shape);
       } else {
