@@ -216,7 +216,7 @@ describe('animate', function() {
     });
     shape.animate({ width: 100, height: 100 }, 1000);
     setTimeout(() => {
-      canvas._cfg.timeline.stopAllAnimations();
+      shape.stopAnimate();
       expect(shape._attrs.width, 100);
       expect(shape._attrs.height, 100);
       done();
