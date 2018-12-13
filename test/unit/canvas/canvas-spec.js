@@ -300,7 +300,7 @@ describe('canvas 事件', function() {
     });
     expect(target).not.to.be.undefined;
     canvas.on('mouseenter', e => { e.target.attr('cursor', 'crosshair'); });
-
+    canvas.on('mouseout', e => { e.target.attr('cursor', 'default'); });
     Simulate.simulate(canvasDOM, 'mousemove', {
       clientX: bbox.left + 100,
       clientY: bbox.top + 100
