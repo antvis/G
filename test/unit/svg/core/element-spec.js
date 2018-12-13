@@ -49,11 +49,11 @@ describe('Element', () => {
     ele.on('test', v => {
       count += v;
     });
-    ele.trigger('test', [ 12 ]);
+    ele.trigger('test', 12);
     expect(count).to.equal(13);
-    expect(ele._events).to.have.own.property('test');
+    expect(ele._cfg._events).to.have.own.property('test');
 
     ele.destroy();
-    expect(ele._events).to.be.undefined;
+    expect(ele._cfg._events).to.be.undefined;
   });
 });
