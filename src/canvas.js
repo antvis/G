@@ -1,5 +1,5 @@
 const Util = require('./util/index');
-const Event = require('./core/event');
+const Event = require('./core/mixin/event');
 const Group = require('./core/group');
 const Timeline = require('./core/mixin/timeline');
 const renderers = require('./renderers/index');
