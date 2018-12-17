@@ -9,6 +9,5 @@ describe('index', () => {
   });
   it('EventEmitter', () => {
     expect(G.EventEmitter).not.to.be.undefined;
-    expect(G.EventEmitter.on).not.to.be.undefined;
   });
 });

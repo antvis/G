@@ -9,8 +9,7 @@ const Element = function(cfg) {
     zIndex: 0,
     capture: true,
     visible: true,
-    destroyed: false,
-    _events: {}
+    destroyed: false
   }; // 配置存放地
 
   Util.assign(this._cfg, this.getDefaultCfg(), cfg); // Element.CFG不合并，提升性能 合并默认配置，用户配置->继承默认配置->Element默认配置
