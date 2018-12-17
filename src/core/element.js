@@ -2,7 +2,7 @@ const Util = require('../util/index');
 const Attribute = require('./mixin/attribute');
 const Transform = require('./mixin/transform');
 const Animate = require('./mixin/animation');
-const EventEmitter = require('./mixin/event');
+const EventEmitter = require('./event-emitter');
 
 const Element = function(cfg) {
   this._cfg = {
