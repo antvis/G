@@ -30,7 +30,6 @@ describe('event emitter', () => {
   const fn3 = () => { count++; };
   it('on & emit & off', () => {
     const path = new G.Path();
-    expect(path._cfg._events).not.to.be.undefined;
     path.on('event', fn1);
     expect(path._cfg._events.event).not.to.be.undefined;
     expect(path._cfg._events.event.length).to.equal(1);
