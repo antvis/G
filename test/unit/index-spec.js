@@ -7,4 +7,7 @@ describe('index', () => {
     expect('G').to.be.a('string');
     expect(G.version).to.equal(pkg.version);
   });
+  it('EventEmitter', () => {
+    expect(G.EventEmitter).not.to.be.undefined;
+  });
 });
