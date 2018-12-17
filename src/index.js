@@ -18,7 +18,7 @@ module.exports = {
   PathSegment: require('./shapes/util/path-segment'),
   PathUtil: require('./util/path'),
   Event: require('./event'),
-  EventEmitter: require('./core/mixin/event'),
+  EventEmitter: require('./core/event-emitter'),
   // version, etc.
   version: '3.4.0-beta.2'
 };
