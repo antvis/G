@@ -29,7 +29,9 @@ function indexOfCallback(events, callback) {
   return -1;
 }
 
-module.exports = {
+const EventEmitter = function() {};
+
+Util.augment(EventEmitter, {
   on(evt, callback, one) {
     const self = this;
     if (!Util.isFunction(callback)) {
@@ -50,6 +52,9 @@ module.exports = {
   },
   emit(evt) {
     if (this.removed || this.destroyed) {
+      return;
+    }
+    if (!this._cfg._events || Util.isEmpty(this._cfg._events)) {
       return;
     }
     const events = this._cfg._events[evt];
@@ -84,6 +89,9 @@ module.exports = {
   },
   off(evt, callback) {
     const events = this._cfg._events;
+    if (!events || Util.isEmpty(events)) {
+      return;
+    }
     if (arguments.length === 0) {
       this._cfg._events = {};
       return this;
@@ -109,4 +117,6 @@ module.exports = {
   _getEvents() {
     return this._cfg._events || {};
   }
-};
+});
+
+module.exports = EventEmitter;
