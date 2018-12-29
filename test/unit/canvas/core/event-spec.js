@@ -12,7 +12,8 @@ const canvas = new G.Canvas({
   pixelRatio: 2
 });
 const group = canvas.addGroup();
-const rect = group.addShape('rect', {
+const subGroup = group.addGroup();
+const rect = subGroup.addShape('rect', {
   id: 'element',
   attrs: {
     x: 0,
@@ -93,11 +94,13 @@ describe('event dispatcher', () => {
     const bbox = canvas._cfg.el.getBoundingClientRect();
     let rectClicked = false;
     let groupClicked = false;
+    let count = 0;
     rect.on('mousedown', function() {
       rectClicked = true;
     });
     group.on('mousedown', function() {
       groupClicked = true;
+      count++;
     });
     Simulate.simulate(canvas._cfg.el, 'mousedown', {
       clientY: bbox.top + 5,
@@ -107,6 +110,7 @@ describe('event dispatcher', () => {
     group.removeEvent('mousedown');
     expect(rectClicked).to.be.true;
     expect(groupClicked).to.be.true;
+    expect(count).to.equal(1); // prevent bubbling multiple times
   });
   it('mouseenter & mouseleave do not propagate', () => {
     const bbox = canvas._cfg.el.getBoundingClientRect();
