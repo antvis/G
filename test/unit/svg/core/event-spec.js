@@ -1,29 +1,32 @@
 const expect = require('chai').expect;
 const G = require('../../../../src/index');
+const Util = require('../../../../src/util');
 const Simulate = require('event-simulate');
 
-const div = document.createElement('div');
-div.id = 'event';
-document.body.appendChild(div);
-const canvas = new G.Canvas({
-  containerId: 'event',
-  width: 1000,
-  height: 1000,
-  renderer: 'svg'
-});
-const group = canvas.addGroup();
-const rect = group.addShape('rect', {
-  id: 'element',
-  attrs: {
-    x: 0,
-    y: 0,
-    width: 20,
-    height: 20,
-    fill: 'red'
-  }
-});
-canvas.draw();
 describe('event', () => {
+  const div = document.createElement('div');
+  div.id = 'event';
+  document.body.appendChild(div);
+  const canvas = new G.Canvas({
+    containerId: 'event',
+    width: 1000,
+    height: 1000,
+    renderer: 'svg'
+  });
+  const group = canvas.addGroup();
+  const subGroup = group.addGroup();
+  const rect = subGroup.addShape('rect', {
+    id: 'element',
+    attrs: {
+      x: 0,
+      y: 0,
+      width: 20,
+      height: 20,
+      fill: 'red'
+    }
+  });
+  canvas.draw();
+
   it('single event of a type', () => {
     let clicked = false;
     let evt = null;
@@ -53,17 +56,22 @@ describe('event', () => {
   it('event bubbling', () => {
     let rectClicked = false;
     let groupClicked = false;
+    let count = 0;
     rect.on('mousedown', function() {
       rectClicked = true;
     });
     group.on('mousedown', function() {
       groupClicked = true;
+      count++;
     });
-    rect.emit('mousedown', new Event('mousedown'));
+    const e = Util.clone(new Event('mousedown'));
+    e.target = rect;
+    rect.emit('mousedown', e);
     rect.removeEvent('mousedown');
     group.removeEvent('mousedown');
     expect(rectClicked).to.be.true;
     expect(groupClicked).to.be.true;
+    expect(count).to.equal(1); // prevent bubbling multiple times
   });
   it('mouseenter & mouseleave do not propagate', () => {
     let rectEnter = false;
@@ -84,8 +92,14 @@ describe('event', () => {
     group.on('mouseleave', () => {
       groupLeave = true;
     });
-    rect.emit('mouseenter', new Event('mousemove'));
-    rect.emit('mouseleave', new Event('mousemove'));
+
+    const e1 = Util.clone(new Event('mousemove'));
+    e1.target = rect;
+    rect.emit('mouseenter', e1);
+
+    const e2 = Util.clone(new Event('mouseleave'));
+    e2.target = rect;
+    rect.emit('mouseleave', e2);
 
     expect(rectEnter).to.be.true;
     expect(rectLeave).to.be.true;
@@ -113,8 +127,15 @@ describe('event', () => {
     group.on('mouseout', () => {
       groupLeave = true;
     });
-    rect.emit('mouseover', new Event('mouseover'));
-    rect.emit('mouseout', new Event('mouseout'));
+
+    const e1 = Util.clone(new Event('mouseover'));
+    e1.target = rect;
+    rect.emit('mouseover', e1);
+
+    const e2 = Util.clone(new Event('mouseout'));
+    e2.target = rect;
+    rect.emit('mouseout', e2);
+
     expect(rectEnter).to.be.true;
     expect(rectLeave).to.be.true;
     expect(groupEnter).to.be.true;
@@ -166,11 +187,20 @@ describe('event', () => {
       groupEnd = true;
     });
     rect.on('drag', () => {
-      ++count;
+      count++;
     });
-    rect.emit('dragstart', new Event('dragstart'));
+
+
+    const e1 = Util.clone(new Event('dragstart'));
+    e1.target = rect;
+    rect.emit('dragstart', e1);
+
     rect.emit('drag', new Event('drag'));
-    rect.emit('dragend', new Event('dragend'));
+
+    const e2 = Util.clone(new Event('dragend'));
+    e2.target = rect;
+    rect.emit('dragend', e2);
+
     expect(count).to.equal(1);
     rect.removeEvent();
     group.removeEvent();

@@ -12,6 +12,7 @@
   "module": "src/index.js",
   "homepage": "https://github.com/antvis/g",
   "author": "https://github.com/orgs/antvis/people",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git@github.com:antvis/g.git"
