@@ -362,4 +362,29 @@ describe('event dispatcher', () => {
     expect(target).to.equal(circle);
     circle.removeEvent('drop');
   });
+  it('destroyed shape event', () => {
+    let count = 0;
+    const bbox = canvas._cfg.el.getBoundingClientRect();
+    const circle = canvas.addShape('circle', {
+      attrs: {
+        x: 50,
+        y: 50,
+        r: 30,
+        fill: '#ccc',
+        cursor: 'pointer'
+      }
+    });
+    canvas.draw();
+    circle.on('mousedown', () => {
+      count += 1;
+    });
+    Simulate.simulate(canvas._cfg.el, 'mousedown', {
+      clientX: bbox.left + 30,
+      clientY: bbox.top + 30
+    });
+    expect(canvas._cfg.el.style.cursor).to.equal('pointer');
+    expect(count).to.equal(1);
+    circle.destroy();
+    circle.emit('mousedown', { target: circle });
+  });
 });
