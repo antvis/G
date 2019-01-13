@@ -85,7 +85,7 @@ module.exports = {
         if (dragging) {
           this._emitEvent('dragleave', e, point, preShape);
         }
-        if (!preShape.destroyed && !preShape.removed) {
+        if (!preShape.get('destroyed')) {
           el.style.cursor = preShape.attr('cursor') || 'default';
         }
       }
@@ -136,14 +136,14 @@ module.exports = {
         mousedown = null;
       }
     }
-    if (shape && !shape.destroyed) {
+    if (shape && !shape.get('destroyed')) {
       el.style.cursor = shape.attr('cursor') || 'default';
     }
   },
   _emitEvent(type, evt, point, shape) {
     const event = this._getEventObj(type, evt, point, shape);
     const emitShape = this._getEmitter(shape, evt);
-    emitShape && emitShape.emit(type, event);
+    emitShape && !emitShape.get('destroyed') && emitShape.emit(type, event);
     return emitShape;
   }
 };
