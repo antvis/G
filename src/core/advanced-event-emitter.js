@@ -31,7 +31,7 @@ Util.augment(AdvancedEE, EventEmitter, {
     }
     if (PROPOGATE_EVENTS.indexOf(evt) >= 0 && e.target === this /* prevent bubbling multiple times */) {
       let shape = this._cfg.parent;
-      while (shape && !shape.removed && !shape.destroyed) {
+      while (shape && !shape.get('destroyed')) {
         shape.emit.apply(shape, args);
         shape = shape._cfg.parent;
       }
