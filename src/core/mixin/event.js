@@ -1,7 +1,6 @@
 const Util = require('../../util/index');
 const Event = require('../../event');
 const EVENTS = [
-  'click',
   'mousedown',
   'mouseup',
   'dblclick',
@@ -13,8 +12,11 @@ const EVENTS = [
   'mouseleave'
 ];
 
+const CLICK_OFFSET = 10;
+
 let preShape = null;
 let mousedown = null;
+let mousedownOffset = {};
 let dragging = null;
 
 module.exports = {
@@ -117,15 +119,21 @@ module.exports = {
       this._emitEvent(type, e, point, shape || this);
       if (!dragging && type === 'mousedown') {
         mousedown = shape;
+        mousedownOffset = { x: e.clientX, y: e.clientY };
       }
       if (type === 'mouseup') {
-        mousedown = null;
+        const dist = (mousedownOffset.x - e.clientX) * (mousedownOffset.x - e.clientX) +
+          (mousedownOffset.y - e.clientY) * (mousedownOffset.y - e.clientY);
+        if (dist < CLICK_OFFSET) {
+          this._emitEvent('click', e, point, mousedown);
+        }
         if (dragging) {
           dragging._cfg.capture = true;
           this._emitEvent('dragend', e, point, dragging);
           dragging = null;
           this._emitEvent('drop', e, point, shape || this);
         }
+        mousedown = null;
       }
     }
     if (shape && !shape.destroyed) {
