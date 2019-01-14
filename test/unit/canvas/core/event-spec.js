@@ -65,9 +65,13 @@ describe('event dispatcher', () => {
       clicked = true;
       evt = event;
     });
-    Simulate.simulate(canvas._cfg.el, 'click', {
+    Simulate.simulate(canvas._cfg.el, 'mousedown', {
       clientY: bbox.top + 5,
       clientX: bbox.left + 5
+    });
+    Simulate.simulate(canvas._cfg.el, 'mouseup', {
+      clientY: bbox.top + 6,
+      clientX: bbox.left + 6
     });
     expect(clicked).to.be.true;
     expect(evt).not.to.be.null;
@@ -76,17 +80,17 @@ describe('event dispatcher', () => {
     const bbox = canvas._cfg.el.getBoundingClientRect();
     let clicked1 = false;
     let clicked2 = false;
-    rect.on('click', function() {
+    rect.on('mousedown', function() {
       clicked1 = true;
     });
-    rect.on('click', function() {
+    rect.on('mousedown', function() {
       clicked2 = true;
     });
-    Simulate.simulate(canvas._cfg.el, 'click', {
+    Simulate.simulate(canvas._cfg.el, 'mousedown', {
       clientY: bbox.top + 5,
       clientX: bbox.left + 5
     });
-    rect.removeEvent('click');
+    rect.removeEvent('mousedown');
     expect(clicked1).to.be.true;
     expect(clicked2).to.be.true;
   });
@@ -228,6 +232,7 @@ describe('event dispatcher', () => {
     let groupDrag = false;
     let rectEnd = false;
     let groupEnd = false;
+    let clicked = false;
     let count = 0;
     rect.on('dragstart', () => {
       rectDrag = true;
@@ -244,6 +249,9 @@ describe('event dispatcher', () => {
     rect.on('drag', () => {
       ++count;
     });
+    rect.on('click', () => {
+      clicked = true;
+    });
     Simulate.simulate(canvas._cfg.el, 'mousedown', {
       clientY: bbox.top + 5,
       clientX: bbox.left + 5
@@ -252,6 +260,7 @@ describe('event dispatcher', () => {
     expect(groupDrag).to.be.false;
     expect(rectEnd).to.be.false;
     expect(groupEnd).to.be.false;
+    expect(clicked).to.be.false;
     Simulate.simulate(canvas._cfg.el, 'mousemove', {
       clientY: bbox.top + 5,
       clientX: bbox.left + 5
@@ -260,6 +269,7 @@ describe('event dispatcher', () => {
     expect(groupDrag).to.be.true;
     expect(rectEnd).to.be.false;
     expect(groupEnd).to.be.false;
+    expect(clicked).to.be.false;
     Simulate.simulate(canvas._cfg.el, 'mousemove', {
       clientY: bbox.top + 10,
       clientX: bbox.left + 10
@@ -273,6 +283,7 @@ describe('event dispatcher', () => {
     group.removeEvent();
     expect(rectEnd).to.be.true;
     expect(groupEnd).to.be.true;
+    expect(clicked).to.be.false;
   });
   it('dragenter & dragleave', () => {
     const bbox = canvas._cfg.el.getBoundingClientRect();
@@ -350,5 +361,30 @@ describe('event dispatcher', () => {
     expect(target).not.to.be.undefined;
     expect(target).to.equal(circle);
     circle.removeEvent('drop');
+  });
+  it('destroyed shape event', () => {
+    let count = 0;
+    const bbox = canvas._cfg.el.getBoundingClientRect();
+    const circle = canvas.addShape('circle', {
+      attrs: {
+        x: 50,
+        y: 50,
+        r: 30,
+        fill: '#ccc',
+        cursor: 'pointer'
+      }
+    });
+    canvas.draw();
+    circle.on('mousedown', () => {
+      count += 1;
+    });
+    Simulate.simulate(canvas._cfg.el, 'mousedown', {
+      clientX: bbox.left + 30,
+      clientY: bbox.top + 30
+    });
+    expect(canvas._cfg.el.style.cursor).to.equal('pointer');
+    expect(count).to.equal(1);
+    circle.destroy();
+    circle.emit('mousedown', { target: circle });
   });
 });
