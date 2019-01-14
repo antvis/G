@@ -64,6 +64,8 @@ describe('event dispatcher', () => {
     rect.on('click', function(event) {
       clicked = true;
       evt = event;
+      expect(event.x).to.equal(6);
+      expect(event.y).to.equal(6);
     });
     Simulate.simulate(canvas._cfg.el, 'mousedown', {
       clientY: bbox.top + 5,
