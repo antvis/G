@@ -1,7 +1,6 @@
 const Util = require('../../util/index');
 const Event = require('../../event');
 const EVENTS = [
-  'click',
   'mousedown',
   'mouseup',
   'dblclick',
@@ -13,8 +12,11 @@ const EVENTS = [
   'mouseleave'
 ];
 
+const CLICK_OFFSET = 10;
+
 let preShape = null;
 let mousedown = null;
+let mousedownOffset = {};
 let dragging = null;
 
 module.exports = {
@@ -83,7 +85,7 @@ module.exports = {
         if (dragging) {
           this._emitEvent('dragleave', e, point, preShape);
         }
-        if (!preShape.destroyed && !preShape.removed) {
+        if (!preShape.get('destroyed')) {
           el.style.cursor = preShape.attr('cursor') || 'default';
         }
       }
@@ -117,25 +119,31 @@ module.exports = {
       this._emitEvent(type, e, point, shape || this);
       if (!dragging && type === 'mousedown') {
         mousedown = shape;
+        mousedownOffset = { x: e.clientX, y: e.clientY };
       }
       if (type === 'mouseup') {
-        mousedown = null;
+        const dist = (mousedownOffset.x - e.clientX) * (mousedownOffset.x - e.clientX) +
+          (mousedownOffset.y - e.clientY) * (mousedownOffset.y - e.clientY);
+        if (dist < CLICK_OFFSET) {
+          this._emitEvent('click', e, point, mousedown);
+        }
         if (dragging) {
           dragging._cfg.capture = true;
           this._emitEvent('dragend', e, point, dragging);
           dragging = null;
           this._emitEvent('drop', e, point, shape || this);
         }
+        mousedown = null;
       }
     }
-    if (shape && !shape.destroyed) {
+    if (shape && !shape.get('destroyed')) {
       el.style.cursor = shape.attr('cursor') || 'default';
     }
   },
   _emitEvent(type, evt, point, shape) {
     const event = this._getEventObj(type, evt, point, shape);
     const emitShape = this._getEmitter(shape, evt);
-    emitShape && emitShape.emit(type, event);
+    emitShape && !emitShape.get('destroyed') && emitShape.emit(type, event);
     return emitShape;
   }
 };
