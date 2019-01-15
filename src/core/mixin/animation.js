@@ -1,6 +1,6 @@
 const Util = require('../../util/index');
 
-const ReservedProps = { delay: 'delay', rotate: 'rotate' };
+const ReservedProps = { delay: 'delay', repeat: 'repeat', rotate: 'rotate' };
 const colorRalaredProps = { fill: 'fill', stroke: 'stroke', fillStyle: 'fillStyle', strokeStyle: 'strokeStyle' };
 
 function getFromAttrs(toAttrs, shape) {
@@ -21,14 +21,15 @@ function getFormatProps(props, shape) {
   for (const k in props) {
     if (k === 'transform') {
       rst.matrix = Util.transform(shape.getMatrix(), props[k]);
-    } else if (k === 'rotate') {
-      rst.matrix = Util.transform(shape.getMatrix(), [[ 'r', props[k] ]]);
     } else if (k === 'matrix') {
       rst.matrix = props[k];
     } else if (colorRalaredProps[k] && /^[r,R,L,l]{1}[\s]*\(/.test(props[k])) {
       // 渐变色不支持动画
       continue;
     } else if (!ReservedProps[k] && attrs[k] !== props[k]) {
+      if (k === 'rotate') {
+        shape._attrs.rotate = shape._attrs.rotate || 0;
+      }
       rst.attrs[k] = props[k];
     }
   }
@@ -36,6 +37,9 @@ function getFormatProps(props, shape) {
 }
 
 function checkExistedAttrs(animators, animator) {
+  if (animator.onFrame) {
+    return;
+  }
   const delay = animator.delay;
   const hasOwnProperty = Object.prototype.hasOwnProperty;
   Util.each(animator.toAttrs, (v, k) => {
@@ -90,14 +94,8 @@ module.exports = {
     } else {
       easing = easing ? easing : 'easeLinear';
     }
-    const formatProps = getFormatProps(toProps, self);
-
-    // 记录动画属性
-    const animator = {
-      fromAttrs: getFromAttrs(formatProps, self),
-      toAttrs: formatProps.attrs,
-      fromMatrix: Util.clone(self.getMatrix()),
-      toMatrix: formatProps.matrix,
+    let animator = {
+      repeat: toProps.repeat,
       duration,
       easing,
       callback,
@@ -105,6 +103,19 @@ module.exports = {
       startTime: timeline.getTime(),
       id: Util.uniqueId()
     };
+    if (toProps.onFrame) {
+      animator.onFrame = toProps.onFrame;
+    } else {
+      const formatProps = getFormatProps(toProps, self);
+      animator = {
+        fromAttrs: getFromAttrs(formatProps, self),
+        toAttrs: formatProps.attrs,
+        fromMatrix: Util.clone(self.getMatrix()),
+        toMatrix: formatProps.matrix,
+        ...animator
+      };
+      animator.fromAttrs = getFromAttrs(formatProps, self);
+    }
     // 如果动画队列中已经有这个图形了
     if (animators.length > 0) {
       // 先检查是否需要合并属性。若有相同的动画，将该属性从前一个动画中删除,直接用后一个动画中
