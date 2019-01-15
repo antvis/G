@@ -65,6 +65,7 @@ function _update(self, animator, ratio) {
       }
     }
   }
+
   if (toMatrix) {
     const mf = interpolateArray(animator.fromMatrix, toMatrix);
     const cM = mf(ratio);
@@ -84,7 +85,7 @@ function update(shape, animator, elapsed) {
   const easing = animator.easing;
   // 已执行时间
   elapsed = elapsed - startTime - animator.delay;
-  if (animator.toAttrs.repeat) {
+  if (animator.repeat) {
     ratio = (elapsed % duration) / duration;
     ratio = d3Ease[easing](ratio);
   } else {
@@ -99,8 +100,12 @@ function update(shape, animator, elapsed) {
       return true;
     }
   }
-
-  _update(shape, animator, ratio);
+  if (animator.onFrame) {
+    const attrs = animator.onFrame(ratio);
+    shape.attr(attrs);
+  } else {
+    _update(shape, animator, ratio);
+  }
   return false;
 }
 
