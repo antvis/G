@@ -61,11 +61,10 @@ module.exports = {
     }
   },
   _getEventObj(type, e, point, target) {
-    const pixelRatio = this.get('pixelRatio');
     const event = new Event(type, e, true, true);
     // 事件的x,y应该是基于画布左上角的，与canvas的matrix无关
-    event.x = point.x / pixelRatio;
-    event.y = point.y / pixelRatio;
+    event.x = point.x;
+    event.y = point.y;
     event.clientX = e.clientX;
     event.clientY = e.clientY;
     event.currentTarget = target;
