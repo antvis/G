@@ -106,7 +106,7 @@ module.exports = {
     if (toProps.onFrame) {
       animator.onFrame = toProps.onFrame;
     } else {
-      const formatProps = toProps.onFrame ? toProps.onFrame : getFormatProps(toProps, self);
+      const formatProps = getFormatProps(toProps, self);
       animator = {
         fromAttrs: getFromAttrs(formatProps, self),
         toAttrs: formatProps.attrs,
