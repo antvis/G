@@ -20,5 +20,5 @@ module.exports = {
   Event: require('./event'),
   EventEmitter: require('./core/event-emitter'),
   // version, etc.
-  version: '3.4.0-beta.6'
+  version: '3.4.0-beta.7'
 };
