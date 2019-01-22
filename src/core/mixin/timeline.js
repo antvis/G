@@ -93,7 +93,8 @@ function update(shape, animator, elapsed) {
     if (ratio < 1) {
       ratio = d3Ease[easing](ratio);
     } else {
-      shape.attr(animator.toAttrs);
+      const attrs = animator.toAttrs || animator.onFrame(1);
+      shape.attr(attrs);
       if (animator.toMatrix) {
         shape.setMatrix(animator.toMatrix);
       }
