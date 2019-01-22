@@ -292,7 +292,7 @@ describe('animate', function() {
     }
     canvas.draw();
   });*/
-  it('onFrame rotate Math.PI * 2', () => {
+  it('onFrame rotate Math.PI * 2', done => {
     let count = 0;
     const shape = canvas.addShape('rect', {
       attrs: {
@@ -304,9 +304,13 @@ describe('animate', function() {
       }
     });
     let matrix = shape.getMatrix();
+    let end = false;
     shape.animate({
       onFrame(ratio) {
         count++;
+        if (ratio === 1) {
+          end = true;
+        }
         const rad = ratio * Math.PI * 2;
         const toMatrix = Util.transform(matrix, [
           [ 't', -210, -110 ],
@@ -318,16 +322,19 @@ describe('animate', function() {
         };
       }, repeat: false }, 1000, function() {
         expect(count > 50).to.be.true;
+        matrix = shape.getMatrix();
+        console.log(matrix);
+        expect(matrix[0]).to.equal(1);
+        expect(Util.isNumberEqual(matrix[1], 0)).to.be.true;
+        expect(matrix[2]).to.equal(0);
+        expect(Util.isNumberEqual(matrix[3], 0)).to.be.true;
+        expect(matrix[4]).to.equal(1);
+        expect(matrix[5]).to.equal(0);
+        expect(Util.isNumberEqual(matrix[6], 0)).to.be.true;
+        expect(Util.isNumberEqual(matrix[7], 0)).to.be.true;
+        expect(matrix[8]).to.equal(1);
+        expect(end).to.be.true;
+        done();
       });
-    matrix = shape.getMatrix();
-    expect(matrix[0]).to.equal(1);
-    expect(matrix[1]).to.equal(0);
-    expect(matrix[2]).to.equal(0);
-    expect(matrix[3]).to.equal(0);
-    expect(matrix[4]).to.equal(1);
-    expect(matrix[5]).to.equal(0);
-    expect(matrix[6]).to.equal(0);
-    expect(matrix[7]).to.equal(0);
-    expect(matrix[8]).to.equal(1);
   });
 });
