@@ -38,7 +38,7 @@ function getFormatProps(props, shape) {
 
 function checkExistedAttrs(animators, animator) {
   if (animator.onFrame) {
-    return;
+    return animators;
   }
   const delay = animator.delay;
   const hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -132,7 +132,7 @@ module.exports = {
     const animators = this.get('animators');
     // 将动画执行到最后一帧，执行回调
     Util.each(animators, animator => {
-      this.attr(animator.toAttrs);
+      this.attr(animator.toAttrs || animator.onFrame(1));
       if (animator.toMatrix) {
         this.attr('matrix', animator.toMatrix);
       }
