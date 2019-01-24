@@ -56,6 +56,7 @@ Util.augment(Path, {
     }
     self.setSilent('segments', segments);
     self.setSilent('tCache', null);
+    self.setSilent('totalLength', null);
     self.setSilent('box', null);
   },
   calculateBox() {
@@ -147,7 +148,7 @@ Util.augment(Path, {
   },
   getTotalLength() {
     const totalLength = this.get('totalLength');
-    if (totalLength) {
+    if (!Util.isNil(totalLength)) {
       return totalLength;
     }
     this._calculateCurve();
