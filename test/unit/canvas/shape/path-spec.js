@@ -7,6 +7,10 @@ const div = document.createElement('div');
 div.id = 'canvas-path';
 document.body.appendChild(div);
 
+function numberEqual(a, b) {
+  return Math.abs(a - b) < 0.01;
+}
+
 describe('Path', function() {
 
   const canvas = new Canvas({
@@ -27,7 +31,6 @@ describe('Path', function() {
     expect(path.attr('path')).to.undefined;
     expect(path.attr('lineWidth')).to.equal(1);
     expect(path.getBBox()).to.be.null;
-
     canvas.add(path);
     canvas.draw();
   });
@@ -52,6 +55,7 @@ describe('Path', function() {
     expect(box.maxX).to.equal(300.5);
     expect(box.minY).to.equal(199.5);
     expect(box.maxY).to.equal(300.5);
+    expect(numberEqual(path.getTotalLength(), Math.sqrt(20000, 2))).to.be.true;
   });
 
   it('lineWidth', function() {
@@ -100,6 +104,7 @@ describe('Path', function() {
       }
     });
     expect(path.attr('fill')).to.equal('red');
+    expect(numberEqual(path.getTotalLength(), Math.sqrt(20000, 2) + 200)).to.be.true;
     canvas.add(path);
     canvas.draw();
   });
@@ -128,7 +133,6 @@ describe('Path', function() {
         })
       }
     });
-
     canvas.add(path);
     canvas.draw();
   });
@@ -151,6 +155,7 @@ describe('Path', function() {
     expect(path.isHit(400, 500)).to.be.true;
     expect(path.isHit(450, 550)).to.be.true;
     expect(path.isHit(405, 450)).to.be.true;
+    expect(numberEqual(path.getTotalLength(), 100 + Math.sqrt(5000, 2) + Math.sqrt(25000))).to.be.true;
     canvas.add(path);
     canvas.draw();
   });
@@ -171,6 +176,7 @@ describe('Path', function() {
     expect(path.isHit(300, 400)).to.be.true;
     expect(path.isHit(400, 400)).to.be.true;
     expect(path.isHit(500, 400)).to.be.true;
+    expect(numberEqual(path.getTotalLength(), 300)).to.be.true;
     canvas.add([ path ]);
     canvas.draw();
   });
@@ -191,6 +197,7 @@ describe('Path', function() {
     expect(path.isHit(200, 500)).to.be.true;
     expect(path.isHit(200, 600)).to.be.true;
     expect(path.isHit(200, 700)).to.be.true;
+    expect(numberEqual(path.getTotalLength(), 300)).to.be.true;
     canvas.add([ path ]);
     canvas.draw();
   });
@@ -319,6 +326,18 @@ describe('Path', function() {
     expect(path1.isHit(500, 400)).to.be.true;
     canvas.add([ path, path1 ]);
     canvas.draw();
+
+    const path3 = new G.Path({
+      attrs: {
+        path: [
+          [ 'M', 200, 400 ],
+          [ 'C', 200, 500, 200, 600, 200, 700 ]
+        ],
+        stroke: 'red',
+        startArrow: true
+      }
+    });
+    expect(path3.getTotalLength()).to.equal(300);
   });
 
   it('s and S', function() {
@@ -389,7 +408,7 @@ describe('Path', function() {
         endArrow: true
       }
     });
-
+    expect(numberEqual(path.getTotalLength(), 383.4562355)).to.be.true;
     const path1 = new G.Path({
       attrs: {
         path: [
@@ -401,6 +420,7 @@ describe('Path', function() {
         endArrow: true
       }
     });
+    expect(numberEqual(path.getTotalLength(), 383.4562355)).to.be.true;
     expect(path.isHit(50, 50)).to.be.true;
     expect(path.isHit(50, 150)).to.be.true;
 
