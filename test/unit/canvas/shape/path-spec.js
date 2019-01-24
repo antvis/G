@@ -11,7 +11,7 @@ function numberEqual(a, b) {
   return Math.abs(a - b) < 0.01;
 }
 
-describe.only('Path', function() {
+describe('Path', function() {
 
   const canvas = new Canvas({
     containerId: 'canvas-path',
