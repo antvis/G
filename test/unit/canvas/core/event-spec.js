@@ -36,7 +36,7 @@ describe('event emitter', () => {
     expect(path._cfg._events.event.length).to.equal(1);
     expect(path._cfg._events.event[0].callback).to.equal(fn1);
     expect(!!path._cfg._events.event[0].one).to.be.false;
-    path.on('event', fn2, true);
+    path.one('event', fn2);
     expect(path._cfg._events.event.length).to.equal(2);
     expect(path._cfg._events.event[1].callback).to.equal(fn2);
     expect(!!path._cfg._events.event[1].one).to.be.true;
@@ -385,7 +385,7 @@ describe('event dispatcher', () => {
     circle.destroy();
     circle.emit('mousedown', { target: circle });
   });
-  it.only('click & contextmenu', () => {
+  it('click & contextmenu', () => {
     let clicked = false;
     let contextmenu = false;
     const bbox = canvas._cfg.el.getBoundingClientRect();
