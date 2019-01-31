@@ -129,8 +129,6 @@ module.exports = {
           (mousedownOffset.y - e.clientY) * (mousedownOffset.y - e.clientY);
         if (dist < CLICK_OFFSET) {
           this._emitEvent('click', e, point, mousedown || this);
-        } else {
-          console.log(dist);
         }
         if (dragging) {
           dragging._cfg.capture = true;
