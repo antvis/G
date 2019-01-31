@@ -385,4 +385,42 @@ describe('event dispatcher', () => {
     circle.destroy();
     circle.emit('mousedown', { target: circle });
   });
+  it.only('click & contextmenu', () => {
+    let clicked = false;
+    let contextmenu = false;
+    const bbox = canvas._cfg.el.getBoundingClientRect();
+    const circle = canvas.addShape('circle', {
+      attrs: {
+        x: 50,
+        y: 50,
+        r: 30,
+        fill: '#ccc',
+        cursor: 'pointer'
+      }
+    });
+    canvas.draw();
+    circle.on('click', () => {
+      clicked = true;
+    });
+    circle.on('contextmenu', () => {
+      contextmenu = true;
+    });
+    Simulate.simulate(canvas._cfg.el, 'mousedown', {
+      clientX: bbox.left + 30,
+      clientY: bbox.top + 30
+    });
+    Simulate.simulate(canvas._cfg.el, 'mouseup', {
+      clientX: bbox.left + 30,
+      clientY: bbox.top + 30
+    });
+    expect(clicked).to.be.true;
+    clicked = false;
+    const event = new window.MouseEvent('contextmenu', {
+      clientX: bbox.left + 30,
+      clientY: bbox.top + 30
+    });
+    canvas._cfg.el.dispatchEvent(event);
+    expect(clicked).to.be.false;
+    expect(contextmenu).to.be.true;
+  });
 });
