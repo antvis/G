@@ -12,7 +12,8 @@ const EVENTS = [
   'mouseleave'
 ];
 
-const CLICK_OFFSET = 10;
+const CLICK_OFFSET = 40;
+const LEFT_BTN_CODE = 0;
 
 let preShape = null;
 let mousedown = null;
@@ -118,15 +119,18 @@ module.exports = {
       preShape = shape;
     } else {
       this._emitEvent(type, e, point, shape || this);
-      if (!dragging && type === 'mousedown') {
+      // e.button === 0 保证按下左键，防止点击右键触发click
+      if (!dragging && type === 'mousedown' && e.button === LEFT_BTN_CODE) {
         mousedown = shape;
         mousedownOffset = { x: e.clientX, y: e.clientY };
       }
-      if (type === 'mouseup') {
+      if (type === 'mouseup' && e.button === LEFT_BTN_CODE) {
         const dist = (mousedownOffset.x - e.clientX) * (mousedownOffset.x - e.clientX) +
           (mousedownOffset.y - e.clientY) * (mousedownOffset.y - e.clientY);
         if (dist < CLICK_OFFSET) {
           this._emitEvent('click', e, point, mousedown || this);
+        } else {
+          console.log(dist);
         }
         if (dragging) {
           dragging._cfg.capture = true;
