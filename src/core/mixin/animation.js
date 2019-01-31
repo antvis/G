@@ -114,7 +114,6 @@ module.exports = {
         toMatrix: formatProps.matrix,
         ...animator
       };
-      animator.fromAttrs = getFromAttrs(formatProps, self);
     }
     // 如果动画队列中已经有这个图形了
     if (animators.length > 0) {
