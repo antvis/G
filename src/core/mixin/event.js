@@ -97,7 +97,9 @@ module.exports = {
       }
       if (shape) {
         if (!dragging) {
-          if (mousedown === shape) {
+          if (mousedown === shape &&
+            (mousedownOffset.x - e.clientX) * (mousedownOffset.x - e.clientX) +
+            (mousedownOffset.y - e.clientY) * (mousedownOffset.y - e.clientY) >= CLICK_OFFSET) {
             dragging = shape;
             mousedown = null;
             this._emitEvent('dragstart', e, point, shape);
