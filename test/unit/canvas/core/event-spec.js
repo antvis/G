@@ -7,8 +7,8 @@ div.id = 'canvas-event';
 document.body.appendChild(div);
 const canvas = new G.Canvas({
   containerId: 'canvas-event',
-  width: 1000,
-  height: 1000,
+  width: 200,
+  height: 200,
   pixelRatio: 2
 });
 const group = canvas.addGroup();
@@ -260,8 +260,8 @@ describe('event dispatcher', () => {
     expect(groupEnd).to.be.false;
     expect(clicked).to.be.false;
     Simulate.simulate(canvas._cfg.el, 'mousemove', {
-      clientY: bbox.top + 5,
-      clientX: bbox.left + 5
+      clientY: bbox.top + 15,
+      clientX: bbox.left + 15
     });
     expect(rectDrag).to.be.true;
     expect(groupDrag).to.be.true;
@@ -422,5 +422,55 @@ describe('event dispatcher', () => {
     canvas._cfg.el.dispatchEvent(event);
     expect(clicked).to.be.false;
     expect(contextmenu).to.be.true;
+  });
+  it('click & dragstart', () => {
+    const bbox = canvas._cfg.el.getBoundingClientRect();
+    let clicked = false;
+    let dragged = false;
+    const circle = canvas.addShape('circle', {
+      attrs: {
+        x: 50,
+        y: 50,
+        r: 30,
+        fill: '#ccc',
+        cursor: 'pointer'
+      }
+    });
+    canvas.draw();
+    circle.on('click', () => {
+      clicked = true;
+    });
+    circle.on('dragstart', () => {
+      dragged = true;
+    });
+    Simulate.simulate(canvas._cfg.el, 'mousedown', {
+      clientX: bbox.left + 50,
+      clientY: bbox.top + 50
+    });
+    Simulate.simulate(canvas._cfg.el, 'mousemove', {
+      clientX: bbox.left + 52,
+      clientY: bbox.top + 52
+    });
+    Simulate.simulate(canvas._cfg.el, 'mouseup', {
+      clientX: bbox.left + 54,
+      clientY: bbox.top + 54
+    });
+    expect(clicked).to.be.true;
+    expect(dragged).to.be.false;
+    clicked = false;
+    Simulate.simulate(canvas._cfg.el, 'mousedown', {
+      clientX: bbox.left + 50,
+      clientY: bbox.top + 50
+    });
+    Simulate.simulate(canvas._cfg.el, 'mousemove', {
+      clientX: bbox.left + 58,
+      clientY: bbox.top + 58
+    });
+    Simulate.simulate(canvas._cfg.el, 'mouseup', {
+      clientX: bbox.left + 60,
+      clientY: bbox.top + 60
+    });
+    expect(clicked).to.be.false;
+    expect(dragged).to.be.true;
   });
 });

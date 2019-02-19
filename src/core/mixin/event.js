@@ -16,7 +16,7 @@ const CLICK_OFFSET = 40;
 const LEFT_BTN_CODE = 0;
 
 let preShape = null;
-let mousedown = null;
+let mousedownShape = null;
 let mousedownOffset = {};
 let dragging = null;
 
@@ -97,9 +97,12 @@ module.exports = {
       }
       if (shape) {
         if (!dragging) {
-          if (mousedown === shape) {
+          const dx = mousedownOffset.x - e.clientX;
+          const dy = mousedownOffset.y - e.clientY;
+          if (mousedownShape === shape &&
+            dx * dx + dy * dy >= CLICK_OFFSET) {
             dragging = shape;
-            mousedown = null;
+            mousedownShape = null;
             this._emitEvent('dragstart', e, point, shape);
           } else {
             this._emitEvent('mousemove', e, point, shape);
@@ -121,14 +124,15 @@ module.exports = {
       this._emitEvent(type, e, point, shape || this);
       // e.button === 0 保证按下左键，防止点击右键触发click
       if (!dragging && type === 'mousedown' && e.button === LEFT_BTN_CODE) {
-        mousedown = shape;
+        mousedownShape = shape;
         mousedownOffset = { x: e.clientX, y: e.clientY };
       }
       if (type === 'mouseup' && e.button === LEFT_BTN_CODE) {
-        const dist = (mousedownOffset.x - e.clientX) * (mousedownOffset.x - e.clientX) +
-          (mousedownOffset.y - e.clientY) * (mousedownOffset.y - e.clientY);
+        const dx = mousedownOffset.x - e.clientX;
+        const dy = mousedownOffset.y - e.clientY;
+        const dist = dx * dx + dy * dy;
         if (dist < CLICK_OFFSET) {
-          this._emitEvent('click', e, point, mousedown || this);
+          this._emitEvent('click', e, point, mousedownShape || this);
         }
         if (dragging) {
           dragging._cfg.capture = true;
@@ -136,7 +140,7 @@ module.exports = {
           dragging = null;
           this._emitEvent('drop', e, point, shape || this);
         }
-        mousedown = null;
+        mousedownShape = null;
       }
     }
     if (shape && !shape.get('destroyed')) {
