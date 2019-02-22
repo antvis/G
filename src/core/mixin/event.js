@@ -4,7 +4,6 @@ const EVENTS = [
   'mousedown',
   'mouseup',
   'dblclick',
-  'contextmenu',
   'mouseenter',
   'mouseout',
   'mouseover',
@@ -47,6 +46,10 @@ module.exports = {
       if (!Util.isEmpty(e.changedTouches)) {
         self._triggerEvent('touchend', e.changedTouches[0]);
       }
+    }, false);
+    el.addEventListener('contextmenu', e => {
+      self._triggerEvent('contextmenu', e);
+      e.preventDefault();
     }, false);
   },
   _getEmitter(element, event) {
