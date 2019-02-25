@@ -18,6 +18,7 @@ let preShape = null;
 let mousedownShape = null;
 let mousedownOffset = {};
 let dragging = null;
+let dragTimer = null;
 
 module.exports = {
   registerEvent() {
@@ -76,19 +77,20 @@ module.exports = {
     return event;
   },
   _triggerEvent(type, e) {
-    const point = this.getPointByClient(e.clientX, e.clientY);
-    let shape = this.getShape(point.x, point.y, e);
-    const el = this.get('el');
+    const self = this;
+    const point = self.getPointByClient(e.clientX, e.clientY);
+    let shape = self.getShape(point.x, point.y, e);
+    const el = self.get('el');
     // svg原生事件取不到dragover, dragout, drop等事件的对象。这边需要走数学拾取。
-    if (dragging && this.getRenderer() === 'svg') {
-      shape = this.getShape(point.x, point.y);
+    if (dragging && self.getRenderer() === 'svg') {
+      shape = self.getShape(point.x, point.y);
     }
     if (type === 'mousemove') {
       if (preShape && preShape !== shape) {
-        this._emitEvent('mouseout', e, point, preShape);
-        this._emitEvent('mouseleave', e, point, preShape);
+        self._emitEvent('mouseout', e, point, preShape);
+        self._emitEvent('mouseleave', e, point, preShape);
         if (dragging) {
-          this._emitEvent('dragleave', e, point, preShape);
+          self._emitEvent('dragleave', e, point, preShape);
         }
         if (!preShape.get('destroyed')) {
           el.style.cursor = preShape.attr('cursor') || 'default';
@@ -96,31 +98,28 @@ module.exports = {
       }
       // 拖拽过程中不会触发mousemove事件
       if (dragging) {
-        this._emitEvent('drag', e, point, dragging);
+        self._emitEvent('drag', e, point, dragging);
       }
       if (shape) {
         if (!dragging) {
-          const dx = mousedownOffset.x - e.clientX;
-          const dy = mousedownOffset.y - e.clientY;
-          if (mousedownShape === shape &&
-            dx * dx + dy * dy >= CLICK_OFFSET) {
+          if (mousedownShape === shape) {
             dragging = shape;
             mousedownShape = null;
             this._emitEvent('dragstart', e, point, shape);
           } else {
-            this._emitEvent('mousemove', e, point, shape);
+            self._emitEvent('mousemove', e, point, shape);
           }
         }
         if (preShape !== shape) {
-          this._emitEvent('mouseenter', e, point, shape);
-          this._emitEvent('mouseover', e, point, shape);
+          self._emitEvent('mouseenter', e, point, shape);
+          self._emitEvent('mouseover', e, point, shape);
           if (dragging) {
-            this._emitEvent('dragenter', e, point, shape);
+            self._emitEvent('dragenter', e, point, shape);
           }
         }
       } else {
-        const canvasmousemove = this._getEventObj('mousemove', e, point, this);
-        this.emit('mousemove', canvasmousemove);
+        const canvasmousemove = self._getEventObj('mousemove', e, point, self);
+        self.emit('mousemove', canvasmousemove);
       }
       preShape = shape;
     } else {
@@ -135,6 +134,8 @@ module.exports = {
         const dy = mousedownOffset.y - e.clientY;
         const dist = dx * dx + dy * dy;
         if (dist < CLICK_OFFSET) {
+          clearTimeout(dragTimer);
+          dragTimer = null;
           this._emitEvent('click', e, point, mousedownShape || this);
         }
         if (dragging) {
