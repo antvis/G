@@ -96,9 +96,14 @@ module.exports = {
           el.style.cursor = preShape.attr('cursor') || 'default';
         }
       }
-      // 拖拽过程中不会触发mousemove事件
       if (dragging) {
         self._emitEvent('drag', e, point, dragging);
+        /**
+         * H5原生事件中drag同时不会触发mousemove
+         * 但是在上层具有嵌套关系的item事件计算中需要用到drag时的mousemove
+         * 才能计算dragenter etc.
+         */
+        self._emitEvent('mousemove', e, point, shape);
       }
       if (shape) {
         if (!dragging) {

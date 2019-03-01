@@ -232,6 +232,7 @@ describe('event dispatcher', () => {
     let groupEnd = false;
     let clicked = false;
     let count = 0;
+    let mousemove = 0;
     rect.on('dragstart', () => {
       rectDrag = true;
     });
@@ -246,6 +247,9 @@ describe('event dispatcher', () => {
     });
     rect.on('drag', () => {
       ++count;
+    });
+    rect.on('mousemove', () => {
+      ++mousemove;
     });
     rect.on('click', () => {
       clicked = true;
@@ -273,6 +277,7 @@ describe('event dispatcher', () => {
       clientX: bbox.left + 10
     });
     expect(count).to.equal(1);
+    expect(mousemove).to.equal(1);
     Simulate.simulate(canvas._cfg.el, 'mouseup', {
       clientY: bbox.top + 12,
       clientX: bbox.left + 12
