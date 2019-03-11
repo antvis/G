@@ -121,14 +121,14 @@ const catmullRom2bezier = function(crp, z) {
 
 const ellipsePath = function(x, y, rx, ry, a) {
   let res = [];
-  if (a === null && ry === null) {
+  if (a == null && ry == null) {
     ry = rx;
   }
   x = +x;
   y = +y;
   rx = +rx;
   ry = +ry;
-  if (a !== null) {
+  if (a != null) {
     const rad = Math.PI / 180;
     const x1 = x + rx * Math.cos(-ry * rad);
     const x2 = x + rx * Math.cos(-a * rad);
@@ -569,7 +569,7 @@ const base3 = function(t, p1, p2, p3, p4) {
 };
 
 const bezlen = function(x1, y1, x2, y2, x3, y3, x4, y4, z) {
-  if (z === null) {
+  if (z == null) {
     z = 1;
   }
   z = z > 1 ? 1 : z < 0 ? 0 : z;
@@ -735,10 +735,10 @@ const rectPath = function(x, y, w, h, r) {
 };
 
 const box = function(x, y, width, height) {
-  if (x === null) {
+  if (x == null) {
     x = y = width = height = 0;
   }
-  if (y === null) {
+  if (y == null) {
     y = x.y;
     width = x.width;
     height = x.height;
