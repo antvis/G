@@ -428,4 +428,27 @@ describe('event dispatcher', () => {
     expect(clicked).to.be.false;
     expect(contextmenu).to.be.true;
   });
+  it('cursor style', () => {
+    canvas.addShape('circle', {
+      attrs: {
+        x: 100,
+        y: 100,
+        r: 30,
+        fill: '#ccc',
+        cursor: 'pointer'
+      }
+    });
+    const el = canvas._cfg.el;
+    const bbox = el.getBoundingClientRect();
+    Simulate.simulate(canvas._cfg.el, 'mousemove', {
+      clientX: bbox.left + 80,
+      clientY: bbox.top + 80
+    });
+    expect(el.style.cursor).to.equal('pointer');
+    Simulate.simulate(canvas._cfg.el, 'mousemove', {
+      clientX: bbox.left + 160,
+      clientY: bbox.top + 160
+    });
+    expect(el.style.cursor).to.equal('default');
+  });
 });
