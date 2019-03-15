@@ -92,8 +92,10 @@ module.exports = {
         if (dragging) {
           self._emitEvent('dragleave', e, point, preShape);
         }
-        if (!preShape.get('destroyed')) {
-          el.style.cursor = preShape.attr('cursor') || 'default';
+        // 当 mouseleave 触发时，如果拾取到其他 shape 的 mouseenter ，鼠标样式会正常
+        // 当鼠标移出 shape 但是移动到画布上时，没有shape，就不恢复样式。这里判断一下，直接重置
+        if (!shape || shape.destroyed) {
+          el.style.cursor = 'default';
         }
       }
       if (dragging) {
