@@ -103,6 +103,12 @@ Util.augment(Marker, {
     } else {
       method = Marker.Symbols[symbol];
     }
+
+    if (!method) {
+      console.warn(`${symbol} marker is not supported.`);
+      return null;
+    }
+
     return method(x, y, r);
   },
   createPath(context) {
