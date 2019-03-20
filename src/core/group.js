@@ -29,6 +29,14 @@ function find(children, x, y) {
   return rst;
 }
 
+function _cloneArrayAttr(arr) {
+  const result = [];
+  for (let i = 0; i < arr.length; i++) {
+    result.push(arr[i]);
+  }
+  return result;
+}
+
 const Group = function(cfg) {
   Group.superclass.constructor.call(this, cfg);
   this.set('children', []);
@@ -448,7 +456,16 @@ Util.augment(Group, {
   clone() {
     const self = this;
     const children = self._cfg.children;
-    const clone = new Group();
+    const _attrs = self._attrs;
+    const attrs = {};
+    Util.each(_attrs, (i, k) => {
+      if (k === 'matrix') {
+        attrs[k] = _cloneArrayAttr(_attrs[k]);
+      } else {
+        attrs[k] = _attrs[k];
+      }
+    });
+    const clone = new Group({ attrs });
     Util.each(children, child => {
       clone.add(child.clone());
     });

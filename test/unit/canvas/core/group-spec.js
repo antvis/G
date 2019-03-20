@@ -327,6 +327,9 @@ describe('Group', function() {
     group.add(r1);
     const text = new G.Text({ zIndex: 4 });
     group.add(text);
+    group.translate(100, 100);
+    expect(group.getMatrix()[6]).to.equal(100);
+    expect(group.getMatrix()[7]).to.equal(100);
     const clone = group.clone();
     expect(clone).not.to.be.undefined;
     const children = clone._cfg.children;
@@ -334,5 +337,12 @@ describe('Group', function() {
     expect(children[0]._cfg.parent).to.equal(clone);
     expect(children[1]._cfg.parent).to.equal(clone);
     expect(children[1]._cfg.zIndex).to.equal(4);
+    expect(clone.getMatrix()[6]).to.equal(100);
+    expect(clone.getMatrix()[7]).to.equal(100);
+    group.translate(100, 100);
+    expect(group.getMatrix()[6]).to.equal(200);
+    expect(group.getMatrix()[7]).to.equal(200);
+    expect(clone.getMatrix()[6]).to.equal(100);
+    expect(clone.getMatrix()[7]).to.equal(100);
   });
 });
