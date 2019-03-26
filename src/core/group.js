@@ -465,7 +465,7 @@ Util.augment(Group, {
         attrs[k] = _attrs[k];
       }
     });
-    const clone = new Group({ attrs });
+    const clone = new Group({ attrs, canvas: self.get('canvas') });
     Util.each(children, child => {
       clone.add(child.clone());
     });
