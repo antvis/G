@@ -98,11 +98,11 @@ function _addCustomizedArrow(ctx, attrs, x1, y1, x2, y2, isStart) {
   }
   if (d) {
     if (isStart) {
-      x2 = x2 + Math.sin(Math.abs(tan)) * d;
-      y2 = y2 + Math.cos(Math.abs(tan)) * d - 0.5 * ctx.lineWidth;
+      x2 = x2 + Math.sin(tan) * d;
+      y2 = y2 + Math.cos(tan) * d - 0.5 * ctx.lineWidth;
     } else {
-      x2 = x2 - Math.sin(Math.abs(tan)) * d;
-      y2 = y2 - Math.cos(Math.abs(tan)) * d + 0.5 * ctx.lineWidth;
+      x2 = x2 - Math.sin(tan) * d;
+      y2 = y2 - Math.cos(tan) * d + 0.5 * ctx.lineWidth;
     }
   }
   ctx.save();
