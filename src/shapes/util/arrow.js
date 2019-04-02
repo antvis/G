@@ -77,32 +77,20 @@ function parsePath(attrs) {
 function _addCustomizedArrow(ctx, attrs, x1, y1, x2, y2, isStart) {
   const shape = isStart ? attrs.startArrow : attrs.endArrow;
   const d = shape.d;
-  let deg = 0;
   const x = x2 - x1;
   const y = y2 - y1;
-  const tan = Math.atan(x / y);
-  if (y === 0 && x < 0) {
-    deg = Math.PI;
-  } else if (x > 0 && y > 0) {
-    deg = Math.PI / 2 - tan;
-  } else if (x < 0 && y < 0) {
-    deg = -Math.PI / 2 - tan;
-  } else if (x >= 0 && y < 0) {
-    deg = -tan - Math.PI / 2;
-  } else if (x <= 0 && y > 0) {
-    deg = Math.PI / 2 - tan;
-  }
+  const deg = Math.atan2(y, x);
   const path = parsePath(shape);
   if (!path) {
     return;
   }
   if (d) {
     if (isStart) {
-      x2 = x2 + Math.sin(tan) * d;
-      y2 = y2 + Math.cos(tan) * d - 0.5 * ctx.lineWidth;
+      x2 = x2 + Math.cos(deg) * d;
+      y2 = y2 + Math.sin(deg) * d;
     } else {
-      x2 = x2 - Math.sin(tan) * d;
-      y2 = y2 - Math.cos(tan) * d + 0.5 * ctx.lineWidth;
+      x2 = x2 - Math.cos(deg) * d;
+      y2 = y2 - Math.sin(deg) * d;
     }
   }
   ctx.save();
