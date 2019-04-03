@@ -4,7 +4,7 @@ const Canvas = G.Canvas;
 const div = document.createElement('div');
 document.body.appendChild(div);
 
-describe.only('paths with arrows', () => {
+describe('paths with arrows', () => {
   const canvas = new Canvas({
     width: 500,
     height: 500,
