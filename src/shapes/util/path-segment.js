@@ -507,12 +507,10 @@ Util.augment(PathSegment, {
       default: break;
       case 'M':
         context.moveTo(params[1].x - dx, params[1].y - dy);
-        console.log('moveTo', params[1].x - dx, params[1].y - dy);
         break;
       case 'TL':
       case 'L':
         context.lineTo(params[1].x - dx, params[1].y - dy);
-        console.log('lineTo', params[1].x - dx, params[1].y - dy);
         break;
       case 'SQ':
       case 'Q':
