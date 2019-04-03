@@ -496,6 +496,67 @@ Util.augment(PathSegment, {
         break;
     }
   },
+  shortenDraw(context, dx, dy) {
+    const command = this.command;
+    const params = this.params;
+    let point1;
+    let point2;
+    let point3;
+
+    switch (command) {
+      default: break;
+      case 'M':
+        context.moveTo(params[1].x - dx, params[1].y - dy);
+        console.log('moveTo', params[1].x - dx, params[1].y - dy);
+        break;
+      case 'TL':
+      case 'L':
+        context.lineTo(params[1].x - dx, params[1].y - dy);
+        console.log('lineTo', params[1].x - dx, params[1].y - dy);
+        break;
+      case 'SQ':
+      case 'Q':
+        point1 = params[1];
+        point2 = params[2];
+        context.quadraticCurveTo(point1.x, point1.y, point2.x - dx, point2.y - dy);
+        break;
+      case 'C':
+        point1 = params[1];
+        point2 = params[2];
+        point3 = params[3];
+        context.bezierCurveTo(point1.x, point1.y, point2.x, point2.y, point3.x - dx, point3.y - dy);
+        break;
+      case 'A': {
+        const p = params;
+        const p1 = p[1];
+        const p2 = p[2];
+        const cx = p1;
+        const cy = p2;
+        const rx = p[3];
+        const ry = p[4];
+        const theta = p[5];
+        const dTheta = p[6];
+        const psi = p[7];
+        const fs = p[8];
+
+        const r = (rx > ry) ? rx : ry;
+        const scaleX = (rx > ry) ? 1 : rx / ry;
+        const scaleY = (rx > ry) ? ry / rx : 1;
+
+        context.translate(cx, cy);
+        context.rotate(psi);
+        context.scale(scaleX, scaleY);
+        context.arc(0, 0, r, theta, theta + dTheta, 1 - fs);
+        context.scale(1 / scaleX, 1 / scaleY);
+        context.rotate(-psi);
+        context.translate(-cx, -cy);
+        break;
+      }
+      case 'Z':
+        context.closePath();
+        break;
+    }
+  },
   getBBox(lineWidth) {
     const halfWidth = lineWidth / 2;
     const params = this.params;

@@ -105,20 +105,37 @@ Util.augment(Polyline, {
     const self = this;
     const attrs = self._attrs;
     const points = attrs.points;
-    let l;
     let i;
 
     if (points.length < 2) {
       return;
     }
+    const len = points.length - 1;
+    let x1 = points[0][0],
+      y1 = points[0][1],
+      x2 = points[len][0],
+      y2 = points[len][1];
+    // 如果定义了箭头，并且是自定义箭头，线条相应缩进
+    if (attrs.startArrow && attrs.startArrow.d) {
+      const dist = Arrow.shortenPath(points[0][0], points[0][1], points[1][0], points[1][1], attrs.startArrow.d);
+      console.log('start', dist);
+      x1 += dist.dx;
+      y1 += dist.dy;
+    }
+    if (attrs.endArrow && attrs.endArrow.d) {
+      const dist = Arrow.shortenPath(points[len - 1][0], points[len - 1][1], points[len][0], points[len][1], attrs.endArrow.d);
+      console.log('end', dist);
+      x2 -= dist.dx;
+      y2 -= dist.dy;
+    }
     context = context || self.get('context');
     context.beginPath();
 
-    context.moveTo(points[0][0], points[0][1]);
-    for (i = 1, l = points.length - 1; i < l; i++) {
+    context.moveTo(x1, y1);
+    for (i = 1; i < len; i++) {
       context.lineTo(points[i][0], points[i][1]);
     }
-    context.lineTo(points[l][0], points[l][1]);
+    context.lineTo(x2, y2);
   },
   getStartTangent() {
     const points = this.__attrs.points;

@@ -247,17 +247,41 @@ Util.augment(Path, {
   },
   createPath(context) {
     const self = this;
-    const segments = self.get('segments');
+    const attrs = self._attrs;
+    const segments = self.get('segments').concat([]);
+    const segmentsLen = segments.length;
     if (!Util.isArray(segments)) {
       return;
     }
     context = context || self.get('context');
 
     context.beginPath();
-    const segmentsLen = segments.length;
-
-    for (let i = 0; i < segmentsLen; i++) {
+    if (attrs.startArrow && attrs.startArrow.d) {
+      const tangent = self.getStartTangent();
+      const dist = Arrow.shortenPath(tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1], attrs.startArrow.d);
+      segments[0].shortenDraw(context, dist.dx, dist.dy);
+    } else {
+      segments[0].draw(context);
+    }
+    for (let i = 1; i < segmentsLen - 2; i++) {
       segments[i].draw(context);
+    }
+    if (attrs.endArrow && attrs.endArrow.d) {
+      const tangent = self.getEndTangent();
+      const dist = Arrow.shortenPath(tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1], attrs.endArrow.d);
+      const segment = segments[segmentsLen - 1];
+      if (segment.command.toUpperCase() === 'Z') {
+        segments[segmentsLen - 2].shortenDraw(context, dist.dx, dist.dy);
+        segment.draw(context);
+      } else {
+        if (segmentsLen > 2) {
+          segments[segmentsLen - 2].draw(context);
+        }
+        segment.shortenDraw(context, dist.dx, dist.dy);
+      }
+    } else {
+      segments[segmentsLen - 2].draw(context);
+      segments[segmentsLen - 1].draw(context);
     }
   },
   afterPath(context) {

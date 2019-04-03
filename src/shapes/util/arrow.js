@@ -74,29 +74,32 @@ function parsePath(attrs) {
   return segments;
 }
 
+function shortenPath(x1, y1, x2, y2, d) {
+  const rad = Math.atan2(y2 - y1, x2 - x1);
+  return {
+    dx: cos(rad) * d,
+    dy: sin(rad) * d
+  };
+}
+
 function _addCustomizedArrow(ctx, attrs, x1, y1, x2, y2, isStart) {
   const shape = isStart ? attrs.startArrow : attrs.endArrow;
   const d = shape.d;
   const x = x2 - x1;
   const y = y2 - y1;
-  const deg = Math.atan2(y, x);
+  const rad = Math.atan2(y, x);
   const path = parsePath(shape);
   if (!path) {
     return;
   }
   if (d) {
-    if (isStart) {
-      x2 = x2 + Math.cos(deg) * d;
-      y2 = y2 + Math.sin(deg) * d;
-    } else {
-      x2 = x2 - Math.cos(deg) * d;
-      y2 = y2 - Math.sin(deg) * d;
-    }
+    x2 = x2 - cos(rad) * d;
+    y2 = y2 - sin(rad) * d;
   }
   ctx.save();
   ctx.beginPath();
   ctx.translate(x2, y2);
-  ctx.rotate(deg);
+  ctx.rotate(rad);
   for (let i = 0; i < path.length; i++) {
     path[i].draw(ctx);
   }
@@ -120,5 +123,6 @@ module.exports = {
     } else if (attrs.endArrow) {
       _addArrow(ctx, attrs, x1, y1, x2, y2, false);
     }
-  }
+  },
+  shortenPath
 };
