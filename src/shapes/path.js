@@ -248,7 +248,7 @@ Util.augment(Path, {
   createPath(context) {
     const self = this;
     const attrs = self._attrs;
-    const segments = self.get('segments').concat([]);
+    const segments = self.get('segments');
     const segmentsLen = segments.length;
     if (!Util.isArray(segments)) {
       return;
