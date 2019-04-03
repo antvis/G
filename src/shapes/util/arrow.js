@@ -74,7 +74,19 @@ function parsePath(attrs) {
   return segments;
 }
 
-function shortenPath(x1, y1, x2, y2, d) {
+/**
+ * 如果自定义箭头并且有 d 需要做偏移，如果直接画，线条会超出箭头尖端，因此需要根据箭头偏移 d, 返回线需要缩短的距离
+ * |----------------
+ * |<|--------------
+ * |
+ * @param {Number} x1 起始点 x
+ * @param {number} y1 起始点 y
+ * @param {number} x2 箭头作用点 x
+ * @param {number} y2 箭头作用点 y
+ * @param {number} d  箭头沿线条方向的偏移距离
+ * @return {{dx: number, dy: number}} 返回线条偏移距离
+ */
+function getShortenOffset(x1, y1, x2, y2, d) {
   const rad = Math.atan2(y2 - y1, x2 - x1);
   return {
     dx: cos(rad) * d,
@@ -124,5 +136,5 @@ module.exports = {
       _addArrow(ctx, attrs, x1, y1, x2, y2, false);
     }
   },
-  shortenPath
+  getShortenOffset
 };

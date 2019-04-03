@@ -117,12 +117,12 @@ Util.augment(Polyline, {
       y2 = points[len][1];
     // 如果定义了箭头，并且是自定义箭头，线条相应缩进
     if (attrs.startArrow && attrs.startArrow.d) {
-      const dist = Arrow.shortenPath(points[0][0], points[0][1], points[1][0], points[1][1], attrs.startArrow.d);
+      const dist = Arrow.getShortenOffset(points[0][0], points[0][1], points[1][0], points[1][1], attrs.startArrow.d);
       x1 += dist.dx;
       y1 += dist.dy;
     }
     if (attrs.endArrow && attrs.endArrow.d) {
-      const dist = Arrow.shortenPath(points[len - 1][0], points[len - 1][1], points[len][0], points[len][1], attrs.endArrow.d);
+      const dist = Arrow.getShortenOffset(points[len - 1][0], points[len - 1][1], points[len][0], points[len][1], attrs.endArrow.d);
       x2 -= dist.dx;
       y2 -= dist.dy;
     }

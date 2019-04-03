@@ -249,16 +249,19 @@ Util.augment(Path, {
     const self = this;
     const attrs = self._attrs;
     const segments = self.get('segments');
-    const segmentsLen = segments.length;
     if (!Util.isArray(segments)) {
       return;
     }
-    context = context || self.get('context');
 
+    const segmentsLen = segments.length;
+    context = context || self.get('context');
     context.beginPath();
     if (attrs.startArrow && attrs.startArrow.d) {
+      // 如果 startArrow 需要做偏移，为了保证 path 长度一定，需要向内缩进一定距离
+      // 如果直接修改 PathSegment 的 params 会导致画布每重绘一次线条便缩短一截
+      // 所以在绘制时计算要缩进的距离，直接绘制出来
       const tangent = self.getStartTangent();
-      const dist = Arrow.shortenPath(tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1], attrs.startArrow.d);
+      const dist = Arrow.getShortenOffset(tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1], attrs.startArrow.d);
       segments[0].shortenDraw(context, dist.dx, dist.dy);
     } else {
       segments[0].draw(context);
@@ -267,8 +270,10 @@ Util.augment(Path, {
       segments[i].draw(context);
     }
     if (attrs.endArrow && attrs.endArrow.d) {
+      // 如果 endArrow 需要做偏移，跟 startArrow 一样处理
+      // 为了防止结尾为 'Z' 的 segment 缩短不起效，需要取最后两个 segment 特殊处理
       const tangent = self.getEndTangent();
-      const dist = Arrow.shortenPath(tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1], attrs.endArrow.d);
+      const dist = Arrow.getShortenOffset(tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1], attrs.endArrow.d);
       const segment = segments[segmentsLen - 1];
       if (segment.command.toUpperCase() === 'Z') {
         segments[segmentsLen - 2].shortenDraw(context, dist.dx, dist.dy);
