@@ -36,7 +36,8 @@ describe('Shape', function() {
         points: [
           [ 10, 10 ], [ 20, 20 ], [ 50, 50 ]
         ]
-      }
+      },
+      zIndex: 11
     });
     expect(polygon._cfg.parent).not.to.be.undefined;
     const clone = polygon.clone();
@@ -47,5 +48,6 @@ describe('Shape', function() {
     polygon._attrs.points[0][0] = 20;
     expect(polygon._attrs.points[0][0]).to.equal(20);
     expect(clone._attrs.points[0][0]).to.equal(10);
+    expect(clone._cfg.zIndex).to.equal(11);
   });
 });
