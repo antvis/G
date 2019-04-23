@@ -3,6 +3,7 @@ const Element = require('./element');
 const Shape = require('../shapes/index');
 const SHAPE_MAP = {}; // 缓存图形类型
 const INDEX = '_INDEX';
+const CLONE_CFGS = [ 'zIndex', 'capture', 'visible' ];
 
 function getComparer(compare) {
   return function(left, right) {
@@ -468,6 +469,10 @@ Util.augment(Group, {
     const clone = new Group({ attrs, canvas: self.get('canvas') });
     Util.each(children, child => {
       clone.add(child.clone());
+    });
+    // 对于一些在 cfg 中的特殊属性做 clone
+    Util.each(CLONE_CFGS, cfg => {
+      clone._cfg[cfg] = self._cfg[cfg];
     });
     return clone;
   }
