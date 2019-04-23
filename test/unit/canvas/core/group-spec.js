@@ -330,7 +330,7 @@ describe('Group', function() {
     group.translate(100, 100);
     expect(group.getMatrix()[6]).to.equal(100);
     expect(group.getMatrix()[7]).to.equal(100);
-    const clone = group.clone();
+    let clone = group.clone();
     expect(clone).not.to.be.undefined;
     const children = clone._cfg.children;
     expect(children.length).to.equal(2);
@@ -344,5 +344,16 @@ describe('Group', function() {
     expect(group.getMatrix()[7]).to.equal(200);
     expect(clone.getMatrix()[6]).to.equal(100);
     expect(clone.getMatrix()[7]).to.equal(100);
+    expect(clone.get('visible')).to.equal(true);
+    expect(clone.get('zIndex')).to.equal(0);
+    group.hide();
+    group.set('zIndex', 1);
+    group.set('capture', false);
+    expect(group.get('visible')).to.equal(false);
+    expect(group.get('zIndex')).to.equal(1);
+    clone = group.clone();
+    expect(clone.get('visible')).to.equal(false);
+    expect(clone.get('zIndex')).to.equal(1);
+    expect(clone.get('capture')).to.equal(false);
   });
 });
