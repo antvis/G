@@ -29,6 +29,8 @@ const SVG_ATTR_MAP = {
   x: 'x',
   y: 'y',
   r: 'r',
+  rx: 'rx',
+  ry: 'ry',
   width: 'width',
   height: 'height',
   x1: 'x1',
