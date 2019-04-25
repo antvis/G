@@ -235,6 +235,11 @@ class Painter {
     if ((type === 'marker' || type === 'rect') && ~[ 'x', 'y', 'radius', 'r' ].indexOf(name)) {
       return;
     }
+    if (type === 'ellipse' && ~[ 'rx', 'ry' ].indexOf(name)) {
+      el.setAttribute(name, parseInt(value, 10));
+      return;
+    }
+
     // 圆和椭圆不是x, y， 是cx, cy。 marker的x,y 用于计算marker的路径，不需要写到dom
     if (~[ 'circle', 'ellipse' ].indexOf(type) && ~[ 'x', 'y' ].indexOf(name)) {
       el.setAttribute('c' + name, parseInt(value, 10));
