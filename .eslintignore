@@ -1,0 +1,9 @@
+build
+coverage
+dist
+lib
+mocks
+node_modules
+packages/torch/renderer/index.html
+packages/istanbul
+packages/g2/__tests__/data/bubble.js

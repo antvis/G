@@ -1,0 +1,3 @@
+--require source-map-support/register
+--recursive
+__tests__/unit

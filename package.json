@@ -1,0 +1,74 @@
+{
+  "name": "antv-g",
+  "version": "4.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.6",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/preset-typescript": "^7.1.0",
+    "@commitlint/cli": "^7.2.1",
+    "@commitlint/config-angular": "^7.1.2",
+    "@types/lodash": "^4.14.119",
+    "@types/node": "^10.12.18",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.4",
+    "benchmark": "^2.1.4",
+    "chai": "^4.2.0",
+    "eslint": "^5.10.0",
+    "eslint-config-egg": "^7.1.0",
+    "eslint-plugin-html": "^5.0.0",
+    "git-contributor": "~1.0.8",
+    "husky": "^1.3.0",
+    "lerna": "^3.4.3",
+    "source-map-support": "^0.5.9",
+    "ts-loader": "^5.3.1",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.12.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "typescript": "^3.2.2",
+    "webpack": "^4.26.1",
+    "webpack-cli": "^3.1.2",
+    "less": "^3.9.0"
+  },
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna run build",
+    "contributor": "git-contributor",
+    "link": "lerna link",
+    "lint": "npm run eslint",
+    "tslint": "tslint ./packages/**/*.ts",
+    "tslint-fix": "tslint ./packages/**/*.ts --fix",
+    "eslint": "eslint --ext .html,.js ./packages",
+    "eslint-fix": "eslint --fix --ext .html,.js ./packages",
+    "test": "lerna run test"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-angular"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS && npm run lint && npm run bootstrap && npm run test"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.alipay-inc.com:datavis/eva-engine.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@antv/istanbul": "0.0.0",
+    "@antv/torch": "^1.0.0",
+    "lodash": "^4.17.11"
+  }
+}

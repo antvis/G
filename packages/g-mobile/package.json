@@ -1,0 +1,39 @@
+{
+  "name": "@antv/g-mobile",
+  "version": "2.0.0",
+  "description": "A common util collection for antv projects",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "rm -rf lib && tsc",
+    "coverage": "npm run coverage-generator && npm run coverage-viewer",
+    "coverage-generator": "torch --coverage --compile --source-pattern src/*.js,src/**/*.js --opts __tests__/mocha.opts",
+    "coverage-viewer": "torch-coverage",
+    "postinstall": "npm run build",
+    "test": "torch --renderer --compile --opts __tests__/mocha.opts",
+    "test-live": "torch --compile --interactive --opts __tests__/mocha.opts",
+    "tsc": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antvis/util.git"
+  },
+  "keywords": [
+    "util",
+    "antv",
+    "g"
+  ],
+  "author": "https://github.com/orgs/antvis/people",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/antvis/util/issues"
+  },
+  "devDependencies": {
+    "@antv/torch": "^1.0.0",
+    "less": "^3.9.0"
+  },
+  "homepage": "https://github.com/antvis/util#readme",
+  "dependencies": {
+    "@antv/util": "~2.0.0"
+  }
+}

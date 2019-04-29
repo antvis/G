@@ -1,0 +1,103 @@
+{
+  "extends": [
+    "egg"
+  ],
+  "globals": {
+    "$": true,
+    "AMap": true,
+    "AMapUI": true,
+    "DataSet": true,
+    "G2": true,
+    "_": true,
+    "window": true,
+    "document": true,
+    "Image": true,
+    "Event": true,
+    "HTMLElement": true,
+    "ImageData": true,
+    "CodeMirror": true,
+    "routie": true,
+    "Clipboard": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "plugins": [
+    "html"
+  ],
+  "rules": {
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "warn",
+          "error",
+          "dir",
+          "time",
+          "timeEnd"
+        ]
+      }
+    ],
+    "no-bitwise": [
+      0
+    ],
+    "experimentalDecorators": [
+      0
+    ],
+    "linebreak-style": [
+      0
+    ],
+    "comma-dangle": [
+      0,
+      "always-multiline"
+    ],
+    "array-bracket-spacing": [
+      1,
+      "always"
+    ],
+    "key-spacing": [
+      2,
+      {
+        "beforeColon": false,
+        "afterColon": true,
+        "mode": "strict"
+      }
+    ],
+    "padding-line-between-statements": [
+      "error",
+      {
+        "blankLine": "always",
+        "prev": "function",
+        "next": "function"
+      }
+    ],
+    "typedef-whitespace": [
+      true,
+      {
+        "call-signature": "nospace",
+        "index-signature": "nospace",
+        "parameter": "nospace",
+        "property-declaration": "nospace",
+        "variable-declaration": "nospace"
+      },
+      {
+        "call-signature": "onespace",
+        "index-signature": "onespace",
+        "parameter": "onespace",
+        "property-declaration": "onespace",
+        "variable-declaration": "onespace"
+      }
+    ],
+    "no-debugger": "error",
+    "object-curly-spacing": [
+      "error", "always",
+      {
+        "arraysInObjects": false
+      }
+    ],
+    "arrow-parens": [
+      "error", "always"
+    ]
+  }
+}
