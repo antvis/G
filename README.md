@@ -299,7 +299,7 @@ canvas.addShape('rect', {
 
 #### 图形属性
 
-* 通用的图形属性见：[绘图属性](https://antv.alipay.com/zh-cn/g2/3.x/api/graphic.html)
+* 通用的图形属性见：[绘图属性](https://www.yuque.com/antv/g2-docs/api-graphic)
 * path：路径，支持 字符串或者数组两种方式，详情参考 [svg path](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths)
 * arrow 箭头设置
     * true / false: 显示 / 取消默认箭头
