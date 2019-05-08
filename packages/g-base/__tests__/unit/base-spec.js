@@ -39,7 +39,7 @@ describe('base test', () => {
     });
     expect(base.destroyed).equal(false);
     base.destroy();
-    expect(base.cfg).eqls({destroyed: true});
+    expect(base.cfg).eqls({ destroyed: true });
     expect(base.destroyed).equal(true);
   });
 });

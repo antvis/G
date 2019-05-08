@@ -1,9 +1,37 @@
 import Base from './base';
 import { IElement, IShape, IGroup, ICanvas, IContainer, ICtor } from '../interfaces';
-import { ShapeCfg } from '../types';
+import { ShapeCfg, CanvasCfg } from '../types';
 import ContainerUtil from '../util/container';
 
 abstract class Canvas extends Base implements ICanvas, IContainer{
+
+  getDefaultCfg() {
+    const cfg = super.getDefaultCfg();
+    cfg['children'] = [];
+    return cfg;
+  }
+
+  constructor(cfg: CanvasCfg) {
+    super(cfg);
+    this.initDom();
+    this.initEvents();
+  }
+
+  /**
+   * @protected
+   * 初始化 DOM 容器
+   */
+  initDom() {
+
+  }
+
+  /**
+   * @protected
+   * 初始化绑定的事件
+   */
+  initEvents() {
+
+  }
 
   /**
    * @protected
@@ -47,18 +75,31 @@ abstract class Canvas extends Base implements ICanvas, IContainer{
 
   }
 
-  // 继承自 IContainer 的方法，由于 ts 的 mixin 非常复杂
+  /**
+   * @protected
+   * 销毁 DOM 容器
+   */
+  destroyDom() {
+
+  }
+
+  /**
+   * @protected
+   * 清理所有的事件
+   */
+  clearEvents() {
+
+  }
+
+  isCanvas() {
+    return true;
+  }
+
+  // 继承自 IContainer 的方法，由于 ts 的 mixin 非常复杂，而且很难控制好局部解耦
   // 所以 canvas 和 group 中的代码重复
   // 但是具体实现都已经提取到 util/container 中
-
   abstract getShapeBase(): ICtor<IShape>;
   abstract getGroupBase(): ICtor<IGroup>;
-
-  getDefaultCfg() {
-    const cfg = super.getDefaultCfg();
-    cfg['children'] = [];
-    return cfg;
-  }
 
   addShape(type: string, cfg: ShapeCfg): IShape {
     return ContainerUtil.addShape(this, type, cfg);
@@ -87,5 +128,16 @@ abstract class Canvas extends Base implements ICanvas, IContainer{
 
   clear() {
     ContainerUtil.clear(this);
+  }
+
+  destroy() {
+    if (this.get('destroyed')) {
+      return;
+    }
+    this.clear();
+    // 同初始化时相反顺序调用
+    this.clearEvents();
+    this.destroyDom();
+    super.destroy();
   }
 }

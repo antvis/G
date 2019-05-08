@@ -5,15 +5,17 @@
 import { IGroup, IElement, IShape, IContainer } from '../interfaces';
 import { ShapeCfg, GroupCfg } from '../types';
 import { upperFirst, isFunction, isObject, each } from '@antv/util';
+import { removeFromArray } from './util';
 
 const SHAPE_MAP = {};
 const INDEX = '_INDEX';
 
 function findShape(children: IElement[], x: number, y: number) {
-  let rst;
+  let rst = null;
   for (let i = children.length - 1; i >= 0; i--) {
     const child = children[i];
     if (child.get('visible') && child.get('capture')) {
+
       if (child.isGroup()) {
         rst = getShape(child as IGroup, x, y);
       } else if ((child as IShape).isHit(x, y)) {
@@ -26,39 +28,56 @@ function findShape(children: IElement[], x: number, y: number) {
   }
   return rst;
 }
+
+function getCanvas(container: IContainer) {
+  let canvas;
+  if (container.isCanvas()) {
+    canvas = container;
+  } else {
+    canvas = (container as IGroup).getCanvas();
+  }
+  return canvas;
+}
+
 /**
  * 添加图形
- * @param {IContainer}   container   分组
+ * @param {IContainer}   container   group 或者 canvas
  * @param {string} type 图形类型
  * @param {ShapeCfg} cfg  图形配置项
  * @returns 添加的图形对象
  */
 function addShape(container: IContainer, type: string, cfg: ShapeCfg): IShape {
-  const canvas = container.get('canvas');
+
   let shapeType = SHAPE_MAP[type];
   if (!shapeType) {
     shapeType = upperFirst(type);
     SHAPE_MAP[type] = shapeType;
   }
-  cfg['canvas'] = canvas;
+  // const canvas = getCanvas(container);
+  // cfg['canvas'] = canvas; // 在 add 函数里面已经添加
   cfg['type'] = type;
   const ShapeBase = container.getShapeBase();
   const rst = new ShapeBase[shapeType](cfg);
   add(container, rst);
   return rst;
 }
-
+/**
+ * 添加图形分组，并设置配置项
+ * @param {IContainer} container 容器，group 或者 canvas
+ * @param {GroupCfg} cfg 图形分组的配置项
+ * @returns 添加的图形分组
+*/
 function addGroup(container: IContainer, groupClass?: any, cfg?: GroupCfg): IGroup {
-  const canvas = container.get('canvas');
+  // const canvas = getCanvas(container);
   let rst;
   if (isFunction(groupClass)) {
     if (cfg) {
-      cfg.canvas = canvas;
-      cfg.parent = container;
+      // cfg.canvas = canvas; // 这两个变量在 add 函数中都添加，这里就不写了
+      // cfg.parent = container;
       rst = new groupClass(cfg);
     } else {
       rst = new groupClass({
-        canvas,
+        // canvas,
         parent: container,
       });
     }
@@ -70,20 +89,21 @@ function addGroup(container: IContainer, groupClass?: any, cfg?: GroupCfg): IGro
   add(container, rst);
   return rst;
 }
+
 /**
  * 添加元素
  * @param {IContainer}   container   分组
  * @param {IElement} element 图形元素
  */
 function add(container: IContainer, element: IElement) {
-  const parent = container.get('canvas');
+  const canvas = getCanvas(container);
   const children = container.getChildren();
-  if (parent) {
-    removeChild(container, element, false);
+  const preParent = element.getParent();
+  if (preParent) {
+    removeChild(preParent, element, false);
   }
-  const cfg = this._cfg;
   element.set('parent', container);
-  element.set('canvas', container.get('canvas'));
+  element.set('canvas', canvas);
   children.push(element);
 }
 
@@ -93,9 +113,14 @@ function contains(container: IContainer, element: IElement): boolean {
 }
 
 function removeChild(container: IContainer, element: IElement, destroy: boolean = true) {
-  if (contains(container, element)) {
-    element.remove(destroy);
+  // 不再调用 element.remove() 方法，会出现循环调用
+  if (destroy) {
+    element.destroy();
+  } else {
+    element.set('parent', null);
+    element.set('canvas', null);
   }
+  removeFromArray(container.getChildren(), element);
 }
 
 function getShape(container: IContainer, x: number, y: number): IShape {
@@ -114,12 +139,12 @@ function getShape(container: IContainer, x: number, y: number): IShape {
 }
 
 function clear(container: IContainer) {
-  if (container.get('destroyed')) {
+  if (container.destroyed) {
     return;
   }
   const children = container.getChildren();
   for (let i = children.length - 1; i >= 0; i--) {
-    children[i].remove(true);
+    children[i].destroy(); // 销毁子元素
   }
   container.set('children', []);
   return this;
@@ -132,8 +157,12 @@ function getComparer(compare: Function) {
   };
 }
 
-function sort(container) {
-  const children = container.get('children');
+/**
+ * 对容器的子元素进行分组
+ * @param {IContainer} container 容器
+ */
+function sort(container: IContainer) {
+  const children = container.getChildren();
   // 稳定排序
   each(children, (child, index) => {
     child[INDEX] = index;

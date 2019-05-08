@@ -54,10 +54,10 @@ const GroupUtil = {
 	 * 根据 ID 查找元素
 	 * @param {IGroup} group Group 对象
 	 * @param {string} id 元素 id
-	 * @return {IElement} 元素
+	 * @return {IElement|null} 元素
 	 */
   findById(group: IGroup, id: string): IElement {
-    return this.find((element) => {
+    return this.find(group, (element) => {
       return element.get('id') === id;
     });
   },
@@ -65,10 +65,10 @@ const GroupUtil = {
 	 * 查找元素，找到第一个返回
 	 * @param  {IGroup}   group Group 对象
 	 * @param  {Function} fn    匹配函数
-	 * @return {IElement} 元素
+	 * @return {IElement|null} 元素，可以为空
 	 */
   find(group: IGroup, fn: Function): IElement {
-    let rst: IElement;
+    let rst: IElement = null;
     const children = group.getChildren();
     each(children, (element: IElement) => {
       if (fn(element)) {

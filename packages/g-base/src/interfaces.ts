@@ -21,6 +21,9 @@ export interface IBase {
    * @param {any}    value 属性值
   */
   set(name: string, value: any);
+
+  destroyed: boolean;
+
   /**
 	 * 销毁对象
   */
@@ -169,6 +172,11 @@ export interface IElement extends IBase {
   resumeAnimate();
 }
 
+export interface IObservable {
+  on();
+  off();
+}
+
 export interface IContainer extends IBase {
   /**
 	 * 添加图形
@@ -177,6 +185,11 @@ export interface IContainer extends IBase {
    * @returns 添加的图形对象
   */
   addShape(type: string, cfg: ShapeCfg): IShape;
+
+  /**
+   * 容器是否是 Canvas 画布
+   */
+  isCanvas();
 
   /**
 	 * 获取 Shape 的基类

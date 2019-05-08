@@ -8,7 +8,6 @@ abstract class Base implements IBase {
 	 */
   cfg: object;
   /**
-	 * @private
 	 * 是否被销毁
 	 * @type {boolean}
 	 */

@@ -2,6 +2,7 @@ import Base from './base';
 import { IElement, IShape, IGroup, ICanvas } from '../interfaces';
 import { GroupCfg, ShapeCfg, BBox } from '../types';
 import { isObject, each, isArray } from '@antv/util';
+import { removeFromArray } from '../util/util';
 
 const ARRAY_ATTRS = {
   matrix: 'matrix',
@@ -119,8 +120,23 @@ abstract class Element extends Base implements IElement {
     children.unshift(this);
   }
 
-  remove() {
+  remove(destroy = true) {
+    const parent = this.getParent();
+    if (parent) {
+      removeFromArray(parent.getChildren(), this);
+    }
+    if (destroy) {
+      this.destroy();
+    }
+  }
 
+  destroy() {
+    const destroyed = this.get('destroyed');
+    if (destroyed) {
+      return;
+    }
+    this.attrs = {};
+    super.destroy();
   }
 
   resetMatrix() {
