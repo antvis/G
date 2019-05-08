@@ -1,7 +1,7 @@
 {
-  "name": "@antv/g-webgl",
+  "name": "@antv/g-svg",
   "version": "4.0.0",
-  "description": "A common util collection for antv projects",
+  "description": "A canvas library which providing 2d",
   "main": "lib/index.js",
   "scripts": {
     "build": "rm -rf lib && tsc",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/antvis/util.git"
+    "url": "git+https://github.com/antvis/g.git"
   },
   "keywords": [
     "util",
@@ -26,14 +26,15 @@
   "author": "https://github.com/orgs/antvis/people",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/antvis/util/issues"
+    "url": "https://github.com/antvis/g/issues"
   },
   "devDependencies": {
     "@antv/torch": "^1.0.0",
     "less": "^3.9.0"
   },
-  "homepage": "https://github.com/antvis/util#readme",
+  "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
     "@antv/util": "~2.0.0"
-  }
+  },
+  "__npminstall_done": false
 }
