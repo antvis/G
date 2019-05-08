@@ -14,6 +14,5 @@ test:
   script:
     - env -u CI tnpm i --silent --internal-oss-cache --install-node=10
     - time tnpm run lint
-    - time tnpm run test
   tags:
     - swarm
