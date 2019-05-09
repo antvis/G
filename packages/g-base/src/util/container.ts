@@ -124,6 +124,10 @@ function removeChild(container: IContainer, element: IElement, destroy: boolean 
 }
 
 function getShape(container: IContainer, x: number, y: number): IShape {
+  // 如果不支持拾取，则直接返回
+  if (!container.get('capture')) {
+    return null;
+  }
   const clip = container.get('clip') as IShape;
   const children = container.getChildren();
   let rst;

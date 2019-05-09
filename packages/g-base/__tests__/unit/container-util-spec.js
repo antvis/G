@@ -183,6 +183,8 @@ describe('test container util', () => {
       }
     });
     expect(ContainerUtil.getShape(group, 0, 0)).equal(item);
+    group.set('capture', false); // 不支持拾取
+    expect(ContainerUtil.getShape(group, 0, 0)).equal(null);
   });
 
 });

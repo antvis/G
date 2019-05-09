@@ -5,3 +5,5 @@ export function removeFromArray(arr: any[], obj: any) {
     arr.splice(index, 1);
   }
 }
+
+export const isBrowser = (typeof window !== 'undefined') && (typeof window.document !== 'undefined');

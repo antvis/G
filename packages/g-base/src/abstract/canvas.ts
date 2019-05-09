@@ -2,6 +2,9 @@ import Base from './base';
 import { IElement, IShape, IGroup, ICanvas, IContainer, ICtor } from '../interfaces';
 import { ShapeCfg, CanvasCfg } from '../types';
 import ContainerUtil from '../util/container';
+import { isString } from '@antv/util';
+import { isBrowser } from '../util/util';
+const PX_SUFFIX = 'px';
 
 abstract class Canvas extends Base implements ICanvas, IContainer{
 
@@ -13,17 +16,42 @@ abstract class Canvas extends Base implements ICanvas, IContainer{
 
   constructor(cfg: CanvasCfg) {
     super(cfg);
+    this.initContainer();
     this.initDom();
     this.initEvents();
   }
 
   /**
    * @protected
-   * 初始化 DOM 容器
+   * 初始化容器
+   */
+  initContainer() {
+    let container = this.get('container');
+    if (isString(container)) {
+      container = document.getElementById(container);
+      this.set('container', container);
+    }
+  }
+
+  /**
+   * @protected
+   * 初始化 DOM
    */
   initDom() {
-
+    const el = this.createDom();
+    this.set('el', el);
+    // 附加到容器
+    const container = this.get('container');
+    container.appendChild(el);
+    // 设置初始宽度
+    this.setDOMSize(this.get('width'), this.get('height'));
   }
+
+  /**
+   * 创建画布容器
+   * @return {HTMLElement} 画布容器
+   */
+  abstract createDom(): HTMLElement;
 
   /**
    * @protected
@@ -39,13 +67,17 @@ abstract class Canvas extends Base implements ICanvas, IContainer{
    * @param {number} width  宽度
    * @param {number} height 高度
    */
-  changeDOMSize(width: number, height: number) {
-
+  setDOMSize(width: number, height: number) {
+    const el = this.get('el');
+    if (isBrowser) {
+      el.style.width = width + PX_SUFFIX;
+      el.style.height = height + PX_SUFFIX;
+    }
   }
 
   // 实现接口
   changeSize(width: number, height: number) {
-    this.changeDOMSize(width, height);
+    this.setDOMSize(width, height);
     this.set('width', width);
     this.set('height', height);
   }
@@ -79,8 +111,9 @@ abstract class Canvas extends Base implements ICanvas, IContainer{
    * @protected
    * 销毁 DOM 容器
    */
-  destroyDom() {
-
+  removeDom() {
+    const el = this.get('el');
+    el.parentNode.removeChild(el);
   }
 
   /**
@@ -137,7 +170,9 @@ abstract class Canvas extends Base implements ICanvas, IContainer{
     this.clear();
     // 同初始化时相反顺序调用
     this.clearEvents();
-    this.destroyDom();
+    this.removeDom();
     super.destroy();
   }
 }
+
+export default Canvas;

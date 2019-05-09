@@ -54,10 +54,10 @@ export type GroupCfg = {
 
 export type CanvasCfg = {
   /**
-   * 容器编号
-   * @type {string}
+   * 容器
+   * @type {string|HtmlElement}
    */
-  containerId: string,
+  container: string,
   /**
    * 画布宽度
    * @type {number}
