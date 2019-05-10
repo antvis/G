@@ -136,6 +136,10 @@ export interface IElement extends IBase {
   */
   remove(destroy);
   /**
+   * 获取全量的图形属性
+   */
+  attr();
+  /**
 	 * 获取图形属性
    * @param {string} name 图形属性名
    * @returns 图形属性值
