@@ -58,7 +58,16 @@ abstract class Element extends Base implements IElement {
   }
 
   // 在子类上单独实现
-  abstract getBBox(): BBox;
+  getBBox(): BBox {
+    let bbox = this.get('bbox');
+    if (!bbox) {
+      bbox = this.calculateBBox();
+      this.set('bbox', bbox);
+    }
+    return bbox;
+  }
+
+  abstract calculateBBox() : BBox;
 
   // 在子类上各自实现
   abstract clone(): IElement;

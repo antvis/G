@@ -37,9 +37,91 @@ describe('base test', () => {
       a: 'a',
       b: 'b'
     });
+    base.on('click', () => {
+
+    });
     expect(base.destroyed).equal(false);
     base.destroy();
     expect(base.cfg).eqls({ destroyed: true });
     expect(base.destroyed).equal(true);
+    expect(base.events.click).equal(undefined);
   });
+
+  it('on', () => {
+    const base = new Base({
+      a: 'a',
+      b: 'b'
+    });
+    function callback() {
+
+    }
+    base.on('click', callback);
+
+    expect(base.events.click.length).equal(1);
+    expect(base.events.click[0]).equal(callback);
+
+  });
+
+  it('trigger, emit', () => {
+    const base = new Base({
+    });
+
+    let called = 0;
+    function callback() {
+      called++;
+    }
+
+    base.on('click', callback);
+    base.trigger('click');
+    expect(called).equal(1);
+    base.emit('click');
+    expect(called).equal(2);
+    base.on('click', () => {
+      called = called + 2;
+    });
+    base.trigger('click');
+    expect(called).equal(5);
+    expect(base.events.click.length).equal(2);
+    base.trigger('test');
+    expect(called).equal(5);
+  });
+
+  it('trigger with args', () => {
+    const base = new Base({
+    });
+    let p1;
+    let p2;
+    function callback(param1, param2) {
+      p1 = param1;
+      p2 = param2;
+    }
+
+    base.on('click', callback);
+    base.trigger('click', 1, 2);
+    expect(p1).equal(1);
+    expect(p2).equal(2);
+
+  });
+
+  it('off', () => {
+    const base = new Base({});
+    const callback = function() {};
+    base.on('click', callback);
+    base.on('click', () => {});
+
+    base.on('test', () => {});
+    expect(base.events.click.length).equal(2);
+    base.off('click', callback);
+    expect(base.events.click.length).equal(1);
+    expect(base.events.test.length).equal(1);
+    // 移除不存在的事件
+    base.off('test', callback);
+    expect(base.events.test.length).equal(1);
+
+    base.off('test');
+    expect(base.events.test).equal(undefined);
+    base.off();
+    expect(base.events.click).equal(undefined);
+  });
+
 });
