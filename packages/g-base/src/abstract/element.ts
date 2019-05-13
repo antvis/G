@@ -1,8 +1,10 @@
 import Base from './base';
 import { IElement, IShape, IGroup, ICanvas } from '../interfaces';
 import { GroupCfg, ShapeCfg, BBox } from '../types';
-import { isObject, each, isArray } from '@antv/util';
+import { isObject, each, isArray, mix } from '@antv/util';
+import { removeFromArray } from '../util/util';
 
+const MATRIX = 'matrix';
 const ARRAY_ATTRS = {
   matrix: 'matrix',
   path: 'path',
@@ -24,6 +26,22 @@ abstract class Element extends Base implements IElement {
       visible: true,
       capture: true,
     };
+  }
+
+  constructor(cfg) {
+    super(cfg);
+    mix(this.attrs, cfg.attrs);
+    if (!this.attrs[MATRIX]) {
+      this.attrs[MATRIX] = this.getDefaultMatrix();
+    }
+  }
+  /**
+   * @protected
+   * 获取默认的矩阵
+   * @returns {number[]} 默认的矩阵
+   */
+  getDefaultMatrix() {
+    return [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
   }
 
   isGroup() {
@@ -57,7 +75,16 @@ abstract class Element extends Base implements IElement {
   }
 
   // 在子类上单独实现
-  abstract getBBox(): BBox;
+  getBBox(): BBox {
+    let bbox = this.get('bbox');
+    if (!bbox) {
+      bbox = this.calculateBBox();
+      this.set('bbox', bbox);
+    }
+    return bbox;
+  }
+
+  abstract calculateBBox() : BBox;
 
   // 在子类上各自实现
   abstract clone(): IElement;
@@ -119,20 +146,35 @@ abstract class Element extends Base implements IElement {
     children.unshift(this);
   }
 
-  remove() {
+  remove(destroy = true) {
+    const parent = this.getParent();
+    if (parent) {
+      removeFromArray(parent.getChildren(), this);
+    }
+    if (destroy) {
+      this.destroy();
+    }
+  }
 
+  destroy() {
+    const destroyed = this.destroyed;
+    if (destroyed) {
+      return;
+    }
+    this.attrs = {};
+    super.destroy();
   }
 
   resetMatrix() {
-    this.attr('matrix', [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
+    this.attr(MATRIX, [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
   }
 
   getMatrix(): number[] {
-    return this.attr('matrix');
+    return this.attr(MATRIX);
   }
 
   setMatrix(m: number[]) {
-    this.attr('matrix', m);
+    this.attr(MATRIX, m);
   }
 
   /**

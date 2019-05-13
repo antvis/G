@@ -1,6 +1,6 @@
 {
-  "name": "@antv/color-util",
-  "version": "2.0.0",
+  "name": "@antv/g-base",
+  "version": "4.0.0",
   "description": "A common util collection for antv projects",
   "main": "lib/index.js",
   "scripts": {

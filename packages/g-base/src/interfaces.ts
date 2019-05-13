@@ -21,10 +21,58 @@ export interface IBase {
    * @param {any}    value 属性值
   */
   set(name: string, value: any);
+
+  /**
+   * 是否销毁
+   * @type {boolean}
+   */
+  destroyed: boolean;
+
   /**
 	 * 销毁对象
   */
   destroy();
+}
+
+/**
+ * @interface IObserable
+ * 可以绑定事件的接口
+ */
+export interface IObservable {
+  /**
+   * 绑定事件
+   * @param {string}   eventName 事件名
+   * @param {Function} callback  回调函数
+   */
+  on(eventName: string, callback: Function);
+  /**
+   * 移除事件
+   */
+  off();
+  /**
+   * 移除事件
+   * @param {string} eventName 事件名
+   */
+  off(eventName: string);
+  /**
+   * 移除事件
+   * @param {string}   eventName 事件名
+   * @param {Function} callback  回调函数
+   */
+  off(eventName: string, callback: Function);
+  /**
+   * 触发事件, trigger 的别名函数
+   * @param {string} eventName 事件名称
+   * @param {Array} args 参数
+   */
+  emit(eventName: string, ...args: any[]);
+  /**
+   * 触发事件
+   * @param {string} eventName 事件名称
+   * @param {Array} args 参数
+   */
+  trigger(eventName: string, ...args: any[]);
+
 }
 
 /**
@@ -87,6 +135,10 @@ export interface IElement extends IBase {
    * @param {boolean} destroy 是否同时销毁
   */
   remove(destroy);
+  /**
+   * 获取全量的图形属性
+   */
+  attr();
   /**
 	 * 获取图形属性
    * @param {string} name 图形属性名
@@ -177,6 +229,11 @@ export interface IContainer extends IBase {
    * @returns 添加的图形对象
   */
   addShape(type: string, cfg: ShapeCfg): IShape;
+
+  /**
+   * 容器是否是 Canvas 画布
+   */
+  isCanvas();
 
   /**
 	 * 获取 Shape 的基类

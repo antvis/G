@@ -9,6 +9,10 @@ abstract class AbstractGroup extends Element implements IGroup {
     return true;
   }
 
+  isCanvas() {
+    return false;
+  }
+
   abstract getShapeBase(): ICtor<IShape>;
   abstract getGroupBase(): ICtor<IGroup>;
 
@@ -45,5 +49,13 @@ abstract class AbstractGroup extends Element implements IGroup {
 
   clear() {
     ContainerUtil.clear(this);
+  }
+
+  destroy() {
+    if (this.get('destroyed')) {
+      return;
+    }
+    this.clear();
+    super.destroy();
   }
 }
