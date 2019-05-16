@@ -574,4 +574,24 @@ describe('Path', function() {
     expect(path.getBBox().width).to.equal(0);
     expect(path.getBBox().height).to.equal(0);
   });
+  it('one dot curve', () => {
+    const path = canvas.addShape('path', {
+      attrs: {
+        path: [
+          [ 'M', 100, 100 ],
+          [ 'C', 100, 100, 100, 100, 100, 100 ]
+        ]
+      }
+    });
+    const point = path.getPoint(0.5);
+    expect(path.get('tCache'));
+    expect(path.get('tCache').length).to.equal(0);
+    expect(point.x).to.equal(100);
+    expect(point.y).to.equal(100);
+    const bbox = path.getBBox();
+    expect(bbox.minX).to.equal(99.5);
+    expect(bbox.minY).to.equal(99.5);
+    expect(bbox.maxX).to.equal(100.5);
+    expect(bbox.maxY).to.equal(100.5);
+  });
 });

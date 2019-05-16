@@ -48,8 +48,11 @@ Util.augment(EventEmitter, {
     const arg = slice.call(args, 1);
     let length = events.length;
     for (let i = 0; i < length;) {
+      if (!events[i]) {
+        continue;
+      }
       events[i].callback.apply(this, arg);
-      if (events[i].one) {
+      if (events[i] && events[i].one) {
         events.splice(i, 1);
         length--;
       } else {
