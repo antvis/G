@@ -7,7 +7,7 @@ const mathUtl = {
   line: require('../../shapes/math/line')
 };
 
-const canvas = Util.createDom('<canvas width="500" height="500"></canvas>');
+const canvas = Util.createDom('<canvas width="1" height="1"></canvas>');
 const context = canvas.getContext('2d');
 
 function isPointInPathByContext(x, y, ctx) {
