@@ -13,6 +13,26 @@ class MyElement extends Element {
   }
 }
 
+class MyCircle extends Element {
+  calculateBBox() {
+    const { x, y, r } = this.attrs;
+    return {
+      minX: x - r,
+      minY: y - r,
+      maxX: x + r,
+      maxY: y + r
+    };
+  }
+}
+
+MyElement.Circle = MyCircle;
+
+const canvas = {
+  getShapeBase() {
+    return MyElement;
+  }
+};
+
 describe('test element', () => {
   const group = {
     getChildren() {
@@ -105,6 +125,31 @@ describe('test element', () => {
     expect(element.attr('matrix')).eqls(toMatrx);
     element.resetMatrix();
     expect(element.attr('matrix')).eqls(originMatix);
+  });
+
+  it('clip', () => {
+    element.set('canvas', canvas);
+    expect(element.getClip()).eqls(null);
+    element.setClip({
+      type: 'circle',
+      attrs: {
+        x: 10,
+        y: 10,
+        r: 10
+      }
+    });
+    const clipShape = element.getClip();
+    expect(clipShape.get('type')).eqls('circle');
+    expect(clipShape.getBBox()).eqls({
+      minX: 0,
+      minY: 0,
+      maxX: 20,
+      maxY: 20
+    });
+
+    element.setClip(null);
+    expect(clipShape.destroyed).eqls(true);
+    expect(element.getClip()).eqls(null);
   });
 
   it('destroy', () => {

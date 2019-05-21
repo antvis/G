@@ -52,6 +52,19 @@ export type GroupCfg = {
   [key: string]: any,
 };
 
+export type ClipCfg = {
+  /**
+   * 作为 clip 的图形
+   * @type {string}
+   */
+  type: string,
+  /**
+   * 图形的属性
+   * @type {ShapeAttrs}
+   */
+  attrs: ShapeAttrs,
+};
+
 export type CanvasCfg = {
   /**
    * 容器

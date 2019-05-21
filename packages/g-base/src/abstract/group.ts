@@ -13,6 +13,18 @@ abstract class AbstractGroup extends Element implements IGroup {
     return false;
   }
 
+  clone() {
+    const children = this.getChildren();
+    // 获取构造函数
+    const cons = this.constructor();
+    const clone = new cons();
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      clone.add(child.clone());
+    }
+    return clone;
+  }
+
   abstract getShapeBase(): ICtor<IShape>;
   abstract getGroupBase(): ICtor<IGroup>;
 
@@ -59,3 +71,5 @@ abstract class AbstractGroup extends Element implements IGroup {
     super.destroy();
   }
 }
+
+export default AbstractGroup;

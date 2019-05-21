@@ -1,4 +1,4 @@
-import { BBox, ShapeCfg, GroupCfg } from './types';
+import { BBox, ShapeCfg, GroupCfg, ClipCfg } from './types';
 
 export interface ICtor<T> {
   new (cfg: any): T;
@@ -73,39 +73,6 @@ export interface IObservable {
    */
   trigger(eventName: string, ...args: any[]);
 
-}
-
-/**
- * @interface ICanvas
- * 画布，图形的容器
- */
-export interface ICanvas extends IBase {
-  /**
-	 * 改变画布大小
-   * @param {number} width  宽度
-   * @param {number} height 高度
-  */
-  changeSize(width: number, height: number);
-  /**
-   * 将窗口坐标转变成 canvas 坐标
-   * @param  {number} clientX 窗口 x 坐标
-   * @param  {number} clientY 窗口 y 坐标
-   * @return {object} canvas坐标
-   */
-  getPointByClient(clientX: number, clientY: number): object;
-
-  /**
-   * 将 canvas 坐标转换成窗口坐标
-   * @param {number} x canvas 上的 x 坐标
-   * @param {number} y canvas 上的 y 坐标
-   * @returns {object} 窗口坐标
-   */
-  getClientByPoint(x: number, y: number): object;
-
-  /**
-   * 绘制
-   */
-  draw();
 }
 
 /**
@@ -219,6 +186,18 @@ export interface IElement extends IBase {
    * 重启暂停的动画
    */
   resumeAnimate();
+
+  /**
+   * 设置 clip ，会在内部转换成对应的图形
+   * @param {ClipCfg} clipCfg 配置项
+   */
+  setClip(clipCfg: ClipCfg);
+
+  /**
+   * 获取 clip ，clip 对象是一个 Shape
+   * @returns {IShape} clip 的 Shape
+   */
+  getClip(): IShape;
 }
 
 export interface IContainer extends IBase {
@@ -303,4 +282,37 @@ export interface IShape extends IElement {
    * @returns 是否已被拾取
   */
   isHit(x: number, y: number): boolean;
+}
+
+/**
+ * @interface ICanvas
+ * 画布，图形的容器
+ */
+export interface ICanvas extends IContainer {
+  /**
+   * 改变画布大小
+   * @param {number} width  宽度
+   * @param {number} height 高度
+  */
+  changeSize(width: number, height: number);
+  /**
+   * 将窗口坐标转变成 canvas 坐标
+   * @param  {number} clientX 窗口 x 坐标
+   * @param  {number} clientY 窗口 y 坐标
+   * @return {object} canvas坐标
+   */
+  getPointByClient(clientX: number, clientY: number): object;
+
+  /**
+   * 将 canvas 坐标转换成窗口坐标
+   * @param {number} x canvas 上的 x 坐标
+   * @param {number} y canvas 上的 y 坐标
+   * @returns {object} 窗口坐标
+   */
+  getClientByPoint(x: number, y: number): object;
+
+  /**
+   * 绘制
+   */
+  draw();
 }

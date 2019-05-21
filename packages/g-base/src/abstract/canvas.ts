@@ -6,7 +6,7 @@ import { isString } from '@antv/util';
 import { isBrowser } from '../util/util';
 const PX_SUFFIX = 'px';
 
-abstract class Canvas extends Base implements ICanvas, IContainer{
+abstract class Canvas extends Base implements ICanvas {
 
   getDefaultCfg() {
     const cfg = super.getDefaultCfg();

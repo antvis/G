@@ -1,7 +1,7 @@
 import Base from './base';
 import { IElement, IShape, IGroup, ICanvas } from '../interfaces';
-import { GroupCfg, ShapeCfg, BBox } from '../types';
-import { isObject, each, isArray, mix } from '@antv/util';
+import { GroupCfg, ShapeCfg, BBox, ClipCfg } from '../types';
+import { isObject, each, isArray, mix, upperFirst } from '@antv/util';
 import { removeFromArray } from '../util/util';
 
 const MATRIX = 'matrix';
@@ -175,6 +175,40 @@ abstract class Element extends Base implements IElement {
 
   setMatrix(m: number[]) {
     this.attr(MATRIX, m);
+  }
+
+  // 设置 clip
+  setClip(clipCfg: ClipCfg) {
+    const preShape = this.get('clipShape');
+    if (preShape) {
+      preShape.destroy();
+    }
+    let clipShape = null;
+    // 如果配置项为 null ,则不移除 clipShape
+    if (clipCfg) {
+      const canvas = this.getCanvas();
+      // clip 的类型同当前 Canvas 密切相关
+      const ShapeBase = canvas.getShapeBase();
+      const shapeType = upperFirst(clipCfg.type);
+      const Cons = ShapeBase[shapeType];
+
+      if (Cons) {
+        clipShape = new Cons({
+          type: clipCfg.type,
+          attrs: clipCfg.attrs,
+        });
+      }
+    }
+    this.set('clipShape', clipShape);
+  }
+
+  getClip(): IShape {
+    const clipShape = this.get('clipShape');
+    // 未设置时返回 Null，保证一致性
+    if (!clipShape) {
+      return null;
+    }
+    return clipShape;
   }
 
   /**
