@@ -2,7 +2,7 @@ import Base from './base';
 import { IElement, IShape, IGroup, ICanvas, IContainer, ICtor } from '../interfaces';
 import { ShapeCfg, CanvasCfg } from '../types';
 import ContainerUtil from '../util/container';
-import { isString } from '@antv/util';
+import { isString, isObject } from '@antv/util';
 import { isBrowser } from '../util/util';
 const PX_SUFFIX = 'px';
 
@@ -134,8 +134,16 @@ abstract class Canvas extends Base implements ICanvas {
   abstract getShapeBase(): ICtor<IShape>;
   abstract getGroupBase(): ICtor<IGroup>;
 
-  addShape(type: string, cfg: ShapeCfg): IShape {
-    return ContainerUtil.addShape(this, type, cfg);
+  // 兼容老版本的接口
+  addShape(...args): IShape {
+    const type = args[0];
+    let cfg = args[1];
+    if (isObject(type)) {
+      cfg = type;
+    } else {
+      cfg['type'] = type;
+    }
+    return ContainerUtil.addShape(this, cfg);
   }
 
   addGroup(...args):IGroup {

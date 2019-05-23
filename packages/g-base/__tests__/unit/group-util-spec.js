@@ -20,6 +20,9 @@ class Group {
     Object.assign(this, cfg);
   }
 
+  invertFromMatrix() {
+
+  }
   get(name) {
     return this[name];
   }

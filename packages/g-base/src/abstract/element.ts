@@ -12,6 +12,22 @@ const ARRAY_ATTRS = {
   lineDash: 'lineDash',
 };
 
+const CLONE_CFGS = [ 'zIndex', 'capture', 'visible' ];
+
+// 需要考虑数组嵌套数组的场景
+// 数组嵌套对象的场景不考虑
+function _cloneArrayAttr(arr) {
+  const result = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (isArray(arr[i])) {
+      result.push([].concat(arr[i]));
+    } else {
+      result.push(arr[i]);
+    }
+  }
+  return result;
+}
+
 abstract class Element extends Base implements IElement {
   /**
    * @private
@@ -34,14 +50,6 @@ abstract class Element extends Base implements IElement {
     if (!this.attrs[MATRIX]) {
       this.attrs[MATRIX] = this.getDefaultMatrix();
     }
-  }
-  /**
-   * @protected
-   * 获取默认的矩阵
-   * @returns {number[]} 默认的矩阵
-   */
-  getDefaultMatrix() {
-    return [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
   }
 
   isGroup() {
@@ -86,8 +94,11 @@ abstract class Element extends Base implements IElement {
 
   abstract calculateBBox() : BBox;
 
-  // 在子类上各自实现
-  abstract clone(): IElement;
+  // 是否被裁剪
+  isClipped(refX, refY): boolean {
+    const clip = this.getClip();
+    return clip && clip.isHit(refX, refY);
+  }
 
   /**
    * @protected
@@ -166,7 +177,7 @@ abstract class Element extends Base implements IElement {
   }
 
   resetMatrix() {
-    this.attr(MATRIX, [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
+    this.attr(MATRIX, this.getDefaultMatrix());
   }
 
   getMatrix(): number[] {
@@ -175,6 +186,25 @@ abstract class Element extends Base implements IElement {
 
   setMatrix(m: number[]) {
     this.attr(MATRIX, m);
+  }
+
+  /**
+   * @protected
+   * 获取默认的矩阵
+   * @returns {number[]|null} 默认的矩阵
+   */
+  getDefaultMatrix() {
+    return null;
+  }
+
+  // 基类什么也不做
+  applyToMatrix(v: number[]) {
+
+  }
+
+  // 基类上什么也不做
+  invertFromMatrix(v: number[]) {
+
   }
 
   // 设置 clip
@@ -217,6 +247,25 @@ abstract class Element extends Base implements IElement {
    */
   clearCacheBBox() {
     this.set('bbox', null);
+  }
+
+  clone() {
+    const originAttrs = this.attrs;
+    const attrs = {};
+    each(originAttrs, (i, k) => {
+      if (isArray(originAttrs[k])) {
+        attrs[k] = _cloneArrayAttr(originAttrs[k]);
+      } else {
+        attrs[k] = originAttrs[k];
+      }
+    });
+    const cons = this.constructor;
+    // @ts-ignore
+    const clone = new cons({ attrs });
+    each(CLONE_CFGS, (cfgName) => {
+      clone.set(cfgName, this.get(cfgName));
+    });
+    return clone;
   }
 
   animate(toProps, duration?: number, easing?: string, callback?: Function, delay?: number) {

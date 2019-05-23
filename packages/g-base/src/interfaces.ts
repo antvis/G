@@ -163,6 +163,17 @@ export interface IElement extends IBase {
   */
   setMatrix(m: number[]);
   /**
+   * 将向量应用设置的矩阵
+   * @param {number[]} v 向量
+   */
+  applyToMatrix(v: number[]);
+  /**
+   * 根据设置的矩阵，将向量转换相对于图形/分组的位置
+   * @param {number[]} v 向量
+   */
+  invertFromMatrix(v: number[]);
+
+  /**
    * 执行动画
    * @param  {Object}   toProps  动画最终状态
    * @param  {Number}   [duration] 动画执行时间
@@ -198,9 +209,23 @@ export interface IElement extends IBase {
    * @returns {IShape} clip 的 Shape
    */
   getClip(): IShape;
+
+  /**
+   * 指定的点是否被裁剪掉
+   * @param  {number}  refX 相对于图形的坐标 x
+   * @param  {number}  refY 相对于图形的坐标 Y
+   * @return {boolean} 是否被裁剪
+   */
+  isClipped(refX: number, refY: number): boolean;
 }
 
 export interface IContainer extends IBase {
+  /**
+   * 添加图形
+   * @param {ShapeCfg} cfg  图形配置项
+   * @returns 添加的图形对象
+  */
+  addShape(cfg: ShapeCfg): IShape;
   /**
 	 * 添加图形
    * @param {string} type 图形类型
