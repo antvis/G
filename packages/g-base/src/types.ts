@@ -1,8 +1,17 @@
 export type BBox = {
+<<<<<<< HEAD
   minX: number;
   minY: number;
   maxX: number;
   maxY: number;
+=======
+  minX: number,
+  minY: number,
+  maxX: number,
+  maxY: number,
+  width: number,
+  height: number,
+>>>>>>> feat(bbox): group not cache box
 };
 
 type ColorType = string | null;

@@ -1,5 +1,5 @@
 import { IShape } from '../interfaces';
-import { ShapeCfg } from '../types';
+import { ShapeCfg, BBox } from '../types';
 import Element from './element';
 import { each, isArray } from '@antv/util';
 
@@ -12,6 +12,35 @@ abstract class AbstractShape extends Element implements IShape {
   _isInBBox(refX, refY): boolean {
     const bbox = this.getBBox();
     return bbox.minX <= refX && bbox.maxX >= refX && bbox.minY <= refY && bbox.maxY >= refY;
+  }
+  /**
+   * 属性更改后需要做的事情
+   * @protected
+   */
+  afterAttrChange() {
+    this.clearCacheBBox();
+  }
+  // 在子类上单独实现
+  getBBox(): BBox {
+    let bbox = this.get('bbox');
+    if (!bbox) {
+      bbox = this.calculateBBox();
+      this.set('bbox', bbox);
+    }
+    return bbox;
+  }
+  /**
+   * 计算包围盒的抽象方法
+   * @return {BBox} 包围盒
+   */
+  abstract calculateBBox(): BBox;
+
+  /**
+   * @protected
+   * 清理缓存的 bbox
+   */
+  clearCacheBBox() {
+    this.set('bbox', null);
   }
 
   /**

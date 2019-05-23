@@ -14,6 +14,14 @@ class MyShape extends Shape {
 }
 
 describe('test element', () => {
+  const shape = new MyShape({
+    attrs: {
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+    }
+  });
   it('test clone', () => {
     const shape = new MyShape({
       attrs: {
@@ -25,5 +33,18 @@ describe('test element', () => {
     });
     const newShape = shape.clone();
     expect(newShape.attrs).eqls(shape.attrs);
+  });
+  it('getBBox', () => {
+    const bbox = shape.getBBox();
+    expect(bbox).eqls({
+      minX: 0,
+      minY: 0,
+      maxX: 100,
+      maxY: 100
+    });
+  });
+
+  it('attr change', () => {
+
   });
 });

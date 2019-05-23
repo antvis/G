@@ -83,6 +83,7 @@ abstract class Element extends Base implements IElement {
   }
 
   // 在子类上单独实现
+<<<<<<< HEAD
   getBBox(): BBox {
     let bbox = this.get('bbox');
     if (!bbox) {
@@ -93,6 +94,9 @@ abstract class Element extends Base implements IElement {
   }
 
   abstract calculateBBox(): BBox;
+=======
+  abstract getBBox(): BBox;
+>>>>>>> feat(bbox): group not cache box
 
   // 是否被裁剪
   isClipped(refX, refY): boolean {
@@ -115,10 +119,7 @@ abstract class Element extends Base implements IElement {
    * @protected
    */
   afterAttrChange() {
-    // 这个地方应该使用 this.set('hasUpdate', true);
-    // 但是由于 attr 方法调用的频率过高， set 方法的开销比较大
-    this.cfg['hasUpdate'] = true;
-    this.clearCacheBBox();
+
   }
 
   show() {
@@ -235,14 +236,6 @@ abstract class Element extends Base implements IElement {
       return null;
     }
     return clipShape;
-  }
-
-  /**
-   * @protected
-   * 清理缓存的 bbox
-   */
-  clearCacheBBox() {
-    this.set('bbox', null);
   }
 
   clone() {

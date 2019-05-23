@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 import Element from '../../src/abstract/element';
 
 class MyElement extends Element {
-  calculateBBox() {
+  getBBox() {
     const { x, y, width, height } = this.attrs;
     return {
       minX: x,
@@ -14,7 +14,7 @@ class MyElement extends Element {
 }
 
 class MyCircle extends Element {
-  calculateBBox() {
+  getBBox() {
     const { x, y, r } = this.attrs;
     return {
       minX: x - r,
