@@ -61,6 +61,13 @@ class Group extends Base {
   getGroupBase() {
     return Group;
   }
+  invertFromMatrix() {
+
+  }
+
+  isClipped() {
+    return false;
+  }
 
   constructor(cfg) {
     super();
@@ -101,7 +108,8 @@ describe('test container util', () => {
   });
 
   it('add shape', () => {
-    const item = ContainerUtil.addShape(group, 'circle', {
+    const item = ContainerUtil.addShape(group, {
+      type: 'circle',
       attrs: {}
     });
     expect(item.getParent()).eqls(group);
@@ -143,11 +151,13 @@ describe('test container util', () => {
   });
 
   it('sort', () => {
-    ContainerUtil.addShape(group, 'circle', {
+    ContainerUtil.addShape(group, {
+      type: 'circle',
       attrs: {},
       zIndex: 1
     });
-    ContainerUtil.addShape(group, 'circle', {
+    ContainerUtil.addShape(group, {
+      type: 'circle',
       attrs: {},
       zIndex: 0
     });
@@ -158,7 +168,8 @@ describe('test container util', () => {
 
   it('getShape', () => {
     expect(ContainerUtil.getShape(group, 0, 0)).equal(null);
-    const item = ContainerUtil.addShape(group, 'circle', {
+    const item = ContainerUtil.addShape(group, {
+      type: 'circle',
       isHit() {
         return true;
       }
@@ -168,7 +179,8 @@ describe('test container util', () => {
 
   it('deep getShape', () => {
     ContainerUtil.clear(group);
-    ContainerUtil.addShape(group, 'circle', {
+    ContainerUtil.addShape(group, {
+      type: 'circle',
       attrs: {}
     });
     expect(ContainerUtil.getShape(group, 0, 0)).equal(null);
@@ -177,7 +189,8 @@ describe('test container util', () => {
         return false;
       }
     });
-    const item = ContainerUtil.addShape(subGroup, 'circle', {
+    const item = ContainerUtil.addShape(subGroup, {
+      type: 'circle',
       isHit() {
         return true;
       }

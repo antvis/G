@@ -1,4 +1,4 @@
-import { BBox, ShapeCfg, GroupCfg } from './types';
+import { BBox, ShapeCfg, GroupCfg, ClipCfg } from './types';
 
 export interface ICtor<T> {
   new (cfg: any): T;
@@ -73,39 +73,6 @@ export interface IObservable {
    */
   trigger(eventName: string, ...args: any[]);
 
-}
-
-/**
- * @interface ICanvas
- * 画布，图形的容器
- */
-export interface ICanvas extends IBase {
-  /**
-	 * 改变画布大小
-   * @param {number} width  宽度
-   * @param {number} height 高度
-  */
-  changeSize(width: number, height: number);
-  /**
-   * 将窗口坐标转变成 canvas 坐标
-   * @param  {number} clientX 窗口 x 坐标
-   * @param  {number} clientY 窗口 y 坐标
-   * @return {object} canvas坐标
-   */
-  getPointByClient(clientX: number, clientY: number): object;
-
-  /**
-   * 将 canvas 坐标转换成窗口坐标
-   * @param {number} x canvas 上的 x 坐标
-   * @param {number} y canvas 上的 y 坐标
-   * @returns {object} 窗口坐标
-   */
-  getClientByPoint(x: number, y: number): object;
-
-  /**
-   * 绘制
-   */
-  draw();
 }
 
 /**
@@ -196,6 +163,17 @@ export interface IElement extends IBase {
   */
   setMatrix(m: number[]);
   /**
+   * 将向量应用设置的矩阵
+   * @param {number[]} v 向量
+   */
+  applyToMatrix(v: number[]);
+  /**
+   * 根据设置的矩阵，将向量转换相对于图形/分组的位置
+   * @param {number[]} v 向量
+   */
+  invertFromMatrix(v: number[]);
+
+  /**
    * 执行动画
    * @param  {Object}   toProps  动画最终状态
    * @param  {Number}   [duration] 动画执行时间
@@ -219,9 +197,35 @@ export interface IElement extends IBase {
    * 重启暂停的动画
    */
   resumeAnimate();
+
+  /**
+   * 设置 clip ，会在内部转换成对应的图形
+   * @param {ClipCfg} clipCfg 配置项
+   */
+  setClip(clipCfg: ClipCfg);
+
+  /**
+   * 获取 clip ，clip 对象是一个 Shape
+   * @returns {IShape} clip 的 Shape
+   */
+  getClip(): IShape;
+
+  /**
+   * 指定的点是否被裁剪掉
+   * @param  {number}  refX 相对于图形的坐标 x
+   * @param  {number}  refY 相对于图形的坐标 Y
+   * @return {boolean} 是否被裁剪
+   */
+  isClipped(refX: number, refY: number): boolean;
 }
 
 export interface IContainer extends IBase {
+  /**
+   * 添加图形
+   * @param {ShapeCfg} cfg  图形配置项
+   * @returns 添加的图形对象
+  */
+  addShape(cfg: ShapeCfg): IShape;
   /**
 	 * 添加图形
    * @param {string} type 图形类型
@@ -303,4 +307,37 @@ export interface IShape extends IElement {
    * @returns 是否已被拾取
   */
   isHit(x: number, y: number): boolean;
+}
+
+/**
+ * @interface ICanvas
+ * 画布，图形的容器
+ */
+export interface ICanvas extends IContainer {
+  /**
+   * 改变画布大小
+   * @param {number} width  宽度
+   * @param {number} height 高度
+  */
+  changeSize(width: number, height: number);
+  /**
+   * 将窗口坐标转变成 canvas 坐标
+   * @param  {number} clientX 窗口 x 坐标
+   * @param  {number} clientY 窗口 y 坐标
+   * @return {object} canvas坐标
+   */
+  getPointByClient(clientX: number, clientY: number): object;
+
+  /**
+   * 将 canvas 坐标转换成窗口坐标
+   * @param {number} x canvas 上的 x 坐标
+   * @param {number} y canvas 上的 y 坐标
+   * @returns {object} 窗口坐标
+   */
+  getClientByPoint(x: number, y: number): object;
+
+  /**
+   * 绘制
+   */
+  draw();
 }

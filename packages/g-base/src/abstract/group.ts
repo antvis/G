@@ -2,6 +2,7 @@ import { IElement, IShape, IGroup, ICtor } from '../interfaces';
 import { GroupCfg, ShapeCfg } from '../types';
 import Element from './element';
 import ContainerUtil from '../util/container';
+import { isObject } from '@antv/util';
 
 abstract class AbstractGroup extends Element implements IGroup {
 
@@ -13,6 +14,17 @@ abstract class AbstractGroup extends Element implements IGroup {
     return false;
   }
 
+  clone() {
+    const clone = super.clone();
+    // 获取构造函数
+    const children = this.getChildren();
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      clone.add(child.clone());
+    }
+    return clone;
+  }
+
   abstract getShapeBase(): ICtor<IShape>;
   abstract getGroupBase(): ICtor<IGroup>;
 
@@ -22,8 +34,16 @@ abstract class AbstractGroup extends Element implements IGroup {
     return cfg;
   }
 
-  addShape(type: string, cfg: ShapeCfg): IShape {
-    return ContainerUtil.addShape(this, type, cfg);
+  // 兼容老版本的接口
+  addShape(...args): IShape {
+    const type = args[0];
+    let cfg = args[1];
+    if (isObject(type)) {
+      cfg = type;
+    } else {
+      cfg['type'] = type;
+    }
+    return ContainerUtil.addShape(this, cfg);
   }
 
   addGroup(...args):IGroup {
@@ -59,3 +79,5 @@ abstract class AbstractGroup extends Element implements IGroup {
     super.destroy();
   }
 }
+
+export default AbstractGroup;

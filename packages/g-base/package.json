@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-base",
-  "version": "4.0.0",
+  "version": "1.0.0",
   "description": "A common util collection for antv projects",
   "main": "lib/index.js",
   "scripts": {
@@ -35,5 +35,6 @@
   "homepage": "https://github.com/antvis/util#readme",
   "dependencies": {
     "@antv/util": "~2.0.0"
-  }
+  },
+  "__npminstall_done": false
 }

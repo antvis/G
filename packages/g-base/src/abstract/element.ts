@@ -1,7 +1,7 @@
 import Base from './base';
 import { IElement, IShape, IGroup, ICanvas } from '../interfaces';
-import { GroupCfg, ShapeCfg, BBox } from '../types';
-import { isObject, each, isArray, mix } from '@antv/util';
+import { GroupCfg, ShapeCfg, BBox, ClipCfg } from '../types';
+import { isObject, each, isArray, mix, upperFirst } from '@antv/util';
 import { removeFromArray } from '../util/util';
 
 const MATRIX = 'matrix';
@@ -11,6 +11,22 @@ const ARRAY_ATTRS = {
   points: 'points',
   lineDash: 'lineDash',
 };
+
+const CLONE_CFGS = [ 'zIndex', 'capture', 'visible' ];
+
+// 需要考虑数组嵌套数组的场景
+// 数组嵌套对象的场景不考虑
+function _cloneArrayAttr(arr) {
+  const result = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (isArray(arr[i])) {
+      result.push([].concat(arr[i]));
+    } else {
+      result.push(arr[i]);
+    }
+  }
+  return result;
+}
 
 abstract class Element extends Base implements IElement {
   /**
@@ -34,14 +50,6 @@ abstract class Element extends Base implements IElement {
     if (!this.attrs[MATRIX]) {
       this.attrs[MATRIX] = this.getDefaultMatrix();
     }
-  }
-  /**
-   * @protected
-   * 获取默认的矩阵
-   * @returns {number[]} 默认的矩阵
-   */
-  getDefaultMatrix() {
-    return [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
   }
 
   isGroup() {
@@ -86,8 +94,11 @@ abstract class Element extends Base implements IElement {
 
   abstract calculateBBox() : BBox;
 
-  // 在子类上各自实现
-  abstract clone(): IElement;
+  // 是否被裁剪
+  isClipped(refX, refY): boolean {
+    const clip = this.getClip();
+    return clip && clip.isHit(refX, refY);
+  }
 
   /**
    * @protected
@@ -166,7 +177,7 @@ abstract class Element extends Base implements IElement {
   }
 
   resetMatrix() {
-    this.attr(MATRIX, [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
+    this.attr(MATRIX, this.getDefaultMatrix());
   }
 
   getMatrix(): number[] {
@@ -179,10 +190,82 @@ abstract class Element extends Base implements IElement {
 
   /**
    * @protected
+   * 获取默认的矩阵
+   * @returns {number[]|null} 默认的矩阵
+   */
+  getDefaultMatrix() {
+    return null;
+  }
+
+  // 基类什么也不做
+  applyToMatrix(v: number[]) {
+
+  }
+
+  // 基类上什么也不做
+  invertFromMatrix(v: number[]) {
+
+  }
+
+  // 设置 clip
+  setClip(clipCfg: ClipCfg) {
+    const preShape = this.get('clipShape');
+    if (preShape) {
+      preShape.destroy();
+    }
+    let clipShape = null;
+    // 如果配置项为 null ,则不移除 clipShape
+    if (clipCfg) {
+      const canvas = this.getCanvas();
+      // clip 的类型同当前 Canvas 密切相关
+      const ShapeBase = canvas.getShapeBase();
+      const shapeType = upperFirst(clipCfg.type);
+      const Cons = ShapeBase[shapeType];
+
+      if (Cons) {
+        clipShape = new Cons({
+          type: clipCfg.type,
+          attrs: clipCfg.attrs,
+        });
+      }
+    }
+    this.set('clipShape', clipShape);
+  }
+
+  getClip(): IShape {
+    const clipShape = this.get('clipShape');
+    // 未设置时返回 Null，保证一致性
+    if (!clipShape) {
+      return null;
+    }
+    return clipShape;
+  }
+
+  /**
+   * @protected
    * 清理缓存的 bbox
    */
   clearCacheBBox() {
     this.set('bbox', null);
+  }
+
+  clone() {
+    const originAttrs = this.attrs;
+    const attrs = {};
+    each(originAttrs, (i, k) => {
+      if (isArray(originAttrs[k])) {
+        attrs[k] = _cloneArrayAttr(originAttrs[k]);
+      } else {
+        attrs[k] = originAttrs[k];
+      }
+    });
+    const cons = this.constructor;
+    // @ts-ignore
+    const clone = new cons({ attrs });
+    each(CLONE_CFGS, (cfgName) => {
+      clone.set(cfgName, this.get(cfgName));
+    });
+    return clone;
   }
 
   animate(toProps, duration?: number, easing?: string, callback?: Function, delay?: number) {

@@ -2,7 +2,7 @@
  * @fileoverview 添加 shape 和 Group 的方法，因为 Canvas 和 Group 都需要，所以在这里实现
  * @author dxq613@gmail.com
  */
-import { IGroup, IElement, IShape, IContainer } from '../interfaces';
+import { IGroup, IElement, IShape, IContainer, IBase } from '../interfaces';
 import { ShapeCfg, GroupCfg } from '../types';
 import { upperFirst, isFunction, isObject, each } from '@antv/util';
 import { removeFromArray } from './util';
@@ -10,12 +10,15 @@ import { removeFromArray } from './util';
 const SHAPE_MAP = {};
 const INDEX = '_INDEX';
 
+function isAllowCapture(element: IBase): boolean {
+  return element.get('visible') && element.get('capture');
+}
+
 function findShape(children: IElement[], x: number, y: number) {
   let rst = null;
   for (let i = children.length - 1; i >= 0; i--) {
     const child = children[i];
-    if (child.get('visible') && child.get('capture')) {
-
+    if (isAllowCapture(child)) {
       if (child.isGroup()) {
         rst = getShape(child as IGroup, x, y);
       } else if ((child as IShape).isHit(x, y)) {
@@ -46,8 +49,8 @@ function getCanvas(container: IContainer) {
  * @param {ShapeCfg} cfg  图形配置项
  * @returns 添加的图形对象
  */
-function addShape(container: IContainer, type: string, cfg: ShapeCfg): IShape {
-
+function addShape(container: IContainer, cfg: ShapeCfg): IShape {
+  const type = cfg.type;
   let shapeType = SHAPE_MAP[type];
   if (!shapeType) {
     shapeType = upperFirst(type);
@@ -55,7 +58,7 @@ function addShape(container: IContainer, type: string, cfg: ShapeCfg): IShape {
   }
   // const canvas = getCanvas(container);
   // cfg['canvas'] = canvas; // 在 add 函数里面已经添加
-  cfg['type'] = type;
+  // cfg['type'] = type;
   const ShapeBase = container.getShapeBase();
   const rst = new ShapeBase[shapeType](cfg);
   add(container, rst);
@@ -125,16 +128,19 @@ function removeChild(container: IContainer, element: IElement, destroy: boolean 
 
 function getShape(container: IContainer, x: number, y: number): IShape {
   // 如果不支持拾取，则直接返回
-  if (!container.get('capture')) {
+  if (!isAllowCapture(container)) {
     return null;
   }
-  const clip = container.get('clip') as IShape;
   const children = container.getChildren();
   let rst;
-  if (clip) {
+  // 如果容器是 group
+  if (!container.isCanvas()) {
     const v = [ x, y, 1 ];
-    if (clip.isHit(v[0], v[1])) {
-      rst = findShape(children, x, y);
+    const group = container as IGroup;
+    // 将 x, y 转换成对应于 group 的局部坐标
+    group.invertFromMatrix(v);
+    if (!group.isClipped(v[0], v[1])) {
+      rst = findShape(children, v[0], v[1]);
     }
   } else {
     rst = findShape(children, x, y);
