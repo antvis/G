@@ -12,6 +12,7 @@ abstract class AbstractGroup extends Element implements IGroup {
   isCanvas() {
     return false;
   }
+
   // 根据子节点确定 BBox
   getBBox(): BBox {
     // 所有的值可能在画布的可视区外

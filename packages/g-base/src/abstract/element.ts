@@ -1,6 +1,6 @@
 import Base from './base';
 import { IElement, IShape, IGroup, ICanvas } from '../interfaces';
-import { GroupCfg, ShapeCfg, BBox, ClipCfg } from '../types';
+import { GroupCfg, ShapeCfg, BBox, ClipCfg, ShapeAttrs } from '../types';
 import { isObject, each, isArray, mix, upperFirst } from '@antv/util';
 import { removeFromArray } from '../util/util';
 
@@ -30,11 +30,11 @@ function _cloneArrayAttr(arr) {
 
 abstract class Element extends Base implements IElement {
   /**
-   * @private
+   * @protected
    * 图形属性
-   * @type {object}
+   * @type {ShapeAttrs}
    */
-  attrs: object = {};
+  attrs: ShapeAttrs = {};
 
   // override
   getDefaultCfg() {
@@ -44,12 +44,31 @@ abstract class Element extends Base implements IElement {
     };
   }
 
+  /**
+   * @protected
+   * 获取默认的属相
+   */
+  getDefaultAttrs() {
+    return {
+      matrix: this.getDefaultMatrix(),
+    };
+  }
+
   constructor(cfg) {
     super(cfg);
-    mix(this.attrs, cfg.attrs);
-    if (!this.attrs[MATRIX]) {
-      this.attrs[MATRIX] = this.getDefaultMatrix();
-    }
+    const attrs = this.getDefaultAttrs();
+    mix(attrs, cfg.attrs);
+    this.attrs = attrs;
+    this.initAttrs(attrs);
+  }
+
+  /**
+   * @protected
+   * 初始化属性，有些属性需要加工
+   * @param {object} attrs 属性值
+   */
+  initAttrs(attrs: ShapeAttrs) {
+
   }
 
   isGroup() {
