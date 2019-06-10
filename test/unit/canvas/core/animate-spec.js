@@ -323,7 +323,6 @@ describe('animate', function() {
       }, repeat: false }, 1000, function() {
         expect(count > 50).to.be.true;
         matrix = shape.getMatrix();
-        console.log(matrix);
         expect(matrix[0]).to.equal(1);
         expect(Util.isNumberEqual(matrix[1], 0)).to.be.true;
         expect(matrix[2]).to.equal(0);
