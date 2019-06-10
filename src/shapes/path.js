@@ -131,6 +131,11 @@ Util.augment(Path, {
     });
     this._cfg.totalLength = totalLength;
 
+    if (totalLength === 0) {
+      this._cfg.tCache = [];
+      return;
+    }
+
     Util.each(curve, function(segment, i) {
       segmentN = curve[i + 1];
       l = segment.length;
@@ -219,7 +224,7 @@ Util.augment(Path, {
 
     const curve = this._cfg.curve;
 
-    if (!tCache) {
+    if (!tCache || tCache.length === 0) {
       if (curve) {
         return {
           x: curve[0][1],
