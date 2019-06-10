@@ -25,7 +25,6 @@ class Pattern {
     }
     img.src = source;
     function onload() {
-      console.log(img.width, img.height);
       el.setAttribute('width', img.width);
       el.setAttribute('height', img.height);
     }
