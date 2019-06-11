@@ -11,6 +11,12 @@ const EVENTS = [
   'mouseleave'
 ];
 
+// 获取当前时间
+const getNowTime = () => {
+  const now = new Date();
+  return now.getTime();
+};
+
 const CLICK_OFFSET = 40;
 const LEFT_BTN_CODE = 0;
 
@@ -18,11 +24,12 @@ let preShape = null;
 let mousedownShape = null;
 let mousedownOffset = {};
 let dragging = null;
-let dragTimer = null;
+let clickTimestamp = 0;
 
 module.exports = {
   registerEvent() {
     const self = this;
+
     const el = this.get('el');
 
     Util.each(EVENTS, evt => {
@@ -77,6 +84,7 @@ module.exports = {
     return event;
   },
   _triggerEvent(type, e) {
+
     const self = this;
     const point = self.getPointByClient(e.clientX, e.clientY);
     let shape = self.getShape(point.x, point.y, e);
@@ -109,10 +117,20 @@ module.exports = {
       }
       if (shape) {
         if (!dragging) {
-          if (mousedownShape === shape) {
-            dragging = shape;
-            mousedownShape = null;
-            this._emitEvent('dragstart', e, point, shape);
+          if(mousedownShape === shape) {
+            const now = getNowTime();
+            const timeWindow = now - clickTimestamp;
+            const dx = mousedownOffset.x - e.clientX;
+            const dy = mousedownOffset.y - e.clientY;
+            const dist = dx * dx + dy * dy;
+
+            if(timeWindow > 120 || dist > CLICK_OFFSET) {
+              dragging = shape;
+              mousedownShape = null;
+              this._emitEvent('dragstart', e, point, shape);
+            } else {
+              self._emitEvent('mousemove', e, point, shape);
+            }
           } else {
             self._emitEvent('mousemove', e, point, shape);
           }
@@ -135,14 +153,16 @@ module.exports = {
       if (!dragging && type === 'mousedown' && e.button === LEFT_BTN_CODE) {
         mousedownShape = shape;
         mousedownOffset = { x: e.clientX, y: e.clientY };
+        clickTimestamp = getNowTime();
       }
       if (type === 'mouseup' && e.button === LEFT_BTN_CODE) {
         const dx = mousedownOffset.x - e.clientX;
         const dy = mousedownOffset.y - e.clientY;
         const dist = dx * dx + dy * dy;
-        if (dist < CLICK_OFFSET) {
-          clearTimeout(dragTimer);
-          dragTimer = null;
+        const now = getNowTime();
+        const timeWindow = now - clickTimestamp;
+        if (dist < CLICK_OFFSET || timeWindow < 200) {
+          clickTimestamp = 0;
           this._emitEvent('click', e, point, mousedownShape || this);
         }
         if (dragging) {
