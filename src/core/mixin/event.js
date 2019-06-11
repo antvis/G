@@ -117,16 +117,20 @@ module.exports = {
       }
       if (shape) {
         if (!dragging) {
-          const now = getNowTime();
-          const timeWindow = now - clickTimestamp;
-          const dx = mousedownOffset.x - e.clientX;
-          const dy = mousedownOffset.y - e.clientY;
-          const dist = dx * dx + dy * dy;
+          if(mousedownShape === shape) {
+            const now = getNowTime();
+            const timeWindow = now - clickTimestamp;
+            const dx = mousedownOffset.x - e.clientX;
+            const dy = mousedownOffset.y - e.clientY;
+            const dist = dx * dx + dy * dy;
 
-          if (mousedownShape === shape && (timeWindow > 120 || dist > CLICK_OFFSET)) {
-            dragging = shape;
-            mousedownShape = null;
-            this._emitEvent('dragstart', e, point, shape);
+            if(timeWindow > 120 || dist > CLICK_OFFSET) {
+              dragging = shape;
+              mousedownShape = null;
+              this._emitEvent('dragstart', e, point, shape);
+            } else {
+              self._emitEvent('mousemove', e, point, shape);
+            }
           } else {
             self._emitEvent('mousemove', e, point, shape);
           }
