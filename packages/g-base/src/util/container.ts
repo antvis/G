@@ -69,7 +69,7 @@ function addShape(container: IContainer, cfg: ShapeCfg): IShape {
  * @param {IContainer} container 容器，group 或者 canvas
  * @param {GroupCfg} cfg 图形分组的配置项
  * @returns 添加的图形分组
-*/
+ */
 function addGroup(container: IContainer, groupClass?: any, cfg?: GroupCfg): IGroup {
   // const canvas = getCanvas(container);
   let rst;
@@ -135,7 +135,7 @@ function getShape(container: IContainer, x: number, y: number): IShape {
   let rst;
   // 如果容器是 group
   if (!container.isCanvas()) {
-    const v = [ x, y, 1 ];
+    const v = [x, y, 1];
     const group = container as IGroup;
     // 将 x, y 转换成对应于 group 的局部坐标
     group.invertFromMatrix(v);
@@ -161,7 +161,7 @@ function clear(container: IContainer) {
 }
 
 function getComparer(compare: Function) {
-  return function (left, right) {
+  return function(left, right) {
     const result = compare(left, right);
     return result === 0 ? left[INDEX] - right[INDEX] : result;
   };
@@ -179,9 +179,11 @@ function sort(container: IContainer) {
     return child;
   });
 
-  children.sort(getComparer((obj1, obj2) => {
-    return obj1.get('zIndex') - obj2.get('zIndex');
-  }));
+  children.sort(
+    getComparer((obj1, obj2) => {
+      return obj1.get('zIndex') - obj2.get('zIndex');
+    })
+  );
 
   return this;
 }

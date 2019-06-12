@@ -8,7 +8,7 @@ class MyElement extends Element {
       minX: x,
       minY: y,
       maxX: x + width,
-      maxY: y + height
+      maxY: y + height,
     };
   }
 }
@@ -20,7 +20,7 @@ class MyCircle extends Element {
       minX: x - r,
       minY: y - r,
       maxX: x + r,
-      maxY: y + r
+      maxY: y + r,
     };
   }
 }
@@ -30,7 +30,7 @@ MyElement.Circle = MyCircle;
 const canvas = {
   getShapeBase() {
     return MyElement;
-  }
+  },
 };
 
 describe('test element', () => {
@@ -38,7 +38,7 @@ describe('test element', () => {
     getChildren() {
       return this.children;
     },
-    children: []
+    children: [],
   };
   const element = new MyElement({
     attrs: {
@@ -46,7 +46,7 @@ describe('test element', () => {
       y: 0,
       width: 100,
       height: 100,
-    }
+    },
   });
 
   it('test init', () => {
@@ -81,10 +81,10 @@ describe('test element', () => {
     group.children.push(element);
     element.set('parent', group);
     const e1 = new MyElement({
-      parent: group
+      parent: group,
     });
     const e2 = new MyElement({
-      parent: group
+      parent: group,
     });
     group.children.push(e1);
     group.children.push(e2);
@@ -120,7 +120,7 @@ describe('test element', () => {
   it('matrix', () => {
     const originMatix = null;
     expect(element.attr('matrix')).eqls(originMatix);
-    const toMatrx = [ 2, 0, 0, 0, 1, 0, 0, 0, 1 ];
+    const toMatrx = [2, 0, 0, 0, 1, 0, 0, 0, 1];
     element.setMatrix(toMatrx);
     expect(element.attr('matrix')).eqls(toMatrx);
     element.resetMatrix();
@@ -135,8 +135,8 @@ describe('test element', () => {
       attrs: {
         x: 10,
         y: 10,
-        r: 10
-      }
+        r: 10,
+      },
     });
     const clipShape = element.getClip();
     expect(clipShape.get('type')).eqls('circle');
@@ -144,7 +144,7 @@ describe('test element', () => {
       minX: 0,
       minY: 0,
       maxX: 20,
-      maxY: 20
+      maxY: 20,
     });
 
     element.setClip(null);
@@ -157,5 +157,4 @@ describe('test element', () => {
     expect(element.destroyed).eqls(true);
     expect(element.attrs).eqls({});
   });
-
 });

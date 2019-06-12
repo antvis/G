@@ -5,25 +5,21 @@ const dom = document.createElement('div');
 document.body.appendChild(dom);
 
 class MyCanvas extends Canvas {
-  getShapeBase() {
-
-  }
+  getShapeBase() {}
 
   createDom() {
     const el = document.createElement('canvas');
     return el;
   }
 
-  getGroupBase() {
-
-  }
+  getGroupBase() {}
 }
 
 describe('test canvas', () => {
   const canvas = new MyCanvas({
     container: dom,
     width: 500,
-    height: 500
+    height: 500,
   });
 
   it('init', () => {
@@ -38,7 +34,7 @@ describe('test canvas', () => {
     const point = canvas.getPointByClient(rect.left + 10, rect.top + 20);
     expect(point).eqls({
       x: 10,
-      y: 20
+      y: 20,
     });
   });
 
@@ -47,7 +43,7 @@ describe('test canvas', () => {
     const point = canvas.getClientByPoint(10, 20);
     expect(point).eqls({
       clientX: rect.left + 10,
-      clientY: rect.top + 20
+      clientY: rect.top + 20,
     });
   });
 
@@ -63,5 +59,4 @@ describe('test canvas', () => {
     expect(canvas.destroyed).eqls(true);
     expect(dom.childNodes.length).eqls(0);
   });
-
 });

@@ -5,7 +5,6 @@ import ContainerUtil from '../util/container';
 import { isObject } from '@antv/util';
 
 abstract class AbstractGroup extends Element implements IGroup {
-
   isGroup() {
     return true;
   }
@@ -46,8 +45,8 @@ abstract class AbstractGroup extends Element implements IGroup {
     return ContainerUtil.addShape(this, cfg);
   }
 
-  addGroup(...args):IGroup {
-    const [ groupClass, cfg ] = args;
+  addGroup(...args): IGroup {
+    const [groupClass, cfg] = args;
     return ContainerUtil.addGroup(this, groupClass, cfg);
   }
 
