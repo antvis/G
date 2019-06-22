@@ -10,7 +10,7 @@ class MyShape extends Shape {
       minX: x,
       minY: y,
       maxX: x + width,
-      maxY: y + height
+      maxY: y + height,
     };
   }
 }
@@ -31,7 +31,7 @@ class MyCircle extends MyShape {
       minX: x - r,
       minY: y - r,
       maxX: x + r,
-      maxY: y + r
+      maxY: y + r,
     };
   }
 }
@@ -46,7 +46,7 @@ describe('test group', () => {
   it('add group', () => {
     const subGroup = group.addGroup({
       id: '2',
-      capture: false
+      capture: false,
     });
     expect(group.getChildren().length).eqls(1);
     expect(subGroup.get('id')).eqls('2');
@@ -56,14 +56,14 @@ describe('test group', () => {
       attrs: {
         x: 10,
         y: 10,
-        r: 10
-      }
+        r: 10,
+      },
     });
     expect(shape.getBBox()).eqls({
       minX: 0,
       minY: 0,
       maxX: 20,
-      maxY: 20
+      maxY: 20,
     });
   });
   it('clone', () => {

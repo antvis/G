@@ -1,4 +1,3 @@
-
 export function removeFromArray(arr: any[], obj: any) {
   const index = arr.indexOf(obj);
   if (index !== -1) {
@@ -6,4 +5,4 @@ export function removeFromArray(arr: any[], obj: any) {
   }
 }
 
-export const isBrowser = (typeof window !== 'undefined') && (typeof window.document !== 'undefined');
+export const isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';

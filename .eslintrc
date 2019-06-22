@@ -1,6 +1,7 @@
 {
   "extends": [
-    "egg"
+    "egg",
+    "prettier"
   ],
   "globals": {
     "$": true,
@@ -91,13 +92,15 @@
     ],
     "no-debugger": "error",
     "object-curly-spacing": [
-      "error", "always",
+      "error",
+      "always",
       {
         "arraysInObjects": false
       }
     ],
     "arrow-parens": [
-      "error", "always"
+      "error",
+      "always"
     ]
   }
 }

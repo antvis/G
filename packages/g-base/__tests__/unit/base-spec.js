@@ -5,17 +5,17 @@ describe('base test', () => {
   it('init', () => {
     const base = new Base({
       a: 'a',
-      b: 'b'
+      b: 'b',
     });
     expect(base.cfg).eqls({
       a: 'a',
-      b: 'b'
+      b: 'b',
     });
   });
   it('get', () => {
     const base = new Base({
       a: 'a',
-      b: 'b'
+      b: 'b',
     });
     expect(base.get('a')).equal('a');
     expect(base.get('b')).equal('b');
@@ -24,7 +24,7 @@ describe('base test', () => {
   it('set', () => {
     const base = new Base({
       a: 'a',
-      b: 'b'
+      b: 'b',
     });
     base.set('a', 'a1');
     base.set('c', 'c1');
@@ -35,11 +35,9 @@ describe('base test', () => {
   it('destroy', () => {
     const base = new Base({
       a: 'a',
-      b: 'b'
+      b: 'b',
     });
-    base.on('click', () => {
-
-    });
+    base.on('click', () => {});
     expect(base.destroyed).equal(false);
     base.destroy();
     expect(base.cfg).eqls({ destroyed: true });
@@ -50,21 +48,17 @@ describe('base test', () => {
   it('on', () => {
     const base = new Base({
       a: 'a',
-      b: 'b'
+      b: 'b',
     });
-    function callback() {
-
-    }
+    function callback() {}
     base.on('click', callback);
 
     expect(base.events.click.length).equal(1);
     expect(base.events.click[0]).equal(callback);
-
   });
 
   it('trigger, emit', () => {
-    const base = new Base({
-    });
+    const base = new Base({});
 
     let called = 0;
     function callback() {
@@ -87,8 +81,7 @@ describe('base test', () => {
   });
 
   it('trigger with args', () => {
-    const base = new Base({
-    });
+    const base = new Base({});
     let p1;
     let p2;
     function callback(param1, param2) {
@@ -100,7 +93,6 @@ describe('base test', () => {
     base.trigger('click', 1, 2);
     expect(p1).equal(1);
     expect(p2).equal(2);
-
   });
 
   it('off', () => {
@@ -123,5 +115,4 @@ describe('base test', () => {
     base.off();
     expect(base.events.click).equal(undefined);
   });
-
 });

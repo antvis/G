@@ -7,7 +7,6 @@ import { isBrowser } from '../util/util';
 const PX_SUFFIX = 'px';
 
 abstract class Canvas extends Base implements ICanvas {
-
   getDefaultCfg() {
     const cfg = super.getDefaultCfg();
     cfg['children'] = [];
@@ -57,9 +56,7 @@ abstract class Canvas extends Base implements ICanvas {
    * @protected
    * 初始化绑定的事件
    */
-  initEvents() {
-
-  }
+  initEvents() {}
 
   /**
    * @protected
@@ -103,9 +100,7 @@ abstract class Canvas extends Base implements ICanvas {
   }
 
   // 实现接口
-  draw() {
-
-  }
+  draw() {}
 
   /**
    * @protected
@@ -120,9 +115,7 @@ abstract class Canvas extends Base implements ICanvas {
    * @protected
    * 清理所有的事件
    */
-  clearEvents() {
-
-  }
+  clearEvents() {}
 
   isCanvas() {
     return true;
@@ -146,8 +139,8 @@ abstract class Canvas extends Base implements ICanvas {
     return ContainerUtil.addShape(this, cfg);
   }
 
-  addGroup(...args):IGroup {
-    const [ groupClass, cfg ] = args;
+  addGroup(...args): IGroup {
+    const [groupClass, cfg] = args;
     return ContainerUtil.addGroup(this, groupClass, cfg);
   }
 

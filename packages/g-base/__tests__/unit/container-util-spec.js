@@ -44,13 +44,11 @@ class Item extends Base {
     super();
     Object.assign(this, cfg);
   }
-
 }
 
 Item.Circle = Item;
 
 class Group extends Base {
-
   isGroup() {
     return true;
   }
@@ -61,9 +59,7 @@ class Group extends Base {
   getGroupBase() {
     return Group;
   }
-  invertFromMatrix() {
-
-  }
+  invertFromMatrix() {}
 
   isClipped() {
     return false;
@@ -88,16 +84,15 @@ describe('test container util', () => {
   const canvas = new Group({
     isCanvas() {
       return true;
-    }
+    },
   });
 
   const group = new Group({
     isCanvas() {
       return false;
     },
-    canvas
+    canvas,
   });
-
 
   it('add', () => {
     const item = new Item();
@@ -110,7 +105,7 @@ describe('test container util', () => {
   it('add shape', () => {
     const item = ContainerUtil.addShape(group, {
       type: 'circle',
-      attrs: {}
+      attrs: {},
     });
     expect(item.getParent()).eqls(group);
     expect(item.getCanvas()).eqls(canvas);
@@ -128,7 +123,6 @@ describe('test container util', () => {
 
     const ng3 = ContainerUtil.addGroup(group, { a: 'a1' });
     expect(ng3.get('a')).eqls('a1');
-
   });
 
   it('contains', () => {
@@ -154,12 +148,12 @@ describe('test container util', () => {
     ContainerUtil.addShape(group, {
       type: 'circle',
       attrs: {},
-      zIndex: 1
+      zIndex: 1,
     });
     ContainerUtil.addShape(group, {
       type: 'circle',
       attrs: {},
-      zIndex: 0
+      zIndex: 0,
     });
     expect(group.getChildren()[0].get('zIndex')).equal(1);
     ContainerUtil.sort(group);
@@ -172,7 +166,7 @@ describe('test container util', () => {
       type: 'circle',
       isHit() {
         return true;
-      }
+      },
     });
     expect(ContainerUtil.getShape(group, 0, 0)).equal(item);
   });
@@ -181,23 +175,22 @@ describe('test container util', () => {
     ContainerUtil.clear(group);
     ContainerUtil.addShape(group, {
       type: 'circle',
-      attrs: {}
+      attrs: {},
     });
     expect(ContainerUtil.getShape(group, 0, 0)).equal(null);
     const subGroup = ContainerUtil.addGroup(group, {
       isCanvas() {
         return false;
-      }
+      },
     });
     const item = ContainerUtil.addShape(subGroup, {
       type: 'circle',
       isHit() {
         return true;
-      }
+      },
     });
     expect(ContainerUtil.getShape(group, 0, 0)).equal(item);
     group.set('capture', false); // 不支持拾取
     expect(ContainerUtil.getShape(group, 0, 0)).equal(null);
   });
-
 });

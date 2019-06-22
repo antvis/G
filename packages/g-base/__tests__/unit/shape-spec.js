@@ -8,11 +8,10 @@ class MyShape extends Shape {
       minX: x,
       minY: y,
       maxX: x + width,
-      maxY: y + height
+      maxY: y + height,
     };
   }
 }
-
 
 describe('test element', () => {
   it('test clone', () => {
@@ -22,10 +21,9 @@ describe('test element', () => {
         y: 0,
         width: 100,
         height: 100,
-      }
+      },
     });
     const newShape = shape.clone();
     expect(newShape.attrs).eqls(shape.attrs);
   });
 });
-

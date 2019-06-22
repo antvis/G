@@ -20,9 +20,7 @@ class Group {
     Object.assign(this, cfg);
   }
 
-  invertFromMatrix() {
-
-  }
+  invertFromMatrix() {}
   get(name) {
     return this[name];
   }
@@ -36,12 +34,9 @@ const group = new Group({
     new Item({ id: '01', text: '01' }),
     new Item({ id: '02', text: '02' }),
     new Group({
-      children: [
-        new Item({ id: '04', text: '04' }),
-        new Item({ id: 'test', text: '02' })
-      ]
+      children: [new Item({ id: '04', text: '04' }), new Item({ id: 'test', text: '02' })],
     }),
-    new Item({ id: '03', text: '03' })
+    new Item({ id: '03', text: '03' }),
   ],
 });
 
@@ -59,13 +54,17 @@ describe('test group util', () => {
   });
 
   it('findAll', () => {
-    expect(GroupUtil.findAll(group, function(item) {
-      return item.text === '02';
-    }).length).eqls(2);
+    expect(
+      GroupUtil.findAll(group, function(item) {
+        return item.text === '02';
+      }).length
+    ).eqls(2);
 
-    expect(GroupUtil.findAll(group, function(item) {
-      return item.text === '05';
-    }).length).eqls(0);
+    expect(
+      GroupUtil.findAll(group, function(item) {
+        return item.text === '05';
+      }).length
+    ).eqls(0);
   });
 
   it('findById', () => {
@@ -75,11 +74,15 @@ describe('test group util', () => {
   });
 
   it('find', () => {
-    expect(GroupUtil.find(group, (item) => {
-      return item.text === '02';
-    }).id).eqls('02');
-    expect(GroupUtil.find(group, function(item) {
-      return item.text === '05';
-    })).eqls(null);
+    expect(
+      GroupUtil.find(group, (item) => {
+        return item.text === '02';
+      }).id
+    ).eqls('02');
+    expect(
+      GroupUtil.find(group, function(item) {
+        return item.text === '05';
+      })
+    ).eqls(null);
   });
 });

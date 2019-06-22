@@ -3,10 +3,10 @@ import { mix, isFunction } from '@antv/util';
 import { removeFromArray } from '../util/util';
 abstract class Base implements IBase, IObservable {
   /**
-	 * @private
-	 * 内部属性，用于 get,set
-	 * @type {object}
-	 */
+   * @private
+   * 内部属性，用于 get,set
+   * @type {object}
+   */
   cfg: object;
   /**
    * @private
@@ -16,16 +16,16 @@ abstract class Base implements IBase, IObservable {
   events: object = {};
 
   /**
-	 * 是否被销毁
-	 * @type {boolean}
-	 */
+   * 是否被销毁
+   * @type {boolean}
+   */
   destroyed: boolean = false;
 
   /**
-	 * @protected
-	 * 默认的配置项
-	 * @returns {object} 默认的配置项
-	 */
+   * @protected
+   * 默认的配置项
+   * @returns {object} 默认的配置项
+   */
   getDefaultCfg() {
     return {};
   }
@@ -90,12 +90,11 @@ abstract class Base implements IBase, IObservable {
   trigger(eventName: string, ...args: any[]) {
     const events = this.events[eventName] || [];
     const length = events.length;
-    for (let i = 0; i < length; i ++) {
+    for (let i = 0; i < length; i++) {
       const callback = events[i];
       callback.apply(this, args);
     }
   }
-
 }
 
 export default Base;

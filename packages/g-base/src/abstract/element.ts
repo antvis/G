@@ -12,7 +12,7 @@ const ARRAY_ATTRS = {
   lineDash: 'lineDash',
 };
 
-const CLONE_CFGS = [ 'zIndex', 'capture', 'visible' ];
+const CLONE_CFGS = ['zIndex', 'capture', 'visible'];
 
 // 需要考虑数组嵌套数组的场景
 // 数组嵌套对象的场景不考虑
@@ -60,12 +60,12 @@ abstract class Element extends Base implements IElement {
     return this.get('parent');
   }
 
-  getCanvas() : ICanvas {
+  getCanvas(): ICanvas {
     return this.get('canvas');
   }
 
   attr(...args) {
-    const [ name, value ] = args;
+    const [name, value] = args;
     if (!name) return this.attrs;
     if (isObject(name)) {
       for (const k in name) {
@@ -92,7 +92,7 @@ abstract class Element extends Base implements IElement {
     return bbox;
   }
 
-  abstract calculateBBox() : BBox;
+  abstract calculateBBox(): BBox;
 
   // 是否被裁剪
   isClipped(refX, refY): boolean {
@@ -198,14 +198,10 @@ abstract class Element extends Base implements IElement {
   }
 
   // 基类什么也不做
-  applyToMatrix(v: number[]) {
-
-  }
+  applyToMatrix(v: number[]) {}
 
   // 基类上什么也不做
-  invertFromMatrix(v: number[]) {
-
-  }
+  invertFromMatrix(v: number[]) {}
 
   // 设置 clip
   setClip(clipCfg: ClipCfg) {
@@ -268,21 +264,13 @@ abstract class Element extends Base implements IElement {
     return clone;
   }
 
-  animate(toProps, duration?: number, easing?: string, callback?: Function, delay?: number) {
+  animate(toProps, duration?: number, easing?: string, callback?: Function, delay?: number) {}
 
-  }
+  stopAnimate() {}
 
-  stopAnimate() {
+  pauseAnimate() {}
 
-  }
-
-  pauseAnimate() {
-
-  }
-
-  resumeAnimate() {
-
-  }
+  resumeAnimate() {}
 }
 
 export default Element;
