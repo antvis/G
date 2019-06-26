@@ -1,6 +1,7 @@
 import { AbstractShape } from '@antv/g-base';
-import { isNil } from '@antv/util';
+import { isNil } from '../util/util';
 import BoxUtil from '../util/box';
+import HitUtil from '../util/hit';
 import { applyAttrsToContext } from '../util/draw';
 
 class ShapeBase extends AbstractShape {
@@ -17,9 +18,17 @@ class ShapeBase extends AbstractShape {
 
   calculateBBox() {
     const type = this.get('type');
-    const lineWidth = this.getHitLineWidth();
+    const lineWidth = this.isStroke() ? this.getHitLineWidth() : 0;
     const attrs = this.attr();
     return BoxUtil.getBBox(type, attrs, lineWidth);
+  }
+
+  isFill() {
+    return !!this.attrs['fill'] || this.isClipShape();
+  }
+
+  isStroke() {
+    return !!this.attrs['stroke'];
   }
 
   // 同 shape 中的方法重复了
@@ -92,6 +101,10 @@ class ShapeBase extends AbstractShape {
    */
   afterDrawPath(context: CanvasRenderingContext2D) {
 
+  }
+
+  isInShape(refX: number, refY: number): boolean {
+    return HitUtil.isHitShape(this, refX, refY);
   }
 
   /**

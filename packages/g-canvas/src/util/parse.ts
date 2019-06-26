@@ -1,5 +1,5 @@
 import { IElement } from '@antv/g-base/lib/interfaces';
-import { isString, each, isArray } from '@antv/util';
+import { isString, each, isArray } from './util';
 
 const regexTags = /[MLHVQTCSAZ]([^MLHVQTCSAZ]*)/ig;
 const regexDot = /[^\s\,]+/ig;
@@ -103,10 +103,10 @@ export function parseRadialGradient(context: CanvasRenderingContext2D, element: 
   const gradient = context.createRadialGradient(
     box.minX + width * fx,
     box.minY + height * fy,
-    fr * r,
+    0,
     box.minX + width / 2,
     box.minY + height / 2,
-    r);
+    fr * r);
   addStop(steps, gradient);
   return gradient;
 }
@@ -211,10 +211,10 @@ export function parseRadius(radius) {
   } else {
     r1 = r2 = r3 = r4 = radius;
   }
-  return {
+  return [
     r1,
     r2,
     r3,
     r4,
-  };
+  ];
 }

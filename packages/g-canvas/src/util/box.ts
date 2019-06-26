@@ -69,7 +69,7 @@ const BoxUtil = {
     return BoxUtil.polygon(attrs, lineWidth);
   },
   image(attrs, lineWidth) {
-    return BoxUtil.rect(attrs, lineWidth);
+    return BoxUtil.rect(attrs, 0); // 图片不计算边框
   },
   /**
    * 使用快速方法计算 path 的包围盒，根据起点、结束点、控制点计算

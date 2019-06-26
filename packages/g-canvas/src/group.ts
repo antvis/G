@@ -1,7 +1,7 @@
 import { AbstractGroup }  from '@antv/g-base';
 
 import Shape from './shape/index';
-import { each } from '@antv/util';
+import { each } from './util/util';
 import { applyAttrsToContext, drawChildren } from './util/draw';
 
 class Group extends AbstractGroup {

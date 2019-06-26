@@ -2,10 +2,9 @@ import { AbstractCanvas } from '@antv/g-base';
 import { IElement } from '@antv/g-base/lib/interfaces';
 import Shape from './shape/index';
 import Group from './group';
-import { each } from '@antv/util';
 import { drawChildren } from './util/draw';
 
-import { getPixelRatio } from './util/util';
+import { getPixelRatio, each } from './util/util';
 
 class Canvas extends AbstractCanvas {
 
@@ -17,10 +16,14 @@ class Canvas extends AbstractCanvas {
     return Group;
   }
 
+  getPixelRatio() {
+    return this.get('pixelRatio') || getPixelRatio();
+  }
+
   // 复写基类的方法生成标签
   createDom(): HTMLElement {
     const element = document.createElement('canvas');
-    const pixelRatio = getPixelRatio();
+    const pixelRatio = this.getPixelRatio();
     const context = element.getContext('2d');
     if (pixelRatio > 1) {
       context.scale(pixelRatio, pixelRatio);

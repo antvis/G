@@ -117,10 +117,10 @@ abstract class Element extends Base implements IElement {
   abstract getBBox(): BBox;
 >>>>>>> feat(bbox): group not cache box
 
-  // 是否被裁剪
+  // 是否被裁剪，被裁剪则不显示，不参与拾取
   isClipped(refX, refY): boolean {
     const clip = this.getClip();
-    return clip && clip.isHit(refX, refY);
+    return clip && !clip.isHit(refX, refY);
   }
 
   /**
@@ -241,6 +241,7 @@ abstract class Element extends Base implements IElement {
       if (Cons) {
         clipShape = new Cons({
           type: clipCfg.type,
+          isClipShape: true, // 增加一个标记
           attrs: clipCfg.attrs,
         });
       }

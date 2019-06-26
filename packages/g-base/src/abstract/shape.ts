@@ -43,6 +43,11 @@ abstract class AbstractShape extends Element implements IShape {
     this.set('bbox', null);
   }
 
+  // 实现接口
+  isClipShape() {
+    return this.get('isClipShape');
+  }
+
   /**
    * @protected
    * 不同的图形自己实现是否在图形内部的逻辑，要判断边和填充区域

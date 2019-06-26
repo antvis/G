@@ -8,6 +8,7 @@ describe('canvas test', () => {
   const canvas = new Canvas({
     container: dom,
     width: 500,
+    pixelRatio: 1,
     height: 500
   });
 

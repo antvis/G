@@ -7,7 +7,6 @@ const SHAPE_ATTRS_MAP = {
   fill: 'fillStyle',
   stroke: 'strokeStyle',
   opacity: 'globalAlpha',
-  strokeWidth: 'lineWidth',
 };
 
 export function applyAttrsToContext(context: CanvasRenderingContext2D, element: IElement) {
