@@ -114,7 +114,7 @@ abstract class AbstractGroup extends Element implements IGroup {
   }
 
   addGroup(...args): IGroup {
-    const [groupClass, cfg] = args;
+    const [ groupClass, cfg ] = args;
     return ContainerUtil.addGroup(this, groupClass, cfg);
   }
 

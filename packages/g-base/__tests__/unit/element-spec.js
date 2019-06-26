@@ -120,7 +120,7 @@ describe('test element', () => {
   it('matrix', () => {
     const originMatix = null;
     expect(element.attr('matrix')).eqls(originMatix);
-    const toMatrx = [2, 0, 0, 0, 1, 0, 0, 0, 1];
+    const toMatrx = [ 2, 0, 0, 0, 1, 0, 0, 0, 1 ];
     element.setMatrix(toMatrx);
     expect(element.attr('matrix')).eqls(toMatrx);
     element.resetMatrix();

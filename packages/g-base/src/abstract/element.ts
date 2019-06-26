@@ -12,7 +12,7 @@ const ARRAY_ATTRS = {
   lineDash: 'lineDash',
 };
 
-const CLONE_CFGS = ['zIndex', 'capture', 'visible'];
+const CLONE_CFGS = [ 'zIndex', 'capture', 'visible' ];
 
 // 需要考虑数组嵌套数组的场景
 // 数组嵌套对象的场景不考虑
@@ -84,7 +84,7 @@ abstract class Element extends Base implements IElement {
   }
 
   attr(...args) {
-    const [name, value] = args;
+    const [ name, value ] = args;
     if (!name) return this.attrs;
     if (isObject(name)) {
       for (const k in name) {
@@ -102,20 +102,7 @@ abstract class Element extends Base implements IElement {
   }
 
   // 在子类上单独实现
-<<<<<<< HEAD
-  getBBox(): BBox {
-    let bbox = this.get('bbox');
-    if (!bbox) {
-      bbox = this.calculateBBox();
-      this.set('bbox', bbox);
-    }
-    return bbox;
-  }
-
-  abstract calculateBBox(): BBox;
-=======
   abstract getBBox(): BBox;
->>>>>>> feat(bbox): group not cache box
 
   // 是否被裁剪，被裁剪则不显示，不参与拾取
   isClipped(refX, refY): boolean {
