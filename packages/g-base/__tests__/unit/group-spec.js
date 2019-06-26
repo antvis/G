@@ -50,6 +50,14 @@ describe('test group', () => {
     });
     expect(group.getChildren().length).eqls(1);
     expect(subGroup.get('id')).eqls('2');
+    subGroup.addShape({
+      type: 'circle',
+      attrs: {
+        x: 20,
+        y: 20,
+        r: 10
+      }
+    });
   });
   it('add shape', () => {
     const shape = group.addShape('circle', {
@@ -65,6 +73,28 @@ describe('test group', () => {
       maxX: 20,
       maxY: 20,
     });
+  });
+
+  it('bbox', () => {
+    group.addShape({
+      type: 'circle',
+      attrs: {
+        x: -10,
+        y: -10,
+        r: 10
+      }
+    });
+
+    const bbox = group.getBBox();
+    expect(bbox).eqls({
+      minX: -20,
+      minY: -20,
+      maxX: 30,
+      maxY: 30,
+      width: 50,
+      height: 50
+    });
+
   });
   it('clone', () => {
     const newGroup = group.clone();

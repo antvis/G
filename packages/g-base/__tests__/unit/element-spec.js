@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 import Element from '../../src/abstract/element';
 
 class MyElement extends Element {
-  calculateBBox() {
+  getBBox() {
     const { x, y, width, height } = this.attrs;
     return {
       minX: x,
@@ -14,7 +14,7 @@ class MyElement extends Element {
 }
 
 class MyCircle extends Element {
-  calculateBBox() {
+  getBBox() {
     const { x, y, r } = this.attrs;
     return {
       minX: x - r,
@@ -120,7 +120,7 @@ describe('test element', () => {
   it('matrix', () => {
     const originMatix = null;
     expect(element.attr('matrix')).eqls(originMatix);
-    const toMatrx = [2, 0, 0, 0, 1, 0, 0, 0, 1];
+    const toMatrx = [ 2, 0, 0, 0, 1, 0, 0, 0, 1 ];
     element.setMatrix(toMatrx);
     expect(element.attr('matrix')).eqls(toMatrx);
     element.resetMatrix();

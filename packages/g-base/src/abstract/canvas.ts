@@ -140,7 +140,7 @@ abstract class Canvas extends Base implements ICanvas {
   }
 
   addGroup(...args): IGroup {
-    const [groupClass, cfg] = args;
+    const [ groupClass, cfg ] = args;
     return ContainerUtil.addGroup(this, groupClass, cfg);
   }
 

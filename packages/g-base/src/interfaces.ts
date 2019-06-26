@@ -292,6 +292,7 @@ export interface IContainer extends IBase {
    * 清理所有的子元素
    */
   clear();
+
 }
 
 export interface IGroup extends IElement, IContainer {}
@@ -304,6 +305,11 @@ export interface IShape extends IElement {
    * @returns 是否已被拾取
    */
   isHit(x: number, y: number): boolean;
+  /**
+   * 是否用于 clip, 默认为 false
+   * @return {boolean} 图形是否用于 clip
+   */
+  isClipShape(): boolean;
 }
 
 /**

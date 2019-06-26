@@ -28,6 +28,9 @@
   "bugs": {
     "url": "https://github.com/antvis/util/issues"
   },
+  "files": [
+    "lib"
+  ],
   "devDependencies": {
     "@antv/torch": "^1.0.0",
     "less": "^3.9.0"

@@ -135,7 +135,7 @@ function getShape(container: IContainer, x: number, y: number): IShape {
   let rst;
   // 如果容器是 group
   if (!container.isCanvas()) {
-    const v = [x, y, 1];
+    const v = [ x, y, 1 ];
     const group = container as IGroup;
     // 将 x, y 转换成对应于 group 的局部坐标
     group.invertFromMatrix(v);
@@ -182,7 +182,7 @@ function sort(container: IContainer) {
   children.sort(
     getComparer((obj1, obj2) => {
       return obj1.get('zIndex') - obj2.get('zIndex');
-    })
+    }),
   );
 
   return this;

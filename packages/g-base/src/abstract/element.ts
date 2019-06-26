@@ -1,6 +1,6 @@
 import Base from './base';
 import { IElement, IShape, IGroup, ICanvas } from '../interfaces';
-import { GroupCfg, ShapeCfg, BBox, ClipCfg } from '../types';
+import { GroupCfg, ShapeCfg, BBox, ClipCfg, ShapeAttrs } from '../types';
 import { isObject, each, isArray, mix, upperFirst } from '@antv/util';
 import { removeFromArray } from '../util/util';
 
@@ -12,7 +12,7 @@ const ARRAY_ATTRS = {
   lineDash: 'lineDash',
 };
 
-const CLONE_CFGS = ['zIndex', 'capture', 'visible'];
+const CLONE_CFGS = [ 'zIndex', 'capture', 'visible' ];
 
 // 需要考虑数组嵌套数组的场景
 // 数组嵌套对象的场景不考虑
@@ -30,11 +30,11 @@ function _cloneArrayAttr(arr) {
 
 abstract class Element extends Base implements IElement {
   /**
-   * @private
+   * @protected
    * 图形属性
-   * @type {object}
+   * @type {ShapeAttrs}
    */
-  attrs: object = {};
+  attrs: ShapeAttrs = {};
 
   // override
   getDefaultCfg() {
@@ -44,12 +44,31 @@ abstract class Element extends Base implements IElement {
     };
   }
 
+  /**
+   * @protected
+   * 获取默认的属相
+   */
+  getDefaultAttrs() {
+    return {
+      matrix: this.getDefaultMatrix(),
+    };
+  }
+
   constructor(cfg) {
     super(cfg);
-    mix(this.attrs, cfg.attrs);
-    if (!this.attrs[MATRIX]) {
-      this.attrs[MATRIX] = this.getDefaultMatrix();
-    }
+    const attrs = this.getDefaultAttrs();
+    mix(attrs, cfg.attrs);
+    this.attrs = attrs;
+    this.initAttrs(attrs);
+  }
+
+  /**
+   * @protected
+   * 初始化属性，有些属性需要加工
+   * @param {object} attrs 属性值
+   */
+  initAttrs(attrs: ShapeAttrs) {
+
   }
 
   isGroup() {
@@ -65,7 +84,7 @@ abstract class Element extends Base implements IElement {
   }
 
   attr(...args) {
-    const [name, value] = args;
+    const [ name, value ] = args;
     if (!name) return this.attrs;
     if (isObject(name)) {
       for (const k in name) {
@@ -83,21 +102,12 @@ abstract class Element extends Base implements IElement {
   }
 
   // 在子类上单独实现
-  getBBox(): BBox {
-    let bbox = this.get('bbox');
-    if (!bbox) {
-      bbox = this.calculateBBox();
-      this.set('bbox', bbox);
-    }
-    return bbox;
-  }
+  abstract getBBox(): BBox;
 
-  abstract calculateBBox(): BBox;
-
-  // 是否被裁剪
+  // 是否被裁剪，被裁剪则不显示，不参与拾取
   isClipped(refX, refY): boolean {
     const clip = this.getClip();
-    return clip && clip.isHit(refX, refY);
+    return clip && !clip.isHit(refX, refY);
   }
 
   /**
@@ -115,10 +125,7 @@ abstract class Element extends Base implements IElement {
    * @protected
    */
   afterAttrChange() {
-    // 这个地方应该使用 this.set('hasUpdate', true);
-    // 但是由于 attr 方法调用的频率过高， set 方法的开销比较大
-    this.cfg['hasUpdate'] = true;
-    this.clearCacheBBox();
+
   }
 
   show() {
@@ -221,6 +228,7 @@ abstract class Element extends Base implements IElement {
       if (Cons) {
         clipShape = new Cons({
           type: clipCfg.type,
+          isClipShape: true, // 增加一个标记
           attrs: clipCfg.attrs,
         });
       }
@@ -235,14 +243,6 @@ abstract class Element extends Base implements IElement {
       return null;
     }
     return clipShape;
-  }
-
-  /**
-   * @protected
-   * 清理缓存的 bbox
-   */
-  clearCacheBBox() {
-    this.set('bbox', null);
   }
 
   clone() {

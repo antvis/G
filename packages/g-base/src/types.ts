@@ -1,18 +1,26 @@
 export type BBox = {
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
+  minX: number,
+  minY: number,
+  maxX: number,
+  maxY: number,
+  width: number,
+  height: number,
 };
 
 type ColorType = string | null;
 
 export type ShapeAttrs = {
-  x?: number;
-  y?: number;
-  stroke?: ColorType;
-  fill?: ColorType;
-  lineWidth?: number;
+  x?: number,
+  y?: number,
+  r?: number,
+  stroke?: ColorType,
+  strokeOpacity?: number,
+  fill?: ColorType,
+  fillOpacity?: number,
+  lineWidth?: number,
+  path?: string|object[],
+  points?: object[],
+  [key: string]: any,
 };
 
 type ElementCfg = {
