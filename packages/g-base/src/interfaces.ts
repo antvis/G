@@ -292,7 +292,6 @@ export interface IContainer extends IBase {
    * 清理所有的子元素
    */
   clear();
-
 }
 
 export interface IGroup extends IElement, IContainer {}

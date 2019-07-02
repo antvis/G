@@ -82,12 +82,11 @@ const BoxUtil = {
     const halfWidth = lineWidth / 2;
     const xArr = [];
     const yArr = [];
-    for (let i = 0; i < path.length; i ++) {
+    for (let i = 0; i < path.length; i++) {
       const params = path[i];
       const command = params[0];
       // 圆弧的计算使用特别方法
       if (command === 'A') {
-
       } else if (command !== 'Z') {
         // 使用模糊的包围盒计算方案，可以显著提升过滤图形的速度
         for (let j = 1; j < params.length - 2; j++) {

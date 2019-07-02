@@ -12,7 +12,7 @@ const ARRAY_ATTRS = {
   lineDash: 'lineDash',
 };
 
-const CLONE_CFGS = [ 'zIndex', 'capture', 'visible' ];
+const CLONE_CFGS = ['zIndex', 'capture', 'visible'];
 
 // 需要考虑数组嵌套数组的场景
 // 数组嵌套对象的场景不考虑
@@ -67,9 +67,7 @@ abstract class Element extends Base implements IElement {
    * 初始化属性，有些属性需要加工
    * @param {object} attrs 属性值
    */
-  initAttrs(attrs: ShapeAttrs) {
-
-  }
+  initAttrs(attrs: ShapeAttrs) {}
 
   isGroup() {
     return false;
@@ -84,7 +82,7 @@ abstract class Element extends Base implements IElement {
   }
 
   attr(...args) {
-    const [ name, value ] = args;
+    const [name, value] = args;
     if (!name) return this.attrs;
     if (isObject(name)) {
       for (const k in name) {
@@ -124,9 +122,7 @@ abstract class Element extends Base implements IElement {
    * 属性更改后需要做的事情
    * @protected
    */
-  afterAttrChange() {
-
-  }
+  afterAttrChange() {}
 
   show() {
     // 不是高频操作直接使用 set

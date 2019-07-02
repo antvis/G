@@ -38,12 +38,7 @@ describe('test in stroke', () => {
   });
 
   it('in polyline', () => {
-    const points = [
-      [ 0, 0 ],
-      [ 10, 0 ],
-      [ 10, 10 ],
-      [ 0, 10 ]
-    ];
+    const points = [[0, 0], [10, 0], [10, 10], [0, 10]];
     expect(InStrokeUtil.polyline(points, 1, 10, 1)).eqls(true);
     expect(InStrokeUtil.polyline(points, 1, 11, 1)).eqls(false);
     expect(InStrokeUtil.polyline(points, 2, 11, 1)).eqls(true);
@@ -54,12 +49,7 @@ describe('test in stroke', () => {
   });
 
   it('in polygon', () => {
-    const points = [
-      [ 0, 0 ],
-      [ 10, 0 ],
-      [ 10, 10 ],
-      [ 0, 10 ]
-    ];
+    const points = [[0, 0], [10, 0], [10, 10], [0, 10]];
     expect(InStrokeUtil.polygon(points, 1, 10, 1)).eqls(true);
     expect(InStrokeUtil.polygon(points, 1, 11, 1)).eqls(false);
     expect(InStrokeUtil.polygon(points, 2, 11, 1)).eqls(true);
@@ -72,13 +62,12 @@ describe('test in stroke', () => {
   it('in arc', () => {
     expect(InStrokeUtil.arc(10, 10, 10, 0, Math.PI / 2, 1, 20, 10)).eqls(true);
     expect(InStrokeUtil.arc(10, 10, 10, 0, Math.PI / 2, 1, 10, 20)).eqls(true);
-    const x = Math.sin(1 / 4 * Math.PI) * 10 + 10;
-    const y = Math.cos(1 / 4 * Math.PI) * 10 + 10;
+    const x = Math.sin((1 / 4) * Math.PI) * 10 + 10;
+    const y = Math.cos((1 / 4) * Math.PI) * 10 + 10;
     expect(InStrokeUtil.arc(10, 10, 10, 0, Math.PI / 2, 1, x, y)).eqls(true);
 
     expect(InStrokeUtil.arc(10, 10, 10, -Math.PI / 2, 0, 1, 20, 10)).eqls(true);
     expect(InStrokeUtil.arc(10, 10, 10, -Math.PI / 2, 0, 1, 10, 20)).eqls(false);
     expect(InStrokeUtil.arc(10, 10, 10, -Math.PI / 2, 0, 1, 10, 0)).eqls(true);
   });
-
 });

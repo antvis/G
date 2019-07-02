@@ -20,7 +20,7 @@ describe('test element', () => {
       y: 0,
       width: 100,
       height: 100,
-    }
+    },
   });
   it('test clone', () => {
     const shape = new MyShape({
@@ -40,11 +40,9 @@ describe('test element', () => {
       minX: 0,
       minY: 0,
       maxX: 100,
-      maxY: 100
+      maxY: 100,
     });
   });
 
-  it('attr change', () => {
-
-  });
+  it('attr change', () => {});
 });

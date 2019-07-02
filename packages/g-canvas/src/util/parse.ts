@@ -1,12 +1,12 @@
 import { IElement } from '@antv/g-base/lib/interfaces';
 import { isString, each, isArray } from './util';
 
-const regexTags = /[MLHVQTCSAZ]([^MLHVQTCSAZ]*)/ig;
-const regexDot = /[^\s\,]+/ig;
+const regexTags = /[MLHVQTCSAZ]([^MLHVQTCSAZ]*)/gi;
+const regexDot = /[^\s\,]+/gi;
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexPR = /^p\s*\(\s*([axyn])\s*\)\s*(.*)/i;
-const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/ig;
+const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/gi;
 
 function addStop(steps, gradient) {
   const arr: string[] = steps.match(regexColorStop);
@@ -30,7 +30,7 @@ export function parseLineGradient(context: CanvasRenderingContext2D, element: IE
   let start;
   let end;
 
-  if (angle >= 0 && angle < 1 / 2 * Math.PI) {
+  if (angle >= 0 && angle < (1 / 2) * Math.PI) {
     start = {
       x: box.minX,
       y: box.minY,
@@ -39,7 +39,7 @@ export function parseLineGradient(context: CanvasRenderingContext2D, element: IE
       x: box.maxX,
       y: box.maxY,
     };
-  } else if (1 / 2 * Math.PI <= angle && angle < Math.PI) {
+  } else if ((1 / 2) * Math.PI <= angle && angle < Math.PI) {
     start = {
       x: box.maxX,
       y: box.minY,
@@ -48,7 +48,7 @@ export function parseLineGradient(context: CanvasRenderingContext2D, element: IE
       x: box.minX,
       y: box.maxY,
     };
-  } else if (Math.PI <= angle && angle < 3 / 2 * Math.PI) {
+  } else if (Math.PI <= angle && angle < (3 / 2) * Math.PI) {
     start = {
       x: box.maxX,
       y: box.maxY,
@@ -71,8 +71,8 @@ export function parseLineGradient(context: CanvasRenderingContext2D, element: IE
   const tanTheta = Math.tan(angle);
   const tanTheta2 = tanTheta * tanTheta;
 
-  const x = ((end.x - start.x) + tanTheta * (end.y - start.y)) / (tanTheta2 + 1) + start.x;
-  const y = tanTheta * ((end.x - start.x) + tanTheta * (end.y - start.y)) / (tanTheta2 + 1) + start.y;
+  const x = (end.x - start.x + tanTheta * (end.y - start.y)) / (tanTheta2 + 1) + start.x;
+  const y = (tanTheta * (end.x - start.x + tanTheta * (end.y - start.y))) / (tanTheta2 + 1) + start.y;
   const gradient = context.createLinearGradient(start.x, start.y, x, y);
   addStop(steps, gradient);
   return gradient;
@@ -106,7 +106,8 @@ export function parseRadialGradient(context: CanvasRenderingContext2D, element: 
     0,
     box.minX + width / 2,
     box.minY + height / 2,
-    fr * r);
+    fr * r
+  );
   addStop(steps, gradient);
   return gradient;
 }
@@ -175,11 +176,16 @@ export function parsePattern(context: CanvasRenderingContext2D, element: IElemen
 export function parseStyle(context: CanvasRenderingContext2D, element: IElement, color: string) {
   if (isString(color)) {
     if (color[1] === '(' || color[2] === '(') {
-      if (color[0] === 'l') { // regexLG.test(color)
+      if (color[0] === 'l') {
+        // regexLG.test(color)
         return parseLineGradient(context, element, color);
-      } if (color[0] === 'r') { // regexRG.test(color)
+      }
+      if (color[0] === 'r') {
+        // regexRG.test(color)
         return parseRadialGradient(context, element, color);
-      } if (color[0] === 'p') { // regexPR.test(color)
+      }
+      if (color[0] === 'p') {
+        // regexPR.test(color)
         return parsePattern(context, element, color);
       }
     }
@@ -211,10 +217,5 @@ export function parseRadius(radius) {
   } else {
     r1 = r2 = r3 = r4 = radius;
   }
-  return [
-    r1,
-    r2,
-    r3,
-    r4,
-  ];
+  return [r1, r2, r3, r4];
 }

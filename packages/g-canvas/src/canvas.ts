@@ -7,7 +7,6 @@ import { drawChildren } from './util/draw';
 import { getPixelRatio, each } from './util/util';
 
 class Canvas extends AbstractCanvas {
-
   getShapeBase() {
     return Shape;
   }

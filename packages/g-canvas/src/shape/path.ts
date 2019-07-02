@@ -7,7 +7,6 @@ import ShapeBase from './base';
 import path2Absolute from '@antv/path-util/lib/path-2-absolute';
 
 class Path extends ShapeBase {
-
   initAttrs(attrs) {
     this._setPathArr(attrs.path);
   }
@@ -55,9 +54,9 @@ class Path extends ShapeBase {
           const psi = p[7];
           const fs = p[8];
 
-          const r = (rx > ry) ? rx : ry;
-          const scaleX = (rx > ry) ? 1 : rx / ry;
-          const scaleY = (rx > ry) ? ry / rx : 1;
+          const r = rx > ry ? rx : ry;
+          const scaleX = rx > ry ? 1 : rx / ry;
+          const scaleY = rx > ry ? ry / rx : 1;
 
           context.translate(cx, cy);
           context.rotate(psi);
@@ -71,7 +70,8 @@ class Path extends ShapeBase {
         case 'Z':
           context.closePath();
           break;
-        default: break;
+        default:
+          break;
       }
     }
   }

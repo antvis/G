@@ -1,4 +1,3 @@
-
 import { IElement } from '@antv/g-base/lib/interfaces';
 import { ICanvasElement } from '../interfaces';
 import { parseStyle } from './parse';
@@ -15,7 +14,8 @@ export function applyAttrsToContext(context: CanvasRenderingContext2D, element: 
     let v = attrs[k];
     // 转换一下不与 canvas 兼容的属性名
     const name = SHAPE_ATTRS_MAP[k] ? SHAPE_ATTRS_MAP[k] : k;
-    if (name === 'matrix' && v) { // 设置矩阵
+    if (name === 'matrix' && v) {
+      // 设置矩阵
       context.transform(v[0], v[1], v[3], v[4], v[6], v[7]);
     } else if (name === 'lineDash' && context.setLineDash) {
       // 不再考虑支持字符串的形式
