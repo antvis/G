@@ -7,7 +7,6 @@ import ShapeBase from './base';
 import { parseRadius } from '../util/parse';
 
 class Rect extends ShapeBase {
-
   getDefaultAttrs() {
     const attrs = super.getDefaultAttrs();
     // 设置默认值
@@ -28,7 +27,7 @@ class Rect extends ShapeBase {
       // 改成原生的rect方法
       context.rect(x, y, width, height);
     } else {
-      const [ r1, r2, r3, r4 ] = parseRadius(radius);
+      const [r1, r2, r3, r4] = parseRadius(radius);
       context.moveTo(x + r1, y);
       context.lineTo(x + width - r2, y);
       r2 !== 0 && context.arc(x + width - r2, y + r2, r2, -Math.PI / 2, 0);

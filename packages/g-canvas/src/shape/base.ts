@@ -5,7 +5,6 @@ import HitUtil from '../util/hit';
 import { applyAttrsToContext } from '../util/draw';
 
 class ShapeBase extends AbstractShape {
-
   getDefaultAttrs() {
     const attrs = super.getDefaultAttrs();
     // 设置默认值
@@ -91,17 +90,13 @@ class ShapeBase extends AbstractShape {
    * 绘制图形的路径
    * @param {CanvasRenderingContext2D} context 上下文
    */
-  createPath(context: CanvasRenderingContext2D) {
-
-  }
+  createPath(context: CanvasRenderingContext2D) {}
 
   /**
    * 绘制完成 path 后的操作
    * @param {CanvasRenderingContext2D} context 上下文
    */
-  afterDrawPath(context: CanvasRenderingContext2D) {
-
-  }
+  afterDrawPath(context: CanvasRenderingContext2D) {}
 
   isInShape(refX: number, refY: number): boolean {
     return HitUtil.isHitShape(this, refX, refY);

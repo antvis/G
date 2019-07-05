@@ -30,10 +30,10 @@ abstract class AbstractGroup extends Element implements IGroup {
           }
           const box = child.getBBox();
           // 计算 4 个顶点
-          const leftTop = [ box.minX, box.minY, 1 ];
-          const leftBottom = [ box.minX, box.maxY, 1 ];
-          const rightTop = [ box.maxX, box.minY, 1 ];
-          const rightBottom = [ box.maxX, box.maxY, 1 ];
+          const leftTop = [box.minX, box.minY, 1];
+          const leftBottom = [box.minX, box.maxY, 1];
+          const rightTop = [box.maxX, box.minY, 1];
+          const rightBottom = [box.maxX, box.maxY, 1];
 
           child.applyToMatrix(leftTop);
           child.applyToMatrix(leftBottom);
@@ -114,7 +114,7 @@ abstract class AbstractGroup extends Element implements IGroup {
   }
 
   addGroup(...args): IGroup {
-    const [ groupClass, cfg ] = args;
+    const [groupClass, cfg] = args;
     return ContainerUtil.addGroup(this, groupClass, cfg);
   }
 

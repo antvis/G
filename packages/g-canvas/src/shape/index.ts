@@ -1,4 +1,3 @@
-
 import Shape from './base';
 import Circle from './circle';
 import Rect from './rect';

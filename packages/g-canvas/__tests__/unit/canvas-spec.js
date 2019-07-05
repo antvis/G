@@ -9,7 +9,7 @@ describe('canvas test', () => {
     container: dom,
     width: 500,
     pixelRatio: 1,
-    height: 500
+    height: 500,
   });
 
   it('init', () => {
@@ -17,9 +17,7 @@ describe('canvas test', () => {
     expect(canvas.get('el').width).eql(500);
   });
 
-  it('add group', () => {
-
-  });
+  it('add group', () => {});
 
   it('add shape', () => {
     canvas.addShape({
@@ -28,8 +26,8 @@ describe('canvas test', () => {
         x: 10,
         y: 10,
         r: 10,
-        fill: 'red'
-      }
+        fill: 'red',
+      },
     });
   });
 
@@ -37,7 +35,5 @@ describe('canvas test', () => {
     canvas.draw();
   });
 
-  it('clear', () => {
-
-  });
+  it('clear', () => {});
 });

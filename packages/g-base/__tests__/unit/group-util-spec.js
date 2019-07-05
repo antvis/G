@@ -34,7 +34,7 @@ const group = new Group({
     new Item({ id: '01', text: '01' }),
     new Item({ id: '02', text: '02' }),
     new Group({
-      children: [ new Item({ id: '04', text: '04' }), new Item({ id: 'test', text: '02' }) ],
+      children: [new Item({ id: '04', text: '04' }), new Item({ id: 'test', text: '02' })],
     }),
     new Item({ id: '03', text: '03' }),
   ],

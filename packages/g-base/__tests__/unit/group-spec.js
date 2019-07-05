@@ -55,8 +55,8 @@ describe('test group', () => {
       attrs: {
         x: 20,
         y: 20,
-        r: 10
-      }
+        r: 10,
+      },
     });
   });
   it('add shape', () => {
@@ -81,8 +81,8 @@ describe('test group', () => {
       attrs: {
         x: -10,
         y: -10,
-        r: 10
-      }
+        r: 10,
+      },
     });
 
     const bbox = group.getBBox();
@@ -92,9 +92,8 @@ describe('test group', () => {
       maxX: 30,
       maxY: 30,
       width: 50,
-      height: 50
+      height: 50,
     });
-
   });
   it('clone', () => {
     const newGroup = group.clone();

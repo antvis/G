@@ -15,8 +15,8 @@ describe.only('rect test', () => {
       y: 10,
       width: 20,
       height: 10,
-      fill: 'red'
-    }
+      fill: 'red',
+    },
   });
 
   it('init', () => {
@@ -48,7 +48,7 @@ describe.only('rect test', () => {
       y: 10,
       width: 30,
       height: 10,
-      radius: 4
+      radius: 4,
     });
     rect.draw(ctx);
     expect(getColor(ctx, 11, 11)).eql('#ff0000');
@@ -62,7 +62,7 @@ describe.only('rect test', () => {
       width: 30,
       height: 10,
       radius: 0,
-      fill: 'red'
+      fill: 'red',
     });
     // 填充
     expect(rect.isHit(10, 10)).eql(true);
@@ -72,7 +72,7 @@ describe.only('rect test', () => {
     // 仅边框
     rect.attr({
       fill: null,
-      stroke: 'red'
+      stroke: 'red',
     });
     expect(rect.isHit(10, 10)).eql(true);
     expect(rect.isHit(11, 11)).eql(false);
@@ -80,7 +80,6 @@ describe.only('rect test', () => {
     // 加大边框
     rect.attr('lineWidth', 2);
     expect(rect.isHit(11, 11)).eql(true);
-
   });
 
   it('isHit with radius', () => {
@@ -92,7 +91,7 @@ describe.only('rect test', () => {
       height: 10,
       radius: 4,
       stroke: null,
-      fill: 'red'
+      fill: 'red',
     });
     expect(rect.isHit(10, 10)).eql(false);
     expect(rect.isHit(12, 12)).eql(true);
@@ -100,7 +99,7 @@ describe.only('rect test', () => {
     rect.attr({
       fill: null,
       stroke: 'blue',
-      radius: 2
+      radius: 2,
     });
 
     expect(rect.isHit(10, 10)).eql(false);
@@ -114,5 +113,4 @@ describe.only('rect test', () => {
     expect(rect.destroyed).eql(true);
     canvas.parentNode.removeChild(canvas);
   });
-
 });

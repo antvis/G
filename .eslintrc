@@ -1,7 +1,8 @@
 {
   "extends": [
     "egg",
-    "prettier"
+    "prettier",
+    "eslint-config-prettier"
   ],
   "globals": {
     "$": true,
@@ -54,8 +55,7 @@
       "always-multiline"
     ],
     "array-bracket-spacing": [
-      1,
-      "always"
+      0
     ],
     "key-spacing": [
       2,

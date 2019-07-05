@@ -72,7 +72,6 @@ const HitUtil = {
     }
 
     if (isStroke) {
-
     }
     return false;
   },

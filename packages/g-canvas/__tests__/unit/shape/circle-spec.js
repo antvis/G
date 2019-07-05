@@ -14,8 +14,8 @@ describe('circle test', () => {
       r: 10,
       x: 10,
       y: 10,
-      fill: 'red'
-    }
+      fill: 'red',
+    },
   });
   it('init', () => {
     expect(circle.attr('r')).equal(10);
@@ -34,7 +34,7 @@ describe('circle test', () => {
       x: 30,
       y: 30,
       fill: null,
-      stroke: 'blue'
+      stroke: 'blue',
     });
     circle.draw(ctx);
     expect(getColor(ctx, 30, 20)).equal('#0000ff');
@@ -49,7 +49,7 @@ describe('circle test', () => {
       maxY: 40.5,
       minX: 19.5,
       minY: 19.5,
-      width: 21
+      width: 21,
     });
     circle.attr('stroke', null);
 
@@ -64,11 +64,11 @@ describe('circle test', () => {
       x: 30,
       y: 30,
       fill: 'red',
-      stroke: null
+      stroke: null,
     });
     const point = {
       x: 30 + Math.cos(Math.PI / 4) * 10,
-      y: 30 + Math.sin(Math.PI / 4) * 10
+      y: 30 + Math.sin(Math.PI / 4) * 10,
     };
 
     expect(circle.isHit(30, 30)).eqls(true);
@@ -86,19 +86,22 @@ describe('circle test', () => {
   it('clip', () => {
     ctx.clearRect(0, 0, 500, 500);
     // 因为 clip 需要父元素存在才能设置
-    circle.set('clipShape', new Circle({
-      type: 'circle',
-      isClipShape: true,
-      attrs: {
-        x: 10,
-        y: 10,
-        r: 5
-      }
-    }));
+    circle.set(
+      'clipShape',
+      new Circle({
+        type: 'circle',
+        isClipShape: true,
+        attrs: {
+          x: 10,
+          y: 10,
+          r: 5,
+        },
+      })
+    );
     circle.attr({
       x: 10,
       y: 10,
-      fill: 'red'
+      fill: 'red',
     });
     circle.draw(ctx);
     expect(getColor(ctx, 10, 10)).eqls('#ff0000');
@@ -114,5 +117,4 @@ describe('circle test', () => {
     expect(circle.destroyed).eqls(true);
     canvas.parentNode.removeChild(canvas);
   });
-
 });
