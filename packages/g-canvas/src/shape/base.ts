@@ -56,6 +56,24 @@ class ShapeBase extends AbstractShape {
     this.afterDrawPath(context);
   }
 
+  /**
+   * @protected
+   * 填充图形
+   * @param {CanvasRenderingContext2D} context context 上下文
+   */
+  fill(context: CanvasRenderingContext2D) {
+    context.fill();
+  }
+
+  /**
+   * @protected
+   * 绘制图形边框
+   * @param {CanvasRenderingContext2D} context context 上下文
+   */
+  stroke(context: CanvasRenderingContext2D) {
+    context.stroke();
+  }
+
   // 绘制或者填充
   strokeAndFill(context) {
     const attrs = this.attrs;
@@ -65,10 +83,10 @@ class ShapeBase extends AbstractShape {
       const fillOpacity = attrs['fillOpacity'];
       if (!isNil(fillOpacity) && fillOpacity !== 1) {
         context.globalAlpha = fillOpacity;
-        context.fill();
+        this.fill(context);
         context.globalAlpha = originOpacity;
       } else {
-        context.fill();
+        this.fill(context);
       }
     }
 
@@ -79,7 +97,7 @@ class ShapeBase extends AbstractShape {
         if (!isNil(strokeOpacity) && strokeOpacity !== 1) {
           context.globalAlpha = strokeOpacity;
         }
-        context.stroke();
+        this.stroke(context);
       }
     }
     this.afterDrawPath(context);
