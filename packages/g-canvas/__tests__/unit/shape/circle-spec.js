@@ -47,6 +47,8 @@ describe('circle test', () => {
       height: 21,
       maxX: 40.5,
       maxY: 40.5,
+      x: 19.5,
+      y: 19.5,
       minX: 19.5,
       minY: 19.5,
       width: 21,

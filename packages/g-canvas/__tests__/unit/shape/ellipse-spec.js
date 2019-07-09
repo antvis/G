@@ -1,165 +1,95 @@
 const expect = require('chai').expect;
 import Ellipse from '../../../src/shape/ellipse';
+import { getColor } from '../../get-color';
 const canvas = document.createElement('canvas');
-canvas.width = 500;
-canvas.height = 500;
+canvas.width = 300;
+canvas.height = 300;
 document.body.appendChild(canvas);
+const ctx = canvas.getContext('2d');
 
-describe('Ellipse', function() {
+describe('ellipse test', () => {
   const ellipse = new Ellipse({
+    type: 'ellipse',
     attrs: {
-      x: 0,
-      y: 0,
-      rx: 1,
-      ry: 1,
-    },
+      rx: 10,
+      ry: 10,
+      x: 10,
+      y: 10,
+      fill: 'red'
+    }
+  });
+  it('init', () => {
+    expect(ellipse.attr('rx')).equal(10);
+    expect(ellipse.attr('ry')).equal(10);
   });
 
-  it('init attr', function() {
-    expect(ellipse.attr('x')).to.equal(0);
-    expect(ellipse.attr('y')).to.equal(0);
-    expect(ellipse.attr('rx')).to.equal(1);
-    expect(ellipse.attr('ry')).to.equal(1);
-    expect(ellipse.attr('lineWidth')).to.equal(1);
-    expect(ellipse.attr('stroke')).to.be.undefined;
-    expect(ellipse.attr('fill')).to.be.undefined;
-    const box = ellipse.getBBox();
-    expect(box.minX).to.equal(-1.5);
-    expect(box.maxX).to.equal(1.5);
-    expect(box.minY).to.equal(-1.5);
-    expect(box.maxY).to.equal(1.5);
+  it('draw circle', () => {
+    ellipse.draw(ctx);
+    expect(getColor(ctx, 10, 10)).equal('#ff0000');
+    expect(getColor(ctx, 21, 10)).equal('#000000');
   });
 
-  it('x', function() {
-    ellipse.attr('x', 20);
-    expect(ellipse.attr('x')).to.equal(20);
-    const box = ellipse.getBBox();
-    expect(box.minX).to.equal(18.5);
-    expect(box.maxX).to.equal(21.5);
-    expect(box.minY).to.equal(-1.5);
-    expect(box.maxY).to.equal(1.5);
+  it('draw ellipse', () => {
+    ctx.clearRect(0, 0, 500, 500);
+    ellipse.attr('rx', 20);
+    ellipse.draw(ctx);
+    expect(getColor(ctx, 21, 10)).equal('#ff0000');
   });
 
-  it('y', function() {
-    ellipse.attr('y', 30);
-    expect(ellipse.attr('y')).to.equal(30);
-    const box = ellipse.getBBox();
-    expect(box.minX).to.equal(18.5);
-    expect(box.maxX).to.equal(21.5);
-    expect(box.minY).to.equal(28.5);
-    expect(box.maxY).to.equal(31.5);
+  it('draw ellipse not use ctx.ellipse', () => {
+    ctx.clearRect(0, 0, 500, 500);
+    ctx.save();
+    ctx.ellipse = null;
+    ellipse.draw(ctx);
+    ctx.restore();
+    expect(getColor(ctx, 21, 10)).equal('#ff0000');
   });
 
-  it('rx', function() {
-    expect(ellipse.attr('rx')).to.equal(1);
-    ellipse.attr('rx', 5);
-    expect(ellipse.attr('rx')).to.equal(5);
-    const box = ellipse.getBBox();
-    expect(box.minX).to.equal(14.5);
-    expect(box.maxX).to.equal(25.5);
-    expect(box.minY).to.equal(28.5);
-    expect(box.maxY).to.equal(31.5);
+  it('bbox', () => {
+    const bbox = ellipse.getBBox();
+    expect(bbox.minX).equal(-10);
+    expect(bbox.minY).equal(0);
+    expect(bbox.maxX).equal(30);
+    expect(bbox.maxY).equal(20);
   });
 
-  it('ry', function() {
-    expect(ellipse.attr('ry')).to.equal(1);
-    ellipse.attr('ry', 10);
-    expect(ellipse.attr('ry')).to.equal(10);
-    const box = ellipse.getBBox();
-    expect(box.minX).to.equal(14.5);
-    expect(box.maxX).to.equal(25.5);
-    expect(box.minY).to.equal(19.5);
-    expect(box.maxY).to.equal(40.5);
-  });
-
-  it('lineWidth', function() {
-    expect(ellipse.attr('lineWidth')).to.equal(1);
-    ellipse.attr('lineWidth', 2);
-    expect(ellipse.attr('lineWidth')).to.equal(2);
-    const box = ellipse.getBBox();
-    expect(box.minX).to.equal(14);
-    expect(box.maxX).to.equal(26);
-    expect(box.minY).to.equal(19);
-    expect(box.maxY).to.equal(41);
-  });
-
-  it('stroke', function() {
-    ellipse.attr('stroke', 'l (0) 0:#959231 1:#00cd54');
-    expect(ellipse.attr('stroke')).to.equal('l (0) 0:#959231 1:#00cd54');
-    canvas.add(ellipse);
-    canvas.draw();
-  });
-
-  it('fill', function() {
-    ellipse.attr('fill', 'l (90) 0:#959231 1:#00cd54');
-    expect(ellipse.attr('fill')).to.equal('l (90) 0:#959231 1:#00cd54');
-    canvas.draw();
-  });
-
-  it('isHit', function() {
-    const ellipse1 = new Ellipse({
-      attrs: {
-        x: 50,
-        y: 50,
-        rx: 200,
-        ry: 100,
-      },
+  it('isHit', () => {
+    ellipse.attr({
+      x: 10,
+      y: 10,
+      rx: 10,
+      ry: 10,
+      fill: 'red'
     });
+    // only fill
+    expect(ellipse.isHit(10, 10)).equal(true);
+    expect(ellipse.isHit(10, 20)).equal(true);
+    expect(ellipse.isHit(10, 20.5)).equal(false);
 
-    expect(ellipse1.isHit(-150, 50)).to.be.false;
-    expect(ellipse1.isHit(50, -50)).to.be.false;
-    expect(ellipse1.isHit(250, 50)).to.be.false;
-    expect(ellipse1.isHit(50, 150)).to.be.false;
-
-    ellipse1.attr('stroke', 'red');
-    expect(ellipse1.isHit(-150, 50)).to.be.true;
-    expect(ellipse1.isHit(50, -50)).to.be.true;
-    expect(ellipse1.isHit(250, 50)).to.be.true;
-    expect(ellipse1.isHit(50, 150)).to.be.true;
-
-    const ellipse2 = new Ellipse({
-      attrs: {
-        x: 100,
-        y: 200,
-        rx: 50,
-        ry: 80,
-      },
+    // fill and stroke
+    ellipse.attr({
+      stroke: 'blue'
     });
-
-    expect(ellipse2.isHit(70, 200)).to.be.false;
-    expect(ellipse2.isHit(100, 150)).to.be.false;
-    expect(ellipse2.isHit(130, 200)).to.be.false;
-    expect(ellipse2.isHit(100, 230)).to.be.false;
-
-    ellipse2.attr('fill', 'green');
-
-    expect(ellipse2.isHit(70, 200)).to.be.true;
-    expect(ellipse2.isHit(100, 150)).to.be.true;
-    expect(ellipse2.isHit(130, 200)).to.be.true;
-    expect(ellipse2.isHit(100, 230)).to.be.true;
-
-    const ellipse3 = new Ellipse({
-      attrs: {
-        x: 200,
-        y: 200,
-        rx: 50,
-        ry: 100,
-      },
-    });
-
-    expect(ellipse3.isHit(150, 200)).to.be.false;
-    expect(ellipse3.isHit(250, 200)).to.be.false;
-    expect(ellipse3.isHit(200, 100)).to.be.false;
-    expect(ellipse3.isHit(200, 300)).to.be.false;
-    expect(ellipse3.isHit(170, 200)).to.be.false;
-    ellipse3.attr({
-      fill: 'green',
-      stroke: 'red',
-    });
-    expect(ellipse3.isHit(150, 200)).to.be.true;
-    expect(ellipse3.isHit(250, 200)).to.be.true;
-    expect(ellipse3.isHit(200, 100)).to.be.true;
-    expect(ellipse3.isHit(200, 300)).to.be.true;
-    expect(ellipse3.isHit(170, 200)).to.be.true;
+    expect(ellipse.isHit(10, 20.5)).equal(true);
+    expect(ellipse.isHit(10, 19)).equal(true);
   });
+
+  it('isHit no fill', () => {
+    ellipse.attr({
+      fill: null
+    });
+    expect(ellipse.isHit(10, 20.5)).equal(true);
+    expect(ellipse.isHit(10, 19)).equal(false);
+
+    ellipse.attr({
+      lineWidth: 4
+    });
+    expect(ellipse.isHit(10, 19)).equal(true);
+  });
+
+  it('clear', () => {
+    ellipse.destroy();
+    expect(ellipse.destroyed).eqls(true);
+    canvas.parentNode.removeChild(canvas);
+  })
 });

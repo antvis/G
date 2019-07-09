@@ -43,10 +43,20 @@ const BoxUtil = {
       maxY: y + height + halfWidth,
     };
   },
+  ellipse(attrs, lineWidth) {
+    const { x, y, rx, ry } = attrs;
+    const halfWidth = lineWidth / 2 + rx;
+    const halfHeight = lineWidth / 2 + ry;
+    return {
+      minX: x - halfWidth,
+      minY: y - halfHeight,
+      maxX: x + halfWidth,
+      maxY: y + halfHeight,
+    };
+  },
   circle(attrs, lineWidth) {
     const { x, y, r } = attrs;
     const halfWidth = lineWidth / 2 + r;
-    const totalWidth = halfWidth * 2;
     return {
       minX: x - halfWidth,
       minY: y - halfWidth,
@@ -87,6 +97,7 @@ const BoxUtil = {
       const command = params[0];
       // 圆弧的计算使用特别方法
       if (command === 'A') {
+        // TO DO 
       } else if (command !== 'Z') {
         // 使用模糊的包围盒计算方案，可以显著提升过滤图形的速度
         for (let j = 1; j < params.length - 2; j++) {
@@ -101,6 +112,8 @@ const BoxUtil = {
     const bbox = BoxUtil[type](attrs, lineWidth);
     bbox.width = bbox.maxX - bbox.minX;
     bbox.height = bbox.maxY - bbox.minY;
+    bbox.x = bbox.minX;
+    bbox.y = bbox.minY;
     return bbox;
   },
 };

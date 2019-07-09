@@ -7,7 +7,7 @@ canvas.height = 300;
 document.body.appendChild(canvas);
 const ctx = canvas.getContext('2d');
 
-describe.only('rect test', () => {
+describe('rect test', () => {
   const rect = new Rect({
     type: 'rect',
     attrs: {
