@@ -251,4 +251,10 @@ describe('multiple lines text test', () => {
     expect(getColorCount(120, 218, 20, '#0000ff') > 0).eqls(true);
     expect(getColorCount(120, 221, 20, '#0000ff') > 0).eqls(true);
   });
+
+  it('clear', () => {
+    text.destroy();
+    expect(text.destroyed).eqls(true);
+    canvas.parentNode.removeChild(canvas);
+  });
 });

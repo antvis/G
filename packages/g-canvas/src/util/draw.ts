@@ -1,6 +1,7 @@
 import { IElement } from '@antv/g-base/lib/interfaces';
 import { ICanvasElement } from '../interfaces';
 import { parseStyle } from './parse';
+import EllipseMath from './math/ellipse';
 
 const SHAPE_ATTRS_MAP = {
   fill: 'fillStyle',
@@ -35,5 +36,69 @@ export function drawChildren(context: CanvasRenderingContext2D, children: IEleme
   for (let i = 0; i < children.length; i++) {
     const child = children[i] as ICanvasElement;
     child.draw(context);
+  }
+}
+
+export function drawPath(context, path, arcParamsCache) {
+  let currentPoint = [0, 0]; // 当前图形
+  context.beginPath();
+  for (let i = 0; i < path; i++) {
+    const params = path[i];
+    const command = params[0];
+    // V,H,S,T 都在前面被转换成标准形式
+    switch (command) {
+      case 'M':
+        context.moveTo(params[1], params[2]);
+        break;
+      case 'L':
+        context.lineTo(params[1], params[2]);
+        break;
+      case 'Q':
+        context.quadraticCurveTo(params[1], params[2], params[3], params[4]);
+        break;
+      case 'C':
+        context.bezierCurveTo(params[1], params[2], params[3], params[4], params[5], params[6]);
+        break;
+      case 'A': {
+        let arcParams;
+        // 为了加速绘制，可以提供参数的缓存，各个图形自己缓存
+        if (arcParamsCache) {
+          arcParams = arcParamsCache[i];
+          if (!arcParams) {
+            arcParams = EllipseMath.getArcParams(currentPoint, params);
+            arcParamsCache[i] = arcParams;
+          }
+        } else {
+          arcParams = EllipseMath.getArcParams(currentPoint, params);
+        }
+        const { cx, cy, rx, ry, startAngle, endAngle, xRotation, sweepFlag } = arcParams;
+        // 直接使用椭圆的 api
+        if (context.ellipse) {
+          context.ellipse(cx, cy, rx, ry, xRotation, startAngle, endAngle, 1 - sweepFlag);
+        } else {
+          const r = rx > ry ? rx : ry;
+          const scaleX = rx > ry ? 1 : rx / ry;
+          const scaleY = rx > ry ? ry / rx : 1;
+          context.translate(cx, cy);
+          context.rotate(xRotation);
+          context.scale(scaleX, scaleY);
+          context.arc(0, 0, r, startAngle, endAngle, 1 - sweepFlag);
+          context.scale(1 / scaleX, 1 / scaleY);
+          context.rotate(-xRotation);
+          context.translate(-cx, -cy);
+        }
+        break;
+      }
+      case 'Z':
+        context.closePath();
+        break;
+      default:
+        break;
+    }
+
+    if (command !== 'Z') {
+      const len = params.length;
+      currentPoint = [params[len - 2], params[len - 1]];
+    }
   }
 }

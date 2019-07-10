@@ -81,6 +81,10 @@ const BoxUtil = {
   image(attrs, lineWidth) {
     return BoxUtil.rect(attrs, 0); // 图片不计算边框
   },
+  // 使用同 circle 一致的包围盒计算方式
+  marker(attrs, lineWidth) {
+    return BoxUtil.circle(attrs, lineWidth);
+  },
   /**
    * 使用快速方法计算 path 的包围盒，根据起点、结束点、控制点计算
    * 精准的包围盒在上层 util 中提供
@@ -97,7 +101,7 @@ const BoxUtil = {
       const command = params[0];
       // 圆弧的计算使用特别方法
       if (command === 'A') {
-        // TO DO 
+        // TO DO
       } else if (command !== 'Z') {
         // 使用模糊的包围盒计算方案，可以显著提升过滤图形的速度
         for (let j = 1; j < params.length - 2; j++) {
