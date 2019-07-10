@@ -79,7 +79,7 @@ class ShapeBase extends AbstractShape {
     const attrs = this.attrs;
     const originOpacity = context.globalAlpha;
 
-    if (attrs['fill']) {
+    if (this.isFill()) {
       const fillOpacity = attrs['fillOpacity'];
       if (!isNil(fillOpacity) && fillOpacity !== 1) {
         context.globalAlpha = fillOpacity;
@@ -90,7 +90,7 @@ class ShapeBase extends AbstractShape {
       }
     }
 
-    if (attrs['stroke']) {
+    if (this.isStroke()) {
       const lineWidth = attrs['lineWidth'];
       if (lineWidth > 0) {
         const strokeOpacity = attrs['strokeOpacity'];
