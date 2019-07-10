@@ -10,7 +10,7 @@
     "coverage-viewer": "torch-coverage",
     "postinstall": "npm run build",
     "test": "torch --renderer --compile --opts __tests__/mocha.opts",
-    "test-live": "torch --compile --interactive --opts __tests__/mocha.opts __tests__/unit/shape/image-spec.js",
+    "test-live": "torch --compile --interactive --opts __tests__/mocha.opts",
     "tsc": "tsc --noEmit",
     "typecheck": "tsc --noEmit"
   },

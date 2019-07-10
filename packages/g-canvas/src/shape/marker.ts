@@ -10,7 +10,7 @@ import { drawPath } from '../util/draw';
 const Symbols = {
   // 圆
   circle(x, y, r) {
-    return [['M', x, y], ['m', -r, 0], ['a', r, r, 0, 1, 0, r * 2, 0], ['a', r, r, 0, 1, 0, -r * 2, 0]];
+    return [['M', x - r, y], ['A', r, r, 0, 1, 0, x + r, y], ['A', r, r, 0, 1, 0, x - r, y]];
   },
   // 正方形
   square(x, y, r) {

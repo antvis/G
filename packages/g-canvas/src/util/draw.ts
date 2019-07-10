@@ -42,7 +42,7 @@ export function drawChildren(context: CanvasRenderingContext2D, children: IEleme
 export function drawPath(context, path, arcParamsCache) {
   let currentPoint = [0, 0]; // 当前图形
   context.beginPath();
-  for (let i = 0; i < path; i++) {
+  for (let i = 0; i < path.length; i++) {
     const params = path[i];
     const command = params[0];
     // V,H,S,T 都在前面被转换成标准形式
