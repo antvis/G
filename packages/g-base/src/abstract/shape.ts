@@ -59,12 +59,25 @@ abstract class AbstractShape extends Element implements IShape {
     return false;
   }
 
+  /**
+   * 是否仅仅使用 BBox 检测就可以判定拾取到图形
+   * 默认是 false，但是有些图形例如 image、marker 等都可直接使用 BBox 的检测而不需要使用图形拾取
+   * @return {Boolean} 仅仅使用 BBox 进行拾取
+   */
+  isOnlyHitBox() {
+    return false;
+  }
+
   // 不同的 Shape 各自实现
   isHit(x: number, y: number): boolean {
     const vec = [x, y, 1];
     this.invertFromMatrix(vec);
     const [refX, refY] = vec;
     const inBBox = this._isInBBox(refX, refY);
+    // 跳过图形的拾取，在某些图形中可以省略一倍的检测成本
+    if (this.isOnlyHitBox()) {
+      return inBBox;
+    }
     // 被裁减掉的和不在包围盒内的不进行计算
     if (inBBox && !this.isClipped(refX, refY)) {
       return this.isInShape(refX, refY);

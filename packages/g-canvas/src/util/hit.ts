@@ -120,6 +120,14 @@ const HitUtil = {
     const bbox = shape.getBBox();
     return inBox(bbox.minX, bbox.minY, bbox.width, bbox.height, x, y);
   },
+  image(shape, x, y) {
+    const bbox = shape.getBBox();
+    return inBox(bbox.minX, bbox.minY, bbox.width, bbox.height, x, y);
+  },
+  marker(shape, x, y) {
+    const bbox = shape.getBBox();
+    return inBox(bbox.minX, bbox.minY, bbox.width, bbox.height, x, y);
+  },
   rect(shape, x, y) {
     const isFill = shape.isFill();
     const isStroke = shape.isStroke();

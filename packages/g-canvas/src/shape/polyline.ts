@@ -6,6 +6,14 @@
 import ShapeBase from './base';
 
 class PolyLine extends ShapeBase {
+  // 不允许 fill
+  isFill() {
+    return false;
+  }
+  // 始终填充
+  isStroke() {
+    return true;
+  }
   createPath(context) {
     const attrs = this.attr();
     const points = attrs.points;

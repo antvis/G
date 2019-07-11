@@ -26,6 +26,7 @@ export function getOffScreenContext() {
 
 export { default as isNil } from '@antv/util/lib/is-nil';
 export { default as isString } from '@antv/util/lib/is-string';
+export { default as isFunction } from '@antv/util/lib/is-function';
 export { default as isArray } from '@antv/util/lib/is-array';
 export { default as each } from '@antv/util/lib/each';
 export { default as toRadian } from '@antv/util/lib/to-radian';
