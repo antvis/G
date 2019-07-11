@@ -4,22 +4,11 @@
  */
 
 import InStroke from './in-stroke';
-import { inBox, distance } from './util';
+import { inBox, distance, getOffScreenContext } from './util';
 
 // 根据椭圆公式计算 x*x/rx*rx + y*y/ry*ry;
 function ellipseDistance(xSquare, ySquare, rx, ry) {
   return xSquare / (rx * rx) + ySquare / (ry * ry);
-}
-// 全局设置一个唯一离屏的 ctx，用于计算 isPointInPath
-let offScreenCtx = null;
-function getOffScreenContext() {
-  if (!offScreenCtx) {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1;
-    canvas.height = 1;
-    offScreenCtx = canvas.getContext('2d');
-  }
-  return offScreenCtx;
 }
 
 // 多边形的射线检测
@@ -109,10 +98,10 @@ const HitUtil = {
     const halfLineWith = lineWidth / 2;
     const cx = attrs.x;
     const cy = attrs.y;
-    const {rx, ry} = attrs;
+    const { rx, ry } = attrs;
     const tmpX = (x - cx) * (x - cx);
     const tmpY = (y - cy) * (y - cy);
-    // 使用椭圆的公式： x*x/rx*rx + y*y/ry*ry = 1; 
+    // 使用椭圆的公式： x*x/rx*rx + y*y/ry*ry = 1;
     if (isFill && isStroke) {
       return ellipseDistance(tmpX, tmpY, rx + halfLineWith, ry + halfLineWith) <= 1;
     }
@@ -120,10 +109,16 @@ const HitUtil = {
       return ellipseDistance(tmpX, tmpY, rx, ry) <= 1;
     }
     if (isStroke) {
-      return ellipseDistance(tmpX, tmpY, rx - halfLineWith, ry - halfLineWith) >= 1 && 
-        ellipseDistance(tmpX, tmpY, rx + halfLineWith, ry + halfLineWith) <= 1;
+      return (
+        ellipseDistance(tmpX, tmpY, rx - halfLineWith, ry - halfLineWith) >= 1 &&
+        ellipseDistance(tmpX, tmpY, rx + halfLineWith, ry + halfLineWith) <= 1
+      );
     }
     return false;
+  },
+  text(shape, x, y) {
+    const bbox = shape.getBBox();
+    return inBox(bbox.minX, bbox.minY, bbox.width, bbox.height, x, y);
   },
   rect(shape, x, y) {
     const isFill = shape.isFill();
