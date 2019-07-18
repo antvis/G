@@ -10,8 +10,8 @@ export default {
    */
   box(x: number, y: number, r: number) {
     return {
-      x,
-      y,
+      x: x - r,
+      y: x - r,
       width: 2 * r,
       height: 2 * r,
     };
@@ -52,11 +52,11 @@ export default {
     return Math.abs(distance(x, y, x0, y0) - r);
   },
   /**
-   * 根据比例角度
+   * 根据比例计算切线角度
    * @param {number} x 圆心 x
    * @param {number} y 圆心 y
    * @param {number} r 半径
-   * @param {number} t 指定比例，x轴方向为 0
+   * @param {number} t 指定比例 0-1 之间，x轴方向为 0。在 0-1 范围之外是循环还是返回 null，还需要调整
    * @returns {number} 角度
    */
   tangentAngle(x: number, y: number, r: number, t) {
