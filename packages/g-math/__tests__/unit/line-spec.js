@@ -12,6 +12,11 @@ describe('line test', () => {
     expect(distance(0, 0, 100, 100)).eqls(line.length(0, 0, 100, 100));
   });
 
+  it('line at', () => {
+    expect(line.pointAt(0, 0, 10, 10, 0.1)).eqls({ x: 1, y: 1 });
+    expect(line.pointAt(0, 0, 10, 10, 0.5)).eqls({ x: 5, y: 5 });
+    expect(line.pointAt(0, 0, 10, 10, 1)).eqls({ x: 10, y: 10 });
+  });
   it('distance to line', () => {
     expect(line.pointToLine(0, 0, 100, 0, 0, 10)).eqls(10); // 垂直方向
     expect(line.pointToLine(0, 0, 100, 0, 10, 0)).eqls(0); // 在线上

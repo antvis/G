@@ -1,4 +1,4 @@
-import { distance, pointAtLine } from './util';
+import { distance } from './util';
 import * as vec2 from '@antv/gl-matrix/lib/gl-matrix/vec2';
 
 export default {
@@ -40,9 +40,16 @@ export default {
    * @param {number} y1 起始点 y
    * @param {number} x2 结束点 x
    * @param {number} y2 结束点 y
+   * @param {number} t 指定比例
    * @return {object} 包含 x, y 的点
+   *
    */
-  pointAt: pointAtLine,
+  pointAt(x1: number, y1: number, x2: number, y2: number, t: number) {
+    return {
+      x: (1 - t) * x1 + t * x2,
+      y: (1 - t) * y1 + t * y2,
+    };
+  },
   /**
    * 点到线段的距离
    * @param {number} x1 起始点 x
