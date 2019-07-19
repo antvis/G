@@ -46,6 +46,8 @@ export default {
    * @param {number} x 圆心 x
    * @param {number} y 圆心 y
    * @param {number} r 半径
+   * @param {number} x0  指定的点 x
+   * @param {number} y0  指定的点 y
    * @returns {number} 距离
    */
   pointDistance(x: number, y: number, r: number, x0, y0) {
@@ -56,11 +58,11 @@ export default {
    * @param {number} x 圆心 x
    * @param {number} y 圆心 y
    * @param {number} r 半径
-   * @param {number} t 指定比例 0-1 之间，x轴方向为 0。在 0-1 范围之外是循环还是返回 null，还需要调整
-   * @returns {number} 角度
+   * @param {number} t 指定比例 0 - 1 之间，x轴方向为 0。在 0-1 范围之外是循环还是返回 null，还需要调整
+   * @returns {number} 角度，在 0 - 2PI 之间
    */
   tangentAngle(x: number, y: number, r: number, t) {
     const angle = Math.PI * 2 * t;
-    return angle + Math.PI / 2;
+    return (angle + Math.PI / 2) % (Math.PI * 2);
   },
 };
