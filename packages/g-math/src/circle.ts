@@ -1,4 +1,4 @@
-import { distance } from './util';
+import { distance, piMod } from './util';
 
 export default {
   /**
@@ -63,6 +63,6 @@ export default {
    */
   tangentAngle(x: number, y: number, r: number, t) {
     const angle = Math.PI * 2 * t;
-    return (angle + Math.PI / 2) % (Math.PI * 2);
+    return piMod(angle + Math.PI / 2);
   },
 };

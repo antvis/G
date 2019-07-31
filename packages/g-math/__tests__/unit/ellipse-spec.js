@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 import ellipse from '../../src/ellipse';
 import circle from '../../src/circle';
-import { distance } from '../../src/util';
+import { distance, piMod } from '../../src/util';
 
 function equalPoint(obj1, obj2) {
   return distance(obj1.x, obj1.y, obj2.x, obj2.y) < 0.3;
@@ -93,6 +93,16 @@ describe('test ellipse', () => {
   it('tangent angle ellipse', () => {
     expect(equal(ellipse.tangentAngle(100, 100, 20, 10, 0), Math.PI / 2)).eqls(true);
     expect(equal(ellipse.tangentAngle(100, 100, 20, 10, 1 / 4), Math.PI)).eqls(true);
+  });
+
+  it('tangent angle all', () => {
+    const count = 12;
+    for (let i = 0; i <= count; i++) {
+      const angle = ((Math.PI * 2) / count) * i;
+      const tangentAngle0 = piMod(Math.atan2(10 * Math.cos(angle), -20 * Math.sin(angle)));
+      const tangentAngle = ellipse.tangentAngle(100, 100, 20, 10, (1 / count) * i);
+      expect(equal(tangentAngle, tangentAngle0)).eqls(true);
+    }
   });
 
   it('draw ellipse', () => {

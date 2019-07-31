@@ -11,3 +11,24 @@ export function distance(x1: number, y1: number, x2: number, y2: number) {
   const dy = y1 - y2;
   return Math.sqrt(dx * dx + dy * dy);
 }
+
+export function isNumberEqual(v1, v2) {
+  return Math.abs(v1 - v2) < 0.001;
+}
+
+export function getBBoxByArray(xArr, yArr) {
+  const minX = Math.min.apply(null, xArr);
+  const minY = Math.min.apply(null, yArr);
+  const maxX = Math.max.apply(null, xArr);
+  const maxY = Math.max.apply(null, yArr);
+  return {
+    x: minX,
+    y: minY,
+    width: maxX - minX,
+    height: maxY - minY,
+  };
+}
+
+export function piMod(angle) {
+  return (angle + Math.PI * 2) % (Math.PI * 2);
+}

@@ -1,17 +1,5 @@
 import { pointAtSegments, angleAtSegments, distanceAtSegment, lengthOfSegment } from './segments';
-
-function getBBoxByArray(xArr, yArr) {
-  const minX = Math.min.apply(null, xArr);
-  const minY = Math.min.apply(null, yArr);
-  const maxX = Math.max.apply(null, xArr);
-  const maxY = Math.max.apply(null, yArr);
-  return {
-    x: minX,
-    y: minY,
-    width: maxX - minX,
-    height: maxY - minY,
-  };
-}
+import { getBBoxByArray } from './util';
 
 export default {
   /**

@@ -5,7 +5,7 @@
  * @author dxq613@gmail.com
  */
 
-import { distance } from './util';
+import { distance, piMod } from './util';
 
 function copysign(v1, v2) {
   const absv = Math.abs(v1);
@@ -58,8 +58,8 @@ export default {
     const relativeY = y0 - y;
     const px = Math.abs(relativeX);
     const py = Math.abs(relativeY);
-    const angle0 = Math.atan2(relativeY, relativeX);
-    let t = ((angle0 + Math.PI * 2) % (Math.PI * 2)) + Math.PI / 4; // Math.PI / 4;
+    // const angle0 = Math.atan2(relativeY, relativeX);
+    let t = Math.PI / 4;
     let nearestX; // 椭圆上的任一点
     let nearestY;
     // 迭代 4 次
@@ -130,11 +130,15 @@ export default {
    */
   tangentAngle(x, y, rx, ry, t) {
     const angle = 2 * Math.PI * t; // 按照角度进行计算，而不按照周长计算
-    const point = this.pointAt(0, 0, rx, ry, t); // 椭圆的切线同椭圆的中心不相关
-    let tangetAngle = -1 * Math.atan((ry * ry * point.x) / (rx * rx * point.y));
-    if (angle >= 0 && angle <= Math.PI) {
-      tangetAngle += Math.PI;
-    }
-    return (tangetAngle + Math.PI * 2) % (Math.PI * 2);
+    // 直接使用 x,y 的导数计算， x' = -rx * sin(t); y' = ry * cos(t);
+    const tangentAngle = Math.atan2(ry * Math.cos(angle), -rx * Math.sin(angle));
+    // 也可以使用指定点的切线方程计算，成本有些高
+    // const point = this.pointAt(0, 0, rx, ry, t); // 椭圆的切线同椭圆的中心不相关
+    // let tangentAngle = -1 * Math.atan((ry * ry * point.x) / (rx * rx * point.y));
+    // if (angle >= 0 && angle <= Math.PI) {
+    //   tangentAngle += Math.PI;
+    // }
+
+    return piMod(tangentAngle);
   },
 };

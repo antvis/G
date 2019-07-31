@@ -5,6 +5,10 @@ import { distance } from '../../src/util';
 function equalPoint(obj1, obj2) {
   return distance(obj1.x, obj1.y, obj2.x, obj2.y) < 0.01;
 }
+
+function equal(v1, v2) {
+  return Math.abs(v1 - v2) < 0.01;
+}
 describe('circle test', () => {
   it('box', () => {
     expect(circle.box(0, 0, 10)).eqls({
@@ -34,6 +38,6 @@ describe('circle test', () => {
 
   it('angle', () => {
     expect(circle.tangentAngle(0, 0, 10, 0)).eqls(Math.PI / 2);
-    expect(circle.tangentAngle(0, 0, 10, 1 / 6)).eqls(Math.PI * (2 / 6 + 1 / 2));
+    expect(equal(circle.tangentAngle(0, 0, 10, 1 / 6), Math.PI * (2 / 6 + 1 / 2))).eqls(true);
   });
 });
