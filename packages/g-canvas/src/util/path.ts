@@ -2,6 +2,17 @@
  * @fileoverview path 的一些工具
  * @author dxq613@gmail.com
  */
+import getArcParams from './arc-params';
+import QuadUtil from '@antv/g-math/lib/quadratic';
+import CubicUtil from '@antv/g-math/lib/cubic';
+import EllipseArcUtil from '@antv/g-math/lib/arc';
+import { getBBoxByArray } from '@antv/g-math/lib/util';
+import { inBox } from './util';
+import inLine from './in-stroke/line';
+import inArc from './in-stroke/arc';
+
+import * as mat3 from '@antv/gl-matrix/lib/gl-matrix/mat3';
+import * as vec3 from '@antv/gl-matrix/lib/gl-matrix/vec3';
 
 function hasArc(path) {
   let hasArc = false;
@@ -17,46 +28,151 @@ function hasArc(path) {
   return hasArc;
 }
 
-// 获取 path 的类型，便于实现快速拾取
-function getPathType(path) {
-  let type = 'mix'; // 混合的 path ,不但有 L，也有 Q,C,A
-  let hasArc = false;
-  let zCount = 0;
-  let mCount = 0;
+function getSegments(path) {
+  const segments = [];
+  let currentPoint = [0, 0]; // 当前图形
+  let startMovePoint = [0, 0]; // 开始 M 的点，可能会有多个
   const count = path.length;
   for (let i = 0; i < count; i++) {
     const params = path[i];
-    switch (params[0]) {
+    const command = params[0];
+    // 数学定义上的参数，便于后面的计算
+    const segment = {
+      command,
+      prePoint: currentPoint,
+      params,
+      mathParams: [],
+    };
+    switch (command) {
       case 'M':
-        mCount++;
+        startMovePoint = [params[1], params[2]];
         break;
-      case 'Q':
-      case 'C':
       case 'A':
-        hasArc = true;
-        break;
-      case 'Z':
-        zCount++;
+        const arcParams = getArcParams(currentPoint, params);
+        segment['arcParams'] = arcParams;
         break;
       default:
         break;
     }
+    // 有了 Z 后，当前节点从开始 M 的点开始
+    if (command === 'Z') {
+      currentPoint = startMovePoint;
+    } else {
+      const len = params.length;
+      currentPoint = [params[len - 2], params[len - 1]];
+    }
+    segment['currentPoint'] = currentPoint;
+    segments.push(segment);
   }
-  if (!hasArc) {
-    if (mCount === 1 && path[0][0] === 'M') {
-      if (zCount === 1 && path[count - 1][0] === 'Z') {
-        // 只有一个 M，一个 Z 则是polygon
-        type = 'polygon';
-      } else if (zCount === 0) {
-        type = 'polyline';
-      }
-    } else if (mCount === zCount) {
-      type = 'polygons';
-    } else if (mCount > 1 && zCount === 0) {
-      type = 'lines';
+  return segments;
+}
+
+function getPathBox(segments) {
+  const xArr = [];
+  const yArr = [];
+  for (let i = 0; i < segments.length; i++) {
+    const segment = segments[i];
+    const { currentPoint, params, prePoint } = segment;
+    let box;
+    switch (segment.command) {
+      case 'Q':
+        box = QuadUtil.box(prePoint[1], prePoint[2], params[1], params[2], params[3], params[4]);
+        break;
+      case 'C':
+        box = CubicUtil.box(prePoint[1], prePoint[2], params[1], params[2], params[3], params[4], params[5], params[6]);
+        break;
+      case 'A':
+        const arcParams = segment.arcParams;
+        box = EllipseArcUtil.box(
+          arcParams.cx,
+          arcParams.cy,
+          arcParams.rx,
+          arcParams.ry,
+          arcParams.xRotation,
+          arcParams.startAngle,
+          arcParams.endAngle
+        );
+        break;
+      default:
+        xArr.push(currentPoint[0]);
+        yArr.push(currentPoint[1]);
+        break;
+    }
+    if (box) {
+      segment.box = box;
+      xArr.push(box.x, box.x + box.width);
+      yArr.push(box.y, box.y + box.height);
     }
   }
-  return type;
+  return getBBoxByArray(xArr, yArr);
+}
+
+function isPointInStroke(segments, lineWidth, x, y) {
+  let isHit = false;
+  for (let i = 0; i < segments.length; i++) {
+    const segment = segments[i];
+    const { currentPoint, params, prePoint, box } = segment;
+    // 如果在前面已经生成过包围盒，直接按照包围盒计算
+    if (box && !inBox(box.x, box.y, box.width, box.height, x, y)) {
+      continue;
+    }
+    switch (segment.command) {
+      // L 和 Z 都是直线， M 不进行拾取
+      case 'L':
+      case 'Z':
+        isHit = inLine(prePoint[0], prePoint[1], currentPoint[0], currentPoint[1], lineWidth, x, y);
+        break;
+      case 'Q':
+        const qDistance = QuadUtil.pointDistance(
+          prePoint[1],
+          prePoint[2],
+          params[1],
+          params[2],
+          params[3],
+          params[4],
+          x,
+          y
+        );
+        isHit = qDistance <= lineWidth / 2;
+        break;
+      case 'C':
+        const cDistance = CubicUtil.pointDistance(
+          prePoint[1],
+          prePoint[2],
+          params[1],
+          params[2],
+          params[3],
+          params[4],
+          params[5],
+          params[6],
+          x,
+          y
+        );
+        isHit = cDistance <= lineWidth / 2;
+        break;
+      case 'A':
+        // 计算点到椭圆圆弧的距离，暂时使用近似算法，后面可以改成切割法求最近距离
+        const arcParams = segment.arcParams;
+        const { cx, cy, rx, ry, startAngle, endAngle, xRotation } = arcParams;
+        const p = [x, y, 1];
+        const m = [1, 0, 0, 0, 1, 0, 0, 0, 1];
+        const r = rx > ry ? rx : ry;
+        const scaleX = rx > ry ? 1 : rx / ry;
+        const scaleY = rx > ry ? ry / rx : 1;
+        mat3.translate(m, m, [-cx, -cy]);
+        mat3.rotate(m, m, -xRotation);
+        mat3.scale(m, m, [1 / scaleX, 1 / scaleY]);
+        vec3.transformMat3(p, p, m);
+        isHit = inArc(cx, cy, r, startAngle, endAngle, lineWidth, p[0], p[1]);
+        break;
+      default:
+        break;
+    }
+    if (isHit) {
+      break;
+    }
+  }
+  return isHit;
 }
 
 /**
@@ -100,4 +216,7 @@ function extractPolygons(path) {
 export default {
   hasArc,
   extractPolygons,
+  getSegments,
+  getPathBox,
+  isPointInStroke,
 };

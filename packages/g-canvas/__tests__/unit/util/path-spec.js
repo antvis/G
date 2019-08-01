@@ -13,6 +13,14 @@ describe('test path util', () => {
     expect(PathUtil.hasArc(p4)).eqls(true);
   });
 
+  it('get segments', () => {});
+
+  it('getPathBox', () => {});
+
+  it('isInStroke', () => {});
+
+  it('isInPath', () => {});
+
   it('extract Polygons', () => {
     const p1 = [['M', 1, 1], ['L', 2, 2], ['L', 3, 3], ['L', 4, 4], ['M', 5, 5], ['L', 6, 6], ['L', 7, 7], ['Z']];
     const rst = PathUtil.extractPolygons(p1);

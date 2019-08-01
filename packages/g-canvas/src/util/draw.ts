@@ -1,7 +1,7 @@
 import { IElement } from '@antv/g-base/lib/interfaces';
 import { ICanvasElement } from '../interfaces';
 import { parseStyle } from './parse';
-import EllipseMath from './math/ellipse';
+import getArcParams from './arc-params';
 
 const SHAPE_ATTRS_MAP = {
   fill: 'fillStyle',
@@ -67,11 +67,11 @@ export function drawPath(context, path, arcParamsCache) {
         if (arcParamsCache) {
           arcParams = arcParamsCache[i];
           if (!arcParams) {
-            arcParams = EllipseMath.getArcParams(currentPoint, params);
+            arcParams = getArcParams(currentPoint, params);
             arcParamsCache[i] = arcParams;
           }
         } else {
-          arcParams = EllipseMath.getArcParams(currentPoint, params);
+          arcParams = getArcParams(currentPoint, params);
         }
         const { cx, cy, rx, ry, startAngle, endAngle, xRotation, sweepFlag } = arcParams;
         // 直接使用椭圆的 api
