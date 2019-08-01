@@ -3,7 +3,7 @@
  * @author dxq613@gmail.com
  */
 import { IGroup, IElement } from '../interfaces';
-import { isString, each } from '@antv/util';
+import { isString, each } from './util';
 
 const GroupUtil = {
   /**

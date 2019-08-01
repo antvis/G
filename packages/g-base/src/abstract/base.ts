@@ -1,6 +1,5 @@
 import { IBase, IObservable } from '../interfaces';
-import { mix, isFunction } from '@antv/util';
-import { removeFromArray } from '../util/util';
+import { removeFromArray, mix, isFunction } from '../util/util';
 abstract class Base implements IBase, IObservable {
   /**
    * @private

@@ -2,8 +2,7 @@ import Base from './base';
 import { IElement, IShape, IGroup, ICanvas, IContainer, ICtor } from '../interfaces';
 import { ShapeCfg, CanvasCfg } from '../types';
 import ContainerUtil from '../util/container';
-import { isString, isObject } from '@antv/util';
-import { isBrowser } from '../util/util';
+import { isBrowser, isString, isObject } from '../util/util';
 const PX_SUFFIX = 'px';
 
 abstract class Canvas extends Base implements ICanvas {

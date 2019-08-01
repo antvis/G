@@ -11,14 +11,9 @@ describe('polygon test', () => {
   const polygon = new Polygon({
     type: 'polygon',
     attrs: {
-      points: [
-        [ 10, 10 ],
-        [ 100, 10 ],
-        [ 100, 100 ],
-        [ 10, 100 ]
-      ],
-      fill: 'red'
-    }
+      points: [[10, 10], [100, 10], [100, 100], [10, 100]],
+      fill: 'red',
+    },
   });
   it('init', () => {
     expect(polygon.attr('points').length).eqls(4);
@@ -32,7 +27,7 @@ describe('polygon test', () => {
     expect(getColor(ctx, 10, 50)).eqls('#ff0000');
     expect(getColor(ctx, 101, 50)).eqls('#000000');
     ctx.clearRect(0, 0, 101, 101);
-    polygon.attr({ 'stroke': 'blue', lineWidth: 4 });
+    polygon.attr({ stroke: 'blue', lineWidth: 4 });
     polygon.draw(ctx);
     expect(getColor(ctx, 101, 50)).eqls('#0000ff');
     expect(getColor(ctx, 9.5, 50)).eqls('#0000ff');
@@ -61,17 +56,19 @@ describe('polygon test', () => {
     polygon.attr({
       stroke: 'blue',
       lineWidth: 2,
-      fill: null
+      fill: null,
     });
     polygon.draw(ctx);
     expect(polygon.isHit(12, 12)).eqls(false);
     expect(polygon.isHit(11, 11)).eqls(true);
-    expect(polygon.isHit(9, 9)).eqls(true);
+    expect(polygon.isHit(9, 10)).eqls(true);
+    // 距离大于 1
+    expect(polygon.isHit(9, 9)).eqls(false);
 
     // only fill
     polygon.attr({
       stroke: null,
-      fill: 'red'
+      fill: 'red',
     });
 
     expect(polygon.isHit(12, 12)).eqls(true);

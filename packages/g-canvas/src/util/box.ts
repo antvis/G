@@ -3,6 +3,8 @@
  * @author dxq613@gmail.com
  */
 
+import EllipseMath from './math/ellipse';
+
 function getBBoxByArray(xArr, yArr, lineWidth) {
   const minX = Math.min.apply(null, xArr);
   const minY = Math.min.apply(null, yArr);
@@ -96,20 +98,91 @@ const BoxUtil = {
     const halfWidth = lineWidth / 2;
     const xArr = [];
     const yArr = [];
+    let currentPoint = [0, 0]; // 当前点
+    let startMovePoint = [0, 0]; // 开始 M 的点，可能会有多个
     for (let i = 0; i < path.length; i++) {
       const params = path[i];
       const command = params[0];
       // 圆弧的计算使用特别方法
       if (command === 'A') {
-        // TO DO
+        const arcParams = EllipseMath.getArcParams(currentPoint, params);
+        const { rx, ry, cx, cy, xRotation, sweepFlag } = arcParams;
+        const xDim = EllipseMath.xExtrema(xRotation, rx, ry);
+        const start = arcParams.startAngle;
+        const end = arcParams.endAngle;
+        let minX = Infinity;
+        let maxX = -Infinity;
+        const xs = [start, end];
+        for (let i = -Math.PI * 2; i <= Math.PI * 2; i += Math.PI) {
+          const xAngle = xDim + i;
+          if (sweepFlag === 1) {
+            if (start < xAngle && xAngle < end) {
+              xs.push(xAngle);
+            }
+          } else {
+            if (end < xAngle && xAngle < start) {
+              xs.push(xAngle);
+            }
+          }
+        }
+
+        for (let i = 0, l = xs.length; i < l; i++) {
+          const x = EllipseMath.xAt(xRotation, rx, ry, cx, xs[i]);
+          if (x < minX) {
+            minX = x;
+          }
+          if (x > maxX) {
+            maxX = x;
+          }
+        }
+
+        const yDim = EllipseMath.yExtrema(xRotation, rx, ry);
+        let minY = Infinity;
+        let maxY = -Infinity;
+        const ys = [start, end];
+        for (let i = -Math.PI * 2; i <= Math.PI * 2; i += Math.PI) {
+          const yAngle = yDim + i;
+          if (sweepFlag === 1) {
+            if (start < yAngle && yAngle < end) {
+              ys.push(yAngle);
+            }
+          } else {
+            if (end < yAngle && yAngle < start) {
+              ys.push(yAngle);
+            }
+          }
+        }
+
+        for (let i = 0, l = ys.length; i < l; i++) {
+          const y = EllipseMath.yAt(xRotation, rx, ry, cy, ys[i]);
+          if (y < minY) {
+            minY = y;
+          }
+          if (y > maxY) {
+            maxY = y;
+          }
+        }
+        xArr.push(minX, maxX);
+        yArr.push(minY, maxY);
       } else if (command !== 'Z') {
+        if (command === 'M') {
+          startMovePoint = [params[1], params[2]];
+        }
         // 使用模糊的包围盒计算方案，可以显著提升过滤图形的速度
         for (let j = 1; j < params.length - 2; j++) {
           xArr.push(params[j]);
           yArr.push(params[j + 1]);
         }
       }
+      // 有了 Z 后，当前节点从开始 M 的点开始
+      if (command === 'Z') {
+        currentPoint = startMovePoint;
+      } else {
+        const len = params.length;
+        currentPoint = [params[len - 2], params[len - 1]];
+      }
     }
+
     return getBBoxByArray(xArr, yArr, lineWidth);
   },
   getBBox(type, attrs, lineWidth) {

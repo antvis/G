@@ -63,7 +63,8 @@ describe('polygon test', () => {
     polyline.draw(ctx);
     expect(polyline.isHit(12, 12)).eqls(false);
     expect(polyline.isHit(11, 11)).eqls(true);
-    expect(polyline.isHit(9, 9)).eqls(true);
+    expect(polyline.isHit(9, 9)).eqls(false);
+
     expect(polyline.isHit(10, 50)).eqls(false);
     // only fill
     polyline.attr({

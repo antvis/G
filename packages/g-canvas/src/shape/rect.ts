@@ -5,6 +5,10 @@
 
 import ShapeBase from './base';
 import { parseRadius } from '../util/parse';
+import { inBox } from '../util/util';
+import inRect from '../util/in-stroke/rect';
+import inRectWithRadius from '../util/in-stroke/rect-radius';
+import isPointInPath from '../util/in-path/point-in-path';
 
 class Rect extends ShapeBase {
   getDefaultAttrs() {
@@ -12,6 +16,51 @@ class Rect extends ShapeBase {
     // 设置默认值
     attrs['radius'] = 0;
     return attrs;
+  }
+
+  getInnerBox(attrs) {
+    const { x, y, width, height } = attrs;
+    return {
+      x,
+      y,
+      width,
+      height,
+    };
+  }
+
+  isInStrokeOrPath(x, y, isStroke, isFill, lineWidth) {
+    const attrs = this.attr();
+    const minX = attrs.x;
+    const minY = attrs.y;
+    const width = attrs.width;
+    const height = attrs.height;
+    const radius = attrs.radius;
+    // 无圆角时的策略
+    if (!radius) {
+      const halfWidth = lineWidth / 2;
+      // 同时填充和带有边框
+      if (isFill && isStroke) {
+        return inBox(minX - halfWidth, minY - halfWidth, width + halfWidth, height + halfWidth, x, y);
+      }
+      // 仅填充
+      if (isFill) {
+        return inBox(minX, minY, width, height, x, y);
+      }
+      if (isStroke) {
+        return inRect(minX, minY, width, height, lineWidth, x, y);
+      }
+    } else {
+      let isHit = false;
+      if (isStroke) {
+        isHit = inRectWithRadius(minX, minY, width, height, radius, lineWidth, x, y);
+      }
+      // 仅填充时带有圆角的矩形直接通过图形拾取
+      // 以后可以改成纯数学的近似拾取，将圆弧切割成多边形
+      if (!isHit && isFill) {
+        isHit = isPointInPath(this, x, y);
+      }
+      return isHit;
+    }
   }
 
   createPath(context) {

@@ -52,7 +52,6 @@ describe('single line text test', () => {
       fill: 'red',
     },
   });
-
   it('init', () => {
     expect(text.attr('fontSize')).eqls(12);
     expect(text.attr('text')).eqls('first');

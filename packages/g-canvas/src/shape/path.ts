@@ -14,7 +14,8 @@ class Path extends ShapeBase {
 
   // 将 path 转换成绝对路径
   _setPathArr(path) {
-    this.set('pathArray', path2Absolute(path));
+    // 转换 path 的格式
+    this.attrs.path = path2Absolute(path);
     // 为了加速 path 的绘制、拾取和计算，这个地方可以缓存很多东西
     // 这些缓存都是第一次需要时计算和存储，虽然增加了复杂度，但是频繁调用的方法，性能有很大提升
     this.set('paramsCache', {}); // 清理缓存
@@ -28,7 +29,7 @@ class Path extends ShapeBase {
   }
 
   createPath(context) {
-    const path = this.get('pathArray');
+    const path = this.attr('path');
     const paramsCache = this.get('paramsCache'); // 由于计算圆弧的参数成本很大，所以要缓存
     drawPath(context, path, paramsCache);
   }

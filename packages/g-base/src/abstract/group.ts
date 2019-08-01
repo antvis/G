@@ -2,7 +2,7 @@ import { IElement, IShape, IGroup, ICtor } from '../interfaces';
 import { GroupCfg, ShapeCfg, BBox } from '../types';
 import Element from './element';
 import ContainerUtil from '../util/container';
-import { isObject, each } from '@antv/util';
+import { isObject, each } from '../util/util';
 
 abstract class AbstractGroup extends Element implements IGroup {
   isGroup() {
