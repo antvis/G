@@ -50,7 +50,7 @@ abstract class Canvas extends Base implements ICanvas {
    * 创建画布容器
    * @return {HTMLElement} 画布容器
    */
-  abstract createDom(): HTMLElement;
+  abstract createDom(): HTMLElement | SVGSVGElement;
 
   /**
    * @protected
