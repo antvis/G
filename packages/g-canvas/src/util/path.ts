@@ -108,11 +108,12 @@ function getPathBox(segments) {
 
 function isPointInStroke(segments, lineWidth, x, y) {
   let isHit = false;
+  const halfWidth = lineWidth / 2;
   for (let i = 0; i < segments.length; i++) {
     const segment = segments[i];
     const { currentPoint, params, prePoint, box } = segment;
     // 如果在前面已经生成过包围盒，直接按照包围盒计算
-    if (box && !inBox(box.x, box.y, box.width, box.height, x, y)) {
+    if (box && !inBox(box.x - halfWidth, box.y - halfWidth, box.width + lineWidth, box.height + lineWidth, x, y)) {
       continue;
     }
     switch (segment.command) {

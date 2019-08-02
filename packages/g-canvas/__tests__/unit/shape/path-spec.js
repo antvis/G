@@ -51,6 +51,7 @@ describe('test path', () => {
   });
 
   it('draw and hit curve Q', () => {
+    // const p2 = [['M', 10, 10], ['Q', 20, 20, 30, 10]];
     ctx.clearRect(0, 0, 100, 100);
     path.attr('stroke', 'blue');
     path.attr('path', p2);
@@ -58,6 +59,7 @@ describe('test path', () => {
     expect(getColor(ctx, 20, 15)).eqls('#0000ff');
     expect(getColor(ctx, 20, 16)).eqls('#000000');
     expect(path.isHit(20, 15)).eqls(true);
+    expect(path.isHit(20, 15.4)).eqls(true);
     expect(path.isHit(20, 16)).eqls(false);
 
     ctx.clearRect(0, 0, 100, 100);

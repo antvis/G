@@ -77,8 +77,18 @@ describe('test path util', () => {
 
   it('isInstroke Q', () => {
     const p2 = [['M', 1, 1], ['Q', 2, 2, 3, 1]];
+
     const seg2 = PathUtil.getSegments(p2);
+    // 函数存在副作用，严格说不应该有这种实现，但是为了延迟性能
+    PathUtil.getPathBox(seg2);
+    expect(seg2[1].box).eqls({
+      x: 1,
+      y: 1,
+      width: 2,
+      height: 0.5,
+    });
     expect(PathUtil.isPointInStroke(seg2, 1, 2, 1.5)).eqls(true);
+    expect(PathUtil.isPointInStroke(seg2, 1, 2, 1.8)).eqls(true);
 
     expect(PathUtil.isPointInStroke(seg2, 1, 2, 2.1)).eqls(false);
   });
