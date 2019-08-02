@@ -11,5 +11,6 @@ export default function inLine(x1, y1, x2, y2, lineWidth, x, y) {
   if (!(x >= minX - halfWidth && x <= maxX + halfWidth && y >= minY - halfWidth && y <= maxY + halfWidth)) {
     return false;
   }
-  return LineUtil.pointDistance(x1, y1, x2, y2, x, y) <= lineWidth / 2;
+  // 因为已经计算了包围盒，所以仅需要计算到直线的距离即可，可以显著提升性能
+  return LineUtil.pointToLine(x1, y1, x2, y2, x, y) <= lineWidth / 2;
 }

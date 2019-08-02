@@ -34,7 +34,7 @@ class Path extends ShapeBase {
     const hasArc = pathUtil.hasArc(path);
     // 为了加速 path 的绘制、拾取和计算，这个地方可以缓存很多东西
     // 这些缓存都是第一次需要时计算和存储，虽然增加了复杂度，但是频繁调用的方法，性能有很大提升
-    this.set('hasArc', true);
+    this.set('hasArc', hasArc);
     this.set('paramsCache', {}); // 清理缓存
     this.set('segments', null); // 延迟生成 path，在动画场景下可能不会有拾取
   }

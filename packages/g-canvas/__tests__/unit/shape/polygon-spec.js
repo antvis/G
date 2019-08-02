@@ -63,7 +63,7 @@ describe('polygon test', () => {
     expect(polygon.isHit(11, 11)).eqls(true);
     expect(polygon.isHit(9, 10)).eqls(true);
     // 距离大于 1
-    expect(polygon.isHit(9, 9)).eqls(false);
+    expect(polygon.isHit(9, 8)).eqls(false);
 
     // only fill
     polygon.attr({

@@ -41,7 +41,6 @@ function getSegments(path) {
       command,
       prePoint: currentPoint,
       params,
-      mathParams: [],
     };
     switch (command) {
       case 'M':
@@ -76,10 +75,10 @@ function getPathBox(segments) {
     let box;
     switch (segment.command) {
       case 'Q':
-        box = QuadUtil.box(prePoint[1], prePoint[2], params[1], params[2], params[3], params[4]);
+        box = QuadUtil.box(prePoint[0], prePoint[1], params[1], params[2], params[3], params[4]);
         break;
       case 'C':
-        box = CubicUtil.box(prePoint[1], prePoint[2], params[1], params[2], params[3], params[4], params[5], params[6]);
+        box = CubicUtil.box(prePoint[0], prePoint[1], params[1], params[2], params[3], params[4], params[5], params[6]);
         break;
       case 'A':
         const arcParams = segment.arcParams;
@@ -124,8 +123,8 @@ function isPointInStroke(segments, lineWidth, x, y) {
         break;
       case 'Q':
         const qDistance = QuadUtil.pointDistance(
+          prePoint[0],
           prePoint[1],
-          prePoint[2],
           params[1],
           params[2],
           params[3],
@@ -137,8 +136,8 @@ function isPointInStroke(segments, lineWidth, x, y) {
         break;
       case 'C':
         const cDistance = CubicUtil.pointDistance(
+          prePoint[0],
           prePoint[1],
-          prePoint[2],
           params[1],
           params[2],
           params[3],
@@ -163,7 +162,7 @@ function isPointInStroke(segments, lineWidth, x, y) {
         mat3.rotate(m, m, -xRotation);
         mat3.scale(m, m, [1 / scaleX, 1 / scaleY]);
         vec3.transformMat3(p, p, m);
-        isHit = inArc(cx, cy, r, startAngle, endAngle, lineWidth, p[0], p[1]);
+        isHit = inArc(0, 0, r, startAngle, endAngle, lineWidth, p[0], p[1]);
         break;
       default:
         break;
@@ -206,6 +205,11 @@ function extractPolygons(path) {
     } else {
       points.push([params[1], params[2]]);
     }
+  }
+  // 说明 points 未放入 polygons 或者 polyline
+  // 仅当只有一个 M，没有 Z 时会发生这种情况
+  if (points.length > 0) {
+    polylines.push(points);
   }
   return {
     polygons,

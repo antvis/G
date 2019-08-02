@@ -100,6 +100,7 @@ describe('rect test', () => {
       fill: null,
       stroke: 'blue',
       radius: 2,
+      lineWidth: 1,
     });
 
     expect(rect.isHit(10, 10)).eql(false);
