@@ -84,7 +84,7 @@ function addGroup(container: IContainer, groupClass?: any, cfg?: GroupCfg): IGro
       });
     }
   } else {
-    const tmpCfg = groupClass;
+    const tmpCfg = groupClass || {};
     const TmpGroupClass = container.getGroupBase();
     rst = new TmpGroupClass(tmpCfg);
   }

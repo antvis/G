@@ -9,6 +9,8 @@ abstract class Canvas extends Base implements ICanvas {
   getDefaultCfg() {
     const cfg = super.getDefaultCfg();
     cfg['children'] = [];
+    cfg['visible'] = true;
+    cfg['capture'] = true;
     return cfg;
   }
 

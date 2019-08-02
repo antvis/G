@@ -12,7 +12,8 @@
     "test": "torch --renderer --compile --opts __tests__/mocha.opts",
     "test-live": "torch --compile --interactive --opts __tests__/mocha.opts",
     "tsc": "tsc --noEmit",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "dist": "webpack --config webpack.config.js --mode production"
   },
   "repository": {
     "type": "git",
@@ -30,7 +31,9 @@
   },
   "devDependencies": {
     "@antv/torch": "^1.0.0",
-    "less": "^3.9.0"
+    "less": "^3.9.0",
+    "webpack": "^4.26.1",
+    "webpack-cli": "^3.1.2"
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {

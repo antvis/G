@@ -35,6 +35,13 @@ class Canvas extends AbstractCanvas {
     return element;
   }
 
+  clear() {
+    super.clear();
+    const context = this.get('context');
+    const element = this.get('el');
+    context.clearRect(0, 0, element.width, element.height);
+  }
+
   // 复写基类的 draw 方法
   draw() {
     const context = this.get('context');
