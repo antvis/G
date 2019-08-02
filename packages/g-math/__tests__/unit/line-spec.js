@@ -13,6 +13,7 @@ describe('line test', () => {
   });
 
   it('line at', () => {
+    expect(line.pointAt(10, 10, 20, 20, 0.9)).eqls({ x: 19, y: 19 });
     expect(line.pointAt(0, 0, 10, 10, 0.1)).eqls({ x: 1, y: 1 });
     expect(line.pointAt(0, 0, 10, 10, 0.5)).eqls({ x: 5, y: 5 });
     expect(line.pointAt(0, 0, 10, 10, 1)).eqls({ x: 10, y: 10 });
@@ -24,6 +25,10 @@ describe('line test', () => {
 
     expect(line.pointToLine(0, 0, 100, 0, 101, 10)).eqls(10); // 在外面上
     expect(line.pointToLine(0, 0, 100, 0, -10, 10)).eqls(10); // 在外面上
+  });
+
+  it('ditance, point in line', () => {
+    expect(line.pointDistance(10, 10, 20, 20, 19, 19)).eqls(0);
   });
 
   it('distance to line segment', () => {
