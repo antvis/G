@@ -23,6 +23,11 @@ class Text extends ShapeBase {
     };
   }
 
+  // 仅仅使用包围盒检测来进行拾取
+  isOnlyHitBox() {
+    return true;
+  }
+
   // 初始化时组合 font，同时判断 text 是否换行
   initAttrs(attrs) {
     this._assembleFont();
@@ -51,7 +56,7 @@ class Text extends ShapeBase {
     this.set('textArr', textArr);
   }
 
-  // 更新属性时，检测是否更改了 path
+  // 更新属性时，检测是否更改了 font、text
   setAttr(name: string, value: any) {
     this.attrs[name] = value;
     if (name.startsWith('font')) {

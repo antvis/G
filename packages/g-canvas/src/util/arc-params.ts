@@ -1,5 +1,4 @@
-
-import { mod, toRadian} from '../util';
+import { mod, toRadian} from './util';
 
 // 向量长度
 function vMag(v) {
@@ -17,7 +16,7 @@ function vAngle(u, v) {
 }
 
 // A 0:rx 1:ry 2:x-axis-rotation 3:large-arc-flag 4:sweep-flag 5: x 6: y
-function getArcParams(startPoint, params) {
+export default function getArcParams(startPoint, params) {
   let rx = params[1];
   let ry = params[2];
   const xRotation = mod(toRadian(params[3]), Math.PI * 2);
@@ -80,19 +79,3 @@ function getArcParams(startPoint, params) {
     sweepFlag,
   };
 }
-
-export default {
-  getArcParams,
-  xAt(xRotation, rx, ry, cx, t) {
-    return rx * Math.cos(xRotation) * Math.cos(t) - ry * Math.sin(xRotation) * Math.sin(t) + cx;
-  },
-  yAt(xRotation, rx, ry, cy, t) {
-    return rx * Math.sin(xRotation) * Math.cos(t) + ry * Math.cos(xRotation) * Math.sin(t) + cy;
-  },
-  xExtrema(xRotation, rx, ry) {
-    return Math.atan((-ry / rx) * Math.tan(xRotation));
-  },
-  yExtrema(xRotation, rx, ry) {
-    return Math.atan((ry / (rx * Math.tan(xRotation))));
-  },
-};

@@ -37,7 +37,8 @@
     "@antv/util": "~2.0.0",
     "@antv/path-util": "~2.0.3-beta.1",
     "@antv/gl-matrix": "~2.7.1",
-    "@antv/g-base": "~1.0.0"
+    "@antv/g-base": "~1.0.0",
+    "@antv/g-math": "~0.0.1"
   },
   "__npminstall_done": false
 }

@@ -39,7 +39,6 @@ describe('test ellipse', () => {
   });
 
   it('point at, use circle', () => {
-    // console.log();
     expect(ellipse.pointAt(0, 0, 10, 10, 0)).eqls({ x: 10, y: 0 });
     expect(equalPoint(ellipse.pointAt(0, 0, 10, 10, 0.5), { x: -10, y: 0 })).eqls(true);
     expect(equalPoint(ellipse.pointAt(0, 0, 10, 10, 0.3), circle.pointAt(0, 0, 10, 0.3))).eqls(true);
@@ -75,6 +74,12 @@ describe('test ellipse', () => {
     expect(equalPoint(p2, { x: 0, y: 5 })).eqls(true);
     expect(equalPoint(p3, { x: -10, y: 0 })).eqls(true);
     expect(equalPoint(p4, { x: 0, y: -5 })).eqls(true);
+  });
+
+  it('nearest point, exception', () => {
+    expect(ellipse.nearestPoint(100, 100, 0, 5, 20, 30)).eqls({ x: 100, y: 100 });
+    // 点在椭圆上
+    expect(equalPoint(ellipse.nearestPoint(100, 100, 20, 10, 120, 100), { x: 120, y: 100 })).eqls(true);
   });
 
   it('pointDistance', () => {

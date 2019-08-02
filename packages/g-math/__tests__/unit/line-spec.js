@@ -13,6 +13,7 @@ describe('line test', () => {
   });
 
   it('line at', () => {
+    expect(line.pointAt(10, 10, 20, 20, 0.9)).eqls({ x: 19, y: 19 });
     expect(line.pointAt(0, 0, 10, 10, 0.1)).eqls({ x: 1, y: 1 });
     expect(line.pointAt(0, 0, 10, 10, 0.5)).eqls({ x: 5, y: 5 });
     expect(line.pointAt(0, 0, 10, 10, 1)).eqls({ x: 10, y: 10 });
@@ -24,6 +25,10 @@ describe('line test', () => {
 
     expect(line.pointToLine(0, 0, 100, 0, 101, 10)).eqls(10); // 在外面上
     expect(line.pointToLine(0, 0, 100, 0, -10, 10)).eqls(10); // 在外面上
+  });
+
+  it('ditance, point in line', () => {
+    expect(line.pointDistance(10, 10, 20, 20, 19, 19)).eqls(0);
   });
 
   it('distance to line segment', () => {
@@ -41,4 +46,40 @@ describe('line test', () => {
     expect(line.tangentAngle(0, 10, 10, 10)).eqls(0);
     expect(line.tangentAngle(0, 0, -4, -4)).eqls((-3 / 4) * Math.PI);
   });
+  // 计算点到线的距离和计算点到线段的距离，性能差距在 2 - 3 倍左右
+  // xit.only('performace test', () => {
+  //   const count = 1000000;
+  //   const v = Math.random() * 100;
+  //   const v1 = Math.random() * 100;
+  //   function execute(msg, callback) {
+  //     const t = performance.now();
+  //     callback();
+  //     console.log(msg, ':', performance.now() - t);
+  //   }
+
+  //   function distanceTest(callback) {
+  //     for(let i = 0; i < count; i++) {
+  //       callback();
+  //     }
+  //   }
+
+  //   execute('distance', () => {
+  //     distanceTest(function() {
+  //       line.pointDistance(0, 0, 100, 100, 30, 40);
+  //     });
+  //   });
+
+  //   execute('point to line',() => {
+  //     distanceTest(function() {
+  //       line.pointToLine(0, 0, 100, 100, 30, 40);
+  //     })
+  //   });
+
+  //   execute('box and point to line', () => {
+  //     distanceTest(function() {
+  //       const box = line.box(0, 0, 100, 100);
+  //       line.pointDistance(0, 0, 100, 100, 30, 40);
+  //     });
+  //   });
+  // });
 });

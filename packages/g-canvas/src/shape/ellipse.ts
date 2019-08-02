@@ -5,7 +5,48 @@
 
 import ShapeBase from './base';
 
+// 暂时不需要
+// import EllipseUtil from '@antv/g-math/lib/ellipse';
+
+// 根据椭圆公式计算 x*x/rx*rx + y*y/ry*ry;
+function ellipseDistance(squareX, squareY, rx, ry) {
+  return squareX / (rx * rx) + squareY / (ry * ry);
+}
+
 class Ellipse extends ShapeBase {
+  getInnerBox(attrs) {
+    const { x, y, rx, ry } = attrs;
+    return {
+      x: x - rx,
+      y: y - ry,
+      width: rx * 2,
+      height: ry * 2,
+    };
+  }
+
+  isInStrokeOrPath(x, y, isStroke, isFill, lineWidth) {
+    const attrs = this.attr();
+    const halfLineWith = lineWidth / 2;
+    const cx = attrs.x;
+    const cy = attrs.y;
+    const { rx, ry } = attrs;
+    const squareX = (x - cx) * (x - cx);
+    const squareY = (y - cy) * (y - cy);
+    // 使用椭圆的公式： x*x/rx*rx + y*y/ry*ry = 1;
+    if (isFill && isStroke) {
+      return ellipseDistance(squareX, squareY, rx + halfLineWith, ry + halfLineWith) <= 1;
+    }
+    if (isFill) {
+      return ellipseDistance(squareX, squareY, rx, ry) <= 1;
+    }
+    if (isStroke) {
+      return (
+        ellipseDistance(squareX, squareY, rx - halfLineWith, ry - halfLineWith) >= 1 &&
+        ellipseDistance(squareX, squareY, rx + halfLineWith, ry + halfLineWith) <= 1
+      );
+    }
+    return false;
+  }
 
   createPath(context) {
     const attrs = this.attr();
@@ -19,9 +60,9 @@ class Ellipse extends ShapeBase {
       context.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2, false);
     } else {
       // 如果不支持，则使用圆来绘制，进行变形
-      const r = (rx > ry) ? rx : ry;
-      const scaleX = (rx > ry) ? 1 : rx / ry;
-      const scaleY = (rx > ry) ? ry / rx : 1;
+      const r = rx > ry ? rx : ry;
+      const scaleX = rx > ry ? 1 : rx / ry;
+      const scaleY = rx > ry ? ry / rx : 1;
       context.save();
       context.translate(cx, cy);
       context.scale(scaleX, scaleY);

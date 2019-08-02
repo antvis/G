@@ -1,7 +1,5 @@
 import { AbstractShape } from '@antv/g-base';
 import { isNil } from '../util/util';
-import BoxUtil from '../util/box';
-import HitUtil from '../util/hit';
 import { applyAttrsToContext } from '../util/draw';
 
 class ShapeBase extends AbstractShape {
@@ -17,9 +15,37 @@ class ShapeBase extends AbstractShape {
 
   calculateBBox() {
     const type = this.get('type');
-    const lineWidth = this.isStroke() ? this.getHitLineWidth() : 0;
+    const lineWidth = this.getHitLineWidth();
     const attrs = this.attr();
-    return BoxUtil.getBBox(type, attrs, lineWidth);
+    const box = this.getInnerBox(attrs);
+    const halfLineWidth = lineWidth / 2;
+    const minX = box.x - halfLineWidth;
+    const minY = box.y - halfLineWidth;
+    const maxX = box.x + box.width + halfLineWidth;
+    const maxY = box.y + box.height + halfLineWidth;
+
+    return {
+      x: minX,
+      minX,
+      y: minY,
+      minY,
+      width: box.width + lineWidth,
+      height: box.height + lineWidth,
+      maxX,
+      maxY,
+    };
+  }
+
+  /**
+   * @protected
+   */
+  getInnerBox(attrs) {
+    return {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    };
   }
 
   isFill() {
@@ -117,7 +143,16 @@ class ShapeBase extends AbstractShape {
   afterDrawPath(context: CanvasRenderingContext2D) {}
 
   isInShape(refX: number, refY: number): boolean {
-    return HitUtil.isHitShape(this, refX, refY);
+    // return HitUtil.isHitShape(this, refX, refY);
+    const isStroke = this.isStroke();
+    const isFill = this.isFill();
+    const lineWidth = this.getHitLineWidth();
+    return this.isInStrokeOrPath(refX, refY, isStroke, isFill, lineWidth);
+  }
+
+  // 之所以不拆成 isInStroke 和 isInPath 在于两者存在一些共同的计算
+  isInStrokeOrPath(x, y, isStroke, isFill, lineWidth) {
+    return false;
   }
 
   /**
@@ -125,6 +160,9 @@ class ShapeBase extends AbstractShape {
    * @returns {number} 线的拾取宽度
    */
   getHitLineWidth() {
+    if (!this.isStroke()) {
+      return 0;
+    }
     const attrs = this.attrs;
     return attrs['lineWidth'] + attrs['lineAppendWidth'];
   }
