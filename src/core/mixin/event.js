@@ -152,6 +152,15 @@ module.exports = {
         clickTimestamp = getNowTime();
       }
       if (type === 'mouseup' && e.button === LEFT_BTN_CODE) {
+        if (dragging) {
+          mousedownShape = shape;
+          dragging._cfg.capture = true;
+          this._emitEvent('dragend', e, point, dragging);
+          dragging = null;
+          this._emitEvent('drop', e, point, shape || this);
+        } else {
+          mousedownOffset = { x: e.clientX, y: e.clientY };
+        }
         const dx = mousedownOffset.x - e.clientX;
         const dy = mousedownOffset.y - e.clientY;
         const dist = dx * dx + dy * dy;
@@ -160,12 +169,6 @@ module.exports = {
         if (dist < CLICK_OFFSET || timeWindow < 200) {
           clickTimestamp = 0;
           this._emitEvent('click', e, point, mousedownShape || this);
-        }
-        if (dragging) {
-          dragging._cfg.capture = true;
-          this._emitEvent('dragend', e, point, dragging);
-          dragging = null;
-          this._emitEvent('drop', e, point, shape || this);
         }
         mousedownShape = null;
       }
