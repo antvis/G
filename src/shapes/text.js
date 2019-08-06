@@ -64,10 +64,14 @@ Util.augment(CText, {
     const attrs = this._attrs;
     const text = attrs.text;
     let textArr = null;
-    if (Util.isString(text) && (text.indexOf('\n') !== -1)) {
-      textArr = text.split('\n');
-      const lineCount = textArr.length;
-      attrs.lineCount = lineCount;
+    if (Util.isString(text)) {
+      if (text.indexOf('\n') !== -1) {
+        textArr = text.split('\n');
+        const lineCount = textArr.length;
+        attrs.lineCount = lineCount;
+      } else {
+        attrs.lineCount = 1;
+      }
     }
     attrs.textArr = textArr;
   },
