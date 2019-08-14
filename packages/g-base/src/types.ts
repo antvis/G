@@ -7,6 +7,11 @@ export type BBox = {
   height: number;
 };
 
+export type Point = {
+  x: number;
+  y: number;
+};
+
 type ColorType = string | null;
 
 export type ShapeAttrs = {
