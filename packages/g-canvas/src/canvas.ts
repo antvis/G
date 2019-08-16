@@ -1,5 +1,6 @@
 import { AbstractCanvas } from '@antv/g-base';
 import { IElement } from '@antv/g-base/lib/interfaces';
+import EventController from '@antv/g-base/lib/event/event-contoller';
 import Shape from './shape/index';
 import Group from './group';
 import { drawChildren } from './util/draw';
@@ -17,6 +18,14 @@ class Canvas extends AbstractCanvas {
 
   getPixelRatio() {
     return this.get('pixelRatio') || getPixelRatio();
+  }
+
+  initEvents() {
+    const eventController = new EventController({
+      canvas: this,
+    });
+    eventController.init();
+    this.set('eventController', eventController);
   }
 
   // 复写基类的方法生成标签
@@ -47,6 +56,12 @@ class Canvas extends AbstractCanvas {
     const context = this.get('context');
     const children = this.getChildren();
     drawChildren(context, children);
+  }
+
+  destroy() {
+    const eventController = this.get('eventController');
+    eventController.destroy();
+    super.destroy();
   }
 }
 

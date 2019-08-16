@@ -2,7 +2,7 @@
  * @fileoverview 事件处理器
  * @author dxq613@gmail.com
  */
-import GraphEvent from './event';
+import GraphEvent from './graph-event';
 import { ICanvas, IShape, IBase } from '../interfaces';
 import { each } from '../util/util';
 const TIME_INTERVAL = 120; // 判断拖拽和点击
@@ -16,8 +16,8 @@ const EVENTS = [
   'mouseout',
   'mouseover',
   'mousemove',
-  'mouseleave', // 等同于 mouseout
-  'mouseenter', // 等同于 mouseenter
+  'mouseleave',
+  'mouseenter',
   'touchstart',
   'touchmove',
   'touchend',
@@ -28,7 +28,7 @@ const EVENTS = [
   'contextmenu',
 ];
 
-// 是否是元素的子元素
+// 是否元素的父容器
 function isParent(container, shape) {
   // 所有 shape 都是 canvas 的子元素
   if (container.isCanvas()) {
@@ -180,6 +180,7 @@ class EventController {
     const point = canvas.getPointByClient(clientPoint.clientX, clientPoint.clientY);
     // 每次都获取图形有一定成本，后期可以考虑进行缓存策略
     const shape = this._getShapeByPoint(point);
+
     const pointInfo = {
       x: point.x,
       y: point.y,
@@ -190,17 +191,18 @@ class EventController {
     if (method) {
       method.call(this, pointInfo, shape, event);
     } else {
+      const preShape = this.currentShape;
       // 如果进入、移出画布时存在图形，则要分别出发事件
-      if (shape) {
-        if (type === 'mouseenter' || type === 'dragenter') {
-          this._emitEvent(type, event, pointInfo, null, null, shape); // 先进入画布
+      if (type === 'mouseenter' || type === 'dragenter' || type === 'mouseover') {
+        this._emitEvent(type, event, pointInfo, null, null, shape); // 先进入画布
+        if (shape) {
           this._emitEvent(type, event, pointInfo, shape, null, shape); // 再触发图形的事件
-        } else if (type === 'mouseleave' || type === 'dragleave') {
-          this._emitEvent(type, event, pointInfo, shape, shape, null); // 先触发图形的事件
-          this._emitEvent(type, event, pointInfo, null, shape, null); // 再触发离开画布事件
-        } else {
-          this._emitEvent(type, event, pointInfo, shape, null, null); // 一般事件中不需要考虑 from, to
         }
+      } else if (type === 'mouseleave' || type === 'dragleave' || type === 'mouseout') {
+        if (preShape) {
+          this._emitEvent(type, event, pointInfo, preShape, preShape, null); // 先触发图形的事件
+        }
+        this._emitEvent(type, event, pointInfo, null, preShape, null); // 再触发离开画布事件
       } else {
         this._emitEvent(type, event, pointInfo, shape, null, null); // 一般事件中不需要考虑 from, to
       }

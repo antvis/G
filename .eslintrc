@@ -19,7 +19,8 @@
     "ImageData": true,
     "CodeMirror": true,
     "routie": true,
-    "Clipboard": true
+    "Clipboard": true,
+    "MouseEvent": true
   },
   "parser": "babel-eslint",
   "parserOptions": {

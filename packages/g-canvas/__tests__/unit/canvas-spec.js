@@ -2,6 +2,20 @@ const expect = require('chai').expect;
 import Canvas from '../../src/canvas';
 import { getColor } from '../get-color';
 
+function simulateMouseEvent(dom, type, cfg) {
+  // esingnore
+  const event = new MouseEvent(type, cfg);
+  dom.dispatchEvent(event);
+}
+
+function getClientPoint(canvas, x, y) {
+  const point = canvas.getClientByPoint(x, y);
+  return {
+    clientX: point.x,
+    clientY: point.y,
+  };
+}
+
 const dom = document.createElement('div');
 document.body.appendChild(dom);
 dom.id = 'c1';
@@ -60,6 +74,33 @@ describe('canvas test', () => {
   });
 
   it('group width matrix', () => {});
+  it('event click', () => {
+    canvas.addShape({
+      type: 'circle',
+      attrs: {
+        x: 10,
+        y: 10,
+        r: 10,
+        fill: 'red',
+      },
+    });
+    canvas.draw();
+    let called = false;
+    canvas.on('click', () => {
+      called = true;
+    });
+    const { clientX, clientY } = getClientPoint(canvas, 10, 10);
+    simulateMouseEvent(canvas.get('el'), 'mousedown', {
+      clientX,
+      clientY,
+    });
+
+    simulateMouseEvent(canvas.get('el'), 'mouseup', {
+      clientX,
+      clientY,
+    });
+    expect(called).eql(true);
+  });
 
   it('destroy', () => {
     canvas.destroy();

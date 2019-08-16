@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-import GraphEvent from '../../src/event/event';
+import GraphEvent from '../../src/event/graph-event';
 import EventController from '../../src/event/event-contoller';
 import Canvas from '../../src/abstract/canvas';
 import Shape from '../../src/abstract/shape';
@@ -900,6 +900,10 @@ describe('test graphic events', () => {
     canvas.on('mouseout', () => {
       leaveCalled = true;
     });
+    let shapeLeaveCalled = false;
+    shape1.on('mouseout', () => {
+      shapeLeaveCalled = true;
+    });
 
     // 移动到画布外面
     const { clientX, clientY } = getClientPoint(0, 0);
@@ -926,6 +930,7 @@ describe('test graphic events', () => {
       clientY: clientY - 1,
     });
     expect(leaveCalled).eql(true);
+    expect(shapeLeaveCalled).eql(true);
     canvas.off();
   });
 
@@ -975,11 +980,16 @@ describe('test graphic events', () => {
       clientY: clientY - 1,
     });
     expect(leaveCalled).eql(true);
-    expect(leaveShape).eql(null);
+    expect(leaveShape).eql(shape1);
 
-    simulateMouseEvent(element, 'mouseleave', {
+    simulateMouseEvent(element, 'mousemove', {
       clientX: clientX + 200,
       clientY: clientY + 200,
+    });
+
+    simulateMouseEvent(element, 'mouseleave', {
+      clientX: clientX + 501,
+      clientY: clientY + 501,
     });
 
     expect(leaveShape).eql(shape4);
