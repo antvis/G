@@ -3,13 +3,17 @@ const resolve = require('path').resolve;
 
 module.exports = {
   entry: {
-    g: './src/index.js'
+    g: './src/index.ts',
   },
   output: {
     filename: '[name].js',
     library: 'G',
     libraryTarget: 'umd',
-    path: resolve(__dirname, 'build/')
+    path: resolve(__dirname, 'build/'),
+  },
+  resolve: {
+    // Add `.ts` as a resolvable extension.
+    extensions: [ '.ts', '.js' ],
   },
   module: {
     rules: [
@@ -19,14 +23,22 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            babelrc: true
-          }
-        }
-      }
-    ]
+            babelrc: true,
+          },
+        },
+      }, {
+        test: /\.ts$/,
+        use: {
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true,
+          },
+        },
+      },
+    ],
   },
   plugins: [
     new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.optimize.AggressiveMergingPlugin()
-  ]
+    new webpack.optimize.AggressiveMergingPlugin(),
+  ],
 };
