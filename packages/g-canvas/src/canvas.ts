@@ -33,12 +33,11 @@ class Canvas extends AbstractCanvas {
     const element = document.createElement('canvas');
     const pixelRatio = this.getPixelRatio();
     const context = element.getContext('2d');
+    element.width = pixelRatio * this.get('width');
+    element.height = pixelRatio * this.get('height');
     if (pixelRatio > 1) {
       context.scale(pixelRatio, pixelRatio);
     }
-
-    element.width = pixelRatio * this.get('width');
-    element.height = pixelRatio * this.get('height');
     // 缓存 context 对象
     this.set('context', context);
     return element;

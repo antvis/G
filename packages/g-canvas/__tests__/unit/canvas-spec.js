@@ -19,17 +19,17 @@ function getClientPoint(canvas, x, y) {
 const dom = document.createElement('div');
 document.body.appendChild(dom);
 dom.id = 'c1';
-describe('canvas test', () => {
+describe.only('canvas test', () => {
   const canvas = new Canvas({
     container: dom,
     width: 500,
-    pixelRatio: 1,
+    pixelRatio: 2,
     height: 500,
   });
 
   it('init', () => {
     expect(canvas.get('width')).eql(500);
-    expect(canvas.get('el').width).eql(500);
+    expect(canvas.get('el').width).eql(1000);
     expect(canvas.get('capture')).eql(true);
     expect(canvas.getChildren().length).eql(0);
   });
@@ -75,7 +75,7 @@ describe('canvas test', () => {
 
   it('group width matrix', () => {});
   it('event click', () => {
-    canvas.addShape({
+    const circle = canvas.addShape({
       type: 'circle',
       attrs: {
         x: 10,
@@ -86,8 +86,10 @@ describe('canvas test', () => {
     });
     canvas.draw();
     let called = false;
-    canvas.on('click', () => {
+    let clickShape = null;
+    canvas.on('click', (ev) => {
       called = true;
+      clickShape = ev.shape;
     });
     const { clientX, clientY } = getClientPoint(canvas, 10, 10);
     simulateMouseEvent(canvas.get('el'), 'mousedown', {
@@ -100,6 +102,7 @@ describe('canvas test', () => {
       clientY,
     });
     expect(called).eql(true);
+    expect(clickShape).eql(circle);
   });
 
   it('destroy', () => {
