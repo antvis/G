@@ -1,15 +1,18 @@
 module.exports = {
   babelrc: {
     presets: [
-      "env",
+      '@babel/env'
     ],
     sourceMaps: 'inline'
   },
-  extensions: ['.js'],
+  extensions: ['.es6', '.es', '.jsx', '.js', '.ts'],
   include: [
-    'node_modules/**/src/gl-matrix/**/*.js'
+    'src/**',
+    'lib/**',
+    '__tests__/**',
   ],
   exclude: [
-    'bower_components/**/*.js',
+    'bower_components/**',
+    'node_modules/**'
   ]
-}
+};
