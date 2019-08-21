@@ -55,6 +55,7 @@ typings/
 
 # build
 lib
+esm
 dist
 build
 

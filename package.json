@@ -9,6 +9,17 @@
     "2d draw"
   ],
   "main": "lib/index.js",
+  "module": "esm/index.js",
+  "types": "lib/index.d.ts",
+  "browser": "dist/g.min.js",
+  "files": [
+    "package.json",
+    "lib",
+    "esm",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "homepage": "https://github.com/antvis/g",
   "author": "https://github.com/orgs/antvis/people",
   "repository": {
@@ -19,20 +30,19 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "scripts": {
-    "build": "rm -rf lib && loose-tsc",
-    "dist": "rm -rf build && webpack --mode production",
-    "coverage": "npm run coverage-generator && npm run coverage-viewer",
-    "coverage-generator": "torch --coverage --compile --renderer --source-pattern src/*.js,src/**/*.js --opts __tests__/mocha.opts",
-    "coverage-viewer": "node ../torch/bin/coverage",
-    "dev": "webpack --config webpack-dev.config.js",
-    "postinstall": "npm run build",
-    "test": "npm run test-unit",
-    "test-bugs": "torch --compile --renderer --recursive __tests__/bugs/",
-    "test-bugs-live": "torch --compile --renderer --interactive --recursive ./__tests__/bugs",
+    "test": "torch --compile --renderer --opts __tests__/mocha.opts",
     "test-live": "torch --compile --renderer --interactive --opts __tests__/mocha.opts",
-    "test-unit": "torch --compile --renderer --opts __tests__/mocha.opts",
-    "tsc": "tsc --noEmit",
-    "prettier": "prettier --write './{src,__tests__}/**/*.{js,ts}'"
+    "build": "run-s clean lib",
+    "clean": "rimraf lib esm",
+    "lib": "run-p lib:*",
+    "lib:cjs": "loose-tsc -p tsconfig.json --target ES5 --module commonjs --outDir lib",
+    "lib:esm": "loose-tsc -p tsconfig.json --target ES5 --module ESNext --outDir esm",
+    "lib:umd": "webpack --config webpack.config.js --mode production",
+    "lint": "lint-staged",
+    "coverage": "exit 0",
+    "tsc": "loose-tsc --noEmit",
+    "prettier": "prettier --write './{src,__tests__}/**/*.{js,ts}'",
+    "ci": "run-s build test"
   },
   "dependencies": {
     "@antv/event-emitter": "^0.1.0",
@@ -66,7 +76,9 @@
     "git-contributor": "~1.0.8",
     "husky": "^1.3.0",
     "loose-tsc": "^0.0.1",
+    "npm-run-all": "^4.1.5",
     "prettier": "^1.18.2",
+    "rimraf": "^3.0.0",
     "source-map-support": "^0.5.9",
     "ts-loader": "^5.3.1",
     "ts-node": "^7.0.1",
@@ -76,6 +88,5 @@
     "typescript": "^3.2.2",
     "webpack": "^4.26.1",
     "webpack-cli": "^3.1.2"
-  },
-  "__npminstall_done": false
+  }
 }
