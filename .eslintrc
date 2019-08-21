@@ -1,6 +1,7 @@
 {
   "extends": [
-    "egg"
+    "egg",
+    "prettier"
   ],
   "globals": {
     "_": true,
