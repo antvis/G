@@ -6,10 +6,10 @@ module.exports = {
     g: './src/index.ts',
   },
   output: {
-    filename: '[name].js',
+    filename: '[name].min.js',
     library: 'G',
     libraryTarget: 'umd',
-    path: resolve(__dirname, 'build/'),
+    path: resolve(__dirname, 'dist/'),
   },
   resolve: {
     // Add `.ts` as a resolvable extension.
@@ -39,4 +39,5 @@ module.exports = {
     ],
   },
   plugins: [new webpack.NoEmitOnErrorsPlugin(), new webpack.optimize.AggressiveMergingPlugin()],
+  devtool: 'source-map',
 };

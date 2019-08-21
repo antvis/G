@@ -1,11 +1,12 @@
-const $ = require('jquery');
 const Simulate = require('event-simulate');
 import { expect } from 'chai';
 import * as G from '../../../src/index';
 
 describe('SVG Canvas', () => {
   const Canvas = G.Canvas;
-  $('<div id="svg-canvas"></div>').appendTo('body');
+  const div = document.createElement('div');
+  div.id = 'svg-canvas';
+  document.body.appendChild(div);
 
   describe('Canvas 容器操作', () => {
     it('new canvas', () => {

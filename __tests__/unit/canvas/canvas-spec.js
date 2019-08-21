@@ -1,10 +1,11 @@
-const $ = require('jquery');
 const Simulate = require('event-simulate');
 import { expect } from 'chai';
 import * as G from '../../../src/index';
 import { Canvas } from '../../../src/index';
 
-$('<div id="c1"></div>').appendTo('body');
+const div = document.createElement('div');
+div.id = 'c1';
+document.body.appendChild(div);
 
 describe('Canvas 容器操作', function() {
   it('new canvas', function() {

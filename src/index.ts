@@ -8,7 +8,9 @@ import Shape from './core/shape';
 import * as PathUtil from './util/path';
 import * as Shapes from './shapes';
 
-export const version = '3.4.1';
+const pkg = require('../package.json');
+
+export const version = pkg.version;
 
 export * from './shapes';
 export * from './interface';

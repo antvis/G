@@ -1,8 +1,8 @@
 node_modules
 lib
-build
-dist
 esm
+dist
+build
 coverage
 mocks
 .vscode
