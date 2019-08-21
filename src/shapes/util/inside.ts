@@ -38,30 +38,47 @@ export function polyline(points: PointType[], lineWidth: number, x: number, y: n
 }
 
 export function cubicline(
-  x1: number, y1: number,
-  x2: number, y2: number,
-  x3: number, y3: number,
-  x4: number, y4: number,
-  lineWidth: number, x: number, y: number
-): boolean{
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  x4: number,
+  y4: number,
+  lineWidth: number,
+  x: number,
+  y: number
+): boolean {
   return Cubic.pointDistance(x1, y1, x2, y2, x3, y3, x4, y4, x, y) <= lineWidth / 2;
 }
 
 export function quadraticline(
-  x1: number, y1: number,
-  x2: number, y2: number,
-  x3: number, y3: number,
-  lineWidth: number, x: number, y: number
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  lineWidth: number,
+  x: number,
+  y: number
 ): boolean {
   return Quadratic.pointDistance(x1, y1, x2, y2, x3, y3, x, y) <= lineWidth / 2;
 }
 
 export function arcline(
-  cx: number, cy: number, r: number,
-  startAngle: number, endAngle: number, clockwise: boolean,
-  lineWidth: number, x: number, y: number
+  cx: number,
+  cy: number,
+  r: number,
+  startAngle: number,
+  endAngle: number,
+  clockwise: boolean,
+  lineWidth: number,
+  x: number,
+  y: number
 ): boolean {
-  return Arc.pointDistance(cx, cy, r, startAngle, endAngle, clockwise, x, y) as number <= lineWidth / 2;
+  return (Arc.pointDistance(cx, cy, r, startAngle, endAngle, clockwise, x, y) as number) <= lineWidth / 2;
 }
 
 export function rect(rx: number, ry: number, width: number, height: number, x: number, y: number): boolean {

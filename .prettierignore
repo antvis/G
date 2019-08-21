@@ -3,4 +3,6 @@ lib
 build
 dist
 esm
+coverage
+mocks
 .vscode

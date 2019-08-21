@@ -8,7 +8,7 @@ class Clip {
   id: string;
   el: SVGClipPathElement;
   cfg: {
-    [key: string]: any
+    [key: string]: any;
   } = {};
 
   constructor(cfg) {

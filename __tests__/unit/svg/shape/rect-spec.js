@@ -261,7 +261,6 @@ describe('Rect', function() {
     rect1.attr('radius', 6);
     expect(rect1.isHit(41, 41)).to.be.false;
 
-
     const rect2 = new G.Rect({
       attrs: {
         x: 50,

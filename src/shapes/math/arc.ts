@@ -12,7 +12,7 @@ import { PointType } from '../../interface';
 const circlePoint = (cx: number, cy: number, r: number, angle: number): PointType => {
   return {
     x: Math.cos(angle) * r + cx,
-    y: Math.sin(angle) * r + cy
+    y: Math.sin(angle) * r + cy,
   };
 };
 
@@ -68,19 +68,24 @@ export const nearAngle = (angle: number, startAngle: number, endAngle: number, c
 };
 
 export const pointDistance = (
-  cx: number, cy: number, r: number,
-  startAngle: number, endAngle: number, clockwise: boolean,
-  x: number, y: number,
+  cx: number,
+  cy: number,
+  r: number,
+  startAngle: number,
+  endAngle: number,
+  clockwise: boolean,
+  x: number,
+  y: number,
   out?: boolean
 ): number | PointType => {
-  const v = [ x, y ];
-  const v0 = [ cx, cy ];
-  const v1 = [ 1, 0 ];
+  const v = [x, y];
+  const v0 = [cx, cy];
+  const v1 = [1, 0];
   const subv = Util.vec2.subtract([], v, v0);
   let angle = Util.vec2.angleTo(v1, subv);
 
   angle = nearAngle(angle, startAngle, endAngle, clockwise);
-  const vpoint = [ r * Math.cos(angle) + cx, r * Math.sin(angle) + cy ];
+  const vpoint = [r * Math.cos(angle) + cx, r * Math.sin(angle) + cy];
   if (out) {
     return {
       x: vpoint[0],
@@ -91,15 +96,18 @@ export const pointDistance = (
 };
 
 export const box = (
-  cx: number, cy: number, r: number,
-  startAngle: number, endAngle: number, clockwise: boolean
+  cx: number,
+  cy: number,
+  r: number,
+  startAngle: number,
+  endAngle: number,
+  clockwise: boolean
 ): BBox => {
   const angleRight = 0;
   const angleBottom = Math.PI / 2;
   const angleLeft = Math.PI;
-  const angleTop = Math.PI * 3 / 2;
+  const angleTop = (Math.PI * 3) / 2;
   const points = [];
-
 
   let angle = nearAngle(angleRight, startAngle, endAngle, clockwise);
   if (angle === angleRight) {
@@ -124,16 +132,21 @@ export const box = (
   points.push(circlePoint(cx, cy, r, startAngle));
   points.push(circlePoint(cx, cy, r, endAngle));
 
-  const xs = points.map(p => p.x);
-  const ys = points.map(p => p.y);
+  const xs = points.map((p) => p.x);
+  const ys = points.map((p) => p.y);
 
   return BBox.fromRange(Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys));
 };
 
 export const projectPoint = (
-  cx: number, cy: number,r: number,
-  startAngle: number, endAngle: number,
-  clockwise: boolean, x: number, y: number
+  cx: number,
+  cy: number,
+  r: number,
+  startAngle: number,
+  endAngle: number,
+  clockwise: boolean,
+  x: number,
+  y: number
 ): PointType => {
   return pointDistance(cx, cy, r, startAngle, endAngle, clockwise, x, y, true) as PointType;
 };

@@ -16,14 +16,12 @@ function drawTestGraphic(renderer) {
   });
   const l = 20;
   const gap = 20;
-  const path = [
-    [ 'M', gap, gap ],
-  ];
+  const path = [['M', gap, gap]];
   for (let index = 0; index < l; index++) {
     for (let j = 0; j < l; j++) {
       const x = index * gap + gap;
       const y = j * gap + gap;
-      path.push([ 'L', x, y ]);
+      path.push(['L', x, y]);
     }
   }
   canvas.addShape('path', {

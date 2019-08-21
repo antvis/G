@@ -1,9 +1,7 @@
 import { expect } from 'chai';
 import * as G from '../../../../src/index';
 import { Canvas } from '../../../../src/index';
-const {
-  resolve,
-} = require('path');
+const { resolve } = require('path');
 
 describe('Image', () => {
   const div = document.createElement('div');
@@ -67,7 +65,6 @@ describe('Image', () => {
     };
     img.src = resolve(process.cwd(), './__tests__/fixtures/test1.jpg'); // relative to test/unit
   });
-
 
   // todo 是否需要支持直接引用一个canvas的场景
   /* it('canvas', () => {

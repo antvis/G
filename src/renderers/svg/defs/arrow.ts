@@ -49,9 +49,11 @@ class Arrow {
     const d = this.cfg.d;
 
     if (Util.isArray(path)) {
-      path = path.map(segment => {
-        return segment.join(' ');
-      }).join('');
+      path = path
+        .map((segment) => {
+          return segment.join(' ');
+        })
+        .join('');
     }
     el.setAttribute('d', path);
     parent.appendChild(el);

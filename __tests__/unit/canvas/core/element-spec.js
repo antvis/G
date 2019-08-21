@@ -48,7 +48,7 @@ describe('Element', function() {
     const ele = new Element();
     let count = 1;
     ele.on('test', function(v1, v2) {
-      count += (v1 + v2);
+      count += v1 + v2;
     });
     ele.emit('test', 12, 13);
     expect(count).to.equal(26);

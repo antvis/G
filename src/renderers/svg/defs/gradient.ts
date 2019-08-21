@@ -5,7 +5,7 @@ import * as Util from '@antv/util';
 
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;
-const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/ig;
+const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/gi;
 
 function addStop(steps) {
   const arr = steps.match(regexColorStop);
@@ -35,46 +35,46 @@ function parseLineGradient(color, el) {
   if (angle >= 0 && angle < 0.5 * Math.PI) {
     start = {
       x: 0,
-      y: 0
+      y: 0,
     };
     end = {
       x: 1,
-      y: 1
+      y: 1,
     };
   } else if (0.5 * Math.PI <= angle && angle < Math.PI) {
     start = {
       x: 1,
-      y: 0
+      y: 0,
     };
     end = {
       x: 0,
-      y: 1
+      y: 1,
     };
   } else if (Math.PI <= angle && angle < 1.5 * Math.PI) {
     start = {
       x: 1,
-      y: 1
+      y: 1,
     };
     end = {
       x: 0,
-      y: 0
+      y: 0,
     };
   } else {
     start = {
       x: 0,
-      y: 1
+      y: 1,
     };
     end = {
       x: 1,
-      y: 0
+      y: 0,
     };
   }
 
   const tanTheta = Math.tan(angle);
   const tanTheta2 = tanTheta * tanTheta;
 
-  const x = ((end.x - start.x) + tanTheta * (end.y - start.y)) / (tanTheta2 + 1) + start.x;
-  const y = tanTheta * ((end.x - start.x) + tanTheta * (end.y - start.y)) / (tanTheta2 + 1) + start.y;
+  const x = (end.x - start.x + tanTheta * (end.y - start.y)) / (tanTheta2 + 1) + start.x;
+  const y = (tanTheta * (end.x - start.x + tanTheta * (end.y - start.y))) / (tanTheta2 + 1) + start.y;
   el.setAttribute('x1', start.x);
   el.setAttribute('y1', start.y);
   el.setAttribute('x2', x);
@@ -98,7 +98,7 @@ class Gradient {
   el: SVGGradientElement;
   id: string;
   cfg: {
-    [key: string]: any
+    [key: string]: any;
   } = {};
 
   constructor(cfg) {

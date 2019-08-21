@@ -6,7 +6,6 @@ div.id = 'canvas-clip';
 document.body.appendChild(div);
 
 describe('clip', function() {
-
   const canvas = new G.Canvas({
     containerId: 'canvas-clip',
     width: 200,
@@ -101,12 +100,7 @@ describe('clip', function() {
   it('shape ploygon', function() {
     const polygon = new G.Polygon({
       attrs: {
-        points: [
-          [ 100, 40 ],
-          [ 40, 100 ],
-          [ 100, 160 ],
-          [ 160, 100 ],
-        ],
+        points: [[100, 40], [40, 100], [100, 160], [160, 100]],
       },
     });
 
@@ -121,12 +115,12 @@ describe('clip', function() {
     const path = new G.Path({
       attrs: {
         path: [
-          [ 'M', 50, 50 ],
-          [ 'L', 100, 50 ],
-          [ 'A', 25, 25, 0, 1, 1, 100, 100 ],
-          [ 'A', 25, 25, 0, 1, 0, 100, 150 ],
-          [ 'L', 50, 150 ],
-          [ 'Z' ],
+          ['M', 50, 50],
+          ['L', 100, 50],
+          ['A', 25, 25, 0, 1, 1, 100, 100],
+          ['A', 25, 25, 0, 1, 0, 100, 150],
+          ['L', 50, 150],
+          ['Z'],
         ],
       },
     });
@@ -147,11 +141,11 @@ describe('clip', function() {
       rs: 30,
       re: 50,
       startAngle: 0,
-      endAngle: Math.PI * 2 / 3,
+      endAngle: (Math.PI * 2) / 3,
       fill: 'green',
     },
   });
-  group.add([ shape, fan ]);
+  group.add([shape, fan]);
   canvas.add(group);
 
   it('group rect', function() {
@@ -215,12 +209,7 @@ describe('clip', function() {
   it('group polygon', function() {
     const polygon = new G.Polygon({
       attrs: {
-        points: [
-          [ 120, 40 ],
-          [ 60, 100 ],
-          [ 120, 160 ],
-          [ 180, 100 ],
-        ],
+        points: [[120, 40], [60, 100], [120, 160], [180, 100]],
       },
     });
 

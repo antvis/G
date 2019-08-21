@@ -6,14 +6,14 @@ export function at(p1: number, p2: number, t: number): number {
 }
 
 export function pointDistance(x1: number, y1: number, x2: number, y2: number, x: number, y: number): number {
-  const d = [ x2 - x1, y2 - y1 ];
-  if (vec2.exactEquals(d, [ 0, 0 ])) {
+  const d = [x2 - x1, y2 - y1];
+  if (vec2.exactEquals(d, [0, 0])) {
     return NaN;
   }
 
-  const u = [ -d[1], d[0] ];
+  const u = [-d[1], d[0]];
   vec2.normalize(u, u);
-  const a = [ x - x1, y - y1 ];
+  const a = [x - x1, y - y1];
   return Math.abs(vec2.dot(a, u));
 }
 

@@ -29,7 +29,7 @@ describe('Polygon', () => {
     polygon.attr('points', []);
     expect(polygon.attr('points').length).to.equal(0);
     // expect(polygon.getBBox()).to.be.null;
-    polygon.attr('points', [ [ 30, 30 ], [ 40, 20 ], [ 30, 50 ], [ 60, 100 ] ]);
+    polygon.attr('points', [[30, 30], [40, 20], [30, 50], [60, 100]]);
     expect(polygon.attr('points').length).to.equal(4);
     let box = polygon.getBBox();
     expect(box.minX).to.equal(29.5);
@@ -39,7 +39,7 @@ describe('Polygon', () => {
 
     const polygon1 = new G.Polygon({
       attrs: {
-        points: [ [ 58, 60 ], [ 80, 190 ], [ 32, 53 ], [ 45, 32 ] ],
+        points: [[58, 60], [80, 190], [32, 53], [45, 32]],
       },
     });
     box = polygon1.getBBox();
@@ -61,7 +61,7 @@ describe('Polygon', () => {
 
     const polygon1 = new G.Polygon({
       attrs: {
-        points: [ [ 58, 60 ], [ 80, 190 ], [ 32, 53 ], [ 45, 32 ] ],
+        points: [[58, 60], [80, 190], [32, 53], [45, 32]],
         lineWidth: 2,
       },
     });
@@ -87,7 +87,7 @@ describe('Polygon', () => {
 
   const polygon2 = new G.Polygon({
     attrs: {
-      points: [ [ 31, 23 ], [ 43, 12 ], [ 53, 23 ], [ 64, 33 ] ],
+      points: [[31, 23], [43, 12], [53, 23], [64, 33]],
       lineWidth: 2,
       fill: 'r (0.3, 0.2, 0) 0:#edda2f 1:#23edfa',
     },
@@ -96,7 +96,7 @@ describe('Polygon', () => {
 
   const polygon3 = new G.Polygon({
     attrs: {
-      points: [ [ 31, 23 ], [ 43, 12 ], [ 53, 23 ], [ 64, 33 ] ],
+      points: [[31, 23], [43, 12], [53, 23], [64, 33]],
       lineWidth: 2,
       stroke: 'l (90) 0:#f0ff0f 1:#ff0e0d',
       fill: 'r (0.3, 0.2, 0) 0:#edda2f 1:#23edfa',

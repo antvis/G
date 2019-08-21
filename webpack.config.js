@@ -13,7 +13,7 @@ module.exports = {
   },
   resolve: {
     // Add `.ts` as a resolvable extension.
-    extensions: [ '.ts', '.js' ],
+    extensions: ['.ts', '.js'],
   },
   module: {
     rules: [
@@ -26,7 +26,8 @@ module.exports = {
             babelrc: true,
           },
         },
-      }, {
+      },
+      {
         test: /\.ts$/,
         use: {
           loader: 'ts-loader',
@@ -37,8 +38,5 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.optimize.AggressiveMergingPlugin(),
-  ],
+  plugins: [new webpack.NoEmitOnErrorsPlugin(), new webpack.optimize.AggressiveMergingPlugin()],
 };

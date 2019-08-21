@@ -23,17 +23,19 @@ describe('#71', () => {
         fill: 'red',
       },
     });
-    circle.animate({
-      transform: [
-        [ 't', 50, 0 ],
-      ],
-    }, 2000);
+    circle.animate(
+      {
+        transform: [['t', 50, 0]],
+      },
+      2000
+    );
     setTimeout(() => {
-      circle.animate({
-        transform: [
-          [ 't', 0, 50 ],
-        ],
-      }, 2000);
+      circle.animate(
+        {
+          transform: [['t', 0, 50]],
+        },
+        2000
+      );
 
       expect(circle.cfg.animators.length).to.equal(2);
       expect(circle.cfg.animators[0].toMatrix).to.be.undefined;
@@ -41,5 +43,4 @@ describe('#71', () => {
       done();
     }, 1000);
   });
-
 });

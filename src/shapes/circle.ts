@@ -13,7 +13,7 @@ class Circle extends Shape {
       x: 0,
       y: 0,
       r: 0,
-      lineWidth: 1
+      lineWidth: 1,
     };
   }
 
@@ -47,12 +47,7 @@ class Circle extends Shape {
     const r = attrs.r;
     const lineWidth = this.getHitLineWidth();
     const halfWidth = lineWidth / 2 + r;
-    return BBox.fromRange(
-      cx - halfWidth,
-      cy - halfWidth,
-      cx + halfWidth,
-      cy + halfWidth
-    );
+    return BBox.fromRange(cx - halfWidth, cy - halfWidth, cx + halfWidth, cy + halfWidth);
   }
 
   createPath(context: CanvasRenderingContext2D): void {

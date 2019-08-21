@@ -56,7 +56,6 @@ describe('Ellipse', () => {
     expect(ellipse.attr('ry')).to.equal(10);
   });
 
-
   it('lineWidth', () => {
     expect(ellipse.attr('lineWidth')).to.equal(1);
     ellipse.attr('lineWidth', 2);
@@ -75,7 +74,6 @@ describe('Ellipse', () => {
     expect(ellipse.attr('fill')).to.equal('l (90) 0:#959231 1:#00cd54');
     canvas.draw();
   });
-
 
   it('isHit', () => {
     new G.Ellipse({

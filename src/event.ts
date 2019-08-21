@@ -1,4 +1,3 @@
-
 import * as Util from '@antv/util';
 
 class Event {
@@ -14,7 +13,7 @@ class Event {
   currentTarget: any;
   bubbles: boolean = false;
   cancelable: boolean = false;
-  timeStamp: number = (new Date()).getTime(); // 时间戳
+  timeStamp: number = new Date().getTime(); // 时间戳
   defaultPrevented: boolean = false;
   propagationStopped: boolean = false; // 阻止冒泡
   event: any;

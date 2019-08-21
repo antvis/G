@@ -18,7 +18,7 @@ class Line extends Shape {
       y2: 0,
       lineWidth: 1,
       startArrow: false,
-      endArrow: false
+      endArrow: false,
     };
   }
 
@@ -66,7 +66,7 @@ class Line extends Shape {
     const attrs = this.attrs;
     return {
       x: LineMath.at(attrs.x1, attrs.x2, t),
-      y: LineMath.at(attrs.y1, attrs.y2, t)
+      y: LineMath.at(attrs.y1, attrs.y2, t),
     };
   }
 }

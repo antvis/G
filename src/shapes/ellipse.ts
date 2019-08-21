@@ -14,7 +14,7 @@ class Ellipse extends Shape {
       y: 0,
       rx: 1,
       ry: 1,
-      lineWidth: 1
+      lineWidth: 1,
     };
   }
 
@@ -27,18 +27,20 @@ class Ellipse extends Shape {
     const rx = attrs.rx;
     const ry = attrs.ry;
     const lineWidth = this.getHitLineWidth();
-    const r = (rx > ry) ? rx : ry;
-    const scaleX = (rx > ry) ? 1 : rx / ry;
-    const scaleY = (rx > ry) ? ry / rx : 1;
-    const p = [ x, y, 1 ];
-    const m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
-    Util.mat3.scale(m, m, [ scaleX, scaleY ]);
-    Util.mat3.translate(m, m, [ cx, cy ]);
+    const r = rx > ry ? rx : ry;
+    const scaleX = rx > ry ? 1 : rx / ry;
+    const scaleY = rx > ry ? ry / rx : 1;
+    const p = [x, y, 1];
+    const m = [1, 0, 0, 0, 1, 0, 0, 0, 1];
+    Util.mat3.scale(m, m, [scaleX, scaleY]);
+    Util.mat3.translate(m, m, [cx, cy]);
     const inm = Util.mat3.invert([], m);
     Util.vec3.transformMat3(p, p, inm);
 
     if (fill && stroke) {
-      return Inside.circle(0, 0, r, p[0], p[1]) || Inside.arcline(0, 0, r, 0, Math.PI * 2, false, lineWidth, p[0], p[1]);
+      return (
+        Inside.circle(0, 0, r, p[0], p[1]) || Inside.arcline(0, 0, r, 0, Math.PI * 2, false, lineWidth, p[0], p[1])
+      );
     }
 
     if (fill) {
@@ -60,12 +62,7 @@ class Ellipse extends Shape {
     const lineWidth = this.getHitLineWidth();
     const halfXWidth = rx + lineWidth / 2;
     const halfYWidth = ry + lineWidth / 2;
-    return BBox.fromRange(
-      cx - halfXWidth,
-      cy - halfYWidth,
-      cx + halfXWidth,
-      cy + halfYWidth
-    );
+    return BBox.fromRange(cx - halfXWidth, cy - halfYWidth, cx + halfXWidth, cy + halfYWidth);
   }
 
   createPath(context: CanvasRenderingContext2D): void {
@@ -77,13 +74,13 @@ class Ellipse extends Shape {
     const ry = attrs.ry;
 
     context = context || self.get('context');
-    const r = (rx > ry) ? rx : ry;
-    const scaleX = (rx > ry) ? 1 : rx / ry;
-    const scaleY = (rx > ry) ? ry / rx : 1;
+    const r = rx > ry ? rx : ry;
+    const scaleX = rx > ry ? 1 : rx / ry;
+    const scaleY = rx > ry ? ry / rx : 1;
 
-    const m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
-    Util.mat3.scale(m, m, [ scaleX, scaleY ]);
-    Util.mat3.translate(m, m, [ cx, cy ]);
+    const m = [1, 0, 0, 0, 1, 0, 0, 0, 1];
+    Util.mat3.scale(m, m, [scaleX, scaleY]);
+    Util.mat3.translate(m, m, [cx, cy]);
     context.beginPath();
     context.save();
     context.transform(m[0], m[1], m[3], m[4], m[6], m[7]);

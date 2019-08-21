@@ -6,7 +6,6 @@ const mat3 = Util.mat3;
 const vec3 = Util.vec3;
 
 describe('Transform', () => {
-
   it('translate and apply', () => {
     const e = new Element();
     const point = vec3.fromValues(0, 0, 1);
@@ -19,14 +18,14 @@ describe('Transform', () => {
   it('rotate', () => {
     const e = new Element();
     const point = vec3.fromValues(10, 0, 0);
-    e.rotate(45 / 180 * Math.PI);
+    e.rotate((45 / 180) * Math.PI);
     e.apply(point);
     expect(Util.isNumberEqual(point[0], 5 * Math.sqrt(2))).to.be.true;
     expect(Util.isNumberEqual(point[1], 5 * Math.sqrt(2))).to.be.true;
     e.apply(point);
     expect(Util.isNumberEqual(point[0], 0)).to.be.true;
     expect(Util.isNumberEqual(point[1], 10)).to.be.true;
-    e.rotate(-135 / 180 * Math.PI);
+    e.rotate((-135 / 180) * Math.PI);
     e.apply(point);
     expect(Util.isNumberEqual(point[0], 10)).to.be.true;
     expect(Util.isNumberEqual(point[1], 0)).to.be.true;
@@ -60,7 +59,7 @@ describe('Transform', () => {
 
   it('transform', () => {
     const e = new Element();
-    e.transform([ [ 'r', Math.PI / 2 ], [ 't', 10, 10 ], [ 'r', -Math.PI / 2 ] ]);
+    e.transform([['r', Math.PI / 2], ['t', 10, 10], ['r', -Math.PI / 2]]);
     const point = vec3.fromValues(0, 0, 1);
     e.apply(point);
     expect(Util.isNumberEqual(point[0], 10)).to.be.true;
@@ -70,7 +69,7 @@ describe('Transform', () => {
   it('setTransform and invert', () => {
     const e = new Element();
     e.translate(10, 10);
-    e.setTransform([ [ 'r', Math.PI / 2 ], [ 't', 10, 10 ], [ 'r', -Math.PI / 2 ], [ 's', 0.5, 0.3 ] ]);
+    e.setTransform([['r', Math.PI / 2], ['t', 10, 10], ['r', -Math.PI / 2], ['s', 0.5, 0.3]]);
     const point = vec3.fromValues(0, 0, 1);
     e.apply(point);
     expect(Util.isNumberEqual(point[0], 5)).to.be.true;
@@ -79,7 +78,7 @@ describe('Transform', () => {
     expect(Util.isNumberEqual(point[0], 0)).to.be.true;
     expect(Util.isNumberEqual(point[1], 0)).to.be.true;
     const e1 = new Element();
-    e1.setTransform([ [ 'm', e.attr('matrix') ] ]);
+    e1.setTransform([['m', e.attr('matrix')]]);
     e1.apply(point);
     expect(Util.isNumberEqual(point[0], 5)).to.be.true;
     expect(Util.isNumberEqual(point[1], -3)).to.be.true;
@@ -95,4 +94,3 @@ describe('Transform', () => {
     expect(mat3.exactEquals(m, m1)).to.be.true;
   });
 });
-

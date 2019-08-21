@@ -53,8 +53,8 @@ describe('CFan', function() {
   });
 
   it('endAngle', function() {
-    fan.attr('endAngle', Math.PI * 3 / 2);
-    expect(Util.isNumberEqual(fan.attr('endAngle'), Math.PI * 3 / 2)).to.be.true;
+    fan.attr('endAngle', (Math.PI * 3) / 2);
+    expect(Util.isNumberEqual(fan.attr('endAngle'), (Math.PI * 3) / 2)).to.be.true;
   });
 
   it('rs', function() {
@@ -98,4 +98,3 @@ describe('CFan', function() {
     canvas.draw();
   });
 });
-

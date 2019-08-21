@@ -19,7 +19,7 @@ class Fan extends Shape {
       startAngle: 0,
       endAngle: 0,
       clockwise: false,
-      lineWidth: 1
+      lineWidth: 1,
     };
   }
 
@@ -35,8 +35,8 @@ class Fan extends Shape {
     const startAngle = attrs.startAngle;
     const endAngle = attrs.endAngle;
     const clockwise = attrs.clockwise;
-    const v1 = [ 1, 0 ];
-    const subv = [ x - cx, y - cy ];
+    const v1 = [1, 0];
+    const subv = [x - cx, y - cy];
     const angle = Util.vec2.angleTo(v1, subv);
 
     function _isPointInFill() {
@@ -56,19 +56,19 @@ class Fan extends Shape {
 
       const ssp = {
         x: Math.cos(startAngle) * rs + cx,
-        y: Math.sin(startAngle) * rs + cy
+        y: Math.sin(startAngle) * rs + cy,
       };
       const sep = {
         x: Math.cos(startAngle) * re + cx,
-        y: Math.sin(startAngle) * re + cy
+        y: Math.sin(startAngle) * re + cy,
       };
       const esp = {
         x: Math.cos(endAngle) * rs + cx,
-        y: Math.sin(endAngle) * rs + cy
+        y: Math.sin(endAngle) * rs + cy,
       };
       const eep = {
         x: Math.cos(endAngle) * re + cx,
-        y: Math.sin(endAngle) * re + cy
+        y: Math.sin(endAngle) * re + cy,
       };
 
       if (Inside.line(ssp.x, ssp.y, sep.x, sep.y, lineWidth, x, y)) {
@@ -124,12 +124,7 @@ class Fan extends Shape {
     const maxY = Math.max(boxs.maxY, boxe.maxY);
 
     const halfWidth = lineWidth / 2;
-    return BBox.fromRange(
-      minX - halfWidth,
-      minY - halfWidth,
-      maxX + halfWidth,
-      maxY + halfWidth
-    );
+    return BBox.fromRange(minX - halfWidth, minY - halfWidth, maxX + halfWidth, maxY + halfWidth);
   }
 
   createPath(context: CanvasRenderingContext2D): void {
@@ -145,15 +140,15 @@ class Fan extends Shape {
 
     const ssp = {
       x: Math.cos(startAngle) * rs + cx,
-      y: Math.sin(startAngle) * rs + cy
+      y: Math.sin(startAngle) * rs + cy,
     };
     const sep = {
       x: Math.cos(startAngle) * re + cx,
-      y: Math.sin(startAngle) * re + cy
+      y: Math.sin(startAngle) * re + cy,
     };
     const esp = {
       x: Math.cos(endAngle) * rs + cx,
-      y: Math.sin(endAngle) * rs + cy
+      y: Math.sin(endAngle) * rs + cy,
     };
 
     context = context || self.get('context');

@@ -65,7 +65,7 @@ function _update(self, animator, ratio) {
 function update(shape, animator, elapsed) {
   const startTime = animator.startTime;
   // 如果还没有开始执行或暂停，先不更新
-  if (elapsed < (startTime + animator.delay) || animator.isPaused) {
+  if (elapsed < startTime + animator.delay || animator.isPaused) {
     return false;
   }
   let ratio;
@@ -81,9 +81,9 @@ function update(shape, animator, elapsed) {
     if (ratio < 1) {
       ratio = d3Ease[easing](ratio);
     } else {
-      if(animator.onFrame) {
+      if (animator.onFrame) {
         shape.attr(animator.onFrame(1));
-      }else{
+      } else {
         shape.attr(animator.toAttrs);
       }
       if (animator.toMatrix) {
@@ -114,10 +114,8 @@ class Timeline {
   initTimer() {
     const self = this;
     let isFinished = false;
-    let shape,
-      animators,
-      animator;
-    self.timer = d3Timer.timer(elapsed => {
+    let shape, animators, animator;
+    self.timer = d3Timer.timer((elapsed) => {
       self.current = elapsed;
       if (this.animators.length > 0) {
         for (let i = this.animators.length - 1; i >= 0; i--) {
@@ -169,7 +167,7 @@ class Timeline {
   }
 
   stopAllAnimations() {
-    this.animators.forEach(animator => {
+    this.animators.forEach((animator) => {
       animator.stopAnimate();
     });
     this.animators = [];

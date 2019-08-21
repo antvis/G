@@ -29,7 +29,7 @@ describe('Circle', () => {
     const box = circle.getBBox();
     expect(box.minX).to.equal(-0.5);
     expect(box.maxX).to.equal(0.5);
-    expect(box.minY).to.equal(-0.50);
+    expect(box.minY).to.equal(-0.5);
     expect(box.maxY).to.equal(0.5);
   });
 
@@ -102,6 +102,4 @@ describe('Circle', () => {
     canvas.add(circle);
     canvas.draw();
   });
-
 });
-

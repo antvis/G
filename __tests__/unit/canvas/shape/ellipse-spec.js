@@ -80,7 +80,6 @@ describe('Ellipse', function() {
     expect(box.maxY).to.equal(40.5);
   });
 
-
   it('lineWidth', function() {
     expect(ellipse.attr('lineWidth')).to.equal(1);
     ellipse.attr('lineWidth', 2);
@@ -104,7 +103,6 @@ describe('Ellipse', function() {
     expect(ellipse.attr('fill')).to.equal('l (90) 0:#959231 1:#00cd54');
     canvas.draw();
   });
-
 
   it('isHit', function() {
     const ellipse1 = new G.Ellipse({

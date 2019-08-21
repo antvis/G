@@ -17,7 +17,7 @@ const SHAPE_TO_TAGS = {
   ellipse: 'ellipse',
   dom: 'foreignObject',
   fan: 'path',
-  group: 'g'
+  group: 'g',
 };
 
 const LETTER_SPACING = 0.3;
@@ -55,7 +55,7 @@ const SVG_ATTR_MAP = {
   class: 'class',
   id: 'id',
   style: 'style',
-  preserveAspectRatio: 'preserveAspectRatio'
+  preserveAspectRatio: 'preserveAspectRatio',
 };
 
 const BASELINE_MAP = {
@@ -63,7 +63,7 @@ const BASELINE_MAP = {
   middle: 'central',
   bottom: 'after-edge',
   alphabetic: 'baseline',
-  hanging: 'hanging'
+  hanging: 'hanging',
 };
 
 const ANCHOR_MAP = {
@@ -71,7 +71,7 @@ const ANCHOR_MAP = {
   start: 'left',
   center: 'middle',
   right: 'end',
-  end: 'end'
+  end: 'end',
 };
 
 class Painter {
@@ -107,7 +107,8 @@ class Painter {
       });
       try {
         self._drawChildren(model);
-      } catch (ev) { // 绘制时异常，中断重绘
+      } catch (ev) {
+        // 绘制时异常，中断重绘
         console.warn('error in draw canvas, detail as:');
         console.warn(ev);
       } finally {
@@ -220,7 +221,6 @@ class Painter {
       self._updateFan(model);
     }
     if (model.type === 'marker') {
-
       model.cfg.el.setAttribute('d', self._assembleMarker(model, attrs));
     }
     if (model.type === 'rect') {
@@ -241,11 +241,11 @@ class Painter {
     const defs = this.context;
 
     // 计算marker路径
-    if ((type === 'marker' || type === 'rect') && ~[ 'x', 'y', 'radius', 'r' ].indexOf(name)) {
+    if ((type === 'marker' || type === 'rect') && ~['x', 'y', 'radius', 'r'].indexOf(name)) {
       return;
     }
     // 圆和椭圆不是x, y， 是cx, cy。 marker的x,y 用于计算marker的路径，不需要写到dom
-    if (~[ 'circle', 'ellipse' ].indexOf(type) && ~[ 'x', 'y' ].indexOf(name)) {
+    if (~['circle', 'ellipse'].indexOf(type) && ~['x', 'y'].indexOf(name)) {
       el.setAttribute('c' + name, parseInt(value, 10));
       return;
     }
@@ -255,7 +255,7 @@ class Painter {
         value = '';
       }
       if (Util.isArray(value)) {
-        value = value.map(point => point[0] + ',' + point[1]);
+        value = value.map((point) => point[0] + ',' + point[1]);
         value = value.join(' ');
       }
       el.setAttribute('points', value);
@@ -348,7 +348,7 @@ class Painter {
         parentNode.appendChild(shape);
       } else {
         const childNodes = parent.cfg.el.childNodes;
-       // svg下天然有defs作为子节点，svg下子元素index需要+1
+        // svg下天然有defs作为子节点，svg下子元素index需要+1
         if (parentNode.tagName === 'svg') {
           index += 1;
         }
@@ -377,9 +377,11 @@ class Painter {
     const d = marker._getPath();
 
     if (Util.isArray(d)) {
-      return d.map(path => {
-        return path.join(' ');
-      }).join('');
+      return d
+        .map((path) => {
+          return path.join(' ');
+        })
+        .join('');
     }
     return d;
   }
@@ -414,23 +416,25 @@ class Painter {
       r.r1 = r.r2 = r.r3 = r.r4 = radius;
     }
     const d = [
-      [ `M ${x + r.r1},${y}` ],
-      [ `l ${w - r.r1 - r.r2},0` ],
-      [ `a ${r.r2},${r.r2},0,0,1,${r.r2},${r.r2}` ],
-      [ `l 0,${h - r.r2 - r.r3}` ],
-      [ `a ${r.r3},${r.r3},0,0,1,${-r.r3},${r.r3}` ],
-      [ `l ${r.r3 + r.r4 - w},0` ],
-      [ `a ${r.r4},${r.r4},0,0,1,${-r.r4},${-r.r4}` ],
-      [ `l 0,${r.r4 + r.r1 - h}` ],
-      [ `a ${r.r1},${r.r1},0,0,1,${r.r1},${-r.r1}` ],
-      [ 'z' ]
+      [`M ${x + r.r1},${y}`],
+      [`l ${w - r.r1 - r.r2},0`],
+      [`a ${r.r2},${r.r2},0,0,1,${r.r2},${r.r2}`],
+      [`l 0,${h - r.r2 - r.r3}`],
+      [`a ${r.r3},${r.r3},0,0,1,${-r.r3},${r.r3}`],
+      [`l ${r.r3 + r.r4 - w},0`],
+      [`a ${r.r4},${r.r4},0,0,1,${-r.r4},${-r.r4}`],
+      [`l 0,${r.r4 + r.r1 - h}`],
+      [`a ${r.r1},${r.r1},0,0,1,${r.r1},${-r.r1}`],
+      ['z'],
     ];
     return d.join(' ');
   }
   _formatPath(value) {
-    value = value.map(path => {
-      return path.join(' ');
-    }).join('');
+    value = value
+      .map((path) => {
+        return path.join(' ');
+      })
+      .join('');
     if (~value.indexOf('NaN')) {
       return '';
     }
@@ -488,19 +492,19 @@ class Painter {
     function getPoint(angle, radius, center) {
       return {
         x: radius * Math.cos(angle) + center.x,
-        y: radius * Math.sin(angle) + center.y
+        y: radius * Math.sin(angle) + center.y,
       };
     }
     const attrs = model.attrs;
     const cfg = model.cfg;
     const center = {
       x: attrs.x,
-      y: attrs.y
+      y: attrs.y,
     };
     const d = [];
     const startAngle = attrs.startAngle;
     let endAngle = attrs.endAngle;
-    if (Util.isNumberEqual((endAngle - startAngle), Math.PI * 2)) {
+    if (Util.isNumberEqual(endAngle - startAngle, Math.PI * 2)) {
       endAngle -= 0.00001;
     }
     const outerStart = getPoint(startAngle, attrs.re, center);
@@ -563,13 +567,10 @@ class Painter {
 
     el.setAttribute('alignment-baseline', BASELINE_MAP[attrs.textBaseline] || 'baseline');
     el.setAttribute('text-anchor', ANCHOR_MAP[attrs.textAlign] || 'left');
-    if (fontSize && +fontSize < 12) { // 小于 12 像素的文本进行 scale 处理
-      attrs.matrix = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
-      model.transform([
-        [ 't', -attrs.x, -attrs.y ],
-        [ 's', +fontSize / 12, +fontSize / 12 ],
-        [ 't', attrs.x, attrs.y ]
-      ]);
+    if (fontSize && +fontSize < 12) {
+      // 小于 12 像素的文本进行 scale 处理
+      attrs.matrix = [1, 0, 0, 0, 1, 0, 0, 0, 1];
+      model.transform([['t', -attrs.x, -attrs.y], ['s', +fontSize / 12, +fontSize / 12], ['t', attrs.x, attrs.y]]);
     }
   }
   _setText(model, text) {
@@ -650,7 +651,7 @@ class Painter {
       dx: attrs.shadowOffsetX,
       dy: attrs.shadowOffsetY,
       blur: attrs.shadowBlur,
-      color: attrs.shadowColor
+      color: attrs.shadowColor,
     };
     if (!cfg.dx && !cfg.dy && !cfg.blur && !cfg.color) {
       el.removeAttribute('filter');

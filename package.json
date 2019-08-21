@@ -32,7 +32,7 @@
     "test-live": "torch --compile --renderer --interactive --opts __tests__/mocha.opts",
     "test-unit": "torch --compile --renderer --opts __tests__/mocha.opts",
     "tsc": "tsc --noEmit",
-    "prettier": "prettier --write './'"
+    "prettier": "prettier --write './{src,__tests__}/**/*.{js,ts}'"
   },
   "dependencies": {
     "@antv/event-emitter": "^0.1.0",

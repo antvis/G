@@ -5,12 +5,9 @@ describe('Shape', function() {
   it('clone path', () => {
     const path = new Shapes.Path({
       attrs: {
-        path: [
-          [ 'M', 5, 5 ],
-          [ 'L', 50, 50 ],
-        ],
+        path: [['M', 5, 5], ['L', 50, 50]],
         stroke: '#666',
-        lineDash: [ 1, 2, 3 ],
+        lineDash: [1, 2, 3],
         lineWidth: 4,
       },
     });
@@ -32,9 +29,7 @@ describe('Shape', function() {
     const group = new Group();
     const polygon = group.addShape('polygon', {
       attrs: {
-        points: [
-          [ 10, 10 ], [ 20, 20 ], [ 50, 50 ],
-        ],
+        points: [[10, 10], [20, 20], [50, 50]],
       },
     });
     expect(polygon.cfg.parent).not.to.be.null;

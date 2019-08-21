@@ -1,9 +1,7 @@
 import EventEmitter from '@antv/event-emitter';
 import * as Util from '@antv/util';
 import Event from '../event';
-import {
-  ElementCFG
-} from '../interface';
+import { ElementCFG } from '../interface';
 
 const PROPOGATE_EVENTS = [
   'click',
@@ -46,7 +44,7 @@ abstract class Base extends EventEmitter {
       zIndex: 0,
       ...cfg,
       ...this.getDefaultCfg(),
-    }
+    };
     return this;
   }
 
@@ -210,7 +208,7 @@ abstract class Base extends EventEmitter {
     return Util.clone(this);
   }
 
-  getBBox() {};
+  getBBox() {}
 }
 
 export default Base;

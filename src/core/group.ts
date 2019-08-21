@@ -2,9 +2,7 @@ import * as Util from '@antv/util';
 import Element from './element';
 import BBox from './bbox';
 import * as Shapes from '../shapes/index';
-import {
-  ElementCFG
-} from '../interface';
+import { ElementCFG } from '../interface';
 
 const SHAPE_MAP = {}; // 缓存图形类型
 const INDEX = '_INDEX';
@@ -64,7 +62,8 @@ class Group extends Element {
     }
     if (cfg.attrs && canvas) {
       const attrs = cfg.attrs;
-      if (type === 'text') { // 临时解决
+      if (type === 'text') {
+        // 临时解决
         const topFontFamily = canvas.get('fontFamily');
         if (topFontFamily) {
           attrs.fontFamily = attrs.fontFamily ? attrs.fontFamily : topFontFamily;
@@ -95,7 +94,7 @@ class Group extends Element {
       } else {
         rst = new param({
           canvas,
-          parent: this
+          parent: this,
         });
       }
       this.add(rst);
@@ -127,14 +126,14 @@ class Group extends Element {
       x: innerBox.x - padding[3],
       y: innerBox.y - padding[0],
       width: innerBox.width + padding[1] + padding[3],
-      height: innerBox.height + padding[0] + padding[2]
+      height: innerBox.height + padding[0] + padding[2],
     });
     if (backShape) {
       backShape.attr(attrs);
     } else {
       backShape = this.addShape('rect', {
         zIndex: -1,
-        attrs
+        attrs,
       });
     }
     this.set('backShape', backShape);
@@ -245,10 +244,10 @@ class Group extends Element {
           const tr = box.tr;
           const bl = box.bl;
           const br = box.br;
-          const leftTop = [ tl.x, tl.y, 1 ];
-          const leftBottom = [ bl.x, bl.y, 1 ];
-          const rightTop = [ tr.x, tr.y, 1 ];
-          const rightBottom = [ br.x, br.y, 1 ];
+          const leftTop = [tl.x, tl.y, 1];
+          const leftBottom = [bl.x, bl.y, 1];
+          const rightTop = [tr.x, tr.y, 1];
+          const rightBottom = [br.x, br.y, 1];
 
           child.apply(leftTop);
           child.apply(leftBottom);
@@ -283,7 +282,7 @@ class Group extends Element {
       minY = 0;
       maxY = 0;
     }
-    return new BBox(minX, minY, (maxX - minX), (maxY - minY));
+    return new BBox(minX, minY, maxX - minX, maxY - minY);
   }
 
   getCount() {
@@ -298,9 +297,11 @@ class Group extends Element {
       return child;
     });
 
-    children.sort(getComparer(function(obj1, obj2) {
-      return obj1.get('zIndex') - obj2.get('zIndex');
-    }));
+    children.sort(
+      getComparer(function(obj1, obj2) {
+        return obj1.get('zIndex') - obj2.get('zIndex');
+      })
+    );
 
     return this;
   }
@@ -405,7 +406,7 @@ class Group extends Element {
     const children = self.cfg.children;
     let rst;
     if (clip) {
-      const v = [ x, y, 1 ];
+      const v = [x, y, 1];
       clip.invert(v, self.get('canvas')); // 已经在外面转换
       if (clip.isPointInPath(v[0], v[1])) {
         rst = find(children, x, y);
@@ -452,7 +453,7 @@ class Group extends Element {
     const self = this;
     const children = self.cfg.children;
     const clone = new Group();
-    Util.each(children, child => {
+    Util.each(children, (child) => {
       clone.add(child.clone());
     });
     return clone;

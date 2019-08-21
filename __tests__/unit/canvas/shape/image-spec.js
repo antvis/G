@@ -1,9 +1,7 @@
 import { expect } from 'chai';
 import * as G from '../../../../src/index';
 import { Canvas } from '../../../../src/index';
-const {
-  resolve,
-} = require('path');
+const { resolve } = require('path');
 
 describe('Image', function() {
   const div = document.createElement('div');

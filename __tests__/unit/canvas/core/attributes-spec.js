@@ -10,7 +10,6 @@ describe('Attributes', function() {
       },
     });
 
-
     expect(e.attrs.width).to.equal(100);
     expect(e.attrs.height).to.equal(50);
   });

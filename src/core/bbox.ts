@@ -1,4 +1,3 @@
-
 import { PointType } from '../interface';
 
 export default class BBox {
@@ -23,7 +22,7 @@ export default class BBox {
   readonly top?: number;
 
   static fromRange(minX: number, minY: number, maxX: number, maxY: number) {
-    return new BBox(minX, minY, (maxX - minX), (maxY - minY));
+    return new BBox(minX, minY, maxX - minX, maxY - minY);
   }
 
   constructor(x: number = 0, y: number = 0, width: number = 0, height: number = 0) {
@@ -32,8 +31,8 @@ export default class BBox {
     this.width = width;
     this.x = this.minX = x;
     this.y = this.minY = y;
-    const maxX = this.maxX = x + width;
-    const maxY = this.maxY = y + height;
+    const maxX = (this.maxX = x + width);
+    const maxY = (this.maxY = y + height);
 
     // points
     this.tl = { x, y };

@@ -13,14 +13,4 @@ export const version = '3.4.1';
 export * from './shapes';
 export * from './interface';
 
-export {
-  BBox,
-  Canvas,
-  Element,
-  Event,
-  Group,
-  PathSegment,
-  PathUtil,
-  Shape,
-  Shapes,
-};
+export { BBox, Canvas, Element, Event, Group, PathSegment, PathUtil, Shape, Shapes };

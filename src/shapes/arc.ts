@@ -7,10 +7,10 @@ import { PointType } from '../interface';
 import BBox from '../core/bbox';
 
 function _getArcX(x: number, radius: number, angle: number): number {
-  return x + (radius * Math.cos(angle));
+  return x + radius * Math.cos(angle);
 }
 function _getArcY(y: number, radius: number, angle: number): number {
-  return y + (radius * Math.sin(angle));
+  return y + radius * Math.sin(angle);
 }
 
 class Arc extends Shape {
@@ -27,7 +27,7 @@ class Arc extends Shape {
       clockwise: false,
       lineWidth: 1,
       startArrow: false,
-      endArrow: false
+      endArrow: false,
     };
   }
 
@@ -64,8 +64,8 @@ class Arc extends Shape {
     const y1 = _getArcY(y, r, startAngle + diff);
     const x2 = _getArcX(x, r, startAngle);
     const y2 = _getArcY(y, r, startAngle);
-    result.push([ x1, y1 ]);
-    result.push([ x2, y2 ]);
+    result.push([x1, y1]);
+    result.push([x2, y2]);
     return result;
   }
 
@@ -81,12 +81,12 @@ class Arc extends Shape {
     const y1 = _getArcY(y, r, endAngle + diff);
     const x2 = _getArcX(x, r, endAngle);
     const y2 = _getArcY(y, r, endAngle);
-    result.push([ x2, y2 ]);
-    result.push([ x1, y1 ]);
+    result.push([x2, y2]);
+    result.push([x1, y1]);
     return result;
   }
 
-  createPath(context: CanvasRenderingContext2D): void{
+  createPath(context: CanvasRenderingContext2D): void {
     const attrs = this.attrs;
     const { x, y, r, startAngle, endAngle, clockwise } = attrs;
     context = context || this.get('context');
@@ -95,7 +95,7 @@ class Arc extends Shape {
     context.arc(x, y, r, startAngle, endAngle, clockwise);
   }
 
-  afterPath(context: CanvasRenderingContext2D): void{
+  afterPath(context: CanvasRenderingContext2D): void {
     const attrs = this.attrs;
     context = context || this.get('context');
 

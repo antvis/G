@@ -62,8 +62,8 @@ describe('Arc line', function() {
   });
 
   it('startAngle', function() {
-    arc.attr('startAngle', 1 / 3 * Math.PI);
-    expect(Util.isNumberEqual(arc.attr('startAngle'), 1 / 3 * Math.PI)).to.be.true;
+    arc.attr('startAngle', (1 / 3) * Math.PI);
+    expect(Util.isNumberEqual(arc.attr('startAngle'), (1 / 3) * Math.PI)).to.be.true;
     const box = arc.getBBox();
     expect(box.minX).to.equal(-20.5);
     expect(box.maxX).to.equal(40.5);
@@ -72,8 +72,8 @@ describe('Arc line', function() {
   });
 
   it('endAngle', function() {
-    arc.attr('endAngle', 120 / 180 * Math.PI);
-    expect(Util.isNumberEqual(arc.attr('endAngle'), 120 / 180 * Math.PI)).to.be.true;
+    arc.attr('endAngle', (120 / 180) * Math.PI);
+    expect(Util.isNumberEqual(arc.attr('endAngle'), (120 / 180) * Math.PI)).to.be.true;
     const box = arc.getBBox();
     expect(Util.isNumberEqual(box.minX, -5.5)).to.be.true;
     expect(Util.isNumberEqual(box.maxX, 25.5)).to.be.true;
@@ -142,7 +142,7 @@ describe('Arc line', function() {
         y: 50,
         r: 40,
         startAngle: 0,
-        endAngle: 110 / 180 * Math.PI,
+        endAngle: (110 / 180) * Math.PI,
         stroke: 'red',
       },
     });

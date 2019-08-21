@@ -7,7 +7,7 @@ const ARRAY_ATTRS = {
   matrix: 'matrix',
   path: 'path',
   points: 'points',
-  lineDash: 'lineDash'
+  lineDash: 'lineDash',
 };
 
 function _cloneArrayAttr(arr: any[]) {
@@ -78,7 +78,7 @@ class Shape extends Element {
    */
   isHit(x: number, y: number): boolean {
     const self = this;
-    const v = [ x, y, 1 ];
+    const v = [x, y, 1];
     self.invert(v); // canvas
 
     if (self.isHitBox()) {
@@ -106,7 +106,7 @@ class Shape extends Element {
    */
   calculateBox(): BBox {
     return null;
-  };
+  }
 
   // 获取拾取时线的宽度，需要考虑附加的线的宽度
   getHitLineWidth(): number {
@@ -155,7 +155,7 @@ class Shape extends Element {
       }
     });
     clone = new Shape({
-      attrs
+      attrs,
     });
     // zIndex也是绘图属性，但是在cfg中，特殊处理
     clone.cfg.zIndex = self.cfg.zIndex;

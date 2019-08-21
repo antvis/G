@@ -10,8 +10,12 @@ const DEFAULT_LENGTH = 10;
 const DEFAULT_ANGLE = PI / 3;
 
 function _addArrow(
-  ctx: CanvasRenderingContext2D, attrs: RenderAttrs,
-  x1: number, y1: number, x2: number, y2: number,
+  ctx: CanvasRenderingContext2D,
+  attrs: RenderAttrs,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
   isStart: boolean
 ): void {
   let leftX;
@@ -22,11 +26,12 @@ function _addArrow(
   let offsetY;
   let angle;
 
-  if (!attrs.fill) { // 闭合的不绘制箭头
+  if (!attrs.fill) {
+    // 闭合的不绘制箭头
     const arrowLength = attrs.arrowLength || DEFAULT_LENGTH;
     const arrowAngle = attrs.arrowAngle ? (attrs.arrowAngle * PI) / 180 : DEFAULT_ANGLE; // 转换为弧
     // Calculate angle
-    angle = atan2((y1 - y2), (x1 - x2));
+    angle = atan2(y1 - y2, x1 - x2);
     /* // Adjust angle correctly
     angle -= PI;*/
     // Calculate offset to place arrow at edge of path
@@ -37,11 +42,11 @@ function _addArrow(
       offsetY = -offsetY;
     }
     // Calculate coordinates for left half of arrow
-    leftX = x2 + (arrowLength * cos(angle + (arrowAngle / 2)));
-    leftY = y2 + (arrowLength * sin(angle + (arrowAngle / 2)));
+    leftX = x2 + arrowLength * cos(angle + arrowAngle / 2);
+    leftY = y2 + arrowLength * sin(angle + arrowAngle / 2);
     // Calculate coordinates for right half of arrow
-    rightX = x2 + (arrowLength * cos(angle - (arrowAngle / 2)));
-    rightY = y2 + (arrowLength * sin(angle - (arrowAngle / 2)));
+    rightX = x2 + arrowLength * cos(angle - arrowAngle / 2);
+    rightY = y2 + arrowLength * sin(angle - arrowAngle / 2);
     ctx.beginPath();
     // Draw left half of arrow
     ctx.moveTo(leftX - offsetX, leftY - offsetY);
@@ -63,11 +68,7 @@ function parsePath(attrs: RenderAttrs): PathSegment[] {
   const pathArray = Format.parsePath(attrs.path);
   let preSegment;
 
-  if (!Array.isArray(pathArray) ||
-    pathArray.length === 0 ||
-    (pathArray[0][0] !== 'M' &&
-      pathArray[0][0] !== 'm')
-  ) {
+  if (!Array.isArray(pathArray) || pathArray.length === 0 || (pathArray[0][0] !== 'M' && pathArray[0][0] !== 'm')) {
     return undefined;
   }
   const count = pathArray.length;
@@ -80,8 +81,12 @@ function parsePath(attrs: RenderAttrs): PathSegment[] {
 }
 
 function _addCustomizedArrow(
-  ctx: CanvasRenderingContext2D, attrs: RenderAttrs,
-  x1: number, y1: number, x2: number, y2: number,
+  ctx: CanvasRenderingContext2D,
+  attrs: RenderAttrs,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
   isStart: boolean
 ): void {
   const shape = isStart ? attrs.startArrow : attrs.endArrow;
@@ -128,8 +133,12 @@ function _addCustomizedArrow(
 }
 
 export function addStartArrow(
-  ctx: CanvasRenderingContext2D, attrs: RenderAttrs,
-  x1: number, y1: number, x2: number, y2: number
+  ctx: CanvasRenderingContext2D,
+  attrs: RenderAttrs,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number
 ): void {
   if (typeof attrs.startArrow === 'object') {
     _addCustomizedArrow(ctx, attrs, x1, y1, x2, y2, true);
@@ -139,8 +148,12 @@ export function addStartArrow(
 }
 
 export function addEndArrow(
-  ctx: CanvasRenderingContext2D, attrs: RenderAttrs,
-  x1: number, y1: number, x2: number, y2: number
+  ctx: CanvasRenderingContext2D,
+  attrs: RenderAttrs,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number
 ): void {
   if (typeof attrs.endArrow === 'object') {
     _addCustomizedArrow(ctx, attrs, x1, y1, x2, y2, false);

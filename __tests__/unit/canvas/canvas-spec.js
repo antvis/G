@@ -35,7 +35,6 @@ describe('Canvas 容器操作', function() {
     canvas.destroy();
   });
 
-
   it('clear canvas', function() {
     const canvas = new Canvas({
       containerId: 'c1',
@@ -46,7 +45,6 @@ describe('Canvas 容器操作', function() {
     expect(canvas.get('children')).to.be.an('array').that.is.empty;
     canvas.destroy();
   });
-
 });
 
 describe('拓展图形 标记 Marker', function() {
@@ -76,7 +74,6 @@ describe('拓展图形 标记 Marker', function() {
         y: 20,
         r: 10,
       },
-
     });
     canvas.draw();
   });
@@ -120,13 +117,7 @@ describe('拓展图形 标记 Marker', function() {
     canvas.addShape('Marker', {
       attrs: {
         symbol(x, y, r) {
-          return [
-            [ 'M', x - r, y ],
-            [ 'L', x, y - r * 4 ],
-            [ 'L', x + r, y ],
-            [ 'L', x, y + r ],
-            [ 'z' ],
-          ];
+          return [['M', x - r, y], ['L', x, y - r * 4], ['L', x + r, y], ['L', x, y + r], ['z']];
         },
         stroke: 'red',
         x: 90,
@@ -172,7 +163,6 @@ describe('组拓展方法', function() {
           return true;
         }
         return false;
-
       });
       expect(rect === rst[0]).to.be.true;
     });
@@ -192,7 +182,6 @@ describe('组拓展方法', function() {
     it('第N个子元素', function() {
       expect(canvas.getChildByIndex(2)).to.eql(children[2]);
       canvas.destroy();
-
     });
     canvas.draw();
   });
@@ -251,14 +240,13 @@ describe('元素拓展方法', function() {
         y: 10,
         width: 20,
         height: 20,
-        rotate: 45 / 180 * Math.PI,
+        rotate: (45 / 180) * Math.PI,
         fill: '#FED23C',
       },
     });
     canvas.draw();
-    expect(rect.attr('rotate')).to.equal(45 / 180 * Math.PI);
+    expect(rect.attr('rotate')).to.equal((45 / 180) * Math.PI);
     canvas.destroy();
-
   });
 });
 
@@ -283,11 +271,11 @@ describe('canvas 事件', function() {
       width: 50,
       height: 50,
       fill: 'black',
-      radius: [ 5, 10, 15, 20 ],
+      radius: [5, 10, 15, 20],
     },
   });
   canvas.draw();
-  it('canvas.on(\'mousedown\')', function() {
+  it("canvas.on('mousedown')", function() {
     const canvasDOM = canvas.get('el');
     const bbox = canvasDOM.getBoundingClientRect();
     let target;
@@ -302,7 +290,9 @@ describe('canvas 事件', function() {
     canvas.on('mouseenter', (e) => {
       e.target.attr('cursor', 'crosshair');
     });
-    canvas.on('mouseout', (e) => { e.target.attr('cursor', 'default'); });
+    canvas.on('mouseout', (e) => {
+      e.target.attr('cursor', 'default');
+    });
     Simulate.simulate(canvasDOM, 'mousemove', {
       clientX: bbox.left + 100,
       clientY: bbox.top + 100,

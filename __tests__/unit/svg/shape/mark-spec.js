@@ -36,6 +36,5 @@ describe('Marker', () => {
         symbol: 'diamond',
       },
     });
-
   });
 });

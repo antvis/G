@@ -146,10 +146,8 @@ describe('Text', function() {
     expect(text1.attr('fill')).to.equal('r (0.5, 0.5, 0) 0:rgb(255, 0, 255) 0.5:#dddddd');
     canvas.add(text1);
 
-
     canvas.draw();
   });
-
 
   it('fontSize', function(done) {
     expect(text.attr('fontSize')).to.equal(12);
@@ -174,7 +172,6 @@ describe('Text', function() {
       expect(text1.attr('font')).to.equal('normal normal normal 20px sans-serif');
       done();
     }, 16);
-
   });
 
   it('fontSize < 12', function() {
@@ -191,7 +188,7 @@ describe('Text', function() {
     canvas.draw();
     expect(text.attr('fontSize')).to.equal(10);
     // expect(text.attr('font')).to.equal('normal normal normal 10px sans-serif');
-    expect(text.getMatrix()).not.eql([ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
+    expect(text.getMatrix()).not.eql([1, 0, 0, 0, 1, 0, 0, 0, 1]);
   });
 
   it('fontStyle', function() {
@@ -248,7 +245,6 @@ describe('Text', function() {
     box = text.getBBox();
     expect(box.minX, 9.5);
     expect(box.maxX, 70.5);
-
 
     const text1 = new G.Text({
       attrs: {
@@ -329,7 +325,6 @@ describe('Text', function() {
     expect(text.isHit(48, 24)).to.be.false;
   });
 
-
   it('normal use', function() {
     const text = new G.Text({
       attrs: {
@@ -383,11 +378,9 @@ describe('Text', function() {
 
     expect(text4.attr('fontFamily')).to.equal('sans-serif');
   });
-
 });
 
 describe('Text \n', function() {
-
   const canvas = new Canvas({
     containerId: 'canvas-text',
     width: 200,
@@ -450,7 +443,6 @@ describe('Text \n', function() {
 });
 
 describe('Text 不存在', function() {
-
   const canvas = new Canvas({
     containerId: 'canvas-text',
     width: 200,
@@ -477,7 +469,6 @@ describe('Text 不存在', function() {
       stroke: 'red',
     },
   });
-
 
   it('text 空 "" ', function() {
     expect(text.attr('x')).to.equal(50);
