@@ -38,7 +38,7 @@ describe('svg shape diff efficiency', () => {
   it('attr diff', () => {
     const shape = group.cfg.children[0];
     shape.cfg.el.setAttribute('fill', 'blue');
-    group.setMatrix([ 1, 0, 0, 0, 1, 0, 100, 100, 0 ]);
+    group.setMatrix([1, 0, 0, 0, 1, 0, 100, 100, 0]);
     expect(group.attrs.matrix[6]).to.equal(100);
     expect(group.attrs.matrix[7]).to.equal(100);
     canvas.draw();

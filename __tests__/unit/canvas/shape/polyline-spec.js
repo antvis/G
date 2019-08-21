@@ -31,7 +31,7 @@ describe('Polyline', function() {
     expect(points.length).to.equal(0);
     let box = polyline.getBBox();
     expect(box).to.be.null;
-    polyline.attr('points', [ [ 20, 30 ], [ 50, 40 ], [ 100, 110 ], [ 130, 70 ] ]);
+    polyline.attr('points', [[20, 30], [50, 40], [100, 110], [130, 70]]);
     points = polyline.attr('points');
     expect(points.length).to.equal(4);
     box = polyline.getBBox();
@@ -42,7 +42,7 @@ describe('Polyline', function() {
 
     const polyline1 = new G.Polyline({
       attrs: {
-        points: [ [ 40, 23 ], [ 53, 64 ], [ 79, 120 ], [ 234, 56 ] ],
+        points: [[40, 23], [53, 64], [79, 120], [234, 56]],
       },
     });
     points = polyline1.attr('points');
@@ -65,7 +65,7 @@ describe('Polyline', function() {
 
     const polyline1 = new G.Polyline({
       attrs: {
-        points: [ [ 23, 12 ], [ 42, 52 ] ],
+        points: [[23, 12], [42, 52]],
         lineWidth: 2,
       },
     });
@@ -92,7 +92,7 @@ describe('Polyline', function() {
     expect(polyline.isHit(18, 29)).to.be.false;
     const polyline1 = new G.Polyline({
       attrs: {
-        points: [ [ 10, 10 ] ],
+        points: [[10, 10]],
       },
     });
     expect(polyline1.isHit(10, 10)).to.be.false;
@@ -114,4 +114,3 @@ describe('Polyline', function() {
     expect(polyline.getPoint(0)).to.eql({ x: 20, y: 30 });
   });
 });
-

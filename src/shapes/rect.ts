@@ -17,7 +17,7 @@ class Rect extends Shape {
       width: 0,
       height: 0,
       radius: 0,
-      lineWidth: 1
+      lineWidth: 1,
     };
   }
 
@@ -37,20 +37,24 @@ class Rect extends Shape {
 
       if (radius === 0) {
         const halfWidth = lineWidth / 2;
-        return Inside.line(rx - halfWidth, ry, rx + width + halfWidth, ry, lineWidth, x, y) ||
+        return (
+          Inside.line(rx - halfWidth, ry, rx + width + halfWidth, ry, lineWidth, x, y) ||
           Inside.line(rx + width, ry - halfWidth, rx + width, ry + height + halfWidth, lineWidth, x, y) ||
           Inside.line(rx + width + halfWidth, ry + height, rx - halfWidth, ry + height, lineWidth, x, y) ||
-          Inside.line(rx, ry + height + halfWidth, rx, ry - halfWidth, lineWidth, x, y);
+          Inside.line(rx, ry + height + halfWidth, rx, ry - halfWidth, lineWidth, x, y)
+        );
       }
 
-      return Inside.line(rx + radius, ry, rx + width - radius, ry, lineWidth, x, y) ||
+      return (
+        Inside.line(rx + radius, ry, rx + width - radius, ry, lineWidth, x, y) ||
         Inside.line(rx + width, ry + radius, rx + width, ry + height - radius, lineWidth, x, y) ||
         Inside.line(rx + width - radius, ry + height, rx + radius, ry + height, lineWidth, x, y) ||
         Inside.line(rx, ry + height - radius, rx, ry + radius, lineWidth, x, y) ||
         Inside.arcline(rx + width - radius, ry + radius, radius, 1.5 * Math.PI, 2 * Math.PI, false, lineWidth, x, y) ||
         Inside.arcline(rx + width - radius, ry + height - radius, radius, 0, 0.5 * Math.PI, false, lineWidth, x, y) ||
         Inside.arcline(rx + radius, ry + height - radius, radius, 0.5 * Math.PI, Math.PI, false, lineWidth, x, y) ||
-        Inside.arcline(rx + radius, ry + radius, radius, Math.PI, 1.5 * Math.PI, false, lineWidth, x, y);
+        Inside.arcline(rx + radius, ry + radius, radius, Math.PI, 1.5 * Math.PI, false, lineWidth, x, y)
+      );
     }
     if (fill && stroke) {
       return isPointInPathByContext(x, y, self) || _isPointInStroke();
@@ -76,12 +80,7 @@ class Rect extends Shape {
     const lineWidth = this.getHitLineWidth();
 
     const halfWidth = lineWidth / 2;
-    return BBox.fromRange(
-      x - halfWidth,
-      y - halfWidth,
-      x + width + halfWidth,
-      y + height + halfWidth
-    );
+    return BBox.fromRange(x - halfWidth, y - halfWidth, x + width + halfWidth, y + height + halfWidth);
   }
 
   createPath(context: CanvasRenderingContext2D): void {

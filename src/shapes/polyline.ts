@@ -17,7 +17,7 @@ class Polyline extends Shape {
       lineWidth: 1,
       startArrow: false,
       endArrow: false,
-      tCache: null
+      tCache: null,
     };
   }
 
@@ -68,12 +68,7 @@ class Polyline extends Shape {
     });
 
     const halfWidth = lineWidth / 2;
-    return BBox.fromRange(
-      minX - halfWidth,
-      minY - halfWidth,
-      maxX + halfWidth,
-      maxY + halfWidth
-    );
+    return BBox.fromRange(minX - halfWidth, minY - halfWidth, maxX + halfWidth, maxY + halfWidth);
   }
 
   _setTcache(): void {
@@ -133,8 +128,8 @@ class Polyline extends Shape {
   getStartTangent(): PointType[] {
     const points = this.attrs.points;
     const result = [];
-    result.push([ points[1][0], points[1][1] ]);
-    result.push([ points[0][0], points[0][1] ]);
+    result.push([points[1][0], points[1][1]]);
+    result.push([points[0][0], points[0][1]]);
     return result;
   }
 
@@ -142,8 +137,8 @@ class Polyline extends Shape {
     const points = this.attrs.points;
     const l = points.length - 1;
     const result = [];
-    result.push([ points[l - 1][0], points[l - 1][1] ]);
-    result.push([ points[l][0], points[l][1] ]);
+    result.push([points[l - 1][0], points[l - 1][1]]);
+    result.push([points[l][0], points[l][1]]);
     return result;
   }
 
@@ -180,7 +175,7 @@ class Polyline extends Shape {
     });
     return {
       x: LineMath.at(points[index][0], points[index + 1][0], subt),
-      y: LineMath.at(points[index][1], points[index + 1][1], subt)
+      y: LineMath.at(points[index][1], points[index + 1][1], subt),
     };
   }
 }

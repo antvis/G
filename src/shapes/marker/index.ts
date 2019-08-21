@@ -20,7 +20,7 @@ class Marker extends Shape {
       path: null,
       x: 0,
       y: 0,
-      lineWidth: 1
+      lineWidth: 1,
     };
   }
 
@@ -40,12 +40,7 @@ class Marker extends Shape {
     const r = attrs.radius;
     const lineWidth = this.getHitLineWidth();
     const halfWidth = lineWidth / 2 + r;
-    return BBox.fromRange(
-      cx - halfWidth,
-      cy - halfWidth,
-      cx + halfWidth,
-      cy + halfWidth
-    );
+    return BBox.fromRange(cx - halfWidth, cy - halfWidth, cx + halfWidth, cy + halfWidth);
   }
 
   _getPath(): any[] {
@@ -61,7 +56,8 @@ class Marker extends Shape {
       method = symbolsFactory.get(symbol);
     }
 
-    if (!method) { // 容错，防止绘制出错
+    if (!method) {
+      // 容错，防止绘制出错
       console.warn(`${method} symbol is not exist.`);
       return null;
     }

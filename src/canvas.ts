@@ -117,7 +117,7 @@ class Canvas extends Group {
       this.set('containerDOM', containerDOM);
     }
     Util.modifyCSS(containerDOM, {
-      position: 'relative'
+      position: 'relative',
     });
   }
 
@@ -180,7 +180,7 @@ class Canvas extends Group {
     const bbox = el.getBoundingClientRect();
     return {
       x: (clientX - bbox.left) * pixelRatio,
-      y: (clientY - bbox.top) * pixelRatio
+      y: (clientY - bbox.top) * pixelRatio,
     };
   }
 
@@ -190,7 +190,7 @@ class Canvas extends Group {
     const pixelRatio = this.get('pixelRatio') || 1;
     return {
       clientX: x / pixelRatio + bbox.left,
-      clientY: y / pixelRatio + bbox.top
+      clientY: y / pixelRatio + bbox.top,
     };
   }
 
@@ -228,29 +228,45 @@ class Canvas extends Group {
     const self = this;
     const el = this.get('el');
 
-    Util.each(EVENTS, evt => {
-      el.addEventListener(evt, e => {
-        self._triggerEvent(evt, e);
-      }, false);
+    Util.each(EVENTS, (evt) => {
+      el.addEventListener(
+        evt,
+        (e) => {
+          self._triggerEvent(evt, e);
+        },
+        false
+      );
     });
     // special cases
-    el.addEventListener('touchstart', e => {
-      if (!Util.isEmpty(e.targetTouches)) {
-        self._triggerEvent('touchstart', e);
-      }
-    }, false);
+    el.addEventListener(
+      'touchstart',
+      (e) => {
+        if (!Util.isEmpty(e.targetTouches)) {
+          self._triggerEvent('touchstart', e);
+        }
+      },
+      false
+    );
 
-    el.addEventListener('touchmove', e => {
-      if (!Util.isEmpty(e.targetTouches)) {
-        self._triggerEvent('touchmove', e);
-      }
-    }, false);
+    el.addEventListener(
+      'touchmove',
+      (e) => {
+        if (!Util.isEmpty(e.targetTouches)) {
+          self._triggerEvent('touchmove', e);
+        }
+      },
+      false
+    );
 
-    el.addEventListener('touchend', e => {
-      if (!Util.isEmpty(e.changedTouches)) {
-        self._triggerEvent('touchend', e);
-      }
-    }, false);
+    el.addEventListener(
+      'touchend',
+      (e) => {
+        if (!Util.isEmpty(e.changedTouches)) {
+          self._triggerEvent('touchend', e);
+        }
+      },
+      false
+    );
   }
   _getEmitter(element, event) {
     if (element) {
@@ -272,24 +288,24 @@ class Canvas extends Group {
     event.clientX = e.clientX;
     event.clientY = e.clientY;
     event.target = target;
-    event.currentTarget = this._getEmitter(target,event);
+    event.currentTarget = this._getEmitter(target, event);
     return event;
   }
 
   _getClientXY(type, e): number[] {
     if (type === 'touchstart' || type === 'touchmove') {
-      return [ e.targetTouches[0].clientX, e.targetTouches[0].clientY ];
+      return [e.targetTouches[0].clientX, e.targetTouches[0].clientY];
     }
 
     if (type === 'touchend') {
-      return [ e.changedTouches[0].clientX, e.changedTouches[0].clientY ];
+      return [e.changedTouches[0].clientX, e.changedTouches[0].clientY];
     }
 
-    return [ e.clientX, e.clientY ];
+    return [e.clientX, e.clientY];
   }
 
   _triggerEvent(type, e) {
-    const [ clientX, clientY ] = this._getClientXY(type, e);
+    const [clientX, clientY] = this._getClientXY(type, e);
 
     const point = this.getPointByClient(clientX, clientY);
     let shape = this.getShape(point.x, point.y, e);

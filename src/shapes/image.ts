@@ -16,7 +16,7 @@ class CImage extends Shape {
       sx: null,
       sy: null,
       swidth: null,
-      sheight: null
+      sheight: null,
     };
   }
 
@@ -139,22 +139,15 @@ class CImage extends Shape {
       img = new Image();
       img.src = image;
     }
-    if (img instanceof Image || (img instanceof HTMLImageElement && Util.isString(img.nodeName) && img.nodeName.toUpperCase() === 'CANVAS')) {
-      if (
-        Util.isNil(sx) ||
-        Util.isNil(sy) ||
-        Util.isNil(swidth) ||
-        Util.isNil(sheight)
-      ) {
+    if (
+      img instanceof Image ||
+      (img instanceof HTMLImageElement && Util.isString(img.nodeName) && img.nodeName.toUpperCase() === 'CANVAS')
+    ) {
+      if (Util.isNil(sx) || Util.isNil(sy) || Util.isNil(swidth) || Util.isNil(sheight)) {
         context.drawImage(img, x, y, width, height);
         return;
       }
-      if (
-        !Util.isNil(sx) &&
-        !Util.isNil(sy) &&
-        !Util.isNil(swidth) &&
-        !Util.isNil(sheight)
-      ) {
+      if (!Util.isNil(sx) && !Util.isNil(sy) && !Util.isNil(swidth) && !Util.isNil(sheight)) {
         context.drawImage(img, sx, sy, swidth, sheight, x, y, width, height);
         return;
       }

@@ -1,10 +1,6 @@
-
 import * as Util from '@antv/util';
 import Base from './base';
-import {
-  ElementAttrs,
-  ElementCFG
-} from '../interface';
+import { ElementAttrs, ElementCFG } from '../interface';
 
 // 是否未改变
 function isUnchanged(m) {
@@ -39,7 +35,7 @@ abstract class Attribute extends Base {
       opacity: 1,
       fillOpacity: 1,
       strokeOpacity: 1,
-      matrix: [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ],
+      matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1],
     };
     this.attr({
       ...this.getDefaultAttrs(),
@@ -83,8 +79,7 @@ abstract class Attribute extends Base {
     return this.attrs[name];
   }
 
-  _afterSetAttrPath(value: any) {
-  }
+  _afterSetAttrPath(value: any) {}
 
   _setAttr(name: string, value: any) {
     const attrs = this.attrs;
@@ -130,19 +125,21 @@ abstract class Attribute extends Base {
     item.cfg.renderer = this.cfg.renderer;
     item.cfg.canvas = this.cfg.canvas;
     item.cfg.parent = this.cfg.parent;
-    item.hasFill = function() { return true; };
+    item.hasFill = function() {
+      return true;
+    };
   }
 
   // transform
   initTransform() {}
 
   resetMatrix() {
-    this.attr('matrix', [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
+    this.attr('matrix', [1, 0, 0, 0, 1, 0, 0, 0, 1]);
   }
 
   translate(tx: number, ty: number) {
     const matrix = this.attrs.matrix;
-    Util.mat3.translate(matrix, matrix, [ tx, ty ]);
+    Util.mat3.translate(matrix, matrix, [tx, ty]);
     this.clearTotalMatrix();
     this.attr('matrix', matrix);
     return this;
@@ -158,7 +155,7 @@ abstract class Attribute extends Base {
 
   scale(s1: number, s2: number) {
     const matrix = this.attrs.matrix;
-    Util.mat3.scale(matrix, matrix, [ s1, s2 ]);
+    Util.mat3.scale(matrix, matrix, [s1, s2]);
     this.clearTotalMatrix();
     this.attr('matrix', matrix);
     return this;
@@ -168,13 +165,9 @@ abstract class Attribute extends Base {
     const x = this.attrs.x || 0;
     const y = this.attrs.y || 0;
     if (Math.abs(rotate) > Math.PI * 2) {
-      rotate = rotate / 180 * Math.PI;
+      rotate = (rotate / 180) * Math.PI;
     }
-    return this.transform([
-      [ 't', -x, -y ],
-      [ 'r', rotate ],
-      [ 't', x, y ]
-    ]);
+    return this.transform([['t', -x, -y], ['r', rotate], ['t', x, y]]);
   }
 
   move(x: number, y: number) {
@@ -212,7 +205,7 @@ abstract class Attribute extends Base {
   }
 
   setTransform(ts) {
-    this.attr('matrix', [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
+    this.attr('matrix', [1, 0, 0, 0, 1, 0, 0, 0, 1]);
     return this.transform(ts);
   }
 
@@ -249,7 +242,7 @@ abstract class Attribute extends Base {
     }
     parents.unshift(parent);
 
-    const m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
+    const m = [1, 0, 0, 0, 1, 0, 0, 0, 1];
     Util.each(parents, function(child) {
       Util.mat3.multiply(m, child.attr('matrix'), m);
     });
@@ -263,7 +256,7 @@ abstract class Attribute extends Base {
   getTotalMatrix() {
     let m = this.cfg.totalMatrix;
     if (!m) {
-      m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
+      m = [1, 0, 0, 0, 1, 0, 0, 0, 1];
       const parent = this.cfg.parent;
       if (parent) {
         const pm = parent.getTotalMatrix();

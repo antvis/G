@@ -1,4 +1,3 @@
-
 import { expect } from 'chai';
 import * as G from '../../../../src/index';
 import { Event, Canvas } from '../../../../src/index';
@@ -236,15 +235,16 @@ describe('Group', function() {
       zIndex: 3,
     });
 
-
     g1.add(g2);
     g1.add(e1);
     g2.add(e2);
     g2.add(e3);
 
-    expect(g1.find(function(item) {
-      return item.get('zIndex') === 3;
-    })).to.eql(e3);
+    expect(
+      g1.find(function(item) {
+        return item.get('zIndex') === 3;
+      })
+    ).to.eql(e3);
 
     expect(g1.findById('e1')).to.eql(e1);
   });
@@ -263,11 +263,10 @@ describe('Group', function() {
     expect(canvas.getShape(100, 100)).not.to.be.undefined;
     canvas.draw();
 
-    canvas.rotate(1 / 4 * Math.PI);
+    canvas.rotate((1 / 4) * Math.PI);
     canvas.draw();
     expect(canvas.getShape(0, 120)).not.to.be.undefined;
     expect(canvas.getShape(100, 100)).to.be.undefined;
-
   });
 
   it('group event', function() {
@@ -297,7 +296,7 @@ describe('Group', function() {
 
     const group = new G.Group();
 
-    group.add([ circle1, circle2, circle3, text ]);
+    group.add([circle1, circle2, circle3, text]);
 
     const children = group.get('children');
     expect(children.length).to.equal(4);

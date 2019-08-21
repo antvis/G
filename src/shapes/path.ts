@@ -19,7 +19,7 @@ class Path extends Shape {
       path: null,
       lineWidth: 1,
       startArrow: false,
-      endArrow: false
+      endArrow: false,
     };
   }
 
@@ -65,11 +65,7 @@ class Path extends Shape {
     let preSegment;
     const segments = [];
 
-    if (!Util.isArray(pathArray) ||
-      pathArray.length === 0 ||
-      (pathArray[0][0] !== 'M' &&
-        pathArray[0][0] !== 'm')
-    ) {
+    if (!Util.isArray(pathArray) || pathArray.length === 0 || (pathArray[0][0] !== 'M' && pathArray[0][0] !== 'm')) {
       return;
     }
     const count = pathArray.length;
@@ -122,7 +118,7 @@ class Path extends Shape {
     if (minX === Infinity || minY === Infinity) {
       return new BBox(0, 0, 0, 0);
     }
-    return new BBox(minX, minY, (maxX - minX), (maxY - minY));
+    return new BBox(minX, minY, maxX - minX, maxY - minY);
   }
 
   _setTcache() {
@@ -143,7 +139,16 @@ class Path extends Shape {
       segmentN = curve[i + 1];
       l = segment.length;
       if (segmentN) {
-        totalLength += CubicMath.len(segment[l - 2], segment[l - 1], segmentN[1], segmentN[2], segmentN[3], segmentN[4], segmentN[5], segmentN[6]);
+        totalLength += CubicMath.len(
+          segment[l - 2],
+          segment[l - 1],
+          segmentN[1],
+          segmentN[2],
+          segmentN[3],
+          segmentN[4],
+          segmentN[5],
+          segmentN[6]
+        );
       }
     });
 
@@ -153,7 +158,16 @@ class Path extends Shape {
       if (segmentN) {
         segmentT = [];
         segmentT[0] = tempLength / totalLength;
-        segmentL = CubicMath.len(segment[l - 2], segment[l - 1], segmentN[1], segmentN[2], segmentN[3], segmentN[4], segmentN[5], segmentN[6]);
+        segmentL = CubicMath.len(
+          segment[l - 2],
+          segment[l - 1],
+          segmentN[1],
+          segmentN[2],
+          segmentN[3],
+          segmentN[4],
+          segmentN[5],
+          segmentN[6]
+        );
         tempLength += segmentL;
         segmentT[1] = tempLength / totalLength;
         tCache.push(segmentT);
@@ -171,10 +185,7 @@ class Path extends Shape {
 
   getStartTangent(): PointType[] {
     const segments = this.get('segments');
-    let startPoint,
-      endPoint,
-      tangent,
-      result;
+    let startPoint, endPoint, tangent, result;
     if (segments.length > 1) {
       startPoint = segments[0].endPoint;
       endPoint = segments[1].endPoint;
@@ -182,11 +193,11 @@ class Path extends Shape {
       result = [];
       if (Util.isFunction(tangent)) {
         const v = tangent();
-        result.push([ startPoint.x - v[0], startPoint.y - v[1] ]);
-        result.push([ startPoint.x, startPoint.y ]);
+        result.push([startPoint.x - v[0], startPoint.y - v[1]]);
+        result.push([startPoint.x, startPoint.y]);
       } else {
-        result.push([ endPoint.x, endPoint.y ]);
-        result.push([ startPoint.x, startPoint.y ]);
+        result.push([endPoint.x, endPoint.y]);
+        result.push([startPoint.x, startPoint.y]);
       }
     }
     return result;
@@ -195,22 +206,19 @@ class Path extends Shape {
   getEndTangent(): PointType[] {
     const segments = this.get('segments');
     const segmentsLen = segments.length;
-    let startPoint,
-      endPoint,
-      tangent,
-      result;
+    let startPoint, endPoint, tangent, result;
     if (segmentsLen > 1) {
-      startPoint = segments[ segmentsLen - 2 ].endPoint;
-      endPoint = segments[ segmentsLen - 1 ].endPoint;
+      startPoint = segments[segmentsLen - 2].endPoint;
+      endPoint = segments[segmentsLen - 1].endPoint;
       tangent = segments[segmentsLen - 1].endTangent;
       result = [];
       if (Util.isFunction(tangent)) {
         const v = tangent();
-        result.push([ endPoint.x - v[0], endPoint.y - v[1] ]);
-        result.push([ endPoint.x, endPoint.y ]);
+        result.push([endPoint.x - v[0], endPoint.y - v[1]]);
+        result.push([endPoint.x, endPoint.y]);
       } else {
-        result.push([ startPoint.x, startPoint.y ]);
-        result.push([ endPoint.x, endPoint.y ]);
+        result.push([startPoint.x, startPoint.y]);
+        result.push([endPoint.x, endPoint.y]);
       }
     }
     return result;
@@ -233,7 +241,7 @@ class Path extends Shape {
       if (curve) {
         return {
           x: curve[0][1],
-          y: curve[0][2]
+          y: curve[0][2],
         };
       }
       return null;
@@ -252,7 +260,7 @@ class Path extends Shape {
     const nextSeg = curve[index + 1];
     return {
       x: CubicMath.at(seg[l - 2], nextSeg[1], nextSeg[3], nextSeg[5], 1 - subt),
-      y: CubicMath.at(seg[l - 1], nextSeg[2], nextSeg[4], nextSeg[6], 1 - subt)
+      y: CubicMath.at(seg[l - 1], nextSeg[2], nextSeg[4], nextSeg[6], 1 - subt),
     };
   }
 
@@ -272,7 +280,7 @@ class Path extends Shape {
     }
   }
 
-  afterPath(context: CanvasRenderingContext2D):void {
+  afterPath(context: CanvasRenderingContext2D): void {
     const self = this;
     const attrs = self.attrs;
     const segments = self.get('segments');
@@ -287,7 +295,8 @@ class Path extends Shape {
     if (!attrs.startArrow && !attrs.endArrow) {
       return;
     }
-    if (path[path.length - 1] === 'z' || path[path.length - 1] === 'Z' || attrs.fill) { // 闭合路径不绘制箭头
+    if (path[path.length - 1] === 'z' || path[path.length - 1] === 'Z' || attrs.fill) {
+      // 闭合路径不绘制箭头
       return;
     }
     const startPoints = self.getStartTangent();

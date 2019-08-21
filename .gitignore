@@ -76,5 +76,4 @@ temp.diff
 !packages/demos/src/dist
 
 # ignore dist files
-g2.min.js*
 .vscode/

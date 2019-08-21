@@ -1,4 +1,3 @@
-
 export interface ElementCFG {
   zIndex?: number;
   capture?: boolean;

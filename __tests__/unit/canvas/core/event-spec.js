@@ -26,9 +26,15 @@ const rect = subGroup.addShape('rect', {
 canvas.draw();
 describe('event emitter', () => {
   let count = 0;
-  const fn1 = () => { count++; };
-  const fn2 = () => { count++; };
-  const fn3 = () => { count++; };
+  const fn1 = () => {
+    count++;
+  };
+  const fn2 = () => {
+    count++;
+  };
+  const fn3 = () => {
+    count++;
+  };
   it('on & emit & off', () => {
     const path = new G.Path();
     path.on('event', fn1);

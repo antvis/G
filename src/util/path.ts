@@ -1,7 +1,11 @@
 import * as _ from '@antv/util';
 
-const SPACES = '\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029';
-const PATH_COMMAND = new RegExp('([a-z])[' + SPACES + ',]*((-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?[' + SPACES + ']*,?[' + SPACES + ']*)+)', 'ig');
+const SPACES =
+  '\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029';
+const PATH_COMMAND = new RegExp(
+  '([a-z])[' + SPACES + ',]*((-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?[' + SPACES + ']*,?[' + SPACES + ']*)+)',
+  'ig'
+);
 const PATH_VALUES = new RegExp('(-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?)[' + SPACES + ']*,?[' + SPACES + ']*', 'ig');
 
 // Parses given path string into an array of arrays of path segments
@@ -26,7 +30,7 @@ const parsePathString = function(pathString) {
     t: 2,
     v: 1,
     u: 3,
-    z: 0
+    z: 0,
   };
   const data = [];
 
@@ -37,18 +41,18 @@ const parsePathString = function(pathString) {
       b && params.push(+b);
     });
     if (name === 'm' && params.length > 2) {
-      data.push([ b ].concat(params.splice(0, 2)));
+      data.push([b].concat(params.splice(0, 2)));
       name = 'l';
       b = b === 'm' ? 'l' : 'L';
     }
     if (name === 'o' && params.length === 1) {
-      data.push([ b, params[0] ]);
+      data.push([b, params[0]]);
     }
     if (name === 'r') {
-      data.push([ b ].concat(params));
+      data.push([b].concat(params));
     } else {
       while (params.length >= paramCounts[name]) {
-        data.push([ b ].concat(params.splice(0, paramCounts[name])));
+        data.push([b].concat(params.splice(0, paramCounts[name])));
         if (!paramCounts[name]) {
           break;
         }
@@ -65,38 +69,43 @@ const catmullRomToBezier = function(crp, z) {
   const d = [];
   // @ts-ignore
   for (let i = 0, iLen = crp.length; iLen - 2 * !z > i; i += 2) {
-    const p = [{
-      x: +crp[i - 2],
-      y: +crp[i - 1]
-    }, {
-      x: +crp[i],
-      y: +crp[i + 1]
-    }, {
-      x: +crp[i + 2],
-      y: +crp[i + 3]
-    }, {
-      x: +crp[i + 4],
-      y: +crp[i + 5]
-    }];
+    const p = [
+      {
+        x: +crp[i - 2],
+        y: +crp[i - 1],
+      },
+      {
+        x: +crp[i],
+        y: +crp[i + 1],
+      },
+      {
+        x: +crp[i + 2],
+        y: +crp[i + 3],
+      },
+      {
+        x: +crp[i + 4],
+        y: +crp[i + 5],
+      },
+    ];
     if (z) {
       if (!i) {
         p[0] = {
           x: +crp[iLen - 2],
-          y: +crp[iLen - 1]
+          y: +crp[iLen - 1],
         };
       } else if (iLen - 4 === i) {
         p[3] = {
           x: +crp[0],
-          y: +crp[1]
+          y: +crp[1],
         };
       } else if (iLen - 2 === i) {
         p[2] = {
           x: +crp[0],
-          y: +crp[1]
+          y: +crp[1],
         };
         p[3] = {
           x: +crp[2],
-          y: +crp[3]
+          y: +crp[3],
         };
       }
     } else {
@@ -105,17 +114,18 @@ const catmullRomToBezier = function(crp, z) {
       } else if (!i) {
         p[0] = {
           x: +crp[i],
-          y: +crp[i + 1]
+          y: +crp[i + 1],
         };
       }
     }
-    d.push([ 'C',
+    d.push([
+      'C',
       (-p[0].x + 6 * p[1].x + p[2].x) / 6,
       (-p[0].y + 6 * p[1].y + p[2].y) / 6,
       (p[1].x + 6 * p[2].x - p[3].x) / 6,
       (p[1].y + 6 * p[2].y - p[3].y) / 6,
       p[2].x,
-      p[2].y
+      p[2].y,
     ]);
   }
 
@@ -137,18 +147,9 @@ const ellipsePath = function(x, y, rx, ry, a?) {
     const x2 = x + rx * Math.cos(-a * rad);
     const y1 = y + rx * Math.sin(-ry * rad);
     const y2 = y + rx * Math.sin(-a * rad);
-    res = [
-      [ 'M', x1, y1 ],
-      [ 'A', rx, rx, 0, +(a - ry > 180), 0, x2, y2 ]
-    ];
+    res = [['M', x1, y1], ['A', rx, rx, 0, +(a - ry > 180), 0, x2, y2]];
   } else {
-    res = [
-      [ 'M', x, y ],
-      [ 'm', 0, -ry ],
-      [ 'a', rx, ry, 0, 1, 1, 0, 2 * ry ],
-      [ 'a', rx, ry, 0, 1, 1, 0, -2 * ry ],
-      [ 'z' ]
-    ];
+    res = [['M', x, y], ['m', 0, -ry], ['a', rx, ry, 0, 1, 1, 0, 2 * ry], ['a', rx, ry, 0, 1, 1, 0, -2 * ry], ['z']];
   }
   return res;
 };
@@ -157,9 +158,7 @@ const pathToAbsolute = function(pathArray) {
   pathArray = parsePathString(pathArray);
 
   if (!pathArray || !pathArray.length) {
-    return [
-      [ 'M', 0, 0 ]
-    ];
+    return [['M', 0, 0]];
   }
   let res = [];
   let x = 0;
@@ -175,14 +174,15 @@ const pathToAbsolute = function(pathArray) {
     mx = x;
     my = y;
     start++;
-    res[0] = [ 'M', x, y ];
+    res[0] = ['M', x, y];
   }
-  const crz = pathArray.length === 3 &&
+  const crz =
+    pathArray.length === 3 &&
     pathArray[0][0] === 'M' &&
     pathArray[1][0].toUpperCase() === 'R' &&
     pathArray[2][0].toUpperCase() === 'Z';
   for (let r, pa, i = start, ii = pathArray.length; i < ii; i++) {
-    res.push(r = []);
+    res.push((r = []));
     pa = pathArray[i];
     pa0 = pa[0];
     if (pa0 !== pa0.toUpperCase()) {
@@ -204,7 +204,7 @@ const pathToAbsolute = function(pathArray) {
           r[1] = +pa[1] + x;
           break;
         case 'R':
-          dots = [ x, y ].concat(pa.slice(1));
+          dots = [x, y].concat(pa.slice(1));
           for (let j = 2, jj = dots.length; j < jj; j++) {
             dots[j] = +dots[j] + x;
             dots[++j] = +dots[j] + y;
@@ -221,7 +221,7 @@ const pathToAbsolute = function(pathArray) {
         case 'U':
           res.pop();
           res = res.concat(ellipsePath(x, y, pa[1], pa[2], pa[3]));
-          r = [ 'U' ].concat(res[res.length - 1].slice(-2));
+          r = ['U'].concat(res[res.length - 1].slice(-2));
           break;
         case 'M':
           mx = +pa[1] + x;
@@ -229,14 +229,14 @@ const pathToAbsolute = function(pathArray) {
           break; // for lint
         default:
           for (let j = 1, jj = pa.length; j < jj; j++) {
-            r[j] = +pa[j] + ((j % 2) ? x : y);
+            r[j] = +pa[j] + (j % 2 ? x : y);
           }
       }
     } else if (pa0 === 'R') {
-      dots = [ x, y ].concat(pa.slice(1));
+      dots = [x, y].concat(pa.slice(1));
       res.pop();
       res = res.concat(catmullRomToBezier(dots, crz));
-      r = [ 'R' ].concat(pa.slice(-2));
+      r = ['R'].concat(pa.slice(-2));
     } else if (pa0 === 'O') {
       res.pop();
       dots = ellipsePath(x, y, pa[1], pa[2]);
@@ -245,7 +245,7 @@ const pathToAbsolute = function(pathArray) {
     } else if (pa0 === 'U') {
       res.pop();
       res = res.concat(ellipsePath(x, y, pa[1], pa[2], pa[3]));
-      r = [ 'U' ].concat(res[res.length - 1].slice(-2));
+      r = ['U'].concat(res[res.length - 1].slice(-2));
     } else {
       for (let k = 0, kk = pa.length; k < kk; k++) {
         r[k] = pa[k];
@@ -279,20 +279,13 @@ const pathToAbsolute = function(pathArray) {
 };
 
 const l2c = function(x1, y1, x2, y2) {
-  return [ x1, y1, x2, y2, x2, y2 ];
+  return [x1, y1, x2, y2, x2, y2];
 };
 
 const q2c = function(x1, y1, ax, ay, x2, y2) {
   const _13 = 1 / 3;
   const _23 = 2 / 3;
-  return [
-    _13 * x1 + _23 * ax,
-    _13 * y1 + _23 * ay,
-    _13 * x2 + _23 * ax,
-    _13 * y2 + _23 * ay,
-    x2,
-    y2
-  ];
+  return [_13 * x1 + _23 * ax, _13 * y1 + _23 * ay, _13 * x2 + _23 * ax, _13 * y2 + _23 * ay, x2, y2];
 };
 
 const a2c = function(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, recursive) {
@@ -302,8 +295,8 @@ const a2c = function(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, 
     rx += 1;
   }
 
-  const _120 = Math.PI * 120 / 180;
-  const rad = Math.PI / 180 * (+angle || 0);
+  const _120 = (Math.PI * 120) / 180;
+  const rad = (Math.PI / 180) * (+angle || 0);
   let res = [];
   let xy;
   let f1;
@@ -315,7 +308,7 @@ const a2c = function(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, 
     const Y = x * Math.sin(rad) + y * Math.cos(rad);
     return {
       x: X,
-      y: Y
+      y: Y,
     };
   };
   if (!recursive) {
@@ -325,7 +318,8 @@ const a2c = function(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, 
     xy = rotate(x2, y2, -rad);
     x2 = xy.x;
     y2 = xy.y;
-    if (x1 === x2 && y1 === y2) { // 若弧的起始点和终点重叠则错开一点
+    if (x1 === x2 && y1 === y2) {
+      // 若弧的起始点和终点重叠则错开一点
       x2 += 1;
       y2 += 1;
     }
@@ -341,10 +335,11 @@ const a2c = function(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, 
     }
     const rx2 = rx * rx;
     const ry2 = ry * ry;
-    const k = (large_arc_flag === sweep_flag ? -1 : 1) *
+    const k =
+      (large_arc_flag === sweep_flag ? -1 : 1) *
       Math.sqrt(Math.abs((rx2 * ry2 - rx2 * y * y - ry2 * x * x) / (rx2 * y * y + ry2 * x * x)));
-    cx = k * rx * y / ry + (x1 + x2) / 2;
-    cy = k * -ry * x / rx + (y1 + y2) / 2;
+    cx = (k * rx * y) / ry + (x1 + x2) / 2;
+    cy = (k * -ry * x) / rx + (y1 + y2) / 2;
     // @ts-ignore
     f1 = Math.asin(((y1 - cy) / ry).toFixed(9));
     // @ts-ignore
@@ -374,7 +369,7 @@ const a2c = function(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, 
     f2 = f1 + _120 * (sweep_flag && f2 > f1 ? 1 : -1);
     x2 = cx + rx * Math.cos(f2);
     y2 = cy + ry * Math.sin(f2);
-    res = a2c(x2, y2, rx, ry, angle, 0, sweep_flag, x2old, y2old, [ f2, f2old, cx, cy ]);
+    res = a2c(x2, y2, rx, ry, angle, 0, sweep_flag, x2old, y2old, [f2, f2old, cx, cy]);
   }
   df = f2 - f1;
   const c1 = Math.cos(f1);
@@ -382,24 +377,26 @@ const a2c = function(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, 
   const c2 = Math.cos(f2);
   const s2 = Math.sin(f2);
   const t = Math.tan(df / 4);
-  const hx = 4 / 3 * rx * t;
-  const hy = 4 / 3 * ry * t;
-  const m1 = [ x1, y1 ];
-  const m2 = [ x1 + hx * s1, y1 - hy * c1 ];
-  const m3 = [ x2 + hx * s2, y2 - hy * c2 ];
-  const m4 = [ x2, y2 ];
+  const hx = (4 / 3) * rx * t;
+  const hy = (4 / 3) * ry * t;
+  const m1 = [x1, y1];
+  const m2 = [x1 + hx * s1, y1 - hy * c1];
+  const m3 = [x2 + hx * s2, y2 - hy * c2];
+  const m4 = [x2, y2];
   m2[0] = 2 * m1[0] - m2[0];
   m2[1] = 2 * m1[1] - m2[1];
   if (recursive) {
-    return [ m2, m3, m4 ].concat(res);
+    return [m2, m3, m4].concat(res);
   }
-  res = [ m2, m3, m4 ].concat(res).join().split(',');
+  res = [m2, m3, m4]
+    .concat(res)
+    .join()
+    .split(',');
   const newres = [];
   for (let i = 0, ii = res.length; i < ii; i++) {
     newres[i] = i % 2 ? rotate(res[i - 1], res[i], rad).y : rotate(res[i], res[i + 1], rad).x;
   }
   return newres;
-
 };
 
 const pathTocurve = function(path, path2?) {
@@ -413,7 +410,7 @@ const pathTocurve = function(path, path2?) {
     X: 0,
     Y: 0,
     qx: null,
-    qy: null
+    qy: null,
   };
   const attrs2 = {
     x: 0,
@@ -423,7 +420,7 @@ const pathTocurve = function(path, path2?) {
     X: 0,
     Y: 0,
     qx: null,
-    qy: null
+    qy: null,
   };
   const pcoms1 = []; // path commands of original path p
   const pcoms2 = []; // path commands of original path p2
@@ -431,58 +428,65 @@ const pathTocurve = function(path, path2?) {
   let pcom = ''; // holder for previous path command of original path
   let ii;
   const processPath = function(path, d, pcom) {
-    let nx,
-      ny;
+    let nx, ny;
     if (!path) {
-      return [ 'C', d.x, d.y, d.x, d.y, d.x, d.y ];
-    }!(path[0] in {
-      T: 1,
-      Q: 1
-    }) && (d.qx = d.qy = null);
+      return ['C', d.x, d.y, d.x, d.y, d.x, d.y];
+    }
+    !(
+      path[0] in
+      {
+        T: 1,
+        Q: 1,
+      }
+    ) && (d.qx = d.qy = null);
     switch (path[0]) {
       case 'M':
         d.X = path[1];
         d.Y = path[2];
         break;
       case 'A':
-        path = [ 'C' ].concat(a2c.apply(0, [ d.x, d.y ].concat(path.slice(1))));
+        path = ['C'].concat(a2c.apply(0, [d.x, d.y].concat(path.slice(1))));
         break;
       case 'S':
-        if (pcom === 'C' || pcom === 'S') { // In "S" case we have to take into account, if the previous command is C/S.
+        if (pcom === 'C' || pcom === 'S') {
+          // In "S" case we have to take into account, if the previous command is C/S.
           nx = d.x * 2 - d.bx; // And reflect the previous
           ny = d.y * 2 - d.by; // command's control point relative to the current point.
-        } else { // or some else or nothing
+        } else {
+          // or some else or nothing
           nx = d.x;
           ny = d.y;
         }
-        path = [ 'C', nx, ny ].concat(path.slice(1));
+        path = ['C', nx, ny].concat(path.slice(1));
         break;
       case 'T':
-        if (pcom === 'Q' || pcom === 'T') { // In "T" case we have to take into account, if the previous command is Q/T.
+        if (pcom === 'Q' || pcom === 'T') {
+          // In "T" case we have to take into account, if the previous command is Q/T.
           d.qx = d.x * 2 - d.qx; // And make a reflection similar
           d.qy = d.y * 2 - d.qy; // to case "S".
-        } else { // or something else or nothing
+        } else {
+          // or something else or nothing
           d.qx = d.x;
           d.qy = d.y;
         }
-        path = [ 'C' ].concat(q2c(d.x, d.y, d.qx, d.qy, path[1], path[2]));
+        path = ['C'].concat(q2c(d.x, d.y, d.qx, d.qy, path[1], path[2]));
         break;
       case 'Q':
         d.qx = path[1];
         d.qy = path[2];
-        path = [ 'C' ].concat(q2c(d.x, d.y, path[1], path[2], path[3], path[4]));
+        path = ['C'].concat(q2c(d.x, d.y, path[1], path[2], path[3], path[4]));
         break;
       case 'L':
-        path = [ 'C' ].concat(l2c(d.x, d.y, path[1], path[2]));
+        path = ['C'].concat(l2c(d.x, d.y, path[1], path[2]));
         break;
       case 'H':
-        path = [ 'C' ].concat(l2c(d.x, d.y, path[1], d.y));
+        path = ['C'].concat(l2c(d.x, d.y, path[1], d.y));
         break;
       case 'V':
-        path = [ 'C' ].concat(l2c(d.x, d.y, d.x, path[1]));
+        path = ['C'].concat(l2c(d.x, d.y, d.x, path[1]));
         break;
       case 'Z':
-        path = [ 'C' ].concat(l2c(d.x, d.y, d.X, d.Y));
+        path = ['C'].concat(l2c(d.x, d.y, d.X, d.Y));
         break;
       default:
         break;
@@ -496,28 +500,28 @@ const pathTocurve = function(path, path2?) {
       while (pi.length) {
         pcoms1[i] = 'A'; // if created multiple C:s, their original seg is saved
         p2 && (pcoms2[i] = 'A'); // the same as above
-        pp.splice(i++, 0, [ 'C' ].concat(pi.splice(0, 6)));
+        pp.splice(i++, 0, ['C'].concat(pi.splice(0, 6)));
       }
       pp.splice(i, 1);
-      ii = Math.max(p.length, p2 && p2.length || 0);
+      ii = Math.max(p.length, (p2 && p2.length) || 0);
     }
   };
   const fixM = function(path1, path2, a1, a2, i) {
     if (path1 && path2 && path1[i][0] === 'M' && path2[i][0] !== 'M') {
-      path2.splice(i, 0, [ 'M', a2.x, a2.y ]);
+      path2.splice(i, 0, ['M', a2.x, a2.y]);
       a1.bx = 0;
       a1.by = 0;
       a1.x = path1[i][1];
       a1.y = path1[i][2];
-      ii = Math.max(p.length, p2 && p2.length || 0);
+      ii = Math.max(p.length, (p2 && p2.length) || 0);
     }
   };
-  ii = Math.max(p.length, p2 && p2.length || 0);
+  ii = Math.max(p.length, (p2 && p2.length) || 0);
   for (let i = 0; i < ii; i++) {
-
     p[i] && (pfirst = p[i][0]); // save current path command
 
-    if (pfirst !== 'C') { // C is not saved yet, because it may be result of conversion
+    if (pfirst !== 'C') {
+      // C is not saved yet, because it may be result of conversion
       pcoms1[i] = pfirst; // Save current path command
       i && (pcom = pcoms1[i - 1]); // Get previous path command pcom
     }
@@ -529,7 +533,8 @@ const pathTocurve = function(path, path2?) {
 
     fixArc(p, i); // fixArc adds also the right amount of A:s to pcoms1
 
-    if (p2) { // the same procedures is done to p2
+    if (p2) {
+      // the same procedures is done to p2
       p2[i] && (pfirst = p2[i][0]);
       if (pfirst !== 'C') {
         pcoms2[i] = pfirst;
@@ -559,7 +564,7 @@ const pathTocurve = function(path, path2?) {
     attrs2.y = p2 && seg2[seg2len - 1];
   }
 
-  return p2 ? [ p, p2 ] : p;
+  return p2 ? [p, p2] : p;
 };
 
 const p2s = /,?([a-z]),?/gi;
@@ -580,8 +585,21 @@ const bezlen = function(x1, y1, x2, y2, x3, y3, x4, y4, z) {
   z = z > 1 ? 1 : z < 0 ? 0 : z;
   const z2 = z / 2;
   const n = 12;
-  const Tvalues = [ -0.1252, 0.1252, -0.3678, 0.3678, -0.5873, 0.5873, -0.7699, 0.7699, -0.9041, 0.9041, -0.9816, 0.9816 ];
-  const Cvalues = [ 0.2491, 0.2491, 0.2335, 0.2335, 0.2032, 0.2032, 0.1601, 0.1601, 0.1069, 0.1069, 0.0472, 0.0472 ];
+  const Tvalues = [
+    -0.1252,
+    0.1252,
+    -0.3678,
+    0.3678,
+    -0.5873,
+    0.5873,
+    -0.7699,
+    0.7699,
+    -0.9041,
+    0.9041,
+    -0.9816,
+    0.9816,
+  ];
+  const Cvalues = [0.2491, 0.2491, 0.2335, 0.2335, 0.2032, 0.2032, 0.1601, 0.1601, 0.1069, 0.1069, 0.0472, 0.0472];
   let sum = 0;
   for (let i = 0; i < n; i++) {
     const ct = z2 * Tvalues[i] + z2;
@@ -595,10 +613,7 @@ const bezlen = function(x1, y1, x2, y2, x3, y3, x4, y4, z) {
 
 const curveDim = function(x0, y0, x1, y1, x2, y2, x3, y3) {
   const tvalues = [];
-  const bounds = [
-    [],
-    []
-  ];
+  const bounds = [[], []];
   let a;
   let b;
   let c;
@@ -645,8 +660,8 @@ const curveDim = function(x0, y0, x1, y1, x2, y2, x3, y3) {
   while (j--) {
     t = tvalues[j];
     mt = 1 - t;
-    bounds[0][j] = (mt * mt * mt * x0) + (3 * mt * mt * t * x1) + (3 * mt * t * t * x2) + (t * t * t * x3);
-    bounds[1][j] = (mt * mt * mt * y0) + (3 * mt * mt * t * y1) + (3 * mt * t * t * y2) + (t * t * t * y3);
+    bounds[0][j] = mt * mt * mt * x0 + 3 * mt * mt * t * x1 + 3 * mt * t * t * x2 + t * t * t * x3;
+    bounds[1][j] = mt * mt * mt * y0 + 3 * mt * mt * t * y1 + 3 * mt * t * t * y2 + t * t * t * y3;
   }
 
   bounds[0][jlen] = x0;
@@ -655,16 +670,15 @@ const curveDim = function(x0, y0, x1, y1, x2, y2, x3, y3) {
   bounds[1][jlen + 1] = y3;
   bounds[0].length = bounds[1].length = jlen + 2;
 
-
   return {
     min: {
       x: Math.min.apply(0, bounds[0]),
-      y: Math.min.apply(0, bounds[1])
+      y: Math.min.apply(0, bounds[1]),
     },
     max: {
       x: Math.max.apply(0, bounds[0]),
-      y: Math.max.apply(0, bounds[1])
-    }
+      y: Math.max.apply(0, bounds[1]),
+    },
   };
 };
 
@@ -702,39 +716,30 @@ const intersect = function(x1, y1, x2, y2, x3, y3, x4, y4) {
   }
   return {
     x: px,
-    y: py
+    y: py,
   };
 };
 
 const isPointInsideBBox = function(bbox, x, y) {
-  return x >= bbox.x &&
-    x <= bbox.x + bbox.width &&
-    y >= bbox.y &&
-    y <= bbox.y + bbox.height;
+  return x >= bbox.x && x <= bbox.x + bbox.width && y >= bbox.y && y <= bbox.y + bbox.height;
 };
 
 const rectPath = function(x, y, w, h, r?) {
   if (r) {
     return [
-      [ 'M', +x + (+r), y ],
-      [ 'l', w - r * 2, 0 ],
-      [ 'a', r, r, 0, 0, 1, r, r ],
-      [ 'l', 0, h - r * 2 ],
-      [ 'a', r, r, 0, 0, 1, -r, r ],
-      [ 'l', r * 2 - w, 0 ],
-      [ 'a', r, r, 0, 0, 1, -r, -r ],
-      [ 'l', 0, r * 2 - h ],
-      [ 'a', r, r, 0, 0, 1, r, -r ],
-      [ 'z' ]
+      ['M', +x + +r, y],
+      ['l', w - r * 2, 0],
+      ['a', r, r, 0, 0, 1, r, r],
+      ['l', 0, h - r * 2],
+      ['a', r, r, 0, 0, 1, -r, r],
+      ['l', r * 2 - w, 0],
+      ['a', r, r, 0, 0, 1, -r, -r],
+      ['l', 0, r * 2 - h],
+      ['a', r, r, 0, 0, 1, r, -r],
+      ['z'],
     ];
   }
-  const res = [
-    [ 'M', x, y ],
-    [ 'l', w, 0 ],
-    [ 'l', 0, h ],
-    [ 'l', -w, 0 ],
-    [ 'z' ]
-  ];
+  const res = [['M', x, y], ['l', w, 0], ['l', 0, h], ['l', -w, 0], ['z']];
   // @ts-ignore
   res.parsePathArray = parsePathArray;
   return res;
@@ -765,27 +770,33 @@ const box = function(x?, y?, width?, height?) {
     r2: Math.max(width, height) / 2,
     r0: Math.sqrt(width * width + height * height) / 2,
     path: rectPath(x, y, width, height),
-    vb: [ x, y, width, height ].join(' ')
+    vb: [x, y, width, height].join(' '),
   };
 };
 
 const isBBoxIntersect = function(bbox1, bbox2) {
   bbox1 = box(bbox1);
   bbox2 = box(bbox2);
-  return isPointInsideBBox(bbox2, bbox1.x, bbox1.y) || isPointInsideBBox(bbox2, bbox1.x2, bbox1.y) || isPointInsideBBox(bbox2, bbox1.x, bbox1.y2) || isPointInsideBBox(bbox2, bbox1.x2, bbox1.y2) || isPointInsideBBox(bbox1, bbox2.x, bbox2.y) || isPointInsideBBox(bbox1, bbox2.x2, bbox2.y) || isPointInsideBBox(bbox1, bbox2.x, bbox2.y2) || isPointInsideBBox(bbox1, bbox2.x2, bbox2.y2) || (bbox1.x < bbox2.x2 && bbox1.x > bbox2.x || bbox2.x < bbox1.x2 && bbox2.x > bbox1.x) && (bbox1.y < bbox2.y2 && bbox1.y > bbox2.y || bbox2.y < bbox1.y2 && bbox2.y > bbox1.y);
+  return (
+    isPointInsideBBox(bbox2, bbox1.x, bbox1.y) ||
+    isPointInsideBBox(bbox2, bbox1.x2, bbox1.y) ||
+    isPointInsideBBox(bbox2, bbox1.x, bbox1.y2) ||
+    isPointInsideBBox(bbox2, bbox1.x2, bbox1.y2) ||
+    isPointInsideBBox(bbox1, bbox2.x, bbox2.y) ||
+    isPointInsideBBox(bbox1, bbox2.x2, bbox2.y) ||
+    isPointInsideBBox(bbox1, bbox2.x, bbox2.y2) ||
+    isPointInsideBBox(bbox1, bbox2.x2, bbox2.y2) ||
+    (((bbox1.x < bbox2.x2 && bbox1.x > bbox2.x) || (bbox2.x < bbox1.x2 && bbox2.x > bbox1.x)) &&
+      ((bbox1.y < bbox2.y2 && bbox1.y > bbox2.y) || (bbox2.y < bbox1.y2 && bbox2.y > bbox1.y)))
+  );
 };
 
 const bezierBBox = function(p1x, p1y?, c1x?, c1y?, c2x?, c2y?, p2x?, p2y?) {
   if (!_.isArray(p1x)) {
-    p1x = [ p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y ];
+    p1x = [p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y];
   }
   const bbox = curveDim.apply(null, p1x);
-  return box(
-    bbox.min.x,
-    bbox.min.y,
-    bbox.max.x - bbox.min.x,
-    bbox.max.y - bbox.min.y
-  );
+  return box(bbox.min.x, bbox.min.y, bbox.max.x - bbox.min.x, bbox.max.y - bbox.min.y);
 };
 
 const findDotsAtSegment = function(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
@@ -804,28 +815,28 @@ const findDotsAtSegment = function(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
   const ay = t1 * p1y + t * c1y;
   const cx = t1 * c2x + t * p2x;
   const cy = t1 * c2y + t * p2y;
-  const alpha = (90 - Math.atan2(mx - nx, my - ny) * 180 / Math.PI);
+  const alpha = 90 - (Math.atan2(mx - nx, my - ny) * 180) / Math.PI;
   // (mx > nx || my < ny) && (alpha += 180);
   return {
     x,
     y,
     m: {
       x: mx,
-      y: my
+      y: my,
     },
     n: {
       x: nx,
-      y: ny
+      y: ny,
     },
     start: {
       x: ax,
-      y: ay
+      y: ay,
     },
     end: {
       x: cx,
-      y: cy
+      y: cy,
     },
-    alpha
+    alpha,
   };
 };
 
@@ -848,7 +859,7 @@ const interHelper = function(bez1, bez2, justCount) {
     dots1.push({
       x: d.x,
       y: d.y,
-      t: i / n1
+      t: i / n1,
     });
   }
   for (let i = 0; i < n2 + 1; i++) {
@@ -856,7 +867,7 @@ const interHelper = function(bez1, bez2, justCount) {
     dots2.push({
       x: d.x,
       y: d.y,
-      t: i / n2
+      t: i / n2,
     });
   }
   for (let i = 0; i < n1; i++) {
@@ -885,7 +896,7 @@ const interHelper = function(bez1, bez2, justCount) {
               x: is.x,
               y: is.y,
               t1,
-              t2
+              t2,
             });
           }
         }
@@ -916,11 +927,11 @@ const interPathHelper = function(path1, path2, justCount?) {
       y1 = y1m = pi[2];
     } else {
       if (pi[0] === 'C') {
-        bez1 = [ x1, y1 ].concat(pi.slice(1));
+        bez1 = [x1, y1].concat(pi.slice(1));
         x1 = bez1[6];
         y1 = bez1[7];
       } else {
-        bez1 = [ x1, y1, x1, y1, x1m, y1m, x1m, y1m ];
+        bez1 = [x1, y1, x1, y1, x1m, y1m, x1m, y1m];
         x1 = x1m;
         y1 = y1m;
       }
@@ -931,11 +942,11 @@ const interPathHelper = function(path1, path2, justCount?) {
           y2 = y2m = pj[2];
         } else {
           if (pj[0] === 'C') {
-            bez2 = [ x2, y2 ].concat(pj.slice(1));
+            bez2 = [x2, y2].concat(pj.slice(1));
             x2 = bez2[6];
             y2 = bez2[7];
           } else {
-            bez2 = [ x2, y2, x2, y2, x2m, y2m, x2m, y2m ];
+            bez2 = [x2, y2, x2, y2, x2m, y2m, x2m, y2m];
             x2 = x2m;
             y2 = y2m;
           }
@@ -982,7 +993,10 @@ function decasteljau(points, t) {
         if (i === points.length - 2) {
           right.push(points[i + 1]);
         }
-        middlePoints[i] = [ (1 - t) * points[i][0] + t * points[i + 1][0], (1 - t) * points[i][1] + t * points[i + 1][1] ];
+        middlePoints[i] = [
+          (1 - t) * points[i][0] + t * points[i + 1][0],
+          (1 - t) * points[i][1] + t * points[i + 1][1],
+        ];
       }
       recurse(middlePoints, t);
     }
@@ -994,21 +1008,21 @@ function decasteljau(points, t) {
 }
 
 function splitCurve(start, end, count) {
-  const points = [[ start[1], start[2] ]];
+  const points = [[start[1], start[2]]];
   count = count || 2;
   const segments = [];
   if (end[0] === 'A') {
     points.push(end[6]);
     points.push(end[7]);
   } else if (end[0] === 'C') {
-    points.push([ end[1], end[2] ]);
-    points.push([ end[3], end[4] ]);
-    points.push([ end[5], end[6] ]);
+    points.push([end[1], end[2]]);
+    points.push([end[3], end[4]]);
+    points.push([end[5], end[6]]);
   } else if (end[0] === 'S' || end[0] === 'Q') {
-    points.push([ end[1], end[2] ]);
-    points.push([ end[3], end[4] ]);
+    points.push([end[1], end[2]]);
+    points.push([end[3], end[4]]);
   } else {
-    points.push([ end[1], end[2] ]);
+    points.push([end[1], end[2]]);
   }
 
   let leftSegments = points;
@@ -1021,7 +1035,7 @@ function splitCurve(start, end, count) {
     leftSegments = split.right;
   }
   segments.push(leftSegments);
-  const result = segments.map(segment => {
+  const result = segments.map((segment) => {
     let cmd = [];
     if (segment.length === 4) {
       cmd.push('C');
@@ -1044,7 +1058,7 @@ function splitCurve(start, end, count) {
 
 const splitSegment = function(start, end, count) {
   if (count === 1) {
-    return [ [].concat(start) ];
+    return [[].concat(start)];
   }
   let segments = [];
   if (end[0] === 'L' || end[0] === 'C' || end[0] === 'Q') {
@@ -1118,7 +1132,7 @@ function getMinDiff(del, add, modify) {
   }
   return {
     type,
-    min
+    min,
   };
 }
 
@@ -1129,8 +1143,7 @@ function getMinDiff(del, add, modify) {
 const levenshteinDistance = function(source, target) {
   const sourceLen = source.length;
   const targetLen = target.length;
-  let sourceSegment,
-    targetSegment;
+  let sourceSegment, targetSegment;
   let temp = 0;
   if (sourceLen === 0 || targetLen === 0) {
     return null;
@@ -1222,9 +1235,12 @@ function _splitPoints(points, former, count) {
     t *= i;
     index = Math.floor(points.length * t);
     if (index === 0) {
-      result.unshift([ formerEnd[0] * t + points[index][0] * (1 - t), formerEnd[1] * t + points[index][1] * (1 - t) ]);
+      result.unshift([formerEnd[0] * t + points[index][0] * (1 - t), formerEnd[1] * t + points[index][1] * (1 - t)]);
     } else {
-      result.splice(index, 0, [ formerEnd[0] * t + points[index][0] * (1 - t), formerEnd[1] * t + points[index][1] * (1 - t) ]);
+      result.splice(index, 0, [
+        formerEnd[0] * t + points[index][0] * (1 - t),
+        formerEnd[1] * t + points[index][1] * (1 - t),
+      ]);
     }
   }
   return result;
@@ -1240,38 +1256,37 @@ function _getSegmentPoints(segment) {
   const points = [];
   switch (segment[0]) {
     case 'M':
-      points.push([ segment[1], segment[2] ]);
+      points.push([segment[1], segment[2]]);
       break;
     case 'L':
-      points.push([ segment[1], segment[2] ]);
+      points.push([segment[1], segment[2]]);
       break;
     case 'A':
-      points.push([ segment[6], segment[7] ]);
+      points.push([segment[6], segment[7]]);
       break;
     case 'Q':
-      points.push([ segment[3], segment[4] ]);
-      points.push([ segment[1], segment[2] ]);
+      points.push([segment[3], segment[4]]);
+      points.push([segment[1], segment[2]]);
       break;
     case 'T':
-      points.push([ segment[1], segment[2] ]);
+      points.push([segment[1], segment[2]]);
       break;
     case 'C':
-      points.push([ segment[5], segment[6] ]);
-      points.push([ segment[1], segment[2] ]);
-      points.push([ segment[3], segment[4] ]);
+      points.push([segment[5], segment[6]]);
+      points.push([segment[1], segment[2]]);
+      points.push([segment[3], segment[4]]);
       break;
     case 'S':
-      points.push([ segment[3], segment[4] ]);
-      points.push([ segment[1], segment[2] ]);
+      points.push([segment[3], segment[4]]);
+      points.push([segment[1], segment[2]]);
       break;
     case 'H':
-      points.push([ segment[1], segment[1] ]);
+      points.push([segment[1], segment[1]]);
       break;
     case 'V':
-      points.push([ segment[1], segment[1] ]);
+      points.push([segment[1], segment[1]]);
       break;
     default:
-
   }
   return points;
 }
@@ -1287,10 +1302,10 @@ const formatPath = function(fromPath, toPath) {
       points = _getSegmentPoints(fromPath[i]);
       switch (toPath[i][0]) {
         case 'M':
-          fromPath[i] = [ 'M' ].concat(points[0]);
+          fromPath[i] = ['M'].concat(points[0]);
           break;
         case 'L':
-          fromPath[i] = [ 'L' ].concat(points[0]);
+          fromPath[i] = ['L'].concat(points[0]);
           break;
         case 'A':
           fromPath[i] = [].concat(toPath[i]);
@@ -1306,10 +1321,14 @@ const formatPath = function(fromPath, toPath) {
               break;
             }
           }
-          fromPath[i] = [ 'Q' ].concat(points.reduce((arr, i) => { return arr.concat(i); }, []));
+          fromPath[i] = ['Q'].concat(
+            points.reduce((arr, i) => {
+              return arr.concat(i);
+            }, [])
+          );
           break;
         case 'T':
-          fromPath[i] = [ 'T' ].concat(points[0]);
+          fromPath[i] = ['T'].concat(points[0]);
           break;
         case 'C':
           if (points.length < 3) {
@@ -1320,7 +1339,11 @@ const formatPath = function(fromPath, toPath) {
               break;
             }
           }
-          fromPath[i] = [ 'C' ].concat(points.reduce((arr, i) => { return arr.concat(i); }, []));
+          fromPath[i] = ['C'].concat(
+            points.reduce((arr, i) => {
+              return arr.concat(i);
+            }, [])
+          );
           break;
         case 'S':
           if (points.length < 2) {
@@ -1331,7 +1354,11 @@ const formatPath = function(fromPath, toPath) {
               break;
             }
           }
-          fromPath[i] = [ 'S' ].concat(points.reduce((arr, i) => { return arr.concat(i); }, []));
+          fromPath[i] = ['S'].concat(
+            points.reduce((arr, i) => {
+              return arr.concat(i);
+            }, [])
+          );
           break;
         default:
           fromPath[i] = toPath[i];
@@ -1346,7 +1373,7 @@ export {
   fillPath,
   fillPathByDiff,
   formatPath,
-  intersection ,
+  intersection,
   parsePathArray,
   parsePathString,
   pathToAbsolute,

@@ -153,7 +153,6 @@ describe('Text', () => {
     canvas.draw();
   });
 
-
   it('fontSize', () => {
     expect(text.attr('fontSize')).to.equal(12);
     // expect(text.attr('font')).to.equal('normal normal normal 12px Arial');
@@ -187,7 +186,7 @@ describe('Text', () => {
     });
     expect(text.attr('fontSize')).to.equal(10);
     // expect(text.attr('font')).to.equal('normal normal normal 10px sans-serif');
-    expect(text.getMatrix()).not.eql([ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]);
+    expect(text.getMatrix()).not.eql([1, 0, 0, 0, 1, 0, 0, 0, 1]);
     canvas.add(text);
     canvas.draw();
   });
@@ -377,11 +376,9 @@ describe('Text', () => {
 
     expect(text4.attr('fontFamily')).to.equal('sans-serif');
   });
-
 });
 
 describe('Text \n', () => {
-
   const canvas = new Canvas({
     containerId: 'canvas-text',
     width: 200,
@@ -410,7 +407,6 @@ describe('Text \n', () => {
     },
   });
 
-
   it('text /n', () => {
     expect(text.attr('x')).to.equal(50);
     expect(text.attr('y')).to.equal(50);
@@ -432,7 +428,6 @@ describe('Text \n', () => {
 });
 
 describe('Text 不存在', () => {
-
   const canvas = new Canvas({
     containerId: 'canvas-text',
     width: 200,

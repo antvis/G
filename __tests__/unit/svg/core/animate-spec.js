@@ -20,11 +20,14 @@ describe('animate', () => {
         r: 10,
       },
     });
-    shape.animate({
-      x: 100,
-      y: 100,
-      repeat: true,
-    }, 2000);
+    shape.animate(
+      {
+        x: 100,
+        y: 100,
+        repeat: true,
+      },
+      2000
+    );
   });
   it('start animate', (done) => {
     let called = false;
@@ -36,12 +39,16 @@ describe('animate', () => {
         r: 10,
       },
     });
-    shape.animate({
-      x: 100,
-      y: 100,
-    }, 500, () => {
-      called = true;
-    });
+    shape.animate(
+      {
+        x: 100,
+        y: 100,
+      },
+      500,
+      () => {
+        called = true;
+      }
+    );
 
     expect(shape.attr('x')).equal(0);
     setTimeout(() => {
@@ -65,12 +72,17 @@ describe('animate', () => {
       },
     });
     canvas.draw('svg');
-    shape.animate({
-      x: 200,
-      width: 20,
-    }, 500, () => {
-      called = true;
-    }, 1000);
+    shape.animate(
+      {
+        x: 200,
+        width: 20,
+      },
+      500,
+      () => {
+        called = true;
+      },
+      1000
+    );
     setTimeout(() => {
       expect(shape.attr('x')).equal(10);
       expect(called).equal(false);
@@ -129,10 +141,13 @@ describe('animate', () => {
     });
     canvas.draw();
     shape.set('animating', true);
-    clip.animate({
-      r: 20,
-      repeat: true,
-    }, 1000);
+    clip.animate(
+      {
+        r: 20,
+        repeat: true,
+      },
+      1000
+    );
 
     setTimeout(() => {
       shape.stopAnimate();
@@ -193,7 +208,7 @@ describe('animate', () => {
         fill: 'red',
       },
     });
-    shape.animate({ transform: [ [ 't', -20, -20 ], [ 's', 2, 2 ], [ 't', 20, 20 ] ]}, 1000);
+    shape.animate({ transform: [['t', -20, -20], ['s', 2, 2], ['t', 20, 20]] }, 1000);
     setTimeout(() => {
       expect(shape.getMatrix()[0], 2);
       expect(shape.getMatrix()[4], 2);

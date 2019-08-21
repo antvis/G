@@ -10,10 +10,14 @@ export function at(p0: number, p1: number, p2: number, t: number): number {
 }
 
 export function pointDistance(
-  x1: number, y1: number,
-  x2: number, y2: number,
-  x3: number, y3: number,
-  x: number, y: number,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  x: number,
+  y: number,
   out?: boolean
 ): PointType | number {
   let t;
@@ -26,12 +30,9 @@ export function pointDistance(
   let d2;
   let i;
 
-  const v0 = [ x, y ];
+  const v0 = [x, y];
   for (_t = 0; _t < 1; _t += 0.05) {
-    v1 = [
-      at(x1, x2, x3, _t),
-      at(y1, y2, y3, _t)
-    ];
+    v1 = [at(x1, x2, x3, _t), at(y1, y2, y3, _t)];
 
     d1 = vec2.squaredDistance(v0, v1);
     if (d1 < d) {
@@ -49,10 +50,7 @@ export function pointDistance(
     const prev = t - interval;
     const next = t + interval;
 
-    v1 = [
-      at(x1, x2, x3, prev),
-      at(y1, y2, y3, prev)
-    ];
+    v1 = [at(x1, x2, x3, prev), at(y1, y2, y3, prev)];
 
     d1 = vec2.squaredDistance(v0, v1);
 
@@ -60,10 +58,7 @@ export function pointDistance(
       t = prev;
       d = d1;
     } else {
-      v2 = [
-        at(x1, x2, x3, next),
-        at(y1, y2, y3, next)
-      ];
+      v2 = [at(x1, x2, x3, next), at(y1, y2, y3, next)];
 
       d2 = vec2.squaredDistance(v0, v2);
 
@@ -80,30 +75,33 @@ export function pointDistance(
     return {
       x: at(x1, x2, x3, t),
       y: at(y1, y2, y3, t),
-    }
+    };
   }
 
   return Math.sqrt(d);
 }
 
-
 export function extrema(p0: number, p1: number, p2: number): number[] {
   const a = p0 + p2 - 2 * p1;
   if (Util.isNumberEqual(a, 0)) {
-    return [ 0.5 ];
+    return [0.5];
   }
   const rst = (p0 - p1) / a;
   if (rst <= 1 && rst >= 0) {
-    return [ rst ];
+    return [rst];
   }
   return [];
 }
 
 export function projectPoint(
-  x1: number, y1: number,
-  x2: number, y2: number,
-  x3: number, y3: number,
-  x: number, y: number
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  x: number,
+  y: number
 ): PointType {
   return pointDistance(x1, y1, x2, y2, x3, y3, x, y, true) as PointType;
 }

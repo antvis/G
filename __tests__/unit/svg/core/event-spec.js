@@ -36,7 +36,6 @@ describe('event', () => {
     rect.emit('click', new Event('click'));
     expect(clicked).to.be.true;
     expect(evt).not.to.be.null;
-
   });
   it('multiple event of the same type', () => {
     let clicked1 = false;

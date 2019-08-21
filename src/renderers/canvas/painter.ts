@@ -17,7 +17,7 @@ const SHAPE_ATTRS = [
   'textAlign',
   'textBaseline',
   'lineDash',
-  'lineDashOffset'
+  'lineDashOffset',
 ];
 
 class Painter {
@@ -56,7 +56,8 @@ class Painter {
       self.beforeDraw();
       try {
         self._drawGroup(model);
-      } catch (ev) { // 绘制时异常，中断重绘
+      } catch (ev) {
+        // 绘制时异常，中断重绘
         console.warn('error in draw canvas, detail as:');
         console.warn(ev);
       } finally {
@@ -124,7 +125,8 @@ class Painter {
     // var canvas = this.get('canvas');
     if (!shape.isGroup) {
       for (const k in elAttrs) {
-        if (SHAPE_ATTRS.indexOf(k) > -1) { // 非canvas属性不附加
+        if (SHAPE_ATTRS.indexOf(k) > -1) {
+          // 非canvas属性不附加
           let v = elAttrs[k];
           if (k === 'fillStyle') {
             v = renderUtil.parseStyle(v, shape, context);

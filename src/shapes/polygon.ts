@@ -13,7 +13,7 @@ class Polygon extends Shape {
   getDefaultAttrs() {
     return {
       points: null,
-      lineWidth: 1
+      lineWidth: 1,
     };
   }
 
@@ -82,12 +82,7 @@ class Polygon extends Shape {
     });
 
     const halfWidth = lineWidth / 2;
-    return BBox.fromRange(
-      minX - halfWidth,
-      minY - halfWidth,
-      maxX + halfWidth,
-      maxY + halfWidth
-    );
+    return BBox.fromRange(minX - halfWidth, minY - halfWidth, maxX + halfWidth, maxY + halfWidth);
   }
 
   createPath(context: CanvasRenderingContext2D): void {

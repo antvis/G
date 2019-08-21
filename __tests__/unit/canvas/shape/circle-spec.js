@@ -155,6 +155,4 @@ describe('Circle', function() {
     canvas.add(circle);
     canvas.draw();
   });
-
 });
-

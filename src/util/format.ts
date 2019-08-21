@@ -1,8 +1,7 @@
-
 import * as Util from '@antv/util';
 
-const regexTags = /[MLHVQTCSAZ]([^MLHVQTCSAZ]*)/ig;
-const regexDot = /[^\s\,]+/ig;
+const regexTags = /[MLHVQTCSAZ]([^MLHVQTCSAZ]*)/gi;
+const regexDot = /[^\s\,]+/gi;
 
 export function parseRadius(radius) {
   let r1 = 0,
@@ -32,10 +31,9 @@ export function parseRadius(radius) {
     r1,
     r2,
     r3,
-    r4
+    r4,
   };
-};
-
+}
 
 export function parsePath(path) {
   path = path || [];
@@ -61,4 +59,4 @@ export function parsePath(path) {
     });
     return path;
   }
-};
+}

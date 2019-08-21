@@ -49,11 +49,9 @@ describe('Arc math', function() {
   //   const endAngle = Util.toRadian(360);
   // });
 
-
   it('arcProjectPoint', function() {
-    expect(Util.isNumberEqual(
-      Arc.pointDistance(10, 10, 10, -Math.PI / 2, Math.PI / 2, false, 20, 0),
-      Math.sqrt(2) * 10 - 10
-    )).to.be.true;
+    expect(
+      Util.isNumberEqual(Arc.pointDistance(10, 10, 10, -Math.PI / 2, Math.PI / 2, false, 20, 0), Math.sqrt(2) * 10 - 10)
+    ).to.be.true;
   });
 });

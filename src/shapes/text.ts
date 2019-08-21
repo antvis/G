@@ -23,7 +23,7 @@ class CText extends Shape {
       fontVariant: 'normal',
       textAlign: 'start',
       textBaseline: 'bottom',
-      textArr: null
+      textArr: null,
     };
   }
 
@@ -37,11 +37,12 @@ class CText extends Shape {
 
   initTransform(): void {
     const fontSize = this.attrs.fontSize;
-    if (fontSize && +fontSize < 12) { // 小于 12 像素的文本进行 scale 处理
+    if (fontSize && +fontSize < 12) {
+      // 小于 12 像素的文本进行 scale 处理
       this.transform([
-        [ 't', -1 * this.attrs.x, -1 * this.attrs.y ],
-        [ 's', +fontSize / 12, +fontSize / 12 ],
-        [ 't', this.attrs.x, this.attrs.y ]
+        ['t', -1 * this.attrs.x, -1 * this.attrs.y],
+        ['s', +fontSize / 12, +fontSize / 12],
+        ['t', this.attrs.x, this.attrs.y],
       ]);
     }
   }
@@ -55,14 +56,14 @@ class CText extends Shape {
     const fontStyle = attrs.fontStyle; // self.attr('fontStyle');
     const fontVariant = attrs.fontVariant; // self.attr('fontVariant');
     // self.attr('font', [fontStyle, fontVariant, fontWeight, fontSize + 'px', fontFamily].join(' '));
-    attrs.font = [ fontStyle, fontVariant, fontWeight, fontSize + 'px', fontFamily ].join(' ');
+    attrs.font = [fontStyle, fontVariant, fontWeight, fontSize + 'px', fontFamily].join(' ');
   }
 
   _setAttrText(): void {
     const attrs = this.attrs;
     const text = attrs.text;
     let textArr = null;
-    if (Util.isString(text) && (text.indexOf('\n') !== -1)) {
+    if (Util.isString(text) && text.indexOf('\n') !== -1) {
       textArr = text.split('\n');
       const lineCount = textArr.length;
       attrs.lineCount = lineCount;
@@ -109,7 +110,7 @@ class CText extends Shape {
     const lineWidth = self.getHitLineWidth();
     const point = {
       x,
-      y: y - height
+      y: y - height,
     };
 
     if (textAlign) {
@@ -137,11 +138,11 @@ class CText extends Shape {
     );
   }
 
-  _getSpaceingY():number {
+  _getSpaceingY(): number {
     const attrs = this.attrs;
     const lineHeight = attrs.lineHeight;
     const fontSize = attrs.fontSize * 1;
-    return lineHeight ? (lineHeight - fontSize) : fontSize * 0.14;
+    return lineHeight ? lineHeight - fontSize : fontSize * 0.14;
   }
 
   drawInner(context: CanvasRenderingContext2D): void {

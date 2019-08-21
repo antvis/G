@@ -7,7 +7,7 @@ const TAG_MAP = {
   foreignObject: 'foreignObject',
   polygon: 'polygon',
   ellipse: 'ellipse',
-  image: 'image'
+  image: 'image',
 };
 
 export default function getShape(x, y, e) {
@@ -22,7 +22,7 @@ export default function getShape(x, y, e) {
   if (this.cfg.el === target) {
     return this;
   }
-  return this.find(item => {
+  return this.find((item) => {
     return item.cfg && item.cfg.el === target;
   });
-};
+}

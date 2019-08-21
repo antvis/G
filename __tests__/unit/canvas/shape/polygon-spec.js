@@ -27,7 +27,7 @@ describe('Polygon', function() {
     polygon.attr('points', []);
     expect(polygon.attr('points').length).to.equal(0);
     expect(polygon.getBBox()).to.be.null;
-    polygon.attr('points', [ [ 30, 30 ], [ 40, 20 ], [ 30, 50 ], [ 60, 100 ] ]);
+    polygon.attr('points', [[30, 30], [40, 20], [30, 50], [60, 100]]);
     expect(polygon.attr('points').length).to.equal(4);
     let box = polygon.getBBox();
     expect(box.minX).to.equal(29.5);
@@ -37,7 +37,7 @@ describe('Polygon', function() {
 
     const polygon1 = new G.Polygon({
       attrs: {
-        points: [ [ 58, 60 ], [ 80, 190 ], [ 32, 53 ], [ 45, 32 ] ],
+        points: [[58, 60], [80, 190], [32, 53], [45, 32]],
       },
     });
     box = polygon1.getBBox();
@@ -59,7 +59,7 @@ describe('Polygon', function() {
 
     const polygon1 = new G.Polygon({
       attrs: {
-        points: [ [ 58, 60 ], [ 80, 190 ], [ 32, 53 ], [ 45, 32 ] ],
+        points: [[58, 60], [80, 190], [32, 53], [45, 32]],
         lineWidth: 2,
       },
     });
@@ -91,7 +91,7 @@ describe('Polygon', function() {
 
     const polygon1 = new G.Polygon({
       attrs: {
-        points: [ [ 31, 23 ], [ 43, 12 ], [ 53, 23 ], [ 64, 33 ] ],
+        points: [[31, 23], [43, 12], [53, 23], [64, 33]],
         lineWidth: 2,
         stroke: 'red',
       },
@@ -108,7 +108,7 @@ describe('Polygon', function() {
 
     const polygon2 = new G.Polygon({
       attrs: {
-        points: [ [ 31, 23 ], [ 43, 12 ], [ 53, 23 ], [ 64, 33 ] ],
+        points: [[31, 23], [43, 12], [53, 23], [64, 33]],
         lineWidth: 2,
         fill: 'red',
       },
@@ -125,7 +125,7 @@ describe('Polygon', function() {
 
     const polygon3 = new G.Polygon({
       attrs: {
-        points: [ [ 31, 23 ], [ 43, 12 ], [ 53, 23 ], [ 64, 33 ] ],
+        points: [[31, 23], [43, 12], [53, 23], [64, 33]],
         lineWidth: 2,
         stroke: 'green',
         fill: 'red',
@@ -142,6 +142,4 @@ describe('Polygon', function() {
     expect(polygon3.isHit(47.5, 28)).to.be.true;
     expect(polygon3.isHit(42.5, 17.5)).to.be.true;
   });
-
 });
-

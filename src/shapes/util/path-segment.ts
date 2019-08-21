@@ -9,19 +9,21 @@ import BBox from '../../core/bbox';
 const vec3 = Util.vec3;
 const mat3 = Util.mat3;
 
-const ARR_CMD = [ 'm', 'l', 'c', 'a', 'q', 'h', 'v', 't', 's', 'z' ];
+const ARR_CMD = ['m', 'l', 'c', 'a', 'q', 'h', 'v', 't', 's', 'z'];
 
-function toAbsolute(x: number, y: number, curPoint: PointType): PointType { // 获取绝对坐标
+function toAbsolute(x: number, y: number, curPoint: PointType): PointType {
+  // 获取绝对坐标
   return {
     x: curPoint.x + x,
-    y: curPoint.y + y
+    y: curPoint.y + y,
   };
 }
 
-function toSymmetry(point: PointType, center: PointType): PointType { // 点对称
+function toSymmetry(point: PointType, center: PointType): PointType {
+  // 点对称
   return {
     x: center.x + (center.x - point.x),
-    y: center.y + (center.y - point.y)
+    y: center.y + (center.y - point.y),
   };
 }
 
@@ -38,9 +40,12 @@ function vAngle(u: number[], v: number[]): number {
 }
 
 function getArcParams(
-  point1: PointType, point2: PointType,
-  fa: number, fs: number,
-  rx: number, ry: number,
+  point1: PointType,
+  point2: PointType,
+  fa: number,
+  fs: number,
+  rx: number,
+  ry: number,
   psiDeg: number
 ): any[] {
   const psi = Util.mod(Util.toRadian(psiDeg), Math.PI * 2);
@@ -48,16 +53,16 @@ function getArcParams(
   const y1 = point1.y;
   const x2 = point2.x;
   const y2 = point2.y;
-  const xp = Math.cos(psi) * (x1 - x2) / 2.0 + Math.sin(psi) * (y1 - y2) / 2.0;
-  const yp = -1 * Math.sin(psi) * (x1 - x2) / 2.0 + Math.cos(psi) * (y1 - y2) / 2.0;
+  const xp = (Math.cos(psi) * (x1 - x2)) / 2.0 + (Math.sin(psi) * (y1 - y2)) / 2.0;
+  const yp = (-1 * Math.sin(psi) * (x1 - x2)) / 2.0 + (Math.cos(psi) * (y1 - y2)) / 2.0;
   const lambda = (xp * xp) / (rx * rx) + (yp * yp) / (ry * ry);
 
   if (lambda > 1) {
     rx *= Math.sqrt(lambda);
     ry *= Math.sqrt(lambda);
   }
-  const diff = (rx * rx) * (yp * yp) + (ry * ry) * (xp * xp);
-  let f = Math.sqrt((((rx * rx) * (ry * ry)) - diff) / diff);
+  const diff = rx * rx * (yp * yp) + ry * ry * (xp * xp);
+  let f = Math.sqrt((rx * rx * (ry * ry) - diff) / diff);
 
   if (fa === fs) {
     f *= -1;
@@ -66,15 +71,15 @@ function getArcParams(
     f = 0;
   }
 
-  const cxp = f * rx * yp / ry;
-  const cyp = f * -ry * xp / rx;
+  const cxp = (f * rx * yp) / ry;
+  const cyp = (f * -ry * xp) / rx;
 
   const cx = (x1 + x2) / 2.0 + Math.cos(psi) * cxp - Math.sin(psi) * cyp;
   const cy = (y1 + y2) / 2.0 + Math.sin(psi) * cxp + Math.cos(psi) * cyp;
 
-  const theta = vAngle([ 1, 0 ], [ (xp - cxp) / rx, (yp - cyp) / ry ]);
-  const u = [ (xp - cxp) / rx, (yp - cyp) / ry ];
-  const v = [ (-1 * xp - cxp) / rx, (-1 * yp - cyp) / ry ];
+  const theta = vAngle([1, 0], [(xp - cxp) / rx, (yp - cyp) / ry]);
+  const u = [(xp - cxp) / rx, (yp - cyp) / ry];
+  const v = [(-1 * xp - cxp) / rx, (-1 * yp - cyp) / ry];
   let dTheta = vAngle(u, v);
 
   if (vRatio(u, v) <= -1) {
@@ -89,7 +94,7 @@ function getArcParams(
   if (fs === 1 && dTheta < 0) {
     dTheta = dTheta + 2 * Math.PI;
   }
-  return [ point1, cx, cy, rx, ry, theta, dTheta, psi, fs ];
+  return [point1, cx, cy, rx, ry, theta, dTheta, psi, fs];
 }
 
 export default class PathSegment {
@@ -101,7 +106,7 @@ export default class PathSegment {
   endPoint: PointType;
   startTangent: Function;
   endTangent: Function;
-  box: BBox
+  box: BBox;
 
   constructor(item, preSegment, isLast) {
     this.preSegment = preSegment;
@@ -109,13 +114,13 @@ export default class PathSegment {
     this.init(item, preSegment);
   }
 
-  init(item:any[], preSegment): void {
+  init(item: any[], preSegment): void {
     const command = item[0];
     preSegment = preSegment || {
       endPoint: {
         x: 0,
-        y: 0
-      }
+        y: 0,
+      },
     };
     const relative = ARR_CMD.indexOf(command) >= 0; // /[a-z]/.test(command);
     const cmd = relative ? command.toUpperCase() : command;
@@ -129,18 +134,19 @@ export default class PathSegment {
     const p1 = p[1];
     const p2 = p[2];
     switch (cmd) {
-      default: break;
+      default:
+        break;
       case 'M':
         if (relative) {
           point = toAbsolute(p1, p2, preEndPoint);
         } else {
           point = {
             x: p1,
-            y: p2
+            y: p2,
           };
         }
         this.command = 'M';
-        this.params = [ preEndPoint, point ];
+        this.params = [preEndPoint, point];
         this.subStart = point;
         this.endPoint = point;
         break;
@@ -150,18 +156,18 @@ export default class PathSegment {
         } else {
           point = {
             x: p1,
-            y: p2
+            y: p2,
           };
         }
         this.command = 'L';
-        this.params = [ preEndPoint, point ];
+        this.params = [preEndPoint, point];
         this.subStart = preSegment.subStart;
         this.endPoint = point;
         this.endTangent = function() {
-          return [ point.x - preEndPoint.x, point.y - preEndPoint.y ];
+          return [point.x - preEndPoint.x, point.y - preEndPoint.y];
         };
         this.startTangent = function() {
-          return [ preEndPoint.x - point.x, preEndPoint.y - point.y ];
+          return [preEndPoint.x - point.x, preEndPoint.y - point.y];
         };
         break;
       case 'H':
@@ -170,18 +176,18 @@ export default class PathSegment {
         } else {
           point = {
             x: p1,
-            y: preEndPoint.y
+            y: preEndPoint.y,
           };
         }
         this.command = 'L';
-        this.params = [ preEndPoint, point ];
+        this.params = [preEndPoint, point];
         this.subStart = preSegment.subStart;
         this.endPoint = point;
         this.endTangent = function() {
-          return [ point.x - preEndPoint.x, point.y - preEndPoint.y ];
+          return [point.x - preEndPoint.x, point.y - preEndPoint.y];
         };
         this.startTangent = function() {
-          return [ preEndPoint.x - point.x, preEndPoint.y - point.y ];
+          return [preEndPoint.x - point.x, preEndPoint.y - point.y];
         };
         break;
       case 'V':
@@ -190,18 +196,18 @@ export default class PathSegment {
         } else {
           point = {
             x: preEndPoint.x,
-            y: p1
+            y: p1,
           };
         }
         this.command = 'L';
-        this.params = [ preEndPoint, point ];
+        this.params = [preEndPoint, point];
         this.subStart = preSegment.subStart;
         this.endPoint = point;
         this.endTangent = function() {
-          return [ point.x - preEndPoint.x, point.y - preEndPoint.y ];
+          return [point.x - preEndPoint.x, point.y - preEndPoint.y];
         };
         this.startTangent = function() {
-          return [ preEndPoint.x - point.x, preEndPoint.y - point.y ];
+          return [preEndPoint.x - point.x, preEndPoint.y - point.y];
         };
         break;
       case 'Q':
@@ -211,22 +217,22 @@ export default class PathSegment {
         } else {
           point1 = {
             x: p1,
-            y: p2
+            y: p2,
           };
           point2 = {
             x: p[3],
-            y: p[4]
+            y: p[4],
           };
         }
         this.command = 'Q';
-        this.params = [ preEndPoint, point1, point2 ];
+        this.params = [preEndPoint, point1, point2];
         this.subStart = preSegment.subStart;
         this.endPoint = point2;
         this.endTangent = function() {
-          return [ point2.x - point1.x, point2.y - point1.y ];
+          return [point2.x - point1.x, point2.y - point1.y];
         };
         this.startTangent = function() {
-          return [ preEndPoint.x - point1.x, preEndPoint.y - point1.y ];
+          return [preEndPoint.x - point1.x, preEndPoint.y - point1.y];
         };
         break;
       case 'T':
@@ -235,31 +241,31 @@ export default class PathSegment {
         } else {
           point2 = {
             x: p1,
-            y: p2
+            y: p2,
           };
         }
         if (preSegment.command === 'Q') {
           point1 = toSymmetry(preSegment.params[1], preEndPoint);
           this.command = 'Q';
-          this.params = [ preEndPoint, point1, point2 ];
+          this.params = [preEndPoint, point1, point2];
           this.subStart = preSegment.subStart;
           this.endPoint = point2;
           this.endTangent = function() {
-            return [ point2.x - point1.x, point2.y - point1.y ];
+            return [point2.x - point1.x, point2.y - point1.y];
           };
           this.startTangent = function() {
-            return [ preEndPoint.x - point1.x, preEndPoint.y - point1.y ];
+            return [preEndPoint.x - point1.x, preEndPoint.y - point1.y];
           };
         } else {
           this.command = 'TL';
-          this.params = [ preEndPoint, point2 ];
+          this.params = [preEndPoint, point2];
           this.subStart = preSegment.subStart;
           this.endPoint = point2;
           this.endTangent = function() {
-            return [ point2.x - preEndPoint.x, point2.y - preEndPoint.y ];
+            return [point2.x - preEndPoint.x, point2.y - preEndPoint.y];
           };
           this.startTangent = function() {
-            return [ preEndPoint.x - point2.x, preEndPoint.y - point2.y ];
+            return [preEndPoint.x - point2.x, preEndPoint.y - point2.y];
           };
         }
 
@@ -272,26 +278,26 @@ export default class PathSegment {
         } else {
           point1 = {
             x: p1,
-            y: p2
+            y: p2,
           };
           point2 = {
             x: p[3],
-            y: p[4]
+            y: p[4],
           };
           point3 = {
             x: p[5],
-            y: p[6]
+            y: p[6],
           };
         }
         this.command = 'C';
-        this.params = [ preEndPoint, point1, point2, point3 ];
+        this.params = [preEndPoint, point1, point2, point3];
         this.subStart = preSegment.subStart;
         this.endPoint = point3;
         this.endTangent = function() {
-          return [ point3.x - point2.x, point3.y - point2.y ];
+          return [point3.x - point2.x, point3.y - point2.y];
         };
         this.startTangent = function() {
-          return [ preEndPoint.x - point1.x, preEndPoint.y - point1.y ];
+          return [preEndPoint.x - point1.x, preEndPoint.y - point1.y];
         };
         break;
       case 'S':
@@ -301,35 +307,35 @@ export default class PathSegment {
         } else {
           point2 = {
             x: p1,
-            y: p2
+            y: p2,
           };
           point3 = {
             x: p[3],
-            y: p[4]
+            y: p[4],
           };
         }
         if (preSegment.command === 'C') {
           point1 = toSymmetry(preSegment.params[2], preEndPoint);
           this.command = 'C';
-          this.params = [ preEndPoint, point1, point2, point3 ];
+          this.params = [preEndPoint, point1, point2, point3];
           this.subStart = preSegment.subStart;
           this.endPoint = point3;
           this.endTangent = function() {
-            return [ point3.x - point2.x, point3.y - point2.y ];
+            return [point3.x - point2.x, point3.y - point2.y];
           };
           this.startTangent = function() {
-            return [ preEndPoint.x - point1.x, preEndPoint.y - point1.y ];
+            return [preEndPoint.x - point1.x, preEndPoint.y - point1.y];
           };
         } else {
           this.command = 'SQ';
-          this.params = [ preEndPoint, point2, point3 ];
+          this.params = [preEndPoint, point2, point3];
           this.subStart = preSegment.subStart;
           this.endPoint = point3;
           this.endTangent = function() {
-            return [ point3.x - point2.x, point3.y - point2.y ];
+            return [point3.x - point2.x, point3.y - point2.y];
           };
           this.startTangent = function() {
-            return [ preEndPoint.x - point2.x, preEndPoint.y - point2.y ];
+            return [preEndPoint.x - point2.x, preEndPoint.y - point2.y];
           };
         }
         break;
@@ -344,7 +350,7 @@ export default class PathSegment {
         } else {
           point = {
             x: p[6],
-            y: p[7]
+            y: p[7],
           };
         }
 
@@ -369,7 +375,7 @@ export default class PathSegment {
           }
           const dx = params[3] * Math.cos(startAngle - d) + params[1];
           const dy = params[4] * Math.sin(startAngle - d) + params[2];
-          return [ dx - start.x, dy - start.y ];
+          return [dx - start.x, dy - start.y];
         };
         this.endTangent = function() {
           let endAngle = params[6];
@@ -378,13 +384,13 @@ export default class PathSegment {
           }
           const dx = params[3] * Math.cos(startAngle + endAngle + d) + params[1];
           const dy = params[4] * Math.sin(startAngle + endAngle - d) + params[2];
-          return [ preEndPoint.x - dx, preEndPoint.y - dy ];
+          return [preEndPoint.x - dx, preEndPoint.y - dy];
         };
         break;
       }
       case 'Z': {
         this.command = 'Z';
-        this.params = [ preEndPoint, preSegment.subStart ];
+        this.params = [preEndPoint, preSegment.subStart];
         this.subStart = preSegment.subStart;
         this.endPoint = preSegment.subStart;
       }
@@ -402,32 +408,40 @@ export default class PathSegment {
       }
     }
     switch (command) {
-      default: break;
+      default:
+        break;
       case 'M':
         return false;
       case 'TL':
       case 'L':
       case 'Z':
-        return Inside.line(
-          params[0].x, params[0].y,
-          params[1].x, params[1].y,
-          lineWidth, x, y
-        );
+        return Inside.line(params[0].x, params[0].y, params[1].x, params[1].y, lineWidth, x, y);
       case 'SQ':
       case 'Q':
         return Inside.quadraticline(
-          params[0].x, params[0].y,
-          params[1].x, params[1].y,
-          params[2].x, params[2].y,
-          lineWidth, x, y
+          params[0].x,
+          params[0].y,
+          params[1].x,
+          params[1].y,
+          params[2].x,
+          params[2].y,
+          lineWidth,
+          x,
+          y
         );
       case 'C': {
         return Inside.cubicline(
-          params[0].x, params[0].y,
-          params[1].x, params[1].y,
-          params[2].x, params[2].y,
-          params[3].x, params[3].y,
-          lineWidth, x, y
+          params[0].x,
+          params[0].y,
+          params[1].x,
+          params[1].y,
+          params[2].x,
+          params[2].y,
+          params[3].x,
+          params[3].y,
+          lineWidth,
+          x,
+          y
         );
       }
       case 'A': {
@@ -441,15 +455,15 @@ export default class PathSegment {
         const psi = p[7];
         const fs = p[8];
 
-        const r = (rx > ry) ? rx : ry;
-        const scaleX = (rx > ry) ? 1 : rx / ry;
-        const scaleY = (rx > ry) ? ry / rx : 1;
+        const r = rx > ry ? rx : ry;
+        const scaleX = rx > ry ? 1 : rx / ry;
+        const scaleY = rx > ry ? ry / rx : 1;
 
-        p = [ x, y, 1 ];
-        const m = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
-        mat3.translate(m, m, [ -cx, -cy ]);
+        p = [x, y, 1];
+        const m = [1, 0, 0, 0, 1, 0, 0, 0, 1];
+        mat3.translate(m, m, [-cx, -cy]);
         mat3.rotate(m, m, -psi);
-        mat3.scale(m, m, [ 1 / scaleX, 1 / scaleY ]);
+        mat3.scale(m, m, [1 / scaleX, 1 / scaleY]);
         vec3.transformMat3(p, p, m);
         return Inside.arcline(0, 0, r, theta, theta + dTheta, 1 - fs, lineWidth, p[0], p[1]);
       }
@@ -465,7 +479,8 @@ export default class PathSegment {
     let point3;
 
     switch (command) {
-      default: break;
+      default:
+        break;
       case 'M':
         context.moveTo(params[1].x, params[1].y);
         break;
@@ -498,9 +513,9 @@ export default class PathSegment {
         const psi = p[7];
         const fs = p[8];
 
-        const r = (rx > ry) ? rx : ry;
-        const scaleX = (rx > ry) ? 1 : rx / ry;
-        const scaleY = (rx > ry) ? ry / rx : 1;
+        const r = rx > ry ? rx : ry;
+        const scaleX = rx > ry ? 1 : rx / ry;
+        const scaleY = rx > ry ? ry / rx : 1;
 
         context.translate(cx, cy);
         context.rotate(psi);
@@ -593,7 +608,7 @@ export default class PathSegment {
         const xDim = Ellipse.xExtrema(psi, rx, ry);
         let minX = Infinity;
         let maxX = -Infinity;
-        const xs = [ start, end ];
+        const xs = [start, end];
         for (i = -Math.PI * 2; i <= Math.PI * 2; i += Math.PI) {
           const xAngle = xDim + i;
           if (fs === 1) {
@@ -620,7 +635,7 @@ export default class PathSegment {
         const yDim = Ellipse.yExtrema(psi, rx, ry);
         let minY = Infinity;
         let maxY = -Infinity;
-        const ys = [ start, end ];
+        const ys = [start, end];
         for (i = -Math.PI * 2; i <= Math.PI * 2; i += Math.PI) {
           const yAngle = yDim + i;
           if (fs === 1) {
@@ -643,12 +658,7 @@ export default class PathSegment {
             maxY = y;
           }
         }
-        this.box = BBox.fromRange(
-          minX - halfWidth,
-          minY - halfWidth,
-          maxX + halfWidth,
-          maxY + halfWidth
-        );
+        this.box = BBox.fromRange(minX - halfWidth, minY - halfWidth, maxX + halfWidth, maxY + halfWidth);
         break;
       }
     }

@@ -1,7 +1,5 @@
 {
-  "extends": [
-    "egg"
-  ],
+  "extends": ["egg", "prettier"],
   "globals": {
     "_": true,
     "window": true,
@@ -9,7 +7,7 @@
     "Image": true,
     "Event": true,
     "HTMLElement": true,
-    "ImageData": true,
+    "ImageData": true
   },
   "parser": "babel-eslint",
   "parserOptions": {
@@ -19,75 +17,11 @@
     "no-console": [
       "error",
       {
-        "allow": [
-          "warn",
-          "error",
-          "dir",
-          "time",
-          "timeEnd"
-        ]
+        "allow": ["warn", "error", "dir", "time", "timeEnd"]
       }
     ],
-    "no-bitwise": [
-      0
-    ],
-    "experimentalDecorators": [
-      0
-    ],
-    "linebreak-style": [
-      0
-    ],
-    "comma-dangle": [
-      0,
-      "always-multiline"
-    ],
-    "array-bracket-spacing": [
-      1,
-      "always"
-    ],
-    "key-spacing": [
-      2,
-      {
-        "beforeColon": false,
-        "afterColon": true,
-        "mode": "strict"
-      }
-    ],
-    "padding-line-between-statements": [
-      "error",
-      {
-        "blankLine": "always",
-        "prev": "function",
-        "next": "function"
-      }
-    ],
-    "typedef-whitespace": [
-      true,
-      {
-        "call-signature": "nospace",
-        "index-signature": "nospace",
-        "parameter": "nospace",
-        "property-declaration": "nospace",
-        "variable-declaration": "nospace"
-      },
-      {
-        "call-signature": "onespace",
-        "index-signature": "onespace",
-        "parameter": "onespace",
-        "property-declaration": "onespace",
-        "variable-declaration": "onespace"
-      }
-    ],
+    "experimentalDecorators": [0],
     "no-debugger": "error",
-    "no-unused-vars": 0,
-    "object-curly-spacing": [
-      "error", "always",
-      {
-        "arraysInObjects": false
-      }
-    ],
-    "arrow-parens": [
-      "error", "always"
-    ]
+    "no-unused-vars": 0
   }
 }

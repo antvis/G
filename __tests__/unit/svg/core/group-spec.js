@@ -238,7 +238,6 @@ describe('Group', () => {
       zIndex: 3,
     });
 
-
     g1.add(g2);
     g1.add(e1);
     g2.add(e2);
@@ -327,7 +326,6 @@ describe('Group', () => {
     canvas.draw();
     // expect(canvas.getShape(0, 120)).not.to.be.undefined;
     // expect(canvas.getShape(100, 100)).to.be.undefined;
-
   });
 
   it('group event', () => {
@@ -357,7 +355,7 @@ describe('Group', () => {
 
     const group = new G.Group();
 
-    group.add([ circle1, circle2, circle3, text ]);
+    group.add([circle1, circle2, circle3, text]);
 
     const children = group.get('children');
     expect(children.length).to.equal(4);

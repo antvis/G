@@ -11,5 +11,5 @@ export function xExtrema(psi: number, rx: number, ry: number): number {
 }
 
 export function yExtrema(psi: number, rx: number, ry: number): number {
-  return Math.atan((ry / (rx * Math.tan(psi))));
+  return Math.atan(ry / (rx * Math.tan(psi)));
 }

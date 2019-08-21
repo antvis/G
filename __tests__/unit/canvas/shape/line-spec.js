@@ -188,4 +188,3 @@ describe('Line', function() {
     expect(point.y).to.equal(150);
   });
 });
-

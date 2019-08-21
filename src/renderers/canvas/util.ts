@@ -1,12 +1,12 @@
 import * as Util from '@antv/util';
 import BBox from '../../core/bbox';
 
-const regexTags = /[MLHVQTCSAZ]([^MLHVQTCSAZ]*)/ig;
-const regexDot = /[^\s\,]+/ig;
+const regexTags = /[MLHVQTCSAZ]([^MLHVQTCSAZ]*)/gi;
+const regexDot = /[^\s\,]+/gi;
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexPR = /^p\s*\(\s*([axyn])\s*\)\s*(.*)/i;
-const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/ig;
+const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/gi;
 
 function addStop(steps, gradient) {
   const arr = steps.match(regexColorStop);
@@ -29,46 +29,46 @@ function parseLineGradient(color, self, context) {
   if (angle >= 0 && angle < 0.5 * Math.PI) {
     start = {
       x: box.x,
-      y: box.y
+      y: box.y,
     };
     end = {
       x: maxX,
-      y: maxY
+      y: maxY,
     };
   } else if (0.5 * Math.PI <= angle && angle < Math.PI) {
     start = {
       x: maxX,
-      y: box.y
+      y: box.y,
     };
     end = {
       x: box.x,
-      y: maxY
+      y: maxY,
     };
   } else if (Math.PI <= angle && angle < 1.5 * Math.PI) {
     start = {
       x: maxX,
-      y: maxY
+      y: maxY,
     };
     end = {
       x: box.x,
-      y: box.y
+      y: box.y,
     };
   } else {
     start = {
       x: box.x,
-      y: maxY
+      y: maxY,
     };
     end = {
       x: maxX,
-      y: box.y
+      y: box.y,
     };
   }
 
   const tanTheta = Math.tan(angle);
   const tanTheta2 = tanTheta * tanTheta;
 
-  const x = ((end.x - start.x) + tanTheta * (end.y - start.y)) / (tanTheta2 + 1) + start.x;
-  const y = tanTheta * ((end.x - start.x) + tanTheta * (end.y - start.y)) / (tanTheta2 + 1) + start.y;
+  const x = (end.x - start.x + tanTheta * (end.y - start.y)) / (tanTheta2 + 1) + start.x;
+  const y = (tanTheta * (end.x - start.x + tanTheta * (end.y - start.y))) / (tanTheta2 + 1) + start.y;
   const gradient = context.createLinearGradient(start.x, start.y, x, y);
   addStop(steps, gradient);
   return gradient;
@@ -91,7 +91,14 @@ function parseRadialGradient(color, self, context) {
   const width = maxX - box.x;
   const height = maxY - box.y;
   const r = Math.sqrt(width * width + height * height) / 2;
-  const gradient = context.createRadialGradient(box.x + width * fx, box.y + height * fy, fr * r, box.x + width / 2, box.y + height / 2, r);
+  const gradient = context.createRadialGradient(
+    box.x + width * fx,
+    box.y + height * fy,
+    fr * r,
+    box.x + width / 2,
+    box.y + height / 2,
+    r
+  );
   addStop(steps, gradient);
   return gradient;
 }
@@ -176,19 +183,22 @@ export function parsePath(path) {
     });
     return path;
   }
-};
+}
 
 export function parseStyle(color, self, context) {
   if (Util.isString(color)) {
     if (color[1] === '(' || color[2] === '(') {
-      if (color[0] === 'l') { // regexLG.test(color)
+      if (color[0] === 'l') {
+        // regexLG.test(color)
         return parseLineGradient(color, self, context);
-      } else if (color[0] === 'r') { // regexRG.test(color)
+      } else if (color[0] === 'r') {
+        // regexRG.test(color)
         return parseRadialGradient(color, self, context);
-      } else if (color[0] === 'p') { // regexPR.test(color)
+      } else if (color[0] === 'p') {
+        // regexPR.test(color)
         return parsePattern(color, self, context);
       }
     }
     return color;
   }
-};
+}

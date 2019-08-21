@@ -1,19 +1,16 @@
 import * as Util from '@antv/util';
 import Attribute from './attribute';
-import {
-  ElementCFG
-} from '../interface';
-
+import { ElementCFG } from '../interface';
 
 const ReservedProps = {
   delay: 'delay',
-  rotate: 'rotate'
+  rotate: 'rotate',
 };
 const colorRalaredProps = {
   fill: 'fill',
   stroke: 'stroke',
   fillStyle: 'fillStyle',
-  strokeStyle: 'strokeStyle'
+  strokeStyle: 'strokeStyle',
 };
 
 function getFromAttrs(toAttrs, shape) {
@@ -28,14 +25,14 @@ function getFromAttrs(toAttrs, shape) {
 function getFormatProps(props, shape) {
   const rst = {
     matrix: null,
-    attrs: {}
+    attrs: {},
   };
   const attrs = shape.attrs;
   for (const k in props) {
     if (k === 'transform') {
       rst.matrix = Util.transform(shape.getMatrix(), props[k]);
     } else if (k === 'rotate') {
-      rst.matrix = Util.transform(shape.getMatrix(), [[ 'r', props[k] ]]);
+      rst.matrix = Util.transform(shape.getMatrix(), [['r', props[k]]]);
     } else if (k === 'matrix') {
       rst.matrix = props[k];
     } else if (colorRalaredProps[k] && /^[r,R,L,l]{1}[\s]*\(/.test(props[k])) {
@@ -55,11 +52,11 @@ interface animator {
   delay: number;
   duration: number;
   easing: string;
-  fromAttrs: { [key: string]: any; };
+  fromAttrs: { [key: string]: any };
   fromMatrix: number[];
   id: string;
   startTime: number;
-  toAttrs: { [key: string]: any; };
+  toAttrs: { [key: string]: any };
   toMatrix?: number[];
   onFrame?: Function;
 }
@@ -71,7 +68,7 @@ function checkExistedAttrs(animators: animator[], animator: animator) {
   const delay = animator.delay;
   const hasOwnProperty = Object.prototype.hasOwnProperty;
   Util.each(animator.toAttrs, (v, k) => {
-    Util.each(animators, animator => {
+    Util.each(animators, (animator) => {
       if (delay < animator.startTime + animator.duration) {
         if (hasOwnProperty.call(animator.toAttrs, k)) {
           delete animator.toAttrs[k];
@@ -81,8 +78,8 @@ function checkExistedAttrs(animators: animator[], animator: animator) {
     });
   });
   if (animator.toMatrix) {
-    Util.each(animators, ator => {
-      if (delay < (ator.startTime + ator.duration) && ator.toMatrix) {
+    Util.each(animators, (ator) => {
+      if (delay < ator.startTime + ator.duration && ator.toMatrix) {
         delete ator.toMatrix;
       }
     });
@@ -146,12 +143,12 @@ class Element extends Attribute {
       delay,
       startTime: timeline.getTime(),
       id: Util.uniqueId(),
-      onFrame: null
+      onFrame: null,
     };
     //加入onFrame
     if (toProps.onFrame) {
       animator.onFrame = toProps.onFrame;
-    } 
+    }
     // 如果动画队列中已经有这个图形了
     if (animators.length > 0) {
       // 先检查是否需要合并属性。若有相同的动画，将该属性从前一个动画中删除,直接用后一个动画中
@@ -169,9 +166,9 @@ class Element extends Attribute {
     const animators = this.get('animators');
     // 将动画执行到最后一帧，执行回调
     Util.each(animators, (animator: animator) => {
-      if(animator.onFrame) {
+      if (animator.onFrame) {
         this.attr(animator.onFrame(1));
-      }else{
+      } else {
         this.attr(animator.toAttrs);
       }
       if (animator.toMatrix) {
@@ -191,7 +188,7 @@ class Element extends Attribute {
     // 记录下是在什么时候暂停的
     self.setSilent('pause', {
       isPaused: true,
-      pauseTime: timeline.getTime()
+      pauseTime: timeline.getTime(),
     });
     return self;
   }
@@ -209,7 +206,7 @@ class Element extends Attribute {
       animator._pauseTime = null;
     });
     self.setSilent('pause', {
-      isPaused: false
+      isPaused: false,
     });
     self.setSilent('animators', animators);
     return self;

@@ -47,7 +47,6 @@ describe('SVG Canvas', () => {
       expect(canvas.get('children')).to.be.an('array').that.is.empty;
       canvas.destroy();
     });
-
   });
 
   describe('拓展图形 标记 Marker', () => {
@@ -79,7 +78,6 @@ describe('SVG Canvas', () => {
           y: 20,
           r: 10,
         },
-
       });
       canvas.draw();
     });
@@ -123,13 +121,7 @@ describe('SVG Canvas', () => {
       canvas.addShape('Marker', {
         attrs: {
           symbol(x, y, r) {
-            return [
-              [ 'M', x - r, y ],
-              [ 'L', x, y - (r * 4) ],
-              [ 'L', x + r, y ],
-              [ 'L', x, y + r ],
-              [ 'z' ],
-            ];
+            return [['M', x - r, y], ['L', x, y - r * 4], ['L', x + r, y], ['L', x, y + r], ['z']];
           },
           stroke: 'red',
           x: 90,
@@ -175,7 +167,6 @@ describe('SVG Canvas', () => {
             return true;
           }
           return false;
-
         });
         expect(rect === rst[0]).to.be.true;
       });
@@ -195,7 +186,6 @@ describe('SVG Canvas', () => {
       it('第N个子元素', () => {
         expect(canvas.getChildByIndex(2)).to.eql(children[2]);
         canvas.destroy();
-
       });
       canvas.draw();
     });
@@ -260,7 +250,7 @@ describe('SVG Canvas', () => {
         },
       });
       canvas.draw();
-      expect(rect.attr('rotate')).to.equal(45 / 180 * Math.PI);
+      expect(rect.attr('rotate')).to.equal((45 / 180) * Math.PI);
       canvas.destroy();
     });
   });
@@ -288,7 +278,7 @@ describe('SVG Canvas', () => {
         width: 50,
         height: 50,
         fill: 'black',
-        radius: [ 5, 15 ],
+        radius: [5, 15],
       },
     });
     canvas.addShape('rect', {
@@ -302,7 +292,7 @@ describe('SVG Canvas', () => {
       },
     });
     canvas.draw();
-    it('canvas.on(\'mousedown\')', () => {
+    it("canvas.on('mousedown')", () => {
       const canvasDOM = canvas.get('el');
       let target;
       canvas.on('mousedown', (ev) => {

@@ -8,15 +8,14 @@ const ATTR_MAP = {
   shadowOpacity: 'opacity',
   shadowBlur: 'blur',
   shadowOffsetX: 'dx',
-  shadowOffsetY: 'dy'
+  shadowOffsetY: 'dy',
 };
 
 const SHADOW_DIMENSION = {
   x: '-40%',
   y: '-40%',
   width: '200%',
-  height: '200%'
-
+  height: '200%',
 };
 
 class Shadow {
@@ -24,7 +23,7 @@ class Shadow {
   id: string;
   el: SVGFilterElement;
   cfg: {
-    [key: string]: any
+    [key: string]: any;
   } = {};
 
   constructor(cfg) {
@@ -47,7 +46,7 @@ class Shadow {
     }
     let flag = true;
     const config = this.cfg;
-    Util.each(Object.keys(config), attr => {
+    Util.each(Object.keys(config), (attr) => {
       if (config[attr] !== cfg[attr]) {
         flag = false;
         return false;
