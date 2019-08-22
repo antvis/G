@@ -5,13 +5,15 @@
   "keywords": [
     "canvas",
     "svg",
+    "G",
     "G2",
+    "G6",
     "2d draw"
   ],
   "main": "lib/index.js",
   "module": "esm/index.js",
-  "types": "lib/index.d.ts",
   "browser": "dist/g.min.js",
+  "types": "lib/index.d.ts",
   "files": [
     "package.json",
     "lib",
@@ -41,8 +43,7 @@
     "lint": "exit 0",
     "coverage": "exit 0",
     "tsc": "loose-tsc --noEmit",
-    "prettier": "prettier --write '*.{js,ts,json,md}'",
-    "ci": "run-s build test"
+    "prettier": "prettier --write '*.{js,ts,json,md}'"
   },
   "husky": {
     "hooks": {
