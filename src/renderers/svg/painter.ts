@@ -1,4 +1,5 @@
 import * as Util from '@antv/util';
+import { detect } from 'detect-browser';
 import Defs from './defs';
 import { parseRadius } from '../../util/format';
 import Marker from '../../shapes/marker';
@@ -63,6 +64,14 @@ const BASELINE_MAP = {
   middle: 'central',
   bottom: 'after-edge',
   alphabetic: 'baseline',
+  hanging: 'hanging',
+};
+
+const BASELINE_MAP_FOR_FIREFOX = {
+  top: 'text-before-edge',
+  middle: 'central',
+  bottom: 'text-after-edge',
+  alphabetic: 'alphabetic',
   hanging: 'hanging',
 };
 
@@ -565,7 +574,13 @@ class Painter {
     const attrs = model.attrs;
     const fontSize = attrs.fontSize;
 
-    el.setAttribute('alignment-baseline', BASELINE_MAP[attrs.textBaseline] || 'baseline');
+    const browser = detect();
+    if (browser && browser.name === 'firefox') {
+      // compatible with FireFox browser, ref: https://github.com/antvis/g/issues/119
+      el.setAttribute('dominant-baseline', BASELINE_MAP_FOR_FIREFOX[attrs.textBaseline] || 'alphabetic');
+    } else {
+      el.setAttribute('alignment-baseline', BASELINE_MAP[attrs.textBaseline] || 'baseline');
+    }
     el.setAttribute('text-anchor', ANCHOR_MAP[attrs.textAlign] || 'left');
     if (fontSize && +fontSize < 12) {
       // 小于 12 像素的文本进行 scale 处理
