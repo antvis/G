@@ -48,7 +48,9 @@ function getPoint(rx, ry, angle) {
 
 // 旋转
 function rotate(x, y, angle) {
-  return [x * Math.cos(angle) - y * Math.sin(angle), x * Math.sin(angle) + y * Math.cos(angle)];
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+  return [x * cos - y * sin, x * sin + y * cos];
 }
 
 export default {

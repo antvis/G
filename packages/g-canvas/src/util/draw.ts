@@ -1,7 +1,7 @@
 import { IElement } from '@antv/g-base/lib/interfaces';
 import { ICanvasElement } from '../interfaces';
 import { parseStyle } from './parse';
-import EllipseMath from './math/ellipse';
+import getArcParams from './arc-params';
 
 const SHAPE_ATTRS_MAP = {
   fill: 'fillStyle',
@@ -41,6 +41,7 @@ export function drawChildren(context: CanvasRenderingContext2D, children: IEleme
 
 export function drawPath(context, path, arcParamsCache) {
   let currentPoint = [0, 0]; // 当前图形
+  let startMovePoint = [0, 0]; // 开始 M 的点，可能会有多个
   context.beginPath();
   for (let i = 0; i < path.length; i++) {
     const params = path[i];
@@ -49,6 +50,7 @@ export function drawPath(context, path, arcParamsCache) {
     switch (command) {
       case 'M':
         context.moveTo(params[1], params[2]);
+        startMovePoint = [params[1], params[2]];
         break;
       case 'L':
         context.lineTo(params[1], params[2]);
@@ -65,11 +67,11 @@ export function drawPath(context, path, arcParamsCache) {
         if (arcParamsCache) {
           arcParams = arcParamsCache[i];
           if (!arcParams) {
-            arcParams = EllipseMath.getArcParams(currentPoint, params);
+            arcParams = getArcParams(currentPoint, params);
             arcParamsCache[i] = arcParams;
           }
         } else {
-          arcParams = EllipseMath.getArcParams(currentPoint, params);
+          arcParams = getArcParams(currentPoint, params);
         }
         const { cx, cy, rx, ry, startAngle, endAngle, xRotation, sweepFlag } = arcParams;
         // 直接使用椭圆的 api
@@ -96,7 +98,10 @@ export function drawPath(context, path, arcParamsCache) {
         break;
     }
 
-    if (command !== 'Z') {
+    // 有了 Z 后，当前节点从开始 M 的点开始
+    if (command === 'Z') {
+      currentPoint = startMovePoint;
+    } else {
       const len = params.length;
       currentPoint = [params[len - 2], params[len - 1]];
     }

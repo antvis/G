@@ -1,8 +1,7 @@
 import Base from './base';
 import { IElement, IShape, IGroup, ICanvas } from '../interfaces';
 import { GroupCfg, ShapeCfg, BBox, ClipCfg, ShapeAttrs } from '../types';
-import { isObject, each, isArray, mix, upperFirst } from '@antv/util';
-import { removeFromArray } from '../util/util';
+import { removeFromArray, isObject, each, isArray, mix, upperFirst } from '../util/util';
 
 const MATRIX = 'matrix';
 const ARRAY_ATTRS = {

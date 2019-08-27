@@ -79,7 +79,7 @@ describe('bezier util test', () => {
     }
     ctx.stroke();
   });
-
+  // 在下面贝塞尔曲线上分别进行了测试
   it('nearest point cubic', () => {
     const [x1, y1, x2, y2, x3, y3, x4, y4] = [100, 100, 150, 50, 250, 150, 300, 100];
     const p1 = nearestPoint([x1, x2, x3, x4], [y1, y2, y3, y4], 200, 100, cubic.interpolationAt);
@@ -106,7 +106,7 @@ describe('bezier util test', () => {
     ctx.stroke();
   });
 
-  it('sanpLength', () => {
+  it('snapLength', () => {
     // 只有一个点
     expect(snapLength([0], [0])).eqls(0);
     // 两个点
@@ -177,6 +177,12 @@ describe('quadratic test', () => {
   it('curve length not symetric', () => {
     const [x1, y1, x2, y2, x3, y3] = [0, 0, 10, 50, 100, 0];
     expect(snapEqual(quad.length(x1, y1, x2, y2, x3, y3), splitQuadLength(x1, y1, x2, y2, x3, y3))).eqls(true);
+  });
+
+  it('neareast point at line', () => {
+    const [x1, y1, x2, y2, x3, y3] = [0, 0, 10, 50, 100, 0];
+    const point = quad.pointAt(x1, y1, x2, y2, x3, y3, 0.3); // 线上任意一点
+    expect(equalPoint(quad.nearestPoint(x1, y1, x2, y2, x3, y3, point.x, point.y), point)).eqls(true);
   });
 
   it('neareast point', () => {
@@ -275,6 +281,11 @@ describe('cubic test', () => {
       ctx.lineTo(nearestPoint.x, nearestPoint.y);
     }
     ctx.stroke();
+  });
+
+  it('neareast point at line', () => {
+    const point = cubic.pointAt(...params1, 0.3); // 线上任意一点
+    expect(equalPoint(cubic.nearestPoint(...params1, point.x, point.y), point)).eqls(true);
   });
 
   it('point distance', () => {

@@ -1,7 +1,6 @@
 import { IBase, IObservable } from '../interfaces';
-import { mix, isFunction } from '@antv/util';
-import { removeFromArray } from '../util/util';
-abstract class Base implements IBase, IObservable {
+import { removeFromArray, mix, isFunction } from '../util/util';
+abstract class Base implements IBase {
   /**
    * @private
    * 内部属性，用于 get,set
@@ -83,16 +82,16 @@ abstract class Base implements IBase, IObservable {
     }
   }
 
-  emit(eventName: string, ...args: any[]) {
-    this.trigger(eventName, args);
+  emit(eventName: string, eventObject: object) {
+    this.trigger(eventName, eventObject);
   }
 
-  trigger(eventName: string, ...args: any[]) {
+  trigger(eventName: string, eventObject: object) {
     const events = this.events[eventName] || [];
     const length = events.length;
     for (let i = 0; i < length; i++) {
       const callback = events[i];
-      callback.apply(this, args);
+      callback.call(this, eventObject);
     }
   }
 }

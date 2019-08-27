@@ -1,15 +1,16 @@
 import Base from './base';
 import { IElement, IShape, IGroup, ICanvas, IContainer, ICtor } from '../interfaces';
-import { ShapeCfg, CanvasCfg } from '../types';
+import { ShapeCfg, CanvasCfg, Point } from '../types';
 import ContainerUtil from '../util/container';
-import { isString, isObject } from '@antv/util';
-import { isBrowser } from '../util/util';
+import { isBrowser, isString, isObject } from '../util/util';
 const PX_SUFFIX = 'px';
 
 abstract class Canvas extends Base implements ICanvas {
   getDefaultCfg() {
     const cfg = super.getDefaultCfg();
     cfg['children'] = [];
+    cfg['visible'] = true;
+    cfg['capture'] = true;
     return cfg;
   }
 
@@ -80,7 +81,7 @@ abstract class Canvas extends Base implements ICanvas {
   }
 
   // 实现接口
-  getPointByClient(clientX: number, clientY: number): object {
+  getPointByClient(clientX: number, clientY: number): Point {
     const el = this.get('el');
     const bbox = el.getBoundingClientRect();
     return {
@@ -90,12 +91,12 @@ abstract class Canvas extends Base implements ICanvas {
   }
 
   // 实现接口
-  getClientByPoint(x: number, y: number): object {
+  getClientByPoint(x: number, y: number): Point {
     const el = this.get('el');
     const bbox = el.getBoundingClientRect();
     return {
-      clientX: x + bbox.left,
-      clientY: y + bbox.top,
+      x: x + bbox.left,
+      y: y + bbox.top,
     };
   }
 
@@ -119,6 +120,10 @@ abstract class Canvas extends Base implements ICanvas {
 
   isCanvas() {
     return true;
+  }
+
+  getParent() {
+    return null;
   }
 
   // 继承自 IContainer 的方法，由于 ts 的 mixin 非常复杂，而且很难控制好局部解耦

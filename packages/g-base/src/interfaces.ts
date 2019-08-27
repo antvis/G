@@ -1,37 +1,7 @@
-import { BBox, ShapeCfg, GroupCfg, ClipCfg } from './types';
+import { BBox, ShapeCfg, GroupCfg, ClipCfg, Point } from './types';
 
 export interface ICtor<T> {
   new (cfg: any): T;
-}
-
-/**
- * @interface IBase
- * 所有图形类公共的接口，提供 get,set 方法
- */
-export interface IBase {
-  /**
-   * 获取属性值
-   * @param  {string} name 属性名
-   * @return {any} 属性值
-   */
-  get(name: string): any;
-  /**
-   * 设置属性值
-   * @param {string} name  属性名称
-   * @param {any}    value 属性值
-   */
-  set(name: string, value: any);
-
-  /**
-   * 是否销毁
-   * @type {boolean}
-   */
-  destroyed: boolean;
-
-  /**
-   * 销毁对象
-   */
-  destroy();
 }
 
 /**
@@ -63,15 +33,45 @@ export interface IObservable {
   /**
    * 触发事件, trigger 的别名函数
    * @param {string} eventName 事件名称
-   * @param {Array} args 参数
+   * @param {object} args 参数
    */
-  emit(eventName: string, ...args: any[]);
+  emit(eventName: string, eventObject: object);
   /**
    * 触发事件
    * @param {string} eventName 事件名称
-   * @param {Array} args 参数
+   * @param {object} args 参数
    */
-  trigger(eventName: string, ...args: any[]);
+  trigger(eventName: string, eventObject: object);
+}
+
+/**
+ * @interface IBase
+ * 所有图形类公共的接口，提供 get,set 方法
+ */
+export interface IBase extends IObservable {
+  /**
+   * 获取属性值
+   * @param  {string} name 属性名
+   * @return {any} 属性值
+   */
+  get(name: string): any;
+  /**
+   * 设置属性值
+   * @param {string} name  属性名称
+   * @param {any}    value 属性值
+   */
+  set(name: string, value: any);
+
+  /**
+   * 是否销毁
+   * @type {boolean}
+   */
+  destroyed: boolean;
+
+  /**
+   * 销毁对象
+   */
+  destroy();
 }
 
 /**
@@ -81,9 +81,9 @@ export interface IObservable {
 export interface IElement extends IBase {
   /**
    * 获取父元素
-   * @return {IGroup} 父元素一般是 Group 或者是 Canvas
+   * @return {IContainer} 父元素一般是 Group 或者是 Canvas
    */
-  getParent(): IGroup;
+  getParent(): IContainer;
 
   /**
    * 获取所属的 Canvas
@@ -317,6 +317,11 @@ export interface IShape extends IElement {
  */
 export interface ICanvas extends IContainer {
   /**
+   * 为了兼容持续向上查找 parent
+   * @return {IContainer} 返回元素的父容器，在 canvas 中始终是 null
+   */
+  getParent(): IContainer;
+  /**
    * 改变画布大小
    * @param {number} width  宽度
    * @param {number} height 高度
@@ -328,7 +333,7 @@ export interface ICanvas extends IContainer {
    * @param  {number} clientY 窗口 y 坐标
    * @return {object} canvas坐标
    */
-  getPointByClient(clientX: number, clientY: number): object;
+  getPointByClient(clientX: number, clientY: number): Point;
 
   /**
    * 将 canvas 坐标转换成窗口坐标
@@ -336,7 +341,7 @@ export interface ICanvas extends IContainer {
    * @param {number} y canvas 上的 y 坐标
    * @returns {object} 窗口坐标
    */
-  getClientByPoint(x: number, y: number): object;
+  getClientByPoint(x: number, y: number): Point;
 
   /**
    * 绘制

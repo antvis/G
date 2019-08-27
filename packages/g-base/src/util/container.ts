@@ -4,8 +4,7 @@
  */
 import { IGroup, IElement, IShape, IContainer, IBase } from '../interfaces';
 import { ShapeCfg, GroupCfg } from '../types';
-import { upperFirst, isFunction, isObject, each } from '@antv/util';
-import { removeFromArray } from './util';
+import { upperFirst, isFunction, isObject, each, removeFromArray } from './util';
 
 const SHAPE_MAP = {};
 const INDEX = '_INDEX';
@@ -85,7 +84,7 @@ function addGroup(container: IContainer, groupClass?: any, cfg?: GroupCfg): IGro
       });
     }
   } else {
-    const tmpCfg = groupClass;
+    const tmpCfg = groupClass || {};
     const TmpGroupClass = container.getGroupBase();
     rst = new TmpGroupClass(tmpCfg);
   }

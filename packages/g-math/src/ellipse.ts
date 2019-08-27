@@ -53,11 +53,20 @@ export default {
   nearestPoint(x: number, y: number, rx: number, ry: number, x0: number, y0: number) {
     const a = rx;
     const b = ry;
+    // 假如椭圆半径为0则返回圆心
+    if (a === 0 || b === 0) {
+      return {
+        x,
+        y,
+      };
+    }
     // 转换成 0， 0 为中心的椭圆计算
     const relativeX = x0 - x;
     const relativeY = y0 - y;
     const px = Math.abs(relativeX);
     const py = Math.abs(relativeY);
+    const squareA = a * a;
+    const squareB = b * b;
     // const angle0 = Math.atan2(relativeY, relativeX);
     let t = Math.PI / 4;
     let nearestX; // 椭圆上的任一点
@@ -67,8 +76,8 @@ export default {
       nearestX = a * Math.cos(t);
       nearestY = b * Math.sin(t);
 
-      const ex = ((a * a - b * b) * Math.cos(t) ** 3) / a;
-      const ey = ((b * b - a * a) * Math.sin(t) ** 3) / b;
+      const ex = ((squareA - squareB) * Math.cos(t) ** 3) / a;
+      const ey = ((squareB - squareA) * Math.sin(t) ** 3) / b;
       const rx1 = nearestX - ex;
       const ry1 = nearestY - ey;
 
@@ -78,7 +87,7 @@ export default {
       const q = Math.hypot(qy, qx);
 
       const delta_c = r * Math.asin((rx1 * qy - ry1 * qx) / (r * q));
-      const delta_t = delta_c / Math.sqrt(a * a + b * b - nearestX * nearestX - nearestY * nearestY);
+      const delta_t = delta_c / Math.sqrt(squareA + squareB - nearestX * nearestX - nearestY * nearestY);
 
       t += delta_t;
       t = Math.min(Math.PI / 2, Math.max(0, t));

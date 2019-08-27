@@ -53,6 +53,22 @@ class Marker extends ShapeBase {
     }
   }
 
+  // 仅仅使用包围盒检测来进行拾取
+  // 所以不需要复写 isInStrokeOrPath 的方法
+  isOnlyHitBox() {
+    return true;
+  }
+
+  getInnerBox(attrs) {
+    const { x, y, r } = attrs;
+    return {
+      x: x - r,
+      y: y - r,
+      width: r * 2,
+      height: r * 2,
+    };
+  }
+
   _getPath() {
     const attrs = this.attr();
     const { x, y, r } = attrs;

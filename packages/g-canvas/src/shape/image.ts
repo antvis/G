@@ -20,8 +20,13 @@ class ImageShape extends ShapeBase {
       matrix: null,
     };
   }
+  // image 不计算 stroke
+  isStroke() {
+    return false;
+  }
 
   // 仅仅使用包围盒检测来进行拾取
+  // 所以不需要复写 isInStrokeOrPath 的方法
   isOnlyHitBox() {
     return true;
   }
@@ -83,6 +88,16 @@ class ImageShape extends ShapeBase {
         attrs.height, Number(img.getAttribute('height'));
       }
     }
+  }
+
+  getInnerBox(attrs) {
+    const { x, y, width, height } = attrs;
+    return {
+      x,
+      y,
+      width,
+      height,
+    };
   }
 
   setAttr(name: string, value: any) {

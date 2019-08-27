@@ -42,8 +42,8 @@ describe('test canvas', () => {
     const rect = dom.getBoundingClientRect();
     const point = canvas.getClientByPoint(10, 20);
     expect(point).eqls({
-      clientX: rect.left + 10,
-      clientY: rect.top + 20,
+      x: rect.left + 10,
+      y: rect.top + 20,
     });
   });
 

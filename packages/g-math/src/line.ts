@@ -67,7 +67,7 @@ export default {
     if (cross < 0) {
       return distance(x1, y1, x, y);
     }
-    const lengthSquare = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y2);
+    const lengthSquare = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
     if (cross > lengthSquare) {
       return distance(x2, y2, x, y);
     }

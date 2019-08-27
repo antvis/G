@@ -1,7 +1,7 @@
 import { IShape } from '../interfaces';
 import { ShapeCfg, BBox } from '../types';
 import Element from './element';
-import { each, isArray } from '@antv/util';
+import { each, isArray } from '../util/util';
 
 abstract class AbstractShape extends Element implements IShape {
   constructor(cfg: ShapeCfg) {
