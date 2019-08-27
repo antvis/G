@@ -34,7 +34,8 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/util": "~2.0.0"
+    "@antv/util": "~2.0.0",
+    "@antv/g-base": "~1.0.0"
   },
   "__npminstall_done": false
 }
