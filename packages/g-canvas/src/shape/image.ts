@@ -100,8 +100,8 @@ class ImageShape extends ShapeBase {
     };
   }
 
-  setAttr(name: string, value: any) {
-    this.attrs[name] = value;
+  onAttrChange(name: string, value: any, originValue: any) {
+    super.onAttrChange(name, value, originValue);
     // 如果加载的已经是当前图片，则不再处理
     if (name === 'img') {
       // 可以加缓冲，&& this.get('imgSrc') !== value
