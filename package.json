@@ -48,13 +48,14 @@
     "contributor": "git-contributor",
     "link": "lerna link",
     "lint": "npm run eslint",
-    "tslint": "tslint ./packages/**/*.ts",
-    "tslint-fix": "tslint ./packages/**/*.ts --fix",
     "eslint": "eslint --ext .html,.js ./packages",
     "eslint-fix": "eslint --fix --ext .html,.js ./packages",
+    "tslint": "tslint ./packages/**/*.ts",
+    "tslint-fix": "tslint ./packages/**/*.ts --fix",
     "lint-staged": "lint-staged",
     "prettier": "prettier --write './packages/**/*.{js,ts}'",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "ci": "npm run lint && npm run bootstrap && npm run test"
   },
   "commitlint": {
     "extends": [
@@ -70,7 +71,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS && npm run lint && npm run bootstrap && npm run test"
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS && npm run lint"
     }
   },
   "repository": {
