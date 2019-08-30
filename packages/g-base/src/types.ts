@@ -1,4 +1,6 @@
 export type BBox = {
+  x: number;
+  y: number;
   minX: number;
   minY: number;
   maxX: number;

@@ -19,7 +19,7 @@ function getClientPoint(canvas, x, y) {
 const dom = document.createElement('div');
 document.body.appendChild(dom);
 dom.id = 'c1';
-describe.only('canvas test', () => {
+describe('canvas test', () => {
   const canvas = new Canvas({
     container: dom,
     width: 500,
@@ -54,10 +54,15 @@ describe.only('canvas test', () => {
     expect(circle.attr('r')).eql(10);
   });
 
-  it('draw', () => {
+  it('draw', (done) => {
     expect(getColor(canvas.get('context'), 10, 10)).eql('#000000');
+    // 默认的 draw 是延迟的所以要延迟测试
     canvas.draw();
-    expect(getColor(canvas.get('context'), 10, 10)).eql('#ff0000');
+    expect(getColor(canvas.get('context'), 10, 10)).eql('#000000');
+    setTimeout(() => {
+      expect(getColor(canvas.get('context'), 10, 10)).eql('#ff0000');
+      done();
+    }, 20);
   });
 
   it('hit', () => {
@@ -73,7 +78,6 @@ describe.only('canvas test', () => {
     expect(canvas.getChildren().length).eql(0);
   });
 
-  it('group width matrix', () => {});
   it('event click', () => {
     const circle = canvas.addShape({
       type: 'circle',
@@ -103,6 +107,12 @@ describe.only('canvas test', () => {
     });
     expect(called).eql(true);
     expect(clickShape).eql(circle);
+  });
+
+  it('changeSize', () => {
+    canvas.changeSize(800, 800);
+    expect(canvas.get('el').width).eql(1600);
+    expect(canvas.get('el').height).eql(1600);
   });
 
   it('destroy', () => {
