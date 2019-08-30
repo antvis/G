@@ -75,8 +75,8 @@ class Path extends ShapeBase {
   }
 
   // 更新属性时，检测是否更改了 path
-  setAttr(name: string, value: any) {
-    this.attrs[name] = value;
+  onAttrChange(name: string, value: any, originValue: any) {
+    super.onAttrChange(name, value, originValue);
     if (name === 'path') {
       this._setPathArr(value);
     }

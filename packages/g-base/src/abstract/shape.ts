@@ -2,7 +2,7 @@ import { IShape } from '../interfaces';
 import { ShapeCfg, BBox } from '../types';
 import Element from './element';
 import { each, isArray } from '../util/util';
-
+import { multiplyVec2 } from '../util/matrix';
 abstract class AbstractShape extends Element implements IShape {
   constructor(cfg: ShapeCfg) {
     super(cfg);
@@ -13,14 +13,16 @@ abstract class AbstractShape extends Element implements IShape {
     const bbox = this.getBBox();
     return bbox.minX <= refX && bbox.maxX >= refX && bbox.minY <= refY && bbox.maxY >= refY;
   }
+
   /**
    * 属性更改后需要做的事情
    * @protected
    */
-  afterAttrChange() {
+  afterAttrsChange() {
+    super.afterAttrsChange();
     this.clearCacheBBox();
   }
-  // 在子类上单独实现
+  // 计算包围盒时，需要缓存，这是一个高频的操作
   getBBox(): BBox {
     let bbox = this.get('bbox');
     if (!bbox) {
@@ -29,11 +31,58 @@ abstract class AbstractShape extends Element implements IShape {
     }
     return bbox;
   }
+  // 计算相对于画布的包围盒
+  getCanvasBBox(): BBox {
+    let canvasBox = this.get('canvasBox');
+    if (!canvasBox) {
+      canvasBox = this.calculateCanvasBBox();
+      this.set('canvasBox', canvasBox);
+    }
+    return canvasBox;
+  }
+
   /**
    * 计算包围盒的抽象方法
    * @return {BBox} 包围盒
    */
   abstract calculateBBox(): BBox;
+
+  applyMatrix(matrix: number[]) {
+    super.applyMatrix(matrix);
+    // 清理掉缓存的包围盒
+    this.set('canvasBox', null);
+  }
+
+  /**
+   * 计算相对于画布的包围盒，默认等同于 bbox
+   * @return {BBox} 包围盒
+   */
+  calculateCanvasBBox(): BBox {
+    const bbox = this.getBBox();
+    const totalMatrix = this.getTotalMatrix();
+    // 如果没有任何矩阵，则等同于计算 bbox
+    if (!totalMatrix) {
+      return bbox;
+    }
+    const topLeft = multiplyVec2(totalMatrix, [bbox.minX, bbox.minY]);
+    const topRight = multiplyVec2(totalMatrix, [bbox.maxX, bbox.minY]);
+    const bottomLeft = multiplyVec2(totalMatrix, [bbox.minX, bbox.maxY]);
+    const bottomRight = multiplyVec2(totalMatrix, [bbox.maxX, bbox.maxY]);
+    const minX = Math.min(topLeft[0], topRight[0], bottomLeft[0], bottomRight[0]);
+    const maxX = Math.max(topLeft[0], topRight[0], bottomLeft[0], bottomRight[0]);
+    const minY = Math.min(topLeft[1], topRight[1], bottomLeft[1], bottomRight[1]);
+    const maxY = Math.max(topLeft[1], topRight[1], bottomLeft[1], bottomRight[1]);
+    return {
+      x: minX,
+      y: minY,
+      minX,
+      minY,
+      maxX,
+      maxY,
+      width: maxX - minX,
+      height: maxY - minY,
+    };
+  }
 
   /**
    * @protected
@@ -41,6 +90,7 @@ abstract class AbstractShape extends Element implements IShape {
    */
   clearCacheBBox() {
     this.set('bbox', null);
+    this.set('canvasBox', null);
   }
 
   // 实现接口
