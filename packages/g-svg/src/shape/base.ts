@@ -26,11 +26,17 @@ class ShapeBase extends AbstractShape {
     const { x, y, width, height } = el.getBBox();
     const lineWidth = this.getHitLineWidth();
     const halfWidth = lineWidth / 2;
+    const minX = x - halfWidth;
+    const minY = y - halfWidth;
+    const maxX = x + width + halfWidth;
+    const maxY = y + height + halfWidth;
     return {
-      minX: x - halfWidth,
-      minY: y - halfWidth,
-      maxX: x + width + halfWidth,
-      maxY: y + height + halfWidth,
+      x: minX,
+      y: minY,
+      minX,
+      minY,
+      maxX,
+      maxY,
       width: width + lineWidth,
       height: height + lineWidth,
     };
