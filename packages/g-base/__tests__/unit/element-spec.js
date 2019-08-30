@@ -35,6 +35,9 @@ const canvas = {
 
 describe('test element', () => {
   const group = {
+    get(name) {
+      return this[name];
+    },
     getChildren() {
       return this.children;
     },

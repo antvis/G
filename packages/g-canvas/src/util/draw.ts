@@ -1,7 +1,9 @@
 import { IElement } from '@antv/g-base/lib/interfaces';
 import { ICanvasElement } from '../interfaces';
+import { Region } from '../types';
 import { parseStyle } from './parse';
 import getArcParams from './arc-params';
+import { mergeRegion } from './util';
 
 const SHAPE_ATTRS_MAP = {
   fill: 'fillStyle',
@@ -32,13 +34,18 @@ export function applyAttrsToContext(context: CanvasRenderingContext2D, element: 
   }
 }
 
-export function drawChildren(context: CanvasRenderingContext2D, children: IElement[]) {
+export function drawChildren(context: CanvasRenderingContext2D, children: IElement[], region?: Region) {
   for (let i = 0; i < children.length; i++) {
     const child = children[i] as ICanvasElement;
-    child.draw(context);
+    if (child.get('visible')) {
+      child.draw(context, region);
+    } else {
+      child.skipDraw();
+    }
   }
 }
 
+// 绘制 path
 export function drawPath(context, path, arcParamsCache) {
   let currentPoint = [0, 0]; // 当前图形
   let startMovePoint = [0, 0]; // 开始 M 的点，可能会有多个
@@ -106,4 +113,41 @@ export function drawPath(context, path, arcParamsCache) {
       currentPoint = [params[len - 2], params[len - 1]];
     }
   }
+}
+
+// 刷新图形元素(Shape 或者 Group)
+export function refreshElement(element, changeType) {
+  const canvas = element.get('canvas');
+  // 只有存在于 canvas 上时生效
+  if (canvas) {
+    if (changeType === 'remove') {
+      // 一旦 remove，则无法在 element 上拿到包围盒
+      // destroy 后所有属性都拿不到，所以需要暂存一下
+      // 这是一段 hack 的代码
+      element._cacheCanvasBBox = element.get('cacheCanvasBBox');
+    }
+    if (!element.get('hasChanged')) {
+      // 防止反复刷新
+      if (canvas.get('localRefresh')) {
+        canvas.refreshElement(element, changeType, canvas);
+      }
+      if (canvas.get('autoDraw')) {
+        canvas.draw();
+      }
+      element.set('hasChanged', true);
+    }
+  }
+}
+
+export function getRefreshRegion(element) {
+  let region;
+  if (!element.destroyed) {
+    const cacheBox = element.get('cacheCanvasBBox');
+    const bbox = element.getCanvasBBox();
+    region = mergeRegion(cacheBox, bbox);
+  } else {
+    // 因为元素已经销毁所以无法获取到缓存的包围盒
+    region = element['_cacheCanvasBBox'];
+  }
+  return region;
 }

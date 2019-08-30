@@ -33,6 +33,7 @@
   ],
   "devDependencies": {
     "@antv/torch": "^1.0.0",
+    "@antv/gl-matrix": "~2.7.1",
     "less": "^3.9.0"
   },
   "homepage": "https://github.com/antvis/util#readme",

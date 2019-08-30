@@ -1,41 +1,113 @@
-# color-util
+# G-Base
 
-> 为 `antv` 开发的轻量级工具方法库。
+> 可视化的绘图引擎的接口定义和抽象实现
 
 
 ## 安装下载
 
-> tnpm i --save @antv/util
+> tnpm i --save @antv/g-base
 
 ```js
-// 所有的 api 是都这么引入，名字不同而已
-import { gradient } from '@antv/color-util';
+import { Base } from '@antv/g-base';
 
-const grad = gradient(['red', 'blue']);
-const color1 = grad(0.1);
-const color2 = grad(0.2);
+class MyClass extends Base {
+
+}
 
 ```
 
 
 ## API 文档
+G-Base 中定义了绘图引擎的接口、抽象类和工具方法
 
-> 目前使用到的、且推荐使用的 API 文档，不在文档内的不建议使用。
-* rgb2arr('#ffeedd') 将 rgb 转换成 16 进制的数组
-* gradient(colors) ： 'Function' 渐变色计算
-	+ colors ： 颜色的数组，例如 ['red', 'blue']
-	+ 返回值是一个函数，可以传入百分百，返回函数
- ```js
-const grad = gradient(['red', 'blue']);
-const color1 = grad(0.1);
-const color2 = grad(0.2);
- ```
-* toRGB(color) : 将颜色转换成 RGB 的格式
+### 接口定义
+
+#### IBase
+事件接口定义
+```js
+  /**
+   * 绑定事件
+   * @param {string}   eventName 事件名
+   * @param {Function} callback  回调函数
+   */
+  on(eventName: string, callback: Function);
+  /**
+   * 移除事件
+   */
+  off();
+  /**
+   * 移除事件
+   * @param {string} eventName 事件名
+   */
+  off(eventName: string);
+  /**
+   * 移除事件
+   * @param {string}   eventName 事件名
+   * @param {Function} callback  回调函数
+   */
+  off(eventName: string, callback: Function);
+  /**
+   * 触发事件, trigger 的别名函数
+   * @param {string} eventName 事件名称
+   * @param {object} args 参数
+   */
+  emit(eventName: string, eventObject: object);
+  /**
+   * 触发事件
+   * @param {string} eventName 事件名称
+   * @param {object} args 参数
+   */
+  trigger(eventName: string, eventObject: object);
+```
+属性接口定义
 
 ```js
-import { toRGB } from '@antv/color-util';
-toRGB('red');
-toRGB('rgb(240, 240, 233)');
+/**
+   * 获取属性值
+   * @param  {string} name 属性名
+   * @return {any} 属性值
+   */
+  get(name: string): any;
+  /**
+   * 设置属性值
+   * @param {string} name  属性名称
+   * @param {any}    value 属性值
+   */
+  set(name: string, value: any);
+
+  /**
+   * 是否销毁
+   * @type {boolean}
+   */
+  destroyed: boolean;
+
+  /**
+   * 销毁对象
+   */
+  destroy();
 ```
 
+#### IElement
 
+#### IGroup
+
+#### IShape
+
+#### ICanvas
+
+
+### 抽象类定义
+
+#### Base
+
+#### AbstractShape
+
+#### AbstractGroup
+
+#### AbstractCanvas
+
+### 其他公用类
+
+#### GraphEvent
+
+#### EventController

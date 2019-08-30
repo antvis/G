@@ -1,6 +1,7 @@
 import { AbstractShape } from '@antv/g-base';
-import { isNil } from '../util/util';
-import { applyAttrsToContext } from '../util/draw';
+import { isNil, intersectRect } from '../util/util';
+import { applyAttrsToContext, refreshElement } from '../util/draw';
+import { Region } from '../types';
 
 class ShapeBase extends AbstractShape {
   getDefaultAttrs() {
@@ -11,6 +12,14 @@ class ShapeBase extends AbstractShape {
     attrs['strokeOpacity'] = 1;
     attrs['fillOpacity'] = 1;
     return attrs;
+  }
+
+  /**
+   * 一些方法调用会引起画布变化
+   * @param {string} changeType 改变的类型
+   */
+  onCanvasChange(changeType: string) {
+    refreshElement(this, changeType);
   }
 
   calculateBBox() {
@@ -64,12 +73,33 @@ class ShapeBase extends AbstractShape {
     }
   }
 
-  draw(context) {
+  // 绘制图形时需要考虑 region 限制
+  draw(context: CanvasRenderingContext2D, region?: Region) {
+    // 如果指定了区域，则同指定区域相交时渲染
+    if (region) {
+      const bbox = this.getCanvasBBox();
+      if (!intersectRect(region, bbox)) {
+        return;
+      }
+    }
     context.save();
     this._applyClip(context, this.getClip() as ShapeBase);
     applyAttrsToContext(context, this);
     this.drawPath(context);
     context.restore();
+    this._afterDraw();
+  }
+
+  _afterDraw() {
+    // 绘制的时候缓存包围盒
+    this.set('cacheCanvasBBox', this.getCanvasBBox());
+    // 绘制后消除标记
+    this.set('hasChanged', false);
+  }
+
+  skipDraw() {
+    this.set('cacheCanvasBBox', null);
+    this.set('hasChanged', false);
   }
 
   /**
