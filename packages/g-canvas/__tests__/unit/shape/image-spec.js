@@ -31,7 +31,7 @@ describe('image test', () => {
       expect(image.attr('width')).eqls(50);
       expect(image.attr('height')).eqls(50);
       done();
-    }, 100);
+    }, 1000);
   });
 
   it('draw image by src', () => {
