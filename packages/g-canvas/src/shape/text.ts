@@ -57,8 +57,8 @@ class Text extends ShapeBase {
   }
 
   // 更新属性时，检测是否更改了 font、text
-  setAttr(name: string, value: any) {
-    this.attrs[name] = value;
+  onAttrChange(name: string, value: any, originValue: any) {
+    super.onAttrChange(name, value, originValue);
     if (name.startsWith('font')) {
       this._assembleFont();
     }

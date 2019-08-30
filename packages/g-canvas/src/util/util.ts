@@ -40,6 +40,23 @@ export function getOffScreenContext() {
   return offScreenCtx;
 }
 
+export function intersectRect(box1, box2) {
+  return !(box2.minX > box1.maxX || box2.maxX < box1.minX || box2.minY > box1.maxY || box2.maxY < box1.minY);
+}
+
+// 合并两个区域
+export function mergeRegion(region1, region2) {
+  if (!region1 || !region2) {
+    return region1 || region2;
+  }
+  return {
+    minX: Math.min(region1.minX, region2.minX),
+    minY: Math.min(region1.minY, region2.minY),
+    maxX: Math.max(region1.maxX, region2.maxX),
+    maxY: Math.max(region1.maxY, region2.maxX),
+  };
+}
+
 export { default as isNil } from '@antv/util/lib/is-nil';
 export { default as isString } from '@antv/util/lib/is-string';
 export { default as isFunction } from '@antv/util/lib/is-function';
@@ -48,3 +65,5 @@ export { default as each } from '@antv/util/lib/each';
 export { default as toRadian } from '@antv/util/lib/to-radian';
 export { default as mod } from '@antv/util/lib/mod';
 export { default as isNumberEqual } from '@antv/util/lib/is-number-equal';
+export { default as requestAnimationFrame } from '@antv/util/lib/request-animation-frame';
+export { default as clearAnimationFrame } from '@antv/util/lib/clear-animation-frame';

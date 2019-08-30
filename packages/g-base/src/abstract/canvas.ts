@@ -1,19 +1,10 @@
-import Base from './base';
-import { IElement, IShape, IGroup, ICanvas, IContainer, ICtor } from '../interfaces';
-import { ShapeCfg, CanvasCfg, Point } from '../types';
-import ContainerUtil from '../util/container';
+import Container from './container';
+import { ICanvas } from '../interfaces';
+import { CanvasCfg, Point } from '../types';
 import { isBrowser, isString, isObject } from '../util/util';
 const PX_SUFFIX = 'px';
 
-abstract class Canvas extends Base implements ICanvas {
-  getDefaultCfg() {
-    const cfg = super.getDefaultCfg();
-    cfg['children'] = [];
-    cfg['visible'] = true;
-    cfg['capture'] = true;
-    return cfg;
-  }
-
+abstract class Canvas extends Container implements ICanvas {
   constructor(cfg: CanvasCfg) {
     super(cfg);
     this.initContainer();
@@ -78,6 +69,7 @@ abstract class Canvas extends Base implements ICanvas {
     this.setDOMSize(width, height);
     this.set('width', width);
     this.set('height', height);
+    this.onCanvasChange('changeSize');
   }
 
   // 实现接口
@@ -124,49 +116,6 @@ abstract class Canvas extends Base implements ICanvas {
 
   getParent() {
     return null;
-  }
-
-  // 继承自 IContainer 的方法，由于 ts 的 mixin 非常复杂，而且很难控制好局部解耦
-  // 所以 canvas 和 group 中的代码重复
-  // 但是具体实现都已经提取到 util/container 中
-  abstract getShapeBase(): ICtor<IShape>;
-  abstract getGroupBase(): ICtor<IGroup>;
-
-  // 兼容老版本的接口
-  addShape(...args): IShape {
-    const type = args[0];
-    let cfg = args[1];
-    if (isObject(type)) {
-      cfg = type;
-    } else {
-      cfg['type'] = type;
-    }
-    return ContainerUtil.addShape(this, cfg);
-  }
-
-  addGroup(...args): IGroup {
-    const [groupClass, cfg] = args;
-    return ContainerUtil.addGroup(this, groupClass, cfg);
-  }
-
-  getShape(x: number, y: number): IShape {
-    return ContainerUtil.getShape(this, x, y);
-  }
-
-  add(element: IElement) {
-    ContainerUtil.add(this, element);
-  }
-
-  getChildren(): IElement[] {
-    return this.get('children');
-  }
-
-  sort() {
-    ContainerUtil.sort(this);
-  }
-
-  clear() {
-    ContainerUtil.clear(this);
   }
 
   destroy() {
