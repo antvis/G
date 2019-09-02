@@ -3,8 +3,16 @@
   "version": "0.0.1",
   "description": "geometry math",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "package.json",
+    "lib",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
-    "build": "rm -rf lib && tsc",
+    "build": "npm run clean && tsc",
+    "clean": "rm -rf lib",
     "coverage": "npm run coverage-generator && npm run coverage-viewer",
     "coverage-generator": "torch --coverage --compile --source-pattern src/*.js,src/**/*.js --opts __tests__/mocha.opts",
     "coverage-viewer": "torch-coverage",
@@ -35,7 +43,7 @@
   },
   "homepage": "https://github.com/antvis/util#readme",
   "dependencies": {
-    "@antv/util": "~2.0.0",
-    "@antv/gl-matrix": "~2.7.1"
+    "@antv/gl-matrix": "~2.7.1",
+    "@antv/util": "~2.0.0"
   }
 }

@@ -1,7 +1,9 @@
 build
 coverage
-dist
+esm
 lib
+dist
+build
 mocks
 node_modules
 packages/torch/renderer/index.html
