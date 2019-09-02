@@ -1,0 +1,118 @@
+/**
+ * @fileoverview text
+ * @author dengfuping_develop@163.com
+ */
+
+import { each } from '@antv/util';
+import { setTransform } from '../util/svg';
+import { SVG_ATTR_MAP } from '../constant';
+import ShapeBase from './base';
+
+const LETTER_SPACING = 0.3;
+
+const BASELINE_MAP = {
+  top: 'before-edge',
+  middle: 'central',
+  bottom: 'after-edge',
+  alphabetic: 'baseline',
+  hanging: 'hanging',
+};
+
+const ANCHOR_MAP = {
+  left: 'left',
+  start: 'left',
+  center: 'middle',
+  right: 'end',
+  end: 'end',
+};
+
+class Text extends ShapeBase {
+  type: string = 'text';
+  canFill: boolean = true;
+  canStroke: boolean = true;
+
+  getDefaultAttrs() {
+    const attrs = super.getDefaultAttrs();
+    return {
+      ...attrs,
+      x: 0,
+      y: 0,
+      text: null,
+      lineHeight: 1,
+      lineWidth: 1,
+      lineCount: 1,
+      fontSize: 12,
+      fontFamily: 'sans-serif',
+      fontStyle: 'normal',
+      fontWeight: 'normal',
+      fontVariant: 'normal',
+      textAlign: 'start',
+      textBaseline: 'bottom',
+      textArr: null,
+    };
+  }
+
+  createPath(context) {
+    const attrs = this.attr();
+    const el = this.get('el');
+    this._setFont();
+    each(attrs, (value, attr) => {
+      if (attr === 'text') {
+        this._setText(`${value}`);
+      } else if (attr === 'matrix' && value) {
+        setTransform(this);
+      } else if (SVG_ATTR_MAP[attr]) {
+        el.setAttribute(SVG_ATTR_MAP[attr], value);
+      }
+    });
+    el.setAttribute('paint-order', 'stroke');
+    el.setAttribute('style', 'stroke-linecap:butt; stroke-linejoin:miter;');
+  }
+
+  _setFont() {
+    const el = this.get('el');
+    const { fontSize, textBaseline, textAlign } = this.attr();
+
+    el.setAttribute('alignment-baseline', BASELINE_MAP[textBaseline] || 'baseline');
+    el.setAttribute('text-anchor', ANCHOR_MAP[textAlign] || 'left');
+    if (fontSize && +fontSize < 12) {
+      // 小于 12 像素的文本进行 scale 处理
+      this.attr('matrix', [1, 0, 0, 0, 1, 0, 0, 0, 1]);
+      this.transform();
+    }
+  }
+
+  _setText(text) {
+    const el = this.cfg.el;
+    const { x, textBaseline: baseline = 'bottom' } = this.attr();
+    if (!text) {
+      el.innerHTML = '';
+    } else if (~text.indexOf('\n')) {
+      const textArr = text.split('\n');
+      const textLen = textArr.length - 1;
+      let arr = '';
+      each(textArr, (segment, i: number) => {
+        if (i === 0) {
+          if (baseline === 'alphabetic') {
+            arr += `<tspan x="${x}" dy="${-textLen}em">${segment}</tspan>`;
+          } else if (baseline === 'top') {
+            arr += `<tspan x="${x}" dy="0.9em">${segment}</tspan>`;
+          } else if (baseline === 'middle') {
+            arr += `<tspan x="${x}" dy="${-(textLen - 1) / 2}em">${segment}</tspan>`;
+          } else if (baseline === 'bottom') {
+            arr += `<tspan x="${x}" dy="-${textLen + LETTER_SPACING}em">${segment}</tspan>`;
+          } else if (baseline === 'hanging') {
+            arr += `<tspan x="${x}" dy="${-(textLen - 1) - LETTER_SPACING}em">${segment}</tspan>`;
+          }
+        } else {
+          arr += `<tspan x="${x}" dy="1em">${segment}</tspan>`;
+        }
+      });
+      el.innerHTML = arr;
+    } else {
+      el.innerHTML = text;
+    }
+  }
+}
+
+export default Text;
