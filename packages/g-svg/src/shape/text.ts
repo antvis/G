@@ -4,6 +4,7 @@
  */
 
 import { each } from '@antv/util';
+import { detect } from 'detect-browser';
 import { setTransform } from '../util/svg';
 import { SVG_ATTR_MAP } from '../constant';
 import ShapeBase from './base';
@@ -15,6 +16,15 @@ const BASELINE_MAP = {
   middle: 'central',
   bottom: 'after-edge',
   alphabetic: 'baseline',
+  hanging: 'hanging',
+};
+
+// for FireFox
+const BASELINE_MAP_FOR_FIREFOX = {
+  top: 'text-before-edge',
+  middle: 'central',
+  bottom: 'text-after-edge',
+  alphabetic: 'alphabetic',
   hanging: 'hanging',
 };
 
@@ -73,7 +83,14 @@ class Text extends ShapeBase {
     const el = this.get('el');
     const { fontSize, textBaseline, textAlign } = this.attr();
 
-    el.setAttribute('alignment-baseline', BASELINE_MAP[textBaseline] || 'baseline');
+    const browser = detect();
+    if (browser && browser.name === 'firefox') {
+      // compatible with FireFox browser, ref: https://github.com/antvis/g/issues/119
+      el.setAttribute('dominant-baseline', BASELINE_MAP_FOR_FIREFOX[textBaseline] || 'alphabetic');
+    } else {
+      el.setAttribute('alignment-baseline', BASELINE_MAP[textBaseline] || 'baseline');
+    }
+
     el.setAttribute('text-anchor', ANCHOR_MAP[textAlign] || 'left');
     if (fontSize && +fontSize < 12) {
       // 小于 12 像素的文本进行 scale 处理
