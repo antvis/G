@@ -1,3 +1,4 @@
 --require source-map-support/register
 --recursive
 __tests__/unit
+__tests__/bugs

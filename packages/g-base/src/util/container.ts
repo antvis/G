@@ -2,7 +2,7 @@
  * @fileoverview 添加 shape 和 Group 的方法，因为 Canvas 和 Group 都需要，所以在这里实现
  * @author dxq613@gmail.com
  */
-import { IGroup, IElement, IShape, IContainer, IBase } from '../interfaces';
+import { IGroup, IElement, IShape, IContainer, ICanvas, IBase } from '../interfaces';
 import { ShapeCfg, GroupCfg } from '../types';
 import { upperFirst, isFunction, isObject, each, removeFromArray } from './util';
 
@@ -105,8 +105,25 @@ function add(container: IContainer, element: IElement) {
     removeChild(preParent, element, false);
   }
   element.set('parent', container);
-  element.set('canvas', canvas);
+  setCanvas(element, canvas);
   children.push(element);
+}
+
+/**
+ * 设置 canvas
+ * @param {IElement} element 元素
+ * @param {ICanvas}  canvas  画布
+ */
+function setCanvas(element: IElement, canvas: ICanvas) {
+  element.set('canvas', canvas);
+  if (element.isGroup()) {
+    const children = element.get('children');
+    if (children.length) {
+      children.forEach((child) => {
+        setCanvas(child, canvas);
+      });
+    }
+  }
 }
 
 function contains(container: IContainer, element: IElement): boolean {
