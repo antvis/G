@@ -25,7 +25,7 @@
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "babel-eslint": "~7.2.3",
-    "babel-loader": "^8.0.0",
+    "babel-loader": "^8.0.6",
     "babel-plugin-transform-remove-strict-mode": "~0.0.2",
     "chai": "~4.0.1",
     "electron": "~2.0.2",
@@ -41,10 +41,11 @@
     "spm-sinon": "~1.6.0",
     "torchjs": "~2.0.4",
     "uglify-js": "~3.0.15",
-    "webpack": "~3.4.1"
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.7"
   },
   "scripts": {
-    "build": "webpack",
+    "build": "NODE_ENV=production webpack",
     "build-lib": "babel src --out-dir lib",
     "ci": "npm run lint && npm run test",
     "compress": "uglifyjs --compress --mangle --output dist/g.min.js -- build/g.js",
@@ -74,6 +75,7 @@
     "@antv/util": "~1.3.1",
     "d3-ease": "~1.0.3",
     "d3-interpolate": "~1.1.5",
-    "d3-timer": "~1.0.6"
+    "d3-timer": "~1.0.6",
+    "size-plugin": "^2.0.0"
   }
 }
