@@ -9,7 +9,7 @@ module.exports = {
     filename: '[name].min.js',
     library: 'G',
     libraryTarget: 'umd',
-    path: resolve(__dirname, 'dist/'),
+    path: resolve(process.cwd(), 'dist/'),
   },
   resolve: {
     // Add `.ts` as a resolvable extension.
