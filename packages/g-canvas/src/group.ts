@@ -1,6 +1,6 @@
 import { AbstractGroup } from '@antv/g-base';
 import { Region } from './types';
-import Shape from './shape/index';
+import Shape from './shape';
 import { each, mergeRegion } from './util/util';
 import { applyAttrsToContext, drawChildren, refreshElement } from './util/draw';
 
