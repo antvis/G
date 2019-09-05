@@ -2,7 +2,7 @@ import { AbstractCanvas } from '@antv/g-base';
 import { IElement } from '@antv/g-base/lib/interfaces';
 import { Region } from './types';
 import EventController from '@antv/g-base/lib/event/event-contoller';
-import Shape from './shape/index';
+import Shape from './shape';
 import Group from './group';
 import { drawChildren, getRefreshRegion } from './util/draw';
 import { getPixelRatio, each, mergeRegion, requestAnimationFrame, clearAnimationFrame } from './util/util';
