@@ -12,10 +12,10 @@ class Line extends ShapeBase {
   canFill: boolean = false;
   canStroke: boolean = true;
 
-  createPath(context) {
+  createPath(context, targetAttrs) {
     const attrs = this.attr();
     const el = this.get('el');
-    each(attrs, (value, attr) => {
+    each(targetAttrs || attrs, (value, attr) => {
       if (attr === 'startArrow' || attr === 'endArrow') {
         const id = isBoolean(value)
           ? context.getDefaultArrow(attrs, SVG_ATTR_MAP[attr])

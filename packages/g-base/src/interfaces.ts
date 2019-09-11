@@ -1,4 +1,4 @@
-import { BBox, ShapeCfg, GroupCfg, ClipCfg, Point } from './types';
+import { BBox, ShapeCfg, GroupCfg, ClipCfg, Point, ChangeType } from './types';
 
 export interface ICtor<T> {
   new (cfg: any): T;
@@ -96,7 +96,7 @@ export interface IElement extends IBase {
    * 这个方法一般不要直接调用，在实现 element 的继承类时可以复写
    * @param {string} changeType [description]
    */
-  onCanvasChange(changeType: string);
+  onCanvasChange(changeType: ChangeType);
 
   /**
    * 是否是分组
@@ -292,6 +292,11 @@ export interface IContainer extends IBase {
    */
   add(element: IElement);
   /**
+   * 获取父元素
+   * @return {IContainer} 父元素一般是 Group 或者是 Canvas
+   */
+  getParent(): IContainer;
+  /**
    * 获取所有的子元素
    * @return {IElement[]} 子元素的集合
    */
@@ -306,7 +311,13 @@ export interface IContainer extends IBase {
   clear();
 }
 
-export interface IGroup extends IElement, IContainer {}
+export interface IGroup extends IElement, IContainer {
+  /**
+   * 是否是实体分组，即对应实际的渲染元素
+   * @return {boolean} 是否是实体分组
+   */
+  isEntityGroup(): boolean;
+}
 
 export interface IShape extends IElement {
   /**

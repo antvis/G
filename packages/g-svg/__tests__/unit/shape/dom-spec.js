@@ -28,11 +28,9 @@ describe('SVG dom', () => {
     expect(dom.attr('html')).eql('<div><h1>Hello World</h1></div>');
   });
 
-  it('draw', () => {
-    expect(dom.cfg.el).eql(undefined);
-    canvas.draw();
-    expect(dom.cfg.el).not.eql(undefined);
-    expect(dom.cfg.el.getAttribute('width')).eql('200');
+  it('autoDraw', () => {
+    expect(dom.get('el')).not.eql(undefined);
+    expect(dom.get('el').getAttribute('width')).eql('200');
   });
 
   it('bbox', () => {
@@ -56,7 +54,6 @@ describe('SVG dom', () => {
       height: 100,
       html: '<div><h1>Hello World</h1></div>',
     });
-    canvas.draw();
     const bbox = dom.getBBox();
     expect(bbox.minX).eql(0);
     expect(bbox.minY).eql(0);
