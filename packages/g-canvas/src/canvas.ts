@@ -1,5 +1,6 @@
 import { AbstractCanvas } from '@antv/g-base';
 import { IElement } from '@antv/g-base/lib/interfaces';
+import { ChangeType } from '@antv/g-base/lib/types';
 import { Region } from './types';
 import EventController from '@antv/g-base/lib/event/event-contoller';
 import Shape from './shape';
@@ -46,9 +47,9 @@ class Canvas extends AbstractCanvas {
 
   /**
    * 一些方法调用会引起画布变化
-   * @param {string} changeType 改变的类型
+   * @param {ChangeType} changeType 改变的类型
    */
-  onCanvasChange(changeType: string) {
+  onCanvasChange(changeType: ChangeType) {
     // 排序时图形的层次发生变化，
     // 画布大小改变可能也会引起变化
     if (changeType === 'sort' || changeType === 'changeSize') {

@@ -10,7 +10,6 @@ export const SHAPE_TO_TAGS = {
   image: 'image',
   ellipse: 'ellipse',
   dom: 'foreignObject',
-  group: 'g',
 };
 
 export const SVG_ATTR_MAP = {
@@ -51,19 +50,6 @@ export const SVG_ATTR_MAP = {
   id: 'id',
   style: 'style',
   preserveAspectRatio: 'preserveAspectRatio',
-};
-
-export const SVG_TAG_MAP = {
-  svg: 'svg',
-  circle: 'circle',
-  rect: 'rect',
-  text: 'text',
-  path: 'path',
-  foreignObject: 'foreignObject',
-  polygon: 'polygon',
-  polyline: 'polyline',
-  ellipse: 'ellipse',
-  image: 'image',
 };
 
 export const EVENTS = [

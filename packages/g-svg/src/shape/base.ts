@@ -1,15 +1,16 @@
 import { AbstractShape } from '@antv/g-base';
+import { ShapeAttrs, ChangeType } from '@antv/g-base/lib/types';
+import { ISVGShape } from '../interfaces';
 import Defs from '../defs';
-import { createDom, setShadow, setTransform, setClip } from '../util/svg';
+import { setShadow, setTransform, setClip } from '../util/svg';
+import { createDom } from '../util/dom';
+import { refreshElement } from '../util/draw';
 import { SVG_ATTR_MAP } from '../constant';
 
-class ShapeBase extends AbstractShape {
+class ShapeBase extends AbstractShape implements ISVGShape {
   type: string = 'svg';
   canFill: boolean = false;
   canStroke: boolean = false;
-  cfg: {
-    el: SVGAElement;
-  };
 
   getDefaultAttrs() {
     const attrs = super.getDefaultAttrs();
@@ -19,6 +20,22 @@ class ShapeBase extends AbstractShape {
     attrs['strokeOpacity'] = 1;
     attrs['fillOpacity'] = 1;
     return attrs;
+  }
+
+  // 覆盖基类的 afterAttrsChange 方法
+  afterAttrsChange(targetAttrs: ShapeAttrs) {
+    super.afterAttrsChange(targetAttrs);
+    const canvas = this.get('canvas');
+    const context = canvas.get('context');
+    this.updatePath(context, targetAttrs);
+  }
+
+  /**
+   * 一些方法调用会引起画布变化
+   * @param {string} changeType 改变的类型
+   */
+  onCanvasChange(changeType: ChangeType) {
+    refreshElement(this, changeType);
   }
 
   calculateBBox() {
@@ -52,16 +69,12 @@ class ShapeBase extends AbstractShape {
     return (stroke || strokeStyle) && this.canStroke;
   }
 
-  // 同 shape 中的方法重复了
-  _applyClip(context, clip: ShapeBase) {
-    if (clip) {
-      clip.createPath(context);
-      setClip(this, context);
-    }
+  applyClip(context) {
+    setClip(this, context);
   }
 
   draw(context) {
-    this._applyClip(context, this.getClip() as ShapeBase);
+    this.applyClip(context);
     this.drawPath(context);
   }
 
@@ -74,30 +87,63 @@ class ShapeBase extends AbstractShape {
     this.createPath(context);
     this.shadow(context);
     this.strokeAndFill(context);
+    this.transform();
   }
 
+  /**
+   * 更新图形的路径
+   * @param {Defs} context 上下文
+   * @param {ShapeAttrs} targetAttrs 渲染的目标属性
+   */
+  updatePath(context: Defs, targetAttrs: ShapeAttrs) {
+    this.createPath(context, targetAttrs);
+    this.shadow(context, targetAttrs);
+    this.strokeAndFill(context, targetAttrs);
+    this.transform(targetAttrs);
+  }
+
+  /**
+   * @protected
+   * 绘制图形的路径
+   * @param {Defs} context 上下文
+   * @param {ShapeAttrs} targetAttrs 渲染的目标属性
+   */
+  createPath(context: Defs, targetAttrs?: ShapeAttrs) {}
+
   // stroke and fill
-  strokeAndFill(context) {
-    const { fill, fillStyle, stroke, strokeStyle, fillOpacity, strokeOpacity, lineWidth } = this.attr();
-    const el = this.cfg.el;
+  strokeAndFill(context, targetAttrs?) {
+    const attrs = this.attr();
+    const { fill, fillStyle, stroke, strokeStyle, fillOpacity, strokeOpacity, lineWidth } = targetAttrs || attrs;
+    const el = this.get('el');
 
     if (this.canFill) {
       // compatible with fillStyle
-      this._setColor(context, 'fill', fill || fillStyle);
-      el.setAttribute(SVG_ATTR_MAP['fillOpacity'], fillOpacity);
+      if (fill || fillStyle || !targetAttrs) {
+        this._setColor(context, 'fill', fill || fillStyle);
+      }
+      if (fillOpacity) {
+        el.setAttribute(SVG_ATTR_MAP['fillOpacity'], fillOpacity);
+      }
     }
 
     if (this.canStroke && lineWidth > 0) {
       // compatible with strokeStyle
-      this._setColor(context, 'stroke', stroke || strokeStyle);
-      el.setAttribute(SVG_ATTR_MAP['strokeOpacity'], strokeOpacity);
-      el.setAttribute(SVG_ATTR_MAP['lineWidth'], lineWidth);
+      if (stroke || strokeStyle || !targetAttrs) {
+        this._setColor(context, 'stroke', stroke || strokeStyle);
+      }
+      if (strokeOpacity) {
+        el.setAttribute(SVG_ATTR_MAP['strokeOpacity'], strokeOpacity);
+      }
+      if (lineWidth) {
+        el.setAttribute(SVG_ATTR_MAP['lineWidth'], lineWidth);
+      }
     }
   }
 
   _setColor(context, attr, value) {
     const el = this.get('el');
     if (!value) {
+      // need to set `none` to avoid default value
       el.setAttribute(SVG_ATTR_MAP[attr], 'none');
       return;
     }
@@ -119,26 +165,21 @@ class ShapeBase extends AbstractShape {
     }
   }
 
-  shadow(context) {
-    const { shadowOffsetX, shadowOffsetY, shadowBlur, shadowColor } = this.attr();
+  shadow(context, targetAttrs?) {
+    const attrs = this.attr();
+    const { shadowOffsetX, shadowOffsetY, shadowBlur, shadowColor } = targetAttrs || attrs;
     if (shadowOffsetX || shadowOffsetY || shadowBlur || shadowColor) {
       setShadow(this, context);
     }
   }
 
-  transform() {
-    const { matrix, rotate, transform } = this.attr();
+  transform(targetAttrs?) {
+    const attrs = this.attr();
+    const { matrix, rotate, transform } = targetAttrs || attrs;
     if (matrix || rotate || transform) {
       setTransform(this);
     }
   }
-
-  /**
-   * @protected
-   * 绘制图形的路径
-   * @param {Defs} context 上下文
-   */
-  createPath(context: Defs) {}
 
   isInShape(refX: number, refY: number): boolean {
     return this.isPointInPath(refX, refY);
@@ -147,7 +188,7 @@ class ShapeBase extends AbstractShape {
   isPointInPath(refX: number, refY: number): boolean {
     const el = this.get('el');
     const canvas = this.get('canvas');
-    const bbox = canvas.cfg.el.getBoundingClientRect();
+    const bbox = canvas.get('el').getBoundingClientRect();
     const clientX = refX + bbox.left;
     const clientY = refY + bbox.top;
     const element = document.elementFromPoint(clientX, clientY);

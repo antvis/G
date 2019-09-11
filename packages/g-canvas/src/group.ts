@@ -1,4 +1,5 @@
 import { AbstractGroup } from '@antv/g-base';
+import { ChangeType } from '@antv/g-base/lib/types';
 import { Region } from './types';
 import Shape from './shape';
 import { each, mergeRegion } from './util/util';
@@ -9,7 +10,7 @@ class Group extends AbstractGroup {
    * 一些方法调用会引起画布变化
    * @param {string} changeType 改变的类型
    */
-  onCanvasChange(changeType: string) {
+  onCanvasChange(changeType: ChangeType) {
     refreshElement(this, changeType);
   }
 

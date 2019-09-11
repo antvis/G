@@ -32,11 +32,9 @@ describe('SVG path', () => {
     });
   });
 
-  it('draw', () => {
-    expect(path.cfg.el).eql(undefined);
-    canvas.draw();
-    expect(path.cfg.el).not.eql(undefined);
-    expect(path.cfg.el.getAttribute('stroke-width')).eql('1');
+  it('autoDraw', () => {
+    expect(path.get('el')).not.eql(undefined);
+    expect(path.get('el').getAttribute('stroke-width')).eql('1');
   });
 
   it('bbox', () => {
@@ -59,7 +57,6 @@ describe('SVG path', () => {
   it('change', () => {
     path.attr('path', [['M', 100, 100], ['L', 200, 200], ['L', 300, 300]]);
     expect(path.attr('path')).eql([['M', 100, 100], ['L', 200, 200], ['L', 300, 300]]);
-    canvas.draw();
     const bbox = path.getBBox();
     expect(bbox.minX).eql(99.5);
     expect(bbox.minY).eql(99.5);

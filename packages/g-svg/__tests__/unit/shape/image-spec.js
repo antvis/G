@@ -23,11 +23,9 @@ describe('SVG Image', () => {
     expect(image.attr('y')).eql(0);
   });
 
-  it('draw', () => {
-    expect(image.cfg.el).eql(undefined);
-    canvas.draw();
-    expect(image.cfg.el).not.eql(undefined);
-    expect(image.cfg.el.getAttribute('x')).eql('0');
+  it('autoDraw', () => {
+    expect(image.get('el')).not.eql(undefined);
+    expect(image.get('el').getAttribute('x')).eql('0');
   });
 
   it('image', (done) => {
@@ -63,7 +61,6 @@ describe('SVG Image', () => {
     expect(image.attr('height')).eql(1024);
     image.attr('width', 600);
     image.attr('height', 800);
-    canvas.draw();
     expect(image.attr('width')).eql(600);
     expect(image.attr('height')).eql(800);
     const bbox = image.getBBox();

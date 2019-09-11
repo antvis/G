@@ -1,5 +1,5 @@
 import { IShape } from '../interfaces';
-import { ShapeCfg, BBox } from '../types';
+import { ShapeCfg, ShapeAttrs, BBox } from '../types';
 import Element from './element';
 import { each, isArray } from '../util/util';
 import { multiplyVec2 } from '../util/matrix';
@@ -17,9 +17,10 @@ abstract class AbstractShape extends Element implements IShape {
   /**
    * 属性更改后需要做的事情
    * @protected
+   * @param {ShapeAttrs} targetAttrs 渲染的图像属性
    */
-  afterAttrsChange() {
-    super.afterAttrsChange();
+  afterAttrsChange(targetAttrs: ShapeAttrs) {
+    super.afterAttrsChange(targetAttrs);
     this.clearCacheBBox();
   }
   // 计算包围盒时，需要缓存，这是一个高频的操作
