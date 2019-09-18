@@ -4,6 +4,7 @@
  */
 import { IGroup, IElement, IShape, IContainer, ICanvas, IBase } from '../interfaces';
 import { ShapeCfg, GroupCfg } from '../types';
+import Timeline from '../animate/timeline';
 import { upperFirst, isFunction, isObject, each, removeFromArray } from './util';
 
 const SHAPE_MAP = {};
@@ -100,12 +101,18 @@ function addGroup(container: IContainer, groupClass?: any, cfg?: GroupCfg): IGro
 function add(container: IContainer, element: IElement) {
   const canvas = getCanvas(container);
   const children = container.getChildren();
+  const timeline = container.get('timeline');
   const preParent = element.getParent();
   if (preParent) {
     removeChild(preParent, element, false);
   }
   element.set('parent', container);
-  setCanvas(element, canvas);
+  if (canvas) {
+    setCanvas(element, canvas);
+  }
+  if (timeline) {
+    setTimeline(element, timeline);
+  }
   children.push(element);
 }
 
@@ -121,6 +128,23 @@ function setCanvas(element: IElement, canvas: ICanvas) {
     if (children.length) {
       children.forEach((child) => {
         setCanvas(child, canvas);
+      });
+    }
+  }
+}
+
+/**
+ * 设置 timeline
+ * @param {IElement} element  元素
+ * @param {Timeline} timeline 时间轴
+ */
+function setTimeline(element: IElement, timeline: Timeline) {
+  element.set('timeline', timeline);
+  if (element.isGroup()) {
+    const children = element.get('children');
+    if (children.length) {
+      children.forEach((child) => {
+        setTimeline(child, timeline);
       });
     }
   }

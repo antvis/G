@@ -1,4 +1,4 @@
-import { BBox, ShapeCfg, GroupCfg, ClipCfg, Point } from './types';
+import { BBox, ElementAttrs, ShapeCfg, GroupCfg, ClipCfg, Point } from './types';
 
 export interface ICtor<T> {
   new (cfg: any): T;
@@ -185,19 +185,25 @@ export interface IElement extends IBase {
   invertFromMatrix(v: number[]);
 
   /**
-   * 执行动画
-   * @param  {Object}   toProps  动画最终状态
-   * @param  {Number}   [duration] 动画执行时间
-   * @param  {String}   [easing]   动画缓动效果
-   * @param  {Function} [callback] 动画执行后的回调
-   * @param  {Number}   [delay]    动画延迟时间
+   * 执行动画，支持多种函数签名
+   * 1. animate(toAttrs, duration: number, easing?: string, callback?: Function, delay?: number)
+   * 2. animate(onFrame, duration: number, easing?: string, callback?: Function, delay?: number)
+   * 3. animate(toAttrs, cfg: AnimateCfg)
+   * 4. animate(onFrame, cfg: AnimateCfg)
+   * 各个参数的含义为:
+   *   toAttrs  动画最终状态
+   *   duration 动画执行时间
+   *   easing   动画缓动效果
+   *   callback 动画执行后的回调
+   *   delay    动画延迟时间
    */
-  animate(toProps, duration?: number, easing?: string, callback?: Function, delay?: number);
+  animate(...args);
 
   /**
    * 停止图形的动画
+   * @param {boolean} toEnd 是否到动画的最终状态
    */
-  stopAnimate();
+  stopAnimate(toEnd?: boolean);
 
   /**
    * 暂停图形的动画
