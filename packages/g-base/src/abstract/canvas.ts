@@ -2,6 +2,8 @@ import Container from './container';
 import { ICanvas } from '../interfaces';
 import { CanvasCfg, Point } from '../types';
 import { isBrowser, isString, isObject } from '../util/util';
+import Timeline from '../animate/timeline';
+
 const PX_SUFFIX = 'px';
 
 abstract class Canvas extends Container implements ICanvas {
@@ -10,6 +12,7 @@ abstract class Canvas extends Container implements ICanvas {
     this.initContainer();
     this.initDom();
     this.initEvents();
+    this.initTimeline();
   }
 
   /**
@@ -49,6 +52,15 @@ abstract class Canvas extends Container implements ICanvas {
    * 初始化绑定的事件
    */
   initEvents() {}
+
+  /**
+   * @protected
+   * 初始化时间轴
+   */
+  initTimeline() {
+    const timeline = new Timeline(this);
+    this.set('timeline', timeline);
+  }
 
   /**
    * @protected
@@ -119,11 +131,16 @@ abstract class Canvas extends Container implements ICanvas {
   }
 
   destroy() {
+    const timeline = this.get('timeline');
     if (this.get('destroyed')) {
       return;
     }
     this.clear();
     // 同初始化时相反顺序调用
+    if (timeline) {
+      // 画布销毁时自动停止动画
+      timeline.stop();
+    }
     this.clearEvents();
     this.removeDom();
     super.destroy();
