@@ -3,10 +3,15 @@
  * @author dxq613@gmail.com
  */
 
-export { default as Interfaces } from './interfaces';
-export { default as Types } from './types';
+import * as Interfaces from './interfaces';
+import * as Types from './types';
+
+const pkg = require('../package.json');
+const version = pkg.version;
+
+export { Interfaces, Types, version };
+export { default as BBox } from './bbox';
 export { default as AbstractCanvas } from './abstract/canvas';
 export { default as AbstractGroup } from './abstract/group';
 export { default as AbstractShape } from './abstract/shape';
-
 export { default as Base } from './abstract/base';

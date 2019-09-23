@@ -1,5 +1,5 @@
 import { IContainer, ICtor, IShape, IGroup, IElement } from '../interfaces';
-import { BBox } from '../types';
+import BBox from '../bbox';
 import Element from './element';
 import ContainerUtil from '../util/container';
 import { isObject, each } from '../util/util';
@@ -69,18 +69,7 @@ abstract class Container extends Element implements IContainer {
       minY = 0;
       maxY = 0;
     }
-
-    const box = {
-      x: minX,
-      y: minY,
-      minX,
-      minY,
-      maxX,
-      maxY,
-      width: maxX - minX,
-      height: maxY - minY,
-    };
-    return box;
+    return BBox.fromRange(minX, minY, maxX, maxY);
   }
 
   // 获取画布的包围盒
@@ -114,18 +103,7 @@ abstract class Container extends Element implements IContainer {
       minY = 0;
       maxY = 0;
     }
-
-    const box = {
-      x: minX,
-      y: minY,
-      minX,
-      minY,
-      maxX,
-      maxY,
-      width: maxX - minX,
-      height: maxY - minY,
-    };
-    return box;
+    return BBox.fromRange(minX, minY, maxX, maxY);
   }
 
   abstract getShapeBase(): ICtor<IShape>;

@@ -1,5 +1,6 @@
 import * as BaseInterfaces from '@antv/g-base/lib/interfaces';
 import * as BaseTypes from '@antv/g-base/lib/types';
+import { BBox } from '@antv/g-base';
 import * as CurrentInterfaces from './interfaces';
 import * as CurrentTypes from './types';
 import Canvas from './canvas';
@@ -20,4 +21,4 @@ const Types = {
   ...CurrentTypes,
 };
 
-export { Interfaces, Types, Canvas, Group, Shape, version };
+export { Interfaces, Types, BBox, Canvas, Group, Shape, version };
