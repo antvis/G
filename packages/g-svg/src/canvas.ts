@@ -1,4 +1,5 @@
 import { AbstractCanvas } from '@antv/g-base';
+import EventController from '@antv/g-base/lib/event/event-contoller';
 import { toString } from '@antv/util';
 import { drawChildren } from './util/draw';
 import Shape from './shape';
@@ -34,6 +35,21 @@ class Canvas extends AbstractCanvas {
     const context = this.get('context');
     const children = this.getChildren();
     drawChildren(context, children);
+  }
+
+  // 覆盖基类中的 initEvents 方法
+  initEvents() {
+    const eventController = new EventController({
+      canvas: this,
+    });
+    eventController.init();
+    this.set('eventController', eventController);
+  }
+
+  // 覆盖基类中的 clearEvents 方法
+  clearEvents() {
+    const eventController = this.get('eventController');
+    eventController.destroy();
   }
 }
 
