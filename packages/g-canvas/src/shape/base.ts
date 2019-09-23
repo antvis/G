@@ -1,4 +1,4 @@
-import { AbstractShape } from '@antv/g-base';
+import { AbstractShape, BBox } from '@antv/g-base';
 import { isNil, intersectRect } from '../util/util';
 import { applyAttrsToContext, refreshElement } from '../util/draw';
 import { Region } from '../types';
@@ -22,7 +22,7 @@ class ShapeBase extends AbstractShape {
     refreshElement(this, changeType);
   }
 
-  calculateBBox() {
+  calculateBBox(): BBox {
     const type = this.get('type');
     const lineWidth = this.getHitLineWidth();
     const attrs = this.attr();
@@ -32,17 +32,7 @@ class ShapeBase extends AbstractShape {
     const minY = box.y - halfLineWidth;
     const maxX = box.x + box.width + halfLineWidth;
     const maxY = box.y + box.height + halfLineWidth;
-
-    return {
-      x: minX,
-      minX,
-      y: minY,
-      minY,
-      width: box.width + lineWidth,
-      height: box.height + lineWidth,
-      maxX,
-      maxY,
-    };
+    return BBox.fromRange(minX, minY, maxX, maxY);
   }
 
   /**
