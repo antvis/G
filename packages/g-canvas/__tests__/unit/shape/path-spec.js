@@ -161,16 +161,11 @@ describe('test path', () => {
 
   it('box', () => {
     path.attr('path', p1);
-    expect(path.getBBox()).eqls({
-      x: 10,
-      y: 10,
-      minX: 10,
-      minY: 10,
-      width: 10,
-      height: 10,
-      maxX: 20,
-      maxY: 20,
-    });
+    const bbox = path.getBBox();
+    expect(bbox.minX).equal(10);
+    expect(bbox.minY).equal(10);
+    expect(bbox.maxX).equal(20);
+    expect(bbox.maxY).equal(20);
 
     path.attr('path', p4);
     expect(path.getInnerBox()).eqls({
