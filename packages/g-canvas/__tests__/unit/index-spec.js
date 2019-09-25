@@ -6,7 +6,7 @@ describe('Canvas index', () => {
     expect(G.Interfaces).not.eql(undefined);
   });
 
-  it('Canvas', () => {
+  it('Types', () => {
     expect(G.Types).not.eql(undefined);
   });
 

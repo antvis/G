@@ -43,18 +43,12 @@ describe('circle test', () => {
 
   it('getBBox', () => {
     const bbox = circle.getBBox();
-    expect(bbox).eqls({
-      height: 21,
-      maxX: 40.5,
-      maxY: 40.5,
-      x: 19.5,
-      y: 19.5,
-      minX: 19.5,
-      minY: 19.5,
-      width: 21,
-    });
-    circle.attr('stroke', null);
+    expect(bbox.minX).equal(19.5);
+    expect(bbox.minY).equal(19.5);
+    expect(bbox.maxX).equal(40.5);
+    expect(bbox.maxY).equal(40.5);
 
+    circle.attr('stroke', null);
     const bbox1 = circle.getBBox();
     expect(bbox).not.eqls(bbox1);
   });

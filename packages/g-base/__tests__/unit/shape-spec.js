@@ -54,22 +54,18 @@ describe('test element', () => {
   });
   it('getBBox', () => {
     const bbox = shape.getBBox();
-    expect(bbox).eqls({
-      minX: 0,
-      minY: 0,
-      maxX: 100,
-      maxY: 100,
-    });
+    expect(bbox.minX).equal(0);
+    expect(bbox.minY).equal(0);
+    expect(bbox.maxX).equal(100);
+    expect(bbox.maxY).equal(100);
   });
 
   it('getCanvasBBox', () => {
     const bbox = shape.getCanvasBBox();
-    expect(bbox).eqls({
-      minX: 0,
-      minY: 0,
-      maxX: 100 * 2,
-      maxY: 100 * 2,
-    });
+    expect(bbox.minX).equal(0);
+    expect(bbox.minY).equal(0);
+    expect(bbox.maxX).equal(100 * 2);
+    expect(bbox.maxY).equal(100 * 2);
     expect(shape.getCanvasBBox()).eql(bbox); // 测试缓存
     expect(shape.get('canvasBox')).not.eqls(undefined);
     expect(shape.get('canvasBox')).not.eqls(null);
