@@ -1,6 +1,7 @@
-import Base from './base';
 import { IElement, IShape, IGroup, ICanvas } from '../interfaces';
-import { GroupCfg, ShapeCfg, BBox, ClipCfg, ShapeAttrs, ChangeType } from '../types';
+import { ClipCfg, ShapeAttrs, ChangeType } from '../types';
+import Base from './base';
+import BBox from '../bbox';
 import { removeFromArray, isObject, each, isArray, mix, upperFirst } from '../util/util';
 import { multiplyMatrix, multiplyVec2, invert } from '../util/matrix';
 const MATRIX = 'matrix';
