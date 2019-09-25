@@ -166,8 +166,8 @@ class ShapeBase extends AbstractShape implements ISVGShape {
 
   transform(targetAttrs?) {
     const attrs = this.attr();
-    const { matrix, rotate, transform } = targetAttrs || attrs;
-    if (matrix || rotate || transform) {
+    const { matrix } = targetAttrs || attrs;
+    if (matrix) {
       setTransform(this);
     }
   }
