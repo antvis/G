@@ -136,7 +136,7 @@ export type AnimateCfg = {
 
 export type OnFrame = (ratio: number) => ElementAttrs;
 
-export type Animator = AnimateCfg & {
+export type Animation = AnimateCfg & {
   id: string;
   fromAttrs: {
     [key: string]: any;
@@ -144,11 +144,9 @@ export type Animator = AnimateCfg & {
   toAttrs: {
     [key: string]: any;
   };
-  fromMatrix: number[];
-  toMatrix?: number[];
+  startTime: number;
   pathFormatted: boolean;
   onFrame?: OnFrame;
-  startTime: number;
   _paused?: boolean;
   _pauseTime?: number;
 };

@@ -393,7 +393,7 @@ describe('animate', () => {
       expect(shape.attr('x')).not.eqls(100);
       expect(shape.attr('y')).not.eqls(100);
       // 暂停中
-      expect(shape.get('pause').isPaused).eqls(true);
+      expect(shape.isAnimatePaused()).eqls(true);
       // 动画暂停时，animating 仍然为 true
       expect(shape.get('animating')).eqls(true);
       expect(flag).eqls(1);
@@ -401,9 +401,56 @@ describe('animate', () => {
       shape.resumeAnimate();
       expect(shape.attr('x')).eqls(pauseAttrs.x);
       expect(shape.attr('y')).eqls(pauseAttrs.y);
-      expect(shape.get('pause').isPaused).eqls(false);
+      expect(shape.isAnimatePaused()).eqls(false);
       expect(flag).eqls(2);
       done();
     }, 300);
+  });
+
+  it.only('autoDraw = false', (done) => {
+    const newCanvas = new MyCanvas({
+      container: 'canvas-animate',
+      width: 1000,
+      height: 1000,
+      autoDraw: false, // 手动更新
+    });
+    const shape = new Shape({
+      attrs: {
+        x: 50,
+        y: 50,
+      },
+    });
+    newCanvas.add(shape);
+    let flag = false;
+    shape.animate(
+      {
+        x: 100,
+        y: 100,
+      },
+      {
+        duration: 500,
+        easing: 'easeLinear',
+        delay: 100,
+        callback: () => {
+          flag = true;
+        },
+      }
+    );
+    expect(shape.attr('x')).eqls(50);
+    expect(shape.attr('y')).eqls(50);
+    expect(flag).eqls(false);
+    setTimeout(() => {
+      expect(shape.attr('x')).not.eqls(50);
+      expect(shape.attr('x')).not.eqls(100);
+      expect(shape.attr('y')).not.eqls(50);
+      expect(shape.attr('y')).not.eqls(100);
+      expect(flag).eqls(false);
+    }, 550);
+    setTimeout(() => {
+      expect(shape.attr('x')).eqls(100);
+      expect(shape.attr('y')).eqls(100);
+      expect(flag).eqls(true);
+      done();
+    }, 700);
   });
 });
