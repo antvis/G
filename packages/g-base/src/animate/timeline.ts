@@ -4,20 +4,18 @@ import * as d3Ease from 'd3-ease';
 import { interpolate, interpolateArray } from 'd3-interpolate'; // 目前整体动画只需要数值和数组的差值计算
 import * as PathUtil from '../util/path';
 import { ICanvas, IElement } from '../interfaces';
-import { Animator } from '../types';
+import { Animation } from '../types';
 
 /**
  * 使用 ratio 进行插值计算来更新属性
- * @param {IElement} shape    元素
- * @param {Animator} animator 动画
- * @param {Animator} animator 动画执行时间(毫秒)
- * @return {boolean} 动画是否执行完成
+ * @param {IElement}  shape    元素
+ * @param {Animation} animation 动画
+ * @param {number}    ratio    比例
+ * @return {boolean}  动画是否执行完成
  */
-function _update(shape: IElement, animator: Animator, ratio: number) {
+function _update(shape: IElement, animation: Animation, ratio: number) {
   const cProps = {}; // 此刻属性
-  const toAttrs = animator.toAttrs;
-  const fromAttrs = animator.fromAttrs;
-  const toMatrix = animator.toMatrix;
+  const { fromAttrs, toAttrs } = animation;
   if (shape.destroyed) {
     return;
   }
@@ -32,15 +30,15 @@ function _update(shape: IElement, animator: Animator, ratio: number) {
           fromPath = PathUtil.parsePathString(fromAttrs[k]); // 起始状态
           fromPath = PathUtil.fillPathByDiff(fromPath, toPath);
           fromPath = PathUtil.formatPath(fromPath, toPath);
-          animator.fromAttrs.path = fromPath;
-          animator.toAttrs.path = toPath;
-        } else if (!animator.pathFormatted) {
+          animation.fromAttrs.path = fromPath;
+          animation.toAttrs.path = toPath;
+        } else if (!animation.pathFormatted) {
           toPath = PathUtil.parsePathString(toAttrs[k]);
           fromPath = PathUtil.parsePathString(fromAttrs[k]);
           fromPath = PathUtil.formatPath(fromPath, toPath);
-          animator.fromAttrs.path = fromPath;
-          animator.toAttrs.path = toPath;
-          animator.pathFormatted = true;
+          animation.fromAttrs.path = fromPath;
+          animation.toAttrs.path = toPath;
+          animation.pathFormatted = true;
         }
         cProps[k] = [];
         for (let i = 0; i < toPath.length; i++) {
@@ -57,39 +55,38 @@ function _update(shape: IElement, animator: Animator, ratio: number) {
           }
           cProps[k].push(cPathPoint);
         }
+      } else if (k === 'matrix') {
+        const matrixFn = interpolateArray(fromAttrs[k], toAttrs[k]);
+        const currentMatrix = matrixFn(ratio);
+        shape.setMatrix(currentMatrix);
       } else {
         interf = interpolate(fromAttrs[k], toAttrs[k]);
         cProps[k] = interf(ratio);
       }
     }
   }
-  if (toMatrix) {
-    const mf = interpolateArray(animator.fromMatrix, toMatrix);
-    const cM = mf(ratio);
-    shape.setMatrix(cM);
-  }
   shape.attr(cProps);
 }
 
 /**
  * 根据自定义帧动画函数 onFrame 来更新属性
- * @param {IElement} shape    元素
- * @param {Animator} animator 动画
- * @param {number}   elapsed  动画执行时间(毫秒)
- * @return {boolean} 动画是否执行完成
+ * @param {IElement}  shape    元素
+ * @param {Animation} animation 动画
+ * @param {number}    elapsed  动画执行时间(毫秒)
+ * @return {boolean}  动画是否执行完成
  */
-function update(shape, animator, elapsed) {
-  const startTime = animator.startTime;
+function update(shape: IElement, animation: Animation, elapsed: number) {
+  const { startTime, delay } = animation;
   // 如果还没有开始执行或暂停，先不更新
-  if (elapsed < startTime + animator.delay || animator.isPaused) {
+  if (elapsed < startTime + delay || animation._paused) {
     return false;
   }
   let ratio;
-  const duration = animator.duration;
-  const easing = animator.easing;
+  const duration = animation.duration;
+  const easing = animation.easing;
   // 已执行时间
-  elapsed = elapsed - startTime - animator.delay;
-  if (animator.repeat) {
+  elapsed = elapsed - startTime - animation.delay;
+  if (animation.repeat) {
     // 如果动画重复执行，则 elapsed > duration，计算 ratio 时需取模
     ratio = (elapsed % duration) / duration;
     ratio = d3Ease[easing](ratio);
@@ -100,22 +97,19 @@ function update(shape, animator, elapsed) {
       ratio = d3Ease[easing](ratio);
     } else {
       // 动画已执行完
-      if (animator.onFrame) {
-        shape.attr(animator.onFrame(1));
+      if (animation.onFrame) {
+        shape.attr(animation.onFrame(1));
       } else {
-        shape.attr(animator.toAttrs);
-      }
-      if (animator.toMatrix) {
-        shape.setMatrix(animator.toMatrix);
+        shape.attr(animation.toAttrs);
       }
       return true;
     }
   }
-  if (animator.onFrame) {
-    const attrs = animator.onFrame(ratio);
+  if (animation.onFrame) {
+    const attrs = animation.onFrame(ratio);
     shape.attr(attrs);
   } else {
-    _update(shape, animator, ratio);
+    _update(shape, animation, ratio);
   }
   return false;
 }
@@ -128,7 +122,6 @@ class Timeline {
   canvas: ICanvas;
   /**
    * 执行动画的元素列表
-   * 注意: timeline 中的 animators 表示动画元素队列，而 element 中的 animators 则表示单个元素上的动画队列，两者命名相同，但含义不同
    * @type {IElement[]}
    */
   animators: IElement[] = [];
@@ -158,8 +151,8 @@ class Timeline {
     const self = this;
     let isFinished = false;
     let shape: IElement;
-    let animators: Animator[];
-    let animator: Animator;
+    let animations: Animation[];
+    let animation: Animation;
     self.timer = d3Timer.timer((elapsed) => {
       self.current = elapsed;
       if (this.animators.length > 0) {
@@ -170,25 +163,29 @@ class Timeline {
             self.removeAnimator(i);
             continue;
           }
-          if (!shape.get('pause').isPaused) {
-            animators = shape.get('animators');
-            for (let j = animators.length - 1; j >= 0; j--) {
-              animator = animators[j];
-              isFinished = update(shape, animator, elapsed);
+          if (!shape.isAnimatePaused()) {
+            animations = shape.get('animations');
+            for (let j = animations.length - 1; j >= 0; j--) {
+              animation = animations[j];
+              isFinished = update(shape, animation, elapsed);
               if (isFinished) {
-                animators.splice(j, 1);
+                animations.splice(j, 1);
                 isFinished = false;
-                if (animator.callback) {
-                  animator.callback();
+                if (animation.callback) {
+                  animation.callback();
                 }
               }
             }
           }
-          if (animators.length === 0) {
+          if (animations.length === 0) {
             self.removeAnimator(i);
           }
         }
-        this.canvas.draw();
+        const autoDraw = this.canvas.get('autoDraw');
+        // 非自动更新模式下，需要手动更新
+        if (!autoDraw) {
+          this.canvas.draw();
+        }
       }
     });
   }
@@ -232,7 +229,11 @@ class Timeline {
       animator.stopAnimate(toEnd);
     });
     this.animators = [];
-    this.canvas.draw();
+    const autoDraw = this.canvas.get('autoDraw');
+    // 非自动更新模式下，需要手动更新
+    if (!autoDraw) {
+      this.canvas.draw();
+    }
   }
 
   /**

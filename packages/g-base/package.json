@@ -43,7 +43,6 @@
   },
   "homepage": "https://github.com/antvis/util#readme",
   "dependencies": {
-    "@antv/matrix-util": "^2.0.2",
     "@antv/util": "~2.0.0",
     "@types/d3-timer": "^1.0.9",
     "d3-ease": "^1.0.5",
