@@ -77,7 +77,10 @@ describe('test element', () => {
 
   it('getBBox', () => {
     const bbox = element.getBBox();
-    expect(bbox).eqls({ minX: 50, minY: 50, maxX: 100, maxY: 100 });
+    expect(bbox.minX).equal(50);
+    expect(bbox.minY).equal(50);
+    expect(bbox.maxX).equal(100);
+    expect(bbox.maxY).equal(100);
   });
 
   it('to front', () => {

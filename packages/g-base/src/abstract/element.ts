@@ -1,8 +1,9 @@
 import { clone, each, isFunction, isNumber, isObject, isArray, noop, mix, upperFirst, uniqueId } from '@antv/util';
 import { transform } from '@antv/matrix-util';
 import Base from './base';
+import BBox from '../bbox';
 import { IElement, IShape, IGroup, ICanvas } from '../interfaces';
-import { BBox, ClipCfg, OnFrame, ShapeAttrs, AnimateCfg, Animator } from '../types';
+import { ClipCfg, OnFrame, ShapeAttrs, AnimateCfg, Animator } from '../types';
 import { removeFromArray } from '../util/util';
 import { multiplyMatrix, multiplyVec2, invert } from '../util/matrix';
 

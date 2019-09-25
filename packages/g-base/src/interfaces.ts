@@ -1,4 +1,5 @@
-import { BBox, ElementAttrs, ShapeCfg, GroupCfg, ClipCfg, Point } from './types';
+import { ShapeCfg, GroupCfg, ClipCfg, Point } from './types';
+import BBox from './bbox';
 
 export interface ICtor<T> {
   new (cfg: any): T;

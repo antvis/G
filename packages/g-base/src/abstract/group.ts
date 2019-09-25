@@ -1,5 +1,4 @@
 import { IGroup } from '../interfaces';
-import { GroupCfg, ShapeCfg, BBox } from '../types';
 import Container from './container';
 import { each } from '../util/util';
 

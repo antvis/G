@@ -1,4 +1,4 @@
-import { AbstractShape } from '@antv/g-base';
+import { AbstractShape, BBox } from '@antv/g-base';
 import Defs from '../defs';
 import { createDom, setShadow, setTransform, setClip } from '../util/svg';
 import { SVG_ATTR_MAP } from '../constant';
@@ -21,7 +21,7 @@ class ShapeBase extends AbstractShape {
     return attrs;
   }
 
-  calculateBBox() {
+  calculateBBox(): BBox {
     const el = this.get('el');
     const { x, y, width, height } = el.getBBox();
     const lineWidth = this.getHitLineWidth();
@@ -30,16 +30,7 @@ class ShapeBase extends AbstractShape {
     const minY = y - halfWidth;
     const maxX = x + width + halfWidth;
     const maxY = y + height + halfWidth;
-    return {
-      x: minX,
-      y: minY,
-      minX,
-      minY,
-      maxX,
-      maxY,
-      width: width + lineWidth,
-      height: height + lineWidth,
-    };
+    return BBox.fromRange(minX, minY, maxX, maxY);
   }
 
   isFill() {

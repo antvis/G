@@ -87,16 +87,10 @@ describe('test group', () => {
     });
 
     const bbox = group.getBBox();
-    expect(bbox).eqls({
-      x: -20,
-      y: -20,
-      minX: -20,
-      minY: -20,
-      maxX: 30,
-      maxY: 30,
-      width: 50,
-      height: 50,
-    });
+    expect(bbox.minX).eqls(-20);
+    expect(bbox.minY).eqls(-20);
+    expect(bbox.maxX).eqls(30);
+    expect(bbox.maxY).eqls(30);
     const canvasBox = group.getCanvasBBox();
     expect(canvasBox).eqls(bbox);
   });
@@ -126,16 +120,11 @@ describe('test group', () => {
   it('clear', () => {
     group.clear();
     expect(group.getChildren().length).eqls(0);
-    expect(group.getBBox()).eqls({
-      x: 0,
-      y: 0,
-      minX: 0,
-      minY: 0,
-      maxX: 0,
-      maxY: 0,
-      width: 0,
-      height: 0,
-    });
+    const bbox = group.getBBox();
+    expect(bbox.minX).eqls(0);
+    expect(bbox.minY).eqls(0);
+    expect(bbox.maxX).eqls(0);
+    expect(bbox.maxY).eqls(0);
     expect(group.getCanvasBBox()).eqls(group.getBBox());
   });
 });
@@ -150,6 +139,7 @@ describe('test with matrix', () => {
   const m1 = [2, 0, 0, 0, 2, 0, 0, 0, 1];
   const m2 = [2, 0, 0, 0, 3, 0, 0, 0, 1];
   const m3 = [4, 0, 0, 0, 6, 0, 0, 0, 1];
+
   it('matrix', () => {
     expect(group.getTotalMatrix()).eqls(undefined);
     expect(group1.getTotalMatrix()).eqls(undefined);
@@ -165,6 +155,7 @@ describe('test with matrix', () => {
     group11.attr('matrix', m2);
     expect(group11.getTotalMatrix()).eqls(m3);
   });
+
   it('add group', () => {
     const group3 = group.addGroup();
     expect(group3.getTotalMatrix()).eqls(m);
@@ -199,23 +190,16 @@ describe('test with matrix', () => {
 
     group1.attr('matrix', null);
     expect(shape.getTotalMatrix()).eqls(m2);
-    expect(shape.getBBox()).eqls({
-      minX: 10,
-      minY: 10,
-      maxX: 30,
-      maxY: 30,
-    });
+    const bbox = shape.getBBox();
+    expect(bbox.minX).equal(10);
+    expect(bbox.minY).equal(10);
+    expect(bbox.maxX).equal(30);
+    expect(bbox.maxY).equal(30);
     const shapeCanvasBBox = shape.getCanvasBBox();
-    expect(shapeCanvasBBox).eqls({
-      x: 20,
-      y: 30,
-      minX: 20,
-      minY: 30,
-      maxX: 60,
-      maxY: 90,
-      width: 40,
-      height: 60,
-    });
+    expect(shapeCanvasBBox.minX).equal(20);
+    expect(shapeCanvasBBox.minY).equal(30);
+    expect(shapeCanvasBBox.maxX).equal(60);
+    expect(shapeCanvasBBox.maxY).equal(90);
     expect(group.getCanvasBBox()).eqls(shapeCanvasBBox);
   });
 
