@@ -95,7 +95,7 @@ export interface IElement extends IBase {
   /**
    * 当引擎画布变化时，可以调用这个方法，告知 canvas 图形属性发生了改变
    * 这个方法一般不要直接调用，在实现 element 的继承类时可以复写
-   * @param {string} changeType [description]
+   * @param {ChangeType} changeType 改变的类型
    */
   onCanvasChange(changeType: ChangeType);
 

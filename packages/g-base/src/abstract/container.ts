@@ -159,10 +159,6 @@ abstract class Container extends Element implements IContainer {
     }
   }
 
-  getParent(): IGroup {
-    return this.get('parent') as IGroup;
-  }
-
   getChildren(): IElement[] {
     return this.get('children') as IElement[];
   }

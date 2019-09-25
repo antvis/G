@@ -65,7 +65,7 @@ abstract class Element extends Base implements IElement {
   /**
    * @protected
    * 一些方法调用会引起画布变化
-   * @param {string} changeType 改变的类型
+   * @param {ChangeType} changeType 改变的类型
    */
   onCanvasChange(changeType: ChangeType) {}
 
