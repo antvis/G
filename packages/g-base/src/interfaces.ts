@@ -1,4 +1,4 @@
-import { ShapeCfg, GroupCfg, ClipCfg, Point, ChangeType } from './types';
+import { ShapeCfg, GroupCfg, ClipCfg, Point, ChangeType, AnimateCfg, ElementAttrs, OnFrame } from './types';
 import BBox from './bbox';
 
 export interface ICtor<T> {
@@ -186,19 +186,50 @@ export interface IElement extends IBase {
   invertFromMatrix(v: number[]);
 
   /**
-   * 执行动画
-   * @param  {Object}   toProps  动画最终状态
-   * @param  {Number}   [duration] 动画执行时间
-   * @param  {String}   [easing]   动画缓动效果
-   * @param  {Function} [callback] 动画执行后的回调
-   * @param  {Number}   [delay]    动画延迟时间
+   * 是否处于动画暂停状态
+   * @return {boolean} 是否处于动画暂停状态
    */
-  animate(toProps, duration?: number, easing?: string, callback?: Function, delay?: number);
+  isAnimatePaused();
+
+  /**
+   * 执行动画
+   * @param {ElementAttrs} toAttrs 动画最终状态
+   * @param {number}       duration 动画执行时间
+   * @param {string}       easing 动画缓动效果
+   * @param {function}     callback 动画执行后的回调
+   * @param {number}       delay 动画延迟时间
+   */
+  animate(toAttrs: ElementAttrs, duration: number, easing?: string, callback?: Function, delay?: number);
+
+  /**
+   * 执行动画
+   * @param {OnFrame}  onFrame  自定义帧动画函数
+   * @param {number}   duration 动画执行时间
+   * @param {string}   easing   动画缓动效果
+   * @param {function} callback 动画执行后的回调
+   * @param {number}   delay    动画延迟时间
+   */
+  animate(onFrame: OnFrame, duration: number, easing?: string, callback?: Function, delay?: number);
+
+  /**
+   * 执行动画
+   * @param {ElementAttrs} toAttrs 动画最终状态
+   * @param {AnimateCfg}   cfg     动画配置
+   */
+  animate(toAttrs, cfg: AnimateCfg);
+
+  /**
+   * 执行动画
+   * @param {OnFrame}    onFrame 自定义帧动画函数
+   * @param {AnimateCfg} cfg     动画配置
+   */
+  animate(onFrame, cfg: AnimateCfg);
 
   /**
    * 停止图形的动画
+   * @param {boolean} toEnd 是否到动画的最终状态
    */
-  stopAnimate();
+  stopAnimate(toEnd?: boolean);
 
   /**
    * 暂停图形的动画

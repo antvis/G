@@ -1,9 +1,11 @@
+import { each, isEqual, isFunction, isNumber, isObject, isArray, noop, mix, upperFirst, uniqueId } from '@antv/util';
 import { IElement, IShape, IGroup, ICanvas } from '../interfaces';
-import { ClipCfg, ShapeAttrs, ChangeType } from '../types';
+import { ClipCfg, ChangeType, OnFrame, ShapeAttrs, AnimateCfg, Animation } from '../types';
+import { removeFromArray } from '../util/util';
+import { multiplyMatrix, multiplyVec2, invert } from '../util/matrix';
 import Base from './base';
 import BBox from '../bbox';
-import { removeFromArray, isObject, each, isArray, mix, upperFirst } from '../util/util';
-import { multiplyMatrix, multiplyVec2, invert } from '../util/matrix';
+
 const MATRIX = 'matrix';
 const ARRAY_ATTRS = {
   matrix: 'matrix',
@@ -13,6 +15,10 @@ const ARRAY_ATTRS = {
 };
 
 const CLONE_CFGS = ['zIndex', 'capture', 'visible'];
+
+const RESERVED_PORPS = ['delay'];
+
+const COLOR_RELATED_PROPS = ['fill', 'fillStyle', 'stroke', 'strokeStyle'];
 
 // 需要考虑数组嵌套数组的场景
 // 数组嵌套对象的场景不考虑
@@ -28,6 +34,48 @@ function _cloneArrayAttr(arr) {
   return result;
 }
 
+function getFormatFromAttrs(toAttrs, shape) {
+  const fromAttrs = {};
+  const attrs = shape.attrs;
+  for (const k in toAttrs) {
+    fromAttrs[k] = attrs[k];
+  }
+  return fromAttrs;
+}
+
+function getFormatToAttrs(props, shape) {
+  const toAttrs = {};
+  const attrs = shape.attr();
+  each(props, (v, k) => {
+    if (COLOR_RELATED_PROPS.indexOf(k) !== -1 && /^[r,R,L,l]{1}[\s]*\(/.test(v)) {
+      // Do nothing, 渐变色不支持动画
+    } else if (RESERVED_PORPS.indexOf(k) === -1 && !isEqual(attrs[k], v)) {
+      toAttrs[k] = v;
+    }
+  });
+  return toAttrs;
+}
+
+function checkExistedAttrs(animations: Animation[], animation: Animation) {
+  if (animation.onFrame) {
+    return animations;
+  }
+  const { startTime, delay, duration } = animation;
+  const hasOwnProperty = Object.prototype.hasOwnProperty;
+  each(animations, (item) => {
+    if (startTime > item.startTime && delay + duration < item.delay + item.duration) {
+      each(animation.toAttrs, (v, k) => {
+        if (hasOwnProperty.call(item.toAttrs, k)) {
+          delete item.toAttrs[k];
+          delete item.fromAttrs[k];
+        }
+      });
+    }
+  });
+
+  return animations;
+}
+
 abstract class Element extends Base implements IElement {
   /**
    * @protected
@@ -35,6 +83,15 @@ abstract class Element extends Base implements IElement {
    * @type {ShapeAttrs}
    */
   attrs: ShapeAttrs = {};
+
+  constructor(cfg) {
+    super(cfg);
+    const attrs = this.getDefaultAttrs();
+    mix(attrs, cfg.attrs);
+    this.attrs = attrs;
+    this.initAttrs(attrs);
+    this.initAnimate(); // 初始化动画
+  }
 
   // override
   getDefaultCfg() {
@@ -54,14 +111,6 @@ abstract class Element extends Base implements IElement {
     };
   }
 
-  constructor(cfg) {
-    super(cfg);
-    const attrs = this.getDefaultAttrs();
-    mix(attrs, cfg.attrs);
-    this.attrs = attrs;
-    this.initAttrs(attrs);
-  }
-
   /**
    * @protected
    * 一些方法调用会引起画布变化
@@ -75,6 +124,15 @@ abstract class Element extends Base implements IElement {
    * @param {object} attrs 属性值
    */
   initAttrs(attrs: ShapeAttrs) {}
+
+  /**
+   * @protected
+   * 初始化动画
+   */
+  initAnimate() {
+    this.set('animable', true);
+    this.set('animating', false);
+  }
 
   isGroup() {
     return false;
@@ -335,14 +393,6 @@ abstract class Element extends Base implements IElement {
     return clone;
   }
 
-  animate(toProps, duration?: number, easing?: string, callback?: Function, delay?: number) {}
-
-  stopAnimate() {}
-
-  pauseAnimate() {}
-
-  resumeAnimate() {}
-
   destroy() {
     const destroyed = this.destroyed;
     if (destroyed) {
@@ -351,6 +401,172 @@ abstract class Element extends Base implements IElement {
     this.attrs = {};
     super.destroy();
     // this.onCanvasChange('destroy');
+  }
+
+  /**
+   * 是否处于动画暂停状态
+   * @return {boolean} 是否处于动画暂停状态
+   */
+  isAnimatePaused() {
+    return this.get('_pause').isPaused;
+  }
+
+  /**
+   * 执行动画，支持多种函数签名
+   * 1. animate(toAttrs: ElementAttrs, duration: number, easing?: string, callback?: () => void, delay?: number)
+   * 2. animate(onFrame: OnFrame, duration: number, easing?: string, callback?: () => void, delay?: number)
+   * 3. animate(toAttrs: ElementAttrs, cfg: AnimateCfg)
+   * 4. animate(onFrame: OnFrame, cfg: AnimateCfg)
+   * 各个参数的含义为:
+   *   toAttrs  动画最终状态
+   *   onFrame  自定义帧动画函数
+   *   duration 动画执行时间
+   *   easing   动画缓动效果
+   *   callback 动画执行后的回调
+   *   delay    动画延迟时间
+   */
+  animate(...args) {
+    this.set('animating', true);
+    let timeline = this.get('timeline');
+    if (!timeline) {
+      timeline = this.get('canvas').get('timeline');
+      this.set('timeline', timeline);
+    }
+    let animations = this.get('animations') || [];
+    // 初始化 tick
+    if (!timeline.timer) {
+      timeline.initTimer();
+    }
+    let [toAttrs, duration, easing = 'easeLinear', callback = noop, delay = 0] = args;
+    let onFrame: OnFrame;
+    let repeat: boolean;
+    let pauseCallback;
+    let resumeCallback;
+    let animateCfg: AnimateCfg;
+    // 第二个参数，既可以是动画最终状态 toAttrs，也可以是自定义帧动画函数 onFrame
+    if (isFunction(toAttrs)) {
+      onFrame = toAttrs as OnFrame;
+      toAttrs = {};
+    }
+    // 第二个参数，既可以是执行时间 duration，也可以是动画参数 animateCfg
+    if (isObject(duration)) {
+      animateCfg = duration as AnimateCfg;
+      duration = animateCfg.duration;
+      easing = animateCfg.easing || 'easeLinear';
+      delay = animateCfg.delay || 0;
+      repeat = animateCfg.repeat || false;
+      callback = animateCfg.callback || noop;
+      pauseCallback = animateCfg.pauseCallback || noop;
+      resumeCallback = animateCfg.resumeCallback || noop;
+    } else {
+      // 第四个参数，既可以是回调函数 callback，也可以是延迟时间 delay
+      if (isNumber(callback)) {
+        delay = callback;
+        callback = null;
+      }
+      // 第三个参数，既可以是缓动参数 easing，也可以是回调函数 callback
+      if (isFunction(easing)) {
+        callback = easing;
+        easing = 'easeLinear';
+      } else {
+        easing = easing || 'easeLinear';
+      }
+    }
+    const formatToAttrs = getFormatToAttrs(toAttrs, this);
+    const animation: Animation = {
+      fromAttrs: getFormatFromAttrs(formatToAttrs, this),
+      toAttrs: formatToAttrs,
+      duration,
+      easing,
+      repeat,
+      callback,
+      pauseCallback,
+      resumeCallback,
+      delay,
+      startTime: timeline.getTime(),
+      id: uniqueId(),
+      onFrame,
+      pathFormatted: false,
+    };
+    // 如果动画元素队列中已经有这个图形了
+    if (animations.length > 0) {
+      // 先检查是否需要合并属性。若有相同的动画，将该属性从前一个动画中删除,直接用后一个动画中
+      animations = checkExistedAttrs(animations, animation);
+    } else {
+      // 否则将图形添加到动画元素队列
+      timeline.addAnimator(this);
+    }
+    animations.push(animation);
+    this.set('animations', animations);
+    this.set('_pause', { isPaused: false });
+  }
+
+  /**
+   * 停止动画
+   * @param {boolean} toEnd 是否到动画的最终状态
+   */
+  stopAnimate(toEnd = true) {
+    const animations = this.get('animations');
+    each(animations, (animation: Animation) => {
+      // 将动画执行到最后一帧
+      if (toEnd) {
+        if (animation.onFrame) {
+          this.attr(animation.onFrame(1));
+        } else {
+          this.attr(animation.toAttrs);
+        }
+      }
+      if (animation.callback) {
+        // 动画停止时的回调
+        animation.callback();
+      }
+    });
+    this.set('animating', false);
+    this.set('animations', []);
+  }
+
+  /**
+   * 暂停动画
+   */
+  pauseAnimate() {
+    const timeline = this.get('timeline');
+    const animations = this.get('animations');
+    each(animations, (animation: Animation) => {
+      if (animation.pauseCallback) {
+        // 动画暂停时的回调
+        animation.pauseCallback();
+      }
+    });
+    // 记录下是在什么时候暂停的
+    this.set('_pause', {
+      isPaused: true,
+      pauseTime: timeline.getTime(),
+    });
+    return this;
+  }
+
+  /**
+   * 恢复动画
+   */
+  resumeAnimate() {
+    const timeline = this.get('timeline');
+    const current = timeline.getTime();
+    const animations = this.get('animations');
+    const pauseTime = this.get('_pause').pauseTime;
+    // 之后更新属性需要计算动画已经执行的时长，如果暂停了，就把初始时间调后
+    each(animations, (animation: Animation) => {
+      animation.startTime = animation.startTime + (current - pauseTime);
+      animation._paused = false;
+      animation._pauseTime = null;
+      if (animation.resumeCallback) {
+        animation.resumeCallback();
+      }
+    });
+    this.set('_pause', {
+      isPaused: false,
+    });
+    this.set('animations', animations);
+    return this;
   }
 }
 
