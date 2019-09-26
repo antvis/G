@@ -1,8 +1,9 @@
 import { AbstractCanvas } from '@antv/g-base';
 import { ChangeType } from '@antv/g-base/lib/types';
 import { ISVGElement } from './interfaces';
-import { drawChildren, applyClipChildren, drawPathChildren, refreshElement } from './util/draw';
+import { applyClipChildren, drawPathChildren, refreshElement } from './util/draw';
 import { setClip } from './util/svg';
+import EventController from '@antv/g-base/lib/event/event-contoller';
 import Shape from './shape';
 import Group from './group';
 import Defs from './defs';
@@ -59,6 +60,21 @@ class Canvas extends AbstractCanvas {
     if (children.length) {
       drawPathChildren(context, children);
     }
+  }
+
+  // 覆盖基类中的 initEvents 方法
+  initEvents() {
+    const eventController = new EventController({
+      canvas: this,
+    });
+    eventController.init();
+    this.set('eventController', eventController);
+  }
+
+  // 覆盖基类中的 clearEvents 方法
+  clearEvents() {
+    const eventController = this.get('eventController');
+    eventController.destroy();
   }
 }
 
