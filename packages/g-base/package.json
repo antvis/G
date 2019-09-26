@@ -43,7 +43,11 @@
   },
   "homepage": "https://github.com/antvis/util#readme",
   "dependencies": {
-    "@antv/util": "~2.0.0"
+    "@antv/util": "~2.0.0",
+    "@types/d3-timer": "^1.0.9",
+    "d3-ease": "^1.0.5",
+    "d3-interpolate": "^1.3.2",
+    "d3-timer": "^1.0.9"
   },
   "__npminstall_done": false
 }
