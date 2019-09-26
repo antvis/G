@@ -27,11 +27,9 @@ describe('SVG Ellipse', () => {
     expect(ellipse.attr('ry')).eql(30);
   });
 
-  it('draw', () => {
-    expect(ellipse.cfg.el).eql(undefined);
-    canvas.draw();
-    expect(ellipse.cfg.el).not.eql(undefined);
-    expect(ellipse.cfg.el.getAttribute('stroke')).eql('red');
+  it('autoDraw', () => {
+    expect(ellipse.get('el')).not.eql(undefined);
+    expect(ellipse.get('el').getAttribute('stroke')).eql('red');
   });
 
   it('bbox', () => {
@@ -50,7 +48,6 @@ describe('SVG Ellipse', () => {
   it('change', () => {
     expect(ellipse.attr('rx')).eql(20);
     ellipse.attr('rx', 30);
-    canvas.draw();
     expect(ellipse.attr('rx')).eql(30);
     const bbox = ellipse.getBBox();
     expect(bbox.minX).eql(19.5);

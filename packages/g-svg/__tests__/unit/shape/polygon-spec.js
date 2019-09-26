@@ -33,11 +33,9 @@ describe('SVG polygon', () => {
     expect(polygon.attr('lineWidth')).eql(1);
   });
 
-  it('draw', () => {
-    expect(polygon.cfg.el).eql(undefined);
-    canvas.draw();
-    expect(polygon.cfg.el).not.eql(undefined);
-    expect(polygon.cfg.el.getAttribute('stroke-width')).eq('1');
+  it('autoDraw', () => {
+    expect(polygon.get('el')).not.eql(undefined);
+    expect(polygon.get('el').getAttribute('stroke-width')).eq('1');
   });
 
   it('bbox', () => {
@@ -60,7 +58,6 @@ describe('SVG polygon', () => {
     expect(polygon.attr('lineWidth')).eql(1);
     polygon.attr('fill', 'blue');
     polygon.attr('lineWidth', 2);
-    canvas.draw();
     expect(polygon.attr('fill')).eql('blue');
     expect(polygon.attr('lineWidth')).eql(2);
     const bbox = polygon.getBBox();

@@ -1,41 +1,4 @@
-import { SHAPE_TO_TAGS, SVG_ATTR_MAP } from '../constant';
-
-export function createDom(model, index?) {
-  const type = SHAPE_TO_TAGS[model.type];
-  const attrs = model.attrs;
-  const parent = model.cfg.parent;
-  if (!type) {
-    throw new Error(`the type ${model.type} is not supported by svg`);
-  }
-  const shape = document.createElementNS('http://www.w3.org/2000/svg', type);
-  if (model.cfg.id) {
-    shape.id = model.cfg.id;
-  }
-  model.cfg.el = shape;
-  if (parent) {
-    let parentNode = parent.cfg.el;
-    while (!parentNode) {
-      const newParent = parent.cfg.parent;
-      parentNode = newParent && newParent.cfg.el;
-    }
-    if (typeof index === 'undefined') {
-      parentNode.appendChild(shape);
-    } else {
-      const childNodes = parent.cfg.el.childNodes;
-      // svg下天然有defs作为子节点，svg下子元素index需要+1
-      if (parentNode.tagName === 'svg') {
-        index += 1;
-      }
-      if (childNodes.length <= index) {
-        parentNode.appendChild(shape);
-      } else {
-        parentNode.insertBefore(shape, childNodes[index]);
-      }
-    }
-  }
-  model.cfg.attrs = {};
-  return shape;
-}
+import { createDom } from './dom';
 
 export function setShadow(model, context) {
   const el = model.cfg.el;
@@ -73,12 +36,13 @@ export function setTransform(model) {
 }
 
 export function setClip(model, context) {
-  const { clip } = this.attr();
-  const el = model.cfg.el;
+  const clip = model.getClip();
+  const el = model.get('el');
   if (!clip) {
     el.removeAttribute('clip-path');
   } else if (clip && !el.hasAttribute('clip-path')) {
-    createDom(model);
+    createDom(clip);
+    clip.createPath(context);
     const id = context.addClip(clip);
     el.setAttribute('clip-path', `url(#${id})`);
   }

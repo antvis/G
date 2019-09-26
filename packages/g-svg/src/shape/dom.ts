@@ -12,10 +12,10 @@ class Dom extends ShapeBase {
   canFill: boolean = false;
   canStroke: boolean = false;
 
-  createPath(context) {
+  createPath(context, targetAttrs) {
     const attrs = this.attr();
     const el = this.get('el');
-    each(attrs, (value, attr) => {
+    each(targetAttrs || attrs, (value, attr) => {
       if (SVG_ATTR_MAP[attr]) {
         el.setAttribute(SVG_ATTR_MAP[attr], value);
       }

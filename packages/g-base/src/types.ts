@@ -91,3 +91,16 @@ export type CanvasCfg = {
   capture?: boolean;
   [key: string]: any;
 };
+
+export type ChangeType =
+  | 'changeSize'
+  | 'add'
+  | 'sort'
+  | 'clear'
+  | 'attr'
+  | 'show'
+  | 'hide'
+  | 'zIndex'
+  | 'remove'
+  | 'matrix'
+  | 'clip';
