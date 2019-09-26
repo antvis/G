@@ -1,7 +1,7 @@
+import { IElement, IShape, IGroup, ICanvas } from '../interfaces';
+import { ClipCfg, ShapeAttrs, ChangeType } from '../types';
 import Base from './base';
 import BBox from '../bbox';
-import { IElement, IShape, IGroup, ICanvas } from '../interfaces';
-import { GroupCfg, ShapeCfg, ClipCfg, ShapeAttrs } from '../types';
 import { removeFromArray, isObject, each, isArray, mix, upperFirst } from '../util/util';
 import { multiplyMatrix, multiplyVec2, invert } from '../util/matrix';
 const MATRIX = 'matrix';
@@ -65,9 +65,9 @@ abstract class Element extends Base implements IElement {
   /**
    * @protected
    * 一些方法调用会引起画布变化
-   * @param {string} changeType 改变的类型
+   * @param {ChangeType} changeType 改变的类型
    */
-  onCanvasChange(changeType: string) {}
+  onCanvasChange(changeType: ChangeType) {}
 
   /**
    * @protected
@@ -95,12 +95,14 @@ abstract class Element extends Base implements IElement {
       for (const k in name) {
         this.setAttr(k, name[k]);
       }
-      this.afterAttrsChange();
+      this.afterAttrsChange(name);
       return this;
     }
     if (args.length === 2) {
       this.setAttr(name, value);
-      this.afterAttrsChange();
+      this.afterAttrsChange({
+        [name]: value,
+      });
       return this;
     }
     return this.attrs[name];
@@ -147,7 +149,7 @@ abstract class Element extends Base implements IElement {
    * 属性更改后需要做的事情
    * @protected
    */
-  afterAttrsChange() {
+  afterAttrsChange(targetAttrs) {
     this.onCanvasChange('attr');
   }
 

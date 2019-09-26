@@ -11,10 +11,10 @@ class Polygon extends ShapeBase {
   canFill: boolean = true;
   canStroke: boolean = true;
 
-  createPath(context) {
+  createPath(context, targetAttrs) {
     const attrs = this.attr();
     const el = this.get('el');
-    each(attrs, (value, attr) => {
+    each(targetAttrs || attrs, (value, attr) => {
       if (attr === 'points' && isArray(value) && value.length >= 2) {
         el.setAttribute('points', value.map((point) => `${point[0]},${point[1]}`).join(' '));
       } else if (SVG_ATTR_MAP[attr]) {

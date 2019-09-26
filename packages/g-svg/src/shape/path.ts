@@ -12,10 +12,10 @@ class Path extends ShapeBase {
   canFill: boolean = true;
   canStroke: boolean = true;
 
-  createPath(context) {
+  createPath(context, targetAttrs) {
     const attrs = this.attr();
     const el = this.get('el');
-    each(attrs, (value, attr) => {
+    each(targetAttrs || attrs, (value, attr) => {
       if (attr === 'path' && isArray(value)) {
         el.setAttribute('d', this._formatPath(value));
       } else if (attr === 'startArrow' || attr === 'endArrow') {
@@ -23,7 +23,7 @@ class Path extends ShapeBase {
           ? context.getDefaultArrow(attrs, SVG_ATTR_MAP[attr])
           : context.addArrow(attrs, SVG_ATTR_MAP[attr]);
         el.setAttribute(SVG_ATTR_MAP[attr], `url(#${id})`);
-      } else {
+      } else if (SVG_ATTR_MAP[attr]) {
         el.setAttribute(SVG_ATTR_MAP[attr], value);
       }
     });

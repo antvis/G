@@ -28,11 +28,9 @@ describe('SVG Rect', () => {
     expect(rect.attr('radius')).eql(0);
   });
 
-  it('draw', () => {
-    expect(rect.cfg.el).eql(undefined);
-    canvas.draw();
-    expect(rect.cfg.el).not.eql(undefined);
-    expect(rect.cfg.el.getAttribute('fill')).eql('red');
+  it('autoDraw', () => {
+    expect(rect.get('el')).not.eql(undefined);
+    expect(rect.get('el').getAttribute('fill')).eql('red');
   });
 
   it('bbox', () => {
@@ -52,7 +50,6 @@ describe('SVG Rect', () => {
   it('change', () => {
     expect(rect.attr('radius')).eql(0);
     rect.attr('radius', 5);
-    canvas.draw();
     expect(rect.attr('radius')).eql(5);
     const bbox = rect.getBBox();
     expect(bbox.minX).eql(10);

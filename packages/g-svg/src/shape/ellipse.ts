@@ -12,10 +12,10 @@ class Ellipse extends ShapeBase {
   canFill: boolean = true;
   canStroke: boolean = true;
 
-  createPath(context) {
+  createPath(context, targetAttrs) {
     const attrs = this.attr();
     const el = this.get('el');
-    each(attrs, (value, attr) => {
+    each(targetAttrs || attrs, (value, attr) => {
       // 圆和椭圆的点坐标属性不是 x, y，而是 cx, cy
       if (attr === 'x' || attr === 'y') {
         el.setAttribute(`c${attr}`, value);

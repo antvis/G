@@ -29,11 +29,9 @@ describe('SVG Marker', () => {
     expect(marker.attr('symbol')).eql('circle');
   });
 
-  it('draw', () => {
-    expect(marker.cfg.el).eql(undefined);
-    canvas.draw();
-    expect(marker.cfg.el).not.eql(undefined);
-    expect(marker.cfg.el.getAttribute('fill')).eq('red');
+  it('autoDraw', () => {
+    expect(marker.get('el')).not.eql(undefined);
+    expect(marker.get('el').getAttribute('fill')).eq('red');
   });
 
   it('bbox', () => {
@@ -53,7 +51,6 @@ describe('SVG Marker', () => {
   it('change', () => {
     expect(marker.attr('radius')).eql(10);
     marker.attr('radius', 20);
-    canvas.draw();
     expect(marker.attr('radius')).eql(20);
     const bbox = marker.getBBox();
     expect(isNumberEqual(bbox.minX, 0)).eql(true);

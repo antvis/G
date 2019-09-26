@@ -12,10 +12,9 @@ describe('SVG Canvas', () => {
     canvas.destroy();
   });
 
-  it('draw', () => {
+  it('autoDraw', () => {
     const canvas = getCanvas(container);
     const el = canvas.get('el');
-    canvas.draw();
     expect(el).not.eql(undefined);
     expect(el.style.width).eql('1000px');
     expect(el.style.height).eql('1000px');

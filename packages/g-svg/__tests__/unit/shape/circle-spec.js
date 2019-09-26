@@ -26,11 +26,9 @@ describe('SVG Cicle', () => {
     expect(circle.attr('fill')).eql('red');
   });
 
-  it('draw', () => {
-    expect(circle.cfg.el).eql(undefined);
-    canvas.draw();
-    expect(circle.cfg.el).not.eql(undefined);
-    expect(circle.cfg.el.getAttribute('fill')).eql('red');
+  it('autoDraw', () => {
+    expect(circle.get('el')).not.eql(undefined);
+    expect(circle.get('el').getAttribute('fill')).eql('red');
   });
 
   it('bbox', () => {
@@ -50,7 +48,6 @@ describe('SVG Cicle', () => {
   it('change', () => {
     expect(circle.attr('r')).eql(20);
     circle.attr('r', 10);
-    canvas.draw();
     expect(circle.attr('r')).eql(10);
     const bbox = circle.getBBox();
     expect(bbox.minX).eql(10);
