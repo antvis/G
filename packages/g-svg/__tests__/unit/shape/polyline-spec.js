@@ -33,11 +33,9 @@ describe('SVG polyline', () => {
     expect(polyline.attr('lineWidth')).eql(1);
   });
 
-  it('draw', () => {
-    expect(polyline.cfg.el).eql(undefined);
-    canvas.draw();
-    expect(polyline.cfg.el).not.eql(undefined);
-    expect(polyline.cfg.el.getAttribute('stroke-width')).eq('1');
+  it('autoDraw', () => {
+    expect(polyline.get('el')).not.eql(undefined);
+    expect(polyline.get('el').getAttribute('stroke-width')).eq('1');
   });
 
   it('bbox', () => {

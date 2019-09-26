@@ -7,6 +7,10 @@ abstract class AbstractGroup extends Container implements IGroup {
     return true;
   }
 
+  isEntityGroup() {
+    return false;
+  }
+
   onAttrChange(name, value, originValue) {
     super.onAttrChange(name, value, originValue);
     if (name === 'matrix') {

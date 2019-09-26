@@ -19,7 +19,7 @@ class Rect extends ShapeBase {
     return attrs;
   }
 
-  createPath(context) {
+  createPath(context, targetAttrs) {
     const attrs = this.attr();
     const el = this.get('el');
     el.setAttribute('d', this._assembleRect(attrs));

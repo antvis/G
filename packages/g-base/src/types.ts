@@ -96,6 +96,19 @@ export type CanvasCfg = {
   [key: string]: any;
 };
 
+export type ChangeType =
+  | 'changeSize'
+  | 'add'
+  | 'sort'
+  | 'clear'
+  | 'attr'
+  | 'show'
+  | 'hide'
+  | 'zIndex'
+  | 'remove'
+  | 'matrix'
+  | 'clip';
+
 export type AnimateCfg = {
   /**
    * 动画执行时间

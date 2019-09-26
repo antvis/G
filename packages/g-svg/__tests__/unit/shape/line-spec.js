@@ -27,11 +27,9 @@ describe('SVG Line', () => {
     expect(line.attr('y2')).eql(100);
   });
 
-  it('draw', () => {
-    expect(line.cfg.el).eql(undefined);
-    canvas.draw();
-    expect(line.cfg.el).not.eql(undefined);
-    expect(line.cfg.el.getAttribute('stroke')).eql('red');
+  it('autoDraw', () => {
+    expect(line.get('el')).not.eql(undefined);
+    expect(line.get('el').getAttribute('stroke')).eql('red');
   });
 
   it('bbox', () => {
@@ -54,7 +52,6 @@ describe('SVG Line', () => {
     expect(line.attr('y1')).eql(0);
     line.attr('x1', 10);
     line.attr('y1', 10);
-    canvas.draw();
     expect(line.attr('x1')).eql(10);
     expect(line.attr('y1')).eql(10);
     const bbox = line.getBBox();
