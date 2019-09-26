@@ -6,7 +6,7 @@ import { isObject, each } from '../util/util';
 
 function afterAdd(element: IElement) {
   if (element.isGroup()) {
-    if (element.get('children').length) {
+    if ((element as IGroup).isEntityGroup() || element.get('children').length) {
       element.onCanvasChange('add');
     }
   } else {
@@ -134,6 +134,8 @@ abstract class Container extends Element implements IContainer {
   addGroup(...args): IGroup {
     const [groupClass, cfg] = args;
     const group = ContainerUtil.addGroup(this, groupClass, cfg);
+    // Group maybe a real element
+    afterAdd(group);
     this._applyElementMatrix(group);
     return group;
   }

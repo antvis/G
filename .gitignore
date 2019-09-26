@@ -80,3 +80,5 @@ temp.diff
 # ignore dist files
 g2.min.js*
 .vscode/
+
+demo/

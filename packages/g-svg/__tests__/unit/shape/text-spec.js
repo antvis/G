@@ -30,11 +30,9 @@ describe('SVG text', () => {
     expect(text.attr('textBaseline')).eql('bottom');
   });
 
-  it('draw', () => {
-    expect(text.cfg.el).eql(undefined);
-    canvas.draw();
-    expect(text.cfg.el).not.eql(undefined);
-    expect(text.cfg.el.getAttribute('x')).eql('100');
+  it('autoDraw', () => {
+    expect(text.get('el')).not.eql(undefined);
+    expect(text.get('el').getAttribute('x')).eql('100');
   });
 
   it('bbox', () => {
@@ -50,7 +48,6 @@ describe('SVG text', () => {
     expect(text.attr('fontSize')).eql(12);
     text.attr('fontSize', 40);
     expect(text.attr('fontSize')).eql(40);
-    canvas.draw();
     const bbox = text.getBBox();
     const textBBox = text.cfg.el.getBBox();
     expect(bbox.minX).eql(textBBox.x - 0.5);

@@ -62,11 +62,11 @@ class Text extends ShapeBase {
     };
   }
 
-  createPath(context) {
+  createPath(context, targetAttrs) {
     const attrs = this.attr();
     const el = this.get('el');
     this._setFont();
-    each(attrs, (value, attr) => {
+    each(targetAttrs || attrs, (value, attr) => {
       if (attr === 'text') {
         this._setText(`${value}`);
       } else if (attr === 'matrix' && value) {
@@ -100,7 +100,7 @@ class Text extends ShapeBase {
   }
 
   _setText(text) {
-    const el = this.cfg.el;
+    const el = this.get('el');
     const { x, textBaseline: baseline = 'bottom' } = this.attr();
     if (!text) {
       el.innerHTML = '';

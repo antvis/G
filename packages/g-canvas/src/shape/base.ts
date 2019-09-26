@@ -1,4 +1,5 @@
 import { AbstractShape, BBox } from '@antv/g-base';
+import { ChangeType } from '@antv/g-base/lib/types';
 import { isNil, intersectRect } from '../util/util';
 import { applyAttrsToContext, refreshElement } from '../util/draw';
 import { Region } from '../types';
@@ -16,9 +17,9 @@ class ShapeBase extends AbstractShape {
 
   /**
    * 一些方法调用会引起画布变化
-   * @param {string} changeType 改变的类型
+   * @param {ChangeType} changeType 改变的类型
    */
-  onCanvasChange(changeType: string) {
+  onCanvasChange(changeType: ChangeType) {
     refreshElement(this, changeType);
   }
 

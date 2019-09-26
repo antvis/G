@@ -12,10 +12,10 @@ class Image extends ShapeBase {
   canFill: boolean = false;
   canStroke: boolean = false;
 
-  createPath(context) {
+  createPath(context, targetAttrs) {
     const attrs = this.attr();
     const el = this.get('el');
-    each(attrs, (value, attr) => {
+    each(targetAttrs || attrs, (value, attr) => {
       if (attr === 'img') {
         this._setImage(attrs.img);
       } else if (SVG_ATTR_MAP[attr]) {
@@ -33,7 +33,7 @@ class Image extends ShapeBase {
 
   _setImage(img) {
     const attrs = this.attr();
-    const el = this.cfg.el;
+    const el = this.get('el');
     if (isString(img)) {
       el.setAttribute('href', img);
     } else if (img instanceof (window as any).Image) {
