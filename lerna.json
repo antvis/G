@@ -6,6 +6,9 @@
   "command": {
     "bootstrap": {
       "ci": false
+    },
+    "publish": {
+      "conventionalCommits": true
     }
   }
 }
