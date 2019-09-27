@@ -1,6 +1,9 @@
 {
   "packages": [
-    "packages/*"
+    "packages/g-base",
+    "packages/g-canvas",
+    "packages/g-svg",
+    "packages/g-math"
   ],
   "version": "independent",
   "command": {
