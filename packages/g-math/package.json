@@ -1,18 +1,21 @@
 {
   "name": "@antv/g-math",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "geometry math",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
     "package.json",
+    "esm",
     "lib",
     "LICENSE",
     "README.md"
   ],
   "scripts": {
-    "build": "npm run clean && tsc",
-    "clean": "rm -rf lib",
+    "build": "npm run clean && run-p build:*",
+    "build:esm": "tsc -p tsconfig.json --target ES5 --module ESNext --outDir esm",
+    "build:cjs": "tsc -p tsconfig.json --target ES5 --module commonjs --outDir lib",
+    "clean": "rm -rf esm lib",
     "coverage": "npm run coverage-generator && npm run coverage-viewer",
     "coverage-generator": "torch --coverage --compile --source-pattern src/*.js,src/**/*.js --opts __tests__/mocha.opts",
     "coverage-viewer": "torch-coverage",
@@ -31,6 +34,9 @@
     "antv",
     "g"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "https://github.com/orgs/antvis/people",
   "license": "ISC",
   "bugs": {
@@ -39,7 +45,8 @@
   "devDependencies": {
     "@antv/torch": "^1.0.0",
     "electron": "4.1.5",
-    "less": "^3.9.0"
+    "less": "^3.9.0",
+    "npm-run-all": "^4.1.5"
   },
   "homepage": "https://github.com/antvis/util#readme",
   "dependencies": {
