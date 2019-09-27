@@ -11,7 +11,7 @@
       "ci": false
     },
     "publish": {
-      "noCommitHooks": true
+      "commitHooks": false
     }
   }
 }
