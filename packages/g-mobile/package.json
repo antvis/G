@@ -1,6 +1,7 @@
 {
   "name": "@antv/g-mobile",
-  "version": "4.0.0",
+  "version": "0.0.0",
+  "private": true,
   "description": "A common util collection for antv projects",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -38,6 +39,9 @@
     "antv",
     "g"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "https://github.com/orgs/antvis/people",
   "license": "ISC",
   "bugs": {
