@@ -351,7 +351,7 @@ describe('animate', () => {
     }, 300);
   });
 
-  it.only('pauseAnimate & resumeAnimate', (done) => {
+  it('pauseAnimate & resumeAnimate', (done) => {
     const shape = new Shape({
       attrs: {
         x: 50,
@@ -407,7 +407,7 @@ describe('animate', () => {
     }, 300);
   });
 
-  it.only('autoDraw = false', (done) => {
+  it('autoDraw = false', (done) => {
     const newCanvas = new MyCanvas({
       container: 'canvas-animate',
       width: 1000,
