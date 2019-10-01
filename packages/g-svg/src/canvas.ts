@@ -10,7 +10,21 @@ import Defs from './defs';
 
 class Canvas extends AbstractCanvas {
   constructor(cfg) {
-    super(cfg);
+    super({
+      ...cfg,
+      autoDraw: true,
+    });
+  }
+
+  // 覆盖基类中的 set 方法
+  set(name, value) {
+    // autoDraw 不可修改，始终为 true
+    // TODO: 应该在控制台给出 Warning 提示，引导用户避免这种用法。需要在 @antv/util 中提供通用的 warning 方法，便于在其他 antv 项目中使用
+    if (name === 'autoDraw') {
+      this.cfg[name] = true;
+    } else {
+      super.set(name, value);
+    }
   }
 
   /**
