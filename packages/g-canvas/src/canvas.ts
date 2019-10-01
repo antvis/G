@@ -94,13 +94,7 @@ class Canvas extends AbstractCanvas {
   // 复写基类的方法生成标签
   createDom(): HTMLElement {
     const element = document.createElement('canvas');
-    const pixelRatio = this.getPixelRatio();
     const context = element.getContext('2d');
-    element.width = pixelRatio * this.get('width');
-    element.height = pixelRatio * this.get('height');
-    if (pixelRatio > 1) {
-      context.scale(pixelRatio, pixelRatio);
-    }
     // 缓存 context 对象
     this.set('context', context);
     return element;
@@ -204,6 +198,12 @@ class Canvas extends AbstractCanvas {
     let drawFrame = this.get('drawFrame');
     if (!drawFrame) {
       drawFrame = requestAnimationFrame(() => {
+        const context = this.get('context');
+        context.save();
+        const pixelRatio = this.getPixelRatio();
+        if (pixelRatio > 1) {
+          context.scale(pixelRatio, pixelRatio);
+        }
         if (this.get('localRefresh')) {
           this._drawRegion();
         } else {
