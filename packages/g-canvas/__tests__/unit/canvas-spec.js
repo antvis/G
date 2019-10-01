@@ -40,7 +40,7 @@ describe('canvas test', () => {
     expect(canvas.getChildren().length).eql(1);
   });
 
-  it('add shape', () => {
+  it('add shape', (done) => {
     const circle = canvas.addShape({
       type: 'circle',
       attrs: {
@@ -52,13 +52,6 @@ describe('canvas test', () => {
     });
     expect(circle.get('type')).eql('circle');
     expect(circle.attr('r')).eql(10);
-  });
-
-  it('draw', (done) => {
-    expect(getColor(canvas.get('context'), 10, 10)).eql('#000000');
-    // 默认的 draw 是延迟的所以要延迟测试
-    canvas.draw();
-    expect(getColor(canvas.get('context'), 10, 10)).eql('#000000');
     setTimeout(() => {
       expect(getColor(canvas.get('context'), 10, 10)).eql('#ff0000');
       done();
@@ -88,7 +81,6 @@ describe('canvas test', () => {
         fill: 'red',
       },
     });
-    canvas.draw();
     let called = false;
     let clickShape = null;
     canvas.on('click', (ev) => {
