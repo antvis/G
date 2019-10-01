@@ -10,8 +10,9 @@ describe('#187', () => {
   const canvas = new Canvas({
     container: dom,
     autoDraw: true,
-    width: 1000,
-    height: 1000,
+    pixelRatio: 1,
+    width: 500,
+    height: 500,
   });
 
   const context = canvas.get('context');
