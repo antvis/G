@@ -17,13 +17,13 @@ describe('#191', () => {
     });
   });
 
-  it.only('autoDraw should be true and immutable', () => {
+  it('autoDraw should be true and immutable', () => {
     expect(canvas.get('autoDraw')).eqls(true);
     canvas.set('autoDraw', false);
     expect(canvas.get('autoDraw')).eqls(true);
   });
 
-  it.only('avoid redundant rendering when animating and repeat is true', (done) => {
+  it('avoid redundant rendering when animating', (done) => {
     circle.animate(
       {
         r: 40,

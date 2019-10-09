@@ -101,10 +101,15 @@ class Canvas extends AbstractCanvas {
   }
   setDOMSize(width: number, height: number) {
     super.setDOMSize(width, height);
+    const context = this.get('context');
     const el = this.get('el');
     const pixelRatio = this.getPixelRatio();
     el.width = pixelRatio * width;
     el.height = pixelRatio * height;
+    // 设置 canvas 元素的宽度和高度，会重置缩放，因此 context.scale 需要在每次设置宽、高后调用
+    if (pixelRatio > 1) {
+      context.scale(pixelRatio, pixelRatio);
+    }
   }
   // 复写基类方法
   clear() {
@@ -198,12 +203,6 @@ class Canvas extends AbstractCanvas {
     let drawFrame = this.get('drawFrame');
     if (!drawFrame) {
       drawFrame = requestAnimationFrame(() => {
-        const context = this.get('context');
-        context.save();
-        const pixelRatio = this.getPixelRatio();
-        if (pixelRatio > 1) {
-          context.scale(pixelRatio, pixelRatio);
-        }
         if (this.get('localRefresh')) {
           this._drawRegion();
         } else {
