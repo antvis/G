@@ -55,7 +55,9 @@
     "lint-staged": "lint-staged",
     "prettier": "prettier --write './packages/**/*.{js,ts}'",
     "test": "lerna run test",
-    "ci": "npm run lint && npm run bootstrap && npm run test"
+    "ci": "npm run lint && npm run bootstrap && npm run build && npm run test",
+    "publish": "rm -rf node_modules && npm install && npm run bootstrap && npm run build && lerna publish",
+    "publish-beta": "rm -rf node_modules && npm install && npm run bootstrap && npm run build && lerna publish --dist-tag beta"
   },
   "commitlint": {
     "extends": [
