@@ -19,7 +19,6 @@
     "coverage": "npm run coverage-generator && npm run coverage-viewer",
     "coverage-generator": "torch --coverage --compile --source-pattern src/*.js,src/**/*.js --opts __tests__/mocha.opts",
     "coverage-viewer": "torch-coverage",
-    "postinstall": "npm run build",
     "test": "torch --renderer --compile --opts __tests__/mocha.opts",
     "test-live": "torch --compile --interactive --opts __tests__/mocha.opts",
     "tsc": "tsc --noEmit",
