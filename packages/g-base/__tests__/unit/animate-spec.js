@@ -453,4 +453,166 @@ describe('animate', () => {
       done();
     }, 700);
   });
+
+  it('animation cover', (done) => {
+    const shape = new Shape({
+      attrs: {
+        x: 50,
+        y: 50,
+      },
+    });
+    canvas.add(shape);
+    shape.animate(
+      {
+        x: 100,
+        y: 100,
+      },
+      {
+        duration: 500,
+      }
+    );
+    shape.animate(
+      {
+        x: 200,
+        y: 200,
+      },
+      {
+        duration: 500,
+      }
+    );
+    expect(shape.attr('x')).eqls(50);
+    expect(shape.attr('y')).eqls(50);
+    setTimeout(() => {
+      expect(shape.attr('x')).eqls(200);
+      expect(shape.attr('y')).eqls(200);
+      done();
+    }, 600);
+  });
+
+  it('animation cover with delay', (done) => {
+    const shape = new Shape({
+      attrs: {
+        x: 50,
+        y: 50,
+      },
+    });
+    canvas.add(shape);
+    shape.animate(
+      {
+        x: 100,
+        y: 100,
+      },
+      {
+        duration: 500,
+        delay: 600, // 前一个动画设置延迟，且大于后一个动画的执行时间
+      }
+    );
+    shape.animate(
+      {
+        x: 200,
+        y: 200,
+      },
+      {
+        duration: 500,
+        delay: 50,
+      }
+    );
+    expect(shape.attr('x')).eqls(50);
+    expect(shape.attr('y')).eqls(50);
+    setTimeout(() => {
+      expect(shape.attr('x')).eqls(200);
+      expect(shape.attr('y')).eqls(200);
+    }, 580);
+    setTimeout(() => {
+      expect(shape.attr('x')).eqls(100);
+      expect(shape.attr('y')).eqls(100);
+      done();
+    }, 1200);
+  });
+
+  it('animation cover with setTimeout', (done) => {
+    const shape = new Shape({
+      attrs: {
+        x: 50,
+        y: 50,
+      },
+    });
+    canvas.add(shape);
+    shape.animate(
+      {
+        x: 100,
+        y: 100,
+      },
+      {
+        duration: 500,
+      }
+    );
+    // test startTime
+    setTimeout(() => {
+      shape.animate(
+        {
+          x: 200,
+          y: 200,
+        },
+        {
+          duration: 500,
+        }
+      );
+    }, 600);
+    expect(shape.attr('x')).eqls(50);
+    expect(shape.attr('y')).eqls(50);
+    setTimeout(() => {
+      expect(shape.attr('x')).eqls(100);
+      expect(shape.attr('y')).eqls(100);
+    }, 600);
+    setTimeout(() => {
+      expect(shape.attr('x')).eqls(200);
+      expect(shape.attr('y')).eqls(200);
+      done();
+    }, 1200);
+  });
+
+  it('animation cover with delay and setTimeout', (done) => {
+    const shape = new Shape({
+      attrs: {
+        x: 50,
+        y: 50,
+      },
+    });
+    canvas.add(shape);
+    shape.animate(
+      {
+        x: 100,
+        y: 100,
+      },
+      {
+        duration: 500,
+        delay: 600, // 前一个动画设置延迟，且大于后一个动画的执行时间
+      }
+    );
+    // test startTime
+    setTimeout(() => {
+      shape.animate(
+        {
+          x: 200,
+          y: 200,
+        },
+        {
+          duration: 500,
+          delay: 50,
+        }
+      );
+    }, 1200);
+    expect(shape.attr('x')).eqls(50);
+    expect(shape.attr('y')).eqls(50);
+    setTimeout(() => {
+      expect(shape.attr('x')).eqls(100);
+      expect(shape.attr('y')).eqls(100);
+    }, 1200);
+    setTimeout(() => {
+      expect(shape.attr('x')).eqls(200);
+      expect(shape.attr('y')).eqls(200);
+      done();
+    }, 1800);
+  });
 });
