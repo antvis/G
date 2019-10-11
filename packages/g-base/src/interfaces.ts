@@ -108,7 +108,7 @@ export interface IElement extends IBase {
    * 从父元素中移除
    * @param {boolean} destroy 是否同时销毁
    */
-  remove(destroy);
+  remove(destroy?: boolean);
   /**
    * 获取全量的图形属性
    */

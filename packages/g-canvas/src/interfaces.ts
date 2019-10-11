@@ -1,7 +1,11 @@
-import { IElement } from '@antv/g-base/lib/interfaces';
+import { IElement as IBaseElement } from '@antv/g-base/lib/interfaces';
 import { Region } from './types';
 
-export interface ICanvasElement extends IElement {
+// 导出 g-base 中的 interfaces
+export * from '@antv/g-base/lib/interfaces';
+
+// 覆盖 g-base 中 IElement 的类型定义
+export interface IElement extends IBaseElement {
   /**
    * 绘制图形元素
    * @param {CanvasRenderingContext2D} context 上下文

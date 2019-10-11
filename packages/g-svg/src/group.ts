@@ -1,7 +1,7 @@
 import { AbstractGroup } from '@antv/g-base';
 import { ChangeType } from '@antv/g-base/lib/types';
 import { each } from '@antv/util';
-import { ISVGElement, ISVGGroup } from './interfaces';
+import { IElement, IGroup } from './interfaces';
 import Shape from './shape';
 import Defs from './defs';
 import { drawChildren, applyClipChildren, drawPathChildren, refreshElement } from './util/draw';
@@ -24,7 +24,7 @@ class Group extends AbstractGroup {
         parentNode.appendChild(element);
       } else {
         // parentNode maybe null for group
-        parentNode = (parent as ISVGGroup).createDom();
+        parentNode = (parent as IGroup).createDom();
         parent.set('el', parentNode);
         parentNode.appendChild(element);
       }
@@ -56,7 +56,7 @@ class Group extends AbstractGroup {
   }
 
   draw(context: Defs) {
-    const children = this.getChildren() as ISVGElement[];
+    const children = this.getChildren() as IElement[];
     setClip(this, context);
     this.createDom();
     this.createPath(context);
@@ -66,7 +66,7 @@ class Group extends AbstractGroup {
   }
 
   applyClip(context: Defs) {
-    const children = this.getChildren() as ISVGElement[];
+    const children = this.getChildren() as IElement[];
     setClip(this, context);
     if (children.length) {
       applyClipChildren(context, children);
@@ -74,7 +74,7 @@ class Group extends AbstractGroup {
   }
 
   drawPath(context: Defs) {
-    const children = this.getChildren() as ISVGElement[];
+    const children = this.getChildren() as IElement[];
     this.createDom();
     this.createPath(context);
     if (children.length) {

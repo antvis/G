@@ -1,5 +1,6 @@
 import { AbstractGroup } from '@antv/g-base';
 import { ChangeType } from '@antv/g-base/lib/types';
+import { IElement } from './interfaces';
 import { Region } from './types';
 import Shape from './shape';
 import { each, mergeRegion } from './util/util';
@@ -31,7 +32,7 @@ class Group extends AbstractGroup {
   }
 
   draw(context: CanvasRenderingContext2D, region?: Region) {
-    const children = this.getChildren();
+    const children = this.getChildren() as IElement[];
     if (children.length) {
       context.save();
       this._applyClip(context, this.getClip() as Shape);

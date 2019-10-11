@@ -1,6 +1,6 @@
 import { AbstractCanvas } from '@antv/g-base';
 import { ChangeType } from '@antv/g-base/lib/types';
-import { ISVGElement } from './interfaces';
+import { IElement } from './interfaces';
 import { applyClipChildren, drawPathChildren, refreshElement } from './util/draw';
 import { setClip } from './util/svg';
 import EventController from '@antv/g-base/lib/event/event-contoller';
@@ -62,7 +62,7 @@ class Canvas extends AbstractCanvas {
   }
 
   applyClip(context: Defs) {
-    const children = this.getChildren() as ISVGElement[];
+    const children = this.getChildren() as IElement[];
     setClip(this, context);
     if (children.length) {
       applyClipChildren(context, children);
@@ -70,7 +70,7 @@ class Canvas extends AbstractCanvas {
   }
 
   drawPath(context: Defs) {
-    const children = this.getChildren() as ISVGElement[];
+    const children = this.getChildren() as IElement[];
     if (children.length) {
       drawPathChildren(context, children);
     }
