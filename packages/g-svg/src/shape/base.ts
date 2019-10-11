@@ -1,13 +1,13 @@
 import { AbstractShape, BBox } from '@antv/g-base';
 import { ShapeAttrs, ChangeType } from '@antv/g-base/lib/types';
-import { ISVGShape } from '../interfaces';
+import { IShape } from '../interfaces';
 import Defs from '../defs';
 import { setShadow, setTransform, setClip } from '../util/svg';
 import { createDom } from '../util/dom';
 import { refreshElement } from '../util/draw';
 import { SVG_ATTR_MAP } from '../constant';
 
-class ShapeBase extends AbstractShape implements ISVGShape {
+class ShapeBase extends AbstractShape implements IShape {
   type: string = 'svg';
   canFill: boolean = false;
   canStroke: boolean = false;

@@ -1,14 +1,13 @@
-import { IElement } from '@antv/g-base/lib/interfaces';
 import { toArray } from '@antv/util';
-import { ISVGShape, ISVGElement } from '../interfaces';
+import { IShape, IElement } from '../interfaces';
 import { SHAPE_TO_TAGS } from '../constant';
 
 /**
  * 创建并返回图形的 dom 元素
- * @param  {ISVGShape} shape 图形
+ * @param  {IShape} shape 图形
  * @return {SVGElement}
  */
-export function createDom(shape: ISVGShape) {
+export function createDom(shape: IShape) {
   const type = SHAPE_TO_TAGS[shape.type];
   const parent = shape.getParent();
   if (!type) {
@@ -36,7 +35,7 @@ export function createDom(shape: ISVGShape) {
  * @param {IElement} element  元素
  * @param {sorter}   function 排序函数
  */
-export function sortDom(element: IElement, sorter: (a: ISVGElement, b: ISVGElement) => number) {
+export function sortDom(element: IElement, sorter: (a: IElement, b: IElement) => number) {
   const el = element.get('el');
   const childList = toArray(el.children).sort(sorter);
   // create empty fragment
