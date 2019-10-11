@@ -63,7 +63,8 @@ function checkExistedAttrs(animations: Animation[], animation: Animation) {
   const { startTime, delay, duration } = animation;
   const hasOwnProperty = Object.prototype.hasOwnProperty;
   each(animations, (item) => {
-    if (startTime > item.startTime && delay + duration < item.delay + item.duration) {
+    // 后一个动画开始执行的时间 < 前一个动画的结束时间 && 后一个动画的执行时间 > 前一个动画的延迟
+    if (startTime + delay < item.startTime + item.delay + item.duration && duration > item.delay) {
       each(animation.toAttrs, (v, k) => {
         if (hasOwnProperty.call(item.toAttrs, k)) {
           delete item.toAttrs[k];
