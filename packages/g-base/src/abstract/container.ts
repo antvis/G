@@ -1,8 +1,11 @@
-import { IContainer, ICtor, IShape, IGroup, IElement } from '../interfaces';
+import { IBase, IContainer, ICtor, IShape, IGroup, IElement, ICanvas } from '../interfaces';
 import BBox from '../bbox';
+import Timeline from '../animate/timeline';
 import Element from './element';
-import ContainerUtil from '../util/container';
-import { isObject, each } from '../util/util';
+import { isFunction, isObject, each, removeFromArray, upperFirst } from '../util/util';
+
+const SHAPE_MAP = {};
+const INDEX = '_INDEX';
 
 function afterAdd(element: IElement) {
   if (element.isGroup()) {
@@ -12,6 +15,67 @@ function afterAdd(element: IElement) {
   } else {
     element.onCanvasChange('add');
   }
+}
+
+/**
+ * 设置 canvas
+ * @param {IElement} element 元素
+ * @param {ICanvas}  canvas  画布
+ */
+function setCanvas(element: IElement, canvas: ICanvas) {
+  element.set('canvas', canvas);
+  if (element.isGroup()) {
+    const children = element.get('children');
+    if (children.length) {
+      children.forEach((child) => {
+        setCanvas(child, canvas);
+      });
+    }
+  }
+}
+
+/**
+ * 设置 timeline
+ * @param {IElement} element  元素
+ * @param {Timeline} timeline 时间轴
+ */
+function setTimeline(element: IElement, timeline: Timeline) {
+  element.set('timeline', timeline);
+  if (element.isGroup()) {
+    const children = element.get('children');
+    if (children.length) {
+      children.forEach((child) => {
+        setTimeline(child, timeline);
+      });
+    }
+  }
+}
+
+function contains(container: IContainer, element: IElement): boolean {
+  const children = container.getChildren();
+  return children.indexOf(element) >= 0;
+}
+
+function removeChild(container: IContainer, element: IElement, destroy: boolean = true) {
+  // 不再调用 element.remove() 方法，会出现循环调用
+  if (destroy) {
+    element.destroy();
+  } else {
+    element.set('parent', null);
+    element.set('canvas', null);
+  }
+  removeFromArray(container.getChildren(), element);
+}
+
+function getComparer(compare: Function) {
+  return function(left, right) {
+    const result = compare(left, right);
+    return result === 0 ? left[INDEX] - right[INDEX] : result;
+  };
+}
+
+function isAllowCapture(element: IBase): boolean {
+  return element.get('visible') && element.get('capture');
 }
 
 abstract class Container extends Element implements IContainer {
@@ -124,28 +188,103 @@ abstract class Container extends Element implements IContainer {
     } else {
       cfg['type'] = type;
     }
-    const shape = ContainerUtil.addShape(this, cfg);
-    // 调用 shape 的变化事件，而不是 container 的
-    afterAdd(shape);
-    this._applyElementMatrix(shape);
+    let shapeType = SHAPE_MAP[cfg.type];
+    if (!shapeType) {
+      shapeType = upperFirst(cfg.type);
+      SHAPE_MAP[cfg.type] = shapeType;
+    }
+    const ShapeBase = this.getShapeBase();
+    const shape = new ShapeBase[shapeType](cfg);
+    this.add(shape);
     return shape;
   }
 
   addGroup(...args): IGroup {
     const [groupClass, cfg] = args;
-    const group = ContainerUtil.addGroup(this, groupClass, cfg);
-    // Group maybe a real element
-    afterAdd(group);
-    this._applyElementMatrix(group);
+    let group;
+    if (isFunction(groupClass)) {
+      if (cfg) {
+        group = new groupClass(cfg);
+      } else {
+        group = new groupClass({
+          // canvas,
+          parent: this,
+        });
+      }
+    } else {
+      const tmpCfg = groupClass || {};
+      const TmpGroupClass = this.getGroupBase();
+      group = new TmpGroupClass(tmpCfg);
+    }
+    this.add(group);
     return group;
   }
 
+  getCanvas() {
+    let canvas;
+    if (this.isCanvas()) {
+      canvas = this;
+    } else {
+      canvas = this.get('canvas');
+    }
+    return canvas;
+  }
+
   getShape(x: number, y: number): IShape {
-    return ContainerUtil.getShape(this, x, y);
+    // 如果不支持拾取，则直接返回
+    if (!isAllowCapture(this)) {
+      return null;
+    }
+    const children = this.getChildren();
+    let shape;
+    // 如果容器是 group
+    if (!this.isCanvas()) {
+      const v = [x, y, 1];
+      // 将 x, y 转换成对应于 group 的局部坐标
+      this.invertFromMatrix(v);
+      if (!this.isClipped(v[0], v[1])) {
+        shape = this._findShape(children, v[0], v[1]);
+      }
+    } else {
+      shape = this._findShape(children, x, y);
+    }
+    return shape;
+  }
+
+  _findShape(children: IElement[], x: number, y: number) {
+    let shape = null;
+    for (let i = children.length - 1; i >= 0; i--) {
+      const child = children[i];
+      if (isAllowCapture(child)) {
+        if (child.isGroup()) {
+          shape = (child as IGroup).getShape(x, y);
+        } else if ((child as IShape).isHit(x, y)) {
+          shape = child;
+        }
+      }
+      if (shape) {
+        break;
+      }
+    }
+    return shape;
   }
 
   add(element: IElement) {
-    ContainerUtil.add(this, element);
+    const canvas = this.getCanvas();
+    const children = this.getChildren();
+    const timeline = this.get('timeline');
+    const preParent = element.getParent();
+    if (preParent) {
+      removeChild(preParent, element, false);
+    }
+    element.set('parent', this);
+    if (canvas) {
+      setCanvas(element, canvas);
+    }
+    if (timeline) {
+      setTimeline(element, timeline);
+    }
+    children.push(element);
     afterAdd(element);
     this._applyElementMatrix(element);
   }
@@ -164,13 +303,30 @@ abstract class Container extends Element implements IContainer {
   }
 
   sort() {
-    ContainerUtil.sort(this);
+    const children = this.getChildren();
+    // 稳定排序
+    each(children, (child, index) => {
+      child[INDEX] = index;
+      return child;
+    });
+    children.sort(
+      getComparer((obj1, obj2) => {
+        return obj1.get('zIndex') - obj2.get('zIndex');
+      })
+    );
     this.onCanvasChange('sort');
   }
 
   clear() {
     this.set('clearing', true);
-    ContainerUtil.clear(this);
+    if (this.destroyed) {
+      return;
+    }
+    const children = this.getChildren();
+    for (let i = children.length - 1; i >= 0; i--) {
+      children[i].destroy(); // 销毁子元素
+    }
+    this.set('children', []);
     this.onCanvasChange('clear');
     this.set('clearing', false);
   }
