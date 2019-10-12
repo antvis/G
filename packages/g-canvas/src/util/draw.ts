@@ -1,5 +1,4 @@
-import { IElement } from '@antv/g-base/lib/interfaces';
-import { ICanvasElement } from '../interfaces';
+import { IElement } from '../interfaces';
 import { Region } from '../types';
 import { parseStyle } from './parse';
 import getArcParams from './arc-params';
@@ -36,7 +35,7 @@ export function applyAttrsToContext(context: CanvasRenderingContext2D, element: 
 
 export function drawChildren(context: CanvasRenderingContext2D, children: IElement[], region?: Region) {
   for (let i = 0; i < children.length; i++) {
-    const child = children[i] as ICanvasElement;
+    const child = children[i] as IElement;
     if (child.get('visible')) {
       child.draw(context, region);
     } else {

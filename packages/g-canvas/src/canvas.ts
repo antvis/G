@@ -1,6 +1,6 @@
 import { AbstractCanvas } from '@antv/g-base';
-import { IElement } from '@antv/g-base/lib/interfaces';
 import { ChangeType } from '@antv/g-base/lib/types';
+import { IElement } from './interfaces';
 import { Region } from './types';
 import EventController from '@antv/g-base/lib/event/event-contoller';
 import Shape from './shape';
@@ -172,14 +172,14 @@ class Canvas extends AbstractCanvas {
   _drawAll() {
     const context = this.get('context');
     const element = this.get('el');
-    const children = this.getChildren();
+    const children = this.getChildren() as IElement[];
     context.clearRect(0, 0, element.width, element.height);
     drawChildren(context, children);
   }
   // 绘制局部
   _drawRegion() {
     const context = this.get('context');
-    const children = this.getChildren();
+    const children = this.getChildren() as IElement[];
     const region = this._getRefreshRegion();
     // 需要注意可能没有 region 的场景
     // 一般发生在设置了 localRefresh ,在没有图形发生变化的情况下，用户调用了 draw

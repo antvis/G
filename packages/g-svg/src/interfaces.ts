@@ -1,7 +1,10 @@
-import { IElement, IGroup, IShape } from '@antv/g-base/lib/interfaces';
+import { IElement as IBaseElement, IGroup as IBaseGroup, IShape as IBaseShape } from '@antv/g-base/lib/interfaces';
 import Defs from './defs';
 
-export interface ISVGElement extends IElement {
+// 导出 g-base 中的 interfaces
+export * from '@antv/g-base/lib/interfaces';
+
+export interface IElement extends IBaseElement {
   /**
    * 裁剪和绘制图形元素
    * @param {Defs} context 上下文
@@ -21,7 +24,7 @@ export interface ISVGElement extends IElement {
   drawPath(context);
 }
 
-export interface ISVGGroup extends IGroup {
+export interface IGroup extends IBaseGroup {
   /**
    * 创建分组容器，对应 <g> 元素
    * @return {SVGGElement} 分组容器
@@ -29,7 +32,7 @@ export interface ISVGGroup extends IGroup {
   createDom(): SVGGElement;
 }
 
-export interface ISVGShape extends IShape {
+export interface IShape extends IBaseShape {
   type: string;
   canFill: boolean;
   canStroke: boolean;
