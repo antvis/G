@@ -75,9 +75,9 @@ export type ClipCfg = {
 export type CanvasCfg = {
   /**
    * 容器
-   * @type {string|HtmlElement}
+   * @type {string|HTMLElement}
    */
-  container: string;
+  container: string | HTMLElement;
   /**
    * 画布宽度
    * @type {number}

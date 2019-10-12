@@ -1,23 +1,23 @@
 import { ChangeType } from '@antv/g-base/lib/types';
-import { ISVGElement } from '../interfaces';
+import { IElement } from '../interfaces';
 import { setTransform } from './svg';
 import { sortDom, moveTo } from './dom';
 import Defs from '../defs';
 
-export function drawChildren(context: Defs, children: ISVGElement[]) {
+export function drawChildren(context: Defs, children: IElement[]) {
   children.forEach((child) => {
     child.draw(context);
   });
 }
 
-export function applyClipChildren(context: Defs, children: ISVGElement[]) {
+export function applyClipChildren(context: Defs, children: IElement[]) {
   for (let i = 0; i < children.length; i++) {
     const child = children[i];
     child.applyClip(context);
   }
 }
 
-export function drawPathChildren(context: Defs, children: ISVGElement[]) {
+export function drawPathChildren(context: Defs, children: IElement[]) {
   for (let i = 0; i < children.length; i++) {
     const child = children[i];
     child.drawPath(context);
@@ -26,10 +26,10 @@ export function drawPathChildren(context: Defs, children: ISVGElement[]) {
 
 /**
  * 更新元素，包括 canvas、group 和 shape
- * @param {ISVGElement} element    SVG 元素
+ * @param {IElement} element    SVG 元素
  * @param {ChangeType} changeType  更新类型
  */
-export function refreshElement(element: ISVGElement, changeType: ChangeType) {
+export function refreshElement(element: IElement, changeType: ChangeType) {
   // element maybe canvas
   const canvas = element.get('canvas') || element;
   // should get context from canvas
@@ -50,7 +50,7 @@ export function refreshElement(element: ISVGElement, changeType: ChangeType) {
   } else if (changeType === 'sort') {
     const children = element.get('children');
     if (children && children.length) {
-      sortDom(element, (a: ISVGElement, b: ISVGElement) => {
+      sortDom(element, (a: IElement, b: IElement) => {
         return children.indexOf(a) - children.indexOf(b) ? 1 : 0;
       });
     }
