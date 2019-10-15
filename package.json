@@ -1,12 +1,57 @@
 {
-  "name": "antv-g",
-  "version": "4.0.0",
-  "description": "",
-  "main": "index.js",
   "private": true,
   "workspaces": [
     "packages/*"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:antvis/g.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna run build",
+    "contributor": "git-contributor",
+    "link": "lerna link",
+    "lint": "npm run eslint",
+    "eslint": "eslint --ext .html,.js ./packages",
+    "eslint-fix": "eslint --fix --ext .html,.js ./packages",
+    "tslint": "tslint ./packages/**/*.ts",
+    "tslint-fix": "tslint ./packages/**/*.ts --fix",
+    "lint-staged": "lint-staged",
+    "prettier": "prettier --write './packages/**/*.{js,ts}'",
+    "test": "lerna run test",
+    "ci": "npm run lint && npm run bootstrap && npm run build && npm run test",
+    "publish": "rm -rf node_modules && npm install && npm run bootstrap && npm run build && lerna publish",
+    "publish-beta": "rm -rf node_modules && npm install && npm run bootstrap && npm run build && lerna publish --dist-tag beta",
+    "site:build": "gatsby build",
+    "site:develop": "gatsby develop",
+    "site:clean": "gatsby clean"
+  },
+  "lint-staged": {
+    "**/*.{js,ts}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS && npm run lint"
+    }
+  },
+  "dependencies": {
+    "@antv/gatsby-theme-antv": "^0.2.7",
+    "@antv/istanbul": "0.0.0",
+    "@antv/torch": "^1.0.0",
+    "gatsby": "^2.15.34",
+    "lodash": "^4.17.11",
+    "ptz-i18n": "^1.0.0",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
+    "tslib": "^1.10.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.1.5",
     "@babel/core": "^7.1.6",
@@ -18,6 +63,8 @@
     "@commitlint/config-angular": "^7.1.2",
     "@types/lodash": "^4.14.119",
     "@types/node": "^10.12.18",
+    "@types/react": "^16.9.2",
+    "@types/react-dom": "^16.9.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
     "benchmark": "^2.1.4",
@@ -41,51 +88,5 @@
     "typescript": "^3.2.2",
     "webpack": "^4.26.1",
     "webpack-cli": "^3.1.2"
-  },
-  "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "build": "lerna run build",
-    "contributor": "git-contributor",
-    "link": "lerna link",
-    "lint": "npm run eslint",
-    "eslint": "eslint --ext .html,.js ./packages",
-    "eslint-fix": "eslint --fix --ext .html,.js ./packages",
-    "tslint": "tslint ./packages/**/*.ts",
-    "tslint-fix": "tslint ./packages/**/*.ts --fix",
-    "lint-staged": "lint-staged",
-    "prettier": "prettier --write './packages/**/*.{js,ts}'",
-    "test": "lerna run test",
-    "ci": "npm run lint && npm run bootstrap && npm run build && npm run test",
-    "publish": "rm -rf node_modules && npm install && npm run bootstrap && npm run build && lerna publish",
-    "publish-beta": "rm -rf node_modules && npm install && npm run bootstrap && npm run build && lerna publish --dist-tag beta"
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-angular"
-    ]
-  },
-  "lint-staged": {
-    "**/*.{js,ts}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS && npm run lint"
-    }
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@gitlab.alipay-inc.com:datavis/eva-engine.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@antv/istanbul": "0.0.0",
-    "@antv/torch": "^1.0.0",
-    "lodash": "^4.17.11",
-    "tslib": "^1.10.0"
   }
 }
