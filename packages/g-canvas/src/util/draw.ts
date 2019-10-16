@@ -1,3 +1,4 @@
+import { isArray } from '@antv/util';
 import { IElement } from '../interfaces';
 import { Region } from '../types';
 import { parseStyle } from './parse';
@@ -20,8 +21,8 @@ export function applyAttrsToContext(context: CanvasRenderingContext2D, element: 
       // 设置矩阵
       context.transform(v[0], v[1], v[3], v[4], v[6], v[7]);
     } else if (name === 'lineDash' && context.setLineDash) {
-      // 不再考虑支持字符串的形式
-      context.setLineDash(v);
+      // 设置虚线，只支持数组形式，非数组形式不做任何操作
+      isArray(v) && context.setLineDash(v);
     } else {
       if (name === 'strokeStyle' || name === 'fillStyle') {
         // 如果存在渐变、pattern 这个开销有些大
