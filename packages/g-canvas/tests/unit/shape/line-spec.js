@@ -15,8 +15,8 @@ describe('line test', () => {
       y1: 0,
       x2: 100,
       y2: 100,
-      stroke: 'red'
-    }
+      stroke: 'red',
+    },
   });
   it('init', () => {
     expect(line.attr('x1')).eqls(0);
@@ -43,7 +43,7 @@ describe('line test', () => {
     expect(line.isHit(-1, -1)).eqls(false);
     expect(line.isHit(10, 11)).eqls(false);
     line.attr({
-      lineAppendWidth: 2
+      lineAppendWidth: 2,
     });
     expect(line.isHit(10, 11)).eqls(true);
   });
@@ -53,5 +53,4 @@ describe('line test', () => {
     expect(line.destroyed).eqls(true);
     canvas.parentNode.removeChild(canvas);
   });
-
 });
