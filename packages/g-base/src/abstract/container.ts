@@ -239,9 +239,9 @@ abstract class Container extends Element implements IContainer {
     let shape;
     // 如果容器是 group
     if (!this.isCanvas()) {
-      const v = [x, y, 1];
+      let v = [x, y, 1];
       // 将 x, y 转换成对应于 group 的局部坐标
-      this.invertFromMatrix(v);
+      v = this.invertFromMatrix(v);
       if (!this.isClipped(v[0], v[1])) {
         shape = this._findShape(children, v[0], v[1]);
       }

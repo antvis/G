@@ -113,8 +113,8 @@ abstract class AbstractShape extends Element implements IShape {
 
   // 不同的 Shape 各自实现
   isHit(x: number, y: number): boolean {
-    const vec = [x, y, 1];
-    this.invertFromMatrix(vec);
+    let vec = [x, y, 1];
+    vec = this.invertFromMatrix(vec);
     const [refX, refY] = vec;
     const inBBox = this._isInBBox(refX, refY);
     // 跳过图形的拾取，在某些图形中可以省略一倍的检测成本
