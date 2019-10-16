@@ -67,8 +67,8 @@ function getSegments(path) {
 }
 
 function getPathBox(segments) {
-  const xArr = [];
-  const yArr = [];
+  let xArr = [];
+  let yArr = [];
   for (let i = 0; i < segments.length; i++) {
     const segment = segments[i];
     const { currentPoint, params, prePoint } = segment;
@@ -103,6 +103,10 @@ function getPathBox(segments) {
       yArr.push(box.y, box.y + box.height);
     }
   }
+  // bbox calculation should ignore NaN for path attribute
+  // ref: https://github.com/antvis/g/issues/210
+  xArr = xArr.filter((item) => !Number.isNaN(item));
+  yArr = yArr.filter((item) => !Number.isNaN(item));
   return getBBoxByArray(xArr, yArr);
 }
 
