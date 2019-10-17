@@ -22,10 +22,10 @@
     "build:umd": "webpack --config webpack.config.js --mode production",
     "clean": "rm -rf esm lib dist",
     "coverage": "npm run coverage-generator && npm run coverage-viewer",
-    "coverage-generator": "torch --coverage --compile --source-pattern src/*.js,src/**/*.js --opts __tests__/mocha.opts",
+    "coverage-generator": "torch --coverage --compile --source-pattern src/*.js,src/**/*.js --opts tests/mocha.opts",
     "coverage-viewer": "torch-coverage",
-    "test": "torch --renderer --compile --opts __tests__/mocha.opts",
-    "test-live": "torch --compile --interactive --opts __tests__/mocha.opts",
+    "test": "torch --renderer --compile --opts tests/mocha.opts",
+    "test-live": "torch --compile --interactive --opts tests/mocha.opts",
     "tsc": "tsc --noEmit",
     "typecheck": "tsc --noEmit"
   },
