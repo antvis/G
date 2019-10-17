@@ -148,19 +148,18 @@ class Timeline {
    * 初始化定时器
    */
   initTimer() {
-    const self = this;
     let isFinished = false;
     let shape: IElement;
     let animations: Animation[];
     let animation: Animation;
-    self.timer = d3Timer.timer((elapsed) => {
-      self.current = elapsed;
+    this.timer = d3Timer.timer((elapsed) => {
+      this.current = elapsed;
       if (this.animators.length > 0) {
         for (let i = this.animators.length - 1; i >= 0; i--) {
           shape = this.animators[i];
           if (shape.destroyed) {
             // 如果已经被销毁，直接移出队列
-            self.removeAnimator(i);
+            this.removeAnimator(i);
             continue;
           }
           if (!shape.isAnimatePaused()) {
@@ -178,7 +177,7 @@ class Timeline {
             }
           }
           if (animations.length === 0) {
-            self.removeAnimator(i);
+            this.removeAnimator(i);
           }
         }
         const autoDraw = this.canvas.get('autoDraw');
