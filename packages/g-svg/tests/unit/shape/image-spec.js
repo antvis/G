@@ -39,7 +39,7 @@ describe('SVG Image', () => {
       expect(bbox.maxY).to.equal(1024);
       done();
     };
-    img.src = resolve(process.cwd(), './__tests__/fixtures/test1.jpg');
+    img.src = resolve(process.cwd(), './tests/fixtures/test1.jpg');
   });
 
   it('bbox', () => {

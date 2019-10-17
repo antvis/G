@@ -15,8 +15,8 @@ describe('ellipse test', () => {
       ry: 10,
       x: 10,
       y: 10,
-      fill: 'red'
-    }
+      fill: 'red',
+    },
   });
   it('init', () => {
     expect(ellipse.attr('rx')).equal(10);
@@ -59,7 +59,7 @@ describe('ellipse test', () => {
       y: 10,
       rx: 10,
       ry: 10,
-      fill: 'red'
+      fill: 'red',
     });
     // only fill
     expect(ellipse.isHit(10, 10)).equal(true);
@@ -68,7 +68,7 @@ describe('ellipse test', () => {
 
     // fill and stroke
     ellipse.attr({
-      stroke: 'blue'
+      stroke: 'blue',
     });
     expect(ellipse.isHit(10, 20.5)).equal(true);
     expect(ellipse.isHit(10, 19)).equal(true);
@@ -76,13 +76,13 @@ describe('ellipse test', () => {
 
   it('isHit no fill', () => {
     ellipse.attr({
-      fill: null
+      fill: null,
     });
     expect(ellipse.isHit(10, 20.5)).equal(true);
     expect(ellipse.isHit(10, 19)).equal(false);
 
     ellipse.attr({
-      lineWidth: 4
+      lineWidth: 4,
     });
     expect(ellipse.isHit(10, 19)).equal(true);
   });
@@ -91,5 +91,5 @@ describe('ellipse test', () => {
     ellipse.destroy();
     expect(ellipse.destroyed).eqls(true);
     canvas.parentNode.removeChild(canvas);
-  })
+  });
 });
