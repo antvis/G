@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-math",
-  "version": "0.1.0-beta.2",
+  "version": "0.1.0-beta.3",
   "description": "geometry math",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
