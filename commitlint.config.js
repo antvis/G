@@ -6,5 +6,6 @@ module.exports = {
       'always',
       ['build', 'ci', 'docs', 'site', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test', 'chore'],
     ],
+    'header-max-length': [2, 'always', 100],
   },
 };
