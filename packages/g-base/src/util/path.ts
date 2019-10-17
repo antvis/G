@@ -428,7 +428,8 @@ const pathTocurve = function(path, path2?) {
   let pcom = ''; // holder for previous path command of original path
   let ii;
   const processPath = function(path, d, pcom) {
-    let nx, ny;
+    let nx;
+    let ny;
     if (!path) {
       return ['C', d.x, d.y, d.x, d.y, d.x, d.y];
     }
@@ -1143,7 +1144,8 @@ function getMinDiff(del, add, modify) {
 const levenshteinDistance = function(source, target) {
   const sourceLen = source.length;
   const targetLen = target.length;
-  let sourceSegment, targetSegment;
+  let sourceSegment;
+  let targetSegment;
   let temp = 0;
   if (sourceLen === 0 || targetLen === 0) {
     return null;
