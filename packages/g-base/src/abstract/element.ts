@@ -7,6 +7,7 @@ import Base from './base';
 import BBox from '../bbox';
 
 const MATRIX = 'matrix';
+
 const ARRAY_ATTRS = {
   matrix: 'matrix',
   path: 'path',
@@ -297,6 +298,9 @@ abstract class Element extends Base implements IElement {
     }
     return totalMatrix;
   }
+
+  // 清空当前矩阵，在子类上各自实现
+  abstract clearTotalMatrix();
 
   // 上层分组设置 matrix
   applyMatrix(matrix: number[]) {

@@ -11,6 +11,7 @@ class MyElement extends Element {
       maxY: y + height,
     };
   }
+  clearTotalMatrix() {}
 }
 
 class MyCircle extends Element {

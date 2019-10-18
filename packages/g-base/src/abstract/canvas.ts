@@ -1,7 +1,7 @@
 import Container from './container';
 import { ICanvas } from '../interfaces';
 import { CanvasCfg, Point } from '../types';
-import { isBrowser, isString, isObject } from '../util/util';
+import { isBrowser, isString } from '../util/util';
 import Timeline from '../animate/timeline';
 
 const PX_SUFFIX = 'px';

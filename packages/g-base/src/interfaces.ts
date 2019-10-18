@@ -185,6 +185,9 @@ export interface IElement extends IBase {
    */
   invertFromMatrix(v: number[]);
 
+  // 清空当前矩阵，在子类上各自实现
+  clearTotalMatrix();
+
   /**
    * 是否处于动画暂停状态
    * @return {boolean} 是否处于动画暂停状态
@@ -260,6 +263,90 @@ export interface IElement extends IBase {
    * @return {boolean} 是否被裁剪
    */
   isClipped(refX: number, refY: number): boolean;
+}
+
+export interface IElement2D extends IElement {
+  /**
+   * 移动元素
+   * @param {number} translateX x 轴方向的移动距离
+   * @param {number} translateY y 轴方向的移动距离
+   * @return {IElement} 元素
+   */
+  translate(translateX: number, translateY?: number): IElement;
+
+  /**
+   * 移动元素到目标位置
+   * @param {number} targetX 目标位置的 x 轴坐标
+   * @param {number} targetY 目标位置的 y 轴坐标
+   * @return {IElement} 元素
+   */
+  move(targetX: number, targetY: number): IElement;
+
+  /**
+   * 缩放元素
+   * @param {number} ratio 各个方向的缩放比例
+   * @return {IElement} 元素
+   */
+  scale(ratio: number): IElement;
+
+  /**
+   * 缩放元素
+   * @param {number} ratioX x 方向的缩放比例
+   * @param {number} ratioY y 方向的缩放比例
+   * @return {IElement} 元素
+   */
+  scale(ratioX: number, ratioY: number): IElement;
+
+  /**
+   * 旋转元素
+   * @param {number} radian 旋转角度
+   * @return {IElement} 元素
+   */
+  rotate(radian: number): IElement;
+}
+
+export interface IElement3D extends IElement {
+  /**
+   * 移动元素
+   * @param {number} translateX x 轴方向的移动距离
+   * @param {number} translateY y 轴方向的移动距离
+   * @param {number} translateZ z 轴方向的移动距离
+   * @return {IElement} 元素
+   */
+  translate(translateX: number, translateY?: number, translateZ?: number): IElement;
+
+  /**
+   * 移动元素到目标位置
+   * @param {number} targetX 目标位置的 x 轴坐标
+   * @param {number} targetY 目标位置的 y 轴坐标
+   * @param {number} targetZ 目标位置的 z 轴坐标
+   * @return {IElement} 元素
+   */
+  move(targetX: number, targetY: number, targetZ: number): IElement;
+
+  /**
+   * 缩放元素
+   * @param {number} ratio 各个方向的缩放比例
+   * @return {IElement} 元素
+   */
+  scale(ratio: number): IElement;
+
+  /**
+   * 缩放元素
+   * @param {number} ratioX x 方向的缩放比例
+   * @param {number} ratioY y 方向的缩放比例
+   * @param {number} ratioZ z 方向的缩放比例
+   * @return {IElement} 元素
+   */
+  scale(ratioX: number, ratioY?: number, ratioZ?: number): IElement;
+
+  /**
+   * 旋转元素
+   * @param {number} radian 旋转角度
+   * @param {number[]} vec 三维坐标向量
+   * @return {IElement} 元素
+   */
+  rotate(radian: number, vec: number[]): IElement;
 }
 
 export interface IContainer extends IBase {

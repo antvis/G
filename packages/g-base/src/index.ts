@@ -12,3 +12,6 @@ export { default as Base } from './abstract/base';
 export { default as AbstractCanvas } from './abstract/canvas';
 export { default as AbstractGroup } from './abstract/group';
 export { default as AbstractShape } from './abstract/shape';
+export { default as AbstractElement } from './abstract/element';
+export { default as AbstractElement2D } from './abstract/element2d';
+export { default as AbstractElement3D } from './abstract/element3d';

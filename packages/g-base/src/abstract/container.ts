@@ -83,6 +83,19 @@ abstract class Container extends Element implements IContainer {
     return false;
   }
 
+  // 实现基类中的 clearTotalMatrix 方法
+  clearTotalMatrix() {
+    const totalMatrix = this.get('totalMatrix');
+    if (totalMatrix) {
+      this.set('totalMatrix', null);
+      const children = this.get('children');
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        child.clearTotalMatrix();
+      }
+    }
+  }
+
   // 根据子节点确定 BBox
   getBBox(): BBox {
     // 所有的值可能在画布的可视区外

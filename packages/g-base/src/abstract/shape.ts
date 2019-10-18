@@ -4,6 +4,7 @@ import BBox from '../bbox';
 import Element from './element';
 import { each, isArray } from '../util/util';
 import { multiplyVec2 } from '../util/matrix';
+
 abstract class AbstractShape extends Element implements IShape {
   constructor(cfg: ShapeCfg) {
     super(cfg);
@@ -53,6 +54,11 @@ abstract class AbstractShape extends Element implements IShape {
     super.applyMatrix(matrix);
     // 清理掉缓存的包围盒
     this.set('canvasBox', null);
+  }
+
+  // 实现基类中的 clearTotalMatrix 方法
+  clearTotalMatrix() {
+    this.set('totalMatrix', null);
   }
 
   /**

@@ -1,5 +1,6 @@
 import { IBase, IObservable } from '../interfaces';
 import { removeFromArray, mix, isFunction } from '../util/util';
+
 abstract class Base implements IBase {
   /**
    * @private

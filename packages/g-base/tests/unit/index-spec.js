@@ -1,5 +1,16 @@
 import { expect } from 'chai';
-import { BBox, Event, AbstractCanvas, AbstractGroup, AbstractShape, Base, version } from '../../src/index';
+import {
+  BBox,
+  Event,
+  Base,
+  AbstractCanvas,
+  AbstractGroup,
+  AbstractShape,
+  AbstractElement,
+  AbstractElement2D,
+  AbstractElement3D,
+  version,
+} from '../../src/index';
 
 describe('Canvas index', () => {
   it('BBox', () => {
@@ -24,6 +35,18 @@ describe('Canvas index', () => {
 
   it('AbstractShape', () => {
     expect(AbstractShape).not.eql(undefined);
+  });
+
+  it('AbstractElement', () => {
+    expect(AbstractElement).not.eql(undefined);
+  });
+
+  it('AbstractElement2D', () => {
+    expect(AbstractElement2D).not.eql(undefined);
+  });
+
+  it('AbstractElement3D', () => {
+    expect(AbstractElement3D).not.eql(undefined);
   });
 
   it('version', () => {
