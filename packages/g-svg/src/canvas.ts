@@ -4,7 +4,7 @@ import { IElement } from './interfaces';
 import { applyClipChildren, drawPathChildren, refreshElement } from './util/draw';
 import { setClip } from './util/svg';
 import EventController from '@antv/g-base/lib/event/event-contoller';
-import Shape from './shape';
+import * as Shape from './shape';
 import Group from './group';
 import Defs from './defs';
 

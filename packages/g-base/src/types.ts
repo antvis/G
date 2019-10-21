@@ -1,3 +1,5 @@
+import { IShape, ICtor } from './interfaces';
+
 export type Point = {
   x: number;
   y: number;
@@ -162,4 +164,8 @@ export type Animation = AnimateCfg & {
   onFrame?: OnFrame;
   _paused?: boolean;
   _pauseTime?: number;
+};
+
+export type ShapeBase = {
+  [key: string]: ICtor<IShape>;
 };

@@ -2,7 +2,8 @@ import { AbstractGroup } from '@antv/g-base';
 import { ChangeType } from '@antv/g-base/lib/types';
 import { IElement } from './interfaces';
 import { Region } from './types';
-import Shape from './shape';
+import ShapeBase from './shape/base';
+import * as Shape from './shape';
 import { each, mergeRegion } from './util/util';
 import { applyAttrsToContext, drawChildren, refreshElement } from './util/draw';
 
@@ -24,7 +25,7 @@ class Group extends AbstractGroup {
   }
 
   // 同 shape 中的方法重复了
-  _applyClip(context, clip: Shape) {
+  _applyClip(context, clip: ShapeBase) {
     if (clip) {
       clip.createPath(context);
       context.clip();
@@ -35,7 +36,7 @@ class Group extends AbstractGroup {
     const children = this.getChildren() as IElement[];
     if (children.length) {
       context.save();
-      this._applyClip(context, this.getClip() as Shape);
+      this._applyClip(context, this.getClip() as ShapeBase);
       // group 上的矩阵和属性也会应用到上下文上
       applyAttrsToContext(context, this);
       drawChildren(context, children, region);
