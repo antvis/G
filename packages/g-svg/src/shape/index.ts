@@ -1,26 +1,11 @@
-import Shape from './base';
-import Circle from './circle';
-import Dom from './dom';
-import Ellipse from './ellipse';
-import Image from './image';
-import Line from './line';
-import Marker from './marker';
-import Path from './path';
-import Polygon from './polygon';
-import Polyline from './polyline';
-import Rect from './rect';
-import Text from './text';
-
-Shape['Circle'] = Circle;
-Shape['Dom'] = Dom;
-Shape['Ellipse'] = Ellipse;
-Shape['Image'] = Image;
-Shape['Line'] = Line;
-Shape['Marker'] = Marker;
-Shape['Path'] = Path;
-Shape['Polygon'] = Polygon;
-Shape['Polyline'] = Polyline;
-Shape['Rect'] = Rect;
-Shape['Text'] = Text;
-
-export default Shape;
+export { default as Circle } from './circle';
+export { default as Dom } from './dom';
+export { default as Ellipse } from './ellipse';
+export { default as Image } from './image';
+export { default as Line } from './line';
+export { default as Marker } from './marker';
+export { default as Path } from './path';
+export { default as Polygon } from './polygon';
+export { default as Polyline } from './polyline';
+export { default as Rect } from './rect';
+export { default as Text } from './text';
