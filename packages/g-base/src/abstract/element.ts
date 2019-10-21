@@ -343,6 +343,7 @@ abstract class Element extends Base implements IElement {
   setClip(clipCfg: ClipCfg) {
     const preShape = this.get('clipShape');
     if (preShape) {
+      // 将之前的 clipShape 销毁
       preShape.destroy();
     }
     let clipShape = null;
@@ -359,11 +360,13 @@ abstract class Element extends Base implements IElement {
           type: clipCfg.type,
           isClipShape: true, // 增加一个标记
           attrs: clipCfg.attrs,
+          canvas, // 设置 canvas
         });
       }
     }
     this.set('clipShape', clipShape);
     this.onCanvasChange('clip');
+    return clipShape;
   }
 
   getClip(): IShape {
