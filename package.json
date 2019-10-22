@@ -29,9 +29,9 @@
     "publish-beta": "npm run pre-publish && lerna publish --dist-tag beta",
     "start": "npm run site:develop",
     "site:develop": "gatsby develop --open",
-    "site:build": "gatsby build --prefix-paths",
+    "site:build": "npm run site:clean && gatsby build --prefix-paths",
     "site:clean": "gatsby clean",
-    "site:deploy": "npm run site:clean && npm run site:build && gh-pages -d public"
+    "site:deploy": "npm run site:build && gh-pages -d public"
   },
   "lint-staged": {
     "**/*.{js,ts}": [
