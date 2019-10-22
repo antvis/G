@@ -3,20 +3,16 @@ module.exports = {
     {
       resolve: '@antv/gatsby-theme-antv',
       options: {
-        pagesPath: './site/pages',
+        GATrackingId: `UA-148148901-3`,
         primaryColor: '#1890ff',
+        pathPrefix: '/g',
       },
     },
   ],
   siteMetadata: {
     title: 'G',
-    siteUrl: 'https://antvis.github.io/g',
     description: 'A powerful rendering engine for AntV providing canvas and svg draw',
     githubUrl: 'https://github.com/antvis/g',
-    languages: {
-      langs: ['en', 'zh'],
-      defaultLangKey: 'en',
-    },
     docs: [
       {
         slug: 'guide',
