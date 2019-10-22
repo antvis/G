@@ -12,7 +12,7 @@ describe('#202', () => {
     height: 500,
   });
 
-  it.only('the transformation from canvas coordinates to relative coordinates should be effective', (done) => {
+  it('the transformation from canvas coordinates to relative coordinates should be effective', (done) => {
     const group = canvas.addGroup();
     const circle = group.addShape('circle', {
       attrs: {
