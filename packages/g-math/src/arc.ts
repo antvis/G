@@ -72,8 +72,14 @@ export default {
     const xs = [startAngle, endAngle];
     for (let i = -Math.PI * 2; i <= Math.PI * 2; i += Math.PI) {
       const xAngle = xDim + i;
-      if (startAngle < xAngle && xAngle < endAngle) {
-        xs.push(xAngle);
+      if (startAngle < endAngle) {
+        if (startAngle < xAngle && xAngle < endAngle) {
+          xs.push(xAngle);
+        }
+      } else {
+        if (endAngle < xAngle && xAngle < startAngle) {
+          xs.push(xAngle);
+        }
       }
     }
 
@@ -93,8 +99,14 @@ export default {
     const ys = [startAngle, endAngle];
     for (let i = -Math.PI * 2; i <= Math.PI * 2; i += Math.PI) {
       const yAngle = yDim + i;
-      if (startAngle < yAngle && yAngle < endAngle) {
-        ys.push(yAngle);
+      if (startAngle < endAngle) {
+        if (startAngle < yAngle && yAngle < endAngle) {
+          ys.push(yAngle);
+        }
+      } else {
+        if (endAngle < yAngle && yAngle < startAngle) {
+          ys.push(yAngle);
+        }
       }
     }
 
