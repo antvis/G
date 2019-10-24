@@ -61,6 +61,7 @@ class ShapeBase extends AbstractShape {
     if (clip) {
       clip.createPath(context);
       context.clip();
+      clip._afterDraw(); // clip 绘制完成后，需要缓存包围盒以及清除标记
     }
   }
 
