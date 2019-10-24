@@ -1,5 +1,4 @@
-import { ShapeCfg, GroupCfg, ClipCfg, Point, ChangeType, AnimateCfg, ElementAttrs, OnFrame } from './types';
-import BBox from './bbox';
+import { ShapeCfg, GroupCfg, ClipCfg, Point, ChangeType, AnimateCfg, ElementAttrs, OnFrame, BBox } from './types';
 
 export interface ICtor<T> {
   new (cfg: any): T;
@@ -134,7 +133,7 @@ export interface IElement extends IBase {
    * 获取包围盒，这个包围盒是相对于图形元素自己，不会计算 matrix
    * @returns {BBox} 包围盒
    */
-  getBBox(): BBox;
+  getBBox();
   /**
    * 获取图形元素相对画布的包围盒，会计算从顶层到当前的 matrix
    * @returns {BBox} 包围盒
