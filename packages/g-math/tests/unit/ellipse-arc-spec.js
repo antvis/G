@@ -135,6 +135,48 @@ describe('ellipse arc test', () => {
     expect(box.width).eqls(p11.x - p21.x);
   });
 
+  it('box, ellipse 0 when startAngle > endAngle', () => {
+    // 1 / 2 圆弧，旋转 0
+    const xRotation = 0;
+    const box = arc.box(100, 100, 20, 10, xRotation, Math.PI, 0);
+    const p1 = arc.pointAt(100, 100, 20, 10, 0, Math.PI, 0, 0);
+    const p2 = arc.pointAt(100, 100, 20, 10, 0, Math.PI, 0, 1);
+    const p11 = rotation({ x: 100, y: 100 }, p1, xRotation);
+    const p21 = rotation({ x: 100, y: 100 }, p2, xRotation);
+
+    ctx.beginPath();
+    ctx.ellipse(100, 100, 20, 10, xRotation, 0, Math.PI);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.strokeRect(box.x, box.y, box.width, box.height);
+    expect(box.x).eqls(p11.x);
+    expect(box.y).eqls(p11.y);
+    expect(box.width).eqls(p21.x - p11.x);
+    expect(box.height).eqls(10);
+  });
+
+  it('box, ellipse 90 when startAngle > endAngle', () => {
+    // 1 / 2 圆弧，旋转 90
+    const xRotation = Math.PI / 2;
+    const box = arc.box(100, 100, 20, 10, xRotation, Math.PI, 0);
+    const p1 = arc.pointAt(100, 100, 20, 10, 0, Math.PI, 0, 0);
+    const p2 = arc.pointAt(100, 100, 20, 10, 0, Math.PI, 0, 1);
+    const p11 = rotation({ x: 100, y: 100 }, p1, xRotation);
+    const p21 = rotation({ x: 100, y: 100 }, p2, xRotation);
+
+    ctx.beginPath();
+    ctx.ellipse(100, 100, 20, 10, xRotation, 0, Math.PI);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.strokeRect(box.x, box.y, box.width, box.height);
+    expect(box.x).eqls(p21.x - 10);
+    expect(box.y).eqls(p11.y);
+    expect(box.width).eqls(10);
+    expect(box.height).eqls(40);
+  });
+
   it('tangent angle', () => {
     expect(arc.tangentAngle(0, 0, 10, 10, 0, 0, Math.PI, 0)).eqls(Math.PI / 2);
     expect(arc.tangentAngle(0, 0, 10, 10, 0, 0, Math.PI, 1)).eqls(Math.PI / 2 + Math.PI);
