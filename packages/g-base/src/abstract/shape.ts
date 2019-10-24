@@ -1,6 +1,5 @@
 import { IShape } from '../interfaces';
-import { ShapeCfg, ShapeAttrs } from '../types';
-import BBox from '../bbox';
+import { ShapeCfg, ShapeAttrs, BBox } from '../types';
 import Element from './element';
 import { each, isArray } from '../util/util';
 import { multiplyVec2 } from '../util/matrix';
@@ -59,7 +58,7 @@ abstract class AbstractShape extends Element implements IShape {
    * 计算相对于画布的包围盒，默认等同于 bbox
    * @return {BBox} 包围盒
    */
-  calculateCanvasBBox(): BBox {
+  calculateCanvasBBox() {
     const bbox = this.getBBox();
     const totalMatrix = this.getTotalMatrix();
     // 如果没有任何矩阵，则等同于计算 bbox
@@ -74,7 +73,16 @@ abstract class AbstractShape extends Element implements IShape {
     const maxX = Math.max(topLeft[0], topRight[0], bottomLeft[0], bottomRight[0]);
     const minY = Math.min(topLeft[1], topRight[1], bottomLeft[1], bottomRight[1]);
     const maxY = Math.max(topLeft[1], topRight[1], bottomLeft[1], bottomRight[1]);
-    return BBox.fromRange(minX, minY, maxX, maxY);
+    return {
+      x: minX,
+      y: minY,
+      minX,
+      minY,
+      maxX,
+      maxY,
+      width: maxX - minX,
+      height: maxY - minY,
+    };
   }
 
   /**
