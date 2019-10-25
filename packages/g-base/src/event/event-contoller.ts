@@ -86,15 +86,15 @@ function emitDelegation(container, type, eventObj) {
   const paths = eventObj.propagationPath;
   const events = container.events;
   // 至少有一个对象
-  for (let i = 1; i < paths.length; i++) {
-    const group = paths[i];
+  for (let i = 0; i < paths.length; i++) {
+    const element = paths[i];
     // 暂定跟 name 绑定
-    const name = group.get('name');
+    const name = element.get('name');
     if (name) {
       const eventName = name + DELEGATION_SPLIT + type;
       if (events[eventName]) {
         eventObj.delegateTarget = container;
-        eventObj.currentTarget = group;
+        eventObj.currentTarget = element;
         container.emit(eventName, eventObj);
       }
     }
