@@ -1,3 +1,14 @@
+export type BBox = {
+  x: number;
+  y: number;
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+  width: number;
+  height: number;
+};
+
 export type Point = {
   x: number;
   y: number;

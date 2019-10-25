@@ -3,6 +3,7 @@
  * @author dxq613@gmail.com
  */
 
+import { BBox } from '@antv/g-base/lib/types';
 import ShapeBase from './base';
 import { isNil, isString, each, getOffScreenContext } from '../util/util';
 
@@ -73,7 +74,7 @@ class Text extends ShapeBase {
   // }
 
   // 文本的 bbox 计算单独计算
-  calculateBBox() {
+  calculateBBox(): BBox {
     const attrs = this.attrs;
     const x = attrs.x;
     const y = attrs.y;
