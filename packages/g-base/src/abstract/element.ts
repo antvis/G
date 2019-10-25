@@ -1,10 +1,9 @@
 import { each, isEqual, isFunction, isNumber, isObject, isArray, noop, mix, upperFirst, uniqueId } from '@antv/util';
 import { IElement, IShape, IGroup, ICanvas } from '../interfaces';
-import { ClipCfg, ChangeType, OnFrame, ShapeAttrs, AnimateCfg, Animation } from '../types';
+import { ClipCfg, ChangeType, OnFrame, ShapeAttrs, AnimateCfg, Animation, BBox } from '../types';
 import { removeFromArray } from '../util/util';
 import { multiplyMatrix, multiplyVec2, invert } from '../util/matrix';
 import Base from './base';
-import BBox from '../bbox';
 
 const MATRIX = 'matrix';
 const ARRAY_ATTRS = {
@@ -343,6 +342,7 @@ abstract class Element extends Base implements IElement {
   setClip(clipCfg: ClipCfg) {
     const preShape = this.get('clipShape');
     if (preShape) {
+      // 将之前的 clipShape 销毁
       preShape.destroy();
     }
     let clipShape = null;
@@ -359,11 +359,13 @@ abstract class Element extends Base implements IElement {
           type: clipCfg.type,
           isClipShape: true, // 增加一个标记
           attrs: clipCfg.attrs,
+          canvas, // 设置 canvas
         });
       }
     }
     this.set('clipShape', clipShape);
     this.onCanvasChange('clip');
+    return clipShape;
   }
 
   getClip(): IShape {

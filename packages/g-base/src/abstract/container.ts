@@ -1,6 +1,5 @@
 import { IBase, IContainer, ICtor, IShape, IGroup, IElement, ICanvas } from '../interfaces';
-import { ShapeBase } from '../types';
-import BBox from '../bbox';
+import { ShapeBase, BBox } from '../types';
 import Timeline from '../animate/timeline';
 import Element from './element';
 import { isFunction, isObject, each, removeFromArray, upperFirst } from '../util/util';
@@ -134,7 +133,17 @@ abstract class Container extends Element implements IContainer {
       minY = 0;
       maxY = 0;
     }
-    return BBox.fromRange(minX, minY, maxX, maxY);
+    const box = {
+      x: minX,
+      y: minY,
+      minX,
+      minY,
+      maxX,
+      maxY,
+      width: maxX - minX,
+      height: maxY - minY,
+    };
+    return box;
   }
 
   // 获取画布的包围盒
@@ -168,7 +177,17 @@ abstract class Container extends Element implements IContainer {
       minY = 0;
       maxY = 0;
     }
-    return BBox.fromRange(minX, minY, maxX, maxY);
+    const box = {
+      x: minX,
+      y: minY,
+      minX,
+      minY,
+      maxX,
+      maxY,
+      width: maxX - minX,
+      height: maxY - minY,
+    };
+    return box;
   }
 
   abstract getShapeBase(): ShapeBase;
