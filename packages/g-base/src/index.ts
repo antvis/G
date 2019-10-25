@@ -6,7 +6,6 @@
 const pkg = require('../package.json');
 
 export const version = pkg.version;
-export { default as BBox } from './bbox';
 export { default as Event } from './event/graph-event';
 export { default as Base } from './abstract/base';
 export { default as AbstractCanvas } from './abstract/canvas';

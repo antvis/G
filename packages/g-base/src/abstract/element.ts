@@ -1,10 +1,9 @@
 import { each, isEqual, isFunction, isNumber, isObject, isArray, noop, mix, upperFirst, uniqueId } from '@antv/util';
 import { IElement, IShape, IGroup, ICanvas } from '../interfaces';
-import { ClipCfg, ChangeType, OnFrame, ShapeAttrs, AnimateCfg, Animation } from '../types';
+import { ClipCfg, ChangeType, OnFrame, ShapeAttrs, AnimateCfg, Animation, BBox } from '../types';
 import { removeFromArray } from '../util/util';
 import { multiplyMatrix, multiplyVec2, invert } from '../util/matrix';
 import Base from './base';
-import BBox from '../bbox';
 
 const MATRIX = 'matrix';
 const ARRAY_ATTRS = {

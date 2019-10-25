@@ -1,5 +1,5 @@
-import { AbstractShape, BBox } from '@antv/g-base';
-import { ShapeAttrs, ChangeType } from '@antv/g-base/lib/types';
+import { AbstractShape } from '@antv/g-base';
+import { ShapeAttrs, ChangeType, BBox } from '@antv/g-base/lib/types';
 import { IShape } from '../interfaces';
 import Defs from '../defs';
 import { setShadow, setTransform, setClip } from '../util/svg';
@@ -47,7 +47,16 @@ class ShapeBase extends AbstractShape implements IShape {
     const minY = y - halfWidth;
     const maxX = x + width + halfWidth;
     const maxY = y + height + halfWidth;
-    return BBox.fromRange(minX, minY, maxX, maxY);
+    return {
+      x: minX,
+      y: minY,
+      minX,
+      minY,
+      maxX,
+      maxY,
+      width: width + lineWidth,
+      height: height + lineWidth,
+    };
   }
 
   isFill() {
