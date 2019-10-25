@@ -1,5 +1,5 @@
-import { AbstractShape, BBox } from '@antv/g-base';
-import { ChangeType } from '@antv/g-base/lib/types';
+import { AbstractShape } from '@antv/g-base';
+import { ChangeType, BBox } from '@antv/g-base/lib/types';
 import { isNil, intersectRect } from '../util/util';
 import { applyAttrsToContext, refreshElement } from '../util/draw';
 import { Region } from '../types';
@@ -33,7 +33,16 @@ class ShapeBase extends AbstractShape {
     const minY = box.y - halfLineWidth;
     const maxX = box.x + box.width + halfLineWidth;
     const maxY = box.y + box.height + halfLineWidth;
-    return BBox.fromRange(minX, minY, maxX, maxY);
+    return {
+      x: minX,
+      minX,
+      y: minY,
+      minY,
+      width: box.width + lineWidth,
+      height: box.height + lineWidth,
+      maxX,
+      maxY,
+    };
   }
 
   /**
@@ -61,6 +70,7 @@ class ShapeBase extends AbstractShape {
     if (clip) {
       clip.createPath(context);
       context.clip();
+      clip._afterDraw(); // clip 绘制完成后，需要缓存包围盒以及清除标记
     }
   }
 
