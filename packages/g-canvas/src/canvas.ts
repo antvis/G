@@ -3,7 +3,7 @@ import { ChangeType } from '@antv/g-base/lib/types';
 import { IElement } from './interfaces';
 import { Region } from './types';
 import EventController from '@antv/g-base/lib/event/event-contoller';
-import Shape from './shape';
+import * as Shape from './shape';
 import Group from './group';
 import { drawChildren, getRefreshRegion } from './util/draw';
 import { getPixelRatio, each, mergeRegion, requestAnimationFrame, clearAnimationFrame } from './util/util';

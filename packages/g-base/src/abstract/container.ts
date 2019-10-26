@@ -1,5 +1,5 @@
 import { IBase, IContainer, ICtor, IShape, IGroup, IElement, ICanvas } from '../interfaces';
-import { BBox } from '../types';
+import { ShapeBase, BBox } from '../types';
 import Timeline from '../animate/timeline';
 import Element from './element';
 import { isFunction, isObject, each, removeFromArray, upperFirst } from '../util/util';
@@ -190,7 +190,7 @@ abstract class Container extends Element implements IContainer {
     return box;
   }
 
-  abstract getShapeBase(): ICtor<IShape>;
+  abstract getShapeBase(): ShapeBase;
   abstract getGroupBase(): ICtor<IGroup>;
 
   getDefaultCfg() {

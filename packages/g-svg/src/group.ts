@@ -2,7 +2,7 @@ import { AbstractGroup } from '@antv/g-base';
 import { ChangeType } from '@antv/g-base/lib/types';
 import { each } from '@antv/util';
 import { IElement, IGroup } from './interfaces';
-import Shape from './shape';
+import * as Shape from './shape';
 import Defs from './defs';
 import { drawChildren, applyClipChildren, drawPathChildren, refreshElement } from './util/draw';
 import { setClip } from './util/svg';
