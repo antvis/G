@@ -1,4 +1,15 @@
-import { ShapeCfg, GroupCfg, ClipCfg, Point, ChangeType, AnimateCfg, ElementAttrs, OnFrame, BBox } from './types';
+import {
+  ShapeCfg,
+  GroupCfg,
+  ClipCfg,
+  Point,
+  ChangeType,
+  AnimateCfg,
+  ElementAttrs,
+  OnFrame,
+  ShapeBase,
+  BBox,
+} from './types';
 
 export interface ICtor<T> {
   new (cfg: any): T;
@@ -285,7 +296,7 @@ export interface IContainer extends IBase {
    * 获取 Shape 的基类
    * @return {IShape} Shape 的基类，用作工厂方法来获取类实例
    */
-  getShapeBase(): ICtor<IShape>;
+  getShapeBase(): ShapeBase;
 
   /**
    * 获取 Group 的基类，用于添加默认的 Group
