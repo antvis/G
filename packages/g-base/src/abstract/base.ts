@@ -1,6 +1,7 @@
-import { IBase, IObservable } from '../interfaces';
+import EE from '@antv/event-emitter';
+import { IBase } from '../interfaces';
 import { removeFromArray, mix, isFunction } from '../util/util';
-abstract class Base implements IBase {
+abstract class Base extends EE implements IBase {
   /**
    * @private
    * 内部属性，用于 get,set
@@ -30,6 +31,7 @@ abstract class Base implements IBase {
   }
 
   constructor(cfg) {
+    super();
     const defaultCfg = this.getDefaultCfg();
     this.cfg = mix(defaultCfg, cfg);
   }
@@ -50,49 +52,6 @@ abstract class Base implements IBase {
     };
     this.off();
     this.destroyed = true;
-  }
-
-  // 实现 IObservable
-  on(eventName: string, callback: Function) {
-    if (!isFunction(callback)) {
-      throw new Error('listener should be a function');
-    }
-    if (!this.events) {
-      this.events = {};
-    }
-    if (!this.events[eventName]) {
-      this.events[eventName] = [];
-    }
-    this.events[eventName].push(callback);
-  }
-
-  off(eventName?: string, callback?: Function) {
-    if (!eventName) {
-      // evt 为空全部清除
-      this.events = {};
-    } else {
-      if (!callback) {
-        // evt 存在，callback 为空，清除事件所有方法
-        delete this.events[eventName];
-      } else {
-        // evt 存在，callback 存在，清除匹配的
-        const events = this.events[eventName] || [];
-        removeFromArray(events, callback);
-      }
-    }
-  }
-
-  emit(eventName: string, eventObject: object) {
-    this.trigger(eventName, eventObject);
-  }
-
-  trigger(eventName: string, eventObject: object) {
-    const events = this.events[eventName] || [];
-    const length = events.length;
-    for (let i = 0; i < length; i++) {
-      const callback = events[i];
-      callback.call(this, eventObject);
-    }
   }
 }
 
