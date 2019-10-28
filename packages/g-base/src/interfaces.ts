@@ -17,10 +17,46 @@ export interface ICtor<T> {
 }
 
 /**
+ * @interface IObservable
+ * 可以绑定事件的接口
+ */
+export interface IObservable {
+  /**
+   * 绑定事件
+   * @param  eventName 事件名
+   * @param callback  回调函数
+   */
+  on(eventName: string, callback: Function);
+  /**
+   * 移除事件
+   */
+  off();
+  /**
+   * 移除事件
+   * @param eventName 事件名
+   */
+  off(eventName: string);
+  /**
+   * 移除事件
+   * @param eventName 事件名
+   * @param callback  回调函数
+   */
+  off(eventName: string, callback: Function);
+  /**
+   * 触发事件, trigger 的别名函数
+   * @param eventName 事件名称
+   * @param eventObject 参数
+   */
+  emit(eventName: string, eventObject: object);
+
+  getEvents(): any;
+}
+
+/**
  * @interface IBase
  * 所有图形类公共的接口，提供 get,set 方法
  */
-export interface IBase extends EE {
+export interface IBase extends IObservable {
   /**
    * 获取属性值
    * @param  {string} name 属性名
