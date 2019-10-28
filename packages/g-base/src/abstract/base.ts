@@ -53,10 +53,6 @@ abstract class Base extends EE implements IBase {
     this.off();
     this.destroyed = true;
   }
-
-  trigger(eventName: string, eventObject: object) {
-    this.emit(eventName, eventObject);
-  }
 }
 
 export default Base;
