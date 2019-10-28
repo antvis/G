@@ -16,14 +16,14 @@ export interface ICtor<T> {
 }
 
 /**
- * @interface IObserable
+ * @interface IObservable
  * 可以绑定事件的接口
  */
 export interface IObservable {
   /**
    * 绑定事件
-   * @param {string}   eventName 事件名
-   * @param {Function} callback  回调函数
+   * @param  eventName 事件名
+   * @param callback  回调函数
    */
   on(eventName: string, callback: Function);
   /**
@@ -32,27 +32,23 @@ export interface IObservable {
   off();
   /**
    * 移除事件
-   * @param {string} eventName 事件名
+   * @param eventName 事件名
    */
   off(eventName: string);
   /**
    * 移除事件
-   * @param {string}   eventName 事件名
-   * @param {Function} callback  回调函数
+   * @param eventName 事件名
+   * @param callback  回调函数
    */
   off(eventName: string, callback: Function);
   /**
    * 触发事件, trigger 的别名函数
-   * @param {string} eventName 事件名称
-   * @param {object} args 参数
+   * @param eventName 事件名称
+   * @param eventObject 参数
    */
   emit(eventName: string, eventObject: object);
-  /**
-   * 触发事件
-   * @param {string} eventName 事件名称
-   * @param {object} args 参数
-   */
-  trigger(eventName: string, eventObject: object);
+
+  getEvents(): any;
 }
 
 /**
