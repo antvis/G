@@ -4,7 +4,7 @@
  */
 import GraphEvent from './graph-event';
 import { ICanvas, IShape, IBase } from '../interfaces';
-import { each, isArray } from '../util/util';
+import { each, isArray, isBrowser } from '../util/util';
 const TIME_INTERVAL = 120; // 判断拖拽和点击
 const CLICK_OFFSET = 40;
 const DELEGATION_SPLIT = ':';
@@ -150,6 +150,7 @@ class EventController {
 
   // 注册事件
   _bindEvents() {
+    if (!isBrowser) return;
     const el = this.canvas.get('el');
     each(EVENTS, (eventName) => {
       el.addEventListener(eventName, this._eventCallback);
@@ -355,6 +356,7 @@ class EventController {
 
   // 清理事件
   _clearEvents() {
+    if (!isBrowser) return;
     const el = this.canvas.get('el');
     each(EVENTS, (eventName) => {
       el.removeEventListener(eventName, this._eventCallback);

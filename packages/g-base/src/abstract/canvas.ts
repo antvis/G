@@ -11,6 +11,7 @@ abstract class Canvas extends Container implements ICanvas {
     super(cfg);
     this.initContainer();
     this.initDom();
+    this.initContext();
     this.initEvents();
     this.initTimeline();
   }
@@ -34,12 +35,21 @@ abstract class Canvas extends Container implements ICanvas {
   initDom() {
     const el = this.createDom();
     this.set('el', el);
+    // 如果是浏览器环境，添加到container里
     // 附加到容器
     const container = this.get('container');
-    container.appendChild(el);
-    // 设置初始宽度
-    this.setDOMSize(this.get('width'), this.get('height'));
+    if (container) {
+      container.appendChild(el);
+      // 设置初始宽度
+      this.setDOMSize(this.get('width'), this.get('height'));
+    }
   }
+
+  /**
+   * @protected
+   * 初始化 context
+   */
+  initContext() {}
 
   /**
    * 创建画布容器
@@ -52,6 +62,12 @@ abstract class Canvas extends Container implements ICanvas {
    * 初始化绑定的事件
    */
   initEvents() {}
+
+  /**
+   * @protected
+   * 手动触发事件
+   */
+  emitEvent(type: string, ev) {}
 
   /**
    * @protected

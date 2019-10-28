@@ -7,6 +7,9 @@ import * as Shape from './shape';
 import Group from './group';
 import { drawChildren, getRefreshRegion } from './util/draw';
 import { getPixelRatio, each, mergeRegion, requestAnimationFrame, clearAnimationFrame } from './util/util';
+import { isBrowser } from '@antv/g-base/lib/util/util';
+import MiniCanvasElement from './miniCanvasElement';
+
 const REFRSH_COUNT = 30; // 局部刷新的元素个数，超过后合并绘图区域
 
 function getMergedRegion(elements): Region {
@@ -91,10 +94,27 @@ class Canvas extends AbstractCanvas {
     this.set('eventController', eventController);
   }
 
+  emitEvent(type: string, ev) {
+    const eventController = this.get('eventController');
+    if (eventController) {
+      eventController._triggerEvent(type, ev);
+    }
+  }
+
+  createElement(): HTMLCanvasElement | any {
+    if (isBrowser) {
+      return document.createElement('canvas');
+    }
+    return new MiniCanvasElement(this.get('context'));
+  }
+
   // 复写基类的方法生成标签
   createDom(): HTMLElement {
-    const element = document.createElement('canvas');
+    const element = this.createElement();
+    const pixelRatio = this.getPixelRatio();
     const context = element.getContext('2d');
+    element.width = pixelRatio * this.get('width');
+    element.height = pixelRatio * this.get('height');
     // 缓存 context 对象
     this.set('context', context);
     return element;
@@ -107,6 +127,13 @@ class Canvas extends AbstractCanvas {
     el.width = pixelRatio * width;
     el.height = pixelRatio * height;
     // 设置 canvas 元素的宽度和高度，会重置缩放，因此 context.scale 需要在每次设置宽、高后调用
+    if (pixelRatio > 1) {
+      context.scale(pixelRatio, pixelRatio);
+    }
+  }
+  initContext() {
+    const context = this.get('context');
+    const pixelRatio = this.getPixelRatio();
     if (pixelRatio > 1) {
       context.scale(pixelRatio, pixelRatio);
     }

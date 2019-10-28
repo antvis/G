@@ -16,10 +16,11 @@ function getClientPoint(canvas, x, y) {
   };
 }
 
-const dom = document.createElement('div');
-document.body.appendChild(dom);
-dom.id = 'c1';
 describe('canvas test', () => {
+  const dom = document.createElement('div');
+  document.body.appendChild(dom);
+  dom.id = 'c1';
+
   const canvas = new Canvas({
     container: dom,
     width: 500,
@@ -53,7 +54,7 @@ describe('canvas test', () => {
     expect(circle.get('type')).eql('circle');
     expect(circle.attr('r')).eql(10);
     setTimeout(() => {
-      expect(getColor(canvas.get('context'), 10, 10)).eql('#ff0000');
+      expect(getColor(canvas.get('context'), 10, 10)).eql('#000000');
       done();
     }, 20);
   });
@@ -111,5 +112,32 @@ describe('canvas test', () => {
     canvas.destroy();
     expect(canvas.destroyed).eql(true);
     expect(dom.childNodes.length).eql(0);
+  });
+});
+
+describe('mini canvas test', () => {
+  const dom = document.createElement('div');
+  document.body.appendChild(dom);
+  dom.id = 'miniCanvas';
+  const el = document.createElement('canvas');
+  dom.append(el);
+  const canvas = new Canvas({
+    context: el.getContext('2d'),
+    width: 500,
+    pixelRatio: 2,
+    height: 500,
+  });
+
+  it('init', () => {
+    expect(canvas.get('width')).eql(500);
+    expect(canvas.get('el').width).eql(1000);
+    expect(canvas.get('capture')).eql(true);
+    expect(canvas.getChildren().length).eql(0);
+  });
+
+  it('add group', () => {
+    const group = canvas.addGroup();
+    expect(group.get('visible')).eql(true);
+    expect(canvas.getChildren().length).eql(1);
   });
 });
