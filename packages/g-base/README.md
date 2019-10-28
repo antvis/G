@@ -24,7 +24,7 @@ G-Base 中定义了绘图引擎的接口、抽象类和工具方法
 
 #### IBase
 事件接口定义
-```js
+```ts
   /**
    * 绑定事件
    * @param {string}   eventName 事件名
@@ -57,11 +57,11 @@ G-Base 中定义了绘图引擎的接口、抽象类和工具方法
    * @param {string} eventName 事件名称
    * @param {object} args 参数
    */
-  trigger(eventName: string, eventObject: object);
+  emit(eventName: string, eventObject: object);
 ```
 属性接口定义
 
-```js
+```ts
 /**
    * 获取属性值
    * @param  {string} name 属性名

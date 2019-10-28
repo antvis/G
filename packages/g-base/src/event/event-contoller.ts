@@ -84,7 +84,7 @@ function hasDelegation(events, type) {
 // 触发委托事件
 function emitDelegation(container, type, eventObj) {
   const paths = eventObj.propagationPath;
-  const events = container.events;
+  const events = container.getEvents();
   // 至少有一个对象
   for (let i = 0; i < paths.length; i++) {
     const element = paths[i];

@@ -42,7 +42,7 @@ describe('base test', () => {
     base.destroy();
     expect(base.cfg).eqls({ destroyed: true });
     expect(base.destroyed).equal(true);
-    expect(base.events.click).equal(undefined);
+    expect(base.getEvents().click).equal(undefined);
   });
 
   it('on', () => {
@@ -53,8 +53,8 @@ describe('base test', () => {
     function callback() {}
     base.on('click', callback);
 
-    expect(base.events.click.length).equal(1);
-    expect(base.events.click[0]).equal(callback);
+    expect(base.getEvents().click.length).equal(1);
+    expect(base.getEvents().click[0].callback).equal(callback);
   });
 
   it('trigger, emit', () => {
@@ -66,17 +66,17 @@ describe('base test', () => {
     }
 
     base.on('click', callback);
-    base.trigger('click');
+    base.emit('click');
     expect(called).equal(1);
     base.emit('click');
     expect(called).equal(2);
     base.on('click', () => {
       called = called + 2;
     });
-    base.trigger('click');
+    base.emit('click');
     expect(called).equal(5);
-    expect(base.events.click.length).equal(2);
-    base.trigger('test');
+    expect(base.getEvents().click.length).equal(2);
+    base.emit('test');
     expect(called).equal(5);
   });
 
@@ -90,7 +90,7 @@ describe('base test', () => {
     }
 
     base.on('click', callback);
-    base.trigger('click', { p1: 1, p2: 2 });
+    base.emit('click', { p1: 1, p2: 2 });
     expect(p1).equal(1);
     expect(p2).equal(2);
   });
@@ -102,17 +102,17 @@ describe('base test', () => {
     base.on('click', () => {});
 
     base.on('test', () => {});
-    expect(base.events.click.length).equal(2);
+    expect(base.getEvents().click.length).equal(2);
     base.off('click', callback);
-    expect(base.events.click.length).equal(1);
-    expect(base.events.test.length).equal(1);
+    expect(base.getEvents().click.length).equal(1);
+    expect(base.getEvents().test.length).equal(1);
     // 移除不存在的事件
     base.off('test', callback);
-    expect(base.events.test.length).equal(1);
+    expect(base.getEvents().test.length).equal(1);
 
     base.off('test');
-    expect(base.events.test).equal(undefined);
+    expect(base.getEvents().test).equal(undefined);
     base.off();
-    expect(base.events.click).equal(undefined);
+    expect(base.getEvents().click).equal(undefined);
   });
 });
