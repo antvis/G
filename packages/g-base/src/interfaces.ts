@@ -10,7 +10,6 @@ import {
   ShapeBase,
   BBox,
 } from './types';
-import EE from '@antv/event-emitter';
 
 export interface ICtor<T> {
   new (cfg: any): T;
