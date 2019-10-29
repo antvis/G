@@ -8,7 +8,10 @@
   "version": "independent",
   "command": {
     "bootstrap": {
-      "ci": false
+      "ci": false,
+      "npmClientArgs": [
+        "--no-package-lock"
+      ]
     },
     "publish": {
       "commitHooks": false
