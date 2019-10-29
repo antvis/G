@@ -47,8 +47,8 @@ class Marker extends ShapeBase {
   // 更新属性时，检测是否更改了 path
   onAttrChange(name: string, value: any, originValue: any) {
     super.onAttrChange(name, value, originValue);
-    if (name === 'symbol') {
-      // symbol 更改时，清理缓存
+    if (['symbol', 'x', 'y', 'r'].indexOf(name) !== -1) {
+      // path 相关属性更改时，清理缓存
       this._resetParamsCache();
     }
   }
