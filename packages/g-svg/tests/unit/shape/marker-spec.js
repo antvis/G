@@ -13,7 +13,7 @@ describe('SVG Marker', () => {
       attrs: {
         x: 20,
         y: 20,
-        radius: 10,
+        r: 10,
         fill: 'red',
         symbol: 'circle',
       },
@@ -24,7 +24,7 @@ describe('SVG Marker', () => {
   it('init', () => {
     expect(marker.attr('x')).eql(20);
     expect(marker.attr('y')).eql(20);
-    expect(marker.attr('radius')).eql(10);
+    expect(marker.attr('r')).eql(10);
     expect(marker.attr('fill')).eql('red');
     expect(marker.attr('symbol')).eql('circle');
   });
@@ -49,9 +49,9 @@ describe('SVG Marker', () => {
   });
 
   it('change', () => {
-    expect(marker.attr('radius')).eql(10);
-    marker.attr('radius', 20);
-    expect(marker.attr('radius')).eql(20);
+    expect(marker.attr('r')).eql(10);
+    marker.attr('r', 20);
+    expect(marker.attr('r')).eql(20);
     const bbox = marker.getBBox();
     expect(isNumberEqual(bbox.minX, 0)).eql(true);
     expect(isNumberEqual(bbox.minY, 0)).eql(true);
