@@ -58,8 +58,8 @@ module.exports = {
       {
         slug: 'api',
         title: {
-          zh: 'API',
-          en: '接口',
+          zh: '接口',
+          en: 'API',
         },
         order: 0,
         redirect: 'canvas',
