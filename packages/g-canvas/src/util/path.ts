@@ -31,10 +31,13 @@ function hasArc(path) {
 function getSegments(path) {
   const segments = [];
   let currentPoint = [0, 0]; // 当前图形
+  let nextParams = null; // 下一节点的 path 参数
   let startMovePoint = [0, 0]; // 开始 M 的点，可能会有多个
+  let lastStartMovePointIndex = 0; // 最近一个开始点 M 的索引
   const count = path.length;
   for (let i = 0; i < count; i++) {
     const params = path[i];
+    nextParams = path[i + 1];
     const command = params[0];
     // 数学定义上的参数，便于后面的计算
     const segment = {
@@ -45,6 +48,7 @@ function getSegments(path) {
     switch (command) {
       case 'M':
         startMovePoint = [params[1], params[2]];
+        lastStartMovePointIndex = i;
         break;
       case 'A':
         const arcParams = getArcParams(currentPoint, params);
@@ -56,22 +60,26 @@ function getSegments(path) {
     // 有了 Z 后，当前节点从开始 M 的点开始
     if (command === 'Z') {
       currentPoint = startMovePoint;
+      nextParams = path[lastStartMovePointIndex + 1];
     } else {
       const len = params.length;
       currentPoint = [params[len - 2], params[len - 1]];
     }
     segment['currentPoint'] = currentPoint;
+    const nextPoint = nextParams ? [nextParams[nextParams.length - 2], nextParams[nextParams.length - 1]] : null;
+    segment['nextPoint'] = nextPoint;
     segments.push(segment);
   }
   return segments;
 }
 
-function getPathBox(segments) {
+function getPathBox(segments, lineWidth) {
   let xArr = [];
   let yArr = [];
+  const segmentsWithAngle = [];
   for (let i = 0; i < segments.length; i++) {
     const segment = segments[i];
-    const { currentPoint, params, prePoint } = segment;
+    const { currentPoint, params, prePoint, nextPoint } = segment;
     let box;
     switch (segment.command) {
       case 'Q':
@@ -102,12 +110,66 @@ function getPathBox(segments) {
       xArr.push(box.x, box.x + box.width);
       yArr.push(box.y, box.y + box.height);
     }
+    if (segment.command === 'L' && segment.nextPoint) {
+      segmentsWithAngle.push(segment);
+    }
   }
   // bbox calculation should ignore NaN for path attribute
   // ref: https://github.com/antvis/g/issues/210
   xArr = xArr.filter((item) => !Number.isNaN(item));
   yArr = yArr.filter((item) => !Number.isNaN(item));
-  return getBBoxByArray(xArr, yArr);
+  let minX = Math.min.apply(null, xArr);
+  let minY = Math.min.apply(null, yArr);
+  let maxX = Math.max.apply(null, xArr);
+  let maxY = Math.max.apply(null, yArr);
+  if (segmentsWithAngle.length === 0) {
+    return {
+      x: minX,
+      y: minY,
+      width: maxX - minX,
+      height: maxY - minY,
+    };
+  }
+  for (let i = 0; i < segmentsWithAngle.length; i++) {
+    const segment = segmentsWithAngle[i];
+    const { currentPoint } = segment;
+    let extra;
+    if (currentPoint[0] === minX) {
+      extra = getExtraFromSegmentWithAngle(segment, lineWidth);
+      minX = minX - extra;
+    } else if (currentPoint[0] === maxX) {
+      extra = getExtraFromSegmentWithAngle(segment, lineWidth);
+      maxX = maxX + extra;
+    }
+    if (currentPoint[1] === minY) {
+      extra = getExtraFromSegmentWithAngle(segment, lineWidth);
+      minY = minY - extra;
+    } else if (currentPoint[1] === maxY) {
+      extra = getExtraFromSegmentWithAngle(segment, lineWidth);
+      maxY = maxY + extra;
+    }
+  }
+  return {
+    x: minX,
+    y: minY,
+    width: maxX - minX,
+    height: maxY - minY,
+  };
+}
+
+// 获取 L segment 的外尖角与内夹角的距离 + 二分之一线宽
+function getExtraFromSegmentWithAngle(segment, lineWidth) {
+  const { prePoint, currentPoint, nextPoint } = segment;
+  const currentAndPre = Math.pow(currentPoint[0] - prePoint[0], 2) + Math.pow(currentPoint[1] - prePoint[1], 2);
+  const currentAndNext = Math.pow(currentPoint[0] - nextPoint[0], 2) + Math.pow(currentPoint[1] - nextPoint[1], 2);
+  const preAndNext = Math.pow(prePoint[0] - nextPoint[0], 2) + Math.pow(prePoint[1] - nextPoint[1], 2);
+  // 以 currentPoint 为顶点的夹角
+  const angleCurrent = Math.acos(
+    (currentAndPre + currentAndNext - preAndNext) / (2 * Math.sqrt(currentAndPre) * Math.sqrt(currentAndNext))
+  );
+  // 这里不考虑在水平和垂直方向的投影，直接使用最大差值
+  // 由于上层统一加减了二分之一线宽，这里需要进行弥补
+  return lineWidth * (1 / Math.sin(angleCurrent / 2)) + lineWidth / 2 || 0;
 }
 
 function isPointInStroke(segments, lineWidth, x, y) {
