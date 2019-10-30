@@ -26,6 +26,37 @@ describe('animate', function() {
       repeat: true
     }, 2000);
   });
+  it('color change', () => {
+    const shape = canvas.addShape('circle', {
+      attrs: {
+        x: 50,
+        y: 50,
+        fill: 'red',
+        r: 20
+      }
+    });
+    shape.animate({
+      fill: '#876'
+    }, 2000);
+  });
+  it('color change to gradient', function(done) {
+    const shape = canvas.addShape('circle', {
+      attrs: {
+        x: 210,
+        y: 210,
+        fill: 'red',
+        r: 20
+      }
+    });
+    shape.animate({
+      fill: 'l (90) 0:RGBA(39, 117, 255, 0.8) 1:rgba(255,255,255, 0)',
+      repeat: false
+    }, 600);
+    setTimeout(function() {
+      expect(shape.attr('fill')).equal('l (90) 0:RGBA(39, 117, 255, 0.8) 1:rgba(255,255,255, 0)');
+      done();
+    }, 600);
+  });
   it('start animate', function(done) {
     let called = false;
     const shape = canvas.addShape('circle', {

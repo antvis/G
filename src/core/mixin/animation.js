@@ -24,8 +24,8 @@ function getFormatProps(props, shape) {
     } else if (k === 'matrix') {
       rst.matrix = props[k];
     } else if (colorRalaredProps[k] && /^[r,R,L,l]{1}[\s]*\(/.test(props[k])) {
-      // 渐变色不支持动画
-      continue;
+      // 渐变色不支持动画, 直接跳色
+      rst.attrs[colorRalaredProps[k]] = props[k] || shape._attrs[colorRalaredProps[k]];
     } else if (!ReservedProps[k] && attrs[k] !== props[k]) {
       if (k === 'rotate') {
         shape._attrs.rotate = shape._attrs.rotate || 0;
