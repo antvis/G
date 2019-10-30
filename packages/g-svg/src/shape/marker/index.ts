@@ -36,7 +36,7 @@ class Marker extends ShapeBase {
     const attrs = this.attrs;
     const x = attrs.x;
     const y = attrs.y;
-    const r = attrs.radius;
+    const r = attrs.r;
     const symbol = attrs.symbol || 'circle';
     let method;
     if (isFunction(symbol)) {
