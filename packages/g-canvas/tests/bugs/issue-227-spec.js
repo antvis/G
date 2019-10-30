@@ -15,7 +15,7 @@ describe('#187', () => {
 
   const el = canvas.get('el');
 
-  it.only('event delegation on shape should be effective', () => {
+  it('event delegation on shape should be effective', () => {
     const group = canvas.addGroup({
       name: 'group',
     });
