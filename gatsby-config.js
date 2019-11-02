@@ -13,16 +13,25 @@ module.exports = {
     title: 'G',
     description: 'A powerful rendering engine for AntV providing canvas and svg draw',
     githubUrl: 'https://github.com/antvis/g',
-    docs: [
+    navs: [
       {
-        slug: 'guide',
+        slug: 'docs/guide',
         title: {
           zh: '教程',
           en: 'Guide',
         },
-        order: 0,
         redirect: 'getting-started',
       },
+      {
+        slug: 'docs/api',
+        title: {
+          zh: '接口',
+          en: 'API',
+        },
+        redirect: 'canvas',
+      },
+    ],
+    docs: [
       {
         slug: 'guide/render',
         title: {
@@ -54,15 +63,6 @@ module.exports = {
           en: 'Animation',
         },
         order: 5,
-      },
-      {
-        slug: 'api',
-        title: {
-          zh: '接口',
-          en: 'API',
-        },
-        order: 0,
-        redirect: 'canvas',
       },
     ],
   },
