@@ -20,7 +20,6 @@ module.exports = {
           zh: '教程',
           en: 'Guide',
         },
-        redirect: 'getting-started',
       },
       {
         slug: 'docs/api',
@@ -28,7 +27,6 @@ module.exports = {
           zh: '接口',
           en: 'API',
         },
-        redirect: 'canvas',
       },
     ],
     docs: [
