@@ -167,6 +167,9 @@ function getExtraFromSegmentWithAngle(segment, lineWidth) {
   const angleCurrent = Math.acos(
     (currentAndPre + currentAndNext - preAndNext) / (2 * Math.sqrt(currentAndPre) * Math.sqrt(currentAndNext))
   );
+  if (Math.sin(angleCurrent) === 0) {
+    return 0;
+  }
   // 这里不考虑在水平和垂直方向的投影，直接使用最大差值
   // 由于上层统一加减了二分之一线宽，这里需要进行弥补
   return lineWidth * (1 / Math.sin(angleCurrent / 2)) + lineWidth / 2 || 0;
