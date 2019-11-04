@@ -226,8 +226,8 @@ Util.augment(CText, {
 
     if (Util.isNil(text)) return undefined;
     const context = document.createElement('canvas').getContext('2d');
-    context.save();
     context.font = font;
+    context.save();
     if (textArr) {
       Util.each(textArr, subText => {
         measureWidth = context.measureText(subText).width;
