@@ -59,6 +59,9 @@ function _update(self, animator, ratio) {
           }
           cProps[k].push(cPathPoint);
         }
+      } else if (Util.isGradientRalaredProps(k, toAttrs[k])) {
+        // 渐变色直接赋值，不做插值
+        cProps[k] = toAttrs[k];
       } else {
         interf = interpolate(fromAttrs[k], toAttrs[k]);
         cProps[k] = interf(ratio);

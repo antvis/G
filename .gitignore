@@ -63,6 +63,7 @@ typings/
 build
 dist
 lib
+esm
 temp
 .DS_Store
 .idea
