@@ -3,6 +3,7 @@ import * as d3Timer from 'd3-timer';
 import * as d3Ease from 'd3-ease';
 import { interpolate, interpolateArray } from 'd3-interpolate'; // 目前整体动画只需要数值和数组的差值计算
 import * as PathUtil from '../util/path';
+import { isColorProp, isGradientColor } from '../util/color';
 import { ICanvas, IElement } from '../interfaces';
 import { Animation } from '../types';
 
@@ -59,6 +60,8 @@ function _update(shape: IElement, animation: Animation, ratio: number) {
         const matrixFn = interpolateArray(fromAttrs[k], toAttrs[k]);
         const currentMatrix = matrixFn(ratio);
         shape.setMatrix(currentMatrix);
+      } else if (isColorProp(k) && isGradientColor(toAttrs[k])) {
+        cProps[k] = toAttrs[k];
       } else {
         interf = interpolate(fromAttrs[k], toAttrs[k]);
         cProps[k] = interf(ratio);

@@ -17,8 +17,6 @@ const CLONE_CFGS = ['zIndex', 'capture', 'visible'];
 
 const RESERVED_PORPS = ['delay'];
 
-const COLOR_RELATED_PROPS = ['fill', 'fillStyle', 'stroke', 'strokeStyle'];
-
 // 需要考虑数组嵌套数组的场景
 // 数组嵌套对象的场景不考虑
 function _cloneArrayAttr(arr) {
@@ -46,9 +44,7 @@ function getFormatToAttrs(props, shape) {
   const toAttrs = {};
   const attrs = shape.attr();
   each(props, (v, k) => {
-    if (COLOR_RELATED_PROPS.indexOf(k) !== -1 && /^[r,R,L,l]{1}[\s]*\(/.test(v)) {
-      // Do nothing, 渐变色不支持动画
-    } else if (RESERVED_PORPS.indexOf(k) === -1 && !isEqual(attrs[k], v)) {
+    if (RESERVED_PORPS.indexOf(k) === -1 && !isEqual(attrs[k], v)) {
       toAttrs[k] = v;
     }
   });

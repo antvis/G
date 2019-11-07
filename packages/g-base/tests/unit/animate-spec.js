@@ -615,4 +615,31 @@ describe('animate', () => {
       done();
     }, 1800);
   });
+
+  it('animate for gradient color should be correct', (done) => {
+    const gradientColor = 'l (90) 0:RGBA(39, 117, 255, 0.8) 1:rgba(255,255,255, 0)';
+    const shape = new Shape({
+      attrs: {
+        x: 50,
+        y: 50,
+        fill: 'red',
+      },
+    });
+    canvas.add(shape);
+    shape.animate(
+      {
+        fill: gradientColor,
+      },
+      {
+        duration: 500,
+      }
+    );
+    setTimeout(() => {
+      expect(shape.attr('fill')).eqls(gradientColor);
+    }, 200);
+    setTimeout(() => {
+      expect(shape.attr('fill')).eqls(gradientColor);
+      done();
+    }, 600);
+  });
 });
