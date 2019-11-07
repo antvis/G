@@ -185,6 +185,7 @@ class EventController {
   // 触发事件
   _triggerEvent(type, ev) {
     const canvas = this.canvas;
+    const el = canvas.get('el');
     const clientPoint = getClientPoint(ev);
     const point = canvas.getPointByClient(clientPoint.clientX, clientPoint.clientY);
     // 每次都获取图形有一定成本，后期可以考虑进行缓存策略
@@ -237,6 +238,10 @@ class EventController {
       }
     }
     this.currentShape = shape;
+    // 当鼠标从画布移动到 shape 或者从 preShape 移动到 shape 时，应用 shape 上的鼠标样式
+    if (shape && !shape.get('destroyed')) {
+      el.style.cursor = shape.attr('cursor') || 'default';
+    }
   }
   // 记录下点击的位置、图形，便于拖拽事件、click 事件的判定
   _onmousedown(pointInfo, shape, event) {
@@ -249,10 +254,15 @@ class EventController {
   // mouseleave 和 mouseenter 都是成对存在的
   // mouseenter 和 mouseover 同时触发
   _emitMouseoverEvents(event, pointInfo, fromShape, toShape) {
+    const el = this.canvas.get('el');
     if (fromShape !== toShape) {
       if (fromShape) {
         this._emitEvent('mouseout', event, pointInfo, fromShape, fromShape, toShape);
         this._emitEvent('mouseleave', event, pointInfo, fromShape, fromShape, toShape);
+        // 当鼠标从 fromShape 移动到画布上时，重置鼠标样式
+        if (!toShape || toShape.get('destroyed')) {
+          el.style.cursor = 'default';
+        }
       }
       if (toShape) {
         this._emitEvent('mouseover', event, pointInfo, toShape, fromShape, toShape);
