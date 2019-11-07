@@ -3,9 +3,13 @@ const Util = {};
 
 
 CommonUtil.merge(Util, CommonUtil, {
-  isGradientRalaredProps(k, v) {
-    // 是否属性配置了渐变色
-    return [ 'fill', 'stroke', 'fillStyle', 'strokeStyle' ].includes(k) && /^[r,R,L,l]{1}[\s]*\(/.test(v);
+  isColorProp(k) {
+    // 是否是颜色属性
+    return [ 'fill', 'stroke', 'fillStyle', 'strokeStyle' ].includes(k);
+  },
+  isGradientColor(v) {
+    // 是否是渐变色
+    return /^[r,R,L,l]{1}[\s]*\(/.test(v);
   },
   mixin(c, mixins) {
     const Param = c.CFG ? 'CFG' : 'ATTRS';

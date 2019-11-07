@@ -26,22 +26,8 @@ describe('animate', function() {
       repeat: true
     }, 2000);
   });
-  // 动画和timeout延时不匹配，这里不做断言
-  // it('color change', function(done) {
-  //   const shape = canvas.addShape('circle', {
-  //     attrs: {
-  //       x: 50,
-  //       y: 50,
-  //       fill: 'red',
-  //       r: 20
-  //     }
-  //   });
-  //   shape.animate({
-  //     fill: '#876',
-  //     repeat: false
-  //   }, 2000);
-  // });
-  it('color change to gradient', function(done) {
+
+  it('animation of gradient color should be correct', function(done) {
     const shape = canvas.addShape('circle', {
       attrs: {
         x: 210,
@@ -50,16 +36,20 @@ describe('animate', function() {
         r: 20
       }
     });
+    const gradientColor = 'l (90) 0:RGBA(39, 117, 255, 0.8) 1:rgba(255,255,255, 0)';
     shape.animate({
-      fill: 'l (90) 0:RGBA(39, 117, 255, 0.8) 1:rgba(255,255,255, 0)',
+      fill: gradientColor,
       repeat: false
-    }, 600);
-    // 渐变不支持动画，画面第一贞就变为最终色，可断言
-    setTimeout(function() {
-      expect(shape.attr('fill')).equal('l (90) 0:RGBA(39, 117, 255, 0.8) 1:rgba(255,255,255, 0)');
+    }, 500);
+    setTimeout(() => {
+      expect(shape.attr('fill')).equal(gradientColor);
+    }, 200);
+    setTimeout(() => {
+      expect(shape.attr('fill')).equal(gradientColor);
       done();
     }, 600);
   });
+
   it('start animate', function(done) {
     let called = false;
     const shape = canvas.addShape('circle', {

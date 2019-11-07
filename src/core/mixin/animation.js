@@ -22,9 +22,9 @@ function getFormatProps(props, shape) {
       rst.matrix = Util.transform(shape.getMatrix(), props[k]);
     } else if (k === 'matrix') {
       rst.matrix = props[k];
-    } else if (Util.isGradientRalaredProps(k, props[k])) {
+    } else if (Util.isColorProp(k) && Util.isGradientColor(props[k])) {
       // 渐变色不支持动画, 直接跳色
-      rst.attrs[k] = props[k] || shape._attrs[k];
+      rst.attrs[k] = props[k];
     } else if (!ReservedProps[k] && attrs[k] !== props[k]) {
       if (k === 'rotate') {
         shape._attrs.rotate = shape._attrs.rotate || 0;
