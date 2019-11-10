@@ -181,6 +181,8 @@ export type ShapeBase = {
   [key: string]: ICtor<IShape>;
 };
 
+export type ElementFilterFn = (IElement) => boolean;
+
 type A = ['a' | 'A', number, number, number, number, number, number, number];
 type C = ['c' | 'C', number, number, number, number, number, number];
 type O = ['o' | 'O', number, number];
