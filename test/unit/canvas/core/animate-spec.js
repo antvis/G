@@ -26,6 +26,30 @@ describe('animate', function() {
       repeat: true
     }, 2000);
   });
+
+  it('animation of gradient color should be correct', function(done) {
+    const shape = canvas.addShape('circle', {
+      attrs: {
+        x: 210,
+        y: 210,
+        fill: 'red',
+        r: 20
+      }
+    });
+    const gradientColor = 'l (90) 0:RGBA(39, 117, 255, 0.8) 1:rgba(255,255,255, 0)';
+    shape.animate({
+      fill: gradientColor,
+      repeat: false
+    }, 500);
+    setTimeout(() => {
+      expect(shape.attr('fill')).equal(gradientColor);
+    }, 200);
+    setTimeout(() => {
+      expect(shape.attr('fill')).equal(gradientColor);
+      done();
+    }, 600);
+  });
+
   it('start animate', function(done) {
     let called = false;
     const shape = canvas.addShape('circle', {
