@@ -12,7 +12,7 @@ describe('#254', () => {
     height: 600,
   });
 
-  it('bbox calculation for path should consider angle of 0 and PI', () => {
+  it('bbox calculation for path should be correct when angle is 0 and π', () => {
     const shape = canvas.addShape({
       type: 'path',
       attrs: {
