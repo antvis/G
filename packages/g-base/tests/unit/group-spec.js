@@ -219,3 +219,63 @@ describe('test with matrix', () => {
     expect(group.invertFromMatrix(v)).eqls(v);
   });
 });
+
+describe('test group member function', () => {
+  const group = new Group({
+    children: [
+      new MyShape({ id: '01', text: '01' }),
+      new MyShape({ id: '02', text: '02' }),
+      new Group({
+        children: [new MyShape({ id: '04', text: '04' }), new MyShape({ id: 'test', text: '02' })],
+      }),
+      new MyShape({ id: '03', text: '03' }),
+    ],
+  });
+
+  it('getFirst', () => {
+    expect(group.getFirst().get('id')).eqls('01');
+  });
+
+  it('getLast', () => {
+    expect(group.getLast().get('id')).eqls('03');
+  });
+
+  it('getCount', () => {
+    expect(group.getCount()).eqls(group.getChildren().length);
+  });
+
+  it('findAll', () => {
+    expect(
+      group.findAll((item) => {
+        return item.get('text') === '02';
+      }).length
+    ).eqls(2);
+
+    expect(
+      group.findAll((item) => {
+        return item.get('text') === '05';
+      }).length
+    ).eqls(0);
+  });
+
+  it('findById', () => {
+    expect(group.findById('01')).not.eqls(null);
+    expect(group.findById('05')).eqls(null);
+    expect(group.findById('04')).not.eqls(null);
+  });
+
+  it('find', () => {
+    expect(
+      group
+        .find((item) => {
+          return item.get('text') === '02';
+        })
+        .get('id')
+    ).eqls('02');
+    expect(
+      group.find((item) => {
+        return item.get('text') === '05';
+      })
+    ).eqls(null);
+  });
+});
