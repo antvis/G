@@ -57,15 +57,31 @@ function getSegments(path) {
       default:
         break;
     }
-    // 有了 Z 后，当前节点从开始 M 的点开始
     if (command === 'Z') {
+      // 有了 Z 后，当前节点从开始 M 的点开始
       currentPoint = startMovePoint;
+      // 如果当前点的命令为 Z，相当于当前点为最近一个 M 点，则下一个点直接指向最近一个 M 点的下一个点
       nextParams = path[lastStartMovePointIndex + 1];
     } else {
       const len = params.length;
       currentPoint = [params[len - 2], params[len - 1]];
     }
+    if (nextParams && nextParams[0] === 'Z') {
+      // 如果下一个点的命令为 Z，则下一个点直接指向最近一个 M 点
+      nextParams = path[lastStartMovePointIndex];
+      if (segments[lastStartMovePointIndex]) {
+        // 如果下一个点的命令为 Z，则最近一个 M 点的前一个点为当前点
+        segments[lastStartMovePointIndex].prePoint = currentPoint;
+      }
+    }
     segment['currentPoint'] = currentPoint;
+    // 如果当前点与最近一个 M 点相同，则最近一个 M 点的前一个点为当前点的前一个点
+    if (
+      segments[lastStartMovePointIndex] &&
+      isSamePoint(currentPoint, segments[lastStartMovePointIndex].currentPoint)
+    ) {
+      segments[lastStartMovePointIndex].prePoint = segment.prePoint;
+    }
     const nextPoint = nextParams ? [nextParams[nextParams.length - 2], nextParams[nextParams.length - 1]] : null;
     segment['nextPoint'] = nextPoint;
     segments.push(segment);
@@ -79,7 +95,7 @@ function getPathBox(segments, lineWidth) {
   const segmentsWithAngle = [];
   for (let i = 0; i < segments.length; i++) {
     const segment = segments[i];
-    const { currentPoint, params, prePoint, nextPoint } = segment;
+    const { currentPoint, params, prePoint } = segment;
     let box;
     switch (segment.command) {
       case 'Q':
@@ -110,7 +126,7 @@ function getPathBox(segments, lineWidth) {
       xArr.push(box.x, box.x + box.width);
       yArr.push(box.y, box.y + box.height);
     }
-    if (segment.command === 'L' && segment.nextPoint) {
+    if ((segment.command === 'L' || segment.command === 'M') && segment.prePoint && segment.nextPoint) {
       segmentsWithAngle.push(segment);
     }
   }
@@ -136,17 +152,17 @@ function getPathBox(segments, lineWidth) {
     let extra;
     if (currentPoint[0] === minX) {
       extra = getExtraFromSegmentWithAngle(segment, lineWidth);
-      minX = minX - extra;
+      minX = minX - extra.xExtra;
     } else if (currentPoint[0] === maxX) {
       extra = getExtraFromSegmentWithAngle(segment, lineWidth);
-      maxX = maxX + extra;
+      maxX = maxX + extra.xExtra;
     }
     if (currentPoint[1] === minY) {
       extra = getExtraFromSegmentWithAngle(segment, lineWidth);
-      minY = minY - extra;
+      minY = minY - extra.yExtra;
     } else if (currentPoint[1] === maxY) {
       extra = getExtraFromSegmentWithAngle(segment, lineWidth);
-      maxY = maxY + extra;
+      maxY = maxY + extra.yExtra;
     }
   }
   return {
@@ -157,6 +173,11 @@ function getPathBox(segments, lineWidth) {
   };
 }
 
+// 判断两个点是否重合
+function isSamePoint(point1, point2) {
+  return point1[0] === point2[0] && point1[1] === point2[1];
+}
+
 // 获取 L segment 的外尖角与内夹角的距离 + 二分之一线宽
 function getExtraFromSegmentWithAngle(segment, lineWidth) {
   const { prePoint, currentPoint, nextPoint } = segment;
@@ -164,15 +185,28 @@ function getExtraFromSegmentWithAngle(segment, lineWidth) {
   const currentAndNext = Math.pow(currentPoint[0] - nextPoint[0], 2) + Math.pow(currentPoint[1] - nextPoint[1], 2);
   const preAndNext = Math.pow(prePoint[0] - nextPoint[0], 2) + Math.pow(prePoint[1] - nextPoint[1], 2);
   // 以 currentPoint 为顶点的夹角
-  const angleCurrent = Math.acos(
+  const currentAngle = Math.acos(
     (currentAndPre + currentAndNext - preAndNext) / (2 * Math.sqrt(currentAndPre) * Math.sqrt(currentAndNext))
   );
-  if (Math.sin(angleCurrent) === 0) {
+  if (Math.sin(currentAngle) === 0) {
     return 0;
   }
+  let xAngle = Math.abs(Math.atan2(nextPoint[1] - currentPoint[1], nextPoint[0] - currentPoint[0]));
+  let yAngle = Math.abs(Math.atan2(nextPoint[0] - currentPoint[0], nextPoint[1] - currentPoint[1]));
+  // 将夹角转为锐角
+  xAngle = xAngle > Math.PI / 2 ? Math.PI - xAngle : xAngle;
+  yAngle = yAngle > Math.PI / 2 ? Math.PI - yAngle : yAngle;
   // 这里不考虑在水平和垂直方向的投影，直接使用最大差值
   // 由于上层统一加减了二分之一线宽，这里需要进行弥补
-  return lineWidth * (1 / Math.sin(angleCurrent / 2)) + lineWidth / 2 || 0;
+  const extra = {
+    // 水平方向投影
+    xExtra:
+      Math.cos(currentAngle / 2 - xAngle) * ((lineWidth / 2) * (1 / Math.sin(currentAngle / 2))) - lineWidth / 2 || 0,
+    // 垂直方向投影
+    yExtra:
+      Math.cos(yAngle - currentAngle / 2) * ((lineWidth / 2) * (1 / Math.sin(currentAngle / 2))) - lineWidth / 2 || 0,
+  };
+  return extra;
 }
 
 function isPointInStroke(segments, lineWidth, x, y) {
