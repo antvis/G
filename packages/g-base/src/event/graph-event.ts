@@ -7,6 +7,11 @@ class GraphEvent {
    */
   type: string;
   /**
+   * 事件名称
+   * @type {string}
+   */
+  name: string;
+  /**
    * 画布上的位置 x
    * @type {number}
    */
@@ -41,6 +46,16 @@ class GraphEvent {
    * @type {object}
    */
   currentTarget: object = null;
+  /**
+   * 委托对象
+   * @type {object}
+   */
+  delegateTarget: object = null;
+  /**
+   * 委托事件监听对象的代理对象，即 ev.delegateObject = ev.currentTarget.get('delegateObject')
+   * @type {object}
+   */
+  delegateObject: object = null;
   /**
    * 是否阻止了原生事件
    * @type {boolean}
@@ -84,6 +99,7 @@ class GraphEvent {
 
   constructor(type, event) {
     this.type = type;
+    this.name = type;
     this.domEvent = event;
     this.timeStamp = event.timeStamp;
   }
@@ -107,6 +123,10 @@ class GraphEvent {
     const type = this.type;
     return `[Event (type=${type})]`;
   }
+
+  save() {}
+
+  restore() {}
 }
 
 export default GraphEvent;

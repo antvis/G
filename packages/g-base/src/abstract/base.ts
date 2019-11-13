@@ -8,12 +8,6 @@ abstract class Base extends EE implements IBase {
    * @type {object}
    */
   cfg: object;
-  /**
-   * @private
-   * 事件集合
-   * @type {object}
-   */
-  events: object = {};
 
   /**
    * 是否被销毁
