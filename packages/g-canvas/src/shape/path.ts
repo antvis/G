@@ -41,7 +41,8 @@ class Path extends ShapeBase {
 
   getInnerBox(attrs) {
     const segments = this.getSegments();
-    return pathUtil.getPathBox(segments);
+    const lineWidth = this.getHitLineWidth();
+    return pathUtil.getPathBox(segments, lineWidth);
   }
 
   getSegments() {

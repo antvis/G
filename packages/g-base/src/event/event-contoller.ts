@@ -8,6 +8,7 @@ import { each, isArray } from '../util/util';
 const TIME_INTERVAL = 120; // 判断拖拽和点击
 const CLICK_OFFSET = 40;
 const DELEGATION_SPLIT = ':';
+const WILDCARD = '*';
 
 const EVENTS = [
   'mousedown',
@@ -81,20 +82,34 @@ function hasDelegation(events, type) {
   return false;
 }
 
+// 触发目标事件，目标只能是 shape 或 canvas
+function emitTargetEvent(target, type, eventObj) {
+  eventObj.name = type;
+  eventObj.target = target;
+  eventObj.currentTarget = target;
+  eventObj.delegateTarget = target;
+  target.emit(type, eventObj);
+}
+
 // 触发委托事件
 function emitDelegation(container, type, eventObj) {
   const paths = eventObj.propagationPath;
   const events = container.getEvents();
-  // 至少有一个对象
+  // 至少有一个对象，且第一个对象为 shape
   for (let i = 0; i < paths.length; i++) {
     const element = paths[i];
     // 暂定跟 name 绑定
     const name = element.get('name');
     if (name) {
+      // 事件委托的形式 name:type
       const eventName = name + DELEGATION_SPLIT + type;
-      if (events[eventName]) {
-        eventObj.delegateTarget = container;
+      if (events[eventName] || events[WILDCARD]) {
+        // 对于通配符 *，事件名称 = 委托事件名称
+        eventObj.name = eventName;
         eventObj.currentTarget = element;
+        eventObj.delegateTarget = container;
+        // 将委托事件的监听对象 delegateObject 挂载到事件对象上
+        eventObj.delegateObject = element.get('delegateObject');
         container.emit(eventName, eventObj);
       }
     }
@@ -123,8 +138,10 @@ function bubbleEvent(container, type, eventObj) {
       eventObj.bubbles = false;
       return;
     }
-    // 绑定事件的对象
+    // 事件名称可能在委托过程中被修改，因此事件冒泡时需要重新设置事件名称
+    eventObj.name = type;
     eventObj.currentTarget = container;
+    eventObj.delegateTarget = container;
     container.emit(type, eventObj);
   }
 }
@@ -158,7 +175,6 @@ class EventController {
 
   _getEventObj(type, event, point, target, fromShape, toShape) {
     const eventObj = new GraphEvent(type, event);
-    // eventObj.target = target;
     eventObj.fromShape = fromShape;
     eventObj.toShape = toShape;
     eventObj.x = point.x;
@@ -185,6 +201,7 @@ class EventController {
   // 触发事件
   _triggerEvent(type, ev) {
     const canvas = this.canvas;
+    const el = canvas.get('el');
     const clientPoint = getClientPoint(ev);
     const point = canvas.getPointByClient(clientPoint.clientX, clientPoint.clientY);
     // 每次都获取图形有一定成本，后期可以考虑进行缓存策略
@@ -237,6 +254,10 @@ class EventController {
       }
     }
     this.currentShape = shape;
+    // 当鼠标从画布移动到 shape 或者从 preShape 移动到 shape 时，应用 shape 上的鼠标样式
+    if (shape && !shape.get('destroyed')) {
+      el.style.cursor = shape.attr('cursor') || 'default';
+    }
   }
   // 记录下点击的位置、图形，便于拖拽事件、click 事件的判定
   _onmousedown(pointInfo, shape, event) {
@@ -249,10 +270,15 @@ class EventController {
   // mouseleave 和 mouseenter 都是成对存在的
   // mouseenter 和 mouseover 同时触发
   _emitMouseoverEvents(event, pointInfo, fromShape, toShape) {
+    const el = this.canvas.get('el');
     if (fromShape !== toShape) {
       if (fromShape) {
         this._emitEvent('mouseout', event, pointInfo, fromShape, fromShape, toShape);
         this._emitEvent('mouseleave', event, pointInfo, fromShape, fromShape, toShape);
+        // 当鼠标从 fromShape 移动到画布上时，重置鼠标样式
+        if (!toShape || toShape.get('destroyed')) {
+          el.style.cursor = 'default';
+        }
       }
       if (toShape) {
         this._emitEvent('mouseover', event, pointInfo, toShape, fromShape, toShape);
@@ -366,9 +392,9 @@ class EventController {
     const eventObj = this._getEventObj(type, event, pointInfo, shape, fromShape, toShape);
     // 存在 shape 触发，则进行冒泡处理
     if (shape) {
-      eventObj.target = shape;
       eventObj.shape = shape;
-      shape.emit(type, eventObj);
+      // 触发 shape 上的事件
+      emitTargetEvent(shape, type, eventObj);
       let parent = shape.getParent();
       // 执行冒泡
       while (parent) {
@@ -384,8 +410,8 @@ class EventController {
     } else {
       // 如果没有 shape 直接在 canvas 上触发
       const canvas = this.canvas;
-      eventObj.target = canvas;
-      canvas.emit(type, eventObj);
+      // 直接触发 canavas 上的事件
+      emitTargetEvent(canvas, type, eventObj);
     }
   }
 
