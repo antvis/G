@@ -181,12 +181,14 @@ export type ShapeBase = {
   [key: string]: ICtor<IShape>;
 };
 
+export type ElementFilterFn = (IElement) => boolean;
+
 type A = ['a' | 'A', number, number, number, number, number, number, number];
 type C = ['c' | 'C', number, number, number, number, number, number];
 type O = ['o' | 'O', number, number];
-type H = ['h' | 'h', number];
-type L = ['l' | 'l', number, number];
-type M = ['m' | 'm', number, number];
+type H = ['h' | 'H', number];
+type L = ['l' | 'L', number, number];
+type M = ['m' | 'M', number, number];
 type R = ['r' | 'R', number, number, number, number];
 type Q = ['q' | 'Q', number, number, number, number];
 type S = ['s' | 'S', number, number, number, number, number, number, number];

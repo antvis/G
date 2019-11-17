@@ -85,7 +85,7 @@ describe('test event object', () => {
     expect(event.defaultPrevented).eql(true);
   });
 
-  it('stopProgation', () => {
+  it('stopPropagation', () => {
     event.stopPropagation();
     expect(event.propagationStopped).eql(true);
   });
@@ -829,7 +829,7 @@ describe('test graphic events', () => {
     group1.set('name', null);
   });
 
-  it('stopProgation', () => {
+  it('stopPropagation', () => {
     let group1Called = false;
     let group11Called = false;
     let canvasCalled = false;
