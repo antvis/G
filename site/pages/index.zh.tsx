@@ -7,7 +7,6 @@ const IndexPage = () => {
   return (
     <>
       <SEO title="蚂蚁数据可视化" lang="zh" />
-      <div style={{ margin: '0 auto', padding: '0 60px' }}>{t('首页')}</div>
     </>
   );
 };
