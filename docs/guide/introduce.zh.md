@@ -1,6 +1,9 @@
 ---
 title: 介绍
 order: 0
+redirect_from:
+  - /zh
+  - /zh/docs/guide
 ---
 
 - G 是一款易用、高效、强大的 2D 可视化渲染引擎，提供 Canvas、SVG 等多种渲染方式的实现。目前，已有多个顶级的可视化开源项目基于 G 开发，比如图形语法库 [G2](https://antv.alipay.com/g2)、图可视化库 [G6](https://antv.alipay.com/g6) 等。
@@ -17,7 +20,6 @@ order: 0
 
 ```bash
 # Canvas version
-
 $ npm install @antv/g-canvas --save
 
 # SVG version
@@ -26,7 +28,7 @@ $ npm install @antv/g-svg --save
 
 ## 使用
 
-![](https://cdn.nlark.com/yuque/0/2019/png/103291/1572431709730-2e84bca7-e4e0-47b9-b7a5-11844ba6b331.png)
+![](https://cdn.nlark.com/yuque/0/2019/png/103291/1574049373917-75c59a36-7e06-4227-b861-f6d3f94a8af9.png)
 
 ```html
 <div id="c1"></div>

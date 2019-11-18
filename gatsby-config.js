@@ -4,7 +4,6 @@ module.exports = {
       resolve: '@antv/gatsby-theme-antv',
       options: {
         GATrackingId: `UA-148148901-3`,
-        primaryColor: '#1890ff',
         pathPrefix: '/g',
       },
     },
@@ -17,15 +16,22 @@ module.exports = {
       {
         slug: 'docs/guide',
         title: {
-          zh: '教程',
+          zh: '使用文档',
           en: 'Guide',
         },
       },
       {
         slug: 'docs/api',
         title: {
-          zh: '接口',
+          zh: 'API 文档',
           en: 'API',
+        },
+      },
+      {
+        slug: 'examples',
+        title: {
+          zh: '示例',
+          en: 'Examples',
         },
       },
     ],
@@ -61,6 +67,54 @@ module.exports = {
           en: 'Animation',
         },
         order: 5,
+      },
+      // API
+      {
+        slug: 'api/canvas',
+        title: {
+          zh: 'Canavs 画布',
+          en: 'Canavs',
+        },
+        order: 2,
+      },
+      {
+        slug: 'api/group',
+        title: {
+          zh: 'Group 图形分组',
+          en: 'Group',
+        },
+        order: 3,
+      },
+      {
+        slug: 'api/shape',
+        title: {
+          zh: 'Shape 图形',
+          en: 'Shape',
+        },
+        order: 4,
+      },
+    ],
+    examples: [
+      {
+        slug: 'shape',
+        title: {
+          zh: '基本图形',
+          en: 'Shape',
+        },
+      },
+      {
+        slug: 'event',
+        title: {
+          zh: '事件',
+          en: 'Event',
+        },
+      },
+      {
+        slug: 'animation',
+        title: {
+          zh: '动画',
+          en: 'Animation',
+        },
       },
     ],
   },
