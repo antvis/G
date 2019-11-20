@@ -18,7 +18,13 @@ describe('#252', () => {
       type: 'path',
       attrs: {
         lineWidth: 2,
-        path: [['M', 75, 200], ['L', 75, 100], ['L', 175, 100], ['L', 175, 200], ['L', 75, 200]],
+        path: [
+          ['M', 75, 200],
+          ['L', 75, 100],
+          ['L', 175, 100],
+          ['L', 175, 200],
+          ['L', 75, 200],
+        ],
         stroke: 'red',
       },
     });
@@ -31,7 +37,7 @@ describe('#252', () => {
   });
 
   // 水平和垂直方向具有凸起角
-  it.only('bbox calculation for path with prominent angle should be correct', () => {
+  it('bbox calculation for path with prominent angle should be correct', () => {
     const shape = canvas.addShape({
       type: 'path',
       attrs: {
