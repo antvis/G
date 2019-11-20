@@ -210,7 +210,11 @@ class Text extends ShapeBase {
       this._drawTextArr(context, textArr, isFill);
     } else {
       const text = attrs.text;
-      context.fillText(text, x, y);
+      if (isFill) {
+        context.fillText(text, x, y);
+      } else {
+        context.strokeText(text, x, y);
+      }
     }
   }
 

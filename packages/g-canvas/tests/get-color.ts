@@ -22,3 +22,14 @@ export function colorToValue(color) {
   const str = color.substr(1);
   return parseInt(str, 16);
 }
+
+// 验证文字是否绘制出来，扫描一条线，看看是否有对应的颜色
+export function getTextColorCount(ctx, x, y, length, color) {
+  let count = 0;
+  for (let i = x; i < x + length; i++) {
+    if (getColor(ctx, i, y) === color) {
+      count++;
+    }
+  }
+  return count;
+}
