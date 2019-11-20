@@ -1,6 +1,6 @@
 ---
 title: Attribute
-order: 0
+order: 2
 ---
 
 ## 通用属性
