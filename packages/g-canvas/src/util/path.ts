@@ -6,7 +6,6 @@ import getArcParams from './arc-params';
 import QuadUtil from '@antv/g-math/lib/quadratic';
 import CubicUtil from '@antv/g-math/lib/cubic';
 import EllipseArcUtil from '@antv/g-math/lib/arc';
-import { getBBoxByArray } from '@antv/g-math/lib/util';
 import { inBox } from './util';
 import inLine from './in-stroke/line';
 import inArc from './in-stroke/arc';
@@ -30,9 +29,9 @@ function hasArc(path) {
 
 function getSegments(path) {
   const segments = [];
-  let currentPoint = [0, 0]; // 当前图形
+  let currentPoint = null; // 当前图形
   let nextParams = null; // 下一节点的 path 参数
-  let startMovePoint = [0, 0]; // 开始 M 的点，可能会有多个
+  let startMovePoint = null; // 开始 M 的点，可能会有多个
   let lastStartMovePointIndex = 0; // 最近一个开始点 M 的索引
   const count = path.length;
   for (let i = 0; i < count; i++) {
@@ -188,8 +187,12 @@ function getExtraFromSegmentWithAngle(segment, lineWidth) {
   const currentAngle = Math.acos(
     (currentAndPre + currentAndNext - preAndNext) / (2 * Math.sqrt(currentAndPre) * Math.sqrt(currentAndNext))
   );
-  if (Math.sin(currentAngle) === 0) {
-    return 0;
+  // 夹角为空、 0 或 PI 时，不需要计算夹角处的额外宽度
+  if (!currentAngle || Math.sin(currentAngle) === 0) {
+    return {
+      xExtra: 0,
+      yExtra: 0,
+    };
   }
   let xAngle = Math.abs(Math.atan2(nextPoint[1] - currentPoint[1], nextPoint[0] - currentPoint[0]));
   let yAngle = Math.abs(Math.atan2(nextPoint[0] - currentPoint[0], nextPoint[1] - currentPoint[1]));
