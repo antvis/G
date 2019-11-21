@@ -1,6 +1,6 @@
 ---
-title: DOM (SVG)
+title: Dom (SVG)
 order: 10
 ---
 
-- Draw DOM element, only for SVG version.
+- Draw Dom element, only for SVG version.

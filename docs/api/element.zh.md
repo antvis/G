@@ -1,23 +1,41 @@
 ---
 title: Element 元素
-order: 3
+order: 0
 ---
 
-## 通用属性
+# 通用属性
 
-### visible: boolean
+## id: string
+
+- 元素 `id`；
+
+## name: string
+
+- 元素名称；
+
+## visible: boolean
 
 - 元素是否可见；
 
-### destroyed: boolean
+## capture: boolean
+
+- 是否可以被拾取；
+
+## destroyed: boolean
 
 - 元素是否被销毁；
 
-### zIndex: number
+## zIndex: number
 
-- 层次索引值，决定元素在父元素中的位置；
+- 层次索引值，决定元素决定绘制的先后顺序；
 
-## 通用方法
+## attrs: Object
+
+- [绘图属性](/zh/docs/api/shape/attrs)；
+
+# 通用方法
+
+## 属性类方法
 
 ### get(name)
 
@@ -38,6 +56,70 @@ order: 3
 ### attr(name, value)
 
 - 设置图形属性；
+
+### getParent()
+
+- 获取父元素；
+
+### getCanvas()
+
+- 获取画布；
+
+### isGroup()
+
+- 是否为图形分组；
+
+### getBBox()
+
+- 获取元素包围盒，这个包围盒是相对于图形元素自己，不会将 `matrix` 计算在内；
+
+### getCanvasBBox()
+
+- 获取元素相对画布的包围盒，会将从顶层到当前元素的 `matrix` 都计算在内；
+
+### getClip()
+
+- 获取裁剪对象；
+
+### setClip(clip)
+
+- 设置并返回裁剪对象；
+
+### isClipped(refX, refY)
+
+- 相对于元素的坐标点是否被裁剪掉；
+
+## 操作类方法
+
+### clone()
+
+- 复制元素；
+
+### show()
+
+- 显示元素；
+
+### hide()
+
+- 隐藏元素；
+
+### toFront()
+
+- 将元素层级放置最前面；
+
+### toBack()
+
+- 将元素层级放置最后面；
+
+### destroy()
+
+- 销毁元素；
+
+### remove(destroyed?)
+
+- 将元素从父元素中移除，`destroyed` 表示移除的同时是否销毁元素，默认为 `true`；
+
+## 矩阵方法
 
 ### getMatrix()
 
@@ -66,66 +148,6 @@ order: 3
 ### applyMatrix(matrix)
 
 - 应用父元素的矩阵，用以计算当前元素总的矩阵；
-
-### getParent()
-
-- 获取父元素；
-
-### getCanvas()
-
-- 获取画布；
-
-### isGroup()
-
-- 是否为图形分组；
-
-### getBBox()
-
-- 获取元素包围盒，这个包围盒是相对于图形元素自己，不会将 `matrix` 计算在内；
-
-### getCanvasBBox()
-
-- 获取元素相对画布的包围盒，会将从顶层到当前元素的 `matrix` 都计算在内；
-
-### clone()
-
-- 复制元素；
-
-### show()
-
-- 显示元素；
-
-### hide()
-
-- 隐藏元素；
-
-### toFront()
-
-- 将元素层级放置最前面；
-
-### toBack()
-
-- 将元素层级放置最后面；
-
-### getClip()
-
-- 获取裁剪对象；
-
-### setClip(clip)
-
-- 设置并返回裁剪对象；
-
-### isClipped(refX, refY)
-
-- 相对于元素的坐标点是否被裁剪掉；
-
-### destroy()
-
-- 销毁元素；
-
-### remove(destroyed?)
-
-- 将元素从父元素中移除，`destroyed` 表示移除的同时是否销毁元素，默认为 `true`；
 
 ## 事件方法
 
