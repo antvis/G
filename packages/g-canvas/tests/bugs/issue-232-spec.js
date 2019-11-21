@@ -55,8 +55,8 @@ describe('#232', () => {
     setTimeout(() => {
       bbox = shape.getBBox();
       expect(bbox.minX).eqls(72.82280392116971);
-      expect(bbox.minY).eqls(31.487390015101695);
-      expect(bbox.maxX).eqls(386.8131061130099);
+      expect(bbox.minY).eqls(31.711318897448876);
+      expect(bbox.maxX).eqls(389.8131061130099);
       expect(bbox.maxY).eqls(377.36);
       done();
     }, 600);

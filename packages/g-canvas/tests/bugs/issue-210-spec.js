@@ -5,7 +5,7 @@ const dom = document.createElement('div');
 document.body.appendChild(dom);
 dom.id = 'c1';
 
-describe('#187', () => {
+describe('#210', () => {
   const canvas = new Canvas({
     container: dom,
     width: 500,
@@ -15,7 +15,11 @@ describe('#187', () => {
   it('bbox calculation should ignore NaN of path', () => {
     const path = canvas.addShape('path', {
       attrs: {
-        path: [['M', 100, 100], ['L', 200, 200], ['L', 300, NaN]],
+        path: [
+          ['M', 100, 100],
+          ['L', 200, 200],
+          ['L', 300, NaN],
+        ],
         stroke: 'red',
       },
     });
