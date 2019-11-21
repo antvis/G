@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/guide
 ---
 
-- G 是一款易用、高效、强大的 2D 可视化渲染引擎，提供 Canvas、SVG 等多种渲染方式的实现。目前，已有多个顶级的可视化开源项目基于 G 开发，比如图形语法库 [G2](https://antv.alipay.com/g2)、图可视化库 [G6](https://antv.alipay.com/g6) 等。
+- G 是一款易用、高效、强大的 2D 可视化渲染引擎，提供 Canvas、SVG 等多种渲染方式的实现。目前，已有多个顶级的可视化开源项目基于 G 开发，比如图形语法库 [G2](https://g2.antv.vision)、图可视化库 [G6](https://g6.antv.vision) 等。
 
 ## 特性
 

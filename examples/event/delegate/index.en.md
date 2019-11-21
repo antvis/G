@@ -1,5 +1,5 @@
 ---
-title: Delegate
+title: Event delegation
 order: 2
 ---
 
