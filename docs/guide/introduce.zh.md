@@ -3,6 +3,7 @@ title: 介绍
 order: 0
 redirect_from:
   - /zh
+  - /zh/docs
   - /zh/docs/guide
 ---
 
@@ -56,10 +57,3 @@ group.addShape('circle', {
   },
 });
 ```
-
-## 链接
-
-- [官网](https://antv.alipay.com/g)
-- [图形语法 G2](https://antv.alipay.com/g2)
-- [图可视化 G6](https://antv.alipay.com/g6)
-- [CodeSandbox 模板](https://codesandbox.io/s/g-reproducible-demo-1quml) for bug reports
