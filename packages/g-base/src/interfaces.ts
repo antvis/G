@@ -244,7 +244,7 @@ export interface IElement extends IBase {
   pauseAnimate();
 
   /**
-   * 重启暂停的动画
+   * 恢复暂停的动画
    */
   resumeAnimate();
 

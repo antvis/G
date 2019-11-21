@@ -20,7 +20,7 @@
     "tslint": "tslint ./packages/**/*.ts",
     "tslint-fix": "tslint ./packages/**/*.ts --fix",
     "lint-staged": "lint-staged",
-    "prettier": "prettier --write './packages/**/*.{js,ts}'",
+    "prettier": "prettier --write './packages/**/*.{js,ts,md}'",
     "test": "lerna run test",
     "ci": "npm run lint && npm run bootstrap && npm run build && npm run test",
     "pre-publish": "npm run lint && rm -rf node_modules && npm install && npm run bootstrap",
@@ -34,7 +34,7 @@
     "site:deploy": "npm run site:build && gh-pages -d public"
   },
   "lint-staged": {
-    "**/*.{js,ts}": [
+    "**/*.{js,ts,md}": [
       "prettier --write",
       "git add"
     ]

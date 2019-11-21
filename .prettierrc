@@ -4,5 +4,13 @@
   "trailingComma": "es5",
   "bracketSpacing": true,
   "printWidth": 120,
-  "arrowParens": "always"
+  "arrowParens": "always",
+  "overrides": [
+    {
+      "files": "*.md",
+      "options": {
+        "tabWidth": 2
+      }
+    }
+  ]
 }
