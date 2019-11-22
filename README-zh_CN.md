@@ -1,4 +1,4 @@
-English | [简体中文](./README-zh_CN.md)
+[English](./README.md) | 简体中文
 
 # G
 
@@ -12,27 +12,27 @@ English | [简体中文](./README-zh_CN.md)
 [![npm downloads](http://img.shields.io/npm/dm/@antv/g-svg.svg)](https://npmjs.org/package/@antv/g-svg)
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open')
 
-- A powerful rendering engine for AntV providing canvas and svg draw.
+- 一款高效易用的可视化 2D 渲染引擎，同时提供 Canvas 和 SVG 版本的实现。
 
-## ✨ Features
+## ✨ 特性
 
-- Powerful and scalable rendering capability with built-in basic Graphics.
-- Excellent rendering performance and supports visualization scenarios with large amounts of data.
-- Complete simulation of browser DOM events, and no difference from native events.
-- Smooth animation implementation and rich configuration interfaces.
-- While providing Canvas and SVG version of implementation, and both of API basic consistent.
+- 强大、可扩展的渲染能力，并内置常用的基础图形。
+- 极致的渲染性能，支持大数据量的可视化场景。
+- 完整模拟浏览器 DOM 的事件，与原生事件的表现无差异。
+- 流畅的动画实现，以及丰富的配置接口。
+- 同时提供 Canvas 和 SVG 版本的实现，且两者的 API 基本保持一致。
 
-## 📦 Install
+## 📦 安装
 
 ```bash
-# Canvas version
+# Canvas 版本
 $ npm install @antv/g-canvas --save
 
-# SVG version
+# SVG 版本
 $ npm install @antv/g-svg --save
 ```
 
-## 🔨 Usage
+## 🔨 使用
 
 ```html
 <div id="c1"></div>
@@ -40,7 +40,7 @@ $ npm install @antv/g-svg --save
 
 ```js
 import { Canvas } from '@antv/g-canvas';
-// or use SVG version
+// 或者使用 SVG 版本
 // import { Canvas } from '@antv/g-svg';
 
 const canvas = new Canvas({
@@ -62,7 +62,7 @@ group.addShape('circle', {
 });
 ```
 
-## ⌨️ Development
+## ⌨️ 开发
 
 ```bash
 $ git clone git@github.com:antvis/g.git

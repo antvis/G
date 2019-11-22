@@ -10,16 +10,16 @@ English | [简体中文](./README-zh_CN.md)
 [![npm downloads](http://img.shields.io/npm/dm/@antv/g-svg.svg)](https://npmjs.org/package/@antv/g-svg)
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open')
 
-- A svg library which providing 2d draw for AntV.
+- 一款高效易用的 SVG 渲染引擎。
 
-## ✨ Features
+## ✨ 特性
 
-- Powerful and scalable rendering capability with built-in basic Graphics.
-- Excellent rendering performance and supports visualization scenarios with large amounts of data.
-- Complete simulation of browser DOM events, and no difference from native events.
-- Smooth animation implementation and rich configuration interfaces.
+- 强大、可扩展的渲染能力，并内置常用的基础图形。
+- 极致的渲染性能，支持大数据量的可视化场景。
+- 完整模拟浏览器 DOM 的事件，与原生事件的表现无差异。
+- 流畅的动画实现，以及丰富的配置接口。
 
-## 📦 Install
+## 📦 安装
 
 ```bash
 $ npm install @antv/g-svg --save
