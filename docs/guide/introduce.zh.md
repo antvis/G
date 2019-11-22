@@ -29,7 +29,7 @@ $ npm install @antv/g-svg --save
 
 ## 使用
 
-![](https://cdn.nlark.com/yuque/0/2019/png/103291/1574049373917-75c59a36-7e06-4227-b861-f6d3f94a8af9.png)
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Hz29QLOXPRYAAAAAAAAAAABkARQnAQ)
 
 ```html
 <div id="c1"></div>

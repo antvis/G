@@ -11,7 +11,7 @@ order: 5
 
 ### stroke
 
-- - 设置用于填充绘画的颜色、[渐变](/en/docs/api/shape/attrs/#渐变色)或 [纹理](/zh/docs/api/shape/attrs/#纹理)，默认值为空；
+- 设置用于填充绘画的颜色、[渐变](/en/docs/api/shape/attrs/#渐变色)或 [纹理](/zh/docs/api/shape/attrs/#纹理)，默认值为空；
 
 ### shadowColor
 
@@ -142,7 +142,7 @@ order: 5
 
 ### 线性渐变
 
-![](https://gw.alipayobjects.com/zos/rmsportal/ieWkhtoHOijxweuNFWdz.png)
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Z5gpQL9ia9kAAAAAAAAAAABkARQnAQ)
 
 - `l` 表示使用线性渐变，绿色的字体为可变量，由用户自己填写。
 
@@ -154,7 +154,7 @@ stroke: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff';
 
 ### 放射状/环形渐变
 
-![](https://gw.alipayobjects.com/zos/rmsportal/qnvmbtSBGxQlcuVOWkdu.png#width=)
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9sc1SY2d_0AAAAAAAAAAAABkARQnAQ)
 
 - `r` 表示使用放射状渐变，绿色的字体为可变量，由用户自己填写，开始圆的 `x`、`y`、`r` 值均为相对值(0 至 1 范围)。
 
@@ -166,7 +166,7 @@ fill: 'r(0.5, 0.5, 0.1) 0:#ffffff 1:#1890ff';
 
 ## 纹理
 
-![](https://gw.alipayobjects.com/zos/rmsportal/NjtjUimlJtmvXljsETAJ.png#width=)
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8FjsSoqE1mYAAAAAAAAAAABkARQnAQ)
 
 - `p`: 表示使用纹理，绿色的字体为可变量，由用户自己填写。
 - `a`: 该模式在水平和垂直方向重复；
