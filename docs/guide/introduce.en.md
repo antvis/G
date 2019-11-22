@@ -37,12 +37,13 @@ $ npm install @antv/g-svg --save
 
 ```js
 import { Canvas } from '@antv/g-canvas';
+// or use SVG version
+// import { Canvas } from '@antv/g-svg';
 
 const canvas = new Canvas({
   container: 'c1',
   width: 500,
   height: 500,
-  renderer: 'svg',
 });
 
 const group = canvas.addGroup();
@@ -56,4 +57,14 @@ group.addShape('circle', {
     lineWidth: 5,
   },
 });
+```
+
+## ⌨️ 开发
+
+```bash
+$ git clone git@github.com:antvis/g.git
+$ cd g
+$ npm install
+$ npm run bootstrap
+$ npm run build
 ```
