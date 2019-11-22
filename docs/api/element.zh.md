@@ -1,6 +1,8 @@
 ---
 title: Element 元素
 order: 0
+redirect_from:
+  - /zh/docs/api
 ---
 
 # 通用属性

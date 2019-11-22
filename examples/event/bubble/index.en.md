@@ -1,5 +1,5 @@
 ---
-title: Bubble
+title: Event bubble
 order: 1
 ---
 

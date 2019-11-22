@@ -1,8 +1,6 @@
 ---
 title: Canvas 画布
 order: 1
-redirect_from:
-  - /zh/docs/api
 ---
 
 ## 属性
