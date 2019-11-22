@@ -1,8 +1,6 @@
 ---
 title: Canvas
 order: 1
-redirect_from:
-  - /en/docs/api
 ---
 
 ## 属性

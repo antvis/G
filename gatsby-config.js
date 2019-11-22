@@ -4,13 +4,13 @@ module.exports = {
       resolve: '@antv/gatsby-theme-antv',
       options: {
         GATrackingId: `UA-148148901-3`,
-        pathPrefix: '/g',
       },
     },
   ],
   siteMetadata: {
     title: 'G',
     description: 'A powerful rendering engine for AntV providing canvas and svg draw',
+    siteUrl: 'https://g.antv.vision',
     githubUrl: 'https://github.com/antvis/g',
     navs: [
       {
