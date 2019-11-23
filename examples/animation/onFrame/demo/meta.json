@@ -1,0 +1,48 @@
+{
+  "title": {
+    "zh": "中文分类",
+    "en": "Category"
+  },
+  "demos": [
+    {
+      "filename": "basic.js",
+      "title": {
+        "zh": "自定义帧动画",
+        "en": "Customize frame animation"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_uKETI3wWTQAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "along-circle.js",
+      "title": {
+        "zh": "圆轨迹动画",
+        "en": "Animation along circle"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*iNImR4naeOkAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "along-rect.js",
+      "title": {
+        "zh": "矩形轨迹动画",
+        "en": "Animation along circle"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Y9deQI1bTa0AAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "concurrent.js",
+      "title": {
+        "zh": "并行动画",
+        "en": "Concurrent animation"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*iNImR4naeOkAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "rotate.js",
+      "title": {
+        "zh": "旋转动画",
+        "en": "Rotation animation"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*rtvKQIqsTkMAAAAAAAAAAABkARQnAQ"
+    }
+  ]
+}
