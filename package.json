@@ -31,7 +31,9 @@
     "site:develop": "gatsby develop --open -H 0.0.0.0",
     "site:build": "npm run site:clean && gatsby build --prefix-paths",
     "site:clean": "gatsby clean",
-    "site:deploy": "npm run site:build && gh-pages -d public"
+    "site:deploy": "npm run site:build && gh-pages -d public",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "lint-staged": {
     "**/*.{js,ts,md}": [
@@ -54,7 +56,8 @@
     "ptz-i18n": "^1.0.0",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "tslib": "^1.10.0"
+    "tslib": "^1.10.0",
+    "snyk": "^1.251.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.5",
@@ -93,5 +96,6 @@
     "typescript": "^3.2.2",
     "webpack": "^4.26.1",
     "webpack-cli": "^3.1.2"
-  }
+  },
+  "snyk": true
 }
