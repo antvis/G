@@ -440,6 +440,49 @@ describe('Text \n', function() {
     expect(text.attr('textBaseline')).to.equal('top');
     expect(text.attr('lineWidth')).to.equal(1);
   });
+  it('text max-width', () => {
+    const text = new G.Text({
+      attrs: {
+        x: 0,
+        y: 20,
+        text: '无最长宽度90限制的文本',
+        fill: 'black',
+        fontSize: 14,
+        stroke: 'red',
+      },
+    });
+    const textLimit = new G.Text({
+      attrs: {
+        x: 0,
+        y: 50,
+        text: '有最长宽度90限制的文本',
+        fill: 'black',
+        fontSize: 14,
+        maxWidth: 90,
+        stroke: 'red',
+        lineWidth: 2
+      },
+    });
+    const textZeroWidth = new G.Text({
+      attrs: {
+        x: 0,
+        y: 50,
+        text: '有最长宽度0限制的文本',
+        fill: 'black',
+        fontSize: 14,
+        maxWidth: 0,
+        stroke: 'red',
+      },
+    });
+    canvas.add(text);
+    canvas.add(textLimit);
+    canvas.add(textZeroWidth);
+    expect(text.getBBox().width).not.to.equal(90);
+    expect(textLimit.attr('maxWidth')).to.equal(90);
+    expect(textLimit.getBBox().width).to.equal(90 + textLimit.attr('lineWidth'));
+    expect(textZeroWidth.getBBox().width).to.equal(0);
+    canvas.draw();
+  });
 });
 
 describe('Text 不存在', function() {

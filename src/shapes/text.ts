@@ -161,6 +161,7 @@ class CText extends Shape {
     const textArr = attrs.textArr;
     const x = attrs.x;
     const y = attrs.y;
+    const maxWidth = attrs.maxWidth;
 
     context.beginPath();
     if (self.hasStroke()) {
@@ -171,7 +172,7 @@ class CText extends Shape {
       if (textArr) {
         self._drawTextArr(context, false);
       } else {
-        context.strokeText(text, x, y);
+        context.strokeText(text, x, y, maxWidth);
       }
       context.globalAlpha = 1;
     }
@@ -183,7 +184,7 @@ class CText extends Shape {
       if (textArr) {
         self._drawTextArr(context, true);
       } else {
-        context.fillText(text, x, y);
+        context.fillText(text, x, y, maxWidth);
       }
     }
     cfg.hasUpdate = false;
@@ -196,6 +197,7 @@ class CText extends Shape {
     const spaceingY = this._getSpaceingY();
     const x = this.attrs.x;
     const y = this.attrs.y;
+    const maxWidth = this.attrs.maxWidth;
     const box = this.getBBox();
     const height = box.maxY - box.minY;
     let subY;
@@ -205,9 +207,9 @@ class CText extends Shape {
       if (textBaseline === 'middle') subY += height - fontSize - (height - fontSize) / 2;
       if (textBaseline === 'top') subY += height - fontSize;
       if (fill) {
-        context.fillText(subText, x, subY);
+        context.fillText(subText, x, subY, maxWidth);
       } else {
-        context.strokeText(subText, x, subY);
+        context.strokeText(subText, x, subY, maxWidth);
       }
     });
   }
@@ -236,6 +238,9 @@ class CText extends Shape {
     } else {
       width = context.measureText(text).width;
       context.restore();
+    }
+    if (attrs.maxWidth !== undefined) {
+      width = Math.min(attrs.maxWidth, width);
     }
     return width;
   }
