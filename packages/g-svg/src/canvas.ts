@@ -1,8 +1,9 @@
 import { AbstractCanvas } from '@antv/g-base';
 import { ChangeType } from '@antv/g-base/lib/types';
 import { IElement } from './interfaces';
-import { applyClipChildren, drawPathChildren, refreshElement } from './util/draw';
-import { setClip } from './util/svg';
+import { applyClipChildren, drawPathChildren } from './util/draw';
+import { setTransform, setClip } from './util/svg';
+import { sortDom } from './util/dom';
 import EventController from '@antv/g-base/lib/event/event-contoller';
 import * as Shape from './shape';
 import Group from './group';
@@ -32,7 +33,28 @@ class Canvas extends AbstractCanvas {
    * @param {ChangeType} changeType 改变的类型
    */
   onCanvasChange(changeType: ChangeType) {
-    refreshElement(this, changeType);
+    const context = this.get('context');
+    const el = this.get('el');
+    if (changeType === 'sort') {
+      const children = this.get('children');
+      if (children && children.length) {
+        sortDom(this, (a: IElement, b: IElement) => {
+          return children.indexOf(a) - children.indexOf(b) ? 1 : 0;
+        });
+      }
+    } else if (changeType === 'clear') {
+      // el is null for canvas
+      if (el) {
+        el.innerHTML = '';
+      }
+    } else if (changeType === 'matrix') {
+      setTransform(this);
+    } else if (changeType === 'clip') {
+      this.applyClip(context);
+    } else if (changeType === 'changeSize') {
+      el.setAttribute('width', `${this.get('width')}`);
+      el.setAttribute('height', `${this.get('height')}`);
+    }
   }
 
   getShapeBase() {

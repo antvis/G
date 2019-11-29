@@ -1,5 +1,5 @@
 import { toArray } from '@antv/util';
-import { IShape, IElement } from '../interfaces';
+import { IShape, IGroup, IElement } from '../interfaces';
 import { SHAPE_TO_TAGS } from '../constant';
 
 /**
@@ -21,11 +21,14 @@ export function createDom(shape: IShape) {
   shape.set('attrs', {});
   if (parent) {
     let parentNode = parent.get('el');
-    while (!parentNode) {
-      const newParent = parent.getParent();
-      parentNode = newParent && newParent.get('el');
+    if (parentNode) {
+      parentNode.appendChild(element);
+    } else {
+      // parentNode maybe null for group
+      parentNode = (parent as IGroup).createDom();
+      parent.set('el', parentNode);
+      parentNode.appendChild(element);
     }
-    parentNode.appendChild(element);
   }
   return element;
 }
