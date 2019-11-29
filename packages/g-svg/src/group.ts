@@ -34,9 +34,13 @@ class Group extends AbstractGroup {
 
   // 覆盖基类的 afterAttrsChange 方法
   afterAttrsChange(targetAttrs) {
-    const context = this.get('context');
     super.afterAttrsChange(targetAttrs);
-    this.createPath(context, targetAttrs);
+    const canvas = this.get('canvas');
+    // 只有挂载到画布下，才对元素进行实际渲染
+    if (canvas) {
+      const context = canvas.get('context');
+      this.updatePath(context, targetAttrs);
+    }
   }
 
   /**
@@ -59,7 +63,7 @@ class Group extends AbstractGroup {
     const children = this.getChildren() as IElement[];
     setClip(this, context);
     this.createDom();
-    this.createPath(context);
+    this.updatePath(context);
     if (children.length) {
       drawChildren(context, children);
     }
@@ -76,13 +80,13 @@ class Group extends AbstractGroup {
   drawPath(context: Defs) {
     const children = this.getChildren() as IElement[];
     this.createDom();
-    this.createPath(context);
+    this.updatePath(context);
     if (children.length) {
       drawPathChildren(context, children);
     }
   }
 
-  createPath(context: Defs, targetAttrs?) {
+  updatePath(context: Defs, targetAttrs?) {
     const attrs = this.attr();
     const el = this.get('el');
     each(targetAttrs || attrs, (value, attr) => {
