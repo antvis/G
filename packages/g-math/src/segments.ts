@@ -1,10 +1,11 @@
 import line from './line';
 import { distance } from './util';
+import { Point, PointTuple, Segment } from './types';
 
-function analyzePoints(points) {
+function analyzePoints(points: PointTuple[]) {
   // 计算每段的长度和总的长度
   let totalLength = 0;
-  const segments = [];
+  const segments: Segment[] = [];
   for (let i = 0; i < points.length - 1; i++) {
     const from = points[i];
     const to = points[i + 1];
@@ -20,7 +21,7 @@ function analyzePoints(points) {
   return { segments, totalLength };
 }
 
-export function lengthOfSegment(points) {
+export function lengthOfSegment(points: PointTuple[]) {
   if (points.length < 2) {
     return 0;
   }
@@ -37,9 +38,9 @@ export function lengthOfSegment(points) {
  * 按照比例在数据片段中获取点
  * @param {array} points 点的集合
  * @param {number} t 百分比 0-1
- * @returns {object} 点的坐标
+ * @return {object} 点的坐标
  */
-export function pointAtSegments(points: any[], t: number) {
+export function pointAtSegments(points: PointTuple[], t: number): Point {
   // 边界判断
   if (t > 1 || t < 0 || points.length < 2) {
     return null;
@@ -74,7 +75,7 @@ export function pointAtSegments(points: any[], t: number) {
  * @param {array} points 点的集合
  * @param {number} t 百分比 0-1
  */
-export function angleAtSegments(points: any[], t: number) {
+export function angleAtSegments(points: PointTuple[], t: number) {
   // 边界判断
   if (t > 1 || t < 0 || points.length < 2) {
     return 0;
@@ -96,7 +97,7 @@ export function angleAtSegments(points: any[], t: number) {
   return angle;
 }
 
-export function distanceAtSegment(points, x, y) {
+export function distanceAtSegment(points: PointTuple[], x: number, y: number) {
   let minDistance = Infinity;
   for (let i = 0; i < points.length - 1; i++) {
     const point = points[i];
