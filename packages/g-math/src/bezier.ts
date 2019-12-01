@@ -1,5 +1,5 @@
 import { distance } from './util';
-import line from './line';
+import { Point, PointTuple } from './types';
 
 const EPSILON = 0.0001;
 /**
@@ -10,15 +10,21 @@ const EPSILON = 0.0001;
  * @param {number}   y         指定的点 y
  * @param {Function} tCallback 差值函数
  */
-export function nearestPoint(xArr: number[], yArr: number[], x: number, y: number, tCallback: Function) {
-  let t;
+export function nearestPoint(
+  xArr: number[],
+  yArr: number[],
+  x: number,
+  y: number,
+  tCallback: (...arr: number[]) => number
+): Point {
+  let t: number;
   let interval = 0.005;
   let d = Infinity;
-  const v0 = [x, y];
+  const v0: PointTuple = [x, y];
 
   for (let i = 0; i <= 20; i++) {
     const _t = i * 0.05;
-    const v1 = [tCallback.apply(null, xArr.concat([_t])), tCallback.apply(null, yArr.concat([_t]))];
+    const v1: PointTuple = [tCallback.apply(null, xArr.concat([_t])), tCallback.apply(null, yArr.concat([_t]))];
 
     const d1 = distance(v0[0], v0[1], v1[0], v1[1]);
     if (d1 < d) {
@@ -75,7 +81,7 @@ export function nearestPoint(xArr: number[], yArr: number[], x: number, y: numbe
 }
 
 // 近似求解 https://community.khronos.org/t/3d-cubic-bezier-segment-length/62363/2
-export function snapLength(xArr, yArr) {
+export function snapLength(xArr: number[], yArr: number[]) {
   let totalLength = 0;
   const count = xArr.length;
   for (let i = 0; i < count; i++) {

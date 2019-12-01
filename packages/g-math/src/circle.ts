@@ -1,4 +1,5 @@
 import { distance, piMod } from './util';
+import { BBox, Point } from './types';
 
 export default {
   /**
@@ -6,9 +7,9 @@ export default {
    * @param {number} x 圆心 x
    * @param {number} y 圆心 y
    * @param {number} r 半径
-   * @returns {object} 包围盒
+   * @return {object} 包围盒
    */
-  box(x: number, y: number, r: number) {
+  box(x: number, y: number, r: number): BBox {
     return {
       x: x - r,
       y: y - r,
@@ -21,7 +22,7 @@ export default {
    * @param {number} x 圆心 x
    * @param {number} y 圆心 y
    * @param {number} r 半径
-   * @returns {number} 周长
+   * @return {number} 周长
    */
   length(x: number, y: number, r: number) {
     return Math.PI * 2 * r;
@@ -32,9 +33,9 @@ export default {
    * @param {number} y 圆心 y
    * @param {number} r 半径
    * @param {number} t 指定比例，x轴方向为 0
-   * @returns {object} 点
+   * @return {object} 点
    */
-  pointAt(x: number, y: number, r: number, t: number) {
+  pointAt(x: number, y: number, r: number, t: number): Point {
     const angle = Math.PI * 2 * t;
     return {
       x: x + r * Math.cos(angle),
@@ -48,9 +49,9 @@ export default {
    * @param {number} r 半径
    * @param {number} x0  指定的点 x
    * @param {number} y0  指定的点 y
-   * @returns {number} 距离
+   * @return {number} 距离
    */
-  pointDistance(x: number, y: number, r: number, x0, y0) {
+  pointDistance(x: number, y: number, r: number, x0: number, y0: number) {
     return Math.abs(distance(x, y, x0, y0) - r);
   },
   /**
@@ -59,7 +60,7 @@ export default {
    * @param {number} y 圆心 y
    * @param {number} r 半径
    * @param {number} t 指定比例 0 - 1 之间，x轴方向为 0。在 0-1 范围之外是循环还是返回 null，还需要调整
-   * @returns {number} 角度，在 0 - 2PI 之间
+   * @return {number} 角度，在 0 - 2PI 之间
    */
   tangentAngle(x: number, y: number, r: number, t) {
     const angle = Math.PI * 2 * t;
