@@ -11,7 +11,7 @@ export default {
   box(x: number, y: number, r: number) {
     return {
       x: x - r,
-      y: x - r,
+      y: y - r,
       width: 2 * r,
       height: 2 * r,
     };
