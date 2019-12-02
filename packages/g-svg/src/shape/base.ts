@@ -43,22 +43,35 @@ class ShapeBase extends AbstractShape implements IShape {
 
   calculateBBox(): BBox {
     const el = this.get('el');
-    const { x, y, width, height } = el.getBBox();
-    const lineWidth = this.getHitLineWidth();
-    const halfWidth = lineWidth / 2;
-    const minX = x - halfWidth;
-    const minY = y - halfWidth;
-    const maxX = x + width + halfWidth;
-    const maxY = y + height + halfWidth;
+    // 包围盒计算依赖于绘制，如果还没有生成对应的 Dom 元素，则包围盒的长宽均为 0
+    if (el) {
+      const { x, y, width, height } = el.getBBox();
+      const lineWidth = this.getHitLineWidth();
+      const halfWidth = lineWidth / 2;
+      const minX = x - halfWidth;
+      const minY = y - halfWidth;
+      const maxX = x + width + halfWidth;
+      const maxY = y + height + halfWidth;
+      return {
+        x: minX,
+        y: minY,
+        minX,
+        minY,
+        maxX,
+        maxY,
+        width: width + lineWidth,
+        height: height + lineWidth,
+      };
+    }
     return {
-      x: minX,
-      y: minY,
-      minX,
-      minY,
-      maxX,
-      maxY,
-      width: width + lineWidth,
-      height: height + lineWidth,
+      x: 0,
+      y: 0,
+      minX: 0,
+      minY: 0,
+      maxX: 0,
+      maxY: 0,
+      width: 0,
+      height: 0,
     };
   }
 
