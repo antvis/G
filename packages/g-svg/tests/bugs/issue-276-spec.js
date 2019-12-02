@@ -15,20 +15,31 @@ describe('#276', () => {
 
   it('should work correctly when group and shape are not mounted under canvas', () => {
     const group = new Group({});
-    const shape = group.addShape('marker', {
+    const shape = group.addShape('circle', {
       attrs: {
         x: 100,
         y: 100,
-        r: 30,
+        r: 50,
         fill: 'red',
-        symbol: 'circle',
       },
     });
+    // before mounted under canvas
     expect(shape.attr('fill')).eqls('red');
     expect(shape.get('el')).eqls(undefined);
+    let bbox = shape.getBBox();
+    expect(bbox.minX).eqls(0);
+    expect(bbox.minY).eqls(0);
+    expect(bbox.maxX).eqls(0);
+    expect(bbox.maxY).eqls(0);
     expect(canvas.getChildren().length).eqls(0);
-    shape.attr('fill', 'blue');
+    // after mounted under canvas
     canvas.add(group);
+    shape.attr('fill', 'blue');
+    bbox = shape.getBBox();
+    expect(bbox.minX).eqls(50);
+    expect(bbox.minY).eqls(50);
+    expect(bbox.maxX).eqls(150);
+    expect(bbox.maxY).eqls(150);
     expect(shape.get('el')).not.eqls(undefined);
     expect(shape.attr('fill')).eqls('blue');
     expect(canvas.getChildren().length).eqls(1);
