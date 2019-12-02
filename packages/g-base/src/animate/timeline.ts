@@ -7,6 +7,8 @@ import { isColorProp, isGradientColor } from '../util/color';
 import { ICanvas, IElement } from '../interfaces';
 import { Animation } from '../types';
 
+const IDENTITY_MATRIX = [1, 0, 0, 0, 1, 0, 0, 0, 1];
+
 /**
  * 使用 ratio 进行插值计算来更新属性
  * @param {IElement}  shape    元素
@@ -57,7 +59,11 @@ function _update(shape: IElement, animation: Animation, ratio: number) {
           cProps[k].push(cPathPoint);
         }
       } else if (k === 'matrix') {
-        const matrixFn = interpolateArray(fromAttrs[k], toAttrs[k]);
+        /* 
+         对矩阵进行插值时，需要保证矩阵不为空，为空则使用单位矩阵
+         TODO: 二维和三维场景下单位矩阵不同，之后 WebGL 版需要做进一步处理
+         */
+        const matrixFn = interpolateArray(fromAttrs[k] || IDENTITY_MATRIX, toAttrs[k] || IDENTITY_MATRIX);
         const currentMatrix = matrixFn(ratio);
         shape.setMatrix(currentMatrix);
       } else if (isColorProp(k) && isGradientColor(toAttrs[k])) {
