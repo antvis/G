@@ -26,8 +26,11 @@ class ShapeBase extends AbstractShape implements IShape {
   afterAttrsChange(targetAttrs: ShapeAttrs) {
     super.afterAttrsChange(targetAttrs);
     const canvas = this.get('canvas');
-    const context = canvas.get('context');
-    this.updatePath(context, targetAttrs);
+    // 只有挂载到画布下，才对元素进行实际渲染
+    if (canvas) {
+      const context = canvas.get('context');
+      this.updatePath(context, targetAttrs);
+    }
   }
 
   /**
