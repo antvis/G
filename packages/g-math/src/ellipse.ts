@@ -6,8 +6,9 @@
  */
 
 import { distance, piMod } from './util';
+import { Point, BBox } from './types';
 
-function copysign(v1, v2) {
+function copysign(v1: number, v2: number) {
   const absv = Math.abs(v1);
   return v2 > 0 ? absv : absv * -1;
 }
@@ -19,9 +20,9 @@ export default {
    * @param {number} y  椭圆中心 y
    * @param {number} rx 椭圆 x 方向半径
    * @param {number} ry 椭圆 y 方向半径
-   * @returns {object} 包围盒
+   * @return {object} 包围盒
    */
-  box(x: number, y: number, rx: number, ry: number) {
+  box(x: number, y: number, rx: number, ry: number): BBox {
     return {
       x: x - rx,
       y: y - ry,
@@ -35,7 +36,7 @@ export default {
    * @param {number} y  椭圆中心 y
    * @param {number} rx 椭圆 x 方向半径
    * @param {number} ry 椭圆 y 方向半径
-   * @returns {number} 椭圆周长
+   * @return {number} 椭圆周长
    */
   length(x: number, y: number, rx: number, ry: number) {
     return Math.PI * (3 * (rx + ry) - Math.sqrt((3 * rx + ry) * (rx + 3 * ry)));
@@ -48,7 +49,7 @@ export default {
    * @param {number} ry 椭圆 y 方向半径
    * @param {number} x0  指定的点 x
    * @param {number} y0  指定的点 y
-   * @returns {object} 椭圆上距离指定点最近的点
+   * @return {object} 椭圆上距离指定点最近的点
    */
   nearestPoint(x: number, y: number, rx: number, ry: number, x0: number, y0: number) {
     const a = rx;
@@ -69,8 +70,8 @@ export default {
     const squareB = b * b;
     // const angle0 = Math.atan2(relativeY, relativeX);
     let t = Math.PI / 4;
-    let nearestX; // 椭圆上的任一点
-    let nearestY;
+    let nearestX: number; // 椭圆上的任一点
+    let nearestY: number;
     // 迭代 4 次
     for (let i = 0; i < 4; i++) {
       nearestX = a * Math.cos(t);
@@ -106,9 +107,9 @@ export default {
    * @param {number} ry 椭圆 y 方向半径
    * @param {number} x0  指定的点 x
    * @param {number} y0  指定的点 y
-   * @returns {number} 点到椭圆的距离
+   * @return {number} 点到椭圆的距离
    */
-  pointDistance(x, y, rx, ry, x0, y0) {
+  pointDistance(x: number, y: number, rx: number, ry: number, x0: number, y0: number) {
     const nearestPoint = this.nearestPoint(x, y, rx, ry, x0, y0);
     return distance(nearestPoint.x, nearestPoint.y, x0, y0);
   },
@@ -119,9 +120,9 @@ export default {
    * @param {number} rx 椭圆 x 方向半径
    * @param {number} ry 椭圆 y 方向半径
    * @param {number} t 指定比例，x轴方向为 0
-   * @returns {object} 点
+   * @return {object} 点
    */
-  pointAt(x, y, rx, ry, t) {
+  pointAt(x: number, y: number, rx: number, ry: number, t: number): Point {
     const angle = 2 * Math.PI * t; // 按照角度进行计算，而不按照周长计算
     return {
       x: x + rx * Math.cos(angle),
@@ -135,9 +136,9 @@ export default {
    * @param {number} rx 椭圆 x 方向半径
    * @param {number} ry 椭圆 y 方向半径
    * @param {number} t 指定比例 0 - 1 之间，x轴方向为 0。在 0-1 范围之外是循环还是返回 null，还需要调整
-   * @returns {number} 角度，在 0 - 2PI 之间
+   * @return {number} 角度，在 0 - 2PI 之间
    */
-  tangentAngle(x, y, rx, ry, t) {
+  tangentAngle(x: number, y: number, rx: number, ry: number, t: number) {
     const angle = 2 * Math.PI * t; // 按照角度进行计算，而不按照周长计算
     // 直接使用 x,y 的导数计算， x' = -rx * sin(t); y' = ry * cos(t);
     const tangentAngle = Math.atan2(ry * Math.cos(angle), -rx * Math.sin(angle));

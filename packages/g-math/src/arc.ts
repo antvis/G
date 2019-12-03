@@ -1,45 +1,64 @@
 import { distance, piMod } from './util';
 import ellipse from './ellipse';
-import * as mat3 from '@antv/gl-matrix/lib/gl-matrix/mat3';
+import { Point, BBox } from './types';
 
 // 偏导数 x
-function derivativeXAt(cx, cy, rx, ry, xRotation, startAngle, endAngle, angle) {
+function derivativeXAt(
+  cx: number,
+  cy: number,
+  rx: number,
+  ry: number,
+  xRotation: number,
+  startAngle: number,
+  endAngle: number,
+  angle: number
+) {
   return -1 * rx * Math.cos(xRotation) * Math.sin(angle) - ry * Math.sin(xRotation) * Math.cos(angle);
 }
 
 // 偏导数 y
-function derivativeYAt(cx, cy, rx, ry, xRotation, startAngle, endAngle, angle) {
+function derivativeYAt(
+  cx: number,
+  cy: number,
+  rx: number,
+  ry: number,
+  xRotation: number,
+  startAngle: number,
+  endAngle: number,
+  angle: number
+) {
   return -1 * rx * Math.sin(xRotation) * Math.sin(angle) + ry * Math.cos(xRotation) * Math.cos(angle);
 }
 
 // x 的极值
-function xExtrema(rx, ry, xRotation) {
+function xExtrema(rx: number, ry: number, xRotation: number) {
   return Math.atan((-ry / rx) * Math.tan(xRotation));
 }
+
 // y 的极值
-function yExtrema(rx, ry, xRotation) {
+function yExtrema(rx: number, ry: number, xRotation: number) {
   return Math.atan(ry / (rx * Math.tan(xRotation)));
 }
 
 // 根据角度求 x 坐标
-function xAt(cx, cy, rx, ry, xRotation, angle) {
+function xAt(cx: number, cy: number, rx: number, ry: number, xRotation: number, angle: number) {
   return rx * Math.cos(xRotation) * Math.cos(angle) - ry * Math.sin(xRotation) * Math.sin(angle) + cx;
 }
 
 // 根据角度求 y 坐标
-function yAt(cx, cy, rx, ry, xRotation, angle) {
+function yAt(cx: number, cy: number, rx: number, ry: number, xRotation: number, angle: number) {
   return rx * Math.sin(xRotation) * Math.cos(angle) + ry * Math.cos(xRotation) * Math.sin(angle) + cy;
 }
 
 // 获取点在椭圆上的角度
-function getAngle(rx, ry, x0, y0) {
+function getAngle(rx: number, ry: number, x0: number, y0: number) {
   const angle = Math.atan2(y0 * rx, x0 * ry);
   // 转换到 0 - 2PI 内
   return (angle + Math.PI * 2) % (Math.PI * 2);
 }
 
 // 根据角度获取，x,y
-function getPoint(rx, ry, angle) {
+function getPoint(rx: number, ry: number, angle: number): Point {
   return {
     x: rx * Math.cos(angle),
     y: ry * Math.sin(angle),
@@ -47,7 +66,7 @@ function getPoint(rx, ry, angle) {
 }
 
 // 旋转
-function rotate(x, y, angle) {
+function rotate(x: number, y: number, angle: number) {
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
   return [x * cos - y * sin, x * sin + y * cos];
@@ -63,9 +82,9 @@ export default {
    * @param {number} xRotation  旋转角度
    * @param {number} startAngle 起始角度
    * @param {number} endAngle   结束角度
-   * @returns {object} 包围盒对象
+   * @return {object} 包围盒对象
    */
-  box(cx, cy, rx, ry, xRotation, startAngle, endAngle) {
+  box(cx: number, cy: number, rx: number, ry: number, xRotation: number, startAngle: number, endAngle: number): BBox {
     const xDim = xExtrema(rx, ry, xRotation);
     let minX = Infinity;
     let maxX = -Infinity;
@@ -138,7 +157,7 @@ export default {
    * @param {number} startAngle 起始角度
    * @param {number} endAngle   结束角度
    */
-  length(cx, cy, rx, ry, xRotation, startAngle, endAngle) {},
+  length(cx: number, cy: number, rx: number, ry: number, xRotation: number, startAngle: number, endAngle: number) {},
   /**
    * 获取指定点到圆弧的最近距离的点
    * @param {number} cx         圆心 x
@@ -148,9 +167,21 @@ export default {
    * @param {number} xRotation  旋转角度
    * @param {number} startAngle 起始角度
    * @param {number} endAngle   结束角度
-   * @returns {object} 到指定点最近距离的点
+   * @param {number} x0         指定点的 x
+   * @param {number} y0         指定点的 y
+   * @return {object} 到指定点最近距离的点
    */
-  nearestPoint(cx, cy, rx, ry, xRotation, startAngle, endAngle, x0, y0) {
+  nearestPoint(
+    cx: number,
+    cy: number,
+    rx: number,
+    ry: number,
+    xRotation: number,
+    startAngle: number,
+    endAngle: number,
+    x0: number,
+    y0: number
+  ) {
     // 将最近距离问题转换成到椭圆中心 0,0 没有旋转的椭圆问题
     const relativeVector = rotate(x0 - cx, y0 - cy, -xRotation);
     const [x1, y1] = relativeVector;
@@ -173,18 +204,46 @@ export default {
       y: vector[1] + cy,
     };
   },
-  pointDistance(cx, cy, rx, ry, xRotation, startAngle, endAngle, x0, y0) {
+  pointDistance(
+    cx: number,
+    cy: number,
+    rx: number,
+    ry: number,
+    xRotation: number,
+    startAngle: number,
+    endAngle: number,
+    x0: number,
+    y0: number
+  ) {
     const nearestPoint = this.nearestPoint(cx, cy, rx, ry, x0, y0);
     return distance(nearestPoint.x, nearestPoint.y, x0, y0);
   },
-  pointAt(cx, cy, rx, ry, xRotation, startAngle, endAngle, t) {
+  pointAt(
+    cx: number,
+    cy: number,
+    rx: number,
+    ry: number,
+    xRotation: number,
+    startAngle: number,
+    endAngle: number,
+    t: number
+  ): Point {
     const angle = (endAngle - startAngle) * t + startAngle;
     return {
       x: xAt(cx, cy, rx, ry, xRotation, angle),
       y: yAt(cx, cy, rx, ry, xRotation, angle),
     };
   },
-  tangentAngle(cx, cy, rx, ry, xRotation, startAngle, endAngle, t) {
+  tangentAngle(
+    cx: number,
+    cy: number,
+    rx: number,
+    ry: number,
+    xRotation: number,
+    startAngle: number,
+    endAngle: number,
+    t: number
+  ) {
     const angle = (endAngle - startAngle) * t + startAngle;
     const dx = derivativeXAt(cx, cy, rx, ry, xRotation, startAngle, endAngle, angle);
     const dy = derivativeYAt(cx, cy, rx, ry, xRotation, startAngle, endAngle, angle);
