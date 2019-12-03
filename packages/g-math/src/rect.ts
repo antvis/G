@@ -1,7 +1,14 @@
-import line from './line';
 import { pointAtSegments, angleAtSegments, distanceAtSegment } from './segments';
-function getPoints(x, y, width, height) {
-  return [[x, y], [x + width, y], [x + width, y + height], [x, y + height], [x, y]];
+import { Point, PointTuple, BBox } from './types';
+
+function getPoints(x: number, y: number, width: number, height: number): PointTuple[] {
+  return [
+    [x, y],
+    [x + width, y],
+    [x + width, y + height],
+    [x, y + height],
+    [x, y],
+  ];
 }
 
 export default {
@@ -11,9 +18,9 @@ export default {
    * @param {number} y      起始点 y
    * @param {number} width  宽度
    * @param {number} height 高度
-   * @returns {object} 包围盒
+   * @return {object} 包围盒
    */
-  box(x: number, y: number, width: number, height: number) {
+  box(x: number, y: number, width: number, height: number): BBox {
     return {
       x,
       y,
@@ -39,7 +46,7 @@ export default {
    * @param {number} height 高度
    * @param {number} x0     指定点的 x
    * @param {number} y0     指定点的 y
-   * @returns {number} 最短距离
+   * @return {number} 最短距离
    */
   pointDistance(x: number, y: number, width: number, height: number, x0: number, y0: number) {
     const points = getPoints(x, y, width, height);
@@ -52,9 +59,9 @@ export default {
    * @param {number} width  宽度
    * @param {number} height 高度
    * @param {number} t 比例 0-1 之间的值
-   * @returns {object} 计算出来的点信息，包含 x,y
+   * @return {object} 计算出来的点信息，包含 x,y
    */
-  pointAt(x: number, y: number, width: number, height: number, t: number) {
+  pointAt(x: number, y: number, width: number, height: number, t: number): Point {
     // 边界判断，避免获取顶点
     if (t > 1 || t < 0) {
       return null;
@@ -69,9 +76,9 @@ export default {
    * @param {number} width  宽度
    * @param {number} height 高度
    * @param {number} t 比例 0-1 之间的值
-   * @returns {number} 切线的角度
+   * @return {number} 切线的角度
    */
-  tangentAngle(x, y, width, height, t) {
+  tangentAngle(x: number, y: number, width: number, height: number, t: number) {
     // 边界判断，避免获取顶点
     if (t > 1 || t < 0) {
       return 0;
