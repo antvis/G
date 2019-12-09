@@ -91,31 +91,6 @@ function emitTargetEvent(target, type, eventObj) {
   target.emit(type, eventObj);
 }
 
-// 触发委托事件
-function emitDelegation(container, type, eventObj) {
-  const paths = eventObj.propagationPath;
-  const events = container.getEvents();
-  // 至少有一个对象，且第一个对象为 shape
-  for (let i = 0; i < paths.length; i++) {
-    const element = paths[i];
-    // 暂定跟 name 绑定
-    const name = element.get('name');
-    if (name) {
-      // 事件委托的形式 name:type
-      const eventName = name + DELEGATION_SPLIT + type;
-      if (events[eventName] || events[WILDCARD]) {
-        // 对于通配符 *，事件名称 = 委托事件名称
-        eventObj.name = eventName;
-        eventObj.currentTarget = element;
-        eventObj.delegateTarget = container;
-        // 将委托事件的监听对象 delegateObject 挂载到事件对象上
-        eventObj.delegateObject = element.get('delegateObject');
-        container.emit(eventName, eventObj);
-      }
-    }
-  }
-}
-
 // 事件冒泡, enter 和 leave 需要对 fromShape 和 toShape 进行判同
 function bubbleEvent(container, type, eventObj) {
   if (eventObj.bubbles) {
@@ -399,7 +374,7 @@ class EventController {
       // 执行冒泡
       while (parent) {
         // 委托事件要先触发
-        emitDelegation(parent, type, eventObj);
+        parent.emitDelegation(type, eventObj);
         // 事件冒泡停止，不能妨碍委托事件
         if (!eventObj.propagationStopped) {
           bubbleEvent(parent, type, eventObj);
