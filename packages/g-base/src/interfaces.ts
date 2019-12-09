@@ -11,6 +11,7 @@ import {
   BBox,
   ElementFilterFn,
 } from './types';
+import GraphEvent from './event/graph-event';
 
 export interface ICtor<T> {
   new (cfg: any): T;
@@ -267,6 +268,13 @@ export interface IElement extends IBase {
    * @return {boolean} 是否被裁剪
    */
   isClipped(refX: number, refY: number): boolean;
+
+  /**
+   * 触发委托事件
+   * @param  {string}  type 事件类型
+   * @param  {GraphEvent}  eventObj 事件对象
+   */
+  emitDelegation(type: string, eventObj: GraphEvent): void;
 }
 
 export interface IContainer extends IBase {
