@@ -98,17 +98,6 @@ abstract class AbstractGroup extends Container implements IGroup {
   }
 
   /**
-   * 根据 ID 查找元素
-   * @param {string} id 元素 id
-   * @return {IElement|null} 元素
-   */
-  findById(id: string): IElement {
-    return this.find((element) => {
-      return element.get('id') === id;
-    });
-  }
-
-  /**
    * 查找元素，找到第一个返回
    * @param  {ElementFilterFn} fn    匹配函数
    * @return {IElement|null} 元素，可以为空
@@ -127,6 +116,28 @@ abstract class AbstractGroup extends Container implements IGroup {
       }
     });
     return rst;
+  }
+
+  /**
+   * 根据 ID 查找元素
+   * @param {string} id 元素 id
+   * @return {IElement|null} 元素
+   */
+  findById(id: string): IElement {
+    return this.find((element) => {
+      return element.get('id') === id;
+    });
+  }
+
+  /**
+   * 根据 name 查找元素列表
+   * @param {string}      name 元素名称
+   * @return {IElement[]} 元素
+   */
+  findAllByName(name: string): IElement[] {
+    return this.findAll((element) => {
+      return element.get('name') === name;
+    });
   }
 }
 

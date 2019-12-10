@@ -133,10 +133,14 @@ type ShapeCfg = {
 
 - 查找所有匹配的元素，其中 `fn` 为查找函数；
 
+### find(fn: element => boolean)
+
+- 查找第一个符合条件的元素，其中 `fn` 为查找函数；
+
 ### findById(id: string)
 
 - 根据元素 `id` 查找元素；
 
-### find(fn: element => boolean)
+### findAllByName(name: string)
 
-- 查找第一个符合条件的元素，其中 `fn` 为查找函数；
+- 根据元素名称查找元素列表；
