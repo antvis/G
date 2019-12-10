@@ -9,6 +9,7 @@ describe('SVG Canvas', () => {
     expect(canvas.get('container')).eql(canvas.get('el').parentNode);
     expect(canvas.get('width')).eql(1000);
     expect(canvas.get('height')).eql(1000);
+    expect(canvas.getRenderer()).eql('svg');
     canvas.destroy();
   });
 
