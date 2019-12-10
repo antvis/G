@@ -37,6 +37,8 @@ function getMergedRegion(elements): Region {
 class Canvas extends AbstractCanvas {
   getDefaultCfg() {
     const cfg = super.getDefaultCfg();
+    // 设置渲染引擎为 canvas，只读属性
+    cfg['renderer'] = 'canvas';
     // 是否自动绘制，不需要用户调用 draw 方法
     cfg['autoDraw'] = true;
     // 是否允许局部刷新图表

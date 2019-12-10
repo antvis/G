@@ -85,6 +85,8 @@ export type ClipCfg = {
   attrs: ShapeAttrs;
 };
 
+export type Renderer = 'canvas' | 'svg';
+
 export type CanvasCfg = {
   /**
    * 容器
@@ -106,6 +108,11 @@ export type CanvasCfg = {
    * @type {boolean}
    */
   capture?: boolean;
+  /**
+   * 只读属性，渲染引擎
+   * @type {string}
+   */
+  renderer?: Renderer;
   [key: string]: any;
 };
 
