@@ -81,7 +81,7 @@ Util.augment(Marker, {
     const attrs = this._attrs;
     const cx = attrs.x;
     const cy = attrs.y;
-    const r = attrs.radius;
+    const r = attrs.radius || attrs.r;
     const lineWidth = this.getHitLineWidth();
     const halfWidth = lineWidth / 2 + r;
     return {
