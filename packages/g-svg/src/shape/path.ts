@@ -40,6 +40,15 @@ class Path extends ShapeBase {
     }
     return newValue;
   }
+
+  /*
+   尽管通过浏览器的 SVGPathElement.getTotalLength() 接口获取的 path 长度，
+   与 Canvas 版本通过数学计算的方式得到的长度有一些细微差异，但最大误差在个位数像素，精度上可以能接受
+   */
+  getTotalLength() {
+    const el = this.get('el');
+    return el ? el.getTotalLength() : null;
+  }
 }
 
 export default Path;
