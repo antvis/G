@@ -225,7 +225,7 @@ describe('test path', () => {
     expect(path.getTotalLength()).eqls(1577.9692907990257);
   });
 
-  it.only('getPoint', () => {
+  it('getPoint', () => {
     path.attr('path', p1);
     expect(path.getPoint(0)).eqls({
       x: 10,
