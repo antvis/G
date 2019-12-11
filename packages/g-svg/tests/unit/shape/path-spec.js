@@ -127,7 +127,7 @@ describe('SVG path', () => {
     expect(path.getTotalLength()).eqls(1579.16943359375);
   });
 
-  it.only('getPoint', () => {
+  it('getPoint', () => {
     path.attr('path', p1);
     expect(path.getPoint(0)).eqls({
       x: 10,
