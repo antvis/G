@@ -3,6 +3,7 @@
  * @author dxq613@gmail.com
  */
 
+import * as PathUtil from './util/path';
 const pkg = require('../package.json');
 
 export const version = pkg.version;
@@ -11,3 +12,4 @@ export { default as Base } from './abstract/base';
 export { default as AbstractCanvas } from './abstract/canvas';
 export { default as AbstractGroup } from './abstract/group';
 export { default as AbstractShape } from './abstract/shape';
+export { PathUtil };
