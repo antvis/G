@@ -2,6 +2,7 @@
  * @fileoverview path 的一些工具
  * @author dxq613@gmail.com
  */
+import { PathUtil } from '@antv/g-base';
 import getArcParams from './arc-params';
 import QuadUtil from '@antv/g-math/lib/quadratic';
 import CubicUtil from '@antv/g-math/lib/cubic';
@@ -325,4 +326,5 @@ export default {
   getSegments,
   getPathBox,
   isPointInStroke,
+  ...PathUtil,
 };

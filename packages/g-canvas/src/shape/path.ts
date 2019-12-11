@@ -2,12 +2,14 @@
  * @fileoverview path
  * @author dxq613@gmail.com
  */
+import CubicUtil from '@antv/g-math/lib/cubic';
+import { each, isNil } from '@antv/util';
 import ShapeBase from './base';
 import path2Absolute from '@antv/path-util/lib/path-2-absolute';
 import { drawPath } from '../util/draw';
 import isPointInPath from '../util/in-path/point-in-path';
 import isInPolygon from '../util/in-path/polygon';
-import pathUtil from '../util/path';
+import PathUtil from '../util/path';
 
 // 是否在多个多边形内部
 function isInPolygons(polygons, x, y) {
@@ -31,24 +33,27 @@ class Path extends ShapeBase {
   _setPathArr(path) {
     // 转换 path 的格式
     this.attrs.path = path2Absolute(path);
-    const hasArc = pathUtil.hasArc(path);
+    const hasArc = PathUtil.hasArc(path);
     // 为了加速 path 的绘制、拾取和计算，这个地方可以缓存很多东西
     // 这些缓存都是第一次需要时计算和存储，虽然增加了复杂度，但是频繁调用的方法，性能有很大提升
     this.set('hasArc', hasArc);
     this.set('paramsCache', {}); // 清理缓存
     this.set('segments', null); // 延迟生成 path，在动画场景下可能不会有拾取
+    this.set('curve', null);
+    this.set('tCache', null);
+    this.set('totalLength', null);
   }
 
   getInnerBox(attrs) {
     const segments = this.getSegments();
     const lineWidth = this.getHitLineWidth();
-    return pathUtil.getPathBox(segments, lineWidth);
+    return PathUtil.getPathBox(segments, lineWidth);
   }
 
   getSegments() {
     let segments = this.get('segements');
     if (!segments) {
-      segments = pathUtil.getSegments(this.attr('path'));
+      segments = PathUtil.getSegments(this.attr('path'));
       this.set('segments', segments);
     }
     return segments;
@@ -59,7 +64,7 @@ class Path extends ShapeBase {
     const hasArc = this.get('hasArc');
     let isHit = false;
     if (isStroke) {
-      isHit = pathUtil.isPointInStroke(segments, lineWidth, x, y);
+      isHit = PathUtil.isPointInStroke(segments, lineWidth, x, y);
     }
     if (!isHit && isFill) {
       if (hasArc) {
@@ -67,7 +72,7 @@ class Path extends ShapeBase {
         isHit = isPointInPath(this, x, y);
       } else {
         const path = this.attr('path');
-        const extractResutl = pathUtil.extractPolygons(path);
+        const extractResutl = PathUtil.extractPolygons(path);
         // 提取出来的多边形包含闭合的和非闭合的，在这里统一按照多边形处理
         isHit = isInPolygons(extractResutl.polygons, x, y) || isInPolygons(extractResutl.polylines, x, y);
       }
@@ -87,6 +92,84 @@ class Path extends ShapeBase {
     const path = this.attr('path');
     const paramsCache = this.get('paramsCache'); // 由于计算圆弧的参数成本很大，所以要缓存
     drawPath(context, path, paramsCache);
+  }
+
+  getTotalLength() {
+    const totalLength = this.get('totalLength');
+    if (!isNil(totalLength)) {
+      return totalLength;
+    }
+    this._calculateCurve();
+    this._setTcache();
+    return this.get('totalLength');
+  }
+
+  _calculateCurve() {
+    const { path } = this.attr();
+    this.set('curve', PathUtil.pathToCurve(path));
+  }
+
+  _setTcache() {
+    let totalLength = 0;
+    let tempLength = 0;
+    // 每段 curve 对应起止点的长度比例列表，形如: [[0, 0.25], [0.25, 0.6]. [0.6, 0.9], [0.9, 1]]
+    const tCache = [];
+    let segmentT;
+    let segmentL;
+    let segmentN;
+    let l;
+    const curve = this.get('curve');
+
+    if (!curve) {
+      return;
+    }
+
+    each(curve, (segment, i) => {
+      segmentN = curve[i + 1];
+      l = segment.length;
+      if (segmentN) {
+        totalLength +=
+          CubicUtil.length(
+            segment[l - 2],
+            segment[l - 1],
+            segmentN[1],
+            segmentN[2],
+            segmentN[3],
+            segmentN[4],
+            segmentN[5],
+            segmentN[6]
+          ) || 0;
+      }
+    });
+    this.set('totalLength', totalLength);
+
+    if (totalLength === 0) {
+      this.set('tCache', []);
+      return;
+    }
+
+    each(curve, (segment, i) => {
+      segmentN = curve[i + 1];
+      l = segment.length;
+      if (segmentN) {
+        segmentT = [];
+        segmentT[0] = tempLength / totalLength;
+        segmentL = CubicUtil.length(
+          segment[l - 2],
+          segment[l - 1],
+          segmentN[1],
+          segmentN[2],
+          segmentN[3],
+          segmentN[4],
+          segmentN[5],
+          segmentN[6]
+        );
+        tempLength += segmentL;
+        segmentT[1] = tempLength / totalLength;
+        tCache.push(segmentT);
+      }
+    });
+    this.set('tCache', tCache);
   }
 }
 
