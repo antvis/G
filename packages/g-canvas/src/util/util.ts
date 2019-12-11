@@ -57,6 +57,15 @@ export function mergeRegion(region1, region2) {
   };
 }
 
+/**
+ * 判断两个点是否重合，点坐标的格式为 [x, y]
+ * @param {Array} point1 第一个点
+ * @param {Array} point2 第二个点
+ */
+export function isSamePoint(point1, point2) {
+  return point1[0] === point2[0] && point1[1] === point2[1];
+}
+
 export { default as isNil } from '@antv/util/lib/is-nil';
 export { default as isString } from '@antv/util/lib/is-string';
 export { default as isFunction } from '@antv/util/lib/is-function';
