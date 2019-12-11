@@ -24,3 +24,14 @@ order: 12
 ### getTotalLength(): number
 
 - 获取路径长度；
+
+### getPoint(ratio: number): Point
+
+- 根据长度比例获取点，其中 `Point` 的格式为:
+
+```ts
+export type Point = {
+  x: number;
+  y: number;
+};
+```
