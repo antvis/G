@@ -205,6 +205,10 @@ redirect_from:
 
 - 触发事件；
 
+### emitDelegation(eventType, ev)
+
+- 触发委托事件；
+
 ### off()
 
 - 取消监听全部事件；

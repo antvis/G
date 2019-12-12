@@ -187,7 +187,7 @@ describe('test graphic events', () => {
     expect(controller.canvas).eql(canvas);
   });
 
-  it('mousedown', (done) => {
+  it('mousedown', () => {
     const { clientX, clientY } = getClientPoint(10, 10);
     let called = false;
     let triggerShape;
@@ -195,23 +195,19 @@ describe('test graphic events', () => {
       called = true;
       triggerShape = ev.shape;
     });
-    // 第一次调用 simulate 不能直接模拟，否则 eletron 会挂掉
-    setTimeout(function() {
-      simulateMouseEvent(element, 'mousedown', {
-        clientX,
-        clientY,
-      });
-      expect(called).eql(true);
-      expect(triggerShape).eql(shape1);
-      shape1.off('mousedown');
-      called = false;
-      simulateMouseEvent(element, 'mousedown', {
-        clientX,
-        clientY,
-      });
-      expect(called).eql(false);
-      done();
-    }, 20);
+    simulateMouseEvent(element, 'mousedown', {
+      clientX,
+      clientY,
+    });
+    expect(called).eql(true);
+    expect(triggerShape).eql(shape1);
+    shape1.off('mousedown');
+    called = false;
+    simulateMouseEvent(element, 'mousedown', {
+      clientX,
+      clientY,
+    });
+    expect(called).eql(false);
   });
 
   it('mouseup', () => {
