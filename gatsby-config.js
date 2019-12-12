@@ -117,5 +117,9 @@ module.exports = {
         },
       },
     ],
+    docsearchOptions: {
+      apiKey: 'c0fb0f71e3b70638cf4756bf128a42e6',
+      indexName: 'antv_g',
+    },
   },
 };
