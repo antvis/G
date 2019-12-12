@@ -2,7 +2,7 @@
  * @fileoverview path
  * @author dengfuping_develop@163.com
  */
-
+import { Point } from '@antv/g-base/lib/types';
 import { each, isArray, isBoolean } from '@antv/util';
 import { SVG_ATTR_MAP } from '../constant';
 import ShapeBase from './base';
@@ -39,6 +39,34 @@ class Path extends ShapeBase {
       return '';
     }
     return newValue;
+  }
+
+  /**
+   * Get total length of path
+   * 尽管通过浏览器的 SVGPathElement.getTotalLength() 接口获取的 path 长度，
+   * 与 Canvas 版本通过数学计算的方式得到的长度有一些细微差异，但最大误差在个位数像素，精度上可以能接受
+   * @return {number} length
+   */
+  getTotalLength() {
+    const el = this.get('el');
+    return el ? el.getTotalLength() : null;
+  }
+
+  /**
+   * Get point according to ratio
+   * @param {number} ratio
+   * @return {Point} point
+   */
+  getPoint(ratio: number): Point {
+    const el = this.get('el');
+    const totalLength = this.getTotalLength();
+    const point = el ? el.getPointAtLength(ratio * totalLength) : null;
+    return point
+      ? {
+          x: point.x,
+          y: point.y,
+        }
+      : null;
   }
 }
 

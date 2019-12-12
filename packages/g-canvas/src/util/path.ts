@@ -2,11 +2,12 @@
  * @fileoverview path 的一些工具
  * @author dxq613@gmail.com
  */
+import { PathUtil } from '@antv/g-base';
 import getArcParams from './arc-params';
 import QuadUtil from '@antv/g-math/lib/quadratic';
 import CubicUtil from '@antv/g-math/lib/cubic';
 import EllipseArcUtil from '@antv/g-math/lib/arc';
-import { inBox } from './util';
+import { inBox, isSamePoint } from './util';
 import inLine from './in-stroke/line';
 import inArc from './in-stroke/arc';
 
@@ -172,11 +173,6 @@ function getPathBox(segments, lineWidth) {
   };
 }
 
-// 判断两个点是否重合
-function isSamePoint(point1, point2) {
-  return point1[0] === point2[0] && point1[1] === point2[1];
-}
-
 // 获取 L segment 的外尖角与内夹角的距离 + 二分之一线宽
 function getExtraFromSegmentWithAngle(segment, lineWidth) {
   const { prePoint, currentPoint, nextPoint } = segment;
@@ -330,4 +326,5 @@ export default {
   getSegments,
   getPathBox,
   isPointInStroke,
+  ...PathUtil,
 };

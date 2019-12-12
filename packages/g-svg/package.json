@@ -55,6 +55,7 @@
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
     "@antv/g-base": "^0.1.1",
+    "@antv/g-math": "^0.1.0-beta.4",
     "@antv/util": "~2.0.0",
     "detect-browser": "^4.6.0"
   },

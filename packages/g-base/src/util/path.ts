@@ -148,7 +148,10 @@ const ellipsePath = function(x, y, rx, ry, a?) {
     const x2 = x + rx * Math.cos(-a * rad);
     const y1 = y + rx * Math.sin(-ry * rad);
     const y2 = y + rx * Math.sin(-a * rad);
-    res = [['M', x1, y1], ['A', rx, rx, 0, +(a - ry > 180), 0, x2, y2]];
+    res = [
+      ['M', x1, y1],
+      ['A', rx, rx, 0, +(a - ry > 180), 0, x2, y2],
+    ];
   } else {
     res = [['M', x, y], ['m', 0, -ry], ['a', rx, ry, 0, 1, 1, 0, 2 * ry], ['a', rx, ry, 0, 1, 1, 0, -2 * ry], ['z']];
   }
@@ -400,7 +403,7 @@ const a2c = function(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, 
   return newres;
 };
 
-const pathTocurve = function(path, path2?) {
+const pathToCurve = function(path, path2?) {
   const p = pathToAbsolute(path);
   const p2 = path2 && pathToAbsolute(path2);
   const attrs = {
@@ -909,8 +912,8 @@ const interHelper = function(bez1, bez2, justCount) {
 };
 
 const interPathHelper = function(path1, path2, justCount?) {
-  path1 = pathTocurve(path1);
-  path2 = pathTocurve(path2);
+  path1 = pathToCurve(path1);
+  path2 = pathToCurve(path2);
   let x1;
   let y1;
   let x2;
@@ -1380,6 +1383,6 @@ export {
   parsePathArray,
   parsePathString,
   pathToAbsolute,
-  pathTocurve,
+  pathToCurve,
   rectPath,
 };

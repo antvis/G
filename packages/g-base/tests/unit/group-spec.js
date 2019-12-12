@@ -223,12 +223,15 @@ describe('test with matrix', () => {
 describe('test group member function', () => {
   const group = new Group({
     children: [
-      new MyShape({ id: '01', text: '01' }),
-      new MyShape({ id: '02', text: '02' }),
+      new MyShape({ id: '01', name: 'shape', text: '01' }),
+      new MyShape({ id: '02', name: 'shape', text: '02' }),
       new Group({
-        children: [new MyShape({ id: '04', text: '04' }), new MyShape({ id: 'test', text: '02' })],
+        children: [
+          new MyShape({ id: '04', name: 'shape', text: '04' }),
+          new MyShape({ id: 'test', name: 'shape', text: '02' }),
+        ],
       }),
-      new MyShape({ id: '03', text: '03' }),
+      new MyShape({ id: '03', name: 'shape', text: '03' }),
     ],
   });
 
@@ -258,12 +261,6 @@ describe('test group member function', () => {
     ).eqls(0);
   });
 
-  it('findById', () => {
-    expect(group.findById('01')).not.eqls(null);
-    expect(group.findById('05')).eqls(null);
-    expect(group.findById('04')).not.eqls(null);
-  });
-
   it('find', () => {
     expect(
       group
@@ -277,5 +274,15 @@ describe('test group member function', () => {
         return item.get('text') === '05';
       })
     ).eqls(null);
+  });
+
+  it('findById', () => {
+    expect(group.findById('01')).not.eqls(null);
+    expect(group.findById('05')).eqls(null);
+    expect(group.findById('04')).not.eqls(null);
+  });
+
+  it('findAllByName', () => {
+    expect(group.findAllByName('shape').length).eqls(5);
   });
 });
