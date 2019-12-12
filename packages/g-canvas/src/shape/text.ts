@@ -218,6 +218,36 @@ class Text extends ShapeBase {
     }
   }
 
+  // 复写绘制和填充的逻辑：对于文本，应该先绘制边框，再进行填充
+  strokeAndFill(context) {
+    const attrs = this.attrs;
+    const originOpacity = context.globalAlpha;
+
+    if (this.isStroke()) {
+      const lineWidth = attrs['lineWidth'];
+      if (lineWidth > 0) {
+        const strokeOpacity = attrs['strokeOpacity'];
+        if (!isNil(strokeOpacity) && strokeOpacity !== 1) {
+          context.globalAlpha = strokeOpacity;
+        }
+        this.stroke(context);
+      }
+    }
+
+    if (this.isFill()) {
+      const fillOpacity = attrs['fillOpacity'];
+      if (!isNil(fillOpacity) && fillOpacity !== 1) {
+        context.globalAlpha = fillOpacity;
+        this.fill(context);
+        context.globalAlpha = originOpacity;
+      } else {
+        this.fill(context);
+      }
+    }
+
+    this.afterDrawPath(context);
+  }
+
   // 复写填充逻辑
   fill(context) {
     this._drawText(context, true);

@@ -47,6 +47,25 @@ describe('SVG Line', () => {
     expect(line.isHit(100, 0)).eql(false);
   });
 
+  it('getTotalLength', () => {
+    expect(line.getTotalLength()).eqls(Math.sqrt(Math.pow(100 - 0, 2) + Math.pow(100 - 0, 2)));
+  });
+
+  it('getPoint', () => {
+    expect(line.getPoint(0)).eqls({
+      x: 0,
+      y: 0,
+    });
+    expect(line.getPoint(0.5)).eqls({
+      x: 50,
+      y: 50,
+    });
+    expect(line.getPoint(1)).eqls({
+      x: 100,
+      y: 100,
+    });
+  });
+
   it('change', () => {
     expect(line.attr('x1')).eql(0);
     expect(line.attr('y1')).eql(0);

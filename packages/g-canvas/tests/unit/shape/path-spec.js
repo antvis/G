@@ -8,25 +8,61 @@ document.body.appendChild(canvas);
 const ctx = canvas.getContext('2d');
 
 describe('test path', () => {
-  const p1 = [['M', 10, 10], ['L', 20, 20]];
-  const p11 = [['M', 10, 10], ['L', 20, 10], ['L', 20, 20]];
-  const p2 = [['M', 10, 10], ['Q', 20, 20, 30, 10]];
+  const p1 = [
+    ['M', 10, 10],
+    ['L', 20, 20],
+  ];
+  const p11 = [
+    ['M', 10, 10],
+    ['L', 20, 10],
+    ['L', 20, 20],
+  ];
+  const p2 = [
+    ['M', 10, 10],
+    ['Q', 20, 20, 30, 10],
+  ];
 
-  const p3 = [['M', 10, 10], ['L', 20, 20], ['C', 30, 10, 40, 30, 50, 20]];
+  const p3 = [
+    ['M', 10, 10],
+    ['L', 20, 20],
+    ['C', 30, 10, 40, 30, 50, 20],
+  ];
   const p4 = [['M', 10, 10], ['L', 20, 20], ['A', 20, 20, 0, 0, 1, 60, 20], ['Z'], ['M', 200, 200], ['L', 300, 300]];
+  const p5 =
+    'M 100,300' +
+    'l 50,-25' +
+    'a 25,25 -30 0,1 50,-25' +
+    'l 50,-25' +
+    'a 25,50 -30 0,1 50,-25' +
+    'l 50,-25' +
+    'a 25,75 -30 0,1 50,-25' +
+    'l 50,-25' +
+    'a 25,100 -30 0,1 50,-25' +
+    'l 50,-25' +
+    'l 0, 200,' +
+    'z';
   const path = new Path({
     attrs: {
-      path: [['M', 10, 10], ['l', 2, 2]],
+      path: [
+        ['M', 10, 10],
+        ['l', 2, 2],
+      ],
       stroke: 'red',
     },
   });
   it('init', () => {
     expect(path.attr('stroke')).eqls('red');
     expect(path.attr('lineWidth')).eqls(1);
-    expect(path.attr('path')).eqls([['M', 10, 10], ['L', 12, 12]]);
+    expect(path.attr('path')).eqls([
+      ['M', 10, 10],
+      ['L', 12, 12],
+    ]);
     expect(path.get('hasArc')).eqls(false);
 
-    path.attr('path', [['M', 2, 2], ['Q', 3, 4, 4, 2, 5, 6]]);
+    path.attr('path', [
+      ['M', 2, 2],
+      ['Q', 3, 4, 4, 2, 5, 6],
+    ]);
     expect(path.get('hasArc')).eqls(true);
   });
 
@@ -173,6 +209,87 @@ describe('test path', () => {
       y: 0,
       width: 290,
       height: 300,
+    });
+  });
+
+  it('getTotalLength', () => {
+    path.attr('path', p1);
+    expect(path.getTotalLength()).eqls(14.142135623730951);
+    path.attr('path', p2);
+    expect(path.getTotalLength()).eqls(22.955857143237814);
+    path.attr('path', p3);
+    expect(path.getTotalLength()).eqls(46.891433122566326);
+    path.attr('path', p4);
+    expect(path.getTotalLength()).eqls(258.5855635430996);
+    path.attr('path', p5);
+    expect(path.getTotalLength()).eqls(1577.9692907990257);
+  });
+
+  it('getPoint', () => {
+    path.attr('path', p1);
+    expect(path.getPoint(0)).eqls({
+      x: 10,
+      y: 10,
+    });
+    expect(path.getPoint(0.5)).eqls({
+      x: 15,
+      y: 15,
+    });
+    expect(path.getPoint(1)).eqls({
+      x: 20,
+      y: 20,
+    });
+    path.attr('path', p2);
+    expect(path.getPoint(0)).eqls({
+      x: 10,
+      y: 10,
+    });
+    expect(path.getPoint(0.5)).eqls({
+      x: 20,
+      y: 14.999999999999998,
+    });
+    expect(path.getPoint(1)).eqls({
+      x: 30,
+      y: 10,
+    });
+    path.attr('path', p3);
+    expect(path.getPoint(0)).eqls({
+      x: 10,
+      y: 10,
+    });
+    expect(path.getPoint(0.5)).eqls({
+      x: 28.522547029794815,
+      y: 17.365222549782033,
+    });
+    expect(path.getPoint(1)).eqls({
+      x: 50,
+      y: 20,
+    });
+    path.attr('path', p4);
+    expect(path.getPoint(0)).eqls({
+      x: 10,
+      y: 10,
+    });
+    expect(path.getPoint(0.5)).eqls({
+      x: 202.08037692855933,
+      y: 202.08037692855933,
+    });
+    expect(path.getPoint(1)).eqls({
+      x: 300,
+      y: 300,
+    });
+    path.attr('path', p5);
+    expect(path.getPoint(0)).eqls({
+      x: 100,
+      y: 300,
+    });
+    expect(path.getPoint(0.5)).eqls({
+      x: 448.76286067241284,
+      y: 30.42057291686797,
+    });
+    expect(path.getPoint(1)).eqls({
+      x: 100,
+      y: 300,
     });
   });
 });

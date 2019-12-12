@@ -48,6 +48,25 @@ describe('line test', () => {
     expect(line.isHit(10, 11)).eqls(true);
   });
 
+  it('getTotalLength', () => {
+    expect(line.getTotalLength()).eqls(Math.sqrt(Math.pow(100 - 0, 2) + Math.pow(100 - 0, 2)));
+  });
+
+  it('getPoint', () => {
+    expect(line.getPoint(0)).eqls({
+      x: 0,
+      y: 0,
+    });
+    expect(line.getPoint(0.5)).eqls({
+      x: 50,
+      y: 50,
+    });
+    expect(line.getPoint(1)).eqls({
+      x: 100,
+      y: 100,
+    });
+  });
+
   it('clear', () => {
     line.destroy();
     expect(line.destroyed).eqls(true);

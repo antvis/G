@@ -391,6 +391,13 @@ export interface IGroup extends IElement, IContainer {
   findAll(fn: ElementFilterFn): IElement[];
 
   /**
+   * 查找元素，找到第一个返回
+   * @param  {ElementFilterFn} fn    匹配函数
+   * @return {IElement|null} 元素，可以为空
+   */
+  find(fn: ElementFilterFn): IElement;
+
+  /**
    * 根据 ID 查找元素
    * @param {string} id 元素 id
    * @return {IElement | null} 元素
@@ -398,11 +405,11 @@ export interface IGroup extends IElement, IContainer {
   findById(id: string): IElement;
 
   /**
-   * 查找元素，找到第一个返回
-   * @param  {ElementFilterFn} fn    匹配函数
-   * @return {IElement|null} 元素，可以为空
+   * 根据 name 查找元素列表
+   * @param {string}      name 元素名称
+   * @return {IElement[]} 元素
    */
-  find(fn: ElementFilterFn): IElement;
+  findAllByName(name: string): IElement[];
 }
 
 export interface IShape extends IElement {
