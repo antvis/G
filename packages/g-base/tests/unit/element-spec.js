@@ -1,5 +1,12 @@
 const expect = require('chai').expect;
+import Canvas from '../../src/abstract/canvas';
+import Group from '../../src/abstract/group';
 import Element from '../../src/abstract/element';
+import GraphEvent from '../../src/event/graph-event';
+
+const dom = document.createElement('div');
+document.body.appendChild(dom);
+dom.id = 'c1';
 
 class MyElement extends Element {
   getBBox() {
@@ -27,13 +34,25 @@ class MyCircle extends Element {
 
 MyElement.Circle = MyCircle;
 
-const canvas = {
+class MyCanvas extends Canvas {
+  createDom() {
+    const el = document.createElement('canvas');
+    return el;
+  }
   getShapeBase() {
     return MyElement;
-  },
-};
+  }
+  getGroupBase() {
+    return Group;
+  }
+}
 
 describe('test element', () => {
+  const canvas = new MyCanvas({
+    container: dom,
+    width: 400,
+    height: 400,
+  });
   const group = {
     get(name) {
       return this[name];
@@ -162,5 +181,51 @@ describe('test element', () => {
     element.destroy();
     expect(element.destroyed).eqls(true);
     expect(element.attrs).eqls({});
+  });
+
+  it('element.emitDelegation should work', () => {
+    const canvas = new MyCanvas({
+      container: dom,
+      width: 400,
+      height: 400,
+    });
+    const group = new Group({
+      getShapeBase() {
+        return MyElement;
+      },
+      getGroupBase() {
+        return Group;
+      },
+    });
+    const element = new MyElement({
+      name: 'element',
+      attrs: {
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
+      },
+    });
+    group.add(element);
+    canvas.add(group);
+    let groupClick = false;
+    let elementClick = false;
+    canvas.on('group:click', () => {
+      groupClick = true;
+    });
+    canvas.on('element:click', () => {
+      elementClick = true;
+    });
+    // 新建事件对象
+    const eventObj = new GraphEvent('click', {});
+    // 设置委托路径
+    eventObj.propagationPath = [element, group];
+    // 触发委托事件
+    canvas.emitDelegation('click', eventObj);
+    // 异步断言
+    setTimeout(() => {
+      expect(groupClick).eqls(true);
+      expect(elementClick).eqls(true);
+    }, 20);
   });
 });
