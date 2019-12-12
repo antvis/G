@@ -24,3 +24,14 @@ order: 12
 ### getTotalLength(): number
 
 - Get total length of path；
+
+### getPoint(ratio: number): Point
+
+- Get point according to ratio and the type of Point is shown below:
+
+```ts
+export type Point = {
+  x: number;
+  y: number;
+};
+```
