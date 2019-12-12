@@ -19,6 +19,16 @@ order: 1
 
 - 画布容器，可以是容器 `id` 或者 DOM 元素；
 
+### renderer: Renderer (只读属性)
+
+> ⚠️ 注意，该属性为只读属性，不能动态修改。
+
+- 当前使用的渲染引擎，其中 `Renderer` 的类型为:
+
+```ts
+export type Renderer = 'canvas' | 'svg';
+```
+
 ### pixelRatio: number
 
 - 画布大小和所占 DOM 宽高的比例，一般可以使用 `window.devicePixelRatio`，通常情况下无需手动设置该属性；
@@ -30,6 +40,14 @@ order: 1
 ### isCanvas()
 
 - 是否为画布；
+
+## getRenderer(): Renderer
+
+- 获取渲染引擎，其中 `Renderer` 的类型为:
+
+```ts
+export type Renderer = 'canvas' | 'svg';
+```
 
 ### getShapeBase()
 

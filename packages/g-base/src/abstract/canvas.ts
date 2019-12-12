@@ -1,6 +1,6 @@
 import Container from './container';
 import { ICanvas } from '../interfaces';
-import { CanvasCfg, Point } from '../types';
+import { CanvasCfg, Point, Renderer } from '../types';
 import { isBrowser, isString, isObject } from '../util/util';
 import Timeline from '../animate/timeline';
 
@@ -82,6 +82,14 @@ abstract class Canvas extends Container implements ICanvas {
     this.set('width', width);
     this.set('height', height);
     this.onCanvasChange('changeSize');
+  }
+
+  /**
+   * 获取当前的渲染引擎
+   * @return {Renderer} 返回当前的渲染引擎
+   */
+  getRenderer(): Renderer {
+    return this.get('renderer');
   }
 
   // 实现接口
