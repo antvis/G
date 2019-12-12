@@ -14,3 +14,22 @@ order: 10
 ### points
 
 - 形如 `[ [ x1, y1 ], [ x2, y2 ], ... ]` 的点集合；
+
+## 方法
+
+### 通用的 [图形方法](/zh/docs/api/shape#方法)
+
+### getTotalLength(): number
+
+- 获取路径长度；
+
+### getPoint(ratio: number): Point
+
+- 根据长度比例获取点，其中 `Point` 的格式为:
+
+```ts
+export type Point = {
+  x: number;
+  y: number;
+};
+```

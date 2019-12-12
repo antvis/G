@@ -13,38 +13,6 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_uKETI3wWTQAAAAAAAAAAABkARQnAQ"
     },
     {
-      "filename": "along-line.js",
-      "title": {
-        "zh": "直线轨迹动画",
-        "en": "Animation along line"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FINdTb9T1SQAAAAAAAAAAABkARQnAQ"
-    },
-    {
-      "filename": "along-circle.js",
-      "title": {
-        "zh": "圆轨迹动画",
-        "en": "Animation along circle"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*iNImR4naeOkAAAAAAAAAAABkARQnAQ"
-    },
-    {
-      "filename": "along-rect.js",
-      "title": {
-        "zh": "矩形轨迹动画",
-        "en": "Animation along circle"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Y9deQI1bTa0AAAAAAAAAAABkARQnAQ"
-    },
-    {
-      "filename": "along-path.js",
-      "title": {
-        "zh": "自定义轨迹动画 (路径动画)",
-        "en": "Animation along path"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*k17iQYsgKyMAAAAAAAAAAABkARQnAQ"
-    },
-    {
       "filename": "concurrent.js",
       "title": {
         "zh": "并行动画",

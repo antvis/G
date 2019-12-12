@@ -33,11 +33,7 @@ const circle = canvas.addShape('circle', {
   },
 });
 
-circle.animate(onFrame, {
+circle.animate((ratio) => path.getPoint(ratio), {
   duration: 5000,
   repeat: true,
 });
-
-function onFrame(ratio) {
-  return path.getPoint(ratio);
-}
