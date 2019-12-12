@@ -114,7 +114,7 @@ class Path extends ShapeBase {
    * @param {number} ratio
    * @return {Point} point
    */
-  getPoint(ratio: number) {
+  getPoint(ratio: number): Point {
     let tCache = this.get('tCache');
     if (!tCache) {
       this._calculateCurve();
