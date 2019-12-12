@@ -32,6 +32,7 @@ describe('canvas test', () => {
     expect(canvas.get('el').width).eql(1000);
     expect(canvas.get('capture')).eql(true);
     expect(canvas.getChildren().length).eql(0);
+    expect(canvas.getRenderer()).eql('canvas');
   });
 
   it('add group', () => {

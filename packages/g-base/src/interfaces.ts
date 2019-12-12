@@ -2,6 +2,7 @@ import {
   ShapeCfg,
   GroupCfg,
   ClipCfg,
+  Renderer,
   Point,
   ChangeType,
   AnimateCfg,
@@ -433,16 +434,24 @@ export interface IShape extends IElement {
  */
 export interface ICanvas extends IContainer {
   /**
+   * 获取当前的渲染引擎
+   * @return {Renderer} 返回当前的渲染引擎
+   */
+  getRenderer(): Renderer;
+
+  /**
    * 为了兼容持续向上查找 parent
    * @return {IContainer} 返回元素的父容器，在 canvas 中始终是 null
    */
   getParent(): IContainer;
+
   /**
    * 改变画布大小
    * @param {number} width  宽度
    * @param {number} height 高度
    */
   changeSize(width: number, height: number);
+
   /**
    * 将窗口坐标转变成 canvas 坐标
    * @param  {number} clientX 窗口 x 坐标

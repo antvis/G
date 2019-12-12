@@ -14,6 +14,8 @@ class Canvas extends AbstractCanvas {
     super({
       ...cfg,
       autoDraw: true,
+      // 设置渲染引擎为 canvas，只读属性
+      renderer: 'svg',
     });
   }
 

@@ -62,9 +62,6 @@ build
 # lock
 package-lock.json
 
-# test
-packages/torch/renderer/index.html
-
 # yarn-lock
 yarn.lock
 
@@ -72,13 +69,10 @@ yarn.lock
 temp.diff
 .DS_Store
 
-# exception
-!packages/torch/lib
-!packages/istanbul/lib
-!packages/demos/src/dist
 
 # ignore dist files
-g2.min.js*
+
 .vscode/
 
+# ignore static files of site
 public/
