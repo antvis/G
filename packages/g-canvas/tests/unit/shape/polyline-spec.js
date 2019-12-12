@@ -8,10 +8,24 @@ document.body.appendChild(canvas);
 const ctx = canvas.getContext('2d');
 
 describe('polygon test', () => {
+  const points1 = [
+    [10, 10],
+    [100, 10],
+    [100, 100],
+    [10, 100],
+  ];
+  const points2 = [
+    [50, 50],
+    [100, 50],
+    [100, 100],
+    [150, 100],
+    [150, 150],
+    [200, 150],
+  ];
   const polyline = new Polyline({
     type: 'polyline',
     attrs: {
-      points: [[10, 10], [100, 10], [100, 100], [10, 100]],
+      points: points1,
       fill: 'red',
     },
   });
@@ -73,5 +87,41 @@ describe('polygon test', () => {
     });
 
     expect(polyline.isHit(12, 12)).eqls(false);
+  });
+
+  it('getTotalLength', () => {
+    polyline.attr('points', points1);
+    expect(polyline.getTotalLength()).eqls(270);
+    polyline.attr('points', points2);
+    expect(polyline.getTotalLength()).eqls(250);
+  });
+
+  it('getPoint', () => {
+    polyline.attr('points', points1);
+    expect(polyline.getPoint(0)).eqls({
+      x: 10,
+      y: 10,
+    });
+    expect(polyline.getPoint(0.6)).eqls({
+      x: 100,
+      y: 82,
+    });
+    expect(polyline.getPoint(1)).eqls({
+      x: 10,
+      y: 100,
+    });
+    polyline.attr('points', points2);
+    expect(polyline.getPoint(0)).eqls({
+      x: 50,
+      y: 50,
+    });
+    expect(polyline.getPoint(0.5)).eqls({
+      x: 125,
+      y: 100,
+    });
+    expect(polyline.getPoint(1)).eqls({
+      x: 200,
+      y: 150,
+    });
   });
 });
