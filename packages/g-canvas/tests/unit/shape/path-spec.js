@@ -28,6 +28,19 @@ describe('test path', () => {
     ['C', 30, 10, 40, 30, 50, 20],
   ];
   const p4 = [['M', 10, 10], ['L', 20, 20], ['A', 20, 20, 0, 0, 1, 60, 20], ['Z'], ['M', 200, 200], ['L', 300, 300]];
+  const p5 =
+    'M 100,300' +
+    'l 50,-25' +
+    'a 25,25 -30 0,1 50,-25' +
+    'l 50,-25' +
+    'a 25,50 -30 0,1 50,-25' +
+    'l 50,-25' +
+    'a 25,75 -30 0,1 50,-25' +
+    'l 50,-25' +
+    'a 25,100 -30 0,1 50,-25' +
+    'l 50,-25' +
+    'l 0, 200,' +
+    'z';
   const path = new Path({
     attrs: {
       path: [
@@ -208,21 +221,75 @@ describe('test path', () => {
     expect(path.getTotalLength()).eqls(46.891433122566326);
     path.attr('path', p4);
     expect(path.getTotalLength()).eqls(258.5855635430996);
-    path.attr(
-      'path',
-      'M 100,300' +
-        'l 50,-25' +
-        'a 25,25 -30 0,1 50,-25' +
-        'l 50,-25' +
-        'a 25,50 -30 0,1 50,-25' +
-        'l 50,-25' +
-        'a 25,75 -30 0,1 50,-25' +
-        'l 50,-25' +
-        'a 25,100 -30 0,1 50,-25' +
-        'l 50,-25' +
-        'l 0, 200,' +
-        'z'
-    );
+    path.attr('path', p5);
     expect(path.getTotalLength()).eqls(1577.9692907990257);
+  });
+
+  it.only('getPoint', () => {
+    path.attr('path', p1);
+    expect(path.getPoint(0)).eqls({
+      x: 10,
+      y: 10,
+    });
+    expect(path.getPoint(0.5)).eqls({
+      x: 15,
+      y: 15,
+    });
+    expect(path.getPoint(1)).eqls({
+      x: 20,
+      y: 20,
+    });
+    path.attr('path', p2);
+    expect(path.getPoint(0)).eqls({
+      x: 10,
+      y: 10,
+    });
+    expect(path.getPoint(0.5)).eqls({
+      x: 20,
+      y: 14.999999999999998,
+    });
+    expect(path.getPoint(1)).eqls({
+      x: 30,
+      y: 10,
+    });
+    path.attr('path', p3);
+    expect(path.getPoint(0)).eqls({
+      x: 10,
+      y: 10,
+    });
+    expect(path.getPoint(0.5)).eqls({
+      x: 28.522547029794815,
+      y: 17.365222549782033,
+    });
+    expect(path.getPoint(1)).eqls({
+      x: 50,
+      y: 20,
+    });
+    path.attr('path', p4);
+    expect(path.getPoint(0)).eqls({
+      x: 10,
+      y: 10,
+    });
+    expect(path.getPoint(0.5)).eqls({
+      x: 202.08037692855933,
+      y: 202.08037692855933,
+    });
+    expect(path.getPoint(1)).eqls({
+      x: 300,
+      y: 300,
+    });
+    path.attr('path', p5);
+    expect(path.getPoint(0)).eqls({
+      x: 100,
+      y: 300,
+    });
+    expect(path.getPoint(0.5)).eqls({
+      x: 448.76286067241284,
+      y: 30.42057291686797,
+    });
+    expect(path.getPoint(1)).eqls({
+      x: 100,
+      y: 300,
+    });
   });
 });
