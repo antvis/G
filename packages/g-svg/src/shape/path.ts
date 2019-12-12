@@ -2,7 +2,7 @@
  * @fileoverview path
  * @author dengfuping_develop@163.com
  */
-
+import { Point } from '@antv/g-base/lib/types';
 import { each, isArray, isBoolean } from '@antv/util';
 import { SVG_ATTR_MAP } from '../constant';
 import ShapeBase from './base';
@@ -57,7 +57,7 @@ class Path extends ShapeBase {
    * @param {number} ratio
    * @return {Point} point
    */
-  getPoint(ratio: number) {
+  getPoint(ratio: number): Point {
     const el = this.get('el');
     const totalLength = this.getTotalLength();
     const point = el ? el.getPointAtLength(ratio * totalLength) : null;
