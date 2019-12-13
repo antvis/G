@@ -1,4 +1,6 @@
-const canvas = new G.Canvas({
+import { Canvas } from '@antv/g-canvas';
+
+const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
