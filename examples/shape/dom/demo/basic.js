@@ -1,5 +1,6 @@
-// G_SVG means svg version of G
-const canvas = new G_SVG.Canvas({
+import { Canvas } from '@antv/g-svg';
+
+const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
