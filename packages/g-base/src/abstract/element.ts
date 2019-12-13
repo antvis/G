@@ -1,6 +1,6 @@
 import { each, isEqual, isFunction, isNumber, isObject, isArray, noop, mix, upperFirst, uniqueId } from '@antv/util';
-import { IElement, IShape, IGroup, ICanvas } from '../interfaces';
-import { ClipCfg, ChangeType, OnFrame, ShapeAttrs, AnimateCfg, Animation, BBox } from '../types';
+import { IElement, IShape, IGroup, ICanvas, ICtor } from '../interfaces';
+import { ClipCfg, ChangeType, OnFrame, ShapeAttrs, AnimateCfg, Animation, BBox, ShapeBase } from '../types';
 import { removeFromArray } from '../util/util';
 import { multiplyMatrix, multiplyVec2, invert } from '../util/matrix';
 import Base from './base';
@@ -110,6 +110,9 @@ abstract class Element extends Base implements IElement {
       matrix: this.getDefaultMatrix(),
     };
   }
+
+  abstract getShapeBase(): ShapeBase;
+  abstract getGroupBase(): ICtor<IGroup>;
 
   /**
    * @protected
@@ -340,6 +343,7 @@ abstract class Element extends Base implements IElement {
 
   // 设置 clip
   setClip(clipCfg: ClipCfg) {
+    const canvas = this.getCanvas();
     const preShape = this.get('clipShape');
     if (preShape) {
       // 将之前的 clipShape 销毁
@@ -348,12 +352,9 @@ abstract class Element extends Base implements IElement {
     let clipShape = null;
     // 如果配置项为 null ,则不移除 clipShape
     if (clipCfg) {
-      const canvas = this.getCanvas();
-      // clip 的类型同当前 Canvas 密切相关
-      const ShapeBase = canvas.getShapeBase();
+      const ShapeBase = this.getShapeBase();
       const shapeType = upperFirst(clipCfg.type);
       const Cons = ShapeBase[shapeType];
-
       if (Cons) {
         clipShape = new Cons({
           type: clipCfg.type,
@@ -363,6 +364,7 @@ abstract class Element extends Base implements IElement {
         });
       }
     }
+
     this.set('clipShape', clipShape);
     this.onCanvasChange('clip');
     return clipShape;

@@ -102,6 +102,18 @@ export interface IElement extends IBase {
   getCanvas(): ICanvas;
 
   /**
+   * 获取 Shape 的基类
+   * @return {IShape} Shape 的基类，用作工厂方法来获取类实例
+   */
+  getShapeBase(): ShapeBase;
+
+  /**
+   * 获取 Group 的基类，用于添加默认的 Group
+   * @return {IGroup} group 类型
+   */
+  getGroupBase(): ICtor<IGroup>;
+
+  /**
    * 当引擎画布变化时，可以调用这个方法，告知 canvas 图形属性发生了改变
    * 这个方法一般不要直接调用，在实现 element 的继承类时可以复写
    * @param {ChangeType} changeType 改变的类型
@@ -278,7 +290,7 @@ export interface IElement extends IBase {
   emitDelegation(type: string, eventObj: GraphEvent): void;
 }
 
-export interface IContainer extends IBase {
+export interface IContainer extends IElement {
   /**
    * 添加图形
    * @param {ShapeCfg} cfg  图形配置项
@@ -298,17 +310,6 @@ export interface IContainer extends IBase {
    */
   isCanvas();
 
-  /**
-   * 获取 Shape 的基类
-   * @return {IShape} Shape 的基类，用作工厂方法来获取类实例
-   */
-  getShapeBase(): ShapeBase;
-
-  /**
-   * 获取 Group 的基类，用于添加默认的 Group
-   * @return {IGroup} group 类型
-   */
-  getGroupBase(): ICtor<IGroup>;
   /**
    * 添加图形分组，增加一个默认的 Group
    * @returns 添加的图形分组
@@ -359,7 +360,7 @@ export interface IContainer extends IBase {
   clear();
 }
 
-export interface IGroup extends IElement, IContainer {
+export interface IGroup extends IContainer {
   /**
    * 是否是实体分组，即对应实际的渲染元素
    * @return {boolean} 是否是实体分组

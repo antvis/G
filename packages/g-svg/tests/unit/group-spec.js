@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import Group from '../../src/group';
+import * as Shape from '../../src/shape';
 import getCanvas from '../get-canvas';
 
 describe('SVG Group', () => {
@@ -17,6 +18,14 @@ describe('SVG Group', () => {
   it('init', () => {
     expect(group.get('parent')).eql(canvas);
     expect(group.get('children').length).eql(0);
+  });
+
+  it('getShapeBase', () => {
+    expect(group.getShapeBase()).eql(Shape);
+  });
+
+  it('getGroupBase', () => {
+    expect(group.getGroupBase()).eql(Group);
   });
 
   it('add', () => {

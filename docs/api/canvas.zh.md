@@ -49,14 +49,6 @@ export type Renderer = 'canvas' | 'svg';
 export type Renderer = 'canvas' | 'svg';
 ```
 
-### getShapeBase()
-
-- 获取图形的基类；
-
-### getGroupBase()
-
-- 获取图形分组的基类；
-
 ### add(element: Element)
 
 - 添加并返回元素，其中 `element` 为构造好的元素对象；

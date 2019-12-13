@@ -1,3 +1,4 @@
+export { default as Base } from './base';
 export { default as Circle } from './circle';
 export { default as Dom } from './dom';
 export { default as Ellipse } from './ellipse';
