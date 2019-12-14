@@ -1,6 +1,6 @@
 import Container from './container';
 import { ICanvas } from '../interfaces';
-import { CanvasCfg, Point, Renderer } from '../types';
+import { CanvasCfg, Point, Renderer, Cursor } from '../types';
 import { isBrowser, isString, isObject } from '../util/util';
 import Timeline from '../animate/timeline';
 
@@ -13,6 +13,13 @@ abstract class Canvas extends Container implements ICanvas {
     this.initDom();
     this.initEvents();
     this.initTimeline();
+  }
+
+  getDefaultCfg() {
+    const cfg = super.getDefaultCfg();
+    // set default cursor style for canvas
+    cfg['cursor'] = 'default';
+    return cfg;
   }
 
   /**
@@ -90,6 +97,22 @@ abstract class Canvas extends Container implements ICanvas {
    */
   getRenderer(): Renderer {
     return this.get('renderer');
+  }
+
+  /**
+   * 获取画布的 cursor 样式
+   * @return {Cursor}
+   */
+  getCursor(): Cursor {
+    return this.get('cursor');
+  }
+
+  /**
+   * 设置画布的 cursor 样式
+   * @param {Cursor} cursor  cursor 样式
+   */
+  setCursor(cursor: Cursor) {
+    this.set('cursor', cursor);
   }
 
   // 实现接口
