@@ -231,7 +231,7 @@ class EventController {
     this.currentShape = shape;
     // 当鼠标从画布移动到 shape 或者从 preShape 移动到 shape 时，应用 shape 上的鼠标样式
     if (shape && !shape.get('destroyed')) {
-      el.style.cursor = shape.attr('cursor') || 'default';
+      el.style.cursor = shape.attr('cursor') || canvas.get('cursor');
     }
   }
   // 记录下点击的位置、图形，便于拖拽事件、click 事件的判定
@@ -252,7 +252,7 @@ class EventController {
         this._emitEvent('mouseleave', event, pointInfo, fromShape, fromShape, toShape);
         // 当鼠标从 fromShape 移动到画布上时，重置鼠标样式
         if (!toShape || toShape.get('destroyed')) {
-          el.style.cursor = 'default';
+          el.style.cursor = this.canvas.get('cursor');
         }
       }
       if (toShape) {
