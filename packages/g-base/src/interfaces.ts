@@ -11,6 +11,7 @@ import {
   ShapeBase,
   BBox,
   ElementFilterFn,
+  Cursor,
 } from './types';
 import GraphEvent from './event/graph-event';
 
@@ -445,6 +446,18 @@ export interface ICanvas extends IContainer {
    * @return {IContainer} 返回元素的父容器，在 canvas 中始终是 null
    */
   getParent(): IContainer;
+
+  /**
+   * 获取画布的 cursor 样式
+   * @return {Cursor}
+   */
+  getCursor(): Cursor;
+
+  /**
+   * 设置画布的 cursor 样式
+   * @param {Cursor} cursor  cursor 样式
+   */
+  setCursor(cursor: Cursor);
 
   /**
    * 改变画布大小
