@@ -1,15 +1,19 @@
 ---
 title: Group 图形分组
-order: 2
+order: 1
 ---
 
 ## 属性
 
-### 通用的 [元素属性](/zh/docs/api/element#通用属性)
+### [元素属性](/zh/docs/api/general/element#属性)
+
+### [容器属性](/zh/docs/api/general/container#属性)
 
 ## 方法
 
-### 通用的 [元素方法](/zh/docs/api/element#通用方法)
+### [元素方法](/zh/docs/api/general/element#方法)
+
+### [容器方法](/zh/docs/api/general/container#方法)
 
 ### isCanvas()
 

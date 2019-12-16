@@ -1,5 +1,5 @@
 import { IBase, IContainer, ICtor, IShape, IGroup, IElement, ICanvas } from '../interfaces';
-import { ShapeBase, BBox } from '../types';
+import { ShapeBase, BBox, ElementFilterFn } from '../types';
 import Timeline from '../animate/timeline';
 import Element from './element';
 import { isFunction, isObject, each, removeFromArray, upperFirst } from '../util/util';
@@ -357,6 +357,95 @@ abstract class Container extends Element implements IContainer {
     }
     this.clear();
     super.destroy();
+  }
+
+  /**
+   * 获取第一个子元素
+   * @return {IElement} 第一个元素
+   */
+  getFirst(): IElement {
+    const children = this.getChildren();
+    return children[0];
+  }
+
+  /**
+   * 获取最后一个子元素
+   * @return {IElement} 元素
+   */
+  getLast(): IElement {
+    const children = this.getChildren();
+    return children[children.length - 1];
+  }
+
+  /**
+   * 子元素的数量
+   * @return {number} 子元素数量
+   */
+  getCount(): number {
+    const children = this.getChildren();
+    return children.length;
+  }
+
+  /**
+   * 查找所有匹配的元素
+   * @param  {ElementFilterFn}   fn  匹配函数
+   * @return {IElement[]} 元素数组
+   */
+  findAll(fn: ElementFilterFn): IElement[] {
+    let rst: IElement[] = [];
+    const children = this.getChildren();
+    each(children, (element: IElement) => {
+      if (fn(element)) {
+        rst.push(element);
+      }
+      if (element.isGroup()) {
+        rst = rst.concat((element as IGroup).findAll(fn));
+      }
+    });
+    return rst;
+  }
+
+  /**
+   * 查找元素，找到第一个返回
+   * @param  {ElementFilterFn} fn    匹配函数
+   * @return {IElement|null} 元素，可以为空
+   */
+  find(fn: ElementFilterFn): IElement {
+    let rst: IElement = null;
+    const children = this.getChildren();
+    each(children, (element: IElement) => {
+      if (fn(element)) {
+        rst = element;
+      } else if (element.isGroup()) {
+        rst = (element as IGroup).find(fn);
+      }
+      if (rst) {
+        return false;
+      }
+    });
+    return rst;
+  }
+
+  /**
+   * 根据 ID 查找元素
+   * @param {string} id 元素 id
+   * @return {IElement|null} 元素
+   */
+  findById(id: string): IElement {
+    return this.find((element) => {
+      return element.get('id') === id;
+    });
+  }
+
+  /**
+   * 根据 name 查找元素列表
+   * @param {string}      name 元素名称
+   * @return {IElement[]} 元素
+   */
+  findAllByName(name: string): IElement[] {
+    return this.findAll((element) => {
+      return element.get('name') === name;
+    });
   }
 }
 
