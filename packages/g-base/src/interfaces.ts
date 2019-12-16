@@ -298,6 +298,7 @@ export interface IContainer extends IElement {
    * @returns 添加的图形对象
    */
   addShape(cfg: ShapeCfg): IShape;
+
   /**
    * 添加图形
    * @param {string} type 图形类型
@@ -316,12 +317,14 @@ export interface IContainer extends IElement {
    * @returns 添加的图形分组
    */
   addGroup(): IGroup;
+
   /**
    * 添加图形分组，并设置配置项
    * @param {GroupCfg} cfg 图形分组的配置项
    * @returns 添加的图形分组
    */
   addGroup(cfg: GroupCfg): IGroup;
+
   /**
    * 添加图形分组，指定类型
    * @param {IGroup} classConstructor 图形分组的构造函数
@@ -329,6 +332,7 @@ export interface IContainer extends IElement {
    * @returns 添加的图形分组
    */
   addGroup(classConstructor: IGroup, cfg: GroupCfg): IGroup;
+
   /**
    * 根据 x,y 获取对应的图形
    * @param {number} x x 坐标
@@ -336,29 +340,82 @@ export interface IContainer extends IElement {
    * @returns 添加的图形分组
    */
   getShape(x: number, y: number): IShape;
+
   /**
    * 添加图形元素，已经在外面构造好的类
    * @param {IElement} element 图形元素（图形或者分组）
    */
   add(element: IElement);
+
   /**
    * 获取父元素
    * @return {IContainer} 父元素一般是 Group 或者是 Canvas
    */
   getParent(): IContainer;
+
   /**
    * 获取所有的子元素
    * @return {IElement[]} 子元素的集合
    */
   getChildren(): IElement[];
+
   /**
    * 子元素按照 zIndex 进行排序
    */
   sort();
+
   /**
    * 清理所有的子元素
    */
   clear();
+
+  /**
+   * 获取第一个子元素
+   * @return {IElement} 第一个元素
+   */
+  getFirst(): IElement;
+
+  /**
+   * 获取最后一个子元素
+   * @return {IElement} 元素
+   */
+  getLast(): IElement;
+
+  /**
+   * 子元素的数量
+   * @return {number} 子元素数量
+   */
+  getCount(): number;
+
+  /**
+   * 查找所有匹配的元素
+   * @param  {ElementFilterFn}   fn  匹配函数
+   * @return {IElement[]} 元素数组
+   */
+  findAll(fn: ElementFilterFn): IElement[];
+
+  /**
+   * 查找元素，找到第一个返回
+   * @param  {ElementFilterFn} fn    匹配函数
+   * @return {IElement|null} 元素，可以为空
+   */
+  find(fn: ElementFilterFn): IElement;
+
+  /**
+   * 根据 ID 查找元素
+   * @param {string} id 元素 id
+   * @return {IElement | null} 元素
+   */
+  findById(id: string): IElement;
+
+  /**
+   * 根据 name 查找元素列表
+   * @param {string}      name 元素名称
+   * @return {IElement[]} 元素
+   * 是否是实体分组，即对应实际的渲染元素
+   * @return {boolean} 是否是实体分组
+   */
+  findAllByName(name: string): IElement[];
 }
 
 export interface IGroup extends IContainer {
