@@ -33,6 +33,10 @@ export type Renderer = 'canvas' | 'svg';
 
 - 画布大小和所占 DOM 宽高的比例，一般可以使用 `window.devicePixelRatio`，通常情况下无需手动设置该属性；
 
+### cursor: Cursor
+
+- 画布的 cursor 样式，其中 `Cursor` 为样式类型，可参考 [MDN 文档](https://developer.mozilla.org/en-US/docs/Web/CSS/cursor)。
+
 ## 方法
 
 ### 通用的 [元素方法](/zh/docs/api/element#通用方法)
@@ -48,6 +52,14 @@ export type Renderer = 'canvas' | 'svg';
 ```ts
 export type Renderer = 'canvas' | 'svg';
 ```
+
+## getCursor(): Cursor
+
+- 获取画布的 cursor 样式，其中 `Cursor` 为样式类型，可参考 [MDN 文档](https://developer.mozilla.org/en-US/docs/Web/CSS/cursor)。
+
+## setCursor(cursor: Cursor)
+
+- 设置画布的 cursor 样式，其中 `Cursor` 为样式类型，可参考 [MDN 文档](https://developer.mozilla.org/en-US/docs/Web/CSS/cursor)。
 
 ### add(element: Element)
 
