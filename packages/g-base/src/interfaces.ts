@@ -358,23 +358,15 @@ export interface IContainer extends IBase {
    * 清理所有的子元素
    */
   clear();
-}
-
-export interface IGroup extends IElement, IContainer {
-  /**
-   * 是否是实体分组，即对应实际的渲染元素
-   * @return {boolean} 是否是实体分组
-   */
-  isEntityGroup(): boolean;
 
   /**
-   * 获取 Group 的第一个子元素
+   * 获取第一个子元素
    * @return {IElement} 第一个元素
    */
   getFirst(): IElement;
 
   /**
-   * 获取 Group 的最后一个子元素
+   * 获取最后一个子元素
    * @return {IElement} 元素
    */
   getLast(): IElement;
@@ -412,6 +404,14 @@ export interface IGroup extends IElement, IContainer {
    * @return {IElement[]} 元素
    */
   findAllByName(name: string): IElement[];
+}
+
+export interface IGroup extends IElement, IContainer {
+  /**
+   * 是否是实体分组，即对应实际的渲染元素
+   * @return {boolean} 是否是实体分组
+   */
+  isEntityGroup(): boolean;
 }
 
 export interface IShape extends IElement {
