@@ -70,12 +70,20 @@ module.exports = {
       },
       // API
       {
+        slug: 'api/general',
+        title: {
+          zh: '通用',
+          en: 'General',
+        },
+        order: 0,
+      },
+      {
         slug: 'api/canvas',
         title: {
           zh: 'Canavs 画布',
           en: 'Canavs',
         },
-        order: 2,
+        order: 1,
       },
       {
         slug: 'api/group',
@@ -83,7 +91,7 @@ module.exports = {
           zh: 'Group 图形分组',
           en: 'Group',
         },
-        order: 3,
+        order: 2,
       },
       {
         slug: 'api/shape',
@@ -91,7 +99,7 @@ module.exports = {
           zh: 'Shape 图形',
           en: 'Shape',
         },
-        order: 4,
+        order: 3,
       },
     ],
     examples: [
