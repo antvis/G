@@ -2,10 +2,10 @@
 title: Element
 order: 0
 redirect_from:
-  - /en/docs/api
+  - /en/docs/api/general
 ---
 
-# 通用属性
+# 属性
 
 ## id: string
 
@@ -35,7 +35,7 @@ redirect_from:
 
 - [绘图属性](/zh/docs/api/shape/attrs)；
 
-# 通用方法
+# 方法
 
 ## 属性类方法
 

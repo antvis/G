@@ -5,7 +5,7 @@ order: 7
 
 # 属性
 
-- 详见 [图形属性](en/docs/api/shape/api#属性)；
+- 详见 [图形属性](/en/docs/api/shape/api#属性)；
 
 ## attrs 绘图属性
 

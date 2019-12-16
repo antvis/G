@@ -367,52 +367,14 @@ export interface IGroup extends IContainer {
    * @return {boolean} 是否是实体分组
    */
   isEntityGroup(): boolean;
+}
 
+export interface IGroup extends IElement, IContainer {
   /**
-   * 获取 Group 的第一个子元素
-   * @return {IElement} 第一个元素
+   * 是否是实体分组，即对应实际的渲染元素
+   * @return {boolean} 是否是实体分组
    */
-  getFirst(): IElement;
-
-  /**
-   * 获取 Group 的最后一个子元素
-   * @return {IElement} 元素
-   */
-  getLast(): IElement;
-
-  /**
-   * 子元素的数量
-   * @return {number} 子元素数量
-   */
-  getCount(): number;
-
-  /**
-   * 查找所有匹配的元素
-   * @param  {ElementFilterFn}   fn  匹配函数
-   * @return {IElement[]} 元素数组
-   */
-  findAll(fn: ElementFilterFn): IElement[];
-
-  /**
-   * 查找元素，找到第一个返回
-   * @param  {ElementFilterFn} fn    匹配函数
-   * @return {IElement|null} 元素，可以为空
-   */
-  find(fn: ElementFilterFn): IElement;
-
-  /**
-   * 根据 ID 查找元素
-   * @param {string} id 元素 id
-   * @return {IElement | null} 元素
-   */
-  findById(id: string): IElement;
-
-  /**
-   * 根据 name 查找元素列表
-   * @param {string}      name 元素名称
-   * @return {IElement[]} 元素
-   */
-  findAllByName(name: string): IElement[];
+  isEntityGroup(): boolean;
 }
 
 export interface IShape extends IElement {

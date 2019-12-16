@@ -5,7 +5,7 @@ order: 4
 
 ## 属性
 
-### 通用的 [元素属性](/zh/docs/api/element#通用属性)
+### [元素属性](/zh/docs/api/general/element#属性)
 
 ### attrs: Object
 
@@ -13,7 +13,7 @@ order: 4
 
 ## 方法
 
-### 通用的 [元素方法](/zh/docs/api/element#通用方法)
+### [元素方法](/zh/docs/api/general/element#方法)
 
 ### isHit(x: number, y: number)
 
