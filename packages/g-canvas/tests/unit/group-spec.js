@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import Shape from '../../../src/shape';
-import Group from '../../../src/group';
+import * as Shape from '../../src/shape';
+import Group from '../../src/group';
 
 describe('Canvas Group', () => {
   it('getShapeBase', () => {
