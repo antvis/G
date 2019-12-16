@@ -6,6 +6,8 @@ import { setShadow, setTransform, setClip } from '../util/svg';
 import { createDom } from '../util/dom';
 import { refreshElement } from '../util/draw';
 import { SVG_ATTR_MAP } from '../constant';
+import * as Shape from './index';
+import Group from '../group';
 
 class ShapeBase extends AbstractShape implements IShape {
   type: string = 'svg';
@@ -31,6 +33,14 @@ class ShapeBase extends AbstractShape implements IShape {
       const context = canvas.get('context');
       this.updatePath(context, targetAttrs);
     }
+  }
+
+  getShapeBase() {
+    return Shape;
+  }
+
+  getGroupBase() {
+    return Group;
   }
 
   /**

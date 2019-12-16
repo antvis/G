@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import Group from '../../src/group';
+import * as Shape from '../../src/shape';
 import getCanvas from '../get-canvas';
 
 describe('SVG Canvas', () => {
@@ -20,6 +21,16 @@ describe('SVG Canvas', () => {
     expect(el.style.width).eql('1000px');
     expect(el.style.height).eql('1000px');
     canvas.destroy();
+  });
+
+  it('getShapeBase', () => {
+    const canvas = getCanvas(container);
+    expect(canvas.getShapeBase()).eql(Shape);
+  });
+
+  it('getGroupBase', () => {
+    const canvas = getCanvas(container);
+    expect(canvas.getGroupBase()).eql(Group);
   });
 
   it('changesize', () => {

@@ -18,6 +18,12 @@ class MyElement extends Element {
       maxY: y + height,
     };
   }
+  getShapeBase() {
+    return MyElement;
+  }
+  getGroupBase() {
+    return Group;
+  }
 }
 
 class MyCircle extends Element {

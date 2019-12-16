@@ -1,5 +1,5 @@
-import { IBase, IContainer, ICtor, IShape, IGroup, IElement, ICanvas } from '../interfaces';
-import { ShapeBase, BBox, ElementFilterFn } from '../types';
+import { IBase, IContainer, IShape, IGroup, IElement, ICanvas } from '../interfaces';
+import { BBox, ElementFilterFn } from '../types';
 import Timeline from '../animate/timeline';
 import Element from './element';
 import { isFunction, isObject, each, removeFromArray, upperFirst } from '../util/util';
@@ -189,9 +189,6 @@ abstract class Container extends Element implements IContainer {
     };
     return box;
   }
-
-  abstract getShapeBase(): ShapeBase;
-  abstract getGroupBase(): ICtor<IGroup>;
 
   getDefaultCfg() {
     const cfg = super.getDefaultCfg();

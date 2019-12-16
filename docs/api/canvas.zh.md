@@ -47,10 +47,6 @@ export type Renderer = 'canvas' | 'svg';
 
 ### [容器方法](/zh/docs/api/general/container#方法)
 
-### isCanvas()
-
-- 是否为画布；
-
 ## getRenderer(): Renderer
 
 - 获取渲染引擎，其中 `Renderer` 的类型为:
@@ -66,10 +62,6 @@ export type Renderer = 'canvas' | 'svg';
 ## setCursor(cursor: Cursor)
 
 - 设置画布的 cursor 样式，其中 `Cursor` 为样式类型，可参考 [MDN 文档](https://developer.mozilla.org/en-US/docs/Web/CSS/cursor)。
-
-### getShape(x: number, y: number);
-
-- 根据画布坐标 `x` 和 `y` 获取对应的图形；
 
 ### changeSize(width: number, height: number)
 
