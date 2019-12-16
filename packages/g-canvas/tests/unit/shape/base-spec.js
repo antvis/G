@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import Shape from '../../../src/shape';
+import * as Shape from '../../../src/shape';
 import Base from '../../../src/shape/base';
 import Group from '../../../src/group';
 
