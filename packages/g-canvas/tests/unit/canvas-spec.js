@@ -1,5 +1,7 @@
 const expect = require('chai').expect;
 import Canvas from '../../src/canvas';
+import Group from '../../src/group';
+import * as Shape from '../../src/shape';
 import { getColor } from '../get-color';
 
 function simulateMouseEvent(dom, type, cfg) {
@@ -33,6 +35,14 @@ describe('canvas test', () => {
     expect(canvas.get('capture')).eql(true);
     expect(canvas.getChildren().length).eql(0);
     expect(canvas.getRenderer()).eql('canvas');
+  });
+
+  it('getShapeBase', () => {
+    expect(canvas.getShapeBase()).eql(Shape);
+  });
+
+  it('getGroupBase', () => {
+    expect(canvas.getGroupBase()).eql(Group);
   });
 
   it('add group', () => {

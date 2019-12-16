@@ -3,6 +3,8 @@ import { ChangeType, BBox } from '@antv/g-base/lib/types';
 import { isNil, intersectRect } from '../util/util';
 import { applyAttrsToContext, refreshElement } from '../util/draw';
 import { Region } from '../types';
+import * as Shape from './index';
+import Group from '../group';
 
 class ShapeBase extends AbstractShape {
   getDefaultAttrs() {
@@ -13,6 +15,14 @@ class ShapeBase extends AbstractShape {
     attrs['strokeOpacity'] = 1;
     attrs['fillOpacity'] = 1;
     return attrs;
+  }
+
+  getShapeBase() {
+    return Shape;
+  }
+
+  getGroupBase() {
+    return Group;
   }
 
   /**

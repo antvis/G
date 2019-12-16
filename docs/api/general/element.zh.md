@@ -67,6 +67,14 @@ redirect_from:
 
 - 获取画布；
 
+### getShapeBase()
+
+- 获取图形的基类；
+
+### getGroupBase()
+
+- 获取图形分组的基类；
+
 ### isGroup()
 
 - 是否为图形分组；
