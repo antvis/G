@@ -1,38 +1,12 @@
 import { AbstractCanvas } from '@antv/g-base';
 import { ChangeType } from '@antv/g-base/lib/types';
 import { IElement } from './interfaces';
-import { Region } from './types';
 import EventController from '@antv/g-base/lib/event/event-contoller';
 import * as Shape from './shape';
 import Group from './group';
-import { drawChildren, getRefreshRegion } from './util/draw';
+import { drawChildren, getMergedRegion } from './util/draw';
 import { getPixelRatio, each, mergeRegion, requestAnimationFrame, clearAnimationFrame } from './util/util';
 const REFRSH_COUNT = 30; // 局部刷新的元素个数，超过后合并绘图区域
-
-function getMergedRegion(elements): Region {
-  if (!elements.length) {
-    return null;
-  }
-  const minXArr = [];
-  const minYArr = [];
-  const maxXArr = [];
-  const maxYArr = [];
-  each(elements, (el: IElement) => {
-    const region = getRefreshRegion(el);
-    if (region) {
-      minXArr.push(region.minX);
-      minYArr.push(region.minY);
-      maxXArr.push(region.maxX);
-      maxYArr.push(region.maxY);
-    }
-  });
-  return {
-    minX: Math.min.apply(null, minXArr),
-    minY: Math.min.apply(null, minYArr),
-    maxX: Math.max.apply(null, maxXArr),
-    maxY: Math.max.apply(null, maxYArr),
-  };
-}
 
 class Canvas extends AbstractCanvas {
   getDefaultCfg() {
