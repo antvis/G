@@ -65,7 +65,7 @@ function _update(shape: IElement, animation: Animation, ratio: number) {
          */
         const matrixFn = interpolateArray(fromAttrs[k] || IDENTITY_MATRIX, toAttrs[k] || IDENTITY_MATRIX);
         const currentMatrix = matrixFn(ratio);
-        shape.setMatrix(currentMatrix);
+        cProps[k] = currentMatrix;
       } else if (isColorProp(k) && isGradientColor(toAttrs[k])) {
         cProps[k] = toAttrs[k];
       } else {

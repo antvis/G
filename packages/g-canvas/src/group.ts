@@ -27,8 +27,15 @@ class Group extends AbstractGroup {
   // 同 shape 中的方法重复了
   _applyClip(context, clip: ShapeBase) {
     if (clip) {
+      context.save();
+      // 将 clip 的属性挂载到 context 上
+      applyAttrsToContext(context, clip);
+      // 绘制 clip 路径
       clip.createPath(context);
+      context.restore();
+      // 裁剪
       context.clip();
+      clip._afterDraw();
     }
   }
 
