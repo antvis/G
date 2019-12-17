@@ -1,7 +1,7 @@
 import { AbstractShape } from '@antv/g-base';
 import { ChangeType, BBox } from '@antv/g-base/lib/types';
 import { isNil, intersectRect } from '../util/util';
-import { applyAttrsToContext, refreshElement } from '../util/draw';
+import { applyAttrsToContext, refreshElement, getMergedRegion } from '../util/draw';
 import { Region } from '../types';
 import * as Shape from './index';
 import Group from '../group';
@@ -78,17 +78,25 @@ class ShapeBase extends AbstractShape {
   // 同 shape 中的方法重复了
   _applyClip(context, clip: ShapeBase) {
     if (clip) {
+      context.save();
+      // 将 clip 的属性挂载到 context 上
+      applyAttrsToContext(context, clip);
+      // 绘制 clip 路径
       clip.createPath(context);
+      context.restore();
+      // 裁剪
       context.clip();
-      clip._afterDraw(); // clip 绘制完成后，需要缓存包围盒以及清除标记
+      clip._afterDraw();
     }
   }
 
   // 绘制图形时需要考虑 region 限制
   draw(context: CanvasRenderingContext2D, region?: Region) {
-    // 如果指定了区域，则同指定区域相交时渲染
+    const clip = this.getClip();
+    // 如果指定了区域，当与指定区域相交时，才会触发渲染
     if (region) {
-      const bbox = this.getCanvasBBox();
+      // 是否相交需要考虑 clip 的包围盒
+      const bbox = clip ? getMergedRegion([this, clip]) : this.getCanvasBBox();
       if (!intersectRect(region, bbox)) {
         return;
       }
