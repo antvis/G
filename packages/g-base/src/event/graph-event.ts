@@ -92,7 +92,7 @@ class GraphEvent {
    * 触发时的对象
    * @type {object}
    */
-  domEvent: Event;
+  originalEvent: Event;
 
   // 触发事件的路径
   propagationPath: any[] = [];
@@ -100,7 +100,7 @@ class GraphEvent {
   constructor(type, event) {
     this.type = type;
     this.name = type;
-    this.domEvent = event;
+    this.originalEvent = event;
     this.timeStamp = event.timeStamp;
   }
 
@@ -109,7 +109,9 @@ class GraphEvent {
    */
   preventDefault() {
     this.defaultPrevented = true;
-    this.domEvent.preventDefault();
+    if (this.originalEvent.preventDefault) {
+      this.originalEvent.preventDefault();
+    }
   }
 
   /**
