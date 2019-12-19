@@ -48,9 +48,9 @@ export default function getArcParams(startPoint, params) {
     f = 0;
   }
 
-  // 旋转前的起点坐标
-  const cxp = (f * rx * yp) / ry;
-  const cyp = (f * -ry * xp) / rx;
+  // 旋转前的起点坐标，且当长半轴和短半轴的长度为 0 时，坐标按 (0, 0) 处理
+  const cxp = ry ? (f * rx * yp) / ry : 0;
+  const cyp = rx ? (f * -ry * xp) / rx : 0;
 
   // 椭圆圆心坐标
   const cx = (x1 + x2) / 2.0 + Math.cos(xRotation) * cxp - Math.sin(xRotation) * cyp;
