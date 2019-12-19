@@ -75,7 +75,7 @@ describe('test event object', () => {
   const event = new GraphEvent('custom', mockEvent);
   it('init', () => {
     expect(event.type).eql('custom');
-    expect(event.domEvent).eql(mockEvent);
+    expect(event.originalEvent).eql(mockEvent);
     expect(event.propagationStopped).eql(false);
   });
 
