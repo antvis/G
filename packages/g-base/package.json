@@ -3,6 +3,7 @@
   "version": "0.3.2",
   "description": "A common util collection for antv projects",
   "main": "lib/index.js",
+  "module": "esm/index.js",
   "types": "lib/index.d.ts",
   "files": [
     "package.json",
