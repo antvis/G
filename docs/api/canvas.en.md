@@ -1,6 +1,6 @@
 ---
 title: Canvas
-order: 0
+order: 2
 redirect_from:
   - /en/docs/api
 ---
