@@ -21,7 +21,7 @@ order: 10
 
 ### getTotalLength(): number
 
-- Get total length of path；
+- Get total length of polyline;
 
 ### getPoint(ratio: number): Point
 
@@ -33,3 +33,11 @@ export type Point = {
   y: number;
 };
 ```
+
+### getStartTangent(): number[][]
+
+- Get the start tangent vector, like `[[10, 10], [20, 20]]`;
+
+### getEndTangent(): number[][]
+
+- Get the end tangent vector, like `[[10, 10], [20, 20]]`;

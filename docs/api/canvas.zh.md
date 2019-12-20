@@ -1,6 +1,6 @@
 ---
 title: Canvas 画布
-order: 0
+order: 2
 redirect_from:
   - /zh/docs/api
 ---

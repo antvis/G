@@ -33,3 +33,11 @@ export type Point = {
   y: number;
 };
 ```
+
+### getStartTangent(): number[][]
+
+- 获取起点切向量，形如: `[[10, 10], [20, 20]]`；
+
+### getEndTangent(): number[][]
+
+- 获取终点切向量，形如: `[[10, 10], [20, 20]]`；

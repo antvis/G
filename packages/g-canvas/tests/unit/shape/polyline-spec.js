@@ -124,4 +124,30 @@ describe('polygon test', () => {
       y: 150,
     });
   });
+
+  it('getStartTangent', () => {
+    polyline.attr('points', points1);
+    expect(polyline.getStartTangent()).eqls([
+      [100, 10],
+      [10, 10],
+    ]);
+    polyline.attr('points', points2);
+    expect(polyline.getStartTangent()).eqls([
+      [100, 50],
+      [50, 50],
+    ]);
+  });
+
+  it('getEndTangent', () => {
+    polyline.attr('points', points1);
+    expect(polyline.getEndTangent()).eqls([
+      [100, 100],
+      [10, 100],
+    ]);
+    polyline.attr('points', points2);
+    expect(polyline.getEndTangent()).eqls([
+      [150, 150],
+      [200, 150],
+    ]);
+  });
 });
