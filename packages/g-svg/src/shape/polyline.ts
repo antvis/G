@@ -107,6 +107,31 @@ class Polyline extends ShapeBase {
     });
     this.set('tCache', tCache);
   }
+
+  /**
+   * Get start tangent
+   * @return {Array}
+   */
+  getStartTangent() {
+    const { points } = this.attr();
+    const result = [];
+    result.push([points[1][0], points[1][1]]);
+    result.push([points[0][0], points[0][1]]);
+    return result;
+  }
+
+  /**
+   * Get end tangent
+   * @return {Array}
+   */
+  getEndTangent() {
+    const { points } = this.attr();
+    const l = points.length - 1;
+    const result = [];
+    result.push([points[l - 1][0], points[l - 1][1]]);
+    result.push([points[l][0], points[l][1]]);
+    return result;
+  }
 }
 
 export default Polyline;
