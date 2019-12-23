@@ -28,6 +28,14 @@ function hasArc(path) {
   return hasArc;
 }
 
+// 点对称
+function toSymmetry(point, center) {
+  return {
+    x: center.x + (center.x - point.x),
+    y: center.y + (center.y - point.y),
+  };
+}
+
 function getSegments(path) {
   const segments = [];
   let currentPoint = null; // 当前图形
@@ -44,6 +52,8 @@ function getSegments(path) {
       command,
       prePoint: currentPoint,
       params,
+      startTangent: null,
+      endTangent: null,
     };
     switch (command) {
       case 'M':
@@ -84,6 +94,62 @@ function getSegments(path) {
     }
     const nextPoint = nextParams ? [nextParams[nextParams.length - 2], nextParams[nextParams.length - 1]] : null;
     segment['nextPoint'] = nextPoint;
+    // Add startTangent and endTangent
+    const { prePoint } = segment;
+    if (['L', 'H', 'V'].includes(command)) {
+      segment.startTangent = [prePoint[0] - currentPoint[0], prePoint[1] - currentPoint[1]];
+      segment.endTangent = [currentPoint[0] - prePoint[0], currentPoint[1] - prePoint[1]];
+    } else if (command === 'Q') {
+      // 二次贝塞尔曲线只有一个控制点
+      const cp = [params[1], params[2]];
+      // 二次贝塞尔曲线的终点为 currentPoint
+      segment.startTangent = [prePoint[0] - cp[0], prePoint[1] - cp[1]];
+      segment.endTangent = [currentPoint[0] - cp[0], currentPoint[1] - cp[1]];
+    } else if (command === 'T') {
+      const preSegment = segments[i - 1];
+      const cp = toSymmetry(preSegment.currentPoint, prePoint);
+      if (preSegment.command === 'Q') {
+        segment.command = 'Q';
+        segment.startTangent = [prePoint[0] - cp[0], prePoint[1] - cp[1]];
+        segment.endTangent = [currentPoint[0] - cp[0], currentPoint[1] - cp[1]];
+      } else {
+        segment.command = 'TL';
+        segment.startTangent = [prePoint[0] - currentPoint[0], prePoint[1] - currentPoint[1]];
+        segment.endTangent = [currentPoint[0] - prePoint[0], currentPoint[1] - prePoint[1]];
+      }
+    } else if (command === 'C') {
+      // 三次贝塞尔曲线有两个控制点
+      const cp1 = [params[1], params[2]];
+      const cp2 = [params[3], params[4]];
+      segment.startTangent = [prePoint[0] - cp1[0], prePoint[1] - cp1[1]];
+      segment.endTangent = [currentPoint[0] - cp2[0], currentPoint[1] - cp2[1]];
+    } else if (command === 'S') {
+      const preSegment = segments[i - 1];
+      const cp1 = toSymmetry(preSegment.currentPoint, prePoint);
+      const cp2 = [params[1], params[2]];
+      if (preSegment.command === 'C') {
+        segment.command = 'C'; // 将 S 命令变换为 C 命令
+        segment.startTangent = [prePoint[0] - cp1[0], prePoint[1] - cp1[1]];
+        segment.endTangent = [currentPoint[0] - cp2[0], currentPoint[1] - cp2[1]];
+      } else {
+        segment.command = 'SQ'; // 将 S 命令变换为 SQ 命令
+        segment.startTangent = [prePoint[0] - cp2[0], prePoint[1] - cp2[1]];
+        segment.endTangent = [currentPoint[0] - cp2[0], currentPoint[1] - cp2[1]];
+      }
+    } else if (command === 'A') {
+      let d = 0.001;
+      const { rx, ry, xRotation, arcFlag, sweepFlag, startAngle, endAngle } = segment['arcParams'] || {};
+      if (sweepFlag === 0) {
+        d *= -1;
+      }
+      const dx1 = xRotation * Math.cos(startAngle - d) + rx;
+      const dy1 = arcFlag * Math.sin(startAngle - d) + ry;
+      segment.startTangent = [dx1 - startMovePoint[0], dy1 - startMovePoint[1]];
+
+      const dx2 = xRotation * Math.cos(startAngle + endAngle + d) + rx;
+      const dy2 = arcFlag * Math.sin(startAngle + endAngle - d) + ry;
+      segment.endTangent = [prePoint.x - dx2, prePoint.y - dy2];
+    }
     segments.push(segment);
   }
   return segments;

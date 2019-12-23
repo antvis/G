@@ -109,10 +109,10 @@ class Polyline extends ShapeBase {
   }
 
   /**
-   * Get start tangent
+   * Get start tangent vector
    * @return {Array}
    */
-  getStartTangent() {
+  getStartTangent(): number[][] {
     const { points } = this.attr();
     const result = [];
     result.push([points[1][0], points[1][1]]);
@@ -121,10 +121,10 @@ class Polyline extends ShapeBase {
   }
 
   /**
-   * Get end tangent
+   * Get end tangent vector
    * @return {Array}
    */
-  getEndTangent() {
+  getEndTangent(): number[][] {
     const { points } = this.attr();
     const l = points.length - 1;
     const result = [];
