@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-math",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "geometry math",
   "main": "lib/index.js",
   "module": "esm/index.js",
