@@ -292,4 +292,52 @@ describe('test path', () => {
       y: 300,
     });
   });
+
+  it('getStartRangent and getEndTangent', () => {
+    path.attr('path', p1);
+    expect(path.getStartTangent()).eqls([
+      [20, 20],
+      [10, 10],
+    ]);
+    expect(path.getEndTangent()).eqls([
+      [10, 10],
+      [20, 20],
+    ]);
+    path.attr('path', p2);
+    expect(path.getStartTangent()).eqls([
+      [20, 20],
+      [10, 10],
+    ]);
+    expect(path.getEndTangent()).eqls([
+      [20, 20],
+      [30, 10],
+    ]);
+    path.attr('path', p3);
+    expect(path.getStartTangent()).eqls([
+      [20, 20],
+      [10, 10],
+    ]);
+    expect(path.getEndTangent()).eqls([
+      [40, 30],
+      [50, 20],
+    ]);
+    path.attr('path', p4);
+    expect(path.getStartTangent()).eqls([
+      [20, 20],
+      [10, 10],
+    ]);
+    expect(path.getEndTangent()).eqls([
+      [200, 200],
+      [300, 300],
+    ]);
+    path.attr('path', p5);
+    expect(path.getStartTangent()).eqls([
+      [150, 275],
+      [100, 300],
+    ]);
+    expect(path.getEndTangent()).eqls([
+      [550, 275],
+      [100, 300],
+    ]);
+  });
 });
