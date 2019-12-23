@@ -20,7 +20,7 @@ describe('image test', () => {
       attrs: {
         x: 10,
         y: 10,
-        img: 'https://cdn.nlark.com/yuque/0/2019/png/89796/1562740493639-f14dfc89-a6b2-4bd9-a784-80bee48f5b7b.png',
+        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1UyYS6tT9B0AAAAAAAAAAABkARQnAQ',
       },
     });
     expect(image.attr('x')).eqls(10);
@@ -100,10 +100,7 @@ describe('image test', () => {
   });
 
   it('clear', () => {
-    image.attr(
-      'img',
-      'https://cdn.nlark.com/yuque/0/2019/png/89796/1562740493639-f14dfc89-a6b2-4bd9-a784-80bee48f5b7b.png'
-    );
+    image.attr('img', 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1UyYS6tT9B0AAAAAAAAAAABkARQnAQ');
     image.destroy();
     expect(image.destroyed).eqls(true);
     expect(image.attr('img')).eqls(undefined);

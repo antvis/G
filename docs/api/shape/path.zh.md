@@ -35,3 +35,15 @@ export type Point = {
   y: number;
 };
 ```
+
+### getStartTangent(): number[][]
+
+> 当前只有 Canvas 版本支持
+
+- 获取起点的切向量，形如: `[[10, 10], [20, 20]]`；
+
+### getEndTangent(): number[][]
+
+> 当前只有 Canvas 版本支持
+
+- 获取终点的切向量，形如: `[[10, 10], [20, 20]]`；

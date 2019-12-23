@@ -35,3 +35,15 @@ export type Point = {
   y: number;
 };
 ```
+
+### getStartTangent(): number[][]
+
+> Only supported by Canavs version for now
+
+- Get the start tangent vector, like `[[10, 10], [20, 20]]`;
+
+### getEndTangent(): number[][]
+
+> Only supported by Canavs version for now
+
+- Get the end tangent vector, like `[[10, 10], [20, 20]]`;
