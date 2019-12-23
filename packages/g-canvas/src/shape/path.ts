@@ -229,6 +229,53 @@ class Path extends ShapeBase {
     });
     this.set('tCache', tCache);
   }
+
+  /**
+   * Get start tangent vector
+   * @return {Array}
+   */
+  getStartTangent(): number[][] {
+    const segments = this.getSegments();
+    let result;
+    if (segments.length > 1) {
+      const startPoint = segments[0].currentPoint;
+      const endPoint = segments[1].currentPoint;
+      const tangent = segments[1].startTangent;
+      result = [];
+      if (tangent) {
+        result.push([startPoint[0] - tangent[0], startPoint[1] - tangent[1]]);
+        result.push([startPoint[0], startPoint[1]]);
+      } else {
+        result.push([endPoint[0], endPoint[1]]);
+        result.push([startPoint[0], startPoint[1]]);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Get end tangent vector
+   * @return {Array}
+   */
+  getEndTangent(): number[][] {
+    const segments = this.getSegments();
+    const length = segments.length;
+    let result;
+    if (length > 1) {
+      const startPoint = segments[length - 2].currentPoint;
+      const endPoint = segments[length - 1].currentPoint;
+      const tangent = segments[length - 1].endTangent;
+      result = [];
+      if (tangent) {
+        result.push([endPoint[0] - tangent[0], endPoint[1] - tangent[1]]);
+        result.push([endPoint[0], endPoint[1]]);
+      } else {
+        result.push([startPoint[0], startPoint[1]]);
+        result.push([endPoint[0], endPoint[1]]);
+      }
+    }
+    return result;
+  }
 }
 
 export default Path;
