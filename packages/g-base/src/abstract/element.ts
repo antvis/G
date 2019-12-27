@@ -98,6 +98,7 @@ abstract class Element extends Base implements IElement {
     return {
       visible: true,
       capture: true,
+      zIndex: 0,
     };
   }
 
