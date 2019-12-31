@@ -17,11 +17,14 @@ class ShapeBase extends AbstractShape implements IShape {
   getDefaultAttrs() {
     const attrs = super.getDefaultAttrs();
     // 设置默认值
-    attrs['lineWidth'] = 1;
-    attrs['lineAppendWidth'] = 0;
-    attrs['strokeOpacity'] = 1;
-    attrs['fillOpacity'] = 1;
-    return attrs;
+    return {
+      ...attrs,
+      lineWidth: 1,
+      lineAppendWidth: 0,
+      opacity: 1,
+      strokeOpacity: 1,
+      fillOpacity: 1,
+    };
   }
 
   // 覆盖基类的 afterAttrsChange 方法

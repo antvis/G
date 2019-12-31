@@ -10,11 +10,14 @@ class ShapeBase extends AbstractShape {
   getDefaultAttrs() {
     const attrs = super.getDefaultAttrs();
     // 设置默认值
-    attrs['lineWidth'] = 1;
-    attrs['lineAppendWidth'] = 0;
-    attrs['strokeOpacity'] = 1;
-    attrs['fillOpacity'] = 1;
-    return attrs;
+    return {
+      ...attrs,
+      lineWidth: 1,
+      lineAppendWidth: 0,
+      opacity: 1,
+      strokeOpacity: 1,
+      fillOpacity: 1,
+    };
   }
 
   getShapeBase() {
@@ -151,24 +154,20 @@ class ShapeBase extends AbstractShape {
 
   // 绘制或者填充
   strokeAndFill(context) {
-    const attrs = this.attrs;
-    const originOpacity = context.globalAlpha;
+    const { lineWidth, opacity, strokeOpacity, fillOpacity } = this.attrs;
 
     if (this.isFill()) {
-      const fillOpacity = attrs['fillOpacity'];
       if (!isNil(fillOpacity) && fillOpacity !== 1) {
         context.globalAlpha = fillOpacity;
         this.fill(context);
-        context.globalAlpha = originOpacity;
+        context.globalAlpha = opacity;
       } else {
         this.fill(context);
       }
     }
 
     if (this.isStroke()) {
-      const lineWidth = attrs['lineWidth'];
       if (lineWidth > 0) {
-        const strokeOpacity = attrs['strokeOpacity'];
         if (!isNil(strokeOpacity) && strokeOpacity !== 1) {
           context.globalAlpha = strokeOpacity;
         }

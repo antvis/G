@@ -7,70 +7,78 @@ order: 5
 
 ### fill
 
-- 设置用于填充绘画的颜色、[渐变](/en/docs/api/shape/attrs/#渐变色)或 [纹理](/zh/docs/api/shape/attrs/#纹理)，默认值为空；
+- 填充色、[渐变](/zh/docs/api/shape/attrs/#渐变色)或 [纹理](/zh/docs/api/shape/attrs/#纹理)，默认值为空；
 
 ### stroke
 
-- 设置用于填充绘画的颜色、[渐变](/en/docs/api/shape/attrs/#渐变色)或 [纹理](/zh/docs/api/shape/attrs/#纹理)，默认值为空；
-
-### shadowColor
-
-- 设置用于阴影的颜色；
-
-### shadowBlur
-
-- 设置用于阴影的模糊级别；
-
-### shadowOffsetX
-
-- 设置阴影距形状的水平距离；
-
-### shadowOffsetY
-
-- 设置阴影距形状的垂直距离；
+- 描边色、[渐变](/zh/docs/api/shape/attrs/#渐变色)或 [纹理](/zh/docs/api/shape/attrs/#纹理)，默认值为空；
 
 ### opacity
 
-- 设置绘图的当前 alpha 或透明值；
+- 透明度，默认值为 1；
+
+### fillOpacity
+
+- 填充色的不透明度，默认值为 1；
+
+### strokeOpacity
+
+- 描边色的不透明度，默认值为 1；
+
+### shadowColor
+
+- 阴影的颜色；
+
+### shadowBlur
+
+- 阴影的模糊级别；
+
+### shadowOffsetX
+
+- 阴影距形状的水平距离；
+
+### shadowOffsetY
+
+- 阴影距形状的垂直距离；
 
 ### globalCompositeOperation
 
-- 设置新图像如何绘制到已有的图像上；
+- 新图像如何绘制到已有的图像上；
 
 ## 线条属性
 
 ### lineCap
 
-- 设置线条的结束端点样式；
+- 线条的结束端点样式；
 
 ### lineJoin
 
-- 设置两条线相交时，所创建的拐角形状，属性值有:
+- 两条线相交时，所创建的拐角形状，属性值有:
   - `bevel`: 斜角
   - `round`: 圆角
   - `miter`: 尖角 (默认)
 
 ### lineWidth
 
-- 设置当前的线条宽度，默认值为 1；
+- 当前的线条宽度，默认值为 1；
 
 ### lineAppendWidth
 
-- 设置额外的线条宽度，且不可见，常用于增加图形的可拾取区域，默认值为 0；
+- 额外的线条宽度，且不可见，常用于增加图形的可拾取区域，默认值为 0；
 
 ### miterLimit
 
-- 设置最大斜接长度；
+- 最大斜接长度；
 
 ### lineDash
 
 > 这个属性取决于浏览器是否支持 setLineDash 函数，详情参考 [setLineDash](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)。
 
-- 设置线的虚线样式，可以指定一个数组。一组描述交替绘制线段和间距（坐标空间单位）长度的数字。 如果数组元素的数量是奇数， 数组的元素会被复制并重复。例如， [5, 15, 25] 会变成 [5, 15, 25, 5, 15, 25]。
+- 线的虚线样式，可以指定一个数组。一组描述交替绘制线段和间距（坐标空间单位）长度的数字。 如果数组元素的数量是奇数， 数组的元素会被复制并重复。例如， [5, 15, 25] 会变成 [5, 15, 25, 5, 15, 25]。
 
 ### startArrow
 
-- 设置起点箭头，值的类型为 `boolean | ArrowCfg | Marker`：
+- 起点箭头，值的类型为 `boolean | ArrowCfg | Marker`：
 
   - `true / false`: 显示 / 取消默认箭头；
   - `ArrowCfg`: 自定义箭头，具体配置为:
@@ -94,49 +102,49 @@ order: 5
 
 ### endArrow
 
-- 设置终点箭头，配置同 [startArrow](#startarrow)。
+- 终点箭头，配置同 [startArrow](#startarrow)。
 
 ## 文本属性
 
 ### font
 
-- 设置文本内容的当前字体属性；
+- 文本内容的当前字体属性；
 
 ### textAlign
 
-- 设置文本内容的当前对齐方式, 支持的属性值：
+- 文本内容的对齐方式, 支持的属性值：
   - center
   - end
   - left
   - right
-  - start
+  - start (默认)
 
 ### textBaseline
 
-- 设置在绘制文本时使用的当前文本基线, 支持的属性：
+- 绘制文本时的基线, 支持的属性值：
   - top
   - middle
-  - bottom
+  - bottom (默认)
 
 ### fontStyle
 
-- 设置字体样式；
+- 字体样式；
 
 ### fontVariant
 
-- 设置小型大写字母的字体显示文本；
+- 小型大写字母的字体显示文本；
 
 ### fontWeight
 
-- 设置字体粗细；
+- 字体粗细；
 
 ### fontSize
 
-- 设置字体尺寸；
+- 字体尺寸，默认值为 `12`；
 
 ### fontFamily
 
-- 设置字体类型；
+- 字体类型，默认值为 `sans-serif`；
 
 ## 渐变色
 

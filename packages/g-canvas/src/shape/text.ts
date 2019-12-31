@@ -10,10 +10,9 @@ import { isNil, isString, each, getOffScreenContext } from '../util/util';
 class Text extends ShapeBase {
   // 默认文本属性
   getDefaultAttrs() {
+    const attrs = super.getDefaultAttrs();
     return {
-      matrix: null,
-      lineWidth: 1,
-      lineAppendWidth: 0,
+      ...attrs,
       fontSize: 12,
       fontFamily: 'sans-serif',
       fontStyle: 'normal',
@@ -220,26 +219,22 @@ class Text extends ShapeBase {
 
   // 复写绘制和填充的逻辑：对于文本，应该先绘制边框，再进行填充
   strokeAndFill(context) {
-    const attrs = this.attrs;
-    const originOpacity = context.globalAlpha;
+    const { lineWidth, opacity, strokeOpacity, fillOpacity } = this.attrs;
 
     if (this.isStroke()) {
-      const lineWidth = attrs['lineWidth'];
       if (lineWidth > 0) {
-        const strokeOpacity = attrs['strokeOpacity'];
         if (!isNil(strokeOpacity) && strokeOpacity !== 1) {
-          context.globalAlpha = strokeOpacity;
+          context.globalAlpha = opacity;
         }
         this.stroke(context);
       }
     }
 
     if (this.isFill()) {
-      const fillOpacity = attrs['fillOpacity'];
       if (!isNil(fillOpacity) && fillOpacity !== 1) {
         context.globalAlpha = fillOpacity;
         this.fill(context);
-        context.globalAlpha = originOpacity;
+        context.globalAlpha = opacity;
       } else {
         this.fill(context);
       }
