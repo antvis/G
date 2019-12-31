@@ -14,12 +14,6 @@ class ImageShape extends ShapeBase {
     this._setImage(attrs.img);
   }
 
-  // image 不需要默认的边框等属性
-  getDefaultAttrs() {
-    return {
-      matrix: null,
-    };
-  }
   // image 不计算 stroke
   isStroke() {
     return false;
