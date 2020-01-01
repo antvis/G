@@ -14,9 +14,11 @@ class Rect extends ShapeBase {
 
   getDefaultAttrs() {
     const attrs = super.getDefaultAttrs();
-    // 设置默认值
-    attrs['radius'] = 0;
-    return attrs;
+    return {
+      ...attrs,
+      // 设置圆角的默认值为 0
+      radius: 0,
+    };
   }
 
   createPath(context, targetAttrs) {
