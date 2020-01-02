@@ -26,6 +26,9 @@ CommonUtil.merge(Util, CommonUtil, {
       });
       c[Param] = Util.merge(temp, c[Param]);
     }
+  },
+  toNumber(value) {
+    return +value;
   }
 });
 
