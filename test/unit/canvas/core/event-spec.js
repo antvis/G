@@ -286,7 +286,7 @@ describe('event dispatcher', () => {
     group.removeEvent();
     expect(rectEnd).to.be.true;
     expect(groupEnd).to.be.true;
-    expect(clicked).to.be.true;
+    expect(clicked).to.be.false;
   });
   it('dragenter & dragleave', () => {
     const bbox = canvas._cfg.el.getBoundingClientRect();
