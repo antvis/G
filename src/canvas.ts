@@ -22,6 +22,10 @@ let preShape = null;
 let mousedown = null;
 let dragging = null;
 
+function toNumber(value) {
+  return +value;
+}
+
 class Canvas extends Group {
   constructor(cfg) {
     super({
@@ -119,6 +123,35 @@ class Canvas extends Group {
     Util.modifyCSS(containerDOM, {
       position: 'relative',
     });
+    const transformString = containerDOM.style.transform;
+    const cssTransform = [];
+    const regex = /(\w+)\((.+?)\)/g;
+    let match = regex.exec(transformString);
+    while (match) {
+      cssTransform.push([ match[1], match[2].split(', ') ]);
+      match = regex.exec(transformString);
+    }
+    // 当前仅对 scale transform 进行处理
+    const containerTransform = {
+      scaleX: 1,
+      scaleY: 1
+    };
+    Util.each(cssTransform, (item, key) => {
+      // transform 方法名
+      const method = item[0];
+      // 第一个参数值
+      const param1 = item[1] && item[1][0];
+      // 第二个参数值
+      const param2 = item[1] && item[1][1];
+      if (method === 'scale') {
+        containerTransform.scaleX = Util.isNil(param1) ? 1 : toNumber(param1);
+        // 对于 scale，第二个参数值为空时，等价于第一个参数值
+        containerTransform.scaleY = Util.isNil(param2) ? containerTransform.scaleX : toNumber(param2);
+      } else if (method === key) {
+        containerTransform[key] = param1;
+      }
+    });
+    this.set('containerTransform', containerTransform);
   }
 
   _initPainter() {
@@ -175,22 +208,26 @@ class Canvas extends Group {
    * @return {Object} canvas坐标
    */
   getPointByClient(clientX, clientY) {
+    const containerTransform = this.get('containerTransform');
+    const { scaleX, scaleY } = containerTransform;
     const el = this.get('el');
     const pixelRatio = this.get('pixelRatio') || 1;
     const bbox = el.getBoundingClientRect();
     return {
-      x: (clientX - bbox.left) * pixelRatio,
-      y: (clientY - bbox.top) * pixelRatio,
+      x: (clientX - bbox.left) * pixelRatio / scaleX,
+      y: (clientY - bbox.top) * pixelRatio / scaleY,
     };
   }
 
   getClientByPoint(x, y) {
+    const containerTransform = this.get('containerTransform');
+    const { scaleX, scaleY } = containerTransform;
     const el = this.get('el');
     const bbox = el.getBoundingClientRect();
     const pixelRatio = this.get('pixelRatio') || 1;
     return {
-      clientX: x / pixelRatio + bbox.left,
-      clientY: y / pixelRatio + bbox.top,
+      clientX: x / pixelRatio * scaleX + bbox.left,
+      clientY: y / pixelRatio * scaleY + bbox.top,
     };
   }
 
