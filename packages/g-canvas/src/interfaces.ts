@@ -12,6 +12,7 @@ export interface IElement extends IBaseElement {
    * @param {Region}                   [region]  限制的区间，可以为空
    */
   draw(context: CanvasRenderingContext2D, region?: Region);
+
   /**
    * 跳过绘制时需要处理的逻辑
    */
