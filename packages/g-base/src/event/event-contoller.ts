@@ -4,7 +4,7 @@
  */
 import GraphEvent from './graph-event';
 import { ICanvas, IShape, IBase } from '../interfaces';
-import { each, isArray } from '../util/util';
+import { each } from '../util/util';
 const TIME_INTERVAL = 120; // 判断拖拽和点击
 const CLICK_OFFSET = 40;
 const DELEGATION_SPLIT = ':';
@@ -28,15 +28,6 @@ const EVENTS = [
   'drop',
   'contextmenu',
 ];
-
-const EVENT_MAP = {
-  mouseenter: 'mouseleave',
-  dragenter: 'dragleave',
-  mouseover: ['mouseout', 'mouseleave'], // 需要按照特定顺序，先触发 mouseout 事件，再触发 mouseleave 事件
-  mouseleave: 'mouseenter',
-  dragleave: 'dragenter',
-  mouseout: ['mouseover', 'mouseenter'], // 需要按照特定顺序，先触发 mouseover 事件，再触发 mouseenter 事件
-};
 
 // 是否元素的父容器
 function isParent(container, shape) {
@@ -195,16 +186,6 @@ class EventController {
       const preShape = this.currentShape;
       // 如果进入、移出画布时存在图形，则要分别出发事件
       if (type === 'mouseenter' || type === 'dragenter' || type === 'mouseover') {
-        // 从图形进入画布，preShape 上的事件最先触发
-        if (preShape) {
-          if (isArray(EVENT_MAP[type])) {
-            each(EVENT_MAP[type], (item) => {
-              this._emitEvent(item, event, pointInfo, null, preShape, null); // 图形 => 画布
-            });
-          } else {
-            this._emitEvent(EVENT_MAP[type], event, pointInfo, null, preShape, null); // 图形 => 画布
-          }
-        }
         this._emitEvent(type, event, pointInfo, null, null, shape); // 先进入画布
         if (shape) {
           this._emitEvent(type, event, pointInfo, shape, null, shape); // 再触发图形的事件
@@ -214,16 +195,6 @@ class EventController {
           this._emitEvent(type, event, pointInfo, preShape, preShape, null); // 先触发图形的事件
         }
         this._emitEvent(type, event, pointInfo, null, preShape, null); // 再触发离开画布事件
-        // 从画布进入图形，shape 上的事件最后触发
-        if (shape) {
-          if (isArray(EVENT_MAP[type])) {
-            each(EVENT_MAP[type], (item) => {
-              this._emitEvent(item, event, pointInfo, shape, null, shape);
-            });
-          } else {
-            this._emitEvent(EVENT_MAP[type], event, pointInfo, shape, null, shape);
-          }
-        }
       } else {
         this._emitEvent(type, event, pointInfo, shape, null, null); // 一般事件中不需要考虑 from, to
       }
