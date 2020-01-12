@@ -4,6 +4,7 @@ import { Region } from '../types';
 import { parseStyle } from './parse';
 import getArcParams from './arc-params';
 import { mergeRegion } from './util';
+import * as ArrowUtil from '../util/arrow';
 
 const SHAPE_ATTRS_MAP = {
   fill: 'fillStyle',
@@ -46,27 +47,50 @@ export function drawChildren(context: CanvasRenderingContext2D, children: IEleme
 }
 
 // 绘制 path
-export function drawPath(context, path, arcParamsCache) {
+export function drawPath(shape, context, attrs, arcParamsCache) {
+  const { path, startArrow, endArrow } = attrs;
   let currentPoint = [0, 0]; // 当前图形
   let startMovePoint = [0, 0]; // 开始 M 的点，可能会有多个
+  let distance = {
+    dx: 0,
+    dy: 0,
+  };
   context.beginPath();
   for (let i = 0; i < path.length; i++) {
     const params = path[i];
     const command = params[0];
+    if (i === 0 && startArrow && startArrow.d) {
+      const tangent = shape.getStartTangent();
+      distance = ArrowUtil.getShortenOffset(tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1], startArrow.d);
+    } else if (i === path.length - 2 && path[i + 1][0] === 'Z' && endArrow && endArrow.d) {
+      // 为了防止结尾为 Z 的 segment 缩短不起效，需要取最后两个 segment 特殊处理
+      const lastPath = path[i + 1];
+      if (lastPath[0] === 'Z') {
+        const tangent = shape.getEndTangent();
+        distance = ArrowUtil.getShortenOffset(tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1], endArrow.d);
+      }
+    } else if (i === path.length - 1 && endArrow && endArrow.d) {
+      if (path[0] !== 'Z') {
+        const tangent = shape.getEndTangent();
+        distance = ArrowUtil.getShortenOffset(tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1], endArrow.d);
+      }
+    }
+
+    const { dx, dy } = distance;
     // V,H,S,T 都在前面被转换成标准形式
     switch (command) {
       case 'M':
-        context.moveTo(params[1], params[2]);
+        context.moveTo(params[1] - dx, params[2] - dy);
         startMovePoint = [params[1], params[2]];
         break;
       case 'L':
-        context.lineTo(params[1], params[2]);
+        context.lineTo(params[1] - dx, params[2] - dy);
         break;
       case 'Q':
-        context.quadraticCurveTo(params[1], params[2], params[3], params[4]);
+        context.quadraticCurveTo(params[1], params[2], params[3] - dx, params[4] - dy);
         break;
       case 'C':
-        context.bezierCurveTo(params[1], params[2], params[3], params[4], params[5], params[6]);
+        context.bezierCurveTo(params[1], params[2], params[3], params[4], params[5] - dx, params[6] - dy);
         break;
       case 'A': {
         let arcParams;
