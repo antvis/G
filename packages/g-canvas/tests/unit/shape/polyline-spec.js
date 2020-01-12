@@ -29,6 +29,7 @@ describe('polygon test', () => {
       fill: 'red',
     },
   });
+
   it('init', () => {
     expect(polyline.attr('points').length).eqls(4);
     expect(polyline.attr('lineWidth')).eqls(1);
