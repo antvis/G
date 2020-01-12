@@ -18,6 +18,7 @@ describe('line test', () => {
       stroke: 'red',
     },
   });
+
   it('init', () => {
     expect(line.attr('x1')).eqls(0);
     expect(line.attr('x2')).eqls(100);
