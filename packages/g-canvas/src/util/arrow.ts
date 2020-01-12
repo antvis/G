@@ -17,41 +17,38 @@ function _addArrow(ctx, attrs, x1, y1, x2, y2, isStart) {
   let offsetY;
   let angle;
 
-  if (!attrs.fill) {
-    // 闭合的不绘制箭头
-    const arrowLength = attrs.arrowLength || DEFAULT_LENGTH;
-    const arrowAngle = attrs.arrowAngle ? (attrs.arrowAngle * PI) / 180 : DEFAULT_ANGLE; // 转换为弧
-    // Calculate angle
-    angle = atan2(y1 - y2, x1 - x2);
-    /* // Adjust angle correctly
-    angle -= PI;*/
-    // Calculate offset to place arrow at edge of path
-    offsetX = Math.abs(attrs.lineWidth * cos(angle)) / 2;
-    offsetY = Math.abs(attrs.lineWidth * sin(angle)) / 2;
-    if (isStart) {
-      offsetX = -offsetX;
-      offsetY = -offsetY;
-    }
-    // Calculate coordinates for left half of arrow
-    leftX = x2 + arrowLength * cos(angle + arrowAngle / 2);
-    leftY = y2 + arrowLength * sin(angle + arrowAngle / 2);
-    // Calculate coordinates for right half of arrow
-    rightX = x2 + arrowLength * cos(angle - arrowAngle / 2);
-    rightY = y2 + arrowLength * sin(angle - arrowAngle / 2);
-    ctx.beginPath();
-    // Draw left half of arrow
-    ctx.moveTo(leftX - offsetX, leftY - offsetY);
-    ctx.lineTo(x2 - offsetX, y2 - offsetY);
-    // Draw right half of arrow
-    ctx.lineTo(rightX - offsetX, rightY - offsetY);
-
-    // Visually connect arrow to path
-    ctx.moveTo(x2 - offsetX, y2 - offsetY);
-    ctx.lineTo(x2 + offsetX, y2 + offsetY);
-    // Move back to end of path
-    ctx.moveTo(x2, y2);
-    ctx.stroke();
+  const arrowLength = attrs.arrowLength || DEFAULT_LENGTH;
+  const arrowAngle = attrs.arrowAngle ? (attrs.arrowAngle * PI) / 180 : DEFAULT_ANGLE; // 转换为弧
+  // Calculate angle
+  angle = atan2(y1 - y2, x1 - x2);
+  /* // Adjust angle correctly
+  angle -= PI;*/
+  // Calculate offset to place arrow at edge of path
+  offsetX = Math.abs(attrs.lineWidth * cos(angle)) / 2;
+  offsetY = Math.abs(attrs.lineWidth * sin(angle)) / 2;
+  if (isStart) {
+    offsetX = -offsetX;
+    offsetY = -offsetY;
   }
+  // Calculate coordinates for left half of arrow
+  leftX = x2 + arrowLength * cos(angle + arrowAngle / 2);
+  leftY = y2 + arrowLength * sin(angle + arrowAngle / 2);
+  // Calculate coordinates for right half of arrow
+  rightX = x2 + arrowLength * cos(angle - arrowAngle / 2);
+  rightY = y2 + arrowLength * sin(angle - arrowAngle / 2);
+  ctx.beginPath();
+  // Draw left half of arrow
+  ctx.moveTo(leftX - offsetX, leftY - offsetY);
+  ctx.lineTo(x2 - offsetX, y2 - offsetY);
+  // Draw right half of arrow
+  ctx.lineTo(rightX - offsetX, rightY - offsetY);
+
+  // Visually connect arrow to path
+  ctx.moveTo(x2 - offsetX, y2 - offsetY);
+  ctx.lineTo(x2 + offsetX, y2 + offsetY);
+  // Move back to end of path
+  ctx.moveTo(x2, y2);
+  ctx.stroke();
 }
 
 function _addCustomizedArrow(ctx, attrs, x1, y1, x2, y2, isStart) {
@@ -88,7 +85,7 @@ function _addCustomizedArrow(ctx, attrs, x1, y1, x2, y2, isStart) {
  * |----------------
  * |<|--------------
  * |
- * @param {Number} x1 起始点 x
+ * @param {number} x1 起始点 x
  * @param {number} y1 起始点 y
  * @param {number} x2 箭头作用点 x
  * @param {number} y2 箭头作用点 y
