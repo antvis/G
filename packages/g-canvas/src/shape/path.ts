@@ -4,13 +4,14 @@
  */
 import { Point } from '@antv/g-base/lib/types';
 import CubicUtil from '@antv/g-math/lib/cubic';
-import { each, isNil } from '@antv/util';
+import { each, isArray, isNil } from '@antv/util';
 import ShapeBase from './base';
 import path2Absolute from '@antv/path-util/lib/path-2-absolute';
 import { drawPath } from '../util/draw';
 import isPointInPath from '../util/in-path/point-in-path';
 import isInPolygon from '../util/in-path/polygon';
 import PathUtil from '../util/path';
+import * as ArrowUtil from '../util/arrow';
 
 // 是否在多个多边形内部
 function isInPolygons(polygons, x, y) {
@@ -26,6 +27,15 @@ function isInPolygons(polygons, x, y) {
 }
 
 class Path extends ShapeBase {
+  getDefaultAttrs() {
+    const attrs = super.getDefaultAttrs();
+    return {
+      ...attrs,
+      startArrow: false,
+      endArrow: false,
+    };
+  }
+
   initAttrs(attrs) {
     this._setPathArr(attrs.path);
   }
@@ -90,9 +100,24 @@ class Path extends ShapeBase {
   }
 
   createPath(context) {
-    const path = this.attr('path');
+    const attrs = this.attr();
     const paramsCache = this.get('paramsCache'); // 由于计算圆弧的参数成本很大，所以要缓存
-    drawPath(context, path, paramsCache);
+    drawPath(this, context, attrs, paramsCache);
+  }
+
+  afterDrawPath(context: CanvasRenderingContext2D) {
+    const attrs = this.attr();
+    const { startArrow, endArrow } = attrs;
+
+    if (startArrow) {
+      const tangent = this.getStartTangent();
+      ArrowUtil.addStartArrow(context, attrs, tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1]);
+    }
+
+    if (endArrow) {
+      const tangent = this.getEndTangent();
+      ArrowUtil.addEndArrow(context, attrs, tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1]);
+    }
   }
 
   /**
