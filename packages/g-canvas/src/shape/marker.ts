@@ -10,7 +10,11 @@ import { drawPath } from '../util/draw';
 const Symbols = {
   // 圆
   circle(x, y, r) {
-    return [['M', x - r, y], ['A', r, r, 0, 1, 0, x + r, y], ['A', r, r, 0, 1, 0, x - r, y]];
+    return [
+      ['M', x - r, y],
+      ['A', r, r, 0, 1, 0, x + r, y],
+      ['A', r, r, 0, 1, 0, x - r, y],
+    ];
   },
   // 正方形
   square(x, y, r) {
@@ -91,7 +95,7 @@ class Marker extends ShapeBase {
   createPath(context) {
     const path = this._getPath();
     const paramsCache = this.get('paramsCache');
-    drawPath(context, path, paramsCache);
+    drawPath(this, context, { path }, paramsCache);
   }
 
   static Symbols = Symbols;
