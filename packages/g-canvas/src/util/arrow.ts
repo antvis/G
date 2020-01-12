@@ -1,4 +1,4 @@
-import Path from '../shape/path';
+import { Path } from '../shape';
 import { ShapeAttrs } from '@antv/g-base/lib/types';
 
 const PI = Math.PI;
