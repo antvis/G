@@ -8,8 +8,18 @@ import PolylineUtil from '@antv/g-math/lib/polyline';
 import { each, isNil } from '@antv/util';
 import ShapeBase from './base';
 import inPolyline from '../util/in-stroke/polyline';
+import * as ArrowUtil from '../util/arrow';
 
 class PolyLine extends ShapeBase {
+  getDefaultAttrs() {
+    const attrs = super.getDefaultAttrs();
+    return {
+      ...attrs,
+      startArrow: false,
+      endArrow: false,
+    };
+  }
+
   // 更新属性时，检测是否更改了 points
   onAttrChange(name: string, value: any, originValue: any) {
     super.onAttrChange(name, value, originValue);
@@ -48,19 +58,50 @@ class PolyLine extends ShapeBase {
   }
 
   createPath(context) {
-    const attrs = this.attr();
-    const points = attrs.points;
+    const { points, startArrow, endArrow } = this.attr();
+    const length = points.length;
     if (points.length < 2) {
       return;
     }
+    let x1 = points[0][0];
+    let y1 = points[0][1];
+    let x2 = points[length - 1][0];
+    let y2 = points[length - 1][1];
+    // 如果定义了箭头，并且是自定义箭头，线条相应缩进
+    if (startArrow && startArrow.d) {
+      const distance = ArrowUtil.getShortenOffset(x1, y1, points[1][0], points[1][1], startArrow.d);
+      x1 += distance.dx;
+      y1 += distance.dy;
+    }
+    if (endArrow && endArrow.d) {
+      const distance = ArrowUtil.getShortenOffset(points[length - 2][0], points[length - 2][1], x2, y2, endArrow.d);
+      x2 -= distance.dx;
+      y2 -= distance.dy;
+    }
+
     context.beginPath();
-    for (let i = 0; i < points.length; i++) {
+    context.moveTo(x1, y1);
+    for (let i = 0; i < length - 1; i++) {
       const point = points[i];
-      if (i === 0) {
-        context.moveTo(point[0], point[1]);
-      } else {
-        context.lineTo(point[0], point[1]);
-      }
+      context.lineTo(point[0], point[1]);
+    }
+    context.lineTo(x2, y2);
+  }
+
+  afterDrawPath(context: CanvasRenderingContext2D) {
+    const attrs = this.attr();
+    const { points, startArrow, endArrow } = this.attrs;
+    const length = points.length;
+    const x1 = points[0][0];
+    const y1 = points[0][1];
+    const x2 = points[length - 1][0];
+    const y2 = points[length - 1][1];
+
+    if (startArrow) {
+      ArrowUtil.addStartArrow(context, attrs, points[1][0], points[1][1], x1, y1);
+    }
+    if (endArrow) {
+      ArrowUtil.addEndArrow(context, attrs, points[length - 2][0], points[length - 2][1], x2, y2);
     }
   }
 
