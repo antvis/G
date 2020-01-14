@@ -16,7 +16,10 @@ class Rect extends ShapeBase {
     const attrs = super.getDefaultAttrs();
     return {
       ...attrs,
-      // 设置圆角的默认值为 0
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
       radius: 0,
     };
   }

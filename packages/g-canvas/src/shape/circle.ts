@@ -6,10 +6,20 @@
 import ShapeBase from './base';
 import { distance } from '../util/util';
 
-// 暂时不需要圆的工具方法，后续如果需要支持 pointAt，tangentAngle 时再引入
+// TODO: 暂时不需要圆的工具方法，后续如果需要支持 pointAt，tangentAngle 时再引入
 // import CircleUtil from '@antv/g-math/lib/circle';
 
 class Circle extends ShapeBase {
+  getDefaultAttrs() {
+    const attrs = super.getDefaultAttrs();
+    return {
+      ...attrs,
+      x: 0,
+      y: 0,
+      r: 0,
+    };
+  }
+
   getInnerBox(attrs) {
     const { x, y, r } = attrs;
     return {

@@ -14,6 +14,15 @@ class Polyline extends ShapeBase {
   canFill: boolean = true;
   canStroke: boolean = true;
 
+  getDefaultAttrs() {
+    const attrs = super.getDefaultAttrs();
+    return {
+      ...attrs,
+      startArrow: false,
+      endArrow: false,
+    };
+  }
+
   // 更新属性时，检测是否更改了 points
   onAttrChange(name: string, value: any, originValue: any) {
     super.onAttrChange(name, value, originValue);
