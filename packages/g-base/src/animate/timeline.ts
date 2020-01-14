@@ -190,7 +190,7 @@ class Timeline {
           }
         }
         const autoDraw = this.canvas.get('autoDraw');
-        // 非自动更新模式下，需要手动更新
+        // 非自动渲染模式下，手动调用 canvas.draw() 重新渲染
         if (!autoDraw) {
           this.canvas.draw();
         }
@@ -237,11 +237,7 @@ class Timeline {
       animator.stopAnimate(toEnd);
     });
     this.animators = [];
-    const autoDraw = this.canvas.get('autoDraw');
-    // 非自动更新模式下，需要手动更新
-    if (!autoDraw) {
-      this.canvas.draw();
-    }
+    this.canvas.draw();
   }
 
   /**

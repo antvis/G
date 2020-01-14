@@ -12,12 +12,6 @@ export interface IElement extends IBaseElement {
   draw(context: Defs);
 
   /**
-   * 裁剪
-   * @param {Defs} context 上下文
-   */
-  applyClip(context);
-
-  /**
    * 绘制图形元素
    * @param {Defs} context 上下文
    */
