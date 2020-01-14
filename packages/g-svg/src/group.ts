@@ -4,7 +4,7 @@ import { each } from '@antv/util';
 import { IElement, IGroup } from './interfaces';
 import * as Shape from './shape';
 import Defs from './defs';
-import { drawChildren, applyClipChildren, drawPathChildren, refreshElement } from './util/draw';
+import { drawChildren, drawPathChildren, refreshElement } from './util/draw';
 import { setClip } from './util/svg';
 import { SVG_ATTR_MAP } from './constant';
 
@@ -66,14 +66,6 @@ class Group extends AbstractGroup {
     this.updatePath(context);
     if (children.length) {
       drawChildren(context, children);
-    }
-  }
-
-  applyClip(context: Defs) {
-    const children = this.getChildren() as IElement[];
-    setClip(this, context);
-    if (children.length) {
-      applyClipChildren(context, children);
     }
   }
 

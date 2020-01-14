@@ -1,7 +1,7 @@
 import { AbstractCanvas } from '@antv/g-base';
 import { ChangeType } from '@antv/g-base/lib/types';
 import { IElement } from './interfaces';
-import { applyClipChildren, drawPathChildren } from './util/draw';
+import { drawPathChildren } from './util/draw';
 import { setTransform, setClip } from './util/svg';
 import { sortDom } from './util/dom';
 import EventController from '@antv/g-base/lib/event/event-contoller';
@@ -52,7 +52,7 @@ class Canvas extends AbstractCanvas {
     } else if (changeType === 'matrix') {
       setTransform(this);
     } else if (changeType === 'clip') {
-      this.applyClip(context);
+      setClip(this, context);
     } else if (changeType === 'changeSize') {
       el.setAttribute('width', `${this.get('width')}`);
       el.setAttribute('height', `${this.get('height')}`);
@@ -81,16 +81,8 @@ class Canvas extends AbstractCanvas {
   // 复写基类的 draw 方法
   draw() {
     const context = this.get('context');
-    this.applyClip(context);
-    this.drawPath(context);
-  }
-
-  applyClip(context: Defs) {
-    const children = this.getChildren() as IElement[];
     setClip(this, context);
-    if (children.length) {
-      applyClipChildren(context, children);
-    }
+    this.drawPath(context);
   }
 
   drawPath(context: Defs) {

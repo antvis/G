@@ -19,6 +19,7 @@ export function createDom(shape: IShape) {
   }
   shape.set('el', element);
   shape.set('attrs', {});
+  // 对于 defs 下的 dom 节点，parent 为空，通过 context 统一挂载到 defs 节点下
   if (parent) {
     let parentNode = parent.get('el');
     if (parentNode) {
