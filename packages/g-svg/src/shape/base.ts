@@ -98,12 +98,8 @@ class ShapeBase extends AbstractShape implements IShape {
     return (stroke || strokeStyle) && this.canStroke;
   }
 
-  applyClip(context) {
-    setClip(this, context);
-  }
-
   draw(context) {
-    this.applyClip(context);
+    setClip(this, context);
     this.drawPath(context);
   }
 

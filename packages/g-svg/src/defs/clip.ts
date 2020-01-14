@@ -19,8 +19,7 @@ class Clip {
     this.id = uniqueId('clip_');
     el.id = this.id;
     const shapeEl = cfg.cfg.el;
-    // just in case the clip shape is also a shape needs to be drawn
-    el.appendChild(shapeEl.cloneNode(true));
+    el.appendChild(shapeEl);
     this.cfg = cfg;
     return this;
   }
