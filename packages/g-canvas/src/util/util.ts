@@ -53,7 +53,7 @@ export function mergeRegion(region1, region2) {
     minX: Math.min(region1.minX, region2.minX),
     minY: Math.min(region1.minY, region2.minY),
     maxX: Math.max(region1.maxX, region2.maxX),
-    maxY: Math.max(region1.maxY, region2.maxX),
+    maxY: Math.max(region1.maxY, region2.maxY),
   };
 }
 
