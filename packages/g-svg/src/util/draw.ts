@@ -1,6 +1,6 @@
 import { ChangeType } from '@antv/g-base/lib/types';
 import { IElement } from '../interfaces';
-import { setTransform } from './svg';
+import { setTransform, setClip } from './svg';
 import { sortDom, moveTo } from './dom';
 import Defs from '../defs';
 
@@ -8,13 +8,6 @@ export function drawChildren(context: Defs, children: IElement[]) {
   children.forEach((child) => {
     child.draw(context);
   });
-}
-
-export function applyClipChildren(context: Defs, children: IElement[]) {
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    child.applyClip(context);
-  }
 }
 
 export function drawPathChildren(context: Defs, children: IElement[]) {
@@ -63,7 +56,7 @@ export function refreshElement(element: IElement, changeType: ChangeType) {
     } else if (changeType === 'matrix') {
       setTransform(element);
     } else if (changeType === 'clip') {
-      element.applyClip(context);
+      setClip(element, context);
     } else if (changeType === 'attr') {
       // 已在 afterAttrsChange 进行了处理，此处 do nothing
     } else if (changeType === 'add') {
