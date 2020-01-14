@@ -12,6 +12,17 @@ class Ellipse extends ShapeBase {
   canFill: boolean = true;
   canStroke: boolean = true;
 
+  getDefaultAttrs() {
+    const attrs = super.getDefaultAttrs();
+    return {
+      ...attrs,
+      x: 0,
+      y: 0,
+      rx: 0,
+      ry: 0,
+    };
+  }
+
   createPath(context, targetAttrs) {
     const attrs = this.attr();
     const el = this.get('el');

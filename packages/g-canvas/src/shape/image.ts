@@ -10,6 +10,17 @@ function isCanvas(dom) {
 }
 
 class ImageShape extends ShapeBase {
+  getDefaultAttrs() {
+    const attrs = super.getDefaultAttrs();
+    return {
+      ...attrs,
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    };
+  }
+
   initAttrs(attrs) {
     this._setImage(attrs.img);
   }

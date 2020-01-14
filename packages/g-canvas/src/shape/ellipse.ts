@@ -14,6 +14,17 @@ function ellipseDistance(squareX, squareY, rx, ry) {
 }
 
 class Ellipse extends ShapeBase {
+  getDefaultAttrs() {
+    const attrs = super.getDefaultAttrs();
+    return {
+      ...attrs,
+      x: 0,
+      y: 0,
+      rx: 0,
+      ry: 0,
+    };
+  }
+
   getInnerBox(attrs) {
     const { x, y, rx, ry } = attrs;
     return {
