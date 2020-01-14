@@ -24,8 +24,10 @@ describe('image test', () => {
       },
     });
     expect(image.attr('x')).eqls(10);
+    expect(image.attr('y')).eqls(10);
     expect(image.get('loading')).eqls(true);
-    expect(image.attr('width')).eqls(undefined);
+    expect(image.attr('width')).eqls(0);
+    expect(image.attr('height')).eqls(0);
     setTimeout(function() {
       expect(image.get('loading')).eqls(false);
       expect(image.attr('width')).eqls(50);

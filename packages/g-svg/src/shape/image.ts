@@ -12,6 +12,17 @@ class Image extends ShapeBase {
   canFill: boolean = false;
   canStroke: boolean = false;
 
+  getDefaultAttrs() {
+    const attrs = super.getDefaultAttrs();
+    return {
+      ...attrs,
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    };
+  }
+
   createPath(context, targetAttrs) {
     const attrs = this.attr();
     const el = this.get('el');

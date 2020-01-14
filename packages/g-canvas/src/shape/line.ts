@@ -12,6 +12,10 @@ class Line extends ShapeBase {
     const attrs = super.getDefaultAttrs();
     return {
       ...attrs,
+      x1: 0,
+      y1: 0,
+      x2: 0,
+      y2: 0,
       startArrow: false,
       endArrow: false,
     };

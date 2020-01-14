@@ -13,9 +13,14 @@ import isPointInPath from '../util/in-path/point-in-path';
 class Rect extends ShapeBase {
   getDefaultAttrs() {
     const attrs = super.getDefaultAttrs();
-    // 设置默认值
-    attrs['radius'] = 0;
-    return attrs;
+    return {
+      ...attrs,
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      radius: 0,
+    };
   }
 
   getInnerBox(attrs) {

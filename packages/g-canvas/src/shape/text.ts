@@ -13,6 +13,9 @@ class Text extends ShapeBase {
     const attrs = super.getDefaultAttrs();
     return {
       ...attrs,
+      x: 0,
+      y: 0,
+      text: null,
       fontSize: 12,
       fontFamily: 'sans-serif',
       fontStyle: 'normal',

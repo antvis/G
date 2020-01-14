@@ -48,9 +48,6 @@ class Text extends ShapeBase {
       x: 0,
       y: 0,
       text: null,
-      lineHeight: 1,
-      lineWidth: 1,
-      lineCount: 1,
       fontSize: 12,
       fontFamily: 'sans-serif',
       fontStyle: 'normal',
@@ -58,7 +55,6 @@ class Text extends ShapeBase {
       fontVariant: 'normal',
       textAlign: 'start',
       textBaseline: 'bottom',
-      textArr: null,
     };
   }
 
