@@ -12,6 +12,15 @@ class Path extends ShapeBase {
   canFill: boolean = true;
   canStroke: boolean = true;
 
+  getDefaultAttrs() {
+    const attrs = super.getDefaultAttrs();
+    return {
+      ...attrs,
+      startArrow: false,
+      endArrow: false,
+    };
+  }
+
   createPath(context, targetAttrs) {
     const attrs = this.attr();
     const el = this.get('el');
