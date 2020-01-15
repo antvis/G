@@ -3,6 +3,7 @@
  * @author dxq613@gmail.com
  */
 
+import path2Absolute from '@antv/path-util/lib/path-2-absolute';
 import ShapeBase from './base';
 import { isFunction } from '../util/util';
 import { drawPath } from '../util/draw';
@@ -27,7 +28,7 @@ const Symbols = {
   // 三角形
   triangle(x, y, r) {
     const diffY = r * Math.sin((1 / 3) * Math.PI);
-    return [['M', x - r, y + diffY], ['L', x, y - diffY], ['L', x + r, y + diffY], ['z']];
+    return [['M', x - r, y + diffY], ['L', x, y - diffY], ['L', x + r, y + diffY], ['Z']];
   },
   // 倒三角形
   'triangle-down'(x, y, r) {
@@ -78,10 +79,16 @@ class Marker extends ShapeBase {
     const { x, y, r } = attrs;
     const symbol = attrs.symbol || 'circle';
     let method;
+    let path;
     if (isFunction(symbol)) {
       method = symbol;
+      path = method(x, y, r);
+      // 将 path 转成绝对路径
+      path = path2Absolute(path);
     } else {
+      // 内置 symbol 的 path 都是绝对路径，直接绘制即可，不需要对 path 进行特殊处理
       method = Marker.Symbols[symbol];
+      path = method(x, y, r);
     }
 
     if (!method) {
@@ -89,7 +96,7 @@ class Marker extends ShapeBase {
       return null;
     }
 
-    return method(x, y, r);
+    return path;
   }
 
   createPath(context) {
