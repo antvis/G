@@ -117,6 +117,7 @@ class EventController {
   private canvas: ICanvas;
   // 正在被拖拽的图形
   private draggingShape: IShape = null;
+  private dragging: boolean = false;
   // 当前鼠标/touch所在位置的图形
   private currentShape: IShape = null;
   private mousedownShape: IShape = null;
@@ -256,8 +257,11 @@ class EventController {
 
   // drag 完成后，需要做一些清理工作
   _afterDrag(draggingShape, pointInfo, event) {
-    draggingShape.set('capture', true); // 恢复可以拾取
-    this.draggingShape = null;
+    if (draggingShape) {
+      draggingShape.set('capture', true); // 恢复可以拾取
+      this.draggingShape = null;
+    }
+    this.dragging = false;
     // drag 完成后，有可能 draggingShape 已经移动到了当前位置，所以不能直接取当前图形
     const shape = this._getShapeByPoint(pointInfo);
     // 拖拽完成后，进行 enter，leave 的判定
@@ -269,8 +273,9 @@ class EventController {
   // 按键抬起时，会终止拖拽、触发点击
   _onmouseup(pointInfo, shape, event) {
     const draggingShape = this.draggingShape;
-    if (draggingShape) {
-      if (shape) {
+    if (this.dragging) {
+      // 存在可以拖拽的图形，同时拖拽到其他图形上时触发 drag 事件
+      if (draggingShape && shape) {
         this._emitEvent('drop', event, pointInfo, shape);
       }
       this._emitEvent('dragend', event, pointInfo, draggingShape);
@@ -294,30 +299,43 @@ class EventController {
   _onmousemove(pointInfo, shape, event) {
     const preShape = this.currentShape;
     let draggingShape = this.draggingShape;
-    // 正在拖拽时会触发 dragenter, dragleave, dragover 和 drag 事件
-    if (draggingShape) {
-      this._emitDragoverEvents(event, pointInfo, preShape, shape, false);
+    // 正在拖拽时
+    if (this.dragging) {
+      // 正在拖拽中
+      if (draggingShape) {
+        // 如果拖拽了 shape 会触发 dragenter, dragleave, dragover 和 drag 事件
+        this._emitDragoverEvents(event, pointInfo, preShape, shape, false);
+      }
+      // 如果存在 draggingShape 则会在 draggingShape 上触发 drag 事件，冒泡到 canvas 上
+      // 否则在 canvas 上触发 drag 事件
       this._emitEvent('drag', event, pointInfo, draggingShape);
     } else {
-      const mousedownShape = this.mousedownShape;
-      // 只有允许 dragable 的元素才被拖拽
-      if (mousedownShape && mousedownShape.get('draggable')) {
-        const mousedownPoint = this.mousedownPoint;
+      const mousedownPoint = this.mousedownPoint;
+      if (mousedownPoint) {
+        // 当鼠标点击下去，同时移动时，进行 drag 判定
+        const mousedownShape = this.mousedownShape;
         const now = event.timeStamp;
         const timeWindow = now - this.mousedownTimeStamp;
         const dx = mousedownPoint.clientX - pointInfo.clientX;
         const dy = mousedownPoint.clientY - pointInfo.clientY;
         const dist = dx * dx + dy * dy;
         if (timeWindow > 120 || dist > CLICK_OFFSET) {
-          draggingShape = this.mousedownShape; // 拖动鼠标点下时的 shape
-          draggingShape.set('capture', false); // 禁止继续拾取，否则无法进行 dragover,dragenter,dragleave,drop的判定
+          if (mousedownShape && mousedownShape.get('draggable')) {
+            draggingShape = this.mousedownShape; // 拖动鼠标点下时的 shape
+            draggingShape.set('capture', false); // 禁止继续拾取，否则无法进行 dragover,dragenter,dragleave,drop的判定
+            this.draggingShape = draggingShape;
+          }
+          this.dragging = true;
+          // 清理按下鼠标时缓存的值
           this.mousedownShape = null;
-          this.draggingShape = draggingShape;
+          this.mousedownPoint = null;
           this._emitEvent('dragstart', event, pointInfo, draggingShape);
         } else {
+          this._emitMouseoverEvents(event, pointInfo, preShape, shape);
           this._emitEvent('mousemove', event, pointInfo, shape);
         }
       } else {
+        // 没有按键按下时，则直接触发 mouse over 相关的各种事件
         this._emitMouseoverEvents(event, pointInfo, preShape, shape);
         // 始终触发移动
         this._emitEvent('mousemove', event, pointInfo, shape);
