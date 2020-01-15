@@ -600,6 +600,10 @@ describe('test graphic events', () => {
     let startshape = null;
     let dragshape = null;
     let endshape = null;
+    let canvasstart = false;
+    canvas.on('dragstart', () => {
+      canvasstart = true;
+    });
     shape1.on('dragstart', (ev) => {
       startshape = ev.shape;
     });
@@ -624,13 +628,14 @@ describe('test graphic events', () => {
       clientY,
     });
     expect(startshape).eql(null);
-
+    expect(canvasstart).eql(false);
     simulateMouseEvent(element, 'mousemove', {
       clientX: clientX + 10,
       clientY,
     });
 
     expect(startshape).eql(shape1);
+    expect(canvasstart).eql(true);
     expect(shape1.get('capture')).eql(false);
     expect(dragshape).eql(null);
 
@@ -650,6 +655,64 @@ describe('test graphic events', () => {
     expect(shape1.get('capture')).eql(true);
     shape1.set('draggable', false);
     shape1.off();
+  });
+
+  it('canvas drag', () => {
+    let start = false;
+    let drag = false;
+    let end = false;
+    let shapeStart = false;
+    canvas.on('dragstart', () => {
+      start = true;
+    });
+
+    shape1.on('dragstart', () => {
+      shapeStart = true;
+    });
+
+    canvas.on('drag', () => {
+      drag = true;
+    });
+
+    canvas.on('dragend', () => {
+      end = true;
+    });
+
+    const { clientX, clientY } = getClientPoint(10, 10);
+    simulateMouseEvent(element, 'mousedown', {
+      clientX,
+      clientY,
+    });
+    expect(start).eql(false);
+    simulateMouseEvent(element, 'mousemove', {
+      clientX: clientX + 2,
+      clientY,
+    });
+    expect(start).eql(false);
+    simulateMouseEvent(element, 'mousemove', {
+      clientX: clientX + 10,
+      clientY,
+    });
+    expect(start).eql(true);
+    expect(shapeStart).eql(false);
+    simulateMouseEvent(element, 'mousemove', {
+      clientX: clientX + 11,
+      clientY,
+    });
+    expect(drag).eql(true);
+    simulateMouseEvent(element, 'mouseup', {
+      clientX,
+      clientY,
+    });
+    expect(end).eql(true);
+    drag = false;
+    simulateMouseEvent(element, 'mousemove', {
+      clientX: clientX + 11,
+      clientY,
+    });
+    expect(drag).eql(false);
+    shape1.off();
+    canvas.off();
   });
 
   it('dragover, dragenter, dragleave, drop', () => {
@@ -674,7 +737,6 @@ describe('test graphic events', () => {
     shape6.on('drop', () => {
       dropCalled = true;
     });
-
     // 移动到 shape4
     const { clientX, clientY } = getClientPoint(200, 200);
     simulateMouseEvent(element, 'mousemove', {
@@ -686,13 +748,13 @@ describe('test graphic events', () => {
       clientX,
       clientY,
     });
-
     // 移动几像素，开始拖动
     simulateMouseEvent(element, 'mousemove', {
       clientX: clientX + 10,
       clientY,
     });
     expect(enterCalled).eql(false);
+
     // 继续移动 shape5
     simulateMouseEvent(element, 'mousemove', {
       clientX: clientX + 10,
