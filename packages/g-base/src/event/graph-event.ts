@@ -1,4 +1,5 @@
 import { IShape } from '../interfaces';
+import { LooseObject } from '../types';
 
 class GraphEvent {
   /**
@@ -40,17 +41,17 @@ class GraphEvent {
    * 触发对象
    * @type {object}
    */
-  target: object = null;
+  target: LooseObject = null;
   /**
    * 监听对象
    * @type {object}
    */
-  currentTarget: object = null;
+  currentTarget: LooseObject = null;
   /**
    * 委托对象
    * @type {object}
    */
-  delegateTarget: object = null;
+  delegateTarget: LooseObject = null;
   /**
    * 委托事件监听对象的代理对象，即 ev.delegateObject = ev.currentTarget.get('delegateObject')
    * @type {object}
