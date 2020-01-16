@@ -7,6 +7,7 @@ import { ICanvas, IShape, IBase } from '../interfaces';
 import { each } from '../util/util';
 const TIME_INTERVAL = 120; // 判断拖拽和点击
 const CLICK_OFFSET = 40;
+const LEFT_BTN_CODE = 0;
 const DELEGATION_SPLIT = ':';
 const WILDCARD = '*';
 
@@ -272,21 +273,25 @@ class EventController {
   }
   // 按键抬起时，会终止拖拽、触发点击
   _onmouseup(pointInfo, shape, event) {
-    const draggingShape = this.draggingShape;
-    if (this.dragging) {
-      // 存在可以拖拽的图形，同时拖拽到其他图形上时触发 drag 事件
-      if (draggingShape && shape) {
-        this._emitEvent('drop', event, pointInfo, shape);
+    // eevent.button === 0 表示鼠标左键事件，此处加上判断主要是为了避免右键鼠标会触发 mouseup 和 click 事件
+    // ref: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
+    if (event.button === LEFT_BTN_CODE) {
+      const draggingShape = this.draggingShape;
+      if (this.dragging) {
+        // 存在可以拖拽的图形，同时拖拽到其他图形上时触发 drag 事件
+        if (draggingShape && shape) {
+          this._emitEvent('drop', event, pointInfo, shape);
+        }
+        this._emitEvent('dragend', event, pointInfo, draggingShape);
+        this._afterDrag(draggingShape, pointInfo, event);
+      } else {
+        this._emitEvent('mouseup', event, pointInfo, shape); // 先触发 mouseup 再触发 click
+        if (shape === this.mousedownShape) {
+          this._emitEvent('click', event, pointInfo, shape);
+        }
+        this.mousedownShape = null;
+        this.mousedownPoint = null;
       }
-      this._emitEvent('dragend', event, pointInfo, draggingShape);
-      this._afterDrag(draggingShape, pointInfo, event);
-    } else {
-      this._emitEvent('mouseup', event, pointInfo, shape); // 先触发 mouseup 再触发 click
-      if (shape === this.mousedownShape) {
-        this._emitEvent('click', event, pointInfo, shape);
-      }
-      this.mousedownShape = null;
-      this.mousedownPoint = null;
     }
   }
   // 当触发浏览器的 dragover 事件时，不会再触发mousemove ，所以这时候的 dragenter, dragleave 事件需要重新处理
