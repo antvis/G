@@ -711,6 +711,7 @@ describe('test graphic events', () => {
       clientY,
     });
     expect(drag).eql(false);
+
     shape1.off();
     canvas.off();
   });
@@ -992,10 +993,65 @@ describe('test graphic events', () => {
     canvas.off();
   });
 
+  it('canvas out drag, dragend', () => {
+    let draged = false;
+    let end = false;
+    let dragPoint;
+    shape4.set('draggable', true);
+
+    shape4.on('drag', (ev) => {
+      draged = true;
+      dragPoint = {
+        x: ev.x,
+        y: ev.y,
+      };
+    });
+
+    shape4.on('dragend', () => {
+      end = true;
+    });
+
+    // 移动到 shape4
+    const { clientX, clientY } = getClientPoint(200, 200);
+    simulateMouseEvent(element, 'mousemove', {
+      clientX,
+      clientY,
+    });
+
+    // 按下鼠标
+    simulateMouseEvent(element, 'mousedown', {
+      clientX,
+      clientY,
+    });
+    // 移动几像素，开始拖动
+    simulateMouseEvent(element, 'mousemove', {
+      clientX: clientX + 10,
+      clientY,
+    });
+
+    // 直接在 document 上移动
+    simulateMouseEvent(document, 'mousemove', {
+      clientX: clientX - 210,
+      clientY,
+    });
+    expect(draged).eql(true);
+    expect(dragPoint).eqls({ x: -10, y: 200 });
+
+    simulateMouseEvent(document, 'mouseup', {
+      clientX: clientX - 210,
+      clientY,
+    });
+
+    expect(end).eql(true);
+    shape4.set('draggable', false);
+    shape4.off();
+  });
+
   it('canvas mouseenter, mouseleave', () => {
     let enterCalled = false;
     let enterShape = null;
     let enterShapeCalled = false;
+    let leaveShapeCalled = false;
 
     shape1.on('mouseenter', () => {
       enterShapeCalled = true;
@@ -1008,6 +1064,11 @@ describe('test graphic events', () => {
 
     let leaveCalled = false;
     let leaveShape = null;
+
+    shape4.on('mouseleave', () => {
+      leaveShapeCalled = true;
+    });
+
     canvas.on('mouseleave', (ev) => {
       leaveCalled = true;
       leaveShape = ev.fromShape;
@@ -1049,7 +1110,7 @@ describe('test graphic events', () => {
       clientX: clientX + 501,
       clientY: clientY + 501,
     });
-
+    expect(leaveShapeCalled).eql(true);
     expect(leaveShape).eql(shape4);
     canvas.off();
     shape1.off();

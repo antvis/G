@@ -1,5 +1,10 @@
 import { IShape, ICtor } from './interfaces';
 
+/** 对象 */
+export interface LooseObject {
+  [key: string]: any;
+}
+
 export type BBox = {
   x: number;
   y: number;

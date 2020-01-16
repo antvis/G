@@ -139,6 +139,26 @@ class EventController {
     each(EVENTS, (eventName) => {
       el.addEventListener(eventName, this._eventCallback);
     });
+
+    if (document) {
+      // 处理移动到外面没有触发 shape mouse leave 的事件
+      // 处理拖拽到外部的问题
+      document.addEventListener('mousemove', this._onDocumentMove);
+      // 处理拖拽过程中在外部释放鼠标的问题
+      document.addEventListener('mouseup', this._onDocumentMouseUp);
+    }
+  }
+
+  // 清理事件
+  _clearEvents() {
+    const el = this.canvas.get('el');
+    each(EVENTS, (eventName) => {
+      el.removeEventListener(eventName, this._eventCallback);
+    });
+    if (document) {
+      document.removeEventListener('mousemove', this._onDocumentMove);
+      document.removeEventListener('mouseup', this._onDocumentMouseUp);
+    }
   }
 
   _getEventObj(type, event, point, target, fromShape, toShape) {
@@ -165,22 +185,24 @@ class EventController {
   _getShapeByPoint(point) {
     return this.canvas.getShape(point.x, point.y);
   }
-
-  // 触发事件
-  _triggerEvent(type, ev) {
+  // 获取事件的当前点的信息
+  _getPointInfo(ev) {
     const canvas = this.canvas;
-    const el = canvas.get('el');
     const clientPoint = getClientPoint(ev);
     const point = canvas.getPointByClient(clientPoint.clientX, clientPoint.clientY);
-    // 每次都获取图形有一定成本，后期可以考虑进行缓存策略
-    const shape = this._getShapeByPoint(point);
-
-    const pointInfo = {
+    return {
       x: point.x,
       y: point.y,
       clientX: clientPoint.clientX,
       clientY: clientPoint.clientY,
     };
+  }
+
+  // 触发事件
+  _triggerEvent(type, ev) {
+    const pointInfo = this._getPointInfo(ev);
+    // 每次都获取图形有一定成本，后期可以考虑进行缓存策略
+    const shape = this._getShapeByPoint(pointInfo);
     const method = this[`_on${type}`];
     if (method) {
       method.call(this, pointInfo, shape, event);
@@ -204,9 +226,46 @@ class EventController {
     this.currentShape = shape;
     // 当鼠标从画布移动到 shape 或者从 preShape 移动到 shape 时，应用 shape 上的鼠标样式
     if (shape && !shape.get('destroyed')) {
+      const canvas = this.canvas;
+      const el = canvas.get('el');
       el.style.cursor = shape.attr('cursor') || canvas.get('cursor');
     }
   }
+
+  // 在 document 处理拖拽到画布外的事件，处理从图形上移除画布未被捕捉的问题
+  _onDocumentMove = (ev: Event) => {
+    const canvas = this.canvas;
+    const el = canvas.get('el');
+    if (el !== ev.target) {
+      // 不在 canvas 上移动
+      if (this.dragging || this.currentShape) {
+        const pointInfo = this._getPointInfo(ev);
+        // 还在拖拽过程中
+        if (this.dragging) {
+          this._emitEvent('drag', ev, pointInfo, this.draggingShape);
+        }
+        // 说明从某个图形直接移动到了画布外面
+        if (this.currentShape) {
+          this._emitEvent('mouseleave', ev, pointInfo, this.currentShape, this.currentShape, null);
+          this.currentShape = null;
+        }
+      }
+    }
+  };
+  // 在 document 上处理拖拽到外面，释放鼠标时触发 dragend
+  _onDocumentMouseUp = (ev) => {
+    const canvas = this.canvas;
+    const el = canvas.get('el');
+    if (el !== ev.target) {
+      // 不在 canvas 上移动
+      if (this.dragging) {
+        const pointInfo = this._getPointInfo(ev);
+        this._emitEvent('dragend', ev, pointInfo, this.draggingShape);
+        this._afterDrag(this.draggingShape, pointInfo, ev);
+      }
+    }
+  };
+
   // 记录下点击的位置、图形，便于拖拽事件、click 事件的判定
   _onmousedown(pointInfo, shape, event) {
     // 只有鼠标左键的 mousedown 事件才会设置 mousedownShape 等属性，避免鼠标右键的 mousedown 事件引起其他事件发生
@@ -349,14 +408,6 @@ class EventController {
         this._emitEvent('mousemove', event, pointInfo, shape);
       }
     }
-  }
-
-  // 清理事件
-  _clearEvents() {
-    const el = this.canvas.get('el');
-    each(EVENTS, (eventName) => {
-      el.removeEventListener(eventName, this._eventCallback);
-    });
   }
 
   // 触发事件
