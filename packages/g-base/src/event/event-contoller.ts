@@ -209,9 +209,12 @@ class EventController {
   }
   // 记录下点击的位置、图形，便于拖拽事件、click 事件的判定
   _onmousedown(pointInfo, shape, event) {
-    this.mousedownShape = shape;
-    this.mousedownPoint = pointInfo;
-    this.mousedownTimeStamp = event.timeStamp;
+    // 只有鼠标左键的 mousedown 事件才会设置 mousedownShape 等属性，避免鼠标右键的 mousedown 事件引起其他事件发生
+    if (event.button === LEFT_BTN_CODE) {
+      this.mousedownShape = shape;
+      this.mousedownPoint = pointInfo;
+      this.mousedownTimeStamp = event.timeStamp;
+    }
     this._emitEvent('mousedown', event, pointInfo, shape, null, null); // mousedown 不考虑fromShape, toShape
   }
 
