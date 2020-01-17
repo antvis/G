@@ -996,6 +996,9 @@ describe('test graphic events', () => {
   it('canvas out drag, dragend', () => {
     let draged = false;
     let end = false;
+    let drop = false;
+    let leave = false;
+    let enter = false;
     let dragPoint;
     shape4.set('draggable', true);
 
@@ -1009,6 +1012,18 @@ describe('test graphic events', () => {
 
     shape4.on('dragend', () => {
       end = true;
+    });
+
+    canvas.on('drop', () => {
+      drop = true;
+    });
+
+    canvas.on('dragleave', () => {
+      leave = true;
+    });
+
+    canvas.on('dragenter', () => {
+      enter = true;
     });
 
     // 移动到 shape4
@@ -1028,6 +1043,21 @@ describe('test graphic events', () => {
       clientX: clientX + 10,
       clientY,
     });
+    expect(leave).eql(false);
+    // 离开画布
+    simulateMouseEvent(element, 'mouseleave', {
+      clientX: clientX + 200,
+      clientY,
+    });
+
+    expect(leave).eql(true);
+    expect(enter).eql(false);
+    // 离开画布
+    simulateMouseEvent(element, 'mouseenter', {
+      clientX: clientX + 200,
+      clientY,
+    });
+    expect(enter).eql(true);
 
     // 直接在 document 上移动
     simulateMouseEvent(document, 'mousemove', {
@@ -1043,8 +1073,10 @@ describe('test graphic events', () => {
     });
 
     expect(end).eql(true);
+    expect(drop).eql(true);
     shape4.set('draggable', false);
     shape4.off();
+    canvas.off();
   });
 
   it('canvas mouseenter, mouseleave', () => {
