@@ -214,11 +214,18 @@ class EventController {
         if (shape) {
           this._emitEvent(type, event, pointInfo, shape, null, shape); // 再触发图形的事件
         }
+        if (type === 'mouseenter' && this.draggingShape) {
+          // 如果正在拖拽图形, 则触发 dragleave
+          this._emitEvent('dragenter', event, pointInfo, null);
+        }
       } else if (type === 'mouseleave' || type === 'dragleave' || type === 'mouseout') {
         if (preShape) {
           this._emitEvent(type, event, pointInfo, preShape, preShape, null); // 先触发图形的事件
         }
         this._emitEvent(type, event, pointInfo, null, preShape, null); // 再触发离开画布事件
+        if (type === 'mouseleave' && this.draggingShape) {
+          this._emitEvent('dragleave', event, pointInfo, null);
+        }
       } else {
         this._emitEvent(type, event, pointInfo, shape, null, null); // 一般事件中不需要考虑 from, to
       }
@@ -260,6 +267,10 @@ class EventController {
       // 不在 canvas 上移动
       if (this.dragging) {
         const pointInfo = this._getPointInfo(ev);
+        if (this.draggingShape) {
+          // 如果存在拖拽的图形，则也触发 drop 事件
+          this._emitEvent('drop', ev, pointInfo, null);
+        }
         this._emitEvent('dragend', ev, pointInfo, this.draggingShape);
         this._afterDrag(this.draggingShape, pointInfo, ev);
       }
@@ -341,7 +352,7 @@ class EventController {
       const draggingShape = this.draggingShape;
       if (this.dragging) {
         // 存在可以拖拽的图形，同时拖拽到其他图形上时触发 drag 事件
-        if (draggingShape && shape) {
+        if (draggingShape) {
           this._emitEvent('drop', event, pointInfo, shape);
         }
         this._emitEvent('dragend', event, pointInfo, draggingShape);
@@ -356,8 +367,10 @@ class EventController {
       }
     }
   }
+
   // 当触发浏览器的 dragover 事件时，不会再触发mousemove ，所以这时候的 dragenter, dragleave 事件需要重新处理
   _ondragover(pointInfo, shape, event) {
+    event.preventDefault(); // 如果不对 dragover 进行 preventDefault，则不会在 canvas 上触发 drop 事件
     const preShape = this.currentShape;
     this._emitDragoverEvents(event, pointInfo, preShape, shape, true);
   }
