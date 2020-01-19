@@ -29,6 +29,9 @@ export function applyAttrsToContext(context: CanvasRenderingContext2D, element: 
         // 如果存在渐变、pattern 这个开销有些大
         // 可以考虑缓存机制，通过 hasUpdate 来避免一些运算
         v = parseStyle(context, element, v);
+      } else if (name === 'globalAlpha') {
+        // opacity 效果可以叠加，子元素的 opacity 需要与父元素 opacity 相乘
+        v = v * context.globalAlpha;
       }
       context[name] = v;
     }
