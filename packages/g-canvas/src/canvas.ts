@@ -26,9 +26,13 @@ class Canvas extends AbstractCanvas {
    * @param {ChangeType} changeType 改变的类型
    */
   onCanvasChange(changeType: ChangeType) {
-    // 排序时图形的层次发生变化，
-    // 画布大小改变可能也会引起变化
-    if (changeType === 'sort' || changeType === 'changeSize') {
+    /**
+     * 触发画布更新的三种 changeType
+     * 1. attr: 修改画布的绘图属性
+     * 2. sort: 画布排序，图形的层次会发生变化
+     * 3. changeSize: 改变画布大小
+     */
+    if (changeType === 'attr' || changeType === 'sort' || changeType === 'changeSize') {
       this.set('refreshElements', [this]);
       this.draw();
     }

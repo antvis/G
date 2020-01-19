@@ -21,7 +21,6 @@ class ShapeBase extends AbstractShape implements IShape {
       ...attrs,
       lineWidth: 1,
       lineAppendWidth: 0,
-      opacity: 1,
       strokeOpacity: 1,
       fillOpacity: 1,
     };

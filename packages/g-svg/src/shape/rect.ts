@@ -28,7 +28,6 @@ class Rect extends ShapeBase {
     const attrs = this.attr();
     const el = this.get('el');
     el.setAttribute('d', this._assembleRect(attrs));
-    // console.log(el.parentNode);
   }
 
   _assembleRect(attrs) {

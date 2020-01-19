@@ -14,7 +14,6 @@ class ShapeBase extends AbstractShape {
       ...attrs,
       lineWidth: 1,
       lineAppendWidth: 0,
-      opacity: 1,
       strokeOpacity: 1,
       fillOpacity: 1,
     };
