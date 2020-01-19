@@ -109,6 +109,7 @@ abstract class Element extends Base implements IElement {
   getDefaultAttrs() {
     return {
       matrix: this.getDefaultMatrix(),
+      opacity: 1,
     };
   }
 
