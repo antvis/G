@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-canvas",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "description": "A canvas library which providing 2d",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -55,7 +55,7 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g-base": "^0.3.11",
+    "@antv/g-base": "^0.3.12",
     "@antv/g-math": "^0.1.1",
     "@antv/gl-matrix": "~2.7.1",
     "@antv/path-util": "~2.0.3-beta.1",
