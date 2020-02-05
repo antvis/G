@@ -204,6 +204,7 @@ class EventController {
     // 每次都获取图形有一定成本，后期可以考虑进行缓存策略
     const shape = this._getShapeByPoint(pointInfo);
     const method = this[`_on${type}`];
+    let leaveCanvas = false;
     if (method) {
       method.call(this, pointInfo, shape, event);
     } else {
@@ -219,6 +220,7 @@ class EventController {
           this._emitEvent('dragenter', event, pointInfo, null);
         }
       } else if (type === 'mouseleave' || type === 'dragleave' || type === 'mouseout') {
+        leaveCanvas = true;
         if (preShape) {
           this._emitEvent(type, event, pointInfo, preShape, preShape, null); // 先触发图形的事件
         }
@@ -230,7 +232,9 @@ class EventController {
         this._emitEvent(type, event, pointInfo, shape, null, null); // 一般事件中不需要考虑 from, to
       }
     }
-    this.currentShape = shape;
+    if (!leaveCanvas) {
+      this.currentShape = shape;
+    }
     // 当鼠标从画布移动到 shape 或者从 preShape 移动到 shape 时，应用 shape 上的鼠标样式
     if (shape && !shape.get('destroyed')) {
       const canvas = this.canvas;
@@ -251,11 +255,12 @@ class EventController {
         if (this.dragging) {
           this._emitEvent('drag', ev, pointInfo, this.draggingShape);
         }
-        // 说明从某个图形直接移动到了画布外面
-        if (this.currentShape) {
-          this._emitEvent('mouseleave', ev, pointInfo, this.currentShape, this.currentShape, null);
-          this.currentShape = null;
-        }
+        // 说明从某个图形直接移动到了画布外面，
+        // 修复了 mouseleave 的 bug 后不再出现这种情况
+        // if (this.currentShape) {
+        //   this._emitEvent('mouseleave', ev, pointInfo, this.currentShape, this.currentShape, null);
+        //   this.currentShape = null;
+        // }
       }
     }
   };

@@ -2,8 +2,7 @@ const expect = require('chai').expect;
 import Canvas from '../../src/canvas';
 // import { transform } from '@antv/matrix-util';
 // import { getColor } from '../get-color';
-
-export function simulateMouseEvent(dom, type, cfg) {
+function simulateMouseEvent(dom, type, cfg) {
   const event = new MouseEvent(type, cfg);
   dom.dispatchEvent(event);
 }
