@@ -662,6 +662,8 @@ describe('test graphic events', () => {
     let drag = false;
     let end = false;
     let shapeStart = false;
+    shape1.set('draggable', true);
+
     canvas.on('dragstart', () => {
       start = true;
     });
@@ -694,7 +696,7 @@ describe('test graphic events', () => {
       clientY,
     });
     expect(start).eql(true);
-    expect(shapeStart).eql(false);
+    expect(shapeStart).eql(true);
     simulateMouseEvent(element, 'mousemove', {
       clientX: clientX + 11,
       clientY,
