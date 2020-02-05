@@ -382,6 +382,7 @@ class EventController {
 
   // 大量的图形事件，都通过 mousemove 模拟
   _onmousemove(pointInfo, shape, event) {
+    const canvas = this.canvas;
     const preShape = this.currentShape;
     let draggingShape = this.draggingShape;
     // 正在拖拽时
@@ -406,15 +407,26 @@ class EventController {
         const dist = dx * dx + dy * dy;
         if (timeWindow > 120 || dist > CLICK_OFFSET) {
           if (mousedownShape && mousedownShape.get('draggable')) {
+            // 设置了 draggable 的 shape 才能触发 drag 相关的事件
             draggingShape = this.mousedownShape; // 拖动鼠标点下时的 shape
             draggingShape.set('capture', false); // 禁止继续拾取，否则无法进行 dragover,dragenter,dragleave,drop的判定
             this.draggingShape = draggingShape;
+            this.dragging = true;
+            this._emitEvent('dragstart', event, pointInfo, draggingShape);
+            // 清理按下鼠标时缓存的值
+            this.mousedownShape = null;
+            this.mousedownPoint = null;
+          } else if (!mousedownShape && canvas.get('draggable')) {
+            // 设置了 draggable 的 canvas 才能触发 drag 相关的事件
+            this.dragging = true;
+            this._emitEvent('dragstart', event, pointInfo, null);
+            // 清理按下鼠标时缓存的值
+            this.mousedownShape = null;
+            this.mousedownPoint = null;
+          } else {
+            this._emitMouseoverEvents(event, pointInfo, preShape, shape);
+            this._emitEvent('mousemove', event, pointInfo, shape);
           }
-          this.dragging = true;
-          // 清理按下鼠标时缓存的值
-          this.mousedownShape = null;
-          this.mousedownPoint = null;
-          this._emitEvent('dragstart', event, pointInfo, draggingShape);
         } else {
           this._emitMouseoverEvents(event, pointInfo, preShape, shape);
           this._emitEvent('mousemove', event, pointInfo, shape);
@@ -451,7 +463,7 @@ class EventController {
     } else {
       // 如果没有 shape 直接在 canvas 上触发
       const canvas = this.canvas;
-      // 直接触发 canavas 上的事件
+      // 直接触发 canvas 上的事件
       emitTargetEvent(canvas, type, eventObj);
     }
   }
