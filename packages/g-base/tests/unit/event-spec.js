@@ -1238,6 +1238,19 @@ describe('test graphic events', () => {
     expect(dropShape).eql(shape1);
   });
 
+  it('canvas mousewheel', () => {
+    let called = false;
+    canvas.on('mousewheel', () => {
+      called = true;
+    });
+    const { clientX, clientY } = getClientPoint(10, 10);
+    simulateMouseEvent(element, 'mousewheel', {
+      clientX: clientX + 10,
+      clientY: clientY + 10,
+    });
+    expect(called).eql(true);
+  });
+
   it('destroy', () => {
     controller.destroy();
     expect(controller.canvas).eql(null);
