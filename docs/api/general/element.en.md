@@ -113,6 +113,10 @@ redirect_from:
 
 - 隐藏元素；
 
+### setZIndex(zIndex: number)
+
+- 设置元素的 `zIndex`；
+
 ### toFront()
 
 - 将元素层级放置最前面；
