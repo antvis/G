@@ -53,7 +53,12 @@ describe('test canvas', () => {
     expect(el.style.width).eqls('600px');
     expect(el.style.height).eqls('600px');
   });
-
+  it('set cursor', () => {
+    expect(canvas.get('cursor')).eql('default');
+    canvas.setCursor('pointer');
+    expect(canvas.get('cursor')).eql('pointer');
+    expect(canvas.get('el').style.cursor).eql('pointer');
+  });
   it('destroy', () => {
     canvas.destroy();
     expect(canvas.destroyed).eqls(true);

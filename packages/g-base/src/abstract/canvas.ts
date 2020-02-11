@@ -113,6 +113,11 @@ abstract class Canvas extends Container implements ICanvas {
    */
   setCursor(cursor: Cursor) {
     this.set('cursor', cursor);
+    const el = this.get('el');
+    if (isBrowser && el) {
+      // 直接设置样式，不等待鼠标移动时再设置
+      el.style.cursor = cursor;
+    }
   }
 
   // 实现接口
