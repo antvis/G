@@ -230,6 +230,16 @@ abstract class Element extends Base implements IElement {
     return this;
   }
 
+  setZIndex(zIndex: number) {
+    this.set('zIndex', zIndex);
+    const parent = this.getParent();
+    if (parent) {
+      // 改变 zIndex 不应该立即触发渲染 (调用 onCanvasChange('zIndex'))，需要经过 sort 再触发
+      parent.sort();
+    }
+    return this;
+  }
+
   toFront() {
     const parent = this.getParent();
     if (!parent) {
