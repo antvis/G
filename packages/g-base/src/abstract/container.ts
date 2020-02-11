@@ -435,6 +435,19 @@ abstract class Container extends Element implements IContainer {
   }
 
   /**
+   * 该方法即将废弃，不建议使用
+   * 根据 className 查找元素
+   * TODO: 该方式定义暂时只给 G6 3.3 以后的版本使用，待 G6 中的 findByClassName 方法移除后，G 也需要同步移除
+   * @param {string} className 元素 className
+   * @return {IElement | null} 元素
+   */
+  findByClassName(className: string): IElement {
+    return this.find((element) => {
+      return element.get('className') === className;
+    });
+  }
+
+  /**
    * 根据 name 查找元素列表
    * @param {string}      name 元素名称
    * @return {IElement[]} 元素
