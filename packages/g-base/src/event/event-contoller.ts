@@ -28,6 +28,7 @@ const EVENTS = [
   'dragleave',
   'drop',
   'contextmenu',
+  'mousewheel',
 ];
 
 // 是否元素的父容器
