@@ -465,6 +465,9 @@ abstract class Element extends Base implements IElement {
     if (isFunction(toAttrs)) {
       onFrame = toAttrs as OnFrame;
       toAttrs = {};
+    } else if (isObject(toAttrs) && (toAttrs as any).onFrame) {
+      // 兼容 3.0 中的写法，onFrame 可在 toAttrs 中设置
+      onFrame = (toAttrs as any).onFrame as OnFrame;
     }
     // 第二个参数，既可以是执行时间 duration，也可以是动画参数 animateCfg
     if (isObject(duration)) {
