@@ -151,7 +151,7 @@ redirect_from:
 
 - 将当前矩阵应用到向量 `vector` 上；
 
-### invertFromMatrix
+### invertFromMatrix(v: number[]): number[]
 
 - 根据当前矩阵，将向量转换相对于 `图形` 或 `图形分组` 的位置；
 
@@ -162,6 +162,38 @@ redirect_from:
 ### applyMatrix(matrix)
 
 - 应用父元素的矩阵，用以计算当前元素总的矩阵；
+
+### translate(translateX, translateY)
+
+- 移动元素；
+
+### move(targetX, targetY)
+
+- 移动元素到目标位置 `(targetX, targetY)`；
+
+### moveTo(targetX, targetY)
+
+- 移动元素到目标位置 `(targetX, targetY)`，等价于 `move` 方法。由于 `moveTo` 相比 `move` 的语义性更强，不容易引起歧义，因此更推荐使用 `moveTo` 方法；
+
+### scale(ratio)
+
+- 缩放元素，其中 `ratio` 为各个方向的缩放比例；
+
+### scale(ratioX, ratioY)
+
+- 缩放元素，其中 `ratioX` 和 `ratioY` 分别为 X 和 Y 方向的缩放比例；
+
+### rotate(radian)
+
+- 以画布左上角 `(0, 0)` 为中心旋转元素，其中 `radian` 为弧度值；
+
+### rotateAtStart(radian)
+
+- 以起始点为中心旋转元素，其中 `radian` 为弧度值；
+
+### rotateAtPoint(radian)
+
+- 以任意点 `(x, y)` 为中心旋转元素，其中 `radian` 为弧度值；
 
 ## 事件方法
 

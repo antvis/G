@@ -293,6 +293,66 @@ export interface IElement extends IBase {
    * @param  {GraphEvent}  eventObj 事件对象
    */
   emitDelegation(type: string, eventObj: GraphEvent): void;
+
+  /**
+   * 移动元素
+   * @param {number} translateX x 轴方向的移动距离
+   * @param {number} translateY y 轴方向的移动距离
+   * @return {IElement} 元素
+   */
+  translate(translateX: number, translateY?: number): IElement;
+
+  /**
+   * 移动元素到目标位置
+   * @param {number} targetX 目标位置的 x 轴坐标
+   * @param {number} targetY 目标位置的 y 轴坐标
+   * @return {IElement} 元素
+   */
+  move(targetX: number, targetY: number): IElement;
+
+  /**
+   * 移动元素到目标位置，等价于 move 方法。由于 moveTo 的语义性更强，因此在文档中推荐使用 moveTo 方法
+   * @param {number} targetX 目标位置的 x 轴坐标
+   * @param {number} targetY 目标位置的 y 轴坐标
+   * @return {IElement} 元素
+   */
+  moveTo(targetX: number, targetY: number): IElement;
+
+  /**
+   * 缩放元素
+   * @param {number} ratio 各个方向的缩放比例
+   * @return {IElement} 元素
+   */
+  scale(ratio: number): IElement;
+
+  /**
+   * 缩放元素
+   * @param {number} ratioX x 方向的缩放比例
+   * @param {number} ratioY y 方向的缩放比例
+   * @return {IElement} 元素
+   */
+  scale(ratioX: number, ratioY: number): IElement;
+
+  /**
+   * 以画布左上角 (0, 0) 为中心旋转元素
+   * @param {number} radian 旋转角度(弧度值)
+   * @return {IElement} 元素
+   */
+  rotate(radian: number): IElement;
+
+  /**
+   * 以起始点为中心旋转元素
+   * @param {number} radian 旋转角度(弧度值)
+   * @return {IElement} 元素
+   */
+  rotateAtStart(rotate: number): IElement;
+
+  /**
+   * 以任意点 (x, y) 为中心旋转元素
+   * @param {number} radian 旋转角度(弧度值)
+   * @return {IElement} 元素
+   */
+  rotateAtPoint(x: number, y: number, rotate: number): IElement;
 }
 
 export interface IContainer extends IElement {

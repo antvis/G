@@ -1,4 +1,5 @@
 import { each, isEqual, isFunction, isNumber, isObject, isArray, noop, mix, upperFirst, uniqueId } from '@antv/util';
+import { transform } from '@antv/matrix-util';
 import { IElement, IShape, IGroup, ICanvas, ICtor } from '../interfaces';
 import { ClipCfg, ChangeType, OnFrame, ShapeAttrs, AnimateCfg, Animation, BBox, ShapeBase } from '../types';
 import { removeFromArray } from '../util/util';
@@ -613,6 +614,100 @@ abstract class Element extends Base implements IElement {
         }
       }
     }
+  }
+
+  /**
+   * 移动元素
+   * @param {number} translateX 水平移动距离
+   * @param {number} translateY 垂直移动距离
+   * @return {IElement} 元素
+   */
+  translate(translateX: number = 0, translateY: number = 0) {
+    const matrix = this.getMatrix();
+    const newMatrix = transform(matrix, [['t', translateX, translateY]]);
+    this.setMatrix(newMatrix);
+    return this;
+  }
+
+  /**
+   * 移动元素到目标位置
+   * @param {number} targetX 目标位置的水平坐标
+   * @param {number} targetX 目标位置的垂直坐标
+   * @return {IElement} 元素
+   */
+  move(targetX: number, targetY: number) {
+    const x = this.attr('x') || 0;
+    const y = this.attr('y') || 0;
+    this.translate(targetX - x, targetY - y);
+    return this;
+  }
+
+  /**
+   * 移动元素到目标位置，等价于 move 方法。由于 moveTo 的语义性更强，因此在文档中推荐使用 moveTo 方法
+   * @param {number} targetX 目标位置的 x 轴坐标
+   * @param {number} targetY 目标位置的 y 轴坐标
+   * @return {IElement} 元素
+   */
+  moveTo(targetX: number, targetY: number) {
+    return this.move(targetX, targetY);
+  }
+
+  /**
+   * 缩放元素
+   * @param {number} ratioX 水平缩放比例
+   * @param {number} ratioY 垂直缩放比例
+   * @return {IElement} 元素
+   */
+  scale(ratioX: number, ratioY?: number) {
+    const matrix = this.getMatrix();
+    const newMatrix = transform(matrix, [['s', ratioX, ratioY || ratioX]]);
+    this.setMatrix(newMatrix);
+    return this;
+  }
+
+  /**
+   * 以画布左上角 (0, 0) 为中心旋转元素
+   * @param {number} radian 旋转角度(弧度值)
+   * @return {IElement} 元素
+   */
+  rotate(radian: number) {
+    const matrix = this.getMatrix();
+    const newMatrix = transform(matrix, [['r', radian]]);
+    this.setMatrix(newMatrix);
+    return this;
+  }
+
+  /**
+   * 以起始点为中心旋转元素
+   * @param {number} radian 旋转角度(弧度值)
+   * @return {IElement} 元素
+   */
+  rotateAtStart(rotate: number): IElement {
+    const { x, y } = this.attr();
+    const matrix = this.getMatrix();
+    const newMatrix = transform(matrix, [
+      ['t', -x, -y],
+      ['r', rotate],
+      ['t', x, y],
+    ]);
+    this.setMatrix(newMatrix);
+    return this;
+  }
+
+  /**
+   * 以任意点 (x, y) 为中心旋转元素
+   * @param {number} radian 旋转角度(弧度值)
+   * @return {IElement} 元素
+   */
+  rotateAtPoint(x: number, y: number, rotate: number): IElement {
+    const matrix = this.getMatrix();
+    const newMatrix = transform(matrix, [
+      ['t', -x, -y],
+      ['r', rotate],
+      ['t', x, y],
+    ]);
+    this.setMatrix(newMatrix);
+    return this;
   }
 }
 
