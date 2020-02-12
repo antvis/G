@@ -52,7 +52,7 @@ class Marker extends ShapeBase {
   // 更新属性时，检测是否更改了 path
   onAttrChange(name: string, value: any, originValue: any) {
     super.onAttrChange(name, value, originValue);
-    if (['symbol', 'x', 'y', 'r'].indexOf(name) !== -1) {
+    if (['symbol', 'x', 'y', 'r', 'radius'].indexOf(name) !== -1) {
       // path 相关属性更改时，清理缓存
       this._resetParamsCache();
     }
@@ -65,7 +65,9 @@ class Marker extends ShapeBase {
   }
 
   getInnerBox(attrs) {
-    const { x, y, r } = attrs;
+    const { x, y } = attrs;
+    // 兼容 r 和 radius 两种写法，推荐使用 r
+    const r = attrs.r || attrs.radius;
     return {
       x: x - r,
       y: y - r,
@@ -76,8 +78,10 @@ class Marker extends ShapeBase {
 
   _getPath() {
     const attrs = this.attr();
-    const { x, y, r } = attrs;
+    const { x, y } = attrs;
     const symbol = attrs.symbol || 'circle';
+    // 兼容 r 和 radius 两种写法，推荐使用 r
+    const r = attrs.r || attrs.radius;
     let method;
     let path;
     if (isFunction(symbol)) {

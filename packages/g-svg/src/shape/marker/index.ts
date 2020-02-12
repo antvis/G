@@ -33,10 +33,10 @@ class Marker extends ShapeBase {
   }
 
   _getPath(): any[] {
-    const attrs = this.attrs;
-    const x = attrs.x;
-    const y = attrs.y;
-    const r = attrs.r;
+    const attrs = this.attr();
+    const { x, y } = attrs;
+    // 兼容 r 和 radius 两种写法，推荐使用 r
+    const r = attrs.r || attrs.radius;
     const symbol = attrs.symbol || 'circle';
     let method;
     if (isFunction(symbol)) {
