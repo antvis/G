@@ -61,6 +61,46 @@ describe('animate', () => {
     }, 700);
   });
 
+  // 兼容 3.0 中的写法，onFrame 可在 toAttrs 中设置
+  it('animate(toAttrs, duration, easing, callback, delay) and toAttrs has onFrame property', (done) => {
+    const shape = new Shape({
+      attrs: {
+        x: 50,
+        y: 50,
+      },
+    });
+    canvas.add(shape);
+    let flag = false;
+    shape.animate(
+      {
+        onFrame: (ratio) => {
+          return {
+            x: 50 + ratio * (100 - 50),
+            y: 50 + ratio * (100 - 50),
+          };
+        },
+      },
+      500,
+      'easeLinear',
+      () => {
+        flag = true;
+      },
+      100
+    );
+    expect(shape.attr('x')).eqls(50);
+    expect(shape.attr('y')).eqls(50);
+    expect(flag).eqls(false);
+    setTimeout(() => {
+      expect(flag).eqls(false);
+    }, 550);
+    setTimeout(() => {
+      expect(shape.attr('x')).eqls(100);
+      expect(shape.attr('y')).eqls(100);
+      expect(flag).eqls(true);
+      done();
+    }, 1200);
+  });
+
   it('animate(onFrame, duration, easing, callback, delay)', (done) => {
     const shape = new Shape({
       attrs: {

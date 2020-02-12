@@ -1,4 +1,4 @@
-import { isEqual, isNumber } from '@antv/util';
+import { isEqual, isNumber, isFunction } from '@antv/util';
 import * as d3Timer from 'd3-timer';
 import * as d3Ease from 'd3-ease';
 import { interpolate, interpolateArray } from 'd3-interpolate'; // 目前整体动画只需要数值和数组的差值计算
@@ -68,7 +68,8 @@ function _update(shape: IElement, animation: Animation, ratio: number) {
         cProps[k] = currentMatrix;
       } else if (isColorProp(k) && isGradientColor(toAttrs[k])) {
         cProps[k] = toAttrs[k];
-      } else {
+      } else if (!isFunction(toAttrs[k])) {
+        // 非函数类型的值才能做插值
         interf = interpolate(fromAttrs[k], toAttrs[k]);
         cProps[k] = interf(ratio);
       }
