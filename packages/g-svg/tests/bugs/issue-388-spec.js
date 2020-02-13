@@ -88,4 +88,20 @@ describe('#388', () => {
       done();
     }, 120);
   });
+
+  it('opacity attr for Rect should work', () => {
+    const group = canvas.addGroup();
+    const rect = group.addShape('rect', {
+      attrs: {
+        x: 10,
+        y: 10,
+        width: 50,
+        height: 150,
+        fill: 'rgba(220, 0, 150, .5)',
+        opacity: 0.3,
+      },
+    });
+    const el = rect.get('el');
+    expect(el.getAttribute('opacity')).eqls('0.3');
+  });
 });

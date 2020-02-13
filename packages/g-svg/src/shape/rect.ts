@@ -3,8 +3,9 @@
  * @author dengfuping_develop@163.com
  */
 
-import { isArray } from '@antv/util';
+import { each, isArray } from '@antv/util';
 import ShapeBase from './base';
+import { SVG_ATTR_MAP } from '../constant';
 import { parseRadius } from '../util/format';
 
 class Rect extends ShapeBase {
@@ -27,7 +28,18 @@ class Rect extends ShapeBase {
   createPath(context, targetAttrs) {
     const attrs = this.attr();
     const el = this.get('el');
-    el.setAttribute('d', this._assembleRect(attrs));
+    // 加上状态量，用来标记 path 是否已组装
+    let completed = false;
+    // 和组装 path 相关的绘图属性
+    const pathRelatedAttrs = ['x', 'y', 'width', 'height', 'radius'];
+    each(targetAttrs || attrs, (value, attr) => {
+      if (pathRelatedAttrs.indexOf(attr) !== -1 && !completed) {
+        el.setAttribute('d', this._assembleRect(attrs));
+        completed = true;
+      } else if (pathRelatedAttrs.indexOf(attr) === -1 && SVG_ATTR_MAP[attr]) {
+        el.setAttribute(SVG_ATTR_MAP[attr], value);
+      }
+    });
   }
 
   _assembleRect(attrs) {
