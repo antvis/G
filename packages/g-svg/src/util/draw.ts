@@ -32,7 +32,15 @@ export function refreshElement(element: IElement, changeType: ChangeType) {
     const parentChildren = parent ? parent.getChildren() : [canvas];
     const el = element.get('el');
     if (changeType === 'remove') {
-      if (el && el.parentNode) {
+      const isClipShape = element.get('isClipShape');
+      // 对于 clip，不仅需要将 clipShape 对于的 SVG 元素删除，还需要将上层的 clipPath 元素也删除
+      if (isClipShape) {
+        const clipPathEl = el && el.parentNode;
+        const defsEl = clipPathEl && clipPathEl.parentNode;
+        if (clipPathEl && defsEl) {
+          defsEl.removeChild(clipPathEl);
+        }
+      } else if (el && el.parentNode) {
         el.parentNode.removeChild(el);
       }
     } else if (changeType === 'show') {
