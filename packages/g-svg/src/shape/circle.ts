@@ -3,7 +3,7 @@
  * @author dengfuping_develop@163.com
  */
 
-import { each, isArray } from '@antv/util';
+import { each } from '@antv/util';
 import { SVG_ATTR_MAP } from '../constant';
 import ShapeBase from './base';
 
