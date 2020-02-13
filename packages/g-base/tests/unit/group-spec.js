@@ -221,19 +221,20 @@ describe('test with matrix', () => {
 });
 
 describe('test group member function', () => {
-  const group = new Group({
-    children: [
-      new MyShape({ id: '01', name: 'shape', text: '01' }),
-      new MyShape({ id: '02', name: 'shape', text: '02' }),
-      new Group({
-        children: [
-          new MyShape({ id: '04', name: 'shape', text: '04' }),
-          new MyShape({ id: 'test', name: 'shape', text: '02' }),
-        ],
-      }),
-      new MyShape({ id: '03', name: 'shape', text: '03' }),
-    ],
+  const group = new Group({});
+  const subGroup = new Group({
+    parent: group,
   });
+  subGroup.set('children', [
+    new MyShape({ id: '04', name: 'shape', text: '04' }),
+    new MyShape({ id: 'test', name: 'shape', text: '02' }),
+  ]);
+  group.set('children', [
+    new MyShape({ id: '01', name: 'shape', text: '01', parent: group }),
+    new MyShape({ id: '02', name: 'shape', text: '02', parent: group }),
+    subGroup,
+    new MyShape({ id: '03', name: 'shape', text: '03', parent: group }),
+  ]);
 
   it('getFirst', () => {
     expect(group.getFirst().get('id')).eqls('01');
@@ -243,8 +244,17 @@ describe('test group member function', () => {
     expect(group.getLast().get('id')).eqls('03');
   });
 
+  it('getChildByIndex', () => {
+    expect(group.getChildByIndex(1).get('id')).eqls('02');
+  });
+
   it('getCount', () => {
     expect(group.getCount()).eqls(group.getChildren().length);
+  });
+
+  it('contain', () => {
+    const shape = group.getFirst();
+    expect(group.contain(shape)).eqls(true);
   });
 
   it('findAll', () => {
@@ -284,5 +294,12 @@ describe('test group member function', () => {
 
   it('findAllByName', () => {
     expect(group.findAllByName('shape').length).eqls(5);
+  });
+
+  it('removeChild', () => {
+    const shape = group.getFirst();
+    expect(group.contain(shape)).eqls(true);
+    group.removeChild(shape);
+    expect(group.contain(shape)).eqls(false);
   });
 });
