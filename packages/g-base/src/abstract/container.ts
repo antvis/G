@@ -361,8 +361,7 @@ abstract class Container extends Element implements IContainer {
    * @return {IElement} 第一个元素
    */
   getFirst(): IElement {
-    const children = this.getChildren();
-    return children[0];
+    return this.getChildByIndex(0);
   }
 
   /**
@@ -371,7 +370,16 @@ abstract class Container extends Element implements IContainer {
    */
   getLast(): IElement {
     const children = this.getChildren();
-    return children[children.length - 1];
+    return this.getChildByIndex(children.length - 1);
+  }
+
+  /**
+   * 根据索引获取子元素
+   * @return {IElement} 第一个元素
+   */
+  getChildByIndex(index: number): IElement {
+    const children = this.getChildren();
+    return children[index];
   }
 
   /**
@@ -381,6 +389,27 @@ abstract class Container extends Element implements IContainer {
   getCount(): number {
     const children = this.getChildren();
     return children.length;
+  }
+
+  /**
+   * 是否包含对应元素
+   * @param {IElement} element 元素
+   * @return {boolean}
+   */
+  contain(element: IElement): boolean {
+    const children = this.getChildren();
+    return children.indexOf(element) > -1;
+  }
+
+  /**
+   * 移除对应子元素
+   * @param {IElement} element 子元素
+   * @param {boolean} destroy 是否销毁子元素，默认为 true
+   */
+  removeChild(element: IElement, destroy = true) {
+    if (this.contain(element)) {
+      element.remove(destroy);
+    }
   }
 
   /**

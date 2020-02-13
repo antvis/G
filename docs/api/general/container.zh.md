@@ -125,9 +125,17 @@ type ShapeCfg = {
 
 - 获取最后一个子元素；
 
+### getChildByIndex(index: number)
+
+- 根据索引获取子元素
+
 ### getCount()
 
 - 获取子元素的数量；
+
+### contain(element: IElement)
+
+- 根据索引获取子元素；
 
 ### findAll(fn: element => boolean)
 
@@ -144,3 +152,7 @@ type ShapeCfg = {
 ### findAllByName(name: string)
 
 - 根据元素名称查找元素列表；
+
+### removeChild(element: IElement, destroy = true)
+
+- 移除对应子元素，`destroy` 用于指定是否销毁子元素，默认为 `true`；
