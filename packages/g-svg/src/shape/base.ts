@@ -1,5 +1,6 @@
 import { AbstractShape } from '@antv/g-base';
 import { ShapeAttrs, ChangeType, BBox } from '@antv/g-base/lib/types';
+import { isUndefined } from '@antv/util';
 import { IShape } from '../interfaces';
 import Defs from '../defs';
 import { setShadow, setTransform, setClip } from '../util/svg';
@@ -136,14 +137,19 @@ class ShapeBase extends AbstractShape implements IShape {
 
   // stroke and fill
   strokeAndFill(context, targetAttrs?) {
-    const attrs = this.attr();
-    const { fill, fillStyle, stroke, strokeStyle, fillOpacity, strokeOpacity, lineWidth } = targetAttrs || attrs;
+    const attrs = targetAttrs || this.attr();
+    const { fill, fillStyle, stroke, strokeStyle, fillOpacity, strokeOpacity, lineWidth } = attrs;
     const el = this.get('el');
 
     if (this.canFill) {
-      // compatible with fillStyle
-      if (fill || fillStyle || !targetAttrs) {
+      // 初次渲染和更新渲染的逻辑有所不同: 初次渲染值为空时，需要设置为 none，否则就会是黑色，而更新渲染则不需要
+      if (!targetAttrs) {
         this._setColor(context, 'fill', fill || fillStyle);
+      } else if ('fill' in attrs) {
+        this._setColor(context, 'fill', fill);
+      } else if ('fillStyle' in attrs) {
+        // compatible with fillStyle
+        this._setColor(context, 'fill', fillStyle);
       }
       if (fillOpacity) {
         el.setAttribute(SVG_ATTR_MAP['fillOpacity'], fillOpacity);
@@ -151,9 +157,13 @@ class ShapeBase extends AbstractShape implements IShape {
     }
 
     if (this.canStroke && lineWidth > 0) {
-      // compatible with strokeStyle
-      if (stroke || strokeStyle || !targetAttrs) {
+      if (!targetAttrs) {
         this._setColor(context, 'stroke', stroke || strokeStyle);
+      } else if ('stroke' in attrs) {
+        this._setColor(context, 'stroke', stroke);
+      } else if ('strokeStyle' in attrs) {
+        // compatible with strokeStyle
+        this._setColor(context, 'stroke', strokeStyle);
       }
       if (strokeOpacity) {
         el.setAttribute(SVG_ATTR_MAP['strokeOpacity'], strokeOpacity);
