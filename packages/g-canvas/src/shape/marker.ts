@@ -3,6 +3,7 @@
  * @author dxq613@gmail.com
  */
 
+import { isNil } from '@antv/util';
 import path2Absolute from '@antv/path-util/lib/path-2-absolute';
 import ShapeBase from './base';
 import { isFunction } from '../util/util';
@@ -66,8 +67,7 @@ class Marker extends ShapeBase {
 
   getInnerBox(attrs) {
     const { x, y } = attrs;
-    // 兼容 r 和 radius 两种写法，推荐使用 r
-    const r = attrs.r || attrs.radius;
+    const r = this._getR(attrs);
     return {
       x: x - r,
       y: y - r,
@@ -76,12 +76,16 @@ class Marker extends ShapeBase {
     };
   }
 
+  _getR(attrs) {
+    // 兼容 r 和 radius 两种写法，推荐使用 r
+    return isNil(attrs.r) ? attrs.radius : attrs.r;
+  }
+
   _getPath() {
     const attrs = this.attr();
     const { x, y } = attrs;
     const symbol = attrs.symbol || 'circle';
-    // 兼容 r 和 radius 两种写法，推荐使用 r
-    const r = attrs.r || attrs.radius;
+    const r = this._getR(attrs);
     let method;
     let path;
     if (isFunction(symbol)) {
