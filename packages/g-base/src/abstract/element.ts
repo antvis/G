@@ -357,13 +357,15 @@ abstract class Element extends Base implements IElement {
   // 设置 clip
   setClip(clipCfg: ClipCfg) {
     const canvas = this.getCanvas();
-    const preShape = this.get('clipShape');
-    if (preShape) {
-      // 将之前的 clipShape 销毁
-      preShape.destroy();
-    }
+    // 应该只设置当前元素的 clip，不应该去修改 clip 本身，方便 clip 被复用
+    // TODO: setClip 的传参既 shape 配置，也支持 shape 对象
+    // const preShape = this.get('clipShape');
+    // if (preShape) {
+    //   // 将之前的 clipShape 销毁
+    //   preShape.destroy();
+    // }
     let clipShape = null;
-    // 如果配置项为 null ,则不移除 clipShape
+    // 如果配置项为 null，则不移除 clipShape
     if (clipCfg) {
       const ShapeBase = this.getShapeBase();
       const shapeType = upperFirst(clipCfg.type);
