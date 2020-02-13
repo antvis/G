@@ -5,7 +5,7 @@ import { IElement, IGroup } from './interfaces';
 import * as Shape from './shape';
 import Defs from './defs';
 import { drawChildren, drawPathChildren, refreshElement } from './util/draw';
-import { setClip } from './util/svg';
+import { setClip, setTransform } from './util/svg';
 import { SVG_ATTR_MAP } from './constant';
 
 class Group extends AbstractGroup {
@@ -60,13 +60,8 @@ class Group extends AbstractGroup {
   }
 
   draw(context: Defs) {
-    const children = this.getChildren() as IElement[];
     setClip(this, context);
-    this.createDom();
-    this.updatePath(context);
-    if (children.length) {
-      drawChildren(context, children);
-    }
+    this.drawPath(context);
   }
 
   drawPath(context: Defs) {
@@ -86,6 +81,7 @@ class Group extends AbstractGroup {
         el.setAttribute(SVG_ATTR_MAP[attr], value);
       }
     });
+    setTransform(this);
   }
 }
 
