@@ -55,4 +55,37 @@ describe('#388', () => {
       done();
     }, 600);
   });
+
+  it('matrix animation for group should work', (done) => {
+    const group = canvas.addGroup();
+    group.addShape({
+      type: 'rect',
+      attrs: {
+        x: 0,
+        y: 0,
+        width: 50,
+        height: 150,
+        fill: 'rgba(220, 0, 150, .5)',
+      },
+    });
+
+    group.setMatrix([1, 0, 0, 0, 0.01, 0, 0, 148.5, 1]);
+    group.animate(
+      {
+        matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1],
+      },
+      {
+        duration: 100,
+        easing: 'easeQuadOut',
+      }
+    );
+
+    const groupEl = group.get('el');
+
+    expect(groupEl.getAttribute('transform')).eqls('matrix(1,0,0,0.01,0,148.5)');
+    setTimeout(() => {
+      expect(groupEl.getAttribute('transform')).eqls('matrix(1,0,0,1,0,0)');
+      done();
+    }, 120);
+  });
 });
