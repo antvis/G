@@ -446,21 +446,41 @@ export interface IContainer extends IElement {
   getLast(): IElement;
 
   /**
+   * 根据索引获取子元素
+   * @return {IElement} 第一个元素
+   */
+  getChildByIndex(index: number): IElement;
+
+  /**
    * 子元素的数量
    * @return {number} 子元素数量
    */
   getCount(): number;
 
   /**
+   * 是否包含对应元素
+   * @param {IElement} element 元素
+   * @return {boolean}
+   */
+  contain(element: IElement): boolean;
+
+  /**
+   * 移除对应子元素
+   * @param {IElement} element 子元素
+   * @param {boolean} destroy 是否销毁子元素，默认为 true
+   */
+  removeChild(element: IElement, destroy?: boolean);
+
+  /**
    * 查找所有匹配的元素
-   * @param  {ElementFilterFn}   fn  匹配函数
+   * @param  {ElementFilterFn} fn 匹配函数
    * @return {IElement[]} 元素数组
    */
   findAll(fn: ElementFilterFn): IElement[];
 
   /**
    * 查找元素，找到第一个返回
-   * @param  {ElementFilterFn} fn    匹配函数
+   * @param  {ElementFilterFn} fn 匹配函数
    * @return {IElement|null} 元素，可以为空
    */
   find(fn: ElementFilterFn): IElement;
