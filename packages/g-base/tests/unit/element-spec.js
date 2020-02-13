@@ -179,7 +179,8 @@ describe('test element', () => {
     });
 
     element.setClip(null);
-    expect(clipShape.destroyed).eqls(true);
+    // setClip 应该只修改 element，不应该修改 clip 本身
+    expect(clipShape.destroyed).eqls(false);
     expect(element.getClip()).eqls(null);
   });
 

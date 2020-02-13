@@ -51,7 +51,7 @@ describe('#218', () => {
         expect(getColor(context, 150, 160)).eqls('#ff0000');
         expect(getColor(context, 150, 190)).eqls('#ff0000');
         shape.setClip(null);
-        expect(clipShape.get('destroyed')).eqls(true);
+        expect(clipShape.destroyed).eqls(false);
         done();
       }, 600);
     }, 25);
