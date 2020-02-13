@@ -104,4 +104,23 @@ describe('#388', () => {
     const el = rect.get('el');
     expect(el.getAttribute('opacity')).eqls('0.3');
   });
+
+  it('null for fill and stroke attr should work', (done) => {
+    const group = canvas.addGroup();
+    const rect = group.addShape('rect', {
+      attrs: {
+        x: 10,
+        y: 10,
+        width: 50,
+        height: 150,
+        fill: 'red',
+      },
+    });
+    setTimeout(() => {
+      rect.attr('fill', null);
+    }, 200);
+    setTimeout(() => {
+      done();
+    }, 300);
+  });
 });
