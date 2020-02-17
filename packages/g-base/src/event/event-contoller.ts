@@ -207,30 +207,30 @@ class EventController {
     const method = this[`_on${type}`];
     let leaveCanvas = false;
     if (method) {
-      method.call(this, pointInfo, shape, event);
+      method.call(this, pointInfo, shape, ev);
     } else {
       const preShape = this.currentShape;
       // 如果进入、移出画布时存在图形，则要分别出发事件
       if (type === 'mouseenter' || type === 'dragenter' || type === 'mouseover') {
-        this._emitEvent(type, event, pointInfo, null, null, shape); // 先进入画布
+        this._emitEvent(type, ev, pointInfo, null, null, shape); // 先进入画布
         if (shape) {
-          this._emitEvent(type, event, pointInfo, shape, null, shape); // 再触发图形的事件
+          this._emitEvent(type, ev, pointInfo, shape, null, shape); // 再触发图形的事件
         }
         if (type === 'mouseenter' && this.draggingShape) {
           // 如果正在拖拽图形, 则触发 dragleave
-          this._emitEvent('dragenter', event, pointInfo, null);
+          this._emitEvent('dragenter', ev, pointInfo, null);
         }
       } else if (type === 'mouseleave' || type === 'dragleave' || type === 'mouseout') {
         leaveCanvas = true;
         if (preShape) {
-          this._emitEvent(type, event, pointInfo, preShape, preShape, null); // 先触发图形的事件
+          this._emitEvent(type, ev, pointInfo, preShape, preShape, null); // 先触发图形的事件
         }
-        this._emitEvent(type, event, pointInfo, null, preShape, null); // 再触发离开画布事件
+        this._emitEvent(type, ev, pointInfo, null, preShape, null); // 再触发离开画布事件
         if (type === 'mouseleave' && this.draggingShape) {
-          this._emitEvent('dragleave', event, pointInfo, null);
+          this._emitEvent('dragleave', ev, pointInfo, null);
         }
       } else {
-        this._emitEvent(type, event, pointInfo, shape, null, null); // 一般事件中不需要考虑 from, to
+        this._emitEvent(type, ev, pointInfo, shape, null, null); // 一般事件中不需要考虑 from, to
       }
     }
     if (!leaveCanvas) {
