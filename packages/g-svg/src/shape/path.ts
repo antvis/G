@@ -3,7 +3,7 @@
  * @author dengfuping_develop@163.com
  */
 import { Point } from '@antv/g-base/lib/types';
-import { each, isArray, isBoolean } from '@antv/util';
+import { each, isArray, isObject } from '@antv/util';
 import { SVG_ATTR_MAP } from '../constant';
 import ShapeBase from './base';
 
@@ -28,10 +28,14 @@ class Path extends ShapeBase {
       if (attr === 'path' && isArray(value)) {
         el.setAttribute('d', this._formatPath(value));
       } else if (attr === 'startArrow' || attr === 'endArrow') {
-        const id = isBoolean(value)
-          ? context.getDefaultArrow(attrs, SVG_ATTR_MAP[attr])
-          : context.addArrow(attrs, SVG_ATTR_MAP[attr]);
-        el.setAttribute(SVG_ATTR_MAP[attr], `url(#${id})`);
+        if (value) {
+          const id = isObject(value)
+            ? context.addArrow(attrs, SVG_ATTR_MAP[attr])
+            : context.getDefaultArrow(attrs, SVG_ATTR_MAP[attr]);
+          el.setAttribute(SVG_ATTR_MAP[attr], `url(#${id})`);
+        } else {
+          el.removeAttribute(SVG_ATTR_MAP[attr]);
+        }
       } else if (SVG_ATTR_MAP[attr]) {
         el.setAttribute(SVG_ATTR_MAP[attr], value);
       }
