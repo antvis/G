@@ -90,22 +90,11 @@ abstract class Container extends Element implements IContainer {
     let maxX = -Infinity;
     let minY = Infinity;
     let maxY = -Infinity;
-    const children = this.getChildren();
+    // 将可见的子元素筛选出来
+    const children = this.getChildren().filter((child) => child.get('visible'));
     if (children.length > 0) {
       each(children, (child: IElement) => {
-        // 可见元素返回正常的 bbox，不可见元素返回默认的 bbox
-        const box = child.get('visible')
-          ? child.getBBox()
-          : {
-              x: 0,
-              y: 0,
-              minX: 0,
-              minY: 0,
-              maxX: 0,
-              maxY: 0,
-              width: 0,
-              height: 0,
-            };
+        const box = child.getBBox();
         // 计算 4 个顶点
         const leftTop = child.applyToMatrix([box.minX, box.minY, 1]);
         const leftBottom = child.applyToMatrix([box.minX, box.maxY, 1]);
