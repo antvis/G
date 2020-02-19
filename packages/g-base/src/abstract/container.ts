@@ -93,38 +93,44 @@ abstract class Container extends Element implements IContainer {
     const children = this.getChildren();
     if (children.length > 0) {
       each(children, (child: IElement) => {
-        if (child.get('visible')) {
-          // 如果分组没有子元素，则直接跳过
-          if (child.isGroup() && child.get('children').length === 0) {
-            return true;
-          }
-          const box = child.getBBox();
-          // 计算 4 个顶点
-          const leftTop = child.applyToMatrix([box.minX, box.minY, 1]);
-          const leftBottom = child.applyToMatrix([box.minX, box.maxY, 1]);
-          const rightTop = child.applyToMatrix([box.maxX, box.minY, 1]);
-          const rightBottom = child.applyToMatrix([box.maxX, box.maxY, 1]);
-          // 从中取最小的范围
-          const boxMinX = Math.min(leftTop[0], leftBottom[0], rightTop[0], rightBottom[0]);
-          const boxMaxX = Math.max(leftTop[0], leftBottom[0], rightTop[0], rightBottom[0]);
-          const boxMinY = Math.min(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
-          const boxMaxY = Math.max(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
+        // 可见元素返回正常的 bbox，不可见元素返回默认的 bbox
+        const box = child.get('visible')
+          ? child.getBBox()
+          : {
+              x: 0,
+              y: 0,
+              minX: 0,
+              minY: 0,
+              maxX: 0,
+              maxY: 0,
+              width: 0,
+              height: 0,
+            };
+        // 计算 4 个顶点
+        const leftTop = child.applyToMatrix([box.minX, box.minY, 1]);
+        const leftBottom = child.applyToMatrix([box.minX, box.maxY, 1]);
+        const rightTop = child.applyToMatrix([box.maxX, box.minY, 1]);
+        const rightBottom = child.applyToMatrix([box.maxX, box.maxY, 1]);
+        // 从中取最小的范围
+        const boxMinX = Math.min(leftTop[0], leftBottom[0], rightTop[0], rightBottom[0]);
+        const boxMaxX = Math.max(leftTop[0], leftBottom[0], rightTop[0], rightBottom[0]);
+        const boxMinY = Math.min(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
+        const boxMaxY = Math.max(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
 
-          if (boxMinX < minX) {
-            minX = boxMinX;
-          }
+        if (boxMinX < minX) {
+          minX = boxMinX;
+        }
 
-          if (boxMaxX > maxX) {
-            maxX = boxMaxX;
-          }
+        if (boxMaxX > maxX) {
+          maxX = boxMaxX;
+        }
 
-          if (boxMinY < minY) {
-            minY = boxMinY;
-          }
+        if (boxMinY < minY) {
+          minY = boxMinY;
+        }
 
-          if (boxMaxY > maxY) {
-            maxY = boxMaxY;
-          }
+        if (boxMaxY > maxY) {
+          maxY = boxMaxY;
         }
       });
     } else {
