@@ -3,7 +3,7 @@
  * @author dengfuping_develop@163.com
  */
 import LineUtil from '@antv/g-math/lib/line';
-import { each, isBoolean } from '@antv/util';
+import { each, isObject } from '@antv/util';
 import { SVG_ATTR_MAP } from '../constant';
 import ShapeBase from './base';
 
@@ -30,10 +30,14 @@ class Line extends ShapeBase {
     const el = this.get('el');
     each(targetAttrs || attrs, (value, attr) => {
       if (attr === 'startArrow' || attr === 'endArrow') {
-        const id = isBoolean(value)
-          ? context.getDefaultArrow(attrs, SVG_ATTR_MAP[attr])
-          : context.addArrow(attrs, SVG_ATTR_MAP[attr]);
-        el.setAttribute(SVG_ATTR_MAP[attr], `url(#${id})`);
+        if (value) {
+          const id = isObject(value)
+            ? context.addArrow(attrs, SVG_ATTR_MAP[attr])
+            : context.getDefaultArrow(attrs, SVG_ATTR_MAP[attr]);
+          el.setAttribute(SVG_ATTR_MAP[attr], `url(#${id})`);
+        } else {
+          el.removeAttribute(SVG_ATTR_MAP[attr]);
+        }
       } else if (SVG_ATTR_MAP[attr]) {
         el.setAttribute(SVG_ATTR_MAP[attr], value);
       }
