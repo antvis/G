@@ -10,12 +10,6 @@ export interface IElement extends IBaseElement {
    * @param {Defs} context 上下文
    */
   draw(context: Defs);
-
-  /**
-   * 绘制图形元素
-   * @param {Defs} context 上下文
-   */
-  drawPath(context);
 }
 
 export interface IGroup extends IBaseGroup {

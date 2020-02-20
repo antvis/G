@@ -34,7 +34,7 @@ class ShapeBase extends AbstractShape implements IShape {
     // 只有挂载到画布下，才对元素进行实际渲染
     if (canvas) {
       const context = canvas.get('context');
-      this.updatePath(context, targetAttrs);
+      this.drawPath(context, targetAttrs);
     }
   }
 
@@ -99,28 +99,29 @@ class ShapeBase extends AbstractShape implements IShape {
   }
 
   draw(context) {
-    setClip(this, context);
-    this.drawPath(context);
+    const el = this.get('el');
+    if (this.get('destroyed')) {
+      if (el) {
+        el.parentNode.removeChild(el);
+      }
+    } else {
+      if (!el) {
+        createDom(this);
+      }
+      setClip(this, context);
+      this.createPath(context);
+      this.shadow(context);
+      this.strokeAndFill(context);
+      this.transform();
+    }
   }
 
   /**
    * 绘制图形的路径
    * @param {Defs} context 上下文
-   */
-  drawPath(context: Defs) {
-    createDom(this);
-    this.createPath(context);
-    this.shadow(context);
-    this.strokeAndFill(context);
-    this.transform();
-  }
-
-  /**
-   * 更新图形的路径
-   * @param {Defs} context 上下文
    * @param {ShapeAttrs} targetAttrs 渲染的目标属性
    */
-  updatePath(context: Defs, targetAttrs: ShapeAttrs) {
+  drawPath(context: Defs, targetAttrs: ShapeAttrs) {
     this.createPath(context, targetAttrs);
     this.shadow(context, targetAttrs);
     this.strokeAndFill(context, targetAttrs);
