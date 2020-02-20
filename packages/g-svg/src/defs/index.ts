@@ -66,6 +66,7 @@ class Defs {
     const arrow = new Arrow(attrs, name);
     this.defaultArrow[stroke] = arrow;
     this.el.appendChild(arrow.el);
+    this.add(arrow);
     return arrow.id;
   }
 
@@ -79,6 +80,7 @@ class Defs {
   addArrow(attrs, name) {
     const arrow = new Arrow(attrs, name);
     this.el.appendChild(arrow.el);
+    this.add(arrow);
     return arrow.id;
   }
 
