@@ -4,7 +4,7 @@ import { each } from '@antv/util';
 import { IElement, IGroup } from './interfaces';
 import * as Shape from './shape';
 import Defs from './defs';
-import { drawChildren, drawPathChildren, refreshElement } from './util/draw';
+import { drawChildren, refreshElement } from './util/draw';
 import { setClip, setTransform } from './util/svg';
 import { SVG_ATTR_MAP } from './constant';
 
@@ -39,7 +39,7 @@ class Group extends AbstractGroup {
     // 只有挂载到画布下，才对元素进行实际渲染
     if (canvas) {
       const context = canvas.get('context');
-      this.updatePath(context, targetAttrs);
+      this.drawPath(context, targetAttrs);
     }
   }
 
@@ -60,20 +60,30 @@ class Group extends AbstractGroup {
   }
 
   draw(context: Defs) {
-    setClip(this, context);
-    this.drawPath(context);
-  }
-
-  drawPath(context: Defs) {
     const children = this.getChildren() as IElement[];
-    this.createDom();
-    this.updatePath(context);
-    if (children.length) {
-      drawPathChildren(context, children);
+    const el = this.get('el');
+    if (this.get('destroyed')) {
+      if (el) {
+        el.parentNode.removeChild(el);
+      }
+    } else {
+      if (!el) {
+        this.createDom();
+      }
+      setClip(this, context);
+      this.drawPath(context);
+      if (children.length) {
+        drawChildren(context, children);
+      }
     }
   }
 
-  updatePath(context: Defs, targetAttrs?) {
+  /**
+   * 绘制分组的路径
+   * @param {Defs} context 上下文
+   * @param {ShapeAttrs} targetAttrs 渲染的目标属性
+   */
+  drawPath(context: Defs, targetAttrs?) {
     const attrs = this.attr();
     const el = this.get('el');
     each(targetAttrs || attrs, (value, attr) => {

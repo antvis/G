@@ -10,13 +10,6 @@ export function drawChildren(context: Defs, children: IElement[]) {
   });
 }
 
-export function drawPathChildren(context: Defs, children: IElement[]) {
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    child.drawPath(context);
-  }
-}
-
 /**
  * 更新元素，包括 group 和 shape
  * @param {IElement} element       SVG 元素
@@ -26,8 +19,8 @@ export function refreshElement(element: IElement, changeType: ChangeType) {
   // 对于还没有挂载到画布下的元素，canvas 可能为空
   const canvas = element.get('canvas');
   // 只有挂载到画布下，才对元素进行实际渲染
-  if (canvas) {
-    const context = canvas && canvas.get('context');
+  if (canvas && canvas.get('autoDraw')) {
+    const context = canvas.get('context');
     const parent = element.getParent();
     const parentChildren = parent ? parent.getChildren() : [canvas];
     const el = element.get('el');
@@ -57,7 +50,7 @@ export function refreshElement(element: IElement, changeType: ChangeType) {
         });
       }
     } else if (changeType === 'clear') {
-      // el is null for group
+      // el maybe null for group
       if (el) {
         el.innerHTML = '';
       }
@@ -68,7 +61,7 @@ export function refreshElement(element: IElement, changeType: ChangeType) {
     } else if (changeType === 'attr') {
       // 已在 afterAttrsChange 进行了处理，此处 do nothing
     } else if (changeType === 'add') {
-      element.drawPath(context);
+      element.draw(context);
     }
   }
 }

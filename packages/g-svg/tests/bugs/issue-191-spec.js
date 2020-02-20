@@ -17,10 +17,10 @@ describe('#191', () => {
     });
   });
 
-  it('autoDraw should be true and immutable', () => {
+  it('autoDraw should be mutable', () => {
     expect(canvas.get('autoDraw')).eqls(true);
     canvas.set('autoDraw', false);
-    expect(canvas.get('autoDraw')).eqls(true);
+    expect(canvas.get('autoDraw')).eqls(false);
   });
 
   it('avoid redundant rendering when animating', (done) => {

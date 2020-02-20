@@ -123,4 +123,30 @@ describe('#388', () => {
       done();
     }, 300);
   });
+
+  it('should not generate svg elements repeatedly when canvas.draw()', () => {
+    // 将之前测试用例生成的子元素清空
+    canvas.clear();
+    const group = canvas.addGroup();
+    const circle = group.addShape('circle', {
+      attrs: {
+        x: 100,
+        y: 100,
+        r: 50,
+        fill: 'red',
+      },
+    });
+    circle.setClip({
+      type: 'rect',
+      attrs: {
+        x: 75,
+        y: 75,
+        width: 50,
+        height: 50,
+      },
+    });
+    canvas.draw();
+    // <defs> 元素 + <g> 元素
+    expect(canvas.get('el').childNodes.length).eqls(2);
+  });
 });
