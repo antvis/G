@@ -19,8 +19,8 @@ class Arrow {
     const id = uniqueId('marker_');
     el.setAttribute('id', id);
     const shape = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    shape.setAttribute('stroke', 'none');
-    shape.setAttribute('fill', attrs.stroke || '#000');
+    shape.setAttribute('stroke', attrs.stroke || 'none');
+    shape.setAttribute('fill', attrs.fill || 'none');
     el.appendChild(shape);
     el.setAttribute('overflow', 'visible');
     el.setAttribute('orient', 'auto-start-reverse');
@@ -44,9 +44,10 @@ class Arrow {
 
   _setDefaultPath(type, el) {
     const parent = this.el;
-    el.setAttribute('d', 'M0,0 L6,3 L0,6 L3,3Z');
-    parent.setAttribute('refX', `${3}`);
-    parent.setAttribute('refY', `${3}`);
+    // 默认箭头的边长为 10，夹角为 60 度
+    el.setAttribute('d', `M0,0 L${10 * Math.cos(Math.PI / 6)},5 L0,10`);
+    parent.setAttribute('refX', `${10 * Math.cos(Math.PI / 6)}`);
+    parent.setAttribute('refY', `${5}`);
   }
 
   _setMarker(r, el) {
