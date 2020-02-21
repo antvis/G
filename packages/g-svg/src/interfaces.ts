@@ -9,7 +9,7 @@ export interface IElement extends IBaseElement {
    * 裁剪和绘制图形元素
    * @param {Defs} context 上下文
    */
-  draw(context: Defs);
+  draw(context: Defs, targetAttrs?);
 }
 
 export interface IGroup extends IBaseGroup {

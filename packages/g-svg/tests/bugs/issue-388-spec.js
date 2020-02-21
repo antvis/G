@@ -149,4 +149,22 @@ describe('#388', () => {
     // <defs> 元素 + <g> 元素
     expect(canvas.get('el').childNodes.length).eqls(2);
   });
+
+  it('should work when autoDraw is false', () => {
+    canvas.set('autoDraw', false);
+    const group = canvas.addGroup();
+    const circle = group.addShape('circle', {
+      attrs: {
+        x: 100,
+        y: 100,
+        r: 50,
+        fill: 'red',
+      },
+    });
+    circle.translate(20, 20);
+    canvas.draw();
+    expect(circle.get('el').getAttribute('transform')).eqls('matrix(1,0,0,1,20,20)');
+    // 重置 autoDraw，避免影响其他的测试用例
+    canvas.set('autoDraw', true);
+  });
 });
