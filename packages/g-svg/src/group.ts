@@ -37,9 +37,9 @@ class Group extends AbstractGroup {
     super.afterAttrsChange(targetAttrs);
     const canvas = this.get('canvas');
     // 只有挂载到画布下，才对元素进行实际渲染
-    if (canvas) {
+    if (canvas && canvas.get('autoDraw')) {
       const context = canvas.get('context');
-      this.drawPath(context, targetAttrs);
+      this.createPath(context, targetAttrs);
     }
   }
 
@@ -71,7 +71,7 @@ class Group extends AbstractGroup {
         this.createDom();
       }
       setClip(this, context);
-      this.drawPath(context);
+      this.createPath(context);
       if (children.length) {
         drawChildren(context, children);
       }
@@ -83,7 +83,7 @@ class Group extends AbstractGroup {
    * @param {Defs} context 上下文
    * @param {ShapeAttrs} targetAttrs 渲染的目标属性
    */
-  drawPath(context: Defs, targetAttrs?) {
+  createPath(context: Defs, targetAttrs?) {
     const attrs = this.attr();
     const el = this.get('el');
     each(targetAttrs || attrs, (value, attr) => {
