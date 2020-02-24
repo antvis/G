@@ -16,6 +16,13 @@ export type BBox = {
   height: number;
 };
 
+export type SimpleBBox = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 export type Point = {
   x: number;
   y: number;
@@ -38,6 +45,8 @@ export type ShapeAttrs = {
   lineWidth?: number;
   path?: string | object[];
   points?: object[];
+  width?: number;
+  height?: number;
   [key: string]: any;
 };
 
