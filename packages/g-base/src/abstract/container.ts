@@ -90,38 +90,23 @@ abstract class Container extends Element implements IContainer {
     let maxX = -Infinity;
     let minY = Infinity;
     let maxY = -Infinity;
-    // 将可见的子元素筛选出来
-    const children = this.getChildren().filter((child) => child.get('visible'));
+    const xArr = [];
+    const yArr = [];
+    // 将可见元素、图形以及不为空的图形分组筛选出来，用于包围盒合并
+    const children = this.getChildren().filter(
+      (child) =>
+        child.get('visible') && (!child.isGroup() || (child.isGroup() && (child as IGroup).getChildren().length > 0))
+    );
     if (children.length > 0) {
       each(children, (child: IElement) => {
         const box = child.getBBox();
-        // 计算 4 个顶点
-        const leftTop = child.applyToMatrix([box.minX, box.minY, 1]);
-        const leftBottom = child.applyToMatrix([box.minX, box.maxY, 1]);
-        const rightTop = child.applyToMatrix([box.maxX, box.minY, 1]);
-        const rightBottom = child.applyToMatrix([box.maxX, box.maxY, 1]);
-        // 从中取最小的范围
-        const boxMinX = Math.min(leftTop[0], leftBottom[0], rightTop[0], rightBottom[0]);
-        const boxMaxX = Math.max(leftTop[0], leftBottom[0], rightTop[0], rightBottom[0]);
-        const boxMinY = Math.min(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
-        const boxMaxY = Math.max(leftTop[1], leftBottom[1], rightTop[1], rightBottom[1]);
-
-        if (boxMinX < minX) {
-          minX = boxMinX;
-        }
-
-        if (boxMaxX > maxX) {
-          maxX = boxMaxX;
-        }
-
-        if (boxMinY < minY) {
-          minY = boxMinY;
-        }
-
-        if (boxMaxY > maxY) {
-          maxY = boxMaxY;
-        }
+        xArr.push(box.minX, box.maxX);
+        yArr.push(box.minY, box.maxY);
       });
+      minX = Math.min.apply(null, xArr);
+      maxX = Math.max.apply(null, xArr);
+      minY = Math.min.apply(null, yArr);
+      maxY = Math.max.apply(null, yArr);
     } else {
       minX = 0;
       maxX = 0;
@@ -149,18 +134,16 @@ abstract class Container extends Element implements IContainer {
     let maxY = -Infinity;
     const xArr = [];
     const yArr = [];
-    const children = this.getChildren();
+    // 将可见元素、图形以及不为空的图形分组筛选出来，用于包围盒合并
+    const children = this.getChildren().filter(
+      (child) =>
+        child.get('visible') && (!child.isGroup() || (child.isGroup() && (child as IGroup).getChildren().length > 0))
+    );
     if (children.length > 0) {
       each(children, (child: IElement) => {
-        if (child.get('visible')) {
-          // 如果分组没有子元素，则直接跳过
-          if (child.isGroup() && child.get('children').length === 0) {
-            return true;
-          }
-          const box = child.getCanvasBBox();
-          xArr.push(box.minX, box.maxX);
-          yArr.push(box.minY, box.maxY);
-        }
+        const box = child.getCanvasBBox();
+        xArr.push(box.minX, box.maxX);
+        yArr.push(box.minY, box.maxY);
       });
       minX = Math.min.apply(null, xArr);
       maxX = Math.max.apply(null, xArr);

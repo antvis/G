@@ -12,7 +12,7 @@ describe('Arrow defs', () => {
     height: 400,
   });
 
-  it.only('default arrow rendering should be same with Canvas', () => {
+  it('default arrow rendering should be same with Canvas', () => {
     const line = canvas.addShape('line', {
       attrs: {
         x1: 50,
