@@ -65,17 +65,6 @@ class Marker extends ShapeBase {
     return true;
   }
 
-  getInnerBox(attrs) {
-    const { x, y } = attrs;
-    const r = this._getR(attrs);
-    return {
-      x: x - r,
-      y: y - r,
-      width: r * 2,
-      height: r * 2,
-    };
-  }
-
   _getR(attrs) {
     // 兼容 r 和 radius 两种写法，推荐使用 r
     return isNil(attrs.r) ? attrs.radius : attrs.r;

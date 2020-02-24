@@ -23,16 +23,6 @@ class Rect extends ShapeBase {
     };
   }
 
-  getInnerBox(attrs) {
-    const { x, y, width, height } = attrs;
-    return {
-      x,
-      y,
-      width,
-      height,
-    };
-  }
-
   isInStrokeOrPath(x, y, isStroke, isFill, lineWidth) {
     const attrs = this.attr();
     const minX = attrs.x;

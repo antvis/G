@@ -5,7 +5,7 @@ const dom = document.createElement('div');
 document.body.appendChild(dom);
 dom.id = 'c1';
 
-describe('#187', () => {
+describe('#206', () => {
   const canvas = new Canvas({
     container: dom,
     width: 600,
@@ -17,6 +17,7 @@ describe('#187', () => {
     const shape1 = canvas.addShape('path', {
       attrs: {
         fill: '#1890ff',
+        lineWidth: 0,
         path: [
           ['M', 227.31794680557064, 200.00000266808433],
           ['L', 87.61525298763183, 98.50004569833794],
