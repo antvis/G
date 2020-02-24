@@ -2,6 +2,7 @@ import { AbstractShape } from '@antv/g-base';
 import { ChangeType, BBox } from '@antv/g-base/lib/types';
 import { isNil, intersectRect } from '../util/util';
 import { applyAttrsToContext, refreshElement, getMergedRegion } from '../util/draw';
+import { getBBoxMethod } from '@antv/g-base/lib/bbox/index';
 import { Region } from '../types';
 import * as Shape from './index';
 import Group from '../group';
@@ -38,8 +39,9 @@ class ShapeBase extends AbstractShape {
   calculateBBox(): BBox {
     const type = this.get('type');
     const lineWidth = this.getHitLineWidth();
-    const attrs = this.attr();
-    const box = this.getInnerBox(attrs);
+    // const attrs = this.attr();
+    const bboxMethod = getBBoxMethod(type);
+    const box = bboxMethod(this);
     const halfLineWidth = lineWidth / 2;
     const minX = box.x - halfLineWidth;
     const minY = box.y - halfLineWidth;
@@ -54,18 +56,6 @@ class ShapeBase extends AbstractShape {
       height: box.height + lineWidth,
       maxX,
       maxY,
-    };
-  }
-
-  /**
-   * @protected
-   */
-  getInnerBox(attrs) {
-    return {
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
     };
   }
 
