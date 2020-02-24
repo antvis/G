@@ -1,6 +1,5 @@
 import { AbstractShape } from '@antv/g-base';
 import { ShapeAttrs, ChangeType, BBox } from '@antv/g-base/lib/types';
-import { isUndefined } from '@antv/util';
 import { IShape } from '../interfaces';
 import Defs from '../defs';
 import { setShadow, setTransform, setClip } from '../util/svg';
@@ -9,6 +8,7 @@ import { refreshElement } from '../util/draw';
 import { SVG_ATTR_MAP } from '../constant';
 import * as Shape from './index';
 import Group from '../group';
+import { getBBoxMethod } from '@antv/g-base/lib/bbox/index';
 
 class ShapeBase extends AbstractShape implements IShape {
   type: string = 'svg';
@@ -56,9 +56,18 @@ class ShapeBase extends AbstractShape implements IShape {
 
   calculateBBox(): BBox {
     const el = this.get('el');
+    let bbox = null;
     // 包围盒计算依赖于绘制，如果还没有生成对应的 Dom 元素，则包围盒的长宽均为 0
     if (el) {
-      const { x, y, width, height } = el.getBBox();
+      bbox = el.getBBox();
+    } else {
+      const bboxMethod = getBBoxMethod(this.get('type'));
+      if (bboxMethod) {
+        bbox = bboxMethod(this);
+      }
+    }
+    if (bbox) {
+      const { x, y, width, height } = bbox;
       const lineWidth = this.getHitLineWidth();
       const halfWidth = lineWidth / 2;
       const minX = x - halfWidth;

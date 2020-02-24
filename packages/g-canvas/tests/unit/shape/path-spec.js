@@ -42,6 +42,7 @@ describe('test path', () => {
     'l 0, 200,' +
     'z';
   const path = new Path({
+    type: 'path',
     attrs: {
       path: [
         ['M', 10, 10],
@@ -202,14 +203,6 @@ describe('test path', () => {
     expect(bbox.minY).equal(10);
     expect(bbox.maxX).equal(20);
     expect(bbox.maxY).equal(20);
-
-    path.attr('path', p4);
-    expect(path.getInnerBox()).eqls({
-      x: 10,
-      y: 0,
-      width: 290,
-      height: 300,
-    });
   });
 
   it('getTotalLength', () => {

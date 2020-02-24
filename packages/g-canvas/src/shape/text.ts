@@ -3,10 +3,9 @@
  * @author dxq613@gmail.com
  */
 
-import { BBox } from '@antv/g-base/lib/types';
 import ShapeBase from './base';
 import { isNil, isString, each, getOffScreenContext } from '../util/util';
-
+import { getTextHeight, assembleFont } from '@antv/g-base/lib/util/text';
 class Text extends ShapeBase {
   // 默认文本属性
   getDefaultAttrs() {
@@ -41,18 +40,12 @@ class Text extends ShapeBase {
   // 组装字体
   _assembleFont() {
     const attrs = this.attrs;
-    const fontSize = attrs.fontSize;
-    const fontFamily = attrs.fontFamily;
-    const fontWeight = attrs.fontWeight;
-    const fontStyle = attrs.fontStyle;
-    const fontVariant = attrs.fontVariant;
-    attrs.font = [fontStyle, fontVariant, fontWeight, `${fontSize}px`, fontFamily].join(' ');
+    attrs.font = assembleFont(attrs);
   }
 
   // 如果文本换行，则缓存数组
   _setText(text) {
     let textArr = null;
-    const attrs = this.attrs;
     if (isString(text) && text.indexOf('\n') !== -1) {
       textArr = text.split('\n');
     }
@@ -75,103 +68,6 @@ class Text extends ShapeBase {
 
   // }
 
-  // 文本的 bbox 计算单独计算
-  calculateBBox(): BBox {
-    const attrs = this.attrs;
-    const x = attrs.x;
-    const y = attrs.y;
-    const width = this._getTextWidth();
-    let bbox;
-    if (!width) {
-      // 如果width不存在，四点共其实点
-      bbox = {
-        minX: x,
-        minY: y,
-        maxX: x,
-        maxY: y,
-      };
-    } else {
-      const height = this._getTextHeight(); // attrs.height
-      const textAlign = attrs.textAlign;
-      const textBaseline = attrs.textBaseline;
-      const lineWidth = this.isStroke() ? this.getHitLineWidth() : 0;
-      // 默认左右对齐：left, 默认上下对齐 bottom
-      const point = {
-        x,
-        y: y - height,
-      };
-
-      if (textAlign) {
-        if (textAlign === 'end' || textAlign === 'right') {
-          point.x -= width;
-        } else if (textAlign === 'center') {
-          point.x -= width / 2;
-        }
-      }
-      if (textBaseline) {
-        if (textBaseline === 'top') {
-          point.y += height;
-        } else if (textBaseline === 'middle') {
-          point.y += height / 2;
-        }
-      }
-
-      const halfWidth = lineWidth / 2;
-      bbox = {
-        minX: point.x - halfWidth,
-        minY: point.y - halfWidth,
-        maxX: point.x + width + halfWidth,
-        maxY: point.y + height + halfWidth,
-      };
-    }
-    bbox.x = bbox.minX;
-    bbox.y = bbox.minY;
-    bbox.width = bbox.maxX - bbox.minX;
-    bbox.height = bbox.maxY - bbox.minY;
-    return bbox;
-  }
-
-  // 文本的宽度计算需要通过 context 的 measureText,
-  // 如果存在多行，则要计算最长的问题
-  _getTextWidth() {
-    const attrs = this.attrs;
-    const context = getOffScreenContext(); // 获取离屏的 ctx 进行计算
-    const { text, font } = attrs;
-    const textArr = this.get('textArr');
-    let width = 0;
-    // null 或者 undefined 时，宽度为 0
-    if (isNil(text)) {
-      return width;
-    }
-    context.save();
-    context.font = font;
-    if (textArr) {
-      each(textArr, (subText) => {
-        const measureWidth = context.measureText(subText).width;
-        if (width < measureWidth) {
-          width = measureWidth;
-        }
-      });
-    } else {
-      width = context.measureText(text).width;
-    }
-    context.restore();
-    return width;
-  }
-
-  // 获取文本高度
-  _getTextHeight() {
-    const attrs = this.attrs;
-    const textArr = this.get('textArr');
-    const fontSize = attrs.fontSize * 1;
-    const lineCount = textArr ? textArr.length : 1;
-    if (lineCount > 1) {
-      const spaceingY = this._getSpaceingY();
-      return fontSize * lineCount + spaceingY * (lineCount - 1);
-    }
-    return fontSize;
-  }
-
   // 如果文本多行，需要获取文本间距
   _getSpaceingY() {
     const attrs = this.attrs;
@@ -188,7 +84,7 @@ class Text extends ShapeBase {
     const y = attrs.y;
     const fontSize = attrs.fontSize * 1;
     const spaceingY = this._getSpaceingY();
-    const height = this._getTextHeight();
+    const height = getTextHeight(attrs.text, attrs.fontSize, attrs.lineHeight);
     let subY;
     each(textArr, (subText, index: number) => {
       subY = y + index * (spaceingY + fontSize) - height + fontSize; // bottom;
