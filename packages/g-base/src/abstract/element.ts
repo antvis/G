@@ -15,7 +15,7 @@ const ARRAY_ATTRS = {
   lineDash: 'lineDash',
 };
 
-const CLONE_CFGS = ['zIndex', 'capture', 'visible'];
+const CLONE_CFGS = ['zIndex', 'capture', 'visible', 'type'];
 
 const RESERVED_PORPS = ['delay'];
 

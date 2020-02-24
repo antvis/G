@@ -95,16 +95,6 @@ class ImageShape extends ShapeBase {
     }
   }
 
-  getInnerBox(attrs) {
-    const { x, y, width, height } = attrs;
-    return {
-      x,
-      y,
-      width,
-      height,
-    };
-  }
-
   onAttrChange(name: string, value: any, originValue: any) {
     super.onAttrChange(name, value, originValue);
     // 如果加载的已经是当前图片，则不再处理

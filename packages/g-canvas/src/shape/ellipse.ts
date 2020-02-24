@@ -25,16 +25,6 @@ class Ellipse extends ShapeBase {
     };
   }
 
-  getInnerBox(attrs) {
-    const { x, y, rx, ry } = attrs;
-    return {
-      x: x - rx,
-      y: y - ry,
-      width: rx * 2,
-      height: ry * 2,
-    };
-  }
-
   isInStrokeOrPath(x, y, isStroke, isFill, lineWidth) {
     const attrs = this.attr();
     const halfLineWith = lineWidth / 2;

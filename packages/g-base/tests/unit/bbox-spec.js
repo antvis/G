@@ -202,4 +202,24 @@ describe('test bbox', () => {
     const bbox = shape.getBBox();
     expect(bbox.width > 90).eql(true);
   });
+
+  it('path complex', () => {
+    const shape = new MyShape({
+      type: 'path',
+      attrs: {
+        fill: '#1890ff',
+        path: [
+          ['M', 227.31794680557064, 200.00000266808433],
+          ['L', 87.61525298763183, 98.50004569833794],
+          ['A', 172.6820363488079, 172.6820363488079, 0, 0, 0, 63.08757910043951, 253.36168385505405],
+          ['L', 227.31794680557064, 200.00000266808433],
+          ['Z'],
+        ],
+      },
+    });
+
+    const bbox1 = shape.getBBox();
+    expect(bbox1.x).eqls(54.63591866828193);
+    expect(bbox1.y).eqls(98.50004569833794);
+  });
 });

@@ -6,7 +6,7 @@ const dom = document.createElement('div');
 document.body.appendChild(dom);
 dom.id = 'c1';
 
-describe('#187', () => {
+describe('#206', () => {
   const canvas = new Canvas({
     container: dom,
     pixelRatio: 1,
