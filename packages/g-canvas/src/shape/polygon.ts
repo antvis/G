@@ -4,16 +4,10 @@
  */
 
 import ShapeBase from './base';
-import PolygonUtil from '@antv/g-math/lib/polygon';
 import inPolyline from '../util/in-stroke/polyline';
 import isInPolygon from '../util/in-path/polygon';
 
 class Polygon extends ShapeBase {
-  getInnerBox(attrs) {
-    const { points } = attrs;
-    return PolygonUtil.box(points);
-  }
-
   isInStrokeOrPath(x, y, isStroke, isFill, lineWidth) {
     const { points } = this.attr();
     let isHit = false;

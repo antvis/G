@@ -21,11 +21,6 @@ class Line extends ShapeBase {
     };
   }
 
-  getInnerBox(attrs) {
-    const { x1, y1, x2, y2 } = this.attr();
-    return LineUtil.box(x1, y1, x2, y2);
-  }
-
   isInStrokeOrPath(x, y, isStroke, isFill, lineWidth) {
     if (!isStroke || !lineWidth) {
       return false;

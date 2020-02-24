@@ -1,72 +1,39 @@
 const expect = require('chai').expect;
 import PathUtil from '../../../src/util/path';
+import path2Segment from '@antv/path-util/lib/path-2-segments';
 
 describe('test path util', () => {
   it('has arc', () => {
-    const p1 = [['M', 1, 1], ['L', 2, 2]];
-    const p2 = [['M', 1, 1], ['Q', 2, 2, 3, 3]];
-    const p3 = [['M', 1, 1], ['L', 2, 2], ['C', 3, 3, 4, 4, 5, 5]];
-    const p4 = [['M', 1, 1], ['L', 2, 2], ['A', 3, 3, 0, 1, 1, 8, 8]];
+    const p1 = [
+      ['M', 1, 1],
+      ['L', 2, 2],
+    ];
+    const p2 = [
+      ['M', 1, 1],
+      ['Q', 2, 2, 3, 3],
+    ];
+    const p3 = [
+      ['M', 1, 1],
+      ['L', 2, 2],
+      ['C', 3, 3, 4, 4, 5, 5],
+    ];
+    const p4 = [
+      ['M', 1, 1],
+      ['L', 2, 2],
+      ['A', 3, 3, 0, 1, 1, 8, 8],
+    ];
     expect(PathUtil.hasArc(p1)).eqls(false);
     expect(PathUtil.hasArc(p2)).eqls(true);
     expect(PathUtil.hasArc(p3)).eqls(true);
     expect(PathUtil.hasArc(p4)).eqls(true);
   });
 
-  it('get segments', () => {
-    const p1 = [['M', 1, 1], ['L', 2, 2]];
-    const p2 = [['M', 1, 1], ['Q', 2, 2, 3, 3]];
-    // const p3 = [['M', 1, 1], ['L', 2, 2], ['C', 3, 3, 4, 4, 5, 5]];
-    const p4 = [['M', 1, 1], ['L', 2, 2], ['A', 3, 3, 0, 1, 1, 8, 8], ['Z'], ['M', 20, 20], ['L', 30, 30]];
-    const seg1 = PathUtil.getSegments(p1);
-    expect(seg1.length).eqls(p1.length);
-    expect(seg1[0].command).eqls('M');
-    expect(seg1[1].command).eqls('L');
-    expect(seg1[0].currentPoint).eqls([1, 1]);
-    expect(seg1[1].prePoint).eqls([1, 1]);
-    expect(seg1[1].currentPoint).eqls([2, 2]);
-
-    const seg2 = PathUtil.getSegments(p2);
-    expect(seg2[1].prePoint).eqls([1, 1]);
-    expect(seg2[1].currentPoint).eqls([3, 3]);
-    const seg4 = PathUtil.getSegments(p4);
-    expect(seg4.length).eqls(p4.length);
-    expect(seg4[3].command).eqls('Z');
-    expect(seg4[3].prePoint).eqls([8, 8]);
-    expect(seg4[3].currentPoint).eqls([1, 1]);
-  });
-
-  it('getPathBox', () => {
-    const p1 = [['M', 1, 1], ['L', 2, 2]];
-    const p2 = [['M', 1, 1], ['Q', 2, 2, 3, 1]];
-    const p3 = [['M', 1, 1], ['L', 2, 2], ['C', 3, 1, 4, 3, 5, 2]];
-    const p4 = [['M', 1, 1], ['L', 2, 2], ['A', 2, 2, 0, 1, 1, 6, 2], ['Z'], ['M', 20, 20], ['L', 30, 30]];
-    const seg1 = PathUtil.getSegments(p1);
-    expect(PathUtil.getPathBox(seg1)).eqls({
-      x: 1,
-      y: 1,
-      width: 1,
-      height: 1,
-    });
-
-    const seg2 = PathUtil.getSegments(p2);
-    expect(PathUtil.getPathBox(seg2)).eqls({ x: 1, y: 1, width: 2, height: 0.5 });
-
-    const seg3 = PathUtil.getSegments(p3);
-
-    expect(PathUtil.getPathBox(seg3)).eqls({
-      x: 1,
-      y: 1,
-      width: 4,
-      height: seg3[2].box.height / 2 + 1, // 一半 box 生效
-    });
-    const seg4 = PathUtil.getSegments(p4);
-    expect(PathUtil.getPathBox(seg4)).eqls({ x: 1, y: 0, width: 29, height: 30 });
-  });
-
   it('isInStroke line', () => {
-    const p1 = [['M', 1, 1], ['L', 2, 2]];
-    const seg1 = PathUtil.getSegments(p1);
+    const p1 = [
+      ['M', 1, 1],
+      ['L', 2, 2],
+    ];
+    const seg1 = path2Segment(p1);
     expect(PathUtil.isPointInStroke(seg1, 1, 1, 1)).eqls(true);
     expect(PathUtil.isPointInStroke(seg1, 1, 2, 2)).eqls(true);
     expect(PathUtil.isPointInStroke(seg1, 1, 1.5, 1.5)).eqls(true);
@@ -76,17 +43,20 @@ describe('test path util', () => {
   });
 
   it('isInstroke Q', () => {
-    const p2 = [['M', 1, 1], ['Q', 2, 2, 3, 1]];
+    const p2 = [
+      ['M', 1, 1],
+      ['Q', 2, 2, 3, 1],
+    ];
 
-    const seg2 = PathUtil.getSegments(p2);
+    const seg2 = path2Segment(p2);
     // 函数存在副作用，严格说不应该有这种实现，但是为了延迟性能
-    PathUtil.getPathBox(seg2);
-    expect(seg2[1].box).eqls({
-      x: 1,
-      y: 1,
-      width: 2,
-      height: 0.5,
-    });
+    // PathUtil.getPathBox(seg2);
+    // expect(seg2[1].box).eqls({
+    //   x: 1,
+    //   y: 1,
+    //   width: 2,
+    //   height: 0.5,
+    // });
     expect(PathUtil.isPointInStroke(seg2, 1, 2, 1.5)).eqls(true);
     expect(PathUtil.isPointInStroke(seg2, 1, 2, 1.8)).eqls(true);
 
@@ -95,20 +65,28 @@ describe('test path util', () => {
 
   it('isInstroke Z', () => {
     const p = [['M', 1, 1], ['L', 2, 1], ['L', 2, 2], ['Z']];
-    const seg = PathUtil.getSegments(p);
+    const seg = path2Segment(p);
     expect(PathUtil.isPointInStroke(seg, 1, 1.5, 1.5)).eqls(true);
   });
 
   it('isInstroke C', () => {
-    const p3 = [['M', 1, 1], ['L', 2, 2], ['C', 3, 1, 4, 3, 5, 2]];
-    const seg3 = PathUtil.getSegments(p3);
+    const p3 = [
+      ['M', 1, 1],
+      ['L', 2, 2],
+      ['C', 3, 1, 4, 3, 5, 2],
+    ];
+    const seg3 = path2Segment(p3);
     expect(PathUtil.isPointInStroke(seg3, 1, 1.5, 1.5)).eqls(true);
     expect(PathUtil.isPointInStroke(seg3, 1, 3.5, 2)).eqls(true);
   });
 
   it('isInstroke A', () => {
-    const p4 = [['M', 1, 1], ['L', 2, 2], ['A', 2, 2, 0, 0, 1, 6, 2]];
-    const seg4 = PathUtil.getSegments(p4);
+    const p4 = [
+      ['M', 1, 1],
+      ['L', 2, 2],
+      ['A', 2, 2, 0, 0, 1, 6, 2],
+    ];
+    const seg4 = path2Segment(p4);
     expect(PathUtil.isPointInStroke(seg4, 1, 4, 0)).eqls(true);
   });
 
@@ -120,7 +98,11 @@ describe('test path util', () => {
     expect(rst.polygons[0].length).eqls(3);
     expect(rst.polylines[0].length).eqls(4);
 
-    const p2 = [['M', 1, 1], ['L', 2, 2], ['L', 3, 3]];
+    const p2 = [
+      ['M', 1, 1],
+      ['L', 2, 2],
+      ['L', 3, 3],
+    ];
     const rst2 = PathUtil.extractPolygons(p2);
     expect(rst2.polylines.length).eqls(1);
     expect(rst2.polygons.length).eqls(0);

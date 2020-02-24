@@ -4,9 +4,10 @@
  */
 import { Point } from '@antv/g-base/lib/types';
 import CubicUtil from '@antv/g-math/lib/cubic';
-import { each, isArray, isNil } from '@antv/util';
+import { each, isNil } from '@antv/util';
 import ShapeBase from './base';
 import path2Absolute from '@antv/path-util/lib/path-2-absolute';
+import path2Segment from '@antv/path-util/lib/path-2-segments';
 import { drawPath } from '../util/draw';
 import isPointInPath from '../util/in-path/point-in-path';
 import isInPolygon from '../util/in-path/polygon';
@@ -55,16 +56,10 @@ class Path extends ShapeBase {
     this.set('totalLength', null);
   }
 
-  getInnerBox(attrs) {
-    const segments = this.getSegments();
-    const lineWidth = this.getHitLineWidth();
-    return PathUtil.getPathBox(segments, lineWidth);
-  }
-
   getSegments() {
     let segments = this.get('segements');
     if (!segments) {
-      segments = PathUtil.getSegments(this.attr('path'));
+      segments = path2Segment(this.attr('path'));
       this.set('segments', segments);
     }
     return segments;
