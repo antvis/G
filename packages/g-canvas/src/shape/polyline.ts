@@ -38,11 +38,6 @@ class PolyLine extends ShapeBase {
     return false;
   }
 
-  getInnerBox(attrs) {
-    const { points } = attrs;
-    return PolylineUtil.box(points);
-  }
-
   isInStrokeOrPath(x, y, isStroke, isFill, lineWidth) {
     // 没有设置 stroke 不能被拾取, 没有线宽不能被拾取
     if (!isStroke || !lineWidth) {

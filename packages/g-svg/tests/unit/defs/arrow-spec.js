@@ -11,6 +11,24 @@ describe('Arrow defs', () => {
     width: 400,
     height: 400,
   });
+  it('should not create marker defs dom when startArrow or endArrow is false', () => {
+    const line = canvas.addShape('line', {
+      attrs: {
+        x1: 20,
+        y1: 20,
+        x2: 50,
+        y2: 50,
+        stroke: 'red',
+        startArrow: false,
+        endArrow: false,
+      },
+    });
+    const el = line.get('el');
+    const markerNodes = document.getElementsByTagName('marker');
+    expect(el.getAttribute('marker-start')).eqls(null);
+    expect(el.getAttribute('marker-end')).eqls(null);
+    expect(markerNodes.length).eqls(0);
+  });
 
   it('default arrow rendering should be same with Canvas', () => {
     const line = canvas.addShape('line', {
@@ -35,24 +53,5 @@ describe('Arrow defs', () => {
     // marker 下对应的箭头 path 节点
     const pathNode = markerNode.childNodes[0];
     expect(pathNode.getAttribute('d')).eqls(`M0,0 L${10 * Math.cos(Math.PI / 6)},5 L0,10`);
-  });
-
-  it('should not create marker defs dom when startArrow or endArrow is false', () => {
-    const line = canvas.addShape('line', {
-      attrs: {
-        x1: 20,
-        y1: 20,
-        x2: 50,
-        y2: 50,
-        stroke: 'red',
-        startArrow: false,
-        endArrow: false,
-      },
-    });
-    const el = line.get('el');
-    const markerNodes = document.getElementsByTagName('marker');
-    expect(el.getAttribute('marker-start')).eqls(null);
-    expect(el.getAttribute('marker-end')).eqls(null);
-    expect(markerNodes.length).eqls(0);
   });
 });

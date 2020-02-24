@@ -64,4 +64,19 @@ describe('SVG Cicle', () => {
     circle.destroy();
     expect(circle.destroyed).eql(true);
   });
+  it('not append to canvas', () => {
+    const circle1 = new Circle({
+      type: 'circle',
+      attrs: {
+        x: 10,
+        y: 10,
+        r: 10,
+      },
+    });
+    const bbox = circle1.getBBox();
+    expect(bbox.x).eql(0);
+    expect(bbox.y).eql(0);
+    expect(bbox.width).eql(20);
+    expect(bbox.height).eql(20);
+  });
 });

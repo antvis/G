@@ -20,16 +20,6 @@ class Circle extends ShapeBase {
     };
   }
 
-  getInnerBox(attrs) {
-    const { x, y, r } = attrs;
-    return {
-      x: x - r,
-      y: y - r,
-      width: r * 2,
-      height: r * 2,
-    };
-  }
-
   isInStrokeOrPath(x, y, isStroke, isFill, lineWidth) {
     const attrs = this.attr();
     const cx = attrs.x;
