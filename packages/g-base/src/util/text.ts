@@ -1,4 +1,4 @@
-import { isNil, each } from './util';
+import { isNil, each, isString } from './util';
 import { getOffScreenContext } from './offscreen';
 import { ShapeAttrs } from '../types';
 
@@ -9,8 +9,10 @@ import { ShapeAttrs } from '../types';
  * @param lineHeight 行高，可以为空
  */
 export function getTextHeight(text: string, fontSize: number, lineHeight?: number): number {
-  const textArr = text.split('\n');
-  const lineCount = textArr ? textArr.length : 1;
+  let lineCount = 1;
+  if (isString(text)) {
+    lineCount = text.split('\n').length;
+  }
   if (lineCount > 1) {
     const spaceingY = getLineSpaceing(fontSize, lineHeight);
     return fontSize * lineCount + spaceingY * (lineCount - 1);
@@ -41,7 +43,7 @@ export function getTextWidth(text: string, font: string) {
   }
   context.save();
   context.font = font;
-  if (text.includes('\n')) {
+  if (isString(text) && text.includes('\n')) {
     const textArr = text.split('\n');
     each(textArr, (subText) => {
       const measureWidth = context.measureText(subText).width;

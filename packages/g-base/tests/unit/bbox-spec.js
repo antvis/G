@@ -162,6 +162,20 @@ describe('test bbox', () => {
       height: 12,
     });
   });
+  it('text is number', () => {
+    const shape = new MyShape({
+      type: 'text',
+      attrs: { x: 10, y: 10, text: 123, fontSize: 12, fontFamily: 'sans-serif' },
+    });
+    const bbox = shape.getBBox();
+    const width = getTextWidth(shape.attr('text'), '12px sans-serif');
+    expect(bbox).eqls({
+      x: 10,
+      y: -2,
+      width,
+      height: 12,
+    });
+  });
 
   it('path', () => {
     const shape = new MyShape({
