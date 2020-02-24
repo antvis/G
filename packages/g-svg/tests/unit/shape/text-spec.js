@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import Text from '../../../src/shape/text';
 import getCanvas from '../../get-canvas';
-
 describe('SVG text', () => {
   let canvas;
   let text;
@@ -42,6 +41,23 @@ describe('SVG text', () => {
     expect(bbox.minY).eql(textBBox.y - 0.5);
     expect(bbox.maxX).eqls(textBBox.x + textBBox.width + 0.5);
     expect(bbox.maxY).eqls(textBBox.y + textBBox.height + 0.5);
+  });
+
+  it('new text bbox', () => {
+    const text1 = new Text({
+      type: 'text',
+      attrs: {
+        x: 100,
+        y: 100,
+        text: 'Hello World',
+        stroke: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff',
+      },
+    });
+    const bbox = text.getBBox();
+    const bbox1 = text1.getBBox();
+    expect(bbox.x).eql(bbox1.x);
+    expect(Math.abs(bbox.width - bbox1.width) <= 2).eql(true);
+    expect(Math.abs(bbox.height - bbox1.height) <= 2).eql(true);
   });
 
   it('change', () => {

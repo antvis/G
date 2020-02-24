@@ -78,6 +78,29 @@ describe('SVG path', () => {
     expect(bbox.maxY).eql(200.5);
   });
 
+  it('new path bbox', () => {
+    const path1 = new Path({
+      type: 'path',
+      attrs: {
+        path: [
+          ['M', 100, 100],
+          ['L', 200, 200],
+        ],
+        lineWidth: 1,
+        stroke: 'red',
+        startArrow: {
+          path: 'M 10,0 L -10,-10 L -10,10 Z',
+          d: 10,
+        },
+      },
+    });
+    const bbox = path1.getBBox();
+    expect(bbox.minX).eql(99.5);
+    expect(bbox.minY).eql(99.5);
+    expect(bbox.maxX).eql(200.5);
+    expect(bbox.maxY).eql(200.5);
+  });
+
   it('isHit', () => {
     expect(path.isHit(100, 100)).eql(true);
     expect(path.isHit(110, 109.5)).eql(true); // in arrow
