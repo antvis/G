@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { getBBoxMehod } from '../../src/box/index';
+import { getBBoxMethod } from '../../src/bbox/index';
 import Shape from '../../src/abstract/shape';
 import { getTextWidth } from '../../src/util/text';
 
@@ -7,7 +7,7 @@ describe('test bbox', () => {
   class MyShape extends Shape {
     calculateBBox() {
       const type = this.get('type');
-      const bboxMethod = getBBoxMehod(type);
+      const bboxMethod = getBBoxMethod(type);
       return bboxMethod(this);
     }
   }
@@ -25,9 +25,37 @@ describe('test bbox', () => {
       height: 20,
     });
   });
+
+  it('image', () => {
+    const rect = new MyShape({
+      type: 'image',
+      attrs: { x: 0, y: 0, width: 10, height: 20 },
+    });
+    const bbox = rect.getBBox();
+    expect(bbox).eqls({
+      x: 0,
+      y: 0,
+      width: 10,
+      height: 20,
+    });
+  });
   it('circle', () => {
     const shape = new MyShape({
       type: 'circle',
+      attrs: { x: 0, y: 0, r: 10 },
+    });
+    const bbox = shape.getBBox();
+    expect(bbox).eqls({
+      x: -10,
+      y: -10,
+      width: 20,
+      height: 20,
+    });
+  });
+
+  it('marker', () => {
+    const shape = new MyShape({
+      type: 'marker',
       attrs: { x: 0, y: 0, r: 10 },
     });
     const bbox = shape.getBBox();
@@ -89,6 +117,25 @@ describe('test bbox', () => {
       y: 10,
       width: 90,
       height: 110,
+    });
+  });
+
+  it('line', () => {
+    const shape = new MyShape({
+      type: 'line',
+      attrs: {
+        x1: 10,
+        y1: 20,
+        x2: 50,
+        y2: 60,
+      },
+    });
+    const bbox = shape.getBBox();
+    expect(bbox).eqls({
+      x: 10,
+      y: 20,
+      width: 40,
+      height: 40,
     });
   });
 

@@ -4,6 +4,7 @@ import circle from './circle';
 import points from './points';
 import text from './text';
 import path from './path';
+import line from './line';
 import ellipse from './ellipse';
 
 register('rect', rect);
@@ -14,6 +15,7 @@ register('polygon', points);
 register('polyline', points);
 register('text', text);
 register('path', path);
+register('line', line);
 register('ellipse', ellipse);
 
-export { getMethod as getBBoxMehod };
+export { getMethod as getBBoxMethod };
