@@ -94,8 +94,9 @@ class ShapeBase extends AbstractShape {
       }
     }
     context.save();
-    this._applyClip(context, this.getClip() as ShapeBase);
+    // 先将 attrs 应用到上下文中，再设置 clip。因为 clip 应该被当前元素的 matrix 所影响
     applyAttrsToContext(context, this);
+    this._applyClip(context, this.getClip() as ShapeBase);
     this.drawPath(context);
     context.restore();
     this._afterDraw();
