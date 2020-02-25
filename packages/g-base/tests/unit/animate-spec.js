@@ -62,7 +62,7 @@ describe('animate', () => {
   });
 
   // 兼容 3.0 中的写法，onFrame 可在 toAttrs 中设置
-  it('animate(toAttrs, duration, easing, callback, delay) and toAttrs has onFrame property', (done) => {
+  it.only('animate(toAttrs, duration, easing, callback, delay) and toAttrs has onFrame, delay and repeat property', (done) => {
     const shape = new Shape({
       attrs: {
         x: 50,
@@ -79,26 +79,25 @@ describe('animate', () => {
             y: 50 + ratio * (100 - 50),
           };
         },
+        delay: 100,
+        repeat: true,
       },
       500,
       'easeLinear',
       () => {
         flag = true;
-      },
-      100
+      }
     );
     expect(shape.attr('x')).eqls(50);
     expect(shape.attr('y')).eqls(50);
     expect(flag).eqls(false);
     setTimeout(() => {
-      expect(flag).eqls(false);
-    }, 550);
-    setTimeout(() => {
-      expect(shape.attr('x')).eqls(100);
-      expect(shape.attr('y')).eqls(100);
-      expect(flag).eqls(true);
+      expect(shape.attr('x')).not.eqls(100);
+      expect(shape.attr('y')).not.eqls(100);
+      expect(shape.get('animating')).eqls(true); // 动画仍然在执行
+      expect(flag).eqls(false); // callback 回调一直得不到执行
       done();
-    }, 1200);
+    }, 700);
   });
 
   it('animate(onFrame, duration, easing, callback, delay)', (done) => {
