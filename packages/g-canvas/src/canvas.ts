@@ -156,6 +156,8 @@ class Canvas extends AbstractCanvas {
     context.clearRect(0, 0, element.width, element.height);
     applyAttrsToContext(context, this);
     drawChildren(context, children);
+    // 对于 https://github.com/antvis/g/issues/422 的场景，全局渲染的模式下也会记录更新的元素队列，因此全局渲染完后也需要置空
+    this.set('refreshElements', []);
   }
   // 绘制局部
   _drawRegion() {

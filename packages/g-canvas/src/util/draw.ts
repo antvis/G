@@ -153,11 +153,14 @@ export function refreshElement(element, changeType) {
       // 这是一段 hack 的代码
       element._cacheCanvasBBox = element.get('cacheCanvasBBox');
     }
+    // 防止反复刷新
     if (!element.get('hasChanged')) {
-      // 防止反复刷新
-      if (canvas.get('localRefresh')) {
-        canvas.refreshElement(element, changeType, canvas);
-      }
+      // 本来只有局部渲染模式下，才需要记录更新的元素队列
+      // if (canvas.get('localRefresh')) {
+      //   canvas.refreshElement(element, changeType, canvas);
+      // }
+      // 但对于 https://github.com/antvis/g/issues/422 的场景，全局渲染的模式下也需要记录更新的元素队列
+      canvas.refreshElement(element, changeType, canvas);
       if (canvas.get('autoDraw')) {
         canvas.draw();
       }
