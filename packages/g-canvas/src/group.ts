@@ -43,9 +43,10 @@ class Group extends AbstractGroup {
     const children = this.getChildren() as IElement[];
     if (children.length) {
       context.save();
-      this._applyClip(context, this.getClip() as ShapeBase);
       // group 上的矩阵和属性也会应用到上下文上
+      // 先将 attrs 应用到上下文中，再设置 clip。因为 clip 应该被当前元素的 matrix 所影响
       applyAttrsToContext(context, this);
+      this._applyClip(context, this.getClip() as ShapeBase);
       drawChildren(context, children, region);
       context.restore();
     }
