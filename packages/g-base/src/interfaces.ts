@@ -401,9 +401,10 @@ export interface IContainer extends IElement {
    * 根据 x,y 获取对应的图形
    * @param {number} x x 坐标
    * @param {number} y y 坐标
+   * @param {Event} 浏览器事件对象
    * @returns 添加的图形分组
    */
-  getShape(x: number, y: number): IShape;
+  getShape(x: number, y: number, ev: Event): IShape;
 
   /**
    * 添加图形元素，已经在外面构造好的类
