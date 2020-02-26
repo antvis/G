@@ -1,6 +1,7 @@
-import { AbstractCanvas } from '@antv/g-base';
+import { AbstractCanvas, IShape } from '@antv/g-base';
 import { ChangeType } from '@antv/g-base/lib/types';
 import { IElement } from './interfaces';
+import { SHAPE_TO_TAGS } from './constant';
 import { drawChildren } from './util/draw';
 import { setTransform, setClip } from './util/svg';
 import { sortDom } from './util/dom';
@@ -25,6 +26,19 @@ class Canvas extends AbstractCanvas {
 
   getGroupBase() {
     return Group;
+  }
+
+  // 覆盖 Container 中通过遍历的方式获取 shape 对象的逻辑，直接走 SVG 的 dom 拾取即可
+  getShape(x: number, y: number, ev: Event): IShape {
+    let target = <Element>ev.target || <Element>ev.srcElement;
+    if (!SHAPE_TO_TAGS[target.tagName]) {
+      let parent = <Element>target.parentNode;
+      while (parent && !SHAPE_TO_TAGS[parent.tagName]) {
+        parent = <Element>parent.parentNode;
+      }
+      target = parent;
+    }
+    return this.find((child) => child.get('el') === target) as IShape;
   }
 
   // 复写基类的方法生成标签

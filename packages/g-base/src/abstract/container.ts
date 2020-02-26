@@ -254,7 +254,7 @@ abstract class Container extends Element implements IContainer {
     return canvas;
   }
 
-  getShape(x: number, y: number): IShape {
+  getShape(x: number, y: number, ev: Event): IShape {
     // 如果不支持拾取，则直接返回
     if (!isAllowCapture(this)) {
       return null;
@@ -267,21 +267,21 @@ abstract class Container extends Element implements IContainer {
       // 将 x, y 转换成对应于 group 的局部坐标
       v = this.invertFromMatrix(v);
       if (!this.isClipped(v[0], v[1])) {
-        shape = this._findShape(children, v[0], v[1]);
+        shape = this._findShape(children, v[0], v[1], ev);
       }
     } else {
-      shape = this._findShape(children, x, y);
+      shape = this._findShape(children, x, y, ev);
     }
     return shape;
   }
 
-  _findShape(children: IElement[], x: number, y: number) {
+  _findShape(children: IElement[], x: number, y: number, ev: Event) {
     let shape = null;
     for (let i = children.length - 1; i >= 0; i--) {
       const child = children[i];
       if (isAllowCapture(child)) {
         if (child.isGroup()) {
-          shape = (child as IGroup).getShape(x, y);
+          shape = (child as IGroup).getShape(x, y, ev);
         } else if ((child as IShape).isHit(x, y)) {
           shape = child;
         }
