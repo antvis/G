@@ -62,7 +62,7 @@ describe('animate', () => {
   });
 
   // 兼容 3.0 中的写法，onFrame 可在 toAttrs 中设置
-  it.only('animate(toAttrs, duration, easing, callback, delay) and toAttrs has onFrame, delay and repeat property', (done) => {
+  it('animate(toAttrs, duration, easing, callback, delay) and toAttrs has onFrame, delay and repeat property', (done) => {
     const shape = new Shape({
       attrs: {
         x: 50,
