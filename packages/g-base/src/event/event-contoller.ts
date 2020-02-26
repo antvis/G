@@ -183,8 +183,8 @@ class EventController {
   };
 
   // 根据点获取图形，提取成独立方法，便于后续优化
-  _getShapeByPoint(point) {
-    return this.canvas.getShape(point.x, point.y);
+  _getShape(point, ev: Event) {
+    return this.canvas.getShape(point.x, point.y, ev);
   }
   // 获取事件的当前点的信息
   _getPointInfo(ev) {
@@ -203,7 +203,7 @@ class EventController {
   _triggerEvent(type, ev) {
     const pointInfo = this._getPointInfo(ev);
     // 每次都获取图形有一定成本，后期可以考虑进行缓存策略
-    const shape = this._getShapeByPoint(pointInfo);
+    const shape = this._getShape(pointInfo, ev);
     const method = this[`_on${type}`];
     let leaveCanvas = false;
     if (method) {
@@ -343,7 +343,7 @@ class EventController {
     }
     this.dragging = false;
     // drag 完成后，有可能 draggingShape 已经移动到了当前位置，所以不能直接取当前图形
-    const shape = this._getShapeByPoint(pointInfo);
+    const shape = this._getShape(pointInfo, event);
     // 拖拽完成后，进行 enter，leave 的判定
     if (shape !== draggingShape) {
       this._emitMouseoverEvents(event, pointInfo, draggingShape, shape);
