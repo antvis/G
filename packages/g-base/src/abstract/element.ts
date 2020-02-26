@@ -17,7 +17,8 @@ const ARRAY_ATTRS = {
 
 const CLONE_CFGS = ['zIndex', 'capture', 'visible', 'type'];
 
-const RESERVED_PORPS = ['delay', 'repeat'];
+// 可以在 toAttrs 中设置，但不属于绘图属性的字段
+const RESERVED_PORPS = ['repeat'];
 
 const DELEGATION_SPLIT = ':';
 const WILDCARD = '*';
@@ -468,9 +469,8 @@ abstract class Element extends Base implements IElement {
       onFrame = toAttrs as OnFrame;
       toAttrs = {};
     } else if (isObject(toAttrs) && (toAttrs as any).onFrame) {
-      // 兼容 3.0 中的写法，onFrame、delay 和 repeat 可在 toAttrs 中设置
+      // 兼容 3.0 中的写法，onFrame 和 repeat 可在 toAttrs 中设置
       onFrame = (toAttrs as any).onFrame as OnFrame;
-      delay = (toAttrs as any).delay;
       repeat = (toAttrs as any).repeat;
     }
     // 第二个参数，既可以是执行时间 duration，也可以是动画参数 animateCfg
@@ -478,8 +478,8 @@ abstract class Element extends Base implements IElement {
       animateCfg = duration as AnimateCfg;
       duration = animateCfg.duration;
       easing = animateCfg.easing || 'easeLinear';
+      delay = animateCfg.delay || 0;
       // animateCfg 中的设置优先级更高
-      delay = animateCfg.delay || delay || 0;
       repeat = animateCfg.repeat || repeat || false;
       callback = animateCfg.callback || noop;
       pauseCallback = animateCfg.pauseCallback || noop;
