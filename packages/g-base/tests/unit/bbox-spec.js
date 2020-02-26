@@ -214,7 +214,9 @@ describe('test bbox', () => {
       },
     });
     const bbox = shape.getBBox();
-    expect(bbox.width > 90).eql(true);
+    expect(bbox.width).eql(90);
+    shape.attr('stroke', 'red');
+    expect(shape.getBBox().width > 90).eqls(true);
   });
 
   it('path complex', () => {
