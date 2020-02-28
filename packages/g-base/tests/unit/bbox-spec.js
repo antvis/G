@@ -265,13 +265,17 @@ describe('test bbox', () => {
     });
     const bbox = rect.getBBox();
     expect(rect.getCanvasBBox().width).eqls(bbox.width);
-    rect.attr({ shadowBlur: 10 });
+    rect.attr({ shadowBlur: 10 }); // 没有 color 不生效
     let canvasBBox = rect.getCanvasBBox();
+    expect(rect.getCanvasBBox().width).eqls(bbox.width);
+
+    rect.attr({ shadowColor: 'red', shadowBlur: 10 });
+    canvasBBox = rect.getCanvasBBox();
     expect(canvasBBox.x).eql(bbox.x - 10);
     expect(canvasBBox.width).eql(bbox.width + 10 * 2);
     expect(canvasBBox.height).eql(bbox.height + 10 * 2);
 
-    rect.attr({ shadowBlur: 10, shadowOffsetX: 10, shadowOffsetY: -10 });
+    rect.attr({ shadowColor: 'red', shadowBlur: 10, shadowOffsetX: 10, shadowOffsetY: -10 });
     canvasBBox = rect.getCanvasBBox();
     expect(canvasBBox.width).eql(bbox.width + 10 * 2);
     expect(canvasBBox.height).eql(bbox.height + 10 * 2);
