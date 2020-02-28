@@ -1,7 +1,6 @@
 import { IShape } from '../interfaces';
 import { ShapeCfg, ShapeAttrs, BBox } from '../types';
 import Element from './element';
-import { isNil } from '../util/util';
 import { multiplyVec2 } from '../util/matrix';
 abstract class AbstractShape extends Element implements IShape {
   constructor(cfg: ShapeCfg) {
@@ -74,8 +73,8 @@ abstract class AbstractShape extends Element implements IShape {
     }
     const attrs = this.attrs;
     // 如果存在 shadow 则计算 shadow
-    if (!isNil(attrs.shadowBlur)) {
-      const { shadowBlur, shadowOffsetX = 0, shadowOffsetY = 0 } = attrs;
+    if (attrs.shadowColor) {
+      const { shadowBlur = 0, shadowOffsetX = 0, shadowOffsetY = 0 } = attrs;
       const shadowLeft = minX - shadowBlur + shadowOffsetX;
       const shadowRight = maxX + shadowBlur + shadowOffsetX;
       const shadowTop = minY - shadowBlur + shadowOffsetY;
