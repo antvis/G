@@ -47,6 +47,10 @@ export type ShapeAttrs = {
   points?: object[];
   width?: number;
   height?: number;
+  shadowBlur?: number;
+  shadowColor?: ColorType;
+  shadowOffsetX?: number;
+  shadowOffsetY?: number;
   [key: string]: any;
 };
 

@@ -1,7 +1,6 @@
 import { IShape } from '../interfaces';
 import { ShapeCfg, ShapeAttrs, BBox } from '../types';
 import Element from './element';
-import { each, isArray } from '../util/util';
 import { multiplyVec2 } from '../util/matrix';
 abstract class AbstractShape extends Element implements IShape {
   constructor(cfg: ShapeCfg) {
@@ -61,18 +60,30 @@ abstract class AbstractShape extends Element implements IShape {
   calculateCanvasBBox() {
     const bbox = this.getBBox();
     const totalMatrix = this.getTotalMatrix();
-    // 如果没有任何矩阵，则等同于计算 bbox
-    if (!totalMatrix) {
-      return bbox;
+    let { minX, minY, maxX, maxY } = bbox;
+    if (totalMatrix) {
+      const topLeft = multiplyVec2(totalMatrix, [bbox.minX, bbox.minY]);
+      const topRight = multiplyVec2(totalMatrix, [bbox.maxX, bbox.minY]);
+      const bottomLeft = multiplyVec2(totalMatrix, [bbox.minX, bbox.maxY]);
+      const bottomRight = multiplyVec2(totalMatrix, [bbox.maxX, bbox.maxY]);
+      minX = Math.min(topLeft[0], topRight[0], bottomLeft[0], bottomRight[0]);
+      maxX = Math.max(topLeft[0], topRight[0], bottomLeft[0], bottomRight[0]);
+      minY = Math.min(topLeft[1], topRight[1], bottomLeft[1], bottomRight[1]);
+      maxY = Math.max(topLeft[1], topRight[1], bottomLeft[1], bottomRight[1]);
     }
-    const topLeft = multiplyVec2(totalMatrix, [bbox.minX, bbox.minY]);
-    const topRight = multiplyVec2(totalMatrix, [bbox.maxX, bbox.minY]);
-    const bottomLeft = multiplyVec2(totalMatrix, [bbox.minX, bbox.maxY]);
-    const bottomRight = multiplyVec2(totalMatrix, [bbox.maxX, bbox.maxY]);
-    const minX = Math.min(topLeft[0], topRight[0], bottomLeft[0], bottomRight[0]);
-    const maxX = Math.max(topLeft[0], topRight[0], bottomLeft[0], bottomRight[0]);
-    const minY = Math.min(topLeft[1], topRight[1], bottomLeft[1], bottomRight[1]);
-    const maxY = Math.max(topLeft[1], topRight[1], bottomLeft[1], bottomRight[1]);
+    const attrs = this.attrs;
+    // 如果存在 shadow 则计算 shadow
+    if (attrs.shadowColor) {
+      const { shadowBlur = 0, shadowOffsetX = 0, shadowOffsetY = 0 } = attrs;
+      const shadowLeft = minX - shadowBlur + shadowOffsetX;
+      const shadowRight = maxX + shadowBlur + shadowOffsetX;
+      const shadowTop = minY - shadowBlur + shadowOffsetY;
+      const shadowBottom = maxY + shadowBlur + shadowOffsetY;
+      minX = Math.min(minX, shadowLeft);
+      maxX = Math.max(maxX, shadowRight);
+      minY = Math.min(minY, shadowTop);
+      maxY = Math.max(maxY, shadowBottom);
+    }
     return {
       x: minX,
       y: minY,
