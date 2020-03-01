@@ -440,7 +440,7 @@ describe('Text \n', function() {
     expect(text.attr('textBaseline')).to.equal('top');
     expect(text.attr('lineWidth')).to.equal(1);
   });
-  it('text max-width', () => {
+  it('text maxWidth', () => {
     const text = new G.Text({
       attrs: {
         x: 0,
