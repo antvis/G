@@ -39,6 +39,17 @@ class Path extends ShapeBase {
 
   initAttrs(attrs) {
     this._setPathArr(attrs.path);
+    this.setArrow();
+  }
+
+  // 更新属性时，检测是否更改了 path
+  onAttrChange(name: string, value: any, originValue: any) {
+    super.onAttrChange(name, value, originValue);
+    if (name === 'path') {
+      this._setPathArr(value);
+    }
+    // 由于箭头的绘制依赖于 line 的诸多 attrs，因此这里不再对每个 attr 进行判断，attr 每次变化都会影响箭头的更新
+    this.setArrow();
   }
 
   // 将 path 转换成绝对路径
@@ -65,6 +76,20 @@ class Path extends ShapeBase {
     return segments;
   }
 
+  setArrow() {
+    const attrs = this.attr();
+    const { startArrow, endArrow } = attrs;
+
+    if (startArrow) {
+      const tangent = this.getStartTangent();
+      ArrowUtil.addStartArrow(this, attrs, tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1]);
+    }
+    if (endArrow) {
+      const tangent = this.getEndTangent();
+      ArrowUtil.addEndArrow(this, attrs, tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1]);
+    }
+  }
+
   isInStrokeOrPath(x, y, isStroke, isFill, lineWidth) {
     const segments = this.getSegments();
     const hasArc = this.get('hasArc');
@@ -86,14 +111,6 @@ class Path extends ShapeBase {
     return isHit;
   }
 
-  // 更新属性时，检测是否更改了 path
-  onAttrChange(name: string, value: any, originValue: any) {
-    super.onAttrChange(name, value, originValue);
-    if (name === 'path') {
-      this._setPathArr(value);
-    }
-  }
-
   createPath(context) {
     const attrs = this.attr();
     const paramsCache = this.get('paramsCache'); // 由于计算圆弧的参数成本很大，所以要缓存
@@ -101,17 +118,13 @@ class Path extends ShapeBase {
   }
 
   afterDrawPath(context: CanvasRenderingContext2D) {
-    const attrs = this.attr();
-    const { startArrow, endArrow } = attrs;
-
-    if (startArrow) {
-      const tangent = this.getStartTangent();
-      ArrowUtil.addStartArrow(context, attrs, tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1]);
+    const startArrowShape = this.get('startArrowShape');
+    const endArrowShape = this.get('endArrowShape');
+    if (startArrowShape) {
+      startArrowShape.draw(context);
     }
-
-    if (endArrow) {
-      const tangent = this.getEndTangent();
-      ArrowUtil.addEndArrow(context, attrs, tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1]);
+    if (endArrowShape) {
+      endArrowShape.draw(context);
     }
   }
 

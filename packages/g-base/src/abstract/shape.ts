@@ -121,6 +121,8 @@ abstract class AbstractShape extends Element implements IShape {
 
   // 不同的 Shape 各自实现
   isHit(x: number, y: number): boolean {
+    const startArrowShape = this.get('startArrowShape');
+    const endArrowShape = this.get('endArrowShape');
     let vec = [x, y, 1];
     vec = this.invertFromMatrix(vec);
     const [refX, refY] = vec;
@@ -131,7 +133,19 @@ abstract class AbstractShape extends Element implements IShape {
     }
     // 被裁减掉的和不在包围盒内的不进行计算
     if (inBBox && !this.isClipped(refX, refY)) {
-      return this.isInShape(refX, refY);
+      // 对图形进行拾取判断
+      if (this.isInShape(refX, refY)) {
+        return true;
+      }
+    }
+
+    // 对起始箭头进行拾取判断
+    if (startArrowShape && startArrowShape.isHit(refX, refY)) {
+      return true;
+    }
+    // 对结束箭头进行拾取判断
+    if (endArrowShape && endArrowShape.isHit(refX, refY)) {
+      return true;
     }
     return false;
   }
