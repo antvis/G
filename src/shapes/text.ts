@@ -172,7 +172,12 @@ class CText extends Shape {
       if (textArr) {
         self._drawTextArr(context, false);
       } else {
-        context.strokeText(text, x, y, maxWidth);
+        if (!Util.isNil(maxWidth)) {
+          context.strokeText(text, x, y, maxWidth);
+        } else {
+          context.strokeText(text, x, y);
+        }
+        
       }
       context.globalAlpha = 1;
     }
@@ -184,7 +189,12 @@ class CText extends Shape {
       if (textArr) {
         self._drawTextArr(context, true);
       } else {
-        context.fillText(text, x, y, maxWidth);
+        if (!Util.isNil(maxWidth)) {
+          context.fillText(text, x, y, maxWidth);
+        } else {
+          context.fillText(text, x, y);
+        }
+        
       }
     }
     cfg.hasUpdate = false;
@@ -207,9 +217,17 @@ class CText extends Shape {
       if (textBaseline === 'middle') subY += height - fontSize - (height - fontSize) / 2;
       if (textBaseline === 'top') subY += height - fontSize;
       if (fill) {
-        context.fillText(subText, x, subY, maxWidth);
+        if (!Util.isNil(maxWidth)) {
+          context.fillText(subText, x, subY, maxWidth);
+        } else {
+          context.fillText(subText, x, subY);
+        }
       } else {
-        context.strokeText(subText, x, subY, maxWidth);
+        if (!Util.isNil(maxWidth)) {
+          context.strokeText(subText, x, subY, maxWidth);
+        } else {
+          context.strokeText(subText, x, subY);
+        }
       }
     });
   }
@@ -239,7 +257,7 @@ class CText extends Shape {
       width = context.measureText(text).width;
       context.restore();
     }
-    if (attrs.maxWidth !== undefined) {
+    if (!Util.isNil(attrs.maxWidth)) {
       width = Math.min(attrs.maxWidth, width);
     }
     return width;
