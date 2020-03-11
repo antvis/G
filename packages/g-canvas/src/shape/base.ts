@@ -2,6 +2,7 @@ import { AbstractShape } from '@antv/g-base';
 import { ChangeType, BBox } from '@antv/g-base/lib/types';
 import { isNil, intersectRect } from '../util/util';
 import { applyAttrsToContext, refreshElement, getMergedRegion } from '../util/draw';
+import { getArrowBBox } from '../util/arrow';
 import { getBBoxMethod } from '@antv/g-base/lib/bbox/index';
 import { Region } from '../types';
 import * as Shape from './index';
@@ -39,21 +40,43 @@ class ShapeBase extends AbstractShape {
   calculateBBox(): BBox {
     const type = this.get('type');
     const lineWidth = this.getHitLineWidth();
-    // const attrs = this.attr();
+
+    const attrs = this.attr();
+    const { x1, y1, x2, y2, startArrow, endArrow } = attrs;
+    let arrowBBox = null;
+    if (startArrow) {
+      arrowBBox = getArrowBBox(attrs, x1, y1, x2, y2, true);
+    } else if (endArrow) {
+      arrowBBox = getArrowBBox(attrs, x1, y1, x2, y2, false);
+    }
+
     const bboxMethod = getBBoxMethod(type);
     const box = bboxMethod(this);
     const halfLineWidth = lineWidth / 2;
-    const minX = box.x - halfLineWidth;
-    const minY = box.y - halfLineWidth;
-    const maxX = box.x + box.width + halfLineWidth;
-    const maxY = box.y + box.height + halfLineWidth;
+
+    let minX = box.x - halfLineWidth;
+    let minY = box.y - halfLineWidth;
+    let maxX = box.x + box.width + halfLineWidth;
+    let maxY = box.y + box.height + halfLineWidth;
+    let width = box.width + lineWidth;
+    let height = box.height + lineWidth;
+
+    if (arrowBBox) {
+      minX = Math.min(minX, arrowBBox.minX);
+      minY = Math.min(minY, arrowBBox.minY);
+      maxX = maxX + arrowBBox.width;
+      maxY = maxY + arrowBBox.height;
+      width = width + arrowBBox.width;
+      height = height + arrowBBox.height;
+    }
+
     return {
       x: minX,
       minX,
       y: minY,
       minY,
-      width: box.width + lineWidth,
-      height: box.height + lineWidth,
+      width,
+      height,
       maxX,
       maxY,
     };

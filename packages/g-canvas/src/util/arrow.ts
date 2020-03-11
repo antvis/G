@@ -8,7 +8,16 @@ const atan2 = Math.atan2;
 const DEFAULT_LENGTH = 10;
 const DEFAULT_ANGLE = PI / 3;
 
-function _addArrow(ctx, attrs, x1, y1, x2, y2, isStart) {
+/**
+ * 计算箭头的各个坐标点
+ * @param attrs 属性对象
+ * @param x1
+ * @param y1
+ * @param x2
+ * @param y2
+ * @param isStart startArrow = true / endArrow = false
+ */
+function caclArrowCoordinate(attrs, x1, y1, x2, y2, isStart) {
   let leftX;
   let leftY;
   let rightX;
@@ -36,16 +45,89 @@ function _addArrow(ctx, attrs, x1, y1, x2, y2, isStart) {
   // Calculate coordinates for right half of arrow
   rightX = x2 + arrowLength * cos(angle - arrowAngle / 2);
   rightY = y2 + arrowLength * sin(angle - arrowAngle / 2);
+
+  // left half of arrow coordinate
+  const leftX1 = leftX - offsetX;
+  const leftY1 = leftY - offsetY;
+
+  // right half of arrow coordinate
+  const rightX1 = rightX - offsetX;
+  const rightY1 = rightY - offsetY;
+
+  const bottomX1 = x2 - offsetX;
+  const bottomY1 = y2 - offsetY;
+
+  const bottomX2 = x2 + offsetX;
+  const bottomY2 = y2 + offsetY;
+
+  return {
+    leftX1,
+    leftY1,
+    rightX1,
+    rightY1,
+    bottomX1,
+    bottomY1,
+    bottomX2,
+    bottomY2,
+  };
+}
+
+/**
+ * 计算箭头的 BBox
+ * @param attrs
+ * @param x1
+ * @param y1
+ * @param x2
+ * @param y2
+ * @param isStart
+ */
+export function getArrowBBox(attrs, x1, y1, x2, y2, isStart) {
+  const { leftX1, leftY1, rightX1, rightY1, bottomX1, bottomY1, bottomX2, bottomY2 } = caclArrowCoordinate(
+    attrs,
+    x1,
+    y1,
+    x2,
+    y2,
+    isStart
+  );
+
+  const minX = Math.min(leftX1, rightX1, bottomX1, bottomX2);
+  const maxX = Math.max(leftX1, rightX1, bottomX1, bottomX2);
+  const minY = Math.min(leftY1, rightY1, bottomY1, bottomY2);
+  const maxY = Math.max(leftY1, rightY1, bottomY1, bottomY2);
+
+  return {
+    x: minX,
+    y: minY,
+    minX,
+    maxX,
+    minY,
+    maxY,
+    width: maxX - minX,
+    height: maxY - minY,
+  };
+}
+
+function _addArrow(ctx, attrs, x1, y1, x2, y2, isStart) {
+  const { leftX1, leftY1, rightX1, rightY1, bottomX1, bottomY1, bottomX2, bottomY2 } = caclArrowCoordinate(
+    attrs,
+    x1,
+    y1,
+    x2,
+    y2,
+    isStart
+  );
+
   ctx.beginPath();
   // Draw left half of arrow
-  ctx.moveTo(leftX - offsetX, leftY - offsetY);
-  ctx.lineTo(x2 - offsetX, y2 - offsetY);
+  ctx.moveTo(leftX1, leftY1);
+  ctx.lineTo(bottomX1, bottomY1);
   // Draw right half of arrow
-  ctx.lineTo(rightX - offsetX, rightY - offsetY);
+  ctx.lineTo(rightX1, rightY1);
 
   // Visually connect arrow to path
-  ctx.moveTo(x2 - offsetX, y2 - offsetY);
-  ctx.lineTo(x2 + offsetX, y2 + offsetY);
+  ctx.moveTo(bottomX1, bottomY1);
+  ctx.lineTo(bottomX2, bottomY2);
   // Move back to end of path
   ctx.moveTo(x2, y2);
   ctx.stroke();
