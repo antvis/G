@@ -2,6 +2,7 @@ import QuadUtil from '@antv/g-math/lib/quadratic';
 import CubicUtil from '@antv/g-math/lib/cubic';
 import EllipseArcUtil from '@antv/g-math/lib/arc';
 import path2Segments from '@antv/path-util/lib/path-2-segments';
+import isNumberEqual from '@antv/util/lib/is-number-equal';
 import { SimpleBBox } from '../types';
 import { IShape } from '../interfaces';
 import { mergeArrowBBox } from './util';
@@ -100,7 +101,8 @@ function getExtraFromSegmentWithAngle(segment, lineWidth) {
     (currentAndPre + currentAndNext - preAndNext) / (2 * Math.sqrt(currentAndPre) * Math.sqrt(currentAndNext))
   );
   // 夹角为空、 0 或 PI 时，不需要计算夹角处的额外宽度
-  if (!currentAngle || Math.sin(currentAngle) === 0) {
+  // 注意: 由于计算精度问题，夹角为 0 的情况计算出来的角度可能是一个很小的值，还需要判断其与 0 是否近似相等
+  if (!currentAngle || Math.sin(currentAngle) === 0 || isNumberEqual(currentAngle, 0)) {
     return {
       xExtra: 0,
       yExtra: 0,
