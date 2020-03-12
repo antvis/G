@@ -32,6 +32,6 @@ describe('#436', () => {
     expect(bbox.minX).eqls(53.88829007174579);
     expect(bbox.minY).eqls(77.53153216848064);
     expect(bbox.maxX).eqls(870.5);
-    expect(bbox.maxY).eqls(122.46846783151936);
+    expect(bbox.maxY).eqls(128.46846783151938);
   });
 });
