@@ -148,14 +148,14 @@ abstract class AbstractShape extends Element implements IShape {
       if (this.isInShape(refX, refY)) {
         return true;
       }
-    }
-    // 对起始箭头进行拾取判断
-    if (startArrowShape && startArrowShape.isHit(refX, refY)) {
-      return true;
-    }
-    // 对结束箭头进行拾取判断
-    if (endArrowShape && endArrowShape.isHit(refX, refY)) {
-      return true;
+      // 对起始箭头进行拾取判断
+      if (startArrowShape && startArrowShape.isHit(refX, refY)) {
+        return true;
+      }
+      // 对结束箭头进行拾取判断
+      if (endArrowShape && endArrowShape.isHit(refX, refY)) {
+        return true;
+      }
     }
     return false;
   }

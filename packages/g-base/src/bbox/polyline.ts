@@ -16,8 +16,8 @@ export default function(shape: IShape): SimpleBBox {
   const { x, y, width, height } = getBBoxByArray(xArr, yArr);
   let bbox = {
     minX: x,
-    maxX: y,
-    minY: x + width,
+    minY: y,
+    maxX: x + width,
     maxY: y + height,
   };
   bbox = mergeArrowBBox(shape, bbox);
