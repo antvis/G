@@ -12,6 +12,20 @@ describe('test bbox', () => {
     }
   }
 
+  class Rect extends Shape {
+    calculateBBox() {
+      const bboxMethod = getBBoxMethod('rect');
+      const bbox = bboxMethod(this);
+      return {
+        ...bbox,
+        minX: bbox.x,
+        minY: bbox.y,
+        maxX: bbox.x + bbox.width,
+        maxY: bbox.y + bbox.height,
+      };
+    }
+  }
+
   it('rect', () => {
     const rect = new MyShape({
       type: 'rect',
@@ -237,5 +251,42 @@ describe('test bbox', () => {
     const bbox1 = shape.getBBox();
     expect(bbox1.x).eqls(54.63591866828193);
     expect(bbox1.y).eqls(98.50004569833794);
+  });
+
+  it('shadow', () => {
+    const rect = new Rect({
+      type: 'rect',
+      attrs: {
+        x: 0,
+        y: 0,
+        width: 10,
+        height: 20,
+      },
+    });
+    const bbox = rect.getBBox();
+    expect(rect.getCanvasBBox().width).eqls(bbox.width);
+    rect.attr({ shadowBlur: 10 }); // 没有 color 不生效
+    let canvasBBox = rect.getCanvasBBox();
+    expect(rect.getCanvasBBox().width).eqls(bbox.width);
+
+    rect.attr({ shadowColor: 'red', shadowBlur: 10 });
+    canvasBBox = rect.getCanvasBBox();
+    expect(canvasBBox.x).eql(bbox.x - 10);
+    expect(canvasBBox.width).eql(bbox.width + 10 * 2);
+    expect(canvasBBox.height).eql(bbox.height + 10 * 2);
+
+    rect.attr({ shadowColor: 'red', shadowBlur: 10, shadowOffsetX: 10, shadowOffsetY: -10 });
+    canvasBBox = rect.getCanvasBBox();
+    expect(canvasBBox.width).eql(bbox.width + 10 * 2);
+    expect(canvasBBox.height).eql(bbox.height + 10 * 2);
+    expect(canvasBBox.x).eql(bbox.x);
+    expect(canvasBBox.y).eql(bbox.y - 20);
+
+    rect.set('totalMatrix', [1, 0, 0, 1, 0, 0, 10, 20, 1]); // 位移 10, 20
+    rect.set('canvasBox', null);
+    canvasBBox = rect.getCanvasBBox();
+
+    expect(canvasBBox.x).eql(bbox.x + 10);
+    expect(canvasBBox.y).eql(bbox.y);
   });
 });

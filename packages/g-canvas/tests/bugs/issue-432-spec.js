@@ -52,7 +52,6 @@ describe('#432', () => {
         clientY,
       });
       expect(clickCalled).eqls(true);
-
       done();
     }, 25);
   });
@@ -91,7 +90,6 @@ describe('#432', () => {
         clientY,
       });
       expect(clickCalled).eqls(true);
-
       done();
     }, 25);
   });
@@ -134,7 +132,6 @@ describe('#432', () => {
         clientY,
       });
       expect(clickCalled).eqls(true);
-
       done();
     }, 25);
   });
@@ -177,7 +174,6 @@ describe('#432', () => {
         clientY,
       });
       expect(clickCalled).eqls(true);
-
       done();
     }, 25);
   });
@@ -218,7 +214,6 @@ describe('#432', () => {
         clientY,
       });
       expect(clickCalled).eqls(true);
-
       done();
     }, 25);
   });
@@ -259,7 +254,6 @@ describe('#432', () => {
         clientY,
       });
       expect(clickCalled).eqls(true);
-
       done();
     }, 25);
   });
