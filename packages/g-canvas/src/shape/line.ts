@@ -21,6 +21,28 @@ class Line extends ShapeBase {
     };
   }
 
+  initAttrs(attrs) {
+    this.setArrow();
+  }
+
+  // 更新属性时，检测是否更改了箭头
+  onAttrChange(name: string, value: any, originValue: any) {
+    super.onAttrChange(name, value, originValue);
+    // 由于箭头的绘制依赖于 line 的诸多 attrs，因此这里不再对每个 attr 进行判断，attr 每次变化都会影响箭头的更新
+    this.setArrow();
+  }
+
+  setArrow() {
+    const attrs = this.attr();
+    const { x1, y1, x2, y2, startArrow, endArrow } = attrs;
+    if (startArrow) {
+      ArrowUtil.addStartArrow(this, attrs, x2, y2, x1, y1);
+    }
+    if (endArrow) {
+      ArrowUtil.addEndArrow(this, attrs, x1, y1, x2, y2);
+    }
+  }
+
   isInStrokeOrPath(x, y, isStroke, isFill, lineWidth) {
     if (!isStroke || !lineWidth) {
       return false;
@@ -55,13 +77,13 @@ class Line extends ShapeBase {
   }
 
   afterDrawPath(context) {
-    const attrs = this.attr();
-    const { x1, y1, x2, y2 } = attrs;
-    if (attrs.startArrow) {
-      ArrowUtil.addStartArrow(context, attrs, x2, y2, x1, y1);
+    const startArrowShape = this.get('startArrowShape');
+    const endArrowShape = this.get('endArrowShape');
+    if (startArrowShape) {
+      startArrowShape.draw(context);
     }
-    if (attrs.endArrow) {
-      ArrowUtil.addEndArrow(context, attrs, x1, y1, x2, y2);
+    if (endArrowShape) {
+      endArrowShape.draw(context);
     }
   }
 

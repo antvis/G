@@ -7,7 +7,7 @@ canvas.height = 300;
 document.body.appendChild(canvas);
 const ctx = canvas.getContext('2d');
 
-describe('polygon test', () => {
+describe('polyline test', () => {
   const points1 = [
     [10, 10],
     [100, 10],
