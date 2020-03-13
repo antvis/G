@@ -5,6 +5,7 @@ import path2Segments from '@antv/path-util/lib/path-2-segments';
 import isNumberEqual from '@antv/util/lib/is-number-equal';
 import { SimpleBBox } from '../types';
 import { IShape } from '../interfaces';
+import { mergeArrowBBox } from './util';
 
 function getPathBox(segments, lineWidth) {
   let xArr = [];
@@ -130,5 +131,18 @@ export default function(shape: IShape): SimpleBBox {
   const { path, stroke } = attrs;
   const lineWidth = stroke ? attrs.lineWidth : 0; // 只有有 stroke 时，lineWidth 才生效
   const segments = shape.get('segments') || path2Segments(path);
-  return getPathBox(segments, lineWidth);
+  const { x, y, width, height } = getPathBox(segments, lineWidth);
+  let bbox = {
+    minX: x,
+    minY: y,
+    maxX: x + width,
+    maxY: y + height,
+  };
+  bbox = mergeArrowBBox(shape, bbox);
+  return {
+    x: bbox.minX,
+    y: bbox.minY,
+    width: bbox.maxX - bbox.minX,
+    height: bbox.maxY - bbox.minY,
+  };
 }

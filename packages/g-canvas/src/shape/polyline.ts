@@ -20,9 +20,14 @@ class PolyLine extends ShapeBase {
     };
   }
 
+  initAttrs(attrs) {
+    this.setArrow();
+  }
+
   // 更新属性时，检测是否更改了 points
   onAttrChange(name: string, value: any, originValue: any) {
     super.onAttrChange(name, value, originValue);
+    this.setArrow();
     if (['points'].indexOf(name) !== -1) {
       this._resetCache();
     }
@@ -31,6 +36,23 @@ class PolyLine extends ShapeBase {
   _resetCache() {
     this.set('totalLength', null);
     this.set('tCache', null);
+  }
+
+  setArrow() {
+    const attrs = this.attr();
+    const { points, startArrow, endArrow } = this.attrs;
+    const length = points.length;
+    const x1 = points[0][0];
+    const y1 = points[0][1];
+    const x2 = points[length - 1][0];
+    const y2 = points[length - 1][1];
+
+    if (startArrow) {
+      ArrowUtil.addStartArrow(this, attrs, points[1][0], points[1][1], x1, y1);
+    }
+    if (endArrow) {
+      ArrowUtil.addEndArrow(this, attrs, points[length - 2][0], points[length - 2][1], x2, y2);
+    }
   }
 
   // 不允许 fill
@@ -84,19 +106,13 @@ class PolyLine extends ShapeBase {
   }
 
   afterDrawPath(context: CanvasRenderingContext2D) {
-    const attrs = this.attr();
-    const { points, startArrow, endArrow } = this.attrs;
-    const length = points.length;
-    const x1 = points[0][0];
-    const y1 = points[0][1];
-    const x2 = points[length - 1][0];
-    const y2 = points[length - 1][1];
-
-    if (startArrow) {
-      ArrowUtil.addStartArrow(context, attrs, points[1][0], points[1][1], x1, y1);
+    const startArrowShape = this.get('startArrowShape');
+    const endArrowShape = this.get('endArrowShape');
+    if (startArrowShape) {
+      startArrowShape.draw(context);
     }
-    if (endArrow) {
-      ArrowUtil.addEndArrow(context, attrs, points[length - 2][0], points[length - 2][1], x2, y2);
+    if (endArrowShape) {
+      endArrowShape.draw(context);
     }
   }
 

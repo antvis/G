@@ -1,19 +1,24 @@
+import { getBBoxByArray } from '@antv/g-math/lib/util';
 import { SimpleBBox } from '../types';
 import { IShape } from '../interfaces';
 import { mergeArrowBBox } from './util';
 
 export default function(shape: IShape): SimpleBBox {
   const attrs = shape.attr();
-  const { x1, y1, x2, y2 } = attrs;
-  const minX = Math.min(x1, x2);
-  const maxX = Math.max(x1, x2);
-  const minY = Math.min(y1, y2);
-  const maxY = Math.max(y1, y2);
+  const { points } = attrs;
+  const xArr = [];
+  const yArr = [];
+  for (let i = 0; i < points.length; i++) {
+    const point = points[i];
+    xArr.push(point[0]);
+    yArr.push(point[1]);
+  }
+  const { x, y, width, height } = getBBoxByArray(xArr, yArr);
   let bbox = {
-    minX,
-    maxX,
-    minY,
-    maxY,
+    minX: x,
+    minY: y,
+    maxX: x + width,
+    maxY: y + height,
   };
   bbox = mergeArrowBBox(shape, bbox);
   return {
