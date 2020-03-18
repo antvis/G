@@ -52,9 +52,11 @@ function _addCustomizedArrow(shape, attrs, x1, y1, x2, y2, isStart) {
     isArrowShape: true,
     attrs: {
       ...restAttrs,
-      // 支持单独设置箭头的 stroke，若为空则使用 shape 的值
+      // 支持单独设置箭头的 stroke 和 lineWidth，若为空则使用 shape 的值
       stroke: arrowStroke || stroke,
       lineWidth: arrowLineWidth || lineWidth,
+      // 箭头是否填充需要手动设置，不会继承自 shape 的值
+      fill: arrowFill,
     },
   });
 
