@@ -142,9 +142,9 @@ describe('test graphic events', () => {
   //   }
   // });
 
-  const group1 = canvas.addGroup();
-  const group11 = group1.addGroup();
-  const group12 = group1.addGroup();
+  const group1 = canvas.addGroup({ name: 'g1' });
+  const group11 = group1.addGroup({ name: 'g11' });
+  const group12 = group1.addGroup({ name: 'g12' });
   const shape4 = group11.addShape({
     type: 'circle',
     attrs: {
@@ -1250,7 +1250,59 @@ describe('test graphic events', () => {
     });
     expect(called).eql(true);
   });
+  it('delagation mouseenter, mouseleave', () => {
+    let enterCalled = 0;
+    let leaveCalled = 0;
 
+    let enterCalled1 = 0;
+    let leaveCalled1 = 0;
+    group1.set('name', 'g1');
+    canvas.on('g1:mouseenter', () => {
+      enterCalled1++;
+    });
+    canvas.on('g1:mouseleave', () => {
+      leaveCalled1++;
+    });
+
+    canvas.on('g11:mouseenter', () => {
+      enterCalled++;
+    });
+    canvas.on('g11:mouseleave', () => {
+      leaveCalled++;
+    });
+
+    const { clientX, clientY } = getClientPoint(200, 200);
+    // 移动到边缘
+    simulateMouseEvent(element, 'mousemove', {
+      clientX: clientX - 200,
+      clientY: clientY - 200,
+    });
+
+    // 移动到 g11 的第一个图形
+    simulateMouseEvent(element, 'mousemove', {
+      clientX: clientX - 1,
+      clientY: clientY - 1,
+    });
+    expect(enterCalled).eql(1);
+    expect(enterCalled1).eql(1);
+    // 移动到 g11 的第二个图形
+    simulateMouseEvent(element, 'mousemove', {
+      clientX: clientX + 11,
+      clientY: clientY + 11,
+    });
+    expect(enterCalled).eql(1);
+    expect(leaveCalled).eql(0);
+    expect(leaveCalled1).eql(0);
+
+    // 离开
+    simulateMouseEvent(element, 'mousemove', {
+      clientX: clientX + 21,
+      clientY: clientY + 21,
+    });
+    expect(enterCalled).eql(1);
+    expect(leaveCalled).eql(1);
+    expect(leaveCalled1).eql(0);
+  });
   it('destroy', () => {
     controller.destroy();
     expect(controller.canvas).eql(null);
