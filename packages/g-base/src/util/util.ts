@@ -14,3 +14,21 @@ export { default as isArray } from '@antv/util/lib/is-array';
 export { default as mix } from '@antv/util/lib/mix';
 export { default as each } from '@antv/util/lib/each';
 export { default as upperFirst } from '@antv/util/lib/upper-first';
+
+// 是否元素的父容器
+export function isParent(container, shape) {
+  // 所有 shape 都是 canvas 的子元素
+  if (container.isCanvas()) {
+    return true;
+  }
+  let parent = shape.getParent();
+  let isParent = false;
+  while (parent) {
+    if (parent === container) {
+      isParent = true;
+      break;
+    }
+    parent = parent.getParent();
+  }
+  return isParent;
+}

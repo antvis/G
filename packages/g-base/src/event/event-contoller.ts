@@ -4,7 +4,7 @@
  */
 import GraphEvent from './graph-event';
 import { ICanvas, IShape, IBase } from '../interfaces';
-import { each } from '../util/util';
+import { each, isParent } from '../util/util';
 const TIME_INTERVAL = 120; // 判断拖拽和点击
 const CLICK_OFFSET = 40;
 const LEFT_BTN_CODE = 0;
@@ -30,24 +30,6 @@ const EVENTS = [
   'contextmenu',
   'mousewheel',
 ];
-
-// 是否元素的父容器
-function isParent(container, shape) {
-  // 所有 shape 都是 canvas 的子元素
-  if (container.isCanvas()) {
-    return true;
-  }
-  let parent = shape.getParent();
-  let isParent = false;
-  while (parent) {
-    if (parent === container) {
-      isParent = true;
-      break;
-    }
-    parent = parent.getParent();
-  }
-  return isParent;
-}
 
 // 触摸事件的 clientX，clientY 获取有一定差异
 function getClientPoint(event) {
