@@ -2,7 +2,7 @@ import { each, isEqual, isFunction, isNumber, isObject, isArray, noop, mix, uppe
 import { transform } from '@antv/matrix-util';
 import { IElement, IShape, IGroup, ICanvas, ICtor } from '../interfaces';
 import { ClipCfg, ChangeType, OnFrame, ShapeAttrs, AnimateCfg, Animation, BBox, ShapeBase } from '../types';
-import { removeFromArray } from '../util/util';
+import { removeFromArray, isParent } from '../util/util';
 import { multiplyMatrix, multiplyVec2, invert } from '../util/matrix';
 import Base from './base';
 import GraphEvent from '../event/graph-event';
@@ -603,12 +603,22 @@ abstract class Element extends Base implements IElement {
   emitDelegation(type: string, eventObj: GraphEvent) {
     const paths = eventObj.propagationPath;
     const events = this.getEvents();
+    let relativeShape;
+    if (type === 'mouseenter') {
+      relativeShape = eventObj.fromShape;
+    } else if (type === 'mouseleave') {
+      relativeShape = eventObj.toShape;
+    }
     // 至少有一个对象，且第一个对象为 shape
     for (let i = 0; i < paths.length; i++) {
       const element = paths[i];
       // 暂定跟 name 绑定
       const name = element.get('name');
       if (name) {
+        // 第一个 mouseenter 和 mouseleave 的停止即可，因为后面的都是前面的 Parent
+        if (relativeShape && isParent(element, relativeShape)) {
+          break;
+        }
         // 事件委托的形式 name:type
         const eventName = name + DELEGATION_SPLIT + type;
         if (events[eventName] || events[WILDCARD]) {
