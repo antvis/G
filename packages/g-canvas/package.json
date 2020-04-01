@@ -4,7 +4,7 @@
   "description": "A canvas library which providing 2d",
   "main": "lib/index.js",
   "module": "esm/index.js",
-  "browser": "dist/g.min.js",
+  "unpkg": "dist/g.min.js",
   "types": "lib/index.d.ts",
   "files": [
     "package.json",
