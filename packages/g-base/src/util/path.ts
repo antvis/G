@@ -1189,7 +1189,7 @@ const fillPathByDiff = function(source, target) {
   let index = 1;
   let minPos = 1;
   // 如果source和target不是完全不相等
-  if (diffMatrix[sourceLen][targetLen] !== sourceLen) {
+  if (diffMatrix[sourceLen][targetLen].min !== sourceLen) {
     // 获取从source到target所需改动
     for (let i = 1; i <= sourceLen; i++) {
       let min = diffMatrix[i][i].min;
