@@ -49,7 +49,9 @@ class Canvas extends AbstractCanvas {
    * 获取屏幕像素比
    */
   getPixelRatio() {
-    return this.get('pixelRatio') || getPixelRatio();
+    const pixelRatio = this.get('pixelRatio') || getPixelRatio();
+    // 不足 1 的取 1，超出 1 的取整
+    return pixelRatio >= 1 ? Math.floor(pixelRatio) : 1;
   }
 
   getViewRange() {
@@ -109,14 +111,11 @@ class Canvas extends AbstractCanvas {
       region = this.getViewRange();
     } else {
       region = getMergedRegion(elements);
-      // 附加 0.5 像素，会解决1px 变成 2px 的问题，无论 pixelRatio 的值是多少
-      // 真实测试的环境下，发现在 1-2 之间时会出现 >2 和 <1 的情况下未出现，但是为了安全，统一附加 0.5
-      const appendPixel = 0.5;
       if (region) {
-        region.minX = Math.floor(region.minX - appendPixel);
-        region.minY = Math.floor(region.minY - appendPixel);
-        region.maxX = Math.ceil(region.maxX + appendPixel);
-        region.maxY = Math.ceil(region.maxY + appendPixel);
+        region.minX = Math.floor(region.minX);
+        region.minY = Math.floor(region.minY);
+        region.maxX = Math.ceil(region.maxX);
+        region.maxY = Math.ceil(region.maxY);
       }
     }
     return region;
