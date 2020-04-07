@@ -71,10 +71,10 @@ function bubbleEvent(container, type, eventObj) {
   if (eventObj.bubbles) {
     let relativeShape;
     let isOverEvent = false;
-    if (type === 'mouseenter' || type === 'dragenter') {
+    if (type === 'mouseenter') {
       relativeShape = eventObj.fromShape;
       isOverEvent = true;
-    } else if (type === 'mouseleave' || type === 'dragleave') {
+    } else if (type === 'mouseleave') {
       isOverEvent = true;
       relativeShape = eventObj.toShape;
     }
@@ -192,7 +192,7 @@ class EventController {
       method.call(this, pointInfo, shape, ev);
     } else {
       const preShape = this.currentShape;
-      // 如果进入、移出画布时存在图形，则要分别出发事件
+      // 如果进入、移出画布时存在图形，则要分别触发事件
       if (type === 'mouseenter' || type === 'dragenter' || type === 'mouseover') {
         this._emitEvent(type, ev, pointInfo, null, null, shape); // 先进入画布
         if (shape) {
@@ -308,6 +308,7 @@ class EventController {
         this._emitEvent('dragover', event, pointInfo, toShape);
       }
     } else if (fromShape) {
+      // TODO: 此处判断有问题，当 drag 图形时，也会触发一次 dragleave 事件，因为此时 toShape 为 null，这不是所期望的
       // 经过空白区域
       this._emitEvent('dragleave', event, pointInfo, fromShape, fromShape, toShape);
     }
@@ -356,7 +357,7 @@ class EventController {
     }
   }
 
-  // 当触发浏览器的 dragover 事件时，不会再触发mousemove ，所以这时候的 dragenter, dragleave 事件需要重新处理
+  // 当触发浏览器的 dragover 事件时，不会再触发 mousemove ，所以这时候的 dragenter, dragleave 事件需要重新处理
   _ondragover(pointInfo, shape, event) {
     event.preventDefault(); // 如果不对 dragover 进行 preventDefault，则不会在 canvas 上触发 drop 事件
     const preShape = this.currentShape;
