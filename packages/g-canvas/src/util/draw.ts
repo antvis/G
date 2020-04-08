@@ -173,8 +173,17 @@ export function getRefreshRegion(element) {
   let region;
   if (!element.destroyed) {
     const cacheBox = element.get('cacheCanvasBBox');
+    const validCache = cacheBox && !!(cacheBox.width && cacheBox.height);
     const bbox = element.getCanvasBBox();
-    region = mergeRegion(cacheBox, bbox);
+    const validBBox = bbox && !!(bbox.width && bbox.height);
+    // 是否是有效 bbox 判定，一些 NaN 或者 宽高为 0 的情况过滤掉
+    if (validCache && validBBox) {
+      region = mergeRegion(cacheBox, bbox);
+    } else if (validCache) {
+      region = cacheBox;
+    } else if (validBBox) {
+      region = bbox;
+    }
   } else {
     // 因为元素已经销毁所以无法获取到缓存的包围盒
     region = element['_cacheCanvasBBox'];
