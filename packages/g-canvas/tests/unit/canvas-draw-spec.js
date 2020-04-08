@@ -430,6 +430,16 @@ describe('test canvas draw', () => {
       }, DELAY);
     });
 
+    it('bbox NaN', (done) => {
+      shape3.attr({
+        r: NaN,
+      });
+      setTimeout(() => {
+        expect(getColor(context, 600, 600)).eql('#000000');
+        done();
+      }, DELAY);
+    });
+
     it('canvas destroy', () => {
       canvas.sort();
       canvas.destroy();
