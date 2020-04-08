@@ -61,9 +61,26 @@ export function moveTo(element: SVGElement, targetIndex: number) {
     // 要求为元素节点，且不能为 defs 节点
     (node: Node) => node.nodeType === 1 && node.nodeName.toLowerCase() !== 'defs'
   );
+  // 获取目标节点
   const target = siblings[targetIndex];
+  const currentIndex = siblings.indexOf(element);
+  // 如果目标节点存在
   if (target) {
-    parentNode.insertBefore(element, target);
+    // 当前索引 > 目标索引，直接插入到目标节点之前即可
+    if (currentIndex > targetIndex) {
+      parentNode.insertBefore(element, target);
+    } else if (currentIndex < targetIndex) {
+      // 当前索引 < 目标索引
+      // 获取目标节点的下一个节点
+      const targetNext = siblings[targetIndex + 1];
+      // 如果目标节点的下一个节点存在，插入到该节点之前
+      if (targetNext) {
+        parentNode.insertBefore(element, targetNext);
+      } else {
+        // 如果该节点不存在，则追加到末尾
+        parentNode.appendChild(element);
+      }
+    }
   } else {
     parentNode.appendChild(element);
   }
