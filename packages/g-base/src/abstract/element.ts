@@ -558,6 +558,8 @@ abstract class Element extends Base implements IElement {
     const timeline = this.get('timeline');
     const animations = this.get('animations');
     each(animations, (animation: Animation) => {
+      animation._paused = true;
+      animation._pauseTime = timeline.getTime();
       if (animation.pauseCallback) {
         // 动画暂停时的回调
         animation.pauseCallback();
