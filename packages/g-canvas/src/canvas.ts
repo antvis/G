@@ -4,8 +4,8 @@ import { IElement } from './interfaces';
 import EventController from '@antv/g-base/lib/event/event-contoller';
 import * as Shape from './shape';
 import Group from './group';
-import { applyAttrsToContext, drawChildren, getMergedRegion } from './util/draw';
-import { getPixelRatio, each, mergeRegion, requestAnimationFrame, clearAnimationFrame } from './util/util';
+import { applyAttrsToContext, drawChildren, getMergedRegion, mergeView } from './util/draw';
+import { getPixelRatio, requestAnimationFrame, clearAnimationFrame } from './util/util';
 const REFRSH_COUNT = 30; // 局部刷新的元素个数，超过后合并绘图区域
 
 class Canvas extends AbstractCanvas {
@@ -18,6 +18,8 @@ class Canvas extends AbstractCanvas {
     // 是否允许局部刷新图表
     cfg['localRefresh'] = true;
     cfg['refreshElements'] = [];
+    // 是否在视图内自动裁剪
+    cfg['clipView'] = true;
     return cfg;
   }
 
@@ -105,10 +107,11 @@ class Canvas extends AbstractCanvas {
   // 对绘制区域边缘取整，避免浮点数问题
   _getRefreshRegion() {
     const elements = this.get('refreshElements');
+    const viewRegion = this.getViewRange();
     let region;
     // 如果是当前画布整体发生了变化，则直接重绘整个画布
     if (elements.length && elements[0] === this) {
-      region = this.getViewRange();
+      region = viewRegion;
     } else {
       region = getMergedRegion(elements);
       if (region) {
@@ -116,6 +119,11 @@ class Canvas extends AbstractCanvas {
         region.minY = Math.floor(region.minY);
         region.maxX = Math.ceil(region.maxX);
         region.maxY = Math.ceil(region.maxY);
+        const clipView = this.get('clipView');
+        // 自动裁剪不在 view 内的区域
+        if (clipView) {
+          region = mergeView(region, viewRegion);
+        }
       }
     }
     return region;

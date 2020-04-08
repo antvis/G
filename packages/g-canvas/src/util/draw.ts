@@ -3,7 +3,7 @@ import { IElement } from '../interfaces';
 import { Region } from '../types';
 import { parseStyle } from './parse';
 import getArcParams from './arc-params';
-import { mergeRegion } from './util';
+import { mergeRegion, intersectRect } from './util';
 import * as ArrowUtil from '../util/arrow';
 
 const SHAPE_ATTRS_MAP = {
@@ -213,5 +213,21 @@ export function getMergedRegion(elements): Region {
     minY: Math.min.apply(null, minYArr),
     maxX: Math.max.apply(null, maxXArr),
     maxY: Math.max.apply(null, maxYArr),
+  };
+}
+
+export function mergeView(region, viewRegion) {
+  if (!region || !viewRegion) {
+    return null;
+  }
+  // 不相交，则直接返回 null
+  if (!intersectRect(region, viewRegion)) {
+    return null;
+  }
+  return {
+    minX: Math.max(region.minX, viewRegion.minX),
+    minY: Math.max(region.minY, viewRegion.minY),
+    maxX: Math.min(region.maxX, viewRegion.maxX),
+    maxY: Math.min(region.maxY, viewRegion.maxY),
   };
 }

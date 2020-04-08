@@ -440,6 +440,19 @@ describe('test canvas draw', () => {
       }, DELAY);
     });
 
+    it('out region', () => {
+      canvas.addShape({
+        type: 'circle',
+        attrs: {
+          x: -100,
+          y: -100,
+          r: 10,
+        },
+      });
+      // @ts-ignore
+      expect(canvas._getRefreshRegion()).eqls(null);
+    });
+
     it('canvas destroy', () => {
       canvas.sort();
       canvas.destroy();
