@@ -344,7 +344,9 @@ abstract class Element extends Base implements IElement {
     const matrix = this.attr('matrix');
     if (matrix) {
       const invertMatrix = invert(matrix);
-      return multiplyVec2(invertMatrix, v);
+      if (invertMatrix) {
+        return multiplyVec2(invertMatrix, v);
+      }
     }
     return v;
   }
