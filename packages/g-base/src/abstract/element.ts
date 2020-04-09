@@ -619,7 +619,12 @@ abstract class Element extends Base implements IElement {
       const name = element.get('name');
       if (name) {
         // 第一个 mouseenter 和 mouseleave 的停止即可，因为后面的都是前面的 Parent
-        if (relativeShape && isParent(element, relativeShape)) {
+        if (
+          // 只有 element 是 Group 或者 Canvas 的时候，才需要判断 isParent
+          (element.isGroup() || (element.isCanvas && element.isCanvas())) &&
+          relativeShape &&
+          isParent(element, relativeShape)
+        ) {
           break;
         }
         // 事件委托的形式 name:type
