@@ -430,6 +430,29 @@ describe('test canvas draw', () => {
       }, DELAY);
     });
 
+    it('bbox NaN', (done) => {
+      shape3.attr({
+        r: NaN,
+      });
+      setTimeout(() => {
+        expect(getColor(context, 600, 600)).eql('#000000');
+        done();
+      }, DELAY);
+    });
+
+    it('out region', () => {
+      canvas.addShape({
+        type: 'circle',
+        attrs: {
+          x: -100,
+          y: -100,
+          r: 10,
+        },
+      });
+      // @ts-ignore
+      expect(canvas._getRefreshRegion()).eqls(null);
+    });
+
     it('canvas destroy', () => {
       canvas.sort();
       canvas.destroy();
