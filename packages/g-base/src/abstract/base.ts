@@ -1,6 +1,6 @@
 import EE from '@antv/event-emitter';
 import { IBase } from '../interfaces';
-import { removeFromArray, mix, isFunction } from '../util/util';
+import { mix } from '../util/util';
 abstract class Base extends EE implements IBase {
   /**
    * @private
