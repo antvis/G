@@ -3,6 +3,14 @@ import { IShape, IGroup, IElement } from '../interfaces';
 import { SHAPE_TO_TAGS } from '../constant';
 
 /**
+ * 创建并返回图形的 svg 元素
+ * @param type svg类型
+ */
+export function createSVG(type: string): SVGElement {
+  return document.createElementNS('http://www.w3.org/2000/svg', type);
+}
+
+/**
  * 创建并返回图形的 dom 元素
  * @param  {IShape} shape 图形
  * @return {SVGElement}
@@ -13,7 +21,7 @@ export function createDom(shape: IShape) {
   if (!type) {
     throw new Error(`the type ${shape.type} is not supported by svg`);
   }
-  const element = document.createElementNS('http://www.w3.org/2000/svg', type);
+  const element = createSVG(type);
   if (shape.get('id')) {
     element.id = shape.get('id');
   }
