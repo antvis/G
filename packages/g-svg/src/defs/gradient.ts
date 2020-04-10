@@ -4,7 +4,7 @@
  */
 
 import { each, mod, toRadian, uniqueId } from '@antv/util';
-import { createSVG } from '../util/dom';
+import { createSVGElement } from '../util/dom';
 
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;
@@ -108,10 +108,10 @@ class Gradient {
     let el = null;
     const id = uniqueId('gradient_');
     if (cfg.toLowerCase()[0] === 'l') {
-      el = createSVG('linearGradient');
+      el = createSVGElement('linearGradient');
       parseLineGradient(cfg, el);
     } else {
-      el = createSVG('radialGradient');
+      el = createSVGElement('radialGradient');
       parseRadialGradient(cfg, el);
     }
     el.setAttribute('id', id);

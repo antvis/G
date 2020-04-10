@@ -4,7 +4,7 @@
  */
 
 import { uniqueId } from '@antv/util';
-import { createSVG } from '../util/dom';
+import { createSVGElement } from '../util/dom';
 
 const regexPR = /^p\s*\(\s*([axyn])\s*\)\s*(.*)/i;
 
@@ -16,9 +16,9 @@ class Pattern {
   } = {};
 
   constructor(cfg) {
-    const el = createSVG('pattern') as SVGPatternElement;
+    const el = createSVGElement('pattern') as SVGPatternElement;
     el.setAttribute('patternUnits', 'userSpaceOnUse');
-    const child = createSVG('image');
+    const child = createSVGElement('image');
     el.appendChild(child);
     const id = uniqueId('pattern_');
     el.id = id;

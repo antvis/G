@@ -4,7 +4,7 @@
  */
 
 import { uniqueId } from '@antv/util';
-import { createSVG } from '../util/dom';
+import { createSVGElement } from '../util/dom';
 
 class Clip {
   type: string = 'clip';
@@ -15,7 +15,7 @@ class Clip {
   } = {};
 
   constructor(cfg) {
-    const el = createSVG('clipPath') as SVGClipPathElement;
+    const el = createSVGElement('clipPath') as SVGClipPathElement;
     this.el = el;
     this.id = uniqueId('clip_');
     el.id = this.id;
