@@ -3,13 +3,11 @@
  * @author dxq613@gmail.com
  */
 import GraphEvent from './graph-event';
-import { ICanvas, IShape, IBase } from '../interfaces';
+import { ICanvas, IShape } from '../interfaces';
 import { each, isParent } from '../util/util';
-const TIME_INTERVAL = 120; // 判断拖拽和点击
 const CLICK_OFFSET = 40;
 const LEFT_BTN_CODE = 0;
 const DELEGATION_SPLIT = ':';
-const WILDCARD = '*';
 
 const EVENTS = [
   'mousedown',

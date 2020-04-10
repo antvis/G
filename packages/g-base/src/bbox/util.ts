@@ -1,5 +1,4 @@
 import { IShape } from '../interfaces';
-import { BBox, SimpleBBox } from '../types';
 
 // 合并包围盒
 export function mergeBBox(bbox1, bbox2) {
