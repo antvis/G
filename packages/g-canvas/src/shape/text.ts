@@ -4,7 +4,7 @@
  */
 
 import ShapeBase from './base';
-import { isNil, isString, each, getOffScreenContext } from '../util/util';
+import { isNil, isString, each } from '../util/util';
 import { getTextHeight, assembleFont } from '@antv/g-base/lib/util/text';
 class Text extends ShapeBase {
   // 默认文本属性
