@@ -8,12 +8,6 @@ import Base from './base';
 import GraphEvent from '../event/graph-event';
 
 const MATRIX = 'matrix';
-const ARRAY_ATTRS = {
-  matrix: 'matrix',
-  path: 'path',
-  points: 'points',
-  lineDash: 'lineDash',
-};
 
 const CLONE_CFGS = ['zIndex', 'capture', 'visible', 'type'];
 
