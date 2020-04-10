@@ -1,23 +1,19 @@
-import { IShape } from '@antv/g-base/lib/interfaces';
-import { ShapeAttrs } from '@antv/g-base/lib/types';
 import { Path } from '../shape';
 
-const sin = Math.sin;
-const cos = Math.cos;
+const { sin, cos, atan2, PI } = Math;
 
 function _addDefaultArrow(shape, attrs, x1, y1, x2, y2, isStart) {
   const { stroke, lineWidth } = attrs;
   const x = x1 - x2;
   const y = y1 - y2;
-  const rad = Math.atan2(y, x);
+  const rad = atan2(y, x);
   const arrowShape = new Path({
     type: 'path',
     canvas: shape.get('canvas'),
     isArrowShape: true,
     attrs: {
       // 默认箭头的边长为 10，夹角为 60 度
-      path: `M${10 * Math.cos(Math.PI / 6)},${10 * Math.sin(Math.PI / 6)} L0,0 L${10 * Math.cos(Math.PI / 6)},-${10 *
-        Math.sin(Math.PI / 6)}`,
+      path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${10 * sin(PI / 6)}`,
       // 使用 shape stroke 值
       stroke,
       lineWidth,
@@ -39,7 +35,7 @@ function _addCustomizedArrow(shape, attrs, x1, y1, x2, y2, isStart) {
   const { d, fill: arrowFill, stroke: arrowStroke, lineWidth: arrowLineWidth, ...restAttrs } = arrowAttrs;
   const x = x1 - x2;
   const y = y1 - y2;
-  const rad = Math.atan2(y, x);
+  const rad = atan2(y, x);
 
   if (d) {
     x2 = x2 - cos(rad) * d;
@@ -78,7 +74,7 @@ function _addCustomizedArrow(shape, attrs, x1, y1, x2, y2, isStart) {
  * @return {{dx: number, dy: number}} 返回线条偏移距离
  */
 export function getShortenOffset(x1, y1, x2, y2, d) {
-  const rad = Math.atan2(y2 - y1, x2 - x1);
+  const rad = atan2(y2 - y1, x2 - x1);
   return {
     dx: cos(rad) * d,
     dy: sin(rad) * d,
