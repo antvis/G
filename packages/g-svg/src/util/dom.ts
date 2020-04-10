@@ -6,7 +6,7 @@ import { SHAPE_TO_TAGS } from '../constant';
  * 创建并返回图形的 svg 元素
  * @param type svg类型
  */
-export function createSVG(type: string): SVGElement {
+export function createSVGElement(type: string): SVGElement {
   return document.createElementNS('http://www.w3.org/2000/svg', type);
 }
 
@@ -21,7 +21,7 @@ export function createDom(shape: IShape) {
   if (!type) {
     throw new Error(`the type ${shape.type} is not supported by svg`);
   }
-  const element = createSVG(type);
+  const element = createSVGElement(type);
   if (shape.get('id')) {
     element.id = shape.get('id');
   }

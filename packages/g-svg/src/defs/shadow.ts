@@ -4,7 +4,7 @@
  */
 
 import { each, uniqueId } from '@antv/util';
-import { createSVG } from '../util/dom';
+import { createSVGElement } from '../util/dom';
 
 const ATTR_MAP = {
   shadowColor: 'color',
@@ -31,7 +31,7 @@ class Shadow {
 
   constructor(cfg) {
     this.type = 'filter';
-    const el = createSVG('filter') as SVGFilterElement;
+    const el = createSVGElement('filter') as SVGFilterElement;
     // expand the filter region to fill in shadows
     each(SHADOW_DIMENSION, (v, k) => {
       el.setAttribute(k, v);

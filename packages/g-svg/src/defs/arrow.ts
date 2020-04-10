@@ -4,7 +4,7 @@
  */
 
 import { isArray, uniqueId } from '@antv/util';
-import { createSVG } from '../util/dom';
+import { createSVGElement } from '../util/dom';
 
 class Arrow {
   id: string;
@@ -16,10 +16,10 @@ class Arrow {
   } = {};
 
   constructor(attrs, type) {
-    const el = createSVG('marker') as SVGMarkerElement;
+    const el = createSVGElement('marker') as SVGMarkerElement;
     const id = uniqueId('marker_');
     el.setAttribute('id', id);
-    const shape = createSVG('path');
+    const shape = createSVGElement('path');
     shape.setAttribute('stroke', attrs.stroke || 'none');
     shape.setAttribute('fill', attrs.fill || 'none');
     el.appendChild(shape);

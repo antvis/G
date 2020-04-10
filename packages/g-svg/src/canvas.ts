@@ -4,7 +4,7 @@ import { IElement } from './interfaces';
 import { SHAPE_TO_TAGS } from './constant';
 import { drawChildren } from './util/draw';
 import { setTransform, setClip } from './util/svg';
-import { sortDom, createSVG } from './util/dom';
+import { sortDom, createSVGElement } from './util/dom';
 import EventController from '@antv/g-base/lib/event/event-contoller';
 import * as Shape from './shape';
 import Group from './group';
@@ -43,7 +43,7 @@ class Canvas extends AbstractCanvas {
 
   // 复写基类的方法生成标签
   createDom() {
-    const element = createSVG('svg') as SVGSVGElement;
+    const element = createSVGElement('svg') as SVGSVGElement;
     const context = new Defs(element);
     element.setAttribute('width', `${this.get('width')}`);
     element.setAttribute('height', `${this.get('height')}`);
