@@ -1256,10 +1256,17 @@ describe('test graphic events', () => {
 
     let enterCalled1 = 0;
     let leaveCalled1 = 0;
-    group1.set('name', 'g1');
+
+    let enterCalledTest = 0;
+    group1.set('name', ['g1', 'gtest']);
     canvas.on('g1:mouseenter', () => {
       enterCalled1++;
     });
+
+    canvas.on('gtest:mouseenter', () => {
+      enterCalledTest++;
+    });
+
     canvas.on('g1:mouseleave', () => {
       leaveCalled1++;
     });
@@ -1285,6 +1292,7 @@ describe('test graphic events', () => {
     });
     expect(enterCalled).eql(1);
     expect(enterCalled1).eql(1);
+    expect(enterCalledTest).eql(1);
     // 移动到 g11 的第二个图形
     simulateMouseEvent(element, 'mousemove', {
       clientX: clientX + 11,
@@ -1303,6 +1311,7 @@ describe('test graphic events', () => {
     expect(leaveCalled).eql(1);
     expect(leaveCalled1).eql(0);
   });
+
   it('destroy', () => {
     controller.destroy();
     expect(controller.canvas).eql(null);
