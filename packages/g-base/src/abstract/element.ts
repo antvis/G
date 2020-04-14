@@ -383,7 +383,8 @@ abstract class Element extends Base implements IElement {
   }
 
   getClip(): IShape {
-    const clipShape = this.get('clipShape');
+    // 高频率调用的地方直接使用 this.cfg.xxx
+    const clipShape = this.cfg.clipShape;
     // 未设置时返回 Null，保证一致性
     if (!clipShape) {
       return null;
