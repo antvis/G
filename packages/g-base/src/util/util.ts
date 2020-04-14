@@ -19,7 +19,7 @@ export { default as upperFirst } from '@antv/util/lib/upper-first';
 // 是否元素的父容器
 export function isParent(container, shape) {
   // 所有 shape 都是 canvas 的子元素
-  if (container.isGroup() && container.isCanvas()) {
+  if (container.isCanvas()) {
     return true;
   }
   let parent = shape.getParent();
