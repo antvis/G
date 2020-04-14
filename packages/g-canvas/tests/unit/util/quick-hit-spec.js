@@ -28,7 +28,7 @@ describe('quick hit test', () => {
     height: maxY,
   });
 
-  it('no group and all in view', () => {
+  xit('no group and all in view', () => {
     for (let i = 0; i < count; i++) {
       canvas.addShape('circle', {
         attrs: {
@@ -54,7 +54,7 @@ describe('quick hit test', () => {
     expect(t2 < t1).eql(true);
   });
 
-  it('no group some out view', (done) => {
+  xit('no group some out view', (done) => {
     canvas.clear();
     for (let i = 0; i < count; i++) {
       canvas.addShape('circle', {
@@ -83,7 +83,7 @@ describe('quick hit test', () => {
     }, 50);
   });
 
-  it('with group and matrix', (done) => {
+  xit('with group and matrix', (done) => {
     canvas.clear();
     for (let i = 0; i < 10; i++) {
       const group = canvas.addGroup();
@@ -126,7 +126,7 @@ describe('quick hit test', () => {
       ['A', r, r, 0, 0, 0, x, y - r],
     ];
   }
-  it('more groups', (done) => {
+  xit('more groups', (done) => {
     canvas.clear();
     for (let i = 0; i < count * 2; i++) {
       const group = canvas.addGroup();
