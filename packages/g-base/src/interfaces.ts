@@ -12,6 +12,7 @@ import {
   BBox,
   ElementFilterFn,
   Cursor,
+  LooseObject,
 } from './types';
 import GraphEvent from './event/graph-event';
 
@@ -60,6 +61,7 @@ export interface IObservable {
  * 所有图形类公共的接口，提供 get,set 方法
  */
 export interface IBase extends IObservable {
+  cfg: LooseObject;
   /**
    * 获取属性值
    * @param  {string} name 属性名
