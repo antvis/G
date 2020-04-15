@@ -624,18 +624,29 @@ abstract class Element extends Base implements IElement {
         ) {
           break;
         }
-        // 事件委托的形式 name:type
-        const eventName = name + DELEGATION_SPLIT + type;
-        if (events[eventName] || events[WILDCARD]) {
-          // 对于通配符 *，事件名称 = 委托事件名称
-          eventObj.name = eventName;
-          eventObj.currentTarget = element;
-          eventObj.delegateTarget = this;
-          // 将委托事件的监听对象 delegateObject 挂载到事件对象上
-          eventObj.delegateObject = element.get('delegateObject');
-          this.emit(eventName, eventObj);
+        if (isArray(name)) {
+          each(name, (subName) => {
+            this.emitDelegateEvent(element, subName, eventObj);
+          });
+        } else {
+          this.emitDelegateEvent(element, name, eventObj);
         }
       }
+    }
+  }
+
+  private emitDelegateEvent(element, name: string, eventObj: GraphEvent) {
+    const events = this.getEvents();
+    // 事件委托的形式 name:type
+    const eventName = name + DELEGATION_SPLIT + eventObj.type;
+    if (events[eventName] || events[WILDCARD]) {
+      // 对于通配符 *，事件名称 = 委托事件名称
+      eventObj.name = eventName;
+      eventObj.currentTarget = element;
+      eventObj.delegateTarget = this;
+      // 将委托事件的监听对象 delegateObject 挂载到事件对象上
+      eventObj.delegateObject = element.get('delegateObject');
+      this.emit(eventName, eventObj);
     }
   }
 
