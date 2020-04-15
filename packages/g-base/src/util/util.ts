@@ -1,3 +1,4 @@
+import { IBase } from '../interfaces';
 export function removeFromArray(arr: any[], obj: any) {
   const index = arr.indexOf(obj);
   if (index !== -1) {
@@ -31,4 +32,9 @@ export function isParent(container, shape) {
     parent = parent.getParent();
   }
   return isParent;
+}
+
+export function isAllowCapture(element: IBase): boolean {
+  // @ts-ignore
+  return element.cfg.visible && element.cfg.capture;
 }
