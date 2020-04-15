@@ -11,8 +11,8 @@ import { inBox, isSamePoint } from './util';
 import inLine from './in-stroke/line';
 import inArc from './in-stroke/arc';
 
-import * as mat3 from '@antv/gl-matrix/lib/gl-matrix/mat3';
-import * as vec3 from '@antv/gl-matrix/lib/gl-matrix/vec3';
+import * as mat3 from 'gl-matrix/mat3';
+import * as vec3 from 'gl-matrix/vec3';
 
 function hasArc(path) {
   let hasArc = false;
