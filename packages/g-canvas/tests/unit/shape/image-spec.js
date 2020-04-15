@@ -15,6 +15,12 @@ const ctx1 = canvas1.getContext('2d');
 describe('image test', () => {
   let image;
   it('init', (done) => {
+    function callback() {
+      expect(image.get('loading')).eqls(false);
+      expect(image.attr('width')).eqls(50);
+      expect(image.attr('height')).eqls(50);
+      done();
+    }
     image = new Image({
       type: 'image',
       attrs: {
@@ -22,18 +28,14 @@ describe('image test', () => {
         y: 10,
         img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1UyYS6tT9B0AAAAAAAAAAABkARQnAQ',
       },
+      callback,
     });
+
     expect(image.attr('x')).eqls(10);
     expect(image.attr('y')).eqls(10);
     expect(image.get('loading')).eqls(true);
     expect(image.attr('width')).eqls(0);
     expect(image.attr('height')).eqls(0);
-    setTimeout(function() {
-      expect(image.get('loading')).eqls(false);
-      expect(image.attr('width')).eqls(50);
-      expect(image.attr('height')).eqls(50);
-      done();
-    }, 1000);
   });
 
   it('draw image by src', () => {

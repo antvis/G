@@ -1,12 +1,12 @@
 import { AbstractCanvas } from '@antv/g-base';
 import { ChangeType } from '@antv/g-base/lib/types';
 import { IElement } from './interfaces';
+import { getShape } from './util/hit';
 import EventController from '@antv/g-base/lib/event/event-contoller';
 import * as Shape from './shape';
 import Group from './group';
 import { applyAttrsToContext, drawChildren, getMergedRegion, mergeView } from './util/draw';
 import { getPixelRatio, requestAnimationFrame, clearAnimationFrame } from './util/util';
-const REFRSH_COUNT = 30; // 局部刷新的元素个数，超过后合并绘图区域
 
 class Canvas extends AbstractCanvas {
   getDefaultCfg() {
@@ -20,6 +20,7 @@ class Canvas extends AbstractCanvas {
     cfg['refreshElements'] = [];
     // 是否在视图内自动裁剪
     cfg['clipView'] = true;
+    cfg['quickHit'] = false;
     return cfg;
   }
 
@@ -57,12 +58,11 @@ class Canvas extends AbstractCanvas {
   }
 
   getViewRange() {
-    const element = this.get('el');
     return {
       minX: 0,
       minY: 0,
-      maxX: element.width,
-      maxY: element.height,
+      maxX: this.get('width'),
+      maxY: this.get('height'),
     };
   }
 
@@ -104,6 +104,12 @@ class Canvas extends AbstractCanvas {
     context.clearRect(0, 0, element.width, element.height);
   }
 
+  getShape(x: number, y: number) {
+    if (this.get('quickHit')) {
+      return getShape(this, x, y);
+    }
+    return super.getShape(x, y, null);
+  }
   // 对绘制区域边缘取整，避免浮点数问题
   _getRefreshRegion() {
     const elements = this.get('refreshElements');
@@ -149,6 +155,21 @@ class Canvas extends AbstractCanvas {
       this.set('drawFrame', null);
       this.set('refreshElements', []);
     }
+  }
+
+  getCanvasBBox() {
+    const width = this.get('width');
+    const height = this.get('height');
+    return {
+      minX: 0,
+      minY: 0,
+      x: 0,
+      y: 0,
+      width,
+      height,
+      maxX: width,
+      maxY: height,
+    };
   }
   // 手工调用绘制接口
   draw() {
