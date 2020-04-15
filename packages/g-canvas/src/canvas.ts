@@ -157,20 +157,6 @@ class Canvas extends AbstractCanvas {
     }
   }
 
-  getCanvasBBox() {
-    const width = this.get('width');
-    const height = this.get('height');
-    return {
-      minX: 0,
-      minY: 0,
-      x: 0,
-      y: 0,
-      width,
-      height,
-      maxX: width,
-      maxY: height,
-    };
-  }
   // 手工调用绘制接口
   draw() {
     const drawFrame = this.get('drawFrame');
