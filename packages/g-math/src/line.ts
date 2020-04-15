@@ -1,5 +1,5 @@
 import { distance, getBBoxByArray } from './util';
-import * as vec2 from '@antv/gl-matrix/lib/gl-matrix/vec2';
+import * as vec2 from 'gl-matrix/vec2';
 import { BBox, Point } from './types';
 
 export default {
