@@ -22,7 +22,7 @@ function getRefXY(element: IElement, x: number, y: number) {
 // 拾取前的检测，只有通过检测才能继续拾取
 function preTest(element: IElement, x: number, y: number) {
   // @ts-ignore
-  if (element.isGroup() && element.isCanvas()) {
+  if (element.isCanvas && element.isCanvas()) {
     return true;
   }
   // 不允许被拾取，则返回 null
@@ -38,7 +38,10 @@ function preTest(element: IElement, x: number, y: number) {
     }
   }
   // @ts-ignore ，这个地方调用过于频繁
-  const bbox = element.cfg.cacheCanvasBBox || element.getCanvasBBox();
+  let bbox = element.cfg.cacheCanvasBBox;
+  if (!bbox) {
+    bbox = element.getCanvasBBox();
+  }
   if (!(x >= bbox.minX && x <= bbox.maxX && y >= bbox.minY && y <= bbox.maxY)) {
     return false;
   }
