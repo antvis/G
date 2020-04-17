@@ -41,7 +41,7 @@ export function applyAttrsToContext(context: CanvasRenderingContext2D, element: 
 export function drawChildren(context: CanvasRenderingContext2D, children: IElement[], region?: Region) {
   for (let i = 0; i < children.length; i++) {
     const child = children[i] as IElement;
-    if (child.get('visible')) {
+    if (child.cfg.visible) {
       child.draw(context, region);
     } else {
       child.skipDraw();

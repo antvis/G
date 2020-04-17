@@ -84,7 +84,7 @@ class ShapeBase extends AbstractShape {
 
   // 绘制图形时需要考虑 region 限制
   draw(context: CanvasRenderingContext2D, region?: Region) {
-    const clip = this.getClip();
+    const clip = this.cfg.clipShape;
     // 如果指定了区域，当与指定区域相交时，才会触发渲染
     if (region) {
       // 是否相交需要考虑 clip 的包围盒
@@ -96,13 +96,13 @@ class ShapeBase extends AbstractShape {
     context.save();
     // 先将 attrs 应用到上下文中，再设置 clip。因为 clip 应该被当前元素的 matrix 所影响
     applyAttrsToContext(context, this);
-    this._applyClip(context, this.getClip() as ShapeBase);
+    this._applyClip(context, clip as ShapeBase);
     this.drawPath(context);
     context.restore();
     this._afterDraw();
   }
 
-  _afterDraw() {
+  cacheCanvasBBox() {
     const bbox = this.getCanvasBBox();
     const canvas = this.getCanvas();
     // 绘制的时候缓存包围盒
@@ -112,6 +112,10 @@ class ShapeBase extends AbstractShape {
       const viewRange = canvas.getViewRange();
       this.set('isInView', intersectRect(bbox, viewRange));
     }
+  }
+
+  _afterDraw() {
+    this.cacheCanvasBBox();
     // 绘制后消除标记
     this.set('hasChanged', false);
   }

@@ -4,8 +4,8 @@ import { IElement } from './interfaces';
 import { Region } from './types';
 import ShapeBase from './shape/base';
 import * as Shape from './shape';
-import { each, mergeRegion } from './util/util';
 import { applyAttrsToContext, drawChildren, refreshElement } from './util/draw';
+import { each } from '@antv/util';
 
 class Group extends AbstractGroup {
   /**
@@ -39,6 +39,36 @@ class Group extends AbstractGroup {
     }
   }
 
+  cacheCanvasBBox() {
+    const cacheCanvasBBox = this.cfg.cacheCanvasBBox;
+    if (!cacheCanvasBBox) {
+      const children = this.getChildren();
+      const xArr = [];
+      const yArr = [];
+      each(children, (child) => {
+        const bbox = child.cfg.cacheCanvasBBox;
+        if (bbox) {
+          xArr.push(bbox.minX, bbox.maxX);
+          yArr.push(bbox.minY, bbox.maxY);
+        }
+      });
+      const minX = Math.min.apply(null, xArr);
+      const maxX = Math.max.apply(null, xArr);
+      const minY = Math.min.apply(null, yArr);
+      const maxY = Math.max.apply(null, yArr);
+      this.set('cacheCanvasBBox', {
+        minX,
+        minY,
+        x: minX,
+        y: minY,
+        maxX,
+        maxY,
+        width: maxX - minX,
+        height: maxY - minY,
+      });
+    }
+  }
+
   draw(context: CanvasRenderingContext2D, region?: Region) {
     const children = this.getChildren() as IElement[];
     if (children.length) {
@@ -51,7 +81,8 @@ class Group extends AbstractGroup {
       context.restore();
     }
     // 这里的成本比较大
-    this.set('cacheCanvasBBox', this.getCanvasBBox());
+    // this.set('cacheCanvasBBox', this.getCanvasBBox());
+    this.cacheCanvasBBox();
     // 绘制后，消除更新标记
     this.set('hasChanged', false);
   }

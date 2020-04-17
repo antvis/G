@@ -183,6 +183,7 @@ class Canvas extends AbstractCanvas {
     const region = this._getRefreshRegion();
     // 需要注意可能没有 region 的场景
     // 一般发生在设置了 localRefresh ,在没有图形发生变化的情况下，用户调用了 draw
+    // const t = performance.now();
     if (region) {
       // 清理指定区域
       context.clearRect(region.minX, region.minY, region.maxX - region.minX, region.maxY - region.minY);
@@ -196,6 +197,7 @@ class Canvas extends AbstractCanvas {
       drawChildren(context, children, region);
       context.restore();
     }
+    // console.log(performance.now() - t);
     this.set('refreshElements', []);
   }
 

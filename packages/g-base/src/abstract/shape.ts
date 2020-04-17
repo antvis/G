@@ -24,7 +24,7 @@ abstract class AbstractShape extends Element implements IShape {
   }
   // 计算包围盒时，需要缓存，这是一个高频的操作
   getBBox(): BBox {
-    let bbox = this.get('bbox');
+    let bbox = this.cfg.bbox;
     if (!bbox) {
       bbox = this.calculateBBox();
       this.set('bbox', bbox);
@@ -33,7 +33,7 @@ abstract class AbstractShape extends Element implements IShape {
   }
   // 计算相对于画布的包围盒
   getCanvasBBox(): BBox {
-    let canvasBox = this.get('canvasBox');
+    let canvasBox = this.cfg.canvasBox;
     if (!canvasBox) {
       canvasBox = this.calculateCanvasBBox();
       this.set('canvasBox', canvasBox);

@@ -294,10 +294,10 @@ abstract class Element extends Base implements IElement {
 
   // 获取总的 matrix
   getTotalMatrix() {
-    let totalMatrix = this.get('totalMatrix');
+    let totalMatrix = this.cfg.totalMatrix;
     if (!totalMatrix) {
       const currentMatrix = this.attr('matrix');
-      const parentMatrix = this.get('parentMatrix');
+      const parentMatrix = this.cfg.parentMatrix;
       if (parentMatrix && currentMatrix) {
         totalMatrix = multiplyMatrix(parentMatrix, currentMatrix);
       } else {
