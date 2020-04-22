@@ -33,12 +33,12 @@ abstract class AbstractShape extends Element implements IShape {
   }
   // 计算相对于画布的包围盒
   getCanvasBBox(): BBox {
-    let canvasBox = this.cfg.canvasBox;
-    if (!canvasBox) {
-      canvasBox = this.calculateCanvasBBox();
-      this.set('canvasBox', canvasBox);
+    let canvasBBox = this.cfg.canvasBBox;
+    if (!canvasBBox) {
+      canvasBBox = this.calculateCanvasBBox();
+      this.set('canvasBBox', canvasBBox);
     }
-    return canvasBox;
+    return canvasBBox;
   }
 
   /**
@@ -50,7 +50,7 @@ abstract class AbstractShape extends Element implements IShape {
   applyMatrix(matrix: number[]) {
     super.applyMatrix(matrix);
     // 清理掉缓存的包围盒
-    this.set('canvasBox', null);
+    this.set('canvasBBox', null);
   }
 
   /**
@@ -102,7 +102,7 @@ abstract class AbstractShape extends Element implements IShape {
    */
   clearCacheBBox() {
     this.set('bbox', null);
-    this.set('canvasBox', null);
+    this.set('canvasBBox', null);
   }
 
   // 实现接口
