@@ -85,11 +85,16 @@ class ShapeBase extends AbstractShape {
   // 绘制图形时需要考虑 region 限制
   draw(context: CanvasRenderingContext2D, region?: Region) {
     const clip = this.cfg.clipShape;
-    // 如果指定了区域，当与指定区域相交时，才会触发渲染
+    // 如果指定了 region，同时不允许刷新时，直接返回
     if (region) {
+      if (this.cfg.refresh === false) {
+        this.set('hasChanged', false);
+        return;
+      }
       // 是否相交需要考虑 clip 的包围盒
-      const bbox = clip ? getMergedRegion([this, clip]) : this.getCanvasBBox();
+      const bbox = this.getCanvasBBox();
       if (!intersectRect(region, bbox)) {
+        this.set('hasChanged', false);
         return;
       }
     }
@@ -118,6 +123,7 @@ class ShapeBase extends AbstractShape {
     this.cacheCanvasBBox();
     // 绘制后消除标记
     this.set('hasChanged', false);
+    this.set('refresh', null);
   }
 
   skipDraw() {

@@ -5,7 +5,7 @@ import { getShape } from './util/hit';
 import EventController from '@antv/g-base/lib/event/event-contoller';
 import * as Shape from './shape';
 import Group from './group';
-import { applyAttrsToContext, drawChildren, getMergedRegion, mergeView } from './util/draw';
+import { applyAttrsToContext, drawChildren, getMergedRegion, mergeView, checkRefresh } from './util/draw';
 import { getPixelRatio, requestAnimationFrame, clearAnimationFrame } from './util/util';
 
 class Canvas extends AbstractCanvas {
@@ -183,7 +183,6 @@ class Canvas extends AbstractCanvas {
     const region = this._getRefreshRegion();
     // 需要注意可能没有 region 的场景
     // 一般发生在设置了 localRefresh ,在没有图形发生变化的情况下，用户调用了 draw
-    // const t = performance.now();
     if (region) {
       // 清理指定区域
       context.clearRect(region.minX, region.minY, region.maxX - region.minX, region.maxY - region.minY);
@@ -193,11 +192,12 @@ class Canvas extends AbstractCanvas {
       context.rect(region.minX, region.minY, region.maxX - region.minX, region.maxY - region.minY);
       context.clip();
       applyAttrsToContext(context, this);
+      // 确认更新的元素，这个优化可以提升 10 倍左右的性能，10W 个带有 group 的节点，局部渲染会从 90ms 下降到 5-6 ms
+      checkRefresh(this, children, region);
       // 绘制子元素
       drawChildren(context, children, region);
       context.restore();
     }
-    // console.log(performance.now() - t);
     this.set('refreshElements', []);
   }
 

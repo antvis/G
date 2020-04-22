@@ -3,7 +3,7 @@ import Canvas from '../../src/canvas';
 import Group from '../../src/group';
 import { getColor } from '../get-color';
 
-const DELAY = 25; // 本来应该 16ms，但是测试时需要适当调大这个值
+const DELAY = 30; // 本来应该 16ms，但是测试时需要适当调大这个值
 
 const dom = document.createElement('div');
 document.body.appendChild(dom);
@@ -301,11 +301,11 @@ describe('test canvas draw', () => {
           x: 60,
           y: 60,
           r: 5,
-          fill: '#000fff',
+          fill: '#00ffff',
         },
       });
       setTimeout(() => {
-        expect(getColor(context, 60, 60)).eql('#000fff');
+        expect(getColor(context, 60, 60)).eql('#00ffff');
         done();
       }, DELAY);
     });
@@ -316,7 +316,7 @@ describe('test canvas draw', () => {
       group1.setMatrix(matrix);
       setTimeout(() => {
         expect(getColor(context, 60, 60)).eql('#000000');
-        expect(getColor(context, 80, 60)).eql('#000fff');
+        expect(getColor(context, 80, 60)).eql('#00ffff');
         done();
       }, DELAY);
     });

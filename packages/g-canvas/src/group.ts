@@ -40,38 +40,36 @@ class Group extends AbstractGroup {
   }
 
   cacheCanvasBBox() {
-    const cacheCanvasBBox = this.cfg.cacheCanvasBBox;
-    if (!cacheCanvasBBox) {
-      const children = this.getChildren();
-      const xArr = [];
-      const yArr = [];
-      each(children, (child) => {
-        const bbox = child.cfg.cacheCanvasBBox;
-        if (bbox) {
-          xArr.push(bbox.minX, bbox.maxX);
-          yArr.push(bbox.minY, bbox.maxY);
-        }
-      });
-      const minX = Math.min.apply(null, xArr);
-      const maxX = Math.max.apply(null, xArr);
-      const minY = Math.min.apply(null, yArr);
-      const maxY = Math.max.apply(null, yArr);
-      this.set('cacheCanvasBBox', {
-        minX,
-        minY,
-        x: minX,
-        y: minY,
-        maxX,
-        maxY,
-        width: maxX - minX,
-        height: maxY - minY,
-      });
-    }
+    const children = this.getChildren();
+    const xArr = [];
+    const yArr = [];
+    each(children, (child) => {
+      const bbox = child.cfg.cacheCanvasBBox;
+      if (bbox) {
+        xArr.push(bbox.minX, bbox.maxX);
+        yArr.push(bbox.minY, bbox.maxY);
+      }
+    });
+    const minX = Math.min.apply(null, xArr);
+    const maxX = Math.max.apply(null, xArr);
+    const minY = Math.min.apply(null, yArr);
+    const maxY = Math.max.apply(null, yArr);
+    this.set('cacheCanvasBBox', {
+      minX,
+      minY,
+      x: minX,
+      y: minY,
+      maxX,
+      maxY,
+      width: maxX - minX,
+      height: maxY - minY,
+    });
   }
 
   draw(context: CanvasRenderingContext2D, region?: Region) {
     const children = this.getChildren() as IElement[];
-    if (children.length) {
+    const allowDraw = region ? this.cfg.refresh : true; // 局部刷新需要判定
+    if (children.length && allowDraw) {
       context.save();
       // group 上的矩阵和属性也会应用到上下文上
       // 先将 attrs 应用到上下文中，再设置 clip。因为 clip 应该被当前元素的 matrix 所影响
@@ -79,10 +77,11 @@ class Group extends AbstractGroup {
       this._applyClip(context, this.getClip() as ShapeBase);
       drawChildren(context, children, region);
       context.restore();
+      this.cacheCanvasBBox();
     }
-    // 这里的成本比较大
+    // 这里的成本比较大，如果不绘制则不再
     // this.set('cacheCanvasBBox', this.getCanvasBBox());
-    this.cacheCanvasBBox();
+    this.cfg.refresh = null;
     // 绘制后，消除更新标记
     this.set('hasChanged', false);
   }
