@@ -1,5 +1,5 @@
 import { each, isEqual, isFunction, isNumber, isObject, isArray, noop, mix, upperFirst, uniqueId } from '@antv/util';
-import { transform } from '@antv/matrix-util';
+import { transform } from '@antv/matrix-util/lib/mat3';
 import { IElement, IShape, IGroup, ICanvas, ICtor } from '../interfaces';
 import { ClipCfg, ChangeType, OnFrame, ShapeAttrs, AnimateCfg, Animation, BBox, ShapeBase } from '../types';
 import { removeFromArray, isParent } from '../util/util';
@@ -209,7 +209,14 @@ abstract class Element extends Base implements IElement {
    * @protected
    */
   afterAttrsChange(targetAttrs) {
-    this.onCanvasChange('attr');
+    if (this.cfg.isClipShape) {
+      const applyTo = this.cfg.applyTo;
+      if (applyTo) {
+        applyTo.onCanvasChange('clip');
+      }
+    } else {
+      this.onCanvasChange('attr');
+    }
   }
 
   show() {
@@ -371,6 +378,7 @@ abstract class Element extends Base implements IElement {
         clipShape = new Cons({
           type: clipCfg.type,
           isClipShape: true, // 增加一个标记
+          applyTo: this,
           attrs: clipCfg.attrs,
           canvas, // 设置 canvas
         });
