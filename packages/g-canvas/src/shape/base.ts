@@ -96,6 +96,9 @@ class ShapeBase extends AbstractShape {
       const bbox = this.getCanvasBBox();
       if (!intersectRect(region, bbox)) {
         this.set('hasChanged', false);
+        // 存在多种情形需要更新 cacheCanvasBBox 和 isInview 的判定
+        // 1. 之前图形在视窗内，但是现在不再视窗内
+        // 2. 如果当前的图形以及父元素都没有发生过变化，refresh = false 不会走到这里，所以这里的图形都是父元素发生变化，但是没有在视图内的元素
         if (this.cfg.isInView) {
           this._afterDraw();
         }
@@ -127,6 +130,9 @@ class ShapeBase extends AbstractShape {
       const bbox = this.getCanvasBBox();
       const isInView = intersectRect(bbox, canvasBBox);
       this.set('isInView', isInView);
+      // 不再视窗内 cacheCanvasBBox 设置成 null，会提升局部渲染的性能，
+      // 因为在局部渲染影响的包围盒计算时不考虑这个图形的包围盒
+      // 父元素 cacheCanvasBBox 计算的时候也不计算
       if (isInView) {
         this.set('cacheCanvasBBox', bbox);
       } else {

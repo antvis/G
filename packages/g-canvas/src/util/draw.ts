@@ -49,6 +49,7 @@ export function drawChildren(context: CanvasRenderingContext2D, children: IEleme
   }
 }
 
+// 这个地方的逻辑比较复杂，简单画了一张图：https://www.yuque.com/antv/ou292n/pcgt5g#OW1QE
 export function checkRefresh(canvas, children: IElement[], region: Region) {
   const refreshElements = canvas.get('refreshElements');
   // 先遍历需要刷新的元素，将这些元素的父元素也设置 refresh

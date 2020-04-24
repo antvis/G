@@ -41,6 +41,9 @@ function preTest(element: IElement, x: number, y: number) {
   // @ts-ignore ，这个地方调用过于频繁
   const bbox = element.cfg.cacheCanvasBBox || element.getCanvasBBox();
   // 如果没有缓存 bbox，则说明不可见
+  // 注释掉的这段可能会加速拾取，上面的语句改写成 const bbox = element.cfg.cacheCanvasBBox;
+  // 这时候的拾取假设图形/分组在上一次绘制都在视窗内，但是上面已经判定了 isInView 所以意义不大
+  // 现在还调用 element.getCanvasBBox(); 一个很大的原因是便于单元测试
   // if (!bbox) {
   //   return false;
   // }
@@ -49,6 +52,8 @@ function preTest(element: IElement, x: number, y: number) {
   }
   return true;
 }
+
+// 这个方法复写了 g-base 的 getShape
 export function getShape(container: IContainer, x: number, y: number) {
   // 没有通过检测，则返回 null
   if (!preTest(container, x, y)) {

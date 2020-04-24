@@ -20,6 +20,7 @@ class Canvas extends AbstractCanvas {
     cfg['refreshElements'] = [];
     // 是否在视图内自动裁剪
     cfg['clipView'] = true;
+    // 是否使用快速拾取的方案，默认为 false，上层可以打开
     cfg['quickHit'] = false;
     return cfg;
   }
