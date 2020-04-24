@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-base",
-  "version": "0.4.4",
+  "version": "0.5.0",
   "description": "A common util collection for antv projects",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -22,7 +22,7 @@
     "coverage-generator": "torch --coverage --compile --source-pattern src/*.js,src/**/*.js --opts tests/mocha.opts",
     "coverage-viewer": "torch-coverage",
     "test": "torch --renderer --compile --opts tests/mocha.opts",
-    "test-live": "torch --compile --interactive --opts tests/mocha.opts",
+    "test-live": "torch --compile --interactive tests/unit",
     "tsc": "tsc --noEmit",
     "typecheck": "tsc --noEmit"
   },
@@ -54,7 +54,7 @@
   "dependencies": {
     "@antv/event-emitter": "^0.1.1",
     "@antv/g-math": "^0.1.3",
-    "@antv/matrix-util": "^2.0.4",
+    "@antv/matrix-util": "^3.0.1-beta.1",
     "@antv/path-util": "~2.0.5",
     "@antv/util": "~2.0.0",
     "@types/d3-timer": "^1.0.9",
