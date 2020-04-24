@@ -7,16 +7,6 @@ import { isFunction, isObject, each, removeFromArray, upperFirst, isAllowCapture
 const SHAPE_MAP = {};
 const INDEX = '_INDEX';
 
-function afterAdd(element: IElement) {
-  if (element.isGroup()) {
-    if ((element as IGroup).isEntityGroup() || element.get('children').length) {
-      element.onCanvasChange('add');
-    }
-  } else {
-    element.onCanvasChange('add');
-  }
-}
-
 /**
  * 设置 canvas
  * @param {IElement} element 元素
@@ -305,7 +295,7 @@ abstract class Container extends Element implements IContainer {
       setTimeline(element, timeline);
     }
     children.push(element);
-    afterAdd(element);
+    element.onCanvasChange('add');
     this._applyElementMatrix(element);
   }
 
