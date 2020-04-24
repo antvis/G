@@ -76,13 +76,13 @@ export function checkChildrenRefresh(children: IElement[], region: Region) {
       // 如果当前图形/分组 refresh = true，说明其子节点存在 changed
       if (child.cfg.refresh) {
         if (child.isGroup()) {
-          checkChildrenRefresh(child.get('children'), region);
+          checkChildrenRefresh(child.cfg.children, region);
         }
       } else if (child.cfg.hasChanged) {
         // 如果节点发生了 change，则需要级联设置子元素的 refresh
         child.cfg.refresh = true;
         if (child.isGroup()) {
-          setChildrenRefresh(child.get('children'), region);
+          setChildrenRefresh(child.cfg.children, region);
         }
       } else {
         // 这个分支说明此次局部刷新，所有的节点和父元素没有发生变化，仅需要检查包围盒（缓存）是否相交即可
@@ -92,20 +92,33 @@ export function checkChildrenRefresh(children: IElement[], region: Region) {
   }
 }
 
+// 由于对改变的图形放入 refreshElements 时做了优化，判定父元素 changed 时不加入
+// 那么有可能会出现 elements 都为空，所以最终 group
+export function clearChanged(elements: IElement[]) {
+  for (let i = 0; i < elements.length; i++) {
+    const el = elements[i];
+    el.cfg.hasChanged = false;
+    // 级联清理
+    if (el.isGroup()) {
+      clearChanged(el.cfg.children);
+    }
+  }
+}
+
 // 当某个父元素发生改变时，调用这个方法级联设置 refresh
 function setChildrenRefresh(children: IElement[], region: Region) {
   for (let i = 0; i < children.length; i++) {
     const child = children[i] as IElement;
-    let refresh = true;
+    // let refresh = true;
     // 获取缓存的 bbox，如果这个 bbox 还存在则说明父元素不是矩阵发生了改变
-    const bbox = child.cfg.canvasBBox;
-    if (bbox) {
-      // 如果这时候
-      refresh = intersectRect(bbox, region);
-    }
-    child.cfg.refresh = refresh;
+    // const bbox = child.cfg.canvasBBox;
+    // if (bbox) {
+    //   // 如果这时候
+    //   refresh = intersectRect(bbox, region);
+    // }
+    child.cfg.refresh = true;
     // 如果需要刷新当前节点，所有的子元素设置 refresh
-    if (refresh && child.isGroup()) {
+    if (child.isGroup()) {
       setChildrenRefresh(child.get('children'), region);
     }
   }
@@ -113,7 +126,7 @@ function setChildrenRefresh(children: IElement[], region: Region) {
 
 function checkElementRefresh(shape: IElement, region: Region): boolean {
   const bbox = shape.cfg.cacheCanvasBBox;
-  const isAllow = bbox && intersectRect(bbox, region);
+  const isAllow = shape.cfg.isInView && bbox && intersectRect(bbox, region);
   return isAllow;
 }
 
@@ -223,6 +236,9 @@ export function refreshElement(element, changeType) {
     }
     // 防止反复刷新
     if (!element.get('hasChanged')) {
+      // 但是始终要标记为 hasChanged，便于后面进行局部渲染
+      element.set('hasChanged', true);
+
       // 本来只有局部渲染模式下，才需要记录更新的元素队列
       // if (canvas.get('localRefresh')) {
       //   canvas.refreshElement(element, changeType, canvas);
@@ -235,8 +251,6 @@ export function refreshElement(element, changeType) {
           canvas.draw();
         }
       }
-      // 但是始终要标记为 hasChanged，便于后面进行局部渲染
-      element.set('hasChanged', true);
     }
   }
 }

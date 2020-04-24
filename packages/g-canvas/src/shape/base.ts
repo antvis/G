@@ -1,7 +1,7 @@
 import { AbstractShape } from '@antv/g-base';
 import { ChangeType, BBox } from '@antv/g-base/lib/types';
 import { isNil, intersectRect } from '../util/util';
-import { applyAttrsToContext, refreshElement, getMergedRegion } from '../util/draw';
+import { applyAttrsToContext, refreshElement } from '../util/draw';
 import { getBBoxMethod } from '@antv/g-base/lib/bbox/index';
 import { Region } from '../types';
 import * as Shape from './index';
@@ -88,6 +88,7 @@ class ShapeBase extends AbstractShape {
     // 如果指定了 region，同时不允许刷新时，直接返回
     if (region) {
       if (this.cfg.refresh === false) {
+        // this._afterDraw();
         this.set('hasChanged', false);
         return;
       }
@@ -95,6 +96,9 @@ class ShapeBase extends AbstractShape {
       const bbox = this.getCanvasBBox();
       if (!intersectRect(region, bbox)) {
         this.set('hasChanged', false);
+        if (this.cfg.isInView) {
+          this._afterDraw();
+        }
         return;
       }
     }
@@ -107,15 +111,27 @@ class ShapeBase extends AbstractShape {
     this._afterDraw();
   }
 
-  cacheCanvasBBox() {
-    const bbox = this.getCanvasBBox();
-    const canvas = this.getCanvas();
-    // 绘制的时候缓存包围盒
-    this.set('cacheCanvasBBox', bbox);
+  private getCanvasViewBox() {
+    const canvas = this.cfg.canvas;
     if (canvas) {
       // @ts-ignore
-      const viewRange = canvas.getViewRange();
-      this.set('isInView', intersectRect(bbox, viewRange));
+      return canvas.getViewRange();
+    }
+    return null;
+  }
+
+  cacheCanvasBBox() {
+    const canvasBBox = this.getCanvasViewBox();
+    // 绘制的时候缓存包围盒
+    if (canvasBBox) {
+      const bbox = this.getCanvasBBox();
+      const isInView = intersectRect(bbox, canvasBBox);
+      this.set('isInView', isInView);
+      if (isInView) {
+        this.set('cacheCanvasBBox', bbox);
+      } else {
+        this.set('cacheCanvasBBox', null);
+      }
     }
   }
 

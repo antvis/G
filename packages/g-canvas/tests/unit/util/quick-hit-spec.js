@@ -27,12 +27,9 @@ describe('quick hit test', () => {
     width: maxX,
     height: maxY,
   });
-
-  const root = canvas.addGroup();
-
   xit('no group and all in view', () => {
     for (let i = 0; i < count; i++) {
-      root.addShape('circle', {
+      canvas.addShape('circle', {
         attrs: {
           x: Math.random() * maxX,
           y: Math.random() * maxY,
@@ -57,9 +54,9 @@ describe('quick hit test', () => {
   });
 
   xit('no group some out view', (done) => {
-    root.clear();
+    canvas.clear();
     for (let i = 0; i < count; i++) {
-      root.addShape('circle', {
+      canvas.addShape('circle', {
         attrs: {
           x: Math.random() * maxX * 2,
           y: Math.random() * maxY * 2,
@@ -86,14 +83,14 @@ describe('quick hit test', () => {
   });
 
   xit('with group and matrix', (done) => {
-    root.clear();
+    canvas.clear();
     for (let i = 0; i < 10; i++) {
-      const group = root.addGroup();
+      const group = canvas.addGroup();
       group.translate(100 * Math.random(), 100 * Math.random());
     }
     for (let i = 0; i < count; i++) {
       const index = i % 10;
-      const group = root.getChildByIndex(index);
+      const group = canvas.getChildByIndex(index);
       group.addShape('circle', {
         attrs: {
           x: Math.random() * maxX * 2,
@@ -128,13 +125,14 @@ describe('quick hit test', () => {
       ['A', r, r, 0, 0, 0, x, y - r],
     ];
   }
+  //
   xit('more groups', (done) => {
-    root.clear();
+    const root = canvas.addGroup();
     for (let i = 0; i < count * 2; i++) {
       const group = root.addGroup();
       group.translate(100 * Math.random(), 100 * Math.random());
-      const x = Math.random() * maxX * 4 - 100;
-      const y = Math.random() * maxY * 4 - 100;
+      const x = Math.random() * maxX - 100;
+      const y = Math.random() * maxY - 100;
       const r = Math.random() * 5;
       group.addShape('path', {
         name: 'node',

@@ -27,9 +27,10 @@ function preTest(element: IElement, x: number, y: number) {
   }
   // 不允许被拾取，则返回 null
   // @ts-ignore
-  if (!isAllowCapture(element) && element.cfg.isInView === false) {
+  if (!isAllowCapture(element) || element.cfg.isInView === false) {
     return false;
   }
+
   if (element.cfg.clipShape) {
     // 如果存在 clip
     const [refX, refY] = getRefXY(element, x, y);
@@ -38,10 +39,11 @@ function preTest(element: IElement, x: number, y: number) {
     }
   }
   // @ts-ignore ，这个地方调用过于频繁
-  let bbox = element.cfg.cacheCanvasBBox;
-  if (!bbox) {
-    bbox = element.getCanvasBBox();
-  }
+  const bbox = element.cfg.cacheCanvasBBox || element.getCanvasBBox();
+  // 如果没有缓存 bbox，则说明不可见
+  // if (!bbox) {
+  //   return false;
+  // }
   if (!(x >= bbox.minX && x <= bbox.maxX && y >= bbox.minY && y <= bbox.maxY)) {
     return false;
   }

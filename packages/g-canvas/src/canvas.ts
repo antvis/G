@@ -5,7 +5,7 @@ import { getShape } from './util/hit';
 import EventController from '@antv/g-base/lib/event/event-contoller';
 import * as Shape from './shape';
 import Group from './group';
-import { applyAttrsToContext, drawChildren, getMergedRegion, mergeView, checkRefresh } from './util/draw';
+import { applyAttrsToContext, drawChildren, getMergedRegion, mergeView, checkRefresh, clearChanged } from './util/draw';
 import { getPixelRatio, requestAnimationFrame, clearAnimationFrame } from './util/util';
 
 class Canvas extends AbstractCanvas {
@@ -61,8 +61,8 @@ class Canvas extends AbstractCanvas {
     return {
       minX: 0,
       minY: 0,
-      maxX: this.get('width'),
-      maxY: this.get('height'),
+      maxX: this.cfg.width,
+      maxY: this.cfg.height,
     };
   }
 
@@ -105,10 +105,13 @@ class Canvas extends AbstractCanvas {
   }
 
   getShape(x: number, y: number) {
+    let shape;
     if (this.get('quickHit')) {
-      return getShape(this, x, y);
+      shape = getShape(this, x, y);
+    } else {
+      shape = super.getShape(x, y, null);
     }
-    return super.getShape(x, y, null);
+    return shape;
   }
   // 对绘制区域边缘取整，避免浮点数问题
   _getRefreshRegion() {
@@ -181,6 +184,7 @@ class Canvas extends AbstractCanvas {
     const context = this.get('context');
     const children = this.getChildren() as IElement[];
     const region = this._getRefreshRegion();
+    const refreshElements = this.get('refreshElements');
     // 需要注意可能没有 region 的场景
     // 一般发生在设置了 localRefresh ,在没有图形发生变化的情况下，用户调用了 draw
     if (region) {
@@ -197,6 +201,13 @@ class Canvas extends AbstractCanvas {
       // 绘制子元素
       drawChildren(context, children, region);
       context.restore();
+    } else if (refreshElements.length) {
+      // 防止发生改变的 elements 没有 region 的场景，这会发生在多个情况下
+      // 1. 空的 group
+      // 2. 所有 elements 没有在绘图区域
+      // 3. group 下面的 elements 隐藏掉
+      // 如果不进行清理 hasChanged 的状态会不正确
+      clearChanged(refreshElements);
     }
     this.set('refreshElements', []);
   }

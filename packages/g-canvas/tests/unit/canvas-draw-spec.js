@@ -3,7 +3,7 @@ import Canvas from '../../src/canvas';
 import Group from '../../src/group';
 import { getColor } from '../get-color';
 
-const DELAY = 30; // 本来应该 16ms，但是测试时需要适当调大这个值
+const DELAY = 40; // 本来应该 16ms，但是测试时需要适当调大这个值
 
 const dom = document.createElement('div');
 document.body.appendChild(dom);
@@ -271,9 +271,10 @@ describe('test canvas draw', () => {
     it('add empty group', () => {
       // 添加分组，不会导致重绘，但是需要考虑 add 已经存在子元素的 group的场景
       // 由于目前还没有这样使用，所以可以不考虑这种场景
+      // 为了简化，也计入 changed 范畴，便于后面的优化
       group1 = canvas.addGroup();
-      expect(group1.get('hasChanged')).eql(undefined);
-      expect(canvas.get('refreshElements').length).eql(0);
+      expect(group1.get('hasChanged')).eql(true);
+      expect(canvas.get('refreshElements').length).eql(1);
     });
 
     it('add new group', (done) => {

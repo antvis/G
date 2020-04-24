@@ -6,6 +6,7 @@ import ShapeBase from './shape/base';
 import * as Shape from './shape';
 import { applyAttrsToContext, drawChildren, refreshElement } from './util/draw';
 import { each } from '@antv/util';
+import { intersectRect } from './util/util';
 
 class Group extends AbstractGroup {
   /**
@@ -40,34 +41,46 @@ class Group extends AbstractGroup {
   }
 
   cacheCanvasBBox() {
-    const children = this.getChildren();
+    const children = this.cfg.children;
     const xArr = [];
     const yArr = [];
     each(children, (child) => {
       const bbox = child.cfg.cacheCanvasBBox;
-      if (bbox) {
+      if (bbox && child.cfg.isInView) {
         xArr.push(bbox.minX, bbox.maxX);
         yArr.push(bbox.minY, bbox.maxY);
       }
     });
-    const minX = Math.min.apply(null, xArr);
-    const maxX = Math.max.apply(null, xArr);
-    const minY = Math.min.apply(null, yArr);
-    const maxY = Math.max.apply(null, yArr);
-    this.set('cacheCanvasBBox', {
-      minX,
-      minY,
-      x: minX,
-      y: minY,
-      maxX,
-      maxY,
-      width: maxX - minX,
-      height: maxY - minY,
-    });
+    let bbox = null;
+    if (xArr.length) {
+      const minX = Math.min.apply(null, xArr);
+      const maxX = Math.max.apply(null, xArr);
+      const minY = Math.min.apply(null, yArr);
+      const maxY = Math.max.apply(null, yArr);
+      bbox = {
+        minX,
+        minY,
+        x: minX,
+        y: minY,
+        maxX,
+        maxY,
+        width: maxX - minX,
+        height: maxY - minY,
+      };
+      const canvas = this.cfg.canvas;
+      if (canvas) {
+        const viewRange = canvas.getViewRange();
+        this.set('isInView', intersectRect(bbox, viewRange));
+      }
+    } else {
+      this.set('isInView', false);
+    }
+
+    this.set('cacheCanvasBBox', bbox);
   }
 
   draw(context: CanvasRenderingContext2D, region?: Region) {
-    const children = this.getChildren() as IElement[];
+    const children = this.cfg.children as IElement[];
     const allowDraw = region ? this.cfg.refresh : true; // 局部刷新需要判定
     if (children.length && allowDraw) {
       context.save();
