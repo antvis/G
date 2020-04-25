@@ -71,6 +71,12 @@ class Canvas extends AbstractCanvas {
     this.set('eventController', eventController);
   }
 
+  // 覆盖基类中的 clearEvents 方法
+  clearEvents() {
+    const eventController = this.get('eventController');
+    eventController.destroy();
+  }
+
   // 复写基类的方法生成标签
   createDom(): HTMLElement {
     const element = document.createElement('canvas');
