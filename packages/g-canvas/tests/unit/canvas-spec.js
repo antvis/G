@@ -118,6 +118,16 @@ describe('canvas test', () => {
     expect(canvas.get('el').height).eql(1600);
   });
 
+  it('pixelRatio', () => {
+    canvas.set('pixelRatio', 0.8);
+    expect(canvas.get('pixelRatio')).eql(0.8);
+    expect(canvas.getPixelRatio()).eql(1);
+    canvas.set('pixelRatio', 1.8);
+    expect(canvas.getPixelRatio()).eql(1);
+    canvas.set('pixelRatio', 2.8);
+    expect(canvas.getPixelRatio()).eql(2);
+  });
+
   it('destroy', () => {
     canvas.destroy();
     expect(canvas.destroyed).eql(true);

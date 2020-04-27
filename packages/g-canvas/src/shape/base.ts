@@ -103,14 +103,22 @@ class ShapeBase extends AbstractShape {
   }
 
   _afterDraw() {
+    const bbox = this.getCanvasBBox();
+    const canvas = this.getCanvas();
     // 绘制的时候缓存包围盒
-    this.set('cacheCanvasBBox', this.getCanvasBBox());
+    this.set('cacheCanvasBBox', bbox);
+    if (canvas) {
+      // @ts-ignore
+      const viewRange = canvas.getViewRange();
+      this.set('isInView', intersectRect(bbox, viewRange));
+    }
     // 绘制后消除标记
     this.set('hasChanged', false);
   }
 
   skipDraw() {
     this.set('cacheCanvasBBox', null);
+    this.set('isInView', null);
     this.set('hasChanged', false);
   }
 

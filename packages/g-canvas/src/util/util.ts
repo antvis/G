@@ -28,18 +28,6 @@ export function inBox(minX: number, minY: number, width: number, height: number,
   return x >= minX && x <= minX + width && y >= minY && y <= minY + height;
 }
 
-// 全局设置一个唯一离屏的 ctx，用于计算 isPointInPath
-let offScreenCtx = null;
-export function getOffScreenContext() {
-  if (!offScreenCtx) {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1;
-    canvas.height = 1;
-    offScreenCtx = canvas.getContext('2d');
-  }
-  return offScreenCtx;
-}
-
 export function intersectRect(box1, box2) {
   return !(box2.minX > box1.maxX || box2.maxX < box1.minX || box2.minY > box1.maxY || box2.maxY < box1.minY);
 }

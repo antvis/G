@@ -1,8 +1,8 @@
-import { IBase, IContainer, IShape, IGroup, IElement, ICanvas } from '../interfaces';
+import { IContainer, IShape, IGroup, IElement, ICanvas } from '../interfaces';
 import { BBox, ElementFilterFn } from '../types';
 import Timeline from '../animate/timeline';
 import Element from './element';
-import { isFunction, isObject, each, removeFromArray, upperFirst } from '../util/util';
+import { isFunction, isObject, each, removeFromArray, upperFirst, isAllowCapture } from '../util/util';
 
 const SHAPE_MAP = {};
 const INDEX = '_INDEX';
@@ -72,10 +72,6 @@ function getComparer(compare: Function) {
     const result = compare(left, right);
     return result === 0 ? left[INDEX] - right[INDEX] : result;
   };
-}
-
-function isAllowCapture(element: IBase): boolean {
-  return element.get('visible') && element.get('capture');
 }
 
 abstract class Container extends Element implements IContainer {

@@ -1,5 +1,5 @@
-import { distance } from './util';
-import * as vec2 from '@antv/gl-matrix/lib/gl-matrix/vec2';
+import { distance, getBBoxByArray } from './util';
+import * as vec2 from 'gl-matrix/vec2';
 import { BBox, Point } from './types';
 
 export default {
@@ -12,17 +12,7 @@ export default {
    * @return {object} 包围盒对象
    */
   box(x1: number, y1: number, x2: number, y2: number): BBox {
-    const minX = Math.min(x1, x2);
-    const maxX = Math.max(x1, x2);
-    const minY = Math.min(y1, y2);
-    const maxY = Math.max(y1, y2);
-
-    return {
-      x: minX,
-      y: minY,
-      width: maxX - minX,
-      height: maxY - minY,
-    };
+    return getBBoxByArray([x1, x2], [y1, y2]);
   },
   /**
    * 线段的长度

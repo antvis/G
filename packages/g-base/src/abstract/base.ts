@@ -1,13 +1,13 @@
 import EE from '@antv/event-emitter';
 import { IBase } from '../interfaces';
-import { removeFromArray, mix, isFunction } from '../util/util';
+import { mix } from '../util/util';
+import { LooseObject } from '../types';
 abstract class Base extends EE implements IBase {
   /**
-   * @private
-   * 内部属性，用于 get,set
+   * 内部属性，用于 get,set，但是可以用于优化性能使用
    * @type {object}
    */
-  cfg: object;
+  cfg: LooseObject;
 
   /**
    * 是否被销毁

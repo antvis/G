@@ -3,13 +3,11 @@
  * @author dxq613@gmail.com
  */
 import GraphEvent from './graph-event';
-import { ICanvas, IShape, IBase } from '../interfaces';
-import { each } from '../util/util';
-const TIME_INTERVAL = 120; // 判断拖拽和点击
+import { ICanvas, IShape } from '../interfaces';
+import { each, isParent } from '../util/util';
 const CLICK_OFFSET = 40;
 const LEFT_BTN_CODE = 0;
 const DELEGATION_SPLIT = ':';
-const WILDCARD = '*';
 
 const EVENTS = [
   'mousedown',
@@ -30,24 +28,6 @@ const EVENTS = [
   'contextmenu',
   'mousewheel',
 ];
-
-// 是否元素的父容器
-function isParent(container, shape) {
-  // 所有 shape 都是 canvas 的子元素
-  if (container.isCanvas()) {
-    return true;
-  }
-  let parent = shape.getParent();
-  let isParent = false;
-  while (parent) {
-    if (parent === container) {
-      isParent = true;
-      break;
-    }
-    parent = parent.getParent();
-  }
-  return isParent;
-}
 
 // 触摸事件的 clientX，clientY 获取有一定差异
 function getClientPoint(event) {
@@ -89,10 +69,10 @@ function bubbleEvent(container, type, eventObj) {
   if (eventObj.bubbles) {
     let relativeShape;
     let isOverEvent = false;
-    if (type === 'mouseenter' || type === 'dragenter') {
+    if (type === 'mouseenter') {
       relativeShape = eventObj.fromShape;
       isOverEvent = true;
-    } else if (type === 'mouseleave' || type === 'dragleave') {
+    } else if (type === 'mouseleave') {
       isOverEvent = true;
       relativeShape = eventObj.toShape;
     }
@@ -210,7 +190,7 @@ class EventController {
       method.call(this, pointInfo, shape, ev);
     } else {
       const preShape = this.currentShape;
-      // 如果进入、移出画布时存在图形，则要分别出发事件
+      // 如果进入、移出画布时存在图形，则要分别触发事件
       if (type === 'mouseenter' || type === 'dragenter' || type === 'mouseover') {
         this._emitEvent(type, ev, pointInfo, null, null, shape); // 先进入画布
         if (shape) {
@@ -326,6 +306,7 @@ class EventController {
         this._emitEvent('dragover', event, pointInfo, toShape);
       }
     } else if (fromShape) {
+      // TODO: 此处判断有问题，当 drag 图形时，也会触发一次 dragleave 事件，因为此时 toShape 为 null，这不是所期望的
       // 经过空白区域
       this._emitEvent('dragleave', event, pointInfo, fromShape, fromShape, toShape);
     }
@@ -374,7 +355,7 @@ class EventController {
     }
   }
 
-  // 当触发浏览器的 dragover 事件时，不会再触发mousemove ，所以这时候的 dragenter, dragleave 事件需要重新处理
+  // 当触发浏览器的 dragover 事件时，不会再触发 mousemove ，所以这时候的 dragenter, dragleave 事件需要重新处理
   _ondragover(pointInfo, shape, event) {
     event.preventDefault(); // 如果不对 dragover 进行 preventDefault，则不会在 canvas 上触发 drop 事件
     const preShape = this.currentShape;

@@ -4,7 +4,7 @@ import { IElement } from './interfaces';
 import { SHAPE_TO_TAGS } from './constant';
 import { drawChildren } from './util/draw';
 import { setTransform, setClip } from './util/svg';
-import { sortDom } from './util/dom';
+import { sortDom, createSVGElement } from './util/dom';
 import * as Shape from './shape';
 import Group from './group';
 import Defs from './defs';
@@ -42,7 +42,7 @@ class Canvas extends AbstractCanvas {
 
   // 复写基类的方法生成标签
   createDom() {
-    const element = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const element = createSVGElement('svg') as SVGSVGElement;
     const context = new Defs(element);
     element.setAttribute('width', `${this.get('width')}`);
     element.setAttribute('height', `${this.get('height')}`);
