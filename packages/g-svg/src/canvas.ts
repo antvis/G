@@ -5,7 +5,6 @@ import { SHAPE_TO_TAGS } from './constant';
 import { drawChildren } from './util/draw';
 import { setTransform, setClip } from './util/svg';
 import { sortDom } from './util/dom';
-import EventController from '@antv/g-base/lib/event/event-contoller';
 import * as Shape from './shape';
 import Group from './group';
 import Defs from './defs';
@@ -95,21 +94,6 @@ class Canvas extends AbstractCanvas {
     if (children.length) {
       drawChildren(context, children);
     }
-  }
-
-  // 覆盖基类中的 initEvents 方法
-  initEvents() {
-    const eventController = new EventController({
-      canvas: this,
-    });
-    eventController.init();
-    this.set('eventController', eventController);
-  }
-
-  // 覆盖基类中的 clearEvents 方法
-  clearEvents() {
-    const eventController = this.get('eventController');
-    eventController.destroy();
   }
 }
 
