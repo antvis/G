@@ -3,7 +3,7 @@ import { ICanvas } from '../interfaces';
 import { CanvasCfg, Point, Renderer, Cursor } from '../types';
 import { isBrowser, isString } from '../util/util';
 import Timeline from '../animate/timeline';
-import EventController from '@antv/g-base/lib/event/event-contoller';
+import EventController from '../event/event-contoller';
 
 const PX_SUFFIX = 'px';
 
