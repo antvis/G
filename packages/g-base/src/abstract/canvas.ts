@@ -3,6 +3,7 @@ import { ICanvas } from '../interfaces';
 import { CanvasCfg, Point, Renderer, Cursor } from '../types';
 import { isBrowser, isString } from '../util/util';
 import Timeline from '../animate/timeline';
+import EventController from '../event/event-contoller';
 
 const PX_SUFFIX = 'px';
 
@@ -58,7 +59,13 @@ abstract class Canvas extends Container implements ICanvas {
    * @protected
    * 初始化绑定的事件
    */
-  initEvents() {}
+  initEvents() {
+    const eventController = new EventController({
+      canvas: this,
+    });
+    eventController.init();
+    this.set('eventController', eventController);
+  }
 
   /**
    * @protected
@@ -156,7 +163,10 @@ abstract class Canvas extends Container implements ICanvas {
    * @protected
    * 清理所有的事件
    */
-  clearEvents() {}
+  clearEvents() {
+    const eventController = this.get('eventController');
+    eventController.destroy();
+  }
 
   isCanvas() {
     return true;
