@@ -3,6 +3,14 @@ import { IShape, IGroup, IElement } from '../interfaces';
 import { SHAPE_TO_TAGS } from '../constant';
 
 /**
+ * 创建并返回图形的 svg 元素
+ * @param type svg类型
+ */
+export function createSVGElement(type: string): SVGElement {
+  return document.createElementNS('http://www.w3.org/2000/svg', type);
+}
+
+/**
  * 创建并返回图形的 dom 元素
  * @param  {IShape} shape 图形
  * @return {SVGElement}
@@ -13,7 +21,7 @@ export function createDom(shape: IShape) {
   if (!type) {
     throw new Error(`the type ${shape.type} is not supported by svg`);
   }
-  const element = document.createElementNS('http://www.w3.org/2000/svg', type);
+  const element = createSVGElement(type);
   if (shape.get('id')) {
     element.id = shape.get('id');
   }
@@ -61,9 +69,26 @@ export function moveTo(element: SVGElement, targetIndex: number) {
     // 要求为元素节点，且不能为 defs 节点
     (node: Node) => node.nodeType === 1 && node.nodeName.toLowerCase() !== 'defs'
   );
+  // 获取目标节点
   const target = siblings[targetIndex];
+  const currentIndex = siblings.indexOf(element);
+  // 如果目标节点存在
   if (target) {
-    parentNode.insertBefore(element, target);
+    // 当前索引 > 目标索引，直接插入到目标节点之前即可
+    if (currentIndex > targetIndex) {
+      parentNode.insertBefore(element, target);
+    } else if (currentIndex < targetIndex) {
+      // 当前索引 < 目标索引
+      // 获取目标节点的下一个节点
+      const targetNext = siblings[targetIndex + 1];
+      // 如果目标节点的下一个节点存在，插入到该节点之前
+      if (targetNext) {
+        parentNode.insertBefore(element, targetNext);
+      } else {
+        // 如果该节点不存在，则追加到末尾
+        parentNode.appendChild(element);
+      }
+    }
   } else {
     parentNode.appendChild(element);
   }

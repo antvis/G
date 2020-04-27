@@ -77,7 +77,7 @@ class Text extends ShapeBase {
 
   _setFont() {
     const el = this.get('el');
-    const { fontSize, textBaseline, textAlign } = this.attr();
+    const { textBaseline, textAlign } = this.attr();
 
     const browser = detect();
     if (browser && browser.name === 'firefox') {
@@ -88,11 +88,6 @@ class Text extends ShapeBase {
     }
 
     el.setAttribute('text-anchor', ANCHOR_MAP[textAlign] || 'left');
-    if (fontSize && +fontSize < 12) {
-      // 小于 12 像素的文本进行 scale 处理
-      this.attr('matrix', [1, 0, 0, 0, 1, 0, 0, 0, 1]);
-      this.transform();
-    }
   }
 
   _setText(text) {

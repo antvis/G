@@ -7,6 +7,7 @@ import Defs from './defs';
 import { drawChildren, refreshElement } from './util/draw';
 import { setClip, setTransform } from './util/svg';
 import { SVG_ATTR_MAP } from './constant';
+import { createSVGElement } from './util/dom';
 
 class Group extends AbstractGroup {
   // SVG 中分组对应实体标签 <g>
@@ -15,7 +16,7 @@ class Group extends AbstractGroup {
   }
 
   createDom() {
-    const element = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    const element = createSVGElement('g');
     this.set('el', element);
     const parent = this.getParent();
     if (parent) {

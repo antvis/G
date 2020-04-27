@@ -3,7 +3,7 @@ import { IElement } from '../interfaces';
 import { Region } from '../types';
 import { parseStyle } from './parse';
 import getArcParams from './arc-params';
-import { mergeRegion } from './util';
+import { mergeRegion, intersectRect } from './util';
 import * as ArrowUtil from '../util/arrow';
 
 const SHAPE_ATTRS_MAP = {
@@ -173,8 +173,17 @@ export function getRefreshRegion(element) {
   let region;
   if (!element.destroyed) {
     const cacheBox = element.get('cacheCanvasBBox');
+    const validCache = cacheBox && !!(cacheBox.width && cacheBox.height);
     const bbox = element.getCanvasBBox();
-    region = mergeRegion(cacheBox, bbox);
+    const validBBox = bbox && !!(bbox.width && bbox.height);
+    // 是否是有效 bbox 判定，一些 NaN 或者 宽高为 0 的情况过滤掉
+    if (validCache && validBBox) {
+      region = mergeRegion(cacheBox, bbox);
+    } else if (validCache) {
+      region = cacheBox;
+    } else if (validBBox) {
+      region = bbox;
+    }
   } else {
     // 因为元素已经销毁所以无法获取到缓存的包围盒
     region = element['_cacheCanvasBBox'];
@@ -204,5 +213,21 @@ export function getMergedRegion(elements): Region {
     minY: Math.min.apply(null, minYArr),
     maxX: Math.max.apply(null, maxXArr),
     maxY: Math.max.apply(null, maxYArr),
+  };
+}
+
+export function mergeView(region, viewRegion) {
+  if (!region || !viewRegion) {
+    return null;
+  }
+  // 不相交，则直接返回 null
+  if (!intersectRect(region, viewRegion)) {
+    return null;
+  }
+  return {
+    minX: Math.max(region.minX, viewRegion.minX),
+    minY: Math.max(region.minY, viewRegion.minY),
+    maxX: Math.min(region.maxX, viewRegion.maxX),
+    maxY: Math.min(region.maxY, viewRegion.maxY),
   };
 }

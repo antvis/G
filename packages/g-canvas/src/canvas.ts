@@ -1,11 +1,11 @@
 import { AbstractCanvas } from '@antv/g-base';
 import { ChangeType } from '@antv/g-base/lib/types';
 import { IElement } from './interfaces';
+import { getShape } from './util/hit';
 import * as Shape from './shape';
 import Group from './group';
-import { applyAttrsToContext, drawChildren, getMergedRegion } from './util/draw';
-import { getPixelRatio, each, mergeRegion, requestAnimationFrame, clearAnimationFrame } from './util/util';
-const REFRSH_COUNT = 30; // 局部刷新的元素个数，超过后合并绘图区域
+import { applyAttrsToContext, drawChildren, getMergedRegion, mergeView } from './util/draw';
+import { getPixelRatio, requestAnimationFrame, clearAnimationFrame } from './util/util';
 
 class Canvas extends AbstractCanvas {
   getDefaultCfg() {
@@ -17,6 +17,9 @@ class Canvas extends AbstractCanvas {
     // 是否允许局部刷新图表
     cfg['localRefresh'] = true;
     cfg['refreshElements'] = [];
+    // 是否在视图内自动裁剪
+    cfg['clipView'] = true;
+    cfg['quickHit'] = false;
     return cfg;
   }
 
@@ -48,16 +51,17 @@ class Canvas extends AbstractCanvas {
    * 获取屏幕像素比
    */
   getPixelRatio() {
-    return this.get('pixelRatio') || getPixelRatio();
+    const pixelRatio = this.get('pixelRatio') || getPixelRatio();
+    // 不足 1 的取 1，超出 1 的取整
+    return pixelRatio >= 1 ? Math.floor(pixelRatio) : 1;
   }
 
   getViewRange() {
-    const element = this.get('el');
     return {
       minX: 0,
       minY: 0,
-      maxX: element.width,
-      maxY: element.height,
+      maxX: this.get('width'),
+      maxY: this.get('height'),
     };
   }
 
@@ -90,23 +94,32 @@ class Canvas extends AbstractCanvas {
     context.clearRect(0, 0, element.width, element.height);
   }
 
+  getShape(x: number, y: number) {
+    if (this.get('quickHit')) {
+      return getShape(this, x, y);
+    }
+    return super.getShape(x, y, null);
+  }
   // 对绘制区域边缘取整，避免浮点数问题
   _getRefreshRegion() {
     const elements = this.get('refreshElements');
+    const viewRegion = this.getViewRange();
     let region;
     // 如果是当前画布整体发生了变化，则直接重绘整个画布
     if (elements.length && elements[0] === this) {
-      region = this.getViewRange();
+      region = viewRegion;
     } else {
       region = getMergedRegion(elements);
-      // 附加 0.5 像素，会解决1px 变成 2px 的问题，无论 pixelRatio 的值是多少
-      // 真实测试的环境下，发现在 1-2 之间时会出现 >2 和 <1 的情况下未出现，但是为了安全，统一附加 0.5
-      const appendPixel = 0.5;
       if (region) {
-        region.minX = Math.floor(region.minX - appendPixel);
-        region.minY = Math.floor(region.minY - appendPixel);
-        region.maxX = Math.ceil(region.maxX + appendPixel);
-        region.maxY = Math.ceil(region.maxY + appendPixel);
+        region.minX = Math.floor(region.minX);
+        region.minY = Math.floor(region.minY);
+        region.maxX = Math.ceil(region.maxX);
+        region.maxY = Math.ceil(region.maxY);
+        const clipView = this.get('clipView');
+        // 自动裁剪不在 view 内的区域
+        if (clipView) {
+          region = mergeView(region, viewRegion);
+        }
       }
     }
     return region;
@@ -133,6 +146,7 @@ class Canvas extends AbstractCanvas {
       this.set('refreshElements', []);
     }
   }
+
   // 手工调用绘制接口
   draw() {
     const drawFrame = this.get('drawFrame');

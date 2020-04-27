@@ -2,18 +2,12 @@ import { each, isEqual, isFunction, isNumber, isObject, isArray, noop, mix, uppe
 import { transform } from '@antv/matrix-util';
 import { IElement, IShape, IGroup, ICanvas, ICtor } from '../interfaces';
 import { ClipCfg, ChangeType, OnFrame, ShapeAttrs, AnimateCfg, Animation, BBox, ShapeBase } from '../types';
-import { removeFromArray } from '../util/util';
+import { removeFromArray, isParent } from '../util/util';
 import { multiplyMatrix, multiplyVec2, invert } from '../util/matrix';
 import Base from './base';
 import GraphEvent from '../event/graph-event';
 
 const MATRIX = 'matrix';
-const ARRAY_ATTRS = {
-  matrix: 'matrix',
-  path: 'path',
-  points: 'points',
-  lineDash: 'lineDash',
-};
 
 const CLONE_CFGS = ['zIndex', 'capture', 'visible', 'type'];
 
@@ -350,7 +344,9 @@ abstract class Element extends Base implements IElement {
     const matrix = this.attr('matrix');
     if (matrix) {
       const invertMatrix = invert(matrix);
-      return multiplyVec2(invertMatrix, v);
+      if (invertMatrix) {
+        return multiplyVec2(invertMatrix, v);
+      }
     }
     return v;
   }
@@ -387,7 +383,8 @@ abstract class Element extends Base implements IElement {
   }
 
   getClip(): IShape {
-    const clipShape = this.get('clipShape');
+    // 高频率调用的地方直接使用 this.cfg.xxx
+    const clipShape = this.cfg.clipShape;
     // 未设置时返回 Null，保证一致性
     if (!clipShape) {
       return null;
@@ -606,24 +603,50 @@ abstract class Element extends Base implements IElement {
   emitDelegation(type: string, eventObj: GraphEvent) {
     const paths = eventObj.propagationPath;
     const events = this.getEvents();
+    let relativeShape;
+    if (type === 'mouseenter') {
+      relativeShape = eventObj.fromShape;
+    } else if (type === 'mouseleave') {
+      relativeShape = eventObj.toShape;
+    }
     // 至少有一个对象，且第一个对象为 shape
     for (let i = 0; i < paths.length; i++) {
       const element = paths[i];
       // 暂定跟 name 绑定
       const name = element.get('name');
       if (name) {
-        // 事件委托的形式 name:type
-        const eventName = name + DELEGATION_SPLIT + type;
-        if (events[eventName] || events[WILDCARD]) {
-          // 对于通配符 *，事件名称 = 委托事件名称
-          eventObj.name = eventName;
-          eventObj.currentTarget = element;
-          eventObj.delegateTarget = this;
-          // 将委托事件的监听对象 delegateObject 挂载到事件对象上
-          eventObj.delegateObject = element.get('delegateObject');
-          this.emit(eventName, eventObj);
+        // 第一个 mouseenter 和 mouseleave 的停止即可，因为后面的都是前面的 Parent
+        if (
+          // 只有 element 是 Group 或者 Canvas 的时候，才需要判断 isParent
+          (element.isGroup() || (element.isCanvas && element.isCanvas())) &&
+          relativeShape &&
+          isParent(element, relativeShape)
+        ) {
+          break;
+        }
+        if (isArray(name)) {
+          each(name, (subName) => {
+            this.emitDelegateEvent(element, subName, eventObj);
+          });
+        } else {
+          this.emitDelegateEvent(element, name, eventObj);
         }
       }
+    }
+  }
+
+  private emitDelegateEvent(element, name: string, eventObj: GraphEvent) {
+    const events = this.getEvents();
+    // 事件委托的形式 name:type
+    const eventName = name + DELEGATION_SPLIT + eventObj.type;
+    if (events[eventName] || events[WILDCARD]) {
+      // 对于通配符 *，事件名称 = 委托事件名称
+      eventObj.name = eventName;
+      eventObj.currentTarget = element;
+      eventObj.delegateTarget = this;
+      // 将委托事件的监听对象 delegateObject 挂载到事件对象上
+      eventObj.delegateObject = element.get('delegateObject');
+      this.emit(eventName, eventObj);
     }
   }
 

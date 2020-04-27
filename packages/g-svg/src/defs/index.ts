@@ -9,6 +9,7 @@ import Shadow from './shadow';
 import Arrow from './arrow';
 import Clip from './clip';
 import Pattern from './pattern';
+import { createSVGElement } from '../util/dom';
 
 class Defs {
   id: string;
@@ -18,7 +19,7 @@ class Defs {
   canvas: SVGSVGElement;
 
   constructor(canvas) {
-    const el = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    const el = createSVGElement('defs') as SVGDefsElement;
     const id = uniqueId('defs_');
     el.id = id;
     canvas.appendChild(el);
