@@ -175,8 +175,7 @@ describe('test graphic events', () => {
     },
   });
 
-  const controller = new EventController({ canvas });
-  controller.init();
+  const controller = canvas.get('eventController');
 
   it('ishit', () => {
     expect(canvas.getShape(9, 9)).eql(shape1);
