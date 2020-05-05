@@ -74,7 +74,7 @@
     "benchmark": "^2.1.4",
     "chai": "^4.2.0",
     "eslint": "^5.10.0",
-    "eslint-config-egg": "^7.1.0",
+    "eslint-config-egg": "^8.0.1",
     "eslint-config-prettier": "^4.3.0",
     "eslint-plugin-html": "^5.0.0",
     "gh-pages": "^2.1.1",
