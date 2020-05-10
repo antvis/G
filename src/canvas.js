@@ -183,7 +183,7 @@ Util.augment(Canvas, Event, {
   },
   // 获取 touch 事件的 clientX 和 clientY 需要单独处理
   getClientByEvent(ev) {
-    let clientInfo = event;
+    let clientInfo = ev;
     if (ev.touches) {
       if (ev.type === 'touchend') {
         clientInfo = ev.changedTouches[0];
