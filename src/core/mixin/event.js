@@ -86,7 +86,7 @@ module.exports = {
   _triggerEvent(type, e) {
 
     const self = this;
-    const point = self.getPointByClient(e.clientX, e.clientY);
+    const point = self.getPointByEvent(e);
     let shape = self.getShape(point.x, point.y, e);
     const el = self.get('el');
     // svg原生事件取不到dragover, dragout, drop等事件的对象。这边需要走数学拾取。
