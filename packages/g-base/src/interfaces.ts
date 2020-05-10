@@ -582,10 +582,24 @@ export interface ICanvas extends IContainer {
   changeSize(width: number, height: number);
 
   /**
-   * 将窗口坐标转变成 canvas 坐标
+   * 根据事件对象获取画布坐标
+   * @param  {Event} ev 事件对象
+   * @return {object} 画布坐标
+   */
+  getPointByEvent(ev: Event): Point;
+
+  /**
+   * 根据事件对象获取窗口坐标
+   * @param  {Event} ev 事件对象
+   * @return {object} 窗口坐标
+   */
+  getClientByEvent(ev: Event): Point;
+
+  /**
+   * 将窗口坐标转变成画布坐标
    * @param  {number} clientX 窗口 x 坐标
    * @param  {number} clientY 窗口 y 坐标
-   * @return {object} canvas坐标
+   * @return {object} 画布坐标
    */
   getPointByClient(clientX: number, clientY: number): Point;
 

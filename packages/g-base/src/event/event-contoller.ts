@@ -29,22 +29,6 @@ const EVENTS = [
   'mousewheel',
 ];
 
-// 触摸事件的 clientX，clientY 获取有一定差异
-function getClientPoint(event) {
-  let clientInfo = event;
-  if (event.touches) {
-    if (event.type === 'touchend') {
-      clientInfo = event.changedTouches[0];
-    } else {
-      clientInfo = event.touches[0];
-    }
-  }
-  return {
-    clientX: clientInfo.clientX,
-    clientY: clientInfo.clientY,
-  };
-}
-
 // 是否有委托事件监听
 function hasDelegation(events, type) {
   for (const key in events) {
@@ -169,13 +153,13 @@ class EventController {
   // 获取事件的当前点的信息
   _getPointInfo(ev) {
     const canvas = this.canvas;
-    const clientPoint = getClientPoint(ev);
-    const point = canvas.getPointByClient(clientPoint.clientX, clientPoint.clientY);
+    const clientPoint = canvas.getClientByEvent(ev);
+    const point = canvas.getPointByEvent(ev);
     return {
       x: point.x,
       y: point.y,
-      clientX: clientPoint.clientX,
-      clientY: clientPoint.clientY,
+      clientX: clientPoint.x,
+      clientY: clientPoint.y,
     };
   }
 
