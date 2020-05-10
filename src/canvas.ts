@@ -1,8 +1,12 @@
 import * as Util from '@antv/util';
+import { detect } from 'detect-browser';
 import * as renderers from './renderers/index';
 import Event from './event';
 import Timeline from './core/timeline';
 import Group from './core/group';
+
+const browser = detect();
+const isFirefox = browser && browser.name === 'firefox';
 
 const EVENTS = [
   'click',
@@ -76,6 +80,11 @@ class Canvas extends Group {
        * @type {String}
        */
       renderer: 'canvas',
+      /**
+       * 是否支持 CSS Transform
+       * CSS transform 目前尚未经过长时间验证，为了避免影响上层业务，默认关闭，上层按需开启
+       */
+      supportCSSTransform: false,
       ...cfg,
     });
     this._setGlobalParam();
@@ -166,6 +175,48 @@ class Canvas extends Group {
     this.set('width', width);
     this.set('height', height);
     this._resize();
+  }
+
+  // 实现接口
+  getPointByEvent(ev) {
+    const supportCSSTransform = this.get('supportCSSTransform');
+    if (supportCSSTransform) {
+      const pixelRatio = this.get('pixelRatio') || 1;
+      // For Firefox <= 38
+      if (isFirefox && !Util.isNil(ev.layerX) && ev.layerX !== ev.offsetX) {
+        return {
+          x: ev.layerX * pixelRatio,
+          y: ev.layerY * pixelRatio,
+        };
+      }
+      if (!Util.isNil(ev.offsetX)) {
+        // For IE6+, Firefox >= 39, Chrome, Safari, Opera
+        return {
+          x: ev.offsetX * pixelRatio,
+          y: ev.offsetY * pixelRatio,
+        };
+      }
+    }
+    // should calculate by self for other cases, like Safari in ios
+    // TODO: support CSS transform
+    const { x: clientX, y: clientY } = this.getClientByEvent(ev);
+    return this.getPointByClient(clientX, clientY);
+  }
+
+  // 获取 touch 事件的 clientX 和 clientY 需要单独处理
+  getClientByEvent(ev) {
+    let clientInfo = ev;
+    if (ev.touches) {
+      if (ev.type === 'touchend') {
+        clientInfo = ev.changedTouches[0];
+      } else {
+        clientInfo = ev.touches[0];
+      }
+    }
+    return {
+      x: clientInfo.clientX,
+      y: clientInfo.clientY,
+    };
   }
 
   /**
@@ -292,22 +343,8 @@ class Canvas extends Group {
     return event;
   }
 
-  _getClientXY(type, e): number[] {
-    if (type === 'touchstart' || type === 'touchmove') {
-      return [e.targetTouches[0].clientX, e.targetTouches[0].clientY];
-    }
-
-    if (type === 'touchend') {
-      return [e.changedTouches[0].clientX, e.changedTouches[0].clientY];
-    }
-
-    return [e.clientX, e.clientY];
-  }
-
   _triggerEvent(type, e) {
-    const [clientX, clientY] = this._getClientXY(type, e);
-
-    const point = this.getPointByClient(clientX, clientY);
+    const point = this.getPointByEvent(e);
     let shape = this.getShape(point.x, point.y, e);
     const el = this.get('el');
     // svg原生事件取不到dragover, dragout, drop等事件的对象。这边需要走数学拾取。
