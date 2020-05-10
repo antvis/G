@@ -160,7 +160,7 @@ abstract class Canvas extends Container implements ICanvas {
 
   // 获取 touch 事件的 clientX 和 clientY 需要单独处理
   getClientByEvent(ev: Event) {
-    let clientInfo: MouseEvent | Touch = event as MouseEvent;
+    let clientInfo: MouseEvent | Touch = ev as MouseEvent;
     if ((ev as TouchEvent).touches) {
       if (ev.type === 'touchend') {
         clientInfo = (ev as TouchEvent).changedTouches[0];
