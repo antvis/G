@@ -67,6 +67,14 @@ export type Renderer = 'canvas' | 'svg';
 
 - 修改画布大小；
 
+### getPointByEvent(ev: Event): Point
+
+- 根据事件对象获取画布坐标，返回类型为 `{ x: number, y: number }`；
+
+### getClientByEvent(ev: Event): Point
+
+- 根据事件对象获取窗口坐标，返回类型为 `{ x: number, y: number }`；
+
 ### getPointByClient(clientX: number, clientY: number)
 
 - 根据窗口坐标，获取对应的画布坐标，返回类型为 `{ x: number, y: number }`；
