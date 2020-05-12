@@ -2,7 +2,6 @@ import { AbstractCanvas } from '@antv/g-base';
 import { ChangeType } from '@antv/g-base/lib/types';
 import { IElement } from './interfaces';
 import { getShape } from './util/hit';
-import EventController from '@antv/g-base/lib/event/event-contoller';
 import * as Shape from './shape';
 import Group from './group';
 import { applyAttrsToContext, drawChildren, getMergedRegion, mergeView, checkRefresh, clearChanged } from './util/draw';
@@ -65,15 +64,6 @@ class Canvas extends AbstractCanvas {
       maxX: this.cfg.width,
       maxY: this.cfg.height,
     };
-  }
-
-  // 复写处理事件
-  initEvents() {
-    const eventController = new EventController({
-      canvas: this,
-    });
-    eventController.init();
-    this.set('eventController', eventController);
   }
 
   // 复写基类的方法生成标签
@@ -230,12 +220,6 @@ class Canvas extends AbstractCanvas {
   }
 
   skipDraw() {}
-
-  destroy() {
-    const eventController = this.get('eventController');
-    eventController.destroy();
-    super.destroy();
-  }
 }
 
 export default Canvas;

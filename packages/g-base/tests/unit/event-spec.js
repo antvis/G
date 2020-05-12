@@ -1,6 +1,5 @@
 const expect = require('chai').expect;
 import GraphEvent from '../../src/event/graph-event';
-import EventController from '../../src/event/event-contoller';
 import Canvas from '../../src/abstract/canvas';
 import Shape from '../../src/abstract/shape';
 import Group from '../../src/abstract/group';
@@ -175,8 +174,7 @@ describe('test graphic events', () => {
     },
   });
 
-  const controller = new EventController({ canvas });
-  controller.init();
+  const controller = canvas.get('eventController');
 
   it('ishit', () => {
     expect(canvas.getShape(9, 9)).eql(shape1);
