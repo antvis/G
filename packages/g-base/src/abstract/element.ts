@@ -209,7 +209,14 @@ abstract class Element extends Base implements IElement {
    * @protected
    */
   afterAttrsChange(targetAttrs) {
-    this.onCanvasChange('attr');
+    if (this.cfg.isClipShape) {
+      const applyTo = this.cfg.applyTo;
+      if (applyTo) {
+        applyTo.onCanvasChange('clip');
+      }
+    } else {
+      this.onCanvasChange('attr');
+    }
   }
 
   show() {
@@ -294,10 +301,10 @@ abstract class Element extends Base implements IElement {
 
   // 获取总的 matrix
   getTotalMatrix() {
-    let totalMatrix = this.get('totalMatrix');
+    let totalMatrix = this.cfg.totalMatrix;
     if (!totalMatrix) {
       const currentMatrix = this.attr('matrix');
-      const parentMatrix = this.get('parentMatrix');
+      const parentMatrix = this.cfg.parentMatrix;
       if (parentMatrix && currentMatrix) {
         totalMatrix = multiplyMatrix(parentMatrix, currentMatrix);
       } else {
@@ -371,6 +378,7 @@ abstract class Element extends Base implements IElement {
         clipShape = new Cons({
           type: clipCfg.type,
           isClipShape: true, // 增加一个标记
+          applyTo: this,
           attrs: clipCfg.attrs,
           canvas, // 设置 canvas
         });

@@ -91,8 +91,8 @@ describe('test group', () => {
     expect(bbox.minY).eqls(-20);
     expect(bbox.maxX).eqls(30);
     expect(bbox.maxY).eqls(30);
-    const canvasBox = group.getCanvasBBox();
-    expect(canvasBox).eqls(bbox);
+    const canvasBBox = group.getCanvasBBox();
+    expect(canvasBBox).eqls(bbox);
   });
 
   it('remove shape', () => {
