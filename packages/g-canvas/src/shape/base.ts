@@ -1,7 +1,7 @@
 import { AbstractShape } from '@antv/g-base';
 import { ChangeType, BBox } from '@antv/g-base/lib/types';
 import { isNil, intersectRect } from '../util/util';
-import { applyAttrsToContext, refreshElement, getMergedRegion } from '../util/draw';
+import { applyAttrsToContext, refreshElement } from '../util/draw';
 import { getBBoxMethod } from '@antv/g-base/lib/bbox/index';
 import { Region } from '../types';
 import * as Shape from './index';
@@ -84,36 +84,68 @@ class ShapeBase extends AbstractShape {
 
   // 绘制图形时需要考虑 region 限制
   draw(context: CanvasRenderingContext2D, region?: Region) {
-    const clip = this.getClip();
-    // 如果指定了区域，当与指定区域相交时，才会触发渲染
+    const clip = this.cfg.clipShape;
+    // 如果指定了 region，同时不允许刷新时，直接返回
     if (region) {
+      if (this.cfg.refresh === false) {
+        // this._afterDraw();
+        this.set('hasChanged', false);
+        return;
+      }
       // 是否相交需要考虑 clip 的包围盒
-      const bbox = clip ? getMergedRegion([this, clip]) : this.getCanvasBBox();
+      const bbox = this.getCanvasBBox();
       if (!intersectRect(region, bbox)) {
+        this.set('hasChanged', false);
+        // 存在多种情形需要更新 cacheCanvasBBox 和 isInview 的判定
+        // 1. 之前图形在视窗内，但是现在不再视窗内
+        // 2. 如果当前的图形以及父元素都没有发生过变化，refresh = false 不会走到这里，所以这里的图形都是父元素发生变化，但是没有在视图内的元素
+        if (this.cfg.isInView) {
+          this._afterDraw();
+        }
         return;
       }
     }
     context.save();
     // 先将 attrs 应用到上下文中，再设置 clip。因为 clip 应该被当前元素的 matrix 所影响
     applyAttrsToContext(context, this);
-    this._applyClip(context, this.getClip() as ShapeBase);
+    this._applyClip(context, clip as ShapeBase);
     this.drawPath(context);
     context.restore();
     this._afterDraw();
   }
 
-  _afterDraw() {
-    const bbox = this.getCanvasBBox();
-    const canvas = this.getCanvas();
-    // 绘制的时候缓存包围盒
-    this.set('cacheCanvasBBox', bbox);
+  private getCanvasViewBox() {
+    const canvas = this.cfg.canvas;
     if (canvas) {
       // @ts-ignore
-      const viewRange = canvas.getViewRange();
-      this.set('isInView', intersectRect(bbox, viewRange));
+      return canvas.getViewRange();
     }
+    return null;
+  }
+
+  cacheCanvasBBox() {
+    const canvasBBox = this.getCanvasViewBox();
+    // 绘制的时候缓存包围盒
+    if (canvasBBox) {
+      const bbox = this.getCanvasBBox();
+      const isInView = intersectRect(bbox, canvasBBox);
+      this.set('isInView', isInView);
+      // 不再视窗内 cacheCanvasBBox 设置成 null，会提升局部渲染的性能，
+      // 因为在局部渲染影响的包围盒计算时不考虑这个图形的包围盒
+      // 父元素 cacheCanvasBBox 计算的时候也不计算
+      if (isInView) {
+        this.set('cacheCanvasBBox', bbox);
+      } else {
+        this.set('cacheCanvasBBox', null);
+      }
+    }
+  }
+
+  _afterDraw() {
+    this.cacheCanvasBBox();
     // 绘制后消除标记
     this.set('hasChanged', false);
+    this.set('refresh', null);
   }
 
   skipDraw() {

@@ -283,7 +283,7 @@ describe('test bbox', () => {
     expect(canvasBBox.y).eql(bbox.y - 20);
 
     rect.set('totalMatrix', [1, 0, 0, 1, 0, 0, 10, 20, 1]); // 位移 10, 20
-    rect.set('canvasBox', null);
+    rect.set('canvasBBox', null);
     canvasBBox = rect.getCanvasBBox();
 
     expect(canvasBBox.x).eql(bbox.x + 10);
