@@ -259,6 +259,9 @@ Util.augment(Path, {
     }
 
     const segmentsLen = segments.length;
+    if (segmentsLen === 0) {
+      return;
+    }
     context = context || self.get('context');
     context.beginPath();
     if (attrs.startArrow && attrs.startArrow.d) {
@@ -281,7 +284,9 @@ Util.augment(Path, {
       const dist = Arrow.getShortenOffset(tangent[0][0], tangent[0][1], tangent[1][0], tangent[1][1], attrs.endArrow.d);
       const segment = segments[segmentsLen - 1];
       if (segment.command.toUpperCase() === 'Z') {
-        segments[segmentsLen - 2].shortenDraw(context, dist.dx, dist.dy);
+        if (segments[segmentsLen - 2]) {
+          segments[segmentsLen - 2].shortenDraw(context, dist.dx, dist.dy);
+        }
         segment.draw(context);
       } else {
         if (segmentsLen > 2) {
@@ -290,7 +295,9 @@ Util.augment(Path, {
         segment.shortenDraw(context, dist.dx, dist.dy);
       }
     } else {
-      segments[segmentsLen - 2].draw(context);
+      if (segments[segmentsLen - 2]) {
+        segments[segmentsLen - 2].draw(context);
+      }
       segments[segmentsLen - 1].draw(context);
     }
   },
