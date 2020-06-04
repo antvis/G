@@ -90,6 +90,8 @@ class ShapeBase extends AbstractShape {
       // 是否相交需要考虑 clip 的包围盒
       const bbox = clip ? getMergedRegion([this, clip]) : this.getCanvasBBox();
       if (!intersectRect(region, bbox)) {
+        // 图形的包围盒与重绘区域不相交时，也需要清除标记
+        this.set('hasChanged', false);
         return;
       }
     }
