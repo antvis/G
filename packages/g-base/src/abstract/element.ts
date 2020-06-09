@@ -80,6 +80,9 @@ abstract class Element extends Base implements IElement {
    */
   attrs: ShapeAttrs = {};
 
+  // 记录active时当前元素位置
+  private currentItemPosition: number;
+
   constructor(cfg) {
     super(cfg);
     const attrs = this.getDefaultAttrs();
@@ -251,6 +254,7 @@ abstract class Element extends Base implements IElement {
     const children = parent.getChildren();
     const el = this.get('el');
     const index = children.indexOf(this);
+    this.currentItemPosition = index;
     children.splice(index, 1);
     children.push(this);
     this.onCanvasChange('zIndex');
@@ -265,7 +269,8 @@ abstract class Element extends Base implements IElement {
     const el = this.get('el');
     const index = children.indexOf(this);
     children.splice(index, 1);
-    children.unshift(this);
+    children.splice(this.currentItemPosition, 0, this);
+    // children.unshift(this);
     this.onCanvasChange('zIndex');
   }
 
