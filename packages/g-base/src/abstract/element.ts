@@ -270,7 +270,6 @@ abstract class Element extends Base implements IElement {
     const index = children.indexOf(this);
     children.splice(index, 1);
     children.splice(this.currentItemPosition, 0, this);
-    // children.unshift(this);
     this.onCanvasChange('zIndex');
   }
 
