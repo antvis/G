@@ -309,6 +309,32 @@ abstract class Container extends Element implements IContainer {
     this._applyElementMatrix(element);
   }
 
+  insertBefore(element: IElement, beforeElement: IElement) {
+    const canvas = this.getCanvas();
+    const children = this.getChildren();
+    const index = children.indexOf(beforeElement);
+    if (index < 0) {
+      return;
+    }
+
+    const timeline = this.get('timeline');
+    const preParent = element.getParent();
+    if (preParent) {
+      removeChild(preParent, element, false);
+    }
+    element.set('parent', this);
+    if (canvas) {
+      setCanvas(element, canvas);
+    }
+    if (timeline) {
+      setTimeline(element, timeline);
+    }
+
+    children.splice(index, 0, element);
+    element.onCanvasChange('add');
+    this._applyElementMatrix(element);
+  }
+
   // 将当前容器的矩阵应用到子元素
   _applyElementMatrix(element) {
     const totalMatrix = this.getTotalMatrix();
