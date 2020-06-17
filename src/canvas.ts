@@ -121,18 +121,21 @@ class Canvas extends Group {
   _setContainer() {
     const containerId = this.get('containerId');
     let containerDOM = this.get('containerDOM');
-    if (!containerDOM) {
+    if (!containerDOM && document) {
       containerDOM = document.getElementById(containerId);
       this.set('containerDOM', containerDOM);
     }
-    Util.modifyCSS(containerDOM, {
-      position: 'relative',
-    });
+    if (containerDOM) {
+      Util.modifyCSS(containerDOM, {
+        position: 'relative',
+      });
+    }
   }
 
   _initPainter() {
     const containerDOM = this.get('containerDOM');
-    const painter = new this.cfg.renderer.painter(containerDOM);
+    const context = this.get('context');
+    const painter = new this.cfg.renderer.painter(containerDOM, context);
     this.cfg.painter = painter;
     this.cfg.canvasDOM = this.cfg.el = painter.canvas;
     this.changeSize(this.get('width'), this.get('height'));
