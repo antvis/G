@@ -28,7 +28,7 @@ describe('#380', () => {
       clientY,
     });
 
-    // 要模拟 drag 事件，需要触发 mousemove 事件两次以上。因为第一次 mousemove 事件是用来触发 dragstart 事件的
+    // 要模拟 drag 事件，需要触发 mousemove 事件两次及以上。因为第一次 mousemove 事件是用来触发 dragstart 事件的
     simulateMouseEvent(el, 'mousemove', {
       clientX: clientX + 20,
       clientY,

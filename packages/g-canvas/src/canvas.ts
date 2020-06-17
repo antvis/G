@@ -5,7 +5,7 @@ import { getShape } from './util/hit';
 import * as Shape from './shape';
 import Group from './group';
 import { applyAttrsToContext, drawChildren, getMergedRegion, mergeView } from './util/draw';
-import { getPixelRatio, requestAnimationFrame, clearAnimationFrame } from './util/util';
+import { each, getPixelRatio, requestAnimationFrame, clearAnimationFrame } from './util/util';
 
 class Canvas extends AbstractCanvas {
   getDefaultCfg() {
@@ -169,6 +169,7 @@ class Canvas extends AbstractCanvas {
   // 绘制局部
   _drawRegion() {
     const context = this.get('context');
+    const refreshElements = this.get('refreshElements');
     const children = this.getChildren() as IElement[];
     const region = this._getRefreshRegion();
     // 需要注意可能没有 region 的场景
@@ -186,6 +187,13 @@ class Canvas extends AbstractCanvas {
       drawChildren(context, children, region);
       context.restore();
     }
+    each(refreshElements, (element) => {
+      if (element.get('hasChanged')) {
+        // 在视窗外的 Group 元素会加入到更新队列里，但实际却没有执行 draw() 逻辑，也就没有清除 hasChanged 标记
+        // 即已经重绘完、但 hasChanged 标记没有清除的元素，需要统一清除掉。主要是 Group 存在问题，具体原因待排查
+        element.set('hasChanged', false);
+      }
+    });
     this.set('refreshElements', []);
   }
 

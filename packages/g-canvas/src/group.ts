@@ -4,7 +4,6 @@ import { IElement } from './interfaces';
 import { Region } from './types';
 import ShapeBase from './shape/base';
 import * as Shape from './shape';
-import { each, mergeRegion } from './util/util';
 import { applyAttrsToContext, drawChildren, refreshElement } from './util/draw';
 
 class Group extends AbstractGroup {
