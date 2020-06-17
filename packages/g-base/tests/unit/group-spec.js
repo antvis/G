@@ -76,6 +76,49 @@ describe('test group', () => {
     });
   });
 
+  it('insert before', () => {
+    const count = group.getChildren().length;
+    const shape = group.addShape('circle', {
+      attrs: {
+        x: 10,
+        y: 10,
+        r: 10,
+      },
+    });
+
+    expect(group.getChildren().length).eqls(count + 1);
+
+    const insertShape = new MyShape({
+      type: 'rect',
+      attrs: {
+        x: 10,
+        y: 10,
+        width: 20,
+        height: 20,
+      },
+    });
+
+    group.insertBefore(insertShape, shape);
+    expect(group.getChildren().length).eqls(count + 2);
+    // index start from 0
+    const rectChild = group.getChildByIndex(count);
+    const circleChild = group.getChildByIndex(count + 1);
+
+    expect(rectChild.getBBox()).eqls({
+      minX: 10,
+      minY: 10,
+      maxX: 30,
+      maxY: 30,
+    });
+
+    expect(circleChild.getBBox()).eqls({
+      minX: 0,
+      minY: 0,
+      maxX: 20,
+      maxY: 20,
+    });
+  });
+
   it('bbox', () => {
     group.addShape({
       type: 'circle',
