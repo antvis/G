@@ -27,9 +27,14 @@ class Painter {
   toDraw: boolean;
   animateHandler: any;
 
-  constructor(dom) {
+  constructor(dom, context) {
+    // DOM 容器不存在时，说明为非浏览器环境，此时使用上层传入的 context
     if (!dom) {
-      return null;
+      this.type = 'canvas';
+      // 从 context 中获取 canvas dom
+      this.canvas = context.canvas;
+      this.context = context;
+      return this;
     }
     const canvasId = Util.uniqueId('canvas_');
     // @ts-ignore

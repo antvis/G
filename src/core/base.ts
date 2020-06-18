@@ -58,6 +58,7 @@ abstract class Base extends EventEmitter {
     // 调用 ee 的事件 emit
     super.emit(evt, e, ...args);
 
+
     // 阻止冒泡
     if (e instanceof Event && e.propagationStopped) {
       return;
