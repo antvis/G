@@ -54,7 +54,7 @@ class Canvas extends AbstractCanvas {
   getPixelRatio() {
     const pixelRatio = this.get('pixelRatio') || getPixelRatio();
     // 不足 1 的取 1，超出 1 的取整
-    return pixelRatio >= 1 ? Math.floor(pixelRatio) : 1;
+    return pixelRatio >= 1 ? Math.ceil(pixelRatio) : 1;
   }
 
   getViewRange() {
