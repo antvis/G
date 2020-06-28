@@ -123,9 +123,9 @@ describe('canvas test', () => {
     expect(canvas.get('pixelRatio')).eql(0.8);
     expect(canvas.getPixelRatio()).eql(1);
     canvas.set('pixelRatio', 1.8);
-    expect(canvas.getPixelRatio()).eql(1);
-    canvas.set('pixelRatio', 2.8);
     expect(canvas.getPixelRatio()).eql(2);
+    canvas.set('pixelRatio', 2.8);
+    expect(canvas.getPixelRatio()).eql(3);
   });
 
   it('destroy', () => {
