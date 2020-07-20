@@ -54,7 +54,7 @@
     "ptz-i18n": "^1.0.0",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "tslib": "^1.10.0"
+    "tslib": "^2.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.5",
