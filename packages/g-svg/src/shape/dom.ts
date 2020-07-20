@@ -20,7 +20,20 @@ class Dom extends ShapeBase {
         el.setAttribute(SVG_ATTR_MAP[attr], value);
       }
     });
-    el.innerHTML = attrs['html']; // set innerHTML
+    if (typeof attrs['html'] === 'function') {
+      const element = attrs['html'].call(this, attrs);
+      if (element instanceof Element || element instanceof HTMLDocument) {
+          const children = el.childNodes; 
+          for(let i = children.length - 1; i >= 0; i--) {
+            el.removeChild(children[i]);
+          }
+          el.appendChild(element); // append to el if it's an element
+      } else {
+          el.innerHTML = element; // set innerHTML
+      }
+    } else {
+        el.innerHTML = attrs['html']; // set innerHTML
+    }
   }
 }
 

@@ -64,6 +64,37 @@ describe('SVG dom', () => {
     expect(dom.isHit(-1, -1)).eql(false);
   });
 
+  it('set html(text) by function', () => {
+    dom.attr({
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+      html(attrs) {
+        return `<div><h1>Hello World,${attrs.width},${attrs.height}</h1></div>`
+      }
+    });
+    expect(dom.get('el').innerHTML).eql('<div><h1>Hello World,100,100</h1></div>');
+  });
+
+  it('set html(dom) by function', () => {
+    dom.attr({
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+      html(attrs) {
+        const div = document.createElement('div');
+        div.id = 'new-dom-node';
+        const child = document.createElement('span');
+        child.innerHTML = `Hello Child,${attrs.width},${attrs.height}`;
+        div.appendChild(child);
+        return div;
+      }
+    });
+    expect(dom.get('el').innerHTML).eql('<div id="new-dom-node"><span>Hello Child,100,100</span></div>');
+  });
+
   it('destroy', () => {
     expect(dom.destroyed).eql(false);
     dom.destroy();
