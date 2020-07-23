@@ -87,7 +87,12 @@ export function checkChildrenRefresh(children: IElement[], region: Region) {
         }
       } else {
         // 这个分支说明此次局部刷新，所有的节点和父元素没有发生变化，仅需要检查包围盒（缓存）是否相交即可
-        child.cfg.refresh = checkElementRefresh(child, region);
+        const refresh = checkElementRefresh(child, region);
+        child.cfg.refresh = refresh;
+        if (refresh && child.isGroup()) {
+          // 如果需要刷新，说明子元素也需要刷新，继续进行判定
+          checkChildrenRefresh(child.cfg.children, region);
+        }
       }
     }
   }
