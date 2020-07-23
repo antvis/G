@@ -1,5 +1,5 @@
 import { each, isEqual, isFunction, isNumber, isObject, isArray, noop, mix, upperFirst, uniqueId } from '@antv/util';
-import { ext } from '@antv/matrix-util';
+import { transform } from '@antv/matrix-util/lib/mat3';
 import { IElement, IShape, IGroup, ICanvas, ICtor } from '../interfaces';
 import { ClipCfg, ChangeType, OnFrame, ShapeAttrs, AnimateCfg, Animation, BBox, ShapeBase } from '../types';
 import { removeFromArray, isParent } from '../util/util';
@@ -666,7 +666,7 @@ abstract class Element extends Base implements IElement {
    */
   translate(translateX: number = 0, translateY: number = 0) {
     const matrix = this.getMatrix();
-    const newMatrix = ext.transform(matrix, [['t', translateX, translateY]]);
+    const newMatrix = transform(matrix, [['t', translateX, translateY]]);
     this.setMatrix(newMatrix);
     return this;
   }
@@ -702,7 +702,7 @@ abstract class Element extends Base implements IElement {
    */
   scale(ratioX: number, ratioY?: number) {
     const matrix = this.getMatrix();
-    const newMatrix = ext.transform(matrix, [['s', ratioX, ratioY || ratioX]]);
+    const newMatrix = transform(matrix, [['s', ratioX, ratioY || ratioX]]);
     this.setMatrix(newMatrix);
     return this;
   }
@@ -714,7 +714,7 @@ abstract class Element extends Base implements IElement {
    */
   rotate(radian: number) {
     const matrix = this.getMatrix();
-    const newMatrix = ext.transform(matrix, [['r', radian]]);
+    const newMatrix = transform(matrix, [['r', radian]]);
     this.setMatrix(newMatrix);
     return this;
   }
@@ -727,7 +727,7 @@ abstract class Element extends Base implements IElement {
   rotateAtStart(rotate: number): IElement {
     const { x, y } = this.attr();
     const matrix = this.getMatrix();
-    const newMatrix = ext.transform(matrix, [
+    const newMatrix = transform(matrix, [
       ['t', -x, -y],
       ['r', rotate],
       ['t', x, y],
@@ -743,7 +743,7 @@ abstract class Element extends Base implements IElement {
    */
   rotateAtPoint(x: number, y: number, rotate: number): IElement {
     const matrix = this.getMatrix();
-    const newMatrix = ext.transform(matrix, [
+    const newMatrix = transform(matrix, [
       ['t', -x, -y],
       ['r', rotate],
       ['t', x, y],

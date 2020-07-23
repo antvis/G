@@ -119,6 +119,7 @@ class Canvas extends AbstractCanvas {
         region.minY = Math.floor(region.minY);
         region.maxX = Math.ceil(region.maxX);
         region.maxY = Math.ceil(region.maxY);
+        region.maxY += 1; // 在很多环境下字体的高低会不一致，附加一像素，避免残影
         const clipView = this.get('clipView');
         // 自动裁剪不在 view 内的区域
         if (clipView) {
