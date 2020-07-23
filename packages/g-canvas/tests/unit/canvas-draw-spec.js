@@ -3,7 +3,7 @@ import Canvas from '../../src/canvas';
 import Group from '../../src/group';
 import { getColor } from '../get-color';
 
-const DELAY = 40; // 本来应该 16ms，但是测试时需要适当调大这个值
+const DELAY = 60; // 本来应该 16ms，但是测试时需要适当调大这个值
 
 const dom = document.createElement('div');
 document.body.appendChild(dom);
@@ -33,6 +33,7 @@ describe('test canvas draw', () => {
   it('delay draw', (done) => {
     // 不自动绘制
     expect(getColor(context, 10, 10)).eql('#000000');
+
     setTimeout(() => {
       expect(getColor(context, 10, 10)).eql('#000000');
       canvas.draw();
