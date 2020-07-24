@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 import Canvas from '../../src/canvas';
 import { getColor } from '../get-color';
 
-const DELAY = 25; // 本来应该 16ms，但是测试时需要适当调大这个值
+const DELAY = 40; // 本来应该 16ms，但是测试时需要适当调大这个值
 
 const dom = document.createElement('div');
 document.body.appendChild(dom);
@@ -114,13 +114,38 @@ describe('prompt refresh test', () => {
   });
 
   it('group sort', (done) => {
-    group1.sort();
+    const group3 = canvas.addGroup();
+    group3.addShape({
+      type: 'circle',
+      zIndex: 1,
+      attrs: {
+        x: 200,
+        y: 200,
+        r: 5,
+        fill: '#00ff00',
+      },
+    });
+
+    const s2 = group3.addShape({
+      type: 'circle',
+      zIndex: 0,
+      attrs: {
+        x: 200,
+        y: 200,
+        r: 10,
+        fill: '#0000ff',
+      },
+    });
     setTimeout(() => {
-      expect(getColor(ctx, 100, 100)).eql('#0000ff');
-      group12.toFront();
+      expect(getColor(ctx, 200, 200)).eql('#0000ff');
+      group3.sort();
       setTimeout(() => {
-        expect(getColor(ctx, 100, 100)).eql('#00ff00');
-        done();
+        expect(getColor(ctx, 200, 200)).eql('#00ff00');
+        s2.toFront();
+        setTimeout(() => {
+          expect(getColor(ctx, 200, 200)).eql('#0000ff');
+          done();
+        }, DELAY);
       }, DELAY);
     }, DELAY);
   });
