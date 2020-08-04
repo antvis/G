@@ -1,5 +1,5 @@
 import { each, isEqual, isFunction, isNumber, isObject, isArray, noop, mix, upperFirst, uniqueId } from '@antv/util';
-import { transform } from '@antv/matrix-util/lib/mat3';
+import { ext } from '@antv/matrix-util';
 import { IElement, IShape, IGroup, ICanvas, ICtor } from '../interfaces';
 import { ClipCfg, ChangeType, OnFrame, ShapeAttrs, AnimateCfg, Animation, BBox, ShapeBase } from '../types';
 import { removeFromArray, isParent } from '../util/util';
@@ -7,8 +7,9 @@ import { multiplyMatrix, multiplyVec2, invert } from '../util/matrix';
 import Base from './base';
 import GraphEvent from '../event/graph-event';
 
-const MATRIX = 'matrix';
+const { transform } = ext;
 
+const MATRIX = 'matrix';
 const CLONE_CFGS = ['zIndex', 'capture', 'visible', 'type'];
 
 // 可以在 toAttrs 中设置，但不属于绘图属性的字段
