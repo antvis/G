@@ -8,9 +8,10 @@ import CubicUtil from '@antv/g-math/lib/cubic';
 import { inBox } from './util';
 import inLine from './in-stroke/line';
 import inArc from './in-stroke/arc';
-
-import { transform } from '@antv/matrix-util/lib/mat3';
+import { ext } from '@antv/matrix-util';
 import * as vec3 from 'gl-matrix/vec3';
+
+const { transform } = ext;
 
 function hasArc(path) {
   let hasArc = false;
