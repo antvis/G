@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { Event, AbstractCanvas, AbstractGroup, AbstractShape, Base, version } from '../../src/index';
+import { version as PkgVersion } from '../../package.json';
 
 describe('Canvas index', () => {
   it('Event', () => {
@@ -23,7 +24,6 @@ describe('Canvas index', () => {
   });
 
   it('version', () => {
-    const pkg = require('../../package.json');
-    expect(version).eql(pkg.version);
+    expect(version).eql(PkgVersion);
   });
 });

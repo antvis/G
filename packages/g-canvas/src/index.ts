@@ -1,7 +1,6 @@
 import * as Shape from './shape';
-const pkg = require('../package.json');
 
-export const version = pkg.version;
+export { version } from '../package.json';
 export * from './types';
 export * from './interfaces';
 export { Event } from '@antv/g-base';

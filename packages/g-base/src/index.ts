@@ -4,9 +4,8 @@
  */
 
 import * as PathUtil from './util/path';
-const pkg = require('../package.json');
 
-export const version = pkg.version;
+export { version } from '../package.json';
 export * from './types';
 export * from './interfaces';
 export { default as Event } from './event/graph-event';
