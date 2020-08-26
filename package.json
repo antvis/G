@@ -86,7 +86,7 @@
     "prettier": "^2.0.5",
     "source-map-support": "^0.5.9",
     "ts-loader": "^8.0.1",
-    "ts-node": "^7.0.1",
+    "ts-node": "^9.0.0",
     "tslint": "^6.1.2",
     "tslint-config-airbnb": "^5.11.1",
     "tslint-config-prettier": "^1.18.0",
