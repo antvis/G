@@ -1,14 +1,7 @@
-const expect = require('chai').expect;
 import Canvas from '../../src/canvas';
-import isPointInPath from '../../src/util/in-path/point-in-path'
 
 const dom = document.createElement('div');
 document.body.appendChild(dom);
-
-function cubicAt(p0, p1, p2, p3, t) {
-  var onet = 1 - t; // t * t * t 的性能大概是 Math.pow(t, 3) 的三倍
-  return onet * onet * onet * p0 + 3 * p1 * t * onet * onet + 3 * p2 * t * t * onet + p3 * t * t * t;
-}
 
 describe('long path event', () => {
   it('long path event', () => {
@@ -30,12 +23,13 @@ describe('long path event', () => {
       name: 'path-name'
     });
 
-    canvas.on('path-name:click', e => {
-      console.log(e);
+    let clickOnPath = false;
+    canvas.on('path-name:click', (e) => {
+      clickOnPath = true;
     });
 
-    path.on('click', e => {
-      console.log('path click', e);
+    path.on('click', (e) => {
+      clickOnPath = true;
     });
 
     
