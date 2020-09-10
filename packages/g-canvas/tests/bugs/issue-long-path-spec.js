@@ -23,13 +23,10 @@ describe('long path event', () => {
       name: 'path-name'
     });
 
-    let clickOnPath = false;
-    canvas.on('path-name:click', (e) => {
-      clickOnPath = true;
+    canvas.on('path-name:click', () => {
     });
 
-    path.on('click', (e) => {
-      clickOnPath = true;
+    path.on('click', () => {
     });
 
     
