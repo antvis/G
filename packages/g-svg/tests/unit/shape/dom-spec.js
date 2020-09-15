@@ -71,8 +71,8 @@ describe('SVG dom', () => {
       width: 100,
       height: 100,
       html(attrs) {
-        return `<div><h1>Hello World,${attrs.width},${attrs.height}</h1></div>`
-      }
+        return `<div><h1>Hello World,${attrs.width},${attrs.height}</h1></div>`;
+      },
     });
     expect(dom.get('el').innerHTML).eql('<div><h1>Hello World,100,100</h1></div>');
   });
@@ -90,7 +90,7 @@ describe('SVG dom', () => {
         child.innerHTML = `Hello Child,${attrs.width},${attrs.height}`;
         div.appendChild(child);
         return div;
-      }
+      },
     });
     expect(dom.get('el').innerHTML).eql('<div id="new-dom-node"><span>Hello Child,100,100</span></div>');
   });

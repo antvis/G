@@ -4,8 +4,8 @@ import { IElement } from './interfaces';
 import { getShape } from './util/hit';
 import * as Shape from './shape';
 import Group from './group';
+import { each, getPixelRatio, requestAnimationFrame, clearAnimationFrame } from './util/util';
 import { applyAttrsToContext, drawChildren, getMergedRegion, mergeView, checkRefresh, clearChanged } from './util/draw';
-import { getPixelRatio, requestAnimationFrame, clearAnimationFrame } from './util/util';
 
 class Canvas extends AbstractCanvas {
   getDefaultCfg() {
@@ -54,7 +54,7 @@ class Canvas extends AbstractCanvas {
   getPixelRatio() {
     const pixelRatio = this.get('pixelRatio') || getPixelRatio();
     // 不足 1 的取 1，超出 1 的取整
-    return pixelRatio >= 1 ? Math.floor(pixelRatio) : 1;
+    return pixelRatio >= 1 ? Math.ceil(pixelRatio) : 1;
   }
 
   getViewRange() {
@@ -174,9 +174,9 @@ class Canvas extends AbstractCanvas {
   // 绘制局部
   _drawRegion() {
     const context = this.get('context');
+    const refreshElements = this.get('refreshElements');
     const children = this.getChildren() as IElement[];
     const region = this._getRefreshRegion();
-    const refreshElements = this.get('refreshElements');
     // 需要注意可能没有 region 的场景
     // 一般发生在设置了 localRefresh ,在没有图形发生变化的情况下，用户调用了 draw
     if (region) {
@@ -201,6 +201,13 @@ class Canvas extends AbstractCanvas {
       // 如果不进行清理 hasChanged 的状态会不正确
       clearChanged(refreshElements);
     }
+    each(refreshElements, (element) => {
+      if (element.get('hasChanged')) {
+        // 在视窗外的 Group 元素会加入到更新队列里，但实际却没有执行 draw() 逻辑，也就没有清除 hasChanged 标记
+        // 即已经重绘完、但 hasChanged 标记没有清除的元素，需要统一清除掉。主要是 Group 存在问题，具体原因待排查
+        element.set('hasChanged', false);
+      }
+    });
     this.set('refreshElements', []);
   }
 
