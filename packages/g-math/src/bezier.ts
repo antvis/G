@@ -15,15 +15,23 @@ export function nearestPoint(
   yArr: number[],
   x: number,
   y: number,
-  tCallback: (...arr: number[]) => number
+  tCallback: (...arr: number[]) => number,
+  length?: number
 ): Point {
   let t: number;
-  let interval = 0.005;
   let d = Infinity;
   const v0: PointTuple = [x, y];
+  
+  let segNum = 20;
+  if (length && length > 200) {
+    segNum = length / 10;
+  }
+  const increaseRate = 1 / segNum;
 
-  for (let i = 0; i <= 20; i++) {
-    const _t = i * 0.05;
+  let interval = increaseRate / 10;
+
+  for (let i = 0; i <= segNum; i++) {
+    const _t = i * increaseRate;
     const v1: PointTuple = [tCallback.apply(null, xArr.concat([_t])), tCallback.apply(null, yArr.concat([_t]))];
 
     const d1 = distance(v0[0], v0[1], v1[0], v1[1]);

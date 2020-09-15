@@ -127,9 +127,10 @@ export default {
     x4: number,
     y4: number,
     x0: number,
-    y0: number
+    y0: number,
+    length?: number
   ) {
-    return nearestPoint([x1, x2, x3, x4], [y1, y2, y3, y4], x0, y0, cubicAt);
+    return nearestPoint([x1, x2, x3, x4], [y1, y2, y3, y4], x0, y0, cubicAt, length);
   },
   pointDistance(
     x1: number,
@@ -141,9 +142,10 @@ export default {
     x4: number,
     y4: number,
     x0: number,
-    y0: number
+    y0: number,
+    length?: number
   ) {
-    const point = this.nearestPoint(x1, y1, x2, y2, x3, y3, x4, y4, x0, y0);
+    const point = this.nearestPoint(x1, y1, x2, y2, x3, y3, x4, y4, x0, y0, length);
     return distance(point.x, point.y, x0, y0);
   },
   interpolationAt: cubicAt,

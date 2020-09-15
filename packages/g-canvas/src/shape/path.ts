@@ -95,7 +95,8 @@ class Path extends ShapeBase {
     const hasArc = this.get('hasArc');
     let isHit = false;
     if (isStroke) {
-      isHit = PathUtil.isPointInStroke(segments, lineWidth, x, y);
+      const length = this.getTotalLength();
+      isHit = PathUtil.isPointInStroke(segments, lineWidth, x, y, length);
     }
     if (!isHit && isFill) {
       if (hasArc) {
