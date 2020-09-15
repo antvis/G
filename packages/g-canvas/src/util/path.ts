@@ -3,16 +3,15 @@
  * @author dxq613@gmail.com
  */
 import { PathUtil } from '@antv/g-base';
-import getArcParams from './arc-params';
 import QuadUtil from '@antv/g-math/lib/quadratic';
 import CubicUtil from '@antv/g-math/lib/cubic';
-import EllipseArcUtil from '@antv/g-math/lib/arc';
-import { inBox, isSamePoint } from './util';
+import { inBox } from './util';
 import inLine from './in-stroke/line';
 import inArc from './in-stroke/arc';
-
-import * as mat3 from 'gl-matrix/mat3';
+import { ext } from '@antv/matrix-util';
 import * as vec3 from 'gl-matrix/vec3';
+
+const { transform } = ext;
 
 function hasArc(path) {
   let hasArc = false;
@@ -77,13 +76,14 @@ function isPointInStroke(segments, lineWidth, x, y) {
         const arcParams = segment.arcParams;
         const { cx, cy, rx, ry, startAngle, endAngle, xRotation } = arcParams;
         const p = [x, y, 1];
-        const m = [1, 0, 0, 0, 1, 0, 0, 0, 1];
         const r = rx > ry ? rx : ry;
         const scaleX = rx > ry ? 1 : rx / ry;
         const scaleY = rx > ry ? ry / rx : 1;
-        mat3.translate(m, m, [-cx, -cy]);
-        mat3.rotate(m, m, -xRotation);
-        mat3.scale(m, m, [1 / scaleX, 1 / scaleY]);
+        const m = transform(null, [
+          ['t', -cx, -cy],
+          ['r', -xRotation],
+          ['s', 1 / scaleX, 1 / scaleY],
+        ]);
         vec3.transformMat3(p, p, m);
         isHit = inArc(0, 0, r, startAngle, endAngle, lineWidth, p[0], p[1]);
         break;

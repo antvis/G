@@ -27,7 +27,6 @@ describe('quick hit test', () => {
     width: maxX,
     height: maxY,
   });
-
   xit('no group and all in view', () => {
     for (let i = 0; i < count; i++) {
       canvas.addShape('circle', {
@@ -126,13 +125,14 @@ describe('quick hit test', () => {
       ['A', r, r, 0, 0, 0, x, y - r],
     ];
   }
+  //
   xit('more groups', (done) => {
-    canvas.clear();
+    const root = canvas.addGroup();
     for (let i = 0; i < count * 2; i++) {
-      const group = canvas.addGroup();
+      const group = root.addGroup();
       group.translate(100 * Math.random(), 100 * Math.random());
-      const x = Math.random() * maxX * 4 - 100;
-      const y = Math.random() * maxY * 4 - 100;
+      const x = Math.random() * maxX - 100;
+      const y = Math.random() * maxY - 100;
       const r = Math.random() * 5;
       group.addShape('path', {
         name: 'node',

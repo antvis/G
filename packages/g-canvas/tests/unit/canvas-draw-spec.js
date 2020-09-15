@@ -3,7 +3,7 @@ import Canvas from '../../src/canvas';
 import Group from '../../src/group';
 import { getColor } from '../get-color';
 
-const DELAY = 25; // 本来应该 16ms，但是测试时需要适当调大这个值
+const DELAY = 60; // 本来应该 16ms，但是测试时需要适当调大这个值
 
 const dom = document.createElement('div');
 document.body.appendChild(dom);
@@ -33,6 +33,7 @@ describe('test canvas draw', () => {
   it('delay draw', (done) => {
     // 不自动绘制
     expect(getColor(context, 10, 10)).eql('#000000');
+
     setTimeout(() => {
       expect(getColor(context, 10, 10)).eql('#000000');
       canvas.draw();
@@ -271,9 +272,10 @@ describe('test canvas draw', () => {
     it('add empty group', () => {
       // 添加分组，不会导致重绘，但是需要考虑 add 已经存在子元素的 group的场景
       // 由于目前还没有这样使用，所以可以不考虑这种场景
+      // 为了简化，也计入 changed 范畴，便于后面的优化
       group1 = canvas.addGroup();
-      expect(group1.get('hasChanged')).eql(undefined);
-      expect(canvas.get('refreshElements').length).eql(0);
+      expect(group1.get('hasChanged')).eql(true);
+      expect(canvas.get('refreshElements').length).eql(1);
     });
 
     it('add new group', (done) => {
@@ -301,11 +303,11 @@ describe('test canvas draw', () => {
           x: 60,
           y: 60,
           r: 5,
-          fill: '#000fff',
+          fill: '#00ffff',
         },
       });
       setTimeout(() => {
-        expect(getColor(context, 60, 60)).eql('#000fff');
+        expect(getColor(context, 60, 60)).eql('#00ffff');
         done();
       }, DELAY);
     });
@@ -316,7 +318,7 @@ describe('test canvas draw', () => {
       group1.setMatrix(matrix);
       setTimeout(() => {
         expect(getColor(context, 60, 60)).eql('#000000');
-        expect(getColor(context, 80, 60)).eql('#000fff');
+        expect(getColor(context, 80, 60)).eql('#00ffff');
         done();
       }, DELAY);
     });

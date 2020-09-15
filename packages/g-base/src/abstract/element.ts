@@ -7,8 +7,9 @@ import { multiplyMatrix, multiplyVec2, invert } from '../util/matrix';
 import Base from './base';
 import GraphEvent from '../event/graph-event';
 
-const MATRIX = 'matrix';
+const { transform } = ext;
 
+const MATRIX = 'matrix';
 const CLONE_CFGS = ['zIndex', 'capture', 'visible', 'type'];
 
 // 可以在 toAttrs 中设置，但不属于绘图属性的字段
@@ -209,7 +210,14 @@ abstract class Element extends Base implements IElement {
    * @protected
    */
   afterAttrsChange(targetAttrs) {
-    this.onCanvasChange('attr');
+    if (this.cfg.isClipShape) {
+      const applyTo = this.cfg.applyTo;
+      if (applyTo) {
+        applyTo.onCanvasChange('clip');
+      }
+    } else {
+      this.onCanvasChange('attr');
+    }
   }
 
   show() {
@@ -294,10 +302,10 @@ abstract class Element extends Base implements IElement {
 
   // 获取总的 matrix
   getTotalMatrix() {
-    let totalMatrix = this.get('totalMatrix');
+    let totalMatrix = this.cfg.totalMatrix;
     if (!totalMatrix) {
       const currentMatrix = this.attr('matrix');
-      const parentMatrix = this.get('parentMatrix');
+      const parentMatrix = this.cfg.parentMatrix;
       if (parentMatrix && currentMatrix) {
         totalMatrix = multiplyMatrix(parentMatrix, currentMatrix);
       } else {
@@ -371,6 +379,7 @@ abstract class Element extends Base implements IElement {
         clipShape = new Cons({
           type: clipCfg.type,
           isClipShape: true, // 增加一个标记
+          applyTo: this,
           attrs: clipCfg.attrs,
           canvas, // 设置 canvas
         });
@@ -658,7 +667,7 @@ abstract class Element extends Base implements IElement {
    */
   translate(translateX: number = 0, translateY: number = 0) {
     const matrix = this.getMatrix();
-    const newMatrix = ext.transform(matrix, [['t', translateX, translateY]]);
+    const newMatrix = transform(matrix, [['t', translateX, translateY]]);
     this.setMatrix(newMatrix);
     return this;
   }
@@ -694,7 +703,7 @@ abstract class Element extends Base implements IElement {
    */
   scale(ratioX: number, ratioY?: number) {
     const matrix = this.getMatrix();
-    const newMatrix = ext.transform(matrix, [['s', ratioX, ratioY || ratioX]]);
+    const newMatrix = transform(matrix, [['s', ratioX, ratioY || ratioX]]);
     this.setMatrix(newMatrix);
     return this;
   }
@@ -706,7 +715,7 @@ abstract class Element extends Base implements IElement {
    */
   rotate(radian: number) {
     const matrix = this.getMatrix();
-    const newMatrix = ext.transform(matrix, [['r', radian]]);
+    const newMatrix = transform(matrix, [['r', radian]]);
     this.setMatrix(newMatrix);
     return this;
   }
@@ -719,7 +728,7 @@ abstract class Element extends Base implements IElement {
   rotateAtStart(rotate: number): IElement {
     const { x, y } = this.attr();
     const matrix = this.getMatrix();
-    const newMatrix = ext.transform(matrix, [
+    const newMatrix = transform(matrix, [
       ['t', -x, -y],
       ['r', rotate],
       ['t', x, y],
@@ -735,7 +744,7 @@ abstract class Element extends Base implements IElement {
    */
   rotateAtPoint(x: number, y: number, rotate: number): IElement {
     const matrix = this.getMatrix();
-    const newMatrix = ext.transform(matrix, [
+    const newMatrix = transform(matrix, [
       ['t', -x, -y],
       ['r', rotate],
       ['t', x, y],

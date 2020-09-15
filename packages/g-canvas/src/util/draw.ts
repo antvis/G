@@ -1,5 +1,5 @@
 import { each, isArray } from '@antv/util';
-import { IElement } from '../interfaces';
+import { IElement, IGroup } from '../interfaces';
 import { Region } from '../types';
 import { parseStyle } from './parse';
 import getArcParams from './arc-params';
@@ -41,12 +41,99 @@ export function applyAttrsToContext(context: CanvasRenderingContext2D, element: 
 export function drawChildren(context: CanvasRenderingContext2D, children: IElement[], region?: Region) {
   for (let i = 0; i < children.length; i++) {
     const child = children[i] as IElement;
-    if (child.get('visible')) {
+    if (child.cfg.visible) {
       child.draw(context, region);
     } else {
       child.skipDraw();
     }
   }
+}
+
+// 这个地方的逻辑比较复杂，简单画了一张图：https://www.yuque.com/antv/ou292n/pcgt5g#OW1QE
+export function checkRefresh(canvas, children: IElement[], region: Region) {
+  const refreshElements = canvas.get('refreshElements');
+  // 先遍历需要刷新的元素，将这些元素的父元素也设置 refresh
+  each(refreshElements, (el) => {
+    if (el !== canvas) {
+      let parent = el.cfg.parent;
+      while (parent && parent !== canvas && !parent.cfg.refresh) {
+        parent.cfg.refresh = true;
+        parent = parent.cfg.parent;
+      }
+    }
+  });
+  if (refreshElements[0] === canvas) {
+    setChildrenRefresh(children, region);
+  } else {
+    // 检查所有子元素是否可以刷新
+    checkChildrenRefresh(children, region);
+  }
+}
+// 检查所有的子元素是否应该更新
+export function checkChildrenRefresh(children: IElement[], region: Region) {
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i] as IElement;
+    if (child.cfg.visible) {
+      // 如果当前图形/分组 refresh = true，说明其子节点存在 changed
+      if (child.cfg.refresh) {
+        if (child.isGroup()) {
+          checkChildrenRefresh(child.cfg.children, region);
+        }
+      } else if (child.cfg.hasChanged) {
+        // 如果节点发生了 change，则需要级联设置子元素的 refresh
+        child.cfg.refresh = true;
+        if (child.isGroup()) {
+          setChildrenRefresh(child.cfg.children, region);
+        }
+      } else {
+        // 这个分支说明此次局部刷新，所有的节点和父元素没有发生变化，仅需要检查包围盒（缓存）是否相交即可
+        const refresh = checkElementRefresh(child, region);
+        child.cfg.refresh = refresh;
+        if (refresh && child.isGroup()) {
+          // 如果需要刷新，说明子元素也需要刷新，继续进行判定
+          checkChildrenRefresh(child.cfg.children, region);
+        }
+      }
+    }
+  }
+}
+
+// 由于对改变的图形放入 refreshElements 时做了优化，判定父元素 changed 时不加入
+// 那么有可能会出现 elements 都为空，所以最终 group
+export function clearChanged(elements: IElement[]) {
+  for (let i = 0; i < elements.length; i++) {
+    const el = elements[i];
+    el.cfg.hasChanged = false;
+    // 级联清理
+    if (el.isGroup()) {
+      clearChanged(el.cfg.children);
+    }
+  }
+}
+
+// 当某个父元素发生改变时，调用这个方法级联设置 refresh
+function setChildrenRefresh(children: IElement[], region: Region) {
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i] as IElement;
+    // let refresh = true;
+    // 获取缓存的 bbox，如果这个 bbox 还存在则说明父元素不是矩阵发生了改变
+    // const bbox = child.cfg.canvasBBox;
+    // if (bbox) {
+    //   // 如果这时候
+    //   refresh = intersectRect(bbox, region);
+    // }
+    child.cfg.refresh = true;
+    // 如果需要刷新当前节点，所有的子元素设置 refresh
+    if (child.isGroup()) {
+      setChildrenRefresh(child.get('children'), region);
+    }
+  }
+}
+
+function checkElementRefresh(shape: IElement, region: Region): boolean {
+  const bbox = shape.cfg.cacheCanvasBBox;
+  const isAllow = shape.cfg.isInView && bbox && intersectRect(bbox, region);
+  return isAllow;
 }
 
 // 绘制 path
@@ -155,16 +242,21 @@ export function refreshElement(element, changeType) {
     }
     // 防止反复刷新
     if (!element.get('hasChanged')) {
+      // 但是始终要标记为 hasChanged，便于后面进行局部渲染
+      element.set('hasChanged', true);
+
       // 本来只有局部渲染模式下，才需要记录更新的元素队列
       // if (canvas.get('localRefresh')) {
       //   canvas.refreshElement(element, changeType, canvas);
       // }
       // 但对于 https://github.com/antvis/g/issues/422 的场景，全局渲染的模式下也需要记录更新的元素队列
-      canvas.refreshElement(element, changeType, canvas);
-      if (canvas.get('autoDraw')) {
-        canvas.draw();
+      // 如果当前元素的父元素发生了改变，可以不放入队列，这句话大概能够提升 15% 的初次渲染性能
+      if (!(element.cfg.parent && element.cfg.parent.get('hasChanged'))) {
+        canvas.refreshElement(element, changeType, canvas);
+        if (canvas.get('autoDraw')) {
+          canvas.draw();
+        }
       }
-      element.set('hasChanged', true);
     }
   }
 }

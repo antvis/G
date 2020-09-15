@@ -67,15 +67,15 @@ describe('test element', () => {
     expect(bbox.maxX).equal(100 * 2);
     expect(bbox.maxY).equal(100 * 2);
     expect(shape.getCanvasBBox()).eql(bbox); // 测试缓存
-    expect(shape.get('canvasBox')).not.eqls(undefined);
-    expect(shape.get('canvasBox')).not.eqls(null);
+    expect(shape.get('canvasBBox')).not.eqls(undefined);
+    expect(shape.get('canvasBBox')).not.eqls(null);
   });
 
   it('attr change', () => {
     shape.attr('x', 10);
     shape.attr('y', 10);
     expect(shape.get('bbox')).eqls(null);
-    expect(shape.get('canvasBox')).eqls(null);
+    expect(shape.get('canvasBBox')).eqls(null);
     expect(shape.getBBox()).eqls({
       minX: 10,
       minY: 10,

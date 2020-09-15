@@ -4,8 +4,8 @@ import { IElement } from './interfaces';
 import { getShape } from './util/hit';
 import * as Shape from './shape';
 import Group from './group';
-import { applyAttrsToContext, drawChildren, getMergedRegion, mergeView } from './util/draw';
 import { each, getPixelRatio, requestAnimationFrame, clearAnimationFrame } from './util/util';
+import { applyAttrsToContext, drawChildren, getMergedRegion, mergeView, checkRefresh, clearChanged } from './util/draw';
 
 class Canvas extends AbstractCanvas {
   getDefaultCfg() {
@@ -19,6 +19,7 @@ class Canvas extends AbstractCanvas {
     cfg['refreshElements'] = [];
     // 是否在视图内自动裁剪
     cfg['clipView'] = true;
+    // 是否使用快速拾取的方案，默认为 false，上层可以打开
     cfg['quickHit'] = false;
     return cfg;
   }
@@ -60,8 +61,8 @@ class Canvas extends AbstractCanvas {
     return {
       minX: 0,
       minY: 0,
-      maxX: this.get('width'),
-      maxY: this.get('height'),
+      maxX: this.cfg.width,
+      maxY: this.cfg.height,
     };
   }
 
@@ -95,10 +96,13 @@ class Canvas extends AbstractCanvas {
   }
 
   getShape(x: number, y: number) {
+    let shape;
     if (this.get('quickHit')) {
-      return getShape(this, x, y);
+      shape = getShape(this, x, y);
+    } else {
+      shape = super.getShape(x, y, null);
     }
-    return super.getShape(x, y, null);
+    return shape;
   }
   // 对绘制区域边缘取整，避免浮点数问题
   _getRefreshRegion() {
@@ -115,6 +119,7 @@ class Canvas extends AbstractCanvas {
         region.minY = Math.floor(region.minY);
         region.maxX = Math.ceil(region.maxX);
         region.maxY = Math.ceil(region.maxY);
+        region.maxY += 1; // 在很多环境下字体的高低会不一致，附加一像素，避免残影
         const clipView = this.get('clipView');
         // 自动裁剪不在 view 内的区域
         if (clipView) {
@@ -183,9 +188,18 @@ class Canvas extends AbstractCanvas {
       context.rect(region.minX, region.minY, region.maxX - region.minX, region.maxY - region.minY);
       context.clip();
       applyAttrsToContext(context, this);
+      // 确认更新的元素，这个优化可以提升 10 倍左右的性能，10W 个带有 group 的节点，局部渲染会从 90ms 下降到 5-6 ms
+      checkRefresh(this, children, region);
       // 绘制子元素
       drawChildren(context, children, region);
       context.restore();
+    } else if (refreshElements.length) {
+      // 防止发生改变的 elements 没有 region 的场景，这会发生在多个情况下
+      // 1. 空的 group
+      // 2. 所有 elements 没有在绘图区域
+      // 3. group 下面的 elements 隐藏掉
+      // 如果不进行清理 hasChanged 的状态会不正确
+      clearChanged(refreshElements);
     }
     each(refreshElements, (element) => {
       if (element.get('hasChanged')) {
