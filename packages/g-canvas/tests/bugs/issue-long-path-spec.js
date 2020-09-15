@@ -19,7 +19,7 @@ describe('long path event', () => {
     const group = canvas.addGroup();
     const nodeGroup = group.addGroup();
 
-    const path = nodeGroup.addShape('path', {
+    nodeGroup.addShape('path', {
       attrs: {
         stroke: '#f00',
         lineWidth: 50,
@@ -32,7 +32,7 @@ describe('long path event', () => {
 
 
     let hit = false;
-    canvas.on('path-name:click', e => {
+    canvas.on('path-name:click', () => {
       hit = true;
     });
 
