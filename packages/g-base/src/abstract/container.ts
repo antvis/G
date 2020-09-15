@@ -58,7 +58,7 @@ function removeChild(container: IContainer, element: IElement, destroy: boolean 
 }
 
 function getComparer(compare: Function) {
-  return function(left, right) {
+  return function (left, right) {
     const result = compare(left, right);
     return result === 0 ? left[INDEX] - right[INDEX] : result;
   };

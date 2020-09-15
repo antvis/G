@@ -95,6 +95,7 @@ class ShapeBase extends AbstractShape {
       // 是否相交需要考虑 clip 的包围盒
       const bbox = this.getCanvasBBox();
       if (!intersectRect(region, bbox)) {
+        // 图形的包围盒与重绘区域不相交时，也需要清除标记
         this.set('hasChanged', false);
         // 存在多种情形需要更新 cacheCanvasBBox 和 isInview 的判定
         // 1. 之前图形在视窗内，但是现在不再视窗内

@@ -74,16 +74,17 @@ export function checkChildrenRefresh(children: IElement[], region: Region) {
   for (let i = 0; i < children.length; i++) {
     const child = children[i] as IElement;
     if (child.cfg.visible) {
-      // 如果当前图形/分组 refresh = true，说明其子节点存在 changed
-      if (child.cfg.refresh) {
-        if (child.isGroup()) {
-          checkChildrenRefresh(child.cfg.children, region);
-        }
-      } else if (child.cfg.hasChanged) {
+      // 先判断 hasChanged，因为它的优先级判断应该高于 refresh
+      if (child.cfg.hasChanged) {
         // 如果节点发生了 change，则需要级联设置子元素的 refresh
         child.cfg.refresh = true;
         if (child.isGroup()) {
           setChildrenRefresh(child.cfg.children, region);
+        }
+      } else if (child.cfg.refresh) {
+        // 如果当前图形/分组 refresh = true，说明其子节点存在 changed
+        if (child.isGroup()) {
+          checkChildrenRefresh(child.cfg.children, region);
         }
       } else {
         // 这个分支说明此次局部刷新，所有的节点和父元素没有发生变化，仅需要检查包围盒（缓存）是否相交即可
