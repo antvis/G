@@ -24,7 +24,7 @@
     "coverage-generator": "torch --coverage --compile --source-pattern src/*.js,src/**/*.js --opts tests/mocha.opts",
     "coverage-viewer": "torch-coverage",
     "test": "torch --renderer --compile --opts tests/mocha.opts",
-    "test-live": "torch --compile --interactive tests/unit",
+    "test-live": "torch --compile --interactive tests/bugs/issue-long-path-spec",
     "tsc": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "dist": "webpack --config webpack.config.js --mode production"

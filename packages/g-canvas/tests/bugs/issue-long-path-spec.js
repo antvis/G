@@ -1,7 +1,13 @@
+const expect = require('chai').expect;
 import Canvas from '../../src/canvas';
 
 const dom = document.createElement('div');
 document.body.appendChild(dom);
+
+function simulateMouseEvent(dom, type, cfg) {
+  const event = new MouseEvent(type, cfg);
+  dom.dispatchEvent(event);
+}
 
 describe('long path event', () => {
   it('long path event', () => {
@@ -23,12 +29,25 @@ describe('long path event', () => {
       name: 'path-name'
     });
 
-    canvas.on('path-name:click', () => {
+
+
+    let hit = false;
+    canvas.on('path-name:click', e => {
+      hit = true;
     });
 
-    path.on('click', () => {
+    // 点击
+    const el = canvas.get('el');
+    simulateMouseEvent(el, 'mousedown', {
+      clientX: 156,
+      clientY: 488,
     });
-
+    simulateMouseEvent(el, 'mouseup', {
+      clientX: 156,
+      clientY: 488,
+    });
+    
+    expect(hit).eql(true);
     
   });
 });

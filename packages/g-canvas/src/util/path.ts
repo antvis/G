@@ -27,7 +27,7 @@ function hasArc(path) {
   return hasArc;
 }
 
-function isPointInStroke(segments, lineWidth, x, y, length = undefined) {
+function isPointInStroke(segments, lineWidth, x, y, length) {
   let isHit = false;
   const halfWidth = lineWidth / 2;
   for (let i = 0; i < segments.length; i++) {
