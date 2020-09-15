@@ -27,7 +27,7 @@ function hasArc(path) {
   return hasArc;
 }
 
-function isPointInStroke(segments, lineWidth, x, y) {
+function isPointInStroke(segments, lineWidth, x, y, length) {
   let isHit = false;
   const halfWidth = lineWidth / 2;
   for (let i = 0; i < segments.length; i++) {
@@ -58,16 +58,17 @@ function isPointInStroke(segments, lineWidth, x, y) {
         break;
       case 'C':
         const cDistance = CubicUtil.pointDistance(
-          prePoint[0],
+          prePoint[0], // 上一段结束位置, 即 C 的起始点
           prePoint[1],
-          params[1],
+          params[1], // 'C' 的参数，1、2 为第一个控制点，3、4 为第二个控制点，5、6 为结束点
           params[2],
           params[3],
           params[4],
           params[5],
           params[6],
           x,
-          y
+          y,
+          length
         );
         isHit = cDistance <= lineWidth / 2;
         break;
