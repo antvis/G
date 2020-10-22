@@ -70,9 +70,10 @@ class ImageShape extends ShapeBase {
           callback.call(this);
         }
       };
-      image.src = img;
       // 设置跨域
       image.crossOrigin = 'Anonymous';
+
+      image.src = img;
       // loading 过程中不绘制
       this.set('loading', true);
     } else if (img instanceof Image) {
