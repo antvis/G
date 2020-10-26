@@ -1,3 +1,4 @@
 --require source-map-support/register
 --recursive
 tests/unit
+tests/bugs
