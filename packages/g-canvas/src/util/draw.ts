@@ -106,7 +106,7 @@ export function clearChanged(elements: IElement[]) {
     const el = elements[i];
     el.cfg.hasChanged = false;
     // 级联清理
-    if (el.isGroup()) {
+    if (el.isGroup() && !el.destroyed) {
       clearChanged(el.cfg.children);
     }
   }
