@@ -73,6 +73,10 @@ class Path extends ShapeBase {
   getPoint(ratio: number): Point {
     const el = this.get('el');
     const totalLength = this.getTotalLength();
+    // @see https://github.com/antvis/g/issues/634
+    if (totalLength === 0) {
+      return null;
+    }
     const point = el ? el.getPointAtLength(ratio * totalLength) : null;
     return point
       ? {
