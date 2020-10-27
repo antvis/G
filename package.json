@@ -92,6 +92,6 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.2.2",
     "webpack": "^4.26.1",
-    "webpack-cli": "^3.1.2"
+    "webpack-cli": "^4.1.0"
   }
 }
