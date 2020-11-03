@@ -46,13 +46,20 @@ export function getTextWidth(text: string, font: string) {
   if (isString(text) && text.includes('\n')) {
     const textArr = text.split('\n');
     each(textArr, (subText) => {
-      const measureWidth = context.measureText(subText).width;
+      const letters = `${subText}`.split("");
+      let measureWidth = 0;
+      for (let i = 0; i < letters.length; i++) {
+        measureWidth += Math.ceil(context.measureText(letters[i]).width);
+      }
       if (width < measureWidth) {
         width = measureWidth;
       }
     });
   } else {
-    width = context.measureText(text).width;
+    const letters = `${text}`.split("");
+    for (let i = 0; i < letters.length; i++) {
+      width += Math.ceil(context.measureText(letters[i]).width);
+    }
   }
   context.restore();
   return width;

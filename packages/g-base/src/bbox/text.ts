@@ -10,7 +10,7 @@ export default function(shape: IShape): SimpleBBox {
     // 如果未组装 font
     font = assembleFont(attrs);
   }
-  const width = getTextWidth(text, font);
+  const width = getTextWidth(text, font) * 1.07;
   let bbox;
   if (!width) {
     // 如果width不存在，四点共其实点

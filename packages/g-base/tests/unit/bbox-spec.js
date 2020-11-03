@@ -160,7 +160,7 @@ describe('test bbox', () => {
     });
 
     let bbox = shape.getBBox();
-    const width = getTextWidth(shape.attr('text'), '12px sans-serif');
+    const width = getTextWidth(shape.attr('text'), '12px sans-serif') * 1.07;
     expect(bbox).eqls({
       x: 10,
       y: -2,
@@ -182,7 +182,7 @@ describe('test bbox', () => {
       attrs: { x: 10, y: 10, text: 123, fontSize: 12, fontFamily: 'sans-serif' },
     });
     const bbox = shape.getBBox();
-    const width = getTextWidth(shape.attr('text'), '12px sans-serif');
+    const width = getTextWidth(shape.attr('text'), '12px sans-serif') * 1.07;
     expect(bbox).eqls({
       x: 10,
       y: -2,
