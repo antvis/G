@@ -5,7 +5,7 @@
 
 import * as PathUtil from './util/path';
 
-export { version } from '../package.json';
+export const version = '0.5.1';
 export * from './types';
 export * from './interfaces';
 export { default as Event } from './event/graph-event';

@@ -1,6 +1,6 @@
 import * as Shape from './shape';
 
-export { version } from '../package.json';
+export const version = '0.5.3';
 export * from './types';
 export * from './interfaces';
 export { Event } from '@antv/g-base';
