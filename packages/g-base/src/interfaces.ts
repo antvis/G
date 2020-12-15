@@ -514,14 +514,6 @@ export interface IContainer extends IElement {
   findAllByName(name: string): IElement[];
 }
 
-export interface IGroup extends IContainer {
-  /**
-   * 是否是实体分组，即对应实际的渲染元素
-   * @return {boolean} 是否是实体分组
-   */
-  isEntityGroup(): boolean;
-}
-
 export interface IGroup extends IElement, IContainer {
   /**
    * 是否是实体分组，即对应实际的渲染元素

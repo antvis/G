@@ -19,6 +19,7 @@ function getRefXY(element: IElement, x: number, y: number) {
   }
   return [x, y];
 }
+
 // 拾取前的检测，只有通过检测才能继续拾取
 function preTest(element: IElement, x: number, y: number) {
   // @ts-ignore

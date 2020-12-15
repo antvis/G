@@ -1,5 +1,11 @@
 {
-  "extends": ["egg", "prettier", "eslint-config-prettier"],
+  "extends": ["eslint:recommended", "prettier", "eslint-config-prettier"],
+  "parser": "@typescript-eslint/parser",
+  "env": {
+    "browser": true,
+    "node": true,
+    "mocha": true
+  },
   "globals": {
     "$": true,
     "AMap": true,
@@ -20,11 +26,12 @@
     "Clipboard": true,
     "MouseEvent": true
   },
-  "parser": "babel-eslint",
   "parserOptions": {
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaVersion": 6,
+    "impliedStrict": true
   },
-  "plugins": ["html"],
+  "plugins": ["html", "prettier", "@typescript-eslint", "import"],
   "rules": {
     "no-console": [
       "error",
@@ -78,6 +85,12 @@
         "arraysInObjects": false
       }
     ],
-    "arrow-parens": ["error", "always"]
+    "arrow-parens": ["error", "always"],
+    "jsdoc/require-returns-description": 0,
+    "no-self-assign": 0,
+    "no-unused-vars": 0, // @typescript-eslint/no-unused-vars
+    "@typescript-eslint/no-unused-vars": 1,
+    "no-inner-declarations": 0,
+    "no-case-declarations": 0
   }
 }
