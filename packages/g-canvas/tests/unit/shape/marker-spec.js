@@ -86,7 +86,10 @@ describe('marker test', () => {
   it('symbol callback', () => {
     marker.attr({
       symbol(x, y, r) {
-        return [['M', x - r, y], ['L', x + r, y]];
+        return [
+          ['M', x - r, y],
+          ['L', x + r, y],
+        ];
       },
       x: 130,
       fill: null,

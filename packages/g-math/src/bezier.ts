@@ -21,7 +21,7 @@ export function nearestPoint(
   let t: number;
   let d = Infinity;
   const v0: PointTuple = [x, y];
-  
+
   let segNum = 20;
   if (length && length > 200) {
     segNum = length / 10;
