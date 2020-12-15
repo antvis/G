@@ -61,7 +61,7 @@
       }
     ],
     "typedef-whitespace": [
-      true,
+      1,
       {
         "call-signature": "nospace",
         "index-signature": "nospace",
