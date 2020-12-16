@@ -1,10 +1,10 @@
 import { IElement } from '@antv/g-base/lib/interfaces';
 import { isString, each, isArray } from './util';
 
-const regexLG = /^l\s*\(\s*([\d.]+)\s*)\s*(.*)/i;
-const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*)\s*(.*)/i;
+const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
+const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexPR = /^p\s*\(\s*([axyn])\s*\)\s*(.*)/i;
-const regexColorStop = /[\d.]+:(#[^\s]+|[^)]+\))/gi;
+const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/gi;
 
 function addStop(steps, gradient) {
   const arr: string[] = steps.match(regexColorStop);

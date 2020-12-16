@@ -8,7 +8,6 @@ const PATH_COMMAND = new RegExp(
   'ig'
 );
 const PATH_VALUES = new RegExp(`(-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?)[${SPACES}]*,?[${SPACES}]*`, 'ig');
-
 // Parse given path string into an array of arrays of path segments
 const parsePathString = function (pathString: string): PathCommand[] {
   if (!pathString) {

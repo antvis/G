@@ -52,6 +52,7 @@
     "no-undef": 0,
     "@typescript-eslint/no-var-requires": 0,
     "no-case-declarations": 1,
-    "no-prototype-builtins": 1
+    "no-prototype-builtins": 1,
+    "no-useless-escape": 1
   }
 }
