@@ -2,7 +2,7 @@ import { SimpleBBox } from '../types';
 import { IShape } from '../interfaces';
 import { getTextWidth, getTextHeight, assembleFont } from '../util/text';
 
-export default function(shape: IShape): SimpleBBox {
+export default function (shape: IShape): SimpleBBox {
   const attrs = shape.attr();
   const { x, y, text, fontSize, lineHeight } = attrs;
   let font = attrs.font;

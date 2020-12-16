@@ -1,7 +1,12 @@
 const Symbols = {
   // 圆
   circle(x: number, y: number, r: number): any[] {
-    return [['M', x, y], ['m', -r, 0], ['a', r, r, 0, 1, 0, r * 2, 0], ['a', r, r, 0, 1, 0, -r * 2, 0]];
+    return [
+      ['M', x, y],
+      ['m', -r, 0],
+      ['a', r, r, 0, 1, 0, r * 2, 0],
+      ['a', r, r, 0, 1, 0, -r * 2, 0],
+    ];
   },
   // 正方形
   square(x: number, y: number, r: number): any[] {

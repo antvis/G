@@ -2,7 +2,7 @@ import { getBBoxByArray } from '@antv/g-math/lib/util';
 import { SimpleBBox } from '../types';
 import { IShape } from '../interfaces';
 
-export default function(shape: IShape): SimpleBBox {
+export default function (shape: IShape): SimpleBBox {
   const attrs = shape.attr();
   const { points } = attrs;
   const xArr = [];

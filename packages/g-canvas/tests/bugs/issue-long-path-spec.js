@@ -6,7 +6,6 @@ const dom = document.createElement('div');
 document.body.appendChild(dom);
 dom.id = 'long-path';
 
-
 describe('long path event', () => {
   it('long path event', () => {
     const canvas = new Canvas({
@@ -22,12 +21,13 @@ describe('long path event', () => {
         stroke: '#f00',
         lineWidth: 50,
         lineAppendWidth: 50,
-        path: [["M", 120, 200], ["C", 200, -500, 200, -10000, 120, 5420]]
+        path: [
+          ['M', 120, 200],
+          ['C', 200, -500, 200, -10000, 120, 5420],
+        ],
       },
-      name: 'path-name'
+      name: 'path-name',
     });
-
-
 
     let hit = false;
     canvas.on('path-name:click', () => {
@@ -46,8 +46,7 @@ describe('long path event', () => {
       clientX,
       clientY,
     });
-    
+
     expect(hit).eql(true);
-    
   });
 });
