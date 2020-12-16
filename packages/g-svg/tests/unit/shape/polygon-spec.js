@@ -10,7 +10,16 @@ describe('SVG polygon', () => {
     canvas = getCanvas('svg-polygon');
     polygon = new Polygon({
       attrs: {
-        points: [[50, 50], [100, 100], [50, 150], [100, 200], [50, 250], [100, 300], [50, 350], [100, 400]],
+        points: [
+          [50, 50],
+          [100, 100],
+          [50, 150],
+          [100, 200],
+          [50, 250],
+          [100, 300],
+          [50, 350],
+          [100, 400],
+        ],
         stroke: 'red',
         lineWidth: 1,
       },

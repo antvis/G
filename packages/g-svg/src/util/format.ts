@@ -1,7 +1,7 @@
 import { each, isArray, isString } from '@antv/util';
 
 const regexTags = /[MLHVQTCSAZ]([^MLHVQTCSAZ]*)/gi;
-const regexDot = /[^\s\,]+/gi;
+const regexDot = /[^\s,]+/gi;
 
 export function parseRadius(radius) {
   let r1 = 0;

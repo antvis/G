@@ -11,7 +11,12 @@ describe('polygon test', () => {
   const polygon = new Polygon({
     type: 'polygon',
     attrs: {
-      points: [[10, 10], [100, 10], [100, 100], [10, 100]],
+      points: [
+        [10, 10],
+        [100, 10],
+        [100, 100],
+        [10, 100],
+      ],
       fill: 'red',
     },
   });

@@ -4,9 +4,18 @@ import { distance } from '../../src/util';
 
 describe('test polyline', () => {
   // 三角形
-  const points1 = [[50, 0], [100, 100], [0, 100]];
+  const points1 = [
+    [50, 0],
+    [100, 100],
+    [0, 100],
+  ];
   // 矩形
-  const points2 = [[0, 0], [100, 0], [100, 100], [0, 100]];
+  const points2 = [
+    [0, 0],
+    [100, 0],
+    [100, 100],
+    [0, 100],
+  ];
 
   it('box', () => {
     expect(polyline.box(points1)).eqls({ x: 0, y: 0, width: 100, height: 100 });

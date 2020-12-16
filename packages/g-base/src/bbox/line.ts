@@ -2,7 +2,7 @@ import { SimpleBBox } from '../types';
 import { IShape } from '../interfaces';
 import { mergeArrowBBox } from './util';
 
-export default function(shape: IShape): SimpleBBox {
+export default function (shape: IShape): SimpleBBox {
   const attrs = shape.attr();
   const { x1, y1, x2, y2 } = attrs;
   const minX = Math.min(x1, x2);

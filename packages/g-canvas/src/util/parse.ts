@@ -1,8 +1,6 @@
 import { IElement } from '@antv/g-base/lib/interfaces';
 import { isString, each, isArray } from './util';
 
-const regexTags = /[MLHVQTCSAZ]([^MLHVQTCSAZ]*)/gi;
-const regexDot = /[^\s\,]+/gi;
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexPR = /^p\s*\(\s*([axyn])\s*\)\s*(.*)/i;

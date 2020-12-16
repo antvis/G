@@ -1,5 +1,10 @@
 {
-  "extends": ["egg", "prettier", "eslint-config-prettier"],
+  "extends": ["eslint:recommended", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "env": {
+    "browser": true,
+    "node": true
+  },
   "globals": {
     "$": true,
     "AMap": true,
@@ -20,64 +25,34 @@
     "Clipboard": true,
     "MouseEvent": true
   },
-  "parser": "babel-eslint",
   "parserOptions": {
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaVersion": 6,
+    "impliedStrict": true
   },
-  "plugins": ["html"],
+  "plugins": ["html", "prettier", "@typescript-eslint", "import"],
   "rules": {
-    "no-console": [
-      "error",
-      {
-        "allow": ["warn", "error", "dir", "time", "timeEnd"]
-      }
-    ],
-    "no-bitwise": [0],
-    "experimentalDecorators": [0],
-    "linebreak-style": [0],
-    "comma-dangle": [0, "always-multiline"],
-    "array-bracket-spacing": [0],
-    "key-spacing": [
-      2,
-      {
-        "beforeColon": false,
-        "afterColon": true,
-        "mode": "strict"
-      }
-    ],
-    "padding-line-between-statements": [
-      "error",
-      {
-        "blankLine": "always",
-        "prev": "function",
-        "next": "function"
-      }
-    ],
-    "typedef-whitespace": [
-      true,
-      {
-        "call-signature": "nospace",
-        "index-signature": "nospace",
-        "parameter": "nospace",
-        "property-declaration": "nospace",
-        "variable-declaration": "nospace"
-      },
-      {
-        "call-signature": "onespace",
-        "index-signature": "onespace",
-        "parameter": "onespace",
-        "property-declaration": "onespace",
-        "variable-declaration": "onespace"
-      }
-    ],
-    "no-debugger": "error",
-    "object-curly-spacing": [
-      "error",
-      "always",
-      {
-        "arraysInObjects": false
-      }
-    ],
-    "arrow-parens": ["error", "always"]
+    "no-sparse-arrays": 0,
+    "no-self-assign": 0,
+    "no-unused-vars": 0, // @typescript-eslint/no-unused-vars
+    "no-inner-declarations": 0,
+    "prettier/prettier": 2,
+    "@typescript-eslint/no-unused-vars": 1,
+    "@typescript-eslint/no-non-null-assertion": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/no-use-before-define": [2, { "functions": false }],
+    "@typescript-eslint/ban-ts-ignore": 0,
+    "@typescript-eslint/interface-name-prefix": 0,
+    "@typescript-eslint/no-empty-interface": 0,
+    "@typescript-eslint/camelcase": 0,
+    "@typescript-eslint/no-inferrable-types": 0,
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "@typescript-eslint/type-annotation-spacing": 0,
+    "@typescript-eslint/no-empty-function": 1,
+    "no-undef": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "no-case-declarations": 1,
+    "no-prototype-builtins": 1,
+    "no-useless-escape": 1
   }
 }

@@ -3,7 +3,7 @@ import { SimpleBBox } from '../types';
 import { IShape } from '../interfaces';
 import { mergeArrowBBox } from './util';
 
-export default function(shape: IShape): SimpleBBox {
+export default function (shape: IShape): SimpleBBox {
   const attrs = shape.attr();
   const { points } = attrs;
   const xArr = [];

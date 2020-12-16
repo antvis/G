@@ -83,7 +83,7 @@ describe('parse util test', () => {
 
     rect.draw(ctx);
     expect(getColor(ctx, 111, 111)).eqls('#000000');
-    setTimeout(function() {
+    setTimeout(function () {
       ctx.clearRect(110, 110, 100, 100);
       rect.draw(ctx);
       expect(getColor(ctx, 111, 111)).not.eqls('#000000');

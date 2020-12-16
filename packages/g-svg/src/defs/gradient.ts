@@ -8,7 +8,7 @@ import { createSVGElement } from '../util/dom';
 
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;
-const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/gi;
+const regexColorStop = /[\d.]+:(#[^\s]+|[^)]+\))/gi;
 
 function addStop(steps) {
   const arr = steps.match(regexColorStop);

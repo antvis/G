@@ -62,6 +62,7 @@ describe('SVG polyline', () => {
     expect(polyline.attr('lineWidth')).eql(1);
     polyline.attr('lineWidth', 4);
     expect(polyline.attr('lineWidth')).eql(4);
+    // @ts-ignore
     polyline.draw(context);
     const bbox = polyline.getBBox();
     expect(bbox.minX).eql(8);

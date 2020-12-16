@@ -126,7 +126,7 @@ function getExtraFromSegmentWithAngle(segment, lineWidth) {
   return extra;
 }
 
-export default function(shape: IShape): SimpleBBox {
+export default function (shape: IShape): SimpleBBox {
   const attrs = shape.attr();
   const { path, stroke } = attrs;
   const lineWidth = stroke ? attrs.lineWidth : 0; // 只有有 stroke 时，lineWidth 才生效

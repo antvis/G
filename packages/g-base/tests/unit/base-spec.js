@@ -97,7 +97,7 @@ describe('base test', () => {
 
   it('off', () => {
     const base = new Base({});
-    const callback = function() {};
+    const callback = function () {};
     base.on('click', callback);
     base.on('click', () => {});
 
