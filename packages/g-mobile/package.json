@@ -8,6 +8,7 @@
   "unpkg": "dist/g.min.js",
   "types": "lib/index.d.ts",
   "files": [
+    "src",
     "package.json",
     "esm",
     "lib",
