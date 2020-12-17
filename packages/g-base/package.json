@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-base",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "A common util collection for antv projects",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -53,7 +53,7 @@
   "homepage": "https://github.com/antvis/util#readme",
   "dependencies": {
     "@antv/event-emitter": "^0.1.1",
-    "@antv/g-math": "^0.1.5",
+    "@antv/g-math": "^0.1.6",
     "@antv/matrix-util": "^3.1.0-beta.1",
     "@antv/path-util": "~2.0.5",
     "@antv/util": "~2.0.0",
