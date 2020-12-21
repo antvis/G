@@ -3,7 +3,6 @@
  * @author dxq613@gmail.com
  */
 
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 import * as PathUtil from './util/path';
 
 export * from './types';
