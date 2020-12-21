@@ -1,8 +1,8 @@
-import { IElement as IBaseElement, IGroup as IBaseGroup, IShape as IBaseShape } from '@antv/g-base/lib/interfaces';
+import { IElement as IBaseElement, IGroup as IBaseGroup, IShape as IBaseShape } from '@antv/g-base';
 import Defs from './defs';
 
 // 导出 g-base 中的 interfaces
-export * from '@antv/g-base/lib/interfaces';
+export * from '@antv/g-base';
 
 export interface IElement extends IBaseElement {
   /**

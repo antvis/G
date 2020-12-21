@@ -1,4 +1,4 @@
-import LineUtil from '@antv/g-math/lib/line';
+import { Line as LineUtil } from '@antv/g-math';
 
 export default function inLine(x1, y1, x2, y2, lineWidth, x, y) {
   const minX = Math.min(x1, x2);

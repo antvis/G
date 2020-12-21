@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-canvas",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "A canvas library which providing 2d",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -61,7 +61,7 @@
     "@antv/matrix-util": "^3.1.0-beta.1",
     "@antv/path-util": "~2.0.5",
     "@antv/util": "~2.0.0",
-    "gl-matrix": "^3.0.0"
-  },
-  "__npminstall_done": false
+    "gl-matrix": "^3.0.0",
+    "tslib": "^2.0.3"
+  }
 }

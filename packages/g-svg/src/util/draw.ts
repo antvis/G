@@ -1,4 +1,4 @@
-import { ChangeType } from '@antv/g-base/lib/types';
+import { ChangeType } from '@antv/g-base';
 import { IElement } from '../interfaces';
 import { setTransform, setClip } from './svg';
 import { sortDom, moveTo } from './dom';

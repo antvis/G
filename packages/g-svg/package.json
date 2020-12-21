@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-svg",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "A canvas library which providing 2d",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -58,7 +58,7 @@
     "@antv/g-base": "^0.5.3",
     "@antv/g-math": "^0.1.6",
     "@antv/util": "~2.0.0",
-    "detect-browser": "^5.0.0"
-  },
-  "__npminstall_done": false
+    "detect-browser": "^5.0.0",
+    "tslib": "^2.0.3"
+  }
 }

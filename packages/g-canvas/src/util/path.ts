@@ -3,13 +3,13 @@
  * @author dxq613@gmail.com
  */
 import { PathUtil } from '@antv/g-base';
-import QuadUtil from '@antv/g-math/lib/quadratic';
-import CubicUtil from '@antv/g-math/lib/cubic';
+import { Quad as QuadUtil } from '@antv/g-math';
+import { Cubic as CubicUtil } from '@antv/g-math';
+import { ext } from '@antv/matrix-util';
+import * as vec3 from 'gl-matrix/vec3';
 import { inBox } from './util';
 import inLine from './in-stroke/line';
 import inArc from './in-stroke/arc';
-import { ext } from '@antv/matrix-util';
-import * as vec3 from 'gl-matrix/vec3';
 
 const { transform } = ext;
 

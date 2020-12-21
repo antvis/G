@@ -4,9 +4,7 @@
  */
 
 import * as PathUtil from './util/path';
-const pkg = require('../package.json');
 
-export const version = pkg.version;
 export * from './types';
 export * from './interfaces';
 export { default as Event } from './event/graph-event';
@@ -15,3 +13,11 @@ export { default as AbstractCanvas } from './abstract/canvas';
 export { default as AbstractGroup } from './abstract/group';
 export { default as AbstractShape } from './abstract/shape';
 export { PathUtil };
+
+export { getBBoxMethod } from './bbox';
+export { getTextHeight, assembleFont } from './util/text';
+export { isAllowCapture } from './util/util';
+export { multiplyVec2, invert } from './util/matrix';
+export { getOffScreenContext } from './util/offscreen';
+
+export const version = '0.5.4';

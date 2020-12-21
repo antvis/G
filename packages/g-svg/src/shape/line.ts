@@ -2,7 +2,7 @@
  * @fileoverview line
  * @author dengfuping_develop@163.com
  */
-import LineUtil from '@antv/g-math/lib/line';
+import { Line as LineUtil } from '@antv/g-math';
 import { each, isObject } from '@antv/util';
 import { SVG_ATTR_MAP } from '../constant';
 import ShapeBase from './base';

@@ -5,9 +5,6 @@
 
 import ShapeBase from './base';
 
-// 暂时不需要
-// import EllipseUtil from '@antv/g-math/lib/ellipse';
-
 // 根据椭圆公式计算 x*x/rx*rx + y*y/ry*ry;
 function ellipseDistance(squareX, squareY, rx, ry) {
   return squareX / (rx * rx) + squareY / (ry * ry);

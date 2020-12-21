@@ -1,8 +1,6 @@
-import QuadUtil from '@antv/g-math/lib/quadratic';
-import CubicUtil from '@antv/g-math/lib/cubic';
-import EllipseArcUtil from '@antv/g-math/lib/arc';
-import path2Segments from '@antv/path-util/lib/path-2-segments';
-import isNumberEqual from '@antv/util/lib/is-number-equal';
+import { Quad as QuadUtil, Cubic as CubicUtil, Arc as EllipseArcUtil } from '@antv/g-math';
+import { path2Segments } from '@antv/path-util';
+import { isNumberEqual } from '@antv/util';
 import { SimpleBBox } from '../types';
 import { IShape } from '../interfaces';
 import { mergeArrowBBox } from './util';

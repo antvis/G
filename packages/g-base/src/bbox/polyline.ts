@@ -1,4 +1,4 @@
-import { getBBoxByArray } from '@antv/g-math/lib/util';
+import { Util } from '@antv/g-math';
 import { SimpleBBox } from '../types';
 import { IShape } from '../interfaces';
 import { mergeArrowBBox } from './util';
@@ -13,7 +13,7 @@ export default function (shape: IShape): SimpleBBox {
     xArr.push(point[0]);
     yArr.push(point[1]);
   }
-  const { x, y, width, height } = getBBoxByArray(xArr, yArr);
+  const { x, y, width, height } = Util.getBBoxByArray(xArr, yArr);
   let bbox = {
     minX: x,
     minY: y,
