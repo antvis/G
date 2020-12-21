@@ -85,12 +85,13 @@ class Marker extends ShapeBase {
     } else {
       // 内置 symbol 的 path 都是绝对路径，直接绘制即可，不需要对 path 进行特殊处理
       method = Marker.Symbols[symbol];
-      path = method(x, y, r);
-    }
 
-    if (!method) {
-      console.warn(`${symbol} marker is not supported.`);
-      return null;
+      if (!method) {
+        console.warn(`${symbol} marker is not supported.`);
+        return null;
+      }
+
+      path = method(x, y, r);
     }
 
     return path;
