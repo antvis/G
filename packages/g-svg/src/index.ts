@@ -6,4 +6,4 @@ export { default as Canvas } from './canvas';
 export { default as Group } from './group';
 export { Shape };
 
-export const version = '0.5.5';
+export const version = '0.5.6';
