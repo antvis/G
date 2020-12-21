@@ -1,8 +1,8 @@
 import { AbstractShape } from '@antv/g-base';
-import { ChangeType, BBox } from '@antv/g-base/lib/types';
+import { ChangeType, BBox } from '@antv/g-base';
 import { isNil, intersectRect } from '../util/util';
 import { applyAttrsToContext, refreshElement } from '../util/draw';
-import { getBBoxMethod } from '@antv/g-base/lib/bbox/index';
+import { getBBoxMethod } from '@antv/g-base';
 import { Region } from '../types';
 import * as Shape from './index';
 import Group from '../group';

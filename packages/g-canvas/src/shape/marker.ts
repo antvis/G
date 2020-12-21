@@ -4,7 +4,7 @@
  */
 
 import { isNil } from '@antv/util';
-import path2Absolute from '@antv/path-util/lib/path-2-absolute';
+import { path2Absolute } from '@antv/path-util';
 import ShapeBase from './base';
 import { isFunction } from '../util/util';
 import { drawPath } from '../util/draw';

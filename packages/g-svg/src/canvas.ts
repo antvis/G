@@ -1,5 +1,5 @@
 import { AbstractCanvas, IShape } from '@antv/g-base';
-import { ChangeType } from '@antv/g-base/lib/types';
+import { ChangeType } from '@antv/g-base';
 import { IElement } from './interfaces';
 import { SHAPE_TO_TAGS } from './constant';
 import { drawChildren } from './util/draw';

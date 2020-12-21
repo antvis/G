@@ -1,5 +1,5 @@
 import { AbstractGroup } from '@antv/g-base';
-import { ChangeType } from '@antv/g-base/lib/types';
+import { ChangeType } from '@antv/g-base';
 import { each } from '@antv/util';
 import { IElement, IGroup } from './interfaces';
 import * as Shape from './shape';

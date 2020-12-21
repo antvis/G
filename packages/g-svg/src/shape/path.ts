@@ -2,7 +2,7 @@
  * @fileoverview path
  * @author dengfuping_develop@163.com
  */
-import { Point } from '@antv/g-base/lib/types';
+import { Point } from '@antv/g-base';
 import { each, isArray, isObject } from '@antv/util';
 import { SVG_ATTR_MAP } from '../constant';
 import ShapeBase from './base';
