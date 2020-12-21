@@ -1,4 +1,4 @@
-import { getOffScreenContext } from '@antv/g-base/lib/util/offscreen';
+import { getOffScreenContext } from '@antv/g-base';
 
 export default function isPointInPath(shape, x, y) {
   const ctx = getOffScreenContext();

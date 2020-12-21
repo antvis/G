@@ -2,9 +2,9 @@
  * @fileoverview 多边形
  * @author dxq613@gmail.com
  */
-import { Point } from '@antv/g-base/lib/types';
-import LineUtil from '@antv/g-math/lib/line';
-import PolylineUtil from '@antv/g-math/lib/polyline';
+import { Point } from '@antv/g-base';
+import { Line as LineUtil } from '@antv/g-math';
+import { Polyline as PolylineUtil } from '@antv/g-math';
 import { each, isNil } from '@antv/util';
 import ShapeBase from './base';
 import inPolyline from '../util/in-stroke/polyline';

@@ -1,5 +1,5 @@
 import { AbstractCanvas } from '@antv/g-base';
-import { ChangeType } from '@antv/g-base/lib/types';
+import { ChangeType } from '@antv/g-base';
 import { IElement } from './interfaces';
 import { getShape } from './util/hit';
 import * as Shape from './shape';

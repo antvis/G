@@ -2,12 +2,11 @@
  * @fileoverview path
  * @author dxq613@gmail.com
  */
-import { Point } from '@antv/g-base/lib/types';
-import CubicUtil from '@antv/g-math/lib/cubic';
+import { Point } from '@antv/g-base';
+import { Cubic as CubicUtil } from '@antv/g-math';
 import { each, isNil } from '@antv/util';
 import ShapeBase from './base';
-import path2Absolute from '@antv/path-util/lib/path-2-absolute';
-import path2Segment from '@antv/path-util/lib/path-2-segments';
+import { path2Absolute, path2Segments } from '@antv/path-util';
 import { drawPath } from '../util/draw';
 import isPointInPath from '../util/in-path/point-in-path';
 import isInPolygon from '../util/in-path/polygon';
@@ -70,7 +69,7 @@ class Path extends ShapeBase {
   getSegments() {
     let segments = this.get('segements');
     if (!segments) {
-      segments = path2Segment(this.attr('path'));
+      segments = path2Segments(this.attr('path'));
       this.set('segments', segments);
     }
     return segments;

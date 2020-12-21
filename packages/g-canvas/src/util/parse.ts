@@ -1,4 +1,4 @@
-import { IElement } from '@antv/g-base/lib/interfaces';
+import { IElement } from '@antv/g-base';
 import { isString, each, isArray } from './util';
 
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;

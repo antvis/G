@@ -2,7 +2,7 @@
  * @fileoverview 圆
  * @author dxq613@gmail.com
  */
-import LineUtil from '@antv/g-math/lib/line';
+import { Line as LineUtil } from '@antv/g-math';
 import ShapeBase from './base';
 import inLine from '../util/in-stroke/line';
 import * as ArrowUtil from '../util/arrow';

@@ -1,6 +1,4 @@
-import { IContainer, IElement, IGroup, IShape } from '@antv/g-base/lib/interfaces';
-import { isAllowCapture } from '@antv/g-base/lib/util/util';
-import { multiplyVec2, invert } from '@antv/g-base/lib/util/matrix';
+import { IContainer, IElement, IGroup, IShape, isAllowCapture, multiplyVec2, invert } from '@antv/g-base';
 
 function invertFromMatrix(v: number[], matrix: number[]): number[] {
   if (matrix) {
