@@ -140,6 +140,9 @@ function checkElementRefresh(shape: IElement, region: Region): boolean {
 // 绘制 path
 export function drawPath(shape, context, attrs, arcParamsCache) {
   const { path, startArrow, endArrow } = attrs;
+  if (!path) {
+    return;
+  }
   let currentPoint = [0, 0]; // 当前图形
   let startMovePoint = [0, 0]; // 开始 M 的点，可能会有多个
   let distance = {
