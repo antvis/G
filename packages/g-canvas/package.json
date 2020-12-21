@@ -51,7 +51,6 @@
     "@antv/torch": "^1.0.0",
     "less": "^3.9.0",
     "npm-run-all": "^4.1.5",
-    "tslib": "^2.0.3",
     "webpack": "^4.26.1",
     "webpack-cli": "^3.1.2"
   },
@@ -62,7 +61,7 @@
     "@antv/matrix-util": "^3.1.0-beta.1",
     "@antv/path-util": "~2.0.5",
     "@antv/util": "~2.0.0",
-    "gl-matrix": "^3.0.0"
-  },
-  "__npminstall_done": false
+    "gl-matrix": "^3.0.0",
+    "tslib": "^2.0.3"
+  }
 }
