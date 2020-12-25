@@ -681,4 +681,37 @@ describe('animate', () => {
       done();
     }, 600);
   });
+
+  it('canvas animate', (done) => {
+    const gradientColor = 'l (90) 0:RGBA(39, 117, 255, 0.8) 1:rgba(255,255,255, 0)';
+    const shape = new Shape({
+      attrs: {
+        x: 50,
+        y: 50,
+        fill: 'red',
+      },
+    });
+    canvas.add(shape);
+
+    canvas.animate(
+      (ratio) => {
+        shape.attr({
+          x: ratio,
+          y: ratio,
+        });
+      },
+      {
+        duration: 500,
+      }
+    );
+    setTimeout(() => {
+      expect(shape.attr('x')).not.eqls(50);
+      expect(shape.attr('y')).not.eqls(50);
+    }, 200);
+    setTimeout(() => {
+      expect(shape.attr('x')).not.eqls(50);
+      expect(shape.attr('y')).not.eqls(50);
+      done();
+    }, 500);
+  });
 });
