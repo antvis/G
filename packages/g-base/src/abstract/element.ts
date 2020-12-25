@@ -453,7 +453,7 @@ abstract class Element extends Base implements IElement {
    *   delay    动画延迟时间
    */
   animate(...args) {
-    if (!this.get('canvas')) {
+    if (!this.get('timeline') && !this.get('canvas')) {
       return;
     }
     this.set('animating', true);
