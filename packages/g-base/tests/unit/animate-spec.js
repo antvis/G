@@ -712,6 +712,6 @@ describe('animate', () => {
       expect(shape.attr('x')).not.eqls(50);
       expect(shape.attr('y')).not.eqls(50);
       done();
-    }, 500);
+    }, 550);
   });
 });
