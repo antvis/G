@@ -71,7 +71,14 @@ class Rect extends ShapeBase {
       // 改成原生的rect方法
       context.rect(x, y, width, height);
     } else {
-      const [r1, r2, r3, r4] = parseRadius(radius);
+      let [r1, r2, r3, r4] = parseRadius(radius);
+      const ratio = Math.max((r1 + r2) / width, (r2 + r3) / height, (r3 + r4) / width, (r4 + r1) / height);
+      if (ratio > 1) {
+        r1 = r1 / ratio;
+        r2 = r2 / ratio;
+        r3 = r3 / ratio;
+        r4 = r4 / ratio;
+      }
       context.moveTo(x + r1, y);
       context.lineTo(x + width - r2, y);
       r2 !== 0 && context.arc(x + width - r2, y + r2, r2, -Math.PI / 2, 0);
