@@ -67,6 +67,15 @@ export {
   clearAnimationFrame,
 } from '@antv/util';
 
+export function tick(fn: FrameRequestCallback) {
+  if (window) {
+    requestAnimationFrame(fn);
+  } else {
+    // TODO need a timeline to control time
+    setTimeout(fn, 16);
+  }
+}
+
 // 是否元素的父容器
 export function isParent(container, shape) {
   // 所有 shape 都是 canvas 的子元素

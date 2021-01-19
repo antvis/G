@@ -4,7 +4,7 @@ import { IElement } from './interfaces';
 import { getShape } from './util/hit';
 import * as Shape from './shape';
 import Group from './group';
-import { each, getPixelRatio, requestAnimationFrame, clearAnimationFrame } from './util/util';
+import { each, getPixelRatio, tick, clearAnimationFrame } from './util/util';
 import { applyAttrsToContext, drawChildren, getMergedRegion, mergeView, checkRefresh, clearChanged } from './util/draw';
 import EventController from './events';
 
@@ -22,6 +22,8 @@ class Canvas extends AbstractCanvas {
     cfg['clipView'] = true;
     // 是否使用快速拾取的方案，默认为 false，上层可以打开
     cfg['quickHit'] = false;
+    // 是否为小程序，默认为h5
+    cfg['isMini'] = false;
     return cfg;
   }
 
@@ -92,11 +94,21 @@ class Canvas extends AbstractCanvas {
     };
   }
 
+  initDom() {
+    if (this.get('isMini')) {
+      const context = this.get('context');
+      const pixelRatio = this.getPixelRatio();
+      // 设置 canvas 元素的宽度和高度，会重置缩放，因此 context.scale 需要在每次设置宽、高后调用
+      if (pixelRatio > 1) {
+        context.scale(pixelRatio, pixelRatio);
+      }
+      return;
+    }
+    super.initDom();
+  }
+
   // 复写基类的方法生成标签
   createDom(): HTMLElement {
-    if (this.get('context')) {
-      return null;
-    }
     const element = document.createElement('canvas');
     const context = element.getContext('2d');
     // 缓存 context 对象
@@ -121,8 +133,7 @@ class Canvas extends AbstractCanvas {
     super.clear();
     this._clearFrame(); // 需要清理掉延迟绘制的帧
     const context = this.get('context');
-    const element = this.get('el');
-    context.clearRect(0, 0, element.width, element.height);
+    context.clearRect(0, 0, this.get('width'), this.get('height'));
   }
 
   getShape(x: number, y: number) {
@@ -193,9 +204,8 @@ class Canvas extends AbstractCanvas {
   // 绘制所有图形
   _drawAll() {
     const context = this.get('context');
-    const element = this.get('el');
     const children = this.getChildren() as IElement[];
-    context.clearRect(0, 0, element.width, element.height);
+    context.clearRect(0, 0, this.get('width'), this.get('height'));
     applyAttrsToContext(context, this);
     drawChildren(context, children);
     // 对于 https://github.com/antvis/g/issues/422 的场景，全局渲染的模式下也会记录更新的元素队列，因此全局渲染完后也需要置空
@@ -245,7 +255,7 @@ class Canvas extends AbstractCanvas {
   _startDraw() {
     let drawFrame = this.get('drawFrame');
     if (!drawFrame) {
-      drawFrame = requestAnimationFrame(() => {
+      drawFrame = tick(() => {
         if (this.get('localRefresh')) {
           this._drawRegion();
         } else {
