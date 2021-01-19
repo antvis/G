@@ -94,8 +94,7 @@ class Canvas extends AbstractCanvas {
 
   // 复写基类的方法生成标签
   createDom(): HTMLElement {
-    console.log('canvas createDom', this, this.get('context'));
-    if (!this.get('context')) {
+    if (this.get('context')) {
       return null;
     }
     const element = document.createElement('canvas');
