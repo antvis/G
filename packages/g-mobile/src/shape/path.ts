@@ -8,7 +8,6 @@ import { each, isNil } from '@antv/util';
 import ShapeBase from './base';
 import { path2Absolute, path2Segments } from '@antv/path-util';
 import { drawPath } from '../util/draw';
-import isPointInPath from '../util/in-path/point-in-path';
 import isInPolygon from '../util/in-path/polygon';
 import PathUtil from '../util/path';
 import * as ArrowUtil from '../util/arrow';
@@ -98,15 +97,11 @@ class Path extends ShapeBase {
       isHit = PathUtil.isPointInStroke(segments, lineWidth, x, y, length);
     }
     if (!isHit && isFill) {
-      if (hasArc) {
-        // 存在曲线时，暂时使用 canvas 的 api 计算，后续可以进行多边形切割
-        isHit = isPointInPath(this, x, y);
-      } else {
-        const path = this.attr('path');
-        const extractResutl = PathUtil.extractPolygons(path);
-        // 提取出来的多边形包含闭合的和非闭合的，在这里统一按照多边形处理
-        isHit = isInPolygons(extractResutl.polygons, x, y) || isInPolygons(extractResutl.polylines, x, y);
-      }
+      // TODO 处理hasArc的场景
+      const path = this.attr('path');
+      const extractResutl = PathUtil.extractPolygons(path);
+      // 提取出来的多边形包含闭合的和非闭合的，在这里统一按照多边形处理
+      isHit = isInPolygons(extractResutl.polygons, x, y) || isInPolygons(extractResutl.polylines, x, y);
     }
     return isHit;
   }

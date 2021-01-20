@@ -1,4 +1,4 @@
-import { AbstractCanvas } from '@antv/g-base';
+import { AbstractCanvas, CanvasCfg } from '@antv/g-base';
 import { ChangeType } from '@antv/g-base';
 import { IElement } from './interfaces';
 import { getShape } from './util/hit';
@@ -7,23 +7,32 @@ import Group from './group';
 import { each, getPixelRatio, tick, clearAnimationFrame } from './util/util';
 import { applyAttrsToContext, drawChildren, getMergedRegion, mergeView, checkRefresh, clearChanged } from './util/draw';
 import EventController from './events';
+import CanvasProxy from './util/mini-canvas-proxy';
+import miniPatch from './patch';
 
 class Canvas extends AbstractCanvas {
+  constructor(cfg: CanvasCfg) {
+    super(cfg);
+
+    if (this.get('renderer') === 'mini') {
+      this.set('context', new Proxy(this.get('context'), new CanvasProxy()));
+      // 架构调整前，打一些patch
+      miniPatch(this.get('context'));
+    }
+  }
   public getDefaultCfg() {
     const cfg = super.getDefaultCfg();
-    // 设置渲染引擎为 canvas，只读属性
+    // 设置渲染引擎为 canvas(h5)/mini(小程序)，只读属性
     cfg['renderer'] = 'canvas';
     // 是否自动绘制，不需要用户调用 draw 方法
     cfg['autoDraw'] = true;
     // 是否允许局部刷新图表
-    cfg['localRefresh'] = true;
+    cfg['localRefresh'] = false;
     cfg['refreshElements'] = [];
     // 是否在视图内自动裁剪
     cfg['clipView'] = true;
     // 是否使用快速拾取的方案，默认为 false，上层可以打开
     cfg['quickHit'] = false;
-    // 是否为小程序，默认为h5
-    cfg['isMini'] = false;
     return cfg;
   }
 
@@ -64,7 +73,6 @@ class Canvas extends AbstractCanvas {
      * 3. changeSize: 改变画布大小
      */
     if (changeType === 'attr' || changeType === 'sort' || changeType === 'changeSize') {
-      this.set('refreshElements', [this]);
       this.draw();
     }
   }
@@ -95,7 +103,7 @@ class Canvas extends AbstractCanvas {
   }
 
   initDom() {
-    if (this.get('isMini')) {
+    if (this.get('renderer') === 'mini') {
       const context = this.get('context');
       const pixelRatio = this.getPixelRatio();
       // 设置 canvas 元素的宽度和高度，会重置缩放，因此 context.scale 需要在每次设置宽、高后调用
@@ -115,6 +123,7 @@ class Canvas extends AbstractCanvas {
     this.set('context', context);
     return element;
   }
+
   setDOMSize(width: number, height: number) {
     super.setDOMSize(width, height);
     const context = this.get('context');
@@ -131,7 +140,6 @@ class Canvas extends AbstractCanvas {
   // 复写基类方法
   clear() {
     super.clear();
-    this._clearFrame(); // 需要清理掉延迟绘制的帧
     const context = this.get('context');
     context.clearRect(0, 0, this.get('width'), this.get('height'));
   }
@@ -171,99 +179,16 @@ class Canvas extends AbstractCanvas {
     return region;
   }
 
-  /**
-   * 刷新图形元素，这里仅仅是放入队列，下次绘制时进行绘制
-   * @param {IElement} element 图形元素
-   */
-  refreshElement(element: IElement) {
-    const refreshElements = this.get('refreshElements');
-    refreshElements.push(element);
-    // if (this.get('autoDraw')) {
-    //   this._startDraw();
-    // }
-  }
-  // 清理还在进行的绘制
-  _clearFrame() {
-    const drawFrame = this.get('drawFrame');
-    if (drawFrame) {
-      // 如果全部渲染时，存在局部渲染，则抛弃掉局部渲染
-      clearAnimationFrame(drawFrame);
-      this.set('drawFrame', null);
-      this.set('refreshElements', []);
-    }
-  }
-
-  // 手工调用绘制接口
   draw() {
-    const drawFrame = this.get('drawFrame');
-    if (this.get('autoDraw') && drawFrame) {
-      return;
-    }
-    this._startDraw();
-  }
-  // 绘制所有图形
-  _drawAll() {
     const context = this.get('context');
     const children = this.getChildren() as IElement[];
     context.clearRect(0, 0, this.get('width'), this.get('height'));
     applyAttrsToContext(context, this);
     drawChildren(context, children);
-    // 对于 https://github.com/antvis/g/issues/422 的场景，全局渲染的模式下也会记录更新的元素队列，因此全局渲染完后也需要置空
-    this.set('refreshElements', []);
-  }
-  // 绘制局部
-  _drawRegion() {
-    const context = this.get('context');
-    const refreshElements = this.get('refreshElements');
-    const children = this.getChildren() as IElement[];
-    const region = this._getRefreshRegion();
-    // 需要注意可能没有 region 的场景
-    // 一般发生在设置了 localRefresh ,在没有图形发生变化的情况下，用户调用了 draw
-    if (region) {
-      // 清理指定区域
-      context.clearRect(region.minX, region.minY, region.maxX - region.minX, region.maxY - region.minY);
-      // 保存上下文，设置 clip
-      context.save();
-      context.beginPath();
-      context.rect(region.minX, region.minY, region.maxX - region.minX, region.maxY - region.minY);
-      context.clip();
-      applyAttrsToContext(context, this);
-      // 确认更新的元素，这个优化可以提升 10 倍左右的性能，10W 个带有 group 的节点，局部渲染会从 90ms 下降到 5-6 ms
-      checkRefresh(this, children, region);
-      // 绘制子元素
-      drawChildren(context, children, region);
-      context.restore();
-    } else if (refreshElements.length) {
-      // 防止发生改变的 elements 没有 region 的场景，这会发生在多个情况下
-      // 1. 空的 group
-      // 2. 所有 elements 没有在绘图区域
-      // 3. group 下面的 elements 隐藏掉
-      // 如果不进行清理 hasChanged 的状态会不正确
-      clearChanged(refreshElements);
-    }
-    each(refreshElements, (element) => {
-      if (element.get('hasChanged')) {
-        // 在视窗外的 Group 元素会加入到更新队列里，但实际却没有执行 draw() 逻辑，也就没有清除 hasChanged 标记
-        // 即已经重绘完、但 hasChanged 标记没有清除的元素，需要统一清除掉。主要是 Group 存在问题，具体原因待排查
-        element.set('hasChanged', false);
-      }
-    });
-    this.set('refreshElements', []);
-  }
 
-  // 触发绘制
-  _startDraw() {
-    let drawFrame = this.get('drawFrame');
-    if (!drawFrame) {
-      drawFrame = tick(() => {
-        if (this.get('localRefresh')) {
-          this._drawRegion();
-        } else {
-          this._drawAll();
-        }
-        this.set('drawFrame', null);
-      });
-      this.set('drawFrame', drawFrame);
+    // 针对小程序需要手动调用一次draw方法
+    if (this.get('renderer') === 'mini') {
+      context.draw();
     }
   }
 

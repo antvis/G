@@ -8,7 +8,6 @@ import { parseRadius } from '../util/parse';
 import { inBox } from '../util/util';
 import inRect from '../util/in-stroke/rect';
 import inRectWithRadius from '../util/in-stroke/rect-radius';
-import isPointInPath from '../util/in-path/point-in-path';
 
 class Rect extends ShapeBase {
   getDefaultAttrs() {
@@ -52,7 +51,8 @@ class Rect extends ShapeBase {
       // 仅填充时带有圆角的矩形直接通过图形拾取
       // 以后可以改成纯数学的近似拾取，将圆弧切割成多边形
       if (!isHit && isFill) {
-        isHit = isPointInPath(this, x, y);
+        // TODO 简单判断，后续补
+        isHit = inBox(minX, minY, width, height, x, y);
       }
       return isHit;
     }

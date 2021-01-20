@@ -15,7 +15,7 @@ class Polygon extends ShapeBase {
       isHit = inPolyline(points, lineWidth, x, y, true);
     }
     if (!isHit && isFill) {
-      isHit = isInPolygon(points, x, y); // isPointInPath(shape, x, y);
+      isHit = isInPolygon(points, x, y);
     }
     return isHit;
   }
