@@ -105,9 +105,11 @@ class Canvas extends AbstractCanvas {
   initDom() {
     if (this.get('renderer') === 'mini') {
       const context = this.get('context');
+      const fitView = this.get('fitView');
       const pixelRatio = this.getPixelRatio();
       // 设置 canvas 元素的宽度和高度，会重置缩放，因此 context.scale 需要在每次设置宽、高后调用
-      if (pixelRatio > 1) {
+      // 上层框架控制 fitView，画布缩放会冲突
+      if (!fitView && pixelRatio > 1) {
         context.scale(pixelRatio, pixelRatio);
       }
       return;
@@ -115,7 +117,7 @@ class Canvas extends AbstractCanvas {
     super.initDom();
   }
 
-  // 复写基类的方法生成标签
+  // 复写基类的方法生成标签（非 mini renderer 的 super.initDom 调用）
   createDom(): HTMLElement {
     const element = document.createElement('canvas');
     const context = element.getContext('2d');
@@ -128,11 +130,13 @@ class Canvas extends AbstractCanvas {
     super.setDOMSize(width, height);
     const context = this.get('context');
     const el = this.get('el');
+    const fitView = this.get('fitView');
     const pixelRatio = this.getPixelRatio();
     el.width = pixelRatio * width;
     el.height = pixelRatio * height;
     // 设置 canvas 元素的宽度和高度，会重置缩放，因此 context.scale 需要在每次设置宽、高后调用
-    if (pixelRatio > 1) {
+    // 上层框架控制 fitView，画布缩放会冲突
+    if (!fitView && pixelRatio > 1) {
       context.scale(pixelRatio, pixelRatio);
     }
   }
