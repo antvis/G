@@ -109,7 +109,7 @@ class Canvas extends AbstractCanvas {
       const fitView = this.get('fitView');
       const pixelRatio = this.getPixelRatio();
       // 设置 canvas 元素的宽度和高度，会重置缩放，因此 context.scale 需要在每次设置宽、高后调用
-      // 上层框架控制 fitView，画布缩放会冲突
+      // 上层框架控制 fitView，画布缩放会冲突 TODO?
       if (!fitView && pixelRatio > 1) {
         context.scale(pixelRatio, pixelRatio);
       }
@@ -131,13 +131,11 @@ class Canvas extends AbstractCanvas {
     super.setDOMSize(width, height);
     const context = this.get('context');
     const el = this.get('el');
-    const fitView = this.get('fitView');
     const pixelRatio = this.getPixelRatio();
     el.width = pixelRatio * width;
     el.height = pixelRatio * height;
     // 设置 canvas 元素的宽度和高度，会重置缩放，因此 context.scale 需要在每次设置宽、高后调用
-    // 上层框架控制 fitView，画布缩放会冲突
-    if (!fitView && pixelRatio > 1) {
+    if (pixelRatio > 1) {
       context.scale(pixelRatio, pixelRatio);
     }
   }
