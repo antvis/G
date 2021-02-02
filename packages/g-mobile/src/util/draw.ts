@@ -255,12 +255,12 @@ export function refreshElement(element, changeType) {
       // }
       // 但对于 https://github.com/antvis/g/issues/422 的场景，全局渲染的模式下也需要记录更新的元素队列
       // 如果当前元素的父元素发生了改变，可以不放入队列，这句话大概能够提升 15% 的初次渲染性能
-      //if (!(element.cfg.parent && element.cfg.parent.get('hasChanged'))) {
-      //  canvas.refreshElement(element, changeType, canvas);
-      //  if (canvas.get('autoDraw')) {
-      //    canvas.draw();
-      //  }
-      //}
+      if (!(element.cfg.parent && element.cfg.parent.get('hasChanged'))) {
+        canvas.refreshElement(element, changeType, canvas);
+        if (canvas.get('autoDraw')) {
+          canvas.draw();
+        }
+      }
     }
   }
 }

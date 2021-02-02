@@ -282,6 +282,18 @@ class Canvas extends AbstractCanvas {
   }
 
   skipDraw() {}
+
+  /**
+   * 刷新图形元素，这里仅仅是放入队列，下次绘制时进行绘制
+   * @param {IElement} element 图形元素
+   */
+  refreshElement(element: IElement) {
+    const refreshElements = this.get('refreshElements');
+    refreshElements.push(element);
+    // if (this.get('autoDraw')) {
+    //   this._startDraw();
+    // }
+  }
 }
 
 export default Canvas;
