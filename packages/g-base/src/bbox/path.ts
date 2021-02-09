@@ -1,6 +1,6 @@
 import { Quad as QuadUtil, Cubic as CubicUtil, Arc as EllipseArcUtil } from '@antv/g-math';
 import { path2Segments } from '@antv/path-util';
-import { isNumberEqual } from '@antv/util';
+import { isNumberEqual, maxBy, minBy } from '@antv/util';
 import { SimpleBBox } from '../types';
 import { IShape } from '../interfaces';
 import { mergeArrowBBox } from './util';
@@ -50,10 +50,10 @@ function getPathBox(segments, lineWidth) {
   // ref: https://github.com/antvis/g/issues/210
   xArr = xArr.filter((item) => !Number.isNaN(item));
   yArr = yArr.filter((item) => !Number.isNaN(item));
-  let minX = Math.min.apply(null, xArr);
-  let minY = Math.min.apply(null, yArr);
-  let maxX = Math.max.apply(null, xArr);
-  let maxY = Math.max.apply(null, yArr);
+  let minX = minBy(xArr, (d) => d);
+  let minY = minBy(yArr, (d) => d);
+  let maxX = maxBy(xArr, (d) => d);
+  let maxY = maxBy(yArr, (d) => d);
   if (segmentsWithAngle.length === 0) {
     return {
       x: minX,
