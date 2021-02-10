@@ -1,4 +1,4 @@
-import { maxBy, minBy } from '@antv/util';
+import { max, min } from '@antv/util';
 import { BBox } from './types';
 
 /**
@@ -20,10 +20,10 @@ export function isNumberEqual(v1: number, v2: number) {
 }
 
 export function getBBoxByArray(xArr: number[], yArr: number[]): BBox {
-  const minX = minBy(xArr, (d) => d);
-  const minY = minBy(yArr, (d) => d);
-  const maxX = maxBy(xArr, (d) => d);
-  const maxY = maxBy(yArr, (d) => d);
+  const minX = min(xArr);
+  const minY = min(yArr);
+  const maxX = max(xArr);
+  const maxY = max(yArr);
   return {
     x: minX,
     y: minY,
@@ -34,10 +34,10 @@ export function getBBoxByArray(xArr: number[], yArr: number[]): BBox {
 
 export function getBBoxRange(x1: number, y1: number, x2: number, y2: number) {
   return {
-    minX: minBy([x1, x2], (d) => d),
-    maxX: maxBy([x1, x2], (d) => d),
-    minY: minBy([y1, y2], (d) => d),
-    maxY: maxBy([y1, y2], (d) => d),
+    minX: min([x1, x2]),
+    maxX: max([x1, x2]),
+    minY: min([y1, y2]),
+    maxY: max([y1, y2]),
   };
 }
 

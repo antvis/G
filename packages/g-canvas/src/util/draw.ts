@@ -1,4 +1,4 @@
-import { each, isArray, maxBy, minBy } from '@antv/util';
+import { each, isArray, max, min } from '@antv/util';
 import { IElement } from '../interfaces';
 import { Region } from '../types';
 import { parseStyle } from './parse';
@@ -305,10 +305,10 @@ export function getMergedRegion(elements): Region {
     }
   });
   return {
-    minX: minBy(minXArr, (d) => d),
-    minY: minBy(minYArr, (d) => d),
-    maxX: maxBy(maxXArr, (d) => d),
-    maxY: maxBy(maxYArr, (d) => d),
+    minX: min(minXArr),
+    minY: min(minYArr),
+    maxX: max(maxXArr),
+    maxY: max(maxYArr),
   };
 }
 

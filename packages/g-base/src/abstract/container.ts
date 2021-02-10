@@ -1,4 +1,4 @@
-import { maxBy, minBy } from '@antv/util';
+import { max, min } from '@antv/util';
 import { IContainer, IShape, IGroup, IElement, ICanvas } from '../interfaces';
 import { BBox, ElementFilterFn } from '../types';
 import Timeline from '../animate/timeline';
@@ -90,10 +90,10 @@ abstract class Container extends Element implements IContainer {
         xArr.push(box.minX, box.maxX);
         yArr.push(box.minY, box.maxY);
       });
-      minX = minBy(xArr, (d) => d);
-      maxX = maxBy(xArr, (d) => d);
-      minY = minBy(yArr, (d) => d);
-      maxY = maxBy(yArr, (d) => d);
+      minX = min(xArr);
+      maxX = max(xArr);
+      minY = min(yArr);
+      maxY = max(yArr);
     } else {
       minX = 0;
       maxX = 0;
@@ -132,10 +132,10 @@ abstract class Container extends Element implements IContainer {
         xArr.push(box.minX, box.maxX);
         yArr.push(box.minY, box.maxY);
       });
-      minX = minBy(xArr, (d) => d);
-      maxX = maxBy(xArr, (d) => d);
-      minY = minBy(yArr, (d) => d);
-      maxY = maxBy(yArr, (d) => d);
+      minX = min(xArr);
+      maxX = max(xArr);
+      minY = min(yArr);
+      maxY = max(yArr);
     } else {
       minX = 0;
       maxX = 0;
