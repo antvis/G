@@ -82,7 +82,7 @@
     "git-contributor": "~1.0.8",
     "husky": "^4.2.5",
     "lerna": "^3.4.3",
-    "less": "^3.9.0",
+    "less": "^4.1.1",
     "lint-staged": "^10.2.2",
     "prettier": "^2.0.5",
     "source-map-support": "^0.5.9",
