@@ -73,7 +73,7 @@
     "babel-loader": "^8.0.4",
     "benchmark": "^2.1.4",
     "chai": "^4.2.0",
-    "eslint": "^6.1.0",
+    "eslint": "^7.19.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-html": "^6.0.2",
     "eslint-plugin-import": "^2.22.1",
