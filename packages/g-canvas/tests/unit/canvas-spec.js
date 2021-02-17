@@ -129,8 +129,11 @@ describe('canvas test', () => {
   });
 
   it('destroy', () => {
+    const canvasEl = canvas.get('el');
     canvas.destroy();
     expect(canvas.destroyed).eql(true);
+    expect(canvasEl.width).eql(0);
+    expect(canvasEl.height).eql(0);
     expect(dom.childNodes.length).eql(0);
   });
 });
