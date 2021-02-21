@@ -1,10 +1,9 @@
 {
   "packages": [
-    "packages/g-base",
-    "packages/g-canvas",
-    "packages/g-svg",
-    "packages/g-math"
+    "packages/g-ecs"
   ],
+  "npmClient": "yarn",
+  "useWorkspaces": true,
   "version": "independent",
   "command": {
     "bootstrap": {
