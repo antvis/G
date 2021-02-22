@@ -10,6 +10,7 @@ import { World } from './World';
 import { ComponentManager } from './ComponentManager';
 import { System, SystemConstructor } from './System';
 import { SystemManager, ISystemRegistry } from './SystemManager';
+import { Matcher } from './Matcher';
 
 const containerModule = new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind) => {
   decorate(injectable(), EventEmitter);
@@ -74,4 +75,4 @@ const containerModule = new ContainerModule((bind: interfaces.Bind, unbind: inte
   bind<World>(World).toSelf();
 });
 
-export { containerModule };
+export { Matcher, Entity, System, Component, World, containerModule };

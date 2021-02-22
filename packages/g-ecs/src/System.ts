@@ -21,7 +21,7 @@ export interface ISystem {
   /**
    * in a similar way to Unity's `Update()`, run once per frame
    */
-  execute?(entities: Entity[]): Promise<void> | void;
+  execute(entities: Entity[]): Promise<void> | void;
 
   /**
    * run once at the end of your program
@@ -31,7 +31,7 @@ export interface ISystem {
   /**
    * all kind of components this system cares about
    */
-  trigger?<C extends Component>(): Matcher<C>;
+  trigger(): Matcher;
 
   onEntityAdded?(entity: Entity): void;
   onEntityRemoved?(entity: Entity): void;
@@ -59,5 +59,13 @@ export abstract class System implements ISystem {
 
   public play() {
     this.enabled = true;
+  }
+
+  public trigger() {
+    return new Matcher();
+  }
+
+  public execute(entities: Entity[]) {
+    throw new Error();
   }
 }

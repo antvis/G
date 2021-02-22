@@ -4,6 +4,9 @@
     "paths": {
       "@antv/g-ecs/*": [
         "g-ecs/src/*"
+      ],
+      "@antv/g-core/*": [
+        "g-core/src/*"
       ]
     }
   },

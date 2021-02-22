@@ -76,9 +76,6 @@ export class EntityManager extends EventEmitter {
 
     components[tag] = component;
 
-    // this._queryManager.onEntityComponentAdded(entity, Component);
-    // this.world.componentsManager.componentAddedToEntity(Component);
-
     this.emit(COMPONENT_EVENT.Added, entity, component);
 
     return component as C;

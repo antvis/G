@@ -1,6 +1,7 @@
 {
   "packages": [
-    "packages/g-ecs"
+    "packages/g-ecs",
+    "packages/g-core"
   ],
   "npmClient": "yarn",
   "useWorkspaces": true,

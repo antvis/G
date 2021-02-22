@@ -25,5 +25,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "downlevelIteration": true
-  }
+  },
+  "exclude": ["**/*.story.*", "**/__tests__/**/*", "**/*.spec.*", "dist"]
 }

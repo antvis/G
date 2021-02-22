@@ -1,18 +1,32 @@
-/**
- * Root Container
- * @see /dev-docs/IoC 容器、依赖注入与服务说明.md
- */
 import 'reflect-metadata';
-
-// import { EventEmitter } from 'eventemitter3';
 import { Container } from 'inversify';
-import { containerModule } from '@antv/g-ecs';
+import { containerModule, World } from '@antv/g-ecs';
+import { Transform as CTransform } from './components/Transform';
+import { Hierarchy as CHierarchy } from './components/Hierarchy';
+import { Geometry as CGeometry } from './components/Geometry';
+import { Material as CMaterial } from './components/Material';
+import { Mesh as CMesh } from './components/Mesh';
+import { Transform as STransform } from './systems/Transform';
+import { Hierarchy as SHierarchy } from './systems/Hierarchy';
 
 // @see https://github.com/inversify/InversifyJS/blob/master/wiki/container_api.md#defaultscope
 export const container = new Container();
-
-// @see https://github.com/inversify/InversifyJS/blob/master/wiki/inheritance.md#what-can-i-do-when-my-base-class-is-provided-by-a-third-party-module
-// decorate(injectable(), EventEmitter);
-// container.bind(EventEmitter).to(EventEmitter);
-
 container.load(containerModule);
+
+// create a world
+const world = container.get(World);
+
+/**
+ * register components
+ */
+world
+  .registerComponent(CTransform)
+  .registerComponent(CHierarchy)
+  .registerComponent(CGeometry)
+  .registerComponent(CMaterial)
+  .registerComponent(CMesh);
+
+/**
+ * register systems
+ */
+world.registerSystem(STransform).registerSystem(SHierarchy);

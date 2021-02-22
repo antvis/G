@@ -14,12 +14,12 @@ interface ICompoundMatcher<C extends Component> extends IMatcher {
 interface INoneOfMatcher<C extends Component> extends ICompoundMatcher<C> {}
 
 interface IAnyOfMatcher<C extends Component> extends ICompoundMatcher<C> {
-  noneOf<C extends Component>(...clazzes: ComponentConstructor<C>[]): INoneOfMatcher<C>;
+  noneOf(...clazzes: ComponentConstructor<C>[]): INoneOfMatcher<C>;
 }
 
 interface IAllOfMatcher<C extends Component> extends ICompoundMatcher<C> {
-  anyOf<C extends Component>(...clazzes: ComponentConstructor<C>[]): IAnyOfMatcher<C>;
-  noneOf<C extends Component>(...clazzes: ComponentConstructor<C>[]): INoneOfMatcher<C>;
+  anyOf(...clazzes: ComponentConstructor<C>[]): IAnyOfMatcher<C>;
+  noneOf(...clazzes: ComponentConstructor<C>[]): INoneOfMatcher<C>;
 }
 
 /**
@@ -30,26 +30,24 @@ interface IAllOfMatcher<C extends Component> extends ICompoundMatcher<C> {
  * matcher.allOf(Position, Velocity).noneOf(NotMovable)
  * ```
  */
-export class Matcher<C extends Component> implements IAllOfMatcher<C>, IAnyOfMatcher<C>, INoneOfMatcher<C> {
+export class Matcher<C extends Component = Component> implements IAllOfMatcher<C>, IAnyOfMatcher<C>, INoneOfMatcher<C> {
   public allOfComponentCtors: ComponentConstructor<C>[] = [];
   public anyOfComponentCtors: ComponentConstructor<C>[] = [];
   public noneOfComponentCtors: ComponentConstructor<C>[] = [];
 
-  public allOf(...clazzes: ComponentConstructor<C>[]): IAllOfMatcher<C> {
+  public allOf(...clazzes: ComponentConstructor<C>[]): Matcher<C> {
     this.allOfComponentCtors = clazzes;
-    return this as IAllOfMatcher<C>;
+    return this;
   }
 
-  // @ts-ignore
-  public anyOf(...clazzes: ComponentConstructor<C>[]): IAnyOfMatcher<C> {
+  public anyOf(...clazzes: ComponentConstructor<C>[]): Matcher<C> {
     this.anyOfComponentCtors = clazzes;
-    return this as IAnyOfMatcher<C>;
+    return this;
   }
 
-  // @ts-ignore
-  public noneOf(...clazzes: ComponentConstructor<C>[]): INoneOfMatcher<C> {
+  public noneOf(...clazzes: ComponentConstructor<C>[]): Matcher<C> {
     this.noneOfComponentCtors = clazzes;
-    return this as INoneOfMatcher<C>;
+    return this;
   }
 
   public matches(entity: Entity): boolean {

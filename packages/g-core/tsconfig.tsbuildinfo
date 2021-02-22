@@ -1,0 +1,815 @@
+{
+  "program": {
+    "fileInfos": {
+      "../../node_modules/typescript/lib/lib.es5.d.ts": {
+        "version": "70ae6416528e68c2ee7b62892200d2ca631759943d4429f8b779b947ff1e124d",
+        "signature": "70ae6416528e68c2ee7b62892200d2ca631759943d4429f8b779b947ff1e124d",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.d.ts": {
+        "version": "dc47c4fa66b9b9890cf076304de2a9c5201e94b740cffdf09f87296d877d71f6",
+        "signature": "dc47c4fa66b9b9890cf076304de2a9c5201e94b740cffdf09f87296d877d71f6",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/typescript/lib/lib.es2016.d.ts": {
+        "version": "7a387c58583dfca701b6c85e0adaf43fb17d590fb16d5b2dc0a2fbd89f35c467",
+        "signature": "7a387c58583dfca701b6c85e0adaf43fb17d590fb16d5b2dc0a2fbd89f35c467",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/typescript/lib/lib.es2017.d.ts": {
+        "version": "8a12173c586e95f4433e0c6dc446bc88346be73ffe9ca6eec7aa63c8f3dca7f9",
+        "signature": "8a12173c586e95f4433e0c6dc446bc88346be73ffe9ca6eec7aa63c8f3dca7f9",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/typescript/lib/lib.dom.d.ts": {
+        "version": "9affb0a2ddc57df5b8174c0af96c288d697a262e5bc9ca1f544c999dc64a91e6",
+        "signature": "9affb0a2ddc57df5b8174c0af96c288d697a262e5bc9ca1f544c999dc64a91e6",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.core.d.ts": {
+        "version": "63e0cc12d0f77394094bd19e84464f9840af0071e5b9358ced30511efef1d8d2",
+        "signature": "63e0cc12d0f77394094bd19e84464f9840af0071e5b9358ced30511efef1d8d2",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.collection.d.ts": {
+        "version": "43fb1d932e4966a39a41b464a12a81899d9ae5f2c829063f5571b6b87e6d2f9c",
+        "signature": "43fb1d932e4966a39a41b464a12a81899d9ae5f2c829063f5571b6b87e6d2f9c",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.generator.d.ts": {
+        "version": "cdccba9a388c2ee3fd6ad4018c640a471a6c060e96f1232062223063b0a5ac6a",
+        "signature": "cdccba9a388c2ee3fd6ad4018c640a471a6c060e96f1232062223063b0a5ac6a",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.iterable.d.ts": {
+        "version": "42f5e41e5893da663dbf0394268f54f1da4b43dc0ddd2ea4bf471fe5361d6faf",
+        "signature": "42f5e41e5893da663dbf0394268f54f1da4b43dc0ddd2ea4bf471fe5361d6faf",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.promise.d.ts": {
+        "version": "0b7a905675e6cb4211c128f0a3aa47d414b275180a299a9aad5d3ec298abbfc4",
+        "signature": "0b7a905675e6cb4211c128f0a3aa47d414b275180a299a9aad5d3ec298abbfc4",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.proxy.d.ts": {
+        "version": "dfff68b3c34338f6b307a25d4566de15eed7973b0dc5d69f9fde2bcac1c25315",
+        "signature": "dfff68b3c34338f6b307a25d4566de15eed7973b0dc5d69f9fde2bcac1c25315",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.reflect.d.ts": {
+        "version": "cb609802a8698aa28b9c56331d4b53f590ca3c1c3a255350304ae3d06017779d",
+        "signature": "cb609802a8698aa28b9c56331d4b53f590ca3c1c3a255350304ae3d06017779d",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.symbol.d.ts": {
+        "version": "3013574108c36fd3aaca79764002b3717da09725a36a6fc02eac386593110f93",
+        "signature": "3013574108c36fd3aaca79764002b3717da09725a36a6fc02eac386593110f93",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": {
+        "version": "4670208dd7da9d6c774ab1b75c1527a810388c7989c4905de6aaea8561cb9dce",
+        "signature": "4670208dd7da9d6c774ab1b75c1527a810388c7989c4905de6aaea8561cb9dce",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2016.array.include.d.ts": {
+        "version": "3be5a1453daa63e031d266bf342f3943603873d890ab8b9ada95e22389389006",
+        "signature": "3be5a1453daa63e031d266bf342f3943603873d890ab8b9ada95e22389389006",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2017.object.d.ts": {
+        "version": "17bb1fc99591b00515502d264fa55dc8370c45c5298f4a5c2083557dccba5a2a",
+        "signature": "17bb1fc99591b00515502d264fa55dc8370c45c5298f4a5c2083557dccba5a2a",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts": {
+        "version": "d0db416bccdb33975548baf09a42ee8c47eace1aac7907351a000f1e568e7232",
+        "signature": "d0db416bccdb33975548baf09a42ee8c47eace1aac7907351a000f1e568e7232",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2017.string.d.ts": {
+        "version": "6a6b173e739a6a99629a8594bfb294cc7329bfb7b227f12e1f7c11bc163b8577",
+        "signature": "6a6b173e739a6a99629a8594bfb294cc7329bfb7b227f12e1f7c11bc163b8577",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2017.intl.d.ts": {
+        "version": "12a310447c5d23c7d0d5ca2af606e3bd08afda69100166730ab92c62999ebb9d",
+        "signature": "12a310447c5d23c7d0d5ca2af606e3bd08afda69100166730ab92c62999ebb9d",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2017.typedarrays.d.ts": {
+        "version": "b0124885ef82641903d232172577f2ceb5d3e60aed4da1153bab4221e1f6dd4e",
+        "signature": "b0124885ef82641903d232172577f2ceb5d3e60aed4da1153bab4221e1f6dd4e",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/tslib/tslib.d.ts": {
+        "version": "55d7868222288a4054166fecbfbaeee46dd3b1b58e4a118e40e9c8c13a9fbe84",
+        "signature": "55d7868222288a4054166fecbfbaeee46dd3b1b58e4a118e40e9c8c13a9fbe84",
+        "affectsGlobalScope": false
+      },
+      "./src/identifier.ts": {
+        "version": "922f80b7f457e305a9e165ed350637d26f7aecdc4bd06ac6b9e8fbd10ffa035e",
+        "signature": "d5d61e19e0ad471407c84529a2eb8367b0f67dd50b6ae92a8af0aa9dee4e20af",
+        "affectsGlobalScope": false
+      },
+      "./src/index.ts": {
+        "version": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "signature": "3835f8d92ad0699690cf572ad0da8aa3bfa5cc1c66fbd2609c52a02b9da828dc",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/reflect-metadata/index.d.ts": {
+        "version": "8d6d51a5118d000ed3bfe6e1dd1335bebfff3fef23cd2af2f84a24d30f90cc90",
+        "signature": "8d6d51a5118d000ed3bfe6e1dd1335bebfff3fef23cd2af2f84a24d30f90cc90",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/inversify/dts/constants/metadata_keys.d.ts": {
+        "version": "c98b36b82116158009016edf9c62702376e5237509e57756ad7962378b5c8219",
+        "signature": "c98b36b82116158009016edf9c62702376e5237509e57756ad7962378b5c8219",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/interfaces/interfaces.d.ts": {
+        "version": "234ded1b44862f6c114c060f11e4cfd2fbace2a0988b886c4d2273da64721ca3",
+        "signature": "234ded1b44862f6c114c060f11e4cfd2fbace2a0988b886c4d2273da64721ca3",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/container/container.d.ts": {
+        "version": "b8191d72db7d2a1ae44680dbbd945757e9e9b2ddd527c3f4f62937d2372c3690",
+        "signature": "b8191d72db7d2a1ae44680dbbd945757e9e9b2ddd527c3f4f62937d2372c3690",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/constants/literal_types.d.ts": {
+        "version": "223c30250c2d0774405136fe412f0c654acbd1f5ebc80d711d0a4413ced11520",
+        "signature": "223c30250c2d0774405136fe412f0c654acbd1f5ebc80d711d0a4413ced11520",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/container/container_module.d.ts": {
+        "version": "d21addb8e9f07e85fe34b65dd38d156b2d29491585eb3a2d3754c85ff024dc78",
+        "signature": "d21addb8e9f07e85fe34b65dd38d156b2d29491585eb3a2d3754c85ff024dc78",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/injectable.d.ts": {
+        "version": "45f14437278936644e7aa944a9d7b3213cc74173a9d0a6e78994de43caccb6d7",
+        "signature": "45f14437278936644e7aa944a9d7b3213cc74173a9d0a6e78994de43caccb6d7",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/tagged.d.ts": {
+        "version": "43769897ae7ca754acaffec5dfb909d10510fb2be0d0afa5cb4eec91b4c9805a",
+        "signature": "43769897ae7ca754acaffec5dfb909d10510fb2be0d0afa5cb4eec91b4c9805a",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/named.d.ts": {
+        "version": "188fd1724740c445a782b9e953879097edef90434ff76fdc420acfbd58b1bcf6",
+        "signature": "188fd1724740c445a782b9e953879097edef90434ff76fdc420acfbd58b1bcf6",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/inject.d.ts": {
+        "version": "9d5f842e22303676e530378d53068790f55359831100c2ab705b6bb71a24cead",
+        "signature": "9d5f842e22303676e530378d53068790f55359831100c2ab705b6bb71a24cead",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/optional.d.ts": {
+        "version": "f81c99df7c78e3ad3b6eacbaa5d5a2d36bcab1ea029b1998ede9151861502a9d",
+        "signature": "f81c99df7c78e3ad3b6eacbaa5d5a2d36bcab1ea029b1998ede9151861502a9d",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/unmanaged.d.ts": {
+        "version": "9fd895b4e65cc84529969de404b2221a95a955a57544febdc76189689696b040",
+        "signature": "9fd895b4e65cc84529969de404b2221a95a955a57544febdc76189689696b040",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/multi_inject.d.ts": {
+        "version": "c656a8d0be8f60c6818d5c60ec56fbe61de252cffb98b760dc0ba5518e85b86a",
+        "signature": "c656a8d0be8f60c6818d5c60ec56fbe61de252cffb98b760dc0ba5518e85b86a",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/target_name.d.ts": {
+        "version": "1f0a68bc4e44a72d2e3ce81967f6001df5d29428549b310054df0fa1bf588203",
+        "signature": "1f0a68bc4e44a72d2e3ce81967f6001df5d29428549b310054df0fa1bf588203",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/post_construct.d.ts": {
+        "version": "d9df733eeb4fc5ca64d6dfcaa3efc429a9fa7d183ce796df0e5049c1acd1eaa7",
+        "signature": "d9df733eeb4fc5ca64d6dfcaa3efc429a9fa7d183ce796df0e5049c1acd1eaa7",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/planning/metadata_reader.d.ts": {
+        "version": "617d9598bd1dbc6b4e19ebabc5564b3fb9a95589f52eefb4c04396f292f7d1ef",
+        "signature": "617d9598bd1dbc6b4e19ebabc5564b3fb9a95589f52eefb4c04396f292f7d1ef",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/utils/id.d.ts": {
+        "version": "c624c0d0d777a670e2b2d8003ec91519e93048963a3236aeab1ec55a8529c382",
+        "signature": "c624c0d0d777a670e2b2d8003ec91519e93048963a3236aeab1ec55a8529c382",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/decorator_utils.d.ts": {
+        "version": "5436e41fb86218a81a15f6517dc47736924b4a31d1b04a2ca4405556a7bdd303",
+        "signature": "5436e41fb86218a81a15f6517dc47736924b4a31d1b04a2ca4405556a7bdd303",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/syntax/constraint_helpers.d.ts": {
+        "version": "388e00b3c8426cf875a3b764a1d2f4d1669f05e587ad511fb7d61684e3fc5352",
+        "signature": "388e00b3c8426cf875a3b764a1d2f4d1669f05e587ad511fb7d61684e3fc5352",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/utils/serialization.d.ts": {
+        "version": "21a9fdf5ec213b187243a4fee33cce7055a0e25dd2ab6fd5eb53d9063bda1297",
+        "signature": "21a9fdf5ec213b187243a4fee33cce7055a0e25dd2ab6fd5eb53d9063bda1297",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/utils/binding_utils.d.ts": {
+        "version": "8ea54168630a0cbd9127985d4190ad962ad55123d78e855d7e505a7bf042bc2d",
+        "signature": "8ea54168630a0cbd9127985d4190ad962ad55123d78e855d7e505a7bf042bc2d",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/inversify.d.ts": {
+        "version": "f15dd6db666e773db7ae7eba550607eeede04d16819dc7a5abf546f15a4b989a",
+        "signature": "f15dd6db666e773db7ae7eba550607eeede04d16819dc7a5abf546f15a4b989a",
+        "affectsGlobalScope": false
+      },
+      "../g-ecs/lib/entity.d.ts": {
+        "version": "e7dc7e3ed3d9f7d80b729d0ab24d0c05be70b4ebd9b166ea0d233c786f24cbfa",
+        "signature": "e7dc7e3ed3d9f7d80b729d0ab24d0c05be70b4ebd9b166ea0d233c786f24cbfa",
+        "affectsGlobalScope": false
+      },
+      "../g-ecs/lib/matcher.d.ts": {
+        "version": "acd72013df6a1724604538721e1a3e2bfe5c898727a659da5d2f34696528521e",
+        "signature": "acd72013df6a1724604538721e1a3e2bfe5c898727a659da5d2f34696528521e",
+        "affectsGlobalScope": false
+      },
+      "../g-ecs/lib/system.d.ts": {
+        "version": "6163a48dc0de5d23ea3e0e8fcef4d5b32d18812732cadccaf874d39634e7087d",
+        "signature": "6163a48dc0de5d23ea3e0e8fcef4d5b32d18812732cadccaf874d39634e7087d",
+        "affectsGlobalScope": false
+      },
+      "../g-ecs/lib/world.d.ts": {
+        "version": "2cc034a96df33bfc310b8380b81eecd9bccca778675468172d8f097b64b82f8d",
+        "signature": "2cc034a96df33bfc310b8380b81eecd9bccca778675468172d8f097b64b82f8d",
+        "affectsGlobalScope": false
+      },
+      "../g-ecs/lib/index.d.ts": {
+        "version": "15ba0ff8fb4f994f0dea9aefe8102ed9a63b79962d43a4e5066f65f4f5a4d0ca",
+        "signature": "15ba0ff8fb4f994f0dea9aefe8102ed9a63b79962d43a4e5066f65f4f5a4d0ca",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/gl-matrix/index.d.ts": {
+        "version": "3d3bfd3a50c4f61b236ff2dfc27d6c13181c44743b0dea4e482a0426dbfb80c6",
+        "signature": "3d3bfd3a50c4f61b236ff2dfc27d6c13181c44743b0dea4e482a0426dbfb80c6",
+        "affectsGlobalScope": false
+      },
+      "./src/components/transform.ts": {
+        "version": "851b1d970fb4e0f8b3ce63329172653f0b418ed584e78dd848008bba33e882f6",
+        "signature": "b7ea1766bbfd03c857503b0de7107ecb3040c0115ff0f10e743d56d287978a11",
+        "affectsGlobalScope": false
+      },
+      "./src/components/hierarchy.ts": {
+        "version": "cbba9f9f4bbdd5d9bc9d3410505ede839f1bc5b827453cea49feb7f72eec2889",
+        "signature": "a4c68bcfa5f192d0ba8ec9980464f43a16533c9f494d25e7fa7ca9589cc12c31",
+        "affectsGlobalScope": false
+      },
+      "./src/components/geometry.ts": {
+        "version": "0cc80c7d5777eeb0b6b9ef394462167f665856ea6ea2160572f01b98817783fe",
+        "signature": "781204d794a7585668eb9bec51c4c10c511167fd60af6f39f2aafb4ad2ce7d4a",
+        "affectsGlobalScope": false
+      },
+      "./src/components/material.ts": {
+        "version": "cdad5d5fd62e703854382a105bb144f5181d02cfdd9fa8f4f133872a9dbebbe4",
+        "signature": "6c1c9bb423b53216b232a2037abe6e81b61c54704e0728ccd203773acd795457",
+        "affectsGlobalScope": false
+      },
+      "./src/shape/plane.ts": {
+        "version": "6fbf413089550accc76ab909dcf0717677a0953d307c3fcd31056bfd109c361e",
+        "signature": "1bd45b4a4cf387b7131d2e41841e4e2df7fa1b9b21d7f7400a586a2e3062744f",
+        "affectsGlobalScope": false
+      },
+      "./src/shape/aabb.ts": {
+        "version": "0e6d7d83372355fb71e8c23f4b75942196e8577eef20e18fff4c411918d98885",
+        "signature": "a477029f869b455496e2899c704414e7b4a550b12cc7c9b8011c5280ae30bf5a",
+        "affectsGlobalScope": false
+      },
+      "./src/shape/boundingsphere.ts": {
+        "version": "5cc4f84e66ceefca65f01ea61165a00c43bdf028ec28e1115b9f814a4ef00e91",
+        "signature": "0a3d9ae727b8f6ef9428998619fcb61bc84d739fb99b769865bcecbc8bfb4b6a",
+        "affectsGlobalScope": false
+      },
+      "./src/shape/frustum.ts": {
+        "version": "43836620441f96643d08479a5cb3c4d362e40516f4490c37450bd797a37ea36e",
+        "signature": "f22a37c9521d226090f97ffd8e6402c4a737eb756c9b260cd3a9a46e84228a49",
+        "affectsGlobalScope": false
+      },
+      "./src/shape/ray.ts": {
+        "version": "9bd36ea9e251230519521e6506a1f993da1d6e12a10a161a01cfc45a48af1ab3",
+        "signature": "73590bbcc5d836f00efe25c9b44206fbe604691a1dd732178b56da6e976ad06d",
+        "affectsGlobalScope": false
+      },
+      "./src/shape/index.ts": {
+        "version": "acb61e82c7abc6361c4133846c905969f613664c7eb33a9c59686898dbc3a9c5",
+        "signature": "8383bd0b05e152503783736442bcd6bbae40bea50275af8cff8993324709ed89",
+        "affectsGlobalScope": false
+      },
+      "./src/components/mesh.ts": {
+        "version": "b6e8ac4655fd844292c8ef885612152abadfd14e300b50ecc15e4db513bc5fdd",
+        "signature": "9fdfdcf9a071308d5d369b53556e0625e6fd0cf2bd901556dacfd06a7f9d15e5",
+        "affectsGlobalScope": false
+      },
+      "./src/systems/transform.ts": {
+        "version": "dfaa54448fd4bbca9e3024ff016bd0894d8e2763af9850828cfef986cf7cb58b",
+        "signature": "35892bcfd92abcc885b8388679a6375b6c825b57707bed761c32b277b92d22da",
+        "affectsGlobalScope": false
+      },
+      "./src/systems/hierarchy.ts": {
+        "version": "2c090ae9d5621b676b65931a60076e1391d48ebd20acafc34f86a6d94679ed38",
+        "signature": "a43e677f0ef4cf0daaf0b44ea84e72c662908705f7e13f8f05c9e62f877a6cc1",
+        "affectsGlobalScope": false
+      },
+      "./src/inversify.config.ts": {
+        "version": "a5f57aa7d0b86790d650b2e95b24bc8ed0b0ecb94648158fef224bdec2ad573b",
+        "signature": "9fec92c11f5f5fc11fb3bef437aa0f5aeb67e2ef0156f3954afc4573d0496dfc",
+        "affectsGlobalScope": false
+      },
+      "./src/systems/renderer.ts": {
+        "version": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "signature": "3c2ff5138733d0d6a4cd9da1ad2c834c9d3427d51c228f9d572a587169f2aeda",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts": {
+        "version": "e222104af6cb9415238ad358488b74d76eceeff238c1268ec6e85655b05341da",
+        "signature": "e222104af6cb9415238ad358488b74d76eceeff238c1268ec6e85655b05341da",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts": {
+        "version": "69da61a7b5093dac77fa3bec8be95dcf9a74c95a0e9161edb98bb24e30e439d2",
+        "signature": "69da61a7b5093dac77fa3bec8be95dcf9a74c95a0e9161edb98bb24e30e439d2",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/difflines.d.ts": {
+        "version": "eba230221317c985ab1953ccc3edc517f248b37db4fef7875cb2c8d08aff7be7",
+        "signature": "eba230221317c985ab1953ccc3edc517f248b37db4fef7875cb2c8d08aff7be7",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/printdiffs.d.ts": {
+        "version": "b83e796810e475da3564c6515bc0ae9577070596a33d89299b7d99f94ecfd921",
+        "signature": "b83e796810e475da3564c6515bc0ae9577070596a33d89299b7d99f94ecfd921",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/index.d.ts": {
+        "version": "b4439890c168d646357928431100daac5cbdee1d345a34e6bf6eca9f3abe22bc",
+        "signature": "b4439890c168d646357928431100daac5cbdee1d345a34e6bf6eca9f3abe22bc",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/node_modules/pretty-format/build/types.d.ts": {
+        "version": "5d72971a459517c44c1379dab9ed248e87a61ba0a1e0f25c9d67e1e640cd9a09",
+        "signature": "5d72971a459517c44c1379dab9ed248e87a61ba0a1e0f25c9d67e1e640cd9a09",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/node_modules/pretty-format/build/index.d.ts": {
+        "version": "02d734976af36f4273d930bea88b3e62adf6b078cf120c1c63d49aa8d8427c5c",
+        "signature": "02d734976af36f4273d930bea88b3e62adf6b078cf120c1c63d49aa8d8427c5c",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/index.d.ts": {
+        "version": "f624e578325b8c58e55b30c998b1f4c3ec1b61a9fa66373da4250c89b7880d44",
+        "signature": "f624e578325b8c58e55b30c998b1f4c3ec1b61a9fa66373da4250c89b7880d44",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/@types/jest/ts3.2/index.d.ts": {
+        "version": "d3002f620eab4bf6476c9da5c0efb2041d46f7df8b3032a5631bd206abef2c75",
+        "signature": "d3002f620eab4bf6476c9da5c0efb2041d46f7df8b3032a5631bd206abef2c75",
+        "affectsGlobalScope": true
+      }
+    },
+    "options": {
+      "target": 1,
+      "lib": [
+        "lib.dom.d.ts",
+        "lib.es5.d.ts",
+        "lib.es2015.d.ts",
+        "lib.es2016.d.ts",
+        "lib.es2017.d.ts"
+      ],
+      "outDir": "./esm",
+      "module": 99,
+      "jsx": 2,
+      "strict": true,
+      "declaration": true,
+      "declarationMap": true,
+      "allowSyntheticDefaultImports": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "importHelpers": true,
+      "strictPropertyInitialization": false,
+      "moduleResolution": 2,
+      "types": [
+        "jest"
+      ],
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "downlevelIteration": true,
+      "rootDir": "./src",
+      "composite": true,
+      "project": "./tsconfig.json",
+      "configFilePath": "./tsconfig.json"
+    },
+    "referencedMap": {
+      "../../node_modules/@types/jest/index.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/index.d.ts",
+        "../../node_modules/@types/jest/node_modules/pretty-format/build/index.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/difflines.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/index.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/difflines.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/printdiffs.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/printdiffs.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/pretty-format/build/index.d.ts": [
+        "../../node_modules/@types/jest/node_modules/pretty-format/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/ts3.2/index.d.ts": [
+        "../../node_modules/@types/jest/index.d.ts"
+      ],
+      "../../node_modules/inversify/dts/annotation/decorator_utils.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/annotation/inject.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/annotation/multi_inject.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/constants/literal_types.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/container/container.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/container/container_module.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/inversify.d.ts": [
+        "../../node_modules/inversify/dts/annotation/decorator_utils.d.ts",
+        "../../node_modules/inversify/dts/annotation/inject.d.ts",
+        "../../node_modules/inversify/dts/annotation/injectable.d.ts",
+        "../../node_modules/inversify/dts/annotation/multi_inject.d.ts",
+        "../../node_modules/inversify/dts/annotation/named.d.ts",
+        "../../node_modules/inversify/dts/annotation/optional.d.ts",
+        "../../node_modules/inversify/dts/annotation/post_construct.d.ts",
+        "../../node_modules/inversify/dts/annotation/tagged.d.ts",
+        "../../node_modules/inversify/dts/annotation/target_name.d.ts",
+        "../../node_modules/inversify/dts/annotation/unmanaged.d.ts",
+        "../../node_modules/inversify/dts/constants/literal_types.d.ts",
+        "../../node_modules/inversify/dts/constants/metadata_keys.d.ts",
+        "../../node_modules/inversify/dts/container/container.d.ts",
+        "../../node_modules/inversify/dts/container/container_module.d.ts",
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts",
+        "../../node_modules/inversify/dts/planning/metadata_reader.d.ts",
+        "../../node_modules/inversify/dts/syntax/constraint_helpers.d.ts",
+        "../../node_modules/inversify/dts/utils/binding_utils.d.ts",
+        "../../node_modules/inversify/dts/utils/id.d.ts",
+        "../../node_modules/inversify/dts/utils/serialization.d.ts"
+      ],
+      "../../node_modules/inversify/dts/planning/metadata_reader.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/syntax/constraint_helpers.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/utils/binding_utils.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts"
+      ],
+      "../../node_modules/inversify/dts/utils/serialization.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "./src/components/geometry.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "./src/components/hierarchy.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "./src/components/material.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "./src/components/mesh.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/geometry.ts",
+        "./src/components/material.ts",
+        "./src/shape/index.ts"
+      ],
+      "./src/components/transform.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "./src/inversify.config.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../../node_modules/reflect-metadata/index.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/geometry.ts",
+        "./src/components/hierarchy.ts",
+        "./src/components/material.ts",
+        "./src/components/mesh.ts",
+        "./src/components/transform.ts",
+        "./src/systems/hierarchy.ts",
+        "./src/systems/transform.ts"
+      ],
+      "./src/shape/aabb.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "./src/shape/plane.ts"
+      ],
+      "./src/shape/boundingsphere.ts": [
+        "../../node_modules/gl-matrix/index.d.ts"
+      ],
+      "./src/shape/frustum.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "./src/shape/plane.ts"
+      ],
+      "./src/shape/index.ts": [
+        "./src/shape/aabb.ts",
+        "./src/shape/boundingsphere.ts",
+        "./src/shape/frustum.ts",
+        "./src/shape/plane.ts",
+        "./src/shape/ray.ts"
+      ],
+      "./src/shape/plane.ts": [
+        "../../node_modules/gl-matrix/index.d.ts"
+      ],
+      "./src/shape/ray.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "./src/shape/aabb.ts",
+        "./src/shape/boundingsphere.ts",
+        "./src/shape/plane.ts"
+      ],
+      "./src/systems/hierarchy.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/hierarchy.ts",
+        "./src/components/transform.ts"
+      ],
+      "./src/systems/transform.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/transform.ts"
+      ],
+      "../g-ecs/lib/index.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../../node_modules/reflect-metadata/index.d.ts",
+        "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/matcher.d.ts",
+        "../g-ecs/lib/system.d.ts",
+        "../g-ecs/lib/world.d.ts"
+      ],
+      "../g-ecs/lib/matcher.d.ts": [
+        "../g-ecs/lib/entity.d.ts"
+      ],
+      "../g-ecs/lib/system.d.ts": [
+        "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/matcher.d.ts"
+      ],
+      "../g-ecs/lib/world.d.ts": [
+        "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/system.d.ts"
+      ]
+    },
+    "exportedModulesMap": {
+      "../../node_modules/@types/jest/index.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/index.d.ts",
+        "../../node_modules/@types/jest/node_modules/pretty-format/build/index.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/difflines.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/index.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/difflines.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/printdiffs.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/printdiffs.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/pretty-format/build/index.d.ts": [
+        "../../node_modules/@types/jest/node_modules/pretty-format/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/ts3.2/index.d.ts": [
+        "../../node_modules/@types/jest/index.d.ts"
+      ],
+      "../../node_modules/inversify/dts/annotation/decorator_utils.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/annotation/inject.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/annotation/multi_inject.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/constants/literal_types.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/container/container.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/container/container_module.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/inversify.d.ts": [
+        "../../node_modules/inversify/dts/annotation/decorator_utils.d.ts",
+        "../../node_modules/inversify/dts/annotation/inject.d.ts",
+        "../../node_modules/inversify/dts/annotation/injectable.d.ts",
+        "../../node_modules/inversify/dts/annotation/multi_inject.d.ts",
+        "../../node_modules/inversify/dts/annotation/named.d.ts",
+        "../../node_modules/inversify/dts/annotation/optional.d.ts",
+        "../../node_modules/inversify/dts/annotation/post_construct.d.ts",
+        "../../node_modules/inversify/dts/annotation/tagged.d.ts",
+        "../../node_modules/inversify/dts/annotation/target_name.d.ts",
+        "../../node_modules/inversify/dts/annotation/unmanaged.d.ts",
+        "../../node_modules/inversify/dts/constants/literal_types.d.ts",
+        "../../node_modules/inversify/dts/constants/metadata_keys.d.ts",
+        "../../node_modules/inversify/dts/container/container.d.ts",
+        "../../node_modules/inversify/dts/container/container_module.d.ts",
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts",
+        "../../node_modules/inversify/dts/planning/metadata_reader.d.ts",
+        "../../node_modules/inversify/dts/syntax/constraint_helpers.d.ts",
+        "../../node_modules/inversify/dts/utils/binding_utils.d.ts",
+        "../../node_modules/inversify/dts/utils/id.d.ts",
+        "../../node_modules/inversify/dts/utils/serialization.d.ts"
+      ],
+      "../../node_modules/inversify/dts/planning/metadata_reader.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/syntax/constraint_helpers.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/utils/binding_utils.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts"
+      ],
+      "../../node_modules/inversify/dts/utils/serialization.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "./src/components/geometry.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "./src/components/hierarchy.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "./src/components/material.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "./src/components/mesh.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/geometry.ts",
+        "./src/components/material.ts",
+        "./src/shape/index.ts"
+      ],
+      "./src/components/transform.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "./src/inversify.config.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../../node_modules/reflect-metadata/index.d.ts"
+      ],
+      "./src/shape/aabb.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "./src/shape/plane.ts"
+      ],
+      "./src/shape/boundingsphere.ts": [
+        "../../node_modules/gl-matrix/index.d.ts"
+      ],
+      "./src/shape/frustum.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "./src/shape/plane.ts"
+      ],
+      "./src/shape/index.ts": [
+        "./src/shape/aabb.ts",
+        "./src/shape/boundingsphere.ts",
+        "./src/shape/frustum.ts",
+        "./src/shape/plane.ts",
+        "./src/shape/ray.ts"
+      ],
+      "./src/shape/plane.ts": [
+        "../../node_modules/gl-matrix/index.d.ts"
+      ],
+      "./src/shape/ray.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "./src/shape/aabb.ts",
+        "./src/shape/boundingsphere.ts",
+        "./src/shape/plane.ts"
+      ],
+      "./src/systems/hierarchy.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "./src/systems/transform.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-ecs/lib/entity.d.ts": [
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/objectpool.d.ts"
+      ],
+      "../g-ecs/lib/index.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../../node_modules/reflect-metadata/index.d.ts",
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/matcher.d.ts",
+        "../g-ecs/lib/system.d.ts",
+        "../g-ecs/lib/world.d.ts"
+      ],
+      "../g-ecs/lib/matcher.d.ts": [
+        "../g-ecs/lib/entity.d.ts"
+      ],
+      "../g-ecs/lib/system.d.ts": [
+        "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/matcher.d.ts"
+      ],
+      "../g-ecs/lib/world.d.ts": [
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/system.d.ts"
+      ]
+    },
+    "semanticDiagnosticsPerFile": [
+      "../../node_modules/@types/jest/index.d.ts",
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/difflines.d.ts",
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/index.d.ts",
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/printdiffs.d.ts",
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts",
+      "../../node_modules/@types/jest/node_modules/pretty-format/build/index.d.ts",
+      "../../node_modules/@types/jest/node_modules/pretty-format/build/types.d.ts",
+      "../../node_modules/@types/jest/ts3.2/index.d.ts",
+      "../../node_modules/gl-matrix/index.d.ts",
+      "../../node_modules/inversify/dts/annotation/decorator_utils.d.ts",
+      "../../node_modules/inversify/dts/annotation/inject.d.ts",
+      "../../node_modules/inversify/dts/annotation/injectable.d.ts",
+      "../../node_modules/inversify/dts/annotation/multi_inject.d.ts",
+      "../../node_modules/inversify/dts/annotation/named.d.ts",
+      "../../node_modules/inversify/dts/annotation/optional.d.ts",
+      "../../node_modules/inversify/dts/annotation/post_construct.d.ts",
+      "../../node_modules/inversify/dts/annotation/tagged.d.ts",
+      "../../node_modules/inversify/dts/annotation/target_name.d.ts",
+      "../../node_modules/inversify/dts/annotation/unmanaged.d.ts",
+      "../../node_modules/inversify/dts/constants/literal_types.d.ts",
+      "../../node_modules/inversify/dts/constants/metadata_keys.d.ts",
+      "../../node_modules/inversify/dts/container/container.d.ts",
+      "../../node_modules/inversify/dts/container/container_module.d.ts",
+      "../../node_modules/inversify/dts/interfaces/interfaces.d.ts",
+      "../../node_modules/inversify/dts/inversify.d.ts",
+      "../../node_modules/inversify/dts/planning/metadata_reader.d.ts",
+      "../../node_modules/inversify/dts/syntax/constraint_helpers.d.ts",
+      "../../node_modules/inversify/dts/utils/binding_utils.d.ts",
+      "../../node_modules/inversify/dts/utils/id.d.ts",
+      "../../node_modules/inversify/dts/utils/serialization.d.ts",
+      "../../node_modules/reflect-metadata/index.d.ts",
+      "../../node_modules/tslib/tslib.d.ts",
+      "../../node_modules/typescript/lib/lib.dom.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.collection.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.core.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.generator.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.promise.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.reflect.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.symbol.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+      "../../node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+      "../../node_modules/typescript/lib/lib.es2016.d.ts",
+      "../../node_modules/typescript/lib/lib.es2017.d.ts",
+      "../../node_modules/typescript/lib/lib.es2017.intl.d.ts",
+      "../../node_modules/typescript/lib/lib.es2017.object.d.ts",
+      "../../node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts",
+      "../../node_modules/typescript/lib/lib.es2017.string.d.ts",
+      "../../node_modules/typescript/lib/lib.es2017.typedarrays.d.ts",
+      "../../node_modules/typescript/lib/lib.es5.d.ts",
+      "./src/components/geometry.ts",
+      "./src/components/hierarchy.ts",
+      "./src/components/material.ts",
+      "./src/components/mesh.ts",
+      "./src/components/transform.ts",
+      "./src/identifier.ts",
+      "./src/index.ts",
+      "./src/inversify.config.ts",
+      "./src/shape/aabb.ts",
+      "./src/shape/boundingsphere.ts",
+      "./src/shape/frustum.ts",
+      "./src/shape/index.ts",
+      "./src/shape/plane.ts",
+      "./src/shape/ray.ts",
+      "./src/systems/hierarchy.ts",
+      "./src/systems/renderer.ts",
+      "./src/systems/transform.ts",
+      "../g-ecs/lib/entity.d.ts",
+      "../g-ecs/lib/index.d.ts",
+      "../g-ecs/lib/matcher.d.ts",
+      "../g-ecs/lib/system.d.ts",
+      "../g-ecs/lib/world.d.ts"
+    ]
+  },
+  "version": "3.9.7"
+}
