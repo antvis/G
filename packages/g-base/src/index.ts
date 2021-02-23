@@ -14,7 +14,7 @@ export { default as AbstractGroup } from './abstract/group';
 export { default as AbstractShape } from './abstract/shape';
 export { PathUtil };
 
-export { getBBoxMethod } from './bbox';
+export { getBBoxMethod, registerBBox } from './bbox';
 export { getTextHeight, assembleFont } from './util/text';
 export { isAllowCapture } from './util/util';
 export { multiplyVec2, invert } from './util/matrix';
