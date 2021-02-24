@@ -12,6 +12,10 @@ export default class MiniCanvasProxy<T> {
       obj['setLineWidth'](value);
     } else if (prop === 'fontSize') {
       obj['setFontSize'](value);
+    } else if (prop === 'textAlign') {
+      obj['setTextAlign'](value);
+    } else if (prop === 'textBaseline') {
+      obj['setTextBaseline'](value);
     }
     return true;
   }
