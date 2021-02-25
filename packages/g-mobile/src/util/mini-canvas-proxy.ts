@@ -3,19 +3,35 @@
  */
 export default class MiniCanvasProxy<T> {
   set(obj: T, prop: string, value: any): boolean {
-    console.log('设置', prop, obj[prop], value);
-    if (prop === 'strokeStyle') {
-      obj['setStrokeStyle'](value);
-    } else if (prop === 'fillStyle') {
-      obj['setFillStyle'](value);
-    } else if (prop === 'lineWidth') {
-      obj['setLineWidth'](value);
-    } else if (prop === 'fontSize') {
-      obj['setFontSize'](value);
-    } else if (prop === 'textAlign') {
-      obj['setTextAlign'](value);
-    } else if (prop === 'textBaseline') {
-      obj['setTextBaseline'](value);
+    switch (prop) {
+      case 'strokeStyle':
+        obj['setStrokeStyle'](value);
+        break;
+      case 'fillStyle':
+        obj['setFillStyle'](value);
+        break;
+      case 'lineWidth':
+        obj['setLineWidth'](value);
+        break;
+      case 'lineDash':
+        obj['setLineDash'](value);
+        break;
+      case 'globalAlpha':
+        if (value || value === 0) {
+          obj['setGlobalAlpha'](value);
+        }
+        break;
+      case 'fontSize':
+        obj['setFontSize'](value);
+        break;
+      case 'textAlign':
+        obj['setTextAlign'](value);
+        break;
+      case 'textBaseline':
+        obj['setTextBaseline'](value);
+        break;
+      default:
+        break;
     }
     return true;
   }
