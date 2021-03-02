@@ -67,7 +67,7 @@ group.addShape('circle', {
 ```bash
 $ git clone git@github.com:antvis/g.git
 $ cd g
-$ npm install
-$ npm run bootstrap
-$ npm run build
+$ yarn install
+$ yarn watch
+$ yarn start
 ```

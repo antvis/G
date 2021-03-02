@@ -6,7 +6,8 @@
       "es5",
       "es2015",
       "es2016",
-      "es2017"
+      "es2017",
+      "es2019"
     ],
     "outDir": "lib",
     "module": "commonjs",
@@ -24,7 +25,8 @@
     "types": ["jest"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "downlevelIteration": true
+    "resolveJsonModule": true,
+    "downlevelIteration": true,
   },
-  "exclude": ["**/*.story.*", "**/__tests__/**/*", "**/*.spec.*", "dist"]
+  "exclude": ["node_modules", "**/node_modules/*", "**/*.story.*", "**/__tests__/**/*", "**/*.spec.*", "dist"]
 }

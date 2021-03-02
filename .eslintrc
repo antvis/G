@@ -32,6 +32,8 @@
   },
   "plugins": ["html", "prettier", "@typescript-eslint", "import"],
   "rules": {
+    "no-dupe-class-members": 0,
+    "no-redeclare": 0,
     "no-sparse-arrays": 0,
     "no-self-assign": 0,
     "no-unused-vars": 0, // @typescript-eslint/no-unused-vars

@@ -16,10 +16,11 @@
     "README.md"
   ],
   "scripts": {    
-    "build": "npm run clean && run-p build:*",
-    "build:esm": "tsc -p tsconfig.json --target ES5 --module ESNext --outDir esm",
-    "build:cjs": "tsc -p tsconfig.json --target ES5 --module commonjs --outDir lib",
     "clean": "rm -rf esm lib dist",
+    "build": "run-p build:*",
+    "build:cjs": "BABEL_ENV=cjs babel src --root-mode upward --out-dir lib --source-maps --extensions .ts,.tsx --delete-dir-on-start",
+    "build:esm": "BABEL_ENV=esm babel src --root-mode upward --out-dir esm --source-maps --extensions .ts,.tsx --delete-dir-on-start",
+    "watch": "BABEL_ENV=esm babel src --watch --root-mode upward --out-dir esm --source-maps --extensions .ts,.tsx --delete-dir-on-start",
     "coverage": "npm run coverage-generator && npm run coverage-viewer",
     "test": "yarn jest --coverage",
     "tsc": "tsc --noEmit"
@@ -55,7 +56,8 @@
     "eventemitter3": "^4.0.0",
     "gl-matrix": "^3.1.0",
     "inversify": "^5.0.1",
-    "lodash": "^4.17.15",
+    "inversify-inject-decorators": "^3.1.0",
+    "lodash-es": "^4.17.15",
     "reflect-metadata": "^0.1.13"
   }
 }

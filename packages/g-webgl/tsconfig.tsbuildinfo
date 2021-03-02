@@ -1,0 +1,1744 @@
+{
+  "program": {
+    "fileInfos": {
+      "../../node_modules/typescript/lib/lib.es5.d.ts": {
+        "version": "70ae6416528e68c2ee7b62892200d2ca631759943d4429f8b779b947ff1e124d",
+        "signature": "70ae6416528e68c2ee7b62892200d2ca631759943d4429f8b779b947ff1e124d",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.d.ts": {
+        "version": "dc47c4fa66b9b9890cf076304de2a9c5201e94b740cffdf09f87296d877d71f6",
+        "signature": "dc47c4fa66b9b9890cf076304de2a9c5201e94b740cffdf09f87296d877d71f6",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/typescript/lib/lib.es2016.d.ts": {
+        "version": "7a387c58583dfca701b6c85e0adaf43fb17d590fb16d5b2dc0a2fbd89f35c467",
+        "signature": "7a387c58583dfca701b6c85e0adaf43fb17d590fb16d5b2dc0a2fbd89f35c467",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/typescript/lib/lib.es2017.d.ts": {
+        "version": "8a12173c586e95f4433e0c6dc446bc88346be73ffe9ca6eec7aa63c8f3dca7f9",
+        "signature": "8a12173c586e95f4433e0c6dc446bc88346be73ffe9ca6eec7aa63c8f3dca7f9",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/typescript/lib/lib.es2018.d.ts": {
+        "version": "5f4e733ced4e129482ae2186aae29fde948ab7182844c3a5a51dd346182c7b06",
+        "signature": "5f4e733ced4e129482ae2186aae29fde948ab7182844c3a5a51dd346182c7b06",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/typescript/lib/lib.es2019.d.ts": {
+        "version": "e6b724280c694a9f588847f754198fb96c43d805f065c3a5b28bbc9594541c84",
+        "signature": "e6b724280c694a9f588847f754198fb96c43d805f065c3a5b28bbc9594541c84",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/typescript/lib/lib.dom.d.ts": {
+        "version": "9affb0a2ddc57df5b8174c0af96c288d697a262e5bc9ca1f544c999dc64a91e6",
+        "signature": "9affb0a2ddc57df5b8174c0af96c288d697a262e5bc9ca1f544c999dc64a91e6",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.core.d.ts": {
+        "version": "63e0cc12d0f77394094bd19e84464f9840af0071e5b9358ced30511efef1d8d2",
+        "signature": "63e0cc12d0f77394094bd19e84464f9840af0071e5b9358ced30511efef1d8d2",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.collection.d.ts": {
+        "version": "43fb1d932e4966a39a41b464a12a81899d9ae5f2c829063f5571b6b87e6d2f9c",
+        "signature": "43fb1d932e4966a39a41b464a12a81899d9ae5f2c829063f5571b6b87e6d2f9c",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.generator.d.ts": {
+        "version": "cdccba9a388c2ee3fd6ad4018c640a471a6c060e96f1232062223063b0a5ac6a",
+        "signature": "cdccba9a388c2ee3fd6ad4018c640a471a6c060e96f1232062223063b0a5ac6a",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.iterable.d.ts": {
+        "version": "42f5e41e5893da663dbf0394268f54f1da4b43dc0ddd2ea4bf471fe5361d6faf",
+        "signature": "42f5e41e5893da663dbf0394268f54f1da4b43dc0ddd2ea4bf471fe5361d6faf",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.promise.d.ts": {
+        "version": "0b7a905675e6cb4211c128f0a3aa47d414b275180a299a9aad5d3ec298abbfc4",
+        "signature": "0b7a905675e6cb4211c128f0a3aa47d414b275180a299a9aad5d3ec298abbfc4",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.proxy.d.ts": {
+        "version": "dfff68b3c34338f6b307a25d4566de15eed7973b0dc5d69f9fde2bcac1c25315",
+        "signature": "dfff68b3c34338f6b307a25d4566de15eed7973b0dc5d69f9fde2bcac1c25315",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.reflect.d.ts": {
+        "version": "cb609802a8698aa28b9c56331d4b53f590ca3c1c3a255350304ae3d06017779d",
+        "signature": "cb609802a8698aa28b9c56331d4b53f590ca3c1c3a255350304ae3d06017779d",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.symbol.d.ts": {
+        "version": "3013574108c36fd3aaca79764002b3717da09725a36a6fc02eac386593110f93",
+        "signature": "3013574108c36fd3aaca79764002b3717da09725a36a6fc02eac386593110f93",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": {
+        "version": "4670208dd7da9d6c774ab1b75c1527a810388c7989c4905de6aaea8561cb9dce",
+        "signature": "4670208dd7da9d6c774ab1b75c1527a810388c7989c4905de6aaea8561cb9dce",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2016.array.include.d.ts": {
+        "version": "3be5a1453daa63e031d266bf342f3943603873d890ab8b9ada95e22389389006",
+        "signature": "3be5a1453daa63e031d266bf342f3943603873d890ab8b9ada95e22389389006",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2017.object.d.ts": {
+        "version": "17bb1fc99591b00515502d264fa55dc8370c45c5298f4a5c2083557dccba5a2a",
+        "signature": "17bb1fc99591b00515502d264fa55dc8370c45c5298f4a5c2083557dccba5a2a",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts": {
+        "version": "d0db416bccdb33975548baf09a42ee8c47eace1aac7907351a000f1e568e7232",
+        "signature": "d0db416bccdb33975548baf09a42ee8c47eace1aac7907351a000f1e568e7232",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2017.string.d.ts": {
+        "version": "6a6b173e739a6a99629a8594bfb294cc7329bfb7b227f12e1f7c11bc163b8577",
+        "signature": "6a6b173e739a6a99629a8594bfb294cc7329bfb7b227f12e1f7c11bc163b8577",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2017.intl.d.ts": {
+        "version": "12a310447c5d23c7d0d5ca2af606e3bd08afda69100166730ab92c62999ebb9d",
+        "signature": "12a310447c5d23c7d0d5ca2af606e3bd08afda69100166730ab92c62999ebb9d",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2017.typedarrays.d.ts": {
+        "version": "b0124885ef82641903d232172577f2ceb5d3e60aed4da1153bab4221e1f6dd4e",
+        "signature": "b0124885ef82641903d232172577f2ceb5d3e60aed4da1153bab4221e1f6dd4e",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts": {
+        "version": "0eb85d6c590b0d577919a79e0084fa1744c1beba6fd0d4e951432fa1ede5510a",
+        "signature": "0eb85d6c590b0d577919a79e0084fa1744c1beba6fd0d4e951432fa1ede5510a",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2018.asynciterable.d.ts": {
+        "version": "a40c4d82bf13fcded295ac29f354eb7d40249613c15e07b53f2fc75e45e16359",
+        "signature": "a40c4d82bf13fcded295ac29f354eb7d40249613c15e07b53f2fc75e45e16359",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2018.intl.d.ts": {
+        "version": "df9c8a72ca8b0ed62f5470b41208a0587f0f73f0a7db28e5a1272cf92537518e",
+        "signature": "df9c8a72ca8b0ed62f5470b41208a0587f0f73f0a7db28e5a1272cf92537518e",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2018.promise.d.ts": {
+        "version": "bb2d3fb05a1d2ffbca947cc7cbc95d23e1d053d6595391bd325deb265a18d36c",
+        "signature": "bb2d3fb05a1d2ffbca947cc7cbc95d23e1d053d6595391bd325deb265a18d36c",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2018.regexp.d.ts": {
+        "version": "c80df75850fea5caa2afe43b9949338ce4e2de086f91713e9af1a06f973872b8",
+        "signature": "c80df75850fea5caa2afe43b9949338ce4e2de086f91713e9af1a06f973872b8",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2019.array.d.ts": {
+        "version": "9d57b2b5d15838ed094aa9ff1299eecef40b190722eb619bac4616657a05f951",
+        "signature": "9d57b2b5d15838ed094aa9ff1299eecef40b190722eb619bac4616657a05f951",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2019.object.d.ts": {
+        "version": "6c51b5dd26a2c31dbf37f00cfc32b2aa6a92e19c995aefb5b97a3a64f1ac99de",
+        "signature": "6c51b5dd26a2c31dbf37f00cfc32b2aa6a92e19c995aefb5b97a3a64f1ac99de",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2019.string.d.ts": {
+        "version": "93544ca2f26a48716c1b6c5091842cad63129daac422dfa4bc52460465f22bb1",
+        "signature": "93544ca2f26a48716c1b6c5091842cad63129daac422dfa4bc52460465f22bb1",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2019.symbol.d.ts": {
+        "version": "2ad234885a4240522efccd77de6c7d99eecf9b4de0914adb9a35c0c22433f993",
+        "signature": "2ad234885a4240522efccd77de6c7d99eecf9b4de0914adb9a35c0c22433f993",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/tslib/tslib.d.ts": {
+        "version": "55d7868222288a4054166fecbfbaeee46dd3b1b58e4a118e40e9c8c13a9fbe84",
+        "signature": "55d7868222288a4054166fecbfbaeee46dd3b1b58e4a118e40e9c8c13a9fbe84",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/reflect-metadata/index.d.ts": {
+        "version": "8d6d51a5118d000ed3bfe6e1dd1335bebfff3fef23cd2af2f84a24d30f90cc90",
+        "signature": "8d6d51a5118d000ed3bfe6e1dd1335bebfff3fef23cd2af2f84a24d30f90cc90",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/inversify/dts/constants/metadata_keys.d.ts": {
+        "version": "c98b36b82116158009016edf9c62702376e5237509e57756ad7962378b5c8219",
+        "signature": "c98b36b82116158009016edf9c62702376e5237509e57756ad7962378b5c8219",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/interfaces/interfaces.d.ts": {
+        "version": "234ded1b44862f6c114c060f11e4cfd2fbace2a0988b886c4d2273da64721ca3",
+        "signature": "234ded1b44862f6c114c060f11e4cfd2fbace2a0988b886c4d2273da64721ca3",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/container/container.d.ts": {
+        "version": "b8191d72db7d2a1ae44680dbbd945757e9e9b2ddd527c3f4f62937d2372c3690",
+        "signature": "b8191d72db7d2a1ae44680dbbd945757e9e9b2ddd527c3f4f62937d2372c3690",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/constants/literal_types.d.ts": {
+        "version": "223c30250c2d0774405136fe412f0c654acbd1f5ebc80d711d0a4413ced11520",
+        "signature": "223c30250c2d0774405136fe412f0c654acbd1f5ebc80d711d0a4413ced11520",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/container/container_module.d.ts": {
+        "version": "d21addb8e9f07e85fe34b65dd38d156b2d29491585eb3a2d3754c85ff024dc78",
+        "signature": "d21addb8e9f07e85fe34b65dd38d156b2d29491585eb3a2d3754c85ff024dc78",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/injectable.d.ts": {
+        "version": "45f14437278936644e7aa944a9d7b3213cc74173a9d0a6e78994de43caccb6d7",
+        "signature": "45f14437278936644e7aa944a9d7b3213cc74173a9d0a6e78994de43caccb6d7",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/tagged.d.ts": {
+        "version": "43769897ae7ca754acaffec5dfb909d10510fb2be0d0afa5cb4eec91b4c9805a",
+        "signature": "43769897ae7ca754acaffec5dfb909d10510fb2be0d0afa5cb4eec91b4c9805a",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/named.d.ts": {
+        "version": "188fd1724740c445a782b9e953879097edef90434ff76fdc420acfbd58b1bcf6",
+        "signature": "188fd1724740c445a782b9e953879097edef90434ff76fdc420acfbd58b1bcf6",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/inject.d.ts": {
+        "version": "9d5f842e22303676e530378d53068790f55359831100c2ab705b6bb71a24cead",
+        "signature": "9d5f842e22303676e530378d53068790f55359831100c2ab705b6bb71a24cead",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/optional.d.ts": {
+        "version": "f81c99df7c78e3ad3b6eacbaa5d5a2d36bcab1ea029b1998ede9151861502a9d",
+        "signature": "f81c99df7c78e3ad3b6eacbaa5d5a2d36bcab1ea029b1998ede9151861502a9d",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/unmanaged.d.ts": {
+        "version": "9fd895b4e65cc84529969de404b2221a95a955a57544febdc76189689696b040",
+        "signature": "9fd895b4e65cc84529969de404b2221a95a955a57544febdc76189689696b040",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/multi_inject.d.ts": {
+        "version": "c656a8d0be8f60c6818d5c60ec56fbe61de252cffb98b760dc0ba5518e85b86a",
+        "signature": "c656a8d0be8f60c6818d5c60ec56fbe61de252cffb98b760dc0ba5518e85b86a",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/target_name.d.ts": {
+        "version": "1f0a68bc4e44a72d2e3ce81967f6001df5d29428549b310054df0fa1bf588203",
+        "signature": "1f0a68bc4e44a72d2e3ce81967f6001df5d29428549b310054df0fa1bf588203",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/post_construct.d.ts": {
+        "version": "d9df733eeb4fc5ca64d6dfcaa3efc429a9fa7d183ce796df0e5049c1acd1eaa7",
+        "signature": "d9df733eeb4fc5ca64d6dfcaa3efc429a9fa7d183ce796df0e5049c1acd1eaa7",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/planning/metadata_reader.d.ts": {
+        "version": "617d9598bd1dbc6b4e19ebabc5564b3fb9a95589f52eefb4c04396f292f7d1ef",
+        "signature": "617d9598bd1dbc6b4e19ebabc5564b3fb9a95589f52eefb4c04396f292f7d1ef",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/utils/id.d.ts": {
+        "version": "c624c0d0d777a670e2b2d8003ec91519e93048963a3236aeab1ec55a8529c382",
+        "signature": "c624c0d0d777a670e2b2d8003ec91519e93048963a3236aeab1ec55a8529c382",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/annotation/decorator_utils.d.ts": {
+        "version": "5436e41fb86218a81a15f6517dc47736924b4a31d1b04a2ca4405556a7bdd303",
+        "signature": "5436e41fb86218a81a15f6517dc47736924b4a31d1b04a2ca4405556a7bdd303",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/syntax/constraint_helpers.d.ts": {
+        "version": "388e00b3c8426cf875a3b764a1d2f4d1669f05e587ad511fb7d61684e3fc5352",
+        "signature": "388e00b3c8426cf875a3b764a1d2f4d1669f05e587ad511fb7d61684e3fc5352",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/utils/serialization.d.ts": {
+        "version": "21a9fdf5ec213b187243a4fee33cce7055a0e25dd2ab6fd5eb53d9063bda1297",
+        "signature": "21a9fdf5ec213b187243a4fee33cce7055a0e25dd2ab6fd5eb53d9063bda1297",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/utils/binding_utils.d.ts": {
+        "version": "8ea54168630a0cbd9127985d4190ad962ad55123d78e855d7e505a7bf042bc2d",
+        "signature": "8ea54168630a0cbd9127985d4190ad962ad55123d78e855d7e505a7bf042bc2d",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/inversify/dts/inversify.d.ts": {
+        "version": "f15dd6db666e773db7ae7eba550607eeede04d16819dc7a5abf546f15a4b989a",
+        "signature": "f15dd6db666e773db7ae7eba550607eeede04d16819dc7a5abf546f15a4b989a",
+        "affectsGlobalScope": false
+      },
+      "../g-ecs/lib/objectpool.d.ts": {
+        "version": "4466f9f331fab8d1942711beb4607fc1c4a71ae7cc0eb47958f24fa6dca1673f",
+        "signature": "4466f9f331fab8d1942711beb4607fc1c4a71ae7cc0eb47958f24fa6dca1673f",
+        "affectsGlobalScope": false
+      },
+      "../g-ecs/lib/component.d.ts": {
+        "version": "09981969654e189a28732dd415417028fa3474e99c5359e3c46fddde447aa52b",
+        "signature": "09981969654e189a28732dd415417028fa3474e99c5359e3c46fddde447aa52b",
+        "affectsGlobalScope": false
+      },
+      "../g-ecs/lib/entity.d.ts": {
+        "version": "e7dc7e3ed3d9f7d80b729d0ab24d0c05be70b4ebd9b166ea0d233c786f24cbfa",
+        "signature": "e7dc7e3ed3d9f7d80b729d0ab24d0c05be70b4ebd9b166ea0d233c786f24cbfa",
+        "affectsGlobalScope": false
+      },
+      "../g-ecs/lib/matcher.d.ts": {
+        "version": "acd72013df6a1724604538721e1a3e2bfe5c898727a659da5d2f34696528521e",
+        "signature": "acd72013df6a1724604538721e1a3e2bfe5c898727a659da5d2f34696528521e",
+        "affectsGlobalScope": false
+      },
+      "../g-ecs/lib/system.d.ts": {
+        "version": "6163a48dc0de5d23ea3e0e8fcef4d5b32d18812732cadccaf874d39634e7087d",
+        "signature": "6163a48dc0de5d23ea3e0e8fcef4d5b32d18812732cadccaf874d39634e7087d",
+        "affectsGlobalScope": false
+      },
+      "../g-ecs/lib/world.d.ts": {
+        "version": "2cc034a96df33bfc310b8380b81eecd9bccca778675468172d8f097b64b82f8d",
+        "signature": "2cc034a96df33bfc310b8380b81eecd9bccca778675468172d8f097b64b82f8d",
+        "affectsGlobalScope": false
+      },
+      "../g-ecs/lib/index.d.ts": {
+        "version": "15ba0ff8fb4f994f0dea9aefe8102ed9a63b79962d43a4e5066f65f4f5a4d0ca",
+        "signature": "15ba0ff8fb4f994f0dea9aefe8102ed9a63b79962d43a4e5066f65f4f5a4d0ca",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/types.d.ts": {
+        "version": "abe864e7f59709e038283ae4fe68927e3f40fe1be474273e74dd53996beac2f6",
+        "signature": "abe864e7f59709e038283ae4fe68927e3f40fe1be474273e74dd53996beac2f6",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/services/context.d.ts": {
+        "version": "6839a62f63eed58095994e7b006e721a8cc62e6ba89a7c470665115eb69c6e45",
+        "signature": "6839a62f63eed58095994e7b006e721a8cc62e6ba89a7c470665115eb69c6e45",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/contribution-provider.d.ts": {
+        "version": "8dfbe7bfbc469da72fd12474ad9e105a90070a2701aa25297856113a9866c877",
+        "signature": "8dfbe7bfbc469da72fd12474ad9e105a90070a2701aa25297856113a9866c877",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/services/shape.d.ts": {
+        "version": "315d19fa33983de83a05eabb6da48486d885d20de11a214ffc4a3f2cee20abf8",
+        "signature": "315d19fa33983de83a05eabb6da48486d885d20de11a214ffc4a3f2cee20abf8",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/canvas.d.ts": {
+        "version": "8f71855299a24f53fb3e77a4f79a1728ec8fc1184c1733536848d16a942bb184",
+        "signature": "8f71855299a24f53fb3e77a4f79a1728ec8fc1184c1733536848d16a942bb184",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/components/geometry.d.ts": {
+        "version": "781204d794a7585668eb9bec51c4c10c511167fd60af6f39f2aafb4ad2ce7d4a",
+        "signature": "781204d794a7585668eb9bec51c4c10c511167fd60af6f39f2aafb4ad2ce7d4a",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/components/hierarchy.d.ts": {
+        "version": "a4c68bcfa5f192d0ba8ec9980464f43a16533c9f494d25e7fa7ca9589cc12c31",
+        "signature": "a4c68bcfa5f192d0ba8ec9980464f43a16533c9f494d25e7fa7ca9589cc12c31",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/components/material.d.ts": {
+        "version": "6c1c9bb423b53216b232a2037abe6e81b61c54704e0728ccd203773acd795457",
+        "signature": "6c1c9bb423b53216b232a2037abe6e81b61c54704e0728ccd203773acd795457",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/gl-matrix/index.d.ts": {
+        "version": "3d3bfd3a50c4f61b236ff2dfc27d6c13181c44743b0dea4e482a0426dbfb80c6",
+        "signature": "3d3bfd3a50c4f61b236ff2dfc27d6c13181c44743b0dea4e482a0426dbfb80c6",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/shapes/plane.d.ts": {
+        "version": "1bd45b4a4cf387b7131d2e41841e4e2df7fa1b9b21d7f7400a586a2e3062744f",
+        "signature": "1bd45b4a4cf387b7131d2e41841e4e2df7fa1b9b21d7f7400a586a2e3062744f",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/shapes/aabb.d.ts": {
+        "version": "a477029f869b455496e2899c704414e7b4a550b12cc7c9b8011c5280ae30bf5a",
+        "signature": "a477029f869b455496e2899c704414e7b4a550b12cc7c9b8011c5280ae30bf5a",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/shapes/boundingsphere.d.ts": {
+        "version": "0a3d9ae727b8f6ef9428998619fcb61bc84d739fb99b769865bcecbc8bfb4b6a",
+        "signature": "0a3d9ae727b8f6ef9428998619fcb61bc84d739fb99b769865bcecbc8bfb4b6a",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/shapes/frustum.d.ts": {
+        "version": "f22a37c9521d226090f97ffd8e6402c4a737eb756c9b260cd3a9a46e84228a49",
+        "signature": "f22a37c9521d226090f97ffd8e6402c4a737eb756c9b260cd3a9a46e84228a49",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/shapes/ray.d.ts": {
+        "version": "73590bbcc5d836f00efe25c9b44206fbe604691a1dd732178b56da6e976ad06d",
+        "signature": "73590bbcc5d836f00efe25c9b44206fbe604691a1dd732178b56da6e976ad06d",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/shapes/index.d.ts": {
+        "version": "8383bd0b05e152503783736442bcd6bbae40bea50275af8cff8993324709ed89",
+        "signature": "8383bd0b05e152503783736442bcd6bbae40bea50275af8cff8993324709ed89",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/components/renderable.d.ts": {
+        "version": "7be936ab8be1b7fa331b94605863e542caa5e894dadd5ac6ac3d10e78a66d55e",
+        "signature": "7be936ab8be1b7fa331b94605863e542caa5e894dadd5ac6ac3d10e78a66d55e",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/components/transform.d.ts": {
+        "version": "b7ea1766bbfd03c857503b0de7107ecb3040c0115ff0f10e743d56d287978a11",
+        "signature": "b7ea1766bbfd03c857503b0de7107ecb3040c0115ff0f10e743d56d287978a11",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/components/index.d.ts": {
+        "version": "89449602cf8124191fd6fb3c16e388a950e9df2a5e12d46d9bab77f28dfdeeb9",
+        "signature": "89449602cf8124191fd6fb3c16e388a950e9df2a5e12d46d9bab77f28dfdeeb9",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/services/index.d.ts": {
+        "version": "45e33896e2cb3a8f7723e911ed778c6f6b3a508ce4ba2e3f2fb19c4bc01e4b00",
+        "signature": "45e33896e2cb3a8f7723e911ed778c6f6b3a508ce4ba2e3f2fb19c4bc01e4b00",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/index.d.ts": {
+        "version": "53125f4ff7da08885ffa2bd53efd0df9850c0e5b32d4d44a0f6af5c4d66a3926",
+        "signature": "53125f4ff7da08885ffa2bd53efd0df9850c0e5b32d4d44a0f6af5c4d66a3926",
+        "affectsGlobalScope": false
+      },
+      "./src/shapes/base.ts": {
+        "version": "fed6349657af4a79b747151802ab13472a963089b98969243720d7d25ab9a3bc",
+        "signature": "1d6d9bbff16d70215e5a4c4f90fd59d1a3187f482bca5b2f8774570741f922d0",
+        "affectsGlobalScope": false
+      },
+      "./src/shapes/circle.ts": {
+        "version": "837c56188d3887eea49bd3a5c85fd9403cf3080bd679da6172f8d4ebb8eefc79",
+        "signature": "bdd2a6d192defa2a3ecea99ac7e58b2dfde40f535bd70c35ca171f5219e0dd72",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/common/common.d.ts": {
+        "version": "3594c022901a1c8993b0f78a3f534cfb81e7b619ed215348f7f6882f3db02abc",
+        "signature": "3594c022901a1c8993b0f78a3f534cfb81e7b619ed215348f7f6882f3db02abc",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/common/array.d.ts": {
+        "version": "438284c7c455a29b9c0e2d1e72abc62ee93d9a163029ffe918a34c5db3b92da2",
+        "signature": "438284c7c455a29b9c0e2d1e72abc62ee93d9a163029ffe918a34c5db3b92da2",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/common/collection.d.ts": {
+        "version": "0c75b204aed9cf6ff1c7b4bed87a3ece0d9d6fc857a6350c0c95ed0c38c814e8",
+        "signature": "0c75b204aed9cf6ff1c7b4bed87a3ece0d9d6fc857a6350c0c95ed0c38c814e8",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/common/date.d.ts": {
+        "version": "187119ff4f9553676a884e296089e131e8cc01691c546273b1d0089c3533ce42",
+        "signature": "187119ff4f9553676a884e296089e131e8cc01691c546273b1d0089c3533ce42",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/common/function.d.ts": {
+        "version": "c9f396e71966bd3a890d8a36a6a497dbf260e9b868158ea7824d4b5421210afe",
+        "signature": "c9f396e71966bd3a890d8a36a6a497dbf260e9b868158ea7824d4b5421210afe",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/common/lang.d.ts": {
+        "version": "509235563ea2b939e1bbe92aae17e71e6a82ceab8f568b45fb4fce7d72523a32",
+        "signature": "509235563ea2b939e1bbe92aae17e71e6a82ceab8f568b45fb4fce7d72523a32",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/common/math.d.ts": {
+        "version": "9364c7566b0be2f7b70ff5285eb34686f83ccb01bda529b82d23b2a844653bfb",
+        "signature": "9364c7566b0be2f7b70ff5285eb34686f83ccb01bda529b82d23b2a844653bfb",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/common/number.d.ts": {
+        "version": "00baffbe8a2f2e4875367479489b5d43b5fc1429ecb4a4cc98cfc3009095f52a",
+        "signature": "00baffbe8a2f2e4875367479489b5d43b5fc1429ecb4a4cc98cfc3009095f52a",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/common/object.d.ts": {
+        "version": "c311349ec71bb69399ffc4092853e7d8a86c1ca39ddb4cd129e775c19d985793",
+        "signature": "c311349ec71bb69399ffc4092853e7d8a86c1ca39ddb4cd129e775c19d985793",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/common/seq.d.ts": {
+        "version": "3c92b6dfd43cc1c2485d9eba5ff0b74a19bb8725b692773ef1d66dac48cda4bd",
+        "signature": "3c92b6dfd43cc1c2485d9eba5ff0b74a19bb8725b692773ef1d66dac48cda4bd",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/common/string.d.ts": {
+        "version": "4908e4c00832b26ce77a629de8501b0e23a903c094f9e79a7fec313a15da796a",
+        "signature": "4908e4c00832b26ce77a629de8501b0e23a903c094f9e79a7fec313a15da796a",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/common/util.d.ts": {
+        "version": "2630a7cbb597e85d713b7ef47f2946d4280d3d4c02733282770741d40672b1a5",
+        "signature": "2630a7cbb597e85d713b7ef47f2946d4280d3d4c02733282770741d40672b1a5",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash/index.d.ts": {
+        "version": "0714e2046df66c0e93c3330d30dbc0565b3e8cd3ee302cf99e4ede6220e5fec8",
+        "signature": "0714e2046df66c0e93c3330d30dbc0565b3e8cd3ee302cf99e4ede6220e5fec8",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/@types/lodash-es/uniq.d.ts": {
+        "version": "64a918a5aa97a37400ec085ffeea12a14211aa799cd34e5dc828beb1806e95bb",
+        "signature": "64a918a5aa97a37400ec085ffeea12a14211aa799cd34e5dc828beb1806e95bb",
+        "affectsGlobalScope": false
+      },
+      "./src/utils/shader-module.ts": {
+        "version": "345cee048dce03cd8a44bc3329392ead75b4d2a890e02b9056ede2a9ee7f1b86",
+        "signature": "a9092e7cde072f344ad9c4c33e67ab49ef562a185905bda76605babc2f0a7952",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/regl/dist/regl.d.ts": {
+        "version": "d0c2c14bb84ab08095097fd3f91dbeec19507cef8a2df2a1c01470d39c975b6e",
+        "signature": "d0c2c14bb84ab08095097fd3f91dbeec19507cef8a2df2a1c01470d39c975b6e",
+        "affectsGlobalScope": false
+      },
+      "./src/services/renderer/constants.ts": {
+        "version": "7dad487ab8a7c456152af3ecf92b6f2f9905c0875dda06465a7dbe5fb4c5378e",
+        "signature": "6377c3e0d9cee311a4948d319a2c8579f45527e079a867844450caac334a9ecf",
+        "affectsGlobalScope": false
+      },
+      "./src/services/renderer/index.ts": {
+        "version": "412d4cfd1546292d2d343fdee8438fab78e4952813e8be43206487f0e4768628",
+        "signature": "f236bc2c40312efcaf3b852f76b8d3b9d6563dfa049d053dc5fa964b502091b3",
+        "affectsGlobalScope": false
+      },
+      "./src/services/shader-module/index.ts": {
+        "version": "b48925befdc4748b919643f7b9549506c48fab2f187e89f07693eb36240499f8",
+        "signature": "75321ac4b82f8a1594bd18d4f1864f8d70504fdd63ce5aaaebc5a31cb78ae014",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash-es/isstring.d.ts": {
+        "version": "81c376c9e4d227a4629c7fca9dde3bbdfa44bd5bd281aee0ed03801182368dc5",
+        "signature": "81c376c9e4d227a4629c7fca9dde3bbdfa44bd5bd281aee0ed03801182368dc5",
+        "affectsGlobalScope": false
+      },
+      "./src/webglcontext.ts": {
+        "version": "af3844b59508170fcbeeeeb92d9319cb844e89f96b913eb70cf3f2fa759c4245",
+        "signature": "5eb1cd10e547a7a1864eedba8c4b396c17b6900032bf61d75cef9f7e61f203fe",
+        "affectsGlobalScope": false
+      },
+      "./src/services/renderer/regl/reglbuffer.ts": {
+        "version": "0edbc150e94c1de6b9daa8c17547af71c38eecfcf21919e36ae45f65f29cc340",
+        "signature": "aba4880fdd0e72110735a03f2ac4aed0417bbbff74bbc6b088e60ed2be64bcb7",
+        "affectsGlobalScope": false
+      },
+      "./src/services/renderer/regl/reglattribute.ts": {
+        "version": "969e2ab0b0baa35af1d383ca720752ec531194101e1a3dd5760a30385d230cf9",
+        "signature": "6106ee3469ffcdca691316def6b1d809013d3bdc26e16965b64c7724b42d6a3c",
+        "affectsGlobalScope": false
+      },
+      "./src/services/renderer/regl/reglelements.ts": {
+        "version": "84be615ab8de24b7dfe4acb57b15c199116d8e396a89dae7482cca4ae26e15ff",
+        "signature": "68770b130339168ec8bd1be629282f123790d5040b84e0e6bac0fee4f6eb8cbf",
+        "affectsGlobalScope": false
+      },
+      "./src/services/renderer/regl/regltexture2d.ts": {
+        "version": "31d27a9ca9f5cd5bbcdd8d2139617a9bfe72e0dfa1bf11dc1280e655751c6501",
+        "signature": "f999b39a1cac449d2834d088e62dc27eee44be84faedbc0b3fcaa7a055615c73",
+        "affectsGlobalScope": false
+      },
+      "./src/services/renderer/regl/reglframebuffer.ts": {
+        "version": "ad689ed110051dad06945045240179a25754b7dbd07456936baf06d7302ac42a",
+        "signature": "afe7c4bea2a69da1aadab55561e7147a79cd12ecacd923c0f21162d8069a0f3b",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash-es/isplainobject.d.ts": {
+        "version": "8816b4b3a87d9b77f0355e616b38ed5054f993cc4c141101297f1914976a94b1",
+        "signature": "8816b4b3a87d9b77f0355e616b38ed5054f993cc4c141101297f1914976a94b1",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/lodash-es/istypedarray.d.ts": {
+        "version": "b2f1a443f7f3982d7325775906b51665fe875c82a62be3528a36184852faa0bb",
+        "signature": "b2f1a443f7f3982d7325775906b51665fe875c82a62be3528a36184852faa0bb",
+        "affectsGlobalScope": false
+      },
+      "./src/utils/uniform.ts": {
+        "version": "d9660f25c20aef367579ce1f4fb0892a953c7228f0ad85c13bf7bf2bab52b7c6",
+        "signature": "f33bf28eaa0a69052137c8b9bff2516194b238266550d7d2abe8cf7d092a8398",
+        "affectsGlobalScope": false
+      },
+      "./src/services/renderer/regl/reglmodel.ts": {
+        "version": "47add2073595022a4976796b2b7523c9a2eef4fdc49125d44872a26aeda0e6ff",
+        "signature": "fc3530eeb03ad1af4bdeed8ecfc08ad0d9ddd526292e656f2aa35961a6e3feb4",
+        "affectsGlobalScope": false
+      },
+      "./src/services/renderer/regl/index.ts": {
+        "version": "4efefc97e7e698feba3d3ef17ff38afc4e68ec2c4e715bff31cf46a278b070c6",
+        "signature": "15c41b753dbc62d7e420edd1197e20a11a4b7253e91d6a630c7d102b3de082fe",
+        "affectsGlobalScope": false
+      },
+      "./src/index.ts": {
+        "version": "2e89ffef9afba9401f7df3b54314eb2bf9724725997e6443f00cf175f2554c42",
+        "signature": "e0059ce4f6d91a78cfb08ebc6608dd6c5bdf2bd678fe09c8c6a091887f5f139f",
+        "affectsGlobalScope": false
+      },
+      "./src/canvas.ts": {
+        "version": "342aaa7bc031734752cb0a29ccfc9941f265b0a4507a1a93e2900c07177e5209",
+        "signature": "cf33fec8a03a6951525af4f838a99699a6f0abb002dad44ffd044f93ee2a9b4a",
+        "affectsGlobalScope": false
+      },
+      "./src/glsl.d.ts": {
+        "version": "db642de7590fa4d1d85c18e72ed57b2936ef65b4c139cbb47583dd25c0c3df22",
+        "signature": "db642de7590fa4d1d85c18e72ed57b2936ef65b4c139cbb47583dd25c0c3df22",
+        "affectsGlobalScope": false
+      },
+      "./src/services/renderer/regl/reglrenderbuffer.ts": {
+        "version": "832ef8f2b000f5f2fe92e8927ea609bd68ddf4e687f76781a72ef294bff62253",
+        "signature": "80fc25e99bf34a728324210466c309ec02a6b93fa2ad07ede8b9d07db0c51a69",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts": {
+        "version": "e222104af6cb9415238ad358488b74d76eceeff238c1268ec6e85655b05341da",
+        "signature": "e222104af6cb9415238ad358488b74d76eceeff238c1268ec6e85655b05341da",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts": {
+        "version": "69da61a7b5093dac77fa3bec8be95dcf9a74c95a0e9161edb98bb24e30e439d2",
+        "signature": "69da61a7b5093dac77fa3bec8be95dcf9a74c95a0e9161edb98bb24e30e439d2",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/difflines.d.ts": {
+        "version": "eba230221317c985ab1953ccc3edc517f248b37db4fef7875cb2c8d08aff7be7",
+        "signature": "eba230221317c985ab1953ccc3edc517f248b37db4fef7875cb2c8d08aff7be7",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/printdiffs.d.ts": {
+        "version": "b83e796810e475da3564c6515bc0ae9577070596a33d89299b7d99f94ecfd921",
+        "signature": "b83e796810e475da3564c6515bc0ae9577070596a33d89299b7d99f94ecfd921",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/index.d.ts": {
+        "version": "b4439890c168d646357928431100daac5cbdee1d345a34e6bf6eca9f3abe22bc",
+        "signature": "b4439890c168d646357928431100daac5cbdee1d345a34e6bf6eca9f3abe22bc",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/node_modules/pretty-format/build/types.d.ts": {
+        "version": "5d72971a459517c44c1379dab9ed248e87a61ba0a1e0f25c9d67e1e640cd9a09",
+        "signature": "5d72971a459517c44c1379dab9ed248e87a61ba0a1e0f25c9d67e1e640cd9a09",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/node_modules/pretty-format/build/index.d.ts": {
+        "version": "02d734976af36f4273d930bea88b3e62adf6b078cf120c1c63d49aa8d8427c5c",
+        "signature": "02d734976af36f4273d930bea88b3e62adf6b078cf120c1c63d49aa8d8427c5c",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/jest/index.d.ts": {
+        "version": "f624e578325b8c58e55b30c998b1f4c3ec1b61a9fa66373da4250c89b7880d44",
+        "signature": "f624e578325b8c58e55b30c998b1f4c3ec1b61a9fa66373da4250c89b7880d44",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/@types/jest/ts3.2/index.d.ts": {
+        "version": "d3002f620eab4bf6476c9da5c0efb2041d46f7df8b3032a5631bd206abef2c75",
+        "signature": "d3002f620eab4bf6476c9da5c0efb2041d46f7df8b3032a5631bd206abef2c75",
+        "affectsGlobalScope": true
+      }
+    },
+    "options": {
+      "target": 1,
+      "lib": [
+        "lib.dom.d.ts",
+        "lib.es5.d.ts",
+        "lib.es2015.d.ts",
+        "lib.es2016.d.ts",
+        "lib.es2017.d.ts",
+        "lib.es2019.d.ts"
+      ],
+      "outDir": "./esm",
+      "module": 99,
+      "jsx": 2,
+      "strict": true,
+      "declaration": true,
+      "declarationMap": true,
+      "allowSyntheticDefaultImports": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "importHelpers": true,
+      "strictPropertyInitialization": false,
+      "moduleResolution": 2,
+      "types": [
+        "jest"
+      ],
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "resolveJsonModule": true,
+      "downlevelIteration": true,
+      "rootDir": "./src",
+      "composite": true,
+      "project": "./tsconfig.json",
+      "watch": true,
+      "configFilePath": "./tsconfig.json"
+    },
+    "referencedMap": {
+      "../../node_modules/@types/jest/index.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/index.d.ts",
+        "../../node_modules/@types/jest/node_modules/pretty-format/build/index.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/difflines.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/index.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/difflines.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/printdiffs.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/printdiffs.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/pretty-format/build/index.d.ts": [
+        "../../node_modules/@types/jest/node_modules/pretty-format/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/ts3.2/index.d.ts": [
+        "../../node_modules/@types/jest/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash-es/isplainobject.d.ts": [
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash-es/isstring.d.ts": [
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash-es/istypedarray.d.ts": [
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash-es/uniq.d.ts": [
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/array.d.ts": [
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/collection.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/common.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/date.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/function.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/lang.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/math.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/number.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/object.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/seq.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/string.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/util.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/index.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts"
+      ],
+      "../../node_modules/inversify/dts/annotation/decorator_utils.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/annotation/inject.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/annotation/multi_inject.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/constants/literal_types.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/container/container.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/container/container_module.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/inversify.d.ts": [
+        "../../node_modules/inversify/dts/annotation/decorator_utils.d.ts",
+        "../../node_modules/inversify/dts/annotation/inject.d.ts",
+        "../../node_modules/inversify/dts/annotation/injectable.d.ts",
+        "../../node_modules/inversify/dts/annotation/multi_inject.d.ts",
+        "../../node_modules/inversify/dts/annotation/named.d.ts",
+        "../../node_modules/inversify/dts/annotation/optional.d.ts",
+        "../../node_modules/inversify/dts/annotation/post_construct.d.ts",
+        "../../node_modules/inversify/dts/annotation/tagged.d.ts",
+        "../../node_modules/inversify/dts/annotation/target_name.d.ts",
+        "../../node_modules/inversify/dts/annotation/unmanaged.d.ts",
+        "../../node_modules/inversify/dts/constants/literal_types.d.ts",
+        "../../node_modules/inversify/dts/constants/metadata_keys.d.ts",
+        "../../node_modules/inversify/dts/container/container.d.ts",
+        "../../node_modules/inversify/dts/container/container_module.d.ts",
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts",
+        "../../node_modules/inversify/dts/planning/metadata_reader.d.ts",
+        "../../node_modules/inversify/dts/syntax/constraint_helpers.d.ts",
+        "../../node_modules/inversify/dts/utils/binding_utils.d.ts",
+        "../../node_modules/inversify/dts/utils/id.d.ts",
+        "../../node_modules/inversify/dts/utils/serialization.d.ts"
+      ],
+      "../../node_modules/inversify/dts/planning/metadata_reader.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/syntax/constraint_helpers.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/utils/binding_utils.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts"
+      ],
+      "../../node_modules/inversify/dts/utils/serialization.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../g-core/lib/canvas.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/contribution-provider.d.ts",
+        "../g-core/lib/services/context.d.ts",
+        "../g-core/lib/services/shape.d.ts",
+        "../g-core/lib/types.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/components/geometry.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/components/hierarchy.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/components/index.d.ts": [
+        "../g-core/lib/components/geometry.d.ts",
+        "../g-core/lib/components/hierarchy.d.ts",
+        "../g-core/lib/components/material.d.ts",
+        "../g-core/lib/components/renderable.d.ts",
+        "../g-core/lib/components/transform.d.ts"
+      ],
+      "../g-core/lib/components/material.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/components/renderable.d.ts": [
+        "../g-core/lib/components/geometry.d.ts",
+        "../g-core/lib/components/material.d.ts",
+        "../g-core/lib/shapes/index.d.ts",
+        "../g-core/lib/types.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/components/transform.d.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/contribution-provider.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts"
+      ],
+      "../g-core/lib/index.d.ts": [
+        "../g-core/lib/canvas.d.ts",
+        "../g-core/lib/components/index.d.ts",
+        "../g-core/lib/contribution-provider.d.ts",
+        "../g-core/lib/services/index.d.ts",
+        "../g-core/lib/types.d.ts"
+      ],
+      "../g-core/lib/services/context.d.ts": [
+        "../g-core/lib/types.d.ts"
+      ],
+      "../g-core/lib/services/index.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/services/context.d.ts",
+        "../g-core/lib/services/shape.d.ts"
+      ],
+      "../g-core/lib/services/shape.d.ts": [
+        "../g-core/lib/types.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/shapes/aabb.d.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../g-core/lib/shapes/plane.d.ts"
+      ],
+      "../g-core/lib/shapes/boundingsphere.d.ts": [
+        "../../node_modules/gl-matrix/index.d.ts"
+      ],
+      "../g-core/lib/shapes/frustum.d.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../g-core/lib/shapes/plane.d.ts"
+      ],
+      "../g-core/lib/shapes/index.d.ts": [
+        "../g-core/lib/shapes/aabb.d.ts",
+        "../g-core/lib/shapes/boundingsphere.d.ts",
+        "../g-core/lib/shapes/frustum.d.ts",
+        "../g-core/lib/shapes/plane.d.ts",
+        "../g-core/lib/shapes/ray.d.ts"
+      ],
+      "../g-core/lib/shapes/plane.d.ts": [
+        "../../node_modules/gl-matrix/index.d.ts"
+      ],
+      "../g-core/lib/shapes/ray.d.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../g-core/lib/shapes/aabb.d.ts",
+        "../g-core/lib/shapes/boundingsphere.d.ts",
+        "../g-core/lib/shapes/plane.d.ts"
+      ],
+      "../g-ecs/lib/component.d.ts": [
+        "../g-ecs/lib/objectpool.d.ts"
+      ],
+      "../g-ecs/lib/entity.d.ts": [
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/objectpool.d.ts"
+      ],
+      "../g-ecs/lib/index.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../../node_modules/reflect-metadata/index.d.ts",
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/matcher.d.ts",
+        "../g-ecs/lib/system.d.ts",
+        "../g-ecs/lib/world.d.ts"
+      ],
+      "../g-ecs/lib/matcher.d.ts": [
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/entity.d.ts"
+      ],
+      "../g-ecs/lib/system.d.ts": [
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/matcher.d.ts"
+      ],
+      "../g-ecs/lib/world.d.ts": [
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/system.d.ts"
+      ],
+      "./src/canvas.ts": [
+        "../g-core/lib/index.d.ts",
+        "./src/index.ts"
+      ],
+      "./src/index.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/index.d.ts",
+        "./src/canvas.ts",
+        "./src/services/renderer/index.ts",
+        "./src/services/renderer/regl/index.ts",
+        "./src/services/shader-module/index.ts",
+        "./src/shapes/base.ts",
+        "./src/shapes/circle.ts",
+        "./src/webglcontext.ts"
+      ],
+      "./src/services/renderer/constants.ts": [
+        "../../node_modules/regl/dist/regl.d.ts"
+      ],
+      "./src/services/renderer/index.ts": [
+        "./src/services/renderer/constants.ts"
+      ],
+      "./src/services/renderer/regl/index.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../../node_modules/regl/dist/regl.d.ts",
+        "./src/services/renderer/constants.ts",
+        "./src/services/renderer/index.ts",
+        "./src/services/renderer/regl/reglattribute.ts",
+        "./src/services/renderer/regl/reglbuffer.ts",
+        "./src/services/renderer/regl/reglelements.ts",
+        "./src/services/renderer/regl/reglframebuffer.ts",
+        "./src/services/renderer/regl/reglmodel.ts",
+        "./src/services/renderer/regl/regltexture2d.ts"
+      ],
+      "./src/services/renderer/regl/reglattribute.ts": [
+        "../../node_modules/regl/dist/regl.d.ts",
+        "./src/services/renderer/index.ts",
+        "./src/services/renderer/regl/reglbuffer.ts"
+      ],
+      "./src/services/renderer/regl/reglbuffer.ts": [
+        "../../node_modules/regl/dist/regl.d.ts",
+        "./src/services/renderer/constants.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/services/renderer/regl/reglelements.ts": [
+        "../../node_modules/regl/dist/regl.d.ts",
+        "./src/services/renderer/constants.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/services/renderer/regl/reglframebuffer.ts": [
+        "../../node_modules/regl/dist/regl.d.ts",
+        "./src/services/renderer/index.ts",
+        "./src/services/renderer/regl/regltexture2d.ts"
+      ],
+      "./src/services/renderer/regl/reglmodel.ts": [
+        "../../node_modules/regl/dist/regl.d.ts",
+        "./src/services/renderer/constants.ts",
+        "./src/services/renderer/index.ts",
+        "./src/services/renderer/regl/reglattribute.ts",
+        "./src/services/renderer/regl/reglelements.ts",
+        "./src/services/renderer/regl/reglframebuffer.ts",
+        "./src/services/renderer/regl/regltexture2d.ts",
+        "./src/utils/uniform.ts"
+      ],
+      "./src/services/renderer/regl/reglrenderbuffer.ts": [
+        "../../node_modules/regl/dist/regl.d.ts",
+        "./src/services/renderer/constants.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/services/renderer/regl/regltexture2d.ts": [
+        "../../node_modules/regl/dist/regl.d.ts",
+        "./src/services/renderer/constants.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/services/shader-module/index.ts": [
+        "../../node_modules/@types/lodash-es/uniq.d.ts",
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "./src/glsl.d.ts",
+        "./src/services/renderer/index.ts",
+        "./src/utils/shader-module.ts"
+      ],
+      "./src/shapes/base.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/index.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "./src/shapes/circle.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/index.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/shapes/base.ts"
+      ],
+      "./src/utils/uniform.ts": [
+        "../../node_modules/@types/lodash-es/isplainobject.d.ts",
+        "../../node_modules/@types/lodash-es/istypedarray.d.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/webglcontext.ts": [
+        "../../node_modules/@types/lodash-es/isstring.d.ts",
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/index.d.ts",
+        "./src/services/renderer/index.ts",
+        "./src/services/shader-module/index.ts"
+      ]
+    },
+    "exportedModulesMap": {
+      "../../node_modules/@types/jest/index.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/index.d.ts",
+        "../../node_modules/@types/jest/node_modules/pretty-format/build/index.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/difflines.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/index.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/difflines.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/printdiffs.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/printdiffs.d.ts": [
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
+        "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/node_modules/pretty-format/build/index.d.ts": [
+        "../../node_modules/@types/jest/node_modules/pretty-format/build/types.d.ts"
+      ],
+      "../../node_modules/@types/jest/ts3.2/index.d.ts": [
+        "../../node_modules/@types/jest/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash-es/isplainobject.d.ts": [
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash-es/isstring.d.ts": [
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash-es/istypedarray.d.ts": [
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash-es/uniq.d.ts": [
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/array.d.ts": [
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/collection.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/common.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/date.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/function.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/lang.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/math.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/number.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/object.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/seq.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/string.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/common/util.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash/index.d.ts": [
+        "../../node_modules/@types/lodash/common/array.d.ts",
+        "../../node_modules/@types/lodash/common/collection.d.ts",
+        "../../node_modules/@types/lodash/common/common.d.ts",
+        "../../node_modules/@types/lodash/common/date.d.ts",
+        "../../node_modules/@types/lodash/common/function.d.ts",
+        "../../node_modules/@types/lodash/common/lang.d.ts",
+        "../../node_modules/@types/lodash/common/math.d.ts",
+        "../../node_modules/@types/lodash/common/number.d.ts",
+        "../../node_modules/@types/lodash/common/object.d.ts",
+        "../../node_modules/@types/lodash/common/seq.d.ts",
+        "../../node_modules/@types/lodash/common/string.d.ts",
+        "../../node_modules/@types/lodash/common/util.d.ts"
+      ],
+      "../../node_modules/inversify/dts/annotation/decorator_utils.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/annotation/inject.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/annotation/multi_inject.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/constants/literal_types.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/container/container.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/container/container_module.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/inversify.d.ts": [
+        "../../node_modules/inversify/dts/annotation/decorator_utils.d.ts",
+        "../../node_modules/inversify/dts/annotation/inject.d.ts",
+        "../../node_modules/inversify/dts/annotation/injectable.d.ts",
+        "../../node_modules/inversify/dts/annotation/multi_inject.d.ts",
+        "../../node_modules/inversify/dts/annotation/named.d.ts",
+        "../../node_modules/inversify/dts/annotation/optional.d.ts",
+        "../../node_modules/inversify/dts/annotation/post_construct.d.ts",
+        "../../node_modules/inversify/dts/annotation/tagged.d.ts",
+        "../../node_modules/inversify/dts/annotation/target_name.d.ts",
+        "../../node_modules/inversify/dts/annotation/unmanaged.d.ts",
+        "../../node_modules/inversify/dts/constants/literal_types.d.ts",
+        "../../node_modules/inversify/dts/constants/metadata_keys.d.ts",
+        "../../node_modules/inversify/dts/container/container.d.ts",
+        "../../node_modules/inversify/dts/container/container_module.d.ts",
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts",
+        "../../node_modules/inversify/dts/planning/metadata_reader.d.ts",
+        "../../node_modules/inversify/dts/syntax/constraint_helpers.d.ts",
+        "../../node_modules/inversify/dts/utils/binding_utils.d.ts",
+        "../../node_modules/inversify/dts/utils/id.d.ts",
+        "../../node_modules/inversify/dts/utils/serialization.d.ts"
+      ],
+      "../../node_modules/inversify/dts/planning/metadata_reader.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/syntax/constraint_helpers.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../../node_modules/inversify/dts/utils/binding_utils.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts"
+      ],
+      "../../node_modules/inversify/dts/utils/serialization.d.ts": [
+        "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
+      ],
+      "../g-core/lib/canvas.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/contribution-provider.d.ts",
+        "../g-core/lib/services/context.d.ts",
+        "../g-core/lib/services/shape.d.ts",
+        "../g-core/lib/types.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/components/geometry.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/components/hierarchy.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/components/index.d.ts": [
+        "../g-core/lib/components/geometry.d.ts",
+        "../g-core/lib/components/hierarchy.d.ts",
+        "../g-core/lib/components/material.d.ts",
+        "../g-core/lib/components/renderable.d.ts",
+        "../g-core/lib/components/transform.d.ts"
+      ],
+      "../g-core/lib/components/material.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/components/renderable.d.ts": [
+        "../g-core/lib/components/geometry.d.ts",
+        "../g-core/lib/components/material.d.ts",
+        "../g-core/lib/shapes/index.d.ts",
+        "../g-core/lib/types.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/components/transform.d.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/contribution-provider.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts"
+      ],
+      "../g-core/lib/index.d.ts": [
+        "../g-core/lib/canvas.d.ts",
+        "../g-core/lib/components/index.d.ts",
+        "../g-core/lib/contribution-provider.d.ts",
+        "../g-core/lib/services/index.d.ts",
+        "../g-core/lib/types.d.ts"
+      ],
+      "../g-core/lib/services/context.d.ts": [
+        "../g-core/lib/types.d.ts"
+      ],
+      "../g-core/lib/services/index.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/services/shape.d.ts"
+      ],
+      "../g-core/lib/services/shape.d.ts": [
+        "../g-core/lib/types.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/shapes/aabb.d.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../g-core/lib/shapes/plane.d.ts"
+      ],
+      "../g-core/lib/shapes/boundingsphere.d.ts": [
+        "../../node_modules/gl-matrix/index.d.ts"
+      ],
+      "../g-core/lib/shapes/frustum.d.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../g-core/lib/shapes/plane.d.ts"
+      ],
+      "../g-core/lib/shapes/index.d.ts": [
+        "../g-core/lib/shapes/aabb.d.ts",
+        "../g-core/lib/shapes/boundingsphere.d.ts",
+        "../g-core/lib/shapes/frustum.d.ts",
+        "../g-core/lib/shapes/plane.d.ts",
+        "../g-core/lib/shapes/ray.d.ts"
+      ],
+      "../g-core/lib/shapes/plane.d.ts": [
+        "../../node_modules/gl-matrix/index.d.ts"
+      ],
+      "../g-core/lib/shapes/ray.d.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../g-core/lib/shapes/aabb.d.ts",
+        "../g-core/lib/shapes/boundingsphere.d.ts",
+        "../g-core/lib/shapes/plane.d.ts"
+      ],
+      "../g-ecs/lib/component.d.ts": [
+        "../g-ecs/lib/objectpool.d.ts"
+      ],
+      "../g-ecs/lib/entity.d.ts": [
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/objectpool.d.ts"
+      ],
+      "../g-ecs/lib/index.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../../node_modules/reflect-metadata/index.d.ts",
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/matcher.d.ts",
+        "../g-ecs/lib/system.d.ts",
+        "../g-ecs/lib/world.d.ts"
+      ],
+      "../g-ecs/lib/matcher.d.ts": [
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/entity.d.ts"
+      ],
+      "../g-ecs/lib/system.d.ts": [
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/matcher.d.ts"
+      ],
+      "../g-ecs/lib/world.d.ts": [
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/system.d.ts"
+      ],
+      "./src/canvas.ts": [
+        "../g-core/lib/index.d.ts"
+      ],
+      "./src/index.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "./src/canvas.ts"
+      ],
+      "./src/services/renderer/constants.ts": [
+        "../../node_modules/regl/dist/regl.d.ts"
+      ],
+      "./src/services/renderer/index.ts": [
+        "./src/services/renderer/constants.ts"
+      ],
+      "./src/services/renderer/regl/index.ts": [
+        "./src/services/renderer/index.ts",
+        "./src/services/renderer/regl/reglframebuffer.ts"
+      ],
+      "./src/services/renderer/regl/reglattribute.ts": [
+        "../../node_modules/regl/dist/regl.d.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/services/renderer/regl/reglbuffer.ts": [
+        "../../node_modules/regl/dist/regl.d.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/services/renderer/regl/reglelements.ts": [
+        "../../node_modules/regl/dist/regl.d.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/services/renderer/regl/reglframebuffer.ts": [
+        "../../node_modules/regl/dist/regl.d.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/services/renderer/regl/reglmodel.ts": [
+        "../../node_modules/regl/dist/regl.d.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/services/renderer/regl/reglrenderbuffer.ts": [
+        "../../node_modules/regl/dist/regl.d.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/services/renderer/regl/regltexture2d.ts": [
+        "../../node_modules/regl/dist/regl.d.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/services/shader-module/index.ts": [
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/shapes/base.ts": [
+        "../g-core/lib/index.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "./src/shapes/circle.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/shapes/base.ts"
+      ],
+      "./src/utils/uniform.ts": [
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/webglcontext.ts": [
+        "../g-core/lib/index.d.ts",
+        "./src/services/renderer/index.ts"
+      ]
+    },
+    "semanticDiagnosticsPerFile": [
+      "../../node_modules/@types/jest/index.d.ts",
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/difflines.d.ts",
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/index.d.ts",
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/printdiffs.d.ts",
+      "../../node_modules/@types/jest/node_modules/jest-diff/build/types.d.ts",
+      "../../node_modules/@types/jest/node_modules/pretty-format/build/index.d.ts",
+      "../../node_modules/@types/jest/node_modules/pretty-format/build/types.d.ts",
+      "../../node_modules/@types/jest/ts3.2/index.d.ts",
+      "../../node_modules/@types/lodash-es/isplainobject.d.ts",
+      "../../node_modules/@types/lodash-es/isstring.d.ts",
+      "../../node_modules/@types/lodash-es/istypedarray.d.ts",
+      "../../node_modules/@types/lodash-es/uniq.d.ts",
+      "../../node_modules/@types/lodash/common/array.d.ts",
+      "../../node_modules/@types/lodash/common/collection.d.ts",
+      "../../node_modules/@types/lodash/common/common.d.ts",
+      "../../node_modules/@types/lodash/common/date.d.ts",
+      "../../node_modules/@types/lodash/common/function.d.ts",
+      "../../node_modules/@types/lodash/common/lang.d.ts",
+      "../../node_modules/@types/lodash/common/math.d.ts",
+      "../../node_modules/@types/lodash/common/number.d.ts",
+      "../../node_modules/@types/lodash/common/object.d.ts",
+      "../../node_modules/@types/lodash/common/seq.d.ts",
+      "../../node_modules/@types/lodash/common/string.d.ts",
+      "../../node_modules/@types/lodash/common/util.d.ts",
+      "../../node_modules/@types/lodash/index.d.ts",
+      "../../node_modules/gl-matrix/index.d.ts",
+      "../../node_modules/inversify/dts/annotation/decorator_utils.d.ts",
+      "../../node_modules/inversify/dts/annotation/inject.d.ts",
+      "../../node_modules/inversify/dts/annotation/injectable.d.ts",
+      "../../node_modules/inversify/dts/annotation/multi_inject.d.ts",
+      "../../node_modules/inversify/dts/annotation/named.d.ts",
+      "../../node_modules/inversify/dts/annotation/optional.d.ts",
+      "../../node_modules/inversify/dts/annotation/post_construct.d.ts",
+      "../../node_modules/inversify/dts/annotation/tagged.d.ts",
+      "../../node_modules/inversify/dts/annotation/target_name.d.ts",
+      "../../node_modules/inversify/dts/annotation/unmanaged.d.ts",
+      "../../node_modules/inversify/dts/constants/literal_types.d.ts",
+      "../../node_modules/inversify/dts/constants/metadata_keys.d.ts",
+      "../../node_modules/inversify/dts/container/container.d.ts",
+      "../../node_modules/inversify/dts/container/container_module.d.ts",
+      "../../node_modules/inversify/dts/interfaces/interfaces.d.ts",
+      "../../node_modules/inversify/dts/inversify.d.ts",
+      "../../node_modules/inversify/dts/planning/metadata_reader.d.ts",
+      "../../node_modules/inversify/dts/syntax/constraint_helpers.d.ts",
+      "../../node_modules/inversify/dts/utils/binding_utils.d.ts",
+      "../../node_modules/inversify/dts/utils/id.d.ts",
+      "../../node_modules/inversify/dts/utils/serialization.d.ts",
+      "../../node_modules/reflect-metadata/index.d.ts",
+      "../../node_modules/regl/dist/regl.d.ts",
+      "../../node_modules/tslib/tslib.d.ts",
+      "../../node_modules/typescript/lib/lib.dom.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.collection.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.core.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.generator.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.promise.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.reflect.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.symbol.d.ts",
+      "../../node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+      "../../node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+      "../../node_modules/typescript/lib/lib.es2016.d.ts",
+      "../../node_modules/typescript/lib/lib.es2017.d.ts",
+      "../../node_modules/typescript/lib/lib.es2017.intl.d.ts",
+      "../../node_modules/typescript/lib/lib.es2017.object.d.ts",
+      "../../node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts",
+      "../../node_modules/typescript/lib/lib.es2017.string.d.ts",
+      "../../node_modules/typescript/lib/lib.es2017.typedarrays.d.ts",
+      "../../node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts",
+      "../../node_modules/typescript/lib/lib.es2018.asynciterable.d.ts",
+      "../../node_modules/typescript/lib/lib.es2018.d.ts",
+      "../../node_modules/typescript/lib/lib.es2018.intl.d.ts",
+      "../../node_modules/typescript/lib/lib.es2018.promise.d.ts",
+      "../../node_modules/typescript/lib/lib.es2018.regexp.d.ts",
+      "../../node_modules/typescript/lib/lib.es2019.array.d.ts",
+      "../../node_modules/typescript/lib/lib.es2019.d.ts",
+      "../../node_modules/typescript/lib/lib.es2019.object.d.ts",
+      "../../node_modules/typescript/lib/lib.es2019.string.d.ts",
+      "../../node_modules/typescript/lib/lib.es2019.symbol.d.ts",
+      "../../node_modules/typescript/lib/lib.es5.d.ts",
+      "../g-core/lib/canvas.d.ts",
+      "../g-core/lib/components/geometry.d.ts",
+      "../g-core/lib/components/hierarchy.d.ts",
+      "../g-core/lib/components/index.d.ts",
+      "../g-core/lib/components/material.d.ts",
+      "../g-core/lib/components/renderable.d.ts",
+      "../g-core/lib/components/transform.d.ts",
+      "../g-core/lib/contribution-provider.d.ts",
+      "../g-core/lib/index.d.ts",
+      "../g-core/lib/services/context.d.ts",
+      "../g-core/lib/services/index.d.ts",
+      "../g-core/lib/services/shape.d.ts",
+      "../g-core/lib/shapes/aabb.d.ts",
+      "../g-core/lib/shapes/boundingsphere.d.ts",
+      "../g-core/lib/shapes/frustum.d.ts",
+      "../g-core/lib/shapes/index.d.ts",
+      "../g-core/lib/shapes/plane.d.ts",
+      "../g-core/lib/shapes/ray.d.ts",
+      "../g-core/lib/types.d.ts",
+      "../g-ecs/lib/component.d.ts",
+      "../g-ecs/lib/entity.d.ts",
+      "../g-ecs/lib/index.d.ts",
+      "../g-ecs/lib/matcher.d.ts",
+      "../g-ecs/lib/objectpool.d.ts",
+      "../g-ecs/lib/system.d.ts",
+      "../g-ecs/lib/world.d.ts",
+      "./src/canvas.ts",
+      "./src/glsl.d.ts",
+      "./src/index.ts",
+      "./src/services/renderer/constants.ts",
+      "./src/services/renderer/index.ts",
+      "./src/services/renderer/regl/index.ts",
+      "./src/services/renderer/regl/reglattribute.ts",
+      "./src/services/renderer/regl/reglbuffer.ts",
+      "./src/services/renderer/regl/reglelements.ts",
+      "./src/services/renderer/regl/reglframebuffer.ts",
+      "./src/services/renderer/regl/reglmodel.ts",
+      "./src/services/renderer/regl/reglrenderbuffer.ts",
+      "./src/services/renderer/regl/regltexture2d.ts",
+      "./src/services/shader-module/index.ts",
+      "./src/shapes/base.ts",
+      "./src/shapes/circle.ts",
+      "./src/utils/shader-module.ts",
+      "./src/utils/uniform.ts",
+      "./src/webglcontext.ts"
+    ]
+  },
+  "version": "3.9.9"
+}

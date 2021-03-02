@@ -9,7 +9,7 @@ import { System, SystemConstructor } from './System';
 import { SystemManager } from './SystemManager';
 
 interface IWorldLifecycle {
-  execute(): void;
+  execute(): Promise<void>;
   stop(): void;
   resume(): void;
 }
@@ -67,7 +67,7 @@ export class World implements IWorldLifecycle {
     return this;
   }
 
-  public execute(delta?: number, millis?: number) {
+  public async execute(delta?: number, millis?: number) {
     if (!delta) {
       millis = new Date().getTime();
       delta = millis - this.lastMillis;
@@ -75,7 +75,7 @@ export class World implements IWorldLifecycle {
     }
 
     if (this.enabled) {
-      this.systemManager.execute(delta, millis);
+      await this.systemManager.execute(delta, millis);
       // this.entityManager.processDeferredRemoval();
     }
   }

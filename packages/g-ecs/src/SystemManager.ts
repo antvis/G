@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { Entity } from './Entity';
-import { COMPONENT_EVENT, EntityManager, ENTITY_EVENT } from './EntityManager';
+import { COMPONENT_EVENT, EntityManager } from './EntityManager';
 import { IDENTIFIER } from './identifier';
 import { ISystem, System, SystemConstructor } from './System';
 
@@ -46,22 +46,23 @@ export class SystemManager {
     this.systems.sort((a, b) => a.priority - b.priority);
   }
 
-  public execute(delta: number, time?: number) {
-    this.systems.forEach((system) => {
+  public async execute() {
+    for (const system of this.systems) {
       if (system.initialized && system.execute) {
-        const entities = system.trigger
-          ? this.entityManager.queryByMatcher(system.trigger())
-          : this.entityManager.getAllEntities();
-        system.execute(entities);
+        await system.execute(this.getEntities(system));
       }
-    });
+    }
   }
 
   public destroy() {
     this.systems.forEach((system) => {
       if (system.initialized && system.tearDown) {
-        system.tearDown();
+        system.tearDown(this.getEntities(system));
       }
     });
+  }
+
+  private getEntities(system: ISystem) {
+    return system.trigger ? this.entityManager.queryByMatcher(system.trigger()) : this.entityManager.getAllEntities();
   }
 }

@@ -1,0 +1,15 @@
+{
+   "mainEntryPointFilePath": "<projectFolder>/examples/src/index.d.ts",
+   "apiReport": {
+      "enabled": false
+   },
+   "docModel": {
+      "enabled": false
+   },
+   "dtsRollup": {
+      "enabled": true
+   },
+   "tsdocMetadata": {
+      "enabled": false
+   }
+}

@@ -5,10 +5,18 @@
   },
   "demos": [
     {
-      "filename": "basic.js",
+      "filename": "canvas.js",
       "title": {
-        "zh": "圆",
-        "en": "Circle"
+        "zh": "圆(Canvas)",
+        "en": "Circle(Canvas)"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "webgl.js",
+      "title": {
+        "zh": "圆(WebGL)",
+        "en": "Circle(WebGL)"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
     }

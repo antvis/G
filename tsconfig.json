@@ -7,16 +7,31 @@
       ],
       "@antv/g-core/*": [
         "g-core/src/*"
+      ],
+      "@antv/g-canvas/*": [
+        "g-canvas/src/*"
+      ],
+      "@antv/g-svg/*": [
+        "g-svg/src/*"
       ]
     }
   },
   "files": [],
   "references": [
     {
+      "path": "packages/g-canvas"
+    },
+    {
       "path": "packages/g-core"
     },
     {
       "path": "packages/g-ecs"
+    },
+    {
+      "path": "packages/g-svg"
+    },
+    {
+      "path": "packages/g-webgl"
     }
   ]
 }

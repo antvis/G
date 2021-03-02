@@ -21,6 +21,16 @@
         "signature": "8a12173c586e95f4433e0c6dc446bc88346be73ffe9ca6eec7aa63c8f3dca7f9",
         "affectsGlobalScope": false
       },
+      "../../node_modules/typescript/lib/lib.es2018.d.ts": {
+        "version": "5f4e733ced4e129482ae2186aae29fde948ab7182844c3a5a51dd346182c7b06",
+        "signature": "5f4e733ced4e129482ae2186aae29fde948ab7182844c3a5a51dd346182c7b06",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/typescript/lib/lib.es2019.d.ts": {
+        "version": "e6b724280c694a9f588847f754198fb96c43d805f065c3a5b28bbc9594541c84",
+        "signature": "e6b724280c694a9f588847f754198fb96c43d805f065c3a5b28bbc9594541c84",
+        "affectsGlobalScope": false
+      },
       "../../node_modules/typescript/lib/lib.dom.d.ts": {
         "version": "9affb0a2ddc57df5b8174c0af96c288d697a262e5bc9ca1f544c999dc64a91e6",
         "signature": "9affb0a2ddc57df5b8174c0af96c288d697a262e5bc9ca1f544c999dc64a91e6",
@@ -101,19 +111,54 @@
         "signature": "b0124885ef82641903d232172577f2ceb5d3e60aed4da1153bab4221e1f6dd4e",
         "affectsGlobalScope": true
       },
+      "../../node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts": {
+        "version": "0eb85d6c590b0d577919a79e0084fa1744c1beba6fd0d4e951432fa1ede5510a",
+        "signature": "0eb85d6c590b0d577919a79e0084fa1744c1beba6fd0d4e951432fa1ede5510a",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2018.asynciterable.d.ts": {
+        "version": "a40c4d82bf13fcded295ac29f354eb7d40249613c15e07b53f2fc75e45e16359",
+        "signature": "a40c4d82bf13fcded295ac29f354eb7d40249613c15e07b53f2fc75e45e16359",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2018.intl.d.ts": {
+        "version": "df9c8a72ca8b0ed62f5470b41208a0587f0f73f0a7db28e5a1272cf92537518e",
+        "signature": "df9c8a72ca8b0ed62f5470b41208a0587f0f73f0a7db28e5a1272cf92537518e",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2018.promise.d.ts": {
+        "version": "bb2d3fb05a1d2ffbca947cc7cbc95d23e1d053d6595391bd325deb265a18d36c",
+        "signature": "bb2d3fb05a1d2ffbca947cc7cbc95d23e1d053d6595391bd325deb265a18d36c",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2018.regexp.d.ts": {
+        "version": "c80df75850fea5caa2afe43b9949338ce4e2de086f91713e9af1a06f973872b8",
+        "signature": "c80df75850fea5caa2afe43b9949338ce4e2de086f91713e9af1a06f973872b8",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2019.array.d.ts": {
+        "version": "9d57b2b5d15838ed094aa9ff1299eecef40b190722eb619bac4616657a05f951",
+        "signature": "9d57b2b5d15838ed094aa9ff1299eecef40b190722eb619bac4616657a05f951",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2019.object.d.ts": {
+        "version": "6c51b5dd26a2c31dbf37f00cfc32b2aa6a92e19c995aefb5b97a3a64f1ac99de",
+        "signature": "6c51b5dd26a2c31dbf37f00cfc32b2aa6a92e19c995aefb5b97a3a64f1ac99de",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2019.string.d.ts": {
+        "version": "93544ca2f26a48716c1b6c5091842cad63129daac422dfa4bc52460465f22bb1",
+        "signature": "93544ca2f26a48716c1b6c5091842cad63129daac422dfa4bc52460465f22bb1",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/typescript/lib/lib.es2019.symbol.d.ts": {
+        "version": "2ad234885a4240522efccd77de6c7d99eecf9b4de0914adb9a35c0c22433f993",
+        "signature": "2ad234885a4240522efccd77de6c7d99eecf9b4de0914adb9a35c0c22433f993",
+        "affectsGlobalScope": true
+      },
       "../../node_modules/tslib/tslib.d.ts": {
         "version": "55d7868222288a4054166fecbfbaeee46dd3b1b58e4a118e40e9c8c13a9fbe84",
         "signature": "55d7868222288a4054166fecbfbaeee46dd3b1b58e4a118e40e9c8c13a9fbe84",
-        "affectsGlobalScope": false
-      },
-      "./src/identifier.ts": {
-        "version": "922f80b7f457e305a9e165ed350637d26f7aecdc4bd06ac6b9e8fbd10ffa035e",
-        "signature": "d5d61e19e0ad471407c84529a2eb8367b0f67dd50b6ae92a8af0aa9dee4e20af",
-        "affectsGlobalScope": false
-      },
-      "./src/index.ts": {
-        "version": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "signature": "3835f8d92ad0699690cf572ad0da8aa3bfa5cc1c66fbd2609c52a02b9da828dc",
         "affectsGlobalScope": false
       },
       "../../node_modules/reflect-metadata/index.d.ts": {
@@ -226,6 +271,16 @@
         "signature": "f15dd6db666e773db7ae7eba550607eeede04d16819dc7a5abf546f15a4b989a",
         "affectsGlobalScope": false
       },
+      "../g-ecs/lib/objectpool.d.ts": {
+        "version": "4466f9f331fab8d1942711beb4607fc1c4a71ae7cc0eb47958f24fa6dca1673f",
+        "signature": "4466f9f331fab8d1942711beb4607fc1c4a71ae7cc0eb47958f24fa6dca1673f",
+        "affectsGlobalScope": false
+      },
+      "../g-ecs/lib/component.d.ts": {
+        "version": "09981969654e189a28732dd415417028fa3474e99c5359e3c46fddde447aa52b",
+        "signature": "09981969654e189a28732dd415417028fa3474e99c5359e3c46fddde447aa52b",
+        "affectsGlobalScope": false
+      },
       "../g-ecs/lib/entity.d.ts": {
         "version": "e7dc7e3ed3d9f7d80b729d0ab24d0c05be70b4ebd9b166ea0d233c786f24cbfa",
         "signature": "e7dc7e3ed3d9f7d80b729d0ab24d0c05be70b4ebd9b166ea0d233c786f24cbfa",
@@ -251,19 +306,19 @@
         "signature": "15ba0ff8fb4f994f0dea9aefe8102ed9a63b79962d43a4e5066f65f4f5a4d0ca",
         "affectsGlobalScope": false
       },
-      "../../node_modules/gl-matrix/index.d.ts": {
-        "version": "3d3bfd3a50c4f61b236ff2dfc27d6c13181c44743b0dea4e482a0426dbfb80c6",
-        "signature": "3d3bfd3a50c4f61b236ff2dfc27d6c13181c44743b0dea4e482a0426dbfb80c6",
+      "./src/contribution-provider.ts": {
+        "version": "ab647d20105abb9f102869aa65b9cf92f56b600ea3e77810b6c8a05d5164f83d",
+        "signature": "8dfbe7bfbc469da72fd12474ad9e105a90070a2701aa25297856113a9866c877",
         "affectsGlobalScope": false
       },
-      "./src/components/transform.ts": {
-        "version": "851b1d970fb4e0f8b3ce63329172653f0b418ed584e78dd848008bba33e882f6",
-        "signature": "b7ea1766bbfd03c857503b0de7107ecb3040c0115ff0f10e743d56d287978a11",
+      "./src/types.ts": {
+        "version": "9919ec9eea695590de552c479d5293edbdac8a1ddaec00ac0755b5d4d45f4a8b",
+        "signature": "abe864e7f59709e038283ae4fe68927e3f40fe1be474273e74dd53996beac2f6",
         "affectsGlobalScope": false
       },
-      "./src/components/hierarchy.ts": {
-        "version": "cbba9f9f4bbdd5d9bc9d3410505ede839f1bc5b827453cea49feb7f72eec2889",
-        "signature": "a4c68bcfa5f192d0ba8ec9980464f43a16533c9f494d25e7fa7ca9589cc12c31",
+      "./src/services/context.ts": {
+        "version": "44f888a87805c1321945ee30772c40e2de77a1295911e9b4c036232f7a2e5880",
+        "signature": "6839a62f63eed58095994e7b006e721a8cc62e6ba89a7c470665115eb69c6e45",
         "affectsGlobalScope": false
       },
       "./src/components/geometry.ts": {
@@ -271,64 +326,109 @@
         "signature": "781204d794a7585668eb9bec51c4c10c511167fd60af6f39f2aafb4ad2ce7d4a",
         "affectsGlobalScope": false
       },
+      "./src/components/hierarchy.ts": {
+        "version": "f08de0d69a5bc7c3c9ec44568a84b4981ff36aef9b26b20d6663e6143cc1fd3a",
+        "signature": "a4c68bcfa5f192d0ba8ec9980464f43a16533c9f494d25e7fa7ca9589cc12c31",
+        "affectsGlobalScope": false
+      },
       "./src/components/material.ts": {
         "version": "cdad5d5fd62e703854382a105bb144f5181d02cfdd9fa8f4f133872a9dbebbe4",
         "signature": "6c1c9bb423b53216b232a2037abe6e81b61c54704e0728ccd203773acd795457",
         "affectsGlobalScope": false
       },
-      "./src/shape/plane.ts": {
-        "version": "6fbf413089550accc76ab909dcf0717677a0953d307c3fcd31056bfd109c361e",
+      "../../node_modules/gl-matrix/index.d.ts": {
+        "version": "3d3bfd3a50c4f61b236ff2dfc27d6c13181c44743b0dea4e482a0426dbfb80c6",
+        "signature": "3d3bfd3a50c4f61b236ff2dfc27d6c13181c44743b0dea4e482a0426dbfb80c6",
+        "affectsGlobalScope": false
+      },
+      "./src/shapes/plane.ts": {
+        "version": "e3bd7805082f155f454b6f8d562537f9832f6948c687bfcd58b3abc696b7adc5",
         "signature": "1bd45b4a4cf387b7131d2e41841e4e2df7fa1b9b21d7f7400a586a2e3062744f",
         "affectsGlobalScope": false
       },
-      "./src/shape/aabb.ts": {
+      "./src/shapes/aabb.ts": {
         "version": "0e6d7d83372355fb71e8c23f4b75942196e8577eef20e18fff4c411918d98885",
         "signature": "a477029f869b455496e2899c704414e7b4a550b12cc7c9b8011c5280ae30bf5a",
         "affectsGlobalScope": false
       },
-      "./src/shape/boundingsphere.ts": {
+      "./src/shapes/boundingsphere.ts": {
         "version": "5cc4f84e66ceefca65f01ea61165a00c43bdf028ec28e1115b9f814a4ef00e91",
         "signature": "0a3d9ae727b8f6ef9428998619fcb61bc84d739fb99b769865bcecbc8bfb4b6a",
         "affectsGlobalScope": false
       },
-      "./src/shape/frustum.ts": {
-        "version": "43836620441f96643d08479a5cb3c4d362e40516f4490c37450bd797a37ea36e",
+      "./src/shapes/frustum.ts": {
+        "version": "7dd9fe0b70de741d7643447688f55d23c59213aa2757f3926e09037d6e75f077",
         "signature": "f22a37c9521d226090f97ffd8e6402c4a737eb756c9b260cd3a9a46e84228a49",
         "affectsGlobalScope": false
       },
-      "./src/shape/ray.ts": {
-        "version": "9bd36ea9e251230519521e6506a1f993da1d6e12a10a161a01cfc45a48af1ab3",
+      "./src/shapes/ray.ts": {
+        "version": "7de390288c617a23558376c4b1516d2522a9a94fe977f27853126a520cfe5139",
         "signature": "73590bbcc5d836f00efe25c9b44206fbe604691a1dd732178b56da6e976ad06d",
         "affectsGlobalScope": false
       },
-      "./src/shape/index.ts": {
+      "./src/shapes/index.ts": {
         "version": "acb61e82c7abc6361c4133846c905969f613664c7eb33a9c59686898dbc3a9c5",
         "signature": "8383bd0b05e152503783736442bcd6bbae40bea50275af8cff8993324709ed89",
         "affectsGlobalScope": false
       },
-      "./src/components/mesh.ts": {
-        "version": "b6e8ac4655fd844292c8ef885612152abadfd14e300b50ecc15e4db513bc5fdd",
-        "signature": "9fdfdcf9a071308d5d369b53556e0625e6fd0cf2bd901556dacfd06a7f9d15e5",
+      "./src/components/renderable.ts": {
+        "version": "7aeef83492e2dcb0ee97f02a2255294f9fbd39b80909691ac579cc301b8ece6c",
+        "signature": "7be936ab8be1b7fa331b94605863e542caa5e894dadd5ac6ac3d10e78a66d55e",
+        "affectsGlobalScope": false
+      },
+      "./src/components/transform.ts": {
+        "version": "7ce40b736aa85400561e8ac857e5cf3e68e3a5b512d47b4f1becf4c480451682",
+        "signature": "b7ea1766bbfd03c857503b0de7107ecb3040c0115ff0f10e743d56d287978a11",
+        "affectsGlobalScope": false
+      },
+      "./src/components/index.ts": {
+        "version": "0b66d20a9e7ceff9ee26901f2d5184b404214cc0d1ef050b006b904560a3cae1",
+        "signature": "89449602cf8124191fd6fb3c16e388a950e9df2a5e12d46d9bab77f28dfdeeb9",
+        "affectsGlobalScope": false
+      },
+      "./src/services/shape.ts": {
+        "version": "2c0a5929842527d3491610e03fb31e55c9ef872efc965a171080268c8bccda82",
+        "signature": "315d19fa33983de83a05eabb6da48486d885d20de11a214ffc4a3f2cee20abf8",
+        "affectsGlobalScope": false
+      },
+      "./src/services/index.ts": {
+        "version": "678aaf8392e199a5fab27fd8f5c3df7687ba125fc92bad5645afe753148e54b2",
+        "signature": "45e33896e2cb3a8f7723e911ed778c6f6b3a508ce4ba2e3f2fb19c4bc01e4b00",
+        "affectsGlobalScope": false
+      },
+      "./src/inversify.config.ts": {
+        "version": "3aca234f8fde78bb41ed2be93dec7605c51ebbbaf6ae9b54095b7bdadac05aed",
+        "signature": "551321ad74f0e47c56a9368fbe6621166b09314ab3119d8568b74897d68b289e",
         "affectsGlobalScope": false
       },
       "./src/systems/transform.ts": {
         "version": "dfaa54448fd4bbca9e3024ff016bd0894d8e2763af9850828cfef986cf7cb58b",
-        "signature": "35892bcfd92abcc885b8388679a6375b6c825b57707bed761c32b277b92d22da",
+        "signature": "68e3800e63131716a2fe7c492f222fae17b666141ccff8f46dfe6d808e652dae",
         "affectsGlobalScope": false
       },
       "./src/systems/hierarchy.ts": {
-        "version": "2c090ae9d5621b676b65931a60076e1391d48ebd20acafc34f86a6d94679ed38",
-        "signature": "a43e677f0ef4cf0daaf0b44ea84e72c662908705f7e13f8f05c9e62f877a6cc1",
-        "affectsGlobalScope": false
-      },
-      "./src/inversify.config.ts": {
-        "version": "a5f57aa7d0b86790d650b2e95b24bc8ed0b0ecb94648158fef224bdec2ad573b",
-        "signature": "9fec92c11f5f5fc11fb3bef437aa0f5aeb67e2ef0156f3954afc4573d0496dfc",
+        "version": "22ef3fbaf386520967794fd7161aee991c4d79c10086d145539cffe89dbff219",
+        "signature": "02d5a5e654d5cd68965d7990beb4e19213e8234db5b32bef0f87d3fc9594c2e1",
         "affectsGlobalScope": false
       },
       "./src/systems/renderer.ts": {
-        "version": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "signature": "3c2ff5138733d0d6a4cd9da1ad2c834c9d3427d51c228f9d572a587169f2aeda",
+        "version": "ced6161797a1c05af381657640104ad5e9fa97845cadcb7932c5e927cf34fb7e",
+        "signature": "ad95f7537743f68986a77444bd4312b114507f39a9aab0b3d7057002581066f7",
+        "affectsGlobalScope": false
+      },
+      "./src/shape.ts": {
+        "version": "50b3a067dc18112fbb6b2c14ea3733dd8987ed47a9423fee0a9dbbc3443d0216",
+        "signature": "624a9bcebbd08aa65c489bfe5272681e9c0a671afcc89418330b4c0cc794fbd6",
+        "affectsGlobalScope": false
+      },
+      "./src/canvas.ts": {
+        "version": "5e3ae0013264e8f457ddbed05d64a2900de5781135e4c033d73570ccaea388b1",
+        "signature": "8f71855299a24f53fb3e77a4f79a1728ec8fc1184c1733536848d16a942bb184",
+        "affectsGlobalScope": false
+      },
+      "./src/index.ts": {
+        "version": "95fcd34cd0372265719bfe47078229d46fb0d0f733dabc5e3d5aed575cb4ab4c",
+        "signature": "53125f4ff7da08885ffa2bd53efd0df9850c0e5b32d4d44a0f6af5c4d66a3926",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts": {
@@ -384,7 +484,8 @@
         "lib.es5.d.ts",
         "lib.es2015.d.ts",
         "lib.es2016.d.ts",
-        "lib.es2017.d.ts"
+        "lib.es2017.d.ts",
+        "lib.es2019.d.ts"
       ],
       "outDir": "./esm",
       "module": 99,
@@ -404,10 +505,12 @@
       ],
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
+      "resolveJsonModule": true,
       "downlevelIteration": true,
       "rootDir": "./src",
       "composite": true,
       "project": "./tsconfig.json",
+      "watch": true,
       "configFilePath": "./tsconfig.json"
     },
     "referencedMap": {
@@ -487,89 +590,157 @@
       "../../node_modules/inversify/dts/utils/serialization.d.ts": [
         "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
       ],
+      "./src/canvas.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/geometry.ts",
+        "./src/components/hierarchy.ts",
+        "./src/components/material.ts",
+        "./src/components/renderable.ts",
+        "./src/components/transform.ts",
+        "./src/contribution-provider.ts",
+        "./src/inversify.config.ts",
+        "./src/services/context.ts",
+        "./src/services/shape.ts",
+        "./src/shape.ts",
+        "./src/systems/hierarchy.ts",
+        "./src/systems/renderer.ts",
+        "./src/systems/transform.ts",
+        "./src/types.ts"
+      ],
       "./src/components/geometry.ts": [
         "../g-ecs/lib/index.d.ts"
       ],
       "./src/components/hierarchy.ts": [
         "../g-ecs/lib/index.d.ts"
       ],
+      "./src/components/index.ts": [
+        "./src/components/geometry.ts",
+        "./src/components/hierarchy.ts",
+        "./src/components/material.ts",
+        "./src/components/renderable.ts",
+        "./src/components/transform.ts"
+      ],
       "./src/components/material.ts": [
         "../g-ecs/lib/index.d.ts"
       ],
-      "./src/components/mesh.ts": [
+      "./src/components/renderable.ts": [
         "../g-ecs/lib/index.d.ts",
         "./src/components/geometry.ts",
         "./src/components/material.ts",
-        "./src/shape/index.ts"
+        "./src/shapes/index.ts",
+        "./src/types.ts"
       ],
       "./src/components/transform.ts": [
         "../../node_modules/gl-matrix/index.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
+      "./src/contribution-provider.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts"
+      ],
+      "./src/index.ts": [
+        "./src/canvas.ts",
+        "./src/components/index.ts",
+        "./src/contribution-provider.ts",
+        "./src/services/index.ts",
+        "./src/types.ts"
+      ],
       "./src/inversify.config.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
         "../../node_modules/reflect-metadata/index.d.ts",
         "../g-ecs/lib/index.d.ts",
-        "./src/components/geometry.ts",
-        "./src/components/hierarchy.ts",
-        "./src/components/material.ts",
-        "./src/components/mesh.ts",
-        "./src/components/transform.ts",
-        "./src/systems/hierarchy.ts",
-        "./src/systems/transform.ts"
+        "./src/services/index.ts"
       ],
-      "./src/shape/aabb.ts": [
+      "./src/services/context.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "./src/types.ts"
+      ],
+      "./src/services/index.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/contribution-provider.ts",
+        "./src/services/context.ts",
+        "./src/services/shape.ts"
+      ],
+      "./src/services/shape.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/index.ts",
+        "./src/types.ts"
+      ],
+      "./src/shape.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/types.ts"
+      ],
+      "./src/shapes/aabb.ts": [
         "../../node_modules/gl-matrix/index.d.ts",
-        "./src/shape/plane.ts"
+        "./src/shapes/plane.ts"
       ],
-      "./src/shape/boundingsphere.ts": [
+      "./src/shapes/boundingsphere.ts": [
         "../../node_modules/gl-matrix/index.d.ts"
       ],
-      "./src/shape/frustum.ts": [
+      "./src/shapes/frustum.ts": [
         "../../node_modules/gl-matrix/index.d.ts",
-        "./src/shape/plane.ts"
+        "./src/shapes/plane.ts"
       ],
-      "./src/shape/index.ts": [
-        "./src/shape/aabb.ts",
-        "./src/shape/boundingsphere.ts",
-        "./src/shape/frustum.ts",
-        "./src/shape/plane.ts",
-        "./src/shape/ray.ts"
+      "./src/shapes/index.ts": [
+        "./src/shapes/aabb.ts",
+        "./src/shapes/boundingsphere.ts",
+        "./src/shapes/frustum.ts",
+        "./src/shapes/plane.ts",
+        "./src/shapes/ray.ts"
       ],
-      "./src/shape/plane.ts": [
+      "./src/shapes/plane.ts": [
         "../../node_modules/gl-matrix/index.d.ts"
       ],
-      "./src/shape/ray.ts": [
+      "./src/shapes/ray.ts": [
         "../../node_modules/gl-matrix/index.d.ts",
-        "./src/shape/aabb.ts",
-        "./src/shape/boundingsphere.ts",
-        "./src/shape/plane.ts"
+        "./src/shapes/aabb.ts",
+        "./src/shapes/boundingsphere.ts",
+        "./src/shapes/plane.ts"
       ],
       "./src/systems/hierarchy.ts": [
         "../g-ecs/lib/index.d.ts",
         "./src/components/hierarchy.ts",
         "./src/components/transform.ts"
       ],
+      "./src/systems/renderer.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/renderable.ts",
+        "./src/services/shape.ts"
+      ],
       "./src/systems/transform.ts": [
         "../g-ecs/lib/index.d.ts",
         "./src/components/transform.ts"
       ],
+      "../g-ecs/lib/component.d.ts": [
+        "../g-ecs/lib/objectpool.d.ts"
+      ],
+      "../g-ecs/lib/entity.d.ts": [
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/objectpool.d.ts"
+      ],
       "../g-ecs/lib/index.d.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
         "../../node_modules/reflect-metadata/index.d.ts",
+        "../g-ecs/lib/component.d.ts",
         "../g-ecs/lib/entity.d.ts",
         "../g-ecs/lib/matcher.d.ts",
         "../g-ecs/lib/system.d.ts",
         "../g-ecs/lib/world.d.ts"
       ],
       "../g-ecs/lib/matcher.d.ts": [
+        "../g-ecs/lib/component.d.ts",
         "../g-ecs/lib/entity.d.ts"
       ],
       "../g-ecs/lib/system.d.ts": [
+        "../g-ecs/lib/component.d.ts",
         "../g-ecs/lib/entity.d.ts",
         "../g-ecs/lib/matcher.d.ts"
       ],
       "../g-ecs/lib/world.d.ts": [
+        "../g-ecs/lib/component.d.ts",
         "../g-ecs/lib/entity.d.ts",
         "../g-ecs/lib/system.d.ts"
       ]
@@ -651,61 +822,109 @@
       "../../node_modules/inversify/dts/utils/serialization.d.ts": [
         "../../node_modules/inversify/dts/interfaces/interfaces.d.ts"
       ],
+      "./src/canvas.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/contribution-provider.ts",
+        "./src/services/context.ts",
+        "./src/services/shape.ts",
+        "./src/types.ts"
+      ],
       "./src/components/geometry.ts": [
         "../g-ecs/lib/index.d.ts"
       ],
       "./src/components/hierarchy.ts": [
         "../g-ecs/lib/index.d.ts"
       ],
+      "./src/components/index.ts": [
+        "./src/components/geometry.ts",
+        "./src/components/hierarchy.ts",
+        "./src/components/material.ts",
+        "./src/components/renderable.ts",
+        "./src/components/transform.ts"
+      ],
       "./src/components/material.ts": [
         "../g-ecs/lib/index.d.ts"
       ],
-      "./src/components/mesh.ts": [
+      "./src/components/renderable.ts": [
         "../g-ecs/lib/index.d.ts",
         "./src/components/geometry.ts",
         "./src/components/material.ts",
-        "./src/shape/index.ts"
+        "./src/shapes/index.ts",
+        "./src/types.ts"
       ],
       "./src/components/transform.ts": [
         "../../node_modules/gl-matrix/index.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
+      "./src/contribution-provider.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts"
+      ],
+      "./src/index.ts": [
+        "./src/canvas.ts",
+        "./src/components/index.ts",
+        "./src/contribution-provider.ts",
+        "./src/services/index.ts",
+        "./src/types.ts"
+      ],
       "./src/inversify.config.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
         "../../node_modules/reflect-metadata/index.d.ts"
       ],
-      "./src/shape/aabb.ts": [
-        "../../node_modules/gl-matrix/index.d.ts",
-        "./src/shape/plane.ts"
+      "./src/services/context.ts": [
+        "./src/types.ts"
       ],
-      "./src/shape/boundingsphere.ts": [
+      "./src/services/index.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "./src/services/context.ts",
+        "./src/services/shape.ts"
+      ],
+      "./src/services/shape.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/types.ts"
+      ],
+      "./src/shape.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/types.ts"
+      ],
+      "./src/shapes/aabb.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "./src/shapes/plane.ts"
+      ],
+      "./src/shapes/boundingsphere.ts": [
         "../../node_modules/gl-matrix/index.d.ts"
       ],
-      "./src/shape/frustum.ts": [
+      "./src/shapes/frustum.ts": [
         "../../node_modules/gl-matrix/index.d.ts",
-        "./src/shape/plane.ts"
+        "./src/shapes/plane.ts"
       ],
-      "./src/shape/index.ts": [
-        "./src/shape/aabb.ts",
-        "./src/shape/boundingsphere.ts",
-        "./src/shape/frustum.ts",
-        "./src/shape/plane.ts",
-        "./src/shape/ray.ts"
+      "./src/shapes/index.ts": [
+        "./src/shapes/aabb.ts",
+        "./src/shapes/boundingsphere.ts",
+        "./src/shapes/frustum.ts",
+        "./src/shapes/plane.ts",
+        "./src/shapes/ray.ts"
       ],
-      "./src/shape/plane.ts": [
+      "./src/shapes/plane.ts": [
         "../../node_modules/gl-matrix/index.d.ts"
       ],
-      "./src/shape/ray.ts": [
+      "./src/shapes/ray.ts": [
         "../../node_modules/gl-matrix/index.d.ts",
-        "./src/shape/aabb.ts",
-        "./src/shape/boundingsphere.ts",
-        "./src/shape/plane.ts"
+        "./src/shapes/aabb.ts",
+        "./src/shapes/boundingsphere.ts",
+        "./src/shapes/plane.ts"
       ],
       "./src/systems/hierarchy.ts": [
         "../g-ecs/lib/index.d.ts"
       ],
+      "./src/systems/renderer.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
       "./src/systems/transform.ts": [
         "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-ecs/lib/component.d.ts": [
+        "../g-ecs/lib/objectpool.d.ts"
       ],
       "../g-ecs/lib/entity.d.ts": [
         "../g-ecs/lib/component.d.ts",
@@ -721,9 +940,11 @@
         "../g-ecs/lib/world.d.ts"
       ],
       "../g-ecs/lib/matcher.d.ts": [
+        "../g-ecs/lib/component.d.ts",
         "../g-ecs/lib/entity.d.ts"
       ],
       "../g-ecs/lib/system.d.ts": [
+        "../g-ecs/lib/component.d.ts",
         "../g-ecs/lib/entity.d.ts",
         "../g-ecs/lib/matcher.d.ts"
       ],
@@ -786,30 +1007,50 @@
       "../../node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts",
       "../../node_modules/typescript/lib/lib.es2017.string.d.ts",
       "../../node_modules/typescript/lib/lib.es2017.typedarrays.d.ts",
+      "../../node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts",
+      "../../node_modules/typescript/lib/lib.es2018.asynciterable.d.ts",
+      "../../node_modules/typescript/lib/lib.es2018.d.ts",
+      "../../node_modules/typescript/lib/lib.es2018.intl.d.ts",
+      "../../node_modules/typescript/lib/lib.es2018.promise.d.ts",
+      "../../node_modules/typescript/lib/lib.es2018.regexp.d.ts",
+      "../../node_modules/typescript/lib/lib.es2019.array.d.ts",
+      "../../node_modules/typescript/lib/lib.es2019.d.ts",
+      "../../node_modules/typescript/lib/lib.es2019.object.d.ts",
+      "../../node_modules/typescript/lib/lib.es2019.string.d.ts",
+      "../../node_modules/typescript/lib/lib.es2019.symbol.d.ts",
       "../../node_modules/typescript/lib/lib.es5.d.ts",
+      "./src/canvas.ts",
       "./src/components/geometry.ts",
       "./src/components/hierarchy.ts",
+      "./src/components/index.ts",
       "./src/components/material.ts",
-      "./src/components/mesh.ts",
+      "./src/components/renderable.ts",
       "./src/components/transform.ts",
-      "./src/identifier.ts",
+      "./src/contribution-provider.ts",
       "./src/index.ts",
       "./src/inversify.config.ts",
-      "./src/shape/aabb.ts",
-      "./src/shape/boundingsphere.ts",
-      "./src/shape/frustum.ts",
-      "./src/shape/index.ts",
-      "./src/shape/plane.ts",
-      "./src/shape/ray.ts",
+      "./src/services/context.ts",
+      "./src/services/index.ts",
+      "./src/services/shape.ts",
+      "./src/shape.ts",
+      "./src/shapes/aabb.ts",
+      "./src/shapes/boundingsphere.ts",
+      "./src/shapes/frustum.ts",
+      "./src/shapes/index.ts",
+      "./src/shapes/plane.ts",
+      "./src/shapes/ray.ts",
       "./src/systems/hierarchy.ts",
       "./src/systems/renderer.ts",
       "./src/systems/transform.ts",
+      "./src/types.ts",
+      "../g-ecs/lib/component.d.ts",
       "../g-ecs/lib/entity.d.ts",
       "../g-ecs/lib/index.d.ts",
       "../g-ecs/lib/matcher.d.ts",
+      "../g-ecs/lib/objectpool.d.ts",
       "../g-ecs/lib/system.d.ts",
       "../g-ecs/lib/world.d.ts"
     ]
   },
-  "version": "3.9.7"
+  "version": "3.9.9"
 }

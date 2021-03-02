@@ -1,9 +1,16 @@
 import { injectable } from 'inversify';
 import { ILifecycle } from './ObjectPool';
 
+let counter = 0;
+
 @injectable()
 export class Component<C = {}> implements ILifecycle {
   readonly tag: string;
+  readonly id = counter++;
+
+  public getId() {
+    return this.id;
+  }
 
   public copy(props: Partial<Omit<C, keyof Component>>): this {
     // @ts-ignore
@@ -13,8 +20,12 @@ export class Component<C = {}> implements ILifecycle {
   public clone(): Component<C> {
     return new Component().copy(this);
   }
-  public reset() {}
-  public dispose() {}
+  public reset() {
+    //
+  }
+  public dispose() {
+    //
+  }
 }
 
 export interface ComponentConstructor<C extends Component> {

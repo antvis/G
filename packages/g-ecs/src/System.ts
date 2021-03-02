@@ -1,5 +1,4 @@
 import { injectable } from 'inversify';
-import { Component } from './Component';
 import { Entity } from './Entity';
 import { Matcher } from './Matcher';
 
@@ -26,7 +25,7 @@ export interface ISystem {
   /**
    * run once at the end of your program
    */
-  tearDown?(): Promise<void> | void;
+  tearDown?(entities: Entity[]): Promise<void> | void;
 
   /**
    * all kind of components this system cares about
@@ -65,7 +64,7 @@ export abstract class System implements ISystem {
     return new Matcher();
   }
 
-  public execute(entities: Entity[]) {
+  public execute() {
     throw new Error();
   }
 }

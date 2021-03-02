@@ -3,6 +3,7 @@ import { ComponentConstructor, Component } from './Component';
 import { EntityManager } from './EntityManager';
 import { ILifecycle } from './ObjectPool';
 
+let counter = 0;
 /**
  * A bag of components
  * @see https://github.com/mzaks/EntitasCookBook/blob/master/chapters/1_ingredients/102_entity.md
@@ -12,7 +13,7 @@ export class Entity implements ILifecycle {
   /**
    * A unique ID for this entity.
    */
-  protected id: number;
+  protected id: number = counter++;
 
   /**
    * Whether or not the entity is alive or removed.
@@ -26,6 +27,10 @@ export class Entity implements ILifecycle {
 
   @inject(EntityManager)
   private entityManager: EntityManager;
+
+  public getId() {
+    return this.id;
+  }
 
   public getComponents(): Record<string, Component> {
     return this.components;
@@ -89,7 +94,9 @@ export class Entity implements ILifecycle {
     return this;
   }
 
-  public reset() {}
+  public reset() {
+    //
+  }
 
   public cast<C extends Component>(
     component: Component | undefined | null,

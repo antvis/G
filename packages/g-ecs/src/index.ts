@@ -12,23 +12,32 @@ import { System, SystemConstructor } from './System';
 import { SystemManager, ISystemRegistry } from './SystemManager';
 import { Matcher } from './Matcher';
 
-const containerModule = new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind) => {
-  decorate(injectable(), EventEmitter);
-  bind(IDENTIFIER.EventEmitter).to(EventEmitter);
+// bind EventEmitter only once
+let isEventEmitterBound = false;
+const containerModule = new ContainerModule((bind: interfaces.Bind) => {
+  if (!isEventEmitterBound) {
+    decorate(injectable(), EventEmitter);
+    bind(IDENTIFIER.EventEmitter).to(EventEmitter);
+    isEventEmitterBound = true;
+  }
 
   bind<interfaces.Factory<void>>(IDENTIFIER.ComponentRegistry).toFactory<void>((context: interfaces.Context) => {
     return (clazz: ComponentConstructor<Component>) => {
-      context.container.bind(clazz).toSelf();
+      if (!context.container.isBound(clazz)) {
+        context.container.bind(clazz).toSelf();
+      }
     };
   });
 
   bind<ISystemRegistry>(IDENTIFIER.SystemRegistry).toDynamicValue((context: interfaces.Context) => {
     return {
       register: (clazz: SystemConstructor<System>) => {
-        context.container.bind(IDENTIFIER.System).to(clazz).whenTargetNamed(clazz.tag);
+        if (!context.container.isBoundTagged(System, clazz.tag, clazz)) {
+          context.container.bind(System).to(clazz).inSingletonScope().whenTargetNamed(clazz.tag);
+        }
       },
       get: (clazz: SystemConstructor<System>) => {
-        return context.container.getNamed(IDENTIFIER.System, clazz.tag);
+        return context.container.getNamed(System, clazz.tag);
       },
     };
   });
