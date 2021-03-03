@@ -1,4 +1,4 @@
-import { ContextService, ContributionProvider, ShapeRenderer } from '@antv/g-core';
+import { ContextService, ContributionProvider, DefaultShapeRenderer } from '@antv/g-core';
 import { Entity } from '@antv/g-ecs';
 import { inject, injectable, named } from 'inversify';
 
@@ -8,7 +8,7 @@ export interface StyleRendererContribution {
 }
 
 @injectable()
-export abstract class BaseRenderer implements ShapeRenderer {
+export abstract class BaseRenderer extends DefaultShapeRenderer {
   @inject(ContextService)
   protected contextService: ContextService<CanvasRenderingContext2D>;
 
@@ -17,6 +17,10 @@ export abstract class BaseRenderer implements ShapeRenderer {
   protected handlers: ContributionProvider<StyleRendererContribution>;
 
   abstract generatePath(entity: Entity): void;
+
+  public onAttributeChanged(entity: Entity, name: string, value: any) {
+    super.onAttributeChanged(entity, name, value);
+  }
 
   render(entity: Entity) {
     const context = this.contextService.getContext();

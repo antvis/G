@@ -2,7 +2,7 @@ attribute vec2 a_extrude;
 attribute vec4 a_color;
 attribute float a_shape;
 attribute vec2 a_position;
-attribute float a_size;
+attribute vec2 a_size;
 
 uniform mat4 projectionMatrix;
 uniform mat4 modelViewMatrix;
@@ -19,9 +19,9 @@ varying float v_radius;
 
 void main() {
   v_color = a_color;
-  v_radius = a_size;
+  v_radius = a_size.x;
 
-  float antialiasblur = 1.0 / (a_size + u_stroke_width);
+  float antialiasblur = 1.0 / (a_size.x + u_stroke_width);
 
   vec2 offset = a_extrude * (a_size + u_stroke_width);
   gl_Position = vec4(a_position + offset, 0.0, 1.0);

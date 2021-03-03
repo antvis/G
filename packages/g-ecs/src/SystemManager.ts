@@ -46,10 +46,10 @@ export class SystemManager {
     this.systems.sort((a, b) => a.priority - b.priority);
   }
 
-  public async execute() {
+  public async execute(delta?: number, millis?: number) {
     for (const system of this.systems) {
       if (system.initialized && system.execute) {
-        await system.execute(this.getEntities(system));
+        await system.execute(this.getEntities(system), delta, millis);
       }
     }
   }

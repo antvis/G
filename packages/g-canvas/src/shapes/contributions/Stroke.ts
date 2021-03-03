@@ -12,7 +12,7 @@ export class StrokeRenderer implements StyleRendererContribution {
 
   apply(entity: Entity, context: CanvasRenderingContext2D) {
     const renderable = entity.getComponent(Renderable);
-    const { stroke, strokeOpacity, lineWidth = 1 } = renderable.attrs;
+    const { stroke, strokeOpacity, lineWidth = 0 } = renderable.attrs;
     if (!isNil(stroke)) {
       context.strokeStyle = this.styleParser.parse(stroke);
 

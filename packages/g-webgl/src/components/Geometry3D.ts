@@ -38,7 +38,7 @@ export class Geometry3D extends Component {
   public setAttribute(
     name: string,
     data: BufferData,
-    descriptor: GPUVertexBufferLayoutDescriptor,
+    descriptor?: GPUVertexBufferLayoutDescriptor,
     bufferGetter?: () => IBuffer
   ) {
     const existed = this.attributes.find((a) => a.name === name);
@@ -47,7 +47,7 @@ export class Geometry3D extends Component {
         dirty: true,
         name,
         data,
-        ...descriptor,
+        ...descriptor!,
         bufferGetter,
       });
     } else {

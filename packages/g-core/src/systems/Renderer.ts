@@ -15,6 +15,18 @@ export const ShapeRendererFactory = Symbol('ShapeRendererFactory');
 export const ShapeRenderer = Symbol('ShapeRenderer');
 export interface ShapeRenderer {
   render(entity: Entity): void;
+  onAttributeChanged(entity: Entity, name: string, value: any): void;
+}
+@injectable()
+export class DefaultShapeRenderer {
+  render(entity: Entity) {
+    //
+  }
+
+  onAttributeChanged(entity: Entity, name: string, value: any) {
+    const renderable = entity.getComponent(Renderable);
+    renderable.attrs[name] = value;
+  }
 }
 
 export const RendererFrameContribution = Symbol('RendererFrameContribution');

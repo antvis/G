@@ -24,32 +24,10 @@ void main() {
   if (shape == 0) {
     outer_df = sdCircle(v_data.xy, 1.0);
     inner_df = sdCircle(v_data.xy, r);
-  }
   // } else if (shape == 1) {
-  //   outer_df = sdEquilateralTriangle(1.1 * v_data.xy);
-  //   inner_df = sdEquilateralTriangle(1.1 / r * v_data.xy);
-  // } else if (shape == 2) {
-  //   outer_df = sdBox(v_data.xy, vec2(1.));
-  //   inner_df = sdBox(v_data.xy, vec2(r));
-  // } else if (shape == 3) {
-  //   outer_df = sdPentagon(v_data.xy, 0.8);
-  //   inner_df = sdPentagon(v_data.xy, r * 0.8);
-  // } else if (shape == 4) {
-  //   outer_df = sdHexagon(v_data.xy, 0.8);
-  //   inner_df = sdHexagon(v_data.xy, r * 0.8);
-  // } else if (shape == 5) {
-  //   outer_df = sdOctogon(v_data.xy, 1.0);
-  //   inner_df = sdOctogon(v_data.xy, r);
-  // } else if (shape == 6) {
-  //   outer_df = sdHexagram(v_data.xy, 0.52);
-  //   inner_df = sdHexagram(v_data.xy, r * 0.52);
-  // } else if (shape == 7) {
-  //   outer_df = sdRhombus(v_data.xy, vec2(1.0));
-  //   inner_df = sdRhombus(v_data.xy, vec2(r));
-  // } else if (shape == 8) {
-  //   outer_df = sdVesica(v_data.xy, 1.1, 0.8);
-  //   inner_df = sdVesica(v_data.xy, r * 1.1, r * 0.8);
-  // }
+  //   outer_df = sdEllipsoidApproximated();
+  //   inner_df = sdEllipsoidApproximated();
+  }
 
   float opacity_t = smoothstep(0.0, antialiased_blur, outer_df);
 

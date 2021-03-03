@@ -37,6 +37,7 @@ export const module = new ContainerModule((bind) => {
    */
   bind(CircleRenderer).toSelf().inSingletonScope();
   bind(ShapeRenderer).to(CircleRenderer).whenTargetNamed(SHAPE.Circle);
+  bind(ShapeRenderer).to(CircleRenderer).whenTargetNamed(SHAPE.Ellipse);
 
   /**
    * bind services

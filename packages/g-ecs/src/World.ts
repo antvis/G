@@ -67,7 +67,7 @@ export class World implements IWorldLifecycle {
     return this;
   }
 
-  public async execute(delta?: number, millis?: number) {
+  public async execute(delta?: number, millis?: number): Promise<void> {
     if (!delta) {
       millis = new Date().getTime();
       delta = millis - this.lastMillis;
@@ -90,5 +90,7 @@ export class World implements IWorldLifecycle {
 
   public destroy() {
     this.systemManager.destroy();
+    this.entityManager.destroy();
+    // this.componentManager.destroy();
   }
 }

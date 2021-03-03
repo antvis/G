@@ -5,10 +5,18 @@
   },
   "demos": [
     {
-      "filename": "basic.js",
+      "filename": "canvas.js",
       "title": {
-        "zh": "椭圆",
-        "en": "Ellipse"
+        "zh": "椭圆(Canvas)",
+        "en": "Ellipse(Canvas)"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8eoKRbfOwgAAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "webgl.js",
+      "title": {
+        "zh": "椭圆(WebGL)",
+        "en": "Ellipse(WebGL)"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8eoKRbfOwgAAAAAAAAAAAABkARQnAQ"
     }

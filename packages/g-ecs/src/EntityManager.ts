@@ -114,6 +114,11 @@ export class EntityManager extends EventEmitter {
     }
   }
 
+  public destroy() {
+    this.entities = [];
+    this.entitiesByNames = {};
+  }
+
   private removeComponentFromEntitySync<C extends Component<unknown>>(entity: Entity, clazz: ComponentConstructor<C>) {
     // Remove T listing on entity and property ref, then free the component.
     // entity._ComponentTypes.splice(index, 1);

@@ -20,7 +20,7 @@ export interface ISystem {
   /**
    * in a similar way to Unity's `Update()`, run once per frame
    */
-  execute(entities: Entity[]): Promise<void> | void;
+  execute(entities: Entity[], delta?: number, millis?: number): Promise<void> | void;
 
   /**
    * run once at the end of your program

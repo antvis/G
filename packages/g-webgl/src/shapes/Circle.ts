@@ -34,10 +34,42 @@ interface IInstanceAttributes {
   instancedPickingColors: number[];
 }
 
+/**
+ * Render circle & ellipse with SDF
+ */
 @injectable()
 export class CircleRenderer extends BaseRenderer {
   @inject(ShaderModuleService)
   private shaderModule: ShaderModuleService;
+
+  onAttributeChanged(entity: Entity, name: string, value: any) {
+    super.onAttributeChanged(entity, name, value);
+    const renderable = entity.getComponent(Renderable);
+    const material = entity.getComponent(Material3D);
+    const geometry = entity.getComponent(Geometry3D);
+    const { r = 0, lineWidth = 0, rx = 0, ry = 0 } = renderable.attrs;
+    if (name === 'fill') {
+      const fillColor = rgb2arr(value);
+      geometry.setAttribute('a_color', Float32Array.from(fillColor));
+    } else if (name === 'r') {
+      geometry.setAttribute('a_size', Float32Array.from([value - lineWidth / 2, value - lineWidth / 2]));
+    } else if (name === 'rx') {
+      geometry.setAttribute('a_size', Float32Array.from([value - lineWidth / 2, ry - lineWidth / 2]));
+    } else if (name === 'ry') {
+      geometry.setAttribute('a_size', Float32Array.from([rx - lineWidth / 2, value - lineWidth / 2]));
+    } else if (name === 'stroke') {
+      const strokeColor = rgb2arr(value);
+      material.setUniform('u_stroke_color', strokeColor);
+    } else if (name === 'fillOpacity') {
+      material.setUniform('u_opacity', value);
+    } else if (name === 'lineWidth') {
+      // 改变线宽时需要同时修改半径，保持与 Canvas 渲染效果一致
+      geometry.setAttribute('a_size', Float32Array.from([(rx || r) - value / 2, (ry || r) - value / 2]));
+      material.setUniform('u_stroke_width', value);
+    } else if (name === 'strokeOpacity') {
+      material.setUniform('u_stroke_opacity', value);
+    }
+  }
 
   buildModel(entity: Entity) {
     const renderable = entity.getComponent(Renderable);
@@ -47,12 +79,14 @@ export class CircleRenderer extends BaseRenderer {
     const {
       x = 0,
       y = 0,
+      rx = 0,
+      ry = 0,
       r = 1,
       fill = '',
       fillOpacity = 1,
       stroke = '',
       strokeOpacity = 1,
-      lineWidth = 1,
+      lineWidth = 0,
     } = renderable.attrs;
 
     const fillColor = rgb2arr(fill);
@@ -86,13 +120,15 @@ export class CircleRenderer extends BaseRenderer {
     material.setUniform({
       ...extractedUniforms,
       u_device_pixel_ratio: window.devicePixelRatio,
+      u_opacity: fillOpacity,
       u_stroke_color: strokeColor,
       u_stroke_width: lineWidth,
+      u_stroke_opacity: strokeOpacity,
     });
 
     const attributes = this.buildAttributes({
       position: [x, y],
-      size: [r, r],
+      size: [(rx || r) - lineWidth / 2, (ry || r) - lineWidth / 2],
       shape: 'circle',
       color: fillColor as [number, number, number, number], // sRGB
       opacity: fillOpacity,
@@ -142,13 +178,13 @@ export class CircleRenderer extends BaseRenderer {
     });
 
     geometry.setAttribute('a_size', Float32Array.from(attributes.instancedSizes), {
-      arrayStride: 4,
+      arrayStride: 4 * 2,
       stepMode: 'instance',
       attributes: [
         {
           shaderLocation: 3,
           offset: 0,
-          format: 'float',
+          format: 'float2',
         },
       ],
     });

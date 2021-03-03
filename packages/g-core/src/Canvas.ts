@@ -7,8 +7,10 @@ import { Geometry as CGeometry } from './components/Geometry';
 import { Material as CMaterial } from './components/Material';
 import { Renderable as CRenderable } from './components/Renderable';
 import { Cullable as CCullable } from './components/Cullable';
-import { CanvasConfig, Context as SContext } from './systems/Context';
+import { Animator as CAnimator } from './components/Animator';
+import { CanvasConfig, Context as SContext, ContextService } from './systems/Context';
 import { SceneGraph as SSceneGraph } from './systems/SceneGraph';
+import { Timeline as STimeline } from './systems/Timeline';
 import { Renderer as SRenderer, ShapeConfigHandlerContribution } from './systems/Renderer';
 import { Culling as SCulling } from './systems/Culling';
 import { AABB as SAABB } from './systems/AABB';
@@ -20,6 +22,8 @@ export class Canvas {
   protected container: Container;
   protected world: World;
   protected shapeConfigHandlerProvider: ContributionProvider<ShapeConfigHandlerContribution>;
+  private frameId: number;
+  private frameCallback: Function;
 
   constructor(private config: CanvasCfg) {
     this.container = createRootContainer();
@@ -30,8 +34,22 @@ export class Canvas {
     throw new Error('method not implemented');
   }
 
+  public onFrame(callback: Function) {
+    this.frameCallback = callback;
+  }
+
+  public destroy() {
+    this.world.destroy();
+    if (this.frameId) {
+      window.cancelAnimationFrame(this.frameId);
+    }
+  }
+
   public changeSize(width: number, height: number) {
-    // this.contextService.resize(width, height);
+    const contextService = this.container.get<ContextService<unknown>>(ContextService);
+    if (contextService) {
+      contextService.resize(width, height);
+    }
   }
 
   public addShape(cfg: ShapeCfg): IShape;
@@ -60,7 +78,7 @@ export class Canvas {
       handler.handle(entity, shapeType, config);
     });
 
-    const shape = new Shape();
+    const shape = this.container.get(Shape);
     shape.setEntity(entity);
 
     return shape;
@@ -68,6 +86,7 @@ export class Canvas {
 
   private async init() {
     this.container.bind(CanvasConfig).toConstantValue(this.config);
+    this.container.bind(Shape).toSelf();
     this.world = this.container.get(World);
 
     /**
@@ -79,6 +98,7 @@ export class Canvas {
       .registerComponent(CCullable)
       .registerComponent(CGeometry)
       .registerComponent(CMaterial)
+      .registerComponent(CAnimator)
       .registerComponent(CRenderable);
 
     this.shapeConfigHandlerProvider = this.container.getNamed(ContributionProvider, ShapeConfigHandlerContribution);
@@ -93,6 +113,7 @@ export class Canvas {
       .registerSystem(SAABB)
       .registerSystem(SCulling)
       .registerSystem(SSceneGraph)
+      .registerSystem(STimeline)
       .registerSystem(SRenderer);
 
     await this.run();
@@ -106,8 +127,11 @@ export class Canvas {
       // run all the systems
       await this.world.execute(delta, time);
 
+      if (this.frameCallback) {
+        this.frameCallback();
+      }
       lastTime = time;
-      requestAnimationFrame(tick);
+      this.frameId = requestAnimationFrame(tick);
     };
     await tick();
   }

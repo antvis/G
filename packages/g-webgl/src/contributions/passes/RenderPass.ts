@@ -168,7 +168,6 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     });
 
     if (renderable.model) {
-      console.log(material.uniforms);
       renderable.model.draw({
         uniforms: material.uniforms.reduce((cur: { [key: string]: IUniform }, prev: IUniformBinding) => {
           cur[prev.name] = prev.data;

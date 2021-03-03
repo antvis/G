@@ -24,9 +24,9 @@ export const module = new ContainerModule((bind) => {
 
   // register attribute renderer
   bindContributionProvider(bind, StyleRendererContribution);
+  bind(AlphaRenderer).toSelf().inSingletonScope();
   bind(FillRenderer).toSelf().inSingletonScope();
   bind(StrokeRenderer).toSelf().inSingletonScope();
-  bind(AlphaRenderer).toSelf().inSingletonScope();
   bind(LineDashRenderer).toSelf().inSingletonScope();
   bind(RestRenderer).toSelf().inSingletonScope();
   bind(StyleRendererContribution).toService(FillRenderer);

@@ -1,0 +1,16 @@
+.dg.main {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: black;
+}
+
+.dg.main li {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    list-style-type: none !important;
+}
+
+.dg li.title {
+    padding-left: 16px !important;
+}

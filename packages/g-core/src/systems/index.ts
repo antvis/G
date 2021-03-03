@@ -3,17 +3,24 @@ import { bindContributionProvider } from '../contribution-provider';
 import { CullingStrategy, DefaultCullingStrategy } from './Culling';
 import {
   DefaultShapeConfigHandler,
+  DefaultShapeRenderer,
   RendererFrameContribution,
   ShapeConfigHandlerContribution,
   ShapeRenderer,
   ShapeRendererFactory,
 } from './Renderer';
+import {
+  AttributeAnimationUpdaters,
+  ColorAttributeAnimationUpdater,
+  DefaultAttributeAnimationUpdater,
+} from './Timeline';
 
 const systemModule = new ContainerModule((bind) => {
   // shape handlers
   bindContributionProvider(bind, ShapeConfigHandlerContribution);
   bind(DefaultShapeConfigHandler).toSelf().inSingletonScope();
   bind(ShapeConfigHandlerContribution).toService(DefaultShapeConfigHandler);
+  bind(DefaultShapeRenderer).toSelf().inSingletonScope();
 
   // shape renderer factory
   bind<interfaces.Factory<ShapeRenderer>>(ShapeRendererFactory).toFactory<ShapeRenderer | null>(
@@ -42,6 +49,11 @@ const systemModule = new ContainerModule((bind) => {
 
   // renderer begin/end frame handlers
   bindContributionProvider(bind, RendererFrameContribution);
+
+  bind(DefaultAttributeAnimationUpdater).toSelf().inSingletonScope();
+  bind(ColorAttributeAnimationUpdater).toSelf().inSingletonScope();
+  bind(AttributeAnimationUpdaters).to(DefaultAttributeAnimationUpdater);
+  bind(AttributeAnimationUpdaters).to(ColorAttributeAnimationUpdater);
 });
 
 // export * from './AABB';

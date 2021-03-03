@@ -29,6 +29,7 @@ export class GeometrySystem extends System {
                 type: gl.FLOAT,
               });
             } else {
+              console.log(entity.getId(), attribute.data, attribute.buffer);
               attribute.buffer?.subData({
                 data: attribute.data,
                 // TODO: support offset in subdata
