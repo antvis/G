@@ -2,11 +2,11 @@ import { inject, injectable } from 'inversify';
 import { Entity } from './Entity';
 import { COMPONENT_EVENT, EntityManager } from './EntityManager';
 import { IDENTIFIER } from './identifier';
-import { ISystem, System, SystemConstructor } from './System';
+import { System, SystemConstructor } from './System';
 
 export interface ISystemRegistry {
   register(clazz: SystemConstructor<System>): void;
-  get(clazz: SystemConstructor<System>): ISystem;
+  get(clazz: SystemConstructor<System>): System;
 }
 
 @injectable()
@@ -17,7 +17,7 @@ export class SystemManager {
   @inject(EntityManager)
   private entityManager: EntityManager;
 
-  private systems: ISystem[] = [];
+  private systems: System[] = [];
 
   public registerSystem<S extends System>(clazz: SystemConstructor<S>) {
     this.registry.register(clazz);
@@ -62,7 +62,7 @@ export class SystemManager {
     });
   }
 
-  private getEntities(system: ISystem) {
+  private getEntities(system: System) {
     return system.trigger ? this.entityManager.queryByMatcher(system.trigger()) : this.entityManager.getAllEntities();
   }
 }

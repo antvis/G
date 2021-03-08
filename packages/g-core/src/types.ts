@@ -1,6 +1,9 @@
 // import { IShape, ICtor } from './interfaces';
+import { Entity } from '@antv/g-ecs';
 
-export interface IShape {}
+export interface IShape {
+  getEntity(): Entity;
+}
 
 // /** 对象 */
 // export interface LooseObject {
@@ -288,8 +291,8 @@ export type Animation = AnimateCfg & {
   startTime: number;
   pathFormatted: boolean;
   onFrame?: OnFrame;
-  _paused?: boolean;
-  _pauseTime?: number;
+  isPaused?: boolean;
+  pauseTime?: number;
 };
 
 // export type ShapeBase = {

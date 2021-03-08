@@ -1,6 +1,7 @@
 import * as d3 from 'd3-color';
 
 export function rgb2arr(str: string | null) {
+  // @ts-ignore
   const color = d3.color(str) as d3.RGBColor;
   const arr = [0, 0, 0, 0];
   if (color != null) {

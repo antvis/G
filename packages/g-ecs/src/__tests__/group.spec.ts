@@ -1,11 +1,11 @@
 import 'reflect-metadata';
 import { expect } from 'chai';
-import { Entity } from './Entity';
-import { Component } from './Component';
-import { World } from './World';
+import { Entity } from '../Entity';
+import { Component } from '../Component';
+import { World } from '../World';
 import { Container } from 'inversify';
-import { containerModule } from '.';
-import { Matcher } from './Matcher';
+import { containerModule } from '..';
+import { Matcher } from '../Matcher';
 
 class C1 extends Component {
   static tag = 'c1';

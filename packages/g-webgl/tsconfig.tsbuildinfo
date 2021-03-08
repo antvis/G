@@ -272,18 +272,23 @@
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/objectpool.d.ts": {
-        "version": "4466f9f331fab8d1942711beb4607fc1c4a71ae7cc0eb47958f24fa6dca1673f",
-        "signature": "4466f9f331fab8d1942711beb4607fc1c4a71ae7cc0eb47958f24fa6dca1673f",
+        "version": "a263cae7205886bdb01fded508b24f5484debae11a37259546d07f1c0006fbb4",
+        "signature": "a263cae7205886bdb01fded508b24f5484debae11a37259546d07f1c0006fbb4",
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/component.d.ts": {
-        "version": "09981969654e189a28732dd415417028fa3474e99c5359e3c46fddde447aa52b",
-        "signature": "09981969654e189a28732dd415417028fa3474e99c5359e3c46fddde447aa52b",
+        "version": "b9d8b9e960ba8495b518c1590e631645e524b7f42363b215ed017ffee6e2e71d",
+        "signature": "b9d8b9e960ba8495b518c1590e631645e524b7f42363b215ed017ffee6e2e71d",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/eventemitter3/index.d.ts": {
+        "version": "b80c780c52524beb13488942543972c8b0e54400e8b59cee0169f38d0fabb968",
+        "signature": "b80c780c52524beb13488942543972c8b0e54400e8b59cee0169f38d0fabb968",
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/entity.d.ts": {
-        "version": "e7dc7e3ed3d9f7d80b729d0ab24d0c05be70b4ebd9b166ea0d233c786f24cbfa",
-        "signature": "e7dc7e3ed3d9f7d80b729d0ab24d0c05be70b4ebd9b166ea0d233c786f24cbfa",
+        "version": "9e56403b78dd9ddca0ce38cd3b043c260f7f20572e3fa5d76f9f0643d7cdff14",
+        "signature": "9e56403b78dd9ddca0ce38cd3b043c260f7f20572e3fa5d76f9f0643d7cdff14",
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/matcher.d.ts": {
@@ -291,59 +296,49 @@
         "signature": "acd72013df6a1724604538721e1a3e2bfe5c898727a659da5d2f34696528521e",
         "affectsGlobalScope": false
       },
+      "../g-ecs/lib/entitymanager.d.ts": {
+        "version": "fc461b39e4faa430fafe8df7656503b1b7cdfd6922170fd0dbad462001cd0b14",
+        "signature": "fc461b39e4faa430fafe8df7656503b1b7cdfd6922170fd0dbad462001cd0b14",
+        "affectsGlobalScope": false
+      },
       "../g-ecs/lib/system.d.ts": {
-        "version": "6163a48dc0de5d23ea3e0e8fcef4d5b32d18812732cadccaf874d39634e7087d",
-        "signature": "6163a48dc0de5d23ea3e0e8fcef4d5b32d18812732cadccaf874d39634e7087d",
+        "version": "99e22f8611e73c01193b09f9350e6975b8e896de52f3a452100cc1a2c47308fb",
+        "signature": "99e22f8611e73c01193b09f9350e6975b8e896de52f3a452100cc1a2c47308fb",
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/world.d.ts": {
-        "version": "2cc034a96df33bfc310b8380b81eecd9bccca778675468172d8f097b64b82f8d",
-        "signature": "2cc034a96df33bfc310b8380b81eecd9bccca778675468172d8f097b64b82f8d",
+        "version": "044eb287f6166a8669ddf9c3502c94a553d9f3fb3eb4b4292bddbffb3efc0cb9",
+        "signature": "044eb287f6166a8669ddf9c3502c94a553d9f3fb3eb4b4292bddbffb3efc0cb9",
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/index.d.ts": {
-        "version": "15ba0ff8fb4f994f0dea9aefe8102ed9a63b79962d43a4e5066f65f4f5a4d0ca",
-        "signature": "15ba0ff8fb4f994f0dea9aefe8102ed9a63b79962d43a4e5066f65f4f5a4d0ca",
+        "version": "cb9a5466b5d7c8498db932e012703687a35f146c70cfbc00ca74dd9f73bb209e",
+        "signature": "cb9a5466b5d7c8498db932e012703687a35f146c70cfbc00ca74dd9f73bb209e",
         "affectsGlobalScope": false
       },
       "../g-core/lib/types.d.ts": {
-        "version": "abe864e7f59709e038283ae4fe68927e3f40fe1be474273e74dd53996beac2f6",
-        "signature": "abe864e7f59709e038283ae4fe68927e3f40fe1be474273e74dd53996beac2f6",
+        "version": "f4d5b966573e7d51042a2b2bdab992ab4c860e2cb9bc9b1dd56010a98e42670c",
+        "signature": "f4d5b966573e7d51042a2b2bdab992ab4c860e2cb9bc9b1dd56010a98e42670c",
         "affectsGlobalScope": false
       },
-      "../g-core/lib/services/context.d.ts": {
-        "version": "6839a62f63eed58095994e7b006e721a8cc62e6ba89a7c470665115eb69c6e45",
-        "signature": "6839a62f63eed58095994e7b006e721a8cc62e6ba89a7c470665115eb69c6e45",
+      "../g-core/lib/shape.d.ts": {
+        "version": "5a586a3a732dadac3344ffb74139300d6507650fbc2b774acdf0078a89b5f831",
+        "signature": "5a586a3a732dadac3344ffb74139300d6507650fbc2b774acdf0078a89b5f831",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/group.d.ts": {
+        "version": "ed73f5ed1afdf125e4cca78d012ef265228b6bbb59bbc2fbc7bd77bcee690af1",
+        "signature": "ed73f5ed1afdf125e4cca78d012ef265228b6bbb59bbc2fbc7bd77bcee690af1",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/canvas.d.ts": {
+        "version": "6e8ebf08a9b2335cb3134515a7af571d216761ad1de2792ca5a0885926e4224a",
+        "signature": "6e8ebf08a9b2335cb3134515a7af571d216761ad1de2792ca5a0885926e4224a",
         "affectsGlobalScope": false
       },
       "../g-core/lib/contribution-provider.d.ts": {
         "version": "8dfbe7bfbc469da72fd12474ad9e105a90070a2701aa25297856113a9866c877",
         "signature": "8dfbe7bfbc469da72fd12474ad9e105a90070a2701aa25297856113a9866c877",
-        "affectsGlobalScope": false
-      },
-      "../g-core/lib/services/shape.d.ts": {
-        "version": "315d19fa33983de83a05eabb6da48486d885d20de11a214ffc4a3f2cee20abf8",
-        "signature": "315d19fa33983de83a05eabb6da48486d885d20de11a214ffc4a3f2cee20abf8",
-        "affectsGlobalScope": false
-      },
-      "../g-core/lib/canvas.d.ts": {
-        "version": "8f71855299a24f53fb3e77a4f79a1728ec8fc1184c1733536848d16a942bb184",
-        "signature": "8f71855299a24f53fb3e77a4f79a1728ec8fc1184c1733536848d16a942bb184",
-        "affectsGlobalScope": false
-      },
-      "../g-core/lib/components/geometry.d.ts": {
-        "version": "781204d794a7585668eb9bec51c4c10c511167fd60af6f39f2aafb4ad2ce7d4a",
-        "signature": "781204d794a7585668eb9bec51c4c10c511167fd60af6f39f2aafb4ad2ce7d4a",
-        "affectsGlobalScope": false
-      },
-      "../g-core/lib/components/hierarchy.d.ts": {
-        "version": "a4c68bcfa5f192d0ba8ec9980464f43a16533c9f494d25e7fa7ca9589cc12c31",
-        "signature": "a4c68bcfa5f192d0ba8ec9980464f43a16533c9f494d25e7fa7ca9589cc12c31",
-        "affectsGlobalScope": false
-      },
-      "../g-core/lib/components/material.d.ts": {
-        "version": "6c1c9bb423b53216b232a2037abe6e81b61c54704e0728ccd203773acd795457",
-        "signature": "6c1c9bb423b53216b232a2037abe6e81b61c54704e0728ccd203773acd795457",
         "affectsGlobalScope": false
       },
       "../../node_modules/gl-matrix/index.d.ts": {
@@ -381,9 +376,24 @@
         "signature": "8383bd0b05e152503783736442bcd6bbae40bea50275af8cff8993324709ed89",
         "affectsGlobalScope": false
       },
+      "../g-core/lib/components/geometry.d.ts": {
+        "version": "58f0df1434a82a92ec7fb8858ae933ce7e4d4ace9d82fde9819965461c904300",
+        "signature": "58f0df1434a82a92ec7fb8858ae933ce7e4d4ace9d82fde9819965461c904300",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/components/hierarchy.d.ts": {
+        "version": "a4c68bcfa5f192d0ba8ec9980464f43a16533c9f494d25e7fa7ca9589cc12c31",
+        "signature": "a4c68bcfa5f192d0ba8ec9980464f43a16533c9f494d25e7fa7ca9589cc12c31",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/components/material.d.ts": {
+        "version": "6c1c9bb423b53216b232a2037abe6e81b61c54704e0728ccd203773acd795457",
+        "signature": "6c1c9bb423b53216b232a2037abe6e81b61c54704e0728ccd203773acd795457",
+        "affectsGlobalScope": false
+      },
       "../g-core/lib/components/renderable.d.ts": {
-        "version": "7be936ab8be1b7fa331b94605863e542caa5e894dadd5ac6ac3d10e78a66d55e",
-        "signature": "7be936ab8be1b7fa331b94605863e542caa5e894dadd5ac6ac3d10e78a66d55e",
+        "version": "deb0df64812af14c33671c00c02d5ccb100d0a00c3fb4226a7d833f732460789",
+        "signature": "deb0df64812af14c33671c00c02d5ccb100d0a00c3fb4226a7d833f732460789",
         "affectsGlobalScope": false
       },
       "../g-core/lib/components/transform.d.ts": {
@@ -396,24 +406,54 @@
         "signature": "89449602cf8124191fd6fb3c16e388a950e9df2a5e12d46d9bab77f28dfdeeb9",
         "affectsGlobalScope": false
       },
-      "../g-core/lib/services/index.d.ts": {
-        "version": "45e33896e2cb3a8f7723e911ed778c6f6b3a508ce4ba2e3f2fb19c4bc01e4b00",
-        "signature": "45e33896e2cb3a8f7723e911ed778c6f6b3a508ce4ba2e3f2fb19c4bc01e4b00",
+      "../g-core/lib/systems/culling.d.ts": {
+        "version": "7b84d438f0ccb7df2f6f860d478b3f3fe7dd18dd8bfd9ce56a8dc088bfe6d746",
+        "signature": "7b84d438f0ccb7df2f6f860d478b3f3fe7dd18dd8bfd9ce56a8dc088bfe6d746",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/systems/scenegraph.d.ts": {
+        "version": "8f924767fc412170e50e7b88652438647053598bf666446e7957d2d08df9ad00",
+        "signature": "8f924767fc412170e50e7b88652438647053598bf666446e7957d2d08df9ad00",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/systems/context.d.ts": {
+        "version": "c59a237725db02f7d21dc1b5600eb8684272eea67c4bb216ee1c4e4a205ce794",
+        "signature": "c59a237725db02f7d21dc1b5600eb8684272eea67c4bb216ee1c4e4a205ce794",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/systems/renderer.d.ts": {
+        "version": "20c81c3440cea3f03d498f60602e0ab7ce67b90abf3f9ff0f8fc5832eefd66a7",
+        "signature": "20c81c3440cea3f03d498f60602e0ab7ce67b90abf3f9ff0f8fc5832eefd66a7",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/systems/index.d.ts": {
+        "version": "3e520b27da7a311ae1634d70d73b9e7ad8b3f1b1daf5e01ce228df90b8696067",
+        "signature": "3e520b27da7a311ae1634d70d73b9e7ad8b3f1b1daf5e01ce228df90b8696067",
         "affectsGlobalScope": false
       },
       "../g-core/lib/index.d.ts": {
-        "version": "53125f4ff7da08885ffa2bd53efd0df9850c0e5b32d4d44a0f6af5c4d66a3926",
-        "signature": "53125f4ff7da08885ffa2bd53efd0df9850c0e5b32d4d44a0f6af5c4d66a3926",
+        "version": "e19ea8b61d36209818d9238d015b2a98008e878606e995d44c528fa5bf2df2b8",
+        "signature": "e19ea8b61d36209818d9238d015b2a98008e878606e995d44c528fa5bf2df2b8",
         "affectsGlobalScope": false
       },
-      "./src/shapes/base.ts": {
-        "version": "fed6349657af4a79b747151802ab13472a963089b98969243720d7d25ab9a3bc",
-        "signature": "1d6d9bbff16d70215e5a4c4f90fd59d1a3187f482bca5b2f8774570741f922d0",
+      "./src/landmark.ts": {
+        "version": "1b5024dff46ca6df5976608e00675867e83b5c42e85f494de83af1e7609b7405",
+        "signature": "dd18c04e1cc55fb0516b1824e607afa6dc876ae736352f593e756b6ff4eda65e",
         "affectsGlobalScope": false
       },
-      "./src/shapes/circle.ts": {
-        "version": "837c56188d3887eea49bd3a5c85fd9403cf3080bd679da6172f8d4ebb8eefc79",
-        "signature": "bdd2a6d192defa2a3ecea99ac7e58b2dfde40f535bd70c35ca171f5219e0dd72",
+      "../../node_modules/regl/dist/regl.d.ts": {
+        "version": "d0c2c14bb84ab08095097fd3f91dbeec19507cef8a2df2a1c01470d39c975b6e",
+        "signature": "d0c2c14bb84ab08095097fd3f91dbeec19507cef8a2df2a1c01470d39c975b6e",
+        "affectsGlobalScope": false
+      },
+      "./src/services/renderer/constants.ts": {
+        "version": "37d548595c2b45f00bd37cb33c957985da06809ba1e2a6c1b5a327860afa21c5",
+        "signature": "6377c3e0d9cee311a4948d319a2c8579f45527e079a867844450caac334a9ecf",
+        "affectsGlobalScope": false
+      },
+      "./src/services/renderer/index.ts": {
+        "version": "34fa109fdc1a3ad16ed442314abc84be18f40412f1dea2e6ca36946945285c9e",
+        "signature": "33f7e46b8fa050387fe115343b8abec9da9ff40171890deace56e0e14f47543b",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/lodash/common/common.d.ts": {
@@ -481,34 +521,74 @@
         "signature": "0714e2046df66c0e93c3330d30dbc0565b3e8cd3ee302cf99e4ede6220e5fec8",
         "affectsGlobalScope": true
       },
+      "../../node_modules/@types/lodash-es/isnumber.d.ts": {
+        "version": "164d633bbd4329794d329219fc173c3de85d5ad866d44e5b5f0fb60c140e98f2",
+        "signature": "164d633bbd4329794d329219fc173c3de85d5ad866d44e5b5f0fb60c140e98f2",
+        "affectsGlobalScope": false
+      },
+      "./src/utils/math.ts": {
+        "version": "b99adadfc5e739fa90f24614a69e8be01f04934050f464d0219b25e434b99c9d",
+        "signature": "e96662421a12b641d356e6375ddbe4b2e53abd1520bb3b60ec417604f551cd0f",
+        "affectsGlobalScope": false
+      },
+      "./src/camera.ts": {
+        "version": "66653d97ad470ec287316fe86f95c1ed32f8e605429fbb4076ed46ca821dbe21",
+        "signature": "92e124ba87ad4e9377e2115077281508da0403b58ae20533f0663531afb43b5f",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@webgpu/types/dist/index.d.ts": {
+        "version": "0600903664983c0e157cbbd988a8a6176faeaed509efe2eacc55bcadcee2de86",
+        "signature": "0600903664983c0e157cbbd988a8a6176faeaed509efe2eacc55bcadcee2de86",
+        "affectsGlobalScope": true
+      },
+      "../../node_modules/@types/lodash-es/istypedarray.d.ts": {
+        "version": "b2f1a443f7f3982d7325775906b51665fe875c82a62be3528a36184852faa0bb",
+        "signature": "b2f1a443f7f3982d7325775906b51665fe875c82a62be3528a36184852faa0bb",
+        "affectsGlobalScope": false
+      },
+      "./src/components/geometry3d.ts": {
+        "version": "f5e927ac40cefa51ba98b85e51e7879acbf6ec8097896c9576eefce7f73f24c5",
+        "signature": "e4f00fab1e4d20e87296812f39ef8f84c650d70f82169cd1377387a79ca76377",
+        "affectsGlobalScope": false
+      },
+      "./src/components/material3d.ts": {
+        "version": "50a3f5920fbb67d0710ae31c94de0137b49a0217004d63331893196a37015add",
+        "signature": "b6e9a423b8a9ae6240a258bfc982bfcb3a78dbaa56d448dc8cd0ac4fecd41c68",
+        "affectsGlobalScope": false
+      },
+      "./src/shapes/base.ts": {
+        "version": "e26e65b75d1603b504ac2f35169b838e447461588a341c2a7707d7845cd7ab7e",
+        "signature": "ae4e9514691a6b165f350147ef9cbc60f775f1b899e453fe8998bac7453d34bf",
+        "affectsGlobalScope": false
+      },
       "../../node_modules/@types/lodash-es/uniq.d.ts": {
         "version": "64a918a5aa97a37400ec085ffeea12a14211aa799cd34e5dc828beb1806e95bb",
         "signature": "64a918a5aa97a37400ec085ffeea12a14211aa799cd34e5dc828beb1806e95bb",
         "affectsGlobalScope": false
       },
       "./src/utils/shader-module.ts": {
-        "version": "345cee048dce03cd8a44bc3329392ead75b4d2a890e02b9056ede2a9ee7f1b86",
+        "version": "7c419a86422a4ad6433acfb91de76d148d36e493ca8a52a311860bec90a82f97",
         "signature": "a9092e7cde072f344ad9c4c33e67ab49ef562a185905bda76605babc2f0a7952",
         "affectsGlobalScope": false
       },
-      "../../node_modules/regl/dist/regl.d.ts": {
-        "version": "d0c2c14bb84ab08095097fd3f91dbeec19507cef8a2df2a1c01470d39c975b6e",
-        "signature": "d0c2c14bb84ab08095097fd3f91dbeec19507cef8a2df2a1c01470d39c975b6e",
-        "affectsGlobalScope": false
-      },
-      "./src/services/renderer/constants.ts": {
-        "version": "7dad487ab8a7c456152af3ecf92b6f2f9905c0875dda06465a7dbe5fb4c5378e",
-        "signature": "6377c3e0d9cee311a4948d319a2c8579f45527e079a867844450caac334a9ecf",
-        "affectsGlobalScope": false
-      },
-      "./src/services/renderer/index.ts": {
-        "version": "412d4cfd1546292d2d343fdee8438fab78e4952813e8be43206487f0e4768628",
-        "signature": "f236bc2c40312efcaf3b852f76b8d3b9d6563dfa049d053dc5fa964b502091b3",
-        "affectsGlobalScope": false
-      },
       "./src/services/shader-module/index.ts": {
-        "version": "b48925befdc4748b919643f7b9549506c48fab2f187e89f07693eb36240499f8",
-        "signature": "75321ac4b82f8a1594bd18d4f1864f8d70504fdd63ce5aaaebc5a31cb78ae014",
+        "version": "3fc959d4f5c0b1e06ca4c14fcc2390b96cb94a1a2639bec4eae0fd3f9d1befb8",
+        "signature": "e0582cc4306b490775de9f6ca114f3eaa48bb7d3258b6b35c2b29c3991086a04",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/d3-color/index.d.ts": {
+        "version": "15a78227f590be693f3e769774b574c177fe17fa0ac6cbeaa6438fa82d5ce577",
+        "signature": "15a78227f590be693f3e769774b574c177fe17fa0ac6cbeaa6438fa82d5ce577",
+        "affectsGlobalScope": false
+      },
+      "./src/utils/color.ts": {
+        "version": "372ab1365db66d0dcea37faa94a9ff0824f6e849b6ca0e913f7144dc91744519",
+        "signature": "9ddd839b20941b12a01ca6bf51fa4d08bfd3d032c3fc241f62657ad8a2c634db",
+        "affectsGlobalScope": false
+      },
+      "./src/shapes/circle.ts": {
+        "version": "7911381d713f685c6302b090199edc9ebc18857e70b04ad2e8930c7f35dbe5ad",
+        "signature": "d87d85b7495138921fe7ead1c1dd5588b2b6659a596979c625ff78d78952fb94",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/lodash-es/isstring.d.ts": {
@@ -516,33 +596,48 @@
         "signature": "81c376c9e4d227a4629c7fca9dde3bbdfa44bd5bd281aee0ed03801182368dc5",
         "affectsGlobalScope": false
       },
+      "./src/utils/browser.ts": {
+        "version": "6565a4f268a57501537e14bb652043ec7428237156c7abcfb4c8a75e4800f9ff",
+        "signature": "c1e06b3a2f3311b860c6d3b3af7781f93f5eceb18d7d231055a2e6a1b6e63340",
+        "affectsGlobalScope": false
+      },
+      "./src/utils/dom.ts": {
+        "version": "adb8390e4928febaebe59a85119efad2651f7e1ba4723f554e5428be8d9e55dc",
+        "signature": "b9f66b5e91fb79e7a728d4d1f7fd90e64439c69550e1971b5fdcdb57c9d54966",
+        "affectsGlobalScope": false
+      },
+      "./src/view.ts": {
+        "version": "0ddc6ea05aa7340ccc9cfa5cc0cf04984dd8e438b7cc1e04dc7d6aa40c81f072",
+        "signature": "880d314b9bcbe7bf9fec0c8b2afd5b58f72f0bbe6f5455d66e217094946b82d3",
+        "affectsGlobalScope": false
+      },
       "./src/webglcontext.ts": {
-        "version": "af3844b59508170fcbeeeeb92d9319cb844e89f96b913eb70cf3f2fa759c4245",
-        "signature": "5eb1cd10e547a7a1864eedba8c4b396c17b6900032bf61d75cef9f7e61f203fe",
+        "version": "eb14e08378f4a0a54e3382e510e0cd40ec89bb2c90c2a28f8daa67e4c38381c4",
+        "signature": "77fbe505d318ec4c5cd9a40a443079219a636f40a07b16cf51853fb62393edcb",
         "affectsGlobalScope": false
       },
       "./src/services/renderer/regl/reglbuffer.ts": {
-        "version": "0edbc150e94c1de6b9daa8c17547af71c38eecfcf21919e36ae45f65f29cc340",
+        "version": "40a8b6e53b06a70d5703613987b4b63375f1f5ebf1a6d3843129d8a589c5613f",
         "signature": "aba4880fdd0e72110735a03f2ac4aed0417bbbff74bbc6b088e60ed2be64bcb7",
         "affectsGlobalScope": false
       },
       "./src/services/renderer/regl/reglattribute.ts": {
-        "version": "969e2ab0b0baa35af1d383ca720752ec531194101e1a3dd5760a30385d230cf9",
+        "version": "7ff66ab52580c5270efbb7ae1814de4508066600f2a5edc505a8f6aae06d737a",
         "signature": "6106ee3469ffcdca691316def6b1d809013d3bdc26e16965b64c7724b42d6a3c",
         "affectsGlobalScope": false
       },
       "./src/services/renderer/regl/reglelements.ts": {
-        "version": "84be615ab8de24b7dfe4acb57b15c199116d8e396a89dae7482cca4ae26e15ff",
-        "signature": "68770b130339168ec8bd1be629282f123790d5040b84e0e6bac0fee4f6eb8cbf",
+        "version": "5ecc8fa76df042de72b3133c4c72614e3a2c341ed068f272ecfc5cce2a14a42d",
+        "signature": "096efa34f8afc9a09fdf0894c37e6aaeb42340f4c08ecc7c259ca00ee0402b00",
         "affectsGlobalScope": false
       },
       "./src/services/renderer/regl/regltexture2d.ts": {
-        "version": "31d27a9ca9f5cd5bbcdd8d2139617a9bfe72e0dfa1bf11dc1280e655751c6501",
+        "version": "124b040969c99f7409876c246cdb5ae3dbfe913d9690727be958c2d1f8fb6200",
         "signature": "f999b39a1cac449d2834d088e62dc27eee44be84faedbc0b3fcaa7a055615c73",
         "affectsGlobalScope": false
       },
       "./src/services/renderer/regl/reglframebuffer.ts": {
-        "version": "ad689ed110051dad06945045240179a25754b7dbd07456936baf06d7302ac42a",
+        "version": "9988fdca53ce59b22a077bbf860c4123f4e86df96057a084924433aef782a809",
         "signature": "afe7c4bea2a69da1aadab55561e7147a79cd12ecacd923c0f21162d8069a0f3b",
         "affectsGlobalScope": false
       },
@@ -551,43 +646,113 @@
         "signature": "8816b4b3a87d9b77f0355e616b38ed5054f993cc4c141101297f1914976a94b1",
         "affectsGlobalScope": false
       },
-      "../../node_modules/@types/lodash-es/istypedarray.d.ts": {
-        "version": "b2f1a443f7f3982d7325775906b51665fe875c82a62be3528a36184852faa0bb",
-        "signature": "b2f1a443f7f3982d7325775906b51665fe875c82a62be3528a36184852faa0bb",
-        "affectsGlobalScope": false
-      },
       "./src/utils/uniform.ts": {
-        "version": "d9660f25c20aef367579ce1f4fb0892a953c7228f0ad85c13bf7bf2bab52b7c6",
+        "version": "6469ddd596b52a49e875ed9bb338b944b478b56f7ee47744e3fead81a5ef4c3e",
         "signature": "f33bf28eaa0a69052137c8b9bff2516194b238266550d7d2abe8cf7d092a8398",
         "affectsGlobalScope": false
       },
       "./src/services/renderer/regl/reglmodel.ts": {
-        "version": "47add2073595022a4976796b2b7523c9a2eef4fdc49125d44872a26aeda0e6ff",
+        "version": "b1af144ce92c3e6a829ec02d920b65640dbb1b4d6d21c528f0ea2967c7b3ce49",
         "signature": "fc3530eeb03ad1af4bdeed8ecfc08ad0d9ddd526292e656f2aa35961a6e3feb4",
         "affectsGlobalScope": false
       },
       "./src/services/renderer/regl/index.ts": {
-        "version": "4efefc97e7e698feba3d3ef17ff38afc4e68ec2c4e715bff31cf46a278b070c6",
-        "signature": "15c41b753dbc62d7e420edd1197e20a11a4b7253e91d6a630c7d102b3de082fe",
+        "version": "3d3f7d6998667fdc3ec5add1b0556799cf2769b2f8f8632de431841251b237d0",
+        "signature": "80a1a9d179fda6db09287f0e7c44cd45aa3e55f2fede871b0de1a6f0f8045c2f",
+        "affectsGlobalScope": false
+      },
+      "./src/components/framegraph/framegraphhandle.ts": {
+        "version": "7d88700976a267fd9cb4241b18f966899a8086d620fca2d6dda92f2612002d79",
+        "signature": "497a56914429de615fb98302b0ca759d443244f3636c71497f81f7665df10c56",
+        "affectsGlobalScope": false
+      },
+      "./src/components/framegraph/framegraphpass.ts": {
+        "version": "d4c8636da73a6a100b70ed78797fdbd99e79f27985de8ea1f71b0e4823fd411d",
+        "signature": "cfbca6212483581e3e4813f2787db6a7b383e16b944b7b1eed4f926816de1346",
+        "affectsGlobalScope": false
+      },
+      "./src/components/framegraph/resourcenode.ts": {
+        "version": "f5d6408506b94ead95ae3908bc80efad7fae1dcada2bdfdc903857e065c6e9b8",
+        "signature": "6286caf770a94e8ef2ad2b72f4863f21f65e6447d7ae9675bfd676e0d0015f99",
+        "affectsGlobalScope": false
+      },
+      "./src/systems/framegraph.ts": {
+        "version": "f85ffbf96d25d6283ab6f31998fefaf7ea3f028560e0acb95f4f00784fcb992e",
+        "signature": "77abd6786d8326c661e3d8655ccbe63a0babd78c008c1313521f1ffbe497ec47",
+        "affectsGlobalScope": false
+      },
+      "./src/components/framegraph/passnode.ts": {
+        "version": "b041be4fbdf66c7882714f3f724c0661deb84f215f20322a1eedbc94db348619",
+        "signature": "075375c0ccf6f0fa4ae33f58e18b22247d26e474c3394fad338cad17d0717b0b",
+        "affectsGlobalScope": false
+      },
+      "./src/components/framegraph/virtualresource.ts": {
+        "version": "db041332927ae1d77d2311fcc4588e531f26baba7266410a50f3426b9d94d680",
+        "signature": "5e606b550e10c32b506d74788cdbb97c2a9e519963a8e3faf79efb6d7dd01dae",
+        "affectsGlobalScope": false
+      },
+      "./src/components/framegraph/resourceentry.ts": {
+        "version": "9602d6988a42b6281ed9b8998f346fa3759c4c17e3278aeee6527c64793408de",
+        "signature": "89fa609f2b1c6a79e2b74b8a9ec642ced914f71491f902540b90d34e5548f4dd",
+        "affectsGlobalScope": false
+      },
+      "./src/components/framegraph/resourcepool.ts": {
+        "version": "24436d1015f02b64fe9c7ae07278dc947c5eb579c0a92e9ffd6105116c295209",
+        "signature": "541bae4f5bcf8e462acb4699555b7a25823584278725ecbbeda3c7f049327220",
+        "affectsGlobalScope": false
+      },
+      "./src/contributions/passes/renderpass.ts": {
+        "version": "ebf68699268362caf459ba552fcf047b583503b5cc99021508f524bd837b50bf",
+        "signature": "91538dcdf26d999263d0a12e316f9b39a71a6227aaa40c7cc7dceac64148484a",
+        "affectsGlobalScope": false
+      },
+      "./src/contributions/passes/copypass.ts": {
+        "version": "b75d38e2b61dbed3e5f8f1437e288a7075a86a6f52da297516f8c76c1d379d57",
+        "signature": "d02cd8707c3dabf765c7ab8b464233a6a4e440d7d8c2f7c5a02b7ec941688240",
+        "affectsGlobalScope": false
+      },
+      "./src/contributions/passes/pixelpickingpass.ts": {
+        "version": "3d4ec273f08f81041e37b927c0254053fd8e2be1328f8dc56a877ec814592b84",
+        "signature": "e75535a38dc74b72457a03478a272768a4f65c0f4e502ac48b737469f01240a0",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/components/cullable.d.ts": {
+        "version": "81c27d02c271ecdadb14b6bba512a781bbb187074a522a85ccec0d311cf7ea43",
+        "signature": "81c27d02c271ecdadb14b6bba512a781bbb187074a522a85ccec0d311cf7ea43",
+        "affectsGlobalScope": false
+      },
+      "./src/contributions/frustumculling.ts": {
+        "version": "bb51c0487becf4b098f64ec17a672b0a48e6664bf491c1c63faeaf50a1a8f4ac",
+        "signature": "b019fb880c943d813e8e52e411d1dd50dd8814ec4f16fb941afcc0aeadfd5ef3",
+        "affectsGlobalScope": false
+      },
+      "./src/contributions/compileframegraph.ts": {
+        "version": "adef072cf8a7f5d523825c7b22be3042a2d7cfad12a89e3e8bdabeb6168cd691",
+        "signature": "a966f1772bfdf003684564f4bff75b743e7dc6930a28357b3862af9442252e6c",
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
-        "version": "2e89ffef9afba9401f7df3b54314eb2bf9724725997e6443f00cf175f2554c42",
-        "signature": "e0059ce4f6d91a78cfb08ebc6608dd6c5bdf2bd678fe09c8c6a091887f5f139f",
+        "version": "4d0b43fa0eababa37f329bfa5a68e36510e5cb2e5aa85bdb770f186278ba0256",
+        "signature": "dc9002da210816424d9127c590719dbf1dd1a0e88e794c6802010d066274555f",
+        "affectsGlobalScope": false
+      },
+      "./src/systems/geometry.ts": {
+        "version": "464a324ba63c614458820424dcbfe5750cc29e351410f5e5e6d94c79ed26590d",
+        "signature": "f6e20febd46be929dab4981a73200aa29ea3e440f07f25acadc28fd8dc3815bd",
         "affectsGlobalScope": false
       },
       "./src/canvas.ts": {
-        "version": "342aaa7bc031734752cb0a29ccfc9941f265b0a4507a1a93e2900c07177e5209",
-        "signature": "cf33fec8a03a6951525af4f838a99699a6f0abb002dad44ffd044f93ee2a9b4a",
+        "version": "4f7a9f27926aa3c80faac4c59ccb2c36bf77aba5e128fd4d3c2a0d17c6f2acc8",
+        "signature": "d66a5d16497389589331f5643a809dadc7ff4eb1ad4588cc1904185ecd328fd3",
         "affectsGlobalScope": false
       },
       "./src/glsl.d.ts": {
-        "version": "db642de7590fa4d1d85c18e72ed57b2936ef65b4c139cbb47583dd25c0c3df22",
-        "signature": "db642de7590fa4d1d85c18e72ed57b2936ef65b4c139cbb47583dd25c0c3df22",
+        "version": "95f3f4d8ad60bccff9ed9e4a5560e9383d181b640cc318400b05783b5cc5d24f",
+        "signature": "95f3f4d8ad60bccff9ed9e4a5560e9383d181b640cc318400b05783b5cc5d24f",
         "affectsGlobalScope": false
       },
       "./src/services/renderer/regl/reglrenderbuffer.ts": {
-        "version": "832ef8f2b000f5f2fe92e8927ea609bd68ddf4e687f76781a72ef294bff62253",
+        "version": "e7a7c3fd16a560b510d0d3122a3e29b3aec2cdf77451161818960716a7d556c3",
         "signature": "80fc25e99bf34a728324210466c309ec02a6b93fa2ad07ede8b9d07db0c51a69",
         "affectsGlobalScope": false
       },
@@ -647,8 +812,8 @@
         "lib.es2017.d.ts",
         "lib.es2019.d.ts"
       ],
-      "outDir": "./esm",
-      "module": 99,
+      "outDir": "./lib",
+      "module": 1,
       "jsx": 2,
       "strict": true,
       "declaration": true,
@@ -670,7 +835,7 @@
       "rootDir": "./src",
       "composite": true,
       "project": "./tsconfig.json",
-      "watch": true,
+      "declarationDir": "./lib",
       "configFilePath": "./tsconfig.json"
     },
     "referencedMap": {
@@ -697,6 +862,9 @@
       ],
       "../../node_modules/@types/jest/ts3.2/index.d.ts": [
         "../../node_modules/@types/jest/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash-es/isnumber.d.ts": [
+        "../../node_modules/@types/lodash/index.d.ts"
       ],
       "../../node_modules/@types/lodash-es/isplainobject.d.ts": [
         "../../node_modules/@types/lodash/index.d.ts"
@@ -946,13 +1114,15 @@
       ],
       "../g-core/lib/canvas.d.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
-        "../g-core/lib/contribution-provider.d.ts",
-        "../g-core/lib/services/context.d.ts",
-        "../g-core/lib/services/shape.d.ts",
+        "../g-core/lib/group.d.ts",
         "../g-core/lib/types.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
+      "../g-core/lib/components/cullable.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
       "../g-core/lib/components/geometry.d.ts": [
+        "../g-core/lib/shapes/index.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
       "../g-core/lib/components/hierarchy.d.ts": [
@@ -969,8 +1139,6 @@
         "../g-ecs/lib/index.d.ts"
       ],
       "../g-core/lib/components/renderable.d.ts": [
-        "../g-core/lib/components/geometry.d.ts",
-        "../g-core/lib/components/material.d.ts",
         "../g-core/lib/shapes/index.d.ts",
         "../g-core/lib/types.d.ts",
         "../g-ecs/lib/index.d.ts"
@@ -982,22 +1150,19 @@
       "../g-core/lib/contribution-provider.d.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts"
       ],
+      "../g-core/lib/group.d.ts": [
+        "../g-core/lib/shape.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
       "../g-core/lib/index.d.ts": [
         "../g-core/lib/canvas.d.ts",
         "../g-core/lib/components/index.d.ts",
         "../g-core/lib/contribution-provider.d.ts",
-        "../g-core/lib/services/index.d.ts",
+        "../g-core/lib/shapes/index.d.ts",
+        "../g-core/lib/systems/index.d.ts",
         "../g-core/lib/types.d.ts"
       ],
-      "../g-core/lib/services/context.d.ts": [
-        "../g-core/lib/types.d.ts"
-      ],
-      "../g-core/lib/services/index.d.ts": [
-        "../../node_modules/inversify/dts/inversify.d.ts",
-        "../g-core/lib/services/context.d.ts",
-        "../g-core/lib/services/shape.d.ts"
-      ],
-      "../g-core/lib/services/shape.d.ts": [
+      "../g-core/lib/shape.d.ts": [
         "../g-core/lib/types.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
@@ -1028,6 +1193,31 @@
         "../g-core/lib/shapes/boundingsphere.d.ts",
         "../g-core/lib/shapes/plane.d.ts"
       ],
+      "../g-core/lib/systems/context.d.ts": [
+        "../g-core/lib/types.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/systems/culling.d.ts": [
+        "../g-core/lib/contribution-provider.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/systems/index.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/systems/context.d.ts",
+        "../g-core/lib/systems/culling.d.ts",
+        "../g-core/lib/systems/renderer.d.ts",
+        "../g-core/lib/systems/scenegraph.d.ts"
+      ],
+      "../g-core/lib/systems/renderer.d.ts": [
+        "../g-core/lib/types.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/systems/scenegraph.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/types.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
       "../g-ecs/lib/component.d.ts": [
         "../g-ecs/lib/objectpool.d.ts"
       ],
@@ -1035,11 +1225,18 @@
         "../g-ecs/lib/component.d.ts",
         "../g-ecs/lib/objectpool.d.ts"
       ],
+      "../g-ecs/lib/entitymanager.d.ts": [
+        "../../node_modules/eventemitter3/index.d.ts",
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/matcher.d.ts"
+      ],
       "../g-ecs/lib/index.d.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
         "../../node_modules/reflect-metadata/index.d.ts",
         "../g-ecs/lib/component.d.ts",
         "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/entitymanager.d.ts",
         "../g-ecs/lib/matcher.d.ts",
         "../g-ecs/lib/system.d.ts",
         "../g-ecs/lib/world.d.ts"
@@ -1058,25 +1255,153 @@
         "../g-ecs/lib/entity.d.ts",
         "../g-ecs/lib/system.d.ts"
       ],
-      "./src/canvas.ts": [
-        "../g-core/lib/index.d.ts",
-        "./src/index.ts"
-      ],
-      "./src/index.ts": [
+      "./src/camera.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
         "../../node_modules/inversify/dts/inversify.d.ts",
         "../g-core/lib/index.d.ts",
+        "./src/landmark.ts",
+        "./src/services/renderer/index.ts",
+        "./src/utils/math.ts"
+      ],
+      "./src/canvas.ts": [
+        "../g-core/lib/index.d.ts",
+        "./src/camera.ts",
+        "./src/components/geometry3d.ts",
+        "./src/components/material3d.ts",
+        "./src/index.ts",
+        "./src/systems/framegraph.ts",
+        "./src/systems/geometry.ts"
+      ],
+      "./src/components/framegraph/framegraphpass.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/systems/framegraph.ts"
+      ],
+      "./src/components/framegraph/passnode.ts": [
+        "./src/components/framegraph/framegraphhandle.ts",
+        "./src/components/framegraph/virtualresource.ts",
+        "./src/systems/framegraph.ts"
+      ],
+      "./src/components/framegraph/resourceentry.ts": [
+        "./src/components/framegraph/framegraphhandle.ts",
+        "./src/components/framegraph/virtualresource.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/components/framegraph/resourcenode.ts": [
+        "./src/components/framegraph/passnode.ts",
+        "./src/components/framegraph/resourceentry.ts"
+      ],
+      "./src/components/framegraph/resourcepool.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "./src/components/framegraph/resourceentry.ts",
+        "./src/services/renderer/constants.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/components/framegraph/virtualresource.ts": [
+        "./src/components/framegraph/passnode.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/components/geometry3d.ts": [
+        "../../node_modules/@types/lodash-es/istypedarray.d.ts",
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../g-core/lib/index.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/components/material3d.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/services/renderer/constants.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/contributions/compileframegraph.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/index.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/framegraph/resourcepool.ts",
+        "./src/contributions/passes/copypass.ts",
+        "./src/contributions/passes/renderpass.ts",
+        "./src/services/renderer/index.ts",
+        "./src/systems/framegraph.ts"
+      ],
+      "./src/contributions/frustumculling.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/components/cullable.d.ts",
+        "../g-core/lib/index.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/camera.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/contributions/passes/copypass.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "./src/components/framegraph/framegraphhandle.ts",
+        "./src/components/framegraph/framegraphpass.ts",
+        "./src/components/framegraph/passnode.ts",
+        "./src/components/framegraph/resourcepool.ts",
+        "./src/contributions/passes/renderpass.ts",
+        "./src/glsl.d.ts",
+        "./src/services/renderer/constants.ts",
+        "./src/services/renderer/index.ts",
+        "./src/systems/framegraph.ts"
+      ],
+      "./src/contributions/passes/pixelpickingpass.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/framegraph/framegraphhandle.ts",
+        "./src/components/framegraph/framegraphpass.ts",
+        "./src/components/framegraph/passnode.ts",
+        "./src/components/framegraph/resourcepool.ts",
+        "./src/services/renderer/index.ts",
+        "./src/systems/framegraph.ts",
+        "./src/utils/math.ts"
+      ],
+      "./src/contributions/passes/renderpass.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/index.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/framegraph/framegraphhandle.ts",
+        "./src/components/framegraph/framegraphpass.ts",
+        "./src/components/framegraph/passnode.ts",
+        "./src/components/framegraph/resourcepool.ts",
+        "./src/components/geometry3d.ts",
+        "./src/components/material3d.ts",
+        "./src/services/renderer/constants.ts",
+        "./src/services/renderer/index.ts",
+        "./src/systems/framegraph.ts",
+        "./src/webglcontext.ts"
+      ],
+      "./src/index.ts": [
+        "../../node_modules/@webgpu/types/dist/index.d.ts",
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/index.d.ts",
+        "./src/camera.ts",
         "./src/canvas.ts",
+        "./src/components/framegraph/resourcepool.ts",
+        "./src/contributions/compileframegraph.ts",
+        "./src/contributions/frustumculling.ts",
+        "./src/contributions/passes/copypass.ts",
+        "./src/contributions/passes/pixelpickingpass.ts",
+        "./src/contributions/passes/renderpass.ts",
         "./src/services/renderer/index.ts",
         "./src/services/renderer/regl/index.ts",
         "./src/services/shader-module/index.ts",
         "./src/shapes/base.ts",
         "./src/shapes/circle.ts",
+        "./src/systems/framegraph.ts",
+        "./src/view.ts",
         "./src/webglcontext.ts"
+      ],
+      "./src/landmark.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "./src/camera.ts"
       ],
       "./src/services/renderer/constants.ts": [
         "../../node_modules/regl/dist/regl.d.ts"
       ],
       "./src/services/renderer/index.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../g-core/lib/index.d.ts",
+        "../g-ecs/lib/index.d.ts",
         "./src/services/renderer/constants.ts"
       ],
       "./src/services/renderer/regl/index.ts": [
@@ -1141,25 +1466,69 @@
       "./src/shapes/base.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
         "../g-core/lib/index.d.ts",
-        "../g-ecs/lib/index.d.ts"
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/geometry3d.ts",
+        "./src/components/material3d.ts"
       ],
       "./src/shapes/circle.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
         "../g-core/lib/index.d.ts",
         "../g-ecs/lib/index.d.ts",
-        "./src/shapes/base.ts"
+        "./src/components/geometry3d.ts",
+        "./src/components/material3d.ts",
+        "./src/glsl.d.ts",
+        "./src/services/renderer/constants.ts",
+        "./src/services/shader-module/index.ts",
+        "./src/shapes/base.ts",
+        "./src/utils/color.ts",
+        "./src/utils/math.ts"
+      ],
+      "./src/systems/framegraph.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/index.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/framegraph/framegraphhandle.ts",
+        "./src/components/framegraph/framegraphpass.ts",
+        "./src/components/framegraph/passnode.ts",
+        "./src/components/framegraph/resourceentry.ts",
+        "./src/components/framegraph/resourcenode.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/systems/geometry.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/geometry3d.ts",
+        "./src/services/renderer/constants.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/utils/color.ts": [
+        "../../node_modules/@types/d3-color/index.d.ts"
+      ],
+      "./src/utils/dom.ts": [
+        "./src/utils/browser.ts"
+      ],
+      "./src/utils/math.ts": [
+        "../../node_modules/@types/lodash-es/isnumber.d.ts",
+        "../../node_modules/gl-matrix/index.d.ts"
       ],
       "./src/utils/uniform.ts": [
         "../../node_modules/@types/lodash-es/isplainobject.d.ts",
         "../../node_modules/@types/lodash-es/istypedarray.d.ts",
         "./src/services/renderer/index.ts"
       ],
+      "./src/view.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "./src/services/renderer/index.ts"
+      ],
       "./src/webglcontext.ts": [
         "../../node_modules/@types/lodash-es/isstring.d.ts",
         "../../node_modules/inversify/dts/inversify.d.ts",
         "../g-core/lib/index.d.ts",
+        "./src/camera.ts",
         "./src/services/renderer/index.ts",
-        "./src/services/shader-module/index.ts"
+        "./src/services/shader-module/index.ts",
+        "./src/utils/dom.ts",
+        "./src/view.ts"
       ]
     },
     "exportedModulesMap": {
@@ -1186,6 +1555,9 @@
       ],
       "../../node_modules/@types/jest/ts3.2/index.d.ts": [
         "../../node_modules/@types/jest/index.d.ts"
+      ],
+      "../../node_modules/@types/lodash-es/isnumber.d.ts": [
+        "../../node_modules/@types/lodash/index.d.ts"
       ],
       "../../node_modules/@types/lodash-es/isplainobject.d.ts": [
         "../../node_modules/@types/lodash/index.d.ts"
@@ -1435,13 +1807,15 @@
       ],
       "../g-core/lib/canvas.d.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
-        "../g-core/lib/contribution-provider.d.ts",
-        "../g-core/lib/services/context.d.ts",
-        "../g-core/lib/services/shape.d.ts",
+        "../g-core/lib/group.d.ts",
         "../g-core/lib/types.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
+      "../g-core/lib/components/cullable.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
       "../g-core/lib/components/geometry.d.ts": [
+        "../g-core/lib/shapes/index.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
       "../g-core/lib/components/hierarchy.d.ts": [
@@ -1458,8 +1832,6 @@
         "../g-ecs/lib/index.d.ts"
       ],
       "../g-core/lib/components/renderable.d.ts": [
-        "../g-core/lib/components/geometry.d.ts",
-        "../g-core/lib/components/material.d.ts",
         "../g-core/lib/shapes/index.d.ts",
         "../g-core/lib/types.d.ts",
         "../g-ecs/lib/index.d.ts"
@@ -1471,21 +1843,19 @@
       "../g-core/lib/contribution-provider.d.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts"
       ],
+      "../g-core/lib/group.d.ts": [
+        "../g-core/lib/shape.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
       "../g-core/lib/index.d.ts": [
         "../g-core/lib/canvas.d.ts",
         "../g-core/lib/components/index.d.ts",
         "../g-core/lib/contribution-provider.d.ts",
-        "../g-core/lib/services/index.d.ts",
+        "../g-core/lib/shapes/index.d.ts",
+        "../g-core/lib/systems/index.d.ts",
         "../g-core/lib/types.d.ts"
       ],
-      "../g-core/lib/services/context.d.ts": [
-        "../g-core/lib/types.d.ts"
-      ],
-      "../g-core/lib/services/index.d.ts": [
-        "../../node_modules/inversify/dts/inversify.d.ts",
-        "../g-core/lib/services/shape.d.ts"
-      ],
-      "../g-core/lib/services/shape.d.ts": [
+      "../g-core/lib/shape.d.ts": [
         "../g-core/lib/types.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
@@ -1516,6 +1886,31 @@
         "../g-core/lib/shapes/boundingsphere.d.ts",
         "../g-core/lib/shapes/plane.d.ts"
       ],
+      "../g-core/lib/systems/context.d.ts": [
+        "../g-core/lib/types.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/systems/culling.d.ts": [
+        "../g-core/lib/contribution-provider.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/systems/index.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/systems/context.d.ts",
+        "../g-core/lib/systems/culling.d.ts",
+        "../g-core/lib/systems/renderer.d.ts",
+        "../g-core/lib/systems/scenegraph.d.ts"
+      ],
+      "../g-core/lib/systems/renderer.d.ts": [
+        "../g-core/lib/types.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/systems/scenegraph.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "../g-core/lib/types.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
       "../g-ecs/lib/component.d.ts": [
         "../g-ecs/lib/objectpool.d.ts"
       ],
@@ -1523,11 +1918,18 @@
         "../g-ecs/lib/component.d.ts",
         "../g-ecs/lib/objectpool.d.ts"
       ],
+      "../g-ecs/lib/entitymanager.d.ts": [
+        "../../node_modules/eventemitter3/index.d.ts",
+        "../g-ecs/lib/component.d.ts",
+        "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/matcher.d.ts"
+      ],
       "../g-ecs/lib/index.d.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
         "../../node_modules/reflect-metadata/index.d.ts",
         "../g-ecs/lib/component.d.ts",
         "../g-ecs/lib/entity.d.ts",
+        "../g-ecs/lib/entitymanager.d.ts",
         "../g-ecs/lib/matcher.d.ts",
         "../g-ecs/lib/system.d.ts",
         "../g-ecs/lib/world.d.ts"
@@ -1546,17 +1948,96 @@
         "../g-ecs/lib/entity.d.ts",
         "../g-ecs/lib/system.d.ts"
       ],
+      "./src/camera.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../g-core/lib/index.d.ts",
+        "./src/landmark.ts",
+        "./src/services/renderer/index.ts"
+      ],
       "./src/canvas.ts": [
-        "../g-core/lib/index.d.ts"
+        "../g-core/lib/index.d.ts",
+        "./src/camera.ts"
+      ],
+      "./src/components/framegraph/framegraphpass.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/systems/framegraph.ts"
+      ],
+      "./src/components/framegraph/passnode.ts": [
+        "./src/components/framegraph/framegraphhandle.ts",
+        "./src/components/framegraph/virtualresource.ts",
+        "./src/systems/framegraph.ts"
+      ],
+      "./src/components/framegraph/resourceentry.ts": [
+        "./src/components/framegraph/framegraphhandle.ts",
+        "./src/components/framegraph/virtualresource.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/components/framegraph/resourcenode.ts": [
+        "./src/components/framegraph/passnode.ts",
+        "./src/components/framegraph/resourceentry.ts"
+      ],
+      "./src/components/framegraph/resourcepool.ts": [
+        "./src/components/framegraph/resourceentry.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/components/framegraph/virtualresource.ts": [
+        "./src/components/framegraph/passnode.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/components/geometry3d.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../g-core/lib/index.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/components/material3d.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/contributions/compileframegraph.ts": [
+        "../g-core/lib/index.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "./src/contributions/frustumculling.ts": [
+        "../g-core/lib/index.d.ts",
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "./src/contributions/passes/copypass.ts": [
+        "./src/components/framegraph/framegraphhandle.ts",
+        "./src/components/framegraph/framegraphpass.ts",
+        "./src/components/framegraph/passnode.ts",
+        "./src/systems/framegraph.ts"
+      ],
+      "./src/contributions/passes/pixelpickingpass.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/framegraph/framegraphhandle.ts",
+        "./src/components/framegraph/framegraphpass.ts",
+        "./src/components/framegraph/passnode.ts",
+        "./src/services/renderer/index.ts",
+        "./src/systems/framegraph.ts"
+      ],
+      "./src/contributions/passes/renderpass.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/framegraph/framegraphhandle.ts",
+        "./src/components/framegraph/framegraphpass.ts",
+        "./src/components/framegraph/passnode.ts",
+        "./src/systems/framegraph.ts"
       ],
       "./src/index.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
         "./src/canvas.ts"
       ],
+      "./src/landmark.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "./src/camera.ts"
+      ],
       "./src/services/renderer/constants.ts": [
         "../../node_modules/regl/dist/regl.d.ts"
       ],
       "./src/services/renderer/index.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
+        "../g-core/lib/index.d.ts",
+        "../g-ecs/lib/index.d.ts",
         "./src/services/renderer/constants.ts"
       ],
       "./src/services/renderer/regl/index.ts": [
@@ -1602,15 +2083,35 @@
         "../g-ecs/lib/index.d.ts",
         "./src/shapes/base.ts"
       ],
+      "./src/systems/framegraph.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/framegraph/framegraphhandle.ts",
+        "./src/components/framegraph/framegraphpass.ts",
+        "./src/components/framegraph/passnode.ts",
+        "./src/components/framegraph/resourceentry.ts",
+        "./src/components/framegraph/resourcenode.ts"
+      ],
+      "./src/systems/geometry.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
+      "./src/utils/math.ts": [
+        "../../node_modules/gl-matrix/index.d.ts"
+      ],
       "./src/utils/uniform.ts": [
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/view.ts": [
         "./src/services/renderer/index.ts"
       ],
       "./src/webglcontext.ts": [
         "../g-core/lib/index.d.ts",
-        "./src/services/renderer/index.ts"
+        "./src/camera.ts",
+        "./src/services/renderer/index.ts",
+        "./src/view.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
+      "../../node_modules/@types/d3-color/index.d.ts",
       "../../node_modules/@types/jest/index.d.ts",
       "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
       "../../node_modules/@types/jest/node_modules/jest-diff/build/difflines.d.ts",
@@ -1620,6 +2121,7 @@
       "../../node_modules/@types/jest/node_modules/pretty-format/build/index.d.ts",
       "../../node_modules/@types/jest/node_modules/pretty-format/build/types.d.ts",
       "../../node_modules/@types/jest/ts3.2/index.d.ts",
+      "../../node_modules/@types/lodash-es/isnumber.d.ts",
       "../../node_modules/@types/lodash-es/isplainobject.d.ts",
       "../../node_modules/@types/lodash-es/isstring.d.ts",
       "../../node_modules/@types/lodash-es/istypedarray.d.ts",
@@ -1637,6 +2139,8 @@
       "../../node_modules/@types/lodash/common/string.d.ts",
       "../../node_modules/@types/lodash/common/util.d.ts",
       "../../node_modules/@types/lodash/index.d.ts",
+      "../../node_modules/@webgpu/types/dist/index.d.ts",
+      "../../node_modules/eventemitter3/index.d.ts",
       "../../node_modules/gl-matrix/index.d.ts",
       "../../node_modules/inversify/dts/annotation/decorator_utils.d.ts",
       "../../node_modules/inversify/dts/annotation/inject.d.ts",
@@ -1694,6 +2198,7 @@
       "../../node_modules/typescript/lib/lib.es2019.symbol.d.ts",
       "../../node_modules/typescript/lib/lib.es5.d.ts",
       "../g-core/lib/canvas.d.ts",
+      "../g-core/lib/components/cullable.d.ts",
       "../g-core/lib/components/geometry.d.ts",
       "../g-core/lib/components/hierarchy.d.ts",
       "../g-core/lib/components/index.d.ts",
@@ -1701,27 +2206,48 @@
       "../g-core/lib/components/renderable.d.ts",
       "../g-core/lib/components/transform.d.ts",
       "../g-core/lib/contribution-provider.d.ts",
+      "../g-core/lib/group.d.ts",
       "../g-core/lib/index.d.ts",
-      "../g-core/lib/services/context.d.ts",
-      "../g-core/lib/services/index.d.ts",
-      "../g-core/lib/services/shape.d.ts",
+      "../g-core/lib/shape.d.ts",
       "../g-core/lib/shapes/aabb.d.ts",
       "../g-core/lib/shapes/boundingsphere.d.ts",
       "../g-core/lib/shapes/frustum.d.ts",
       "../g-core/lib/shapes/index.d.ts",
       "../g-core/lib/shapes/plane.d.ts",
       "../g-core/lib/shapes/ray.d.ts",
+      "../g-core/lib/systems/context.d.ts",
+      "../g-core/lib/systems/culling.d.ts",
+      "../g-core/lib/systems/index.d.ts",
+      "../g-core/lib/systems/renderer.d.ts",
+      "../g-core/lib/systems/scenegraph.d.ts",
       "../g-core/lib/types.d.ts",
       "../g-ecs/lib/component.d.ts",
       "../g-ecs/lib/entity.d.ts",
+      "../g-ecs/lib/entitymanager.d.ts",
       "../g-ecs/lib/index.d.ts",
       "../g-ecs/lib/matcher.d.ts",
       "../g-ecs/lib/objectpool.d.ts",
       "../g-ecs/lib/system.d.ts",
       "../g-ecs/lib/world.d.ts",
+      "./src/camera.ts",
       "./src/canvas.ts",
+      "./src/components/framegraph/framegraphhandle.ts",
+      "./src/components/framegraph/framegraphpass.ts",
+      "./src/components/framegraph/passnode.ts",
+      "./src/components/framegraph/resourceentry.ts",
+      "./src/components/framegraph/resourcenode.ts",
+      "./src/components/framegraph/resourcepool.ts",
+      "./src/components/framegraph/virtualresource.ts",
+      "./src/components/geometry3d.ts",
+      "./src/components/material3d.ts",
+      "./src/contributions/compileframegraph.ts",
+      "./src/contributions/frustumculling.ts",
+      "./src/contributions/passes/copypass.ts",
+      "./src/contributions/passes/pixelpickingpass.ts",
+      "./src/contributions/passes/renderpass.ts",
       "./src/glsl.d.ts",
       "./src/index.ts",
+      "./src/landmark.ts",
       "./src/services/renderer/constants.ts",
       "./src/services/renderer/index.ts",
       "./src/services/renderer/regl/index.ts",
@@ -1735,8 +2261,15 @@
       "./src/services/shader-module/index.ts",
       "./src/shapes/base.ts",
       "./src/shapes/circle.ts",
+      "./src/systems/framegraph.ts",
+      "./src/systems/geometry.ts",
+      "./src/utils/browser.ts",
+      "./src/utils/color.ts",
+      "./src/utils/dom.ts",
+      "./src/utils/math.ts",
       "./src/utils/shader-module.ts",
       "./src/utils/uniform.ts",
+      "./src/view.ts",
       "./src/webglcontext.ts"
     ]
   },

@@ -267,13 +267,13 @@
         "affectsGlobalScope": false
       },
       "./src/objectpool.ts": {
-        "version": "5c273f0d58d3f983ead3dd92f50d3b949f91c1d000d586508cfed0cfed3d992d",
-        "signature": "4466f9f331fab8d1942711beb4607fc1c4a71ae7cc0eb47958f24fa6dca1673f",
+        "version": "e67fdbfc61c991700d013a2f1cc61744e1462e7106d0ebaf610434131b3d69ad",
+        "signature": "a263cae7205886bdb01fded508b24f5484debae11a37259546d07f1c0006fbb4",
         "affectsGlobalScope": false
       },
       "./src/component.ts": {
-        "version": "becc37f63bd59555e43b1df8c699d1f7eaf17436cee603ad0f587c9e1a30aa0f",
-        "signature": "09981969654e189a28732dd415417028fa3474e99c5359e3c46fddde447aa52b",
+        "version": "fb335507dfaee6d11e899f471e6eab3aac03006e7bcd2fa5b5418bcf18cf6b1d",
+        "signature": "b9d8b9e960ba8495b518c1590e631645e524b7f42363b215ed017ffee6e2e71d",
         "affectsGlobalScope": false
       },
       "./src/identifier.ts": {
@@ -297,28 +297,28 @@
         "affectsGlobalScope": false
       },
       "./src/entitymanager.ts": {
-        "version": "cdb2412e308d3a172eb5fbc952606ba13a15db91a1a60d27385870a9fae448f9",
-        "signature": "ba40010308bfb43e6e5c11529a9e95ebb2598106c14fe5f7873f43c8e448b7f5",
+        "version": "2dff3a1b9331a5f7a52ea5c9abd2ecd1bdcc5638e998375232b401baa1e725db",
+        "signature": "fc461b39e4faa430fafe8df7656503b1b7cdfd6922170fd0dbad462001cd0b14",
         "affectsGlobalScope": false
       },
       "./src/entity.ts": {
-        "version": "26d2c4862aa167b7791b1b08ce52590bbd231a48126ef82a2816454f17a0c89d",
-        "signature": "e7dc7e3ed3d9f7d80b729d0ab24d0c05be70b4ebd9b166ea0d233c786f24cbfa",
+        "version": "b4a40106a64b0e7a17beb4991fdebb3852e2238271b825ec4516e69a69106ca9",
+        "signature": "9e56403b78dd9ddca0ce38cd3b043c260f7f20572e3fa5d76f9f0643d7cdff14",
         "affectsGlobalScope": false
       },
       "./src/system.ts": {
-        "version": "1a401b9bdc84afd5b1665fe9cbbdc155e016b471ca9f21cdb25701458a44f4fb",
-        "signature": "6163a48dc0de5d23ea3e0e8fcef4d5b32d18812732cadccaf874d39634e7087d",
+        "version": "6fe409656d92dd03322fbe42949b5238522bfb707a775e3431b3183568201217",
+        "signature": "4fbd6a020ec8f7bd243ae1474ebabbf8da1b60d9df070d96e9c1fba1eddf91f8",
         "affectsGlobalScope": false
       },
       "./src/systemmanager.ts": {
-        "version": "1413d5507ce718f7a6f2091fd595423436ab7e4c497b6e1f5024460dfce327bf",
-        "signature": "49a98cb83c97c0690e23bc36286acd1dc57dd04934717f176bac380ab26de1ea",
+        "version": "232d62fa872a98ae849499c5ef32564f12dc468dc96e72267d9a6c0c4cc45fcd",
+        "signature": "b7e39a9d1daa7ff99db6c286693aa25add04e8301888c70718ffa9570b78ae9f",
         "affectsGlobalScope": false
       },
       "./src/world.ts": {
-        "version": "386735821d04c3370592d1ebb5131539876bf848a5d018379eff527d33f307ca",
-        "signature": "2cc034a96df33bfc310b8380b81eecd9bccca778675468172d8f097b64b82f8d",
+        "version": "62e80f599918b91f4306295e37d1ce007916f4843fa5dba619d0fcc6758febb2",
+        "signature": "044eb287f6166a8669ddf9c3502c94a553d9f3fb3eb4b4292bddbffb3efc0cb9",
         "affectsGlobalScope": false
       },
       "../../node_modules/reflect-metadata/index.d.ts": {
@@ -327,8 +327,8 @@
         "affectsGlobalScope": true
       },
       "./src/index.ts": {
-        "version": "69b5d5dd0f3a6d2dd02de4d4f1d35a9618098e242e50686eae551bb61821ad89",
-        "signature": "15ba0ff8fb4f994f0dea9aefe8102ed9a63b79962d43a4e5066f65f4f5a4d0ca",
+        "version": "8605d5ac11b0b8e7a14c707453c88d3513ae0c5461f81cecc63a609065f78885",
+        "signature": "531c35b5144945a297b5fb9707e7591f4dde654fc2ad6f580b6d58b6040ca06c",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts": {
@@ -387,8 +387,8 @@
         "lib.es2017.d.ts",
         "lib.es2019.d.ts"
       ],
-      "outDir": "./esm",
-      "module": 99,
+      "outDir": "./lib",
+      "module": 1,
       "jsx": 2,
       "strict": true,
       "declaration": true,
@@ -410,7 +410,7 @@
       "rootDir": "./src",
       "composite": true,
       "project": "./tsconfig.json",
-      "watch": true,
+      "declarationDir": "./lib",
       "configFilePath": "./tsconfig.json"
     },
     "referencedMap": {
@@ -537,8 +537,6 @@
         "../../node_modules/inversify/dts/inversify.d.ts"
       ],
       "./src/system.ts": [
-        "../../node_modules/inversify/dts/inversify.d.ts",
-        "./src/component.ts",
         "./src/entity.ts",
         "./src/matcher.ts"
       ],
@@ -659,6 +657,7 @@
         "../../node_modules/reflect-metadata/index.d.ts",
         "./src/component.ts",
         "./src/entity.ts",
+        "./src/entitymanager.ts",
         "./src/matcher.ts",
         "./src/system.ts",
         "./src/world.ts"
@@ -668,7 +667,6 @@
         "./src/entity.ts"
       ],
       "./src/system.ts": [
-        "./src/component.ts",
         "./src/entity.ts",
         "./src/matcher.ts"
       ],

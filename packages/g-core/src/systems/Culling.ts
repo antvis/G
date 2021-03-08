@@ -18,7 +18,7 @@ export class DefaultCullingStrategy implements CullingStrategy {
 }
 
 @injectable()
-export class Culling extends System {
+export class Culling implements System {
   static tag = 's-culling';
 
   @inject(ContributionProvider)

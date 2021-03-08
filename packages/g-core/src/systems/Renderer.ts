@@ -69,7 +69,7 @@ export interface RendererFrameContribution {
  * 使用上层 g-canvas/svg/webgl 提供的渲染服务
  */
 @injectable()
-export class Renderer extends System {
+export class Renderer implements System {
   static tag = 's-renderer';
 
   public priority = Infinity;

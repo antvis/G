@@ -1,12 +1,12 @@
 import 'reflect-metadata';
 import { expect } from 'chai';
-import { Entity } from './Entity';
-import { Component } from './Component';
-import { World } from './World';
-import { Container } from 'inversify';
-import { containerModule } from '.';
-import { System } from './System';
-import { Matcher } from './Matcher';
+import { Entity } from '../Entity';
+import { Component } from '../Component';
+import { World } from '../World';
+import { Container, inject, injectable } from 'inversify';
+import { containerModule } from '..';
+import { System } from '../System';
+import { Matcher } from '../Matcher';
 
 class C1 extends Component {
   static tag = 'c1';
@@ -23,8 +23,16 @@ class C4 extends Component {
   static tag = 'c4';
 }
 
-class S1 extends System {
+@injectable()
+class S1 implements System {
   static tag = 's1';
+
+  public priority = 0;
+  public initialized = false;
+
+  initialize() {
+    this.initialized = true;
+  }
 
   trigger() {
     return new Matcher().allOf(C1);
@@ -38,10 +46,20 @@ class S1 extends System {
   }
 }
 
-class S2 extends System {
+@injectable()
+class S2 implements System {
   static tag = 's2';
 
-  counter = 0;
+  public counter = 0;
+  public priority = 0;
+
+  getCounter() {
+    return this.counter;
+  }
+
+  reset() {
+    this.counter = 0;
+  }
 
   trigger() {
     return new Matcher().allOf(C2);
@@ -65,13 +83,25 @@ class S2 extends System {
   }
 }
 
+@injectable()
+class S3 implements System {
+  static tag = 's3';
+  public priority = 0;
+
+  execute(entities: Entity[]) {
+    entities.forEach((entity) => {
+      //
+    });
+  }
+}
+
 describe('System', () => {
   const container = new Container();
   container.load(containerModule);
 
   const world = container.get(World);
   world.registerComponent(C1).registerComponent(C2).registerComponent(C3).registerComponent(C4);
-  world.registerSystem(S1).registerSystem(S2);
+  world.registerSystem(S1).registerSystem(S2).registerSystem(S3);
   let e: Entity;
 
   beforeEach(() => {
@@ -86,6 +116,9 @@ describe('System', () => {
     world.execute();
 
     expect(e.getComponent(C1).p1).to.eq(1);
+    expect(e.getComponent(C1).getId()).to.not.null;
+    const cloned = e.getComponent(C1).clone() as C1;
+    expect(cloned.p1).to.eq(1);
   });
 
   it('should execute system S2 correctly', () => {
@@ -103,5 +136,32 @@ describe('System', () => {
     expect(e2.getComponent(C1).p1).to.eq(2);
 
     world.execute();
+  });
+
+  it('should inform system S2 when component removed', () => {
+    const s2 = container.getNamed(System, S2.tag) as S2;
+    s2.reset();
+
+    const e1 = world.createEntity();
+    const e2 = world.createEntity();
+
+    e1.addComponent(C1, { p1: 0 });
+    e1.addComponent(C2, { p2: 1 });
+
+    expect(e1.getComponent(C1).p1).to.eq(1);
+
+    e2.addComponent(C1, { p1: 0 });
+    e2.addComponent(C2, { p2: 1 });
+
+    expect(e2.getComponent(C1).p1).to.eq(2);
+
+    world.execute();
+
+    e2.removeComponent(C2, true);
+    world.execute();
+
+    expect(s2.getCounter()).to.eq(1);
+
+    world.destroy();
   });
 });

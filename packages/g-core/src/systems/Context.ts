@@ -1,4 +1,4 @@
-import { System } from '@antv/g-ecs';
+import { Matcher, System } from '@antv/g-ecs';
 import { inject, injectable } from 'inversify';
 import { CanvasCfg } from '../types';
 
@@ -33,8 +33,9 @@ export abstract class DefaultContextService<Context> implements ContextService<C
 }
 
 @injectable()
-export class Context extends System {
+export class Context implements System {
   static tag = 's-context';
+  initialized = false;
 
   @inject(CanvasConfig)
   private canvasConfig: CanvasCfg;
@@ -51,6 +52,10 @@ export class Context extends System {
 
   tearDown() {
     this.contextService.destroy();
+  }
+
+  trigger() {
+    return new Matcher();
   }
 
   async execute() {

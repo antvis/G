@@ -1,4 +1,4 @@
-import { mat3, mat4 } from 'gl-matrix';
+import { mat3, mat4, vec3 } from 'gl-matrix';
 
 export function getRotationScale(matrix: mat4, result: mat3) {
   result[0] = matrix[0];
@@ -11,4 +11,11 @@ export function getRotationScale(matrix: mat4, result: mat3) {
   result[7] = matrix[9];
   result[8] = matrix[10];
   return result;
+}
+
+export function createVec3(position: vec3 | number, y: number = 0, z: number = 0) {
+  if (typeof position === 'number') {
+    position = vec3.fromValues(position, y, z);
+  }
+  return position;
 }

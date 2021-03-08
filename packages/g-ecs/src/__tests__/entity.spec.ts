@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 import { expect } from 'chai';
-import { Entity } from './Entity';
-import { Component } from './Component';
-import { World } from './World';
+import { Entity } from '../Entity';
+import { Component } from '../Component';
+import { World } from '../World';
 import { Container } from 'inversify';
-import { containerModule } from '.';
+import { containerModule } from '..';
 
 class C1 extends Component {
   static tag = 'c1';
@@ -46,6 +46,7 @@ describe('Entity', () => {
   it('should create entity with name correctly', () => {
     e = world.createEntity('test entity');
     expect(e.getName()).to.eq('test entity');
+    expect(e.getId()).to.not.null;
   });
 
   it('should add and remove components correctly', () => {

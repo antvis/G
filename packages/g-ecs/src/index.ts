@@ -50,10 +50,11 @@ const containerModule = new ContainerModule((bind: interfaces.Bind) => {
         if (!componentPool) {
           componentPool = context.container.get(ObjectPool);
           componentPool.init(() => {
-            const component = context.container.get(clazz);
-            if (!component) {
+            const isBound = context.container.isBound(clazz);
+            if (!isBound) {
               throw new Error(`Component "${clazz.tag}" is not registered, please call registerComponent() first.`);
             }
+            const component = context.container.get(clazz);
             return component;
           }, 10);
           factoryRegistry[clazz.tag] = componentPool;
@@ -84,4 +85,5 @@ const containerModule = new ContainerModule((bind: interfaces.Bind) => {
   bind<World>(World).toSelf();
 });
 
-export { Matcher, Entity, System, Component, World, containerModule };
+export * from './System';
+export { Matcher, Entity, Component, World, EntityManager, containerModule };

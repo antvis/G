@@ -22,7 +22,9 @@
     "watch": "BABEL_ENV=esm babel src --watch --root-mode upward --out-dir esm --source-maps --extensions .ts,.tsx --delete-dir-on-start",
     "coverage": "npm run coverage-generator && npm run coverage-viewer",
     "test": "yarn jest --coverage",
-    "tsc": "tsc --noEmit"
+    "tsc": "run-p tsc:*",
+    "tsc:esm": "tsc --project tsconfig.json --declarationDir esm",
+    "tsc:lib": "tsc --project tsconfig.json --declarationDir lib"
   },
   "repository": {
     "type": "git",

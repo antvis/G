@@ -17,6 +17,7 @@ import { AABB as SAABB } from './systems/AABB';
 import { CanvasCfg, IShape, ShapeCfg } from './types';
 import { Shape } from './Shape';
 import { cleanExistedCanvas } from './utils/canvas';
+import { Group } from './Group';
 
 export class Canvas {
   protected container: Container;
@@ -28,6 +29,7 @@ export class Canvas {
     cleanExistedCanvas(config.container, this);
     this.container = createRootContainer();
     this.init();
+    this.run();
   }
 
   protected loadModule() {
@@ -67,22 +69,23 @@ export class Canvas {
     }
 
     const entity = this.world.createEntity();
-    entity.addComponent(CTransform);
-    entity.addComponent(CHierarchy);
-    entity.addComponent(CCullable);
-    entity.addComponent(CMaterial);
-    entity.addComponent(CGeometry);
-    entity.addComponent(CRenderable);
-
     const shape = this.container.get(Shape);
-    shape.init(entity, shapeType, config);
-
+    shape.init(entity);
+    shape.setType(shapeType, config);
     return shape;
   }
 
-  private async init() {
+  public addGroup() {
+    const entity = this.world.createEntity();
+    const group = this.container.get(Group);
+    group.init(entity);
+    return group;
+  }
+
+  private init() {
     this.container.bind(CanvasConfig).toConstantValue(this.config);
     this.container.bind(Shape).toSelf();
+    this.container.bind(Group).toSelf();
     this.world = this.container.get(World);
 
     /**
@@ -109,8 +112,6 @@ export class Canvas {
       .registerSystem(SCulling)
       .registerSystem(SSceneGraph)
       .registerSystem(SRenderer);
-
-    await this.run();
   }
 
   private async run() {

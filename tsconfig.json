@@ -13,6 +13,9 @@
       ],
       "@antv/g-svg/*": [
         "g-svg/src/*"
+      ],
+      "@antv/g-webgl/*": [
+        "g-webgl/src/*"
       ]
     }
   },

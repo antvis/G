@@ -1,13 +1,13 @@
-import { injectable } from 'inversify';
 import { Entity } from './Entity';
 import { Matcher } from './Matcher';
 
+export const System = Symbol('System');
 /**
  * inspired by Entitas' Systems
  * @see https://github.com/sschmid/Entitas-CSharp/wiki/Systems
  */
-export interface ISystem {
-  priority: number;
+export interface System {
+  priority?: number;
 
   /**
    * in a similar way to Unity's `Start()`, we can do some initialization works:
@@ -15,7 +15,7 @@ export interface ISystem {
    * * init event listeners
    */
   initialize?(): Promise<void> | void;
-  initialized: boolean;
+  initialized?: boolean;
 
   /**
    * in a similar way to Unity's `Update()`, run once per frame
@@ -30,7 +30,7 @@ export interface ISystem {
   /**
    * all kind of components this system cares about
    */
-  trigger(): Matcher;
+  trigger?(): Matcher;
 
   onEntityAdded?(entity: Entity): void;
   onEntityRemoved?(entity: Entity): void;
@@ -39,32 +39,4 @@ export interface ISystem {
 export interface SystemConstructor<T extends System> {
   tag: string;
   new (...args: any): T;
-}
-
-@injectable()
-export abstract class System implements ISystem {
-  static tag: string;
-
-  readonly priority: number;
-
-  public initialized = false;
-  private enabled = false;
-  private executeTime: number;
-
-  public stop() {
-    this.executeTime = 0;
-    this.enabled = false;
-  }
-
-  public play() {
-    this.enabled = true;
-  }
-
-  public trigger() {
-    return new Matcher();
-  }
-
-  public execute() {
-    throw new Error();
-  }
 }

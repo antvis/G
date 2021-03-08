@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { mat4, quat, vec3 } from 'gl-matrix';
-import { Transform } from './Transform';
+import { Transform } from '../Transform';
 
 describe('Transform component', () => {
   test('should rotate correctly.', () => {

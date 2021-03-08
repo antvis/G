@@ -36,9 +36,9 @@ export class Entity implements ILifecycle {
     return this.components;
   }
 
-  public getComponentsToRemove(): Record<string, Component> {
-    return this.componentsToRemove;
-  }
+  // public getComponentsToRemove(): Record<string, Component> {
+  //   return this.componentsToRemove;
+  // }
 
   public setAlive(alive: boolean) {
     this.alive = alive;
@@ -60,15 +60,13 @@ export class Entity implements ILifecycle {
     return component as C;
   }
 
-  public hasComponent<C extends Component>(clazz: ComponentConstructor<C>, includeRemoved = false) {
-    return (
-      !!~Object.keys(this.components).indexOf(clazz.tag) || (includeRemoved === true && this.hasRemovedComponent(clazz))
-    );
+  public hasComponent<C extends Component>(clazz: ComponentConstructor<C>) {
+    return !!~Object.keys(this.components).indexOf(clazz.tag);
   }
 
-  public hasRemovedComponent<C extends Component>(clazz: ComponentConstructor<C>) {
-    return !!~Object.keys(this.componentsToRemove).indexOf(clazz.tag);
-  }
+  // public hasRemovedComponent<C extends Component>(clazz: ComponentConstructor<C>) {
+  //   return !!~Object.keys(this.componentsToRemove).indexOf(clazz.tag);
+  // }
 
   public hasAllComponents<C extends Component>(clazzes: ComponentConstructor<C>[]) {
     return clazzes.every((clazz) => this.hasComponent(clazz));
@@ -90,9 +88,9 @@ export class Entity implements ILifecycle {
     return this;
   }
 
-  public removeAllComponents() {
-    return this;
-  }
+  // public removeAllComponents() {
+  //   return this;
+  // }
 
   public reset() {
     //

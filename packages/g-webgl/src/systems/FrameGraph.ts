@@ -33,7 +33,7 @@ export interface IRenderPass<RenderPassData> {
  * @see https://github.com/SaeruHikari/Sakura/blob/RenderGraph/SakuraCore/Source/Framework/GraphicTypes/FrameGraph/SakuraFrameGraph.cpp
  */
 @injectable()
-export class FrameGraphSystem extends System {
+export class FrameGraphSystem implements System {
   static tag = 's-framegraph';
   public passNodes: PassNode[] = [];
 

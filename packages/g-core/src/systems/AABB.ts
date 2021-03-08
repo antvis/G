@@ -6,7 +6,7 @@ import { Renderable } from '../components/Renderable';
 import { getRotationScale } from '../utils/math';
 
 @injectable()
-export class AABB extends System {
+export class AABB implements System {
   static tag = 's-aabb';
 
   trigger() {

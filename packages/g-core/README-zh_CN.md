@@ -258,6 +258,19 @@ export abstract class BaseRenderer implements ShapeRenderer {
 }
 ```
 
+## Shape & Group
+
+G 3.0 中支持通过 `canvas.addShape/addGroup()` 来创建 `Shape` 和 `Group`。在 ECS 架构中我们可以把这两个对象看作多个 `Component` 的集合。
+
+`Group` 是一种抽象概念，本质上并没有渲染实体，仅提供 `SceneGraph` 场景图的部分能力，例如：
+
+- 提供一种层次关系，可以添加/删除子 `Group/Shape`
+- 执行 RTS 变换，在子元素计算世界坐标系下的变换矩阵时需要考虑父元素
+
+以上能力通过 `Hierarchy` `Transform` 这两个组件以及 `SceneGraph` 系统提供。
+
+`Shape` 继承自 `Group`，因此它就具有以上能力，但通过 `Renderable` `Cullable` 等其他组件具备了被渲染的能力。
+
 ## 参考资料
 
 - [Theia 中的服务和扩展点](https://theia-ide.org/docs/services_and_contributions)

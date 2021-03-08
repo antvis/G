@@ -5,7 +5,7 @@ import { RenderingEngine } from '../services/renderer';
 import { gl } from '../services/renderer/constants';
 
 @injectable()
-export class GeometrySystem extends System {
+export class GeometrySystem implements System {
   static tag = 's-geometry-3d';
 
   public priority = 1000;
