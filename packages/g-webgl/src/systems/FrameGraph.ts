@@ -44,6 +44,8 @@ export class FrameGraphSystem extends System {
   @inject(RenderingEngine)
   private readonly engine: RenderingEngine;
 
+  public priority = 1001;
+
   trigger() {
     return new Matcher().allOf(Renderable);
   }

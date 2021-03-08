@@ -193,6 +193,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     const geometry = entity.getComponent(Geometry3D);
 
     if (!geometry || geometry.dirty || !material || !material.vertexShaderGLSL || !material.fragmentShaderGLSL) {
+      console.log(geometry, 'return...');
       return;
     }
 

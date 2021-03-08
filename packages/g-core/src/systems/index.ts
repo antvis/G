@@ -1,14 +1,7 @@
 import { ContainerModule, interfaces } from 'inversify';
 import { bindContributionProvider } from '../contribution-provider';
 import { CullingStrategy, DefaultCullingStrategy } from './Culling';
-import {
-  DefaultShapeConfigHandler,
-  DefaultShapeRenderer,
-  RendererFrameContribution,
-  ShapeConfigHandlerContribution,
-  ShapeRenderer,
-  ShapeRendererFactory,
-} from './Renderer';
+import { DefaultShapeRenderer, RendererFrameContribution, ShapeRenderer, ShapeRendererFactory } from './Renderer';
 import {
   AttributeAnimationUpdaters,
   ColorAttributeAnimationUpdater,
@@ -17,9 +10,6 @@ import {
 
 const systemModule = new ContainerModule((bind) => {
   // shape handlers
-  bindContributionProvider(bind, ShapeConfigHandlerContribution);
-  bind(DefaultShapeConfigHandler).toSelf().inSingletonScope();
-  bind(ShapeConfigHandlerContribution).toService(DefaultShapeConfigHandler);
   bind(DefaultShapeRenderer).toSelf().inSingletonScope();
 
   // shape renderer factory

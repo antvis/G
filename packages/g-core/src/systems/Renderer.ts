@@ -4,28 +4,56 @@ import { Transform } from '../components';
 import { Cullable } from '../components/Cullable';
 import { Renderable as CRenderable, Renderable } from '../components/Renderable';
 import { ContributionProvider } from '../contribution-provider';
-import { ShapeCfg } from '../types';
-
-export const ShapeConfigHandlerContribution = Symbol('ShapeConfigHandlerContribution');
-export interface ShapeConfigHandlerContribution {
-  handle(entity: Entity, type: string, cfg: ShapeCfg): void;
-}
+import { ShapeCfg, ShapeAttrs } from '../types';
 
 export const ShapeRendererFactory = Symbol('ShapeRendererFactory');
 export const ShapeRenderer = Symbol('ShapeRenderer');
 export interface ShapeRenderer {
+  getDefaultAttributes(): ShapeAttrs;
+  init(entity: Entity, type: string, cfg: ShapeCfg): void;
   render(entity: Entity): void;
   onAttributeChanged(entity: Entity, name: string, value: any): void;
 }
 @injectable()
 export class DefaultShapeRenderer {
+  getDefaultAttributes() {
+    return {
+      opacity: 1,
+      strokeOpacity: 1,
+    };
+  }
+
+  init(entity: Entity, type: string, cfg: ShapeCfg) {
+    const renderable = entity.getComponent(Renderable);
+    const transform = entity.getComponent(Transform);
+
+    renderable.type = type;
+    renderable.attrs = { ...this.getDefaultAttributes(), ...cfg.attrs };
+
+    const {
+      attrs: { x = 0, y = 0 },
+    } = cfg;
+
+    // set position
+    transform.setPosition(x, y);
+  }
+
   render(entity: Entity) {
     //
   }
 
   onAttributeChanged(entity: Entity, name: string, value: any) {
     const renderable = entity.getComponent(Renderable);
+    const transform = entity.getComponent(Transform);
+    const [x, y] = transform.getPosition();
+
     renderable.attrs[name] = value;
+
+    if (name === 'x') {
+      transform.setPosition(value, y);
+    } else if (name === 'y') {
+      transform.setPosition(x, value);
+    }
   }
 }
 
@@ -37,30 +65,14 @@ export interface RendererFrameContribution {
   destroy(): void;
 }
 
-@injectable()
-export class DefaultShapeConfigHandler implements ShapeConfigHandlerContribution {
-  handle(entity: Entity, type: string, cfg: ShapeCfg) {
-    const renderable = entity.getComponent(Renderable);
-    const transform = entity.getComponent(Transform);
-
-    renderable.type = type;
-    renderable.attrs = cfg.attrs;
-
-    const {
-      attrs: { x = 0, y = 0 },
-    } = cfg;
-
-    // set position
-    transform.setPosition(x, y);
-  }
-}
-
 /**
  * 使用上层 g-canvas/svg/webgl 提供的渲染服务
  */
 @injectable()
 export class Renderer extends System {
   static tag = 's-renderer';
+
+  public priority = Infinity;
 
   @inject(ContributionProvider)
   @named(RendererFrameContribution)

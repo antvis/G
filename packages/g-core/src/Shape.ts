@@ -5,9 +5,8 @@ import isFunction from 'lodash-es/isFunction';
 import isObject from 'lodash-es/isObject';
 import { Renderable } from './components';
 import { Animator } from './components/Animator';
-import { ContributionProvider } from './contribution-provider';
-import { RendererFrameContribution, ShapeRenderer, ShapeRendererFactory } from './systems';
-import { IShape, OnFrame, AnimateCfg, ElementAttrs, Animation } from './types';
+import { ShapeRenderer, ShapeRendererFactory } from './systems';
+import { IShape, OnFrame, AnimateCfg, ElementAttrs, Animation, ShapeCfg } from './types';
 import { Timeline } from './systems/Timeline';
 
 const noop = () => {};
@@ -23,12 +22,12 @@ export class Shape implements IShape {
   @named(Timeline.tag)
   private timeline: Timeline;
 
-  setEntity(entity: Entity) {
+  init(entity: Entity, type: string, cfg: ShapeCfg) {
     this.entity = entity;
-  }
-
-  getEntity(): Entity {
-    return this.entity;
+    const renderer = this.shapeRendererFactory(type);
+    if (renderer) {
+      renderer.init(entity, type, cfg);
+    }
   }
 
   attr(): any;

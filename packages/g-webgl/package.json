@@ -20,6 +20,7 @@
     "build": "run-p build:*",
     "build:cjs": "BABEL_ENV=cjs babel src --root-mode upward --out-dir lib --source-maps --extensions .ts,.tsx --delete-dir-on-start",
     "build:esm": "BABEL_ENV=esm babel src --root-mode upward --out-dir esm --source-maps --extensions .ts,.tsx --delete-dir-on-start",
+    "build:umd": "webpack --config webpack.config.js --mode production",
     "watch": "BABEL_ENV=esm babel src --watch --root-mode upward --out-dir esm --source-maps --extensions .ts,.tsx --delete-dir-on-start",
     "coverage": "npm run coverage-generator && npm run coverage-viewer",
     "test": "yarn jest --coverage",

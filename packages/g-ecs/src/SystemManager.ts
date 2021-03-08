@@ -43,7 +43,7 @@ export class SystemManager {
     });
 
     this.systems.push(system);
-    this.systems.sort((a, b) => a.priority - b.priority);
+    this.systems.sort((a, b) => (a.priority || 0) - (b.priority || 0));
   }
 
   public async execute(delta?: number, millis?: number) {

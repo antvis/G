@@ -1,6 +1,8 @@
-import { DefaultShapeRenderer } from '@antv/g-core';
+import { DefaultShapeRenderer, ShapeCfg } from '@antv/g-core';
 import { Entity } from '@antv/g-ecs';
 import { injectable } from 'inversify';
+import { Geometry3D } from '../components/Geometry3D';
+import { Material3D } from '../components/Material3D';
 
 @injectable()
 export abstract class BaseRenderer extends DefaultShapeRenderer {
@@ -10,7 +12,11 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
     super.onAttributeChanged(entity, name, value);
   }
 
-  render(entity: Entity) {
+  init(entity: Entity, type: string, cfg: ShapeCfg) {
+    super.init(entity, type, cfg);
+    entity.addComponent(Geometry3D);
+    entity.addComponent(Material3D);
+
     this.buildModel(entity);
   }
 }

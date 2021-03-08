@@ -8,6 +8,8 @@ import { gl } from '../services/renderer/constants';
 export class GeometrySystem extends System {
   static tag = 's-geometry-3d';
 
+  public priority = 1000;
+
   @inject(RenderingEngine)
   private readonly engine: RenderingEngine;
 
@@ -29,7 +31,6 @@ export class GeometrySystem extends System {
                 type: gl.FLOAT,
               });
             } else {
-              console.log(entity.getId(), attribute.data, attribute.buffer);
               attribute.buffer?.subData({
                 data: attribute.data,
                 // TODO: support offset in subdata
@@ -56,6 +57,7 @@ export class GeometrySystem extends System {
             });
           }
         }
+
         geometry.dirty = false;
       }
     });

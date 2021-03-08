@@ -11,21 +11,21 @@ import { Animator as CAnimator } from './components/Animator';
 import { CanvasConfig, Context as SContext, ContextService } from './systems/Context';
 import { SceneGraph as SSceneGraph } from './systems/SceneGraph';
 import { Timeline as STimeline } from './systems/Timeline';
-import { Renderer as SRenderer, ShapeConfigHandlerContribution } from './systems/Renderer';
+import { Renderer as SRenderer } from './systems/Renderer';
 import { Culling as SCulling } from './systems/Culling';
 import { AABB as SAABB } from './systems/AABB';
 import { CanvasCfg, IShape, ShapeCfg } from './types';
 import { Shape } from './Shape';
-import { ContributionProvider } from './contribution-provider';
+import { cleanExistedCanvas } from './utils/canvas';
 
 export class Canvas {
   protected container: Container;
   protected world: World;
-  protected shapeConfigHandlerProvider: ContributionProvider<ShapeConfigHandlerContribution>;
   private frameId: number;
   private frameCallback: Function;
 
   constructor(private config: CanvasCfg) {
+    cleanExistedCanvas(config.container, this);
     this.container = createRootContainer();
     this.init();
   }
@@ -74,12 +74,8 @@ export class Canvas {
     entity.addComponent(CGeometry);
     entity.addComponent(CRenderable);
 
-    this.shapeConfigHandlerProvider.getContributions().forEach((handler) => {
-      handler.handle(entity, shapeType, config);
-    });
-
     const shape = this.container.get(Shape);
-    shape.setEntity(entity);
+    shape.init(entity, shapeType, config);
 
     return shape;
   }
@@ -101,8 +97,6 @@ export class Canvas {
       .registerComponent(CAnimator)
       .registerComponent(CRenderable);
 
-    this.shapeConfigHandlerProvider = this.container.getNamed(ContributionProvider, ShapeConfigHandlerContribution);
-
     this.loadModule();
 
     /**
@@ -110,10 +104,10 @@ export class Canvas {
      */
     this.world
       .registerSystem(SContext)
+      .registerSystem(STimeline)
       .registerSystem(SAABB)
       .registerSystem(SCulling)
       .registerSystem(SSceneGraph)
-      .registerSystem(STimeline)
       .registerSystem(SRenderer);
 
     await this.run();

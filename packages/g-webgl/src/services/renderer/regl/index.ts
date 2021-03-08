@@ -150,7 +150,6 @@ export class WebGLEngine implements RenderingEngine {
     if (this.gl && this.gl._gl) {
       // https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/scissor
       if (scissor.enable && scissor.box) {
-        // console.log(scissor.box);
         this.gl._gl.enable(gl.SCISSOR_TEST);
         this.gl._gl.scissor(scissor.box.x, scissor.box.y, scissor.box.width, scissor.box.height);
       } else {

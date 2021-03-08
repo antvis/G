@@ -172,9 +172,30 @@ bind(ShapeRenderer).to(CircleRenderer).whenTargetNamed(SHAPE.Circle);
 bind(ShapeRenderer).to(EllipseRenderer).whenTargetNamed(SHAPE.Ellipse);
 ```
 
-### [WIP]事件系统
+### 动画系统
 
-### [WIP]动画系统
+渲染系统定义在 `src/systems/Timeline` 中，该系统关注所有包含了 `Animator` 组件的实体。得益于 ECS 中系统会自动在每一帧运行，我们不需要使用例如 `d3-timer` 这样的定时器。
+在每一帧中，对于需要执行动画的属性，我们使用 `d3-ease` 结合传入的缓动方法、当前运行时间进行插值，得到一个 `ratio`，随后交给更新器完成属性的更新。
+
+提供针对 `Shape` 属性的更新器接口，上层可以任意注册针对任意属性的更新器：
+
+```typescript
+export interface AttributeAnimationUpdater {
+  filter(attribute: string, fromAttribute: any, toAttribute: any): boolean;
+  update<T>(entity: Entity, fromAttribute: T, toAttribute: T, ratio: number): T;
+}
+```
+
+例如核心层当前注册了两个更新器：
+
+```typescript
+// 兜底默认属性更新器
+export class DefaultAttributeAnimationUpdater implements AttributeAnimationUpdater {}
+// 关注颜色
+export class ColorAttributeAnimationUpdater implements AttributeAnimationUpdater {}
+```
+
+### [WIP]事件系统
 
 ## 全局注入对象
 

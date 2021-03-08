@@ -64,7 +64,7 @@ export class Timeline extends System {
     return new Matcher().allOf(Renderable, Animator);
   }
 
-  execute(entities: Entity[], delta: number = 0, millis: number = 0) {
+  async execute(entities: Entity[], delta: number = 0, millis: number = 0) {
     entities.forEach((entity) => {
       const animator = entity.getComponent(Animator);
       const { animations } = animator;

@@ -47,8 +47,12 @@ export class CircleRenderer extends BaseRenderer {
     const renderable = entity.getComponent(Renderable);
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
-    const { r = 0, lineWidth = 0, rx = 0, ry = 0 } = renderable.attrs;
-    if (name === 'fill') {
+    const { x = 0, y = 0, r = 0, lineWidth = 0, rx = 0, ry = 0 } = renderable.attrs;
+    if (name === 'x') {
+      geometry.setAttribute('a_position', Float32Array.from([value, y]));
+    } else if (name === 'y') {
+      geometry.setAttribute('a_position', Float32Array.from([x, value]));
+    } else if (name === 'fill') {
       const fillColor = rgb2arr(value);
       geometry.setAttribute('a_color', Float32Array.from(fillColor));
     } else if (name === 'r') {
