@@ -105,35 +105,32 @@ class EventController {
     //  this.hammerRuntime.add(new Hammer.Rotate({ threshold: 0 })).recognizeWith(this.hammerRuntime.get('pan'));
 
     this.hammerRuntime.on('panstart panmove panend', (e) => {
-      console.log(e.type, e.additionalEvent, e);
       e.srcEvent.extra = e;
       this._emitMobileEvent(e.type, e.srcEvent);
     });
-    this.hammerRuntime.on('hammer.input', (ev) => {
-      if (ev.isFinal) {
-        console.log('hammer.input end');
+    this.hammerRuntime.on('hammer.input', (e) => {
+      if (e.isFinal) {
+        this._emitMobileEvent(e.type, e.srcEvent);
       }
     });
 
-    this.hammerRuntime.on('swipe', (ev) => {
-      console.log('swipe', ev);
-    });
-
-    this.hammerRuntime.on('rotatestart rotatemove', (e) => {
-      console.log(e.type);
-    });
-
-    this.hammerRuntime.on('pinchstart pinchmove', (e) => {
-      console.log('pinch', e);
+    this.hammerRuntime.on('swipe', (e) => {
       this._emitMobileEvent(e.type, e.srcEvent);
     });
 
-    this.hammerRuntime.on('doubletap', (ev) => {
-      console.log('doubletap', ev);
+    this.hammerRuntime.on('rotatestart rotatemove', (e) => {
+      this._emitMobileEvent(e.type, e.srcEvent);
+    });
+
+    this.hammerRuntime.on('pinchstart pinchmove', (e) => {
+      this._emitMobileEvent(e.type, e.srcEvent);
+    });
+
+    this.hammerRuntime.on('doubletap', (e) => {
+      this._emitMobileEvent(e.type, e.srcEvent);
     });
 
     this.hammerRuntime.on('tap', (e) => {
-      console.log('tap', e);
       this._emitMobileEvent(e.type, e.srcEvent);
     });
   }
