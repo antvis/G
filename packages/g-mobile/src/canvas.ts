@@ -1,4 +1,4 @@
-import { AbstractCanvas, CanvasCfg } from '@antv/g-base';
+import { AbstractCanvas, CanvasCfg, Point } from '@antv/g-base';
 import { ChangeType } from '@antv/g-base';
 import { IElement } from './interfaces';
 import { getShape } from './util/hit';
@@ -262,6 +262,23 @@ class Canvas extends AbstractCanvas {
       context.draw();
     }
     this.set('refreshElements', []);
+  }
+
+  // TODO 需考虑透传query信息
+  getPointByClient(clientX: number, clientY: number): Point {
+    if (this.get('renderer') === 'mini') {
+      return { x: clientX, y: clientY };
+    }
+
+    return super.getPointByClient(clientX, clientY);
+  }
+
+  getClientByPoint(x: number, y: number): Point {
+    if (this.get('renderer') === 'mini') {
+      return { x, y };
+    }
+
+    return super.getClientByPoint(x, y);
   }
 
   // 绘制所有图形
