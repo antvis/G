@@ -29,7 +29,9 @@
     "site:develop": "gatsby develop --open -H 0.0.0.0",
     "site:build": "npm run site:clean && gatsby build --prefix-paths",
     "site:clean": "gatsby clean",
-    "site:deploy": "npm run site:build && gh-pages -d public"
+    "site:deploy": "npm run site:build && gh-pages -d public",
+    "clear": "lerna clean && lerna clean -y",
+    "clean:modules": "rimraf node_modules"
   },
   "lint-staged": {
     "**/*.{js,ts,md}": [
