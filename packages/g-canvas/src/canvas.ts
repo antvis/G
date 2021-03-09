@@ -228,6 +228,17 @@ class Canvas extends AbstractCanvas {
   }
 
   skipDraw() {}
+
+  removeDom() {
+    const el = this.get('el');
+    // 需要清理 canvas 画布内容，否则ios下 创建的canvas垃圾未回收，导致Total canvas memory use exceeds问题
+    // 相关问题列表
+    // https://stackoverflow.com/questions/52532614/total-canvas-memory-use-exceeds-the-maximum-limit-safari-12
+    // https://github.com/openlayers/openlayers/issues/9291
+    el.width = 0;
+    el.height = 0;
+    el.parentNode.removeChild(el);
+  }
 }
 
 export default Canvas;
