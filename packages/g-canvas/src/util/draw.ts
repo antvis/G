@@ -1,5 +1,5 @@
-import { each, isArray } from '@antv/util';
-import { IElement, IGroup } from '../interfaces';
+import { each, isArray, max, min } from '@antv/util';
+import { IElement } from '../interfaces';
 import { Region } from '../types';
 import { parseStyle } from './parse';
 import getArcParams from './arc-params';
@@ -265,7 +265,7 @@ export function refreshElement(element, changeType) {
   }
 }
 
-export function getRefreshRegion(element) {
+export function getRefreshRegion(element): Region | undefined {
   let region;
   if (!element.destroyed) {
     const cacheBox = element.get('cacheCanvasBBox');
@@ -305,10 +305,10 @@ export function getMergedRegion(elements): Region {
     }
   });
   return {
-    minX: Math.min.apply(null, minXArr),
-    minY: Math.min.apply(null, minYArr),
-    maxX: Math.max.apply(null, maxXArr),
-    maxY: Math.max.apply(null, maxYArr),
+    minX: min(minXArr),
+    minY: min(minYArr),
+    maxX: max(maxXArr),
+    maxY: max(maxYArr),
   };
 }
 
