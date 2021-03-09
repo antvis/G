@@ -13,9 +13,9 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.GITEE_RSA_PRIVATE_KEY }}
         with:
           # 注意替换为你的 GitHub 源仓库地址
-          source-repo: 'git@github.com:antvis/g.git'
+          source-repo: git@github.com:antvis/g.git
           # 注意替换为你的 Gitee 目标仓库地址
-          destination-repo: 'git@gitee.com:antv-g/antv-g.git'
+          destination-repo: git@gitee.com:antv-g/antv-g.git
 
       - name: ✅ Build Gitee Pages
         uses: yanglbme/gitee-pages-action@master
@@ -26,3 +26,5 @@ jobs:
           gitee-password: ${{ secrets.GITEE_PASSWORD }}
           # 注意替换为你的 Gitee 仓库
           gitee-repo: antv-g/antv-g
+          # 要部署的分支
+          branch: gh-pages
