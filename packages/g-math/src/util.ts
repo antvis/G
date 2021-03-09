@@ -1,12 +1,5 @@
+import { max, min } from '@antv/util';
 import { BBox } from './types';
-
-function minNum(array: number[]) {
-  return Math.min.apply(null, array);
-}
-
-function maxNum(array: number[]) {
-  return Math.max.apply(null, array);
-}
 
 /**
  * 两点之间的距离
@@ -27,10 +20,10 @@ export function isNumberEqual(v1: number, v2: number) {
 }
 
 export function getBBoxByArray(xArr: number[], yArr: number[]): BBox {
-  const minX = minNum(xArr);
-  const minY = minNum(yArr);
-  const maxX = maxNum(xArr);
-  const maxY = maxNum(yArr);
+  const minX = min(xArr);
+  const minY = min(yArr);
+  const maxX = max(xArr);
+  const maxY = max(yArr);
   return {
     x: minX,
     y: minY,
@@ -41,10 +34,10 @@ export function getBBoxByArray(xArr: number[], yArr: number[]): BBox {
 
 export function getBBoxRange(x1: number, y1: number, x2: number, y2: number) {
   return {
-    minX: minNum([x1, x2]),
-    maxX: maxNum([x1, x2]),
-    minY: minNum([y1, y2]),
-    maxY: maxNum([y1, y2]),
+    minX: min([x1, x2]),
+    maxX: max([x1, x2]),
+    minY: min([y1, y2]),
+    maxY: max([y1, y2]),
   };
 }
 
