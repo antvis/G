@@ -123,6 +123,9 @@ class EventController {
     });
 
     this.hammerRuntime.on('pinchstart pinchmove', (e) => {
+      e.srcEvent.extra = {
+        scale: e.scale,
+      };
       this._emitMobileEvent(e.type, e.srcEvent);
     });
 
