@@ -1,13 +1,13 @@
 English | [简体中文](./README-zh_CN.md)
 
-# g-canvas
+# g-mobile
 
 [![](https://img.shields.io/travis/antvis/g.svg)](https://travis-ci.org/antvis/g)
 ![](https://img.shields.io/badge/language-javascript-red.svg)
 ![](https://img.shields.io/badge/license-MIT-000000.svg)
 
-[![npm package](https://img.shields.io/npm/v/@antv/g-canvas.svg)](https://www.npmjs.com/package/@antv/g-canavs)
-[![npm downloads](http://img.shields.io/npm/dm/@antv/g-canvas.svg)](https://npmjs.org/package/@antv/g-canvas)
+[![npm package](https://img.shields.io/npm/v/@antv/g-canvas.svg)](https://www.npmjs.com/package/@antv/g-mobile)
+[![npm downloads](http://img.shields.io/npm/dm/@antv/g-canvas.svg)](https://npmjs.org/package/@antv/g-mobile)
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open')
 
 - A canvas library which providing 2d draw for AntV.
@@ -16,13 +16,13 @@ English | [简体中文](./README-zh_CN.md)
 
 - Powerful and scalable rendering capability with built-in basic Graphics.
 - Excellent rendering performance and supports visualization scenarios with large amounts of data.
-- Complete simulation of browser DOM events, and no difference from native events.
+- Complete simulation of mobile/browser DOM events, and no difference from native events.
 - Smooth animation implementation and rich configuration interfaces.
 
 ## 📦 Install
 
 ```bash
-$ npm install @antv/g-canvas --save
+$ npm install @antv/g-mobile --save
 ```
 
 ## 🔨 Usage
@@ -32,7 +32,7 @@ $ npm install @antv/g-canvas --save
 ```
 
 ```js
-import { Canvas } from '@antv/g-canvas';
+import { Canvas } from '@antv/g-mobile';
 
 const canvas = new Canvas({
   container: 'c1',
