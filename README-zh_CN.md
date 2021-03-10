@@ -42,7 +42,11 @@ $ npm install @antv/g-svg --save
 ```
 
 ```js
-import { Canvas } from '@antv/g-mobile';
+import { Canvas } from '@antv/g-canvas';
+// 或者使用 SVG 版本
+// import { Canvas } from '@antv/g-svg';
+// 或者使用 移动端 版本
+// import { Canvas } from '@antv/g-mobile';
 
 const canvas = new Canvas({
   container: 'c1',
