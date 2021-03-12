@@ -10,4 +10,5 @@ export * from './components';
 export * from './systems';
 export * from './shapes';
 export * from './types';
+export * from './utils';
 export { Canvas, SHAPE };

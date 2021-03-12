@@ -1,5 +1,6 @@
 // import { IShape, ICtor } from './interfaces';
 import { Entity } from '@antv/g-ecs';
+import { Group } from './Group';
 
 export interface IShape {
   getEntity(): Entity;
@@ -101,12 +102,14 @@ export type ShapeAttrs = {
   [key: string]: any;
 };
 
-type ElementCfg = {
+export type GroupCfg = {
   /**
    * 元素 id,可以为空
    * @type {String}
    */
   id?: string;
+
+  name?: string;
   /**
    * 层次索引，决定绘制的先后顺序
    * @type {Number}
@@ -124,7 +127,7 @@ type ElementCfg = {
   capture?: boolean;
 };
 
-export type ShapeCfg = ElementCfg & {
+export type ShapeCfg = GroupCfg & {
   /**
    * 图形的属性
    * @type {ShapeAttrs}
@@ -132,10 +135,6 @@ export type ShapeCfg = ElementCfg & {
   attrs: ShapeAttrs;
   [key: string]: any;
 };
-
-// export type GroupCfg = {
-//   [key: string]: any;
-// };
 
 // export type ClipCfg = {
 //   /**
@@ -299,6 +298,7 @@ export type Animation = AnimateCfg & {
 //   [key: string]: ICtor<IShape>;
 // };
 
+export type GroupFilter = (group: Group) => boolean;
 // export type ElementFilterFn = (IElement) => boolean;
 
 // type A = ['a' | 'A', number, number, number, number, number, number, number];

@@ -19,4 +19,6 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
 
     this.buildModel(entity);
   }
+
+  render() {}
 }

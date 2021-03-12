@@ -266,6 +266,7 @@ G 3.0 中支持通过 `canvas.addShape/addGroup()` 来创建 `Shape` 和 `Group`
 
 - 提供一种层次关系，可以添加/删除子 `Group/Shape`
 - 执行 RTS 变换，在子元素计算世界坐标系下的变换矩阵时需要考虑父元素
+- 通过 `zIndex` 辅助在同一层级内排序，确定渲染次序
 
 以上能力通过 `Hierarchy` `Transform` 这两个组件以及 `SceneGraph` 系统提供。
 

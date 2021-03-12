@@ -272,13 +272,13 @@
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/objectpool.d.ts": {
-        "version": "a263cae7205886bdb01fded508b24f5484debae11a37259546d07f1c0006fbb4",
-        "signature": "a263cae7205886bdb01fded508b24f5484debae11a37259546d07f1c0006fbb4",
+        "version": "e3b80502de8e0677fd40f02e2b6561d165a95308a9471330af8af8754459ac78",
+        "signature": "e3b80502de8e0677fd40f02e2b6561d165a95308a9471330af8af8754459ac78",
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/component.d.ts": {
-        "version": "b9d8b9e960ba8495b518c1590e631645e524b7f42363b215ed017ffee6e2e71d",
-        "signature": "b9d8b9e960ba8495b518c1590e631645e524b7f42363b215ed017ffee6e2e71d",
+        "version": "badd98ad25d807457592252309cd0304ecc97557af1cb933e64b59e8ad8ccc76",
+        "signature": "badd98ad25d807457592252309cd0304ecc97557af1cb933e64b59e8ad8ccc76",
         "affectsGlobalScope": false
       },
       "../../node_modules/eventemitter3/index.d.ts": {
@@ -287,8 +287,8 @@
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/entity.d.ts": {
-        "version": "9e56403b78dd9ddca0ce38cd3b043c260f7f20572e3fa5d76f9f0643d7cdff14",
-        "signature": "9e56403b78dd9ddca0ce38cd3b043c260f7f20572e3fa5d76f9f0643d7cdff14",
+        "version": "83c08369b92b82b769dd4efeec8fc087e311f13b1a4c218a9c4f8888602318bd",
+        "signature": "83c08369b92b82b769dd4efeec8fc087e311f13b1a4c218a9c4f8888602318bd",
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/matcher.d.ts": {
@@ -297,13 +297,13 @@
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/entitymanager.d.ts": {
-        "version": "fc461b39e4faa430fafe8df7656503b1b7cdfd6922170fd0dbad462001cd0b14",
-        "signature": "fc461b39e4faa430fafe8df7656503b1b7cdfd6922170fd0dbad462001cd0b14",
+        "version": "05b04d8f8375bc646d990330416551c1030d3c7aaf80b2edbd59b145a0d431b6",
+        "signature": "05b04d8f8375bc646d990330416551c1030d3c7aaf80b2edbd59b145a0d431b6",
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/system.d.ts": {
-        "version": "4fbd6a020ec8f7bd243ae1474ebabbf8da1b60d9df070d96e9c1fba1eddf91f8",
-        "signature": "4fbd6a020ec8f7bd243ae1474ebabbf8da1b60d9df070d96e9c1fba1eddf91f8",
+        "version": "d968991358992a580ce84b10ef473584e56fa720f61126f077a41bd70beaa596",
+        "signature": "d968991358992a580ce84b10ef473584e56fa720f61126f077a41bd70beaa596",
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/world.d.ts": {
@@ -382,8 +382,8 @@
         "affectsGlobalScope": false
       },
       "./src/components/transform.ts": {
-        "version": "7ce40b736aa85400561e8ac857e5cf3e68e3a5b512d47b4f1becf4c480451682",
-        "signature": "d7c27c53faac250a50aa00e97aba5d6fc4c3049f455c69a3541e04626a96f514",
+        "version": "a24d6a0ae81cde373b2aea59ae02559323b2da2f81bd7cf25c00f54e3222a10e",
+        "signature": "bbab1b1a58f20493d79f279d9312546ba0c07d4a6e2b7dbc9cd306d2b46a04a5",
         "affectsGlobalScope": false
       },
       "./src/components/index.ts": {
@@ -401,9 +401,19 @@
         "signature": "339472736360ccbbbf5589839daea59140ce358680762c7fbe52483891637f7f",
         "affectsGlobalScope": false
       },
+      "./src/utils/topo-sort.ts": {
+        "version": "b43ee5ec8d1abce26236ea71d0b512c3a4492c85ef79fcfcb3577fb62b99c1bc",
+        "signature": "cb786b3cc35f935246b39b476507471b465acaf6c8e8403f8556e6395c1c7cfb",
+        "affectsGlobalScope": false
+      },
+      "./src/systems/scenegraph.ts": {
+        "version": "f74f8c55b0a8931e5501bc87d48c8120954d5e5ddee27173c1cde931bec3c555",
+        "signature": "f93aef74a6e1e0f66678211c528b338769b83088e936087cb3b10995d41da710",
+        "affectsGlobalScope": false
+      },
       "./src/systems/renderer.ts": {
-        "version": "cef9b58811c7bb4ec849a4c087a668da8358a52882bfb534cd3754c827c6b522",
-        "signature": "db5e0d52839cea3ab99109dbc0e85f550688ee1db11a6d0a7d5ee3f95bd469ba",
+        "version": "891e8293c40705e2488bc80a5e33141b586b4ce44734a71b931bc00bccf73a8d",
+        "signature": "c3420e9020293f98458f6c122e27b599f0637b6fb40cfcd5f3015ed1338ee62b",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/d3-ease/index.d.ts": {
@@ -422,7 +432,7 @@
         "affectsGlobalScope": false
       },
       "./src/components/animator.ts": {
-        "version": "76d7562e47a8aee0acc72e006bcfa242e2eb950dd1302a460326fe9e9dc5228b",
+        "version": "83a4c00c7a697b58093dcf87a4f93c453ffff5df30799da1cfe34acd67845d50",
         "signature": "ca0c5b359a235c3cde8caad39c44cd183a4e03548471c4f1161c3ce855591b7e",
         "affectsGlobalScope": false
       },
@@ -517,13 +527,8 @@
         "affectsGlobalScope": false
       },
       "./src/systems/timeline.ts": {
-        "version": "0a1edf37e892278e500ea206cba40d9523d3ee2e381c5b54ec9cb6c030c6a870",
+        "version": "1832145dc008bea1b8256a95c7281481a56ca8603da73b34bc30966b51eeb1fa",
         "signature": "6a243290eed222aaedc98f20f63cb2a66700ede38c07088d871fc589723d040a",
-        "affectsGlobalScope": false
-      },
-      "./src/systems/scenegraph.ts": {
-        "version": "66792b6b8e137303e915b3fcf39dd63e818e28e05444076e3a7ec8a5e9af82f0",
-        "signature": "591162439b9cdd46437ff6ed56c898905e02373938a2e93eaef2eed041a14527",
         "affectsGlobalScope": false
       },
       "./src/systems/context.ts": {
@@ -542,8 +547,8 @@
         "affectsGlobalScope": false
       },
       "./src/utils/math.ts": {
-        "version": "6c6af50d06f6eedffbdb1f39f047833cb63948c35908388224448ec58d7ba713",
-        "signature": "4283c9edf72d741c8d299fe07411820a00b0cef0901ae54ec182b8f155ab3ac2",
+        "version": "e1e28b2b7dd0e344e88f374e9205e91506b18e6f0706c787c21a6b1de52cb199",
+        "signature": "443c2553c80a23890e8d1d7f5a2a6b18d02bf48bb0bf2f02f10eec6fa721e955",
         "affectsGlobalScope": false
       },
       "./src/systems/aabb.ts": {
@@ -551,9 +556,24 @@
         "signature": "3feb0ab29ccf6ec12907a674f2682b6a89a963b6bdfb1ffa81f9905e3a351171",
         "affectsGlobalScope": false
       },
+      "../../node_modules/@antv/matrix-util/lib/ext.d.ts": {
+        "version": "5321aa68d8f28b4f13227e2cfd691a4e0bcfa000bcd11d17cf43642ef8273fa8",
+        "signature": "5321aa68d8f28b4f13227e2cfd691a4e0bcfa000bcd11d17cf43642ef8273fa8",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@antv/matrix-util/lib/index.d.ts": {
+        "version": "be071b8fbfb8c7b0dc639c7a0e9f760282ab130ae4241e26477cad1ba74fa7d0",
+        "signature": "be071b8fbfb8c7b0dc639c7a0e9f760282ab130ae4241e26477cad1ba74fa7d0",
+        "affectsGlobalScope": false
+      },
+      "./src/group.ts": {
+        "version": "bdc74a75a357379fbbc5a97f419d426352a8885b3962c9a2c965d9e8f7f08d4f",
+        "signature": "86a1ad5b7ade730022124894a0a04e6cf0aedb8210f384e97b9eca1386b5e189",
+        "affectsGlobalScope": false
+      },
       "./src/shape.ts": {
-        "version": "6a076565fbb83b4898894f1f20fee846d746da3c7904e1d796b95726d8977e1a",
-        "signature": "5a586a3a732dadac3344ffb74139300d6507650fbc2b774acdf0078a89b5f831",
+        "version": "b19b25cddba5f952d32d24f686a0f61300838f9b2f7c5dfa2799648c460be857",
+        "signature": "ba0ccf5e2e13f69c98c6ab4f6505e4659eebfe4afd22cc0905229a6957f02810",
         "affectsGlobalScope": false
       },
       "./src/utils/canvas.ts": {
@@ -561,19 +581,19 @@
         "signature": "6f9fce5218ec08fdb39c136df394881e9ee36e695877adb6bc7b81dbb9e3319a",
         "affectsGlobalScope": false
       },
-      "./src/group.ts": {
-        "version": "d86180544549190a01b434065ab4fc2f53523024d4358f65c858ae080a00e048",
-        "signature": "ed73f5ed1afdf125e4cca78d012ef265228b6bbb59bbc2fbc7bd77bcee690af1",
-        "affectsGlobalScope": false
-      },
       "./src/canvas.ts": {
-        "version": "f1d48fdbb0306c584aa7069f74eb6308c8f283bd61416813bc9d6b6934f5b46c",
+        "version": "d3c3fe3a0ace2504328c0597b0fa84d34db5d59851effd1a50c8533b6abcc464",
         "signature": "6e8ebf08a9b2335cb3134515a7af571d216761ad1de2792ca5a0885926e4224a",
         "affectsGlobalScope": false
       },
+      "./src/utils/index.ts": {
+        "version": "0e70abb1b3d7c7363e8a325024662719bb7d7332be4d9451d97f52b10d8d7799",
+        "signature": "a6a495ed65465ba233d7c57c3415d70c4427f699c4617ad788d0b1fb331bcdf5",
+        "affectsGlobalScope": false
+      },
       "./src/index.ts": {
-        "version": "e03b91c9a40f8bfbb556faa20716c961798db7d1d2c26ed814cee5cbdb48e0f8",
-        "signature": "e19ea8b61d36209818d9238d015b2a98008e878606e995d44c528fa5bf2df2b8",
+        "version": "ebe1f13db8b7c0f2071b15b6e0a5f73462df186b7ac8c135c30b5d79967764f9",
+        "signature": "e56c50cb7bf79aea9e30eb8f997b9b61fe271dde994dd3da7a23fd1f8743a651",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts": {
@@ -659,6 +679,13 @@
       "configFilePath": "./tsconfig.json"
     },
     "referencedMap": {
+      "../../node_modules/@antv/matrix-util/lib/ext.d.ts": [
+        "../../node_modules/gl-matrix/index.d.ts"
+      ],
+      "../../node_modules/@antv/matrix-util/lib/index.d.ts": [
+        "../../node_modules/@antv/matrix-util/lib/ext.d.ts",
+        "../../node_modules/gl-matrix/index.d.ts"
+      ],
       "../../node_modules/@types/d3-interpolate/index.d.ts": [
         "../../node_modules/@types/d3-color/index.d.ts"
       ],
@@ -991,10 +1018,14 @@
         "../../node_modules/inversify/dts/inversify.d.ts"
       ],
       "./src/group.ts": [
+        "../../node_modules/@antv/matrix-util/lib/index.d.ts",
+        "../../node_modules/gl-matrix/index.d.ts",
         "../../node_modules/inversify/dts/inversify.d.ts",
         "../g-ecs/lib/index.d.ts",
+        "./src/components/index.ts",
         "./src/shape.ts",
-        "./src/systems/index.ts"
+        "./src/systems/index.ts",
+        "./src/utils/math.ts"
       ],
       "./src/index.ts": [
         "./src/canvas.ts",
@@ -1002,7 +1033,8 @@
         "./src/contribution-provider.ts",
         "./src/shapes/index.ts",
         "./src/systems/index.ts",
-        "./src/types.ts"
+        "./src/types.ts",
+        "./src/utils/index.ts"
       ],
       "./src/inversify.config.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
@@ -1015,7 +1047,9 @@
         "../../node_modules/inversify/dts/inversify.d.ts",
         "../g-ecs/lib/index.d.ts",
         "./src/components/animator.ts",
+        "./src/components/cullable.ts",
         "./src/components/index.ts",
+        "./src/group.ts",
         "./src/systems/index.ts",
         "./src/systems/timeline.ts",
         "./src/types.ts"
@@ -1084,6 +1118,7 @@
         "./src/components/index.ts",
         "./src/components/renderable.ts",
         "./src/contribution-provider.ts",
+        "./src/systems/scenegraph.ts",
         "./src/types.ts"
       ],
       "./src/systems/scenegraph.ts": [
@@ -1092,7 +1127,8 @@
         "../g-ecs/lib/index.d.ts",
         "./src/components/hierarchy.ts",
         "./src/components/index.ts",
-        "./src/components/transform.ts"
+        "./src/components/transform.ts",
+        "./src/utils/topo-sort.ts"
       ],
       "./src/systems/timeline.ts": [
         "../../node_modules/@types/d3-ease/index.d.ts",
@@ -1114,6 +1150,10 @@
       ],
       "./src/utils/canvas.ts": [
         "./src/canvas.ts"
+      ],
+      "./src/utils/index.ts": [
+        "./src/utils/color.ts",
+        "./src/utils/math.ts"
       ],
       "./src/utils/math.ts": [
         "../../node_modules/gl-matrix/index.d.ts"
@@ -1156,6 +1196,13 @@
       ]
     },
     "exportedModulesMap": {
+      "../../node_modules/@antv/matrix-util/lib/ext.d.ts": [
+        "../../node_modules/gl-matrix/index.d.ts"
+      ],
+      "../../node_modules/@antv/matrix-util/lib/index.d.ts": [
+        "../../node_modules/@antv/matrix-util/lib/ext.d.ts",
+        "../../node_modules/gl-matrix/index.d.ts"
+      ],
       "../../node_modules/@types/d3-interpolate/index.d.ts": [
         "../../node_modules/@types/d3-color/index.d.ts"
       ],
@@ -1459,6 +1506,7 @@
         "../../node_modules/inversify/dts/inversify.d.ts"
       ],
       "./src/group.ts": [
+        "../../node_modules/gl-matrix/index.d.ts",
         "../g-ecs/lib/index.d.ts",
         "./src/shape.ts"
       ],
@@ -1468,7 +1516,8 @@
         "./src/contribution-provider.ts",
         "./src/shapes/index.ts",
         "./src/systems/index.ts",
-        "./src/types.ts"
+        "./src/types.ts",
+        "./src/utils/index.ts"
       ],
       "./src/inversify.config.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
@@ -1476,6 +1525,7 @@
       ],
       "./src/shape.ts": [
         "../g-ecs/lib/index.d.ts",
+        "./src/group.ts",
         "./src/types.ts"
       ],
       "./src/shapes/aabb.ts": [
@@ -1536,6 +1586,10 @@
       "./src/utils/canvas.ts": [
         "./src/canvas.ts"
       ],
+      "./src/utils/index.ts": [
+        "./src/utils/color.ts",
+        "./src/utils/math.ts"
+      ],
       "./src/utils/math.ts": [
         "../../node_modules/gl-matrix/index.d.ts"
       ],
@@ -1577,6 +1631,8 @@
       ]
     },
     "semanticDiagnosticsPerFile": [
+      "../../node_modules/@antv/matrix-util/lib/ext.d.ts",
+      "../../node_modules/@antv/matrix-util/lib/index.d.ts",
       "../../node_modules/@types/d3-color/index.d.ts",
       "../../node_modules/@types/d3-ease/index.d.ts",
       "../../node_modules/@types/d3-interpolate/index.d.ts",
@@ -1692,7 +1748,9 @@
       "./src/types.ts",
       "./src/utils/canvas.ts",
       "./src/utils/color.ts",
+      "./src/utils/index.ts",
       "./src/utils/math.ts",
+      "./src/utils/topo-sort.ts",
       "../g-ecs/lib/component.d.ts",
       "../g-ecs/lib/entity.d.ts",
       "../g-ecs/lib/entitymanager.d.ts",

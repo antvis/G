@@ -267,13 +267,13 @@
         "affectsGlobalScope": false
       },
       "./src/objectpool.ts": {
-        "version": "e67fdbfc61c991700d013a2f1cc61744e1462e7106d0ebaf610434131b3d69ad",
-        "signature": "a263cae7205886bdb01fded508b24f5484debae11a37259546d07f1c0006fbb4",
+        "version": "a01c4e94e6b4c18633c309bb5e6eb7efe566df692908efa52c973ae7ec6b6c43",
+        "signature": "e3b80502de8e0677fd40f02e2b6561d165a95308a9471330af8af8754459ac78",
         "affectsGlobalScope": false
       },
       "./src/component.ts": {
-        "version": "fb335507dfaee6d11e899f471e6eab3aac03006e7bcd2fa5b5418bcf18cf6b1d",
-        "signature": "b9d8b9e960ba8495b518c1590e631645e524b7f42363b215ed017ffee6e2e71d",
+        "version": "8df4381e3b6ca3021cdba425ed4e88f62d2e79c883cbb907e551bbe76f33a1d6",
+        "signature": "badd98ad25d807457592252309cd0304ecc97557af1cb933e64b59e8ad8ccc76",
         "affectsGlobalScope": false
       },
       "./src/identifier.ts": {
@@ -297,18 +297,18 @@
         "affectsGlobalScope": false
       },
       "./src/entitymanager.ts": {
-        "version": "2dff3a1b9331a5f7a52ea5c9abd2ecd1bdcc5638e998375232b401baa1e725db",
-        "signature": "fc461b39e4faa430fafe8df7656503b1b7cdfd6922170fd0dbad462001cd0b14",
+        "version": "019c4dfde15a937a8a656e41451012686cc81b4063c190c52532454b6fd0be34",
+        "signature": "05b04d8f8375bc646d990330416551c1030d3c7aaf80b2edbd59b145a0d431b6",
         "affectsGlobalScope": false
       },
       "./src/entity.ts": {
-        "version": "b4a40106a64b0e7a17beb4991fdebb3852e2238271b825ec4516e69a69106ca9",
-        "signature": "9e56403b78dd9ddca0ce38cd3b043c260f7f20572e3fa5d76f9f0643d7cdff14",
+        "version": "838121a61b68914bbb51b17fa24cc20d8496a1f79c3c9f09ca95c852a7eff5bf",
+        "signature": "83c08369b92b82b769dd4efeec8fc087e311f13b1a4c218a9c4f8888602318bd",
         "affectsGlobalScope": false
       },
       "./src/system.ts": {
-        "version": "6fe409656d92dd03322fbe42949b5238522bfb707a775e3431b3183568201217",
-        "signature": "4fbd6a020ec8f7bd243ae1474ebabbf8da1b60d9df070d96e9c1fba1eddf91f8",
+        "version": "9b07943a91037ba71b387967e397e9bd283e2c376e7e80349678d385c6c0e0fb",
+        "signature": "d968991358992a580ce84b10ef473584e56fa720f61126f077a41bd70beaa596",
         "affectsGlobalScope": false
       },
       "./src/systemmanager.ts": {

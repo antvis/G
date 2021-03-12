@@ -47,12 +47,8 @@ export class CircleRenderer extends BaseRenderer {
     const renderable = entity.getComponent(Renderable);
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
-    const { x = 0, y = 0, r = 0, lineWidth = 0, rx = 0, ry = 0 } = renderable.attrs;
-    if (name === 'x') {
-      geometry.setAttribute('a_position', Float32Array.from([value, y]));
-    } else if (name === 'y') {
-      geometry.setAttribute('a_position', Float32Array.from([x, value]));
-    } else if (name === 'fill') {
+    const { r = 0, lineWidth = 0, rx = 0, ry = 0 } = renderable.attrs;
+    if (name === 'fill') {
       const fillColor = rgb2arr(value);
       geometry.setAttribute('a_color', Float32Array.from(fillColor));
     } else if (name === 'r') {
@@ -81,8 +77,8 @@ export class CircleRenderer extends BaseRenderer {
     const geometry = entity.getComponent(Geometry3D);
 
     const {
-      x = 0,
-      y = 0,
+      // x = 0,
+      // y = 0,
       rx = 0,
       ry = 0,
       r = 1,
@@ -131,7 +127,7 @@ export class CircleRenderer extends BaseRenderer {
     });
 
     const attributes = this.buildAttributes({
-      position: [x, y],
+      position: [0, 0],
       size: [(rx || r) - lineWidth / 2, (ry || r) - lineWidth / 2],
       shape: 'circle',
       color: fillColor as [number, number, number, number], // sRGB

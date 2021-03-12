@@ -1,4 +1,4 @@
-import { Canvas } from '@antv/g-canvas';
+import { Canvas } from '@antv/g-webgl';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 

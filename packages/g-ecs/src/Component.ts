@@ -23,7 +23,7 @@ export class Component<C = {}> implements ILifecycle {
   public reset() {
     //
   }
-  public dispose() {
+  public destroy() {
     //
   }
 }

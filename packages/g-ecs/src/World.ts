@@ -48,7 +48,6 @@ export class World implements IWorldLifecycle {
 
   public createEntity(name: string = '') {
     const entity = this.entityPoolFactory().acquire();
-    entity.setAlive(true);
     entity.setName(name);
     return this.entityManager.createEntity(entity);
   }

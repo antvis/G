@@ -20,11 +20,6 @@ const ellipse = canvas.addShape('ellipse', {
   },
 });
 
-// destroy canvas when current page destroyed
-window.clean = () => {
-  canvas.destroy();
-};
-
 // stats
 const stats = new Stats();
 stats.showPanel(0);

@@ -15,11 +15,6 @@ export class Entity implements ILifecycle {
    */
   protected id: number = counter++;
 
-  /**
-   * Whether or not the entity is alive or removed.
-   */
-  protected alive: boolean;
-
   protected name: string;
 
   protected components: Record<string, Component> = {};
@@ -36,20 +31,12 @@ export class Entity implements ILifecycle {
     return this.components;
   }
 
-  // public getComponentsToRemove(): Record<string, Component> {
-  //   return this.componentsToRemove;
-  // }
-
-  public setAlive(alive: boolean) {
-    this.alive = alive;
-  }
-
   public setName(name: string) {
     this.name = name;
   }
 
   public getName() {
-    return this.name;
+    return this.name || `${this.id}`;
   }
 
   public getComponent<C extends Component>(clazz: ComponentConstructor<C>, includeRemoved = false): C {
@@ -94,6 +81,14 @@ export class Entity implements ILifecycle {
 
   public reset() {
     //
+  }
+
+  public destroy() {
+    // TODO: remove components first
+    // for (const name in this.components) {
+    //   this.entityManager.removeComponentFromEntity(this, this.components[name]);
+    // }
+    this.entityManager.destroyEntity(this);
   }
 
   public cast<C extends Component>(

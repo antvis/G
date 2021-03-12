@@ -16,7 +16,7 @@ export class FrustumCulling implements CullingStrategy {
     const cullable = entity.getComponent(Cullable);
     const hierarchy = entity.getComponent(Hierarchy);
 
-    const parentVisibilityPlaneMask = hierarchy?.parentEntity?.getComponent(Cullable)?.visibilityPlaneMask;
+    const parentVisibilityPlaneMask = hierarchy?.parent?.getComponent(Cullable)?.visibilityPlaneMask;
     cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
       renderable.aabb,
       parentVisibilityPlaneMask || Mask.INDETERMINATE,

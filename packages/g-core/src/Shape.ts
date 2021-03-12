@@ -1,13 +1,12 @@
 import { Entity, System } from '@antv/g-ecs';
 import { inject, injectable, named } from 'inversify';
 import isObject from 'lodash-es/isObject';
-import { Geometry, Material, Renderable } from './components';
+import { Geometry, Material, Renderable, Cullable } from './components';
 import { ShapeRenderer, ShapeRendererFactory } from './systems';
 import { IShape, OnFrame, AnimateCfg, ElementAttrs, ShapeCfg } from './types';
 import { Timeline } from './systems/Timeline';
 import { Animator, STATUS } from './components/Animator';
 import { Group } from './Group';
-import { Cullable } from './components/Cullable';
 
 @injectable()
 export class Shape extends Group implements IShape {
@@ -18,18 +17,17 @@ export class Shape extends Group implements IShape {
   @named(Timeline.tag)
   private timeline: Timeline;
 
-  init(entity: Entity) {
-    super.init(entity);
+  init(entity: Entity, type: string, config: ShapeCfg) {
+    super.init(entity, '', config);
+
     entity.addComponent(Cullable);
     entity.addComponent(Material);
     entity.addComponent(Geometry);
     entity.addComponent(Renderable);
-  }
 
-  setType(type: string, cfg: ShapeCfg) {
     const renderer = this.shapeRendererFactory(type);
     if (renderer) {
-      renderer.init(this.entity, type, cfg);
+      renderer.init(this.entity, type, config);
     }
   }
 
@@ -104,6 +102,10 @@ export class Shape extends Group implements IShape {
   }
   isAnimatePaused() {
     return this.isAnimationPaused();
+  }
+
+  isGroup() {
+    return false;
   }
 
   private setAttribute(name: string, value: any) {

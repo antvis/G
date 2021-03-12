@@ -1,4 +1,4 @@
-import { ContextService, Renderable, Transform } from '@antv/g-core';
+import { ContextService, Renderable, Transform, Visible } from '@antv/g-core';
 import { Entity } from '@antv/g-ecs';
 import { mat4 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
@@ -139,7 +139,8 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     }
   ) {
     const renderable = entity.getComponent(Renderable);
-    if (!renderable || !renderable.visible) {
+    const visible = entity.getComponent(Visible);
+    if (!renderable || !visible.visible) {
       return;
     }
 
@@ -157,15 +158,17 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     const modelViewMatrix = mat4.multiply(mat4.create(), viewMatrix, transform.worldTransform);
     const { width, height } = view.getViewport();
 
-    // set MVP matrix, other builtin uniforms @see https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
-    material.setUniform({
-      projectionMatrix: camera.getPerspective(),
-      modelViewMatrix,
-      modelMatrix: transform.worldTransform,
-      viewMatrix,
-      cameraPosition: camera.getPosition(),
+    const u = {
+      u_projection_matrix: camera.getPerspective(),
+      u_model_view_matrix: modelViewMatrix,
+      u_model_matrix: transform.worldTransform,
+      u_view_matrix: viewMatrix,
+      u_camera_position: camera.getPosition(),
       u_viewport: [width, height],
-    });
+    };
+
+    // set MVP matrix, other builtin uniforms @see https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
+    material.setUniform(u);
 
     if (renderable.model) {
       renderable.model.draw({

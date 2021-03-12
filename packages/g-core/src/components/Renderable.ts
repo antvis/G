@@ -5,8 +5,14 @@ import { ShapeAttrs } from '../types';
 export class Renderable extends Component {
   public static tag = 'c-renderable';
 
+  /**
+   * circle/ellipse..
+   */
   public type: string;
 
+  /**
+   * assigned by shape.attrs
+   */
   public attrs: ShapeAttrs;
 
   /**
@@ -21,7 +27,8 @@ export class Renderable extends Component {
    */
   public aabbDirty = true;
 
-  public visible = true;
-
+  /**
+   * extension props
+   */
   public model: any;
 }

@@ -89,6 +89,7 @@ export class Transform extends Component {
     const quatX = quat.create();
     const quatY = quat.create();
     const quatZ = quat.create();
+    // in degrees
     return (x: number, y: number, z: number) => {
       this.setDirty();
 
@@ -218,12 +219,13 @@ export class Transform extends Component {
     }
     vec3.copy(this.localPosition, position);
     this.setLocalDirty(true);
+    return this;
   }
 
   /**
    * scale in local space
    */
-  public scaleLocal(scaling: vec3 | number, y: number = 0, z: number = 0) {
+  public scaleLocal(scaling: vec3 | number, y: number = 1, z: number = 1) {
     this.setLocalDirty();
     if (typeof scaling === 'number') {
       scaling = vec3.fromValues(scaling, y, z);
@@ -232,12 +234,13 @@ export class Transform extends Component {
     return this;
   }
 
-  public setLocalScale(scaling: vec3 | number, y: number = 0, z: number = 0) {
+  public setLocalScale(scaling: vec3 | number, y: number = 1, z: number = 1) {
     if (typeof scaling === 'number') {
       scaling = vec3.fromValues(scaling, y, z);
     }
     vec3.copy(this.localScale, scaling);
     this.setLocalDirty(true);
+    return this;
   }
 
   public isDirty() {
@@ -332,17 +335,17 @@ export class Transform extends Component {
   }
 
   public getPosition() {
-    mat4.getTranslation(this.position, this.worldTransform);
+    mat4.getTranslation(this.position, this.getWorldTransform());
     return this.position;
   }
 
   public getRotation() {
-    mat4.getRotation(this.rotation, this.worldTransform);
+    mat4.getRotation(this.rotation, this.getWorldTransform());
     return this.rotation;
   }
 
   public getScale() {
-    mat4.getScaling(this.scaling, this.worldTransform);
+    mat4.getScaling(this.scaling, this.getWorldTransform());
     return this.scaling;
   }
 

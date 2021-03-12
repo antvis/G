@@ -51,6 +51,17 @@ export class EntityManager extends EventEmitter {
     return entity;
   }
 
+  public destroyEntity(entity: Entity) {
+    if (entity.getName()) {
+      delete this.entitiesByNames[entity.getName()];
+    }
+
+    const index = this.entities.indexOf(entity);
+    if (index > -1) {
+      this.entities.splice(index, 1);
+    }
+  }
+
   public addComponentToEntity<C extends Component<unknown>>(
     entity: Entity,
     clazz: ComponentConstructor<C>,
@@ -126,7 +137,7 @@ export class EntityManager extends EventEmitter {
 
     const components = entity.getComponents();
     delete components[clazz.tag];
-    component.dispose();
+    component.destroy();
     // this.world.componentsManager.componentRemovedFromEntity(Component);
   }
 }

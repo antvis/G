@@ -4,8 +4,8 @@ attribute float a_shape;
 attribute vec2 a_position;
 attribute vec2 a_size;
 
-uniform mat4 projectionMatrix;
-uniform mat4 modelViewMatrix;
+uniform mat4 u_projection_matrix;
+uniform mat4 u_model_view_matrix;
 
 uniform float u_stroke_width : 1;
 uniform float u_device_pixel_ratio;
@@ -25,7 +25,10 @@ void main() {
 
   vec2 offset = a_extrude * (a_size + u_stroke_width);
   gl_Position = vec4(a_position + offset, 0.0, 1.0);
-  gl_Position.xy = (gl_Position.xy / u_viewport * 2.0 * 2.0 - 1.) * vec2(1, -1);
+  gl_Position = u_projection_matrix * u_model_view_matrix * gl_Position;
+
+  // project_pixel_size_to_clipspace: [0, 1] -> [-1, 1] and flipY
+  gl_Position.xy = (gl_Position.xy / u_viewport * 2.0 - 1.) * vec2(1, -1);
 
   // construct point coords
   v_data = vec4(a_extrude, antialiasblur, a_shape);

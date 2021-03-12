@@ -104,6 +104,13 @@ module.exports = {
     ],
     examples: [
       {
+        slug: 'scenegraph',
+        title: {
+          zh: '场景图',
+          en: 'Scene Graph',
+        },
+      },
+      {
         slug: 'shape',
         title: {
           zh: '基本图形',
@@ -129,20 +136,5 @@ module.exports = {
       apiKey: 'c0fb0f71e3b70638cf4756bf128a42e6',
       indexName: 'antv_g',
     },
-    // playground: {
-    //   // container: '<div style="justify-content: center;position: relative" id="wrapper"/>',
-    //   playgroundDidMount: `(function(history){
-    //     var pushState = history.pushState;
-    //     history.pushState = function(state) {
-    //       window.clean && window.clean();
-    //       return pushState.apply(history, arguments);
-    //     };
-    //   })(window.history);`,
-    //   playgroundWillUnmount: 'window.clean && window.clean();',
-    //   dependencies: {
-    //     '@antv/g-canvas': 'latest',
-    //     '@antv/g-webgl': 'latest',
-    //   },
-    // },
   },
 };

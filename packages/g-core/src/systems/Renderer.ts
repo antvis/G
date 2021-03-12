@@ -1,10 +1,11 @@
 import { Entity, Matcher, System } from '@antv/g-ecs';
 import { inject, injectable, named } from 'inversify';
-import { Transform } from '../components';
+import { Hierarchy, Transform, Visible } from '../components';
 import { Cullable } from '../components/Cullable';
-import { Renderable as CRenderable, Renderable } from '../components/Renderable';
+import { Renderable } from '../components/Renderable';
 import { ContributionProvider } from '../contribution-provider';
 import { ShapeCfg, ShapeAttrs } from '../types';
+import { SceneGraph } from './SceneGraph';
 
 export const ShapeRendererFactory = Symbol('ShapeRendererFactory');
 export const ShapeRenderer = Symbol('ShapeRenderer');
@@ -15,7 +16,7 @@ export interface ShapeRenderer {
   onAttributeChanged(entity: Entity, name: string, value: any): void;
 }
 @injectable()
-export class DefaultShapeRenderer {
+export abstract class DefaultShapeRenderer {
   getDefaultAttributes() {
     return {
       opacity: 1,
@@ -34,13 +35,13 @@ export class DefaultShapeRenderer {
       attrs: { x = 0, y = 0 },
     } = cfg;
 
-    // set position
+    // set position in world space
     transform.setPosition(x, y);
+    // update world transform immediately
+    // transform.updateTransform();
   }
 
-  render(entity: Entity) {
-    //
-  }
+  abstract render(entity: Entity): void;
 
   onAttributeChanged(entity: Entity, name: string, value: any) {
     const renderable = entity.getComponent(Renderable);
@@ -60,7 +61,7 @@ export class DefaultShapeRenderer {
 export const RendererFrameContribution = Symbol('RendererFrameContribution');
 export interface RendererFrameContribution {
   beginFrame(): Promise<void>;
-  renderFrame(entities: Entity[]): Promise<void>;
+  renderFrame(entity: Entity[]): Promise<void>;
   endFrame(): Promise<void>;
   destroy(): void;
 }
@@ -78,8 +79,12 @@ export class Renderer implements System {
   @named(RendererFrameContribution)
   private frameContribution: ContributionProvider<RendererFrameContribution>;
 
+  @inject(System)
+  @named(SceneGraph.tag)
+  private sceneGraph: SceneGraph;
+
   trigger() {
-    return new Matcher().allOf(CRenderable);
+    return new Matcher().allOf(Renderable);
   }
 
   async execute(entities: Entity[]) {
@@ -87,11 +92,23 @@ export class Renderer implements System {
       await f.beginFrame();
     }
 
-    // do culling first
-    const visibleEntities = entities.filter((entity) => {
+    // filter by renderable.visible
+    const renderableEntities = entities.filter((entity) => {
+      const visible = entity.getComponent(Visible);
+      return visible.visible;
+    });
+
+    // sort by z-index
+    const ids = this.sceneGraph.sort();
+    const sortedEntities = renderableEntities.sort((a, b) => ids.indexOf(a) - ids.indexOf(b));
+
+    // do culling
+    const visibleEntities = sortedEntities.filter((entity) => {
       const cullable = entity.getComponent(Cullable);
       return !cullable || cullable.visible;
     });
+
+    // render each entity
     for (const f of this.frameContribution.getContributions()) {
       await f.renderFrame(visibleEntities);
     }
@@ -106,4 +123,13 @@ export class Renderer implements System {
       f.destroy();
     }
   }
+
+  // private sort(entities: Entity[], sorted: Entity[]) {
+  //   entities.forEach((entity) => {
+  //     const hierarchy = entity.getComponent(Hierarchy);
+  //     this.sort(hierarchy.children, sorted);
+
+  //     sorted.push(entity);
+  //   });
+  // }
 }

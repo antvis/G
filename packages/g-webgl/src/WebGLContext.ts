@@ -46,7 +46,7 @@ export class WebGLContext extends DefaultContextService<RenderingContext> {
         antialias: false,
       });
 
-      this.camera.setPosition(0, 0, 2).setOrthographic(-4, 4, -4, 4, 1, 600);
+      this.camera.setPosition(0, 0, 2).setOrthographic(-0.5, 0.5, -0.5, 0.5, 0.5, 10);
 
       const dpr = this.getDPR();
       this.view.setViewport({

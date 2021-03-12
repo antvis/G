@@ -17,7 +17,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js'],
   modulePathIgnorePatterns: ['dist'],
   moduleNameMapper: {
-    '@antv/(.+)$': '<rootDir>../$1/src',
+    '@antv/(g-.+)$': '<rootDir>../$1/src',
   },
   notify: true,
   notifyMode: 'always',
