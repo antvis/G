@@ -1,5 +1,5 @@
 /**
- * @fileoverview 圆
+ * @fileoverview 线
  * @author dxq613@gmail.com
  */
 import LineUtil from '@antv/g-math/lib/line';
