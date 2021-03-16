@@ -7,16 +7,16 @@
     {
       "filename": "canvas-solarsystem.js",
       "title": {
-        "zh": "太阳系(Canvas)",
-        "en": "SolarSystem(Canvas)"
+        "zh": "层次结构(Canvas)",
+        "en": "Hierarchy(Canvas)"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZcrHSoLxRS8AAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "webgl-solarsystem.js",
       "title": {
-        "zh": "太阳系(WebGL)",
-        "en": "SolarSystem(WebGL)"
+        "zh": "层次结构(WebGL)",
+        "en": "Hierarchy(WebGL)"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZcrHSoLxRS8AAAAAAAAAAAAAARQnAQ"
     }

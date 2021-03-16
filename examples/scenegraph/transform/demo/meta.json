@@ -5,18 +5,18 @@
   },
   "demos": [
     {
-      "filename": "canvas.js",
+      "filename": "canvas-transform.js",
       "title": {
-        "zh": "椭圆(Canvas)",
-        "en": "Ellipse(Canvas)"
+        "zh": "变换(Canvas)",
+        "en": "Transform(Canvas)"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8eoKRbfOwgAAAAAAAAAAAABkARQnAQ"
     },
     {
-      "filename": "webgl.js",
+      "filename": "webgl-transform.js",
       "title": {
-        "zh": "椭圆(WebGL)",
-        "en": "Ellipse(WebGL)"
+        "zh": "变换(WebGL)",
+        "en": "Transform(WebGL)"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8eoKRbfOwgAAAAAAAAAAAABkARQnAQ"
     }

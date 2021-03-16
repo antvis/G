@@ -35,6 +35,8 @@ export interface IRenderPass<RenderPassData> {
 @injectable()
 export class FrameGraphSystem implements System {
   static tag = 's-framegraph';
+  static trigger = new Matcher().allOf(Renderable);
+
   public passNodes: PassNode[] = [];
 
   public resourceNodes: ResourceNode[] = [];
@@ -46,11 +48,7 @@ export class FrameGraphSystem implements System {
 
   public priority = 1001;
 
-  trigger() {
-    return new Matcher().allOf(Renderable);
-  }
-
-  public async execute(entities: Entity[]) {
+  public execute(entities: Entity[]) {
     this.compile();
     this.executePassNodes(entities);
   }
@@ -161,7 +159,8 @@ export class FrameGraphSystem implements System {
   }
 
   public async executePassNodes(entities: Entity[]) {
-    for (const [index, node] of this.passNodes.entries()) {
+    for (let index = 0; index < this.passNodes.length; index++) {
+      const node = this.passNodes[index];
       if (node.refCount) {
         for (const resource of node.devirtualize) {
           resource.preExecuteDevirtualize(this.engine);

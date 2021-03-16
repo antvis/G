@@ -18,7 +18,6 @@ export class Entity implements ILifecycle {
   protected name: string;
 
   protected components: Record<string, Component> = {};
-  protected componentsToRemove: Record<string, Component> = {};
 
   @inject(EntityManager)
   private entityManager: EntityManager;
@@ -39,21 +38,13 @@ export class Entity implements ILifecycle {
     return this.name || `${this.id}`;
   }
 
-  public getComponent<C extends Component>(clazz: ComponentConstructor<C>, includeRemoved = false): C {
-    let component = this.components[clazz.tag];
-    if (!component && includeRemoved) {
-      component = this.componentsToRemove[clazz.tag];
-    }
-    return component as C;
+  public getComponent<C extends Component>(clazz: ComponentConstructor<C>): C {
+    return this.components[clazz.tag] as C;
   }
 
   public hasComponent<C extends Component>(clazz: ComponentConstructor<C>) {
     return !!~Object.keys(this.components).indexOf(clazz.tag);
   }
-
-  // public hasRemovedComponent<C extends Component>(clazz: ComponentConstructor<C>) {
-  //   return !!~Object.keys(this.componentsToRemove).indexOf(clazz.tag);
-  // }
 
   public hasAllComponents<C extends Component>(clazzes: ComponentConstructor<C>[]) {
     return clazzes.every((clazz) => this.hasComponent(clazz));

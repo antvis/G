@@ -57,16 +57,13 @@ export class ColorAttributeAnimationUpdater implements AttributeAnimationUpdater
 @injectable()
 export class Timeline implements System {
   static tag = 's-timeline';
+  static trigger = new Matcher().allOf(Renderable, Animator);
 
   @inject(ShapeRendererFactory)
   private shapeRendererFactory: (type: string) => ShapeRenderer | null;
 
   @multiInject(AttributeAnimationUpdaters)
   private attributeAnimationUpdaters: AttributeAnimationUpdater[];
-
-  trigger() {
-    return new Matcher().allOf(Renderable, Animator);
-  }
 
   async execute(entities: Entity[], delta: number = 0, millis: number = 0) {
     entities.forEach((entity) => {
@@ -100,6 +97,8 @@ export class Timeline implements System {
     let pauseCallback;
     let resumeCallback;
     let animateCfg: AnimateCfg;
+    let direction: AnimateCfg['direction'];
+    let iterationCount: number = 1;
     // 第二个参数，既可以是动画最终状态 toAttrs，也可以是自定义帧动画函数 onFrame
     if (isFunction(toAttrs)) {
       onFrame = toAttrs as OnFrame;
@@ -115,8 +114,16 @@ export class Timeline implements System {
       duration = animateCfg.duration;
       easing = animateCfg.easing || 'easeLinear';
       delay = animateCfg.delay || 0;
-      // animateCfg 中的设置优先级更高
       repeat = animateCfg.repeat || repeat || false;
+      direction = animateCfg.direction || 'normal';
+      iterationCount = animateCfg.iterationCount || 1;
+      // animateCfg 中的设置优先级更高
+      if (iterationCount === Infinity) {
+        repeat = true;
+      }
+      if (repeat) {
+        iterationCount = Infinity;
+      }
       callback = animateCfg.callback || noop;
       pauseCallback = animateCfg.pauseCallback || noop;
       resumeCallback = animateCfg.resumeCallback || noop;
@@ -143,6 +150,8 @@ export class Timeline implements System {
         duration,
         easing,
         repeat,
+        direction,
+        iterationCount,
         callback,
         pauseCallback,
         resumeCallback,
@@ -252,7 +261,20 @@ export class Timeline implements System {
   }
 
   private update(entity: Entity, animation: Animation, elapsed: number) {
-    const { startTime, delay = 0, fromAttrs, toAttrs, duration, easing = 'easeLinear', repeat, onFrame } = animation;
+    // support direction & count like CSS3 Animation
+    // @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-direction
+    // @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-iteration-count
+    const {
+      startTime,
+      delay = 0,
+      fromAttrs,
+      toAttrs,
+      duration,
+      easing = 'easeLinear',
+      direction,
+      iterationCount,
+      onFrame,
+    } = animation;
 
     // 如果还没有开始执行或暂停，先不更新
     if (elapsed < startTime + delay) {
@@ -261,43 +283,44 @@ export class Timeline implements System {
     let ratio;
     // 已执行时间
     elapsed = elapsed - startTime - delay;
-    if (repeat) {
-      // 如果动画重复执行，则 elapsed > duration，计算 ratio 时需取模
+
+    const cycles = Math.floor(elapsed / duration);
+    const oddeven = cycles % 2;
+    if (cycles < (iterationCount || 0)) {
       ratio = (elapsed % duration) / duration;
+
+      if (direction === 'alternate') {
+        ratio = oddeven ? 1 - ratio : ratio;
+      } else if (direction === 'reverse') {
+        ratio = 1 - ratio;
+      }
       // @ts-ignore
       ratio = d3Ease[easing](ratio);
-    } else {
-      ratio = elapsed / duration;
-      if (ratio < 1) {
-        // 动画未执行完
-        // @ts-ignore
-        ratio = d3Ease[easing](ratio);
+      if (onFrame) {
+        this.changeEntityAttributes(entity, onFrame(ratio));
       } else {
-        // 动画已执行完
-        if (onFrame) {
-          this.changeEntityAttributes(entity, onFrame(1));
-        } else {
-          this.changeEntityAttributes(entity, toAttrs);
-        }
-        return true;
-      }
-    }
-    if (onFrame) {
-      this.changeEntityAttributes(entity, onFrame(ratio));
-    } else {
-      const updatedAttrs: Record<string, any> = {};
+        const updatedAttrs: Record<string, any> = {};
 
-      for (const k in toAttrs) {
-        const updater = this.attributeAnimationUpdaters
-          .reverse()
-          .find((updater) => updater.filter(k, fromAttrs[k], toAttrs[k]));
-        if (updater) {
-          updatedAttrs[k] = updater.update(entity, fromAttrs[k], toAttrs[k], ratio);
+        for (const k in toAttrs) {
+          const updater = this.attributeAnimationUpdaters
+            .reverse()
+            .find((updater) => updater.filter(k, fromAttrs[k], toAttrs[k]));
+          if (updater) {
+            updatedAttrs[k] = updater.update(entity, fromAttrs[k], toAttrs[k], ratio);
+          }
         }
+        this.changeEntityAttributes(entity, updatedAttrs);
       }
-      this.changeEntityAttributes(entity, updatedAttrs);
+      return false;
+    } else {
+      // 动画已执行完
+      if (onFrame) {
+        this.changeEntityAttributes(entity, onFrame(1));
+      } else {
+        this.changeEntityAttributes(entity, toAttrs);
+      }
+      return true;
     }
-    return false;
   }
 
   private changeEntityAttributes(entity: Entity, attributes: Record<string, any>) {

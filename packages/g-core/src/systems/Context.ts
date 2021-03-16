@@ -54,11 +54,5 @@ export class Context implements System {
     this.contextService.destroy();
   }
 
-  trigger() {
-    return new Matcher();
-  }
-
-  async execute() {
-    //
-  }
+  execute() {}
 }

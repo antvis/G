@@ -292,32 +292,32 @@
         "affectsGlobalScope": false
       },
       "./src/matcher.ts": {
-        "version": "22f4f5858fdcd44357234287583897947936335ee59cefddbf4ed12f739b9d67",
-        "signature": "acd72013df6a1724604538721e1a3e2bfe5c898727a659da5d2f34696528521e",
+        "version": "4011238138a70ceead7b8a0669704170a9702df0d5069c90caf4cb017f70bc4b",
+        "signature": "5de0940bb2a7428f2495eed7e5ed43eb26d6fb333a0ac79405ad00629a8e3fba",
         "affectsGlobalScope": false
       },
       "./src/entitymanager.ts": {
-        "version": "019c4dfde15a937a8a656e41451012686cc81b4063c190c52532454b6fd0be34",
-        "signature": "05b04d8f8375bc646d990330416551c1030d3c7aaf80b2edbd59b145a0d431b6",
+        "version": "21d0c6989d26f91442359771401cc3fcbc90492a318f1b40f8e4a1aceb3f35e3",
+        "signature": "db6e60918028812a72ded932275da711c0f0cf983914f801749740c228016451",
         "affectsGlobalScope": false
       },
       "./src/entity.ts": {
-        "version": "838121a61b68914bbb51b17fa24cc20d8496a1f79c3c9f09ca95c852a7eff5bf",
-        "signature": "83c08369b92b82b769dd4efeec8fc087e311f13b1a4c218a9c4f8888602318bd",
+        "version": "0bd6b22fc6420c0a5e78c46c3589811a751b53037e89aaceb8989cc0b119bfe6",
+        "signature": "4c34cd47e4b95a7195cdd7369dd8ae7bb0aec75a7e9b9d10a7c9f522df000708",
         "affectsGlobalScope": false
       },
       "./src/system.ts": {
-        "version": "9b07943a91037ba71b387967e397e9bd283e2c376e7e80349678d385c6c0e0fb",
-        "signature": "d968991358992a580ce84b10ef473584e56fa720f61126f077a41bd70beaa596",
+        "version": "61fa537a802c86c148157d84171d2ac7a8bd490e7526309c7ac8cd9726f7b476",
+        "signature": "2782f2bc11e8f32542e27848e3b22b7886ce4340d913df254108a7d00e2d1dee",
         "affectsGlobalScope": false
       },
       "./src/systemmanager.ts": {
-        "version": "232d62fa872a98ae849499c5ef32564f12dc468dc96e72267d9a6c0c4cc45fcd",
+        "version": "55a3ab5ff2f2a9b8fd4983f11ca8d96a5c8fe3b1a4c729f76bdfff86605d6a1a",
         "signature": "b7e39a9d1daa7ff99db6c286693aa25add04e8301888c70718ffa9570b78ae9f",
         "affectsGlobalScope": false
       },
       "./src/world.ts": {
-        "version": "62e80f599918b91f4306295e37d1ce007916f4843fa5dba619d0fcc6758febb2",
+        "version": "c21ba80ab52041451c8011a25053ced7d8e0a6a1652c83dfd502c37ee9c3f69d",
         "signature": "044eb287f6166a8669ddf9c3502c94a553d9f3fb3eb4b4292bddbffb3efc0cb9",
         "affectsGlobalScope": false
       },

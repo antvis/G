@@ -1,12 +1,12 @@
-import { Entity, System } from '@antv/g-ecs';
-import { inject, injectable, named } from 'inversify';
+import { Entity, System, World } from '@antv/g-ecs';
+import { Container, inject, injectable, named } from 'inversify';
 import isObject from 'lodash-es/isObject';
 import { Geometry, Material, Renderable, Cullable } from './components';
 import { ShapeRenderer, ShapeRendererFactory } from './systems';
 import { IShape, OnFrame, AnimateCfg, ElementAttrs, ShapeCfg } from './types';
 import { Timeline } from './systems/Timeline';
 import { Animator, STATUS } from './components/Animator';
-import { Group } from './Group';
+import { Group, GroupOrShape } from './Group';
 
 @injectable()
 export class Shape extends Group implements IShape {
@@ -17,17 +17,23 @@ export class Shape extends Group implements IShape {
   @named(Timeline.tag)
   private timeline: Timeline;
 
-  init(entity: Entity, type: string, config: ShapeCfg) {
-    super.init(entity, '', config);
+  private type: string;
+
+  private instanceEntity: Entity;
+
+  init(container: Container, world: World, entity: Entity, type: string, config: ShapeCfg) {
+    super.init(container, world, entity, '', config);
 
     entity.addComponent(Cullable);
     entity.addComponent(Material);
     entity.addComponent(Geometry);
     entity.addComponent(Renderable);
 
+    this.type = type;
+
     const renderer = this.shapeRendererFactory(type);
     if (renderer) {
-      renderer.init(this.entity, type, config);
+      renderer.init(this.entity, type, config, this.instanceEntity);
     }
   }
 
@@ -62,7 +68,7 @@ export class Shape extends Group implements IShape {
   }
 
   /**
-   * 停止图形的动画
+   * stop animation
    */
   stopAnimation(toEnd: boolean = false) {
     this.timeline.stopAnimation(this.entity, toEnd, (attributes: any) => {
@@ -74,7 +80,7 @@ export class Shape extends Group implements IShape {
   }
 
   /**
-   * 暂停图形的动画
+   * pause animation
    */
   pauseAnimation() {
     this.timeline.pauseAnimation(this.entity);
@@ -84,7 +90,7 @@ export class Shape extends Group implements IShape {
   }
 
   /**
-   * 恢复暂停的动画
+   * resume animation
    */
   resumeAnimation() {
     this.timeline.resumeAnimation(this.entity);
@@ -93,9 +99,6 @@ export class Shape extends Group implements IShape {
     this.resumeAnimation();
   }
 
-  /**
-   * 当前动画是否处于暂停状态
-   */
   isAnimationPaused() {
     const animator = this.entity.getComponent(Animator);
     return animator && animator.status === STATUS.Paused;
@@ -106,6 +109,38 @@ export class Shape extends Group implements IShape {
 
   isGroup() {
     return false;
+  }
+
+  /**
+   * create a instance of current shape
+   *
+   * @see https://doc.babylonjs.com/divingDeeper/mesh/copies/instances
+   */
+  createInstance(config?: ShapeCfg) {
+    // make itself invisible first
+    this.hide();
+
+    const entity = this.world.createEntity(config?.name || '');
+    const shape = this.container.get(Shape);
+
+    shape.instanceEntity = this.entity;
+    shape.init(this.container, this.world, entity, this.type, {
+      zIndex: 0,
+      visible: true,
+      capture: true,
+      ...this.config,
+      attrs: {
+        ...this.config.attrs, // copy attributes from root shape
+        ...config?.attrs,
+      },
+    });
+
+    this.container.bind(GroupOrShape).toConstantValue(shape).whenTargetNamed(entity.getName());
+    return shape;
+  }
+
+  removeInstance(shape: Shape) {
+    // TODO:
   }
 
   private setAttribute(name: string, value: any) {

@@ -15,7 +15,12 @@ const systemModule = new ContainerModule((bind) => {
   // shape renderer factory
   bind<interfaces.Factory<ShapeRenderer>>(ShapeRendererFactory).toFactory<ShapeRenderer | null>(
     (context: interfaces.Context) => {
+      const cache: Record<string, ShapeRenderer> = {};
       return (shapeType: string) => {
+        if (cache[shapeType]) {
+          return cache[shapeType];
+        }
+
         try {
           const isShapeRendererBound = context.container.isBoundNamed(ShapeRenderer, shapeType);
           if (!isShapeRendererBound) {
@@ -27,6 +32,7 @@ const systemModule = new ContainerModule((bind) => {
         }
 
         const renderer = context.container.getNamed<ShapeRenderer>(ShapeRenderer, shapeType);
+        cache[shapeType] = renderer;
         return renderer;
       };
     }

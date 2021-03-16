@@ -7,8 +7,6 @@ export const System = Symbol('System');
  * @see https://github.com/sschmid/Entitas-CSharp/wiki/Systems
  */
 export interface System {
-  priority?: number;
-
   /**
    * in a similar way to Unity's `Start()`, we can do some initialization works:
    * * create global entities
@@ -27,16 +25,16 @@ export interface System {
    */
   tearDown?(entities: Entity[]): Promise<void> | void;
 
-  /**
-   * all kind of components this system cares about
-   */
-  trigger?(): Matcher;
-
   onEntityAdded?(entity: Entity): void;
   onEntityRemoved?(entity: Entity): void;
 }
 
 export interface SystemConstructor<T extends System> {
   tag: string;
+  /**
+   * all kind of components this system cares about
+   */
+  trigger?: Matcher;
+  priority?: number;
   new (...args: any): T;
 }

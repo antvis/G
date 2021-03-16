@@ -30,7 +30,7 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
     super.onAttributeChanged(entity, name, value);
   }
 
-  render(entity: Entity) {
+  async render(entity: Entity) {
     const context = this.contextService.getContext();
 
     if (context) {

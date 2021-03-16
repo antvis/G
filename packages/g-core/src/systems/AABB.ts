@@ -8,10 +8,7 @@ import { getRotationScale } from '../utils/math';
 @injectable()
 export class AABB implements System {
   static tag = 's-aabb';
-
-  trigger() {
-    return new Matcher().allOf(Renderable, Transform, Geometry);
-  }
+  static trigger = new Matcher().allOf(Renderable, Transform, Geometry);
 
   execute(entities: Entity[]) {
     entities.forEach((entity) => {
@@ -20,7 +17,7 @@ export class AABB implements System {
       const transform = entity.getComponent(Transform);
 
       // update mesh.aabb
-      if (geometry && geometry.aabb && transform && renderable.aabbDirty) {
+      if (geometry.aabb && renderable.aabbDirty) {
         const { worldTransform } = transform;
 
         // apply transform to geometry.aabb

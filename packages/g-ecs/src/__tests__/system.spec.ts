@@ -26,16 +26,12 @@ class C4 extends Component {
 @injectable()
 class S1 implements System {
   static tag = 's1';
-
-  public priority = 0;
+  static trigger = new Matcher().allOf(C1);
+  static priority = 0;
   public initialized = false;
 
   initialize() {
     this.initialized = true;
-  }
-
-  trigger() {
-    return new Matcher().allOf(C1);
   }
 
   execute(entities: Entity[]) {
@@ -49,9 +45,10 @@ class S1 implements System {
 @injectable()
 class S2 implements System {
   static tag = 's2';
+  static trigger = new Matcher().allOf(C2);
 
   public counter = 0;
-  public priority = 0;
+  static priority = 0;
 
   getCounter() {
     return this.counter;
@@ -59,10 +56,6 @@ class S2 implements System {
 
   reset() {
     this.counter = 0;
-  }
-
-  trigger() {
-    return new Matcher().allOf(C2);
   }
 
   execute(entities: Entity[]) {
@@ -86,7 +79,7 @@ class S2 implements System {
 @injectable()
 class S3 implements System {
   static tag = 's3';
-  public priority = 0;
+  static priority = 0;
 
   execute(entities: Entity[]) {
     entities.forEach((entity) => {

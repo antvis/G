@@ -20,14 +20,11 @@ export class DefaultCullingStrategy implements CullingStrategy {
 @injectable()
 export class Culling implements System {
   static tag = 's-culling';
+  static trigger = new Matcher().allOf(Renderable, Cullable, Geometry);
 
   @inject(ContributionProvider)
   @named(CullingStrategy)
   protected strategies: ContributionProvider<CullingStrategy>;
-
-  trigger() {
-    return new Matcher().allOf(Renderable, Cullable, Geometry);
-  }
 
   execute(entities: Entity[]) {
     entities.forEach((entity) => {

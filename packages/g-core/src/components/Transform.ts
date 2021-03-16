@@ -6,10 +6,9 @@ import { Component } from '@antv/g-ecs';
  */
 export class Transform extends Component {
   public static tag = 'c-transform';
-  public static DIRTY = 1 << 0;
 
-  private dirtyFlag: number;
-  private localDirtyFlag: number;
+  public dirtyFlag = true;
+  public localDirtyFlag = true;
 
   public parent: Transform | null = null;
 
@@ -91,8 +90,6 @@ export class Transform extends Component {
     const quatZ = quat.create();
     // in degrees
     return (x: number, y: number, z: number) => {
-      this.setDirty();
-
       quat.fromEuler(quatX, x, 0, 0);
       quat.fromEuler(quatY, 0, y, 0);
       quat.fromEuler(quatZ, 0, 0, z);
@@ -101,6 +98,8 @@ export class Transform extends Component {
       quat.multiply(this.localRotation, this.localRotation, quatY);
       quat.multiply(this.localRotation, quatZ, this.localRotation);
       quat.normalize(this.localRotation, this.localRotation);
+
+      this.setLocalDirty(true);
     };
   })();
 
@@ -218,7 +217,7 @@ export class Transform extends Component {
       position = vec3.fromValues(position, y, z);
     }
     vec3.copy(this.localPosition, position);
-    this.setLocalDirty(true);
+    this.setLocalDirty();
     return this;
   }
 
@@ -226,11 +225,11 @@ export class Transform extends Component {
    * scale in local space
    */
   public scaleLocal(scaling: vec3 | number, y: number = 1, z: number = 1) {
-    this.setLocalDirty();
     if (typeof scaling === 'number') {
       scaling = vec3.fromValues(scaling, y, z);
     }
     vec3.multiply(this.localScale, this.localScale, scaling);
+    this.setLocalDirty();
     return this;
   }
 
@@ -239,40 +238,32 @@ export class Transform extends Component {
       scaling = vec3.fromValues(scaling, y, z);
     }
     vec3.copy(this.localScale, scaling);
-    this.setLocalDirty(true);
+    this.setLocalDirty();
     return this;
-  }
-
-  public isDirty() {
-    return this.dirtyFlag;
   }
 
   public setDirty(value = true) {
     if (value) {
-      this.dirtyFlag |= Transform.DIRTY;
+      this.dirtyFlag = true;
     } else {
-      this.dirtyFlag &= ~Transform.DIRTY;
+      this.dirtyFlag = false;
     }
-  }
-
-  public isLocalDirty() {
-    return this.localDirtyFlag;
   }
 
   public setLocalDirty(value = true) {
     if (value) {
-      this.localDirtyFlag |= Transform.DIRTY;
+      this.localDirtyFlag = true;
       this.setDirty(true);
     } else {
-      this.localDirtyFlag &= ~Transform.DIRTY;
+      this.localDirtyFlag = false;
     }
   }
 
   public updateTransform() {
-    if (this.isLocalDirty()) {
+    if (this.localDirtyFlag) {
       this.getLocalTransform();
     }
-    if (this.isDirty()) {
+    if (this.dirtyFlag) {
       if (this.parent === null) {
         mat4.copy(this.worldTransform, this.getLocalTransform());
         this.setDirty(false);
@@ -281,6 +272,8 @@ export class Transform extends Component {
   }
 
   public updateTransformWithParent(parent: Transform) {
+    // TODO: should we support scale compensation?
+    // @see https://github.com/playcanvas/engine/issues/1077#issuecomment-359765557
     mat4.multiply(this.worldTransform, parent.worldTransform, this.getLocalTransform());
   }
 
@@ -321,7 +314,7 @@ export class Transform extends Component {
   }
 
   public getWorldTransform() {
-    if (!this.isLocalDirty() && !this.isDirty()) {
+    if (!this.localDirtyFlag && !this.dirtyFlag) {
       return this.worldTransform;
     }
 

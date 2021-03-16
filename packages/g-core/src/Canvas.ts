@@ -78,7 +78,7 @@ export class Canvas {
     // create entity with shape's name
     const entity = this.world.createEntity(config.name || '');
     const shape = this.container.get(Shape);
-    shape.init(entity, shapeType, {
+    shape.init(this.container, this.world, entity, shapeType, {
       zIndex: 0,
       visible: true,
       capture: true,
@@ -92,7 +92,7 @@ export class Canvas {
   public addGroup(config: GroupCfg = {}) {
     const entity = this.world.createEntity(config.name || '');
     const group = this.container.get(Group);
-    group.init(entity, '', {
+    group.init(this.container, this.world, entity, '', {
       zIndex: 0,
       visible: true,
       capture: true,
@@ -143,20 +143,19 @@ export class Canvas {
       .registerSystem(SRenderer);
   }
 
-  private async run() {
+  private run() {
     let lastTime = performance.now();
     const tick = async () => {
+      if (this.frameCallback) {
+        this.frameCallback();
+      }
       const time = performance.now();
       const delta = time - lastTime;
       // run all the systems
       await this.world.execute(delta, time);
-
-      if (this.frameCallback) {
-        this.frameCallback();
-      }
       lastTime = time;
       this.frameId = requestAnimationFrame(tick);
     };
-    await tick();
+    tick();
   }
 }

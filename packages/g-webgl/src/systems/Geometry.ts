@@ -1,25 +1,24 @@
 import { Entity, Matcher, System } from '@antv/g-ecs';
 import { inject, injectable } from 'inversify';
 import { Geometry3D } from '../components/Geometry3D';
+import { Renderable3D } from '../components/Renderable3D';
 import { RenderingEngine } from '../services/renderer';
 import { gl } from '../services/renderer/constants';
 
 @injectable()
 export class GeometrySystem implements System {
   static tag = 's-geometry-3d';
-
-  public priority = 1000;
+  static trigger = new Matcher().allOf(Geometry3D);
+  static priority = 1000;
 
   @inject(RenderingEngine)
   private readonly engine: RenderingEngine;
 
-  trigger() {
-    return new Matcher().allOf(Geometry3D);
-  }
-
-  public async execute(entities: Entity[]) {
+  public execute(entities: Entity[]) {
     entities.forEach((entity) => {
       const geometry = entity.getComponent(Geometry3D);
+      const renderable = entity.getComponent(Renderable3D);
+      const instancing = renderable && renderable.instances.length;
 
       // build buffers for each geometry
       if (geometry.dirty) {
@@ -29,6 +28,7 @@ export class GeometrySystem implements System {
               attribute.buffer = this.engine.createBuffer({
                 data: attribute.data,
                 type: gl.FLOAT,
+                usage: instancing ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW,
               });
             } else {
               attribute.buffer?.subData({

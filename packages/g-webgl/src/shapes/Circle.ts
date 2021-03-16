@@ -10,13 +10,13 @@ import { gl } from '../services/renderer/constants';
 import { Material3D } from '../components/Material3D';
 import { Geometry3D } from '../components/Geometry3D';
 import { encodePickingColor } from '../utils/math';
+import { Renderable3D } from '../components/Renderable3D';
 
 const pointShapes = ['circle', 'triangle', 'square', 'pentagon', 'hexagon', 'octogon', 'hexagram', 'rhombus', 'vesica'];
 
 interface IPointConfig {
   id: number;
   shape: 'circle' | 'triangle' | 'square' | 'pentagon' | 'hexagon' | 'octogon' | 'hexagram' | 'rhombus' | 'vesica';
-  position: [number, number];
   size: [number, number];
   color: [number, number, number, number]; // sRGB
   opacity: number;
@@ -26,8 +26,7 @@ interface IPointConfig {
 }
 
 interface IInstanceAttributes {
-  positions: number[];
-  instancedOffsets: number[];
+  extrudes: number[];
   instancedColors: number[];
   instancedSizes: number[];
   instancedShapes: number[];
@@ -44,30 +43,49 @@ export class CircleRenderer extends BaseRenderer {
 
   onAttributeChanged(entity: Entity, name: string, value: any) {
     super.onAttributeChanged(entity, name, value);
+
     const renderable = entity.getComponent(Renderable);
-    const material = entity.getComponent(Material3D);
-    const geometry = entity.getComponent(Geometry3D);
-    const { r = 0, lineWidth = 0, rx = 0, ry = 0 } = renderable.attrs;
-    if (name === 'fill') {
-      const fillColor = rgb2arr(value);
-      geometry.setAttribute('a_color', Float32Array.from(fillColor));
-    } else if (name === 'r') {
-      geometry.setAttribute('a_size', Float32Array.from([value - lineWidth / 2, value - lineWidth / 2]));
-    } else if (name === 'rx') {
-      geometry.setAttribute('a_size', Float32Array.from([value - lineWidth / 2, ry - lineWidth / 2]));
-    } else if (name === 'ry') {
-      geometry.setAttribute('a_size', Float32Array.from([rx - lineWidth / 2, value - lineWidth / 2]));
-    } else if (name === 'stroke') {
-      const strokeColor = rgb2arr(value);
-      material.setUniform('u_stroke_color', strokeColor);
-    } else if (name === 'fillOpacity') {
-      material.setUniform('u_opacity', value);
-    } else if (name === 'lineWidth') {
-      // 改变线宽时需要同时修改半径，保持与 Canvas 渲染效果一致
-      geometry.setAttribute('a_size', Float32Array.from([(rx || r) - value / 2, (ry || r) - value / 2]));
-      material.setUniform('u_stroke_width', value);
-    } else if (name === 'strokeOpacity') {
-      material.setUniform('u_stroke_opacity', value);
+    const renderable3d = entity.getComponent(Renderable3D);
+    // if we are updating sub renderable's attribute
+    if (renderable3d.sourceEntity) {
+      const sourceGeometry = renderable3d.sourceEntity.getComponent(Geometry3D);
+      // TODO: update subdata in this buffer
+      const { r = 0, lineWidth = 0, rx = 0, ry = 0 } = renderable.attrs;
+      const index = renderable3d.source.instances.indexOf(renderable3d);
+      if (name === 'r') {
+        const sizeAttribute = sourceGeometry.attributes.find((a) => a.name === 'a_size');
+        if (sizeAttribute) {
+          sizeAttribute.buffer?.subData({
+            data: Float32Array.from([value - lineWidth / 2, value - lineWidth / 2]),
+            offset: index * Float32Array.BYTES_PER_ELEMENT * 2,
+          });
+        }
+      }
+    } else {
+      const material = entity.getComponent(Material3D);
+      const geometry = entity.getComponent(Geometry3D);
+      const { r = 0, lineWidth = 0, rx = 0, ry = 0 } = renderable.attrs;
+      if (name === 'fill') {
+        const fillColor = rgb2arr(value);
+        geometry.setAttribute('a_color', Float32Array.from(fillColor));
+      } else if (name === 'r') {
+        geometry.setAttribute('a_size', Float32Array.from([value - lineWidth / 2, value - lineWidth / 2]));
+      } else if (name === 'rx') {
+        geometry.setAttribute('a_size', Float32Array.from([value - lineWidth / 2, ry - lineWidth / 2]));
+      } else if (name === 'ry') {
+        geometry.setAttribute('a_size', Float32Array.from([rx - lineWidth / 2, value - lineWidth / 2]));
+      } else if (name === 'stroke') {
+        const strokeColor = rgb2arr(value);
+        material.setUniform('u_stroke_color', strokeColor);
+      } else if (name === 'fillOpacity') {
+        material.setUniform('u_opacity', value);
+      } else if (name === 'lineWidth') {
+        // 改变线宽时需要同时修改半径，保持与 Canvas 渲染效果一致
+        geometry.setAttribute('a_size', Float32Array.from([(rx || r) - value / 2, (ry || r) - value / 2]));
+        material.setUniform('u_stroke_width', value);
+      } else if (name === 'strokeOpacity') {
+        material.setUniform('u_stroke_opacity', value);
+      }
     }
   }
 
@@ -75,10 +93,10 @@ export class CircleRenderer extends BaseRenderer {
     const renderable = entity.getComponent(Renderable);
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
+    const renderable3d = entity.getComponent(Renderable3D);
+    const instancing = renderable3d.instances.length > 0;
 
     const {
-      // x = 0,
-      // y = 0,
       rx = 0,
       ry = 0,
       r = 1,
@@ -101,7 +119,7 @@ export class CircleRenderer extends BaseRenderer {
     material.vertexShaderGLSL = vs || '';
     material.fragmentShaderGLSL = fs || '';
     material.cull = {
-      enable: false,
+      enable: true,
     };
     material.depth = {
       enable: false,
@@ -126,39 +144,43 @@ export class CircleRenderer extends BaseRenderer {
       u_stroke_opacity: strokeOpacity,
     });
 
-    const attributes = this.buildAttributes({
-      position: [0, 0],
-      size: [(rx || r) - lineWidth / 2, (ry || r) - lineWidth / 2],
-      shape: 'circle',
-      color: fillColor as [number, number, number, number], // sRGB
-      opacity: fillOpacity,
-      strokeOpacity,
-      strokeColor: strokeColor as [number, number, number, number], // sRGB
-    });
+    let config: Partial<IPointConfig>[] = [];
+    if (instancing) {
+      config = renderable3d.instanceEntities.map((subEntity) => {
+        const { attrs } = subEntity.getComponent(Renderable);
+        return {
+          size: [(attrs.rx || rx || attrs.r || r) - lineWidth / 2, (attrs.ry || ry || attrs.r || r) - lineWidth / 2],
+          shape: 'circle',
+          color: fillColor as [number, number, number, number], // sRGB
+          opacity: fillOpacity,
+          strokeOpacity,
+          strokeColor: strokeColor as [number, number, number, number], // sRGB
+        };
+      });
+    } else {
+      config.push({
+        size: [(rx || r) - lineWidth / 2, (ry || r) - lineWidth / 2],
+        shape: 'circle',
+        color: fillColor as [number, number, number, number], // sRGB
+        opacity: fillOpacity,
+        strokeOpacity,
+        strokeColor: strokeColor as [number, number, number, number], // sRGB
+      });
+    }
 
-    geometry.maxInstancedCount = attributes.instancedOffsets.length / 2;
+    const attributes = this.buildAttributes(config);
+
+    geometry.maxInstancedCount = attributes.instancedSizes.length / 2;
     geometry.vertexCount = 6;
 
-    geometry.setIndex([0, 2, 1, 0, 3, 2]);
+    geometry.setIndex([0, 1, 2, 0, 2, 3]);
 
-    geometry.setAttribute('a_extrude', Float32Array.from(attributes.positions), {
+    geometry.setAttribute('a_extrude', Float32Array.from(attributes.extrudes), {
       arrayStride: 4 * 2,
       stepMode: 'vertex',
       attributes: [
         {
           shaderLocation: 0,
-          offset: 0,
-          format: 'float2',
-        },
-      ],
-    });
-
-    geometry.setAttribute('a_position', Float32Array.from(attributes.instancedOffsets), {
-      arrayStride: 4 * 2,
-      stepMode: 'instance',
-      attributes: [
-        {
-          shaderLocation: 1,
           offset: 0,
           format: 'float2',
         },
@@ -216,17 +238,14 @@ export class CircleRenderer extends BaseRenderer {
 
   private buildAttribute(config: Partial<IPointConfig>, attributes: IInstanceAttributes, index: number) {
     attributes.instancedPickingColors.push(...encodePickingColor(config.id || index));
-
     attributes.instancedShapes.push(pointShapes.indexOf(config.shape || 'circle'));
     attributes.instancedColors.push(...(config.color || [1, 0, 0, 1]));
-    attributes.instancedOffsets.push(...(config.position || [0, 0]));
     attributes.instancedSizes.push(...(config.size || [0.2, 0.2]));
   }
 
   private buildAttributes(config: Partial<IPointConfig> | Array<Partial<IPointConfig>>) {
     const attributes: IInstanceAttributes = {
-      positions: [1, 1, 1, -1, -1, -1, -1, 1],
-      instancedOffsets: [],
+      extrudes: [1, 1, 1, -1, -1, -1, -1, 1],
       instancedColors: [],
       instancedSizes: [],
       instancedShapes: [],

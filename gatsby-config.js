@@ -131,6 +131,13 @@ module.exports = {
           en: 'Animation',
         },
       },
+      {
+        slug: 'perf',
+        title: {
+          zh: '性能',
+          en: 'Performance',
+        },
+      },
     ],
     docsearchOptions: {
       apiKey: 'c0fb0f71e3b70638cf4756bf128a42e6',

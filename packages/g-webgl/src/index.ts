@@ -63,7 +63,7 @@ export const module = new ContainerModule((bind) => {
    * bind culling strategies
    */
   bind(FrustumCulling).toSelf().inSingletonScope();
-  bind(CullingStrategy).toService(FrustumCulling);
+  bind(CullingStrategy).to(FrustumCulling);
 
   bind(View).toSelf().inSingletonScope();
   bind(Camera).toSelf().inSingletonScope();
@@ -74,7 +74,7 @@ export const module = new ContainerModule((bind) => {
   bind(CompileFrameGraph).toSelf().inSingletonScope();
   // unbind(RendererFrameContribution);
   // bindContributionProvider(bind, RendererFrameContribution);
-  bind(RendererFrameContribution).toService(CompileFrameGraph);
+  bind(RendererFrameContribution).to(CompileFrameGraph);
 });
 
 export { Canvas };

@@ -242,37 +242,39 @@ export type ChangeType =
 export type AnimateCfg = {
   /**
    * 动画执行时间
-   * @type {number}
    */
   duration: number;
   /**
    * 动画缓动效果
-   * @type {string}}
    */
   easing?: string;
   /**
    * 动画执行的延迟时间
-   * @type {function}}
    */
   delay?: number;
   /**
    * 是否重复执行动画
-   * @type {boolean}}
    */
   repeat?: boolean;
   /**
+   * same as `repeat: true` when set Infinity
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-iteration-count
+   */
+  iterationCount?: number;
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-direction
+   */
+  direction?: 'normal' | 'alternate' | 'reverse' | 'alternate-reverse';
+  /**
    * 动画执行完时的回调函数
-   * @type {function}}
    */
   callback?: () => void;
   /**
    * 动画暂停时的回调函数
-   * @type {function}}
    */
   pauseCallback?: () => void;
   /**
    * 动画恢复(重新唤醒)时的回调函数
-   * @type {function}}
    */
   resumeCallback?: () => void;
 };

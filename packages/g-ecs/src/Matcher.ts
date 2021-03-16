@@ -58,4 +58,10 @@ export class Matcher<C extends Component = Component> implements IAllOfMatcher<C
       : !entity.hasAnyComponents(this.noneOfComponentCtors);
     return matchesAllOf && matchesAnyOf && matchesNoneOf;
   }
+
+  public hash() {
+    return [...this.allOfComponentCtors, ...this.anyOfComponentCtors, ...this.noneOfComponentCtors]
+      .map((c) => c.tag)
+      .join();
+  }
 }

@@ -1,6 +1,6 @@
 import { Entity, Matcher, System } from '@antv/g-ecs';
 import { inject, injectable, named } from 'inversify';
-import { Hierarchy, Transform, Visible } from '../components';
+import { Transform, Visible } from '../components';
 import { Cullable } from '../components/Cullable';
 import { Renderable } from '../components/Renderable';
 import { ContributionProvider } from '../contribution-provider';
@@ -11,8 +11,8 @@ export const ShapeRendererFactory = Symbol('ShapeRendererFactory');
 export const ShapeRenderer = Symbol('ShapeRenderer');
 export interface ShapeRenderer {
   getDefaultAttributes(): ShapeAttrs;
-  init(entity: Entity, type: string, cfg: ShapeCfg): void;
-  render(entity: Entity): void;
+  init(entity: Entity, type: string, cfg: ShapeCfg, instanceEntity?: Entity): Promise<void>;
+  render(entity: Entity): Promise<void>;
   onAttributeChanged(entity: Entity, name: string, value: any): void;
 }
 @injectable()
@@ -24,7 +24,7 @@ export abstract class DefaultShapeRenderer {
     };
   }
 
-  init(entity: Entity, type: string, cfg: ShapeCfg) {
+  async init(entity: Entity, type: string, cfg: ShapeCfg) {
     const renderable = entity.getComponent(Renderable);
     const transform = entity.getComponent(Transform);
 
@@ -37,11 +37,9 @@ export abstract class DefaultShapeRenderer {
 
     // set position in world space
     transform.setPosition(x, y);
-    // update world transform immediately
-    // transform.updateTransform();
   }
 
-  abstract render(entity: Entity): void;
+  abstract render(entity: Entity): Promise<void>;
 
   onAttributeChanged(entity: Entity, name: string, value: any) {
     const renderable = entity.getComponent(Renderable);
@@ -61,19 +59,24 @@ export abstract class DefaultShapeRenderer {
 export const RendererFrameContribution = Symbol('RendererFrameContribution');
 export interface RendererFrameContribution {
   beginFrame(): Promise<void>;
-  renderFrame(entity: Entity[]): Promise<void>;
-  endFrame(): Promise<void>;
+  renderFrame(entities: Entity[]): Promise<void>;
+  endFrame(entities: Entity[]): Promise<void>;
   destroy(): void;
 }
 
 /**
- * 使用上层 g-canvas/svg/webgl 提供的渲染服务
+ * Use frame renderer implemented by `g-canvas/svg/webgl`, in every frame we do followings:
+ * * begin frame
+ * * filter by visible
+ * * sort by z-index in scene graph
+ * * culling with strategies registered in `g-canvas/webgl`
+ * * end frame
  */
 @injectable()
 export class Renderer implements System {
   static tag = 's-renderer';
-
-  public priority = Infinity;
+  static trigger = new Matcher().allOf(Renderable);
+  static priority = Infinity;
 
   @inject(ContributionProvider)
   @named(RendererFrameContribution)
@@ -82,10 +85,6 @@ export class Renderer implements System {
   @inject(System)
   @named(SceneGraph.tag)
   private sceneGraph: SceneGraph;
-
-  trigger() {
-    return new Matcher().allOf(Renderable);
-  }
 
   async execute(entities: Entity[]) {
     for (const f of this.frameContribution.getContributions()) {
@@ -101,6 +100,7 @@ export class Renderer implements System {
     // sort by z-index
     const ids = this.sceneGraph.sort();
     const sortedEntities = renderableEntities.sort((a, b) => ids.indexOf(a) - ids.indexOf(b));
+    // const sortedEntities = renderableEntities;
 
     // do culling
     const visibleEntities = sortedEntities.filter((entity) => {
@@ -114,7 +114,7 @@ export class Renderer implements System {
     }
 
     for (const f of this.frameContribution.getContributions()) {
-      await f.endFrame();
+      await f.endFrame(visibleEntities);
     }
   }
 

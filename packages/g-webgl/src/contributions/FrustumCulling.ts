@@ -12,19 +12,23 @@ export class FrustumCulling implements CullingStrategy {
   private camera: ICamera;
 
   isVisible(entity: Entity) {
-    const renderable = entity.getComponent(Renderable);
-    const cullable = entity.getComponent(Cullable);
-    const hierarchy = entity.getComponent(Hierarchy);
+    // FIXME: restore after perf benchmark finished
 
-    const parentVisibilityPlaneMask = hierarchy?.parent?.getComponent(Cullable)?.visibilityPlaneMask;
-    cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
-      renderable.aabb,
-      parentVisibilityPlaneMask || Mask.INDETERMINATE,
-      this.planes || this.camera.getFrustum().planes
-    );
-    cullable.visible = cullable.visibilityPlaneMask !== Mask.OUTSIDE;
+    // const renderable = entity.getComponent(Renderable);
+    // const cullable = entity.getComponent(Cullable);
+    // const hierarchy = entity.getComponent(Hierarchy);
 
-    return cullable.visible;
+    // const parentVisibilityPlaneMask = hierarchy?.parent?.getComponent(Cullable)?.visibilityPlaneMask;
+    // cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
+    //   renderable.aabb,
+    //   parentVisibilityPlaneMask || Mask.INDETERMINATE,
+    //   this.planes || this.camera.getFrustum().planes
+    // );
+    // cullable.visible = cullable.visibilityPlaneMask !== Mask.OUTSIDE;
+
+    // return cullable.visible;
+
+    return true;
   }
 
   private planes: Plane[];

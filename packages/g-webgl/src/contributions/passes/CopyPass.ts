@@ -87,7 +87,6 @@ export class CopyPass implements IRenderPass<CopyPassData> {
       this.model = model;
     }
 
-    // 实例化资源
     const resourceNode = fg.getResourceNode(pass.data.input);
     const framebuffer = this.resourcePool.getOrCreateResource(resourceNode.resource);
 
@@ -101,7 +100,6 @@ export class CopyPass implements IRenderPass<CopyPassData> {
       this.model!.draw({
         uniforms: {
           u_Texture: framebuffer,
-          // u_ViewportSize: [width, height],
         },
       });
     });

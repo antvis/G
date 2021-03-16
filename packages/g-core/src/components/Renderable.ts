@@ -26,9 +26,4 @@ export class Renderable extends Component {
    * transform 之后需要重新计算包围盒
    */
   public aabbDirty = true;
-
-  /**
-   * extension props
-   */
-  public model: any;
 }

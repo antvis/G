@@ -287,23 +287,23 @@
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/entity.d.ts": {
-        "version": "83c08369b92b82b769dd4efeec8fc087e311f13b1a4c218a9c4f8888602318bd",
-        "signature": "83c08369b92b82b769dd4efeec8fc087e311f13b1a4c218a9c4f8888602318bd",
+        "version": "4c34cd47e4b95a7195cdd7369dd8ae7bb0aec75a7e9b9d10a7c9f522df000708",
+        "signature": "4c34cd47e4b95a7195cdd7369dd8ae7bb0aec75a7e9b9d10a7c9f522df000708",
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/matcher.d.ts": {
-        "version": "acd72013df6a1724604538721e1a3e2bfe5c898727a659da5d2f34696528521e",
-        "signature": "acd72013df6a1724604538721e1a3e2bfe5c898727a659da5d2f34696528521e",
+        "version": "5de0940bb2a7428f2495eed7e5ed43eb26d6fb333a0ac79405ad00629a8e3fba",
+        "signature": "5de0940bb2a7428f2495eed7e5ed43eb26d6fb333a0ac79405ad00629a8e3fba",
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/entitymanager.d.ts": {
-        "version": "05b04d8f8375bc646d990330416551c1030d3c7aaf80b2edbd59b145a0d431b6",
-        "signature": "05b04d8f8375bc646d990330416551c1030d3c7aaf80b2edbd59b145a0d431b6",
+        "version": "db6e60918028812a72ded932275da711c0f0cf983914f801749740c228016451",
+        "signature": "db6e60918028812a72ded932275da711c0f0cf983914f801749740c228016451",
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/system.d.ts": {
-        "version": "d968991358992a580ce84b10ef473584e56fa720f61126f077a41bd70beaa596",
-        "signature": "d968991358992a580ce84b10ef473584e56fa720f61126f077a41bd70beaa596",
+        "version": "2782f2bc11e8f32542e27848e3b22b7886ce4340d913df254108a7d00e2d1dee",
+        "signature": "2782f2bc11e8f32542e27848e3b22b7886ce4340d913df254108a7d00e2d1dee",
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/world.d.ts": {
@@ -316,29 +316,29 @@
         "signature": "531c35b5144945a297b5fb9707e7591f4dde654fc2ad6f580b6d58b6040ca06c",
         "affectsGlobalScope": false
       },
-      "../g-core/lib/types.d.ts": {
-        "version": "f4d5b966573e7d51042a2b2bdab992ab4c860e2cb9bc9b1dd56010a98e42670c",
-        "signature": "f4d5b966573e7d51042a2b2bdab992ab4c860e2cb9bc9b1dd56010a98e42670c",
-        "affectsGlobalScope": false
-      },
       "../../node_modules/gl-matrix/index.d.ts": {
         "version": "3d3bfd3a50c4f61b236ff2dfc27d6c13181c44743b0dea4e482a0426dbfb80c6",
         "signature": "3d3bfd3a50c4f61b236ff2dfc27d6c13181c44743b0dea4e482a0426dbfb80c6",
         "affectsGlobalScope": false
       },
       "../g-core/lib/shape.d.ts": {
-        "version": "ba0ccf5e2e13f69c98c6ab4f6505e4659eebfe4afd22cc0905229a6957f02810",
-        "signature": "ba0ccf5e2e13f69c98c6ab4f6505e4659eebfe4afd22cc0905229a6957f02810",
+        "version": "8c9d0dca0e7a0df2d4f6c99fc994e238166ac1fb040f3a58e84683ac4b902939",
+        "signature": "8c9d0dca0e7a0df2d4f6c99fc994e238166ac1fb040f3a58e84683ac4b902939",
         "affectsGlobalScope": false
       },
       "../g-core/lib/group.d.ts": {
-        "version": "86a1ad5b7ade730022124894a0a04e6cf0aedb8210f384e97b9eca1386b5e189",
-        "signature": "86a1ad5b7ade730022124894a0a04e6cf0aedb8210f384e97b9eca1386b5e189",
+        "version": "281320e5de3e07e167952026ed18e88f7df4b6a8fac3afac3326325812d561db",
+        "signature": "281320e5de3e07e167952026ed18e88f7df4b6a8fac3afac3326325812d561db",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/types.d.ts": {
+        "version": "12ea1811f3ed36b598004fa6626ce69bea5e0577f605309a283245c997828d29",
+        "signature": "12ea1811f3ed36b598004fa6626ce69bea5e0577f605309a283245c997828d29",
         "affectsGlobalScope": false
       },
       "../g-core/lib/canvas.d.ts": {
-        "version": "6e8ebf08a9b2335cb3134515a7af571d216761ad1de2792ca5a0885926e4224a",
-        "signature": "6e8ebf08a9b2335cb3134515a7af571d216761ad1de2792ca5a0885926e4224a",
+        "version": "86186be86dbe8e5bde9f9263c4db69a49ce648e1547f2d273346e2b16b3feb2a",
+        "signature": "86186be86dbe8e5bde9f9263c4db69a49ce648e1547f2d273346e2b16b3feb2a",
         "affectsGlobalScope": false
       },
       "../g-core/lib/contribution-provider.d.ts": {
@@ -382,8 +382,8 @@
         "affectsGlobalScope": false
       },
       "../g-core/lib/components/hierarchy.d.ts": {
-        "version": "a4c68bcfa5f192d0ba8ec9980464f43a16533c9f494d25e7fa7ca9589cc12c31",
-        "signature": "a4c68bcfa5f192d0ba8ec9980464f43a16533c9f494d25e7fa7ca9589cc12c31",
+        "version": "c94078c34047fb08d0f7a1320c121245c9683846599687f86fcfe31680759465",
+        "signature": "c94078c34047fb08d0f7a1320c121245c9683846599687f86fcfe31680759465",
         "affectsGlobalScope": false
       },
       "../g-core/lib/components/material.d.ts": {
@@ -392,38 +392,48 @@
         "affectsGlobalScope": false
       },
       "../g-core/lib/components/renderable.d.ts": {
-        "version": "deb0df64812af14c33671c00c02d5ccb100d0a00c3fb4226a7d833f732460789",
-        "signature": "deb0df64812af14c33671c00c02d5ccb100d0a00c3fb4226a7d833f732460789",
+        "version": "c186888b98491183dfcf91da3a6a67fa416ef7dfd9d807f6f9488329fb265cd1",
+        "signature": "c186888b98491183dfcf91da3a6a67fa416ef7dfd9d807f6f9488329fb265cd1",
         "affectsGlobalScope": false
       },
       "../g-core/lib/components/transform.d.ts": {
-        "version": "bbab1b1a58f20493d79f279d9312546ba0c07d4a6e2b7dbc9cd306d2b46a04a5",
-        "signature": "bbab1b1a58f20493d79f279d9312546ba0c07d4a6e2b7dbc9cd306d2b46a04a5",
+        "version": "a1ba9956dfb266a2e467778c477fefb495ad8731ccab591b522a4cc318050a59",
+        "signature": "a1ba9956dfb266a2e467778c477fefb495ad8731ccab591b522a4cc318050a59",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/components/cullable.d.ts": {
+        "version": "81c27d02c271ecdadb14b6bba512a781bbb187074a522a85ccec0d311cf7ea43",
+        "signature": "81c27d02c271ecdadb14b6bba512a781bbb187074a522a85ccec0d311cf7ea43",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/components/visible.d.ts": {
+        "version": "886ccd2b7d3ed90d9cbb051a732be26e8a8773bfa4c73f07bf95a190fb2a0422",
+        "signature": "886ccd2b7d3ed90d9cbb051a732be26e8a8773bfa4c73f07bf95a190fb2a0422",
         "affectsGlobalScope": false
       },
       "../g-core/lib/components/index.d.ts": {
-        "version": "89449602cf8124191fd6fb3c16e388a950e9df2a5e12d46d9bab77f28dfdeeb9",
-        "signature": "89449602cf8124191fd6fb3c16e388a950e9df2a5e12d46d9bab77f28dfdeeb9",
+        "version": "fd6411567bbc4e3170bb2b51500e61f598a583343e80be363ff05b95f29c8d12",
+        "signature": "fd6411567bbc4e3170bb2b51500e61f598a583343e80be363ff05b95f29c8d12",
         "affectsGlobalScope": false
       },
       "../g-core/lib/systems/culling.d.ts": {
-        "version": "339472736360ccbbbf5589839daea59140ce358680762c7fbe52483891637f7f",
-        "signature": "339472736360ccbbbf5589839daea59140ce358680762c7fbe52483891637f7f",
+        "version": "f6de996035d2b49b478065bbb489d9a16eec46d1ff8aa793d2b1300dad356e32",
+        "signature": "f6de996035d2b49b478065bbb489d9a16eec46d1ff8aa793d2b1300dad356e32",
         "affectsGlobalScope": false
       },
       "../g-core/lib/systems/scenegraph.d.ts": {
-        "version": "f93aef74a6e1e0f66678211c528b338769b83088e936087cb3b10995d41da710",
-        "signature": "f93aef74a6e1e0f66678211c528b338769b83088e936087cb3b10995d41da710",
+        "version": "2665d6b5da321ee13fd034939263a28c7a804619c0ca99242267f7b82f3a99bf",
+        "signature": "2665d6b5da321ee13fd034939263a28c7a804619c0ca99242267f7b82f3a99bf",
         "affectsGlobalScope": false
       },
       "../g-core/lib/systems/context.d.ts": {
-        "version": "65ddcde6a1249725d988dab1e747a77da89cea7a5cff29fa3d703106735167af",
-        "signature": "65ddcde6a1249725d988dab1e747a77da89cea7a5cff29fa3d703106735167af",
+        "version": "43058fac48e464043d28756cc81f4b1792722801b214e8fb51e5f45c03b38a35",
+        "signature": "43058fac48e464043d28756cc81f4b1792722801b214e8fb51e5f45c03b38a35",
         "affectsGlobalScope": false
       },
       "../g-core/lib/systems/renderer.d.ts": {
-        "version": "c3420e9020293f98458f6c122e27b599f0637b6fb40cfcd5f3015ed1338ee62b",
-        "signature": "c3420e9020293f98458f6c122e27b599f0637b6fb40cfcd5f3015ed1338ee62b",
+        "version": "1ec7a18c5bbc81dc258fe1fc5f295a93b9a36941bc0ecd69abbe8f251c8c4e02",
+        "signature": "1ec7a18c5bbc81dc258fe1fc5f295a93b9a36941bc0ecd69abbe8f251c8c4e02",
         "affectsGlobalScope": false
       },
       "../g-core/lib/systems/index.d.ts": {
@@ -621,6 +631,9 @@
         "../g-core/lib/types.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
+      "../g-core/lib/components/cullable.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
       "../g-core/lib/components/geometry.d.ts": [
         "../g-core/lib/shapes/index.d.ts",
         "../g-ecs/lib/index.d.ts"
@@ -629,11 +642,13 @@
         "../g-ecs/lib/index.d.ts"
       ],
       "../g-core/lib/components/index.d.ts": [
+        "../g-core/lib/components/cullable.d.ts",
         "../g-core/lib/components/geometry.d.ts",
         "../g-core/lib/components/hierarchy.d.ts",
         "../g-core/lib/components/material.d.ts",
         "../g-core/lib/components/renderable.d.ts",
-        "../g-core/lib/components/transform.d.ts"
+        "../g-core/lib/components/transform.d.ts",
+        "../g-core/lib/components/visible.d.ts"
       ],
       "../g-core/lib/components/material.d.ts": [
         "../g-ecs/lib/index.d.ts"
@@ -647,12 +662,17 @@
         "../../node_modules/gl-matrix/index.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
+      "../g-core/lib/components/visible.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
       "../g-core/lib/contribution-provider.d.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts"
       ],
       "../g-core/lib/group.d.ts": [
         "../../node_modules/gl-matrix/index.d.ts",
+        "../../node_modules/inversify/dts/inversify.d.ts",
         "../g-core/lib/shape.d.ts",
+        "../g-core/lib/types.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
       "../g-core/lib/index.d.ts": [
@@ -665,6 +685,7 @@
         "../g-core/lib/utils/index.d.ts"
       ],
       "../g-core/lib/shape.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
         "../g-core/lib/group.d.ts",
         "../g-core/lib/types.d.ts",
         "../g-ecs/lib/index.d.ts"
@@ -719,6 +740,7 @@
         "../g-ecs/lib/index.d.ts"
       ],
       "../g-core/lib/types.d.ts": [
+        "../g-core/lib/group.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
       "../g-core/lib/utils/index.d.ts": [
@@ -851,6 +873,9 @@
         "../g-core/lib/types.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
+      "../g-core/lib/components/cullable.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
       "../g-core/lib/components/geometry.d.ts": [
         "../g-core/lib/shapes/index.d.ts",
         "../g-ecs/lib/index.d.ts"
@@ -859,11 +884,13 @@
         "../g-ecs/lib/index.d.ts"
       ],
       "../g-core/lib/components/index.d.ts": [
+        "../g-core/lib/components/cullable.d.ts",
         "../g-core/lib/components/geometry.d.ts",
         "../g-core/lib/components/hierarchy.d.ts",
         "../g-core/lib/components/material.d.ts",
         "../g-core/lib/components/renderable.d.ts",
-        "../g-core/lib/components/transform.d.ts"
+        "../g-core/lib/components/transform.d.ts",
+        "../g-core/lib/components/visible.d.ts"
       ],
       "../g-core/lib/components/material.d.ts": [
         "../g-ecs/lib/index.d.ts"
@@ -877,12 +904,17 @@
         "../../node_modules/gl-matrix/index.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
+      "../g-core/lib/components/visible.d.ts": [
+        "../g-ecs/lib/index.d.ts"
+      ],
       "../g-core/lib/contribution-provider.d.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts"
       ],
       "../g-core/lib/group.d.ts": [
         "../../node_modules/gl-matrix/index.d.ts",
+        "../../node_modules/inversify/dts/inversify.d.ts",
         "../g-core/lib/shape.d.ts",
+        "../g-core/lib/types.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
       "../g-core/lib/index.d.ts": [
@@ -895,6 +927,7 @@
         "../g-core/lib/utils/index.d.ts"
       ],
       "../g-core/lib/shape.d.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
         "../g-core/lib/group.d.ts",
         "../g-core/lib/types.d.ts",
         "../g-ecs/lib/index.d.ts"
@@ -949,6 +982,7 @@
         "../g-ecs/lib/index.d.ts"
       ],
       "../g-core/lib/types.d.ts": [
+        "../g-core/lib/group.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
       "../g-core/lib/utils/index.d.ts": [
@@ -1065,12 +1099,14 @@
       "../../node_modules/typescript/lib/lib.es2019.symbol.d.ts",
       "../../node_modules/typescript/lib/lib.es5.d.ts",
       "../g-core/lib/canvas.d.ts",
+      "../g-core/lib/components/cullable.d.ts",
       "../g-core/lib/components/geometry.d.ts",
       "../g-core/lib/components/hierarchy.d.ts",
       "../g-core/lib/components/index.d.ts",
       "../g-core/lib/components/material.d.ts",
       "../g-core/lib/components/renderable.d.ts",
       "../g-core/lib/components/transform.d.ts",
+      "../g-core/lib/components/visible.d.ts",
       "../g-core/lib/contribution-provider.d.ts",
       "../g-core/lib/group.d.ts",
       "../g-core/lib/index.d.ts",

@@ -1,0 +1,24 @@
+{
+  "title": {
+    "zh": "中文分类",
+    "en": "Category"
+  },
+  "demos": [
+    {
+      "filename": "canvas-circle.js",
+      "title": {
+        "zh": "大量圆(Canvas)",
+        "en": "Many Circles(Canvas)"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "webgl-circle.js",
+      "title": {
+        "zh": "大量圆(WebGL)",
+        "en": "Many Circles(WebGL)"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+    }
+  ]
+}

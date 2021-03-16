@@ -1,6 +1,6 @@
-import { Entity, System } from '@antv/g-ecs';
+import { Entity, System, World } from '@antv/g-ecs';
 import { mat3, mat4, quat, vec2, vec3 } from 'gl-matrix';
-import { inject, injectable, named } from 'inversify';
+import { Container, inject, injectable, named } from 'inversify';
 import { ext } from '@antv/matrix-util';
 import { Hierarchy, Transform, Visible } from './components';
 import { Shape } from './Shape';
@@ -40,6 +40,8 @@ export const GroupOrShape = Symbol('GroupOrShape');
 @injectable()
 export class Group implements IGroup {
   protected entity: Entity;
+  protected container: Container;
+  protected world: World;
   protected config: Record<string, any> = {};
 
   @inject(System)
@@ -49,8 +51,10 @@ export class Group implements IGroup {
   @inject(GroupRegistry)
   private groupRegistry: (entityName: string) => Group;
 
-  init(entity: Entity, type: string, config: GroupCfg) {
+  init(container: Container, world: World, entity: Entity, type: string, config: GroupCfg) {
     this.entity = entity;
+    this.container = container;
+    this.world = world;
     entity.addComponent(Transform);
     entity.addComponent(Hierarchy);
     entity.addComponent(Sortable);
@@ -329,6 +333,8 @@ export class Group implements IGroup {
    *
    * scaling in local space
    * scale(10) = scale(10, 10, 10)
+   *
+   * we can't set scale in world space
    */
   scale(scaling: vec3 | number, y?: number, z?: number) {
     if (typeof scaling === 'number') {
@@ -357,6 +363,17 @@ export class Group implements IGroup {
     return this;
   }
 
+  /**
+   * get scaling in local space
+   */
+  getLocalScale() {
+    const transform = this.entity.getComponent(Transform);
+    return transform.getLocalScale();
+  }
+
+  /**
+   * get scaling in world space
+   */
   getScale() {
     const transform = this.entity.getComponent(Transform);
     return transform.getScale();
@@ -380,7 +397,7 @@ export class Group implements IGroup {
    */
   rotateAtStart(radian: number) {
     const tc = this.entity.getComponent(Transform);
-    const [x, y] = tc.getPosition();
+    const [x, y] = tc.getLocalPosition();
     this.rotateAtPoint(x, y, radian);
 
     return this;
@@ -392,16 +409,16 @@ export class Group implements IGroup {
    * 以任意点 (x, y) 为中心旋转元素
    */
   rotateAtPoint(x: number, y: number, radians: number) {
-    // const matrix = this.getMatrix();
-    // const newMatrix = transform(matrix, [
-    //   ['t', -x, -y],
-    //   ['r', radian],
-    //   ['t', x, y],
-    // ]);
-    // this.setMatrix(newMatrix);
+    const matrix = this.getMatrix();
+    const newMatrix = transform(matrix, [
+      ['t', -x, -y],
+      ['r', radians],
+      ['t', x, y],
+    ]);
+    this.setMatrix(newMatrix);
 
-    const transform = this.entity.getComponent(Transform);
-    transform.rotateLocal(quat.fromEuler(quat.create(), 0, 0, rad2deg(radians)));
+    // const transform = this.entity.getComponent(Transform);
+    // transform.rotateLocal(quat.fromEuler(quat.create(), 0, 0, rad2deg(radians)));
 
     return this;
   }
@@ -416,8 +433,6 @@ export class Group implements IGroup {
     const [ex, ey, ez] = getEuler(vec3.create(), transform.getLocalRotation());
     const [x, y] = transform.getLocalPosition();
     const [scaleX, scaleY] = transform.getLocalScale();
-
-    console.log(scaleX, scaleY);
 
     return [...fromRotationTranslationScale(ex || ez, x, y, scaleX, scaleY)];
   }
@@ -436,21 +451,10 @@ export class Group implements IGroup {
     const radians = getRotationInRadians(mat3x3);
     const transform = this.entity.getComponent(Transform);
 
-    // console.log(radians, rad2deg(radians));
-
     transform
       .setLocalPosition(translation[0], translation[1], 0)
       .setLocalRotation(quat.fromEuler(quat.create(), 0, 0, rad2deg(radians)))
       .setLocalScale(scaling[0], scaling[1], 1);
-
-    console.log(scaling);
-
-    // transform.matrixTransform(mat4.fromRotationTranslationScale(
-    //   mat4.create(),
-    //   quat.fromEuler(quat.create(), 0, 0, rad2deg(radians)),
-    //   translation,
-    //   scaling,
-    // ));
   }
 
   /* z-index & visibility */

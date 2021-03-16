@@ -32,6 +32,27 @@ export class Geometry3D extends Component {
 
   // public entity: Entity;
 
+  public reset() {
+    this.attributes.forEach((attribute) => {
+      if (attribute.buffer) {
+        attribute.buffer.destroy();
+      }
+    });
+
+    if (this.indicesBuffer) {
+      this.indicesBuffer.destroy();
+    }
+
+    this.indices = null;
+    this.attributes = [];
+    this.vertexCount = 0;
+    this.maxInstancedCount = 0;
+  }
+
+  public getAttribute(name: string) {
+    return this.attributes.find((a) => a.name === name);
+  }
+
   /**
    * @see https://threejs.org/docs/#api/en/core/BufferAttribute
    */

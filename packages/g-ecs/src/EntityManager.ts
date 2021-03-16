@@ -23,6 +23,11 @@ export class EntityManager extends EventEmitter {
   private entities: Entity[] = [];
   private entitiesByNames: Record<string, Entity> = {};
 
+  /**
+   * use cache when query a matcher
+   */
+  private matcherCache: Record<string, Entity[]> = {};
+
   public getEntityByName(name: string) {
     return this.entitiesByNames[name];
   }
@@ -32,7 +37,12 @@ export class EntityManager extends EventEmitter {
   }
 
   public queryByMatcher<C extends Component>(matcher: Matcher<C>) {
-    return this.entities.filter((entity) => matcher.matches(entity));
+    const hash = matcher.hash();
+    if (!this.matcherCache[hash]) {
+      this.matcherCache[hash] = this.entities.filter((entity) => matcher.matches(entity));
+    }
+
+    return this.matcherCache[hash];
   }
 
   public createEntity(entity: Entity) {
@@ -60,6 +70,8 @@ export class EntityManager extends EventEmitter {
     if (index > -1) {
       this.entities.splice(index, 1);
     }
+
+    this.matcherCache = {};
   }
 
   public addComponentToEntity<C extends Component<unknown>>(
@@ -88,6 +100,8 @@ export class EntityManager extends EventEmitter {
     components[tag] = component;
 
     this.emit(COMPONENT_EVENT.Added, entity, component);
+
+    this.matcherCache = {};
 
     return component as C;
   }
@@ -123,6 +137,8 @@ export class EntityManager extends EventEmitter {
       //     entity.remove();
       //   }
     }
+
+    this.matcherCache = {};
   }
 
   public destroy() {

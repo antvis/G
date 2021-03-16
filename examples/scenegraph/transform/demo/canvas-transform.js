@@ -42,13 +42,12 @@ const ellipseFolder = gui.addFolder('Transform');
 const ellipseConfig = {
   translateX: 0,
   translateY: 0,
-  scaleX: 1,
-  scaleY: 1,
+  scale: 1,
   rotate: () => {
     ellipse.rotateAtStart((Math.PI / 180) * 10);
   },
   rotateAtPoint: () => {
-    ellipse.rotateAtPoint((Math.PI / 180) * 10);
+    ellipse.rotateAtPoint(0, 0, (Math.PI / 180) * 10);
   },
 };
 ellipseFolder.add(ellipseConfig, 'translateX', -200, 200).onChange((tx) => {
@@ -70,11 +69,8 @@ ellipseFolder.add(ellipseConfig, 'translateY', -200, 200).onChange((ty) => {
 });
 ellipseFolder.add(ellipseConfig, 'rotate').name('rotate');
 ellipseFolder.add(ellipseConfig, 'rotateAtPoint').name('rotate at');
-ellipseFolder.add(ellipseConfig, 'scaleX', 0.2, 5).onChange((sx) => {
-  ellipse.setLocalScale(sx, ellipseConfig.scaleY);
-});
-ellipseFolder.add(ellipseConfig, 'scaleY', 0.2, 5).onChange((sy) => {
-  ellipse.setLocalScale(ellipseConfig.scaleX, sy);
+ellipseFolder.add(ellipseConfig, 'scale', 0.2, 5).onChange((scaling) => {
+  ellipse.setLocalScale(scaling);
 });
 
 ellipseFolder.open();

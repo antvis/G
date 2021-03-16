@@ -21,6 +21,7 @@ function sortByZIndex(e1: Entity, e2: Entity) {
 @injectable()
 export class SceneGraph implements System {
   static tag = 's-scenegraph';
+  static trigger = new Matcher().allOf(Hierarchy, Transform);
 
   @inject(EntityManager)
   private entityManager: EntityManager;
@@ -28,28 +29,22 @@ export class SceneGraph implements System {
   private topologicalSortDirty = true;
   private topologicalSortResult: Entity[] = [];
 
-  trigger() {
-    return new Matcher().anyOf(Hierarchy, Transform, Sortable);
-  }
-
   execute(entities: Entity[]) {
     entities.forEach((entity) => {
       const hierarchy = entity.getComponent(Hierarchy);
       const transform = entity.getComponent(Transform);
-
-      if (transform) {
-        if (transform.isDirty() || transform.isLocalDirty()) {
-          // TODO: update AABB in mesh component
-          // this.setMeshAABBDirty(this.mesh.getComponentByEntity(entity));
-          transform.updateTransform();
+      if (transform.dirtyFlag || transform.localDirtyFlag) {
+        // update AABB in mesh component
+        const renderable = entity.getComponent(Renderable);
+        if (renderable) {
+          renderable.aabbDirty = true;
         }
+        transform.updateTransform();
+      }
 
-        if (hierarchy) {
-          const transformParent = hierarchy.parent && hierarchy.parent.getComponent(Transform);
-          if (transformParent) {
-            transform.updateTransformWithParent(transformParent);
-          }
-        }
+      const transformParent = hierarchy.parent && hierarchy.parent.getComponent(Transform);
+      if (transformParent) {
+        transform.updateTransformWithParent(transformParent);
       }
     });
   }
@@ -59,9 +54,6 @@ export class SceneGraph implements System {
     if (hierarchy && hierarchy.parent) {
       this.detach(entity);
     }
-
-    // add edage in dag
-    // this.addEdge(entity, parent);
 
     hierarchy.parent = parent;
     const parentHierarchy = parent.getComponent(Hierarchy);
@@ -139,7 +131,7 @@ export class SceneGraph implements System {
       return this.topologicalSortResult;
     }
 
-    const entities = this.entityManager.queryByMatcher(this.trigger());
+    const entities = this.entityManager.queryByMatcher(SceneGraph.trigger);
     const rootGroup = entities.filter((entity: Entity) => entity.getComponent(Hierarchy).parent === null);
 
     const sorted: Entity[] = [];

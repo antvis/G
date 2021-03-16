@@ -2,6 +2,7 @@ import { RendererFrameContribution } from '@antv/g-core';
 import { Entity, System } from '@antv/g-ecs';
 import { inject, injectable, named } from 'inversify';
 import { ResourcePool } from '../components/framegraph/ResourcePool';
+import { Renderable3D, INSTANCING_STATUS } from '../components/Renderable3D';
 import { RenderingEngine } from '../services/renderer';
 import { FrameGraphSystem, IRenderPass, RenderPassFactory } from '../systems/FrameGraph';
 import { CopyPass, CopyPassData } from './passes/CopyPass';
@@ -63,11 +64,16 @@ export class CompileFrameGraph implements RendererFrameContribution {
 
   async renderFrame(entities: Entity[]) {
     this.frameGraphSystem.compile();
-    this.frameGraphSystem.executePassNodes(entities);
-    // await this.frameGraphSystem.executePassNodes(entities);
+    await this.frameGraphSystem.executePassNodes(entities);
   }
 
-  async endFrame() {
+  async endFrame(entities: Entity[]) {
+    entities.forEach((entity) => {
+      const renderable3d = entity.getComponent(Renderable3D);
+      if (renderable3d.source) {
+        renderable3d.source.status = INSTANCING_STATUS.Rendered;
+      }
+    });
     this.engine.endFrame();
   }
 
