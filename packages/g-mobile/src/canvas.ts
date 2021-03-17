@@ -15,13 +15,27 @@ class Canvas extends AbstractCanvas {
   constructor(cfg: CanvasCfg) {
     super(cfg);
 
-    if (this.get('renderer') === 'mini') {
-      const ctx = this.get('context');
+    const ctx = this.get('context');
+
+    if (!this.isMiniNative()) {
+      // 小程序使用了自定义的canvas api，不兼容w3c标准
       this.set('context', new Proxy(ctx, new CanvasProxy()));
+    }
+
+    if (this.isMini()) {
       // 架构调整前，打一些patch
       miniPatch(ctx);
     }
   }
+
+  isMiniNative() {
+    return this.get('renderer') === 'mini-native';
+  }
+
+  isMini() {
+    return this.get('renderer').startsWith('mini');
+  }
+
   public getDefaultCfg() {
     const cfg = super.getDefaultCfg();
     // 设置渲染引擎为 canvas(h5)/mini(小程序)，只读属性
@@ -105,7 +119,7 @@ class Canvas extends AbstractCanvas {
   }
 
   initDom() {
-    if (this.get('renderer') === 'mini') {
+    if (this.isMini()) {
       const context = this.get('context');
       const fitView = this.get('fitView');
       const pixelRatio = this.getPixelRatio();
@@ -258,7 +272,7 @@ class Canvas extends AbstractCanvas {
       }
     });
     // 针对小程序需要手动调用一次draw方法
-    if (this.get('renderer') === 'mini') {
+    if (this.isMini()) {
       context.draw();
     }
     this.set('refreshElements', []);
@@ -266,7 +280,7 @@ class Canvas extends AbstractCanvas {
 
   // TODO 需考虑透传query信息
   getPointByClient(clientX: number, clientY: number): Point {
-    if (this.get('renderer') === 'mini') {
+    if (this.isMini()) {
       return { x: clientX, y: clientY };
     }
 
@@ -274,7 +288,7 @@ class Canvas extends AbstractCanvas {
   }
 
   getClientByPoint(x: number, y: number): Point {
-    if (this.get('renderer') === 'mini') {
+    if (this.isMini()) {
       return { x, y };
     }
 
@@ -289,7 +303,7 @@ class Canvas extends AbstractCanvas {
     applyAttrsToContext(context, this);
     drawChildren(context, children);
     // 针对小程序需要手动调用一次draw方法
-    if (this.get('renderer') === 'mini') {
+    if (!this.isMiniNative()) {
       context.draw();
     }
 
