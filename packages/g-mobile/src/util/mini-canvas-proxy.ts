@@ -37,7 +37,6 @@ export default class MiniCanvasProxy<T> {
   }
 
   get(obj: T, prop: string): any {
-    //console.log('获取', prop, obj[prop]);
     return obj[prop];
   }
 }
