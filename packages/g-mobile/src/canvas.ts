@@ -17,7 +17,7 @@ class Canvas extends AbstractCanvas {
 
     const ctx = this.get('context');
 
-    if (!this.isMiniNative()) {
+    if (this.isMini() && !this.isMiniNative()) {
       // 小程序使用了自定义的canvas api，不兼容w3c标准
       this.set('context', new Proxy(ctx, new CanvasProxy()));
     }
