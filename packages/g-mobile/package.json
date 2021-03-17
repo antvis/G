@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile",
-  "version": "0.0.1-beta.2",
+  "version": "0.0.1-beta.3",
   "description": "A mobile canvas library which providing 2d",
   "main": "lib/index.js",
   "module": "esm/index.js",
