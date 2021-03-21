@@ -122,7 +122,6 @@ class EventController {
     });
 
     this.hammerRuntime.on('pinchstart pinchmove pinchend', (e) => {
-      console.log('pinchstart pinchmove', e.type, e.scale, this.defaultScale);
       const scale = this.defaultScale * e.scale;
       e.srcEvent.extra = {
         scale,
