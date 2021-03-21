@@ -31,14 +31,7 @@ function bubbleEvent(container, type, eventObj) {
   if (eventObj.bubbles) {
     let relativeShape;
     let isOverEvent = false;
-    if (type === 'mouseenter') {
-      relativeShape = eventObj.fromShape;
-      isOverEvent = true;
-    } else if (type === 'mouseleave') {
-      isOverEvent = true;
-      relativeShape = eventObj.toShape;
-    }
-    // canvas 上的 mouseenter， mouseleave 事件，仅当进入或者移出 canvas 时触发
+
     if (container.isCanvas() && isOverEvent) {
       return;
     }
@@ -67,9 +60,11 @@ class EventController {
   private dragging: boolean = false;
   // 当前鼠标/touch所在位置的图形
   private currentShape: IShape = null;
-  private mousedownShape: IShape = null;
-  private mousedownPoint = null;
-  private mousedownTimeStamp;
+  private panstartShape: IShape = null;
+  private panstartPoint = null;
+  private panstartTimeStamp;
+  // 基础的缩放比例
+  private defaultScale: number = 1;
 
   constructor(cfg) {
     this.canvas = cfg.canvas;
@@ -94,24 +89,28 @@ class EventController {
     this.hammerRuntime.add(new Hammer.Tap({ event: 'doubletap', taps: 2 }));
     this.hammerRuntime.add(new Hammer.Tap());
 
-    //  this.hammerRuntime.add(new Hammer.Pan({ threshold: 0, pointers: 0 }));
-    //  this.hammerRuntime.get('pan').set({ direction: Hammer.DIRECTION_ALL });
-    //  this.hammerRuntime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
-    //  this.hammerRuntime.get('rotate').set({ enable: true });
-    //  this.hammerRuntime
-    //    .add(new Hammer.Pinch({ threshold: 0 }))
-    //    .recognizeWith([this.hammerRuntime.get('pan'), this.hammerRuntime.get('rotate')]);
-
-    //  this.hammerRuntime.add(new Hammer.Rotate({ threshold: 0 })).recognizeWith(this.hammerRuntime.get('pan'));
-
     this.hammerRuntime.on('panstart panmove panend', (e) => {
       e.srcEvent.extra = e;
-      this._emitMobileEvent(e.type, e.srcEvent);
-    });
-    this.hammerRuntime.on('hammer.input', (e) => {
-      if (e.isFinal) {
-        this._emitMobileEvent(e.type, e.srcEvent);
+
+      const pointInfo = this._getPointInfo(e);
+      const shape = this._getShape(pointInfo, e);
+
+      // 结束拖拽
+      if (e.type === 'panend') {
+        this._onpanend(pointInfo, shape, e);
       }
+
+      // 开始拖拽
+      if (e.type === 'panstart') {
+        this._onpanstart(pointInfo, shape, e);
+      }
+
+      // 拖拽中
+      if (e.type === 'panmove') {
+        this._onpanmove(pointInfo, shape, e);
+      }
+
+      this.currentShape = shape;
     });
 
     this.hammerRuntime.on('swipe', (e) => {
@@ -122,11 +121,17 @@ class EventController {
       this._emitMobileEvent(e.type, e.srcEvent);
     });
 
-    this.hammerRuntime.on('pinchstart pinchmove', (e) => {
+    this.hammerRuntime.on('pinchstart pinchmove pinchend', (e) => {
+      console.log('pinchstart pinchmove', e.type, e.scale, this.defaultScale);
+      const scale = this.defaultScale * e.scale;
       e.srcEvent.extra = {
-        scale: e.scale,
+        scale,
       };
       this._emitMobileEvent(e.type, e.srcEvent);
+
+      if (e.type === 'pinchend') {
+        this.defaultScale = scale;
+      }
     });
 
     this.hammerRuntime.on('doubletap', (e) => {
@@ -141,29 +146,7 @@ class EventController {
   _emitMobileEvent(type, ev) {
     const pointInfo = this._getPointInfo(ev);
     const shape = this._getShape(pointInfo, ev);
-    const eventObj = this._getEventObj(type, ev, pointInfo, shape, null, null);
-    if (shape) {
-      eventObj.shape = shape;
-      // 触发 shape 上的事件
-      emitTargetEvent(shape, type, eventObj);
-      let parent = shape.getParent();
-      // 执行冒泡
-      while (parent) {
-        // 委托事件要先触发
-        parent.emitDelegation(type, eventObj);
-        // 事件冒泡停止，不能妨碍委托事件
-        if (!eventObj.propagationStopped) {
-          bubbleEvent(parent, type, eventObj);
-        }
-        eventObj.propagationPath.push(parent);
-        parent = parent.getParent();
-      }
-    } else {
-      // 如果没有 shape 直接在 canvas 上触发
-      const canvas = this.canvas;
-      // 直接触发 canvas 上的事件
-      emitTargetEvent(canvas, type, eventObj);
-    }
+    this._emitEvent(type, ev, pointInfo, shape);
   }
 
   _getEventObj(type, event, point, target, fromShape, toShape) {
@@ -191,130 +174,56 @@ class EventController {
   }
   // 获取事件的当前点的信息
   _getPointInfo(ev) {
-    const canvas = this.canvas;
-    const clientPoint = canvas.getClientByEvent(ev);
-    const point = canvas.getPointByEvent(ev);
-    return {
-      x: point.x,
-      y: point.y,
-      clientX: clientPoint.x,
-      clientY: clientPoint.y,
-    };
+    // 支付宝下单指是pointer，多指是touchs，做个兜底。
+    if (ev.type === 'touchend') {
+      return ev.changedPointers ? ev.changedPointers[0] : ev.changedTouches[0];
+    } else {
+      return ev.pointers ? ev.pointers[0] : ev.touches[0];
+    }
   }
 
   // 触发事件
   _triggerEvent(type, ev) {
-    // this._emitEvent(type, ev, pointInfo, shape, null, null); // 一般事件中不需要考虑 from, to
-    //const method = this[`_on${type}`];
-    //let leaveCanvas = false;
-    //if (method) {
-    //  method.call(this, pointInfo, shape, ev);
-    //} else {
-    //  const preShape = this.currentShape;
-    //  // 如果进入、移出画布时存在图形，则要分别触发事件
-    //  if (type === 'mouseenter' || type === 'dragenter' || type === 'mouseover') {
-    //    this._emitEvent(type, ev, pointInfo, null, null, shape); // 先进入画布
-    //    if (shape) {
-    //      this._emitEvent(type, ev, pointInfo, shape, null, shape); // 再触发图形的事件
-    //    }
-    //    if (type === 'mouseenter' && this.draggingShape) {
-    //      // 如果正在拖拽图形, 则触发 dragleave
-    //      this._emitEvent('dragenter', ev, pointInfo, null);
-    //    }
-    //  } else if (type === 'mouseleave' || type === 'dragleave' || type === 'mouseout') {
-    //    leaveCanvas = true;
-    //    if (preShape) {
-    //      this._emitEvent(type, ev, pointInfo, preShape, preShape, null); // 先触发图形的事件
-    //    }
-    //    this._emitEvent(type, ev, pointInfo, null, preShape, null); // 再触发离开画布事件
-    //    if (type === 'mouseleave' && this.draggingShape) {
-    //      this._emitEvent('dragleave', ev, pointInfo, null);
-    //    }
-    //  } else {
-    //    this._emitEvent(type, ev, pointInfo, shape, null, null); // 一般事件中不需要考虑 from, to
-    //  }
-    //}
-    //if (!leaveCanvas) {
-    //  this.currentShape = shape;
-    //}
-    //// 当鼠标从画布移动到 shape 或者从 preShape 移动到 shape 时，应用 shape 上的鼠标样式
-    //if (shape && !shape.get('destroyed')) {
-    //  const canvas = this.canvas;
-    //  const el = canvas.get('el');
-    //  el.style.cursor = shape.attr('cursor') || canvas.get('cursor');
-    //}
+    const pointInfo = this._getPointInfo(ev);
+    // 每次都获取图形有一定成本，后期可以考虑进行缓存策略
+    const shape = this._getShape(pointInfo, ev);
+    const method = this[`_on${type}`];
+    if (method) {
+      method.call(this, pointInfo, shape, ev);
+    } else {
+      const preShape = this.currentShape;
+      // 如果进入、移出画布时存在图形，则要分别触发事件
+      if (type === 'panstart' || type === 'dragenter') {
+        this._emitEvent(type, ev, pointInfo, null, null, shape); // 先进入画布
+        if (shape) {
+          this._emitEvent(type, ev, pointInfo, shape, null, shape); // 再触发图形的事件
+        }
+        if (type === 'panstart' && this.draggingShape) {
+          // 如果正在拖拽图形, 则触发 dragleave
+          this._emitEvent('dragenter', ev, pointInfo, null);
+        }
+      } else if (type === 'panend' || type === 'dragleave') {
+        if (preShape) {
+          this._emitEvent(type, ev, pointInfo, preShape, preShape, null); // 先触发图形的事件
+        }
+        this._emitEvent(type, ev, pointInfo, null, preShape, null); // 再触发离开画布事件
+        if (type === 'panend' && this.draggingShape) {
+          this._emitEvent('dragleave', ev, pointInfo, null);
+        }
+      } else {
+        this._emitEvent(type, ev, pointInfo, shape, null, null); // 一般事件中不需要考虑 from, to
+      }
+    }
   }
-
-  // 在 document 处理拖拽到画布外的事件，处理从图形上移除画布未被捕捉的问题
-  _onDocumentMove = (ev: Event) => {
-    const canvas = this.canvas;
-    const el = canvas.get('el');
-    if (el !== ev.target) {
-      // 不在 canvas 上移动
-      if (this.dragging || this.currentShape) {
-        const pointInfo = this._getPointInfo(ev);
-        // 还在拖拽过程中
-        if (this.dragging) {
-          this._emitEvent('drag', ev, pointInfo, this.draggingShape);
-        }
-        // 说明从某个图形直接移动到了画布外面，
-        // 修复了 mouseleave 的 bug 后不再出现这种情况
-        // if (this.currentShape) {
-        //   this._emitEvent('mouseleave', ev, pointInfo, this.currentShape, this.currentShape, null);
-        //   this.currentShape = null;
-        // }
-      }
-    }
-  };
-  // 在 document 上处理拖拽到外面，释放鼠标时触发 dragend
-  _onDocumentMouseUp = (ev) => {
-    const canvas = this.canvas;
-    const el = canvas.get('el');
-    if (el !== ev.target) {
-      // 不在 canvas 上移动
-      if (this.dragging) {
-        const pointInfo = this._getPointInfo(ev);
-        if (this.draggingShape) {
-          // 如果存在拖拽的图形，则也触发 drop 事件
-          this._emitEvent('drop', ev, pointInfo, null);
-        }
-        this._emitEvent('dragend', ev, pointInfo, this.draggingShape);
-        this._afterDrag(this.draggingShape, pointInfo, ev);
-      }
-    }
-  };
 
   // 记录下点击的位置、图形，便于拖拽事件、click 事件的判定
-  _onmousedown(pointInfo, shape, event) {
-    // 只有鼠标左键的 mousedown 事件才会设置 mousedownShape 等属性，避免鼠标右键的 mousedown 事件引起其他事件发生
-    if (event.button === LEFT_BTN_CODE) {
-      this.mousedownShape = shape;
-      this.mousedownPoint = pointInfo;
-      this.mousedownTimeStamp = event.timeStamp;
-    }
-    this._emitEvent('mousedown', event, pointInfo, shape, null, null); // mousedown 不考虑fromShape, toShape
+  _onpanstart(pointInfo, shape, event) {
+    this.panstartShape = shape;
+    this.panstartPoint = pointInfo;
+    this.panstartTimeStamp = event.timeStamp;
+    this._emitEvent('panstart', event, pointInfo, shape, null, null);
   }
 
-  // mouseleave 和 mouseenter 都是成对存在的
-  // mouseenter 和 mouseover 同时触发
-  _emitMouseoverEvents(event, pointInfo, fromShape, toShape) {
-    const el = this.canvas.get('el');
-    if (fromShape !== toShape) {
-      if (fromShape) {
-        this._emitEvent('mouseout', event, pointInfo, fromShape, fromShape, toShape);
-        this._emitEvent('mouseleave', event, pointInfo, fromShape, fromShape, toShape);
-        // 当鼠标从 fromShape 移动到画布上时，重置鼠标样式
-        if (!toShape || toShape.get('destroyed')) {
-          el.style.cursor = this.canvas.get('cursor');
-        }
-      }
-      if (toShape) {
-        this._emitEvent('mouseover', event, pointInfo, toShape, fromShape, toShape);
-        this._emitEvent('mouseenter', event, pointInfo, toShape, fromShape, toShape);
-      }
-    }
-  }
-  // dragover 不等同于 mouseover，而等同于 mousemove
   _emitDragoverEvents(event, pointInfo, fromShape, toShape, isCanvasEmit) {
     if (toShape) {
       if (toShape !== fromShape) {
@@ -346,33 +255,22 @@ class EventController {
     this.dragging = false;
     // drag 完成后，有可能 draggingShape 已经移动到了当前位置，所以不能直接取当前图形
     const shape = this._getShape(pointInfo, event);
-    // 拖拽完成后，进行 enter，leave 的判定
-    if (shape !== draggingShape) {
-      this._emitMouseoverEvents(event, pointInfo, draggingShape, shape);
-    }
-    this.currentShape = shape; // 更新当前 shape，如果不处理当前图形的 mouseleave 事件可能会出问题
+    this.currentShape = shape;
   }
   // 按键抬起时，会终止拖拽、触发点击
-  _onmouseup(pointInfo, shape, event) {
-    // eevent.button === 0 表示鼠标左键事件，此处加上判断主要是为了避免右键鼠标会触发 mouseup 和 click 事件
-    // ref: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
-    if (event.button === LEFT_BTN_CODE) {
-      const draggingShape = this.draggingShape;
-      if (this.dragging) {
-        // 存在可以拖拽的图形，同时拖拽到其他图形上时触发 drag 事件
-        if (draggingShape) {
-          this._emitEvent('drop', event, pointInfo, shape);
-        }
-        this._emitEvent('dragend', event, pointInfo, draggingShape);
-        this._afterDrag(draggingShape, pointInfo, event);
-      } else {
-        this._emitEvent('mouseup', event, pointInfo, shape); // 先触发 mouseup 再触发 click
-        if (shape === this.mousedownShape) {
-          this._emitEvent('click', event, pointInfo, shape);
-        }
-        this.mousedownShape = null;
-        this.mousedownPoint = null;
+  _onpanend(pointInfo, shape, event) {
+    const draggingShape = this.draggingShape;
+    if (this.dragging) {
+      // 存在可以拖拽的图形，同时拖拽到其他图形上时触发 drag 事件
+      if (draggingShape) {
+        this._emitEvent('drop', event, pointInfo, shape);
       }
+      this._emitEvent('dragend', event, pointInfo, draggingShape);
+      this._afterDrag(draggingShape, pointInfo, event);
+    } else {
+      this._emitEvent('panend', event, pointInfo, shape);
+      this.panstartShape = null;
+      this.panstartPoint = null;
     }
   }
 
@@ -384,7 +282,7 @@ class EventController {
   }
 
   // 大量的图形事件，都通过 mousemove 模拟
-  _onmousemove(pointInfo, shape, event) {
+  _onpanmove(pointInfo, shape, event) {
     const canvas = this.canvas;
     const preShape = this.currentShape;
     let draggingShape = this.draggingShape;
@@ -399,46 +297,42 @@ class EventController {
       // 否则在 canvas 上触发 drag 事件
       this._emitEvent('drag', event, pointInfo, draggingShape);
     } else {
-      const mousedownPoint = this.mousedownPoint;
-      if (mousedownPoint) {
+      const panstartPoint = this.panstartPoint;
+      if (panstartPoint) {
         // 当鼠标点击下去，同时移动时，进行 drag 判定
-        const mousedownShape = this.mousedownShape;
+        const panstartShape = this.panstartShape;
         const now = event.timeStamp;
-        const timeWindow = now - this.mousedownTimeStamp;
-        const dx = mousedownPoint.clientX - pointInfo.clientX;
-        const dy = mousedownPoint.clientY - pointInfo.clientY;
+        const timeWindow = now - this.panstartTimeStamp;
+        const dx = panstartPoint.clientX - pointInfo.clientX;
+        const dy = panstartPoint.clientY - pointInfo.clientY;
         const dist = dx * dx + dy * dy;
         if (timeWindow > 120 || dist > CLICK_OFFSET) {
-          if (mousedownShape && mousedownShape.get('draggable')) {
+          if (panstartShape && panstartShape.get('draggable')) {
             // 设置了 draggable 的 shape 才能触发 drag 相关的事件
-            draggingShape = this.mousedownShape; // 拖动鼠标点下时的 shape
+            draggingShape = this.panstartShape; // 拖动鼠标点下时的 shape
             draggingShape.set('capture', false); // 禁止继续拾取，否则无法进行 dragover,dragenter,dragleave,drop的判定
             this.draggingShape = draggingShape;
             this.dragging = true;
             this._emitEvent('dragstart', event, pointInfo, draggingShape);
             // 清理按下鼠标时缓存的值
-            this.mousedownShape = null;
-            this.mousedownPoint = null;
-          } else if (!mousedownShape && canvas.get('draggable')) {
+            this.panstartShape = null;
+            this.panstartPoint = null;
+          } else if (!panstartShape && canvas.get('draggable')) {
             // 设置了 draggable 的 canvas 才能触发 drag 相关的事件
             this.dragging = true;
             this._emitEvent('dragstart', event, pointInfo, null);
             // 清理按下鼠标时缓存的值
-            this.mousedownShape = null;
-            this.mousedownPoint = null;
+            this.panstartShape = null;
+            this.panstartPoint = null;
           } else {
-            this._emitMouseoverEvents(event, pointInfo, preShape, shape);
-            this._emitEvent('mousemove', event, pointInfo, shape);
+            this._emitEvent('panmove', event, pointInfo, shape);
           }
         } else {
-          this._emitMouseoverEvents(event, pointInfo, preShape, shape);
-          this._emitEvent('mousemove', event, pointInfo, shape);
+          this._emitEvent('panmove', event, pointInfo, shape);
         }
       } else {
-        // 没有按键按下时，则直接触发 mouse over 相关的各种事件
-        this._emitMouseoverEvents(event, pointInfo, preShape, shape);
         // 始终触发移动
-        this._emitEvent('mousemove', event, pointInfo, shape);
+        this._emitEvent('panmove', event, pointInfo, shape);
       }
     }
   }
@@ -476,9 +370,9 @@ class EventController {
     this.canvas = null;
     this.currentShape = null;
     this.draggingShape = null;
-    this.mousedownPoint = null;
-    this.mousedownShape = null;
-    this.mousedownTimeStamp = null;
+    this.panstartPoint = null;
+    this.panstartShape = null;
+    this.panstartTimeStamp = null;
   }
 }
 
