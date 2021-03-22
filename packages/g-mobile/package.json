@@ -48,7 +48,7 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g-base": "^0.5.3",
+    "@antv/g-base": "^0.5.6-beta.1",
     "@antv/g-math": "^0.1.6",
     "@antv/matrix-util": "^3.1.0-beta.1",
     "@antv/path-util": "~2.0.5",
