@@ -1,5 +1,4 @@
-import Hammer from 'g6-hammerjs';
-import { TouchInput } from 'g6-hammerjs';
+import Hammer, { TouchInput } from 'g6-hammerjs';
 import { Event as GraphEvent } from '@antv/g-base';
 import { ICanvas, IShape } from '@antv/g-base';
 import { each, isParent } from './util/util';
@@ -81,7 +80,6 @@ class EventController {
     );
 
     this.hammerRuntime.add(new Hammer.Pan({ threshold: 0, pointers: 0 }));
-
     this.hammerRuntime.add(new Hammer.Swipe()).recognizeWith(this.hammerRuntime.get('pan'));
     this.hammerRuntime.add(new Hammer.Rotate({ threshold: 0 })).recognizeWith(this.hammerRuntime.get('pan'));
     this.hammerRuntime
@@ -115,11 +113,11 @@ class EventController {
     });
 
     this.hammerRuntime.on('swipe', (e) => {
-      this._emitMobileEvent(e.type, e.srcEvent);
+      this._emitMobileEvent(e.type, e);
     });
 
     this.hammerRuntime.on('rotatestart rotatemove', (e) => {
-      this._emitMobileEvent(e.type, e.srcEvent);
+      this._emitMobileEvent(e.type, e);
     });
 
     this.hammerRuntime.on('pinchstart pinchmove pinchend', (e) => {
@@ -127,7 +125,7 @@ class EventController {
       e.srcEvent.extra = {
         scale,
       };
-      this._emitMobileEvent(e.type, e.srcEvent);
+      this._emitMobileEvent(e.type, e);
 
       if (e.type === 'pinchend') {
         this.defaultScale = scale;
@@ -135,11 +133,11 @@ class EventController {
     });
 
     this.hammerRuntime.on('doubletap', (e) => {
-      this._emitMobileEvent(e.type, e.srcEvent);
+      this._emitMobileEvent(e.type, e);
     });
 
     this.hammerRuntime.on('tap', (e) => {
-      this._emitMobileEvent(e.type, e.srcEvent);
+      this._emitMobileEvent(e.type, e);
     });
   }
 
