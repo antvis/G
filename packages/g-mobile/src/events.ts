@@ -3,6 +3,7 @@ import { TouchInput } from 'g6-hammerjs';
 import { Event as GraphEvent } from '@antv/g-base';
 import { ICanvas, IShape } from '@antv/g-base';
 import { each, isParent } from './util/util';
+import MiniCanvas from './canvas';
 const CLICK_OFFSET = 40;
 const LEFT_BTN_CODE = 0;
 const DELEGATION_SPLIT = ':';
@@ -168,16 +169,29 @@ class EventController {
   };
 
   // 根据点获取图形，提取成独立方法，便于后续优化
-  _getShape(point, ev: Event) {
+  _getShape(point, event: any) {
+    const ev: Event = event.srcEvent;
     return this.canvas.getShape(point.x, point.y, ev);
   }
   // 获取事件的当前点的信息
   _getPointInfo(ev) {
-    // 支付宝下单指是pointer，多指是touchs，做个兜底。
-    if (ev.type === 'touchend') {
-      return ev.changedPointers ? ev.changedPointers[0] : ev.changedTouches[0];
+    const canvas = this.canvas as MiniCanvas;
+    if (canvas.isMini()) {
+      // 支付宝下单指是pointer，多指是touchs，做个兜底。
+      if (ev.type === 'touchend') {
+        return ev.changedPointers ? ev.changedPointers[0] : ev.changedTouches[0];
+      } else {
+        return ev.pointers ? ev.pointers[0] : ev.touches[0];
+      }
     } else {
-      return ev.pointers ? ev.pointers[0] : ev.touches[0];
+      const clientPoint = canvas.getClientByEvent(ev);
+      const point = canvas.getPointByEvent(ev);
+      return {
+        x: point.x,
+        y: point.y,
+        clientX: clientPoint.x,
+        clientY: clientPoint.y,
+      };
     }
   }
 

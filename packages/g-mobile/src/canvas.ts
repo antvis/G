@@ -49,6 +49,15 @@ class Canvas extends AbstractCanvas {
     cfg['clipView'] = true;
     // 是否使用快速拾取的方案，默认为 false，上层可以打开
     cfg['quickHit'] = false;
+    // 给一个默认的rect，防止出现问题
+    cfg['boundingClientRect'] = {
+      width: 0,
+      height: 0,
+      left: 0,
+      top: 0,
+      bottom: 0,
+      right: 0,
+    };
     return cfg;
   }
 
@@ -278,23 +287,6 @@ class Canvas extends AbstractCanvas {
     this.set('refreshElements', []);
   }
 
-  // TODO 需考虑透传query信息
-  getPointByClient(clientX: number, clientY: number): Point {
-    if (this.isMini()) {
-      return { x: clientX, y: clientY };
-    }
-
-    return super.getPointByClient(clientX, clientY);
-  }
-
-  getClientByPoint(x: number, y: number): Point {
-    if (this.isMini()) {
-      return { x, y };
-    }
-
-    return super.getClientByPoint(x, y);
-  }
-
   // 绘制所有图形
   _drawAll() {
     const context = this.get('context');
@@ -303,7 +295,7 @@ class Canvas extends AbstractCanvas {
     applyAttrsToContext(context, this);
     drawChildren(context, children);
     // 针对小程序需要手动调用一次draw方法
-    if (!this.isMiniNative()) {
+    if (this.isMini()) {
       context.draw();
     }
 
@@ -323,6 +315,71 @@ class Canvas extends AbstractCanvas {
     // if (this.get('autoDraw')) {
     //   this._startDraw();
     // }
+  }
+
+  // 实现接口
+  getPointByEvent(ev: Event): Point {
+    if (this.isMini()) {
+      const { x: clientX, y: clientY } = this.getClientByEvent(ev);
+      return this.getPointByClient(clientX, clientY);
+    }
+
+    return super.getPointByEvent(ev);
+  }
+
+  // 获取 touch 事件的 clientX 和 clientY 需要单独处理
+  getClientByEvent(event: any) {
+    // 这里需要转换成原始event
+    const ev: Event = event.srcEvent;
+    let clientInfo: MouseEvent | Touch = ev as MouseEvent;
+    if ((ev as TouchEvent).touches) {
+      if (ev.type === 'touchend') {
+        clientInfo = (ev as TouchEvent).changedTouches[0];
+      } else {
+        clientInfo = (ev as TouchEvent).touches[0];
+      }
+    }
+    return {
+      x: clientInfo.clientX,
+      y: clientInfo.clientY,
+    };
+  }
+
+  // 实现接口
+  getPointByClient(clientX: number, clientY: number): Point {
+    if (this.isMini()) {
+      const rect = this.get('boundingClientRect');
+      return {
+        x: clientX + rect.left,
+        y: clientY + rect.top,
+      };
+      return { x: clientX, y: clientY };
+    }
+
+    const el = this.get('el');
+    const bbox = el.getBoundingClientRect();
+    return {
+      x: clientX - bbox.left,
+      y: clientY - bbox.top,
+    };
+  }
+
+  // 实现接口
+  getClientByPoint(x: number, y: number): Point {
+    if (this.isMini()) {
+      // 小程序内需计算处理canvas的位置信息
+      const rect = this.get('boundingClientRect');
+      return {
+        x: x + rect.left,
+        y: y + rect.top,
+      };
+    }
+    const el = this.get('el');
+    const bbox = el.getBoundingClientRect();
+    return {
+      x: x + bbox.left,
+      y: y + bbox.top,
+    };
   }
 }
 
