@@ -295,7 +295,7 @@ class Canvas extends AbstractCanvas {
     applyAttrsToContext(context, this);
     drawChildren(context, children);
     // 针对小程序需要手动调用一次draw方法
-    if (this.isMini()) {
+    if (this.isMini() && !this.isMiniNative()) {
       context.draw();
     }
 
