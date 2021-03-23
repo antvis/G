@@ -17,12 +17,14 @@ class Canvas extends AbstractCanvas {
 
     const ctx = this.get('context');
 
-    if (this.isMini() && !this.isMiniNative()) {
-      // 小程序使用了自定义的canvas api，不兼容w3c标准
-      this.set('context', new Proxy(ctx, new CanvasProxy()));
-    }
-
     if (this.isMini()) {
+      if (this.isMiniNative()) {
+        // TODO 这里会传递过来extra，里面包含一些来自各个平台的优化函数
+      } else {
+        // 小程序使用了自定义的canvas api，不兼容w3c标准
+        this.set('context', new Proxy(ctx, new CanvasProxy()));
+      }
+
       // 架构调整前，打一些patch
       miniPatch(ctx);
     }
@@ -237,6 +239,8 @@ class Canvas extends AbstractCanvas {
         } else {
           this._drawAll();
         }
+        // 可能存在setInterval的情况
+        clearAnimationFrame(drawFrame);
         this.set('drawFrame', null);
       });
       this.set('drawFrame', drawFrame);
