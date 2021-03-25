@@ -1,13 +1,16 @@
 import { Canvas } from './Canvas';
 
-const SHAPE = {
-  Circle: 'circle',
-  Ellipse: 'ellipse',
-};
+const enum SHAPE {
+  Circle = 'circle',
+  Ellipse = 'ellipse',
+  Image = 'image',
+  Rect = 'rect',
+}
 
 export * from './contribution-provider';
 export * from './components';
 export * from './systems';
+export * from './services';
 export * from './shapes';
 export * from './types';
 export * from './utils';

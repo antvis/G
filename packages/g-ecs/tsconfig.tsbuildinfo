@@ -307,12 +307,12 @@
         "affectsGlobalScope": false
       },
       "./src/system.ts": {
-        "version": "61fa537a802c86c148157d84171d2ac7a8bd490e7526309c7ac8cd9726f7b476",
-        "signature": "2782f2bc11e8f32542e27848e3b22b7886ce4340d913df254108a7d00e2d1dee",
+        "version": "84caaa4de59a279c8a2b38801f032def03b89ee3b2c99a3873fc267d8893b4bb",
+        "signature": "3a8c682f067a83c500d9f70c0d86dbd142c16e51bb28fada5ec6f94476cb366f",
         "affectsGlobalScope": false
       },
       "./src/systemmanager.ts": {
-        "version": "55a3ab5ff2f2a9b8fd4983f11ca8d96a5c8fe3b1a4c729f76bdfff86605d6a1a",
+        "version": "c147b21b5be6dca5c36878cd953466483691106c321a6ed69c1d057fe2650699",
         "signature": "b7e39a9d1daa7ff99db6c286693aa25add04e8301888c70718ffa9570b78ae9f",
         "affectsGlobalScope": false
       },
@@ -410,7 +410,7 @@
       "rootDir": "./src",
       "composite": true,
       "project": "./tsconfig.json",
-      "declarationDir": "./lib",
+      "declarationDir": "./esm",
       "configFilePath": "./tsconfig.json"
     },
     "referencedMap": {

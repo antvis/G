@@ -22,7 +22,7 @@ export class Material3D extends Component {
   // control flow in shaders, eg. USE_UV, USE_MAP...
   public defines: Record<string, boolean | number> = {};
 
-  public dirty = true;
+  public dirty = false;
 
   public uniforms: IUniformBinding[] = [];
 
@@ -36,8 +36,6 @@ export class Material3D extends Component {
   };
 
   public blend: IModelInitializationOptions['blend'];
-
-  //   public entity: Entity;
 
   public type: string;
 
@@ -78,8 +76,6 @@ export class Material3D extends Component {
       existedUniform.dirty = true;
       existedUniform.data = data!;
     }
-
-    this.dirty = true;
     return this;
   }
 }

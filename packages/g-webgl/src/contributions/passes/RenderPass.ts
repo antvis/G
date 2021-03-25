@@ -5,11 +5,10 @@ import { FrameGraphHandle } from '../../components/framegraph/FrameGraphHandle';
 import { FrameGraphPass } from '../../components/framegraph/FrameGraphPass';
 import { PassNode } from '../../components/framegraph/PassNode';
 import { ResourcePool } from '../../components/framegraph/ResourcePool';
-import { Renderable3D } from '../../components/Renderable3D';
 import { RenderingEngine } from '../../services/renderer';
 import { gl } from '../../services/renderer/constants';
-import { FrameGraphSystem, IRenderPass } from '../../systems/FrameGraph';
-import { RenderingContext } from '../../WebGLContext';
+import { FrameGraphEngine, IRenderPass } from '../FrameGraphEngine';
+import { RenderingContext } from '../../services/WebGLContextService';
 
 export interface RenderPassData {
   output: FrameGraphHandle;
@@ -31,7 +30,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
   @inject(ShapeRendererFactory)
   private shapeRendererFactory: (type: string) => ShapeRenderer | null;
 
-  public setup = (fg: FrameGraphSystem, passNode: PassNode, pass: FrameGraphPass<RenderPassData>): void => {
+  public setup = (fg: FrameGraphEngine, passNode: PassNode, pass: FrameGraphPass<RenderPassData>): void => {
     const output = fg.createRenderTarget(passNode, 'color buffer', {
       width: 1,
       height: 1,
@@ -44,7 +43,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
   };
 
   public execute = async (
-    fg: FrameGraphSystem,
+    fg: FrameGraphEngine,
     pass: FrameGraphPass<RenderPassData>,
     entities: Entity[]
   ): Promise<void> => {

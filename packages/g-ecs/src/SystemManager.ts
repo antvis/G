@@ -44,7 +44,11 @@ export class SystemManager {
     });
 
     this.systems.push(system);
-    this.systems.sort((a, b) => (systemCtor.priority || 0) - (systemCtor.priority || 0));
+    this.systems.sort(
+      (a, b) =>
+        ((a.constructor as SystemConstructor<S>).priority || 0) -
+        ((b.constructor as SystemConstructor<S>).priority || 0)
+    );
   }
 
   public async execute(delta?: number, millis?: number) {

@@ -1,4 +1,4 @@
-import { ContextService, DefaultShapeRenderer, ShapeCfg, Transform } from '@antv/g-core';
+import { ContextService, DefaultShapeRenderer, Renderable, SHAPE, ShapeCfg, Transform } from '@antv/g-core';
 import { Entity } from '@antv/g-ecs';
 import { mat4 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
@@ -6,22 +6,28 @@ import { Geometry3D } from '../components/Geometry3D';
 import { IUniformBinding, Material3D } from '../components/Material3D';
 import { Renderable3D, INSTANCING_STATUS } from '../components/Renderable3D';
 import { IAttribute, IModelInitializationOptions, IUniform, RenderingEngine } from '../services/renderer';
-import { RenderingContext } from '../WebGLContext';
+import { RenderingContext } from '../services/WebGLContextService';
 
 const ATTRIBUTE = {
-  ModelMatrix0: 'a_model_matrix_0',
-  ModelMatrix1: 'a_model_matrix_1',
-  ModelMatrix2: 'a_model_matrix_2',
-  ModelMatrix3: 'a_model_matrix_3',
+  ModelMatrix0: 'a_ModelMatrix0',
+  ModelMatrix1: 'a_ModelMatrix1',
+  ModelMatrix2: 'a_ModelMatrix2',
+  ModelMatrix3: 'a_ModelMatrix3',
 };
 
 const UNIFORM = {
-  ProjectionMatrix: 'u_projection_matrix',
-  ModelViewMatrix: 'u_model_view_matrix',
-  ModelMatrix: 'u_model_matrix',
-  ViewMatrix: 'u_view_matrix',
-  CameraPosition: 'u_camera_position',
-  Viewport: 'u_viewport',
+  ProjectionMatrix: 'u_ProjectionMatrix',
+  ModelViewMatrix: 'u_ModelViewMatrix',
+  ModelMatrix: 'u_ModelMatrix',
+  ViewMatrix: 'u_ViewMatrix',
+  CameraPosition: 'u_CameraPosition',
+  Viewport: 'u_Viewport',
+  DPR: 'u_DevicePixelRatio',
+  Opacity: 'u_Opacity',
+};
+
+const STYLE = {
+  Opacity: 'opacity',
 };
 
 @injectable()
@@ -32,14 +38,23 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
   @inject(RenderingEngine)
   private readonly engine: RenderingEngine;
 
-  abstract buildModel(entity: Entity): void;
-
-  public onAttributeChanged(entity: Entity, name: string, value: any) {
-    super.onAttributeChanged(entity, name, value);
+  protected buildModel(entity: Entity): Promise<void> | void {
+    const renderable = entity.getComponent(Renderable);
+    const material = entity.getComponent(Material3D);
+    material.setUniform(UNIFORM.Opacity, renderable.attrs?.opacity || 1);
   }
 
-  async init(entity: Entity, type: string, cfg: ShapeCfg, instanceEntity?: Entity) {
-    await super.init(entity, type, cfg);
+  onAttributeChanged(entity: Entity, name: string, value: any) {
+    super.onAttributeChanged(entity, name, value);
+
+    if (name === STYLE.Opacity) {
+      const material = entity.getComponent(Material3D);
+      material.setUniform(UNIFORM.Opacity, value);
+    }
+  }
+
+  init(entity: Entity, type: SHAPE, cfg: ShapeCfg, instanceEntity?: Entity) {
+    super.init(entity, type, cfg);
 
     entity.addComponent(Renderable3D);
 
@@ -162,7 +177,7 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
     const instancing = renderable3d.instanceEntities.length > 0;
 
     // waiting for dirty geometry updated
-    if (!geometry || geometry.dirty || !material || !material.vertexShaderGLSL || !material.fragmentShaderGLSL) {
+    if (geometry.dirty || material.dirty) {
       return;
     }
 
@@ -202,6 +217,7 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
         [UNIFORM.ViewMatrix]: viewMatrix,
         [UNIFORM.CameraPosition]: camera.getPosition(),
         [UNIFORM.Viewport]: [width, height],
+        [UNIFORM.DPR]: window.devicePixelRatio,
       });
 
       if (renderable3d.model) {
@@ -240,11 +256,6 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
             return cur;
           }, {}),
         });
-
-        material.uniforms.forEach((u) => {
-          u.dirty = false;
-        });
-        material.dirty = false;
       }
     }
   }

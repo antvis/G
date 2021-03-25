@@ -5,6 +5,7 @@ import { IUniform } from '../renderer';
 
 import instancingVert from './shaders/webgl.instancing.vert.glsl';
 import instancingDeclarationVert from './shaders/webgl.instancing.declaration.vert.glsl';
+import projectDeclarationVert from './shaders/webgl.project.declaration.vert.glsl';
 import pickingFrag from './shaders/webgl.picking.frag.glsl';
 import pickingVert from './shaders/webgl.picking.vert.glsl';
 import sdf2dFrag from './shaders/webgl.sdf2d.frag.glsl';
@@ -47,6 +48,7 @@ export class DefaultShaderModuleService implements ShaderModuleService {
     this.destroy();
     this.registerModule('instancing.declaration', { vs: instancingDeclarationVert, fs: '' });
     this.registerModule('instancing', { vs: instancingVert, fs: '' });
+    this.registerModule('project.declaration', { vs: projectDeclarationVert, fs: '' });
     this.registerModule('picking', { vs: pickingVert, fs: pickingFrag });
     this.registerModule('sdf_2d', { vs: '', fs: sdf2dFrag });
   }

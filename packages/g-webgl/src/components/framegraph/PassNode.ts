@@ -1,4 +1,4 @@
-import { FrameGraphSystem } from '../../systems/FrameGraph';
+import { FrameGraphEngine } from '../../contributions/FrameGraphEngine';
 import { FrameGraphHandle } from './FrameGraphHandle';
 import { VirtualResource } from './VirtualResource';
 
@@ -41,7 +41,7 @@ export class PassNode {
     return handle;
   }
 
-  public write(fg: FrameGraphSystem, handle: FrameGraphHandle): FrameGraphHandle {
+  public write(fg: FrameGraphEngine, handle: FrameGraphHandle): FrameGraphHandle {
     const existed = this.writes.find((h) => h.index === handle.index);
     if (existed) {
       return handle;

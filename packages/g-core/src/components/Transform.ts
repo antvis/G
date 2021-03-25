@@ -313,32 +313,35 @@ export class Transform extends Component {
     return this.localTransform;
   }
 
-  public getWorldTransform() {
-    if (!this.localDirtyFlag && !this.dirtyFlag) {
-      return this.worldTransform;
-    }
+  // public getWorldTransform() {
+  //   if (!this.localDirtyFlag && !this.dirtyFlag) {
+  //     return this.worldTransform;
+  //   }
 
-    if (this.parent) {
-      this.parent.getWorldTransform();
-    }
+  //   if (this.parent) {
+  //     this.parent.getWorldTransform();
+  //   }
 
-    this.updateTransform();
+  //   this.updateTransform();
 
-    return this.worldTransform;
-  }
+  //   return this.worldTransform;
+  // }
 
   public getPosition() {
-    mat4.getTranslation(this.position, this.getWorldTransform());
+    // mat4.getTranslation(this.position, this.getWorldTransform());
+    mat4.getTranslation(this.position, this.worldTransform);
     return this.position;
   }
 
   public getRotation() {
-    mat4.getRotation(this.rotation, this.getWorldTransform());
+    // mat4.getRotation(this.rotation, this.getWorldTransform());
+    mat4.getRotation(this.rotation, this.worldTransform);
     return this.rotation;
   }
 
   public getScale() {
-    mat4.getScaling(this.scaling, this.getWorldTransform());
+    // mat4.getScaling(this.scaling, this.getWorldTransform());
+    mat4.getScaling(this.scaling, this.worldTransform);
     return this.scaling;
   }
 

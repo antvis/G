@@ -34,7 +34,7 @@ export class SceneGraph implements System {
       const hierarchy = entity.getComponent(Hierarchy);
       const transform = entity.getComponent(Transform);
       if (transform.dirtyFlag || transform.localDirtyFlag) {
-        // update AABB in mesh component
+        // need to update AABB in renderable
         const renderable = entity.getComponent(Renderable);
         if (renderable) {
           renderable.aabbDirty = true;

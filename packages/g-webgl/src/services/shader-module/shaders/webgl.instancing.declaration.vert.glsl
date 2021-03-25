@@ -1,8 +1,8 @@
 #ifdef INSTANCING
-  attribute vec4 a_model_matrix_0;
-  attribute vec4 a_model_matrix_1;
-  attribute vec4 a_model_matrix_2;
-  attribute vec4 a_model_matrix_3;
+  attribute vec4 a_ModelMatrix0;
+  attribute vec4 a_ModelMatrix1;
+  attribute vec4 a_ModelMatrix2;
+  attribute vec4 a_ModelMatrix3;
 #else
-  uniform mat4 u_model_matrix;
+  uniform mat4 u_ModelMatrix;
 #endif

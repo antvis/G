@@ -1,5 +1,5 @@
 import { Entity, System, World } from '@antv/g-ecs';
-import { mat3, mat4, quat, vec2, vec3 } from 'gl-matrix';
+import { mat3, quat, vec2, vec3 } from 'gl-matrix';
 import { Container, inject, injectable, named } from 'inversify';
 import { ext } from '@antv/matrix-util';
 import { Hierarchy, Transform, Visible } from './components';
@@ -16,6 +16,8 @@ import {
 } from './utils/math';
 import { Sortable } from './components/Sortable';
 import { GroupCfg, GroupFilter } from './types';
+import EventEmitter from 'eventemitter3';
+import { GroupPool } from './GroupPool';
 
 const { transform } = ext;
 
@@ -24,10 +26,6 @@ export interface IGroup {
   add(shape: Shape | Group): void;
   remove(shape: Shape | Group): void;
 }
-
-// bind registry for all groups, we can use it to query group by entity id
-export const GroupRegistry = Symbol('GroupRegistry');
-export const GroupOrShape = Symbol('GroupOrShape');
 
 /**
  * Provide abilities in scene graph, such as:
@@ -38,7 +36,7 @@ export const GroupOrShape = Symbol('GroupOrShape');
  * Those abilities are implemented with those components: `Transform/Hierarchy/Sortable/Visible`.
  */
 @injectable()
-export class Group implements IGroup {
+export class Group extends EventEmitter implements IGroup {
   protected entity: Entity;
   protected container: Container;
   protected world: World;
@@ -48,8 +46,8 @@ export class Group implements IGroup {
   @named(SceneGraph.tag)
   private sceneGraph: SceneGraph;
 
-  @inject(GroupRegistry)
-  private groupRegistry: (entityName: string) => Group;
+  @inject(GroupPool)
+  protected groupPool: GroupPool;
 
   init(container: Container, world: World, entity: Entity, type: string, config: GroupCfg) {
     this.entity = entity;
@@ -75,6 +73,10 @@ export class Group implements IGroup {
     this.config = config;
 
     // TODO: capture
+  }
+
+  getConfig() {
+    return this.config;
   }
 
   getEntity() {
@@ -134,7 +136,7 @@ export class Group implements IGroup {
   getParent(): Group | null {
     const hierarchy = this.entity.getComponent(Hierarchy);
     if (hierarchy.parent) {
-      return this.groupRegistry(hierarchy.parent.getName());
+      return this.groupPool.getByName(hierarchy.parent.getName());
     }
 
     return null;
@@ -147,7 +149,7 @@ export class Group implements IGroup {
    */
   getChildren() {
     const hierarchy = this.entity.getComponent(Hierarchy);
-    return hierarchy.children.map((entity) => this.groupRegistry(entity.getName()));
+    return hierarchy.children.map((entity) => this.groupPool.getByName(entity.getName()));
   }
 
   /**
@@ -188,7 +190,7 @@ export class Group implements IGroup {
     this.sceneGraph.visit(this.entity, (entity) => {
       // shouldn't include itself
       if (entity !== this.getEntity()) {
-        const group = this.groupRegistry(entity.getName());
+        const group = this.groupPool.getByName(entity.getName());
         if (filter(group)) {
           target = group;
           return true;
@@ -202,7 +204,7 @@ export class Group implements IGroup {
     this.sceneGraph.visit(this.entity, (entity) => {
       // shouldn't include itself
       if (entity !== this.getEntity()) {
-        const group = this.groupRegistry(entity.getName());
+        const group = this.groupPool.getByName(entity.getName());
         if (filter(group)) {
           groups.push(group);
         }
@@ -326,6 +328,11 @@ export class Group implements IGroup {
   getPosition() {
     const transform = this.entity.getComponent(Transform);
     return transform.getPosition();
+  }
+
+  getLocalPosition() {
+    const transform = this.entity.getComponent(Transform);
+    return transform.getLocalPosition();
   }
 
   /**

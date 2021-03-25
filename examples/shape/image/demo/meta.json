@@ -5,12 +5,36 @@
   },
   "demos": [
     {
-      "filename": "basic.js",
+      "filename": "canvas.js",
       "title": {
-        "zh": "图片",
-        "en": "Image"
+        "zh": "图片(Canvas)",
+        "en": "Image(Canvas)"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OIAmRpwhNWYAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "webgl.js",
+      "title": {
+        "zh": "图片(WebGL)",
+        "en": "Image(WebGL)"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OIAmRpwhNWYAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "canvas-perf.js",
+      "title": {
+        "zh": "大量图片(Canvas)",
+        "en": "Performance(Canvas)"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*LD-2T7iQhakAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "webgl-perf.js",
+      "title": {
+        "zh": "大量图片(WebGL)",
+        "en": "Performance(WebGL)"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*LD-2T7iQhakAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

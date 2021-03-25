@@ -9,7 +9,7 @@ import { PassNode } from '../../components/framegraph/PassNode';
 import { ResourcePool } from '../../components/framegraph/ResourcePool';
 import { IModel, RenderingEngine } from '../../services/renderer';
 import { gl } from '../../services/renderer/constants';
-import { FrameGraphSystem, IRenderPass } from '../../systems/FrameGraph';
+import { FrameGraphEngine, IRenderPass } from '../FrameGraphEngine';
 import { RenderPass, RenderPassData } from './RenderPass';
 
 export interface CopyPassData {
@@ -29,7 +29,7 @@ export class CopyPass implements IRenderPass<CopyPassData> {
 
   private model: IModel | undefined;
 
-  public setup = (fg: FrameGraphSystem, passNode: PassNode, pass: FrameGraphPass<CopyPassData>): void => {
+  public setup = (fg: FrameGraphEngine, passNode: PassNode, pass: FrameGraphPass<CopyPassData>): void => {
     const renderPass = fg.getPass<RenderPassData>(RenderPass.IDENTIFIER);
     if (renderPass) {
       const output = fg.createRenderTarget(passNode, 'render to screen', {
@@ -44,7 +44,7 @@ export class CopyPass implements IRenderPass<CopyPassData> {
     }
   };
 
-  public execute = async (fg: FrameGraphSystem, pass: FrameGraphPass<CopyPassData>): Promise<void> => {
+  public execute = async (fg: FrameGraphEngine, pass: FrameGraphPass<CopyPassData>): Promise<void> => {
     const { createModel, createAttribute, createBuffer } = this.engine;
 
     if (!this.model) {

@@ -1,4 +1,4 @@
-import { Entity, System, World } from '@antv/g-ecs';
+import { World } from '@antv/g-ecs';
 import { Container, interfaces } from 'inversify';
 import { createRootContainer } from './inversify.config';
 import { Transform as CTransform } from './components/Transform';
@@ -10,16 +10,18 @@ import { Cullable as CCullable } from './components/Cullable';
 import { Sortable as CSortable } from './components/Sortable';
 import { Visible as CVisible } from './components/Visible';
 import { Animator as CAnimator } from './components/Animator';
-import { CanvasConfig, Context as SContext, ContextService } from './systems/Context';
+import { Context as SContext } from './systems/Context';
 import { SceneGraph as SSceneGraph } from './systems/SceneGraph';
 import { Timeline as STimeline } from './systems/Timeline';
 import { Renderer as SRenderer } from './systems/Renderer';
 import { Culling as SCulling } from './systems/Culling';
 import { AABB as SAABB } from './systems/AABB';
-import { CanvasCfg, GroupCfg, IShape, ShapeCfg } from './types';
+import { CanvasConfig, GroupCfg, IShape, ShapeCfg } from './types';
 import { Shape } from './Shape';
 import { cleanExistedCanvas } from './utils/canvas';
-import { Group, GroupOrShape, GroupRegistry } from './Group';
+import { Group } from './Group';
+import { ContextService } from './services';
+import { GroupPool } from './GroupPool';
 
 export class Canvas {
   protected container: Container;
@@ -27,7 +29,7 @@ export class Canvas {
   private frameId: number;
   private frameCallback: Function;
 
-  constructor(private config: CanvasCfg) {
+  constructor(private config: CanvasConfig) {
     cleanExistedCanvas(config.container, this);
     this.container = createRootContainer();
     this.init();
@@ -36,6 +38,22 @@ export class Canvas {
 
   protected loadModule() {
     throw new Error('method not implemented');
+  }
+
+  /**
+   * override the initial config
+   *
+   * @example
+   * // disable dirty rectangle
+   * canvas.setConfig({
+   *   dirtyRectangle: {
+   *     enable: false,
+   *   },
+   * });
+   */
+  public setConfig(config: Partial<CanvasConfig>) {
+    const canvasConfig = this.container.get(CanvasConfig);
+    Object.assign(canvasConfig, config);
   }
 
   public onFrame(callback: Function) {
@@ -85,7 +103,7 @@ export class Canvas {
       ...config,
     });
 
-    this.container.bind(GroupOrShape).toConstantValue(shape).whenTargetNamed(entity.getName());
+    this.container.get(GroupPool).add(entity.getName(), shape);
     return shape;
   }
 
@@ -99,17 +117,19 @@ export class Canvas {
       ...config,
     });
 
-    this.container.bind(GroupOrShape).toConstantValue(group).whenTargetNamed(entity.getName());
+    this.container.get(GroupPool).add(entity.getName(), group);
     return group;
   }
 
   private init() {
-    this.container.bind(CanvasConfig).toConstantValue(this.config);
-    this.container.bind<interfaces.Factory<Group>>(GroupRegistry).toFactory<Group>((context: interfaces.Context) => {
-      return (entityName: string) => {
-        return context.container.getNamed(GroupOrShape, entityName);
-      };
+    this.container.bind(CanvasConfig).toConstantValue({
+      dirtyRectangle: {
+        enable: true,
+        debug: false,
+      },
+      ...this.config,
     });
+    this.container.bind(GroupPool).toSelf().inSingletonScope();
     this.container.bind(Group).toSelf();
     this.container.bind(Shape).toSelf();
 
@@ -135,11 +155,11 @@ export class Canvas {
      * register systems
      */
     this.world
-      .registerSystem(SContext)
       .registerSystem(STimeline)
-      .registerSystem(SAABB)
-      .registerSystem(SCulling)
       .registerSystem(SSceneGraph)
+      .registerSystem(SAABB)
+      .registerSystem(SContext)
+      .registerSystem(SCulling)
       .registerSystem(SRenderer);
   }
 

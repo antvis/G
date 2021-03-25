@@ -1,36 +1,8 @@
-import { Matcher, System } from '@antv/g-ecs';
+import { System } from '@antv/g-ecs';
 import { inject, injectable } from 'inversify';
-import { CanvasCfg } from '../types';
-
-export const CanvasConfig = Symbol('CanvasConfig');
-export const ContextService = Symbol('ContextService');
-export interface ContextService<Context> {
-  setContext(context: Context): void;
-  getContext(): Context | null;
-  init(): Promise<Context | null> | void;
-  destroy(): Promise<void> | void;
-  resize(width: number, height: number): void;
-}
-
-@injectable()
-export abstract class DefaultContextService<Context> implements ContextService<Context> {
-  private context: Context | null;
-
-  @inject(CanvasConfig)
-  protected canvasConfig: CanvasCfg;
-
-  public abstract init(): void;
-  public abstract destroy(): void;
-  public abstract resize(width: number, height: number): void;
-
-  public setContext(context: Context) {
-    this.context = context;
-  }
-
-  public getContext() {
-    return this.context;
-  }
-}
+import { ContextService } from '../services/DefaultContextService';
+import { EventService } from '../services/DefaultEventService';
+import { CanvasConfig } from '../types';
 
 @injectable()
 export class Context implements System {
@@ -38,20 +10,27 @@ export class Context implements System {
   initialized = false;
 
   @inject(CanvasConfig)
-  private canvasConfig: CanvasCfg;
+  private canvasConfig: CanvasConfig;
 
   @inject(ContextService)
   private contextService: ContextService<unknown>;
+
+  @inject(EventService)
+  private eventService: EventService;
 
   async initialize() {
     const context = await this.contextService.init();
     this.contextService.setContext(context);
     this.contextService.resize(this.canvasConfig.width, this.canvasConfig.height);
+
+    await this.eventService.init();
+
     this.initialized = true;
   }
 
   tearDown() {
     this.contextService.destroy();
+    this.eventService.destroy();
   }
 
   execute() {}

@@ -1,5 +1,5 @@
 #ifdef INSTANCING
-  mat4 model_matrix = mat4(a_model_matrix_0, a_model_matrix_1, a_model_matrix_2, a_model_matrix_3);
+  mat4 modelMatrix = mat4(a_ModelMatrix0, a_ModelMatrix1, a_ModelMatrix2, a_ModelMatrix3);
 #else
-  mat4 model_matrix = u_model_matrix;
+  mat4 modelMatrix = u_ModelMatrix;
 #endif

@@ -48,8 +48,8 @@ const systemModule = new ContainerModule((bind) => {
 
   bind(DefaultAttributeAnimationUpdater).toSelf().inSingletonScope();
   bind(ColorAttributeAnimationUpdater).toSelf().inSingletonScope();
-  bind(AttributeAnimationUpdaters).to(DefaultAttributeAnimationUpdater);
-  bind(AttributeAnimationUpdaters).to(ColorAttributeAnimationUpdater);
+  bind(AttributeAnimationUpdaters).toService(DefaultAttributeAnimationUpdater);
+  bind(AttributeAnimationUpdaters).toService(ColorAttributeAnimationUpdater);
 });
 
 // export * from './AABB';

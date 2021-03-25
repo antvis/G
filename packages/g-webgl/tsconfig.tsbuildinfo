@@ -302,8 +302,8 @@
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/system.d.ts": {
-        "version": "2782f2bc11e8f32542e27848e3b22b7886ce4340d913df254108a7d00e2d1dee",
-        "signature": "2782f2bc11e8f32542e27848e3b22b7886ce4340d913df254108a7d00e2d1dee",
+        "version": "3a8c682f067a83c500d9f70c0d86dbd142c16e51bb28fada5ec6f94476cb366f",
+        "signature": "3a8c682f067a83c500d9f70c0d86dbd142c16e51bb28fada5ec6f94476cb366f",
         "affectsGlobalScope": false
       },
       "../g-ecs/lib/world.d.ts": {
@@ -332,8 +332,8 @@
         "affectsGlobalScope": false
       },
       "../g-core/lib/types.d.ts": {
-        "version": "12ea1811f3ed36b598004fa6626ce69bea5e0577f605309a283245c997828d29",
-        "signature": "12ea1811f3ed36b598004fa6626ce69bea5e0577f605309a283245c997828d29",
+        "version": "22aab8bea85a1fc1fc49841b7914748c681662116b96ab3146d5fc08ef0bc094",
+        "signature": "22aab8bea85a1fc1fc49841b7914748c681662116b96ab3146d5fc08ef0bc094",
         "affectsGlobalScope": false
       },
       "../g-core/lib/canvas.d.ts": {
@@ -417,28 +417,43 @@
         "affectsGlobalScope": false
       },
       "../g-core/lib/systems/culling.d.ts": {
-        "version": "f6de996035d2b49b478065bbb489d9a16eec46d1ff8aa793d2b1300dad356e32",
-        "signature": "f6de996035d2b49b478065bbb489d9a16eec46d1ff8aa793d2b1300dad356e32",
+        "version": "319bca52c47a910dcf9f1083841f6a88e12887d38d0b0cf3a643ad8bfe1ffdf0",
+        "signature": "319bca52c47a910dcf9f1083841f6a88e12887d38d0b0cf3a643ad8bfe1ffdf0",
         "affectsGlobalScope": false
       },
       "../g-core/lib/systems/scenegraph.d.ts": {
-        "version": "2665d6b5da321ee13fd034939263a28c7a804619c0ca99242267f7b82f3a99bf",
-        "signature": "2665d6b5da321ee13fd034939263a28c7a804619c0ca99242267f7b82f3a99bf",
+        "version": "ea7084fdb24513eb74040f1164a49cb183685a41fc8a059ca61dc200dda6efba",
+        "signature": "ea7084fdb24513eb74040f1164a49cb183685a41fc8a059ca61dc200dda6efba",
         "affectsGlobalScope": false
       },
       "../g-core/lib/systems/context.d.ts": {
-        "version": "43058fac48e464043d28756cc81f4b1792722801b214e8fb51e5f45c03b38a35",
-        "signature": "43058fac48e464043d28756cc81f4b1792722801b214e8fb51e5f45c03b38a35",
+        "version": "922f48734839b307ff380ebdd8d4a71a8494467225f4ee7646430e78804c8d3e",
+        "signature": "922f48734839b307ff380ebdd8d4a71a8494467225f4ee7646430e78804c8d3e",
         "affectsGlobalScope": false
       },
       "../g-core/lib/systems/renderer.d.ts": {
-        "version": "1ec7a18c5bbc81dc258fe1fc5f295a93b9a36941bc0ecd69abbe8f251c8c4e02",
-        "signature": "1ec7a18c5bbc81dc258fe1fc5f295a93b9a36941bc0ecd69abbe8f251c8c4e02",
+        "version": "51d0c4d4e13c6285b0bbc7559fdf2447ecd1e07b9318e0df696e44ef87980707",
+        "signature": "51d0c4d4e13c6285b0bbc7559fdf2447ecd1e07b9318e0df696e44ef87980707",
         "affectsGlobalScope": false
       },
       "../g-core/lib/systems/index.d.ts": {
         "version": "3e520b27da7a311ae1634d70d73b9e7ad8b3f1b1daf5e01ce228df90b8696067",
         "signature": "3e520b27da7a311ae1634d70d73b9e7ad8b3f1b1daf5e01ce228df90b8696067",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/services/defaultcontextservice.d.ts": {
+        "version": "61b9f865e11d57e2753ff085b54aebc0eb1721a3c6730b7334c45dd41e8cf868",
+        "signature": "61b9f865e11d57e2753ff085b54aebc0eb1721a3c6730b7334c45dd41e8cf868",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/services/defaulteventservice.d.ts": {
+        "version": "fcf8b0e26cf6b28d73d6e4c934e37801bbc993312b70050a41ebd3dd2436feda",
+        "signature": "fcf8b0e26cf6b28d73d6e4c934e37801bbc993312b70050a41ebd3dd2436feda",
+        "affectsGlobalScope": false
+      },
+      "../g-core/lib/services/index.d.ts": {
+        "version": "ff0700340beb5ba50219f5dde49d6f27095c6a0619f21f985560b7ced8f66c2c",
+        "signature": "ff0700340beb5ba50219f5dde49d6f27095c6a0619f21f985560b7ced8f66c2c",
         "affectsGlobalScope": false
       },
       "../g-core/lib/utils/math.d.ts": {
@@ -457,8 +472,8 @@
         "affectsGlobalScope": false
       },
       "../g-core/lib/index.d.ts": {
-        "version": "e56c50cb7bf79aea9e30eb8f997b9b61fe271dde994dd3da7a23fd1f8743a651",
-        "signature": "e56c50cb7bf79aea9e30eb8f997b9b61fe271dde994dd3da7a23fd1f8743a651",
+        "version": "683bf972eb1ff3e72682541261cbf46b474d49d935c973d14a391e97442b0298",
+        "signature": "683bf972eb1ff3e72682541261cbf46b474d49d935c973d14a391e97442b0298",
         "affectsGlobalScope": false
       },
       "./src/landmark.ts": {
@@ -477,8 +492,8 @@
         "affectsGlobalScope": false
       },
       "./src/services/renderer/index.ts": {
-        "version": "34fa109fdc1a3ad16ed442314abc84be18f40412f1dea2e6ca36946945285c9e",
-        "signature": "33f7e46b8fa050387fe115343b8abec9da9ff40171890deace56e0e14f47543b",
+        "version": "4baa78da466b05ed8699b0ca4597d63a307c5f12f631b758e8862ffa7135ff8e",
+        "signature": "837efbabfd0e7b64b09df1dd27d88a8e39bf3e1fe0c44beba5f1bba990dcf791",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/lodash/common/common.d.ts": {
@@ -572,18 +587,18 @@
         "affectsGlobalScope": false
       },
       "./src/components/geometry3d.ts": {
-        "version": "bee3169cfc58489f24f0208a581b8d11afcf41b810fcae7754254afbd33c560c",
-        "signature": "2c5911f624f1307487d800ad73cc66aa13972c0700bc061c5ff51cded06499c2",
+        "version": "d8efb3870a4bc31fc9e3190ee0e30262dce5ca57a21c21fc2a8429b330e85582",
+        "signature": "d38474dabe27271d70765b632cc95f903d0f6711342fbdea0db4617fd171b041",
         "affectsGlobalScope": false
       },
       "./src/components/material3d.ts": {
-        "version": "50a3f5920fbb67d0710ae31c94de0137b49a0217004d63331893196a37015add",
+        "version": "5c416205ea03bc0fbb0599f31ca513c878e6bd3fe924955dabe6a23c16dfdeb8",
         "signature": "b6e9a423b8a9ae6240a258bfc982bfcb3a78dbaa56d448dc8cd0ac4fecd41c68",
         "affectsGlobalScope": false
       },
       "./src/components/renderable3d.ts": {
-        "version": "ed232ade3893ba232edf52608a70aecf8c40f11e49022ee9fee043c74333c1dd",
-        "signature": "0c4ab83e786ab7ee8ac3bb644802bb16abc2d8e079f7c776b1d555a241018f71",
+        "version": "e6e3a0bc049544e58d12f0b6686c491e095dfeb031d92419e33e14afa2e1a371",
+        "signature": "17c005af9c3eea5d4908f6e8f1d93c9cc808b6773fabc3a55325fd03cb17e7ca",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/lodash-es/isstring.d.ts": {
@@ -602,7 +617,7 @@
         "affectsGlobalScope": false
       },
       "./src/services/shader-module/index.ts": {
-        "version": "3fc959d4f5c0b1e06ca4c14fcc2390b96cb94a1a2639bec4eae0fd3f9d1befb8",
+        "version": "2c507595d6ede5dedc72ad572ad38c4f3f3f9003a6ed41f87111539592939fea",
         "signature": "e0582cc4306b490775de9f6ca114f3eaa48bb7d3258b6b35c2b29c3991086a04",
         "affectsGlobalScope": false
       },
@@ -627,8 +642,8 @@
         "affectsGlobalScope": false
       },
       "./src/shapes/base.ts": {
-        "version": "6cf8c77b8054bebed1241003e9de43f2d153468b51f8d16da79ded2083bd8826",
-        "signature": "3dbc44c862d3f0ad8e21bff00c2ffd27fd0a99625291070e2d1dc491a9c518b2",
+        "version": "1f18a719a3b90cccd38edb7085ef2356c61dc42483a479b6fdd7077f1574ee10",
+        "signature": "595de6aa1ff30fe5ae847aaa92b18d65c7a665202d212e9c51f6667c164aeeb5",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/d3-color/index.d.ts": {
@@ -642,8 +657,18 @@
         "affectsGlobalScope": false
       },
       "./src/shapes/circle.ts": {
-        "version": "566efc60ca45bef2ddca0463e793f0d8e1a2c44e8e176b728bb1686011285849",
+        "version": "bcf273d1d302cb8d09d81aa5c363b634c75d9abf77be031deb338338cb6924a4",
         "signature": "d87d85b7495138921fe7ead1c1dd5588b2b6659a596979c625ff78d78952fb94",
+        "affectsGlobalScope": false
+      },
+      "./src/shapes/texturepool.ts": {
+        "version": "d25de9eb49f25cd88ffb52750698d6b4f7f8019e335ea4f3746d62260b653d94",
+        "signature": "809fec8cc3f7c82b2b5d305ef912251e8e4d904a7531d7fee144daa2270f2f73",
+        "affectsGlobalScope": false
+      },
+      "./src/shapes/image.ts": {
+        "version": "9f03d0c4bb3247dedf8180e404379eeeaaac601e0a34eed9415cd78ce00c5108",
+        "signature": "63468b6c3b3037e41de88faa3ded549ab038d25094c4f16fcdd2787173e8ca21",
         "affectsGlobalScope": false
       },
       "./src/services/renderer/regl/reglbuffer.ts": {
@@ -697,8 +722,8 @@
         "affectsGlobalScope": false
       },
       "./src/components/framegraph/framegraphpass.ts": {
-        "version": "d4c8636da73a6a100b70ed78797fdbd99e79f27985de8ea1f71b0e4823fd411d",
-        "signature": "cfbca6212483581e3e4813f2787db6a7b383e16b944b7b1eed4f926816de1346",
+        "version": "b4f764c9976f5731c2e974a1df1a0a7bb24bb93f561545d499c3f07d4cf005ee",
+        "signature": "b6a944db140faaea68acaae6233815fa95dfad98cdf1c66ec973a1945c5266cc",
         "affectsGlobalScope": false
       },
       "./src/components/framegraph/resourcenode.ts": {
@@ -706,14 +731,14 @@
         "signature": "6286caf770a94e8ef2ad2b72f4863f21f65e6447d7ae9675bfd676e0d0015f99",
         "affectsGlobalScope": false
       },
-      "./src/systems/framegraph.ts": {
-        "version": "77a929138fb548dbf9945b28f4e6ed315d0a471b50854ff096fa6495b511d537",
-        "signature": "4f791385fe0f7c63ff6c508af3cb6989a15fb46856f0570d5e481462f56a421d",
+      "./src/contributions/framegraphengine.ts": {
+        "version": "5b1713a2bd18289d5268cbbe9c775c6be923133f2f7c3f92fc479d8974c49d2f",
+        "signature": "c3d9159425204fbf2f2d4b88917c99606dae260442caf7bfa6b28d82cc4fb03b",
         "affectsGlobalScope": false
       },
       "./src/components/framegraph/passnode.ts": {
-        "version": "b041be4fbdf66c7882714f3f724c0661deb84f215f20322a1eedbc94db348619",
-        "signature": "075375c0ccf6f0fa4ae33f58e18b22247d26e474c3394fad338cad17d0717b0b",
+        "version": "ed3b995b2c86dc7df7075b65962502bfb5ecba5ecc28294e7611290b071f0161",
+        "signature": "705c4c3dca427f894cd79f4d484355a2104c4ee8a75136c5a7759b01049a6cd1",
         "affectsGlobalScope": false
       },
       "./src/components/framegraph/virtualresource.ts": {
@@ -732,18 +757,18 @@
         "affectsGlobalScope": false
       },
       "./src/contributions/passes/renderpass.ts": {
-        "version": "44ef74de96d53ff68ac0bb9eab3d16a4f9fc33fc6a3b796b5552ea4adf8691f5",
-        "signature": "2b561246d2242806f36bbfddc96441cb74d00061dd0059e162aed0a37e42634b",
+        "version": "2fee0d32715113fad500a22116bbb5d2712875bd031d1e0450dbc5250dce3729",
+        "signature": "cc82b301ae667688e3f5db0ac5161cd96498bff2affe4c611184b4e29613d8a2",
         "affectsGlobalScope": false
       },
       "./src/contributions/passes/copypass.ts": {
-        "version": "b75d38e2b61dbed3e5f8f1437e288a7075a86a6f52da297516f8c76c1d379d57",
-        "signature": "d02cd8707c3dabf765c7ab8b464233a6a4e440d7d8c2f7c5a02b7ec941688240",
+        "version": "747f67de9b3f44279e8ac6249ca1f4079edce596506e91c69865c5e8ba34fe93",
+        "signature": "56647264a3a0f29724ffa17b8f47175966126f53ae75073763dac19b4400eb51",
         "affectsGlobalScope": false
       },
       "./src/contributions/passes/pixelpickingpass.ts": {
-        "version": "3d4ec273f08f81041e37b927c0254053fd8e2be1328f8dc56a877ec814592b84",
-        "signature": "e75535a38dc74b72457a03478a272768a4f65c0f4e502ac48b737469f01240a0",
+        "version": "de6583a48332ce01fa8dba8e725c596979b01c2b1448160fed125f684255a54f",
+        "signature": "79f807883e54cf7aa53d36579b2512a99ed6a74e196a31bfb50e7d75388c0c8d",
         "affectsGlobalScope": false
       },
       "./src/contributions/frustumculling.ts": {
@@ -751,23 +776,23 @@
         "signature": "b019fb880c943d813e8e52e411d1dd50dd8814ec4f16fb941afcc0aeadfd5ef3",
         "affectsGlobalScope": false
       },
-      "./src/contributions/compileframegraph.ts": {
-        "version": "a3b6eff35a64892d34d0862f17a5eaf3f8cb43a80813bc4fdb0ed94cc26295aa",
-        "signature": "a966f1772bfdf003684564f4bff75b743e7dc6930a28357b3862af9442252e6c",
+      "./src/contributions/framegraphrenderer.ts": {
+        "version": "c73c7edca47db2005540ef732562c2c45101d4c3b8cbaf45d830df5a6d4265ee",
+        "signature": "c809a013972f41f1db1c6cea64930b73399de747427ef3df4cf1aec53060d0e2",
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
-        "version": "43962b89c9248419d5e36ae72bb8836550c1518d4b0e20d3875e130433ad1ffc",
+        "version": "b4e01022ccd6da33e1f6c7492cdf1055b92fe818d6b0fbfe097122d2f7468a8d",
         "signature": "dc9002da210816424d9127c590719dbf1dd1a0e88e794c6802010d066274555f",
         "affectsGlobalScope": false
       },
       "./src/systems/geometry.ts": {
-        "version": "9275fefc9c0dc2238c85ca781ea32c658431c6dd5dd9c3a3898c1f3e05da575c",
-        "signature": "bddc62a366d6e24181a1dc5b89a72811849579d26ff4244df5b5d5394bec7f5b",
+        "version": "8905372d94fa4b41dd2e9cb1de3f2a0d5dc765e671647c5fbd5eb79305acf09e",
+        "signature": "fc5dbd1d4cc0a23a3120d3e4b9c9035aad1368946397ba320f47d408d70f0399",
         "affectsGlobalScope": false
       },
       "./src/canvas.ts": {
-        "version": "7073363e735583b0440da3ab91204d71a42472c7194fb750676a6c68963f078a",
+        "version": "706b5ee283e2813e48e030a4ed8dfa4027b42a88965a88d99edb94fe622a44bf",
         "signature": "d66a5d16497389589331f5643a809dadc7ff4eb1ad4588cc1904185ecd328fd3",
         "affectsGlobalScope": false
       },
@@ -860,7 +885,7 @@
       "rootDir": "./src",
       "composite": true,
       "project": "./tsconfig.json",
-      "declarationDir": "./esm",
+      "declarationDir": "./lib",
       "configFilePath": "./tsconfig.json"
     },
     "referencedMap": {
@@ -1191,10 +1216,18 @@
         "../g-core/lib/canvas.d.ts",
         "../g-core/lib/components/index.d.ts",
         "../g-core/lib/contribution-provider.d.ts",
+        "../g-core/lib/services/index.d.ts",
         "../g-core/lib/shapes/index.d.ts",
         "../g-core/lib/systems/index.d.ts",
         "../g-core/lib/types.d.ts",
         "../g-core/lib/utils/index.d.ts"
+      ],
+      "../g-core/lib/services/defaultcontextservice.d.ts": [
+        "../g-core/lib/types.d.ts"
+      ],
+      "../g-core/lib/services/index.d.ts": [
+        "../g-core/lib/services/defaultcontextservice.d.ts",
+        "../g-core/lib/services/defaulteventservice.d.ts"
       ],
       "../g-core/lib/shape.d.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
@@ -1230,7 +1263,6 @@
         "../g-core/lib/shapes/plane.d.ts"
       ],
       "../g-core/lib/systems/context.d.ts": [
-        "../g-core/lib/types.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
       "../g-core/lib/systems/culling.d.ts": [
@@ -1313,17 +1345,16 @@
         "./src/components/material3d.ts",
         "./src/components/renderable3d.ts",
         "./src/index.ts",
-        "./src/systems/framegraph.ts",
         "./src/systems/geometry.ts"
       ],
       "./src/components/framegraph/framegraphpass.ts": [
         "../g-ecs/lib/index.d.ts",
-        "./src/systems/framegraph.ts"
+        "./src/contributions/framegraphengine.ts"
       ],
       "./src/components/framegraph/passnode.ts": [
         "./src/components/framegraph/framegraphhandle.ts",
         "./src/components/framegraph/virtualresource.ts",
-        "./src/systems/framegraph.ts"
+        "./src/contributions/framegraphengine.ts"
       ],
       "./src/components/framegraph/resourceentry.ts": [
         "./src/components/framegraph/framegraphhandle.ts",
@@ -1360,15 +1391,27 @@
         "../g-ecs/lib/index.d.ts",
         "./src/services/renderer/index.ts"
       ],
-      "./src/contributions/compileframegraph.ts": [
+      "./src/contributions/framegraphengine.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
+        "../g-core/lib/index.d.ts",
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/framegraph/framegraphhandle.ts",
+        "./src/components/framegraph/framegraphpass.ts",
+        "./src/components/framegraph/passnode.ts",
+        "./src/components/framegraph/resourceentry.ts",
+        "./src/components/framegraph/resourcenode.ts",
+        "./src/services/renderer/index.ts"
+      ],
+      "./src/contributions/framegraphrenderer.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
         "../g-core/lib/index.d.ts",
         "../g-ecs/lib/index.d.ts",
         "./src/components/framegraph/resourcepool.ts",
+        "./src/components/renderable3d.ts",
+        "./src/contributions/framegraphengine.ts",
         "./src/contributions/passes/copypass.ts",
         "./src/contributions/passes/renderpass.ts",
-        "./src/services/renderer/index.ts",
-        "./src/systems/framegraph.ts"
+        "./src/services/renderer/index.ts"
       ],
       "./src/contributions/frustumculling.ts": [
         "../../node_modules/gl-matrix/index.d.ts",
@@ -1385,11 +1428,11 @@
         "./src/components/framegraph/framegraphpass.ts",
         "./src/components/framegraph/passnode.ts",
         "./src/components/framegraph/resourcepool.ts",
+        "./src/contributions/framegraphengine.ts",
         "./src/contributions/passes/renderpass.ts",
         "./src/glsl.d.ts",
         "./src/services/renderer/constants.ts",
-        "./src/services/renderer/index.ts",
-        "./src/systems/framegraph.ts"
+        "./src/services/renderer/index.ts"
       ],
       "./src/contributions/passes/pixelpickingpass.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
@@ -1398,8 +1441,8 @@
         "./src/components/framegraph/framegraphpass.ts",
         "./src/components/framegraph/passnode.ts",
         "./src/components/framegraph/resourcepool.ts",
+        "./src/contributions/framegraphengine.ts",
         "./src/services/renderer/index.ts",
-        "./src/systems/framegraph.ts",
         "./src/utils/math.ts"
       ],
       "./src/contributions/passes/renderpass.ts": [
@@ -1410,10 +1453,9 @@
         "./src/components/framegraph/framegraphpass.ts",
         "./src/components/framegraph/passnode.ts",
         "./src/components/framegraph/resourcepool.ts",
-        "./src/components/renderable3d.ts",
+        "./src/contributions/framegraphengine.ts",
         "./src/services/renderer/constants.ts",
         "./src/services/renderer/index.ts",
-        "./src/systems/framegraph.ts",
         "./src/webglcontext.ts"
       ],
       "./src/index.ts": [
@@ -1423,7 +1465,8 @@
         "./src/camera.ts",
         "./src/canvas.ts",
         "./src/components/framegraph/resourcepool.ts",
-        "./src/contributions/compileframegraph.ts",
+        "./src/contributions/framegraphengine.ts",
+        "./src/contributions/framegraphrenderer.ts",
         "./src/contributions/frustumculling.ts",
         "./src/contributions/passes/copypass.ts",
         "./src/contributions/passes/pixelpickingpass.ts",
@@ -1433,7 +1476,8 @@
         "./src/services/shader-module/index.ts",
         "./src/shapes/base.ts",
         "./src/shapes/circle.ts",
-        "./src/systems/framegraph.ts",
+        "./src/shapes/image.ts",
+        "./src/shapes/texturepool.ts",
         "./src/view.ts",
         "./src/webglcontext.ts"
       ],
@@ -1529,26 +1573,36 @@
         "./src/components/renderable3d.ts",
         "./src/glsl.d.ts",
         "./src/services/renderer/constants.ts",
+        "./src/services/renderer/index.ts",
         "./src/services/shader-module/index.ts",
         "./src/shapes/base.ts",
         "./src/utils/color.ts",
         "./src/utils/math.ts"
       ],
-      "./src/systems/framegraph.ts": [
+      "./src/shapes/image.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
         "../g-core/lib/index.d.ts",
         "../g-ecs/lib/index.d.ts",
-        "./src/components/framegraph/framegraphhandle.ts",
-        "./src/components/framegraph/framegraphpass.ts",
-        "./src/components/framegraph/passnode.ts",
-        "./src/components/framegraph/resourceentry.ts",
-        "./src/components/framegraph/resourcenode.ts",
+        "./src/components/geometry3d.ts",
+        "./src/components/material3d.ts",
+        "./src/components/renderable3d.ts",
+        "./src/glsl.d.ts",
+        "./src/services/renderer/constants.ts",
+        "./src/services/renderer/index.ts",
+        "./src/services/shader-module/index.ts",
+        "./src/shapes/base.ts",
+        "./src/shapes/texturepool.ts",
+        "./src/utils/math.ts"
+      ],
+      "./src/shapes/texturepool.ts": [
+        "../../node_modules/inversify/dts/inversify.d.ts",
         "./src/services/renderer/index.ts"
       ],
       "./src/systems/geometry.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
         "../g-ecs/lib/index.d.ts",
         "./src/components/geometry3d.ts",
+        "./src/components/renderable3d.ts",
         "./src/services/renderer/constants.ts",
         "./src/services/renderer/index.ts"
       ],
@@ -1910,10 +1964,18 @@
         "../g-core/lib/canvas.d.ts",
         "../g-core/lib/components/index.d.ts",
         "../g-core/lib/contribution-provider.d.ts",
+        "../g-core/lib/services/index.d.ts",
         "../g-core/lib/shapes/index.d.ts",
         "../g-core/lib/systems/index.d.ts",
         "../g-core/lib/types.d.ts",
         "../g-core/lib/utils/index.d.ts"
+      ],
+      "../g-core/lib/services/defaultcontextservice.d.ts": [
+        "../g-core/lib/types.d.ts"
+      ],
+      "../g-core/lib/services/index.d.ts": [
+        "../g-core/lib/services/defaultcontextservice.d.ts",
+        "../g-core/lib/services/defaulteventservice.d.ts"
       ],
       "../g-core/lib/shape.d.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
@@ -1949,7 +2011,6 @@
         "../g-core/lib/shapes/plane.d.ts"
       ],
       "../g-core/lib/systems/context.d.ts": [
-        "../g-core/lib/types.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
       "../g-core/lib/systems/culling.d.ts": [
@@ -2029,12 +2090,12 @@
       ],
       "./src/components/framegraph/framegraphpass.ts": [
         "../g-ecs/lib/index.d.ts",
-        "./src/systems/framegraph.ts"
+        "./src/contributions/framegraphengine.ts"
       ],
       "./src/components/framegraph/passnode.ts": [
         "./src/components/framegraph/framegraphhandle.ts",
         "./src/components/framegraph/virtualresource.ts",
-        "./src/systems/framegraph.ts"
+        "./src/contributions/framegraphengine.ts"
       ],
       "./src/components/framegraph/resourceentry.ts": [
         "./src/components/framegraph/framegraphhandle.ts",
@@ -2067,7 +2128,15 @@
         "../g-ecs/lib/index.d.ts",
         "./src/services/renderer/index.ts"
       ],
-      "./src/contributions/compileframegraph.ts": [
+      "./src/contributions/framegraphengine.ts": [
+        "../g-ecs/lib/index.d.ts",
+        "./src/components/framegraph/framegraphhandle.ts",
+        "./src/components/framegraph/framegraphpass.ts",
+        "./src/components/framegraph/passnode.ts",
+        "./src/components/framegraph/resourceentry.ts",
+        "./src/components/framegraph/resourcenode.ts"
+      ],
+      "./src/contributions/framegraphrenderer.ts": [
         "../g-core/lib/index.d.ts",
         "../g-ecs/lib/index.d.ts"
       ],
@@ -2079,22 +2148,22 @@
         "./src/components/framegraph/framegraphhandle.ts",
         "./src/components/framegraph/framegraphpass.ts",
         "./src/components/framegraph/passnode.ts",
-        "./src/systems/framegraph.ts"
+        "./src/contributions/framegraphengine.ts"
       ],
       "./src/contributions/passes/pixelpickingpass.ts": [
         "../g-ecs/lib/index.d.ts",
         "./src/components/framegraph/framegraphhandle.ts",
         "./src/components/framegraph/framegraphpass.ts",
         "./src/components/framegraph/passnode.ts",
-        "./src/services/renderer/index.ts",
-        "./src/systems/framegraph.ts"
+        "./src/contributions/framegraphengine.ts",
+        "./src/services/renderer/index.ts"
       ],
       "./src/contributions/passes/renderpass.ts": [
         "../g-ecs/lib/index.d.ts",
         "./src/components/framegraph/framegraphhandle.ts",
         "./src/components/framegraph/framegraphpass.ts",
         "./src/components/framegraph/passnode.ts",
-        "./src/systems/framegraph.ts"
+        "./src/contributions/framegraphengine.ts"
       ],
       "./src/index.ts": [
         "../../node_modules/inversify/dts/inversify.d.ts",
@@ -2157,13 +2226,12 @@
         "../g-ecs/lib/index.d.ts",
         "./src/shapes/base.ts"
       ],
-      "./src/systems/framegraph.ts": [
+      "./src/shapes/image.ts": [
         "../g-ecs/lib/index.d.ts",
-        "./src/components/framegraph/framegraphhandle.ts",
-        "./src/components/framegraph/framegraphpass.ts",
-        "./src/components/framegraph/passnode.ts",
-        "./src/components/framegraph/resourceentry.ts",
-        "./src/components/framegraph/resourcenode.ts"
+        "./src/shapes/base.ts"
+      ],
+      "./src/shapes/texturepool.ts": [
+        "./src/services/renderer/index.ts"
       ],
       "./src/systems/geometry.ts": [
         "../g-ecs/lib/index.d.ts"
@@ -2283,6 +2351,9 @@
       "../g-core/lib/contribution-provider.d.ts",
       "../g-core/lib/group.d.ts",
       "../g-core/lib/index.d.ts",
+      "../g-core/lib/services/defaultcontextservice.d.ts",
+      "../g-core/lib/services/defaulteventservice.d.ts",
+      "../g-core/lib/services/index.d.ts",
       "../g-core/lib/shape.d.ts",
       "../g-core/lib/shapes/aabb.d.ts",
       "../g-core/lib/shapes/boundingsphere.d.ts",
@@ -2319,7 +2390,8 @@
       "./src/components/geometry3d.ts",
       "./src/components/material3d.ts",
       "./src/components/renderable3d.ts",
-      "./src/contributions/compileframegraph.ts",
+      "./src/contributions/framegraphengine.ts",
+      "./src/contributions/framegraphrenderer.ts",
       "./src/contributions/frustumculling.ts",
       "./src/contributions/passes/copypass.ts",
       "./src/contributions/passes/pixelpickingpass.ts",
@@ -2340,7 +2412,8 @@
       "./src/services/shader-module/index.ts",
       "./src/shapes/base.ts",
       "./src/shapes/circle.ts",
-      "./src/systems/framegraph.ts",
+      "./src/shapes/image.ts",
+      "./src/shapes/texturepool.ts",
       "./src/systems/geometry.ts",
       "./src/utils/browser.ts",
       "./src/utils/color.ts",

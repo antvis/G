@@ -11,6 +11,7 @@ import { Material3D } from '../components/Material3D';
 import { Geometry3D } from '../components/Geometry3D';
 import { encodePickingColor } from '../utils/math';
 import { Renderable3D } from '../components/Renderable3D';
+import { BufferData } from '../services/renderer';
 
 const pointShapes = ['circle', 'triangle', 'square', 'pentagon', 'hexagon', 'octogon', 'hexagram', 'rhombus', 'vesica'];
 
@@ -33,6 +34,20 @@ interface IInstanceAttributes {
   instancedPickingColors: number[];
 }
 
+const ATTRIBUTE = {
+  Size: 'a_Size',
+  Color: 'a_Color',
+  Shape: 'a_Shape',
+  Extrude: 'a_Extrude',
+};
+
+const UNIFORM = {
+  Opacity: 'u_Opacity',
+  StrokeColor: 'u_StrokeColor',
+  StrokeWidth: 'u_StrokeWidth',
+  StrokeOpacity: 'u_StrokeOpacity',
+};
+
 /**
  * Render circle & ellipse with SDF
  */
@@ -53,7 +68,7 @@ export class CircleRenderer extends BaseRenderer {
       const { r = 0, lineWidth = 0, rx = 0, ry = 0 } = renderable.attrs;
       const index = renderable3d.source.instances.indexOf(renderable3d);
       if (name === 'r') {
-        const sizeAttribute = sourceGeometry.attributes.find((a) => a.name === 'a_size');
+        const sizeAttribute = sourceGeometry.getAttribute(ATTRIBUTE.Size);
         if (sizeAttribute) {
           sizeAttribute.buffer?.subData({
             data: Float32Array.from([value - lineWidth / 2, value - lineWidth / 2]),
@@ -67,29 +82,31 @@ export class CircleRenderer extends BaseRenderer {
       const { r = 0, lineWidth = 0, rx = 0, ry = 0 } = renderable.attrs;
       if (name === 'fill') {
         const fillColor = rgb2arr(value);
-        geometry.setAttribute('a_color', Float32Array.from(fillColor));
+        geometry.setAttribute(ATTRIBUTE.Color, Float32Array.from(fillColor));
       } else if (name === 'r') {
-        geometry.setAttribute('a_size', Float32Array.from([value - lineWidth / 2, value - lineWidth / 2]));
+        geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from([value - lineWidth / 2, value - lineWidth / 2]));
       } else if (name === 'rx') {
-        geometry.setAttribute('a_size', Float32Array.from([value - lineWidth / 2, ry - lineWidth / 2]));
+        geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from([value - lineWidth / 2, ry - lineWidth / 2]));
       } else if (name === 'ry') {
-        geometry.setAttribute('a_size', Float32Array.from([rx - lineWidth / 2, value - lineWidth / 2]));
+        geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from([rx - lineWidth / 2, value - lineWidth / 2]));
       } else if (name === 'stroke') {
         const strokeColor = rgb2arr(value);
-        material.setUniform('u_stroke_color', strokeColor);
+        material.setUniform(UNIFORM.StrokeColor, strokeColor);
       } else if (name === 'fillOpacity') {
-        material.setUniform('u_opacity', value);
+        material.setUniform(UNIFORM.Opacity, value);
       } else if (name === 'lineWidth') {
         // 改变线宽时需要同时修改半径，保持与 Canvas 渲染效果一致
-        geometry.setAttribute('a_size', Float32Array.from([(rx || r) - value / 2, (ry || r) - value / 2]));
-        material.setUniform('u_stroke_width', value);
+        geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from([(rx || r) - value / 2, (ry || r) - value / 2]));
+        material.setUniform(UNIFORM.StrokeWidth, value);
       } else if (name === 'strokeOpacity') {
-        material.setUniform('u_stroke_opacity', value);
+        material.setUniform(UNIFORM.StrokeOpacity, value);
       }
     }
   }
 
   buildModel(entity: Entity) {
+    super.buildModel(entity);
+
     const renderable = entity.getComponent(Renderable);
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
@@ -136,12 +153,11 @@ export class CircleRenderer extends BaseRenderer {
 
     // TODO: support define stroke-relative props per point
     material.setUniform({
-      ...extractedUniforms,
-      u_device_pixel_ratio: window.devicePixelRatio,
-      u_opacity: fillOpacity,
-      u_stroke_color: strokeColor,
-      u_stroke_width: lineWidth,
-      u_stroke_opacity: strokeOpacity,
+      ...(extractedUniforms as Record<string, BufferData>),
+      [UNIFORM.Opacity]: fillOpacity,
+      [UNIFORM.StrokeColor]: strokeColor,
+      [UNIFORM.StrokeWidth]: lineWidth,
+      [UNIFORM.StrokeOpacity]: strokeOpacity,
     });
 
     let config: Partial<IPointConfig>[] = [];
@@ -175,7 +191,7 @@ export class CircleRenderer extends BaseRenderer {
 
     geometry.setIndex([0, 1, 2, 0, 2, 3]);
 
-    geometry.setAttribute('a_extrude', Float32Array.from(attributes.extrudes), {
+    geometry.setAttribute(ATTRIBUTE.Extrude, Float32Array.from(attributes.extrudes), {
       arrayStride: 4 * 2,
       stepMode: 'vertex',
       attributes: [
@@ -187,7 +203,7 @@ export class CircleRenderer extends BaseRenderer {
       ],
     });
 
-    geometry.setAttribute('a_color', Float32Array.from(attributes.instancedColors), {
+    geometry.setAttribute(ATTRIBUTE.Color, Float32Array.from(attributes.instancedColors), {
       arrayStride: 4 * 4,
       stepMode: 'instance',
       attributes: [
@@ -199,7 +215,7 @@ export class CircleRenderer extends BaseRenderer {
       ],
     });
 
-    geometry.setAttribute('a_size', Float32Array.from(attributes.instancedSizes), {
+    geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from(attributes.instancedSizes), {
       arrayStride: 4 * 2,
       stepMode: 'instance',
       attributes: [
@@ -211,7 +227,7 @@ export class CircleRenderer extends BaseRenderer {
       ],
     });
 
-    geometry.setAttribute('a_shape', Float32Array.from(attributes.instancedShapes), {
+    geometry.setAttribute(ATTRIBUTE.Shape, Float32Array.from(attributes.instancedShapes), {
       arrayStride: 4,
       stepMode: 'instance',
       attributes: [

@@ -5,18 +5,26 @@
   },
   "demos": [
     {
-      "filename": "canvas-circle.js",
+      "filename": "canvas-instancing.js",
       "title": {
-        "zh": "大量圆(Canvas)",
-        "en": "Many Circles(Canvas)"
+        "zh": "Instancing 渲染(Canvas)",
+        "en": "Rendering with instancing(Canvas)"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
     },
     {
-      "filename": "webgl-circle.js",
+      "filename": "webgl-instancing.js",
       "title": {
-        "zh": "大量圆(WebGL)",
-        "en": "Many Circles(WebGL)"
+        "zh": "Instancing 渲染(WebGL)",
+        "en": "Rendering with instancing(WebGL)"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "canvas-dirty-rectangle.js",
+      "title": {
+        "zh": "脏矩形渲染(Canvas)",
+        "en": "Rendering with dirty rectangle(Canvas)"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
     }

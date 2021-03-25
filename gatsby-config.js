@@ -36,35 +36,43 @@ module.exports = {
       },
     ],
     docs: [
+      // {
+      //   slug: 'guide/render',
+      //   title: {
+      //     zh: '渲染',
+      //     en: 'Render',
+      //   },
+      //   order: 2,
+      // },
+      // {
+      //   slug: 'guide/hit',
+      //   title: {
+      //     zh: '拾取',
+      //     en: 'Hit',
+      //   },
+      //   order: 3,
+      // },
+      // {
+      //   slug: 'guide/event',
+      //   title: {
+      //     zh: '事件',
+      //     en: 'Event',
+      //   },
+      //   order: 4,
+      // },
+      // {
+      //   slug: 'guide/animation',
+      //   title: {
+      //     zh: '动画',
+      //     en: 'Animation',
+      //   },
+      //   order: 5,
+      // },
       {
-        slug: 'guide/render',
+        slug: 'guide/advanced-topics',
         title: {
-          zh: '渲染',
-          en: 'Render',
-        },
-        order: 2,
-      },
-      {
-        slug: 'guide/hit',
-        title: {
-          zh: '拾取',
-          en: 'Hit',
-        },
-        order: 3,
-      },
-      {
-        slug: 'guide/event',
-        title: {
-          zh: '事件',
-          en: 'Event',
-        },
-        order: 4,
-      },
-      {
-        slug: 'guide/animation',
-        title: {
-          zh: '动画',
-          en: 'Animation',
+          zh: '进阶内容',
+          en: 'Advanced Topics',
         },
         order: 5,
       },

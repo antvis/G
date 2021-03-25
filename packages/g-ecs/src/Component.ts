@@ -5,7 +5,6 @@ let counter = 0;
 
 @injectable()
 export class Component<C = {}> implements ILifecycle {
-  readonly tag: string;
   readonly id = counter++;
 
   public getId() {

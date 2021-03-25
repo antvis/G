@@ -6,7 +6,7 @@ import { ResourcePool } from '../../components/framegraph/ResourcePool';
 // import { Material3D } from '../../components/Material3D';
 import { IFramebuffer, IView, RenderingEngine } from '../../services/renderer';
 import { decodePickingColor } from '../../utils/math';
-import { FrameGraphSystem, IRenderPass, RenderPassFactory } from '../../systems/FrameGraph';
+import { FrameGraphEngine, IRenderPass, RenderPassFactory } from '../FrameGraphEngine';
 // import { RenderPass, RenderPassData } from './RenderPass';
 import { Entity } from '@antv/g-ecs';
 
@@ -55,7 +55,7 @@ export class PixelPickingPass implements IRenderPass<PixelPickingPassData> {
     this.highlightColor = color;
   }
 
-  public setup = (fg: FrameGraphSystem, passNode: PassNode, pass: FrameGraphPass<PixelPickingPassData>): void => {
+  public setup = (fg: FrameGraphEngine, passNode: PassNode, pass: FrameGraphPass<PixelPickingPassData>): void => {
     const output = fg.createRenderTarget(passNode, 'picking fbo', {
       width: 1,
       height: 1,
@@ -70,7 +70,7 @@ export class PixelPickingPass implements IRenderPass<PixelPickingPassData> {
   };
 
   public execute = async (
-    fg: FrameGraphSystem,
+    fg: FrameGraphEngine,
     pass: FrameGraphPass<PixelPickingPassData>,
     entities: Entity[]
   ): Promise<void> => {

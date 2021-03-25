@@ -5,6 +5,7 @@ import {
   Transform,
   fromRotationTranslationScale,
   getEuler,
+  Renderable,
 } from '@antv/g-core';
 import { Entity } from '@antv/g-ecs';
 import { inject, injectable, named } from 'inversify';
@@ -24,10 +25,35 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
   @named(StyleRendererContribution)
   protected handlers: ContributionProvider<StyleRendererContribution>;
 
-  abstract generatePath(entity: Entity): void;
+  abstract generatePath(entity: Entity): Promise<void> | void;
 
-  public onAttributeChanged(entity: Entity, name: string, value: any) {
+  protected draw(entity: Entity): Promise<void> | void {
+    const context = this.contextService.getContext()!;
+    this.handlers.getContributions().forEach((handler) => {
+      handler.apply(entity, context);
+    });
+  }
+
+  abstract isInStrokeOrPath(
+    entity: Entity,
+    params: {
+      lineWidth: number;
+      x: number;
+      y: number;
+    }
+  ): boolean;
+
+  onAttributeChanged(entity: Entity, name: string, value: any) {
     super.onAttributeChanged(entity, name, value);
+  }
+
+  isHit(entity: Entity, { x, y }: { x: number; y: number }) {
+    const lineWidth = this.getHitLineWidth(entity);
+    return this.isInStrokeOrPath(entity, {
+      lineWidth,
+      x,
+      y,
+    });
   }
 
   async render(entity: Entity) {
@@ -36,21 +62,17 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
     if (context) {
       const originMatrix = context.getTransform();
 
-      context.save();
       context.beginPath();
 
       // apply RTS transformation
       this.applyTransform(entity, context);
 
       // implemented by subclass
-      this.generatePath(entity);
+      await this.generatePath(entity);
 
-      this.handlers.getContributions().forEach((handler) => {
-        handler.apply(entity, context);
-      });
+      await this.draw(entity);
 
       context.closePath();
-      context.restore();
 
       context.setTransform(originMatrix);
     }
@@ -68,5 +90,14 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
 
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
     context.transform(rts[0], rts[1], rts[3], rts[4], rts[6], rts[7]);
+  }
+
+  private getHitLineWidth(entity: Entity) {
+    const renderable = entity.getComponent(Renderable);
+    const { stroke, lineWidth = 0, lineAppendWidth = 0 } = renderable.attrs;
+    if (!stroke) {
+      return 0;
+    }
+    return lineWidth + lineAppendWidth;
   }
 }

@@ -1,35 +1,49 @@
 // tslint:disable-next-line:no-reference
 /// <reference path="../../../node_modules/@webgpu/types/dist/index.d.ts" />
-import { ContextService, CullingStrategy, RendererFrameContribution, SHAPE, ShapeRenderer } from '@antv/g-core';
+import {
+  ContextService,
+  CullingStrategy,
+  EventService,
+  RendererFrameContribution,
+  SHAPE,
+  ShapeRenderer,
+} from '@antv/g-core';
 import { ContainerModule, interfaces } from 'inversify';
 import { Canvas } from './Canvas';
 import { BaseRenderer } from './shapes/Base';
 import { CircleRenderer } from './shapes/Circle';
+import { ImageRenderer } from './shapes/Image';
 import { ShaderModuleService, DefaultShaderModuleService } from './services/shader-module';
-import { WebGLContext as WebGLContextService } from './WebGLContext';
+import { WebGLContextService } from './services/WebGLContextService';
 import { RenderingEngine } from './services/renderer';
 import { WebGLEngine } from './services/renderer/regl';
 import { ResourcePool } from './components/framegraph/ResourcePool';
-import { IRenderPass, RenderPassFactory } from './systems/FrameGraph';
+import { IRenderPass, RenderPassFactory } from './contributions/FrameGraphEngine';
 import { RenderPass } from './contributions/passes/RenderPass';
 import { CopyPass } from './contributions/passes/CopyPass';
 import { PixelPickingPass } from './contributions/passes/PixelPickingPass';
 import { FrustumCulling } from './contributions/FrustumCulling';
+import { FrameGraphRenderer } from './contributions/FrameGraphRenderer';
+import { FrameGraphEngine } from './contributions/FrameGraphEngine';
 import { Camera } from './Camera';
 import { View } from './View';
-import { CompileFrameGraph } from './contributions/CompileFrameGraph';
+import { TexturePool } from './shapes/TexturePool';
+import { CanvasEventService } from './services/CanvasEventService';
 
 export const module = new ContainerModule((bind) => {
   bind(WebGLContextService).toSelf().inSingletonScope();
   bind(ContextService).toService(WebGLContextService);
+  bind(CanvasEventService).toSelf().inSingletonScope();
+  bind(EventService).toService(CanvasEventService);
   bind(BaseRenderer).toSelf().inSingletonScope();
 
   /**
    * register shape renderers
    */
-  bind(CircleRenderer).toSelf().inSingletonScope();
-  bind(ShapeRenderer).to(CircleRenderer).whenTargetNamed(SHAPE.Circle);
-  bind(ShapeRenderer).to(CircleRenderer).whenTargetNamed(SHAPE.Ellipse);
+  bind(TexturePool).toSelf().inSingletonScope();
+  bind(ShapeRenderer).to(CircleRenderer).inSingletonScope().whenTargetNamed(SHAPE.Circle);
+  bind(ShapeRenderer).to(CircleRenderer).inSingletonScope().whenTargetNamed(SHAPE.Ellipse);
+  bind(ShapeRenderer).to(ImageRenderer).inSingletonScope().whenTargetNamed(SHAPE.Image);
 
   /**
    * bind services
@@ -63,7 +77,7 @@ export const module = new ContainerModule((bind) => {
    * bind culling strategies
    */
   bind(FrustumCulling).toSelf().inSingletonScope();
-  bind(CullingStrategy).to(FrustumCulling);
+  bind(CullingStrategy).toService(FrustumCulling);
 
   bind(View).toSelf().inSingletonScope();
   bind(Camera).toSelf().inSingletonScope();
@@ -71,10 +85,11 @@ export const module = new ContainerModule((bind) => {
   /**
    * bind handlers when frame began
    */
-  bind(CompileFrameGraph).toSelf().inSingletonScope();
+  bind(FrameGraphEngine).toSelf().inSingletonScope();
+  bind(FrameGraphRenderer).toSelf().inSingletonScope();
   // unbind(RendererFrameContribution);
   // bindContributionProvider(bind, RendererFrameContribution);
-  bind(RendererFrameContribution).to(CompileFrameGraph);
+  bind(RendererFrameContribution).toService(FrameGraphRenderer);
 });
 
 export { Canvas };

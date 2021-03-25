@@ -1,4 +1,3 @@
-import { AABB } from '@antv/g-core';
 import { Component } from '@antv/g-ecs';
 import { mat3, mat4, vec3, vec4 } from 'gl-matrix';
 import isTypedArray from 'lodash-es/isTypedArray';
@@ -27,10 +26,6 @@ export class Geometry3D extends Component {
 
   // instanced count
   public maxInstancedCount: number;
-
-  public aabb: AABB;
-
-  // public entity: Entity;
 
   public reset() {
     this.attributes.forEach((attribute) => {

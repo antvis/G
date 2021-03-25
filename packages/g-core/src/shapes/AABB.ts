@@ -1,4 +1,4 @@
-import { vec3 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
 import { Plane } from './Plane';
 
 /**
@@ -19,8 +19,8 @@ export class AABB {
   }
 
   public update(center?: vec3, halfExtents?: vec3) {
-    this.center = center || vec3.create();
-    this.halfExtents = halfExtents || vec3.fromValues(0.5, 0.5, 0.5);
+    this.center = vec3.copy(vec3.create(), center || vec3.create());
+    this.halfExtents = vec3.copy(vec3.create(), halfExtents || vec3.fromValues(0, 0, 0));
     this.min = vec3.sub(this.min, this.center, this.halfExtents);
     this.max = vec3.add(this.max, this.center, this.halfExtents);
   }
@@ -107,6 +107,50 @@ export class AABB {
     this.max[0] = tmaxx;
     this.max[1] = tmaxy;
     this.max[2] = tmaxz;
+  }
+
+  public setFromTransformedAABB(aabb: AABB, m: mat4) {
+    const bc = this.center;
+    const br = this.halfExtents;
+    const ac = aabb.center;
+    const ar = aabb.halfExtents;
+
+    const mx0 = m[0];
+    const mx1 = m[4];
+    const mx2 = m[8];
+    const my0 = m[1];
+    const my1 = m[5];
+    const my2 = m[9];
+    const mz0 = m[2];
+    const mz1 = m[6];
+    const mz2 = m[10];
+
+    const mx0a = Math.abs(mx0);
+    const mx1a = Math.abs(mx1);
+    const mx2a = Math.abs(mx2);
+    const my0a = Math.abs(my0);
+    const my1a = Math.abs(my1);
+    const my2a = Math.abs(my2);
+    const mz0a = Math.abs(mz0);
+    const mz1a = Math.abs(mz1);
+    const mz2a = Math.abs(mz2);
+
+    vec3.set(
+      bc,
+      m[12] + mx0 * ac[0] + mx1 * ac[1] + mx2 * ac[2],
+      m[13] + my0 * ac[0] + my1 * ac[1] + my2 * ac[2],
+      m[14] + mz0 * ac[0] + mz1 * ac[1] + mz2 * ac[2]
+    );
+
+    vec3.set(
+      br,
+      mx0a * ar[0] + mx1a * ar[1] + mx2a * ar[2],
+      my0a * ar[0] + my1a * ar[1] + my2a * ar[2],
+      mz0a * ar[0] + mz1a * ar[1] + mz2a * ar[2]
+    );
+
+    this.min = vec3.sub(this.min, bc, br);
+    this.max = vec3.add(this.max, bc, br);
   }
 
   public intersects(aabb: AABB) {

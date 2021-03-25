@@ -1,6 +1,4 @@
 ---
-title: 图形事件
-order: 0
+title: 事件
+order: 1
 ---
-
-- 直接在图形 shape 上监听事件。

@@ -191,7 +191,8 @@ export type Cursor =
   | 'zoom-in'
   | 'zoom-out';
 
-export type CanvasCfg = {
+export const CanvasConfig = Symbol('CanvasConfig');
+export interface CanvasConfig {
   /**
    * 容器
    * @type {string|HTMLElement}
@@ -223,8 +224,16 @@ export type CanvasCfg = {
    * @type {Cursor}
    */
   cursor?: Cursor;
+
+  /**
+   * 脏矩形（局部）渲染
+   */
+  dirtyRectangle?: Partial<{
+    enable: boolean; // 是否开启
+    debug: boolean; // 开启时是否打开 debug 模式
+  }>;
   [key: string]: any;
-};
+}
 
 export type ChangeType =
   | 'changeSize'

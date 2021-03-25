@@ -6,7 +6,8 @@ import { ShapeRenderer, ShapeRendererFactory } from './systems';
 import { IShape, OnFrame, AnimateCfg, ElementAttrs, ShapeCfg } from './types';
 import { Timeline } from './systems/Timeline';
 import { Animator, STATUS } from './components/Animator';
-import { Group, GroupOrShape } from './Group';
+import { Group } from './Group';
+import { AABB } from './systems/AABB';
 
 @injectable()
 export class Shape extends Group implements IShape {
@@ -16,6 +17,10 @@ export class Shape extends Group implements IShape {
   @inject(System)
   @named(Timeline.tag)
   private timeline: Timeline;
+
+  @inject(System)
+  @named(AABB.tag)
+  private aabbSystem: AABB;
 
   private type: string;
 
@@ -112,6 +117,13 @@ export class Shape extends Group implements IShape {
   }
 
   /**
+   * TODO: return hit point besides the result
+   */
+  isHit(position: { x: number; y: number }) {
+    return this.shapeRendererFactory(this.type)?.isHit(this.entity, position);
+  }
+
+  /**
    * create a instance of current shape
    *
    * @see https://doc.babylonjs.com/divingDeeper/mesh/copies/instances
@@ -135,7 +147,7 @@ export class Shape extends Group implements IShape {
       },
     });
 
-    this.container.bind(GroupOrShape).toConstantValue(shape).whenTargetNamed(entity.getName());
+    this.groupPool.add(entity.getName(), shape);
     return shape;
   }
 

@@ -602,7 +602,8 @@ export type BufferData =
   | Int16Array
   | Uint32Array
   | Int32Array
-  | Float32Array;
+  | Float32Array
+  | ITexture2D;
 
 export interface RenderingEngine {
   supportWebGPU: boolean;
