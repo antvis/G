@@ -45,7 +45,7 @@ class Canvas extends AbstractCanvas {
     // 是否自动绘制，不需要用户调用 draw 方法
     cfg['autoDraw'] = true;
     // 是否允许局部刷新图表
-    cfg['localRefresh'] = false;
+    cfg['localRefresh'] = true;
     cfg['refreshElements'] = [];
     // 是否在视图内自动裁剪
     cfg['clipView'] = true;
@@ -100,6 +100,7 @@ class Canvas extends AbstractCanvas {
      * 3. changeSize: 改变画布大小
      */
     if (changeType === 'attr' || changeType === 'sort' || changeType === 'changeSize') {
+      this.set('refreshElements', [this]);
       this.draw();
     }
   }
@@ -286,7 +287,7 @@ class Canvas extends AbstractCanvas {
     });
     // 针对小程序需要手动调用一次draw方法
     if (this.isMini() && !this.isMiniNative()) {
-      context.draw();
+      context.draw(true);
     }
     this.set('refreshElements', []);
   }
@@ -300,7 +301,7 @@ class Canvas extends AbstractCanvas {
     drawChildren(context, children);
     // 针对小程序需要手动调用一次draw方法
     if (this.isMini() && !this.isMiniNative()) {
-      context.draw();
+      context.draw(true);
     }
 
     // 对于 https://github.com/antvis/g/issues/422 的场景，全局渲染的模式下也会记录更新的元素队列，因此全局渲染完后也需要置空
