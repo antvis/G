@@ -31,12 +31,14 @@ export default class MiniCanvasProxy<T> {
         obj['setTextBaseline'](value);
         break;
       default:
-        break;
+        obj[prop] = value;
     }
     return true;
   }
 
   get(obj: T, prop: string): any {
-    return obj[prop];
+    return (...args) => {
+      obj[prop](...args);
+    };
   }
 }

@@ -65,6 +65,8 @@ class EventController {
   private panstartTimeStamp;
   // 基础的缩放比例
   private defaultScale: number = 1;
+  private currentScale: number = 1;
+  private initScale: number = 1;
 
   constructor(cfg) {
     this.canvas = cfg.canvas;
@@ -121,15 +123,18 @@ class EventController {
     });
 
     this.hammerRuntime.on('pinchstart pinchmove pinchend', (e) => {
-      const scale = this.defaultScale * e.scale;
+      if (e.type == 'pinchstart') {
+        this.initScale = this.currentScale || 1;
+      }
+
+      this.currentScale = this.initScale * e.scale;
+
+      e.scale = this.currentScale;
+
       e.srcEvent.extra = {
-        scale,
+        scale: this.currentScale,
       };
       this._emitMobileEvent(e.type, e);
-
-      if (e.type === 'pinchend') {
-        this.defaultScale = scale;
-      }
     });
 
     this.hammerRuntime.on('doubletap', (e) => {
