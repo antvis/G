@@ -43,11 +43,12 @@ export default function (shape: IShape): SimpleBBox {
       }
     }
 
+    const padding = fontSize * 0.2;
     bbox = {
-      x: point.x,
-      y: point.y,
-      width,
-      height,
+      x: point.x - padding,
+      y: point.y - padding,
+      width: width + padding,
+      height: height + padding,
     };
   }
   return bbox;
