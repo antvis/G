@@ -1,5 +1,5 @@
 export function getPixelRatio() {
-  return window ? window.devicePixelRatio : 1;
+  return typeof window === 'object' && window.devicePixelRatio ? window.devicePixelRatio : 1;
 }
 
 /**
