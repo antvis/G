@@ -27,6 +27,10 @@ export default class MiniCanvasProxy<T> {
       case 'textAlign':
         obj['setTextAlign'](value);
         break;
+      case 'fontStyle':
+      case 'font':
+        obj['setFont'](value);
+        break;
       case 'textBaseline':
         obj['setTextBaseline'](value);
         break;
