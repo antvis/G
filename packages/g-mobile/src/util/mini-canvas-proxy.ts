@@ -18,6 +18,7 @@ export default class MiniCanvasProxy<T> {
         break;
       case 'globalAlpha':
         if (value || value === 0) {
+          obj['globalAlpha'] = value;
           obj['setGlobalAlpha'](value);
         }
         break;
@@ -41,8 +42,7 @@ export default class MiniCanvasProxy<T> {
   }
 
   get(obj: T, prop: string): any {
-    return (...args) => {
-      obj[prop](...args);
-    };
+    if (prop === 'globalAlpha' && obj[prop] === undefined) return 1;
+    return obj[prop];
   }
 }
