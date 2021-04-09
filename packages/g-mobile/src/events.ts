@@ -81,7 +81,7 @@ class EventController {
       }
     );
 
-    this.hammerRuntime.add(new Hammer.Pan({ threshold: 0, pointers: 0 }));
+    this.hammerRuntime.add(new Hammer.Pan({ threshold: 0, pointers: 1 }));
     this.hammerRuntime.add(new Hammer.Swipe()).recognizeWith(this.hammerRuntime.get('pan'));
     this.hammerRuntime.add(new Hammer.Rotate({ threshold: 0 })).recognizeWith(this.hammerRuntime.get('pan'));
     this.hammerRuntime
@@ -125,6 +125,12 @@ class EventController {
     this.hammerRuntime.on('pinchstart pinchmove pinchend', (e) => {
       if (e.type == 'pinchstart') {
         this.initScale = this.currentScale || 1;
+      }
+
+      if (e.type === 'pinchend') {
+        e.scale = this.currentScale;
+        this._emitMobileEvent(e.type, e);
+        return;
       }
 
       this.currentScale = this.initScale * e.scale;
@@ -179,23 +185,15 @@ class EventController {
   // 获取事件的当前点的信息
   _getPointInfo(ev) {
     const canvas = this.canvas as MiniCanvas;
-    if (canvas.isMini()) {
-      // 支付宝下单指是pointer，多指是touchs，做个兜底。
-      if (ev.type === 'touchend') {
-        return ev.changedPointers ? ev.changedPointers[0] : ev.changedTouches[0];
-      } else {
-        return ev.pointers ? ev.pointers[0] : ev.touches[0];
-      }
-    } else {
-      const clientPoint = canvas.getClientByEvent(ev);
-      const point = canvas.getPointByEvent(ev);
-      return {
-        x: point.x,
-        y: point.y,
-        clientX: clientPoint.x,
-        clientY: clientPoint.y,
-      };
-    }
+
+    const clientPoint = canvas.getClientByEvent(ev);
+    const point = canvas.getPointByEvent(ev);
+    return {
+      x: point.x,
+      y: point.y,
+      clientX: clientPoint.x,
+      clientY: clientPoint.y,
+    };
   }
 
   // 触发事件
@@ -285,9 +283,9 @@ class EventController {
       this._afterDrag(draggingShape, pointInfo, event);
     } else {
       this._emitEvent('panend', event, pointInfo, shape);
-      this.panstartShape = null;
-      this.panstartPoint = null;
     }
+    this.panstartShape = null;
+    this.panstartPoint = null;
   }
 
   // 当触发浏览器的 dragover 事件时，不会再触发 mousemove ，所以这时候的 dragenter, dragleave 事件需要重新处理
