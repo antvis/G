@@ -8,11 +8,11 @@ export enum Strategy {
 }
 
 export class Cullable extends Component {
-  public static tag = 'c-cullable';
+  static tag = 'c-cullable';
 
-  public strategy: Strategy = Strategy.Standard;
+  strategy: Strategy = Strategy.Standard;
 
-  public visibilityPlaneMask = 0;
+  visibilityPlaneMask = 0;
 
-  public visible = false;
+  visible = false;
 }

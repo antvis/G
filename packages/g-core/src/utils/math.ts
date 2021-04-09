@@ -1,4 +1,4 @@
-import { mat3, quat, vec2, vec3 } from 'gl-matrix';
+import { mat3, mat4, quat, vec2, vec3 } from 'gl-matrix';
 
 export function createVec3(position: vec3 | number, y: number = 0, z: number = 0) {
   if (typeof position === 'number') {
@@ -42,23 +42,19 @@ export function getRotationInRadians(mat: mat3): number {
   return Math.atan2(mat[1], mat[4]);
 }
 
-/**
- * @see https://github.com/toji/gl-matrix/issues/329
- * @see https://doc.babylonjs.com/divingDeeper/mesh/transforms/center_origin/rotation_conventions
- */
-export function getEuler(out: vec3, quat: quat): vec3 {
-  let x = quat[0],
-    y = quat[1],
-    z = quat[2],
-    w = quat[3],
-    x2 = x * x,
-    y2 = y * y,
-    z2 = z * z,
-    w2 = w * w;
+function getEulerFromQuat(out: vec3, quat: quat) {
+  let x = quat[0];
+  let y = quat[1];
+  let z = quat[2];
+  let w = quat[3];
+  let x2 = x * x;
+  let y2 = y * y;
+  let z2 = z * z;
+  let w2 = w * w;
   let unit = x2 + y2 + z2 + w2;
   let test = x * w - y * z;
   if (test > 0.499995 * unit) {
-    //TODO: Use glmatrix.EPSILON
+    // TODO: Use glmatrix.EPSILON
     // singularity at the north pole
     out[0] = Math.PI / 2;
     out[1] = 2 * Math.atan2(y, x);
@@ -76,6 +72,50 @@ export function getEuler(out: vec3, quat: quat): vec3 {
   }
   // TODO: Return them as degrees and not as radians
   return out;
+}
+
+function getEulerFromMat4(out: vec3, m: mat4) {
+  let x;
+  let y;
+  let z;
+  const halfPi = Math.PI * 0.5;
+
+  const [sx, sy, sz] = mat4.getScaling(vec3.create(), m);
+
+  y = Math.asin(-m[2] / sx);
+
+  if (y < halfPi) {
+    if (y > -halfPi) {
+      x = Math.atan2(m[6] / sy, m[10] / sz);
+      z = Math.atan2(m[1] / sx, m[0] / sx);
+    } else {
+      // Not a unique solution
+      z = 0;
+      x = -Math.atan2(m[4] / sy, m[5] / sy);
+    }
+  } else {
+    // Not a unique solution
+    z = 0;
+    x = Math.atan2(m[4] / sy, m[5] / sy);
+  }
+
+  out[0] = x;
+  out[1] = y;
+  out[2] = z;
+
+  return out;
+}
+
+/**
+ * @see https://github.com/toji/gl-matrix/issues/329
+ * @see https://doc.babylonjs.com/divingDeeper/mesh/transforms/center_origin/rotation_conventions
+ */
+export function getEuler(out: vec3, quat: quat | mat4): vec3 {
+  if (quat.length === 16) {
+    return getEulerFromMat4(out, quat as mat4);
+  } else {
+    return getEulerFromQuat(out, quat as quat);
+  }
 }
 
 export function fromRotationTranslationScale(

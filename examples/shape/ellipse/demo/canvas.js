@@ -1,4 +1,5 @@
 import { Canvas } from '@antv/g-canvas';
+import { Ellipse } from '@antv/g-core';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 
@@ -8,7 +9,7 @@ const canvas = new Canvas({
   height: 500,
 });
 
-const ellipse = canvas.addShape('ellipse', {
+const ellipse = new Ellipse({
   attrs: {
     x: 300,
     y: 200,
@@ -19,6 +20,8 @@ const ellipse = canvas.addShape('ellipse', {
     lineWidth: 4,
   },
 });
+
+canvas.appendChild(ellipse);
 
 // stats
 const stats = new Stats();

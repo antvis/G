@@ -6,7 +6,7 @@ import { Ray } from '../Ray';
 
 describe('AABB', () => {
   test('should construct correctly.', () => {
-    const aabb = new AABB();
+    const aabb = new AABB(vec3.fromValues(0, 0, 0), vec3.fromValues(0.5, 0.5, 0.5));
 
     expect(aabb.getMin()).to.eqls(vec3.fromValues(-0.5, -0.5, -0.5));
     expect(aabb.getMax()).to.eqls(vec3.fromValues(0.5, 0.5, 0.5));
@@ -19,8 +19,8 @@ describe('AABB', () => {
   });
 
   test('should merge 2 AABBs correctly.', () => {
-    const aabb1 = new AABB(vec3.fromValues(0, 0, 0));
-    const aabb2 = new AABB(vec3.fromValues(1, 1, 1));
+    const aabb1 = new AABB(vec3.fromValues(0, 0, 0), vec3.fromValues(0.5, 0.5, 0.5));
+    const aabb2 = new AABB(vec3.fromValues(1, 1, 1), vec3.fromValues(0.5, 0.5, 0.5));
 
     aabb1.add(aabb2);
 
@@ -31,23 +31,23 @@ describe('AABB', () => {
   });
 
   test('should intersects with another AABB.', () => {
-    const aabb1 = new AABB(vec3.fromValues(0, 0, 0));
-    const aabb2 = new AABB(vec3.fromValues(1, 1, 1));
-    const aabb3 = new AABB(vec3.fromValues(2, 2, 2));
+    const aabb1 = new AABB(vec3.fromValues(0, 0, 0), vec3.fromValues(0.5, 0.5, 0.5));
+    const aabb2 = new AABB(vec3.fromValues(1, 1, 1), vec3.fromValues(0.5, 0.5, 0.5));
+    const aabb3 = new AABB(vec3.fromValues(2, 2, 2), vec3.fromValues(0.5, 0.5, 0.5));
 
     expect(aabb1.intersects(aabb2)).to.true;
     expect(aabb1.intersects(aabb3)).to.false;
   });
 
   test('should contains a Point.', () => {
-    const aabb1 = new AABB(vec3.fromValues(0, 0, 0));
+    const aabb1 = new AABB(vec3.fromValues(0, 0, 0), vec3.fromValues(0.5, 0.5, 0.5));
 
     expect(aabb1.containsPoint(vec3.fromValues(0.1, 0.1, 0.1))).to.true;
     expect(aabb1.containsPoint(vec3.fromValues(0.6, 0.1, 0.1))).to.false;
   });
 
   test('should intersects with Ray.', () => {
-    const aabb1 = new AABB(vec3.fromValues(0, 0, 0));
+    const aabb1 = new AABB(vec3.fromValues(0, 0, 0), vec3.fromValues(0.5, 0.5, 0.5));
 
     const ray1 = new Ray(vec3.fromValues(0, 10, 0), vec3.fromValues(0, -1, 0));
     const ray2 = new Ray(vec3.fromValues(0, 10, 0), vec3.fromValues(0, 1, 0));
@@ -64,7 +64,7 @@ describe('AABB', () => {
   });
 
   test('should get p-vertex & n-vertex based on each plane of culling volume.', () => {
-    const aabb = new AABB(vec3.fromValues(0, 0, 0));
+    const aabb = new AABB(vec3.fromValues(0, 0, 0), vec3.fromValues(0.5, 0.5, 0.5));
     let plane = new Plane(0, vec3.fromValues(1, 1, 1));
     expect(aabb.getNegativeFarPoint(plane)).to.eqls(vec3.fromValues(-0.5, -0.5, -0.5));
     expect(aabb.getPositiveFarPoint(plane)).to.eqls(vec3.fromValues(0.5, 0.5, 0.5));

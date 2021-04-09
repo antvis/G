@@ -1,8 +1,7 @@
 import { Entity, Matcher, System } from '@antv/g-ecs';
-import { inject, injectable } from 'inversify';
+import { injectable } from 'inversify';
 import { Geometry3D } from '../components/Geometry3D';
 import { Renderable3D } from '../components/Renderable3D';
-import { RenderingEngine } from '../services/renderer';
 import { gl } from '../services/renderer/constants';
 
 @injectable()
@@ -10,9 +9,6 @@ export class GeometrySystem implements System {
   static tag = 's-geometry-3d';
   static trigger = new Matcher().allOf(Geometry3D);
   static priority = 1000;
-
-  @inject(RenderingEngine)
-  private readonly engine: RenderingEngine;
 
   public execute(entities: Entity[]) {
     entities.forEach((entity) => {
@@ -22,10 +18,14 @@ export class GeometrySystem implements System {
 
       // build buffers for each geometry
       if (geometry.dirty) {
+        if (geometry.attributes.length === 0) {
+          return;
+        }
+
         geometry.attributes.forEach((attribute) => {
           if (attribute.dirty && attribute.data) {
             if (!attribute.buffer) {
-              attribute.buffer = this.engine.createBuffer({
+              attribute.buffer = renderable.engine.createBuffer({
                 data: attribute.data,
                 type: gl.FLOAT,
                 usage: instancing ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW,
@@ -44,7 +44,7 @@ export class GeometrySystem implements System {
         // create index buffer if needed
         if (geometry.indices) {
           if (!geometry.indicesBuffer) {
-            geometry.indicesBuffer = this.engine.createElements({
+            geometry.indicesBuffer = renderable.engine.createElements({
               data: geometry.indices,
               count: geometry.indices.length,
               type: gl.UNSIGNED_INT,
@@ -57,7 +57,6 @@ export class GeometrySystem implements System {
             });
           }
         }
-
         geometry.dirty = false;
       }
     });

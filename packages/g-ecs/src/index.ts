@@ -39,6 +39,9 @@ const containerModule = new ContainerModule((bind: interfaces.Bind) => {
       get: (clazz: SystemConstructor<System>) => {
         return context.container.getNamed(System, clazz.tag);
       },
+      has: (clazz: SystemConstructor<System>) => {
+        return context.container.isBoundNamed(System, clazz.tag);
+      },
     };
   });
 
@@ -82,7 +85,7 @@ const containerModule = new ContainerModule((bind: interfaces.Bind) => {
   bind<SystemManager>(SystemManager).toSelf().inSingletonScope();
   bind<Entity>(Entity).toSelf();
   bind<ObjectPool<ILifecycle>>(ObjectPool).toSelf();
-  bind<World>(World).toSelf();
+  bind<World>(World).toSelf().inSingletonScope();
 });
 
 export * from './System';

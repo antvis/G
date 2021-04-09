@@ -1,16 +1,14 @@
 import { Entity, Matcher, System } from '@antv/g-ecs';
+import { isNumber, isFunction, isObject, each } from '@antv/util';
 import * as d3Ease from 'd3-ease';
 import { interpolate } from 'd3-interpolate';
 import { Animator, STATUS } from '../components/Animator';
 import { Renderable } from '../components/Renderable';
 import { inject, injectable, multiInject } from 'inversify';
 import { AnimateCfg, Animation, OnFrame } from '../types';
-import { ShapeRenderer, ShapeRendererFactory } from './Renderer';
-import isNumber from 'lodash-es/isNumber';
-import isFunction from 'lodash-es/isFunction';
-import isObject from 'lodash-es/isObject';
-import each from 'lodash-es/each';
 import { isColorProp, isGradientColor } from '../utils/color';
+import { SceneGraphNode } from '../components';
+import { GroupPool } from '../GroupPool';
 
 const noop = () => {};
 
@@ -59,35 +57,39 @@ export class Timeline implements System {
   static tag = 's-timeline';
   static trigger = new Matcher().allOf(Renderable, Animator);
 
-  @inject(ShapeRendererFactory)
-  private shapeRendererFactory: (type: string) => ShapeRenderer | null;
-
   @multiInject(AttributeAnimationUpdaters)
   private attributeAnimationUpdaters: AttributeAnimationUpdater[];
 
+  @inject(GroupPool)
+  protected groupPool: GroupPool;
+
   async execute(entities: Entity[], delta: number = 0, millis: number = 0) {
-    entities.forEach((entity) => {
-      const animator = entity.getComponent(Animator);
-      const { animations } = animator;
+    await Promise.all(
+      entities.map(async (entity) => {
+        const animator = entity.getComponent(Animator);
+        const { animations } = animator;
 
-      if (animator.status === STATUS.Running) {
-        for (let j = animations.length - 1; j >= 0; j--) {
-          const animation = animations[j];
+        if (animator.status === STATUS.Running) {
+          for (let j = animations.length - 1; j >= 0; j--) {
+            const animation = animations[j];
 
-          if (!animation.startTime) {
-            animation.startTime = millis;
-          }
+            if (!animation.startTime) {
+              animation.startTime = millis;
+            }
 
-          const isFinished = this.update(entity, animation, millis);
-          if (isFinished) {
-            animations.splice(j, 1);
-            if (animation.callback) {
-              animation.callback();
+            // TODO: support morph
+            // @see https://codepen.io/osublake/pen/RWeOWX
+            const isFinished = await this.update(entity, animation, millis);
+            if (isFinished) {
+              animations.splice(j, 1);
+              if (animation.callback) {
+                animation.callback();
+              }
             }
           }
         }
-      }
-    });
+      })
+    );
   }
 
   createAnimation(entity: Entity, args: any) {
@@ -227,11 +229,11 @@ export class Timeline implements System {
   private getAnimationAttrs(entity: Entity, props: Record<string, any>) {
     const toAttrs: Record<string, any> = {};
     const fromAttrs: Record<string, any> = {};
-    const { attrs } = entity.getComponent(Renderable);
+    const { attributes } = entity.getComponent(SceneGraphNode);
 
     for (const k in props) {
-      if (attrs[k] !== props[k]) {
-        fromAttrs[k] = attrs[k];
+      if (attributes[k] !== props[k]) {
+        fromAttrs[k] = attributes[k];
         toAttrs[k] = props[k];
       }
     }
@@ -260,7 +262,7 @@ export class Timeline implements System {
     return animations;
   }
 
-  private update(entity: Entity, animation: Animation, elapsed: number) {
+  private async update(entity: Entity, animation: Animation, elapsed: number) {
     // support direction & count like CSS3 Animation
     // @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-direction
     // @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-iteration-count
@@ -297,7 +299,7 @@ export class Timeline implements System {
       // @ts-ignore
       ratio = d3Ease[easing](ratio);
       if (onFrame) {
-        this.changeEntityAttributes(entity, onFrame(ratio));
+        await this.changeEntityAttributes(entity, onFrame(ratio));
       } else {
         const updatedAttrs: Record<string, any> = {};
 
@@ -309,25 +311,22 @@ export class Timeline implements System {
             updatedAttrs[k] = updater.update(entity, fromAttrs[k], toAttrs[k], ratio);
           }
         }
-        this.changeEntityAttributes(entity, updatedAttrs);
+        await this.changeEntityAttributes(entity, updatedAttrs);
       }
       return false;
     } else {
       // 动画已执行完
       if (onFrame) {
-        this.changeEntityAttributes(entity, onFrame(1));
+        await this.changeEntityAttributes(entity, onFrame(1));
       } else {
-        this.changeEntityAttributes(entity, toAttrs);
+        await this.changeEntityAttributes(entity, toAttrs);
       }
       return true;
     }
   }
 
-  private changeEntityAttributes(entity: Entity, attributes: Record<string, any>) {
-    const renderable = entity.getComponent(Renderable);
-    const renderer = this.shapeRendererFactory(renderable.type);
-    for (const k in attributes) {
-      renderer?.onAttributeChanged(entity, k, attributes[k]);
-    }
+  private async changeEntityAttributes(entity: Entity, attributes: Record<string, any>) {
+    const group = this.groupPool.getByName(entity.getName());
+    await Promise.all(Object.keys(attributes).map((k) => group.setAttribute(k, attributes[k])));
   }
 }

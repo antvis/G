@@ -1,4 +1,5 @@
 import { Canvas } from '@antv/g-canvas';
+import { Circle } from '@antv/g-core';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 
@@ -10,7 +11,7 @@ const canvas = new Canvas({
 });
 
 // add a circle to canvas
-const circle = canvas.addShape('circle', {
+const circle = new Circle({
   attrs: {
     x: 300,
     y: 200,
@@ -20,6 +21,8 @@ const circle = canvas.addShape('circle', {
     lineWidth: 4,
   },
 });
+
+canvas.appendChild(circle);
 
 circle.on('mouseenter', () => {
   circle.attr('fill', '#2FC25B');

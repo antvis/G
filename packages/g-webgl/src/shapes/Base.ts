@@ -1,10 +1,11 @@
-import { ContextService, DefaultShapeRenderer, Renderable, SHAPE, ShapeCfg, Transform } from '@antv/g-core';
+import { DefaultShapeRenderer, Renderable, SceneGraphNode, SceneGraphService, Transform } from '@antv/g-core';
 import { Entity } from '@antv/g-ecs';
 import { mat4 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
 import { Geometry3D } from '../components/Geometry3D';
 import { IUniformBinding, Material3D } from '../components/Material3D';
 import { Renderable3D, INSTANCING_STATUS } from '../components/Renderable3D';
+import { PickingIdGenerator } from '../plugins/PickingIdGenerator';
 import { IAttribute, IModelInitializationOptions, IUniform, RenderingEngine } from '../services/renderer';
 import { RenderingContext } from '../services/WebGLContextService';
 
@@ -13,9 +14,10 @@ const ATTRIBUTE = {
   ModelMatrix1: 'a_ModelMatrix1',
   ModelMatrix2: 'a_ModelMatrix2',
   ModelMatrix3: 'a_ModelMatrix3',
+  PickingColor: 'a_PickingColor',
 };
 
-const UNIFORM = {
+export const UNIFORM = {
   ProjectionMatrix: 'u_ProjectionMatrix',
   ModelViewMatrix: 'u_ModelViewMatrix',
   ModelMatrix: 'u_ModelMatrix',
@@ -24,6 +26,7 @@ const UNIFORM = {
   Viewport: 'u_Viewport',
   DPR: 'u_DevicePixelRatio',
   Opacity: 'u_Opacity',
+  PickingStage: 'u_PickingStage',
 };
 
 const STYLE = {
@@ -31,55 +34,68 @@ const STYLE = {
 };
 
 @injectable()
-export abstract class BaseRenderer extends DefaultShapeRenderer {
-  @inject(ContextService)
-  protected contextService: ContextService<RenderingContext>;
+export abstract class BaseRenderer extends DefaultShapeRenderer<RenderingContext> {
+  @inject(SceneGraphService)
+  private sceneGraph: SceneGraphService;
 
   @inject(RenderingEngine)
-  private readonly engine: RenderingEngine;
+  private engine: RenderingEngine;
 
-  protected buildModel(entity: Entity): Promise<void> | void {
+  @inject(PickingIdGenerator)
+  private pickingIdGenerator: PickingIdGenerator;
+
+  abstract prepareModel(context: RenderingContext, entity: Entity): Promise<void>;
+
+  async onAttributeChanged(entity: Entity, name: string, value: any) {
+    await super.onAttributeChanged(entity, name, value);
     const renderable = entity.getComponent(Renderable);
-    const material = entity.getComponent(Material3D);
-    material.setUniform(UNIFORM.Opacity, renderable.attrs?.opacity || 1);
-  }
-
-  onAttributeChanged(entity: Entity, name: string, value: any) {
-    super.onAttributeChanged(entity, name, value);
 
     if (name === STYLE.Opacity) {
       const material = entity.getComponent(Material3D);
       material.setUniform(UNIFORM.Opacity, value);
     }
+
+    // set dirty rectangle flag
+    renderable.dirty = true;
   }
 
-  init(entity: Entity, type: SHAPE, cfg: ShapeCfg, instanceEntity?: Entity) {
-    super.init(entity, type, cfg);
+  async init(context: RenderingContext, entity: Entity) {
+    await this.prepareModel(context, entity);
 
-    entity.addComponent(Renderable3D);
+    const renderable3d = entity.getComponent(Renderable3D);
+    const sceneGraphNode = entity.getComponent(SceneGraphNode);
 
-    const subRenderable = entity.getComponent(Renderable3D);
+    if (!renderable3d.modelPrepared) {
+      renderable3d.engine = context.engine;
 
-    // TODO: check whether current engine supports instanced array?
-    if (instanceEntity) {
-      const source = instanceEntity.getComponent(Renderable3D);
-      const geometry = instanceEntity.getComponent(Geometry3D);
+      this.prepareModel(context, entity);
 
-      subRenderable.source = source;
-      subRenderable.sourceEntity = instanceEntity;
-      source.instances.push(subRenderable);
-      source.instanceEntities.push(entity);
-      source.instanceDirty = true;
-      geometry.reset();
-    } else {
-      // add geometry & material required by Renderable3D
-      entity.addComponent(Geometry3D);
-      entity.addComponent(Material3D);
-      this.buildModel(entity);
+      const material = entity.getComponent(Material3D);
+      material.setUniform(UNIFORM.Opacity, sceneGraphNode.attributes.opacity || 1);
+
+      const geometry = entity.getComponent(Geometry3D);
+      geometry.setAttribute(
+        ATTRIBUTE.PickingColor,
+        Float32Array.from(this.pickingIdGenerator.encodePickingColor(renderable3d.pickingId)),
+        {
+          arrayStride: 4 * 3,
+          stepMode: 'instance',
+          attributes: [
+            {
+              shaderLocation: 0,
+              offset: 0,
+              format: 'float3',
+            },
+          ],
+        }
+      );
+
+      renderable3d.modelPrepared = true;
     }
   }
 
-  async render(entity: Entity) {
+  render(context: RenderingContext, entity: Entity) {
+    const renderable = entity.getComponent(Renderable);
     const renderable3d = entity.getComponent(Renderable3D);
     const rootRenderable = renderable3d.source;
     const rootEntity = renderable3d.sourceEntity;
@@ -89,9 +105,9 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
         // destroy the dirty model
         rootRenderable.model?.destroy();
         rootRenderable.model = null;
+        rootRenderable.modelPrepared = false;
 
-        // rebuild model
-        this.buildModel(rootEntity);
+        console.log('instance dirty');
 
         // create model matrix decomposed into 4 vec4 instead of mat4
         const geometry = rootEntity.getComponent(Geometry3D);
@@ -111,18 +127,21 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
 
       // skip if current batch is rendering, make sure every batch get rendererd once per frame
       if (rootRenderable.status === INSTANCING_STATUS.Rendering) {
+        renderable.dirty = false;
         return;
       }
 
       // render root renderable instead
       rootRenderable.status = INSTANCING_STATUS.Rendering;
-      await this.renderEntity(rootEntity);
+      const dirty = this.renderEntity(context, rootEntity);
+      renderable.dirty = dirty;
+      rootEntity.getComponent(Renderable).dirty = dirty;
     } else {
-      await this.renderEntity(entity);
+      renderable.dirty = this.renderEntity(context, entity);
     }
   }
 
-  private async createModel({ material, geometry }: { material: Material3D; geometry: Geometry3D }) {
+  private createModel({ material, geometry }: { material: Material3D; geometry: Geometry3D }) {
     const { createModel, createAttribute } = this.engine;
 
     const modelInitializationOptions: IModelInitializationOptions = {
@@ -169,7 +188,8 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
     return createModel(modelInitializationOptions);
   }
 
-  private async renderEntity(entity: Entity) {
+  private renderEntity(context: RenderingContext, entity: Entity): boolean {
+    const sceneGraphNode = entity.getComponent(SceneGraphNode);
     const renderable3d = entity.getComponent(Renderable3D);
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
@@ -178,19 +198,18 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
 
     // waiting for dirty geometry updated
     if (geometry.dirty || material.dirty) {
-      return;
+      // need rerendering later
+      return true;
     }
 
     if (!renderable3d.model) {
-      renderable3d.model = await this.createModel({
+      renderable3d.model = this.createModel({
         material,
         geometry,
       });
     }
 
-    // const scene = view.getScene();
-    const view = this.contextService.getContext()?.view;
-    const camera = this.contextService.getContext()?.camera;
+    const { view, camera } = context;
 
     if (view && camera) {
       // get VP matrix from camera
@@ -207,13 +226,14 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
         height,
       });
 
-      const modelViewMatrix = mat4.multiply(mat4.create(), viewMatrix, transform.worldTransform);
+      const modelMatrix = this.sceneGraph.getWorldTransform(entity, transform);
+      const modelViewMatrix = mat4.multiply(mat4.create(), viewMatrix, modelMatrix);
 
       // set MVP matrix, other builtin uniforms @see https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
       material.setUniform({
         [UNIFORM.ProjectionMatrix]: camera.getPerspective(),
         [UNIFORM.ModelViewMatrix]: modelViewMatrix,
-        [UNIFORM.ModelMatrix]: transform.worldTransform,
+        [UNIFORM.ModelMatrix]: modelMatrix,
         [UNIFORM.ViewMatrix]: viewMatrix,
         [UNIFORM.CameraPosition]: camera.getPosition(),
         [UNIFORM.Viewport]: [width, height],
@@ -258,6 +278,9 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
         });
       }
     }
+
+    // finish rendering
+    return false;
   }
 
   /**

@@ -26,7 +26,15 @@
         "zh": "多个圆拾取(Canvas)",
         "en": "Multiple circle picking(Canvas)"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dc0NTrzOwHYAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "webgl-circles.js",
+      "title": {
+        "zh": "多个圆拾取(WebGL)",
+        "en": "Multiple circle picking(WebGL)"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dc0NTrzOwHYAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

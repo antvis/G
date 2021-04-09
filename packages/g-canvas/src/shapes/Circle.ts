@@ -1,4 +1,4 @@
-import { Renderable } from '@antv/g-core';
+import { SceneGraphNode } from '@antv/g-core';
 import { Entity } from '@antv/g-ecs';
 import { injectable } from 'inversify';
 import { distance } from '../utils/math';
@@ -19,8 +19,8 @@ export class CircleRenderer extends BaseRenderer {
     }
   ): boolean {
     const {
-      attrs: { x: cx = 0, y: cy = 0, r = 0, fill, stroke },
-    } = entity.getComponent(Renderable);
+      attributes: { x: cx = 0, y: cy = 0, r = 0, fill, stroke },
+    } = entity.getComponent(SceneGraphNode);
     const halfLineWidth = lineWidth / 2;
     const absDistance = distance(cx, cy, x, y);
     // 直接用距离，如果同时存在边和填充时，可以减少两次计算
@@ -36,13 +36,9 @@ export class CircleRenderer extends BaseRenderer {
     return false;
   }
 
-  generatePath(entity: Entity) {
-    const context = this.contextService.getContext();
-
-    if (context) {
-      const renderable = entity.getComponent(Renderable);
-      const { r = 100 } = renderable.attrs;
-      context.arc(0, 0, r, 0, Math.PI * 2, false);
-    }
+  generatePath(context: CanvasRenderingContext2D, entity: Entity) {
+    const sceneGraphNode = entity.getComponent(SceneGraphNode);
+    const { r = 100 } = sceneGraphNode.attributes;
+    context.arc(0, 0, r, 0, Math.PI * 2, false);
   }
 }

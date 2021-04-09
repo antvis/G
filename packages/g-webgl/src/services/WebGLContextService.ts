@@ -1,6 +1,6 @@
-import { DefaultContextService } from '@antv/g-core';
+import { CanvasConfig, ContextService } from '@antv/g-core';
 import { inject, injectable } from 'inversify';
-import isString from 'lodash-es/isString';
+import { isString } from '@antv/util';
 import { Camera } from '../Camera';
 import { IView, RenderingEngine } from './renderer';
 import { ShaderModuleService } from './shader-module';
@@ -14,8 +14,9 @@ export interface RenderingContext {
 }
 
 @injectable()
-export class WebGLContextService extends DefaultContextService<RenderingContext> {
+export class WebGLContextService implements ContextService<RenderingContext> {
   private $container: HTMLElement | null;
+  private context: RenderingContext | null;
 
   @inject(ShaderModuleService)
   private shaderModule: ShaderModuleService;
@@ -29,7 +30,10 @@ export class WebGLContextService extends DefaultContextService<RenderingContext>
   @inject(View)
   private view: View;
 
-  public async init() {
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
+
+  async init() {
     this.shaderModule.registerBuiltinModules();
 
     const { container, width, height } = this.canvasConfig;
@@ -41,14 +45,28 @@ export class WebGLContextService extends DefaultContextService<RenderingContext>
       const $canvas = document.createElement('canvas');
       this.$container.appendChild($canvas);
 
+      const dpr = this.getDPR();
+
       await this.engine.init({
         canvas: $canvas,
         antialias: false,
+        dpr,
       });
 
-      this.camera.setPosition(0, 0, 2).setOrthographic(-0.5, 0.5, -0.5, 0.5, 0.5, 10);
+      this.camera.setPosition(0, 0, 1).setOrthographic(
+        (width / -2) * dpr,
+        (width / 2) * dpr,
+        (height / 2) * dpr,
+        (height / -2) * dpr,
+        // 0,
+        // width * dpr,
+        // height * dpr,
+        // 0,
+        0.5,
+        2
+      );
+      this.camera.setViewOffset(2, 2, 0, 0, 2, 2);
 
-      const dpr = this.getDPR();
       this.view.setViewport({
         x: 0,
         y: 0,
@@ -56,21 +74,23 @@ export class WebGLContextService extends DefaultContextService<RenderingContext>
         height: height * dpr,
       });
 
-      return {
+      this.context = {
         engine: this.engine,
         camera: this.camera,
         view: this.view,
       };
     }
-
-    return null;
   }
 
-  public destroy() {
+  getContext() {
+    return this.context;
+  }
+
+  destroy() {
     this.shaderModule.destroy();
   }
 
-  public resize(width: number, height: number) {
+  resize(width: number, height: number) {
     const $canvas = this.engine.getCanvas();
     if ($canvas) {
       const dpr = this.getDPR();
@@ -84,7 +104,7 @@ export class WebGLContextService extends DefaultContextService<RenderingContext>
     }
   }
 
-  private getDPR() {
+  getDPR() {
     let dpr = window.devicePixelRatio || 1;
     dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
     return dpr;

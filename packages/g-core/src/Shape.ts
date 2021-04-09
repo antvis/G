@@ -1,67 +1,49 @@
-import { Entity, System, World } from '@antv/g-ecs';
-import { Container, inject, injectable, named } from 'inversify';
-import isObject from 'lodash-es/isObject';
-import { Geometry, Material, Renderable, Cullable } from './components';
-import { ShapeRenderer, ShapeRendererFactory } from './systems';
+import { Entity, System } from '@antv/g-ecs';
+import { SyncHook } from 'tapable';
+import { SceneGraphNode } from './components';
 import { IShape, OnFrame, AnimateCfg, ElementAttrs, ShapeCfg } from './types';
 import { Timeline } from './systems/Timeline';
 import { Animator, STATUS } from './components/Animator';
 import { Group } from './Group';
-import { AABB } from './systems/AABB';
+import { ShapePluginContribution, lazyInjectNamed } from './inversify.config';
+import { ContributionProvider } from './contribution-provider';
 
-@injectable()
+export interface ShapePlugin {
+  apply(shape: Shape): void;
+}
+
+export function isShape(shape: any): shape is Shape {
+  return !!(shape && shape.isGroup);
+}
+
 export class Shape extends Group implements IShape {
-  @inject(ShapeRendererFactory)
-  private shapeRendererFactory: (type: string) => ShapeRenderer | null;
-
-  @inject(System)
-  @named(Timeline.tag)
+  @lazyInjectNamed(System, Timeline.tag)
   private timeline: Timeline;
 
-  @inject(System)
-  @named(AABB.tag)
-  private aabbSystem: AABB;
+  @lazyInjectNamed(ContributionProvider, ShapePluginContribution)
+  private shapePluginContribution: ContributionProvider<ShapePlugin>;
 
-  private type: string;
+  hooks = {
+    init: new SyncHook<[Entity]>(['entity']),
+    hit: new SyncHook<[Entity]>(['entity']),
+    destroy: new SyncHook<[Entity]>(['entity']),
+  };
 
-  private instanceEntity: Entity;
+  constructor(config: ShapeCfg) {
+    super({
+      zIndex: 0,
+      visible: true,
+      capture: true,
+      ...config,
+    });
 
-  init(container: Container, world: World, entity: Entity, type: string, config: ShapeCfg) {
-    super.init(container, world, entity, '', config);
+    const sceneGraphNode = this.entity.getComponent(SceneGraphNode);
+    sceneGraphNode.tagName = this.config.type;
 
-    entity.addComponent(Cullable);
-    entity.addComponent(Material);
-    entity.addComponent(Geometry);
-    entity.addComponent(Renderable);
-
-    this.type = type;
-
-    const renderer = this.shapeRendererFactory(type);
-    if (renderer) {
-      renderer.init(this.entity, type, config, this.instanceEntity);
-    }
-  }
-
-  attr(): any;
-  attr(name: string): any;
-  attr(name: string, value: any): void;
-  attr(name: Record<string, any>): any;
-  attr(...args: any) {
-    const [name, value] = args;
-
-    const renderable = this.entity.getComponent(Renderable);
-    if (!name) return renderable.attrs;
-    if (isObject(name)) {
-      for (const k in name) {
-        this.setAttribute(k, (name as Record<string, any>)[k]);
-      }
-      return this;
-    }
-    if (args.length === 2) {
-      this.setAttribute(name, value);
-      return this;
-    }
-    return renderable.attrs[name];
+    this.shapePluginContribution.getContributions().forEach((plugin) => {
+      plugin.apply(this);
+    });
+    this.hooks.init.call(this.entity);
   }
 
   animate(toAttrs: ElementAttrs, duration: number, easing?: string, callback?: Function, delay?: number): void;
@@ -117,13 +99,6 @@ export class Shape extends Group implements IShape {
   }
 
   /**
-   * TODO: return hit point besides the result
-   */
-  isHit(position: { x: number; y: number }) {
-    return this.shapeRendererFactory(this.type)?.isHit(this.entity, position);
-  }
-
-  /**
    * create a instance of current shape
    *
    * @see https://doc.babylonjs.com/divingDeeper/mesh/copies/instances
@@ -132,22 +107,19 @@ export class Shape extends Group implements IShape {
     // make itself invisible first
     this.hide();
 
-    const entity = this.world.createEntity(config?.name || '');
-    const shape = this.container.get(Shape);
-
-    shape.instanceEntity = this.entity;
-    shape.init(this.container, this.world, entity, this.type, {
+    const shape = new Shape({
       zIndex: 0,
       visible: true,
       capture: true,
+      type: this.entity.getComponent(SceneGraphNode).tagName,
       ...this.config,
       attrs: {
         ...this.config.attrs, // copy attributes from root shape
         ...config?.attrs,
+        instanceEntity: this.entity,
       },
     });
 
-    this.groupPool.add(entity.getName(), shape);
     return shape;
   }
 
@@ -155,11 +127,8 @@ export class Shape extends Group implements IShape {
     // TODO:
   }
 
-  private setAttribute(name: string, value: any) {
-    const renderable = this.entity.getComponent(Renderable);
-    if (value !== renderable.attrs[name]) {
-      renderable.attrs[name] = value;
-      this.shapeRendererFactory(renderable.type)?.onAttributeChanged(this.entity, name, value);
-    }
+  destroy() {
+    this.hooks.destroy.call(this.entity);
+    super.destroy();
   }
 }

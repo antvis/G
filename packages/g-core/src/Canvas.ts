@@ -1,43 +1,48 @@
 import { World } from '@antv/g-ecs';
-import { Container, interfaces } from 'inversify';
-import { createRootContainer } from './inversify.config';
-import { Transform as CTransform } from './components/Transform';
-import { Hierarchy as CHierarchy } from './components/Hierarchy';
-import { Geometry as CGeometry } from './components/Geometry';
-import { Material as CMaterial } from './components/Material';
-import { Renderable as CRenderable } from './components/Renderable';
-import { Cullable as CCullable } from './components/Cullable';
-import { Sortable as CSortable } from './components/Sortable';
-import { Visible as CVisible } from './components/Visible';
-import { Animator as CAnimator } from './components/Animator';
-import { Context as SContext } from './systems/Context';
-import { SceneGraph as SSceneGraph } from './systems/SceneGraph';
-import { Timeline as STimeline } from './systems/Timeline';
-import { Renderer as SRenderer } from './systems/Renderer';
-import { Culling as SCulling } from './systems/Culling';
-import { AABB as SAABB } from './systems/AABB';
-import { CanvasConfig, GroupCfg, IShape, ShapeCfg } from './types';
-import { Shape } from './Shape';
+import { Container, ContainerModule } from 'inversify';
+import { CanvasConfig, GroupCfg, IShape, RENDERER, ShapeCfg } from './types';
+import { isShape, Shape } from './Shape';
 import { cleanExistedCanvas } from './utils/canvas';
-import { Group } from './Group';
-import { ContextService } from './services';
+import { Group, isGroup } from './Group';
+import { ContextService, EventService, SceneGraphService } from './services';
+import { container, lazyInject } from './inversify.config';
+import { bindContributionProvider } from './contribution-provider';
+import { RenderingPluginContribution, RenderingService } from './services/RenderingService';
+import { DirtyCheckPlugin } from './plugins/DirtyCheckPlugin';
+import { CullingPlugin } from './plugins/CullingPlugin';
+import { SortPlugin } from './plugins/SortPlugin';
+import { UpdateAttributePlugin } from './plugins/UpdateAttributePlugin';
+import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
+import { Renderable } from './components';
 import { GroupPool } from './GroupPool';
 
-export class Canvas {
-  protected container: Container;
+export const CanvasContainerModule = Symbol('CanvasContainerModule');
+
+export abstract class Canvas {
+  private initialized = false;
+
+  @lazyInject(World)
   protected world: World;
+  protected container = new Container();
+
   private frameId: number;
   private frameCallback: Function;
+  private root: Group = new Group();
 
-  constructor(private config: CanvasConfig) {
+  constructor(config: CanvasConfig) {
     cleanExistedCanvas(config.container, this);
-    this.container = createRootContainer();
-    this.init();
-    this.run();
-  }
 
-  protected loadModule() {
-    throw new Error('method not implemented');
+    // use hierarchy container
+    this.container.parent = container;
+    this.container.bind(CanvasConfig).toConstantValue({
+      dirtyRectangle: {
+        enable: true,
+        debug: false,
+      },
+      ...config,
+    });
+
+    this.init(config);
   }
 
   /**
@@ -50,132 +55,219 @@ export class Canvas {
    *     enable: false,
    *   },
    * });
+   *
+   * // switch renderer at runtime
+   * canvas.setConfig({
+   *   renderer: RENDERER.Canvas,
+   * });
+   *
+   * // change size
+   * canvas.setConfig({
+   *   width: 200,
+   *   height: 200,
+   * });
    */
-  public setConfig(config: Partial<CanvasConfig>) {
-    const canvasConfig = this.container.get(CanvasConfig);
+  setConfig(config: Partial<CanvasConfig>) {
+    const canvasConfig = this.container.get<Partial<CanvasConfig>>(CanvasConfig);
+    const { renderer, width, height, container } = config;
+
+    // switch renderer at runtime
+    if (renderer && renderer !== canvasConfig.renderer) {
+      this.switchRenderer(config);
+    }
+
+    // change canvas' size at runtime
+    if ((width && width !== canvasConfig.width) || (height && height !== canvasConfig.height)) {
+      this.changeSize(width || canvasConfig.width || 0, height || canvasConfig.height || 0);
+    }
+
+    // TODO: change container, need to destroy first
+
     Object.assign(canvasConfig, config);
   }
 
-  public onFrame(callback: Function) {
+  onFrame(callback: Function) {
     this.frameCallback = callback;
   }
 
-  public destroy() {
-    this.world.destroy();
+  destroy(destroyGroup = true) {
     if (this.frameId) {
       window.cancelAnimationFrame(this.frameId);
     }
+
+    const contextService = this.container.get<ContextService<unknown>>(ContextService);
+    contextService.destroy();
+
+    const renderingService = this.container.get<RenderingService>(RenderingService);
+    renderingService.destroy();
+
+    const eventService = this.container.get<EventService>(EventService);
+    eventService.destroy();
+
+    if (destroyGroup) {
+      // destroy all shapes
+      const sceneGraph = this.container.get(SceneGraphService);
+      const groupPool = this.container.get(GroupPool);
+      sceneGraph.visit(this.root.getEntity(), (entity) => {
+        const group = groupPool.getByName(entity.getName());
+        if (group) {
+          group.destroy();
+        }
+      });
+    }
   }
 
-  public changeSize(width: number, height: number) {
-    const contextService = this.container.get<ContextService<unknown>>(ContextService);
+  changeSize(width: number, height: number) {
+    const contextService = container.get<ContextService<unknown>>(ContextService);
     if (contextService) {
       contextService.resize(width, height);
     }
   }
 
-  public addShape(cfg: ShapeCfg): IShape;
-  public addShape(type: string, cfg: ShapeCfg): IShape;
-  public addShape(type: string | ShapeCfg, cfg?: ShapeCfg): IShape {
-    let config: ShapeCfg;
-    let shapeType: string;
-    if (typeof type !== 'string') {
-      config = type;
-      // @ts-ignore
-      shapeType = cfg.type || '';
+  appendChild(group: Group) {
+    this.root.appendChild(group);
+  }
+
+  addShape(shape: Shape): IShape;
+  addShape(cfg: ShapeCfg): IShape;
+  addShape(type: string, cfg: ShapeCfg): IShape;
+  addShape(type: string | ShapeCfg | Shape, cfg?: ShapeCfg): IShape {
+    let shape: Shape;
+    if (isShape(type)) {
+      shape = type;
     } else {
-      config = cfg!;
-      shapeType = type;
+      let config: ShapeCfg;
+      let shapeType: string;
+      if (typeof type !== 'string') {
+        config = type;
+        // @ts-ignore
+        shapeType = cfg.type || '';
+      } else {
+        config = cfg!;
+        shapeType = type;
+      }
+
+      // TODO: 增加更新能力，通过 name 判断如果已经存在则更新，否则新建
+
+      shape = new Shape({
+        type: shapeType,
+        ...config,
+      });
     }
 
-    // TODO: 增加更新能力，通过 name 判断如果已经存在则更新，否则新建
-    // if () {
-
-    // }
-
-    // create entity with shape's name
-    const entity = this.world.createEntity(config.name || '');
-    const shape = this.container.get(Shape);
-    shape.init(this.container, this.world, entity, shapeType, {
-      zIndex: 0,
-      visible: true,
-      capture: true,
-      ...config,
-    });
-
-    this.container.get(GroupPool).add(entity.getName(), shape);
+    this.root.appendChild(shape);
     return shape;
   }
 
-  public addGroup(config: GroupCfg = {}) {
-    const entity = this.world.createEntity(config.name || '');
-    const group = this.container.get(Group);
-    group.init(this.container, this.world, entity, '', {
-      zIndex: 0,
-      visible: true,
-      capture: true,
-      ...config,
-    });
+  addGroup(group: Group): Group;
+  addGroup(config: GroupCfg): Group;
+  addGroup(config: GroupCfg | Group): Group {
+    let group: Group;
+    if (!isGroup(config)) {
+      group = new Group({
+        attrs: {},
+        ...config,
+      });
+    } else {
+      group = config;
+    }
 
-    this.container.get(GroupPool).add(entity.getName(), group);
+    this.root.appendChild(group);
     return group;
   }
 
-  private init() {
-    this.container.bind(CanvasConfig).toConstantValue({
-      dirtyRectangle: {
-        enable: true,
-        debug: false,
-      },
-      ...this.config,
-    });
-    this.container.bind(GroupPool).toSelf().inSingletonScope();
-    this.container.bind(Group).toSelf();
-    this.container.bind(Shape).toSelf();
+  async render() {
+    if (!this.initialized) {
+      return;
+    }
 
-    this.world = this.container.get(World);
-
-    /**
-     * register components
-     */
-    this.world
-      .registerComponent(CTransform)
-      .registerComponent(CHierarchy)
-      .registerComponent(CSortable)
-      .registerComponent(CVisible)
-      .registerComponent(CCullable)
-      .registerComponent(CGeometry)
-      .registerComponent(CMaterial)
-      .registerComponent(CAnimator)
-      .registerComponent(CRenderable);
-
-    this.loadModule();
-
-    /**
-     * register systems
-     */
-    this.world
-      .registerSystem(STimeline)
-      .registerSystem(SSceneGraph)
-      .registerSystem(SAABB)
-      .registerSystem(SContext)
-      .registerSystem(SCulling)
-      .registerSystem(SRenderer);
+    if (this.container.isBound(RenderingService)) {
+      const renderingService = this.container.get<RenderingService>(RenderingService);
+      await renderingService.render(this.root);
+    }
   }
 
   private run() {
-    let lastTime = performance.now();
     const tick = async () => {
       if (this.frameCallback) {
         this.frameCallback();
       }
-      const time = performance.now();
-      const delta = time - lastTime;
-      // run all the systems
-      await this.world.execute(delta, time);
-      lastTime = time;
+      await this.render();
       this.frameId = requestAnimationFrame(tick);
     };
     tick();
+  }
+
+  private async init(config: Partial<CanvasConfig>) {
+    this.container.snapshot();
+
+    this.bindRenderingPlugins();
+    this.bindCanvasContainerModule(config.renderer || RENDERER.Canvas);
+
+    const canvasConfig = this.container.get<CanvasConfig>(CanvasConfig);
+
+    // init context
+    const contextService = this.container.get<ContextService<unknown>>(ContextService);
+    await contextService.init();
+    contextService.resize(canvasConfig.width, canvasConfig.height);
+
+    // init event
+    const eventService = this.container.get<EventService>(EventService);
+    await eventService.init(this.root);
+
+    // init renderer
+    const renderingService = this.container.get<RenderingService>(RenderingService);
+    renderingService.init();
+
+    this.initialized = true;
+
+    if (config.autoRendering !== false) {
+      this.run();
+    }
+  }
+
+  private bindRenderingPlugins() {
+    this.container.bind(RenderingService).toSelf().inSingletonScope();
+    bindContributionProvider(this.container, RenderingPluginContribution);
+
+    this.container.bind(PrepareRendererPlugin).toSelf().inSingletonScope();
+    this.container.bind(RenderingPluginContribution).toService(PrepareRendererPlugin);
+
+    this.container.bind(DirtyCheckPlugin).toSelf().inSingletonScope();
+    this.container.bind(RenderingPluginContribution).toService(DirtyCheckPlugin);
+
+    this.container.bind(CullingPlugin).toSelf().inSingletonScope();
+    this.container.bind(RenderingPluginContribution).toService(CullingPlugin);
+
+    this.container.bind(SortPlugin).toSelf().inSingletonScope();
+    this.container.bind(RenderingPluginContribution).toService(SortPlugin);
+
+    this.container.bind(UpdateAttributePlugin).toSelf().inSingletonScope();
+    this.container.bind(RenderingPluginContribution).toService(UpdateAttributePlugin);
+  }
+
+  private bindCanvasContainerModule(renderer: RENDERER) {
+    // bind other container modules provided by g-canvas/g-svg/g-webgl
+    const canvasContainerModule = this.container.getNamed<ContainerModule>(CanvasContainerModule, renderer);
+    this.container.load(canvasContainerModule);
+    return () => {
+      this.container.unload(canvasContainerModule);
+    };
+  }
+
+  private async switchRenderer(config: Partial<CanvasConfig>) {
+    this.destroy(false);
+
+    this.container.restore();
+    await this.init(config);
+
+    const sceneGraph = this.container.get(SceneGraphService);
+    sceneGraph.visit(this.root.getEntity(), (entity) => {
+      const renderable = entity.getComponent(Renderable);
+      if (renderable) {
+        renderable.inited = false;
+        renderable.dirty = true;
+      }
+    });
   }
 }

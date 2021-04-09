@@ -1,4 +1,5 @@
 import { Canvas } from '@antv/g-webgl';
+import { Ellipse } from '@antv/g-core';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 
@@ -8,7 +9,7 @@ const canvas = new Canvas({
   height: 500,
 });
 
-const ellipse = canvas.addShape('ellipse', {
+const ellipse = new Ellipse({
   attrs: {
     x: 300,
     y: 200,
@@ -19,6 +20,8 @@ const ellipse = canvas.addShape('ellipse', {
     lineWidth: 4,
   },
 });
+
+canvas.appendChild(ellipse);
 
 // stats
 const stats = new Stats();
@@ -44,10 +47,7 @@ const ellipseConfig = {
   translateY: 0,
   scale: 1,
   rotate: () => {
-    ellipse.rotateAtStart((Math.PI / 180) * 10);
-  },
-  rotateAtPoint: () => {
-    ellipse.rotateAtPoint(0, 0, (Math.PI / 180) * 10);
+    ellipse.rotateLocal(10);
   },
 };
 ellipseFolder.add(ellipseConfig, 'translateX', -200, 200).onChange((tx) => {
@@ -68,7 +68,6 @@ ellipseFolder.add(ellipseConfig, 'translateY', -200, 200).onChange((ty) => {
   ellipse.setPosition(x, 200 + ty);
 });
 ellipseFolder.add(ellipseConfig, 'rotate').name('rotate');
-ellipseFolder.add(ellipseConfig, 'rotateAtPoint').name('rotate at');
 ellipseFolder.add(ellipseConfig, 'scale', 0.2, 5).onChange((scaling) => {
   ellipse.setLocalScale(scaling);
 });

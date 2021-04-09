@@ -1,4 +1,5 @@
 import { Canvas } from '@antv/g-canvas';
+import { Image } from '@antv/g-core';
 import Stats from 'stats.js';
 
 const canvas = new Canvas({
@@ -7,7 +8,7 @@ const canvas = new Canvas({
   height: 500,
 });
 
-const image = canvas.addShape('image', {
+const image = new Image({
   attrs: {
     img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
   },
@@ -24,6 +25,8 @@ for (let i = 0; i < 1000; i++) {
       height: size,
     },
   });
+
+  canvas.appendChild(instance);
 }
 
 // stats

@@ -533,6 +533,8 @@ export interface IView {
 export interface IRendererConfig {
   canvas?: HTMLCanvasElement;
 
+  dpr?: number;
+
   /**
    * Whether to use WGSL instead of GLSL 450
    */
@@ -610,7 +612,7 @@ export interface RenderingEngine {
   useWGSL: boolean;
   init(cfg: IRendererConfig): Promise<void>;
   clear(options: IClearOptions): void;
-  createModel(options: IModelInitializationOptions): Promise<IModel>;
+  createModel(options: IModelInitializationOptions): IModel;
   createAttribute(options: IAttributeInitializationOptions): IAttribute;
   createBuffer(options: IBufferInitializationOptions): IBuffer;
   createElements(options: IElementsInitializationOptions): IElements;

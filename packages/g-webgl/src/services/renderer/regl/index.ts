@@ -58,7 +58,7 @@ export class WebGLEngine implements RenderingEngine {
           premultipliedAlpha: true,
           // preserveDrawingBuffer: false,
         },
-        pixelRatio: 1,
+        pixelRatio: cfg.dpr || 1,
         // TODO: use extensions
         extensions: [
           'OES_element_index_uint',
@@ -86,20 +86,20 @@ export class WebGLEngine implements RenderingEngine {
     return this.gl.limits.readFloat;
   }
 
-  public createModel = async (options: IModelInitializationOptions): Promise<IModel> => {
-    if (options.uniforms) {
-      await Promise.all(
-        Object.keys(options.uniforms).map(async (name) => {
-          // @ts-ignore
-          if (options.uniforms![name] && options.uniforms![name].load !== undefined) {
-            // @ts-ignore
-            const texture = await options.uniforms![name].load();
-            // @ts-ignore
-            options.uniforms[name] = texture;
-          }
-        })
-      );
-    }
+  public createModel = (options: IModelInitializationOptions): IModel => {
+    // if (options.uniforms) {
+    //   await Promise.all(
+    //     Object.keys(options.uniforms).map(async (name) => {
+    //       // @ts-ignore
+    //       if (options.uniforms![name] && options.uniforms![name].load !== undefined) {
+    //         // @ts-ignore
+    //         const texture = await options.uniforms![name].load();
+    //         // @ts-ignore
+    //         options.uniforms[name] = texture;
+    //       }
+    //     })
+    //   );
+    // }
     return new ReglModel(this.gl, options);
   };
 

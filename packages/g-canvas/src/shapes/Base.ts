@@ -2,10 +2,10 @@ import {
   ContextService,
   ContributionProvider,
   DefaultShapeRenderer,
-  Transform,
   fromRotationTranslationScale,
   getEuler,
   Renderable,
+  SceneGraphNode,
 } from '@antv/g-core';
 import { Entity } from '@antv/g-ecs';
 import { inject, injectable, named } from 'inversify';
@@ -17,23 +17,14 @@ export interface StyleRendererContribution {
 }
 
 @injectable()
-export abstract class BaseRenderer extends DefaultShapeRenderer {
-  @inject(ContextService)
-  protected contextService: ContextService<CanvasRenderingContext2D>;
-
+export abstract class BaseRenderer extends DefaultShapeRenderer<CanvasRenderingContext2D> {
   @inject(ContributionProvider)
   @named(StyleRendererContribution)
   protected handlers: ContributionProvider<StyleRendererContribution>;
 
-  abstract generatePath(entity: Entity): Promise<void> | void;
-
-  protected draw(entity: Entity): Promise<void> | void {
-    const context = this.contextService.getContext()!;
-    this.handlers.getContributions().forEach((handler) => {
-      handler.apply(entity, context);
-    });
-  }
-
+  abstract prepare?(context: CanvasRenderingContext2D, entity: Entity): Promise<void>;
+  abstract generatePath?(context: CanvasRenderingContext2D, entity: Entity): void;
+  abstract finishRenderingPath?(context: CanvasRenderingContext2D, entity: Entity): void;
   abstract isInStrokeOrPath(
     entity: Entity,
     params: {
@@ -43,8 +34,12 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
     }
   ): boolean;
 
-  onAttributeChanged(entity: Entity, name: string, value: any) {
-    super.onAttributeChanged(entity, name, value);
+  async onAttributeChanged(entity: Entity, name: string, value: any) {
+    await super.onAttributeChanged(entity, name, value);
+
+    const renderable = entity.getComponent(Renderable);
+    // set dirty rectangle flag
+    renderable.dirty = true;
   }
 
   isHit(entity: Entity, { x, y }: { x: number; y: number }) {
@@ -56,34 +51,44 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
     });
   }
 
-  async render(entity: Entity) {
-    const context = this.contextService.getContext();
-
-    if (context) {
-      const originMatrix = context.getTransform();
-
-      context.beginPath();
-
-      // apply RTS transformation
-      this.applyTransform(entity, context);
-
-      // implemented by subclass
-      await this.generatePath(entity);
-
-      await this.draw(entity);
-
-      context.closePath();
-
-      context.setTransform(originMatrix);
+  async init(context: CanvasRenderingContext2D, entity: Entity) {
+    if (this.prepare) {
+      await this.prepare(context, entity);
     }
   }
 
-  private applyTransform(entity: Entity, context: CanvasRenderingContext2D) {
-    const transform = entity.getComponent(Transform);
-    const [ex, ey, ez] = getEuler(vec3.create(), transform.getRotation());
+  render(context: CanvasRenderingContext2D, entity: Entity) {
+    const originMatrix = context.getTransform();
 
-    const [x, y] = transform.getPosition();
-    const [scaleX, scaleY] = transform.getScale();
+    // apply RTS transformation
+    this.applyTransform(context, entity);
+
+    if (this.generatePath) {
+      context.beginPath();
+      this.generatePath(context, entity);
+      context.closePath();
+    }
+
+    this.handlers.getContributions().forEach((handler) => {
+      handler.apply(entity, context);
+    });
+
+    if (this.finishRenderingPath) {
+      this.finishRenderingPath(context, entity);
+    }
+
+    context.setTransform(originMatrix);
+
+    // finish rendering, clear dirty flag
+    const renderable = entity.getComponent(Renderable);
+    renderable.dirty = false;
+  }
+
+  private applyTransform(context: CanvasRenderingContext2D, entity: Entity) {
+    const [ex, ey, ez] = getEuler(vec3.create(), this.sceneGraphSystem.getRotation(entity));
+
+    const [x, y] = this.sceneGraphSystem.getPosition(entity);
+    const [scaleX, scaleY] = this.sceneGraphSystem.getScale(entity);
 
     // gimbal lock at 90 degrees
     const rts = fromRotationTranslationScale(ex || ez, x, y, scaleX, scaleY);
@@ -93,8 +98,8 @@ export abstract class BaseRenderer extends DefaultShapeRenderer {
   }
 
   private getHitLineWidth(entity: Entity) {
-    const renderable = entity.getComponent(Renderable);
-    const { stroke, lineWidth = 0, lineAppendWidth = 0 } = renderable.attrs;
+    const renderable = entity.getComponent(SceneGraphNode);
+    const { stroke, lineWidth = 0, lineAppendWidth = 0 } = renderable.attributes;
     if (!stroke) {
       return 0;
     }

@@ -3,6 +3,7 @@ attribute vec2 a_Size;
 
 varying vec2 v_UV;
 
+uniform vec2 u_Anchor;
 uniform mat4 u_ProjectionMatrix;
 uniform mat4 u_ViewMatrix;
 
@@ -12,7 +13,7 @@ uniform mat4 u_ViewMatrix;
 void main() {
   v_UV = a_Extrude;
 
-  vec2 offset = a_Extrude * a_Size;
+  vec2 offset = (a_Extrude - u_Anchor) * a_Size;
 
   #pragma include "instancing"
 

@@ -1,4 +1,4 @@
-const esModules = ['lodash-es'].join('|');
+const esModules = ['tapable', 'css-select'].join('|');
 
 module.exports = {
   preset: 'ts-jest',
@@ -27,7 +27,7 @@ module.exports = {
     // @see https://github.com/kulshekhar/ts-jest/issues/1130
     ['^.+\\.(ts|tsx|js)$']: 'babel-jest',
   },
-  transformIgnorePatterns: [`<rootDir>../../node_modules/(?!${esModules})`],
+  transformIgnorePatterns: [`node_modules/(?!${esModules})/`],
   // setupFilesAfterEnv: ['<rootDir>../../jest/setupTests.ts'],
-  snapshotSerializers: ['enzyme-to-json/serializer'],
+  // snapshotSerializers: ['enzyme-to-json/serializer'],
 };

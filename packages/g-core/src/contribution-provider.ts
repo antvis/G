@@ -53,7 +53,7 @@ export namespace Bindable {
   }
 }
 
-export function bindContributionProvider(bindable: Bindable, id: symbol): void {
+export function bindContributionProvider(bindable: Bindable, id: symbol | string): void {
   const bindingToSyntax = Bindable.isContainer(bindable)
     ? bindable.bind(ContributionProvider)
     : bindable(ContributionProvider);

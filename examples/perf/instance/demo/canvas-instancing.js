@@ -1,3 +1,4 @@
+import { Circle } from '@antv/g-core';
 import { Canvas } from '@antv/g-canvas';
 import Stats from 'stats.js';
 
@@ -8,7 +9,7 @@ const canvas = new Canvas({
   height: 500,
 });
 
-const circle = canvas.addShape('circle', {
+const circle = new Circle({
   attrs: {
     fill: '#1890FF',
     stroke: '#F04864',
@@ -25,6 +26,8 @@ for (let i = 0; i < 1000; i++) {
       r: 10 + Math.random() * 5,
     },
   });
+
+  canvas.appendChild(instance);
 
   instance.animate(
     {

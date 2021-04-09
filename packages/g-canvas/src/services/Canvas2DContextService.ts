@@ -1,13 +1,17 @@
-import { DefaultContextService } from '@antv/g-core';
-import { injectable } from 'inversify';
-import isString from 'lodash-es/isString';
+import { CanvasConfig, ContextService } from '@antv/g-core';
+import { inject, injectable } from 'inversify';
+import { isString } from '@antv/util';
 import { setDOMSize } from '../utils/dom';
 
 @injectable()
-export class Canvas2DContextService extends DefaultContextService<CanvasRenderingContext2D> {
+export class Canvas2DContextService implements ContextService<CanvasRenderingContext2D> {
   private $container: HTMLElement | null;
   private $canvas: HTMLCanvasElement | null;
   private dpr: number;
+  private context: CanvasRenderingContext2D | null;
+
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
   async init() {
     const { container } = this.canvasConfig;
@@ -17,18 +21,18 @@ export class Canvas2DContextService extends DefaultContextService<CanvasRenderin
     if (this.$container) {
       // create canvas
       const $canvas = document.createElement('canvas');
-      const context = $canvas.getContext('2d');
+      this.context = $canvas.getContext('2d');
       this.$container.appendChild($canvas);
       this.$canvas = $canvas;
 
       let dpr = window.devicePixelRatio || 1;
       dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
       this.dpr = dpr;
-
-      return context;
     }
+  }
 
-    return null;
+  getContext() {
+    return this.context;
   }
 
   getCanvas() {
@@ -40,7 +44,10 @@ export class Canvas2DContextService extends DefaultContextService<CanvasRenderin
   }
 
   async destroy() {
-    // TODO: destroy context
+    if (this.$container && this.$canvas) {
+      // destroy context
+      this.$container.removeChild(this.$canvas);
+    }
   }
 
   resize(width: number, height: number) {

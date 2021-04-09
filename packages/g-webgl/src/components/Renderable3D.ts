@@ -1,5 +1,5 @@
 import { Component, Entity } from '@antv/g-ecs';
-import { IModel } from '../services/renderer';
+import { IModel, RenderingEngine } from '../services/renderer';
 
 export enum INSTANCING_STATUS {
   Preparing,
@@ -8,26 +8,32 @@ export enum INSTANCING_STATUS {
 }
 
 export class Renderable3D extends Component {
-  public static tag = 'c-renderable-3d';
+  static tag = 'c-renderable-3d';
 
-  public model: IModel | null;
+  pickingId: number;
+
+  engine: RenderingEngine;
+
+  model: IModel | null;
+
+  modelPrepared = false;
 
   /**
    * Dirty flag of instanced array
    */
-  public instanceDirty = false;
+  instanceDirty = false;
 
   /**
    * Source renderable
    */
-  public source: Renderable3D;
-  public sourceEntity: Entity;
+  source: Renderable3D;
+  sourceEntity: Entity;
 
   /**
    * Keep refs when calling with `shape.createInstance()`.
    */
-  public instances: Renderable3D[] = [];
-  public instanceEntities: Entity[] = [];
+  instances: Renderable3D[] = [];
+  instanceEntities: Entity[] = [];
 
-  public status: INSTANCING_STATUS = INSTANCING_STATUS.Preparing;
+  status: INSTANCING_STATUS = INSTANCING_STATUS.Preparing;
 }

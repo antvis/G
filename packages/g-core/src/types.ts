@@ -2,6 +2,21 @@
 import { Entity } from '@antv/g-ecs';
 import { Group } from './Group';
 
+export enum SHAPE {
+  Group = 'group',
+  Circle = 'circle',
+  Ellipse = 'ellipse',
+  Image = 'image',
+  Rect = 'rect',
+}
+
+export enum RENDERER {
+  Canvas = 'canvas',
+  SVG = 'svg',
+  WebGL = 'webgl',
+  WebGPU = 'webgpu',
+}
+
 export interface IShape {
   getEntity(): Entity;
 }
@@ -149,8 +164,6 @@ export type ShapeCfg = GroupCfg & {
 //   attrs: ShapeAttrs;
 // };
 
-export type RendererType = 'canvas' | 'svg';
-
 // Cursor style
 // See: https://developer.mozilla.org/en-US/docs/Web/CSS/cursor
 export type Cursor =
@@ -217,7 +230,7 @@ export interface CanvasConfig {
    * 只读属性，渲染引擎
    * @type {string}
    */
-  renderer?: RendererType;
+  renderer?: RENDERER;
 
   /**
    * 画布的 cursor 样式
@@ -232,6 +245,12 @@ export interface CanvasConfig {
     enable: boolean; // 是否开启
     debug: boolean; // 开启时是否打开 debug 模式
   }>;
+
+  /**
+   * 在按需渲染场景下可关闭自动渲染
+   */
+  autoRendering?: boolean;
+
   [key: string]: any;
 }
 

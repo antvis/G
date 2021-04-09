@@ -1,8 +1,4 @@
 ---
-title: Circle
-order: 0
-redirect_from:
-  - /en/examples
+title: Animation
+order: 10
 ---
-
-- Draw circle.

@@ -2,21 +2,21 @@ import { Canvas } from '@antv/g-canvas';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 
-const canvas = new Canvas({
-  container: 'container',
-  width: 600,
-  height: 500,
-});
+// const canvas = new Canvas({
+//   container: 'container',
+//   width: 600,
+//   height: 500,
+// });
 
 // const group = canvas.addGroup();
 
 // const nodeGroup = group.addGroup();
-// nodeGroup.setMatrix([1, 0, 0, 0, 1, 0, 50, 0, 1]);
+// nodeGroup.setMatrix([1, 0, 0, 0, 1, 0, 251, 250, 1]);
 
 // const text = nodeGroup.addShape('text', {
 //   attrs: {
 //     fill: "#000",
-//     fillOpacity: 1,
+//     fillOpacity: 0.9,
 //     font: `normal normal normal 12px Avenir, -apple-system, system-ui, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
 //     // fontFamily: `Avenir, -apple-system, system-ui, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
 //     // fontFamily: 'Arial, sans-serif',
@@ -33,7 +33,7 @@ const canvas = new Canvas({
 //     matrix: null,
 //     opacity: 1,
 //     strokeOpacity: 1,
-//     text: "Circle",
+//     text: "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz审核",
 //     textAlign: "center",
 //     textBaseline: "bottom",
 //     x: 0,

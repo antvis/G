@@ -4,6 +4,10 @@ import { injectable } from 'inversify';
 export class ImagePool {
   private imageCache: Record<string, HTMLImageElement> = {};
 
+  getImageSync(src: string) {
+    return this.imageCache[src];
+  }
+
   async getOrCreateImage(src: string | HTMLImageElement, width?: number, height?: number): Promise<HTMLImageElement> {
     if (typeof src === 'string') {
       if (this.imageCache[src]) {

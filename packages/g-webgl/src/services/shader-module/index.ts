@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import uniq from 'lodash-es/uniq';
+import { uniq } from '@antv/util';
 import { extractUniforms } from '../../utils/shader-module';
 import { IUniform } from '../renderer';
 

@@ -1,5 +1,5 @@
-import isPlainObject from 'lodash-es/isPlainObject';
-import isTypedArray from 'lodash-es/isTypedArray';
+import { isPlainObject } from '@antv/util';
+import { isTypedArray } from './is-typedarray';
 import { IUniform } from '../services/renderer';
 
 /**

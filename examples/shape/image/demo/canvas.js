@@ -1,3 +1,4 @@
+import { Image } from '@antv/g-core';
 import { Canvas } from '@antv/g-canvas';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
@@ -8,7 +9,7 @@ const canvas = new Canvas({
   height: 500,
 });
 
-const image = canvas.addShape('image', {
+const image = new Image({
   attrs: {
     x: 200,
     y: 100,
@@ -17,6 +18,8 @@ const image = canvas.addShape('image', {
     img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
   },
 });
+
+canvas.appendChild(image);
 
 // stats
 const stats = new Stats();
@@ -43,6 +46,8 @@ const config = {
   width: 200,
   height: 200,
   opacity: 1,
+  anchorX: 0,
+  anchorY: 0,
   src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
 };
 imageFolder.add(config, 'x', 0, 400).onChange((x) => {
@@ -57,7 +62,13 @@ imageFolder.add(config, 'width', 0, 400).onChange((width) => {
 imageFolder.add(config, 'height', 0, 400).onChange((height) => {
   image.attr('height', height);
 });
-imageFolder.add(config, 'opacity', 0, 1).onChange((opacity) => {
+imageFolder.add(config, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
+  image.attr('anchor', [anchorX, config.anchorY]);
+});
+imageFolder.add(config, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
+  image.attr('anchor', [config.anchorX, anchorY]);
+});
+imageFolder.add(config, 'opacity', 0, 1, 0.1).onChange((opacity) => {
   image.attr('opacity', opacity);
 });
 imageFolder

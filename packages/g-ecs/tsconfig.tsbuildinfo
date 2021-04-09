@@ -272,8 +272,8 @@
         "affectsGlobalScope": false
       },
       "./src/component.ts": {
-        "version": "8df4381e3b6ca3021cdba425ed4e88f62d2e79c883cbb907e551bbe76f33a1d6",
-        "signature": "badd98ad25d807457592252309cd0304ecc97557af1cb933e64b59e8ad8ccc76",
+        "version": "faf25a2d5fd18df1b2c471cbdd91c0eb9d40f62fb10250079b08f238953b0660",
+        "signature": "07c7cb1cf72326c083e435f1037a85101504cc2d4605d884d2a49d2edf8f03c7",
         "affectsGlobalScope": false
       },
       "./src/identifier.ts": {
@@ -312,7 +312,7 @@
         "affectsGlobalScope": false
       },
       "./src/systemmanager.ts": {
-        "version": "c147b21b5be6dca5c36878cd953466483691106c321a6ed69c1d057fe2650699",
+        "version": "b9fded58131a288acd7f085f8036f19962e229753a5918854d8ade940941bd4a",
         "signature": "b7e39a9d1daa7ff99db6c286693aa25add04e8301888c70718ffa9570b78ae9f",
         "affectsGlobalScope": false
       },
@@ -327,7 +327,7 @@
         "affectsGlobalScope": true
       },
       "./src/index.ts": {
-        "version": "8605d5ac11b0b8e7a14c707453c88d3513ae0c5461f81cecc63a609065f78885",
+        "version": "ecac832a8a6d9145b0ec24f9b7670538af4b6e066ae989ac661bd63d4f430837",
         "signature": "531c35b5144945a297b5fb9707e7591f4dde654fc2ad6f580b6d58b6040ca06c",
         "affectsGlobalScope": false
       },
@@ -410,7 +410,7 @@
       "rootDir": "./src",
       "composite": true,
       "project": "./tsconfig.json",
-      "declarationDir": "./esm",
+      "declarationDir": "./lib",
       "configFilePath": "./tsconfig.json"
     },
     "referencedMap": {

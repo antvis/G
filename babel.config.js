@@ -111,7 +111,7 @@ module.exports = (api) => {
       // isCDNBundle ? 'inline-webgl-constants' : {},
     ],
     ignore: [
-      'node_modules',
+      'node_modules/(?!css-select)',
       ...(!isTest
         ? [
             '**/*.test.tsx',

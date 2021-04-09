@@ -69,9 +69,17 @@ module.exports = {
       //   order: 5,
       // },
       {
-        slug: 'guide/advanced-topics',
+        slug: 'guide/diving-deeper',
         title: {
           zh: '进阶内容',
+          en: 'Diving Deeper',
+        },
+        order: 4,
+      },
+      {
+        slug: 'guide/advanced-topics',
+        title: {
+          zh: '高级话题',
           en: 'Advanced Topics',
         },
         order: 5,

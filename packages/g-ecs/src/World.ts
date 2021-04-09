@@ -75,7 +75,6 @@ export class World implements IWorldLifecycle {
 
     if (this.enabled) {
       await this.systemManager.execute(delta, millis);
-      // this.entityManager.processDeferredRemoval();
     }
   }
 

@@ -1,3 +1,4 @@
+import { Circle } from '@antv/g-core';
 import { Canvas } from '@antv/g-webgl';
 import Stats from 'stats.js';
 
@@ -8,7 +9,8 @@ const canvas = new Canvas({
   height: 500,
 });
 
-const circle = canvas.addShape('circle', {
+// create a circle
+const circle = new Circle({
   attrs: {
     fill: '#1890FF',
     stroke: '#F04864',
@@ -17,7 +19,7 @@ const circle = canvas.addShape('circle', {
 });
 
 for (let i = 0; i < 1000; i++) {
-  // add a circle to canvas
+  // create an instance of circle
   const instance = circle.createInstance({
     attrs: {
       x: Math.random() * 600,
@@ -25,6 +27,9 @@ for (let i = 0; i < 1000; i++) {
       r: 10 + Math.random() * 5,
     },
   });
+
+  // add the instance to canvas
+  canvas.appendChild(instance);
 
   instance.animate(
     {

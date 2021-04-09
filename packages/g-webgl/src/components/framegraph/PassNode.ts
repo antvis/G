@@ -1,4 +1,4 @@
-import { FrameGraphEngine } from '../../contributions/FrameGraphEngine';
+import { FrameGraphEngine } from '../../plugins/FrameGraphEngine';
 import { FrameGraphHandle } from './FrameGraphHandle';
 import { VirtualResource } from './VirtualResource';
 

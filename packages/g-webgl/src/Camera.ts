@@ -334,7 +334,9 @@ export class Camera implements ICamera {
       bottom = top - scaleH * this.view.height;
     }
 
-    mat4.ortho(this.perspective, left, right, top, bottom, near, far);
+    console.log(left, right, bottom, top);
+
+    mat4.ortho(this.perspective, left, right, bottom, top, near, far);
     return this;
   }
 

@@ -5,52 +5,12 @@
   },
   "demos": [
     {
-      "filename": "canvas-circle.js",
+      "filename": "circle.js",
       "title": {
-        "zh": "圆(Canvas)",
-        "en": "Circle(Canvas)"
+        "zh": "圆",
+        "en": "Circle"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
-    },
-    {
-      "filename": "webgl-circle.js",
-      "title": {
-        "zh": "圆(WebGL)",
-        "en": "Circle(WebGL)"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
-    },
-    {
-      "filename": "canvas-animation-single-attribute.js",
-      "title": {
-        "zh": "单属性动画(Canvas)",
-        "en": "Animation for single attribute(Canvas)"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*hafUTp9MrfYAAAAAAAAAAABkARQnAQ"
-    },
-    {
-      "filename": "webgl-animation-single-attribute.js",
-      "title": {
-        "zh": "单属性动画(WebGL)",
-        "en": "Animation for single attribute(WebGL)"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*hafUTp9MrfYAAAAAAAAAAABkARQnAQ"
-    },
-    {
-      "filename": "canvas-animation-multiple-attributes.js",
-      "title": {
-        "zh": "多属性动画(Canvas)",
-        "en": "Animation for multiple attributes(Canvas)"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dZ03S7gEjz8AAAAAAAAAAABkARQnAQ"
-    },
-    {
-      "filename": "webgl-animation-multiple-attributes.js",
-      "title": {
-        "zh": "多属性动画(WebGL)",
-        "en": "Animation for multiple attributes(WebGL)"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dZ03S7gEjz8AAAAAAAAAAABkARQnAQ"
     }
   ]
 }

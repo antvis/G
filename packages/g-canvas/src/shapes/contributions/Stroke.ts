@@ -1,7 +1,7 @@
-import { Renderable } from '@antv/g-core';
+import { SceneGraphNode } from '@antv/g-core';
 import { Entity } from '@antv/g-ecs';
 import { inject, injectable } from 'inversify';
-import isNil from 'lodash-es/isNil';
+import { isNil } from '@antv/util';
 import { StyleRendererContribution } from '../Base';
 import { StyleParser } from '../StyleParser';
 
@@ -11,14 +11,14 @@ export class StrokeRenderer implements StyleRendererContribution {
   private styleParser: StyleParser;
 
   apply(entity: Entity, context: CanvasRenderingContext2D) {
-    const renderable = entity.getComponent(Renderable);
-    const { stroke, strokeOpacity, lineWidth = 0 } = renderable.attrs;
+    const sceneGraphNode = entity.getComponent(SceneGraphNode);
+    const { stroke, strokeOpacity, lineWidth = 0 } = sceneGraphNode.attributes;
     if (!isNil(stroke)) {
-      context.strokeStyle = this.styleParser.parse(stroke);
+      context.strokeStyle = this.styleParser.parse(stroke!);
 
       if (lineWidth > 0) {
         if (!isNil(strokeOpacity) && strokeOpacity !== 1) {
-          context.globalAlpha = strokeOpacity;
+          context.globalAlpha = strokeOpacity!;
         }
         context.lineWidth = lineWidth;
         context.stroke();

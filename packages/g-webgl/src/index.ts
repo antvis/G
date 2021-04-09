@@ -1,95 +1,123 @@
 // tslint:disable-next-line:no-reference
 /// <reference path="../../../node_modules/@webgpu/types/dist/index.d.ts" />
 import {
+  container,
+  CanvasContainerModule,
   ContextService,
   CullingStrategy,
   EventService,
-  RendererFrameContribution,
+  ShapePluginContribution,
+  RenderingPluginContribution,
   SHAPE,
   ShapeRenderer,
+  RENDERER,
 } from '@antv/g-core';
+import { World } from '@antv/g-ecs';
 import { ContainerModule, interfaces } from 'inversify';
-import { Canvas } from './Canvas';
+import { Geometry3D } from './components/Geometry3D';
+import { Material3D } from './components/Material3D';
+import { Renderable3D } from './components/Renderable3D';
+import { InitShapePlugin } from './plugins/InitShapePlugin';
+import { PickingIdGenerator } from './plugins/PickingIdGenerator';
+import { GeometrySystem } from './systems/Geometry';
 import { BaseRenderer } from './shapes/Base';
 import { CircleRenderer } from './shapes/Circle';
-import { ImageRenderer } from './shapes/Image';
-import { ShaderModuleService, DefaultShaderModuleService } from './services/shader-module';
-import { WebGLContextService } from './services/WebGLContextService';
 import { RenderingEngine } from './services/renderer';
 import { WebGLEngine } from './services/renderer/regl';
 import { ResourcePool } from './components/framegraph/ResourcePool';
-import { IRenderPass, RenderPassFactory } from './contributions/FrameGraphEngine';
-import { RenderPass } from './contributions/passes/RenderPass';
-import { CopyPass } from './contributions/passes/CopyPass';
-import { PixelPickingPass } from './contributions/passes/PixelPickingPass';
+import { IRenderPass, RenderPassFactory } from './plugins/FrameGraphEngine';
+import { RenderPass } from './plugins/passes/RenderPass';
+import { CopyPass } from './plugins/passes/CopyPass';
 import { FrustumCulling } from './contributions/FrustumCulling';
-import { FrameGraphRenderer } from './contributions/FrameGraphRenderer';
-import { FrameGraphEngine } from './contributions/FrameGraphEngine';
+import { FrameGraphEngine } from './plugins/FrameGraphEngine';
 import { Camera } from './Camera';
 import { View } from './View';
 import { TexturePool } from './shapes/TexturePool';
 import { CanvasEventService } from './services/CanvasEventService';
+import { WebGLContextService } from './services/WebGLContextService';
+import { ImageRenderer } from './shapes/Image';
+import { DefaultShaderModuleService, ShaderModuleService } from './services/shader-module';
+import { FrameGraphPlugin } from './plugins/FrameGraphPlugin';
 
-export const module = new ContainerModule((bind) => {
-  bind(WebGLContextService).toSelf().inSingletonScope();
-  bind(ContextService).toService(WebGLContextService);
-  bind(CanvasEventService).toSelf().inSingletonScope();
-  bind(EventService).toService(CanvasEventService);
-  bind(BaseRenderer).toSelf().inSingletonScope();
+const world = container.get(World);
+world.registerComponent(Geometry3D);
+world.registerComponent(Material3D);
+world.registerComponent(Renderable3D);
+world.registerSystem(GeometrySystem);
 
-  /**
-   * register shape renderers
-   */
-  bind(TexturePool).toSelf().inSingletonScope();
-  bind(ShapeRenderer).to(CircleRenderer).inSingletonScope().whenTargetNamed(SHAPE.Circle);
-  bind(ShapeRenderer).to(CircleRenderer).inSingletonScope().whenTargetNamed(SHAPE.Ellipse);
-  bind(ShapeRenderer).to(ImageRenderer).inSingletonScope().whenTargetNamed(SHAPE.Image);
+container.bind(PickingIdGenerator).toSelf().inSingletonScope();
+container.bind(InitShapePlugin).toSelf().inSingletonScope();
+container.bind(ShapePluginContribution).toService(InitShapePlugin);
 
-  /**
-   * bind services
-   */
-  bind(DefaultShaderModuleService).toSelf().inSingletonScope();
-  bind(ShaderModuleService).toService(DefaultShaderModuleService);
-  bind(WebGLEngine).toSelf().inSingletonScope();
-  bind(RenderingEngine).toService(WebGLEngine);
+container
+  .bind(CanvasContainerModule)
+  .toConstantValue(
+    new ContainerModule((bind, unbind, isBound, rebind) => {
+      // TODO: implement dirty rectangle with Stencil
+      // const config = container.get(CanvasConfig);
+      // Object.assign(config, {
+      //   dirtyRectangle: {
+      //     enable: false,
+      //   },
+      // });
 
-  bind(ResourcePool).toSelf().inSingletonScope();
+      bind(WebGLContextService).toSelf().inSingletonScope();
+      bind(ContextService).toService(WebGLContextService);
+      bind(CanvasEventService).toSelf().inSingletonScope();
+      bind(EventService).toService(CanvasEventService);
+      bind(BaseRenderer).toSelf().inSingletonScope();
 
-  /**
-   * bind render passes
-   */
-  bind<IRenderPass<any>>(IRenderPass).to(RenderPass).inSingletonScope().whenTargetNamed(RenderPass.IDENTIFIER);
-  bind<IRenderPass<any>>(IRenderPass).to(CopyPass).inSingletonScope().whenTargetNamed(CopyPass.IDENTIFIER);
-  bind<IRenderPass<any>>(IRenderPass)
-    .to(PixelPickingPass)
-    .inSingletonScope()
-    .whenTargetNamed(PixelPickingPass.IDENTIFIER);
+      /**
+       * register shape renderers
+       */
+      bind(TexturePool).toSelf().inSingletonScope();
+      bind(ShapeRenderer).to(CircleRenderer).inSingletonScope().whenTargetNamed(SHAPE.Circle);
+      bind(ShapeRenderer).to(CircleRenderer).inSingletonScope().whenTargetNamed(SHAPE.Ellipse);
+      bind(ShapeRenderer).to(CircleRenderer).inSingletonScope().whenTargetNamed(SHAPE.Rect);
+      bind(ShapeRenderer).to(ImageRenderer).inSingletonScope().whenTargetNamed(SHAPE.Image);
 
-  bind<interfaces.Factory<IRenderPass<any>>>(RenderPassFactory).toFactory<IRenderPass<any>>(
-    (context: interfaces.Context) => {
-      return (name: string) => {
-        return context.container.getNamed(IRenderPass, name);
-      };
-    }
-  );
+      /**
+       * bind services
+       */
+      bind(DefaultShaderModuleService).toSelf().inSingletonScope();
+      bind(ShaderModuleService).toService(DefaultShaderModuleService);
+      bind(WebGLEngine).toSelf().inSingletonScope();
+      bind(RenderingEngine).toService(WebGLEngine);
 
-  /**
-   * bind culling strategies
-   */
-  bind(FrustumCulling).toSelf().inSingletonScope();
-  bind(CullingStrategy).toService(FrustumCulling);
+      bind(ResourcePool).toSelf().inSingletonScope();
 
-  bind(View).toSelf().inSingletonScope();
-  bind(Camera).toSelf().inSingletonScope();
+      /**
+       * bind render passes
+       */
+      bind<IRenderPass<any>>(IRenderPass).to(RenderPass).inSingletonScope().whenTargetNamed(RenderPass.IDENTIFIER);
+      bind<IRenderPass<any>>(IRenderPass).to(CopyPass).inSingletonScope().whenTargetNamed(CopyPass.IDENTIFIER);
+      bind<interfaces.Factory<IRenderPass<any>>>(RenderPassFactory).toFactory<IRenderPass<any>>(
+        (context: interfaces.Context) => {
+          return (name: string) => {
+            return context.container.getNamed(IRenderPass, name);
+          };
+        }
+      );
 
-  /**
-   * bind handlers when frame began
-   */
-  bind(FrameGraphEngine).toSelf().inSingletonScope();
-  bind(FrameGraphRenderer).toSelf().inSingletonScope();
-  // unbind(RendererFrameContribution);
-  // bindContributionProvider(bind, RendererFrameContribution);
-  bind(RendererFrameContribution).toService(FrameGraphRenderer);
-});
+      /**
+       * bind culling strategies
+       */
+      bind(FrustumCulling).toSelf().inSingletonScope();
+      bind(CullingStrategy).toService(FrustumCulling);
 
-export { Canvas };
+      bind(View).toSelf().inSingletonScope();
+      bind(Camera).toSelf().inSingletonScope();
+
+      /**
+       * bind handlers when frame began
+       */
+      bind(FrameGraphEngine).toSelf().inSingletonScope();
+
+      /**
+       * register rendering plugins
+       */
+      bind(FrameGraphPlugin).toSelf().inSingletonScope();
+      bind(RenderingPluginContribution).toService(FrameGraphPlugin);
+    })
+  )
+  .whenTargetNamed(RENDERER.WebGL);

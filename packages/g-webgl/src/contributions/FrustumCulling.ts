@@ -1,4 +1,4 @@
-import { AABB, CullingStrategy, Hierarchy, Mask, Plane, Renderable } from '@antv/g-core';
+import { AABB, CullingStrategy, SceneGraphNode, Mask, Plane, Renderable } from '@antv/g-core';
 import { Cullable } from '@antv/g-core/src/components/Cullable';
 import { Entity } from '@antv/g-ecs';
 import { vec3 } from 'gl-matrix';
@@ -16,7 +16,7 @@ export class FrustumCulling implements CullingStrategy {
 
     // const renderable = entity.getComponent(Renderable);
     // const cullable = entity.getComponent(Cullable);
-    // const hierarchy = entity.getComponent(Hierarchy);
+    // const hierarchy = entity.getComponent(SceneGraphNode);
 
     // const parentVisibilityPlaneMask = hierarchy?.parent?.getComponent(Cullable)?.visibilityPlaneMask;
     // cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(

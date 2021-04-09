@@ -8,9 +8,9 @@ export const enum STATUS {
 }
 
 export class Animator extends Component {
-  public static tag = 'c-animation';
+  static tag = 'c-animation';
 
-  public status: STATUS;
+  status: STATUS;
 
-  public animations: Animation[] = [];
+  animations: Animation[] = [];
 }

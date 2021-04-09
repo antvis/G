@@ -1,3 +1,4 @@
+import { Group, Circle } from 'g-core';
 import { Canvas } from '@antv/g-webgl';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
@@ -22,20 +23,17 @@ const canvas = new Canvas({
   height: 500,
 });
 
-const solarSystem = canvas.addGroup({
+const solarSystem = new Group({
   name: 'solarSystem',
 });
-solarSystem.setPosition(300, 250);
-const earthOrbit = canvas.addGroup({
+const earthOrbit = new Group({
   name: 'earthOrbit',
 });
-earthOrbit.translate(100, 0);
-const moonOrbit = canvas.addGroup({
+const moonOrbit = new Group({
   name: 'moonOrbit',
 });
-moonOrbit.translate(100, 0);
 
-const sun = canvas.addShape('circle', {
+const sun = new Circle({
   name: 'sun',
   attrs: {
     r: 100,
@@ -44,8 +42,7 @@ const sun = canvas.addShape('circle', {
     lineWidth: 4,
   },
 });
-
-const earth = canvas.addShape('circle', {
+const earth = new Circle({
   name: 'earth',
   attrs: {
     r: 50,
@@ -54,8 +51,7 @@ const earth = canvas.addShape('circle', {
     lineWidth: 4,
   },
 });
-
-const moon = canvas.addShape('circle', {
+const moon = new Circle({
   name: 'moon',
   attrs: {
     r: 25,
@@ -65,11 +61,17 @@ const moon = canvas.addShape('circle', {
   },
 });
 
-solarSystem.add(sun);
-solarSystem.add(earthOrbit);
-earthOrbit.add(earth);
-earthOrbit.add(moonOrbit);
-moonOrbit.add(moon);
+solarSystem.appendChild(sun);
+solarSystem.appendChild(earthOrbit);
+earthOrbit.appendChild(earth);
+earthOrbit.appendChild(moonOrbit);
+moonOrbit.appendChild(moon);
+
+solarSystem.setPosition(300, 250);
+earthOrbit.translate(100, 0);
+moonOrbit.translate(100, 0);
+
+canvas.appendChild(solarSystem);
 
 // stats
 const stats = new Stats();
@@ -85,8 +87,8 @@ canvas.onFrame(() => {
     stats.update();
   }
 
-  solarSystem.rotateAtStart((Math.PI / 180) * 1);
-  earthOrbit.rotateAtStart((Math.PI / 180) * 2);
+  solarSystem.rotateLocal(1);
+  earthOrbit.rotateLocal(2);
 });
 
 // GUI
