@@ -5,7 +5,7 @@ import { Region } from './types';
 import ShapeBase from './shape/base';
 import * as Shape from './shape';
 import { applyAttrsToContext, drawChildren, refreshElement } from './util/draw';
-import { each, max, min } from '@antv/util';
+import { each } from '@antv/util';
 import { intersectRect } from './util/util';
 
 class Group extends AbstractGroup {
@@ -57,10 +57,10 @@ class Group extends AbstractGroup {
     });
     let bbox = null;
     if (xArr.length) {
-      const minX = min(xArr);
-      const maxX = max(xArr);
-      const minY = min(yArr);
-      const maxY = max(yArr);
+      const minX = Math.min(xArr);
+      const maxX = Math.max(xArr);
+      const minY = Math.min(yArr);
+      const maxY = Math.max(yArr);
       bbox = {
         minX,
         minY,
