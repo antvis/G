@@ -1,20 +1,12 @@
 {
   "name": "@antv/g-mobile",
-  "version": "0.0.1-beta.14",
+  "version": "0.0.1-beta.15",
   "description": "A mobile canvas library which providing 2d",
   "main": "lib/index.js",
   "module": "esm/index.js",
   "unpkg": "dist/g.min.js",
   "types": "lib/index.d.ts",
-  "files": [
-    "src",
-    "package.json",
-    "esm",
-    "lib",
-    "dist",
-    "LICENSE",
-    "README.md"
-  ],
+  "files": ["src", "package.json", "esm", "lib", "dist", "LICENSE", "README.md"],
   "scripts": {
     "build": "npm run clean && run-p build:*",
     "build:esm": "tsc -p tsconfig.json --target ES5 --module ESNext --outDir esm",
@@ -34,11 +26,7 @@
     "type": "git",
     "url": "git+https://github.com/antvis/g.git"
   },
-  "keywords": [
-    "util",
-    "antv",
-    "g"
-  ],
+  "keywords": ["util", "antv", "g"],
   "author": "https://github.com/orgs/antvis/people",
   "license": "ISC",
   "bugs": {

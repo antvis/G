@@ -336,7 +336,15 @@ class Canvas extends AbstractCanvas {
   getClientByEvent(event: any): any {
     // 这里需要转换成原始event
     const ev: Event = event.srcEvent;
-    let clientInfo = (ev as TouchEvent).touches[0];
+
+    let clientInfo = null;
+    if ((ev as TouchEvent).touches) {
+      if (ev.type === 'touchend') {
+        clientInfo = (ev as TouchEvent).changedTouches[0];
+      } else {
+        clientInfo = (ev as TouchEvent).touches[0];
+      }
+    }
     if (!clientInfo) {
       return {};
     }
