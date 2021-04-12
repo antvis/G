@@ -43,6 +43,9 @@ export default class MiniCanvasProxy<T> {
 
   get(obj: T, prop: string): any {
     if (prop === 'globalAlpha' && obj[prop] === undefined) return 1;
+    if(typeof obj[prop] === 'function') {
+      return obj[prop].bind(obj);
+    } 
     return obj[prop];
   }
 }
