@@ -281,9 +281,9 @@ class EventController {
       }
       this._emitEvent('dragend', event, pointInfo, draggingShape);
       this._afterDrag(draggingShape, pointInfo, event);
-    } else {
-      this._emitEvent('panend', event, pointInfo, shape);
     }
+    this._emitEvent('panend', event, pointInfo, shape);
+
     this.panstartShape = null;
     this.panstartPoint = null;
   }
@@ -341,14 +341,11 @@ class EventController {
           } else {
             this._emitEvent('panmove', event, pointInfo, shape);
           }
-        } else {
-          this._emitEvent('panmove', event, pointInfo, shape);
         }
-      } else {
-        // 始终触发移动
-        this._emitEvent('panmove', event, pointInfo, shape);
       }
     }
+
+    this._emitEvent('panmove', event, pointInfo, shape);
   }
 
   // 触发事件
