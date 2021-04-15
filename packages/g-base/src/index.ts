@@ -20,4 +20,4 @@ export { isAllowCapture } from './util/util';
 export { multiplyVec2, invert } from './util/matrix';
 export { getOffScreenContext } from './util/offscreen';
 
-export const version = '0.5.6';
+export const version = '0.5.8';
