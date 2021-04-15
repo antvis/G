@@ -90,10 +90,12 @@ class Text extends ShapeBase {
       subY = y + index * (spaceingY + fontSize) - height + fontSize; // bottom;
       if (textBaseline === 'middle') subY += height - fontSize - (height - fontSize) / 2;
       if (textBaseline === 'top') subY += height - fontSize;
-      if (isFill) {
-        context.fillText(subText, x, subY);
-      } else {
-        context.strokeText(subText, x, subY);
+      if (subText) {
+        if (isFill) {
+          context.fillText(subText, x, subY);
+        } else {
+          context.strokeText(subText, x, subY);
+        }
       }
     });
   }
@@ -108,10 +110,12 @@ class Text extends ShapeBase {
       this._drawTextArr(context, textArr, isFill);
     } else {
       const text = attrs.text;
-      if (isFill) {
-        context.fillText(text, x, y);
-      } else {
-        context.strokeText(text, x, y);
+      if (text) {
+        if (isFill) {
+          context.fillText(text, x, y);
+        } else {
+          context.strokeText(text, x, y);
+        }
       }
     }
   }
