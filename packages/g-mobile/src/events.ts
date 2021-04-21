@@ -63,10 +63,6 @@ class EventController {
   private panstartShape: IShape = null;
   private panstartPoint = null;
   private panstartTimeStamp;
-  // 基础的缩放比例
-  private defaultScale: number = 1;
-  private currentScale: number = 1;
-  private initScale: number = 1;
 
   constructor(cfg) {
     this.canvas = cfg.canvas;
@@ -123,22 +119,13 @@ class EventController {
     });
 
     this.hammerRuntime.on('pinchstart pinchmove pinchend', (e) => {
-      if (e.type == 'pinchstart') {
-        this.initScale = this.currentScale || 1;
-      }
-
       if (e.type === 'pinchend') {
-        e.scale = this.currentScale;
         this._emitMobileEvent(e.type, e);
         return;
       }
 
-      this.currentScale = this.initScale * e.scale;
-
-      e.scale = this.currentScale;
-
       e.srcEvent.extra = {
-        scale: this.currentScale,
+        scale: e.scale,
       };
       this._emitMobileEvent(e.type, e);
     });
