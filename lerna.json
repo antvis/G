@@ -1,10 +1,10 @@
 {
   "packages": [
     "packages/g-ecs",
-    "packages/g-core",
-    "packages/g-canvas",
-    "packages/g-svg",
-    "packages/g-webgl"
+    "packages/g",
+    "packages/g-renderer-canvas",
+    "packages/g-renderer-svg",
+    "packages/g-renderer-webgl"
   ],
   "npmClient": "yarn",
   "useWorkspaces": true,

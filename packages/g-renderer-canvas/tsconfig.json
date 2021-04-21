@@ -1,0 +1,19 @@
+{
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        "outDir": "lib",
+        "rootDir": "./src",
+        "composite": true
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "references": [
+        {
+            "path": "../g-ecs"
+        },
+        {
+            "path": "../g"
+        }
+    ]
+}

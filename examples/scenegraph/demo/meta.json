@@ -1,0 +1,40 @@
+{
+  "title": {
+    "zh": "中文分类",
+    "en": "Category"
+  },
+  "demos": [
+    {
+      "filename": "hierarchy.js",
+      "title": {
+        "zh": "层次结构",
+        "en": "Hierarchy"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZcrHSoLxRS8AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "transform.js",
+      "title": {
+        "zh": "变换",
+        "en": "Transform"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZcrHSoLxRS8AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "origin.js",
+      "title": {
+        "zh": "旋转和缩放中心",
+        "en": "Origin"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*E7OfQ5-uVgYAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "visibility.js",
+      "title": {
+        "zh": "可见性和展示次序",
+        "en": "Visibility & Z-index"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZcrHSoLxRS8AAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

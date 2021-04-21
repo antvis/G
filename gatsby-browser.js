@@ -1,7 +1,7 @@
 require('./site/css/demo.css');
 window.stats = require('stats.js');
 window.dat = require('dat.gui');
-window.gCore = require('@antv/g-core');
-window.gCanvas = require('@antv/g-canvas');
-window.gWebgl = require('@antv/g-webgl');
-window.gSvg = require('@antv/g-svg');
+window.g = require('@antv/g');
+window.gRendererCanvas = require('@antv/g-renderer-canvas');
+window.gRendererWebgl = require('@antv/g-renderer-webgl');
+window.gRendererSvg = require('@antv/g-renderer-svg');

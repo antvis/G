@@ -1,4 +1,4 @@
-import { Circle } from '@antv/g-core';
+import { Circle } from '@antv/g';
 import { Canvas } from '@antv/g-webgl';
 import Stats from 'stats.js';
 

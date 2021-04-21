@@ -1,5 +1,5 @@
-import { Circle } from '@antv/g-core';
-import { Canvas } from '@antv/g-canvas';
+import { Circle } from '@antv/g';
+import { Canvas } from '@antv/g-renderer-canvas';
 import Stats from 'stats.js';
 
 // create a canvas

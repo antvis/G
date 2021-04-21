@@ -5,36 +5,36 @@
       "@antv/g-ecs/*": [
         "g-ecs/src/*"
       ],
-      "@antv/g-core/*": [
-        "g-core/src/*"
+      "@antv/g/*": [
+        "g/src/*"
       ],
-      "@antv/g-canvas/*": [
-        "g-canvas/src/*"
+      "@antv/g-renderer-canvas/*": [
+        "g-renderer-canvas/src/*"
       ],
-      "@antv/g-svg/*": [
-        "g-svg/src/*"
+      "@antv/g-renderer-svg/*": [
+        "g-renderer-svg/src/*"
       ],
-      "@antv/g-webgl/*": [
-        "g-webgl/src/*"
+      "@antv/g-renderer-webgl/*": [
+        "g-renderer-webgl/src/*"
       ]
     }
   },
   "files": [],
   "references": [
     {
-      "path": "packages/g-canvas"
-    },
-    {
-      "path": "packages/g-core"
-    },
-    {
       "path": "packages/g-ecs"
     },
     {
-      "path": "packages/g-svg"
+      "path": "packages/g-renderer-canvas"
     },
     {
-      "path": "packages/g-webgl"
+      "path": "packages/g-renderer-svg"
+    },
+    {
+      "path": "packages/g-renderer-webgl"
+    },
+    {
+      "path": "packages/g"
     }
   ]
 }

@@ -14,3 +14,7 @@
 .dg li.title {
     padding-left: 16px !important;
 }
+
+.dg .c select {
+    color: black;
+}

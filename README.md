@@ -6,8 +6,8 @@ English | [简体中文](./README-zh_CN.md)
 ![](https://img.shields.io/badge/language-javascript-red.svg)
 ![](https://img.shields.io/badge/license-MIT-000000.svg)
 
-[![npm package](https://img.shields.io/npm/v/@antv/g-canvas.svg)](https://www.npmjs.com/package/@antv/g-canvas)
-[![npm downloads](http://img.shields.io/npm/dm/@antv/g-canvas.svg)](https://npmjs.org/package/@antv/g-canvas)
+[![npm package](https://img.shields.io/npm/v/@antv/g-renderer-canvas.svg)](https://www.npmjs.com/package/@antv/g-renderer-canvas)
+[![npm downloads](http://img.shields.io/npm/dm/@antv/g-renderer-canvas.svg)](https://npmjs.org/package/@antv/g-renderer-canvas)
 [![npm package](https://img.shields.io/npm/v/@antv/g-svg.svg)](https://www.npmjs.com/package/@antv/g-svg)
 [![npm downloads](http://img.shields.io/npm/dm/@antv/g-svg.svg)](https://npmjs.org/package/@antv/g-svg)
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open')
@@ -26,7 +26,7 @@ English | [简体中文](./README-zh_CN.md)
 
 ```bash
 # Canvas version
-$ npm install @antv/g-canvas --save
+$ npm install @antv/g-renderer-canvas --save
 
 # SVG version
 $ npm install @antv/g-svg --save
@@ -39,7 +39,7 @@ $ npm install @antv/g-svg --save
 ```
 
 ```js
-import { Canvas } from '@antv/g-canvas';
+import { Canvas } from '@antv/g-renderer-canvas';
 // or use SVG version
 // import { Canvas } from '@antv/g-svg';
 

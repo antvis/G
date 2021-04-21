@@ -1,4 +1,4 @@
-import { Canvas } from '@antv/g-canvas';
+import { Canvas } from '@antv/g-renderer-canvas';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 

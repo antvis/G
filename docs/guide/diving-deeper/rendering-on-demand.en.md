@@ -1,6 +1,6 @@
 ---
 title: Rendering on demand
-order: 1
+order: 2
 ---
 
 在大多数场景下，渲染引擎会自动在每一帧重绘，但在部分场景下，我们需要自己决定重绘的时机。

@@ -5,34 +5,18 @@
   },
   "demos": [
     {
-      "filename": "canvas-animation-single-attribute.js",
+      "filename": "single-attribute.js",
       "title": {
-        "zh": "单属性动画(Canvas)",
-        "en": "Animation for single attribute(Canvas)"
+        "zh": "单属性动画",
+        "en": "Animation for single attribute"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*hafUTp9MrfYAAAAAAAAAAABkARQnAQ"
     },
     {
-      "filename": "webgl-animation-single-attribute.js",
+      "filename": "multiple-attributes.js",
       "title": {
-        "zh": "单属性动画(WebGL)",
-        "en": "Animation for single attribute(WebGL)"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*hafUTp9MrfYAAAAAAAAAAABkARQnAQ"
-    },
-    {
-      "filename": "canvas-animation-multiple-attributes.js",
-      "title": {
-        "zh": "多属性动画(Canvas)",
-        "en": "Animation for multiple attributes(Canvas)"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dZ03S7gEjz8AAAAAAAAAAABkARQnAQ"
-    },
-    {
-      "filename": "webgl-animation-multiple-attributes.js",
-      "title": {
-        "zh": "多属性动画(WebGL)",
-        "en": "Animation for multiple attributes(WebGL)"
+        "zh": "多属性动画",
+        "en": "Animation for multiple attributes"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dZ03S7gEjz8AAAAAAAAAAABkARQnAQ"
     }
