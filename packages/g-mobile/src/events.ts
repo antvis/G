@@ -99,6 +99,13 @@ class EventController {
 
       // 开始拖拽
       if (e.type === 'panstart') {
+        // 兜底, hammer解析的事件可能缺失一次panend，所以做个兜底
+        if (this.dragging) {
+          this.draggingShape = null;
+          this.dragging = false;
+          this.panstartShape = null;
+          this.panstartPoint = null;
+        }
         this._onpanstart(pointInfo, shape, e);
       }
 
