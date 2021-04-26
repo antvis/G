@@ -90,7 +90,7 @@ class Text extends ShapeBase {
       subY = y + index * (spaceingY + fontSize) - height + fontSize; // bottom;
       if (textBaseline === 'middle') subY += height - fontSize - (height - fontSize) / 2;
       if (textBaseline === 'top') subY += height - fontSize;
-      if (subText) {
+      if (!isNil(subText)) {
         if (isFill) {
           context.fillText(subText, x, subY);
         } else {
@@ -110,7 +110,7 @@ class Text extends ShapeBase {
       this._drawTextArr(context, textArr, isFill);
     } else {
       const text = attrs.text;
-      if (text) {
+      if (!isNil(text)) {
         if (isFill) {
           context.fillText(text, x, y);
         } else {
