@@ -46,8 +46,8 @@ export default function (shape: IShape): SimpleBBox {
     bbox = {
       x: point.x,
       y: point.y,
-      width,
-      height,
+      width: width,
+      height: height,
     };
   }
   return bbox;
