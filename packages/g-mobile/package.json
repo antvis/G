@@ -45,11 +45,11 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g-base": "^0.5.6-beta.1",
+    "@antv/g-base": "^0.5.9",
     "@antv/g-math": "^0.1.6",
     "@antv/matrix-util": "^3.1.0-beta.1",
     "@antv/path-util": "~2.0.5",
-    "@antv/util": "~2.0.0",
+    "@antv/util": "~2.0.13",
     "ansi-styles": "^5.0.0",
     "escape-string-regexp": "^4.0.0",
     "g6-hammerjs": "^0.0.9",
