@@ -263,6 +263,18 @@ describe('multiple lines text test', () => {
     expect(getColorCount(240, 221, 20, '#0000ff') > 0).eqls(false);
   });
 
+  it('draw 0', () => {
+    text.attr({
+      x: 240,
+      text: 0,
+    });
+    text.draw(ctx);
+    drawBox(text.getBBox());
+    // 因为 null 不绘制了
+    expect(getColorCount(240, 218, 20, '#0000ff') > 0).not.eqls(false);
+    expect(getColorCount(240, 221, 20, '#0000ff') > 0).not.eqls(false);
+  });
+
   it('clear', () => {
     text.destroy();
     expect(text.destroyed).eqls(true);
