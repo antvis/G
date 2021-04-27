@@ -362,7 +362,6 @@ class Canvas extends AbstractCanvas {
         x: clientX + rect.left,
         y: clientY + rect.top,
       };
-      return { x: clientX, y: clientY };
     }
 
     const el = this.get('el');
