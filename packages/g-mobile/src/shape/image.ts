@@ -1,12 +1,14 @@
-/**
- * @fileoverview 图片
- * @author dxq613@gmail.com
- */
-
 import ShapeBase from './base';
 import { isString, isNil } from '../util/util';
+
 function isCanvas(dom) {
   return dom instanceof HTMLElement && isString(dom.nodeName) && dom.nodeName.toUpperCase() === 'CANVAS';
+}
+
+let miniCanvas = null;
+
+export function setMiniCanvas(canvas) {
+  miniCanvas = canvas;
 }
 
 class ImageShape extends ShapeBase {
@@ -51,8 +53,21 @@ class ImageShape extends ShapeBase {
 
   _setImage(img) {
     const attrs = this.attrs;
+    console.log('xxxx', img, miniCanvas.isMiniNative(), miniCanvas, miniCanvas.isMini());
+    // 1.0 小程序canvas下只能用string绘制
+    if (miniCanvas.isMini() && !miniCanvas.isMiniNative()) {
+      this.attr('img', img);
+      return;
+    }
+
+    // 以下兼容2.0 小程序canvas
     if (isString(img)) {
-      const image = new Image();
+      let image = null;
+      if (miniCanvas.isMiniNative()) {
+        image = miniCanvas.get('extra').createImage();
+      } else {
+        image = new Image();
+      }
       image.onload = () => {
         // 图片未加载完，则已经被销毁
         if (this.destroyed) {
@@ -76,8 +91,7 @@ class ImageShape extends ShapeBase {
       image.src = img;
       // loading 过程中不绘制
       this.set('loading', true);
-    } else if (img instanceof Image) {
-      // 如果是一个 image 对象，则设置宽高
+    } else if (miniCanvas.isMiniNative() || img instanceof Image) {
       if (!attrs.width) {
         attrs.width = img.width;
       }
@@ -106,16 +120,21 @@ class ImageShape extends ShapeBase {
   }
 
   createPath(context: CanvasRenderingContext2D) {
+    const attrs = this.attr();
+    const { img, x, y, width, height, sx, sy, swidth, sheight } = attrs;
+
     // 正在加载则不绘制
     if (this.get('loading')) {
       this.set('toDraw', true); // 加载完成后绘制
       this.set('context', context);
       return;
     }
-    const attrs = this.attr();
-    const { x, y, width, height, sx, sy, swidth, sheight } = attrs;
 
-    const img = attrs.img;
+    if (miniCanvas.isMini()) {
+      context.drawImage(img, x, y, width, height);
+      return;
+    }
+
     if (img instanceof Image || isCanvas(img)) {
       if (!isNil(sx) && !isNil(sy) && !isNil(swidth) && !isNil(sheight)) {
         context.drawImage(img, sx, sy, swidth, sheight, x, y, width, height);

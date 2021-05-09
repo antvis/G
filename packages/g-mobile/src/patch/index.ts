@@ -1,4 +1,7 @@
 import bbox from './bbox';
-export default (context: CanvasRenderingContext2D) => {
+import { setMiniCanvas } from '../shape/image';
+
+export default (context: CanvasRenderingContext2D, canvas: any) => {
+  setMiniCanvas(canvas);
   bbox(context);
 };
