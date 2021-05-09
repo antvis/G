@@ -79,21 +79,20 @@ class EventController {
 
     this.hammerRuntime.add(new Hammer.Pan({ threshold: 0, pointers: 1 }));
     this.hammerRuntime.add(new Hammer.Swipe()).recognizeWith(this.hammerRuntime.get('pan'));
-    this.hammerRuntime.add(new Hammer.Rotate({ threshold: 0 })).recognizeWith(this.hammerRuntime.get('pan'));
-    this.hammerRuntime
-      .add(new Hammer.Pinch({ threshold: 0 }))
-      .recognizeWith([this.hammerRuntime.get('pan'), this.hammerRuntime.get('rotate')]);
+    //this.hammerRuntime.add(new Hammer.Rotate({ threshold: 0 })).recognizeWith(this.hammerRuntime.get('pan'));
+    this.hammerRuntime.add(new Hammer.Pinch({ threshold: 0, pointers: 2 }));
+    //.recognizeWith([this.hammerRuntime.get('pan'), this.hammerRuntime.get('rotate')]);
     this.hammerRuntime.add(new Hammer.Tap({ event: 'doubletap', taps: 2 }));
     this.hammerRuntime.add(new Hammer.Tap());
 
-    this.hammerRuntime.on('panstart panmove panend', (e) => {
+    this.hammerRuntime.on('panstart panmove panend pancancel', (e) => {
       e.srcEvent.extra = e;
 
       const pointInfo = this._getPointInfo(e);
       const shape = this._getShape(pointInfo, e);
 
       // 结束拖拽
-      if (e.type === 'panend') {
+      if (e.type === 'panend' || e.type === 'pancancel') {
         this._onpanend(pointInfo, shape, e);
       }
 
@@ -125,8 +124,8 @@ class EventController {
       this._emitMobileEvent(e.type, e);
     });
 
-    this.hammerRuntime.on('pinchstart pinchmove pinchend', (e) => {
-      if (e.type === 'pinchend') {
+    this.hammerRuntime.on('pinchstart pinchmove pinchend pinchcancel', (e) => {
+      if (e.type === 'pinchend' || e.type === 'pinchcancel') {
         this._emitMobileEvent(e.type, e);
         return;
       }

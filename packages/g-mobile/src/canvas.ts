@@ -26,7 +26,7 @@ class Canvas extends AbstractCanvas {
       }
 
       // 架构调整前，打一些patch
-      miniPatch(ctx);
+      miniPatch(ctx, this);
     }
   }
 
