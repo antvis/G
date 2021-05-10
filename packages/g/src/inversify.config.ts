@@ -2,64 +2,62 @@ import 'reflect-metadata';
 import { Container, interfaces } from 'inversify';
 import getDecorators from 'inversify-inject-decorators';
 import { containerModule as ecsModule, World } from '@antv/g-ecs';
-import {
-  Timeline,
-  DefaultAttributeAnimationUpdater,
-  ColorAttributeAnimationUpdater,
-  AttributeAnimationUpdaters,
-} from './systems';
+import { containerModule as globalModule } from './global-module';
+import { Timeline } from './systems';
 import { Animator, Sortable, Cullable, Geometry, SceneGraphNode, Renderable, Transform } from './components';
-import { DisplayObject } from './DisplayObject';
-import { DisplayObjectPool } from './DisplayObjectPool';
-import { SceneGraphAdapter, SceneGraphService } from './services';
-import { bindContributionProvider, ContributionProvider } from './contribution-provider';
 import { InitShapePlugin } from './plugins/shape/InitShapePlugin';
 import { UpdateAttributePlugin } from './plugins/shape/UpdateAttributePlugin';
-import { CircleUpdater, EllipseUpdater, GeometryAABBUpdater, RectUpdater } from './services/aabb';
-import { SHAPE } from './types';
-import { TextService } from './services/text';
-import { TextUpdater } from './services/aabb/TextUpdater';
-import { OffscreenCanvasCreator } from './services/text/OffscreenCanvasCreator';
-import { Camera } from './Camera';
 import { registerDisplayObjectPlugin } from './hooks';
+
+export const CanvasContainerModuleFactory = Symbol('CanvasContainerModuleFactory');
 
 const container = new Container();
 // bind ECS
 container.load(ecsModule);
 
-// bind camera
-container.bind(Camera).toSelf().inSingletonScope();
+container.load(globalModule);
 
-// bind global DisplayObject plugins
-// bindContributionProvider(container, DisplayObjectPluginContribution);
-// container.bind(InitShapePlugin).toSelf().inSingletonScope();
-// container.bind(DisplayObjectPluginContribution).toService(InitShapePlugin);
-// container.bind(UpdateAttributePlugin).toSelf().inSingletonScope();
-// container.bind(DisplayObjectPluginContribution).toService(UpdateAttributePlugin);
+// container.bind(CanvasContainerModuleFactory).toFactory(context => (config: CanvasConfig) => {
+//   const childContainer = context.container.createChild();
+//   const { renderer, ...rest } = config;
+//   const mergedConfig = {
+//     renderer: {
+//       type: '', // set renderer's type later
+//       enableAutoRendering: true,
+//       enableDirtyRectangleRendering: true,
+//       ...(isString(config.renderer) ? { type: config.renderer } : config.renderer),
+//     },
+//     cursor: 'default',
+//     ...rest,
+//   };
+//   childContainer.bind(CanvasConfig).toConstantValue(mergedConfig);
+//   childContainer.bind(RenderingContext).toConstantValue({
+//     /**
+//      * the root node in scene graph
+//      */
+//     root: new DisplayObject({
+//       id: '_root',
+//       attrs: {},
+//     }),
 
-// bind DisplayObject pool
-container.bind(DisplayObjectPool).toSelf().inSingletonScope();
+//     /**
+//      * spatial index with RTree which can speed up the search for AABBs
+//      */
+//     rBush: new RBush<RBushNode>(),
 
-// bind css-select adapter
-container.bind(SceneGraphAdapter).toSelf().inSingletonScope();
-container.bind(SceneGraphService).toSelf().inSingletonScope();
+//     /**
+//      * all the entities
+//      */
+//     entities: [],
 
-// bind text service
-container.bind(OffscreenCanvasCreator).toSelf().inSingletonScope();
-container.bind(TextService).toSelf().inSingletonScope();
-
-// bind aabb updater
-container.bind(GeometryAABBUpdater).to(CircleUpdater).inSingletonScope().whenTargetNamed(SHAPE.Circle);
-container.bind(GeometryAABBUpdater).to(EllipseUpdater).inSingletonScope().whenTargetNamed(SHAPE.Ellipse);
-container.bind(GeometryAABBUpdater).to(RectUpdater).inSingletonScope().whenTargetNamed(SHAPE.Rect);
-container.bind(GeometryAABBUpdater).to(RectUpdater).inSingletonScope().whenTargetNamed(SHAPE.Image);
-container.bind(GeometryAABBUpdater).to(TextUpdater).inSingletonScope().whenTargetNamed(SHAPE.Text);
-
-// bind animation updaters
-container.bind(DefaultAttributeAnimationUpdater).toSelf().inSingletonScope();
-container.bind(ColorAttributeAnimationUpdater).toSelf().inSingletonScope();
-container.bind(AttributeAnimationUpdaters).toService(DefaultAttributeAnimationUpdater);
-container.bind(AttributeAnimationUpdaters).toService(ColorAttributeAnimationUpdater);
+//     dirtyRectangle: undefined,
+//     dirtyEntities: [],
+//   });
+//   // childContainer.bind(CanvasManager).toSelf().inSingletonScope();
+//   // const manager = childContainer.get(CanvasManager);
+//   // manager.setContainer(childContainer);
+//   return new CanvasManager(childContainer);
+// });
 
 // register components & systems
 const world = container.get(World);

@@ -56,7 +56,7 @@ export class WebGLEngine implements RenderingEngine {
           // @see https://www.khronos.org/registry/webgl/specs/1.0/#5.2.1
           antialias: cfg.antialias,
           premultipliedAlpha: true,
-          // preserveDrawingBuffer: false,
+          preserveDrawingBuffer: true,
         },
         pixelRatio: cfg.dpr || 1,
         // TODO: use extensions
@@ -87,19 +87,6 @@ export class WebGLEngine implements RenderingEngine {
   }
 
   public createModel = (options: IModelInitializationOptions): IModel => {
-    // if (options.uniforms) {
-    //   await Promise.all(
-    //     Object.keys(options.uniforms).map(async (name) => {
-    //       // @ts-ignore
-    //       if (options.uniforms![name] && options.uniforms![name].load !== undefined) {
-    //         // @ts-ignore
-    //         const texture = await options.uniforms![name].load();
-    //         // @ts-ignore
-    //         options.uniforms[name] = texture;
-    //       }
-    //     })
-    //   );
-    // }
     return new ReglModel(this.gl, options);
   };
 
@@ -130,11 +117,8 @@ export class WebGLEngine implements RenderingEngine {
   public clear = (options: IClearOptions) => {
     // @see https://github.com/regl-project/regl/blob/gh-pages/API.md#clear-the-draw-buffer
     const { color, depth, stencil, framebuffer = null } = options;
-    const reglClearOptions: regl.ClearOptions = {
-      color,
-      depth,
-      stencil,
-    };
+    // @ts-ignore
+    const reglClearOptions: regl.ClearOptions = options;
 
     reglClearOptions.framebuffer = framebuffer === null ? framebuffer : (framebuffer as ReglFramebuffer).get();
 
@@ -155,7 +139,7 @@ export class WebGLEngine implements RenderingEngine {
       } else {
         this.gl._gl.disable(gl.SCISSOR_TEST);
       }
-      this.gl._refresh();
+      // this.gl._refresh();
     }
   };
 

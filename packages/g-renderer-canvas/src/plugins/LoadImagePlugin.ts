@@ -1,6 +1,7 @@
-import { Renderable, DisplayObjectPlugin, SceneGraphNode, SHAPE, RENDERER, DisplayObjectHooks } from '@antv/g';
+import { Renderable, DisplayObjectPlugin, SceneGraphNode, SHAPE, DisplayObjectHooks } from '@antv/g';
 import { Entity } from '@antv/g-ecs';
 import { inject, injectable } from 'inversify';
+import { RENDERER } from '..';
 import { ImagePool } from '../shapes/ImagePool';
 
 /**
@@ -14,8 +15,8 @@ export class LoadImagePlugin implements DisplayObjectPlugin {
   apply() {
     DisplayObjectHooks.mounted.tapPromise(
       'LoadImagePlugin',
-      async (renderer: RENDERER, context: CanvasRenderingContext2D, entity: Entity) => {
-        if (renderer !== RENDERER.Canvas) {
+      async (renderer: string, context: CanvasRenderingContext2D, entity: Entity) => {
+        if (renderer !== RENDERER) {
           return;
         }
 

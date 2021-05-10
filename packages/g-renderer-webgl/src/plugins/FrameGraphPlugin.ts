@@ -1,27 +1,13 @@
-import {
-  container,
-  AABB,
-  RenderingPlugin,
-  RenderingService,
-  SceneGraphNode,
-  Renderable,
-  Geometry,
-  SHAPE,
-} from '@antv/g';
+import { RenderingPlugin, RenderingService, CanvasConfig, SceneGraphNode, SHAPE } from '@antv/g';
 import { Entity } from '@antv/g-ecs';
-import { isNil } from '@antv/util';
 import { inject, injectable } from 'inversify';
 import { ResourcePool } from '../components/framegraph/ResourcePool';
-import { Geometry3D } from '../components/Geometry3D';
-import { Material3D } from '../components/Material3D';
 import { Renderable3D, INSTANCING_STATUS } from '../components/Renderable3D';
 import { RenderingEngine } from '../services/renderer';
-import { RenderingContext } from '../services/WebGLContextService';
-import { ModelBuilder } from '../shapes';
+import { TexturePool } from '../shapes/TexturePool';
 import { FrameGraphEngine, IRenderPass, RenderPassFactory } from './FrameGraphEngine';
 import { CopyPass, CopyPassData } from './passes/CopyPass';
 import { RenderPass, RenderPassData } from './passes/RenderPass';
-import { PickingIdGenerator } from './PickingIdGenerator';
 
 export const ATTRIBUTE = {
   ModelMatrix0: 'a_ModelMatrix0',
@@ -52,11 +38,17 @@ export const STYLE = {
 export class FrameGraphPlugin implements RenderingPlugin {
   static tag = 'FrameGraphPlugin';
 
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
+
   @inject(RenderPassFactory)
   private renderPassFactory: <T>(name: string) => IRenderPass<T>;
 
   @inject(ResourcePool)
   private resourcePool: ResourcePool;
+
+  @inject(TexturePool)
+  private texturePool: TexturePool;
 
   @inject(RenderingEngine)
   private engine: RenderingEngine;
@@ -67,7 +59,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
   apply(renderer: RenderingService) {
     // compile frame graph at beginning
     // renderpass -> copypass -> present
-    renderer.hooks.beginFrame.tapPromise(FrameGraphPlugin.tag, async (entities: Entity[], dirtyAABB?: AABB) => {
+    renderer.hooks.beginFrame.tapPromise(FrameGraphPlugin.tag, async () => {
       this.engine.beginFrame();
 
       const { setup: setupRenderPass, execute: executeRenderPass } = this.renderPassFactory<RenderPassData>(
@@ -102,12 +94,16 @@ export class FrameGraphPlugin implements RenderingPlugin {
     });
 
     renderer.hooks.renderFrame.tapPromise(FrameGraphPlugin.tag, async (entities: Entity[]) => {
+      // skip group
+      const entitiesToRender = entities.filter((e) => e.getComponent(SceneGraphNode).tagName !== SHAPE.Group);
+
       this.frameGraphSystem.compile();
-      this.frameGraphSystem.executePassNodes(entities);
+      this.frameGraphSystem.executePassNodes(entitiesToRender);
     });
 
     renderer.hooks.destroy.tap(FrameGraphPlugin.tag, () => {
       this.resourcePool.clean();
+      this.texturePool.destroy();
       this.engine.destroy();
     });
   }

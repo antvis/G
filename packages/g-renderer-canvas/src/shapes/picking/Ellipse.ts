@@ -1,4 +1,4 @@
-import { SceneGraphNode } from '@antv/g';
+import { SceneGraphNode, DisplayObject } from '@antv/g';
 import { Entity } from '@antv/g-ecs';
 
 function ellipseDistance(squareX: number, squareY: number, rx: number, ry: number) {
@@ -6,12 +6,13 @@ function ellipseDistance(squareX: number, squareY: number, rx: number, ry: numbe
 }
 
 export function isPointInPath(
-  entity: Entity,
+  displayObject: DisplayObject,
   { lineWidth, x, y }: { lineWidth: number; x: number; y: number }
 ): boolean {
   const {
-    attributes: { x: cx = 0, y: cy = 0, rx = 0, ry = 0, fill, stroke },
-  } = entity.getComponent(SceneGraphNode);
+    attributes: { rx = 0, ry = 0, fill, stroke },
+  } = displayObject.getEntity().getComponent(SceneGraphNode);
+  const [cx, cy] = displayObject.getPosition();
   const halfLineWith = lineWidth / 2;
   const squareX = (x - cx) * (x - cx);
   const squareY = (y - cy) * (y - cy);

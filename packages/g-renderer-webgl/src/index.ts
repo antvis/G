@@ -2,14 +2,11 @@
 /// <reference path="../../../node_modules/@webgpu/types/dist/index.d.ts" />
 import {
   container,
-  CanvasContainerModule,
   ContextService,
-  CullingStrategy,
-  EventService,
   RenderingPluginContribution,
   SHAPE,
-  RENDERER,
   registerDisplayObjectPlugin,
+  registerCanvasContainerModule,
 } from '@antv/g';
 import { World } from '@antv/g-ecs';
 import { ContainerModule, interfaces } from 'inversify';
@@ -26,22 +23,25 @@ import { IRenderPass, RenderPassFactory } from './plugins/FrameGraphEngine';
 import { RenderPass } from './plugins/passes/RenderPass';
 import { CopyPass } from './plugins/passes/CopyPass';
 import { FrameGraphEngine } from './plugins/FrameGraphEngine';
-// import { Camera } from './Camera';
 import { View } from './View';
 import { TexturePool } from './shapes/TexturePool';
-import { CanvasEventService } from './services/CanvasEventService';
 import { WebGLContextService } from './services/WebGLContextService';
 import { DefaultShaderModuleService, ShaderModuleService } from './services/shader-module';
 import { FrameGraphPlugin } from './plugins/FrameGraphPlugin';
-import { ImageModelBuilder, LineModelBuilder, ModelBuilder } from './shapes';
+import { ImageModelBuilder, LineModelBuilder, ModelBuilder, TextModelBuilder } from './shapes';
+import { GlyphManager } from './shapes/symbol/GlyphManager';
+import { PickingPlugin } from './plugins/PickingPlugin';
+
+export const RENDERER = 'webgl';
 
 const world = container.get(World);
 world.registerComponent(Geometry3D);
 world.registerComponent(Material3D);
 world.registerComponent(Renderable3D);
-// world.registerSystem(GeometrySystem);
 
 container.bind(PickingIdGenerator).toSelf().inSingletonScope();
+container.bind(TexturePool).toSelf().inSingletonScope();
+container.bind(GlyphManager).toSelf().inSingletonScope();
 
 container.bind(DefaultShaderModuleService).toSelf().inSingletonScope();
 container.bind(ShaderModuleService).toService(DefaultShaderModuleService);
@@ -52,6 +52,7 @@ container.bind(ShaderModuleService).toService(DefaultShaderModuleService);
 container.bind(CircleModelBuilder).toSelf().inSingletonScope();
 container.bind(ImageModelBuilder).toSelf().inSingletonScope();
 container.bind(LineModelBuilder).toSelf().inSingletonScope();
+container.bind(TextModelBuilder).toSelf().inSingletonScope();
 container
   .bind<interfaces.Factory<ModelBuilder>>(ModelBuilder)
   .toFactory<ModelBuilder>((context: interfaces.Context) => {
@@ -62,6 +63,8 @@ container
         return context.container.get(ImageModelBuilder);
       } else if (tagName === SHAPE.Line || tagName === SHAPE.Polyline) {
         return context.container.get(LineModelBuilder);
+      } else if (tagName === SHAPE.Text) {
+        return context.container.get(TextModelBuilder);
       }
 
       return context.container.get(CircleModelBuilder);
@@ -70,61 +73,50 @@ container
 
 registerDisplayObjectPlugin(InitShapePlugin);
 
-container
-  .bind(CanvasContainerModule)
-  .toConstantValue(
-    new ContainerModule((bind, unbind, isBound, rebind) => {
-      // TODO: implement dirty rectangle with Stencil
-      // const config = container.get(CanvasConfig);
-      // Object.assign(config, {
-      //   dirtyRectangle: {
-      //     enable: false,
-      //   },
-      // });
+registerCanvasContainerModule(
+  new ContainerModule((bind, unbind, isBound, rebind) => {
+    bind(WebGLContextService).toSelf().inSingletonScope();
+    bind(ContextService).toService(WebGLContextService);
 
-      bind(WebGLContextService).toSelf().inSingletonScope();
-      bind(ContextService).toService(WebGLContextService);
-      bind(CanvasEventService).toSelf().inSingletonScope();
-      bind(EventService).toService(CanvasEventService);
+    /**
+     * texture pool should be clean when renderer destroyed
+     */
+    bind(ResourcePool).toSelf().inSingletonScope();
 
-      /**
-       * texture pool should be clean when renderer destroyed
-       */
-      bind(TexturePool).toSelf().inSingletonScope();
-      bind(ResourcePool).toSelf().inSingletonScope();
+    /**
+     * bind rendering engine
+     */
+    bind(WebGLEngine).toSelf().inSingletonScope();
+    bind(RenderingEngine).toService(WebGLEngine);
 
-      /**
-       * bind services
-       */
-      bind(WebGLEngine).toSelf().inSingletonScope();
-      bind(RenderingEngine).toService(WebGLEngine);
+    /**
+     * bind render passes
+     */
+    bind<IRenderPass<any>>(IRenderPass).to(RenderPass).inSingletonScope().whenTargetNamed(RenderPass.IDENTIFIER);
+    bind<IRenderPass<any>>(IRenderPass).to(CopyPass).inSingletonScope().whenTargetNamed(CopyPass.IDENTIFIER);
+    bind<interfaces.Factory<IRenderPass<any>>>(RenderPassFactory).toFactory<IRenderPass<any>>(
+      (context: interfaces.Context) => {
+        return (name: string) => {
+          return context.container.getNamed(IRenderPass, name);
+        };
+      }
+    );
 
-      /**
-       * bind render passes
-       */
-      bind<IRenderPass<any>>(IRenderPass).to(RenderPass).inSingletonScope().whenTargetNamed(RenderPass.IDENTIFIER);
-      bind<IRenderPass<any>>(IRenderPass).to(CopyPass).inSingletonScope().whenTargetNamed(CopyPass.IDENTIFIER);
-      bind<interfaces.Factory<IRenderPass<any>>>(RenderPassFactory).toFactory<IRenderPass<any>>(
-        (context: interfaces.Context) => {
-          return (name: string) => {
-            return context.container.getNamed(IRenderPass, name);
-          };
-        }
-      );
+    bind(View).toSelf().inSingletonScope();
+    // bind(Camera).toSelf().inSingletonScope();
 
-      bind(View).toSelf().inSingletonScope();
-      // bind(Camera).toSelf().inSingletonScope();
+    /**
+     * bind handlers when frame began
+     */
+    bind(FrameGraphEngine).toSelf().inSingletonScope();
 
-      /**
-       * bind handlers when frame began
-       */
-      bind(FrameGraphEngine).toSelf().inSingletonScope();
-
-      /**
-       * register rendering plugins
-       */
-      bind(FrameGraphPlugin).toSelf().inSingletonScope();
-      bind(RenderingPluginContribution).toService(FrameGraphPlugin);
-    })
-  )
-  .whenTargetNamed(RENDERER.WebGL);
+    /**
+     * register rendering plugins
+     */
+    bind(FrameGraphPlugin).toSelf().inSingletonScope();
+    bind(RenderingPluginContribution).toService(FrameGraphPlugin);
+    bind(PickingPlugin).toSelf().inSingletonScope();
+    bind(RenderingPluginContribution).toService(PickingPlugin);
+  }),
+  RENDERER
+);

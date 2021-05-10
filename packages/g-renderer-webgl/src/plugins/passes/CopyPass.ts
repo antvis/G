@@ -79,10 +79,10 @@ export class CopyPass implements IRenderPass<CopyPassData> {
           enable: false,
         },
         count: 3,
-        blend: {
-          // copy pass 需要混合
-          enable: true,
-        },
+        // blend: {
+        //   // copy pass 需要混合
+        //   enable: true,
+        // },
       });
       this.model = model;
     }

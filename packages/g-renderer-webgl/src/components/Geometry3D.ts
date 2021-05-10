@@ -29,13 +29,13 @@ export class Geometry3D extends Component {
   reset() {
     this.attributes.forEach((attribute) => {
       if (attribute.buffer) {
-        attribute.buffer.destroy();
+        // attribute.buffer.destroy();
         attribute.buffer = undefined;
       }
     });
 
     if (this.indicesBuffer) {
-      this.indicesBuffer.destroy();
+      // this.indicesBuffer.destroy();
     }
 
     this.indices = null;

@@ -1,20 +1,50 @@
 import { Entity } from '@antv/g-ecs';
-import { Renderable, Cullable, SceneGraphNode } from '../../components';
+import { Cullable, SceneGraphNode } from '../../components';
 import { mat4, vec3 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
 import { CullingStrategy } from './CullingPlugin';
 import { AABB, Mask, Plane } from '../../shapes';
 import { Camera } from '../../Camera';
+import { DisplayObjectPool } from '../../DisplayObjectPool';
+import { CanvasConfig } from '../../types';
 
 @injectable()
 export class FrustumCullingStrategy implements CullingStrategy {
   @inject(Camera)
   private camera: Camera;
 
+  @inject(DisplayObjectPool)
+  private displayObjectPool: DisplayObjectPool;
+
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
+
   isVisible(entity: Entity) {
-    const renderable = entity.getComponent(Renderable);
     const cullable = entity.getComponent(Cullable);
     const hierarchy = entity.getComponent(SceneGraphNode);
+    const displayObject = this.displayObjectPool.getByName(entity.getName());
+    const aabb = displayObject.getBounds();
+
+    if (!aabb) {
+      return false;
+    }
+
+    // project (0, 0)(w, h) to (-w, -h)(w, h)
+    const projectedAABB = new AABB();
+    projectedAABB.setMinMax(
+      vec3.scaleAndAdd(
+        vec3.create(),
+        vec3.fromValues(-this.canvasConfig.width, -this.canvasConfig.height, 0),
+        aabb.getMin(),
+        2
+      ),
+      vec3.scaleAndAdd(
+        vec3.create(),
+        vec3.fromValues(-this.canvasConfig.width, -this.canvasConfig.height, 0),
+        aabb.getMax(),
+        2
+      )
+    );
 
     // get VP matrix from camera
     const viewMatrix = this.camera.getViewTransform()!;
@@ -23,11 +53,14 @@ export class FrustumCullingStrategy implements CullingStrategy {
 
     const parentVisibilityPlaneMask = hierarchy?.parent?.getComponent(Cullable)?.visibilityPlaneMask;
     cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
-      renderable.aabb,
+      projectedAABB,
       parentVisibilityPlaneMask || Mask.INDETERMINATE,
       this.camera.getFrustum().planes
     );
+
     cullable.visible = cullable.visibilityPlaneMask !== Mask.OUTSIDE;
+
+    // console.log(entity, cullable.visibilityPlaneMask, this.camera.getFrustum().planes)
 
     return cullable.visible;
   }

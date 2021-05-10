@@ -138,10 +138,8 @@ export class LineModelBuilder implements ModelBuilder {
       lineJoin,
       stroke = '',
       strokeOpacity = 1,
-      x1,
-      x2,
-      y1,
-      y2,
+      width,
+      height,
       points,
     } = sceneGraphNode.attributes;
     const strokeColor = rgb2arr(stroke);
@@ -166,8 +164,6 @@ export class LineModelBuilder implements ModelBuilder {
       func: {
         srcRGB: gl.SRC_ALPHA,
         dstRGB: gl.ONE_MINUS_SRC_ALPHA,
-        srcAlpha: 1,
-        dstAlpha: 1,
       },
     };
     material.setUniform({
@@ -179,8 +175,8 @@ export class LineModelBuilder implements ModelBuilder {
       ? [points]
       : [
           [
-            [x1, y1, 0],
-            [x2, y2, 0],
+            [0, 0, 0],
+            [width, height, 0],
           ],
         ];
 

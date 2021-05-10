@@ -1,17 +1,17 @@
-import { SceneGraphNode, SHAPE } from '@antv/g';
 import { Entity } from '@antv/g-ecs';
+import { SceneGraphNode, SHAPE } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { ShaderModuleService } from '../services/shader-module';
 import circleVertex from './shaders/webgl.circle.vert.glsl';
 import circleFragment from './shaders/webgl.circle.frag.glsl';
-import { rgb2arr } from '../utils/color';
 import { gl } from '../services/renderer/constants';
 import { Material3D } from '../components/Material3D';
 import { Geometry3D } from '../components/Geometry3D';
 import { Renderable3D } from '../components/Renderable3D';
 import { BufferData } from '../services/renderer';
-import { RenderingContext } from '../services/WebGLContextService';
+import { WebGLRenderingContext } from '../services/WebGLContextService';
 import { ModelBuilder } from '.';
+import { rgb2arr } from '../utils/color';
 
 const pointShapes = ['circle', 'ellipse', 'rect', 'rounded-rect'];
 
@@ -118,7 +118,7 @@ export class CircleModelBuilder implements ModelBuilder {
     }
   }
 
-  async prepareModel(context: RenderingContext, entity: Entity) {
+  async prepareModel(context: WebGLRenderingContext, entity: Entity) {
     const sceneGraphNode = entity.getComponent(SceneGraphNode);
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
@@ -154,10 +154,9 @@ export class CircleModelBuilder implements ModelBuilder {
     material.blend = {
       enable: true,
       func: {
+        // @see https://learnopengl.com/Advanced-OpenGL/Blending
         srcRGB: gl.SRC_ALPHA,
         dstRGB: gl.ONE_MINUS_SRC_ALPHA,
-        srcAlpha: 1,
-        dstAlpha: 1,
       },
     };
 

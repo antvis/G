@@ -16,12 +16,14 @@ export interface CullingStrategy {
  */
 @injectable()
 export class CullingPlugin implements RenderingPlugin {
+  static tag = 'CullingPlugin';
+
   @inject(ContributionProvider)
   @named(CullingStrategy)
   private strategies: ContributionProvider<CullingStrategy>;
 
   apply(renderer: RenderingService) {
-    renderer.hooks.prepareEntities.tap('CullingPlugin', (entities: Entity[]) => {
+    renderer.hooks.prepareEntities.tap(CullingPlugin.tag, (entities: Entity[]) => {
       return entities.filter((entity) => {
         const cullable = entity.getComponent(Cullable);
         if (this.strategies.getContributions(true).length === 0) {
@@ -31,9 +33,13 @@ export class CullingPlugin implements RenderingPlugin {
           cullable.visible = this.strategies.getContributions(true).every((strategy) => strategy.isVisible(entity));
         }
 
-        // console.log(this.isVisible(entity), entity);
-
         return this.isVisible(entity) && (!cullable || cullable.visible);
+      });
+    });
+
+    renderer.hooks.endFrame.tap(CullingPlugin.tag, (entities: Entity[]) => {
+      entities.forEach((entity) => {
+        entity.getComponent(Cullable).visibilityPlaneMask = -1;
       });
     });
   }
@@ -42,12 +48,14 @@ export class CullingPlugin implements RenderingPlugin {
     // descendants of the element will be visible if they have `visibility` set to `visible`.
     const sceneGraphNode = entity.getComponent(SceneGraphNode);
 
-    return (
-      !sceneGraphNode.parent ||
-      sceneGraphNode.attributes.visibility === 'visible' ||
-      (sceneGraphNode.attributes.visibility === 'initial' &&
-        !!sceneGraphNode.parent &&
-        this.isVisible(sceneGraphNode.parent))
-    );
+    return sceneGraphNode.attributes.visibility === 'visible';
+
+    // return (
+    //   !sceneGraphNode.parent ||
+    //   sceneGraphNode.attributes.visibility === 'visible' ||
+    //   (sceneGraphNode.attributes.visibility === 'initial' &&
+    //     !!sceneGraphNode.parent &&
+    //     this.isVisible(sceneGraphNode.parent))
+    // );
   }
 }

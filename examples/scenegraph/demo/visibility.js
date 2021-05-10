@@ -1,7 +1,7 @@
-import { Group, Circle, Canvas, RENDERER } from '@antv/g';
-import '@antv/g-renderer-canvas';
-import '@antv/g-renderer-webgl';
-import '@antv/g-renderer-svg';
+import { Group, Circle, Canvas } from '@antv/g';
+import { RENDERER as CANVAS_RENDERER } from '@antv/g-renderer-canvas';
+import { RENDERER as WEBGL_RENDERER } from '@antv/g-renderer-webgl';
+import { RENDERER as SVG_RENDERER } from '@antv/g-renderer-svg';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 
@@ -23,7 +23,7 @@ const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: RENDERER.Canvas,
+  renderer: CANVAS_RENDERER,
 });
 
 const solarSystem = new Group({
@@ -85,7 +85,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.onFrame(() => {
+canvas.on('postrender', () => {
   if (stats) {
     stats.update();
   }
@@ -96,9 +96,9 @@ const gui = new dat.GUI({ autoPlace: false });
 $wrapper.appendChild(gui.domElement);
 const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
-  renderer: RENDERER.Canvas,
+  renderer: CANVAS_RENDERER,
 };
-rendererFolder.add(rendererConfig, 'renderer', [RENDERER.Canvas, RENDERER.WebGL, RENDERER.SVG]).onChange((renderer) => {
+rendererFolder.add(rendererConfig, 'renderer', [CANVAS_RENDERER, WEBGL_RENDERER, SVG_RENDERER]).onChange((renderer) => {
   canvas.setConfig({
     renderer,
   });
@@ -107,57 +107,77 @@ rendererFolder.open();
 
 const sunFolder = gui.addFolder('sun');
 const sunConfig = {
-  visibility: 'initial',
+  show: () => {
+    sun.attr('visibility', 'visible');
+  },
+  hide: () => {
+    sun.attr('visibility', 'hidden');
+  },
   'z-index': 0,
 };
-sunFolder.add(sunConfig, 'visibility', ['initial', 'visible', 'hidden']).onChange((visible) => {
-  sun.attr('visibility', visible);
-});
+sunFolder.add(sunConfig, 'hide').name('hide');
+sunFolder.add(sunConfig, 'show').name('show');
 sunFolder.add(sunConfig, 'z-index', 0, 100).onChange((zIndex) => {
-  sun.setZIndex(zIndex);
+  sun.attr('z-index', zIndex);
 });
 sunFolder.open();
 
 const earthFolder = gui.addFolder('earth');
 const earthConfig = {
-  visibility: 'initial',
+  show: () => {
+    earth.attr('visibility', 'visible');
+  },
+  hide: () => {
+    earth.attr('visibility', 'hidden');
+  },
   'z-index': 0,
 };
-earthFolder.add(earthConfig, 'visibility', ['initial', 'visible', 'hidden']).onChange((visible) => {
-  earth.attr('visibility', visible);
-});
+earthFolder.add(earthConfig, 'hide').name('hide');
+earthFolder.add(earthConfig, 'show').name('show');
 earthFolder.add(earthConfig, 'z-index', 0, 100).onChange((zIndex) => {
-  earth.setZIndex(zIndex);
+  earth.attr('z-index', zIndex);
 });
 
 const moonFolder = gui.addFolder('moon');
 const moonConfig = {
-  visibility: 'initial',
+  show: () => {
+    moon.attr('visibility', 'visible');
+  },
+  hide: () => {
+    moon.attr('visibility', 'hidden');
+  },
 };
-moonFolder.add(moonConfig, 'visibility', ['initial', 'visible', 'hidden']).onChange((visible) => {
-  moon.attr('visibility', visible);
-});
+moonFolder.add(moonConfig, 'hide').name('hide');
+moonFolder.add(moonConfig, 'show').name('show');
 
 const earthOrbitFolder = gui.addFolder('earthOrbit');
 const earthOrbitConfig = {
-  visibility: 'initial',
+  show: () => {
+    earthOrbit.attr('visibility', 'visible');
+  },
+  hide: () => {
+    earthOrbit.attr('visibility', 'hidden');
+  },
   'z-index': 0,
 };
-earthOrbitFolder.add(earthOrbitConfig, 'visibility', ['initial', 'visible', 'hidden']).onChange((visible) => {
-  earthOrbit.attr('visibility', visible);
-});
+earthOrbitFolder.add(earthOrbitConfig, 'hide').name('hide');
+earthOrbitFolder.add(earthOrbitConfig, 'show').name('show');
 earthOrbitFolder.add(earthOrbitConfig, 'z-index', 0, 100).onChange((zIndex) => {
   earthOrbit.setZIndex(zIndex);
 });
 
 const moonOrbitFolder = gui.addFolder('moonOrbit');
 const moonOrbitConfig = {
-  visibility: 'initial',
+  show: () => {
+    moonOrbit.attr('visibility', 'visible');
+  },
+  hide: () => {
+    moonOrbit.attr('visibility', 'hidden');
+  },
   'z-index': 0,
 };
-moonOrbitFolder.add(moonOrbitConfig, 'visibility', ['initial', 'visible', 'hidden']).onChange((visible) => {
-  moonOrbit.attr('visibility', visible);
-});
+moonOrbitFolder.add(moonOrbitConfig, 'hide').name('hide');
+moonOrbitFolder.add(moonOrbitConfig, 'show').name('show');
 moonOrbitFolder.add(moonOrbitConfig, 'z-index', 0, 100).onChange((zIndex) => {
   moonOrbit.setZIndex(zIndex);
 });

@@ -12,7 +12,7 @@ export class Cullable extends Component {
 
   strategy: Strategy = Strategy.Standard;
 
-  visibilityPlaneMask = 0;
+  visibilityPlaneMask = -1;
 
   visible = false;
 }

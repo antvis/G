@@ -10,20 +10,20 @@ order: 1
 目前我们提供了三种渲染器：`@antv/g-renderer-canvas/svg/webgl`，用户可以像插件一样按需引入，但至少需要一种：
 
 ```js
-import '@antv/g-renderer-canvas';
-import '@antv/g-renderer-webgl';
+import { RENDERER as CANVAS_RENDERER } from '@antv/g-renderer-canvas';
+import { RENDERER as WEBGL_RENDERER } from '@antv/g-renderer-webgl';
 // import 'g-renderer-svg';
 ```
 
 这样在创建 `Canvas` 画布时可以选择引入的渲染器之一，例如我们引入了 Canvas 和 WebGL 渲染器，就可以在两者之间选择：
 
 ```js
-import { Canvas, RENDERER } from '@antv/g';
+import { Canvas } from '@antv/g';
 const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: RENDERER.Canvas,
+  renderer: CANVAS_RENDERER,
   // renderer: RENDERER.WebGL,
 });
 ```
@@ -33,9 +33,9 @@ const canvas = new Canvas({
 如果选择了一个未引入的渲染器，但在创建画布时使用，则会报错，例如：
 
 ```js
-import { Canvas, RENDERER } from '@antv/g';
+import { Canvas } from '@antv/g';
 import '@antv/g-renderer-canvas';
-import '@antv/g-renderer-webgl';
+import { RENDERER as WEBGL_RENDERER } from '@antv/g-renderer-webgl';
 
 const canvas = new Canvas({
   container: 'container',

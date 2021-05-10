@@ -102,8 +102,6 @@ export class ImageModelBuilder implements ModelBuilder {
       func: {
         srcRGB: gl.SRC_ALPHA,
         dstRGB: gl.ONE_MINUS_SRC_ALPHA,
-        srcAlpha: 1,
-        dstAlpha: 1,
       },
     };
 

@@ -1,22 +1,21 @@
 import { Camera, CanvasConfig, ContextService } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { isString } from '@antv/util';
-// import { Camera } from '../Camera';
 import { IView, RenderingEngine } from './renderer';
 import { ShaderModuleService } from './shader-module';
 import { setDOMSize } from '../utils/dom';
 import { View } from '../View';
 
-export interface RenderingContext {
+export interface WebGLRenderingContext {
   engine: RenderingEngine;
   camera: Camera;
   view: IView;
 }
 
 @injectable()
-export class WebGLContextService implements ContextService<RenderingContext> {
+export class WebGLContextService implements ContextService<WebGLRenderingContext> {
   private $container: HTMLElement | null;
-  private context: RenderingContext | null;
+  private context: WebGLRenderingContext | null;
 
   @inject(ShaderModuleService)
   private shaderModule: ShaderModuleService;
@@ -79,11 +78,21 @@ export class WebGLContextService implements ContextService<RenderingContext> {
         camera: this.camera,
         view: this.view,
       };
+
+      this.resize(width, height);
     }
+  }
+
+  getDomElement() {
+    return this.engine.getCanvas();
   }
 
   getContext() {
     return this.context;
+  }
+
+  getBoundingClientRect() {
+    return this.$container?.getBoundingClientRect();
   }
 
   destroy() {
@@ -112,5 +121,11 @@ export class WebGLContextService implements ContextService<RenderingContext> {
     let dpr = window.devicePixelRatio || 1;
     dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
     return dpr;
+  }
+
+  applyCursorStyle(cursor: string) {
+    if (this.$container) {
+      this.$container.style.cursor = cursor;
+    }
   }
 }

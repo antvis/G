@@ -1,6 +1,8 @@
 import { AABB } from '../../shapes';
 import { ShapeAttrs } from '../../types';
 
+export const GeometryUpdaterFactory = Symbol('GeometryUpdaterFactory');
+
 export const GeometryAABBUpdater = Symbol('GeometryAABBGenerator');
 export interface GeometryAABBUpdater {
   dependencies: string[];
@@ -10,3 +12,6 @@ export interface GeometryAABBUpdater {
 export { CircleUpdater } from './CircleUpdater';
 export { EllipseUpdater } from './EllipseUpdater';
 export { RectUpdater } from './RectUpdater';
+export { TextUpdater } from './TextUpdater';
+export { LineUpdater } from './LineUpdater';
+export { PolylineUpdater } from './PolylineUpdater';

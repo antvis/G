@@ -1,7 +1,7 @@
-import { Circle, Canvas, RENDERER } from '@antv/g';
-import '@antv/g-renderer-canvas';
-import '@antv/g-renderer-webgl';
-import '@antv/g-renderer-svg';
+import { Circle, Canvas } from '@antv/g';
+import { RENDERER as CANVAS_RENDERER } from '@antv/g-renderer-canvas';
+import { RENDERER as WEBGL_RENDERER } from '@antv/g-renderer-webgl';
+import { RENDERER as SVG_RENDERER } from '@antv/g-renderer-svg';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 
@@ -9,7 +9,7 @@ const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: RENDERER.Canvas,
+  renderer: CANVAS_RENDERER,
 });
 
 const circle = new Circle({
@@ -50,7 +50,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.onFrame(() => {
+canvas.on('postrender', () => {
   if (stats) {
     stats.update();
   }
@@ -61,9 +61,9 @@ const gui = new dat.GUI({ autoPlace: false });
 $wrapper.appendChild(gui.domElement);
 const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
-  renderer: RENDERER.Canvas,
+  renderer: CANVAS_RENDERER,
 };
-rendererFolder.add(rendererConfig, 'renderer', [RENDERER.Canvas, RENDERER.WebGL, RENDERER.SVG]).onChange((renderer) => {
+rendererFolder.add(rendererConfig, 'renderer', [CANVAS_RENDERER, WEBGL_RENDERER, SVG_RENDERER]).onChange((renderer) => {
   canvas.setConfig({
     renderer,
   });

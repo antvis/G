@@ -45,5 +45,8 @@ void main() {
   gl_FragColor = mix(vec4(v_Color.rgb, v_Color.a * u_Opacity), strokeColor * u_StrokeOpacity, color_t);
   gl_FragColor.a = gl_FragColor.a * opacity_t;
 
+  if (gl_FragColor.a < 0.01)
+    discard;
+
   gl_FragColor = filterColor(gl_FragColor);
 }

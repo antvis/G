@@ -7,5 +7,6 @@ export interface ElementRenderer {
 
 export { RectRenderer } from './Rect';
 export { ImageRenderer } from './Image';
+export { LineRenderer } from './Line';
 export { PolylineRenderer } from './Polyline';
 export { TextRenderer } from './Text';

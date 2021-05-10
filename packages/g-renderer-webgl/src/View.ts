@@ -17,7 +17,8 @@ export class View implements IView {
     width: 0,
     height: 0,
   };
-  private clearColor: [number, number, number, number] = [1, 1, 1, 1];
+  // private clearColor: [number, number, number, number] = [1, 1, 1, 1];
+  private clearColor: [number, number, number, number] = [0, 0, 0, 0];
 
   public getCamera() {
     return this.camera;

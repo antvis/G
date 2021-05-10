@@ -3,17 +3,17 @@ import {
   fromRotationTranslationScale,
   getEuler,
   Renderable,
-  RENDERER,
   DisplayObjectPlugin,
   SceneGraphNode,
   SceneGraphService,
-  DisplayObject,
   SHAPE,
   DisplayObjectHooks,
+  Sortable,
 } from '@antv/g';
 import { Entity } from '@antv/g-ecs';
 import { vec3 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
+import { RENDERER } from '..';
 import { ElementSVG } from '../components/ElementSVG';
 import { ElementRenderer } from '../shapes/paths';
 import { createSVGElement } from '../utils/dom';
@@ -23,7 +23,7 @@ export const SHAPE_TO_TAGS: Record<SHAPE, string> = {
   [SHAPE.Circle]: 'circle',
   [SHAPE.Ellipse]: 'ellipse',
   [SHAPE.Image]: 'image',
-  [SHAPE.Group]: 'group',
+  [SHAPE.Group]: 'g', // FIXME: skip group
   [SHAPE.Line]: 'line',
   [SHAPE.Polyline]: 'polyline',
   [SHAPE.Polygon]: 'polygon',
@@ -46,10 +46,10 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   ry: 'ry',
   width: 'width',
   height: 'height',
-  x1: 'x1',
-  x2: 'x2',
-  y1: 'y1',
-  y2: 'y2',
+  // x1: 'x1',
+  // x2: 'x2',
+  // y1: 'y1',
+  // y2: 'y2',
   lineCap: 'stroke-linecap',
   lineJoin: 'stroke-linejoin',
   lineWidth: 'stroke-width',
@@ -75,14 +75,16 @@ export const SVG_ATTR_MAP: Record<string, string> = {
 
 @injectable()
 export class RenderShapePlugin implements DisplayObjectPlugin {
+  static tag = 'SVGRenderShapePlugin';
+
   @inject(SceneGraphService)
   protected sceneGraphService: SceneGraphService;
 
-  apply(shape: DisplayObject) {
+  apply() {
     DisplayObjectHooks.mounted.tapPromise(
-      'SVGRenderShapePlugin',
-      async (renderer: RENDERER, context: SVGElement, entity: Entity) => {
-        if (renderer !== RENDERER.SVG) {
+      RenderShapePlugin.tag,
+      async (renderer: string, context: SVGElement, entity: Entity) => {
+        if (renderer !== RENDERER) {
           return;
         }
 
@@ -92,33 +94,35 @@ export class RenderShapePlugin implements DisplayObjectPlugin {
         const svgElement = entity.addComponent(ElementSVG);
 
         const type = SHAPE_TO_TAGS[sceneGraphNode.tagName];
-        if (!type) {
-          throw new Error(`the type ${sceneGraphNode.tagName} is not supported by svg`);
-        }
-        const $el = createSVGElement(type);
-        $el.id = entity.getName();
-        svgElement.$el = $el;
+        if (type) {
+          let $groupEl;
 
-        $el.setAttribute('fill', 'none');
-        if (type === SHAPE.Image) {
-          $el.setAttribute('preserveAspectRatio', 'none');
-        }
+          const $el = createSVGElement(type);
+          $el.id = entity.getName();
 
-        // apply attributes
-        for (const name in sceneGraphNode.attributes) {
-          if (SVG_ATTR_MAP[name]) {
-            $el.setAttribute(SVG_ATTR_MAP[name], `${sceneGraphNode.attributes[name]}`);
+          if (type !== 'g') {
+            $groupEl = createSVGElement('g');
+            $groupEl.appendChild($el);
+          } else {
+            $groupEl = $el;
+          }
+
+          svgElement.$el = $el;
+          svgElement.$groupEl = $groupEl;
+
+          const $parentGroupEl = sceneGraphNode.parent?.getComponent(ElementSVG).$groupEl || context;
+
+          if ($parentGroupEl) {
+            $parentGroupEl.appendChild($groupEl);
           }
         }
-
-        context.appendChild($el);
       }
     );
 
     DisplayObjectHooks.unmounted.tapPromise(
-      'SVGRenderShapePlugin',
-      async (renderer: RENDERER, context: SVGElement, entity: Entity) => {
-        if (renderer !== RENDERER.SVG) {
+      RenderShapePlugin.tag,
+      async (renderer: string, context: SVGElement, entity: Entity) => {
+        if (renderer !== RENDERER) {
           return;
         }
 
@@ -129,15 +133,28 @@ export class RenderShapePlugin implements DisplayObjectPlugin {
       }
     );
 
-    DisplayObjectHooks.render.tap('SVGRenderShapePlugin', (renderer: RENDERER, context: SVGElement, entity: Entity) => {
-      if (renderer !== RENDERER.SVG) {
+    DisplayObjectHooks.render.tap(RenderShapePlugin.tag, (renderer: string, context: SVGElement, entity: Entity) => {
+      if (renderer !== RENDERER) {
         return;
       }
 
       const $el = entity.getComponent(ElementSVG).$el;
-      if ($el) {
-        // apply RTS transformation
-        this.applyTransform($el, entity);
+      const $groupEl = entity.getComponent(ElementSVG).$groupEl;
+      if ($el && $groupEl) {
+        const sceneGraphNode = entity.getComponent(SceneGraphNode);
+
+        // apply local RTS transformation to <group> wrapper
+        this.applyTransform($groupEl, entity);
+
+        $el.setAttribute('fill', 'none');
+        if (sceneGraphNode.tagName === SHAPE.Image) {
+          $el.setAttribute('preserveAspectRatio', 'none');
+        }
+
+        // apply attributes
+        for (const name in sceneGraphNode.attributes) {
+          this.updateAttribute(entity, name, `${sceneGraphNode.attributes[name]}`);
+        }
 
         // generate path
         const tagName = entity.getComponent(SceneGraphNode).tagName;
@@ -145,28 +162,50 @@ export class RenderShapePlugin implements DisplayObjectPlugin {
           const renderer = container.getNamed<ElementRenderer>(ElementRenderer, tagName);
           renderer.apply($el, entity);
         }
-
-        // finish rendering, clear dirty flag
-        const renderable = entity.getComponent(Renderable);
-        renderable.dirty = false;
       }
+
+      // finish rendering, clear dirty flag
+      const renderable = entity.getComponent(Renderable);
+      renderable.dirty = false;
     });
 
     DisplayObjectHooks.changeAttribute.tapPromise(
-      'SVGRenderShapePlugin',
+      RenderShapePlugin.tag,
       async (entity: Entity, name: string, value: any) => {
-        if (SVG_ATTR_MAP[name]) {
-          entity.getComponent(ElementSVG)?.$el?.setAttribute(SVG_ATTR_MAP[name], `${value}`);
+        if (name === 'z-index') {
+          const parentEntity = entity.getComponent(SceneGraphNode).parent;
+          const $groupEl = parentEntity?.getComponent(ElementSVG)?.$groupEl;
+
+          if ($groupEl) {
+            // need to reorder parent's children
+            const ids = entity.getComponent(Sortable).sorted;
+
+            const entities = [...(parentEntity?.getComponent(SceneGraphNode).children || [])];
+            entities.sort((a, b) => ids.indexOf(a) - ids.indexOf(b));
+
+            // create empty fragment
+            const fragment = document.createDocumentFragment();
+            entities.forEach((entity) => {
+              const $el = entity.getComponent(ElementSVG).$groupEl;
+              if ($el) {
+                fragment.appendChild($el);
+              }
+            });
+
+            $groupEl.appendChild(fragment);
+          }
         }
+
+        this.updateAttribute(entity, name, value);
       }
     );
   }
 
   private applyTransform($el: SVGElement, entity: Entity) {
-    const [ex, ey, ez] = getEuler(vec3.create(), this.sceneGraphService.getRotation(entity));
+    const [ex, ey, ez] = getEuler(vec3.create(), this.sceneGraphService.getLocalRotation(entity));
 
-    const [x, y] = this.sceneGraphService.getPosition(entity);
-    const [scaleX, scaleY] = this.sceneGraphService.getScale(entity);
+    const [x, y] = this.sceneGraphService.getLocalPosition(entity);
+    const [scaleX, scaleY] = this.sceneGraphService.getLocalScale(entity);
 
     // gimbal lock at 90 degrees
     const rts = fromRotationTranslationScale(ex || ez, x, y, scaleX, scaleY);
@@ -174,5 +213,16 @@ export class RenderShapePlugin implements DisplayObjectPlugin {
     // TODO: use proper precision avoiding too long string in `transform`
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
     $el.setAttribute('transform', `matrix(${rts[0]},${rts[1]},${rts[3]},${rts[4]},${rts[6]},${rts[7]})`);
+  }
+
+  private updateAttribute(entity: Entity, name: string, value: any) {
+    if (SVG_ATTR_MAP[name]) {
+      // update `visibility` on <group>
+      if (name === 'visibility') {
+        entity.getComponent(ElementSVG)?.$groupEl?.setAttribute(SVG_ATTR_MAP[name], `${value}`);
+      } else {
+        entity.getComponent(ElementSVG)?.$el?.setAttribute(SVG_ATTR_MAP[name], `${value}`);
+      }
+    }
   }
 }

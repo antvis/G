@@ -28,10 +28,7 @@ export class TextRenderer implements StyleRenderer {
       opacity,
     } = attributes;
 
-    const { font, lines, height, lineHeight, lineWidths, maxLineWidth } = this.textService.measureText(
-      text,
-      attributes
-    );
+    const { font, lines, height, lineHeight } = this.textService.measureText(text, attributes);
 
     context.font = font;
     context.lineWidth = lineWidth!;

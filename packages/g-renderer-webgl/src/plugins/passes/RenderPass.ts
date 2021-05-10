@@ -1,4 +1,14 @@
-import { ContextService, SceneGraphService, Renderable, SceneGraphNode, Transform } from '@antv/g';
+import {
+  ContextService,
+  RendererConfig,
+  SceneGraphService,
+  Renderable,
+  SceneGraphNode,
+  Transform,
+  RenderingContext,
+  AABB,
+  CanvasConfig,
+} from '@antv/g';
 import { Entity } from '@antv/g-ecs';
 import { inject, injectable } from 'inversify';
 import { mat4 } from 'gl-matrix';
@@ -6,11 +16,11 @@ import { FrameGraphHandle } from '../../components/framegraph/FrameGraphHandle';
 import { FrameGraphPass } from '../../components/framegraph/FrameGraphPass';
 import { PassNode } from '../../components/framegraph/PassNode';
 import { ResourcePool } from '../../components/framegraph/ResourcePool';
-import { IAttribute, IModelInitializationOptions, IUniform, RenderingEngine } from '../../services/renderer';
+import { IAttribute, IModelInitializationOptions, IUniform, IViewport, RenderingEngine } from '../../services/renderer';
 import { gl } from '../../services/renderer/constants';
 import { FrameGraphEngine, IRenderPass } from '../FrameGraphEngine';
 import { UNIFORM, ATTRIBUTE } from '../FrameGraphPlugin';
-import { RenderingContext } from '../../services/WebGLContextService';
+import { WebGLRenderingContext } from '../../services/WebGLContextService';
 import { INSTANCING_STATUS, Renderable3D } from '../../components/Renderable3D';
 import { Geometry3D } from '../../components/Geometry3D';
 import { IUniformBinding, Material3D } from '../../components/Material3D';
@@ -23,6 +33,9 @@ export interface RenderPassData {
 export class RenderPass implements IRenderPass<RenderPassData> {
   static IDENTIFIER = 'Render Pass';
 
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
+
   @inject(RenderingEngine)
   private readonly engine: RenderingEngine;
 
@@ -30,10 +43,13 @@ export class RenderPass implements IRenderPass<RenderPassData> {
   private readonly resourcePool: ResourcePool;
 
   @inject(ContextService)
-  private readonly contextService: ContextService<RenderingContext>;
+  private readonly contextService: ContextService<WebGLRenderingContext>;
 
   @inject(SceneGraphService)
   private sceneGraph: SceneGraphService;
+
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
 
   setup = (fg: FrameGraphEngine, passNode: PassNode, pass: FrameGraphPass<RenderPassData>): void => {
     const output = fg.createRenderTarget(passNode, 'color buffer', {
@@ -57,17 +73,33 @@ export class RenderPass implements IRenderPass<RenderPassData> {
       height: canvas.height,
     });
 
-    // this.engine.setScissor({
-    //   enable: false,
-    // });
-    this.engine.clear({
-      framebuffer,
-      color: this.contextService.getContext()?.view.getClearColor(), // TODO: use clearColor defined in view
-      depth: 1,
-    });
-
     this.engine.useFramebuffer(framebuffer, () => {
+      // clip dirty rectangle, same as `clip` in Canvas 2D
+      if (
+        (this.canvasConfig.renderer as RendererConfig).enableDirtyRectangleRendering &&
+        this.renderingContext.dirtyRectangle
+      ) {
+        this.engine.setScissor({
+          enable: true,
+          box: this.convertAABB2Rect(this.renderingContext.dirtyRectangle),
+        });
+      }
+
+      // clear dirty rectangle
+      this.engine.clear({
+        framebuffer,
+        // color: [Math.random(), 0, 0, 1],
+        color: this.contextService.getContext()?.view.getClearColor(), // TODO: use clearColor defined in view
+        // depth: 1,
+      });
+
       this.renderEntities(entities);
+
+      console.log('rendering...', entities);
+
+      if ((this.canvasConfig.renderer as RendererConfig).enableDirtyRectangleRendering) {
+        this.engine.setScissor({ enable: false });
+      }
     });
   };
 
@@ -86,8 +118,6 @@ export class RenderPass implements IRenderPass<RenderPassData> {
           rootRenderable.model?.destroy();
           rootRenderable.model = null;
           rootRenderable.modelPrepared = false;
-
-          console.log('instance dirty');
 
           // create model matrix decomposed into 4 vec4 instead of mat4
           const geometry = rootEntity.getComponent(Geometry3D);
@@ -171,7 +201,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     return createModel(modelInitializationOptions);
   }
 
-  private renderEntity(context: RenderingContext, entity: Entity): boolean {
+  private renderEntity(context: WebGLRenderingContext, entity: Entity): boolean {
     const renderable3d = entity.getComponent(Renderable3D);
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
@@ -323,5 +353,29 @@ export class RenderPass implements IRenderPass<RenderPassData> {
           },
         ],
       });
+  }
+
+  private convertAABB2Rect(aabb: AABB | undefined): IViewport {
+    if (!aabb) {
+      return this.contextService.getContext()?.view.getViewport()!;
+    }
+
+    const min = aabb.getMin();
+    const max = aabb.getMax();
+    // expand the rectangle a bit to avoid artifacts
+    // @see https://www.yuque.com/antv/ou292n/bi8nix#ExvCu
+    const minX = Math.floor(min[0]);
+    const minY = Math.floor(min[1]);
+    const maxX = Math.ceil(max[0]);
+    const maxY = Math.ceil(max[1]);
+    const width = maxX - minX;
+    const height = maxY - minY;
+
+    const dpr = this.contextService.getDPR();
+    const { height: vh } = this.contextService.getContext()?.view.getViewport()!;
+
+    // the origin is lower left corner in scissor API, should flipY
+    // @see https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/scissor
+    return { x: minX * dpr, y: vh - maxY * dpr, width: width * dpr, height: height * dpr };
   }
 }

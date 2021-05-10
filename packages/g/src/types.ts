@@ -14,13 +14,6 @@ export enum SHAPE {
   Text = 'text',
 }
 
-export enum RENDERER {
-  Canvas = 'canvas',
-  SVG = 'svg',
-  WebGL = 'webgl',
-  WebGPU = 'webgpu',
-}
-
 export interface IShape {
   getEntity(): Entity;
 }
@@ -54,6 +47,13 @@ export interface IShape {
 // };
 
 type ColorType = string | null;
+
+export interface EventPosition {
+  clientX: number;
+  clientY: number;
+  x: number;
+  y: number;
+}
 
 export type ElementAttrs = {
   [key: string]: any;
@@ -212,6 +212,23 @@ export type Cursor =
   | 'zoom-in'
   | 'zoom-out';
 
+export interface RendererConfig {
+  /**
+   * type of renderer, eg. 'canvas' 'svg' 'webgl'
+   */
+  type: string;
+
+  /**
+   * enable dirty rectangle rendering
+   */
+  enableDirtyRectangleRendering?: boolean;
+
+  /**
+   * enable auto rendering
+   */
+  enableAutoRendering?: boolean;
+}
+
 export const CanvasConfig = Symbol('CanvasConfig');
 export interface CanvasConfig {
   /**
@@ -238,26 +255,13 @@ export interface CanvasConfig {
    * 只读属性，渲染引擎
    * @type {string}
    */
-  renderer?: RENDERER;
+  renderer?: string | RendererConfig;
 
   /**
    * 画布的 cursor 样式
    * @type {Cursor}
    */
   cursor?: Cursor;
-
-  /**
-   * 脏矩形（局部）渲染
-   */
-  dirtyRectangle?: Partial<{
-    enable: boolean; // 是否开启
-    debug: boolean; // 开启时是否打开 debug 模式
-  }>;
-
-  /**
-   * 在按需渲染场景下可关闭自动渲染
-   */
-  autoRendering?: boolean;
 
   [key: string]: any;
 }

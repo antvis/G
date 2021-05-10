@@ -1,15 +1,16 @@
 import { Entity } from '@antv/g-ecs';
 import { inject, injectable, named } from 'inversify';
-import RBush from 'rbush';
-import { SyncHook, AsyncSeriesWaterfallHook, AsyncSeriesHook } from 'tapable';
-import { RBushNode, Renderable } from '../components';
+import { SyncHook, AsyncSeriesWaterfallHook, AsyncSeriesHook, SyncWaterfallHook } from 'tapable';
+import { CanvasService } from '../Canvas';
+import { RBushNode, Renderable, SceneGraphNode, Sortable } from '../components';
 import { ContributionProvider } from '../contribution-provider';
 import { DisplayObject } from '../DisplayObject';
-// import { DisplayObjectPool } from '../DisplayObjectPool';
+import { DisplayObjectPool } from '../DisplayObjectPool';
 import { DisplayObjectHooks } from '../hooks';
-import { AABB } from '../shapes';
-import { CanvasConfig } from '../types';
+import { CanvasConfig, RendererConfig, EventPosition } from '../types';
 import { ContextService } from './ContextService';
+import { RenderingContext } from './RenderingContext';
+import { SceneGraphAdapter } from './SceneGraphAdapter';
 import { SceneGraphService } from './SceneGraphService';
 
 export interface RenderingPlugin {
@@ -17,9 +18,16 @@ export interface RenderingPlugin {
 }
 export const RenderingPluginContribution = Symbol('RenderingPluginContribution');
 
-export interface RenderingContext {
-  dirtyRectangle: AABB | undefined;
-  rBush: RBush<RBushNode>;
+export interface PickingResult {
+  position: EventPosition;
+  picked: DisplayObject | null;
+}
+
+function sortByZIndex(e1: Entity, e2: Entity) {
+  const sortable1 = e1.getComponent(Sortable);
+  const sortable2 = e2.getComponent(Sortable);
+
+  return sortable1.zIndex - sortable2.zIndex;
 }
 
 /**
@@ -32,7 +40,7 @@ export interface RenderingContext {
  * * end frame
  */
 @injectable()
-export class RenderingService {
+export class RenderingService implements CanvasService {
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
@@ -41,68 +49,77 @@ export class RenderingService {
   private renderingPluginContribution: ContributionProvider<RenderingPlugin>;
 
   @inject(SceneGraphService)
-  private sceneGraph: SceneGraphService;
+  private sceneGraphService: SceneGraphService;
 
   @inject(ContextService)
   private contextService: ContextService<unknown>;
 
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
+
   hooks = {
+    init: new SyncHook<[]>(),
     prepareEntities: new AsyncSeriesWaterfallHook<[Entity[], DisplayObject]>(['entities', 'root']),
-    beginFrame: new AsyncSeriesHook<[Entity[]]>(['entities']),
+    beginFrame: new AsyncSeriesHook<[Entity[], Entity[]]>(['entitiesToRender', 'entities']),
     renderFrame: new AsyncSeriesHook<[Entity[]]>(['entities']),
-    endFrame: new AsyncSeriesHook<[Entity[]]>(['entities']),
+    endFrame: new AsyncSeriesHook<[Entity[], Entity[]]>(['entitiesToRender', 'entities']),
     destroy: new SyncHook<[]>(),
+    pick: new SyncWaterfallHook<[PickingResult]>(['result']),
   };
 
-  context: RenderingContext = {
-    dirtyRectangle: undefined,
-    /**
-     * spatial index with RTree which can speed up the search for AABBs
-     */
-    rBush: new RBush<RBushNode>(),
-  };
-
-  init() {
+  async init() {
     // register rendering plugins
     this.renderingPluginContribution.getContributions(true).forEach((plugin) => {
       plugin.apply(this);
     });
+    this.hooks.init.call();
   }
 
-  async render(group: DisplayObject) {
+  async render() {
+    const root = this.renderingContext.root;
     const entities: Entity[] = [];
-    this.sceneGraph.visit(group.getEntity(), (entity) => {
+    this.sceneGraphService.visit(root.getEntity(), (entity) => {
       entities.push(entity);
     });
+    // const entities = root.getEntity().getComponent(SceneGraphNode).children;
 
-    const entitiesToRender = await this.hooks.prepareEntities.promise(entities, group);
+    this.renderingContext.entities = entities;
+
+    const entitiesToRender = await this.hooks.prepareEntities.promise(entities, root);
     if (entitiesToRender.length === 0) {
       return;
     }
 
-    await this.hooks.beginFrame.promise(entitiesToRender);
-    if (this.hooks.renderFrame.isUsed()) {
-      await this.hooks.renderFrame.promise(entitiesToRender);
-    } else {
-      for (const entity of entitiesToRender) {
-        DisplayObjectHooks.render.call(this.canvasConfig.renderer!, this.contextService.getContext(), entity);
-      }
-    }
-    await this.hooks.endFrame.promise(entitiesToRender);
+    this.renderingContext.dirtyEntities = entitiesToRender;
 
-    // finish rendering, clear dirty flag
-    entities.forEach((e) => {
-      const renderable = e.getComponent(Renderable);
-      if (renderable) {
-        renderable.dirty = false;
-      }
-    });
+    // console.log('render', entitiesToRender);
+
+    await this.hooks.beginFrame.promise(entitiesToRender, entities);
+    // if (this.hooks.renderFrame.isUsed()) {
+    await this.hooks.renderFrame.promise(entitiesToRender);
+    // } else {
+    for (const entity of entitiesToRender) {
+      DisplayObjectHooks.render.call(
+        (this.canvasConfig.renderer as RendererConfig).type,
+        this.contextService.getContext(),
+        entity
+      );
+    }
+    // }
+    await this.hooks.endFrame.promise(entitiesToRender, entities);
   }
 
   destroy() {
     this.hooks.destroy.call();
+  }
 
-    // clear r-bush
-    // this.context.rBush.clear();
+  private flatten(entities: Entity[], result: Entity[]) {
+    if (entities.length) {
+      entities.sort(sortByZIndex).forEach((entity) => {
+        result.push(entity);
+        const hierarchy = entity.getComponent(SceneGraphNode);
+        this.flatten(hierarchy.children, result);
+      });
+    }
   }
 }

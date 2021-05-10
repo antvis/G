@@ -2,18 +2,16 @@ import { Entity, System } from '@antv/g-ecs';
 import { isObject, isNil } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import EventEmitter from 'eventemitter3';
-import { Renderable, SceneGraphNode, Transform } from './components';
+import { Cullable, Renderable, SceneGraphNode, Transform } from './components';
 import { Animator, STATUS } from './components/Animator';
 import { createVec3, rad2deg, getEuler } from './utils/math';
 import { Sortable } from './components/Sortable';
-import { GroupFilter, SHAPE, ShapeCfg } from './types';
+import { GroupFilter, SHAPE, ShapeCfg, AnimateCfg, ElementAttrs, OnFrame } from './types';
 import { DisplayObjectPool } from './DisplayObjectPool';
 import { world, lazyInject, lazyInjectNamed } from './inversify.config';
 import { SceneGraphService } from './services';
 import { Timeline } from './systems';
-import { AnimateCfg, ElementAttrs, OnFrame } from '@antv/g';
 import { AABB } from './shapes';
-import { ContributionProvider } from './contribution-provider';
 import { DisplayObjectHooks } from './hooks';
 
 export interface INode {
@@ -40,17 +38,14 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
   protected entity: Entity;
   protected config: ShapeCfg = { attrs: {} };
 
-  // @lazyInjectNamed(ContributionProvider, DisplayObjectPluginContribution)
-  // private pluginContribution: ContributionProvider<DisplayObjectPlugin>;
+  @lazyInject(DisplayObjectPool)
+  protected displayObjectPool: DisplayObjectPool;
 
   @lazyInjectNamed(System, Timeline.tag)
   private timeline: Timeline;
 
   @lazyInject(SceneGraphService)
   protected sceneGraph: SceneGraphService;
-
-  @lazyInject(DisplayObjectPool)
-  protected displayObjectPool: DisplayObjectPool;
 
   constructor(config?: ShapeCfg) {
     super();
@@ -63,57 +58,25 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     const entity = world.createEntity(this.config.id || '');
     this.entity = entity;
 
-    // // register plugins
-    // this.pluginContribution.getContributions(true).forEach((plugin) => {
-    //   plugin.apply(this);
-    // });
-
-    // init scene graph node
-    const sceneGraphNode = entity.addComponent(SceneGraphNode);
-    sceneGraphNode.id = this.config.id || '';
-    sceneGraphNode.class = this.config.className || '';
-    sceneGraphNode.tagName = this.config.type || SHAPE.Group;
-    sceneGraphNode.attributes = this.config.attrs || {};
-    if (this.config.name) {
-      sceneGraphNode.attributes.name = this.config.name;
-    }
-
-    // init transform
-    const { x = 0, y = 0, origin } = sceneGraphNode.attributes;
-    entity.addComponent(Transform);
-    // set position in world space
-    this.sceneGraph.setPosition(entity, x, y);
-    if (origin) {
-      this.sceneGraph.setOrigin(entity, [...origin, 0]);
-    }
-
-    // visible: true -> visibility: visible
-    // visible: false -> visibility: hidden
-    // visible: undefined -> visibility: initial
-    if (!isNil(this.config.visible)) {
-      if (this.config.visible) {
-        sceneGraphNode.attributes.visibility = 'visible';
-      } else {
-        sceneGraphNode.attributes.visibility = 'hidden';
-      }
-    } else {
-      sceneGraphNode.attributes.visibility = 'initial';
-    }
+    // TODO: capture
+    this.config.capture = true;
 
     entity.addComponent(Sortable);
     if (this.config.zIndex) {
       this.setZIndex(this.config.zIndex);
     }
 
-    // TODO: capture
-
     // insert this group into pool
     this.displayObjectPool.add(entity.getName(), this);
 
     // trigger init hook
-    DisplayObjectHooks.init.call(this.entity);
+    DisplayObjectHooks.init.call(this.entity, this.config);
   }
 
+  set() {}
+  setConfig() {}
+
+  get() {}
   getConfig() {
     return this.config;
   }
@@ -284,10 +247,18 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    */
   setAttribute(attributeName: string, value: any) {
     const attributes = this.entity.getComponent(SceneGraphNode).attributes;
-    if (value !== attributes[attributeName]) {
-      attributes[attributeName] = value;
-
-      DisplayObjectHooks.changeAttribute.promise(this.entity, attributeName, value);
+    if (
+      value !== attributes[attributeName] ||
+      attributeName === 'visibility' // will affect children
+    ) {
+      if (attributeName === 'visibility') {
+        // set value cascade
+        this.sceneGraph.visit(this.entity, (e) => {
+          DisplayObjectHooks.changeAttribute.promise(e, attributeName, value);
+        });
+      } else {
+        DisplayObjectHooks.changeAttribute.promise(this.entity, attributeName, value);
+      }
     }
   }
 
@@ -587,12 +558,6 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
   /* z-index & visibility */
 
   setZIndex(zIndex: number) {
-    const sortable = this.entity.getComponent(Sortable);
-    sortable.zIndex = zIndex;
-
-    // need re-sort
-    this.sceneGraph.setTopologicalSortDirty(true);
-
     this.attr('z-index', zIndex);
   }
 
@@ -607,7 +572,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
       const parent = parentEntity.getComponent(SceneGraphNode);
       sortable.zIndex = Math.max(...parent.children.map((e) => e.getComponent(Sortable).zIndex)) + 1;
       // need re-sort
-      this.sceneGraph.setTopologicalSortDirty(true);
+      sortable.dirty = true;
     }
   }
 
@@ -622,7 +587,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
       const parent = parentEntity.getComponent(SceneGraphNode);
       sortable.zIndex = Math.min(...parent.children.map((e) => e.getComponent(Sortable).zIndex)) - 1;
       // need re-sort
-      this.sceneGraph.setTopologicalSortDirty(true);
+      sortable.dirty = true;
     }
   }
 
@@ -640,6 +605,10 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    */
   hide() {
     this.attr('visibility', 'hidden');
+  }
+
+  isVisible() {
+    return this.attr('visibility') === 'visible';
   }
 
   animate(toAttrs: ElementAttrs, duration: number, easing?: string, callback?: Function, delay?: number): void;

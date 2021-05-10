@@ -1,11 +1,11 @@
 import { Entity } from '@antv/g-ecs';
 import { inject, injectable } from 'inversify';
-import { Geometry, Renderable } from '../../components';
-import { DisplayObjectPool } from '../../DisplayObjectPool';
+import { Renderable } from '../../components';
 import { DisplayObjectHooks } from '../../hooks';
 import { ContextService } from '../../services';
 import { RenderingService, RenderingPlugin } from '../../services/RenderingService';
-import { CanvasConfig } from '../../types';
+import { SceneGraphService, SCENE_GRAPH_EVENT } from '../../services/SceneGraphService';
+import { CanvasConfig, RendererConfig } from '../../types';
 
 @injectable()
 export class PrepareRendererPlugin implements RenderingPlugin {
@@ -15,66 +15,31 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   @inject(ContextService)
   private contextService: ContextService<unknown>;
 
-  @inject(DisplayObjectPool)
-  private displayObjectPool: DisplayObjectPool;
+  @inject(SceneGraphService)
+  private sceneGraphService: SceneGraphService;
 
   apply(renderer: RenderingService) {
     renderer.hooks.prepareEntities.tapPromise('PrepareRendererPlugin', async (entities: Entity[]) => {
-      const initedEntities = await Promise.all(
+      return Promise.all(
         entities.map(async (entity) => {
-          if (entity.hasComponent(Renderable)) {
-            const renderable = entity.getComponent(Renderable);
+          const renderable = entity.getComponent(Renderable);
 
-            // trigger hooks
-            if (!renderable.didMount) {
-              const object = this.displayObjectPool.getByName(entity.getName());
+          // trigger hooks
+          if (!renderable.didMount) {
+            this.sceneGraphService.emit(SCENE_GRAPH_EVENT.AABBChanged, entity);
 
-              // shape.hooks.changeAttribute.tapAsync();
-
-              // shape.on(GROUP_EVENT.AABBChanged, () => {
-              //   if (!renderable.rBush) {
-              //     renderable.rBush = renderer.context.rBush;
-              //   }
-
-              //   // insert node in RTree
-              //   if (renderable.rBush && renderable.rBushNode) {
-              //     renderable.rBush.remove(renderable.rBushNode);
-              //   }
-              //   const [minX, minY] = renderable.aabb.getMin();
-              //   const [maxX, maxY] = renderable.aabb.getMax();
-              //   renderable.rBushNode = {
-              //     name: entity.getName(),
-              //     minX,
-              //     minY,
-              //     maxX,
-              //     maxY,
-              //   };
-
-              //   if (renderable.rBush) {
-              //     renderable.rBush.insert(renderable.rBushNode);
-              //   }
-              // });
-              // shape.emit(GROUP_EVENT.AABBChanged);
-
-              await DisplayObjectHooks.mounted.promise(
-                this.canvasConfig.renderer!,
-                this.contextService.getContext(),
-                entity
-              );
-              renderable.didMount = true;
-              renderable.dirty = true;
-            }
-
-            return entity;
+            await DisplayObjectHooks.mounted.promise(
+              (this.canvasConfig.renderer as RendererConfig).type,
+              this.contextService.getContext(),
+              entity
+            );
+            renderable.didMount = true;
+            renderable.dirty = true;
           }
 
-          return null;
+          return entity;
         })
       );
-
-      return initedEntities.filter((e) => e) as Entity[];
     });
-
-    // renderer.hooks.destroy
   }
 }

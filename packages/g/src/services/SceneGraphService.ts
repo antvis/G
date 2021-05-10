@@ -1,5 +1,6 @@
 import { Entity } from '@antv/g-ecs';
 import { isNil } from '@antv/util';
+import EventEmitter from 'eventemitter3';
 import { Transform } from '../components/Transform';
 import { SceneGraphNode } from '../components/SceneGraphNode';
 import { Sortable } from '../components/Sortable';
@@ -18,18 +19,21 @@ function sortByZIndex(e1: Entity, e2: Entity) {
   return sortable1.zIndex - sortable2.zIndex;
 }
 
+export enum SCENE_GRAPH_EVENT {
+  AABBChanged = 'AABBChanged',
+}
+
 /**
  * update transform in scene graph
  *
  * @see https://community.khronos.org/t/scene-graphs/50542/7
  */
 @injectable()
-export class SceneGraphService {
+export class SceneGraphService extends EventEmitter {
   @inject(SceneGraphAdapter)
   private sceneGraphAdapter: SceneGraphAdapter;
 
-  // private topologicalSortDirty = true;
-  // private topologicalSortResult: Entity[] = [];
+  reset() {}
 
   querySelector(query: string, group: DisplayObject) {
     return selectOne(query, group, { adapter: this.sceneGraphAdapter });
@@ -104,19 +108,17 @@ export class SceneGraphService {
   /**
    * execute topological sort on current scene graph, account for z-index on `Sortable` component
    */
-  sort(root: DisplayObject) {
-    // if (!this.topologicalSortDirty) {
-    //   return this.topologicalSortResult;
-    // }
+  sort(entity: Entity, force = false) {
+    const sortable = entity.getComponent(Sortable);
 
-    const sorted: Entity[] = [];
-    this.flatten([root.getEntity()], sorted);
-    // this.topologicalSortResult = sorted;
-    // this.topologicalSortDirty = false;
+    if (sortable.dirty || force) {
+      const sorted: Entity[] = [];
+      this.flatten([entity], sorted);
+      sortable.sorted = sorted;
+      sortable.dirty = false;
+    }
 
-    // return this.topologicalSortResult;
-
-    return sorted;
+    return sortable.sorted;
   }
 
   private getChildren(parent: Entity): Entity[] {
@@ -131,10 +133,6 @@ export class SceneGraphService {
         this.flatten(hierarchy.children, result);
       });
     }
-  }
-
-  setTopologicalSortDirty(dirty: boolean) {
-    // this.topologicalSortDirty = dirty;
   }
 
   /**
@@ -168,15 +166,11 @@ export class SceneGraphService {
     }
     const transform = entity.getComponent(Transform);
 
-    if (vec3.equals(transform.origin, origin)) {
-      return;
-    }
-
     const originVec = transform.origin;
     originVec[0] = origin[0];
     originVec[1] = origin[1];
     originVec[2] = origin[2] || 0;
-    this.setLocalDirty(entity, transform);
+    // this.setLocalDirty(entity, transform);
   }
 
   /**
@@ -303,9 +297,9 @@ export class SceneGraphService {
       }
       const transform = entity.getComponent(Transform);
 
-      if (vec3.equals(transform.position, position)) {
-        return;
-      }
+      // if (vec3.equals(transform.position, position)) {
+      //   return;
+      // }
 
       transform.position = position;
 
@@ -331,9 +325,9 @@ export class SceneGraphService {
     }
     const transform = entity.getComponent(Transform);
 
-    if (vec3.equals(transform.localPosition, position)) {
-      return;
-    }
+    // if (vec3.equals(transform.localPosition, position)) {
+    //   return;
+    // }
 
     vec3.copy(transform.localPosition, position);
     this.setLocalDirty(entity, transform);
@@ -357,9 +351,9 @@ export class SceneGraphService {
     }
     const transform = entity.getComponent(Transform);
 
-    if (vec3.equals(transform.localScale, scaling)) {
-      return;
-    }
+    // if (vec3.equals(transform.localScale, scaling)) {
+    //   return;
+    // }
 
     vec3.copy(transform.localScale, scaling);
     this.setLocalDirty(entity, transform);
@@ -479,44 +473,34 @@ export class SceneGraphService {
   }
 
   updateRenderableAABB(entity: Entity): void {
+    const sceneGraphNode = entity.getComponent(SceneGraphNode);
     const renderable = entity.getComponent(Renderable);
     const transform = entity.getComponent(Transform);
     const geometry = entity.getComponent(Geometry);
 
-    if (renderable.aabb) {
-      if (!renderable.dirtyAABB) {
-        renderable.dirtyAABB = new AABB();
-      }
-      // save last dirty aabb
-      renderable.dirtyAABB.update(
-        vec3.copy(vec3.create(), renderable.aabb.center),
-        vec3.copy(vec3.create(), renderable.aabb.halfExtents)
-      );
-    } else {
+    if (!renderable.aabb) {
       renderable.aabb = new AABB();
     }
-
     // apply transform to geometry.aabb
     // @see https://stackoverflow.com/questions/6053522/how-to-recalculate-axis-aligned-bounding-box-after-translate-rotate
     renderable.aabb.setFromTransformedAABB(geometry.aabb, this.getWorldTransform(entity, transform));
 
-    // insert node in RTree
-    // if (renderable.rBush && renderable.rBushNode) {
-    //   renderable.rBush.remove(renderable.rBushNode);
+    // add children's aabbs
+    // if (sceneGraphNode.children && sceneGraphNode.children.length) {
+    //   for (const child of sceneGraphNode.children) {
+    //     const childAabb = child.getComponent(Renderable).aabb;
+    //     if (childAabb) {
+    //       renderable.aabb.add(childAabb);
+    //     }
+    //   }
     // }
-    // const [minX, minY] = renderable.aabb.getMin();
-    // const [maxX, maxY] = renderable.aabb.getMax();
-    // renderable.rBushNode = {
-    //   name: entity.getName(),
-    //   minX,
-    //   minY,
-    //   maxX,
-    //   maxY,
-    // };
 
-    // if (renderable.rBush) {
-    //   renderable.rBush.insert(renderable.rBushNode);
+    // inform parent
+    // if (sceneGraphNode.parent) {
+    //   this.updateRenderableAABB(sceneGraphNode.parent);
     // }
+
+    this.emit(SCENE_GRAPH_EVENT.AABBChanged, entity);
 
     // need to update dirty rectangle
     renderable.dirty = true;

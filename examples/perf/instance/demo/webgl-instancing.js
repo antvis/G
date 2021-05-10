@@ -56,7 +56,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.onFrame(() => {
+canvas.on('postrender', () => {
   if (stats) {
     stats.update();
   }

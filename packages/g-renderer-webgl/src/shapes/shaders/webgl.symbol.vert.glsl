@@ -1,22 +1,34 @@
-attribute vec2 a_pos;
-attribute vec2 a_tex;
-attribute vec2 a_offset;
+attribute vec2 a_Pos;
+attribute vec2 a_Tex;
+attribute vec2 a_Offset;
 
-uniform vec2 u_sdf_map_size;
-uniform mat4 u_label_matrix;
-uniform mat4 u_gl_matrix;
-uniform float u_font_size;
+uniform vec2 u_SDFMapSize;
+uniform mat4 u_LabelMatrix;
+uniform float u_FontSize;
 
-varying vec2 v_uv;
-varying float v_gamma_scale;
+uniform mat4 u_ProjectionMatrix;
+uniform mat4 u_ViewMatrix;
+
+varying vec2 v_UV;
+varying float v_GammaScale;
+
+#pragma include "instancing.declaration"
+#pragma include "project.declaration"
+#pragma include "picking"
 
 void main() {
-    v_uv = a_tex / u_sdf_map_size;
+  v_UV = a_Tex / u_SDFMapSize;
 
-    float fontScale = u_font_size / 24.;
+  float fontScale = u_FontSize / 24.;
 
-    vec4 projected_pos = u_label_matrix * vec4(a_pos, 0.0, 1.0);
-    gl_Position = u_gl_matrix * vec4(projected_pos.xy / projected_pos.w + a_offset * fontScale, 0.0, 1.0);
+  #pragma include "instancing"
 
-    v_gamma_scale = gl_Position.w;
+  vec4 projected_pos = u_LabelMatrix * vec4(a_Pos, 0.0, 1.0);
+
+  gl_Position = u_ProjectionMatrix * u_ViewMatrix * modelMatrix * 
+    vec4(projected_pos.xy / projected_pos.w + a_Offset * fontScale, 0.0, 1.0);
+
+  gl_Position.xy = project_to_clipspace(gl_Position.xy);
+
+  v_GammaScale = gl_Position.w;
 }

@@ -39,8 +39,6 @@ export class FrameGraphEngine {
 
   public frameGraphPasses: Array<FrameGraphPass<any>> = [];
 
-  public entities: Entity[] = [];
-
   @inject(RenderingEngine)
   private readonly engine: RenderingEngine;
 
@@ -150,8 +148,6 @@ export class FrameGraphEngine {
   }
 
   public executePassNodes(entities: Entity[]) {
-    this.entities = entities;
-
     for (let index = 0; index < this.passNodes.length; index++) {
       const node = this.passNodes[index];
       if (node.refCount) {

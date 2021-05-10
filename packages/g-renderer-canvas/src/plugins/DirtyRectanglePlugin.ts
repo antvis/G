@@ -1,5 +1,13 @@
 import { Entity } from '@antv/g-ecs';
-import { AABB, CanvasConfig, ContextService, RenderingService, RenderingPlugin } from '@antv/g';
+import {
+  AABB,
+  CanvasConfig,
+  ContextService,
+  RenderingService,
+  RendererConfig,
+  RenderingContext,
+  RenderingPlugin,
+} from '@antv/g';
 import { inject, injectable } from 'inversify';
 
 interface Rect {
@@ -17,6 +25,9 @@ export class DirtyRectanglePlugin implements RenderingPlugin {
   @inject(ContextService)
   private contextService: ContextService<CanvasRenderingContext2D>;
 
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
+
   /**
    * save the last dirty rect in DEBUG mode
    */
@@ -25,7 +36,7 @@ export class DirtyRectanglePlugin implements RenderingPlugin {
   apply(renderingService: RenderingService) {
     renderingService.hooks.beginFrame.tapPromise('DirtyRectanglePlugin', async (entities: Entity[]) => {
       const context = this.contextService.getContext();
-      const dirtyAABB = renderingService.context.dirtyRectangle;
+      const dirtyAABB = this.renderingContext.dirtyRectangle;
 
       if (context) {
         if (!dirtyAABB) {
@@ -35,7 +46,7 @@ export class DirtyRectanglePlugin implements RenderingPlugin {
           const dirtyRectangle = this.convertAABB2Rect(dirtyAABB);
 
           context.clearRect(dirtyRectangle.x, dirtyRectangle.y, dirtyRectangle.width, dirtyRectangle.height);
-          if (this.canvasConfig.dirtyRectangle?.debug) {
+          if ((this.canvasConfig?.renderer as RendererConfig).enableDirtyRectangleRenderingDebug) {
             if (this.lastDirtyRectangle) {
               context.clearRect(
                 this.lastDirtyRectangle.x,
@@ -53,7 +64,7 @@ export class DirtyRectanglePlugin implements RenderingPlugin {
           context.clip();
 
           // draw dirty rectangle on DEBUG mode
-          if (this.canvasConfig.dirtyRectangle?.debug) {
+          if ((this.canvasConfig?.renderer as RendererConfig).enableDirtyRectangleRenderingDebug) {
             this.drawDirtyRectangle(context, dirtyRectangle);
             this.lastDirtyRectangle = dirtyRectangle;
           }

@@ -32,12 +32,20 @@ export class SVGContextService implements ContextService<SVGElement> {
     this.dpr = dpr;
   }
 
+  getDomElement() {
+    return this.$namespace;
+  }
+
   getContext() {
     return this.$namespace;
   }
 
   getDPR() {
     return this.dpr;
+  }
+
+  getBoundingClientRect() {
+    return this.$namespace?.getBoundingClientRect();
   }
 
   async destroy() {
@@ -51,6 +59,12 @@ export class SVGContextService implements ContextService<SVGElement> {
     if (this.$namespace) {
       this.$namespace.setAttribute('width', `${width}`);
       this.$namespace.setAttribute('height', `${height}`);
+    }
+  }
+
+  applyCursorStyle(cursor: string) {
+    if (this.$container) {
+      this.$container.style.cursor = cursor;
     }
   }
 }

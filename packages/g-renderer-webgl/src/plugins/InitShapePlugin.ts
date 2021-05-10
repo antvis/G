@@ -1,14 +1,15 @@
 import { Entity } from '@antv/g-ecs';
-import { SceneGraphNode, DisplayObjectPlugin, DisplayObjectHooks, SHAPE, RENDERER } from '@antv/g';
+import { SceneGraphNode, DisplayObjectPlugin, DisplayObjectHooks, SHAPE } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { Geometry3D } from '../components/Geometry3D';
 import { Material3D } from '../components/Material3D';
 import { Renderable3D } from '../components/Renderable3D';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { ModelBuilder } from '../shapes';
-import { RenderingContext } from '../services/WebGLContextService';
+import { WebGLRenderingContext } from '../services/WebGLContextService';
 import { ATTRIBUTE, FrameGraphPlugin, STYLE, UNIFORM } from './FrameGraphPlugin';
 import { isNil } from '@antv/util';
+import { RENDERER } from '..';
 
 @injectable()
 export class InitShapePlugin implements DisplayObjectPlugin {
@@ -46,8 +47,8 @@ export class InitShapePlugin implements DisplayObjectPlugin {
 
     DisplayObjectHooks.mounted.tapPromise(
       FrameGraphPlugin.tag,
-      async (renderer: RENDERER, context: RenderingContext, entity: Entity) => {
-        if (renderer !== RENDERER.WebGL) {
+      async (renderer: string, context: WebGLRenderingContext, entity: Entity) => {
+        if (renderer !== RENDERER) {
           return;
         }
 
@@ -92,8 +93,8 @@ export class InitShapePlugin implements DisplayObjectPlugin {
 
     DisplayObjectHooks.unmounted.tapPromise(
       'CleanRenderablePlugin',
-      async (renderer: RENDERER, context: RenderingContext, entity: Entity) => {
-        if (renderer !== RENDERER.WebGL) {
+      async (renderer: string, context: WebGLRenderingContext, entity: Entity) => {
+        if (renderer !== RENDERER) {
           return;
         }
 
@@ -101,14 +102,14 @@ export class InitShapePlugin implements DisplayObjectPlugin {
         const geometry = entity.getComponent(Geometry3D);
         const material = entity.getComponent(Material3D);
 
+        geometry.reset();
+
         if (renderable.model) {
           renderable.model.destroy();
         }
 
         renderable.modelPrepared = false;
         renderable.model = null;
-
-        geometry.reset();
 
         material.dirty = false;
       }

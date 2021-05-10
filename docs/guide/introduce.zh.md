@@ -40,14 +40,14 @@ $ npm install @antv/g-renderer-webgl --save
 ```
 
 ```js
-import { Canvas, Circle, RENDERER } from '@antv/g';
-import '@antv/g-renderer-canvas';
+import { Canvas, Circle } from '@antv/g';
+import { RENDERER as CANVAS_RENDERER } from '@antv/g-renderer-canvas';
 
 const canvas = new Canvas({
   container: 'c1',
   width: 500,
   height: 500,
-  renderer: RENDERER.Canvas,
+  renderer: CANVAS_RENDERER,
 });
 
 const circle = new Circle({

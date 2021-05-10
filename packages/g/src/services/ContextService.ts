@@ -1,8 +1,11 @@
+import { CanvasService } from '../Canvas';
+
 export const ContextService = Symbol('ContextService');
-export interface ContextService<Context> {
+export interface ContextService<Context> extends CanvasService {
   getContext(): Context | null;
+  getDomElement(): HTMLElement;
   getDPR(): number;
-  init(): Promise<void> | void;
-  destroy(): Promise<void> | void;
+  getBoundingClientRect(): DOMRect | undefined;
   resize(width: number, height: number): void;
+  applyCursorStyle(cursor: string): void;
 }

@@ -10,7 +10,6 @@ import {
   ShapeAttrs,
   Camera,
   DisplayObjectHooks,
-  RENDERER,
 } from '@antv/g';
 import { Entity } from '@antv/g-ecs';
 import { mat3, mat4, quat, vec2, vec3 } from 'gl-matrix';
@@ -19,6 +18,7 @@ import { StyleRenderer } from '../shapes/styles';
 import { PathGenerator } from '../shapes/paths';
 import { isArray } from '@antv/util';
 import { StyleParser } from '../shapes/StyleParser';
+import { RENDERER } from '..';
 
 const SHAPE_ATTRS_MAP: Record<string, string> = {
   fill: 'fillStyle',
@@ -37,17 +37,13 @@ export class RenderShapePlugin implements DisplayObjectPlugin {
   @inject(Camera)
   private camera: Camera;
 
-  apply(group: DisplayObject) {
-    console.log('apply...');
-
+  apply() {
     DisplayObjectHooks.render.tap(
       'Rendering',
-      (renderer: RENDERER, context: CanvasRenderingContext2D, entity: Entity) => {
-        if (renderer !== RENDERER.Canvas) {
+      (renderer: string, context: CanvasRenderingContext2D, entity: Entity) => {
+        if (renderer !== RENDERER) {
           return;
         }
-
-        console.log('rendererd..', entity, renderer);
 
         context.save();
 

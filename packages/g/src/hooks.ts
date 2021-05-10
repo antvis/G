@@ -1,7 +1,9 @@
 import { Entity } from '@antv/g-ecs';
+import { ContainerModule } from 'inversify';
 import { SyncHook, AsyncSeriesHook } from 'tapable';
+import { CanvasContainerModule } from './Canvas';
 import { container } from './inversify.config';
-import { RENDERER } from './types';
+import { ShapeCfg } from './types';
 
 export interface DisplayObjectPlugin {
   apply(): void;
@@ -14,7 +16,7 @@ export const DisplayObjectHooks = {
   /**
    * get called at the end of constructor
    */
-  init: new SyncHook<[Entity]>(['entity']),
+  init: new SyncHook<[Entity, ShapeCfg]>(['entity', 'config']),
   /**
    * get called when attributes changed, eg. calling `attr/setAttribute()`
    */
@@ -23,15 +25,15 @@ export const DisplayObjectHooks = {
   /**
    * get called when mounted into canvas first time
    */
-  mounted: new AsyncSeriesHook<[RENDERER, any, Entity]>(['renderer', 'context', 'entity']),
+  mounted: new AsyncSeriesHook<[string, any, Entity]>(['renderer', 'context', 'entity']),
   /**
    * get called every time renderred
    */
-  render: new SyncHook<[RENDERER, any, Entity]>(['renderer', 'context', 'entity']),
+  render: new SyncHook<[string, any, Entity]>(['renderer', 'context', 'entity']),
   /**
    * get called when unmounted from canvas
    */
-  unmounted: new AsyncSeriesHook<[RENDERER, any, Entity]>(['renderer', 'context', 'entity']),
+  unmounted: new AsyncSeriesHook<[string, any, Entity]>(['renderer', 'context', 'entity']),
   /**
    * get called when destroyed, eg. calling `destroy()`
    */
@@ -41,4 +43,8 @@ export const DisplayObjectHooks = {
 export function registerDisplayObjectPlugin(pluginClazz: new () => DisplayObjectPlugin) {
   container.bind(pluginClazz).toSelf().inSingletonScope();
   container.get(pluginClazz).apply();
+}
+
+export function registerCanvasContainerModule(containerModule: ContainerModule, renderer: string) {
+  container.bind(CanvasContainerModule).toConstantValue(containerModule).whenTargetNamed(renderer);
 }

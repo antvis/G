@@ -40,7 +40,7 @@ G 4.0 中已经支持了局部渲染，ECharts 5 中称之为[“脏矩形渲染
 
 ## 清空脏矩形
 
-Canvas 2D 提供了 `clearRect` 和 `clip` API。而 WebGL 则需要通过 stencil 实现。
+Canvas 2D 提供了 `clearRect` 和 `clip` API。而 WebGL 则需要通过 `scissor` 实现。
 
 ## 局限性
 

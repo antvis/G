@@ -13,9 +13,8 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
-  init() {
-    const { container } = this.canvasConfig;
-
+  async init() {
+    const { container, width, height } = this.canvasConfig;
     // create container
     this.$container = isString(container) ? document.getElementById(container) : container;
     if (this.$container) {
@@ -28,6 +27,8 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
       let dpr = window.devicePixelRatio || 1;
       dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
       this.dpr = dpr;
+
+      this.resize(width, height);
     }
   }
 
@@ -35,7 +36,7 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
     return this.context;
   }
 
-  getCanvas() {
+  getDomElement() {
     return this.$canvas;
   }
 
@@ -43,7 +44,11 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
     return this.dpr;
   }
 
-  async destroy() {
+  getBoundingClientRect() {
+    return this.$canvas?.getBoundingClientRect();
+  }
+
+  destroy() {
     if (this.$container && this.$canvas) {
       // destroy context
       this.$container.removeChild(this.$canvas);
@@ -64,6 +69,12 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
       // scale all drawing operations by the dpr
       // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
       context?.scale(this.dpr, this.dpr);
+    }
+  }
+
+  applyCursorStyle(cursor: string) {
+    if (this.$container) {
+      this.$container.style.cursor = cursor;
     }
   }
 }

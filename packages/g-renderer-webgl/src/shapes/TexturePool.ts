@@ -3,9 +3,6 @@ import { ITexture2D, ITexture2DInitializationOptions, RenderingEngine } from '..
 
 @injectable()
 export class TexturePool {
-  // @inject(RenderingEngine)
-  // private readonly engine: RenderingEngine;
-
   private textureCache: Record<string, ITexture2D> = {};
 
   async getOrCreateTexture2D(
@@ -47,9 +44,11 @@ export class TexturePool {
   }
 
   destroy() {
-    for (const key in this.textureCache) {
-      this.textureCache[key].destroy();
-    }
+    // no need to destroy texture here
+    // Error: (regl) must not double destroy texture
+    // for (const key in this.textureCache) {
+    //   this.textureCache[key].destroy();
+    // }
     this.textureCache = {};
   }
 }

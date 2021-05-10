@@ -1,0 +1,16 @@
+{
+  "title": {
+    "zh": "中文分类",
+    "en": "Category"
+  },
+  "demos": [
+    {
+      "filename": "chapter2.js",
+      "title": {
+        "zh": "使用渲染器",
+        "en": "Use renderer"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+    }
+  ]
+}

@@ -1,20 +1,17 @@
 import { ContainerModule } from 'inversify';
 import {
   container,
-  RENDERER,
-  CanvasContainerModule,
-  bindContributionProvider,
   ContextService,
   EventService,
   RenderingPluginContribution,
   SHAPE,
   registerDisplayObjectPlugin,
+  registerCanvasContainerModule,
 } from '@antv/g';
 import { DefaultRenderer, StyleRenderer } from './shapes/styles';
 import { Canvas2DContextService } from './services/Canvas2DContextService';
 import { ImageRenderer } from './shapes/styles/Image';
 import { StyleParser } from './shapes/StyleParser';
-import { CanvasEventService } from './services/CanvasEventService';
 import { DirtyRectanglePlugin } from './plugins/DirtyRectanglePlugin';
 import { ImagePool } from './shapes/ImagePool';
 import { RenderShapePlugin } from './plugins/RenderShapePlugin';
@@ -22,6 +19,9 @@ import { LoadImagePlugin } from './plugins/LoadImagePlugin';
 import { PathGenerator, CirclePath, EllipsePath, RectPath, LinePath, PolylinePath, PolygonPath } from './shapes/paths';
 import { PointInPathPicker, CirclePicker, EllipsePicker } from './shapes/picking';
 import { TextRenderer } from './shapes/styles/Text';
+import { PickingPlugin } from './plugins/PickingPlugin';
+
+export const RENDERER = 'canvas';
 
 container.bind(ImagePool).toSelf().inSingletonScope();
 
@@ -52,27 +52,21 @@ container.bind(StyleParser).toSelf().inSingletonScope();
 registerDisplayObjectPlugin(RenderShapePlugin);
 registerDisplayObjectPlugin(LoadImagePlugin);
 
-container
-  .bind(CanvasContainerModule)
-  .toConstantValue(
-    new ContainerModule((bind, unbind, isBound, rebind) => {
-      /**
-       * implements ContextService
-       */
-      bind(Canvas2DContextService).toSelf().inSingletonScope();
-      bind(ContextService).toService(Canvas2DContextService);
+registerCanvasContainerModule(
+  new ContainerModule((bind, unbind, isBound, rebind) => {
+    /**
+     * implements ContextService
+     */
+    bind(Canvas2DContextService).toSelf().inSingletonScope();
+    bind(ContextService).toService(Canvas2DContextService);
 
-      /**
-       * implements EventService
-       */
-      bind(CanvasEventService).toSelf().inSingletonScope();
-      bind(EventService).toService(CanvasEventService);
-
-      /**
-       * register rendering plugins
-       */
-      bind(DirtyRectanglePlugin).toSelf().inSingletonScope();
-      bind(RenderingPluginContribution).toService(DirtyRectanglePlugin);
-    })
-  )
-  .whenTargetNamed(RENDERER.Canvas);
+    /**
+     * register rendering plugins
+     */
+    bind(DirtyRectanglePlugin).toSelf().inSingletonScope();
+    bind(RenderingPluginContribution).toService(DirtyRectanglePlugin);
+    bind(PickingPlugin).toSelf().inSingletonScope();
+    bind(RenderingPluginContribution).toService(PickingPlugin);
+  }),
+  RENDERER
+);
