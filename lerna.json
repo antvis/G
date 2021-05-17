@@ -3,7 +3,8 @@
     "packages/g-base",
     "packages/g-canvas",
     "packages/g-svg",
-    "packages/g-math"
+    "packages/g-math",
+    "packages/g-mobile"
   ],
   "version": "independent",
   "command": {

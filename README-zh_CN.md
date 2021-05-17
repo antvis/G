@@ -25,6 +25,9 @@
 ## 📦 安装
 
 ```bash
+# 移动端 版本
+$ npm install @antv/g-mobile --save
+
 # Canvas 版本
 $ npm install @antv/g-canvas --save
 
@@ -42,6 +45,8 @@ $ npm install @antv/g-svg --save
 import { Canvas } from '@antv/g-canvas';
 // 或者使用 SVG 版本
 // import { Canvas } from '@antv/g-svg';
+// 或者使用 移动端 版本
+// import { Canvas } from '@antv/g-mobile';
 
 const canvas = new Canvas({
   container: 'c1',

@@ -1,41 +1,54 @@
-# color-util
+English | [简体中文](./README-zh_CN.md)
 
-> 为 `antv` 开发的轻量级工具方法库。
+# g-mobile
 
+[![](https://img.shields.io/travis/antvis/g.svg)](https://travis-ci.org/antvis/g)
+![](https://img.shields.io/badge/language-javascript-red.svg)
+![](https://img.shields.io/badge/license-MIT-000000.svg)
 
-## 安装下载
+[![npm package](https://img.shields.io/npm/v/@antv/g-canvas.svg)](https://www.npmjs.com/package/@antv/g-mobile)
+[![npm downloads](http://img.shields.io/npm/dm/@antv/g-canvas.svg)](https://npmjs.org/package/@antv/g-mobile)
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open')
 
-> tnpm i --save @antv/util
+- A canvas library which providing 2d draw for AntV.
 
-```js
-// 所有的 api 是都这么引入，名字不同而已
-import { gradient } from '@antv/color-util';
+## ✨ Features
 
-const grad = gradient(['red', 'blue']);
-const color1 = grad(0.1);
-const color2 = grad(0.2);
+- Powerful and scalable rendering capability with built-in basic Graphics.
+- Excellent rendering performance and supports visualization scenarios with large amounts of data.
+- Complete simulation of mobile/browser DOM events, and no difference from native events.
+- Smooth animation implementation and rich configuration interfaces.
 
+## 📦 Install
+
+```bash
+$ npm install @antv/g-mobile --save
 ```
 
+## 🔨 Usage
 
-## API 文档
-
-> 目前使用到的、且推荐使用的 API 文档，不在文档内的不建议使用。
-* rgb2arr('#ffeedd') 将 rgb 转换成 16 进制的数组
-* gradient(colors) ： 'Function' 渐变色计算
-	+ colors ： 颜色的数组，例如 ['red', 'blue']
-	+ 返回值是一个函数，可以传入百分百，返回函数
- ```js
-const grad = gradient(['red', 'blue']);
-const color1 = grad(0.1);
-const color2 = grad(0.2);
- ```
-* toRGB(color) : 将颜色转换成 RGB 的格式
-
-```js
-import { toRGB } from '@antv/color-util';
-toRGB('red');
-toRGB('rgb(240, 240, 233)');
+```html
+<div id="c1"></div>
 ```
 
+```js
+import { Canvas } from '@antv/g-mobile';
 
+const canvas = new Canvas({
+  container: 'c1',
+  width: 500,
+  height: 500,
+});
+
+const group = canvas.addGroup();
+group.addShape('circle', {
+  attrs: {
+    x: 100,
+    y: 100,
+    r: 50,
+    fill: 'red',
+    stroke: 'blue',
+    lineWidth: 5,
+  },
+});
+```

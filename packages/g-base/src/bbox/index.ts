@@ -19,4 +19,4 @@ register('path', path);
 register('line', line);
 register('ellipse', ellipse);
 
-export { getMethod as getBBoxMethod };
+export { getMethod as getBBoxMethod, register as registerBBox };
