@@ -5,14 +5,13 @@ let counter = 0;
 
 @injectable()
 export class Component<C = {}> implements ILifecycle {
-  readonly _id = counter++;
+  readonly pid = counter++;
 
   public getId() {
-    return this._id;
+    return this.pid;
   }
 
   public copy(props: Partial<Omit<C, keyof Component>>): this {
-    // @ts-ignore
     Object.assign(this, props);
     return this;
   }

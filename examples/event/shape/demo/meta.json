@@ -27,6 +27,14 @@
         "en": "Dragging"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gYBQQph9kkUAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "drag-bug.js",
+      "title": {
+        "zh": "拖拽残影问题",
+        "en": "Dragging"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gYBQQph9kkUAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

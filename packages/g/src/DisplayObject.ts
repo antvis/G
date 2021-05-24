@@ -2,17 +2,17 @@ import { Entity, System } from '@antv/g-ecs';
 import { isObject, isNil } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import EventEmitter from 'eventemitter3';
-import { Cullable, Renderable, SceneGraphNode, Transform } from './components';
+import { Cullable, Geometry, Renderable, SceneGraphNode, Transform } from './components';
 import { Animator, STATUS } from './components/Animator';
 import { createVec3, rad2deg, getEuler } from './utils/math';
 import { Sortable } from './components/Sortable';
 import { GroupFilter, SHAPE, ShapeCfg, AnimateCfg, ElementAttrs, OnFrame } from './types';
 import { DisplayObjectPool } from './DisplayObjectPool';
-import { world, lazyInject, lazyInjectNamed } from './inversify.config';
+import { world, container } from './inversify.config';
 import { SceneGraphService } from './services';
 import { Timeline } from './systems';
 import { AABB } from './shapes';
-import { DisplayObjectHooks } from './hooks';
+import { GeometryAABBUpdater, GeometryUpdaterFactory } from './services/aabb';
 
 export interface INode {
   nodeType: string;
@@ -27,25 +27,59 @@ export interface IGroup {
 }
 
 /**
+ * event for display object
+ */
+export const enum DISPLAY_OBJECT_EVENT {
+  Init = 'init',
+  Destroy = 'destroy',
+  AttributeChanged = 'attributeChanged',
+  /**
+   * it has been inserted
+   */
+  Inserted = 'inserted',
+  /**
+   * it has had a child inserted
+   */
+  ChildInserted = 'child-inserted',
+  /**
+   * it has been removed
+   */
+  Removed = 'removed',
+  /**
+   * it has had a child removed
+   */
+  ChildRemoved = 'child-removed',
+}
+
+/**
  * Provide abilities in scene graph, such as:
  * * transform `translate/rotate/scale`
  * * add/remove child
  * * visibility and z-index
  *
  * Those abilities are implemented with those components: `Transform/SceneGraphNode/Sortable/Visible`.
+ *
+ * Emit following events:
+ * * init
+ * * destroy
+ * * attributeChanged
  */
 export class DisplayObject extends EventEmitter implements INode, IGroup {
   protected entity: Entity;
   protected config: ShapeCfg = { attrs: {} };
 
-  @lazyInject(DisplayObjectPool)
-  protected displayObjectPool: DisplayObjectPool;
+  private displayObjectPool = container.get(DisplayObjectPool);
 
-  @lazyInjectNamed(System, Timeline.tag)
-  private timeline: Timeline;
+  private timeline = container.getNamed<Timeline>(System, Timeline.tag);
 
-  @lazyInject(SceneGraphService)
-  protected sceneGraph: SceneGraphService;
+  private sceneGraphService = container.get(SceneGraphService);
+
+  private geometryUpdaterFactory = container.get<(tagName: SHAPE) => GeometryAABBUpdater>(GeometryUpdaterFactory);
+
+  /**
+   * whether already mounted in canvas
+   */
+  public mounted = false;
 
   constructor(config?: ShapeCfg) {
     super();
@@ -57,6 +91,8 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     // create entity with shape's name
     const entity = world.createEntity(this.config.id || '');
     this.entity = entity;
+    // insert this group into pool
+    this.displayObjectPool.add(entity.getName(), this);
 
     // TODO: capture
     this.config.capture = true;
@@ -66,17 +102,62 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
       this.setZIndex(this.config.zIndex);
     }
 
-    // insert this group into pool
-    this.displayObjectPool.add(entity.getName(), this);
+    // init scene graph node
+    const sceneGraphNode = entity.addComponent(SceneGraphNode);
+    sceneGraphNode.id = this.config.id || '';
+    sceneGraphNode.class = this.config.className || '';
+    sceneGraphNode.tagName = this.config.type || SHAPE.Group;
+    sceneGraphNode.attributes = this.config.attrs || {};
+    if (this.config.name) {
+      sceneGraphNode.attributes.name = this.config.name;
+    }
 
-    // trigger init hook
-    DisplayObjectHooks.init.call(this.entity, this.config);
+    // init transform
+    entity.addComponent(Transform);
+
+    // calculate AABB for current geometry
+    const geometry = entity.addComponent(Geometry);
+    const updater = this.geometryUpdaterFactory(sceneGraphNode.tagName);
+    if (updater) {
+      updater.update(sceneGraphNode.attributes, geometry.aabb);
+    }
+
+    // set position in world space
+    const { x = 0, y = 0 } = sceneGraphNode.attributes;
+    this.sceneGraphService.setPosition(entity, x, y);
+
+    // set origin
+    const { origin = [0, 0] } = sceneGraphNode.attributes;
+    this.sceneGraphService.setOrigin(entity, [...origin, 0]);
+
+    // visible: true -> visibility: visible
+    // visible: false -> visibility: hidden
+    if (this.config.visible === false) {
+      sceneGraphNode.attributes.visibility = 'hidden';
+    } else {
+      sceneGraphNode.attributes.visibility = 'visible';
+    }
+
+    // only shape can be rendered
+    entity.addComponent(Renderable);
+    entity.addComponent(Cullable);
+
+    if (updater) {
+      this.sceneGraphService.updateRenderableAABB(entity);
+    }
+
+    this.emit(DISPLAY_OBJECT_EVENT.Init);
   }
 
-  set() {}
-  setConfig() {}
-
-  get() {}
+  /**
+   * compatible with G 3.0
+   */
+  set(name: string, value: any) {
+    this.config[name] = value;
+  }
+  get(name: string) {
+    return this.config[name];
+  }
   getConfig() {
     return this.config;
   }
@@ -91,10 +172,8 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
   attr(name: Record<string, any>): any;
   attr(...args: any) {
     const [name, value] = args;
-
-    const sceneGraphNode = this.entity.getComponent(SceneGraphNode);
     if (!name) {
-      return sceneGraphNode.attributes;
+      return this.attributes;
     }
     if (isObject(name)) {
       for (const k in name) {
@@ -106,11 +185,11 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
       this.setAttribute(name, value);
       return this;
     }
-    return sceneGraphNode.attributes[name];
+    return this.attributes[name];
   }
 
   destroy() {
-    DisplayObjectHooks.destroy.call(this.entity);
+    this.emit(DISPLAY_OBJECT_EVENT.Destroy);
     this.entity.destroy();
   }
 
@@ -119,10 +198,10 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node
    */
-  get nodeType(): string {
+  get nodeType(): SHAPE {
     return this.entity.getComponent(SceneGraphNode).tagName;
   }
-  get nodeName(): string {
+  get nodeName(): SHAPE {
     return this.entity.getComponent(SceneGraphNode).tagName;
   }
   get parentNode(): DisplayObject | null {
@@ -159,6 +238,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     return this.getLast();
   }
   cloneNode() {
+    // TODO
     return new DisplayObject(this.config);
   }
   appendChild(group: DisplayObject) {
@@ -184,6 +264,14 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     }
     return !!tmp;
   }
+  getAncestor(n: number) {
+    let temp: DisplayObject | null = this;
+    while (n > 0) {
+      temp = this.parentNode;
+      n--;
+    }
+    return temp;
+  }
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/ParentNode
@@ -203,22 +291,22 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
   }
 
   getElementById(id: string) {
-    return this.sceneGraph.querySelector(`#${id}`, this);
+    return this.sceneGraphService.querySelector(`#${id}`, this);
   }
   getElementsByName(name: string) {
-    return this.sceneGraph.querySelectorAll(`[name="${name}"]`, this);
+    return this.sceneGraphService.querySelectorAll(`[name="${name}"]`, this);
   }
   getElementsByClassName(className: string) {
-    return this.sceneGraph.querySelectorAll(`.${className}`, this);
+    return this.sceneGraphService.querySelectorAll(`.${className}`, this);
   }
   getElementsByTagName(tagName: string) {
-    return this.sceneGraph.querySelectorAll(tagName, this);
+    return this.sceneGraphService.querySelectorAll(tagName, this);
   }
   querySelector(selector: string) {
-    return this.sceneGraph.querySelector(selector, this);
+    return this.sceneGraphService.querySelector(selector, this);
   }
   querySelectorAll(selector: string) {
-    return this.sceneGraph.querySelectorAll(selector, this);
+    return this.sceneGraphService.querySelectorAll(selector, this);
   }
 
   addEventListener(event: string, handler: (...args: any[]) => void) {
@@ -227,11 +315,18 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
   removeEventListener(event: string, handler: (...args: any[]) => void) {
     this.off(event, handler);
   }
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes
+   */
+  get attributes() {
+    return this.entity.getComponent(SceneGraphNode).attributes;
+  }
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute
    */
   getAttribute(attributeName: string) {
-    const value = this.entity.getComponent(SceneGraphNode).attributes[attributeName];
+    const value = this.attributes[attributeName];
     // if the given attribute does not exist, the value returned will either be null or ""
     return isNil(value) ? null : value;
   }
@@ -240,24 +335,23 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
    */
   removeAttribute(attributeName: string) {
-    delete this.entity.getComponent(SceneGraphNode).attributes[attributeName];
+    delete this.attributes[attributeName];
   }
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute
    */
   setAttribute(attributeName: string, value: any) {
-    const attributes = this.entity.getComponent(SceneGraphNode).attributes;
     if (
-      value !== attributes[attributeName] ||
+      value !== this.attributes[attributeName] ||
       attributeName === 'visibility' // will affect children
     ) {
       if (attributeName === 'visibility') {
         // set value cascade
-        this.sceneGraph.visit(this.entity, (e) => {
-          DisplayObjectHooks.changeAttribute.promise(e, attributeName, value);
+        this.forEach((object) => {
+          object.changeAttribute(attributeName, value);
         });
       } else {
-        DisplayObjectHooks.changeAttribute.promise(this.entity, attributeName, value);
+        this.changeAttribute(attributeName, value);
       }
     }
   }
@@ -268,7 +362,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * return children num
    */
   getCount() {
-    return this.getChildren().length;
+    return this.children.length;
   }
 
   /**
@@ -301,8 +395,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * get first child group/shape
    */
   getFirst(): DisplayObject | null {
-    const children = this.getChildren();
-    return children.length > 0 ? children[0] : null;
+    return this.children.length > 0 ? this.children[0] : null;
   }
 
   /**
@@ -311,8 +404,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * get last child group/shape
    */
   getLast(): DisplayObject | null {
-    const children = this.getChildren();
-    return children.length > 0 ? children[children.length - 1] : null;
+    return this.children.length > 0 ? this.children[this.children.length - 1] : null;
   }
 
   /**
@@ -321,39 +413,30 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * get child group/shape by index
    */
   getChildByIndex(index: number): DisplayObject | null {
-    const children = this.getChildren();
-    return children[index] || null;
+    return this.children[index] || null;
   }
 
   /**
-   * search in scene group, but
+   * search in scene group, but should not include itself
    */
   find(filter: GroupFilter): DisplayObject | null {
     let target: DisplayObject | null = null;
-    this.sceneGraph.visit(this.entity, (entity) => {
-      // shouldn't include itself
-      if (entity !== this.getEntity()) {
-        const group = this.displayObjectPool.getByName(entity.getName());
-        if (filter(group)) {
-          target = group;
-          return true;
-        }
+    this.forEach((object) => {
+      if (object !== this && filter(object)) {
+        target = object;
+        return true;
       }
     });
     return target;
   }
   findAll(filter: GroupFilter): DisplayObject[] {
-    const groups: DisplayObject[] = [];
-    this.sceneGraph.visit(this.entity, (entity) => {
-      // shouldn't include itself
-      if (entity !== this.getEntity()) {
-        const group = this.displayObjectPool.getByName(entity.getName());
-        if (filter(group)) {
-          groups.push(group);
-        }
+    const objects: DisplayObject[] = [];
+    this.forEach((object) => {
+      if (object !== this && filter(object)) {
+        objects.push(object);
       }
     });
-    return groups;
+    return objects;
   }
 
   /**
@@ -361,10 +444,11 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    *
    * add child group or shape
    */
-  add(shape: DisplayObject, index?: number) {
-    this.sceneGraph.attach(shape.getEntity(), this.entity, index);
+  add(child: DisplayObject, index?: number) {
+    this.sceneGraphService.attach(child.getEntity(), this.entity, index);
 
-    // this.emit(GROUP_EVENT.ChildAppended, shape);
+    this.emit(DISPLAY_OBJECT_EVENT.ChildInserted, child);
+    child.emit(DISPLAY_OBJECT_EVENT.Inserted);
   }
 
   /**
@@ -372,32 +456,37 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    *
    * remove child and destroy it by default
    */
-  remove(shape: DisplayObject, destroy = true) {
-    const entity = shape.getEntity();
-    this.sceneGraph.detach(entity);
+  remove(child: DisplayObject, destroy = true) {
+    const entity = child.getEntity();
+    this.sceneGraphService.detach(entity);
 
-    // this.emit(GROUP_EVENT.ChildRemoved, shape);
+    this.emit(DISPLAY_OBJECT_EVENT.ChildRemoved, child);
+    child.emit(DISPLAY_OBJECT_EVENT.Removed);
 
     if (destroy) {
-      this.sceneGraph.visit(this.entity, (e) => {
-        e.destroy();
+      this.forEach((object) => {
+        object.destroy();
       });
     }
 
-    return shape;
+    return child;
   }
   removeChild(shape: DisplayObject, destroy = true) {
     return this.remove(shape, destroy);
   }
-
   removeChildren(destroy = true) {
-    const sceneGraphNode = this.entity.getComponent(SceneGraphNode);
-    this.sceneGraph.detachChildren(this.entity);
-    if (destroy) {
-      sceneGraphNode.children.forEach((entity) => {
-        this.sceneGraph.visit(entity, (e) => {
-          e.destroy();
-        });
+    this.children.forEach((child) => {
+      this.removeChild(child, destroy);
+    });
+  }
+
+  /**
+   * traverse in descendants
+   */
+  forEach(callback: (o: DisplayObject) => void | boolean) {
+    if (!callback(this)) {
+      this.children.forEach((child) => {
+        child.forEach(callback);
       });
     }
   }
@@ -405,7 +494,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
   /** transform operations */
 
   setOrigin(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.sceneGraph.setOrigin(this.entity, createVec3(position, y, z));
+    this.sceneGraphService.setOrigin(this.entity, createVec3(position, y, z));
     return this;
   }
 
@@ -429,7 +518,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * set position in world space
    */
   setPosition(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.sceneGraph.setPosition(this.entity, createVec3(position, y, z));
+    this.sceneGraphService.setPosition(this.entity, createVec3(position, y, z));
     return this;
   }
 
@@ -437,7 +526,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * set position in local space
    */
   setLocalPosition(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.sceneGraph.setLocalPosition(this.entity, createVec3(position, y, z));
+    this.sceneGraphService.setLocalPosition(this.entity, createVec3(position, y, z));
     return this;
   }
 
@@ -445,7 +534,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * translate in world space
    */
   translate(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.sceneGraph.translate(this.entity, createVec3(position, y, z));
+    this.sceneGraphService.translate(this.entity, createVec3(position, y, z));
     return this;
   }
 
@@ -453,16 +542,16 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * translate in local space
    */
   translateLocal(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.sceneGraph.translateLocal(this.entity, createVec3(position, y, z));
+    this.sceneGraphService.translateLocal(this.entity, createVec3(position, y, z));
     return this;
   }
 
   getPosition() {
-    return this.sceneGraph.getPosition(this.entity);
+    return this.sceneGraphService.getPosition(this.entity);
   }
 
   getLocalPosition() {
-    return this.sceneGraph.getLocalPosition(this.entity);
+    return this.sceneGraphService.getLocalPosition(this.entity);
   }
 
   /**
@@ -482,7 +571,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
       z = z || scaling;
       scaling = createVec3(scaling, y, z);
     }
-    this.sceneGraph.scaleLocal(this.entity, scaling);
+    this.sceneGraphService.scaleLocal(this.entity, scaling);
     return this;
   }
 
@@ -496,7 +585,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
       scaling = createVec3(scaling, y, z);
     }
 
-    this.sceneGraph.setLocalScale(this.entity, scaling);
+    this.sceneGraphService.setLocalScale(this.entity, scaling);
     return this;
   }
 
@@ -504,14 +593,14 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * get scaling in local space
    */
   getLocalScale() {
-    return this.sceneGraph.getLocalScale(this.entity);
+    return this.sceneGraphService.getLocalScale(this.entity);
   }
 
   /**
    * get scaling in world space
    */
   getScale() {
-    return this.sceneGraph.getScale(this.entity);
+    return this.sceneGraphService.getScale(this.entity);
   }
 
   /**
@@ -519,7 +608,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    */
   getEulerAngles() {
     const transform = this.entity.getComponent(Transform);
-    const [ex, ey, ez] = getEuler(vec3.create(), this.sceneGraph.getWorldTransform(this.entity, transform));
+    const [ex, ey, ez] = getEuler(vec3.create(), this.sceneGraphService.getWorldTransform(this.entity, transform));
     return rad2deg(ez);
   }
 
@@ -527,7 +616,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * only return degrees of Z axis in local space
    */
   getLocalEulerAngles() {
-    const [ex, ey, ez] = getEuler(vec3.create(), this.sceneGraph.getLocalRotation(this.entity));
+    const [ex, ey, ez] = getEuler(vec3.create(), this.sceneGraphService.getLocalRotation(this.entity));
     return rad2deg(ez);
   }
 
@@ -535,7 +624,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * set euler angles(degrees) in world space
    */
   setEulerAngles(z: number) {
-    this.sceneGraph.setEulerAngles(this.entity, 0, 0, z);
+    this.sceneGraphService.setEulerAngles(this.entity, 0, 0, z);
     return this;
   }
 
@@ -543,16 +632,23 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * set euler angles(degrees) in local space
    */
   setLocalEulerAngles(z: number) {
-    this.sceneGraph.setLocalEulerAngles(this.entity, 0, 0, z);
+    this.sceneGraphService.setLocalEulerAngles(this.entity, 0, 0, z);
     return this;
   }
 
   rotateLocal(z: number) {
-    return this.sceneGraph.rotateLocal(this.entity, 0, 0, z);
+    return this.sceneGraphService.rotateLocal(this.entity, 0, 0, z);
   }
 
   rotate(z: number) {
-    return this.sceneGraph.rotate(this.entity, 0, 0, z);
+    return this.sceneGraphService.rotate(this.entity, 0, 0, z);
+  }
+
+  getRotation() {
+    return this.sceneGraphService.getRotation(this.entity);
+  }
+  getLocalRotation() {
+    return this.sceneGraphService.getLocalRotation(this.entity);
   }
 
   /* z-index & visibility */
@@ -679,5 +775,72 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     });
 
     return aabb;
+  }
+
+  /**
+   * get bounds in local space, account for children
+   */
+  getLocalBounds(): AABB | null {
+    // TODO: remove its parent temporarily
+    // @see https://medium.com/swlh/inside-pixijs-display-objects-and-their-hierarchy-2deef1c01b6e#6d5d
+    return null;
+  }
+
+  /**
+   * get called when attributes changed
+   */
+  private changeAttribute(name: string, value: any) {
+    const entity = this.getEntity();
+    const renderable = entity.getComponent(Renderable);
+    const geometry = entity.getComponent(Geometry);
+
+    // update value
+    this.attributes[name] = value;
+
+    // update geometry if some attributes changed such as `width/height/...`
+    const geometryUpdater = this.geometryUpdaterFactory(this.nodeType);
+    const needUpdateGeometry = geometryUpdater && geometryUpdater.dependencies.indexOf(name) > -1;
+    if (needUpdateGeometry) {
+      geometryUpdater!.update(this.attributes, geometry.aabb);
+    }
+
+    if (
+      name === 'x' ||
+      name === 'y' || // circle rect...
+      name === 'x1' ||
+      name === 'x2' ||
+      name === 'y1' ||
+      name === 'y2' || // line
+      name === 'points' // polyline
+    ) {
+      const { x = 0, y = 0 } = this.attributes;
+      // update transform
+      this.sceneGraphService.setPosition(entity, x, y);
+    } else if (name === 'z-index') {
+      const sortable = entity.getComponent(Sortable);
+      sortable.zIndex = value;
+
+      const parentEntity = this.parentNode?.getEntity();
+      const parentRenderable = parentEntity?.getComponent(Renderable);
+      const parentSortable = parentEntity?.getComponent(Sortable);
+      if (parentRenderable) {
+        parentRenderable.dirty = true;
+      }
+
+      // need re-sort on parent
+      if (parentSortable) {
+        parentSortable.dirty = true;
+      }
+    }
+
+    // update renderable's aabb, account for world transform
+    if (needUpdateGeometry) {
+      this.sceneGraphService.updateRenderableAABB(entity);
+    }
+
+    // redraw at next frame
+    renderable.dirty = true;
+
+    this.emit(DISPLAY_OBJECT_EVENT.AttributeChanged, this, name, value);
   }
 }

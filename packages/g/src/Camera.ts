@@ -1,8 +1,7 @@
-import { Frustum } from '@antv/g';
 import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
 import { injectable } from 'inversify';
 import Landmark from './Landmark';
-// import { ICamera } from './services/renderer';
+import { Frustum } from './shapes';
 import { createVec3, getAngle } from './utils/math';
 
 export enum CAMERA_TYPE {
@@ -332,6 +331,8 @@ export class Camera {
       right = left + scaleW * this.view.width;
       top -= scaleH * this.view.offsetY;
       bottom = top - scaleH * this.view.height;
+      // bottom += scaleH * this.view.offsetY;
+      // top = bottom + scaleH * this.view.height;
     }
 
     mat4.ortho(this.perspective, left, right, bottom, top, near, far);

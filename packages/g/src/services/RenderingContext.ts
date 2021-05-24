@@ -1,5 +1,3 @@
-import { Entity } from '@antv/g-ecs';
-import { injectable } from 'inversify';
 import RBush from 'rbush';
 import { RBushNode } from '../components';
 import { DisplayObject } from '../DisplayObject';
@@ -45,9 +43,9 @@ export interface RenderingContext {
   /**
    * all the entities
    */
-  entities: Entity[];
+  displayObjects: DisplayObject[];
   dirtyRectangle: AABB | undefined;
-  dirtyEntities: Entity[];
+  dirtyDisplayObjects: DisplayObject[];
 
   /**
    * picked object in last frame

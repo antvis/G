@@ -1,24 +1,29 @@
 import { Circle, Canvas } from '@antv/g';
-import { RENDERER as CANVAS_RENDERER } from '@antv/g-renderer-canvas';
-import { RENDERER as WEBGL_RENDERER } from '@antv/g-renderer-webgl';
-import { RENDERER as SVG_RENDERER } from '@antv/g-renderer-svg';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as SVGRenderer } from '@antv/g-svg';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
+
+// create a renderer
+const canvasRenderer = new CanvasRenderer();
+const webglRenderer = new WebGLRenderer();
+const svgRenderer = new SVGRenderer();
 
 // create a canvas
 const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: CANVAS_RENDERER,
+  renderer: canvasRenderer,
 });
 
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 1000; i++) {
   const circle = new Circle({
     attrs: {
-      x: 300,
-      y: 250,
-      r: (20 - i) * 10,
+      x: Math.random() * 600,
+      y: Math.random() * 500,
+      r: 20 + Math.random() * 10,
       fill: '#1890FF',
       stroke: '#F04864',
       lineWidth: 4,
@@ -52,15 +57,17 @@ canvas.on('postrender', () => {
 });
 
 // GUI
+let currentRenderer = canvasRenderer;
 const gui = new dat.GUI({ autoPlace: false });
 $wrapper.appendChild(gui.domElement);
 const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
-  renderer: CANVAS_RENDERER,
+  renderer: 'canvas',
 };
-rendererFolder.add(rendererConfig, 'renderer', [CANVAS_RENDERER, WEBGL_RENDERER, SVG_RENDERER]).onChange((renderer) => {
+rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
+  currentRenderer = renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer;
   canvas.setConfig({
-    renderer,
+    renderer: currentRenderer,
   });
 });
 rendererFolder.open();
@@ -70,10 +77,8 @@ const dirtyRectangleConfig = {
   enable: true,
 };
 folder0.add(dirtyRectangleConfig, 'enable').onChange((enable) => {
-  canvas.setConfig({
-    renderer: {
-      enableDirtyRectangleRendering: enable,
-    },
+  currentRenderer.setConfig({
+    enableDirtyRectangleRendering: enable,
   });
 });
 folder0.open();

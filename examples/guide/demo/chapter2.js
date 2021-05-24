@@ -1,11 +1,15 @@
 import { Circle, Line, Text, Canvas } from '@antv/g';
-import { RENDERER as CANVAS_RENDERER } from '@antv/g-renderer-canvas';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 
+// create a renderer
+const canvasRenderer = new CanvasRenderer();
+
+// create a canvas
 const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: CANVAS_RENDERER,
+  renderer: canvasRenderer,
 });
 
 const node1 = new Circle({

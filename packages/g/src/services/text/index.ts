@@ -1,6 +1,5 @@
 import { Entity } from '@antv/g-ecs';
 import { inject, injectable, named } from 'inversify';
-import runes from 'runes';
 import { ShapeAttrs } from '../../types';
 import { toFontString } from '../../utils/text';
 import { OffscreenCanvasCreator } from './OffscreenCanvasCreator';
@@ -207,7 +206,7 @@ export class TextService {
       return this.getFromCache(char, letterSpacing, cache, context);
     };
 
-    runes(text).forEach((char: string, i: number) => {
+    text.split('').forEach((char: string, i: number) => {
       const prevChar = text[i - 1];
       const nextChar = text[i + 1];
       const width = calcWidth(char);

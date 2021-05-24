@@ -6,8 +6,8 @@
 ![](https://img.shields.io/badge/language-javascript-red.svg)
 ![](https://img.shields.io/badge/license-MIT-000000.svg)
 
-[![npm package](https://img.shields.io/npm/v/@antv/g-renderer-canvas.svg)](https://www.npmjs.com/package/@antv/g-renderer-canvas)
-[![npm downloads](http://img.shields.io/npm/dm/@antv/g-renderer-canvas.svg)](https://npmjs.org/package/@antv/g-renderer-canvas)
+[![npm package](https://img.shields.io/npm/v/@antv/g-canvas.svg)](https://www.npmjs.com/package/@antv/g-canvas)
+[![npm downloads](http://img.shields.io/npm/dm/@antv/g-canvas.svg)](https://npmjs.org/package/@antv/g-canvas)
 [![npm package](https://img.shields.io/npm/v/@antv/g-svg.svg)](https://www.npmjs.com/package/@antv/g-svg)
 [![npm downloads](http://img.shields.io/npm/dm/@antv/g-svg.svg)](https://npmjs.org/package/@antv/g-svg)
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open')
@@ -26,7 +26,7 @@
 
 ```bash
 # Canvas 版本
-$ npm install @antv/g-renderer-canvas --save
+$ npm install @antv/g-canvas --save
 
 # SVG 版本
 $ npm install @antv/g-svg --save
@@ -35,22 +35,26 @@ $ npm install @antv/g-svg --save
 ## 🔨 使用
 
 ```html
-<div id="c1"></div>
+<div id="container"></div>
 ```
 
 ```js
-import { Canvas } from '@antv/g-renderer-canvas';
-// 或者使用 SVG 版本
-// import { Canvas } from '@antv/g-svg';
+import { Circle } from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+// or
+// import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+// import { Renderer as SVGRenderer } from '@antv/g-svg';
 
+// create a canvas
 const canvas = new Canvas({
-  container: 'c1',
+  container: 'container',
   width: 500,
   height: 500,
+  renderer: new CanvasRenderer(), // select a renderer
 });
 
-const group = canvas.addGroup();
-group.addShape('circle', {
+// create a circle
+const circle = new Circle({
   attrs: {
     x: 100,
     y: 100,
@@ -60,6 +64,9 @@ group.addShape('circle', {
     lineWidth: 5,
   },
 });
+
+// append to canvas
+canvas.appendChild(circle);
 ```
 
 ## ⌨️ 开发

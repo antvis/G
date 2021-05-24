@@ -1,5 +1,11 @@
 import { DisplayObject } from './DisplayObject';
-import { InteractivePointerEvent } from './utils/event';
+
+export type InteractivePointerEvent = PointerEvent | TouchEvent | MouseEvent;
+export type InteractionCallback = (
+  interactionEvent: InteractionEvent,
+  displayObject: DisplayObject,
+  hit?: boolean
+) => void;
 
 export class InteractionEvent {
   static isTouch(event: InteractionEvent) {

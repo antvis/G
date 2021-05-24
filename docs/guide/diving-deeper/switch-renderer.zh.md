@@ -7,11 +7,11 @@ order: 1
 
 ## 按需引入渲染器
 
-目前我们提供了三种渲染器：`@antv/g-renderer-canvas/svg/webgl`，用户可以像插件一样按需引入，但至少需要一种：
+目前我们提供了三种渲染器：`@antv/g-canvas/svg/webgl`，用户可以像插件一样按需引入，但至少需要一种：
 
 ```js
-import { RENDERER as CANVAS_RENDERER } from '@antv/g-renderer-canvas';
-import { RENDERER as WEBGL_RENDERER } from '@antv/g-renderer-webgl';
+import { RENDERER as CANVAS_RENDERER } from '@antv/g-canvas';
+import { RENDERER as WEBGL_RENDERER } from '@antv/g-webgl';
 // import 'g-renderer-svg';
 ```
 
@@ -34,8 +34,8 @@ const canvas = new Canvas({
 
 ```js
 import { Canvas } from '@antv/g';
-import '@antv/g-renderer-canvas';
-import { RENDERER as WEBGL_RENDERER } from '@antv/g-renderer-webgl';
+import '@antv/g-canvas';
+import { RENDERER as WEBGL_RENDERER } from '@antv/g-webgl';
 
 const canvas = new Canvas({
   container: 'container',

@@ -1,38 +1,38 @@
 import { ContainerModule } from 'inversify';
-import { CanvasServiceContribution } from './Canvas';
 import { bindContributionProvider } from './contribution-provider';
-import { DirtyCheckPlugin } from './plugins/renderer/DirtyCheckPlugin';
-import { CullingPlugin, CullingStrategy } from './plugins/renderer/CullingPlugin';
-import { SortPlugin } from './plugins/renderer/SortPlugin';
-import { PrepareRendererPlugin } from './plugins/renderer/PrepareRendererPlugin';
-import { FrustumCullingStrategy } from './plugins/renderer/FrustumCullingStrategy';
+import { DirtyCheckPlugin } from './plugins/DirtyCheckPlugin';
+import { CullingPlugin, CullingStrategy } from './plugins/CullingPlugin';
+import { SortPlugin } from './plugins/SortPlugin';
+import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
+import { FrustumCullingStrategy } from './plugins/FrustumCullingStrategy';
 import { RenderingPluginContribution, RenderingService } from './services';
-import { InteractionPlugin } from './plugins/renderer/InteractionPlugin';
+import { EventPlugin } from './plugins/EventPlugin';
 
 export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
-  // bind global DisplayObject plugins
-  // bindContributionProvider(bind, CanvasServiceContribution);
-
   bind(RenderingService).toSelf().inSingletonScope();
-  // bind(CanvasServiceContribution).toService(RenderingService);
 
   bindContributionProvider(bind, RenderingPluginContribution);
 
-  bind(InteractionPlugin).toSelf().inSingletonScope();
-  bind(RenderingPluginContribution).toService(InteractionPlugin);
+  // event plugin
+  bind(EventPlugin).toSelf().inSingletonScope();
+  bind(RenderingPluginContribution).toService(EventPlugin);
 
+  // prerender plugin
   bind(PrepareRendererPlugin).toSelf().inSingletonScope();
   bind(RenderingPluginContribution).toService(PrepareRendererPlugin);
 
+  // dirty rectangle plugin
   bind(DirtyCheckPlugin).toSelf().inSingletonScope();
   bind(RenderingPluginContribution).toService(DirtyCheckPlugin);
 
-  // culling strategies
+  // culling plugin
   bindContributionProvider(bind, CullingStrategy);
   bind(FrustumCullingStrategy).toSelf().inSingletonScope();
   bind(CullingStrategy).toService(FrustumCullingStrategy);
   bind(CullingPlugin).toSelf().inSingletonScope();
   bind(RenderingPluginContribution).toService(CullingPlugin);
+
+  // sort plugin
   bind(SortPlugin).toSelf().inSingletonScope();
   bind(RenderingPluginContribution).toService(SortPlugin);
 });

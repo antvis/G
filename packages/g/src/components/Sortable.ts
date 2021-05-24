@@ -10,6 +10,11 @@ export class Sortable extends Component {
   zIndex: number = 0;
 
   /**
+   * sorted index
+   */
+  sortedIndex: number;
+
+  /**
    * need to re-sort
    */
   dirty = false;

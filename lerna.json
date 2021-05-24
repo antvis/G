@@ -2,9 +2,16 @@
   "packages": [
     "packages/g-ecs",
     "packages/g",
-    "packages/g-renderer-canvas",
-    "packages/g-renderer-svg",
-    "packages/g-renderer-webgl"
+    "packages/g-plugin-dom-interaction",
+    "packages/g-plugin-css-select",
+    "packages/g-plugin-canvas-renderer",
+    "packages/g-plugin-canvas-picker",
+    "packages/g-plugin-svg-renderer",
+    "packages/g-plugin-svg-picker",
+    "packages/g-plugin-webgl-renderer",
+    "packages/g-canvas",
+    "packages/g-svg",
+    "packages/g-webgl"
   ],
   "npmClient": "yarn",
   "useWorkspaces": true,

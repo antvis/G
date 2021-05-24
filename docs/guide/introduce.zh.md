@@ -24,11 +24,11 @@ redirect_from:
 $ npm install @antv/g --save
 
 # Canvas renderer
-$ npm install @antv/g-renderer-canvas --save
+$ npm install @antv/g-canvas --save
 # SVG renderer
 $ npm install @antv/g-renderer-svg --save
 # WebGL renderer
-$ npm install @antv/g-renderer-webgl --save
+$ npm install @antv/g-webgl --save
 ```
 
 ## 使用
@@ -41,7 +41,7 @@ $ npm install @antv/g-renderer-webgl --save
 
 ```js
 import { Canvas, Circle } from '@antv/g';
-import { RENDERER as CANVAS_RENDERER } from '@antv/g-renderer-canvas';
+import { RENDERER as CANVAS_RENDERER } from '@antv/g-canvas';
 
 const canvas = new Canvas({
   container: 'c1',

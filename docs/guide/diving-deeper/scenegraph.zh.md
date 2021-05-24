@@ -217,7 +217,7 @@ earthOrbit.rotateLocal(1);
 
 ```javascript
 solarSystem.getElementsByName('sun');
-// sun
+// [sun]
 
 solarSystem.getElementsByTagName('circle');
 solarSystem.getElementsByTagName(SHAPE.Circle);

@@ -12,7 +12,9 @@ order: 2
 首先我们需要引入一个或多个渲染器，如果引入了多个，还可以在[运行时切换](/zh/docs/guide/diving-deeper/switch-renderer#运行时切换)。本例中我们只选择了一个 Canvas2D 渲染器：
 
 ```javascript
-import { RENDERER as CANVAS_RENDERER } from '@antv/g-renderer-canvas';
+import { Renderer } from '@antv/g-canvas';
+
+const renderer = new Renderer();
 ```
 
 # 创建画布
@@ -24,7 +26,7 @@ const canvas = new Canvas({
   container: 'container', // DOM 节点id
   width: 600, // 画布宽度
   height: 500, // 画布高度
-  renderer: CANVAS_RENDERER,
+  renderer,
 });
 ```
 

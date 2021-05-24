@@ -8,13 +8,13 @@
       "@antv/g/*": [
         "g/src/*"
       ],
-      "@antv/g-renderer-canvas/*": [
+      "@antv/g-canvas/*": [
         "g-renderer-canvas/src/*"
       ],
       "@antv/g-renderer-svg/*": [
         "g-renderer-svg/src/*"
       ],
-      "@antv/g-renderer-webgl/*": [
+      "@antv/g-webgl/*": [
         "g-renderer-webgl/src/*"
       ]
     }
@@ -22,16 +22,37 @@
   "files": [],
   "references": [
     {
+      "path": "packages/g-canvas"
+    },
+    {
       "path": "packages/g-ecs"
     },
     {
-      "path": "packages/g-renderer-canvas"
+      "path": "packages/g-plugin-canvas-picker"
     },
     {
-      "path": "packages/g-renderer-svg"
+      "path": "packages/g-plugin-canvas-renderer"
     },
     {
-      "path": "packages/g-renderer-webgl"
+      "path": "packages/g-plugin-css-select"
+    },
+    {
+      "path": "packages/g-plugin-dom-interaction"
+    },
+    {
+      "path": "packages/g-plugin-svg-picker"
+    },
+    {
+      "path": "packages/g-plugin-svg-renderer"
+    },
+    {
+      "path": "packages/g-plugin-webgl-renderer"
+    },
+    {
+      "path": "packages/g-svg"
+    },
+    {
+      "path": "packages/g-webgl"
     },
     {
       "path": "packages/g"

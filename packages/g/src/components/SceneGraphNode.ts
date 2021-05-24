@@ -15,6 +15,12 @@ export class SceneGraphNode extends Component {
    */
   parent: Entity | null = null;
   children: Entity[] = [];
+  /**
+   * index of layer, eg.
+   * * root -1
+   * * root's children 0
+   */
+  hierarchyIndex: number = -1;
 
   /**
    * used with `getElementById()`
@@ -39,4 +45,9 @@ export class SceneGraphNode extends Component {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes
    */
   attributes: ShapeAttrs;
+
+  /**
+   * shadow node, invisible in scene graph, which means cannot be queried
+   */
+  shadow = false;
 }

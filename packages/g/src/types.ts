@@ -1,8 +1,10 @@
 // import { IShape, ICtor } from './interfaces';
 import { Entity } from '@antv/g-ecs';
+import { IRenderer } from './AbstractRenderer';
 import { DisplayObject } from './DisplayObject';
 
 export enum SHAPE {
+  Custom = 'custom',
   Group = 'group',
   Circle = 'circle',
   Ellipse = 'ellipse',
@@ -214,23 +216,24 @@ export type Cursor =
 
 export interface RendererConfig {
   /**
-   * type of renderer, eg. 'canvas' 'svg' 'webgl'
-   */
-  type: string;
-
-  /**
    * enable dirty rectangle rendering
    */
-  enableDirtyRectangleRendering?: boolean;
+  enableDirtyRectangleRendering: boolean;
+
+  enableDirtyRectangleRenderingDebug: boolean;
 
   /**
    * enable auto rendering
    */
-  enableAutoRendering?: boolean;
+  enableAutoRendering: boolean;
 }
 
 export const CanvasConfig = Symbol('CanvasConfig');
 export interface CanvasConfig {
+  /**
+   * Renderer
+   */
+  renderer: IRenderer;
   /**
    * 容器
    * @type {string|HTMLElement}
@@ -251,11 +254,6 @@ export interface CanvasConfig {
    * @type {boolean}
    */
   capture?: boolean;
-  /**
-   * 只读属性，渲染引擎
-   * @type {string}
-   */
-  renderer?: string | RendererConfig;
 
   /**
    * 画布的 cursor 样式

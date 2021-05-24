@@ -5,7 +5,6 @@ import {
   AttributeAnimationUpdaters,
 } from './systems';
 import { DisplayObjectPool } from './DisplayObjectPool';
-import { SceneGraphAdapter } from './services/SceneGraphAdapter';
 import { SceneGraphService } from './services/SceneGraphService';
 import {
   CircleUpdater,
@@ -21,6 +20,7 @@ import { TextService } from './services/text';
 import { TextUpdater } from './services/aabb/TextUpdater';
 import { OffscreenCanvasCreator } from './services/text/OffscreenCanvasCreator';
 import { Camera } from './Camera';
+import { DefaultSceneGraphSelector, SceneGraphSelector } from './services/SceneGraphSelector';
 
 export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
   // bind camera
@@ -30,7 +30,8 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   bind(DisplayObjectPool).toSelf().inSingletonScope();
 
   // bind css-select adapter
-  bind(SceneGraphAdapter).toSelf().inSingletonScope();
+  bind(DefaultSceneGraphSelector).toSelf().inSingletonScope();
+  bind(SceneGraphSelector).to(DefaultSceneGraphSelector);
   bind(SceneGraphService).toSelf().inSingletonScope();
 
   // bind text service

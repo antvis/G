@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const resolve = require('path').resolve;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   entry: {
@@ -47,6 +48,10 @@ module.exports = {
       },
     ],
   },
-  plugins: [new webpack.NoEmitOnErrorsPlugin(), new webpack.optimize.AggressiveMergingPlugin()],
+  plugins: [
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.optimize.AggressiveMergingPlugin(),
+    new BundleAnalyzerPlugin(),
+  ],
   devtool: 'source-map',
 };
