@@ -1,7 +1,8 @@
 {
-  "name": "@antv/g-plugin-canvas-renderer",
+  "name": "@antv/g-ui",
   "version": "0.1.0",
-  "description": "A G plugin of renderer implementation with Canvas2D API",
+  "private": true,
+  "description": "UI for g",
   "main": "lib/index.js",
   "module": "esm/index.js",
   "unpkg": "dist/g.min.js",
@@ -46,18 +47,18 @@
   "bugs": {
     "url": "https://github.com/antvis/g/issues"
   },
-  "dependencies": {
-    "@antv/g-math": "^0.1.6",
-    "@antv/path-util": "~2.0.5"
-  },
   "devDependencies": {
     "@types/jest": "^25.0.0",
+    "@types/gl-matrix": "^2.4.5",
     "npm-run-all": "^4.1.5",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7"
   },
   "homepage": "https://github.com/antvis/g#readme",
-  "peerDependencies": {
-    "@antv/g": "^0.1.0"
+  "dependencies": {
+    "@antv/g": "^0.1.0",
+    "@antv/util": "^2.0.13",
+    "@antv/g-plugin-webgl-renderer": "^0.1.0",
+    "@antv/g-plugin-dom-interaction": "^0.1.0"
   }
 }

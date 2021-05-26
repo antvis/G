@@ -5,4 +5,5 @@ export * from './ContextService';
 export * from './RenderingContext';
 export * from './RenderingService';
 export * from './SceneGraphSelector';
+export * from './text/OffscreenCanvasCreator';
 export * from './text';

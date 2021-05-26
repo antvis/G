@@ -7,17 +7,21 @@ import {
   RenderingContext,
   SceneGraphService,
   PickingResult,
+  OffscreenCanvasCreator,
 } from '@antv/g';
+import { PathGeneratorFactory, PathGenerator } from '@antv/g-plugin-canvas-renderer';
+import { mat4, vec3 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
 
+export type Point = {
+  x: number;
+  y: number;
+};
 export const PointInPathPickerFactory = Symbol('PointInPathPicker');
 export type PointInPathPicker = (
   displayObject: DisplayObject,
-  point: {
-    // lineWidth: number;
-    x: number;
-    y: number;
-  }
+  point: Point,
+  isPointInPath?: (displayObject: DisplayObject, point: Point) => boolean
 ) => boolean;
 
 /**
@@ -39,11 +43,18 @@ export class CanvasPickerPlugin implements RenderingPlugin {
   @inject(DisplayObjectPool)
   private displayObjectPool: DisplayObjectPool;
 
+  @inject(OffscreenCanvasCreator)
+  private offscreenCanvas: OffscreenCanvasCreator;
+
+  @inject(PathGeneratorFactory)
+  private pathGeneratorFactory: (tagName: SHAPE) => PathGenerator;
+
   @inject(PointInPathPickerFactory)
   private pointInPathPickerFactory: (tagName: SHAPE) => PointInPathPicker;
 
   apply(renderingService: RenderingService) {
     renderingService.hooks.pick.tap(CanvasPickerPlugin.tag, (result: PickingResult) => {
+      // position in world space
       const { x, y } = result.position;
       // query by AABB first with spatial index(r-tree)
       const rBushNodes = this.renderingContext.rBush.search({
@@ -62,11 +73,16 @@ export class CanvasPickerPlugin implements RenderingPlugin {
           // use picker for current shape's type
           const pick = this.pointInPathPickerFactory(displayObject.nodeType);
           if (pick) {
-            if (pick(displayObject, { x, y })) {
+            // invert with world matrix
+            const worldTransform = displayObject.getWorldTransform();
+            const invertWorldMat = mat4.invert(mat4.create(), worldTransform);
+            // transform client position to local space, do picking in local space
+            const localPosition = vec3.transformMat4(vec3.create(), vec3.fromValues(x, y, 0), invertWorldMat);
+            if (pick(displayObject, { x: localPosition[0], y: localPosition[1] }, this.isPointInPath)) {
               pickedDisplayObjects.push(displayObject);
             }
           } else {
-            // use hit result, such as `Text`
+            // AABB test is enough, such as `Text`
             pickedDisplayObjects.push(displayObject);
           }
         }
@@ -82,4 +98,18 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       };
     });
   }
+
+  /**
+   * use native picking method
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/isPointInPath
+   */
+  private isPointInPath = (displayObject: DisplayObject, position: Point) => {
+    const context = this.offscreenCanvas.getOrCreateContext();
+    const generatePath = this.pathGeneratorFactory(displayObject.nodeType);
+    if (generatePath) {
+      generatePath(context, displayObject.attributes);
+    }
+
+    return context.isPointInPath(position.x, position.y);
+  };
 }

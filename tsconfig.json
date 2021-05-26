@@ -52,6 +52,9 @@
       "path": "packages/g-svg"
     },
     {
+      "path": "packages/g-ui"
+    },
+    {
       "path": "packages/g-webgl"
     },
     {

@@ -1,25 +1,12 @@
-import { SceneGraphNode, DisplayObject } from '@antv/g';
+import { DisplayObject } from '@antv/g';
+import { Point } from './CanvasPickerPlugin';
 import { distance } from './utils/math';
 
-export function isPointInPath(
-  displayObject: DisplayObject,
-  {
-    // lineWidth,
-    x,
-    y,
-  }: {
-    // lineWidth: number;
-    x: number;
-    y: number;
-  }
-): boolean {
-  const {
-    attributes: { r = 0, fill, stroke, lineWidth = 0 },
-  } = displayObject.getEntity().getComponent(SceneGraphNode);
-  const [cx, cy] = displayObject.getPosition();
+export function isPointInPath(displayObject: DisplayObject, position: Point): boolean {
+  const { r = 0, fill, stroke, lineWidth = 0 } = displayObject.attributes;
 
   const halfLineWidth = lineWidth / 2;
-  const absDistance = distance(cx, cy, x, y);
+  const absDistance = distance(0, 0, position.x, position.y);
 
   // 直接用距离，如果同时存在边和填充时，可以减少两次计算
   if (fill && stroke) {

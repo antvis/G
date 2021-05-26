@@ -77,9 +77,9 @@ export class RenderingService implements CanvasService {
 
     const objects: DisplayObject[] = [];
     root.forEach((node) => {
-      if (!node.getEntity().getComponent(SceneGraphNode).shadow) {
-        objects.push(node);
-      }
+      // if (!node.getEntity().getComponent(SceneGraphNode).shadow) {
+      objects.push(node);
+      // }
     });
 
     this.renderingContext.displayObjects = objects;

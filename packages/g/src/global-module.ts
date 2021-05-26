@@ -12,6 +12,7 @@ import {
   GeometryAABBUpdater,
   GeometryUpdaterFactory,
   LineUpdater,
+  PathUpdater,
   PolylineUpdater,
   RectUpdater,
 } from './services/aabb';
@@ -47,6 +48,7 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   bind(GeometryAABBUpdater).to(LineUpdater).inSingletonScope().whenTargetNamed(SHAPE.Line);
   bind(GeometryAABBUpdater).to(PolylineUpdater).inSingletonScope().whenTargetNamed(SHAPE.Polyline);
   bind(GeometryAABBUpdater).to(PolylineUpdater).inSingletonScope().whenTargetNamed(SHAPE.Polygon);
+  bind(GeometryAABBUpdater).to(PathUpdater).inSingletonScope().whenTargetNamed(SHAPE.Path);
   bind<interfaces.Factory<GeometryAABBUpdater | null>>(GeometryUpdaterFactory).toFactory<GeometryAABBUpdater | null>(
     (context: interfaces.Context) => {
       return (tagName: SHAPE) => {

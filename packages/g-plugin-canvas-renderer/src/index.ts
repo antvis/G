@@ -1,4 +1,4 @@
-import { RenderingPluginContribution, SHAPE } from '@antv/g';
+import { RenderingPluginContribution, SHAPE, container } from '@antv/g';
 import { ContainerModule } from 'inversify';
 import { DefaultRenderer, StyleRenderer, StyleRendererFactory } from './shapes/styles';
 import { ImageRenderer } from './shapes/styles/Image';
@@ -13,33 +13,39 @@ import {
   LinePath,
   PolylinePath,
   PolygonPath,
+  PathPath,
 } from './shapes/paths';
 import { TextRenderer } from './shapes/styles/Text';
 import { CanvasRendererPlugin } from './CanvasRendererPlugin';
 import { LoadImagePlugin } from './LoadImagePlugin';
 
+export { PathGeneratorFactory, PathGenerator };
+
+/**
+ * register shape renderers
+ */
+container.bind(PathGeneratorFactory).toFactory<PathGenerator | null>((ctx) => (tagName: SHAPE) => {
+  if (tagName === SHAPE.Circle) {
+    return CirclePath;
+  } else if (tagName === SHAPE.Ellipse) {
+    return EllipsePath;
+  } else if (tagName === SHAPE.Rect) {
+    return RectPath;
+  } else if (tagName === SHAPE.Line) {
+    return LinePath;
+  } else if (tagName === SHAPE.Polyline) {
+    return PolylinePath;
+  } else if (tagName === SHAPE.Polygon) {
+    return PolygonPath;
+  } else if (tagName === SHAPE.Path) {
+    return PathPath;
+  }
+
+  return null;
+});
+
 export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ImagePool).toSelf().inSingletonScope();
-  /**
-   * register shape renderers
-   */
-  bind(PathGeneratorFactory).toFactory<PathGenerator | null>((ctx) => (tagName: SHAPE) => {
-    if (tagName === SHAPE.Circle) {
-      return CirclePath;
-    } else if (tagName === SHAPE.Ellipse) {
-      return EllipsePath;
-    } else if (tagName === SHAPE.Rect) {
-      return RectPath;
-    } else if (tagName === SHAPE.Line) {
-      return LinePath;
-    } else if (tagName === SHAPE.Polyline) {
-      return PolylinePath;
-    } else if (tagName === SHAPE.Polygon) {
-      return PolygonPath;
-    }
-
-    return null;
-  });
 
   bind(DefaultRenderer).toSelf().inSingletonScope();
   bind(ImageRenderer).toSelf().inSingletonScope();
@@ -51,7 +57,8 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
       tagName === SHAPE.Rect ||
       tagName === SHAPE.Line ||
       tagName === SHAPE.Polyline ||
-      tagName === SHAPE.Polygon
+      tagName === SHAPE.Polygon ||
+      tagName === SHAPE.Path
     ) {
       return ctx.container.get(DefaultRenderer);
     } else if (tagName === SHAPE.Image) {

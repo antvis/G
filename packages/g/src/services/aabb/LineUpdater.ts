@@ -22,8 +22,6 @@ export class LineUpdater implements GeometryAABBUpdater {
     const width = maxX - minX;
     const height = maxY - minY;
 
-    // TODO: account for arrows
-
     const halfExtents = vec3.fromValues(width / 2, height / 2, 0);
     const center = vec3.fromValues((1 - anchor[0] * 2) * halfExtents[0], (1 - anchor[1] * 2) * halfExtents[1], 0);
 

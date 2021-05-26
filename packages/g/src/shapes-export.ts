@@ -79,6 +79,21 @@ export class Line extends DisplayObject {
   }
 }
 
+export class Path extends DisplayObject {
+  constructor({ attrs, ...rest }: ShapeCfg) {
+    super({
+      type: SHAPE.Path,
+      attrs: {
+        opacity: 1,
+        strokeOpacity: 1,
+        lineWidth: 1,
+        ...attrs,
+      },
+      ...rest,
+    });
+  }
+}
+
 export class Polyline extends DisplayObject {
   constructor({ attrs, ...rest }: ShapeCfg) {
     super({

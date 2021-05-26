@@ -11,7 +11,8 @@
     "packages/g-plugin-webgl-renderer",
     "packages/g-canvas",
     "packages/g-svg",
-    "packages/g-webgl"
+    "packages/g-webgl",
+    "packages/g-ui"
   ],
   "npmClient": "yarn",
   "useWorkspaces": true,

@@ -1,6 +1,7 @@
 export * from './AbstractRenderer';
 export * from './Batch';
 export * from './Canvas';
+export * from './CustomElement';
 export * from './DisplayObject';
 export * from './DisplayObjectPool';
 export * from './Camera';

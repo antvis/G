@@ -40,7 +40,7 @@ const rect = new Rect({
 
 ## 位置
 
-图形在世界坐标系下的初始位置通过 `(x, y)` 描述，后续也可以通过 [setPosition](/zh/docs/api/display-object#平移) 重新设置。
+图形在局部坐标系下的初始位置通过 `(x, y)` 描述，后续也可以通过 [setLocalPosition](/zh/docs/api/display-object#平移) 重新设置。
 
 对于不同的图形，“位置”的几何意义也不同，例如：
 

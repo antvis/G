@@ -112,18 +112,19 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const context = this.contextService.getContext()!;
       objects.forEach((object) => {
         const nodeType = object.nodeType;
+
+        // reset transformation
         context.save();
 
         const originMatrix = context.getTransform();
 
-        // apply RTS transformation
+        // apply RTS transformation in world space
         this.applyTransform(context, object);
 
         // apply attributes to context
         this.applyAttributesToContext(context, object.attributes);
 
-        // generate path
-
+        // generate path in local space
         const generatePath = this.pathGeneratorFactory(nodeType);
         if (generatePath) {
           generatePath(context, object.attributes);

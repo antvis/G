@@ -122,9 +122,9 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
       updater.update(sceneGraphNode.attributes, geometry.aabb);
     }
 
-    // set position in world space
+    // set position in local space
     const { x = 0, y = 0 } = sceneGraphNode.attributes;
-    this.sceneGraphService.setPosition(entity, x, y);
+    this.sceneGraphService.setLocalPosition(entity, x, y);
 
     // set origin
     const { origin = [0, 0] } = sceneGraphNode.attributes;
@@ -651,6 +651,10 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     return this.sceneGraphService.getLocalRotation(this.entity);
   }
 
+  getWorldTransform() {
+    return this.sceneGraphService.getWorldTransform(this.entity, this.entity.getComponent(Transform));
+  }
+
   /* z-index & visibility */
 
   setZIndex(zIndex: number) {
@@ -811,11 +815,13 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
       name === 'x2' ||
       name === 'y1' ||
       name === 'y2' || // line
-      name === 'points' // polyline
+      name === 'points' || // polyline
+      name === 'path' // path
     ) {
+      // in parent's local space
       const { x = 0, y = 0 } = this.attributes;
       // update transform
-      this.sceneGraphService.setPosition(entity, x, y);
+      this.sceneGraphService.setLocalPosition(entity, x, y);
     } else if (name === 'z-index') {
       const sortable = entity.getComponent(Sortable);
       sortable.zIndex = value;

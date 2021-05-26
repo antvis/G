@@ -15,3 +15,4 @@ export { RectUpdater } from './RectUpdater';
 export { TextUpdater } from './TextUpdater';
 export { LineUpdater } from './LineUpdater';
 export { PolylineUpdater } from './PolylineUpdater';
+export { PathUpdater } from './PathUpdater';

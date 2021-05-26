@@ -1,0 +1,22 @@
+{
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        "outDir": "lib",
+        "rootDir": "./src",
+        "composite": true
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "references": [
+        {
+            "path": "../g"
+        },
+        {
+            "path": "../g-plugin-webgl-renderer"
+        },
+        {
+            "path": "../g-plugin-dom-interaction"
+        }
+    ]
+}

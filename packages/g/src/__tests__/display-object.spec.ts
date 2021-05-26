@@ -1,12 +1,12 @@
 import 'reflect-metadata';
 import { expect } from 'chai';
-import { Group } from '@antv/g';
+import { DisplayObject } from '@antv/g';
 import { mat4, vec3 } from 'gl-matrix';
 
-describe('Group', () => {
+describe('DisplayObject', () => {
   it('should update transform with its parent group', () => {
-    const group1 = new Group();
-    const group2 = new Group();
+    const group1 = new DisplayObject();
+    const group2 = new DisplayObject();
 
     expect(group1.getPosition()).to.eqls(vec3.create());
     expect(group2.getPosition()).to.eqls(vec3.create());
@@ -45,8 +45,8 @@ describe('Group', () => {
   });
 
   it('should update scaling with its parent group', () => {
-    const group1 = new Group();
-    const group2 = new Group();
+    const group1 = new DisplayObject();
+    const group2 = new DisplayObject();
 
     expect(group1.getScale()).to.eqls(vec3.fromValues(1, 1, 1));
     expect(group2.getScale()).to.eqls(vec3.fromValues(1, 1, 1));
