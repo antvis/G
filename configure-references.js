@@ -19,10 +19,10 @@ config.references = [];
     return;
   }
 
-  const { stdout } = await exec('yarn workspaces info --json');
+  const { stdout } = await exec('yarn --silent workspaces info');
 
-  let workspaces = JSON.parse(stdout).data;
-  workspaces = JSON.parse(workspaces);
+  // let workspaces = JSON.parse(stdout).data;
+  const workspaces = JSON.parse(stdout);
 
   Object.keys(workspaces).forEach((name) => {
     const workspace = workspaces[name];
