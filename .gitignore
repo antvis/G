@@ -76,3 +76,6 @@ temp.diff
 
 # ignore static files of site
 public/
+
+
+tsconfig.tsbuildinfo

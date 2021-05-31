@@ -4,7 +4,6 @@
   "description": "A G plugin for using CSS select syntax in query selector",
   "main": "lib/index.js",
   "module": "esm/index.js",
-  "unpkg": "dist/g.min.js",
   "types": "lib/index.d.ts",
   "files": [
     "package.json",
