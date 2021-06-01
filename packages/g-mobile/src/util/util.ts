@@ -54,18 +54,9 @@ export function isSamePoint(point1, point2) {
   return point1[0] === point2[0] && point1[1] === point2[1];
 }
 
-export {
-  isNil,
-  isString,
-  isFunction,
-  isArray,
-  each,
-  toRadian,
-  mod,
-  isNumberEqual,
-  requestAnimationFrame,
-  clearAnimationFrame,
-} from '@antv/util';
+export { isNil, isString, isFunction, isArray, each, toRadian, mod, isNumberEqual } from '@antv/util';
+
+export { requestAnimationFrame, clearAnimationFrame } from './time';
 
 export function tick(fn: FrameRequestCallback) {
   if (window) {

@@ -5,7 +5,7 @@ import { getShape } from './util/hit';
 import * as Shape from './shape';
 import Group from './group';
 import { each, getPixelRatio } from './util/util';
-import { requestAnimationFrame, clearAnimationFrame } from './util/time';
+import { requestAnimationFrame, clearAnimationFrame, setExtraFunction } from './util/time';
 import { applyAttrsToContext, drawChildren, getMergedRegion, mergeView, checkRefresh, clearChanged } from './util/draw';
 import EventController from './events';
 import CanvasProxy from './util/mini-canvas-proxy';
@@ -20,6 +20,7 @@ class Canvas extends AbstractCanvas {
     if (this.isMini()) {
       if (this.isMiniNative()) {
         // TODO 这里会传递过来extra，里面包含一些来自各个平台的优化函数
+        setExtraFunction(this.get('extra'));
       } else {
         // 小程序使用了自定义的canvas api，不兼容w3c标准
         this.set('context', new Proxy(ctx, new CanvasProxy()));
