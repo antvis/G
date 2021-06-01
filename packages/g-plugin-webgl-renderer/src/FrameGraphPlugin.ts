@@ -178,7 +178,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
         // handle batch
         const isBatch = tagName === Batch.tag;
         if (isBatch) {
-          tagName = ((object as unknown) as Batch).getBatchType();
+          tagName = (object as unknown as Batch).getBatchType();
         }
 
         const modelBuilder = this.modelBuilderFactory(tagName);

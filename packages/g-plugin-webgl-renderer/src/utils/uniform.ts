@@ -7,9 +7,7 @@ import { IUniform } from '../services/renderer';
  * a: { b: 1 }  ->  'a.b'
  * a: [ { b: 1 } ] -> 'a[0].b'
  */
-export function extractUniforms(uniforms: {
-  [key: string]: IUniform;
-}): {
+export function extractUniforms(uniforms: { [key: string]: IUniform }): {
   [key: string]: IUniform;
 } {
   const extractedUniforms = {};

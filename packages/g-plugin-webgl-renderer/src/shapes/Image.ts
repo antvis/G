@@ -1,5 +1,4 @@
 import { DisplayObject, Renderable, SceneGraphNode } from '@antv/g';
-import { Entity } from '@antv/g-ecs';
 import { inject, injectable } from 'inversify';
 import { ShaderModuleService } from '../services/shader-module';
 import imageVertex from './shaders/webgl.image.vert.glsl';

@@ -69,11 +69,6 @@ yarn.lock
 temp.diff
 .DS_Store
 
-
-# ignore dist files
-
-.vscode/
-
 # ignore static files of site
 public/
 

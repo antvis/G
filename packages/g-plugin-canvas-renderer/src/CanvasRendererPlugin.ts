@@ -63,10 +63,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.beforeRender.tap(CanvasRendererPlugin.tag, () => {
       const context = this.contextService.getContext();
 
-      const {
-        enableDirtyRectangleRendering,
-        enableDirtyRectangleRenderingDebug,
-      } = this.canvasConfig?.renderer.getConfig();
+      const { enableDirtyRectangleRendering, enableDirtyRectangleRenderingDebug } =
+        this.canvasConfig?.renderer.getConfig();
       const dirtyAABB = this.renderingContext.dirtyRectangle;
 
       if (context) {
