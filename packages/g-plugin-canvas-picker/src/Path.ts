@@ -1,7 +1,6 @@
 import { DisplayObject } from '@antv/g';
-import { mat3, vec3 } from 'gl-matrix';
-import { Quad as QuadUtil, Cubic as CubicUtil, Line as LineUtil } from '@antv/g-math';
-import { Point } from './CanvasPickerPlugin';
+import { mat3, vec2, vec3 } from 'gl-matrix';
+import { Quad as QuadUtil, Cubic as CubicUtil, Line as LineUtil, Point } from '@antv/g-math';
 import { inArc, inBox, inLine, inPolygons } from './utils/math';
 
 function isPointInStroke(
@@ -60,7 +59,6 @@ function isPointInStroke(
       case 'A':
         // 计算点到椭圆圆弧的距离，暂时使用近似算法，后面可以改成切割法求最近距离
         const arcParams = segment.arcParams;
-        console.log(arcParams);
         const { cx, cy, rx, ry, startAngle, endAngle, xRotation } = arcParams;
         const r = rx > ry ? rx : ry;
         const scaleX = rx > ry ? 1 : rx / ry;
@@ -71,13 +69,18 @@ function isPointInStroke(
         //   ['s', 1 / scaleX, 1 / scaleY],
         // ]);
 
-        const m = mat3.create();
-        mat3.fromTranslation(m, [-cx, -cy]);
+        // FIXME
+        const m = mat3.fromTranslation(mat3.create(), [-cx, -cy]);
         mat3.multiply(m, mat3.fromRotation(mat3.create(), -xRotation), m);
         mat3.multiply(m, mat3.fromScaling(mat3.create(), [1 / scaleX, 1 / scaleY]), m);
 
-        const p = vec3.transformMat3(vec3.create(), vec3.fromValues(px - x, py - y, 0), m);
+        let p = vec2.fromValues(px, py);
+        p = vec2.transformMat3(p, p, m);
 
+        // isHit = inArc(cx, cy, r, startAngle, endAngle, lineWidth, px, py);
+
+        // console.log(m, p[0], px - cx);
+        // isHit = inArc(cx, cy, r, startAngle, endAngle, lineWidth, px, py);
         isHit = inArc(0, 0, r, startAngle, endAngle, lineWidth, p[0], p[1]);
         break;
       default:

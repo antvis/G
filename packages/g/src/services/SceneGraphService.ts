@@ -37,12 +37,14 @@ export class SceneGraphService extends EventEmitter {
   @inject(SceneGraphSelector)
   private sceneGraphSelector: SceneGraphSelector;
 
-  querySelector(query: string, group: DisplayObject) {
-    return this.sceneGraphSelector.selectOne(query, group);
+  querySelector(query: string, root: DisplayObject) {
+    return this.sceneGraphSelector.selectOne(query, root);
   }
 
-  querySelectorAll(query: string, group: DisplayObject) {
-    return this.sceneGraphSelector.selectAll(query, group);
+  querySelectorAll(query: string, root: DisplayObject) {
+    return this.sceneGraphSelector
+      .selectAll(query, root)
+      .filter((node) => !node.getEntity().getComponent(SceneGraphNode).shadow);
   }
 
   attach(entity: Entity, parentEntity: Entity, index?: number) {
@@ -58,12 +60,6 @@ export class SceneGraphService extends EventEmitter {
       parentSceneGraphNode.children.splice(index!, 0, entity);
     } else {
       parentSceneGraphNode.children.push(entity);
-    }
-
-    const transformParent = parentEntity.getComponent(Transform);
-
-    if (transformParent) {
-      this.matrixTransform(entity, mat4.invert(mat4.create(), transformParent.worldTransform));
     }
 
     this.dirtifyWorld(entity, entity.getComponent(Transform));
@@ -373,8 +369,6 @@ export class SceneGraphService extends EventEmitter {
     const tr = vec3.create();
 
     return (entity: Entity, translation: vec3 | number, y: number = 0, z: number = 0) => {
-      const transform = entity.getComponent(Transform);
-
       if (typeof translation === 'number') {
         translation = vec3.fromValues(translation, y, z);
       }
@@ -389,8 +383,6 @@ export class SceneGraphService extends EventEmitter {
       transform.localDirtyFlag = true;
       if (!transform.dirtyFlag) {
         this.dirtifyWorld(entity, transform);
-        // } else {
-        //   this.dirtifyAABB(entity);
       }
     }
   }
@@ -462,7 +454,6 @@ export class SceneGraphService extends EventEmitter {
   }
 
   updateRenderableAABB(entity: Entity): void {
-    const sceneGraphNode = entity.getComponent(SceneGraphNode);
     const renderable = entity.getComponent(Renderable);
     const transform = entity.getComponent(Transform);
     const geometry = entity.getComponent(Geometry);
@@ -499,8 +490,8 @@ export class SceneGraphService extends EventEmitter {
           this.dirtifyWorldInternal(childEntity, childTransform);
         }
       });
+      this.dirtifyAABB(entity);
     }
-    this.dirtifyAABB(entity);
   }
 
   /**

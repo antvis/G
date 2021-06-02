@@ -9,14 +9,11 @@ import {
   PickingResult,
   OffscreenCanvasCreator,
 } from '@antv/g';
+import { Point } from '@antv/g-math';
 import { PathGeneratorFactory, PathGenerator } from '@antv/g-plugin-canvas-renderer';
 import { mat4, vec3 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
 
-export type Point = {
-  x: number;
-  y: number;
-};
 export const PointInPathPickerFactory = Symbol('PointInPathPicker');
 export type PointInPathPicker = (
   displayObject: DisplayObject,
@@ -35,7 +32,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
   static tag = 'CanvasPickerPlugin';
 
   @inject(SceneGraphService)
-  protected sceneGraphService: SceneGraphService;
+  private sceneGraphService: SceneGraphService;
 
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
@@ -88,7 +85,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
         }
       });
 
-      // TODO: find group with max z-index
+      // find group with max z-index
       pickedDisplayObjects.sort(this.sceneGraphService.sort);
 
       return {

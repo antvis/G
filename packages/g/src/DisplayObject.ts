@@ -27,7 +27,7 @@ export interface IGroup {
 }
 
 /**
- * event for display object
+ * events for display object
  */
 export const enum DISPLAY_OBJECT_EVENT {
   Init = 'init',
@@ -104,7 +104,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
 
     // init scene graph node
     const sceneGraphNode = entity.addComponent(SceneGraphNode);
-    sceneGraphNode.id = this.config.id || '';
+    sceneGraphNode.id = entity.getName();
     sceneGraphNode.class = this.config.className || '';
     sceneGraphNode.tagName = this.config.type || SHAPE.Group;
     sceneGraphNode.attributes = this.config.attrs || {};
@@ -239,7 +239,10 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
   }
   cloneNode() {
     // TODO
-    return new DisplayObject(this.config);
+    return new DisplayObject({
+      ...this.config,
+      id: '',
+    });
   }
   appendChild(group: DisplayObject) {
     this.add(group);
@@ -254,6 +257,9 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
       this.add(group, index - 1);
     }
     return group;
+  }
+  contain(group: DisplayObject) {
+    return this.contains(group);
   }
   contains(group: DisplayObject) {
     // the node itself, one of its direct children
@@ -448,7 +454,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     this.sceneGraphService.attach(child.getEntity(), this.entity, index);
 
     this.emit(DISPLAY_OBJECT_EVENT.ChildInserted, child);
-    child.emit(DISPLAY_OBJECT_EVENT.Inserted);
+    child.emit(DISPLAY_OBJECT_EVENT.Inserted, child);
   }
 
   /**
@@ -461,7 +467,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     this.sceneGraphService.detach(entity);
 
     this.emit(DISPLAY_OBJECT_EVENT.ChildRemoved, child);
-    child.emit(DISPLAY_OBJECT_EVENT.Removed);
+    child.emit(DISPLAY_OBJECT_EVENT.Removed, child);
 
     if (destroy) {
       this.forEach((object) => {
@@ -636,12 +642,20 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     return this;
   }
 
-  rotateLocal(z: number) {
-    return this.sceneGraphService.rotateLocal(this.entity, 0, 0, z);
+  rotateLocal(x: number, y?: number, z?: number) {
+    if (isNil(y) && isNil(z)) {
+      return this.sceneGraphService.rotateLocal(this.entity, 0, 0, z);
+    }
+
+    return this.sceneGraphService.rotateLocal(this.entity, x, y, z);
   }
 
-  rotate(z: number) {
-    return this.sceneGraphService.rotate(this.entity, 0, 0, z);
+  rotate(x: number, y?: number, z?: number) {
+    if (isNil(y) && isNil(z)) {
+      return this.sceneGraphService.rotate(this.entity, 0, 0, z);
+    }
+
+    return this.sceneGraphService.rotate(this.entity, x, y, z);
   }
 
   getRotation() {

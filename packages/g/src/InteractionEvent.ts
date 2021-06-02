@@ -71,11 +71,11 @@ export class InteractionEvent {
   //  * @type {boolean}
   //  */
   // defaultPrevented: boolean = false;
-  // /**
-  //  * 是否阻止传播（向上冒泡）
-  //  * @type {boolean}
-  //  */
-  // propagationStopped: boolean = false;
+  /**
+   * 是否阻止传播（向上冒泡）
+   * @type {boolean}
+   */
+  propagationStopped: boolean = false;
   // /**
   //  * 触发事件的图形
   //  * @type {IShape}
@@ -126,12 +126,12 @@ export class InteractionEvent {
   //   }
   // }
 
-  // /**
-  //  * 阻止冒泡
-  //  */
-  // stopPropagation() {
-  //   this.propagationStopped = true;
-  // }
+  /**
+   * 阻止冒泡
+   */
+  stopPropagation() {
+    this.propagationStopped = true;
+  }
 
   // toString() {
   //   const type = this.type;

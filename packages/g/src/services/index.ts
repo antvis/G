@@ -7,3 +7,4 @@ export * from './RenderingService';
 export * from './SceneGraphSelector';
 export * from './text/OffscreenCanvasCreator';
 export * from './text';
+export * from './aabb';

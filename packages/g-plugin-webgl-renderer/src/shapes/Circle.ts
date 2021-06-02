@@ -129,14 +129,9 @@ export class CircleModelBuilder implements ModelBuilder {
       tagName = (object as Batch).getBatchType();
     }
 
-    const {
-      fill = '',
-      fillOpacity = 1,
-      stroke = '',
-      strokeOpacity = 1,
-      lineWidth = 0,
-      radius = 0,
-    } = isBatch ? ((object as Batch).attributes.instances[0] as DisplayObject).attributes : sceneGraphNode.attributes;
+    const { fill = '', fillOpacity = 1, stroke = '', strokeOpacity = 1, lineWidth = 0, radius = 0 } = isBatch
+      ? ((object as Batch).attributes.instances[0] as DisplayObject).attributes
+      : sceneGraphNode.attributes;
 
     const fillColor = rgb2arr(fill);
     const strokeColor = rgb2arr(stroke);
@@ -150,7 +145,7 @@ export class CircleModelBuilder implements ModelBuilder {
     material.vertexShaderGLSL = vs || '';
     material.fragmentShaderGLSL = fs || '';
     material.cull = {
-      enable: true,
+      enable: false,
     };
     material.depth = {
       enable: false,
@@ -201,8 +196,6 @@ export class CircleModelBuilder implements ModelBuilder {
     }
 
     const attributes = this.buildAttributes(config);
-
-    console.log(attributes);
 
     geometry.maxInstancedCount = attributes.instancedSizes.length / 2;
     geometry.vertexCount = 6;

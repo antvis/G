@@ -1,0 +1,58 @@
+{
+  "private": true,
+  "name": "@antv/g-site",
+  "version": "0.1.0",
+  "description": "G sites deployed on gh-pages",
+  "files": [
+    "package.json",
+    "esm",
+    "lib",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antvis/g.git"
+  },
+  "keywords": [
+    "g",
+    "antv",
+    "site"
+  ],
+  "scripts": {
+    "site:build": "npm run site:clean && GATSBY=true gatsby build --prefix-paths",
+    "site:clean": "gatsby clean",
+    "site:develop": "GATSBY=true gatsby develop --open",
+    "site:deploy": "npm run site:build && npm run site:copy-mirror-action && gh-pages -d public",
+    "site:copy-mirror-action": "mkdir -p public/.github/workflows && cp .github/workflows/mirror.yml public/.github/workflows",
+    "start": "npm run site:clean && npm run site:develop"
+  },
+  "author": "https://github.com/orgs/antvis/people",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/antvis/g/issues"
+  },
+  "dependencies": {
+    "@antv/gatsby-theme-antv": "^1.0.8",
+    "@antv/g": "^0.1.0",
+    "@antv/g-canvas": "^0.1.0",
+    "@antv/g-svg": "^0.1.0",
+    "@antv/g-webgl": "^0.1.0",
+    "@antv/g-components": "^0.1.0",
+    "@antv/g-plugin-css-select": "^0.1.0",
+    "@antv/g-plugin-3d": "^0.1.0",
+    "@types/jest": "^25.0.0",
+    "@types/gl-matrix": "^2.4.5",
+    "dat.gui": "^0.7.2",
+    "stats.js": "^0.17.0",
+    "gatsby": "^2.24.40",
+    "gh-pages": "^2.1.1",
+    "typedoc": "^0.17.6",
+    "typedoc-plugin-markdown": "^2.2.11",
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
+    "react-i18next": "^11.1.0"
+  },
+  "homepage": "https://github.com/antvis/g#readme"
+}

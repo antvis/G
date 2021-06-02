@@ -20,33 +20,27 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       renderingService.hooks.attributeChanged.call(object, name, value);
     };
 
-    renderingService.hooks.prepare.tap(PrepareRendererPlugin.tag, (objects: DisplayObject[]) => {
-      objects.forEach((object) => {
-        if (!object.mounted) {
-          const entity = object.getEntity();
-          const renderable = entity.getComponent(Renderable);
-          this.sceneGraphService.emit(SCENE_GRAPH_EVENT.AABBChanged, entity);
+    renderingService.hooks.mounted.tap(PrepareRendererPlugin.tag, (object: DisplayObject) => {
+      // console.log('mounted', object);
+      const entity = object.getEntity();
+      this.sceneGraphService.emit(SCENE_GRAPH_EVENT.AABBChanged, entity);
 
-          // delegate attribute-changed handler
-          object.on(DISPLAY_OBJECT_EVENT.AttributeChanged, handleAttributeChanged);
-          renderingService.hooks.mounted.call(object);
-          object.mounted = true;
+      // delegate attribute-changed handler
+      object.on(DISPLAY_OBJECT_EVENT.AttributeChanged, handleAttributeChanged);
 
-          renderable.dirty = true;
-        }
-      });
-      return objects;
+      const renderable = entity.getComponent(Renderable);
+      renderable.dirty = true;
     });
 
     renderingService.hooks.unmounted.tap(PrepareRendererPlugin.tag, (object: DisplayObject) => {
+      // console.log('unmounted', object);
       object.off(DISPLAY_OBJECT_EVENT.AttributeChanged, handleAttributeChanged);
+
       const entity = object.getEntity();
       const renderable = entity.getComponent(Renderable);
       this.renderingContext.rBush.remove(renderable.rBushNode);
 
-      console.log('unmounted', object);
-      object.mounted = false;
-      renderable.dirty = true;
+      this.renderingContext.removedAABBs.push(renderable.aabb);
     });
   }
 }

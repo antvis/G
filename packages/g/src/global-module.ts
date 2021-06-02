@@ -20,13 +20,9 @@ import { SHAPE } from './types';
 import { TextService } from './services/text';
 import { TextUpdater } from './services/aabb/TextUpdater';
 import { OffscreenCanvasCreator } from './services/text/OffscreenCanvasCreator';
-import { Camera } from './Camera';
 import { DefaultSceneGraphSelector, SceneGraphSelector } from './services/SceneGraphSelector';
 
 export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
-  // bind camera
-  bind(Camera).toSelf().inSingletonScope();
-
   // bind DisplayObject pool
   bind(DisplayObjectPool).toSelf().inSingletonScope();
 

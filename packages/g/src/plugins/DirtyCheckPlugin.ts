@@ -30,9 +30,9 @@ export class DirtyCheckPlugin implements RenderingPlugin {
   private displayObjectPool: DisplayObjectPool;
 
   private handleEntityAABBChanged = (entity: Entity) => {
-    if (entity.getComponent(SceneGraphNode).shadow) {
-      return;
-    }
+    // if (entity.getComponent(SceneGraphNode).shadow) {
+    //   return;
+    // }
 
     const renderable = entity.getComponent(Renderable);
 
@@ -76,19 +76,23 @@ export class DirtyCheckPlugin implements RenderingPlugin {
       const enableDirtyRectangleRendering = this.canvasConfig?.renderer.getConfig().enableDirtyRectangleRendering;
       const dirtyRenderables = dirtyObjects.map((object) => object.getEntity().getComponent(Renderable));
 
-      if (!enableDirtyRectangleRendering) {
-        this.renderingContext.dirtyRectangle = undefined;
-        return objects;
-      }
-
       // skip rendering if nothing to redraw
       if (dirtyRenderables.length === 0) {
         this.renderingContext.dirtyRectangle = undefined;
         return [];
       }
 
+      if (!enableDirtyRectangleRendering) {
+        this.renderingContext.dirtyRectangle = undefined;
+        return dirtyObjects;
+      }
+
       // TODO: use threshold when too much dirty renderables
       const dirtyRectangle = this.mergeDirtyRectangles(dirtyRenderables);
+      this.renderingContext.removedAABBs.forEach((removedAABB) => {
+        removedAABB && dirtyRectangle?.add(removedAABB);
+      });
+      this.renderingContext.removedAABBs = [];
       // set dirty rectangle manually
       this.renderingContext.dirtyRectangle = dirtyRectangle;
 
@@ -108,6 +112,8 @@ export class DirtyCheckPlugin implements RenderingPlugin {
       });
 
       dirtyObjects = rBushNodes.map(({ name }) => this.displayObjectPool.getByName(name));
+      // .filter((object) => objects.indexOf(object)); // should
+
       return dirtyObjects;
     });
 

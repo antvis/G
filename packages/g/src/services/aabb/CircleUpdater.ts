@@ -6,7 +6,7 @@ import { ShapeAttrs } from '../../types';
 
 @injectable()
 export class CircleUpdater implements GeometryAABBUpdater {
-  dependencies = ['r', 'lineWidth'];
+  dependencies = ['r', 'lineWidth', 'lineAppendWidth'];
 
   update(attributes: ShapeAttrs, aabb: AABB) {
     const { r = 0, lineWidth = 0, lineAppendWidth = 0 } = attributes;

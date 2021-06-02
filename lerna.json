@@ -5,7 +5,9 @@
   "command": {
     "bootstrap": {
       "ci": false,
-      "npmClientArgs": ["--no-package-lock"]
+      "npmClientArgs": [
+        "--no-package-lock"
+      ]
     },
     "publish": {
       "commitHooks": false

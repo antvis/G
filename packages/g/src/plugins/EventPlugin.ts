@@ -203,8 +203,12 @@ export class EventPlugin implements RenderingPlugin {
     this.processInteractive(interactionEvent, callback, cancelled || !eventAppend);
   };
 
-  private dispatchEvent(eventName: string, picked: DisplayObject, event: InteractionEvent) {
-    picked.emit(eventName, event);
+  private dispatchEvent(eventName: string, target: DisplayObject, event: InteractionEvent) {
+    let tmp: DisplayObject | null = target;
+    while (tmp && !event.propagationStopped) {
+      tmp.emit(eventName, event);
+      tmp = tmp.parentNode;
+    }
   }
 
   private getEventPosition(event: PointerEvent) {
@@ -242,32 +246,38 @@ export class EventPlugin implements RenderingPlugin {
     const lastPicked = this.renderingContext.lastPickedDisplayObject;
     if (picked !== lastPicked) {
       if (lastPicked) {
-        lastPicked.emit('mouseleave');
+        this.dispatchEvent('mouseleave', lastPicked, interactionEvent);
         this.renderingContext.lastPickedDisplayObject = undefined;
-
-        // restore default cursor style
-        this.contextService.applyCursorStyle('default');
       }
 
       if (picked) {
-        picked.emit('mouseenter');
+        const cursor = this.getCursor(picked) || this.canvasConfig.cursor || 'default';
+        this.dispatchEvent('mouseenter', picked, interactionEvent);
         this.renderingContext.lastPickedDisplayObject = picked;
 
         // apply cursor style
-        this.contextService.applyCursorStyle(picked.getAttribute('cursor') || this.canvasConfig.cursor || 'default');
+        this.contextService.applyCursorStyle(cursor);
       }
     }
 
-    // bubble up
     if (picked) {
-      let tmp: DisplayObject | null = picked;
-      while (tmp) {
-        callback(interactionEvent, tmp, hitTest);
-        tmp = tmp.parentNode;
-      }
+      callback(interactionEvent, picked, hitTest);
     } else {
       // trigger on root
       callback(interactionEvent, this.renderingContext.root, hitTest);
+      // restore default cursor style
+      this.contextService.applyCursorStyle(this.canvasConfig.cursor || 'default');
+    }
+  }
+
+  private getCursor(target: DisplayObject) {
+    let tmp: DisplayObject | null = target;
+    while (tmp) {
+      const cursor = tmp.getAttribute('cursor');
+      if (cursor) {
+        return cursor;
+      }
+      tmp = tmp.parentNode;
     }
   }
 }

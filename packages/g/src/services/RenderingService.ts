@@ -34,9 +34,6 @@ export class RenderingService implements CanvasService {
   @named(RenderingPluginContribution)
   private renderingPluginContribution: ContributionProvider<RenderingPlugin>;
 
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
-
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
@@ -73,7 +70,7 @@ export class RenderingService implements CanvasService {
   render() {
     const root = this.renderingContext.root;
 
-    this.sceneGraphService.syncHierarchy(root.getEntity());
+    // this.sceneGraphService.syncHierarchy(root.getEntity());
 
     const objects: DisplayObject[] = [];
     root.forEach((node) => {
@@ -89,6 +86,8 @@ export class RenderingService implements CanvasService {
     if (objectsToRender.length === 0) {
       return;
     }
+
+    // console.log(objectsToRender);
 
     this.renderingContext.dirtyDisplayObjects = objectsToRender;
 

@@ -10,7 +10,7 @@ import {
   DisplayObject,
 } from '@antv/g';
 import { inject, injectable } from 'inversify';
-import { mat4 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
 import { FrameGraphHandle } from '../components/framegraph/FrameGraphHandle';
 import { FrameGraphPass } from '../components/framegraph/FrameGraphPass';
 import { PassNode } from '../components/framegraph/PassNode';
@@ -176,9 +176,9 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
     // get VP matrix from camera
     const viewMatrix = this.camera.getViewTransform()!;
-    const viewProjectionMatrix = mat4.multiply(mat4.create(), this.camera.getPerspective(), viewMatrix);
+    // const viewProjectionMatrix = mat4.multiply(mat4.create(), this.camera.getPerspective(), viewMatrix);
     // TODO: use cached planes if camera was not changed
-    this.camera.getFrustum().extractFromVPMatrix(viewProjectionMatrix);
+    // this.camera.getFrustum().extractFromVPMatrix(viewProjectionMatrix);
 
     const { width, height } = this.view.getViewport();
 

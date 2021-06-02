@@ -11,10 +11,11 @@ import {
   getEuler,
   fromRotationTranslationScale,
   ShapeAttrs,
+  Camera,
 } from '@antv/g';
 import { isArray } from '@antv/util';
 import { inject, injectable } from 'inversify';
-import { vec3 } from 'gl-matrix';
+import { vec3, mat4, mat3, quat } from 'gl-matrix';
 import { PathGeneratorFactory, PathGenerator } from './shapes/paths';
 import { StyleRenderer, StyleRendererFactory } from './shapes/styles';
 import { StyleParser } from './shapes/StyleParser';
@@ -38,6 +39,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
+
+  @inject(Camera)
+  private camera: Camera;
 
   @inject(ContextService)
   private contextService: ContextService<CanvasRenderingContext2D>;
@@ -63,8 +67,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.beforeRender.tap(CanvasRendererPlugin.tag, () => {
       const context = this.contextService.getContext();
 
-      const { enableDirtyRectangleRendering, enableDirtyRectangleRenderingDebug } =
-        this.canvasConfig?.renderer.getConfig();
+      const {
+        enableDirtyRectangleRendering,
+        enableDirtyRectangleRenderingDebug,
+      } = this.canvasConfig?.renderer.getConfig();
       const dirtyAABB = this.renderingContext.dirtyRectangle;
 
       if (context) {
@@ -170,7 +176,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   }
 
   private applyTransform(context: CanvasRenderingContext2D, object: DisplayObject) {
-    // const { width, height } = this.canvasConfig;
+    const { width, height } = this.canvasConfig;
     const [ex, ey, ez] = getEuler(vec3.create(), object.getRotation());
 
     const [x, y] = object.getPosition();
@@ -184,7 +190,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     //   viewMatrix,
     // );
 
-    // const modelMatrix = this.sceneGraphService.getWorldTransform(entity, entity.getComponent(Transform));
+    // const modelMatrix = object.getWorldTransform();
     // const mvpMatrix = mat4.multiply(
     //   mat4.create(),
     //   viewProjectionMatrix,
@@ -196,10 +202,19 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     // const rotation = mat4.getRotation(quat.create(), mvpMatrix);
     // const [eux, euy, euz] = getEuler(vec3.create(), rotation);
 
+    // const viewportMatrix = fromRotationTranslationScale(0, 0, 0, width / 2, height / 2);
+
     // gimbal lock at 90 degrees
     const rts = fromRotationTranslationScale(ex || ez, x, y, scaleX, scaleY);
 
+    // const rts2 = fromRotationTranslationScale(euz, tx, ty, sx, sy);
+    // mat3.multiply(rts2, viewportMatrix, rts2);
+
+    // console.log(rts, rts2, viewportMatrix);
+
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
+    // context.transform(rts[0], rts[1], rts[3], rts[4], rts[6], rts[7]);
+
     context.transform(rts[0], rts[1], rts[3], rts[4], rts[6], rts[7]);
   }
 

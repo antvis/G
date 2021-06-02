@@ -1,3 +1,4 @@
+import { EventEmitter } from 'eventemitter3';
 import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
 import { injectable } from 'inversify';
 import Landmark from './Landmark';
@@ -22,6 +23,10 @@ export enum CAMERA_PROJECTION_MODE {
   PERSPECTIVE = 'PERSPECTIVE',
 }
 
+export const enum CAMERA_EVENT {
+  Updated = 'updated',
+}
+
 const DEG_2_RAD = Math.PI / 180;
 const RAD_2_DEG = 180 / Math.PI;
 
@@ -34,7 +39,7 @@ const RAD_2_DEG = 180 / Math.PI;
  * 4. 移动到 Landmark，具有平滑的动画效果，其间禁止其他用户交互
  */
 @injectable()
-export class Camera {
+export class Camera extends EventEmitter {
   public static ProjectionMode = {
     ORTHOGRAPHIC: 'ORTHOGRAPHIC',
     PERSPECTIVE: 'PERSPECTIVE',
@@ -294,6 +299,15 @@ export class Camera {
     return this;
   }
 
+  public setZoom(zoom: number) {
+    this.zoom = zoom;
+    if (this.projectionMode === CAMERA_PROJECTION_MODE.ORTHOGRAPHIC) {
+      this.setOrthographic(this.left, this.rright, this.top, this.bottom, this.near, this.far);
+    }
+    this.emit(CAMERA_EVENT.Updated);
+    return this;
+  }
+
   public setPerspective(near: number, far: number, fov: number, aspect: number) {
     this.projectionMode = CAMERA_PROJECTION_MODE.PERSPECTIVE;
     this.fov = fov;
@@ -331,8 +345,6 @@ export class Camera {
       right = left + scaleW * this.view.width;
       top -= scaleH * this.view.offsetY;
       bottom = top - scaleH * this.view.height;
-      // bottom += scaleH * this.view.offsetY;
-      // top = bottom + scaleH * this.view.height;
     }
 
     mat4.ortho(this.perspective, left, right, bottom, top, near, far);
@@ -553,6 +565,8 @@ export class Camera {
 
     this._setPosition(pos);
 
+    this.emit(CAMERA_EVENT.Updated);
+
     return this;
   }
 
@@ -579,6 +593,8 @@ export class Camera {
       // 保持视距，移动视点位置
       vec3.add(this.focalPoint, pos, this.distanceVector);
     }
+
+    this.emit(CAMERA_EVENT.Updated);
     return this;
   }
 
@@ -677,6 +693,8 @@ export class Camera {
     this._getPosition();
     this._getDistance();
     this._getAngles();
+
+    this.emit(CAMERA_EVENT.Updated);
   }
 
   /**

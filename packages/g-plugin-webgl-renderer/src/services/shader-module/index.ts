@@ -9,6 +9,11 @@ import projectDeclarationVert from './shaders/webgl.project.declaration.vert.gls
 import pickingFrag from './shaders/webgl.picking.frag.glsl';
 import pickingVert from './shaders/webgl.picking.vert.glsl';
 import sdf2dFrag from './shaders/webgl.sdf2d.frag.glsl';
+import uvVert from './shaders/webgl.uv.vert.glsl';
+import uvDeclarationVert from './shaders/webgl.uv.declaration.vert.glsl';
+import uvDeclarationFrag from './shaders/webgl.uv.declaration.frag.glsl';
+import mapFrag from './shaders/webgl.map.frag.glsl';
+import mapDeclarationFrag from './shaders/webgl.map.declaration.frag.glsl';
 
 const precisionRegExp = /precision\s+(high|low|medium)p\s+float/;
 const globalDefaultprecision =
@@ -46,11 +51,17 @@ export class DefaultShaderModuleService implements ShaderModuleService {
 
   public registerBuiltinModules() {
     this.destroy();
+
+    // register shader chunks
     this.registerModule('instancing.declaration', { vs: instancingDeclarationVert, fs: '' });
     this.registerModule('instancing', { vs: instancingVert, fs: '' });
     this.registerModule('project.declaration', { vs: projectDeclarationVert, fs: '' });
     this.registerModule('picking', { vs: pickingVert, fs: pickingFrag });
     this.registerModule('sdf_2d', { vs: '', fs: sdf2dFrag });
+    this.registerModule('uv', { vs: uvVert, fs: '' });
+    this.registerModule('uv.declaration', { vs: uvDeclarationVert, fs: uvDeclarationFrag });
+    this.registerModule('map', { vs: '', fs: mapFrag });
+    this.registerModule('map.declaration', { vs: '', fs: mapDeclarationFrag });
   }
 
   public registerModule(moduleName: string, moduleParams: IModuleParams) {

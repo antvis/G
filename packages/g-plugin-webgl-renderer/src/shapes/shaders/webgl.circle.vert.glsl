@@ -14,7 +14,6 @@ varying vec4 v_Data;
 varying vec2 v_Radius;
 
 #pragma include "instancing.declaration"
-#pragma include "project.declaration"
 #pragma include "picking"
 
 void main() {
@@ -28,9 +27,6 @@ void main() {
   #pragma include "instancing"
 
   gl_Position = u_ProjectionMatrix * u_ViewMatrix * modelMatrix * vec4(offset, 0.0, 1.0);
-
-  // project_pixel_size_to_clipspace: [0, 1] -> [-1, 1] and flipY
-  gl_Position.xy = project_to_clipspace(gl_Position.xy);
 
   // construct point coords
   v_Data = vec4(a_Extrude, antialiasblur, u_Shape);

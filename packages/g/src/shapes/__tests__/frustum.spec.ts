@@ -13,10 +13,8 @@ describe('Frustum', () => {
       mat4.lookAt(mat4.create(), vec3.fromValues(0, 0, 10), vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0))
     );
 
-    const vpMatrix = mat4.mul(mat4.create(), projectionMatrix, viewMatrix);
-
     const frustum = new Frustum();
-    frustum.extractFromVPMatrix(vpMatrix);
+    frustum.extractFromVPMatrix(projectionMatrix);
 
     // right plane
     expect(frustum.planes[0].normal).to.eqls(vec3.fromValues(-1, 0, 0));

@@ -16,6 +16,7 @@ import { PickingPlugin } from './PickingPlugin';
 import { IView, RenderingEngine } from './services/renderer';
 import { WebGLEngine } from './services/renderer/regl';
 import { DefaultShaderModuleService, ShaderModuleService } from './services/shader-module';
+import { gl } from './services/renderer/constants';
 import {
   BatchModelBuilder,
   CircleModelBuilder,
@@ -23,17 +24,22 @@ import {
   LineModelBuilder,
   ModelBuilder,
   TextModelBuilder,
+  ModelBuilderFactory,
 } from './shapes';
 import { GlyphManager } from './shapes/symbol/GlyphManager';
 import { TexturePool } from './shapes/TexturePool';
 import { View } from './View';
+import { rgb2arr } from './utils/color';
 
 const world = container.get(World);
 world.registerComponent(Geometry3D);
 world.registerComponent(Material3D);
 world.registerComponent(Renderable3D);
 
+let bindFunc: interfaces.Bind;
+
 export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
+  bindFunc = bind;
   /**
    * texture pool should be clean when renderer destroyed
    */
@@ -48,23 +54,19 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   /**
    * bind model builder for each kind of Shape
    */
-  bind(CircleModelBuilder).toSelf().inSingletonScope();
-  bind(ImageModelBuilder).toSelf().inSingletonScope();
-  bind(LineModelBuilder).toSelf().inSingletonScope();
-  bind(TextModelBuilder).toSelf().inSingletonScope();
-  bind<interfaces.Factory<ModelBuilder | null>>(ModelBuilder).toFactory<ModelBuilder | null>(
+  bind(ModelBuilder).to(CircleModelBuilder).inSingletonScope().whenTargetNamed(SHAPE.Circle);
+  bind(ModelBuilder).to(CircleModelBuilder).inSingletonScope().whenTargetNamed(SHAPE.Ellipse);
+  bind(ModelBuilder).to(CircleModelBuilder).inSingletonScope().whenTargetNamed(SHAPE.Rect);
+  bind(ModelBuilder).to(ImageModelBuilder).inSingletonScope().whenTargetNamed(SHAPE.Image);
+  bind(ModelBuilder).to(LineModelBuilder).inSingletonScope().whenTargetNamed(SHAPE.Line);
+  bind(ModelBuilder).to(LineModelBuilder).inSingletonScope().whenTargetNamed(SHAPE.Polyline);
+  bind(ModelBuilder).to(TextModelBuilder).inSingletonScope().whenTargetNamed(SHAPE.Text);
+  bind<interfaces.Factory<ModelBuilder | null>>(ModelBuilderFactory).toFactory<ModelBuilder | null>(
     (context: interfaces.Context) => {
       return (tagName: SHAPE) => {
-        if (tagName === SHAPE.Circle || tagName === SHAPE.Ellipse || tagName === SHAPE.Rect) {
-          return context.container.get(CircleModelBuilder);
-        } else if (tagName === SHAPE.Image) {
-          return context.container.get(ImageModelBuilder);
-        } else if (tagName === SHAPE.Line || tagName === SHAPE.Polyline) {
-          return context.container.get(LineModelBuilder);
-        } else if (tagName === SHAPE.Text) {
-          return context.container.get(TextModelBuilder);
+        if (context.container.isBoundNamed(ModelBuilder, tagName)) {
+          return context.container.getNamed(ModelBuilder, tagName);
         }
-
         return null;
       };
     }
@@ -90,7 +92,6 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   );
 
   bind(View).toSelf().inSingletonScope();
-  // bind(Camera).toSelf().inSingletonScope();
 
   /**
    * bind handlers when frame began
@@ -109,3 +110,9 @@ export interface WebGLRenderingContext {
   camera: Camera;
   view: IView;
 }
+
+export function registerModelBuilder(builderClazz: new (...args: any[]) => ModelBuilder, name: string) {
+  bindFunc(ModelBuilder).to(builderClazz).inSingletonScope().whenTargetNamed(name);
+}
+
+export { Geometry3D, Material3D, Renderable3D, ShaderModuleService, ModelBuilder, gl, rgb2arr };

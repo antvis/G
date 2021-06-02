@@ -6,6 +6,7 @@ import {
   ElementRendererFactory,
   ImageRenderer,
   LineRenderer,
+  PathRenderer,
   PolylineRenderer,
   RectRenderer,
   TextRenderer,
@@ -25,6 +26,7 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   bind(LineRenderer).toSelf().inSingletonScope();
   bind(PolylineRenderer).toSelf().inSingletonScope();
   bind(TextRenderer).toSelf().inSingletonScope();
+  bind(PathRenderer).toSelf().inSingletonScope();
   bind(ElementRendererFactory).toFactory<ElementRenderer | null>((ctx) => (tagName: SHAPE) => {
     if (tagName === SHAPE.Rect) {
       return ctx.container.get(RectRenderer);
@@ -36,6 +38,8 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
       return ctx.container.get(PolylineRenderer);
     } else if (tagName === SHAPE.Text) {
       return ctx.container.get(TextRenderer);
+    } else if (tagName === SHAPE.Path) {
+      return ctx.container.get(PathRenderer);
     }
     return null;
   });

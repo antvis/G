@@ -22,20 +22,27 @@ export class SVGPickerPlugin implements RenderingPlugin {
     renderingService.hooks.pick.tap(SVGPickerPlugin.tag, (result: PickingResult) => {
       const { x, y, clientX, clientY } = result.position;
 
-      // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint
-      const element = document.elementFromPoint(clientX, clientY);
+      try {
+        // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint
+        const element = document.elementFromPoint(clientX, clientY);
 
-      // find by id
-      let target = null;
-      const id = element?.getAttribute('id');
-      if (id) {
-        target = this.displayObjectPool.getByName(id);
+        // find by id
+        let target = null;
+        const id = element?.getAttribute('id');
+        if (id) {
+          target = this.displayObjectPool.getByName(id);
+        }
+
+        return {
+          position: result.position,
+          picked: target,
+        };
+      } catch (e) {
+        return {
+          position: result.position,
+          picked: null,
+        };
       }
-
-      return {
-        position: result.position,
-        picked: target,
-      };
     });
   }
 }

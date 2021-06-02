@@ -8,11 +8,18 @@ export interface SceneGraphSelector {
   selectAll(query: string, object: DisplayObject): DisplayObject[];
 }
 
+/**
+ * support following DOM API
+ * * getElementById
+ * * getElementsByClassName
+ * * getElementsByName
+ * * getElementsByTag
+ */
 @injectable()
 export class DefaultSceneGraphSelector implements SceneGraphSelector {
   selectOne(query: string, object: DisplayObject) {
     if (query.startsWith('#')) {
-      // getElementById('#id')
+      // getElementById('id')
       // TODO: should include itself?
       return object.find((node) => node.getEntity().getComponent(SceneGraphNode).id === query.substring(1));
     }
@@ -22,10 +29,12 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
   selectAll(query: string, object: DisplayObject) {
     // TODO: only support `[name="${name}"]` `.className`
     if (query.startsWith('.')) {
-      // getElementsByClassName('.className');
+      // getElementsByClassName('className');
       // TODO: should include itself?
       return object.findAll((node) => node.getEntity().getComponent(SceneGraphNode).class === query.substring(1));
-      // } else if () {
+    } else if (query.startsWith('[name=')) {
+      // getElementsByName();
+      return object.findAll((node) => node.attributes.name === query.substring(7, query.length - 2));
     } else {
       // getElementsByTag('circle');
       return object.findAll((node) => node.nodeType === query);

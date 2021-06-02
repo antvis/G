@@ -13,6 +13,6 @@ export default {
     'g-svg',
     'g-plugin-webgl-renderer',
     'g-webgl',
-    'g-ui',
+    'g-components',
   ],
 };

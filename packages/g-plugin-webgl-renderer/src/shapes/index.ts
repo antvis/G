@@ -1,5 +1,6 @@
 import { DisplayObject } from '@antv/g';
 
+export const ModelBuilderFactory = Symbol('ModelBuilderFactory');
 export const ModelBuilder = Symbol('ModelBuilder');
 export interface ModelBuilder {
   prepareModel(object: DisplayObject): void;

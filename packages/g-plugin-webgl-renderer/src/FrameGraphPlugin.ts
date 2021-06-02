@@ -21,7 +21,7 @@ import { CopyPass, CopyPassData } from './passes/CopyPass';
 import { RenderPass, RenderPassData } from './passes/RenderPass';
 import { Geometry3D } from './components/Geometry3D';
 import { Material3D } from './components/Material3D';
-import { ModelBuilder } from './shapes';
+import { ModelBuilder, ModelBuilderFactory } from './shapes';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { WebGLRenderingContext } from '.';
 import { ShaderModuleService } from './services/shader-module';
@@ -83,7 +83,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
   @inject(PickingIdGenerator)
   private pickingIdGenerator: PickingIdGenerator;
 
-  @inject(ModelBuilder)
+  @inject(ModelBuilderFactory)
   private modelBuilderFactory: (shape: SHAPE) => ModelBuilder;
 
   @inject(Camera)
@@ -103,8 +103,6 @@ export class FrameGraphPlugin implements RenderingPlugin {
     renderingService.hooks.render.tap(FrameGraphPlugin.tag, (dirtyObjects: DisplayObject[]) => {
       // skip group
       const objects = dirtyObjects.filter((object) => object.nodeType !== SHAPE.Group);
-
-      console.log(objects);
 
       this.frameGraphSystem.compile();
       this.frameGraphSystem.executePassNodes(objects);
@@ -159,7 +157,6 @@ export class FrameGraphPlugin implements RenderingPlugin {
 
     renderingService.hooks.mounted.tap(FrameGraphPlugin.tag, (object: DisplayObject) => {
       const entity = object.getEntity();
-      const renderable = entity.addComponent(Renderable);
       const renderable3d = entity.addComponent(Renderable3D);
       // add geometry & material required by Renderable3D
       const geometry = entity.addComponent(Geometry3D);
@@ -178,7 +175,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
         // handle batch
         const isBatch = tagName === Batch.tag;
         if (isBatch) {
-          tagName = (object as unknown as Batch).getBatchType();
+          tagName = ((object as unknown) as Batch).getBatchType();
         }
 
         const modelBuilder = this.modelBuilderFactory(tagName);

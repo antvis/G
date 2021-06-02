@@ -1,0 +1,104 @@
+{
+  "title": {
+    "zh": "中文分类",
+    "en": "Category"
+  },
+  "demos": [
+    {
+      "filename": "circle.js",
+      "title": {
+        "zh": "圆",
+        "en": "Circle"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "ellipse.js",
+      "title": {
+        "zh": "椭圆",
+        "en": "Ellipse"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8eoKRbfOwgAAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "rect.js",
+      "title": {
+        "zh": "矩形",
+        "en": "Rectangle"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*owKfQKVFG1wAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "image.js",
+      "title": {
+        "zh": "图片",
+        "en": "Image"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OIAmRpwhNWYAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "line.js",
+      "title": {
+        "zh": "直线",
+        "en": "Line"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*7YsyTJDA_CMAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "polyline.js",
+      "title": {
+        "zh": "折线",
+        "en": "Polyline"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bo4rRK0U8PIAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "polygon.js",
+      "title": {
+        "zh": "多边形",
+        "en": "Polygon"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ooeZRJF65nIAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "text.js",
+      "title": {
+        "zh": "文本",
+        "en": "Text"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FdtgQLndl8IAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "path.js",
+      "title": {
+        "zh": "路径",
+        "en": "Path"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nw3DSKlj9t4AAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "arrow.js",
+      "title": {
+        "zh": "箭头",
+        "en": "Arrow"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*EzqjQYMeYoMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "cube.js",
+      "title": {
+        "zh": "立方体",
+        "en": "Cube"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*EzqjQYMeYoMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "grid.js",
+      "title": {
+        "zh": "网格",
+        "en": "Grid"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*EzqjQYMeYoMAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}
