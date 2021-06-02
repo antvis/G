@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-svg",
-  "version": "0.1.0",
+  "version": "1.0.0-alpha.0",
   "description": "A renderer implemented by SVG",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -32,18 +32,18 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "devDependencies": {
-    "@types/jest": "^25.0.0",
     "@types/gl-matrix": "^2.4.5",
+    "@types/jest": "^25.0.0",
     "npm-run-all": "^4.1.5",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7"
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g": "^0.1.0",
-    "@antv/util": "^2.0.13",
-    "@antv/g-plugin-svg-renderer": "^0.1.0",
-    "@antv/g-plugin-dom-interaction": "^0.1.0",
-    "@antv/g-plugin-svg-picker": "^0.1.0"
+    "@antv/g": "^1.0.0-alpha.0",
+    "@antv/g-plugin-dom-interaction": "^1.0.0-alpha.0",
+    "@antv/g-plugin-svg-picker": "^1.0.0-alpha.0",
+    "@antv/g-plugin-svg-renderer": "^1.0.0-alpha.0",
+    "@antv/util": "^2.0.13"
   }
 }
