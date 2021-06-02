@@ -2,10 +2,10 @@
   "name": "@antv/g-plugin-webgl-renderer",
   "version": "0.1.0",
   "description": "A G plugin of renderer implementation with WebGL1",
-  "main": "lib/index.js",
-  "module": "esm/index.js",
-  "unpkg": "dist/g.min.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.umd.min.js",
   "files": [
     "package.json",
     "esm",
@@ -27,7 +27,7 @@
     "access": "public"
   },
   "author": "https://github.com/orgs/antvis/people",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/antvis/g/issues"
   },
