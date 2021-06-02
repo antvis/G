@@ -9,7 +9,6 @@ import {
   DisplayObjectPool,
   DisplayObject,
 } from '@antv/g';
-import { Entity } from '@antv/g-ecs';
 import { inject, injectable } from 'inversify';
 import { mat4 } from 'gl-matrix';
 import { FrameGraphHandle } from '../components/framegraph/FrameGraphHandle';

@@ -1,7 +1,6 @@
 {
   "name": "@antv/g",
   "version": "0.1.0",
-  "private": true,
   "description": "A core module including ECS and DI container.",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -15,20 +14,6 @@
     "LICENSE",
     "README.md"
   ],
-  "scripts": {    
-    "clean": "rm -rf esm lib dist",
-    "build": "run-p build:*",
-    "build:cjs": "BABEL_ENV=cjs babel src --root-mode upward --out-dir lib --source-maps --extensions .ts,.tsx --delete-dir-on-start",
-    "build:esm": "BABEL_ENV=esm babel src --root-mode upward --out-dir esm --source-maps --extensions .ts,.tsx --delete-dir-on-start",
-    "watch": "run-p watch:*",
-    "watch:cjs": "BABEL_ENV=cjs babel src --watch --root-mode upward --out-dir lib --source-maps --extensions .ts,.tsx --delete-dir-on-start",
-    "watch:esm": "BABEL_ENV=esm babel src --watch --root-mode upward --out-dir esm --source-maps --extensions .ts,.tsx --delete-dir-on-start",
-    "coverage": "npm run coverage-generator && npm run coverage-viewer",
-    "test": "yarn jest --coverage",
-    "tsc": "run-p tsc:*",
-    "tsc:esm": "tsc --project tsconfig.json --declarationDir esm",
-    "tsc:lib": "tsc --project tsconfig.json --declarationDir lib"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/antvis/g.git"

@@ -15,7 +15,7 @@ const parsePathString = function (pathString: string): PathCommand[] {
   }
 
   if (isArray(pathString)) {
-    return (pathString as unknown) as PathCommand[];
+    return pathString as unknown as PathCommand[];
   }
   const paramCounts = {
     a: 7,
@@ -587,18 +587,7 @@ const bezlen = function (x1, y1, x2, y2, x3, y3, x4, y4, z) {
   const z2 = z / 2;
   const n = 12;
   const Tvalues = [
-    -0.1252,
-    0.1252,
-    -0.3678,
-    0.3678,
-    -0.5873,
-    0.5873,
-    -0.7699,
-    0.7699,
-    -0.9041,
-    0.9041,
-    -0.9816,
-    0.9816,
+    -0.1252, 0.1252, -0.3678, 0.3678, -0.5873, 0.5873, -0.7699, 0.7699, -0.9041, 0.9041, -0.9816, 0.9816,
   ];
   const Cvalues = [0.2491, 0.2491, 0.2335, 0.2335, 0.2032, 0.2032, 0.1601, 0.1601, 0.1069, 0.1069, 0.0472, 0.0472];
   let sum = 0;

@@ -13,7 +13,7 @@ import { SHAPE, ShapeCfg } from './types';
 export class Batch extends DisplayObject {
   static tag = 'batch';
 
-  private batchType: SHAPE;
+  private batchType?: SHAPE;
 
   constructor({ attrs = {}, ...rest }: ShapeCfg) {
     super({

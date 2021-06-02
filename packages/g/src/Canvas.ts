@@ -27,7 +27,7 @@ export abstract class Canvas extends EventEmitter {
   /**
    * rAF in auto rendering
    */
-  private frameId: number;
+  private frameId?: number;
 
   constructor(config: CanvasConfig) {
     super();

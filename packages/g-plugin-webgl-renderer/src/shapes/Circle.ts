@@ -1,4 +1,3 @@
-import { Entity } from '@antv/g-ecs';
 import { Batch, DisplayObject, DisplayObjectPool, SceneGraphNode, SHAPE, ShapeAttrs } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { ShaderModuleService } from '../services/shader-module';
@@ -130,9 +129,14 @@ export class CircleModelBuilder implements ModelBuilder {
       tagName = (object as Batch).getBatchType();
     }
 
-    const { fill = '', fillOpacity = 1, stroke = '', strokeOpacity = 1, lineWidth = 0, radius = 0 } = isBatch
-      ? ((object as Batch).attributes.instances[0] as DisplayObject).attributes
-      : sceneGraphNode.attributes;
+    const {
+      fill = '',
+      fillOpacity = 1,
+      stroke = '',
+      strokeOpacity = 1,
+      lineWidth = 0,
+      radius = 0,
+    } = isBatch ? ((object as Batch).attributes.instances[0] as DisplayObject).attributes : sceneGraphNode.attributes;
 
     const fillColor = rgb2arr(fill);
     const strokeColor = rgb2arr(stroke);
