@@ -27,7 +27,7 @@
     "access": "public"
   },
   "author": "https://github.com/orgs/antvis/people",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/antvis/g/issues"
   },
