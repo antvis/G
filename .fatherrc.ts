@@ -1,6 +1,7 @@
 export default {
   // yarn build order
   pkgs: [
+    'g-math',
     'g-ecs',
     'g',
     'g-plugin-dom-interaction',
@@ -14,5 +15,6 @@ export default {
     'g-plugin-webgl-renderer',
     'g-webgl',
     'g-components',
+    'g-plugin-3d',
   ],
 };
