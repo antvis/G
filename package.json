@@ -21,10 +21,9 @@
     "lint-staged": "lint-staged",
     "prettier": "prettier --write './packages/**/*.{js,ts,md}'",
     "ci": "npm run lint && npm run bootstrap && npm run build && npm run test",
-    "pre-publish": "npm run lint && rm -rf node_modules && npm install && npm run bootstrap",
-    "postversion": "npm run build",
+    "pre-publish": "yarn build",
     "publish": "lerna publish",
-    "publish-beta": "npm run pre-publish && lerna publish --dist-tag beta",
+    "publish:next": "lerna publish prerelease --dist-tag next",
     "start": "cd ./packages/site && npm run start"
   },
   "lint-staged": {
@@ -57,5 +56,8 @@
     "prettier": "^2.0.5",
     "rollup-plugin-string": "^3.0.0",
     "typescript": "^4.3.2"
+  },
+  "resolutions": {
+    "monaco-editor": "0.21.2"
   }
 }
