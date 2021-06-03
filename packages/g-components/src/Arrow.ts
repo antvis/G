@@ -1,4 +1,13 @@
-import { CustomElement, DisplayObject, Line, Path, Polyline, SHAPE, ShapeAttrs, ShapeCfg } from '@antv/g';
+import {
+  CustomElement,
+  DisplayObject,
+  Line,
+  Path,
+  Polyline,
+  SHAPE,
+  ShapeAttrs,
+  ShapeCfg,
+} from '@antv/g';
 import { vec3 } from 'gl-matrix';
 
 type ArrowHead = boolean | DisplayObject;
@@ -30,9 +39,9 @@ export interface ArrowConfig extends ShapeCfg {
 export class Arrow extends CustomElement {
   static tag = 'arrow';
 
-  private body: DisplayObject | null;
-  private startHead: DisplayObject | null;
-  private endHead: DisplayObject | null;
+  private body: DisplayObject;
+  private startHead?: DisplayObject;
+  private endHead?: DisplayObject;
 
   constructor(config: ArrowConfig) {
     super({
@@ -73,7 +82,12 @@ export class Arrow extends CustomElement {
   }
 
   attributeChangedCallback(name: string, value: any) {
-    if (name === 'opacity' || name === 'strokeOpacity' || name === 'stroke' || name === 'lineWidth') {
+    if (
+      name === 'opacity' ||
+      name === 'strokeOpacity' ||
+      name === 'stroke' ||
+      name === 'lineWidth'
+    ) {
       this.applyArrowStyle({ [name]: value }, [this.body, this.startHead, this.endHead]);
     } else if (name === 'startHead' || name === 'endHead') {
       const isStart = name === 'startHead';
@@ -214,7 +228,9 @@ export class Arrow extends CustomElement {
     return new Path({
       attrs: {
         // draw an angle '<'
-        path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${10 * sin(PI / 6)}`,
+        path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${
+          10 * sin(PI / 6)
+        }`,
         stroke,
         lineWidth,
         anchor: [0.5, 0.5], // set anchor to center
