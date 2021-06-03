@@ -46,7 +46,7 @@ canvas.on('postrender', () => {
   if (stats) {
     stats.update();
   }
-  cube.rotate(quat.fromEuler(quat.create(), 0, 1, 0));
+  // cube.rotate(quat.fromEuler(quat.create(), 0, 1, 0));
 });
 
 // GUI

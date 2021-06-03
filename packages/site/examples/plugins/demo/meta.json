@@ -1,0 +1,15 @@
+{
+  "title": {
+    "zh": "中文分类",
+    "en": "Category"
+  },
+  "demos": [
+    {
+      "filename": "css-select.js",
+      "title": {
+        "zh": "CSS 选择器插件",
+        "en": "CSS Selector Plugin"
+      }
+    }
+  ]
+}
