@@ -6,7 +6,15 @@
   "module": "esm/index.js",
   "unpkg": "dist/g.min.js",
   "types": "lib/index.d.ts",
-  "files": ["src", "package.json", "esm", "lib", "dist", "LICENSE", "README.md"],
+  "files": [
+    "src",
+    "package.json",
+    "esm",
+    "lib",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "build": "npm run clean && run-p build:*",
     "build:esm": "tsc -p tsconfig.json --target ES5 --module ESNext --outDir esm",
@@ -26,7 +34,11 @@
     "type": "git",
     "url": "git+https://github.com/antvis/g.git"
   },
-  "keywords": ["util", "antv", "g"],
+  "keywords": [
+    "util",
+    "antv",
+    "g"
+  ],
   "author": "https://github.com/orgs/antvis/people",
   "license": "ISC",
   "bugs": {
@@ -52,7 +64,7 @@
     "@antv/util": "~2.0.13",
     "ansi-styles": "^5.0.0",
     "escape-string-regexp": "^4.0.0",
-    "g6-hammerjs": "^0.0.9",
+    "g6-hammerjs": "^0.0.11",
     "gl-matrix": "^3.0.0",
     "supports-color": "^8.1.0",
     "tslib": "^2.0.3"

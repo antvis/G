@@ -281,13 +281,6 @@ class EventController {
     this.panstartPoint = null;
   }
 
-  // 当触发浏览器的 dragover 事件时，不会再触发 mousemove ，所以这时候的 dragenter, dragleave 事件需要重新处理
-  _ondragover(pointInfo, shape, event) {
-    event.preventDefault(); // 如果不对 dragover 进行 preventDefault，则不会在 canvas 上触发 drop 事件
-    const preShape = this.currentShape;
-    this._emitDragoverEvents(event, pointInfo, preShape, shape, true);
-  }
-
   // 大量的图形事件，都通过 mousemove 模拟
   _onpanmove(pointInfo, shape, event) {
     const canvas = this.canvas;
