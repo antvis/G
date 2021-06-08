@@ -51,10 +51,10 @@ order: 10
 可以在运行时关闭：
 
 ```javascript
-canvas.setConfig({
-  dirtyRectangle: {
-    enable: false,
-  },
+canvas.setRenderer({
+    dirtyRectangle: {
+        enable: false,
+    },
 });
 ```
 
@@ -119,8 +119,7 @@ canvas.setConfig({
 
 ⚠️ 仅 `g-webgl` 生效
 
-通过批量绘制，大幅提升同类图形绘制性能，动画场景下 `g-canvas` 10FPS 提升到 `g-webgl` 40 FPS。
-参考 [例子](/zh/examples/perf/instance#webgl-instancing)
+通过批量绘制，大幅提升同类图形绘制性能，动画场景下 `g-canvas` 10FPS 提升到 `g-webgl` 40 FPS。参考 [例子](/zh/examples/perf/instance#webgl-instancing)
 
 ### Offscreen Canvas
 

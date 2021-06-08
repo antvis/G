@@ -50,6 +50,7 @@
     "gatsby": "^2.24.40",
     "gh-pages": "^2.1.1",
     "react-i18next": "^11.1.0",
+    "react-split-pane": "^0.1.92",
     "stats.js": "^0.17.0",
     "typedoc": "^0.17.6",
     "typedoc-plugin-markdown": "^2.2.11"

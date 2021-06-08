@@ -62,7 +62,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('postrender', () => {
+canvas.on('afterRender', () => {
   if (stats) {
     stats.update();
   }
@@ -84,9 +84,9 @@ const rendererConfig = {
   renderer: 'canvas',
 };
 rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setConfig({
-    renderer: renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  });
+  canvas.setRenderer(
+    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
+  );
 });
 rendererFolder.open();
 
@@ -139,9 +139,11 @@ fillStrokeFolder.addColor(fillStrokeConfig, 'stroke').onChange((color) => {
 fillStrokeFolder.add(fillStrokeConfig, 'lineWidth', 0, 10).onChange((lineWidth) => {
   text.attr('lineWidth', lineWidth);
 });
-fillStrokeFolder.add(fillStrokeConfig, 'lineJoin', ['miter', 'round', 'bevel']).onChange((lineJoin) => {
-  text.attr('lineJoin', lineJoin);
-});
+fillStrokeFolder
+  .add(fillStrokeConfig, 'lineJoin', ['miter', 'round', 'bevel'])
+  .onChange((lineJoin) => {
+    text.attr('lineJoin', lineJoin);
+  });
 fillStrokeFolder.add(fillStrokeConfig, 'strokeOpacity', 0, 1).onChange((strokeOpacity) => {
   text.attr('strokeOpacity', strokeOpacity);
 });
@@ -155,7 +157,14 @@ layoutFolder.add(layoutConfig, 'letterSpacing', 0, 10).onChange((letterSpacing) 
   text.attr('letterSpacing', letterSpacing);
 });
 layoutFolder
-  .add(layoutConfig, 'textBaseline', ['alphabetic', 'bottom', 'middle', 'top', 'hanging', 'ideographic'])
+  .add(layoutConfig, 'textBaseline', [
+    'alphabetic',
+    'bottom',
+    'middle',
+    'top',
+    'hanging',
+    'ideographic',
+  ])
   .onChange((textBaseline) => {
     text.attr('textBaseline', textBaseline);
   });
@@ -185,9 +194,13 @@ multilineFolder.add(multilineConfig, 'lineHeight', 0, 100).onChange((lineHeight)
 multilineFolder.add(multilineConfig, 'leading', 0, 30).onChange((leading) => {
   text.attr('leading', leading);
 });
-multilineFolder.add(multilineConfig, 'textAlign', ['start', 'end', 'center', 'left', 'right']).onChange((textAlign) => {
-  text.attr('textAlign', textAlign);
-});
-multilineFolder.add(multilineConfig, 'whiteSpace', ['pre', 'normal', 'pre-line']).onChange((whiteSpace) => {
-  text.attr('whiteSpace', whiteSpace);
-});
+multilineFolder
+  .add(multilineConfig, 'textAlign', ['start', 'end', 'center', 'left', 'right'])
+  .onChange((textAlign) => {
+    text.attr('textAlign', textAlign);
+  });
+multilineFolder
+  .add(multilineConfig, 'whiteSpace', ['pre', 'normal', 'pre-line'])
+  .onChange((whiteSpace) => {
+    text.attr('whiteSpace', whiteSpace);
+  });

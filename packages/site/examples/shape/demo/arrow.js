@@ -135,7 +135,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('postrender', () => {
+canvas.on('afterRender', () => {
   if (stats) {
     stats.update();
   }
@@ -149,9 +149,9 @@ const rendererConfig = {
   renderer: 'canvas',
 };
 rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setConfig({
-    renderer: renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  });
+  canvas.setRenderer(
+    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
+  );
 });
 rendererFolder.open();
 
@@ -185,17 +185,19 @@ lineArrowFolder
       lineArrow.setAttribute('startHead', new MyCustomArrowHead({ attrs: {} }));
     }
   });
-lineArrowFolder.add(lineArrowConfig, 'endHead', ['none', 'default', 'circle', 'custom arrowhead']).onChange((type) => {
-  if (type === 'none') {
-    lineArrow.setAttribute('endHead', false);
-  } else if (type === 'default') {
-    lineArrow.setAttribute('endHead', true);
-  } else if (type === 'circle') {
-    lineArrow.setAttribute('endHead', new Circle({ attrs: { r: 10 } }));
-  } else if (type === 'custom arrowhead') {
-    lineArrow.setAttribute('endHead', new MyCustomArrowHead({ attrs: {} }));
-  }
-});
+lineArrowFolder
+  .add(lineArrowConfig, 'endHead', ['none', 'default', 'circle', 'custom arrowhead'])
+  .onChange((type) => {
+    if (type === 'none') {
+      lineArrow.setAttribute('endHead', false);
+    } else if (type === 'default') {
+      lineArrow.setAttribute('endHead', true);
+    } else if (type === 'circle') {
+      lineArrow.setAttribute('endHead', new Circle({ attrs: { r: 10 } }));
+    } else if (type === 'custom arrowhead') {
+      lineArrow.setAttribute('endHead', new MyCustomArrowHead({ attrs: {} }));
+    }
+  });
 lineArrowFolder.open();
 
 const polylineArrowFolder = gui.addFolder('polyline arrow');
@@ -272,14 +274,16 @@ pathArrowFolder
       pathArrow.setAttribute('startHead', new MyCustomArrowHead({ attrs: {} }));
     }
   });
-pathArrowFolder.add(pathArrowConfig, 'endHead', ['none', 'default', 'circle', 'custom arrowhead']).onChange((type) => {
-  if (type === 'none') {
-    pathArrow.setAttribute('endHead', false);
-  } else if (type === 'default') {
-    pathArrow.setAttribute('endHead', true);
-  } else if (type === 'circle') {
-    pathArrow.setAttribute('endHead', new Circle({ attrs: { r: 10 } }));
-  } else if (type === 'custom arrowhead') {
-    pathArrow.setAttribute('endHead', new MyCustomArrowHead({ attrs: {} }));
-  }
-});
+pathArrowFolder
+  .add(pathArrowConfig, 'endHead', ['none', 'default', 'circle', 'custom arrowhead'])
+  .onChange((type) => {
+    if (type === 'none') {
+      pathArrow.setAttribute('endHead', false);
+    } else if (type === 'default') {
+      pathArrow.setAttribute('endHead', true);
+    } else if (type === 'circle') {
+      pathArrow.setAttribute('endHead', new Circle({ attrs: { r: 10 } }));
+    } else if (type === 'custom arrowhead') {
+      pathArrow.setAttribute('endHead', new MyCustomArrowHead({ attrs: {} }));
+    }
+  });

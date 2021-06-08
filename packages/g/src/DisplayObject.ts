@@ -74,7 +74,9 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
 
   private sceneGraphService = container.get(SceneGraphService);
 
-  private geometryUpdaterFactory = container.get<(tagName: SHAPE) => GeometryAABBUpdater>(GeometryUpdaterFactory);
+  private geometryUpdaterFactory = container.get<(tagName: SHAPE) => GeometryAABBUpdater>(
+    GeometryUpdaterFactory,
+  );
 
   /**
    * whether already mounted in canvas
@@ -392,7 +394,9 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    */
   getChildren() {
     const sceneGraphNode = this.entity.getComponent(SceneGraphNode);
-    return sceneGraphNode.children.map((entity) => this.displayObjectPool.getByName(entity.getName()));
+    return sceneGraphNode.children.map((entity) =>
+      this.displayObjectPool.getByName(entity.getName()),
+    );
   }
 
   /**
@@ -614,7 +618,10 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    */
   getEulerAngles() {
     const transform = this.entity.getComponent(Transform);
-    const [ex, ey, ez] = getEuler(vec3.create(), this.sceneGraphService.getWorldTransform(this.entity, transform));
+    const [ex, ey, ez] = getEuler(
+      vec3.create(),
+      this.sceneGraphService.getWorldTransform(this.entity, transform),
+    );
     return rad2deg(ez);
   }
 
@@ -622,7 +629,10 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * only return degrees of Z axis in local space
    */
   getLocalEulerAngles() {
-    const [ex, ey, ez] = getEuler(vec3.create(), this.sceneGraphService.getLocalRotation(this.entity));
+    const [ex, ey, ez] = getEuler(
+      vec3.create(),
+      this.sceneGraphService.getLocalRotation(this.entity),
+    );
     return rad2deg(ez);
   }
 
@@ -644,7 +654,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
 
   rotateLocal(x: number, y?: number, z?: number) {
     if (isNil(y) && isNil(z)) {
-      return this.sceneGraphService.rotateLocal(this.entity, 0, 0, z);
+      return this.sceneGraphService.rotateLocal(this.entity, 0, 0, x);
     }
 
     return this.sceneGraphService.rotateLocal(this.entity, x, y, z);
@@ -652,7 +662,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
 
   rotate(x: number, y?: number, z?: number) {
     if (isNil(y) && isNil(z)) {
-      return this.sceneGraphService.rotate(this.entity, 0, 0, z);
+      return this.sceneGraphService.rotate(this.entity, 0, 0, x);
     }
 
     return this.sceneGraphService.rotate(this.entity, x, y, z);
@@ -666,7 +676,10 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
   }
 
   getWorldTransform() {
-    return this.sceneGraphService.getWorldTransform(this.entity, this.entity.getComponent(Transform));
+    return this.sceneGraphService.getWorldTransform(
+      this.entity,
+      this.entity.getComponent(Transform),
+    );
   }
 
   /* z-index & visibility */
@@ -684,7 +697,8 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     const parentEntity = sceneGraphNode.parent;
     if (parentEntity) {
       const parent = parentEntity.getComponent(SceneGraphNode);
-      sortable.zIndex = Math.max(...parent.children.map((e) => e.getComponent(Sortable).zIndex)) + 1;
+      sortable.zIndex =
+        Math.max(...parent.children.map((e) => e.getComponent(Sortable).zIndex)) + 1;
       // need re-sort
       sortable.dirty = true;
     }
@@ -699,7 +713,8 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     const parentEntity = sceneGraphNode.parent;
     if (parentEntity) {
       const parent = parentEntity.getComponent(SceneGraphNode);
-      sortable.zIndex = Math.min(...parent.children.map((e) => e.getComponent(Sortable).zIndex)) - 1;
+      sortable.zIndex =
+        Math.min(...parent.children.map((e) => e.getComponent(Sortable).zIndex)) - 1;
       // need re-sort
       sortable.dirty = true;
     }
@@ -725,8 +740,20 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     return this.attr('visibility') === 'visible';
   }
 
-  animate(toAttrs: ElementAttrs, duration: number, easing?: string, callback?: Function, delay?: number): void;
-  animate(onFrame: OnFrame, duration: number, easing?: string, callback?: Function, delay?: number): void;
+  animate(
+    toAttrs: ElementAttrs,
+    duration: number,
+    easing?: string,
+    callback?: Function,
+    delay?: number,
+  ): void;
+  animate(
+    onFrame: OnFrame,
+    duration: number,
+    easing?: string,
+    callback?: Function,
+    delay?: number,
+  ): void;
   animate(toAttrs: ElementAttrs, cfg: AnimateCfg): void;
   animate(onFrame: OnFrame, cfg: AnimateCfg): void;
   animate(...args: any) {

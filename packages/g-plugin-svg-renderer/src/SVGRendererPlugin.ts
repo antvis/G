@@ -110,7 +110,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
         svgElement.$groupEl = $groupEl;
 
         const $parentGroupEl =
-          object.parentNode?.getEntity().getComponent(ElementSVG).$groupEl || this.contextService.getContext();
+          object.parentNode?.getEntity().getComponent(ElementSVG).$groupEl ||
+          this.contextService.getContext();
 
         if ($parentGroupEl) {
           $parentGroupEl.appendChild($groupEl);
@@ -119,10 +120,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.unmounted.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
-      const element = object.getEntity().getComponent(ElementSVG);
-      if (element) {
-        element.$el = null;
-      }
+      object.getEntity().removeComponent(ElementSVG, true);
     });
 
     renderingService.hooks.render.tap(SVGRendererPlugin.tag, (objects: DisplayObject[]) => {
@@ -164,9 +162,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
         const entity = object.getEntity();
         if (name === 'z-index') {
           const parent = object.parentNode;
-          const parentEntity = object.parentNode.getEntity();
+          const parentEntity = object.parentNode?.getEntity();
           const $groupEl = parentEntity?.getComponent(ElementSVG)?.$groupEl;
-          const children = [...parent.children];
+          const children = [...(parent?.children || [])];
 
           if ($groupEl) {
             // need to reorder parent's children
@@ -186,11 +184,17 @@ export class SVGRendererPlugin implements RenderingPlugin {
         }
 
         this.updateAttribute(entity, name, value);
-      }
+      },
     );
   }
 
   private applyTransform($el: SVGElement, object: DisplayObject) {
+    console.log(object);
+
+    if (object.parentNode === null) {
+      // root should account for camera matrix
+    }
+
     const [ex, ey, ez] = getEuler(vec3.create(), object.getLocalRotation());
 
     const [x, y] = object.getLocalPosition();
@@ -201,7 +205,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
     // TODO: use proper precision avoiding too long string in `transform`
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
-    $el.setAttribute('transform', `matrix(${rts[0]},${rts[1]},${rts[3]},${rts[4]},${rts[6]},${rts[7]})`);
+    $el.setAttribute(
+      'transform',
+      `matrix(${rts[0]},${rts[1]},${rts[3]},${rts[4]},${rts[6]},${rts[7]})`,
+    );
   }
 
   private updateAttribute(entity: Entity, name: string, value: any) {

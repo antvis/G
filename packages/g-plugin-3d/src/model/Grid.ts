@@ -58,14 +58,7 @@ export class GridModelBuilder implements ModelBuilder {
       enable: false,
     };
     material.depth = {
-      enable: true,
-    };
-    material.blend = {
-      enable: true,
-      func: {
-        srcRGB: gl.SRC_ALPHA,
-        dstRGB: gl.ONE_MINUS_SRC_ALPHA,
-      },
+      enable: false,
     };
 
     const fillColor = rgb2arr(fill);
@@ -77,12 +70,27 @@ export class GridModelBuilder implements ModelBuilder {
       [UNIFORM.Size2]: 10,
     });
 
-    geometry.vertexCount = 4;
+    geometry.vertexCount = 6;
     geometry.setIndex([0, 3, 2, 2, 1, 0]);
 
+    const halfWidth = width / 2;
+    const halfHeight = height / 2;
     geometry.setAttribute(
       ATTRIBUTE.Position,
-      Float32Array.from([-4, -1, -4, 4, -1, -4, 4, -1, 4, -4, -1, 4].map((a) => a * 100)),
+      Float32Array.from([
+        -halfWidth,
+        0,
+        -halfHeight,
+        halfWidth,
+        0,
+        -halfHeight,
+        halfWidth,
+        0,
+        halfHeight,
+        -halfWidth,
+        0,
+        halfHeight,
+      ]),
       {
         arrayStride: 4 * 3,
         stepMode: 'vertex',
@@ -93,7 +101,7 @@ export class GridModelBuilder implements ModelBuilder {
             format: 'float3',
           },
         ],
-      }
+      },
     );
   }
 }

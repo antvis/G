@@ -8,9 +8,25 @@
       "filename": "ortho.js",
       "title": {
         "zh": "正交相机",
-        "en": "Ortho camera"
+        "en": "Orthographic camera"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*D0XmSIyniZAAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "perspective.js",
+      "title": {
+        "zh": "透视投影相机",
+        "en": "Perspective camera"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8KT3Q4bNd1YAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "landmark.js",
+      "title": {
+        "zh": "相机动画",
+        "en": "Landmark"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*goX8QqgVSMEAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

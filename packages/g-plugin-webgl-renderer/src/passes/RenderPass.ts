@@ -15,7 +15,13 @@ import { FrameGraphHandle } from '../components/framegraph/FrameGraphHandle';
 import { FrameGraphPass } from '../components/framegraph/FrameGraphPass';
 import { PassNode } from '../components/framegraph/PassNode';
 import { ResourcePool } from '../components/framegraph/ResourcePool';
-import { IAttribute, IModelInitializationOptions, IUniform, IViewport, RenderingEngine } from '../services/renderer';
+import {
+  IAttribute,
+  IModelInitializationOptions,
+  IUniform,
+  IViewport,
+  RenderingEngine,
+} from '../services/renderer';
 import { gl } from '../services/renderer/constants';
 import { FrameGraphEngine, IRenderPass } from '../FrameGraphEngine';
 import { UNIFORM, ATTRIBUTE } from '../FrameGraphPlugin';
@@ -47,7 +53,11 @@ export class RenderPass implements IRenderPass<RenderPassData> {
   @inject(Camera)
   private camera: Camera;
 
-  setup = (fg: FrameGraphEngine, passNode: PassNode, pass: FrameGraphPass<RenderPassData>): void => {
+  setup = (
+    fg: FrameGraphEngine,
+    passNode: PassNode,
+    pass: FrameGraphPass<RenderPassData>,
+  ): void => {
     const output = fg.createRenderTarget(passNode, 'color buffer', {
       width: 1,
       height: 1,
@@ -59,7 +69,11 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     };
   };
 
-  execute = (fg: FrameGraphEngine, pass: FrameGraphPass<RenderPassData>, displayObjects: DisplayObject[]) => {
+  execute = (
+    fg: FrameGraphEngine,
+    pass: FrameGraphPass<RenderPassData>,
+    displayObjects: DisplayObject[],
+  ) => {
     const resourceNode = fg.getResourceNode(pass.data.output);
     const framebuffer = this.resourcePool.getOrCreateResource(resourceNode.resource);
 
@@ -80,7 +94,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
         });
 
         this.renderDisplayObjects(displayObjects);
-      }
+      },
     );
   };
 
@@ -92,7 +106,10 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     }
   }
 
-  private createModel({ material, geometry }: { material: Material3D; geometry: Geometry3D }, batchSize?: number) {
+  private createModel(
+    { material, geometry }: { material: Material3D; geometry: Geometry3D },
+    batchSize?: number,
+  ) {
     const { createModel, createAttribute } = this.engine;
 
     if (batchSize) {
@@ -121,10 +138,13 @@ export class RenderPass implements IRenderPass<RenderPassData> {
         }
         return cur;
       }, {}),
-      uniforms: material.uniforms.reduce((cur: { [key: string]: IUniform }, prev: IUniformBinding) => {
-        cur[prev.name] = prev.data;
-        return cur;
-      }, {}),
+      uniforms: material.uniforms.reduce(
+        (cur: { [key: string]: IUniform }, prev: IUniformBinding) => {
+          cur[prev.name] = prev.data;
+          return cur;
+        },
+        {},
+      ),
     };
 
     if (material.cull) {
@@ -154,6 +174,11 @@ export class RenderPass implements IRenderPass<RenderPassData> {
   private renderDisplayObject(displayObject: DisplayObject): boolean {
     const entity = displayObject.getEntity();
     const renderable3d = entity.getComponent(Renderable3D);
+
+    if (!renderable3d) {
+      return true;
+    }
+
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
     const transform = entity.getComponent(Transform);
@@ -170,7 +195,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
           material,
           geometry,
         },
-        batchSize
+        batchSize,
       );
     }
 
@@ -216,7 +241,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
           const m = mat4.multiply(
             mat4.create(),
             parentWorldMatrix,
-            this.sceneGraph.getLocalTransform(instance.getEntity())
+            this.sceneGraph.getLocalTransform(instance.getEntity()),
           );
           modelMatrixAttribute0Buffer.push(m[0], m[1], m[2], m[3]);
           modelMatrixAttribute1Buffer.push(m[4], m[5], m[6], m[7]);
@@ -243,10 +268,13 @@ export class RenderPass implements IRenderPass<RenderPassData> {
       }
 
       renderable3d.model.draw({
-        uniforms: material.uniforms.reduce((cur: { [key: string]: IUniform }, prev: IUniformBinding) => {
-          cur[prev.name] = prev.data;
-          return cur;
-        }, {}),
+        uniforms: material.uniforms.reduce(
+          (cur: { [key: string]: IUniform }, prev: IUniformBinding) => {
+            cur[prev.name] = prev.data;
+            return cur;
+          },
+          {},
+        ),
       });
     }
 
@@ -260,7 +288,13 @@ export class RenderPass implements IRenderPass<RenderPassData> {
    * relative bug in regl:
    * @see https://github.com/regl-project/regl/issues/597
    */
-  private createModelMatrixAttributes({ geometry, count }: { geometry: Geometry3D; count: number }) {
+  private createModelMatrixAttributes({
+    geometry,
+    count,
+  }: {
+    geometry: Geometry3D;
+    count: number;
+  }) {
     const m = mat4.create();
     const instancedModelMatrix0: number[] = [];
     const instancedModelMatrix1: number[] = [];

@@ -114,7 +114,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('postrender', () => {
+canvas.on('afterRender', () => {
   if (stats) {
     stats.update();
   }
@@ -127,9 +127,11 @@ const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
   renderer: CANVAS_RENDERER,
 };
-rendererFolder.add(rendererConfig, 'renderer', [CANVAS_RENDERER, WEBGL_RENDERER, SVG_RENDERER]).onChange((renderer) => {
-  canvas.setConfig({
-    renderer,
+rendererFolder
+  .add(rendererConfig, 'renderer', [CANVAS_RENDERER, WEBGL_RENDERER, SVG_RENDERER])
+  .onChange((renderer) => {
+    canvas.setRenderer({
+      renderer,
+    });
   });
-});
 rendererFolder.open();

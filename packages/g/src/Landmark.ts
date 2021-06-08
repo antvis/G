@@ -22,6 +22,7 @@ export default class Landmark {
   private relAzimuth = 0;
   private relElevation = 0;
   private relRoll = 0;
+  // private zoom = 1;
 
   constructor(name: string, c: Camera) {
     this.name = name;
@@ -42,6 +43,7 @@ export default class Landmark {
     this.relRoll = c.relRoll;
     this.dollyingStep = c.dollyingStep;
     this.distance = c.distance;
+    // this.zoom = c.zoom;
   }
 
   public getPosition() {
@@ -73,5 +75,6 @@ export default class Landmark {
     c.relRoll = this.relRoll;
     c.dollyingStep = this.dollyingStep;
     c.distance = this.distance;
+    // c.zoom = this.zoom;
   }
 }

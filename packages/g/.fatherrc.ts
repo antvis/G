@@ -1,8 +1,8 @@
 export default {
   cjs: 'rollup',
   esm: 'rollup',
-  umd: {
-    minFile: true,
-  },
+  // umd: {
+  //   minFile: true,
+  // },
   disableTypeCheck: true,
 };

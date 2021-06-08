@@ -17,7 +17,8 @@ const canvas = new Canvas({
 });
 
 const camera = canvas.getCamera();
-camera.setPosition(10, 10, 100);
+camera.setFocalPoint(300, 250, 0);
+camera.setPosition(300, 250, 500);
 
 // create a cube
 const cube = new Cube({
@@ -42,11 +43,11 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('postrender', () => {
+canvas.on('afterRender', () => {
   if (stats) {
     stats.update();
   }
-  // cube.rotate(quat.fromEuler(quat.create(), 0, 1, 0));
+  camera.rotate(1, 0, 0);
 });
 
 // GUI

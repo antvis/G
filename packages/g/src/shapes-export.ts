@@ -1,14 +1,12 @@
 import { DisplayObject } from './DisplayObject';
-import { SHAPE, ShapeCfg } from './types';
+import { SHAPE, GroupCfg, ShapeCfg } from './types';
 
 export class Group extends DisplayObject {
-  constructor({ attrs, ...rest }: ShapeCfg) {
+  constructor(config: GroupCfg) {
     super({
       type: SHAPE.Group,
-      attrs: {
-        ...attrs,
-      },
-      ...rest,
+      attrs: {},
+      ...config,
     });
   }
 }

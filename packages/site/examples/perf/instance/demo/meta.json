@@ -19,14 +19,6 @@
         "en": "Rendering with dirty rectangle(Canvas)"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
-    },
-    {
-      "filename": "canvas-rendering-on-demand.js",
-      "title": {
-        "zh": "按需渲染(Canvas)",
-        "en": "Rendering on demand(Canvas)"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
     }
   ]
 }

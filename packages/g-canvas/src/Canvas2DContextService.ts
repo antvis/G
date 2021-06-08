@@ -63,12 +63,6 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
 
       // set CSS style width & height
       setDOMSize(this.$canvas, width, height);
-
-      // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/scale
-      const context = this.getContext();
-      // scale all drawing operations by the dpr
-      // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
-      context?.scale(this.dpr, this.dpr);
     }
   }
 

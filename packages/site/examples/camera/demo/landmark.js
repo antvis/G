@@ -4,7 +4,7 @@ import { Cube, Grid, containerModule } from '@antv/g-plugin-3d';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 
-// create a renderer
+// create a webgl renderer
 const webglRenderer = new WebGLRenderer();
 webglRenderer.registerPlugin(containerModule);
 
@@ -16,11 +16,26 @@ const canvas = new Canvas({
   renderer: webglRenderer,
 });
 
-// create an orthographic camera
 const camera = canvas.getCamera();
-camera.setPosition(300, 100, 500).setFocalPoint(300, 250, 0);
+camera.setPerspective(0.1, 1000, 75, 600 / 500);
 
-const group = new Group();
+// create landmarks
+camera.createLandmark('mark1', {
+  position: [300, 250, 400],
+  focalPoint: [300, 250, 0],
+});
+camera.createLandmark('mark2', {
+  position: [300, 600, 500],
+  focalPoint: [300, 250, 0],
+});
+camera.createLandmark('mark3', {
+  position: [0, 250, 800],
+  focalPoint: [300, 250, 0],
+  roll: 30,
+});
+
+const group = new Group({});
+// create a cube
 const cube = new Cube({
   attrs: {
     width: 200,
@@ -29,20 +44,19 @@ const cube = new Cube({
     fill: '#1890FF',
   },
 });
-
 const grid = new Grid({
   attrs: {
-    width: 400,
-    height: 400,
+    width: 200,
+    height: 200,
+    depth: 200,
     fill: '#1890FF',
   },
 });
-
 group.appendChild(grid);
 group.appendChild(cube);
-grid.translateLocal(0, 100, 0);
 group.setPosition(300, 250, 0);
 
+// add a cube to canvas
 canvas.appendChild(group);
 
 // stats
@@ -58,25 +72,25 @@ canvas.on('afterRender', () => {
   if (stats) {
     stats.update();
   }
-  group.rotate(0, 1, 0);
 });
 
 // GUI
 const gui = new dat.GUI({ autoPlace: false });
 $wrapper.appendChild(gui.domElement);
-const cameraFolder = gui.addFolder('orthographic projection');
+
+const cameraFolder = gui.addFolder('camera landmarks');
 const cameraConfig = {
-  near: 0.1,
-  far: 1000,
-  zoom: 1,
+  goToMark1: () => {
+    camera.gotoLandmark('mark1', 300);
+  },
+  goToMark2: () => {
+    camera.gotoLandmark('mark2', 300);
+  },
+  goToMark3: () => {
+    camera.gotoLandmark('mark3', 300);
+  },
 };
-cameraFolder.add(cameraConfig, 'near', 0, 600).onChange((near) => {
-  camera.setNear(near);
-});
-cameraFolder.add(cameraConfig, 'far', 0, 1000).onChange((far) => {
-  camera.setFar(far);
-});
-cameraFolder.add(cameraConfig, 'zoom', 0, 10).onChange((zoom) => {
-  camera.setZoom(zoom);
-});
+cameraFolder.add(cameraConfig, 'goToMark1');
+cameraFolder.add(cameraConfig, 'goToMark2');
+cameraFolder.add(cameraConfig, 'goToMark3');
 cameraFolder.open();

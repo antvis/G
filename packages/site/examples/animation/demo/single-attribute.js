@@ -65,7 +65,7 @@ circle1.animate(
     easing: 'easeLinear',
     callback: () => {},
     repeat: true,
-  }
+  },
 );
 
 circle2.animate(
@@ -78,7 +78,7 @@ circle2.animate(
     easing: 'easeLinear',
     callback: () => {},
     repeat: true,
-  }
+  },
 );
 
 circle3.animate(
@@ -91,7 +91,7 @@ circle3.animate(
     easing: 'easeQuadInOut',
     callback: () => {},
     repeat: true,
-  }
+  },
 );
 
 // stats
@@ -103,7 +103,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('postrender', () => {
+canvas.on('afterRender', () => {
   if (stats) {
     stats.update();
   }
@@ -117,9 +117,9 @@ const rendererConfig = {
   renderer: 'canvas',
 };
 rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setConfig({
-    renderer: renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  });
+  canvas.setRenderer(
+    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
+  );
 });
 rendererFolder.open();
 
@@ -159,7 +159,7 @@ const animationConfig = {
         easing: 'easeLinear',
         callback: () => {},
         repeat: true,
-      }
+      },
     );
 
     circle2.attr({
@@ -180,7 +180,7 @@ const animationConfig = {
         easing: 'easeLinear',
         callback: () => {},
         repeat: true,
-      }
+      },
     );
 
     circle3.attr({
@@ -201,7 +201,7 @@ const animationConfig = {
         easing: 'easeQuadInOut',
         callback: () => {},
         repeat: true,
-      }
+      },
     );
   },
 };

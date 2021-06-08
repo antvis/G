@@ -1,5 +1,5 @@
 ---
-title: Import renderer on demand
+title: Choose a renderer
 order: 1
 ---
 
@@ -10,9 +10,8 @@ order: 1
 目前我们提供了三种渲染器：`@antv/g-canvas/svg/webgl`，用户可以像插件一样按需引入，但至少需要一种：
 
 ```js
-import { RENDERER as CANVAS_RENDERER } from '@antv/g-canvas';
-import { RENDERER as WEBGL_RENDERER } from '@antv/g-webgl';
-// import 'g-renderer-svg';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 ```
 
 这样在创建 `Canvas` 画布时可以选择引入的渲染器之一，例如我们引入了 Canvas 和 WebGL 渲染器，就可以在两者之间选择：
@@ -20,41 +19,31 @@ import { RENDERER as WEBGL_RENDERER } from '@antv/g-webgl';
 ```js
 import { Canvas } from '@antv/g';
 const canvas = new Canvas({
-  container: 'container',
-  width: 600,
-  height: 500,
-  renderer: CANVAS_RENDERER,
-  // renderer: RENDERER.WebGL,
+    container: 'container',
+    width: 600,
+    height: 500,
+    renderer: new WebGLRenderer(),
 });
 ```
 
 很多渲染引擎会为用户选择默认渲染器，例如 Pixi.js 会优先使用 WebGL，如果不支持则降级成 Canvas。在 G 中这个选择权交给用户。
-
-如果选择了一个未引入的渲染器，但在创建画布时使用，则会报错，例如：
-
-```js
-import { Canvas } from '@antv/g';
-import { RENDERER as CANVAS_RENDERER } from '@antv/g-canvas';
-import { RENDERER as WEBGL_RENDERER } from '@antv/g-webgl';
-
-const canvas = new Canvas({
-  container: 'container',
-  width: 600,
-  height: 500,
-  renderer: RENDERER.SVG,
-});
-
-// 报错，未引入 SVG Renderer
-```
 
 ## 运行时切换
 
 如果引入了多个渲染器，可以在运行时切换。目前 G 官网中的所有 DEMO 都可以在 `renderer` 面板中切换，并不会中断动画效果。再比如 G6 中可以通过节点和边的数目动态判断，是否需要切换到 WebGL 渲染器。
 
 ```js
-canvas.setConfig({
-  renderer: RENDERER.WebGL,
-});
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as SvgRenderer } from '@antv/g-svg';
+
+const webglRenderer = new WebGLRenderer();
+const svgRenderer = new SvgRenderer();
+
+if (tooManyShapes) {
+    canvas.setRenderer(webglRenderer);
+} else {
+    canvas.setRenderer(svgRenderer);
+}
 ```
 
 ## [WIP]自定义渲染器

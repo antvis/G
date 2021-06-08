@@ -93,14 +93,14 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('postrender', () => {
+canvas.on('afterRender', () => {
   if (stats) {
     stats.update();
   }
 });
 
 // GUI
-const gui = new dat.GUI({ autoPlace: false });
+const gui = new dat.GUI({ autoPlace: false, width: 400 });
 $wrapper.appendChild(gui.domElement);
 const selectorFolder = gui.addFolder('CSS Selector');
 const selectorConfig = {
@@ -108,7 +108,7 @@ const selectorConfig = {
   getElementsByClassName: 'classname-sun',
   getElementsByTagName: 'circle',
   querySelector: '[r=100]',
-  querySelectors: '[r=100]',
+  querySelectorAll: '[r=100]',
 };
 const clear = () => {
   solarSystem.forEach((child) => {
@@ -150,10 +150,10 @@ selectorFolder
     target.setAttribute('fill', '#F04864');
   });
 selectorFolder
-  .add(selectorConfig, 'querySelectors', ['[r=100]', '[r=50]', '[r=25]'])
+  .add(selectorConfig, 'querySelectorAll', ['[r=100]', '[r=50]', '[r=25]'])
   .onChange((selector) => {
     clear();
-    const targets = solarSystem.querySelectors(selector);
+    const targets = solarSystem.querySelectorAll(selector);
     targets.forEach((target) => {
       target.setAttribute('fill', '#F04864');
     });

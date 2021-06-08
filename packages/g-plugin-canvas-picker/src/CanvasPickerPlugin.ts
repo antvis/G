@@ -8,6 +8,7 @@ import {
   SceneGraphService,
   PickingResult,
   OffscreenCanvasCreator,
+  Camera,
 } from '@antv/g';
 import { Point } from '@antv/g-math';
 import { PathGeneratorFactory, PathGenerator } from '@antv/g-plugin-canvas-renderer';
@@ -18,7 +19,7 @@ export const PointInPathPickerFactory = Symbol('PointInPathPicker');
 export type PointInPathPicker = (
   displayObject: DisplayObject,
   point: Point,
-  isPointInPath?: (displayObject: DisplayObject, point: Point) => boolean
+  isPointInPath?: (displayObject: DisplayObject, point: Point) => boolean,
 ) => boolean;
 
 /**
@@ -30,6 +31,9 @@ export type PointInPathPicker = (
 @injectable()
 export class CanvasPickerPlugin implements RenderingPlugin {
   static tag = 'CanvasPickerPlugin';
+
+  @inject(Camera)
+  private camera: Camera;
 
   @inject(SceneGraphService)
   private sceneGraphService: SceneGraphService;
@@ -71,11 +75,24 @@ export class CanvasPickerPlugin implements RenderingPlugin {
           const pick = this.pointInPathPickerFactory(displayObject.nodeType);
           if (pick) {
             // invert with world matrix
-            const worldTransform = displayObject.getWorldTransform();
-            const invertWorldMat = mat4.invert(mat4.create(), worldTransform);
+            const transform = mat4.multiply(
+              mat4.create(),
+              this.camera.getOrthoMatrix(),
+              displayObject.getWorldTransform(),
+            );
+
+            const invertWorldMat = mat4.invert(mat4.create(), transform);
             // transform client position to local space, do picking in local space
-            const localPosition = vec3.transformMat4(vec3.create(), vec3.fromValues(x, y, 0), invertWorldMat);
-            if (pick(displayObject, { x: localPosition[0], y: localPosition[1] }, this.isPointInPath)) {
+            const localPosition = vec3.transformMat4(
+              vec3.create(),
+              vec3.fromValues(x, y, 0),
+              invertWorldMat,
+            );
+
+            console.log(invertWorldMat, localPosition);
+            if (
+              pick(displayObject, { x: localPosition[0], y: localPosition[1] }, this.isPointInPath)
+            ) {
               pickedDisplayObjects.push(displayObject);
             }
           } else {
@@ -101,7 +118,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/isPointInPath
    */
   private isPointInPath = (displayObject: DisplayObject, position: Point) => {
-    const context = this.offscreenCanvas.getOrCreateContext();
+    const context = this.offscreenCanvas.getOrCreateContext() as CanvasRenderingContext2D;
     const generatePath = this.pathGeneratorFactory(displayObject.nodeType);
     if (generatePath) {
       generatePath(context, displayObject.attributes);

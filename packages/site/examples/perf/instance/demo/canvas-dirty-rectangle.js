@@ -86,7 +86,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('postrender', () => {
+canvas.on('afterRender', () => {
   if (stats) {
     stats.update();
   }
@@ -104,7 +104,7 @@ const dirtyRectangleConfig = {
   debug: true,
 };
 folder0.add(dirtyRectangleConfig, 'enable').onChange((enable) => {
-  canvas.setConfig({
+  canvas.setRenderer({
     dirtyRectangle: {
       enable,
       debug: dirtyRectangleConfig.debug,
@@ -112,7 +112,7 @@ folder0.add(dirtyRectangleConfig, 'enable').onChange((enable) => {
   });
 });
 folder0.add(dirtyRectangleConfig, 'debug').onChange((debug) => {
-  canvas.setConfig({
+  canvas.setRenderer({
     dirtyRectangle: {
       enable: dirtyRectangleConfig.enable,
       debug,

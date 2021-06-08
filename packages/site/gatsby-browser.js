@@ -1,4 +1,7 @@
 require('./site/css/demo.css');
+window.react = require('react');
+window.reactDom = require('react-dom');
+window.reactSplitPane = require('react-split-pane');
 window.stats = require('stats.js');
 window.dat = require('dat.gui');
 window.g = require('@antv/g');

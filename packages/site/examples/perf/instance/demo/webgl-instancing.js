@@ -43,7 +43,7 @@ for (let i = 0; i < 1000; i++) {
       callback: () => {},
       repeat: true,
       direction: 'alternate',
-    }
+    },
   );
 }
 
@@ -56,7 +56,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('postrender', () => {
+canvas.on('afterRender', () => {
   if (stats) {
     stats.update();
   }

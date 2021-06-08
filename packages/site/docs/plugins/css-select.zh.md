@@ -80,3 +80,5 @@ solarSystem.querySelector('[name=sun]');
 solarSystem.querySelectorAll('[r=25]');
 // [moon]
 ```
+
+<!-- <playground path='examples/plugins/demo/css-select.js' rid='container'></playground> -->

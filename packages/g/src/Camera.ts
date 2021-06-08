@@ -40,77 +40,79 @@ const RAD_2_DEG = 180 / Math.PI;
  */
 @injectable()
 export class Camera extends EventEmitter {
-  public static ProjectionMode = {
+  static ProjectionMode = {
     ORTHOGRAPHIC: 'ORTHOGRAPHIC',
     PERSPECTIVE: 'PERSPECTIVE',
   };
   /**
    * 相机矩阵
    */
-  public matrix = mat4.create();
+  matrix = mat4.create();
 
   /**
    * u 轴
    * @see http://learnwebgl.brown37.net/07_cameras/camera_introduction.html#a-camera-definition
    */
-  public right = vec3.fromValues(1, 0, 0);
+  right = vec3.fromValues(1, 0, 0);
 
   /**
-   * v 轴
+   * v 轴 +Y is down
    */
-  public up = vec3.fromValues(0, 1, 0);
+  up = vec3.fromValues(0, 1, 0);
 
   /**
-   * n 轴
+   * n 轴 +Z is inside
    */
-  public forward = vec3.fromValues(0, 0, 1);
+  forward = vec3.fromValues(0, 0, 1);
 
   /**
    * 相机位置
    */
-  public position = vec3.fromValues(0, 0, 1);
+  position = vec3.fromValues(0, 0, 1);
 
   /**
    * 视点位置
    */
-  public focalPoint = vec3.fromValues(0, 0, 0);
+  focalPoint = vec3.fromValues(0, 0, 0);
 
   /**
    * 相机位置到视点向量
    * focalPoint - position
    */
-  public distanceVector = vec3.fromValues(0, 0, 0);
+  distanceVector = vec3.fromValues(0, 0, 0);
 
   /**
    * 相机位置到视点距离
    * length(focalPoint - position)
    */
-  public distance = 1;
+  distance = 1;
 
   /**
    * @see https://en.wikipedia.org/wiki/Azimuth
    */
-  public azimuth = 0;
-  public elevation = 0;
-  public roll = 0;
-  public relAzimuth = 0;
-  public relElevation = 0;
-  public relRoll = 0;
+  azimuth = 0;
+  elevation = 0;
+  roll = 0;
+  relAzimuth = 0;
+  relElevation = 0;
+  relRoll = 0;
 
   /**
    * 沿 n 轴移动时，保证移动速度从快到慢
    */
-  public dollyingStep = 0;
-  public maxDistance = Infinity;
-  public minDistance = -Infinity;
+  dollyingStep = 0;
+  maxDistance = Infinity;
+  minDistance = -Infinity;
+
+  zoom = 1;
 
   /**
    * invert the horizontal coordinate system HCS
    */
-  public rotateWorld = false;
+  rotateWorld = false;
 
   // @inject(IDENTIFIER.InteractorService)
-  // public interactor: IInteractorService;
+  // interactor: IInteractorService;
 
   /**
    * 投影矩阵参数
@@ -128,7 +130,6 @@ export class Camera extends EventEmitter {
   private rright: number;
   private top: number;
   private bottom: number;
-  private zoom = 1;
   private perspective = mat4.create();
 
   private view:
@@ -160,30 +161,51 @@ export class Camera extends EventEmitter {
   private landmarks: Landmark[] = [];
   private landmarkAnimationID: number | undefined;
 
-  public clone(): Camera {
+  /**
+   * ortho matrix for Canvas2D & SVG
+   */
+  private orthoMatrix: mat4 = mat4.create();
+
+  clone(): Camera {
     const camera = new Camera();
     camera.setType(this.type, undefined);
     // camera.interactor = this.interactor;
     return camera;
   }
 
-  public getProjectionMode() {
+  getProjectionMode() {
     return this.projectionMode;
   }
 
-  public getPerspective() {
+  getPerspective() {
     return this.perspective;
   }
 
-  public getFrustum() {
+  getFrustum() {
     return this.frustum;
   }
 
-  public getPosition() {
+  getPosition() {
     return this.position;
   }
 
-  public setType(type: CAMERA_TYPE, trackingMode: CAMERA_TRACKING_MODE | undefined) {
+  getNear() {
+    return this.near;
+  }
+
+  getFar() {
+    return this.far;
+  }
+
+  getZoom() {
+    return this.zoom;
+  }
+
+  getOrthoMatrix() {
+    return this.orthoMatrix;
+  }
+
+  setType(type: CAMERA_TYPE, trackingMode: CAMERA_TRACKING_MODE | undefined) {
     this.type = type;
     if (this.type === CAMERA_TYPE.EXPLORING) {
       this.setWorldRotation(true);
@@ -198,12 +220,12 @@ export class Camera extends EventEmitter {
     return this;
   }
 
-  public setProjectionMode(projectionMode: CAMERA_PROJECTION_MODE) {
+  setProjectionMode(projectionMode: CAMERA_PROJECTION_MODE) {
     this.projectionMode = projectionMode;
     return this;
   }
 
-  public setTrackingMode(trackingMode: CAMERA_TRACKING_MODE) {
+  setTrackingMode(trackingMode: CAMERA_TRACKING_MODE) {
     if (this.type !== CAMERA_TYPE.TRACKING) {
       throw new Error('Impossible to set a tracking mode if the camera is not of tracking type');
     }
@@ -223,7 +245,7 @@ export class Camera extends EventEmitter {
    * By default the camera angles are not reversed.
    * @param {Boolean} flag the boolean flag to reverse the angles.
    */
-  public setWorldRotation(flag: boolean) {
+  setWorldRotation(flag: boolean) {
     this.rotateWorld = flag;
     this._getAngles();
   }
@@ -231,32 +253,61 @@ export class Camera extends EventEmitter {
   /**
    * 计算 MV 矩阵，为相机矩阵的逆矩阵
    */
-  public getViewTransform(): mat4 {
+  getViewTransform(): mat4 {
     return mat4.invert(mat4.create(), this.matrix)!;
   }
 
-  public getWorldTransform(): mat4 {
+  getWorldTransform(): mat4 {
     return this.matrix;
   }
 
   /**
    * 设置相机矩阵
    */
-  public setMatrix(matrix: mat4) {
+  setMatrix(matrix: mat4) {
     this.matrix = matrix;
     this._update();
     return this;
   }
 
-  public setAspect(aspect: number) {
+  setFov(fov: number) {
+    this.setPerspective(this.near, this.far, fov, this.aspect);
+  }
+
+  setAspect(aspect: number) {
     this.setPerspective(this.near, this.far, this.fov, aspect);
+    return this;
+  }
+
+  setNear(near: number) {
+    if (this.projectionMode === CAMERA_PROJECTION_MODE.PERSPECTIVE) {
+      this.setPerspective(near, this.far, this.fov, this.aspect);
+    } else {
+      this.setOrthographic(this.left, this.rright, this.top, this.bottom, near, this.far);
+    }
+    return this;
+  }
+
+  setFar(far: number) {
+    if (this.projectionMode === CAMERA_PROJECTION_MODE.PERSPECTIVE) {
+      this.setPerspective(this.near, far, this.fov, this.aspect);
+    } else {
+      this.setOrthographic(this.left, this.rright, this.top, this.bottom, this.near, far);
+    }
     return this;
   }
 
   /**
    * Sets an offset in a larger frustum, used in PixelPicking
    */
-  public setViewOffset(fullWidth: number, fullHeight: number, x: number, y: number, width: number, height: number) {
+  setViewOffset(
+    fullWidth: number,
+    fullHeight: number,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ) {
     this.aspect = fullWidth / fullHeight;
     if (this.view === undefined) {
       this.view = {
@@ -286,7 +337,7 @@ export class Camera extends EventEmitter {
     return this;
   }
 
-  public clearViewOffset() {
+  clearViewOffset() {
     if (this.view !== undefined) {
       this.view.enabled = false;
     }
@@ -299,26 +350,27 @@ export class Camera extends EventEmitter {
     return this;
   }
 
-  public setZoom(zoom: number) {
+  setZoom(zoom: number) {
     this.zoom = zoom;
     if (this.projectionMode === CAMERA_PROJECTION_MODE.ORTHOGRAPHIC) {
       this.setOrthographic(this.left, this.rright, this.top, this.bottom, this.near, this.far);
     }
-    this.emit(CAMERA_EVENT.Updated);
     return this;
   }
 
-  public setPerspective(near: number, far: number, fov: number, aspect: number) {
+  setPerspective(near: number, far: number, fov: number, aspect: number) {
     this.projectionMode = CAMERA_PROJECTION_MODE.PERSPECTIVE;
     this.fov = fov;
     this.near = near;
     this.far = far;
     this.aspect = aspect;
-    mat4.perspective(this.perspective, this.fov * DEG_2_RAD, this.aspect, this.near, this.far);
+    // flip Y
+    mat4.perspective(this.perspective, -this.fov * DEG_2_RAD, -this.aspect, this.near, this.far);
+    this.emit(CAMERA_EVENT.Updated);
     return this;
   }
 
-  public setOrthographic(l: number, r: number, t: number, b: number, near: number, far: number) {
+  setOrthographic(l: number, r: number, t: number, b: number, near: number, far: number) {
     this.projectionMode = CAMERA_PROJECTION_MODE.ORTHOGRAPHIC;
     this.rright = r;
     this.left = l;
@@ -348,13 +400,16 @@ export class Camera extends EventEmitter {
     }
 
     mat4.ortho(this.perspective, left, right, bottom, top, near, far);
+
+    this._getOrthoMatrix();
+    this.emit(CAMERA_EVENT.Updated);
     return this;
   }
 
   /**
    * 设置相机位置
    */
-  public setPosition(x: number | vec3, y?: number, z?: number) {
+  setPosition(x: number | vec3, y?: number, z?: number) {
     this._setPosition(x, y, z);
     this.setFocalPoint(this.focalPoint);
     return this;
@@ -363,7 +418,7 @@ export class Camera extends EventEmitter {
   /**
    * 设置视点位置
    */
-  public setFocalPoint(x: number | vec3, y?: number, z?: number) {
+  setFocalPoint(x: number | vec3, y?: number, z?: number) {
     let up = vec3.fromValues(0, 1, 0);
     this.focalPoint = createVec3(x, y, z);
 
@@ -392,7 +447,7 @@ export class Camera extends EventEmitter {
   /**
    * 固定当前视点，按指定距离放置相机
    */
-  public setDistance(d: number) {
+  setDistance(d: number) {
     if (this.distance === d || d < 0) {
       return;
     }
@@ -417,12 +472,12 @@ export class Camera extends EventEmitter {
     return this;
   }
 
-  public setMaxDistance(d: number) {
+  setMaxDistance(d: number) {
     this.maxDistance = d;
     return this;
   }
 
-  public setMinDistance(d: number) {
+  setMinDistance(d: number) {
     this.minDistance = d;
     return this;
   }
@@ -430,7 +485,7 @@ export class Camera extends EventEmitter {
   /**
    * Changes the initial azimuth of the camera
    */
-  public changeAzimuth(az: number) {
+  changeAzimuth(az: number) {
     this.setAzimuth(this.azimuth + az);
     return this;
   }
@@ -438,7 +493,7 @@ export class Camera extends EventEmitter {
   /**
    * Changes the initial elevation of the camera
    */
-  public changeElevation(el: number) {
+  changeElevation(el: number) {
     this.setElevation(this.elevation + el);
     return this;
   }
@@ -446,7 +501,7 @@ export class Camera extends EventEmitter {
   /**
    * Changes the initial roll of the camera
    */
-  public changeRoll(rl: number) {
+  changeRoll(rl: number) {
     this.setRoll(this.roll + rl);
     return this;
   }
@@ -455,7 +510,7 @@ export class Camera extends EventEmitter {
    * 设置相机方位角，不同相机模式下需要重新计算相机位置或者是视点位置
    * @param {Number} el the azimuth in degrees
    */
-  public setAzimuth(az: number) {
+  setAzimuth(az: number) {
     this.azimuth = getAngle(az);
     this.computeMatrix();
 
@@ -468,7 +523,7 @@ export class Camera extends EventEmitter {
     return this;
   }
 
-  public getAzimuth() {
+  getAzimuth() {
     return this.azimuth;
   }
 
@@ -476,7 +531,7 @@ export class Camera extends EventEmitter {
    * 设置相机方位角，不同相机模式下需要重新计算相机位置或者是视点位置
    * @param {Number} el the elevation in degrees
    */
-  public setElevation(el: number) {
+  setElevation(el: number) {
     this.elevation = getAngle(el);
     this.computeMatrix();
 
@@ -493,7 +548,7 @@ export class Camera extends EventEmitter {
    * 设置相机方位角，不同相机模式下需要重新计算相机位置或者是视点位置
    * @param {Number} angle the roll angle
    */
-  public setRoll(angle: number) {
+  setRoll(angle: number) {
     this.roll = getAngle(angle);
     this.computeMatrix();
 
@@ -512,16 +567,27 @@ export class Camera extends EventEmitter {
    * @param {Number} elevation the relative elevation
    * @param {Number} roll the relative roll
    */
-  public rotate(azimuth: number, elevation: number, roll: number) {
+  rotate(azimuth: number, elevation: number, roll: number) {
+    this.relElevation = getAngle(elevation);
+    this.relAzimuth = getAngle(azimuth);
+    this.relRoll = getAngle(roll);
+    this.elevation += this.relElevation;
+    this.azimuth += this.relAzimuth;
+    this.roll += this.relRoll;
+
     if (this.type === CAMERA_TYPE.EXPLORING) {
-      azimuth = getAngle(azimuth);
-      elevation = getAngle(elevation);
-      roll = getAngle(roll);
+      const rotX = quat.setAxisAngle(
+        quat.create(),
+        [1, 0, 0],
+        (this.rotateWorld ? 1 : -1) * this.relElevation * DEG_2_RAD,
+      );
+      const rotY = quat.setAxisAngle(
+        quat.create(),
+        [0, 1, 0],
+        (this.rotateWorld ? 1 : -1) * this.relAzimuth * DEG_2_RAD,
+      );
 
-      const rotX = quat.setAxisAngle(quat.create(), [1, 0, 0], (this.rotateWorld ? 1 : -1) * elevation * DEG_2_RAD);
-      const rotY = quat.setAxisAngle(quat.create(), [0, 1, 0], (this.rotateWorld ? 1 : -1) * azimuth * DEG_2_RAD);
-
-      const rotZ = quat.setAxisAngle(quat.create(), [0, 0, 1], roll * DEG_2_RAD);
+      const rotZ = quat.setAxisAngle(quat.create(), [0, 0, 1], this.relRoll * DEG_2_RAD);
       let rotQ = quat.multiply(quat.create(), rotY, rotX);
       rotQ = quat.multiply(quat.create(), rotQ, rotZ);
       const rotMatrix = mat4.fromQuat(mat4.create(), rotQ);
@@ -529,16 +595,9 @@ export class Camera extends EventEmitter {
       mat4.multiply(this.matrix, this.matrix, rotMatrix);
       mat4.translate(this.matrix, this.matrix, [0, 0, this.distance]);
     } else {
-      if (Math.abs(this.elevation + elevation) > 90) {
+      if (Math.abs(this.elevation) > 90) {
         return;
       }
-      this.relElevation = getAngle(elevation);
-      this.relAzimuth = getAngle(azimuth);
-      this.relRoll = getAngle(roll);
-      this.elevation += this.relElevation;
-      this.azimuth += this.relAzimuth;
-      this.roll += this.relRoll;
-
       this.computeMatrix();
     }
 
@@ -556,7 +615,7 @@ export class Camera extends EventEmitter {
   /**
    * 沿水平(right) & 垂直(up)平移相机
    */
-  public pan(tx: number, ty: number) {
+  pan(tx: number, ty: number) {
     const coords = createVec3(tx, ty, 0);
     const pos = vec3.clone(this.position);
 
@@ -573,7 +632,7 @@ export class Camera extends EventEmitter {
   /**
    * 沿 n 轴移动，当距离视点远时移动速度较快，离视点越近速度越慢
    */
-  public dolly(value: number) {
+  dolly(value: number) {
     const n = this.forward;
     const pos = vec3.clone(this.position);
     let step = value * this.dollyingStep;
@@ -598,13 +657,13 @@ export class Camera extends EventEmitter {
     return this;
   }
 
-  public createLandmark(
+  createLandmark(
     name: string,
     params: {
       position: vec3;
       focalPoint: vec3;
       roll?: number;
-    }
+    },
   ): Landmark {
     const camera = this.clone();
     camera.setPosition(params.position);
@@ -617,13 +676,13 @@ export class Camera extends EventEmitter {
     return landmark;
   }
 
-  public setLandmark(name: string) {
+  setLandmark(name: string) {
     const landmark = new Landmark(name, this);
     this.landmarks.push(landmark);
     return this;
   }
 
-  public gotoLandmark(name: string, duration: number = 1000) {
+  gotoLandmark(name: string, duration: number = 1000) {
     const landmark = this.landmarks.find((l) => l.name === name);
     if (landmark) {
       if (duration === 0) {
@@ -664,7 +723,10 @@ export class Camera extends EventEmitter {
         this.setRoll(interRoll);
         this.computeMatrix();
 
-        const dist = vec3.dist(interFocalPoint, destFocalPoint) + vec3.dist(interPosition, destPosition);
+        this.emit(CAMERA_EVENT.Updated);
+
+        const dist =
+          vec3.dist(interFocalPoint, destFocalPoint) + vec3.dist(interPosition, destPosition);
         if (dist > 0.01) {
           //
         } else {
@@ -673,6 +735,7 @@ export class Camera extends EventEmitter {
           this.setRoll(interRoll);
           this.computeMatrix();
           // this.interactor.connect();
+
           return;
         }
 
@@ -693,6 +756,7 @@ export class Camera extends EventEmitter {
     this._getPosition();
     this._getDistance();
     this._getAngles();
+    this._getOrthoMatrix();
 
     this.emit(CAMERA_EVENT.Updated);
   }
@@ -713,16 +777,22 @@ export class Camera extends EventEmitter {
     rotX = quat.setAxisAngle(
       quat.create(),
       [1, 0, 0],
-      ((this.rotateWorld && this.type !== CAMERA_TYPE.TRACKING) || this.type === CAMERA_TYPE.TRACKING ? 1 : -1) *
+      ((this.rotateWorld && this.type !== CAMERA_TYPE.TRACKING) ||
+      this.type === CAMERA_TYPE.TRACKING
+        ? 1
+        : -1) *
         this.elevation *
-        DEG_2_RAD
+        DEG_2_RAD,
     );
     rotY = quat.setAxisAngle(
       quat.create(),
       [0, 1, 0],
-      ((this.rotateWorld && this.type !== CAMERA_TYPE.TRACKING) || this.type === CAMERA_TYPE.TRACKING ? 1 : -1) *
+      ((this.rotateWorld && this.type !== CAMERA_TYPE.TRACKING) ||
+      this.type === CAMERA_TYPE.TRACKING
+        ? 1
+        : -1) *
         this.azimuth *
-        DEG_2_RAD
+        DEG_2_RAD,
     );
 
     let rotQ = quat.multiply(quat.create(), rotY, rotX);
@@ -749,6 +819,8 @@ export class Camera extends EventEmitter {
     m[13] = this.position[1];
     m[14] = this.position[2];
     m[15] = 1;
+
+    this._getOrthoMatrix();
   }
 
   /**
@@ -757,7 +829,10 @@ export class Camera extends EventEmitter {
   private _getAxes() {
     vec3.copy(this.right, createVec3(vec4.transformMat4(vec4.create(), [1, 0, 0, 0], this.matrix)));
     vec3.copy(this.up, createVec3(vec4.transformMat4(vec4.create(), [0, 1, 0, 0], this.matrix)));
-    vec3.copy(this.forward, createVec3(vec4.transformMat4(vec4.create(), [0, 0, 1, 0], this.matrix)));
+    vec3.copy(
+      this.forward,
+      createVec3(vec4.transformMat4(vec4.create(), [0, 0, 1, 0], this.matrix)),
+    );
     vec3.normalize(this.right, this.right);
     vec3.normalize(this.up, this.up);
     vec3.normalize(this.forward, this.forward);
@@ -798,7 +873,10 @@ export class Camera extends EventEmitter {
    * 重新计算相机位置，只有 ORBITING 模式相机位置才会发生变化
    */
   private _getPosition() {
-    vec3.copy(this.position, createVec3(vec4.transformMat4(vec4.create(), [0, 0, 0, 1], this.matrix)));
+    vec3.copy(
+      this.position,
+      createVec3(vec4.transformMat4(vec4.create(), [0, 0, 0, 1], this.matrix)),
+    );
 
     // 相机位置变化，需要重新计算视距
     this._getDistance();
@@ -808,7 +886,11 @@ export class Camera extends EventEmitter {
    * 重新计算视点，只有 TRACKING 模式视点才会发生变化
    */
   private _getFocalPoint() {
-    vec3.transformMat3(this.distanceVector, [0, 0, -this.distance], mat3.fromMat4(mat3.create(), this.matrix));
+    vec3.transformMat3(
+      this.distanceVector,
+      [0, 0, -this.distance],
+      mat3.fromMat4(mat3.create(), this.matrix),
+    );
     vec3.add(this.focalPoint, this.position, this.distanceVector);
 
     // 视点变化，需要重新计算视距
@@ -822,5 +904,25 @@ export class Camera extends EventEmitter {
     this.distanceVector = vec3.subtract(vec3.create(), this.focalPoint, this.position);
     this.distance = vec3.length(this.distanceVector);
     this.dollyingStep = this.distance / 100;
+  }
+
+  private _getOrthoMatrix() {
+    if (this.projectionMode !== CAMERA_PROJECTION_MODE.ORTHOGRAPHIC) {
+      return;
+    }
+
+    const position = this.position;
+    const rotZ = quat.setAxisAngle(quat.create(), [0, 0, 1], (-this.roll * Math.PI) / 180);
+    mat4.fromRotationTranslationScaleOrigin(
+      this.orthoMatrix,
+      rotZ,
+      vec3.fromValues(
+        (this.rright - this.left) / 2 - position[0],
+        (this.bottom - this.top) / 2 - position[1],
+        0,
+      ),
+      vec3.fromValues(this.zoom, this.zoom, 1),
+      position,
+    );
   }
 }

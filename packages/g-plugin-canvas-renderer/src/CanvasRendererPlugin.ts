@@ -12,10 +12,11 @@ import {
   fromRotationTranslationScale,
   ShapeAttrs,
   Camera,
+  CAMERA_PROJECTION_MODE,
 } from '@antv/g';
 import { isArray } from '@antv/util';
 import { inject, injectable } from 'inversify';
-import { vec3, mat4, mat3, quat } from 'gl-matrix';
+import { vec3, mat4, quat } from 'gl-matrix';
 import { PathGeneratorFactory, PathGenerator } from './shapes/paths';
 import { StyleRenderer, StyleRendererFactory } from './shapes/styles';
 import { StyleParser } from './shapes/StyleParser';
@@ -64,6 +65,14 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private lastDirtyRectangle: Rect;
 
   apply(renderingService: RenderingService) {
+    renderingService.hooks.init.tap(CanvasRendererPlugin.tag, () => {
+      const context = this.contextService.getContext();
+      const dpr = this.contextService.getDPR();
+      // scale all drawing operations by the dpr
+      // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
+      context?.scale(dpr, dpr);
+    });
+
     renderingService.hooks.beforeRender.tap(CanvasRendererPlugin.tag, () => {
       const context = this.contextService.getContext();
 
@@ -74,28 +83,44 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const dirtyAABB = this.renderingContext.dirtyRectangle;
 
       if (context) {
-        if (!enableDirtyRectangleRendering) {
+        context.save();
+        const clearAll = !enableDirtyRectangleRendering || !dirtyAABB;
+
+        if (clearAll) {
           context.clearRect(0, 0, this.canvasConfig.width, this.canvasConfig.height);
-          context.save();
-        } else {
+        }
+
+        // account for camera's world matrix
+        this.applyTransform(context, this.camera.getOrthoMatrix());
+
+        if (!clearAll && dirtyAABB) {
           const dirtyRectangle = this.convertAABB2Rect(dirtyAABB);
 
-          context.clearRect(dirtyRectangle.x, dirtyRectangle.y, dirtyRectangle.width, dirtyRectangle.height);
+          context.clearRect(
+            dirtyRectangle.x,
+            dirtyRectangle.y,
+            dirtyRectangle.width,
+            dirtyRectangle.height,
+          );
           if (enableDirtyRectangleRenderingDebug) {
             if (this.lastDirtyRectangle) {
               context.clearRect(
                 this.lastDirtyRectangle.x,
                 this.lastDirtyRectangle.y,
                 this.lastDirtyRectangle.width,
-                this.lastDirtyRectangle.height
+                this.lastDirtyRectangle.height,
               );
             }
           }
 
           // clip dirty rectangle
-          context.save();
           context.beginPath();
-          context.rect(dirtyRectangle.x, dirtyRectangle.y, dirtyRectangle.width, dirtyRectangle.height);
+          context.rect(
+            dirtyRectangle.x,
+            dirtyRectangle.y,
+            dirtyRectangle.width,
+            dirtyRectangle.height,
+          );
           context.clip();
 
           // draw dirty rectangle on DEBUG mode
@@ -120,10 +145,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         // reset transformation
         context.save();
 
-        const originMatrix = context.getTransform();
-
         // apply RTS transformation in world space
-        this.applyTransform(context, object);
+        this.applyTransform(context, object.getWorldTransform());
 
         // apply attributes to context
         this.applyAttributesToContext(context, object.attributes);
@@ -139,8 +162,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         if (styleRenderer) {
           styleRenderer.render(context, object.attributes);
         }
-
-        context.setTransform(originMatrix);
 
         // finish rendering, clear dirty flag
         const renderable = object.getEntity().getComponent(Renderable);
@@ -175,46 +196,15 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     context.stroke();
   }
 
-  private applyTransform(context: CanvasRenderingContext2D, object: DisplayObject) {
-    const { width, height } = this.canvasConfig;
-    const [ex, ey, ez] = getEuler(vec3.create(), object.getRotation());
-
-    const [x, y] = object.getPosition();
-    const [scaleX, scaleY] = object.getScale();
-
-    // TODO: use MVP matrix
-    // const viewMatrix = this.camera.getViewTransform()!;
-    // const viewProjectionMatrix = mat4.multiply(
-    //   mat4.create(),
-    //   this.camera.getPerspective(),
-    //   viewMatrix,
-    // );
-
-    // const modelMatrix = object.getWorldTransform();
-    // const mvpMatrix = mat4.multiply(
-    //   mat4.create(),
-    //   viewProjectionMatrix,
-    //   modelMatrix,
-    // );
-
-    // const [tx, ty] = mat4.getTranslation(vec3.create(), mvpMatrix);
-    // const [sx, sy] = mat4.getScaling(vec3.create(), mvpMatrix);
-    // const rotation = mat4.getRotation(quat.create(), mvpMatrix);
-    // const [eux, euy, euz] = getEuler(vec3.create(), rotation);
-
-    // const viewportMatrix = fromRotationTranslationScale(0, 0, 0, width / 2, height / 2);
-
+  private applyTransform(context: CanvasRenderingContext2D, transform: mat4) {
+    const [tx, ty] = mat4.getTranslation(vec3.create(), transform);
+    const [sx, sy] = mat4.getScaling(vec3.create(), transform);
+    const rotation = mat4.getRotation(quat.create(), transform);
+    const [eux, euy, euz] = getEuler(vec3.create(), rotation);
     // gimbal lock at 90 degrees
-    const rts = fromRotationTranslationScale(ex || ez, x, y, scaleX, scaleY);
-
-    // const rts2 = fromRotationTranslationScale(euz, tx, ty, sx, sy);
-    // mat3.multiply(rts2, viewportMatrix, rts2);
-
-    // console.log(rts, rts2, viewportMatrix);
+    const rts = fromRotationTranslationScale(eux || euz, tx, ty, sx, sy);
 
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
-    // context.transform(rts[0], rts[1], rts[3], rts[4], rts[6], rts[7]);
-
     context.transform(rts[0], rts[1], rts[3], rts[4], rts[6], rts[7]);
   }
 

@@ -2,6 +2,7 @@ import { injectable } from 'inversify';
 import { SceneGraphNode } from '../components';
 import { DisplayObject } from '../DisplayObject';
 
+export const SceneGraphSelectorFactory = Symbol('SceneGraphSelectorFactory');
 export const SceneGraphSelector = Symbol('SceneGraphSelector');
 export interface SceneGraphSelector {
   selectOne(query: string, object: DisplayObject): DisplayObject | null;
@@ -21,7 +22,9 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
     if (query.startsWith('#')) {
       // getElementById('id')
       // TODO: should include itself?
-      return object.find((node) => node.getEntity().getComponent(SceneGraphNode).id === query.substring(1));
+      return object.find(
+        (node) => node.getEntity().getComponent(SceneGraphNode).id === query.substring(1),
+      );
     }
     return null;
   }
@@ -31,10 +34,14 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
     if (query.startsWith('.')) {
       // getElementsByClassName('className');
       // TODO: should include itself?
-      return object.findAll((node) => node.getEntity().getComponent(SceneGraphNode).class === query.substring(1));
+      return object.findAll(
+        (node) => node.getEntity().getComponent(SceneGraphNode).class === query.substring(1),
+      );
     } else if (query.startsWith('[name=')) {
       // getElementsByName();
-      return object.findAll((node) => node.attributes.name === query.substring(7, query.length - 2));
+      return object.findAll(
+        (node) => node.attributes.name === query.substring(7, query.length - 2),
+      );
     } else {
       // getElementsByTag('circle');
       return object.findAll((node) => node.nodeType === query);

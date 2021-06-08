@@ -9,7 +9,7 @@ import { Geometry, Renderable } from '../components';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { DisplayObject } from '../DisplayObject';
 import { AABB } from '../shapes';
-import { SceneGraphSelector } from './SceneGraphSelector';
+import { SceneGraphSelector, SceneGraphSelectorFactory } from './SceneGraphSelector';
 
 function sortByZIndex(e1: Entity, e2: Entity, parent: Entity) {
   const sortable1 = e1.getComponent(Sortable);
@@ -34,15 +34,15 @@ export enum SCENE_GRAPH_EVENT {
  */
 @injectable()
 export class SceneGraphService extends EventEmitter {
-  @inject(SceneGraphSelector)
-  private sceneGraphSelector: SceneGraphSelector;
+  @inject(SceneGraphSelectorFactory)
+  private sceneGraphSelectorFactory: () => SceneGraphSelector;
 
   querySelector(query: string, root: DisplayObject) {
-    return this.sceneGraphSelector.selectOne(query, root);
+    return this.sceneGraphSelectorFactory().selectOne(query, root);
   }
 
   querySelectorAll(query: string, root: DisplayObject) {
-    return this.sceneGraphSelector
+    return this.sceneGraphSelectorFactory()
       .selectAll(query, root)
       .filter((node) => !node.getEntity().getComponent(SceneGraphNode).shadow);
   }
@@ -125,7 +125,7 @@ export class SceneGraphService extends EventEmitter {
   };
 
   private isRoot(entity: Entity) {
-    return entity.getName() === '_root';
+    return entity.getComponent(SceneGraphNode).parent === null;
   }
 
   /**
@@ -163,7 +163,7 @@ export class SceneGraphService extends EventEmitter {
     originVec[0] = origin[0];
     originVec[1] = origin[1];
     originVec[2] = origin[2] || 0;
-    // this.dirtifyLocal(entity, transform);
+    this.dirtifyLocal(entity, transform);
   }
 
   /**
@@ -446,7 +446,7 @@ export class SceneGraphService extends EventEmitter {
         transform.localRotation,
         transform.localPosition,
         transform.localScale,
-        transform.origin
+        transform.origin,
       );
       transform.localDirtyFlag = false;
     }
@@ -463,7 +463,10 @@ export class SceneGraphService extends EventEmitter {
     }
     // apply transform to geometry.aabb
     // @see https://stackoverflow.com/questions/6053522/how-to-recalculate-axis-aligned-bounding-box-after-translate-rotate
-    renderable.aabb.setFromTransformedAABB(geometry.aabb, this.getWorldTransform(entity, transform));
+    renderable.aabb.setFromTransformedAABB(
+      geometry.aabb,
+      this.getWorldTransform(entity, transform),
+    );
 
     this.emit(SCENE_GRAPH_EVENT.AABBChanged, entity);
 
@@ -516,7 +519,11 @@ export class SceneGraphService extends EventEmitter {
       } else {
         // TODO: should we support scale compensation?
         // @see https://github.com/playcanvas/engine/issues/1077#issuecomment-359765557
-        mat4.multiply(transform.worldTransform, parentTransform.worldTransform, transform.localTransform);
+        mat4.multiply(
+          transform.worldTransform,
+          parentTransform.worldTransform,
+          transform.localTransform,
+        );
       }
       transform.dirtyFlag = false;
     }

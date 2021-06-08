@@ -91,13 +91,10 @@ export class CubeModelBuilder implements ModelBuilder {
       });
     }
 
-    const { indices, positions, normals, uvs, vertexCount } = this.buildAttributes(object.attributes);
+    const { indices, positions, normals, uvs } = this.buildAttributes(object.attributes);
 
-    geometry.vertexCount = vertexCount;
-
+    geometry.vertexCount = indices.length;
     geometry.setIndex(indices);
-
-    console.log(indices, positions);
 
     geometry.setAttribute(ATTRIBUTE.Position, Float32Array.from(positions), {
       arrayStride: 4 * 3,
@@ -137,12 +134,19 @@ export class CubeModelBuilder implements ModelBuilder {
   }
 
   protected buildAttributes(attributes: ShapeAttrs) {
-    const { widthSegments = 1, heightSegments = 1, depthSegments = 1, height = 0, width = 0, depth = 0 } = attributes;
+    const {
+      widthSegments = 1,
+      heightSegments = 1,
+      depthSegments = 1,
+      height = 0,
+      width = 0,
+      depth = 0,
+    } = attributes;
     const ws = widthSegments;
     const hs = heightSegments;
     const ds = depthSegments;
-    const hex = height / 2;
-    const hey = width / 2;
+    const hex = width / 2;
+    const hey = height / 2;
     const hez = depth / 2;
 
     const corners = [
@@ -163,19 +167,11 @@ export class CubeModelBuilder implements ModelBuilder {
       [1, 0, 4], // BOTTOM
       [1, 4, 2], // RIGHT
       [5, 0, 6], // LEFT
-      // [3, 2, 0], // FRONT
-      // [7, 6, 4], // BACK
-      // [0, 1, 5], // TOP
-      // [2, 3, 7], // BOTTOM
-      // [2, 7, 1], // RIGHT
-      // [6, 3, 5], // LEFT
     ];
 
     const faceNormals = [
       [0, 0, 1], // FRONT
       [0, 0, -1], // BACK
-      // [0, 1, 0], // TOP
-      // [0, -1, 0], // BOTTOM
       [0, 1, 0], // TOP
       [0, -1, 0], // BOTTOM
       [1, 0, 0], // RIGHT

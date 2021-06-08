@@ -109,12 +109,27 @@ export class FrameGraphPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.beforeRender.tap(FrameGraphPlugin.tag, () => {
+      // update viewport
+      const { width, height } = this.canvasConfig;
+      const dpr = this.contextService.getDPR();
+      this.view.setViewport({
+        x: 0,
+        y: 0,
+        width: width * dpr,
+        height: height * dpr,
+      });
+
       this.engine.beforeRender();
 
-      const { setup: setupRenderPass, execute: executeRenderPass } = this.renderPassFactory<RenderPassData>(
-        RenderPass.IDENTIFIER
+      const {
+        setup: setupRenderPass,
+        execute: executeRenderPass,
+      } = this.renderPassFactory<RenderPassData>(RenderPass.IDENTIFIER);
+      this.frameGraphSystem.addPass<RenderPassData>(
+        RenderPass.IDENTIFIER,
+        setupRenderPass,
+        executeRenderPass,
       );
-      this.frameGraphSystem.addPass<RenderPassData>(RenderPass.IDENTIFIER, setupRenderPass, executeRenderPass);
 
       const {
         setup: setupCopyPass,
@@ -125,7 +140,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
         CopyPass.IDENTIFIER,
         setupCopyPass,
         executeCopyPass,
-        tearDownCopyPass
+        tearDownCopyPass,
       );
 
       this.frameGraphSystem.present(copyPass.data.output);
@@ -146,12 +161,6 @@ export class FrameGraphPlugin implements RenderingPlugin {
       });
 
       const { width, height } = this.canvasConfig;
-      this.view.setViewport({
-        x: 0,
-        y: 0,
-        width: width * dpr,
-        height: height * dpr,
-      });
       this.contextService.resize(width, height);
     });
 
@@ -187,7 +196,9 @@ export class FrameGraphPlugin implements RenderingPlugin {
         const material = entity.getComponent(Material3D);
         material.setUniform(
           UNIFORM.Opacity,
-          isNil(attributes.fillOpacity || attributes.opacity) ? 1 : attributes.fillOpacity || attributes.opacity
+          isNil(attributes.fillOpacity || attributes.opacity)
+            ? 1
+            : attributes.fillOpacity || attributes.opacity,
         );
 
         if (isBatch) {
@@ -224,12 +235,19 @@ export class FrameGraphPlugin implements RenderingPlugin {
                   format: 'float3',
                 },
               ],
-            }
+            },
           );
         }
 
         renderable3d.modelPrepared = true;
       }
+    });
+
+    renderingService.hooks.unmounted.tap(FrameGraphPlugin.tag, (object: DisplayObject) => {
+      const entity = object.getEntity();
+      entity.removeComponent(Renderable3D, true);
+      entity.removeComponent(Geometry3D, true);
+      entity.removeComponent(Material3D, true);
     });
 
     renderingService.hooks.attributeChanged.tap(
@@ -247,7 +265,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
           const modelBuilder = this.modelBuilderFactory(sceneGraphNode.tagName);
           modelBuilder.onAttributeChanged(object, name, value);
         }
-      }
+      },
     );
   }
 }

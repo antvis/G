@@ -1,4 +1,5 @@
 import EventEmitter from 'eventemitter3';
+import { vec3 } from 'gl-matrix';
 import { CanvasConfig, Cursor } from './types';
 import { cleanExistedCanvas } from './utils/canvas';
 import { DisplayObject, DISPLAY_OBJECT_EVENT } from './DisplayObject';
@@ -39,6 +40,12 @@ export abstract class Canvas extends EventEmitter {
       cursor: 'default' as Cursor,
     };
 
+    this.initRenderingContext(mergedConfig);
+    this.initDefaultCamera(mergedConfig.width, mergedConfig.height);
+    this.initRenderer(mergedConfig.renderer);
+  }
+
+  private initRenderingContext(mergedConfig: CanvasConfig) {
     this.container.bind<CanvasConfig>(CanvasConfig).toConstantValue(mergedConfig);
     // bind rendering context, shared by all renderers
     this.container.bind(RenderingContext).toConstantValue({
@@ -46,7 +53,6 @@ export abstract class Canvas extends EventEmitter {
        * the root node in scene graph
        */
       root: new DisplayObject({
-        id: '_root',
         attrs: {},
       }),
 
@@ -64,29 +70,20 @@ export abstract class Canvas extends EventEmitter {
       dirtyEntities: [],
       removedAABBs: [],
     });
-
-    this.initDefaultCamera(mergedConfig.width, mergedConfig.height);
-    this.init(mergedConfig.renderer);
   }
 
   private initDefaultCamera(width: number, height: number) {
     // set a default ortho camera
-    const camera = new Camera();
-    camera
-      .setProjectionMode(CAMERA_PROJECTION_MODE.ORTHOGRAPHIC)
-      // .setPosition(mergedConfig.width / 2, 0, 0)
-      // .setPerspective(0.1, 100, 75, width / height);
-      // .setOrthographic(width / -2, width / 2, height / 2, height / -2, -1000, 1000);
+    const camera = new Camera()
+      .setPosition(width / 2, height / 2, 500)
+      .setFocalPoint(width / 2, height / 2, 0)
       // origin to be in the top left
-      .setOrthographic(0, width, 0, height, -1000, 1000);
-
-    // camera.setViewOffset(width, height, width * 0.25, height * 0.25, width / 2, height / 2);
+      .setOrthographic(width / -2, width / 2, height / -2, height / 2, 0.1, 1000);
     // camera.setViewOffset(width, height, 0, 0, width / 2, height / 2);
 
     // redraw when camera changed
     camera.on(CAMERA_EVENT.Updated, () => {
-      const root = this.container.get<RenderingContext>(RenderingContext).root;
-      root.forEach((node) => {
+      this.getRoot().forEach((node) => {
         node.getEntity().getComponent(Renderable).dirty = true;
       });
     });
@@ -94,74 +91,38 @@ export abstract class Canvas extends EventEmitter {
     this.container.bind(Camera).toConstantValue(camera);
   }
 
+  getConfig() {
+    return this.container.get<Partial<CanvasConfig>>(CanvasConfig);
+  }
+
+  /**
+   * get the root displayObject in scenegraph
+   */
   getRoot() {
     return this.container.get<RenderingContext>(RenderingContext).root;
   }
 
+  /**
+   * get the camera of canvas
+   */
   getCamera() {
     return this.container.get(Camera);
   }
 
-  /**
-   * override the initial config
-   *
-   * @example
-   * // disable dirty rectangle
-   * canvas.setConfig({
-   *   renderer: {
-   *     enableDirtyRectangleRendering: false,
-   *   },
-   * });
-   *
-   * // switch renderer at runtime
-   * canvas.setConfig({
-   *   renderer: {
-   *     type: CANVAS_RENDERER,
-   *   }
-   * });
-   *
-   * // change size
-   * canvas.setConfig({
-   *   width: 200,
-   *   height: 200,
-   * });
-   */
-  setConfig(config: Partial<CanvasConfig>) {
-    const canvasConfig = this.container.get<Partial<CanvasConfig>>(CanvasConfig);
-    const { renderer, width, height } = config;
-
-    // switch renderer at runtime
-    if (renderer && canvasConfig.renderer !== renderer) {
-      this.switchRenderer(renderer);
-      canvasConfig.renderer = renderer;
-    }
-
-    let sizeChanged = false;
-    // change canvas' size at runtime
-    if (width && width !== canvasConfig.width) {
-      canvasConfig.width = width;
-      sizeChanged = true;
-    }
-    if (height && height !== canvasConfig.height) {
-      canvasConfig.height = height;
-      sizeChanged = true;
-    }
-    if (sizeChanged) {
-      this.changeSize(width!, height!);
-    }
-
-    // TODO: change container, need to destroy first
+  getContextService() {
+    return this.container.get<ContextService<unknown>>(ContextService);
   }
 
-  destroy(destroyGroup = true) {
+  destroy(destroyScenegraph = true) {
+    this.emit('beforeDestroy');
     if (this.frameId) {
       window.cancelAnimationFrame(this.frameId);
     }
 
     // unmount all children
-    const root = this.container.get<RenderingContext>(RenderingContext).root;
+    const root = this.getRoot();
     const renderingService = this.container.get<RenderingService>(RenderingService);
-    if (destroyGroup) {
+    if (destroyScenegraph) {
       root.forEach((child: DisplayObject) => {
         this.removeChild(child, true);
       });
@@ -170,31 +131,47 @@ export abstract class Canvas extends EventEmitter {
     }
 
     // destroy services
-    const contextService = this.container.get<ContextService<unknown>>(ContextService);
-
-    contextService.destroy();
+    this.getContextService().destroy();
     renderingService.destroy();
+
+    this.emit('afterDestroy');
   }
 
+  /**
+   * compatible with G 3.0
+   */
   changeSize(width: number, height: number) {
-    const contextService = container.get<ContextService<unknown>>(ContextService);
-    contextService.resize(width, height);
-    const dpr = contextService.getDPR();
+    this.resize(width, height);
+  }
+  resize(width: number, height: number) {
+    // update canvas' config
+    const canvasConfig = this.container.get<Partial<CanvasConfig>>(CanvasConfig);
+    canvasConfig.width = width;
+    canvasConfig.height = height;
+
+    // resize context
+    this.getContextService().resize(width, height);
 
     // resize camera
     const camera = this.container.get(Camera);
     const projectionMode = camera.getProjectionMode();
     if (projectionMode === CAMERA_PROJECTION_MODE.ORTHOGRAPHIC) {
-      camera.setOrthographic((width / -2) * dpr, (width / 2) * dpr, (height / 2) * dpr, (height / -2) * dpr, 0.5, 20);
+      camera.setOrthographic(
+        width / -2,
+        width / 2,
+        height / -2,
+        height / 2,
+        camera.getNear(),
+        camera.getFar(),
+      );
     } else {
-      // TODO: perspective
+      camera.setAspect(width / height);
     }
   }
 
   appendChild(node: DisplayObject) {
-    const root = this.container.get<RenderingContext>(RenderingContext).root;
     const renderingService = this.container.get<RenderingService>(RenderingService);
-    root.appendChild(node);
+    this.getRoot().appendChild(node);
 
     this.decorate(node, renderingService);
   }
@@ -207,25 +184,26 @@ export abstract class Canvas extends EventEmitter {
         child.mounted = true;
       }
 
-      child.on(DISPLAY_OBJECT_EVENT.ChildInserted, (grandchild) => this.decorate(grandchild, renderingService));
+      child.on(DISPLAY_OBJECT_EVENT.ChildInserted, (grandchild) =>
+        this.decorate(grandchild, renderingService),
+      );
       child.on(DISPLAY_OBJECT_EVENT.ChildRemoved, (grandchild) => this.unmountChildren(grandchild));
     });
   }
 
   removeChild(node: DisplayObject, destroy?: boolean) {
-    const root = this.container.get<RenderingContext>(RenderingContext).root;
-    root.removeChild(node, destroy);
+    this.getRoot().removeChild(node, destroy);
   }
 
   render() {
-    this.emit('prerender');
+    this.emit('beforeRender');
 
     if (this.container.isBound(RenderingService)) {
       const renderingService = this.container.get<RenderingService>(RenderingService);
       renderingService.render();
     }
 
-    this.emit('postrender');
+    this.emit('afterRender');
   }
 
   private run() {
@@ -236,15 +214,15 @@ export abstract class Canvas extends EventEmitter {
     tick();
   }
 
-  private init(renderer: IRenderer) {
+  private initRenderer(renderer: IRenderer) {
     if (!renderer) {
       throw new Error('Renderer is required.');
     }
 
     this.container.snapshot();
 
-    this.bindCommonContainerModule();
-    this.bindCanvasContainerModule(renderer);
+    this.loadCommonContainerModule();
+    this.loadRendererContainerModule(renderer);
 
     // init context
     const contextService = this.container.get<ContextService<unknown>>(ContextService);
@@ -258,11 +236,11 @@ export abstract class Canvas extends EventEmitter {
     }
   }
 
-  private bindCommonContainerModule() {
+  private loadCommonContainerModule() {
     this.container.load(commonContainerModule);
   }
 
-  private bindCanvasContainerModule(renderer: IRenderer) {
+  private loadRendererContainerModule(renderer: IRenderer) {
     // load other container modules provided by g-canvas/g-svg/g-webgl
     const modules = renderer.getPlugins();
     modules.forEach((module) => {
@@ -270,15 +248,21 @@ export abstract class Canvas extends EventEmitter {
     });
   }
 
-  private switchRenderer(renderer: IRenderer) {
+  setRenderer(renderer: IRenderer) {
+    // update canvas' config
+    const canvasConfig = this.getConfig();
+    if (canvasConfig.renderer === renderer) {
+      return;
+    }
+    canvasConfig.renderer = renderer;
+
     // keep all children undestroyed
     this.destroy(false);
     this.container.restore();
-    this.init(renderer);
+    this.initRenderer(renderer);
 
-    // keep current scenegraph unchanged, just trigger
-    const root = this.container.get<RenderingContext>(RenderingContext).root;
-    this.mountChildren(root);
+    // keep current scenegraph unchanged, just trigger mounted event
+    this.mountChildren(this.getRoot());
   }
 
   private unmountChildren(node: DisplayObject) {
