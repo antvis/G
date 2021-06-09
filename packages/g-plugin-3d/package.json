@@ -1,7 +1,6 @@
 {
   "name": "@antv/g-plugin-3d",
   "version": "1.0.0-alpha.0",
-  "private": true,
   "description": "Provide 3D extension for G",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
