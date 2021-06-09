@@ -1,4 +1,4 @@
-import { Canvas, Circle, Path, Line, Polyline, CustomElement } from '@antv/g';
+import { Canvas, Circle, Path, Image, Line, Polyline, CustomElement } from '@antv/g';
 import { Arrow } from '@antv/g-components';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -173,7 +173,7 @@ lineArrowFolder.add(lineArrowConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opaci
   lineArrow.setAttribute('strokeOpacity', opacity);
 });
 lineArrowFolder
-  .add(lineArrowConfig, 'startHead', ['none', 'default', 'circle', 'custom arrowhead'])
+  .add(lineArrowConfig, 'startHead', ['none', 'default', 'circle', 'image', 'custom arrowhead'])
   .onChange((type) => {
     if (type === 'none') {
       lineArrow.setAttribute('startHead', false);
@@ -181,12 +181,23 @@ lineArrowFolder
       lineArrow.setAttribute('startHead', true);
     } else if (type === 'circle') {
       lineArrow.setAttribute('startHead', new Circle({ attrs: { r: 10 } }));
+    } else if (type === 'image') {
+      const image = new Image({
+        attrs: {
+          width: 50,
+          height: 50,
+          anchor: [0.5, 0.5],
+          img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        }
+      });
+      image.rotateLocal(90);
+      lineArrow.setAttribute('startHead', image);
     } else if (type === 'custom arrowhead') {
       lineArrow.setAttribute('startHead', new MyCustomArrowHead({ attrs: {} }));
     }
   });
 lineArrowFolder
-  .add(lineArrowConfig, 'endHead', ['none', 'default', 'circle', 'custom arrowhead'])
+  .add(lineArrowConfig, 'endHead', ['none', 'default', 'circle', 'image', 'custom arrowhead'])
   .onChange((type) => {
     if (type === 'none') {
       lineArrow.setAttribute('endHead', false);
@@ -194,6 +205,17 @@ lineArrowFolder
       lineArrow.setAttribute('endHead', true);
     } else if (type === 'circle') {
       lineArrow.setAttribute('endHead', new Circle({ attrs: { r: 10 } }));
+    } else if (type === 'image') {
+      const image = new Image({
+        attrs: {
+          width: 50,
+          height: 50,
+          anchor: [0.5, 0.5],
+          img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        }
+      });
+      image.rotateLocal(90);
+      lineArrow.setAttribute('endHead', image);
     } else if (type === 'custom arrowhead') {
       lineArrow.setAttribute('endHead', new MyCustomArrowHead({ attrs: {} }));
     }
@@ -218,7 +240,7 @@ polylineArrowFolder.add(polylineArrowConfig, 'strokeOpacity', 0, 1, 0.1).onChang
   polylineArrow.setAttribute('strokeOpacity', opacity);
 });
 polylineArrowFolder
-  .add(polylineArrowConfig, 'startHead', ['none', 'default', 'circle', 'custom arrowhead'])
+  .add(polylineArrowConfig, 'startHead', ['none', 'default', 'circle', 'image', 'custom arrowhead'])
   .onChange((type) => {
     if (type === 'none') {
       polylineArrow.setAttribute('startHead', false);
@@ -226,12 +248,23 @@ polylineArrowFolder
       polylineArrow.setAttribute('startHead', true);
     } else if (type === 'circle') {
       polylineArrow.setAttribute('startHead', new Circle({ attrs: { r: 10 } }));
+    } else if (type === 'image') {
+      const image = new Image({
+        attrs: {
+          width: 50,
+          height: 50,
+          anchor: [0.5, 0.5],
+          img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        }
+      });
+      image.rotateLocal(90);
+      polylineArrow.setAttribute('startHead', image);
     } else if (type === 'custom arrowhead') {
       polylineArrow.setAttribute('startHead', new MyCustomArrowHead({ attrs: {} }));
     }
   });
 polylineArrowFolder
-  .add(polylineArrowConfig, 'endHead', ['none', 'default', 'circle', 'custom arrowhead'])
+  .add(polylineArrowConfig, 'endHead', ['none', 'default', 'circle', 'image', 'custom arrowhead'])
   .onChange((type) => {
     if (type === 'none') {
       polylineArrow.setAttribute('endHead', false);
@@ -239,6 +272,17 @@ polylineArrowFolder
       polylineArrow.setAttribute('endHead', true);
     } else if (type === 'circle') {
       polylineArrow.setAttribute('endHead', new Circle({ attrs: { r: 10 } }));
+    } else if (type === 'image') {
+      const image = new Image({
+        attrs: {
+          width: 50,
+          height: 50,
+          anchor: [0.5, 0.5],
+          img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        }
+      });
+      image.rotateLocal(90);
+      polylineArrow.setAttribute('endHead', image);
     } else if (type === 'custom arrowhead') {
       polylineArrow.setAttribute('endHead', new MyCustomArrowHead({ attrs: {} }));
     }
@@ -262,7 +306,7 @@ pathArrowFolder.add(pathArrowConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opaci
   pathArrow.setAttribute('strokeOpacity', opacity);
 });
 pathArrowFolder
-  .add(pathArrowConfig, 'startHead', ['none', 'default', 'circle', 'custom arrowhead'])
+  .add(pathArrowConfig, 'startHead', ['none', 'default', 'circle', 'image', 'custom arrowhead'])
   .onChange((type) => {
     if (type === 'none') {
       pathArrow.setAttribute('startHead', false);
@@ -270,12 +314,23 @@ pathArrowFolder
       pathArrow.setAttribute('startHead', true);
     } else if (type === 'circle') {
       pathArrow.setAttribute('startHead', new Circle({ attrs: { r: 10 } }));
+    } else if (type === 'image') {
+      const image = new Image({
+        attrs: {
+          width: 50,
+          height: 50,
+          anchor: [0.5, 0.5],
+          img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        }
+      });
+      image.rotateLocal(90);
+      pathArrow.setAttribute('startHead', image);
     } else if (type === 'custom arrowhead') {
       pathArrow.setAttribute('startHead', new MyCustomArrowHead({ attrs: {} }));
     }
   });
 pathArrowFolder
-  .add(pathArrowConfig, 'endHead', ['none', 'default', 'circle', 'custom arrowhead'])
+  .add(pathArrowConfig, 'endHead', ['none', 'default', 'circle', 'image', 'custom arrowhead'])
   .onChange((type) => {
     if (type === 'none') {
       pathArrow.setAttribute('endHead', false);
@@ -283,6 +338,17 @@ pathArrowFolder
       pathArrow.setAttribute('endHead', true);
     } else if (type === 'circle') {
       pathArrow.setAttribute('endHead', new Circle({ attrs: { r: 10 } }));
+    } else if (type === 'image') {
+      const image = new Image({
+        attrs: {
+          width: 50,
+          height: 50,
+          anchor: [0.5, 0.5],
+          img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        }
+      });
+      image.rotateLocal(90);
+      pathArrow.setAttribute('endHead', image);
     } else if (type === 'custom arrowhead') {
       pathArrow.setAttribute('endHead', new MyCustomArrowHead({ attrs: {} }));
     }

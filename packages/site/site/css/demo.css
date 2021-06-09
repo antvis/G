@@ -3,6 +3,7 @@
     right: 0;
     top: 0;
     background: black;
+    z-index: 1;
 }
 
 .dg.main li {

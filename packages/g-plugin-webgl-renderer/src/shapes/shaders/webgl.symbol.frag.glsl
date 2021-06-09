@@ -32,6 +32,8 @@ void main() {
 
   gl_FragColor = mix(u_FontColor * u_Opacity, u_HaloColor, smoothstep(0., .5, 1. - dist)) * alpha;
 
+  gl_FragColor = vec4(1., 0., 0., 1.);
+
   // if (u_debug) {
   //   vec4 debug_color = vec4(1., 0., 0., 1.);
   //   gl_FragColor = mix(gl_FragColor, debug_color, 0.5);

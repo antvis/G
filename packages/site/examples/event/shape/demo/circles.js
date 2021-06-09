@@ -67,9 +67,7 @@ const rendererConfig = {
 rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
   currentRenderer =
     renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer;
-  canvas.setRenderer({
-    renderer: currentRenderer,
-  });
+  canvas.setRenderer(currentRenderer);
 });
 rendererFolder.open();
 

@@ -274,8 +274,8 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
   }
   getAncestor(n: number) {
     let temp: DisplayObject | null = this;
-    while (n > 0) {
-      temp = this.parentNode;
+    while (n > 0 && temp) {
+      temp = temp.parentNode;
       n--;
     }
     return temp;
@@ -675,6 +675,11 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     return this.sceneGraphService.getLocalRotation(this.entity);
   }
 
+  getLocalTransform() {
+    return this.sceneGraphService.getLocalTransform(
+      this.entity,
+    );
+  }
   getWorldTransform() {
     return this.sceneGraphService.getWorldTransform(
       this.entity,

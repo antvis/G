@@ -152,12 +152,11 @@ export class Arrow extends CustomElement {
       x2 = isStart ? points[0][0] : points[length - 1][0];
       y2 = isStart ? points[0][1] : points[length - 1][1];
     } else if (bodyType === SHAPE.Path) {
-      const { x = 0, y = 0 } = head.attributes;
       const [p1, p2] = this.getTangent(this.body! as Path, isStart);
-      x1 = p1[0] - x;
-      y1 = p1[1] - y;
-      x2 = p2[0] - x;
-      y2 = p2[1] - y;
+      x1 = p1[0];
+      y1 = p1[1];
+      x2 = p2[0];
+      y2 = p2[1];
     }
 
     const x = x1 - x2;
@@ -166,7 +165,7 @@ export class Arrow extends CustomElement {
     position = vec3.fromValues(x2, y2, 0);
 
     head.setLocalPosition(position);
-    head.setLocalEulerAngles((rad * 180) / Math.PI);
+    head.setLocalEulerAngles((rad * 180) / Math.PI + head.getLocalEulerAngles());
   }
 
   private destroyArrowHead(isStart: boolean) {

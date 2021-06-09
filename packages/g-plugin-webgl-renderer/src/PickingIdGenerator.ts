@@ -1,15 +1,25 @@
+import { DisplayObject } from '@antv/g';
 import { injectable } from 'inversify';
 
 @injectable()
 export class PickingIdGenerator {
   private counter = 0;
 
-  getId() {
-    return this.counter++;
+  private id2DisplayObjectMap: Record<number, DisplayObject> = {};
+
+  getId(displayObject: DisplayObject) {
+    const id = this.counter++;
+    this.id2DisplayObjectMap[id] = displayObject;
+    return id;
+  }
+
+  getById(id: number): DisplayObject {
+    return this.id2DisplayObjectMap[id];
   }
 
   reset() {
     this.counter = 0;
+    this.id2DisplayObjectMap = {};
   }
 
   decodePickingColor(color: Uint8Array): number {

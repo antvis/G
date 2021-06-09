@@ -29,7 +29,8 @@ const cube = new Cube({
     width: 200,
     height: 200,
     depth: 200,
-    fill: '#1890FF',
+    fill: '#FFF',
+    map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
   },
 });
 const grid = new Grid({

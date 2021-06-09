@@ -164,7 +164,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
       this.contextService.resize(width, height);
     });
 
-    renderingService.hooks.mounted.tap(FrameGraphPlugin.tag, (object: DisplayObject) => {
+    renderingService.hooks.mounted.tap(FrameGraphPlugin.tag, async (object: DisplayObject) => {
       const entity = object.getEntity();
       const renderable3d = entity.addComponent(Renderable3D);
       // add geometry & material required by Renderable3D
@@ -172,7 +172,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
       entity.addComponent(Material3D);
 
       // add picking id
-      renderable3d.pickingId = this.pickingIdGenerator.getId();
+      renderable3d.pickingId = this.pickingIdGenerator.getId(object);
 
       if (!renderable3d.modelPrepared) {
         // TODO: ref engine to create buffers & textures
@@ -191,7 +191,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
         if (!modelBuilder) {
           return;
         }
-        modelBuilder.prepareModel(object);
+        await modelBuilder.prepareModel(object);
 
         const material = entity.getComponent(Material3D);
         material.setUniform(
@@ -204,9 +204,9 @@ export class FrameGraphPlugin implements RenderingPlugin {
         if (isBatch) {
           // allocate pickingid for each child in batch
           const pickingColorBuffer: number[] = [];
-          attributes.instances.forEach(() => {
+          attributes.instances.forEach((instance: DisplayObject) => {
             // TODO: save pickingID
-            const childPickingId = this.pickingIdGenerator.getId();
+            const childPickingId = this.pickingIdGenerator.getId(instance);
             pickingColorBuffer.push(...this.pickingIdGenerator.encodePickingColor(childPickingId));
           });
 

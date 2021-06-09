@@ -115,4 +115,4 @@ export function registerModelBuilder(builderClazz: new (...args: any[]) => Model
   bindFunc(ModelBuilder).to(builderClazz).inSingletonScope().whenTargetNamed(name);
 }
 
-export { Geometry3D, Material3D, Renderable3D, ShaderModuleService, ModelBuilder, gl, rgb2arr };
+export { Geometry3D, Material3D, Renderable3D, ShaderModuleService, ModelBuilder, TexturePool, RenderingEngine, gl, rgb2arr };

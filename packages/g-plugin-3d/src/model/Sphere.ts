@@ -30,8 +30,11 @@ const UNIFORM = {
   UvTransform: 'u_UvTransform',
 };
 
+/**
+ * Render image with texture2d
+ */
 @injectable()
-export class CubeModelBuilder implements ModelBuilder {
+export class SphereModelBuilder implements ModelBuilder {
   @inject(ShaderModuleService)
   private shaderModule: ShaderModuleService;
 
@@ -268,7 +271,7 @@ export class CubeModelBuilder implements ModelBuilder {
     img: string | HTMLImageElement,
     width = 0,
     height = 0,
-    engine: RenderingEngine
+    engine: RenderingEngine,
   ) {
     // TODO: WebGL don't support mipmap in size of pow2
     const texture = await this.texturePool.getOrCreateTexture2D(engine, img, {

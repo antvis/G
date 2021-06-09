@@ -1,5 +1,6 @@
 import { DisplayObject, Renderable, SceneGraphNode } from '@antv/g';
 import { inject, injectable } from 'inversify';
+import { mat3 } from 'gl-matrix';
 import { ShaderModuleService } from '../services/shader-module';
 import imageVertex from './shaders/webgl.image.vert.glsl';
 import imageFragment from './shaders/webgl.image.frag.glsl';
@@ -23,11 +24,12 @@ interface IInstanceAttributes {
 
 const ATTRIBUTE = {
   Size: 'a_Size',
-  Extrude: 'a_Extrude',
+  Extrude: 'a_Uv',
 };
 
 const UNIFORM = {
-  Texture: 'u_Texture',
+  UvTransform: 'u_UvTransform',
+  Texture: 'u_Map',
   Anchor: 'u_Anchor',
 };
 
@@ -55,7 +57,7 @@ export class ImageModelBuilder implements ModelBuilder {
 
       const { img, width = 0, height = 0 } = object.attributes;
       if (name === 'img') {
-        const texture = await this.loadImage(img, width, height, material, renderable3d.engine);
+        const texture = await this.loadImage(img, width, height, renderable3d.engine);
         material.setUniform({
           [UNIFORM.Texture]: texture,
         });
@@ -74,6 +76,7 @@ export class ImageModelBuilder implements ModelBuilder {
 
   async prepareModel(object: DisplayObject) {
     const entity = object.getEntity();
+    const renderable = entity.getComponent(Renderable);
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
     const renderable3d = entity.getComponent(Renderable3D);
@@ -103,11 +106,16 @@ export class ImageModelBuilder implements ModelBuilder {
       },
     };
 
-    const texture = await this.loadImage(img, width, height, material, renderable3d.engine);
+    const texture = await this.loadImage(img, width, height, renderable3d.engine);
 
+    material.setDefines({
+      USE_UV: 1,
+      USE_MAP: 1,
+    });
     material.setUniform({
       ...(extractedUniforms as Record<string, BufferData>),
       [UNIFORM.Texture]: texture,
+      [UNIFORM.UvTransform]: mat3.create(),
       [UNIFORM.Anchor]: anchor,
     });
 
@@ -155,6 +163,9 @@ export class ImageModelBuilder implements ModelBuilder {
         },
       ],
     });
+
+    renderable3d.modelPrepared = true;
+    renderable.dirty = true;
   }
 
   private buildAttribute(config: Partial<IImageConfig>, attributes: IInstanceAttributes, index: number) {
@@ -182,18 +193,13 @@ export class ImageModelBuilder implements ModelBuilder {
     img: string | HTMLImageElement,
     width = 0,
     height = 0,
-    material: Material3D,
     engine: RenderingEngine
   ) {
-    material.dirty = true;
-
     // TODO: WebGL don't support mipmap in size of pow2
     const texture = await this.texturePool.getOrCreateTexture2D(engine, img, {
       width,
       height,
     });
-
-    material.dirty = false;
     return texture;
   }
 }

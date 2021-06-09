@@ -1,3 +1,5 @@
+uniform float u_Opacity : 1;
+
 varying vec4 v_Color;
 
 #pragma include "uv.declaration"
@@ -9,4 +11,5 @@ void main() {
   #pragma include "map"
 
   gl_FragColor = diffuseColor;
+  gl_FragColor.a = gl_FragColor.a * u_Opacity;
 }

@@ -1,3 +1,5 @@
+uniform float u_Opacity : 1;
+
 // generate grid, borrow from clay.gl viewer
 // @see https://github.com/pissang/clay-viewer/blob/master/src/graphic/ground.glsl
 #extension GL_OES_standard_derivatives : enable
@@ -20,4 +22,6 @@ void main() {
 
   float v1 = 1.0 - clamp(min(x1, z1), 0.0, 1.0);
   gl_FragColor = mix(gl_FragColor, u_GridColor2, v1);
+
+  gl_FragColor.a = gl_FragColor.a * u_Opacity;
 }

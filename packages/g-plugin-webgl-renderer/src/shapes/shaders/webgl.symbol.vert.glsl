@@ -13,7 +13,6 @@ varying vec2 v_UV;
 varying float v_GammaScale;
 
 #pragma include "instancing.declaration"
-#pragma include "project.declaration"
 #pragma include "picking"
 
 void main() {
@@ -27,8 +26,6 @@ void main() {
 
   gl_Position = u_ProjectionMatrix * u_ViewMatrix * modelMatrix * 
     vec4(projected_pos.xy / projected_pos.w + a_Offset * fontScale, 0.0, 1.0);
-
-  gl_Position.xy = project_to_clipspace(gl_Position.xy);
 
   v_GammaScale = gl_Position.w;
 }

@@ -84,7 +84,7 @@ export class DirtyCheckPlugin implements RenderingPlugin {
 
       if (!enableDirtyRectangleRendering) {
         this.renderingContext.dirtyRectangle = undefined;
-        return dirtyObjects;
+        return objects;
       }
 
       // TODO: use threshold when too much dirty renderables

@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { Entity } from '@antv/g-ecs';
-import { vec3 } from 'gl-matrix';
+import { vec3, mat4, quat } from 'gl-matrix';
 import {
   ContextService,
   RenderingService,
@@ -11,6 +11,7 @@ import {
   getEuler,
   Renderable,
   DisplayObject,
+  Camera,
 } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
 import { createSVGElement } from './utils/dom';
@@ -76,6 +77,9 @@ export const SVG_ATTR_MAP: Record<string, string> = {
 export class SVGRendererPlugin implements RenderingPlugin {
   static tag = 'SVGRendererPlugin';
 
+  @inject(Camera)
+  private camera: Camera;
+
   @inject(ContextService)
   private contextService: ContextService<SVGElement>;
 
@@ -124,6 +128,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.render.tap(SVGRendererPlugin.tag, (objects: DisplayObject[]) => {
+      this.applyTransform(
+        this.contextService.getDomElement(),
+        this.camera.getOrthoMatrix(),
+      );
+
       objects.forEach((object) => {
         const entity = object.getEntity();
         const $el = entity.getComponent(ElementSVG).$el;
@@ -131,7 +140,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         if ($el && $groupEl) {
           const { nodeType, attributes } = object;
           // apply local RTS transformation to <group> wrapper
-          this.applyTransform($groupEl, object);
+          this.applyTransform($groupEl, object.getLocalTransform());
 
           $el.setAttribute('fill', 'none');
           if (nodeType === SHAPE.Image) {
@@ -188,17 +197,14 @@ export class SVGRendererPlugin implements RenderingPlugin {
     );
   }
 
-  private applyTransform($el: SVGElement, object: DisplayObject) {
-    console.log(object);
+  private applyTransform($el: SVGElement, transform: mat4) {
+    const translation = mat4.getTranslation(vec3.create(), transform);
+    const scaling = mat4.getScaling(vec3.create(), transform);
+    const rotation = mat4.getRotation(quat.create(), transform);
 
-    if (object.parentNode === null) {
-      // root should account for camera matrix
-    }
-
-    const [ex, ey, ez] = getEuler(vec3.create(), object.getLocalRotation());
-
-    const [x, y] = object.getLocalPosition();
-    const [scaleX, scaleY] = object.getLocalScale();
+    const [x, y] = translation;
+    const [scaleX, scaleY] = scaling;
+    const [ex, ey, ez] = getEuler(vec3.create(), rotation);
 
     // gimbal lock at 90 degrees
     const rts = fromRotationTranslationScale(ex || ez, x, y, scaleX, scaleY);

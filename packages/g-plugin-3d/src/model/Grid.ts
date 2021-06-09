@@ -24,9 +24,6 @@ const UNIFORM = {
   Size2: 'u_GridSize2',
 };
 
-/**
- * Render image with texture2d
- */
 @injectable()
 export class GridModelBuilder implements ModelBuilder {
   @inject(ShaderModuleService)

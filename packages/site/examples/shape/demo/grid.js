@@ -1,6 +1,6 @@
 import { Canvas, Group } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { Cube, Grid, containerModule } from '@antv/g-plugin-3d';
+import { Grid, containerModule } from '@antv/g-plugin-3d';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 
@@ -17,33 +17,20 @@ const canvas = new Canvas({
 });
 
 const camera = canvas.getCamera();
-camera.setPerspective(0.1, 1000, 75, 600 / 500).setPosition(300, 250, -500);
+camera.setPerspective(0.1, 1000, 75, 600 / 500).setPosition(300, 250, 500);
 
-const group = new Group({});
-// create a cube
-const cube = new Cube({
-  attrs: {
-    width: 200,
-    height: 200,
-    depth: 200,
-    fill: '#1890FF',
-  },
-});
 const grid = new Grid({
   attrs: {
-    width: 200,
-    height: 200,
-    depth: 200,
+    width: 400,
+    height: 400,
+    depth: 400,
     fill: '#1890FF',
   },
 });
+grid.setPosition(300, 250, 10);
 
-group.appendChild(grid);
-group.appendChild(cube);
-group.setPosition(300, 250, 10);
-
-// add a cube to canvas
-canvas.appendChild(group);
+// add a grid to canvas
+canvas.appendChild(grid);
 
 // stats
 const stats = new Stats();
@@ -58,5 +45,5 @@ canvas.on('afterRender', () => {
   if (stats) {
     stats.update();
   }
-  group.rotate(0, 1, 1);
+  grid.rotate(0, 1, 1);
 });

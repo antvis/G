@@ -92,40 +92,46 @@ export class SceneGraphService extends EventEmitter {
    * @see https://stackoverflow.com/questions/31470730/comparing-tree-nodes
    */
   sort = (object1: DisplayObject, object2: DisplayObject): number => {
-    if (!object1 || !object2) {
+    if (!object1.parentNode) {
       return -1;
     }
 
-    const e1 = object1.getEntity();
-    const e2 = object2.getEntity();
-
-    const { hierarchyIndex: hierarchyIndex1, parent: parent1 } = e1.getComponent(SceneGraphNode);
-    const { hierarchyIndex: hierarchyIndex2, parent: parent2 } = e2.getComponent(SceneGraphNode);
-
-    const hierarchyDiff = hierarchyIndex1 - hierarchyIndex2;
-
-    if (this.isRoot(e1) && !this.isRoot(e2)) {
-      return -1;
-    } else if (!this.isRoot(e1) && this.isRoot(e2)) {
+    if (!object2.parentNode) {
       return 1;
     }
 
-    // at the same hierarchy layer, compared with original index & z-index
-    if (hierarchyDiff === 0) {
-      if (parent1 && parent1 === parent2) {
-        return sortByZIndex(e1, e2, parent1);
-      } else {
-        return this.sort(object1.getAncestor(1)!, object2.getAncestor(1)!);
+    const hierarchyDiff = this.getDepth(object1) - this.getDepth(object2);
+
+    let o1 = object1;
+    let o2 = object2;
+    if (hierarchyDiff < 0) {
+      o2 = object2.getAncestor(-hierarchyDiff)!;
+      if (o2 === o1) {
+        return -1;
       }
-    } else if (hierarchyDiff < 0) {
-      return this.sort(object1, object2.getAncestor(-hierarchyDiff)!);
-    } else {
-      return this.sort(object1.getAncestor(hierarchyDiff)!, object2);
+    } else if (hierarchyDiff > 0) {
+      o1 = object1.getAncestor(hierarchyDiff)!;
+      if (o2 === o1) {
+        return 1;
+      }
     }
+
+    while (o1 && o2 && o1.parentNode !== o2.parentNode) {
+      o1 = o1.parentNode!;
+      o2 = o2.parentNode!;
+    }
+
+    return sortByZIndex(o1.getEntity(), o2.getEntity(), o1.parentNode!.getEntity());
   };
 
-  private isRoot(entity: Entity) {
-    return entity.getComponent(SceneGraphNode).parent === null;
+  private getDepth(object: DisplayObject) {
+    let o: DisplayObject = object;
+    let depth = 0;
+    while (o) {
+      o = o.parentNode!;
+      depth++;
+    }
+    return depth;
   }
 
   /**
@@ -529,18 +535,18 @@ export class SceneGraphService extends EventEmitter {
     }
   }
 
-  syncHierarchy(entity: Entity) {
-    const sceneGraphNode = entity.getComponent(SceneGraphNode);
-    if (sceneGraphNode.frozen) {
-      return;
-    }
-    sceneGraphNode.frozen = true;
+  // syncHierarchy(entity: Entity) {
+  //   const sceneGraphNode = entity.getComponent(SceneGraphNode);
+  //   if (sceneGraphNode.frozen) {
+  //     return;
+  //   }
+  //   sceneGraphNode.frozen = true;
 
-    const transform = entity.getComponent(Transform);
-    if (transform.localDirtyFlag || transform.dirtyFlag) {
-      this.updateTransform(entity, transform);
-    }
+  //   const transform = entity.getComponent(Transform);
+  //   if (transform.localDirtyFlag || transform.dirtyFlag) {
+  //     this.updateTransform(entity, transform);
+  //   }
 
-    sceneGraphNode.children.forEach((child) => this.syncHierarchy(child));
-  }
+  //   sceneGraphNode.children.forEach((child) => this.syncHierarchy(child));
+  // }
 }

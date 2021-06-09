@@ -1,9 +1,15 @@
-varying vec2 v_UV;
-
 uniform float u_Opacity : 1;
-uniform sampler2D u_Texture;
+
+#pragma include "uv.declaration"
+#pragma include "map.declaration"
+#pragma include "picking"
 
 void main() {
-  gl_FragColor = vec4(texture2D(u_Texture, v_UV));
+  vec4 diffuseColor = vec4(1.);
+
+  #pragma include "map"
+
+  gl_FragColor = diffuseColor;
   gl_FragColor.a = gl_FragColor.a * u_Opacity;
+  gl_FragColor = filterColor(gl_FragColor);
 }

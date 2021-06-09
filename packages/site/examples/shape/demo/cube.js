@@ -17,8 +17,7 @@ const canvas = new Canvas({
 });
 
 const camera = canvas.getCamera();
-camera.setFocalPoint(300, 250, 0);
-camera.setPosition(300, 250, 500);
+camera.setPosition(300, 20, 500);
 
 // create a cube
 const cube = new Cube({
@@ -27,6 +26,7 @@ const cube = new Cube({
     height: 200,
     depth: 200,
     fill: '#1890FF',
+    map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
   },
 });
 cube.setPosition(300, 250, 0);
@@ -47,38 +47,35 @@ canvas.on('afterRender', () => {
   if (stats) {
     stats.update();
   }
-  camera.rotate(1, 0, 0);
+  cube.rotate(0, 1, 0);
 });
 
 // GUI
-// const gui = new dat.GUI({ autoPlace: false });
-// $wrapper.appendChild(gui.domElement);
+const gui = new dat.GUI({ autoPlace: false });
+$wrapper.appendChild(gui.domElement);
 
-// const circleFolder = gui.addFolder('circle');
-// const circleConfig = {
-//   r: 100,
-//   fill: '#1890FF',
-//   stroke: '#F04864',
-//   lineWidth: 4,
-//   fillOpacity: 1,
-//   strokeOpacity: 1,
-// };
-// circleFolder.add(circleConfig, 'r', 50, 200).onChange((radius) => {
-//   circle.attr('r', radius);
-// });
-// circleFolder.addColor(circleConfig, 'fill').onChange((color) => {
-//   circle.attr('fill', color);
-// });
-// circleFolder.addColor(circleConfig, 'stroke').onChange((color) => {
-//   circle.attr('stroke', color);
-// });
-// circleFolder.add(circleConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
-//   circle.attr('lineWidth', lineWidth);
-// });
-// circleFolder.add(circleConfig, 'fillOpacity', 0, 1, 0.1).onChange((opacity) => {
-//   circle.attr('fillOpacity', opacity);
-// });
-// circleFolder.add(circleConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
-//   circle.attr('strokeOpacity', opacity);
-// });
-// circleFolder.open();
+const cubeFolder = gui.addFolder('cube');
+const cubeConfig = {
+  width: 200,
+  height: 200,
+  depth: 200,
+  fill: '#1890FF',
+  fillOpacity: 1,
+  map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
+};
+cubeFolder.add(cubeConfig, 'width', 50, 300).onChange((width) => {
+  cube.attr('width', width);
+});
+cubeFolder.add(cubeConfig, 'height', 50, 300).onChange((height) => {
+  cube.attr('height', height);
+});
+cubeFolder.add(cubeConfig, 'depth', 50, 300).onChange((depth) => {
+  cube.attr('depth', depth);
+});
+cubeFolder.addColor(cubeConfig, 'fill').onChange((color) => {
+  cube.attr('fill', color);
+});
+cubeFolder.add(cubeConfig, 'fillOpacity', 0, 1, 0.1).onChange((opacity) => {
+  cube.attr('fillOpacity', opacity);
+});
+cubeFolder.open();

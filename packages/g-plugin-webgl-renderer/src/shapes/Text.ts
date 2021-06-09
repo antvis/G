@@ -1,4 +1,4 @@
-import { SceneGraphNode, TextService, SHAPE, ShapeAttrs } from '@antv/g';
+import { SceneGraphNode, TextService, DisplayObject, ShapeAttrs } from '@antv/g';
 import { Entity } from '@antv/g-ecs';
 import { inject, injectable } from 'inversify';
 import { ShaderModuleService } from '../services/shader-module';
@@ -139,8 +139,9 @@ export class TextModelBuilder implements ModelBuilder {
     // }
   }
 
-  async prepareModel(entity: Entity) {
-    const sceneGraphNode = entity.getComponent(SceneGraphNode);
+  prepareModel(object: DisplayObject) {
+    const entity = object.getEntity();
+    const { attributes } = entity.getComponent(SceneGraphNode);
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
     const renderable3d = entity.getComponent(Renderable3D);
@@ -148,14 +149,19 @@ export class TextModelBuilder implements ModelBuilder {
 
     const {
       text,
+      lineWidth = 0,
+      textAlign,
+      textBaseline,
       fill = '',
       fillOpacity = 1,
       stroke = '',
       strokeOpacity = 1,
       fontSize = 0,
-    } = sceneGraphNode.attributes;
+    } = attributes;
 
-    this.initGlyphAtlas(context, sceneGraphNode.attributes);
+    // shaping text
+    const { font, lines, height, lineHeight } = this.textService.measureText(text, attributes);
+    this.initGlyphAtlas(font);
 
     const fillColor = rgb2arr(fill);
     const strokeColor = rgb2arr(stroke);
@@ -181,11 +187,10 @@ export class TextModelBuilder implements ModelBuilder {
         dstRGB: gl.ONE_MINUS_SRC_ALPHA,
       },
     };
-
-    const { width, height, data } = this.glyphAtlas.image;
-    this.glyphAtlasTexture = context.engine.createTexture2D({
-      width,
-      height,
+    const { width: atlasWidth, height: atlasHeight, data } = this.glyphAtlas.image;
+    this.glyphAtlasTexture = renderable3d.engine.createTexture2D({
+      width: atlasWidth,
+      height: atlasHeight,
       mag: gl.LINEAR,
       min: gl.LINEAR,
       format: gl.ALPHA,
@@ -198,9 +203,27 @@ export class TextModelBuilder implements ModelBuilder {
       [UNIFORM.FontColor]: fillColor,
       [UNIFORM.FontSize]: fontSize,
       [UNIFORM.SDFMap]: this.glyphAtlasTexture,
-      [UNIFORM.SDFMapSize]: [width, height],
+      [UNIFORM.SDFMapSize]: [atlasWidth, atlasHeight],
       [UNIFORM.LabelMatrix]: mat4.create(),
     });
+
+    let linePositionY = 0;
+    // handle vertical text baseline
+    if (textBaseline === 'middle') {
+      linePositionY = -height / 2 - lineHeight / 2;
+    } else if (textBaseline === 'bottom' || textBaseline === 'alphabetic' || textBaseline === 'ideographic') {
+      linePositionY = -height;
+    } else if (textBaseline === 'top' || textBaseline === 'hanging') {
+      linePositionY = -lineHeight;
+    }
+
+    // draw lines line by line
+    for (let i = 0; i < lines.length; i++) {
+      let linePositionX = lineWidth / 2;
+      linePositionY += lineHeight;
+
+
+    }
 
     // const attributes = this.buildAttributes(config);
     const { indexBuffer, charOffsetBuffer, charPositionBuffer, charUVBuffer } = this.buildTextBuffers([
@@ -252,36 +275,10 @@ export class TextModelBuilder implements ModelBuilder {
     });
   }
 
-  // private buildAttribute(config: Partial<IPointConfig>, attributes: IInstanceAttributes, index: number) {
-  //   attributes.instancedColors.push(...(config.color || [1, 0, 0, 1]));
-  //   attributes.instancedSizes.push(...(config.size || [0.2, 0.2]));
-  // }
-
-  // private buildAttributes(config: Partial<IPointConfig> | Array<Partial<IPointConfig>>) {
-  //   const attributes: IInstanceAttributes = {
-  //     extrudes: [1, 1, 1, -1, -1, -1, -1, 1],
-  //     instancedColors: [],
-  //     instancedSizes: [],
-  //   };
-
-  //   if (Array.isArray(config)) {
-  //     config.forEach((c, i) => {
-  //       this.buildAttribute(c, attributes, i);
-  //     });
-  //   } else {
-  //     this.buildAttribute(config, attributes, 0);
-  //   }
-
-  //   return attributes;
-  // }
-
   /**
    * 创建 Atlas
    */
-  private initGlyphAtlas(context: WebGLRenderingContext, attributes: ShapeAttrs) {
-    const fontStack = `${attributes.fontFamily} ${attributes.fontWeight}`;
-    this.fontStack = fontStack;
-
+  private initGlyphAtlas(fontStack: string) {
     const glyphMap = getDefaultCharacterSet()
       .map((char) => {
         return this.glyphManager.generateSDF(fontStack, char);
@@ -297,7 +294,6 @@ export class TextModelBuilder implements ModelBuilder {
     }
 
     this.glyphMap[fontStack] = glyphMap;
-
     this.glyphAtlas = new GlyphAtlas(this.glyphMap);
   }
 
@@ -324,19 +320,6 @@ export class TextModelBuilder implements ModelBuilder {
       const shaping = shapeText(text, this.glyphMap, this.fontStack, 0, 24, 'center', 'center', 0, textOffset, 1);
 
       if (shaping) {
-        // 加入索引
-        // const { box } = this.collisionIndex.placeCollisionBox({
-        //   x1: shaping.left * fontScale,
-        //   x2: shaping.right * fontScale,
-        //   y1: shaping.top * fontScale,
-        //   y2: shaping.bottom * fontScale,
-        //   anchorPointX: position[0],
-        //   anchorPointY: position[1],
-        // }, false, textPixelRatio, posMatrix);
-
-        // if (box && box.length) {
-        //   this.collisionIndex.insertCollisionBox(box, 0, 0, 0);
-
         // 计算每个独立字符相对于锚点的位置信息
         const glyphQuads = getGlyphQuads(shaping, textOffset, false, this.glyphAtlas.positions);
 

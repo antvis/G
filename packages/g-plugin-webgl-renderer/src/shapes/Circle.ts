@@ -88,26 +88,26 @@ export class CircleModelBuilder implements ModelBuilder {
         } else if (name === 'strokeOpacity') {
           material.setUniform(UNIFORM.StrokeOpacity, value);
         } else if (name === 'r') {
-          geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from([value - lineWidth / 2, value - lineWidth / 2]));
+          geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from([value + lineWidth / 2, value + lineWidth / 2]));
         } else if (name === 'rx') {
-          geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from([value - lineWidth / 2, ry - lineWidth / 2]));
+          geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from([value + lineWidth / 2, ry + lineWidth / 2]));
         } else if (name === 'ry') {
-          geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from([rx - lineWidth / 2, value - lineWidth / 2]));
+          geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from([rx + lineWidth / 2, value + lineWidth / 2]));
         } else if (name === 'width') {
           geometry.setAttribute(
             ATTRIBUTE.Size,
-            Float32Array.from([value / 2 - lineWidth / 2, height / 2 - lineWidth / 2])
+            Float32Array.from([value / 2 + lineWidth / 2, height / 2 + lineWidth / 2])
           );
         } else if (name === 'height') {
           geometry.setAttribute(
             ATTRIBUTE.Size,
-            Float32Array.from([width / 2 - lineWidth / 2, value / 2 - lineWidth / 2])
+            Float32Array.from([width / 2 + lineWidth / 2, value / 2 + lineWidth / 2])
           );
         } else if (name === 'lineWidth') {
           // 改变线宽时需要同时修改半径，保持与 Canvas 渲染效果一致
           geometry.setAttribute(
             ATTRIBUTE.Size,
-            Float32Array.from([(rx || r || width / 2) - value / 2, (ry || r || height / 2) - value / 2])
+            Float32Array.from([(rx || r || width / 2) + value / 2, (ry || r || height / 2) + value / 2])
           );
           material.setUniform(UNIFORM.StrokeWidth, value);
         } else if (name === 'radius') {
@@ -145,7 +145,7 @@ export class CircleModelBuilder implements ModelBuilder {
     material.vertexShaderGLSL = vs || '';
     material.fragmentShaderGLSL = fs || '';
     material.cull = {
-      enable: false,
+      enable: true,
     };
     material.depth = {
       enable: false,
@@ -177,7 +177,7 @@ export class CircleModelBuilder implements ModelBuilder {
         const [halfWidth, halfHeight] = this.getSize(instance.attributes, tagName);
         const fillColor = rgb2arr(instance.attributes.fill || '');
         return {
-          size: [halfWidth - lineWidth / 2, halfHeight - lineWidth / 2],
+          size: [halfWidth + lineWidth / 2, halfHeight + lineWidth / 2],
           color: fillColor as [number, number, number, number], // sRGB
           opacity: fillOpacity,
           strokeOpacity,
@@ -187,7 +187,7 @@ export class CircleModelBuilder implements ModelBuilder {
     } else {
       const [halfWidth, halfHeight] = this.getSize(sceneGraphNode.attributes, tagName);
       config.push({
-        size: [halfWidth - lineWidth / 2, halfHeight - lineWidth / 2],
+        size: [halfWidth + lineWidth / 2, halfHeight + lineWidth / 2],
         color: fillColor as [number, number, number, number], // sRGB
         opacity: fillOpacity,
         strokeOpacity,
@@ -196,6 +196,8 @@ export class CircleModelBuilder implements ModelBuilder {
     }
 
     const attributes = this.buildAttributes(config);
+
+    console.log(attributes);
 
     geometry.maxInstancedCount = attributes.instancedSizes.length / 2;
     geometry.vertexCount = 6;

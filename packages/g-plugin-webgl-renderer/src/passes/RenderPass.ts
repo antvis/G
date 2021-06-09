@@ -29,6 +29,7 @@ import { Renderable3D } from '../components/Renderable3D';
 import { Geometry3D } from '../components/Geometry3D';
 import { IUniformBinding, Material3D } from '../components/Material3D';
 import { View } from '../View';
+import { DisplayObject } from '@antv/g';
 
 export interface RenderPassData {
   output: FrameGraphHandle;
@@ -52,6 +53,8 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
   @inject(Camera)
   private camera: Camera;
+
+  displayObjectsLastFrame: DisplayObject[] = [];
 
   setup = (
     fg: FrameGraphEngine,
@@ -91,9 +94,11 @@ export class RenderPass implements IRenderPass<RenderPassData> {
         this.engine.clear({
           framebuffer,
           color: this.view.getClearColor(),
+          depth: 1,
         });
 
         this.renderDisplayObjects(displayObjects);
+        this.displayObjectsLastFrame = displayObjects;
       },
     );
   };
@@ -174,12 +179,13 @@ export class RenderPass implements IRenderPass<RenderPassData> {
   private renderDisplayObject(displayObject: DisplayObject): boolean {
     const entity = displayObject.getEntity();
     const renderable3d = entity.getComponent(Renderable3D);
+    const material = entity.getComponent(Material3D);
 
-    if (!renderable3d) {
+    // hang when model unprepared
+    if (!renderable3d || !renderable3d.modelPrepared) {
       return true;
     }
 
-    const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
     const transform = entity.getComponent(Transform);
     const sceneGraphNode = entity.getComponent(SceneGraphNode);
@@ -201,19 +207,14 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
     // get VP matrix from camera
     const viewMatrix = this.camera.getViewTransform()!;
-    // const viewProjectionMatrix = mat4.multiply(mat4.create(), this.camera.getPerspective(), viewMatrix);
-    // TODO: use cached planes if camera was not changed
-    // this.camera.getFrustum().extractFromVPMatrix(viewProjectionMatrix);
 
     const { width, height } = this.view.getViewport();
 
     const modelMatrix = this.sceneGraph.getWorldTransform(entity, transform);
-    const modelViewMatrix = mat4.multiply(mat4.create(), viewMatrix, modelMatrix);
 
     // set MVP matrix, other builtin uniforms @see https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
     material.setUniform({
       [UNIFORM.ProjectionMatrix]: this.camera.getPerspective(),
-      [UNIFORM.ModelViewMatrix]: modelViewMatrix,
       [UNIFORM.ModelMatrix]: modelMatrix,
       [UNIFORM.ViewMatrix]: viewMatrix,
       [UNIFORM.CameraPosition]: this.camera.getPosition(),

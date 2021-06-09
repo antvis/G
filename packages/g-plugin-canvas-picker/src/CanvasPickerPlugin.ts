@@ -57,12 +57,20 @@ export class CanvasPickerPlugin implements RenderingPlugin {
     renderingService.hooks.pick.tap(CanvasPickerPlugin.tag, (result: PickingResult) => {
       // position in world space
       const { x, y } = result.position;
+      const position = vec3.fromValues(x, y, 0);
+      const invertOrthoMat = mat4.invert(mat4.create(), this.camera.getOrthoMatrix());
+      vec3.transformMat4(
+        position,
+        position,
+        invertOrthoMat,
+      );
+
       // query by AABB first with spatial index(r-tree)
       const rBushNodes = this.renderingContext.rBush.search({
-        minX: x,
-        minY: y,
-        maxX: x,
-        maxY: y,
+        minX: position[0],
+        minY: position[1],
+        maxX: position[0],
+        maxY: position[1],
       });
 
       const pickedDisplayObjects: DisplayObject[] = [];
@@ -75,21 +83,13 @@ export class CanvasPickerPlugin implements RenderingPlugin {
           const pick = this.pointInPathPickerFactory(displayObject.nodeType);
           if (pick) {
             // invert with world matrix
-            const transform = mat4.multiply(
-              mat4.create(),
-              this.camera.getOrthoMatrix(),
-              displayObject.getWorldTransform(),
-            );
-
-            const invertWorldMat = mat4.invert(mat4.create(), transform);
+            const invertWorldMat = mat4.invert(mat4.create(), displayObject.getWorldTransform());
             // transform client position to local space, do picking in local space
             const localPosition = vec3.transformMat4(
               vec3.create(),
-              vec3.fromValues(x, y, 0),
+              vec3.fromValues(position[0], position[1], 0),
               invertWorldMat,
             );
-
-            console.log(invertWorldMat, localPosition);
             if (
               pick(displayObject, { x: localPosition[0], y: localPosition[1] }, this.isPointInPath)
             ) {

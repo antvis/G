@@ -67,34 +67,6 @@ export function getGlyphQuads(
     const bl = { x: x1, y: y2 };
     const br = { x: x2, y: y2 };
 
-    // if (alongLine && positionedGlyph.vertical) {
-    //   // Vertical-supporting glyphs are laid out in 24x24 point boxes (1 square em)
-    //   // In horizontal orientation, the y values for glyphs are below the midline
-    //   // and we use a "yOffset" of -17 to pull them up to the middle.
-    //   // By rotating counter-clockwise around the point at the center of the left
-    //   // edge of a 24x24 layout box centered below the midline, we align the center
-    //   // of the glyphs with the horizontal midline, so the yOffset is no longer
-    //   // necessary, but we also pull the glyph to the left along the x axis
-    //   const center = new Point(-halfAdvance, halfAdvance);
-    //   const verticalRotation = -Math.PI / 2;
-    //   const xOffsetCorrection = new Point(5, 0);
-    //   tl._rotateAround(verticalRotation, center)._add(xOffsetCorrection);
-    //   tr._rotateAround(verticalRotation, center)._add(xOffsetCorrection);
-    //   bl._rotateAround(verticalRotation, center)._add(xOffsetCorrection);
-    //   br._rotateAround(verticalRotation, center)._add(xOffsetCorrection);
-    // }
-
-    // if (textRotate) {
-    //   const sin = Math.sin(textRotate),
-    //     cos = Math.cos(textRotate),
-    //     matrix = [cos, -sin, sin, cos];
-
-    //   tl._matMult(matrix);
-    //   tr._matMult(matrix);
-    //   bl._matMult(matrix);
-    //   br._matMult(matrix);
-    // }
-
     quads.push({ tl, tr, bl, br, tex: rect, writingMode: shaping.writingMode, glyphOffset });
   }
 

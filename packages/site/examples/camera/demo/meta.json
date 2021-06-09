@@ -7,7 +7,7 @@
     {
       "filename": "ortho.js",
       "title": {
-        "zh": "正交相机",
+        "zh": "正交投影相机",
         "en": "Orthographic camera"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*D0XmSIyniZAAAAAAAAAAAAAAARQnAQ"
