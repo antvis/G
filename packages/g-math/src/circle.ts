@@ -62,7 +62,7 @@ export default {
    * @param {number} t 指定比例 0 - 1 之间，x轴方向为 0。在 0-1 范围之外是循环还是返回 null，还需要调整
    * @return {number} 角度，在 0 - 2PI 之间
    */
-  tangentAngle(x: number, y: number, r: number, t) {
+  tangentAngle(x: number, y: number, r: number, t: number) {
     const angle = Math.PI * 2 * t;
     return piMod(angle + Math.PI / 2);
   },

@@ -1,7 +1,10 @@
-import 'reflect-metadata';
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
+// @ts-ignore
+import chaiAlmost from 'chai-almost';
 import { DisplayObject, Group, SHAPE } from '..';
 import { mat4, vec3 } from 'gl-matrix';
+
+chai.use(chaiAlmost());
 
 describe('DisplayObject', () => {
   it('should update transform with its parent group', () => {
@@ -85,43 +88,40 @@ describe('DisplayObject', () => {
     expect(group2.getScale()).to.eqls(vec3.fromValues(20, 20, 20));
   });
 
-  // it('should update rotation with its parent group', () => {
-  //   const group1 = new Group();
-  //   const groupEntity1 = group1.getEntity();
-  //   const group2 = new Group();
-  //   const groupEntity2 = group2.getEntity();
+  it('should update rotation with its parent group', () => {
+    const group1 = new Group();
+    const group2 = new Group();
+    // group1 -> group2
+    group1.appendChild(group2);
 
-  //   const transform1 = groupEntity1.getComponent(Transform);
-  //   expect(sceneGraph.getWorldTransform(groupEntity1, transform1)).to.eqls(mat4.create());
+    group1.rotateLocal(30);
 
-  //   const transform2 = groupEntity2.getComponent(Transform);
-  //   expect(sceneGraph.getWorldTransform(groupEntity2, transform2)).to.eqls(mat4.create());
-
-  //   // group1 -> group2
-  //   group1.add(group2);
-  // });
+    // use almost, allows a tolerance of 1 x 10-6.
+    // @ts-ignore
+    expect(group1.getEulerAngles()).to.almost.eqls(30);
+    // @ts-ignore
+    expect(group1.getLocalEulerAngles()).to.almost.eqls(30);
+    // @ts-ignore
+    expect(group2.getEulerAngles()).to.almost.eqls(30);
+  });
 
   it('should query child correctly', () => {
     const group1 = new Group({
       id: 'id1',
       name: 'group1',
-      attrs: {},
     });
     const group2 = new Group({
       id: 'id2',
       name: 'group2',
-      attrs: {},
     });
     const group3 = new Group({
       id: 'id3',
       name: 'group3',
-      attrs: {},
     });
     const group4 = new Group({
       id: 'id4',
       name: 'group4',
       className: 'className4',
-      attrs: {},
     });
 
     // 1 -> 2 -> 3
@@ -148,23 +148,23 @@ describe('DisplayObject', () => {
     expect(
       group1.find((group) => {
         return group.get('name') === 'group4';
-      })
+      }),
     ).to.eqls(group4);
     expect(
       group1.find((group) => {
         return group.get('name') === 'group5';
-      })
+      }),
     ).to.null;
     expect(
       group1.find(() => {
         return true;
-      })
+      }),
     ).to.eqls(group4);
 
     expect(
       group1.findAll(() => {
         return true;
-      }).length
+      }).length,
     ).to.eqls(3);
 
     expect(group1.getElementsByName('group4').length).to.eqls(1);

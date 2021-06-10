@@ -10,9 +10,9 @@ export interface ILifecycle {
 export class ObjectPool<T extends ILifecycle> {
   private count = 0;
   private freeList: T[] = [];
-  protected objectFactory: { new (...args: unknown[]): T } | (() => T);
+  protected objectFactory: () => T;
 
-  public init(T: { new (...args: unknown[]): T } | (() => T), initialSize?: number) {
+  public init(T: () => T, initialSize?: number) {
     this.objectFactory = T;
 
     if (typeof initialSize !== 'undefined') {
@@ -34,13 +34,9 @@ export class ObjectPool<T extends ILifecycle> {
 
   private expand(count: number) {
     for (let n = 0; n < count; n++) {
-      const clone = this.isCtor(this.objectFactory) ? new this.objectFactory() : this.objectFactory();
+      const clone = this.objectFactory();
       this.freeList.push(clone);
     }
     this.count += count;
-  }
-
-  private isCtor(factory: { new (...args: unknown[]): T } | (() => T)): factory is { new (...args: unknown[]): T } {
-    return (factory as { new (...args: unknown[]): T }).constructor !== undefined;
   }
 }

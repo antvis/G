@@ -72,9 +72,14 @@ export class DirtyCheckPlugin implements RenderingPlugin {
     });
 
     renderer.hooks.prepare.tap(DirtyCheckPlugin.tag, (objects: DisplayObject[]) => {
-      let dirtyObjects = objects.filter((object) => object.getEntity().getComponent(Renderable).dirty);
-      const enableDirtyRectangleRendering = this.canvasConfig?.renderer.getConfig().enableDirtyRectangleRendering;
-      const dirtyRenderables = dirtyObjects.map((object) => object.getEntity().getComponent(Renderable));
+      let dirtyObjects = objects.filter(
+        (object) => object.getEntity().getComponent(Renderable).dirty,
+      );
+      const enableDirtyRectangleRendering = this.canvasConfig.renderer.getConfig()
+        .enableDirtyRectangleRendering;
+      const dirtyRenderables = dirtyObjects.map((object) =>
+        object.getEntity().getComponent(Renderable),
+      );
 
       // skip rendering if nothing to redraw
       if (dirtyRenderables.length === 0) {
@@ -90,7 +95,7 @@ export class DirtyCheckPlugin implements RenderingPlugin {
       // TODO: use threshold when too much dirty renderables
       const dirtyRectangle = this.mergeDirtyRectangles(dirtyRenderables);
       this.renderingContext.removedAABBs.forEach((removedAABB) => {
-        removedAABB && dirtyRectangle?.add(removedAABB);
+        removedAABB && dirtyRectangle && dirtyRectangle.add(removedAABB);
       });
       this.renderingContext.removedAABBs = [];
       // set dirty rectangle manually
@@ -118,33 +123,37 @@ export class DirtyCheckPlugin implements RenderingPlugin {
     });
 
     // save dirty AABB in last frame
-    renderer.hooks.afterRender.tap(DirtyCheckPlugin.tag, (dirtyObjects: DisplayObject[], objects: DisplayObject[]) => {
-      const enableDirtyRectangleRendering = this.canvasConfig?.renderer.getConfig().enableDirtyRectangleRendering;
+    renderer.hooks.afterRender.tap(
+      DirtyCheckPlugin.tag,
+      (dirtyObjects: DisplayObject[], objects: DisplayObject[]) => {
+        const enableDirtyRectangleRendering = this.canvasConfig.renderer.getConfig()
+          .enableDirtyRectangleRendering;
 
-      if (enableDirtyRectangleRendering) {
-        dirtyObjects.forEach((object) => {
+        if (enableDirtyRectangleRendering) {
+          dirtyObjects.forEach((object) => {
+            const entity = object.getEntity();
+            const renderable = entity.getComponent(Renderable);
+            if (!renderable.dirtyAABB) {
+              renderable.dirtyAABB = new AABB();
+            }
+            // save last dirty aabb
+            renderable.dirtyAABB.update(
+              vec3.copy(vec3.create(), renderable.aabb.center),
+              vec3.copy(vec3.create(), renderable.aabb.halfExtents),
+            );
+          });
+        }
+
+        // finish rendering, clear dirty flag
+        objects.forEach((object) => {
           const entity = object.getEntity();
           const renderable = entity.getComponent(Renderable);
-          if (!renderable.dirtyAABB) {
-            renderable.dirtyAABB = new AABB();
+          if (renderable) {
+            renderable.dirty = false;
           }
-          // save last dirty aabb
-          renderable.dirtyAABB.update(
-            vec3.copy(vec3.create(), renderable.aabb.center),
-            vec3.copy(vec3.create(), renderable.aabb.halfExtents)
-          );
         });
-      }
-
-      // finish rendering, clear dirty flag
-      objects.forEach((object) => {
-        const entity = object.getEntity();
-        const renderable = entity.getComponent(Renderable);
-        if (renderable) {
-          renderable.dirty = false;
-        }
-      });
-    });
+      },
+    );
   }
 
   /**

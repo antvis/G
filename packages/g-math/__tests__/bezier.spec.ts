@@ -3,20 +3,21 @@ import { distance } from '../src/util';
 import { nearestPoint, snapLength } from '../src/bezier';
 import quad from '../src/quadratic';
 import cubic from '../src/cubic';
+import { Point } from '../src/types';
 
-function equalPoint(obj1, obj2) {
+function equalPoint(obj1: Point, obj2: Point) {
   return distance(obj1.x, obj1.y, obj2.x, obj2.y) < 0.3;
 }
 
 // 由于曲线运算都是逼近算法，容忍度高一些
-function snapEqual(v1, v2) {
+function snapEqual(v1: number, v2: number) {
   return Math.abs(v1 - v2) < 0.3;
 }
 
 const SPLIT_COUNT = 100;
 
 // 通过分割法，计算近似长度
-function splitQuadLength(x1, y1, x2, y2, x3, y3) {
+function splitQuadLength(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number) {
   let prePoint = { x: x1, y: y1 };
   let totalLength = 0;
   for (let i = 1; i <= SPLIT_COUNT; i++) {
@@ -28,7 +29,16 @@ function splitQuadLength(x1, y1, x2, y2, x3, y3) {
 }
 
 // 通过分割法，计算近似长度
-function splitCubicLength(x1, y1, x2, y2, x3, y3, x4, y4) {
+function splitCubicLength(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  x4: number,
+  y4: number,
+) {
   let prePoint = { x: x1, y: y1 };
   let totalLength = 0;
   for (let i = 1; i <= SPLIT_COUNT; i++) {
@@ -108,7 +118,7 @@ describe('bezier util test', () => {
 
     // 三个点
     expect(snapLength([0, 50, 100], [0, 50, 0])).eqls(
-      (distance(0, 0, 50, 50) + distance(50, 50, 100, 0) + distance(0, 0, 100, 0)) / 2
+      (distance(0, 0, 50, 50) + distance(50, 50, 100, 0) + distance(0, 0, 100, 0)) / 2,
     );
   });
 });
@@ -165,18 +175,24 @@ describe('quadratic test', () => {
 
   it('curve length symetric', () => {
     const [x1, y1, x2, y2, x3, y3] = [0, 0, 50, 50, 100, 0];
-    expect(snapEqual(quad.length(x1, y1, x2, y2, x3, y3), splitQuadLength(x1, y1, x2, y2, x3, y3))).eqls(true);
+    expect(
+      snapEqual(quad.length(x1, y1, x2, y2, x3, y3), splitQuadLength(x1, y1, x2, y2, x3, y3)),
+    ).eqls(true);
   });
 
   it('curve length not symetric', () => {
     const [x1, y1, x2, y2, x3, y3] = [0, 0, 10, 50, 100, 0];
-    expect(snapEqual(quad.length(x1, y1, x2, y2, x3, y3), splitQuadLength(x1, y1, x2, y2, x3, y3))).eqls(true);
+    expect(
+      snapEqual(quad.length(x1, y1, x2, y2, x3, y3), splitQuadLength(x1, y1, x2, y2, x3, y3)),
+    ).eqls(true);
   });
 
   it('neareast point at line', () => {
     const [x1, y1, x2, y2, x3, y3] = [0, 0, 10, 50, 100, 0];
     const point = quad.pointAt(x1, y1, x2, y2, x3, y3, 0.3); // 线上任意一点
-    expect(equalPoint(quad.nearestPoint(x1, y1, x2, y2, x3, y3, point.x, point.y), point)).eqls(true);
+    expect(equalPoint(quad.nearestPoint(x1, y1, x2, y2, x3, y3, point.x, point.y), point)).eqls(
+      true,
+    );
   });
 
   // it('neareast point', () => {
@@ -223,9 +239,36 @@ describe('quadratic test', () => {
 // }
 
 describe('cubic test', () => {
-  const params1 = [0, 100, 25, 150, 75, 50, 100, 100];
-  const params2 = [200, 200, 250, 200, 275, 300, 300, 300];
-  const params3 = [100, 200, 80, 100, 160, 220, 200, 200];
+  const params1: [number, number, number, number, number, number, number, number] = [
+    0,
+    100,
+    25,
+    150,
+    75,
+    50,
+    100,
+    100,
+  ];
+  const params2: [number, number, number, number, number, number, number, number] = [
+    200,
+    200,
+    250,
+    200,
+    275,
+    300,
+    300,
+    300,
+  ];
+  const params3: [number, number, number, number, number, number, number, number] = [
+    100,
+    200,
+    80,
+    100,
+    160,
+    220,
+    200,
+    200,
+  ];
   it('point at', () => {
     expect(cubic.pointAt(...params1, 0)).eqls({ x: 0, y: 100 });
     expect(cubic.pointAt(...params1, 1)).eqls({ x: 100, y: 100 });

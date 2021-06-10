@@ -4,13 +4,13 @@ import { distance } from '../src/util';
 
 describe('test polyline', () => {
   // 三角形
-  const points1 = [
+  const points1: [number, number][] = [
     [50, 0],
     [100, 100],
     [0, 100],
   ];
   // 矩形
-  const points2 = [
+  const points2: [number, number][] = [
     [0, 0],
     [100, 0],
     [100, 100],

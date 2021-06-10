@@ -45,7 +45,7 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   }
 
   getBoundingClientRect() {
-    return this.$canvas?.getBoundingClientRect();
+    return this.$canvas.getBoundingClientRect();
   }
 
   destroy() {

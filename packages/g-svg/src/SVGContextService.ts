@@ -45,7 +45,7 @@ export class SVGContextService implements ContextService<SVGElement> {
   }
 
   getBoundingClientRect() {
-    return this.$namespace?.getBoundingClientRect();
+    return this.$namespace.getBoundingClientRect();
   }
 
   async destroy() {

@@ -8,7 +8,7 @@ describe('util test', () => {
   });
 
   it('point at segments 2 point', () => {
-    const points = [
+    const points: [number, number][] = [
       [0, 0],
       [100, 100],
       [200, 200],
@@ -21,7 +21,7 @@ describe('util test', () => {
   });
 
   it('point at segments 5 point', () => {
-    const points = [
+    const points: [number, number][] = [
       [0, 0],
       [100, 100],
       [200, 200],
@@ -44,12 +44,12 @@ describe('util test', () => {
           [1, 1],
           [1, 1],
         ],
-        0.5
-      )
+        0.5,
+      ),
     ).to.eqls({ x: 1, y: 1 });
   });
   it('angle at segment', () => {
-    const points = [
+    const points: [number, number][] = [
       [0, 0],
       [100, 100],
       [200, 200],
@@ -70,14 +70,14 @@ describe('util test', () => {
           [1, 1],
           [1, 1],
         ],
-        0.5
-      )
+        0.5,
+      ),
     ).to.eqls(0);
   });
 
   it('distance at segment', () => {
     // 矩形
-    const points = [
+    const points: [number, number][] = [
       [0, 0],
       [100, 0],
       [100, 100],

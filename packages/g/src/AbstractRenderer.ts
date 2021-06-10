@@ -21,7 +21,13 @@ export abstract class AbstractRenderer implements IRenderer {
 
   constructor(config: Partial<RendererConfig>) {
     this.config = {
+      /**
+       * enable auto rendering by default
+       */
       enableAutoRendering: true,
+      /**
+       * enable dirty rectangle rendering by default
+       */
       enableDirtyRectangleRendering: true,
       enableDirtyRectangleRenderingDebug: false,
       ...config,

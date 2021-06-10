@@ -1,4 +1,13 @@
-import { CustomElement, DisplayObject, Line, Path, Polyline, SHAPE, ShapeAttrs, ShapeCfg } from '@antv/g';
+import {
+  CustomElement,
+  DisplayObject,
+  Line,
+  Path,
+  Polyline,
+  SHAPE,
+  ShapeAttrs,
+  ShapeCfg,
+} from '@antv/g';
 import { vec3 } from 'gl-matrix';
 
 type ArrowHead = boolean | DisplayObject;
@@ -73,7 +82,12 @@ export class Arrow extends CustomElement {
   }
 
   attributeChangedCallback(name: string, value: any) {
-    if (name === 'opacity' || name === 'strokeOpacity' || name === 'stroke' || name === 'lineWidth') {
+    if (
+      name === 'opacity' ||
+      name === 'strokeOpacity' ||
+      name === 'stroke' ||
+      name === 'lineWidth'
+    ) {
       this.applyArrowStyle({ [name]: value }, [this.body, this.startHead, this.endHead]);
     } else if (name === 'startHead' || name === 'endHead') {
       const isStart = name === 'startHead';
@@ -136,7 +150,7 @@ export class Arrow extends CustomElement {
     let y1 = 0;
     let y2 = 0;
 
-    const bodyType = this.body?.nodeType;
+    const bodyType = this.body && this.body.nodeType;
 
     if (bodyType === SHAPE.Line) {
       const { x1: _x1, x2: _x2, y1: _y1, y2: _y2 } = this.body!.attributes;
@@ -145,7 +159,7 @@ export class Arrow extends CustomElement {
       y1 = isStart ? _y1 : _y2;
       y2 = isStart ? _y2 : _y1;
     } else if (bodyType === SHAPE.Polyline) {
-      const points = this.body!.attributes.points as number[][];
+      const points = this.body.attributes.points as number[][];
       const length = points.length;
       x1 = isStart ? points[1][0] : points[length - 2][0];
       y1 = isStart ? points[1][1] : points[length - 2][1];
@@ -213,7 +227,9 @@ export class Arrow extends CustomElement {
     return new Path({
       attrs: {
         // draw an angle '<'
-        path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${10 * sin(PI / 6)}`,
+        path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${
+          10 * sin(PI / 6)
+        }`,
         stroke,
         lineWidth,
         anchor: [0.5, 0.5], // set anchor to center

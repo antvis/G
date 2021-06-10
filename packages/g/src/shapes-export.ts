@@ -2,7 +2,7 @@ import { DisplayObject } from './DisplayObject';
 import { SHAPE, GroupCfg, ShapeCfg } from './types';
 
 export class Group extends DisplayObject {
-  constructor(config: GroupCfg) {
+  constructor(config?: GroupCfg) {
     super({
       type: SHAPE.Group,
       attrs: {},

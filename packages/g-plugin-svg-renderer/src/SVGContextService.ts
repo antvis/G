@@ -6,7 +6,7 @@ import { createSVGElement } from './utils/dom';
 @injectable()
 export class SVGContextService implements ContextService<SVGElement> {
   private $container: HTMLElement | null;
-  private $namespace: SVGElement | null;
+  private $namespace: SVGElement;
   private dpr: number;
 
   @inject(CanvasConfig)
@@ -45,7 +45,7 @@ export class SVGContextService implements ContextService<SVGElement> {
   }
 
   getBoundingClientRect() {
-    return this.$namespace?.getBoundingClientRect();
+    return this.$namespace && this.$namespace.getBoundingClientRect();
   }
 
   async destroy() {

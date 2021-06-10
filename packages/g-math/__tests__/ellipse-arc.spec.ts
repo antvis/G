@@ -1,22 +1,26 @@
 import { expect } from 'chai';
 import arc from '../src/arc';
+import { BBox, Point } from '../src/types';
 import { distance } from '../src/util';
 
-function equal(v1, v2) {
+function equal(v1: number, v2: number) {
   return Math.abs(v1 - v2) < 0.01;
 }
 
-function equalPoint(obj1, obj2) {
+function equalPoint(obj1: Point, obj2: Point) {
   return distance(obj1.x, obj1.y, obj2.x, obj2.y) < 0.3;
 }
 
-function equalBox(box1, box2) {
+function equalBox(box1: BBox, box2: BBox) {
   return (
-    equal(box1.x, box2.x) && equal(box1.y, box2.y) && equal(box1.width, box2.width) && equal(box1.height, box2.height)
+    equal(box1.x, box2.x) &&
+    equal(box1.y, box2.y) &&
+    equal(box1.width, box2.width) &&
+    equal(box1.height, box2.height)
   );
 }
 
-function rotation(center, p, angle) {
+function rotation(center: Point, p: Point, angle: number) {
   const relativeX = p.x - center.x;
   const relativeY = p.y - center.y;
   return {
@@ -33,9 +37,15 @@ describe('ellipse arc test', () => {
     expect(equalPoint(arc.pointAt(0, 0, 10, 10, 0, 0, Math.PI, 0.5), { x: 0, y: 10 })).eqls(true);
 
     // 1/2 圆弧，旋转90度
-    expect(equalPoint(arc.pointAt(0, 0, 10, 10, Math.PI / 2, 0, Math.PI, 0), { x: 0, y: 10 })).eqls(true);
-    expect(equalPoint(arc.pointAt(0, 0, 10, 10, Math.PI / 2, 0, Math.PI, 1), { x: 0, y: -10 })).eqls(true);
-    expect(equalPoint(arc.pointAt(0, 0, 10, 10, Math.PI / 2, 0, Math.PI, 0.5), { x: -10, y: 0 })).eqls(true);
+    expect(equalPoint(arc.pointAt(0, 0, 10, 10, Math.PI / 2, 0, Math.PI, 0), { x: 0, y: 10 })).eqls(
+      true,
+    );
+    expect(
+      equalPoint(arc.pointAt(0, 0, 10, 10, Math.PI / 2, 0, Math.PI, 1), { x: 0, y: -10 }),
+    ).eqls(true);
+    expect(
+      equalPoint(arc.pointAt(0, 0, 10, 10, Math.PI / 2, 0, Math.PI, 0.5), { x: -10, y: 0 }),
+    ).eqls(true);
   });
 
   it('point at, ellipse', () => {
@@ -45,9 +55,15 @@ describe('ellipse arc test', () => {
     expect(equalPoint(arc.pointAt(0, 0, 20, 10, 0, 0, Math.PI, 0.5), { x: 0, y: 10 })).eqls(true);
 
     // 1/2 椭圆圆弧，旋转90度
-    expect(equalPoint(arc.pointAt(0, 0, 20, 10, Math.PI / 2, 0, Math.PI, 0), { x: 0, y: 20 })).eqls(true);
-    expect(equalPoint(arc.pointAt(0, 0, 20, 10, Math.PI / 2, 0, Math.PI, 1), { x: 0, y: -20 })).eqls(true);
-    expect(equalPoint(arc.pointAt(0, 0, 20, 10, Math.PI / 2, 0, Math.PI, 0.5), { x: -10, y: 0 })).eqls(true);
+    expect(equalPoint(arc.pointAt(0, 0, 20, 10, Math.PI / 2, 0, Math.PI, 0), { x: 0, y: 20 })).eqls(
+      true,
+    );
+    expect(
+      equalPoint(arc.pointAt(0, 0, 20, 10, Math.PI / 2, 0, Math.PI, 1), { x: 0, y: -20 }),
+    ).eqls(true);
+    expect(
+      equalPoint(arc.pointAt(0, 0, 20, 10, Math.PI / 2, 0, Math.PI, 0.5), { x: -10, y: 0 }),
+    ).eqls(true);
   });
 
   it('box, circle', () => {
@@ -74,7 +90,7 @@ describe('ellipse arc test', () => {
         y: 0,
         width: 10,
         height: 10,
-      })
+      }),
     ).eqls(true);
   });
   it('box circle 45', () => {
@@ -87,7 +103,7 @@ describe('ellipse arc test', () => {
         y: Math.sin(xRotation) * 10,
         width: Math.cos(xRotation) * 10 * 2,
         height: 10 - Math.sin(xRotation) * 10,
-      })
+      }),
     ).eqls(true);
   });
   it('box, ellipse', () => {
@@ -105,7 +121,7 @@ describe('ellipse arc test', () => {
         y: -20,
         width: 10,
         height: 40,
-      })
+      }),
     ).eqls(true);
   });
 

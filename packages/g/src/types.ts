@@ -136,6 +136,8 @@ export type GroupCfg = {
   id?: string;
 
   name?: string;
+
+  className?: string;
   /**
    * 层次索引，决定绘制的先后顺序
    * @type {Number}

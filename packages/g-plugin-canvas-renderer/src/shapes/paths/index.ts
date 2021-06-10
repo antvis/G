@@ -1,4 +1,4 @@
-import { DisplayObject } from '@antv/g';
+import { ShapeAttrs } from '@antv/g';
 
 export const PathGeneratorFactory = Symbol('PathGeneratorFactory');
 export const PathGenerator = Symbol('Path');
@@ -6,7 +6,7 @@ export const PathGenerator = Symbol('Path');
 /**
  * generate path in local space
  */
-export type PathGenerator = (context: CanvasRenderingContext2D, displayObject: DisplayObject) => void;
+export type PathGenerator = (context: CanvasRenderingContext2D, attributes: ShapeAttrs) => void;
 
 export { generatePath as CirclePath } from './Circle';
 export { generatePath as EllipsePath } from './Ellipse';

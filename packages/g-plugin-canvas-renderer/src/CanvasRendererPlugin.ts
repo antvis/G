@@ -70,7 +70,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const dpr = this.contextService.getDPR();
       // scale all drawing operations by the dpr
       // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
-      context?.scale(dpr, dpr);
+      context && context.scale(dpr, dpr);
     });
 
     renderingService.hooks.beforeRender.tap(CanvasRendererPlugin.tag, () => {
@@ -79,7 +79,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const {
         enableDirtyRectangleRendering,
         enableDirtyRectangleRenderingDebug,
-      } = this.canvasConfig?.renderer.getConfig();
+      } = this.canvasConfig.renderer.getConfig();
       const dirtyAABB = this.renderingContext.dirtyRectangle;
 
       if (context) {

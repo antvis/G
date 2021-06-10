@@ -70,8 +70,8 @@ export default {
     const squareB = b * b;
     // const angle0 = Math.atan2(relativeY, relativeX);
     let t = Math.PI / 4;
-    let nearestX: number; // 椭圆上的任一点
-    let nearestY: number;
+    let nearestX: number = 0; // 椭圆上的任一点
+    let nearestY: number = 0;
     // 迭代 4 次
     for (let i = 0; i < 4; i++) {
       nearestX = a * Math.cos(t);
@@ -88,7 +88,8 @@ export default {
       const q = Math.hypot(qy, qx);
 
       const delta_c = r * Math.asin((rx1 * qy - ry1 * qx) / (r * q));
-      const delta_t = delta_c / Math.sqrt(squareA + squareB - nearestX * nearestX - nearestY * nearestY);
+      const delta_t =
+        delta_c / Math.sqrt(squareA + squareB - nearestX * nearestX - nearestY * nearestY);
 
       t += delta_t;
       t = Math.min(Math.PI / 2, Math.max(0, t));

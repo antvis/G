@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { each, isArray } from '@antv/util';
 import { PathCommand } from '../types';
 
@@ -5,17 +6,17 @@ const SPACES =
   '\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029';
 const PATH_COMMAND = new RegExp(
   `([a-z])[${SPACES},]*((-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?[${SPACES}]*,?[${SPACES}]*)+)`,
-  'ig'
+  'ig',
 );
 const PATH_VALUES = new RegExp(`(-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?)[${SPACES}]*,?[${SPACES}]*`, 'ig');
 // Parse given path string into an array of arrays of path segments
-const parsePathString = function (pathString: string): PathCommand[] {
+const parsePathString = function (pathString: string): PathCommand[] | null {
   if (!pathString) {
     return null;
   }
 
   if (isArray(pathString)) {
-    return pathString as unknown as PathCommand[];
+    return (pathString as unknown) as PathCommand[];
   }
   const paramCounts = {
     a: 7,
@@ -35,7 +36,7 @@ const parsePathString = function (pathString: string): PathCommand[] {
   const data = [];
 
   String(pathString).replace(PATH_COMMAND, (a, b, c) => {
-    const params = [];
+    const params: number[] = [];
     let name = b.toLowerCase();
     c.replace(PATH_VALUES, (a, b) => {
       b && params.push(+b);
@@ -65,7 +66,7 @@ const parsePathString = function (pathString: string): PathCommand[] {
 };
 
 // http://schepers.cc/getting-to-the-point
-const catmullRomToBezier = function (crp, z) {
+const catmullRomToBezier = function (crp: number[], z: boolean) {
   const d = [];
   // @ts-ignore
   for (let i = 0, iLen = crp.length; iLen - 2 * !z > i; i += 2) {
@@ -132,16 +133,16 @@ const catmullRomToBezier = function (crp, z) {
   return d;
 };
 
-const ellipsePath = function (x, y, rx, ry, a?) {
+const ellipsePath = function (x: number, y: number, rx: number, ry: number, a?: number) {
   let res = [];
-  if (a === null && ry === null) {
+  if (a === undefined && ry === undefined) {
     ry = rx;
   }
   x = +x;
   y = +y;
   rx = +rx;
   ry = +ry;
-  if (a !== null) {
+  if (a !== undefined) {
     const rad = Math.PI / 180;
     const x1 = x + rx * Math.cos(-ry * rad);
     const x2 = x + rx * Math.cos(-a * rad);
@@ -152,7 +153,13 @@ const ellipsePath = function (x, y, rx, ry, a?) {
       ['A', rx, rx, 0, +(a - ry > 180), 0, x2, y2],
     ];
   } else {
-    res = [['M', x, y], ['m', 0, -ry], ['a', rx, ry, 0, 1, 1, 0, 2 * ry], ['a', rx, ry, 0, 1, 1, 0, -2 * ry], ['z']];
+    res = [
+      ['M', x, y],
+      ['m', 0, -ry],
+      ['a', rx, ry, 0, 1, 1, 0, 2 * ry],
+      ['a', rx, ry, 0, 1, 1, 0, -2 * ry],
+      ['z'],
+    ];
   }
   return res;
 };
@@ -281,17 +288,35 @@ const pathToAbsolute = function (pathArray) {
   return res;
 };
 
-const l2c = function (x1, y1, x2, y2) {
+const l2c = function (x1: number, y1: number, x2: number, y2: number) {
   return [x1, y1, x2, y2, x2, y2];
 };
 
-const q2c = function (x1, y1, ax, ay, x2, y2) {
+const q2c = function (x1: number, y1: number, ax: number, ay: number, x2: number, y2: number) {
   const _13 = 1 / 3;
   const _23 = 2 / 3;
-  return [_13 * x1 + _23 * ax, _13 * y1 + _23 * ay, _13 * x2 + _23 * ax, _13 * y2 + _23 * ay, x2, y2];
+  return [
+    _13 * x1 + _23 * ax,
+    _13 * y1 + _23 * ay,
+    _13 * x2 + _23 * ax,
+    _13 * y2 + _23 * ay,
+    x2,
+    y2,
+  ];
 };
 
-const a2c = function (x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, recursive) {
+const a2c = function (
+  x1: number,
+  y1: number,
+  rx: number,
+  ry: number,
+  angle: number,
+  large_arc_flag: number,
+  sweep_flag: number,
+  x2: number,
+  y2: number,
+  recursive: number[],
+): number[] {
   // for more information of where this math came from visit:
   // http://www.w3.org/TR/SVG11/implnote.html#ArcImplementationNotes
   if (rx === ry) {
@@ -306,7 +331,7 @@ const a2c = function (x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2,
   let f2;
   let cx;
   let cy;
-  const rotate = function (x, y, rad) {
+  const rotate = function (x: number, y: number, rad: number) {
     const X = x * Math.cos(rad) - y * Math.sin(rad);
     const Y = x * Math.sin(rad) + y * Math.cos(rad);
     return {
@@ -587,9 +612,33 @@ const bezlen = function (x1, y1, x2, y2, x3, y3, x4, y4, z) {
   const z2 = z / 2;
   const n = 12;
   const Tvalues = [
-    -0.1252, 0.1252, -0.3678, 0.3678, -0.5873, 0.5873, -0.7699, 0.7699, -0.9041, 0.9041, -0.9816, 0.9816,
+    -0.1252,
+    0.1252,
+    -0.3678,
+    0.3678,
+    -0.5873,
+    0.5873,
+    -0.7699,
+    0.7699,
+    -0.9041,
+    0.9041,
+    -0.9816,
+    0.9816,
   ];
-  const Cvalues = [0.2491, 0.2491, 0.2335, 0.2335, 0.2032, 0.2032, 0.1601, 0.1601, 0.1069, 0.1069, 0.0472, 0.0472];
+  const Cvalues = [
+    0.2491,
+    0.2491,
+    0.2335,
+    0.2335,
+    0.2032,
+    0.2032,
+    0.1601,
+    0.1601,
+    0.1069,
+    0.1069,
+    0.0472,
+    0.0472,
+  ];
   let sum = 0;
   for (let i = 0; i < n; i++) {
     const ct = z2 * Tvalues[i] + z2;
@@ -601,9 +650,18 @@ const bezlen = function (x1, y1, x2, y2, x3, y3, x4, y4, z) {
   return z2 * sum;
 };
 
-const curveDim = function (x0, y0, x1, y1, x2, y2, x3, y3) {
+const curveDim = function (
+  x0: number,
+  y0: number,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+) {
   const tvalues = [];
-  const bounds = [[], []];
+  const bounds: [number[], number[]] = [[], []];
   let a;
   let b;
   let c;
@@ -672,7 +730,16 @@ const curveDim = function (x0, y0, x1, y1, x2, y2, x3, y3) {
   };
 };
 
-const intersect = function (x1, y1, x2, y2, x3, y3, x4, y4) {
+const intersect = function (
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  x4: number,
+  y4: number,
+) {
   if (
     Math.max(x1, x2) < Math.min(x3, x4) ||
     Math.min(x1, x2) > Math.max(x3, x4) ||
@@ -1226,7 +1293,10 @@ function _splitPoints(points, former, count) {
     t *= i;
     index = Math.floor(points.length * t);
     if (index === 0) {
-      result.unshift([formerEnd[0] * t + points[index][0] * (1 - t), formerEnd[1] * t + points[index][1] * (1 - t)]);
+      result.unshift([
+        formerEnd[0] * t + points[index][0] * (1 - t),
+        formerEnd[1] * t + points[index][1] * (1 - t),
+      ]);
     } else {
       result.splice(index, 0, [
         formerEnd[0] * t + points[index][0] * (1 - t),
@@ -1315,7 +1385,7 @@ const formatPath = function (fromPath, toPath) {
           fromPath[i] = ['Q'].concat(
             points.reduce((arr, i) => {
               return arr.concat(i);
-            }, [])
+            }, []),
           );
           break;
         case 'T':
@@ -1333,7 +1403,7 @@ const formatPath = function (fromPath, toPath) {
           fromPath[i] = ['C'].concat(
             points.reduce((arr, i) => {
               return arr.concat(i);
-            }, [])
+            }, []),
           );
           break;
         case 'S':
@@ -1348,7 +1418,7 @@ const formatPath = function (fromPath, toPath) {
           fromPath[i] = ['S'].concat(
             points.reduce((arr, i) => {
               return arr.concat(i);
-            }, [])
+            }, []),
           );
           break;
         default:

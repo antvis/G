@@ -1,5 +1,5 @@
 import { distance, getBBoxByArray } from './util';
-import * as vec2 from 'gl-matrix/vec2';
+import { vec2 } from 'gl-matrix';
 import { BBox, Point } from './types';
 
 export default {
@@ -74,14 +74,14 @@ export default {
    * @return {number} 距离
    */
   pointToLine(x1: number, y1: number, x2: number, y2: number, x: number, y: number) {
-    const d = [x2 - x1, y2 - y1];
+    const d: [number, number] = [x2 - x1, y2 - y1];
     // 如果端点相等，则判定点到点的距离
     if (vec2.exactEquals(d, [0, 0])) {
       return Math.sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1));
     }
-    const u = [-d[1], d[0]];
+    const u: [number, number] = [-d[1], d[0]];
     vec2.normalize(u, u);
-    const a = [x - x1, y - y1];
+    const a: [number, number] = [x - x1, y - y1];
     return Math.abs(vec2.dot(a, u));
   },
   /**

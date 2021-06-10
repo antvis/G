@@ -6,7 +6,7 @@ import { SHAPE, ShapeAttrs } from '../types';
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element
  * @see https://developer.mozilla.org/en-US/docs/Web/API/ParentNode
  */
-export class SceneGraphNode<Attributes> extends Component {
+export class SceneGraphNode extends Component {
   static tag = 'c-scene-graph-node';
   frozen = false;
 

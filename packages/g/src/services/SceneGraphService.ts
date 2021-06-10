@@ -71,7 +71,7 @@ export class SceneGraphService extends EventEmitter {
       const transform = entity.getComponent(Transform);
       this.applyTransform(entity, transform);
 
-      const parentSceneGraphNode = hierarchy.parent?.getComponent(SceneGraphNode);
+      const parentSceneGraphNode = hierarchy.parent.getComponent(SceneGraphNode);
       if (parentSceneGraphNode) {
         const index = parentSceneGraphNode.children.indexOf(entity);
         if (index > -1) {
@@ -394,9 +394,9 @@ export class SceneGraphService extends EventEmitter {
   }
 
   dirtifyWorld(entity: Entity, transform: Transform) {
-    if (!transform.dirtyFlag) {
-      this.unfreezeParentToRoot(entity);
-    }
+    // if (!transform.dirtyFlag) {
+    //   this.unfreezeParentToRoot(entity);
+    // }
     this.dirtifyWorldInternal(entity, transform);
   }
 
@@ -421,9 +421,9 @@ export class SceneGraphService extends EventEmitter {
     }
 
     const parentEntity = entity.getComponent(SceneGraphNode).parent;
-    const parentTransform = parentEntity?.getComponent(Transform);
 
-    if (parentEntity && parentTransform) {
+    if (parentEntity) {
+      const parentTransform = parentEntity.getComponent(Transform);
       this.getWorldTransform(parentEntity, parentTransform);
     }
 
@@ -480,13 +480,13 @@ export class SceneGraphService extends EventEmitter {
     renderable.dirty = true;
   }
 
-  private unfreezeParentToRoot(entity: Entity) {
-    let p: SceneGraphNode | undefined = entity.getComponent(SceneGraphNode);
-    while (p) {
-      p.frozen = false;
-      p = p.parent?.getComponent(SceneGraphNode);
-    }
-  }
+  // private unfreezeParentToRoot(entity: Entity) {
+  //   let p: SceneGraphNode | undefined = entity.getComponent(SceneGraphNode);
+  //   while (p) {
+  //     p.frozen = false;
+  //     p = p.parent?.getComponent(SceneGraphNode);
+  //   }
+  // }
 
   private dirtifyWorldInternal(entity: Entity, transform: Transform) {
     if (!transform.dirtyFlag) {
@@ -519,7 +519,7 @@ export class SceneGraphService extends EventEmitter {
     }
     if (transform.dirtyFlag) {
       const parentEntity = entity.getComponent(SceneGraphNode).parent;
-      const parentTransform = parentEntity?.getComponent(Transform);
+      const parentTransform = parentEntity && parentEntity.getComponent(Transform);
       if (parentEntity === null || !parentTransform) {
         mat4.copy(transform.worldTransform, transform.localTransform);
       } else {

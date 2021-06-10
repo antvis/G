@@ -676,9 +676,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
   }
 
   getLocalTransform() {
-    return this.sceneGraphService.getLocalTransform(
-      this.entity,
-    );
+    return this.sceneGraphService.getLocalTransform(this.entity);
   }
   getWorldTransform() {
     return this.sceneGraphService.getWorldTransform(
@@ -811,7 +809,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * get bounds in world space, account for children
    */
   getBounds(): AABB | null {
-    let aabb = this.entity.getComponent(Renderable)?.aabb || null;
+    let aabb = this.entity.getComponent(Renderable).aabb || null;
 
     this.children.forEach((child) => {
       const childBounds = child.getBounds();
@@ -872,16 +870,18 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
       const sortable = entity.getComponent(Sortable);
       sortable.zIndex = value;
 
-      const parentEntity = this.parentNode?.getEntity();
-      const parentRenderable = parentEntity?.getComponent(Renderable);
-      const parentSortable = parentEntity?.getComponent(Sortable);
-      if (parentRenderable) {
-        parentRenderable.dirty = true;
-      }
+      if (this.parentNode) {
+        const parentEntity = this.parentNode.getEntity();
+        const parentRenderable = parentEntity.getComponent(Renderable);
+        const parentSortable = parentEntity.getComponent(Sortable);
+        if (parentRenderable) {
+          parentRenderable.dirty = true;
+        }
 
-      // need re-sort on parent
-      if (parentSortable) {
-        parentSortable.dirty = true;
+        // need re-sort on parent
+        if (parentSortable) {
+          parentSortable.dirty = true;
+        }
       }
     }
 

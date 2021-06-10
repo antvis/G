@@ -63,33 +63,31 @@ export class Timeline implements System {
   @inject(DisplayObjectPool)
   protected displayObjectPool: DisplayObjectPool;
 
-  async execute(entities: Entity[], delta: number = 0, millis: number = 0) {
-    await Promise.all(
-      entities.map(async (entity) => {
-        const animator = entity.getComponent(Animator);
-        const { animations } = animator;
+  execute(entities: Entity[], delta: number = 0, millis: number = 0) {
+    entities.map((entity) => {
+      const animator = entity.getComponent(Animator);
+      const { animations } = animator;
 
-        if (animator.status === STATUS.Running) {
-          for (let j = animations.length - 1; j >= 0; j--) {
-            const animation = animations[j];
+      if (animator.status === STATUS.Running) {
+        for (let j = animations.length - 1; j >= 0; j--) {
+          const animation = animations[j];
 
-            if (!animation.startTime) {
-              animation.startTime = millis;
-            }
+          if (!animation.startTime) {
+            animation.startTime = millis;
+          }
 
-            // TODO: support morph
-            // @see https://codepen.io/osublake/pen/RWeOWX
-            const isFinished = await this.update(entity, animation, millis);
-            if (isFinished) {
-              animations.splice(j, 1);
-              if (animation.callback) {
-                animation.callback();
-              }
+          // TODO: support morph
+          // @see https://codepen.io/osublake/pen/RWeOWX
+          const isFinished = this.update(entity, animation, millis);
+          if (isFinished) {
+            animations.splice(j, 1);
+            if (animation.callback) {
+              animation.callback();
             }
           }
         }
-      })
-    );
+      }
+    });
   }
 
   createAnimation(entity: Entity, args: any) {
@@ -249,7 +247,10 @@ export class Timeline implements System {
     const hasOwnProperty = Object.prototype.hasOwnProperty;
     each(animations, (item) => {
       // 后一个动画开始执行的时间 < 前一个动画的结束时间 && 后一个动画的执行时间 > 前一个动画的延迟
-      if (startTime + delay < item.startTime + (item.delay || 0) + item.duration && duration > (item.delay || 0)) {
+      if (
+        startTime + delay < item.startTime + (item.delay || 0) + item.duration &&
+        duration > (item.delay || 0)
+      ) {
         each(animation.toAttrs, (v, k) => {
           if (hasOwnProperty.call(item.toAttrs, k)) {
             delete item.toAttrs[k];
@@ -262,7 +263,7 @@ export class Timeline implements System {
     return animations;
   }
 
-  private async update(entity: Entity, animation: Animation, elapsed: number) {
+  private update(entity: Entity, animation: Animation, elapsed: number) {
     // support direction & count like CSS3 Animation
     // @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-direction
     // @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-iteration-count
@@ -299,7 +300,7 @@ export class Timeline implements System {
       // @ts-ignore
       ratio = d3Ease[easing](ratio);
       if (onFrame) {
-        await this.changeEntityAttributes(entity, onFrame(ratio));
+        this.changeEntityAttributes(entity, onFrame(ratio));
       } else {
         const updatedAttrs: Record<string, any> = {};
 
@@ -311,22 +312,22 @@ export class Timeline implements System {
             updatedAttrs[k] = updater.update(entity, fromAttrs[k], toAttrs[k], ratio);
           }
         }
-        await this.changeEntityAttributes(entity, updatedAttrs);
+        this.changeEntityAttributes(entity, updatedAttrs);
       }
       return false;
     } else {
       // 动画已执行完
       if (onFrame) {
-        await this.changeEntityAttributes(entity, onFrame(1));
+        this.changeEntityAttributes(entity, onFrame(1));
       } else {
-        await this.changeEntityAttributes(entity, toAttrs);
+        this.changeEntityAttributes(entity, toAttrs);
       }
       return true;
     }
   }
 
-  private async changeEntityAttributes(entity: Entity, attributes: Record<string, any>) {
+  private changeEntityAttributes(entity: Entity, attributes: Record<string, any>) {
     const group = this.displayObjectPool.getByName(entity.getName());
-    await Promise.all(Object.keys(attributes).map((k) => group.setAttribute(k, attributes[k])));
+    Object.keys(attributes).forEach((k) => group.setAttribute(k, attributes[k]));
   }
 }

@@ -1,14 +1,12 @@
 import EventEmitter from 'eventemitter3';
-import { vec3 } from 'gl-matrix';
 import { CanvasConfig, Cursor } from './types';
 import { cleanExistedCanvas } from './utils/canvas';
 import { DisplayObject, DISPLAY_OBJECT_EVENT } from './DisplayObject';
-import { ContextService, SceneGraphService } from './services';
+import { ContextService } from './services';
 import { container } from './inversify.config';
 import { RenderingService } from './services/RenderingService';
 import { RenderingContext } from './services/RenderingContext';
 import { RBushNode, Renderable } from './components';
-import { DisplayObjectPool } from './DisplayObjectPool';
 import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE } from './Camera';
 import RBush from 'rbush';
 import { containerModule as commonContainerModule } from './canvas-module';

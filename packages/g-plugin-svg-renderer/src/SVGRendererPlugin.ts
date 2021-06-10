@@ -114,7 +114,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         svgElement.$groupEl = $groupEl;
 
         const $parentGroupEl =
-          object.parentNode?.getEntity().getComponent(ElementSVG).$groupEl ||
+          (object.parentNode && object.parentNode.getEntity().getComponent(ElementSVG).$groupEl) ||
           this.contextService.getContext();
 
         if ($parentGroupEl) {
@@ -128,10 +128,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.render.tap(SVGRendererPlugin.tag, (objects: DisplayObject[]) => {
-      this.applyTransform(
-        this.contextService.getDomElement(),
-        this.camera.getOrthoMatrix(),
-      );
+      const $namespace = this.contextService.getDomElement();
+      if ($namespace) {
+        this.applyTransform($namespace, this.camera.getOrthoMatrix());
+      }
 
       objects.forEach((object) => {
         const entity = object.getEntity();

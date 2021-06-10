@@ -1,5 +1,10 @@
 module.exports = {
-  collectCoverageFrom: ['packages/**/*.{ts,tsx}', '!**/node_modules/**', '!**/__tests__/**', '!**/*.d.ts'],
+  collectCoverageFrom: [
+    'packages/**/*.{ts,tsx}',
+    '!**/node_modules/**',
+    '!**/__tests__/**',
+    '!**/*.d.ts',
+  ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'clover'],
   coverageThreshold: {
@@ -11,4 +16,10 @@ module.exports = {
     },
   },
   roots: ['<rootDir>packages'],
+  runner: 'jest-electron/runner',
+  testEnvironment: 'jest-electron/environment',
+  preset: 'ts-jest',
+  testMatch: ['**/*/__tests__/*.spec.+(ts|tsx|js)'],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
+  modulePathIgnorePatterns: ['dist'],
 };

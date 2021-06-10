@@ -1,6 +1,10 @@
 import { inject, injectable } from 'inversify';
 import { DisplayObject } from '../DisplayObject';
-import { InteractionCallback, InteractionEvent, InteractivePointerEvent } from '../InteractionEvent';
+import {
+  InteractionCallback,
+  InteractionEvent,
+  InteractivePointerEvent,
+} from '../InteractionEvent';
 import { ContextService, RenderingPlugin, RenderingService, RenderingContext } from '../services';
 import { CanvasConfig } from '../types';
 
@@ -39,9 +43,9 @@ export class EventPlugin implements RenderingPlugin {
           (event, displayObject) => {
             this.dispatchEvent('mousewheel', displayObject, event);
           },
-          false
+          false,
         );
-      }
+      },
     );
 
     renderingService.hooks.pointerMove.tap(
@@ -75,9 +79,9 @@ export class EventPlugin implements RenderingPlugin {
               }
             }
           },
-          true
+          true,
         );
-      }
+      },
     );
 
     renderingService.hooks.pointerDown.tap(
@@ -97,14 +101,21 @@ export class EventPlugin implements RenderingPlugin {
               this.dispatchEvent('touchstart', displayObject, interactionEvent);
             }
             // emit a mouse event for "pen" pointers, the way a browser would emit a fallback event
-            else if (event.formattedEvent.pointerType === 'mouse' || event.formattedEvent.pointerType === 'pen') {
+            else if (
+              event.formattedEvent.pointerType === 'mouse' ||
+              event.formattedEvent.pointerType === 'pen'
+            ) {
               const isRightButton = event.formattedEvent.button === 2;
-              this.dispatchEvent(isRightButton ? 'rightdown' : 'mousedown', displayObject, interactionEvent);
+              this.dispatchEvent(
+                isRightButton ? 'rightdown' : 'mousedown',
+                displayObject,
+                interactionEvent,
+              );
             }
           },
-          true
+          true,
         );
-      }
+      },
     );
 
     renderingService.hooks.pointerUp.tap(
@@ -125,7 +136,11 @@ export class EventPlugin implements RenderingPlugin {
               this.dispatchEvent(isRightButton ? 'rightup' : 'mouseup', displayObject, event);
               this.dispatchEvent(isRightButton ? 'rightclick' : 'click', displayObject, event);
             } else {
-              this.dispatchEvent(isRightButton ? 'rightupoutside' : 'mouseupoutside', displayObject, event);
+              this.dispatchEvent(
+                isRightButton ? 'rightupoutside' : 'mouseupoutside',
+                displayObject,
+                event,
+              );
             }
           }
 
@@ -136,7 +151,7 @@ export class EventPlugin implements RenderingPlugin {
             }
           }
         });
-      }
+      },
     );
 
     renderingService.hooks.pointerCancel.tap(
@@ -152,12 +167,12 @@ export class EventPlugin implements RenderingPlugin {
             this.dispatchEvent('touchcancel', displayObject, event);
           }
         });
-      }
+      },
     );
 
     renderingService.hooks.pointerOver.tap(
       EventPlugin.tag,
-      (event: PointerEvent, originalEvent: InteractivePointerEvent) => {}
+      (event: PointerEvent, originalEvent: InteractivePointerEvent) => {},
     );
 
     renderingService.hooks.pointerOut.tap(
@@ -179,9 +194,9 @@ export class EventPlugin implements RenderingPlugin {
               this.dispatchEvent('mouseout', displayObject, event);
             }
           },
-          false
+          false,
         );
-      }
+      },
     );
   }
 
@@ -189,7 +204,7 @@ export class EventPlugin implements RenderingPlugin {
     event: PointerEvent,
     originalEvent: InteractivePointerEvent,
     cancelled: boolean,
-    callback: InteractionCallback
+    callback: InteractionCallback,
   ) => {
     const $el = this.contextService.getDomElement();
 
@@ -218,12 +233,16 @@ export class EventPlugin implements RenderingPlugin {
     return {
       clientX,
       clientY,
-      x: clientX - (bbox?.left || 0),
-      y: clientY - (bbox?.top || 0),
+      x: clientX - ((bbox && bbox.left) || 0),
+      y: clientY - ((bbox && bbox.top) || 0),
     };
   }
 
-  private processInteractive(interactionEvent: InteractionEvent, callback: InteractionCallback, hitTest?: boolean) {
+  private processInteractive(
+    interactionEvent: InteractionEvent,
+    callback: InteractionCallback,
+    hitTest?: boolean,
+  ) {
     const position = this.getEventPosition(interactionEvent.formattedEvent);
     interactionEvent.x = position.x;
     interactionEvent.y = position.y;

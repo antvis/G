@@ -12,18 +12,18 @@ export interface System {
    * * create global entities
    * * init event listeners
    */
-  initialize?(): Promise<void> | void;
+  initialize?(): void;
   initialized?: boolean;
 
   /**
    * in a similar way to Unity's `Update()`, run once per frame
    */
-  execute(entities: Entity[], delta?: number, millis?: number): Promise<void> | void;
+  execute(entities: Entity[], delta?: number, millis?: number): void;
 
   /**
    * run once at the end of your program
    */
-  tearDown?(entities: Entity[]): Promise<void> | void;
+  tearDown?(entities: Entity[]): void;
 
   onEntityAdded?(entity: Entity): void;
   onEntityRemoved?(entity: Entity): void;

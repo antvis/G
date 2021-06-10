@@ -1,12 +1,13 @@
 import { expect } from 'chai';
 import circle from '../src/circle';
+import { Point } from '../src/types';
 import { distance } from '../src/util';
 
-function equalPoint(obj1, obj2) {
+function equalPoint(obj1: Point, obj2: Point) {
   return distance(obj1.x, obj1.y, obj2.x, obj2.y) < 0.01;
 }
 
-function equal(v1, v2) {
+function equal(v1: number, v2: number) {
   return Math.abs(v1 - v2) < 0.01;
 }
 describe('circle test', () => {

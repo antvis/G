@@ -61,7 +61,7 @@ export default {
    * @param {number} t 比例 0-1 之间的值
    * @return {object} 计算出来的点信息，包含 x,y
    */
-  pointAt(x: number, y: number, width: number, height: number, t: number): Point {
+  pointAt(x: number, y: number, width: number, height: number, t: number): Point | null {
     // 边界判断，避免获取顶点
     if (t > 1 || t < 0) {
       return null;

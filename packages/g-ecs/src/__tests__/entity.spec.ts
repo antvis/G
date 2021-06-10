@@ -39,10 +39,6 @@ describe('Entity', () => {
     .registerComponent(C4Copy);
   let e: Entity;
 
-  beforeEach(() => {
-    e = world.createEntity();
-  });
-
   it('should create entity with name correctly', () => {
     e = world.createEntity('test entity');
     expect(e.getName()).to.eq('test entity');
@@ -84,7 +80,7 @@ describe('Entity', () => {
   });
 
   it('should create many entities correctly', () => {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 10; i++) {
       world.createEntity(`${i}`);
     }
 

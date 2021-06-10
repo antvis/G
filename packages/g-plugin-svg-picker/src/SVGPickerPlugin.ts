@@ -1,5 +1,11 @@
 import { inject, injectable } from 'inversify';
-import { DisplayObjectPool, RenderingService, RenderingPlugin, SceneGraphService, PickingResult } from '@antv/g';
+import {
+  DisplayObjectPool,
+  RenderingService,
+  RenderingPlugin,
+  SceneGraphService,
+  PickingResult,
+} from '@antv/g';
 // import { ElementSVG } from '@antv/g-plugin-svg-renderer';
 
 /**
@@ -28,7 +34,7 @@ export class SVGPickerPlugin implements RenderingPlugin {
 
         // find by id
         let target = null;
-        const id = element?.getAttribute('id');
+        const id = element && element.getAttribute('id');
         if (id) {
           target = this.displayObjectPool.getByName(id);
         }

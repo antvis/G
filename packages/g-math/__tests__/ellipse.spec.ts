@@ -2,12 +2,13 @@ import { expect } from 'chai';
 import ellipse from '../src/ellipse';
 import circle from '../src/circle';
 import { distance, piMod } from '../src/util';
+import { Point } from '../src/types';
 
-function equalPoint(obj1, obj2) {
+function equalPoint(obj1: Point, obj2: Point) {
   return distance(obj1.x, obj1.y, obj2.x, obj2.y) < 0.3;
 }
 
-function equal(v1, v2) {
+function equal(v1: number, v2: number) {
   return Math.abs(v1 - v2) < 0.01;
 }
 
@@ -35,7 +36,9 @@ describe('test ellipse', () => {
   it('point at, use circle', () => {
     expect(ellipse.pointAt(0, 0, 10, 10, 0)).eqls({ x: 10, y: 0 });
     expect(equalPoint(ellipse.pointAt(0, 0, 10, 10, 0.5), { x: -10, y: 0 })).eqls(true);
-    expect(equalPoint(ellipse.pointAt(0, 0, 10, 10, 0.3), circle.pointAt(0, 0, 10, 0.3))).eqls(true);
+    expect(equalPoint(ellipse.pointAt(0, 0, 10, 10, 0.3), circle.pointAt(0, 0, 10, 0.3))).eqls(
+      true,
+    );
 
     expect(ellipse.pointAt(100, 100, 10, 10, 0)).eqls({ x: 110, y: 100 });
     expect(equalPoint(ellipse.pointAt(100, 100, 10, 10, 0.5), { x: 100 - 10, y: 100 })).eqls(true);
@@ -45,7 +48,9 @@ describe('test ellipse', () => {
     expect(ellipse.pointAt(0, 0, 10, 5, 0)).eqls({ x: 10, y: 0 });
     expect(equalPoint(ellipse.pointAt(0, 0, 10, 5, 0.5), { x: -10, y: 0 })).eqls(true);
     const point = circle.pointAt(0, 0, 10, 0.3);
-    expect(equalPoint(ellipse.pointAt(0, 0, 10, 5, 0.3), { x: point.x, y: point.y / 2 })).eqls(true);
+    expect(equalPoint(ellipse.pointAt(0, 0, 10, 5, 0.3), { x: point.x, y: point.y / 2 })).eqls(
+      true,
+    );
 
     expect(ellipse.pointAt(10, 10, 10, 5, 0)).eqls({ x: 20, y: 10 });
   });
@@ -73,7 +78,9 @@ describe('test ellipse', () => {
   it('nearest point, exception', () => {
     expect(ellipse.nearestPoint(100, 100, 0, 5, 20, 30)).eqls({ x: 100, y: 100 });
     // 点在椭圆上
-    expect(equalPoint(ellipse.nearestPoint(100, 100, 20, 10, 120, 100), { x: 120, y: 100 })).eqls(true);
+    expect(equalPoint(ellipse.nearestPoint(100, 100, 20, 10, 120, 100), { x: 120, y: 100 })).eqls(
+      true,
+    );
   });
 
   it('pointDistance', () => {

@@ -1,6 +1,6 @@
 # 3D extension for G
 
-Provide some 3D shapes such as Cube, Sphere.
+Provide some 3D shapes such as Cube, Sphere, support `g-webgl` only.
 
 ## Cube
 
@@ -15,19 +15,19 @@ webglRenderer.registerPlugin(containerModule);
 
 // create a canvas
 const canvas = new Canvas({
-  container: 'container',
-  width: 600,
-  height: 500,
-  renderer: webglRenderer,
+    container: 'container',
+    width: 600,
+    height: 500,
+    renderer: webglRenderer,
 });
 
 // create a cube
 const cube = new Cube({
-  attrs: {
-    width: 200,
-    height: 200,
-    depth: 200,
-    fill: '#1890FF',
-  },
+    attrs: {
+        width: 200,
+        height: 200,
+        depth: 200,
+        fill: '#1890FF',
+    },
 });
 ```

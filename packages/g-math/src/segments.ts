@@ -40,7 +40,7 @@ export function lengthOfSegment(points: PointTuple[]) {
  * @param {number} t 百分比 0-1
  * @return {object} 点的坐标
  */
-export function pointAtSegments(points: PointTuple[], t: number): Point {
+export function pointAtSegments(points: PointTuple[], t: number): Point | null {
   // 边界判断
   if (t > 1 || t < 0 || points.length < 2) {
     return null;

@@ -15,7 +15,10 @@ export class SceneGraphAdapter implements Adapter<DisplayObject, DisplayObject> 
   existsOne(test: Predicate<DisplayObject>, nodes: DisplayObject[]): boolean {
     return nodes.some((checked) => {
       const groups = this.getChildren(checked);
-      return this.isTag(checked) && (test(checked) || (groups.length > 0 && this.existsOne(test, groups)));
+      return (
+        this.isTag(checked) &&
+        (test(checked) || (groups.length > 0 && this.existsOne(test, groups)))
+      );
     });
   }
 
@@ -47,7 +50,7 @@ export class SceneGraphAdapter implements Adapter<DisplayObject, DisplayObject> 
    * this is expected to include the current node as well
    */
   getSiblings(node: DisplayObject): DisplayObject[] {
-    return node.parentNode?.children || [];
+    return (node.parentNode && node.parentNode.children) || [];
   }
 
   getText(node: DisplayObject): string {

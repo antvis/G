@@ -27,7 +27,15 @@ function derivativeAt(p0: number, p1: number, p2: number, t: number) {
 }
 
 // 分割贝塞尔曲线
-function divideQuadratic(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, t: number) {
+function divideQuadratic(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  t: number,
+) {
   // 划分点
   const xt = quadraticAt(x1, x2, x3, t);
   const yt = quadraticAt(y1, y2, y3, t);
@@ -50,8 +58,8 @@ function quadraticLength(
   y2: number,
   x3: number,
   y3: number,
-  iterationCount: number
-) {
+  iterationCount: number,
+): number {
   if (iterationCount === 0) {
     return (distance(x1, y1, x2, y2) + distance(x2, y2, x3, y3) + distance(x1, y1, x3, y3)) / 2;
   }
@@ -60,6 +68,7 @@ function quadraticLength(
   const right = quadratics[1];
   left.push(iterationCount - 1);
   right.push(iterationCount - 1);
+  // @ts-ignore
   return quadraticLength.apply(null, left) + quadraticLength.apply(null, right);
 }
 
@@ -81,15 +90,41 @@ export default {
   length(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number) {
     return quadraticLength(x1, y1, x2, y2, x3, y3, 3);
   },
-  nearestPoint(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, x0: number, y0: number) {
+  nearestPoint(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    x3: number,
+    y3: number,
+    x0: number,
+    y0: number,
+  ) {
     return nearestPoint([x1, x2, x3], [y1, y2, y3], x0, y0, quadraticAt);
   },
-  pointDistance(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, x0: number, y0: number) {
+  pointDistance(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    x3: number,
+    y3: number,
+    x0: number,
+    y0: number,
+  ) {
     const point = this.nearestPoint(x1, y1, x2, y2, x3, y3, x0, y0);
     return distance(point.x, point.y, x0, y0);
   },
   interpolationAt: quadraticAt,
-  pointAt(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, t: number): Point {
+  pointAt(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    x3: number,
+    y3: number,
+    t: number,
+  ): Point {
     return {
       x: quadraticAt(x1, x2, x3, t),
       y: quadraticAt(y1, y2, y3, t),

@@ -49,16 +49,16 @@ export class SystemManager {
       this.systems.sort(
         (a, b) =>
           ((a.constructor as SystemConstructor<S>).priority || 0) -
-          ((b.constructor as SystemConstructor<S>).priority || 0)
+          ((b.constructor as SystemConstructor<S>).priority || 0),
       );
     }
   }
 
-  public async execute(delta?: number, millis?: number) {
+  public execute(delta?: number, millis?: number) {
     for (const system of this.systems) {
       if (system.initialized && system.execute) {
         // const t1 = performance.now();
-        await system.execute(this.getEntities(system), delta, millis);
+        system.execute(this.getEntities(system), delta, millis);
         // console.log((system.constructor as SystemConstructor<System>).tag, performance.now() - t1);
       }
     }

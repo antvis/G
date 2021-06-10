@@ -27,11 +27,12 @@ export class FrustumCullingStrategy implements CullingStrategy {
     // get VP matrix from camera
     this.camera.getFrustum().extractFromVPMatrix(vpMatrix);
 
-    const parentVisibilityPlaneMask = hierarchy?.parent?.getComponent(Cullable)?.visibilityPlaneMask;
+    const parentVisibilityPlaneMask =
+      hierarchy.parent && hierarchy.parent.getComponent(Cullable).visibilityPlaneMask;
     cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
       aabb,
       parentVisibilityPlaneMask || Mask.INDETERMINATE,
-      this.camera.getFrustum().planes
+      this.camera.getFrustum().planes,
     );
 
     cullable.visible = cullable.visibilityPlaneMask !== Mask.OUTSIDE;
