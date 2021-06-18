@@ -39,9 +39,9 @@ export interface ArrowConfig extends ShapeCfg {
 export class Arrow extends CustomElement {
   static tag = 'arrow';
 
-  private body: DisplayObject | null;
-  private startHead: DisplayObject | null;
-  private endHead: DisplayObject | null;
+  private body: DisplayObject;
+  private startHead?: DisplayObject;
+  private endHead?: DisplayObject;
 
   constructor(config: ArrowConfig) {
     super({
