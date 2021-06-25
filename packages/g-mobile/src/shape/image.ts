@@ -53,9 +53,8 @@ class ImageShape extends ShapeBase {
 
   _setImage(img) {
     const attrs = this.attrs;
-    console.log('xxxx', img, miniCanvas.isMiniNative(), miniCanvas, miniCanvas.isMini());
     // 1.0 小程序canvas下只能用string绘制
-    if (miniCanvas.isMini() && !miniCanvas.isMiniNative()) {
+    if (miniCanvas?.isMini() && !miniCanvas?.isMiniNative()) {
       this.attr('img', img);
       return;
     }
@@ -63,8 +62,8 @@ class ImageShape extends ShapeBase {
     // 以下兼容2.0 小程序canvas
     if (isString(img)) {
       let image = null;
-      if (miniCanvas.isMiniNative()) {
-        image = miniCanvas.get('extra').createImage();
+      if (miniCanvas?.isMiniNative()) {
+        image = miniCanvas?.get('extra').createImage();
       } else {
         image = new Image();
       }
@@ -91,7 +90,7 @@ class ImageShape extends ShapeBase {
       image.src = img;
       // loading 过程中不绘制
       this.set('loading', true);
-    } else if (miniCanvas.isMiniNative() || img instanceof Image) {
+    } else if (miniCanvas?.isMiniNative() || img instanceof Image) {
       if (!attrs.width) {
         attrs.width = img.width;
       }
@@ -130,7 +129,7 @@ class ImageShape extends ShapeBase {
       return;
     }
 
-    if (miniCanvas.isMini()) {
+    if (miniCanvas?.isMini()) {
       context.drawImage(img, x, y, width, height);
       return;
     }
