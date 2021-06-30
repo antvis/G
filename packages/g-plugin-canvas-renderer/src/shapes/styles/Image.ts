@@ -1,6 +1,6 @@
 import { ShapeAttrs } from '@antv/g';
 import { inject, injectable } from 'inversify';
-import { isNil } from '@antv/util';
+import { isNil, isString } from '@antv/util';
 import { ImagePool } from '../ImagePool';
 import { StyleRenderer } from '.';
 
@@ -11,12 +11,22 @@ export class ImageRenderer implements StyleRenderer {
 
   render(context: CanvasRenderingContext2D, attributes: ShapeAttrs) {
     const { width = 0, height = 0, img, sx, sy, swidth, sheight, anchor = [0, 0] } = attributes;
-    // image has been loaded in `mounted` hook
-    const image = this.imagePool.getImageSync(img);
-    if (!isNil(sx) && !isNil(sy) && !isNil(swidth) && !isNil(sheight)) {
-      context.drawImage(image, sx, sy, swidth, sheight, -anchor[0] * width, -anchor[1] * height, width, height);
+
+    let image: HTMLImageElement = img;
+    let iw = width;
+    let ih = height;
+    if (isString(img)) {
+      // image has been loaded in `mounted` hook
+      image = this.imagePool.getImageSync(img);
     } else {
-      context.drawImage(image, -anchor[0] * width, -anchor[1] * height, width, height);
+      iw ||= img.width;
+      ih ||= img.height;
+    }
+
+    if (!isNil(sx) && !isNil(sy) && !isNil(swidth) && !isNil(sheight)) {
+      context.drawImage(image, sx, sy, swidth, sheight, -anchor[0] * iw, -anchor[1] * ih, iw, ih);
+    } else {
+      context.drawImage(image, -anchor[0] * iw, -anchor[1] * ih, iw, ih);
     }
   }
 }
