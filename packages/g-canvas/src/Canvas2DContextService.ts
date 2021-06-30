@@ -49,7 +49,7 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   }
 
   destroy() {
-    if (this.$container && this.$canvas) {
+    if (this.$container && this.$canvas && this.$canvas.parentNode) {
       // destroy context
       this.$container.removeChild(this.$canvas);
     }
