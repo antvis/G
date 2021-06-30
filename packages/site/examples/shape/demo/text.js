@@ -92,12 +92,18 @@ rendererFolder.open();
 
 const fontFolder = gui.addFolder('font');
 const fontConfig = {
+  text: '这是测试文本This is text',
   fontFamily: 'PingFang SC',
   fontSize: 60,
   fontStyle: 'normal',
   fontWeight: 'normal',
   fontVariant: 'normal',
 };
+fontFolder
+  .add(fontConfig, 'text')
+  .onFinishChange((content) => {
+    text.attr('text', content);
+  });
 fontFolder
   .add(fontConfig, 'fontFamily', ['PingFang SC', 'fantasy', 'Arial', 'Times', 'Microsoft YaHei'])
   .onChange((fontFamily) => {

@@ -1,4 +1,4 @@
-import { IModel, IModelDrawOptions, IModelInitializationOptions, IUniform } from '..';
+import { IAttribute, IElements, IModel, IModelDrawOptions, IModelInitializationOptions, IUniform } from '..';
 import regl from 'regl';
 import { extractUniforms } from '../../../utils/uniform';
 import {
@@ -16,6 +16,8 @@ import ReglElements from './ReglElements';
 import ReglFramebuffer from './ReglFramebuffer';
 import ReglTexture2D from './ReglTexture2D';
 
+const PROP_PREFIX = '__regl__';
+
 /**
  * adaptor for regl.DrawCommand
  */
@@ -25,6 +27,12 @@ export default class ReglModel implements IModel {
   private uniforms: {
     [key: string]: IUniform;
   } = {};
+  private attributes: {
+    [key: string]: IAttribute;
+  } = {};
+  private elements: IElements;
+  private count: number;
+  private instances: number;
 
   constructor(reGl: regl.Regl, options: IModelInitializationOptions) {
     this.reGl = reGl;
@@ -57,9 +65,14 @@ export default class ReglModel implements IModel {
     }
 
     const reglAttributes: { [key: string]: regl.Attribute } = {};
-    Object.keys(attributes).forEach((name: string) => {
-      reglAttributes[name] = (attributes[name] as ReglAttribute).get();
-    });
+    if (attributes) {
+      this.attributes = attributes;
+      Object.keys(attributes).forEach((name: string) => {
+        // use regl prop API
+        // @ts-ignore
+        reglAttributes[name] = reGl.prop(name);
+      });
+    }
 
     const defineStmts = (defines && this.generateDefines(defines)) || '';
     const drawParams: regl.DrawConfig = {
@@ -78,16 +91,22 @@ ${vs}`,
       primitive: primitiveMap[primitive === undefined ? gl.TRIANGLES : primitive],
     };
     if (instances) {
-      drawParams.instances = instances;
+      this.instances = instances;
+      // @ts-ignore
+      drawParams.instances = reGl.prop(`${PROP_PREFIX}instances`);
     }
 
     // elements 中可能包含 count，此时不应传入
     if (count) {
-      drawParams.count = count;
+      this.count = count;
+      // @ts-ignore
+      drawParams.count = reGl.prop(`${PROP_PREFIX}count`);
     }
 
     if (elements) {
-      drawParams.elements = (elements as ReglElements).get();
+      this.elements = elements;
+      // @ts-ignore
+      drawParams.elements = reGl.prop(`${PROP_PREFIX}elements`);
     }
 
     if (scissor) {
@@ -113,35 +132,79 @@ ${vs}`,
     };
   }
 
-  public draw(options: IModelDrawOptions) {
-    const uniforms: {
-      [key: string]: IUniform;
-    } = {
-      ...this.uniforms,
-      ...extractUniforms(options.uniforms || {}),
-    };
+  /**
+   * support batch-rendering, eg. draw([prop1, prop2])
+   * @see https://github.com/regl-project/regl/blob/gh-pages/API.md#batch-rendering
+   */
+  public draw(options: IModelDrawOptions | IModelDrawOptions[]) {
+    let batches: IModelDrawOptions[] = [];
+    if (!Array.isArray(options)) {
+      batches = [options];
+    } else {
+      batches = options;
+    }
 
-    const reglDrawProps: {
-      [key: string]: regl.Framebuffer | regl.Texture2D | number | number[] | boolean;
-    } = {};
+    const batchProps = batches.map((batch) => {
+      const reglDrawProps: {
+        [key: string]: regl.Framebuffer | regl.Texture2D | number | number[] | boolean;
+      } = {};
 
-    Object.keys(uniforms).forEach((uniformName: string) => {
-      const type = typeof uniforms[uniformName];
-      if (
-        type === 'boolean' ||
-        type === 'number' ||
-        Array.isArray(uniforms[uniformName]) ||
+      const attributes: {
+        [key: string]: IAttribute;
+      } = {
+        ...this.attributes,
+        ...batch.attributes,
+      };
+      Object.keys(attributes).forEach((attributeName: string) => {
         // @ts-ignore
-        uniforms[uniformName].BYTES_PER_ELEMENT
-      ) {
-        reglDrawProps[uniformName] = uniforms[uniformName] as number | number[] | boolean;
-      } else if (type === 'string') {
-        // TODO: image url
-      } else {
-        reglDrawProps[uniformName] = (uniforms[uniformName] as ReglFramebuffer | ReglTexture2D).get();
+        reglDrawProps[attributeName] = (attributes[attributeName] as ReglAttribute).get();
+      });
+
+      const uniforms: {
+        [key: string]: IUniform;
+      } = {
+        ...this.uniforms,
+        ...extractUniforms(batch.uniforms || {}),
+      };
+
+      Object.keys(uniforms).forEach((uniformName: string) => {
+        const type = typeof uniforms[uniformName];
+        if (
+          type === 'boolean' ||
+          type === 'number' ||
+          Array.isArray(uniforms[uniformName]) ||
+          // @ts-ignore
+          uniforms[uniformName].BYTES_PER_ELEMENT
+        ) {
+          reglDrawProps[uniformName] = uniforms[uniformName] as number | number[] | boolean;
+        } else if (type === 'string') {
+          // TODO: image url
+        } else {
+          reglDrawProps[uniformName] = (uniforms[uniformName] as ReglFramebuffer | ReglTexture2D).get();
+        }
+      });
+
+      if (this.elements) {
+        // @ts-ignore
+        reglDrawProps[`${PROP_PREFIX}elements`] = ((batch.elements || this.elements) as ReglElements).get();
       }
+
+      const count = batch.count || this.count;
+      if (count) {
+        // @ts-ignore
+        reglDrawProps[`${PROP_PREFIX}count`] = count;
+      }
+
+      // @ts-ignore     
+      const instances = batch.instances || this.instances;
+      if (instances) {
+        reglDrawProps[`${PROP_PREFIX}instances`] = instances;
+      }
+
+      return reglDrawProps;
     });
-    this.drawCommand(reglDrawProps);
+
+    this.drawCommand(batchProps);
   }
 
   public destroy() {

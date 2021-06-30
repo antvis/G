@@ -197,10 +197,8 @@ export class CircleModelBuilder implements ModelBuilder {
 
     const attributes = this.buildAttributes(config);
 
-    console.log(attributes);
-
     geometry.maxInstancedCount = attributes.instancedSizes.length / 2;
-    geometry.vertexCount = 6;
+    // geometry.vertexCount = 6;
 
     geometry.setIndex([0, 1, 2, 0, 2, 3]);
 

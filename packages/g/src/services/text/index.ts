@@ -208,7 +208,7 @@ export class TextService {
       return this.getFromCache(char, letterSpacing, cache, context);
     };
 
-    text.split('').forEach((char: string, i: number) => {
+    Array.from(text).forEach((char: string, i: number) => {
       const prevChar = text[i - 1];
       const nextChar = text[i + 1];
       const width = calcWidth(char);

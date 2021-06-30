@@ -162,73 +162,73 @@ type stencilOp = gl.ZERO | gl.KEEP | gl.REPLACE | gl.INVERT | gl.INCR | gl.DECR 
 
 type BlendingFunctionCombined = Partial<{
   src:
-    | gl.ZERO
-    | gl.ONE
-    | gl.SRC_COLOR
-    | gl.ONE_MINUS_SRC_COLOR
-    | gl.SRC_ALPHA
-    | gl.ONE_MINUS_SRC_ALPHA
-    | gl.DST_COLOR
-    | gl.ONE_MINUS_DST_COLOR
-    | gl.DST_ALPHA
-    | gl.ONE_MINUS_DST_ALPHA
-    | gl.CONSTANT_COLOR
-    | gl.ONE_MINUS_CONSTANT_COLOR
-    | gl.CONSTANT_ALPHA
-    | gl.ONE_MINUS_CONSTANT_ALPHA
-    | gl.SRC_ALPHA_SATURATE;
+  | gl.ZERO
+  | gl.ONE
+  | gl.SRC_COLOR
+  | gl.ONE_MINUS_SRC_COLOR
+  | gl.SRC_ALPHA
+  | gl.ONE_MINUS_SRC_ALPHA
+  | gl.DST_COLOR
+  | gl.ONE_MINUS_DST_COLOR
+  | gl.DST_ALPHA
+  | gl.ONE_MINUS_DST_ALPHA
+  | gl.CONSTANT_COLOR
+  | gl.ONE_MINUS_CONSTANT_COLOR
+  | gl.CONSTANT_ALPHA
+  | gl.ONE_MINUS_CONSTANT_ALPHA
+  | gl.SRC_ALPHA_SATURATE;
   dst:
-    | gl.ZERO
-    | gl.ONE
-    | gl.SRC_COLOR
-    | gl.ONE_MINUS_SRC_COLOR
-    | gl.SRC_ALPHA
-    | gl.ONE_MINUS_SRC_ALPHA
-    | gl.DST_COLOR
-    | gl.ONE_MINUS_DST_COLOR
-    | gl.DST_ALPHA
-    | gl.ONE_MINUS_DST_ALPHA
-    | gl.CONSTANT_COLOR
-    | gl.ONE_MINUS_CONSTANT_COLOR
-    | gl.CONSTANT_ALPHA
-    | gl.ONE_MINUS_CONSTANT_ALPHA
-    | gl.SRC_ALPHA_SATURATE;
+  | gl.ZERO
+  | gl.ONE
+  | gl.SRC_COLOR
+  | gl.ONE_MINUS_SRC_COLOR
+  | gl.SRC_ALPHA
+  | gl.ONE_MINUS_SRC_ALPHA
+  | gl.DST_COLOR
+  | gl.ONE_MINUS_DST_COLOR
+  | gl.DST_ALPHA
+  | gl.ONE_MINUS_DST_ALPHA
+  | gl.CONSTANT_COLOR
+  | gl.ONE_MINUS_CONSTANT_COLOR
+  | gl.CONSTANT_ALPHA
+  | gl.ONE_MINUS_CONSTANT_ALPHA
+  | gl.SRC_ALPHA_SATURATE;
 }>;
 
 type BlendingFunctionSeparate = Partial<{
   srcRGB:
-    | gl.ZERO
-    | gl.ONE
-    | gl.SRC_COLOR
-    | gl.ONE_MINUS_SRC_COLOR
-    | gl.SRC_ALPHA
-    | gl.ONE_MINUS_SRC_ALPHA
-    | gl.DST_COLOR
-    | gl.ONE_MINUS_DST_COLOR
-    | gl.DST_ALPHA
-    | gl.ONE_MINUS_DST_ALPHA
-    | gl.CONSTANT_COLOR
-    | gl.ONE_MINUS_CONSTANT_COLOR
-    | gl.CONSTANT_ALPHA
-    | gl.ONE_MINUS_CONSTANT_ALPHA
-    | gl.SRC_ALPHA_SATURATE;
+  | gl.ZERO
+  | gl.ONE
+  | gl.SRC_COLOR
+  | gl.ONE_MINUS_SRC_COLOR
+  | gl.SRC_ALPHA
+  | gl.ONE_MINUS_SRC_ALPHA
+  | gl.DST_COLOR
+  | gl.ONE_MINUS_DST_COLOR
+  | gl.DST_ALPHA
+  | gl.ONE_MINUS_DST_ALPHA
+  | gl.CONSTANT_COLOR
+  | gl.ONE_MINUS_CONSTANT_COLOR
+  | gl.CONSTANT_ALPHA
+  | gl.ONE_MINUS_CONSTANT_ALPHA
+  | gl.SRC_ALPHA_SATURATE;
   srcAlpha: number;
   dstRGB:
-    | gl.ZERO
-    | gl.ONE
-    | gl.SRC_COLOR
-    | gl.ONE_MINUS_SRC_COLOR
-    | gl.SRC_ALPHA
-    | gl.ONE_MINUS_SRC_ALPHA
-    | gl.DST_COLOR
-    | gl.ONE_MINUS_DST_COLOR
-    | gl.DST_ALPHA
-    | gl.ONE_MINUS_DST_ALPHA
-    | gl.CONSTANT_COLOR
-    | gl.ONE_MINUS_CONSTANT_COLOR
-    | gl.CONSTANT_ALPHA
-    | gl.ONE_MINUS_CONSTANT_ALPHA
-    | gl.SRC_ALPHA_SATURATE;
+  | gl.ZERO
+  | gl.ONE
+  | gl.SRC_COLOR
+  | gl.ONE_MINUS_SRC_COLOR
+  | gl.SRC_ALPHA
+  | gl.ONE_MINUS_SRC_ALPHA
+  | gl.DST_COLOR
+  | gl.ONE_MINUS_DST_COLOR
+  | gl.DST_ALPHA
+  | gl.ONE_MINUS_DST_ALPHA
+  | gl.CONSTANT_COLOR
+  | gl.ONE_MINUS_CONSTANT_COLOR
+  | gl.CONSTANT_ALPHA
+  | gl.ONE_MINUS_CONSTANT_ALPHA
+  | gl.SRC_ALPHA_SATURATE;
   dstAlpha: number;
 }>;
 
@@ -344,7 +344,8 @@ export interface IModelDrawOptions {
     [key: string]: IAttribute;
   };
   elements?: IElements;
-
+  count?: number;
+  instances?: number;
   blend?: IBlendOptions;
 }
 
@@ -357,7 +358,7 @@ export interface IModelDrawOptions {
  */
 export interface IModel {
   addUniforms(uniforms: { [key: string]: IUniform }): void;
-  draw(options: IModelDrawOptions): void;
+  draw(options: IModelDrawOptions | IModelDrawOptions[]): void;
   destroy(): void;
 }
 
@@ -392,16 +393,16 @@ export interface ITexture2DInitializationOptions {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
    */
   format?:
-    | gl.ALPHA
-    | gl.LUMINANCE
-    | gl.LUMINANCE_ALPHA
-    | gl.RGB
-    | gl.RGBA
-    | gl.RGBA4
-    | gl.RGB5_A1
-    | gl.RGB565
-    | gl.DEPTH_COMPONENT
-    | gl.DEPTH_STENCIL;
+  | gl.ALPHA
+  | gl.LUMINANCE
+  | gl.LUMINANCE_ALPHA
+  | gl.RGB
+  | gl.RGBA
+  | gl.RGBA4
+  | gl.RGB5_A1
+  | gl.RGB565
+  | gl.DEPTH_COMPONENT
+  | gl.DEPTH_STENCIL;
 
   /**
    * 纹理数据类型，可能需要引入扩展，例如 ext.HALF_FLOAT_OES
@@ -412,15 +413,15 @@ export interface ITexture2DInitializationOptions {
    * 纹理 pixel source
    */
   data?:
-    | undefined
-    | HTMLCanvasElement
-    | HTMLImageElement
-    | number[]
-    | number[][]
-    | Uint8Array
-    | Uint16Array
-    | Uint32Array
-    | Uint8ClampedArray;
+  | undefined
+  | HTMLCanvasElement
+  | HTMLImageElement
+  | number[]
+  | number[][]
+  | Uint8Array
+  | Uint16Array
+  | Uint32Array
+  | Uint8ClampedArray;
 
   /**
    * 纹理参数
@@ -430,12 +431,12 @@ export interface ITexture2DInitializationOptions {
   mag?: gl.NEAREST | gl.LINEAR;
   /* Sets minification filter. Default: 'nearest' */
   min?:
-    | gl.NEAREST
-    | gl.LINEAR
-    | gl.LINEAR_MIPMAP_LINEAR
-    | gl.NEAREST_MIPMAP_LINEAR
-    | gl.LINEAR_MIPMAP_NEAREST
-    | gl.NEAREST_MIPMAP_NEAREST;
+  | gl.NEAREST
+  | gl.LINEAR
+  | gl.LINEAR_MIPMAP_LINEAR
+  | gl.NEAREST_MIPMAP_LINEAR
+  | gl.LINEAR_MIPMAP_NEAREST
+  | gl.NEAREST_MIPMAP_NEAREST;
   /* Sets wrap mode on S axis. Default: 'clamp' */
   wrapS?: gl.REPEAT | gl.CLAMP_TO_EDGE | gl.MIRRORED_REPEAT;
   /* Sets wrap mode on T axis. Default: 'clamp' */

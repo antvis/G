@@ -1,8 +1,6 @@
-import { Shaping } from './layout';
 import { GlyphPosition } from './GlyphAtlas';
 import { Point } from './AlphaImage';
-
-const GLYPH_PBF_BORDER = 3;
+import { BASE_FONT_BUFFER, PositionedGlyph } from './GlyphManager';
 
 export type SymbolQuad = {
   tl: Point;
@@ -15,7 +13,6 @@ export type SymbolQuad = {
     w: number;
     h: number;
   };
-  writingMode: any | void;
   glyphOffset: [number, number];
 };
 
@@ -24,16 +21,9 @@ export type SymbolQuad = {
  * @private
  */
 export function getGlyphQuads(
-  shaping: Shaping,
-  textOffset: [number, number],
-  // layer: SymbolStyleLayer,
-  alongLine: boolean,
-  // feature: Feature,
+  positionedGlyphs: PositionedGlyph[],
   positions: { [key: string]: { [key: number]: GlyphPosition } }
 ): Array<SymbolQuad> {
-  // const textRotate = layer.layout.get('text-rotate').evaluate(feature, {}) * Math.PI / 180;
-
-  const positionedGlyphs = shaping.positionedGlyphs;
   const quads: Array<SymbolQuad> = [];
 
   for (let k = 0; k < positionedGlyphs.length; k++) {
@@ -47,15 +37,13 @@ export function getGlyphQuads(
 
     // The rects have an addditional buffer that is not included in their size.
     const glyphPadding = 1.0;
-    const rectBuffer = GLYPH_PBF_BORDER + glyphPadding;
+    const rectBuffer = BASE_FONT_BUFFER + glyphPadding;
 
     const halfAdvance = (glyph.metrics.advance * positionedGlyph.scale) / 2;
 
-    const glyphOffset: [number, number] = alongLine ? [positionedGlyph.x + halfAdvance, positionedGlyph.y] : [0, 0];
+    const glyphOffset: [number, number] = [0, 0];
 
-    const builtInOffset = alongLine
-      ? [0, 0]
-      : [positionedGlyph.x + halfAdvance + textOffset[0], positionedGlyph.y + textOffset[1]];
+    const builtInOffset = [positionedGlyph.x + halfAdvance, positionedGlyph.y];
 
     const x1 = (glyph.metrics.left - rectBuffer) * positionedGlyph.scale - halfAdvance + builtInOffset[0];
     const y1 = (-glyph.metrics.top - rectBuffer) * positionedGlyph.scale + builtInOffset[1];
@@ -67,7 +55,7 @@ export function getGlyphQuads(
     const bl = { x: x1, y: y2 };
     const br = { x: x2, y: y2 };
 
-    quads.push({ tl, tr, bl, br, tex: rect, writingMode: shaping.writingMode, glyphOffset });
+    quads.push({ tl, tr, bl, br, tex: rect, glyphOffset });
   }
 
   return quads;

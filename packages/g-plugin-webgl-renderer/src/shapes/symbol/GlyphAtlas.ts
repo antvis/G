@@ -18,6 +18,9 @@ export type GlyphPosition = {
 
 export type GlyphPositions = { [key: string]: { [key: number]: GlyphPosition } };
 
+/**
+ * merge SDFs into a large squared atlas
+ */
 export default class GlyphAtlas {
   image: AlphaImage;
   positions: GlyphPositions;
