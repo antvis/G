@@ -47,7 +47,29 @@ const image = new Image({
 **说明**：图片来源，支持以下两种：
 
 - 图片地址字符串，加载成功后展示
-- 自行创建 [Image](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image) 对象
+- 自行创建 [Image](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image) 对象，在 `onload` 回调中创建 G Image，示例如下：
+
+```js
+import { Image as GImage, Canvas } from '@antv/g';
+
+let image;
+const img = new Image();
+img.src = 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ';
+img.crossOrigin = 'Anonymous';
+img.onload = () => {
+  // 图片加载成功后创建
+  image = new GImage({
+    attrs: {
+      x: 200,
+      y: 100,
+      width: 200,
+      height: 200,
+      img, // 传入 Image 对象
+    },
+  });
+  canvas.appendChild(image);
+};
+```
 
 ### width
 
