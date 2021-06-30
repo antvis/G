@@ -1,11 +1,24 @@
 // @ts-ignore
 import * as TinySDF from '@mapbox/tiny-sdf';
-import { inject, injectable } from 'inversify';
-import { TextService } from '@antv/g';
+import { injectable } from 'inversify';
 import { AlphaImage, StyleGlyph } from './AlphaImage';
+import GlyphAtlas from './GlyphAtlas';
+import { ITexture2D, RenderingEngine } from '../../services/renderer';
+import { gl } from '../../services/renderer/constants';
 
-const fontsize = 24; // Font size in pixels
-const buffer = 3; // Whitespace buffer around a glyph in pixels
+export type PositionedGlyph = {
+  glyph: number; // charCode
+  x: number;
+  y: number;
+  scale: number; // 根据缩放等级计算的缩放比例
+  fontStack: string;
+};
+
+export const BASE_FONT_WIDTH = 24;
+export const BASE_FONT_BUFFER = 3;
+
+const fontsize = BASE_FONT_WIDTH; // Font size in pixels
+const buffer = BASE_FONT_BUFFER; // Whitespace buffer around a glyph in pixels
 const radius = 8; // How many pixels around the glyph shape to use for encoding distance
 const cutoff = 0.25; // How much of the radius (relative) is used for the inside part the glyph
 
@@ -21,28 +34,8 @@ export function getDefaultCharacterSet(): string[] {
   return charSet;
 }
 
-function extractFontStack(fontStack: string) {
-  const fontFamily = fontStack.trim().substring(0, fontStack.lastIndexOf(' '));
-  let fontWeight = '400';
-  if (/bold/i.test(fontStack)) {
-    fontWeight = '900';
-  } else if (/medium/i.test(fontStack)) {
-    fontWeight = '500';
-  } else if (/light/i.test(fontStack)) {
-    fontWeight = '200';
-  }
-
-  return {
-    fontFamily,
-    fontWeight,
-  };
-}
-
 @injectable()
 export class GlyphManager {
-  @inject(TextService)
-  private textService: TextService;
-
   private sdfGeneratorCache: {
     [fontStack: string]: TinySDF;
   } = {};
@@ -53,9 +46,129 @@ export class GlyphManager {
     };
   } = {};
 
-  generateSDF(fontStack: string = '', char: string): StyleGlyph {
-    const { fontFamily, fontWeight } = extractFontStack(fontStack);
+  private glyphAtlas: GlyphAtlas;
+  private glyphMap: { [key: string]: { [key: number]: StyleGlyph } } = {};
+  private glyphAtlasTexture: ITexture2D;
 
+  getMap() {
+    return this.glyphMap;
+  }
+
+  getAtlas() {
+    return this.glyphAtlas;
+  }
+
+  getAtlasTexture() {
+    return this.glyphAtlasTexture;
+  }
+
+  layout(
+    lines: string[],
+    fontStack: string,
+    lineHeight: number,
+    textAlign: "start" | "center" | "end" | "left" | "right",
+    letterSpacing: number,
+    offsetY: number,
+  ): PositionedGlyph[] {
+    const positionedGlyphs: PositionedGlyph[] = [];
+    const yOffset = offsetY;
+
+    let x = 0;
+    let y = yOffset;
+
+    const justify = (textAlign === 'right' || textAlign === 'end')
+      ? 1 : (textAlign === 'left' || textAlign === 'start') ? 0 : 0.5;
+
+    lines.forEach((line) => {
+      let lineStartIndex = positionedGlyphs.length;
+      Array.from(line).forEach((char) => {
+        // fontStack
+        const positions = this.glyphMap[fontStack];
+        const charCode = char.charCodeAt(0);
+        const glyph = positions && positions[charCode];
+
+        if (glyph) {
+          positionedGlyphs.push({
+            glyph: charCode,
+            x,
+            y,
+            scale: 1,
+            fontStack,
+          });
+          x += glyph.metrics.advance + letterSpacing;
+        }
+      });
+
+      const lineWidth = x - letterSpacing;
+      for (let i = lineStartIndex; i < positionedGlyphs.length; i++) {
+        positionedGlyphs[i].x = positionedGlyphs[i].x - justify * lineWidth;
+      }
+
+      x = 0;
+      y += lineHeight;
+    });
+
+    return positionedGlyphs;
+  }
+
+  generateAtlas(
+    fontStack: string = '',
+    fontFamily: string,
+    fontWeight: string,
+    text: string,
+    engine: RenderingEngine,
+  ) {
+    let newChars: string[] = [];
+    if (!this.glyphMap[fontStack]) {
+      newChars = getDefaultCharacterSet();
+    }
+
+    const existedChars = Object.keys(this.glyphMap[fontStack] || {});
+    Array.from(new Set(text.split(''))).forEach((char) => {
+      if (existedChars.indexOf(char.charCodeAt(0).toString()) === -1) {
+        newChars.push(char);
+      }
+    });
+
+    if (newChars.length) {
+      const glyphMap = newChars
+        .map((char) => {
+          return this.generateSDF(fontStack, fontFamily, fontWeight, char);
+        })
+        .reduce((prev, cur) => {
+          // @ts-ignore
+          prev[cur.id] = cur;
+          return prev;
+        }, {}) as StyleGlyph;
+
+      this.glyphMap[fontStack] = {
+        ...this.glyphMap[fontStack],
+        ...glyphMap,
+      };
+      this.glyphAtlas = new GlyphAtlas(this.glyphMap);
+      const { width: atlasWidth, height: atlasHeight, data } = this.glyphAtlas.image;
+
+      if (this.glyphAtlasTexture) {
+        this.glyphAtlasTexture.destroy();
+      }
+
+      this.glyphAtlasTexture = engine.createTexture2D({
+        width: atlasWidth,
+        height: atlasHeight,
+        mag: gl.LINEAR,
+        min: gl.LINEAR,
+        format: gl.ALPHA,
+        data,
+      });
+    }
+  }
+
+  private generateSDF(
+    fontStack: string = '',
+    fontFamily: string,
+    fontWeight: string,
+    char: string,
+  ): StyleGlyph {
     const charCode = char.charCodeAt(0);
     let sdfGenerator = this.sdfGeneratorCache[fontStack];
     if (!sdfGenerator) {
@@ -78,15 +191,16 @@ export class GlyphManager {
     return {
       id: charCode,
       // 在 canvas 中绘制字符，使用 Uint8Array 存储 30*30 sdf 数据
-      bitmap: new AlphaImage({ width: 30, height: 30 }, sdfGenerator.draw(char)),
+      bitmap: new AlphaImage({
+        width: BASE_FONT_BUFFER * 2 + BASE_FONT_WIDTH,
+        height: BASE_FONT_BUFFER * 2 + BASE_FONT_WIDTH,
+      }, sdfGenerator.draw(char)),
       metrics: {
-        width: 24,
-        height: 24,
+        width: BASE_FONT_WIDTH,
+        height: BASE_FONT_WIDTH,
         left: 0,
-        top: -5,
-        // 对于 CJK 需要调整字符间距
-        // advance: getCharAdvance(charCode)
-        advance: isCJK(charCode) ? 24 : this.textMetricsCache[fontStack][char],
+        top: -8,
+        advance: isCJK(charCode) ? BASE_FONT_WIDTH : this.textMetricsCache[fontStack][char],
       },
     };
   }

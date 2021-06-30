@@ -29,7 +29,7 @@ import { Renderable3D } from '../components/Renderable3D';
 import { Geometry3D } from '../components/Geometry3D';
 import { IUniformBinding, Material3D } from '../components/Material3D';
 import { View } from '../View';
-import { DisplayObject } from '@antv/g';
+import { ModelBuilder, ModelBuilderFactory } from '../shapes';
 
 export interface RenderPassData {
   output: FrameGraphHandle;
@@ -53,6 +53,9 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
   @inject(Camera)
   private camera: Camera;
+
+  @inject(ModelBuilderFactory)
+  private modelBuilderFactory: (shape: SHAPE) => ModelBuilder;
 
   displayObjectsLastFrame: DisplayObject[] = [];
 
@@ -132,15 +135,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
       fs: material.fragmentShaderGLSL,
       defines: material.defines,
       attributes: geometry.attributes.reduce((cur: { [key: string]: IAttribute }, prev: any) => {
-        if (prev.data && prev.buffer) {
-          cur[prev.name] = createAttribute({
-            buffer: prev.buffer,
-            attributes: prev.attributes,
-            arrayStride: prev.arrayStride,
-            stepMode: prev.stepMode,
-            divisor: prev.stepMode === 'vertex' ? 0 : 1,
-          });
-        }
+        cur[prev.name] = prev.buffer;
         return cur;
       }, {}),
       uniforms: material.uniforms.reduce(
@@ -168,7 +163,6 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
     if (geometry.maxInstancedCount) {
       modelInitializationOptions.instances = geometry.maxInstancedCount;
-      modelInitializationOptions.count = geometry.vertexCount || 3;
     } else {
       modelInitializationOptions.count = geometry.vertexCount || 3;
     }
@@ -250,33 +244,38 @@ export class RenderPass implements IRenderPass<RenderPassData> {
           modelMatrixAttribute3Buffer.push(m[12], m[13], m[14], m[15]);
         });
 
-        modelMatrixAttribute0?.buffer?.subData({
+        modelMatrixAttribute0?.buffer?.updateBuffer({
           data: modelMatrixAttribute0Buffer,
           offset: 0,
         });
-        modelMatrixAttribute1?.buffer?.subData({
+        modelMatrixAttribute1?.buffer?.updateBuffer({
           data: modelMatrixAttribute1Buffer,
           offset: 0,
         });
-        modelMatrixAttribute2?.buffer?.subData({
+        modelMatrixAttribute2?.buffer?.updateBuffer({
           data: modelMatrixAttribute2Buffer,
           offset: 0,
         });
-        modelMatrixAttribute3?.buffer?.subData({
+        modelMatrixAttribute3?.buffer?.updateBuffer({
           data: modelMatrixAttribute3Buffer,
           offset: 0,
         });
       }
 
-      renderable3d.model.draw({
-        uniforms: material.uniforms.reduce(
-          (cur: { [key: string]: IUniform }, prev: IUniformBinding) => {
-            cur[prev.name] = prev.data;
-            return cur;
-          },
-          {},
-        ),
-      });
+      const builder = this.modelBuilderFactory(displayObject.nodeType);
+      if (builder && builder.renderModel) {
+        builder.renderModel(displayObject);
+      } else {
+        renderable3d.model.draw({
+          uniforms: material.uniforms.reduce(
+            (cur: { [key: string]: IUniform }, prev: IUniformBinding) => {
+              cur[prev.name] = prev.data;
+              return cur;
+            },
+            {},
+          ),
+        });
+      }
     }
 
     // finish rendering

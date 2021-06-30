@@ -18,6 +18,12 @@ export type GlyphPosition = {
 
 export type GlyphPositions = { [key: string]: { [key: number]: GlyphPosition } };
 
+/**
+ * Merge SDFs into a large squared atlas with `potpack`,
+ * because on WebGL1 context, all textures are resized to a power of two to produce the best quality.
+ * 
+ * @see https://doc.babylonjs.com/advanced_topics/webGL2#power-of-two-textures
+ */
 export default class GlyphAtlas {
   image: AlphaImage;
   positions: GlyphPositions;
