@@ -542,6 +542,11 @@ export interface IRendererConfig {
   useWGSL?: boolean;
 
   /**
+   * disable using WebGL2 when detecting passed
+   */
+  disableWebGL2?: boolean;
+
+  /**
    * 是否开启 multi pass
    */
   enableMultiPassRenderer?: boolean;

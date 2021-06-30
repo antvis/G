@@ -29,6 +29,10 @@ import ReglFramebuffer from './ReglFramebuffer';
 import ReglModel from './ReglModel';
 import ReglTexture2D from './ReglTexture2D';
 import { gl } from '../constants';
+import { overrideContextType } from './webgl2-compatible';
+
+// @see https://stackoverflow.com/questions/54401577/check-if-webgl2-is-supported-and-enabled-in-clients-browser
+const isWebGL2Supported = () => !!document.createElement('canvas').getContext('webgl2');
 
 /**
  * regl rendering engine
@@ -43,26 +47,30 @@ export class WebGLEngine implements RenderingEngine {
   public init(cfg: IRendererConfig): void {
     this.$canvas = cfg.canvas!;
 
-    this.gl = regl({
-      canvas: cfg.canvas,
-      attributes: {
-        alpha: true,
-        // use TAA instead of MSAA
-        // @see https://www.khronos.org/registry/webgl/specs/1.0/#5.2.1
-        antialias: cfg.antialias,
-        premultipliedAlpha: true,
-        preserveDrawingBuffer: true,
-      },
-      pixelRatio: cfg.dpr || 1,
-      // TODO: use extensions
-      extensions: [
-        'OES_element_index_uint',
-        'OES_texture_float',
-        'OES_standard_derivatives', // wireframe
-        'angle_instanced_arrays', // VSM shadow map
-      ],
-      optionalExtensions: ['EXT_texture_filter_anisotropic', 'EXT_blend_minmax', 'WEBGL_depth_texture'],
-    });
+    const createRegl = () =>
+      regl({
+        canvas: cfg.canvas,
+        attributes: {
+          alpha: true,
+          // use TAA instead of MSAA
+          // @see https://www.khronos.org/registry/webgl/specs/1.0/#5.2.1
+          antialias: cfg.antialias,
+          premultipliedAlpha: true,
+          preserveDrawingBuffer: true,
+        },
+        pixelRatio: cfg.dpr || 1,
+        // TODO: use extensions
+        extensions: [
+          'OES_element_index_uint',
+          'OES_texture_float',
+          'OES_standard_derivatives', // wireframe
+          'angle_instanced_arrays', // VSM shadow map
+        ],
+        optionalExtensions: ['EXT_texture_filter_anisotropic', 'EXT_blend_minmax', 'WEBGL_depth_texture'],
+      });
+
+    this.gl = (cfg.disableWebGL2 || !isWebGL2Supported()) ?
+      createRegl() : overrideContextType(createRegl);
   }
 
   public isFloatSupported() {
