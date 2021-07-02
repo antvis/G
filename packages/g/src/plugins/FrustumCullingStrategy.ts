@@ -15,8 +15,12 @@ export class FrustumCullingStrategy implements CullingStrategy {
     const entity = object.getEntity();
     const cullable = entity.getComponent(Cullable);
     const hierarchy = entity.getComponent(SceneGraphNode);
-    const aabb = object.getBounds();
 
+    if (!cullable.enable) {
+      return true;
+    }
+
+    const aabb = object.getBounds();
     if (!aabb) {
       return false;
     }

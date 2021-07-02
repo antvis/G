@@ -75,25 +75,21 @@ export class DirtyCheckPlugin implements RenderingPlugin {
       let dirtyObjects = objects.filter(
         (object) => object.getEntity().getComponent(Renderable).dirty,
       );
-      const enableDirtyRectangleRendering = this.canvasConfig.renderer.getConfig()
-        .enableDirtyRectangleRendering;
-      const dirtyRenderables = dirtyObjects.map((object) =>
-        object.getEntity().getComponent(Renderable),
-      );
-
-      // skip rendering if nothing to redraw
-      if (dirtyRenderables.length === 0) {
-        this.renderingContext.dirtyRectangle = undefined;
-        return [];
-      }
+      const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
 
       if (!enableDirtyRectangleRendering) {
         this.renderingContext.dirtyRectangle = undefined;
         return objects;
       }
 
+      // skip rendering if nothing to redraw
+      if (dirtyObjects.length === 0) {
+        this.renderingContext.dirtyRectangle = undefined;
+        return [];
+      }
+
       // TODO: use threshold when too much dirty renderables
-      const dirtyRectangle = this.mergeDirtyRectangles(dirtyRenderables);
+      const dirtyRectangle = this.mergeDirtyRectangles(dirtyObjects);
       this.renderingContext.removedAABBs.forEach((removedAABB) => {
         removedAABB && dirtyRectangle && dirtyRectangle.add(removedAABB);
       });
@@ -117,7 +113,6 @@ export class DirtyCheckPlugin implements RenderingPlugin {
       });
 
       dirtyObjects = rBushNodes.map(({ name }) => this.displayObjectPool.getByName(name));
-      // .filter((object) => objects.indexOf(object)); // should
 
       return dirtyObjects;
     });
@@ -126,8 +121,7 @@ export class DirtyCheckPlugin implements RenderingPlugin {
     renderer.hooks.afterRender.tap(
       DirtyCheckPlugin.tag,
       (dirtyObjects: DisplayObject[], objects: DisplayObject[]) => {
-        const enableDirtyRectangleRendering = this.canvasConfig.renderer.getConfig()
-          .enableDirtyRectangleRendering;
+        const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
 
         if (enableDirtyRectangleRendering) {
           dirtyObjects.forEach((object) => {
@@ -136,11 +130,14 @@ export class DirtyCheckPlugin implements RenderingPlugin {
             if (!renderable.dirtyAABB) {
               renderable.dirtyAABB = new AABB();
             }
-            // save last dirty aabb
-            renderable.dirtyAABB.update(
-              vec3.copy(vec3.create(), renderable.aabb.center),
-              vec3.copy(vec3.create(), renderable.aabb.halfExtents),
-            );
+            const bounds = object.getBounds();
+            if (bounds) {
+              // save last dirty aabb
+              renderable.dirtyAABB.update(
+                bounds.center,
+                bounds.halfExtents,
+              );
+            }
           });
         }
 
@@ -161,10 +158,11 @@ export class DirtyCheckPlugin implements RenderingPlugin {
    * For now, we just simply merge all the rectangles into one.
    * @see https://idom.me/articles/841.html
    */
-  private mergeDirtyRectangles(dirtyRenderables: Renderable[]): AABB | undefined {
+  private mergeDirtyRectangles(dirtyObjects: DisplayObject[]): AABB | undefined {
     // merge into a big AABB
     let dirtyRectangle: AABB | undefined;
-    dirtyRenderables.forEach(({ aabb, dirtyAABB }) => {
+    dirtyObjects.forEach((object) => {
+      const aabb = object.getBounds();
       if (aabb) {
         if (!dirtyRectangle) {
           dirtyRectangle = new AABB(aabb.center, aabb.halfExtents);
@@ -172,6 +170,8 @@ export class DirtyCheckPlugin implements RenderingPlugin {
           dirtyRectangle.add(aabb);
         }
       }
+
+      const { dirtyAABB } = object.getEntity().getComponent(Renderable);
       if (dirtyAABB) {
         if (!dirtyRectangle) {
           dirtyRectangle = new AABB(dirtyAABB.center, dirtyAABB.halfExtents);

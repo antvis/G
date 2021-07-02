@@ -24,7 +24,7 @@ export abstract class CustomElement extends DisplayObject {
     });
   }
 
-  private handleAttributeChanged(displayObject: DisplayObject, name: string, value: any) {
+  private handleAttributeChanged(name: string, value: any, displayObject: DisplayObject) {
     this.attributeChangedCallback(name, value);
   }
 }

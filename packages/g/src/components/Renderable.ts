@@ -18,7 +18,9 @@ export class Renderable extends Component {
    * 1. 包围盒会受 transform 影响。例如每次 transform 之后应该重新计算包围盒（center 发生偏移）。
    * 2. 多个 Mesh 可以共享一个 Geometry，但可以各自拥有不同的 aabb
    */
-  aabb: AABB;
+  aabb: AABB | undefined;
+
+  aabbDirty = true;
 
   /**
    * dirty rectangle(aabb) in last render frame

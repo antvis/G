@@ -4,5 +4,5 @@ import { AABB } from '../shapes';
 export class Geometry extends Component {
   static tag = 'c-geometry';
 
-  aabb: AABB = new AABB();
+  aabb: AABB | undefined;
 }

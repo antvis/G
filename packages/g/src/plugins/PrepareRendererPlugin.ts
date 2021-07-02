@@ -16,7 +16,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
-    const handleAttributeChanged = (object: DisplayObject, name: string, value: any) => {
+    const handleAttributeChanged = (name: string, value: any, object: DisplayObject) => {
       renderingService.hooks.attributeChanged.call(object, name, value);
     };
 
@@ -40,7 +40,9 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       const renderable = entity.getComponent(Renderable);
       this.renderingContext.rBush.remove(renderable.rBushNode);
 
-      this.renderingContext.removedAABBs.push(renderable.aabb);
+      if (renderable.aabb) {
+        this.renderingContext.removedAABBs.push(renderable.aabb);
+      }
     });
   }
 }

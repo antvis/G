@@ -5,7 +5,16 @@ import { AABB } from '../shapes';
 
 export const RenderingContext = Symbol('RenderingContext');
 export interface RenderingContext {
+  /**
+   * root of scenegraph
+   */
   root: DisplayObject;
+
+  /**
+   * force rendering at next frame
+   */
+  force: boolean;
+
   /**
    * spatial index with RTree which can speed up the search for AABBs
    */

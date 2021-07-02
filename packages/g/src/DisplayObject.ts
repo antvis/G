@@ -114,14 +114,18 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
       sceneGraphNode.attributes.name = this.config.name;
     }
 
-    // init transform
+    const renderable = entity.addComponent(Renderable);
+    entity.addComponent(Cullable);
     entity.addComponent(Transform);
 
     // calculate AABB for current geometry
     const geometry = entity.addComponent(Geometry);
     const updater = this.geometryUpdaterFactory(sceneGraphNode.tagName);
     if (updater) {
+      geometry.aabb = new AABB();
       updater.update(sceneGraphNode.attributes, geometry.aabb);
+      renderable.aabbDirty = true;
+      renderable.dirty = true;
     }
 
     // set position in local space
@@ -138,14 +142,6 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
       sceneGraphNode.attributes.visibility = 'hidden';
     } else {
       sceneGraphNode.attributes.visibility = 'visible';
-    }
-
-    // only shape can be rendered
-    entity.addComponent(Renderable);
-    entity.addComponent(Cullable);
-
-    if (updater) {
-      this.sceneGraphService.updateRenderableAABB(entity);
     }
 
     this.emit(DISPLAY_OBJECT_EVENT.Init);
@@ -458,7 +454,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     this.sceneGraphService.attach(child.getEntity(), this.entity, index);
 
     this.emit(DISPLAY_OBJECT_EVENT.ChildInserted, child);
-    child.emit(DISPLAY_OBJECT_EVENT.Inserted, child);
+    child.emit(DISPLAY_OBJECT_EVENT.Inserted, this);
   }
 
   /**
@@ -471,7 +467,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     this.sceneGraphService.detach(entity);
 
     this.emit(DISPLAY_OBJECT_EVENT.ChildRemoved, child);
-    child.emit(DISPLAY_OBJECT_EVENT.Removed, child);
+    child.emit(DISPLAY_OBJECT_EVENT.Removed, this);
 
     if (destroy) {
       this.forEach((object) => {
@@ -696,14 +692,11 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    */
   toFront() {
     const sceneGraphNode = this.entity.getComponent(SceneGraphNode);
-    const sortable = this.entity.getComponent(Sortable);
     const parentEntity = sceneGraphNode.parent;
     if (parentEntity) {
       const parent = parentEntity.getComponent(SceneGraphNode);
-      sortable.zIndex =
-        Math.max(...parent.children.map((e) => e.getComponent(Sortable).zIndex)) + 1;
-      // need re-sort
-      sortable.dirty = true;
+      const zIndex = Math.max(...parent.children.map((e) => e.getComponent(Sortable).zIndex)) + 1;
+      this.setZIndex(zIndex);
     }
   }
 
@@ -712,14 +705,11 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    */
   toBack() {
     const sceneGraphNode = this.entity.getComponent(SceneGraphNode);
-    const sortable = this.entity.getComponent(Sortable);
     const parentEntity = sceneGraphNode.parent;
     if (parentEntity) {
       const parent = parentEntity.getComponent(SceneGraphNode);
-      sortable.zIndex =
-        Math.min(...parent.children.map((e) => e.getComponent(Sortable).zIndex)) - 1;
-      // need re-sort
-      sortable.dirty = true;
+      const zIndex = Math.min(...parent.children.map((e) => e.getComponent(Sortable).zIndex)) - 1;
+      this.setZIndex(zIndex);
     }
   }
 
@@ -809,29 +799,14 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
    * get bounds in world space, account for children
    */
   getBounds(): AABB | null {
-    let aabb = this.entity.getComponent(Renderable).aabb || null;
-
-    this.children.forEach((child) => {
-      const childBounds = child.getBounds();
-      if (childBounds) {
-        if (!aabb) {
-          aabb = childBounds;
-        } else {
-          aabb.add(childBounds);
-        }
-      }
-    });
-
-    return aabb;
+    return this.sceneGraphService.getBounds(this.entity);
   }
 
   /**
    * get bounds in local space, account for children
    */
   getLocalBounds(): AABB | null {
-    // TODO: remove its parent temporarily
-    // @see https://medium.com/swlh/inside-pixijs-display-objects-and-their-hierarchy-2deef1c01b6e#6d5d
-    return null;
+    return this.sceneGraphService.getLocalBounds(this.entity);
   }
 
   /**
@@ -848,7 +823,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
     // update geometry if some attributes changed such as `width/height/...`
     const geometryUpdater = this.geometryUpdaterFactory(this.nodeType);
     const needUpdateGeometry = geometryUpdater && geometryUpdater.dependencies.indexOf(name) > -1;
-    if (needUpdateGeometry) {
+    if (needUpdateGeometry && geometry.aabb) {
       geometryUpdater!.update(this.attributes, geometry.aabb);
     }
 
@@ -887,12 +862,12 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
 
     // update renderable's aabb, account for world transform
     if (needUpdateGeometry) {
-      this.sceneGraphService.updateRenderableAABB(entity);
+      renderable.aabbDirty = true;
     }
 
     // redraw at next frame
     renderable.dirty = true;
 
-    this.emit(DISPLAY_OBJECT_EVENT.AttributeChanged, this, name, value);
+    this.emit(DISPLAY_OBJECT_EVENT.AttributeChanged, name, value, this);
   }
 }

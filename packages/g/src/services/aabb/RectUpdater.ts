@@ -13,7 +13,7 @@ export class RectUpdater implements GeometryAABBUpdater {
     const { x = 0, y = 0, lineWidth = 0, lineAppendWidth = 0, anchor = [0, 0], img } = attributes;
 
     // resize with HTMLImageElement's size
-    if (!isString(img)) {
+    if (img && !isString(img)) {
       if (!attributes.width) {
         attributes.width = img.width;
       }
