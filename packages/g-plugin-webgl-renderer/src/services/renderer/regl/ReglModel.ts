@@ -39,7 +39,6 @@ export default class ReglModel implements IModel {
     const {
       vs,
       fs,
-      defines,
       attributes,
       uniforms,
       primitive,
@@ -74,20 +73,11 @@ export default class ReglModel implements IModel {
       });
     }
 
-    const defineStmts = (defines && this.generateDefines(defines)) || '';
     const drawParams: regl.DrawConfig = {
       attributes: reglAttributes,
-      frag: `#ifdef GL_FRAGMENT_PRECISION_HIGH
-  precision highp float;
-#else
-  precision mediump float;
-#endif
-${defineStmts}
-${fs}`,
+      frag: fs,
       uniforms: reglUniforms,
-      vert: `
-${defineStmts}
-${vs}`,
+      vert: vs,
       primitive: primitiveMap[primitive === undefined ? gl.TRIANGLES : primitive],
     };
     if (instances) {
@@ -308,11 +298,5 @@ ${vs}`,
         face: cullFaceMap[face],
       };
     }
-  }
-
-  private generateDefines(defines: Record<string, number | boolean>) {
-    return Object.keys(defines)
-      .map((name) => `#define ${name} ${Number(defines[name])}`)
-      .join('\n');
   }
 }

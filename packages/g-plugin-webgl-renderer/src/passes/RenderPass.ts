@@ -6,7 +6,6 @@ import {
   SceneGraphNode,
   SHAPE,
   Batch,
-  DisplayObjectPool,
   DisplayObject,
 } from '@antv/g';
 import { inject, injectable } from 'inversify';
@@ -19,7 +18,6 @@ import {
   IAttribute,
   IModelInitializationOptions,
   IUniform,
-  IViewport,
   RenderingEngine,
 } from '../services/renderer';
 import { gl } from '../services/renderer/constants';
@@ -30,6 +28,7 @@ import { Geometry3D } from '../components/Geometry3D';
 import { IUniformBinding, Material3D } from '../components/Material3D';
 import { View } from '../View';
 import { ModelBuilder, ModelBuilderFactory } from '../shapes';
+import { ShaderModuleService, ShaderType } from '../services/shader-module';
 
 export interface RenderPassData {
   output: FrameGraphHandle;
@@ -47,6 +46,9 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
   @inject(SceneGraphService)
   private sceneGraph: SceneGraphService;
+
+  @inject(ShaderModuleService)
+  private shaderModuleService: ShaderModuleService;
 
   @inject(View)
   private view: View;
@@ -131,9 +133,8 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     }
 
     const modelInitializationOptions: IModelInitializationOptions = {
-      vs: material.vertexShaderGLSL,
-      fs: material.fragmentShaderGLSL,
-      defines: material.defines,
+      vs: this.shaderModuleService.transpile(material.vertexShaderGLSL, ShaderType.Vertex, this.engine.shaderLanguage, material.defines),
+      fs: this.shaderModuleService.transpile(material.fragmentShaderGLSL, ShaderType.Fragment, this.engine.shaderLanguage, material.defines),
       attributes: geometry.attributes.reduce((cur: { [key: string]: IAttribute }, prev: any) => {
         cur[prev.name] = prev.buffer;
         return cur;

@@ -19,6 +19,8 @@ const precisionRegExp = /precision\s+(high|low|medium)p\s+float/;
 const globalDefaultprecision =
   '#ifdef GL_FRAGMENT_PRECISION_HIGH\n precision highp float;\n #else\n precision mediump float;\n#endif\n';
 const includeRegExp = /#pragma include (["^+"]?["\ "[a-zA-Z_0-9](.*)"]*?)/g;
+const extensionRegExp = /#extension.+\n/g;
+const GLSL3_OUT_VARIABLE_NAME = 'gwebgl_out';
 
 /**
  * 提供 ShaderModule 管理服务
@@ -32,6 +34,18 @@ export interface IModuleParams {
   };
 }
 
+export enum TranspileTarget {
+  GLSL1, // WebGL1
+  GLSL3, // WebGL2
+  WGSL, // WebGPU
+}
+
+export enum ShaderType {
+  Vertex,
+  Fragment,
+  Compute
+}
+
 export const ShaderModuleService = Symbol('ShaderModuleService');
 export interface ShaderModuleService {
   registerModule(moduleName: string, moduleParams: IModuleParams): void;
@@ -42,6 +56,11 @@ export interface ShaderModuleService {
    */
   registerBuiltinModules(): void;
   destroy(): void;
+
+  /**
+   * transpile GLSL 1.0 to 3.0
+   */
+  transpile(content: string, type: ShaderType, target: TranspileTarget, defines?: Record<string, number | boolean>): string;
 }
 
 @injectable()
@@ -49,7 +68,7 @@ export class DefaultShaderModuleService implements ShaderModuleService {
   private moduleCache: { [key: string]: IModuleParams } = {};
   private rawContentCache: { [key: string]: IModuleParams } = {};
 
-  public registerBuiltinModules() {
+  registerBuiltinModules() {
     this.destroy();
 
     // register shader chunks
@@ -64,7 +83,7 @@ export class DefaultShaderModuleService implements ShaderModuleService {
     this.registerModule('map.declaration', { vs: '', fs: mapDeclarationFrag });
   }
 
-  public registerModule(moduleName: string, moduleParams: IModuleParams) {
+  registerModule(moduleName: string, moduleParams: IModuleParams) {
     // prevent registering the same module multiple times
     if (this.rawContentCache[moduleName]) {
       return;
@@ -84,11 +103,11 @@ export class DefaultShaderModuleService implements ShaderModuleService {
       vs: extractedVS,
     };
   }
-  public destroy() {
+  destroy() {
     this.moduleCache = {};
     this.rawContentCache = {};
   }
-  public getModule(moduleName: string): IModuleParams {
+  getModule(moduleName: string): IModuleParams {
     if (this.moduleCache[moduleName]) {
       return this.moduleCache[moduleName];
     }
@@ -98,8 +117,7 @@ export class DefaultShaderModuleService implements ShaderModuleService {
 
     const { content: vs, includeList: vsIncludeList } = this.processModule(rawVS, [], 'vs');
     const { content: fs, includeList: fsIncludeList } = this.processModule(rawFS, [], 'fs');
-    let compiledFs = fs;
-    // TODO: extract uniforms and their default values from GLSL
+    // extract uniforms and their default values from GLSL
     const uniforms: {
       [key: string]: any;
     } = uniq(vsIncludeList.concat(fsIncludeList).concat(moduleName)).reduce((prev, cur: string) => {
@@ -109,20 +127,71 @@ export class DefaultShaderModuleService implements ShaderModuleService {
       };
     }, {});
 
-    /**
-     * set default precision for fragment shader
-     * https://stackoverflow.com/questions/28540290/why-it-is-necessary-to-set-precision-for-the-fragment-shader
-     */
-    if (!precisionRegExp.test(fs)) {
-      compiledFs = globalDefaultprecision + fs;
-    }
-
     this.moduleCache[moduleName] = {
-      fs: compiledFs.trim(),
+      fs: fs.trim(),
       uniforms,
       vs: vs.trim(),
     };
     return this.moduleCache[moduleName];
+  }
+
+  transpile(content: string, type: ShaderType, target: TranspileTarget, defines?: Record<string, number | boolean>) {
+    let header = '';
+    if (target === TranspileTarget.GLSL3) {
+      header = '#version 300 es';
+      if (type === ShaderType.Vertex) {
+        content = content
+          .replace(/varying/g, 'out')
+          .replace(/attribute/g, 'in');
+      } else if (type === ShaderType.Fragment) {
+        content = content
+          .replace(/varying/g, 'in')
+          .replace(/gl_FragColor/g, GLSL3_OUT_VARIABLE_NAME)
+          .replace(/texture2D/g, 'texture');
+
+        content = `out vec4 ${GLSL3_OUT_VARIABLE_NAME};\n${content}`;
+      }
+
+      // remove built-in extensions in webgl2
+      // @see https://developer.mozilla.org/en-US/docs/Web/API/OES_standard_derivatives
+      const { content: extracted } = this.extractExtensions(content);
+      content = extracted;
+    }
+
+    if (type === ShaderType.Fragment) {
+      /**
+       * set default precision for fragment shader
+       * https://stackoverflow.com/questions/28540290/why-it-is-necessary-to-set-precision-for-the-fragment-shader
+       */
+      if (!precisionRegExp.test(content)) {
+        content = globalDefaultprecision + content;
+      }
+    }
+
+    // prepend #define
+    const defineStatements = this.generateDefines(defines || {});
+
+    return `${header}
+${defineStatements}
+${content}`;
+  }
+
+  private generateDefines(defines: Record<string, number | boolean>) {
+    return Object.keys(defines)
+      .map((name) => `#define ${name} ${Number(defines[name])}`)
+      .join('\n');
+  }
+
+  private extractExtensions(shader: string) {
+    const extensions: string[] = [];
+    const content = shader.replace(extensionRegExp, (strMatch) => {
+      extensions.push(strMatch);
+      return '';
+    });
+    return {
+      extensions: extensions.join(''),
+      content,
+    };
   }
 
   private processModule(

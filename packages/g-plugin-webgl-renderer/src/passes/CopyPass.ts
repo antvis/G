@@ -1,8 +1,6 @@
 import { inject, injectable } from 'inversify';
 import copyFrag from '../services/shader-module/shaders/webgl.copy.frag.glsl';
 import copyVert from '../services/shader-module/shaders/webgl.copy.vert.glsl';
-import copyFragWebGPU from '../services/shader-module/shaders/webgpu.copy.frag.glsl';
-import copyVertWebGPU from '../services/shader-module/shaders/webgpu.copy.vert.glsl';
 import { FrameGraphHandle } from '../components/framegraph/FrameGraphHandle';
 import { FrameGraphPass } from '../components/framegraph/FrameGraphPass';
 import { PassNode } from '../components/framegraph/PassNode';
@@ -12,6 +10,7 @@ import { gl } from '../services/renderer/constants';
 import { FrameGraphEngine, IRenderPass } from '../FrameGraphEngine';
 import { RenderPass, RenderPassData } from './RenderPass';
 import { View } from '../View';
+import { ShaderModuleService, ShaderType } from '../services/shader-module';
 
 export interface CopyPassData {
   input: FrameGraphHandle;
@@ -24,6 +23,9 @@ export class CopyPass implements IRenderPass<CopyPassData> {
 
   @inject(RenderingEngine)
   private readonly engine: RenderingEngine;
+
+  @inject(ShaderModuleService)
+  private readonly shaderModuleService: ShaderModuleService;
 
   @inject(ResourcePool)
   private readonly resourcePool: ResourcePool;
@@ -54,8 +56,8 @@ export class CopyPass implements IRenderPass<CopyPassData> {
 
     if (!this.model) {
       const model = createModel({
-        vs: this.engine.supportWebGPU ? copyVertWebGPU : copyVert,
-        fs: this.engine.supportWebGPU ? copyFragWebGPU : copyFrag,
+        vs: this.shaderModuleService.transpile(copyVert, ShaderType.Vertex, this.engine.shaderLanguage),
+        fs: this.shaderModuleService.transpile(copyFrag, ShaderType.Fragment, this.engine.shaderLanguage),
         attributes: {
           // rendering a fullscreen triangle instead of quad
           // @see https://www.saschawillems.de/blog/2016/08/13/vulkan-tutorial-on-rendering-a-fullscreen-quad-without-buffers/

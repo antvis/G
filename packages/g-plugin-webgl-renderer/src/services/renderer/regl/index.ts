@@ -30,6 +30,7 @@ import ReglModel from './ReglModel';
 import ReglTexture2D from './ReglTexture2D';
 import { gl } from '../constants';
 import { overrideContextType } from './webgl2-compatible';
+import { TranspileTarget } from '../../shader-module';
 
 // @see https://stackoverflow.com/questions/54401577/check-if-webgl2-is-supported-and-enabled-in-clients-browser
 const isWebGL2Supported = () => !!document.createElement('canvas').getContext('webgl2');
@@ -43,6 +44,8 @@ export class WebGLEngine implements RenderingEngine {
   public useWGSL = false;
   private $canvas: HTMLCanvasElement;
   private gl: regl.Regl;
+
+  shaderLanguage: TranspileTarget = TranspileTarget.GLSL1;
 
   public init(cfg: IRendererConfig): void {
     this.$canvas = cfg.canvas!;
@@ -69,8 +72,13 @@ export class WebGLEngine implements RenderingEngine {
         optionalExtensions: ['EXT_texture_filter_anisotropic', 'EXT_blend_minmax', 'WEBGL_depth_texture'],
       });
 
-    this.gl = (cfg.disableWebGL2 || !isWebGL2Supported()) ?
-      createRegl() : overrideContextType(createRegl);
+    const useWebgl1 = cfg.disableWebGL2 || !isWebGL2Supported();
+    if (useWebgl1) {
+      this.gl = createRegl();
+    } else {
+      this.gl = overrideContextType(createRegl);
+      this.shaderLanguage = TranspileTarget.GLSL3;
+    }
   }
 
   public isFloatSupported() {

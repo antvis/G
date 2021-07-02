@@ -1,6 +1,7 @@
 import { Frustum } from '@antv/g';
 import { Entity } from '@antv/g-ecs';
 import { mat4, vec3 } from 'gl-matrix';
+import { TranspileTarget } from '../shader-module';
 import { gl } from './constants';
 
 export const RenderingEngine = Symbol('RenderingEngine');
@@ -615,7 +616,7 @@ export type BufferData =
 
 export interface RenderingEngine {
   supportWebGPU: boolean;
-  useWGSL: boolean;
+  shaderLanguage: TranspileTarget;
   init(cfg: IRendererConfig): void;
   clear(options: IClearOptions): void;
   createModel(options: IModelInitializationOptions): IModel;
