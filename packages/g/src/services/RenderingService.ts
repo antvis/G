@@ -69,9 +69,6 @@ export class RenderingService implements CanvasService {
 
   render() {
     const root = this.renderingContext.root;
-
-    // this.sceneGraphService.syncHierarchy(root.getEntity());
-
     const objects: DisplayObject[] = [];
     root.forEach((node) => {
       // if (!node.getEntity().getComponent(SceneGraphNode).shadow) {
@@ -83,7 +80,7 @@ export class RenderingService implements CanvasService {
 
     // subset of all objects to render at this frame
     const objectsToRender = this.hooks.prepare.call(objects, root);
-    if (objectsToRender.length === 0) {
+    if (objectsToRender.length === 0 && !this.renderingContext.force) {
       return;
     }
 

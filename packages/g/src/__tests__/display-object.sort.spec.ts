@@ -37,45 +37,45 @@ describe('DisplayObject Sort', () => {
     expect(group1.getLast()).to.eqls(group4);
 
     // 2, 3, 4
-    const chilren = [...group1.children];
-    chilren.sort(sceneGraphService.sort);
-    expect(chilren[0]).to.eqls(group2);
-    expect(chilren[2]).to.eqls(group4);
+    const children = [...group1.children];
+    children.sort(sceneGraphService.sort);
+    expect(children[0]).to.eqls(group2);
+    expect(children[2]).to.eqls(group4);
 
     // bring group2 to front
     // 3, 4, 2(1)
     group2.setZIndex(1);
-    chilren.sort(sceneGraphService.sort);
-    expect(chilren[0]).to.eqls(group3);
-    expect(chilren[2]).to.eqls(group2);
+    children.sort(sceneGraphService.sort);
+    expect(children[0]).to.eqls(group3);
+    expect(children[2]).to.eqls(group2);
 
     // bring group3 to front
     // 4, 2(1), 3(2)
     group3.setZIndex(2);
-    chilren.sort(sceneGraphService.sort);
-    expect(chilren[0]).to.eqls(group4);
-    expect(chilren[2]).to.eqls(group3);
+    children.sort(sceneGraphService.sort);
+    expect(children[0]).to.eqls(group4);
+    expect(children[2]).to.eqls(group3);
 
     // use stable sort with the same z-index
     // 2(1), 4(1), 3(2)
     group4.setZIndex(1);
-    chilren.sort(sceneGraphService.sort);
-    expect(chilren[0]).to.eqls(group2);
-    expect(chilren[2]).to.eqls(group3);
+    children.sort(sceneGraphService.sort);
+    expect(children[0]).to.eqls(group2);
+    expect(children[2]).to.eqls(group3);
 
     // bring to front
     // 4(1), 3(2), 2(3)
     group2.toFront();
-    chilren.sort(sceneGraphService.sort);
-    expect(chilren[0]).to.eqls(group4);
-    expect(chilren[2]).to.eqls(group2);
+    children.sort(sceneGraphService.sort);
+    expect(children[0]).to.eqls(group4);
+    expect(children[2]).to.eqls(group2);
     expect(group2.getAttribute('z-index')).to.eqls(3);
 
     // push to back
     group2.toBack();
-    chilren.sort(sceneGraphService.sort);
-    expect(chilren[0]).to.eqls(group2);
-    expect(chilren[2]).to.eqls(group3);
+    children.sort(sceneGraphService.sort);
+    expect(children[0]).to.eqls(group2);
+    expect(children[2]).to.eqls(group3);
     expect(group2.getAttribute('z-index')).to.eqls(0);
   });
 });

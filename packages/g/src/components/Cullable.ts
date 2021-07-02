@@ -15,4 +15,6 @@ export class Cullable extends Component {
   visibilityPlaneMask = -1;
 
   visible = false;
+
+  enable = true;
 }

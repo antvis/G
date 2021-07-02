@@ -157,6 +157,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
           if (elementRenderer) {
             elementRenderer.apply($el, attributes);
           }
+
+          this.reorderChildren($groupEl, object.children || []);
         }
 
         // finish rendering, clear dirty flag
@@ -176,25 +178,29 @@ export class SVGRendererPlugin implements RenderingPlugin {
           const children = [...(parent?.children || [])];
 
           if ($groupEl) {
-            // need to reorder parent's children
-            children.sort(this.sceneGraphService.sort);
-
-            // create empty fragment
-            const fragment = document.createDocumentFragment();
-            children.forEach((child: DisplayObject) => {
-              const $el = child.getEntity().getComponent(ElementSVG).$groupEl;
-              if ($el) {
-                fragment.appendChild($el);
-              }
-            });
-
-            $groupEl.appendChild(fragment);
+            this.reorderChildren($groupEl, children);
           }
         }
 
         this.updateAttribute(entity, name, value);
       },
     );
+  }
+
+  private reorderChildren($groupEl: SVGElement, children: DisplayObject[]) {
+    // need to reorder parent's children
+    children.sort(this.sceneGraphService.sort);
+
+    // create empty fragment
+    const fragment = document.createDocumentFragment();
+    children.forEach((child: DisplayObject) => {
+      const $el = child.getEntity().getComponent(ElementSVG).$groupEl;
+      if ($el) {
+        fragment.appendChild($el);
+      }
+    });
+
+    $groupEl.appendChild(fragment);
   }
 
   private applyTransform($el: SVGElement, transform: mat4) {

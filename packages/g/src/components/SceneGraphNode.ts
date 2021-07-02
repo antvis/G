@@ -8,19 +8,12 @@ import { SHAPE, ShapeAttrs } from '../types';
  */
 export class SceneGraphNode extends Component {
   static tag = 'c-scene-graph-node';
-  frozen = false;
 
   /**
    * hierarchy
    */
   parent: Entity | null = null;
   children: Entity[] = [];
-  /**
-   * index of layer, eg.
-   * * root -1
-   * * root's children 0
-   */
-  hierarchyIndex: number = -1;
 
   /**
    * used with `getElementById()`
