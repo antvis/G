@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-svg-renderer",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "A G plugin of renderer implementation with SVG",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -32,8 +32,8 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.1",
-    "@antv/g-ecs": "^1.0.0-alpha.1",
+    "@antv/g": "^1.0.0-alpha.2",
+    "@antv/g-ecs": "^1.0.0-alpha.2",
     "detect-browser": "^5.0.0"
   },
   "devDependencies": {
