@@ -17,5 +17,5 @@ export class Sortable extends Component {
   /**
    * sorted child entities
    */
-  sorted: Entity[] = [];
+  sorted: Entity[];
 }

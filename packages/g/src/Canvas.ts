@@ -67,6 +67,7 @@ export abstract class Canvas extends EventEmitter {
       dirtyRectangle: undefined,
       dirtyEntities: [],
       removedAABBs: [],
+      cameraDirty: true,
     });
   }
 
@@ -77,13 +78,14 @@ export abstract class Canvas extends EventEmitter {
       .setFocalPoint(width / 2, height / 2, 0)
       // origin to be in the top left
       .setOrthographic(width / -2, width / 2, height / -2, height / 2, 0.1, 1000);
-    // camera.setViewOffset(width, height, 0, 0, width / 2, height / 2);
 
     // redraw when camera changed
+    const context = this.container.get<RenderingContext>(RenderingContext);
     camera.on(CAMERA_EVENT.Updated, () => {
       this.getRoot().forEach((node) => {
         node.getEntity().getComponent(Renderable).dirty = true;
       });
+      context.cameraDirty = true;
     });
     // bind camera
     this.container.bind(Camera).toConstantValue(camera);

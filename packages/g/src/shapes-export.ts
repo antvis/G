@@ -70,6 +70,9 @@ export class Line extends DisplayObject {
       attrs: {
         opacity: 1,
         strokeOpacity: 1,
+        lineJoin: 'miter',
+        lineCap: 'butt',
+        lineWidth: 1,
         ...attrs,
       },
       ...rest,
@@ -84,6 +87,8 @@ export class Path extends DisplayObject {
       attrs: {
         opacity: 1,
         strokeOpacity: 1,
+        lineJoin: 'miter',
+        lineCap: 'butt',
         lineWidth: 1,
         ...attrs,
       },
@@ -99,6 +104,9 @@ export class Polyline extends DisplayObject {
       attrs: {
         opacity: 1,
         strokeOpacity: 1,
+        lineJoin: 'miter',
+        lineCap: 'butt',
+        lineWidth: 1,
         ...attrs,
       },
       ...rest,

@@ -1,4 +1,4 @@
-import { SceneGraphNode } from './components';
+import { Geometry, SceneGraphNode } from './components';
 import { DisplayObject, DISPLAY_OBJECT_EVENT } from './DisplayObject';
 import { ShapeCfg } from './types';
 
@@ -11,6 +11,7 @@ export abstract class CustomElement extends DisplayObject {
     super(config);
 
     this.on(DISPLAY_OBJECT_EVENT.ChildInserted, this.handleChildInserted);
+    this.on(DISPLAY_OBJECT_EVENT.ChildRemoved, this.handleChildRemoved);
     this.on(DISPLAY_OBJECT_EVENT.AttributeChanged, this.handleAttributeChanged);
   }
 
@@ -21,6 +22,12 @@ export abstract class CustomElement extends DisplayObject {
       // every child and its children should turn into a shadow node
       // a shadow node doesn't mean to be unrenderable, it's just unsearchable in scenegraph
       node.getEntity().getComponent(SceneGraphNode).shadow = true;
+    });
+  }
+
+  private handleChildRemoved(child: DisplayObject) {
+    child.forEach((node) => {
+      node.getEntity().getComponent(SceneGraphNode).shadow = false;
     });
   }
 

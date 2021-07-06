@@ -10,10 +10,15 @@ import { SHAPE, ShapeCfg } from './types';
  *
  * @see https://developer.playcanvas.com/en/user-manual/optimization/batching/
  */
-export class Batch extends DisplayObject {
+export class Batch extends CustomElement {
   static tag = 'batch';
 
   private batchType?: SHAPE;
+
+  /**
+   * need to reconstruct batch
+   */
+  private dirty = true;
 
   constructor({ attrs = {}, ...rest }: ShapeCfg) {
     super({
@@ -29,8 +34,6 @@ export class Batch extends DisplayObject {
         this.addInstance(instance);
       });
     }
-
-    this.on(DISPLAY_OBJECT_EVENT.AttributeChanged, this.attributeChangedCallback);
   }
 
   getBatchType() {
@@ -42,30 +45,30 @@ export class Batch extends DisplayObject {
       this.batchType = child.nodeType;
     }
 
-    // merge child's aabb
-    const geometry = this.getEntity().getComponent(Geometry);
-    geometry.aabb.add(child.getBounds()!);
+    this.appendChild(child);
 
-    // change child into a "shadow node"
-    const childSceneGraphNode = child.getEntity().getComponent(SceneGraphNode);
-    childSceneGraphNode.shadow = true;
+    const renderable = this.getEntity().getComponent(Renderable);
+    renderable.aabbDirty = true;
+    renderable.dirty = true;
 
-    if (!this.attributes.instances) {
-      this.attributes.instances = [];
-    }
-    this.attributes.instances.push(child);
+    this.dirty = true;
 
     return child;
   }
 
-  private attributeChangedCallback(name: string, value: string) {
-    if (name === 'instances') {
-      // TODO:
-    }
+  removeInstance(child: DisplayObject) {
+    this.removeChild(child);
+
+    const renderable = this.getEntity().getComponent(Renderable);
+    renderable.aabbDirty = true;
+    renderable.dirty = true;
+
+    this.dirty = true;
+
+    return child;
   }
 
-  // TODO:
-  // removeChild() {
-
-  // }
+  attributeChangedCallback(name: string, value: any): void {
+    throw new Error('Method not implemented.');
+  }
 }

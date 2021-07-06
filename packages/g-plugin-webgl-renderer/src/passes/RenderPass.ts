@@ -7,6 +7,7 @@ import {
   SHAPE,
   Batch,
   DisplayObject,
+  RenderingContext,
 } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { mat4, vec3 } from 'gl-matrix';
@@ -43,6 +44,9 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
   @inject(ResourcePool)
   private readonly resourcePool: ResourcePool;
+
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
 
   @inject(SceneGraphService)
   private sceneGraph: SceneGraphService;
@@ -133,8 +137,18 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     }
 
     const modelInitializationOptions: IModelInitializationOptions = {
-      vs: this.shaderModuleService.transpile(material.vertexShaderGLSL, ShaderType.Vertex, this.engine.shaderLanguage, material.defines),
-      fs: this.shaderModuleService.transpile(material.fragmentShaderGLSL, ShaderType.Fragment, this.engine.shaderLanguage, material.defines),
+      vs: this.shaderModuleService.transpile(
+        material.vertexShaderGLSL,
+        ShaderType.Vertex,
+        this.engine.shaderLanguage,
+        material.defines,
+      ),
+      fs: this.shaderModuleService.transpile(
+        material.fragmentShaderGLSL,
+        ShaderType.Fragment,
+        this.engine.shaderLanguage,
+        material.defines,
+      ),
       attributes: geometry.attributes.reduce((cur: { [key: string]: IAttribute }, prev: any) => {
         cur[prev.name] = prev.buffer;
         return cur;
@@ -184,12 +198,9 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     const geometry = entity.getComponent(Geometry3D);
     const transform = entity.getComponent(Transform);
     const sceneGraphNode = entity.getComponent(SceneGraphNode);
-    const batchSize =
-      (sceneGraphNode.tagName === Batch.tag &&
-        displayObject.attributes.instances &&
-        displayObject.attributes.instances.length) ||
-      0;
+    const batchSize = (sceneGraphNode.tagName === Batch.tag && displayObject.children.length) || 0;
 
+    // create model(program) first
     if (!renderable3d.model) {
       renderable3d.model = this.createModel(
         {
@@ -200,26 +211,19 @@ export class RenderPass implements IRenderPass<RenderPassData> {
       );
     }
 
-    // get VP matrix from camera
-    const viewMatrix = this.camera.getViewTransform()!;
-
+    // update camera relative params
     const { width, height } = this.view.getViewport();
-
-    const modelMatrix = this.sceneGraph.getWorldTransform(entity, transform);
-
-    // set MVP matrix, other builtin uniforms @see https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
     material.setUniform({
       [UNIFORM.ProjectionMatrix]: this.camera.getPerspective(),
-      [UNIFORM.ModelMatrix]: modelMatrix,
-      [UNIFORM.ViewMatrix]: viewMatrix,
+      [UNIFORM.ViewMatrix]: this.camera.getViewTransform(),
       [UNIFORM.CameraPosition]: this.camera.getPosition(),
       [UNIFORM.Viewport]: [width, height],
       [UNIFORM.DPR]: window.devicePixelRatio,
     });
 
-    if (renderable3d.model) {
-      // update instance model matrix
-      if (batchSize) {
+    // update instance model matrix
+    if (batchSize) {
+      if (displayObject.dirty) {
         const modelMatrixAttribute0 = geometry.getAttribute(ATTRIBUTE.ModelMatrix0);
         const modelMatrixAttribute1 = geometry.getAttribute(ATTRIBUTE.ModelMatrix1);
         const modelMatrixAttribute2 = geometry.getAttribute(ATTRIBUTE.ModelMatrix2);
@@ -232,7 +236,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
         const parentWorldMatrix = this.sceneGraph.getWorldTransform(entity, transform);
 
-        displayObject.attributes.instances.forEach((instance: DisplayObject) => {
+        displayObject.children.forEach((instance: DisplayObject) => {
           // don't get each child's worldTransform here, which will cause bad perf
           const m = mat4.multiply(
             mat4.create(),
@@ -244,7 +248,6 @@ export class RenderPass implements IRenderPass<RenderPassData> {
           modelMatrixAttribute2Buffer.push(m[8], m[9], m[10], m[11]);
           modelMatrixAttribute3Buffer.push(m[12], m[13], m[14], m[15]);
         });
-
         modelMatrixAttribute0?.buffer?.updateBuffer({
           data: modelMatrixAttribute0Buffer,
           offset: 0,
@@ -261,22 +264,32 @@ export class RenderPass implements IRenderPass<RenderPassData> {
           data: modelMatrixAttribute3Buffer,
           offset: 0,
         });
-      }
 
-      const builder = this.modelBuilderFactory(displayObject.nodeType);
-      if (builder && builder.renderModel) {
-        builder.renderModel(displayObject);
-      } else {
-        renderable3d.model.draw({
-          uniforms: material.uniforms.reduce(
-            (cur: { [key: string]: IUniform }, prev: IUniformBinding) => {
-              cur[prev.name] = prev.data;
-              return cur;
-            },
-            {},
-          ),
-        });
+        displayObject.dirty = false;
       }
+    } else {
+      const modelMatrix = this.sceneGraph.getWorldTransform(entity, transform);
+
+      // set MVP matrix, other builtin uniforms @see https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
+      material.setUniform({
+        [UNIFORM.ModelMatrix]: modelMatrix,
+      });
+    }
+
+    // submit model
+    const builder = this.modelBuilderFactory(displayObject.nodeType);
+    if (builder && builder.renderModel) {
+      builder.renderModel(displayObject);
+    } else {
+      renderable3d.model.draw({
+        uniforms: material.uniforms.reduce(
+          (cur: { [key: string]: IUniform }, prev: IUniformBinding) => {
+            cur[prev.name] = prev.data;
+            return cur;
+          },
+          {},
+        ),
+      });
     }
 
     // finish rendering

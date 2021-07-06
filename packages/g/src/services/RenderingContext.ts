@@ -33,4 +33,6 @@ export interface RenderingContext {
    * picked object in last frame
    */
   lastPickedDisplayObject: DisplayObject | undefined;
+
+  cameraDirty: boolean;
 }

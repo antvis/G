@@ -1,4 +1,11 @@
-import { Batch, DisplayObject, DisplayObjectPool, SceneGraphNode, SHAPE, ShapeAttrs } from '@antv/g';
+import {
+  Batch,
+  DisplayObject,
+  DisplayObjectPool,
+  SceneGraphNode,
+  SHAPE,
+  ShapeAttrs,
+} from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { ShaderModuleService } from '../services/shader-module';
 import circleVertex from './shaders/webgl.circle.vert.glsl';
@@ -78,7 +85,14 @@ export class CircleModelBuilder implements ModelBuilder {
       const geometry = entity.getComponent(Geometry3D);
 
       if (material && geometry) {
-        const { r = 0, lineWidth = 0, rx = 0, ry = 0, width = 0, height = 0 } = renderable.attributes;
+        const {
+          r = 0,
+          lineWidth = 0,
+          rx = 0,
+          ry = 0,
+          width = 0,
+          height = 0,
+        } = renderable.attributes;
         if (name === 'fill') {
           const fillColor = rgb2arr(value);
           geometry.setAttribute(ATTRIBUTE.Color, Float32Array.from(fillColor));
@@ -88,26 +102,38 @@ export class CircleModelBuilder implements ModelBuilder {
         } else if (name === 'strokeOpacity') {
           material.setUniform(UNIFORM.StrokeOpacity, value);
         } else if (name === 'r') {
-          geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from([value + lineWidth / 2, value + lineWidth / 2]));
+          geometry.setAttribute(
+            ATTRIBUTE.Size,
+            Float32Array.from([value + lineWidth / 2, value + lineWidth / 2]),
+          );
         } else if (name === 'rx') {
-          geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from([value + lineWidth / 2, ry + lineWidth / 2]));
+          geometry.setAttribute(
+            ATTRIBUTE.Size,
+            Float32Array.from([value + lineWidth / 2, ry + lineWidth / 2]),
+          );
         } else if (name === 'ry') {
-          geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from([rx + lineWidth / 2, value + lineWidth / 2]));
+          geometry.setAttribute(
+            ATTRIBUTE.Size,
+            Float32Array.from([rx + lineWidth / 2, value + lineWidth / 2]),
+          );
         } else if (name === 'width') {
           geometry.setAttribute(
             ATTRIBUTE.Size,
-            Float32Array.from([value / 2 + lineWidth / 2, height / 2 + lineWidth / 2])
+            Float32Array.from([value / 2 + lineWidth / 2, height / 2 + lineWidth / 2]),
           );
         } else if (name === 'height') {
           geometry.setAttribute(
             ATTRIBUTE.Size,
-            Float32Array.from([width / 2 + lineWidth / 2, value / 2 + lineWidth / 2])
+            Float32Array.from([width / 2 + lineWidth / 2, value / 2 + lineWidth / 2]),
           );
         } else if (name === 'lineWidth') {
           // 改变线宽时需要同时修改半径，保持与 Canvas 渲染效果一致
           geometry.setAttribute(
             ATTRIBUTE.Size,
-            Float32Array.from([(rx || r || width / 2) + value / 2, (ry || r || height / 2) + value / 2])
+            Float32Array.from([
+              (rx || r || width / 2) + value / 2,
+              (ry || r || height / 2) + value / 2,
+            ]),
           );
           material.setUniform(UNIFORM.StrokeWidth, value);
         } else if (name === 'radius') {
@@ -129,8 +155,15 @@ export class CircleModelBuilder implements ModelBuilder {
       tagName = (object as Batch).getBatchType();
     }
 
-    const { fill = '', fillOpacity = 1, stroke = '', strokeOpacity = 1, lineWidth = 0, radius = 0 } = isBatch
-      ? ((object as Batch).attributes.instances[0] as DisplayObject).attributes
+    const {
+      fill = '',
+      fillOpacity = 1,
+      stroke = '',
+      strokeOpacity = 1,
+      lineWidth = 0,
+      radius = 0,
+    } = isBatch
+      ? ((object as Batch).children[0] as DisplayObject).attributes
       : sceneGraphNode.attributes;
 
     const fillColor = rgb2arr(fill);
@@ -173,7 +206,7 @@ export class CircleModelBuilder implements ModelBuilder {
     let config: Partial<IPointConfig>[] = [];
 
     if (isBatch) {
-      config = (object as Batch).attributes.instances.map((instance: DisplayObject) => {
+      config = (object as Batch).children.map((instance: DisplayObject) => {
         const [halfWidth, halfHeight] = this.getSize(instance.attributes, tagName);
         const fillColor = rgb2arr(instance.attributes.fill || '');
         return {
@@ -239,7 +272,11 @@ export class CircleModelBuilder implements ModelBuilder {
     });
   }
 
-  private buildAttribute(config: Partial<IPointConfig>, attributes: IInstanceAttributes, index: number) {
+  private buildAttribute(
+    config: Partial<IPointConfig>,
+    attributes: IInstanceAttributes,
+    index: number,
+  ) {
     attributes.instancedColors.push(...(config.color || [1, 0, 0, 1]));
     attributes.instancedSizes.push(...(config.size || [0.2, 0.2]));
   }

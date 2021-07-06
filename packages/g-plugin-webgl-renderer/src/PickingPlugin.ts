@@ -1,11 +1,8 @@
 import {
-  SHAPE,
   DisplayObject,
-  DisplayObjectPool,
   ContextService,
   RenderingService,
   RenderingPlugin,
-  RenderingContext,
   SceneGraphService,
   PickingResult,
   Camera,
@@ -15,7 +12,6 @@ import { View } from './View';
 import { IRenderPass, RenderPassFactory } from './FrameGraphEngine';
 import { IFramebuffer, RenderingEngine } from './services/renderer';
 import { PickingIdGenerator } from './PickingIdGenerator';
-import { Renderable3D } from './components/Renderable3D';
 import { RenderPass, RenderPassData } from './passes/RenderPass';
 import { UNIFORM } from './FrameGraphPlugin';
 import { Material3D } from './components/Material3D';
@@ -42,12 +38,6 @@ export class PickingPlugin implements RenderingPlugin {
 
   @inject(ContextService)
   private contextService: ContextService<WebGLRenderingContext>;
-
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
-
-  @inject(DisplayObjectPool)
-  private displayObjectPool: DisplayObjectPool;
 
   @inject(PickingIdGenerator)
   private pickingIdGenerator: PickingIdGenerator;
@@ -84,96 +74,79 @@ export class PickingPlugin implements RenderingPlugin {
 
       this.alreadyInRendering = true;
 
-      // query by AABB first with spatial index(r-tree)
-      // const rBushNodes = this.renderingContext.rBush.search({
-      //   minX: x,
-      //   minY: y,
-      //   maxX: x,
-      //   maxY: y,
-      // });
+      const engine = this.engine;
+      const dpr = this.contextService.getDPR();
+      const { width, height } = this.view.getViewport();
 
-      // const pickedDisplayObjects: DisplayObject[] = [];
-      // rBushNodes.forEach(({ name }: { name: string }) => {
-      //   const displayObject = this.displayObjectPool.getByName(name);
-      //   const { capture } = displayObject.getConfig();
+      if (engine) {
+        const { clear, useFramebuffer, createFramebuffer, readPixels } = engine;
 
-      //   if (displayObject.isVisible() && capture
-      //     && displayObject.nodeType !== SHAPE.Group) {
-      //     pickedDisplayObjects.push(displayObject);
-      //   }
-      // });
+        if (!this.pickingFBO) {
+          this.pickingFBO = createFramebuffer({ width: 1, height: 1 });
+        }
 
-      // // sort by z-index
-      // pickedDisplayObjects.sort(this.sceneGraphService.sort);
+        let pickedColors: Uint8Array | undefined;
+        let pickedFeatureIdx = -1;
 
-      // const engine = this.engine;
-      // const dpr = this.contextService.getDPR();
-      // const { width, height } = this.view.getViewport();
+        clear({
+          framebuffer: this.pickingFBO,
+          color: [0, 0, 0, 0],
+          depth: 1,
+        });
 
-      // if (engine) {
-      //   const { clear, useFramebuffer, createFramebuffer, readPixels } = engine;
+        useFramebuffer({ framebuffer: this.pickingFBO }, () => {
+          this.camera.setViewOffset(width, height, x * dpr, y * dpr, 1, 1);
 
-      //   if (!this.pickingFBO) {
-      //     this.pickingFBO = createFramebuffer({ width: 1, height: 1 });
-      //   }
+          // render
+          const renderPass = this.renderPassFactory<RenderPassData>(
+            RenderPass.IDENTIFIER,
+          ) as RenderPass;
+          const pickedDisplayObjects: DisplayObject[] = renderPass.displayObjectsLastFrame;
 
-      //   let pickedColors: Uint8Array | undefined;
-      //   let pickedFeatureIdx = -1;
+          for (const object of pickedDisplayObjects) {
+            const material = object.getEntity().getComponent(Material3D);
+            material.setUniform(UNIFORM.PickingStage, PickingStage.ENCODE);
+          }
 
-      //   clear({
-      //     framebuffer: this.pickingFBO,
-      //     color: [0, 0, 0, 0],
-      //     depth: 1,
-      //   });
+          renderPass.renderDisplayObjects(pickedDisplayObjects);
 
-      //   useFramebuffer({ framebuffer: this.pickingFBO }, () => {
-      //     this.camera.setViewOffset(width, height, x * dpr, y * dpr, 1, 1);
+          for (const object of pickedDisplayObjects) {
+            const material = object.getEntity().getComponent(Material3D);
+            material.setUniform(UNIFORM.PickingStage, PickingStage.NONE);
+          }
 
-      //     // render
-      //     const renderPass = this.renderPassFactory<RenderPassData>(RenderPass.IDENTIFIER) as RenderPass;
-      //     const pickedDisplayObjects: DisplayObject[] = renderPass.displayObjectsLastFrame;
+          this.camera.clearViewOffset();
 
-      //     for (const object of pickedDisplayObjects) {
-      //       const material = object.getEntity().getComponent(Material3D);
-      //       material.setUniform(UNIFORM.PickingStage, PickingStage.ENCODE);
-      //     }
+          // avoid realloc, draw a 1x1 quad
+          pickedColors = readPixels({
+            x: 0,
+            y: 0,
+            width: 1,
+            height: 1,
+            data: new Uint8Array(1 * 1 * 4),
+            framebuffer: this.pickingFBO,
+          });
 
-      //     renderPass.renderDisplayObjects(pickedDisplayObjects);
+          if (
+            pickedColors &&
+            (pickedColors[0] !== 0 || pickedColors[1] !== 0 || pickedColors[2] !== 0)
+          ) {
+            pickedFeatureIdx = this.pickingIdGenerator.decodePickingColor(pickedColors);
+          }
 
-      //     for (const object of pickedDisplayObjects) {
-      //       const material = object.getEntity().getComponent(Material3D);
-      //       material.setUniform(UNIFORM.PickingStage, PickingStage.NONE);
-      //     }
+          this.alreadyInRendering = false;
+        });
 
-      //     this.camera.clearViewOffset();
-
-      //     // avoid realloc, draw a 1x1 quad
-      //     pickedColors = readPixels({
-      //       x: 0,
-      //       y: 0,
-      //       width: 1,
-      //       height: 1,
-      //       data: new Uint8Array(1 * 1 * 4),
-      //       framebuffer: this.pickingFBO,
-      //     });
-
-      //     if (pickedColors && (pickedColors[0] !== 0 || pickedColors[1] !== 0 || pickedColors[2] !== 0)) {
-      //       pickedFeatureIdx = this.pickingIdGenerator.decodePickingColor(pickedColors);
-      //     }
-
-      //     this.alreadyInRendering = false;
-      //   });
-
-      //   if (pickedFeatureIdx > -1) {
-      //     const pickedDisplayObject = this.pickingIdGenerator.getById(pickedFeatureIdx);
-      //     if (pickedDisplayObject) {
-      //       return {
-      //         position: result.position,
-      //         picked: pickedDisplayObject,
-      //       };
-      //     }
-      //   }
-      // }
+        if (pickedFeatureIdx > -1) {
+          const pickedDisplayObject = this.pickingIdGenerator.getById(pickedFeatureIdx);
+          if (pickedDisplayObject) {
+            return {
+              position: result.position,
+              picked: pickedDisplayObject,
+            };
+          }
+        }
+      }
 
       return {
         position: result.position,

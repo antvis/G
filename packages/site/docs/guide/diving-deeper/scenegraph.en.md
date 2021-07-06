@@ -8,8 +8,7 @@ order: 0
 1. 描述父子关系
 2. 自动完成基于父子关系的某些复杂级联计算
 
-在旧版 G 中我们在 `Group/Shape` 上提供了部分相关操作，但存在很多问题，导致上层在使用时存在很多 hack 手段。
-在新版中，我们参考了 DOM API 和 CSS 选择器，给场景图中的每个节点补全了以下能力，大幅降低学习成本：
+在旧版 G 中我们在 `Group/Shape` 上提供了部分相关操作，但存在很多问题，导致上层在使用时存在很多 hack 手段。在新版中，我们参考了 DOM API 和 CSS 选择器，给场景图中的每个节点补全了以下能力，大幅降低学习成本：
 
 1. 与 DOM API 风格一致的添加/删除节点/属性方法
 2. 与 CSS 选择器类似的节点查询语法
@@ -42,31 +41,31 @@ order: 0
 import { Group, Circle } from 'g-core';
 
 const solarSystem = new Group({
-  name: 'solarSystem',
+    name: 'solarSystem',
 });
 const earthOrbit = new Group({
-  name: 'earthOrbit',
+    name: 'earthOrbit',
 });
 const moonOrbit = new Group({
-  name: 'moonOrbit',
+    name: 'moonOrbit',
 });
 const sun = new Circle({
-  name: 'sun',
-  attrs: {
-    r: 100,
-  },
+    name: 'sun',
+    attrs: {
+        r: 100,
+    },
 });
 const earth = new Circle({
-  name: 'earth',
-  attrs: {
-    r: 50,
-  },
+    name: 'earth',
+    attrs: {
+        r: 50,
+    },
 });
 const moon = new Circle({
-  name: 'moon',
-  attrs: {
-    r: 25,
-  },
+    name: 'moon',
+    attrs: {
+        r: 25,
+    },
 });
 
 solarSystem.appendChild(sun);
@@ -94,52 +93,50 @@ moonOrbit.appendChild(moon);
 
 当我们在说“月亮绕着地球转”的时候，实际上已经忽略了地球以外的对象。在月亮的**“局部坐标系”**中，它只是单纯地绕着一个点旋转而已，尽管在整个太阳系这个**“世界坐标系”**下，地球还在绕着太阳旋转，月球最终沿着上面那个复杂轨迹运动。
 
-在二维和三维世界中，都可以使用局部坐标系和世界坐标系的概念，下图来自 [playcanvas](https://developer.playcanvas.com/en/tutorials/manipulating-entities/)，左侧为世界坐标系，右侧为局部坐标系：
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kgaHRIYex8MAAAAAAAAAAAAAARQnAQ)
+在二维和三维世界中，都可以使用局部坐标系和世界坐标系的概念，下图来自 [playcanvas](https://developer.playcanvas.com/en/tutorials/manipulating-entities/)，左侧为世界坐标系，右侧为局部坐标系： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kgaHRIYex8MAAAAAAAAAAAAAARQnAQ)
 
 世界坐标系被整个场景图内的所有节点共享，因此它有一个固定的原点`(0, 0)`，XYZ 三轴（二维场景中为 XY 轴）的朝向也都是固定的，即使场景中的这个盒子自身发生了旋转，世界坐标系对它来说也不会变化。但对于自身的局部坐标系而言，它的原点首先就不再是 `(0, 0)` 而是物体自身的位置，坐标轴自然也发生了变化，顾名思义它和物体本身相关联。
 
 试想此时我们让这个盒子“沿 X 轴（红色）平移 10 个单位”，在不同坐标系下含义完全不同。因此当我们想对一个物体进行变换时，首先要指明所处的坐标系。
 
-另外，局部坐标系也被称作**模型坐标系**，在描述模型自身的变换时更方便。在[下图](https://bladecast.pro/blog/local-vs-world-space-why-two)中放置了两个士兵模型，如果我们想让每一个士兵转一下头，显然在局部坐标系做比较简单，因为“转动”这个变换就是相对于每个模型的头部而言的。
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9B4FRo4UbNsAAAAAAAAAAAAAARQnAQ)
+另外，局部坐标系也被称作**模型坐标系**，在描述模型自身的变换时更方便。在[下图](https://bladecast.pro/blog/local-vs-world-space-why-two)中放置了两个士兵模型，如果我们想让每一个士兵转一下头，显然在局部坐标系做比较简单，因为“转动”这个变换就是相对于每个模型的头部而言的。 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9B4FRo4UbNsAAAAAAAAAAAAAARQnAQ)
 
 ### 平移
 
 对于平移操作，我们提供了局部/世界坐标系下，移动绝对/相对距离的 API：
 
-| 名称             | 参数               | 返回值             | 备注                                   |
-| ---------------- | ------------------ | ------------------ | -------------------------------------- |
-| translate        | `[number, number]` | 无                 | 在 **世界坐标系** 下，相对当前位置移动 |
-| translateLocal   | `[number, number]` | 无                 | 在 **局部坐标系** 下，相对当前位置移动 |
-| setPosition      | `[number, number]` | 无                 | 设置 **世界坐标系** 下的位置           |
-| setLocalPosition | `[number, number]` | 无                 | 设置 **局部坐标系** 下的位置           |
-| getPosition      | 无                 | `[number, number]` | 获取 **世界坐标系** 下的位置           |
-| getLocalPosition | 无                 | `[number, number]` | 获取 **局部坐标系** 下的位置           |
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| translate | `[number, number]` | 无 | 在 **世界坐标系** 下，相对当前位置移动 |
+| translateLocal | `[number, number]` | 无 | 在 **局部坐标系** 下，相对当前位置移动 |
+| setPosition | `[number, number]` | 无 | 设置 **世界坐标系** 下的位置 |
+| setLocalPosition | `[number, number]` | 无 | 设置 **局部坐标系** 下的位置 |
+| getPosition | 无 | `[number, number]` | 获取 **世界坐标系** 下的位置 |
+| getLocalPosition | 无 | `[number, number]` | 获取 **局部坐标系** 下的位置 |
 
 ### 缩放
 
 和平移不同，我们无法提供 `setScale` 这样设置世界坐标系下缩放的方法，因此全局坐标系下缩放是只读的，这在 Unity 中称之为 [lossyScale](https://forum.unity.com/threads/solved-why-is-transform-lossyscale-readonly.363594/)。
 
-| 名称          | 参数               | 返回值             | 备注                                           |
-| ------------- | ------------------ | ------------------ | ---------------------------------------------- |
-| scaleLocal    | `[number, number]` | 无                 | 在 **局部坐标系** 下，相对当前缩放比例继续缩放 |
-| setLocalScale | `[number, number]` | 无                 | 设置 **局部坐标系** 下的缩放比例               |
-| getScale      | 无                 | `[number, number]` | 获取 **世界坐标系** 下的缩放比例               |
-| getLocalScale | 无                 | `[number, number]` | 获取 **局部坐标系** 下的缩放比例               |
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| scaleLocal | `[number, number]` | 无 | 在 **局部坐标系** 下，相对当前缩放比例继续缩放 |
+| setLocalScale | `[number, number]` | 无 | 设置 **局部坐标系** 下的缩放比例 |
+| getScale | 无 | `[number, number]` | 获取 **世界坐标系** 下的缩放比例 |
+| getLocalScale | 无 | `[number, number]` | 获取 **局部坐标系** 下的缩放比例 |
 
 ### 旋转
 
 在 3D 场景中，旋转可以用矩阵、轴角、欧拉角和四元数表示，它们彼此之间可以互相转换。虽然考虑到未来的扩展性，在 G 内部实现中我们使用了四元数，但目前我们仅提供欧拉角的 API。
 
-| 名称                | 参数     | 返回值   | 备注                                                                    |
-| ------------------- | -------- | -------- | ----------------------------------------------------------------------- |
-| rotateLocal         | `number` | 无       | 在 **局部坐标系** 下，旋转一定的欧拉角，顺时针方向为正，单位为 `degree` |
-| rotate              | `number` | 无       | 在 **局部坐标系** 下，旋转一定的欧拉角                                  |
-| setEulerAngles      | `number` | 无       | 设置 **世界坐标系** 下的欧拉角                                          |
-| setLocalEulerAngles | `number` | 无       | 设置 **局部坐标系** 下的欧拉角                                          |
-| getEulerAngles      | 无       | `number` | 获取 **世界坐标系** 下的欧拉角                                          |
-| getLocalEulerAngles | 无       | `number` | 获取 **局部坐标系** 下的欧拉角                                          |
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| rotateLocal | `number` | 无 | 在 **局部坐标系** 下，旋转一定的欧拉角，顺时针方向为正，单位为 `degree` |
+| rotate | `number` | 无 | 在 **世界坐标系** 下，旋转一定的欧拉角 |
+| setEulerAngles | `number` | 无 | 设置 **世界坐标系** 下的欧拉角 |
+| setLocalEulerAngles | `number` | 无 | 设置 **局部坐标系** 下的欧拉角 |
+| getEulerAngles | 无 | `number` | 获取 **世界坐标系** 下的欧拉角 |
+| getLocalEulerAngles | 无 | `number` | 获取 **局部坐标系** 下的欧拉角 |
 
 上面的旋转方法都以自身位置为旋转中心，如果我们想让节点绕任意一个点旋转，可以给它创建一个父节点，将父节点移动到某个点后再旋转：
 
@@ -185,8 +182,7 @@ earthOrbit.rotateLocal(1);
 
 ## 节点操作
 
-在场景图中，我们需要构建父子关系，快速获取父子节点，有时还需要在子树中查询某一类型的节点列表。
-为此，我们参考 DOM API 中的 [Node 接口](https://developer.mozilla.org/en-US/docs/Web/API/Node) 在节点上定义了一系列属性与方法，同时提供了类似 CSS 选择器的节点查询方法，最大程度减少学习成本。
+在场景图中，我们需要构建父子关系，快速获取父子节点，有时还需要在子树中查询某一类型的节点列表。为此，我们参考 DOM API 中的 [Node 接口](https://developer.mozilla.org/en-US/docs/Web/API/Node) 在节点上定义了一系列属性与方法，同时提供了类似 CSS 选择器的节点查询方法，最大程度减少学习成本。
 
 ### 简单节点查询
 
@@ -204,14 +200,14 @@ earthOrbit.rotateLocal(1);
 
 参考 CSS 选择器，我们提供了以下查询方法，查询范围是当前节点的**整棵子树**，并不仅仅是直接的子节点列表，而是所有子孙节点。
 
-| 名称                   | 参数                  | 返回值          | 备注                            |
-| ---------------------- | --------------------- | --------------- | ------------------------------- | -------------------- |
-| getElementById         | `(id: string)`        | `Group          | null`                           | 通过 `id` 查询子节点 |
-| getElementsByName      | `(name: string)`      | `Group[]`       | 通过 `name` 查询子节点列表      |
-| getElementsByClassName | `(className: string)` | `Group[]`       | 通过 `className` 查询子节点列表 |
-| getElementsByTagName   | `(tagName: string)`   | `Group[]`       | 通过 `tagName` 查询子节点列表   |
-| querySelector          | `(selector: string)`  | `Group ｜ null` | 查询满足条件的第一个子节点      |
-| querySelectorAll       | `(selector: string)`  | `Group[]`       | 查询满足条件的所有子节点列表    |
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- | --- |
+| getElementById | `(id: string)` | `Group | null` | 通过 `id` 查询子节点 |
+| getElementsByName | `(name: string)` | `Group[]` | 通过 `name` 查询子节点列表 |
+| getElementsByClassName | `(className: string)` | `Group[]` | 通过 `className` 查询子节点列表 |
+| getElementsByTagName | `(tagName: string)` | `Group[]` | 通过 `tagName` 查询子节点列表 |
+| querySelector | `(selector: string)` | `Group ｜ null` | 查询满足条件的第一个子节点 |
+| querySelectorAll | `(selector: string)` | `Group[]` | 查询满足条件的所有子节点列表 |
 
 下面我们以上面太阳系的例子，演示如何使用这些查询方法。
 
@@ -232,11 +228,11 @@ solarSystem.querySelectorAll('[r=25]');
 
 ### 添加/删除节点
 
-| 名称         | 参数                                | 返回值  | 备注                                                 |
-| ------------ | ----------------------------------- | ------- | ---------------------------------------------------- |
-| appendChild  | `(group: Group)`                    | `Group` | 添加子节点，返回添加的节点                           |
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| appendChild | `(group: Group)` | `Group` | 添加子节点，返回添加的节点 |
 | insertBefore | `(group: Group, reference?: Group)` | `Group` | 添加子节点，在某个子节点之前（如有），返回添加的节点 |
-| removeChild  | `(group: Group)`                    | `Group` | 删除子节点，返回被删除的节点                         |
+| removeChild | `(group: Group)` | `Group` | 删除子节点，返回被删除的节点 |
 
 ### 获取/设置属性值
 
@@ -298,43 +294,43 @@ group.setZIndex(100);
 
 ### 定义组件
 
-- 使用声明式语法定义场景图结构，省略了大量对于 `appendChild` 的手动调用
-- 如果需要调用 `Group` 上的方法，可以使用 `useRef` 获取引用
-- 提供例如 `useFrame` 这样的 hook，完成动画
+-   使用声明式语法定义场景图结构，省略了大量对于 `appendChild` 的手动调用
+-   如果需要调用 `Group` 上的方法，可以使用 `useRef` 获取引用
+-   提供例如 `useFrame` 这样的 hook，完成动画
 
 ```jsx
 import React, { useRef, useState } from 'react';
 import { Group, Circle, useFrame } from '@antv/react-g-fiber';
 
 const SolarSystem = () => {
-  // 创建对于 Group 的引用
-  const solarSystem = useRef();
-  const earthOrbit = useRef();
+    // 创建对于 Group 的引用
+    const solarSystem = useRef();
+    const earthOrbit = useRef();
 
-  // 每一帧调用
-  useFrame(() => {
-    solarSystem.rotateLocal(1);
-    earthOrbit.rotateLocal(1);
-  });
+    // 每一帧调用
+    useFrame(() => {
+        solarSystem.rotateLocal(1);
+        earthOrbit.rotateLocal(1);
+    });
 
-  const [hovered, setHover] = useState(false);
+    const [hovered, setHover] = useState(false);
 
-  return;
-  <Group name="solarSystem" ref={solarSystem} position={[300, 250]}>
-    <Circle name="sun" r={100} />
-    <Group name="earthOrbit" ref={earthOrbit} localPosition={[100, 0]}>
-      <Circle name="earth" r={50} />
-      <Group name="moonOrbit" localPosition={[100, 0]}>
-        <Circle
-          name="moon"
-          r={25}
-          fill={hovered ? 'yellow' : 'red'}
-          onPointerOver={(event) => setHover(true)}
-          onPointerOut={(event) => setHover(false)}
-        />
-      </Group>
-    </Group>
-  </Group>;
+    return;
+    <Group name="solarSystem" ref={solarSystem} position={[300, 250]}>
+        <Circle name="sun" r={100} />
+        <Group name="earthOrbit" ref={earthOrbit} localPosition={[100, 0]}>
+            <Circle name="earth" r={50} />
+            <Group name="moonOrbit" localPosition={[100, 0]}>
+                <Circle
+                    name="moon"
+                    r={25}
+                    fill={hovered ? 'yellow' : 'red'}
+                    onPointerOver={(event) => setHover(true)}
+                    onPointerOut={(event) => setHover(false)}
+                />
+            </Group>
+        </Group>
+    </Group>;
 };
 ```
 
@@ -348,10 +344,10 @@ import { Canvas } from '@antv/react-g-fiber';
 import { SolarSystem } from './SolarSystem';
 
 ReactDOM.render(
-  <Canvas width={600} height={500} renderer="webgl">
-    <SolarSystem />
-  </Canvas>,
-  document.getElementById('root')
+    <Canvas width={600} height={500} renderer="webgl">
+        <SolarSystem />
+    </Canvas>,
+    document.getElementById('root'),
 );
 ```
 
@@ -359,8 +355,8 @@ ReactDOM.render(
 
 在实际使用中，如何将场景图中的节点与 HTML 结合是一个问题，尤其当 HTML 变得复杂时，就不仅仅是一个 HUD 问题了：
 
-- Canvas/WebGL 可以渲染类似按钮这样的简单组件，但类似输入框、表单这样的复杂组件成本太高
-- SVG 虽然可以使用 [foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject)，兼顾基础图形和 HTML 的渲染，但存在性能问题
+-   Canvas/WebGL 可以渲染类似按钮这样的简单组件，但类似输入框、表单这样的复杂组件成本太高
+-   SVG 虽然可以使用 [foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject)，兼顾基础图形和 HTML 的渲染，但存在性能问题
 
 因此我们应该让渲染引擎做它们擅长的事情：让 Canvas/WebGL 高效地绘制基础图形，让 HTML 来渲染复杂组件。两者之间的**联动**才是我们该关心的问题。
 
@@ -370,27 +366,26 @@ ReactDOM.render(
 import { Group, Circle, Html } from '@antv/react-g-fiber';
 
 const SolarSystem = () => (
-  <Group>
-    <Circle r={100} />
-    <Html prepend>
-      <h1>hello</h1>
-      <p>world</p>
-    </Html>
-  </Group>
+    <Group>
+        <Circle r={100} />
+        <Html prepend>
+            <h1>hello</h1>
+            <p>world</p>
+        </Html>
+    </Group>
 );
 ```
 
 该容器中的内容会添加在 `<canvas>` 之后。但毕竟是特殊节点，一些会功能受限，例如：
 
-- 无法通过 `z-index` 让它夹在两个 `Circle` 之间
-- 无法在内部嵌套其他基础图形节点
+-   无法通过 `z-index` 让它夹在两个 `Circle` 之间
+-   无法在内部嵌套其他基础图形节点
 
 ## WIP 结合 D3 生态
 
 选择兼容 DOM API 与 CSS 选择器，除了降低学习成本，还有一个很大的好处，那就是很容易与一些已有生态结合，例如 D3，因为大家的节点定义都是基于统一的接口。
 
-SpriteJS 就是这么做的，节点描述、处理逻辑仍由 D3 完成，渲染则替换成了自身实现的 Canvas/WebGL：
-https://spritejs.org/demo/#/d3/bar
+SpriteJS 就是这么做的，节点描述、处理逻辑仍由 D3 完成，渲染则替换成了自身实现的 Canvas/WebGL： https://spritejs.org/demo/#/d3/bar
 
 ## 旧版兼容
 
@@ -403,9 +398,9 @@ https://spritejs.org/demo/#/d3/bar
 ```javascript
 import { transform } from '@antv/matrix-util';
 transform(m, [
-  ['t', x, y], // translate with vector (x, y)
-  ['r', Math.PI], // rotate
-  ['s', 2, 2], // scale at x-axis and y-axis
+    ['t', x, y], // translate with vector (x, y)
+    ['r', Math.PI], // rotate
+    ['s', 2, 2], // scale at x-axis and y-axis
 ]);
 ```
 
@@ -413,15 +408,14 @@ transform(m, [
 
 ```javascript
 group
-  .translate(x, y)
-  .rotateLocal(180) // rotate in degrees
-  .scaleLocal(2, 2);
+    .translate(x, y)
+    .rotateLocal(180) // rotate in degrees
+    .scaleLocal(2, 2);
 ```
 
 ### 节点定义
 
-场景图应该能够脱离渲染引擎存在，这样在描述组件时才不需要考虑具体渲染引擎（`g-canvas/svg/webgl`）。
-因此不再建议使用 `canvas.addGroup` 和 `canvas.addShape` 这样的方法。
+场景图应该能够脱离渲染引擎存在，这样在描述组件时才不需要考虑具体渲染引擎（`g-canvas/svg/webgl`）。因此不再建议使用 `canvas.addGroup` 和 `canvas.addShape` 这样的方法。
 
 ```javascript
 // 不建议使用
@@ -463,6 +457,6 @@ group.queryAllSelector('.link-point-left');
 
 ## 参考资料
 
-- [World vs Local Space. Why do we need them both?](https://bladecast.pro/blog/local-vs-world-space-why-two)
-- [PlayCanvas Docs - Manipulating Entities](https://developer.playcanvas.com/en/tutorials/manipulating-entities/)
-- [What dose 'lossyScale' actually means?](https://answers.unity.com/questions/456669/what-dose-lossyscale-actually-means.html)
+-   [World vs Local Space. Why do we need them both?](https://bladecast.pro/blog/local-vs-world-space-why-two)
+-   [PlayCanvas Docs - Manipulating Entities](https://developer.playcanvas.com/en/tutorials/manipulating-entities/)
+-   [What dose 'lossyScale' actually means?](https://answers.unity.com/questions/456669/what-dose-lossyscale-actually-means.html)

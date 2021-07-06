@@ -184,7 +184,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
         // handle batch
         const isBatch = tagName === Batch.tag;
         if (isBatch) {
-          tagName = ((object as unknown) as Batch).getBatchType();
+          tagName = ((object as unknown) as Batch).getBatchType()!;
         }
 
         const modelBuilder = this.modelBuilderFactory(tagName);
@@ -201,43 +201,30 @@ export class FrameGraphPlugin implements RenderingPlugin {
             : attributes.fillOpacity || attributes.opacity,
         );
 
+        // allocate pickingid for each child in batch
+        const pickingColorBuffer: number[] = [];
         if (isBatch) {
-          // allocate pickingid for each child in batch
-          const pickingColorBuffer: number[] = [];
-          attributes.instances.forEach((instance: DisplayObject) => {
+          object.children.forEach((instance: DisplayObject) => {
             // TODO: save pickingID
             const childPickingId = this.pickingIdGenerator.getId(instance);
             pickingColorBuffer.push(...this.pickingIdGenerator.encodePickingColor(childPickingId));
           });
-
-          geometry.setAttribute(ATTRIBUTE.PickingColor, Float32Array.from(pickingColorBuffer), {
-            arrayStride: 4 * 3,
-            stepMode: 'instance',
-            attributes: [
-              {
-                shaderLocation: 0,
-                offset: 0,
-                format: 'float3',
-              },
-            ],
-          });
         } else {
-          geometry.setAttribute(
-            ATTRIBUTE.PickingColor,
-            Float32Array.from(this.pickingIdGenerator.encodePickingColor(renderable3d.pickingId)),
-            {
-              arrayStride: 4 * 3,
-              stepMode: 'instance',
-              attributes: [
-                {
-                  shaderLocation: 0,
-                  offset: 0,
-                  format: 'float3',
-                },
-              ],
-            },
+          pickingColorBuffer.push(
+            ...this.pickingIdGenerator.encodePickingColor(renderable3d.pickingId),
           );
         }
+        geometry.setAttribute(ATTRIBUTE.PickingColor, Float32Array.from(pickingColorBuffer), {
+          arrayStride: 4 * 3,
+          stepMode: 'instance',
+          attributes: [
+            {
+              shaderLocation: 0,
+              offset: 0,
+              format: 'float3',
+            },
+          ],
+        });
 
         renderable3d.modelPrepared = true;
       }

@@ -77,15 +77,15 @@ export class DirtyCheckPlugin implements RenderingPlugin {
       );
       const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
 
-      if (!enableDirtyRectangleRendering) {
-        this.renderingContext.dirtyRectangle = undefined;
-        return objects;
-      }
-
       // skip rendering if nothing to redraw
       if (dirtyObjects.length === 0) {
         this.renderingContext.dirtyRectangle = undefined;
         return [];
+      }
+
+      if (!enableDirtyRectangleRendering) {
+        this.renderingContext.dirtyRectangle = undefined;
+        return objects;
       }
 
       // TODO: use threshold when too much dirty renderables
@@ -133,10 +133,7 @@ export class DirtyCheckPlugin implements RenderingPlugin {
             const bounds = object.getBounds();
             if (bounds) {
               // save last dirty aabb
-              renderable.dirtyAABB.update(
-                bounds.center,
-                bounds.halfExtents,
-              );
+              renderable.dirtyAABB.update(bounds.center, bounds.halfExtents);
             }
           });
         }
@@ -149,6 +146,9 @@ export class DirtyCheckPlugin implements RenderingPlugin {
             renderable.dirty = false;
           }
         });
+
+        // clear camera dirty flag
+        this.renderingContext.cameraDirty = false;
       },
     );
   }

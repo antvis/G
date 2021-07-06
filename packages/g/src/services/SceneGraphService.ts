@@ -129,13 +129,18 @@ export class SceneGraphService extends EventEmitter {
       const parentSortable = parentEntity.getComponent(Sortable);
 
       // no need to re-sort, use cached sorted children
+      if (!parentSortable.sorted) {
+        parentSortable.sorted = [...parentEntity.getComponent(SceneGraphNode).children];
+      }
       if (parentSortable.dirty) {
-        parentSortable.sorted = [...parentEntity.getComponent(SceneGraphNode).children].sort(sortByZIndex);
+        parentSortable.sorted.sort(sortByZIndex);
         parentSortable.dirty = false;
       }
 
-      return parentSortable.sorted.indexOf(o1.getEntity())
-        - parentSortable.sorted.indexOf(o2.getEntity());
+      return (
+        parentSortable.sorted.indexOf(o1.getEntity()) -
+        parentSortable.sorted.indexOf(o2.getEntity())
+      );
     }
 
     return -1;
@@ -419,6 +424,16 @@ export class SceneGraphService extends EventEmitter {
     return mat4.getScaling(transform.scaling, this.getWorldTransform(entity, transform));
   }
 
+  // isTransformDirty(entity: Entity): boolean {
+  //   const transform = entity.getComponent(Transform);
+  //   if (!transform.localDirtyFlag && !transform.dirtyFlag) {
+  //     const parentEntity = entity.getComponent(SceneGraphNode).parent;
+  //     return !!(parentEntity && this.isTransformDirty(parentEntity));
+  //   }
+
+  //   return true;
+  // }
+
   getWorldTransform(entity: Entity, transform: Transform = entity.getComponent(Transform)) {
     if (!transform.localDirtyFlag && !transform.dirtyFlag) {
       return transform.worldTransform;
@@ -491,10 +506,7 @@ export class SceneGraphService extends EventEmitter {
     if (geometryAABB) {
       aabb = new AABB();
       // apply transformation to aabb
-      aabb.setFromTransformedAABB(
-        geometryAABB,
-        this.getWorldTransform(entity),
-      );
+      aabb.setFromTransformedAABB(geometryAABB, this.getWorldTransform(entity));
     }
 
     // merge children's aabbs
