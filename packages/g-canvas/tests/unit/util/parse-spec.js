@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-import { parseRadius } from '../../../src/util/parse';
+import { parseRadius, parseStyle } from '../../../src/util/parse';
 import Rect from '../../../src/shape/rect';
 import { getColor } from '../../get-color';
 
@@ -32,6 +32,22 @@ describe('parse util test', () => {
     expect(getColor(ctx, 10, 11)).eqls('#fffefe');
     expect(getColor(ctx, 60, 11)).eqls('#ff7f7f');
     expect(getColor(ctx, 100, 11)).eqls('#ff1919');
+    expect(parseStyle(ctx, rect, 'l(0) 0:#ffffff 1:#ff0000')).not.eqls('l(0) 0:#ffffff 1:#ff0000');
+  });
+
+  it('parse linear gradient, when elemenet is illegal', () => {
+    const rect = new Rect({
+      type: 'rect',
+      attrs: {
+        y: NaN,
+        width: NaN,
+        height: 2,
+        fill: 'l(0) 0:#ffffff 1:#ff0000',
+      },
+    });
+    rect.draw(ctx);
+
+    expect(parseStyle(ctx, rect, 'l(0) 0:#ffffff 1:#ff0000')).eqls('l(0) 0:#ffffff 1:#ff0000');
   });
 
   it('parse linear gradient 90', () => {
