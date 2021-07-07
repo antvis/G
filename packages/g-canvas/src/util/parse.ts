@@ -172,6 +172,10 @@ export function parsePattern(context: CanvasRenderingContext2D, element: IElemen
 }
 
 export function parseStyle(context: CanvasRenderingContext2D, element: IElement, color: string) {
+  const bbox = element.getBBox();
+  if (isNaN(bbox.x) || isNaN(bbox.y) || isNaN(bbox.width) || isNaN(bbox.height)) {
+    return color;
+  }
   if (isString(color)) {
     if (color[1] === '(' || color[2] === '(') {
       if (color[0] === 'l') {
