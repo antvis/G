@@ -18,7 +18,6 @@ import { WebGLEngine } from './services/renderer/regl';
 import { DefaultShaderModuleService, ShaderModuleService } from './services/shader-module';
 import { gl } from './services/renderer/constants';
 import {
-  BatchModelBuilder,
   CircleModelBuilder,
   ImageModelBuilder,
   LineModelBuilder,
@@ -30,6 +29,7 @@ import { GlyphManager } from './shapes/symbol/GlyphManager';
 import { TexturePool } from './shapes/TexturePool';
 import { View } from './View';
 import { rgb2arr } from './utils/color';
+import TAAPass from './passes/TAAPass';
 
 const world = container.get(World);
 world.registerComponent(Geometry3D);
@@ -83,6 +83,7 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
    */
   bind<IRenderPass<any>>(IRenderPass).to(RenderPass).inSingletonScope().whenTargetNamed(RenderPass.IDENTIFIER);
   bind<IRenderPass<any>>(IRenderPass).to(CopyPass).inSingletonScope().whenTargetNamed(CopyPass.IDENTIFIER);
+  bind<IRenderPass<any>>(IRenderPass).to(TAAPass).inSingletonScope().whenTargetNamed(TAAPass.IDENTIFIER);
   bind<interfaces.Factory<IRenderPass<any>>>(RenderPassFactory).toFactory<IRenderPass<any>>(
     (context: interfaces.Context) => {
       return (name: string) => {

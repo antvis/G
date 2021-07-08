@@ -224,6 +224,7 @@ export const DisplayObjectHooks = {
 | 名称      | 参数 | 返回值 | 备注                     |
 | --------- | ---- | ------ | ------------------------ |
 | getBounds | 无   | AABB   | 获取世界坐标系下的包围盒 |
+| getLocalBounds | 无   | AABB   | 获取局部坐标系下的包围盒 |
 
 # 节点操作
 

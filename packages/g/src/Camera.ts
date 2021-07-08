@@ -131,17 +131,18 @@ export class Camera extends EventEmitter {
   private top: number;
   private bottom: number;
   private perspective = mat4.create();
+  private jitteredProjectionMatrix: mat4 | undefined = undefined;
 
   private view:
     | {
-        enabled: boolean;
-        fullWidth: number;
-        fullHeight: number;
-        offsetX: number;
-        offsetY: number;
-        width: number;
-        height: number;
-      }
+      enabled: boolean;
+      fullWidth: number;
+      fullHeight: number;
+      offsetX: number;
+      offsetY: number;
+      width: number;
+      height: number;
+    }
     | undefined;
 
   private following = undefined;
@@ -178,7 +179,8 @@ export class Camera extends EventEmitter {
   }
 
   getPerspective() {
-    return this.perspective;
+    // account for TAA
+    return this.jitteredProjectionMatrix || this.perspective;
   }
 
   getFrustum() {
@@ -259,6 +261,20 @@ export class Camera extends EventEmitter {
 
   getWorldTransform(): mat4 {
     return this.matrix;
+  }
+
+  jitterProjectionMatrix(x: number, y: number) {
+    const translation = mat4.fromTranslation(mat4.create(), [x, y, 0]);
+
+    this.jitteredProjectionMatrix = mat4.multiply(
+      mat4.create(),
+      translation,
+      this.perspective,
+    );
+  }
+
+  clearJitterProjectionMatrix() {
+    this.jitteredProjectionMatrix = undefined;
   }
 
   /**
@@ -364,6 +380,22 @@ export class Camera extends EventEmitter {
     this.near = near;
     this.far = far;
     this.aspect = aspect;
+
+    // let top = this.near * Math.tan(DEG_2_RAD * 0.5 * this.fov) / this.zoom;
+    // let height = 2 * top;
+    // let width = this.aspect * height;
+    // let left = -0.5 * width;
+
+    // if (this.view !== undefined && this.view.enabled) {
+    //   const fullWidth = this.view.fullWidth;
+    //   const fullHeight = this.view.fullHeight;
+
+    //   left += this.view.offsetX * width / fullWidth;
+    //   top -= this.view.offsetY * height / fullHeight;
+    //   width *= this.view.width / fullWidth;
+    //   height *= this.view.height / fullHeight;
+    // }
+
     // flip Y
     mat4.perspective(this.perspective, -this.fov * DEG_2_RAD, -this.aspect, this.near, this.far);
     this.emit(CAMERA_EVENT.Updated);
@@ -778,21 +810,21 @@ export class Camera extends EventEmitter {
       quat.create(),
       [1, 0, 0],
       ((this.rotateWorld && this.type !== CAMERA_TYPE.TRACKING) ||
-      this.type === CAMERA_TYPE.TRACKING
+        this.type === CAMERA_TYPE.TRACKING
         ? 1
         : -1) *
-        this.elevation *
-        DEG_2_RAD,
+      this.elevation *
+      DEG_2_RAD,
     );
     rotY = quat.setAxisAngle(
       quat.create(),
       [0, 1, 0],
       ((this.rotateWorld && this.type !== CAMERA_TYPE.TRACKING) ||
-      this.type === CAMERA_TYPE.TRACKING
+        this.type === CAMERA_TYPE.TRACKING
         ? 1
         : -1) *
-        this.azimuth *
-        DEG_2_RAD,
+      this.azimuth *
+      DEG_2_RAD,
     );
 
     let rotQ = quat.multiply(quat.create(), rotY, rotX);

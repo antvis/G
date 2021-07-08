@@ -26,6 +26,9 @@ import { PickingIdGenerator } from './PickingIdGenerator';
 import { WebGLRenderingContext } from '.';
 import { ShaderModuleService } from './services/shader-module';
 import { View } from './View';
+import TAAPass, { TAAPassData } from './passes/TAAPass';
+import { PassNode } from './components/framegraph/PassNode';
+import { FrameGraphPass } from './components/framegraph/FrameGraphPass';
 
 export const ATTRIBUTE = {
   ModelMatrix0: 'a_ModelMatrix0',
@@ -121,29 +124,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
 
       this.engine.beforeRender();
 
-      const {
-        setup: setupRenderPass,
-        execute: executeRenderPass,
-      } = this.renderPassFactory<RenderPassData>(RenderPass.IDENTIFIER);
-      this.frameGraphSystem.addPass<RenderPassData>(
-        RenderPass.IDENTIFIER,
-        setupRenderPass,
-        executeRenderPass,
-      );
-
-      const {
-        setup: setupCopyPass,
-        execute: executeCopyPass,
-        tearDown: tearDownCopyPass,
-      } = this.renderPassFactory<CopyPassData>(CopyPass.IDENTIFIER);
-      const copyPass = this.frameGraphSystem.addPass<CopyPassData>(
-        CopyPass.IDENTIFIER,
-        setupCopyPass,
-        executeCopyPass,
-        tearDownCopyPass,
-      );
-
-      this.frameGraphSystem.present(copyPass.data.output);
+      this.buildFrameGraph();
     });
 
     renderingService.hooks.init.tap(FrameGraphPlugin.tag, async () => {
@@ -254,5 +235,53 @@ export class FrameGraphPlugin implements RenderingPlugin {
         }
       },
     );
+  }
+
+  private buildFrameGraph() {
+    const { enableTAA } = this.canvasConfig.renderer.getConfig();
+
+    const {
+      setup: setupRenderPass,
+      execute: executeRenderPass,
+    } = this.renderPassFactory<RenderPassData>(RenderPass.IDENTIFIER);
+    const renderPass = this.frameGraphSystem.addPass<RenderPassData>(
+      RenderPass.IDENTIFIER,
+      setupRenderPass,
+      executeRenderPass,
+    );
+
+    const {
+      setup: setupTAAPass,
+      execute: executeTAAPass,
+    } = this.renderPassFactory<TAAPassData>(TAAPass.IDENTIFIER);
+    const taaPass = this.frameGraphSystem.addPass<TAAPassData>(
+      TAAPass.IDENTIFIER,
+      setupTAAPass,
+      executeTAAPass,
+    );
+
+    const {
+      execute: executeCopyPass,
+    } = this.renderPassFactory<CopyPassData>(CopyPass.IDENTIFIER);
+    const copyPass = this.frameGraphSystem.addPass<CopyPassData>(
+      CopyPass.IDENTIFIER,
+      (fg: FrameGraphEngine, passNode: PassNode, pass: FrameGraphPass<CopyPassData>) => {
+        const output = fg.createRenderTarget(passNode, 'render to screen', {
+          width: 1,
+          height: 1,
+        });
+
+        pass.data = {
+          input: passNode.read(
+            enableTAA ? taaPass.data.copy : renderPass.data.output
+          ),
+          output: passNode.write(fg, output),
+        };
+      },
+      executeCopyPass,
+    );
+
+    // render to screen
+    this.frameGraphSystem.present(copyPass.data.output);
   }
 }

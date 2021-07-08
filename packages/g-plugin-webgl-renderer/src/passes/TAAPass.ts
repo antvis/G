@@ -1,338 +1,389 @@
-// import { inject, injectable } from 'inversify';
-// import blendFS from '../../../shaders/post-processing/blend.glsl';
-// import copyFS from '../../../shaders/post-processing/copy.glsl';
-// import quadVS from '../../../shaders/post-processing/quad.glsl';
-// import { TYPES } from '../../../types';
-// import { ILayer } from '../../layer/ILayerService';
-// import { ILogService } from '../../log/ILogService';
-// import { IShaderModuleService } from '../../shader/IShaderModuleService';
-// import { gl } from '../gl';
-// import { IFramebuffer } from '../IFramebuffer';
-// import { IModel, IModelInitializationOptions } from '../IModel';
-// import { PassType } from '../IMultiPassRenderer';
-// import BaseNormalPass from './BaseNormalPass';
+import { inject, injectable } from 'inversify';
+import { Camera, DisplayObject } from '@antv/g';
+import blendFS from '../services/shader-module/shaders/webgl.blend.frag.glsl';
+import copyFS from '../services/shader-module/shaders/webgl.copy.frag.glsl';
+import quadVS from '../services/shader-module/shaders/webgl.copy.vert.glsl';
+import { FrameGraphEngine, IRenderPass, RenderPassFactory } from '../FrameGraphEngine';
+import { IFramebuffer, IModel, IModelInitializationOptions, RenderingEngine } from '../services/renderer';
+import { ShaderModuleService, ShaderType } from '../services/shader-module';
+import { FrameGraphHandle } from '../components/framegraph/FrameGraphHandle';
+import { gl } from '../services/renderer/constants';
+import { RenderPass, RenderPassData } from './RenderPass';
+import { PassNode } from '../components/framegraph/PassNode';
+import { FrameGraphPass } from '../components/framegraph/FrameGraphPass';
+import { ResourcePool } from '../components/framegraph/ResourcePool';
+import { View } from '../View';
+import { CopyPass, CopyPassData } from './CopyPass';
 
-// // Generate halton sequence
-// // https://en.wikipedia.org/wiki/Halton_sequence
-// function halton(index: number, base: number) {
-//   let result = 0;
-//   let f = 1 / base;
-//   let i = index;
-//   while (i > 0) {
-//     result = result + f * (i % base);
-//     i = Math.floor(i / base);
-//     f = f / base;
-//   }
-//   return result;
-// }
+// Generate halton sequence
+// https://en.wikipedia.org/wiki/Halton_sequence
+function halton(index: number, base: number) {
+  let result = 0;
+  let f = 1 / base;
+  let i = index;
+  while (i > 0) {
+    result = result + f * (i % base);
+    i = Math.floor(i / base);
+    f = f / base;
+  }
+  return result;
+}
 
-// // 累加计数器
-// let accumulatingId = 1;
+// 累加计数器
+let accumulatingId = 1;
 
-// /**
-//  * TAA（Temporal Anti-Aliasing）
-//  * 在需要后处理的场景中（例如 L7 的热力图需要 blur pass、PBR 中的 SSAO 环境光遮蔽），无法使用浏览器内置的 MSAA，
-//  * 只能使用 TAA
-//  * @see https://yuque.antfin-inc.com/yuqi.pyq/fgetpa/ri52hv
-//  */
-// @injectable()
-// export default class TAAPass<InitializationOptions = {}> extends BaseNormalPass<
-//   InitializationOptions
-// > {
-//   @inject(TYPES.IShaderModuleService)
-//   protected readonly shaderModuleService: IShaderModuleService;
+export interface TAAPassData {
+  sample: FrameGraphHandle;
+  prev: FrameGraphHandle;
+  copy: FrameGraphHandle;
+  output: FrameGraphHandle;
+}
 
-//   @inject(TYPES.ILogService)
-//   protected readonly logger: ILogService;
+/**
+ * TAA（Temporal Anti-Aliasing）
+ * 在需要后处理的场景中（例如 L7 的热力图需要 blur pass、PBR 中的 SSAO 环境光遮蔽），无法使用浏览器内置的 MSAA，
+ * 只能使用 TAA
+ * @see https://yuque.antfin-inc.com/yuqi.pyq/fgetpa/ri52hv
+ */
+@injectable()
+export default class TAAPass implements IRenderPass<TAAPassData> {
+  static IDENTIFIER = 'TAA Pass';
 
-//   /**
-//    * 低差异序列
-//    */
-//   private haltonSequence: Array<[number, number]> = [];
+  @inject(RenderingEngine)
+  private readonly engine: RenderingEngine;
 
-//   /**
-//    * 当前累加任务 ID，例如用户连续拖拽时上一次累加很有可能没有结束，此时在开启新一轮累加之前需要结束掉之前未完成的
-//    */
-//   private accumulatingId: number = 0;
+  @inject(ShaderModuleService)
+  private shaderModuleService: ShaderModuleService;
 
-//   /**
-//    * 每一轮累加中的 frameID
-//    */
-//   private frame: number = 0;
+  @inject(ResourcePool)
+  private readonly resourcePool: ResourcePool;
 
-//   /**
-//    * 每一轮累加中的 frame 定时器
-//    */
-//   private timer: number | undefined = undefined;
+  @inject(RenderPassFactory)
+  private renderPassFactory: <T>(name: string) => IRenderPass<T>;
 
-//   private sampleRenderTarget: IFramebuffer;
-//   private prevRenderTarget: IFramebuffer;
-//   private outputRenderTarget: IFramebuffer;
-//   private copyRenderTarget: IFramebuffer;
+  @inject(View)
+  private view: View;
 
-//   private blendModel: IModel;
-//   private outputModel: IModel;
-//   private copyModel: IModel;
+  @inject(Camera)
+  private camera: Camera;
 
-//   public getType() {
-//     return PassType.Normal;
-//   }
+  /**
+   * 低差异序列
+   */
+  private haltonSequence: Array<[number, number]> = [];
 
-//   public getName() {
-//     return 'taa';
-//   }
+  /**
+   * 当前累加任务 ID，例如用户连续拖拽时上一次累加很有可能没有结束，此时在开启新一轮累加之前需要结束掉之前未完成的
+   */
+  private accumulatingId: number = 0;
 
-//   public init(layer: ILayer, config?: Partial<InitializationOptions>) {
-//     super.init(layer, config);
+  /**
+   * 每一轮累加中的 frameID
+   */
+  private frame: number = 0;
 
-//     const { createFramebuffer, createTexture2D } = this.rendererService;
-//     this.sampleRenderTarget = createFramebuffer({
-//       color: createTexture2D({
-//         width: 1,
-//         height: 1,
-//         wrapS: gl.CLAMP_TO_EDGE,
-//         wrapT: gl.CLAMP_TO_EDGE,
-//       }),
-//     });
-//     this.prevRenderTarget = createFramebuffer({
-//       color: createTexture2D({
-//         width: 1,
-//         height: 1,
-//         wrapS: gl.CLAMP_TO_EDGE,
-//         wrapT: gl.CLAMP_TO_EDGE,
-//       }),
-//     });
-//     this.outputRenderTarget = createFramebuffer({
-//       color: createTexture2D({
-//         width: 1,
-//         height: 1,
-//         wrapS: gl.CLAMP_TO_EDGE,
-//         wrapT: gl.CLAMP_TO_EDGE,
-//       }),
-//     });
-//     this.copyRenderTarget = createFramebuffer({
-//       color: createTexture2D({
-//         width: 1,
-//         height: 1,
-//         wrapS: gl.CLAMP_TO_EDGE,
-//         wrapT: gl.CLAMP_TO_EDGE,
-//       }),
-//     });
+  /**
+   * 每一轮累加中的 frame 定时器
+   */
+  private timer: number | undefined = undefined;
 
-//     for (let i = 0; i < 30; i++) {
-//       this.haltonSequence.push([halton(i, 2), halton(i, 3)]);
-//     }
+  private sampleRenderTarget: IFramebuffer;
+  private prevRenderTarget: IFramebuffer;
+  private outputRenderTarget: IFramebuffer;
+  private copyRenderTarget: IFramebuffer;
 
-//     this.blendModel = this.createTriangleModel('blend-pass', blendFS);
-//     this.outputModel = this.createTriangleModel('copy-pass', copyFS, {
-//       blend: {
-//         enable: true,
-//         func: {
-//           srcRGB: gl.ONE,
-//           dstRGB: gl.ONE_MINUS_SRC_ALPHA,
-//           srcAlpha: gl.ONE,
-//           dstAlpha: gl.ONE_MINUS_SRC_ALPHA,
-//         },
-//         equation: {
-//           rgb: gl.FUNC_ADD,
-//           alpha: gl.FUNC_ADD,
-//         },
-//       },
-//     });
-//     this.copyModel = this.createTriangleModel('copy-pass', copyFS);
-//   }
+  private blendModel: IModel;
+  private outputModel: IModel;
+  private copyModel: IModel;
 
-//   public render(layer: ILayer) {
-//     const { clear, getViewportSize, useFramebuffer } = this.rendererService;
-//     const { width, height } = getViewportSize();
-//     this.sampleRenderTarget.resize({ width, height });
-//     this.prevRenderTarget.resize({ width, height });
-//     this.outputRenderTarget.resize({ width, height });
-//     this.copyRenderTarget.resize({ width, height });
+  private renderPass: RenderPass;
+  private copyPass: CopyPass;
 
-//     this.resetFrame();
-//     // 首先停止上一次的累加
-//     this.stopAccumulating();
+  setup = (fg: FrameGraphEngine, passNode: PassNode, pass: FrameGraphPass<TAAPassData>): void => {
+    const sample = fg.createRenderTarget(passNode, 'sample', {
+      width: 1,
+      height: 1,
+    });
 
-//     // 先输出到 PostProcessor
-//     const readFBO = layer.multiPassRenderer.getPostProcessor().getReadFBO();
-//     useFramebuffer(readFBO, () => {
-//       clear({
-//         color: [0, 0, 0, 0],
-//         depth: 1,
-//         stencil: 0,
-//         framebuffer: readFBO,
-//       });
+    const prev = fg.createRenderTarget(passNode, 'prev', {
+      width: 1,
+      height: 1,
+    });
 
-//       // render to post processor
-//       layer.multiPassRenderer.setRenderFlag(false);
-//       layer.render();
-//       layer.multiPassRenderer.setRenderFlag(true);
-//     });
+    const copy = fg.createRenderTarget(passNode, 'copy', {
+      width: 1,
+      height: 1,
+    });
 
-//     const accumulate = (id: number) => {
-//       // 在开启新一轮累加之前，需要先结束掉之前的累加
-//       if (!this.accumulatingId || id !== this.accumulatingId) {
-//         return;
-//       }
+    const output = fg.createRenderTarget(passNode, 'output', {
+      width: 1,
+      height: 1,
+    });
 
-//       if (!this.isFinished()) {
-//         this.doRender(layer);
+    pass.data = {
+      sample,
+      prev,
+      copy: passNode.write(fg, copy),
+      output,
+    };
 
-//         requestAnimationFrame(() => {
-//           accumulate(id);
-//         });
-//       }
-//     };
+    for (let i = 0; i < 30; i++) {
+      this.haltonSequence.push([halton(i, 2), halton(i, 3)]);
+    }
 
-//     this.accumulatingId = accumulatingId++;
-//     this.timer = window.setTimeout(() => {
-//       accumulate(this.accumulatingId);
-//     }, 50);
-//   }
+    this.renderPass = this.renderPassFactory<RenderPassData>(
+      RenderPass.IDENTIFIER,
+    ) as RenderPass;
+  };
 
-//   private doRender(layer: ILayer) {
-//     this.logger.debug(`accumulatingId: ${this.accumulatingId}`);
+  execute = (
+    fg: FrameGraphEngine,
+    pass: FrameGraphPass<TAAPassData>,
+    displayObjects: DisplayObject[],
+  ) => {
+    this.copyPass = this.renderPassFactory<CopyPassData>(
+      CopyPass.IDENTIFIER,
+    ) as CopyPass;
 
-//     const { clear, getViewportSize, useFramebuffer } = this.rendererService;
-//     const { width, height } = getViewportSize();
-//     const { jitterScale = 1 } = layer.getLayerConfig();
+    if (!this.blendModel) {
+      this.blendModel = this.createTriangleModel('blend-pass', blendFS);
+    }
 
-//     // 使用 Halton 序列抖动投影矩阵
-//     const offset = this.haltonSequence[this.frame % this.haltonSequence.length];
-//     this.cameraService.jitterProjectionMatrix(
-//       ((offset[0] * 2.0 - 1.0) / width) * jitterScale,
-//       ((offset[1] * 2.0 - 1.0) / height) * jitterScale,
-//     );
+    if (!this.outputModel) {
+      this.outputModel = this.createTriangleModel('copy-pass', copyFS, {
+        blend: {
+          enable: true,
+          func: {
+            srcRGB: gl.ONE,
+            dstRGB: gl.ONE_MINUS_SRC_ALPHA,
+            srcAlpha: gl.ONE,
+            dstAlpha: gl.ONE_MINUS_SRC_ALPHA,
+          },
+          equation: {
+            rgb: gl.FUNC_ADD,
+            alpha: gl.FUNC_ADD,
+          },
+        },
+      });
+    }
 
-//     // 按抖动后的投影矩阵渲染
-//     layer.multiPassRenderer.setRenderFlag(false);
-//     layer.hooks.beforeRender.call();
-//     useFramebuffer(this.sampleRenderTarget, () => {
-//       clear({
-//         color: [0, 0, 0, 0],
-//         depth: 1,
-//         stencil: 0,
-//         framebuffer: this.sampleRenderTarget,
-//       });
+    if (!this.copyModel) {
+      this.copyModel = this.createTriangleModel('copy-pass', copyFS);
+    }
 
-//       layer.render();
-//     });
-//     layer.hooks.afterRender.call();
-//     layer.multiPassRenderer.setRenderFlag(true);
+    const viewport = this.view.getViewport();
 
-//     // 混合
-//     const layerStyleOptions = layer.getLayerConfig();
-//     useFramebuffer(this.outputRenderTarget, () => {
-//       this.blendModel.draw({
-//         uniforms: {
-//           // @ts-ignore
-//           u_opacity: layerStyleOptions.opacity || 1,
-//           u_MixRatio: this.frame === 0 ? 1 : 0.9,
-//           u_Diffuse1: this.sampleRenderTarget,
-//           u_Diffuse2:
-//             this.frame === 0
-//               ? layer.multiPassRenderer.getPostProcessor().getReadFBO()
-//               : this.prevRenderTarget,
-//         },
-//       });
-//     });
+    this.sampleRenderTarget = this.resourcePool.getOrCreateResource(fg.getResourceNode(pass.data.sample).resource);
+    this.prevRenderTarget = this.resourcePool.getOrCreateResource(fg.getResourceNode(pass.data.prev).resource);
+    this.outputRenderTarget = this.resourcePool.getOrCreateResource(fg.getResourceNode(pass.data.output).resource);
+    this.copyRenderTarget = this.resourcePool.getOrCreateResource(fg.getResourceNode(pass.data.copy).resource);
+    this.sampleRenderTarget.resize(viewport);
+    this.prevRenderTarget.resize(viewport);
+    this.outputRenderTarget.resize(viewport);
+    this.copyRenderTarget.resize(viewport);
 
-//     // 输出累加结果
-//     if (this.frame === 0) {
-//       clear({
-//         color: [0, 0, 0, 0],
-//         depth: 1,
-//         stencil: 0,
-//         framebuffer: this.copyRenderTarget,
-//       });
-//     }
+    this.resetFrame();
+    // 首先停止上一次的累加
+    this.stopAccumulating();
 
-//     if (this.frame >= 1) {
-//       useFramebuffer(this.copyRenderTarget, () => {
-//         this.outputModel.draw({
-//           uniforms: {
-//             u_Texture: this.outputRenderTarget,
-//           },
-//         });
-//       });
+    const { clear, useFramebuffer } = this.engine;
+    // 先输出到 copy
+    useFramebuffer({
+      framebuffer: this.copyRenderTarget,
+    }, () => {
+      clear({
+        color: [0, 0, 0, 0],
+        depth: 1,
+        stencil: 0,
+        framebuffer: this.copyRenderTarget,
+      });
 
-//       useFramebuffer(
-//         layer.multiPassRenderer.getPostProcessor().getReadFBO(),
-//         () => {
-//           this.copyModel.draw({
-//             uniforms: {
-//               u_Texture: this.copyRenderTarget,
-//             },
-//           });
-//         },
-//       );
-//       layer.multiPassRenderer.getPostProcessor().render(layer);
-//     }
+      this.renderPass.renderDisplayObjects(displayObjects);
+    });
 
-//     // 保存前序帧结果
-//     const tmp = this.prevRenderTarget;
-//     this.prevRenderTarget = this.outputRenderTarget;
-//     this.outputRenderTarget = tmp;
+    const accumulate = (id: number) => {
+      // 在开启新一轮累加之前，需要先结束掉之前的累加
+      if (!this.accumulatingId || id !== this.accumulatingId) {
+        return;
+      }
 
-//     this.frame++;
+      if (!this.isFinished()) {
+        this.doRender(displayObjects);
 
-//     // 恢复 jitter 后的相机
-//     this.cameraService.clearJitterProjectionMatrix();
-//   }
+        requestAnimationFrame(() => {
+          accumulate(id);
+        });
+      }
+    };
 
-//   /**
-//    * 是否已经完成累加
-//    * @return {boolean} isFinished
-//    */
-//   private isFinished() {
-//     return this.frame >= this.haltonSequence.length;
-//   }
+    this.accumulatingId = accumulatingId++;
+    this.timer = window.setTimeout(() => {
+      accumulate(this.accumulatingId);
+    }, 50);
+  }
 
-//   private resetFrame() {
-//     this.frame = 0;
-//   }
 
-//   private stopAccumulating() {
-//     this.accumulatingId = 0;
-//     window.clearTimeout(this.timer);
-//   }
+  //   // 先输出到 PostProcessor
+  //   const readFBO = layer.multiPassRenderer.getPostProcessor().getReadFBO();
+  //   useFramebuffer(readFBO, () => {
+  //     clear({
+  //       color: [0, 0, 0, 0],
+  //       depth: 1,
+  //       stencil: 0,
+  //       framebuffer: readFBO,
+  //     });
 
-//   private createTriangleModel(
-//     shaderModuleName: string,
-//     fragmentShader: string,
-//     options?: Partial<IModelInitializationOptions>,
-//   ) {
-//     this.shaderModuleService.registerModule(shaderModuleName, {
-//       vs: quadVS,
-//       fs: fragmentShader,
-//     });
+  //     // render to post processor
+  //     layer.multiPassRenderer.setRenderFlag(false);
+  //     layer.render();
+  //     layer.multiPassRenderer.setRenderFlag(true);
+  //   });
 
-//     const { vs, fs, uniforms } = this.shaderModuleService.getModule(
-//       shaderModuleName,
-//     );
-//     const { createAttribute, createBuffer, createModel } = this.rendererService;
-//     return createModel({
-//       vs,
-//       fs,
-//       attributes: {
-//         // 使用一个全屏三角形，相比 Quad 顶点数目更少
-//         a_Position: createAttribute({
-//           buffer: createBuffer({
-//             data: [-4, -4, 4, -4, 0, 4],
-//             type: gl.FLOAT,
-//           }),
-//           size: 2,
-//         }),
-//       },
-//       uniforms: {
-//         ...uniforms,
-//       },
-//       depth: {
-//         enable: false,
-//       },
-//       count: 3,
-//       ...options,
-//     });
-//   }
-// }
+  private doRender(displayObjects: DisplayObject[]) {
+    console.log(`accumulatingId: ${this.accumulatingId} ${this.frame}`);
+
+    const { clear, useFramebuffer } = this.engine;
+    const { width, height } = this.view.getViewport();
+    const jitterScale = 1;
+
+    // 使用 Halton 序列抖动投影矩阵
+    const offset = this.haltonSequence[this.frame % this.haltonSequence.length];
+    this.camera.jitterProjectionMatrix(
+      ((offset[0] * 2.0 - 1.0) / width) * jitterScale,
+      ((offset[1] * 2.0 - 1.0) / height) * jitterScale,
+    );
+
+    // 按抖动后的投影矩阵渲染
+    useFramebuffer({
+      framebuffer: this.sampleRenderTarget,
+    }, () => {
+      clear({
+        color: [0, 0, 0, 0],
+        depth: 1,
+        stencil: 0,
+        framebuffer: this.sampleRenderTarget,
+      });
+
+      this.renderPass.renderDisplayObjects(displayObjects);
+    });
+
+    // 混合
+    useFramebuffer({
+      framebuffer: this.outputRenderTarget,
+    }, () => {
+      this.blendModel.draw({
+        uniforms: {
+          u_Opacity: 1,
+          u_MixRatio: this.frame === 0 ? 1 : 0.9,
+          u_Diffuse1: this.sampleRenderTarget,
+          u_Diffuse2:
+            this.frame === 0
+              // ? layer.multiPassRenderer.getPostProcessor().getReadFBO()
+              ? this.copyRenderTarget
+              : this.prevRenderTarget,
+        },
+      });
+    });
+
+    // 输出累加结果
+    if (this.frame === 0) {
+      clear({
+        color: [0, 0, 0, 0],
+        depth: 1,
+        stencil: 0,
+        framebuffer: this.copyRenderTarget,
+      });
+    }
+
+    if (this.frame >= 1) {
+      useFramebuffer({
+        framebuffer: this.copyRenderTarget,
+      }, () => {
+        this.outputModel.draw({
+          uniforms: {
+            u_Texture: this.outputRenderTarget,
+          },
+        });
+      });
+
+      this.copyPass.render(this.copyRenderTarget);
+
+      // useFramebuffer(
+      //   layer.multiPassRenderer.getPostProcessor().getReadFBO(),
+      //   () => {
+      //     this.copyModel.draw({
+      //       uniforms: {
+      //         u_Texture: this.copyRenderTarget,
+      //       },
+      //     });
+      //   },
+      // );
+      // layer.multiPassRenderer.getPostProcessor().render(layer);
+    }
+
+    // 保存前序帧结果
+    const tmp = this.prevRenderTarget;
+    this.prevRenderTarget = this.outputRenderTarget;
+    this.outputRenderTarget = tmp;
+
+    this.frame++;
+
+    // 恢复 jitter 后的相机
+    this.camera.clearJitterProjectionMatrix();
+  }
+
+  /**
+   * 是否已经完成累加
+   */
+  private isFinished() {
+    return this.frame >= this.haltonSequence.length;
+  }
+
+  private resetFrame() {
+    this.frame = 0;
+  }
+
+  private stopAccumulating() {
+    this.accumulatingId = 0;
+    window.clearTimeout(this.timer);
+  }
+
+  private createTriangleModel(
+    shaderModuleName: string,
+    fragmentShader: string,
+    options?: Partial<IModelInitializationOptions>,
+  ) {
+    const { createModel, createAttribute, createBuffer } = this.engine;
+    this.shaderModuleService.registerModule(shaderModuleName, {
+      vs: quadVS,
+      fs: fragmentShader,
+    });
+
+    const { vs = '', fs = '', uniforms } = this.shaderModuleService.getModule(
+      shaderModuleName,
+    );
+
+    return createModel({
+      vs: this.shaderModuleService.transpile(vs, ShaderType.Vertex, this.engine.shaderLanguage),
+      fs: this.shaderModuleService.transpile(fs, ShaderType.Fragment, this.engine.shaderLanguage),
+      attributes: {
+        // 使用一个全屏三角形，相比 Quad 顶点数目更少
+        a_Position: createAttribute({
+          buffer: createBuffer({
+            data: [-4, -4, 4, -4, 0, 4],
+            type: gl.FLOAT,
+          }),
+          size: 2,
+        }),
+      },
+      uniforms: {
+        ...uniforms,
+      },
+      depth: {
+        enable: false,
+      },
+      count: 3,
+      ...options,
+    });
+  }
+}

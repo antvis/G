@@ -61,6 +61,12 @@ export class LineModelBuilder implements ModelBuilder {
     const renderable3d = entity.getComponent(Renderable3D);
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
+
+    if (name === 'lineWidth') {
+      material.setUniform({
+        [UNIFORM.LineWidth]: value,
+      });
+    }
   }
 
   prepareModel(object: DisplayObject) {
@@ -95,7 +101,7 @@ export class LineModelBuilder implements ModelBuilder {
     material.vertexShaderGLSL = vs || '';
     material.fragmentShaderGLSL = fs || '';
     material.cull = {
-      enable: false,
+      enable: true,
     };
     material.depth = {
       enable: false,
@@ -124,8 +130,9 @@ export class LineModelBuilder implements ModelBuilder {
     geometry.setAttribute(
       ATTRIBUTE.Pos,
       Float32Array.from(
-        [0, 0, 1, 0, 1, 1, 0, 1],
+        // [0, 0, 1, 0, 1, 1, 0, 1],
         // [-0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5]
+        [-1, -1, 1, -1, 1, 1, -1, 1]
       ),
       {
         arrayStride: 4 * 2,

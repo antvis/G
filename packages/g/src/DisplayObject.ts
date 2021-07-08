@@ -14,18 +14,6 @@ import { Timeline } from './systems';
 import { AABB } from './shapes';
 import { GeometryAABBUpdater, GeometryUpdaterFactory } from './services/aabb';
 
-export interface INode {
-  nodeType: string;
-  nodeName: string;
-  parentNode: INode | null;
-}
-
-export interface IGroup {
-  getEntity(): Entity;
-  add(shape: DisplayObject): void;
-  remove(shape: DisplayObject): void;
-}
-
 /**
  * events for display object
  */
@@ -64,7 +52,7 @@ export const enum DISPLAY_OBJECT_EVENT {
  * * destroy
  * * attributeChanged
  */
-export class DisplayObject extends EventEmitter implements INode, IGroup {
+export class DisplayObject extends EventEmitter {
   protected entity: Entity;
   protected config: ShapeCfg = { attrs: {} };
 
@@ -460,9 +448,15 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
   /**
    * compatible with G 3.0
    *
-   * remove child and destroy it by default
+   * remove itself from parent
    */
-  remove(child: DisplayObject, destroy = true) {
+  remove(destroy = true) {
+    if (this.parentNode) {
+      return this.parentNode.removeChild(this, destroy);
+    }
+    return this;
+  }
+  removeChild(child: DisplayObject, destroy = true) {
     const entity = child.getEntity();
     this.sceneGraphService.detach(entity);
 
@@ -474,11 +468,7 @@ export class DisplayObject extends EventEmitter implements INode, IGroup {
         object.destroy();
       });
     }
-
     return child;
-  }
-  removeChild(shape: DisplayObject, destroy = true) {
-    return this.remove(shape, destroy);
   }
   removeChildren(destroy = true) {
     this.children.forEach((child) => {

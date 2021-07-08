@@ -1,5 +1,4 @@
 import { DisplayObject } from '@antv/g';
-import { Entity } from '@antv/g-ecs';
 import { inject, injectable } from 'inversify';
 import { FrameGraphHandle, TextureDescriptor } from './components/framegraph/FrameGraphHandle';
 import { FrameGraphPass } from './components/framegraph/FrameGraphPass';
@@ -14,7 +13,7 @@ export interface IRenderPass<RenderPassData> {
   /**
    * 只声明虚拟资源及其读写关系，不进行具体资源 Texture | Framebuffer 的实例化
    */
-  setup(fg: FrameGraphEngine, passNode: PassNode, pass: FrameGraphPass<RenderPassData>): void;
+  setup?(fg: FrameGraphEngine, passNode: PassNode, pass: FrameGraphPass<RenderPassData>): void;
 
   /**
    * 调用渲染引擎服务完成虚拟资源的实例化

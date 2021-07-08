@@ -3,12 +3,10 @@ import copyFrag from '../services/shader-module/shaders/webgl.copy.frag.glsl';
 import copyVert from '../services/shader-module/shaders/webgl.copy.vert.glsl';
 import { FrameGraphHandle } from '../components/framegraph/FrameGraphHandle';
 import { FrameGraphPass } from '../components/framegraph/FrameGraphPass';
-import { PassNode } from '../components/framegraph/PassNode';
 import { ResourcePool } from '../components/framegraph/ResourcePool';
-import { IModel, RenderingEngine } from '../services/renderer';
+import { IFramebuffer, IModel, RenderingEngine } from '../services/renderer';
 import { gl } from '../services/renderer/constants';
 import { FrameGraphEngine, IRenderPass } from '../FrameGraphEngine';
-import { RenderPass, RenderPassData } from './RenderPass';
 import { View } from '../View';
 import { ShaderModuleService, ShaderType } from '../services/shader-module';
 
@@ -35,25 +33,8 @@ export class CopyPass implements IRenderPass<CopyPassData> {
 
   private model: IModel | undefined;
 
-  setup = (fg: FrameGraphEngine, passNode: PassNode, pass: FrameGraphPass<CopyPassData>): void => {
-    const renderPass = fg.getPass<RenderPassData>(RenderPass.IDENTIFIER);
-    if (renderPass) {
-      const output = fg.createRenderTarget(passNode, 'render to screen', {
-        width: 1,
-        height: 1,
-      });
-
-      pass.data = {
-        input: passNode.read(renderPass.data.output),
-        output: passNode.write(fg, output),
-      };
-    }
-  };
-
   execute = (fg: FrameGraphEngine, pass: FrameGraphPass<CopyPassData>) => {
     const { createModel, createAttribute, createBuffer } = this.engine;
-    const viewport = this.view.getViewport();
-
     if (!this.model) {
       const model = createModel({
         vs: this.shaderModuleService.transpile(copyVert, ShaderType.Vertex, this.engine.shaderLanguage),
@@ -97,6 +78,15 @@ export class CopyPass implements IRenderPass<CopyPassData> {
     const resourceNode = fg.getResourceNode(pass.data.input);
     const framebuffer = this.resourcePool.getOrCreateResource(resourceNode.resource);
 
+    this.render(framebuffer);
+  };
+
+  tearDown = () => {
+    this.model = undefined;
+  };
+
+  render(framebuffer: IFramebuffer) {
+    const viewport = this.view.getViewport();
     this.engine.useFramebuffer(
       {
         framebuffer: null,
@@ -109,6 +99,7 @@ export class CopyPass implements IRenderPass<CopyPassData> {
           depth: 1,
           stencil: 0,
         });
+
         this.model!.draw({
           uniforms: {
             u_Texture: framebuffer,
@@ -116,9 +107,5 @@ export class CopyPass implements IRenderPass<CopyPassData> {
         });
       }
     );
-  };
-
-  tearDown = () => {
-    this.model = undefined;
-  };
+  }
 }

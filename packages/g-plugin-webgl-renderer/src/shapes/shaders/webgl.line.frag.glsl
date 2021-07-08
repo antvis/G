@@ -328,10 +328,12 @@ void main() {
     }
   }
 
+  gl_FragColor = v_color;
 
-  if ((inMainPath + inLineJoin + inLineCap) > 0.) {
-    gl_FragColor = v_color;
-  } else {
-    discard;
-  }
+
+  // if ((inMainPath + inLineJoin + inLineCap) > 0.) {
+  //   gl_FragColor = v_color;
+  // } else {
+  //   discard;
+  // }
 }

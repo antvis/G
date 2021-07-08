@@ -30,10 +30,13 @@ uniform mat4 u_ProjectionMatrix;
 uniform mat4 u_ViewMatrix;
 #pragma include "instancing.declaration"
 
+float pixelWidth = 1. / u_Viewport.x;
+float aspect = u_Viewport.x / u_Viewport.y;
+
 vec4 viewCoord(vec3 c) {
   #pragma include "instancing"
   vec4 result = u_ProjectionMatrix * u_ViewMatrix * modelMatrix * vec4(c.xyz, 1.0);
-  if (result.w != 0.0) result = result / result.w * u_Viewport.x / u_Viewport.y;
+  if (result.w != 0.0) result = result / result.w;
   return result;
 }
 
@@ -164,11 +167,13 @@ mat3 getTransformMatrix(vec2 startPos, vec2 endPos, float lineWidth) {
   float len = length(delta);
   float phi = atan(delta.y / delta.x);
 
+  // mat3 scale = mat3(len, 0, 0, 0, lineWidth, 0, 0, 0, 1);
   mat3 scale = mat3(len, 0, 0, 0, lineWidth, 0, 0, 0, 1);
 
   mat3 rotate = mat3(cos(phi), sin(phi), 0, -sin(phi), cos(phi), 0, 0, 0, 1);
 
   mat3 translate = mat3(1, 0, 0, 0, 1, 0, centerPos.x, centerPos.y, 1);
+  // mat3 translate = mat3(1, 0, 0, 0, 1, 0, 0, 0, 1);
   // mat3 translate = mat3(1, 0, 0, 0, 1, 0, startPos.x, startPos.y, 1);
   // mat3 translate = mat3(1, 0, 0, 0, 1, 0, endPos.x, endPos.y, 1);
 
@@ -273,7 +278,12 @@ void main() {
 
   gl_Position = vec4(clipSpace * vec2(1., -1.), 0., 1.);
 
-  // gl_Position = vec4(in_position * vec2(200., 2.) / u_Viewport, 0., 1.);
+  // gl_Position = vec4(
+  //   B.x + in_position.x * pixelWidth,
+  //   B.y + in_position.y * pixelWidth * aspect,
+  //   B.z, 1.0);
+
+  // gl_Position = vec4(pos.xy, 0., 1.);
 
   v_startPos = startPos.xy;
   v_endPos = endPos.xy;
