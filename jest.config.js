@@ -19,6 +19,13 @@ module.exports = {
   runner: 'jest-electron/runner',
   testEnvironment: 'jest-electron/environment',
   preset: 'ts-jest',
+  globals: {
+    'ts-jest': {
+      tsConfig: {
+        target: 'ES2019'
+      }
+    }
+  },
   testMatch: ['**/*/__tests__/*.spec.+(ts|tsx|js)'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
   modulePathIgnorePatterns: ['dist'],

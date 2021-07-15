@@ -8,9 +8,9 @@ export class ImagePool {
     return this.imageCache[src];
   }
 
-  async getOrCreateImage(src: string): Promise<HTMLImageElement> {
+  getOrCreateImage(src: string): Promise<HTMLImageElement> {
     if (this.imageCache[src]) {
-      return this.imageCache[src];
+      return Promise.resolve(this.imageCache[src]);
     }
 
     return new Promise((resolve, reject) => {

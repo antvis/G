@@ -81,6 +81,9 @@ export class DirtyCheckPlugin implements RenderingPlugin {
       if (dirtyObjects.length === 0) {
         this.renderingContext.dirtyRectangle = undefined;
         return [];
+      } else {
+        // 即使最终待渲染对象为 0 也需要强制渲染一次
+        this.renderingContext.force = true;
       }
 
       if (!enableDirtyRectangleRendering) {
@@ -149,6 +152,7 @@ export class DirtyCheckPlugin implements RenderingPlugin {
 
         // clear camera dirty flag
         this.renderingContext.cameraDirty = false;
+        this.renderingContext.force = false;
       },
     );
   }

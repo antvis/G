@@ -6,7 +6,7 @@ import { containerModule as canvasPickerModule } from '@antv/g-plugin-canvas-pic
 import { Canvas2DContextService } from './Canvas2DContextService';
 
 export class Renderer extends AbstractRenderer {
-  constructor(config: RendererConfig) {
+  constructor(config?: Partial<RendererConfig>) {
     super(config);
 
     this.registerPlugin(

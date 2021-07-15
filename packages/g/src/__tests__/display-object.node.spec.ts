@@ -85,7 +85,7 @@ describe('DisplayObject Node API', () => {
     expect(group2.getScale()).to.eqls(vec3.fromValues(20, 20, 20));
 
     // remove group2 from group1
-    group1.remove(group2);
+    group1.removeChild(group2);
     group1.removeChildren();
 
     expect(group1.getScale()).to.eqls(vec3.fromValues(10, 10, 10));

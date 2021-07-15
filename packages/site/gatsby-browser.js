@@ -4,6 +4,8 @@ window.reactDom = require('react-dom');
 window.reactSplitPane = require('react-split-pane');
 window.stats = require('stats.js');
 window.dat = require('dat.gui');
+window.hammerjs = require('hammerjs');
+window.interactjs = require('interactjs');
 window.g = require('@antv/g');
 window.gCanvas = require('@antv/g-canvas');
 window.gWebgl = require('@antv/g-webgl');
@@ -12,3 +14,4 @@ window.gComponents = require('@antv/g-components');
 // plugins
 window.gPluginCssSelect = require('@antv/g-plugin-css-select');
 window.gPlugin3d = require('@antv/g-plugin-3d');
+window.gPluginControl = require('@antv/g-plugin-control');

@@ -4,10 +4,8 @@ import { CanvasService } from '../Canvas';
 import { SceneGraphNode } from '../components';
 import { ContributionProvider } from '../contribution-provider';
 import { DisplayObject } from '../DisplayObject';
-import { InteractivePointerEvent } from '../InteractionEvent';
-import { EventPosition } from '../types';
+import { EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext } from './RenderingContext';
-import { SceneGraphService } from './SceneGraphService';
 
 export interface RenderingPlugin {
   apply(renderer: RenderingService): void;
@@ -48,13 +46,12 @@ export class RenderingService implements CanvasService {
     afterRender: new SyncHook<[DisplayObject[], DisplayObject[]]>(['objectsToRender', 'objects']),
     destroy: new SyncHook<[]>(),
     pick: new SyncWaterfallHook<[PickingResult]>(['result']),
-    pointerDown: new SyncHook<[PointerEvent, InteractivePointerEvent]>(['event', 'original']),
-    pointerUp: new SyncHook<[PointerEvent, InteractivePointerEvent]>(['event', 'original']),
-    pointerMove: new SyncHook<[PointerEvent, InteractivePointerEvent]>(['event', 'original']),
-    pointerCancel: new SyncHook<[PointerEvent, InteractivePointerEvent]>(['event', 'original']),
-    pointerOut: new SyncHook<[PointerEvent, InteractivePointerEvent]>(['event', 'original']),
-    pointerOver: new SyncHook<[PointerEvent, InteractivePointerEvent]>(['event', 'original']),
-    pointerWheel: new SyncHook<[PointerEvent, InteractivePointerEvent]>(['event', 'original']),
+    pointerDown: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerUp: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerMove: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerOut: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerOver: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerWheel: new SyncHook<[InteractivePointerEvent]>(['event']),
   };
 
   init() {

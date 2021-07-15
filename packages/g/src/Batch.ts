@@ -31,7 +31,7 @@ export class Batch extends CustomElement {
 
     if (attrs.instances) {
       attrs.instances.forEach((instance: DisplayObject) => {
-        this.addInstance(instance);
+        this.appendChild(instance);
       });
     }
   }
@@ -40,12 +40,12 @@ export class Batch extends CustomElement {
     return this.batchType;
   }
 
-  addInstance(child: DisplayObject) {
+  appendChild(child: DisplayObject) {
     if (!this.batchType) {
       this.batchType = child.nodeType;
     }
 
-    this.appendChild(child);
+    super.appendChild(child);
 
     const renderable = this.getEntity().getComponent(Renderable);
     renderable.aabbDirty = true;
@@ -56,8 +56,8 @@ export class Batch extends CustomElement {
     return child;
   }
 
-  removeInstance(child: DisplayObject) {
-    this.removeChild(child);
+  removeChild(child: DisplayObject) {
+    super.removeChild(child);
 
     const renderable = this.getEntity().getComponent(Renderable);
     renderable.aabbDirty = true;

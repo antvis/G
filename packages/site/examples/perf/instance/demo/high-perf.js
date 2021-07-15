@@ -66,7 +66,11 @@ fetch('https://gw.alipayobjects.com/os/basement_prod/0b9730ff-0850-46ff-84d0-1d4
           lineWidth: 1,
         },
       });
-      circleBatch.addInstance(circle);
+      circleBatch.appendChild(circle);
+    });
+
+    circleBatch.addEventListener('mouseenter', (e) => {
+      console.log('mouseenter', e);
     });
 
     canvas.appendChild(circleBatch);
@@ -100,10 +104,31 @@ canvas.on('afterRender', () => {
   }
 
   // manipulate camera instead of the root of canvas
-  camera.rotate(0, 0, 1);
+  // camera.rotate(0, 0, 1);
 
   // root.setOrigin(300, 250);
   // root.rotate(1);
 });
 
-const root = canvas.getRoot();
+// update Camera's zoom
+// @see https://github.com/mrdoob/three.js/blob/master/examples/jsm/controls/OrbitControls.js
+const minZoom = 0;
+const maxZoom = Infinity;
+canvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  let zoom;
+  if (e.deltaY < 0) {
+    zoom = Math.max(
+      minZoom,
+      Math.min(maxZoom, camera.getZoom() / 0.95),
+    );
+  } else {
+    zoom = Math.max(
+      minZoom,
+      Math.min(maxZoom, camera.getZoom() * 0.95),
+    );
+  }
+  camera.setZoom(zoom);
+});

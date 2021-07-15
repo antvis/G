@@ -359,3 +359,5 @@ type U = ['u' | 'U', number, number, number];
 type Z = ['z' | 'Z'];
 
 export type PathCommand = A | C | O | H | L | M | R | Q | S | T | V | U | Z;
+
+export type InteractivePointerEvent = PointerEvent | TouchEvent | MouseEvent | WheelEvent;

@@ -19,7 +19,7 @@ export abstract class AbstractRenderer implements IRenderer {
   private plugins: ContainerModule[] = [];
   private config: RendererConfig;
 
-  constructor(config: Partial<RendererConfig>) {
+  constructor(config?: Partial<RendererConfig>) {
     this.config = {
       /**
        * enable auto rendering by default

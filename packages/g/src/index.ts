@@ -5,7 +5,6 @@ export * from './CustomElement';
 export * from './DisplayObject';
 export * from './DisplayObjectPool';
 export * from './Camera';
-export * from './InteractionEvent';
 export * from './shapes-export';
 export * from './inversify.config';
 export * from './contribution-provider';

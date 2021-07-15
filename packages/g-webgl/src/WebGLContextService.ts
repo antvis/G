@@ -6,14 +6,14 @@ import { setDOMSize } from './utils/dom';
 
 @injectable()
 export class WebGLContextService implements ContextService<WebGLRenderingContext> {
-  private $container: HTMLElement;
+  private $container: HTMLElement | null;
   private $canvas: HTMLCanvasElement | null;
   private context: WebGLRenderingContext | null;
 
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
-  async init() {
+  init() {
     const { container, width, height } = this.canvasConfig;
 
     // create container
@@ -55,7 +55,7 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
   }
 
   getBoundingClientRect() {
-    return this.$container.getBoundingClientRect();
+    return this.$container?.getBoundingClientRect();
   }
 
   destroy() {

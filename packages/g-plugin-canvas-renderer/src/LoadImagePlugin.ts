@@ -11,32 +11,32 @@ export class LoadImagePlugin implements RenderingPlugin {
   private imagePool: ImagePool;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.mounted.tap(LoadImagePlugin.tag, async (object: DisplayObject) => {
+    renderingService.hooks.mounted.tap(LoadImagePlugin.tag, (object: DisplayObject) => {
       const { nodeType, attributes } = object;
       if (nodeType === SHAPE.Image) {
         const { img } = attributes;
 
         if (isString(img)) {
-          await this.imagePool.getOrCreateImage(img);
+          this.imagePool.getOrCreateImage(img).then(() => {
+            // set dirty rectangle flag
+            object.getEntity().getComponent(Renderable).dirty = true;
+          });
         }
-
-        // set dirty rectangle flag
-        object.getEntity().getComponent(Renderable).dirty = true;
       }
     });
 
     renderingService.hooks.attributeChanged.tap(
       LoadImagePlugin.tag,
-      async (object: DisplayObject, name: string, value: string) => {
+      (object: DisplayObject, name: string, value: string) => {
         const { nodeType } = object;
         if (nodeType === SHAPE.Image) {
           if (name === 'img') {
             if (isString(value)) {
-              await this.imagePool.getOrCreateImage(value);
+              this.imagePool.getOrCreateImage(value).then(() => {
+                // set dirty rectangle flag
+                object.getEntity().getComponent(Renderable).dirty = true;
+              });
             }
-
-            // set dirty rectangle flag
-            object.getEntity().getComponent(Renderable).dirty = true;
           }
         }
       }

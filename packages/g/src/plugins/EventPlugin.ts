@@ -1,12 +1,10 @@
 import { inject, injectable } from 'inversify';
-import { DisplayObject } from '../DisplayObject';
-import {
-  InteractionCallback,
-  InteractionEvent,
-  InteractivePointerEvent,
-} from '../InteractionEvent';
-import { ContextService, RenderingPlugin, RenderingService, RenderingContext } from '../services';
-import { CanvasConfig } from '../types';
+import { FederatedMouseEvent } from '../FederatedMouseEvent';
+import { FederatedPointerEvent } from '../FederatedPointerEvent';
+import { FederatedWheelEvent } from '../FederatedWheelEvent';
+import { ContextService, RenderingPlugin, RenderingService, EventService } from '../services';
+import { CanvasConfig, Cursor, EventPosition, InteractivePointerEvent } from '../types';
+import { normalizeToPointerEvent, supportsTouchEvents, TOUCH_TO_POINTER } from '../utils/event';
 
 /**
  * support mouse & touch events
@@ -27,276 +25,191 @@ export class EventPlugin implements RenderingPlugin {
   @inject(RenderingService)
   private renderingService: RenderingService;
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+  @inject(EventService)
+  private eventService: EventService;
 
-  private didMove: boolean = false;
+  private autoPreventDefault = true;
+  private rootPointerEvent = new FederatedPointerEvent(null);
+  private rootWheelEvent = new FederatedWheelEvent(null);
 
   apply(renderingService: RenderingService) {
+    this.eventService.setPickHandler((position: EventPosition) => {
+      const { picked } = this.renderingService.hooks.pick.call({
+        position,
+        picked: null,
+      });
+
+      return picked;
+    });
+
     renderingService.hooks.pointerWheel.tap(
       EventPlugin.tag,
-      (event: PointerEvent, originalEvent: InteractivePointerEvent) => {
-        const interactionEvent = new InteractionEvent(event, originalEvent);
+      (nativeEvent: InteractivePointerEvent) => {
+        const wheelEvent = this.normalizeWheelEvent(nativeEvent as WheelEvent);
 
-        this.processInteractive(
-          interactionEvent,
-          (event, displayObject) => {
-            this.dispatchEvent('mousewheel', displayObject, event);
-          },
-          false,
-        );
-      },
-    );
-
-    renderingService.hooks.pointerMove.tap(
-      EventPlugin.tag,
-      (event: PointerEvent, originalEvent: InteractivePointerEvent) => {
-        if (event.pointerType === 'mouse' || event.pointerType === 'pen') {
-          // this.didMove = true;
-          // this.cursor = null;
-        }
-
-        const interactionEvent = new InteractionEvent(event, originalEvent);
-
-        this.processInteractive(
-          interactionEvent,
-          (event, displayObject, hit) => {
-            const isTouch = InteractionEvent.isTouch(event);
-            const isMouse = InteractionEvent.isMouse(event);
-
-            if (isMouse) {
-              // TODO:
-              // this.processPointerOverOut(interactionEvent, displayObject, hit);
-            }
-
-            if (hit) {
-              this.dispatchEvent('pointermove', displayObject, event);
-              if (isTouch) {
-                this.dispatchEvent('touchmove', displayObject, event);
-              }
-              if (isMouse) {
-                this.dispatchEvent('mousemove', displayObject, event);
-              }
-            }
-          },
-          true,
-        );
+        this.eventService.mapEvent(wheelEvent);
       },
     );
 
     renderingService.hooks.pointerDown.tap(
       EventPlugin.tag,
-      (event: PointerEvent, originalEvent: InteractivePointerEvent) => {
-        // if (supportsTouchEvents && (originalEvent as PointerEvent).pointerType === 'touch') {
-        //   return;
-        // }
+      (nativeEvent: InteractivePointerEvent) => {
+        if (supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch') {
+          return;
+        }
 
-        const interactionEvent = new InteractionEvent(event, originalEvent);
+        const events = normalizeToPointerEvent(nativeEvent);
 
-        this.processInteractive(
-          interactionEvent,
-          (event, displayObject) => {
-            this.dispatchEvent('pointerdown', displayObject, interactionEvent);
-            if (event.formattedEvent.pointerType === 'touch') {
-              this.dispatchEvent('touchstart', displayObject, interactionEvent);
-            }
-            // emit a mouse event for "pen" pointers, the way a browser would emit a fallback event
-            else if (
-              event.formattedEvent.pointerType === 'mouse' ||
-              event.formattedEvent.pointerType === 'pen'
-            ) {
-              const isRightButton = event.formattedEvent.button === 2;
-              this.dispatchEvent(
-                isRightButton ? 'rightdown' : 'mousedown',
-                displayObject,
-                interactionEvent,
-              );
-            }
-          },
-          true,
-        );
+        if (this.autoPreventDefault && (events[0] as any).isNormalized) {
+          const cancelable = nativeEvent.cancelable || !('cancelable' in nativeEvent);
+
+          if (cancelable) {
+            nativeEvent.preventDefault();
+          }
+        }
+
+        for (const event of events) {
+          const federatedEvent = this.bootstrapEvent(this.rootPointerEvent, event);
+          this.eventService.mapEvent(federatedEvent);
+        }
+
+        this.setCursor(this.eventService.cursor);
       },
     );
 
     renderingService.hooks.pointerUp.tap(
       EventPlugin.tag,
-      (event: PointerEvent, originalEvent: InteractivePointerEvent) => {
-        // if (supportsTouchEvents && (originalEvent as PointerEvent).pointerType === 'touch') {
-        //   return;
-        // }
+      (nativeEvent: InteractivePointerEvent) => {
+        if (supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch') return;
 
-        this.onPointerComplete(event, originalEvent, false, (event, displayObject, hit) => {
-          const isTouch = InteractionEvent.isTouch(event);
-          const isMouse = InteractionEvent.isMouse(event);
+        const outside = nativeEvent.target !== this.contextService.getDomElement()
+          ? 'outside' : '';
+        const normalizedEvents = normalizeToPointerEvent(nativeEvent);
 
-          if (isMouse) {
-            const isRightButton = event.formattedEvent.button === 2;
+        for (const normalizedEvent of normalizedEvents) {
+          const event = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent);
+          event.type += outside;
+          this.eventService.mapEvent(event);
+        }
 
-            if (hit) {
-              this.dispatchEvent(isRightButton ? 'rightup' : 'mouseup', displayObject, event);
-              this.dispatchEvent(isRightButton ? 'rightclick' : 'click', displayObject, event);
-            } else {
-              this.dispatchEvent(
-                isRightButton ? 'rightupoutside' : 'mouseupoutside',
-                displayObject,
-                event,
-              );
-            }
-          }
-
-          if (hit) {
-            this.dispatchEvent('pointerup', displayObject, event);
-            if (isTouch) {
-              this.dispatchEvent('touchend', displayObject, event);
-            }
-          }
-        });
+        this.setCursor(this.eventService.cursor);
       },
     );
 
-    renderingService.hooks.pointerCancel.tap(
+    renderingService.hooks.pointerMove.tap(
       EventPlugin.tag,
-      (event: PointerEvent, originalEvent: InteractivePointerEvent) => {
-        // if (supportsTouchEvents && (originalEvent as PointerEvent).pointerType === 'touch') {
-        //   return;
-        // }
-
-        this.onPointerComplete(event, originalEvent, true, (event, displayObject) => {
-          this.dispatchEvent('pointercancel', displayObject, event);
-          if (event.formattedEvent.pointerType === 'touch') {
-            this.dispatchEvent('touchcancel', displayObject, event);
-          }
-        });
-      },
+      this.onPointerMove,
     );
 
     renderingService.hooks.pointerOver.tap(
       EventPlugin.tag,
-      (event: PointerEvent, originalEvent: InteractivePointerEvent) => {},
+      this.onPointerMove,
     );
 
     renderingService.hooks.pointerOut.tap(
       EventPlugin.tag,
-      (event: PointerEvent, originalEvent: InteractivePointerEvent) => {
-        // if (supportsTouchEvents && (originalEvent as PointerEvent).pointerType === 'touch') {
-        //   return;
-        // }
-
-        const interactionEvent = new InteractionEvent(event, originalEvent);
-        const isMouse = InteractionEvent.isMouse(interactionEvent);
-
-        // don't need to do hit testing
-        this.processInteractive(
-          interactionEvent,
-          (event, displayObject) => {
-            this.dispatchEvent('pointerout', displayObject, event);
-            if (isMouse) {
-              this.dispatchEvent('mouseout', displayObject, event);
-            }
-          },
-          false,
-        );
-      },
+      this.onPointerMove,
     );
   }
 
-  private onPointerComplete = (
-    event: PointerEvent,
-    originalEvent: InteractivePointerEvent,
-    cancelled: boolean,
-    callback: InteractionCallback,
-  ) => {
-    const $el = this.contextService.getDomElement();
+  private onPointerMove = (nativeEvent: InteractivePointerEvent) => {
+    if (supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch') return;
 
-    // if the event wasn't targeting our canvas, then consider it to be pointerupoutside
-    // in all cases (unless it was a pointercancel)
-    const eventAppend = originalEvent.target !== $el ? 'outside' : '';
+    const normalizedEvents = normalizeToPointerEvent(nativeEvent);
 
-    const interactionEvent = new InteractionEvent(event, originalEvent);
+    for (const normalizedEvent of normalizedEvents) {
+      const event = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent);
 
-    // perform hit testing for events targeting our canvas or cancel events
-    this.processInteractive(interactionEvent, callback, cancelled || !eventAppend);
-  };
-
-  private dispatchEvent(eventName: string, target: DisplayObject, event: InteractionEvent) {
-    let tmp: DisplayObject | null = target;
-    while (tmp && !event.propagationStopped) {
-      tmp.emit(eventName, event);
-      tmp = tmp.parentNode;
+      this.eventService.mapEvent(event);
     }
+
+    this.setCursor(this.eventService.cursor);
   }
 
-  private getEventPosition(event: PointerEvent) {
-    const { clientX, clientY } = event;
+  private bootstrapEvent(event: FederatedPointerEvent, nativeEvent: PointerEvent): FederatedPointerEvent {
+    // @ts-ignore
+    event.originalEvent = null;
+    event.nativeEvent = nativeEvent;
+
+    event.pointerId = nativeEvent.pointerId;
+    event.width = nativeEvent.width;
+    event.height = nativeEvent.height;
+    event.isPrimary = nativeEvent.isPrimary;
+    event.pointerType = nativeEvent.pointerType;
+    event.pressure = nativeEvent.pressure;
+    event.tangentialPressure = nativeEvent.tangentialPressure;
+    event.tiltX = nativeEvent.tiltX;
+    event.tiltY = nativeEvent.tiltY;
+    event.twist = nativeEvent.twist;
+    this.transferMouseData(event, nativeEvent);
+
+    // calc position
     const bbox = this.contextService.getBoundingClientRect();
+    event.screen.x = nativeEvent.clientX - ((bbox && bbox.left) || 0);
+    event.screen.y = nativeEvent.clientY - ((bbox && bbox.top) || 0);
+    event.global.copyFrom(event.screen);
+    event.offset.copyFrom(event.screen);
 
-    return {
-      clientX,
-      clientY,
-      x: clientX - ((bbox && bbox.left) || 0),
-      y: clientY - ((bbox && bbox.top) || 0),
-    };
+    event.isTrusted = nativeEvent.isTrusted;
+    if (event.type === 'pointerleave') {
+      event.type = 'pointerout';
+    }
+    if (event.type.startsWith('mouse')) {
+      event.type = event.type.replace('mouse', 'pointer');
+    }
+    if (event.type.startsWith('touch')) {
+      event.type = TOUCH_TO_POINTER[event.type] || event.type;
+    }
+
+    return event;
   }
 
-  private processInteractive(
-    interactionEvent: InteractionEvent,
-    callback: InteractionCallback,
-    hitTest?: boolean,
-  ) {
-    const position = this.getEventPosition(interactionEvent.formattedEvent);
-    interactionEvent.x = position.x;
-    interactionEvent.y = position.y;
+  private normalizeWheelEvent(nativeEvent: WheelEvent): FederatedWheelEvent {
+    const event = this.rootWheelEvent;
 
-    // outside canvas
-    if (
-      position.x > this.canvasConfig.width ||
-      position.x < 0 ||
-      position.y > this.canvasConfig.height ||
-      position.y < 0
-    ) {
-      return;
-    }
+    this.transferMouseData(event, nativeEvent);
 
-    const { picked } = this.renderingService.hooks.pick.call({
-      position,
-      picked: null,
-    });
+    event.deltaMode = nativeEvent.deltaMode;
+    event.deltaX = nativeEvent.deltaX;
+    event.deltaY = nativeEvent.deltaY;
+    event.deltaZ = nativeEvent.deltaZ;
 
-    const lastPicked = this.renderingContext.lastPickedDisplayObject;
-    if (picked !== lastPicked) {
-      if (lastPicked) {
-        this.dispatchEvent('mouseleave', lastPicked, interactionEvent);
-        this.renderingContext.lastPickedDisplayObject = undefined;
-      }
+    // calc position
+    const bbox = this.contextService.getBoundingClientRect();
+    event.screen.x = nativeEvent.clientX - ((bbox && bbox.left) || 0);
+    event.screen.y = nativeEvent.clientY - ((bbox && bbox.top) || 0);
+    event.global.copyFrom(event.screen);
+    event.offset.copyFrom(event.screen);
 
-      if (picked) {
-        const cursor = this.getCursor(picked) || this.canvasConfig.cursor || 'default';
-        this.dispatchEvent('mouseenter', picked, interactionEvent);
-        this.renderingContext.lastPickedDisplayObject = picked;
+    event.nativeEvent = nativeEvent;
+    event.type = nativeEvent.type;
 
-        // apply cursor style
-        this.contextService.applyCursorStyle(cursor);
-      }
-    }
-
-    if (picked) {
-      callback(interactionEvent, picked, hitTest);
-    } else {
-      // trigger on root
-      callback(interactionEvent, this.renderingContext.root, hitTest);
-      // restore default cursor style
-      this.contextService.applyCursorStyle(this.canvasConfig.cursor || 'default');
-    }
+    return event;
   }
 
-  private getCursor(target: DisplayObject) {
-    let tmp: DisplayObject | null = target;
-    while (tmp) {
-      const cursor = tmp.getAttribute('cursor');
-      if (cursor) {
-        return cursor;
-      }
-      tmp = tmp.parentNode;
-    }
+  /**
+   * Transfers base & mouse event data from the nativeEvent to the federated event.
+   */
+  private transferMouseData(event: FederatedMouseEvent, nativeEvent: MouseEvent): void {
+    event.isTrusted = nativeEvent.isTrusted;
+    event.timeStamp = performance.now();
+    event.type = nativeEvent.type;
+
+    event.altKey = nativeEvent.altKey;
+    event.button = nativeEvent.button;
+    event.buttons = nativeEvent.buttons;
+    event.client.x = nativeEvent.clientX;
+    event.client.y = nativeEvent.clientY;
+    event.ctrlKey = nativeEvent.ctrlKey;
+    event.metaKey = nativeEvent.metaKey;
+    event.movement.x = nativeEvent.movementX;
+    event.movement.y = nativeEvent.movementY;
+    event.page.x = nativeEvent.pageX;
+    event.page.y = nativeEvent.pageY;
+    event.relatedTarget = null;
+  }
+
+  private setCursor(cursor: Cursor | null) {
+    this.contextService.applyCursorStyle(cursor || this.canvasConfig.cursor || 'default');
   }
 }

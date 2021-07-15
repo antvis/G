@@ -1,5 +1,5 @@
 import { Entity, System } from '@antv/g-ecs';
-import { isObject, isNil } from '@antv/util';
+import { isObject, isNil, isBoolean, isFunction } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import EventEmitter from 'eventemitter3';
 import { Cullable, Geometry, Renderable, SceneGraphNode, Transform } from './components';
@@ -13,6 +13,8 @@ import { SceneGraphService } from './services';
 import { Timeline } from './systems';
 import { AABB } from './shapes';
 import { GeometryAABBUpdater, GeometryUpdaterFactory } from './services/aabb';
+import { FederatedEvent } from './FederatedEvent';
+import { Canvas } from './Canvas';
 
 /**
  * events for display object
@@ -71,6 +73,8 @@ export class DisplayObject extends EventEmitter {
    */
   public mounted = false;
 
+  id: string;
+
   constructor(config?: ShapeCfg) {
     super();
 
@@ -95,6 +99,7 @@ export class DisplayObject extends EventEmitter {
     // init scene graph node
     const sceneGraphNode = entity.addComponent(SceneGraphNode);
     sceneGraphNode.id = entity.getName();
+    this.id = sceneGraphNode.id;
     sceneGraphNode.class = this.config.className || '';
     sceneGraphNode.tagName = this.config.type || SHAPE.Group;
     sceneGraphNode.attributes = this.config.attrs || {};
@@ -264,6 +269,16 @@ export class DisplayObject extends EventEmitter {
     }
     return temp;
   }
+  /**
+   * points to root in Canvas
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument
+   */
+  ownerDocument: DisplayObject;
+  /**
+   * only root has defaultView, points to Canvas
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
+   */
+  defaultView: Canvas;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/ParentNode
@@ -301,11 +316,56 @@ export class DisplayObject extends EventEmitter {
     return this.sceneGraphService.querySelectorAll(selector, this);
   }
 
-  addEventListener(event: string, handler: (...args: any[]) => void) {
-    this.on(event, handler);
+  /**
+   * support `capture` & `once` in options
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener
+   */
+  addEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions,
+  ) {
+    const capture =
+      (isBoolean(options) && options)
+      || (isObject(options) && options.capture);
+    const once = isObject(options) && options.once;
+    const context = isFunction(listener) ? undefined : listener;
+
+    type = capture ? `${type}capture` : type;
+    listener = isFunction(listener) ? listener : listener.handleEvent;
+
+    if (once) {
+      this.once(type, listener, context);
+    } else {
+      this.on(type, listener, context);
+    }
   }
-  removeEventListener(event: string, handler: (...args: any[]) => void) {
-    this.off(event, handler);
+  removeEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions,
+  ) {
+    const capture =
+      (isBoolean(options) && options)
+      || (isObject(options) && options.capture);
+    const context = isFunction(listener) ? undefined : listener;
+
+    type = capture ? `${type}capture` : type;
+    listener = isFunction(listener) ? listener : listener.handleEvent;
+
+    this.off(type, listener, context);
+  }
+  dispatchEvent(e: Event): boolean {
+    if (!(e instanceof FederatedEvent)) {
+      throw new Error('DisplayObject cannot propagate events outside of the Federated Events API');
+    }
+
+    e.defaultPrevented = false;
+    e.path = [];
+    e.target = this;
+    e.manager?.dispatchEvent(e);
+
+    return !e.defaultPrevented;
   }
 
   /**
@@ -798,6 +858,43 @@ export class DisplayObject extends EventEmitter {
   getLocalBounds(): AABB | null {
     return this.sceneGraphService.getLocalBounds(this.entity);
   }
+
+  getBoundingClientRect() {
+    const bounds = this.getBounds();
+    if (!bounds) {
+      return null;
+    }
+
+    const [left, top] = bounds.getMin();
+    const [right, bottom] = bounds.getMax();
+
+    return {
+      left,
+      top,
+      right,
+      bottom,
+      width: right - left,
+      height: bottom - top,
+    };
+  }
+
+  getClientRects() {
+    return [this.getBoundingClientRect()];
+  }
+
+  /**
+   * compitable with `style`
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style
+   */
+  style = new Proxy({}, {
+    get: (_, prop) => {
+      return this.getAttribute(prop as string);
+    },
+    set: (_, prop, value) => {
+      this.setAttribute(prop as string, value);
+      return true;
+    }
+  });
 
   /**
    * get called when attributes changed

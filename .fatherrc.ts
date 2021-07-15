@@ -22,5 +22,6 @@ export default {
     'g-webgl',
     'g-components',
     'g-plugin-3d',
+    'g-plugin-control',
   ],
 };

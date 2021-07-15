@@ -7,11 +7,14 @@ import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
 import { FrustumCullingStrategy } from './plugins/FrustumCullingStrategy';
 import { RenderingPluginContribution, RenderingService } from './services';
 import { EventPlugin } from './plugins/EventPlugin';
+import { EventService } from './services';
 
 export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(RenderingService).toSelf().inSingletonScope();
 
   bindContributionProvider(bind, RenderingPluginContribution);
+
+  bind(EventService).toSelf().inSingletonScope();
 
   // event plugin
   bind(EventPlugin).toSelf().inSingletonScope();

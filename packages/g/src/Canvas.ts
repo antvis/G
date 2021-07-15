@@ -17,7 +17,10 @@ export interface CanvasService {
   destroy(): void;
 }
 
-export abstract class Canvas extends EventEmitter {
+/**
+ * mix Window and Document
+ */
+export class Canvas extends EventEmitter {
   /**
    * child container of current canvas, use hierarchy container
    */
@@ -27,6 +30,8 @@ export abstract class Canvas extends EventEmitter {
    * rAF in auto rendering
    */
   private frameId?: number;
+
+  document: DisplayObject;
 
   constructor(config: CanvasConfig) {
     super();
@@ -43,16 +48,37 @@ export abstract class Canvas extends EventEmitter {
     this.initRenderer(mergedConfig.renderer);
   }
 
+  addEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions,
+  ) {
+    const root = this.getRoot();
+    root.addEventListener(type, listener, options);
+  }
+
+  removeEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions,
+  ) {
+    const root = this.getRoot();
+    root.removeEventListener(type, listener, options);
+  }
+
   private initRenderingContext(mergedConfig: CanvasConfig) {
     this.container.bind<CanvasConfig>(CanvasConfig).toConstantValue(mergedConfig);
     // bind rendering context, shared by all renderers
+    const root = new DisplayObject({
+      attrs: {},
+    });
+    root.defaultView = this;
+    this.document = root;
     this.container.bind(RenderingContext).toConstantValue({
       /**
        * the root node in scene graph
        */
-      root: new DisplayObject({
-        attrs: {},
-      }),
+      root,
 
       /**
        * spatial index with RTree which can speed up the search for AABBs
@@ -171,21 +197,24 @@ export abstract class Canvas extends EventEmitter {
 
   appendChild(node: DisplayObject) {
     const renderingService = this.container.get<RenderingService>(RenderingService);
-    this.getRoot().appendChild(node);
+    const root = this.getRoot();
+    root.appendChild(node);
+    node.ownerDocument = root;
 
-    this.decorate(node, renderingService);
+    this.decorate(node, renderingService, root);
   }
 
-  private decorate(object: DisplayObject, renderingService: RenderingService) {
+  private decorate(object: DisplayObject, renderingService: RenderingService, root: DisplayObject) {
     object.forEach((child: DisplayObject) => {
       // trigger mount on node's descendants
       if (!child.mounted) {
         renderingService.hooks.mounted.call(child);
         child.mounted = true;
+        child.ownerDocument = root;
       }
 
       child.on(DISPLAY_OBJECT_EVENT.ChildInserted, (grandchild) =>
-        this.decorate(grandchild, renderingService),
+        this.decorate(grandchild, renderingService, root),
       );
       child.on(DISPLAY_OBJECT_EVENT.ChildRemoved, (grandchild) => this.unmountChildren(grandchild));
     });

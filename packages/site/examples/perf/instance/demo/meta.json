@@ -19,6 +19,14 @@
         "en": "Rendering with dirty rectangle(Canvas)"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "batch.js",
+      "title": {
+        "zh": "批量渲染",
+        "en": "Instancing rendering"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
     }
   ]
 }

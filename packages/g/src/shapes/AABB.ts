@@ -7,25 +7,25 @@ import { Plane } from './Plane';
  * @see https://github.com/antvis/GWebGPUEngine/issues/3
  */
 export class AABB {
-  public center: vec3;
+  center: vec3;
 
-  public halfExtents: vec3;
+  halfExtents: vec3;
 
-  private min: vec3 = vec3.create();
-  private max: vec3 = vec3.create();
+  min: vec3 = vec3.create();
+  max: vec3 = vec3.create();
 
   constructor(center?: vec3, halfExtents?: vec3) {
     this.update(center, halfExtents);
   }
 
-  public update(center?: vec3, halfExtents?: vec3) {
+  update(center?: vec3, halfExtents?: vec3) {
     this.center = vec3.copy(vec3.create(), center || vec3.create());
     this.halfExtents = vec3.copy(vec3.create(), halfExtents || vec3.fromValues(0, 0, 0));
     this.min = vec3.sub(this.min, this.center, this.halfExtents);
     this.max = vec3.add(this.max, this.center, this.halfExtents);
   }
 
-  public setMinMax(min: vec3, max: vec3) {
+  setMinMax(min: vec3, max: vec3) {
     vec3.add(this.center, max, min);
     vec3.scale(this.center, this.center, 0.5);
 
@@ -36,15 +36,15 @@ export class AABB {
     vec3.copy(this.max, max);
   }
 
-  public getMin() {
+  getMin() {
     return this.min;
   }
 
-  public getMax() {
+  getMax() {
     return this.max;
   }
 
-  public add(aabb: AABB) {
+  add(aabb: AABB) {
     const tc = this.center;
     const tcx = tc[0];
     const tcy = tc[1];
@@ -109,7 +109,7 @@ export class AABB {
     this.max[2] = tmaxz;
   }
 
-  public setFromTransformedAABB(aabb: AABB, m: mat4) {
+  setFromTransformedAABB(aabb: AABB, m: mat4) {
     const bc = this.center;
     const br = this.halfExtents;
     const ac = aabb.center;
@@ -153,7 +153,7 @@ export class AABB {
     this.max = vec3.add(this.max, bc, br);
   }
 
-  public intersects(aabb: AABB) {
+  intersects(aabb: AABB) {
     const aMax = this.getMax();
     const aMin = this.getMin();
     const bMax = aabb.getMax();
@@ -169,7 +169,7 @@ export class AABB {
     );
   }
 
-  public containsPoint(point: vec3) {
+  containsPoint(point: vec3) {
     const min = this.getMin();
     const max = this.getMax();
 
@@ -187,7 +187,7 @@ export class AABB {
    * get n-vertex
    * @param plane plane of CullingVolume
    */
-  public getNegativeFarPoint(plane: Plane) {
+  getNegativeFarPoint(plane: Plane) {
     if (plane.pnVertexFlag === 0x111) {
       return vec3.copy(vec3.create(), this.min);
     } else if (plane.pnVertexFlag === 0x110) {
@@ -211,7 +211,7 @@ export class AABB {
    * get p-vertex
    * @param plane plane of CullingVolume
    */
-  public getPositiveFarPoint(plane: Plane) {
+  getPositiveFarPoint(plane: Plane) {
     if (plane.pnVertexFlag === 0x111) {
       return vec3.copy(vec3.create(), this.max);
     } else if (plane.pnVertexFlag === 0x110) {

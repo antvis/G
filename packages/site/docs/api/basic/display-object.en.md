@@ -5,17 +5,27 @@ redirect_from:
     - /en/docs/api/basic
 ---
 
-DisplayObject 是所有图形的基类，`Group` `Circle` `Text` 等都会继承它。
+DisplayObject 是所有图形的基类，例如 `Group` `Circle` `Text` 等都会继承它。
+
+我们尝试让它尽可能兼容 [DOM Element](https://developer.mozilla.org/en-US/docs/Web/API/Element)，除了能降低学习成本，还能将自身伪装成 DOM Element 来充分利用已有的 Web 生态，例如：
+* 使用 CSS 选择器进行[高级查询](/zh/docs/plugins/css-select)
+* 使用 Hammer.js [扩展手势](/zh/docs/api/event#直接使用-hammerjs)
 
 # id
 
-可通过 [getElementById](/zh/docs/api/display-object#高级查询) 查询
+https://developer.mozilla.org/en-US/docs/Web/API/Element/id
+
+全局唯一的标识，可通过 [getElementById](/zh/docs/api/display-object#高级查询) 查询。
 
 # name
+
+https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByName
 
 可通过 [getElementsByName](/zh/docs/api/display-object#高级查询) 查询
 
 # className
+
+https://developer.mozilla.org/en-US/docs/Web/API/Element/className
 
 可通过 [getElementsByClassName](/zh/docs/api/display-object#高级查询) 查询
 
@@ -140,40 +150,6 @@ const rect = new Rect({
 
 **说明**：描边宽度
 
-# 生命周期
-
-每一个 DisplayObject 都有统一的生命周期，各个系统（包括 G 内部的核心系统）、自定义渲染器都可以通过注册生命周期的响应函数，完成对场景图、渲染效果的扩展。
-
-```js
-export const DisplayObjectHooks = {
-    /**
-     * get called at the end of constructor
-     */
-    init: new SyncHook() < [Entity, ShapeCfg] > ['entity', 'config'],
-    /**
-     * get called when attributes changed, eg. calling `attr/setAttribute()`
-     */
-    changeAttribute: new AsyncSeriesHook() < [Entity, string, any] > ['entity', 'name', 'value'],
-    // hit: new SyncHook<[Entity]>(['entity']),
-    /**
-     * get called when mounted into canvas first time
-     */
-    mounted: new AsyncSeriesHook() < [RENDERER, any, Entity] > ['renderer', 'context', 'entity'],
-    /**
-     * get called every time renderred
-     */
-    render: new SyncHook() < [RENDERER, any, Entity] > ['renderer', 'context', 'entity'],
-    /**
-     * get called when unmounted from canvas
-     */
-    unmounted: new AsyncSeriesHook() < [RENDERER, any, Entity] > ['renderer', 'context', 'entity'],
-    /**
-     * get called when destroyed, eg. calling `destroy()`
-     */
-    destroy: new SyncHook() < [Entity] > ['entity'],
-};
-```
-
 # 变换
 
 ## 平移
@@ -223,8 +199,34 @@ export const DisplayObjectHooks = {
 
 | 名称      | 参数 | 返回值 | 备注                     |
 | --------- | ---- | ------ | ------------------------ |
-| getBounds | 无   | AABB   | 获取世界坐标系下的包围盒 |
+| getBounds | 无   | AABB   | 获取世界坐标系下的轴对齐包围盒 |
 | getLocalBounds | 无   | AABB   | 获取局部坐标系下的包围盒 |
+| getBoundingClientRect | 无 | Rect | 获取世界坐标系下的包围矩形 |
+
+⚠️ `getBounds` 和 `getBoundingClientRect` 返回值的结构不同，前者返回一个3维的轴对齐包围盒，后者返回一个2维矩形。
+
+其中轴对齐包围盒 `AABB` 结构为：
+```js
+interface AABB {
+  center: [number, number, number];
+  halfExtents: [number, number, number];
+  min: [number, number, number];
+  max: [number, number, number];
+}
+```
+
+2维矩形 `Rect` 和 [DOMRect](https://developer.mozilla.org/zh-CN/docs/Web/API/DOMRect) 保持一致，结构为：
+```js
+interface Rect {
+  top: number;
+  left: number;
+  right: number;
+  bottom: number;
+  width: number;
+  height: number;
+}
+```
+
 
 # 节点操作
 
@@ -279,6 +281,18 @@ solarSystem.querySelectorAll('[r=25]');
 | appendChild | `(group: Group)` | `Group` | 添加子节点，返回添加的节点 |
 | insertBefore | `(group: Group, reference?: Group)` | `Group` | 添加子节点，在某个子节点之前（如有），返回添加的节点 |
 | removeChild | `(group: Group)` | `Group` | 删除子节点，返回被删除的节点 |
+| remove | `(destroy?: boolean)` | `Group` | 从父节点（如有）中移除自身，`destroy` 表示是否要销毁 |
+
+从父节点中删除子节点并销毁有以下两种方式：
+```js
+// parent -> child
+
+parent.removeChild(child);
+child.destroy();
+
+// 等价于
+child.remove(true);
+```
 
 ## 获取/设置属性值
 
@@ -288,6 +302,57 @@ solarSystem.querySelectorAll('[r=25]');
 | setAttribute | `(name: string, value: any)` | 无     | 设置属性值 |
 
 ⚠️ 兼容旧版 `attr(name: string, value?: any)`，获取以及设置属性值。
+
+⚠️ 兼容 [HTMLElement Style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style)
+
+因此以下用法等价：
+```js
+const circle = new Circle({
+  attrs: {
+    r: 10,
+    fill: 'red',
+  }
+});
+
+// 获取属性值
+circle.getAttribute('fill'); // red
+circle.attr('fill'); // red
+circle.style.fill; // red
+
+// 设置属性值
+circle.setAttribute('r', 20);
+circle.attr('r', 20);
+circle.style.r = 20;
+```
+
+## 销毁
+
+调用 `destroy()` 将销毁节点。
+
+## 生命周期事件监听
+
+可以监听节点添加和删除事件：
+```js
+import { DISPLAY_OBJECT_EVENT } from '@antv/g';
+
+// 监听子节点添加事件
+parent.on(DISPLAY_OBJECT_EVENT.ChildInserted, (childNode) => {
+  console.log(childNode); // child
+});
+child.on(DISPLAY_OBJECT_EVENT.Inserted, (parentNode) => {
+  console.log(parentNode); // parent
+});
+
+parent.appendChild(child);
+```
+
+支持以下事件：
+* `ChildInserted` 作为父节点有子节点添加时触发
+* `Inserted` 作为子节点被添加时触发
+* `ChildRemoved` 作为父节点有子节点移除时触发
+* `Removed` 作为子节点被移除时触发
+* `AttributeChanged` 调用 `setAttribute()` 修改属性时触发
+* `Destroy` 调用 `destroy()` 时触发
 
 # 可见性与渲染次序
 

@@ -424,16 +424,6 @@ export class SceneGraphService extends EventEmitter {
     return mat4.getScaling(transform.scaling, this.getWorldTransform(entity, transform));
   }
 
-  // isTransformDirty(entity: Entity): boolean {
-  //   const transform = entity.getComponent(Transform);
-  //   if (!transform.localDirtyFlag && !transform.dirtyFlag) {
-  //     const parentEntity = entity.getComponent(SceneGraphNode).parent;
-  //     return !!(parentEntity && this.isTransformDirty(parentEntity));
-  //   }
-
-  //   return true;
-  // }
-
   getWorldTransform(entity: Entity, transform: Transform = entity.getComponent(Transform)) {
     if (!transform.localDirtyFlag && !transform.dirtyFlag) {
       return transform.worldTransform;

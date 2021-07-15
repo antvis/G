@@ -1,4 +1,4 @@
-import { Circle, Rect, Ellipse, Image, Line, Polyline, Path, Polygon, Canvas } from '@antv/g';
+import { Circle, Rect, Ellipse, Image, Line, Polyline, Path, Polygon, Text, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -119,6 +119,16 @@ const polygon = new Polygon({
     lineWidth: 10,
   },
 });
+const text = new Text({
+  attrs: {
+    fontFamily: 'PingFang SC',
+    text: '这是测试文本',
+    fontSize: 40,
+    fill: '#1890FF',
+    stroke: '#F04864',
+    lineWidth: 5,
+  },
+});
 
 circle.setPosition(100, 100);
 canvas.appendChild(circle);
@@ -147,6 +157,9 @@ canvas.appendChild(path);
 polygon.setPosition(340, 200);
 polygon.scale(0.3);
 canvas.appendChild(polygon);
+
+text.setPosition(160, 450);
+canvas.appendChild(text);
 
 circle.on('mouseenter', () => {
   circle.attr('fill', '#2FC25B');
@@ -189,6 +202,12 @@ polygon.on('mouseenter', () => {
 });
 polygon.on('mouseleave', () => {
   polygon.attr('stroke', '#1890FF');
+});
+text.on('mouseenter', () => {
+  text.attr('stroke', '#2FC25B');
+});
+text.on('mouseleave', () => {
+  text.attr('stroke', '#F04864');
 });
 
 // stats

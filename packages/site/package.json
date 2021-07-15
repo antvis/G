@@ -49,6 +49,8 @@
     "dat.gui": "^0.7.2",
     "gatsby": "^2.24.40",
     "gh-pages": "^2.1.1",
+    "hammerjs": "^2.0.8",
+    "interactjs": "^1.10.11",
     "react-i18next": "^11.1.0",
     "react-split-pane": "^0.1.92",
     "stats.js": "^0.17.0",

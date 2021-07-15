@@ -5,6 +5,14 @@
   },
   "demos": [
     {
+      "filename": "delegate.js",
+      "title": {
+        "zh": "事件委托",
+        "en": "Delegate"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*xJB7TY68IVUAAAAAAAAAAABkARQnAQ"
+    },
+    {
       "filename": "shapes.js",
       "title": {
         "zh": "多种图形拾取",
@@ -43,6 +51,22 @@
         "en": "Dragging"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gYBQQph9kkUAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "hammer.js",
+      "title": {
+        "zh": "使用 Hammer.js 手势库",
+        "en": "Gesture with Hammer.js"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*i7SaRaYw0YcAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "interact.js",
+      "title": {
+        "zh": "使用 Interact.js 拖拽库",
+        "en": "Drag&Drop with Interact.js"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*i7SaRaYw0YcAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

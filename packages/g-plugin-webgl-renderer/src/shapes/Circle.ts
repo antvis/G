@@ -74,7 +74,7 @@ export class CircleModelBuilder implements ModelBuilder {
       if (name === 'r') {
         const sizeAttribute = sourceGeometry.getAttribute(ATTRIBUTE.Size);
         if (sizeAttribute) {
-          sizeAttribute.buffer?.subData({
+          sizeAttribute.buffer?.updateBuffer({
             data: Float32Array.from([value - lineWidth / 2, value - lineWidth / 2]),
             offset: index * Float32Array.BYTES_PER_ELEMENT * 2,
           });
@@ -152,7 +152,7 @@ export class CircleModelBuilder implements ModelBuilder {
     const isBatch = sceneGraphNode.tagName === Batch.tag;
     let tagName = sceneGraphNode.tagName;
     if (isBatch) {
-      tagName = (object as Batch).getBatchType();
+      tagName = (object as Batch).getBatchType()!;
     }
 
     const {
@@ -163,8 +163,8 @@ export class CircleModelBuilder implements ModelBuilder {
       lineWidth = 0,
       radius = 0,
     } = isBatch
-      ? ((object as Batch).children[0] as DisplayObject).attributes
-      : sceneGraphNode.attributes;
+        ? ((object as Batch).children[0] as DisplayObject).attributes
+        : sceneGraphNode.attributes;
 
     const fillColor = rgb2arr(fill);
     const strokeColor = rgb2arr(stroke);
@@ -275,26 +275,21 @@ export class CircleModelBuilder implements ModelBuilder {
   private buildAttribute(
     config: Partial<IPointConfig>,
     attributes: IInstanceAttributes,
-    index: number,
   ) {
     attributes.instancedColors.push(...(config.color || [1, 0, 0, 1]));
     attributes.instancedSizes.push(...(config.size || [0.2, 0.2]));
   }
 
-  private buildAttributes(config: Partial<IPointConfig> | Array<Partial<IPointConfig>>) {
+  private buildAttributes(config: Array<Partial<IPointConfig>>) {
     const attributes: IInstanceAttributes = {
       extrudes: [1, 1, 1, -1, -1, -1, -1, 1],
       instancedColors: [],
       instancedSizes: [],
     };
 
-    if (Array.isArray(config)) {
-      config.forEach((c, i) => {
-        this.buildAttribute(c, attributes, i);
-      });
-    } else {
-      this.buildAttribute(config, attributes, 0);
-    }
+    config.forEach((c) => {
+      this.buildAttribute(c, attributes);
+    });
 
     return attributes;
   }

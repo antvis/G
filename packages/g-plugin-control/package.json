@@ -1,0 +1,49 @@
+{
+  "name": "@antv/g-plugin-control",
+  "version": "1.0.0-alpha.2",
+  "description": "A G plugin for orbit control",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.umd.min.js",
+  "files": [
+    "package.json",
+    "esm",
+    "lib",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antvis/g.git"
+  },
+  "keywords": [
+    "util",
+    "antv",
+    "g"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "https://github.com/orgs/antvis/people",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/antvis/g/issues"
+  },
+  "dependencies": {
+    "@antv/g": "^1.0.0-alpha.2",
+    "hammerjs": "^2.0.8"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.0.0",
+    "@types/hammerjs": "^2.0.36",
+    "npm-run-all": "^4.1.5",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.7"
+  },
+  "homepage": "https://github.com/antvis/g#readme",
+  "peerDependencies": {
+    "@antv/g": "^1.0.0-alpha.2"
+  }
+}
