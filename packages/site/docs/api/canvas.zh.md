@@ -157,6 +157,10 @@ const root = canvas.getRoot();
 root.children; // [circle]
 ```
 
+## document
+
+考虑兼容 DOM 中的 `window.document`，效果与 [getRoot](/zh/docs/api/canvas#getroot-displayobject) 相同。
+
 # 事件
 
 目前画布会触发以下事件：

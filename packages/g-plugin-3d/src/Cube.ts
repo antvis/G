@@ -1,12 +1,28 @@
-import { DisplayObject, ShapeCfg } from '@antv/g';
+import { DisplayObject, BaseStyleProps, DisplayObjectConfig } from '@antv/g';
 import { SHAPE_3D } from './types';
 
-export class Cube extends DisplayObject {
-  constructor({ attrs, ...rest }: ShapeCfg) {
+export interface CubeStyleProps extends BaseStyleProps {
+  height: number;
+  width: number;
+  depth: number;
+  widthSegments?: number;
+  heightSegments?: number;
+  depthSegments?: number;
+  map?: string;
+}
+export class Cube extends DisplayObject<CubeStyleProps> {
+  constructor({ style, ...rest }: DisplayObjectConfig<CubeStyleProps>) {
     super({
+      // @ts-ignore
       type: SHAPE_3D.Cube,
-      attrs: {
-        ...attrs,
+      style: {
+        height: 0,
+        width: 0,
+        depth: 0,
+        widthSegments: 1,
+        heightSegments: 1,
+        depthSegments: 1,
+        ...style,
       },
       ...rest,
     });

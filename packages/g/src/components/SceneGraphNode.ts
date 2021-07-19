@@ -1,12 +1,12 @@
 import { Component, Entity } from '@antv/g-ecs';
-import { SHAPE, ShapeAttrs } from '../types';
+import { BaseStyleProps, SHAPE } from '../types';
 
 /**
  * scene graph node, try to mimic `Element`
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element
  * @see https://developer.mozilla.org/en-US/docs/Web/API/ParentNode
  */
-export class SceneGraphNode extends Component {
+export class SceneGraphNode<StyleProps extends BaseStyleProps> extends Component {
   static tag = 'c-scene-graph-node';
 
   /**
@@ -28,6 +28,12 @@ export class SceneGraphNode extends Component {
   class: string;
 
   /**
+   * used with `getElementsByName()`
+   * @see https://developer.mozilla.org/en-US/docs/Web/Element/name
+   */
+  name: string;
+
+  /**
    * used with `getElementsByTagName()`
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/tagName
    */
@@ -37,7 +43,7 @@ export class SceneGraphNode extends Component {
    * assigned by shape.attrs
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes
    */
-  attributes: ShapeAttrs;
+  attributes: StyleProps;
 
   /**
    * shadow node, invisible in scene graph, which means cannot be queried

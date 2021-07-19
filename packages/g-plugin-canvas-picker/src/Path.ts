@@ -1,6 +1,6 @@
-import { DisplayObject } from '@antv/g';
+import { DisplayObject, PathStyleProps, Point } from '@antv/g';
 import { mat3, vec2, vec3 } from 'gl-matrix';
-import { Quad as QuadUtil, Cubic as CubicUtil, Line as LineUtil, Point } from '@antv/g-math';
+import { Quad as QuadUtil, Cubic as CubicUtil, Line as LineUtil } from '@antv/g-math';
 import { inArc, inBox, inLine, inPolygons } from './utils/math';
 
 function isPointInStroke(
@@ -94,22 +94,28 @@ function isPointInStroke(
 }
 
 export function isPointInPath(
-  displayObject: DisplayObject,
+  displayObject: DisplayObject<PathStyleProps>,
   position: Point,
-  isPointInPath: (displayObject: DisplayObject, position: Point) => boolean
+  isPointInPath: (displayObject: DisplayObject<PathStyleProps>, position: Point) => boolean
 ): boolean {
   const {
     lineWidth = 0,
     stroke,
     fill,
+    // @ts-ignore
     path,
+    // @ts-ignore
     segments,
+    // @ts-ignore
     hasArc,
+    // @ts-ignore
     polygons,
+    // @ts-ignore
     polylines,
+    // @ts-ignore
     totalLength,
-    x,
-    y,
+    x = 0,
+    y = 0,
   } = displayObject.attributes;
 
   let isHit = false;

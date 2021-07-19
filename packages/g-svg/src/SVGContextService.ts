@@ -32,6 +32,7 @@ export class SVGContextService implements ContextService<SVGElement> {
     this.dpr = dpr;
   }
 
+  // @ts-ignore
   getDomElement() {
     return this.$namespace;
   }
@@ -45,7 +46,7 @@ export class SVGContextService implements ContextService<SVGElement> {
   }
 
   getBoundingClientRect() {
-    return this.$namespace.getBoundingClientRect();
+    return this.$namespace?.getBoundingClientRect();
   }
 
   destroy() {

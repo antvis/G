@@ -31,22 +31,24 @@ https://developer.mozilla.org/en-US/docs/Web/API/Element/className
 
 # 绘图属性
 
-绘图属性通过 `attrs` 设置，通常包含了图形的位置、填充色、透明度等**通用属性**，不同类型的图形也有自己的**额外属性**，例如在下面的圆角矩形中，位置`(x, y)`、填充色 `fill`、描边色 `stroke` 就是通用属性，而矩形的尺寸 `width/height` 和圆角半径 `radius` 则是额外属性：
+绘图属性通过 `attrs/style` 设置，通常包含了图形的位置、填充色、透明度等**通用属性**，不同类型的图形也有自己的**额外属性**，例如在下面的圆角矩形中，位置`(x, y)`、填充色 `fill`、描边色 `stroke` 就是通用属性，而矩形的尺寸 `width/height` 和圆角半径 `radius` 则是额外属性：
 
 ```javascript
 const rect = new Rect({
-    attrs: {
-        x: 200,
-        y: 100,
-        fill: '#1890FF',
-        stroke: '#F04864',
-        lineWidth: 4,
-        width: 300,
-        height: 200,
-        radius: 8,
-    },
+  attrs: { // 或者使用 style
+    x: 200,
+    y: 100,
+    fill: '#1890FF',
+    stroke: '#F04864',
+    lineWidth: 4,
+    width: 300,
+    height: 200,
+    radius: 8,
+  },
 });
 ```
+
+⚠️ 熟悉 DOM API 的开发者可以参考 [HTMLElement Style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) 使用。
 
 ## 位置
 
@@ -308,7 +310,7 @@ child.remove(true);
 因此以下用法等价：
 ```js
 const circle = new Circle({
-  attrs: {
+  attrs: { // 或者使用 style
     r: 10,
     fill: 'red',
   }

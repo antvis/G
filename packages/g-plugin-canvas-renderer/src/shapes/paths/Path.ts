@@ -1,10 +1,12 @@
-import { ShapeAttrs } from '@antv/g';
+import { PathStyleProps } from '@antv/g';
 import getArcParams, { ArcParams } from '../../utils/arc-params';
 
-export function generatePath(context: CanvasRenderingContext2D, attributes: ShapeAttrs) {
+export function generatePath(context: CanvasRenderingContext2D, attributes: PathStyleProps) {
+  // @ts-ignore
   let { x = 0, y = 0, path, arcParamsCache } = attributes;
 
   if (!arcParamsCache) {
+    // @ts-ignore
     attributes.arcParamsCache = {};
   }
 

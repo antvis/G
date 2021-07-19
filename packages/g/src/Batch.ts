@@ -1,16 +1,18 @@
 import { Geometry, Renderable, SceneGraphNode } from './components';
 import { CustomElement } from './CustomElement';
-import { DisplayObject, DISPLAY_OBJECT_EVENT } from './DisplayObject';
-import { AABB } from './shapes';
-import { SHAPE, ShapeCfg } from './types';
+import { DisplayObject, DisplayObjectConfig, DISPLAY_OBJECT_EVENT } from './DisplayObject';
+import { BaseStyleProps, SHAPE } from './types';
 
+export interface BatchStyleProps<T> extends BaseStyleProps {
+  instances: DisplayObject<T>[];
+}
 /**
  * A container for multiple display objects with the same `style`,
  * eg. 1000 Circles with the same stroke color, but their position, radius can be different
  *
  * @see https://developer.playcanvas.com/en/user-manual/optimization/batching/
  */
-export class Batch extends CustomElement {
+export class Batch<T> extends CustomElement<BatchStyleProps<T>> {
   static tag = 'batch';
 
   private batchType?: SHAPE;
@@ -18,19 +20,18 @@ export class Batch extends CustomElement {
   /**
    * need to reconstruct batch
    */
-  private dirty = true;
+  dirty = true;
 
-  constructor({ attrs = {}, ...rest }: ShapeCfg) {
+  constructor({ style = { instances: [] }, ...rest }: DisplayObjectConfig<BatchStyleProps<T>>) {
     super({
+      // @ts-ignore
       type: Batch.tag,
-      attrs: {
-        ...attrs,
-      },
+      style,
       ...rest,
     });
 
-    if (attrs.instances) {
-      attrs.instances.forEach((instance: DisplayObject) => {
+    if (style.instances) {
+      style.instances.forEach((instance: DisplayObject<T>) => {
         this.appendChild(instance);
       });
     }
@@ -40,7 +41,7 @@ export class Batch extends CustomElement {
     return this.batchType;
   }
 
-  appendChild(child: DisplayObject) {
+  appendChild(child: DisplayObject<T>) {
     if (!this.batchType) {
       this.batchType = child.nodeType;
     }
@@ -56,7 +57,7 @@ export class Batch extends CustomElement {
     return child;
   }
 
-  removeChild(child: DisplayObject) {
+  removeChild(child: DisplayObject<T>) {
     super.removeChild(child);
 
     const renderable = this.getEntity().getComponent(Renderable);

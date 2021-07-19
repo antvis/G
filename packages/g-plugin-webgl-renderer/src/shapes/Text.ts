@@ -1,5 +1,4 @@
-import { SceneGraphNode, TextService, DisplayObject, ShapeAttrs } from '@antv/g';
-import { Entity } from '@antv/g-ecs';
+import { SceneGraphNode, TextService, DisplayObject, TextStyleProps } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { ShaderModuleService } from '../services/shader-module';
 import symbolVertex from './shaders/webgl.symbol.vert.glsl';
@@ -50,7 +49,7 @@ export class TextModelBuilder implements ModelBuilder {
   @inject(GlyphManager)
   private glyphManager: GlyphManager;
 
-  onAttributeChanged(object: DisplayObject, name: string, value: any) {
+  onAttributeChanged(object: DisplayObject<TextStyleProps>, name: string, value: any) {
     const entity = object.getEntity();
     const material = entity.getComponent(Material3D);
 
@@ -82,7 +81,7 @@ export class TextModelBuilder implements ModelBuilder {
     }
   }
 
-  prepareModel(object: DisplayObject) {
+  prepareModel(object: DisplayObject<TextStyleProps>) {
     const entity = object.getEntity();
     const { attributes } = entity.getComponent(SceneGraphNode);
     const material = entity.getComponent(Material3D);
@@ -139,7 +138,7 @@ export class TextModelBuilder implements ModelBuilder {
   /**
    * draw 2 passes: stroke & fill
    */
-  renderModel(object: DisplayObject) {
+  renderModel(object: DisplayObject<TextStyleProps>) {
     const entity = object.getEntity();
     const { attributes: { stroke, lineWidth } } = entity.getComponent(SceneGraphNode);
     const material = entity.getComponent(Material3D);
@@ -193,7 +192,7 @@ export class TextModelBuilder implements ModelBuilder {
     }
   }
 
-  private generateAtlas(object: DisplayObject) {
+  private generateAtlas(object: DisplayObject<TextStyleProps>) {
     const entity = object.getEntity();
     const { attributes } = entity.getComponent(SceneGraphNode);
     const material = entity.getComponent(Material3D);
@@ -283,7 +282,7 @@ export class TextModelBuilder implements ModelBuilder {
     offsetY,
     glyphAtlas,
   }: {
-    attributes: ShapeAttrs;
+    attributes: TextStyleProps;
     lines: string[];
     fontStack: string;
     lineHeight: number;

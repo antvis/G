@@ -27,7 +27,7 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   bind(PolylineRenderer).toSelf().inSingletonScope();
   bind(TextRenderer).toSelf().inSingletonScope();
   bind(PathRenderer).toSelf().inSingletonScope();
-  bind(ElementRendererFactory).toFactory<ElementRenderer | null>((ctx) => (tagName: SHAPE) => {
+  bind(ElementRendererFactory).toFactory<ElementRenderer<any> | null>((ctx) => (tagName: SHAPE) => {
     if (tagName === SHAPE.Rect) {
       return ctx.container.get(RectRenderer);
     } else if (tagName === SHAPE.Image) {

@@ -2,11 +2,11 @@ import { vec3 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
 import { GeometryAABBUpdater } from '.';
 import { AABB } from '../../shapes';
-import { ShapeAttrs } from '../../types';
+import { TextStyleProps } from '../../shapes-export';
 import { TextService } from '../text';
 
 @injectable()
-export class TextUpdater implements GeometryAABBUpdater {
+export class TextUpdater implements GeometryAABBUpdater<TextStyleProps> {
   dependencies = [
     'text',
     'font',
@@ -30,7 +30,7 @@ export class TextUpdater implements GeometryAABBUpdater {
   @inject(TextService)
   private textService: TextService;
 
-  update(attributes: ShapeAttrs, aabb: AABB) {
+  update(attributes: TextStyleProps, aabb: AABB) {
     const { text = '', textAlign, lineWidth = 0, textBaseline } = attributes;
 
     const { width, height, lineHeight, fontProperties } = this.textService.measureText(text, attributes);

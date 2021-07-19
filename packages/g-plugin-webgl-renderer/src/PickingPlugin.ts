@@ -101,7 +101,7 @@ export class PickingPlugin implements RenderingPlugin {
           const renderPass = this.renderPassFactory<RenderPassData>(
             RenderPass.IDENTIFIER,
           ) as RenderPass;
-          const pickedDisplayObjects: DisplayObject[] = renderPass.displayObjectsLastFrame;
+          const pickedDisplayObjects: DisplayObject<any>[] = renderPass.displayObjectsLastFrame;
 
           for (const object of pickedDisplayObjects) {
             const material = object.getEntity().getComponent(Material3D);

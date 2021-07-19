@@ -7,7 +7,12 @@ order: -3
 * 尽可能和 DOM API 保持一致，除了能降低学习成本，最重要的是能接入已有生态（例如手势库）。
 * 仅提供标准事件。拖拽、手势等高级事件通过扩展方式定义。
 
-目前我们支持以下[基础事件](/zh/docs/api/event#type)。
+熟悉 [DOM 事件流](https://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-flow-h2) 的开发者对以下概念肯定不陌生：
+* 事件对象上有一个指向 EventTarget 的引用，在 DOM 中自然是 DOM 元素，在 G 中是 [DisplayObject](/zh/docs/api/basic/display-object)
+* 事件流包含捕获和冒泡阶段，可以通过事件对象上的某些方法介入它们
+* 可以为某个事件添加一个或多个监听器，它们按照注册顺序依次触发
+
+目前我们支持以下[基础事件](/zh/docs/api/event#type)，尽可能兼容了 DOM 事件流，因此在下面的很多 API 介绍中我们都附上了 DOM Event API 对应的参考链接。
 
 # 事件监听
 
@@ -129,10 +134,12 @@ ul.appendChild(li1);
 ul.appendChild(li2);
 
 ul.addEventListener('click', (e) => {
-    e.target; // li1 或者 li2
-    e.currentTarget; // ul
+  e.target; // li1 或者 li2
+  e.currentTarget; // ul
 }, false);
 ```
+
+[示例](/zh/examples/event/shape#delegate)
 
 ### currentTarget
 
@@ -233,7 +240,29 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Event/preventDefault
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Event/composedPath
 
-返回事件路径，即一组 `DisplayObject`，类似旧版 G 中的 `propagationPath`。`target` 在数组的末尾。
+返回事件路径，即一组 `DisplayObject`，类似旧版 G 中的 `propagationPath`。`target` 为数组的第一个元素。
+
+仍然以类似 DOM `ul/li` 场景为例：
+```
+Group(ul)
+    - Rect(li)
+    - Rect(li)
+```
+
+在 `ul` 上监听事件，当点击每一个 `li` 时都会触发：
+```js
+const ul = new Group();
+const li1 = new Rect();
+const li2 = new Rect();
+ul.appendChild(li1);
+ul.appendChild(li2);
+
+ul.addEventListener('click', (e) => {
+  const path = e.composedPath(); // [li1, ul];
+}, false);
+```
+
+[示例](/zh/examples/event/shape#delegate)
 
 # 手势和拖拽
 
@@ -253,3 +282,97 @@ hammer.on('press', (e) => {
 ```
 
 [示例](/zh/examples/event/shape#hammer)
+
+## 实现简单的拖拽
+
+我们可以通过组合监听 `mousedown/up/move/ouside` 实现拖拽：
+```js
+let dragging = false; // 拖拽状态
+let lastPosition; // 保存上次位置
+const onDragStart = (event) => {
+  dragging = true;
+  circle.attr('opacity', 0.5);
+  lastPosition = [event.x, event.y];
+  text.attr('text', 'Drag me');
+};
+const onDragEnd = () => {
+  dragging = false;
+  circle.attr('opacity', 1);
+  text.attr('text', 'Drag me');
+};
+const onDragMove = (event) => {
+  if (dragging) {
+    circle.attr('opacity', 0.5);
+    text.attr('text', 'Dragging...');
+
+    const offset = [event.x - lastPosition[0], event.y - lastPosition[1]];
+    const position = circle.getPosition();
+    circle.setPosition(position[0] + offset[0], position[1] + offset[1]);
+    lastPosition = [event.x, event.y];
+  }
+};
+
+circle
+  // events for drag start
+  .on('mousedown', onDragStart)
+  .on('touchstart', onDragStart)
+  // events for drag end
+  .on('mouseup', onDragEnd)
+  .on('mouseupoutside', onDragEnd)
+  .on('touchend', onDragEnd)
+  .on('touchendoutside', onDragEnd)
+  // events for drag move
+  .on('mousemove', onDragMove)
+  .on('touchmove', onDragMove);
+```
+
+[示例](/zh/examples/event/shape#drag)
+
+## 直接使用 Interact.js
+
+[Interact.js](https://interactjs.io/) 是一个包含了 Drag&Drop，Resize，手势等功能的交互库。
+
+# 与其他插件的交互
+
+## 事件绑定/解绑插件
+
+前面提到过，事件绑定不在核心事件系统中完成，应当交给对应渲染环境插件。
+例如使用 DOM API 绑定/解绑的 [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction)，其他环境例如小程序应当自行编写插件。
+
+在这一类插件中，我们需要在 `init` 中完成绑定，在 `destroy` 中完成解绑。
+在实现绑定时，需要将该渲染环境下的多个（如有）原生事件映射到 G 的标准事件处理器上。
+```js
+// g-plugin-dom-interaction
+
+const onPointerDown = (ev: InteractivePointerEvent) => {
+  renderingService.hooks.pointerDown.call(ev);
+};
+
+renderingService.hooks.init.tap(DOMInteractionPlugin.tag, () => {
+  // 事件绑定，使用 DOM API
+  $el.addEventListener(
+    'pointerdown', // 原生事件
+    onPointerDown, // G 标准事件处理器
+    true
+  );
+  
+  // 如果需要支持移动端
+  if (supportsTouchEvents) {
+    $el.addEventListener('touchstart', onPointerDown, true);
+  }
+  // 省略其他
+});
+
+renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
+  // 事件解绑
+});
+```
+
+## 拾取插件
+
+不同渲染环境使用不同的拾取插件，用于判定原生事件的 EventTarget：
+* [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 主要使用数学运算
+* [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 使用现成 SVG API
+* [g-plugin-webgl-renderer](/zh/docs/plugins/webgl-renderer) 使用 GPU 颜色编码
+
+## A11y 无障碍插件

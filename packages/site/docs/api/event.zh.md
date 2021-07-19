@@ -240,7 +240,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Event/preventDefault
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Event/composedPath
 
-返回事件路径，即一组 `DisplayObject`，类似旧版 G 中的 `propagationPath`。`target` 在数组的末尾。
+返回事件路径，即一组 `DisplayObject`，类似旧版 G 中的 `propagationPath`。`target` 为数组的第一个元素。
 
 仍然以类似 DOM `ul/li` 场景为例：
 ```
@@ -258,7 +258,7 @@ ul.appendChild(li1);
 ul.appendChild(li2);
 
 ul.addEventListener('click', (e) => {
-  const path = e.composedPath(); // [ul, li1];
+  const path = e.composedPath(); // [li1, ul];
 }, false);
 ```
 
@@ -283,9 +283,34 @@ hammer.on('press', (e) => {
 
 [示例](/zh/examples/event/shape#hammer)
 
+## 直接使用 Interact.js
+
+[Interact.js](https://interactjs.io/) 是一个包含了 Drag&Drop，Resize，手势等功能的交互库。
+
+以拖拽为例：
+```js
+import interact from 'interactjs';
+
+interact(
+  circle, // 待拖拽对象
+  {
+    context: canvas.document, // 将画布 document 传入
+  })
+  .draggable({
+    startAxis: 'xy', // 允许水平垂直两个方向的拖拽
+    lockAxis: 'start', // 锁定拖拽方向为初始设定
+    onmove: function (event) {
+      const { dx, dy } = event; // interact.js 将 dx/dy 挂载在事件对象上
+      circle.translateLocal(dx, dy); // 移动该对象
+    }
+  });
+```
+
+[示例](/zh/examples/event/shape#interact)
+
 ## 实现简单的拖拽
 
-我们可以通过组合监听 `mousedown/up/move/ouside` 实现拖拽：
+除了使用以上现成的库，我们还可以通过组合监听 `mousedown/up/move/ouside` 实现简单的拖拽效果：
 ```js
 let dragging = false; // 拖拽状态
 let lastPosition; // 保存上次位置
@@ -327,10 +352,6 @@ circle
 ```
 
 [示例](/zh/examples/event/shape#drag)
-
-## 直接使用 Interact.js
-
-[Interact.js](https://interactjs.io/) 是一个包含了 Drag&Drop，Resize，手势等功能的交互库。
 
 # 与其他插件的交互
 

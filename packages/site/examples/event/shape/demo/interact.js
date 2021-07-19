@@ -1,7 +1,8 @@
-import { Circle, Text, Canvas } from '@antv/g';
+import { Circle, Text, Rect, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { containerModule } from '@antv/g-plugin-css-select';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 import interact from 'interactjs';
@@ -10,6 +11,11 @@ import interact from 'interactjs';
 const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
+
+// register css select plugin
+canvasRenderer.registerPlugin(containerModule);
+webglRenderer.registerPlugin(containerModule);
+svgRenderer.registerPlugin(containerModule);
 
 // create a canvas
 const canvas = new Canvas({
@@ -21,62 +27,113 @@ const canvas = new Canvas({
 
 // add a circle to canvas
 const circle = new Circle({
-  id: 'circle',
+  className: 'draggable',
   attrs: {
     fill: 'rgb(239, 244, 255)',
     fillOpacity: 1,
     lineWidth: 1,
     opacity: 1,
-    r: 100,
+    r: 60,
     stroke: 'rgb(95, 149, 255)',
     strokeOpacity: 1,
-    cursor: 'pointer',
   },
 });
 
 const text = new Text({
-  id: 'text',
   attrs: {
-    fill: '#000',
-    fillOpacity: 0.9,
-    font: `normal normal normal 12px Avenir, -apple-system, system-ui, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
-    fontFamily: 'Avenir',
+    text: 'Drag me',
     fontSize: 22,
-    fontStyle: 'normal',
-    fontVariant: 'normal',
-    fontWeight: 'normal',
-    lineWidth: 1,
-    opacity: 1,
-    strokeOpacity: 1,
-    text: 'Try to tap/press/pan me',
+    fill: '#000',
     textAlign: 'center',
     textBaseline: 'middle',
   },
 });
+const dropZone = new Rect({
+  attrs: {
+    x: 100,
+    y: 50,
+    width: 300,
+    height: 200,
+    fill: '#1890FF',
+  },
+});
+
+// resizable
+const resizableRect = new Rect({
+  attrs: {
+    x: 200,
+    y: 260,
+    width: 200,
+    height: 200,
+    fill: '#1890FF',
+  },
+});
+const resizableRectText = new Text({
+  attrs: {
+    text: 'Resize from any edge or corner',
+    fontSize: 16,
+    fill: '#000',
+    textAlign: 'left',
+    textBaseline: 'top',
+    wordWrap: true,
+    wordWrapWidth: 200,
+  },
+});
+resizableRectText.translateLocal(0, 20);
+resizableRect.appendChild(resizableRectText);
+canvas.appendChild(resizableRect);
+
+canvas.appendChild(dropZone);
 
 circle.appendChild(text);
 canvas.appendChild(circle);
-circle.setPosition(300, 200);
+circle.setPosition(100, 100);
 
 // use interact.js
 interact(circle, {
-  context: canvas,
-})
-  .draggable({
-    listeners: {
-      start: (e) => {
-        console.log(e);
-      },
-      // call this function on every dragmove event
-      move: (e) => {
-        console.log(e);
-      },
-      // call this function on every dragend event
-      end(e) {
-        console.log(e);
-      }
-    }
-  });
+  context: canvas.document,
+}).draggable({
+  onmove: function (event) {
+    const { dx, dy } = event;
+    circle.translateLocal(dx, dy);
+  }
+});
+
+interact(resizableRect, {
+  context: canvas.document,
+}).resizable({
+  edges: { top: true, left: true, bottom: true, right: true },
+  onmove: function (event) {
+    resizableRect.translateLocal(event.deltaRect.left, event.deltaRect.top);
+    resizableRect.style.width = event.rect.width;
+    resizableRect.style.height = event.rect.height;
+
+    resizableRectText.style.wordWrapWidth = event.rect.width;
+  }
+});
+
+interact(dropZone, {
+  context: canvas.document,
+}).dropzone({
+  accept: '.draggable',
+  overlap: 0.75,
+  ondragenter: function (event) {
+    text.style.text = 'Dragged in';
+  },
+  ondragleave: function (event) {
+    text.style.text = 'Dragged out';
+  },
+  ondrop: function (event) {
+    text.style.text = 'Dropped';
+  },
+  ondropactivate: function (event) {
+    // add active dropzone feedback
+    event.target.style.fill = '#4e4';
+  },
+  ondropdeactivate: function (event) {
+    event.target.style.fill = '#1890FF';
+  }
+});
 
 // stats
 const stats = new Stats();

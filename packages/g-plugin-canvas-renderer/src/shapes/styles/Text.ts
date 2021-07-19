@@ -1,4 +1,4 @@
-import { ShapeAttrs, TextService } from '@antv/g';
+import { TextService, TextStyleProps } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { isNil } from '@antv/util';
 import { StyleRenderer } from '.';
@@ -8,16 +8,16 @@ export class TextRenderer implements StyleRenderer {
   @inject(TextService)
   private textService: TextService;
 
-  render(context: CanvasRenderingContext2D, attributes: ShapeAttrs) {
+  render(context: CanvasRenderingContext2D, attributes: TextStyleProps) {
     const {
       text = '',
       lineWidth = 0,
       textAlign,
       textBaseline,
       lineJoin,
-      miterLimit,
+      miterLimit = 0,
       padding = 0,
-      letterSpacing,
+      letterSpacing = 0,
       stroke,
       fill,
       fillOpacity,

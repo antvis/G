@@ -1,7 +1,8 @@
-import { ShapeAttrs } from '@antv/g';
+import { PolylineStyleProps } from '@antv/g';
 
-export function generatePath(context: CanvasRenderingContext2D, attributes: ShapeAttrs) {
+export function generatePath(context: CanvasRenderingContext2D, attributes: PolylineStyleProps) {
   const { x = 0, y = 0 } = attributes;
+  // @ts-ignore
   const points = attributes.points as number[][];
   const length = points.length;
 

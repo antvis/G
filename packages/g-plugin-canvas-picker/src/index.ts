@@ -10,7 +10,7 @@ import { isPointInPath as RectPicker } from './Rect';
 import { isPointInPath as PolygonPicker } from './Polygon';
 
 export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
-  bind(PointInPathPickerFactory).toFactory<PointInPathPicker | null>((ctx) => (tagName: SHAPE) => {
+  bind(PointInPathPickerFactory).toFactory<PointInPathPicker<any> | null>((ctx) => (tagName: SHAPE) => {
     if (tagName === SHAPE.Circle) {
       return CirclePicker;
     } else if (tagName === SHAPE.Ellipse) {

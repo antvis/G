@@ -8,19 +8,19 @@ import { FederatedWheelEvent } from '../FederatedWheelEvent';
 import { Cursor, EventPosition } from '../types';
 import { RenderingContext } from './RenderingContext';
 
-type Picker = (position: EventPosition) => DisplayObject | null;
+type Picker = (position: EventPosition) => DisplayObject<any> | null;
 type TrackingData = {
   pressTargetsByButton: {
-    [id: number]: DisplayObject[];
+    [id: number]: DisplayObject<any>[];
   };
   clicksByButton: {
     [id: number]: {
       clickCount: number;
-      target: DisplayObject;
+      target: DisplayObject<any>;
       timeStamp: number;
     }
   };
-  overTargets: DisplayObject[] | null;
+  overTargets: DisplayObject<any>[] | null;
 };
 type EmitterListeners = Record<string,
   | Array<{ fn(...args: any[]): any, context: any }>
@@ -33,7 +33,7 @@ export class EventService extends EventEmitter {
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
-  private rootTarget: DisplayObject;
+  private rootTarget: DisplayObject<any>;
 
   cursor: Cursor | null = 'default';
 
@@ -142,7 +142,7 @@ export class EventService extends EventEmitter {
     // pointerupoutside only bubbles. It only bubbles upto the parent that doesn't contain
     // the pointerup location.
     if (pressTarget && !e.composedPath().includes(pressTarget)) {
-      let currentTarget: DisplayObject | null = pressTarget;
+      let currentTarget: DisplayObject<any> | null = pressTarget;
 
       while (currentTarget && !e.composedPath().includes(currentTarget)) {
         e.currentTarget = currentTarget;
@@ -400,7 +400,7 @@ export class EventService extends EventEmitter {
     const e = this.createPointerEvent(from);
 
     if (pressTarget) {
-      let currentTarget: DisplayObject | null = pressTarget;
+      let currentTarget: DisplayObject<any> | null = pressTarget;
 
       while (currentTarget) {
         e.currentTarget = currentTarget;
@@ -444,44 +444,38 @@ export class EventService extends EventEmitter {
 
   propagate(e: FederatedEvent, type?: string) {
     if (!e.target) {
-      // This usually occurs when the scene graph is not interactive.
       return;
     }
 
+    // [target, parent, root]
     const composedPath = e.composedPath();
 
-    // Capturing phase
+    // event flow: capture -> target -> bubbling
+
+    // capture phase
     e.eventPhase = e.CAPTURING_PHASE;
-
-    for (let i = 0, j = composedPath.length - 1; i < j; i++) {
+    for (let i = composedPath.length - 1; i >= 1; i--) {
       e.currentTarget = composedPath[i];
-
       this.notifyTarget(e, type);
-
       if (e.propagationStopped || e.propagationImmediatelyStopped) return;
     }
 
-    // At target phase
+    // target phase
     e.eventPhase = e.AT_TARGET;
     e.currentTarget = e.target;
-
     this.notifyTarget(e, type);
-
     if (e.propagationStopped || e.propagationImmediatelyStopped) return;
 
-    // Bubbling phase
+    // bubbling phase
     e.eventPhase = e.BUBBLING_PHASE;
-
-    for (let i = composedPath.length - 2; i >= 0; i--) {
+    for (let i = 1; i < composedPath.length; i++) {
       e.currentTarget = composedPath[i];
-
       this.notifyTarget(e, type);
-
       if (e.propagationStopped || e.propagationImmediatelyStopped) return;
     }
   }
 
-  propagationPath(target: DisplayObject): DisplayObject[] {
+  propagationPath(target: DisplayObject<any>): DisplayObject<any>[] {
     const propagationPath = [target];
 
     for (let i = 0; i < PROPAGATION_LIMIT && target !== this.rootTarget; i++) {
@@ -489,24 +483,22 @@ export class EventService extends EventEmitter {
         throw new Error('Cannot find propagation path to disconnected target');
       }
 
+      // [target, parent, parent, root]
       propagationPath.push(target.parentNode);
-
       target = target.parentNode;
     }
-
-    propagationPath.reverse();
 
     return propagationPath;
   }
 
-  hitTest(position: EventPosition): DisplayObject | null {
+  hitTest(position: EventPosition): DisplayObject<any> | null {
     return this.pickHandler(position) || this.rootTarget;
   }
 
   private createPointerEvent(
     from: FederatedPointerEvent,
     type?: string,
-    target?: DisplayObject
+    target?: DisplayObject<any>
   ): FederatedPointerEvent {
     const event = this.allocateEvent(FederatedPointerEvent);
 
@@ -521,7 +513,7 @@ export class EventService extends EventEmitter {
       clientY: event.clientY,
       x: event.global.x,
       y: event.global.y,
-    }) as DisplayObject;
+    }) as DisplayObject<any>;
 
     if (typeof type === 'string') {
       event.type = type;
@@ -544,7 +536,7 @@ export class EventService extends EventEmitter {
       clientY: event.clientY,
       x: event.global.x,
       y: event.global.y,
-    }) as DisplayObject;
+    }) as DisplayObject<any>;
 
     return event;
   }
@@ -571,7 +563,6 @@ export class EventService extends EventEmitter {
     this.copyMouseData(from, event);
     this.copyData(from, event);
 
-    // copy propagation path for perf
     event.target = from.target;
     event.path = from.composedPath().slice();
     event.type = type ?? event.type;
@@ -686,16 +677,16 @@ export class EventService extends EventEmitter {
     }
   }
 
-  private findMountedTarget(propagationPath: DisplayObject[] | null): DisplayObject | null {
+  /**
+   * some detached nodes may exist in propagation path, need to skip them
+   */
+  private findMountedTarget(propagationPath: DisplayObject<any>[] | null): DisplayObject<any> | null {
     if (!propagationPath) {
       return null;
     }
 
-    let currentTarget = propagationPath[0];
-
-    for (let i = 1; i < propagationPath.length; i++) {
-      // Set currentTarget to the next target in the path only if it is still attached to the
-      // scene graph (i.e. parent still points to the expected ancestor).
+    let currentTarget = propagationPath[propagationPath.length - 1];
+    for (let i = propagationPath.length - 2; i >= 0; i--) {
       if (propagationPath[i].parentNode === currentTarget) {
         currentTarget = propagationPath[i];
       } else {
@@ -706,8 +697,8 @@ export class EventService extends EventEmitter {
     return currentTarget;
   }
 
-  private getCursor(target: DisplayObject | null) {
-    let tmp: DisplayObject | null = target;
+  private getCursor(target: DisplayObject<any> | null) {
+    let tmp: DisplayObject<any> | null = target;
     while (tmp) {
       const cursor = tmp.getAttribute('cursor');
       if (cursor) {

@@ -1,7 +1,7 @@
-import { ShapeAttrs } from '@antv/g';
+import { RectStyleProps } from '@antv/g';
 import { parseRadius } from '../../utils/parse';
 
-export function generatePath(context: CanvasRenderingContext2D, attributes: ShapeAttrs) {
+export function generatePath(context: CanvasRenderingContext2D, attributes: RectStyleProps) {
   const { radius = 0, width = 0, height = 0 } = attributes;
 
   context.beginPath();

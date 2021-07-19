@@ -10,7 +10,6 @@ import {
   RenderingPlugin,
   getEuler,
   fromRotationTranslationScale,
-  ShapeAttrs,
   Camera,
   CAMERA_PROJECTION_MODE,
 } from '@antv/g';
@@ -54,7 +53,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private styleParser: StyleParser;
 
   @inject(PathGeneratorFactory)
-  private pathGeneratorFactory: (tagName: SHAPE) => PathGenerator;
+  private pathGeneratorFactory: (tagName: SHAPE) => PathGenerator<any>;
 
   @inject(StyleRendererFactory)
   private styleRendererFactory: (tagName: SHAPE) => StyleRenderer;
@@ -137,7 +136,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       context.restore();
     });
 
-    renderingService.hooks.render.tap(CanvasRendererPlugin.tag, (objects: DisplayObject[]) => {
+    renderingService.hooks.render.tap(CanvasRendererPlugin.tag, (objects: DisplayObject<any>[]) => {
       const context = this.contextService.getContext()!;
       objects.forEach((object) => {
         const nodeType = object.nodeType;
@@ -208,7 +207,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     context.transform(rts[0], rts[1], rts[3], rts[4], rts[6], rts[7]);
   }
 
-  private applyAttributesToContext(context: CanvasRenderingContext2D, attrs: ShapeAttrs) {
+  private applyAttributesToContext(context: CanvasRenderingContext2D, attrs: any) {
     for (const k in attrs) {
       let v = attrs[k];
       // 转换一下不与 canvas 兼容的属性名

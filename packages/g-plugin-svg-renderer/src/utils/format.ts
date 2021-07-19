@@ -1,6 +1,6 @@
 import { isArray } from '@antv/util';
 
-export function parseRadius(radius: number[]) {
+export function parseRadius(radius: number[] | number) {
   let r1 = 0;
   let r2 = 0;
   let r3 = 0;

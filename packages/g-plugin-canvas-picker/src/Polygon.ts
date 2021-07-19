@@ -1,9 +1,9 @@
-import { DisplayObject } from '@antv/g';
-import { Point } from './CanvasPickerPlugin';
+import { DisplayObject, PolylineStyleProps, Point } from '@antv/g';
 import { inPolygon, inPolyline } from './utils/math';
 
-export function isPointInPath(displayObject: DisplayObject, position: Point): boolean {
-  const { stroke, fill, lineWidth = 0, points, x, y } = displayObject.attributes;
+export function isPointInPath(displayObject: DisplayObject<PolylineStyleProps>, position: Point): boolean {
+  // @ts-ignore
+  const { stroke, fill, lineWidth = 0, points, x = 0, y = 0 } = displayObject.attributes;
 
   let isHit = false;
   if (stroke) {

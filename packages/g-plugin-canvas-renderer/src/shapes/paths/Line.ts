@@ -1,6 +1,6 @@
-import { ShapeAttrs } from '@antv/g';
+import { LineStyleProps } from '@antv/g';
 
-export function generatePath(context: CanvasRenderingContext2D, attributes: ShapeAttrs) {
+export function generatePath(context: CanvasRenderingContext2D, attributes: LineStyleProps) {
   const { x1, y1, x2, y2, x = 0, y = 0 } = attributes;
   context.beginPath();
   context.moveTo(x1 - x, y1 - y);

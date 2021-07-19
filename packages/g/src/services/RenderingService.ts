@@ -14,7 +14,7 @@ export const RenderingPluginContribution = Symbol('RenderingPluginContribution')
 
 export interface PickingResult {
   position: EventPosition;
-  picked: DisplayObject | null;
+  picked: DisplayObject<any> | null;
 }
 
 /**
@@ -37,13 +37,13 @@ export class RenderingService implements CanvasService {
 
   hooks = {
     init: new SyncHook<[]>(),
-    prepare: new SyncWaterfallHook<[DisplayObject[], DisplayObject]>(['objects', 'root']),
-    mounted: new SyncHook<[DisplayObject]>(['object']),
-    unmounted: new SyncHook<[DisplayObject]>(['object']),
-    attributeChanged: new SyncHook<[DisplayObject, string, any]>(['object', 'name', 'value']),
-    beforeRender: new SyncHook<[DisplayObject[], DisplayObject[]]>(['objectsToRender', 'objects']),
-    render: new SyncHook<[DisplayObject[], DisplayObject[]]>(['objectsToRender', 'objects']),
-    afterRender: new SyncHook<[DisplayObject[], DisplayObject[]]>(['objectsToRender', 'objects']),
+    prepare: new SyncWaterfallHook<[DisplayObject<any>[], DisplayObject<any>]>(['objects', 'root']),
+    mounted: new SyncHook<[DisplayObject<any>]>(['object']),
+    unmounted: new SyncHook<[DisplayObject<any>]>(['object']),
+    attributeChanged: new SyncHook<[DisplayObject<any>, string, any]>(['object', 'name', 'value']),
+    beforeRender: new SyncHook<[DisplayObject<any>[], DisplayObject<any>[]]>(['objectsToRender', 'objects']),
+    render: new SyncHook<[DisplayObject<any>[], DisplayObject<any>[]]>(['objectsToRender', 'objects']),
+    afterRender: new SyncHook<[DisplayObject<any>[], DisplayObject<any>[]]>(['objectsToRender', 'objects']),
     destroy: new SyncHook<[]>(),
     pick: new SyncWaterfallHook<[PickingResult]>(['result']),
     pointerDown: new SyncHook<[InteractivePointerEvent]>(['event']),
@@ -66,7 +66,7 @@ export class RenderingService implements CanvasService {
 
   render() {
     const root = this.renderingContext.root;
-    const objects: DisplayObject[] = [];
+    const objects: DisplayObject<any>[] = [];
     root.forEach((node) => {
       if (!node.getEntity().getComponent(SceneGraphNode).shadow) {
         objects.push(node);

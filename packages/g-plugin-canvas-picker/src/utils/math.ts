@@ -105,7 +105,7 @@ function dcmp(x: number) {
 }
 
 // 判断点Q是否在p1和p2的线段上
-function onSegment(p1, p2, q) {
+function onSegment(p1: any, p2: any, q: any) {
   if (
     (q[0] - p1[0]) * (p2[1] - p1[1]) === (p2[0] - p1[0]) * (q[1] - p1[1]) &&
     Math.min(p1[0], p2[0]) <= q[0] &&

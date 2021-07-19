@@ -1,6 +1,5 @@
-import { Entity } from '@antv/g-ecs';
-import { inject, injectable, named } from 'inversify';
-import { ShapeAttrs } from '../../types';
+import { inject, injectable } from 'inversify';
+import { TextStyleProps } from '../../shapes-export';
 import { toFontString } from '../../utils/text';
 import { OffscreenCanvasCreator } from './OffscreenCanvasCreator';
 
@@ -139,7 +138,7 @@ export class TextService {
     return properties;
   }
 
-  measureText(text: string, attributes: ShapeAttrs) {
+  measureText(text: string, attributes: TextStyleProps) {
     const {
       fontSize = 0,
       wordWrap,
@@ -195,7 +194,7 @@ export class TextService {
     };
   }
 
-  private wordWrap(text: string, { wordWrapWidth, letterSpacing }: ShapeAttrs): string {
+  private wordWrap(text: string, { wordWrapWidth = 0, letterSpacing = 0 }: TextStyleProps): string {
     const context = this.offscreenCanvas.getOrCreateContext();
     const maxWidth = wordWrapWidth + letterSpacing;
 

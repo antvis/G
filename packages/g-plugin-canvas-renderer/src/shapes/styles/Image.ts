@@ -1,4 +1,4 @@
-import { ShapeAttrs } from '@antv/g';
+import { ImageStyleProps } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { isNil, isString } from '@antv/util';
 import { ImagePool } from '../ImagePool';
@@ -9,10 +9,11 @@ export class ImageRenderer implements StyleRenderer {
   @inject(ImagePool)
   private imagePool: ImagePool;
 
-  render(context: CanvasRenderingContext2D, attributes: ShapeAttrs) {
+  render(context: CanvasRenderingContext2D, attributes: ImageStyleProps) {
+    // @ts-ignore
     const { width = 0, height = 0, img, sx, sy, swidth, sheight, anchor = [0, 0] } = attributes;
 
-    let image: HTMLImageElement = img;
+    let image: HTMLImageElement;
     let iw = width;
     let ih = height;
     if (isString(img)) {
@@ -21,6 +22,7 @@ export class ImageRenderer implements StyleRenderer {
     } else {
       iw ||= img.width;
       ih ||= img.height;
+      image = img;
     }
 
     if (!isNil(sx) && !isNil(sy) && !isNil(swidth) && !isNil(sheight)) {

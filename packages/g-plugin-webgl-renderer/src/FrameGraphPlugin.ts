@@ -103,7 +103,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
       this.engine.destroy();
     });
 
-    renderingService.hooks.render.tap(FrameGraphPlugin.tag, (dirtyObjects: DisplayObject[]) => {
+    renderingService.hooks.render.tap(FrameGraphPlugin.tag, (dirtyObjects: DisplayObject<any>[]) => {
       // skip group
       const objects = dirtyObjects.filter((object) => object.nodeType !== SHAPE.Group);
 
@@ -145,7 +145,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
       this.contextService.resize(width, height);
     });
 
-    renderingService.hooks.mounted.tap(FrameGraphPlugin.tag, async (object: DisplayObject) => {
+    renderingService.hooks.mounted.tap(FrameGraphPlugin.tag, async (object: DisplayObject<any>) => {
       const entity = object.getEntity();
       const renderable3d = entity.addComponent(Renderable3D);
       // add geometry & material required by Renderable3D
@@ -185,7 +185,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
         // allocate pickingid for each child in batch
         const pickingColorBuffer: number[] = [];
         if (isBatch) {
-          object.children.forEach((instance: DisplayObject) => {
+          object.children.forEach((instance: DisplayObject<any>) => {
             // TODO: save pickingID
             const childPickingId = this.pickingIdGenerator.getId(instance);
             pickingColorBuffer.push(...this.pickingIdGenerator.encodePickingColor(childPickingId));
@@ -211,7 +211,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
       }
     });
 
-    renderingService.hooks.unmounted.tap(FrameGraphPlugin.tag, (object: DisplayObject) => {
+    renderingService.hooks.unmounted.tap(FrameGraphPlugin.tag, (object: DisplayObject<any>) => {
       const entity = object.getEntity();
       entity.removeComponent(Renderable3D, true);
       entity.removeComponent(Geometry3D, true);
@@ -220,7 +220,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
 
     renderingService.hooks.attributeChanged.tap(
       FrameGraphPlugin.tag,
-      (object: DisplayObject, name: string, value: any) => {
+      (object: DisplayObject<any>, name: string, value: any) => {
         const entity = object.getEntity();
         const renderable3d = entity.getComponent(Renderable3D);
         if (renderable3d.modelPrepared) {

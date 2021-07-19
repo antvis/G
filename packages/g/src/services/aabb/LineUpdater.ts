@@ -2,13 +2,13 @@ import { vec3 } from 'gl-matrix';
 import { injectable } from 'inversify';
 import { GeometryAABBUpdater } from '.';
 import { AABB } from '../../shapes';
-import { ShapeAttrs } from '../../types';
+import { LineStyleProps } from '../../shapes-export';
 
 @injectable()
-export class LineUpdater implements GeometryAABBUpdater {
+export class LineUpdater implements GeometryAABBUpdater<LineStyleProps> {
   dependencies = ['x1', 'y1', 'x2', 'y2', 'lineWidth', 'anchor'];
 
-  update(attributes: ShapeAttrs, aabb: AABB) {
+  update(attributes: LineStyleProps, aabb: AABB) {
     const { x1, y1, x2, y2, lineWidth = 0, lineAppendWidth = 0, anchor = [0, 0] } = attributes;
     const minX = Math.min(x1, x2);
     const maxX = Math.max(x1, x2);

@@ -9,17 +9,18 @@ import {
   PickingResult,
   OffscreenCanvasCreator,
   Camera,
+  BaseStyleProps,
+  Point,
 } from '@antv/g';
-import { Point } from '@antv/g-math';
 import { PathGeneratorFactory, PathGenerator } from '@antv/g-plugin-canvas-renderer';
 import { mat4, vec3 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
 
 export const PointInPathPickerFactory = Symbol('PointInPathPicker');
-export type PointInPathPicker = (
-  displayObject: DisplayObject,
+export type PointInPathPicker<T extends BaseStyleProps> = (
+  displayObject: DisplayObject<T>,
   point: Point,
-  isPointInPath?: (displayObject: DisplayObject, point: Point) => boolean,
+  isPointInPath?: (displayObject: DisplayObject<T>, point: Point) => boolean,
 ) => boolean;
 
 /**
@@ -51,7 +52,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
   private pathGeneratorFactory: (tagName: SHAPE) => PathGenerator;
 
   @inject(PointInPathPickerFactory)
-  private pointInPathPickerFactory: (tagName: SHAPE) => PointInPathPicker;
+  private pointInPathPickerFactory: (tagName: SHAPE) => PointInPathPicker<any>;
 
   apply(renderingService: RenderingService) {
     renderingService.hooks.pick.tap(CanvasPickerPlugin.tag, (result: PickingResult) => {
@@ -73,7 +74,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
         maxY: position[1],
       });
 
-      const pickedDisplayObjects: DisplayObject[] = [];
+      const pickedDisplayObjects: DisplayObject<any>[] = [];
       rBushNodes.forEach(({ name }: { name: string }) => {
         const displayObject = this.displayObjectPool.getByName(name);
         const { capture } = displayObject.getConfig();
@@ -91,7 +92,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
               invertWorldMat,
             );
             if (
-              pick(displayObject, { x: localPosition[0], y: localPosition[1] }, this.isPointInPath)
+              pick(displayObject, new Point(localPosition[0], localPosition[1]), this.isPointInPath)
             ) {
               pickedDisplayObjects.push(displayObject);
             }
@@ -117,7 +118,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
    * use native picking method
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/isPointInPath
    */
-  private isPointInPath = (displayObject: DisplayObject, position: Point) => {
+  private isPointInPath = (displayObject: DisplayObject<any>, position: Point) => {
     const context = this.offscreenCanvas.getOrCreateContext() as CanvasRenderingContext2D;
     const generatePath = this.pathGeneratorFactory(displayObject.nodeType);
     if (generatePath) {

@@ -24,20 +24,27 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
   eventPhase = FederatedEvent.prototype.NONE;
 
   /**
-   * The event target that this will be dispatched to.
+   * can be used to implement event delegation
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/target
    */
-  target: DisplayObject | null;
+  target: DisplayObject<any> | null;
 
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/bubbles
+   */
   bubbles = true;
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/cancelBubble
+   */
   cancelBubble = true;
 
   /**
-   * Flags whether this event can be canceled using `preventDefault`.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Event/cancelable
    */
   readonly cancelable = false;
 
   /** The listeners of the event target that are being notified. */
-  currentTarget: DisplayObject | null;
+  currentTarget: DisplayObject<any> | null;
 
   /** Flags whether the default response of the user agent was prevent through this event. */
   defaultPrevented = false;
@@ -56,9 +63,6 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
 
   /** Flags whether propagation was immediately stopped. */
   propagationImmediatelyStopped = false;
-
-  /** The composed path of the event's propagation. The target is at the end. */
-  path: DisplayObject[];
 
   readonly manager: EventService | null;
 
@@ -89,13 +93,16 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
     this.manager = manager;
   }
 
+  path: DisplayObject<any>[];
   /**
    * The propagation path for this event
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/composedPath
+   * 
+   * So composedPath()[0] represents the original target.
+   * @see https://polymer-library.polymer-project.org/3.0/docs/devguide/events#retargeting
    */
-  composedPath(): DisplayObject[] {
-    // Find the propagation path if it isn't cached or if the target has changed since since
-    // the last evaluation.
-    if (this.manager && (!this.path || this.path[this.path.length - 1] !== this.target)) {
+  composedPath(): DisplayObject<any>[] {
+    if (this.manager && (!this.path || this.path[0] !== this.target)) {
       this.path = this.target ? this.manager.propagationPath(this.target) : [];
     }
 

@@ -1,12 +1,13 @@
 import { vec3 } from 'gl-matrix';
 import { injectable } from 'inversify';
-import { GeometryAABBUpdater, AABB, ShapeAttrs } from '@antv/g';
+import { GeometryAABBUpdater, AABB } from '@antv/g';
+import { SphereStyleProps } from '../Sphere';
 
 @injectable()
-export class SphereUpdater implements GeometryAABBUpdater {
+export class SphereUpdater implements GeometryAABBUpdater<SphereStyleProps> {
   dependencies = ['height', 'width', 'depth', 'anchor'];
 
-  update(attributes: ShapeAttrs, aabb: AABB) {
+  update(attributes: SphereStyleProps, aabb: AABB) {
     const { height = 0, width = 0, depth = 0, anchor = [0, 0] } = attributes;
 
     // anchor is left-top by default

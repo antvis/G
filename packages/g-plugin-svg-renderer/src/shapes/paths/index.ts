@@ -1,9 +1,9 @@
-import { ShapeAttrs } from '@antv/g';
+import { BaseStyleProps } from '@antv/g';
 
 export const ElementRendererFactory = Symbol('ElementRendererFactory');
 export const ElementRenderer = Symbol('ElementRenderer');
-export interface ElementRenderer {
-  apply(context: SVGElement, attributes: ShapeAttrs): void;
+export interface ElementRenderer<T extends BaseStyleProps> {
+  apply(context: SVGElement, attributes: T): void;
 }
 
 export { RectRenderer } from './Rect';

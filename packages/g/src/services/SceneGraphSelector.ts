@@ -5,8 +5,9 @@ import { DisplayObject } from '../DisplayObject';
 export const SceneGraphSelectorFactory = Symbol('SceneGraphSelectorFactory');
 export const SceneGraphSelector = Symbol('SceneGraphSelector');
 export interface SceneGraphSelector {
-  selectOne(query: string, object: DisplayObject): DisplayObject | null;
-  selectAll(query: string, object: DisplayObject): DisplayObject[];
+  selectOne(query: string, object: DisplayObject<any>): DisplayObject<any> | null;
+  selectAll(query: string, object: DisplayObject<any>): DisplayObject<any>[];
+  is(query: string, group: DisplayObject<any>): boolean;
 }
 
 /**
@@ -18,7 +19,7 @@ export interface SceneGraphSelector {
  */
 @injectable()
 export class DefaultSceneGraphSelector implements SceneGraphSelector {
-  selectOne(query: string, object: DisplayObject) {
+  selectOne(query: string, object: DisplayObject<any>) {
     if (query.startsWith('#')) {
       // getElementById('id')
       // TODO: should include itself?
@@ -29,22 +30,27 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
     return null;
   }
 
-  selectAll(query: string, object: DisplayObject) {
+  selectAll(query: string, object: DisplayObject<any>) {
     // TODO: only support `[name="${name}"]` `.className`
     if (query.startsWith('.')) {
       // getElementsByClassName('className');
       // TODO: should include itself?
       return object.findAll(
-        (node) => node.getEntity().getComponent(SceneGraphNode).class === query.substring(1),
+        (node: DisplayObject<any>) => node.getEntity().getComponent(SceneGraphNode).class === query.substring(1),
       );
     } else if (query.startsWith('[name=')) {
       // getElementsByName();
       return object.findAll(
-        (node) => node.attributes.name === query.substring(7, query.length - 2),
+        (node: DisplayObject<any>) => node.name === query.substring(7, query.length - 2),
       );
     } else {
       // getElementsByTag('circle');
       return object.findAll((node) => node.nodeType === query);
     }
+  }
+
+  is(query: string, group: DisplayObject<any>) {
+    // TODO: need a simple `matches` implementation
+    return true;
   }
 }

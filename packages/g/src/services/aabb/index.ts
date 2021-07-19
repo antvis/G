@@ -1,12 +1,12 @@
 import { AABB } from '../../shapes';
-import { ShapeAttrs } from '../../types';
+import { BaseStyleProps } from '../../types';
 
 export const GeometryUpdaterFactory = Symbol('GeometryUpdaterFactory');
 
 export const GeometryAABBUpdater = Symbol('GeometryAABBGenerator');
-export interface GeometryAABBUpdater {
+export interface GeometryAABBUpdater<T extends BaseStyleProps> {
   dependencies: string[];
-  update(attributes: ShapeAttrs, aabb: AABB): void;
+  update(attributes: T, aabb: AABB): void;
 }
 
 export { CircleUpdater } from './CircleUpdater';

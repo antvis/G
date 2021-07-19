@@ -18,7 +18,7 @@ export interface IRenderPass<RenderPassData> {
   /**
    * 调用渲染引擎服务完成虚拟资源的实例化
    */
-  execute(fg: FrameGraphEngine, pass: FrameGraphPass<RenderPassData>, displayObjects: DisplayObject[]): void;
+  execute(fg: FrameGraphEngine, pass: FrameGraphPass<RenderPassData>, displayObjects: DisplayObject<any>[]): void;
 
   /**
    * 结束后清理
@@ -54,7 +54,7 @@ export class FrameGraphEngine {
   public addPass<PassData>(
     name: string,
     setup: (fg: FrameGraphEngine, passNode: PassNode, pass: FrameGraphPass<PassData>) => void,
-    execute: (fg: FrameGraphEngine, pass: FrameGraphPass<PassData>, displayObjects: DisplayObject[]) => void,
+    execute: (fg: FrameGraphEngine, pass: FrameGraphPass<PassData>, displayObjects: DisplayObject<any>[]) => void,
     tearDown?: () => void
   ) {
     const frameGraphPass = new FrameGraphPass<PassData>();
@@ -147,7 +147,7 @@ export class FrameGraphEngine {
     }
   }
 
-  public executePassNodes(displayObjects: DisplayObject[]) {
+  public executePassNodes(displayObjects: DisplayObject<any>[]) {
     for (let index = 0; index < this.passNodes.length; index++) {
       const node = this.passNodes[index];
       if (node.refCount) {
@@ -211,7 +211,7 @@ export class FrameGraphEngine {
   }
 
   public present(input: FrameGraphHandle) {
-    this.addPass<{}>(
+    this.addPass<any>(
       'Present',
       (fg, passNode) => {
         passNode.read(input);

@@ -1,11 +1,10 @@
-import { DisplayObject } from '@antv/g';
-import { Point } from './CanvasPickerPlugin';
+import { DisplayObject, RectStyleProps, Point } from '@antv/g';
 import { inLine, inArc, inBox, inRect } from './utils/math';
 
 export function isPointInPath(
-  displayObject: DisplayObject,
+  displayObject: DisplayObject<RectStyleProps>,
   position: Point,
-  isPointInPath: (displayObject: DisplayObject, position: Point) => boolean
+  isPointInPath: (displayObject: DisplayObject<RectStyleProps>, position: Point) => boolean
 ): boolean {
   const { radius, fill, stroke, lineWidth = 0, width, height } = displayObject.attributes;
 

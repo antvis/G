@@ -31,7 +31,12 @@ export class Canvas extends EventEmitter {
    */
   private frameId?: number;
 
-  document: DisplayObject;
+  document: DisplayObject<{}>;
+
+  scrollX = 0;
+  scrollY = 0;
+
+  Element = DisplayObject;
 
   constructor(config: CanvasConfig) {
     super();
@@ -72,8 +77,14 @@ export class Canvas extends EventEmitter {
     const root = new DisplayObject({
       attrs: {},
     });
+    // ref to Canvas @see https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
     root.defaultView = this;
+    // ref to itself @see https://developer.mozilla.org/en-US/docs/Web/API/Document/documentElement
+    root.documentElement = root;
+
+    // window.document
     this.document = root;
+    root.ownerDocument = root;
     this.container.bind(RenderingContext).toConstantValue({
       /**
        * the root node in scene graph
@@ -139,6 +150,14 @@ export class Canvas extends EventEmitter {
     return this.container.get<ContextService<unknown>>(ContextService);
   }
 
+  getRenderingService() {
+    return this.container.get<RenderingService>(RenderingService);
+  }
+
+  getComputedStyle(node: DisplayObject<any>) {
+    return node.style;
+  }
+
   destroy(destroyScenegraph = true) {
     this.emit('beforeDestroy');
     if (this.frameId) {
@@ -149,7 +168,7 @@ export class Canvas extends EventEmitter {
     const root = this.getRoot();
     const renderingService = this.container.get<RenderingService>(RenderingService);
     if (destroyScenegraph) {
-      root.forEach((child: DisplayObject) => {
+      root.forEach((child: DisplayObject<any>) => {
         this.removeChild(child, true);
       });
     } else {
@@ -195,7 +214,7 @@ export class Canvas extends EventEmitter {
     }
   }
 
-  appendChild(node: DisplayObject) {
+  appendChild(node: DisplayObject<any>) {
     const renderingService = this.container.get<RenderingService>(RenderingService);
     const root = this.getRoot();
     root.appendChild(node);
@@ -204,8 +223,8 @@ export class Canvas extends EventEmitter {
     this.decorate(node, renderingService, root);
   }
 
-  private decorate(object: DisplayObject, renderingService: RenderingService, root: DisplayObject) {
-    object.forEach((child: DisplayObject) => {
+  private decorate(object: DisplayObject<any>, renderingService: RenderingService, root: DisplayObject<any>) {
+    object.forEach((child: DisplayObject<any>) => {
       // trigger mount on node's descendants
       if (!child.mounted) {
         renderingService.hooks.mounted.call(child);
@@ -220,7 +239,7 @@ export class Canvas extends EventEmitter {
     });
   }
 
-  removeChild(node: DisplayObject, destroy?: boolean) {
+  removeChild(node: DisplayObject<any>, destroy?: boolean) {
     this.getRoot().removeChild(node, destroy);
   }
 
@@ -294,9 +313,9 @@ export class Canvas extends EventEmitter {
     this.mountChildren(this.getRoot());
   }
 
-  private unmountChildren(node: DisplayObject) {
+  private unmountChildren(node: DisplayObject<any>) {
     const renderingService = this.container.get<RenderingService>(RenderingService);
-    node.forEach((child: DisplayObject) => {
+    node.forEach((child: DisplayObject<any>) => {
       if (child.mounted) {
         renderingService.hooks.unmounted.call(child);
         child.mounted = false;
@@ -304,9 +323,9 @@ export class Canvas extends EventEmitter {
     });
   }
 
-  private mountChildren(node: DisplayObject) {
+  private mountChildren(node: DisplayObject<any>) {
     const renderingService = this.container.get<RenderingService>(RenderingService);
-    node.forEach((child: DisplayObject) => {
+    node.forEach((child: DisplayObject<any>) => {
       if (!child.mounted) {
         renderingService.hooks.mounted.call(child);
         child.mounted = true;

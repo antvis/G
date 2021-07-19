@@ -5,31 +5,41 @@ import { isNumberEqual, max, min } from '@antv/util';
 import { injectable } from 'inversify';
 import { GeometryAABBUpdater } from '.';
 import { AABB } from '../../shapes';
-import { ShapeAttrs } from '../../types';
 import { pathToCurve } from '../../utils/path';
+import { PathStyleProps } from '../../shapes-export';
 
 @injectable()
-export class PathUpdater implements GeometryAABBUpdater {
+export class PathUpdater implements GeometryAABBUpdater<PathStyleProps> {
   dependencies = ['path', 'lineWidth', 'anchor'];
 
-  update(attributes: ShapeAttrs, aabb: AABB) {
+  update(attributes: PathStyleProps, aabb: AABB) {
     // format path and add some extra attributes for later use
     // @ts-ignore
     const path = path2Absolute(attributes.path);
+    // @ts-ignore
     attributes.path = path;
 
     let { lineWidth = 1, anchor = [0, 0] } = attributes;
 
+    // @ts-ignore
     attributes.hasArc = hasArc(path);
+    // @ts-ignore
     attributes.segments = path2Segments(path);
     const { polygons, polylines } = extractPolygons(path);
+    // @ts-ignore
     attributes.polygons = polygons;
+    // @ts-ignore
     attributes.polylines = polylines;
+    // @ts-ignore
     attributes.curve = pathToCurve(path);
+    // @ts-ignore
     const { totalLength, curveSegments } = calcLength(attributes.curve);
+    // @ts-ignore
     attributes.totalLength = totalLength;
+    // @ts-ignore
     attributes.curveSegments = curveSegments;
 
+    // @ts-ignore
     let { x: minX, y: minY, width, height } = getPathBox(attributes.segments, lineWidth);
 
     // anchor is left-top by default

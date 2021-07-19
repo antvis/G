@@ -1,4 +1,4 @@
-import { DisplayObject, Renderable, SceneGraphNode } from '@antv/g';
+import { DisplayObject, LineStyleProps, Renderable, SceneGraphNode } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { ShaderModuleService } from '../services/shader-module';
 import lineVertex from './shaders/webgl.line.vert.glsl';
@@ -54,7 +54,7 @@ export class LineModelBuilder implements ModelBuilder {
   @inject(ShaderModuleService)
   private shaderModule: ShaderModuleService;
 
-  onAttributeChanged(object: DisplayObject, name: string, value: any) {
+  onAttributeChanged(object: DisplayObject<LineStyleProps>, name: string, value: any) {
     const entity = object.getEntity();
     const sceneGraphNode = entity.getComponent(SceneGraphNode);
     const renderable = entity.getComponent(Renderable);
@@ -69,7 +69,7 @@ export class LineModelBuilder implements ModelBuilder {
     }
   }
 
-  prepareModel(object: DisplayObject) {
+  prepareModel(object: DisplayObject<LineStyleProps>) {
     const entity = object.getEntity();
     const sceneGraphNode = entity.getComponent(SceneGraphNode);
     const material = entity.getComponent(Material3D);

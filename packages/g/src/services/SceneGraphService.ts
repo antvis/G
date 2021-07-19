@@ -38,11 +38,15 @@ export class SceneGraphService extends EventEmitter {
   @inject(SceneGraphSelectorFactory)
   private sceneGraphSelectorFactory: () => SceneGraphSelector;
 
-  querySelector(query: string, root: DisplayObject) {
+  matches(query: string, root: DisplayObject<any>) {
+    return this.sceneGraphSelectorFactory().is(query, root);
+  }
+
+  querySelector(query: string, root: DisplayObject<any>) {
     return this.sceneGraphSelectorFactory().selectOne(query, root);
   }
 
-  querySelectorAll(query: string, root: DisplayObject) {
+  querySelectorAll(query: string, root: DisplayObject<any>) {
     return this.sceneGraphSelectorFactory()
       .selectAll(query, root)
       .filter((node) => !node.getEntity().getComponent(SceneGraphNode).shadow);
@@ -93,7 +97,7 @@ export class SceneGraphService extends EventEmitter {
    * use materialized path
    * @see https://stackoverflow.com/questions/31470730/comparing-tree-nodes
    */
-  sort = (object1: DisplayObject, object2: DisplayObject): number => {
+  sort = (object1: DisplayObject<any>, object2: DisplayObject<any>): number => {
     if (!object1.parentNode) {
       return -1;
     }
@@ -146,8 +150,8 @@ export class SceneGraphService extends EventEmitter {
     return -1;
   };
 
-  private getDepth(object: DisplayObject) {
-    let o: DisplayObject = object;
+  private getDepth(object: DisplayObject<any>) {
+    let o: DisplayObject<any> = object;
     let depth = 0;
     while (o) {
       o = o.parentNode!;
@@ -302,10 +306,8 @@ export class SceneGraphService extends EventEmitter {
       if (typeof position === 'number') {
         position = vec3.fromValues(position, y, z);
       }
+
       const transform = entity.getComponent(Transform);
-      if (vec3.equals(transform.position, position)) {
-        return;
-      }
       transform.position = position;
 
       const hierarchy = entity.getComponent(SceneGraphNode);

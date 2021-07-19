@@ -1,10 +1,10 @@
 import {
   Batch,
+  CircleStyleProps,
   DisplayObject,
   DisplayObjectPool,
   SceneGraphNode,
   SHAPE,
-  ShapeAttrs,
 } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { ShaderModuleService } from '../services/shader-module';
@@ -61,7 +61,7 @@ export class CircleModelBuilder implements ModelBuilder {
   @inject(ShaderModuleService)
   private shaderModule: ShaderModuleService;
 
-  onAttributeChanged(object: DisplayObject, name: string, value: any) {
+  onAttributeChanged(object: DisplayObject<CircleStyleProps>, name: string, value: any) {
     const entity = object.getEntity();
     const renderable = entity.getComponent(SceneGraphNode);
     const renderable3d = entity.getComponent(Renderable3D);
@@ -143,7 +143,7 @@ export class CircleModelBuilder implements ModelBuilder {
     }
   }
 
-  prepareModel(object: DisplayObject) {
+  prepareModel(object: DisplayObject<CircleStyleProps>) {
     const entity = object.getEntity();
     const sceneGraphNode = entity.getComponent(SceneGraphNode);
     const material = entity.getComponent(Material3D);
@@ -206,7 +206,7 @@ export class CircleModelBuilder implements ModelBuilder {
     let config: Partial<IPointConfig>[] = [];
 
     if (isBatch) {
-      config = (object as Batch).children.map((instance: DisplayObject) => {
+      config = (object as Batch<any>).children.map((instance: DisplayObject<any>) => {
         const [halfWidth, halfHeight] = this.getSize(instance.attributes, tagName);
         const fillColor = rgb2arr(instance.attributes.fill || '');
         return {
@@ -294,7 +294,7 @@ export class CircleModelBuilder implements ModelBuilder {
     return attributes;
   }
 
-  private getSize(attributes: ShapeAttrs, tagName: SHAPE) {
+  private getSize(attributes: CircleStyleProps, tagName: SHAPE) {
     if (tagName === SHAPE.Circle) {
       return [attributes.r, attributes.r];
     } else if (tagName === SHAPE.Ellipse) {

@@ -17,6 +17,7 @@ import { ElementSVG } from './components/ElementSVG';
 import { createSVGElement } from './utils/dom';
 import { ElementRenderer, ElementRendererFactory } from './shapes/paths';
 
+// @ts-ignore
 export const SHAPE_TO_TAGS: Record<SHAPE, string> = {
   [SHAPE.Rect]: 'path',
   [SHAPE.Circle]: 'circle',
@@ -87,10 +88,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
   private sceneGraphService: SceneGraphService;
 
   @inject(ElementRendererFactory)
-  private elementRendererFactory: (tagName: string) => ElementRenderer;
+  private elementRendererFactory: (tagName: string) => ElementRenderer<any>;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.mounted.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
+    renderingService.hooks.mounted.tap(SVGRendererPlugin.tag, (object: DisplayObject<any>) => {
       const entity = object.getEntity();
 
       // create svg element
@@ -123,20 +124,21 @@ export class SVGRendererPlugin implements RenderingPlugin {
       }
     });
 
-    renderingService.hooks.unmounted.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
+    renderingService.hooks.unmounted.tap(SVGRendererPlugin.tag, (object: DisplayObject<any>) => {
       object.getEntity().removeComponent(ElementSVG, true);
     });
 
-    renderingService.hooks.render.tap(SVGRendererPlugin.tag, (objects: DisplayObject[]) => {
+    renderingService.hooks.render.tap(SVGRendererPlugin.tag, (objects: DisplayObject<any>[]) => {
       const $namespace = this.contextService.getDomElement();
       if ($namespace) {
+        // @ts-ignore
         this.applyTransform($namespace, this.camera.getOrthoMatrix());
       }
 
       objects.forEach((object) => {
         const entity = object.getEntity();
-        const $el = entity.getComponent(ElementSVG).$el;
-        const $groupEl = entity.getComponent(ElementSVG).$groupEl;
+        const $el = entity.getComponent(ElementSVG)?.$el;
+        const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
         if ($el && $groupEl) {
           const { nodeType, attributes } = object;
           // apply local RTS transformation to <group> wrapper
@@ -159,17 +161,17 @@ export class SVGRendererPlugin implements RenderingPlugin {
           }
 
           this.reorderChildren($groupEl, object.children || []);
-        }
 
-        // finish rendering, clear dirty flag
-        const renderable = entity.getComponent(Renderable);
-        renderable.dirty = false;
+          // finish rendering, clear dirty flag
+          const renderable = entity.getComponent(Renderable);
+          renderable.dirty = false;
+        }
       });
     });
 
     renderingService.hooks.attributeChanged.tap(
       SVGRendererPlugin.tag,
-      (object: DisplayObject, name: string, value: any) => {
+      (object: DisplayObject<any>, name: string, value: any) => {
         const entity = object.getEntity();
         if (name === 'z-index') {
           const parent = object.parentNode;
@@ -187,13 +189,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
     );
   }
 
-  private reorderChildren($groupEl: SVGElement, children: DisplayObject[]) {
+  private reorderChildren($groupEl: SVGElement, children: DisplayObject<any>[]) {
     // need to reorder parent's children
     children.sort(this.sceneGraphService.sort);
 
     // create empty fragment
     const fragment = document.createDocumentFragment();
-    children.forEach((child: DisplayObject) => {
+    children.forEach((child: DisplayObject<any>) => {
       const $el = child.getEntity().getComponent(ElementSVG).$groupEl;
       if ($el) {
         fragment.appendChild($el);

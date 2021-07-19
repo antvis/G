@@ -1,4 +1,4 @@
-import { DisplayObject, Renderable, ShapeAttrs } from '@antv/g';
+import { DisplayObject, Renderable } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { mat3, vec3 } from 'gl-matrix';
 import {
@@ -14,6 +14,7 @@ import {
 } from '@antv/g-plugin-webgl-renderer';
 import imageVertex from './shaders/webgl.basic.vert.glsl';
 import imageFragment from './shaders/webgl.basic.frag.glsl';
+import { CubeStyleProps } from '../Cube';
 
 const primitiveUv1Padding = 4.0 / 64;
 const primitiveUv1PaddingScale = 1.0 - primitiveUv1Padding * 2;
@@ -38,7 +39,7 @@ export class CubeModelBuilder implements ModelBuilder {
   @inject(TexturePool)
   private texturePool: TexturePool;
 
-  async onAttributeChanged(object: DisplayObject, name: string, value: any) {
+  async onAttributeChanged(object: DisplayObject<CubeStyleProps>, name: string, value: any) {
     const entity = object.getEntity();
     const renderable = entity.getComponent(Renderable);
     const renderable3d = entity.getComponent(Renderable3D);
@@ -54,7 +55,7 @@ export class CubeModelBuilder implements ModelBuilder {
     }
   }
 
-  async prepareModel(object: DisplayObject) {
+  async prepareModel(object: DisplayObject<CubeStyleProps>) {
     const entity = object.getEntity();
     const renderable = entity.getComponent(Renderable);
     const material = entity.getComponent(Material3D);
@@ -81,6 +82,7 @@ export class CubeModelBuilder implements ModelBuilder {
 
     const fillColor = rgb2arr(fill);
     material.setUniform({
+      // @ts-ignore
       ...(extractedUniforms as Record<string, BufferData>),
       [UNIFORM.Color]: fillColor,
     });
@@ -142,7 +144,7 @@ export class CubeModelBuilder implements ModelBuilder {
     renderable.dirty = true;
   }
 
-  protected buildAttributes(attributes: ShapeAttrs) {
+  protected buildAttributes(attributes: CubeStyleProps) {
     const {
       widthSegments = 1,
       heightSegments = 1,

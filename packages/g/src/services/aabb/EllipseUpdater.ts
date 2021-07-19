@@ -2,13 +2,13 @@ import { vec3 } from 'gl-matrix';
 import { injectable } from 'inversify';
 import { GeometryAABBUpdater } from '.';
 import { AABB } from '../../shapes';
-import { ShapeAttrs } from '../../types';
+import { EllipseStyleProps } from '../../shapes-export';
 
 @injectable()
-export class EllipseUpdater implements GeometryAABBUpdater {
+export class EllipseUpdater implements GeometryAABBUpdater<EllipseStyleProps> {
   dependencies = ['rx', 'ry', 'lineWidth'];
 
-  update(attributes: ShapeAttrs, aabb: AABB) {
+  update(attributes: EllipseStyleProps, aabb: AABB) {
     const { rx = 0, ry = 0, lineWidth = 0, lineAppendWidth = 0 } = attributes;
     const center = vec3.create();
     const halfExtents = vec3.fromValues(rx, ry, 0);

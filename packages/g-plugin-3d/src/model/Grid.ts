@@ -1,4 +1,4 @@
-import { DisplayObject, Renderable, ShapeAttrs } from '@antv/g';
+import { DisplayObject, Renderable } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { mat3, vec3 } from 'gl-matrix';
 import {
@@ -12,6 +12,7 @@ import {
 } from '@antv/g-plugin-webgl-renderer';
 import gridVertex from './shaders/webgl.grid.vert.glsl';
 import gridFragment from './shaders/webgl.grid.frag.glsl';
+import { GridStyleProps } from '../Grid';
 
 const ATTRIBUTE = {
   Position: 'a_Position',
@@ -29,13 +30,13 @@ export class GridModelBuilder implements ModelBuilder {
   @inject(ShaderModuleService)
   private shaderModule: ShaderModuleService;
 
-  async onAttributeChanged(object: DisplayObject, name: string, value: any) {
+  async onAttributeChanged(object: DisplayObject<GridStyleProps>, name: string, value: any) {
     const entity = object.getEntity();
     const renderable = entity.getComponent(Renderable);
     const renderable3d = entity.getComponent(Renderable3D);
   }
 
-  async prepareModel(object: DisplayObject) {
+  async prepareModel(object: DisplayObject<GridStyleProps>) {
     const entity = object.getEntity();
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
@@ -60,6 +61,7 @@ export class GridModelBuilder implements ModelBuilder {
 
     const fillColor = rgb2arr(fill);
     material.setUniform({
+      // @ts-ignore
       ...(extractedUniforms as Record<string, BufferData>),
       [UNIFORM.Color1]: fillColor,
       [UNIFORM.Color2]: fillColor,

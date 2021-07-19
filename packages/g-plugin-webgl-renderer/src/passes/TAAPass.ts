@@ -139,7 +139,7 @@ export default class TAAPass implements IRenderPass<TAAPassData> {
   execute = (
     fg: FrameGraphEngine,
     pass: FrameGraphPass<TAAPassData>,
-    displayObjects: DisplayObject[],
+    displayObjects: DisplayObject<any>[],
   ) => {
     this.copyPass = this.renderPassFactory<CopyPassData>(
       CopyPass.IDENTIFIER,
@@ -239,7 +239,7 @@ export default class TAAPass implements IRenderPass<TAAPassData> {
   //     layer.multiPassRenderer.setRenderFlag(true);
   //   });
 
-  private doRender(displayObjects: DisplayObject[]) {
+  private doRender(displayObjects: DisplayObject<any>[]) {
     console.log(`accumulatingId: ${this.accumulatingId} ${this.frame}`);
 
     const { clear, useFramebuffer } = this.engine;

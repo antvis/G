@@ -1,11 +1,11 @@
-import { ShapeAttrs } from '@antv/g';
+import { BaseStyleProps } from '@antv/g';
 import { injectable } from 'inversify';
 import { isNil } from '@antv/util';
 import { StyleRenderer } from '.';
 
 @injectable()
 export class DefaultRenderer implements StyleRenderer {
-  render(context: CanvasRenderingContext2D, attributes: ShapeAttrs) {
+  render(context: CanvasRenderingContext2D, attributes: BaseStyleProps) {
     const { fill, opacity, fillOpacity, stroke, strokeOpacity, lineWidth, lineCap, lineJoin } = attributes;
 
     if (!isNil(fill)) {

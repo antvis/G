@@ -1,8 +1,7 @@
-import { DisplayObject } from '@antv/g';
-import { Point } from './CanvasPickerPlugin';
+import { CircleStyleProps, DisplayObject, Point } from '@antv/g';
 import { distance } from './utils/math';
 
-export function isPointInPath(displayObject: DisplayObject, position: Point): boolean {
+export function isPointInPath(displayObject: DisplayObject<CircleStyleProps>, position: Point): boolean {
   const { r = 0, fill, stroke, lineWidth = 0 } = displayObject.attributes;
 
   const halfLineWidth = lineWidth / 2;

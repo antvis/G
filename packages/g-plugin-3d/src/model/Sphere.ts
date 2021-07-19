@@ -1,4 +1,4 @@
-import { DisplayObject, Renderable, ShapeAttrs } from '@antv/g';
+import { DisplayObject, Renderable } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { mat3, vec3 } from 'gl-matrix';
 import {
@@ -14,6 +14,7 @@ import {
 } from '@antv/g-plugin-webgl-renderer';
 import imageVertex from './shaders/webgl.basic.vert.glsl';
 import imageFragment from './shaders/webgl.basic.frag.glsl';
+import { SphereStyleProps } from '../Sphere';
 
 const primitiveUv1Padding = 4.0 / 64;
 const primitiveUv1PaddingScale = 1.0 - primitiveUv1Padding * 2;
@@ -41,7 +42,7 @@ export class SphereModelBuilder implements ModelBuilder {
   @inject(TexturePool)
   private texturePool: TexturePool;
 
-  async onAttributeChanged(object: DisplayObject, name: string, value: any) {
+  async onAttributeChanged(object: DisplayObject<SphereStyleProps>, name: string, value: any) {
     const entity = object.getEntity();
     const renderable = entity.getComponent(Renderable);
     const renderable3d = entity.getComponent(Renderable3D);
@@ -57,7 +58,7 @@ export class SphereModelBuilder implements ModelBuilder {
     }
   }
 
-  async prepareModel(object: DisplayObject) {
+  async prepareModel(object: DisplayObject<SphereStyleProps>) {
     const entity = object.getEntity();
     const renderable = entity.getComponent(Renderable);
     const material = entity.getComponent(Material3D);
@@ -84,6 +85,7 @@ export class SphereModelBuilder implements ModelBuilder {
 
     const fillColor = rgb2arr(fill);
     material.setUniform({
+      // @ts-ignore
       ...(extractedUniforms as Record<string, BufferData>),
       [UNIFORM.Color]: fillColor,
     });
@@ -145,7 +147,7 @@ export class SphereModelBuilder implements ModelBuilder {
     renderable.dirty = true;
   }
 
-  protected buildAttributes(attributes: ShapeAttrs) {
+  protected buildAttributes(attributes: SphereStyleProps) {
     const {
       widthSegments = 1,
       heightSegments = 1,

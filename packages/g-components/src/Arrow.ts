@@ -5,25 +5,24 @@ import {
   Path,
   Polyline,
   SHAPE,
-  ShapeAttrs,
-  ShapeCfg,
+  BaseStyleProps,
+  DisplayObjectConfig,
+  LineStyleProps,
 } from '@antv/g';
 import { vec3 } from 'gl-matrix';
 
-type ArrowHead = boolean | DisplayObject;
+type ArrowHead = boolean | DisplayObject<any>;
 type ArrowBody = Line | Path | Polyline;
 type ArrowHeadType = 'default' | 'custom';
-export interface ArrowConfig extends ShapeCfg {
-  attrs: {
-    body: ArrowBody;
-    startHead?: ArrowHead;
-    endHead?: ArrowHead;
-    cursor?: string;
-    stroke?: string;
-    lineWidth?: number;
-    opacity?: number;
-    strokeOpacity?: number;
-  };
+export interface ArrowStyleProps extends BaseStyleProps {
+  body?: ArrowBody;
+  startHead?: ArrowHead;
+  endHead?: ArrowHead;
+  cursor?: string;
+  stroke?: string;
+  lineWidth?: number;
+  opacity?: number;
+  strokeOpacity?: number;
 }
 
 /**
@@ -36,16 +35,17 @@ export interface ArrowConfig extends ShapeCfg {
  * 1. default(Path)
  * 2. custom
  */
-export class Arrow extends CustomElement {
+export class Arrow extends CustomElement<ArrowStyleProps> {
   static tag = 'arrow';
 
-  private body: DisplayObject;
-  private startHead?: DisplayObject;
-  private endHead?: DisplayObject;
+  private body: Line | Path | Polyline;
+  private startHead?: DisplayObject<any>;
+  private endHead?: DisplayObject<any>;
 
-  constructor(config: ArrowConfig) {
+  constructor(config: DisplayObjectConfig<ArrowStyleProps>) {
     super({
       ...config,
+      // @ts-ignore
       type: Arrow.tag,
     });
 
@@ -117,10 +117,11 @@ export class Arrow extends CustomElement {
   }
 
   private appendArrowHead(type: ArrowHeadType, isStart: boolean) {
-    let head: DisplayObject;
+    let head: DisplayObject<any>;
     if (type === 'default') {
       head = this.createDefaultArrowHead();
     } else {
+      // @ts-ignore
       head = isStart ? this.attributes.startHead : this.attributes.endHead;
     }
 
@@ -142,7 +143,7 @@ export class Arrow extends CustomElement {
   /**
    * transform arrow head according to arrow line
    */
-  private transformArrowHead(head: DisplayObject, isStart: boolean) {
+  private transformArrowHead(head: DisplayObject<any>, isStart: boolean) {
     let position = vec3.create();
     let rad = 0;
     let x1 = 0;
@@ -153,12 +154,13 @@ export class Arrow extends CustomElement {
     const bodyType = this.body && this.body.nodeType;
 
     if (bodyType === SHAPE.Line) {
-      const { x1: _x1, x2: _x2, y1: _y1, y2: _y2 } = this.body!.attributes;
+      const { x1: _x1, x2: _x2, y1: _y1, y2: _y2 } = this.body!.attributes as LineStyleProps;
       x1 = isStart ? _x1 : _x2;
       x2 = isStart ? _x2 : _x1;
       y1 = isStart ? _y1 : _y2;
       y2 = isStart ? _y2 : _y1;
     } else if (bodyType === SHAPE.Polyline) {
+      // @ts-ignore
       const points = this.body.attributes.points as number[][];
       const length = points.length;
       x1 = isStart ? points[1][0] : points[length - 2][0];
@@ -185,15 +187,16 @@ export class Arrow extends CustomElement {
   private destroyArrowHead(isStart: boolean) {
     if (isStart && this.startHead) {
       this.removeChild(this.startHead, true);
-      this.startHead = null;
+      this.startHead = undefined;
     }
     if (!isStart && this.endHead) {
       this.removeChild(this.endHead, true);
-      this.endHead = null;
+      this.endHead = undefined;
     }
   }
 
   private getTangent(path: Path, isStart: boolean): [number, number][] {
+    // @ts-ignore
     const { segments } = path.attributes;
     const length = segments.length;
 
@@ -227,9 +230,9 @@ export class Arrow extends CustomElement {
     return new Path({
       attrs: {
         // draw an angle '<'
-        path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${
-          10 * sin(PI / 6)
-        }`,
+        // @ts-ignore
+        path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${10 * sin(PI / 6)
+          }`,
         stroke,
         lineWidth,
         anchor: [0.5, 0.5], // set anchor to center
@@ -237,7 +240,7 @@ export class Arrow extends CustomElement {
     });
   }
 
-  private applyArrowStyle(attributes: ShapeAttrs, objects: (DisplayObject | null)[]) {
+  private applyArrowStyle(attributes: ArrowStyleProps, objects: (DisplayObject<any> | undefined)[]) {
     objects.forEach((shape) => {
       if (shape) {
         shape.attr(attributes);

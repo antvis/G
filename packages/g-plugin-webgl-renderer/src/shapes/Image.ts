@@ -1,4 +1,4 @@
-import { DisplayObject, Renderable, SceneGraphNode } from '@antv/g';
+import { DisplayObject, ImageStyleProps, Renderable, SceneGraphNode } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { mat3 } from 'gl-matrix';
 import { ShaderModuleService } from '../services/shader-module';
@@ -44,7 +44,7 @@ export class ImageModelBuilder implements ModelBuilder {
   @inject(TexturePool)
   private texturePool: TexturePool;
 
-  async onAttributeChanged(object: DisplayObject, name: string, value: any) {
+  async onAttributeChanged(object: DisplayObject<ImageStyleProps>, name: string, value: any) {
     const entity = object.getEntity();
     const renderable = entity.getComponent(Renderable);
     const renderable3d = entity.getComponent(Renderable3D);
@@ -74,7 +74,7 @@ export class ImageModelBuilder implements ModelBuilder {
     }
   }
 
-  async prepareModel(object: DisplayObject) {
+  async prepareModel(object: DisplayObject<ImageStyleProps>) {
     const entity = object.getEntity();
     const renderable = entity.getComponent(Renderable);
     const material = entity.getComponent(Material3D);

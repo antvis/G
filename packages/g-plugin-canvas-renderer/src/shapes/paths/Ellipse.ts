@@ -1,6 +1,6 @@
-import { ShapeAttrs } from '@antv/g';
+import { EllipseStyleProps } from '@antv/g';
 
-export function generatePath(context: CanvasRenderingContext2D, attributes: ShapeAttrs) {
+export function generatePath(context: CanvasRenderingContext2D, attributes: EllipseStyleProps) {
   const { rx, ry } = attributes;
   context.beginPath();
 

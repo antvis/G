@@ -6,7 +6,7 @@ import { Cullable, Geometry, Renderable, SceneGraphNode, Transform } from './com
 import { Animator, STATUS } from './components/Animator';
 import { createVec3, rad2deg, getEuler } from './utils/math';
 import { Sortable } from './components/Sortable';
-import { GroupFilter, SHAPE, ShapeCfg, AnimateCfg, ElementAttrs, OnFrame } from './types';
+import { GroupFilter, SHAPE, AnimateCfg, OnFrame, BaseStyleProps } from './types';
 import { DisplayObjectPool } from './DisplayObjectPool';
 import { world, container } from './inversify.config';
 import { SceneGraphService } from './services';
@@ -15,6 +15,7 @@ import { AABB } from './shapes';
 import { GeometryAABBUpdater, GeometryUpdaterFactory } from './services/aabb';
 import { FederatedEvent } from './FederatedEvent';
 import { Canvas } from './Canvas';
+import { Rect } from './shapes/Rect';
 
 /**
  * events for display object
@@ -41,6 +42,54 @@ export const enum DISPLAY_OBJECT_EVENT {
   ChildRemoved = 'child-removed',
 }
 
+export interface DisplayObjectConfig<StyleProps> {
+  /**
+   * element's identifier, must be unique in a document.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/id
+   */
+  id?: string;
+
+  /**
+   * all styles properties, not read-only
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style
+   */
+  style?: StyleProps;
+  /**
+   * compatible with G 3.0
+   * @alias style
+   * @deprecated
+   */
+  attrs?: StyleProps;
+
+  /**
+   * used in `getElementsByName`
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByName
+   */
+  name?: string;
+
+  type?: SHAPE;
+
+  /**
+   * used in `getElementsByClassName`
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByClassName
+   */
+  className?: string;
+
+  /**
+   * @deprecated use `style['z-index']` instead
+   */
+  zIndex?: number;
+  /**
+   * @deprecated use `style['visibility'] = 'visible'` instead
+   */
+  visible?: boolean;
+  /**
+   * 是否可以拾取
+   * @type {Boolean}
+   */
+  capture?: boolean;
+};
+
 /**
  * Provide abilities in scene graph, such as:
  * * transform `translate/rotate/scale`
@@ -54,9 +103,9 @@ export const enum DISPLAY_OBJECT_EVENT {
  * * destroy
  * * attributeChanged
  */
-export class DisplayObject extends EventEmitter {
+export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitter {
   protected entity: Entity;
-  protected config: ShapeCfg = { attrs: {} };
+  protected config: DisplayObjectConfig<StyleProps> = {};
 
   private displayObjectPool = container.get(DisplayObjectPool);
 
@@ -64,23 +113,21 @@ export class DisplayObject extends EventEmitter {
 
   private sceneGraphService = container.get(SceneGraphService);
 
-  private geometryUpdaterFactory = container.get<(tagName: SHAPE) => GeometryAABBUpdater>(
+  private geometryUpdaterFactory = container.get<(tagName: SHAPE) => GeometryAABBUpdater<any>>(
     GeometryUpdaterFactory,
   );
 
   /**
    * whether already mounted in canvas
    */
-  public mounted = false;
+  mounted = false;
 
-  id: string;
-
-  constructor(config?: ShapeCfg) {
+  constructor(config?: DisplayObjectConfig<StyleProps>) {
     super();
 
     // assign name, id to config
     // eg. group.get('name')
-    this.config = config || { attrs: {} };
+    this.config = config || {};
 
     // create entity with shape's name
     const entity = world.createEntity(this.config.id || '');
@@ -99,13 +146,18 @@ export class DisplayObject extends EventEmitter {
     // init scene graph node
     const sceneGraphNode = entity.addComponent(SceneGraphNode);
     sceneGraphNode.id = entity.getName();
-    this.id = sceneGraphNode.id;
+    sceneGraphNode.name = this.config.name || '';
     sceneGraphNode.class = this.config.className || '';
     sceneGraphNode.tagName = this.config.type || SHAPE.Group;
-    sceneGraphNode.attributes = this.config.attrs || {};
-    if (this.config.name) {
-      sceneGraphNode.attributes.name = this.config.name;
+
+    // compatible with G 3.0
+    if (this.config.attrs) {
+      this.config.style = {
+        ...this.config.style,
+        ...this.config.attrs,
+      };
     }
+    sceneGraphNode.attributes = this.config.style || {};
 
     const renderable = entity.addComponent(Renderable);
     entity.addComponent(Cullable);
@@ -142,11 +194,18 @@ export class DisplayObject extends EventEmitter {
 
   /**
    * compatible with G 3.0
+   * @deprecated
    */
   set(name: string, value: any) {
+    // @ts-ignore
     this.config[name] = value;
   }
+  /**
+   * compatible with G 3.0
+   * @deprecated
+   */
   get(name: string) {
+    // @ts-ignore
     return this.config[name];
   }
   getConfig() {
@@ -160,14 +219,14 @@ export class DisplayObject extends EventEmitter {
   attr(): any;
   attr(name: string): any;
   attr(name: string, value: any): void;
-  attr(name: Record<string, any>): any;
+  attr(name: StyleProps): any;
   attr(...args: any) {
     const [name, value] = args;
     if (!name) {
       return this.attributes;
     }
     if (isObject(name)) {
-      for (const k in name) {
+      for (const k in name as StyleProps) {
         this.setAttribute(k, (name as Record<string, any>)[k]);
       }
       return this;
@@ -176,15 +235,26 @@ export class DisplayObject extends EventEmitter {
       this.setAttribute(name, value);
       return this;
     }
+
+    // @ts-ignore
     return this.attributes[name];
   }
 
   destroy() {
     this.emit(DISPLAY_OBJECT_EVENT.Destroy);
     this.entity.destroy();
+    this.removeAllListeners();
   }
 
   /** scene graph operations */
+
+  scrollLeft = 0;
+  scrollTop = 0;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset
+   */
+  dataset: Record<string, any> = {};
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node
@@ -195,14 +265,14 @@ export class DisplayObject extends EventEmitter {
   get nodeName(): SHAPE {
     return this.entity.getComponent(SceneGraphNode).tagName;
   }
-  get parentNode(): DisplayObject | null {
+  get parentNode(): DisplayObject<any> | null {
     return this.getParent();
   }
-  get parentElement(): DisplayObject | null {
+  get parentElement(): DisplayObject<any> | null {
     // TODO: The Node.parentElement read-only property returns the DOM node's parent Element, or null if the node either has no parent, or its parent isn't a DOM Element.
     return this.getParent();
   }
-  get nextSibling(): DisplayObject | null {
+  get nextSibling(): DisplayObject<any> | null {
     const parentGroup = this.getParent();
     if (parentGroup) {
       const children = parentGroup.getChildren();
@@ -212,7 +282,7 @@ export class DisplayObject extends EventEmitter {
 
     return null;
   }
-  get previousSibling(): DisplayObject | null {
+  get previousSibling(): DisplayObject<any> | null {
     const parentGroup = this.getParent();
     if (parentGroup) {
       const children = parentGroup.getChildren();
@@ -222,10 +292,10 @@ export class DisplayObject extends EventEmitter {
 
     return null;
   }
-  get firstChild(): DisplayObject | null {
+  get firstChild(): DisplayObject<any> | null {
     return this.getFirst();
   }
-  get lastChild(): DisplayObject | null {
+  get lastChild(): DisplayObject<any> | null {
     return this.getLast();
   }
   cloneNode() {
@@ -235,11 +305,11 @@ export class DisplayObject extends EventEmitter {
       id: '',
     });
   }
-  appendChild(group: DisplayObject) {
+  appendChild(group: DisplayObject<any>) {
     this.add(group);
     return group;
   }
-  insertBefore(group: DisplayObject, reference?: DisplayObject): DisplayObject {
+  insertBefore(group: DisplayObject<any>, reference?: DisplayObject<any>): DisplayObject<any> {
     if (!reference) {
       this.add(group);
     } else {
@@ -249,12 +319,12 @@ export class DisplayObject extends EventEmitter {
     }
     return group;
   }
-  contain(group: DisplayObject) {
+  contain(group: DisplayObject<any>) {
     return this.contains(group);
   }
-  contains(group: DisplayObject) {
+  contains(group: DisplayObject<any>): boolean {
     // the node itself, one of its direct children
-    let tmp: DisplayObject | null = group;
+    let tmp: DisplayObject<any> | null = group;
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Node/contains
     while (tmp && this !== tmp) {
       tmp = tmp.parentNode;
@@ -262,7 +332,7 @@ export class DisplayObject extends EventEmitter {
     return !!tmp;
   }
   getAncestor(n: number) {
-    let temp: DisplayObject | null = this;
+    let temp: DisplayObject<any> | null = this;
     while (n > 0 && temp) {
       temp = temp.parentNode;
       n--;
@@ -273,30 +343,46 @@ export class DisplayObject extends EventEmitter {
    * points to root in Canvas
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument
    */
-  ownerDocument: DisplayObject;
+  ownerDocument: DisplayObject<any>;
   /**
    * only root has defaultView, points to Canvas
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
    */
   defaultView: Canvas;
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/documentElement
+   */
+  documentElement: DisplayObject<any>;
 
+  get id() {
+    return this.entity.getComponent(SceneGraphNode).id;
+  }
+  get name() {
+    return this.entity.getComponent(SceneGraphNode).name;
+  }
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/ParentNode
    */
-  get children(): DisplayObject[] {
+  get children(): DisplayObject<any>[] {
     return this.getChildren();
   }
   get childElementCount(): number {
     return this.getCount();
   }
-  get firstElementChild(): DisplayObject | null {
+  get firstElementChild(): DisplayObject<any> | null {
     // TODO: To avoid the issue with node.firstChild returning #text or #comment nodes, ParentNode.firstElementChild can be used to return only the first element node.
     return this.firstChild;
   }
-  get lastElementChild(): DisplayObject | null {
+  get lastElementChild(): DisplayObject<any> | null {
     return this.lastChild;
   }
 
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
+   */
+  matches(selector: string) {
+    return this.sceneGraphService.matches(selector, this);
+  }
   getElementById(id: string) {
     return this.sceneGraphService.querySelector(`#${id}`, this);
   }
@@ -371,13 +457,13 @@ export class DisplayObject extends EventEmitter {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes
    */
-  get attributes() {
-    return this.entity.getComponent(SceneGraphNode).attributes;
+  get attributes(): StyleProps {
+    return this.entity.getComponent(SceneGraphNode).attributes as StyleProps;
   }
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute
    */
-  getAttribute(attributeName: string) {
+  getAttribute(attributeName: keyof StyleProps) {
     const value = this.attributes[attributeName];
     // if the given attribute does not exist, the value returned will either be null or ""
     return isNil(value) ? null : value;
@@ -386,13 +472,13 @@ export class DisplayObject extends EventEmitter {
    * should use removeAttribute() instead of setting the attribute value to null either directly or using setAttribute(). Many attributes will not behave as expected if you set them to null.
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
    */
-  removeAttribute(attributeName: string) {
+  removeAttribute(attributeName: keyof StyleProps) {
     delete this.attributes[attributeName];
   }
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute
    */
-  setAttribute(attributeName: string, value: any) {
+  setAttribute(attributeName: keyof StyleProps, value: any) {
     if (
       value !== this.attributes[attributeName] ||
       attributeName === 'visibility' // will affect children
@@ -422,7 +508,7 @@ export class DisplayObject extends EventEmitter {
    *
    * return parent group
    */
-  getParent(): DisplayObject | null {
+  getParent(): DisplayObject<any> | null {
     const sceneGraphNode = this.entity.getComponent(SceneGraphNode);
     if (sceneGraphNode.parent) {
       return this.displayObjectPool.getByName(sceneGraphNode.parent.getName());
@@ -445,36 +531,36 @@ export class DisplayObject extends EventEmitter {
 
   /**
    * compatible with G 3.0
-   *
+   * @deprecated
    * get first child group/shape
    */
-  getFirst(): DisplayObject | null {
+  getFirst(): DisplayObject<any> | null {
     return this.children.length > 0 ? this.children[0] : null;
   }
 
   /**
    * compatible with G 3.0
-   *
+   * @deprecated
    * get last child group/shape
    */
-  getLast(): DisplayObject | null {
+  getLast(): DisplayObject<any> | null {
     return this.children.length > 0 ? this.children[this.children.length - 1] : null;
   }
 
   /**
    * compatible with G 3.0
-   *
+   * @deprecated
    * get child group/shape by index
    */
-  getChildByIndex(index: number): DisplayObject | null {
+  getChildByIndex(index: number): DisplayObject<any> | null {
     return this.children[index] || null;
   }
 
   /**
    * search in scene group, but should not include itself
    */
-  find(filter: GroupFilter): DisplayObject | null {
-    let target: DisplayObject | null = null;
+  find(filter: GroupFilter): DisplayObject<any> | null {
+    let target: DisplayObject<any> | null = null;
     this.forEach((object) => {
       if (object !== this && filter(object)) {
         target = object;
@@ -483,8 +569,8 @@ export class DisplayObject extends EventEmitter {
     });
     return target;
   }
-  findAll(filter: GroupFilter): DisplayObject[] {
-    const objects: DisplayObject[] = [];
+  findAll(filter: GroupFilter): DisplayObject<any>[] {
+    const objects: DisplayObject<any>[] = [];
     this.forEach((object) => {
       if (object !== this && filter(object)) {
         objects.push(object);
@@ -498,7 +584,7 @@ export class DisplayObject extends EventEmitter {
    *
    * add child group or shape
    */
-  add(child: DisplayObject, index?: number) {
+  add(child: DisplayObject<any>, index?: number) {
     this.sceneGraphService.attach(child.getEntity(), this.entity, index);
 
     this.emit(DISPLAY_OBJECT_EVENT.ChildInserted, child);
@@ -516,7 +602,7 @@ export class DisplayObject extends EventEmitter {
     }
     return this;
   }
-  removeChild(child: DisplayObject, destroy = true) {
+  removeChild(child: DisplayObject<any>, destroy = true) {
     const entity = child.getEntity();
     this.sceneGraphService.detach(entity);
 
@@ -539,7 +625,7 @@ export class DisplayObject extends EventEmitter {
   /**
    * traverse in descendants
    */
-  forEach(callback: (o: DisplayObject) => void | boolean) {
+  forEach(callback: (o: DisplayObject<any>) => void | boolean) {
     if (!callback(this)) {
       this.children.forEach((child) => {
         child.forEach(callback);
@@ -784,21 +870,21 @@ export class DisplayObject extends EventEmitter {
   }
 
   animate(
-    toAttrs: ElementAttrs,
+    toAttrs: StyleProps,
     duration: number,
     easing?: string,
     callback?: Function,
     delay?: number,
   ): void;
   animate(
-    onFrame: OnFrame,
+    onFrame: OnFrame<StyleProps>,
     duration: number,
     easing?: string,
     callback?: Function,
     delay?: number,
   ): void;
-  animate(toAttrs: ElementAttrs, cfg: AnimateCfg): void;
-  animate(onFrame: OnFrame, cfg: AnimateCfg): void;
+  animate(toAttrs: StyleProps, cfg: AnimateCfg): void;
+  animate(onFrame: OnFrame<StyleProps>, cfg: AnimateCfg): void;
   animate(...args: any) {
     this.timeline.createAnimation(this.entity, args);
   }
@@ -859,7 +945,10 @@ export class DisplayObject extends EventEmitter {
     return this.sceneGraphService.getLocalBounds(this.entity);
   }
 
-  getBoundingClientRect() {
+  /**
+   * account for context's bounds in client space
+   */
+  getBoundingClientRect(): Rect | null {
     const bounds = this.getBounds();
     if (!bounds) {
       return null;
@@ -868,14 +957,16 @@ export class DisplayObject extends EventEmitter {
     const [left, top] = bounds.getMin();
     const [right, bottom] = bounds.getMax();
 
-    return {
-      left,
-      top,
-      right,
-      bottom,
-      width: right - left,
-      height: bottom - top,
-    };
+    // calc context's offset
+    const bbox = this.ownerDocument.defaultView
+      .getContextService().getBoundingClientRect();
+
+    return new Rect(
+      left + (bbox?.left || 0),
+      top + (bbox?.top || 0),
+      right - left,
+      bottom - top,
+    );
   }
 
   getClientRects() {
@@ -886,12 +977,12 @@ export class DisplayObject extends EventEmitter {
    * compitable with `style`
    * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style
    */
-  style = new Proxy({}, {
+  style = new Proxy<StyleProps>({} as StyleProps, {
     get: (_, prop) => {
-      return this.getAttribute(prop as string);
+      return this.getAttribute(prop as keyof StyleProps);
     },
     set: (_, prop, value) => {
-      this.setAttribute(prop as string, value);
+      this.setAttribute(prop as keyof StyleProps, value);
       return true;
     }
   });
@@ -899,7 +990,7 @@ export class DisplayObject extends EventEmitter {
   /**
    * get called when attributes changed
    */
-  private changeAttribute(name: string, value: any) {
+  private changeAttribute(name: keyof StyleProps, value: any) {
     const entity = this.getEntity();
     const renderable = entity.getComponent(Renderable);
     const geometry = entity.getComponent(Geometry);
@@ -909,7 +1000,7 @@ export class DisplayObject extends EventEmitter {
 
     // update geometry if some attributes changed such as `width/height/...`
     const geometryUpdater = this.geometryUpdaterFactory(this.nodeType);
-    const needUpdateGeometry = geometryUpdater && geometryUpdater.dependencies.indexOf(name) > -1;
+    const needUpdateGeometry = geometryUpdater && geometryUpdater.dependencies.indexOf(name as string) > -1;
     if (needUpdateGeometry && geometry.aabb) {
       geometryUpdater!.update(this.attributes, geometry.aabb);
     }

@@ -2,14 +2,15 @@ import { vec3 } from 'gl-matrix';
 import { injectable } from 'inversify';
 import { GeometryAABBUpdater } from '.';
 import { AABB } from '../../shapes';
-import { ShapeAttrs } from '../../types';
+import { PolylineStyleProps } from '../../shapes-export';
 
 @injectable()
-export class PolylineUpdater implements GeometryAABBUpdater {
+export class PolylineUpdater implements GeometryAABBUpdater<PolylineStyleProps> {
   dependencies = ['points', 'lineWidth', 'anchor'];
 
-  update(attributes: ShapeAttrs, aabb: AABB) {
+  update(attributes: PolylineStyleProps, aabb: AABB) {
     const { lineWidth = 0, anchor = [0, 0] } = attributes;
+    // @ts-ignore
     const points = attributes.points as number[][];
     const minX = Math.min(...points.map((point) => point[0]));
     const maxX = Math.max(...points.map((point) => point[0]));

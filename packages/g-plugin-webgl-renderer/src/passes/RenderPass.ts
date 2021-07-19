@@ -63,7 +63,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
   @inject(ModelBuilderFactory)
   private modelBuilderFactory: (shape: SHAPE) => ModelBuilder;
 
-  displayObjectsLastFrame: DisplayObject[] = [];
+  displayObjectsLastFrame: DisplayObject<any>[] = [];
 
   setup = (
     fg: FrameGraphEngine,
@@ -84,7 +84,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
   execute = (
     fg: FrameGraphEngine,
     pass: FrameGraphPass<RenderPassData>,
-    displayObjects: DisplayObject[],
+    displayObjects: DisplayObject<any>[],
   ) => {
     const resourceNode = fg.getResourceNode(pass.data.output);
     const framebuffer = this.resourcePool.getOrCreateResource(resourceNode.resource);
@@ -112,7 +112,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     );
   };
 
-  renderDisplayObjects(displayObjects: DisplayObject[]) {
+  renderDisplayObjects(displayObjects: DisplayObject<any>[]) {
     for (const displayObject of displayObjects) {
       const entity = displayObject.getEntity();
       const renderable = entity.getComponent(Renderable);
@@ -185,7 +185,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     return createModel(modelInitializationOptions);
   }
 
-  private renderDisplayObject(displayObject: DisplayObject): boolean {
+  private renderDisplayObject(displayObject: DisplayObject<any>): boolean {
     const entity = displayObject.getEntity();
     const renderable3d = entity.getComponent(Renderable3D);
     const material = entity.getComponent(Material3D);
@@ -223,7 +223,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
     // update instance model matrix
     if (batchSize) {
-      if (displayObject.dirty) {
+      if ((displayObject as Batch<any>).dirty) {
         const modelMatrixAttribute0 = geometry.getAttribute(ATTRIBUTE.ModelMatrix0);
         const modelMatrixAttribute1 = geometry.getAttribute(ATTRIBUTE.ModelMatrix1);
         const modelMatrixAttribute2 = geometry.getAttribute(ATTRIBUTE.ModelMatrix2);
@@ -236,7 +236,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
         const parentWorldMatrix = this.sceneGraph.getWorldTransform(entity, transform);
 
-        displayObject.children.forEach((instance: DisplayObject) => {
+        displayObject.children.forEach((instance: DisplayObject<any>) => {
           // don't get each child's worldTransform here, which will cause bad perf
           const m = mat4.multiply(
             mat4.create(),
@@ -265,7 +265,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
           offset: 0,
         });
 
-        displayObject.dirty = false;
+        (displayObject as Batch<any>).dirty = false;
       }
     } else {
       const modelMatrix = this.sceneGraph.getWorldTransform(entity, transform);

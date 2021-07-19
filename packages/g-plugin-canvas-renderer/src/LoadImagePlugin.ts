@@ -11,7 +11,7 @@ export class LoadImagePlugin implements RenderingPlugin {
   private imagePool: ImagePool;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.mounted.tap(LoadImagePlugin.tag, (object: DisplayObject) => {
+    renderingService.hooks.mounted.tap(LoadImagePlugin.tag, (object: DisplayObject<any>) => {
       const { nodeType, attributes } = object;
       if (nodeType === SHAPE.Image) {
         const { img } = attributes;
@@ -27,7 +27,7 @@ export class LoadImagePlugin implements RenderingPlugin {
 
     renderingService.hooks.attributeChanged.tap(
       LoadImagePlugin.tag,
-      (object: DisplayObject, name: string, value: string) => {
+      (object: DisplayObject<any>, name: string, value: string) => {
         const { nodeType } = object;
         if (nodeType === SHAPE.Image) {
           if (name === 'img') {

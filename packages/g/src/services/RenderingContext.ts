@@ -8,7 +8,7 @@ export interface RenderingContext {
   /**
    * root of scenegraph
    */
-  root: DisplayObject;
+  root: DisplayObject<{}>;
 
   /**
    * force rendering at next frame
@@ -23,16 +23,16 @@ export interface RenderingContext {
   /**
    * all the entities
    */
-  displayObjects: DisplayObject[];
+  displayObjects: DisplayObject<any>[];
   dirtyRectangle: AABB | undefined;
-  dirtyDisplayObjects: DisplayObject[];
+  dirtyDisplayObjects: DisplayObject<any>[];
 
   removedAABBs: AABB[];
 
   /**
    * picked object in last frame
    */
-  lastPickedDisplayObject: DisplayObject | undefined;
+  lastPickedDisplayObject: DisplayObject<any> | undefined;
 
   cameraDirty: boolean;
 }
