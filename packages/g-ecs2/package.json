@@ -1,0 +1,41 @@
+{
+  "name": "@antv/g-ecs2",
+  "version": "1.0.0-alpha.2",
+  "description": "A simple ECS implement",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.umd.min.js",
+  "files": [
+    "package.json",
+    "esm",
+    "lib",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antvis/g.git"
+  },
+  "keywords": [
+    "util",
+    "antv",
+    "g"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "https://github.com/orgs/antvis/people",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/antvis/g/issues"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.0.0",
+    "npm-run-all": "^4.1.5",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.7"
+  },
+  "homepage": "https://github.com/antvis/g#readme"
+}
