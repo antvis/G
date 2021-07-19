@@ -71,7 +71,7 @@ export class DirtyCheckPlugin implements RenderingPlugin {
       this.sceneGraphService.off(SCENE_GRAPH_EVENT.AABBChanged, this.handleEntityAABBChanged);
     });
 
-    renderer.hooks.prepare.tap(DirtyCheckPlugin.tag, (objects: DisplayObject[]) => {
+    renderer.hooks.prepare.tap(DirtyCheckPlugin.tag, (objects: DisplayObject<any>[]) => {
       let dirtyObjects = objects.filter(
         (object) => object.getEntity().getComponent(Renderable).dirty,
       );
@@ -123,7 +123,7 @@ export class DirtyCheckPlugin implements RenderingPlugin {
     // save dirty AABB in last frame
     renderer.hooks.afterRender.tap(
       DirtyCheckPlugin.tag,
-      (dirtyObjects: DisplayObject[], objects: DisplayObject[]) => {
+      (dirtyObjects: DisplayObject<any>[], objects: DisplayObject<any>[]) => {
         const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
 
         if (enableDirtyRectangleRendering) {
@@ -162,7 +162,7 @@ export class DirtyCheckPlugin implements RenderingPlugin {
    * For now, we just simply merge all the rectangles into one.
    * @see https://idom.me/articles/841.html
    */
-  private mergeDirtyRectangles(dirtyObjects: DisplayObject[]): AABB | undefined {
+  private mergeDirtyRectangles(dirtyObjects: DisplayObject<any>[]): AABB | undefined {
     // merge into a big AABB
     let dirtyRectangle: AABB | undefined;
     dirtyObjects.forEach((object) => {

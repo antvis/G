@@ -9,11 +9,11 @@ import { BaseStyleProps, SHAPE } from '../types';
 export class SceneGraphNode<StyleProps extends BaseStyleProps> extends Component {
   static tag = 'c-scene-graph-node';
 
-  /**
-   * hierarchy
-   */
-  parent: Entity | null = null;
-  children: Entity[] = [];
+  // /**
+  //  * hierarchy
+  //  */
+  // parent: Entity | null = null;
+  // children: Entity[] = [];
 
   /**
    * used with `getElementById()`

@@ -11,11 +11,10 @@ import { DisplayObjectPool } from './DisplayObjectPool';
 import { world, container } from './inversify.config';
 import { SceneGraphService } from './services';
 import { Timeline } from './systems';
-import { AABB } from './shapes';
+import { AABB, Rectangle } from './shapes';
 import { GeometryAABBUpdater, GeometryUpdaterFactory } from './services/aabb';
 import { FederatedEvent } from './FederatedEvent';
 import { Canvas } from './Canvas';
-import { Rect } from './shapes/Rect';
 
 /**
  * events for display object
@@ -175,11 +174,11 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
 
     // set position in local space
     const { x = 0, y = 0 } = sceneGraphNode.attributes;
-    this.sceneGraphService.setLocalPosition(entity, x, y);
+    this.sceneGraphService.setLocalPosition(this, x, y);
 
     // set origin
     const { origin = [0, 0] } = sceneGraphNode.attributes;
-    this.sceneGraphService.setOrigin(entity, [...origin, 0]);
+    this.sceneGraphService.setOrigin(this, [...origin, 0]);
 
     // visible: true -> visibility: visible
     // visible: false -> visibility: hidden
@@ -266,11 +265,11 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
     return this.entity.getComponent(SceneGraphNode).tagName;
   }
   get parentNode(): DisplayObject<any> | null {
-    return this.getParent();
+    return this.parent;
   }
   get parentElement(): DisplayObject<any> | null {
     // TODO: The Node.parentElement read-only property returns the DOM node's parent Element, or null if the node either has no parent, or its parent isn't a DOM Element.
-    return this.getParent();
+    return this.parent;
   }
   get nextSibling(): DisplayObject<any> | null {
     const parentGroup = this.getParent();
@@ -293,10 +292,10 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
     return null;
   }
   get firstChild(): DisplayObject<any> | null {
-    return this.getFirst();
+    return this.children.length > 0 ? this.children[0] : null;
   }
   get lastChild(): DisplayObject<any> | null {
-    return this.getLast();
+    return this.children.length > 0 ? this.children[this.children.length - 1] : null;
   }
   cloneNode() {
     // TODO
@@ -305,19 +304,47 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
       id: '',
     });
   }
-  appendChild(group: DisplayObject<any>) {
-    this.add(group);
-    return group;
+  appendChild(child: DisplayObject<any>, index?: number) {
+    this.sceneGraphService.attach(child, this, index);
+
+    this.emit(DISPLAY_OBJECT_EVENT.ChildInserted, child);
+    child.emit(DISPLAY_OBJECT_EVENT.Inserted, this);
+
+    return child;
   }
   insertBefore(group: DisplayObject<any>, reference?: DisplayObject<any>): DisplayObject<any> {
     if (!reference) {
-      this.add(group);
+      this.appendChild(group);
     } else {
       const children = this.getChildren();
       const index = children.indexOf(reference);
-      this.add(group, index - 1);
+      this.appendChild(group, index - 1);
     }
     return group;
+  }
+  remove(destroy = true) {
+    if (this.parentNode) {
+      return this.parentNode.removeChild(this, destroy);
+    }
+    return this;
+  }
+  removeChild(child: DisplayObject<any>, destroy = true) {
+    this.sceneGraphService.detach(child);
+
+    this.emit(DISPLAY_OBJECT_EVENT.ChildRemoved, child);
+    child.emit(DISPLAY_OBJECT_EVENT.Removed, this);
+
+    if (destroy) {
+      this.forEach((object) => {
+        object.destroy();
+      });
+    }
+    return child;
+  }
+  removeChildren(destroy = true) {
+    this.children.forEach((child) => {
+      this.removeChild(child, destroy);
+    });
   }
   contain(group: DisplayObject<any>) {
     return this.contains(group);
@@ -331,7 +358,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
     }
     return !!tmp;
   }
-  getAncestor(n: number) {
+  getAncestor(n: number): DisplayObject<any> | null {
     let temp: DisplayObject<any> | null = this;
     while (n > 0 && temp) {
       temp = temp.parentNode;
@@ -361,16 +388,23 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
     return this.entity.getComponent(SceneGraphNode).name;
   }
   /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
+   */
+  get classList() {
+    return [this.entity.getComponent(SceneGraphNode).class];
+  }
+  /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/ParentNode
    */
-  get children(): DisplayObject<any>[] {
-    return this.getChildren();
-  }
+  parent: DisplayObject<any> | null = null;
+  children: DisplayObject<any>[] = [];
+
   get childElementCount(): number {
-    return this.getCount();
+    return this.children.length;
   }
   get firstElementChild(): DisplayObject<any> | null {
-    // TODO: To avoid the issue with node.firstChild returning #text or #comment nodes, ParentNode.firstElementChild can be used to return only the first element node.
+    // To avoid the issue with node.firstChild returning #text or #comment nodes,
+    // ParentNode.firstElementChild can be used to return only the first element node.
     return this.firstChild;
   }
   get lastElementChild(): DisplayObject<any> | null {
@@ -496,46 +530,34 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
 
   /**
    * compatible with G 3.0
-   *
-   * return children num
+   * @deprecated
    */
   getCount() {
-    return this.children.length;
-  }
-
-  /**
-   * compatible with G 3.0
-   *
-   * return parent group
-   */
-  getParent(): DisplayObject<any> | null {
-    const sceneGraphNode = this.entity.getComponent(SceneGraphNode);
-    if (sceneGraphNode.parent) {
-      return this.displayObjectPool.getByName(sceneGraphNode.parent.getName());
-    }
-
-    return null;
-  }
-
-  /**
-   * compatible with G 3.0
-   *
-   * return children groups
-   */
-  getChildren() {
-    const sceneGraphNode = this.entity.getComponent(SceneGraphNode);
-    return sceneGraphNode.children.map((entity) =>
-      this.displayObjectPool.getByName(entity.getName()),
-    );
+    return this.childElementCount;
   }
 
   /**
    * compatible with G 3.0
    * @deprecated
-   * get first child group/shape
+   */
+  getParent(): DisplayObject<any> | null {
+    return this.parentNode;
+  }
+
+  /**
+   * compatible with G 3.0
+   * @deprecated
+   */
+  getChildren() {
+    return this.children;
+  }
+
+  /**
+   * compatible with G 3.0
+   * @deprecated
    */
   getFirst(): DisplayObject<any> | null {
-    return this.children.length > 0 ? this.children[0] : null;
+    return this.firstChild;
   }
 
   /**
@@ -544,7 +566,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
    * get last child group/shape
    */
   getLast(): DisplayObject<any> | null {
-    return this.children.length > 0 ? this.children[this.children.length - 1] : null;
+    return this.lastChild;
   }
 
   /**
@@ -581,45 +603,10 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
 
   /**
    * compatible with G 3.0
-   *
-   * add child group or shape
+   * @deprecated
    */
   add(child: DisplayObject<any>, index?: number) {
-    this.sceneGraphService.attach(child.getEntity(), this.entity, index);
-
-    this.emit(DISPLAY_OBJECT_EVENT.ChildInserted, child);
-    child.emit(DISPLAY_OBJECT_EVENT.Inserted, this);
-  }
-
-  /**
-   * compatible with G 3.0
-   *
-   * remove itself from parent
-   */
-  remove(destroy = true) {
-    if (this.parentNode) {
-      return this.parentNode.removeChild(this, destroy);
-    }
-    return this;
-  }
-  removeChild(child: DisplayObject<any>, destroy = true) {
-    const entity = child.getEntity();
-    this.sceneGraphService.detach(entity);
-
-    this.emit(DISPLAY_OBJECT_EVENT.ChildRemoved, child);
-    child.emit(DISPLAY_OBJECT_EVENT.Removed, this);
-
-    if (destroy) {
-      this.forEach((object) => {
-        object.destroy();
-      });
-    }
-    return child;
-  }
-  removeChildren(destroy = true) {
-    this.children.forEach((child) => {
-      this.removeChild(child, destroy);
-    });
+    this.appendChild(child, index);
   }
 
   /**
@@ -636,7 +623,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
   /** transform operations */
 
   setOrigin(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.setOrigin(this.entity, createVec3(position, y, z));
+    this.sceneGraphService.setOrigin(this, createVec3(position, y, z));
     return this;
   }
 
@@ -660,7 +647,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
    * set position in world space
    */
   setPosition(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.setPosition(this.entity, createVec3(position, y, z));
+    this.sceneGraphService.setPosition(this, createVec3(position, y, z));
     return this;
   }
 
@@ -668,7 +655,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
    * set position in local space
    */
   setLocalPosition(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.setLocalPosition(this.entity, createVec3(position, y, z));
+    this.sceneGraphService.setLocalPosition(this, createVec3(position, y, z));
     return this;
   }
 
@@ -676,7 +663,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
    * translate in world space
    */
   translate(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.translate(this.entity, createVec3(position, y, z));
+    this.sceneGraphService.translate(this, createVec3(position, y, z));
     return this;
   }
 
@@ -684,16 +671,16 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
    * translate in local space
    */
   translateLocal(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.translateLocal(this.entity, createVec3(position, y, z));
+    this.sceneGraphService.translateLocal(this, createVec3(position, y, z));
     return this;
   }
 
   getPosition() {
-    return this.sceneGraphService.getPosition(this.entity);
+    return this.sceneGraphService.getPosition(this);
   }
 
   getLocalPosition() {
-    return this.sceneGraphService.getLocalPosition(this.entity);
+    return this.sceneGraphService.getLocalPosition(this);
   }
 
   /**
@@ -713,7 +700,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
       z = z || scaling;
       scaling = createVec3(scaling, y, z);
     }
-    this.sceneGraphService.scaleLocal(this.entity, scaling);
+    this.sceneGraphService.scaleLocal(this, scaling);
     return this;
   }
 
@@ -727,7 +714,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
       scaling = createVec3(scaling, y, z);
     }
 
-    this.sceneGraphService.setLocalScale(this.entity, scaling);
+    this.sceneGraphService.setLocalScale(this, scaling);
     return this;
   }
 
@@ -735,14 +722,14 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
    * get scaling in local space
    */
   getLocalScale() {
-    return this.sceneGraphService.getLocalScale(this.entity);
+    return this.sceneGraphService.getLocalScale(this);
   }
 
   /**
    * get scaling in world space
    */
   getScale() {
-    return this.sceneGraphService.getScale(this.entity);
+    return this.sceneGraphService.getScale(this);
   }
 
   /**
@@ -752,7 +739,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
     const transform = this.entity.getComponent(Transform);
     const [ex, ey, ez] = getEuler(
       vec3.create(),
-      this.sceneGraphService.getWorldTransform(this.entity, transform),
+      this.sceneGraphService.getWorldTransform(this, transform),
     );
     return rad2deg(ez);
   }
@@ -763,7 +750,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
   getLocalEulerAngles() {
     const [ex, ey, ez] = getEuler(
       vec3.create(),
-      this.sceneGraphService.getLocalRotation(this.entity),
+      this.sceneGraphService.getLocalRotation(this),
     );
     return rad2deg(ez);
   }
@@ -772,7 +759,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
    * set euler angles(degrees) in world space
    */
   setEulerAngles(z: number) {
-    this.sceneGraphService.setEulerAngles(this.entity, 0, 0, z);
+    this.sceneGraphService.setEulerAngles(this, 0, 0, z);
     return this;
   }
 
@@ -780,41 +767,38 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
    * set euler angles(degrees) in local space
    */
   setLocalEulerAngles(z: number) {
-    this.sceneGraphService.setLocalEulerAngles(this.entity, 0, 0, z);
+    this.sceneGraphService.setLocalEulerAngles(this, 0, 0, z);
     return this;
   }
 
   rotateLocal(x: number, y?: number, z?: number) {
     if (isNil(y) && isNil(z)) {
-      return this.sceneGraphService.rotateLocal(this.entity, 0, 0, x);
+      return this.sceneGraphService.rotateLocal(this, 0, 0, x);
     }
 
-    return this.sceneGraphService.rotateLocal(this.entity, x, y, z);
+    return this.sceneGraphService.rotateLocal(this, x, y, z);
   }
 
   rotate(x: number, y?: number, z?: number) {
     if (isNil(y) && isNil(z)) {
-      return this.sceneGraphService.rotate(this.entity, 0, 0, x);
+      return this.sceneGraphService.rotate(this, 0, 0, x);
     }
 
-    return this.sceneGraphService.rotate(this.entity, x, y, z);
+    return this.sceneGraphService.rotate(this, x, y, z);
   }
 
   getRotation() {
-    return this.sceneGraphService.getRotation(this.entity);
+    return this.sceneGraphService.getRotation(this);
   }
   getLocalRotation() {
-    return this.sceneGraphService.getLocalRotation(this.entity);
+    return this.sceneGraphService.getLocalRotation(this);
   }
 
   getLocalTransform() {
-    return this.sceneGraphService.getLocalTransform(this.entity);
+    return this.sceneGraphService.getLocalTransform(this);
   }
   getWorldTransform() {
-    return this.sceneGraphService.getWorldTransform(
-      this.entity,
-      this.entity.getComponent(Transform),
-    );
+    return this.sceneGraphService.getWorldTransform(this);
   }
 
   /* z-index & visibility */
@@ -827,11 +811,8 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
    * bring to front in current group
    */
   toFront() {
-    const sceneGraphNode = this.entity.getComponent(SceneGraphNode);
-    const parentEntity = sceneGraphNode.parent;
-    if (parentEntity) {
-      const parent = parentEntity.getComponent(SceneGraphNode);
-      const zIndex = Math.max(...parent.children.map((e) => e.getComponent(Sortable).zIndex)) + 1;
+    if (this.parent) {
+      const zIndex = Math.max(...this.parent.children.map((child) => child.getEntity().getComponent(Sortable).zIndex)) + 1;
       this.setZIndex(zIndex);
     }
   }
@@ -840,11 +821,8 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
    * send to back in current group
    */
   toBack() {
-    const sceneGraphNode = this.entity.getComponent(SceneGraphNode);
-    const parentEntity = sceneGraphNode.parent;
-    if (parentEntity) {
-      const parent = parentEntity.getComponent(SceneGraphNode);
-      const zIndex = Math.min(...parent.children.map((e) => e.getComponent(Sortable).zIndex)) - 1;
+    if (this.parent) {
+      const zIndex = Math.min(...this.parent.children.map((child) => child.getEntity().getComponent(Sortable).zIndex)) - 1;
       this.setZIndex(zIndex);
     }
   }
@@ -935,20 +913,20 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
    * get bounds in world space, account for children
    */
   getBounds(): AABB | null {
-    return this.sceneGraphService.getBounds(this.entity);
+    return this.sceneGraphService.getBounds(this);
   }
 
   /**
    * get bounds in local space, account for children
    */
   getLocalBounds(): AABB | null {
-    return this.sceneGraphService.getLocalBounds(this.entity);
+    return this.sceneGraphService.getLocalBounds(this);
   }
 
   /**
    * account for context's bounds in client space
    */
-  getBoundingClientRect(): Rect | null {
+  getBoundingClientRect(): Rectangle | null {
     const bounds = this.getBounds();
     if (!bounds) {
       return null;
@@ -961,7 +939,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
     const bbox = this.ownerDocument.defaultView
       .getContextService().getBoundingClientRect();
 
-    return new Rect(
+    return new Rectangle(
       left + (bbox?.left || 0),
       top + (bbox?.top || 0),
       right - left,
@@ -1018,7 +996,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
       // in parent's local space
       const { x = 0, y = 0 } = this.attributes;
       // update transform
-      this.sceneGraphService.setLocalPosition(entity, x, y);
+      this.sceneGraphService.setLocalPosition(this, x, y);
     } else if (name === 'z-index') {
       const sortable = entity.getComponent(Sortable);
       sortable.zIndex = value;

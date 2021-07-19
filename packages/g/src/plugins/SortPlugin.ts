@@ -12,12 +12,13 @@ export class SortPlugin implements RenderingPlugin {
   private sceneGraphService: SceneGraphService;
 
   apply(renderer: RenderingService) {
-    renderer.hooks.prepare.tap('SortPlugin', (objects: DisplayObject[], root: DisplayObject) => {
+    renderer.hooks.prepare.tap('SortPlugin', (objects: DisplayObject<any>[], root: DisplayObject<any>) => {
       if (!objects.length) {
         return [];
       }
 
-      return objects.sort(this.sceneGraphService.sort);
+      // return objects.sort(this.sceneGraphService.sort);
+      return objects;
     });
   }
 }

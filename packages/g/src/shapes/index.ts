@@ -4,4 +4,4 @@ export * from './Frustum';
 export * from './Plane';
 export * from './Ray';
 export * from './Point';
-export * from './Rect';
+export * from './Rectangle';

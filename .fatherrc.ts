@@ -9,7 +9,7 @@ export default {
   pkgs: [
     'g-math',
     'g-ecs',
-    'g-ecs2',
+    // 'g-ecs2',
     'g',
     'g-plugin-dom-interaction',
     'g-plugin-css-select',

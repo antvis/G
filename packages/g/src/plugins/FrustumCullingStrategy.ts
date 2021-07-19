@@ -11,7 +11,7 @@ export class FrustumCullingStrategy implements CullingStrategy {
   @inject(Camera)
   private camera: Camera;
 
-  isVisible(object: DisplayObject) {
+  isVisible(object: DisplayObject<any>) {
     const entity = object.getEntity();
     const cullable = entity.getComponent(Cullable);
     const hierarchy = entity.getComponent(SceneGraphNode);
@@ -32,7 +32,7 @@ export class FrustumCullingStrategy implements CullingStrategy {
     this.camera.getFrustum().extractFromVPMatrix(vpMatrix);
 
     const parentVisibilityPlaneMask =
-      hierarchy.parent && hierarchy.parent.getComponent(Cullable).visibilityPlaneMask;
+      object.parent && object.parent.getEntity().getComponent(Cullable).visibilityPlaneMask;
     cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
       aabb,
       parentVisibilityPlaneMask || Mask.INDETERMINATE,

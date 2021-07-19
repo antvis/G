@@ -16,11 +16,11 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
-    const handleAttributeChanged = (name: string, value: any, object: DisplayObject) => {
+    const handleAttributeChanged = (name: string, value: any, object: DisplayObject<any>) => {
       renderingService.hooks.attributeChanged.call(object, name, value);
     };
 
-    renderingService.hooks.mounted.tap(PrepareRendererPlugin.tag, (object: DisplayObject) => {
+    renderingService.hooks.mounted.tap(PrepareRendererPlugin.tag, (object: DisplayObject<any>) => {
       // console.log('mounted', object);
       const entity = object.getEntity();
       this.sceneGraphService.emit(SCENE_GRAPH_EVENT.AABBChanged, entity);
@@ -32,7 +32,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       renderable.dirty = true;
     });
 
-    renderingService.hooks.unmounted.tap(PrepareRendererPlugin.tag, (object: DisplayObject) => {
+    renderingService.hooks.unmounted.tap(PrepareRendererPlugin.tag, (object: DisplayObject<any>) => {
       // console.log('unmounted', object);
       object.off(DISPLAY_OBJECT_EVENT.AttributeChanged, handleAttributeChanged);
 

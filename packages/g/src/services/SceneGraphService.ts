@@ -11,14 +11,14 @@ import { DisplayObject } from '../DisplayObject';
 import { AABB } from '../shapes';
 import { SceneGraphSelector, SceneGraphSelectorFactory } from './SceneGraphSelector';
 
-function sortByZIndex(e1: Entity, e2: Entity) {
-  const sortable1 = e1.getComponent(Sortable);
-  const sortable2 = e2.getComponent(Sortable);
+function sortByZIndex(o1: DisplayObject<any>, o2: DisplayObject<any>) {
+  const sortable1 = o1.getEntity().getComponent(Sortable);
+  const sortable2 = o2.getEntity().getComponent(Sortable);
   if (sortable1.zIndex === sortable2.zIndex) {
-    const parent = e1.getComponent(SceneGraphNode).parent;
+    const parent = o1.parent;
     if (parent) {
-      const children = parent.getComponent(SceneGraphNode).children || [];
-      return children.indexOf(e1) - children.indexOf(e2);
+      const children = parent.children || [];
+      return children.indexOf(o1) - children.indexOf(o2);
     }
   }
   return sortable1.zIndex - sortable2.zIndex;
@@ -52,42 +52,39 @@ export class SceneGraphService extends EventEmitter {
       .filter((node) => !node.getEntity().getComponent(SceneGraphNode).shadow);
   }
 
-  attach(entity: Entity, parentEntity: Entity, index?: number) {
-    const hierarchy = entity.getComponent(SceneGraphNode);
-    if (hierarchy && hierarchy.parent) {
-      this.detach(entity);
+  attach(child: DisplayObject<any>, parent: DisplayObject<any>, index?: number) {
+    if (child.parent) {
+      this.detach(child);
     }
 
-    hierarchy.parent = parentEntity;
-    const parentSceneGraphNode = parentEntity.getComponent(SceneGraphNode);
+    const entity = child.getEntity();
+    child.parent = parent;
     if (!isNil(index)) {
-      parentSceneGraphNode.children.splice(index!, 0, entity);
+      child.parent.children.splice(index!, 0, child);
     } else {
-      parentSceneGraphNode.children.push(entity);
+      child.parent.children.push(child);
     }
 
-    this.dirtifyWorld(entity, entity.getComponent(Transform));
+    this.dirtifyWorld(child, entity.getComponent(Transform));
   }
 
-  detach(entity: Entity) {
-    const hierarchy = entity.getComponent(SceneGraphNode);
-    if (hierarchy.parent) {
+  detach(child: DisplayObject<any>) {
+    if (child.parent) {
+      const entity = child.getEntity();
+
       const transform = entity.getComponent(Transform);
       mat4.getScaling(transform.localScale, transform.worldTransform);
       mat4.getTranslation(transform.localPosition, transform.worldTransform);
       mat4.getRotation(transform.localRotation, transform.worldTransform);
       transform.localDirtyFlag = true;
 
-      const parentSceneGraphNode = hierarchy.parent.getComponent(SceneGraphNode);
-      if (parentSceneGraphNode) {
-        const index = parentSceneGraphNode.children.indexOf(entity);
-        if (index > -1) {
-          parentSceneGraphNode.children.splice(index, 1);
-        }
+      const index = child.parent.children.indexOf(child);
+      if (index > -1) {
+        child.parent.children.splice(index, 1);
       }
 
-      this.dirtifyWorld(entity, transform);
-      hierarchy.parent = null;
+      this.dirtifyWorld(child, transform);
+      child.parent = null;
     }
   }
 
@@ -134,7 +131,7 @@ export class SceneGraphService extends EventEmitter {
 
       // no need to re-sort, use cached sorted children
       if (!parentSortable.sorted) {
-        parentSortable.sorted = [...parentEntity.getComponent(SceneGraphNode).children];
+        parentSortable.sorted = [...parent.children];
       }
       if (parentSortable.dirty) {
         parentSortable.sorted.sort(sortByZIndex);
@@ -142,8 +139,8 @@ export class SceneGraphService extends EventEmitter {
       }
 
       return (
-        parentSortable.sorted.indexOf(o1.getEntity()) -
-        parentSortable.sorted.indexOf(o2.getEntity())
+        parentSortable.sorted.indexOf(o1) -
+        parentSortable.sorted.indexOf(o2)
       );
     }
 
@@ -160,11 +157,11 @@ export class SceneGraphService extends EventEmitter {
     return depth;
   }
 
-  setOrigin(entity: Entity, origin: vec3 | number, y = 0, z = 0) {
+  setOrigin(displayObject: DisplayObject<any>, origin: vec3 | number, y = 0, z = 0) {
     if (typeof origin === 'number') {
       origin = vec3.fromValues(origin, y, z);
     }
-    const transform = entity.getComponent(Transform);
+    const transform = displayObject.getEntity().getComponent(Transform);
     if (vec3.equals(origin, transform.origin)) {
       return;
     }
@@ -173,7 +170,7 @@ export class SceneGraphService extends EventEmitter {
     originVec[0] = origin[0];
     originVec[1] = origin[1];
     originVec[2] = origin[2] || 0;
-    this.dirtifyLocal(entity, transform);
+    this.dirtifyLocal(displayObject, transform);
   }
 
   /**
@@ -181,20 +178,20 @@ export class SceneGraphService extends EventEmitter {
    */
   rotate = (() => {
     const parentInvertRotation = quat.create();
-    return (entity: Entity, degrees: vec3 | number, y = 0, z = 0) => {
+    return (displayObject: DisplayObject<any>, degrees: vec3 | number, y = 0, z = 0) => {
       if (typeof degrees === 'number') {
         degrees = vec3.fromValues(degrees, y, z);
       }
 
-      const transform = entity.getComponent(Transform);
-      const hierarchy = entity.getComponent(SceneGraphNode);
-      if (hierarchy.parent === null) {
-        this.rotateLocal(entity, degrees);
+      const transform = displayObject.getEntity().getComponent(Transform);
+
+      if (displayObject.parent === null) {
+        this.rotateLocal(displayObject, degrees);
       } else {
         const rotation = quat.create();
         quat.fromEuler(rotation, degrees[0], degrees[1], degrees[2]);
-        const rot = this.getRotation(entity);
-        const parentRot = this.getRotation(hierarchy.parent);
+        const rot = this.getRotation(displayObject);
+        const parentRot = this.getRotation(displayObject.parent);
 
         quat.copy(parentInvertRotation, parentRot);
         quat.invert(parentInvertRotation, parentInvertRotation);
@@ -203,7 +200,7 @@ export class SceneGraphService extends EventEmitter {
         quat.normalize(transform.localRotation, transform.localRotation);
 
         if (!transform.localDirtyFlag) {
-          this.dirtifyLocal(entity, transform);
+          this.dirtifyLocal(displayObject, transform);
         }
       }
     };
@@ -215,16 +212,16 @@ export class SceneGraphService extends EventEmitter {
    */
   rotateLocal = (() => {
     const rotation = quat.create();
-    return (entity: Entity, degrees: vec3 | number, y = 0, z = 0) => {
+    return (displayObject: DisplayObject<any>, degrees: vec3 | number, y = 0, z = 0) => {
       if (typeof degrees === 'number') {
         degrees = vec3.fromValues(degrees, y, z);
       }
-      const transform = entity.getComponent(Transform);
+      const transform = displayObject.getEntity().getComponent(Transform);
       quat.fromEuler(rotation, degrees[0], degrees[1], degrees[2]);
       quat.mul(transform.localRotation, transform.localRotation, rotation);
 
       if (!transform.localDirtyFlag) {
-        this.dirtifyLocal(entity, transform);
+        this.dirtifyLocal(displayObject, transform);
       }
     };
   })();
@@ -235,23 +232,22 @@ export class SceneGraphService extends EventEmitter {
   setEulerAngles = (() => {
     const invParentRot = quat.create();
 
-    return (entity: Entity, degrees: vec3 | number, y = 0, z = 0) => {
+    return (displayObject: DisplayObject<any>, degrees: vec3 | number, y = 0, z = 0) => {
       if (typeof degrees === 'number') {
         degrees = vec3.fromValues(degrees, y, z);
       }
 
-      const transform = entity.getComponent(Transform);
-      const hierarchy = entity.getComponent(SceneGraphNode);
+      const transform = displayObject.getEntity().getComponent(Transform);
 
-      if (hierarchy.parent === null) {
-        this.setLocalEulerAngles(entity, degrees);
+      if (displayObject.parent === null) {
+        this.setLocalEulerAngles(displayObject, degrees);
       } else {
         quat.fromEuler(transform.localRotation, degrees[0], degrees[1], degrees[2]);
-        const parentRotation = this.getRotation(hierarchy.parent);
+        const parentRotation = this.getRotation(displayObject.parent);
         quat.copy(invParentRot, quat.invert(quat.create(), parentRotation));
         quat.mul(transform.localRotation, transform.localRotation, invParentRot);
 
-        this.dirtifyLocal(entity, transform);
+        this.dirtifyLocal(displayObject, transform);
       }
     };
   })();
@@ -259,13 +255,13 @@ export class SceneGraphService extends EventEmitter {
   /**
    * set euler angles(degrees) in local space
    */
-  setLocalEulerAngles(entity: Entity, degrees: vec3 | number, y = 0, z = 0) {
+  setLocalEulerAngles(displayObject: DisplayObject<any>, degrees: vec3 | number, y = 0, z = 0) {
     if (typeof degrees === 'number') {
       degrees = vec3.fromValues(degrees, y, z);
     }
-    const transform = entity.getComponent(Transform);
+    const transform = displayObject.getEntity().getComponent(Transform);
     quat.fromEuler(transform.localRotation, degrees[0], degrees[1], degrees[2]);
-    this.dirtifyLocal(entity, transform);
+    this.dirtifyLocal(displayObject, transform);
   }
 
   /**
@@ -278,18 +274,18 @@ export class SceneGraphService extends EventEmitter {
    * ```
    */
   translateLocal = (() => {
-    return (entity: Entity, translation: vec3 | number, y: number = 0, z: number = 0) => {
+    return (displayObject: DisplayObject<any>, translation: vec3 | number, y: number = 0, z: number = 0) => {
       if (typeof translation === 'number') {
         translation = vec3.fromValues(translation, y, z);
       }
-      const transform = entity.getComponent(Transform);
+      const transform = displayObject.getEntity().getComponent(Transform);
       if (vec3.equals(translation, vec3.create())) {
         return;
       }
       vec3.transformQuat(translation, translation, transform.localRotation);
       vec3.add(transform.localPosition, transform.localPosition, translation);
 
-      this.dirtifyLocal(entity, transform);
+      this.dirtifyLocal(displayObject, transform);
     };
   })();
 
@@ -302,27 +298,26 @@ export class SceneGraphService extends EventEmitter {
   setPosition = (() => {
     const parentInvertMatrix = mat4.create();
 
-    return (entity: Entity, position: vec3 | number, y: number = 0, z: number = 0) => {
+    return (displayObject: DisplayObject<any>, position: vec3 | number, y: number = 0, z: number = 0) => {
       if (typeof position === 'number') {
         position = vec3.fromValues(position, y, z);
       }
 
-      const transform = entity.getComponent(Transform);
+      const transform = displayObject.getEntity().getComponent(Transform);
       transform.position = position;
 
-      const hierarchy = entity.getComponent(SceneGraphNode);
-      if (hierarchy.parent === null) {
+      if (displayObject.parent === null) {
         vec3.copy(transform.localPosition, position);
       } else {
-        const parentTransform = hierarchy.parent.getComponent(Transform);
+        const parentTransform = displayObject.parent.getEntity().getComponent(Transform);
         mat4.copy(parentInvertMatrix, parentTransform.worldTransform);
         mat4.invert(parentInvertMatrix, parentInvertMatrix);
         vec3.transformMat4(transform.localPosition, position, parentInvertMatrix);
-        this.dirtifyLocal(entity, transform);
+        this.dirtifyLocal(displayObject, transform);
       }
 
       if (!transform.localDirtyFlag) {
-        this.dirtifyLocal(entity, transform);
+        this.dirtifyLocal(displayObject, transform);
       }
     };
   })();
@@ -330,43 +325,43 @@ export class SceneGraphService extends EventEmitter {
   /**
    * move to position in local space
    */
-  setLocalPosition(entity: Entity, position: vec3 | number, y: number = 0, z: number = 0) {
+  setLocalPosition(displayObject: DisplayObject<any>, position: vec3 | number, y: number = 0, z: number = 0) {
     if (typeof position === 'number') {
       position = vec3.fromValues(position, y, z);
     }
-    const transform = entity.getComponent(Transform);
+    const transform = displayObject.getEntity().getComponent(Transform);
     if (vec3.equals(transform.localPosition, position)) {
       return;
     }
     vec3.copy(transform.localPosition, position);
     if (!transform.localDirtyFlag) {
-      this.dirtifyLocal(entity, transform);
+      this.dirtifyLocal(displayObject, transform);
     }
   }
 
   /**
    * scale in local space
    */
-  scaleLocal(entity: Entity, scaling: vec3 | number, y: number = 1, z: number = 1) {
+  scaleLocal(displayObject: DisplayObject<any>, scaling: vec3 | number, y: number = 1, z: number = 1) {
     if (typeof scaling === 'number') {
       scaling = vec3.fromValues(scaling, y, z);
     }
-    const transform = entity.getComponent(Transform);
+    const transform = displayObject.getEntity().getComponent(Transform);
     vec3.multiply(transform.localScale, transform.localScale, scaling);
-    this.dirtifyLocal(entity, transform);
+    this.dirtifyLocal(displayObject, transform);
   }
 
-  setLocalScale(entity: Entity, scaling: vec3 | number, y: number = 1, z: number = 1) {
+  setLocalScale(displayObject: DisplayObject<any>, scaling: vec3 | number, y: number = 1, z: number = 1) {
     if (typeof scaling === 'number') {
       scaling = vec3.fromValues(scaling, y, z);
     }
-    const transform = entity.getComponent(Transform);
+    const transform = displayObject.getEntity().getComponent(Transform);
     if (vec3.equals(transform.localScale, scaling)) {
       return;
     }
 
     vec3.copy(transform.localScale, scaling);
-    this.dirtifyLocal(entity, transform);
+    this.dirtifyLocal(displayObject, transform);
   }
 
   /**
@@ -384,7 +379,7 @@ export class SceneGraphService extends EventEmitter {
   translate = (() => {
     const tr = vec3.create();
 
-    return (entity: Entity, translation: vec3 | number, y: number = 0, z: number = 0) => {
+    return (displayObject: DisplayObject<any>, translation: vec3 | number, y: number = 0, z: number = 0) => {
       if (typeof translation === 'number') {
         translation = vec3.fromValues(translation, y, z);
       }
@@ -392,71 +387,68 @@ export class SceneGraphService extends EventEmitter {
         return;
       }
 
-      vec3.add(tr, this.getPosition(entity), translation);
+      vec3.add(tr, this.getPosition(displayObject), translation);
 
-      this.setPosition(entity, tr);
+      this.setPosition(displayObject, tr);
     };
   })();
 
-  dirtifyLocal(entity: Entity, transform: Transform) {
+  dirtifyLocal(displayObject: DisplayObject<any>, transform: Transform) {
     if (!transform.localDirtyFlag) {
       transform.localDirtyFlag = true;
       if (!transform.dirtyFlag) {
-        this.dirtifyWorld(entity, transform);
+        this.dirtifyWorld(displayObject, transform);
       }
     }
   }
 
-  dirtifyWorld(entity: Entity, transform: Transform) {
-    this.dirtifyWorldInternal(entity, transform);
+  dirtifyWorld(displayObject: DisplayObject<any>, transform: Transform) {
+    this.dirtifyWorldInternal(displayObject, transform);
   }
 
-  getPosition(entity: Entity) {
-    const transform = entity.getComponent(Transform);
-    return mat4.getTranslation(transform.position, this.getWorldTransform(entity, transform));
+  getPosition(displayObject: DisplayObject<any>) {
+    const transform = displayObject.getEntity().getComponent(Transform);
+    return mat4.getTranslation(transform.position, this.getWorldTransform(displayObject, transform));
   }
 
-  getRotation(entity: Entity) {
-    const transform = entity.getComponent(Transform);
-    return mat4.getRotation(transform.rotation, this.getWorldTransform(entity, transform));
+  getRotation(displayObject: DisplayObject<any>) {
+    const transform = displayObject.getEntity().getComponent(Transform);
+    return mat4.getRotation(transform.rotation, this.getWorldTransform(displayObject, transform));
   }
 
-  getScale(entity: Entity) {
-    const transform = entity.getComponent(Transform);
-    return mat4.getScaling(transform.scaling, this.getWorldTransform(entity, transform));
+  getScale(displayObject: DisplayObject<any>) {
+    const transform = displayObject.getEntity().getComponent(Transform);
+    return mat4.getScaling(transform.scaling, this.getWorldTransform(displayObject, transform));
   }
 
-  getWorldTransform(entity: Entity, transform: Transform = entity.getComponent(Transform)) {
+  getWorldTransform(displayObject: DisplayObject<any>, transform: Transform = displayObject.getEntity().getComponent(Transform)) {
     if (!transform.localDirtyFlag && !transform.dirtyFlag) {
       return transform.worldTransform;
     }
 
-    const parentEntity = entity.getComponent(SceneGraphNode).parent;
-
-    if (parentEntity) {
-      const parentTransform = parentEntity.getComponent(Transform);
-      this.getWorldTransform(parentEntity, parentTransform);
+    if (displayObject.parent) {
+      this.getWorldTransform(displayObject.parent);
     }
 
-    this.updateTransform(entity, transform);
+    this.updateTransform(displayObject, transform);
 
     return transform.worldTransform;
   }
 
-  getLocalPosition(entity: Entity) {
-    return entity.getComponent(Transform).localPosition;
+  getLocalPosition(displayObject: DisplayObject<any>) {
+    return displayObject.getEntity().getComponent(Transform).localPosition;
   }
 
-  getLocalRotation(entity: Entity) {
-    return entity.getComponent(Transform).localRotation;
+  getLocalRotation(displayObject: DisplayObject<any>) {
+    return displayObject.getEntity().getComponent(Transform).localRotation;
   }
 
-  getLocalScale(entity: Entity) {
-    return entity.getComponent(Transform).localScale;
+  getLocalScale(displayObject: DisplayObject<any>) {
+    return displayObject.getEntity().getComponent(Transform).localScale;
   }
 
-  getLocalTransform(entity: Entity) {
-    const transform = entity.getComponent(Transform);
+  getLocalTransform(displayObject: DisplayObject<any>) {
+    const transform = displayObject.getEntity().getComponent(Transform);
     if (transform.localDirtyFlag) {
       mat4.fromRotationTranslationScaleOrigin(
         transform.localTransform,
@@ -470,11 +462,10 @@ export class SceneGraphService extends EventEmitter {
     return transform.localTransform;
   }
 
-  getLocalBounds(entity: Entity): AABB | null {
-    const parentEntity = entity.getComponent(SceneGraphNode).parent;
-    if (parentEntity) {
-      const parentInvert = mat4.invert(mat4.create(), this.getWorldTransform(parentEntity));
-      const bounds = this.getBounds(entity);
+  getLocalBounds(displayObject: DisplayObject<any>): AABB | null {
+    if (displayObject.parent) {
+      const parentInvert = mat4.invert(mat4.create(), this.getWorldTransform(displayObject.parent));
+      const bounds = this.getBounds(displayObject);
 
       if (bounds) {
         const localBounds = new AABB();
@@ -483,10 +474,11 @@ export class SceneGraphService extends EventEmitter {
       }
     }
 
-    return null;
+    return this.getBounds(displayObject);
   }
 
-  getBounds(entity: Entity): AABB | null {
+  getBounds(displayObject: DisplayObject<any>): AABB | null {
+    const entity = displayObject.getEntity();
     const renderable = entity.getComponent(Renderable);
     if (!renderable.aabbDirty && renderable.aabb) {
       return renderable.aabb;
@@ -498,11 +490,11 @@ export class SceneGraphService extends EventEmitter {
     if (geometryAABB) {
       aabb = new AABB();
       // apply transformation to aabb
-      aabb.setFromTransformedAABB(geometryAABB, this.getWorldTransform(entity));
+      aabb.setFromTransformedAABB(geometryAABB, this.getWorldTransform(displayObject));
     }
 
     // merge children's aabbs
-    const children = entity.getComponent(SceneGraphNode).children;
+    const children = displayObject.children;
     children.forEach((child) => {
       const childBounds = this.getBounds(child);
       if (childBounds) {
@@ -524,40 +516,39 @@ export class SceneGraphService extends EventEmitter {
     return renderable.aabb || null;
   }
 
-  private dirtifyAABBToRoot(entity: Entity) {
-    let p: Entity | null = entity;
+  private dirtifyAABBToRoot(displayObject: DisplayObject<any>) {
+    let p: DisplayObject<any> | null = displayObject;
     while (p) {
-      const renderable = p.getComponent(Renderable);
+      const renderable = p.getEntity().getComponent(Renderable);
       renderable.aabbDirty = true;
       renderable.dirty = true;
-      p = p.getComponent(SceneGraphNode).parent;
+      p = p.parent;
     }
   }
 
-  private dirtifyWorldInternal(entity: Entity, transform: Transform) {
+  private dirtifyWorldInternal(displayObject: DisplayObject<any>, transform: Transform) {
     if (!transform.dirtyFlag) {
-      const hierarchy = entity.getComponent(SceneGraphNode);
       transform.dirtyFlag = true;
-      hierarchy.children.forEach((childEntity) => {
-        const childTransform = childEntity.getComponent(Transform);
+      displayObject.children.forEach((child) => {
+        const childTransform = child.getEntity().getComponent(Transform);
         if (!childTransform.dirtyFlag) {
-          this.dirtifyWorldInternal(childEntity, childTransform);
+          this.dirtifyWorldInternal(child, childTransform);
         }
       });
 
       // bubble up to root
-      this.dirtifyAABBToRoot(entity);
+      this.dirtifyAABBToRoot(displayObject);
     }
   }
 
-  private updateTransform(entity: Entity, transform: Transform) {
+  private updateTransform(displayObject: DisplayObject<any>, transform: Transform) {
     if (transform.localDirtyFlag) {
-      this.getLocalTransform(entity);
+      this.getLocalTransform(displayObject);
     }
     if (transform.dirtyFlag) {
-      const parentEntity = entity.getComponent(SceneGraphNode).parent;
-      const parentTransform = parentEntity && parentEntity.getComponent(Transform);
-      if (parentEntity === null || !parentTransform) {
+      const parent = displayObject.parent;
+      const parentTransform = parent && parent.getEntity().getComponent(Transform);
+      if (parent === null || !parentTransform) {
         mat4.copy(transform.worldTransform, transform.localTransform);
       } else {
         // TODO: should we support scale compensation?
