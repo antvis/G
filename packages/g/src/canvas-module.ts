@@ -2,7 +2,6 @@ import { ContainerModule } from 'inversify';
 import { bindContributionProvider } from './contribution-provider';
 import { DirtyCheckPlugin } from './plugins/DirtyCheckPlugin';
 import { CullingPlugin, CullingStrategy } from './plugins/CullingPlugin';
-import { SortPlugin } from './plugins/SortPlugin';
 import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
 import { FrustumCullingStrategy } from './plugins/FrustumCullingStrategy';
 import { RenderingPluginContribution, RenderingService } from './services';
@@ -34,8 +33,4 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   bind(CullingStrategy).toService(FrustumCullingStrategy);
   bind(CullingPlugin).toSelf().inSingletonScope();
   bind(RenderingPluginContribution).toService(CullingPlugin);
-
-  // sort plugin
-  bind(SortPlugin).toSelf().inSingletonScope();
-  bind(RenderingPluginContribution).toService(SortPlugin);
 });

@@ -47,20 +47,6 @@ circle.addEventListener('click', () => {}, { once: true });
 circle.removeEventListener('click', handler);
 ```
 
-## dispatchEvent
-
-在图形上显式触发事件：
-```js
-const circle = new Circle();
-
-circle.dispatchEvent(new PointerEvent('click', {
-  pointerType: 'mouse',
-  clientX: 1,
-  clientY: 1,
-  isPrimary: true,
-}));
-```
-
 # 事件对象
 
 在事件监听器的回调函数中，我们可以取得事件对象并访问其上的属性和方法。这些属性和方法和 DOM Event API 保持一致，因此可以直接参考它们的文档。
@@ -283,6 +269,8 @@ hammer.on('press', (e) => {
 
 [示例](/zh/examples/event/shape#hammer)
 
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*i7SaRaYw0YcAAAAAAAAAAAAAARQnAQ)
+
 ## 直接使用 Interact.js
 
 [Interact.js](https://interactjs.io/) 是一个包含了 Drag&Drop，Resize，手势等功能的交互库。
@@ -307,6 +295,8 @@ interact(
 ```
 
 [示例](/zh/examples/event/shape#interact)
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ)
 
 ## 实现简单的拖拽
 
@@ -397,3 +387,11 @@ renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
 * [g-plugin-webgl-renderer](/zh/docs/plugins/webgl-renderer) 使用 GPU 颜色编码
 
 ## A11y 无障碍插件
+
+# 注意事项
+
+## mouseenter/leave 冒泡问题
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/Element/mouseenter_event
+
+mouseenter 不会冒泡，而 mouseover 会。同理 mouseleave 不会冒泡，而 mouseout 会。

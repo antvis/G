@@ -1,14 +1,12 @@
-import EventEmitter from 'eventemitter3';
+import { EventEmitter } from 'eventemitter3';
 import { CanvasConfig, Cursor } from './types';
 import { cleanExistedCanvas } from './utils/canvas';
 import { DisplayObject, DISPLAY_OBJECT_EVENT } from './DisplayObject';
 import { ContextService } from './services';
 import { container } from './inversify.config';
 import { RenderingService } from './services/RenderingService';
-import { RenderingContext } from './services/RenderingContext';
-import { RBushNode, Renderable } from './components';
+import { RenderingContext, RENDER_REASON } from './services/RenderingContext';
 import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE } from './Camera';
-import RBush from 'rbush';
 import { containerModule as commonContainerModule } from './canvas-module';
 import { IRenderer } from './AbstractRenderer';
 
@@ -85,26 +83,19 @@ export class Canvas extends EventEmitter {
     // window.document
     this.document = root;
     root.ownerDocument = root;
-    this.container.bind(RenderingContext).toConstantValue({
+    this.container.bind<RenderingContext>(RenderingContext).toConstantValue({
       /**
        * the root node in scene graph
        */
       root,
 
-      /**
-       * spatial index with RTree which can speed up the search for AABBs
-       */
-      rBush: new RBush<RBushNode>(),
-
-      /**
-       * all the entities
-       */
-      entities: [],
-
-      dirtyRectangle: undefined,
-      dirtyEntities: [],
       removedAABBs: [],
       cameraDirty: true,
+
+      renderReasons: new Set(),
+
+      force: false,
+      dirty: false,
     });
   }
 
@@ -119,9 +110,7 @@ export class Canvas extends EventEmitter {
     // redraw when camera changed
     const context = this.container.get<RenderingContext>(RenderingContext);
     camera.on(CAMERA_EVENT.Updated, () => {
-      this.getRoot().forEach((node) => {
-        node.getEntity().getComponent(Renderable).dirty = true;
-      });
+      context.renderReasons.add(RENDER_REASON.CameraChanged);
       context.cameraDirty = true;
     });
     // bind camera
@@ -152,6 +141,10 @@ export class Canvas extends EventEmitter {
 
   getRenderingService() {
     return this.container.get<RenderingService>(RenderingService);
+  }
+
+  getRenderingContext() {
+    return this.container.get<RenderingContext>(RenderingContext);
   }
 
   getComputedStyle(node: DisplayObject<any>) {

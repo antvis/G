@@ -1,6 +1,5 @@
-import { Entity } from '@antv/g-ecs';
 import { isNil } from '@antv/util';
-import EventEmitter from 'eventemitter3';
+import { EventEmitter } from 'eventemitter3';
 import { Transform } from '../components/Transform';
 import { SceneGraphNode } from '../components/SceneGraphNode';
 import { Sortable } from '../components/Sortable';
@@ -11,7 +10,7 @@ import { DisplayObject } from '../DisplayObject';
 import { AABB } from '../shapes';
 import { SceneGraphSelector, SceneGraphSelectorFactory } from './SceneGraphSelector';
 
-function sortByZIndex(o1: DisplayObject<any>, o2: DisplayObject<any>) {
+export function sortByZIndex(o1: DisplayObject<any>, o2: DisplayObject<any>) {
   const sortable1 = o1.getEntity().getComponent(Sortable);
   const sortable2 = o2.getEntity().getComponent(Sortable);
   if (sortable1.zIndex === sortable2.zIndex) {
@@ -511,7 +510,7 @@ export class SceneGraphService extends EventEmitter {
       renderable.aabb = aabb;
     }
     renderable.aabbDirty = false;
-    this.emit(SCENE_GRAPH_EVENT.AABBChanged, entity);
+    this.emit(SCENE_GRAPH_EVENT.AABBChanged, displayObject);
 
     return renderable.aabb || null;
   }
@@ -522,6 +521,7 @@ export class SceneGraphService extends EventEmitter {
       const renderable = p.getEntity().getComponent(Renderable);
       renderable.aabbDirty = true;
       renderable.dirty = true;
+      this.emit(SCENE_GRAPH_EVENT.AABBChanged, p);
       p = p.parent;
     }
   }

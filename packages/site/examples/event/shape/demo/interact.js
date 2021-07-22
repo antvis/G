@@ -7,6 +7,11 @@ import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 import interact from 'interactjs';
 
+/**
+ * use interact.js
+ * @see https://interactjs.io/
+ */
+
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
@@ -89,6 +94,21 @@ circle.appendChild(text);
 canvas.appendChild(circle);
 circle.setPosition(100, 100);
 
+// gesture
+// const gesture = new Circle({
+//   attrs: {
+//     fill: 'rgb(239, 244, 255)',
+//     fillOpacity: 1,
+//     lineWidth: 1,
+//     opacity: 1,
+//     r: 60,
+//     stroke: 'rgb(95, 149, 255)',
+//     strokeOpacity: 1,
+//   },
+// });
+// gesture.setPosition(100, 320);
+// canvas.appendChild(gesture);
+
 // use interact.js
 interact(circle, {
   context: canvas.document,
@@ -98,6 +118,7 @@ interact(circle, {
     circle.translateLocal(dx, dy);
   }
 });
+
 
 interact(resizableRect, {
   context: canvas.document,
@@ -134,6 +155,21 @@ interact(dropZone, {
     event.target.style.fill = '#1890FF';
   }
 });
+
+// interact('.tap-target')
+//   .on('tap', function (event) {
+//     event.currentTarget.classList.toggle('switch-bg')
+//     event.preventDefault()
+//   })
+//   .on('doubletap', function (event) {
+//     event.currentTarget.classList.toggle('large')
+//     event.currentTarget.classList.remove('rotate')
+//     event.preventDefault()
+//   })
+//   .on('hold', function (event) {
+//     event.currentTarget.classList.toggle('rotate')
+//     event.currentTarget.classList.remove('large')
+//   })
 
 // stats
 const stats = new Stats();

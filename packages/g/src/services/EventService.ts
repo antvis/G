@@ -1,5 +1,5 @@
 import { inject, injectable, postConstruct } from 'inversify';
-import EventEmitter from 'eventemitter3';
+import { EventEmitter } from 'eventemitter3';
 import { DisplayObject } from '../DisplayObject';
 import { FederatedEvent } from '../FederatedEvent';
 import { FederatedMouseEvent } from '../FederatedMouseEvent';

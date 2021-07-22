@@ -1,6 +1,6 @@
-import { Cullable, SceneGraphNode } from '../components';
 import { mat4, vec3 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
+import { Cullable } from '../components';
 import { CullingStrategy } from './CullingPlugin';
 import { AABB, Mask, Plane } from '../shapes';
 import { Camera } from '../Camera';
@@ -14,7 +14,6 @@ export class FrustumCullingStrategy implements CullingStrategy {
   isVisible(object: DisplayObject<any>) {
     const entity = object.getEntity();
     const cullable = entity.getComponent(Cullable);
-    const hierarchy = entity.getComponent(SceneGraphNode);
 
     if (!cullable.enable) {
       return true;

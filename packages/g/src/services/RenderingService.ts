@@ -1,11 +1,12 @@
 import { inject, injectable, named } from 'inversify';
 import { SyncHook, SyncWaterfallHook } from 'tapable';
 import { CanvasService } from '../Canvas';
-import { SceneGraphNode } from '../components';
+import { Renderable, Sortable } from '../components';
 import { ContributionProvider } from '../contribution-provider';
 import { DisplayObject } from '../DisplayObject';
 import { EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext } from './RenderingContext';
+import { sortByZIndex } from './SceneGraphService';
 
 export interface RenderingPlugin {
   apply(renderer: RenderingService): void;
@@ -37,13 +38,18 @@ export class RenderingService implements CanvasService {
 
   hooks = {
     init: new SyncHook<[]>(),
-    prepare: new SyncWaterfallHook<[DisplayObject<any>[], DisplayObject<any>]>(['objects', 'root']),
+    prepare: new SyncWaterfallHook<[DisplayObject<any> | null]>(['object']),
     mounted: new SyncHook<[DisplayObject<any>]>(['object']),
     unmounted: new SyncHook<[DisplayObject<any>]>(['object']),
     attributeChanged: new SyncHook<[DisplayObject<any>, string, any]>(['object', 'name', 'value']),
-    beforeRender: new SyncHook<[DisplayObject<any>[], DisplayObject<any>[]]>(['objectsToRender', 'objects']),
-    render: new SyncHook<[DisplayObject<any>[], DisplayObject<any>[]]>(['objectsToRender', 'objects']),
-    afterRender: new SyncHook<[DisplayObject<any>[], DisplayObject<any>[]]>(['objectsToRender', 'objects']),
+    /**
+     * called at beginning of each frame, won't get called if nothing to re-render
+     */
+    beginFrame: new SyncHook<[]>([]),
+    beforeRender: new SyncHook<[DisplayObject<any>]>(['objectToRender']),
+    render: new SyncHook<[DisplayObject<any>]>(['objectToRender']),
+    afterRender: new SyncHook<[DisplayObject<any>]>(['objectToRender']),
+    endFrame: new SyncHook<[]>([]),
     destroy: new SyncHook<[]>(),
     pick: new SyncWaterfallHook<[PickingResult]>(['result']),
     pointerDown: new SyncHook<[InteractivePointerEvent]>(['event']),
@@ -55,7 +61,6 @@ export class RenderingService implements CanvasService {
   };
 
   init() {
-    this.renderingContext.dirtyRectangle = undefined;
     // register rendering plugins
     this.renderingPluginContribution.getContributions(true).forEach((plugin) => {
       plugin.apply(this);
@@ -65,33 +70,50 @@ export class RenderingService implements CanvasService {
   }
 
   render() {
-    const root = this.renderingContext.root;
-    const objects: DisplayObject<any>[] = [];
-    root.forEach((node) => {
-      if (!node.getEntity().getComponent(SceneGraphNode).shadow) {
-        objects.push(node);
+    if (this.renderingContext.renderReasons.size) {
+      this.renderDisplayObject(this.renderingContext.root);
+
+      if (this.renderingContext.dirty) {
+        this.hooks.endFrame.call();
+        this.renderingContext.dirty = false;
       }
-    });
 
-    this.renderingContext.displayObjects = objects;
-
-    // subset of all objects to render at this frame
-    const objectsToRender = this.hooks.prepare.call(objects, root);
-    if (objectsToRender.length === 0 && !this.renderingContext.force) {
-      return;
+      this.renderingContext.renderReasons.clear();
     }
-
-    // console.log(objectsToRender);
-
-    this.renderingContext.dirtyDisplayObjects = objectsToRender;
-
-    this.hooks.beforeRender.call(objectsToRender, objects);
-    // render entities one by one
-    this.hooks.render.call(objectsToRender, objects);
-    this.hooks.afterRender.call(objectsToRender, objects);
   }
 
   destroy() {
     this.hooks.destroy.call();
+  }
+
+  private renderDisplayObject(displayObject: DisplayObject<any>) {
+    const entity = displayObject?.getEntity()!;
+
+    // render itself
+    const objectToRender = this.hooks.prepare.call(displayObject);
+    if (objectToRender) {
+      if (!this.renderingContext.dirty) {
+        this.renderingContext.dirty = true;
+        this.hooks.beginFrame.call();
+      }
+
+      this.hooks.beforeRender.call(objectToRender);
+      this.hooks.render.call(objectToRender);
+      this.hooks.afterRender.call(objectToRender);
+
+      entity.getComponent(Renderable).dirty = false;
+    }
+
+    // sort is very expensive, use cached result if posible
+    const sortable = entity.getComponent(Sortable);
+    if (sortable.dirty) {
+      sortable.sorted = [...displayObject.children].sort(sortByZIndex);
+      sortable.dirty = false;
+    }
+
+    // recursive rendering its children
+    (sortable.sorted || displayObject.children).forEach((child) => {
+      this.renderDisplayObject(child);
+    });
   }
 }

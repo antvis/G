@@ -1,5 +1,6 @@
-import { RenderingPluginContribution, SHAPE, container } from '@antv/g';
+import { RenderingPluginContribution, SHAPE, container, world } from '@antv/g';
 import { ContainerModule } from 'inversify';
+import RBush from 'rbush';
 import { DefaultRenderer, StyleRenderer, StyleRendererFactory } from './shapes/styles';
 import { ImageRenderer } from './shapes/styles/Image';
 import { StyleParser } from './shapes/StyleParser';
@@ -16,15 +17,18 @@ import {
   PathPath,
 } from './shapes/paths';
 import { TextRenderer } from './shapes/styles/Text';
-import { CanvasRendererPlugin } from './CanvasRendererPlugin';
+import { CanvasRendererPlugin, RBushRoot } from './CanvasRendererPlugin';
 import { LoadImagePlugin } from './LoadImagePlugin';
+import { RBushNode, RBushNodeAABB } from './components/RBushNode';
 
-export { PathGeneratorFactory, PathGenerator };
+export { PathGeneratorFactory, PathGenerator, RBushNode, RBushNodeAABB, RBushRoot, RBush };
+
+world.registerComponent(RBushNode);
 
 /**
  * register shape renderers
  */
-container.bind(PathGeneratorFactory).toFactory<PathGenerator | null>((ctx) => (tagName: SHAPE) => {
+container.bind(PathGeneratorFactory).toFactory<PathGenerator<any> | null>((ctx) => (tagName: SHAPE) => {
   if (tagName === SHAPE.Circle) {
     return CirclePath;
   } else if (tagName === SHAPE.Ellipse) {
@@ -46,6 +50,7 @@ container.bind(PathGeneratorFactory).toFactory<PathGenerator | null>((ctx) => (t
 
 export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ImagePool).toSelf().inSingletonScope();
+  bind(RBushRoot).toConstantValue(new RBush<RBushNodeAABB>());
 
   bind(DefaultRenderer).toSelf().inSingletonScope();
   bind(ImageRenderer).toSelf().inSingletonScope();

@@ -54,7 +54,7 @@ export class FrameGraphEngine {
   public addPass<PassData>(
     name: string,
     setup: (fg: FrameGraphEngine, passNode: PassNode, pass: FrameGraphPass<PassData>) => void,
-    execute: (fg: FrameGraphEngine, pass: FrameGraphPass<PassData>, displayObjects: DisplayObject<any>[]) => void,
+    execute: (fg: FrameGraphEngine, pass: FrameGraphPass<PassData>) => void,
     tearDown?: () => void
   ) {
     const frameGraphPass = new FrameGraphPass<PassData>();
@@ -147,7 +147,7 @@ export class FrameGraphEngine {
     }
   }
 
-  public executePassNodes(displayObjects: DisplayObject<any>[]) {
+  public executePassNodes() {
     for (let index = 0; index < this.passNodes.length; index++) {
       const node = this.passNodes[index];
       if (node.refCount) {
@@ -159,7 +159,7 @@ export class FrameGraphEngine {
           resource.preExecuteDestroy(this.engine);
         }
 
-        this.frameGraphPasses[index].execute(this, this.frameGraphPasses[index], displayObjects);
+        this.frameGraphPasses[index].execute(this, this.frameGraphPasses[index]);
 
         for (const resource of node.devirtualize) {
           resource.postExecuteDevirtualize(this.engine);

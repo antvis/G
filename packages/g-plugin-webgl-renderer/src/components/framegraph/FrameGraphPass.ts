@@ -1,12 +1,11 @@
-import { DisplayObject } from '@antv/g';
 import { FrameGraphEngine } from '../../FrameGraphEngine';
 
 export class FrameGraphPass<PassData> {
-  public name: string;
+  name: string;
 
-  public data: PassData;
+  data: PassData;
 
-  public execute: (fg: FrameGraphEngine, pass: FrameGraphPass<PassData>, displayObjects: DisplayObject[]) => void;
+  execute: (fg: FrameGraphEngine, pass: FrameGraphPass<PassData>) => void;
 
-  public tearDown: () => void;
+  tearDown: () => void;
 }

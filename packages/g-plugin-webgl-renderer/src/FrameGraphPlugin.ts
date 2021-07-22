@@ -103,15 +103,21 @@ export class FrameGraphPlugin implements RenderingPlugin {
       this.engine.destroy();
     });
 
-    renderingService.hooks.render.tap(FrameGraphPlugin.tag, (dirtyObjects: DisplayObject<any>[]) => {
+    renderingService.hooks.render.tap(FrameGraphPlugin.tag, (dirtyObject: DisplayObject<any>) => {
       // skip group
-      const objects = dirtyObjects.filter((object) => object.nodeType !== SHAPE.Group);
+      // const objects = dirtyObjects.filter((object) => object.nodeType !== SHAPE.Group);
 
-      this.frameGraphSystem.compile();
-      this.frameGraphSystem.executePassNodes(objects);
+      if (dirtyObject.nodeType === SHAPE.Group) {
+        return;
+      }
+
+      const renderPass = this.renderPassFactory<RenderPassData>(
+        RenderPass.IDENTIFIER,
+      ) as RenderPass;
+      renderPass.pushToRenderQueue(dirtyObject);
     });
 
-    renderingService.hooks.beforeRender.tap(FrameGraphPlugin.tag, () => {
+    renderingService.hooks.beginFrame.tap(FrameGraphPlugin.tag, () => {
       // update viewport
       const { width, height } = this.canvasConfig;
       const dpr = this.contextService.getDPR();
@@ -125,6 +131,10 @@ export class FrameGraphPlugin implements RenderingPlugin {
       this.engine.beforeRender();
 
       this.buildFrameGraph();
+    });
+
+    renderingService.hooks.endFrame.tap(FrameGraphPlugin.tag, () => {
+      this.frameGraphSystem.executePassNodes();
     });
 
     renderingService.hooks.init.tap(FrameGraphPlugin.tag, async () => {
@@ -165,7 +175,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
         // handle batch
         const isBatch = tagName === Batch.tag;
         if (isBatch) {
-          tagName = ((object as unknown) as Batch).getBatchType()!;
+          tagName = ((object as unknown) as Batch<any>).getBatchType()!;
         }
 
         const modelBuilder = this.modelBuilderFactory(tagName);
@@ -186,7 +196,6 @@ export class FrameGraphPlugin implements RenderingPlugin {
         const pickingColorBuffer: number[] = [];
         if (isBatch) {
           object.children.forEach((instance: DisplayObject<any>) => {
-            // TODO: save pickingID
             const childPickingId = this.pickingIdGenerator.getId(instance);
             pickingColorBuffer.push(...this.pickingIdGenerator.encodePickingColor(childPickingId));
           });
@@ -283,5 +292,6 @@ export class FrameGraphPlugin implements RenderingPlugin {
 
     // render to screen
     this.frameGraphSystem.present(copyPass.data.output);
+    this.frameGraphSystem.compile();
   }
 }

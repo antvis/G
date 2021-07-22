@@ -1,4 +1,4 @@
-import EventEmitter from 'eventemitter3';
+import { EventEmitter } from 'eventemitter3';
 import { inject, injectable } from 'inversify';
 import { IDENTIFIER } from './identifier';
 import { Component, ComponentConstructor } from './Component';

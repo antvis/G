@@ -15,7 +15,7 @@ const canvas = new Canvas({
 
 const circleBatch = new Batch({});
 
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 5; i++) {
   const circle = new Circle({
     id: i,
     attrs: {

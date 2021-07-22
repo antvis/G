@@ -18,7 +18,7 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-for (let i = 0; i < 10000; i++) {
+for (let i = 0; i < 10; i++) {
   const circle = new Circle({
     attrs: {
       x: Math.random() * 600,

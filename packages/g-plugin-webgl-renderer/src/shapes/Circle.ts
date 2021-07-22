@@ -61,6 +61,25 @@ export class CircleModelBuilder implements ModelBuilder {
   @inject(ShaderModuleService)
   private shaderModule: ShaderModuleService;
 
+  // createOrUpdateAttribute(attributeName: keyof CircleStyleProps, objects: DisplayObject<CircleStyleProps>[]) {
+  //   const entity = object.getEntity();
+  //   const geometry = entity.getComponent(Geometry3D);
+
+  //   if (attributeName === 'r') {
+  //     geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from(attributes.instancedSizes), {
+  //       arrayStride: 4 * 2,
+  //       stepMode: 'instance',
+  //       attributes: [
+  //         {
+  //           shaderLocation: 3,
+  //           offset: 0,
+  //           format: 'float2',
+  //         },
+  //       ],
+  //     });
+  //   }
+  // }
+
   onAttributeChanged(object: DisplayObject<CircleStyleProps>, name: string, value: any) {
     const entity = object.getEntity();
     const renderable = entity.getComponent(SceneGraphNode);
@@ -205,7 +224,10 @@ export class CircleModelBuilder implements ModelBuilder {
 
     let config: Partial<IPointConfig>[] = [];
 
+    console.log('isBatch', isBatch);
+
     if (isBatch) {
+      // TODO: use sortable.sorted
       config = (object as Batch<any>).children.map((instance: DisplayObject<any>) => {
         const [halfWidth, halfHeight] = this.getSize(instance.attributes, tagName);
         const fillColor = rgb2arr(instance.attributes.fill || '');

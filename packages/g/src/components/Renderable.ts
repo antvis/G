@@ -1,14 +1,5 @@
 import { Component } from '@antv/g-ecs';
-import RBush from 'rbush';
 import { AABB } from '../shapes';
-
-export interface RBushNode {
-  name: string;
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
-}
 
 export class Renderable extends Component {
   static tag = 'c-renderable';
@@ -26,15 +17,6 @@ export class Renderable extends Component {
    * dirty rectangle(aabb) in last render frame
    */
   dirtyAABB: AABB;
-
-  /**
-   * r-bush tree node
-   */
-  rBushNode: RBushNode;
-  /**
-   * r-bush tree
-   */
-  rBush: RBush<RBushNode>;
 
   /**
    * dirty rectangle flag

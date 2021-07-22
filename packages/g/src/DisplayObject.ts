@@ -1,7 +1,7 @@
 import { Entity, System } from '@antv/g-ecs';
 import { isObject, isNil, isBoolean, isFunction } from '@antv/util';
 import { vec3 } from 'gl-matrix';
-import EventEmitter from 'eventemitter3';
+import { EventEmitter } from 'eventemitter3';
 import { Cullable, Geometry, Renderable, SceneGraphNode, Transform } from './components';
 import { Animator, STATUS } from './components/Animator';
 import { createVec3, rad2deg, getEuler } from './utils/math';
@@ -75,11 +75,11 @@ export interface DisplayObjectConfig<StyleProps> {
   className?: string;
 
   /**
-   * @deprecated use `style['z-index']` instead
+   * @deprecated use `style.zIndex` instead
    */
   zIndex?: number;
   /**
-   * @deprecated use `style['visibility'] = 'visible'` instead
+   * @deprecated use `style.visibility = 'visible'` instead
    */
   visible?: boolean;
   /**
@@ -804,7 +804,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
   /* z-index & visibility */
 
   setZIndex(zIndex: number) {
-    this.attr('z-index', zIndex);
+    this.style.zIndex = zIndex;
   }
 
   /**
@@ -997,7 +997,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps> extends EventEmitt
       const { x = 0, y = 0 } = this.attributes;
       // update transform
       this.sceneGraphService.setLocalPosition(this, x, y);
-    } else if (name === 'z-index') {
+    } else if (name === 'zIndex') {
       const sortable = entity.getComponent(Sortable);
       sortable.zIndex = value;
 

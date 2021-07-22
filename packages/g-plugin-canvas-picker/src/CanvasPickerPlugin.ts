@@ -12,7 +12,7 @@ import {
   BaseStyleProps,
   Point,
 } from '@antv/g';
-import { PathGeneratorFactory, PathGenerator } from '@antv/g-plugin-canvas-renderer';
+import { PathGeneratorFactory, PathGenerator, RBushRoot, RBushNodeAABB, RBush } from '@antv/g-plugin-canvas-renderer';
 import { mat4, vec3 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
 
@@ -48,8 +48,11 @@ export class CanvasPickerPlugin implements RenderingPlugin {
   @inject(OffscreenCanvasCreator)
   private offscreenCanvas: OffscreenCanvasCreator;
 
+  @inject(RBushRoot)
+  private rBush: RBush<RBushNodeAABB>;
+
   @inject(PathGeneratorFactory)
-  private pathGeneratorFactory: (tagName: SHAPE) => PathGenerator;
+  private pathGeneratorFactory: (tagName: SHAPE) => PathGenerator<any>;
 
   @inject(PointInPathPickerFactory)
   private pointInPathPickerFactory: (tagName: SHAPE) => PointInPathPicker<any>;
@@ -67,7 +70,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       );
 
       // query by AABB first with spatial index(r-tree)
-      const rBushNodes = this.renderingContext.rBush.search({
+      const rBushNodes = this.rBush.search({
         minX: position[0],
         minY: position[1],
         maxX: position[0],

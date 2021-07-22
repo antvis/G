@@ -69,13 +69,13 @@ describe('DisplayObject Sort', () => {
     children.sort(sceneGraphService.sort);
     expect(children[0]).to.eqls(group4);
     expect(children[2]).to.eqls(group2);
-    expect(group2.getAttribute('z-index')).to.eqls(3);
+    expect(group2.style.zIndex).to.eqls(3);
 
     // push to back
     group2.toBack();
     children.sort(sceneGraphService.sort);
     expect(children[0]).to.eqls(group2);
     expect(children[2]).to.eqls(group3);
-    expect(group2.getAttribute('z-index')).to.eqls(0);
+    expect(group2.style.zIndex).to.eqls(0);
   });
 });

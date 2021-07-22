@@ -1,8 +1,15 @@
 import RBush from 'rbush';
-import { RBushNode } from '../components';
 import { DisplayObject } from '../DisplayObject';
 import { AABB } from '../shapes';
 
+/**
+ * why we need re-render
+ */
+export enum RENDER_REASON {
+  CameraChanged,
+  DisplayObjectChanged,
+  None,
+}
 export const RenderingContext = Symbol('RenderingContext');
 export interface RenderingContext {
   /**
@@ -15,24 +22,14 @@ export interface RenderingContext {
    */
   force: boolean;
 
-  /**
-   * spatial index with RTree which can speed up the search for AABBs
-   */
-  rBush: RBush<RBushNode>;
-
-  /**
-   * all the entities
-   */
-  displayObjects: DisplayObject<any>[];
-  dirtyRectangle: AABB | undefined;
-  dirtyDisplayObjects: DisplayObject<any>[];
-
   removedAABBs: AABB[];
 
-  /**
-   * picked object in last frame
-   */
-  lastPickedDisplayObject: DisplayObject<any> | undefined;
-
   cameraDirty: boolean;
+
+  /**
+   * reason of re-render, reset after every renderred frame
+   */
+  renderReasons: Set<RENDER_REASON>;
+
+  dirty: boolean;
 }

@@ -51,7 +51,7 @@ export interface BaseStyleProps {
   /**
    * z-index in CSS
    */
-  ['z-index']?: number;
+  zIndex?: number;
 
   cursor?: Cursor,
 
@@ -164,6 +164,11 @@ export interface RendererConfig {
    * enable auto rendering
    */
   enableAutoRendering: boolean;
+
+  /**
+   * enable TAA in WebGL
+   */
+  enableTAA: boolean;
 }
 
 export const CanvasConfig = Symbol('CanvasConfig');

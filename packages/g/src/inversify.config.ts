@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { Container } from 'inversify';
 import { containerModule as ecsModule, World } from '@antv/g-ecs';
 import { containerModule as globalModule } from './global-module';

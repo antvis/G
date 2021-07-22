@@ -128,52 +128,50 @@ export class SVGRendererPlugin implements RenderingPlugin {
       object.getEntity().removeComponent(ElementSVG, true);
     });
 
-    renderingService.hooks.render.tap(SVGRendererPlugin.tag, (objects: DisplayObject<any>[]) => {
+    renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject<any>) => {
       const $namespace = this.contextService.getDomElement();
       if ($namespace) {
         // @ts-ignore
         this.applyTransform($namespace, this.camera.getOrthoMatrix());
       }
 
-      objects.forEach((object) => {
-        const entity = object.getEntity();
-        const $el = entity.getComponent(ElementSVG)?.$el;
-        const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
-        if ($el && $groupEl) {
-          const { nodeType, attributes } = object;
-          // apply local RTS transformation to <group> wrapper
-          this.applyTransform($groupEl, object.getLocalTransform());
+      const entity = object.getEntity();
+      const $el = entity.getComponent(ElementSVG)?.$el;
+      const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
+      if ($el && $groupEl) {
+        const { nodeType, attributes } = object;
+        // apply local RTS transformation to <group> wrapper
+        this.applyTransform($groupEl, object.getLocalTransform());
 
-          $el.setAttribute('fill', 'none');
-          if (nodeType === SHAPE.Image) {
-            $el.setAttribute('preserveAspectRatio', 'none');
-          }
-
-          // apply attributes
-          for (const name in attributes) {
-            this.updateAttribute(entity, name, `${attributes[name]}`);
-          }
-
-          // generate path
-          const elementRenderer = this.elementRendererFactory(nodeType);
-          if (elementRenderer) {
-            elementRenderer.apply($el, attributes);
-          }
-
-          this.reorderChildren($groupEl, object.children || []);
-
-          // finish rendering, clear dirty flag
-          const renderable = entity.getComponent(Renderable);
-          renderable.dirty = false;
+        $el.setAttribute('fill', 'none');
+        if (nodeType === SHAPE.Image) {
+          $el.setAttribute('preserveAspectRatio', 'none');
         }
-      });
+
+        // apply attributes
+        for (const name in attributes) {
+          this.updateAttribute(entity, name, `${attributes[name]}`);
+        }
+
+        // generate path
+        const elementRenderer = this.elementRendererFactory(nodeType);
+        if (elementRenderer) {
+          elementRenderer.apply($el, attributes);
+        }
+
+        this.reorderChildren($groupEl, object.children || []);
+
+        // finish rendering, clear dirty flag
+        const renderable = entity.getComponent(Renderable);
+        renderable.dirty = false;
+      }
     });
 
     renderingService.hooks.attributeChanged.tap(
       SVGRendererPlugin.tag,
       (object: DisplayObject<any>, name: string, value: any) => {
         const entity = object.getEntity();
-        if (name === 'z-index') {
+        if (name === 'zIndex') {
           const parent = object.parentNode;
           const parentEntity = object.parentNode?.getEntity();
           const $groupEl = parentEntity?.getComponent(ElementSVG)?.$groupEl;

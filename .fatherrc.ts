@@ -9,12 +9,11 @@ export default {
   pkgs: [
     'g-math',
     'g-ecs',
-    // 'g-ecs2',
     'g',
     'g-plugin-dom-interaction',
     'g-plugin-css-select',
-    'g-plugin-canvas-picker',
     'g-plugin-canvas-renderer',
+    'g-plugin-canvas-picker',
     'g-canvas',
     'g-plugin-svg-renderer',
     'g-plugin-svg-picker',

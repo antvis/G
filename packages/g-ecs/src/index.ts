@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { ContainerModule, decorate, injectable, interfaces } from 'inversify';
-import EventEmitter from 'eventemitter3';
+import { EventEmitter } from 'eventemitter3';
 import { ILifecycle, ObjectPool } from './ObjectPool';
 import { Component, ComponentConstructor } from './Component';
 import { IDENTIFIER } from './identifier';

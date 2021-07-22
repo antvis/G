@@ -139,6 +139,7 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
    * deprecated props and methods
    */
   initEvent(): void { }
+  initUIEvent(): void { }
   view: WindowProxy;
   which: number;
   returnValue: boolean;

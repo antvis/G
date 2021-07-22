@@ -129,7 +129,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     this.transformArrowHead(head, isStart);
 
     // heads should display on top of body
-    head.setAttribute('z-index', 1);
+    head.setAttribute('zIndex', 1);
 
     if (isStart) {
       this.startHead = head;

@@ -8,6 +8,7 @@ import {
   Batch,
   DisplayObject,
   RenderingContext,
+  Rectangle,
 } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { mat4, vec3 } from 'gl-matrix';
@@ -17,6 +18,7 @@ import { PassNode } from '../components/framegraph/PassNode';
 import { ResourcePool } from '../components/framegraph/ResourcePool';
 import {
   IAttribute,
+  IFramebuffer,
   IModelInitializationOptions,
   IUniform,
   RenderingEngine,
@@ -30,10 +32,21 @@ import { IUniformBinding, Material3D } from '../components/Material3D';
 import { View } from '../View';
 import { ModelBuilder, ModelBuilderFactory } from '../shapes';
 import { ShaderModuleService, ShaderType } from '../services/shader-module';
+import { PickingIdGenerator } from '../PickingIdGenerator';
 
 export interface RenderPassData {
   output: FrameGraphHandle;
+  /**
+   * FBO used in Picking
+   */
+  picking: FrameGraphHandle;
 }
+
+export const PickingStage = {
+  NONE: 0.0,
+  ENCODE: 1.0,
+  HIGHLIGHT: 2.0,
+};
 
 @injectable()
 export class RenderPass implements IRenderPass<RenderPassData> {
@@ -54,6 +67,9 @@ export class RenderPass implements IRenderPass<RenderPassData> {
   @inject(ShaderModuleService)
   private shaderModuleService: ShaderModuleService;
 
+  @inject(PickingIdGenerator)
+  private pickingIdGenerator: PickingIdGenerator;
+
   @inject(View)
   private view: View;
 
@@ -63,7 +79,56 @@ export class RenderPass implements IRenderPass<RenderPassData> {
   @inject(ModelBuilderFactory)
   private modelBuilderFactory: (shape: SHAPE) => ModelBuilder;
 
+  private pickingFramebuffer: IFramebuffer;
+
   displayObjectsLastFrame: DisplayObject<any>[] = [];
+
+  pushToRenderQueue(object: DisplayObject<any>) {
+    this.displayObjectsLastFrame.push(object);
+  }
+
+  clearQueue() {
+    this.displayObjectsLastFrame = [];
+  }
+
+  /**
+   * return displayobjects in target rectangle
+   */
+  pickByRectangle(rect: Rectangle): DisplayObject<any>[] {
+    const targets: DisplayObject<any>[] = [];
+    let pickedColors: Uint8Array | undefined;
+    let pickedFeatureIdx = -1;
+    for (let i = 0; i < rect.width; i++) {
+      for (let j = 0; j < rect.height; j++) {
+        // avoid realloc, draw a 1x1 quad
+        pickedColors = this.engine.readPixels({
+          x: rect.x + i,
+          y: rect.y + i,
+          width: 1,
+          height: 1,
+          data: new Uint8Array(1 * 1 * 4),
+          framebuffer: this.pickingFramebuffer,
+        });
+
+        if (
+          pickedColors &&
+          (pickedColors[0] !== 0 || pickedColors[1] !== 0 || pickedColors[2] !== 0)
+        ) {
+          pickedFeatureIdx = this.pickingIdGenerator.decodePickingColor(pickedColors);
+        }
+
+        if (pickedFeatureIdx > -1) {
+          const pickedDisplayObject = this.pickingIdGenerator.getById(pickedFeatureIdx);
+          if (pickedDisplayObject
+            && targets.indexOf(pickedDisplayObject) === -1) {
+            targets.push(pickedDisplayObject);
+          }
+        }
+      }
+    }
+
+    return targets;
+  }
 
   setup = (
     fg: FrameGraphEngine,
@@ -75,22 +140,35 @@ export class RenderPass implements IRenderPass<RenderPassData> {
       height: 1,
       usage: gl.RENDER_ATTACHMENT | gl.SAMPLED | gl.COPY_SRC,
     });
+    const picking = fg.createRenderTarget(passNode, 'picking buffer', {
+      width: 1,
+      height: 1,
+      usage: gl.RENDER_ATTACHMENT | gl.SAMPLED | gl.COPY_SRC,
+    });
 
     pass.data = {
       output: passNode.write(fg, output),
+      picking: passNode.write(fg, picking),
     };
   };
 
   execute = (
     fg: FrameGraphEngine,
     pass: FrameGraphPass<RenderPassData>,
-    displayObjects: DisplayObject<any>[],
   ) => {
     const resourceNode = fg.getResourceNode(pass.data.output);
     const framebuffer = this.resourcePool.getOrCreateResource(resourceNode.resource);
 
+    const pickingResourceNode = fg.getResourceNode(pass.data.picking);
+    const pickingFramebuffer = this.resourcePool.getOrCreateResource(pickingResourceNode.resource);
+    this.pickingFramebuffer = pickingFramebuffer;
+
     const canvas = this.engine.getCanvas();
     framebuffer.resize({
+      width: canvas.width,
+      height: canvas.height,
+    });
+    pickingFramebuffer.resize({
       width: canvas.width,
       height: canvas.height,
     });
@@ -106,10 +184,37 @@ export class RenderPass implements IRenderPass<RenderPassData> {
           depth: 1,
         });
 
-        this.renderDisplayObjects(displayObjects);
-        this.displayObjectsLastFrame = displayObjects;
+        this.renderDisplayObjects(this.displayObjectsLastFrame);
       },
     );
+
+    this.engine.useFramebuffer(
+      {
+        framebuffer: pickingFramebuffer,
+        viewport: this.view.getViewport(),
+      },
+      () => {
+        this.engine.clear({
+          framebuffer: pickingFramebuffer,
+          color: this.view.getClearColor(),
+          depth: 1,
+        });
+
+        for (const object of this.displayObjectsLastFrame) {
+          const material = object.getEntity().getComponent(Material3D);
+          material.setUniform(UNIFORM.PickingStage, PickingStage.ENCODE);
+        }
+
+        this.renderDisplayObjects(this.displayObjectsLastFrame);
+
+        for (const object of this.displayObjectsLastFrame) {
+          const material = object.getEntity().getComponent(Material3D);
+          material.setUniform(UNIFORM.PickingStage, PickingStage.NONE);
+        }
+      },
+    );
+
+    this.clearQueue();
   };
 
   renderDisplayObjects(displayObjects: DisplayObject<any>[]) {
@@ -196,7 +301,6 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     }
 
     const geometry = entity.getComponent(Geometry3D);
-    const transform = entity.getComponent(Transform);
     const sceneGraphNode = entity.getComponent(SceneGraphNode);
     const batchSize = (sceneGraphNode.tagName === Batch.tag && displayObject.children.length) || 0;
 
@@ -234,14 +338,14 @@ export class RenderPass implements IRenderPass<RenderPassData> {
         const modelMatrixAttribute2Buffer: number[] = [];
         const modelMatrixAttribute3Buffer: number[] = [];
 
-        const parentWorldMatrix = this.sceneGraph.getWorldTransform(entity, transform);
+        const parentWorldMatrix = displayObject.getWorldTransform();
 
         displayObject.children.forEach((instance: DisplayObject<any>) => {
           // don't get each child's worldTransform here, which will cause bad perf
           const m = mat4.multiply(
             mat4.create(),
             parentWorldMatrix,
-            this.sceneGraph.getLocalTransform(instance.getEntity()),
+            instance.getLocalTransform(),
           );
           modelMatrixAttribute0Buffer.push(m[0], m[1], m[2], m[3]);
           modelMatrixAttribute1Buffer.push(m[4], m[5], m[6], m[7]);
@@ -268,7 +372,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
         (displayObject as Batch<any>).dirty = false;
       }
     } else {
-      const modelMatrix = this.sceneGraph.getWorldTransform(entity, transform);
+      const modelMatrix = displayObject.getWorldTransform();
 
       // set MVP matrix, other builtin uniforms @see https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
       material.setUniform({

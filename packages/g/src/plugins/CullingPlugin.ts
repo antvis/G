@@ -6,7 +6,7 @@ import { RenderingService, RenderingPlugin } from '../services/RenderingService'
 
 export const CullingStrategy = Symbol('CullingStrategy');
 export interface CullingStrategy {
-  isVisible(object: DisplayObject): boolean;
+  isVisible(object: DisplayObject<any>): boolean;
 }
 
 /**
@@ -23,8 +23,8 @@ export class CullingPlugin implements RenderingPlugin {
   private strategies: ContributionProvider<CullingStrategy>;
 
   apply(renderer: RenderingService) {
-    renderer.hooks.prepare.tap(CullingPlugin.tag, (objects: DisplayObject[]) => {
-      return objects.filter((object) => {
+    renderer.hooks.prepare.tap(CullingPlugin.tag, (object: DisplayObject<any> | null) => {
+      if (object) {
         const entity = object.getEntity();
         const cullable = entity.getComponent(Cullable);
         if (this.strategies.getContributions(true).length === 0) {
@@ -34,15 +34,19 @@ export class CullingPlugin implements RenderingPlugin {
           cullable.visible = this.strategies.getContributions(true).every((strategy) => strategy.isVisible(object));
         }
 
-        return object.attributes.visibility === 'visible' && (!cullable || cullable.visible);
-      });
+        if (object.attributes.visibility === 'visible'
+          && (!cullable || cullable.visible)
+        ) {
+          return object;
+        }
+      }
+
+      return object;
     });
 
-    renderer.hooks.afterRender.tap(CullingPlugin.tag, (objects: DisplayObject[]) => {
-      objects.forEach((object) => {
-        const entity = object.getEntity();
-        entity.getComponent(Cullable).visibilityPlaneMask = -1;
-      });
+    renderer.hooks.afterRender.tap(CullingPlugin.tag, (object: DisplayObject<any>) => {
+      const entity = object.getEntity();
+      entity.getComponent(Cullable).visibilityPlaneMask = -1;
     });
   }
 }
