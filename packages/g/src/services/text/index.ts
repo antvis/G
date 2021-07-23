@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { TextStyleProps } from '../../shapes-export';
+import type { TextStyleProps } from '../../shapes-export';
 import { toFontString } from '../../utils/text';
 import { OffscreenCanvasCreator } from './OffscreenCanvasCreator';
 
@@ -8,7 +8,7 @@ interface IFontMetrics {
   descent: number;
   fontSize: number;
 }
-type CharacterWidthCache = { [key: string]: number };
+type CharacterWidthCache = Record<string, number>;
 
 const TEXT_METRICS = {
   MetricsString: '|ÉqÅ',
@@ -41,7 +41,8 @@ const LATIN_REGEX = /[a-zA-Z0-9\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff!"#$%&'()*
 
 // Line breaking rules in CJK (Kinsoku Shori)
 // Refer from https://en.wikipedia.org/wiki/Line_breaking_rules_in_East_Asian_languages
-const regexCannotStartZhCn = /[!%),.:;?\]}¢°·'""†‡›℃∶、。〃〆〕〗〞﹚﹜！＂％＇），．：；？！］｝～]/;
+const regexCannotStartZhCn =
+  /[!%),.:;?\]}¢°·'""†‡›℃∶、。〃〆〕〗〞﹚﹜！＂％＇），．：；？！］｝～]/;
 const regexCannotEndZhCn = /[$(£¥·'"〈《「『【〔〖〝﹙﹛＄（．［｛￡￥]/;
 const regexCannotStartZhTw =
   /[!),.:;?\]}¢·–—'"•"、。〆〞〕〉》」︰︱︲︳﹐﹑﹒﹓﹔﹕﹖﹘﹚﹜！），．：；？︶︸︺︼︾﹀﹂﹗］｜｝､]/;
@@ -53,10 +54,10 @@ const regexCannotStartKoKr = /[!%),.:;?\]}¢°'"†‡℃〆〈《「『〕！�
 const regexCannotEndKoKr = /[$([{£¥'"々〇〉》」〔＄（［｛｠￥￦#]/;
 
 const regexCannotStart = new RegExp(
-  `${regexCannotStartZhCn.source}|${regexCannotStartZhTw.source}|${regexCannotStartJaJp.source}|${regexCannotStartKoKr.source}`
+  `${regexCannotStartZhCn.source}|${regexCannotStartZhTw.source}|${regexCannotStartJaJp.source}|${regexCannotStartKoKr.source}`,
 );
 const regexCannotEnd = new RegExp(
-  `${regexCannotEndZhCn.source}|${regexCannotEndZhTw.source}|${regexCannotEndJaJp.source}|${regexCannotEndKoKr.source}`
+  `${regexCannotEndZhCn.source}|${regexCannotEndZhTw.source}|${regexCannotEndJaJp.source}|${regexCannotEndKoKr.source}`,
 );
 
 @injectable()
@@ -177,7 +178,8 @@ export class TextService {
     }
     const lineHeight = strokeHeight || fontProperties.fontSize + strokeThickness;
     let height =
-      Math.max(lineHeight, fontProperties.fontSize + strokeThickness) + (lines.length - 1) * (lineHeight + leading);
+      Math.max(lineHeight, fontProperties.fontSize + strokeThickness) +
+      (lines.length - 1) * (lineHeight + leading);
     if (dropShadow) {
       height += dropShadowDistance;
     }
@@ -326,7 +328,7 @@ export class TextService {
     key: string,
     letterSpacing: number,
     cache: CharacterWidthCache,
-    context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D
+    context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   ): number {
     let width = cache[key];
     if (typeof width !== 'number') {

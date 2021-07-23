@@ -1,6 +1,5 @@
-import { Entity } from '@antv/g-ecs';
-import { IRenderer } from './AbstractRenderer';
-import { DisplayObject } from './DisplayObject';
+import type { IRenderer } from './AbstractRenderer';
+import type { DisplayObject } from './DisplayObject';
 
 export enum SHAPE {
   Custom = 'custom',
@@ -53,7 +52,7 @@ export interface BaseStyleProps {
    */
   zIndex?: number;
 
-  cursor?: Cursor,
+  cursor?: Cursor;
 
   stroke?: ColorType;
   /** 描边透明度 */
@@ -81,7 +80,7 @@ export interface BaseStyleProps {
 //   /** 圆半径 */
 //   r?: number;
 
-//   
+//
 //   /** Path 路径 */
 //   path?: string | object[];
 //   /** 图形坐标点 */
@@ -95,7 +94,7 @@ export interface BaseStyleProps {
 //   shadowOffsetX?: number;
 //   /** 阴影 y 方向偏移量 */
 //   shadowOffsetY?: number;
-//   
+//
 
 // };
 
@@ -172,6 +171,7 @@ export interface RendererConfig {
 }
 
 export const CanvasConfig = Symbol('CanvasConfig');
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface CanvasConfig {
   /**
    * Renderer
@@ -264,12 +264,8 @@ export type OnFrame<T extends BaseStyleProps> = (ratio: number) => T;
 
 export type Animation<StyleProps> = AnimateCfg & {
   id: string;
-  fromAttrs: {
-    [key: string]: any;
-  };
-  toAttrs: {
-    [key: string]: any;
-  };
+  fromAttrs: Record<string, any>;
+  toAttrs: Record<string, any>;
   startTime: number;
   pathFormatted: boolean;
   onFrame?: OnFrame<StyleProps>;

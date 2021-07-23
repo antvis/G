@@ -1,12 +1,13 @@
-import { AABB } from '../../shapes';
-import { BaseStyleProps } from '../../types';
+import type { AABB } from '../../shapes';
+import type { BaseStyleProps } from '../../types';
 
 export const GeometryUpdaterFactory = Symbol('GeometryUpdaterFactory');
 
 export const GeometryAABBUpdater = Symbol('GeometryAABBGenerator');
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface GeometryAABBUpdater<T extends BaseStyleProps> {
   dependencies: string[];
-  update(attributes: T, aabb: AABB): void;
+  update: (attributes: T, aabb: AABB) => void;
 }
 
 export { CircleUpdater } from './CircleUpdater';

@@ -1,12 +1,12 @@
-import { Component, Entity } from '@antv/g-ecs';
-import { BaseStyleProps, SHAPE } from '../types';
+import { Component } from '@antv/g-ecs';
+import type { BaseStyleProps, SHAPE } from '../types';
 
 /**
  * scene graph node, try to mimic `Element`
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element
  * @see https://developer.mozilla.org/en-US/docs/Web/API/ParentNode
  */
-export class SceneGraphNode<StyleProps extends BaseStyleProps> extends Component {
+export class SceneGraphNode<StyleProps extends BaseStyleProps = BaseStyleProps> extends Component {
   static tag = 'c-scene-graph-node';
 
   // /**

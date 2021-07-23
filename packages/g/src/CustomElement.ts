@@ -1,20 +1,39 @@
 import { SceneGraphNode } from './components';
-import { DisplayObject, DisplayObjectConfig, DISPLAY_OBJECT_EVENT } from './DisplayObject';
+import type { DisplayObjectConfig } from './DisplayObject';
+import { DisplayObject, DISPLAY_OBJECT_EVENT } from './DisplayObject';
 
 /**
  * shadow root
  * @see https://yuque.antfin-inc.com/antv/czqvg5/pgqipg
  */
-export abstract class CustomElement<CustomElementStyleProps> extends DisplayObject<CustomElementStyleProps> {
+export abstract class CustomElement<
+  CustomElementStyleProps,
+> extends DisplayObject<CustomElementStyleProps> {
   constructor(config: DisplayObjectConfig<CustomElementStyleProps>) {
     super(config);
 
     this.on(DISPLAY_OBJECT_EVENT.ChildInserted, this.handleChildInserted);
     this.on(DISPLAY_OBJECT_EVENT.ChildRemoved, this.handleChildRemoved);
     this.on(DISPLAY_OBJECT_EVENT.AttributeChanged, this.handleAttributeChanged);
+    this.on(DISPLAY_OBJECT_EVENT.Inserted, this.connectedCallback);
+    this.on(DISPLAY_OBJECT_EVENT.Removed, this.disconnectedCallback);
   }
 
-  abstract attributeChangedCallback(name: string, value: any): void;
+  /**
+   * fired after element insert into DOM tree
+   */
+  abstract connectedCallback(): void;
+
+  /**
+   * fired before element removed from DOM tree
+   */
+  abstract disconnectedCallback(): void;
+
+  abstract attributeChangedCallback<Key extends keyof CustomElementStyleProps>(
+    name: Key,
+    oldValue: CustomElementStyleProps[Key],
+    newValue: CustomElementStyleProps[Key],
+  ): void;
 
   private handleChildInserted(child: DisplayObject<any>) {
     child.forEach((node) => {
@@ -30,7 +49,13 @@ export abstract class CustomElement<CustomElementStyleProps> extends DisplayObje
     });
   }
 
-  private handleAttributeChanged(name: string, value: any, displayObject: DisplayObject<any>) {
-    this.attributeChangedCallback(name, value);
+  private handleAttributeChanged<Key extends keyof CustomElementStyleProps>(
+    name: Key,
+    oldValue: CustomElementStyleProps[Key],
+    value: CustomElementStyleProps[Key],
+  ) {
+    this.attributeChangedCallback(name, oldValue, value);
   }
+
+  abstract render(): DisplayObject;
 }

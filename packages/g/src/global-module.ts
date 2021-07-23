@@ -1,4 +1,5 @@
-import { interfaces, ContainerModule } from 'inversify';
+import type { interfaces } from 'inversify';
+import { ContainerModule } from 'inversify';
 import {
   DefaultAttributeAnimationUpdater,
   ColorAttributeAnimationUpdater,
@@ -26,6 +27,7 @@ import {
   SceneGraphSelectorFactory,
 } from './services/SceneGraphSelector';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
   // bind DisplayObject pool
   bind(DisplayObjectPool).toSelf().inSingletonScope();

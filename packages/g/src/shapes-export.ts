@@ -1,5 +1,8 @@
-import { DisplayObject, DisplayObjectConfig } from './DisplayObject';
-import { SHAPE, BaseStyleProps } from './types';
+/* eslint-disable max-classes-per-file */
+import type { DisplayObjectConfig } from './DisplayObject';
+import { DisplayObject } from './DisplayObject';
+import type { BaseStyleProps } from './types';
+import { SHAPE } from './types';
 
 export class Group extends DisplayObject<{}> {
   constructor(config?: DisplayObject<{}>) {
@@ -112,8 +115,7 @@ export class Line extends DisplayObject<LineStyleProps> {
   }
 }
 
-export interface PathStyleProps extends BaseStyleProps {
-}
+export type PathStyleProps = BaseStyleProps;
 export class Path extends DisplayObject<PathStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<PathStyleProps>) {
     super({
@@ -131,8 +133,7 @@ export class Path extends DisplayObject<PathStyleProps> {
   }
 }
 
-export interface PolylineStyleProps extends BaseStyleProps {
-}
+export type PolylineStyleProps = BaseStyleProps;
 export class Polyline extends DisplayObject<PolylineStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<PolylineStyleProps>) {
     super({
@@ -150,8 +151,7 @@ export class Polyline extends DisplayObject<PolylineStyleProps> {
   }
 }
 
-export interface PolygonStyleProps extends BaseStyleProps {
-}
+export type PolygonStyleProps = BaseStyleProps;
 export class Polygon extends DisplayObject<PolygonStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<PolygonStyleProps>) {
     super({
