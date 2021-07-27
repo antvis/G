@@ -56,6 +56,4 @@ export abstract class CustomElement<
   ) {
     this.attributeChangedCallback(name, oldValue, value);
   }
-
-  abstract render(): DisplayObject;
 }

@@ -1,10 +1,11 @@
-import { DisplayObject } from './DisplayObject';
+import type { DisplayObject } from './DisplayObject';
 import { FederatedEvent } from './FederatedEvent';
 import { Point } from './shapes/Point';
 
-export class FederatedMouseEvent extends FederatedEvent<
-  MouseEvent | PointerEvent | TouchEvent
-> implements MouseEvent {
+export class FederatedMouseEvent
+  extends FederatedEvent<MouseEvent | PointerEvent | TouchEvent>
+  implements MouseEvent
+{
   /** Whether the "alt" key was pressed when this mouse event occurred. */
   altKey: boolean;
 
@@ -30,39 +31,63 @@ export class FederatedMouseEvent extends FederatedEvent<
    * The coordinates of the mouse event relative to the canvas.
    */
   client: Point = new Point();
-  get clientX(): number { return this.client.x; }
-  get clientY(): number { return this.client.y; }
-  get x(): number { return this.clientX; }
-  get y(): number { return this.clientY; }
+  get clientX(): number {
+    return this.client.x;
+  }
+  get clientY(): number {
+    return this.client.y;
+  }
+  get x(): number {
+    return this.clientX;
+  }
+  get y(): number {
+    return this.clientY;
+  }
 
   /**
    * The movement in this pointer relative to the last `mousemove` event.
    */
   movement: Point = new Point();
-  get movementX(): number { return this.movement.x; }
-  get movementY(): number { return this.movement.y; }
+  get movementX(): number {
+    return this.movement.x;
+  }
+  get movementY(): number {
+    return this.movement.y;
+  }
 
   /**
    * The offset of the pointer coordinates w.r.t. target DisplayObject in world space. This is
    * not supported at the moment.
    */
   offset: Point = new Point();
-  get offsetX(): number { return this.offset.x; }
-  get offsetY(): number { return this.offset.y; }
+  get offsetX(): number {
+    return this.offset.x;
+  }
+  get offsetY(): number {
+    return this.offset.y;
+  }
 
   /**
    * The pointer coordinates in world space.
    */
   global: Point = new Point();
-  get globalX(): number { return this.global.x; }
-  get globalY(): number { return this.global.y; }
+  get globalX(): number {
+    return this.global.x;
+  }
+  get globalY(): number {
+    return this.global.y;
+  }
 
   /**
    * The pointer coordinates in sceen space.
    */
   screen: Point = new Point();
-  get screenX(): number { return this.screen.x; }
-  get screenY(): number { return this.screen.y; }
+  get screenX(): number {
+    return this.screen.x;
+  }
+  get screenY(): number {
+    return this.screen.y;
+  }
 
   getModifierState(key: string): boolean {
     return 'getModifierState' in this.nativeEvent && this.nativeEvent.getModifierState(key);
