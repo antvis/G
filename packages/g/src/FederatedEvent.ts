@@ -1,6 +1,6 @@
-import { DisplayObject } from './DisplayObject';
+import type { DisplayObject } from './DisplayObject';
 import { Point } from './shapes/Point';
-import { EventService } from './services';
+import type { EventService } from './services';
 
 /**
  * An DOM-compatible synthetic event implementation that is "forwarded" on behalf of an original
@@ -74,16 +74,24 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
    * This is a non-standard property.
    */
   layer: Point = new Point();
-  get layerX(): number { return this.layer.x; }
-  get layerY(): number { return this.layer.y; }
+  get layerX(): number {
+    return this.layer.x;
+  }
+  get layerY(): number {
+    return this.layer.y;
+  }
 
   /**
    * The coordinates of the event relative to the DOM document.
    * This is a non-standard property.
    */
   page: Point = new Point();
-  get pageX(): number { return this.page.x; }
-  get pageY(): number { return this.page.y; }
+  get pageX(): number {
+    return this.page.x;
+  }
+  get pageY(): number {
+    return this.page.y;
+  }
 
   /**
    * The event boundary which manages this event. Propagation can only occur
@@ -97,7 +105,7 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
   /**
    * The propagation path for this event
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/composedPath
-   * 
+   *
    * So composedPath()[0] represents the original target.
    * @see https://polymer-library.polymer-project.org/3.0/docs/devguide/events#retargeting
    */
@@ -138,8 +146,8 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
    * added for compatibility with DOM Event,
    * deprecated props and methods
    */
-  initEvent(): void { }
-  initUIEvent(): void { }
+  initEvent(): void {}
+  initUIEvent(): void {}
   view: WindowProxy;
   which: number;
   returnValue: boolean;

@@ -1,10 +1,11 @@
 import { injectable } from 'inversify';
-import { ILifecycle } from './ObjectPool';
+import type { ILifecycle } from './ObjectPool';
 
 let counter = 0;
 
 @injectable()
 export class Component<C = {}> implements ILifecycle {
+  // eslint-disable-next-line no-plusplus
   readonly pid = counter++;
 
   public getId() {

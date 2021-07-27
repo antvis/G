@@ -36,7 +36,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS && npm run lint"
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "devDependencies": {
@@ -45,11 +45,13 @@
     "@types/chai": "^4.2.18",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.0.23",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
     "@umijs/fabric": "^2.5.13",
     "chai": "^4.3.4",
     "chai-almost": "^1.0.1",
     "cross-env": "^6.0.3",
-    "eslint": "^7.27.0",
+    "eslint": "^7.28.0",
     "eslint-plugin-jest": "24.3.6",
     "father": "^2.30.6",
     "git-contributor": "~1.0.8",
@@ -64,7 +66,7 @@
     "sinon": "^11.1.1",
     "sinon-chai": "^3.7.0",
     "ts-jest": "^26.4.4",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.4"
   },
   "resolutions": {
     "monaco-editor": "0.21.2"

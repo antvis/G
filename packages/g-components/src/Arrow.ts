@@ -1,14 +1,12 @@
-import {
-  CustomElement,
+import type {
   DisplayObject,
   Line,
-  Path,
   Polyline,
-  SHAPE,
   BaseStyleProps,
   DisplayObjectConfig,
   LineStyleProps,
 } from '@antv/g';
+import { CustomElement, Path, SHAPE } from '@antv/g';
 import { vec3 } from 'gl-matrix';
 
 type ArrowHead = boolean | DisplayObject<any>;
@@ -162,7 +160,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     } else if (bodyType === SHAPE.Polyline) {
       // @ts-ignore
       const points = this.body.attributes.points as number[][];
-      const length = points.length;
+      const { length } = points;
       x1 = isStart ? points[1][0] : points[length - 2][0];
       y1 = isStart ? points[1][1] : points[length - 2][1];
       x2 = isStart ? points[0][0] : points[length - 1][0];
@@ -198,9 +196,9 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
   private getTangent(path: Path, isStart: boolean): [number, number][] {
     // @ts-ignore
     const { segments } = path.attributes;
-    const length = segments.length;
+    const { length } = segments;
 
-    let result: [number, number][] = [];
+    const result: [number, number][] = [];
     if (length > 1) {
       let startPoint = isStart ? segments[0].currentPoint : segments[length - 2].currentPoint;
       let endPoint = isStart ? segments[1].currentPoint : segments[length - 1].currentPoint;
@@ -231,8 +229,9 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       attrs: {
         // draw an angle '<'
         // @ts-ignore
-        path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${10 * sin(PI / 6)
-          }`,
+        path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${
+          10 * sin(PI / 6)
+        }`,
         stroke,
         lineWidth,
         anchor: [0.5, 0.5], // set anchor to center
@@ -240,7 +239,10 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     });
   }
 
-  private applyArrowStyle(attributes: ArrowStyleProps, objects: (DisplayObject<any> | undefined)[]) {
+  private applyArrowStyle(
+    attributes: ArrowStyleProps,
+    objects: (DisplayObject<any> | undefined)[],
+  ) {
     objects.forEach((shape) => {
       if (shape) {
         shape.attr(attributes);

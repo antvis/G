@@ -1,11 +1,13 @@
-import { Entity, Matcher, System } from '@antv/g-ecs';
+/* eslint-disable max-classes-per-file */
+import type { Entity, System } from '@antv/g-ecs';
+import { Matcher } from '@antv/g-ecs';
 import { isNumber, isFunction, isObject, each } from '@antv/util';
 import * as d3Ease from 'd3-ease';
 import { interpolate } from 'd3-interpolate';
 import { Animator, STATUS } from '../components/Animator';
 import { Renderable } from '../components/Renderable';
 import { inject, injectable, multiInject } from 'inversify';
-import { AnimateCfg, Animation, OnFrame } from '../types';
+import type { AnimateCfg, Animation, OnFrame } from '../types';
 import { isColorProp, isGradientColor } from '../utils/color';
 import { SceneGraphNode } from '../components';
 import { DisplayObjectPool } from '../DisplayObjectPool';
@@ -14,9 +16,10 @@ const noop = () => {};
 
 export const AttributeAnimationUpdaters = Symbol('AttributeAnimationUpdaters');
 export const AttributeAnimationUpdater = Symbol('AttributeAnimationUpdater');
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface AttributeAnimationUpdater {
-  filter(attribute: string, fromAttribute: any, toAttribute: any): boolean;
-  update<T>(entity: Entity, fromAttribute: T, toAttribute: T, ratio: number): T;
+  filter: (attribute: string, fromAttribute: any, toAttribute: any) => boolean;
+  update: <T>(entity: Entity, fromAttribute: T, toAttribute: T, ratio: number) => T;
 }
 
 /**
@@ -244,7 +247,7 @@ export class Timeline implements System {
       return animations;
     }
     const { startTime, delay = 0, duration } = animation;
-    const hasOwnProperty = Object.prototype.hasOwnProperty;
+    const { hasOwnProperty } = Object.prototype;
     each(animations, (item) => {
       // 后一个动画开始执行的时间 < 前一个动画的结束时间 && 后一个动画的执行时间 > 前一个动画的延迟
       if (
@@ -315,15 +318,14 @@ export class Timeline implements System {
         this.changeEntityAttributes(entity, updatedAttrs);
       }
       return false;
-    } else {
-      // 动画已执行完
-      if (onFrame) {
-        this.changeEntityAttributes(entity, onFrame(1));
-      } else {
-        this.changeEntityAttributes(entity, toAttrs);
-      }
-      return true;
     }
+    // 动画已执行完
+    if (onFrame) {
+      this.changeEntityAttributes(entity, onFrame(1));
+    } else {
+      this.changeEntityAttributes(entity, toAttrs);
+    }
+    return true;
   }
 
   private changeEntityAttributes(entity: Entity, attributes: Record<string, any>) {

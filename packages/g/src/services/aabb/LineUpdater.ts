@@ -1,8 +1,8 @@
 import { vec3 } from 'gl-matrix';
 import { injectable } from 'inversify';
-import { GeometryAABBUpdater } from '.';
-import { AABB } from '../../shapes';
-import { LineStyleProps } from '../../shapes-export';
+import type { GeometryAABBUpdater } from '.';
+import type { AABB } from '../../shapes';
+import type { LineStyleProps } from '../../shapes-export';
 
 @injectable()
 export class LineUpdater implements GeometryAABBUpdater<LineStyleProps> {
@@ -23,9 +23,17 @@ export class LineUpdater implements GeometryAABBUpdater<LineStyleProps> {
     attributes.y = minY + anchor[1] * height;
 
     const halfExtents = vec3.fromValues(width / 2, height / 2, 0);
-    const center = vec3.fromValues((1 - anchor[0] * 2) * halfExtents[0], (1 - anchor[1] * 2) * halfExtents[1], 0);
+    const center = vec3.fromValues(
+      (1 - anchor[0] * 2) * halfExtents[0],
+      (1 - anchor[1] * 2) * halfExtents[1],
+      0,
+    );
 
-    vec3.add(halfExtents, halfExtents, vec3.fromValues(lineWidth + lineAppendWidth, lineWidth + lineAppendWidth, 0));
+    vec3.add(
+      halfExtents,
+      halfExtents,
+      vec3.fromValues(lineWidth + lineAppendWidth, lineWidth + lineAppendWidth, 0),
+    );
     aabb.update(center, halfExtents);
   }
 }

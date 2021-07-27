@@ -1,5 +1,5 @@
 import { isNumber } from '@antv/util';
-import { TextStyleProps } from '../shapes-export';
+import type { TextStyleProps } from '../shapes-export';
 
 const genericFontFamilies = ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'];
 
@@ -24,5 +24,7 @@ export function toFontString(attributes: TextStyleProps) {
     }
     (fontFamilies as string[])[i] = fontFamily;
   }
-  return `${fontStyle} ${fontVariant} ${fontWeight} ${fontSizeString} ${(fontFamilies as string[]).join(',')}`;
+  return `${fontStyle} ${fontVariant} ${fontWeight} ${fontSizeString} ${(
+    fontFamilies as string[]
+  ).join(',')}`;
 }
