@@ -1,7 +1,10 @@
-import { DisplayObject, PolylineStyleProps, Point } from '@antv/g';
+import type { DisplayObject, PolylineStyleProps, Point } from '@antv/g';
 import { inPolygon, inPolyline } from './utils/math';
 
-export function isPointInPath(displayObject: DisplayObject<PolylineStyleProps>, position: Point): boolean {
+export function isPointInPath(
+  displayObject: DisplayObject<PolylineStyleProps>,
+  position: Point,
+): boolean {
   // @ts-ignore
   const { stroke, fill, lineWidth = 0, points, x = 0, y = 0 } = displayObject.attributes;
 

@@ -1,18 +1,18 @@
-import { ContainerModule } from 'inversify';
-import { RendererConfig } from './types';
+import type { ContainerModule } from 'inversify';
+import type { RendererConfig } from './types';
 
 export interface IRenderer {
-  getConfig(): RendererConfig;
+  getConfig: () => RendererConfig;
 
   /**
    * register plugin at runtime
    */
-  registerPlugin(containerModule: ContainerModule): void;
+  registerPlugin: (containerModule: ContainerModule) => void;
 
   /**
    * return all registered plugins
    */
-  getPlugins(): ContainerModule[];
+  getPlugins: () => ContainerModule[];
 }
 
 export abstract class AbstractRenderer implements IRenderer {

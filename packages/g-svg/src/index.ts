@@ -1,4 +1,5 @@
-import { AbstractRenderer, RendererConfig, ContextService } from '@antv/g';
+import type { RendererConfig } from '@antv/g';
+import { AbstractRenderer, ContextService } from '@antv/g';
 import { ContainerModule } from 'inversify';
 import { containerModule as domInteractionModule } from '@antv/g-plugin-dom-interaction';
 import { containerModule as svgRendererModule } from '@antv/g-plugin-svg-renderer';
@@ -16,7 +17,7 @@ export class Renderer extends AbstractRenderer {
          */
         bind(SVGContextService).toSelf().inSingletonScope();
         bind(ContextService).toService(SVGContextService);
-      })
+      }),
     );
     this.registerPlugin(svgRendererModule);
     this.registerPlugin(domInteractionModule);

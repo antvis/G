@@ -57,5 +57,8 @@
     "typedoc": "^0.17.6",
     "typedoc-plugin-markdown": "^2.2.11"
   },
-  "homepage": "https://github.com/antvis/g#readme"
+  "homepage": "https://github.com/antvis/g#readme",
+  "devDependencies": {
+    "copy-webpack-plugin": "^6.3.2"
+  }
 }

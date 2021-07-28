@@ -4,10 +4,9 @@ import { ContainerModule } from 'inversify';
 import { containerModule as domInteractionModule } from '@antv/g-plugin-dom-interaction';
 import { containerModule as canvasRendererModule } from '@antv/g-plugin-canvas-renderer';
 import { containerModule as canvasPickerModule } from '@antv/g-plugin-canvas-picker';
-import { Canvas2DContextService } from './Canvas2DContextService';
-import { CanvasKitRenderer } from './CanvasKitRenderer';
+import { CanvasKitContextService } from './CanvasKitContextService';
 
-export class Renderer extends AbstractRenderer {
+export class CanvasKitRenderer extends AbstractRenderer {
   constructor(config?: Partial<RendererConfig>) {
     super(config);
 
@@ -16,8 +15,8 @@ export class Renderer extends AbstractRenderer {
         /**
          * implements ContextService
          */
-        bind(Canvas2DContextService).toSelf().inSingletonScope();
-        bind(ContextService).toService(Canvas2DContextService);
+        bind(CanvasKitContextService).toSelf().inSingletonScope();
+        bind(ContextService).toService(CanvasKitContextService);
       }),
     );
 
@@ -26,5 +25,3 @@ export class Renderer extends AbstractRenderer {
     this.registerPlugin(canvasPickerModule);
   }
 }
-
-export { CanvasKitRenderer };

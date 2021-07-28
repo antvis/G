@@ -1,7 +1,8 @@
 import { RenderingPluginContribution, SHAPE, container, world } from '@antv/g';
 import { ContainerModule } from 'inversify';
 import RBush from 'rbush';
-import { DefaultRenderer, StyleRenderer, StyleRendererFactory } from './shapes/styles';
+import type { StyleRenderer } from './shapes/styles';
+import { DefaultRenderer, StyleRendererFactory } from './shapes/styles';
 import { ImageRenderer } from './shapes/styles/Image';
 import { StyleParser } from './shapes/StyleParser';
 import { ImagePool } from './shapes/ImagePool';
@@ -28,25 +29,33 @@ world.registerComponent(RBushNode);
 /**
  * register shape renderers
  */
-container.bind(PathGeneratorFactory).toFactory<PathGenerator<any> | null>((ctx) => (tagName: SHAPE) => {
-  if (tagName === SHAPE.Circle) {
-    return CirclePath;
-  } else if (tagName === SHAPE.Ellipse) {
-    return EllipsePath;
-  } else if (tagName === SHAPE.Rect) {
-    return RectPath;
-  } else if (tagName === SHAPE.Line) {
-    return LinePath;
-  } else if (tagName === SHAPE.Polyline) {
-    return PolylinePath;
-  } else if (tagName === SHAPE.Polygon) {
-    return PolygonPath;
-  } else if (tagName === SHAPE.Path) {
-    return PathPath;
-  }
+container
+  .bind(PathGeneratorFactory)
+  .toFactory<PathGenerator<any> | null>((ctx) => (tagName: SHAPE) => {
+    if (tagName === SHAPE.Circle) {
+      return CirclePath;
+    }
+    if (tagName === SHAPE.Ellipse) {
+      return EllipsePath;
+    }
+    if (tagName === SHAPE.Rect) {
+      return RectPath;
+    }
+    if (tagName === SHAPE.Line) {
+      return LinePath;
+    }
+    if (tagName === SHAPE.Polyline) {
+      return PolylinePath;
+    }
+    if (tagName === SHAPE.Polygon) {
+      return PolygonPath;
+    }
+    if (tagName === SHAPE.Path) {
+      return PathPath;
+    }
 
-  return null;
-});
+    return null;
+  });
 
 export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ImagePool).toSelf().inSingletonScope();
@@ -66,9 +75,11 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
       tagName === SHAPE.Path
     ) {
       return ctx.container.get(DefaultRenderer);
-    } else if (tagName === SHAPE.Image) {
+    }
+    if (tagName === SHAPE.Image) {
       return ctx.container.get(ImageRenderer);
-    } else if (tagName === SHAPE.Text) {
+    }
+    if (tagName === SHAPE.Text) {
       return ctx.container.get(TextRenderer);
     }
 

@@ -1,9 +1,10 @@
-import { PathStyleProps } from '@antv/g';
-import getArcParams, { ArcParams } from '../../utils/arc-params';
+import type { PathStyleProps } from '@antv/g';
+import type { ArcParams } from '../../utils/arc-params';
+import getArcParams from '../../utils/arc-params';
 
 export function generatePath(context: CanvasRenderingContext2D, attributes: PathStyleProps) {
   // @ts-ignore
-  let { x = 0, y = 0, path, arcParamsCache } = attributes;
+  const { x = 0, y = 0, path, arcParamsCache } = attributes;
 
   if (!arcParamsCache) {
     // @ts-ignore
@@ -30,7 +31,14 @@ export function generatePath(context: CanvasRenderingContext2D, attributes: Path
         context.quadraticCurveTo(params[1], params[2], params[3] - x, params[4] - y);
         break;
       case 'C':
-        context.bezierCurveTo(params[1], params[2], params[3], params[4], params[5] - x, params[6] - y);
+        context.bezierCurveTo(
+          params[1],
+          params[2],
+          params[3],
+          params[4],
+          params[5] - x,
+          params[6] - y,
+        );
         break;
       case 'A': {
         let arcParams: ArcParams;

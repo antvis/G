@@ -1,10 +1,13 @@
-import { DisplayObject, EllipseStyleProps } from '@antv/g';
+import type { DisplayObject, EllipseStyleProps } from '@antv/g';
 
 function ellipseDistance(squareX: number, squareY: number, rx: number, ry: number) {
   return squareX / (rx * rx) + squareY / (ry * ry);
 }
 
-export function isPointInPath(displayObject: DisplayObject<EllipseStyleProps>, { x, y }: { x: number; y: number }): boolean {
+export function isPointInPath(
+  displayObject: DisplayObject<EllipseStyleProps>,
+  { x, y }: { x: number; y: number },
+): boolean {
   const { rx = 0, ry = 0, fill, stroke, lineWidth = 0 } = displayObject.attributes;
 
   const halfLineWith = lineWidth / 2;

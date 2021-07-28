@@ -1,4 +1,4 @@
-import { CircleStyleProps } from '@antv/g';
+import type { CircleStyleProps } from '@antv/g';
 
 export function generatePath(context: CanvasRenderingContext2D, attributes: CircleStyleProps) {
   context.beginPath();

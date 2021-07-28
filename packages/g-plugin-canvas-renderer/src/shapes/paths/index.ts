@@ -1,4 +1,4 @@
-import { BaseStyleProps } from '@antv/g';
+import type { BaseStyleProps } from '@antv/g';
 
 export const PathGeneratorFactory = Symbol('PathGeneratorFactory');
 export const PathGenerator = Symbol('Path');
@@ -6,7 +6,10 @@ export const PathGenerator = Symbol('Path');
 /**
  * generate path in local space
  */
-export type PathGenerator<T extends BaseStyleProps> = (context: CanvasRenderingContext2D, attributes: T) => void;
+export type PathGenerator<T extends BaseStyleProps> = (
+  context: CanvasRenderingContext2D,
+  attributes: T,
+) => void;
 
 export { generatePath as CirclePath } from './Circle';
 export { generatePath as EllipsePath } from './Ellipse';

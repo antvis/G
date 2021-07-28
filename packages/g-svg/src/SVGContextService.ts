@@ -1,4 +1,5 @@
-import { CanvasConfig, ContextService } from '@antv/g';
+import type { ContextService } from '@antv/g';
+import { CanvasConfig } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { isString } from '@antv/util';
 import { createSVGElement } from './utils/dom';

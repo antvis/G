@@ -1,4 +1,4 @@
-import { RectStyleProps } from '@antv/g';
+import type { RectStyleProps } from '@antv/g';
 import { parseRadius } from '../../utils/parse';
 
 export function generatePath(context: CanvasRenderingContext2D, attributes: RectStyleProps) {

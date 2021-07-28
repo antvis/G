@@ -1,15 +1,15 @@
 import { inject, injectable, named } from 'inversify';
 import { SyncHook, SyncWaterfallHook } from 'tapable';
-import { CanvasService } from '../Canvas';
+import type { CanvasService } from '../Canvas';
 import { Renderable, Sortable } from '../components';
 import { ContributionProvider } from '../contribution-provider';
-import { DisplayObject } from '../DisplayObject';
-import { EventPosition, InteractivePointerEvent } from '../types';
+import type { DisplayObject } from '../DisplayObject';
+import type { EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext } from './RenderingContext';
 import { sortByZIndex } from './SceneGraphService';
 
 export interface RenderingPlugin {
-  apply(renderer: RenderingService): void;
+  apply: (renderer: RenderingService) => void;
 }
 export const RenderingPluginContribution = Symbol('RenderingPluginContribution');
 
@@ -60,7 +60,7 @@ export class RenderingService implements CanvasService {
     pointerWheel: new SyncHook<[InteractivePointerEvent]>(['event']),
   };
 
-  init() {
+  async init() {
     // register rendering plugins
     this.renderingPluginContribution.getContributions(true).forEach((plugin) => {
       plugin.apply(this);
@@ -82,7 +82,7 @@ export class RenderingService implements CanvasService {
     }
   }
 
-  destroy() {
+  async destroy() {
     this.hooks.destroy.call();
   }
 

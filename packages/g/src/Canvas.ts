@@ -1,5 +1,6 @@
 import { EventEmitter } from 'eventemitter3';
-import { CanvasConfig, Cursor } from './types';
+import type { Cursor } from './types';
+import { CanvasConfig } from './types';
 import { cleanExistedCanvas } from './utils/canvas';
 import { DisplayObject, DISPLAY_OBJECT_EVENT } from './DisplayObject';
 import { ContextService } from './services';
@@ -8,11 +9,11 @@ import { RenderingService } from './services/RenderingService';
 import { RenderingContext, RENDER_REASON } from './services/RenderingContext';
 import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE } from './Camera';
 import { containerModule as commonContainerModule } from './canvas-module';
-import { IRenderer } from './AbstractRenderer';
+import type { IRenderer } from './AbstractRenderer';
 
 export interface CanvasService {
-  init(): void;
-  destroy(): void;
+  init: () => Promise<void>;
+  destroy: () => Promise<void>;
 }
 
 /**
@@ -216,7 +217,11 @@ export class Canvas extends EventEmitter {
     this.decorate(node, renderingService, root);
   }
 
-  private decorate(object: DisplayObject<any>, renderingService: RenderingService, root: DisplayObject<any>) {
+  private decorate(
+    object: DisplayObject<any>,
+    renderingService: RenderingService,
+    root: DisplayObject<any>,
+  ) {
     object.forEach((child: DisplayObject<any>) => {
       // trigger mount on node's descendants
       if (!child.mounted) {

@@ -1,16 +1,13 @@
+import type { SHAPE, DisplayObject, RenderingService, RenderingPlugin } from '@antv/g';
 import {
   AABB,
-  SHAPE,
-  DisplayObject,
   DisplayObjectPool,
   CanvasConfig,
   ContextService,
   SceneGraphService,
   SCENE_GRAPH_EVENT,
   Renderable,
-  RenderingService,
   RenderingContext,
-  RenderingPlugin,
   getEuler,
   fromRotationTranslationScale,
   Camera,
@@ -19,10 +16,13 @@ import { isArray } from '@antv/util';
 import { inject, injectable } from 'inversify';
 import { vec3, mat4, quat } from 'gl-matrix';
 import RBush from 'rbush';
-import { PathGeneratorFactory, PathGenerator } from './shapes/paths';
-import { StyleRenderer, StyleRendererFactory } from './shapes/styles';
+import type { PathGenerator } from './shapes/paths';
+import { PathGeneratorFactory } from './shapes/paths';
+import type { StyleRenderer } from './shapes/styles';
+import { StyleRendererFactory } from './shapes/styles';
 import { StyleParser } from './shapes/StyleParser';
-import { RBushNode, RBushNodeAABB } from './components/RBushNode';
+import type { RBushNodeAABB } from './components/RBushNode';
+import { RBushNode } from './components/RBushNode';
 
 export const RBushRoot = Symbol('RBushRoot');
 
@@ -118,10 +118,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.beginFrame.tap(CanvasRendererPlugin.tag, () => {
       const context = this.contextService.getContext();
 
-      const {
-        enableDirtyRectangleRendering,
-        enableDirtyRectangleRenderingDebug,
-      } = this.canvasConfig.renderer.getConfig();
+      const { enableDirtyRectangleRendering, enableDirtyRectangleRenderingDebug } =
+        this.canvasConfig.renderer.getConfig();
 
       if (context) {
         context.save();
@@ -192,7 +190,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private renderDisplayObject(object: DisplayObject<any>) {
     const context = this.contextService.getContext()!;
 
-    const nodeType = object.nodeType;
+    const { nodeType } = object;
 
     // reset transformation
     context.save();
@@ -317,7 +315,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     const rBushNode = entity.getComponent(RBushNode);
 
     if (rBushNode) {
-
       // insert node in RTree
       if (rBushNode.aabb) {
         this.rBush.remove(rBushNode.aabb);
@@ -365,7 +362,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           v = this.styleParser.parse(v);
         } else if (name === 'globalAlpha') {
           // opacity 效果可以叠加，子元素的 opacity 需要与父元素 opacity 相乘
-          v = v * context.globalAlpha;
+          v *= context.globalAlpha;
         }
         // @ts-ignore
         context[name] = v;

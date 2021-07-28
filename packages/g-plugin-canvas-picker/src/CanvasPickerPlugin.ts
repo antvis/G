@@ -1,18 +1,21 @@
-import {
+import type {
   SHAPE,
   DisplayObject,
-  DisplayObjectPool,
   RenderingService,
   RenderingPlugin,
+  PickingResult,
+  BaseStyleProps,
+} from '@antv/g';
+import {
+  DisplayObjectPool,
   RenderingContext,
   SceneGraphService,
-  PickingResult,
   OffscreenCanvasCreator,
   Camera,
-  BaseStyleProps,
   Point,
 } from '@antv/g';
-import { PathGeneratorFactory, PathGenerator, RBushRoot, RBushNodeAABB, RBush } from '@antv/g-plugin-canvas-renderer';
+import type { PathGenerator, RBushNodeAABB } from '@antv/g-plugin-canvas-renderer';
+import { PathGeneratorFactory, RBushRoot, RBush } from '@antv/g-plugin-canvas-renderer';
 import { mat4, vec3 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
 
@@ -63,11 +66,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       const { x, y } = result.position;
       const position = vec3.fromValues(x, y, 0);
       const invertOrthoMat = mat4.invert(mat4.create(), this.camera.getOrthoMatrix());
-      vec3.transformMat4(
-        position,
-        position,
-        invertOrthoMat,
-      );
+      vec3.transformMat4(position, position, invertOrthoMat);
 
       // query by AABB first with spatial index(r-tree)
       const rBushNodes = this.rBush.search({
