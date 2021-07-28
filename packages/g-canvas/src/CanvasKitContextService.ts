@@ -3,10 +3,19 @@ import { CanvasConfig } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { isString } from '@antv/util';
 import { setDOMSize } from './utils/dom';
+import type { CanvasKit } from 'canvaskit-wasm';
 import { CanvasKitInit } from 'canvaskit-wasm';
+
+let canvaskit: CanvasKit;
 
 @injectable()
 export class CanvasKitContextService implements ContextService<CanvasRenderingContext2D> {
+  static async ready() {
+    if (!canvaskit) {
+      canvaskit = await CanvasKitInit();
+    }
+  }
+
   private $container: HTMLElement | null;
   private $canvas: HTMLCanvasElement | null;
   private dpr: number;
@@ -15,15 +24,19 @@ export class CanvasKitContextService implements ContextService<CanvasRenderingCo
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
-  async init() {
+  init() {
     const { container, width, height } = this.canvasConfig;
     // create container
     this.$container = isString(container) ? document.getElementById(container) : container;
     if (this.$container) {
       // create canvas
       const $canvas = document.createElement('canvas');
-      const CanvasKit = await CanvasKitInit();
-      const skcanvas = CanvasKit.MakeCanvas(width, height);
+
+      if (!canvaskit) {
+        throw new Error('canvaskit not ready');
+      }
+
+      const skcanvas = canvaskit.MakeCanvas(width, height);
 
       this.context = skcanvas.getContext('2d');
       this.$container.appendChild($canvas);

@@ -60,7 +60,7 @@ export class RenderingService implements CanvasService {
     pointerWheel: new SyncHook<[InteractivePointerEvent]>(['event']),
   };
 
-  async init() {
+  init() {
     // register rendering plugins
     this.renderingPluginContribution.getContributions(true).forEach((plugin) => {
       plugin.apply(this);
@@ -82,7 +82,7 @@ export class RenderingService implements CanvasService {
     }
   }
 
-  async destroy() {
+  destroy() {
     this.hooks.destroy.call();
   }
 

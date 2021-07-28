@@ -12,8 +12,8 @@ import { containerModule as commonContainerModule } from './canvas-module';
 import type { IRenderer } from './AbstractRenderer';
 
 export interface CanvasService {
-  init: () => Promise<void>;
-  destroy: () => Promise<void>;
+  init: () => void;
+  destroy: () => void;
 }
 
 /**

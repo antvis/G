@@ -24,4 +24,8 @@ export class CanvasKitRenderer extends AbstractRenderer {
     this.registerPlugin(domInteractionModule);
     this.registerPlugin(canvasPickerModule);
   }
+
+  static async ready() {
+    await CanvasKitContextService.ready();
+  }
 }
