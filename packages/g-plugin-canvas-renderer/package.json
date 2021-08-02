@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvas-renderer",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "description": "A G plugin of renderer implementation with Canvas2D API",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
