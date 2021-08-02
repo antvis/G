@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "peerDependencies": {
-    "@antv/g": "^0.1.0",
-    "@antv/g-plugin-canvas-renderer": "^0.1.0"
+    "@antv/g": "^1.0.0-alpha.4",
+    "@antv/g-plugin-canvas-renderer": "^1.0.0-alpha.4"
   }
 }

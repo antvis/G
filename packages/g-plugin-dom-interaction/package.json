@@ -42,6 +42,6 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "peerDependencies": {
-    "@antv/g": "^0.1.0"
+    "@antv/g": "^1.0.0-alpha.4"
   }
 }
