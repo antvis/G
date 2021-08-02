@@ -1,10 +1,5 @@
 import type { interfaces } from 'inversify';
 import { ContainerModule } from 'inversify';
-import {
-  DefaultAttributeAnimationUpdater,
-  ColorAttributeAnimationUpdater,
-  AttributeAnimationUpdaters,
-} from './systems';
 import { DisplayObjectPool } from './DisplayObjectPool';
 import { SceneGraphService } from './services/SceneGraphService';
 import {
@@ -69,8 +64,8 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   });
 
   // bind animation updaters
-  bind(DefaultAttributeAnimationUpdater).toSelf().inSingletonScope();
-  bind(ColorAttributeAnimationUpdater).toSelf().inSingletonScope();
-  bind(AttributeAnimationUpdaters).toService(DefaultAttributeAnimationUpdater);
-  bind(AttributeAnimationUpdaters).toService(ColorAttributeAnimationUpdater);
+  // bind(DefaultAttributeAnimationUpdater).toSelf().inSingletonScope();
+  // bind(ColorAttributeAnimationUpdater).toSelf().inSingletonScope();
+  // bind(AttributeAnimationUpdaters).toService(DefaultAttributeAnimationUpdater);
+  // bind(AttributeAnimationUpdaters).toService(ColorAttributeAnimationUpdater);
 });

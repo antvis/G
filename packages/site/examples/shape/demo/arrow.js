@@ -121,9 +121,12 @@ class MyCustomArrowHead extends CustomElement {
     this.appendChild(this.head);
   }
 
-  attributeChangedCallback(name, value) {
+  attributeChangedCallback(name, oldValue, value) {
     this.head.setAttribute(name, value);
   }
+
+  connectedCallback() { }
+  disconnectedCallback() { }
 }
 
 // stats

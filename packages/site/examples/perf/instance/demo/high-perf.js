@@ -104,10 +104,7 @@ canvas.on('afterRender', () => {
   }
 
   // manipulate camera instead of the root of canvas
-  // camera.rotate(0, 0, 1);
-
-  // root.setOrigin(300, 250);
-  // root.rotate(1);
+  camera.rotate(0, 0, 1);
 });
 
 // update Camera's zoom

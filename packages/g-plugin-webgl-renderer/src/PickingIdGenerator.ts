@@ -5,15 +5,15 @@ import { injectable } from 'inversify';
 export class PickingIdGenerator {
   private counter = 0;
 
-  private id2DisplayObjectMap: Record<number, DisplayObject<any>> = {};
+  private id2DisplayObjectMap: Record<number, DisplayObject> = {};
 
-  getId(displayObject: DisplayObject<any>) {
+  getId(displayObject: DisplayObject) {
     const id = this.counter++;
     this.id2DisplayObjectMap[id] = displayObject;
     return id;
   }
 
-  getById(id: number): DisplayObject<any> {
+  getById(id: number): DisplayObject {
     return this.id2DisplayObjectMap[id];
   }
 

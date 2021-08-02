@@ -1,4 +1,4 @@
-import { Geometry, Renderable, SceneGraphNode } from './components';
+import { Geometry, Renderable, SceneGraphNode, Cullable } from './components';
 import { CustomElement } from './CustomElement';
 import { DisplayObject, DisplayObjectConfig, DISPLAY_OBJECT_EVENT } from './DisplayObject';
 import { BaseStyleProps, SHAPE } from './types';
@@ -30,6 +30,8 @@ export class Batch<T> extends CustomElement<BatchStyleProps<T>> {
       ...rest,
     });
 
+    this.getEntity().getComponent(Cullable).enable = false;
+
     if (style.instances) {
       style.instances.forEach((instance: DisplayObject<T>) => {
         this.appendChild(instance);
@@ -43,10 +45,12 @@ export class Batch<T> extends CustomElement<BatchStyleProps<T>> {
 
   appendChild(child: DisplayObject<T>) {
     if (!this.batchType) {
-      this.batchType = child.nodeType;
+      this.batchType = child.nodeName;
     }
 
     super.appendChild(child);
+
+    child.getEntity().getComponent(Renderable).instanced = true;
 
     const renderable = this.getEntity().getComponent(Renderable);
     renderable.aabbDirty = true;
@@ -59,6 +63,8 @@ export class Batch<T> extends CustomElement<BatchStyleProps<T>> {
 
   removeChild(child: DisplayObject<T>) {
     super.removeChild(child);
+
+    child.getEntity().getComponent(Renderable).instanced = false;
 
     const renderable = this.getEntity().getComponent(Renderable);
     renderable.aabbDirty = true;

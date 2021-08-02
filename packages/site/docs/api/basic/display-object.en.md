@@ -31,22 +31,24 @@ https://developer.mozilla.org/en-US/docs/Web/API/Element/className
 
 # 绘图属性
 
-绘图属性通过 `attrs` 设置，通常包含了图形的位置、填充色、透明度等**通用属性**，不同类型的图形也有自己的**额外属性**，例如在下面的圆角矩形中，位置`(x, y)`、填充色 `fill`、描边色 `stroke` 就是通用属性，而矩形的尺寸 `width/height` 和圆角半径 `radius` 则是额外属性：
+绘图属性通过 `attrs/style` 设置，通常包含了图形的位置、填充色、透明度等**通用属性**，不同类型的图形也有自己的**额外属性**，例如在下面的圆角矩形中，位置`(x, y)`、填充色 `fill`、描边色 `stroke` 就是通用属性，而矩形的尺寸 `width/height` 和圆角半径 `radius` 则是额外属性：
 
 ```javascript
 const rect = new Rect({
-    attrs: {
-        x: 200,
-        y: 100,
-        fill: '#1890FF',
-        stroke: '#F04864',
-        lineWidth: 4,
-        width: 300,
-        height: 200,
-        radius: 8,
-    },
+  attrs: { // 或者使用 style
+    x: 200,
+    y: 100,
+    fill: '#1890FF',
+    stroke: '#F04864',
+    lineWidth: 4,
+    width: 300,
+    height: 200,
+    radius: 8,
+  },
 });
 ```
+
+⚠️ 熟悉 DOM API 的开发者可以参考 [HTMLElement Style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) 使用。
 
 ## 位置
 
@@ -150,6 +152,33 @@ const rect = new Rect({
 
 **说明**：描边宽度
 
+## 渲染次序
+
+### zIndex
+
+**类型**： `number`
+
+**默认值**：0
+
+**是否必须**：`false`
+
+**说明**：类似 CSS 的 `z-index` 属性，用于控制渲染次序，有两点需要注意：
+
+1. 只会影响渲染顺序，并不会改变场景图中的节点结构
+2. 只在当前上下文内生效
+3. 默认展示次序为场景图添加顺序，后添加的在之前添加的元素之上
+
+例如下面的场景图中，由于 li2 在 li1 之后加入画布，因此 li2 默认会展示在 li1 之上。如果希望改变这种展示次序，可以修改 li1 的 zIndex：
+```js
+// ul1 -> li1
+//     -> li2
+// ul2 -> li3
+
+li1.style.zIndex = 1; // li1 在 li2 之上
+```
+
+[示例](/zh/examples/scenegraph#z-index)
+
 # 变换
 
 ## 平移
@@ -201,9 +230,7 @@ const rect = new Rect({
 | --------- | ---- | ------ | ------------------------ |
 | getBounds | 无   | AABB   | 获取世界坐标系下的轴对齐包围盒 |
 | getLocalBounds | 无   | AABB   | 获取局部坐标系下的包围盒 |
-| getBoundingClientRect | 无 | Rect | 获取世界坐标系下的包围矩形 |
-
-⚠️ `getBounds` 和 `getBoundingClientRect` 返回值的结构不同，前者返回一个3维的轴对齐包围盒，后者返回一个2维矩形。
+| getBoundingClientRect | 无 | Rect | 获取世界坐标系下的包围矩形，不考虑子元素 |
 
 其中轴对齐包围盒 `AABB` 结构为：
 ```js
@@ -227,6 +254,9 @@ interface Rect {
 }
 ```
 
+`getBounds` 和 `getBoundingClientRect` 有以下区别：
+* 返回值的结构不同，前者返回一个3维的轴对齐包围盒，后者返回一个2维矩形
+* 前者会考虑子元素，把它们的包围盒合并起来。后者仅考虑自身，不考虑子元素
 
 # 节点操作
 
@@ -308,7 +338,7 @@ child.remove(true);
 因此以下用法等价：
 ```js
 const circle = new Circle({
-  attrs: {
+  attrs: { // 或者使用 style
     r: 10,
     fill: 'red',
   }
@@ -379,9 +409,6 @@ group.show();
 
 类似 CSS，我们可以通过 `z-index` 属性控制渲染次序，有两点需要注意：
 
-1. 只会影响渲染顺序，并不会改变场景图中的节点结构
-2. 只在当前上下文内生效
-
 | 名称      | 参数     | 返回值 | 备注           |
 | --------- | -------- | ------ | -------------- |
 | setZIndex | `number` | 无     | 设置 `z-index` |
@@ -393,4 +420,28 @@ const group = new Group();
 
 group.setZIndex(100);
 // or group.setAttribute('z-index', 100);
+// or group.style.zIndex = 100;
 ```
+
+# 动画
+
+参考 Web Animation API，可以使用 animate 完成 keyframe 动画，下面是一个 ScaleIn 动画效果：
+```js
+circle.animate(
+  [
+    {
+      transform: 'scale(0)',
+    },
+    {
+      transform: 'scale(1)',
+    }
+  ],
+  {
+    duration: 500,
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+    iterations: Infinity,
+  },
+);
+```
+
+更多用法详见[动画系统](/zh/docs/animation)

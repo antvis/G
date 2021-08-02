@@ -1,4 +1,3 @@
-export * from './Animator';
 export * from './Geometry';
 export * from './SceneGraphNode';
 export * from './Renderable';

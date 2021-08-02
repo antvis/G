@@ -1,6 +1,7 @@
 import { Circle, Line, Canvas, Batch } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import Stats from 'stats.js';
+import interact from 'interactjs';
 
 // create a renderer
 const webglRenderer = new WebGLRenderer();
@@ -63,6 +64,15 @@ canvas.addEventListener('wheel', (e) => {
     );
   }
   camera.setZoom(zoom);
+});
+
+interact(canvas.document, {
+  context: canvas.document,
+}).draggable({
+  onmove: function (event) {
+    const { dx, dy } = event;
+    // circle.translateLocal(dx, dy);
+  }
 });
 
 // stats

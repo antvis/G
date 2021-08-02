@@ -24,8 +24,6 @@ export interface RenderingContext {
 
   removedAABBs: AABB[];
 
-  cameraDirty: boolean;
-
   /**
    * reason of re-render, reset after every renderred frame
    */

@@ -137,21 +137,19 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Event/currentTarget
 
 原生事件对象。
 
+### x/y
+
+<tag color="green" text="MouseEvent">MouseEvent</tag>
+
+相对于 Canvas 的坐标，左上角为 `(0, 0)`
+
 ### clientX/Y
 
 <tag color="green" text="MouseEvent">MouseEvent</tag>
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX
 
-相对于 Canvas 的坐标，左上角为 `(0, 0)`
-
-### screenX/Y
-
-<tag color="green" text="MouseEvent">MouseEvent</tag>
-
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/screenX
-
-鼠标在全局（屏幕）中的水平/垂直坐标（偏移量），屏幕左上角为 `(0, 0)`。
+相对于浏览器的坐标，左上角为 `(0, 0)`
 
 ### pageX/Y
 
@@ -177,6 +175,12 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/movementX
 https://developer.mozilla.org/zh-CN/docs/Web/API/WheelEvent
 
 滚轮的横向/纵向/Z轴的滚动量。
+
+### timeStamp
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/Event/timeStamp
+
+事件创建时的时间戳
 
 ## 方法
 事件对象上的某些方法可以控制事件传播时的行为，例如阻止冒泡等。

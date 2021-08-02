@@ -81,9 +81,9 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
   private pickingFramebuffer: IFramebuffer;
 
-  displayObjectsLastFrame: DisplayObject<any>[] = [];
+  displayObjectsLastFrame: DisplayObject[] = [];
 
-  pushToRenderQueue(object: DisplayObject<any>) {
+  pushToRenderQueue(object: DisplayObject) {
     this.displayObjectsLastFrame.push(object);
   }
 
@@ -94,8 +94,8 @@ export class RenderPass implements IRenderPass<RenderPassData> {
   /**
    * return displayobjects in target rectangle
    */
-  pickByRectangle(rect: Rectangle): DisplayObject<any>[] {
-    const targets: DisplayObject<any>[] = [];
+  pickByRectangle(rect: Rectangle): DisplayObject[] {
+    const targets: DisplayObject[] = [];
     let pickedColors: Uint8Array | undefined;
     let pickedFeatureIdx = -1;
     for (let i = 0; i < rect.width; i++) {
@@ -202,14 +202,14 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
         for (const object of this.displayObjectsLastFrame) {
           const material = object.getEntity().getComponent(Material3D);
-          material.setUniform(UNIFORM.PickingStage, PickingStage.ENCODE);
+          material?.setUniform(UNIFORM.PickingStage, PickingStage.ENCODE);
         }
 
         this.renderDisplayObjects(this.displayObjectsLastFrame);
 
         for (const object of this.displayObjectsLastFrame) {
           const material = object.getEntity().getComponent(Material3D);
-          material.setUniform(UNIFORM.PickingStage, PickingStage.NONE);
+          material?.setUniform(UNIFORM.PickingStage, PickingStage.NONE);
         }
       },
     );
@@ -217,7 +217,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     this.clearQueue();
   };
 
-  renderDisplayObjects(displayObjects: DisplayObject<any>[]) {
+  renderDisplayObjects(displayObjects: DisplayObject[]) {
     for (const displayObject of displayObjects) {
       const entity = displayObject.getEntity();
       const renderable = entity.getComponent(Renderable);
@@ -290,7 +290,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     return createModel(modelInitializationOptions);
   }
 
-  private renderDisplayObject(displayObject: DisplayObject<any>): boolean {
+  private renderDisplayObject(displayObject: DisplayObject): boolean {
     const entity = displayObject.getEntity();
     const renderable3d = entity.getComponent(Renderable3D);
     const material = entity.getComponent(Material3D);
@@ -340,7 +340,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
         const parentWorldMatrix = displayObject.getWorldTransform();
 
-        displayObject.children.forEach((instance: DisplayObject<any>) => {
+        displayObject.children.forEach((instance: DisplayObject) => {
           // don't get each child's worldTransform here, which will cause bad perf
           const m = mat4.multiply(
             mat4.create(),
@@ -381,7 +381,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     }
 
     // submit model
-    const builder = this.modelBuilderFactory(displayObject.nodeType);
+    const builder = this.modelBuilderFactory(displayObject.nodeName);
     if (builder && builder.renderModel) {
       builder.renderModel(displayObject);
     } else {

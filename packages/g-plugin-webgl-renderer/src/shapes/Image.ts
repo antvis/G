@@ -1,4 +1,4 @@
-import { DisplayObject, ImageStyleProps, Renderable, SceneGraphNode } from '@antv/g';
+import { DisplayObject, ImageStyleProps, Renderable, SceneGraphNode, RenderingService } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { mat3 } from 'gl-matrix';
 import { ShaderModuleService } from '../services/shader-module';
@@ -44,6 +44,9 @@ export class ImageModelBuilder implements ModelBuilder {
   @inject(TexturePool)
   private texturePool: TexturePool;
 
+  @inject(RenderingService)
+  private renderingService: RenderingService;
+
   async onAttributeChanged(object: DisplayObject<ImageStyleProps>, name: string, value: any) {
     const entity = object.getEntity();
     const renderable = entity.getComponent(Renderable);
@@ -62,6 +65,7 @@ export class ImageModelBuilder implements ModelBuilder {
           [UNIFORM.Texture]: texture,
         });
         renderable.dirty = true;
+        this.renderingService.dirtify();
       } else if (name === 'width') {
         geometry.setAttribute(ATTRIBUTE.Size, Float32Array.from([value, height]));
       } else if (name === 'height') {
@@ -166,6 +170,8 @@ export class ImageModelBuilder implements ModelBuilder {
 
     renderable3d.modelPrepared = true;
     renderable.dirty = true;
+
+    this.renderingService.dirtify();
   }
 
   private buildAttribute(config: Partial<IImageConfig>, attributes: IInstanceAttributes, index: number) {

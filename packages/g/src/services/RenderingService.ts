@@ -1,12 +1,13 @@
 import { inject, injectable, named } from 'inversify';
 import { SyncHook, SyncWaterfallHook } from 'tapable';
 import { CanvasService } from '../Canvas';
-import { Renderable, Sortable } from '../components';
+import { Renderable, Sortable, SceneGraphNode } from '../components';
 import { ContributionProvider } from '../contribution-provider';
 import { DisplayObject } from '../DisplayObject';
 import { EventPosition, InteractivePointerEvent } from '../types';
-import { RenderingContext } from './RenderingContext';
+import { RenderingContext, RENDER_REASON } from './RenderingContext';
 import { sortByZIndex } from './SceneGraphService';
+import { Batch } from '../Batch';
 
 export interface RenderingPlugin {
   apply(renderer: RenderingService): void;
@@ -15,7 +16,7 @@ export const RenderingPluginContribution = Symbol('RenderingPluginContribution')
 
 export interface PickingResult {
   position: EventPosition;
-  picked: DisplayObject<any> | null;
+  picked: DisplayObject | null;
 }
 
 /**
@@ -38,17 +39,17 @@ export class RenderingService implements CanvasService {
 
   hooks = {
     init: new SyncHook<[]>(),
-    prepare: new SyncWaterfallHook<[DisplayObject<any> | null]>(['object']),
-    mounted: new SyncHook<[DisplayObject<any>]>(['object']),
-    unmounted: new SyncHook<[DisplayObject<any>]>(['object']),
-    attributeChanged: new SyncHook<[DisplayObject<any>, string, any]>(['object', 'name', 'value']),
+    prepare: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
+    mounted: new SyncHook<[DisplayObject]>(['object']),
+    unmounted: new SyncHook<[DisplayObject]>(['object']),
+    attributeChanged: new SyncHook<[DisplayObject, string, any]>(['object', 'name', 'value']),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */
     beginFrame: new SyncHook<[]>([]),
-    beforeRender: new SyncHook<[DisplayObject<any>]>(['objectToRender']),
-    render: new SyncHook<[DisplayObject<any>]>(['objectToRender']),
-    afterRender: new SyncHook<[DisplayObject<any>]>(['objectToRender']),
+    beforeRender: new SyncHook<[DisplayObject]>(['objectToRender']),
+    render: new SyncHook<[DisplayObject]>(['objectToRender']),
+    afterRender: new SyncHook<[DisplayObject]>(['objectToRender']),
     endFrame: new SyncHook<[]>([]),
     destroy: new SyncHook<[]>(),
     pick: new SyncWaterfallHook<[PickingResult]>(['result']),
@@ -86,11 +87,18 @@ export class RenderingService implements CanvasService {
     this.hooks.destroy.call();
   }
 
-  private renderDisplayObject(displayObject: DisplayObject<any>) {
+  dirtify() {
+    // need re-render
+    this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectChanged);
+  }
+
+  private renderDisplayObject(displayObject: DisplayObject) {
     const entity = displayObject?.getEntity()!;
 
     // render itself
     const objectToRender = this.hooks.prepare.call(displayObject);
+
+    // console.log(objectToRender);
     if (objectToRender) {
       if (!this.renderingContext.dirty) {
         this.renderingContext.dirty = true;
@@ -104,16 +112,19 @@ export class RenderingService implements CanvasService {
       entity.getComponent(Renderable).dirty = false;
     }
 
-    // sort is very expensive, use cached result if posible
-    const sortable = entity.getComponent(Sortable);
-    if (sortable.dirty) {
-      sortable.sorted = [...displayObject.children].sort(sortByZIndex);
-      sortable.dirty = false;
-    }
+    if (objectToRender?.getEntity()
+      .getComponent(SceneGraphNode)?.tagName !== Batch.tag) {
+      // sort is very expensive, use cached result if posible
+      const sortable = entity.getComponent(Sortable);
+      if (sortable.dirty) {
+        sortable.sorted = [...displayObject.children].sort(sortByZIndex);
+        sortable.dirty = false;
+      }
 
-    // recursive rendering its children
-    (sortable.sorted || displayObject.children).forEach((child) => {
-      this.renderDisplayObject(child);
-    });
+      // recursive rendering its children
+      (sortable.sorted || displayObject.children).forEach((child) => {
+        this.renderDisplayObject(child);
+      });
+    }
   }
 }

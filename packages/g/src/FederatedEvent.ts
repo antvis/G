@@ -18,6 +18,11 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
   type: string;
 
   /**
+   * @deprecated
+   */
+  get name() { return this.type; };
+
+  /**
    * The propagation phase.
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Event/eventPhase
    */
@@ -27,7 +32,7 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
    * can be used to implement event delegation
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/target
    */
-  target: DisplayObject<any> | null;
+  target: DisplayObject | null;
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/bubbles
@@ -43,20 +48,30 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
    */
   readonly cancelable = false;
 
-  /** The listeners of the event target that are being notified. */
-  currentTarget: DisplayObject<any> | null;
+  /** the event target when listeners binded */
+  currentTarget: DisplayObject | null;
 
   /** Flags whether the default response of the user agent was prevent through this event. */
   defaultPrevented = false;
 
-  /** The timestamp of when the event was created. */
+  /**
+   * timestamp when the event created
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/timeStamp
+   */
   timeStamp: number;
 
-  /** The native event that caused the foremost original event. */
+  /**
+   * the original event.
+   */
   nativeEvent: N;
 
+  /**
+   * @deprecated
+   */
+  get originalEvent() { return this.nativeEvent; }
+
   /** The original event that caused this event, if any. */
-  originalEvent: FederatedEvent<N>;
+  _originalEvent: FederatedEvent<N>;
 
   /** Flags whether propagation was stopped. */
   propagationStopped = false;
@@ -84,6 +99,8 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
   /**
    * The coordinates of the event relative to the DOM document.
    * This is a non-standard property.
+   * relative to the DOM document.
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX
    */
   page: Point = new Point();
   get pageX(): number {
@@ -94,6 +111,13 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
   }
 
   /**
+   * relative to Canvas, origin is left-top
+   */
+  canvas: Point = new Point();
+  get x(): number { return this.canvas.x; }
+  get y(): number { return this.canvas.y; }
+
+  /**
    * The event boundary which manages this event. Propagation can only occur
    *  within the boundary's jurisdiction.
    */
@@ -101,7 +125,7 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
     this.manager = manager;
   }
 
-  path: DisplayObject<any>[];
+  path: DisplayObject[];
   /**
    * The propagation path for this event
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/composedPath
@@ -109,13 +133,17 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
    * So composedPath()[0] represents the original target.
    * @see https://polymer-library.polymer-project.org/3.0/docs/devguide/events#retargeting
    */
-  composedPath(): DisplayObject<any>[] {
+  composedPath(): DisplayObject[] {
     if (this.manager && (!this.path || this.path[0] !== this.target)) {
       this.path = this.target ? this.manager.propagationPath(this.target) : [];
     }
 
     return this.path;
   }
+  /**
+   * @deprecated
+   */
+  get propagationPath() { return this.composedPath(); }
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/preventDefault
@@ -146,8 +174,8 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
    * added for compatibility with DOM Event,
    * deprecated props and methods
    */
-  initEvent(): void {}
-  initUIEvent(): void {}
+  initEvent(): void { }
+  initUIEvent(): void { }
   view: WindowProxy;
   which: number;
   returnValue: boolean;

@@ -9,6 +9,7 @@ import { RenderingContext, RENDER_REASON } from './services/RenderingContext';
 import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE } from './Camera';
 import { containerModule as commonContainerModule } from './canvas-module';
 import { IRenderer } from './AbstractRenderer';
+import { AnimationTimeline } from './Timeline';
 
 export interface CanvasService {
   init(): void;
@@ -29,12 +30,20 @@ export class Canvas extends EventEmitter {
    */
   private frameId?: number;
 
-  document: DisplayObject<{}>;
+  /**
+   * window.document
+   */
+  document: DisplayObject;
 
   scrollX = 0;
   scrollY = 0;
 
   Element = DisplayObject;
+
+  /**
+   * document.timeline in WAAPI
+   */
+  timeline = new AnimationTimeline();
 
   constructor(config: CanvasConfig) {
     super();
@@ -90,7 +99,6 @@ export class Canvas extends EventEmitter {
       root,
 
       removedAABBs: [],
-      cameraDirty: true,
 
       renderReasons: new Set(),
 
@@ -111,7 +119,6 @@ export class Canvas extends EventEmitter {
     const context = this.container.get<RenderingContext>(RenderingContext);
     camera.on(CAMERA_EVENT.Updated, () => {
       context.renderReasons.add(RENDER_REASON.CameraChanged);
-      context.cameraDirty = true;
     });
     // bind camera
     this.container.bind(Camera).toConstantValue(camera);
@@ -147,7 +154,7 @@ export class Canvas extends EventEmitter {
     return this.container.get<RenderingContext>(RenderingContext);
   }
 
-  getComputedStyle(node: DisplayObject<any>) {
+  getComputedStyle(node: DisplayObject) {
     return node.style;
   }
 
@@ -161,7 +168,7 @@ export class Canvas extends EventEmitter {
     const root = this.getRoot();
     const renderingService = this.container.get<RenderingService>(RenderingService);
     if (destroyScenegraph) {
-      root.forEach((child: DisplayObject<any>) => {
+      root.forEach((child: DisplayObject) => {
         this.removeChild(child, true);
       });
     } else {
@@ -171,6 +178,9 @@ export class Canvas extends EventEmitter {
     // destroy services
     this.getContextService().destroy();
     renderingService.destroy();
+
+    // destroy timeline
+    this.timeline.destroy();
 
     this.emit('afterDestroy');
   }
@@ -207,7 +217,7 @@ export class Canvas extends EventEmitter {
     }
   }
 
-  appendChild(node: DisplayObject<any>) {
+  appendChild(node: DisplayObject) {
     const renderingService = this.container.get<RenderingService>(RenderingService);
     const root = this.getRoot();
     root.appendChild(node);
@@ -216,23 +226,18 @@ export class Canvas extends EventEmitter {
     this.decorate(node, renderingService, root);
   }
 
-  private decorate(object: DisplayObject<any>, renderingService: RenderingService, root: DisplayObject<any>) {
-    object.forEach((child: DisplayObject<any>) => {
-      // trigger mount on node's descendants
-      if (!child.mounted) {
-        renderingService.hooks.mounted.call(child);
-        child.mounted = true;
-        child.ownerDocument = root;
-      }
+  private decorate(object: DisplayObject, renderingService: RenderingService, root: DisplayObject) {
+    object.forEach((child: DisplayObject) => {
+      this.mountChild(child);
 
-      child.on(DISPLAY_OBJECT_EVENT.ChildInserted, (grandchild) =>
+      child.on(DISPLAY_OBJECT_EVENT.ChildInserted, (grandchild: DisplayObject) =>
         this.decorate(grandchild, renderingService, root),
       );
-      child.on(DISPLAY_OBJECT_EVENT.ChildRemoved, (grandchild) => this.unmountChildren(grandchild));
+      child.on(DISPLAY_OBJECT_EVENT.ChildRemoved, (grandchild: DisplayObject) => this.unmountChildren(grandchild));
     });
   }
 
-  removeChild(node: DisplayObject<any>, destroy?: boolean) {
+  removeChild(node: DisplayObject, destroy?: boolean) {
     this.getRoot().removeChild(node, destroy);
   }
 
@@ -306,23 +311,30 @@ export class Canvas extends EventEmitter {
     this.mountChildren(this.getRoot());
   }
 
-  private unmountChildren(node: DisplayObject<any>) {
+  private unmountChildren(node: DisplayObject) {
     const renderingService = this.container.get<RenderingService>(RenderingService);
-    node.forEach((child: DisplayObject<any>) => {
-      if (child.mounted) {
+    node.forEach((child: DisplayObject) => {
+      if (child.isConnected) {
         renderingService.hooks.unmounted.call(child);
-        child.mounted = false;
+        child.isConnected = false;
+        child.ownerDocument = null;
       }
     });
   }
 
-  private mountChildren(node: DisplayObject<any>) {
-    const renderingService = this.container.get<RenderingService>(RenderingService);
-    node.forEach((child: DisplayObject<any>) => {
-      if (!child.mounted) {
-        renderingService.hooks.mounted.call(child);
-        child.mounted = true;
-      }
+  private mountChildren(parent: DisplayObject) {
+    parent.forEach((child: DisplayObject) => {
+      this.mountChild(child);
     });
+  }
+
+  private mountChild(child: DisplayObject) {
+    // trigger mount on node's descendants
+    if (!child.isConnected) {
+      const renderingService = this.container.get<RenderingService>(RenderingService);
+      renderingService.hooks.mounted.call(child);
+      child.isConnected = true;
+      child.ownerDocument = this.document;
+    }
   }
 }

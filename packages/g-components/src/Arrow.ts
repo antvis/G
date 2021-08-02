@@ -9,14 +9,13 @@ import type {
 import { CustomElement, Path, SHAPE } from '@antv/g';
 import { vec3 } from 'gl-matrix';
 
-type ArrowHead = boolean | DisplayObject<any>;
+type ArrowHead = boolean | DisplayObject;
 type ArrowBody = Line | Path | Polyline;
 type ArrowHeadType = 'default' | 'custom';
 export interface ArrowStyleProps extends BaseStyleProps {
   body?: ArrowBody;
   startHead?: ArrowHead;
   endHead?: ArrowHead;
-  cursor?: string;
   stroke?: string;
   lineWidth?: number;
   opacity?: number;
@@ -37,8 +36,8 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
   static tag = 'arrow';
 
   private body: Line | Path | Polyline;
-  private startHead?: DisplayObject<any>;
-  private endHead?: DisplayObject<any>;
+  private startHead?: DisplayObject;
+  private endHead?: DisplayObject;
 
   constructor(config: DisplayObjectConfig<ArrowStyleProps>) {
     super({
@@ -79,29 +78,32 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     return this.endHead;
   }
 
-  attributeChangedCallback(name: string, value: any) {
+  connectedCallback(): void { }
+  disconnectedCallback(): void { }
+
+  attributeChangedCallback<Key extends keyof ArrowStyleProps>(name: Key, oldValue: ArrowStyleProps[Key], newValue: ArrowStyleProps[Key]) {
     if (
       name === 'opacity' ||
       name === 'strokeOpacity' ||
       name === 'stroke' ||
       name === 'lineWidth'
     ) {
-      this.applyArrowStyle({ [name]: value }, [this.body, this.startHead, this.endHead]);
+      this.applyArrowStyle({ [name]: newValue }, [this.body, this.startHead, this.endHead]);
     } else if (name === 'startHead' || name === 'endHead') {
       const isStart = name === 'startHead';
       // delete existed arrow head first
       this.destroyArrowHead(isStart);
 
-      if (value) {
+      if (newValue) {
         const { body, startHead, endHead, ...rest } = this.attributes;
         // append new arrow head
-        this.appendArrowHead(this.getArrowHeadType(value), isStart);
+        this.appendArrowHead(this.getArrowHeadType(newValue), isStart);
         this.applyArrowStyle(rest, [isStart ? this.startHead : this.endHead]);
       }
     } else if (name === 'body') {
       const { body, startHead, endHead, ...rest } = this.attributes;
       this.removeChild(this.body!, true);
-      this.body = value;
+      this.body = newValue;
       this.appendChild(this.body!);
       this.applyArrowStyle(rest, [this.body]);
     }
@@ -115,7 +117,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
   }
 
   private appendArrowHead(type: ArrowHeadType, isStart: boolean) {
-    let head: DisplayObject<any>;
+    let head: DisplayObject;
     if (type === 'default') {
       head = this.createDefaultArrowHead();
     } else {
@@ -141,7 +143,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
   /**
    * transform arrow head according to arrow line
    */
-  private transformArrowHead(head: DisplayObject<any>, isStart: boolean) {
+  private transformArrowHead(head: DisplayObject, isStart: boolean) {
     let position = vec3.create();
     let rad = 0;
     let x1 = 0;
@@ -149,7 +151,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     let y1 = 0;
     let y2 = 0;
 
-    const bodyType = this.body && this.body.nodeType;
+    const bodyType = this.body && this.body.nodeName;
 
     if (bodyType === SHAPE.Line) {
       const { x1: _x1, x2: _x2, y1: _y1, y2: _y2 } = this.body!.attributes as LineStyleProps;
@@ -229,9 +231,8 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       attrs: {
         // draw an angle '<'
         // @ts-ignore
-        path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${
-          10 * sin(PI / 6)
-        }`,
+        path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${10 * sin(PI / 6)
+          }`,
         stroke,
         lineWidth,
         anchor: [0.5, 0.5], // set anchor to center

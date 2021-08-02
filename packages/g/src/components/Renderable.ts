@@ -22,4 +22,9 @@ export class Renderable extends Component {
    * dirty rectangle flag
    */
   dirty = false;
+
+  /**
+   * is instanced
+   */
+  instanced = false;
 }

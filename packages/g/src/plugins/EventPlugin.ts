@@ -128,7 +128,7 @@ export class EventPlugin implements RenderingPlugin {
 
   private bootstrapEvent(event: FederatedPointerEvent, nativeEvent: PointerEvent): FederatedPointerEvent {
     // @ts-ignore
-    event.originalEvent = null;
+    event._originalEvent = null;
     event.nativeEvent = nativeEvent;
 
     event.pointerId = nativeEvent.pointerId;
@@ -145,8 +145,10 @@ export class EventPlugin implements RenderingPlugin {
 
     // calc position
     const bbox = this.contextService.getBoundingClientRect();
-    event.screen.x = nativeEvent.clientX - ((bbox && bbox.left) || 0);
-    event.screen.y = nativeEvent.clientY - ((bbox && bbox.top) || 0);
+    // relative to canvas
+    event.canvas.x = nativeEvent.clientX - ((bbox && bbox.left) || 0);
+    event.canvas.y = nativeEvent.clientY - ((bbox && bbox.top) || 0);
+    event.screen.copyFrom(event.canvas);
     event.global.copyFrom(event.screen);
     event.offset.copyFrom(event.screen);
 
@@ -176,8 +178,9 @@ export class EventPlugin implements RenderingPlugin {
 
     // calc position
     const bbox = this.contextService.getBoundingClientRect();
-    event.screen.x = nativeEvent.clientX - ((bbox && bbox.left) || 0);
-    event.screen.y = nativeEvent.clientY - ((bbox && bbox.top) || 0);
+    event.canvas.x = nativeEvent.clientX - ((bbox && bbox.left) || 0);
+    event.canvas.y = nativeEvent.clientY - ((bbox && bbox.top) || 0);
+    event.screen.copyFrom(event.canvas);
     event.global.copyFrom(event.screen);
     event.offset.copyFrom(event.screen);
 

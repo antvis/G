@@ -77,14 +77,14 @@ export class CanvasPickerPlugin implements RenderingPlugin {
         maxY: position[1],
       });
 
-      const pickedDisplayObjects: DisplayObject<any>[] = [];
+      const pickedDisplayObjects: DisplayObject[] = [];
       rBushNodes.forEach(({ name }: { name: string }) => {
         const displayObject = this.displayObjectPool.getByName(name);
         const { capture } = displayObject.getConfig();
 
         if (displayObject.isVisible() && capture) {
           // use picker for current shape's type
-          const pick = this.pointInPathPickerFactory(displayObject.nodeType);
+          const pick = this.pointInPathPickerFactory(displayObject.nodeName);
           if (pick) {
             // invert with world matrix
             const invertWorldMat = mat4.invert(mat4.create(), displayObject.getWorldTransform());
@@ -121,9 +121,9 @@ export class CanvasPickerPlugin implements RenderingPlugin {
    * use native picking method
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/isPointInPath
    */
-  private isPointInPath = (displayObject: DisplayObject<any>, position: Point) => {
+  private isPointInPath = (displayObject: DisplayObject, position: Point) => {
     const context = this.offscreenCanvas.getOrCreateContext() as CanvasRenderingContext2D;
-    const generatePath = this.pathGeneratorFactory(displayObject.nodeType);
+    const generatePath = this.pathGeneratorFactory(displayObject.nodeName);
     if (generatePath) {
       generatePath(context, displayObject.attributes);
     }

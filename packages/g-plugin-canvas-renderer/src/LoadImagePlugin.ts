@@ -11,15 +11,16 @@ export class LoadImagePlugin implements RenderingPlugin {
   private imagePool: ImagePool;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.mounted.tap(LoadImagePlugin.tag, (object: DisplayObject<any>) => {
-      const { nodeType, attributes } = object;
-      if (nodeType === SHAPE.Image) {
+    renderingService.hooks.mounted.tap(LoadImagePlugin.tag, (object: DisplayObject) => {
+      const { nodeName, attributes } = object;
+      if (nodeName === SHAPE.Image) {
         const { img } = attributes;
 
         if (isString(img)) {
           this.imagePool.getOrCreateImage(img).then(() => {
             // set dirty rectangle flag
             object.getEntity().getComponent(Renderable).dirty = true;
+            renderingService.dirtify();
           });
         }
       }
@@ -27,14 +28,15 @@ export class LoadImagePlugin implements RenderingPlugin {
 
     renderingService.hooks.attributeChanged.tap(
       LoadImagePlugin.tag,
-      (object: DisplayObject<any>, name: string, value: string) => {
-        const { nodeType } = object;
-        if (nodeType === SHAPE.Image) {
+      (object: DisplayObject, name: string, value: string) => {
+        const { nodeName } = object;
+        if (nodeName === SHAPE.Image) {
           if (name === 'img') {
             if (isString(value)) {
               this.imagePool.getOrCreateImage(value).then(() => {
                 // set dirty rectangle flag
                 object.getEntity().getComponent(Renderable).dirty = true;
+                renderingService.dirtify();
               });
             }
           }

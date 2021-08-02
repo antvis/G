@@ -2,25 +2,25 @@ import { isObject, isNil, isBoolean, isFunction } from '@antv/util';
 /* eslint-disable no-plusplus */
 import type { Entity } from '@antv/g-ecs';
 import { System } from '@antv/g-ecs';
-import { vec3 } from 'gl-matrix';
+import { vec3, mat3, mat4, quat } from 'gl-matrix';
 import { EventEmitter } from 'eventemitter3';
 import { Cullable, Geometry, Renderable, SceneGraphNode, Transform } from './components';
-import { Animator, STATUS } from './components/Animator';
-import { createVec3, rad2deg, getEuler } from './utils/math';
+import { createVec3, rad2deg, getEuler, fromRotationTranslationScale } from './utils/math';
 import { Sortable } from './components/Sortable';
 import type { BaseStyleProps } from './types';
-import type { GroupFilter, AnimateCfg, OnFrame } from './types';
+import type { GroupFilter } from './types';
 import { SHAPE } from './types';
 import { DisplayObjectPool } from './DisplayObjectPool';
 import { world, container } from './inversify.config';
 import { SceneGraphService } from './services';
-import { Timeline } from './systems';
-import { Rectangle } from './shapes';
+// import { Timeline } from './systems';
+import { AABB, Rectangle } from './shapes';
+import { GeometryAABBUpdater, GeometryUpdaterFactory } from './services/aabb';
 import { FederatedEvent } from './FederatedEvent';
-import type { Canvas } from './Canvas';
-import { AABB } from './shapes';
-import type { GeometryAABBUpdater } from './services/aabb';
-import { GeometryUpdaterFactory } from './services/aabb';
+import { KeyframeEffect } from './KeyframeEffect';
+import { Canvas } from './Canvas';
+import { Animation } from './Animation';
+import { parseTransform } from './property-handlers/transform';
 
 /**
  * events for display object
@@ -123,15 +123,11 @@ export interface DisplayObjectConfig<StyleProps> {
  * * destroy
  * * attributeChanged
  */
-export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> extends EventEmitter<
-  DisplayObjectEventType<StyleProps>
-> {
+export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
   protected entity: Entity;
   protected config: DisplayObjectConfig<StyleProps>;
 
   private displayObjectPool: DisplayObjectPool = container.get(DisplayObjectPool);
-
-  private timeline = container.getNamed<Timeline>(System, Timeline.tag);
 
   private sceneGraphService = container.get(SceneGraphService);
 
@@ -139,19 +135,22 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
     container.get<(tagName: SHAPE) => GeometryAABBUpdater<any>>(GeometryUpdaterFactory);
 
   /**
-   * whether already mounted in canvas
+   * event emitter
    */
-  mounted = false;
+  emitter = new EventEmitter();
+
+  /**
+   * push to active animations after calling `animate()`
+   */
+  activeAnimations: Animation[] = [];
 
   constructor(config: DisplayObjectConfig<StyleProps>) {
-    super();
-
     // assign name, id to config
     // eg. group.get('name')
     this.config = config;
 
-    // create entity with shape's name
-    const entity = world.createEntity(this.config.id || '');
+    // create entity with shape's name, unique ID
+    const entity = world.createEntity();
     this.entity = entity;
     // insert this group into pool
     this.displayObjectPool.add(entity.getName(), this);
@@ -159,30 +158,27 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
     // TODO: capture
     this.config.capture = true;
 
-    entity.addComponent(Sortable);
-    if (this.config.zIndex) {
-      this.setZIndex(this.config.zIndex);
-    }
-
     // init scene graph node
     const sceneGraphNode = entity.addComponent(SceneGraphNode);
-    sceneGraphNode.id = entity.getName();
+    sceneGraphNode.id = this.config.id || '';
     sceneGraphNode.name = this.config.name || '';
     sceneGraphNode.class = this.config.className || '';
     sceneGraphNode.tagName = this.config.type || SHAPE.Group;
 
     // compatible with G 3.0
-    if (this.config.attrs) {
-      this.config.style = {
-        ...this.config.style,
-        ...this.config.attrs,
-      };
-    }
+    // @ts-ignore
+    this.config.style = {
+      zIndex: this.config.zIndex ?? 0,
+      visibility: this.config.visible === false ? 'hidden' : 'visible',
+      ...this.config.style,
+      ...this.config.attrs,
+    };
     sceneGraphNode.attributes = this.config.style || {};
 
     const renderable = entity.addComponent(Renderable);
     entity.addComponent(Cullable);
     entity.addComponent(Transform);
+    entity.addComponent(Sortable);
 
     // calculate AABB for current geometry
     const geometry = entity.addComponent(Geometry);
@@ -202,15 +198,89 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
     const { origin = [0, 0] } = sceneGraphNode.attributes;
     this.sceneGraphService.setOrigin(this, [...origin, 0]);
 
-    // visible: true -> visibility: visible
-    // visible: false -> visibility: hidden
-    if (this.config.visible === false) {
-      sceneGraphNode.attributes.visibility = 'hidden';
-    } else {
-      sceneGraphNode.attributes.visibility = 'visible';
-    }
+    this.emitter.emit(DISPLAY_OBJECT_EVENT.Init);
+  }
 
-    this.emit(DISPLAY_OBJECT_EVENT.Init);
+  /**
+   * implements Node API
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node
+   */
+  readonly baseURI: string = '';
+  childNodes: NodeListOf<ChildNode & Node>;
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isConnected
+   * @example
+      circle.isConnected; // false
+      canvas.appendChild(circle);
+      circle.isConnected; // true
+   */
+  isConnected: boolean;
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeType
+   */
+  get nodeType(): number {
+    return 0;
+  }
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeName
+   */
+  get nodeName(): SHAPE {
+    return this.entity.getComponent(SceneGraphNode).tagName;
+  }
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeValue
+   */
+  nodeValue: string | null = null;
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/textContent
+   */
+  textContent: string | null = null;
+
+  getRootNode(options?: GetRootNodeOptions): DisplayObject {
+    return this.getAncestor(Infinity)!;
+  }
+  hasChildNodes(): boolean {
+    throw new Error('Method not implemented.');
+  }
+  isDefaultNamespace(namespace: string | null): boolean {
+    throw new Error('Method not implemented.');
+  }
+  isEqualNode(otherNode: Node | null): boolean {
+    throw new Error('Method not implemented.');
+  }
+  isSameNode(otherNode: Node | null): boolean {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * ChildNode API
+   */
+  after(...nodes: (Node | string)[]) {
+
+  }
+
+  before(...nodes: (Node | string)[]) {
+
+  }
+
+  replaceWith(...nodes: (Node | string)[]) {
+
+  }
+
+  replaceChild<T extends Node>(node: Node, child: T): T {
+    throw new Error('Method not implemented.');
+  }
+
+  remove(destroy = true) {
+    if (this.parentNode) {
+      return this.parentNode.removeChild(this, destroy);
+    }
+    return this;
   }
 
   /**
@@ -257,9 +327,9 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
   }
 
   destroy() {
-    this.emit(DISPLAY_OBJECT_EVENT.Destroy);
+    this.emitter.emit(DISPLAY_OBJECT_EVENT.Destroy);
     this.entity.destroy();
-    this.removeAllListeners();
+    this.emitter.removeAllListeners();
   }
 
   /** scene graph operations */
@@ -272,46 +342,37 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
    */
   dataset: Record<string, any> = {};
 
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/Node
-   */
-  get nodeType(): SHAPE {
-    return this.entity.getComponent(SceneGraphNode).tagName;
-  }
-  get nodeName(): SHAPE {
-    return this.entity.getComponent(SceneGraphNode).tagName;
-  }
-  get parentNode(): DisplayObject<any> | null {
+  get parentNode(): DisplayObject | null {
     return this.parent;
   }
-  get parentElement(): DisplayObject<any> | null {
+  get parentElement(): DisplayObject | null {
     // TODO: The Node.parentElement read-only property returns the DOM node's parent Element, or null if the node either has no parent, or its parent isn't a DOM Element.
     return this.parent;
   }
-  get nextSibling(): DisplayObject<any> | null {
-    const parentGroup = this.getParent();
+  get nextSibling(): DisplayObject | null {
+    const parentGroup = this.parentNode;
     if (parentGroup) {
-      const children = parentGroup.getChildren();
+      const children = parentGroup.children;
       const index = children.indexOf(this);
       return children[index + 1] || null;
     }
 
     return null;
   }
-  get previousSibling(): DisplayObject<any> | null {
-    const parentGroup = this.getParent();
+  get previousSibling(): DisplayObject | null {
+    const parentGroup = this.parentNode;
     if (parentGroup) {
-      const children = parentGroup.getChildren();
+      const children = parentGroup.children;
       const index = children.indexOf(this);
       return children[index - 1] || null;
     }
 
     return null;
   }
-  get firstChild(): DisplayObject<any> | null {
+  get firstChild(): DisplayObject | null {
     return this.children.length > 0 ? this.children[0] : null;
   }
-  get lastChild(): DisplayObject<any> | null {
+  get lastChild(): DisplayObject | null {
     return this.children.length > 0 ? this.children[this.children.length - 1] : null;
   }
   cloneNode() {
@@ -321,38 +382,31 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
       id: '',
     });
   }
-  appendChild(child: DisplayObject<any>, index?: number) {
+  appendChild(child: DisplayObject, index?: number) {
     this.sceneGraphService.attach(child, this, index);
 
-    this.emit(DISPLAY_OBJECT_EVENT.ChildInserted, child);
-    child.emit(DISPLAY_OBJECT_EVENT.Inserted, this);
+    this.emitter.emit(DISPLAY_OBJECT_EVENT.ChildInserted, child);
+    child.emitter.emit(DISPLAY_OBJECT_EVENT.Inserted, this);
 
     return child;
   }
-  insertBefore(group: DisplayObject<any>, reference?: DisplayObject<any>): DisplayObject<any> {
+  insertBefore(group: DisplayObject, reference?: DisplayObject): DisplayObject {
     if (!reference) {
       this.appendChild(group);
     } else {
-      const children = this.getChildren();
-      const index = children.indexOf(reference);
+      const index = this.children.indexOf(reference);
       this.appendChild(group, index - 1);
     }
     return group;
   }
-  remove(destroy = true) {
-    if (this.parentNode) {
-      return this.parentNode.removeChild(this, destroy);
-    }
-    return this;
-  }
-  removeChild(child: DisplayObject<any>, destroy = true) {
+  removeChild(child: DisplayObject, destroy = true) {
     this.sceneGraphService.detach(child);
 
-    this.emit(DISPLAY_OBJECT_EVENT.ChildRemoved, child);
-    child.emit(DISPLAY_OBJECT_EVENT.Removed, this);
+    this.emitter.emit(DISPLAY_OBJECT_EVENT.ChildRemoved, child);
+    child.emitter.emit(DISPLAY_OBJECT_EVENT.Removed, this);
 
     if (destroy) {
-      this.forEach((object) => {
+      child.forEach((object) => {
         object.destroy();
       });
     }
@@ -363,21 +417,20 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
       this.removeChild(child, destroy);
     });
   }
-  contain(group: DisplayObject<any>) {
+  contain(group: DisplayObject) {
     return this.contains(group);
   }
-  contains(group: DisplayObject<any>): boolean {
+  contains(group: DisplayObject | null): boolean {
     // the node itself, one of its direct children
-    let tmp: DisplayObject<any> | null = group;
+    let tmp: DisplayObject | null = group;
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Node/contains
     while (tmp && this !== tmp) {
       tmp = tmp.parentNode;
     }
     return !!tmp;
   }
-  getAncestor(n: number) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let temp: DisplayObject<any> | null = this;
+  getAncestor(n: number): DisplayObject | null {
+    let temp: DisplayObject | null = this;
     while (n > 0 && temp) {
       temp = temp.parentNode;
       n--;
@@ -388,7 +441,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
    * points to root in Canvas
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument
    */
-  ownerDocument: DisplayObject<any>;
+  ownerDocument: DisplayObject | null;
   /**
    * only root has defaultView, points to Canvas
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
@@ -397,10 +450,13 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/documentElement
    */
-  documentElement: DisplayObject<any>;
+  documentElement: DisplayObject;
 
   get id() {
     return this.entity.getComponent(SceneGraphNode).id;
+  }
+  get className() {
+    return this.entity.getComponent(SceneGraphNode).class;
   }
   get name() {
     return this.entity.getComponent(SceneGraphNode).name;
@@ -414,25 +470,31 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/ParentNode
    */
-  parent: DisplayObject<any> | null = null;
-  children: DisplayObject<any>[] = [];
+  parent: DisplayObject | null = null;
+
+  // HTMLCollection
+  children: DisplayObject[] = [];
 
   get childElementCount(): number {
     return this.children.length;
   }
-  get firstElementChild(): DisplayObject<any> | null {
+  get firstElementChild(): DisplayObject | null {
     // To avoid the issue with node.firstChild returning #text or #comment nodes,
     // ParentNode.firstElementChild can be used to return only the first element node.
     return this.firstChild;
   }
-  get lastElementChild(): DisplayObject<any> | null {
+  get lastElementChild(): DisplayObject | null {
     return this.lastChild;
   }
+
+  append(...nodes: (Node | string)[]) { }
+  prepend(...nodes: (Node | string)[]) { }
+  replaceChildren(...nodes: (Node | string)[]) { }
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
    */
-  matches(selector: string) {
+  matches(selector: string): boolean {
     return this.sceneGraphService.matches(selector, this);
   }
   getElementById(id: string) {
@@ -455,6 +517,16 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
   }
 
   /**
+   * @alias addEventListener
+   */
+  on(
+    type: string,
+    listener: EventListenerOrEventListenerObject | ((...args: any[]) => void),
+    options?: boolean | AddEventListenerOptions,
+  ) {
+    this.addEventListener(type, listener, options);
+  }
+  /**
    * support `capture` & `once` in options
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener
    */
@@ -471,10 +543,20 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
     listener = isFunction(listener) ? listener : listener.handleEvent;
 
     if (once) {
-      this.once(type, listener, context);
+      this.emitter.once(type, listener, context);
     } else {
-      this.on(type, listener, context);
+      this.emitter.on(type, listener, context);
     }
+  }
+  /**
+   * @alias removeEventListener
+   */
+  off(
+    type: string,
+    listener: EventListenerOrEventListenerObject | ((...args: any[]) => void),
+    options?: boolean | AddEventListenerOptions,
+  ) {
+    this.removeEventListener(type, listener, options);
   }
   removeEventListener(
     type: string,
@@ -487,7 +569,10 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
     type = capture ? `${type}capture` : type;
     listener = isFunction(listener) ? listener : listener.handleEvent;
 
-    this.off(type, listener, context);
+    this.emitter.off(type, listener, context);
+  }
+  emit(event: string | symbol, ...args: any[]) {
+    this.emitter.emit(event, ...args);
   }
   dispatchEvent(e: Event): boolean {
     if (!(e instanceof FederatedEvent)) {
@@ -559,7 +644,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
    * compatible with G 3.0
    * @deprecated
    */
-  getParent(): DisplayObject<any> | null {
+  getParent(): DisplayObject | null {
     return this.parentNode;
   }
 
@@ -577,7 +662,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
    * compatible with G 3.0
    * @deprecated
    */
-  getFirst(): DisplayObject<any> | null {
+  getFirst(): DisplayObject | null {
     return this.firstChild;
   }
 
@@ -587,7 +672,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
    * @deprecated
    * get last child group/shape
    */
-  getLast(): DisplayObject<any> | null {
+  getLast(): DisplayObject | null {
     return this.lastChild;
   }
 
@@ -597,15 +682,15 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
    * @deprecated
    * get child group/shape by index
    */
-  getChildByIndex(index: number): DisplayObject<any> | null {
+  getChildByIndex(index: number): DisplayObject | null {
     return this.children[index] || null;
   }
 
   /**
    * search in scene group, but should not include itself
    */
-  find(filter: GroupFilter): DisplayObject<any> | null {
-    let target: DisplayObject<any> | null = null;
+  find(filter: GroupFilter): DisplayObject | null {
+    let target: DisplayObject | null = null;
     this.forEach((object) => {
       if (object !== this && filter(object)) {
         target = object;
@@ -615,9 +700,8 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
     });
     return target;
   }
-
-  findAll(filter: GroupFilter): DisplayObject<any>[] {
-    const objects: DisplayObject<any>[] = [];
+  findAll(filter: GroupFilter): DisplayObject[] {
+    const objects: DisplayObject[] = [];
     this.forEach((object) => {
       if (object !== this && filter(object)) {
         objects.push(object);
@@ -630,14 +714,14 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
    * compatible with G 3.0
    * @deprecated
    */
-  add(child: DisplayObject<any>, index?: number) {
+  add(child: DisplayObject, index?: number) {
     this.appendChild(child, index);
   }
 
   /**
    * traverse in descendants
    */
-  forEach(callback: (o: DisplayObject<any>) => void | boolean) {
+  forEach(callback: (o: DisplayObject) => void | boolean) {
     if (!callback(this)) {
       this.children.forEach((child) => {
         child.forEach(callback);
@@ -700,11 +784,11 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
     return this;
   }
 
-  getPosition() {
+  getPosition(): vec3 {
     return this.sceneGraphService.getPosition(this);
   }
 
-  getLocalPosition() {
+  getLocalPosition(): vec3 {
     return this.sceneGraphService.getLocalPosition(this);
   }
 
@@ -746,14 +830,14 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
   /**
    * get scaling in local space
    */
-  getLocalScale() {
+  getLocalScale(): vec3 {
     return this.sceneGraphService.getLocalScale(this);
   }
 
   /**
    * get scaling in world space
    */
-  getScale() {
+  getScale(): vec3 {
     return this.sceneGraphService.getScale(this);
   }
 
@@ -797,34 +881,95 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
 
   rotateLocal(x: number, y?: number, z?: number) {
     if (isNil(y) && isNil(z)) {
-      return this.sceneGraphService.rotateLocal(this, 0, 0, x);
+      this.sceneGraphService.rotateLocal(this, 0, 0, x);
+    } else {
+      this.sceneGraphService.rotateLocal(this, x, y, z);
     }
 
-    return this.sceneGraphService.rotateLocal(this, x, y, z);
+    return this;
   }
 
   rotate(x: number, y?: number, z?: number) {
     if (isNil(y) && isNil(z)) {
-      return this.sceneGraphService.rotate(this, 0, 0, x);
+      this.sceneGraphService.rotate(this, 0, 0, x);
+    } else {
+      this.sceneGraphService.rotate(this, x, y, z);
     }
 
-    return this.sceneGraphService.rotate(this, x, y, z);
+    return this;
   }
 
-  getRotation() {
+  getRotation(): quat {
     return this.sceneGraphService.getRotation(this);
   }
 
-  getLocalRotation() {
+  getLocalRotation(): quat {
     return this.sceneGraphService.getLocalRotation(this);
   }
 
-  getLocalTransform() {
+  getLocalTransform(): mat4 {
     return this.sceneGraphService.getLocalTransform(this);
   }
 
-  getWorldTransform() {
+  getWorldTransform(): mat4 {
     return this.sceneGraphService.getWorldTransform(this);
+  }
+
+  /**
+   * return 3x3 matrix in world space
+   * @deprecated
+   */
+  getMatrix(): mat3 {
+    const transform = this.getWorldTransform();
+    const [tx, ty] = mat4.getTranslation(vec3.create(), transform);
+    const [sx, sy] = mat4.getScaling(vec3.create(), transform);
+    const rotation = mat4.getRotation(quat.create(), transform);
+    const [eux, euy, euz] = getEuler(vec3.create(), rotation);
+    // gimbal lock at 90 degrees
+    return fromRotationTranslationScale(eux || euz, tx, ty, sx, sy);
+  }
+  /**
+   * set 3x3 matrix in world space
+   * @deprecated
+   */
+  setMatrix(mat: mat3) {
+    let row0x = mat[0];
+    let row0y = mat[3];
+    let row1x = mat[1];
+    let row1y = mat[4];
+    // decompose 3x3 matrix
+    // @see https://www.w3.org/TR/css-transforms-1/#decomposing-a-2d-matrix
+    let scalingX = Math.sqrt(row0x * row0x + row0y * row0y);
+    let scalingY = Math.sqrt(row1x * row1x + row1y * row1y);
+
+    // If determinant is negative, one axis was flipped.
+    const determinant = row0x * row1y - row0y * row1x;
+    if (determinant < 0) {
+      // Flip axis with minimum unit vector dot product.
+      if (row0x < row1y) {
+        scalingX = -scalingX;
+      } else {
+        scalingY = -scalingY;
+      }
+    }
+
+    // Renormalize matrix to remove scale.
+    if (scalingX) {
+      row0x *= 1 / scalingX;
+      row0y *= 1 / scalingX;
+    }
+    if (scalingY) {
+      row1x *= 1 / scalingY;
+      row1y *= 1 / scalingY;
+    }
+
+    // Compute rotation and renormalize matrix.
+    const angle = Math.atan2(row0y, row0x);
+
+    this
+      .setEulerAngles(angle)
+      .setPosition(mat[6], mat[7])
+      .setLocalScale(scalingX, scalingY);
   }
 
   /* z-index & visibility */
@@ -838,10 +983,9 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
    */
   toFront() {
     if (this.parent) {
-      const zIndex =
-        Math.max(
-          ...this.parent.children.map((child) => child.getEntity().getComponent(Sortable).zIndex),
-        ) + 1;
+      const zIndex = Math.max(
+        ...this.parent.children.map((child) => Number(child.style.zIndex))
+      ) + 1;
       this.setZIndex(zIndex);
     }
   }
@@ -851,10 +995,9 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
    */
   toBack() {
     if (this.parent) {
-      const zIndex =
-        Math.min(
-          ...this.parent.children.map((child) => child.getEntity().getComponent(Sortable).zIndex),
-        ) - 1;
+      const zIndex = Math.min(
+        ...this.parent.children.map((child) => Number(child.style.zIndex))
+      ) - 1;
       this.setZIndex(zIndex);
     }
   }
@@ -865,80 +1008,39 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/visibility
    */
   show() {
-    this.attr('visibility', 'visible');
+    this.style.visibility = 'visible';
   }
 
   /**
    * hide group, which will also change visibility of its children in sceneGraphNode
    */
   hide() {
-    this.attr('visibility', 'hidden');
+    this.style.visibility = 'hidden';
   }
 
   isVisible() {
-    return this.attr('visibility') === 'visible';
+    return this.style.visibility === 'visible';
   }
 
   animate(
-    toAttrs: StyleProps,
-    duration: number,
-    easing?: string,
-    callback?: Function,
-    delay?: number,
-  ): void;
-  animate(
-    onFrame: OnFrame<StyleProps>,
-    duration: number,
-    easing?: string,
-    callback?: Function,
-    delay?: number,
-  ): void;
-  animate(toAttrs: StyleProps, cfg: AnimateCfg): void;
-  animate(onFrame: OnFrame<StyleProps>, cfg: AnimateCfg): void;
-  animate(...args: any) {
-    this.timeline.createAnimation(this.entity, args);
+    keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
+    options?: number | KeyframeAnimationOptions | undefined
+  ): Animation | null {
+    const timeline = this.ownerDocument?.defaultView.timeline;
+    if (timeline) {
+      return timeline.play(
+        new KeyframeEffect(
+          this as unknown as Element,
+          keyframes,
+          options,
+        )
+      );
+    }
+    return null;
   }
 
-  /**
-   * stop animation
-   */
-  stopAnimation(toEnd: boolean = false) {
-    this.timeline.stopAnimation(this.entity, toEnd, (attributes: any) => {
-      this.attr(attributes);
-    });
-  }
-  stopAnimate(toEnd: boolean = false) {
-    this.stopAnimation(toEnd);
-  }
-
-  /** animation */
-
-  /**
-   * pause animation
-   */
-  pauseAnimation() {
-    this.timeline.pauseAnimation(this.entity);
-  }
-  pauseAnimate() {
-    this.pauseAnimation();
-  }
-
-  /**
-   * resume animation
-   */
-  resumeAnimation() {
-    this.timeline.resumeAnimation(this.entity);
-  }
-  resumeAnimate() {
-    this.resumeAnimation();
-  }
-
-  isAnimationPaused() {
-    const animator = this.entity.getComponent(Animator);
-    return animator && animator.status === STATUS.Paused;
-  }
-  isAnimatePaused() {
-    return this.isAnimationPaused();
+  getAnimations(): Animation[] {
+    return this.activeAnimations;
   }
 
   /**
@@ -956,19 +1058,21 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
   }
 
   /**
-   * account for context's bounds in client space
+   * account for context's bounds in client space,
+   * but not accounting for children
    */
-  getBoundingClientRect(): Rectangle | null {
-    const bounds = this.getBounds();
+  getBoundingClientRect(): Rectangle {
+    const bounds = this.sceneGraphService.getGeometryBounds(this);
     if (!bounds) {
-      return null;
+      return new Rectangle(0, 0, 0, 0);
     }
 
     const [left, top] = bounds.getMin();
     const [right, bottom] = bounds.getMax();
 
     // calc context's offset
-    const bbox = this.ownerDocument.defaultView.getContextService().getBoundingClientRect();
+    const bbox = this.ownerDocument?.defaultView
+      .getContextService().getBoundingClientRect();
 
     return new Rectangle(
       left + (bbox?.left || 0),
@@ -978,6 +1082,9 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
     );
   }
 
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getClientRects
+   */
   getClientRects() {
     return [this.getBoundingClientRect()];
   }
@@ -1010,9 +1117,8 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
     this.attributes[name] = value;
 
     // update geometry if some attributes changed such as `width/height/...`
-    const geometryUpdater = this.geometryUpdaterFactory(this.nodeType);
-    const needUpdateGeometry =
-      geometryUpdater && geometryUpdater.dependencies.indexOf(name as string) > -1;
+    const geometryUpdater = this.geometryUpdaterFactory(this.nodeName);
+    const needUpdateGeometry = geometryUpdater && geometryUpdater.dependencies.indexOf(name as string) > -1;
     if (needUpdateGeometry && geometry.aabb) {
       geometryUpdater!.update(this.attributes, geometry.aabb);
     }
@@ -1032,9 +1138,6 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
       // update transform
       this.sceneGraphService.setLocalPosition(this, x, y);
     } else if (name === 'zIndex') {
-      const sortable = entity.getComponent(Sortable);
-      sortable.zIndex = value as unknown as number;
-
       if (this.parentNode) {
         const parentEntity = this.parentNode.getEntity();
         const parentRenderable = parentEntity.getComponent(Renderable);
@@ -1042,12 +1145,56 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
         if (parentRenderable) {
           parentRenderable.dirty = true;
         }
-
         // need re-sort on parent
         if (parentSortable) {
           parentSortable.dirty = true;
         }
       }
+    } else if (name === 'transform') {
+      const result = parseTransform(value);
+      // console.log(result);
+      result?.forEach(({ d, t }) => {
+        if (t === 'scale') { // scale(1) scale(1, 1)
+          // @ts-ignore
+          this.setLocalScale(d[0], d[1], 1);
+        } else if (t === 'scalex') {
+          this.setLocalScale(d as unknown as number, 1, 1);
+        } else if (t === 'scaley') {
+          this.setLocalScale(1, d as unknown as number, 1);
+        } else if (t === 'scalez') {
+          this.setLocalScale(1, 1, d as unknown as number);
+        } else if (t === 'scale3d') {
+          // @ts-ignore
+          this.setLocalScale(d[0], d[1], d[2]);
+        } else if (t === 'translate') {
+          this.setLocalPosition(d[0].px, d[1].px, 0);
+        } else if (t === 'translatex') {
+          this.setLocalPosition(d[0].px, 0, 0);
+        } else if (t === 'translatey') {
+          this.setLocalPosition(0, d[0].px, 0);
+        } else if (t === 'translatez') {
+          this.setLocalPosition(0, 0, d[0].px);
+        } else if (t === 'translate3d') {
+          this.setLocalPosition(d[0].px, d[1].px, d[2].px);
+        } else if (t === 'rotate') {
+          let deg = 0;
+          if ('deg' in d[0]) {
+            deg = d[0].deg;
+          } else if ('rad' in d[0]) {
+            deg = rad2deg(d[0].rad);
+          } else if ('turn' in d[0]) {
+            deg = 360 * d[0].turn;
+          }
+          this.setLocalEulerAngles(deg);
+        } else if (t === 'rotatex') {
+
+        } else if (t === 'rotatey') {
+
+        } else if (t === 'rotatez') {
+
+        }
+      });
+      delete this.attributes[name];
     }
 
     // update renderable's aabb, account for world transform
@@ -1058,6 +1205,6 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> e
     // redraw at next frame
     renderable.dirty = true;
 
-    this.emit(DISPLAY_OBJECT_EVENT.AttributeChanged, name, oldValue, value, this);
+    this.emitter.emit(DISPLAY_OBJECT_EVENT.AttributeChanged, name, oldValue, value, this);
   }
 }

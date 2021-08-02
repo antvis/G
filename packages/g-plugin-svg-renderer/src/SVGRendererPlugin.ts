@@ -91,13 +91,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
   private elementRendererFactory: (tagName: string) => ElementRenderer<any>;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.mounted.tap(SVGRendererPlugin.tag, (object: DisplayObject<any>) => {
+    renderingService.hooks.mounted.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
       const entity = object.getEntity();
 
       // create svg element
       const svgElement = entity.addComponent(ElementSVG);
 
-      const type = SHAPE_TO_TAGS[object.nodeType];
+      const type = SHAPE_TO_TAGS[object.nodeName];
       if (type) {
         let $groupEl;
 
@@ -124,11 +124,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
       }
     });
 
-    renderingService.hooks.unmounted.tap(SVGRendererPlugin.tag, (object: DisplayObject<any>) => {
+    renderingService.hooks.unmounted.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
       object.getEntity().removeComponent(ElementSVG, true);
     });
 
-    renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject<any>) => {
+    renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
       const $namespace = this.contextService.getDomElement();
       if ($namespace) {
         // @ts-ignore
@@ -139,12 +139,12 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const $el = entity.getComponent(ElementSVG)?.$el;
       const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
       if ($el && $groupEl) {
-        const { nodeType, attributes } = object;
+        const { nodeName, attributes } = object;
         // apply local RTS transformation to <group> wrapper
         this.applyTransform($groupEl, object.getLocalTransform());
 
         $el.setAttribute('fill', 'none');
-        if (nodeType === SHAPE.Image) {
+        if (nodeName === SHAPE.Image) {
           $el.setAttribute('preserveAspectRatio', 'none');
         }
 
@@ -154,7 +154,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         }
 
         // generate path
-        const elementRenderer = this.elementRendererFactory(nodeType);
+        const elementRenderer = this.elementRendererFactory(nodeName);
         if (elementRenderer) {
           elementRenderer.apply($el, attributes);
         }
@@ -169,7 +169,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
     renderingService.hooks.attributeChanged.tap(
       SVGRendererPlugin.tag,
-      (object: DisplayObject<any>, name: string, value: any) => {
+      (object: DisplayObject, name: string, value: any) => {
         const entity = object.getEntity();
         if (name === 'zIndex') {
           const parent = object.parentNode;
@@ -187,13 +187,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
     );
   }
 
-  private reorderChildren($groupEl: SVGElement, children: DisplayObject<any>[]) {
+  private reorderChildren($groupEl: SVGElement, children: DisplayObject[]) {
     // need to reorder parent's children
     children.sort(this.sceneGraphService.sort);
 
     // create empty fragment
     const fragment = document.createDocumentFragment();
-    children.forEach((child: DisplayObject<any>) => {
+    children.forEach((child: DisplayObject) => {
       const $el = child.getEntity().getComponent(ElementSVG).$groupEl;
       if ($el) {
         fragment.appendChild($el);

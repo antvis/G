@@ -1,4 +1,4 @@
-import { DisplayObject, Renderable } from '@antv/g';
+import { DisplayObject, Renderable, RenderingService } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { mat3, vec3 } from 'gl-matrix';
 import {
@@ -38,6 +38,9 @@ export class CubeModelBuilder implements ModelBuilder {
 
   @inject(TexturePool)
   private texturePool: TexturePool;
+
+  @inject(RenderingService)
+  private renderingService: RenderingService;
 
   async onAttributeChanged(object: DisplayObject<CubeStyleProps>, name: string, value: any) {
     const entity = object.getEntity();
@@ -142,6 +145,7 @@ export class CubeModelBuilder implements ModelBuilder {
 
     renderable3d.modelPrepared = true;
     renderable.dirty = true;
+    this.renderingService.dirtify();
   }
 
   protected buildAttributes(attributes: CubeStyleProps) {

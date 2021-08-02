@@ -52,7 +52,6 @@ interface FormattedTouch extends Touch {
   pressure: number;
   twist: number;
   tangentialPressure: number;
-  layerX: number;
   layerY: number;
   offsetX: number;
   offsetY: number;
@@ -83,8 +82,6 @@ export function normalizeToPointerEvent(event: InteractivePointerEvent): Pointer
       if (isUndefined(touch.pressure)) touch.pressure = touch.force || 0.5;
       if (isUndefined(touch.twist)) touch.twist = 0;
       if (isUndefined(touch.tangentialPressure)) touch.tangentialPressure = 0;
-      if (isUndefined(touch.layerX)) touch.layerX = touch.offsetX = touch.clientX;
-      if (isUndefined(touch.layerY)) touch.layerY = touch.offsetY = touch.clientY;
       touch.isNormalized = true;
       touch.type = event.type;
 

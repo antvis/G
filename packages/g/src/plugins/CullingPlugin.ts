@@ -6,7 +6,7 @@ import { RenderingService, RenderingPlugin } from '../services/RenderingService'
 
 export const CullingStrategy = Symbol('CullingStrategy');
 export interface CullingStrategy {
-  isVisible(object: DisplayObject<any>): boolean;
+  isVisible(object: DisplayObject): boolean;
 }
 
 /**
@@ -23,7 +23,7 @@ export class CullingPlugin implements RenderingPlugin {
   private strategies: ContributionProvider<CullingStrategy>;
 
   apply(renderer: RenderingService) {
-    renderer.hooks.prepare.tap(CullingPlugin.tag, (object: DisplayObject<any> | null) => {
+    renderer.hooks.prepare.tap(CullingPlugin.tag, (object: DisplayObject | null) => {
       if (object) {
         const entity = object.getEntity();
         const cullable = entity.getComponent(Cullable);
@@ -34,17 +34,19 @@ export class CullingPlugin implements RenderingPlugin {
           cullable.visible = this.strategies.getContributions(true).every((strategy) => strategy.isVisible(object));
         }
 
-        if (object.attributes.visibility === 'visible'
+        if (object.style.visibility === 'visible'
           && (!cullable || cullable.visible)
         ) {
           return object;
+        } else {
+          return null;
         }
       }
 
       return object;
     });
 
-    renderer.hooks.afterRender.tap(CullingPlugin.tag, (object: DisplayObject<any>) => {
+    renderer.hooks.afterRender.tap(CullingPlugin.tag, (object: DisplayObject) => {
       const entity = object.getEntity();
       entity.getComponent(Cullable).visibilityPlaneMask = -1;
     });

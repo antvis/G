@@ -18,7 +18,7 @@ export interface IRenderPass<RenderPassData> {
   /**
    * 调用渲染引擎服务完成虚拟资源的实例化
    */
-  execute(fg: FrameGraphEngine, pass: FrameGraphPass<RenderPassData>, displayObjects: DisplayObject<any>[]): void;
+  execute(fg: FrameGraphEngine, pass: FrameGraphPass<RenderPassData>): void;
 
   /**
    * 结束后清理

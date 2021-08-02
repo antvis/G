@@ -9,12 +9,6 @@ import type { BaseStyleProps, SHAPE } from '../types';
 export class SceneGraphNode<StyleProps extends BaseStyleProps = BaseStyleProps> extends Component {
   static tag = 'c-scene-graph-node';
 
-  // /**
-  //  * hierarchy
-  //  */
-  // parent: Entity | null = null;
-  // children: Entity[] = [];
-
   /**
    * used with `getElementById()`
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/id

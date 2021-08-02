@@ -11,7 +11,7 @@ export class FrustumCullingStrategy implements CullingStrategy {
   @inject(Camera)
   private camera: Camera;
 
-  isVisible(object: DisplayObject<any>) {
+  isVisible(object: DisplayObject) {
     const entity = object.getEntity();
     const cullable = entity.getComponent(Cullable);
 

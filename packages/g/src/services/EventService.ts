@@ -8,19 +8,19 @@ import { FederatedWheelEvent } from '../FederatedWheelEvent';
 import { Cursor, EventPosition } from '../types';
 import { RenderingContext } from './RenderingContext';
 
-type Picker = (position: EventPosition) => DisplayObject<any> | null;
+type Picker = (position: EventPosition) => DisplayObject | null;
 type TrackingData = {
   pressTargetsByButton: {
-    [id: number]: DisplayObject<any>[];
+    [id: number]: DisplayObject[];
   };
   clicksByButton: {
     [id: number]: {
       clickCount: number;
-      target: DisplayObject<any>;
+      target: DisplayObject;
       timeStamp: number;
     }
   };
-  overTargets: DisplayObject<any>[] | null;
+  overTargets: DisplayObject[] | null;
 };
 type EmitterListeners = Record<string,
   | Array<{ fn(...args: any[]): any, context: any }>
@@ -33,7 +33,7 @@ export class EventService extends EventEmitter {
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
-  private rootTarget: DisplayObject<any>;
+  private rootTarget: DisplayObject;
 
   cursor: Cursor | null = 'default';
 
@@ -142,7 +142,7 @@ export class EventService extends EventEmitter {
     // pointerupoutside only bubbles. It only bubbles upto the parent that doesn't contain
     // the pointerup location.
     if (pressTarget && !e.composedPath().includes(pressTarget)) {
-      let currentTarget: DisplayObject<any> | null = pressTarget;
+      let currentTarget: DisplayObject | null = pressTarget;
 
       while (currentTarget && !e.composedPath().includes(currentTarget)) {
         e.currentTarget = currentTarget;
@@ -400,7 +400,7 @@ export class EventService extends EventEmitter {
     const e = this.createPointerEvent(from);
 
     if (pressTarget) {
-      let currentTarget: DisplayObject<any> | null = pressTarget;
+      let currentTarget: DisplayObject | null = pressTarget;
 
       while (currentTarget) {
         e.currentTarget = currentTarget;
@@ -475,7 +475,7 @@ export class EventService extends EventEmitter {
     }
   }
 
-  propagationPath(target: DisplayObject<any>): DisplayObject<any>[] {
+  propagationPath(target: DisplayObject): DisplayObject[] {
     const propagationPath = [target];
 
     for (let i = 0; i < PROPAGATION_LIMIT && target !== this.rootTarget; i++) {
@@ -491,14 +491,14 @@ export class EventService extends EventEmitter {
     return propagationPath;
   }
 
-  hitTest(position: EventPosition): DisplayObject<any> | null {
+  hitTest(position: EventPosition): DisplayObject | null {
     return this.pickHandler(position) || this.rootTarget;
   }
 
   private createPointerEvent(
     from: FederatedPointerEvent,
     type?: string,
-    target?: DisplayObject<any>
+    target?: DisplayObject
   ): FederatedPointerEvent {
     const event = this.allocateEvent(FederatedPointerEvent);
 
@@ -507,13 +507,13 @@ export class EventService extends EventEmitter {
     this.copyData(from, event);
 
     event.nativeEvent = from.nativeEvent;
-    event.originalEvent = from;
+    event._originalEvent = from;
     event.target = target ?? this.hitTest({
       clientX: event.clientX,
       clientY: event.clientY,
       x: event.global.x,
       y: event.global.y,
-    }) as DisplayObject<any>;
+    }) as DisplayObject;
 
     if (typeof type === 'string') {
       event.type = type;
@@ -530,13 +530,13 @@ export class EventService extends EventEmitter {
     this.copyData(from, event);
 
     event.nativeEvent = from.nativeEvent;
-    event.originalEvent = from;
+    event._originalEvent = from;
     event.target = this.hitTest({
       clientX: event.clientX,
       clientY: event.clientY,
       x: event.global.x,
       y: event.global.y,
-    }) as DisplayObject<any>;
+    }) as DisplayObject;
 
     return event;
   }
@@ -557,7 +557,7 @@ export class EventService extends EventEmitter {
     const event = this.allocateEvent(FederatedPointerEvent);
 
     event.nativeEvent = from.nativeEvent;
-    event.originalEvent = from.originalEvent;
+    event._originalEvent = from._originalEvent;
 
     this.copyPointerData(from, event);
     this.copyMouseData(from, event);
@@ -591,13 +591,14 @@ export class EventService extends EventEmitter {
     to.altKey = from.altKey;
     to.button = from.button;
     to.buttons = from.buttons;
-    to.client.copyFrom(from.client);
     to.ctrlKey = from.ctrlKey;
     to.metaKey = from.metaKey;
+    to.client.copyFrom(from.client);
     to.movement.copyFrom(from.movement);
-
+    to.canvas.copyFrom(from.canvas);
     to.screen.copyFrom(from.screen);
     to.global.copyFrom(from.global);
+    to.offset.copyFrom(from.offset);
   }
 
   private copyWheelData(from: FederatedWheelEvent, to: FederatedWheelEvent) {
@@ -613,7 +614,6 @@ export class EventService extends EventEmitter {
     to.type = from.type;
     to.detail = from.detail;
     to.view = from.view;
-    to.layer.copyFrom(from.layer);
     to.page.copyFrom(from.page);
   }
 
@@ -663,7 +663,7 @@ export class EventService extends EventEmitter {
 
   private notifyListeners(e: FederatedEvent, type: string) {
     // hack EventEmitter, stops if the `propagationImmediatelyStopped` flag is set
-    const listeners = ((e.currentTarget as any)._events as EmitterListeners)[type];
+    const listeners = ((e.currentTarget as any).emitter._events as EmitterListeners)[type];
 
     if (!listeners) return;
 
@@ -680,7 +680,7 @@ export class EventService extends EventEmitter {
   /**
    * some detached nodes may exist in propagation path, need to skip them
    */
-  private findMountedTarget(propagationPath: DisplayObject<any>[] | null): DisplayObject<any> | null {
+  private findMountedTarget(propagationPath: DisplayObject[] | null): DisplayObject | null {
     if (!propagationPath) {
       return null;
     }
@@ -697,8 +697,8 @@ export class EventService extends EventEmitter {
     return currentTarget;
   }
 
-  private getCursor(target: DisplayObject<any> | null) {
-    let tmp: DisplayObject<any> | null = target;
+  private getCursor(target: DisplayObject | null) {
+    let tmp: DisplayObject | null = target;
     while (tmp) {
       const cursor = tmp.getAttribute('cursor');
       if (cursor) {

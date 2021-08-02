@@ -27,6 +27,22 @@
         "en": "Instancing rendering"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "high-perf.js",
+      "title": {
+        "zh": "8k 节点",
+        "en": "8k nodes"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "5wnodes.js",
+      "title": {
+        "zh": "5.5w 节点",
+        "en": "5.5w nodes"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
     }
   ]
 }

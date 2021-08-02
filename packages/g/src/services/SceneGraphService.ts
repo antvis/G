@@ -10,17 +10,17 @@ import { DisplayObject } from '../DisplayObject';
 import { AABB } from '../shapes';
 import { SceneGraphSelector, SceneGraphSelectorFactory } from './SceneGraphSelector';
 
-export function sortByZIndex(o1: DisplayObject<any>, o2: DisplayObject<any>) {
-  const sortable1 = o1.getEntity().getComponent(Sortable);
-  const sortable2 = o2.getEntity().getComponent(Sortable);
-  if (sortable1.zIndex === sortable2.zIndex) {
+export function sortByZIndex(o1: DisplayObject, o2: DisplayObject) {
+  const zIndex1 = Number(o1.style.zIndex);
+  const zIndex2 = Number(o2.style.zIndex);
+  if (zIndex1 === zIndex2) {
     const parent = o1.parent;
     if (parent) {
       const children = parent.children || [];
       return children.indexOf(o1) - children.indexOf(o2);
     }
   }
-  return sortable1.zIndex - sortable2.zIndex;
+  return zIndex1 - zIndex2;
 }
 
 export enum SCENE_GRAPH_EVENT {
@@ -37,21 +37,21 @@ export class SceneGraphService extends EventEmitter {
   @inject(SceneGraphSelectorFactory)
   private sceneGraphSelectorFactory: () => SceneGraphSelector;
 
-  matches(query: string, root: DisplayObject<any>) {
+  matches(query: string, root: DisplayObject) {
     return this.sceneGraphSelectorFactory().is(query, root);
   }
 
-  querySelector(query: string, root: DisplayObject<any>) {
+  querySelector(query: string, root: DisplayObject) {
     return this.sceneGraphSelectorFactory().selectOne(query, root);
   }
 
-  querySelectorAll(query: string, root: DisplayObject<any>) {
+  querySelectorAll(query: string, root: DisplayObject) {
     return this.sceneGraphSelectorFactory()
       .selectAll(query, root)
       .filter((node) => !node.getEntity().getComponent(SceneGraphNode).shadow);
   }
 
-  attach(child: DisplayObject<any>, parent: DisplayObject<any>, index?: number) {
+  attach(child: DisplayObject, parent: DisplayObject, index?: number) {
     if (child.parent) {
       this.detach(child);
     }
@@ -64,10 +64,13 @@ export class SceneGraphService extends EventEmitter {
       child.parent.children.push(child);
     }
 
+    // parent needs re-sort
+    parent.getEntity().getComponent(Sortable).dirty = true;
+
     this.dirtifyWorld(child, entity.getComponent(Transform));
   }
 
-  detach(child: DisplayObject<any>) {
+  detach(child: DisplayObject) {
     if (child.parent) {
       const entity = child.getEntity();
 
@@ -76,6 +79,9 @@ export class SceneGraphService extends EventEmitter {
       mat4.getTranslation(transform.localPosition, transform.worldTransform);
       mat4.getRotation(transform.localRotation, transform.worldTransform);
       transform.localDirtyFlag = true;
+
+      // parent needs re-sort
+      child.parent.getEntity().getComponent(Sortable).dirty = true;
 
       const index = child.parent.children.indexOf(child);
       if (index > -1) {
@@ -93,7 +99,7 @@ export class SceneGraphService extends EventEmitter {
    * use materialized path
    * @see https://stackoverflow.com/questions/31470730/comparing-tree-nodes
    */
-  sort = (object1: DisplayObject<any>, object2: DisplayObject<any>): number => {
+  sort = (object1: DisplayObject, object2: DisplayObject): number => {
     if (!object1.parentNode) {
       return -1;
     }
@@ -146,8 +152,8 @@ export class SceneGraphService extends EventEmitter {
     return -1;
   };
 
-  private getDepth(object: DisplayObject<any>) {
-    let o: DisplayObject<any> = object;
+  private getDepth(object: DisplayObject) {
+    let o: DisplayObject = object;
     let depth = 0;
     while (o) {
       o = o.parentNode!;
@@ -156,7 +162,7 @@ export class SceneGraphService extends EventEmitter {
     return depth;
   }
 
-  setOrigin(displayObject: DisplayObject<any>, origin: vec3 | number, y = 0, z = 0) {
+  setOrigin(displayObject: DisplayObject, origin: vec3 | number, y = 0, z = 0) {
     if (typeof origin === 'number') {
       origin = vec3.fromValues(origin, y, z);
     }
@@ -177,7 +183,7 @@ export class SceneGraphService extends EventEmitter {
    */
   rotate = (() => {
     const parentInvertRotation = quat.create();
-    return (displayObject: DisplayObject<any>, degrees: vec3 | number, y = 0, z = 0) => {
+    return (displayObject: DisplayObject, degrees: vec3 | number, y = 0, z = 0) => {
       if (typeof degrees === 'number') {
         degrees = vec3.fromValues(degrees, y, z);
       }
@@ -211,7 +217,7 @@ export class SceneGraphService extends EventEmitter {
    */
   rotateLocal = (() => {
     const rotation = quat.create();
-    return (displayObject: DisplayObject<any>, degrees: vec3 | number, y = 0, z = 0) => {
+    return (displayObject: DisplayObject, degrees: vec3 | number, y = 0, z = 0) => {
       if (typeof degrees === 'number') {
         degrees = vec3.fromValues(degrees, y, z);
       }
@@ -231,7 +237,7 @@ export class SceneGraphService extends EventEmitter {
   setEulerAngles = (() => {
     const invParentRot = quat.create();
 
-    return (displayObject: DisplayObject<any>, degrees: vec3 | number, y = 0, z = 0) => {
+    return (displayObject: DisplayObject, degrees: vec3 | number, y = 0, z = 0) => {
       if (typeof degrees === 'number') {
         degrees = vec3.fromValues(degrees, y, z);
       }
@@ -254,7 +260,7 @@ export class SceneGraphService extends EventEmitter {
   /**
    * set euler angles(degrees) in local space
    */
-  setLocalEulerAngles(displayObject: DisplayObject<any>, degrees: vec3 | number, y = 0, z = 0) {
+  setLocalEulerAngles(displayObject: DisplayObject, degrees: vec3 | number, y = 0, z = 0) {
     if (typeof degrees === 'number') {
       degrees = vec3.fromValues(degrees, y, z);
     }
@@ -273,7 +279,7 @@ export class SceneGraphService extends EventEmitter {
    * ```
    */
   translateLocal = (() => {
-    return (displayObject: DisplayObject<any>, translation: vec3 | number, y: number = 0, z: number = 0) => {
+    return (displayObject: DisplayObject, translation: vec3 | number, y: number = 0, z: number = 0) => {
       if (typeof translation === 'number') {
         translation = vec3.fromValues(translation, y, z);
       }
@@ -297,7 +303,7 @@ export class SceneGraphService extends EventEmitter {
   setPosition = (() => {
     const parentInvertMatrix = mat4.create();
 
-    return (displayObject: DisplayObject<any>, position: vec3 | number, y: number = 0, z: number = 0) => {
+    return (displayObject: DisplayObject, position: vec3 | number, y: number = 0, z: number = 0) => {
       if (typeof position === 'number') {
         position = vec3.fromValues(position, y, z);
       }
@@ -324,7 +330,7 @@ export class SceneGraphService extends EventEmitter {
   /**
    * move to position in local space
    */
-  setLocalPosition(displayObject: DisplayObject<any>, position: vec3 | number, y: number = 0, z: number = 0) {
+  setLocalPosition(displayObject: DisplayObject, position: vec3 | number, y: number = 0, z: number = 0) {
     if (typeof position === 'number') {
       position = vec3.fromValues(position, y, z);
     }
@@ -341,7 +347,7 @@ export class SceneGraphService extends EventEmitter {
   /**
    * scale in local space
    */
-  scaleLocal(displayObject: DisplayObject<any>, scaling: vec3 | number, y: number = 1, z: number = 1) {
+  scaleLocal(displayObject: DisplayObject, scaling: vec3 | number, y: number = 1, z: number = 1) {
     if (typeof scaling === 'number') {
       scaling = vec3.fromValues(scaling, y, z);
     }
@@ -350,7 +356,7 @@ export class SceneGraphService extends EventEmitter {
     this.dirtifyLocal(displayObject, transform);
   }
 
-  setLocalScale(displayObject: DisplayObject<any>, scaling: vec3 | number, y: number = 1, z: number = 1) {
+  setLocalScale(displayObject: DisplayObject, scaling: vec3 | number, y: number = 1, z: number = 1) {
     if (typeof scaling === 'number') {
       scaling = vec3.fromValues(scaling, y, z);
     }
@@ -378,7 +384,7 @@ export class SceneGraphService extends EventEmitter {
   translate = (() => {
     const tr = vec3.create();
 
-    return (displayObject: DisplayObject<any>, translation: vec3 | number, y: number = 0, z: number = 0) => {
+    return (displayObject: DisplayObject, translation: vec3 | number, y: number = 0, z: number = 0) => {
       if (typeof translation === 'number') {
         translation = vec3.fromValues(translation, y, z);
       }
@@ -392,7 +398,7 @@ export class SceneGraphService extends EventEmitter {
     };
   })();
 
-  dirtifyLocal(displayObject: DisplayObject<any>, transform: Transform) {
+  dirtifyLocal(displayObject: DisplayObject, transform: Transform) {
     if (!transform.localDirtyFlag) {
       transform.localDirtyFlag = true;
       if (!transform.dirtyFlag) {
@@ -401,26 +407,26 @@ export class SceneGraphService extends EventEmitter {
     }
   }
 
-  dirtifyWorld(displayObject: DisplayObject<any>, transform: Transform) {
+  dirtifyWorld(displayObject: DisplayObject, transform: Transform) {
     this.dirtifyWorldInternal(displayObject, transform);
   }
 
-  getPosition(displayObject: DisplayObject<any>) {
+  getPosition(displayObject: DisplayObject) {
     const transform = displayObject.getEntity().getComponent(Transform);
     return mat4.getTranslation(transform.position, this.getWorldTransform(displayObject, transform));
   }
 
-  getRotation(displayObject: DisplayObject<any>) {
+  getRotation(displayObject: DisplayObject) {
     const transform = displayObject.getEntity().getComponent(Transform);
     return mat4.getRotation(transform.rotation, this.getWorldTransform(displayObject, transform));
   }
 
-  getScale(displayObject: DisplayObject<any>) {
+  getScale(displayObject: DisplayObject) {
     const transform = displayObject.getEntity().getComponent(Transform);
     return mat4.getScaling(transform.scaling, this.getWorldTransform(displayObject, transform));
   }
 
-  getWorldTransform(displayObject: DisplayObject<any>, transform: Transform = displayObject.getEntity().getComponent(Transform)) {
+  getWorldTransform(displayObject: DisplayObject, transform: Transform = displayObject.getEntity().getComponent(Transform)) {
     if (!transform.localDirtyFlag && !transform.dirtyFlag) {
       return transform.worldTransform;
     }
@@ -434,19 +440,19 @@ export class SceneGraphService extends EventEmitter {
     return transform.worldTransform;
   }
 
-  getLocalPosition(displayObject: DisplayObject<any>) {
+  getLocalPosition(displayObject: DisplayObject) {
     return displayObject.getEntity().getComponent(Transform).localPosition;
   }
 
-  getLocalRotation(displayObject: DisplayObject<any>) {
+  getLocalRotation(displayObject: DisplayObject) {
     return displayObject.getEntity().getComponent(Transform).localRotation;
   }
 
-  getLocalScale(displayObject: DisplayObject<any>) {
+  getLocalScale(displayObject: DisplayObject) {
     return displayObject.getEntity().getComponent(Transform).localScale;
   }
 
-  getLocalTransform(displayObject: DisplayObject<any>) {
+  getLocalTransform(displayObject: DisplayObject) {
     const transform = displayObject.getEntity().getComponent(Transform);
     if (transform.localDirtyFlag) {
       mat4.fromRotationTranslationScaleOrigin(
@@ -461,7 +467,7 @@ export class SceneGraphService extends EventEmitter {
     return transform.localTransform;
   }
 
-  getLocalBounds(displayObject: DisplayObject<any>): AABB | null {
+  getLocalBounds(displayObject: DisplayObject): AABB | null {
     if (displayObject.parent) {
       const parentInvert = mat4.invert(mat4.create(), this.getWorldTransform(displayObject.parent));
       const bounds = this.getBounds(displayObject);
@@ -476,7 +482,19 @@ export class SceneGraphService extends EventEmitter {
     return this.getBounds(displayObject);
   }
 
-  getBounds(displayObject: DisplayObject<any>): AABB | null {
+  getGeometryBounds(displayObject: DisplayObject): AABB | null {
+    const entity = displayObject.getEntity();
+    let geometryAABB = entity.getComponent(Geometry).aabb;
+    let aabb = null;
+    if (geometryAABB) {
+      aabb = new AABB();
+      // apply transformation to aabb
+      aabb.setFromTransformedAABB(geometryAABB, this.getWorldTransform(displayObject));
+    }
+    return aabb;
+  }
+
+  getBounds(displayObject: DisplayObject): AABB | null {
     const entity = displayObject.getEntity();
     const renderable = entity.getComponent(Renderable);
     if (!renderable.aabbDirty && renderable.aabb) {
@@ -484,13 +502,7 @@ export class SceneGraphService extends EventEmitter {
     }
 
     // reset with geometry's aabb
-    let geometryAABB = entity.getComponent(Geometry).aabb;
-    let aabb: AABB | undefined;
-    if (geometryAABB) {
-      aabb = new AABB();
-      // apply transformation to aabb
-      aabb.setFromTransformedAABB(geometryAABB, this.getWorldTransform(displayObject));
-    }
+    let aabb: AABB | null = this.getGeometryBounds(displayObject);
 
     // merge children's aabbs
     const children = displayObject.children;
@@ -515,8 +527,8 @@ export class SceneGraphService extends EventEmitter {
     return renderable.aabb || null;
   }
 
-  private dirtifyAABBToRoot(displayObject: DisplayObject<any>) {
-    let p: DisplayObject<any> | null = displayObject;
+  private dirtifyAABBToRoot(displayObject: DisplayObject) {
+    let p: DisplayObject | null = displayObject;
     while (p) {
       const renderable = p.getEntity().getComponent(Renderable);
       renderable.aabbDirty = true;
@@ -526,7 +538,7 @@ export class SceneGraphService extends EventEmitter {
     }
   }
 
-  private dirtifyWorldInternal(displayObject: DisplayObject<any>, transform: Transform) {
+  private dirtifyWorldInternal(displayObject: DisplayObject, transform: Transform) {
     if (!transform.dirtyFlag) {
       transform.dirtyFlag = true;
       displayObject.children.forEach((child) => {
@@ -541,7 +553,7 @@ export class SceneGraphService extends EventEmitter {
     }
   }
 
-  private updateTransform(displayObject: DisplayObject<any>, transform: Transform) {
+  private updateTransform(displayObject: DisplayObject, transform: Transform) {
     if (transform.localDirtyFlag) {
       this.getLocalTransform(displayObject);
     }

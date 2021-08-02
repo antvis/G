@@ -35,6 +35,14 @@
         "en": "Visibility & Z-index"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZcrHSoLxRS8AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "z-index.js",
+      "title": {
+        "zh": "展示次序",
+        "en": "Z-index"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gW6rQpXFK30AAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

@@ -5,6 +5,7 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
+// @ts-ignore
 import { Group, Circle, Canvas, Text, Rect, DISPLAY_OBJECT_EVENT } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { containerModule } from '@antv/g-plugin-css-select';
@@ -157,6 +158,19 @@ describe('Event API like DOM', () => {
   // });
 
   it('should emit inserted event correctly', () => {
+    const rect = new Rect({
+      attrs: {
+        fill: 'rgb(239, 244, 255)',
+        fillOpacity: 1,
+        lineWidth: 1,
+        opacity: 1,
+        width: 300,
+        height: 300,
+        stroke: 'rgb(95, 149, 255)',
+        strokeOpacity: 1,
+      },
+    });
+
     // add a circle to canvas
     const circle = new Circle({
       className: 'draggable',
@@ -173,7 +187,7 @@ describe('Event API like DOM', () => {
 
     const text = new Text({
       attrs: {
-        text: 'Drag me',
+        text: 'move',
         fontSize: 22,
         fill: '#000',
         textAlign: 'center',
@@ -181,54 +195,60 @@ describe('Event API like DOM', () => {
       },
     });
 
-    const dropZone = new Rect({
-      attrs: {
-        x: 200,
-        y: 300,
-        width: 300,
-        height: 200,
-        fill: '#1890FF',
-      },
-    });
-
-    canvas.appendChild(dropZone);
-
+    rect.appendChild(circle);
     circle.appendChild(text);
-    canvas.appendChild(circle);
-    circle.setPosition(100, 100);
+    canvas.appendChild(rect);
+    rect.setPosition(200, 200);
+    circle.translateLocal(150, 150);
 
     // @ts-ignore
     interact(circle, {
       context: canvas.document,
     }).draggable({
+      modifiers: [
+        // interact.modifiers.snap({
+        //   targets: [
+        //     interact.snappers.grid({ x: 30, y: 30 })
+        //   ],
+        //   range: Infinity,
+        //   relativePoints: [{ x: 0, y: 0 }]
+        // }),
+        interact.modifiers.restrict({
+          // @ts-ignore
+          restriction: circle.parentNode,
+          elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
+          endOnly: true
+        })
+      ],
+      inertia: true,
       onmove: function (event) {
         const { dx, dy } = event;
         circle.translateLocal(dx, dy);
       }
     });
 
-    // @ts-ignore
-    interact(dropZone, {
-      context: canvas.document,
-    }).dropzone({
-      accept: '.draggable',
-      overlap: 0.75,
-      ondragenter: function (event) {
-        text.style.text = 'Dragged in';
-      },
-      ondragleave: function (event) {
-        text.style.text = 'Dragged out';
-      },
-      ondrop: function (event) {
-        text.style.text = 'Dropped';
-      },
-      ondropactivate: function (event) {
-        // add active dropzone feedback
-        event.target.style.fill = '#4e4';
-      },
-      ondropdeactivate: function (event) {
-        event.target.style.fill = '#1890FF';
-      }
-    });
+    // // @ts-ignore
+    // interact(dropZone, {
+    //   context: canvas.document,
+    // }).dropzone({
+    //   accept: '.draggable',
+    //   overlap: 0.75,
+    //   ondragenter: function (event) {
+    //     text.style.text = 'Dragged in';
+    //   },
+    //   ondragleave: function (event) {
+    //     text.style.text = 'Dragged out';
+    //   },
+    //   ondrop: function (event) {
+    //     text.style.text = 'Dropped';
+    //   },
+    //   ondropactivate: function (event) {
+    //     // add active dropzone feedback
+    //     event.target.style.fill = '#4e4';
+    //   },
+    //   ondropdeactivate: function (event) {
+    //     event.target.style.fill = '#1890FF';
+    //   }
+    // });
   });
 });

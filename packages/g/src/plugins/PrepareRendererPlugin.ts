@@ -16,7 +16,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
-    const handleAttributeChanged = (name: string, value: any, object: DisplayObject<any>) => {
+    const handleAttributeChanged = (name: string, oldValue: any, value: any, object: DisplayObject) => {
       // need re-render
       this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectChanged);
 
@@ -37,7 +37,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       this.sceneGraphService.off(SCENE_GRAPH_EVENT.AABBChanged, handleAABBChanged);
     });
 
-    renderingService.hooks.mounted.tap(PrepareRendererPlugin.tag, (object: DisplayObject<any>) => {
+    renderingService.hooks.mounted.tap(PrepareRendererPlugin.tag, (object: DisplayObject) => {
       const entity = object.getEntity();
 
       // delegate attribute-changed handler
@@ -50,7 +50,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectChanged);
     });
 
-    renderingService.hooks.unmounted.tap(PrepareRendererPlugin.tag, (object: DisplayObject<any>) => {
+    renderingService.hooks.unmounted.tap(PrepareRendererPlugin.tag, (object: DisplayObject) => {
       // console.log('unmounted', object);
       object.off(DISPLAY_OBJECT_EVENT.AttributeChanged, handleAttributeChanged);
 

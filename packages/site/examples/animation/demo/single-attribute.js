@@ -5,6 +5,10 @@ import { Renderer as SVGRenderer } from '@antv/g-svg';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 
+/**
+ * ported from https://animista.net/play/entrances/scale-in
+ */
+
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
@@ -18,81 +22,28 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const circle1 = new Circle({
+const circle = new Circle({
   attrs: {
-    x: 100,
-    y: 100,
-    r: 20,
-    fill: '#1890FF',
-    stroke: '#F04864',
-    lineWidth: 4,
-  },
-});
-
-const circle2 = new Circle({
-  attrs: {
-    x: 100,
+    x: 200,
     y: 200,
-    r: 50,
+    r: 120,
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
   },
 });
 
-const circle3 = new Circle({
-  attrs: {
-    x: 100,
-    y: 300,
-    r: 50,
-    fill: '#1890FF',
-    stroke: '#F04864',
-    lineWidth: 4,
-  },
+canvas.appendChild(circle);
+
+const animation = circle.animate(
+  [
+    { transform: 'scale(1)' },
+    { transform: 'scale(1.2)' },
+  ], {
+  duration: 500,
+  // iterations: Infinity,
+  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
 });
-
-canvas.appendChild(circle1);
-canvas.appendChild(circle2);
-canvas.appendChild(circle3);
-
-circle1.animate(
-  {
-    r: 50,
-  },
-  {
-    delay: 0,
-    duration: 2000,
-    easing: 'easeLinear',
-    callback: () => {},
-    repeat: true,
-  },
-);
-
-circle2.animate(
-  {
-    fill: '#F04864',
-  },
-  {
-    delay: 0,
-    duration: 2000,
-    easing: 'easeLinear',
-    callback: () => {},
-    repeat: true,
-  },
-);
-
-circle3.animate(
-  {
-    x: 500,
-  },
-  {
-    delay: 0,
-    duration: 2000,
-    easing: 'easeQuadInOut',
-    callback: () => {},
-    repeat: true,
-  },
-);
 
 // stats
 const stats = new Stats();
@@ -125,88 +76,26 @@ rendererFolder.open();
 
 const animationFolder = gui.addFolder('animation');
 const animationConfig = {
+  name: 'scale-in',
+  play: () => {
+    animation.play();
+  },
   pause: () => {
-    circle1.pauseAnimation();
-    circle2.pauseAnimation();
-    circle3.pauseAnimation();
+    animation.pause();
   },
-  resume: () => {
-    circle1.resumeAnimation();
-    circle2.resumeAnimation();
-    circle3.resumeAnimation();
+  reverse: () => {
+    animation.reverse();
   },
-  stop: () => {
-    circle1.stopAnimation(true);
-    circle2.stopAnimation(true);
-    circle3.stopAnimation(true);
-  },
-  start: () => {
-    circle1.attr({
-      x: 100,
-      y: 100,
-      r: 20,
-      fill: '#1890FF',
-      stroke: '#F04864',
-      lineWidth: 4,
-    });
-    circle1.animate(
-      {
-        r: 50,
-      },
-      {
-        delay: 0,
-        duration: 2000,
-        easing: 'easeLinear',
-        callback: () => {},
-        repeat: true,
-      },
-    );
-
-    circle2.attr({
-      x: 100,
-      y: 200,
-      r: 50,
-      fill: '#1890FF',
-      stroke: '#F04864',
-      lineWidth: 4,
-    });
-    circle2.animate(
-      {
-        fill: '#F04864',
-      },
-      {
-        delay: 0,
-        duration: 2000,
-        easing: 'easeLinear',
-        callback: () => {},
-        repeat: true,
-      },
-    );
-
-    circle3.attr({
-      x: 100,
-      y: 300,
-      r: 50,
-      fill: '#1890FF',
-      stroke: '#F04864',
-      lineWidth: 4,
-    });
-    circle3.animate(
-      {
-        x: 500,
-      },
-      {
-        delay: 0,
-        duration: 2000,
-        easing: 'easeQuadInOut',
-        callback: () => {},
-        repeat: true,
-      },
-    );
+  finish: () => {
+    animation.finish();
   },
 };
+animationFolder.add(animationConfig, 'name', ['scale-in', 'rotate-in', 'svg'])
+  .onChange((type) => {
+
+  }).name('Type');
+animationFolder.add(animationConfig, 'play').name('Play');
 animationFolder.add(animationConfig, 'pause').name('Pause');
-animationFolder.add(animationConfig, 'resume').name('Resume');
-animationFolder.add(animationConfig, 'stop').name('Stop');
-animationFolder.add(animationConfig, 'start').name('Restart');
+animationFolder.add(animationConfig, 'reverse').name('Reverse');
+animationFolder.add(animationConfig, 'finish').name('Finish');
 animationFolder.open();

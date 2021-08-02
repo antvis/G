@@ -23,8 +23,8 @@ export enum CAMERA_PROJECTION_MODE {
   PERSPECTIVE = 'PERSPECTIVE',
 }
 
-export const enum CAMERA_EVENT {
-  Updated = 'updated',
+export const CAMERA_EVENT = {
+  Updated: 'updated',
 }
 
 const DEG_2_RAD = Math.PI / 180;

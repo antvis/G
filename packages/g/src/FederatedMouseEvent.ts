@@ -22,7 +22,7 @@ export class FederatedMouseEvent
   metaKey: boolean;
 
   /** This is currently not implemented in the Federated Events API. */
-  relatedTarget: DisplayObject<any> | null;
+  relatedTarget: DisplayObject | null;
 
   /** Whether the "shift" key was pressed when this mouse event occurred. */
   shiftKey: boolean;

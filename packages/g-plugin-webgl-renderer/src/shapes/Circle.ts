@@ -228,7 +228,7 @@ export class CircleModelBuilder implements ModelBuilder {
 
     if (isBatch) {
       // TODO: use sortable.sorted
-      config = (object as Batch<any>).children.map((instance: DisplayObject<any>) => {
+      config = object.children.map((instance: DisplayObject) => {
         const [halfWidth, halfHeight] = this.getSize(instance.attributes, tagName);
         const fillColor = rgb2arr(instance.attributes.fill || '');
         return {

@@ -8,7 +8,7 @@ import { DisplayObject, DISPLAY_OBJECT_EVENT } from './DisplayObject';
  */
 export abstract class CustomElement<
   CustomElementStyleProps,
-> extends DisplayObject<CustomElementStyleProps> {
+  > extends DisplayObject<CustomElementStyleProps> {
   constructor(config: DisplayObjectConfig<CustomElementStyleProps>) {
     super(config);
 
@@ -35,25 +35,25 @@ export abstract class CustomElement<
     newValue: CustomElementStyleProps[Key],
   ): void;
 
-  private handleChildInserted(child: DisplayObject<any>) {
+  private handleChildInserted = (child: DisplayObject) => {
     child.forEach((node) => {
       // every child and its children should turn into a shadow node
       // a shadow node doesn't mean to be unrenderable, it's just unsearchable in scenegraph
       node.getEntity().getComponent(SceneGraphNode).shadow = true;
     });
-  }
+  };
 
-  private handleChildRemoved(child: DisplayObject<any>) {
+  private handleChildRemoved = (child: DisplayObject) => {
     child.forEach((node) => {
       node.getEntity().getComponent(SceneGraphNode).shadow = false;
     });
-  }
+  };
 
-  private handleAttributeChanged<Key extends keyof CustomElementStyleProps>(
+  private handleAttributeChanged = <Key extends keyof CustomElementStyleProps>(
     name: Key,
     oldValue: CustomElementStyleProps[Key],
     value: CustomElementStyleProps[Key],
-  ) {
+  ) => {
     this.attributeChangedCallback(name, oldValue, value);
-  }
+  };
 }

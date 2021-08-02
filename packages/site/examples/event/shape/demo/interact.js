@@ -30,7 +30,9 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-// add a circle to canvas
+/**
+ * Draggable
+ */
 const circle = new Circle({
   className: 'draggable',
   attrs: {
@@ -41,9 +43,9 @@ const circle = new Circle({
     r: 60,
     stroke: 'rgb(95, 149, 255)',
     strokeOpacity: 1,
+    zIndex: 1,
   },
 });
-
 const text = new Text({
   attrs: {
     text: 'Drag me',
@@ -53,20 +55,24 @@ const text = new Text({
     textBaseline: 'middle',
   },
 });
-const dropZone = new Rect({
-  attrs: {
-    x: 100,
-    y: 50,
-    width: 300,
-    height: 200,
-    fill: '#1890FF',
-  },
+circle.appendChild(text);
+canvas.appendChild(circle);
+circle.setPosition(100, 100);
+interact(circle, {
+  context: canvas.document,
+}).draggable({
+  onmove: function (event) {
+    const { dx, dy } = event;
+    circle.translateLocal(dx, dy);
+  }
 });
 
-// resizable
+/**
+ * Resizable
+ */
 const resizableRect = new Rect({
   attrs: {
-    x: 200,
+    x: 220,
     y: 260,
     width: 200,
     height: 200,
@@ -77,7 +83,7 @@ const resizableRectText = new Text({
   attrs: {
     text: 'Resize from any edge or corner',
     fontSize: 16,
-    fill: '#000',
+    fill: 'white',
     textAlign: 'left',
     textBaseline: 'top',
     wordWrap: true,
@@ -87,39 +93,6 @@ const resizableRectText = new Text({
 resizableRectText.translateLocal(0, 20);
 resizableRect.appendChild(resizableRectText);
 canvas.appendChild(resizableRect);
-
-canvas.appendChild(dropZone);
-
-circle.appendChild(text);
-canvas.appendChild(circle);
-circle.setPosition(100, 100);
-
-// gesture
-// const gesture = new Circle({
-//   attrs: {
-//     fill: 'rgb(239, 244, 255)',
-//     fillOpacity: 1,
-//     lineWidth: 1,
-//     opacity: 1,
-//     r: 60,
-//     stroke: 'rgb(95, 149, 255)',
-//     strokeOpacity: 1,
-//   },
-// });
-// gesture.setPosition(100, 320);
-// canvas.appendChild(gesture);
-
-// use interact.js
-interact(circle, {
-  context: canvas.document,
-}).draggable({
-  onmove: function (event) {
-    const { dx, dy } = event;
-    circle.translateLocal(dx, dy);
-  }
-});
-
-
 interact(resizableRect, {
   context: canvas.document,
 }).resizable({
@@ -133,6 +106,19 @@ interact(resizableRect, {
   }
 });
 
+/**
+ * Drop zone
+ */
+const dropZone = new Rect({
+  attrs: {
+    x: 100,
+    y: 50,
+    width: 300,
+    height: 200,
+    fill: '#1890FF',
+  },
+});
+canvas.appendChild(dropZone);
 interact(dropZone, {
   context: canvas.document,
 }).dropzone({
@@ -156,20 +142,107 @@ interact(dropZone, {
   }
 });
 
-// interact('.tap-target')
-//   .on('tap', function (event) {
-//     event.currentTarget.classList.toggle('switch-bg')
-//     event.preventDefault()
-//   })
-//   .on('doubletap', function (event) {
-//     event.currentTarget.classList.toggle('large')
-//     event.currentTarget.classList.remove('rotate')
-//     event.preventDefault()
-//   })
-//   .on('hold', function (event) {
-//     event.currentTarget.classList.toggle('rotate')
-//     event.currentTarget.classList.remove('large')
-//   })
+/**
+ * Gesture
+ */
+const gesture = new Circle({
+  attrs: {
+    fill: 'rgb(239, 244, 255)',
+    fillOpacity: 1,
+    lineWidth: 1,
+    opacity: 1,
+    r: 60,
+    stroke: 'rgb(95, 149, 255)',
+    strokeOpacity: 1,
+  },
+});
+const gestureText = new Text({
+  attrs: {
+    text: 'Tap to Change color\n Doubletap to change size\n Hold to rotate',
+    fontSize: 12,
+    fill: '#000',
+    textAlign: 'center',
+    textBaseline: 'middle',
+  },
+});
+gesture.appendChild(gestureText);
+canvas.appendChild(gesture);
+gesture.setPosition(500, 100);
+let tapped = false;
+let doubleTapped = false;
+interact(gesture, {
+  context: canvas.document,
+})
+  .on('tap', function (event) {
+    event.currentTarget.style.fill = tapped ? 'red' : 'rgb(239, 244, 255)';
+    tapped = !tapped;
+    event.preventDefault();
+  })
+  .on('doubletap', function (event) {
+    event.currentTarget.style.r = doubleTapped ? 100 : 60;
+    doubleTapped = !doubleTapped;
+    event.preventDefault();
+  })
+  .on('hold', function (event) {
+    event.currentTarget.rotateLocal(30);
+  });
+
+/**
+ * Snapping
+ */
+const snapRect = new Rect({
+  attrs: {
+    fill: 'rgb(239, 244, 255)',
+    fillOpacity: 1,
+    lineWidth: 1,
+    opacity: 1,
+    width: 200,
+    height: 200,
+    stroke: 'rgb(95, 149, 255)',
+    strokeOpacity: 1,
+  },
+});
+const snapCircle = new Circle({
+  attrs: {
+    fill: 'rgb(239, 244, 255)',
+    fillOpacity: 1,
+    lineWidth: 1,
+    opacity: 1,
+    r: 30,
+    stroke: 'rgb(95, 149, 255)',
+    strokeOpacity: 1,
+  },
+});
+const snapText = new Text({
+  attrs: {
+    text: 'Drag me',
+    fontSize: 12,
+    fill: '#000',
+    textAlign: 'center',
+    textBaseline: 'middle',
+  },
+});
+snapRect.appendChild(snapCircle);
+snapCircle.appendChild(snapText);
+canvas.appendChild(snapRect);
+snapRect.setPosition(0, 260);
+snapCircle.translateLocal(150, 150);
+interact(snapCircle, {
+  context: canvas.document,
+}).draggable({
+  modifiers: [
+    interact.modifiers.restrict({
+      restriction: snapCircle.parentNode,
+      elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
+      endOnly: true
+    })
+  ],
+  inertia: true,
+  onmove: function (event) {
+    const { dx, dy } = event;
+    snapCircle.translateLocal(dx, dy);
+  }
+});
 
 // stats
 const stats = new Stats();

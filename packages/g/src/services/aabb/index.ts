@@ -4,8 +4,7 @@ import type { BaseStyleProps } from '../../types';
 export const GeometryUpdaterFactory = Symbol('GeometryUpdaterFactory');
 
 export const GeometryAABBUpdater = Symbol('GeometryAABBGenerator');
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export interface GeometryAABBUpdater<T extends BaseStyleProps> {
+export interface GeometryAABBUpdater<T extends BaseStyleProps = any> {
   dependencies: string[];
   update: (attributes: T, aabb: AABB) => void;
 }

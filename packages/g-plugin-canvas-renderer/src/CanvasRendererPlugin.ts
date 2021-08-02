@@ -81,7 +81,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   @inject(RBushRoot)
   private rBush: RBush<RBushNodeAABB>;
 
-  private renderQueue: DisplayObject<any>[] = [];
+  private renderQueue: DisplayObject[] = [];
 
   /**
    * save the last dirty rect in DEBUG mode
@@ -99,12 +99,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       this.sceneGraphService.on(SCENE_GRAPH_EVENT.AABBChanged, this.handleEntityAABBChanged);
     });
 
-    renderingService.hooks.mounted.tap(CanvasRendererPlugin.tag, (object: DisplayObject<any>) => {
+    renderingService.hooks.mounted.tap(CanvasRendererPlugin.tag, (object: DisplayObject) => {
       object.getEntity().addComponent(RBushNode);
       this.sceneGraphService.emit(SCENE_GRAPH_EVENT.AABBChanged, object);
     });
 
-    renderingService.hooks.unmounted.tap(CanvasRendererPlugin.tag, (object: DisplayObject<any>) => {
+    renderingService.hooks.unmounted.tap(CanvasRendererPlugin.tag, (object: DisplayObject) => {
       const rBushNode = object.getEntity().getComponent(RBushNode);
       this.rBush.remove(rBushNode.aabb);
 
@@ -177,7 +177,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       context.restore();
     });
 
-    renderingService.hooks.render.tap(CanvasRendererPlugin.tag, (object: DisplayObject<any>) => {
+    renderingService.hooks.render.tap(CanvasRendererPlugin.tag, (object: DisplayObject) => {
       const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
       if (!enableDirtyRectangleRendering) {
         // render immediately
@@ -189,10 +189,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     });
   }
 
-  private renderDisplayObject(object: DisplayObject<any>) {
+  private renderDisplayObject(object: DisplayObject) {
     const context = this.contextService.getContext()!;
 
-    const nodeType = object.nodeType;
+    const nodeName = object.nodeName;
 
     // reset transformation
     context.save();
@@ -204,13 +204,13 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     this.applyAttributesToContext(context, object.attributes);
 
     // generate path in local space
-    const generatePath = this.pathGeneratorFactory(nodeType);
+    const generatePath = this.pathGeneratorFactory(nodeName);
     if (generatePath) {
       generatePath(context, object.attributes);
     }
 
     // fill & stroke
-    const styleRenderer = this.styleRendererFactory(nodeType);
+    const styleRenderer = this.styleRendererFactory(nodeName);
     if (styleRenderer) {
       styleRenderer.render(context, object.attributes);
     }
@@ -242,7 +242,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
    * For now, we just simply merge all the rectangles into one.
    * @see https://idom.me/articles/841.html
    */
-  private mergeDirtyAABBs(dirtyObjects: DisplayObject<any>[]): AABB | undefined {
+  private mergeDirtyAABBs(dirtyObjects: DisplayObject[]): AABB | undefined {
     // merge into a big AABB
     let dirtyRectangle: AABB | undefined;
     dirtyObjects.forEach((object) => {
@@ -282,7 +282,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     return rBushNodes.map(({ name }) => this.displayObjectPool.getByName(name));
   }
 
-  private saveDirtyAABB(object: DisplayObject<any>) {
+  private saveDirtyAABB(object: DisplayObject) {
     const entity = object.getEntity();
     const renderable = entity.getComponent(Renderable);
     if (!renderable.dirtyAABB) {
@@ -304,7 +304,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     context.stroke();
   }
 
-  private handleEntityAABBChanged = (object: DisplayObject<any>) => {
+  private handleEntityAABBChanged = (object: DisplayObject) => {
     const entity = object.getEntity();
     const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
 

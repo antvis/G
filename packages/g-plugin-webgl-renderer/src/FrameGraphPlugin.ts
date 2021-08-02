@@ -103,11 +103,14 @@ export class FrameGraphPlugin implements RenderingPlugin {
       this.engine.destroy();
     });
 
-    renderingService.hooks.render.tap(FrameGraphPlugin.tag, (dirtyObject: DisplayObject<any>) => {
+    renderingService.hooks.render.tap(FrameGraphPlugin.tag, (dirtyObject: DisplayObject) => {
       // skip group
-      // const objects = dirtyObjects.filter((object) => object.nodeType !== SHAPE.Group);
+      // const objects = dirtyObjects.filter((object) => object.nodeName !== SHAPE.Group);
 
-      if (dirtyObject.nodeType === SHAPE.Group) {
+      if (
+        dirtyObject.nodeName === SHAPE.Group ||
+        dirtyObject.getEntity().getComponent(Renderable).instanced
+      ) {
         return;
       }
 
@@ -155,8 +158,13 @@ export class FrameGraphPlugin implements RenderingPlugin {
       this.contextService.resize(width, height);
     });
 
-    renderingService.hooks.mounted.tap(FrameGraphPlugin.tag, async (object: DisplayObject<any>) => {
+    renderingService.hooks.mounted.tap(FrameGraphPlugin.tag, async (object: DisplayObject) => {
       const entity = object.getEntity();
+      const renderable = entity.getComponent(Renderable);
+      if (renderable.instanced) {
+        return;
+      }
+
       const renderable3d = entity.addComponent(Renderable3D);
       // add geometry & material required by Renderable3D
       const geometry = entity.addComponent(Geometry3D);
@@ -195,7 +203,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
         // allocate pickingid for each child in batch
         const pickingColorBuffer: number[] = [];
         if (isBatch) {
-          object.children.forEach((instance: DisplayObject<any>) => {
+          object.children.forEach((instance: DisplayObject) => {
             const childPickingId = this.pickingIdGenerator.getId(instance);
             pickingColorBuffer.push(...this.pickingIdGenerator.encodePickingColor(childPickingId));
           });
@@ -220,7 +228,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
       }
     });
 
-    renderingService.hooks.unmounted.tap(FrameGraphPlugin.tag, (object: DisplayObject<any>) => {
+    renderingService.hooks.unmounted.tap(FrameGraphPlugin.tag, (object: DisplayObject) => {
       const entity = object.getEntity();
       entity.removeComponent(Renderable3D, true);
       entity.removeComponent(Geometry3D, true);
@@ -229,10 +237,10 @@ export class FrameGraphPlugin implements RenderingPlugin {
 
     renderingService.hooks.attributeChanged.tap(
       FrameGraphPlugin.tag,
-      (object: DisplayObject<any>, name: string, value: any) => {
+      (object: DisplayObject, name: string, value: any) => {
         const entity = object.getEntity();
         const renderable3d = entity.getComponent(Renderable3D);
-        if (renderable3d.modelPrepared) {
+        if (renderable3d && renderable3d.modelPrepared) {
           if (name === STYLE.Opacity || name === STYLE.FillOpacity) {
             const material = entity.getComponent(Material3D);
             material.setUniform(UNIFORM.Opacity, value);
@@ -255,6 +263,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
     } = this.renderPassFactory<RenderPassData>(RenderPass.IDENTIFIER);
     const renderPass = this.frameGraphSystem.addPass<RenderPassData>(
       RenderPass.IDENTIFIER,
+      // @ts-ignore
       setupRenderPass,
       executeRenderPass,
     );
@@ -265,6 +274,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
     } = this.renderPassFactory<TAAPassData>(TAAPass.IDENTIFIER);
     const taaPass = this.frameGraphSystem.addPass<TAAPassData>(
       TAAPass.IDENTIFIER,
+      // @ts-ignore
       setupTAAPass,
       executeTAAPass,
     );

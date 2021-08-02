@@ -40,6 +40,10 @@ export interface BaseStyleProps {
    */
   origin?: [number, number];
 
+  /**
+   * how do we define the 'position' of a shape?
+   * eg. the default anchor of a Rect is top-left, we can change it to its' center [0.5, 0.5].
+   */
   anchor?: [number, number];
 
   /**
@@ -52,6 +56,9 @@ export interface BaseStyleProps {
    */
   zIndex?: number;
 
+  /**
+   * the cursor style when the target is active
+   */
   cursor?: Cursor;
 
   stroke?: ColorType;
@@ -74,6 +81,8 @@ export interface BaseStyleProps {
    * 设置线的虚线样式，可以指定一个数组。一组描述交替绘制线段和间距（坐标空间单位）长度的数字。 如果数组元素的数量是奇数， 数组的元素会被复制并重复。例如， [5, 15, 25] 会变成 [5, 15, 25, 5, 15, 25]。这个属性取决于浏览器是否支持 setLineDash() 函数。
    */
   lineDash?: number[] | null;
+
+  [key: string]: any;
 }
 
 // export type ShapeAttrs = {
@@ -220,60 +229,7 @@ export type ChangeType =
   | 'matrix'
   | 'clip';
 
-export type AnimateCfg = {
-  /**
-   * 动画执行时间
-   */
-  duration: number;
-  /**
-   * 动画缓动效果
-   */
-  easing?: string;
-  /**
-   * 动画执行的延迟时间
-   */
-  delay?: number;
-  /**
-   * 是否重复执行动画
-   */
-  repeat?: boolean;
-  /**
-   * same as `repeat: true` when set Infinity
-   * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-iteration-count
-   */
-  iterationCount?: number;
-  /**
-   * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-direction
-   */
-  direction?: 'normal' | 'alternate' | 'reverse' | 'alternate-reverse';
-  /**
-   * 动画执行完时的回调函数
-   */
-  callback?: () => void;
-  /**
-   * 动画暂停时的回调函数
-   */
-  pauseCallback?: () => void;
-  /**
-   * 动画恢复(重新唤醒)时的回调函数
-   */
-  resumeCallback?: () => void;
-};
-
-export type OnFrame<T extends BaseStyleProps> = (ratio: number) => T;
-
-export type Animation<StyleProps> = AnimateCfg & {
-  id: string;
-  fromAttrs: Record<string, any>;
-  toAttrs: Record<string, any>;
-  startTime: number;
-  pathFormatted: boolean;
-  onFrame?: OnFrame<StyleProps>;
-  isPaused?: boolean;
-  pauseTime?: number;
-};
-
-export type GroupFilter = (group: DisplayObject<any>) => boolean;
+export type GroupFilter = (group: DisplayObject) => boolean;
 
 type A = ['a' | 'A', number, number, number, number, number, number, number];
 type C = ['c' | 'C', number, number, number, number, number, number];

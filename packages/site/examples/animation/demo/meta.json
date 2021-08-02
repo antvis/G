@@ -5,6 +5,14 @@
   },
   "demos": [
     {
+      "filename": "easing.js",
+      "title": {
+        "zh": "缓动函数",
+        "en": "Easing"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dZ03S7gEjz8AAAAAAAAAAABkARQnAQ"
+    },
+    {
       "filename": "single-attribute.js",
       "title": {
         "zh": "单属性动画",
