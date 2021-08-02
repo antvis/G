@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-svg",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "A renderer implemented by SVG",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -40,10 +40,10 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.3",
-    "@antv/g-plugin-dom-interaction": "^1.0.0-alpha.3",
-    "@antv/g-plugin-svg-picker": "^1.0.0-alpha.3",
-    "@antv/g-plugin-svg-renderer": "^1.0.0-alpha.3",
+    "@antv/g": "^1.0.0-alpha.4",
+    "@antv/g-plugin-dom-interaction": "^1.0.0-alpha.4",
+    "@antv/g-plugin-svg-picker": "^1.0.0-alpha.4",
+    "@antv/g-plugin-svg-renderer": "^1.0.0-alpha.4",
     "@antv/util": "^2.0.13"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "A core module including ECS and DI container.",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g-ecs": "^1.0.0-alpha.2",
+    "@antv/g-ecs": "^1.0.0-alpha.3",
     "@antv/g-math": "^1.0.0-alpha.2",
     "@antv/path-util": "~2.0.5",
     "@antv/util": "^2.0.13",
