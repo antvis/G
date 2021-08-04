@@ -67,5 +67,5 @@ function round(left: number, right: number) {
   return [left, right, Math.round];
 }
 
-addPropertiesHandler(parseNumber, clampedMergeNumbers(0, 1), ['opacity', 'fillOpacity', 'strokeOpacity']);
+addPropertiesHandler(parseNumber, clampedMergeNumbers(0, 1), ['opacity', 'fillOpacity', 'strokeOpacity', 'offsetDistance']);
 addPropertiesHandler(parseNumber, clampedMergeNumbers(0, Infinity), ['r', 'lineWidth']);

@@ -3,6 +3,8 @@ import { Cullable } from '../components';
 import { ContributionProvider } from '../contribution-provider';
 import { DisplayObject } from '../DisplayObject';
 import { RenderingService, RenderingPlugin } from '../services/RenderingService';
+import { RenderingContext, RENDER_REASON } from '../services/RenderingContext';
+import { CanvasConfig } from '../types';
 
 export const CullingStrategy = Symbol('CullingStrategy');
 export interface CullingStrategy {
@@ -18,9 +20,15 @@ export interface CullingStrategy {
 export class CullingPlugin implements RenderingPlugin {
   static tag = 'CullingPlugin';
 
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
+
   @inject(ContributionProvider)
   @named(CullingStrategy)
   private strategies: ContributionProvider<CullingStrategy>;
+
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
 
   apply(renderer: RenderingService) {
     renderer.hooks.prepare.tap(CullingPlugin.tag, (object: DisplayObject | null) => {
@@ -39,6 +47,15 @@ export class CullingPlugin implements RenderingPlugin {
         ) {
           return object;
         } else {
+          // Those invisible objects which get renderred in last frame should be saved for later use.
+          const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
+          if (enableDirtyRectangleRendering) {
+            const removedAABB = object.getBounds();
+            if (removedAABB) {
+              this.renderingContext.removedAABBs.push(removedAABB);
+              this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectRemoved);
+            }
+          }
           return null;
         }
       }

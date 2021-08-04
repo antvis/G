@@ -162,9 +162,3 @@ const lengthUnits = 'px';
 export const parseLength = parseDimension.bind(null, new RegExp(lengthUnits, 'g'));
 export const parseLengthOrPercent = parseDimension.bind(null, new RegExp(lengthUnits + '|%', 'g'));
 export const parseAngle = parseDimension.bind(null, /deg|rad|grad|turn/g);
-
-// addPropertiesHandler(parseLengthOrPercent, mergeDimensionsNonNegative, [
-//   'r',
-//   'width',
-//   'height',
-// ]);

@@ -83,24 +83,14 @@ export class CanvasPickerPlugin implements RenderingPlugin {
         const { capture } = displayObject.getConfig();
 
         if (displayObject.isVisible() && capture) {
-          // use picker for current shape's type
-          const pick = this.pointInPathPickerFactory(displayObject.nodeName);
-          if (pick) {
-            // invert with world matrix
-            const invertWorldMat = mat4.invert(mat4.create(), displayObject.getWorldTransform());
-            // transform client position to local space, do picking in local space
-            const localPosition = vec3.transformMat4(
-              vec3.create(),
-              vec3.fromValues(position[0], position[1], 0),
-              invertWorldMat,
-            );
-            if (
-              pick(displayObject, new Point(localPosition[0], localPosition[1]), this.isPointInPath)
-            ) {
-              pickedDisplayObjects.push(displayObject);
+          // is in clip path?
+          if (displayObject.style.clipPath) {
+            if (!this.isHit(displayObject.style.clipPath, position)) {
+              return;
             }
-          } else {
-            // AABB test is enough, such as `Text`
+          }
+
+          if (this.isHit(displayObject, position)) {
             pickedDisplayObjects.push(displayObject);
           }
         }
@@ -116,6 +106,28 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       };
     });
   }
+
+  private isHit = (displayObject: DisplayObject, position: vec3) => {
+    // use picker for current shape's type
+    const pick = this.pointInPathPickerFactory(displayObject.nodeName);
+    if (pick) {
+      // invert with world matrix
+      const invertWorldMat = mat4.invert(mat4.create(), displayObject.getWorldTransform());
+      // transform client position to local space, do picking in local space
+      const localPosition = vec3.transformMat4(
+        vec3.create(),
+        vec3.fromValues(position[0], position[1], 0),
+        invertWorldMat,
+      );
+      if (
+        pick(displayObject, new Point(localPosition[0], localPosition[1]), this.isPointInPath)
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  };
 
   /**
    * use native picking method

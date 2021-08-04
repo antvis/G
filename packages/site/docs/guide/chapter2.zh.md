@@ -57,13 +57,13 @@ canvas.appendChild(node2);
 此时效果就正常了：
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*te-lR4m9mRIAAAAAAAAAAAAAARQnAQ)
 
-或者，我们也可以通过 `z-index` 手动调整。
+或者，我们也可以通过 `zIndex` 手动调整。
 
 # 设置展示次序
 
-类似 CSS 中的 `z-index`，我们可以手动设置两个节点的绘制顺序，让它们比边高（默认为 0）即可：
+类似 CSS 中的 `zIndex`，我们可以手动设置两个节点的绘制顺序，让它们比边高（默认为 0）即可：
 
 ```javascript
-node1.attr('z-index', 1);
-node2.attr('z-index', 1);
+node1.attr('zIndex', 1);
+node2.attr('zIndex', 1);
 ```

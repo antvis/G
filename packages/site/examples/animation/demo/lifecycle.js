@@ -26,7 +26,7 @@ const circle = new Circle({
   attrs: {
     x: 200,
     y: 200,
-    r: 120,
+    r: 60,
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
@@ -38,11 +38,18 @@ canvas.appendChild(circle);
 const animation = circle.animate(
   [
     { transform: 'scale(1)' },
-    { transform: 'scale(1.2)' },
+    { transform: 'scale(2)' },
   ], {
   duration: 500,
-  // iterations: Infinity,
   easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+});
+
+// get triggerred when animation finished
+animation.onfinish = (e) => {
+  console.log('finish!', e.target, e.playState);
+};
+animation.finished.then(() => {
+  console.log('finish promise resolved');
 });
 
 // stats
@@ -76,7 +83,6 @@ rendererFolder.open();
 
 const animationFolder = gui.addFolder('animation');
 const animationConfig = {
-  name: 'scale-in',
   play: () => {
     animation.play();
   },
@@ -90,10 +96,6 @@ const animationConfig = {
     animation.finish();
   },
 };
-animationFolder.add(animationConfig, 'name', ['scale-in', 'rotate-in', 'svg'])
-  .onChange((type) => {
-
-  }).name('Type');
 animationFolder.add(animationConfig, 'play').name('Play');
 animationFolder.add(animationConfig, 'pause').name('Pause');
 animationFolder.add(animationConfig, 'reverse').name('Reverse');

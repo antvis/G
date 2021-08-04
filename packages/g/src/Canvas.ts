@@ -171,6 +171,8 @@ export class Canvas extends EventEmitter {
       root.forEach((child: DisplayObject) => {
         this.removeChild(child, true);
       });
+      // destroy timeline
+      this.timeline.destroy();
     } else {
       this.unmountChildren(root);
     }
@@ -178,9 +180,6 @@ export class Canvas extends EventEmitter {
     // destroy services
     this.getContextService().destroy();
     renderingService.destroy();
-
-    // destroy timeline
-    this.timeline.destroy();
 
     this.emit('afterDestroy');
   }

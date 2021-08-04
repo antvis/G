@@ -15,7 +15,7 @@ order: -4
 * Tween 缓动效果。内置例如 `linear` `cubic-bezier` 等，也支持自定义。
 * Spring，一种基于真实物理弹簧的效果。
 
-我们从一个 Keyframe 动画入手，实现一个 [ScaleIn](https://animista.net/play/entrances/scale-in) 的动画：
+我们从一个 Keyframe 动画入手，实现一个 [ScaleIn](https://animista.net/play/entrances/scale-in) 的动画 [示例](/zh/examples/animation#lifecycle)：
 ```js
 const scaleInCenter = circle.animate(
   [
@@ -29,6 +29,7 @@ const scaleInCenter = circle.animate(
   {
     duration: 500, // 持续时间
     easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)', // 缓动函数
+    fill: 'both', // 动画处于非运行状态时，该图形的展示效果
   },
 );
 ```
@@ -58,6 +59,17 @@ https://developer.mozilla.org/en-US/docs/Web/API/Animation
 
 通过 `DisplayObject.animate()` 可以创建一个 Animation 对象：
 ```js
+const animation = circle.animate(keyframes, options);
+```
+
+需要注意，应用动画效果的目标图形必须先挂载到画布上：
+```js
+// wrong
+const animation = circle.animate(keyframes, options);
+canvas.appendChild(circle);
+
+// correct
+canvas.appendChild(circle);
 const animation = circle.animate(keyframes, options);
 ```
 
@@ -178,14 +190,14 @@ Promise.all(
 
 ### onfinish
 
-设置动画完成后的回调函数，类似 [animationend](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/animationend_event) 事件。
+设置动画完成后的回调函数，类似 [animationend](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/animationend_event) 事件。[示例](/zh/examples/animation#lifecycle)
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/onfinish
 
 ```js
 animation.onfinish = function(e) {
   e.target; // animation
-  e.playState; // 'finished'
+  e.target.playState; // 'finished'
 };
 ```
 
@@ -215,7 +227,7 @@ animation.playbackRate *= 1.1;
 
 ## 方法
 
-通过以下方法可以手动控制动画的运行状态，例如暂停、重启、结束等。
+通过以下方法可以手动控制动画的运行状态，例如暂停、重启、结束等。[示例](/zh/examples/animation#lifecycle)
 
 ### play()
 
@@ -256,9 +268,20 @@ https://developer.mozilla.org/en-US/docs/Web/API/Animation/cancel
 
 ### reverse()
 
-翻转动画运行方向
+翻转动画运行方向，效果等同于设置 playbackRate 为 -1。
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/reverse
+
+### updatePlaybackRate()
+
+控制动画运行速率，默认速率为 1，[示例](/zh/examples/animation#easing)：
+```js
+animation.updatePlaybackRate(2); // 加速
+animation.updatePlaybackRate(0.5); // 减速
+animation.updatePlaybackRate(-1); // 反向
+```
+
+https://developer.mozilla.org/en-US/docs/Web/API/Animation/updatePlaybackRate
 
 # KeyframeEffect
 
@@ -305,7 +328,7 @@ timing.ease = 'linear';
 
 ## 支持变换的属性
 
-目前支持对以下属性进行变换：
+目前支持对以下属性进行变换 [示例](/zh/examples/animation#multiple-attributes)：
 
 | 名称 | 类型 | 取值范围 | 备注 |
 | --- | --- | --- | --- |
@@ -314,7 +337,7 @@ timing.ease = 'linear';
 | fill | `string` | `red` `#fff` | 填充色 |
 | stroke | `string` | `red` `#fff` | 描边色 |
 | r | `number` | `10` `20` | Circle 的半径 |
-| offsetDistance | `string` | `0%` `100%` | 路径偏移，在[路径动画](/zh/docs/api/animation#路径动画)中使用 |
+| offsetDistance | `string` | `[0-1]` | 路径偏移，在[路径动画](/zh/docs/api/animation#路径动画)中使用 |
 
 其中 transform 和 [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 保持一致，支持以下属性值：
 
@@ -440,17 +463,20 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/easing
 
 支持以下内置缓动函数，来自：https://easings.net/
 
-| constant   | accelerate   | decelerate     | accelerate-decelerate |
-| :--------- | :----------- | :------------- | :-------------------- |
-| linear     | ease-in / in | ease-out / out | ease-in-out / in-out  |
-| ease       | in-sine      | out-sine       | in-out-sine           |
-| steps      | in-quad      | out-quad       | in-out-quad           |
-| step-start | in-cubic     | out-cubic      | in-out-cubic          |
-| step-end   | in-quart     | out-quart      | in-out-quart          |
-|            | in-quint     | out-quint      | in-out-quint          |
-|            | in-expo      | out-expo       | in-out-expo           |
-|            | in-circ      | out-circ       | in-out-circ           |
-|            | in-back      | out-back       | in-out-back           |
+| constant   | accelerate         | decelerate     | accelerate-decelerate | decelerate-accelerate |
+| :--------- | :----------------- | :------------- | :-------------------- | :-------------------- |
+| linear     | ease-in / in       | ease-out / out | ease-in-out / in-out  | ease-out-in / out-in  |
+| ease       | in-sine            | out-sine       | in-out-sine           | out-in-sine           |
+| steps      | in-quad            | out-quad       | in-out-quad           | out-in-quad           |
+| step-start | in-cubic           | out-cubic      | in-out-cubic          | out-in-cubic          |
+| step-end   | in-quart           | out-quart      | in-out-quart          | out-in-quart          |
+|            | in-quint           | out-quint      | in-out-quint          | out-in-quint          |
+|            | in-expo            | out-expo       | in-out-expo           | out-in-expo           |
+|            | in-circ            | out-circ       | in-out-circ           | out-in-circ           |
+|            | in-back            | out-back       | in-out-back           | out-in-back           |
+|            | in-bounce          | out-bounce     | in-out-bounce         | out-in-bounce         |
+|            | in-elastic         | out-elastic    | in-out-elastic        | out-in-elastic        |
+|            | spring / spring-in | spring-out     | spring-in-out         | spring-out-in         |
 
 除此之外，还可以通过 `cubic-bezier(<number>, <number>, <number>, <number>)` 自定义形如三次贝塞尔曲线的函数。以上部分内置函数也是通过它定义完成的，例如 `ease-in-sine = cubic-bezier(0.47, 0, 0.745, 0.715)`
 
@@ -478,13 +504,32 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/endDelay
 
 **是否必须**：`false`
 
-## [WIP] fill
+## fill
+
+该属性规定了图形在动画处于非运行状态（例如动画开始前，结束后）时的展示效果。支持以下值：
+* auto/none 默认值，这意味着动画在第一帧开始前和最后一帧结束后都不会影响到图形的展示效果。例如在动画完成后图形会恢复到动画前状态，如果设置了 delay 在延迟期间也不会应用第一帧的效果。
+* forwards 动画完成后停住，不恢复到初始状态
+* backwards 动画开始前应用第一帧效果
+* both 为 forwards 和 backwards 的组合效果
 
 https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/fill
 
+例如我们想让图形在缩放动画完成后，停在结束状态：
+```js
+const animation = circle.animate(
+  [
+    { transform: 'scale(1)', fill: '#1890FF', stroke: '#F04864', opacity: 1 },
+    { transform: 'scale(2)', fill: 'red', stroke: '#1890FF', opacity: 0.8 },
+  ], {
+  duration: 1500,
+  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+  fill: 'both',
+});
+```
+
 ## iterations
 
-循环次数，默认值为 1，也可以取大于 0 的小数。当我们想让动画一致运行下去时，可以取 `Infinity`。
+循环次数，默认值为 1，也可以取大于 0 的小数。当我们想让动画一直运行下去时，可以取 `Infinity`。
 
 https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterations
 
@@ -498,7 +543,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterations
 
 https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterationStart
 
-# [WIP] 其他类型的 Transition
+# 其他类型的 Transition
 
 我们熟悉的缓动函数（又称 Tween）是一种基于当前运行时间的动画效果，即使能够自定义缓动函数，仍然有一些动画效果无法实现。例如现已被广泛使用的 Spring 效果，在 [React Spring Visualizer](https://react-spring-visualizer.com/) 中可以看到该动画效果并非仅仅依靠当前运行时间，而是一种基于物理弹簧属性（自重、摩擦力等）的效果：
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*6MaCQbloUQQAAAAAAAAAAAAAARQnAQ)
@@ -518,8 +563,19 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterationStart
 
 Spring 背后的原理：https://blog.maximeheckel.com/posts/the-physics-behind-spring-animations
 
-那么对于这种非缓动的效果，如何使用 CSS Animation 或者 WAAPI 实现呢？
-这个问题在 W3C 中早已有过讨论：https://github.com/w3c/csswg-drafts/issues/229
+那么对于这种非缓动的效果，如何使用 CSS Animation 或者 WAAPI 实现呢？关于这个问题在 W3C 中早已有过讨论：https://github.com/w3c/csswg-drafts/issues/229。
+目前我们内置了 spring 系列的变换效果，但暂不提供弹簧参数的配置 [示例](/zh/examples/animation#easing)：
+```js
+const animation = image.animate(
+  [
+    { transform: 'rotate(0)' },
+    { transform: 'rotate(360deg)' },
+  ], {
+  duration: 1500,
+  iterations: Infinity,
+  easing: 'spring',
+});
+```
 
 # 路径动画
 
@@ -540,24 +596,34 @@ Spring 背后的原理：https://blog.maximeheckel.com/posts/the-physics-behind-
 }
 ```
 
-以上写法在 G 中可转换为，[示例]()：
+首先通过 offsetPath 创建一条运动轨迹，目前支持 [Line](/zh/docs/api/basic/line) [Path](/zh/docs/api/basic/path) 和 [Polyline](/zh/docs/api/basic/polyline)。然后通过对 offsetDistance （取值范围 `[0-1]`）进行变换实现该效果，[示例](/zh/examples/animation#offset-path)：
 ```js
 const circle = new Circle({
   attrs: {
-    offsetPath: 'M20,20 C20,100 200,0 200,100',
+    offsetPath: new Line({ // 创建运动轨迹
+      attrs: { // 不需要设置其他与轨迹无关的绘图属性
+        x1: 100,
+        y1: 100,
+        x2: 300,
+        y2: 100,
+      }
+    }),
     r: 10,
   }
 });
 
 const animation = circle.animate([
-  { offsetDistance: '0%' },
-  { offsetDistance: '100%' },
+  { offsetDistance: 0 }, // 变换
+  { offsetDistance: 1 },
 ], {
   duration: 3000,
   easing: 'ease-in-out',
   iterations: Infinity,
 });
 ```
+
+效果如下：
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zNasT6AmflEAAAAAAAAAAAAAARQnAQ)
 
 # [WIP] 高性能动画
 

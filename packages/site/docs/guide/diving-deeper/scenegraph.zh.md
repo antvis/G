@@ -266,14 +266,14 @@ group.show();
 
 ### 渲染次序
 
-类似 CSS，我们可以通过 `z-index` 属性控制渲染次序，有两点需要注意：
+类似 CSS，我们可以通过 `zIndex` 属性控制渲染次序，有两点需要注意：
 
 1. 只会影响渲染顺序，并不会改变场景图中的节点结构
 2. 只在当前上下文内生效
 
 | 名称      | 参数     | 返回值 | 备注           |
 | --------- | -------- | ------ | -------------- |
-| setZIndex | `number` | 无     | 设置 `z-index` |
+| setZIndex | `number` | 无     | 设置 `zIndex` |
 | toFront   | 无       | 无     | 置顶           |
 | toBack    | 无       | 无     | 置底           |
 
@@ -281,7 +281,7 @@ group.show();
 const group = new Group();
 
 group.setZIndex(100);
-// or group.setAttribute('z-index', 100);
+// or group.setAttribute('zIndex', 100);
 ```
 
 ## [WIP] React Fiber

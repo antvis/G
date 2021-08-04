@@ -1,7 +1,7 @@
 import { CanvasConfig, ContextService } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { isString } from '@antv/util';
-import { createSVGElement } from './utils/dom';
+import { createSVGElement } from '@antv/g-plugin-svg-renderer';
 
 @injectable()
 export class SVGContextService implements ContextService<SVGElement> {

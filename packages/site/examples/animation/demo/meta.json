@@ -10,21 +10,29 @@
         "zh": "缓动函数",
         "en": "Easing"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dZ03S7gEjz8AAAAAAAAAAABkARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9y3_TIoOUPMAAAAAAAAAAAAAARQnAQ"
     },
     {
-      "filename": "single-attribute.js",
+      "filename": "lifecycle.js",
       "title": {
-        "zh": "单属性动画",
-        "en": "Animation for single attribute"
+        "zh": "动画生命周期控制方法",
+        "en": "Lifecycle of animation"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*hafUTp9MrfYAAAAAAAAAAABkARQnAQ"
     },
     {
+      "filename": "offset-path.js",
+      "title": {
+        "zh": "路径动画",
+        "en": "Offset path"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zNasT6AmflEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "multiple-attributes.js",
       "title": {
-        "zh": "多属性动画",
-        "en": "Animation for multiple attributes"
+        "zh": "可应用动画的属性",
+        "en": "Animatable attributes"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dZ03S7gEjz8AAAAAAAAAAABkARQnAQ"
     }

@@ -4,6 +4,7 @@ import { vec3, mat4, quat } from 'gl-matrix';
 import {
   ContextService,
   RenderingService,
+  RenderingContext,
   SceneGraphService,
   RenderingPlugin,
   SHAPE,
@@ -12,6 +13,7 @@ import {
   Renderable,
   DisplayObject,
   Camera,
+  RENDER_REASON,
 } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
 import { createSVGElement } from './utils/dom';
@@ -42,6 +44,7 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   strokeStyle: 'stroke',
   strokeOpacity: 'stroke-opacity',
   stroke: 'stroke',
+  clipPath: 'clip-path',
   r: 'r',
   rx: 'rx',
   ry: 'ry',
@@ -74,6 +77,8 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   visibility: 'visibility',
 };
 
+const CLIP_PATH_PREFIX = 'clip-path-';
+
 @injectable()
 export class SVGRendererPlugin implements RenderingPlugin {
   static tag = 'SVGRendererPlugin';
@@ -84,44 +89,26 @@ export class SVGRendererPlugin implements RenderingPlugin {
   @inject(ContextService)
   private contextService: ContextService<SVGElement>;
 
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
+
   @inject(SceneGraphService)
   private sceneGraphService: SceneGraphService;
 
   @inject(ElementRendererFactory)
   private elementRendererFactory: (tagName: string) => ElementRenderer<any>;
 
+  private $def: SVGDefsElement;
+
   apply(renderingService: RenderingService) {
+    renderingService.hooks.init.tap(SVGRendererPlugin.tag, () => {
+      this.$def = createSVGElement('defs') as SVGDefsElement;
+      this.contextService.getContext()?.appendChild(this.$def);
+    });
+
     renderingService.hooks.mounted.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
-      const entity = object.getEntity();
-
-      // create svg element
-      const svgElement = entity.addComponent(ElementSVG);
-
-      const type = SHAPE_TO_TAGS[object.nodeName];
-      if (type) {
-        let $groupEl;
-
-        const $el = createSVGElement(type);
-        $el.id = entity.getName();
-
-        if (type !== 'g') {
-          $groupEl = createSVGElement('g');
-          $groupEl.appendChild($el);
-        } else {
-          $groupEl = $el;
-        }
-
-        svgElement.$el = $el;
-        svgElement.$groupEl = $groupEl;
-
-        const $parentGroupEl =
-          (object.parentNode && object.parentNode.getEntity().getComponent(ElementSVG).$groupEl) ||
-          this.contextService.getContext();
-
-        if ($parentGroupEl) {
-          $parentGroupEl.appendChild($groupEl);
-        }
-      }
+      // create SVG DOM Node
+      this.createSVGDom(object, this.contextService.getContext() as SVGElement);
     });
 
     renderingService.hooks.unmounted.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
@@ -131,39 +118,24 @@ export class SVGRendererPlugin implements RenderingPlugin {
     renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
       const $namespace = this.contextService.getDomElement();
       if ($namespace) {
-        // @ts-ignore
-        this.applyTransform($namespace, this.camera.getOrthoMatrix());
-      }
-
-      const entity = object.getEntity();
-      const $el = entity.getComponent(ElementSVG)?.$el;
-      const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
-      if ($el && $groupEl) {
-        const { nodeName, attributes } = object;
-        // apply local RTS transformation to <group> wrapper
-        this.applyTransform($groupEl, object.getLocalTransform());
-
-        $el.setAttribute('fill', 'none');
-        if (nodeName === SHAPE.Image) {
-          $el.setAttribute('preserveAspectRatio', 'none');
+        if (this.renderingContext.renderReasons.has(RENDER_REASON.CameraChanged)) {
+          // @ts-ignore
+          this.applyTransform($namespace, this.camera.getOrthoMatrix());
         }
 
-        // apply attributes
-        for (const name in attributes) {
-          this.updateAttribute(entity, name, `${attributes[name]}`);
+        const entity = object.getEntity();
+        const $el = entity.getComponent(ElementSVG)?.$el;
+        const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
+
+        if ($el && $groupEl) {
+          // apply local RTS transformation to <group> wrapper
+          this.applyTransform($groupEl, object.getLocalTransform());
+
+          this.reorderChildren($groupEl, object.children || []);
+          // finish rendering, clear dirty flag
+          const renderable = entity.getComponent(Renderable);
+          renderable.dirty = false;
         }
-
-        // generate path
-        const elementRenderer = this.elementRendererFactory(nodeName);
-        if (elementRenderer) {
-          elementRenderer.apply($el, attributes);
-        }
-
-        this.reorderChildren($groupEl, object.children || []);
-
-        // finish rendering, clear dirty flag
-        const renderable = entity.getComponent(Renderable);
-        renderable.dirty = false;
       }
     });
 
@@ -223,14 +195,102 @@ export class SVGRendererPlugin implements RenderingPlugin {
     );
   }
 
+  private applyAttributes(object: DisplayObject) {
+    const entity = object.getEntity();
+    const $el = entity.getComponent(ElementSVG)?.$el;
+    const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
+    if ($el && $groupEl) {
+      const { nodeName, attributes } = object;
+
+      $el.setAttribute('fill', 'none');
+      if (nodeName === SHAPE.Image) {
+        $el.setAttribute('preserveAspectRatio', 'none');
+      }
+
+      // apply attributes
+      for (const name in attributes) {
+        this.updateAttribute(entity, name, attributes[name]);
+      }
+
+      // generate path
+      const elementRenderer = this.elementRendererFactory(nodeName);
+      if (elementRenderer) {
+        elementRenderer.apply($el, attributes);
+      }
+    }
+  }
+
   private updateAttribute(entity: Entity, name: string, value: any) {
     if (SVG_ATTR_MAP[name]) {
       // update `visibility` on <group>
       if (name === 'visibility') {
         entity.getComponent(ElementSVG)?.$groupEl?.setAttribute(SVG_ATTR_MAP[name], `${value}`);
+      } else if (name === 'clipPath') {
+        const clipPath = value as DisplayObject;
+        if (clipPath) {
+          const clipPathId = CLIP_PATH_PREFIX + clipPath.getEntity().getName();
+
+          const existed = this.$def.querySelector(`#${clipPathId}`);
+          if (!existed) {
+            // create <clipPath> dom node, append it to <defs>
+            const $clipPath = createSVGElement('clipPath');
+            $clipPath.id = clipPathId;
+            this.$def.appendChild($clipPath);
+
+            // <clipPath><circle /></clipPath>
+            this.createSVGDom(clipPath, $clipPath, true);
+          }
+
+          const $groupEl = clipPath.getEntity().getComponent(ElementSVG)?.$groupEl;
+          if ($groupEl) {
+            // apply local RTS transformation to <group> wrapper
+            this.applyTransform($groupEl, clipPath.getLocalTransform());
+          }
+          // apply attributes
+          this.applyAttributes(clipPath);
+          entity.getComponent(ElementSVG)?.$el?.setAttribute('clip-path', `url(#${clipPathId})`);
+        } else {
+          // remove clip path
+          entity.getComponent(ElementSVG)?.$el?.removeAttribute('clip-path');
+        }
       } else {
         entity.getComponent(ElementSVG)?.$el?.setAttribute(SVG_ATTR_MAP[name], `${value}`);
       }
+    }
+  }
+
+  private createSVGDom(object: DisplayObject, root: SVGElement, noWrapWithGroup = false) {
+    const entity = object.getEntity();
+    // create svg element
+    const svgElement = entity.addComponent(ElementSVG);
+
+    const type = SHAPE_TO_TAGS[object.nodeName];
+    if (type) {
+      let $groupEl;
+
+      const $el = createSVGElement(type);
+      $el.id = entity.getName();
+
+      if (type !== 'g' && !noWrapWithGroup) {
+        $groupEl = createSVGElement('g');
+        $groupEl.appendChild($el);
+      } else {
+        $groupEl = $el;
+      }
+
+      svgElement.$el = $el;
+      svgElement.$groupEl = $groupEl;
+
+      const $parentGroupEl =
+        (object.parentNode && object.parentNode.getEntity().getComponent(ElementSVG)?.$groupEl) ||
+        root;
+
+      if ($parentGroupEl) {
+        $parentGroupEl.appendChild($groupEl);
+      }
+
+      // apply attributes at first time
+      this.applyAttributes(object);
     }
   }
 }

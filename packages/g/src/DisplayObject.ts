@@ -1,19 +1,16 @@
 import { isObject, isNil, isBoolean, isFunction } from '@antv/util';
 /* eslint-disable no-plusplus */
 import type { Entity } from '@antv/g-ecs';
-import { System } from '@antv/g-ecs';
 import { vec3, mat3, mat4, quat } from 'gl-matrix';
 import { EventEmitter } from 'eventemitter3';
-import { Cullable, Geometry, Renderable, SceneGraphNode, Transform } from './components';
+import { Cullable, Geometry, Renderable, SceneGraphNode, Transform, Sortable } from './components';
 import { createVec3, rad2deg, getEuler, fromRotationTranslationScale } from './utils/math';
-import { Sortable } from './components/Sortable';
 import type { BaseStyleProps } from './types';
 import type { GroupFilter } from './types';
 import { SHAPE } from './types';
 import { DisplayObjectPool } from './DisplayObjectPool';
 import { world, container } from './inversify.config';
 import { SceneGraphService } from './services';
-// import { Timeline } from './systems';
 import { AABB, Rectangle } from './shapes';
 import { GeometryAABBUpdater, GeometryUpdaterFactory } from './services/aabb';
 import { FederatedEvent } from './FederatedEvent';
@@ -173,30 +170,14 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
       ...this.config.style,
       ...this.config.attrs,
     };
-    sceneGraphNode.attributes = this.config.style || {};
 
-    const renderable = entity.addComponent(Renderable);
+    entity.addComponent(Renderable);
     entity.addComponent(Cullable);
     entity.addComponent(Transform);
     entity.addComponent(Sortable);
+    entity.addComponent(Geometry);
 
-    // calculate AABB for current geometry
-    const geometry = entity.addComponent(Geometry);
-    const updater = this.geometryUpdaterFactory(sceneGraphNode.tagName);
-    if (updater) {
-      geometry.aabb = new AABB();
-      updater.update(sceneGraphNode.attributes, geometry.aabb);
-      renderable.aabbDirty = true;
-      renderable.dirty = true;
-    }
-
-    // set position in local space
-    const { x = 0, y = 0 } = sceneGraphNode.attributes;
-    this.sceneGraphService.setLocalPosition(this, x, y);
-
-    // set origin
-    const { origin = [0, 0] } = sceneGraphNode.attributes;
-    this.sceneGraphService.setOrigin(this, [...origin, 0]);
+    this.initAttributes(this.config.style!);
 
     this.emitter.emit(DISPLAY_OBJECT_EVENT.Init);
   }
@@ -330,6 +311,10 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
     this.emitter.emit(DISPLAY_OBJECT_EVENT.Destroy);
     this.entity.destroy();
     this.emitter.removeAllListeners();
+    // stop all active animations
+    this.getAnimations().forEach((animation) => {
+      animation.cancel();
+    });
   }
 
   /** scene graph operations */
@@ -614,8 +599,9 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute
    */
-  setAttribute<Key extends keyof StyleProps>(attributeName: Key, value: StyleProps[Key]) {
+  setAttribute<Key extends keyof StyleProps>(attributeName: Key, value: StyleProps[Key], force = false) {
     if (
+      force ||
       value !== this.attributes[attributeName] ||
       attributeName === 'visibility' // will affect children
     ) {
@@ -1022,11 +1008,22 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
     return this.style.visibility === 'visible';
   }
 
+  /**
+   * create an animation with WAAPI
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/animate
+   */
   animate(
     keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
     options?: number | KeyframeAnimationOptions | undefined
   ): Animation | null {
-    const timeline = this.ownerDocument?.defaultView.timeline;
+    let timeline = this.ownerDocument?.defaultView.timeline;
+
+    // accounte for clip path, use target's timeline
+    if (this.attributes.clipPathTargets && this.attributes.clipPathTargets.length) {
+      const target = this.attributes.clipPathTargets[0];
+      timeline = target.ownerDocument?.defaultView.timeline;
+    }
+
     if (timeline) {
       return timeline.play(
         new KeyframeEffect(
@@ -1039,6 +1036,10 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
     return null;
   }
 
+  /**
+   * returns an array of all Animation objects affecting this element
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations
+   */
   getAnimations(): Animation[] {
     return this.activeAnimations;
   }
@@ -1090,6 +1091,22 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
   }
 
   /**
+   * @alias style.clipPath
+   * @deprecated
+   */
+  setClip(clipPath: DisplayObject | null) {
+    this.style.clipPath = clipPath;
+  }
+
+  /**
+   * @alias style.clipPath
+   * @deprecated
+   */
+  getClip() {
+    return this.style.clipPath;
+  }
+
+  /**
    * compitable with `style`
    * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style
    */
@@ -1104,7 +1121,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
   });
 
   /**
-   * get called when attributes changed
+   * called when attributes get changed or initialized
    */
   private changeAttribute<Key extends keyof StyleProps>(name: Key, value: StyleProps[Key]) {
     const entity = this.getEntity();
@@ -1119,8 +1136,11 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
     // update geometry if some attributes changed such as `width/height/...`
     const geometryUpdater = this.geometryUpdaterFactory(this.nodeName);
     const needUpdateGeometry = geometryUpdater && geometryUpdater.dependencies.indexOf(name as string) > -1;
-    if (needUpdateGeometry && geometry.aabb) {
-      geometryUpdater!.update(this.attributes, geometry.aabb);
+    if (needUpdateGeometry) {
+      if (!geometry.aabb) {
+        geometry.aabb = new AABB();
+      }
+      geometryUpdater.update(this.attributes, geometry.aabb);
     }
 
     if (
@@ -1137,6 +1157,8 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
       const { x = 0, y = 0 } = this.attributes;
       // update transform
       this.sceneGraphService.setLocalPosition(this, x, y);
+    } else if (name === 'origin') {
+      this.sceneGraphService.setOrigin(this, [...value, 0]);
     } else if (name === 'zIndex') {
       if (this.parentNode) {
         const parentEntity = this.parentNode.getEntity();
@@ -1195,6 +1217,56 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
         }
       });
       delete this.attributes[name];
+    } else if (name === 'clipPath') {
+      const oldClipPath = oldValue as DisplayObject;
+      const newClipPath = value as DisplayObject;
+      // clear ref to old clip path
+      if (oldClipPath
+        && oldClipPath !== newClipPath
+        && oldClipPath.style.clipPathTargets
+      ) {
+        const index = oldClipPath.style.clipPathTargets.indexOf(this);
+        oldClipPath.style.clipPathTargets.splice(index, 1);
+      }
+
+      if (newClipPath) {
+        if (!newClipPath.style.clipPathTargets) {
+          newClipPath.style.clipPathTargets = [];
+        }
+        newClipPath.style.clipPathTargets.push(this);
+      }
+    } else if (name === 'offsetPath') {
+      const oldOffsetPath = oldValue as DisplayObject;
+      const newOffsetPath = value as DisplayObject;
+      // clear ref to old clip path
+      if (oldOffsetPath
+        && oldOffsetPath !== newOffsetPath
+        && oldOffsetPath.style.offsetPathTargets
+      ) {
+        const index = oldOffsetPath.style.offsetPathTargets.indexOf(this);
+        oldOffsetPath.style.offsetPathTargets.splice(index, 1);
+      }
+
+      if (newOffsetPath) {
+        if (!newOffsetPath.style.offsetPathTargets) {
+          newOffsetPath.style.offsetPathTargets = [];
+        }
+        newOffsetPath.style.offsetPathTargets.push(this);
+      }
+    } else if (name === 'offsetDistance' && this.attributes.offsetPath) {
+      const offsetPathNodeName = this.attributes.offsetPath.nodeName;
+      if (
+        offsetPathNodeName === SHAPE.Line ||
+        offsetPathNodeName === SHAPE.Path ||
+        offsetPathNodeName === SHAPE.Polyline
+      ) {
+        // @ts-ignore
+        const point = this.attributes.offsetPath.getPoint(value);
+        if (point) {
+          console.log(point.x, point.y);
+          this.setLocalPosition(point.x, point.y);
+        }
+      }
     }
 
     // update renderable's aabb, account for world transform
@@ -1202,9 +1274,32 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
       renderable.aabbDirty = true;
     }
 
+    // inform clip path targets
+    if (this.attributes.clipPathTargets
+      && this.attributes.clipPathTargets.length) {
+      this.attributes.clipPathTargets.forEach((target) => {
+        const targetRenderable = target.getEntity().getComponent(Renderable);
+        targetRenderable.dirty = true;
+        targetRenderable.aabbDirty = true;
+
+        target.emitter.emit(DISPLAY_OBJECT_EVENT.AttributeChanged, 'clipPath', this, this, target);
+      });
+    }
+
     // redraw at next frame
     renderable.dirty = true;
 
     this.emitter.emit(DISPLAY_OBJECT_EVENT.AttributeChanged, name, oldValue, value, this);
+  }
+
+  private initAttributes(attributes: StyleProps) {
+    // apply attributes
+    for (const attributeName in attributes) {
+      this.attributes[attributeName] = attributes[attributeName];
+    }
+
+    for (const attributeName in attributes) {
+      this.setAttribute(attributeName, attributes[attributeName], true);
+    }
   }
 }

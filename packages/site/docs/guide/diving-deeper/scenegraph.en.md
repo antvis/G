@@ -273,7 +273,7 @@ group.show();
 
 | 名称      | 参数     | 返回值 | 备注           |
 | --------- | -------- | ------ | -------------- |
-| setZIndex | `number` | 无     | 设置 `z-index` |
+| setZIndex | `number` | 无     | 设置 `zIndex` |
 | toFront   | 无       | 无     | 置顶           |
 | toBack    | 无       | 无     | 置底           |
 
@@ -281,7 +281,7 @@ group.show();
 const group = new Group();
 
 group.setZIndex(100);
-// or group.setAttribute('z-index', 100);
+// or group.setAttribute('zIndex', 100);
 ```
 
 ## [WIP] React Fiber

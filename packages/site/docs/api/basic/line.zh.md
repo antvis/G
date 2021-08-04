@@ -82,3 +82,23 @@ line1.attr({
 **是否必须**：`false`
 
 **虚线**
+
+# 方法
+
+## getTotalLength(): number
+
+获取直线长度。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
+
+## getPoint(ratio: number): Point
+
+根据长度比例（取值范围 `[0-1]`）获取点，其中 `Point` 的格式为:
+
+```ts
+export type Point = {
+  x: number;
+  y: number;
+};
+```
+

@@ -362,6 +362,13 @@ export class Animation implements globalThis.Animation {
     this.updatePromises();
   }
 
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Animation/updatePlaybackRate
+   */
+  updatePlaybackRate(playbackRate: number): void {
+    this.playbackRate = playbackRate;
+  }
+
   targetAnimations() {
     const target = this.effect?.target as unknown as DisplayObject;
     return target.activeAnimations;
@@ -410,9 +417,7 @@ export class Animation implements globalThis.Animation {
   persist(): void {
     throw new Error("Method not implemented.");
   }
-  updatePlaybackRate(playbackRate: number): void {
-    this.playbackRate = playbackRate;
-  }
+
   addEventListener<K extends keyof AnimationEventMap>(type: K, listener: (this: Animation, ev: AnimationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
   addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
   addEventListener(type: any, listener: any, options?: any): void {
@@ -458,19 +463,23 @@ export class Animation implements globalThis.Animation {
   }
 
   private fireEvents(baseTime: number) {
-    if (this.playState === 'finished') {
-      if (this.onfinish) {
-        const event = new AnimationEvent(
-          null,
-          // @ts-ignore
-          this.effect.target,
-          this.currentTime,
-          baseTime,
-        );
-        setTimeout(() => {
-          this.onfinish && this.onfinish(event);
-        });
+    if (this._isFinished) {
+      if (!this._finishedFlag) {
+        if (this.onfinish) {
+          const event = new AnimationEvent(
+            null,
+            this,
+            this.currentTime,
+            baseTime,
+          );
+          setTimeout(() => {
+            this.onfinish && this.onfinish(event);
+          });
+        }
+        this._finishedFlag = true;
       }
+    } else {
+      this._finishedFlag = false;
     }
   }
 }

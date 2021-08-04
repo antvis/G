@@ -99,6 +99,14 @@
         "en": "Grid"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*EzqjQYMeYoMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "clip.js",
+      "title": {
+        "zh": "裁剪区域",
+        "en": "Clip Path"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*EzqjQYMeYoMAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

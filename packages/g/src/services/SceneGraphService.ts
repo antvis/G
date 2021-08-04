@@ -501,8 +501,18 @@ export class SceneGraphService extends EventEmitter {
       return renderable.aabb;
     }
 
-    // reset with geometry's aabb
-    let aabb: AABB | null = this.getGeometryBounds(displayObject);
+    let aabb: AABB | null = null;
+    // account for clip path
+    if (displayObject.style.clipPath) {
+      const clipPathBounds = this.getGeometryBounds(displayObject.style.clipPath);
+      if (clipPathBounds) {
+        clipPathBounds.setFromTransformedAABB(clipPathBounds, this.getWorldTransform(displayObject));
+        aabb = clipPathBounds;
+      }
+    } else {
+      // reset with geometry's aabb
+      aabb = this.getGeometryBounds(displayObject);
+    }
 
     // merge children's aabbs
     const children = displayObject.children;

@@ -37,7 +37,7 @@ export class SceneGraphNode<StyleProps extends BaseStyleProps = BaseStyleProps> 
    * assigned by shape.attrs
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes
    */
-  attributes: StyleProps;
+  attributes: StyleProps = {};
 
   /**
    * shadow node, invisible in scene graph, which means cannot be queried

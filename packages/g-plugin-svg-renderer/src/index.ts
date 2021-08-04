@@ -16,6 +16,7 @@ import { SVGRendererPlugin } from './SVGRendererPlugin';
 world.registerComponent(ElementSVG);
 
 export { ElementSVG };
+export * from './utils/dom';
 
 export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
   /**

@@ -162,7 +162,7 @@ const rect = new Rect({
 
 **是否必须**：`false`
 
-**说明**：类似 CSS 的 `z-index` 属性，用于控制渲染次序，有两点需要注意：
+**说明**：类似 CSS 的 `zIndex` 属性，用于控制渲染次序，有两点需要注意：
 
 1. 只会影响渲染顺序，并不会改变场景图中的节点结构
 2. 只在当前上下文内生效
@@ -178,6 +178,73 @@ li1.style.zIndex = 1; // li1 在 li2 之上
 ```
 
 [示例](/zh/examples/scenegraph#z-index)
+
+## 裁剪
+
+### clipPath
+
+使用裁剪方式创建元素的可显示区域，区域内的部分显示，区域外的隐藏。可参考 CSS 的 [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)。该属性值可以是任意图形，例如 Circle、Rect 等等。同一个裁剪区域可以被多个图形共享使用。
+
+例如我们想创建一个圆形的图片：
+```js
+const image = new Image({
+  attrs: {
+    clipPath: new Circle({
+      attrs: {
+        r: 10,
+      },
+    }),
+  }
+});
+```
+
+也可以在创建图形之后设置裁剪区域，因此以上写法等价于：
+```js
+const image = new Image({
+  attrs: {
+    //... 省略其他属性
+  }
+});
+
+image.style.clipPath = new Circle({
+  attrs: {
+    r: 10,
+  },
+});
+// 或者兼容旧版写法
+image.setClip(new Circle({
+  attrs: {
+    r: 10,
+  },
+}));
+```
+
+当我们想清除裁剪区域时，可以设置为 `null`：
+```js
+image.style.clipPath = null;
+// 或者
+image.setClip(null);
+```
+
+### 注意事项
+
+裁剪区域图形本身也是支持修改属性的，受它影响，被裁剪图形会立刻重绘。例如，配合[动画系统](/zh/docs/api/animation)我们可以对裁剪区域图形进行变换，实现以下效果，[示例](/zh/examples/shape#clip)：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Iy4RQZgT3EUAAAAAAAAAAAAAARQnAQ)
+
+```js
+// 对裁剪区域应用动画
+clipPathCircle.animate(
+  [
+    { transform: 'scale(1)' },
+    { transform: 'scale(1.2)' },
+  ], {
+  duration: 1500,
+  iterations: Infinity,
+});
+```
+
+我们暂不支持复合的裁剪区域，例如自定义图形以及 Group.
 
 # 变换
 
@@ -408,11 +475,11 @@ group.show();
 
 ## 渲染次序
 
-类似 CSS，我们可以通过 `z-index` 属性控制渲染次序，有两点需要注意：
+类似 CSS，我们可以通过 `zIndex` 属性控制渲染次序，有两点需要注意：
 
 | 名称      | 参数     | 返回值 | 备注           |
 | --------- | -------- | ------ | -------------- |
-| setZIndex | `number` | 无     | 设置 `z-index` |
+| setZIndex | `number` | 无     | 设置 `zIndex` |
 | toFront   | 无       | 无     | 置顶           |
 | toBack    | 无       | 无     | 置底           |
 
@@ -420,7 +487,7 @@ group.show();
 const group = new Group();
 
 group.setZIndex(100);
-// or group.setAttribute('z-index', 100);
+// or group.setAttribute('zIndex', 100);
 // or group.style.zIndex = 100;
 ```
 

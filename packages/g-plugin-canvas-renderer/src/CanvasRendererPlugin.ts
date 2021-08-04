@@ -140,9 +140,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
       const context = this.contextService.getContext()!;
       if (enableDirtyRectangleRendering) {
-        // calc dirty rectangle
-        const dirtyAABB = this.mergeDirtyAABBs(this.renderQueue);
-        // TODO: removed objects
+        // merge removed AABB
+        const dirtyAABB = this.safeMergeAABB(
+          this.mergeDirtyAABBs(this.renderQueue),
+          ...this.renderingContext.removedAABBs,
+        );
+        this.renderingContext.removedAABBs = [];
         if (!dirtyAABB) {
           return;
         }
@@ -162,7 +165,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           // sort by z-index
           .sort(this.sceneGraphService.sort)
           .forEach((object) => {
-            this.renderDisplayObject(object);
+            if (object.isVisible()) {
+              this.renderDisplayObject(object);
+            }
           });
 
         // save dirty AABBs in last frame
@@ -202,6 +207,22 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     // apply attributes to context
     this.applyAttributesToContext(context, object.attributes);
+
+    // clip path
+    const clipPathShape = object.style.clipPath;
+    if (clipPathShape) {
+      context.save();
+
+      // apply clip shape's RTS
+      this.applyTransform(context, clipPathShape.getWorldTransform());
+      this.applyAttributesToContext(context, clipPathShape.attributes);
+      const generatePath = this.pathGeneratorFactory(clipPathShape.nodeName);
+      if (generatePath) {
+        generatePath(context, clipPathShape.attributes);
+      }
+      context.restore();
+      context.clip();
+    }
 
     // generate path in local space
     const generatePath = this.pathGeneratorFactory(nodeName);
@@ -371,5 +392,19 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         context[name] = v;
       }
     }
+  }
+
+  private safeMergeAABB(...aabbs: (AABB | undefined)[]): AABB | undefined {
+    let merged: AABB | undefined;
+    aabbs.forEach((aabb) => {
+      if (aabb) {
+        if (!merged) {
+          merged = aabb;
+        } else {
+          merged.add(aabb);
+        }
+      }
+    });
+    return merged;
   }
 }

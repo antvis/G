@@ -8,6 +8,7 @@ import { AABB } from '../shapes';
 export enum RENDER_REASON {
   CameraChanged,
   DisplayObjectChanged,
+  DisplayObjectRemoved,
   None,
 }
 export const RenderingContext = Symbol('RenderingContext');

@@ -1,9 +1,13 @@
-import { Circle, Canvas } from '@antv/g';
+import { Circle, Canvas } from 'g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
+
+/**
+ * ported from https://animista.net/play/entrances/scale-in
+ */
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
@@ -21,8 +25,8 @@ const canvas = new Canvas({
 const circle = new Circle({
   attrs: {
     x: 200,
-    y: 100,
-    r: 20,
+    y: 200,
+    r: 60,
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
@@ -31,21 +35,23 @@ const circle = new Circle({
 
 canvas.appendChild(circle);
 
-circle.animate(
-  {
-    x: 500,
-    y: 400,
-    r: 50,
-    fill: '#F04864',
-  },
-  {
-    delay: 0,
-    duration: 2000,
-    easing: 'easeLinear',
-    callback: () => {},
-    repeat: true,
-  },
-);
+const animation = circle.animate(
+  [
+    { transform: 'scale(1)', fill: '#1890FF', stroke: '#F04864', opacity: 1 },
+    { transform: 'scale(2)', fill: 'red', stroke: '#1890FF', opacity: 0.8 },
+  ], {
+  duration: 1500,
+  iterations: Infinity,
+  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+});
+
+// get triggerred when animation finished
+animation.onfinish = (e) => {
+  console.log('finish!', e.target, e.playState);
+};
+animation.finished.then(() => {
+  console.log('finish promise resolved');
+});
 
 // stats
 const stats = new Stats();
@@ -78,43 +84,21 @@ rendererFolder.open();
 
 const animationFolder = gui.addFolder('animation');
 const animationConfig = {
+  play: () => {
+    animation.play();
+  },
   pause: () => {
-    circle.pauseAnimation();
+    animation.pause();
   },
-  resume: () => {
-    circle.resumeAnimation();
+  reverse: () => {
+    animation.reverse();
   },
-  stop: () => {
-    circle.stopAnimation(true);
-  },
-  start: () => {
-    circle.attr({
-      x: 200,
-      y: 100,
-      r: 20,
-      fill: '#1890FF',
-      stroke: '#F04864',
-      lineWidth: 4,
-    });
-    circle.animate(
-      {
-        x: 500,
-        y: 400,
-        r: 50,
-        fill: '#F04864',
-      },
-      {
-        delay: 0,
-        duration: 2000,
-        easing: 'easeLinear',
-        callback: () => {},
-        repeat: true,
-      },
-    );
+  finish: () => {
+    animation.finish();
   },
 };
+animationFolder.add(animationConfig, 'play').name('Play');
 animationFolder.add(animationConfig, 'pause').name('Pause');
-animationFolder.add(animationConfig, 'resume').name('Resume');
-animationFolder.add(animationConfig, 'stop').name('Stop');
-animationFolder.add(animationConfig, 'start').name('Restart');
+animationFolder.add(animationConfig, 'reverse').name('Reverse');
+animationFolder.add(animationConfig, 'finish').name('Finish');
 animationFolder.open();

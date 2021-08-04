@@ -124,7 +124,7 @@ const sunConfig = {
 sunFolder.add(sunConfig, 'hide').name('hide');
 sunFolder.add(sunConfig, 'show').name('show');
 sunFolder.add(sunConfig, 'z-index', 0, 100).onChange((zIndex) => {
-  sun.attr('z-index', zIndex);
+  sun.style.zIndex = zIndex;
 });
 sunFolder.open();
 
@@ -141,7 +141,7 @@ const earthConfig = {
 earthFolder.add(earthConfig, 'hide').name('hide');
 earthFolder.add(earthConfig, 'show').name('show');
 earthFolder.add(earthConfig, 'z-index', 0, 100).onChange((zIndex) => {
-  earth.attr('z-index', zIndex);
+  earth.style.zIndex = zIndex;
 });
 
 const moonFolder = gui.addFolder('moon');
@@ -169,7 +169,7 @@ const earthOrbitConfig = {
 earthOrbitFolder.add(earthOrbitConfig, 'hide').name('hide');
 earthOrbitFolder.add(earthOrbitConfig, 'show').name('show');
 earthOrbitFolder.add(earthOrbitConfig, 'z-index', 0, 100).onChange((zIndex) => {
-  earthOrbit.setZIndex(zIndex);
+  earthOrbit.style.zIndex = zIndex;
 });
 
 const moonOrbitFolder = gui.addFolder('moonOrbit');
@@ -185,5 +185,5 @@ const moonOrbitConfig = {
 moonOrbitFolder.add(moonOrbitConfig, 'hide').name('hide');
 moonOrbitFolder.add(moonOrbitConfig, 'show').name('show');
 moonOrbitFolder.add(moonOrbitConfig, 'z-index', 0, 100).onChange((zIndex) => {
-  moonOrbit.setZIndex(zIndex);
+  moonOrbit.style.zIndex = zIndex;
 });

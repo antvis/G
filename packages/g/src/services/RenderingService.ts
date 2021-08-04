@@ -77,6 +77,11 @@ export class RenderingService implements CanvasService {
       if (this.renderingContext.dirty) {
         this.hooks.endFrame.call();
         this.renderingContext.dirty = false;
+      } else {
+        if (this.renderingContext.renderReasons.has(RENDER_REASON.DisplayObjectRemoved)) {
+          this.hooks.beginFrame.call();
+          this.hooks.endFrame.call();
+        }
       }
 
       this.renderingContext.renderReasons.clear();

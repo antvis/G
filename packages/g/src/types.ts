@@ -61,6 +61,20 @@ export interface BaseStyleProps {
    */
   cursor?: Cursor;
 
+  /**
+   * clip path
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path
+   */
+  clipPath?: DisplayObject | null;
+  clipPathTargets?: DisplayObject[];
+
+  /**
+   * offset path
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Motion_Path
+   */
+  offsetPath?: DisplayObject | null;
+  offsetPathTargets?: DisplayObject[];
+
   stroke?: ColorType;
   /** 描边透明度 */
   strokeOpacity?: number;

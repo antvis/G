@@ -25,6 +25,9 @@ export class SVGContextService implements ContextService<SVGElement> {
       this.$container.appendChild($namespace);
 
       this.$namespace = $namespace;
+
+      const $def = createSVGElement('defs') as SVGDefsElement;
+      this.$namespace.appendChild($def);
     }
 
     let dpr = window.devicePixelRatio || 1;

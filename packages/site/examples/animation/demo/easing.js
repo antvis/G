@@ -42,6 +42,8 @@ const animation = image.animate(
   ], {
   duration: 1500,
   iterations: Infinity,
+  // delay: 3000,
+  // direction: 'alternate',
 });
 const timing = animation.effect.getTiming();
 
@@ -77,6 +79,7 @@ rendererFolder.open();
 const animationFolder = gui.addFolder('animation');
 const animationConfig = {
   easing: 'linear',
+  playbackRate: 1,
 };
 animationFolder.add(animationConfig, 'easing', [
   'linear',
@@ -136,8 +139,17 @@ animationFolder.add(animationConfig, 'easing', [
   'ease-out-in-elastic',
 
   'cubic-bezier(0.47, 0, 0.745, 0.715)',
+
+  'spring',
+  'spring-in',
+  'spring-out',
+  'spring-in-out',
+  'spring-out-in',
 ])
   .onChange((type) => {
     timing.easing = type;
   });
+animationFolder.add(animationConfig, 'playbackRate', 0, 5).onChange((playbackRate) => {
+  animation.updatePlaybackRate(playbackRate);
+});
 animationFolder.open();
