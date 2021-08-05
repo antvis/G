@@ -171,7 +171,7 @@ export function parsePattern(context: CanvasRenderingContext2D, element: IElemen
   return pattern;
 }
 
-export function parseStyle(context: CanvasRenderingContext2D, element: IElement, color: string) {
+export function parseStyle(context: CanvasRenderingContext2D, element: IElement, color: string|CanvasPattern) {
   if (isString(color)) {
     if (color[1] === '(' || color[2] === '(') {
       if (color[0] === 'l') {
@@ -187,6 +187,10 @@ export function parseStyle(context: CanvasRenderingContext2D, element: IElement,
         return parsePattern(context, element, color);
       }
     }
+    return color;
+  }
+
+  if(color instanceof CanvasPattern) {
     return color;
   }
 }
