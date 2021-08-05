@@ -57,6 +57,8 @@ export class PathUpdater implements GeometryAABBUpdater<UpdateProps> {
     attributes.x = minX + anchor[0] * width;
     attributes.y = minY + anchor[1] * height;
 
+    console.log(minX, minY, width, width);
+
     const halfExtents = vec3.fromValues(width / 2, height / 2, 0);
     const center = vec3.fromValues(
       (1 - anchor[0] * 2) * halfExtents[0],
@@ -182,7 +184,7 @@ function getExtraFromSegmentWithAngle(segment: any, lineWidth: number) {
   // 以 currentPoint 为顶点的夹角
   const currentAngle = Math.acos(
     (currentAndPre + currentAndNext - preAndNext) /
-      (2 * Math.sqrt(currentAndPre) * Math.sqrt(currentAndNext)),
+    (2 * Math.sqrt(currentAndPre) * Math.sqrt(currentAndNext)),
   );
   // 夹角为空、 0 或 PI 时，不需要计算夹角处的额外宽度
   // 注意: 由于计算精度问题，夹角为 0 的情况计算出来的角度可能是一个很小的值，还需要判断其与 0 是否近似相等
@@ -203,11 +205,11 @@ function getExtraFromSegmentWithAngle(segment: any, lineWidth: number) {
     // 水平方向投影
     xExtra:
       Math.cos(currentAngle / 2 - xAngle) * ((lineWidth / 2) * (1 / Math.sin(currentAngle / 2))) -
-        lineWidth / 2 || 0,
+      lineWidth / 2 || 0,
     // 垂直方向投影
     yExtra:
       Math.cos(yAngle - currentAngle / 2) * ((lineWidth / 2) * (1 / Math.sin(currentAngle / 2))) -
-        lineWidth / 2 || 0,
+      lineWidth / 2 || 0,
   };
   return extra;
 }

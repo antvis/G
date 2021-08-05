@@ -27,10 +27,10 @@ export function generatePath(context: CanvasRenderingContext2D, attributes: Path
         context.lineTo(params[1] - x, params[2] - y);
         break;
       case 'Q':
-        context.quadraticCurveTo(params[1], params[2], params[3] - x, params[4] - y);
+        context.quadraticCurveTo(params[1] - x, params[2] - y, params[3] - x, params[4] - y);
         break;
       case 'C':
-        context.bezierCurveTo(params[1], params[2], params[3], params[4], params[5] - x, params[6] - y);
+        context.bezierCurveTo(params[1] - x, params[2] - y, params[3] - x, params[4] - y, params[5] - x, params[6] - y);
         break;
       case 'A': {
         let arcParams: ArcParams;

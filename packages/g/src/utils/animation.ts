@@ -25,10 +25,10 @@ export function makeTiming(timingInput: KeyframeEffectOptions, forGroup: boolean
             return;
           }
         }
-        if ((property == 'fill') && (fills.indexOf(timingInput[property]!) === -1)) {
+        if ((property === 'fill') && (fills.indexOf(timingInput[property]!) === -1)) {
           return;
         }
-        if ((property == 'direction') && (directions.indexOf(timingInput[property]!) === -1)) {
+        if ((property === 'direction') && (directions.indexOf(timingInput[property]!) === -1)) {
           return;
         }
         // @ts-ignore
@@ -118,7 +118,7 @@ const PhaseActive = 3;
 
 function calculatePhase(activeDuration: any, localTime: number | null, timing: { delay: number; endDelay: any; }) {
   // https://drafts.csswg.org/web-animations/#animation-effect-phases-and-states
-  if (localTime == null) {
+  if (localTime === null) {
     return PhaseNone;
   }
 
@@ -137,13 +137,13 @@ function calculateActiveTime(activeDuration: any, fillMode: string, localTime: n
   // https://drafts.csswg.org/web-animations/#calculating-the-active-time
   switch (phase) {
     case PhaseBefore:
-      if (fillMode == 'backwards' || fillMode == 'both')
+      if (fillMode === 'backwards' || fillMode === 'both')
         return 0;
       return null;
     case PhaseActive:
       return localTime - delay;
     case PhaseAfter:
-      if (fillMode == 'forwards' || fillMode == 'both')
+      if (fillMode === 'forwards' || fillMode === 'both')
         return activeDuration;
       return null;
     case PhaseNone:
@@ -286,5 +286,5 @@ export const convertToDash = (str: string) => {
   str = str.replace(/([A-Z])/g, letter => `-${letter.toLowerCase()}`);
 
   // Remove first dash
-  return (str.charAt(0) == '-') ? str.substr(1) : str;
+  return (str.charAt(0) === '-') ? str.substr(1) : str;
 }

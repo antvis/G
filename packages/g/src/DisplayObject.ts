@@ -18,6 +18,7 @@ import { KeyframeEffect } from './KeyframeEffect';
 import { Canvas } from './Canvas';
 import { Animation } from './Animation';
 import { parseTransform } from './property-handlers/transform';
+import { convertPercentUnit, convertAngleUnit } from './property-handlers/dimension';
 
 /**
  * events for display object
@@ -1174,7 +1175,6 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
       }
     } else if (name === 'transform') {
       const result = parseTransform(value);
-      // console.log(result);
       result?.forEach(({ d, t }) => {
         if (t === 'scale') { // scale(1) scale(1, 1)
           // @ts-ignore
@@ -1189,30 +1189,40 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
           // @ts-ignore
           this.setLocalScale(d[0], d[1], d[2]);
         } else if (t === 'translate') {
-          this.setLocalPosition(d[0].px, d[1].px, 0);
+          this.setLocalPosition(
+            convertPercentUnit(d[0], 0, this),
+            convertPercentUnit(d[1], 1, this),
+            0,
+          );
         } else if (t === 'translatex') {
-          this.setLocalPosition(d[0].px, 0, 0);
+          this.setLocalPosition(
+            convertPercentUnit(d[0], 0, this),
+            0,
+            0,
+          );
         } else if (t === 'translatey') {
-          this.setLocalPosition(0, d[0].px, 0);
+          this.setLocalPosition(
+            0,
+            convertPercentUnit(d[0], 1, this),
+            0,
+          );
         } else if (t === 'translatez') {
-          this.setLocalPosition(0, 0, d[0].px);
+          this.setLocalPosition(0, 0, convertPercentUnit(d[0].px, 2, this));
         } else if (t === 'translate3d') {
-          this.setLocalPosition(d[0].px, d[1].px, d[2].px);
+          this.setLocalPosition(
+            convertPercentUnit(d[0], 0, this),
+            convertPercentUnit(d[1], 1, this),
+            convertPercentUnit(d[2], 2, this)
+          );
         } else if (t === 'rotate') {
-          let deg = 0;
-          if ('deg' in d[0]) {
-            deg = d[0].deg;
-          } else if ('rad' in d[0]) {
-            deg = rad2deg(d[0].rad);
-          } else if ('turn' in d[0]) {
-            deg = 360 * d[0].turn;
-          }
-          this.setLocalEulerAngles(deg);
+          this.setLocalEulerAngles(convertAngleUnit(d[0]));
         } else if (t === 'rotatex') {
 
         } else if (t === 'rotatey') {
 
         } else if (t === 'rotatez') {
+
+        } else if (t === 'rotate3d') {
 
         }
       });
@@ -1263,7 +1273,6 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
         // @ts-ignore
         const point = this.attributes.offsetPath.getPoint(value);
         if (point) {
-          console.log(point.x, point.y);
           this.setLocalPosition(point.x, point.y);
         }
       }

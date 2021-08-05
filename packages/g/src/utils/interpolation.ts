@@ -1,11 +1,14 @@
-import { AnimationEffectTiming } from './AnimationEffectTiming';
-import { DisplayObject } from './DisplayObject';
-import { parseEasingFunction } from './utils/animation';
+import { AnimationEffectTiming } from '../AnimationEffectTiming';
+import { DisplayObject } from '../DisplayObject';
+import { parseEasingFunction } from './animation';
 
 /**
  * handlers for valid properties
  */
-const propertyHandlers: Record<string, any> = {};
+const propertyHandlers: Record<string, [
+  Function,
+  Function,
+][]> = {};
 
 function addPropertyHandler(parser: Function, merger: Function, property: string) {
   propertyHandlers[property] = propertyHandlers[property] || [];
@@ -17,9 +20,13 @@ export function addPropertiesHandler(parser: Function, merger: Function, propert
   }
 }
 
-export function convertEffectInput(keyframes: ComputedKeyframe[], timing: AnimationEffectTiming) {
+export function convertEffectInput(
+  keyframes: ComputedKeyframe[],
+  timing: AnimationEffectTiming,
+  target: DisplayObject,
+) {
   const propertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups(keyframes, timing);
-  const interpolations = makeInterpolations(propertySpecificKeyframeGroups);
+  const interpolations = makeInterpolations(propertySpecificKeyframeGroups, target);
 
   return function (target: DisplayObject, fraction: number) {
     if (fraction !== null) {
@@ -79,7 +86,10 @@ function makePropertySpecificKeyframeGroups(keyframes: ComputedKeyframe[], timin
   return propertySpecificKeyframeGroups;
 }
 
-function makeInterpolations(propertySpecificKeyframeGroups: Record<string, PropertySpecificKeyframe[]>) {
+function makeInterpolations(
+  propertySpecificKeyframeGroups: Record<string, PropertySpecificKeyframe[]>,
+  target: DisplayObject,
+) {
   let interpolations = [];
   for (const groupName in propertySpecificKeyframeGroups) {
     const keyframes = propertySpecificKeyframeGroups[groupName];
@@ -115,6 +125,7 @@ function makeInterpolations(propertySpecificKeyframeGroups: Record<string, Prope
           groupName,
           keyframes[startIndex].value,
           keyframes[endIndex].value,
+          target,
         )
       });
     }
@@ -128,7 +139,8 @@ function makeInterpolations(propertySpecificKeyframeGroups: Record<string, Prope
 function propertyInterpolation(
   property: string,
   left: string | number,
-  right: string | number
+  right: string | number,
+  target: DisplayObject,
 ) {
   let ucProperty = property;
   if (/-/.test(property)) {
@@ -147,9 +159,9 @@ function propertyInterpolation(
     const parsedRight = handlers[i][0](right);
     if (parsedLeft !== undefined && parsedRight !== undefined) {
       // merger [left, right, n2string()]
-      const interpolationArgs = handlers[i][1](parsedLeft, parsedRight);
+      const interpolationArgs = handlers[i][1](parsedLeft, parsedRight, target);
       if (interpolationArgs) {
-        const interp = Interpolation.apply(null, interpolationArgs);
+        const interp = InterpolationFactory.apply(null, interpolationArgs);
         return function (t: number) {
           if (t === 0) return left;
           if (t === 1) return right;
@@ -158,7 +170,7 @@ function propertyInterpolation(
       }
     }
   }
-  return Interpolation(false, true, function (bool: boolean) {
+  return InterpolationFactory(false, true, function (bool: boolean) {
     return bool ? right : left;
   });
 }
@@ -194,7 +206,7 @@ function interpolate(
   throw 'Mismatched interpolation arguments ' + from + ':' + to;
 }
 
-const Interpolation = function (
+const InterpolationFactory = function (
   from: number | boolean | (number | boolean)[],
   to: number | boolean | (number | boolean)[],
   convertToString: Function

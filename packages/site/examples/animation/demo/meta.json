@@ -35,6 +35,14 @@
         "en": "Animatable attributes"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dZ03S7gEjz8AAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "animations.js",
+      "title": {
+        "zh": "常见的动画效果",
+        "en": "Useful animations"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*WRp0SbVfgjUAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

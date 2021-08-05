@@ -145,9 +145,24 @@ animationFolder.add(animationConfig, 'easing', [
   'spring-out',
   'spring-in-out',
   'spring-out-in',
+
+  'custom',
 ])
   .onChange((type) => {
-    timing.easing = type;
+    if (type !== 'custom') {
+      timing.easing = type;
+    } else {
+      const count = 4;
+      const pos = 0;
+      timing.easingFunction = (x) => {
+        if (x >= 1) {
+          return 1;
+        }
+        const stepSize = 1 / count;
+        x += pos * stepSize;
+        return x - x % stepSize;
+      };
+    }
   });
 animationFolder.add(animationConfig, 'playbackRate', 0, 5).onChange((playbackRate) => {
   animation.updatePlaybackRate(playbackRate);

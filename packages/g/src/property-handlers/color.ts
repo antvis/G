@@ -1,7 +1,8 @@
-import { addPropertiesHandler } from '../Interpolation';
-import { numberToString, clamp } from './numeric';
+import { addPropertiesHandler } from '../utils/interpolation';
+import { clamp } from './numeric';
 import * as d3 from 'd3-color';
 
+// color string -> [r,g,b,a]
 export function rgb2arr(str: string | null) {
   // @ts-ignore
   const color = d3.color(str) as d3.RGBColor;
@@ -17,12 +18,12 @@ export function rgb2arr(str: string | null) {
 }
 
 function mergeColors(left: string, right: string) {
-  return [left, right, (x: any[]) => {
+  return [left, right, (x: [number, number, number, number]) => {
     if (x[3]) {
       for (let i = 0; i < 3; i++)
         x[i] = Math.round(clamp(0, 255, x[i] * 255));
     }
-    x[3] = numberToString(clamp(0, 1, x[3]));
+    x[3] = clamp(0, 1, x[3]);
     return 'rgba(' + x.join(',') + ')';
   }];
 }

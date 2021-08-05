@@ -1,8 +1,9 @@
 import { mat4 } from 'gl-matrix';
-import { addPropertiesHandler } from '../Interpolation';
+import { addPropertiesHandler } from '../utils/interpolation';
 import { parseAngle, parseLength, parseLengthOrPercent, mergeDimensions } from './dimension';
 import { parseNumber, mergeNumbers } from './numeric';
 import { makeMatrixDecomposition, quat, composeMatrix } from '../utils/matrix-decompose';
+import type { DisplayObject } from '../DisplayObject';
 
 interface ParsedArg {
   t: string;
@@ -151,7 +152,7 @@ const isMatrixOrPerspective = function (lt: string, rt: string) {
     ((lt === 'matrix' || lt === 'matrix3d') && (rt === 'matrix' || rt === 'matrix3d'));
 };
 
-function mergeTransforms(left: ParsedArg[], right: ParsedArg[]) {
+function mergeTransforms(left: ParsedArg[], right: ParsedArg[], target: DisplayObject) {
   let flipResults = false;
   if (!left.length || !right.length) {
     if (!left.length) {
@@ -228,7 +229,7 @@ function mergeTransforms(left: ParsedArg[], right: ParsedArg[]) {
       const stringConversions = [];
       for (let j = 0; j < leftArgs.length; j++) {
         const merge = typeof leftArgs[j] === 'number' ? mergeNumbers : mergeDimensions;
-        const merged = merge(leftArgs[j], rightArgs[j]);
+        const merged = merge(leftArgs[j], rightArgs[j], false, target, j);
         leftArgsCopy[j] = merged[0];
         rightArgsCopy[j] = merged[1];
         stringConversions.push(merged[2]);

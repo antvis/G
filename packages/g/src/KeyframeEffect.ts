@@ -1,9 +1,9 @@
-import { numericTimingToObject, normalizeTimingInput, calculateActiveDuration, calculateIterationProgress } from './utils/animation';
+import { normalizeTimingInput, calculateActiveDuration, calculateIterationProgress } from './utils/animation';
 import { AnimationEffectTiming } from './AnimationEffectTiming';
 import { normalizeKeyframes } from './KeyframeList';
 import { DisplayObject } from './DisplayObject';
 import { Animation } from './Animation';
-import { convertEffectInput } from './Interpolation';
+import { convertEffectInput } from './utils/interpolation';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect
@@ -46,7 +46,8 @@ export class KeyframeEffect implements globalThis.KeyframeEffect {
     this.timing.endTime = Math.max(0, this.timing.delay + this.timing.activeDuration + this.timing.endDelay);
 
     this.normalizedKeyframes = normalizeKeyframes(effectInput, this.timing);
-    this.interpolations = convertEffectInput(this.normalizedKeyframes, this.timing);
+    // @ts-ignore
+    this.interpolations = convertEffectInput(this.normalizedKeyframes, this.timing, this.target);
   }
 
   applyInterpolations() {

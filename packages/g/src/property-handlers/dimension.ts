@@ -1,5 +1,7 @@
 import { numberToString, clamp } from './numeric';
-import { addPropertiesHandler } from '../Interpolation';
+import { addPropertiesHandler } from '../utils/interpolation';
+import type { DisplayObject } from '../DisplayObject';
+import { rad2deg } from '../utils/math';
 
 // In calc expressions, white space is required on both sides of the
 // + and - operators. https://drafts.csswg.org/css-values-3/#calc-notation
@@ -79,9 +81,15 @@ function calculate(expression: string) {
 function parseDimension(unitRegExp: RegExp, string: string) {
   string = string.trim().toLowerCase();
 
-  // 0 -> 0px
-  if (string === '0' && 'px'.search(unitRegExp) >= 0)
-    return { px: 0 };
+  if (string === '0') {
+    if ('px'.search(unitRegExp) >= 0) {
+      // 0 -> 0px
+      return { px: 0 };
+    } else if ('%'.search(unitRegExp) >= 0) {
+      // 0 -> 0%
+      return { '%': 0 };
+    }
+  }
 
   // If we have parenthesis, we're a calc and need to start with 'calc'.
   if (!/^[^(]*$|^calc/.test(string))
@@ -125,16 +133,14 @@ function parseDimension(unitRegExp: RegExp, string: string) {
   return matchedUnits;
 }
 
-function mergeDimensionsNonNegative(left, right) {
-  return mergeDimensions(left, right, true);
-}
-
 export function mergeDimensions(
   left: Record<string, number>,
   right: Record<string, number>,
   nonNegative?: boolean,
+  target?: DisplayObject,
+  index?: number,
 ) {
-  const units: string[] = [];
+  let units: string[] = [];
   let unit: string;
   for (unit in left)
     units.push(unit);
@@ -143,9 +149,24 @@ export function mergeDimensions(
       units.push(unit);
   }
 
-  left = units.map(function (unit) { return left[unit] || 0; });
-  right = units.map(function (unit) { return right[unit] || 0; });
-  return [left, right, function (values) {
+  let leftValue: number[];
+  let rightValue: number[];
+  // normalize different units
+  if (units.length > 1) {
+    if (units.indexOf('%') > -1) {
+      leftValue = [convertPercentUnit(left, index, target)];
+      rightValue = [convertPercentUnit(right, index, target)];
+      units = ['px'];
+    } else {
+      leftValue = units.map(function (unit) { return left[unit] || 0; });
+      rightValue = units.map(function (unit) { return right[unit] || 0; });
+    }
+  } else {
+    leftValue = units.map(function (unit) { return left[unit] || 0; });
+    rightValue = units.map(function (unit) { return right[unit] || 0; });
+  }
+
+  return [leftValue, rightValue, function (values) {
     const result = values.map(function (value, i) {
       if (values.length == 1 && nonNegative) {
         value = Math.max(value, 0);
@@ -155,10 +176,49 @@ export function mergeDimensions(
     }).join(' + ');
     return values.length > 1 ? 'calc(' + result + ')' : result;
   }];
+
+  // // { %: -100 } -> { px: 0 }
+  // const leftValueInPx = ('%' in left) ? calcSizePercent(left['%'], target, index) : left.px;
+  // const rightValueInPx = ('%' in right) ? calcSizePercent(right['%'], target, index) : right.px;
+
+  // return [leftValueInPx, rightValueInPx, function (values) {
+  //   return values + 'px';
+  // }];
 }
 
-// const lengthUnits = 'px|em|ex|ch|rem|vw|vh|vmin|vmax|cm|mm|in|pt|pc';
 const lengthUnits = 'px';
 export const parseLength = parseDimension.bind(null, new RegExp(lengthUnits, 'g'));
 export const parseLengthOrPercent = parseDimension.bind(null, new RegExp(lengthUnits + '|%', 'g'));
 export const parseAngle = parseDimension.bind(null, /deg|rad|grad|turn/g);
+
+export function convertPercentUnit(
+  valueWithUnit: { px?: number; '%'?: number },
+  vec3Index: number,
+  target: DisplayObject,
+): number {
+  if ('px' in valueWithUnit) {
+    return Number(valueWithUnit.px);
+  } else if ('%' in valueWithUnit) {
+    const bounds = target.getBounds();
+    let size = 0;
+    if (bounds) {
+      size = bounds.halfExtents[vec3Index] * 2;
+    }
+    return Number(valueWithUnit['%']) / 100 * size;
+  }
+  return 0;
+}
+
+export function convertAngleUnit(
+  valueWithUnit: { deg?: number; rad?: number; turn?: number; }
+) {
+  let deg = 0;
+  if ('deg' in valueWithUnit) {
+    deg = Number(valueWithUnit.deg);
+  } else if ('rad' in valueWithUnit) {
+    deg = rad2deg(Number(valueWithUnit.rad));
+  } else if ('turn' in valueWithUnit) {
+    deg = 360 * Number(valueWithUnit.turn);
+  }
+  return deg;
+}

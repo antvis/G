@@ -8,8 +8,8 @@ import { Line as LineUtil, Polyline as PolylineUtil, Cubic as CubicUtil } from '
 import { pathToCurve } from './utils/path';
 import { isNil } from '@antv/util';
 
-export class Group extends DisplayObject<{}> {
-  constructor(config?: DisplayObject<{}>) {
+export class Group extends DisplayObject {
+  constructor(config?: BaseStyleProps) {
     super({
       type: SHAPE.Group,
       ...config,

@@ -1,5 +1,5 @@
 ---
-title: Animation
+title: 动画
 order: -4
 ---
 
@@ -334,9 +334,12 @@ timing.ease = 'linear';
 | --- | --- | --- | --- |
 | transform | `string` | `scale(1, 2)` `scaleY(1)` | 和 [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 保持一致 |
 | opacity | `number` | `[0-1]` | 透明度 |
-| fill | `string` | `red` `#fff` | 填充色 |
-| stroke | `string` | `red` `#fff` | 描边色 |
-| r | `number` | `10` `20` | Circle 的半径 |
+| fill | `string` | 例如 `red` `#fff` | 填充色 |
+| stroke | `string` | 例如 `red` `#fff` | 描边色 |
+| lineWidth | `number` | 例如 `1` `10` | 线宽 |
+| r | `number` | 例如 `10` `20` | Circle 的半径 |
+| width | `number` | 例如 `10` `20` | Rect/Image 的宽度 |
+| height | `number` | 例如 `10` `20` | Rect/Image 的高度 |
 | offsetDistance | `string` | `[0-1]` | 路径偏移，在[路径动画](/zh/docs/api/animation#路径动画)中使用 |
 
 其中 transform 和 [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 保持一致，支持以下属性值：
@@ -347,14 +350,23 @@ timing.ease = 'linear';
   * scaleY(x)
   * scaleZ(z)
   * scale3d(x, y, z)
-* 平移，无单位或 px
-  * translate(0, 0) translate(0, 30px)
+* 平移，0 可以不加单位，无单位当作 px 处理，百分比相对于当前图形包围盒
+  * translate(0, 0) translate(0, 30px) translate(100%, 100%)
   * translateX(0)
   * translateY(0)
   * translateZ(0)
   * translate3d(0, 0, 0)
 * 旋转，支持 deg rad turn 这些单位
   * rotate(0.5turn) rotate(30deg) rotate(1rad)
+
+⚠️ 暂不支持以下取值：
+* `calc()`。例如 `translate(calc(100% + 10px))`
+* `matrix/matrix3d()`
+* `skew/skewX/skewY`
+* `perspective`
+* `none`
+
+⚠️ 暂不支持 transformOrigin 指定旋转/缩放中心
 
 ## offset
 
@@ -398,6 +410,10 @@ export default {
   animationOptions: { duration: 1000, fill: "both" },
 };
 ```
+
+[示例](/zh/examples/animation#animations)
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*WRp0SbVfgjUAAAAAAAAAAAAAARQnAQ)
 
 # EffectTiming
 
@@ -484,13 +500,27 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/easing
 
 ## easingFunction
 
-自定义缓动函数。
+自定义缓动函数。在绝大多数情况下都不需要使用到这个属性，内置缓动函数基本能满足需求。
 
 **类型**： `Function`
 
 **默认值**：`无`
 
 **是否必须**：`false`
+
+但如果想，例如手动实现一个 step 效果，[示例](/zh/examples/animation#easing)（选择 custom 缓动函数）：
+```js
+const count = 4;
+const pos = 0;
+timing.easingFunction = (x) => {
+  if (x >= 1) {
+    return 1;
+  }
+  const stepSize = 1 / count;
+  x += pos * stepSize;
+  return x - x % stepSize;
+};
+```
 
 ## endDelay
 
@@ -596,12 +626,12 @@ const animation = image.animate(
 }
 ```
 
-首先通过 offsetPath 创建一条运动轨迹，目前支持 Line Path 和 Polyline。然后通过对 offsetDistance （取值范围 `[0-1]`）进行变换实现该效果，[示例](/zh/examples/animation#offset-path)：
+首先通过 offsetPath 创建一条运动轨迹，目前支持 [Line](/zh/docs/api/basic/line) [Path](/zh/docs/api/basic/path) 和 [Polyline](/zh/docs/api/basic/polyline)。然后通过对 offsetDistance （取值范围 `[0-1]`）进行变换实现该效果，[示例](/zh/examples/animation#offset-path)：
 ```js
 const circle = new Circle({
   attrs: {
     offsetPath: new Line({ // 创建运动轨迹
-      attrs: {
+      attrs: { // 不需要设置其他与轨迹无关的绘图属性
         x1: 100,
         y1: 100,
         x2: 300,
@@ -622,6 +652,9 @@ const animation = circle.animate([
 });
 ```
 
+效果如下：
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zNasT6AmflEAAAAAAAAAAAAAARQnAQ)
+
 # [WIP] 高性能动画
 
-在 `g-webgl`
+在 `g-webgl` 中支持基于 WebGL Transform Feedback 的 GPU 动画。

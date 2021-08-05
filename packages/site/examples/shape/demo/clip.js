@@ -28,12 +28,14 @@ const clipPathRect = new Rect({
 });
 const clipPath = new Path({
   attrs: {
-    x: 100,
-    y: 100,
-    width: 50,
-    height: 50,
+    stroke: 'black',
+    lineWidth: 2,
+    path: 'M 10,10 L -10,0 L 10,-10 Z',
+    anchor: [0.5, 0.5],
   },
 });
+
+clipPath.setLocalPosition(100, 100);
 
 // create a canvas
 const canvas = new Canvas({
@@ -49,7 +51,7 @@ const image = new Image({
     y: 100,
     width: 200,
     height: 200,
-    img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
     clipPath: clipPathCircle,
   },
 });
