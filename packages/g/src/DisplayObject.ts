@@ -1,5 +1,4 @@
 import { isObject, isNil, isBoolean, isFunction } from '@antv/util';
-/* eslint-disable no-plusplus */
 import type { Entity } from '@antv/g-ecs';
 import { vec3, mat3, mat4, quat } from 'gl-matrix';
 import { EventEmitter } from 'eventemitter3';
@@ -86,7 +85,7 @@ export interface DisplayObjectConfig<StyleProps> {
    */
   name?: string;
 
-  type?: SHAPE;
+  type?: SHAPE | string;
 
   /**
    * used in `getElementsByClassName`

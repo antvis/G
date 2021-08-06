@@ -42,7 +42,6 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
   constructor(config: DisplayObjectConfig<ArrowStyleProps>) {
     super({
       ...config,
-      // @ts-ignore
       type: Arrow.tag,
     });
 
@@ -77,9 +76,6 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
   getEndHead() {
     return this.endHead;
   }
-
-  connectedCallback(): void { }
-  disconnectedCallback(): void { }
 
   attributeChangedCallback<Key extends keyof ArrowStyleProps>(name: Key, oldValue: ArrowStyleProps[Key], newValue: ArrowStyleProps[Key]) {
     if (
@@ -160,7 +156,6 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       y1 = isStart ? _y1 : _y2;
       y2 = isStart ? _y2 : _y1;
     } else if (bodyType === SHAPE.Polyline) {
-      // @ts-ignore
       const points = this.body.attributes.points as number[][];
       const { length } = points;
       x1 = isStart ? points[1][0] : points[length - 2][0];
@@ -196,7 +191,6 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
   }
 
   private getTangent(path: Path, isStart: boolean): [number, number][] {
-    // @ts-ignore
     const { segments } = path.attributes;
     const { length } = segments;
 
@@ -230,7 +224,6 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     return new Path({
       attrs: {
         // draw an angle '<'
-        // @ts-ignore
         path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${10 * sin(PI / 6)
           }`,
         stroke,

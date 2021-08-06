@@ -79,24 +79,24 @@ canvas.appendChild(lineArrow);
 canvas.appendChild(polylineArrow);
 canvas.appendChild(pathArrow);
 
-lineArrow.on('mouseenter', () => {
+lineArrow.addEventListener('mouseenter', () => {
   lineArrow.setAttribute('stroke', '#2FC25B');
 });
-lineArrow.on('mouseleave', () => {
+lineArrow.addEventListener('mouseleave', () => {
   lineArrow.setAttribute('stroke', '#1890FF');
 });
 
-polylineArrow.on('mouseenter', () => {
+polylineArrow.addEventListener('mouseenter', () => {
   polylineArrow.setAttribute('stroke', '#2FC25B');
 });
-polylineArrow.on('mouseleave', () => {
+polylineArrow.addEventListener('mouseleave', () => {
   polylineArrow.setAttribute('stroke', '#1890FF');
 });
 
-pathArrow.on('mouseenter', () => {
+pathArrow.addEventListener('mouseenter', () => {
   pathArrow.setAttribute('stroke', '#2FC25B');
 });
-pathArrow.on('mouseleave', () => {
+pathArrow.addEventListener('mouseleave', () => {
   pathArrow.setAttribute('stroke', '#1890FF');
 });
 
@@ -124,9 +124,6 @@ class MyCustomArrowHead extends CustomElement {
   attributeChangedCallback(name, oldValue, value) {
     this.head.setAttribute(name, value);
   }
-
-  connectedCallback() { }
-  disconnectedCallback() { }
 }
 
 // stats

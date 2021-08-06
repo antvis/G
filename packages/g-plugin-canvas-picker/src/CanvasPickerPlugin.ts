@@ -126,7 +126,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       }
     }
 
-    return true;
+    return false;
   };
 
   /**

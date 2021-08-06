@@ -92,10 +92,6 @@ circle.off('mouseenter', () => {});
 
 https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
 
-例如我们想手动触发一个鼠标点击事件，[示例]()：
-```js
-```
-
 ⚠️ 在一个图形上手动触发事件前，必须保证该元素已经添加到画布上
 
 ### 自定义事件

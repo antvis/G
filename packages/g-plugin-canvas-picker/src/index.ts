@@ -25,6 +25,8 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
       return PolygonPicker;
     } else if (tagName === SHAPE.Path) {
       return PathPicker;
+    } else if (tagName === SHAPE.Image || tagName === SHAPE.Text) {
+      return () => true;
     }
     return null;
   });

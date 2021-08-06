@@ -2,6 +2,25 @@ import { SceneGraphNode } from './components';
 import type { DisplayObjectConfig } from './DisplayObject';
 import { DisplayObject, DISPLAY_OBJECT_EVENT } from './DisplayObject';
 
+// @see https://stackoverflow.com/questions/44153378/typescript-abstract-optional-method
+export interface CustomElement<CustomElementStyleProps> {
+  /**
+   * fired after element insert into DOM tree
+   */
+  connectedCallback?(): void;
+
+  /**
+   * fired before element removed from DOM tree
+   */
+  disconnectedCallback?(): void;
+
+  attributeChangedCallback?<Key extends keyof CustomElementStyleProps>(
+    name: Key,
+    oldValue: CustomElementStyleProps[Key],
+    newValue: CustomElementStyleProps[Key],
+  ): void;
+}
+
 /**
  * shadow root
  * @see https://yuque.antfin-inc.com/antv/czqvg5/pgqipg
@@ -14,32 +33,25 @@ export abstract class CustomElement<
 
     this.on(DISPLAY_OBJECT_EVENT.ChildInserted, this.handleChildInserted);
     this.on(DISPLAY_OBJECT_EVENT.ChildRemoved, this.handleChildRemoved);
-    this.on(DISPLAY_OBJECT_EVENT.AttributeChanged, this.handleAttributeChanged);
-    this.on(DISPLAY_OBJECT_EVENT.Inserted, this.connectedCallback);
-    this.on(DISPLAY_OBJECT_EVENT.Removed, this.disconnectedCallback);
+    if (this.attributeChangedCallback) {
+      this.on(DISPLAY_OBJECT_EVENT.AttributeChanged, this.handleAttributeChanged);
+    }
+    if (this.connectedCallback) {
+      this.on(DISPLAY_OBJECT_EVENT.Inserted, this.connectedCallback.bind(this));
+    }
+    if (this.disconnectedCallback) {
+      this.on(DISPLAY_OBJECT_EVENT.Removed, this.disconnectedCallback.bind(this));
+    }
   }
-
-  /**
-   * fired after element insert into DOM tree
-   */
-  abstract connectedCallback(): void;
-
-  /**
-   * fired before element removed from DOM tree
-   */
-  abstract disconnectedCallback(): void;
-
-  abstract attributeChangedCallback<Key extends keyof CustomElementStyleProps>(
-    name: Key,
-    oldValue: CustomElementStyleProps[Key],
-    newValue: CustomElementStyleProps[Key],
-  ): void;
 
   private handleChildInserted = (child: DisplayObject) => {
     child.forEach((node) => {
-      // every child and its children should turn into a shadow node
-      // a shadow node doesn't mean to be unrenderable, it's just unsearchable in scenegraph
-      node.getEntity().getComponent(SceneGraphNode).shadow = true;
+      // append children like other shapes after mounted
+      if (!this.isConnected) {
+        // every child and its children should turn into a shadow node
+        // a shadow node doesn't mean to be unrenderable, it's just unsearchable in scenegraph
+        node.getEntity().getComponent(SceneGraphNode).shadow = true;
+      }
     });
   };
 
@@ -54,6 +66,7 @@ export abstract class CustomElement<
     oldValue: CustomElementStyleProps[Key],
     value: CustomElementStyleProps[Key],
   ) => {
-    this.attributeChangedCallback(name, oldValue, value);
+    this.attributeChangedCallback
+      && this.attributeChangedCallback(name, oldValue, value);
   };
 }

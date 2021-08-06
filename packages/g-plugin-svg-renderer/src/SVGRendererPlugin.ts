@@ -264,7 +264,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // create svg element
     const svgElement = entity.addComponent(ElementSVG);
 
-    const type = SHAPE_TO_TAGS[object.nodeName];
+    // use <group> as default, eg. CustomElement
+    const type = SHAPE_TO_TAGS[object.nodeName] || 'g';
     if (type) {
       let $groupEl;
 

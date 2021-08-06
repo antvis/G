@@ -22,9 +22,11 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
   selectOne(query: string, object: DisplayObject) {
     if (query.startsWith('#')) {
       // getElementById('id')
-      // TODO: should include itself?
       return object.find(
-        (node) => node.getEntity().getComponent(SceneGraphNode).id === query.substring(1),
+        (node) => {
+          const sceneGraphNode = node.getEntity().getComponent(SceneGraphNode);
+          return !sceneGraphNode.shadow && sceneGraphNode.id === query.substring(1);
+        },
       );
     }
     return null;

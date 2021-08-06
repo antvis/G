@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import type { DisplayObjectConfig } from './DisplayObject';
 import { DisplayObject } from './DisplayObject';
-import type { BaseStyleProps } from './types';
+import type { BaseStyleProps, PathCommand } from './types';
 import { SHAPE } from './types';
 import { Point } from './shapes';
 import { Line as LineUtil, Polyline as PolylineUtil, Cubic as CubicUtil } from '@antv/g-math';
@@ -135,12 +135,15 @@ export class Line extends DisplayObject<LineStyleProps> {
   }
 }
 
-export type PathStyleProps = BaseStyleProps;
+export interface PathStyleProps extends BaseStyleProps {
+  path: string | PathCommand[];
+}
 export class Path extends DisplayObject<PathStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<PathStyleProps>) {
     super({
       type: SHAPE.Path,
       style: {
+        path: '',
         opacity: 1,
         strokeOpacity: 1,
         lineJoin: 'miter',
@@ -153,8 +156,8 @@ export class Path extends DisplayObject<PathStyleProps> {
   }
 
   private totalLength: number;
-  private cache: [number, number][] = [];
-  private curve: any;
+  private cache: number[][] = [];
+  private curve: number[][];
 
   getTotalLength() {
     if (!this.totalLength) {
@@ -176,8 +179,8 @@ export class Path extends DisplayObject<PathStyleProps> {
       this.createCache();
     }
 
-    let subt;
-    let index;
+    let subt = 0;
+    let index = 0;
 
     const curve = this.curve;
     if (!this.cache.length) {
@@ -217,7 +220,7 @@ export class Path extends DisplayObject<PathStyleProps> {
     let totalLength = 0;
     let tempLength = 0;
     // 每段 curve 对应起止点的长度比例列表，形如: [[0, 0.25], [0.25, 0.6]. [0.6, 0.9], [0.9, 1]]
-    const tCache = [];
+    this.cache = [];
     let segmentT;
     let segmentL;
     let segmentN;
@@ -271,19 +274,21 @@ export class Path extends DisplayObject<PathStyleProps> {
         // 当 path 不连续时，segmentL 可能为空，为空时需要作为 0 处理
         tempLength += segmentL || 0;
         segmentT[1] = tempLength / totalLength;
-        tCache.push(segmentT);
+        this.cache.push(segmentT);
       }
     });
-    this.cache = tCache;
   }
 }
 
-export type PolylineStyleProps = BaseStyleProps;
+export interface PolylineStyleProps extends BaseStyleProps {
+  points: [number, number][];
+}
 export class Polyline extends DisplayObject<PolylineStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<PolylineStyleProps>) {
     super({
       type: SHAPE.Polyline,
       style: {
+        points: [],
         opacity: 1,
         strokeOpacity: 1,
         lineJoin: 'miter',
