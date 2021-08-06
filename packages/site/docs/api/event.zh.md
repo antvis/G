@@ -14,12 +14,39 @@ order: -3
 
 目前我们支持以下[基础事件](/zh/docs/api/event#type)，尽可能兼容了 DOM 事件流，因此在下面的很多 API 介绍中我们都附上了 DOM Event API 对应的参考链接。
 
+例如我们想给这个圆形增加简单的鼠标移入/移出的交互效果，[示例](/zh/examples/event/shape#shapes)
+```js
+circle.addEventListener('mouseenter', () => {
+  circle.attr('fill', '#2FC25B');
+});
+circle.addEventListener('mouseleave', () => {
+  circle.attr('fill', '#1890FF');
+});
+```
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*D7xLQp4L4VoAAAAAAAAAAAAAARQnAQ)
+
 # 事件监听
 
 ## addEventListener
 
 为图形添加事件监听器，可以完全参考 DOM Event API：https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener
 
+方法签名：
+```js
+target.addEventListener(type, listener, options);
+target.addEventListener(type, listener, useCapture);
+```
+
+其中参数为：
+* type 事件名称，[内置标准事件](/zh/docs/api/event#type) 或[自定义事件名]()
+* listener 事件监听器，支持以下两种写法：
+  * 处理函数 `Function`
+  * [EventListener](https://developer.mozilla.org/zh-CN/docs/Web/API/EventListener/handleEvent) 对象，形如 `{ handleEvent: Function }`
+* options `可选`
+  * capture `boolean`，表示 listener 会在该类型的事件捕获阶段传播到该 EventTarget 时触发。
+  * once `boolean`，表示 listener 在添加之后最多只调用一次。如果是 `true`， listener 会在其被调用之后自动移除。
+* useCapture `可选` `boolean` 默认为 `false`。如果是 `true`，向上冒泡的事件不会触发listener。
 
 ```js
 // 二者等价
@@ -40,11 +67,65 @@ circle.addEventListener('click', () => {}, true);
 circle.addEventListener('click', () => {}, { once: true });
 ```
 
+为了兼容旧版 G API，也支持使用 `on`，因此以下写法等价：
+```js
+circle.addEventListener('mouseenter', () => {});
+circle.on('mouseenter', () => {});
+```
+
 ## removeEventListener
 
 移除事件监听器
 ```js
 circle.removeEventListener('click', handler);
+```
+
+为了兼容旧版 G API，也支持使用 `off`，因此以下写法等价：
+```js
+circle.removeEventListener('mouseenter', () => {});
+circle.off('mouseenter', () => {});
+```
+
+## dispatchEvent
+
+手动触发事件，和交互触发的事件一样会经历完整的事件传播流程。
+
+https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
+
+例如我们想手动触发一个鼠标点击事件，[示例]()：
+```js
+```
+
+⚠️ 在一个图形上手动触发事件前，必须保证该元素已经添加到画布上
+
+### 自定义事件
+
+除了内置标准事件，有时我们也需要触发一些自定义事件，参考 [Web CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent)，我们也支持如下写法，[示例](/zh/examples/event/shape#custom)：
+
+```js
+import { CustomEvent } from '@antv/g';
+
+const event = new CustomEvent('build', { detail: { prop1: 'xx' } });
+circle.addEventListener('build', (e) => {
+  e.target; // circle
+  e.detail; // { prop1: 'xx' }
+});
+
+circle.dispatchEvent(event);
+```
+
+其中 CustomEvent 构造函数参数如下：
+* eventName 事件名 `string` `必填`
+* eventObject 事件对象 `选填` 包含以下属性：
+  * detail 自定义数据 `any`
+
+为了兼容旧版 G API，也支持使用 `emit`：
+```js
+circle.on('build', (e) => {
+  e.target; // circle
+  e.detail; // { prop1: 'xx' }
+});
+circle.emit('build', { prop1: 'xx' });
 ```
 
 # 事件对象
@@ -399,3 +480,18 @@ renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/mouseenter_event
 
 mouseenter 不会冒泡，而 mouseover 会。同理 mouseleave 不会冒泡，而 mouseout 会。
+
+## 旧版兼容
+
+在旧版中支持以下在事件名中表示委托的写法，格式为 `[被委托图形 name]:[事件名]`，[示例](/zh/examples/event/shape#deprecated-delegate)：
+```js
+// 监听所有 name 为 node 的图形上冒泡上来的 click 事件
+graph.on('node:click', () => {});
+
+// 等价于
+graph.addEventListener('click', (e) => {
+  if (e.target.name === 'node') {
+
+  }
+});
+```

@@ -4,8 +4,7 @@ import { Point } from './shapes/Point';
 
 export class FederatedMouseEvent
   extends FederatedEvent<MouseEvent | PointerEvent | TouchEvent>
-  implements MouseEvent
-{
+  implements MouseEvent {
   /** Whether the "alt" key was pressed when this mouse event occurred. */
   altKey: boolean;
 
@@ -36,12 +35,6 @@ export class FederatedMouseEvent
   }
   get clientY(): number {
     return this.client.y;
-  }
-  get x(): number {
-    return this.clientX;
-  }
-  get y(): number {
-    return this.clientY;
   }
 
   /**

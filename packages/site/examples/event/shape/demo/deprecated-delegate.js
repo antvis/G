@@ -31,6 +31,7 @@ const ul = new Group({
 });
 const li1 = new Rect({
   id: 'li1',
+  name: 'test-name',
   attrs: {
     x: 200,
     y: 100,
@@ -53,6 +54,7 @@ const text = new Text({
 li1.appendChild(text);
 const li2 = new Rect({
   id: 'li2',
+  name: 'test-name',
   attrs: {
     x: 200,
     y: 300,
@@ -66,13 +68,8 @@ canvas.appendChild(ul);
 ul.appendChild(li1);
 ul.appendChild(li2);
 
-ul.addEventListener('click', (e) => {
-  console.log('currentTarget', e.currentTarget);
+ul.addEventListener('test-name:click', (e) => {
   console.log('target', e.target);
-  console.log('clientX', e.clientX);
-  console.log('clientY', e.clientY);
-  console.log('x', e.x);
-  console.log('y', e.y);
   console.log('path', e.composedPath());
 });
 

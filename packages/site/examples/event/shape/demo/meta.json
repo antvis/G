@@ -18,7 +18,7 @@
         "zh": "多种图形拾取",
         "en": "Multiple shapes picking"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*xJB7TY68IVUAAAAAAAAAAABkARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*D7xLQp4L4VoAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "circle.js",
@@ -65,6 +65,22 @@
       "title": {
         "zh": "使用 Interact.js 拖拽库",
         "en": "Drag&Drop with Interact.js"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "custom.js",
+      "title": {
+        "zh": "触发自定义事件",
+        "en": "Dispatch custom event"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "deprecated-delegate.js",
+      "title": {
+        "zh": "兼容旧版的事件委托写法",
+        "en": "Delegate with event's name"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ"
     }

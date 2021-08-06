@@ -129,6 +129,23 @@ const text = new Text({
     lineWidth: 5,
   },
 });
+const clippedText = new Text({
+  attrs: {
+    fontFamily: 'PingFang SC',
+    text: '这是测试文本',
+    fontSize: 40,
+    fill: '#1890FF',
+    stroke: '#F04864',
+    lineWidth: 5,
+    clipPath: new Circle({
+      attrs: {
+        x: 20,
+        y: -10,
+        r: 20,
+      },
+    }),
+  },
+});
 
 circle.setPosition(100, 100);
 canvas.appendChild(circle);
@@ -160,6 +177,9 @@ canvas.appendChild(polygon);
 
 text.setPosition(160, 450);
 canvas.appendChild(text);
+
+clippedText.setPosition(160, 500);
+canvas.appendChild(clippedText);
 
 circle.on('mouseenter', () => {
   circle.attr('fill', '#2FC25B');
@@ -208,6 +228,12 @@ text.on('mouseenter', () => {
 });
 text.on('mouseleave', () => {
   text.attr('stroke', '#F04864');
+});
+clippedText.on('mouseenter', () => {
+  clippedText.attr('stroke', '#2FC25B');
+});
+clippedText.on('mouseleave', () => {
+  clippedText.attr('stroke', '#F04864');
 });
 
 // stats

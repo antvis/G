@@ -102,7 +102,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       return {
         position: result.position,
         // return last picked
-        picked: pickedDisplayObjects[pickedDisplayObjects.length - 1],
+        picked: pickedDisplayObjects[pickedDisplayObjects.length - 1] || null,
       };
     });
   }
@@ -126,7 +126,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       }
     }
 
-    return false;
+    return true;
   };
 
   /**

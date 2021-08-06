@@ -6,6 +6,7 @@ import { ContextService } from './services';
 import { container } from './inversify.config';
 import { RenderingService } from './services/RenderingService';
 import { RenderingContext, RENDER_REASON } from './services/RenderingContext';
+import { EventService } from './services/EventService';
 import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE } from './Camera';
 import { containerModule as commonContainerModule } from './canvas-module';
 import { IRenderer } from './AbstractRenderer';
@@ -144,6 +145,10 @@ export class Canvas extends EventEmitter {
 
   getContextService() {
     return this.container.get<ContextService<unknown>>(ContextService);
+  }
+
+  getEventService() {
+    return this.container.get<EventService>(EventService);
   }
 
   getRenderingService() {
@@ -331,9 +336,9 @@ export class Canvas extends EventEmitter {
     // trigger mount on node's descendants
     if (!child.isConnected) {
       const renderingService = this.container.get<RenderingService>(RenderingService);
+      child.ownerDocument = this.document;
       renderingService.hooks.mounted.call(child);
       child.isConnected = true;
-      child.ownerDocument = this.document;
     }
   }
 }

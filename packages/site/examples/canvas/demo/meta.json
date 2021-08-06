@@ -19,6 +19,14 @@
         "en": "Rendering on demand"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "dom-canvas.js",
+      "title": {
+        "zh": "canvas.container 使用 DOM 元素",
+        "en": "Use a DOM element for container"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
     }
   ]
 }

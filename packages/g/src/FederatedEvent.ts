@@ -6,7 +6,7 @@ import type { EventService } from './services';
  * An DOM-compatible synthetic event implementation that is "forwarded" on behalf of an original
  * FederatedEvent or native {@link https://dom.spec.whatwg.org/#event Event}.
  */
-export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
+export class FederatedEvent<N extends Event = Event, T = any> implements Event {
   /**
    * The type of event, supports the following:
    * * pointerdown
@@ -79,10 +79,10 @@ export class FederatedEvent<N extends UIEvent = UIEvent> implements UIEvent {
   /** Flags whether propagation was immediately stopped. */
   propagationImmediatelyStopped = false;
 
-  readonly manager: EventService | null;
+  manager: EventService | null;
 
   /** Event-specific detail */
-  detail: number;
+  detail: T;
 
   /**
    * The coordinates of the evnet relative to the nearest DOM layer.

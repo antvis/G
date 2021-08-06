@@ -326,6 +326,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   }
 
   private handleEntityAABBChanged = (object: DisplayObject) => {
+    // skip if this object mounted on another scenegraph root
+    if (object.ownerDocument !== this.renderingContext.root) {
+      return;
+    }
+
     const entity = object.getEntity();
     const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
 

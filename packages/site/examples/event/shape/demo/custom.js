@@ -1,17 +1,12 @@
-import { Canvas, Group, Text, Rect } from '@antv/g';
+import { Canvas, Group, Rect, Text, CustomEvent } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 
-/**
- * 实现事件委托，点击两个矩形，在控制台输出：
- * * target
- * * currentTarget
- * * clientX/Y
- * * composedPath() 事件传播路径
- */
+// create a custom event
+const event = new CustomEvent('build', { detail: { prop1: 'xx' } });
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
@@ -51,6 +46,7 @@ const text = new Text({
   },
 });
 li1.appendChild(text);
+
 const li2 = new Rect({
   id: 'li2',
   attrs: {
@@ -66,14 +62,18 @@ canvas.appendChild(ul);
 ul.appendChild(li1);
 ul.appendChild(li2);
 
-ul.addEventListener('click', (e) => {
-  console.log('currentTarget', e.currentTarget);
-  console.log('target', e.target);
-  console.log('clientX', e.clientX);
-  console.log('clientY', e.clientY);
-  console.log('x', e.x);
-  console.log('y', e.y);
-  console.log('path', e.composedPath());
+li1.addEventListener('click', (e) => {
+  // dispatch my custom event!
+  li1.dispatchEvent(event);
+
+  // @deprecated
+  // li1.emit('build', { prop1: 'xx' });
+});
+
+// delegate to parent
+ul.addEventListener('build', (e) => {
+  console.log(e.target); // circle
+  console.log(e.detail); // { prop1: 'xx' }
 });
 
 // stats

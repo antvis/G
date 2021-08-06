@@ -5,7 +5,7 @@ import { FederatedEvent } from '../FederatedEvent';
 import { FederatedMouseEvent } from '../FederatedMouseEvent';
 import { FederatedPointerEvent } from '../FederatedPointerEvent';
 import { FederatedWheelEvent } from '../FederatedWheelEvent';
-import { Cursor, EventPosition } from '../types';
+import { Cursor, EventPosition, CanvasConfig } from '../types';
 import { RenderingContext } from './RenderingContext';
 
 type Picker = (position: EventPosition) => DisplayObject | null;
@@ -27,11 +27,15 @@ type EmitterListeners = Record<string,
   | { fn(...args: any[]): any, context: any }
 >;
 const PROPAGATION_LIMIT = 2048;
+export const DELEGATION_SPLITTER = ':';
 
 @injectable()
 export class EventService extends EventEmitter {
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
+
+  @inject(CanvasConfig)
+  protected canvasConfig: CanvasConfig;
 
   private rootTarget: DisplayObject;
 
@@ -492,6 +496,12 @@ export class EventService extends EventEmitter {
   }
 
   hitTest(position: EventPosition): DisplayObject | null {
+    const { x, y } = position;
+    const { width, height } = this.canvasConfig;
+    // outside canvas
+    if (x < 0 || y < 0 || x > width || y > height) {
+      return null;
+    }
     return this.pickHandler(position) || this.rootTarget;
   }
 

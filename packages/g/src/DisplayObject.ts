@@ -19,6 +19,7 @@ import { Canvas } from './Canvas';
 import { Animation } from './Animation';
 import { parseTransform } from './property-handlers/transform';
 import { convertPercentUnit, convertAngleUnit } from './property-handlers/dimension';
+import { DELEGATION_SPLITTER } from './services/EventService';
 
 /**
  * events for display object
@@ -503,6 +504,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
   }
 
   /**
+   * @deprecated
    * @alias addEventListener
    */
   on(
@@ -525,8 +527,30 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
     const once = isObject(options) && options.once;
     const context = isFunction(listener) ? undefined : listener;
 
+    // compatible with G 3.0
+    // support using delegate name in event type, eg. 'node:click'
+    let useDelegatedName = false;
+    let delegatedName = '';
+    if (type.indexOf(DELEGATION_SPLITTER) > -1) {
+      const [name, eventType] = type.split(DELEGATION_SPLITTER);
+      type = eventType;
+      delegatedName = name;
+      useDelegatedName = true;
+    }
+
     type = capture ? `${type}capture` : type;
     listener = isFunction(listener) ? listener : listener.handleEvent;
+
+    // compatible with G 3.0
+    if (useDelegatedName) {
+      const originListener = listener;
+      listener = (...args) => {
+        if ((args[0].target as DisplayObject)?.name !== delegatedName) {
+          return;
+        }
+        originListener(...args);
+      };
+    }
 
     if (once) {
       this.emitter.once(type, listener, context);
@@ -535,6 +559,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
     }
   }
   /**
+   * @deprecated
    * @alias removeEventListener
    */
   off(
@@ -557,18 +582,35 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
 
     this.emitter.off(type, listener, context);
   }
-  emit(event: string | symbol, ...args: any[]) {
-    this.emitter.emit(event, ...args);
+  /**
+   * @deprecated
+   * @alias dispatchEvent
+   */
+  emit(eventName: string, object: object) {
+    const event = new FederatedEvent(null);
+    event.type = eventName;
+    // @ts-ignore
+    event.detail = object;
+
+    this.dispatchEvent(event);
   }
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
+   */
   dispatchEvent(e: Event): boolean {
     if (!(e instanceof FederatedEvent)) {
       throw new Error('DisplayObject cannot propagate events outside of the Federated Events API');
     }
 
-    e.defaultPrevented = false;
-    e.path = [];
-    e.target = this;
-    e.manager?.dispatchEvent(e);
+    // assign event manager
+    if (this.ownerDocument?.defaultView) {
+      e.manager = this.ownerDocument?.defaultView.getEventService();
+      e.defaultPrevented = false;
+      e.path = [];
+      // @ts-ignore
+      e.target = this;
+      e.manager.dispatchEvent(e);
+    }
 
     return !e.defaultPrevented;
   }
