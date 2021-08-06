@@ -28,6 +28,8 @@ export interface CustomElement<CustomElementStyleProps> {
 export abstract class CustomElement<
   CustomElementStyleProps,
   > extends DisplayObject<CustomElementStyleProps> {
+  private shadowNodes: DisplayObject[] = [];
+
   constructor(config: DisplayObjectConfig<CustomElementStyleProps>) {
     super(config);
 
@@ -37,20 +39,30 @@ export abstract class CustomElement<
       this.on(DISPLAY_OBJECT_EVENT.AttributeChanged, this.handleAttributeChanged);
     }
     if (this.connectedCallback) {
-      this.on(DISPLAY_OBJECT_EVENT.Inserted, this.connectedCallback.bind(this));
+      this.on(DISPLAY_OBJECT_EVENT.Inserted, this.handleMounted);
     }
     if (this.disconnectedCallback) {
       this.on(DISPLAY_OBJECT_EVENT.Removed, this.disconnectedCallback.bind(this));
     }
   }
 
+  private handleMounted = () => {
+    this.shadowNodes.forEach((node) => {
+      // every child and its children should turn into a shadow node
+      // a shadow node doesn't mean to be unrenderable, it's just unsearchable in scenegraph
+      node.getEntity().getComponent(SceneGraphNode).shadow = true;
+    });
+
+    if (this.connectedCallback) {
+      this.connectedCallback();
+    }
+  };
+
   private handleChildInserted = (child: DisplayObject) => {
     child.forEach((node) => {
       // append children like other shapes after mounted
       if (!this.isConnected) {
-        // every child and its children should turn into a shadow node
-        // a shadow node doesn't mean to be unrenderable, it's just unsearchable in scenegraph
-        node.getEntity().getComponent(SceneGraphNode).shadow = true;
+        this.shadowNodes.push(node);
       }
     });
   };
