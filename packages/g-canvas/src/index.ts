@@ -7,4 +7,4 @@ export { default as Group } from './group';
 export { Shape };
 export { default as getArcParams } from './util/arc-params';
 
-export const version = '0.5.11';
+export const version = '0.5.12';
