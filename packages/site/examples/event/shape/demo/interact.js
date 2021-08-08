@@ -2,7 +2,7 @@ import { Circle, Text, Rect, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
-import { containerModule } from '@antv/g-plugin-css-select';
+import { Plugin } from '@antv/g-plugin-css-select';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 import interact from 'interactjs';
@@ -18,9 +18,9 @@ const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
 
 // register css select plugin
-canvasRenderer.registerPlugin(containerModule);
-webglRenderer.registerPlugin(containerModule);
-svgRenderer.registerPlugin(containerModule);
+canvasRenderer.registerPlugin(new Plugin());
+webglRenderer.registerPlugin(new Plugin());
+svgRenderer.registerPlugin(new Plugin());
 
 // create a canvas
 const canvas = new Canvas({

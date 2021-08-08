@@ -10,6 +10,9 @@ describe('DisplayObject Sort', () => {
     const group1 = new Group({
       id: 'id1',
       name: 'group1',
+      style: {
+        zIndex: 1,
+      }
     });
     const group2 = new Group({
       id: 'id2',
@@ -31,6 +34,7 @@ describe('DisplayObject Sort', () => {
     group1.appendChild(group3);
     group1.appendChild(group4);
 
+    expect(group1.style.zIndex).to.eqls(1);
     expect(group1.getCount()).to.eqls(3);
     expect(group1.getChildren().length).to.eqls(3);
     expect(group1.getFirst()).to.eqls(group2);

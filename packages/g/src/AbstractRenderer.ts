@@ -1,5 +1,10 @@
-import { ContainerModule } from 'inversify';
+import { Container } from 'inversify';
 import { RendererConfig } from './types';
+
+export interface RendererPlugin {
+  init(container: Container): void;
+  destroy(container: Container): void;
+}
 
 export interface IRenderer {
   getConfig(): RendererConfig;
@@ -7,16 +12,16 @@ export interface IRenderer {
   /**
    * register plugin at runtime
    */
-  registerPlugin(containerModule: ContainerModule): void;
+  registerPlugin(plugin: RendererPlugin): void;
 
   /**
    * return all registered plugins
    */
-  getPlugins(): ContainerModule[];
+  getPlugins(): RendererPlugin[];
 }
 
-export abstract class AbstractRenderer implements IRenderer {
-  private plugins: ContainerModule[] = [];
+export class AbstractRenderer implements IRenderer {
+  private plugins: RendererPlugin[] = [];
   private config: RendererConfig;
 
   constructor(config?: Partial<RendererConfig>) {
@@ -35,8 +40,8 @@ export abstract class AbstractRenderer implements IRenderer {
     };
   }
 
-  registerPlugin(containerModule: ContainerModule) {
-    this.plugins.push(containerModule);
+  registerPlugin(plugin: RendererPlugin) {
+    this.plugins.push(plugin);
   }
 
   getPlugins() {

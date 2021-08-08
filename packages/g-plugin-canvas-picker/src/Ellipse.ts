@@ -5,13 +5,14 @@ function ellipseDistance(squareX: number, squareY: number, rx: number, ry: numbe
 }
 
 export function isPointInPath(displayObject: DisplayObject<EllipseStyleProps>, { x, y }: { x: number; y: number }): boolean {
-  const { rx = 0, ry = 0, fill, stroke, lineWidth = 0 } = displayObject.attributes;
+  const { rx = 0, ry = 0, fill, stroke, lineWidth = 0, clipPathTargets } = displayObject.attributes;
+  const isClipPath = !!clipPathTargets?.length;
 
   const halfLineWith = lineWidth / 2;
   const squareX = x * x;
   const squareY = y * y;
   // 使用椭圆的公式： x*x/rx*rx + y*y/ry*ry = 1;
-  if (fill && stroke) {
+  if ((fill && stroke) || isClipPath) {
     return ellipseDistance(squareX, squareY, rx + halfLineWith, ry + halfLineWith) <= 1;
   }
   if (fill) {

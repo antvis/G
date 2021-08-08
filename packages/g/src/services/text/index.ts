@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import type { TextStyleProps } from '../../shapes-export';
+import type { TextStyleProps } from '../../display-objects/Text';
 import { toFontString } from '../../utils/text';
 import { OffscreenCanvasCreator } from './OffscreenCanvasCreator';
 
@@ -87,7 +87,9 @@ export class TextService {
     let baseline = Math.ceil(context.measureText(TEXT_METRICS.BaselineSymbol).width);
     const height = TEXT_METRICS.HeightMultiplier * baseline;
     baseline = (baseline * TEXT_METRICS.BaselineMultiplier) | 0;
+    // @ts-ignore
     canvas.width = width;
+    // @ts-ignore
     canvas.height = height;
     context.fillStyle = '#f00';
     context.fillRect(0, 0, width, height);
@@ -328,7 +330,7 @@ export class TextService {
     key: string,
     letterSpacing: number,
     cache: CharacterWidthCache,
-    context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+    context: CanvasRenderingContext2D,
   ): number {
     let width = cache[key];
     if (typeof width !== 'number') {

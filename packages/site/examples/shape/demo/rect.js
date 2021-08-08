@@ -68,6 +68,8 @@ const rectConfig = {
   y: 100,
   width: 300,
   height: 200,
+  anchorX: 0,
+  anchorY: 0,
   fill: '#1890FF',
   stroke: '#F04864',
   lineWidth: 4,
@@ -80,6 +82,12 @@ rectFolder.add(rectConfig, 'x', 50, 200).onChange((x) => {
 });
 rectFolder.add(rectConfig, 'y', 50, 200).onChange((y) => {
   rect.attr('y', y);
+});
+rectFolder.add(rectFolder, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
+  rect.attr('anchor', [anchorX, rectFolder.anchorY]);
+});
+rectFolder.add(rectFolder, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
+  rect.attr('anchor', [rectFolder.anchorX, anchorY]);
 });
 rectFolder.add(rectConfig, 'width', 50, 400).onChange((width) => {
   rect.attr('width', width);

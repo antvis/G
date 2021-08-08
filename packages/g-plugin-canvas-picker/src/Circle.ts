@@ -2,13 +2,14 @@ import { CircleStyleProps, DisplayObject, Point } from '@antv/g';
 import { distance } from './utils/math';
 
 export function isPointInPath(displayObject: DisplayObject<CircleStyleProps>, position: Point): boolean {
-  const { r = 0, fill, stroke, lineWidth = 0 } = displayObject.attributes;
+  const { r = 0, fill, stroke, lineWidth = 0, clipPathTargets } = displayObject.attributes;
 
   const halfLineWidth = lineWidth / 2;
   const absDistance = distance(0, 0, position.x, position.y);
+  const isClipPath = !!clipPathTargets?.length;
 
   // 直接用距离，如果同时存在边和填充时，可以减少两次计算
-  if (fill && stroke) {
+  if ((fill && stroke) || isClipPath) {
     return absDistance <= r + halfLineWidth;
   }
   if (fill) {

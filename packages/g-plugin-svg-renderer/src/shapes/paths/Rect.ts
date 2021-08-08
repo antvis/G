@@ -7,11 +7,11 @@ import { ElementRenderer } from '.';
 @injectable()
 export class RectRenderer implements ElementRenderer<RectStyleProps> {
   apply($el: SVGElement, attributes: RectStyleProps) {
-    const { radius = 0, width = 0, height = 0 } = attributes;
+    const { radius = 0, width = 0, height = 0, anchor = [0, 0] } = attributes;
 
     let d = '';
     if (!radius) {
-      d = `M 0, 0 l ${width},0 l 0,${height} l${-width} 0 z`;
+      d = `M ${-anchor[0] * width}, ${-anchor[1] * height} l ${width},0 l 0,${height} l${-width} 0 z`;
     } else {
       const r = parseRadius(radius);
       if (isArray(radius)) {
@@ -34,7 +34,7 @@ export class RectRenderer implements ElementRenderer<RectStyleProps> {
         r.r1 = r.r2 = r.r3 = r.r4 = radius;
       }
       d = [
-        [`M ${r.r1},0`],
+        [`M ${r.r1 - anchor[0] * width},${-anchor[1] * height}`],
         [`l ${width - r.r1 - r.r2},0`],
         [`a ${r.r2},${r.r2},0,0,1,${r.r2},${r.r2}`],
         [`l 0,${height - r.r2 - r.r3}`],

@@ -2,7 +2,7 @@ import { vec3 } from 'gl-matrix';
 import { injectable } from 'inversify';
 import type { GeometryAABBUpdater } from '.';
 import type { AABB } from '../../shapes';
-import type { CircleStyleProps } from '../../shapes-export';
+import type { CircleStyleProps } from '../../display-objects/Circle';
 
 @injectable()
 export class CircleUpdater implements GeometryAABBUpdater<CircleStyleProps> {

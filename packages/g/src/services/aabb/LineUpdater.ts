@@ -2,7 +2,7 @@ import { vec3 } from 'gl-matrix';
 import { injectable } from 'inversify';
 import type { GeometryAABBUpdater } from '.';
 import type { AABB } from '../../shapes';
-import type { LineStyleProps } from '../../shapes-export';
+import type { LineStyleProps } from '../../display-objects/Line';
 
 @injectable()
 export class LineUpdater implements GeometryAABBUpdater<LineStyleProps> {

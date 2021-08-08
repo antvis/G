@@ -5,7 +5,7 @@ import type { DisplayObject } from './DisplayObject';
 export class DisplayObjectPool {
   private pool: Record<string, DisplayObject> = {};
 
-  getByName(name: string): DisplayObject<any> {
+  getByName(name: string): DisplayObject {
     return this.pool[name];
   }
 

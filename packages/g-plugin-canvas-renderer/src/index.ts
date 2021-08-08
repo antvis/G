@@ -1,5 +1,5 @@
-import { RenderingPluginContribution, SHAPE, container, world } from '@antv/g';
-import { ContainerModule } from 'inversify';
+import { RenderingPluginContribution, RendererPlugin, SHAPE, container, world } from '@antv/g';
+import { ContainerModule, Container } from 'inversify';
 import RBush from 'rbush';
 import { DefaultRenderer, StyleRenderer, StyleRendererFactory } from './shapes/styles';
 import { ImageRenderer } from './shapes/styles/Image';
@@ -48,7 +48,7 @@ container.bind(PathGeneratorFactory).toFactory<PathGenerator<any> | null>((ctx) 
   return null;
 });
 
-export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
+const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ImagePool).toSelf().inSingletonScope();
   bind(RBushRoot).toConstantValue(new RBush<RBushNodeAABB>());
 
@@ -83,3 +83,12 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   bind(LoadImagePlugin).toSelf().inSingletonScope();
   bind(RenderingPluginContribution).toService(LoadImagePlugin);
 });
+
+export class Plugin implements RendererPlugin {
+  init(container: Container): void {
+    container.load(containerModule);
+  }
+  destroy(container: Container): void {
+    container.unload(containerModule);
+  }
+}

@@ -11,11 +11,11 @@ order: 10
 
 ```js
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { containerModule } from '@antv/g-plugin-control';
+import { Plugin } from '@antv/g-plugin-control';
 // 创建 WebGL 渲染器
 const webglRenderer = new WebGLRenderer();
 // 注册 3D 插件
-webglRenderer.registerPlugin(containerModule);
+webglRenderer.registerPlugin(new Plugin());
 ```
 
 # 效果

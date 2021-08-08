@@ -1,15 +1,15 @@
 import { Group, Canvas } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import Stats from 'stats.js';
-import { Cube, Grid, containerModule as Plugin3D } from '@antv/g-plugin-3d';
-import { containerModule as PluginControl } from '@antv/g-plugin-control';
+import { Cube, Grid, Plugin as Plugin3D } from '@antv/g-plugin-3d';
+import { Plugin as PluginControl } from '@antv/g-plugin-control';
 
 // create a renderer
 const webglRenderer = new WebGLRenderer();
 
 // register plugins
-webglRenderer.registerPlugin(Plugin3D);
-webglRenderer.registerPlugin(PluginControl);
+webglRenderer.registerPlugin(new Plugin3D());
+webglRenderer.registerPlugin(new PluginControl());
 
 // create a canvas
 const canvas = new Canvas({

@@ -1,8 +1,8 @@
 // tslint:disable-next-line:no-reference
 /// <reference path="../../../node_modules/@webgpu/types/dist/index.d.ts" />
-import { Camera, container, RenderingPluginContribution, SHAPE } from '@antv/g';
+import { Camera, container, RenderingPluginContribution, RendererPlugin, SHAPE } from '@antv/g';
 import { World } from '@antv/g-ecs';
-import { ContainerModule, interfaces } from 'inversify';
+import { ContainerModule, Container, interfaces } from 'inversify';
 import { ResourcePool } from './components/framegraph/ResourcePool';
 import { Geometry3D } from './components/Geometry3D';
 import { Material3D } from './components/Material3D';
@@ -117,3 +117,12 @@ export function registerModelBuilder(builderClazz: new (...args: any[]) => Model
 }
 
 export { Geometry3D, Material3D, Renderable3D, ShaderModuleService, ModelBuilder, TexturePool, RenderingEngine, gl, rgb2arr };
+
+export class Plugin implements RendererPlugin {
+  init(container: Container): void {
+    container.load(containerModule);
+  }
+  destroy(container: Container): void {
+    container.unload(containerModule);
+  }
+}

@@ -2,7 +2,7 @@ import { vec3 } from 'gl-matrix';
 import { injectable } from 'inversify';
 import type { GeometryAABBUpdater } from '.';
 import type { AABB } from '../../shapes';
-import type { EllipseStyleProps } from '../../shapes-export';
+import type { EllipseStyleProps } from '../../display-objects/Ellipse';
 
 @injectable()
 export class EllipseUpdater implements GeometryAABBUpdater<EllipseStyleProps> {

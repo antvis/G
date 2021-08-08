@@ -501,19 +501,8 @@ export class SceneGraphService extends EventEmitter {
       return renderable.aabb;
     }
 
-    let aabb: AABB | null = null;
-    // account for clip path
-    if (displayObject.style.clipPath) {
-      const clipPathBounds = this.getGeometryBounds(displayObject.style.clipPath);
-      if (clipPathBounds) {
-        clipPathBounds.setFromTransformedAABB(clipPathBounds, this.getWorldTransform(displayObject));
-        aabb = clipPathBounds;
-      }
-    } else {
-      // reset with geometry's aabb
-      aabb = this.getGeometryBounds(displayObject);
-    }
-
+    // reset with geometry's aabb
+    let aabb = this.getGeometryBounds(displayObject);
     // merge children's aabbs
     const children = displayObject.children;
     children.forEach((child) => {
@@ -527,6 +516,16 @@ export class SceneGraphService extends EventEmitter {
         }
       }
     });
+
+    // account for clip path
+    if (displayObject.style.clipPath) {
+      const clipPathBounds = this.getGeometryBounds(displayObject.style.clipPath);
+      // intersect with original geometry
+      if (clipPathBounds && aabb) {
+        clipPathBounds.setFromTransformedAABB(clipPathBounds, this.getWorldTransform(displayObject));
+        aabb = clipPathBounds.intersection(aabb);
+      }
+    }
 
     if (aabb) {
       renderable.aabb = aabb;

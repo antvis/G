@@ -41,9 +41,9 @@ renderer.setConfig({ enableAutoRendering: true });
 渲染器可以在运行时动态添加插件，扩展自身能力，例如 `g-webgl` 可以通过 [g-pluin-3d](/zh/docs/plugins/3d) 进行 3D 场景的渲染：
 
 ```js
-import { containerModule } from '@antv/g-plugin-3d';
+import { Plugin } from '@antv/g-plugin-3d';
 // 注册 3D 插件
-webglRenderer.registerPlugin(containerModule);
+webglRenderer.registerPlugin(new Plugin());
 ```
 
 # [WIP]自定义渲染器

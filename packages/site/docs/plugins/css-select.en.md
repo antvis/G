@@ -57,14 +57,14 @@ solarSystem.querySelectorAll('[r=25]');
 任意渲染器（g-canvas/g-svg/g-webgl）都可以使用该插件：
 
 ```js
-import { containerModule } from '@antv/g-plugin-css-select';
+import { Plugin } from '@antv/g-plugin-css-select';
 // 注册插件
-webglRenderer.registerPlugin(containerModule);
+webglRenderer.registerPlugin(new Plugin());
 ```
 
 # 使用方式
 
-我们可以使用类似 DOM API + CSS 选择器的方式进行场景图中的节点查询：
+我们可以使用类似 DOM API + CSS 选择器的方式进行场景图中的节点查询，[完整示例](/zh/examples/plugins#css-select)：
 
 ```javascript
 solarSystem.getElementsByName('sun');
@@ -80,3 +80,5 @@ solarSystem.querySelector('[name=sun]');
 solarSystem.querySelectorAll('[r=25]');
 // [moon]
 ```
+
+<!-- <playground path='examples/plugins/demo/css-select.js' rid='container'></playground> -->

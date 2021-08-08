@@ -1,5 +1,5 @@
-import { DisplayObject, ShapeCfg, GeometryAABBUpdater, container } from '@antv/g';
-import { ContainerModule } from 'inversify';
+import { DisplayObject, RendererPlugin, GeometryAABBUpdater, container } from '@antv/g';
+import { ContainerModule, Container } from 'inversify';
 import { registerModelBuilder } from '@antv/g-plugin-webgl-renderer';
 import { CubeUpdater } from './aabb/CubeUpdater';
 import { SphereUpdater } from './aabb/SphereUpdater';
@@ -35,5 +35,14 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   registerModelBuilder(SphereModelBuilder, SHAPE_3D.Sphere);
   registerModelBuilder(GridModelBuilder, SHAPE_3D.Grid);
 });
+
+export class Plugin implements RendererPlugin {
+  init(container: Container): void {
+    container.load(containerModule);
+  }
+  destroy(container: Container): void {
+    container.unload(containerModule);
+  }
+}
 
 export { Cube, Sphere, Grid };

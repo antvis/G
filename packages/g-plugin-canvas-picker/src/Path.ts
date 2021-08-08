@@ -102,7 +102,6 @@ export function isPointInPath(
     lineWidth = 0,
     stroke,
     fill,
-    // @ts-ignore
     path,
     // @ts-ignore
     segments,
@@ -116,13 +115,15 @@ export function isPointInPath(
     totalLength,
     x = 0,
     y = 0,
+    clipPathTargets,
   } = displayObject.attributes;
+  const isClipPath = !!clipPathTargets?.length;
 
   let isHit = false;
-  if (stroke) {
+  if (stroke || isClipPath) {
     isHit = isPointInStroke(segments, lineWidth, position.x + x, position.y + y, totalLength, x, y);
   }
-  if (!isHit && fill) {
+  if (!isHit && (fill || isClipPath)) {
     if (hasArc) {
       // 存在曲线时，暂时使用 canvas 的 api 计算，后续可以进行多边形切割
       isHit = isPointInPath(displayObject, position);

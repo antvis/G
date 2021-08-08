@@ -83,14 +83,20 @@ export class CanvasPickerPlugin implements RenderingPlugin {
         const { capture } = displayObject.getConfig();
 
         if (displayObject.isVisible() && capture) {
-          // is in clip path?
+          // test with clip path
+          const objectToTest = displayObject.style.clipPath || displayObject;
+          let worldTransform = displayObject.getWorldTransform();
+
           if (displayObject.style.clipPath) {
-            if (!this.isHit(displayObject.style.clipPath, position)) {
-              return;
-            }
+            // transform clip path in local space
+            vec3.transformMat4(
+              position,
+              position,
+              displayObject.style.clipPath.getLocalTransform(),
+            );
           }
 
-          if (this.isHit(displayObject, position)) {
+          if (this.isHit(objectToTest, position, worldTransform)) {
             pickedDisplayObjects.push(displayObject);
           }
         }
@@ -107,12 +113,12 @@ export class CanvasPickerPlugin implements RenderingPlugin {
     });
   }
 
-  private isHit = (displayObject: DisplayObject, position: vec3) => {
+  private isHit = (displayObject: DisplayObject, position: vec3, worldTransform: mat4) => {
     // use picker for current shape's type
     const pick = this.pointInPathPickerFactory(displayObject.nodeName);
     if (pick) {
       // invert with world matrix
-      const invertWorldMat = mat4.invert(mat4.create(), displayObject.getWorldTransform());
+      const invertWorldMat = mat4.invert(mat4.create(), worldTransform);
       // transform client position to local space, do picking in local space
       const localPosition = vec3.transformMat4(
         vec3.create(),
@@ -122,6 +128,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       if (
         pick(displayObject, new Point(localPosition[0], localPosition[1]), this.isPointInPath)
       ) {
+        console.log(localPosition);
         return true;
       }
     }

@@ -102,6 +102,7 @@ const path = new Path({
     lineWidth: 10,
     lineJoin: 'round',
     stroke: '#1890FF',
+    cursor: 'pointer',
   },
 });
 const polygon = new Polygon({
@@ -117,6 +118,7 @@ const polygon = new Polygon({
     stroke: '#1890FF',
     fill: '#1890FF',
     lineWidth: 10,
+    cursor: 'pointer',
   },
 });
 const text = new Text({
@@ -127,6 +129,7 @@ const text = new Text({
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 5,
+    cursor: 'pointer',
   },
 });
 const clippedText = new Text({
@@ -144,6 +147,7 @@ const clippedText = new Text({
         r: 20,
       },
     }),
+    cursor: 'pointer'
   },
 });
 
@@ -181,58 +185,58 @@ canvas.appendChild(text);
 clippedText.setPosition(160, 500);
 canvas.appendChild(clippedText);
 
-circle.on('mouseenter', () => {
-  circle.attr('fill', '#2FC25B');
+circle.addEventListener('mouseenter', () => {
+  circle.style.fill = '#2FC25B';
 });
-circle.on('mouseleave', () => {
-  circle.attr('fill', '#1890FF');
+circle.addEventListener('mouseleave', () => {
+  circle.style.fill = '#1890FF';
 });
-ellipse.on('mouseenter', () => {
-  ellipse.attr('fill', '#2FC25B');
+ellipse.addEventListener('mouseenter', () => {
+  ellipse.style.fill = '#2FC25B';
 });
-ellipse.on('mouseleave', () => {
-  ellipse.attr('fill', '#1890FF');
+ellipse.addEventListener('mouseleave', () => {
+  ellipse.style.fill = '#1890FF';
 });
-rect.on('mouseenter', () => {
-  rect.attr('fill', '#2FC25B');
+rect.addEventListener('mouseenter', () => {
+  rect.style.fill = '#2FC25B';
 });
-rect.on('mouseleave', () => {
-  rect.attr('fill', '#1890FF');
+rect.addEventListener('mouseleave', () => {
+  rect.style.fill = '#1890FF';
 });
-line.on('mouseenter', () => {
-  line.attr('stroke', '#2FC25B');
+line.addEventListener('mouseenter', () => {
+  line.style.stroke = '#2FC25B';
 });
-line.on('mouseleave', () => {
-  line.attr('stroke', '#1890FF');
+line.addEventListener('mouseleave', () => {
+  line.style.stroke = '#1890FF';
 });
-polyline.on('mouseenter', () => {
-  polyline.attr('stroke', '#2FC25B');
+polyline.addEventListener('mouseenter', () => {
+  polyline.style.stroke = '#2FC25B';
 });
-polyline.on('mouseleave', () => {
-  polyline.attr('stroke', '#1890FF');
+polyline.addEventListener('mouseleave', () => {
+  polyline.style.stroke = '#1890FF';
 });
-path.on('mouseenter', () => {
-  path.attr('stroke', '#2FC25B');
+path.addEventListener('mouseenter', () => {
+  path.style.stroke = '#2FC25B';
 });
-path.on('mouseleave', () => {
-  path.attr('stroke', '#1890FF');
+path.addEventListener('mouseleave', () => {
+  path.style.stroke = '#1890FF';
 });
-polygon.on('mouseenter', () => {
-  polygon.attr('stroke', '#2FC25B');
+polygon.addEventListener('mouseenter', () => {
+  polygon.style.stroke = '#2FC25B';
 });
-polygon.on('mouseleave', () => {
-  polygon.attr('stroke', '#1890FF');
+polygon.addEventListener('mouseleave', () => {
+  polygon.style.stroke = '#1890FF';
 });
-text.on('mouseenter', () => {
+text.addEventListener('mouseenter', () => {
   text.attr('stroke', '#2FC25B');
 });
-text.on('mouseleave', () => {
+text.addEventListener('mouseleave', () => {
   text.attr('stroke', '#F04864');
 });
-clippedText.on('mouseenter', () => {
+clippedText.addEventListener('mouseenter', () => {
   clippedText.attr('stroke', '#2FC25B');
 });
-clippedText.on('mouseleave', () => {
+clippedText.addEventListener('mouseleave', () => {
   clippedText.attr('stroke', '#F04864');
 });
 
@@ -245,7 +249,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterRender', () => {
+canvas.addEventListener('afterRender', () => {
   if (stats) {
     stats.update();
   }

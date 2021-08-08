@@ -1,26 +1,16 @@
-import { AbstractRenderer, RendererConfig, ContextService } from '@antv/g';
-import { ContainerModule } from 'inversify';
-import { containerModule as domInteractionModule } from '@antv/g-plugin-dom-interaction';
-import { containerModule as canvasRendererModule } from '@antv/g-plugin-canvas-renderer';
-import { containerModule as canvasPickerModule } from '@antv/g-plugin-canvas-picker';
-import { Canvas2DContextService } from './Canvas2DContextService';
+import { AbstractRenderer, RendererConfig } from '@antv/g';
+import { Plugin as DomInteractionPlugin } from '@antv/g-plugin-dom-interaction';
+import { Plugin as CanvasRendererPlugin } from '@antv/g-plugin-canvas-renderer';
+import { Plugin as CanvasPickerPlugin } from '@antv/g-plugin-canvas-picker';
+import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export class Renderer extends AbstractRenderer {
   constructor(config?: Partial<RendererConfig>) {
     super(config);
 
-    this.registerPlugin(
-      new ContainerModule((bind, unbind, isBound, rebind) => {
-        /**
-         * implements ContextService
-         */
-        bind(Canvas2DContextService).toSelf().inSingletonScope();
-        bind(ContextService).toService(Canvas2DContextService);
-      })
-    );
-
-    this.registerPlugin(canvasRendererModule);
-    this.registerPlugin(domInteractionModule);
-    this.registerPlugin(canvasPickerModule);
+    this.registerPlugin(new ContextRegisterPlugin());
+    this.registerPlugin(new CanvasRendererPlugin());
+    this.registerPlugin(new DomInteractionPlugin());
+    this.registerPlugin(new CanvasPickerPlugin());
   }
 }

@@ -1,4 +1,4 @@
-import type { IRenderer } from './AbstractRenderer';
+import type { AbstractRenderer } from './AbstractRenderer';
 import type { DisplayObject } from './DisplayObject';
 
 export enum SHAPE {
@@ -199,7 +199,7 @@ export interface CanvasConfig {
   /**
    * Renderer
    */
-  renderer: IRenderer;
+  renderer: AbstractRenderer;
   /**
    * 容器
    * @type {string|HTMLElement}

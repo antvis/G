@@ -9,7 +9,7 @@ import { RenderingContext, RENDER_REASON } from './services/RenderingContext';
 import { EventService } from './services/EventService';
 import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE } from './Camera';
 import { containerModule as commonContainerModule } from './canvas-module';
-import { IRenderer } from './AbstractRenderer';
+import { AbstractRenderer, IRenderer } from './AbstractRenderer';
 import { AnimationTimeline } from './Timeline';
 
 export interface CanvasService {
@@ -292,22 +292,30 @@ export class Canvas extends EventEmitter {
 
   private loadRendererContainerModule(renderer: IRenderer) {
     // load other container modules provided by g-canvas/g-svg/g-webgl
-    const modules = renderer.getPlugins();
-    modules.forEach((module) => {
-      this.container.load(module);
+    const plugins = renderer.getPlugins();
+    plugins.forEach((plugin) => {
+      plugin.init(this.container);
     });
   }
 
-  setRenderer(renderer: IRenderer) {
+  setRenderer(renderer: AbstractRenderer) {
     // update canvas' config
     const canvasConfig = this.getConfig();
     if (canvasConfig.renderer === renderer) {
       return;
     }
+
+    const oldRenderer = canvasConfig.renderer;
     canvasConfig.renderer = renderer;
 
     // keep all children undestroyed
     this.destroy(false);
+
+    // destroy all plugins
+    oldRenderer?.getPlugins().forEach((plugin) => {
+      plugin.destroy(this.container);
+    });
+
     this.container.restore();
     this.initRenderer(renderer);
 

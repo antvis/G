@@ -8,7 +8,7 @@ import sinonChai from 'sinon-chai';
 // @ts-ignore
 import { Group, Circle, Canvas, Text, Rect, DISPLAY_OBJECT_EVENT } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { containerModule } from '@antv/g-plugin-css-select';
+import { Plugin } from '@antv/g-plugin-css-select';
 import interact from 'interactjs';
 
 chai.use(chaiAlmost());
@@ -20,7 +20,7 @@ document.body.prepend($container);
 
 // @ts-ignore
 const renderer = new CanvasRenderer();
-renderer.registerPlugin(containerModule);
+renderer.registerPlugin(new Plugin());
 
 // create a canvas
 const canvas = new Canvas({

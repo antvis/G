@@ -57,9 +57,9 @@ solarSystem.querySelectorAll('[r=25]');
 任意渲染器（g-canvas/g-svg/g-webgl）都可以使用该插件：
 
 ```js
-import { containerModule } from '@antv/g-plugin-css-select';
+import { Plugin } from '@antv/g-plugin-css-select';
 // 注册插件
-webglRenderer.registerPlugin(containerModule);
+webglRenderer.registerPlugin(new Plugin());
 ```
 
 # 使用方式

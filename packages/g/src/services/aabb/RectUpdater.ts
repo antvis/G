@@ -3,13 +3,14 @@ import { injectable } from 'inversify';
 import { isString } from '@antv/util';
 import type { GeometryAABBUpdater } from '.';
 import type { AABB } from '../../shapes';
-import type { ImageStyleProps, RectStyleProps } from '../../shapes-export';
+import type { RectStyleProps } from '../../display-objects/Rect';
+import type { ImageStyleProps } from '../../display-objects/Image';
 
 @injectable()
 export class RectUpdater implements GeometryAABBUpdater<RectStyleProps | ImageStyleProps> {
   dependencies = ['width', 'height', 'lineWidth', 'anchor', 'img'];
 
-  update(attributes: RectStyleProps & ImageStyleProps, aabb: AABB) {
+  update(attributes: RectStyleProps | ImageStyleProps, aabb: AABB) {
     const { x = 0, y = 0, lineWidth = 0, lineAppendWidth = 0, anchor = [0, 0], img } = attributes;
 
     // resize with HTMLImageElement's size

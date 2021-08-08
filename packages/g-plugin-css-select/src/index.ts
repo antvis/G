@@ -1,9 +1,9 @@
-import { SceneGraphSelector, container } from '@antv/g';
-import { ContainerModule } from 'inversify';
+import { RendererPlugin, SceneGraphSelector, container } from '@antv/g';
+import { ContainerModule, Container } from 'inversify';
 import { CSSSceneGraphSelector } from './CSSSceneGraphSelector';
 import { SceneGraphAdapter } from './SceneGraphAdapter';
 
-export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
+const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
   if (!container.isBound(SceneGraphAdapter)) {
     container.bind(SceneGraphAdapter).toSelf().inSingletonScope();
     container.bind(CSSSceneGraphSelector).toSelf().inSingletonScope();
@@ -11,3 +11,12 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
     container.rebind(SceneGraphSelector).toService(CSSSceneGraphSelector);
   }
 });
+
+export class Plugin implements RendererPlugin {
+  init(container: Container): void {
+    container.load(containerModule);
+  }
+  destroy(container: Container): void {
+    container.unload(containerModule);
+  }
+}

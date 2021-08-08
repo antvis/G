@@ -169,6 +169,19 @@ export class AABB {
     );
   }
 
+  intersection(aabb: AABB): AABB | null {
+    if (!this.intersects(aabb)) {
+      return null;
+    }
+
+    const intersection = new AABB();
+    const min = vec3.max(vec3.create(), this.getMin(), aabb.getMin());
+    const max = vec3.min(vec3.create(), this.getMax(), aabb.getMax());
+    intersection.setMinMax(min, max);
+
+    return intersection;
+  }
+
   containsPoint(point: vec3) {
     const min = this.getMin();
     const max = this.getMax();

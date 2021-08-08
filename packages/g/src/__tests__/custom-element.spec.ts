@@ -1,6 +1,6 @@
 import type { DisplayObjectConfig } from '@antv/g';
 import { CustomElement } from '../CustomElement';
-import { Circle } from '../shapes-export';
+import { Circle } from '../display-objects/Circle';
 
 interface AProps {
   size: number;
@@ -11,7 +11,7 @@ describe('CustomElement', () => {
     class ElementA extends CustomElement<AProps> {
       constructor(options: DisplayObjectConfig<AProps>) {
         super(options);
-        this.addEventListener('onclick', () => {});
+        this.addEventListener('onclick', () => { });
         const circle = new Circle({ style: { r: options.style?.size || 0 } });
         this.appendChild(circle);
       }

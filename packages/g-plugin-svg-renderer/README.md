@@ -10,5 +10,9 @@
 ## 使用方式
 
 ```javascript
-import { containerModule } from '@antv/g-plugin-svg-renderer';
+import { Plugin } from '@antv/g-plugin-svg-renderer';
+
+// create a renderer
+const svgRenderer = new SVGRenderer();
+svgRenderer.registerPlugin(new Plugin());
 ```

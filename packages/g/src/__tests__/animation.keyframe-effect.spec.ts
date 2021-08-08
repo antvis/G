@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { Circle } from '..';
 import { vec3 } from 'gl-matrix';
-import { Group } from '../shapes-export';
+import { Group } from '../display-objects/Group';
 import { KeyframeEffect } from '../KeyframeEffect';
 import {
   gEmptyKeyframeListTests,

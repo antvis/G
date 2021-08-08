@@ -6,13 +6,14 @@ export function isPointInPath(
   position: Point,
   isPointInPath: (displayObject: DisplayObject<RectStyleProps>, position: Point) => boolean
 ): boolean {
-  const { radius, fill, stroke, lineWidth = 0, width, height } = displayObject.attributes;
+  const { radius, fill, stroke, lineWidth = 0, width, height, clipPathTargets } = displayObject.attributes;
+  const isClipPath = !!clipPathTargets?.length;
 
   // 无圆角时的策略
   if (!radius) {
     const halfWidth = lineWidth / 2;
     // 同时填充和带有边框
-    if (fill && stroke) {
+    if ((fill && stroke) || isClipPath) {
       return inBox(0 - halfWidth, 0 - halfWidth, width + halfWidth, height + halfWidth, position.x, position.y);
     }
     // 仅填充
@@ -24,12 +25,12 @@ export function isPointInPath(
     }
   } else {
     let isHit = false;
-    if (stroke) {
+    if (stroke || isClipPath) {
       isHit = inRectWithRadius(0, 0, width, height, radius, lineWidth, position.x, position.y);
     }
     // 仅填充时带有圆角的矩形直接通过图形拾取
     // 以后可以改成纯数学的近似拾取，将圆弧切割成多边形
-    if (!isHit && fill) {
+    if (!isHit && (fill || isClipPath)) {
       isHit = isPointInPath(displayObject, position);
     }
     return isHit;

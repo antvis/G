@@ -1,5 +1,5 @@
-import { ContainerModule } from 'inversify';
-import { RenderingPluginContribution, SHAPE, world } from '@antv/g';
+import { ContainerModule, Container } from 'inversify';
+import { RenderingPluginContribution, RendererPlugin, SHAPE, world } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
 import {
   ElementRenderer,
@@ -48,3 +48,12 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   bind(SVGRendererPlugin).toSelf().inSingletonScope();
   bind(RenderingPluginContribution).toService(SVGRendererPlugin);
 });
+
+export class Plugin implements RendererPlugin {
+  init(container: Container): void {
+    container.load(containerModule);
+  }
+  destroy(container: Container): void {
+    container.unload(containerModule);
+  }
+}

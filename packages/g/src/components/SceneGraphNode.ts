@@ -6,7 +6,7 @@ import type { BaseStyleProps, SHAPE } from '../types';
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element
  * @see https://developer.mozilla.org/en-US/docs/Web/API/ParentNode
  */
-export class SceneGraphNode<StyleProps extends BaseStyleProps = BaseStyleProps> extends Component {
+export class SceneGraphNode<StyleProps extends BaseStyleProps> extends Component {
   static tag = 'c-scene-graph-node';
 
   /**
@@ -31,13 +31,13 @@ export class SceneGraphNode<StyleProps extends BaseStyleProps = BaseStyleProps> 
    * used with `getElementsByTagName()`
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/tagName
    */
-  tagName: SHAPE;
+  tagName: SHAPE | string;
 
   /**
    * assigned by shape.attrs
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes
    */
-  attributes: StyleProps = {};
+  attributes: StyleProps = {} as StyleProps;
 
   /**
    * shadow node, invisible in scene graph, which means cannot be queried

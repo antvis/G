@@ -1,6 +1,6 @@
 import { Canvas, Group, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { containerModule } from '@antv/g-plugin-css-select';
+import { Plugin } from '@antv/g-plugin-css-select';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 
@@ -21,7 +21,7 @@ solarSystem
 // create a canvas renderer
 const canvasRenderer = new CanvasRenderer();
 // register CSS select plugin
-canvasRenderer.registerPlugin(containerModule);
+canvasRenderer.registerPlugin(new Plugin());
 
 // create a canvas
 const canvas = new Canvas({

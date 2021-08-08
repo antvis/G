@@ -2,7 +2,7 @@ import { vec3 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
 import type { GeometryAABBUpdater } from '.';
 import type { AABB } from '../../shapes';
-import type { TextStyleProps } from '../../shapes-export';
+import type { TextStyleProps } from '../../display-objects/Text';
 import { TextService } from '../text';
 
 @injectable()
