@@ -9,7 +9,7 @@ order: 3
 
 - [DisplayObject](/zh/docs/api/basic/display-object)
 
-通过 `(x, y)` 定义的位置为圆心。
+通过 `(x, y)` 定义的位置为圆心，即 `anchor` 默认值为 `[0.5, 0.5]`。
 
 # 额外属性
 

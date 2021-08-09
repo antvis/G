@@ -6,7 +6,7 @@ import { Group } from '../display-objects/Group';
 describe('Circle', () => {
   it('should calc global bounds correctly', () => {
     const circle = new Circle({
-      attrs: {
+      style: {
         x: 100,
         y: 100,
         r: 100,
@@ -56,7 +56,7 @@ describe('Circle', () => {
     expect(bounds).to.be.null;
 
     const circle1 = new Circle({
-      attrs: {
+      style: {
         x: 100,
         y: 100,
         r: 100,
@@ -64,7 +64,7 @@ describe('Circle', () => {
     });
 
     const circle2 = new Circle({
-      attrs: {
+      style: {
         x: 200,
         y: 100,
         r: 100,

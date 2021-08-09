@@ -11,7 +11,7 @@ const canvas = new Canvas({
 
 // create a circle
 const circle = new Circle({
-  attrs: {
+  style: {
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
@@ -21,7 +21,7 @@ const circle = new Circle({
 for (let i = 0; i < 1000; i++) {
   // create an instance of circle
   const instance = circle.createInstance({
-    attrs: {
+    style: {
       x: Math.random() * 600,
       y: Math.random() * 500,
       r: 10 + Math.random() * 5,
@@ -40,7 +40,7 @@ for (let i = 0; i < 1000; i++) {
       delay: 0,
       duration: 1000,
       easing: 'easeLinear',
-      callback: () => {},
+      callback: () => { },
       repeat: true,
       direction: 'alternate',
     },

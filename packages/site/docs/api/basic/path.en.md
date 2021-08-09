@@ -9,7 +9,7 @@ order: 8
 
 ```javascript
 const line = new Path({
-  attrs: {
+  style: {
     path: [
       ['M', 100, 100],
       ['L', 200, 200],

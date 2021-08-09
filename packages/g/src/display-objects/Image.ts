@@ -15,6 +15,7 @@ export class Image extends DisplayObject<ImageStyleProps> {
       style: {
         img: '',
         opacity: 1,
+        anchor: [0, 0],
         ...style,
       },
       ...rest,

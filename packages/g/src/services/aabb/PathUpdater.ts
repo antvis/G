@@ -7,7 +7,7 @@ import { injectable } from 'inversify';
 import type { GeometryAABBUpdater } from '.';
 import type { AABB } from '../../shapes';
 import { pathToCurve } from '../../utils/path';
-import type { PathStyleProps } from '../../shapes-type';
+import type { PathStyleProps } from '../../display-objects';
 
 interface ExtraPathAttrs {
   /**
@@ -36,7 +36,7 @@ export class PathUpdater implements GeometryAABBUpdater<UpdateProps> {
 
   update(attributes: UpdateProps, aabb: AABB) {
     // format path and add some extra attributes for later use
-    const path = path2Absolute(attributes.path);
+    const path = path2Absolute(attributes.path as string);
     attributes.path = path;
 
     const { lineWidth = 1, anchor = [0, 0] } = attributes;
@@ -54,8 +54,10 @@ export class PathUpdater implements GeometryAABBUpdater<UpdateProps> {
     const { x: minX, y: minY, width, height } = getPathBox(attributes.segments, lineWidth);
 
     // anchor is left-top by default
-    attributes.x = minX + anchor[0] * width;
-    attributes.y = minY + anchor[1] * height;
+    attributes.x = minX;
+    attributes.y = minY;
+    attributes.width = width;
+    attributes.height = height;
 
     const halfExtents = vec3.fromValues(width / 2, height / 2, 0);
     const center = vec3.fromValues(

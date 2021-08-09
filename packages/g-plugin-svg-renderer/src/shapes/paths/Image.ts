@@ -5,12 +5,13 @@ import { injectable } from 'inversify';
 
 @injectable()
 export class ImageRenderer implements ElementRenderer<ImageStyleProps> {
-  apply($el: SVGElement, attributes: ImageStyleProps) {
-    const { img, width = 0, height = 0, anchor = [0, 0] } = attributes;
+  dependencies = ['img', 'width', 'height'];
 
-    // set anchor
-    $el.setAttribute('x', `${-anchor[0] * width}`);
-    $el.setAttribute('y', `${-anchor[1] * height}`);
+  apply($el: SVGElement, attributes: ImageStyleProps) {
+    const { img, width = 0, height = 0 } = attributes;
+
+    $el.setAttribute('x', '0');
+    $el.setAttribute('y', '0');
 
     if (isString(img)) {
       $el.setAttribute('href', img);

@@ -20,7 +20,7 @@ const canvas = new Canvas({
 
 // add a circle to canvas
 const circle = new Circle({
-  attrs: {
+  style: {
     x: 300,
     y: 200,
     r: 100,
@@ -33,12 +33,12 @@ const circle = new Circle({
 
 canvas.appendChild(circle);
 
-circle.on('mouseenter', () => {
-  circle.attr('fill', '#2FC25B');
+circle.addEventListener('mouseenter', () => {
+  circle.style.fill = '#2FC25B';
 });
 
-circle.on('mouseleave', () => {
-  circle.attr('fill', '#1890FF');
+circle.addEventListener('mouseleave', () => {
+  circle.style.fill = '#1890FF';
 });
 
 // stats
@@ -72,17 +72,19 @@ rendererFolder.open();
 
 const circleFolder = gui.addFolder('circle');
 const circleConfig = {
-  capture: true,
+  interactive: true,
   visible: true,
 };
 circleFolder.add(circleConfig, 'visible').onChange((visible) => {
   if (visible) {
-    circle.show();
+    circle.style.visibility = 'visible';
+    // circle.show();
   } else {
-    circle.hide();
+    circle.style.visibility = 'hidden';
+    // circle.hide();
   }
 });
-circleFolder.add(circleConfig, 'capture').onChange((capture) => {
-  circle.set('capture', capture);
+circleFolder.add(circleConfig, 'interactive').onChange((interactive) => {
+  circle.interactive = interactive;
 });
 circleFolder.open();

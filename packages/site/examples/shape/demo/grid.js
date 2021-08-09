@@ -20,7 +20,7 @@ const camera = canvas.getCamera();
 camera.setPerspective(0.1, 1000, 75, 600 / 500).setPosition(300, 250, 500);
 
 const grid = new Grid({
-  attrs: {
+  style: {
     width: 400,
     height: 400,
     depth: 400,

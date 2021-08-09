@@ -21,6 +21,7 @@ export class Path extends DisplayObject<PathStyleProps> {
         lineJoin: 'miter',
         lineCap: 'butt',
         lineWidth: 1,
+        anchor: [0, 0],
         ...style,
       },
       ...rest,

@@ -19,8 +19,10 @@ export class LineUpdater implements GeometryAABBUpdater<LineStyleProps> {
     const height = maxY - minY;
 
     // anchor is left-top by default
-    attributes.x = minX + anchor[0] * width;
-    attributes.y = minY + anchor[1] * height;
+    attributes.x = minX;
+    attributes.y = minY;
+    attributes.width = width;
+    attributes.height = height;
 
     const halfExtents = vec3.fromValues(width / 2, height / 2, 0);
     const center = vec3.fromValues(

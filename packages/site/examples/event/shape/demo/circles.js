@@ -20,7 +20,7 @@ const canvas = new Canvas({
 
 for (let i = 0; i < 1000; i++) {
   const circle = new Circle({
-    attrs: {
+    style: {
       x: Math.random() * 600,
       y: Math.random() * 500,
       r: 20 + Math.random() * 10,

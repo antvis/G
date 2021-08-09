@@ -19,7 +19,7 @@ const canvas = new Canvas({
 });
 
 const ellipse = new Ellipse({
-  attrs: {
+  style: {
     x: 300,
     y: 200,
     rx: 100,
@@ -90,10 +90,10 @@ ellipseFolder.add(ellipseConfig, 'translateY', -200, 200).onChange((ty) => {
   ellipse.setPosition(x, 200 + ty);
 });
 ellipseFolder.add(ellipseConfig, 'originX', -200, 200).onChange((tx) => {
-  ellipse.setOrigin(tx, ellipseConfig.originY);
+  ellipse.style.origin = [tx, ellipseConfig.originY];
 });
 ellipseFolder.add(ellipseConfig, 'originY', -200, 200).onChange((ty) => {
-  ellipse.setOrigin(ellipseConfig.originX, ty);
+  ellipse.style.origin = [ellipseConfig.originX, ty];
 });
 ellipseFolder.add(ellipseConfig, 'rotate').name('rotate');
 ellipseFolder.add(ellipseConfig, 'scale', 0.2, 5).onChange((scaling) => {

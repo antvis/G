@@ -7,7 +7,7 @@ order: 7
 
 ```javascript
 const polyline = new Polyline({
-  attrs: {
+  style: {
     points: [
       [50, 50],
       [100, 50],

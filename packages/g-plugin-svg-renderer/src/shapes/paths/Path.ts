@@ -1,15 +1,16 @@
-import { PathStyleProps } from '@antv/g';
+import { PathCommand, PathStyleProps } from '@antv/g';
 import { ElementRenderer } from '.';
 import { injectable } from 'inversify';
 
 @injectable()
 export class PathRenderer implements ElementRenderer<PathStyleProps> {
+  dependencies = ['path'];
   apply($el: SVGElement, attributes: PathStyleProps) {
     const { path, x = 0, y = 0 } = attributes;
-    $el.setAttribute('d', this.formatPath(path, x, y));
+    $el.setAttribute('d', this.formatPath(path as PathCommand[], x, y));
   }
 
-  private formatPath(value: any[], x: number, y: number) {
+  private formatPath(value: PathCommand[], x: number, y: number) {
     const newValue = value
       .map((params) => {
         const command = params[0];

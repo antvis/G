@@ -196,7 +196,7 @@ effects.forEach((f, i) => {
   const row = Math.floor(i / 4);
   const group = new Group();
   const circle = new Circle({
-    attrs: {
+    style: {
       r: 50,
       fill: '#1890FF',
       stroke: '#F04864',
@@ -204,7 +204,7 @@ effects.forEach((f, i) => {
     },
   });
   const text = new Text({
-    attrs: {
+    style: {
       text: name,
       fontSize: 10,
       fill: '#000',

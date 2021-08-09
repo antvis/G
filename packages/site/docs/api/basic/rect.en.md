@@ -7,7 +7,7 @@ order: 4
 
 ```javascript
 const rect = new Rect({
-  attrs: {
+  style: {
     x: 200,
     y: 100,
     width: 300,

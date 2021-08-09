@@ -54,7 +54,7 @@ const App = function MultiWorld() {
 
     const group1 = new Group();
     const cube1 = new Cube({
-      attrs: {
+      style: {
         width: 200,
         height: 200,
         depth: 200,
@@ -62,7 +62,7 @@ const App = function MultiWorld() {
       },
     });
     const grid1 = new Grid({
-      attrs: {
+      style: {
         width: 400,
         height: 400,
         depth: 400,
@@ -83,7 +83,7 @@ const App = function MultiWorld() {
 
     const group2 = new Group();
     const cube2 = new Cube({
-      attrs: {
+      style: {
         width: 200,
         height: 200,
         depth: 200,
@@ -91,7 +91,7 @@ const App = function MultiWorld() {
       },
     });
     const grid2 = new Grid({
-      attrs: {
+      style: {
         width: 400,
         height: 400,
         depth: 400,

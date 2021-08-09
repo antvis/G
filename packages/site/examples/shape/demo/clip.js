@@ -12,14 +12,14 @@ const svgRenderer = new SVGRenderer();
 
 // clip path shape
 const clipPathCircle = new Circle({
-  attrs: {
+  style: {
     x: 100,
     y: 100,
     r: 50,
   },
 });
 const clipPathRect = new Rect({
-  attrs: {
+  style: {
     x: 100,
     y: 100,
     width: 50,
@@ -27,7 +27,7 @@ const clipPathRect = new Rect({
   },
 });
 const clipPath = new Path({
-  attrs: {
+  style: {
     stroke: 'black',
     lineWidth: 2,
     path: 'M 10,10 L -10,0 L 10,-10 Z',
@@ -46,7 +46,7 @@ const canvas = new Canvas({
 });
 
 const image = new Image({
-  attrs: {
+  style: {
     x: 200,
     y: 100,
     width: 200,
@@ -57,7 +57,7 @@ const image = new Image({
 });
 
 const image2 = new Image({
-  attrs: {
+  style: {
     x: 200,
     y: 200,
     width: 200,

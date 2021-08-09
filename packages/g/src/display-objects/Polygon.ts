@@ -11,6 +11,7 @@ export class Polygon extends DisplayObject<PolygonStyleProps> {
       style: {
         opacity: 1,
         strokeOpacity: 1,
+        anchor: [0, 0],
         ...style,
       },
       ...rest,

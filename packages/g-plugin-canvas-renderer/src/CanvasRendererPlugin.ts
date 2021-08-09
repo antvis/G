@@ -205,6 +205,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     // apply RTS transformation in world space
     this.applyTransform(context, object.getWorldTransform());
 
+    // apply anchor in local space
+    this.applyAnchor(context, object);
+
     // apply attributes to context
     this.applyAttributesToContext(context, object.attributes);
 
@@ -215,6 +218,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
       // apply clip shape's RTS
       this.applyTransform(context, clipPathShape.getWorldTransform());
+      this.applyAnchor(context, clipPathShape);
       this.applyAttributesToContext(context, clipPathShape.attributes);
       const generatePath = this.pathGeneratorFactory(clipPathShape.nodeName);
       if (generatePath) {
@@ -397,6 +401,13 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         context[name] = v;
       }
     }
+  }
+
+  private applyAnchor(context: CanvasRenderingContext2D, object: DisplayObject) {
+    // true size, not include stroke
+    // bounds = true size + half lineWidth
+    const { width = 0, height = 0, anchor = [0, 0] } = object.style || {};
+    context.translate(-anchor[0] * width, -anchor[1] * height);
   }
 
   private safeMergeAABB(...aabbs: (AABB | undefined)[]): AABB | undefined {

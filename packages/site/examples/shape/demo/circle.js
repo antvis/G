@@ -20,7 +20,7 @@ const canvas = new Canvas({
 
 // create a circle
 const circle = new Circle({
-  attrs: {
+  style: {
     x: 300,
     y: 200,
     r: 100,
@@ -70,12 +70,14 @@ const circleConfig = {
   lineWidth: 4,
   fillOpacity: 1,
   strokeOpacity: 1,
+  anchorX: 0.5,
+  anchorY: 0.5,
 };
 circleFolder.add(circleConfig, 'r', 50, 200).onChange((radius) => {
-  circle.attr('r', radius);
+  circle.style.r = radius;
 });
 circleFolder.addColor(circleConfig, 'fill').onChange((color) => {
-  circle.attr('fill', color);
+  circle.style.fill = color;
 });
 circleFolder.addColor(circleConfig, 'stroke').onChange((color) => {
   circle.attr('stroke', color);
@@ -88,5 +90,11 @@ circleFolder.add(circleConfig, 'fillOpacity', 0, 1, 0.1).onChange((opacity) => {
 });
 circleFolder.add(circleConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
   circle.attr('strokeOpacity', opacity);
+});
+circleFolder.add(circleConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
+  circle.attr('anchor', [anchorX, circleConfig.anchorY]);
+});
+circleFolder.add(circleConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
+  circle.attr('anchor', [circleConfig.anchorX, anchorY]);
 });
 circleFolder.open();

@@ -25,7 +25,7 @@ camera
 
 const group = new Group();
 const cube = new Cube({
-  attrs: {
+  style: {
     width: 200,
     height: 200,
     depth: 200,
@@ -34,7 +34,7 @@ const cube = new Cube({
   },
 });
 const grid = new Grid({
-  attrs: {
+  style: {
     width: 400,
     height: 400,
     fill: '#1890FF',

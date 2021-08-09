@@ -13,6 +13,7 @@ export class Circle extends DisplayObject<CircleStyleProps> {
       style: {
         r: 0,
         opacity: 1,
+        anchor: [0.5, 0.5],
         ...style,
       },
       ...rest,

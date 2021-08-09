@@ -34,7 +34,7 @@ const canvas2 = new Canvas({
 // create a circle
 const circle1 = new Circle({
   id: 'circle1',
-  attrs: {
+  style: {
     x: 300,
     y: 200,
     r: 100,
@@ -54,7 +54,7 @@ circle1.on('mouseleave', () => {
 
 const circle2 = new Circle({
   id: 'circle2',
-  attrs: {
+  style: {
     x: 300,
     y: 200,
     r: 100,

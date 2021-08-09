@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify';
-import { Entity } from '@antv/g-ecs';
 import { vec3, mat4, quat } from 'gl-matrix';
 import {
   ContextService,
@@ -19,20 +18,17 @@ import { ElementSVG } from './components/ElementSVG';
 import { createSVGElement } from './utils/dom';
 import { ElementRenderer, ElementRendererFactory } from './shapes/paths';
 
-// @ts-ignore
 export const SHAPE_TO_TAGS: Record<SHAPE, string> = {
   [SHAPE.Rect]: 'path',
   [SHAPE.Circle]: 'circle',
   [SHAPE.Ellipse]: 'ellipse',
   [SHAPE.Image]: 'image',
-  [SHAPE.Group]: 'g', // FIXME: skip group
+  [SHAPE.Group]: 'g',
   [SHAPE.Line]: 'line',
   [SHAPE.Polyline]: 'polyline',
   [SHAPE.Polygon]: 'polygon',
   [SHAPE.Text]: 'text',
   [SHAPE.Path]: 'path',
-  // path: 'path',
-  // marker: 'path',
   // dom: 'foreignObject',
 };
 
@@ -75,6 +71,7 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   style: 'style',
   preserveAspectRatio: 'preserveAspectRatio',
   visibility: 'visibility',
+  anchor: 'anchor',
 };
 
 const CLIP_PATH_PREFIX = 'clip-path-';
@@ -129,6 +126,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
         if ($el && $groupEl) {
           // apply local RTS transformation to <group> wrapper
+          // account for anchor
           this.applyTransform($groupEl, object.getLocalTransform());
 
           this.reorderChildren($groupEl, object.children || []);
@@ -142,7 +140,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
     renderingService.hooks.attributeChanged.tap(
       SVGRendererPlugin.tag,
       (object: DisplayObject, name: string, value: any) => {
-        const entity = object.getEntity();
         if (name === 'zIndex') {
           const parent = object.parentNode;
           const parentEntity = object.parentNode?.getEntity();
@@ -154,7 +151,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
           }
         }
 
-        this.updateAttribute(entity, name, value);
+        this.updateAttribute(object, name, value);
       },
     );
   }
@@ -187,11 +184,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // gimbal lock at 90 degrees
     const rts = fromRotationTranslationScale(ex || ez, x, y, scaleX, scaleY);
 
-    // TODO: use proper precision avoiding too long string in `transform`
+    // use proper precision avoiding too long string in `transform`
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
     $el.setAttribute(
       'transform',
-      `matrix(${rts[0]},${rts[1]},${rts[3]},${rts[4]},${rts[6]},${rts[7]})`,
+      `matrix(${rts[0].toFixed(5)},${rts[1].toFixed(5)},${rts[3].toFixed(5)},${rts[4].toFixed(5)},${rts[6].toFixed(5)},${rts[7].toFixed(5)})`,
     );
   }
 
@@ -209,7 +206,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       // apply attributes
       for (const name in attributes) {
-        this.updateAttribute(entity, name, attributes[name]);
+        this.updateAttribute(object, name, attributes[name], true);
       }
 
       // generate path
@@ -220,11 +217,14 @@ export class SVGRendererPlugin implements RenderingPlugin {
     }
   }
 
-  private updateAttribute(entity: Entity, name: string, value: any) {
+  private updateAttribute(object: DisplayObject, name: string, value: any, skipGeneratePath = false) {
+    const entity = object.getEntity();
+    const $el = entity.getComponent(ElementSVG)?.$el;
+    const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
     if (SVG_ATTR_MAP[name]) {
       // update `visibility` on <group>
       if (name === 'visibility') {
-        entity.getComponent(ElementSVG)?.$groupEl?.setAttribute(SVG_ATTR_MAP[name], `${value}`);
+        $groupEl?.setAttribute(SVG_ATTR_MAP[name], `${value}`);
       } else if (name === 'clipPath') {
         const clipPath = value as DisplayObject;
         if (clipPath) {
@@ -239,6 +239,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
             // <clipPath><circle /></clipPath>
             this.createSVGDom(clipPath, $clipPath, true);
+
+            clipPath.getEntity().getComponent(ElementSVG).$groupEl = $clipPath;
           }
 
           const $groupEl = clipPath.getEntity().getComponent(ElementSVG)?.$groupEl;
@@ -248,13 +250,30 @@ export class SVGRendererPlugin implements RenderingPlugin {
           }
           // apply attributes
           this.applyAttributes(clipPath);
-          entity.getComponent(ElementSVG)?.$el?.setAttribute('clip-path', `url(#${clipPathId})`);
+          $el?.setAttribute('clip-path', `url(#${clipPathId})`);
         } else {
           // remove clip path
-          entity.getComponent(ElementSVG)?.$el?.removeAttribute('clip-path');
+          $el?.removeAttribute('clip-path');
         }
       } else {
-        entity.getComponent(ElementSVG)?.$el?.setAttribute(SVG_ATTR_MAP[name], `${value}`);
+        if (
+          // (!object.style.clipPathTargets) &&
+          object.nodeName !== SHAPE.Text && // text' anchor is controlled by `textAnchor` property
+          ['anchor', 'width', 'height', 'r', 'rx', 'ry'].indexOf(name) > -1
+        ) {
+          this.updateAnchorWithTransform(object);
+        }
+        if (name !== 'anchor') {
+          $el?.setAttribute(SVG_ATTR_MAP[name], `${value}`);
+        }
+      }
+    }
+
+    // need re-generate path
+    if (!skipGeneratePath && $el) {
+      const elementRenderer = this.elementRendererFactory(object.nodeName);
+      if (elementRenderer && elementRenderer.dependencies.indexOf(name) > -1) {
+        elementRenderer.apply($el, object.attributes);
       }
     }
   }
@@ -292,6 +311,28 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       // apply attributes at first time
       this.applyAttributes(object);
+    }
+  }
+
+  /**
+   * the origin is bounding box's top left corner
+   */
+  private updateAnchorWithTransform(object: DisplayObject) {
+    const anchor = object.style.anchor || [0, 0];
+    const { width = 0, height = 0 } = object.style || {};
+
+    const $el = object.getEntity().getComponent(ElementSVG)?.$el;
+    // apply anchor to element's `transform` property
+    $el?.setAttribute(
+      'transform',
+      // can't use percent unit like translate(-50%, -50%)
+      // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/transform#translate
+      `translate(-${anchor[0] * width},-${anchor[1] * height})`,
+    );
+
+    if (object.nodeName === SHAPE.Circle || object.nodeName === SHAPE.Ellipse) {
+      $el?.setAttribute('cx', `${width / 2}`);
+      $el?.setAttribute('cy', `${height / 2}`);
     }
   }
 }

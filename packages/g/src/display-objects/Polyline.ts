@@ -19,6 +19,7 @@ export class Polyline extends DisplayObject<PolylineStyleProps> {
         lineJoin: 'miter',
         lineCap: 'butt',
         lineWidth: 1,
+        anchor: [0, 0],
         ...style,
       },
       ...rest,

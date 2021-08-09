@@ -20,7 +20,7 @@ const canvas = new Canvas({
 
 // create a line
 const polyline = new Polyline({
-  attrs: {
+  style: {
     points: [
       [50, 50],
       [100, 50],
@@ -82,6 +82,8 @@ const lineConfig = {
   lineJoin: 'miter',
   lineCap: 'butt',
   strokeOpacity: 1,
+  anchorX: 0,
+  anchorY: 0,
 };
 lineFolder.addColor(lineConfig, 'stroke').onChange((color) => {
   polyline.attr('stroke', color);
@@ -97,5 +99,11 @@ lineFolder.add(lineConfig, 'lineCap', ['butt', 'round', 'square']).onChange((lin
 });
 lineFolder.add(lineConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
   polyline.attr('strokeOpacity', opacity);
+});
+lineFolder.add(lineConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
+  polyline.attr('anchor', [anchorX, lineConfig.anchorY]);
+});
+lineFolder.add(lineConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
+  polyline.attr('anchor', [lineConfig.anchorX, anchorY]);
 });
 lineFolder.open();

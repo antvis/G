@@ -20,7 +20,7 @@ const canvas = new Canvas({
 
 // create a line
 const line1 = new Line({
-  attrs: {
+  style: {
     x1: 200,
     y1: 100,
     x2: 400,
@@ -30,7 +30,7 @@ const line1 = new Line({
   },
 });
 const line2 = new Line({
-  attrs: {
+  style: {
     x1: 200,
     y1: 150,
     x2: 400,
@@ -78,6 +78,8 @@ const lineConfig = {
   stroke: '#1890FF',
   lineWidth: 2,
   strokeOpacity: 1,
+  anchorX: 0,
+  anchorY: 0,
 };
 lineFolder.addColor(lineConfig, 'stroke').onChange((color) => {
   line1.attr('stroke', color);
@@ -87,5 +89,11 @@ lineFolder.add(lineConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
 });
 lineFolder.add(lineConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
   line1.attr('strokeOpacity', opacity);
+});
+lineFolder.add(lineConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
+  line1.attr('anchor', [anchorX, lineConfig.anchorY]);
+});
+lineFolder.add(lineConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
+  line1.attr('anchor', [lineConfig.anchorX, anchorY]);
 });
 lineFolder.open();

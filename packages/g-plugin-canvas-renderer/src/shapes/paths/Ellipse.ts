@@ -6,7 +6,7 @@ export function generatePath(context: CanvasRenderingContext2D, attributes: Elli
 
   // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/ellipse
   if (context.ellipse) {
-    context.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2, false);
+    context.ellipse(rx, ry, rx, ry, 0, 0, Math.PI * 2, false);
   } else {
     // 如果不支持，则使用圆来绘制，进行变形
     const r = rx > ry ? rx : ry;

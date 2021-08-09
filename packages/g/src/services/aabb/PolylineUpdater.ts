@@ -2,7 +2,7 @@ import { vec3 } from 'gl-matrix';
 import { injectable } from 'inversify';
 import type { GeometryAABBUpdater } from '.';
 import type { AABB } from '../../shapes';
-import type { PolylineStyleProps } from '../../shapes-type';
+import type { PolylineStyleProps } from '../../display-objects/Polyline';
 
 type UpdateProps = PolylineStyleProps & { x: number; y: number };
 
@@ -23,8 +23,10 @@ export class PolylineUpdater implements GeometryAABBUpdater<UpdateProps> {
     const height = maxY - minY;
 
     // anchor is left-top by default
-    attributes.x = minX + anchor[0] * width;
-    attributes.y = minY + anchor[1] * height;
+    attributes.x = minX;
+    attributes.y = minY;
+    attributes.width = width;
+    attributes.height = height;
 
     const halfExtents = vec3.fromValues(width / 2, height / 2, 0);
     const center = vec3.fromValues(

@@ -23,7 +23,7 @@ const canvas = new Canvas({
 });
 
 const image = new Image({
-  attrs: {
+  style: {
     x: 200,
     y: 100,
     width: 200,

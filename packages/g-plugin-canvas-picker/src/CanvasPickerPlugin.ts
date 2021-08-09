@@ -80,18 +80,17 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       const pickedDisplayObjects: DisplayObject[] = [];
       rBushNodes.forEach(({ name }: { name: string }) => {
         const displayObject = this.displayObjectPool.getByName(name);
-        const { capture } = displayObject.getConfig();
 
-        if (displayObject.isVisible() && capture) {
+        if (displayObject.isVisible() && displayObject.interactive) {
           // test with clip path
           const objectToTest = displayObject.style.clipPath || displayObject;
           let worldTransform = displayObject.getWorldTransform();
 
+          // clipped's world matrix * clipPath's local matrix
           if (displayObject.style.clipPath) {
-            // transform clip path in local space
-            vec3.transformMat4(
-              position,
-              position,
+            worldTransform = mat4.multiply(
+              mat4.create(),
+              worldTransform,
               displayObject.style.clipPath.getLocalTransform(),
             );
           }
@@ -119,16 +118,21 @@ export class CanvasPickerPlugin implements RenderingPlugin {
     if (pick) {
       // invert with world matrix
       const invertWorldMat = mat4.invert(mat4.create(), worldTransform);
+
       // transform client position to local space, do picking in local space
       const localPosition = vec3.transformMat4(
         vec3.create(),
         vec3.fromValues(position[0], position[1], 0),
         invertWorldMat,
       );
+
+      // account for anchor
+      const { width = 0, height = 0, anchor = [0, 0] } = displayObject.style;
+      localPosition[0] += anchor[0] * width;
+      localPosition[1] += anchor[1] * height;
       if (
         pick(displayObject, new Point(localPosition[0], localPosition[1]), this.isPointInPath)
       ) {
-        console.log(localPosition);
         return true;
       }
     }

@@ -28,7 +28,7 @@ const canvas1 = new Canvas2DCanvas({ container: 'c1' });
 const canvas2 = new Canvas2DCanvas({ container: 'c2' });
 const canvas3 = new WebGLCanvas({ container: 'c3' });
 
-const circle = new Circle({ attrs: { r: 10 } });
+const circle = new Circle({ style: { r: 10 } });
 
 canvas1.add(circle);
 canvas2.add(circle);

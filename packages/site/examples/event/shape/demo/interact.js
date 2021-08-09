@@ -35,7 +35,7 @@ const canvas = new Canvas({
  */
 const circle = new Circle({
   className: 'draggable',
-  attrs: {
+  style: {
     fill: 'rgb(239, 244, 255)',
     fillOpacity: 1,
     lineWidth: 1,
@@ -47,7 +47,7 @@ const circle = new Circle({
   },
 });
 const text = new Text({
-  attrs: {
+  style: {
     text: 'Drag me',
     fontSize: 22,
     fill: '#000',
@@ -71,7 +71,7 @@ interact(circle, {
  * Resizable
  */
 const resizableRect = new Rect({
-  attrs: {
+  style: {
     x: 220,
     y: 260,
     width: 200,
@@ -80,7 +80,7 @@ const resizableRect = new Rect({
   },
 });
 const resizableRectText = new Text({
-  attrs: {
+  style: {
     text: 'Resize from any edge or corner',
     fontSize: 16,
     fill: 'white',
@@ -110,7 +110,7 @@ interact(resizableRect, {
  * Drop zone
  */
 const dropZone = new Rect({
-  attrs: {
+  style: {
     x: 100,
     y: 50,
     width: 300,
@@ -146,7 +146,7 @@ interact(dropZone, {
  * Gesture
  */
 const gesture = new Circle({
-  attrs: {
+  style: {
     fill: 'rgb(239, 244, 255)',
     fillOpacity: 1,
     lineWidth: 1,
@@ -157,7 +157,7 @@ const gesture = new Circle({
   },
 });
 const gestureText = new Text({
-  attrs: {
+  style: {
     text: 'Tap to Change color\n Doubletap to change size\n Hold to rotate',
     fontSize: 12,
     fill: '#000',
@@ -191,7 +191,7 @@ interact(gesture, {
  * Snapping
  */
 const snapRect = new Rect({
-  attrs: {
+  style: {
     fill: 'rgb(239, 244, 255)',
     fillOpacity: 1,
     lineWidth: 1,
@@ -203,7 +203,7 @@ const snapRect = new Rect({
   },
 });
 const snapCircle = new Circle({
-  attrs: {
+  style: {
     fill: 'rgb(239, 244, 255)',
     fillOpacity: 1,
     lineWidth: 1,
@@ -214,7 +214,7 @@ const snapCircle = new Circle({
   },
 });
 const snapText = new Text({
-  attrs: {
+  style: {
     text: 'Drag me',
     fontSize: 12,
     fill: '#000',

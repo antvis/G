@@ -7,9 +7,9 @@ order: 1
 
 ```javascript
 const lineArrow = new Arrow({
-  attrs: {
+  style: {
     body: new Line({
-      attrs: {
+      style: {
         x1: 200,
         y1: 100,
         x2: 0,
@@ -43,9 +43,9 @@ lineArrow.translate(200, 100);
 
 ```javascript
 const lineArrow = new Arrow({
-  attrs: {
+  style: {
     body: new Line({
-      attrs: {
+      style: {
         x1: 200,
         y1: 100,
         x2: 0,
@@ -61,9 +61,9 @@ const lineArrow = new Arrow({
 lineArrow.translate(200, 100);
 
 const polylineArrow = new Arrow({
-  attrs: {
+  style: {
     body: new Polyline({
-      attrs: {
+      style: {
         points: [
           [0, 0],
           [50, 0],
@@ -83,9 +83,9 @@ const polylineArrow = new Arrow({
 polylineArrow.translate(200, 200);
 
 const pathArrow = new Arrow({
-  attrs: {
+  style: {
     body: new Path({
-      attrs: {
+      style: {
         path: 'M 100,300' + 'l 50,-25' + 'a25,25 -30 0,1 50,-80',
       },
     }),

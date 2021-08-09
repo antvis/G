@@ -83,7 +83,7 @@ export class Canvas extends EventEmitter {
     this.container.bind<CanvasConfig>(CanvasConfig).toConstantValue(mergedConfig);
     // bind rendering context, shared by all renderers
     const root = new DisplayObject({
-      attrs: {},
+      style: {},
     });
     // ref to Canvas @see https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
     root.defaultView = this;

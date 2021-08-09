@@ -37,7 +37,7 @@ camera.createLandmark('mark3', {
 const group = new Group({});
 // create a cube
 const cube = new Cube({
-  attrs: {
+  style: {
     width: 200,
     height: 200,
     depth: 200,
@@ -46,7 +46,7 @@ const cube = new Cube({
   },
 });
 const grid = new Grid({
-  attrs: {
+  style: {
     width: 200,
     height: 200,
     depth: 200,

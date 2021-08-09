@@ -1,8 +1,8 @@
+import type { vec2, vec3 } from 'gl-matrix';
 import type { AbstractRenderer } from './AbstractRenderer';
 import type { DisplayObject } from './DisplayObject';
 
 export enum SHAPE {
-  Custom = 'custom',
   Group = 'group',
   Circle = 'circle',
   Ellipse = 'ellipse',
@@ -38,13 +38,13 @@ export interface BaseStyleProps {
   /**
    * the origin of rotation and scaling, default to (0, 0)
    */
-  origin?: [number, number];
+  origin?: vec2 | vec3;
 
   /**
    * how do we define the 'position' of a shape?
    * eg. the default anchor of a Rect is top-left, we can change it to its' center [0.5, 0.5].
    */
-  anchor?: [number, number];
+  anchor?: vec2 | vec3;
 
   /**
    * visibility in CSS

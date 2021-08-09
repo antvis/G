@@ -63,7 +63,7 @@ Canvas 2D 提供了 `clearRect` 和 `clip` API。而 WebGL 则需要通过 stenc
 ```javascript
 // 创建一个圆，仅设置通用样式属性，并不需要设置位置和半径
 const circle = canvas.addShape('circle', {
-  attrs: {
+  style: {
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
@@ -73,7 +73,7 @@ const circle = canvas.addShape('circle', {
 for (let i = 0; i < 1000; i++) {
   // 使用同一个圆创建 1000 个 instance
   const instance = circle.createInstance({
-    attrs: {
+    style: {
       x: Math.random() * 600, // 位置随机
       y: Math.random() * 500,
       r: 10 + Math.random() * 5, // 半径随机

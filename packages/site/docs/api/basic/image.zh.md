@@ -7,7 +7,7 @@ order: 5
 
 ```javascript
 const image = new Image({
-  attrs: {
+  style: {
     x: 200,
     y: 100,
     width: 200,
@@ -21,7 +21,7 @@ const image = new Image({
 
 ```javascript
 const image = new Image({
-  attrs: {
+  style: {
     // 省略其他属性
     anchor: [0.5, 0.5],
   },
@@ -59,7 +59,7 @@ img.crossOrigin = 'Anonymous';
 img.onload = () => {
   // 图片加载成功后创建
   image = new GImage({
-    attrs: {
+    style: {
       x: 200,
       y: 100,
       width: 200,

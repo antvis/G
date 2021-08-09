@@ -43,4 +43,9 @@ export class SceneGraphNode<StyleProps extends BaseStyleProps> extends Component
    * shadow node, invisible in scene graph, which means cannot be queried
    */
   shadow = false;
+
+  /**
+   * enable interaction
+   */
+  interactive = true;
 }

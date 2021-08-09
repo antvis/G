@@ -22,7 +22,7 @@ const canvas = new Canvas({
 // add a circle to canvas
 const circle = new Circle({
   id: 'circle',
-  attrs: {
+  style: {
     fill: 'rgb(239, 244, 255)',
     fillOpacity: 1,
     lineWidth: 1,
@@ -36,7 +36,7 @@ const circle = new Circle({
 
 const text = new Text({
   id: 'text',
-  attrs: {
+  style: {
     fill: '#000',
     fillOpacity: 0.9,
     font: `normal normal normal 12px Avenir, -apple-system, system-ui, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,

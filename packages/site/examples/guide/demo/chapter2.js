@@ -13,7 +13,7 @@ const canvas = new Canvas({
 });
 
 const node1 = new Circle({
-  attrs: {
+  style: {
     r: 40,
     fill: '#1890FF',
     stroke: '#F04864',
@@ -21,7 +21,7 @@ const node1 = new Circle({
   },
 });
 const text1 = new Text({
-  attrs: {
+  style: {
     text: 'Node1', // 文本内容
     fontFamily: 'Avenir', // 字体
     fontSize: 22, // 字号
@@ -34,7 +34,7 @@ node1.appendChild(text1);
 node1.setPosition(200, 200);
 
 const node2 = new Circle({
-  attrs: {
+  style: {
     r: 40,
     fill: '#1890FF',
     stroke: '#F04864',
@@ -42,7 +42,7 @@ const node2 = new Circle({
   },
 });
 const text2 = new Text({
-  attrs: {
+  style: {
     text: 'Node2', // 文本内容
     fontFamily: 'Avenir', // 字体
     fontSize: 22, // 字号
@@ -55,7 +55,7 @@ node2.appendChild(text2);
 node2.setPosition(400, 200);
 
 const edge = new Line({
-  attrs: {
+  style: {
     x1: 200,
     y1: 200,
     x2: 400,

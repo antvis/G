@@ -7,7 +7,7 @@ order: 6
 
 ```javascript
 const line1 = new Line({
-  attrs: {
+  style: {
     x1: 200,
     y1: 100,
     x2: 400,

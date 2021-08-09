@@ -26,7 +26,7 @@ export class SVGPickerPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     renderingService.hooks.pick.tap(SVGPickerPlugin.tag, (result: PickingResult) => {
-      const { x, y, clientX, clientY } = result.position;
+      const { clientX, clientY } = result.position;
 
       try {
         // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint
@@ -37,6 +37,9 @@ export class SVGPickerPlugin implements RenderingPlugin {
         const id = element && element.getAttribute('id');
         if (id) {
           target = this.displayObjectPool.getByName(id);
+          if (!target.interactive) {
+            target = null;
+          }
         }
 
         return {

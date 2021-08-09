@@ -19,7 +19,7 @@ const canvas = new Canvas({
 });
 
 const rect = new Rect({
-  attrs: {
+  style: {
     x: 200,
     y: 100,
     width: 300,
@@ -83,11 +83,11 @@ rectFolder.add(rectConfig, 'x', 50, 200).onChange((x) => {
 rectFolder.add(rectConfig, 'y', 50, 200).onChange((y) => {
   rect.attr('y', y);
 });
-rectFolder.add(rectFolder, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
-  rect.attr('anchor', [anchorX, rectFolder.anchorY]);
+rectFolder.add(rectConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
+  rect.attr('anchor', [anchorX, rectConfig.anchorY]);
 });
-rectFolder.add(rectFolder, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
-  rect.attr('anchor', [rectFolder.anchorX, anchorY]);
+rectFolder.add(rectConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
+  rect.attr('anchor', [rectConfig.anchorX, anchorY]);
 });
 rectFolder.add(rectConfig, 'width', 50, 400).onChange((width) => {
   rect.attr('width', width);

@@ -19,7 +19,7 @@ const canvas = new Canvas({
 });
 
 const circle = new Circle({
-  attrs: {
+  style: {
     r: 50,
     fill: '#1890FF',
     stroke: '#F04864',
@@ -28,7 +28,7 @@ const circle = new Circle({
   },
 });
 const ellipse = new Ellipse({
-  attrs: {
+  style: {
     rx: 60,
     ry: 80,
     fill: '#1890FF',
@@ -38,7 +38,7 @@ const ellipse = new Ellipse({
   },
 });
 const rect = new Rect({
-  attrs: {
+  style: {
     width: 80,
     height: 60,
     fill: '#1890FF',
@@ -49,7 +49,7 @@ const rect = new Rect({
   },
 });
 const image = new Image({
-  attrs: {
+  style: {
     width: 100,
     height: 100,
     img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
@@ -57,7 +57,7 @@ const image = new Image({
   },
 });
 const line = new Line({
-  attrs: {
+  style: {
     x1: 0,
     y1: 0,
     x2: 200,
@@ -68,7 +68,7 @@ const line = new Line({
   },
 });
 const polyline = new Polyline({
-  attrs: {
+  style: {
     points: [
       [50, 50],
       [100, 50],
@@ -85,7 +85,7 @@ const polyline = new Polyline({
   },
 });
 const path = new Path({
-  attrs: {
+  style: {
     path:
       'M 100,300' +
       'l 50,-25' +
@@ -106,7 +106,7 @@ const path = new Path({
   },
 });
 const polygon = new Polygon({
-  attrs: {
+  style: {
     points: [
       [200, 100],
       [400, 100],
@@ -122,7 +122,7 @@ const polygon = new Polygon({
   },
 });
 const text = new Text({
-  attrs: {
+  style: {
     fontFamily: 'PingFang SC',
     text: '这是测试文本',
     fontSize: 40,
@@ -133,7 +133,7 @@ const text = new Text({
   },
 });
 const clippedText = new Text({
-  attrs: {
+  style: {
     fontFamily: 'PingFang SC',
     text: '这是测试文本',
     fontSize: 40,
@@ -141,7 +141,7 @@ const clippedText = new Text({
     stroke: '#F04864',
     lineWidth: 5,
     clipPath: new Circle({
-      attrs: {
+      style: {
         x: 20,
         y: -10,
         r: 20,

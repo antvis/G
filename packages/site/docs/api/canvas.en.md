@@ -52,7 +52,7 @@ const canvas = new Canvas({
 向画布中添加待渲染对象。如果该对象有子节点也会一并加入。
 
 ```js
-const circle = new Circle({ attrs: { r: 10 } });
+const circle = new Circle({ style: { r: 10 } });
 
 canvas.appendChild(circle);
 ```

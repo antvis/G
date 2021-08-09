@@ -9,8 +9,8 @@ export function isPointInPath(displayObject: DisplayObject<EllipseStyleProps>, {
   const isClipPath = !!clipPathTargets?.length;
 
   const halfLineWith = lineWidth / 2;
-  const squareX = x * x;
-  const squareY = y * y;
+  const squareX = (x - rx) * (x - rx);
+  const squareY = (y - ry) * (y - ry);
   // 使用椭圆的公式： x*x/rx*rx + y*y/ry*ry = 1;
   if ((fill && stroke) || isClipPath) {
     return ellipseDistance(squareX, squareY, rx + halfLineWith, ry + halfLineWith) <= 1;

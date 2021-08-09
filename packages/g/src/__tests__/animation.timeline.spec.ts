@@ -30,7 +30,7 @@ describe('Timeline', () => {
   it('x', () => {
     const circle = new Circle({
       id: 'circle',
-      attrs: {
+      style: {
         fill: 'rgb(239, 244, 255)',
         fillOpacity: 1,
         lineWidth: 1,

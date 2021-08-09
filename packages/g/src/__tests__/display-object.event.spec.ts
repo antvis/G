@@ -75,7 +75,7 @@ describe('DisplayObject Event API', () => {
 
   // it('should emit attribute-changed event correctly', () => {
   //   const circle = new Circle({
-  //     attrs: {
+  //     style: {
   //       r: 10,
   //     }
   //   });
@@ -96,7 +96,7 @@ describe('DisplayObject Event API', () => {
 
   // it('should emit destroy event correctly', () => {
   //   const circle = new Circle({
-  //     attrs: {
+  //     style: {
   //       r: 10,
   //     }
   //   });

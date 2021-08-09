@@ -222,7 +222,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     const { stroke, lineWidth } = this.attributes;
     const { sin, cos, PI } = Math;
     return new Path({
-      attrs: {
+      style: {
         // draw an angle '<'
         path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${10 * sin(PI / 6)
           }`,

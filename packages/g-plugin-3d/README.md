@@ -23,7 +23,7 @@ const canvas = new Canvas({
 
 // create a cube
 const cube = new Cube({
-    attrs: {
+    style: {
         width: 200,
         height: 200,
         depth: 200,

@@ -4,8 +4,8 @@ import { injectable } from 'inversify';
 
 @injectable()
 export class PolylineRenderer implements ElementRenderer<PolylineStyleProps> {
+  dependencies = ['points'];
   apply($el: SVGElement, attributes: PolylineStyleProps) {
-    // @ts-ignore
     const { points, x = 0, y = 0 } = attributes;
 
     if (points && points.length >= 2) {

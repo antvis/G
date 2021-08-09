@@ -629,9 +629,9 @@ const animation = image.animate(
 首先通过 offsetPath 创建一条运动轨迹，目前支持 [Line](/zh/docs/api/basic/line) [Path](/zh/docs/api/basic/path) 和 [Polyline](/zh/docs/api/basic/polyline)。然后通过对 offsetDistance （取值范围 `[0-1]`）进行变换实现该效果，[示例](/zh/examples/animation#offset-path)：
 ```js
 const circle = new Circle({
-  attrs: {
+  style: {
     offsetPath: new Line({ // 创建运动轨迹
-      attrs: { // 不需要设置其他与轨迹无关的绘图属性
+      style: { // 不需要设置其他与轨迹无关的绘图属性
         x1: 100,
         y1: 100,
         x2: 300,

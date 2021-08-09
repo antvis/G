@@ -21,7 +21,7 @@ const canvas = new Canvas({
 // add a circle to canvas
 const circle = new Circle({
   id: 'circle',
-  attrs: {
+  style: {
     fill: 'rgb(239, 244, 255)',
     fillOpacity: 1,
     lineAppendWidth: 0,
@@ -38,7 +38,7 @@ const circle = new Circle({
 
 const text = new Text({
   id: 'text',
-  attrs: {
+  style: {
     opacity: 1,
     lineWidth: 1,
     lineAppendWidth: 0,

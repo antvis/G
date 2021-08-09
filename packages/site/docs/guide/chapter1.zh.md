@@ -24,7 +24,7 @@ import { Circle } from '@antv/g';
 ```javascript
 // 节点1
 const node1 = new Circle({
-  attrs: {
+  style: {
     r: 100, // 半径
     fill: '#1890FF', // 填充色
     stroke: '#F04864', // 描边颜色
@@ -43,7 +43,7 @@ const node1 = new Circle({
 import { Text } from '@antv/g';
 
 const text1 = new Text({
-  attrs: {
+  style: {
     text: 'Node1', // 文本内容
     fontFamily: 'Avenir', // 字体
     fontSize: 22, // 字号
@@ -74,7 +74,7 @@ node1.setPosition(200, 200);
 import { Line } from '@antv/g';
 
 const edge = new Line({
-  attrs: {
+  style: {
     x1: 200,
     y1: 200,
     x2: 400,

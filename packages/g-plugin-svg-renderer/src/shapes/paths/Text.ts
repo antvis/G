@@ -34,6 +34,7 @@ const ANCHOR_MAP: Record<string, string> = {
 
 @injectable()
 export class TextRenderer implements ElementRenderer<TextStyleProps> {
+  dependencies = [];
   @inject(TextService)
   private textService: TextService;
 

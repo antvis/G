@@ -19,7 +19,7 @@ const canvas = new Canvas({
 });
 
 const ellipse = new Ellipse({
-  attrs: {
+  style: {
     x: 300,
     y: 200,
     rx: 100,
@@ -70,12 +70,20 @@ const ellipseConfig = {
   lineWidth: 4,
   fillOpacity: 1,
   strokeOpacity: 1,
+  anchorX: 0.5,
+  anchorY: 0.5,
 };
 ellipseFolder.add(ellipseConfig, 'rx', 50, 200).onChange((radius) => {
   ellipse.attr('rx', radius);
 });
 ellipseFolder.add(ellipseConfig, 'ry', 50, 200).onChange((radius) => {
   ellipse.attr('ry', radius);
+});
+ellipseFolder.add(ellipseConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
+  ellipse.attr('anchor', [anchorX, ellipseConfig.anchorY]);
+});
+ellipseFolder.add(ellipseConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
+  ellipse.attr('anchor', [ellipseConfig.anchorX, anchorY]);
 });
 ellipseFolder.addColor(ellipseConfig, 'fill').onChange((color) => {
   ellipse.attr('fill', color);

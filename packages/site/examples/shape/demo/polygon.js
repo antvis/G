@@ -20,7 +20,7 @@ const canvas = new Canvas({
 
 // create a polygon
 const polygon = new Polygon({
-  attrs: {
+  style: {
     points: [
       [200, 100],
       [400, 100],
@@ -73,6 +73,8 @@ const polygonConfig = {
   lineWidth: 4,
   fillOpacity: 1,
   strokeOpacity: 1,
+  anchorX: 0,
+  anchorY: 0,
 };
 polygonFolder.addColor(polygonConfig, 'fill').onChange((color) => {
   polygon.attr('fill', color);
@@ -88,5 +90,11 @@ polygonFolder.add(polygonConfig, 'fillOpacity', 0, 1, 0.1).onChange((opacity) =>
 });
 polygonFolder.add(polygonConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
   polygon.attr('strokeOpacity', opacity);
+});
+polygonFolder.add(polygonConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
+  polygon.attr('anchor', [anchorX, polygonConfig.anchorY]);
+});
+polygonFolder.add(polygonConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
+  polygon.attr('anchor', [polygonConfig.anchorX, anchorY]);
 });
 polygonFolder.open();

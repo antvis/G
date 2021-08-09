@@ -6,7 +6,7 @@ Composite basic shapes provided in G into advanced components.
 import { LineWithArrow } from '@antv/g-components';
 
 const arrow = new LineWithArrow({
-  attrs: {
+  style: {
     x1: 0,
     // ...
   },

@@ -34,7 +34,7 @@ describe('Event API like DOM', () => {
   // it('pointerdown/mousedown/touchstart/rightdown', () => {
   //   const circle = new Circle({
   //     id: 'circle',
-  //     attrs: {
+  //     style: {
   //       fill: 'rgb(239, 244, 255)',
   //       fillOpacity: 1,
   //       lineWidth: 1,
@@ -95,7 +95,7 @@ describe('Event API like DOM', () => {
   // it('pointerup/mouseup/touchend/rightup', () => {
   //   const circle = new Circle({
   //     id: 'circle',
-  //     attrs: {
+  //     style: {
   //       fill: 'rgb(239, 244, 255)',
   //       fillOpacity: 1,
   //       lineWidth: 1,
@@ -159,7 +159,7 @@ describe('Event API like DOM', () => {
 
   it('should emit inserted event correctly', () => {
     const rect = new Rect({
-      attrs: {
+      style: {
         fill: 'rgb(239, 244, 255)',
         fillOpacity: 1,
         lineWidth: 1,
@@ -174,7 +174,7 @@ describe('Event API like DOM', () => {
     // add a circle to canvas
     const circle = new Circle({
       className: 'draggable',
-      attrs: {
+      style: {
         fill: 'rgb(239, 244, 255)',
         fillOpacity: 1,
         lineWidth: 1,
@@ -186,7 +186,7 @@ describe('Event API like DOM', () => {
     });
 
     const text = new Text({
-      attrs: {
+      style: {
         text: 'move',
         fontSize: 22,
         fill: '#000',

@@ -25,6 +25,7 @@ export class Line extends DisplayObject<LineStyleProps> {
         lineJoin: 'miter',
         lineCap: 'butt',
         lineWidth: 1,
+        anchor: [0, 0],
         ...style,
       },
       ...rest,

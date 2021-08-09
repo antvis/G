@@ -21,9 +21,9 @@ const canvas = new Canvas({
 
 // create an arrow
 const lineArrow = new Arrow({
-  attrs: {
+  style: {
     body: new Line({
-      attrs: {
+      style: {
         x1: 200,
         y1: 100,
         x2: 0,
@@ -39,9 +39,9 @@ const lineArrow = new Arrow({
 lineArrow.translate(200, 100);
 
 const polylineArrow = new Arrow({
-  attrs: {
+  style: {
     body: new Polyline({
-      attrs: {
+      style: {
         points: [
           [0, 0],
           [50, 0],
@@ -61,9 +61,9 @@ const polylineArrow = new Arrow({
 polylineArrow.translate(200, 200);
 
 const pathArrow = new Arrow({
-  attrs: {
+  style: {
     body: new Path({
-      attrs: {
+      style: {
         path: 'M 100,300' + 'l 50,-25' + 'a25,25 -30 0,1 50,-80',
       },
     }),
@@ -112,7 +112,7 @@ class MyCustomArrowHead extends CustomElement {
 
     // just draw a simple triangle, eg. '<|'
     this.head = new Path({
-      attrs: {
+      style: {
         path: 'M 10,10 L -10,0 L 10,-10 Z',
         anchor: [0.5, 0.5],
       },
@@ -180,10 +180,10 @@ lineArrowFolder
     } else if (type === 'default') {
       lineArrow.setAttribute('startHead', true);
     } else if (type === 'circle') {
-      lineArrow.setAttribute('startHead', new Circle({ attrs: { r: 10 } }));
+      lineArrow.setAttribute('startHead', new Circle({ style: { r: 10 } }));
     } else if (type === 'image') {
       const image = new Image({
-        attrs: {
+        style: {
           width: 50,
           height: 50,
           anchor: [0.5, 0.5],
@@ -193,7 +193,7 @@ lineArrowFolder
       image.rotateLocal(90);
       lineArrow.setAttribute('startHead', image);
     } else if (type === 'custom arrowhead') {
-      lineArrow.setAttribute('startHead', new MyCustomArrowHead({ attrs: {} }));
+      lineArrow.setAttribute('startHead', new MyCustomArrowHead({ style: {} }));
     }
   });
 lineArrowFolder
@@ -204,10 +204,10 @@ lineArrowFolder
     } else if (type === 'default') {
       lineArrow.setAttribute('endHead', true);
     } else if (type === 'circle') {
-      lineArrow.setAttribute('endHead', new Circle({ attrs: { r: 10 } }));
+      lineArrow.setAttribute('endHead', new Circle({ style: { r: 10 } }));
     } else if (type === 'image') {
       const image = new Image({
-        attrs: {
+        style: {
           width: 50,
           height: 50,
           anchor: [0.5, 0.5],
@@ -217,7 +217,7 @@ lineArrowFolder
       image.rotateLocal(90);
       lineArrow.setAttribute('endHead', image);
     } else if (type === 'custom arrowhead') {
-      lineArrow.setAttribute('endHead', new MyCustomArrowHead({ attrs: {} }));
+      lineArrow.setAttribute('endHead', new MyCustomArrowHead({ style: {} }));
     }
   });
 lineArrowFolder.open();
@@ -247,10 +247,10 @@ polylineArrowFolder
     } else if (type === 'default') {
       polylineArrow.setAttribute('startHead', true);
     } else if (type === 'circle') {
-      polylineArrow.setAttribute('startHead', new Circle({ attrs: { r: 10 } }));
+      polylineArrow.setAttribute('startHead', new Circle({ style: { r: 10 } }));
     } else if (type === 'image') {
       const image = new Image({
-        attrs: {
+        style: {
           width: 50,
           height: 50,
           anchor: [0.5, 0.5],
@@ -260,7 +260,7 @@ polylineArrowFolder
       image.rotateLocal(90);
       polylineArrow.setAttribute('startHead', image);
     } else if (type === 'custom arrowhead') {
-      polylineArrow.setAttribute('startHead', new MyCustomArrowHead({ attrs: {} }));
+      polylineArrow.setAttribute('startHead', new MyCustomArrowHead({ style: {} }));
     }
   });
 polylineArrowFolder
@@ -271,10 +271,10 @@ polylineArrowFolder
     } else if (type === 'default') {
       polylineArrow.setAttribute('endHead', true);
     } else if (type === 'circle') {
-      polylineArrow.setAttribute('endHead', new Circle({ attrs: { r: 10 } }));
+      polylineArrow.setAttribute('endHead', new Circle({ style: { r: 10 } }));
     } else if (type === 'image') {
       const image = new Image({
-        attrs: {
+        style: {
           width: 50,
           height: 50,
           anchor: [0.5, 0.5],
@@ -284,7 +284,7 @@ polylineArrowFolder
       image.rotateLocal(90);
       polylineArrow.setAttribute('endHead', image);
     } else if (type === 'custom arrowhead') {
-      polylineArrow.setAttribute('endHead', new MyCustomArrowHead({ attrs: {} }));
+      polylineArrow.setAttribute('endHead', new MyCustomArrowHead({ style: {} }));
     }
   });
 
@@ -313,10 +313,10 @@ pathArrowFolder
     } else if (type === 'default') {
       pathArrow.setAttribute('startHead', true);
     } else if (type === 'circle') {
-      pathArrow.setAttribute('startHead', new Circle({ attrs: { r: 10 } }));
+      pathArrow.setAttribute('startHead', new Circle({ style: { r: 10 } }));
     } else if (type === 'image') {
       const image = new Image({
-        attrs: {
+        style: {
           width: 50,
           height: 50,
           anchor: [0.5, 0.5],
@@ -326,7 +326,7 @@ pathArrowFolder
       image.rotateLocal(90);
       pathArrow.setAttribute('startHead', image);
     } else if (type === 'custom arrowhead') {
-      pathArrow.setAttribute('startHead', new MyCustomArrowHead({ attrs: {} }));
+      pathArrow.setAttribute('startHead', new MyCustomArrowHead({ style: {} }));
     }
   });
 pathArrowFolder
@@ -337,10 +337,10 @@ pathArrowFolder
     } else if (type === 'default') {
       pathArrow.setAttribute('endHead', true);
     } else if (type === 'circle') {
-      pathArrow.setAttribute('endHead', new Circle({ attrs: { r: 10 } }));
+      pathArrow.setAttribute('endHead', new Circle({ style: { r: 10 } }));
     } else if (type === 'image') {
       const image = new Image({
-        attrs: {
+        style: {
           width: 50,
           height: 50,
           anchor: [0.5, 0.5],
@@ -350,6 +350,6 @@ pathArrowFolder
       image.rotateLocal(90);
       pathArrow.setAttribute('endHead', image);
     } else if (type === 'custom arrowhead') {
-      pathArrow.setAttribute('endHead', new MyCustomArrowHead({ attrs: {} }));
+      pathArrow.setAttribute('endHead', new MyCustomArrowHead({ style: {} }));
     }
   });

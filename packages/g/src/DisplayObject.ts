@@ -1,6 +1,6 @@
 import { isObject, isNil, isBoolean, isFunction } from '@antv/util';
 import type { Entity } from '@antv/g-ecs';
-import { vec3, mat3, mat4, quat } from 'gl-matrix';
+import { vec2, vec3, mat3, mat4, quat } from 'gl-matrix';
 import { EventEmitter } from 'eventemitter3';
 import { Cullable, Geometry, Renderable, SceneGraphNode, Transform, Sortable } from './components';
 import { createVec3, rad2deg, getEuler, fromRotationTranslationScale } from './utils/math';
@@ -102,10 +102,16 @@ export interface DisplayObjectConfig<StyleProps> {
    */
   visible?: boolean;
   /**
-   * 是否可以拾取
-   * @type {Boolean}
+   * compatible with G 3.0
+   * @alias interactive
+   * @deprecated
    */
   capture?: boolean;
+
+  /**
+   * enable interaction events for the DisplayObject
+   */
+  interactive?: boolean;
 }
 
 /**
@@ -153,8 +159,8 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
     // insert this group into pool
     this.displayObjectPool.add(entity.getName(), this);
 
-    // TODO: capture
-    this.config.capture = true;
+    // compatible with G 3.0
+    this.config.interactive = this.config.capture ?? this.config.interactive;
 
     // init scene graph node
     const sceneGraphNode = entity.addComponent(SceneGraphNode);
@@ -162,6 +168,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
     sceneGraphNode.name = this.config.name || '';
     sceneGraphNode.class = this.config.className || '';
     sceneGraphNode.tagName = this.config.type || SHAPE.Group;
+    sceneGraphNode.interactive = this.config.interactive ?? true;
 
     // compatible with G 3.0
     // @ts-ignore
@@ -441,11 +448,26 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
   get id() {
     return this.entity.getComponent(SceneGraphNode).id;
   }
+  set id(id: string) {
+    this.entity.getComponent(SceneGraphNode).id = id;
+  }
   get className() {
     return this.entity.getComponent(SceneGraphNode).class;
   }
+  set className(className: string) {
+    this.entity.getComponent(SceneGraphNode).class = className;
+  }
   get name() {
     return this.entity.getComponent(SceneGraphNode).name;
+  }
+  set name(name: string) {
+    this.entity.getComponent(SceneGraphNode).name = name;
+  }
+  get interactive() {
+    return this.entity.getComponent(SceneGraphNode).interactive;
+  }
+  set interactive(interactive: boolean) {
+    this.entity.getComponent(SceneGraphNode).interactive = interactive;
   }
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
@@ -627,7 +649,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
   getAttribute(attributeName: keyof StyleProps) {
     const value = this.attributes[attributeName];
     // if the given attribute does not exist, the value returned will either be null or ""
-    return isNil(value) ? null : value;
+    return isNil(value) ? undefined : value;
   }
 
   /**
@@ -760,7 +782,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
   /** transform operations */
 
   setOrigin(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.setOrigin(this, createVec3(position, y, z));
+    this.style.origin = createVec3(position, y, z);
     return this;
   }
 
@@ -1200,7 +1222,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
       // update transform
       this.sceneGraphService.setLocalPosition(this, x, y);
     } else if (name === 'origin') {
-      this.sceneGraphService.setOrigin(this, [...value, 0]);
+      this.sceneGraphService.setOrigin(this, value[0], value[1], value[2]);
     } else if (name === 'zIndex') {
       if (this.parentNode) {
         const parentEntity = this.parentNode.getEntity();
@@ -1320,7 +1342,11 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
     }
 
     // update renderable's aabb, account for world transform
-    if (needUpdateGeometry) {
+    if (
+      needUpdateGeometry ||
+      name === 'x' || // local position changed
+      name === 'y'
+    ) {
       renderable.aabbDirty = true;
     }
 

@@ -4,6 +4,7 @@ import { injectable } from 'inversify';
 
 @injectable()
 export class LineRenderer implements ElementRenderer<LineStyleProps> {
+  dependencies = ['x1', 'y1', 'x2', 'y2'];
   apply($el: SVGElement, attributes: LineStyleProps) {
     const { x1, y1, x2, y2, x = 0, y = 0 } = attributes;
 

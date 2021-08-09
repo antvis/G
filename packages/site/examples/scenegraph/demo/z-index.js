@@ -24,14 +24,14 @@ const canvas = new Canvas({
 
 const ul1 = new Rect({
   id: 'ul1',
-  attrs: {
+  style: {
     width: 400,
     height: 200,
     fill: 'blue',
   },
 });
 const ul1Text = new Text({
-  attrs: {
+  style: {
     text: 'ul1',
     fontSize: 16,
     fill: 'white',
@@ -39,14 +39,16 @@ const ul1Text = new Text({
 });
 const ul2 = new Rect({
   id: 'ul2',
-  attrs: {
-    width: 200,
+  style: {
+    width: 300,
     height: 250,
     fill: '#1890FF',
+    lineWidth: 4,
+    stroke: 'white',
   },
 });
 const ul2Text = new Text({
-  attrs: {
+  style: {
     text: 'ul2',
     fontSize: 16,
     fill: 'white',
@@ -55,7 +57,7 @@ const ul2Text = new Text({
 
 const li1 = new Rect({
   id: 'li1',
-  attrs: {
+  style: {
     width: 200,
     height: 50,
     fill: '#1890FF',
@@ -64,7 +66,7 @@ const li1 = new Rect({
   },
 });
 const li1Text = new Text({
-  attrs: {
+  style: {
     text: 'li1',
     fontSize: 16,
     fill: 'white',
@@ -72,7 +74,7 @@ const li1Text = new Text({
 });
 const li2 = new Rect({
   id: 'li2',
-  attrs: {
+  style: {
     width: 200,
     height: 50,
     fill: '#1890FF',
@@ -81,7 +83,7 @@ const li2 = new Rect({
   },
 });
 const li2Text = new Text({
-  attrs: {
+  style: {
     text: 'li2',
     fontSize: 16,
     fill: 'white',
@@ -101,7 +103,7 @@ ul1.appendChild(li2);
 
 ul2Text.translateLocal(60, 20);
 ul2.appendChild(ul2Text);
-ul2.setPosition(300, 200);
+ul2.setPosition(200, 100);
 
 canvas.appendChild(ul1);
 canvas.appendChild(ul2);

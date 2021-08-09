@@ -23,7 +23,7 @@ const canvas = new Canvas({
 });
 
 const circle = new Circle({
-  attrs: {
+  style: {
     x: 200,
     y: 200,
     r: 60,

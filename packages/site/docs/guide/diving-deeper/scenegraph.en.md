@@ -51,19 +51,19 @@ const moonOrbit = new Group({
 });
 const sun = new Circle({
     name: 'sun',
-    attrs: {
+    style: {
         r: 100,
     },
 });
 const earth = new Circle({
     name: 'earth',
-    attrs: {
+    style: {
         r: 50,
     },
 });
 const moon = new Circle({
     name: 'moon',
-    attrs: {
+    style: {
         r: 25,
     },
 });
@@ -421,12 +421,12 @@ group
 // 不建议使用
 import { Canvas } from 'g-canvas';
 const canvas = new Canvas();
-const circle = canvas.addShape('circle', { attrs: { r: 25 } });
+const circle = canvas.addShape('circle', { style: { r: 25 } });
 
 // 建议使用
 // 定义组件
 import { Circle } from 'g-core';
-const circle = new Circle({ attrs: { r: 25 } });
+const circle = new Circle({ style: { r: 25 } });
 // 渲染组件
 import { Canvas } from 'g-canvas';
 const canvas = new Canvas();

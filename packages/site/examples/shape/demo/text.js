@@ -20,7 +20,7 @@ const canvas = new Canvas({
 
 // create a line of text
 const text = new Text({
-  attrs: {
+  style: {
     x: 100,
     y: 300,
     fontFamily: 'PingFang SC',
@@ -34,7 +34,7 @@ const text = new Text({
 
 // display anchor
 const origin = new Circle({
-  attrs: {
+  style: {
     r: 20,
     fill: 'red',
   },
@@ -43,7 +43,7 @@ origin.setPosition(text.getPosition());
 
 // display bounds
 const bounds = new Rect({
-  attrs: {
+  style: {
     stroke: 'black',
     lineWidth: 2,
   },

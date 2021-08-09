@@ -23,7 +23,7 @@ const canvas = new Canvas({
 });
 
 const offsetPathLine = new Line({
-  attrs: {
+  style: {
     x1: 100,
     y1: 100,
     x2: 300,
@@ -31,7 +31,7 @@ const offsetPathLine = new Line({
   },
 });
 const offsetPathPolyline = new Polyline({
-  attrs: {
+  style: {
     points: [
       [50, 50],
       [100, 50],
@@ -54,7 +54,7 @@ const offsetPathPolyline = new Polyline({
 });
 
 const offsetPathPath = new Path({
-  attrs: {
+  style: {
     path:
       'M 100,300' +
       'l 50,-25' +
@@ -72,7 +72,7 @@ const offsetPathPath = new Path({
 });
 
 const circle1 = new Circle({
-  attrs: {
+  style: {
     x: 200,
     y: 200,
     r: 60,
@@ -83,7 +83,7 @@ const circle1 = new Circle({
   },
 });
 const circle2 = new Circle({
-  attrs: {
+  style: {
     x: 200,
     y: 200,
     r: 60,
@@ -94,7 +94,7 @@ const circle2 = new Circle({
   },
 });
 const circle3 = new Circle({
-  attrs: {
+  style: {
     x: 200,
     y: 300,
     r: 60,

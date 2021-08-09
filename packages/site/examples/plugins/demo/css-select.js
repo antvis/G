@@ -44,7 +44,7 @@ const moonOrbit = new Group({
 const sun = new Circle({
   id: 'sun',
   className: 'classname-sun',
-  attrs: {
+  style: {
     r: 100,
     fill: '#1890FF',
     stroke: '#F04864',
@@ -54,7 +54,7 @@ const sun = new Circle({
 const earth = new Circle({
   id: 'earth',
   className: 'classname-earth',
-  attrs: {
+  style: {
     r: 50,
     fill: '#1890FF',
     stroke: '#F04864',
@@ -64,7 +64,7 @@ const earth = new Circle({
 const moon = new Circle({
   id: 'moon',
   className: 'classname-moon',
-  attrs: {
+  style: {
     r: 25,
     fill: '#1890FF',
     stroke: '#F04864',

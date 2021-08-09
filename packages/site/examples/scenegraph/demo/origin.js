@@ -20,7 +20,7 @@ const canvas = new Canvas({
 
 const rect = new Rect({
   id: 'rect',
-  attrs: {
+  style: {
     x: 200,
     y: 100,
     width: 300,
@@ -34,14 +34,14 @@ const rect = new Rect({
 
 const origin = new Circle({
   id: 'origin',
-  attrs: {
+  style: {
     r: 30,
     fill: '#F04864',
   },
 });
 const originText = new Text({
   id: 'text',
-  attrs: {
+  style: {
     fontFamily: 'PingFang SC',
     text: 'Origin',
     fontSize: 16,
@@ -93,13 +93,11 @@ const rectConfig = {
   originY: 0,
 };
 rectFolder.add(rectConfig, 'originX', -200, 200).onChange((tx) => {
-  rect.setOrigin(tx, rectConfig.originY);
-
+  rect.style.origin = [tx, rectConfig.originY];
   origin.setPosition(200 + tx, 100 + rectConfig.originY);
 });
 rectFolder.add(rectConfig, 'originY', -200, 200).onChange((ty) => {
-  rect.setOrigin(rectConfig.originX, ty);
-
+  rect.style.origin = [rectConfig.originX, ty];
   origin.setPosition(200 + rectConfig.originX, 100 + ty);
 });
 rectFolder.open();

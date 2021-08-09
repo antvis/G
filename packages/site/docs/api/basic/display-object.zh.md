@@ -29,13 +29,31 @@ https://developer.mozilla.org/en-US/docs/Web/API/Element/className
 
 可通过 [getElementsByClassName](/zh/docs/api/display-object#高级查询) 查询
 
+# interactive
+
+是否支持响应[事件](/zh/docs/api/event)，默认为 `true`。在某些不需要支持交互的图形上可以关闭。
+
+例如我们不想让下面这个圆响应鼠标 `mouseenter/leave` 事件，[示例](/zh/examples/event/shape#circle)
+```js
+// 初始化时禁止交互
+const circle = new Circle({
+  interactive: false,
+  style: {
+    r: 100,
+  }
+});
+
+// 或者后续禁止
+circle.interactive = false;
+```
+
 # 绘图属性
 
 绘图属性通过 `attrs/style` 设置，通常包含了图形的位置、填充色、透明度等**通用属性**，不同类型的图形也有自己的**额外属性**，例如在下面的圆角矩形中，位置`(x, y)`、填充色 `fill`、描边色 `stroke` 就是通用属性，而矩形的尺寸 `width/height` 和圆角半径 `radius` 则是额外属性：
 
 ```javascript
 const rect = new Rect({
-  attrs: { // 或者使用 style
+  style: { // 或者使用 attrs
     x: 200,
     y: 100,
     fill: '#1890FF',
@@ -83,11 +101,14 @@ const rect = new Rect({
 
 **类型**： `[number, number]`
 
-**默认值**：`[0, 0]`
-
 **是否必须**：`false`
 
-**说明** 锚点位置，取值范围 `(0, 0) ~ (1, 1)`
+**说明** 锚点位置，取值范围 `(0, 0) ~ (1, 1)`，修改它同时会改变图形的包围盒（尺寸不变，中心点发生偏移）
+
+不同图形的默认锚点如下，[示例](/zh/examples/shape#rect)：
+-   [Circle](/zh/docs/api/circle)，[Ellipse](/zh/docs/api/ellipse) 为圆心位置 `[0.5, 0.5]`
+-   [Rect](/zh/docs/api/rect)，[Image](/zh/docs/api/image)，[Line](/zh/docs/api/line)，[Polyline](/zh/docs/api/polyline)，[Polygon](/zh/docs/api/polygon)，[Path](/zh/docs/api/path) 为包围盒左上角顶点位置 `[0, 0]`
+-   [Text](/zh/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/docs/api/basic/text#textbaseline) 与 [textAlign](/zh/docs/api/basic/text#textalign) 这两个属性设置
 
 ### origin
 
@@ -97,7 +118,22 @@ const rect = new Rect({
 
 **是否必须**：`false`
 
-**说明** 旋转中心
+**说明** 旋转中心，在局部坐标系下表示
+
+[示例](/zh/examples/scenegraph#origin)
+```js
+const rect = new Rect({
+  id: 'rect',
+  style: {
+    width: 300,
+    height: 200,
+    origin: [150, 100], // 设置旋转与缩放中心，局部坐标系下的中点
+  },
+});
+
+rect.style.origin(0, 0); // 设置为左上角
+// 或者 rect.setOrigin(0, 0);
+```
 
 ## 填充
 
@@ -226,21 +262,27 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 li1.style.zIndex = 1; // li1 在 li2 之上
 ```
 
-[示例](/zh/examples/scenegraph#z-index)
+再比如尽管 li2 的 zIndex 比 ul2 大很多，但由于 ul1 比 ul2 小，它也只能处于 ul2 之下，[示例](/zh/examples/scenegraph#z-index)
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfZhRYJ_rogAAAAAAAAAAAAAARQnAQ)
 
 ## 裁剪
 
 ### clipPath
 
-使用裁剪方式创建元素的可显示区域，区域内的部分显示，区域外的隐藏。可参考 CSS 的 [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)。该属性值可以是任意图形，例如 Circle、Rect 等等。同一个裁剪区域可以被多个图形共享使用。最后，裁剪区域也会影响图形的拾取区域。
+使用裁剪方式创建元素的可显示区域，区域内的部分显示，区域外的隐藏。可参考 CSS 的 [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)。该属性值可以是任意图形，例如 Circle、Rect 等等。同一个裁剪区域可以被多个图形共享使用。最后，裁剪区域也会影响图形的拾取区域，[示例](/zh/examples/event/shape#shapes)。
 
-例如我们想创建一个圆形的图片：
+例如我们想创建一个裁剪成圆形的图片，让裁剪区域刚好处于图片中心（尺寸为 200 * 200），此时我们可以设置裁剪区域圆形的局部坐标为 `[100, 100]`。[示例](/zh/examples/shape#clip)：
 ```js
 const image = new Image({
-  attrs: {
+  style: {
+    width: 200,
+    height: 200,
     clipPath: new Circle({
-      attrs: {
-        r: 10,
+      style: {
+        x: 100, // 处于被裁剪图形局部坐标系下
+        y: 100,
+        r: 50,
       },
     }),
   }
@@ -250,20 +292,24 @@ const image = new Image({
 也可以在创建图形之后设置裁剪区域，因此以上写法等价于：
 ```js
 const image = new Image({
-  attrs: {
+  style: {
     //... 省略其他属性
   }
 });
 
 image.style.clipPath = new Circle({
-  attrs: {
-    r: 10,
+  style: {
+    x: 100, // 处于被裁剪图形局部坐标系下
+    y: 100,
+    r: 50,
   },
 });
 // 或者兼容旧版写法
 image.setClip(new Circle({
-  attrs: {
-    r: 10,
+  style: {
+    x: 100, // 处于被裁剪图形局部坐标系下
+    y: 100,
+    r: 50,
   },
 }));
 ```
@@ -336,9 +382,26 @@ clipPathCircle.animate(
 
 ## 设置缩放和旋转中心
 
+
 | 名称      | 参数               | 返回值 | 备注                             |
 | --------- | ------------------ | ------ | -------------------------------- |
 | setOrigin | `[number, number]` | 无     | 设置局部坐标系下的缩放和旋转中心 |
+
+设置局部坐标系下的缩放和旋转中心，[示例](/zh/examples/scenegraph#origin)
+
+```js
+const rect = new Rect({
+  id: 'rect',
+  style: {
+    width: 300,
+    height: 200,
+    origin: [150, 100], // 设置旋转与缩放中心，局部坐标系下的中点
+  },
+});
+
+rect.style.origin = [0, 0]; // 设置为左上角
+// 或者 rect.setOrigin(0, 0);
+```
 
 ## 获取包围盒
 
@@ -455,7 +518,7 @@ child.remove(true);
 因此以下用法等价：
 ```js
 const circle = new Circle({
-  attrs: { // 或者使用 style
+  style: { // 或者使用 style
     r: 10,
     fill: 'red',
   }

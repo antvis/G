@@ -39,7 +39,7 @@ fetch('https://gw.alipayobjects.com/os/basement_prod/0b9730ff-0850-46ff-84d0-1d4
 
     // data.edges.slice(0, 100).forEach(({ startPoint, endPoint, size, color }) => {
     //   const line = new Line({
-    //     attrs: {
+    //     style: {
     //       x1: startPoint.x,
     //       y1: startPoint.y,
     //       x2: endPoint.x,
@@ -57,7 +57,7 @@ fetch('https://gw.alipayobjects.com/os/basement_prod/0b9730ff-0850-46ff-84d0-1d4
 
     data.nodes.forEach(({ size, x, y }) => {
       const circle = new Circle({
-        attrs: {
+        style: {
           x,
           y,
           fill: '#C6E5FF',
@@ -97,7 +97,7 @@ canvas.on('afterRender', () => {
     stats.update();
   }
 
-  root.setOrigin(300, 250);
+  root.style.origin = [300, 250];
   root.rotate(1);
 });
 

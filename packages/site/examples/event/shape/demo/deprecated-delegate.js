@@ -32,7 +32,7 @@ const ul = new Group({
 const li1 = new Rect({
   id: 'li1',
   name: 'test-name',
-  attrs: {
+  style: {
     x: 200,
     y: 100,
     width: 300,
@@ -41,7 +41,7 @@ const li1 = new Rect({
   },
 });
 const text = new Text({
-  attrs: {
+  style: {
     x: 150,
     y: 50,
     text: 'Click me!',
@@ -55,7 +55,7 @@ li1.appendChild(text);
 const li2 = new Rect({
   id: 'li2',
   name: 'test-name',
-  attrs: {
+  style: {
     x: 200,
     y: 300,
     width: 300,

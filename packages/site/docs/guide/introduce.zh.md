@@ -51,7 +51,7 @@ const canvas = new Canvas({
 });
 
 const circle = new Circle({
-  attrs: {
+  style: {
     x: 100,
     y: 100,
     r: 50,

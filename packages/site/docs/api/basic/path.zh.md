@@ -9,7 +9,7 @@ order: 8
 
 ```javascript
 const line = new Path({
-  attrs: {
+  style: {
     path: [
       ['M', 100, 100],
       ['L', 200, 200],
@@ -28,7 +28,7 @@ const line = new Path({
 例如这条直线路径 `[ ['M', 100, 100], ['L', 200, 200] ]` 在局部坐标系下的 “位置” 为 `[100, 100]`：
 ```js
 const line = new Path({
-  attrs: {
+  style: {
     path: [
       ['M', 100, 100],
       ['L', 200, 200],

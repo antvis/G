@@ -19,7 +19,7 @@ const circleBatch = new Batch({});
 for (let i = 0; i < 5; i++) {
   const circle = new Circle({
     id: i,
-    attrs: {
+    style: {
       x: Math.random() * 600,
       y: Math.random() * 500,
       r: 20 + Math.random() * 10,
