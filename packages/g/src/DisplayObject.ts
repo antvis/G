@@ -19,11 +19,12 @@ import { Animation } from './Animation';
 import { parseTransform } from './property-handlers/transform';
 import { convertPercentUnit, convertAngleUnit } from './property-handlers/dimension';
 import { DELEGATION_SPLITTER } from './services/EventService';
+import { CustomEvent } from './CustomEvent';
 
 /**
  * events for display object
  */
-export const enum DISPLAY_OBJECT_EVENT {
+export enum DISPLAY_OBJECT_EVENT {
   Init = 'init',
   Destroy = 'destroy',
   AttributeChanged = 'attributeChanged',
@@ -216,7 +217,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeName
    */
-  get nodeName(): SHAPE {
+  get nodeName(): SHAPE | string {
     return this.entity.getComponent(SceneGraphNode).tagName;
   }
 
@@ -608,12 +609,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
    * @alias dispatchEvent
    */
   emit(eventName: string, object: object) {
-    const event = new FederatedEvent(null);
-    event.type = eventName;
-    // @ts-ignore
-    event.detail = object;
-
-    this.dispatchEvent(event);
+    this.dispatchEvent(new CustomEvent(eventName, object));
   }
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
@@ -1308,6 +1304,8 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
         }
         newClipPath.style.clipPathTargets.push(this);
       }
+
+      renderable.aabbDirty = true;
     } else if (name === 'offsetPath') {
       const oldOffsetPath = oldValue as DisplayObject;
       const newOffsetPath = value as DisplayObject;

@@ -1,12 +1,12 @@
 import { Canvas, Group } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { Grid, containerModule } from '@antv/g-plugin-3d';
+import { Grid, Plugin } from '@antv/g-plugin-3d';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 
 // create a webgl renderer
 const webglRenderer = new WebGLRenderer();
-webglRenderer.registerPlugin(containerModule);
+webglRenderer.registerPlugin(new Plugin());
 
 // create a canvas
 const canvas = new Canvas({

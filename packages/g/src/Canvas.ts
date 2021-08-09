@@ -245,6 +245,10 @@ export class Canvas extends EventEmitter {
     this.getRoot().removeChild(node, destroy);
   }
 
+  removeChildren() {
+    this.getRoot().removeChildren();
+  }
+
   render() {
     this.emit('beforeRender');
 

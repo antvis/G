@@ -4,7 +4,7 @@ import SplitPane from 'react-split-pane';
 import Stats from 'stats.js';
 import { Canvas, Group } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { Cube, Grid, containerModule } from '@antv/g-plugin-3d';
+import { Cube, Grid, Plugin } from '@antv/g-plugin-3d';
 
 // scene1 + scene2
 const TOTAL_WIDTH = 600;
@@ -25,10 +25,10 @@ const App = function MultiWorld() {
 
     // create a webgl renderer
     const webglRenderer1 = new WebGLRenderer();
-    webglRenderer1.registerPlugin(containerModule);
+    webglRenderer1.registerPlugin(new Plugin());
 
     const webglRenderer2 = new WebGLRenderer();
-    webglRenderer2.registerPlugin(containerModule);
+    webglRenderer2.registerPlugin(new Plugin());
 
     // create a canvas
     canvas1 = new Canvas({
