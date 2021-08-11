@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-3d",
-  "version": "1.0.0-alpha.8",
+  "version": "1.0.0-alpha.9",
   "description": "Provide 3D extension for G",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -40,9 +40,9 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.7",
-    "@antv/g-plugin-dom-interaction": "^1.0.0-alpha.8",
-    "@antv/g-plugin-webgl-renderer": "^1.0.0-alpha.8",
+    "@antv/g": "^1.0.0-alpha.8",
+    "@antv/g-plugin-dom-interaction": "^1.0.0-alpha.9",
+    "@antv/g-plugin-webgl-renderer": "^1.0.0-alpha.9",
     "@antv/util": "^2.0.13"
   }
 }
