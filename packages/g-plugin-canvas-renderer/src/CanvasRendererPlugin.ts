@@ -383,6 +383,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   private applyAttributesToContext(context: CanvasRenderingContext2D, attrs: any) {
     for (const k in attrs) {
+      // reserved keywords in Canvas2DContext
+      if (k === 'transform') {
+        continue;
+      }
+
       let v = attrs[k];
       // 转换一下不与 canvas 兼容的属性名
       const name = SHAPE_ATTRS_MAP[k] ? SHAPE_ATTRS_MAP[k] : k;

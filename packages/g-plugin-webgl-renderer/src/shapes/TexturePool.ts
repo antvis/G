@@ -5,14 +5,14 @@ import { ITexture2D, ITexture2DInitializationOptions, RenderingEngine } from '..
 export class TexturePool {
   private textureCache: Record<string, ITexture2D> = {};
 
-  async getOrCreateTexture2D(
+  getOrCreateTexture2D(
     engine: RenderingEngine,
     src: string | HTMLImageElement,
     options: ITexture2DInitializationOptions
   ): Promise<ITexture2D> {
     if (typeof src === 'string') {
       if (this.textureCache[src]) {
-        return this.textureCache[src];
+        return Promise.resolve(this.textureCache[src]);
       }
 
       return new Promise((resolve, reject) => {
@@ -35,11 +35,11 @@ export class TexturePool {
         image.src = src;
       });
     } else {
-      return engine.createTexture2D({
+      return Promise.resolve(engine.createTexture2D({
         ...options,
         data: src,
         flipY: true,
-      });
+      }));
     }
   }
 

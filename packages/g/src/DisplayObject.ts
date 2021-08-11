@@ -16,10 +16,9 @@ import { FederatedEvent } from './FederatedEvent';
 import { KeyframeEffect } from './KeyframeEffect';
 import { Canvas } from './Canvas';
 import { Animation } from './Animation';
-import { parseTransform } from './property-handlers/transform';
-import { convertPercentUnit, convertAngleUnit } from './property-handlers/dimension';
 import { DELEGATION_SPLITTER } from './services/EventService';
 import { CustomEvent } from './CustomEvent';
+import { StylePropertyHandlerFactory, StylePropertyHandler } from './properties';
 
 /**
  * events for display object
@@ -46,7 +45,7 @@ export enum DISPLAY_OBJECT_EVENT {
   ChildRemoved = 'child-removed',
 }
 
-export interface DisplayObjectEventType<StyleProps extends BaseStyleProps = BaseStyleProps> {
+export interface DisplayObjectEventType<StyleProps extends BaseStyleProps = any> {
   [DISPLAY_OBJECT_EVENT.Init]: () => void;
   [DISPLAY_OBJECT_EVENT.Destroy]: () => void;
   [DISPLAY_OBJECT_EVENT.AttributeChanged]: <Key extends keyof StyleProps>(
@@ -55,10 +54,10 @@ export interface DisplayObjectEventType<StyleProps extends BaseStyleProps = Base
     newValue: StyleProps[Key],
     object: DisplayObject<StyleProps>,
   ) => void;
-  [DISPLAY_OBJECT_EVENT.Inserted]: (object: DisplayObject<any>) => void;
-  [DISPLAY_OBJECT_EVENT.ChildInserted]: (object: DisplayObject<any>) => void;
-  [DISPLAY_OBJECT_EVENT.Removed]: (object: DisplayObject<any>) => void;
-  [DISPLAY_OBJECT_EVENT.ChildRemoved]: (object: DisplayObject<any>) => void;
+  [DISPLAY_OBJECT_EVENT.Inserted]: (object: DisplayObject) => void;
+  [DISPLAY_OBJECT_EVENT.ChildInserted]: (object: DisplayObject) => void;
+  [DISPLAY_OBJECT_EVENT.Removed]: (object: DisplayObject) => void;
+  [DISPLAY_OBJECT_EVENT.ChildRemoved]: (object: DisplayObject) => void;
 }
 
 export interface DisplayObjectConfig<StyleProps> {
@@ -128,7 +127,7 @@ export interface DisplayObjectConfig<StyleProps> {
  * * destroy
  * * attributeChanged
  */
-export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
+export class DisplayObject<StyleProps extends BaseStyleProps = any> {
   protected entity: Entity;
   protected config: DisplayObjectConfig<StyleProps>;
 
@@ -137,7 +136,10 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
   private sceneGraphService = container.get(SceneGraphService);
 
   private geometryUpdaterFactory =
-    container.get<(tagName: SHAPE) => GeometryAABBUpdater<any>>(GeometryUpdaterFactory);
+    container.get<(tagName: string) => GeometryAABBUpdater<any>>(GeometryUpdaterFactory);
+
+  private stylePropertyHandlerFactory =
+    container.get<<Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyHandler<any, any>>(StylePropertyHandlerFactory);
 
   /**
    * event emitter
@@ -266,7 +268,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
     throw new Error('Method not implemented.');
   }
 
-  remove(destroy = true) {
+  remove(destroy = true): DisplayObject {
     if (this.parentNode) {
       return this.parentNode.removeChild(this, destroy);
     }
@@ -370,11 +372,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
     return this.children.length > 0 ? this.children[this.children.length - 1] : null;
   }
   cloneNode() {
-    // TODO
-    return new DisplayObject({
-      ...this.config,
-      id: '',
-    });
+    throw new Error("Method not implemented.");
   }
   appendChild(child: DisplayObject, index?: number) {
     this.sceneGraphService.attach(child, this, index);
@@ -407,7 +405,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
     return child;
   }
   removeChildren(destroy = true) {
-    this.children.forEach((child) => {
+    [...this.children].forEach((child) => {
       this.removeChild(child, destroy);
     });
   }
@@ -1203,6 +1201,13 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
       geometryUpdater.update(this.attributes, geometry.aabb);
     }
 
+    const stylePropertyHandler = this.stylePropertyHandlerFactory(name);
+    if (stylePropertyHandler) {
+      if (stylePropertyHandler.update) {
+        stylePropertyHandler.update(oldValue, value, this);
+      }
+    }
+
     if (
       name === 'x' ||
       name === 'y' || // circle rect...
@@ -1217,126 +1222,6 @@ export class DisplayObject<StyleProps extends BaseStyleProps = BaseStyleProps> {
       const { x = 0, y = 0 } = this.attributes;
       // update transform
       this.sceneGraphService.setLocalPosition(this, x, y);
-    } else if (name === 'origin') {
-      this.sceneGraphService.setOrigin(this, value[0], value[1], value[2]);
-    } else if (name === 'zIndex') {
-      if (this.parentNode) {
-        const parentEntity = this.parentNode.getEntity();
-        const parentRenderable = parentEntity.getComponent(Renderable);
-        const parentSortable = parentEntity.getComponent(Sortable);
-        if (parentRenderable) {
-          parentRenderable.dirty = true;
-        }
-        // need re-sort on parent
-        if (parentSortable) {
-          parentSortable.dirty = true;
-        }
-      }
-    } else if (name === 'transform') {
-      const result = parseTransform(value);
-      result?.forEach(({ d, t }) => {
-        if (t === 'scale') { // scale(1) scale(1, 1)
-          // @ts-ignore
-          this.setLocalScale(d[0], d[1], 1);
-        } else if (t === 'scalex') {
-          this.setLocalScale(d as unknown as number, 1, 1);
-        } else if (t === 'scaley') {
-          this.setLocalScale(1, d as unknown as number, 1);
-        } else if (t === 'scalez') {
-          this.setLocalScale(1, 1, d as unknown as number);
-        } else if (t === 'scale3d') {
-          // @ts-ignore
-          this.setLocalScale(d[0], d[1], d[2]);
-        } else if (t === 'translate') {
-          this.setLocalPosition(
-            convertPercentUnit(d[0], 0, this),
-            convertPercentUnit(d[1], 1, this),
-            0,
-          );
-        } else if (t === 'translatex') {
-          this.setLocalPosition(
-            convertPercentUnit(d[0], 0, this),
-            0,
-            0,
-          );
-        } else if (t === 'translatey') {
-          this.setLocalPosition(
-            0,
-            convertPercentUnit(d[0], 1, this),
-            0,
-          );
-        } else if (t === 'translatez') {
-          this.setLocalPosition(0, 0, convertPercentUnit(d[0].px, 2, this));
-        } else if (t === 'translate3d') {
-          this.setLocalPosition(
-            convertPercentUnit(d[0], 0, this),
-            convertPercentUnit(d[1], 1, this),
-            convertPercentUnit(d[2], 2, this)
-          );
-        } else if (t === 'rotate') {
-          this.setLocalEulerAngles(convertAngleUnit(d[0]));
-        } else if (t === 'rotatex') {
-
-        } else if (t === 'rotatey') {
-
-        } else if (t === 'rotatez') {
-
-        } else if (t === 'rotate3d') {
-
-        }
-      });
-      delete this.attributes[name];
-    } else if (name === 'clipPath') {
-      const oldClipPath = oldValue as DisplayObject;
-      const newClipPath = value as DisplayObject;
-      // clear ref to old clip path
-      if (oldClipPath
-        && oldClipPath !== newClipPath
-        && oldClipPath.style.clipPathTargets
-      ) {
-        const index = oldClipPath.style.clipPathTargets.indexOf(this);
-        oldClipPath.style.clipPathTargets.splice(index, 1);
-      }
-
-      if (newClipPath) {
-        if (!newClipPath.style.clipPathTargets) {
-          newClipPath.style.clipPathTargets = [];
-        }
-        newClipPath.style.clipPathTargets.push(this);
-      }
-
-      renderable.aabbDirty = true;
-    } else if (name === 'offsetPath') {
-      const oldOffsetPath = oldValue as DisplayObject;
-      const newOffsetPath = value as DisplayObject;
-      // clear ref to old clip path
-      if (oldOffsetPath
-        && oldOffsetPath !== newOffsetPath
-        && oldOffsetPath.style.offsetPathTargets
-      ) {
-        const index = oldOffsetPath.style.offsetPathTargets.indexOf(this);
-        oldOffsetPath.style.offsetPathTargets.splice(index, 1);
-      }
-
-      if (newOffsetPath) {
-        if (!newOffsetPath.style.offsetPathTargets) {
-          newOffsetPath.style.offsetPathTargets = [];
-        }
-        newOffsetPath.style.offsetPathTargets.push(this);
-      }
-    } else if (name === 'offsetDistance' && this.attributes.offsetPath) {
-      const offsetPathNodeName = this.attributes.offsetPath.nodeName;
-      if (
-        offsetPathNodeName === SHAPE.Line ||
-        offsetPathNodeName === SHAPE.Path ||
-        offsetPathNodeName === SHAPE.Polyline
-      ) {
-        // @ts-ignore
-        const point = this.attributes.offsetPath.getPoint(value);
-        if (point) {
-          this.setLocalPosition(point.x, point.y);
-        }
-      }
     }
 
     // update renderable's aabb, account for world transform

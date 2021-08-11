@@ -185,4 +185,53 @@ describe('DisplayObject Node API', () => {
     expect(group1.getElementsByTagName(SHAPE.Group).length).to.eqls(3);
     expect(group1.getElementsByTagName(SHAPE.Circle).length).to.eqls(0);
   });
+
+  it('should remove children recursively', () => {
+    const group1 = new Group({
+      id: 'id1',
+      name: 'group1',
+    });
+    const group2 = new Group({
+      id: 'id2',
+      name: 'group2',
+    });
+    const group3 = new Group({
+      id: 'id3',
+      name: 'group3',
+    });
+    const group4 = new Group({
+      id: 'id4',
+      name: 'group4',
+      className: 'className4',
+    });
+
+    // 1 -> 2 -> 3
+    // 1 -> 4
+    group1.appendChild(group2);
+    group2.appendChild(group3);
+    group1.appendChild(group4);
+
+    group1.removeChildren();
+    expect(group1.children.length).to.be.eqls(0);
+
+    group1.appendChild(group2);
+    group2.appendChild(group3);
+    group1.appendChild(group4);
+    // remove
+    group4.remove(false);
+    expect(group1.children.length).to.be.eqls(1);
+
+    // re-append
+    group1.appendChild(group4);
+    expect(group1.children.length).to.be.eqls(2);
+
+    group4.remove();
+    expect(group1.children.length).to.be.eqls(1);
+
+    group1.appendChild(group2);
+    group2.appendChild(group3);
+    group1.appendChild(group4);
+    [...group1.children].forEach((child) => child.remove());
+    expect(group1.children.length).to.be.eqls(0);
+  });
 });

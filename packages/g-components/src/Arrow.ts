@@ -235,7 +235,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
 
   private applyArrowStyle(
     attributes: ArrowStyleProps,
-    objects: (DisplayObject<any> | undefined)[],
+    objects: (DisplayObject | undefined)[],
   ) {
     objects.forEach((shape) => {
       if (shape) {

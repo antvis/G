@@ -490,18 +490,26 @@ solarSystem.querySelectorAll('[r=25]');
 | --- | --- | --- | --- |
 | appendChild | `(group: Group)` | `Group` | 添加子节点，返回添加的节点 |
 | insertBefore | `(group: Group, reference?: Group)` | `Group` | 添加子节点，在某个子节点之前（如有），返回添加的节点 |
-| removeChild | `(group: Group)` | `Group` | 删除子节点，返回被删除的节点 |
-| remove | `(destroy?: boolean)` | `Group` | 从父节点（如有）中移除自身，`destroy` 表示是否要销毁 |
+| removeChild | `(group: Group, destroy = true)` | `Group` | 删除子节点，返回被删除的节点。`destroy` 表示是否要销毁 |
+| removeChildren | `(destroy = true)` |  | 删除全部子节点。`destroy` 表示是否要销毁 |
+| remove | `(destroy = true)` | `Group` | 从父节点（如有）中移除自身，`destroy` 表示是否要销毁 |
 
 从父节点中删除子节点并销毁有以下两种方式：
 ```js
 // parent -> child
-
 parent.removeChild(child);
-child.destroy();
 
 // 等价于
-child.remove(true);
+child.remove();
+```
+
+删除所有子节点有以下两种方式：
+```js
+parent.removeChildren();
+
+// 等价于
+[...parent.children].forEach((child) => parent.removeChild(child));
+[...parent.children].forEach((child) => child.remove());
 ```
 
 ## 获取/设置属性值

@@ -270,17 +270,16 @@ export class CubeModelBuilder implements ModelBuilder {
     // TODO: barycentric & tangent
   }
 
-  private async loadImage(
+  private loadImage(
     img: string | HTMLImageElement,
     width = 0,
     height = 0,
     engine: RenderingEngine
   ) {
     // TODO: WebGL don't support mipmap in size of pow2
-    const texture = await this.texturePool.getOrCreateTexture2D(engine, img, {
+    return this.texturePool.getOrCreateTexture2D(engine, img, {
       width,
       height,
     });
-    return texture;
   }
 }

@@ -21,6 +21,7 @@ import {
   SceneGraphSelector,
   SceneGraphSelectorFactory,
 } from './services/SceneGraphSelector';
+import { StylePropertyHandlerFactory, StylePropertyHandler, Color, ClipPath, ZIndex, OffsetPath, OffsetDistance, Origin, Transform } from './properties';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
@@ -63,9 +64,23 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
     };
   });
 
-  // bind animation updaters
-  // bind(DefaultAttributeAnimationUpdater).toSelf().inSingletonScope();
-  // bind(ColorAttributeAnimationUpdater).toSelf().inSingletonScope();
-  // bind(AttributeAnimationUpdaters).toService(DefaultAttributeAnimationUpdater);
-  // bind(AttributeAnimationUpdaters).toService(ColorAttributeAnimationUpdater);
+  // bind style property handler
+  bind(StylePropertyHandler).to(ClipPath).inSingletonScope().whenTargetNamed('clipPath');
+  bind(StylePropertyHandler).to(Color).inSingletonScope().whenTargetNamed('fill');
+  bind(StylePropertyHandler).to(Color).inSingletonScope().whenTargetNamed('stroke');
+  bind(StylePropertyHandler).to(ZIndex).inSingletonScope().whenTargetNamed('zIndex');
+  bind(StylePropertyHandler).to(OffsetPath).inSingletonScope().whenTargetNamed('offsetPath');
+  bind(StylePropertyHandler).to(OffsetDistance).inSingletonScope().whenTargetNamed('offsetDistance');
+  bind(StylePropertyHandler).to(Origin).inSingletonScope().whenTargetNamed('origin');
+  bind(StylePropertyHandler).to(Transform).inSingletonScope().whenTargetNamed('transform');
+  bind<interfaces.Factory<StylePropertyHandler<any, any> | null>>(
+    StylePropertyHandlerFactory,
+  ).toFactory<StylePropertyHandler<any, any> | null>((context: interfaces.Context) => {
+    return (propertyName: string) => {
+      if (context.container.isBoundNamed(StylePropertyHandler, propertyName)) {
+        return context.container.getNamed(StylePropertyHandler, propertyName);
+      }
+      return null;
+    };
+  });
 });

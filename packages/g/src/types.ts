@@ -261,3 +261,21 @@ type Z = ['z' | 'Z'];
 export type PathCommand = A | C | O | H | L | M | R | Q | S | T | V | U | Z;
 
 export type InteractivePointerEvent = PointerEvent | TouchEvent | MouseEvent | WheelEvent;
+
+// @see https://github.com/zhanba/pailye/blob/master/packages/flex/src/types.ts
+export type Tuple4<T> = [T, T, T, T];
+
+export type Tuple4Number = Tuple4<number>;
+
+export type ComninedValue<T> = T | [T] | [T, T] | [T, T, T] | Tuple4<T>;
+
+export type CombinedNumber = ComninedValue<number>;
+
+export type Length = number;
+
+type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+
+export type Percentage = `${Digit}%` | `${Digit}${Digit}%`;
+
+export type LengthOrPercentage = Length | Percentage;
+export type LengthOrPercentageOrAuto = Length | Percentage | 'auto';
