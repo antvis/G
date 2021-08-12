@@ -21,7 +21,7 @@ import {
   SceneGraphSelector,
   SceneGraphSelectorFactory,
 } from './services/SceneGraphSelector';
-import { StylePropertyHandlerFactory, StylePropertyHandler, Color, ClipPath, ZIndex, OffsetPath, OffsetDistance, Origin, Transform } from './properties';
+import { StylePropertyHandlerFactory, StylePropertyHandler, Color, ClipPath, ZIndex, OffsetPath, OffsetDistance, Origin, TransformProperty } from './properties';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
@@ -72,7 +72,7 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   bind(StylePropertyHandler).to(OffsetPath).inSingletonScope().whenTargetNamed('offsetPath');
   bind(StylePropertyHandler).to(OffsetDistance).inSingletonScope().whenTargetNamed('offsetDistance');
   bind(StylePropertyHandler).to(Origin).inSingletonScope().whenTargetNamed('origin');
-  bind(StylePropertyHandler).to(Transform).inSingletonScope().whenTargetNamed('transform');
+  bind(StylePropertyHandler).to(TransformProperty).inSingletonScope().whenTargetNamed('transform');
   bind<interfaces.Factory<StylePropertyHandler<any, any> | null>>(
     StylePropertyHandlerFactory,
   ).toFactory<StylePropertyHandler<any, any> | null>((context: interfaces.Context) => {

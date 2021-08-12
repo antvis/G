@@ -7,10 +7,36 @@ import { parseTransform } from '../property-handlers/transform';
 import { convertPercentUnit, convertAngleUnit } from '../property-handlers/dimension';
 
 /**
- * @see /zh/docs/api/animation#%E8%B7%AF%E5%BE%84%E5%8A%A8%E7%94%BB
+ * @see /zh/docs/api/animation#支持变换的属性
+ * 
+ * support the following formats like CSS Transform:
+ * 
+ * scale
+ * * scale(x, y)
+ * * scaleX(x)
+ * * scaleY(x)
+ * * scaleZ(z)
+ * * scale3d(x, y, z)
+ * 
+ * translate (unit: none, px, %(relative to its bounds))
+ * * translate(x, y) eg. translate(0, 0) translate(0, 30px) translate(100%, 100%)
+ * * translateX(0)
+ * * translateY(0)
+ * * translateZ(0)
+ * * translate3d(0, 0, 0)
+ * 
+ * rotate (unit: deg rad turn)
+ * * rotate(0.5turn) rotate(30deg) rotate(1rad)
+ * 
+ * unsupported for now:
+ * * calc() eg. translate(calc(100% + 10px))
+ * * matrix/matrix3d()
+ * * skew/skewX/skewY
+ * * perspective
+ * * none
  */
 @injectable()
-export class Transform implements StylePropertyHandler<string, string> {
+export class TransformProperty implements StylePropertyHandler<string, string> {
   @inject(SceneGraphService)
   private sceneGraphService: SceneGraphService;
 

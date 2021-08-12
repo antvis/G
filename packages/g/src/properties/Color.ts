@@ -3,7 +3,7 @@ import * as d3 from 'd3-color';
 import { clamp, isString, isNil } from '@antv/util';
 import type { DisplayObject } from '../DisplayObject';
 import type { Tuple4Number } from '../types';
-import type { StylePropertyHandler } from '.';
+import type { ParsedStyleProperty, StylePropertyHandler } from '.';
 
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;
@@ -28,31 +28,23 @@ export interface RadialGradient {
   steps: string[][];
 }
 
+export interface Pattern {
+  repetition: string;
+  src: string;
+}
+
 export enum PARSED_COLOR_TYPE {
   Constant,
   LinearGradient,
   RadialGradient,
-}
-export type ParsedColor = {
-  type: PARSED_COLOR_TYPE.Constant;
-  value: Tuple4Number;
-} | {
-  type: PARSED_COLOR_TYPE.LinearGradient;
-  value: LinearGradient;
-} | {
-  type: PARSED_COLOR_TYPE.RadialGradient;
-  value: RadialGradient;
+  Pattern,
 }
 
-function isConstant(parsed: ParsedColor['value']): parsed is Tuple4Number {
-  return Array.isArray(parsed);
-}
-function isLinearGradient(parsed: ParsedColor['value']): parsed is LinearGradient {
-  return !isRadialGradient(parsed) && !isNil((parsed as LinearGradient).x0);
-}
-function isRadialGradient(parsed: ParsedColor['value']): parsed is RadialGradient {
-  return !isConstant(parsed) && !isNil((parsed as RadialGradient).r0);
-}
+export type ParsedColorStyleProperty =
+  ParsedStyleProperty<PARSED_COLOR_TYPE.Constant, Tuple4Number> |
+  ParsedStyleProperty<PARSED_COLOR_TYPE.LinearGradient, LinearGradient> |
+  ParsedStyleProperty<PARSED_COLOR_TYPE.RadialGradient, RadialGradient> |
+  ParsedStyleProperty<PARSED_COLOR_TYPE.Pattern, Pattern>;
 
 /**
  * used in `fill`, `stroke`, support the following types:
@@ -62,22 +54,23 @@ function isRadialGradient(parsed: ParsedColor['value']): parsed is RadialGradien
  */
 
 @injectable()
-export class Color implements StylePropertyHandler<string, ParsedColor> {
+export class Color implements StylePropertyHandler<string, ParsedColorStyleProperty> {
   initialValue = '';
 
-  parse(colorStr: string, displayObject: DisplayObject): ParsedColor {
+  parse(colorStr: string, displayObject: DisplayObject): ParsedColorStyleProperty {
     const type = colorStr[0];
     if (colorStr[1] === '(' || colorStr[2] === '(') {
       if (type === 'l') {
-        const parsedLineGradient = parseLineGradient(displayObject, colorStr);
+        const parsedLineGradient = parseLineGradient(colorStr);
         if (parsedLineGradient) {
           return {
             type: PARSED_COLOR_TYPE.LinearGradient,
             value: parsedLineGradient,
+            formatted: '',
           };
         }
       } else if (type === 'r') {
-        const parsedRadialGradient = parseRadialGradient(displayObject, colorStr);
+        const parsedRadialGradient = parseRadialGradient(colorStr);
         if (parsedRadialGradient) {
           if (isString(parsedRadialGradient)) {
             colorStr = parsedRadialGradient as string;
@@ -85,116 +78,134 @@ export class Color implements StylePropertyHandler<string, ParsedColor> {
             return {
               type: PARSED_COLOR_TYPE.RadialGradient,
               value: parsedRadialGradient,
+              formatted: '',
             };
           }
         }
+      } else if (type === 'p') {
+        const pattern = parsePattern(colorStr);
+        if (pattern) {
+          return {
+            type: PARSED_COLOR_TYPE.Pattern,
+            value: pattern,
+            formatted: '',
+          };
+        }
       }
-      // if (color[0] === 'p') {
-      //   // regexPR.test(color)
-      //   return parsePattern(context, element, color);
-      // }
     }
 
     // constants
     const color = d3.color(colorStr) as d3.RGBColor;
-    const arr: Tuple4Number = [0, 0, 0, 0];
+    const rgba: Tuple4Number = [0, 0, 0, 0];
     if (color !== null) {
-      arr[0] = color.r / 255;
-      arr[1] = color.g / 255;
-      arr[2] = color.b / 255;
-      arr[3] = color.opacity;
+      rgba[0] = color.r / 255;
+      rgba[1] = color.g / 255;
+      rgba[2] = color.b / 255;
+      rgba[3] = color.opacity;
     }
     return {
       type: PARSED_COLOR_TYPE.Constant,
-      value: arr,
+      value: rgba,
+      formatted: `rgba(${color.r},${color.g},${color.b},${color.opacity})`,
     };
-  }
-
-  format(parsed: ParsedColor): string {
-    if (isConstant(parsed.value)) {
-      if (parsed.value[3]) {
-        for (let i = 0; i < 3; i++)
-          parsed.value[i] = Math.round(clamp(0, 255, parsed.value[i] * 255));
-      }
-      parsed.value[3] = clamp(0, 1, parsed.value[3]);
-      return `rgba(${parsed.value.join(',')})`;
-    }
-
-    return '';
   }
 }
 
-export function parseLineGradient(displayObject: DisplayObject, gradientStr: string): LinearGradient | null {
-  const arr = regexLG.exec(gradientStr);
+function parsePattern(patternStr: string): Pattern | null {
+  const arr = regexPR.exec(patternStr);
   if (arr) {
-    const angle = (parseFloat(arr[1]) % 360) * (Math.PI / 180);
-    const steps = arr[2].match(regexColorStop)?.map((stop) => stop.split(':')) || [];
-    const bounds = displayObject.getLocalBounds();
-    if (bounds) {
-      const [maxX, maxY] = bounds.getMax();
-      const [minX, minY] = bounds.getMin();
-      let start;
-      let end;
-
-      if (angle >= 0 && angle < (1 / 2) * Math.PI) {
-        start = {
-          x: minX,
-          y: minY,
-        };
-        end = {
-          x: maxX,
-          y: maxY,
-        };
-      } else if ((1 / 2) * Math.PI <= angle && angle < Math.PI) {
-        start = {
-          x: maxX,
-          y: minY,
-        };
-        end = {
-          x: minX,
-          y: maxY,
-        };
-      } else if (Math.PI <= angle && angle < (3 / 2) * Math.PI) {
-        start = {
-          x: maxX,
-          y: maxY,
-        };
-        end = {
-          x: minX,
-          y: minY,
-        };
-      } else {
-        start = {
-          x: minX,
-          y: maxY,
-        };
-        end = {
-          x: maxX,
-          y: minY,
-        };
-      }
-
-      const tanTheta = Math.tan(angle);
-      const tanTheta2 = tanTheta * tanTheta;
-
-      const x = (end.x - start.x + tanTheta * (end.y - start.y)) / (tanTheta2 + 1) + start.x;
-      const y = (tanTheta * (end.x - start.x + tanTheta * (end.y - start.y))) / (tanTheta2 + 1) + start.y;
-
-      return {
-        x0: start.x,
-        y0: start.y,
-        x1: x,
-        y1: y,
-        steps,
-      };
+    let repetition = arr[1];
+    const src = arr[2];
+    switch (repetition) {
+      case 'a':
+        repetition = 'repeat';
+        break;
+      case 'x':
+        repetition = 'repeat-x';
+        break;
+      case 'y':
+        repetition = 'repeat-y';
+        break;
+      case 'n':
+        repetition = 'no-repeat';
+        break;
+      default:
+        repetition = 'no-repeat';
     }
-    // const gradient = context.createLinearGradient(start.x, start.y, x, y);
-    // addStop(steps, gradient);
+    return {
+      src,
+      repetition,
+    }
   }
   return null;
 }
 
-export function parseRadialGradient(displayObject: DisplayObject, gradientStr: string): RadialGradient | string | null {
+function parseLineGradient(gradientStr: string): LinearGradient | null {
+  const arr = regexLG.exec(gradientStr);
+  if (arr) {
+    const angle = (parseFloat(arr[1]) % 360) * (Math.PI / 180);
+    const steps = arr[2].match(regexColorStop)?.map((stop) => stop.split(':')) || [];
+    const [maxX, maxY] = [1, 1];
+    const [minX, minY] = [0, 0];
+    let start;
+    let end;
+
+    if (angle >= 0 && angle < (1 / 2) * Math.PI) {
+      start = {
+        x: minX,
+        y: minY,
+      };
+      end = {
+        x: maxX,
+        y: maxY,
+      };
+    } else if ((1 / 2) * Math.PI <= angle && angle < Math.PI) {
+      start = {
+        x: maxX,
+        y: minY,
+      };
+      end = {
+        x: minX,
+        y: maxY,
+      };
+    } else if (Math.PI <= angle && angle < (3 / 2) * Math.PI) {
+      start = {
+        x: maxX,
+        y: maxY,
+      };
+      end = {
+        x: minX,
+        y: minY,
+      };
+    } else {
+      start = {
+        x: minX,
+        y: maxY,
+      };
+      end = {
+        x: maxX,
+        y: minY,
+      };
+    }
+
+    const tanTheta = Math.tan(angle);
+    const tanTheta2 = tanTheta * tanTheta;
+
+    const x = (end.x - start.x + tanTheta * (end.y - start.y)) / (tanTheta2 + 1) + start.x;
+    const y = (tanTheta * (end.x - start.x + tanTheta * (end.y - start.y))) / (tanTheta2 + 1) + start.y;
+
+    return {
+      x0: start.x,
+      y0: start.y,
+      x1: x,
+      y1: y,
+      steps,
+    };
+  }
+  return null;
+}
+
+function parseRadialGradient(gradientStr: string): RadialGradient | string | null {
   const arr = regexRG.exec(gradientStr);
   if (arr) {
     const fx = parseFloat(arr[1]);
@@ -206,24 +217,15 @@ export function parseRadialGradient(displayObject: DisplayObject, gradientStr: s
       const colors = arr[4].match(regexColorStop) as string[];
       return colors[colors.length - 1].split(':')[1];
     }
-    const bounds = displayObject.getLocalBounds();
-    if (bounds) {
-      const [maxX, maxY] = bounds.getMax();
-      const [minX, minY] = bounds.getMin();
-      const width = maxX - minX;
-      const height = maxY - minY;
-      const r = Math.sqrt(width * width + height * height) / 2;
-
-      return {
-        x0: minX + width * fx,
-        y0: minY + height * fy,
-        r0: 0,
-        x1: minX + width / 2,
-        y1: minY + height / 2,
-        r1: fr * r,
-        steps,
-      };
-    }
+    return {
+      x0: fx,
+      y0: fy,
+      r0: 0,
+      x1: 0.5,
+      y1: 0.5,
+      r1: fr,
+      steps,
+    };
   }
   return null;
 }

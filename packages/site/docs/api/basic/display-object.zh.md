@@ -162,7 +162,7 @@ rect.style.origin(0, 0); // 设置为左上角
 * `'#1890FF'`
 * `'rgba(r, g, b, a)'`
 
-除此之外，支持以下渐变色写法。
+除此之外，支持以下渐变色写法。[示例](/zh/examples/shape#gradient)
 
 ### 线性渐变
 
@@ -341,6 +341,42 @@ clipPathCircle.animate(
 
 我们暂不支持复合的裁剪区域，例如自定义图形以及 Group.
 
+## 运动轨迹
+
+在[路径动画](/zh/docs/api/animation#路径动画)中，我们可以使用 `offsetPath` 指定一个图形的运动轨迹，配合[动画系统](/zh/docs/api/animation#路径动画)对 `offsetDistance` 属性应用变换：
+```js
+const circle = new Circle({
+  style: {
+    offsetPath: new Line({ // 创建运动轨迹
+      style: { // 不需要设置其他与轨迹无关的绘图属性
+        x1: 100,
+        y1: 100,
+        x2: 300,
+        y2: 100,
+      }
+    }),
+    r: 10,
+  }
+});
+
+const animation = circle.animate([
+  { offsetDistance: 0 }, // 变换
+  { offsetDistance: 1 },
+], {
+  duration: 3000,
+  easing: 'ease-in-out',
+  iterations: Infinity,
+});
+```
+
+### offsetPath
+
+指定路径轨迹，目前支持 [Line](/zh/docs/api/basic/line) [Path](/zh/docs/api/basic/path) 和 [Polyline](/zh/docs/api/basic/polyline) 这三种图形。
+
+### offsetDistance
+
+从路径起点出发行进的距离，取值范围为 `[0-1]`，0 代表路径起点，1 代表终点。
+
 # 变换
 
 ## 平移
@@ -409,7 +445,7 @@ rect.style.origin = [0, 0]; // 设置为左上角
 | --------- | ---- | ------ | ------------------------ |
 | getBounds | 无   | AABB   | 获取世界坐标系下的轴对齐包围盒 |
 | getLocalBounds | 无   | AABB   | 获取局部坐标系下的包围盒 |
-| getBoundingClientRect | 无 | Rect | 获取世界坐标系下的包围矩形，不考虑子元素 |
+| getBoundingClientRect | 无 | Rect | 获取世界坐标系下的包围矩形，不考虑子元素，同时加上画布相对于浏览器的偏移量 |
 
 其中轴对齐包围盒 `AABB` 结构为：
 ```js
@@ -435,7 +471,7 @@ interface Rect {
 
 `getBounds` 和 `getBoundingClientRect` 有以下区别：
 * 返回值的结构不同，前者返回一个3维的轴对齐包围盒，后者返回一个2维矩形
-* 前者会考虑子元素，把它们的包围盒合并起来。后者仅考虑自身，不考虑子元素
+* 前者会考虑子元素，把它们的包围盒合并起来。后者仅考虑自身，不考虑子元素，另外会加上画布相对于浏览器的偏移量
 
 # 节点操作
 

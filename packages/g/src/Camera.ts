@@ -4,6 +4,7 @@ import { injectable } from 'inversify';
 import Landmark from './Landmark';
 import { Frustum } from './shapes';
 import { createVec3, getAngle } from './utils/math';
+import { requestAnimationFrame, cancelAnimationFrame } from './utils/raf';
 
 export enum CAMERA_TYPE {
   ORBITING = 'ORBITING',
@@ -723,7 +724,7 @@ export class Camera extends EventEmitter {
       }
 
       if (this.landmarkAnimationID !== undefined) {
-        window.cancelAnimationFrame(this.landmarkAnimationID);
+        cancelAnimationFrame(this.landmarkAnimationID);
       }
 
       // TODO: do not process events during animation
@@ -772,11 +773,11 @@ export class Camera extends EventEmitter {
         }
 
         if (elapsed < duration) {
-          this.landmarkAnimationID = window.requestAnimationFrame(animate);
+          this.landmarkAnimationID = requestAnimationFrame(animate);
         }
       };
 
-      window.requestAnimationFrame(animate);
+      requestAnimationFrame(animate);
     }
   }
 

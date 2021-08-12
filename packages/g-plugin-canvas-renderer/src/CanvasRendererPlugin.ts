@@ -14,6 +14,8 @@ import {
   getEuler,
   fromRotationTranslationScale,
   Camera,
+  ParsedColorStyleProperty,
+  PARSED_COLOR_TYPE,
 } from '@antv/g';
 import { isArray } from '@antv/util';
 import { inject, injectable } from 'inversify';
@@ -21,7 +23,8 @@ import { vec3, mat4, quat } from 'gl-matrix';
 import RBush from 'rbush';
 import { PathGeneratorFactory, PathGenerator } from './shapes/paths';
 import { StyleRenderer, StyleRendererFactory } from './shapes/styles';
-import { StyleParser } from './shapes/StyleParser';
+import { GradientPool } from './shapes/GradientPool';
+import { ImagePool } from './shapes/ImagePool';
 import { RBushNode, RBushNodeAABB } from './components/RBushNode';
 
 export const RBushRoot = Symbol('RBushRoot');
@@ -63,14 +66,17 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
-  @inject(StyleParser)
-  private styleParser: StyleParser;
+  @inject(ImagePool)
+  private imagePool: ImagePool;
+
+  @inject(GradientPool)
+  private gradientPool: GradientPool;
 
   @inject(PathGeneratorFactory)
-  private pathGeneratorFactory: (tagName: SHAPE) => PathGenerator<any>;
+  private pathGeneratorFactory: (tagName: SHAPE | string) => PathGenerator<any>;
 
   @inject(StyleRendererFactory)
-  private styleRendererFactory: (tagName: SHAPE) => StyleRenderer;
+  private styleRendererFactory: (tagName: SHAPE | string) => StyleRenderer;
 
   @inject(DisplayObjectPool)
   private displayObjectPool: DisplayObjectPool;
@@ -166,7 +172,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           .sort(this.sceneGraphService.sort)
           .forEach((object) => {
             if (object.isVisible()) {
-              this.renderDisplayObject(object);
+              this.renderDisplayObject(object, renderingService);
             }
           });
 
@@ -186,7 +192,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
       if (!enableDirtyRectangleRendering) {
         // render immediately
-        this.renderDisplayObject(object);
+        this.renderDisplayObject(object, renderingService);
       } else {
         // render at the end of frame
         this.renderQueue.push(object);
@@ -194,7 +200,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     });
   }
 
-  private renderDisplayObject(object: DisplayObject) {
+  private renderDisplayObject(object: DisplayObject, renderingService: RenderingService) {
     const context = this.contextService.getContext()!;
 
     const nodeName = object.nodeName;
@@ -209,7 +215,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     this.applyAnchor(context, object);
 
     // apply attributes to context
-    this.applyAttributesToContext(context, object.attributes);
+    this.applyAttributesToContext(context, object, renderingService);
 
     // clip path
     const clipPathShape = object.style.clipPath;
@@ -219,7 +225,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       // apply clip shape's RTS
       this.applyTransform(context, clipPathShape.getWorldTransform());
       this.applyAnchor(context, clipPathShape);
-      this.applyAttributesToContext(context, clipPathShape.attributes);
+      this.applyAttributesToContext(context, clipPathShape, renderingService);
       const generatePath = this.pathGeneratorFactory(clipPathShape.nodeName);
       if (generatePath) {
         generatePath(context, clipPathShape.attributes);
@@ -381,23 +387,46 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     context.transform(rts[0], rts[1], rts[3], rts[4], rts[6], rts[7]);
   }
 
-  private applyAttributesToContext(context: CanvasRenderingContext2D, attrs: any) {
-    for (const k in attrs) {
+  private applyAttributesToContext(context: CanvasRenderingContext2D, object: DisplayObject, renderingService: RenderingService) {
+    const { attributes, parsedStyle } = object;
+    for (const k in attributes) {
       // reserved keywords in Canvas2DContext
       if (k === 'transform') {
         continue;
       }
 
-      let v = attrs[k];
+      let v = attributes[k];
       // 转换一下不与 canvas 兼容的属性名
       const name = SHAPE_ATTRS_MAP[k] ? SHAPE_ATTRS_MAP[k] : k;
       if (name === 'lineDash' && context.setLineDash) {
         isArray(v) && context.setLineDash(v);
       } else {
         if (name === 'strokeStyle' || name === 'fillStyle') {
-          // 如果存在渐变、pattern 这个开销有些大
-          // 可以考虑缓存机制，通过 hasUpdate 来避免一些运算
-          v = this.styleParser.parse(v);
+          const parsedColor = parsedStyle[k] as ParsedColorStyleProperty;
+          if (
+            parsedColor.type === PARSED_COLOR_TYPE.LinearGradient ||
+            parsedColor.type === PARSED_COLOR_TYPE.RadialGradient
+          ) {
+            const { width = 0, height = 0 } = attributes;
+            v = this.gradientPool.getOrCreateGradient({
+              type: parsedColor.type,
+              ...parsedColor.value, width, height,
+            }, context);
+          } else if (parsedColor.type === PARSED_COLOR_TYPE.Pattern) {
+            const pattern = this.imagePool.getPatternSync(parsedColor.value);
+            if (pattern) {
+              v = pattern;
+            } else {
+              this.imagePool.createPattern(parsedColor.value, context).then(() => {
+                // set dirty rectangle flag
+                object.getEntity().getComponent(Renderable).dirty = true;
+                renderingService.dirtify();
+              });
+            }
+          } else {
+            // constant, eg. rgba(255,255,255,1)
+            v = parsedColor.formatted;
+          }
         } else if (name === 'globalAlpha') {
           // opacity 效果可以叠加，子元素的 opacity 需要与父元素 opacity 相乘
           v = v * context.globalAlpha;

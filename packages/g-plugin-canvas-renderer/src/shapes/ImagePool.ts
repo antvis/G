@@ -1,8 +1,10 @@
+import { Pattern } from '@antv/g';
 import { injectable } from 'inversify';
 
 @injectable()
 export class ImagePool {
   private imageCache: Record<string, HTMLImageElement> = {};
+  private patternCache: Record<string, CanvasPattern> = {};
 
   getImageSync(src: string) {
     return this.imageCache[src];
@@ -25,5 +27,30 @@ export class ImagePool {
       image.src = src;
       this.imageCache[src] = image;
     });
+  }
+
+  getPatternSync(pattern: Pattern) {
+    const patternKey = this.generatePatternKey(pattern);
+    if (this.patternCache[patternKey]) {
+      return this.patternCache[patternKey];
+    }
+  }
+
+  createPattern(patternParams: Pattern, context: CanvasRenderingContext2D) {
+    return this.getOrCreateImage(patternParams.src).then((image) => {
+      const patternKey = this.generatePatternKey(patternParams);
+      // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createPattern
+      const pattern = context.createPattern(image, patternParams.repetition);
+      if (pattern) {
+        this.patternCache[patternKey] = pattern;
+      }
+
+      return this.patternCache[patternKey];
+    });
+  }
+
+  private generatePatternKey(pattern: Pattern) {
+    const { src, repetition } = pattern;
+    return `pattern-${src}-${repetition}`;
   }
 }

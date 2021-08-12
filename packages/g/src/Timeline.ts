@@ -1,6 +1,7 @@
 import { injectable } from 'inversify';
 import { Animation } from './Animation';
 import { KeyframeEffect } from './KeyframeEffect';
+import { requestAnimationFrame, cancelAnimationFrame } from './utils/raf';
 
 export function compareAnimations(leftAnimation: Animation, rightAnimation: Animation) {
   return Number(leftAnimation.id) - Number(rightAnimation.id);
@@ -92,7 +93,7 @@ export class AnimationTimeline implements globalThis.AnimationTimeline {
   }
 
   destroy() {
-    window.cancelAnimationFrame(this.frameId);
+    cancelAnimationFrame(this.frameId);
   }
 
   applyPendingEffects() {
@@ -146,7 +147,7 @@ export class AnimationTimeline implements globalThis.AnimationTimeline {
   private rAF(f: (x: number) => void) {
     const id = this.rafId++;
     if (this.rafCallbacks.length === 0) {
-      this.frameId = window.requestAnimationFrame(this.processRafCallbacks);
+      this.frameId = requestAnimationFrame(this.processRafCallbacks);
     }
     this.rafCallbacks.push([id, f]);
     return id;

@@ -18,3 +18,4 @@ export * from './Timeline';
 export * from './Animation';
 export * from './KeyframeEffect';
 export * from './property-handlers';
+export * from './properties';

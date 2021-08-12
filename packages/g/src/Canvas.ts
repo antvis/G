@@ -11,6 +11,7 @@ import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE } from './Camera';
 import { containerModule as commonContainerModule } from './canvas-module';
 import { AbstractRenderer, IRenderer } from './AbstractRenderer';
 import { AnimationTimeline } from './Timeline';
+import { cancelAnimationFrame } from './utils/raf';
 
 export interface CanvasService {
   init(): void;
@@ -166,7 +167,7 @@ export class Canvas extends EventEmitter {
   destroy(destroyScenegraph = true) {
     this.emit('beforeDestroy');
     if (this.frameId) {
-      window.cancelAnimationFrame(this.frameId);
+      cancelAnimationFrame(this.frameId);
     }
 
     // unmount all children

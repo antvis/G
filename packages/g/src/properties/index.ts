@@ -1,14 +1,16 @@
 import type { DisplayObject } from '../DisplayObject';
 
 export const StylePropertyHandlerFactory = Symbol('StylePropertyHandlerFactory');
-export type StylePropertyHandlerFactory = <T, P>(name: string) => StylePropertyHandler<T, P>;
+export type StylePropertyHandlerFactory = <Original, Parsed>(name: string) => StylePropertyHandler<Original, Parsed>;
 
+export interface ParsedStyleProperty<T, V, Formatted = string> {
+  type: T;
+  value: V;
+  formatted: Formatted;
+}
 export const StylePropertyHandler = Symbol('StylePropertyHandler');
-export interface StylePropertyHandler<Original, Parsed, Formatted = string> {
+export interface StylePropertyHandler<Original, Parsed> {
   parse?(value: Original, displayObject: DisplayObject): Parsed;
-
-  format?(rgba: Parsed): Formatted;
-
   update?(oldValue: Original, newValue: Original, displayObject: DisplayObject): void;
 }
 

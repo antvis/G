@@ -1156,7 +1156,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
   }
 
   /**
-   * compitable with `style`
+   * compatible with `style`
    * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style
    */
   style = new Proxy<StyleProps>({} as StyleProps, {
@@ -1168,6 +1168,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
       return true;
     },
   });
+  parsedStyle: StyleProps = {} as StyleProps;
 
   /**
    * called when attributes get changed or initialized
@@ -1195,6 +1196,8 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
 
     const stylePropertyHandler = this.stylePropertyHandlerFactory(name);
     if (stylePropertyHandler) {
+      this.parsedStyle[name] = stylePropertyHandler.parse
+        ? stylePropertyHandler.parse(value, this) : value;
       if (stylePropertyHandler.update) {
         stylePropertyHandler.update(oldValue, value, this);
       }

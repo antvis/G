@@ -3,7 +3,7 @@ import { ContainerModule, Container } from 'inversify';
 import RBush from 'rbush';
 import { DefaultRenderer, StyleRenderer, StyleRendererFactory } from './shapes/styles';
 import { ImageRenderer } from './shapes/styles/Image';
-import { StyleParser } from './shapes/StyleParser';
+import { GradientPool } from './shapes/GradientPool';
 import { ImagePool } from './shapes/ImagePool';
 import {
   PathGeneratorFactory,
@@ -75,7 +75,7 @@ const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     return null;
   });
 
-  bind(StyleParser).toSelf().inSingletonScope();
+  bind(GradientPool).toSelf().inSingletonScope();
 
   bind(CanvasRendererPlugin).toSelf().inSingletonScope();
   bind(RenderingPluginContribution).toService(CanvasRendererPlugin);
