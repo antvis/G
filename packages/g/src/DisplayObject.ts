@@ -1,6 +1,8 @@
+/* eslint-disable no-restricted-syntax */
 import { isObject, isNil, isBoolean, isFunction } from '@antv/util';
 import type { Entity } from '@antv/g-ecs';
-import { vec2, vec3, mat3, mat4, quat } from 'gl-matrix';
+import type { mat3 } from 'gl-matrix';
+import { vec2, vec3, mat4, quat } from 'gl-matrix';
 import { EventEmitter } from 'eventemitter3';
 import { Cullable, Geometry, Renderable, SceneGraphNode, Transform, Sortable } from './components';
 import { createVec3, rad2deg, getEuler, fromRotationTranslationScale } from './utils/math';
@@ -11,14 +13,16 @@ import { DisplayObjectPool } from './DisplayObjectPool';
 import { world, container } from './inversify.config';
 import { SceneGraphService } from './services';
 import { AABB, Rectangle } from './shapes';
-import { GeometryAABBUpdater, GeometryUpdaterFactory } from './services/aabb';
-import { FederatedEvent } from './FederatedEvent';
+import type { GeometryAABBUpdater } from './services/aabb';
+import { GeometryUpdaterFactory } from './services/aabb';
+import { FederatedEvent } from './dom/FederatedEvent';
 import { KeyframeEffect } from './KeyframeEffect';
-import { Canvas } from './Canvas';
-import { Animation } from './Animation';
+import type { Canvas } from './Canvas';
+import type { Animation } from './Animation';
 import { DELEGATION_SPLITTER } from './services/EventService';
 import { CustomEvent } from './CustomEvent';
-import { StylePropertyHandlerFactory, StylePropertyHandler } from './properties';
+import type { StylePropertyHandler } from './properties';
+import { StylePropertyHandlerFactory } from './properties';
 
 /**
  * events for display object
@@ -138,8 +142,9 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
   private geometryUpdaterFactory =
     container.get<(tagName: string) => GeometryAABBUpdater<any>>(GeometryUpdaterFactory);
 
-  private stylePropertyHandlerFactory =
-    container.get<<Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyHandler<any, any>>(StylePropertyHandlerFactory);
+  private stylePropertyHandlerFactory = container.get<
+    <Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyHandler<any, any>
+  >(StylePropertyHandlerFactory);
 
   /**
    * event emitter
@@ -252,17 +257,11 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
   /**
    * ChildNode API
    */
-  after(...nodes: (Node | string)[]) {
+  after(...nodes: (Node | string)[]) {}
 
-  }
+  before(...nodes: (Node | string)[]) {}
 
-  before(...nodes: (Node | string)[]) {
-
-  }
-
-  replaceWith(...nodes: (Node | string)[]) {
-
-  }
+  replaceWith(...nodes: (Node | string)[]) {}
 
   replaceChild<T extends Node>(node: Node, child: T): T {
     throw new Error('Method not implemented.');
@@ -348,7 +347,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
   get nextSibling(): DisplayObject | null {
     const parentGroup = this.parentNode;
     if (parentGroup) {
-      const children = parentGroup.children;
+      const { children } = parentGroup;
       const index = children.indexOf(this);
       return children[index + 1] || null;
     }
@@ -358,7 +357,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
   get previousSibling(): DisplayObject | null {
     const parentGroup = this.parentNode;
     if (parentGroup) {
-      const children = parentGroup.children;
+      const { children } = parentGroup;
       const index = children.indexOf(this);
       return children[index - 1] || null;
     }
@@ -372,7 +371,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     return this.children.length > 0 ? this.children[this.children.length - 1] : null;
   }
   cloneNode() {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
   appendChild(child: DisplayObject, index?: number) {
     this.sceneGraphService.attach(child, this, index);
@@ -494,9 +493,9 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     return this.lastChild;
   }
 
-  append(...nodes: (Node | string)[]) { }
-  prepend(...nodes: (Node | string)[]) { }
-  replaceChildren(...nodes: (Node | string)[]) { }
+  append(...nodes: (Node | string)[]) {}
+  prepend(...nodes: (Node | string)[]) {}
+  replaceChildren(...nodes: (Node | string)[]) {}
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
@@ -657,7 +656,11 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute
    */
-  setAttribute<Key extends keyof StyleProps>(attributeName: Key, value: StyleProps[Key], force = false) {
+  setAttribute<Key extends keyof StyleProps>(
+    attributeName: Key,
+    value: StyleProps[Key],
+    force = false,
+  ) {
     if (
       force ||
       value !== this.attributes[attributeName] ||
@@ -1010,10 +1013,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     // Compute rotation and renormalize matrix.
     const angle = Math.atan2(row0y, row0x);
 
-    this
-      .setEulerAngles(angle)
-      .setPosition(mat[6], mat[7])
-      .setLocalScale(scalingX, scalingY);
+    this.setEulerAngles(angle).setPosition(mat[6], mat[7]).setLocalScale(scalingX, scalingY);
   }
 
   /* z-index & visibility */
@@ -1027,9 +1027,8 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
    */
   toFront() {
     if (this.parent) {
-      const zIndex = Math.max(
-        ...this.parent.children.map((child) => Number(child.style.zIndex))
-      ) + 1;
+      const zIndex =
+        Math.max(...this.parent.children.map((child) => Number(child.style.zIndex))) + 1;
       this.setZIndex(zIndex);
     }
   }
@@ -1039,9 +1038,8 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
    */
   toBack() {
     if (this.parent) {
-      const zIndex = Math.min(
-        ...this.parent.children.map((child) => Number(child.style.zIndex))
-      ) - 1;
+      const zIndex =
+        Math.min(...this.parent.children.map((child) => Number(child.style.zIndex))) - 1;
       this.setZIndex(zIndex);
     }
   }
@@ -1072,7 +1070,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
    */
   animate(
     keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
-    options?: number | KeyframeAnimationOptions | undefined
+    options?: number | KeyframeAnimationOptions | undefined,
   ): Animation | null {
     let timeline = this.ownerDocument?.defaultView.timeline;
 
@@ -1083,13 +1081,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     }
 
     if (timeline) {
-      return timeline.play(
-        new KeyframeEffect(
-          this as unknown as Element,
-          keyframes,
-          options,
-        )
-      );
+      return timeline.play(new KeyframeEffect(this as unknown as Element, keyframes, options));
     }
     return null;
   }
@@ -1130,8 +1122,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     const [right, bottom] = bounds.getMax();
 
     // calc context's offset
-    const bbox = this.ownerDocument?.defaultView
-      .getContextService().getBoundingClientRect();
+    const bbox = this.ownerDocument?.defaultView.getContextService().getBoundingClientRect();
 
     return new Rectangle(
       left + (bbox?.left || 0),
@@ -1193,7 +1184,8 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
 
     // update geometry if some attributes changed such as `width/height/...`
     const geometryUpdater = this.geometryUpdaterFactory(this.nodeName);
-    const needUpdateGeometry = geometryUpdater && geometryUpdater.dependencies.indexOf(name as string) > -1;
+    const needUpdateGeometry =
+      geometryUpdater && geometryUpdater.dependencies.indexOf(name as string) > -1;
     if (needUpdateGeometry) {
       if (!geometry.aabb) {
         geometry.aabb = new AABB();
@@ -1234,8 +1226,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     }
 
     // inform clip path targets
-    if (this.attributes.clipPathTargets
-      && this.attributes.clipPathTargets.length) {
+    if (this.attributes.clipPathTargets && this.attributes.clipPathTargets.length) {
       this.attributes.clipPathTargets.forEach((target) => {
         const targetRenderable = target.getEntity().getComponent(Renderable);
         targetRenderable.dirty = true;

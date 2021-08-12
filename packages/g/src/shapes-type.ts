@@ -1,4 +1,4 @@
-import type { BasicAttrs, Cursor, PathCommand } from './types';
+import type { BaseStyleProps, Cursor, PathCommand } from './types';
 
 export const G_CANVAS_ELEMENT = [
   'Group',
@@ -179,7 +179,7 @@ export type Radius =
   | [number, number, number]
   | [number, number, number, number];
 
-export type RectProps = BasicAttrs &
+export type RectProps = BaseStyleProps &
   Partial<{
     x: number;
     y: number;
@@ -191,7 +191,7 @@ export type RectProps = BasicAttrs &
   }> &
   LineStyleProps;
 
-export type TextProps = BasicAttrs &
+export type TextProps = BaseStyleProps &
   Partial<{
     x: number;
     y: number;
@@ -219,7 +219,7 @@ export type TextProps = BasicAttrs &
     opacity?: number;
   }>;
 
-export type CircleProps = BasicAttrs &
+export type CircleProps = BaseStyleProps &
   Partial<{
     x: number;
     y: number;
@@ -228,7 +228,7 @@ export type CircleProps = BasicAttrs &
   }> &
   LineSizeProps;
 
-export type EllipseProps = BasicAttrs &
+export type EllipseProps = BaseStyleProps &
   Partial<{
     x: number;
     y: number;
@@ -238,7 +238,7 @@ export type EllipseProps = BasicAttrs &
   }> &
   LineSizeProps;
 
-export type ImageProps = BasicAttrs & {
+export type ImageProps = BaseStyleProps & {
   img: string | HTMLImageElement | HTMLCanvasElement;
 } & Partial<{
     x: number;
@@ -248,7 +248,7 @@ export type ImageProps = BasicAttrs & {
     opacity: number;
   }>;
 
-export type LineProps = BasicAttrs &
+export type LineProps = BaseStyleProps &
   Partial<{
     x1: number;
     y1: number;
@@ -260,20 +260,20 @@ export type LineProps = BasicAttrs &
   }> &
   LineStyleProps;
 
-export type PathProps = BasicAttrs & {
+export type PathProps = BaseStyleProps & {
   path: PathType;
   anchor: Anchor;
   opacity?: number;
   strokeOpacity?: number;
 } & LineStyleProps;
 
-export type PolygonProps = BasicAttrs & {
+export type PolygonProps = BaseStyleProps & {
   points: Points;
   opacity?: number;
   strokeOpacity?: number;
 };
 
-export type PolylineProps = BasicAttrs & {
+export type PolylineProps = BaseStyleProps & {
   points: Points;
   anchor: Anchor;
   opacity?: number;
