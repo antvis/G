@@ -18,11 +18,11 @@ import { convertEffectInput } from './utils/interpolation';
   );
  *
  */
-export class KeyframeEffect implements globalThis.KeyframeEffect {
+export class KeyframeEffect {
   composite: CompositeOperation = 'replace';
   iterationComposite: IterationCompositeOperation = 'replace';
   pseudoElement: string | null;
-  target: Element | null;
+  target: DisplayObject | null;
 
   animation: Animation | null;
 
@@ -35,7 +35,7 @@ export class KeyframeEffect implements globalThis.KeyframeEffect {
   private interpolations: (target: DisplayObject, f: number) => void;
 
   constructor(
-    target: Element | null,
+    target: DisplayObject | null,
     effectInput: Keyframe[] | PropertyIndexedKeyframes | null,
     timingInput?: KeyframeEffectOptions | number,
   ) {
@@ -46,7 +46,6 @@ export class KeyframeEffect implements globalThis.KeyframeEffect {
     this.timing.endTime = Math.max(0, this.timing.delay + this.timing.activeDuration + this.timing.endDelay);
 
     this.normalizedKeyframes = normalizeKeyframes(effectInput, this.timing);
-    // @ts-ignore
     this.interpolations = convertEffectInput(this.normalizedKeyframes, this.timing, this.target);
   }
 
@@ -60,16 +59,6 @@ export class KeyframeEffect implements globalThis.KeyframeEffect {
     }
     this.timeFraction = calculateIterationProgress(this.timing.activeDuration, localTime, this.timing)
     return this.timeFraction !== null;
-  }
-
-  remove() {
-    // this.animation?.cancel();
-    // this.animation.effect = new KeyframeEffect(null, []);
-    // if (this._animation._callback) {
-    //   this.animation._callback._animation = null;
-    // }
-    // this.animation?.rebuildUnderlyingAnimation();
-    // disassociate(effect);
   }
 
   getKeyframes(): ComputedKeyframe[] {

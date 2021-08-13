@@ -84,6 +84,7 @@ export const SVG_ATTR_MAP: Record<string, string> = {
 
 export type GradientParams = (LinearGradient | RadialGradient) & { type: PARSED_COLOR_TYPE; };
 
+const G_SVG_PREFIX = 'g_svg';
 const CLIP_PATH_PREFIX = 'clip-path-';
 let counter = 0;
 
@@ -323,7 +324,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       let $groupEl;
 
       const $el = createSVGElement(type);
-      $el.id = entity.getName();
+      $el.id = `${G_SVG_PREFIX}_${object.nodeName}_${entity.getName()}`;
 
       if (type !== 'g' && !noWrapWithGroup) {
         $groupEl = createSVGElement('g');

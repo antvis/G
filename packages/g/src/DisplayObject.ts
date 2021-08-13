@@ -257,11 +257,11 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
   /**
    * ChildNode API
    */
-  after(...nodes: (Node | string)[]) {}
+  after(...nodes: (Node | string)[]) { }
 
-  before(...nodes: (Node | string)[]) {}
+  before(...nodes: (Node | string)[]) { }
 
-  replaceWith(...nodes: (Node | string)[]) {}
+  replaceWith(...nodes: (Node | string)[]) { }
 
   replaceChild<T extends Node>(node: Node, child: T): T {
     throw new Error('Method not implemented.');
@@ -493,9 +493,9 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     return this.lastChild;
   }
 
-  append(...nodes: (Node | string)[]) {}
-  prepend(...nodes: (Node | string)[]) {}
-  replaceChildren(...nodes: (Node | string)[]) {}
+  append(...nodes: (Node | string)[]) { }
+  prepend(...nodes: (Node | string)[]) { }
+  replaceChildren(...nodes: (Node | string)[]) { }
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
@@ -611,7 +611,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
    */
-  dispatchEvent(e: Event): boolean {
+  dispatchEvent<T extends FederatedEvent>(e: T): boolean {
     if (!(e instanceof FederatedEvent)) {
       throw new Error('DisplayObject cannot propagate events outside of the Federated Events API');
     }
@@ -1081,7 +1081,13 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     }
 
     if (timeline) {
-      return timeline.play(new KeyframeEffect(this as unknown as Element, keyframes, options));
+      return timeline.play(
+        new KeyframeEffect(
+          this,
+          keyframes,
+          options,
+        )
+      );
     }
     return null;
   }

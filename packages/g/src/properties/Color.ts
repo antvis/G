@@ -109,6 +109,10 @@ export class Color implements StylePropertyHandler<string, ParsedColorStylePrope
       formatted: `rgba(${color.r},${color.g},${color.b},${color.opacity})`,
     };
   }
+
+  merge(left: ParsedColorStyleProperty, right: ParsedColorStyleProperty) {
+
+  }
 }
 
 function parsePattern(patternStr: string): Pattern | null {

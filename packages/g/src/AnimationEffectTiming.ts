@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { linear, parseEasingFunction } from './utils/animation';
+import type { KeyframeEffect } from './KeyframeEffect';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming

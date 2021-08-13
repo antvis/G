@@ -467,6 +467,9 @@ export class SceneGraphService extends EventEmitter {
     return transform.localTransform;
   }
 
+  /**
+   * account for children in local space
+   */
   getLocalBounds(displayObject: DisplayObject): AABB | null {
     if (displayObject.parent) {
       const parentInvert = mat4.invert(mat4.create(), this.getWorldTransform(displayObject.parent));
@@ -482,6 +485,9 @@ export class SceneGraphService extends EventEmitter {
     return this.getBounds(displayObject);
   }
 
+  /**
+   * won't account for children
+   */
   getGeometryBounds(displayObject: DisplayObject): AABB | null {
     const entity = displayObject.getEntity();
     let geometryAABB = entity.getComponent(Geometry).aabb;
@@ -494,6 +500,9 @@ export class SceneGraphService extends EventEmitter {
     return aabb;
   }
 
+  /**
+   * account for children in world space
+   */
   getBounds(displayObject: DisplayObject): AABB | null {
     const entity = displayObject.getEntity();
     const renderable = entity.getComponent(Renderable);
@@ -520,9 +529,13 @@ export class SceneGraphService extends EventEmitter {
     // account for clip path
     if (displayObject.style.clipPath) {
       const clipPathBounds = this.getGeometryBounds(displayObject.style.clipPath);
-      // intersect with original geometry
-      if (clipPathBounds && aabb) {
+      if (clipPathBounds) {
+        // intersect with original geometry
         clipPathBounds.setFromTransformedAABB(clipPathBounds, this.getWorldTransform(displayObject));
+      }
+      if (!aabb) {
+        aabb = clipPathBounds;
+      } else if (clipPathBounds) {
         aabb = clipPathBounds.intersection(aabb);
       }
     }

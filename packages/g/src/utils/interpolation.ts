@@ -23,7 +23,7 @@ export function addPropertiesHandler(parser: Function, merger: Function, propert
 export function convertEffectInput(
   keyframes: ComputedKeyframe[],
   timing: AnimationEffectTiming,
-  target: DisplayObject,
+  target: DisplayObject | null,
 ) {
   const propertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups(keyframes, timing);
   const interpolations = makeInterpolations(propertySpecificKeyframeGroups, target);
@@ -88,7 +88,7 @@ function makePropertySpecificKeyframeGroups(keyframes: ComputedKeyframe[], timin
 
 function makeInterpolations(
   propertySpecificKeyframeGroups: Record<string, PropertySpecificKeyframe[]>,
-  target: DisplayObject,
+  target: DisplayObject | null,
 ) {
   let interpolations = [];
   for (const groupName in propertySpecificKeyframeGroups) {
@@ -140,7 +140,7 @@ function propertyInterpolation(
   property: string,
   left: string | number,
   right: string | number,
-  target: DisplayObject,
+  target: DisplayObject | null,
 ) {
   let ucProperty = property;
   if (/-/.test(property)) {

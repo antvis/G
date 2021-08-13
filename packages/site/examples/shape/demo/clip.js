@@ -1,4 +1,4 @@
-import { Image, Circle, Rect, Path, Canvas } from '@antv/g';
+import { Image, Circle, Rect, Path, Group, Text, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -67,17 +67,38 @@ const image2 = new Image({
   },
 });
 
-canvas.appendChild(image);
-canvas.appendChild(image2);
-
-clipPathCircle.animate(
-  [
-    { transform: 'scale(1)' },
-    { transform: 'scale(1.2)' },
-  ], {
-  duration: 1500,
-  iterations: Infinity,
+const group = new Group({
+  style: {
+    x: 200,
+    y: 400,
+    clipPath: clipPathCircle,
+    cursor: 'pointer',
+  },
 });
+const text = new Text({
+  style: {
+    fontFamily: 'PingFang SC',
+    text: '这是测试文本',
+    fontSize: 40,
+    fill: '#1890FF',
+    stroke: '#F04864',
+    lineWidth: 5,
+  },
+});
+group.appendChild(text);
+
+// canvas.appendChild(image);
+// canvas.appendChild(image2);
+canvas.appendChild(group);
+
+// clipPathCircle.animate(
+//   [
+//     { transform: 'scale(1)' },
+//     { transform: 'scale(1.2)' },
+//   ], {
+//   duration: 1500,
+//   iterations: Infinity,
+// });
 
 // stats
 const stats = new Stats();
