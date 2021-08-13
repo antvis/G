@@ -1,6 +1,6 @@
-import type { DisplayObject } from './DisplayObject';
-import { Point } from './shapes/Point';
-import type { EventService } from './services';
+import type { DisplayObject } from '../DisplayObject';
+import { Point } from '../shapes/Point';
+import type { EventService } from '../services';
 
 /**
  * An DOM-compatible synthetic event implementation that is "forwarded" on behalf of an original
@@ -20,7 +20,9 @@ export class FederatedEvent<N extends Event = Event, T = any> implements Event {
   /**
    * @deprecated
    */
-  get name() { return this.type; };
+  get name() {
+    return this.type;
+  }
 
   /**
    * The propagation phase.
@@ -32,7 +34,7 @@ export class FederatedEvent<N extends Event = Event, T = any> implements Event {
    * can be used to implement event delegation
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/target
    */
-  target: DisplayObject | null;
+  target: EventTarget | null;
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/bubbles
@@ -49,7 +51,7 @@ export class FederatedEvent<N extends Event = Event, T = any> implements Event {
   readonly cancelable = false;
 
   /** the event target when listeners binded */
-  currentTarget: DisplayObject | null;
+  currentTarget: EventTarget | null;
 
   /** Flags whether the default response of the user agent was prevent through this event. */
   defaultPrevented = false;
@@ -68,7 +70,9 @@ export class FederatedEvent<N extends Event = Event, T = any> implements Event {
   /**
    * @deprecated
    */
-  get originalEvent() { return this.nativeEvent; }
+  get originalEvent() {
+    return this.nativeEvent;
+  }
 
   /** The original event that caused this event, if any. */
   _originalEvent: FederatedEvent<N>;
@@ -114,8 +118,12 @@ export class FederatedEvent<N extends Event = Event, T = any> implements Event {
    * relative to Canvas, origin is left-top
    */
   canvas: Point = new Point();
-  get x(): number { return this.canvas.x; }
-  get y(): number { return this.canvas.y; }
+  get x(): number {
+    return this.canvas.x;
+  }
+  get y(): number {
+    return this.canvas.y;
+  }
 
   /**
    * The event boundary which manages this event. Propagation can only occur
@@ -143,7 +151,9 @@ export class FederatedEvent<N extends Event = Event, T = any> implements Event {
   /**
    * @deprecated
    */
-  get propagationPath() { return this.composedPath(); }
+  get propagationPath() {
+    return this.composedPath();
+  }
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/preventDefault
@@ -174,8 +184,8 @@ export class FederatedEvent<N extends Event = Event, T = any> implements Event {
    * added for compatibility with DOM Event,
    * deprecated props and methods
    */
-  initEvent(): void { }
-  initUIEvent(): void { }
+  initEvent(): void {}
+  initUIEvent(): void {}
   view: WindowProxy;
   which: number;
   returnValue: boolean;

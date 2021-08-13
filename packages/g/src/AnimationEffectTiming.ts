@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { linear, parseEasingFunction } from './utils/animation';
 
 /**
@@ -72,5 +73,5 @@ export class AnimationEffectTiming implements globalThis.EffectTiming {
 
   endTime: number;
 
-  constructor() { }
+  constructor() {}
 }

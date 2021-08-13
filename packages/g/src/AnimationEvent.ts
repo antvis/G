@@ -1,10 +1,12 @@
 import { FederatedEvent } from './FederatedEvent';
-import { EventService } from './services';
+import type { EventService } from './services';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/AnimationPlaybackEvent
  */
 export class AnimationEvent extends FederatedEvent implements globalThis.AnimationPlaybackEvent {
+  currentTime: number;
+  timelineTime: number;
   constructor(
     manager: EventService | null,
     target: Animation,
@@ -22,5 +24,7 @@ export class AnimationEvent extends FederatedEvent implements globalThis.Animati
     this.defaultPrevented = false;
     this.eventPhase = this.AT_TARGET;
     this.timeStamp = Date.now();
+    this.currentTime = currentTime;
+    this.timelineTime = timelineTime;
   }
 }

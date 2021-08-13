@@ -1,30 +1,31 @@
+/* eslint-disable no-plusplus */
 import { inject, injectable, postConstruct } from 'inversify';
 import { EventEmitter } from 'eventemitter3';
-import { DisplayObject } from '../DisplayObject';
-import { FederatedEvent } from '../FederatedEvent';
-import { FederatedMouseEvent } from '../FederatedMouseEvent';
-import { FederatedPointerEvent } from '../FederatedPointerEvent';
-import { FederatedWheelEvent } from '../FederatedWheelEvent';
-import { Cursor, EventPosition, CanvasConfig } from '../types';
+import type { Cursor, EventPosition } from '../types';
+import { CanvasConfig } from '../types';
+import type { DisplayObject } from '../DisplayObject';
+import type { FederatedEvent } from '../dom/FederatedEvent';
+import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
+import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
+import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
 import { RenderingContext } from './RenderingContext';
 
 type Picker = (position: EventPosition) => DisplayObject | null;
 type TrackingData = {
-  pressTargetsByButton: {
-    [id: number]: DisplayObject[];
-  };
-  clicksByButton: {
-    [id: number]: {
+  pressTargetsByButton: Record<number, DisplayObject[]>;
+  clicksByButton: Record<
+    number,
+    {
       clickCount: number;
       target: DisplayObject;
       timeStamp: number;
     }
-  };
+  >;
   overTargets: DisplayObject[] | null;
 };
-type EmitterListeners = Record<string,
-  | Array<{ fn(...args: any[]): any, context: any }>
-  | { fn(...args: any[]): any, context: any }
+type EmitterListeners = Record<
+  string,
+  { fn: (...args: any[]) => any; context: any }[] | { fn: (...args: any[]) => any; context: any }
 >;
 const PROPAGATION_LIMIT = 2048;
 export const DELEGATION_SPLITTER = ':';
@@ -41,12 +42,15 @@ export class EventService extends EventEmitter {
 
   cursor: Cursor | null = 'default';
 
-  private mappingTable: Record<string, Array<{
-    fn: (e: FederatedEvent) => void,
-    priority: number
-  }>> = {};
+  private mappingTable: Record<
+    string,
+    {
+      fn: (e: FederatedEvent) => void;
+      priority: number;
+    }[]
+  > = {};
   private mappingState: Record<string, any> = {
-    trackingData: {}
+    trackingData: {},
   };
   private eventPool: Map<typeof FederatedEvent, FederatedEvent[]> = new Map();
 
@@ -92,8 +96,7 @@ export class EventService extends EventEmitter {
       for (let i = 0, j = mappers.length; i < j; i++) {
         mappers[i].fn(e);
       }
-    }
-    else {
+    } else {
       console.warn(`[EventService]: Event mapping not defined for ${e.type}`);
     }
   }
@@ -187,11 +190,9 @@ export class EventService extends EventEmitter {
 
       const clickHistory = trackingData.clicksByButton[from.button];
 
-      if (clickHistory.target === clickEvent.target
-        && now - clickHistory.timeStamp < 200) {
+      if (clickHistory.target === clickEvent.target && now - clickHistory.timeStamp < 200) {
         ++clickHistory.clickCount;
-      }
-      else {
+      } else {
         clickHistory.clickCount = 1;
       }
 
@@ -212,7 +213,7 @@ export class EventService extends EventEmitter {
     }
 
     this.freeEvent(e);
-  }
+  };
 
   onPointerMove = (from: FederatedEvent) => {
     if (!(from instanceof FederatedPointerEvent)) {
@@ -260,7 +261,7 @@ export class EventService extends EventEmitter {
     if (outTarget !== e.target) {
       // pointerover always occurs on the new overTarget
       const overType = from.type === 'mousemove' ? 'mouseover' : 'pointerover';
-      const overEvent = this.clonePointerEvent(e, overType);// clone faster
+      const overEvent = this.clonePointerEvent(e, overType); // clone faster
 
       this.dispatchEvent(overEvent, 'pointerover');
       if (isMouse) this.dispatchEvent(overEvent, 'mouseover');
@@ -276,16 +277,19 @@ export class EventService extends EventEmitter {
 
       // The pointer has entered a non-ancestor of the original overTarget. This means we need a pointerentered
       // event.
-      const didPointerEnter = !overTargetAncestor || overTargetAncestor === this.rootTarget?.parentNode;
+      const didPointerEnter =
+        !overTargetAncestor || overTargetAncestor === this.rootTarget?.parentNode;
 
       if (didPointerEnter) {
         const enterEvent = this.clonePointerEvent(e, 'pointerenter');
 
         enterEvent.eventPhase = enterEvent.AT_TARGET;
 
-        while (enterEvent.target
-          && enterEvent.target !== outTarget
-          && enterEvent.target !== this.rootTarget?.parentNode) {
+        while (
+          enterEvent.target &&
+          enterEvent.target !== outTarget &&
+          enterEvent.target !== this.rootTarget?.parentNode
+        ) {
           enterEvent.currentTarget = enterEvent.target;
 
           this.notifyTarget(enterEvent);
@@ -313,7 +317,7 @@ export class EventService extends EventEmitter {
     trackingData.overTargets = e.composedPath();
 
     this.freeEvent(e);
-  }
+  };
 
   onPointerOut = (from: FederatedEvent) => {
     if (!(from instanceof FederatedPointerEvent)) {
@@ -354,7 +358,7 @@ export class EventService extends EventEmitter {
     }
 
     this.cursor = null;
-  }
+  };
 
   onPointerOver = (from: FederatedEvent) => {
     if (!(from instanceof FederatedPointerEvent)) {
@@ -392,7 +396,7 @@ export class EventService extends EventEmitter {
 
     this.freeEvent(e);
     this.freeEvent(enterEvent);
-  }
+  };
 
   onPointerUpOutside = (from: FederatedEvent) => {
     if (!(from instanceof FederatedPointerEvent)) {
@@ -413,8 +417,7 @@ export class EventService extends EventEmitter {
 
         if (e.pointerType === 'touch') {
           this.notifyTarget(e, 'touchendoutside');
-        }
-        else if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
+        } else if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
           this.notifyTarget(e, e.button === 2 ? 'rightupoutside' : 'mouseupoutside');
         }
 
@@ -425,7 +428,7 @@ export class EventService extends EventEmitter {
     }
 
     this.freeEvent(e);
-  }
+  };
 
   onWheel = (from: FederatedEvent) => {
     if (!(from instanceof FederatedWheelEvent)) {
@@ -436,7 +439,7 @@ export class EventService extends EventEmitter {
 
     this.dispatchEvent(wheelEvent);
     this.freeEvent(wheelEvent);
-  }
+  };
 
   dispatchEvent(e: FederatedEvent, type?: string) {
     e.propagationStopped = false;
@@ -508,7 +511,7 @@ export class EventService extends EventEmitter {
   private createPointerEvent(
     from: FederatedPointerEvent,
     type?: string,
-    target?: DisplayObject
+    target?: DisplayObject,
   ): FederatedPointerEvent {
     const event = this.allocateEvent(FederatedPointerEvent);
 
@@ -518,12 +521,14 @@ export class EventService extends EventEmitter {
 
     event.nativeEvent = from.nativeEvent;
     event._originalEvent = from;
-    event.target = target ?? this.hitTest({
-      clientX: event.clientX,
-      clientY: event.clientY,
-      x: event.global.x,
-      y: event.global.y,
-    }) as DisplayObject;
+    event.target =
+      target ??
+      (this.hitTest({
+        clientX: event.clientX,
+        clientY: event.clientY,
+        x: event.global.x,
+        y: event.global.y,
+      }) as DisplayObject);
 
     if (typeof type === 'string') {
       event.type = type;
@@ -556,7 +561,7 @@ export class EventService extends EventEmitter {
       this.mappingState.trackingData[id] = {
         pressTargetsByButton: {},
         clicksByButton: {},
-        overTarget: null
+        overTarget: null,
       };
     }
 
@@ -627,16 +632,15 @@ export class EventService extends EventEmitter {
     to.page.copyFrom(from.page);
   }
 
-  private allocateEvent<T extends FederatedEvent>(
-    constructor: { new(boundary: EventService): T }
-  ): T {
+  private allocateEvent<T extends FederatedEvent>(constructor: {
+    new (boundary: EventService): T;
+  }): T {
     if (!this.eventPool.has(constructor as any)) {
       this.eventPool.set(constructor as any, []);
     }
 
     // @ts-ignore
-    const event = this.eventPool.get(constructor as any).pop() as T
-      || new constructor(this);
+    const event = (this.eventPool.get(constructor as any).pop() as T) || new constructor(this);
 
     event.eventPhase = event.NONE;
     event.currentTarget = null;
@@ -647,9 +651,10 @@ export class EventService extends EventEmitter {
   }
 
   private freeEvent<T extends FederatedEvent>(event: T) {
-    if (event.manager !== this) throw new Error('It is illegal to free an event not managed by this EventBoundary!');
+    if (event.manager !== this)
+      throw new Error('It is illegal to free an event not managed by this EventBoundary!');
 
-    const constructor = event.constructor;
+    const { constructor } = event;
 
     if (!this.eventPool.has(constructor as any)) {
       this.eventPool.set(constructor as any, []);
@@ -661,8 +666,8 @@ export class EventService extends EventEmitter {
 
   private notifyTarget(e: FederatedEvent, type?: string) {
     type = type ?? e.type;
-    const key = e.eventPhase === e.CAPTURING_PHASE
-      || e.eventPhase === e.AT_TARGET ? `${type}capture` : type;
+    const key =
+      e.eventPhase === e.CAPTURING_PHASE || e.eventPhase === e.AT_TARGET ? `${type}capture` : type;
 
     this.notifyListeners(e, key);
 
@@ -679,8 +684,7 @@ export class EventService extends EventEmitter {
 
     if ('fn' in listeners) {
       listeners.fn.call(listeners.context, e);
-    }
-    else {
+    } else {
       for (let i = 0; i < listeners.length && !e.propagationImmediatelyStopped; i++) {
         listeners[i].fn.call(listeners[i].context, e);
       }
