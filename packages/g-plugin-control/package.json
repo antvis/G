@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-control",
-  "version": "1.0.0-alpha.8",
+  "version": "1.0.0-alpha.9",
   "description": "A G plugin for orbit control",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -32,7 +32,7 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.8",
+    "@antv/g": "^1.0.0-alpha.9",
     "hammerjs": "^2.0.8"
   },
   "devDependencies": {
