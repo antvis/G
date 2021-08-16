@@ -70,35 +70,46 @@ const image2 = new Image({
 const group = new Group({
   style: {
     x: 200,
-    y: 400,
+    y: 300,
     clipPath: clipPathCircle,
     cursor: 'pointer',
   },
 });
-const text = new Text({
-  style: {
-    fontFamily: 'PingFang SC',
-    text: '这是测试文本',
-    fontSize: 40,
-    fill: '#1890FF',
-    stroke: '#F04864',
-    lineWidth: 5,
-  },
+const textStyle = {
+  fontFamily: 'PingFang SC',
+  text: '这是测试文本',
+  fontSize: 40,
+  fill: '#1890FF',
+  stroke: '#F04864',
+  lineWidth: 5,
+};
+const text1 = new Text({
+  style: textStyle,
 });
-group.appendChild(text);
+const text2 = new Text({
+  style: textStyle,
+});
+const text3 = new Text({
+  style: textStyle,
+});
+text2.translateLocal(0, 50);
+text3.translateLocal(0, 100);
+group.appendChild(text1);
+group.appendChild(text2);
+group.appendChild(text3);
 
-// canvas.appendChild(image);
-// canvas.appendChild(image2);
+canvas.appendChild(image);
+canvas.appendChild(image2);
 canvas.appendChild(group);
 
-// clipPathCircle.animate(
-//   [
-//     { transform: 'scale(1)' },
-//     { transform: 'scale(1.2)' },
-//   ], {
-//   duration: 1500,
-//   iterations: Infinity,
-// });
+clipPathCircle.animate(
+  [
+    { transform: 'scale(1)' },
+    { transform: 'scale(1.2)' },
+  ], {
+  duration: 1500,
+  iterations: Infinity,
+});
 
 // stats
 const stats = new Stats();

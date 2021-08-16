@@ -89,6 +89,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   private renderQueue: DisplayObject[] = [];
 
+  private restoreStack: DisplayObject[] = [];
+
   /**
    * save the last dirty rect in DEBUG mode
    */
@@ -181,8 +183,16 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           this.saveDirtyAABB(object);
         });
 
+        // pop restore stack, eg. root -> parent -> child
+        this.restoreStack.forEach((s) => {
+          context.restore();
+        });
+
         // clear queue
         this.renderQueue = [];
+
+        // clear restore stack
+        this.restoreStack = [];
       }
 
       context.restore();
@@ -203,19 +213,21 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private renderDisplayObject(object: DisplayObject, renderingService: RenderingService) {
     const context = this.contextService.getContext()!;
 
+    // restore to its parent
+    let parent = this.restoreStack[this.restoreStack.length - 1];
+    while (parent && object.parent !== parent) {
+      context.restore();
+      this.restoreStack.pop();
+      parent = this.restoreStack[this.restoreStack.length - 1];
+    }
+
     const nodeName = object.nodeName;
 
     // reset transformation
     context.save();
 
     // apply RTS transformation in world space
-    this.applyTransform(context, object.getWorldTransform());
-
-    // apply anchor in local space
-    this.applyAnchor(context, object);
-
-    // apply attributes to context
-    this.applyAttributesToContext(context, object, renderingService);
+    this.applyTransform(context, object.getLocalTransform());
 
     // clip path
     const clipPathShape = object.style.clipPath;
@@ -223,34 +235,43 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       context.save();
 
       // apply clip shape's RTS
-      this.applyTransform(context, clipPathShape.getWorldTransform());
-      this.applyAnchor(context, clipPathShape);
-      this.applyAttributesToContext(context, clipPathShape, renderingService);
+      this.applyTransform(context, clipPathShape.getLocalTransform());
+
+      // generate path in local space
       const generatePath = this.pathGeneratorFactory(clipPathShape.nodeName);
       if (generatePath) {
-        generatePath(context, clipPathShape.attributes);
+        this.useAnchor(context, clipPathShape, () => {
+          generatePath(context, clipPathShape.attributes);
+        });
       }
+
       context.restore();
       context.clip();
     }
 
-    // generate path in local space
-    const generatePath = this.pathGeneratorFactory(nodeName);
-    if (generatePath) {
-      generatePath(context, object.attributes);
-    }
+    // apply attributes to context
+    this.applyAttributesToContext(context, object, renderingService);
 
-    // fill & stroke
-    const styleRenderer = this.styleRendererFactory(nodeName);
-    if (styleRenderer) {
-      styleRenderer.render(context, object.attributes);
-    }
+    // apply anchor in local space
+    this.useAnchor(context, object, () => {
+      // generate path in local space
+      const generatePath = this.pathGeneratorFactory(object.nodeName);
+      if (generatePath) {
+        generatePath(context, object.attributes);
+      }
+
+      // fill & stroke
+      const styleRenderer = this.styleRendererFactory(nodeName);
+      if (styleRenderer) {
+        styleRenderer.render(context, object.attributes);
+      }
+    });
 
     // finish rendering, clear dirty flag
     const renderable = object.getEntity().getComponent(Renderable);
     renderable.dirty = false;
 
-    context.restore();
+    this.restoreStack.push(object);
   }
 
   private convertAABB2Rect(aabb: AABB): Rect {
@@ -437,12 +458,27 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
   }
 
-  private applyAnchor(context: CanvasRenderingContext2D, object: DisplayObject) {
-    // true size, not include stroke
-    // bounds = true size + half lineWidth
+  private useAnchor(context: CanvasRenderingContext2D, object: DisplayObject, callback: Function): void {
+    context.save();
+
+    // apply anchor, use true size, not include stroke,
+    // eg. bounds = true size + half lineWidth
     const { width = 0, height = 0, anchor = [0, 0] } = object.style || {};
     context.translate(-anchor[0] * width, -anchor[1] * height);
+
+    callback();
+    context.restore();
   }
+
+  // private drawPath(context: CanvasRenderingContext2D, object: DisplayObject) {
+  //   // generate path in local space
+  //   const generatePath = this.pathGeneratorFactory(object.nodeName);
+  //   if (generatePath) {
+  //     this.useAnchor(context, object, () => {
+  //       generatePath(context, object.attributes);
+  //     });
+  //   }
+  // }
 
   private safeMergeAABB(...aabbs: (AABB | undefined)[]): AABB | undefined {
     let merged: AABB | undefined;

@@ -78,10 +78,16 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       });
 
       const pickedDisplayObjects: DisplayObject[] = [];
+      const queriedNames = rBushNodes.map((node) => node.name);
       rBushNodes.forEach(({ name }: { name: string }) => {
         const displayObject = this.displayObjectPool.getByName(name);
-
         if (displayObject.isVisible() && displayObject.interactive) {
+          // parent is not included, eg. parent is clipped
+          if (displayObject.parentNode
+            && queriedNames.indexOf(displayObject.parentNode.getEntity().getName()) === -1) {
+            return;
+          }
+
           // test with clip path
           const objectToTest = displayObject.style.clipPath || displayObject;
           let worldTransform = displayObject.getWorldTransform();

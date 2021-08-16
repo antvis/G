@@ -624,4 +624,4 @@ circle.animate(
 );
 ```
 
-更多用法详见[动画系统](/zh/docs/animation)
+更多用法详见[动画系统](/zh/docs/api/animation)

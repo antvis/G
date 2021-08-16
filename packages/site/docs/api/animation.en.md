@@ -5,11 +5,9 @@ order: -4
 
 参考 [Web Animation API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API)，我们为每一个 DisplayObject 添加了动画能力。
 
-目前我们支持以下种类的动画：
-* Keyframe。定义一系列关键帧，通过插值得到每一帧的属性值。
-* 路径动画。定义一条路径，让目标图形沿路径移动。
+目前我们支持基于 Keyframe 的动画，用户需要定义一系列关键帧，其中每一帧都可以包含变换属性、帧偏移量、缓动函数等参数，G 内部通过插值得到各个属性值在当前时间下的值并应用到目标图形上（如下图）。对不同的属性变换会带来不同的动画效果，例如 `offsetDistance` 可以实现[路径动画](/zh/docs/api/animation#路径动画)，Path 的 `d` 可以实现形变效果（Morph）等。
 
-未来可能还会提供 Morph 等其他种类的动画。
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kF2uS4gpDh0AAAAAAAAAAAAAARQnAQ)
 
 在 Transition 效果上，我们支持：
 * Tween 缓动效果。内置例如 `linear` `cubic-bezier` 等，也支持自定义。
@@ -654,6 +652,9 @@ const animation = circle.animate([
 
 效果如下：
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zNasT6AmflEAAAAAAAAAAAAAARQnAQ)
+
+# [WIP] 变形动画
+
 
 # [WIP] 高性能动画
 

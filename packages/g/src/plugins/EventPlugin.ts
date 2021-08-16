@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
-import { FederatedMouseEvent } from '../FederatedMouseEvent';
-import { FederatedPointerEvent } from '../FederatedPointerEvent';
-import { FederatedWheelEvent } from '../FederatedWheelEvent';
+import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
+import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
+import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
 import { ContextService, RenderingPlugin, RenderingService, EventService } from '../services';
 import { CanvasConfig, Cursor, EventPosition, InteractivePointerEvent } from '../types';
 import { normalizeToPointerEvent, supportsTouchEvents, TOUCH_TO_POINTER } from '../utils/event';

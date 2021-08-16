@@ -51,7 +51,7 @@ export class SVGContextService implements ContextService<SVGElement> {
 
   destroy() {
     // destroy context
-    if (this.$container && this.$namespace) {
+    if (this.$container && this.$namespace && this.$namespace.parentNode) {
       this.$container.removeChild(this.$namespace);
     }
   }

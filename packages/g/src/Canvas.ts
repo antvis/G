@@ -2,6 +2,7 @@ import { EventEmitter } from 'eventemitter3';
 import { CanvasConfig, Cursor } from './types';
 import { cleanExistedCanvas } from './utils/canvas';
 import { DisplayObject, DISPLAY_OBJECT_EVENT } from './DisplayObject';
+import { Group } from './display-objects/Group';
 import { ContextService } from './services';
 import { container } from './inversify.config';
 import { RenderingService } from './services/RenderingService';
@@ -83,7 +84,7 @@ export class Canvas extends EventEmitter {
   private initRenderingContext(mergedConfig: CanvasConfig) {
     this.container.bind<CanvasConfig>(CanvasConfig).toConstantValue(mergedConfig);
     // bind rendering context, shared by all renderers
-    const root = new DisplayObject({
+    const root = new Group({
       style: {},
     });
     // ref to Canvas @see https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
@@ -289,6 +290,9 @@ export class Canvas extends EventEmitter {
     if (renderer.getConfig().enableAutoRendering) {
       this.run();
     }
+
+    // keep current scenegraph unchanged, just trigger mounted event
+    this.mountChildren(this.getRoot());
   }
 
   private loadCommonContainerModule() {
@@ -323,9 +327,6 @@ export class Canvas extends EventEmitter {
 
     this.container.restore();
     this.initRenderer(renderer);
-
-    // keep current scenegraph unchanged, just trigger mounted event
-    this.mountChildren(this.getRoot());
   }
 
   private unmountChildren(node: DisplayObject) {

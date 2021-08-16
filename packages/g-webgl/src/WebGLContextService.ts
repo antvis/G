@@ -59,7 +59,7 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
   }
 
   destroy() {
-    if (this.$container && this.$canvas) {
+    if (this.$container && this.$canvas && this.$canvas.parentNode) {
       this.$container.removeChild(this.$canvas);
     }
   }
