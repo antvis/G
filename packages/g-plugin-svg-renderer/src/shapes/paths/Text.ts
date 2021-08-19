@@ -34,17 +34,28 @@ const ANCHOR_MAP: Record<string, string> = {
 
 @injectable()
 export class TextRenderer implements ElementRenderer<TextStyleProps> {
-  dependencies = [];
+  dependencies = ['text'];
   @inject(TextService)
   private textService: TextService;
 
   apply($el: SVGElement, attributes: TextStyleProps) {
-    const { textAlign, text, textBaseline, fontSize = 0, lineCap, lineJoin, lineWidth = 0 } = attributes;
+    const {
+      textAlign,
+      text,
+      textBaseline,
+      fontSize = 0,
+      lineCap,
+      lineJoin,
+      lineWidth = 0,
+    } = attributes;
 
     const browser = detect();
     if (browser && browser.name === 'firefox') {
       // compatible with FireFox browser, ref: https://github.com/antvis/g/issues/119
-      $el.setAttribute('dominant-baseline', BASELINE_MAP_FOR_FIREFOX[textBaseline!] || 'alphabetic');
+      $el.setAttribute(
+        'dominant-baseline',
+        BASELINE_MAP_FOR_FIREFOX[textBaseline!] || 'alphabetic',
+      );
     } else {
       $el.setAttribute('dominant-baseline', BASELINE_MAP_FOR_FIREFOX[textBaseline!]);
       $el.setAttribute('alignment-baseline', BASELINE_MAP[textBaseline!]);
@@ -72,7 +83,11 @@ export class TextRenderer implements ElementRenderer<TextStyleProps> {
               dy = lineHeight / 2 - height / 2;
             } else if (textBaseline === 'top' || textBaseline === 'hanging') {
               dy = 0;
-            } else if (textBaseline === 'bottom' || textBaseline === 'alphabetic' || textBaseline === 'ideographic') {
+            } else if (
+              textBaseline === 'bottom' ||
+              textBaseline === 'alphabetic' ||
+              textBaseline === 'ideographic'
+            ) {
               dy = -lineHeight * (lineNum - 1);
             }
           } else {

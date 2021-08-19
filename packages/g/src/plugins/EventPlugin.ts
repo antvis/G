@@ -82,8 +82,17 @@ export class EventPlugin implements RenderingPlugin {
       (nativeEvent: InteractivePointerEvent) => {
         if (supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch') return;
 
-        const outside = nativeEvent.target !== this.contextService.getDomElement()
-          ? 'outside' : '';
+        // account for element in SVG
+        const $element = this.contextService.getDomElement();
+        const outside =
+          $element &&
+          nativeEvent.target &&
+          nativeEvent.target !== $element &&
+          $element.contains &&
+          // @ts-ignore
+          !$element.contains(nativeEvent.target)
+            ? 'outside'
+            : '';
         const normalizedEvents = normalizeToPointerEvent(nativeEvent);
 
         for (const normalizedEvent of normalizedEvents) {
@@ -96,20 +105,11 @@ export class EventPlugin implements RenderingPlugin {
       },
     );
 
-    renderingService.hooks.pointerMove.tap(
-      EventPlugin.tag,
-      this.onPointerMove,
-    );
+    renderingService.hooks.pointerMove.tap(EventPlugin.tag, this.onPointerMove);
 
-    renderingService.hooks.pointerOver.tap(
-      EventPlugin.tag,
-      this.onPointerMove,
-    );
+    renderingService.hooks.pointerOver.tap(EventPlugin.tag, this.onPointerMove);
 
-    renderingService.hooks.pointerOut.tap(
-      EventPlugin.tag,
-      this.onPointerMove,
-    );
+    renderingService.hooks.pointerOut.tap(EventPlugin.tag, this.onPointerMove);
   }
 
   private onPointerMove = (nativeEvent: InteractivePointerEvent) => {
@@ -124,9 +124,12 @@ export class EventPlugin implements RenderingPlugin {
     }
 
     this.setCursor(this.eventService.cursor);
-  }
+  };
 
-  private bootstrapEvent(event: FederatedPointerEvent, nativeEvent: PointerEvent): FederatedPointerEvent {
+  private bootstrapEvent(
+    event: FederatedPointerEvent,
+    nativeEvent: PointerEvent,
+  ): FederatedPointerEvent {
     // @ts-ignore
     event._originalEvent = null;
     event.nativeEvent = nativeEvent;

@@ -64,7 +64,7 @@ interact(circle, {
   onmove: function (event) {
     const { dx, dy } = event;
     circle.translateLocal(dx, dy);
-  }
+  },
 });
 
 /**
@@ -103,7 +103,7 @@ interact(resizableRect, {
     resizableRect.style.height = event.rect.height;
 
     resizableRectText.style.wordWrapWidth = event.rect.width;
-  }
+  },
 });
 
 /**
@@ -139,7 +139,7 @@ interact(dropZone, {
   },
   ondropdeactivate: function (event) {
     event.target.style.fill = '#1890FF';
-  }
+  },
 });
 
 /**
@@ -234,14 +234,14 @@ interact(snapCircle, {
     interact.modifiers.restrict({
       restriction: snapCircle.parentNode,
       elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
-      endOnly: true
-    })
+      endOnly: true,
+    }),
   ],
   inertia: true,
   onmove: function (event) {
     const { dx, dy } = event;
     snapCircle.translateLocal(dx, dy);
-  }
+  },
 });
 
 // stats

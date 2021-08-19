@@ -147,7 +147,7 @@ const clippedText = new Text({
         r: 20,
       },
     }),
-    cursor: 'pointer'
+    cursor: 'pointer',
   },
 });
 

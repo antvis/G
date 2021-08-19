@@ -257,11 +257,11 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
   /**
    * ChildNode API
    */
-  after(...nodes: (Node | string)[]) { }
+  after(...nodes: (Node | string)[]) {}
 
-  before(...nodes: (Node | string)[]) { }
+  before(...nodes: (Node | string)[]) {}
 
-  replaceWith(...nodes: (Node | string)[]) { }
+  replaceWith(...nodes: (Node | string)[]) {}
 
   replaceChild<T extends Node>(node: Node, child: T): T {
     throw new Error('Method not implemented.');
@@ -493,9 +493,9 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     return this.lastChild;
   }
 
-  append(...nodes: (Node | string)[]) { }
-  prepend(...nodes: (Node | string)[]) { }
-  replaceChildren(...nodes: (Node | string)[]) { }
+  append(...nodes: (Node | string)[]) {}
+  prepend(...nodes: (Node | string)[]) {}
+  replaceChildren(...nodes: (Node | string)[]) {}
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
@@ -503,22 +503,22 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
   matches(selector: string): boolean {
     return this.sceneGraphService.matches(selector, this);
   }
-  getElementById(id: string) {
+  getElementById(id: string): DisplayObject | null {
     return this.sceneGraphService.querySelector(`#${id}`, this);
   }
-  getElementsByName(name: string) {
+  getElementsByName(name: string): DisplayObject[] {
     return this.sceneGraphService.querySelectorAll(`[name="${name}"]`, this);
   }
-  getElementsByClassName(className: string) {
+  getElementsByClassName(className: string): DisplayObject[] {
     return this.sceneGraphService.querySelectorAll(`.${className}`, this);
   }
-  getElementsByTagName(tagName: string) {
+  getElementsByTagName(tagName: string): DisplayObject[] {
     return this.sceneGraphService.querySelectorAll(tagName, this);
   }
-  querySelector(selector: string) {
+  querySelector(selector: string): DisplayObject | null {
     return this.sceneGraphService.querySelector(selector, this);
   }
-  querySelectorAll(selector: string) {
+  querySelectorAll(selector: string): DisplayObject[] {
     return this.sceneGraphService.querySelectorAll(selector, this);
   }
 
@@ -532,6 +532,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     options?: boolean | AddEventListenerOptions,
   ) {
     this.addEventListener(type, listener, options);
+    return this;
   }
   /**
    * support `capture` & `once` in options
@@ -576,6 +577,8 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     } else {
       this.emitter.on(type, listener, context);
     }
+
+    return this;
   }
   /**
    * @deprecated
@@ -1081,13 +1084,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     }
 
     if (timeline) {
-      return timeline.play(
-        new KeyframeEffect(
-          this,
-          keyframes,
-          options,
-        )
-      );
+      return timeline.play(new KeyframeEffect(this, keyframes, options));
     }
     return null;
   }
@@ -1203,7 +1200,8 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     const stylePropertyHandler = this.stylePropertyHandlerFactory(name);
     if (stylePropertyHandler) {
       this.parsedStyle[name] = stylePropertyHandler.parse
-        ? stylePropertyHandler.parse(value, this) : value;
+        ? stylePropertyHandler.parse(value, this)
+        : value;
       if (stylePropertyHandler.update) {
         stylePropertyHandler.update(oldValue, value, this);
       }

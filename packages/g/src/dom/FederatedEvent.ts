@@ -6,7 +6,7 @@ import type { EventService } from '../services';
  * An DOM-compatible synthetic event implementation that is "forwarded" on behalf of an original
  * FederatedEvent or native {@link https://dom.spec.whatwg.org/#event Event}.
  */
-export class FederatedEvent<N extends Event = Event, T = any> implements Event {
+export class FederatedEvent<N extends Event = Event, T = any> {
   /**
    * The type of event, supports the following:
    * * pointerdown
@@ -34,7 +34,7 @@ export class FederatedEvent<N extends Event = Event, T = any> implements Event {
    * can be used to implement event delegation
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/target
    */
-  target: EventTarget | null;
+  target: DisplayObject | null;
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/bubbles
