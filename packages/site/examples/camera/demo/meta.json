@@ -27,6 +27,14 @@
         "en": "Landmark"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*goX8QqgVSMEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "action.js",
+      "title": {
+        "zh": "相机动作",
+        "en": "Camera actions"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*goX8QqgVSMEAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

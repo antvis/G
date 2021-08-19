@@ -26,7 +26,7 @@ export enum CAMERA_PROJECTION_MODE {
 
 export const CAMERA_EVENT = {
   Updated: 'updated',
-}
+};
 
 const DEG_2_RAD = Math.PI / 180;
 const RAD_2_DEG = 180 / Math.PI;
@@ -105,6 +105,10 @@ export class Camera extends EventEmitter {
   maxDistance = Infinity;
   minDistance = -Infinity;
 
+  /**
+   * zoom factor of the camera, default is 1
+   * eg. https://threejs.org/docs/#api/en/cameras/OrthographicCamera.zoom
+   */
   zoom = 1;
 
   /**
@@ -136,14 +140,14 @@ export class Camera extends EventEmitter {
 
   private view:
     | {
-      enabled: boolean;
-      fullWidth: number;
-      fullHeight: number;
-      offsetX: number;
-      offsetY: number;
-      width: number;
-      height: number;
-    }
+        enabled: boolean;
+        fullWidth: number;
+        fullHeight: number;
+        offsetX: number;
+        offsetY: number;
+        width: number;
+        height: number;
+      }
     | undefined;
 
   private following = undefined;
@@ -267,11 +271,7 @@ export class Camera extends EventEmitter {
   jitterProjectionMatrix(x: number, y: number) {
     const translation = mat4.fromTranslation(mat4.create(), [x, y, 0]);
 
-    this.jitteredProjectionMatrix = mat4.multiply(
-      mat4.create(),
-      translation,
-      this.perspective,
-    );
+    this.jitteredProjectionMatrix = mat4.multiply(mat4.create(), translation, this.perspective);
   }
 
   clearJitterProjectionMatrix() {
@@ -811,21 +811,21 @@ export class Camera extends EventEmitter {
       quat.create(),
       [1, 0, 0],
       ((this.rotateWorld && this.type !== CAMERA_TYPE.TRACKING) ||
-        this.type === CAMERA_TYPE.TRACKING
+      this.type === CAMERA_TYPE.TRACKING
         ? 1
         : -1) *
-      this.elevation *
-      DEG_2_RAD,
+        this.elevation *
+        DEG_2_RAD,
     );
     rotY = quat.setAxisAngle(
       quat.create(),
       [0, 1, 0],
       ((this.rotateWorld && this.type !== CAMERA_TYPE.TRACKING) ||
-        this.type === CAMERA_TYPE.TRACKING
+      this.type === CAMERA_TYPE.TRACKING
         ? 1
         : -1) *
-      this.azimuth *
-      DEG_2_RAD,
+        this.azimuth *
+        DEG_2_RAD,
     );
 
     let rotQ = quat.multiply(quat.create(), rotY, rotX);

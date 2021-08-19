@@ -82,7 +82,7 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   anchor: 'anchor',
 };
 
-export type GradientParams = (LinearGradient | RadialGradient) & { type: PARSED_COLOR_TYPE; };
+export type GradientParams = (LinearGradient | RadialGradient) & { type: PARSED_COLOR_TYPE };
 
 const G_SVG_PREFIX = 'g_svg';
 const CLIP_PATH_PREFIX = 'clip-path-';
@@ -107,7 +107,15 @@ export class SVGRendererPlugin implements RenderingPlugin {
   @inject(ElementRendererFactory)
   private elementRendererFactory: (tagName: string) => ElementRenderer<any>;
 
+  /**
+   * container for <gradient> <clipPath>...
+   */
   private $def: SVGDefsElement;
+
+  /**
+   * <camera>
+   */
+  private $camera: SVGElement;
 
   private cacheKey2IDMap: Record<string, string> = {};
 
@@ -115,11 +123,16 @@ export class SVGRendererPlugin implements RenderingPlugin {
     renderingService.hooks.init.tap(SVGRendererPlugin.tag, () => {
       this.$def = createSVGElement('defs') as SVGDefsElement;
       this.contextService.getContext()?.appendChild(this.$def);
+
+      this.$camera = createSVGElement('g');
+      this.$camera.id = `${G_SVG_PREFIX}_camera`;
+      this.applyTransform(this.$camera, this.camera.getOrthoMatrix());
+      this.contextService.getContext()?.appendChild(this.$camera);
     });
 
     renderingService.hooks.mounted.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
       // create SVG DOM Node
-      this.createSVGDom(object, this.contextService.getContext() as SVGElement);
+      this.createSVGDom(object, this.$camera);
     });
 
     renderingService.hooks.unmounted.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
@@ -127,27 +140,23 @@ export class SVGRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
-      const $namespace = this.contextService.getDomElement();
-      if ($namespace) {
-        if (this.renderingContext.renderReasons.has(RENDER_REASON.CameraChanged)) {
-          // @ts-ignore
-          this.applyTransform($namespace, this.camera.getOrthoMatrix());
-        }
+      if (this.renderingContext.renderReasons.has(RENDER_REASON.CameraChanged)) {
+        this.applyTransform(this.$camera, this.camera.getOrthoMatrix());
+      }
 
-        const entity = object.getEntity();
-        const $el = entity.getComponent(ElementSVG)?.$el;
-        const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
+      const entity = object.getEntity();
+      const $el = entity.getComponent(ElementSVG)?.$el;
+      const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
 
-        if ($el && $groupEl) {
-          // apply local RTS transformation to <group> wrapper
-          // account for anchor
-          this.applyTransform($groupEl, object.getLocalTransform());
+      if ($el && $groupEl) {
+        // apply local RTS transformation to <group> wrapper
+        // account for anchor
+        this.applyTransform($groupEl, object.getLocalTransform());
 
-          this.reorderChildren($groupEl, object.children || []);
-          // finish rendering, clear dirty flag
-          const renderable = entity.getComponent(Renderable);
-          renderable.dirty = false;
-        }
+        this.reorderChildren($groupEl, object.children || []);
+        // finish rendering, clear dirty flag
+        const renderable = entity.getComponent(Renderable);
+        renderable.dirty = false;
       }
     });
 
@@ -202,7 +211,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
     $el.setAttribute(
       'transform',
-      `matrix(${rts[0].toFixed(5)},${rts[1].toFixed(5)},${rts[3].toFixed(5)},${rts[4].toFixed(5)},${rts[6].toFixed(5)},${rts[7].toFixed(5)})`,
+      `matrix(${rts[0].toFixed(5)},${rts[1].toFixed(5)},${rts[3].toFixed(5)},${rts[4].toFixed(
+        5,
+      )},${rts[6].toFixed(5)},${rts[7].toFixed(5)})`,
     );
   }
 
@@ -231,7 +242,12 @@ export class SVGRendererPlugin implements RenderingPlugin {
     }
   }
 
-  private updateAttribute(object: DisplayObject, name: string, value: any, skipGeneratePath = false) {
+  private updateAttribute(
+    object: DisplayObject,
+    name: string,
+    value: any,
+    skipGeneratePath = false,
+  ) {
     const entity = object.getEntity();
     const $el = entity.getComponent(ElementSVG)?.$el;
     const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
@@ -375,7 +391,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     let cacheKey = '';
     const { type } = params;
     if (type === PARSED_COLOR_TYPE.Pattern) {
-      const { src } = params.value;
+      const { src } = params.value as Pattern;
       cacheKey = src;
     } else if (
       type === PARSED_COLOR_TYPE.LinearGradient ||
@@ -383,8 +399,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
     ) {
       // @ts-ignore
       const { x0, y0, x1, y1, r1, steps } = params.value;
-      cacheKey = `${type}${x0}${y0}${x1}${y1}${r1 || 0}${steps.map(
-        (step: string[]) => step.join('')).join('')}`;
+      cacheKey = `${type}${x0}${y0}${x1}${y1}${r1 || 0}${steps
+        .map((step: string[]) => step.join(''))
+        .join('')}`;
     }
 
     if (cacheKey) {
@@ -398,7 +415,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
   private createPattern(
     parsedColor: ParsedStyleProperty<PARSED_COLOR_TYPE.Pattern, Pattern, string>,
-    patternId: string
+    patternId: string,
   ) {
     const { src } = parsedColor.value;
     // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/pattern
@@ -430,15 +447,17 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private createGradient(
-    parsedColor: ParsedStyleProperty<PARSED_COLOR_TYPE.LinearGradient, LinearGradient, string> | ParsedStyleProperty<PARSED_COLOR_TYPE.RadialGradient, RadialGradient, string>,
-    gradientId: string
+    parsedColor:
+      | ParsedStyleProperty<PARSED_COLOR_TYPE.LinearGradient, LinearGradient, string>
+      | ParsedStyleProperty<PARSED_COLOR_TYPE.RadialGradient, RadialGradient, string>,
+    gradientId: string,
   ) {
     // <linearGradient> <radialGradient>
     // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/linearGradient
     // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/radialGradient
     const $gradient = createSVGElement(
-      parsedColor.type === PARSED_COLOR_TYPE.LinearGradient ?
-        'linearGradient' : 'radialGradient');
+      parsedColor.type === PARSED_COLOR_TYPE.LinearGradient ? 'linearGradient' : 'radialGradient',
+    );
     if (parsedColor.type === PARSED_COLOR_TYPE.LinearGradient) {
       const { x0, y0, x1, y1 } = parsedColor.value;
       $gradient.setAttribute('x1', `${x0}`);

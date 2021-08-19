@@ -16,6 +16,7 @@ import {
   Camera,
   ParsedColorStyleProperty,
   PARSED_COLOR_TYPE,
+  RENDER_REASON,
 } from '@antv/g';
 import { isArray } from '@antv/util';
 import { inject, injectable } from 'inversify';
@@ -91,6 +92,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   private restoreStack: DisplayObject[] = [];
 
+  private clearFullScreen = false;
+
   /**
    * save the last dirty rect in DEBUG mode
    */
@@ -126,15 +129,20 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.beginFrame.tap(CanvasRendererPlugin.tag, () => {
       const context = this.contextService.getContext();
 
-      const {
-        enableDirtyRectangleRendering,
-        enableDirtyRectangleRenderingDebug,
-      } = this.canvasConfig.renderer.getConfig();
+      const { enableDirtyRectangleRendering, enableDirtyRectangleRenderingDebug } =
+        this.canvasConfig.renderer.getConfig();
+
+      // clear fullscreen when:
+      // 1. dirty rectangle rendering disabled
+      // 2. camera changed
+      this.clearFullScreen =
+        !enableDirtyRectangleRendering ||
+        this.renderingContext.renderReasons.has(RENDER_REASON.CameraChanged);
 
       if (context) {
         context.save();
 
-        if (!enableDirtyRectangleRendering) {
+        if (this.clearFullScreen) {
           context.clearRect(0, 0, this.canvasConfig.width, this.canvasConfig.height);
         }
 
@@ -374,7 +382,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     const rBushNode = entity.getComponent(RBushNode);
 
     if (rBushNode) {
-
       // insert node in RTree
       if (rBushNode.aabb) {
         this.rBush.remove(rBushNode.aabb);
@@ -408,7 +415,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     context.transform(rts[0], rts[1], rts[3], rts[4], rts[6], rts[7]);
   }
 
-  private applyAttributesToContext(context: CanvasRenderingContext2D, object: DisplayObject, renderingService: RenderingService) {
+  private applyAttributesToContext(
+    context: CanvasRenderingContext2D,
+    object: DisplayObject,
+    renderingService: RenderingService,
+  ) {
     const { attributes, parsedStyle } = object;
     for (const k in attributes) {
       // reserved keywords in Canvas2DContext
@@ -429,10 +440,15 @@ export class CanvasRendererPlugin implements RenderingPlugin {
             parsedColor.type === PARSED_COLOR_TYPE.RadialGradient
           ) {
             const { width = 0, height = 0 } = attributes;
-            v = this.gradientPool.getOrCreateGradient({
-              type: parsedColor.type,
-              ...parsedColor.value, width, height,
-            }, context);
+            v = this.gradientPool.getOrCreateGradient(
+              {
+                type: parsedColor.type,
+                ...parsedColor.value,
+                width,
+                height,
+              },
+              context,
+            );
           } else if (parsedColor.type === PARSED_COLOR_TYPE.Pattern) {
             const pattern = this.imagePool.getPatternSync(parsedColor.value);
             if (pattern) {
@@ -458,7 +474,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
   }
 
-  private useAnchor(context: CanvasRenderingContext2D, object: DisplayObject, callback: Function): void {
+  private useAnchor(
+    context: CanvasRenderingContext2D,
+    object: DisplayObject,
+    callback: Function,
+  ): void {
     context.save();
 
     // apply anchor, use true size, not include stroke,

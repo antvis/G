@@ -8,8 +8,9 @@ redirect_from:
 DisplayObject 是所有图形的基类，例如 `Group` `Circle` `Text` 等都会继承它。
 
 我们尝试让它尽可能兼容 [DOM Element](https://developer.mozilla.org/en-US/docs/Web/API/Element)，除了能降低学习成本，还能将自身伪装成 DOM Element 来充分利用已有的 Web 生态，例如：
-* 使用 CSS 选择器进行[高级查询](/zh/docs/plugins/css-select)
-* 使用 Hammer.js [扩展手势](/zh/docs/api/event#直接使用-hammerjs)
+
+-   使用 CSS 选择器进行[高级查询](/zh/docs/plugins/css-select)
+-   使用 Hammer.js [扩展手势](/zh/docs/api/event#直接使用-hammerjs)
 
 # id
 
@@ -34,13 +35,14 @@ https://developer.mozilla.org/en-US/docs/Web/API/Element/className
 是否支持响应[事件](/zh/docs/api/event)，默认为 `true`。在某些不需要支持交互的图形上可以关闭。
 
 例如我们不想让下面这个圆响应鼠标 `mouseenter/leave` 事件，[示例](/zh/examples/event/shape#circle)
+
 ```js
 // 初始化时禁止交互
 const circle = new Circle({
-  interactive: false,
-  style: {
-    r: 100,
-  }
+    interactive: false,
+    style: {
+        r: 100,
+    },
 });
 
 // 或者后续禁止
@@ -53,16 +55,17 @@ circle.interactive = false;
 
 ```javascript
 const rect = new Rect({
-  style: { // 或者使用 attrs
-    x: 200,
-    y: 100,
-    fill: '#1890FF',
-    stroke: '#F04864',
-    lineWidth: 4,
-    width: 300,
-    height: 200,
-    radius: 8,
-  },
+    style: {
+        // 或者使用 attrs
+        x: 200,
+        y: 100,
+        fill: '#1890FF',
+        stroke: '#F04864',
+        lineWidth: 4,
+        width: 300,
+        height: 200,
+        radius: 8,
+    },
 });
 ```
 
@@ -106,6 +109,7 @@ const rect = new Rect({
 **说明** 锚点位置，取值范围 `(0, 0) ~ (1, 1)`，修改它同时会改变图形的包围盒（尺寸不变，中心点发生偏移）
 
 不同图形的默认锚点如下，[示例](/zh/examples/shape#rect)：
+
 -   [Circle](/zh/docs/api/circle)，[Ellipse](/zh/docs/api/ellipse) 为圆心位置 `[0.5, 0.5]`
 -   [Rect](/zh/docs/api/rect)，[Image](/zh/docs/api/image)，[Line](/zh/docs/api/line)，[Polyline](/zh/docs/api/polyline)，[Polygon](/zh/docs/api/polygon)，[Path](/zh/docs/api/path) 为包围盒左上角顶点位置 `[0, 0]`
 -   [Text](/zh/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/docs/api/basic/text#textbaseline) 与 [textAlign](/zh/docs/api/basic/text#textalign) 这两个属性设置
@@ -121,17 +125,18 @@ const rect = new Rect({
 **说明** 旋转中心，在局部坐标系下表示
 
 [示例](/zh/examples/scenegraph#origin)
+
 ```js
 const rect = new Rect({
-  id: 'rect',
-  style: {
-    width: 300,
-    height: 200,
-    origin: [150, 100], // 设置旋转与缩放中心，局部坐标系下的中点
-  },
+    id: 'rect',
+    style: {
+        width: 300,
+        height: 200,
+        origin: [150, 100], // 设置旋转与缩放中心，局部坐标系下的中点
+    },
 });
 
-rect.style.origin(0, 0); // 设置为左上角
+rect.style.origin = [0, 0]; // 设置为左上角
 // 或者 rect.setOrigin(0, 0);
 ```
 
@@ -158,9 +163,10 @@ rect.style.origin(0, 0); // 设置为左上角
 **说明**：填充色
 
 支持以下格式的颜色值：
-* `'red'`
-* `'#1890FF'`
-* `'rgba(r, g, b, a)'`
+
+-   `'red'`
+-   `'#1890FF'`
+-   `'rgba(r, g, b, a)'`
 
 除此之外，支持以下渐变色写法。[示例](/zh/examples/shape#gradient)
 
@@ -168,7 +174,7 @@ rect.style.origin(0, 0); // 设置为左上角
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Z5gpQL9ia9kAAAAAAAAAAABkARQnAQ)
 
-- `l` 表示使用线性渐变，绿色的字体为可变量，由用户自己填写。
+-   `l` 表示使用线性渐变，绿色的字体为可变量，由用户自己填写。
 
 ```js
 // example
@@ -180,7 +186,7 @@ stroke: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9sc1SY2d_0AAAAAAAAAAAABkARQnAQ)
 
-- `r` 表示使用放射状渐变，绿色的字体为可变量，由用户自己填写，开始圆的 `x`、`y`、`r` 值均为相对值(0 至 1 范围)。
+-   `r` 表示使用放射状渐变，绿色的字体为可变量，由用户自己填写，开始圆的 `x`、`y`、`r` 值均为相对值(0 至 1 范围)。
 
 ```js
 // example
@@ -192,12 +198,12 @@ fill: 'r(0.5, 0.5, 0.1) 0:#ffffff 1:#1890ff';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8FjsSoqE1mYAAAAAAAAAAABkARQnAQ)
 
-- `p`: 表示使用纹理，绿色的字体为可变量，由用户自己填写。
-- `a`: 该模式在水平和垂直方向重复；
-- `x`: 该模式只在水平方向重复；
-- `y`: 该模式只在垂直方向重复；
-- `n`: 该模式只显示一次（不重复）。
-- 纹理的内容可以直接是图片或者 [Data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)。
+-   `p`: 表示使用纹理，绿色的字体为可变量，由用户自己填写。
+-   `a`: 该模式在水平和垂直方向重复；
+-   `x`: 该模式只在水平方向重复；
+-   `y`: 该模式只在垂直方向重复；
+-   `n`: 该模式只显示一次（不重复）。
+-   纹理的内容可以直接是图片或者 [Data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)。
 
 ```js
 // example
@@ -247,13 +253,14 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 **是否必须**：`false`
 
-**说明**：类似 CSS 的 `zIndex` 属性，用于控制渲染次序，有两点需要注意：
+**说明**：类似 CSS 的 `zIndex` 属性，用于控制渲染次序，需要注意：
 
 1. 只会影响渲染顺序，并不会改变场景图中的节点结构
 2. 只在当前上下文内生效
 3. 默认展示次序为场景图添加顺序，后添加的在之前添加的元素之上
 
 例如下面的场景图中，由于 li2 在 li1 之后加入画布，因此 li2 默认会展示在 li1 之上。如果希望改变这种展示次序，可以修改 li1 的 zIndex：
+
 ```js
 // ul1 -> li1
 //     -> li2
@@ -272,49 +279,54 @@ li1.style.zIndex = 1; // li1 在 li2 之上
 
 使用裁剪方式创建元素的可显示区域，区域内的部分显示，区域外的隐藏。可参考 CSS 的 [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)。该属性值可以是任意图形，例如 Circle、Rect 等等。同一个裁剪区域可以被多个图形共享使用。最后，裁剪区域也会影响图形的拾取区域，[示例](/zh/examples/event/shape#shapes)。
 
-例如我们想创建一个裁剪成圆形的图片，让裁剪区域刚好处于图片中心（尺寸为 200 * 200），此时我们可以设置裁剪区域圆形的局部坐标为 `[100, 100]`。[示例](/zh/examples/shape#clip)：
+例如我们想创建一个裁剪成圆形的图片，让裁剪区域刚好处于图片中心（尺寸为 200 \* 200），此时我们可以设置裁剪区域圆形的局部坐标为 `[100, 100]`。[示例](/zh/examples/shape#clip)：
+
 ```js
 const image = new Image({
-  style: {
-    width: 200,
-    height: 200,
-    clipPath: new Circle({
-      style: {
-        x: 100, // 处于被裁剪图形局部坐标系下
-        y: 100,
-        r: 50,
-      },
-    }),
-  }
+    style: {
+        width: 200,
+        height: 200,
+        clipPath: new Circle({
+            style: {
+                x: 100, // 处于被裁剪图形局部坐标系下
+                y: 100,
+                r: 50,
+            },
+        }),
+    },
 });
 ```
 
 也可以在创建图形之后设置裁剪区域，因此以上写法等价于：
+
 ```js
 const image = new Image({
-  style: {
-    //... 省略其他属性
-  }
+    style: {
+        //... 省略其他属性
+    },
 });
 
 image.style.clipPath = new Circle({
-  style: {
-    x: 100, // 处于被裁剪图形局部坐标系下
-    y: 100,
-    r: 50,
-  },
+    style: {
+        x: 100, // 处于被裁剪图形局部坐标系下
+        y: 100,
+        r: 50,
+    },
 });
 // 或者兼容旧版写法
-image.setClip(new Circle({
-  style: {
-    x: 100, // 处于被裁剪图形局部坐标系下
-    y: 100,
-    r: 50,
-  },
-}));
+image.setClip(
+    new Circle({
+        style: {
+            x: 100, // 处于被裁剪图形局部坐标系下
+            y: 100,
+            r: 50,
+        },
+    }),
+);
 ```
 
 当我们想清除裁剪区域时，可以设置为 `null`：
+
 ```js
 image.style.clipPath = null;
 // 或者
@@ -329,13 +341,9 @@ image.setClip(null);
 
 ```js
 // 对裁剪区域应用动画
-clipPathCircle.animate(
-  [
-    { transform: 'scale(1)' },
-    { transform: 'scale(1.2)' },
-  ], {
-  duration: 1500,
-  iterations: Infinity,
+clipPathCircle.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }], {
+    duration: 1500,
+    iterations: Infinity,
 });
 ```
 
@@ -344,29 +352,35 @@ clipPathCircle.animate(
 ## 运动轨迹
 
 在[路径动画](/zh/docs/api/animation#路径动画)中，我们可以使用 `offsetPath` 指定一个图形的运动轨迹，配合[动画系统](/zh/docs/api/animation#路径动画)对 `offsetDistance` 属性应用变换：
+
 ```js
 const circle = new Circle({
-  style: {
-    offsetPath: new Line({ // 创建运动轨迹
-      style: { // 不需要设置其他与轨迹无关的绘图属性
-        x1: 100,
-        y1: 100,
-        x2: 300,
-        y2: 100,
-      }
-    }),
-    r: 10,
-  }
+    style: {
+        offsetPath: new Line({
+            // 创建运动轨迹
+            style: {
+                // 不需要设置其他与轨迹无关的绘图属性
+                x1: 100,
+                y1: 100,
+                x2: 300,
+                y2: 100,
+            },
+        }),
+        r: 10,
+    },
 });
 
-const animation = circle.animate([
-  { offsetDistance: 0 }, // 变换
-  { offsetDistance: 1 },
-], {
-  duration: 3000,
-  easing: 'ease-in-out',
-  iterations: Infinity,
-});
+const animation = circle.animate(
+    [
+        { offsetDistance: 0 }, // 变换
+        { offsetDistance: 1 },
+    ],
+    {
+        duration: 3000,
+        easing: 'ease-in-out',
+        iterations: Infinity,
+    },
+);
 ```
 
 ### offsetPath
@@ -418,7 +432,6 @@ const animation = circle.animate([
 
 ## 设置缩放和旋转中心
 
-
 | 名称      | 参数               | 返回值 | 备注                             |
 | --------- | ------------------ | ------ | -------------------------------- |
 | setOrigin | `[number, number]` | 无     | 设置局部坐标系下的缩放和旋转中心 |
@@ -427,12 +440,12 @@ const animation = circle.animate([
 
 ```js
 const rect = new Rect({
-  id: 'rect',
-  style: {
-    width: 300,
-    height: 200,
-    origin: [150, 100], // 设置旋转与缩放中心，局部坐标系下的中点
-  },
+    id: 'rect',
+    style: {
+        width: 300,
+        height: 200,
+        origin: [150, 100], // 设置旋转与缩放中心，局部坐标系下的中点
+    },
 });
 
 rect.style.origin = [0, 0]; // 设置为左上角
@@ -441,37 +454,40 @@ rect.style.origin = [0, 0]; // 设置为左上角
 
 ## 获取包围盒
 
-| 名称      | 参数 | 返回值 | 备注                     |
-| --------- | ---- | ------ | ------------------------ |
-| getBounds | 无   | AABB   | 获取世界坐标系下的轴对齐包围盒 |
-| getLocalBounds | 无   | AABB   | 获取局部坐标系下的包围盒 |
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| getBounds | 无 | AABB | 获取世界坐标系下的轴对齐包围盒 |
+| getLocalBounds | 无 | AABB | 获取局部坐标系下的包围盒 |
 | getBoundingClientRect | 无 | Rect | 获取世界坐标系下的包围矩形，不考虑子元素，同时加上画布相对于浏览器的偏移量 |
 
 其中轴对齐包围盒 `AABB` 结构为：
+
 ```js
 interface AABB {
-  center: [number, number, number];
-  halfExtents: [number, number, number];
-  min: [number, number, number];
-  max: [number, number, number];
+    center: [number, number, number];
+    halfExtents: [number, number, number];
+    min: [number, number, number];
+    max: [number, number, number];
 }
 ```
 
-2维矩形 `Rect` 和 [DOMRect](https://developer.mozilla.org/zh-CN/docs/Web/API/DOMRect) 保持一致，结构为：
+2 维矩形 `Rect` 和 [DOMRect](https://developer.mozilla.org/zh-CN/docs/Web/API/DOMRect) 保持一致，结构为：
+
 ```js
 interface Rect {
-  top: number;
-  left: number;
-  right: number;
-  bottom: number;
-  width: number;
-  height: number;
+    top: number;
+    left: number;
+    right: number;
+    bottom: number;
+    width: number;
+    height: number;
 }
 ```
 
 `getBounds` 和 `getBoundingClientRect` 有以下区别：
-* 返回值的结构不同，前者返回一个3维的轴对齐包围盒，后者返回一个2维矩形
-* 前者会考虑子元素，把它们的包围盒合并起来。后者仅考虑自身，不考虑子元素，另外会加上画布相对于浏览器的偏移量
+
+-   返回值的结构不同，前者返回一个 3 维的轴对齐包围盒，后者返回一个 2 维矩形
+-   前者会考虑子元素，把它们的包围盒合并起来。后者仅考虑自身，不考虑子元素，另外会加上画布相对于浏览器的偏移量
 
 # 节点操作
 
@@ -488,7 +504,7 @@ interface Rect {
 | nextSibling     | 属性      | `Group    | null`                          | 返回后一个兄弟节点（如有）           |
 | previousSibling | 属性      | `Group    | null`                          | 返回前一个兄弟节点（如有）           |
 | contains        | 方法      | `boolean` | 子树中是否包含某个节点（入参） |
-| isConnected | 属性      | `boolean` | 节点是否被添加到画布中 |
+| isConnected     | 属性      | `boolean` | 节点是否被添加到画布中         |
 
 ## 高级查询
 
@@ -531,6 +547,7 @@ solarSystem.querySelectorAll('[r=25]');
 | remove | `(destroy = true)` | `Group` | 从父节点（如有）中移除自身，`destroy` 表示是否要销毁 |
 
 从父节点中删除子节点并销毁有以下两种方式：
+
 ```js
 // parent -> child
 parent.removeChild(child);
@@ -540,6 +557,7 @@ child.remove();
 ```
 
 删除所有子节点有以下两种方式：
+
 ```js
 parent.removeChildren();
 
@@ -560,12 +578,14 @@ parent.removeChildren();
 ⚠️ 兼容 [HTMLElement Style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style)
 
 因此以下用法等价：
+
 ```js
 const circle = new Circle({
-  style: { // 或者使用 style
-    r: 10,
-    fill: 'red',
-  }
+    style: {
+        // 或者使用 style
+        r: 10,
+        fill: 'red',
+    },
 });
 
 // 获取属性值
@@ -586,27 +606,29 @@ circle.style.r = 20;
 ## 生命周期事件监听
 
 可以监听节点添加和删除事件：
+
 ```js
 import { DISPLAY_OBJECT_EVENT } from '@antv/g';
 
 // 监听子节点添加事件
 parent.on(DISPLAY_OBJECT_EVENT.ChildInserted, (childNode) => {
-  console.log(childNode); // child
+    console.log(childNode); // child
 });
 child.on(DISPLAY_OBJECT_EVENT.Inserted, (parentNode) => {
-  console.log(parentNode); // parent
+    console.log(parentNode); // parent
 });
 
 parent.appendChild(child);
 ```
 
 支持以下事件：
-* `ChildInserted` 作为父节点有子节点添加时触发
-* `Inserted` 作为子节点被添加时触发
-* `ChildRemoved` 作为父节点有子节点移除时触发
-* `Removed` 作为子节点被移除时触发
-* `AttributeChanged` 调用 `setAttribute()` 修改属性时触发
-* `Destroy` 调用 `destroy()` 时触发
+
+-   `ChildInserted` 作为父节点有子节点添加时触发
+-   `Inserted` 作为子节点被添加时触发
+-   `ChildRemoved` 作为父节点有子节点移除时触发
+-   `Removed` 作为子节点被移除时触发
+-   `AttributeChanged` 调用 `setAttribute()` 修改属性时触发
+-   `Destroy` 调用 `destroy()` 时触发
 
 # 可见性与渲染次序
 
@@ -633,11 +655,11 @@ group.show();
 
 类似 CSS，我们可以通过 `zIndex` 属性控制渲染次序，有两点需要注意：
 
-| 名称      | 参数     | 返回值 | 备注           |
-| --------- | -------- | ------ | -------------- |
+| 名称      | 参数     | 返回值 | 备注          |
+| --------- | -------- | ------ | ------------- |
 | setZIndex | `number` | 无     | 设置 `zIndex` |
-| toFront   | 无       | 无     | 置顶           |
-| toBack    | 无       | 无     | 置底           |
+| toFront   | 无       | 无     | 置顶          |
+| toBack    | 无       | 无     | 置底          |
 
 ```javascript
 const group = new Group();
@@ -650,21 +672,22 @@ group.setZIndex(100);
 # 动画
 
 参考 Web Animation API，可以使用 animate 完成 keyframe 动画，下面是一个 ScaleIn 动画效果：
+
 ```js
 circle.animate(
-  [
+    [
+        {
+            transform: 'scale(0)',
+        },
+        {
+            transform: 'scale(1)',
+        },
+    ],
     {
-      transform: 'scale(0)',
+        duration: 500,
+        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+        iterations: Infinity,
     },
-    {
-      transform: 'scale(1)',
-    }
-  ],
-  {
-    duration: 500,
-    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-    iterations: Infinity,
-  },
 );
 ```
 

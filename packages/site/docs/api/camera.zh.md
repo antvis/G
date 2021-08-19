@@ -68,7 +68,15 @@ camera
 
 ### setPosition(x: number | vec3, y?: number, z?: number)
 
-设置相机位置。
+设置相机在世界坐标系下的位置。在 G 内置的正交投影相机中，默认设置为 `[width / 2, height / 2]`，其中 `width/height` 为创建画布时传入的参数。
+
+```js
+camera.setPosition(300, 250);
+// 或者
+camera.setPosition(300, 250, 0);
+// 或者
+camera.setPosition([300, 250, 0]);
+```
 
 ### setFocalPosition(x: number | vec3, y?: number, z?: number)
 
@@ -94,6 +102,24 @@ camera
 
 仅透视投影下生效。大部分情况下不需要手动设置，当画布尺寸发生改变时可以通过调用 `canvas.resize()` 自动更新。
 
+### 设置方位角
+
+在描述旋转时，有时欧拉角理解起来要更直观，因为它更加贴近我们在日常生活中的描述，比如摄像机运动、水平坐标系（也称作地心坐标系）中的经纬度等等。在一些 GIS 类可视化项目（例如 Mapbox）中，经常使用 pitch/yaw/roll 来描述自身的旋转情况。例如下图中的一架飞机。
+
+设置相机方位角，不同相机模式下需要重新计算相机位置或者是视点位置。
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*tLc3R7rerqsAAAAAAAAAAAAAARQnAQ)
+
+#### setRoll(angle: number)
+
+```js
+camera.setRoll(30);
+```
+
+#### setElevation(angle: number)
+
+#### setAzimuth(angle: number)
+
 ## 相机类型
 
 在 2D 场景中，如果我们想在场景中移动，通常会使用到平移和缩放。而在 3D 场景下不同的相机类型会带来不同的视觉效果。
@@ -101,6 +127,28 @@ camera
 左图是固定视点，移动相机位置来观测场景，多见于模型观察。而右图固定相机位置，调整视点观察场景中的所有物体。 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*vNDVQ5tE4G0AAAAAAAAAAAAAARQnAQ)
 
 ## 相机动作
+
+在相机坐标系中相机的三轴为 `uvn` ![](https://i.stack.imgur.com/ooEFp.png)
+
+后面我们介绍的相机动作实际就是沿这三轴进行移动和旋转。
+
+下图来自 Television Production Handbook p.97。早年的电视台使用的摄像机通过轨道完成移动：
+
+![](https://gw.alipayobjects.com/mdn/rms_4be1e1/afts/img/A*Dm7cQZ6locEAAAAAAAAAAAAAARQnAQ)
+
+我们不考虑依靠摇臂完成的 crane 和 tongue 动作，沿 uvn 三轴的平移和旋转可总结出以下动作：
+
+| 动作名   | 相机位置 | 视点     | u    | v    | n    |
+| -------- | -------- | -------- | ---- | ---- | ---- |
+| dolly    |          |          |      |      | 平移 |
+| pedestal |          |          |      | 平移 |      |
+| truck    |          |          | 平移 |      |      |
+| cant     | 旋转中心 |          |      |      | 旋转 |
+| pan      | 旋转中心 |          |      | 旋转 |      |
+| tilt     | 旋转中心 |          | 旋转 |      |      |
+| arc      |          | 旋转中心 |      | 旋转 |      |
+
+很自然的，根据相机类型的不同，同一个摄像机动作对应的实现也不同。 我们以 dolly 动作为例，同样都是一个向前向后移动摄像机位置的动作，对于 Orbiting 模式视点不变，而在 Tracking 模式下视点是需要调整的。
 
 ### pan(tx: number, ty: number)
 
@@ -134,7 +182,11 @@ camera.dolly(-10); // 靠近视点
 
 ### rotate(azimuth: number, elevation: number, roll: number)
 
-按相机方位角旋转。
+按相机方位角旋转，逆时针方向为正。2D 场景只需要指定 roll，例如让相机“歪下头”：
+
+```js
+camera.rotate(0, 0, 30);
+```
 
 ## 相机动画
 
