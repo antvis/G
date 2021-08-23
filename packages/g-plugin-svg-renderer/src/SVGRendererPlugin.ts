@@ -24,6 +24,7 @@ import type {
 } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
 import { createSVGElement } from './utils/dom';
+import { numberToLongString } from './utils/format';
 import { ElementRenderer, ElementRendererFactory } from './shapes/paths';
 
 export const SHAPE_TO_TAGS: Record<SHAPE | string, string> = {
@@ -211,9 +212,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
     $el.setAttribute(
       'transform',
-      `matrix(${rts[0].toFixed(5)},${rts[1].toFixed(5)},${rts[3].toFixed(5)},${rts[4].toFixed(
-        5,
-      )},${rts[6].toFixed(5)},${rts[7].toFixed(5)})`,
+      `matrix(${numberToLongString(rts[0])},${numberToLongString(rts[1])},${numberToLongString(
+        rts[3],
+      )},${numberToLongString(rts[4])},${numberToLongString(rts[6])},${numberToLongString(
+        rts[7],
+      )})`,
     );
   }
 

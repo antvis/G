@@ -1,14 +1,18 @@
 import { AnimationEffectTiming } from '../AnimationEffectTiming';
 import { DisplayObject } from '../DisplayObject';
+import { container } from '../inversify.config';
+import {
+  Interpolatable,
+  StylePropertyMergerFactory,
+  StylePropertyParserFactory,
+} from '../property-handlers';
 import { parseEasingFunction } from './animation';
+import { TypeEasingFunction } from './custom-easing';
 
 /**
  * handlers for valid properties
  */
-const propertyHandlers: Record<string, [
-  Function,
-  Function,
-][]> = {};
+const propertyHandlers: Record<string, [Function, Function][]> = {};
 
 function addPropertyHandler(parser: Function, merger: Function, property: string) {
   propertyHandlers[property] = propertyHandlers[property] || [];
@@ -30,15 +34,18 @@ export function convertEffectInput(
 
   return function (target: DisplayObject, fraction: number) {
     if (fraction !== null) {
-      interpolations.filter((interpolation) => {
-        return fraction >= interpolation.applyFrom && fraction < interpolation.applyTo;
-      }).forEach((interpolation) => {
-        const offsetFraction = fraction - interpolation.startOffset;
-        const localDuration = interpolation.endOffset - interpolation.startOffset;
-        const scaledLocalTime = localDuration === 0 ? 0 : interpolation.easingFunction(offsetFraction / localDuration);
-        // apply updated attribute
-        target.style[interpolation.property] = interpolation.interpolation(scaledLocalTime);
-      });
+      interpolations
+        .filter((interpolation) => {
+          return fraction >= interpolation.applyFrom && fraction < interpolation.applyTo;
+        })
+        .forEach((interpolation) => {
+          const offsetFraction = fraction - interpolation.startOffset;
+          const localDuration = interpolation.endOffset - interpolation.startOffset;
+          const scaledLocalTime =
+            localDuration === 0 ? 0 : interpolation.easingFunction(offsetFraction / localDuration);
+          // apply updated attribute
+          target.style[interpolation.property] = interpolation.interpolation(scaledLocalTime);
+        });
     } else {
       for (const property in propertySpecificKeyframeGroups)
         if (isNotReservedWord(property)) {
@@ -53,18 +60,23 @@ interface PropertySpecificKeyframe {
   offset: number | null;
   computedOffset: number;
   easing: string;
-  easingFunction: Function;
+  easingFunction: TypeEasingFunction;
   value: any;
 }
 
 function isNotReservedWord(member: string) {
-  return member !== 'offset' &&
+  return (
+    member !== 'offset' &&
     member !== 'easing' &&
     member !== 'composite' &&
-    member !== 'computedOffset';
+    member !== 'computedOffset'
+  );
 }
 
-function makePropertySpecificKeyframeGroups(keyframes: ComputedKeyframe[], timing: AnimationEffectTiming) {
+function makePropertySpecificKeyframeGroups(
+  keyframes: ComputedKeyframe[],
+  timing: AnimationEffectTiming,
+) {
   const propertySpecificKeyframeGroups: Record<string, PropertySpecificKeyframe[]> = {};
 
   for (let i = 0; i < keyframes.length; i++) {
@@ -75,7 +87,7 @@ function makePropertySpecificKeyframeGroups(keyframes: ComputedKeyframe[], timin
           computedOffset: keyframes[i].computedOffset,
           easing: keyframes[i].easing,
           easingFunction: parseEasingFunction(keyframes[i].easing) || timing.easingFunction,
-          value: keyframes[i][member]
+          value: keyframes[i][member],
         };
         propertySpecificKeyframeGroups[member] = propertySpecificKeyframeGroups[member] || [];
         // @ts-ignore
@@ -126,7 +138,7 @@ function makeInterpolations(
           keyframes[startIndex].value,
           keyframes[endIndex].value,
           target,
-        )
+        ),
       });
     }
   }
@@ -142,34 +154,39 @@ function propertyInterpolation(
   right: string | number,
   target: DisplayObject | null,
 ) {
-  let ucProperty = property;
-  if (/-/.test(property)) {
-    ucProperty = toCamelCase(property);
-  }
+  let parsedLeft = left;
+  let parsedRight = right;
+
+  const parserFactory = container.get<StylePropertyParserFactory>(StylePropertyParserFactory);
+  const parser = parserFactory(property);
+  const mergerFactory = container.get<StylePropertyMergerFactory>(StylePropertyMergerFactory);
+  const merger = mergerFactory(property);
+
   // if (left == 'initial' || right == 'initial') {
   //   if (left == 'initial')
   //     left = initialValues[ucProperty];
   //   if (right == 'initial')
   //     right = initialValues[ucProperty];
   // }
-  const handlers = left === right ? [] : propertyHandlers[ucProperty];
-  for (let i = 0; handlers && i < handlers.length; i++) {
-    // parser
-    const parsedLeft = handlers[i][0](left);
-    const parsedRight = handlers[i][0](right);
-    if (parsedLeft !== undefined && parsedRight !== undefined) {
-      // merger [left, right, n2string()]
-      const interpolationArgs = handlers[i][1](parsedLeft, parsedRight, target);
-      if (interpolationArgs) {
-        const interp = InterpolationFactory.apply(null, interpolationArgs);
-        return function (t: number) {
-          if (t === 0) return left;
-          if (t === 1) return right;
-          return interp(t);
-        };
-      }
-    }
+
+  if (parser) {
+    // @ts-ignore
+    parsedLeft = parser(left, target);
+    // @ts-ignore
+    parsedRight = parser(right, target);
   }
+
+  // merger [left, right, n2string()]
+  const interpolationArgs = merger && merger(parsedLeft, parsedRight, target);
+  if (interpolationArgs) {
+    const interp = InterpolationFactory(...interpolationArgs);
+    return function (t: number) {
+      if (t === 0) return left;
+      if (t === 1) return right;
+      return interp(t);
+    };
+  }
+
   return InterpolationFactory(false, true, function (bool: boolean) {
     return bool ? right : left;
   });
@@ -181,15 +198,14 @@ function toCamelCase(property: string) {
   });
 }
 
-function interpolate(
-  from: number | boolean | (number | boolean)[],
-  to: number | boolean | (number | boolean)[],
-  f: number,
-): boolean | number | number[] {
-  if ((typeof from === 'number') && (typeof to === 'number')) {
+/**
+ * interpolate with number, boolean, number[], boolean[]
+ */
+function interpolate(from: Interpolatable, to: Interpolatable, f: number): Interpolatable {
+  if (typeof from === 'number' && typeof to === 'number') {
     return from * (1 - f) + to * f;
   }
-  if ((typeof from === 'boolean') && (typeof to === 'boolean')) {
+  if (typeof from === 'boolean' && typeof to === 'boolean') {
     return f < 0.5 ? from : to;
   }
 
@@ -206,12 +222,12 @@ function interpolate(
   throw 'Mismatched interpolation arguments ' + from + ':' + to;
 }
 
-const InterpolationFactory = function (
-  from: number | boolean | (number | boolean)[],
-  to: number | boolean | (number | boolean)[],
-  convertToString: Function
-) {
+const InterpolationFactory = (
+  from: Interpolatable,
+  to: Interpolatable,
+  convertToString: Function,
+) => {
   return (f: number) => {
     return convertToString(interpolate(from, to, f));
-  }
-}
+  };
+};

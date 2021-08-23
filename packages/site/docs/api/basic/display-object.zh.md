@@ -92,6 +92,8 @@ const rect = new Rect({
 
 **是否必须**：`false`
 
+**说明** 局部坐标系下 x 轴坐标
+
 ### y
 
 **类型**： `number`
@@ -99,6 +101,8 @@ const rect = new Rect({
 **默认值**：0
 
 **是否必须**：`false`
+
+**说明** 局部坐标系下 y 轴坐标
 
 ### anchor
 
@@ -122,7 +126,7 @@ const rect = new Rect({
 
 **是否必须**：`false`
 
-**说明** 旋转中心，在局部坐标系下表示
+**说明** 旋转与缩放中心，也称作变换中心，在局部坐标系下表示
 
 [示例](/zh/examples/scenegraph#origin)
 
@@ -137,12 +141,100 @@ const rect = new Rect({
 });
 
 rect.style.origin = [0, 0]; // 设置为左上角
-// 或者 rect.setOrigin(0, 0);
+// 或者
+rect.style.transformOrigin = 'top left';
+rect.style.transformOrigin = '0px 0px';
+// 或者
+rect.setOrigin(0, 0);
 ```
+
+也可以使用 [transformOrigin](/zh/docs/api/basic/display-object#transformorigin) 表示。
+
+### transform
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+我们提供了在局部坐标系下进行变换的快捷方式，同时与[CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 保持一致，支持以下属性值：
+
+-   缩放，无单位
+    -   scale(x, y)
+    -   scaleX(x)
+    -   scaleY(x)
+    -   scaleZ(z)
+    -   scale3d(x, y, z)
+-   平移，0 可以不加单位，无单位当作 px 处理，百分比相对于当前图形包围盒
+    -   translate(0, 0) translate(0, 30px) translate(100%, 100%)
+    -   translateX(0)
+    -   translateY(0)
+    -   translateZ(0)
+    -   translate3d(0, 0, 0)
+-   旋转，支持 deg rad turn 这些单位
+    -   rotate(0.5turn) rotate(30deg) rotate(1rad)
+-   none 清除变换
+
+由于是在局部坐标系下进行变换，因此以下写法等价：
+
+```js
+const circle = new Circle({
+    style: {
+        transform: 'translate(100px, 100px)',
+        r: 100,
+    },
+});
+
+const circle = new Circle({
+    style: {
+        x: 100,
+        y: 100,
+        r: 100,
+    },
+});
+
+const circle = new Circle({
+    style: {
+        r: 100,
+    },
+});
+circle.translateLocal(100, 100);
+```
+
+### transformOrigin
+
+**类型**： `string`
+
+**默认值**：`center`
+
+**是否必须**：`false`
+
+**说明** 旋转与缩放中心，也称作变换中心，在局部坐标系下表示。
+
+和 CSS [transform-origin](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin) 类似，支持以下字符串写法，其中用空格分隔：
+
+-   一个值
+    -   单位为 px 的长度，例如 10px
+    -   单位为 % 的长度，例如 50%
+    -   关键词 left, center, right, top, bottom，等于用百分比表示，例如 left 等于 0%，center 等于 50%
+-   两个值
+    -   第一个是单位为 px 或 % 的长度，或 left, center, right 关键字中的一个
+    -   第二个是单位为 px 或 % 的长度，或 top, center, bottom 关键字中的一个
+
+因此以下写法等价：
+
+```js
+// r = 100
+circle.style.transformOrigin = 'left';
+circle.style.transformOrigin = 'left center';
+circle.style.transformOrigin = '0 50%';
+circle.style.transformOrigin = '0 100px';
+```
+
+⚠️ 暂不支持三个值的写法。
 
 ## 填充
 
 ### opacity
+
+<tag color="green" text="可应用动画">可应用动画</tag>
 
 **类型**： `number`
 
@@ -153,6 +245,8 @@ rect.style.origin = [0, 0]; // 设置为左上角
 **说明**：透明度，取值范围为 `[0, 1]`
 
 ### fill
+
+<tag color="green" text="可应用动画">可应用动画</tag>
 
 **类型**： `String`
 
@@ -215,6 +309,8 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 ### strokeOpacity
 
+<tag color="green" text="可应用动画">可应用动画</tag>
+
 **类型**： `number`
 
 **默认值**：1
@@ -225,6 +321,8 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 ### stroke
 
+<tag color="green" text="可应用动画">可应用动画</tag>
+
 **类型**： `String`
 
 **默认值**：无
@@ -234,6 +332,8 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 **说明**：描边色，例如 `'#1890FF'`
 
 ### lineWidth
+
+<tag color="green" text="可应用动画">可应用动画</tag>
 
 **类型**： `number`
 
@@ -389,9 +489,13 @@ const animation = circle.animate(
 
 ### offsetDistance
 
+<tag color="green" text="可应用动画">可应用动画</tag>
+
 从路径起点出发行进的距离，取值范围为 `[0-1]`，0 代表路径起点，1 代表终点。
 
-# 变换
+# 变换操作
+
+我们提供了一系列变换方法。
 
 ## 平移
 

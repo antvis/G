@@ -21,56 +21,56 @@ const canvas = new Canvas({
 /**
  * ported from https://github.com/wellyshen/use-web-animations/tree/master/src/animations
  */
-const transformOrigin = "center bottom";
+const transformOrigin = 'center bottom';
 const effects = [
   () => ({
     name: 'backInDown',
     keyframes: [
-      { transform: "translateY(-1200px) scale(0.7)", opacity: 0.7, offset: 0 },
-      { transform: "translateY(0px) scale(0.7)", opacity: 0.7, offset: 0.8 },
-      { transform: "scale(1)", opacity: 1, offset: 1 },
+      { transform: 'translateY(-1200px) scale(0.7)', opacity: 0.7, offset: 0 },
+      { transform: 'translateY(0px) scale(0.7)', opacity: 0.7, offset: 0.8 },
+      { transform: 'scale(1)', opacity: 1, offset: 1 },
     ],
-    animationOptions: { duration: 1000, fill: "both" },
+    animationOptions: { duration: 1000, fill: 'both' },
   }),
   () => ({
     name: 'fadeIn',
     keyframes: [{ opacity: 0 }, { opacity: 1 }],
-    animationOptions: { duration: 1000, fill: "both" },
+    animationOptions: { duration: 1000, fill: 'both' },
   }),
   () => ({
     name: 'fadeInBottomLeft',
     keyframes: [
-      { transform: "translate3d(-100%, 100%, 0)", opacity: 0 },
-      { transform: "translate3d(0, 0, 0)", opacity: 1 },
+      { transform: 'translate3d(-100%, 100%, 0)', opacity: 0 },
+      { transform: 'translate3d(0, 0, 0)', opacity: 1 },
     ],
-    animationOptions: { duration: 1000, fill: "both" },
+    animationOptions: { duration: 1000, fill: 'both' },
   }),
   () => ({
     name: 'fadeInBottomRight',
     keyframes: [
-      { transform: "translate3d(100%, 100%, 0)", opacity: 0 },
-      { transform: "translate3d(0, 0, 0)", opacity: 1 },
+      { transform: 'translate3d(100%, 100%, 0)', opacity: 0 },
+      { transform: 'translate3d(0, 0, 0)', opacity: 1 },
     ],
-    animationOptions: { duration: 1000, fill: "both" },
+    animationOptions: { duration: 1000, fill: 'both' },
   }),
   () => ({
     name: 'fadeOutTopRight',
     keyframes: [
-      { transform: "translate3d(0, 0, 0)", opacity: 1 },
-      { transform: "translate3d(100%, -100%, 0)", opacity: 0 },
+      { transform: 'translate3d(0, 0, 0)', opacity: 1 },
+      { transform: 'translate3d(100%, -100%, 0)', opacity: 0 },
     ],
-    animationOptions: { duration: 1000, fill: "both" },
+    animationOptions: { duration: 1000, fill: 'both' },
   }),
   () => {
-    const easing1 = "cubic-bezier(0.215, 0.61, 0.355, 1)";
-    const easing2 = "cubic-bezier(0.755, 0.05, 0.855, 0.06)";
+    const easing1 = 'cubic-bezier(0.215, 0.61, 0.355, 1)';
+    const easing2 = 'cubic-bezier(0.755, 0.05, 0.855, 0.06)';
     const frame1 = {
-      transform: "translate3d(0, 0, 0)",
+      transform: 'translate3d(0, 0, 0)',
       easing: easing1,
       transformOrigin,
     };
     const frame2 = {
-      transform: "translate3d(0, -30px, 0) scaleY(1.1)",
+      transform: 'translate3d(0, -30px, 0) scaleY(1.1)',
       easing: easing2,
       transformOrigin,
     };
@@ -83,55 +83,55 @@ const effects = [
         { ...frame2, offset: 0.43 },
         { ...frame1, offset: 0.53 },
         {
-          transform: "translate3d(0, -15px, 0) scaleY(1.05)",
+          transform: 'translate3d(0, -15px, 0) scaleY(1.05)',
           easing: easing2,
           transformOrigin,
           offset: 0.7,
         },
         {
-          transform: "translate3d(0, 0, 0) scaleY(0.95)",
+          transform: 'translate3d(0, 0, 0) scaleY(0.95)',
           easing: easing1,
           transformOrigin,
           offset: 0.8,
         },
         {
-          transform: "translate3d(0, -4px, 0) scaleY(1.02)",
+          transform: 'translate3d(0, -4px, 0) scaleY(1.02)',
           transformOrigin,
           offset: 0.9,
         },
         { ...frame1, offset: 1 },
       ],
-      animationOptions: { duration: 1000, fill: "both" },
-    }
+      animationOptions: { duration: 1000, fill: 'both' },
+    };
   },
   () => {
-    const easing = "cubic-bezier(0.215, 0.61, 0.355, 1)";
+    const easing = 'cubic-bezier(0.215, 0.61, 0.355, 1)';
     return {
       name: 'bounceIn',
       keyframes: [
-        { transform: "scale3d(0.3, 0.3, 0.3)", opacity: 0, easing, offset: 0 },
-        { transform: "scale3d(1.1, 1.1, 1.1)", easing, offset: 0.2 },
-        { transform: "scale3d(0.9, 0.9, 0.9)", easing, offset: 0.4 },
-        { transform: "scale3d(1.03, 1.03, 1.03)", opacity: 1, easing, offset: 0.6 },
-        { transform: "scale3d(0.97, 0.97, 0.97)", easing, offset: 0.8 },
-        { transform: "scale3d(1, 1, 1)", opacity: 1, easing, offset: 1 },
+        { transform: 'scale3d(0.3, 0.3, 0.3)', opacity: 0, easing, offset: 0 },
+        { transform: 'scale3d(1.1, 1.1, 1.1)', easing, offset: 0.2 },
+        { transform: 'scale3d(0.9, 0.9, 0.9)', easing, offset: 0.4 },
+        { transform: 'scale3d(1.03, 1.03, 1.03)', opacity: 1, easing, offset: 0.6 },
+        { transform: 'scale3d(0.97, 0.97, 0.97)', easing, offset: 0.8 },
+        { transform: 'scale3d(1, 1, 1)', opacity: 1, easing, offset: 1 },
       ],
-      animationOptions: { duration: 750, fill: "both" },
-    }
+      animationOptions: { duration: 750, fill: 'both' },
+    };
   },
   () => {
-    const frame = { transform: "scale3d(1.1, 1.1, 1.1)", opacity: 1 };
+    const frame = { transform: 'scale3d(1.1, 1.1, 1.1)', opacity: 1 };
     return {
       name: 'bounceOut',
       keyframes: [
-        { transform: "none", opacity: 1, offset: 0 },
-        { transform: "scale3d(0.9, 0.9, 0.9)", offset: 0.2 },
+        { transform: 'none', opacity: 1, offset: 0 },
+        { transform: 'scale3d(0.9, 0.9, 0.9)', offset: 0.2 },
         { ...frame, offset: 0.5 },
         { ...frame, offset: 0.55 },
-        { transform: "scale3d(0.3, 0.3, 0.3)", opacity: 0, offset: 1 },
+        { transform: 'scale3d(0.3, 0.3, 0.3)', opacity: 0, offset: 1 },
       ],
-      animationOptions: { duration: 750, fill: "both" },
-    }
+      animationOptions: { duration: 750, fill: 'both' },
+    };
   },
   () => {
     const frame1 = { opacity: 1 };
@@ -145,25 +145,25 @@ const effects = [
         { ...frame2, offset: 0.75 },
         { ...frame1, offset: 1 },
       ],
-      animationOptions: { duration: 1000, fill: "both" },
+      animationOptions: { duration: 1000, fill: 'both' },
     };
   },
-  // () => ({
-  //   name: 'headShake',
-  //   keyframes: [
-  //     { transform: "translateX(0)", offset: 0 },
-  //     { transform: "translateX(-6px) rotateY(-9deg)", offset: 0.065 },
-  //     // { transform: "translateX(5px) rotateY(7deg)", offset: 0.185 },
-  //     // { transform: "translateX(-3px) rotateY(-5deg)", offset: 0.315 },
-  //     // { transform: "translateX(2px) rotateY(3deg)", offset: 0.435 },
-  //     // { transform: "translateX(0)", offset: 0.5 },
-  //     // { transform: "none", offset: 1 },
-  //   ],
-  //   animationOptions: { duration: 1000, fill: "both", easing: "ease-in-out" },
-  // }),
+  () => ({
+    name: 'headShake',
+    keyframes: [
+      { transform: 'translateX(0)', offset: 0 },
+      { transform: 'translateX(-6px) rotateY(-9deg)', offset: 0.065 },
+      { transform: 'translateX(5px) rotateY(7deg)', offset: 0.185 },
+      { transform: 'translateX(-3px) rotateY(-5deg)', offset: 0.315 },
+      { transform: 'translateX(2px) rotateY(3deg)', offset: 0.435 },
+      { transform: 'translateX(0)', offset: 0.5 },
+      { transform: 'none', offset: 1 },
+    ],
+    animationOptions: { duration: 1000, fill: 'both', easing: 'ease-in-out' },
+  }),
   () => {
-    const frame1 = { transform: "scale(1)" };
-    const frame2 = { transform: "scale(1.3)" };
+    const frame1 = { transform: 'scale(1)' };
+    const frame2 = { transform: 'scale(1.3)' };
     return {
       name: 'heartBeat',
       keyframes: [
@@ -172,23 +172,23 @@ const effects = [
         { ...frame1, offset: 0.28 },
         { ...frame2, offset: 0.42 },
         { ...frame1, offset: 0.7 },
-        { transform: "none", offset: 1 },
+        { transform: 'none', offset: 1 },
       ],
-      animationOptions: { duration: 1300, fill: "both", easing: "ease-in-out" },
-    }
+      animationOptions: { duration: 1300, fill: 'both', easing: 'ease-in-out' },
+    };
   },
-  // () => ({
-  //   name: 'swing',
-  //   keyframes: [
-  //     { transform: "rotate3d(0, 0, 1, 0deg)", transformOrigin, offset: 0 },
-  //     { transform: "rotate3d(0, 0, 1, 15deg)", transformOrigin, offset: 0.2 },
-  //     // { transform: "rotate3d(0, 0, 1, -10deg)", transformOrigin, offset: 0.4 },
-  //     // { transform: "rotate3d(0, 0, 1, 5deg)", transformOrigin, offset: 0.6 },
-  //     // { transform: "rotate3d(0, 0, 1, -5deg)", transformOrigin, offset: 0.8 },
-  //     // { transform: "rotate3d(0, 0, 1, 0deg)", transformOrigin, offset: 1 },
-  //   ],
-  //   animationOptions: { duration: 1000, fill: "both" },
-  // })
+  () => ({
+    name: 'swing',
+    keyframes: [
+      { transform: 'rotateZ(0deg)', transformOrigin, offset: 0 },
+      { transform: 'rotateZ(15deg)', transformOrigin, offset: 0.2 },
+      { transform: 'rotateZ(-10deg)', transformOrigin, offset: 0.4 },
+      { transform: 'rotateZ(5deg)', transformOrigin, offset: 0.6 },
+      { transform: 'rotateZ(-5deg)', transformOrigin, offset: 0.8 },
+      { transform: 'rotateZ(0deg)', transformOrigin, offset: 1 },
+    ],
+    animationOptions: { duration: 1000, fill: 'both' },
+  }),
 ];
 
 effects.forEach((f, i) => {
@@ -218,13 +218,10 @@ effects.forEach((f, i) => {
 
   group.setPosition(50 + 150 * (i % 4), 50 + 150 * row);
 
-  circle.animate(
-    keyframes,
-    {
-      ...animationOptions,
-      iterations: Infinity,
-    },
-  );
+  circle.animate(keyframes, {
+    ...animationOptions,
+    iterations: Infinity,
+  });
 });
 
 // stats

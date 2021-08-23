@@ -92,6 +92,8 @@ const rect = new Rect({
 
 **是否必须**：`false`
 
+**说明** 局部坐标系下 x 轴坐标
+
 ### y
 
 **类型**： `number`
@@ -99,6 +101,8 @@ const rect = new Rect({
 **默认值**：0
 
 **是否必须**：`false`
+
+**说明** 局部坐标系下 y 轴坐标
 
 ### anchor
 
@@ -122,7 +126,7 @@ const rect = new Rect({
 
 **是否必须**：`false`
 
-**说明** 旋转中心，在局部坐标系下表示
+**说明** 旋转与缩放中心，也称作变换中心，在局部坐标系下表示
 
 [示例](/zh/examples/scenegraph#origin)
 
@@ -137,12 +141,100 @@ const rect = new Rect({
 });
 
 rect.style.origin = [0, 0]; // 设置为左上角
-// 或者 rect.setOrigin(0, 0);
+// 或者
+rect.style.transformOrigin = 'top left';
+rect.style.transformOrigin = '0px 0px';
+// 或者
+rect.setOrigin(0, 0);
 ```
+
+也可以使用 [transformOrigin](/zh/docs/api/basic/display-object#transformorigin) 表示。
+
+### transform
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+我们提供了在局部坐标系下进行变换的快捷方式，同时与[CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 保持一致，支持以下属性值：
+
+-   缩放，无单位
+    -   scale(x, y)
+    -   scaleX(x)
+    -   scaleY(x)
+    -   scaleZ(z)
+    -   scale3d(x, y, z)
+-   平移，0 可以不加单位，无单位当作 px 处理，百分比相对于当前图形包围盒
+    -   translate(0, 0) translate(0, 30px) translate(100%, 100%)
+    -   translateX(0)
+    -   translateY(0)
+    -   translateZ(0)
+    -   translate3d(0, 0, 0)
+-   旋转，支持 deg rad turn 这些单位
+    -   rotate(0.5turn) rotate(30deg) rotate(1rad)
+-   none 清除变换
+
+由于是在局部坐标系下进行变换，因此以下写法等价：
+
+```js
+const circle = new Circle({
+    style: {
+        transform: 'translate(100px, 100px)',
+        r: 100,
+    },
+});
+
+const circle = new Circle({
+    style: {
+        x: 100,
+        y: 100,
+        r: 100,
+    },
+});
+
+const circle = new Circle({
+    style: {
+        r: 100,
+    },
+});
+circle.translateLocal(100, 100);
+```
+
+### transformOrigin
+
+**类型**： `string`
+
+**默认值**：`center`
+
+**是否必须**：`false`
+
+**说明** 旋转与缩放中心，也称作变换中心，在局部坐标系下表示。
+
+和 CSS [transform-origin](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin) 类似，支持以下字符串写法，其中用空格分隔：
+
+-   一个值
+    -   单位为 px 的长度，例如 10px
+    -   单位为 % 的长度，例如 50%
+    -   关键词 left, center, right, top, bottom，等于用百分比表示，例如 left 等于 0%，center 等于 50%
+-   两个值
+    -   第一个是单位为 px 或 % 的长度，或 left, center, right 关键字中的一个
+    -   第二个是单位为 px 或 % 的长度，或 top, center, bottom 关键字中的一个
+
+因此以下写法等价：
+
+```js
+// r = 100
+circle.style.transformOrigin = 'left';
+circle.style.transformOrigin = 'left center';
+circle.style.transformOrigin = '0 50%';
+circle.style.transformOrigin = '0 100px';
+```
+
+⚠️ 暂不支持三个值的写法。
 
 ## 填充
 
 ### opacity
+
+<tag color="green" text="可应用动画">可应用动画</tag>
 
 **类型**： `number`
 
@@ -153,6 +245,8 @@ rect.style.origin = [0, 0]; // 设置为左上角
 **说明**：透明度，取值范围为 `[0, 1]`
 
 ### fill
+
+<tag color="green" text="可应用动画">可应用动画</tag>
 
 **类型**： `String`
 
@@ -168,7 +262,7 @@ rect.style.origin = [0, 0]; // 设置为左上角
 -   `'#1890FF'`
 -   `'rgba(r, g, b, a)'`
 
-除此之外，支持以下渐变色写法。
+除此之外，支持以下渐变色写法。[示例](/zh/examples/shape#gradient)
 
 ### 线性渐变
 
@@ -215,6 +309,8 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 ### strokeOpacity
 
+<tag color="green" text="可应用动画">可应用动画</tag>
+
 **类型**： `number`
 
 **默认值**：1
@@ -225,6 +321,8 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 ### stroke
 
+<tag color="green" text="可应用动画">可应用动画</tag>
+
 **类型**： `String`
 
 **默认值**：无
@@ -234,6 +332,8 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 **说明**：描边色，例如 `'#1890FF'`
 
 ### lineWidth
+
+<tag color="green" text="可应用动画">可应用动画</tag>
 
 **类型**： `number`
 
@@ -349,7 +449,53 @@ clipPathCircle.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }],
 
 我们暂不支持复合的裁剪区域，例如自定义图形以及 Group.
 
-# 变换
+## 运动轨迹
+
+在[路径动画](/zh/docs/api/animation#路径动画)中，我们可以使用 `offsetPath` 指定一个图形的运动轨迹，配合[动画系统](/zh/docs/api/animation#路径动画)对 `offsetDistance` 属性应用变换：
+
+```js
+const circle = new Circle({
+    style: {
+        offsetPath: new Line({
+            // 创建运动轨迹
+            style: {
+                // 不需要设置其他与轨迹无关的绘图属性
+                x1: 100,
+                y1: 100,
+                x2: 300,
+                y2: 100,
+            },
+        }),
+        r: 10,
+    },
+});
+
+const animation = circle.animate(
+    [
+        { offsetDistance: 0 }, // 变换
+        { offsetDistance: 1 },
+    ],
+    {
+        duration: 3000,
+        easing: 'ease-in-out',
+        iterations: Infinity,
+    },
+);
+```
+
+### offsetPath
+
+指定路径轨迹，目前支持 [Line](/zh/docs/api/basic/line) [Path](/zh/docs/api/basic/path) 和 [Polyline](/zh/docs/api/basic/polyline) 这三种图形。
+
+### offsetDistance
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+从路径起点出发行进的距离，取值范围为 `[0-1]`，0 代表路径起点，1 代表终点。
+
+# 变换操作
+
+我们提供了一系列变换方法。
 
 ## 平移
 
@@ -412,11 +558,11 @@ rect.style.origin = [0, 0]; // 设置为左上角
 
 ## 获取包围盒
 
-| 名称                  | 参数 | 返回值 | 备注                                     |
-| --------------------- | ---- | ------ | ---------------------------------------- |
-| getBounds             | 无   | AABB   | 获取世界坐标系下的轴对齐包围盒           |
-| getLocalBounds        | 无   | AABB   | 获取局部坐标系下的包围盒                 |
-| getBoundingClientRect | 无   | Rect   | 获取世界坐标系下的包围矩形，不考虑子元素 |
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| getBounds | 无 | AABB | 获取世界坐标系下的轴对齐包围盒 |
+| getLocalBounds | 无 | AABB | 获取局部坐标系下的包围盒 |
+| getBoundingClientRect | 无 | Rect | 获取世界坐标系下的包围矩形，不考虑子元素，同时加上画布相对于浏览器的偏移量 |
 
 其中轴对齐包围盒 `AABB` 结构为：
 
@@ -445,7 +591,7 @@ interface Rect {
 `getBounds` 和 `getBoundingClientRect` 有以下区别：
 
 -   返回值的结构不同，前者返回一个 3 维的轴对齐包围盒，后者返回一个 2 维矩形
--   前者会考虑子元素，把它们的包围盒合并起来。后者仅考虑自身，不考虑子元素
+-   前者会考虑子元素，把它们的包围盒合并起来。后者仅考虑自身，不考虑子元素，另外会加上画布相对于浏览器的偏移量
 
 # 节点操作
 
@@ -500,19 +646,28 @@ solarSystem.querySelectorAll('[r=25]');
 | --- | --- | --- | --- |
 | appendChild | `(group: Group)` | `Group` | 添加子节点，返回添加的节点 |
 | insertBefore | `(group: Group, reference?: Group)` | `Group` | 添加子节点，在某个子节点之前（如有），返回添加的节点 |
-| removeChild | `(group: Group)` | `Group` | 删除子节点，返回被删除的节点 |
-| remove | `(destroy?: boolean)` | `Group` | 从父节点（如有）中移除自身，`destroy` 表示是否要销毁 |
+| removeChild | `(group: Group, destroy = true)` | `Group` | 删除子节点，返回被删除的节点。`destroy` 表示是否要销毁 |
+| removeChildren | `(destroy = true)` |  | 删除全部子节点。`destroy` 表示是否要销毁 |
+| remove | `(destroy = true)` | `Group` | 从父节点（如有）中移除自身，`destroy` 表示是否要销毁 |
 
 从父节点中删除子节点并销毁有以下两种方式：
 
 ```js
 // parent -> child
-
 parent.removeChild(child);
-child.destroy();
 
 // 等价于
-child.remove(true);
+child.remove();
+```
+
+删除所有子节点有以下两种方式：
+
+```js
+parent.removeChildren();
+
+// 等价于
+[...parent.children].forEach((child) => parent.removeChild(child));
+[...parent.children].forEach((child) => child.remove());
 ```
 
 ## 获取/设置属性值

@@ -1,29 +1,28 @@
-import { addPropertiesHandler } from '../utils/interpolation';
+import { clamp } from '@antv/util';
 
 export function numberToString(x: number) {
   return x.toFixed(3).replace(/0+$/, '').replace(/\.$/, '');
 }
 
-export function clamp(min: number, max: number, x: number) {
-  return Math.min(max, Math.max(min, x));
-}
-
-export function parseNumber(string: string) {
-  if (/^\s*[-+]?(\d*\.)?\d+\s*$/.test(string))
+export function parseNumber(string: string | number) {
+  if (typeof string === 'number') {
+    return string;
+  }
+  if (/^\s*[-+]?(\d*\.)?\d+\s*$/.test(string)) {
     return Number(string);
+  } else {
+    return 0;
+  }
 }
 
 export function mergeNumbers(left: number, right: number) {
   return [left, right, numberToString];
 }
 
-function clampedMergeNumbers(min: number, max: number) {
-  return function (left: number, right: number) {
-    return [left, right, function (x: number) {
-      return numberToString(clamp(min, max, x));
-    }];
-  };
+export function clampedMergeNumbers(min: number, max: number) {
+  return (left: number, right: number): [number, number, (i: number) => string] => [
+    left,
+    right,
+    (x: number) => numberToString(clamp(x, min, max)),
+  ];
 }
-
-addPropertiesHandler(parseNumber, clampedMergeNumbers(0, 1), ['opacity', 'fillOpacity', 'strokeOpacity', 'offsetDistance']);
-addPropertiesHandler(parseNumber, clampedMergeNumbers(0, Infinity), ['r', 'lineWidth', 'width', 'height']);

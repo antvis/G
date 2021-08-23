@@ -21,7 +21,30 @@ import {
   SceneGraphSelector,
   SceneGraphSelectorFactory,
 } from './services/SceneGraphSelector';
-import { StylePropertyHandlerFactory, StylePropertyHandler, Color, ClipPath, ZIndex, OffsetPath, OffsetDistance, Origin, TransformProperty } from './properties';
+import {
+  StylePropertyParser,
+  StylePropertyMerger,
+  StylePropertyUpdater,
+  StylePropertyParserFactory,
+  StylePropertyUpdaterFactory,
+  StylePropertyMergerFactory,
+  clampedMergeNumbers,
+  parseNumber,
+  mergeColors,
+  parseColor,
+  updateOffsetPath,
+  updateClipPath,
+  updateZIndex,
+  updateOffsetDistance,
+  updateOrigin,
+  updateTransform,
+  updateTransformOrigin,
+  parseTransform,
+  mergeTransforms,
+  ParsedColorStyleProperty,
+  Interpolatable,
+} from './property-handlers';
+import { container } from './inversify.config';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
@@ -64,23 +87,89 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
     };
   });
 
-  // bind style property handler
-  bind(StylePropertyHandler).to(ClipPath).inSingletonScope().whenTargetNamed('clipPath');
-  bind(StylePropertyHandler).to(Color).inSingletonScope().whenTargetNamed('fill');
-  bind(StylePropertyHandler).to(Color).inSingletonScope().whenTargetNamed('stroke');
-  bind(StylePropertyHandler).to(ZIndex).inSingletonScope().whenTargetNamed('zIndex');
-  bind(StylePropertyHandler).to(OffsetPath).inSingletonScope().whenTargetNamed('offsetPath');
-  bind(StylePropertyHandler).to(OffsetDistance).inSingletonScope().whenTargetNamed('offsetDistance');
-  bind(StylePropertyHandler).to(Origin).inSingletonScope().whenTargetNamed('origin');
-  bind(StylePropertyHandler).to(TransformProperty).inSingletonScope().whenTargetNamed('transform');
-  bind<interfaces.Factory<StylePropertyHandler<any, any> | null>>(
-    StylePropertyHandlerFactory,
-  ).toFactory<StylePropertyHandler<any, any> | null>((context: interfaces.Context) => {
+  // bind style property handlers
+  bind<interfaces.Factory<StylePropertyParser<any, any> | null>>(
+    StylePropertyParserFactory,
+  ).toFactory<StylePropertyParser<any, any> | null>((context: interfaces.Context) => {
     return (propertyName: string) => {
-      if (context.container.isBoundNamed(StylePropertyHandler, propertyName)) {
-        return context.container.getNamed(StylePropertyHandler, propertyName);
+      if (context.container.isBoundNamed(StylePropertyParser, propertyName)) {
+        return context.container.getNamed(StylePropertyParser, propertyName);
       }
       return null;
     };
   });
+  bind<interfaces.Factory<StylePropertyUpdater<any> | null>>(
+    StylePropertyUpdaterFactory,
+  ).toFactory<StylePropertyUpdater<any> | null>((context: interfaces.Context) => {
+    return (propertyName: string) => {
+      if (context.container.isBoundNamed(StylePropertyUpdater, propertyName)) {
+        return context.container.getNamed(StylePropertyUpdater, propertyName);
+      }
+      return null;
+    };
+  });
+  bind<interfaces.Factory<StylePropertyMerger<any> | null>>(
+    StylePropertyMergerFactory,
+  ).toFactory<StylePropertyMerger<any> | null>((context: interfaces.Context) => {
+    return (propertyName: string) => {
+      if (context.container.isBoundNamed(StylePropertyMerger, propertyName)) {
+        return context.container.getNamed(StylePropertyMerger, propertyName);
+      }
+      return null;
+    };
+  });
+
+  // bind handlers for properties
+  addPropertiesHandler<string | number, number>(
+    ['opacity', 'fillOpacity', 'strokeOpacity', 'offsetDistance'],
+    parseNumber,
+    clampedMergeNumbers(0, 1),
+    undefined,
+  );
+  addPropertiesHandler<string | number, number>(
+    ['r', 'rx', 'ry', 'lineWidth', 'width', 'height'],
+    parseNumber,
+    clampedMergeNumbers(0, Infinity),
+    undefined,
+  );
+  addPropertiesHandler<string, ParsedColorStyleProperty, number[]>(
+    ['fill', 'stroke'],
+    parseColor,
+    mergeColors,
+    undefined,
+  );
+  addPropertyHandler('clipPath', undefined, undefined, updateClipPath);
+  addPropertyHandler('zIndex', undefined, undefined, updateZIndex);
+  addPropertyHandler('offsetPath', undefined, undefined, updateOffsetPath);
+  addPropertyHandler('offsetDistance', undefined, undefined, updateOffsetDistance);
+  addPropertyHandler('origin', undefined, undefined, updateOrigin);
+  addPropertyHandler('transformOrigin', undefined, undefined, updateTransformOrigin);
+  addPropertyHandler('transform', parseTransform, mergeTransforms, updateTransform);
 });
+
+function addPropertyHandler<O, P, I extends Interpolatable = number>(
+  property: string,
+  parser: StylePropertyParser<O, P> | undefined,
+  merger: StylePropertyMerger<P, I> | undefined,
+  updater: StylePropertyUpdater<O> | undefined,
+) {
+  if (parser) {
+    container.bind(StylePropertyParser).toConstantValue(parser).whenTargetNamed(property);
+  }
+  if (merger) {
+    container.bind(StylePropertyMerger).toConstantValue(merger).whenTargetNamed(property);
+  }
+  if (updater) {
+    container.bind(StylePropertyUpdater).toConstantValue(updater).whenTargetNamed(property);
+  }
+}
+export function addPropertiesHandler<O, P, I extends Interpolatable = number>(
+  properties: string[],
+  parser: StylePropertyParser<O, P> | undefined,
+  merger: StylePropertyMerger<P, I> | undefined,
+  updater: StylePropertyUpdater<O> | undefined,
+) {
+  for (let i = 0; i < properties.length; i++) {
+    addPropertyHandler<O, P, I>(properties[i], parser, merger, updater);
+  }
+}

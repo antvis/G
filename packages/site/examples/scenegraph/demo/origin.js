@@ -91,7 +91,23 @@ const rectFolder = gui.addFolder('Origin');
 const rectConfig = {
   originX: 0,
   originY: 0,
+  transformOrigin: 'left top',
 };
+rectFolder
+  .add(rectConfig, 'transformOrigin', ['left top', 'center', 'right bottom', '150px 100px'])
+  .onChange((transformOrigin) => {
+    rect.style.transformOrigin = transformOrigin;
+
+    if (transformOrigin === 'left top') {
+      origin.setPosition(200, 100);
+    } else if (transformOrigin === 'center') {
+      origin.setPosition(200 + 150, 100 + 100);
+    } else if (transformOrigin === 'right bottom') {
+      origin.setPosition(200 + 300, 100 + 200);
+    } else if (transformOrigin === '150px 100px') {
+      origin.setPosition(200 + 150, 100 + 100);
+    }
+  });
 rectFolder.add(rectConfig, 'originX', -200, 200).onChange((tx) => {
   rect.style.origin = [tx, rectConfig.originY];
   origin.setPosition(200 + tx, 100 + rectConfig.originY);

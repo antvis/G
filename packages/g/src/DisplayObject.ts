@@ -21,8 +21,8 @@ import type { Canvas } from './Canvas';
 import type { Animation } from './Animation';
 import { DELEGATION_SPLITTER } from './services/EventService';
 import { CustomEvent } from './CustomEvent';
-import type { StylePropertyHandler } from './properties';
-import { StylePropertyHandlerFactory } from './properties';
+import type { StylePropertyUpdater, StylePropertyParser } from './property-handlers';
+import { StylePropertyUpdaterFactory, StylePropertyParserFactory } from './property-handlers';
 
 /**
  * events for display object
@@ -142,9 +142,13 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
   private geometryUpdaterFactory =
     container.get<(tagName: string) => GeometryAABBUpdater<any>>(GeometryUpdaterFactory);
 
-  private stylePropertyHandlerFactory = container.get<
-    <Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyHandler<any, any>
-  >(StylePropertyHandlerFactory);
+  private stylePropertyUpdaterFactory = container.get<
+    <Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyUpdater<any>
+  >(StylePropertyUpdaterFactory);
+
+  private stylePropertyParserFactory = container.get<
+    <Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyParser<any, any>
+  >(StylePropertyParserFactory);
 
   /**
    * event emitter
@@ -782,7 +786,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
   /** transform operations */
 
   setOrigin(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.style.origin = createVec3(position, y, z);
+    this.sceneGraphService.setOrigin(this, createVec3(position, y, z));
     return this;
   }
 
@@ -1097,6 +1101,10 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     return this.activeAnimations;
   }
 
+  getGeometryBounds(): AABB | null {
+    return this.sceneGraphService.getGeometryBounds(this);
+  }
+
   /**
    * get bounds in world space, account for children
    */
@@ -1182,6 +1190,7 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     const geometry = entity.getComponent(Geometry);
 
     const oldValue = this.attributes[name];
+    const oldParsedValue = this.parsedStyle[name];
 
     // update value
     this.attributes[name] = value;
@@ -1197,14 +1206,19 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
       geometryUpdater.update(this.attributes, geometry.aabb);
     }
 
-    const stylePropertyHandler = this.stylePropertyHandlerFactory(name);
-    if (stylePropertyHandler) {
-      this.parsedStyle[name] = stylePropertyHandler.parse
-        ? stylePropertyHandler.parse(value, this)
-        : value;
-      if (stylePropertyHandler.update) {
-        stylePropertyHandler.update(oldValue, value, this);
-      }
+    // parse property, eg.
+    // * 'red' => [1, 0, 0, 1]
+    // * '10px' => { unit: 'px', value: 10 }
+    this.parsedStyle[name] = value;
+    const stylePropertyParser = this.stylePropertyParserFactory(name);
+    if (stylePropertyParser) {
+      this.parsedStyle[name] = stylePropertyParser(value, this);
+    }
+
+    // update property, which may cause AABB re-calc
+    const stylePropertyUpdater = this.stylePropertyUpdaterFactory(name);
+    if (stylePropertyUpdater) {
+      stylePropertyUpdater(oldParsedValue, this.parsedStyle[name], this);
     }
 
     if (

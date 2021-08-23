@@ -1,5 +1,9 @@
 import { isArray } from '@antv/util';
 
+export function numberToLongString(x: number) {
+  return x.toFixed(6).replace('.000000', '');
+}
+
 export function parseRadius(radius: number[] | number) {
   let r1 = 0;
   let r2 = 0;
