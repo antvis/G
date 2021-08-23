@@ -82,8 +82,9 @@ class EventController {
     //this.hammerRuntime.add(new Hammer.Rotate({ threshold: 0 })).recognizeWith(this.hammerRuntime.get('pan'));
     this.hammerRuntime.add(new Hammer.Pinch({ threshold: 0, pointers: 2 }));
     //.recognizeWith([this.hammerRuntime.get('pan'), this.hammerRuntime.get('rotate')]);
-    this.hammerRuntime.add(new Hammer.Tap({ event: 'doubletap', taps: 2 }));
+    this.hammerRuntime.add(new Hammer.Tap({ event: 'dbltap', taps: 2 }));
     this.hammerRuntime.add(new Hammer.Tap());
+    this.hammerRuntime.add(new Hammer.Press({ time: 500 }));
 
     this.hammerRuntime.on('panstart panmove panend pancancel', (e) => {
       e.srcEvent.extra = e;
@@ -116,11 +117,7 @@ class EventController {
       this.currentShape = shape;
     });
 
-    this.hammerRuntime.on('swipe', (e) => {
-      this._emitMobileEvent(e.type, e);
-    });
-
-    this.hammerRuntime.on('rotatestart rotatemove', (e) => {
+    this.hammerRuntime.on('tap dbltap press swipe rotatestart rotatemove', (e) => {
       this._emitMobileEvent(e.type, e);
     });
 
@@ -133,14 +130,6 @@ class EventController {
       e.srcEvent.extra = {
         scale: e.scale,
       };
-      this._emitMobileEvent(e.type, e);
-    });
-
-    this.hammerRuntime.on('doubletap', (e) => {
-      this._emitMobileEvent(e.type, e);
-    });
-
-    this.hammerRuntime.on('tap', (e) => {
       this._emitMobileEvent(e.type, e);
     });
   }
