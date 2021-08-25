@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "1.0.0-alpha.9",
+  "version": "1.0.0-alpha.10",
   "description": "A core module including ECS and DI container.",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
