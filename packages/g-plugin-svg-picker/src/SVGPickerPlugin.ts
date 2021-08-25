@@ -6,7 +6,6 @@ import {
   SceneGraphService,
   PickingResult,
 } from '@antv/g';
-// import { ElementSVG } from '@antv/g-plugin-svg-renderer';
 
 /**
  * pick shape(s) with Mouse/Touch event

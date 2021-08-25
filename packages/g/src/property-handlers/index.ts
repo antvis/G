@@ -37,6 +37,8 @@ export type StylePropertyMerger<Parsed, T extends Interpolatable = number> = (
 export const StylePropertyMergerFactory = Symbol('StylePropertyMergerFactory');
 export type StylePropertyMergerFactory = <Parsed>(name: string) => StylePropertyMerger<Parsed>;
 
+export * from './aabb';
+export * from './localPosition';
 export * from './numeric';
 export * from './color';
 export * from './offsetPath';
@@ -46,4 +48,5 @@ export * from './zIndex';
 export * from './origin';
 export * from './transform';
 export * from './dimension';
-export * from './transform';
+export * from './path';
+export * from './points';

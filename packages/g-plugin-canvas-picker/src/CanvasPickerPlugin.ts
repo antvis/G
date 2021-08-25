@@ -139,7 +139,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       );
 
       // account for anchor
-      const { width = 0, height = 0, anchor = [0, 0] } = displayObject.style;
+      const { width = 0, height = 0, anchor = [0, 0] } = displayObject.parsedStyle;
       localPosition[0] += anchor[0] * width;
       localPosition[1] += anchor[1] * height;
       if (pick(displayObject, new Point(localPosition[0], localPosition[1]), this.isPointInPath)) {

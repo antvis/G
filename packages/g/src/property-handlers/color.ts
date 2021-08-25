@@ -49,6 +49,14 @@ export function parseColor(
   colorStr: string,
   displayObject: DisplayObject | null,
 ): ParsedColorStyleProperty {
+  if (colorStr === 'transparent') {
+    return {
+      type: PARSED_COLOR_TYPE.Constant,
+      value: [0, 0, 0, 0],
+      formatted: 'rgba(0,0,0,0)',
+    };
+  }
+
   const type = colorStr[0];
   if (colorStr[1] === '(' || colorStr[2] === '(') {
     if (type === 'l') {

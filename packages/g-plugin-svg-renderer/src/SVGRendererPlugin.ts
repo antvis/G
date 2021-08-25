@@ -137,7 +137,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.unmounted.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
-      object.getEntity().removeComponent(ElementSVG, true);
+      this.removeSVGDom(object);
     });
 
     renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
@@ -225,7 +225,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const $el = entity.getComponent(ElementSVG)?.$el;
     const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
     if ($el && $groupEl) {
-      const { nodeName, attributes } = object;
+      const { nodeName, attributes, parsedStyle } = object;
 
       $el.setAttribute('fill', 'none');
       if (nodeName === SHAPE.Image) {
@@ -240,7 +240,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       // generate path
       const elementRenderer = this.elementRendererFactory(nodeName);
       if (elementRenderer) {
-        elementRenderer.apply($el, attributes);
+        elementRenderer.apply($el, parsedStyle);
       }
     }
   }
@@ -368,12 +368,20 @@ export class SVGRendererPlugin implements RenderingPlugin {
     }
   }
 
+  private removeSVGDom(object: DisplayObject) {
+    const $groupEl = object.getEntity().getComponent(ElementSVG)?.$groupEl;
+    if ($groupEl && $groupEl.parentNode) {
+      $groupEl.parentNode.removeChild($groupEl);
+
+      object.getEntity().removeComponent(ElementSVG, true);
+    }
+  }
+
   /**
    * the origin is bounding box's top left corner
    */
   private updateAnchorWithTransform(object: DisplayObject) {
-    const anchor = object.style.anchor || [0, 0];
-    const { width = 0, height = 0 } = object.style || {};
+    const { width = 0, height = 0, anchor = [0, 0] } = object.parsedStyle || {};
 
     const $el = object.getEntity().getComponent(ElementSVG)?.$el;
     // apply anchor to element's `transform` property

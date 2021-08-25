@@ -75,9 +75,10 @@ export class SceneGraphService extends EventEmitter {
       const entity = child.getEntity();
 
       const transform = entity.getComponent(Transform);
-      mat4.getScaling(transform.localScale, transform.worldTransform);
-      mat4.getTranslation(transform.localPosition, transform.worldTransform);
-      mat4.getRotation(transform.localRotation, transform.worldTransform);
+      const worldTransform = this.getWorldTransform(child, transform);
+      mat4.getScaling(transform.localScale, worldTransform);
+      mat4.getTranslation(transform.localPosition, worldTransform);
+      mat4.getRotation(transform.localRotation, worldTransform);
       transform.localDirtyFlag = true;
 
       // parent needs re-sort
@@ -143,10 +144,7 @@ export class SceneGraphService extends EventEmitter {
         parentSortable.dirty = false;
       }
 
-      return (
-        parentSortable.sorted.indexOf(o1) -
-        parentSortable.sorted.indexOf(o2)
-      );
+      return parentSortable.sorted.indexOf(o1) - parentSortable.sorted.indexOf(o2);
     }
 
     return -1;
@@ -279,7 +277,12 @@ export class SceneGraphService extends EventEmitter {
    * ```
    */
   translateLocal = (() => {
-    return (displayObject: DisplayObject, translation: vec3 | number, y: number = 0, z: number = 0) => {
+    return (
+      displayObject: DisplayObject,
+      translation: vec3 | number,
+      y: number = 0,
+      z: number = 0,
+    ) => {
       if (typeof translation === 'number') {
         translation = vec3.fromValues(translation, y, z);
       }
@@ -303,7 +306,12 @@ export class SceneGraphService extends EventEmitter {
   setPosition = (() => {
     const parentInvertMatrix = mat4.create();
 
-    return (displayObject: DisplayObject, position: vec3 | number, y: number = 0, z: number = 0) => {
+    return (
+      displayObject: DisplayObject,
+      position: vec3 | number,
+      y: number = 0,
+      z: number = 0,
+    ) => {
       if (typeof position === 'number') {
         position = vec3.fromValues(position, y, z);
       }
@@ -330,7 +338,12 @@ export class SceneGraphService extends EventEmitter {
   /**
    * move to position in local space
    */
-  setLocalPosition(displayObject: DisplayObject, position: vec3 | number, y: number = 0, z: number = 0) {
+  setLocalPosition(
+    displayObject: DisplayObject,
+    position: vec3 | number,
+    y: number = 0,
+    z: number = 0,
+  ) {
     if (typeof position === 'number') {
       position = vec3.fromValues(position, y, z);
     }
@@ -356,7 +369,12 @@ export class SceneGraphService extends EventEmitter {
     this.dirtifyLocal(displayObject, transform);
   }
 
-  setLocalScale(displayObject: DisplayObject, scaling: vec3 | number, y: number = 1, z: number = 1) {
+  setLocalScale(
+    displayObject: DisplayObject,
+    scaling: vec3 | number,
+    y: number = 1,
+    z: number = 1,
+  ) {
     if (typeof scaling === 'number') {
       scaling = vec3.fromValues(scaling, y, z);
     }
@@ -384,7 +402,12 @@ export class SceneGraphService extends EventEmitter {
   translate = (() => {
     const tr = vec3.create();
 
-    return (displayObject: DisplayObject, translation: vec3 | number, y: number = 0, z: number = 0) => {
+    return (
+      displayObject: DisplayObject,
+      translation: vec3 | number,
+      y: number = 0,
+      z: number = 0,
+    ) => {
       if (typeof translation === 'number') {
         translation = vec3.fromValues(translation, y, z);
       }
@@ -413,7 +436,10 @@ export class SceneGraphService extends EventEmitter {
 
   getPosition(displayObject: DisplayObject) {
     const transform = displayObject.getEntity().getComponent(Transform);
-    return mat4.getTranslation(transform.position, this.getWorldTransform(displayObject, transform));
+    return mat4.getTranslation(
+      transform.position,
+      this.getWorldTransform(displayObject, transform),
+    );
   }
 
   getRotation(displayObject: DisplayObject) {
@@ -426,7 +452,10 @@ export class SceneGraphService extends EventEmitter {
     return mat4.getScaling(transform.scaling, this.getWorldTransform(displayObject, transform));
   }
 
-  getWorldTransform(displayObject: DisplayObject, transform: Transform = displayObject.getEntity().getComponent(Transform)) {
+  getWorldTransform(
+    displayObject: DisplayObject,
+    transform: Transform = displayObject.getEntity().getComponent(Transform),
+  ) {
     if (!transform.localDirtyFlag && !transform.dirtyFlag) {
       return transform.worldTransform;
     }
@@ -531,7 +560,10 @@ export class SceneGraphService extends EventEmitter {
       const clipPathBounds = this.getGeometryBounds(displayObject.style.clipPath);
       if (clipPathBounds) {
         // intersect with original geometry
-        clipPathBounds.setFromTransformedAABB(clipPathBounds, this.getWorldTransform(displayObject));
+        clipPathBounds.setFromTransformedAABB(
+          clipPathBounds,
+          this.getWorldTransform(displayObject),
+        );
       }
       if (!aabb) {
         aabb = clipPathBounds;

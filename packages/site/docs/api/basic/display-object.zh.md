@@ -261,6 +261,7 @@ circle.style.transformOrigin = '0 100px';
 -   `'red'`
 -   `'#1890FF'`
 -   `'rgba(r, g, b, a)'`
+-   `'transparent'` 完全透明，等价于 `'rgba(0,0,0,0)'`
 
 除此之外，支持以下渐变色写法。[示例](/zh/examples/shape#gradient)
 

@@ -1,11 +1,11 @@
-import { LineStyleProps } from '@antv/g';
+import { LineStyleProps, ParsedBaseStyleProps } from '@antv/g';
 import { ElementRenderer } from '.';
 import { injectable } from 'inversify';
 
 @injectable()
-export class LineRenderer implements ElementRenderer<LineStyleProps> {
+export class LineRenderer implements ElementRenderer<ParsedBaseStyleProps> {
   dependencies = ['x1', 'y1', 'x2', 'y2'];
-  apply($el: SVGElement, attributes: LineStyleProps) {
+  apply($el: SVGElement, attributes: ParsedBaseStyleProps) {
     const { x1, y1, x2, y2, x = 0, y = 0 } = attributes;
 
     $el.setAttribute('x1', `${x1 - x}`);

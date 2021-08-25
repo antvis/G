@@ -1,7 +1,8 @@
 import type { vec2, vec3 } from 'gl-matrix';
 import type { AbstractRenderer } from './AbstractRenderer';
+import { ParsedPathStyleProps, ParsedPolylineStyleProps } from './display-objects';
 import type { DisplayObject } from './DisplayObject';
-import type { ParsedColorStyleProperty } from './properties';
+import type { ParsedColorStyleProperty } from './property-handlers';
 
 export enum SHAPE {
   Group = 'group',
@@ -98,9 +99,16 @@ export interface BaseStyleProps {
   lineDash?: number[] | null;
 }
 
-export interface ParsedBaseStyleProps extends Omit<BaseStyleProps, 'fill' | 'stroke'> {
+export interface ParsedBaseStyleProps
+  extends Omit<BaseStyleProps, 'fill' | 'stroke' | 'path' | 'points'> {
   fill?: ParsedColorStyleProperty;
   stroke?: ParsedColorStyleProperty;
+  path?: ParsedPathStyleProps;
+  points?: ParsedPolylineStyleProps;
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
 }
 
 // export type ShapeAttrs = {
@@ -122,21 +130,6 @@ export interface ParsedBaseStyleProps extends Omit<BaseStyleProps, 'fill' | 'str
 //   /** 阴影 y 方向偏移量 */
 //   shadowOffsetY?: number;
 //
-
-// };
-
-// export type ClipCfg = {
-//   /**
-//    * 作为 clip 的图形
-//    * @type {string}
-//    */
-//   type: string;
-//   /**
-//    * 图形的属性
-//    * @type {ShapeAttrs}
-//    */
-//   attrs: ShapeAttrs;
-// };
 
 // Cursor style
 // See: https://developer.mozilla.org/en-US/docs/Web/CSS/cursor

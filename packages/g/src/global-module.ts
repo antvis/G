@@ -32,6 +32,8 @@ import {
   parseNumber,
   mergeColors,
   parseColor,
+  updateGeometry,
+  updateLocalPosition,
   updateOffsetPath,
   updateClipPath,
   updateZIndex,
@@ -43,6 +45,8 @@ import {
   mergeTransforms,
   ParsedColorStyleProperty,
   Interpolatable,
+  parsePath,
+  parsePoints,
 } from './property-handlers';
 import { container } from './inversify.config';
 
@@ -98,12 +102,12 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
       return null;
     };
   });
-  bind<interfaces.Factory<StylePropertyUpdater<any> | null>>(
+  bind<interfaces.Factory<StylePropertyUpdater<any>[] | null>>(
     StylePropertyUpdaterFactory,
-  ).toFactory<StylePropertyUpdater<any> | null>((context: interfaces.Context) => {
+  ).toFactory<StylePropertyUpdater<any>[] | null>((context: interfaces.Context) => {
     return (propertyName: string) => {
       if (context.container.isBoundNamed(StylePropertyUpdater, propertyName)) {
-        return context.container.getNamed(StylePropertyUpdater, propertyName);
+        return context.container.getAllNamed(StylePropertyUpdater, propertyName);
       }
       return null;
     };
@@ -120,17 +124,45 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   });
 
   // bind handlers for properties
-  addPropertiesHandler<string | number, number>(
+  addPropertiesHandler<number, number>(
     ['opacity', 'fillOpacity', 'strokeOpacity', 'offsetDistance'],
     parseNumber,
     clampedMergeNumbers(0, 1),
     undefined,
   );
-  addPropertiesHandler<string | number, number>(
+  addPropertiesHandler<number, number>(
     ['r', 'rx', 'ry', 'lineWidth', 'width', 'height'],
     parseNumber,
     clampedMergeNumbers(0, Infinity),
+    updateGeometry,
+  );
+  addPropertiesHandler<number, number>(
+    [
+      'anchor',
+      'x1',
+      'x2',
+      'y1',
+      'y2', // Line
+      'text', // Text
+      'font',
+      'fontSize',
+      'fontFamily',
+      'fontStyle',
+      'fontWeight',
+      'fontVariant',
+      'lineHeight',
+      'letterSpacing',
+      'padding',
+      'wordWrap',
+      'wordWrapWidth',
+      'leading',
+      'textBaseline',
+      'textAlign',
+      'whiteSpace',
+    ],
     undefined,
+    undefined,
+    updateGeometry,
   );
   addPropertiesHandler<string, ParsedColorStyleProperty, number[]>(
     ['fill', 'stroke'],
@@ -145,6 +177,19 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   addPropertyHandler('origin', undefined, undefined, updateOrigin);
   addPropertyHandler('transformOrigin', undefined, undefined, updateTransformOrigin);
   addPropertyHandler('transform', parseTransform, mergeTransforms, updateTransform);
+
+  // Path.path
+  addPropertyHandler('path', parsePath, undefined, updateGeometry);
+  // Polyline.points Polygon.points
+  addPropertyHandler('points', parsePoints, undefined, updateGeometry);
+
+  // update local position
+  addPropertiesHandler<number, number>(
+    ['x', 'y', 'points', 'path', 'x1', 'x2', 'y1', 'y2'],
+    undefined,
+    undefined,
+    updateLocalPosition,
+  );
 });
 
 function addPropertyHandler<O, P, I extends Interpolatable = number>(

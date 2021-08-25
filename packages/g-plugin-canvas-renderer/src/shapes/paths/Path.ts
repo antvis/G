@@ -1,14 +1,14 @@
-import { PathStyleProps } from '@antv/g';
+import type { ParsedBaseStyleProps } from '@antv/g';
 import getArcParams, { ArcParams } from '../../utils/arc-params';
 
-export function generatePath(context: CanvasRenderingContext2D, attributes: PathStyleProps) {
-  // @ts-ignore
-  let { x = 0, y = 0, path, arcParamsCache } = attributes;
-
+export function generatePath(context: CanvasRenderingContext2D, attributes: ParsedBaseStyleProps) {
+  let { x = 0, y = 0, arcParamsCache } = attributes;
   if (!arcParamsCache) {
     // @ts-ignore
     attributes.arcParamsCache = {};
   }
+
+  const path = attributes.path!.absolutePath;
 
   let currentPoint: [number, number] = [-x, -y]; // 当前图形
   let startMovePoint: [number, number] = [-x, -y]; // 开始 M 的点，可能会有多个
@@ -20,17 +20,24 @@ export function generatePath(context: CanvasRenderingContext2D, attributes: Path
     // V,H,S,T 都在前面被转换成标准形式
     switch (command) {
       case 'M':
-        context.moveTo(params[1] - x, params[2] - y);
-        startMovePoint = [params[1] - x, params[2] - y];
+        context.moveTo(params[1]! - x, params[2]! - y);
+        startMovePoint = [params[1]! - x, params[2]! - y];
         break;
       case 'L':
-        context.lineTo(params[1] - x, params[2] - y);
+        context.lineTo(params[1]! - x, params[2]! - y);
         break;
       case 'Q':
-        context.quadraticCurveTo(params[1] - x, params[2] - y, params[3] - x, params[4] - y);
+        context.quadraticCurveTo(params[1]! - x, params[2]! - y, params[3]! - x, params[4]! - y);
         break;
       case 'C':
-        context.bezierCurveTo(params[1] - x, params[2] - y, params[3] - x, params[4] - y, params[5] - x, params[6] - y);
+        context.bezierCurveTo(
+          params[1]! - x,
+          params[2]! - y,
+          params[3]! - x,
+          params[4]! - y,
+          params[5]! - x,
+          params[6]! - y,
+        );
         break;
       case 'A': {
         let arcParams: ArcParams;
@@ -75,7 +82,7 @@ export function generatePath(context: CanvasRenderingContext2D, attributes: Path
       currentPoint = startMovePoint;
     } else {
       const len = params.length;
-      currentPoint = [params[len - 2] - x, params[len - 1] - y];
+      currentPoint = [(params[len - 2] as number) - x, (params[len - 1] as number) - y];
     }
   }
 }

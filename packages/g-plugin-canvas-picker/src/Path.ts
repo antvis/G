@@ -10,7 +10,7 @@ function isPointInStroke(
   py: number,
   length: number,
   x: number,
-  y: number
+  y: number,
 ) {
   let isHit = false;
   const halfWidth = lineWidth / 2;
@@ -18,14 +18,32 @@ function isPointInStroke(
     const segment = segments[i];
     const { currentPoint, params, prePoint, box } = segment;
     // 如果在前面已经生成过包围盒，直接按照包围盒计算
-    if (box && !inBox(box.x - halfWidth, box.y - halfWidth, box.width + lineWidth, box.height + lineWidth, px, py)) {
+    if (
+      box &&
+      !inBox(
+        box.x - halfWidth,
+        box.y - halfWidth,
+        box.width + lineWidth,
+        box.height + lineWidth,
+        px,
+        py,
+      )
+    ) {
       continue;
     }
     switch (segment.command) {
       // L 和 Z 都是直线， M 不进行拾取
       case 'L':
       case 'Z':
-        isHit = inLine(prePoint[0], prePoint[1], currentPoint[0], currentPoint[1], lineWidth, px, py);
+        isHit = inLine(
+          prePoint[0],
+          prePoint[1],
+          currentPoint[0],
+          currentPoint[1],
+          lineWidth,
+          px,
+          py,
+        );
         break;
       case 'Q':
         const qDistance = QuadUtil.pointDistance(
@@ -36,7 +54,7 @@ function isPointInStroke(
           params[3],
           params[4],
           px,
-          py
+          py,
         );
         isHit = qDistance <= lineWidth / 2;
         break;
@@ -52,7 +70,7 @@ function isPointInStroke(
           params[6],
           px,
           py,
-          length
+          length,
         );
         isHit = cDistance <= lineWidth / 2;
         break;
@@ -96,27 +114,19 @@ function isPointInStroke(
 export function isPointInPath(
   displayObject: DisplayObject<PathStyleProps>,
   position: Point,
-  isPointInPath: (displayObject: DisplayObject<PathStyleProps>, position: Point) => boolean
+  isPointInPath: (displayObject: DisplayObject<PathStyleProps>, position: Point) => boolean,
 ): boolean {
   const {
     lineWidth = 0,
     stroke,
     fill,
-    path,
-    // @ts-ignore
-    segments,
-    // @ts-ignore
-    hasArc,
-    // @ts-ignore
-    polygons,
-    // @ts-ignore
-    polylines,
-    // @ts-ignore
-    totalLength,
     x = 0,
     y = 0,
     clipPathTargets,
-  } = displayObject.attributes;
+    path,
+  } = displayObject.parsedStyle;
+  const { segments, hasArc, polylines, polygons, totalLength } = path;
+
   const isClipPath = !!clipPathTargets?.length;
 
   let isHit = false;
@@ -130,7 +140,8 @@ export function isPointInPath(
     } else {
       // 提取出来的多边形包含闭合的和非闭合的，在这里统一按照多边形处理
       isHit =
-        inPolygons(polygons, position.x + x, position.y + y) || inPolygons(polylines, position.x + x, position.y + y);
+        inPolygons(polygons, position.x + x, position.y + y) ||
+        inPolygons(polylines, position.x + x, position.y + y);
     }
   }
   return isHit;

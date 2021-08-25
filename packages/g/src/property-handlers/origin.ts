@@ -44,7 +44,6 @@ export function updateTransformOrigin(oldValue: string, value: string, object: D
   }
 
   if (!isNil(originX) && !isNil(originY)) {
-    console.log(originX!, originY!);
     object.setOrigin(originX!, originY!);
   }
 }

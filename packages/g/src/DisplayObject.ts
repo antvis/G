@@ -6,15 +6,13 @@ import { vec2, vec3, mat4, quat } from 'gl-matrix';
 import { EventEmitter } from 'eventemitter3';
 import { Cullable, Geometry, Renderable, SceneGraphNode, Transform, Sortable } from './components';
 import { createVec3, rad2deg, getEuler, fromRotationTranslationScale } from './utils/math';
-import type { BaseStyleProps } from './types';
+import type { BaseStyleProps, ParsedBaseStyleProps } from './types';
 import type { GroupFilter } from './types';
 import { SHAPE } from './types';
 import { DisplayObjectPool } from './DisplayObjectPool';
 import { world, container } from './inversify.config';
 import { SceneGraphService } from './services';
 import { AABB, Rectangle } from './shapes';
-import type { GeometryAABBUpdater } from './services/aabb';
-import { GeometryUpdaterFactory } from './services/aabb';
 import { FederatedEvent } from './dom/FederatedEvent';
 import { KeyframeEffect } from './KeyframeEffect';
 import type { Canvas } from './Canvas';
@@ -131,7 +129,10 @@ export interface DisplayObjectConfig<StyleProps> {
  * * destroy
  * * attributeChanged
  */
-export class DisplayObject<StyleProps extends BaseStyleProps = any> {
+export class DisplayObject<
+  StyleProps extends BaseStyleProps = any,
+  ParsedStyleProps extends ParsedBaseStyleProps = any,
+> {
   protected entity: Entity;
   protected config: DisplayObjectConfig<StyleProps>;
 
@@ -139,15 +140,12 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
 
   private sceneGraphService = container.get(SceneGraphService);
 
-  private geometryUpdaterFactory =
-    container.get<(tagName: string) => GeometryAABBUpdater<any>>(GeometryUpdaterFactory);
-
   private stylePropertyUpdaterFactory = container.get<
-    <Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyUpdater<any>
+    <Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyUpdater<any>[]
   >(StylePropertyUpdaterFactory);
 
   private stylePropertyParserFactory = container.get<
-    <Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyParser<any, any>
+    <Key extends keyof ParsedStyleProps>(stylePropertyName: Key) => StylePropertyParser<any, any>
   >(StylePropertyParserFactory);
 
   /**
@@ -198,6 +196,16 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     entity.addComponent(Geometry);
 
     this.initAttributes(this.config.style!);
+
+    this.style = new Proxy<StyleProps>(this.attributes, {
+      get: (_, prop) => {
+        return this.getAttribute(prop as keyof StyleProps);
+      },
+      set: (_, prop, value) => {
+        this.setAttribute(prop as keyof StyleProps, value);
+        return true;
+      },
+    });
 
     this.emitter.emit(DISPLAY_OBJECT_EVENT.Init);
   }
@@ -1170,16 +1178,39 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
    * compatible with `style`
    * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style
    */
-  style = new Proxy<StyleProps>({} as StyleProps, {
-    get: (_, prop) => {
-      return this.getAttribute(prop as keyof StyleProps);
-    },
-    set: (_, prop, value) => {
-      this.setAttribute(prop as keyof StyleProps, value);
-      return true;
-    },
-  });
-  parsedStyle: StyleProps = {} as StyleProps;
+  style: StyleProps;
+  parsedStyle: ParsedStyleProps = {} as ParsedStyleProps;
+
+  /**
+   * parse property, eg.
+   * * fill: 'red' => [1, 0, 0, 1]
+   * * translateX: '10px' => { unit: 'px', value: 10 }
+   */
+  private parseStyleProperty<Key extends keyof ParsedStyleProps>(
+    name: Key,
+    value: ParsedStyleProps[Key],
+  ) {
+    const stylePropertyParser = this.stylePropertyParserFactory(name);
+    if (stylePropertyParser) {
+      this.parsedStyle[name] = stylePropertyParser(value, this);
+    } else {
+      this.parsedStyle[name] = value;
+    }
+  }
+
+  private updateStyleProperty<Key extends keyof ParsedStyleProps>(
+    name: Key,
+    oldParsedValue: ParsedStyleProps[Key],
+    newParsedValue: ParsedStyleProps[Key],
+  ) {
+    // update property, which may cause AABB re-calc
+    const stylePropertyUpdaters = this.stylePropertyUpdaterFactory(name);
+    if (stylePropertyUpdaters) {
+      stylePropertyUpdaters.forEach((updater) => {
+        updater(oldParsedValue, newParsedValue, this);
+      });
+    }
+  }
 
   /**
    * called when attributes get changed or initialized
@@ -1187,7 +1218,6 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
   private changeAttribute<Key extends keyof StyleProps>(name: Key, value: StyleProps[Key]) {
     const entity = this.getEntity();
     const renderable = entity.getComponent(Renderable);
-    const geometry = entity.getComponent(Geometry);
 
     const oldValue = this.attributes[name];
     const oldParsedValue = this.parsedStyle[name];
@@ -1195,56 +1225,9 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
     // update value
     this.attributes[name] = value;
 
-    // update geometry if some attributes changed such as `width/height/...`
-    const geometryUpdater = this.geometryUpdaterFactory(this.nodeName);
-    const needUpdateGeometry =
-      geometryUpdater && geometryUpdater.dependencies.indexOf(name as string) > -1;
-    if (needUpdateGeometry) {
-      if (!geometry.aabb) {
-        geometry.aabb = new AABB();
-      }
-      geometryUpdater.update(this.attributes, geometry.aabb);
-    }
+    this.parseStyleProperty(name, value);
 
-    // parse property, eg.
-    // * 'red' => [1, 0, 0, 1]
-    // * '10px' => { unit: 'px', value: 10 }
-    this.parsedStyle[name] = value;
-    const stylePropertyParser = this.stylePropertyParserFactory(name);
-    if (stylePropertyParser) {
-      this.parsedStyle[name] = stylePropertyParser(value, this);
-    }
-
-    // update property, which may cause AABB re-calc
-    const stylePropertyUpdater = this.stylePropertyUpdaterFactory(name);
-    if (stylePropertyUpdater) {
-      stylePropertyUpdater(oldParsedValue, this.parsedStyle[name], this);
-    }
-
-    if (
-      name === 'x' ||
-      name === 'y' || // circle rect...
-      name === 'x1' ||
-      name === 'x2' ||
-      name === 'y1' ||
-      name === 'y2' || // line
-      name === 'points' || // polyline
-      name === 'path' // path
-    ) {
-      // in parent's local space
-      const { x = 0, y = 0 } = this.attributes;
-      // update transform
-      this.sceneGraphService.setLocalPosition(this, x, y);
-    }
-
-    // update renderable's aabb, account for world transform
-    if (
-      needUpdateGeometry ||
-      name === 'x' || // local position changed
-      name === 'y'
-    ) {
-      renderable.aabbDirty = true;
-    }
+    this.updateStyleProperty(name, oldParsedValue, this.parsedStyle[name]);
 
     // inform clip path targets
     if (this.attributes.clipPathTargets && this.attributes.clipPathTargets.length) {
@@ -1264,13 +1247,30 @@ export class DisplayObject<StyleProps extends BaseStyleProps = any> {
   }
 
   private initAttributes(attributes: StyleProps) {
-    // apply attributes
+    const entity = this.getEntity();
+    const renderable = entity.getComponent(Renderable);
+
+    // parse attributes first
     for (const attributeName in attributes) {
-      this.attributes[attributeName] = attributes[attributeName];
+      const value = attributes[attributeName];
+      this.attributes[attributeName] = value;
+      this.parseStyleProperty(attributeName, value);
     }
 
-    for (const attributeName in attributes) {
-      this.setAttribute(attributeName, attributes[attributeName], true);
-    }
+    const priorities: Record<string, number> = {
+      x: 1000,
+      y: 1000,
+    };
+
+    // update x, y at last
+    const sortedNames = Object.keys(attributes).sort(
+      (a, b) => (priorities[a] || 0) - (priorities[b] || 0),
+    );
+    sortedNames.forEach((attributeName) => {
+      this.updateStyleProperty(attributeName, undefined, this.parsedStyle[attributeName]);
+    });
+
+    // redraw at next frame
+    renderable.dirty = true;
   }
 }

@@ -1,12 +1,19 @@
-import type { AABB } from '../../shapes';
-import type { BaseStyleProps } from '../../types';
+import type { ParsedBaseStyleProps } from '../../types';
 
 export const GeometryUpdaterFactory = Symbol('GeometryUpdaterFactory');
 
 export const GeometryAABBUpdater = Symbol('GeometryAABBGenerator');
-export interface GeometryAABBUpdater<T extends BaseStyleProps = any> {
-  dependencies: string[];
-  update: (attributes: T, aabb: AABB) => void;
+export interface GeometryAABBUpdater<T extends ParsedBaseStyleProps = any> {
+  update: (parsedStyle: T) => {
+    width: number;
+    height: number;
+    depth?: number;
+    x: number;
+    y: number;
+    offsetX?: number;
+    offsetY?: number;
+    offsetZ?: number;
+  };
 }
 
 export { CircleUpdater } from './CircleUpdater';

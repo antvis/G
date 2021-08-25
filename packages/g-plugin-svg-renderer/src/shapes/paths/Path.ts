@@ -1,13 +1,13 @@
-import { PathCommand, PathStyleProps } from '@antv/g';
+import { ParsedBaseStyleProps, PathCommand } from '@antv/g';
 import { ElementRenderer } from '.';
 import { injectable } from 'inversify';
 
 @injectable()
-export class PathRenderer implements ElementRenderer<PathStyleProps> {
+export class PathRenderer implements ElementRenderer<ParsedBaseStyleProps> {
   dependencies = ['path'];
-  apply($el: SVGElement, attributes: PathStyleProps) {
+  apply($el: SVGElement, attributes: ParsedBaseStyleProps) {
     const { path, x = 0, y = 0 } = attributes;
-    $el.setAttribute('d', this.formatPath(path as PathCommand[], x, y));
+    $el.setAttribute('d', this.formatPath(path!.absolutePath as PathCommand[], x, y));
   }
 
   private formatPath(value: PathCommand[], x: number, y: number) {
@@ -17,15 +17,19 @@ export class PathRenderer implements ElementRenderer<PathStyleProps> {
 
         switch (command) {
           case 'M':
-            return `M ${params[1] - x},${params[2] - y}`;
+            return `M ${params[1]! - x},${params[2]! - y}`;
           case 'L':
-            return `L ${params[1] - x},${params[2] - y}`;
+            return `L ${params[1]! - x},${params[2]! - y}`;
           case 'Q':
-            return `Q ${params[1] - x} ${params[2] - y},${params[3] - x} ${params[4] - y}`;
+            return `Q ${params[1]! - x} ${params[2]! - y},${params[3]! - x} ${params[4]! - y}`;
           case 'C':
-            return `C ${params[1] - x} ${params[2] - y},${params[3] - x} ${params[4] - y},${params[5] - x} ${params[6] - y}`;
+            return `C ${params[1]! - x} ${params[2]! - y},${params[3]! - x} ${params[4]! - y},${
+              params[5]! - x
+            } ${params[6]! - y}`;
           case 'A':
-            return `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${params[5]} ${params[6] - x} ${params[7] - y}`;
+            return `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${params[5]} ${
+              params[6]! - x
+            } ${params[7]! - y}`;
           case 'Z':
             return 'Z';
           default:

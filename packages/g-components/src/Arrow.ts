@@ -45,7 +45,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       type: Arrow.tag,
     });
 
-    const { body, startHead, endHead, ...rest } = this.attributes;
+    const { body, startHead, endHead, ...rest } = this.style;
 
     if (!body) {
       throw new Error("Arrow's body is required");
@@ -77,7 +77,11 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     return this.endHead;
   }
 
-  attributeChangedCallback<Key extends keyof ArrowStyleProps>(name: Key, oldValue: ArrowStyleProps[Key], newValue: ArrowStyleProps[Key]) {
+  attributeChangedCallback<Key extends keyof ArrowStyleProps>(
+    name: Key,
+    oldValue: ArrowStyleProps[Key],
+    newValue: ArrowStyleProps[Key],
+  ) {
     if (
       name === 'opacity' ||
       name === 'strokeOpacity' ||
@@ -91,13 +95,13 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       this.destroyArrowHead(isStart);
 
       if (newValue) {
-        const { body, startHead, endHead, ...rest } = this.attributes;
+        const { body, startHead, endHead, ...rest } = this.style;
         // append new arrow head
         this.appendArrowHead(this.getArrowHeadType(newValue), isStart);
         this.applyArrowStyle(rest, [isStart ? this.startHead : this.endHead]);
       }
     } else if (name === 'body') {
-      const { body, startHead, endHead, ...rest } = this.attributes;
+      const { body, startHead, endHead, ...rest } = this.style;
       this.removeChild(this.body!, true);
       this.body = newValue;
       this.appendChild(this.body!);
@@ -118,7 +122,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       head = this.createDefaultArrowHead();
     } else {
       // @ts-ignore
-      head = isStart ? this.attributes.startHead : this.attributes.endHead;
+      head = isStart ? this.style.startHead : this.style.endHead;
     }
 
     // set position & rotation
@@ -150,20 +154,20 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     const bodyType = this.body && this.body.nodeName;
 
     if (bodyType === SHAPE.Line) {
-      const { x1: _x1, x2: _x2, y1: _y1, y2: _y2 } = this.body!.attributes as LineStyleProps;
+      const { x1: _x1, x2: _x2, y1: _y1, y2: _y2 } = (this.body as Line).style;
       x1 = isStart ? _x1 : _x2;
       x2 = isStart ? _x2 : _x1;
       y1 = isStart ? _y1 : _y2;
       y2 = isStart ? _y2 : _y1;
     } else if (bodyType === SHAPE.Polyline) {
-      const points = this.body.attributes.points as number[][];
+      const points = (this.body as Polyline).style.points;
       const { length } = points;
       x1 = isStart ? points[1][0] : points[length - 2][0];
       y1 = isStart ? points[1][1] : points[length - 2][1];
       x2 = isStart ? points[0][0] : points[length - 1][0];
       y2 = isStart ? points[0][1] : points[length - 1][1];
     } else if (bodyType === SHAPE.Path) {
-      const [p1, p2] = this.getTangent(this.body! as Path, isStart);
+      const [p1, p2] = this.getTangent(this.body as Path, isStart);
       x1 = p1[0];
       y1 = p1[1];
       x2 = p2[0];
@@ -190,42 +194,19 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     }
   }
 
-  private getTangent(path: Path, isStart: boolean): [number, number][] {
-    const { segments } = path.attributes;
-    const { length } = segments;
-
-    const result: [number, number][] = [];
-    if (length > 1) {
-      let startPoint = isStart ? segments[0].currentPoint : segments[length - 2].currentPoint;
-      let endPoint = isStart ? segments[1].currentPoint : segments[length - 1].currentPoint;
-      const tangent = isStart ? segments[1].startTangent : segments[length - 1].endTangent;
-      let tmpPoint;
-
-      if (!isStart) {
-        tmpPoint = startPoint;
-        startPoint = endPoint;
-        endPoint = tmpPoint;
-      }
-
-      if (tangent) {
-        result.push([startPoint[0] - tangent[0], startPoint[1] - tangent[1]]);
-        result.push([startPoint[0], startPoint[1]]);
-      } else {
-        result.push([endPoint[0], endPoint[1]]);
-        result.push([startPoint[0], startPoint[1]]);
-      }
-    }
-    return result;
+  private getTangent(path: Path, isStart: boolean): number[][] {
+    return isStart ? path.getStartTangent() : path.getEndTangent();
   }
 
   private createDefaultArrowHead() {
-    const { stroke, lineWidth } = this.attributes;
+    const { stroke, lineWidth } = this.style;
     const { sin, cos, PI } = Math;
     return new Path({
       style: {
         // draw an angle '<'
-        path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${10 * sin(PI / 6)
-          }`,
+        path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${
+          10 * sin(PI / 6)
+        }`,
         stroke,
         lineWidth,
         anchor: [0.5, 0.5], // set anchor to center
@@ -233,10 +214,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     });
   }
 
-  private applyArrowStyle(
-    attributes: ArrowStyleProps,
-    objects: (DisplayObject | undefined)[],
-  ) {
+  private applyArrowStyle(attributes: ArrowStyleProps, objects: (DisplayObject | undefined)[]) {
     objects.forEach((shape) => {
       if (shape) {
         shape.attr(attributes);

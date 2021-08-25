@@ -6,9 +6,9 @@ export function isPointInPath(
   position: {
     x: number;
     y: number;
-  }
+  },
 ): boolean {
-  const { x1, y1, x2, y2, lineWidth = 0, x = 0, y = 0 } = displayObject.attributes;
+  const { x1, y1, x2, y2, lineWidth = 0, x = 0, y = 0 } = displayObject.parsedStyle;
 
   return inLine(x1, y1, x2, y2, lineWidth, position.x + x, position.y + y);
 }

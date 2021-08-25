@@ -8,7 +8,17 @@ import { Point } from '../shapes';
 export interface PolylineStyleProps extends BaseStyleProps {
   points: [number, number][];
 }
-export class Polyline extends DisplayObject<PolylineStyleProps> {
+export interface ParsedPolylineStyleProps {
+  points: [number, number][];
+  segments: [number, number][];
+  totalLength: number;
+}
+export class Polyline extends DisplayObject<
+  PolylineStyleProps,
+  {
+    points: ParsedPolylineStyleProps;
+  }
+> {
   constructor({ style, ...rest }: DisplayObjectConfig<PolylineStyleProps>) {
     super({
       type: SHAPE.Polyline,
@@ -26,26 +36,16 @@ export class Polyline extends DisplayObject<PolylineStyleProps> {
     });
   }
 
-  private totalLength: number;
-  private cache: [number, number][] = [];
-
   getTotalLength() {
-    const { points } = this.attributes;
-    if (!this.totalLength) {
-      this.totalLength = PolylineUtil.length(points);
-    }
-    return this.totalLength;
+    return this.parsedStyle.points.totalLength;
   }
 
   getPoint(ratio: number): Point {
-    const { points } = this.attributes;
-    if (!this.cache.length) {
-      this.createCache();
-    }
+    const { points, segments } = this.parsedStyle.points;
 
     let subt = 0;
     let index = 0;
-    this.cache.forEach((v, i) => {
+    segments.forEach((v, i) => {
       if (ratio >= v[0] && ratio <= v[1]) {
         subt = (ratio - v[0]) / (v[1] - v[0]);
         index = i;
@@ -62,30 +62,20 @@ export class Polyline extends DisplayObject<PolylineStyleProps> {
     return new Point(x, y);
   }
 
-  private createCache() {
-    const { points } = this.attributes;
-    if (!points || points.length === 0) {
-      return;
-    }
+  getStartTangent(): number[][] {
+    const { points } = this.parsedStyle.points;
+    const result = [];
+    result.push([points[1][0], points[1][1]]);
+    result.push([points[0][0], points[0][1]]);
+    return result;
+  }
 
-    const totalLength = this.getTotalLength();
-    if (totalLength <= 0) {
-      return;
-    }
-
-    let tempLength = 0;
-    let segmentT: [number, number];
-    let segmentL;
-
-    (points as [number, number][]).forEach((p, i) => {
-      if (points[i + 1]) {
-        segmentT = [0, 0];
-        segmentT[0] = tempLength / totalLength;
-        segmentL = LineUtil.length(p[0], p[1], points[i + 1][0], points[i + 1][1]);
-        tempLength += segmentL;
-        segmentT[1] = tempLength / totalLength;
-        this.cache.push(segmentT);
-      }
-    });
+  getEndTangent(): number[][] {
+    const { points } = this.parsedStyle.points;
+    const l = points.length - 1;
+    const result = [];
+    result.push([points[l - 1][0], points[l - 1][1]]);
+    result.push([points[l][0], points[l][1]]);
+    return result;
   }
 }

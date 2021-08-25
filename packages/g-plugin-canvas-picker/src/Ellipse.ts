@@ -4,8 +4,18 @@ function ellipseDistance(squareX: number, squareY: number, rx: number, ry: numbe
   return squareX / (rx * rx) + squareY / (ry * ry);
 }
 
-export function isPointInPath(displayObject: DisplayObject<EllipseStyleProps>, { x, y }: { x: number; y: number }): boolean {
-  const { rx = 0, ry = 0, fill, stroke, lineWidth = 0, clipPathTargets } = displayObject.attributes;
+export function isPointInPath(
+  displayObject: DisplayObject<EllipseStyleProps>,
+  { x, y }: { x: number; y: number },
+): boolean {
+  const {
+    rx = 0,
+    ry = 0,
+    fill,
+    stroke,
+    lineWidth = 0,
+    clipPathTargets,
+  } = displayObject.parsedStyle;
   const isClipPath = !!clipPathTargets?.length;
 
   const halfLineWith = lineWidth / 2;

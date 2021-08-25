@@ -1,77 +1,27 @@
 /* eslint-disable no-plusplus */
-import { vec3 } from 'gl-matrix';
 import { Quad as QuadUtil, Cubic as CubicUtil, Arc as EllipseArcUtil } from '@antv/g-math';
-import { path2Absolute, path2Segments } from '@antv/path-util';
 import { isNumberEqual, max, min } from '@antv/util';
 import { injectable } from 'inversify';
 import type { GeometryAABBUpdater } from '.';
-import type { AABB } from '../../shapes';
-import { pathToCurve } from '../../utils/path';
-import type { PathStyleProps } from '../../display-objects';
-
-interface ExtraPathAttrs {
-  /**
-   * @readonly
-   */
-  hasArc: boolean;
-  /**
-   * @readonly
-   */
-  segments: any[];
-  polygons: any;
-  polylines: any;
-  curve: any;
-  totalLength: any;
-  curveSegments: any;
-  anchor: any;
-  x: number;
-  y: number;
-}
-
-type UpdateProps = PathStyleProps & ExtraPathAttrs;
+import { PathSegment } from '../../display-objects';
+import type { ParsedBaseStyleProps } from '../../types';
 
 @injectable()
-export class PathUpdater implements GeometryAABBUpdater<UpdateProps> {
-  dependencies = ['path', 'lineWidth', 'anchor'];
+export class PathUpdater implements GeometryAABBUpdater<ParsedBaseStyleProps> {
+  update(parsedStyle: ParsedBaseStyleProps) {
+    const { path, lineWidth = 0 } = parsedStyle;
 
-  update(attributes: UpdateProps, aabb: AABB) {
-    // format path and add some extra attributes for later use
-    const path = path2Absolute(attributes.path as string);
-    attributes.path = path;
-
-    const { lineWidth = 1, anchor = [0, 0] } = attributes;
-
-    attributes.hasArc = hasArc(path);
-    attributes.segments = path2Segments(path);
-    const { polygons, polylines } = extractPolygons(path);
-    attributes.polygons = polygons;
-    attributes.polylines = polylines;
-    attributes.curve = pathToCurve(path);
-    const { totalLength, curveSegments } = calcLength(attributes.curve);
-    attributes.totalLength = totalLength;
-    attributes.curveSegments = curveSegments;
-
-    const { x: minX, y: minY, width, height } = getPathBox(attributes.segments, lineWidth);
-
-    // anchor is left-top by default
-    attributes.x = minX;
-    attributes.y = minY;
-    attributes.width = width;
-    attributes.height = height;
-
-    const halfExtents = vec3.fromValues(width / 2, height / 2, 0);
-    const center = vec3.fromValues(
-      (1 - anchor[0] * 2) * halfExtents[0],
-      (1 - anchor[1] * 2) * halfExtents[1],
-      0,
-    );
-
-    vec3.add(halfExtents, halfExtents, vec3.fromValues(lineWidth, lineWidth, 0));
-    aabb.update(center, halfExtents);
+    const { x: minX, y: minY, width, height } = getPathBox(path!.segments, lineWidth);
+    return {
+      width,
+      height,
+      x: minX,
+      y: minY,
+    };
   }
 }
 
-function getPathBox(segments: any[], lineWidth: number) {
+function getPathBox(segments: PathSegment[], lineWidth: number) {
   let xArr = [];
   let yArr = [];
   const segmentsWithAngle = [];
@@ -184,7 +134,7 @@ function getExtraFromSegmentWithAngle(segment: any, lineWidth: number) {
   // 以 currentPoint 为顶点的夹角
   const currentAngle = Math.acos(
     (currentAndPre + currentAndNext - preAndNext) /
-    (2 * Math.sqrt(currentAndPre) * Math.sqrt(currentAndNext)),
+      (2 * Math.sqrt(currentAndPre) * Math.sqrt(currentAndNext)),
   );
   // 夹角为空、 0 或 PI 时，不需要计算夹角处的额外宽度
   // 注意: 由于计算精度问题，夹角为 0 的情况计算出来的角度可能是一个很小的值，还需要判断其与 0 是否近似相等
@@ -205,11 +155,11 @@ function getExtraFromSegmentWithAngle(segment: any, lineWidth: number) {
     // 水平方向投影
     xExtra:
       Math.cos(currentAngle / 2 - xAngle) * ((lineWidth / 2) * (1 / Math.sin(currentAngle / 2))) -
-      lineWidth / 2 || 0,
+        lineWidth / 2 || 0,
     // 垂直方向投影
     yExtra:
       Math.cos(yAngle - currentAngle / 2) * ((lineWidth / 2) * (1 / Math.sin(currentAngle / 2))) -
-      lineWidth / 2 || 0,
+        lineWidth / 2 || 0,
   };
   return extra;
 }

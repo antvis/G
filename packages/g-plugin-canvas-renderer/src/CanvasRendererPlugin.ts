@@ -249,7 +249,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const generatePath = this.pathGeneratorFactory(clipPathShape.nodeName);
       if (generatePath) {
         this.useAnchor(context, clipPathShape, () => {
-          generatePath(context, clipPathShape.attributes);
+          generatePath(context, clipPathShape.parsedStyle);
         });
       }
 
@@ -265,13 +265,13 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       // generate path in local space
       const generatePath = this.pathGeneratorFactory(object.nodeName);
       if (generatePath) {
-        generatePath(context, object.attributes);
+        generatePath(context, object.parsedStyle);
       }
 
       // fill & stroke
       const styleRenderer = this.styleRendererFactory(nodeName);
       if (styleRenderer) {
-        styleRenderer.render(context, object.attributes);
+        styleRenderer.render(context, object.parsedStyle);
       }
     });
 
@@ -439,7 +439,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
             parsedColor.type === PARSED_COLOR_TYPE.LinearGradient ||
             parsedColor.type === PARSED_COLOR_TYPE.RadialGradient
           ) {
-            const { width = 0, height = 0 } = attributes;
+            const { width = 0, height = 0 } = parsedStyle;
             v = this.gradientPool.getOrCreateGradient(
               {
                 type: parsedColor.type,
@@ -483,22 +483,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     // apply anchor, use true size, not include stroke,
     // eg. bounds = true size + half lineWidth
-    const { width = 0, height = 0, anchor = [0, 0] } = object.style || {};
+    const { width = 0, height = 0, anchor = [0, 0] } = object.parsedStyle || {};
     context.translate(-anchor[0] * width, -anchor[1] * height);
 
     callback();
     context.restore();
   }
-
-  // private drawPath(context: CanvasRenderingContext2D, object: DisplayObject) {
-  //   // generate path in local space
-  //   const generatePath = this.pathGeneratorFactory(object.nodeName);
-  //   if (generatePath) {
-  //     this.useAnchor(context, object, () => {
-  //       generatePath(context, object.attributes);
-  //     });
-  //   }
-  // }
 
   private safeMergeAABB(...aabbs: (AABB | undefined)[]): AABB | undefined {
     let merged: AABB | undefined;

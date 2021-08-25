@@ -30,6 +30,11 @@ const circle = new Circle({
 
 describe('Property Color', () => {
   it('should parse constant color correctly', () => {
+    expect(parseColor('transparent', null)).to.be.eqls({
+      type: PARSED_COLOR_TYPE.Constant,
+      value: [0, 0, 0, 0],
+      formatted: 'rgba(0,0,0,0)',
+    });
     expect(parseColor('red', null)).to.be.eqls({
       type: PARSED_COLOR_TYPE.Constant,
       value: [1, 0, 0, 1],

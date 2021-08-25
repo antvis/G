@@ -7,34 +7,34 @@ order: 7
 
 ```javascript
 const polyline = new Polyline({
-  style: {
-    points: [
-      [50, 50],
-      [100, 50],
-      [100, 100],
-      [150, 100],
-      [150, 150],
-      [200, 150],
-      [200, 200],
-      [250, 200],
-      [250, 250],
-      [300, 250],
-      [300, 300],
-      [350, 300],
-      [350, 350],
-      [400, 350],
-      [400, 400],
-      [450, 400],
-    ],
-    stroke: '#1890FF',
-    lineWidth: 2,
-  },
+    style: {
+        points: [
+            [50, 50],
+            [100, 50],
+            [100, 100],
+            [150, 100],
+            [150, 150],
+            [200, 150],
+            [200, 200],
+            [250, 200],
+            [250, 250],
+            [300, 250],
+            [300, 300],
+            [350, 300],
+            [350, 350],
+            [400, 350],
+            [400, 400],
+            [450, 400],
+        ],
+        stroke: '#1890FF',
+        lineWidth: 2,
+    },
 });
 ```
 
 # 继承自
 
-- [DisplayObject](/zh/docs/api/basic/display-object)
+-   [DisplayObject](/zh/docs/api/basic/display-object)
 
 默认锚点定义的位置为包围盒左上角顶点，可以通过 [anchor](/zh/docs/api/display-object#anchor) 改变。
 
@@ -72,8 +72,15 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLeng
 
 ```ts
 export type Point = {
-  x: number;
-  y: number;
+    x: number;
+    y: number;
 };
 ```
 
+## getStartTangent(): number[][]
+
+获取起点的切向量，形如: `[[10, 10], [20, 20]]`
+
+## getEndTangent(): number[][]
+
+获取终点的切向量，形如: `[[10, 10], [20, 20]]`

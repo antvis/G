@@ -21,6 +21,7 @@ const canvas = new Canvas({
 
 // create an arrow
 const lineArrow = new Arrow({
+  id: 'lineArrow',
   style: {
     body: new Line({
       style: {
@@ -39,6 +40,7 @@ const lineArrow = new Arrow({
 lineArrow.translate(200, 100);
 
 const polylineArrow = new Arrow({
+  id: 'polylineArrow',
   style: {
     body: new Polyline({
       style: {
@@ -61,6 +63,7 @@ const polylineArrow = new Arrow({
 polylineArrow.translate(200, 200);
 
 const pathArrow = new Arrow({
+  id: 'pathArrow',
   style: {
     body: new Path({
       style: {
@@ -78,6 +81,18 @@ pathArrow.translate(100, 150);
 canvas.appendChild(lineArrow);
 canvas.appendChild(polylineArrow);
 canvas.appendChild(pathArrow);
+
+lineArrow.animate(
+  [
+    { transform: 'scale(1)', stroke: '#F04864', opacity: 1 },
+    { transform: 'scale(2)', stroke: '#1890FF', opacity: 0.8 },
+  ],
+  {
+    duration: 1500,
+    iterations: Infinity,
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+  },
+);
 
 lineArrow.addEventListener('mouseenter', () => {
   lineArrow.setAttribute('stroke', '#2FC25B');
@@ -188,7 +203,7 @@ lineArrowFolder
           height: 50,
           anchor: [0.5, 0.5],
           img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-        }
+        },
       });
       image.rotateLocal(90);
       lineArrow.setAttribute('startHead', image);
@@ -212,7 +227,7 @@ lineArrowFolder
           height: 50,
           anchor: [0.5, 0.5],
           img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-        }
+        },
       });
       image.rotateLocal(90);
       lineArrow.setAttribute('endHead', image);
@@ -255,7 +270,7 @@ polylineArrowFolder
           height: 50,
           anchor: [0.5, 0.5],
           img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-        }
+        },
       });
       image.rotateLocal(90);
       polylineArrow.setAttribute('startHead', image);
@@ -279,7 +294,7 @@ polylineArrowFolder
           height: 50,
           anchor: [0.5, 0.5],
           img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-        }
+        },
       });
       image.rotateLocal(90);
       polylineArrow.setAttribute('endHead', image);
@@ -321,7 +336,7 @@ pathArrowFolder
           height: 50,
           anchor: [0.5, 0.5],
           img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-        }
+        },
       });
       image.rotateLocal(90);
       pathArrow.setAttribute('startHead', image);
@@ -345,7 +360,7 @@ pathArrowFolder
           height: 50,
           anchor: [0.5, 0.5],
           img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-        }
+        },
       });
       image.rotateLocal(90);
       pathArrow.setAttribute('endHead', image);

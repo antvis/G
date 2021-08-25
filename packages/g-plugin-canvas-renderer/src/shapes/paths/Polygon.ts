@@ -1,9 +1,8 @@
-import { PolygonStyleProps } from '@antv/g';
+import { ParsedBaseStyleProps } from '@antv/g';
 
-export function generatePath(context: CanvasRenderingContext2D, attributes: PolygonStyleProps) {
+export function generatePath(context: CanvasRenderingContext2D, attributes: ParsedBaseStyleProps) {
   const { x = 0, y = 0 } = attributes;
-  // @ts-ignore
-  const points = attributes.points as number[][];
+  const points = attributes.points.points;
   const length = points.length;
 
   let x1 = points[0][0] - x;

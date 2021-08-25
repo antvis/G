@@ -101,7 +101,7 @@ export function convertPercentUnit(
   if (valueWithUnit.unit === 'px') {
     return Number(valueWithUnit.value);
   } else if (valueWithUnit.unit === '%' && target) {
-    const { width, height } = target.style;
+    const { width, height } = target.parsedStyle;
     // const bounds = target.getEntity().getComponent(Geometry).aabb;
     // can't use bounds
     // const bounds = target.getLocalBounds();
