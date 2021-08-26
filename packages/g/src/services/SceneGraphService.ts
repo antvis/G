@@ -46,9 +46,8 @@ export class SceneGraphService extends EventEmitter {
   }
 
   querySelectorAll(query: string, root: DisplayObject) {
-    return this.sceneGraphSelectorFactory()
-      .selectAll(query, root)
-      .filter((node) => !node.getEntity().getComponent(SceneGraphNode).shadow);
+    return this.sceneGraphSelectorFactory().selectAll(query, root);
+    // .filter((node) => !node.getEntity().getComponent(SceneGraphNode).shadow);
   }
 
   attach(child: DisplayObject, parent: DisplayObject, index?: number) {

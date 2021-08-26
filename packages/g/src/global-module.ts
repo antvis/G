@@ -47,6 +47,7 @@ import {
   Interpolatable,
   parsePath,
   parsePoints,
+  mergePaths,
 } from './property-handlers';
 import { container } from './inversify.config';
 
@@ -179,7 +180,7 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   addPropertyHandler('transform', parseTransform, mergeTransforms, updateTransform);
 
   // Path.path
-  addPropertyHandler('path', parsePath, undefined, updateGeometry);
+  addPropertyHandler('path', parsePath, mergePaths, updateGeometry);
   // Polyline.points Polygon.points
   addPropertyHandler('points', parsePoints, undefined, updateGeometry);
 

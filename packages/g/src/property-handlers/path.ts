@@ -1,15 +1,22 @@
 import { path2Absolute, path2Segments, path2Curve } from '@antv/path-util';
-import { Quad as QuadUtil, Cubic as CubicUtil, Arc as EllipseArcUtil } from '@antv/g-math';
+import { Cubic as CubicUtil } from '@antv/g-math';
 import type { DisplayObject } from '../DisplayObject';
 import type { PathCommand } from '../types';
+import type { ParsedPathStyleProps } from '../display-objects';
+import { isString } from '@antv/util';
 
-export function parsePath(path: string, displayObject: DisplayObject | null) {
+export function parsePath(path: string, displayObject: DisplayObject | null): ParsedPathStyleProps {
   const absolutePath = path2Absolute(path) as PathCommand[];
   const hasArc = hasArcOrBezier(absolutePath);
   const segments = path2Segments(absolutePath);
   const { polygons, polylines } = extractPolygons(absolutePath);
+
+  // convert to curves to do morphing later
+  // @see http://thednp.github.io/kute.js/svgCubicMorph.html
   const curve = path2Curve(absolutePath);
   const { totalLength, curveSegments } = calcLength(curve);
+
+  // console.log(curve, curveSegments)
 
   return {
     absolutePath,
@@ -144,4 +151,18 @@ function calcLength(curve: any[]) {
     curveSegments,
     totalLength,
   };
+}
+
+export function mergePaths(
+  left: ParsedPathStyleProps,
+  right: ParsedPathStyleProps,
+  displayObject: DisplayObject | null,
+) {
+  // const curve1 = left.;
+  // const curve2 = right.curve;
+  // if (curve1.length !== curve2.length) {
+  // }
+  // equalizeSegments();
+  // return [
+  // ];
 }

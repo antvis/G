@@ -22,12 +22,11 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
   selectOne(query: string, object: DisplayObject) {
     if (query.startsWith('#')) {
       // getElementById('id')
-      return object.find(
-        (node) => {
-          const sceneGraphNode = node.getEntity().getComponent(SceneGraphNode);
-          return !sceneGraphNode.shadow && sceneGraphNode.id === query.substring(1);
-        },
-      );
+      return object.find((node) => {
+        const sceneGraphNode = node.getEntity().getComponent(SceneGraphNode);
+        // return !sceneGraphNode.shadow && sceneGraphNode.id === query.substring(1);
+        return sceneGraphNode.id === query.substring(1);
+      });
     }
     return null;
   }
@@ -38,7 +37,8 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
       // getElementsByClassName('className');
       // TODO: should include itself?
       return object.findAll(
-        (node: DisplayObject) => node.getEntity().getComponent(SceneGraphNode).class === query.substring(1),
+        (node: DisplayObject) =>
+          node.getEntity().getComponent(SceneGraphNode).class === query.substring(1),
       );
     } else if (query.startsWith('[name=')) {
       // getElementsByName();
