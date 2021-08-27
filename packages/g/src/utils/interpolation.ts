@@ -205,7 +205,10 @@ function interpolate(from: Interpolatable, to: Interpolatable, f: number): Inter
   if (typeof from === 'number' && typeof to === 'number') {
     return from * (1 - f) + to * f;
   }
-  if (typeof from === 'boolean' && typeof to === 'boolean') {
+  if (
+    (typeof from === 'boolean' && typeof to === 'boolean') ||
+    (typeof from === 'string' && typeof to === 'string') // skip string, eg. path ['M', 10, 10]
+  ) {
     return f < 0.5 ? from : to;
   }
 

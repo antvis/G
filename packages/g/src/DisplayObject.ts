@@ -1,5 +1,4 @@
-/* eslint-disable no-restricted-syntax */
-import { isObject, isNil, isBoolean, isFunction } from '@antv/util';
+import { isObject, isNil, isBoolean, isFunction, isEqual } from '@antv/util';
 import type { Entity } from '@antv/g-ecs';
 import type { mat3 } from 'gl-matrix';
 import { vec2, vec3, mat4, quat } from 'gl-matrix';
@@ -330,9 +329,16 @@ export class DisplayObject<
   }
 
   destroy() {
+    // remove from scenegraph first
+    this.remove(false);
+
+    // then destroy itself
     this.emitter.emit(DISPLAY_OBJECT_EVENT.Destroy);
     this.entity.destroy();
+
+    // remove event listeners
     this.emitter.removeAllListeners();
+
     // stop all active animations
     this.getAnimations().forEach((animation) => {
       animation.cancel();
@@ -678,7 +684,7 @@ export class DisplayObject<
   ) {
     if (
       force ||
-      value !== this.attributes[attributeName] ||
+      !isEqual(value, this.attributes[attributeName]) ||
       attributeName === 'visibility' // will affect children
     ) {
       if (attributeName === 'visibility') {
@@ -819,6 +825,7 @@ export class DisplayObject<
    */
   setPosition(position: vec3 | number, y: number = 0, z: number = 0) {
     this.sceneGraphService.setPosition(this, createVec3(position, y, z));
+    this.syncLocalPosition();
     return this;
   }
 
@@ -827,6 +834,7 @@ export class DisplayObject<
    */
   setLocalPosition(position: vec3 | number, y: number = 0, z: number = 0) {
     this.sceneGraphService.setLocalPosition(this, createVec3(position, y, z));
+    this.syncLocalPosition();
     return this;
   }
 
@@ -835,6 +843,7 @@ export class DisplayObject<
    */
   translate(position: vec3 | number, y: number = 0, z: number = 0) {
     this.sceneGraphService.translate(this, createVec3(position, y, z));
+    this.syncLocalPosition();
     return this;
   }
 
@@ -843,6 +852,7 @@ export class DisplayObject<
    */
   translateLocal(position: vec3 | number, y: number = 0, z: number = 0) {
     this.sceneGraphService.translateLocal(this, createVec3(position, y, z));
+    this.syncLocalPosition();
     return this;
   }
 
@@ -1272,5 +1282,11 @@ export class DisplayObject<
 
     // redraw at next frame
     renderable.dirty = true;
+  }
+
+  private syncLocalPosition() {
+    const localPosition = this.getLocalPosition();
+    this.attributes.x = localPosition[0];
+    this.attributes.y = localPosition[1];
   }
 }

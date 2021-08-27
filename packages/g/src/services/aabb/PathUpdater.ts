@@ -1,10 +1,9 @@
-/* eslint-disable no-plusplus */
 import { Quad as QuadUtil, Cubic as CubicUtil, Arc as EllipseArcUtil } from '@antv/g-math';
 import { isNumberEqual, max, min } from '@antv/util';
 import { injectable } from 'inversify';
 import type { GeometryAABBUpdater } from '.';
 import { PathSegment } from '../../display-objects';
-import type { ParsedBaseStyleProps } from '../../types';
+import type { ParsedBaseStyleProps, PathCommand } from '../../types';
 
 @injectable()
 export class PathUpdater implements GeometryAABBUpdater<ParsedBaseStyleProps> {
@@ -12,6 +11,7 @@ export class PathUpdater implements GeometryAABBUpdater<ParsedBaseStyleProps> {
     const { path, lineWidth = 0 } = parsedStyle;
 
     const { x: minX, y: minY, width, height } = getPathBox(path!.segments, lineWidth);
+    // const { x: minX, y: minY, width, height } = getPathBBox(path!.curve);
     return {
       width,
       height,
@@ -19,6 +19,43 @@ export class PathUpdater implements GeometryAABBUpdater<ParsedBaseStyleProps> {
       y: minY,
     };
   }
+}
+
+function getPathBBox(segments: PathCommand[]) {
+  let x = 0;
+  let y = 0;
+  let X: number[] = [];
+  let Y: number[] = [];
+
+  segments.forEach((segment) => {
+    const [s1, s2] = segment.slice(-2);
+    if (segment[0] === 'M') {
+      x = s1 as number;
+      y = s2 as number;
+      X.push(s1 as number);
+      Y.push(s2 as number);
+    } else {
+      const dim = CubicUtil.box(...[x, y].concat(segment.slice(1)));
+      X = X.concat(dim.x, dim.x + dim.width);
+      Y = Y.concat(dim.y, dim.y + dim.height);
+      x = s1 as number;
+      y = s2 as number;
+    }
+  });
+
+  const xTop = Math.min.apply(0, X);
+  const yTop = Math.min.apply(0, Y);
+  const xBot = Math.max.apply(0, X);
+  const yBot = Math.max.apply(0, Y);
+  const width = xBot - xTop;
+  const height = yBot - yTop;
+
+  return {
+    x: xTop,
+    y: yTop,
+    width,
+    height,
+  };
 }
 
 function getPathBox(segments: PathSegment[], lineWidth: number) {
@@ -123,13 +160,10 @@ function getPathBox(segments: PathSegment[], lineWidth: number) {
 function getExtraFromSegmentWithAngle(segment: any, lineWidth: number) {
   const { prePoint, currentPoint, nextPoint } = segment;
   const currentAndPre =
-    // eslint-disable-next-line no-restricted-properties
     Math.pow(currentPoint[0] - prePoint[0], 2) + Math.pow(currentPoint[1] - prePoint[1], 2);
   const currentAndNext =
-    // eslint-disable-next-line no-restricted-properties
     Math.pow(currentPoint[0] - nextPoint[0], 2) + Math.pow(currentPoint[1] - nextPoint[1], 2);
   const preAndNext =
-    // eslint-disable-next-line no-restricted-properties
     Math.pow(prePoint[0] - nextPoint[0], 2) + Math.pow(prePoint[1] - nextPoint[1], 2);
   // 以 currentPoint 为顶点的夹角
   const currentAngle = Math.acos(
@@ -162,127 +196,4 @@ function getExtraFromSegmentWithAngle(segment: any, lineWidth: number) {
         lineWidth / 2 || 0,
   };
   return extra;
-}
-
-function hasArc(path: any[]) {
-  let hasArc = false;
-  const count = path.length;
-  for (let i = 0; i < count; i++) {
-    const params = path[i];
-    const cmd = params[0];
-    if (cmd === 'C' || cmd === 'A' || cmd === 'Q') {
-      hasArc = true;
-      break;
-    }
-  }
-  return hasArc;
-}
-
-function extractPolygons(path: any[]) {
-  const count = path.length;
-  const polygons = [];
-  const polylines = [];
-  let points = []; // 防止第一个命令不是 'M'
-  for (let i = 0; i < count; i++) {
-    const params = path[i];
-    const cmd = params[0];
-    if (cmd === 'M') {
-      // 遇到 'M' 判定是否是新数组，新数组中没有点
-      if (points.length) {
-        // 如果存在点，则说明没有遇到 'Z'，开始了一个新的多边形
-        polylines.push(points);
-        points = []; // 创建新的点
-      }
-      points.push([params[1], params[2]]);
-    } else if (cmd === 'Z') {
-      if (points.length) {
-        // 存在点
-        polygons.push(points);
-        points = []; // 开始新的点集合
-      }
-      // 如果不存在点，同时 'Z'，则说明是错误，不处理
-    } else {
-      points.push([params[1], params[2]]);
-    }
-  }
-  // 说明 points 未放入 polygons 或者 polyline
-  // 仅当只有一个 M，没有 Z 时会发生这种情况
-  if (points.length > 0) {
-    polylines.push(points);
-  }
-  return {
-    polygons,
-    polylines,
-  };
-}
-
-function calcLength(curve: any[]) {
-  let totalLength = 0;
-  let tempLength = 0;
-  // 每段 curve 对应起止点的长度比例列表，形如: [[0, 0.25], [0.25, 0.6]. [0.6, 0.9], [0.9, 1]]
-  const curveSegments: number[][] = [];
-  let segmentT;
-  let segmentL;
-  let segmentN;
-  let l;
-
-  if (!curve) {
-    return {
-      curveSegments: [],
-      totalLength,
-    };
-  }
-
-  curve.forEach((segment, i) => {
-    segmentN = curve[i + 1];
-    l = segment.length;
-    if (segmentN) {
-      totalLength +=
-        CubicUtil.length(
-          segment[l - 2],
-          segment[l - 1],
-          segmentN[1],
-          segmentN[2],
-          segmentN[3],
-          segmentN[4],
-          segmentN[5],
-          segmentN[6],
-        ) || 0;
-    }
-  });
-
-  if (totalLength === 0) {
-    return {
-      curveSegments: [],
-      totalLength,
-    };
-  }
-
-  curve.forEach((segment, i) => {
-    segmentN = curve[i + 1];
-    l = segment.length;
-    if (segmentN) {
-      segmentT = [];
-      segmentT[0] = tempLength / totalLength;
-      segmentL = CubicUtil.length(
-        segment[l - 2],
-        segment[l - 1],
-        segmentN[1],
-        segmentN[2],
-        segmentN[3],
-        segmentN[4],
-        segmentN[5],
-        segmentN[6],
-      );
-      // 当 path 不连续时，segmentL 可能为空，为空时需要作为 0 处理
-      tempLength += segmentL || 0;
-      segmentT[1] = tempLength / totalLength;
-      curveSegments.push(segmentT);
-    }
-  });
-
-  return {
-    curveSegments,
-    totalLength,
-  };
 }

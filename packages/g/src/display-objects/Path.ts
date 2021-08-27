@@ -22,8 +22,8 @@ export interface ParsedPathStyleProps {
   absolutePath: PathCommand[];
   hasArc: boolean;
   segments: PathSegment[];
-  polygons: number[][];
-  polylines: number[][];
+  polygons: [number, number][][];
+  polylines: [number, number][][];
   curve: PathCommand[];
   totalLength: number;
   curveSegments: number[][];

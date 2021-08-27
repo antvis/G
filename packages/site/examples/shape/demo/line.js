@@ -40,9 +40,20 @@ const line2 = new Line({
     stroke: '#F04864',
   },
 });
+const line3 = new Line({
+  style: {
+    x1: 200,
+    y1: 200,
+    x2: 400,
+    y2: 200,
+    lineWidth: 2,
+    stroke: 'l(0) 0:#F04864 0.5:#7EC2F3 1:#1890FF',
+  },
+});
 
 canvas.appendChild(line1);
 canvas.appendChild(line2);
+canvas.appendChild(line3);
 
 // stats
 const stats = new Stats();
@@ -80,15 +91,31 @@ const lineConfig = {
   strokeOpacity: 1,
   anchorX: 0,
   anchorY: 0,
+  x1: 200,
+  y1: 100,
+  x2: 400,
+  y2: 100,
 };
+lineFolder.add(lineConfig, 'x1', 0, 400).onChange((x1) => {
+  line1.style.x1 = x1;
+});
+lineFolder.add(lineConfig, 'y1', 0, 400).onChange((y1) => {
+  line1.style.y1 = y1;
+});
+lineFolder.add(lineConfig, 'x2', 0, 400).onChange((x2) => {
+  line1.style.x2 = x2;
+});
+lineFolder.add(lineConfig, 'y2', 0, 400).onChange((y2) => {
+  line1.style.y2 = y2;
+});
 lineFolder.addColor(lineConfig, 'stroke').onChange((color) => {
-  line1.attr('stroke', color);
+  line1.style.stroke = color;
 });
 lineFolder.add(lineConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
-  line1.attr('lineWidth', lineWidth);
+  line1.style.lineWidth = lineWidth;
 });
 lineFolder.add(lineConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
-  line1.attr('strokeOpacity', opacity);
+  line1.style.strokeOpacity = opacity;
 });
 lineFolder.add(lineConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
   line1.attr('anchor', [anchorX, lineConfig.anchorY]);

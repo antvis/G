@@ -3,20 +3,26 @@ import { Cubic as CubicUtil } from '@antv/g-math';
 import type { DisplayObject } from '../DisplayObject';
 import type { PathCommand } from '../types';
 import type { ParsedPathStyleProps } from '../display-objects';
-import { isString } from '@antv/util';
+import {
+  clonePath,
+  equalizeSegments,
+  getDrawDirection,
+  getRotatedCurve,
+  reverseCurve,
+} from '../utils/path';
 
 export function parsePath(path: string, displayObject: DisplayObject | null): ParsedPathStyleProps {
   const absolutePath = path2Absolute(path) as PathCommand[];
   const hasArc = hasArcOrBezier(absolutePath);
-  const segments = path2Segments(absolutePath);
-  const { polygons, polylines } = extractPolygons(absolutePath);
 
-  // convert to curves to do morphing later
+  const clonedAbsolutePath = [...absolutePath];
+  const { polygons, polylines } = extractPolygons(clonedAbsolutePath);
+
+  // convert to curves to do morphing & picking later
   // @see http://thednp.github.io/kute.js/svgCubicMorph.html
-  const curve = path2Curve(absolutePath);
+  const curve = path2Curve(clonedAbsolutePath);
+  const segments = path2Segments(clonedAbsolutePath);
   const { totalLength, curveSegments } = calcLength(curve);
-
-  // console.log(curve, curveSegments)
 
   return {
     absolutePath,
@@ -44,13 +50,12 @@ function hasArcOrBezier(path: PathCommand[]) {
   return hasArc;
 }
 
-function extractPolygons(path: any[]) {
-  const count = path.length;
-  const polygons = [];
-  const polylines = [];
-  let points = []; // 防止第一个命令不是 'M'
-  for (let i = 0; i < count; i++) {
-    const params = path[i];
+function extractPolygons(pathArray: PathCommand[]) {
+  const polygons: [number, number][][] = [];
+  const polylines: [number, number][][] = [];
+  let points: [number, number][] = []; // 防止第一个命令不是 'M'
+  for (let i = 0; i < pathArray.length; i++) {
+    const params = pathArray[i];
     const cmd = params[0];
     if (cmd === 'M') {
       // 遇到 'M' 判定是否是新数组，新数组中没有点
@@ -59,7 +64,7 @@ function extractPolygons(path: any[]) {
         polylines.push(points);
         points = []; // 创建新的点
       }
-      points.push([params[1], params[2]]);
+      points.push([params[1] as number, params[2] as number]);
     } else if (cmd === 'Z') {
       if (points.length) {
         // 存在点
@@ -68,7 +73,7 @@ function extractPolygons(path: any[]) {
       }
       // 如果不存在点，同时 'Z'，则说明是错误，不处理
     } else {
-      points.push([params[1], params[2]]);
+      points.push([params[1] as number, params[2] as number]);
     }
   }
   // 说明 points 未放入 polygons 或者 polyline
@@ -158,11 +163,24 @@ export function mergePaths(
   right: ParsedPathStyleProps,
   displayObject: DisplayObject | null,
 ) {
-  // const curve1 = left.;
-  // const curve2 = right.curve;
-  // if (curve1.length !== curve2.length) {
-  // }
-  // equalizeSegments();
-  // return [
-  // ];
+  const curve1 = left.curve;
+  const curve2 = right.curve;
+  let curves = [curve1, curve2];
+  if (curve1.length !== curve2.length) {
+    curves = equalizeSegments(curve1, curve2);
+  }
+
+  const curve0 =
+    getDrawDirection(curves[0]) !== getDrawDirection(curves[1])
+      ? reverseCurve(curves[0])
+      : clonePath(curves[0]);
+
+  return [
+    curve0,
+    getRotatedCurve(curves[1], curve0),
+    (pathArray: PathCommand[]) => {
+      // need converting to path string?
+      return pathArray;
+    },
+  ];
 }

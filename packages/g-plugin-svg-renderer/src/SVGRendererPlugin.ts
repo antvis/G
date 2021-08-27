@@ -175,7 +175,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
           }
         }
 
-        this.updateAttribute(object, name, value);
+        this.updateAttribute(object, name, object.parsedStyle[name]);
       },
     );
   }
@@ -234,7 +234,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       // apply attributes
       for (const name in attributes) {
-        this.updateAttribute(object, name, attributes[name], true);
+        this.updateAttribute(object, name, parsedStyle[name], true);
       }
 
       // generate path

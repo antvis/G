@@ -29,6 +29,14 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zNasT6AmflEAAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "morph.js",
+      "title": {
+        "zh": "形变动画",
+        "en": "Morph"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zNasT6AmflEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "multiple-attributes.js",
       "title": {
         "zh": "可应用动画的属性",

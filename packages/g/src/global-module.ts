@@ -187,6 +187,7 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   // update local position
   addPropertiesHandler<number, number>(
     ['x', 'y', 'points', 'path', 'x1', 'x2', 'y1', 'y2'],
+    // ['x', 'y'],
     undefined,
     undefined,
     updateLocalPosition,

@@ -19,26 +19,27 @@ const canvas = new Canvas({
 });
 
 // create a line
+const points = [
+  [50, 50],
+  [100, 50],
+  [100, 100],
+  [150, 100],
+  [150, 150],
+  [200, 150],
+  [200, 200],
+  [250, 200],
+  [250, 250],
+  [300, 250],
+  [300, 300],
+  [350, 300],
+  [350, 350],
+  [400, 350],
+  [400, 400],
+  [450, 400],
+];
 const polyline = new Polyline({
   style: {
-    points: [
-      [50, 50],
-      [100, 50],
-      [100, 100],
-      [150, 100],
-      [150, 150],
-      [200, 150],
-      [200, 200],
-      [250, 200],
-      [250, 250],
-      [300, 250],
-      [300, 300],
-      [350, 300],
-      [350, 350],
-      [400, 350],
-      [400, 400],
-      [450, 400],
-    ],
+    points,
     stroke: '#1890FF',
     lineWidth: 2,
   },
@@ -84,7 +85,19 @@ const lineConfig = {
   strokeOpacity: 1,
   anchorX: 0,
   anchorY: 0,
+  firstPointX: 50,
+  firstPointY: 50,
 };
+lineFolder.add(lineConfig, 'firstPointX', 0, 200).onChange((firstPointX) => {
+  const newPoints = [...points];
+  newPoints[0] = [firstPointX, lineConfig.firstPointY];
+  polyline.style.points = newPoints;
+});
+lineFolder.add(lineConfig, 'firstPointY', 0, 200).onChange((firstPointY) => {
+  const newPoints = [...points];
+  newPoints[0] = [lineConfig.firstPointX, firstPointY];
+  polyline.style.points = newPoints;
+});
 lineFolder.addColor(lineConfig, 'stroke').onChange((color) => {
   polyline.attr('stroke', color);
 });
