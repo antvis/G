@@ -21,6 +21,7 @@ export class Line extends DisplayObject<LineStyleProps> {
         x2: 0,
         y2: 0,
         opacity: 1,
+        fillOpacity: 1,
         strokeOpacity: 1,
         lineJoin: 'miter',
         lineCap: 'butt',

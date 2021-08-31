@@ -16,6 +16,7 @@ import {
   PARSED_COLOR_TYPE,
 } from '@antv/g';
 import type {
+  ParsedBaseStyleProps,
   ParsedStyleProperty,
   ParsedColorStyleProperty,
   LinearGradient,
@@ -81,12 +82,17 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   preserveAspectRatio: 'preserveAspectRatio',
   visibility: 'visibility',
   anchor: 'anchor',
+  shadowColor: 'flood-color',
+  shadowBlur: 'stdDeviation',
+  shadowOffsetX: 'dx',
+  shadowOffsetY: 'dy',
 };
 
 export type GradientParams = (LinearGradient | RadialGradient) & { type: PARSED_COLOR_TYPE };
 
 const G_SVG_PREFIX = 'g_svg';
 const CLIP_PATH_PREFIX = 'clip-path-';
+const FILTER_DROPSHADOW_PREFIX = 'filter-dropshadow-';
 let counter = 0;
 
 @injectable()
@@ -274,6 +280,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
           }
           $el?.setAttribute(SVG_ATTR_MAP[name], `url(#${gradientId})`);
         } else {
+          // constant value, eg. '#fff'
           $el?.setAttribute(SVG_ATTR_MAP[name], `${parsedColor.formatted}`);
         }
       } else if (name === 'visibility') {
@@ -309,6 +316,41 @@ export class SVGRendererPlugin implements RenderingPlugin {
           // remove clip path
           $el?.removeAttribute('clip-path');
         }
+      } else if (
+        name === 'shadowColor' ||
+        name === 'shadowBlur' ||
+        name === 'shadowOffsetX' ||
+        name === 'shadowOffsetY'
+      ) {
+        const shadowId = FILTER_DROPSHADOW_PREFIX + entity.getName();
+        let $existedFilter = this.$def.querySelector(`#${shadowId}`);
+        if (!$existedFilter) {
+          $existedFilter = createSVGElement('filter') as SVGFilterElement;
+          const $feDropShadow = createSVGElement('feDropShadow');
+          $feDropShadow.setAttribute('dx', '0');
+          $feDropShadow.setAttribute('dy', '0');
+          $existedFilter.appendChild($feDropShadow);
+          $existedFilter.id = shadowId;
+          this.$def.appendChild($existedFilter);
+        }
+        const $feDropShadow = $existedFilter.children[0] as SVGPatternElement;
+        if (name === 'shadowColor') {
+          const parsedColor = parsedStyle[name] as ParsedColorStyleProperty;
+          $feDropShadow.setAttribute('flood-color', parsedColor.formatted);
+        } else if (name === 'shadowBlur') {
+          // half the blur radius
+          // @see https://drafts.csswg.org/css-backgrounds/#shadow-blur
+          // @see https://css-tricks.com/breaking-css-box-shadow-vs-drop-shadow/
+          $feDropShadow.setAttribute('stdDeviation', `${Number(parsedStyle[name]) / 2}`);
+        } else if (name === 'shadowOffsetX') {
+          $feDropShadow.setAttribute('dx', parsedStyle[name]);
+        } else if (name === 'shadowOffsetY') {
+          $feDropShadow.setAttribute('dy', parsedStyle[name]);
+        }
+
+        // use filter <feDropShadow>
+        // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDropShadow
+        $el?.setAttribute('filter', `url(#${shadowId})`);
       } else {
         if (
           // (!object.style.clipPathTargets) &&
@@ -327,7 +369,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     if (!skipGeneratePath && $el) {
       const elementRenderer = this.elementRendererFactory(object.nodeName);
       if (elementRenderer && elementRenderer.dependencies.indexOf(name) > -1) {
-        elementRenderer.apply($el, object.attributes);
+        elementRenderer.apply($el, object.parsedStyle);
       }
     }
   }

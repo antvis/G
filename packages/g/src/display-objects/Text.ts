@@ -37,6 +37,8 @@ export class Text extends DisplayObject<TextStyleProps> {
       type: SHAPE.Text,
       style: {
         opacity: 1,
+        fillOpacity: 1,
+        strokeOpacity: 1,
         text: '',
         fontSize: 12,
         fontFamily: 'sans-serif',

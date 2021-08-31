@@ -27,6 +27,8 @@ const circle = new Circle({
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
+    shadowColor: 'black',
+    shadowBlur: 20,
   },
 });
 
@@ -72,6 +74,10 @@ const circleConfig = {
   strokeOpacity: 1,
   anchorX: 0.5,
   anchorY: 0.5,
+  shadowColor: '#000',
+  shadowBlur: 20,
+  shadowOffsetX: 0,
+  shadowOffsetY: 0,
 };
 circleFolder.add(circleConfig, 'r', 50, 200).onChange((radius) => {
   circle.style.r = radius;
@@ -81,6 +87,18 @@ circleFolder.addColor(circleConfig, 'fill').onChange((color) => {
 });
 circleFolder.addColor(circleConfig, 'stroke').onChange((color) => {
   circle.attr('stroke', color);
+});
+circleFolder.addColor(circleConfig, 'shadowColor').onChange((color) => {
+  circle.attr('shadowColor', color);
+});
+circleFolder.add(circleConfig, 'shadowBlur', 0, 100).onChange((shadowBlur) => {
+  circle.style.shadowBlur = shadowBlur;
+});
+circleFolder.add(circleConfig, 'shadowOffsetX', -50, 50).onChange((shadowOffsetX) => {
+  circle.style.shadowOffsetX = shadowOffsetX;
+});
+circleFolder.add(circleConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY) => {
+  circle.style.shadowOffsetY = shadowOffsetY;
 });
 circleFolder.add(circleConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
   circle.attr('lineWidth', lineWidth);

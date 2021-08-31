@@ -48,6 +48,8 @@ import {
   parsePath,
   parsePoints,
   mergePaths,
+  mergeNumbers,
+  mergeNumberLists,
 } from './property-handlers';
 import { container } from './inversify.config';
 
@@ -132,10 +134,17 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
     undefined,
   );
   addPropertiesHandler<number, number>(
-    ['r', 'rx', 'ry', 'lineWidth', 'width', 'height'],
+    ['r', 'rx', 'ry', 'lineWidth', 'width', 'height', 'shadowBlur'],
     parseNumber,
     clampedMergeNumbers(0, Infinity),
-    updateGeometry,
+    undefined,
+  );
+  addPropertiesHandler<number[], number[]>(['lineDash'], undefined, mergeNumberLists, undefined);
+  addPropertiesHandler<number, number>(
+    ['x1', 'x2', 'y1', 'y2', 'lineDashOffset', 'shadowOffsetX', 'shadowOffsetY'],
+    parseNumber,
+    mergeNumbers,
+    undefined,
   );
   addPropertiesHandler<number, number>(
     [
@@ -144,7 +153,16 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
       'x2',
       'y1',
       'y2', // Line
+      'r', // Circle
+      'rx',
+      'ry', // Ellipse
+      'width',
+      'height', // Image/Rect
       'text', // Text
+      'shadowBlur',
+      'shadowOffsetX',
+      'shadowOffsetY',
+      'lineWidth',
       'font',
       'fontSize',
       'fontFamily',
@@ -166,7 +184,7 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
     updateGeometry,
   );
   addPropertiesHandler<string, ParsedColorStyleProperty, number[]>(
-    ['fill', 'stroke'],
+    ['fill', 'stroke', 'shadowColor'],
     parseColor,
     mergeColors,
     undefined,

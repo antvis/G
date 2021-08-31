@@ -10,6 +10,7 @@ export class Polygon extends DisplayObject<PolygonStyleProps> {
       type: SHAPE.Polygon,
       style: {
         opacity: 1,
+        fillOpacity: 1,
         strokeOpacity: 1,
         anchor: [0, 0],
         ...style,

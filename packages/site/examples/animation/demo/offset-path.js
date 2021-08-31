@@ -1,4 +1,4 @@
-import { Circle, Line, Path, Polyline, Canvas } from 'g';
+import { Circle, Line, Path, Polyline, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -32,6 +32,7 @@ const offsetPathLine = new Line({
 });
 const offsetPathPolyline = new Polyline({
   style: {
+    stroke: 'black',
     points: [
       [50, 50],
       [100, 50],
@@ -50,7 +51,7 @@ const offsetPathPolyline = new Polyline({
       [400, 400],
       [450, 400],
     ],
-  }
+  },
 });
 
 const offsetPathPath = new Path({
@@ -86,7 +87,7 @@ const circle2 = new Circle({
   style: {
     x: 200,
     y: 200,
-    r: 60,
+    r: 10,
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
@@ -105,35 +106,24 @@ const circle3 = new Circle({
   },
 });
 
+canvas.appendChild(offsetPathPolyline);
 canvas.appendChild(circle1);
 canvas.appendChild(circle2);
 canvas.appendChild(circle3);
 
-circle1.animate(
-  [
-    { offsetDistance: 0 },
-    { offsetDistance: 1 },
-  ], {
+circle1.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
   duration: 2500,
   easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
   iterations: Infinity,
   direction: 'alternate',
 });
-circle2.animate(
-  [
-    { offsetDistance: 0 },
-    { offsetDistance: 1 },
-  ], {
-  duration: 1500,
+circle2.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
+  duration: 3500,
   easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
   iterations: Infinity,
   direction: 'alternate',
 });
-circle3.animate(
-  [
-    { offsetDistance: 0 },
-    { offsetDistance: 1 },
-  ], {
+circle3.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
   duration: 4500,
   easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
   iterations: Infinity,

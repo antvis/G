@@ -26,7 +26,23 @@
         "zh": "路径动画",
         "en": "Offset path"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zNasT6AmflEAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nk1YSrbkQPMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "marching-ants.js",
+      "title": {
+        "zh": "蚂蚁线",
+        "en": "Marching ants"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "line-dash.js",
+      "title": {
+        "zh": "笔迹动画",
+        "en": "Line dash"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "morph.js",
@@ -34,7 +50,7 @@
         "zh": "形变动画",
         "en": "Morph"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zNasT6AmflEAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qCHaTJUg_aEAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "multiple-attributes.js",

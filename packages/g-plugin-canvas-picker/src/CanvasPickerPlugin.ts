@@ -158,7 +158,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
     const context = this.offscreenCanvas.getOrCreateContext() as CanvasRenderingContext2D;
     const generatePath = this.pathGeneratorFactory(displayObject.nodeName);
     if (generatePath) {
-      generatePath(context, displayObject.attributes);
+      generatePath(context, displayObject.parsedStyle);
     }
 
     return context.isPointInPath(position.x, position.y);

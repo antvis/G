@@ -3,7 +3,10 @@
  * @see http://thednp.github.io/kute.js/svgCubicMorph.html
  */
 import { Cubic as CubicUtil } from '@antv/g-math';
-import type { PathCommand } from '../types';
+import { mat4, vec3 } from 'gl-matrix';
+import type { Circle, Ellipse, Line, Path, Polyline, Rect } from '../display-objects';
+import type { DisplayObject } from '../DisplayObject';
+import { PathCommand, SHAPE } from '../types';
 
 function midPoint(a: [number, number], b: [number, number], t: number): [number, number] {
   const ax = a[0];
@@ -52,7 +55,11 @@ function getCurveArray(segments: PathCommand[]) {
   });
 }
 
-export function equalizeSegments(path1: PathCommand[], path2: PathCommand[], TL?: number) {
+export function equalizeSegments(
+  path1: PathCommand[],
+  path2: PathCommand[],
+  TL?: number,
+): PathCommand[][] {
   const c1 = getCurveArray(path1);
   const c2 = getCurveArray(path2);
   const L1 = c1.length;
@@ -64,7 +71,7 @@ export function equalizeSegments(path1: PathCommand[], path2: PathCommand[], TL?
   const tl = TL || Math.max(L1, L2);
   const mm = [m1, m2];
   const dif = [tl - L1, tl - L2];
-  let canSplit = 0;
+  let canSplit: number | boolean = 0;
   const result = [c1, c2].map((x, i) =>
     x.l === tl
       ? x.map((y) => y.s)
@@ -96,7 +103,7 @@ function getCubicSegArea(
   x3: number,
   y3: number,
 ) {
-  // http://objectmix.com/graphics/133553-area-closed-bezier-curve.html
+  // https://stackoverflow.com/a/15845996
   return (
     (3 *
       ((y3 - y0) * (x1 + x2) -
@@ -199,4 +206,128 @@ export function getRotatedCurve(a: PathCommand[], b: PathCommand[]) {
   computedIndex = lineLengths.indexOf(Math.min.apply(null, lineLengths));
 
   return rotations[computedIndex];
+}
+
+function commandsToPathString(
+  commands: PathCommand[],
+  localTransform: mat4,
+  anchor: [number, number],
+  parsedStyle: any,
+) {
+  const { x, y, width, height } = parsedStyle;
+  return commands.reduce((prev, cur) => {
+    let path = '';
+    if (cur[0] === 'M' || cur[0] === 'L') {
+      const p = vec3.fromValues(cur[1] - x, cur[2] - y, 0);
+      vec3.transformMat4(p, p, localTransform);
+
+      path = `${cur[0]}${p[0]},${p[1]}`;
+    } else if (cur[0] === 'Z') {
+      path = cur[0];
+    } else if (cur[0] === 'C') {
+      const p1 = vec3.fromValues(cur[1] - x, cur[2] - y, 0);
+      const p2 = vec3.fromValues(cur[3] - x, cur[4] - y, 0);
+      const p3 = vec3.fromValues(cur[5] - x, cur[6] - y, 0);
+      vec3.transformMat4(p1, p1, localTransform);
+      vec3.transformMat4(p2, p2, localTransform);
+      vec3.transformMat4(p3, p3, localTransform);
+
+      path = `${cur[0]}${p1[0]},${p1[1]},${p2[0]},${p2[1]},${p3[0]},${p3[1]}`;
+    }
+
+    return (prev += path);
+  }, '');
+}
+
+function lineToCommands(x1: number, y1: number, x2: number, y2: number): PathCommand[] {
+  return [
+    ['M', x1, y1],
+    ['L', x2, y2],
+  ];
+}
+
+function ellipseToCommands(rx: number, ry: number, cx: number, cy: number): PathCommand[] {
+  const factor = ((-1 + Math.sqrt(2)) / 3) * 4;
+  let dx = rx * factor;
+  let dy = ry * factor;
+  let left = cx - rx;
+  let right = cx + rx;
+  let top = cy - ry;
+  let bottom = cy + ry;
+
+  return [
+    ['M', left, cy],
+    ['C', left, cy - dy, cx - dx, top, cx, top],
+    ['C', cx + dx, top, right, cy - dy, right, cy],
+    ['C', right, cy + dy, cx + dx, bottom, cx, bottom],
+    ['C', cx - dx, bottom, left, cy + dy, left, cy],
+    ['Z'],
+  ];
+}
+
+function polygonToCommands(points: [number, number][]): PathCommand[] {
+  return points.map((point, i) => {
+    return [i === 0 ? 'M' : 'L', point[0], point[1]];
+  });
+}
+
+function rectToCommands(
+  width: number,
+  height: number,
+  x: number,
+  y: number,
+  radius: number,
+): PathCommand[] {
+  // FIXME: account for radius
+  return [
+    ['M', x, y],
+    ['L', x + width, y],
+    ['L', x + width, y + height],
+    ['L', x, y + height],
+    ['Z'],
+  ];
+}
+
+/**
+ * convert object to path, should account for:
+ * * transform & origin
+ * * anchor
+ * * lineWidth
+ */
+export function convertToPath(object: DisplayObject) {
+  const localTransform = object.getLocalTransform();
+  const anchor = object.style.anchor;
+  let commands: PathCommand[] = [];
+  switch (object.nodeName) {
+    case SHAPE.Line:
+      const { x1, y1, x2, y2 } = (object as Line).parsedStyle;
+      commands = lineToCommands(x1, y1, x2, y2);
+      break;
+    case SHAPE.Circle: {
+      const { r, x, y } = (object as Circle).parsedStyle;
+      commands = ellipseToCommands(r, r, x, y);
+      break;
+    }
+    case SHAPE.Ellipse: {
+      const { rx, ry, x, y } = (object as Ellipse).parsedStyle;
+      commands = ellipseToCommands(rx, ry, x, y);
+      break;
+    }
+    case SHAPE.Polyline:
+    case SHAPE.Polygon:
+      const { points } = (object as Polyline).parsedStyle;
+      commands = polygonToCommands(points.points);
+      break;
+    case SHAPE.Rect:
+      const { width, height, x, y, radius } = (object as Rect).parsedStyle;
+      commands = rectToCommands(width, height, x, y, radius);
+      break;
+    case SHAPE.Path:
+      commands = (object as Path).parsedStyle.path.curve;
+      break;
+  }
+
+  if (commands.length) {
+    return commandsToPathString(commands, localTransform, anchor, object.parsedStyle);
+  }
 }

@@ -55,13 +55,11 @@ function convertToArrayForm(effectInput: PropertyIndexedKeyframes) {
     }
   }
 
-  normalizedEffectInput.sort(
-    function (a, b) {
-      return (a.computedOffset as number || 0) - (b.computedOffset as number || 0);
-    }
-  );
+  normalizedEffectInput.sort(function (a, b) {
+    return ((a.computedOffset as number) || 0) - ((b.computedOffset as number) || 0);
+  });
   return normalizedEffectInput;
-};
+}
 
 export function normalizeKeyframes(
   effectInput: Keyframe[] | PropertyIndexedKeyframes | null,
@@ -89,8 +87,7 @@ export function normalizeKeyframes(
       if (member === 'offset') {
         if (memberValue !== null) {
           memberValue = Number(memberValue);
-          if (!isFinite(memberValue))
-            throw new Error('Keyframe offsets must be numbers.');
+          if (!isFinite(memberValue)) throw new Error('Keyframe offsets must be numbers.');
           if (memberValue < 0 || memberValue > 1)
             throw new Error('Keyframe offsets must be between 0 and 1.');
           keyframe.computedOffset = memberValue;
@@ -98,17 +95,15 @@ export function normalizeKeyframes(
       } else if (member === 'composite') {
         // TODO: Support add & accumulate in KeyframeEffect.composite
         // @see https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/composite
-        if (
-          ['replace', 'add', 'accumulate', 'auto'].indexOf(memberValue as string) === -1
-        ) {
+        if (['replace', 'add', 'accumulate', 'auto'].indexOf(memberValue as string) === -1) {
           throw new Error(`${memberValue} compositing is not supported`);
         }
       } else if (member === 'easing') {
         // TODO: Validate animation-timing-function
         // @see https://developer.mozilla.org/en-US/docs/Web/CSS/animation-timing-function
-        memberValue = memberValue;
-      } else {
-        memberValue = '' + memberValue;
+        // memberValue = memberValue;
+        // } else {
+        //   memberValue = '' + memberValue;
       }
 
       // assign to keyframe, no need to parse shorthand value
@@ -142,8 +137,7 @@ export function normalizeKeyframes(
   }
 
   keyframes = keyframes.filter((keyframe) => {
-    return Number(keyframe.offset) >= 0
-      && Number(keyframe.offset) <= 1;
+    return Number(keyframe.offset) >= 0 && Number(keyframe.offset) <= 1;
   });
 
   function spaceKeyframes() {
@@ -157,18 +151,21 @@ export function normalizeKeyframes(
     let previousOffset = Number(keyframes[0].computedOffset);
     for (let i = 1; i < length; i++) {
       let offset = Number(keyframes[i].computedOffset);
-      if (offset !== null && offset !== undefined
-        && previousOffset !== null && previousOffset !== undefined) {
+      if (
+        offset !== null &&
+        offset !== undefined &&
+        previousOffset !== null &&
+        previousOffset !== undefined
+      ) {
         for (let j = 1; j < i - previousIndex; j++)
           keyframes[previousIndex + j].computedOffset =
-            previousOffset + (offset - previousOffset) * j / (i - previousIndex);
+            previousOffset + ((offset - previousOffset) * j) / (i - previousIndex);
         previousIndex = i;
         previousOffset = offset;
       }
     }
   }
-  if (!everyFrameHasOffset)
-    spaceKeyframes();
+  if (!everyFrameHasOffset) spaceKeyframes();
 
   return keyframes as ComputedKeyframe[];
 }

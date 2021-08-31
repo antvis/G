@@ -48,16 +48,6 @@ const polyline = new Polyline({
 
 **是否必须**：`true`
 
-### lineDash
-
-**类型**： `[number, number]`
-
-**默认值**：无
-
-**是否必须**：`false`
-
-**虚线**
-
 # 方法
 
 ## getTotalLength(): number

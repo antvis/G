@@ -1,9 +1,9 @@
-import { BaseStyleProps } from '@antv/g';
+import { ParsedBaseStyleProps } from '@antv/g';
 
 export const StyleRendererFactory = Symbol('StyleRendererFactory');
 export const StyleRenderer = Symbol('StyleRenderer');
 export interface StyleRenderer {
-  render(context: CanvasRenderingContext2D, attributes: BaseStyleProps): void;
+  render(context: CanvasRenderingContext2D, parsedStyle: ParsedBaseStyleProps): void;
 }
 
 export * from './Default';

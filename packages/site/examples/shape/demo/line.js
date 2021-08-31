@@ -29,6 +29,7 @@ const line1 = new Line({
     lineWidth: 2,
   },
 });
+
 const line2 = new Line({
   style: {
     x1: 200,
@@ -54,6 +55,23 @@ const line3 = new Line({
 canvas.appendChild(line1);
 canvas.appendChild(line2);
 canvas.appendChild(line3);
+
+line2.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
+  duration: 1500,
+  iterations: Infinity,
+});
+
+line3.animate(
+  [
+    { x1: 200, lineWidth: 2 },
+    { x1: 0, lineWidth: 10 },
+  ],
+  {
+    duration: 1500,
+    iterations: Infinity,
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+  },
+);
 
 // stats
 const stats = new Stats();

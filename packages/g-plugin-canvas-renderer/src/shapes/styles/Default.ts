@@ -1,12 +1,13 @@
-import { BaseStyleProps } from '@antv/g';
+import { ParsedBaseStyleProps } from '@antv/g';
 import { injectable } from 'inversify';
 import { isNil } from '@antv/util';
 import { StyleRenderer } from '.';
 
 @injectable()
 export class DefaultRenderer implements StyleRenderer {
-  render(context: CanvasRenderingContext2D, attributes: BaseStyleProps) {
-    const { fill, opacity, fillOpacity, stroke, strokeOpacity, lineWidth, lineCap, lineJoin } = attributes;
+  render(context: CanvasRenderingContext2D, parsedStyle: ParsedBaseStyleProps) {
+    const { fill, opacity, fillOpacity, stroke, strokeOpacity, lineWidth, lineCap, lineJoin } =
+      parsedStyle;
 
     if (!isNil(fill)) {
       if (!isNil(fillOpacity) && fillOpacity !== 1) {
@@ -34,7 +35,19 @@ export class DefaultRenderer implements StyleRenderer {
           context.lineJoin = lineJoin!;
         }
 
+        // save shadow blur
+        const shadowBlur = context.shadowBlur;
+        const shadowColor = context.shadowColor;
+        if (shadowBlur) {
+          context.shadowColor = 'transparent';
+          context.shadowBlur = 0;
+        }
         context.stroke();
+        // restore shadow blur
+        if (shadowBlur) {
+          context.shadowColor = shadowColor;
+          context.shadowBlur = shadowBlur;
+        }
       }
     }
   }

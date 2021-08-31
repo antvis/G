@@ -25,6 +25,7 @@ export class Polyline extends DisplayObject<
       style: {
         points: [],
         opacity: 1,
+        fillOpacity: 1,
         strokeOpacity: 1,
         lineJoin: 'miter',
         lineCap: 'butt',

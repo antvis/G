@@ -15,6 +15,8 @@ export class Ellipse extends DisplayObject<EllipseStyleProps> {
         rx: 0,
         ry: 0,
         opacity: 1,
+        fillOpacity: 1,
+        strokeOpacity: 1,
         anchor: [0.5, 0.5],
         ...style,
       },

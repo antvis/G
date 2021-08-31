@@ -16,6 +16,8 @@ export class Rect extends DisplayObject<RectStyleProps> {
         width: 0,
         height: 0,
         opacity: 1,
+        fillOpacity: 1,
+        strokeOpacity: 1,
         anchor: [0, 0],
         ...style,
       },

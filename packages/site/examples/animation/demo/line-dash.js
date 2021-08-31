@@ -1,13 +1,9 @@
-import { Circle, Canvas } from '@antv/g';
+import { Path, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
-
-/**
- * ported from https://animista.net/play/entrances/scale-in
- */
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
@@ -22,35 +18,33 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const circle = new Circle({
+const path = new Path({
   style: {
-    x: 200,
-    y: 200,
-    r: 60,
-    fill: '#1890FF',
-    stroke: '#F04864',
-    lineWidth: 4,
+    stroke: 'black',
+    path:
+      'M 100,300' +
+      'l 50,-25' +
+      'a25,25 -30 0,1 50,-25' +
+      'l 50,-25' +
+      'a25,50 -30 0,1 50,-25' +
+      'l 50,-25' +
+      'a25,75 -30 0,1 50,-25' +
+      'l 50,-25' +
+      'a25,100 -30 0,1 50,-25' +
+      'l 50,-25' +
+      'l 0, 200,' +
+      'z',
   },
 });
+canvas.appendChild(path);
 
-canvas.appendChild(circle);
-
-const animation = circle.animate([{ transform: 'scale(1)' }, { transform: 'scale(2)' }], {
-  duration: 500,
+const length = path.getTotalLength();
+path.animate([{ lineDash: [0, length] }, { lineDash: [length, 0] }], {
+  duration: 3500,
   easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+  iterations: Infinity,
+  direction: 'alternate',
 });
-
-// get triggered when animation finished
-animation.onfinish = (e) => {
-  console.log('finish!', e.target, e.target.playState);
-};
-animation.finished.then(() => {
-  console.log('finish promise resolved');
-});
-// get triggered at the end of each frame in a running animation
-animation.onframe = (e) => {
-  console.log('frame ended!', e.target, e.target.playState);
-};
 
 // stats
 const stats = new Stats();
@@ -80,24 +74,3 @@ rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onCha
   );
 });
 rendererFolder.open();
-
-const animationFolder = gui.addFolder('animation');
-const animationConfig = {
-  play: () => {
-    animation.play();
-  },
-  pause: () => {
-    animation.pause();
-  },
-  reverse: () => {
-    animation.reverse();
-  },
-  finish: () => {
-    animation.finish();
-  },
-};
-animationFolder.add(animationConfig, 'play').name('Play');
-animationFolder.add(animationConfig, 'pause').name('Pause');
-animationFolder.add(animationConfig, 'reverse').name('Reverse');
-animationFolder.add(animationConfig, 'finish').name('Finish');
-animationFolder.open();

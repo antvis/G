@@ -194,8 +194,6 @@ export class DisplayObject<
     entity.addComponent(Sortable);
     entity.addComponent(Geometry);
 
-    this.initAttributes(this.config.style!);
-
     this.style = new Proxy<StyleProps>(this.attributes, {
       get: (_, prop) => {
         return this.getAttribute(prop as keyof StyleProps);
@@ -205,6 +203,8 @@ export class DisplayObject<
         return true;
       },
     });
+
+    this.initAttributes(this.config.style!);
 
     this.emitter.emit(DISPLAY_OBJECT_EVENT.Init);
   }
@@ -800,7 +800,10 @@ export class DisplayObject<
   /** transform operations */
 
   setOrigin(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.setOrigin(this, createVec3(position, y, z));
+    this.sceneGraphService.setOrigin(
+      this,
+      vec3.sub(vec3.create(), createVec3(position, y, z), this.getLocalPosition()),
+    );
     return this;
   }
 
@@ -1284,6 +1287,9 @@ export class DisplayObject<
     renderable.dirty = true;
   }
 
+  /**
+   * sync style.x/y when local position changed
+   */
   private syncLocalPosition() {
     const localPosition = this.getLocalPosition();
     this.attributes.x = localPosition[0];

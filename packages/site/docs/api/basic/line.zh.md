@@ -3,7 +3,7 @@ title: Line 直线
 order: 6
 ---
 
-如下 [示例](/zh/examples/shape#line) 定义了一条直线，两个端点为：
+如下 [示例](/zh/examples/shape#line) 定义了一条直线，两个端点分别为 `[200, 100]` 和 `[400, 100]`，线宽为 2，而且是一条虚线：
 
 ```javascript
 const line1 = new Line({
@@ -49,6 +49,8 @@ line1.attr({
 
 ### x1
 
+<tag color="green" text="可应用动画">可应用动画</tag>
+
 **类型**： `number`
 
 **默认值**：无
@@ -56,6 +58,8 @@ line1.attr({
 **是否必须**：`true`
 
 ### y1
+
+<tag color="green" text="可应用动画">可应用动画</tag>
 
 **类型**： `number`
 
@@ -65,6 +69,8 @@ line1.attr({
 
 ### x2
 
+<tag color="green" text="可应用动画">可应用动画</tag>
+
 **类型**： `number`
 
 **默认值**：无
@@ -73,21 +79,13 @@ line1.attr({
 
 ### y2
 
+<tag color="green" text="可应用动画">可应用动画</tag>
+
 **类型**： `number`
 
 **默认值**：无
 
 **是否必须**：`true`
-
-### lineDash
-
-**类型**： `[number, number]`
-
-**默认值**：无
-
-**是否必须**：`false`
-
-**虚线**
 
 # 方法
 
@@ -97,13 +95,23 @@ line1.attr({
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
 
+```js
+line.getTotalLength(); // 200
+```
+
 ## getPoint(ratio: number): Point
 
-根据长度比例（取值范围 `[0-1]`）获取点，其中 `Point` 的格式为:
+根据长度比例（取值范围 `[0-1]`）获取直线上局部坐标系下的点坐标，其中 `Point` 的格式为:
 
 ```ts
 export type Point = {
     x: number;
     y: number;
 };
+```
+
+例如获取上面定义直线的中点：
+
+```js
+line.getPoint(0.5); // Point {x: 300, y: 100}
 ```

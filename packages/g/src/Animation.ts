@@ -31,10 +31,9 @@ export class Animation implements globalThis.Animation {
    */
   get pending() {
     return (
-      this._startTime === null &&
-      !this._paused &&
-      this.playbackRate !== 0
-    ) || this.currentTimePending;
+      (this._startTime === null && !this._paused && this.playbackRate !== 0) ||
+      this.currentTimePending
+    );
   }
   private currentTimePending = false;
 
@@ -46,12 +45,9 @@ export class Animation implements globalThis.Animation {
   private _paused = false;
   private _finishedFlag = true;
   get playState(): AnimationPlayState {
-    if (this._idle)
-      return 'idle';
-    if (this._isFinished)
-      return 'finished';
-    if (this._paused)
-      return 'paused';
+    if (this._idle) return 'idle';
+    if (this._isFinished) return 'finished';
+    if (this._paused) return 'paused';
     return 'running';
   }
 
@@ -145,17 +141,21 @@ export class Animation implements globalThis.Animation {
   oncancel: ((this: globalThis.Animation, ev: AnimationPlaybackEvent) => any) | null;
 
   /**
+   * get called after each frame when running
+   */
+  onframe: ((this: globalThis.Animation, ev: AnimationPlaybackEvent) => any) | null;
+
+  /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Animation/currentTime
    */
   get currentTime(): number | null {
     this.updatePromises();
-    return (this._idle || this.currentTimePending) ? null : this._currentTime;
+    return this._idle || this.currentTimePending ? null : this._currentTime;
   }
   private _currentTime: number = 0;
   set currentTime(newTime: number | null) {
     newTime = Number(newTime);
-    if (isNaN(newTime))
-      return;
+    if (isNaN(newTime)) return;
     this.timeline.restart();
     if (!this._paused && this._startTime !== null) {
       this._startTime = Number(this.timeline?.currentTime) - newTime / this.playbackRate;
@@ -183,12 +183,12 @@ export class Animation implements globalThis.Animation {
     if (newTime !== null) {
       this.updatePromises();
       newTime = Number(newTime);
-      if (isNaN(newTime))
-        return;
-      if (this._paused || this._idle)
-        return;
+      if (isNaN(newTime)) return;
+      if (this._paused || this._idle) return;
       this._startTime = newTime;
-      this.tickCurrentTime((Number(this.timeline.currentTime) - this._startTime) * this.playbackRate);
+      this.tickCurrentTime(
+        (Number(this.timeline.currentTime) - this._startTime) * this.playbackRate,
+      );
       this.timeline.applyDirtiedAnimation(this);
       this.updatePromises();
     }
@@ -220,9 +220,11 @@ export class Animation implements globalThis.Animation {
   }
 
   get _isFinished() {
-    return !this._idle && (
-      this._playbackRate > 0 && Number(this._currentTime) >= this.totalDuration ||
-      this._playbackRate < 0 && Number(this._currentTime) <= 0);
+    return (
+      !this._idle &&
+      ((this._playbackRate > 0 && Number(this._currentTime) >= this.totalDuration) ||
+        (this._playbackRate < 0 && Number(this._currentTime) <= 0))
+    );
   }
 
   get totalDuration() {
@@ -232,14 +234,10 @@ export class Animation implements globalThis.Animation {
   _inEffect: boolean;
   _inTimeline = true;
   get _needsTick() {
-    return this.pending || this.playState === 'running'
-      || !this._finishedFlag;
+    return this.pending || this.playState === 'running' || !this._finishedFlag;
   }
 
-  constructor(
-    effect: KeyframeEffect,
-    timeline: AnimationTimeline,
-  ) {
+  constructor(effect: KeyframeEffect, timeline: AnimationTimeline) {
     this.effect = effect;
     this.timeline = timeline;
     this.id = `${sequenceNumber++}`;
@@ -321,8 +319,7 @@ export class Animation implements globalThis.Animation {
 
   finish() {
     this.updatePromises();
-    if (this._idle)
-      return;
+    if (this._idle) return;
     this.currentTime = this._playbackRate > 0 ? this.totalDuration : 0;
     this._startTime = this.totalDuration - this.currentTime;
     this.currentTimePending = false;
@@ -333,8 +330,7 @@ export class Animation implements globalThis.Animation {
 
   cancel() {
     this.updatePromises();
-    if (!this._inEffect)
-      return;
+    if (!this._inEffect) return;
     this._inEffect = false;
     this._idle = true;
     this._paused = false;
@@ -415,21 +411,37 @@ export class Animation implements globalThis.Animation {
   }
 
   persist(): void {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 
-  addEventListener<K extends keyof AnimationEventMap>(type: K, listener: (this: Animation, ev: AnimationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-  addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+  addEventListener<K extends keyof AnimationEventMap>(
+    type: K,
+    listener: (this: Animation, ev: AnimationEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions,
+  ): void;
+  addEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions,
+  ): void;
   addEventListener(type: any, listener: any, options?: any): void {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
-  removeEventListener<K extends keyof AnimationEventMap>(type: K, listener: (this: Animation, ev: AnimationEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-  removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  removeEventListener<K extends keyof AnimationEventMap>(
+    type: K,
+    listener: (this: Animation, ev: AnimationEventMap[K]) => any,
+    options?: boolean | EventListenerOptions,
+  ): void;
+  removeEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | EventListenerOptions,
+  ): void;
   removeEventListener(type: any, listener: any, options?: any): void {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
   dispatchEvent(event: Event): boolean {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
   onremove: ((this: globalThis.Animation, ev: Event) => any) | null;
   replaceState: globalThis.AnimationReplaceState;
@@ -466,12 +478,7 @@ export class Animation implements globalThis.Animation {
     if (this._isFinished) {
       if (!this._finishedFlag) {
         if (this.onfinish) {
-          const event = new AnimationEvent(
-            null,
-            this,
-            this.currentTime,
-            baseTime,
-          );
+          const event = new AnimationEvent(null, this, this.currentTime, baseTime);
           setTimeout(() => {
             this.onfinish && this.onfinish(event);
           });
@@ -479,6 +486,10 @@ export class Animation implements globalThis.Animation {
         this._finishedFlag = true;
       }
     } else {
+      if (this.onframe && this.playState === 'running') {
+        const event = new AnimationEvent(null, this, this.currentTime, baseTime);
+        this.onframe(event);
+      }
       this._finishedFlag = false;
     }
   }

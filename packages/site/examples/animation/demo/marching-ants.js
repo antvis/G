@@ -1,13 +1,9 @@
-import { Circle, Canvas } from '@antv/g';
+import { Circle, Rect, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
-
-/**
- * ported from https://animista.net/play/entrances/scale-in
- */
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
@@ -27,48 +23,34 @@ const circle = new Circle({
     x: 200,
     y: 200,
     r: 60,
-    fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
-    shadowColor: 'black',
-    shadowBlur: 30,
+    lineDash: [10, 10],
   },
 });
-
 canvas.appendChild(circle);
 
-const animation = circle.animate(
-  [
-    {
-      transform: 'scale(1)',
-      fill: '#1890FF',
-      stroke: '#F04864',
-      opacity: 1,
-      shadowColor: 'black',
-      shadowBlur: 30,
-    },
-    {
-      transform: 'scale(2)',
-      fill: 'red',
-      stroke: '#1890FF',
-      opacity: 0.8,
-      shadowColor: 'red',
-      shadowBlur: 0,
-    },
-  ],
-  {
-    duration: 1500,
-    iterations: Infinity,
-    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-  },
-);
+circle.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
+  duration: 500,
+  iterations: Infinity,
+});
 
-// get triggerred when animation finished
-animation.onfinish = (e) => {
-  console.log('finish!', e.target, e.target.playState);
-};
-animation.finished.then(() => {
-  console.log('finish promise resolved');
+const rect = new Rect({
+  style: {
+    x: 300,
+    y: 100,
+    width: 200,
+    height: 200,
+    stroke: '#F04864',
+    lineWidth: 4,
+    radius: 8,
+    lineDash: [10, 10],
+  },
+});
+canvas.appendChild(rect);
+rect.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
+  duration: 500,
+  iterations: Infinity,
 });
 
 // stats
@@ -99,24 +81,3 @@ rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onCha
   );
 });
 rendererFolder.open();
-
-const animationFolder = gui.addFolder('animation');
-const animationConfig = {
-  play: () => {
-    animation.play();
-  },
-  pause: () => {
-    animation.pause();
-  },
-  reverse: () => {
-    animation.reverse();
-  },
-  finish: () => {
-    animation.finish();
-  },
-};
-animationFolder.add(animationConfig, 'play').name('Play');
-animationFolder.add(animationConfig, 'pause').name('Pause');
-animationFolder.add(animationConfig, 'reverse').name('Reverse');
-animationFolder.add(animationConfig, 'finish').name('Finish');
-animationFolder.open();

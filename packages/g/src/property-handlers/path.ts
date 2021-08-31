@@ -10,6 +10,7 @@ import {
   getRotatedCurve,
   reverseCurve,
 } from '../utils/path';
+import { Rect } from '../shapes/Rect';
 
 export function parsePath(path: string, displayObject: DisplayObject | null): ParsedPathStyleProps {
   const absolutePath = path2Absolute(path) as PathCommand[];
@@ -33,6 +34,7 @@ export function parsePath(path: string, displayObject: DisplayObject | null): Pa
     curve,
     totalLength,
     curveSegments,
+    rect: getPathBBox(curve),
   };
 }
 
@@ -156,6 +158,39 @@ function calcLength(curve: any[]) {
     curveSegments,
     totalLength,
   };
+}
+
+function getPathBBox(segments: PathCommand[]): Rect {
+  let x = 0;
+  let y = 0;
+  let X: number[] = [];
+  let Y: number[] = [];
+
+  segments.forEach((segment) => {
+    const [s1, s2] = segment.slice(-2);
+    if (segment[0] === 'M') {
+      x = s1 as number;
+      y = s2 as number;
+      X.push(s1 as number);
+      Y.push(s2 as number);
+    } else {
+      // @ts-ignore
+      const dim = CubicUtil.box(...[x, y].concat(segment.slice(1)));
+      X = X.concat(dim.x, dim.x + dim.width);
+      Y = Y.concat(dim.y, dim.y + dim.height);
+      x = s1 as number;
+      y = s2 as number;
+    }
+  });
+
+  const xTop = Math.min.apply(0, X);
+  const yTop = Math.min.apply(0, Y);
+  const xBot = Math.max.apply(0, X);
+  const yBot = Math.max.apply(0, Y);
+  const width = xBot - xTop;
+  const height = yBot - yTop;
+
+  return new Rect(xTop, yTop, width, height);
 }
 
 export function mergePaths(

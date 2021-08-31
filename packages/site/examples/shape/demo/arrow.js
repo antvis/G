@@ -129,7 +129,6 @@ class MyCustomArrowHead extends CustomElement {
     this.head = new Path({
       style: {
         path: 'M 10,10 L -10,0 L 10,-10 Z',
-        anchor: [0.5, 0.5],
       },
     });
 

@@ -82,7 +82,27 @@ const rect = new Rect({
 -   [Text](/zh/docs/api/text) 为文本锚点位置
 -   [Line](/zh/docs/api/line)，[Polyline](/zh/docs/api/polyline)，[Polygon](/zh/docs/api/polygon)，[Path](/zh/docs/api/path) 为包围盒左上角顶点位置
 
-有时我们需要更改这个 “位置” 的几何意义，例如将 Rect 的中心而非左上角设置成 “锚点”，此时我们可以使用 [anchor](/zh/docs/api/display-object#anchor)，将它设置成 `[0.5, 0.5]`。
+有时我们需要更改这个 “位置” 的几何意义，例如将 Rect 的中心而非左上角设置成 “锚点”，此时我们可以使用 [anchor](/zh/docs/api/display-object#anchor)，将它设置成 `[0.5, 0.5]`。需要注意的是，修改前后图形在局部坐标系下的坐标并不会改变。
+
+举例来说，我们定义了一个半径为 100 的圆，由于 anchor 默认值为 `[0.5, 0.5]`，此时获取这个圆在局部坐标系的坐标为 `[100, 100]`，即圆心所在的位置：
+
+```js
+const circle = new Cirle({
+    style: {
+        x: 100,
+        y: 100,
+        r: 100,
+    },
+});
+circle.getLocalPosition(); // [100, 100]，此时为圆心所在位置
+```
+
+如果我们此时修改锚点为 `[0, 0]`，这个圆局部坐标系下位置依然不变，还是 `[100, 100]`，只是此时这个坐标不再是圆心，而是圆的包围盒左上角，因此从视觉上看，这个圆向右下方平移了 `[100, 100]` 的距离：
+
+```js
+circle.style.anchor = [0, 0];
+circle.getLocalPosition(); // [100, 100]，此时为圆包围盒左上角位置
+```
 
 ### x
 
@@ -148,7 +168,22 @@ rect.style.transformOrigin = '0px 0px';
 rect.setOrigin(0, 0);
 ```
 
-也可以使用 [transformOrigin](/zh/docs/api/basic/display-object#transformorigin) 表示。
+也可以使用 [transformOrigin](/zh/docs/api/basic/display-object#transformorigin) 表示。两者的区别是 origin 在图形局部坐标系下定义，transformOrigin 相对于图形包围盒定义，例如我们想修改一个圆的变换中心到左上角而非圆心，可以这样做：
+
+```js
+const circle = new Circle({
+    style: {
+        x: 200,
+        y: 200,
+        r: 100,
+    },
+});
+
+circle.style.origin = [100, 100]; // 左上角在局部坐标系下坐标为 [100, 100]
+circle.style.transformOrigin = 'left top'; // 包围盒左上角
+// 或者
+circle.style.transformOrigin = '0px 0px';
+```
 
 ### transform
 
@@ -206,7 +241,7 @@ circle.translateLocal(100, 100);
 
 **是否必须**：`false`
 
-**说明** 旋转与缩放中心，也称作变换中心，在局部坐标系下表示。
+**说明** 旋转与缩放中心，也称作变换中心，相对于自身包围盒定义。
 
 和 CSS [transform-origin](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin) 类似，支持以下字符串写法，其中用空格分隔：
 
@@ -223,9 +258,9 @@ circle.translateLocal(100, 100);
 ```js
 // r = 100
 circle.style.transformOrigin = 'left';
-circle.style.transformOrigin = 'left center';
-circle.style.transformOrigin = '0 50%';
-circle.style.transformOrigin = '0 100px';
+circle.style.transformOrigin = 'left center'; // 包围盒水平方向左侧边缘，垂直方向中点
+circle.style.transformOrigin = '0 50%'; // 包围盒水平方向左侧边缘距离为 0，垂直方向距离顶部 50% 高度
+circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘距离为 0，垂直方向距离顶部 100px
 ```
 
 ⚠️ 暂不支持三个值的写法。
@@ -343,6 +378,92 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 **是否必须**：`false`
 
 **说明**：描边宽度
+
+### lineDash
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+**类型**： `number[]`
+
+**默认值**：无
+
+**是否必须**：`false`
+
+**说明**：一个数组，描述交替绘制的线段和间距。可参考：https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
+
+对它应用动画可以实现[笔迹动画效果](/zh/docs/api/animation#笔迹动画)。
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ)
+
+### lineDashOffset
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+**类型**： `number`
+
+**默认值**：0
+
+**是否必须**：`false`
+
+**说明**：虚线偏移量，对它进行变换可以实现[蚂蚁线动画](/zh/docs/api/animation#蚂蚁线)
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ)
+
+## 阴影
+
+在图形底部增加阴影效果，支持配置阴影颜色，模糊半径和水平/垂直偏移距离。[示例](/zh/examples/shape#circle)
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ)
+
+⚠️ 暂不支持内阴影。
+
+### shadowColor
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+**类型**： `String`
+
+**默认值**：无
+
+**是否必须**：`false`
+
+**说明**：阴影色，例如 `'#1890FF'`。不支持渐变或者纹理写法。
+
+### shadowBlur
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+**类型**： `number`
+
+**默认值**：无
+
+**是否必须**：`false`
+
+**说明**：阴影效果模糊程度，不允许为负数。越大代表越模糊，为 0 时不展示阴影。
+
+### shadowOffsetX
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+**类型**： `number`
+
+**默认值**：无
+
+**是否必须**：`false`
+
+**说明**：水平方向偏移量，例如负数让阴影往左移，正数向右
+
+### shadowOffsetY
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+**类型**： `number`
+
+**默认值**：无
+
+**是否必须**：`false`
+
+**说明**：垂直方向偏移量，例如负数让阴影往上移，正数向下
 
 ## 渲染次序
 

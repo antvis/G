@@ -1,4 +1,4 @@
-import { Image, Canvas } from 'g';
+import { Image, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -35,11 +35,7 @@ const image = new Image({
 
 canvas.appendChild(image);
 
-const animation = image.animate(
-  [
-    { transform: 'rotate(0)' },
-    { transform: 'rotate(360deg)' },
-  ], {
+const animation = image.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }], {
   duration: 1500,
   iterations: Infinity,
   // delay: 3000,
@@ -81,73 +77,74 @@ const animationConfig = {
   easing: 'linear',
   playbackRate: 1,
 };
-animationFolder.add(animationConfig, 'easing', [
-  'linear',
-  'ease',
-  'ease-in',
-  'ease-out',
-  'ease-in-out',
-  'ease-out-in',
-  'ease-in-quad',
-  'ease-out-quad',
-  'ease-in-out-quad',
-  'ease-out-in-quad',
+animationFolder
+  .add(animationConfig, 'easing', [
+    'linear',
+    'ease',
+    'ease-in',
+    'ease-out',
+    'ease-in-out',
+    'ease-out-in',
+    'ease-in-quad',
+    'ease-out-quad',
+    'ease-in-out-quad',
+    'ease-out-in-quad',
 
-  'ease-in-cubic',
-  'ease-out-cubic',
-  'ease-in-out-cubic',
-  'ease-out-in-cubic',
+    'ease-in-cubic',
+    'ease-out-cubic',
+    'ease-in-out-cubic',
+    'ease-out-in-cubic',
 
-  'ease-in-quart',
-  'ease-out-quart',
-  'ease-in-out-quart',
-  'ease-out-in-quart',
+    'ease-in-quart',
+    'ease-out-quart',
+    'ease-in-out-quart',
+    'ease-out-in-quart',
 
-  'ease-in-quint',
-  'ease-out-quint',
-  'ease-in-out-quint',
-  'ease-out-in-quint',
+    'ease-in-quint',
+    'ease-out-quint',
+    'ease-in-out-quint',
+    'ease-out-in-quint',
 
-  'ease-in-expo',
-  'ease-out-expo',
-  'ease-in-out-expo',
-  'ease-out-in-expo',
+    'ease-in-expo',
+    'ease-out-expo',
+    'ease-in-out-expo',
+    'ease-out-in-expo',
 
-  'ease-in-sine',
-  'ease-out-sine',
-  'ease-in-out-sine',
-  'ease-out-in-sine',
+    'ease-in-sine',
+    'ease-out-sine',
+    'ease-in-out-sine',
+    'ease-out-in-sine',
 
-  'ease-in-circ',
-  'ease-out-circ',
-  'ease-in-out-circ',
-  'ease-out-in-circ',
+    'ease-in-circ',
+    'ease-out-circ',
+    'ease-in-out-circ',
+    'ease-out-in-circ',
 
-  'ease-in-back',
-  'ease-out-back',
-  'ease-in-out-back',
-  'ease-out-in-back',
+    'ease-in-back',
+    'ease-out-back',
+    'ease-in-out-back',
+    'ease-out-in-back',
 
-  'ease-in-bounce',
-  'ease-out-bounce',
-  'ease-in-out-bounce',
-  'ease-out-in-bounce',
+    'ease-in-bounce',
+    'ease-out-bounce',
+    'ease-in-out-bounce',
+    'ease-out-in-bounce',
 
-  'ease-in-elastic',
-  'ease-out-elastic',
-  'ease-in-out-elastic',
-  'ease-out-in-elastic',
+    'ease-in-elastic',
+    'ease-out-elastic',
+    'ease-in-out-elastic',
+    'ease-out-in-elastic',
 
-  'cubic-bezier(0.47, 0, 0.745, 0.715)',
+    'cubic-bezier(0.47, 0, 0.745, 0.715)',
 
-  'spring',
-  'spring-in',
-  'spring-out',
-  'spring-in-out',
-  'spring-out-in',
+    'spring',
+    'spring-in',
+    'spring-out',
+    'spring-in-out',
+    'spring-out-in',
 
-  'custom',
-])
+    'custom',
+  ])
   .onChange((type) => {
     if (type !== 'custom') {
       timing.easing = type;
@@ -160,7 +157,7 @@ animationFolder.add(animationConfig, 'easing', [
         }
         const stepSize = 1 / count;
         x += pos * stepSize;
-        return x - x % stepSize;
+        return x - (x % stepSize);
       };
     }
   });

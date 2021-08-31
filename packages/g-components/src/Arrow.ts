@@ -95,13 +95,13 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       this.destroyArrowHead(isStart);
 
       if (newValue) {
-        const { body, startHead, endHead, ...rest } = this.style;
+        const { body, startHead, endHead, x, y, ...rest } = this.style;
         // append new arrow head
         this.appendArrowHead(this.getArrowHeadType(newValue), isStart);
         this.applyArrowStyle(rest, [isStart ? this.startHead : this.endHead]);
       }
     } else if (name === 'body') {
-      const { body, startHead, endHead, ...rest } = this.style;
+      const { body, startHead, endHead, x, y, ...rest } = this.style;
       this.removeChild(this.body!, true);
       this.body = newValue;
       this.appendChild(this.body!);

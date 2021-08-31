@@ -46,7 +46,7 @@ const regexPR = /^p\s*\(\s*([axyn])\s*\)\s*(.*)/i;
 const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/gi;
 
 export function parseColor(
-  colorStr: string,
+  colorStr: string = '',
   displayObject: DisplayObject | null,
 ): ParsedColorStyleProperty {
   if (colorStr === 'transparent') {

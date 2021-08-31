@@ -1,4 +1,4 @@
-import { Circle, Text, Group, Canvas } from 'g';
+import { Circle, Text, Group, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';

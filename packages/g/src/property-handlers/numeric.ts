@@ -26,3 +26,16 @@ export function clampedMergeNumbers(min: number, max: number) {
     (x: number) => numberToString(clamp(x, min, max)),
   ];
 }
+
+export function mergeNumberLists(left: number[], right: number[]) {
+  if (left.length != right.length) {
+    return;
+  }
+  return [
+    left,
+    right,
+    (numberList: number[]) => {
+      return numberList;
+    },
+  ];
+}
