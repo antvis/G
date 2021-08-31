@@ -45,11 +45,7 @@ export function updateTransformOrigin(oldValue: string, value: string, object: D
 
   if (!isNil(originX) && !isNil(originY)) {
     // relative to local bounds
-    const localBounds = object.getLocalBounds();
-    if (localBounds) {
-      const [minX, minY] = localBounds.getMin();
-      object.setOrigin(originX! + minX, originY! + minY);
-    }
+    object.setOrigin(originX!, originY!);
   }
 }
 

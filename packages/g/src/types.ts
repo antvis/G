@@ -77,6 +77,16 @@ export interface BaseStyleProps {
   offsetPath?: DisplayObject | null;
   offsetPathTargets?: DisplayObject[];
 
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform
+   */
+  transform?: string;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
+   */
+  transformOrigin?: string;
+
   stroke?: ColorType;
   /** 描边透明度 */
   strokeOpacity?: number;

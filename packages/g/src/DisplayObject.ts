@@ -800,10 +800,7 @@ export class DisplayObject<
   /** transform operations */
 
   setOrigin(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.setOrigin(
-      this,
-      vec3.sub(vec3.create(), createVec3(position, y, z), this.getLocalPosition()),
-    );
+    this.sceneGraphService.setOrigin(this, createVec3(position, y, z));
     return this;
   }
 
@@ -1107,6 +1104,9 @@ export class DisplayObject<
       const target = this.attributes.clipPathTargets[0];
       timeline = target.ownerDocument?.defaultView.timeline;
     }
+
+    // clear old parsed transform
+    this.parsedStyle.transform = undefined;
 
     if (timeline) {
       return timeline.play(new KeyframeEffect(this, keyframes, options));

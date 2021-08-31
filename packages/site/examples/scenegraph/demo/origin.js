@@ -109,11 +109,11 @@ rectFolder
     }
   });
 rectFolder.add(rectConfig, 'originX', -200, 200).onChange((tx) => {
-  rect.style.origin = [200 + tx, 100 + rectConfig.originY];
+  rect.style.origin = [tx, rectConfig.originY];
   origin.setPosition(200 + tx, 100 + rectConfig.originY);
 });
 rectFolder.add(rectConfig, 'originY', -200, 200).onChange((ty) => {
-  rect.style.origin = [200 + rectConfig.originX, 100 + ty];
+  rect.style.origin = [rectConfig.originX, ty];
   origin.setPosition(200 + rectConfig.originX, 100 + ty);
 });
 rectFolder.open();

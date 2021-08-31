@@ -201,6 +201,35 @@ Promise.all(circle.getAnimations().map((animation) => animation.finished)).then(
 });
 ```
 
+或者完成一组连续动画，例如让一个圆先向右，再向下移动，[示例](/zh/examples/animation#sequence)：
+
+```js
+(async () => {
+  // 向右移动 100px
+  const moveRight = circle.animate(
+    [
+      {
+        transform: 'translate(0)',
+      },
+      {
+        transform: 'translate(100px)',
+      },
+    ],
+    {
+      duration: 1000,
+      easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+      fill: 'both',
+    },
+  );
+  // 等待动画完成
+  await moveRight.finished;
+
+  // 完成后向下移动
+  const moveDown = circle.animate(
+    //... 省略
+  );
+```
+
 ### onfinish
 
 设置动画完成后的回调函数，类似 [animationend](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/animationend_event) 事件。[示例](/zh/examples/animation#lifecycle)

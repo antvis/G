@@ -38,13 +38,13 @@ export class DefaultRenderer implements StyleRenderer {
         // save shadow blur
         const shadowBlur = context.shadowBlur;
         const shadowColor = context.shadowColor;
-        if (shadowBlur) {
+        if (!isNil(shadowBlur)) {
           context.shadowColor = 'transparent';
           context.shadowBlur = 0;
         }
         context.stroke();
         // restore shadow blur
-        if (shadowBlur) {
+        if (!isNil(shadowBlur)) {
           context.shadowColor = shadowColor;
           context.shadowBlur = shadowBlur;
         }

@@ -146,7 +146,7 @@ circle.getLocalPosition(); // [100, 100]，此时为圆包围盒左上角位置
 
 **是否必须**：`false`
 
-**说明** 旋转与缩放中心，也称作变换中心，在局部坐标系下表示
+**说明** 旋转与缩放中心，也称作变换中心，基于自身包围盒表示，包围盒左上角为 `[0, 0]`
 
 [示例](/zh/examples/scenegraph#origin)
 
@@ -156,7 +156,7 @@ const rect = new Rect({
     style: {
         width: 300,
         height: 200,
-        origin: [150, 100], // 设置旋转与缩放中心，局部坐标系下的中点
+        origin: [150, 100], // 设置旋转与缩放中心为自身包围盒中心点
     },
 });
 
@@ -168,7 +168,7 @@ rect.style.transformOrigin = '0px 0px';
 rect.setOrigin(0, 0);
 ```
 
-也可以使用 [transformOrigin](/zh/docs/api/basic/display-object#transformorigin) 表示。两者的区别是 origin 在图形局部坐标系下定义，transformOrigin 相对于图形包围盒定义，例如我们想修改一个圆的变换中心到左上角而非圆心，可以这样做：
+也可以使用 [transformOrigin](/zh/docs/api/basic/display-object#transformorigin) 表示。两者都相对于图形自身包围盒定义，但 transformOrigin 可以使用百分比或者关键字描述位置，例如我们想修改一个圆的变换中心到左上角而非圆心，可以这样做：
 
 ```js
 const circle = new Circle({
@@ -180,9 +180,12 @@ const circle = new Circle({
 });
 
 circle.style.origin = [100, 100]; // 左上角在局部坐标系下坐标为 [100, 100]
+// 或者
 circle.style.transformOrigin = 'left top'; // 包围盒左上角
 // 或者
 circle.style.transformOrigin = '0px 0px';
+// 或者
+circle.style.transformOrigin = '0% 0%';
 ```
 
 ### transform
@@ -393,6 +396,8 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 对它应用动画可以实现[笔迹动画效果](/zh/docs/api/animation#笔迹动画)。
 
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ)
+
 ### lineDashOffset
 
 <tag color="green" text="可应用动画">可应用动画</tag>
@@ -404,6 +409,64 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 **是否必须**：`false`
 
 **说明**：虚线偏移量，对它进行变换可以实现[蚂蚁线动画](/zh/docs/api/animation#蚂蚁线)
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ)
+
+## 阴影
+
+在图形底部增加阴影效果，支持配置阴影颜色，模糊半径和水平/垂直偏移距离。[示例](/zh/examples/shape#circle)
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ)
+
+⚠️ 暂不支持内阴影。
+
+### shadowColor
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+**类型**： `String`
+
+**默认值**：无
+
+**是否必须**：`false`
+
+**说明**：阴影色，例如 `'#1890FF'`。不支持渐变或者纹理写法。
+
+### shadowBlur
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+**类型**： `number`
+
+**默认值**：无
+
+**是否必须**：`false`
+
+**说明**：阴影效果模糊程度，不允许为负数。越大代表越模糊，为 0 时不展示阴影。
+
+### shadowOffsetX
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+**类型**： `number`
+
+**默认值**：无
+
+**是否必须**：`false`
+
+**说明**：水平方向偏移量，例如负数让阴影往左移，正数向右
+
+### shadowOffsetY
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+**类型**： `number`
+
+**默认值**：无
+
+**是否必须**：`false`
+
+**说明**：垂直方向偏移量，例如负数让阴影往上移，正数向下
 
 ## 渲染次序
 
@@ -661,16 +724,16 @@ interface Rect {
 
 ## 简单节点查询
 
-| 名称            | 属性/方法 | 返回值    | 备注                           |
-| --------------- | --------- | --------- | ------------------------------ | ------------------------------------ |
-| parentNode      | 属性      | `Group    | null`                          | 父节点（如有）                       |
-| children        | 属性      | `Group[]` | 子节点列表                     |
-| firstChild      | 属性      | `Group    | null`                          | 返回子节点列表中第一个节点（如有）   |
-| lastChild       | 属性      | `Group    | null`                          | 返回子节点列表中最后一个节点（如有） |
-| nextSibling     | 属性      | `Group    | null`                          | 返回后一个兄弟节点（如有）           |
-| previousSibling | 属性      | `Group    | null`                          | 返回前一个兄弟节点（如有）           |
-| contains        | 方法      | `boolean` | 子树中是否包含某个节点（入参） |
-| isConnected     | 属性      | `boolean` | 节点是否被添加到画布中         |
+| 名称            | 属性/方法 | 返回值            | 备注                           |
+| --------------- | --------- | ----------------- | ------------------------------ | ------------------------------------ |
+| parentNode      | 属性      | `DisplayObject    | null`                          | 父节点（如有）                       |
+| children        | 属性      | `DisplayObject[]` | 子节点列表                     |
+| firstChild      | 属性      | `DisplayObject    | null`                          | 返回子节点列表中第一个节点（如有）   |
+| lastChild       | 属性      | `DisplayObject    | null`                          | 返回子节点列表中最后一个节点（如有） |
+| nextSibling     | 属性      | `DisplayObject    | null`                          | 返回后一个兄弟节点（如有）           |
+| previousSibling | 属性      | `DisplayObject    | null`                          | 返回前一个兄弟节点（如有）           |
+| contains        | 方法      | `boolean`         | 子树中是否包含某个节点（入参） |
+| isConnected     | 属性      | `boolean`         | 节点是否被添加到画布中         |
 
 ## 高级查询
 
@@ -678,12 +741,12 @@ interface Rect {
 
 | 名称 | 参数 | 返回值 | 备注 |
 | --- | --- | --- | --- | --- |
-| getElementById | `(id: string)` | `Group | null` | 通过 `id` 查询子节点 |
-| getElementsByName | `(name: string)` | `Group[]` | 通过 `name` 查询子节点列表 |
-| getElementsByClassName | `(className: string)` | `Group[]` | 通过 `className` 查询子节点列表 |
-| getElementsByTagName | `(tagName: string)` | `Group[]` | 通过 `tagName` 查询子节点列表 |
-| querySelector | `(selector: string)` | `Group ｜ null` | 查询满足条件的第一个子节点 |
-| querySelectorAll | `(selector: string)` | `Group[]` | 查询满足条件的所有子节点列表 |
+| getElementById | `(id: string)` | `DisplayObject | null` | 通过 `id` 查询子节点 |
+| getElementsByName | `(name: string)` | `DisplayObject[]` | 通过 `name` 查询子节点列表 |
+| getElementsByClassName | `(className: string)` | `DisplayObject[]` | 通过 `className` 查询子节点列表 |
+| getElementsByTagName | `(tagName: string)` | `DisplayObject[]` | 通过 `tagName` 查询子节点列表 |
+| querySelector | `(selector: string)` | `DisplayObject ｜ null` | 查询满足条件的第一个子节点 |
+| querySelectorAll | `(selector: string)` | `DisplayObject[]` | 查询满足条件的所有子节点列表 |
 
 下面我们以上面太阳系的例子，演示如何使用这些查询方法。
 
@@ -706,11 +769,11 @@ solarSystem.querySelectorAll('[r=25]');
 
 | 名称 | 参数 | 返回值 | 备注 |
 | --- | --- | --- | --- |
-| appendChild | `(group: Group)` | `Group` | 添加子节点，返回添加的节点 |
-| insertBefore | `(group: Group, reference?: Group)` | `Group` | 添加子节点，在某个子节点之前（如有），返回添加的节点 |
-| removeChild | `(group: Group, destroy = true)` | `Group` | 删除子节点，返回被删除的节点。`destroy` 表示是否要销毁 |
+| appendChild | `(child: DisplayObject)` | `DisplayObject` | 添加子节点，返回添加的节点 |
+| insertBefore | `(child: DisplayObject, reference?: DisplayObject)` | `DisplayObject` | 添加子节点，在某个子节点之前（如有），返回添加的节点 |
+| removeChild | `(child: DisplayObject, destroy = true)` | `DisplayObject` | 删除子节点，返回被删除的节点。`destroy` 表示是否要销毁 |
 | removeChildren | `(destroy = true)` |  | 删除全部子节点。`destroy` 表示是否要销毁 |
-| remove | `(destroy = true)` | `Group` | 从父节点（如有）中移除自身，`destroy` 表示是否要销毁 |
+| remove | `(destroy = true)` | `DisplayObject` | 从父节点（如有）中移除自身，`destroy` 表示是否要销毁 |
 
 从父节点中删除子节点并销毁有以下两种方式：
 
