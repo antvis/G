@@ -40,13 +40,27 @@ abstract class Canvas extends Container implements ICanvas {
       this.set('container', container);
     }
   }
+  /**
+   * @protected
+   * 获取canvas元素
+   */
+  getCanvasEl() {
+    const cutsomEl: HTMLCanvasElement | undefined = this.get('renderElement');
+    // 判断是否为canvas元素
+    if (cutsomEl && cutsomEl.nodeName === 'CANVAS') {
+      return cutsomEl;
+    }
+
+    const el = this.createDom();
+    return el;
+  }
 
   /**
    * @protected
    * 初始化 DOM
    */
   initDom() {
-    const el = this.createDom();
+    const el = this.getCanvasEl();
     this.set('el', el);
     // 附加到容器
     const container = this.get('container');
