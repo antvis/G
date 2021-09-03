@@ -120,6 +120,11 @@ export interface BaseStyleProps {
   shadowOffsetX?: number;
   /** 阴影 y 方向偏移量 */
   shadowOffsetY?: number;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/filter
+   */
+  filter?: string;
 }
 
 export interface ParsedBaseStyleProps

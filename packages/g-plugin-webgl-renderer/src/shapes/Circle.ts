@@ -3,8 +3,11 @@ import {
   CircleStyleProps,
   DisplayObject,
   DisplayObjectPool,
+  ParsedBaseStyleProps,
+  PARSED_COLOR_TYPE,
   SceneGraphNode,
   SHAPE,
+  Tuple4Number,
 } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { ShaderModuleService } from '../services/shader-module';
@@ -33,12 +36,14 @@ interface IPointConfig {
 
 interface IInstanceAttributes {
   extrudes: number[];
+  uvs: number[];
   instancedColors: number[];
   instancedSizes: number[];
 }
 
 const ATTRIBUTE = {
   Size: 'a_Size',
+  Uv: 'a_Uv',
   Color: 'a_Color',
   Extrude: 'a_Extrude',
 };
@@ -162,31 +167,47 @@ export class CircleModelBuilder implements ModelBuilder {
     }
   }
 
-  prepareModel(object: DisplayObject<CircleStyleProps>) {
+  prepareModel(object: DisplayObject<CircleStyleProps, ParsedBaseStyleProps>) {
     const entity = object.getEntity();
     const sceneGraphNode = entity.getComponent(SceneGraphNode);
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
 
-    const isBatch = sceneGraphNode.tagName === Batch.tag;
+    // const isBatch = sceneGraphNode.tagName === Batch.tag;
     let tagName = sceneGraphNode.tagName;
-    if (isBatch) {
-      tagName = (object as Batch).getBatchType()!;
-    }
+    // if (isBatch) {
+    //   tagName = (object as Batch).getBatchType()!;
+    // }
+
+    // const {
+    //   fill = '',
+    //   fillOpacity = 1,
+    //   stroke = '',
+    //   strokeOpacity = 1,
+    //   lineWidth = 0,
+    //   radius = 0,
+    // } = isBatch
+    //     ? ((object as Batch).children[0] as DisplayObject).attributes
+    //     : object.parsedStyle;
 
     const {
-      fill = '',
+      fill,
+      opacity = 1,
       fillOpacity = 1,
-      stroke = '',
+      stroke,
       strokeOpacity = 1,
       lineWidth = 0,
       radius = 0,
-    } = isBatch
-        ? ((object as Batch).children[0] as DisplayObject).attributes
-        : sceneGraphNode.attributes;
+    } = object.parsedStyle;
 
-    const fillColor = rgb2arr(fill);
-    const strokeColor = rgb2arr(stroke);
+    let fillColor: Tuple4Number = [1, 1, 1, 1];
+    let strokeColor: Tuple4Number = [0, 0, 0, 0];
+    if (fill?.type === PARSED_COLOR_TYPE.Constant) {
+      fillColor = fill.value;
+    }
+    if (stroke?.type === PARSED_COLOR_TYPE.Constant) {
+      strokeColor = stroke.value;
+    }
 
     this.shaderModule.registerModule('circle', {
       vs: circleVertex,
@@ -217,38 +238,36 @@ export class CircleModelBuilder implements ModelBuilder {
       [UNIFORM.Shape]: pointShapes.indexOf(tagName),
       [UNIFORM.StrokeColor]: strokeColor,
       [UNIFORM.StrokeWidth]: lineWidth,
-      [UNIFORM.StrokeOpacity]: strokeOpacity,
+      [UNIFORM.StrokeOpacity]: strokeOpacity * opacity,
       [UNIFORM.RectRadius]: radius,
       [UNIFORM.Anchor]: tagName === SHAPE.Rect ? [1, 1] : [0, 0],
     });
 
     let config: Partial<IPointConfig>[] = [];
 
-    console.log('isBatch', isBatch);
-
-    if (isBatch) {
-      // TODO: use sortable.sorted
-      config = object.children.map((instance: DisplayObject) => {
-        const [halfWidth, halfHeight] = this.getSize(instance.attributes, tagName);
-        const fillColor = rgb2arr(instance.attributes.fill || '');
-        return {
-          size: [halfWidth + lineWidth / 2, halfHeight + lineWidth / 2],
-          color: fillColor as [number, number, number, number], // sRGB
-          opacity: fillOpacity,
-          strokeOpacity,
-          strokeColor: strokeColor as [number, number, number, number], // sRGB
-        };
-      });
-    } else {
-      const [halfWidth, halfHeight] = this.getSize(sceneGraphNode.attributes, tagName);
-      config.push({
-        size: [halfWidth + lineWidth / 2, halfHeight + lineWidth / 2],
-        color: fillColor as [number, number, number, number], // sRGB
-        opacity: fillOpacity,
-        strokeOpacity,
-        strokeColor: strokeColor as [number, number, number, number], // sRGB
-      });
-    }
+    // if (isBatch) {
+    //   // TODO: use sortable.sorted
+    //   config = object.children.map((instance: DisplayObject) => {
+    //     const [halfWidth, halfHeight] = this.getSize(instance.attributes, tagName);
+    //     const fillColor = rgb2arr(instance.attributes.fill || '');
+    //     return {
+    //       size: [halfWidth + lineWidth / 2, halfHeight + lineWidth / 2],
+    //       color: fillColor as [number, number, number, number], // sRGB
+    //       opacity: fillOpacity,
+    //       strokeOpacity,
+    //       strokeColor: strokeColor as [number, number, number, number], // sRGB
+    //     };
+    //   });
+    // } else {
+    const [halfWidth, halfHeight] = this.getSize(sceneGraphNode.attributes, tagName);
+    config.push({
+      size: [halfWidth + lineWidth / 2, halfHeight + lineWidth / 2],
+      color: fillColor as [number, number, number, number], // sRGB
+      opacity: fillOpacity * opacity,
+      strokeOpacity,
+      strokeColor: strokeColor as [number, number, number, number], // sRGB
+    });
+    // }
 
     const attributes = this.buildAttributes(config);
 
@@ -258,6 +277,18 @@ export class CircleModelBuilder implements ModelBuilder {
     geometry.setIndex([0, 1, 2, 0, 2, 3]);
 
     geometry.setAttribute(ATTRIBUTE.Extrude, Float32Array.from(attributes.extrudes), {
+      arrayStride: 4 * 2,
+      stepMode: 'vertex',
+      attributes: [
+        {
+          shaderLocation: 0,
+          offset: 0,
+          format: 'float2',
+        },
+      ],
+    });
+
+    geometry.setAttribute(ATTRIBUTE.Uv, Float32Array.from(attributes.uvs), {
       arrayStride: 4 * 2,
       stepMode: 'vertex',
       attributes: [
@@ -294,10 +325,7 @@ export class CircleModelBuilder implements ModelBuilder {
     });
   }
 
-  private buildAttribute(
-    config: Partial<IPointConfig>,
-    attributes: IInstanceAttributes,
-  ) {
+  private buildAttribute(config: Partial<IPointConfig>, attributes: IInstanceAttributes) {
     attributes.instancedColors.push(...(config.color || [1, 0, 0, 1]));
     attributes.instancedSizes.push(...(config.size || [0.2, 0.2]));
   }
@@ -305,6 +333,7 @@ export class CircleModelBuilder implements ModelBuilder {
   private buildAttributes(config: Array<Partial<IPointConfig>>) {
     const attributes: IInstanceAttributes = {
       extrudes: [1, 1, 1, -1, -1, -1, -1, 1],
+      uvs: [1, 1, 1, 0, 0, 0, 0, 1],
       instancedColors: [],
       instancedSizes: [],
     };

@@ -4,11 +4,16 @@ import { Geometry, Renderable } from '../components';
 import type { DisplayObject } from '../DisplayObject';
 import { AABB } from '../shapes';
 import { container } from '../inversify.config';
-import { GeometryAABBUpdater, GeometryUpdaterFactory } from '../services';
+import { GeometryAABBUpdater, GeometryUpdaterFactory, SceneGraphService } from '../services';
 import { SHAPE } from '../types';
 import { PARSED_COLOR_TYPE } from './color';
 
-export function updateGeometry(oldValue: number, newValue: number, object: DisplayObject) {
+export function updateGeometry(
+  oldValue: number,
+  newValue: number,
+  object: DisplayObject,
+  sceneGraphService: SceneGraphService,
+) {
   const geometryUpdaterFactory =
     container.get<(tagName: string) => GeometryAABBUpdater<any>>(GeometryUpdaterFactory);
   const geometryUpdater = geometryUpdaterFactory(object.nodeName);
@@ -84,6 +89,6 @@ export function updateGeometry(oldValue: number, newValue: number, object: Displ
     }
 
     // dirtify renderable's AABB
-    renderable.aabbDirty = true;
+    sceneGraphService.dirtifyAABBToRoot(object);
   }
 }

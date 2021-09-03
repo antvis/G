@@ -807,15 +807,15 @@ export class DisplayObject<
   /**
    * alias setPosition
    */
-  moveTo(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.setPosition(createVec3(position, y, z));
+  moveTo(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
+    this.setPosition(position, y, z);
     return this;
   }
   /**
    * alias setPosition
    */
-  move(position: vec3 | number, y: number = 0, z: number = 0) {
-    this.setPosition(createVec3(position, y, z));
+  move(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
+    this.setPosition(position, y, z);
     return this;
   }
   /**
@@ -823,7 +823,7 @@ export class DisplayObject<
    *
    * set position in world space
    */
-  setPosition(position: vec3 | number, y: number = 0, z: number = 0) {
+  setPosition(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
     this.sceneGraphService.setPosition(this, createVec3(position, y, z));
     this.syncLocalPosition();
     return this;
@@ -832,7 +832,7 @@ export class DisplayObject<
   /**
    * set position in local space
    */
-  setLocalPosition(position: vec3 | number, y: number = 0, z: number = 0) {
+  setLocalPosition(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
     this.sceneGraphService.setLocalPosition(this, createVec3(position, y, z));
     this.syncLocalPosition();
     return this;
@@ -841,7 +841,7 @@ export class DisplayObject<
   /**
    * translate in world space
    */
-  translate(position: vec3 | number, y: number = 0, z: number = 0) {
+  translate(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
     this.sceneGraphService.translate(this, createVec3(position, y, z));
     this.syncLocalPosition();
     return this;
@@ -850,7 +850,7 @@ export class DisplayObject<
   /**
    * translate in local space
    */
-  translateLocal(position: vec3 | number, y: number = 0, z: number = 0) {
+  translateLocal(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
     this.sceneGraphService.translateLocal(this, createVec3(position, y, z));
     this.syncLocalPosition();
     return this;
@@ -872,10 +872,10 @@ export class DisplayObject<
    *
    * we can't set scale in world space
    */
-  scale(scaling: vec3 | number, y?: number, z?: number) {
+  scale(scaling: vec3 | vec2 | number, y?: number, z?: number) {
     return this.scaleLocal(scaling, y, z);
   }
-  scaleLocal(scaling: vec3 | number, y?: number, z?: number) {
+  scaleLocal(scaling: vec3 | vec2 | number, y?: number, z?: number) {
     if (typeof scaling === 'number') {
       y = y || scaling;
       z = z || scaling;
@@ -888,7 +888,7 @@ export class DisplayObject<
   /**
    * set scaling in local space
    */
-  setLocalScale(scaling: vec3 | number, y?: number, z?: number) {
+  setLocalScale(scaling: vec3 | vec2 | number, y?: number, z?: number) {
     if (typeof scaling === 'number') {
       y = y || scaling;
       z = z || scaling;
@@ -1220,7 +1220,7 @@ export class DisplayObject<
     const stylePropertyUpdaters = this.stylePropertyUpdaterFactory(name);
     if (stylePropertyUpdaters) {
       stylePropertyUpdaters.forEach((updater) => {
-        updater(oldParsedValue, newParsedValue, this);
+        updater(oldParsedValue, newParsedValue, this, this.sceneGraphService);
       });
     }
   }

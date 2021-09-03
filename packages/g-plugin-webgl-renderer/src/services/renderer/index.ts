@@ -93,7 +93,14 @@ export interface IElementsInitializationOptions {
    */
   type?: gl.UNSIGNED_BYTE | gl.UNSIGNED_SHORT | gl.UNSIGNED_INT;
   length?: number;
-  primitive?: gl.POINTS | gl.LINES | gl.LINE_STRIP | gl.LINE_LOOP | gl.TRIANGLES | gl.TRIANGLE_STRIP | gl.TRIANGLE_FAN;
+  primitive?:
+    | gl.POINTS
+    | gl.LINES
+    | gl.LINE_STRIP
+    | gl.LINE_LOOP
+    | gl.TRIANGLES
+    | gl.TRIANGLE_STRIP
+    | gl.TRIANGLE_FAN;
   count?: number;
 }
 
@@ -159,77 +166,85 @@ export interface IBlendOptions {
   // gl.blendColor
   color: [number, number, number, number];
 }
-type stencilOp = gl.ZERO | gl.KEEP | gl.REPLACE | gl.INVERT | gl.INCR | gl.DECR | gl.INCR_WRAP | gl.DECR_WRAP;
+type stencilOp =
+  | gl.ZERO
+  | gl.KEEP
+  | gl.REPLACE
+  | gl.INVERT
+  | gl.INCR
+  | gl.DECR
+  | gl.INCR_WRAP
+  | gl.DECR_WRAP;
 
 type BlendingFunctionCombined = Partial<{
   src:
-  | gl.ZERO
-  | gl.ONE
-  | gl.SRC_COLOR
-  | gl.ONE_MINUS_SRC_COLOR
-  | gl.SRC_ALPHA
-  | gl.ONE_MINUS_SRC_ALPHA
-  | gl.DST_COLOR
-  | gl.ONE_MINUS_DST_COLOR
-  | gl.DST_ALPHA
-  | gl.ONE_MINUS_DST_ALPHA
-  | gl.CONSTANT_COLOR
-  | gl.ONE_MINUS_CONSTANT_COLOR
-  | gl.CONSTANT_ALPHA
-  | gl.ONE_MINUS_CONSTANT_ALPHA
-  | gl.SRC_ALPHA_SATURATE;
+    | gl.ZERO
+    | gl.ONE
+    | gl.SRC_COLOR
+    | gl.ONE_MINUS_SRC_COLOR
+    | gl.SRC_ALPHA
+    | gl.ONE_MINUS_SRC_ALPHA
+    | gl.DST_COLOR
+    | gl.ONE_MINUS_DST_COLOR
+    | gl.DST_ALPHA
+    | gl.ONE_MINUS_DST_ALPHA
+    | gl.CONSTANT_COLOR
+    | gl.ONE_MINUS_CONSTANT_COLOR
+    | gl.CONSTANT_ALPHA
+    | gl.ONE_MINUS_CONSTANT_ALPHA
+    | gl.SRC_ALPHA_SATURATE;
   dst:
-  | gl.ZERO
-  | gl.ONE
-  | gl.SRC_COLOR
-  | gl.ONE_MINUS_SRC_COLOR
-  | gl.SRC_ALPHA
-  | gl.ONE_MINUS_SRC_ALPHA
-  | gl.DST_COLOR
-  | gl.ONE_MINUS_DST_COLOR
-  | gl.DST_ALPHA
-  | gl.ONE_MINUS_DST_ALPHA
-  | gl.CONSTANT_COLOR
-  | gl.ONE_MINUS_CONSTANT_COLOR
-  | gl.CONSTANT_ALPHA
-  | gl.ONE_MINUS_CONSTANT_ALPHA
-  | gl.SRC_ALPHA_SATURATE;
+    | gl.ZERO
+    | gl.ONE
+    | gl.SRC_COLOR
+    | gl.ONE_MINUS_SRC_COLOR
+    | gl.SRC_ALPHA
+    | gl.ONE_MINUS_SRC_ALPHA
+    | gl.DST_COLOR
+    | gl.ONE_MINUS_DST_COLOR
+    | gl.DST_ALPHA
+    | gl.ONE_MINUS_DST_ALPHA
+    | gl.CONSTANT_COLOR
+    | gl.ONE_MINUS_CONSTANT_COLOR
+    | gl.CONSTANT_ALPHA
+    | gl.ONE_MINUS_CONSTANT_ALPHA
+    | gl.SRC_ALPHA_SATURATE;
 }>;
 
 type BlendingFunctionSeparate = Partial<{
   srcRGB:
-  | gl.ZERO
-  | gl.ONE
-  | gl.SRC_COLOR
-  | gl.ONE_MINUS_SRC_COLOR
-  | gl.SRC_ALPHA
-  | gl.ONE_MINUS_SRC_ALPHA
-  | gl.DST_COLOR
-  | gl.ONE_MINUS_DST_COLOR
-  | gl.DST_ALPHA
-  | gl.ONE_MINUS_DST_ALPHA
-  | gl.CONSTANT_COLOR
-  | gl.ONE_MINUS_CONSTANT_COLOR
-  | gl.CONSTANT_ALPHA
-  | gl.ONE_MINUS_CONSTANT_ALPHA
-  | gl.SRC_ALPHA_SATURATE;
+    | gl.ZERO
+    | gl.ONE
+    | gl.SRC_COLOR
+    | gl.ONE_MINUS_SRC_COLOR
+    | gl.SRC_ALPHA
+    | gl.ONE_MINUS_SRC_ALPHA
+    | gl.DST_COLOR
+    | gl.ONE_MINUS_DST_COLOR
+    | gl.DST_ALPHA
+    | gl.ONE_MINUS_DST_ALPHA
+    | gl.CONSTANT_COLOR
+    | gl.ONE_MINUS_CONSTANT_COLOR
+    | gl.CONSTANT_ALPHA
+    | gl.ONE_MINUS_CONSTANT_ALPHA
+    | gl.SRC_ALPHA_SATURATE;
   srcAlpha: number;
   dstRGB:
-  | gl.ZERO
-  | gl.ONE
-  | gl.SRC_COLOR
-  | gl.ONE_MINUS_SRC_COLOR
-  | gl.SRC_ALPHA
-  | gl.ONE_MINUS_SRC_ALPHA
-  | gl.DST_COLOR
-  | gl.ONE_MINUS_DST_COLOR
-  | gl.DST_ALPHA
-  | gl.ONE_MINUS_DST_ALPHA
-  | gl.CONSTANT_COLOR
-  | gl.ONE_MINUS_CONSTANT_COLOR
-  | gl.CONSTANT_ALPHA
-  | gl.ONE_MINUS_CONSTANT_ALPHA
-  | gl.SRC_ALPHA_SATURATE;
+    | gl.ZERO
+    | gl.ONE
+    | gl.SRC_COLOR
+    | gl.ONE_MINUS_SRC_COLOR
+    | gl.SRC_ALPHA
+    | gl.ONE_MINUS_SRC_ALPHA
+    | gl.DST_COLOR
+    | gl.ONE_MINUS_DST_COLOR
+    | gl.DST_ALPHA
+    | gl.ONE_MINUS_DST_ALPHA
+    | gl.CONSTANT_COLOR
+    | gl.ONE_MINUS_CONSTANT_COLOR
+    | gl.CONSTANT_ALPHA
+    | gl.ONE_MINUS_CONSTANT_ALPHA
+    | gl.SRC_ALPHA_SATURATE;
   dstAlpha: number;
 }>;
 
@@ -254,7 +269,14 @@ export interface IModelInitializationOptions {
    * gl.POINTS | gl.TRIANGLES | ...
    * 默认值 gl.TRIANGLES
    */
-  primitive?: gl.POINTS | gl.LINES | gl.LINE_LOOP | gl.LINE_STRIP | gl.TRIANGLES | gl.TRIANGLE_FAN | gl.TRIANGLE_STRIP;
+  primitive?:
+    | gl.POINTS
+    | gl.LINES
+    | gl.LINE_LOOP
+    | gl.LINE_STRIP
+    | gl.TRIANGLES
+    | gl.TRIANGLE_FAN
+    | gl.TRIANGLE_STRIP;
   // 绘制的顶点数目
   count?: number;
   // 默认值为 0
@@ -280,7 +302,15 @@ export interface IModelInitializationOptions {
     // gl.depthMask
     mask: boolean;
     // gl.depthFunc
-    func: gl.NEVER | gl.ALWAYS | gl.LESS | gl.LEQUAL | gl.GREATER | gl.GEQUAL | gl.EQUAL | gl.NOTEQUAL;
+    func:
+      | gl.NEVER
+      | gl.ALWAYS
+      | gl.LESS
+      | gl.LEQUAL
+      | gl.GREATER
+      | gl.GEQUAL
+      | gl.EQUAL
+      | gl.NOTEQUAL;
     // gl.depthRange
     range: [0, 1];
   }>;
@@ -299,7 +329,15 @@ export interface IModelInitializationOptions {
     // gl.stencilMask
     mask: number;
     func: {
-      cmp: gl.NEVER | gl.ALWAYS | gl.LESS | gl.LEQUAL | gl.GREATER | gl.GEQUAL | gl.EQUAL | gl.NOTEQUAL;
+      cmp:
+        | gl.NEVER
+        | gl.ALWAYS
+        | gl.LESS
+        | gl.LEQUAL
+        | gl.GREATER
+        | gl.GEQUAL
+        | gl.EQUAL
+        | gl.NOTEQUAL;
       ref: number;
       mask: number;
     };
@@ -370,7 +408,13 @@ export interface IRenderbufferInitializationOptions {
   /**
    * gl.RGBA4 | gl.DEPTH_COMPONENT16...
    */
-  format: gl.RGBA4 | gl.RGB565 | gl.RGB5_A1 | gl.DEPTH_COMPONENT16 | gl.STENCIL_INDEX8 | gl.DEPTH_STENCIL;
+  format:
+    | gl.RGBA4
+    | gl.RGB565
+    | gl.RGB5_A1
+    | gl.DEPTH_COMPONENT16
+    | gl.STENCIL_INDEX8
+    | gl.DEPTH_STENCIL;
 }
 
 export interface IRenderbuffer {
@@ -394,16 +438,16 @@ export interface ITexture2DInitializationOptions {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
    */
   format?:
-  | gl.ALPHA
-  | gl.LUMINANCE
-  | gl.LUMINANCE_ALPHA
-  | gl.RGB
-  | gl.RGBA
-  | gl.RGBA4
-  | gl.RGB5_A1
-  | gl.RGB565
-  | gl.DEPTH_COMPONENT
-  | gl.DEPTH_STENCIL;
+    | gl.ALPHA
+    | gl.LUMINANCE
+    | gl.LUMINANCE_ALPHA
+    | gl.RGB
+    | gl.RGBA
+    | gl.RGBA4
+    | gl.RGB5_A1
+    | gl.RGB565
+    | gl.DEPTH_COMPONENT
+    | gl.DEPTH_STENCIL;
 
   /**
    * 纹理数据类型，可能需要引入扩展，例如 ext.HALF_FLOAT_OES
@@ -414,15 +458,16 @@ export interface ITexture2DInitializationOptions {
    * 纹理 pixel source
    */
   data?:
-  | undefined
-  | HTMLCanvasElement
-  | HTMLImageElement
-  | number[]
-  | number[][]
-  | Uint8Array
-  | Uint16Array
-  | Uint32Array
-  | Uint8ClampedArray;
+    | undefined
+    | HTMLCanvasElement
+    | OffscreenCanvas
+    | HTMLImageElement
+    | number[]
+    | number[][]
+    | Uint8Array
+    | Uint16Array
+    | Uint32Array
+    | Uint8ClampedArray;
 
   /**
    * 纹理参数
@@ -432,12 +477,12 @@ export interface ITexture2DInitializationOptions {
   mag?: gl.NEAREST | gl.LINEAR;
   /* Sets minification filter. Default: 'nearest' */
   min?:
-  | gl.NEAREST
-  | gl.LINEAR
-  | gl.LINEAR_MIPMAP_LINEAR
-  | gl.NEAREST_MIPMAP_LINEAR
-  | gl.LINEAR_MIPMAP_NEAREST
-  | gl.NEAREST_MIPMAP_NEAREST;
+    | gl.NEAREST
+    | gl.LINEAR
+    | gl.LINEAR_MIPMAP_LINEAR
+    | gl.NEAREST_MIPMAP_LINEAR
+    | gl.LINEAR_MIPMAP_NEAREST
+    | gl.NEAREST_MIPMAP_NEAREST;
   /* Sets wrap mode on S axis. Default: 'clamp' */
   wrapS?: gl.REPEAT | gl.CLAMP_TO_EDGE | gl.MIRRORED_REPEAT;
   /* Sets wrap mode on T axis. Default: 'clamp' */
@@ -639,7 +684,7 @@ export interface RenderingEngine {
         };
       };
     },
-    drawCommands: () => void
+    drawCommands: () => void,
   ): void;
   getCanvas(): HTMLCanvasElement;
   getGLContext(): WebGLRenderingContext;
@@ -655,7 +700,7 @@ export interface RenderingEngine {
         width: number;
         height: number;
       };
-    }>
+    }>,
   ): void;
   destroy(): void;
   beforeRender(): void;

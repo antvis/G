@@ -13,6 +13,7 @@ varying vec4 v_Color;
 varying vec4 v_Data;
 varying vec2 v_Radius;
 
+#pragma include "uv.declaration"
 #pragma include "instancing.declaration"
 #pragma include "picking"
 
@@ -30,6 +31,8 @@ void main() {
 
   // construct point coords
   v_Data = vec4(a_Extrude, antialiasblur, u_Shape);
+
+  #pragma include "uv"
 
   setPickingColor(a_PickingColor);
 }

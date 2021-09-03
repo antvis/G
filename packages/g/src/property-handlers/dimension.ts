@@ -19,7 +19,7 @@ function isAngleUnit(unit: string) {
   return unit === 'deg' || unit === 'rad' || unit === 'turn';
 }
 
-function parseDimension(unitRegExp: RegExp, string: string): ParsedElement | undefined {
+export function parseDimension(unitRegExp: RegExp, string: string): ParsedElement | undefined {
   string = string.trim().toLowerCase();
 
   if (string === '0') {

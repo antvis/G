@@ -10,7 +10,7 @@ export function getAngle(angle: number | undefined) {
   return angle;
 }
 
-export function createVec3(x: number | vec3 | vec4, y?: number, z?: number) {
+export function createVec3(x: number | vec2 | vec3 | vec4, y?: number, z?: number) {
   if (isNumber(x)) {
     return vec3.fromValues(x, y as number, z as number);
   }
@@ -19,7 +19,7 @@ export function createVec3(x: number | vec3 | vec4, y?: number, z?: number) {
     return vec3.clone(x as vec3);
   }
 
-  return vec3.fromValues(x[0], x[1], x[2]);
+  return vec3.fromValues(x[0], x[1], x[2] || 0);
 }
 
 export function deg2rad(deg: number) {
@@ -138,7 +138,7 @@ export function fromRotationTranslationScale(
   x: number,
   y: number,
   scaleX: number,
-  scaleY: number
+  scaleY: number,
 ): mat3 {
   const cos = Math.cos(rotation);
   const sin = Math.sin(rotation);

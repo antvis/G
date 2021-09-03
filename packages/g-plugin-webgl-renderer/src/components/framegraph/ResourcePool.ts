@@ -33,6 +33,9 @@ export class ResourcePool {
   }
 
   public clean() {
+    Object.keys(this.resourcePool).forEach((resourceName) => {
+      this.resourcePool[resourceName].destroy();
+    });
     this.resourcePool = {};
   }
 }

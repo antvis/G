@@ -1,5 +1,6 @@
 /** handle props in keyframe */
 import type { DisplayObject } from '../DisplayObject';
+import { SceneGraphService } from '../services';
 
 export const StylePropertyParser = Symbol('StylePropertyParser');
 export type StylePropertyParser<Original, Parsed> = (
@@ -22,6 +23,7 @@ export type StylePropertyUpdater<Original> = (
   oldValue: Original,
   newValue: Original,
   displayObject: DisplayObject,
+  sceneGraphService: SceneGraphService,
 ) => void;
 export const StylePropertyUpdaterFactory = Symbol('StylePropertyUpdaterFactory');
 export type StylePropertyUpdaterFactory = <Original>(
@@ -50,3 +52,4 @@ export * from './transform';
 export * from './dimension';
 export * from './path';
 export * from './points';
+export * from './filter';

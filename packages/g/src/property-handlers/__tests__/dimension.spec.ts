@@ -62,8 +62,8 @@ describe('Dimension', () => {
       circle,
       0,
     );
-    expect(left).to.be.eqls([10]);
-    expect(right).to.be.eqls([40]);
+    expect(left).to.be.eqls(10);
+    expect(right).to.be.eqls(40);
     expect(format(30)).to.be.eqls('30px');
   });
 
@@ -81,8 +81,8 @@ describe('Dimension', () => {
       circle,
       0,
     );
-    expect(left).to.be.eqls([40]);
-    expect(right).to.be.eqls([40]);
+    expect(left).to.be.eqls(40);
+    expect(right).to.be.eqls(40);
     expect(format(30)).to.be.eqls('30px');
   });
 });

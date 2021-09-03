@@ -119,8 +119,11 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
         if (pickedFeatureIdx > -1) {
           const pickedDisplayObject = this.pickingIdGenerator.getById(pickedFeatureIdx);
-          if (pickedDisplayObject
-            && targets.indexOf(pickedDisplayObject) === -1) {
+          if (
+            pickedDisplayObject &&
+            pickedDisplayObject.interactive &&
+            targets.indexOf(pickedDisplayObject) === -1
+          ) {
             targets.push(pickedDisplayObject);
           }
         }
@@ -152,10 +155,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     };
   };
 
-  execute = (
-    fg: FrameGraphEngine,
-    pass: FrameGraphPass<RenderPassData>,
-  ) => {
+  execute = (fg: FrameGraphEngine, pass: FrameGraphPass<RenderPassData>) => {
     const resourceNode = fg.getResourceNode(pass.data.output);
     const framebuffer = this.resourcePool.getOrCreateResource(resourceNode.resource);
 
@@ -342,11 +342,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
         displayObject.children.forEach((instance: DisplayObject) => {
           // don't get each child's worldTransform here, which will cause bad perf
-          const m = mat4.multiply(
-            mat4.create(),
-            parentWorldMatrix,
-            instance.getLocalTransform(),
-          );
+          const m = mat4.multiply(mat4.create(), parentWorldMatrix, instance.getLocalTransform());
           modelMatrixAttribute0Buffer.push(m[0], m[1], m[2], m[3]);
           modelMatrixAttribute1Buffer.push(m[4], m[5], m[6], m[7]);
           modelMatrixAttribute2Buffer.push(m[8], m[9], m[10], m[11]);

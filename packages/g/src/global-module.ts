@@ -50,6 +50,7 @@ import {
   mergePaths,
   mergeNumbers,
   mergeNumberLists,
+  parseFilter,
 } from './property-handlers';
 import { container } from './inversify.config';
 
@@ -134,7 +135,7 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
     undefined,
   );
   addPropertiesHandler<number, number>(
-    ['r', 'rx', 'ry', 'lineWidth', 'width', 'height', 'shadowBlur'],
+    ['r', 'rx', 'ry', 'lineWidth', 'lineAppendWidth', 'width', 'height', 'shadowBlur'],
     parseNumber,
     clampedMergeNumbers(0, Infinity),
     undefined,
@@ -163,6 +164,7 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
       'shadowOffsetX',
       'shadowOffsetY',
       'lineWidth',
+      'lineAppendWidth',
       'font',
       'fontSize',
       'fontFamily',
@@ -210,6 +212,8 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
     undefined,
     updateLocalPosition,
   );
+
+  addPropertyHandler('filter', parseFilter, undefined, undefined);
 });
 
 function addPropertyHandler<O, P, I extends Interpolatable = number>(

@@ -50,7 +50,9 @@ describe('DisplayObject Node API', () => {
     group1.setPosition([10, 10, 10]);
     // set group2 to origin in local space
     group2.setLocalPosition(0, 0, 0);
+    group2.setLocalPosition(0, 0);
     group2.setLocalPosition([0, 0, 0]);
+    group2.setLocalPosition([0, 0]);
 
     expect(group1.getPosition()).to.eqls(vec3.fromValues(10, 10, 10));
     expect(group2.getPosition()).to.eqls(vec3.fromValues(10, 10, 10));
@@ -70,6 +72,7 @@ describe('DisplayObject Node API', () => {
     // scale group1
     group1.scale(10);
     group1.scale([1, 1, 1]);
+    group1.scale([1, 1]);
 
     // group2's world transform should be the same with group1
     expect(group1.getScale()).to.eqls(vec3.fromValues(10, 10, 10));

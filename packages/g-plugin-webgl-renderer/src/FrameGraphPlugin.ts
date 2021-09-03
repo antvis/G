@@ -9,12 +9,16 @@ import {
   DisplayObject,
   Batch,
   Renderable,
+  PARSED_COLOR_TYPE,
+  OffscreenCanvasCreator,
+  ParsedColorStyleProperty,
 } from '@antv/g';
+import { mat3 } from 'gl-matrix';
 import { isNil } from '@antv/util';
 import { inject, injectable } from 'inversify';
 import { ResourcePool } from './components/framegraph/ResourcePool';
 import { Renderable3D, INSTANCING_STATUS } from './components/Renderable3D';
-import { RenderingEngine } from './services/renderer';
+import { ITexture2D, RenderingEngine } from './services/renderer';
 import { TexturePool } from './shapes/TexturePool';
 import { FrameGraphEngine, IRenderPass, RenderPassFactory } from './FrameGraphEngine';
 import { CopyPass, CopyPassData } from './passes/CopyPass';
@@ -29,6 +33,7 @@ import { View } from './View';
 import TAAPass, { TAAPassData } from './passes/TAAPass';
 import { PassNode } from './components/framegraph/PassNode';
 import { FrameGraphPass } from './components/framegraph/FrameGraphPass';
+import { gl } from './services/renderer/constants';
 
 export const ATTRIBUTE = {
   ModelMatrix0: 'a_ModelMatrix0',
@@ -46,11 +51,18 @@ export const UNIFORM = {
   CameraPosition: 'u_CameraPosition',
   Viewport: 'u_Viewport',
   DPR: 'u_DevicePixelRatio',
+  FillOpacity: 'u_FillOpacity',
   Opacity: 'u_Opacity',
   PickingStage: 'u_PickingStage',
+  /**
+   * gradient(linear/radial) & pattern
+   */
+  Map: 'u_Map',
+  UvTransform: 'u_UvTransform',
 };
 
 export const STYLE = {
+  Fill: 'fill',
   Opacity: 'opacity',
   FillOpacity: 'fillOpacity',
 };
@@ -183,7 +195,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
         // handle batch
         const isBatch = tagName === Batch.tag;
         if (isBatch) {
-          tagName = ((object as unknown) as Batch<any>).getBatchType()!;
+          tagName = (object as unknown as Batch<any>).getBatchType()!;
         }
 
         const modelBuilder = this.modelBuilderFactory(tagName);
@@ -193,12 +205,11 @@ export class FrameGraphPlugin implements RenderingPlugin {
         await modelBuilder.prepareModel(object);
 
         const material = entity.getComponent(Material3D);
-        material.setUniform(
-          UNIFORM.Opacity,
-          isNil(attributes.fillOpacity || attributes.opacity)
-            ? 1
-            : attributes.fillOpacity || attributes.opacity,
-        );
+
+        const { fill, opacity, fillOpacity } = object.parsedStyle;
+        material.setUniform(UNIFORM.Opacity, opacity);
+        material.setUniform(UNIFORM.FillOpacity, fillOpacity);
+        await this.updateFill(fill, object, renderingService);
 
         // allocate pickingid for each child in batch
         const pickingColorBuffer: number[] = [];
@@ -237,13 +248,17 @@ export class FrameGraphPlugin implements RenderingPlugin {
 
     renderingService.hooks.attributeChanged.tap(
       FrameGraphPlugin.tag,
-      (object: DisplayObject, name: string, value: any) => {
+      async (object: DisplayObject, name: string, value: any) => {
         const entity = object.getEntity();
         const renderable3d = entity.getComponent(Renderable3D);
+        const material = entity.getComponent(Material3D);
         if (renderable3d && renderable3d.modelPrepared) {
-          if (name === STYLE.Opacity || name === STYLE.FillOpacity) {
-            const material = entity.getComponent(Material3D);
+          if (name === STYLE.Opacity) {
             material.setUniform(UNIFORM.Opacity, value);
+          } else if (name === STYLE.FillOpacity) {
+            material.setUniform(UNIFORM.FillOpacity, value);
+          } else if (name === STYLE.Fill) {
+            await this.updateFill(object.parsedStyle.fill, object, renderingService);
           }
 
           const sceneGraphNode = entity.getComponent(SceneGraphNode);
@@ -257,10 +272,8 @@ export class FrameGraphPlugin implements RenderingPlugin {
   private buildFrameGraph() {
     const { enableTAA } = this.canvasConfig.renderer.getConfig();
 
-    const {
-      setup: setupRenderPass,
-      execute: executeRenderPass,
-    } = this.renderPassFactory<RenderPassData>(RenderPass.IDENTIFIER);
+    const { setup: setupRenderPass, execute: executeRenderPass } =
+      this.renderPassFactory<RenderPassData>(RenderPass.IDENTIFIER);
     const renderPass = this.frameGraphSystem.addPass<RenderPassData>(
       RenderPass.IDENTIFIER,
       // @ts-ignore
@@ -268,10 +281,9 @@ export class FrameGraphPlugin implements RenderingPlugin {
       executeRenderPass,
     );
 
-    const {
-      setup: setupTAAPass,
-      execute: executeTAAPass,
-    } = this.renderPassFactory<TAAPassData>(TAAPass.IDENTIFIER);
+    const { setup: setupTAAPass, execute: executeTAAPass } = this.renderPassFactory<TAAPassData>(
+      TAAPass.IDENTIFIER,
+    );
     const taaPass = this.frameGraphSystem.addPass<TAAPassData>(
       TAAPass.IDENTIFIER,
       // @ts-ignore
@@ -279,9 +291,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
       executeTAAPass,
     );
 
-    const {
-      execute: executeCopyPass,
-    } = this.renderPassFactory<CopyPassData>(CopyPass.IDENTIFIER);
+    const { execute: executeCopyPass } = this.renderPassFactory<CopyPassData>(CopyPass.IDENTIFIER);
     const copyPass = this.frameGraphSystem.addPass<CopyPassData>(
       CopyPass.IDENTIFIER,
       (fg: FrameGraphEngine, passNode: PassNode, pass: FrameGraphPass<CopyPassData>) => {
@@ -291,9 +301,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
         });
 
         pass.data = {
-          input: passNode.read(
-            enableTAA ? taaPass.data.copy : renderPass.data.output
-          ),
+          input: passNode.read(enableTAA ? taaPass.data.copy : renderPass.data.output),
           output: passNode.write(fg, output),
         };
       },
@@ -303,5 +311,53 @@ export class FrameGraphPlugin implements RenderingPlugin {
     // render to screen
     this.frameGraphSystem.present(copyPass.data.output);
     this.frameGraphSystem.compile();
+  }
+
+  private async updateFill(
+    fill: ParsedColorStyleProperty,
+    object: DisplayObject,
+    renderingService: RenderingService,
+  ) {
+    const material = object.getEntity().getComponent(Material3D);
+    const renderable = object.getEntity().getComponent(Renderable);
+    // use pattern & gradient
+    if (
+      fill.type === PARSED_COLOR_TYPE.Pattern ||
+      fill.type === PARSED_COLOR_TYPE.LinearGradient ||
+      fill.type === PARSED_COLOR_TYPE.RadialGradient
+    ) {
+      let texture: ITexture2D;
+      if (
+        fill.type === PARSED_COLOR_TYPE.LinearGradient ||
+        fill.type === PARSED_COLOR_TYPE.RadialGradient
+      ) {
+        this.texturePool.getOrCreateGradient({
+          type: fill.type,
+          ...fill.value,
+          width: 128,
+          height: 128,
+        });
+        const canvas = this.texturePool.getOrCreateCanvas();
+        texture = await this.texturePool.getOrCreateTexture2D(this.engine, canvas, {
+          width: 32,
+          height: 32,
+        });
+      } else {
+        texture = await this.texturePool.getOrCreateTexture2D(this.engine, fill.value.src, {
+          width: 32,
+          height: 32,
+        });
+      }
+      material.setDefines({
+        USE_UV: 1,
+        USE_MAP: 1,
+      });
+      material.setUniform({
+        [UNIFORM.Map]: texture,
+        [UNIFORM.UvTransform]: mat3.create(),
+      });
+      renderable.dirty = true;
+      renderingService.dirtify();
+    }
   }
 }

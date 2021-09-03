@@ -6,6 +6,7 @@ import {
   Rectangle,
   ContextService,
 } from '@antv/g';
+import { clamp } from '@antv/util';
 import { inject, injectable } from 'inversify';
 import { IRenderPass, RenderPassFactory } from './FrameGraphEngine';
 import { RenderPass, RenderPassData } from './passes/RenderPass';
@@ -57,11 +58,13 @@ export class PickingPlugin implements RenderingPlugin {
 
       const [pickedDisplayObject] = renderPass.pickByRectangle(
         new Rectangle(
-          Math.round(xInDevicePixel),
+          clamp(Math.round(xInDevicePixel), 0, width - 1),
           // flip Y
-          Math.round(height - (y + 1) * dpr),
-          1, 1
-        ));
+          clamp(Math.round(height - (y + 1) * dpr), 0, height - 1),
+          1,
+          1,
+        ),
+      );
 
       return {
         position: result.position,

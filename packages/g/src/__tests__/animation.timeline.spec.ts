@@ -46,18 +46,24 @@ describe('Timeline', () => {
 
     // tick(90);
 
-    const animation = circle.animate(
-      [], {
+    const animation = circle.animate([], {
       duration: 500,
     });
-    console.log('not ready', canvas.timeline.currentTime, animation?.currentTime, animation?.playState);
+    expect(canvas.timeline.currentTime).to.be.eqls(0);
+    expect(animation?.currentTime).to.be.eqls(0);
+    expect(animation?.playState).to.be.eqls('running');
 
     animation?.ready.then(() => {
       console.log('ready', canvas.timeline.currentTime, animation.currentTime, animation.playState);
     });
 
     animation?.finished.then(() => {
-      console.log('finished', canvas.timeline.currentTime, animation.currentTime, animation.playState);
+      console.log(
+        'finished',
+        canvas.timeline.currentTime,
+        animation.currentTime,
+        animation.playState,
+      );
     });
 
     // expect(animation?.playState).to.be.eql('pending');

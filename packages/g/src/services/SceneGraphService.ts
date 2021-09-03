@@ -5,7 +5,7 @@ import { SceneGraphNode } from '../components/SceneGraphNode';
 import { Sortable } from '../components/Sortable';
 import { inject, injectable } from 'inversify';
 import { Geometry, Renderable } from '../components';
-import { mat4, quat, vec3 } from 'gl-matrix';
+import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import { DisplayObject } from '../DisplayObject';
 import { AABB } from '../shapes';
 import { SceneGraphSelector, SceneGraphSelectorFactory } from './SceneGraphSelector';
@@ -305,17 +305,9 @@ export class SceneGraphService extends EventEmitter {
   setPosition = (() => {
     const parentInvertMatrix = mat4.create();
 
-    return (
-      displayObject: DisplayObject,
-      position: vec3 | number,
-      y: number = 0,
-      z: number = 0,
-    ) => {
-      if (typeof position === 'number') {
-        position = vec3.fromValues(position, y, z);
-      }
-
+    return (displayObject: DisplayObject, position: vec3 | vec2) => {
       const transform = displayObject.getEntity().getComponent(Transform);
+      position = vec3.fromValues(position[0], position[1], position[2] || transform.position[2]);
       transform.position = position;
 
       if (displayObject.parent === null) {
@@ -337,16 +329,9 @@ export class SceneGraphService extends EventEmitter {
   /**
    * move to position in local space
    */
-  setLocalPosition(
-    displayObject: DisplayObject,
-    position: vec3 | number,
-    y: number = 0,
-    z: number = 0,
-  ) {
-    if (typeof position === 'number') {
-      position = vec3.fromValues(position, y, z);
-    }
+  setLocalPosition(displayObject: DisplayObject, position: vec3 | vec2) {
     const transform = displayObject.getEntity().getComponent(Transform);
+    position = vec3.fromValues(position[0], position[1], position[2] || transform.localPosition[2]);
     if (vec3.equals(transform.localPosition, position)) {
       return;
     }
@@ -359,30 +344,29 @@ export class SceneGraphService extends EventEmitter {
   /**
    * scale in local space
    */
-  scaleLocal(displayObject: DisplayObject, scaling: vec3 | number, y: number = 1, z: number = 1) {
-    if (typeof scaling === 'number') {
-      scaling = vec3.fromValues(scaling, y, z);
-    }
+  scaleLocal(displayObject: DisplayObject, scaling: vec3 | vec2) {
     const transform = displayObject.getEntity().getComponent(Transform);
-    vec3.multiply(transform.localScale, transform.localScale, scaling);
+    vec3.multiply(
+      transform.localScale,
+      transform.localScale,
+      vec3.fromValues(scaling[0], scaling[1], scaling[2] || 1),
+    );
     this.dirtifyLocal(displayObject, transform);
   }
 
-  setLocalScale(
-    displayObject: DisplayObject,
-    scaling: vec3 | number,
-    y: number = 1,
-    z: number = 1,
-  ) {
-    if (typeof scaling === 'number') {
-      scaling = vec3.fromValues(scaling, y, z);
-    }
+  setLocalScale(displayObject: DisplayObject, scaling: vec3 | vec2) {
     const transform = displayObject.getEntity().getComponent(Transform);
-    if (vec3.equals(transform.localScale, scaling)) {
+    const updatedScaling = vec3.fromValues(
+      scaling[0],
+      scaling[1],
+      scaling[2] || transform.localScale[2],
+    );
+
+    if (vec3.equals(updatedScaling, transform.localScale)) {
       return;
     }
 
-    vec3.copy(transform.localScale, scaling);
+    vec3.copy(transform.localScale, updatedScaling);
     this.dirtifyLocal(displayObject, transform);
   }
 
@@ -580,7 +564,7 @@ export class SceneGraphService extends EventEmitter {
     return renderable.aabb || null;
   }
 
-  private dirtifyAABBToRoot(displayObject: DisplayObject) {
+  dirtifyAABBToRoot(displayObject: DisplayObject) {
     let p: DisplayObject | null = displayObject;
     while (p) {
       const renderable = p.getEntity().getComponent(Renderable);

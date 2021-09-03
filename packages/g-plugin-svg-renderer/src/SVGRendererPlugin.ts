@@ -22,11 +22,15 @@ import type {
   LinearGradient,
   RadialGradient,
   Pattern,
+  ParsedFilterStyleProperty,
 } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
 import { createSVGElement } from './utils/dom';
 import { numberToLongString } from './utils/format';
 import { ElementRenderer, ElementRendererFactory } from './shapes/paths';
+import { createOrUpdateFilter } from './shapes/defs/Filter';
+import { createOrUpdateGradientAndPattern } from './shapes/defs/Pattern';
+import { createOrUpdateShadow } from './shapes/defs/Shadow';
 
 export const SHAPE_TO_TAGS: Record<SHAPE | string, string> = {
   [SHAPE.Rect]: 'path',
@@ -86,13 +90,13 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   shadowBlur: 'stdDeviation',
   shadowOffsetX: 'dx',
   shadowOffsetY: 'dy',
+  filter: 'filter',
 };
 
 export type GradientParams = (LinearGradient | RadialGradient) & { type: PARSED_COLOR_TYPE };
 
 const G_SVG_PREFIX = 'g_svg';
 const CLIP_PATH_PREFIX = 'clip-path-';
-const FILTER_DROPSHADOW_PREFIX = 'filter-dropshadow-';
 let counter = 0;
 
 @injectable()
@@ -123,8 +127,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
    * <camera>
    */
   private $camera: SVGElement;
-
-  private cacheKey2IDMap: Record<string, string> = {};
 
   apply(renderingService: RenderingService) {
     renderingService.hooks.init.tap(SVGRendererPlugin.tag, () => {
@@ -263,26 +265,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const { parsedStyle } = object;
     if (SVG_ATTR_MAP[name]) {
       if (name === 'fill' || name === 'stroke') {
-        const parsedColor = parsedStyle[name] as ParsedColorStyleProperty;
-        const gradientId = this.generateCacheKey(parsedColor);
-        const existed = this.$def.querySelector(`#${gradientId}`);
-        if (
-          parsedColor.type === PARSED_COLOR_TYPE.LinearGradient ||
-          parsedColor.type === PARSED_COLOR_TYPE.RadialGradient
-        ) {
-          if (!existed) {
-            this.createGradient(parsedColor, gradientId);
-          }
-          $el?.setAttribute(SVG_ATTR_MAP[name], `url(#${gradientId})`);
-        } else if (parsedColor.type === PARSED_COLOR_TYPE.Pattern) {
-          if (!existed) {
-            this.createPattern(parsedColor, gradientId);
-          }
-          $el?.setAttribute(SVG_ATTR_MAP[name], `url(#${gradientId})`);
-        } else {
-          // constant value, eg. '#fff'
-          $el?.setAttribute(SVG_ATTR_MAP[name], `${parsedColor.formatted}`);
-        }
+        createOrUpdateGradientAndPattern(
+          this.$def,
+          object,
+          $el!,
+          parsedStyle[name],
+          SVG_ATTR_MAP[name],
+        );
       } else if (name === 'visibility') {
         // update `visibility` on <group>
         $groupEl?.setAttribute(SVG_ATTR_MAP[name], `${value}`);
@@ -322,35 +311,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
         name === 'shadowOffsetX' ||
         name === 'shadowOffsetY'
       ) {
-        const shadowId = FILTER_DROPSHADOW_PREFIX + entity.getName();
-        let $existedFilter = this.$def.querySelector(`#${shadowId}`);
-        if (!$existedFilter) {
-          $existedFilter = createSVGElement('filter') as SVGFilterElement;
-          const $feDropShadow = createSVGElement('feDropShadow');
-          $feDropShadow.setAttribute('dx', '0');
-          $feDropShadow.setAttribute('dy', '0');
-          $existedFilter.appendChild($feDropShadow);
-          $existedFilter.id = shadowId;
-          this.$def.appendChild($existedFilter);
-        }
-        const $feDropShadow = $existedFilter.children[0] as SVGPatternElement;
-        if (name === 'shadowColor') {
-          const parsedColor = parsedStyle[name] as ParsedColorStyleProperty;
-          $feDropShadow.setAttribute('flood-color', parsedColor.formatted);
-        } else if (name === 'shadowBlur') {
-          // half the blur radius
-          // @see https://drafts.csswg.org/css-backgrounds/#shadow-blur
-          // @see https://css-tricks.com/breaking-css-box-shadow-vs-drop-shadow/
-          $feDropShadow.setAttribute('stdDeviation', `${Number(parsedStyle[name]) / 2}`);
-        } else if (name === 'shadowOffsetX') {
-          $feDropShadow.setAttribute('dx', parsedStyle[name]);
-        } else if (name === 'shadowOffsetY') {
-          $feDropShadow.setAttribute('dy', parsedStyle[name]);
-        }
-
-        // use filter <feDropShadow>
-        // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDropShadow
-        $el?.setAttribute('filter', `url(#${shadowId})`);
+        createOrUpdateShadow(this.$def, object, $el!, name);
+      } else if (name === 'filter') {
+        createOrUpdateFilter(this.$def, object, $el!, parsedStyle[name]);
       } else {
         if (
           // (!object.style.clipPathTargets) &&
@@ -438,99 +401,5 @@ export class SVGRendererPlugin implements RenderingPlugin {
       $el?.setAttribute('cx', `${width / 2}`);
       $el?.setAttribute('cy', `${height / 2}`);
     }
-  }
-
-  private generateCacheKey(params: ParsedColorStyleProperty): string {
-    let cacheKey = '';
-    const { type } = params;
-    if (type === PARSED_COLOR_TYPE.Pattern) {
-      const { src } = params.value as Pattern;
-      cacheKey = src;
-    } else if (
-      type === PARSED_COLOR_TYPE.LinearGradient ||
-      type === PARSED_COLOR_TYPE.RadialGradient
-    ) {
-      // @ts-ignore
-      const { x0, y0, x1, y1, r1, steps } = params.value;
-      cacheKey = `${type}${x0}${y0}${x1}${y1}${r1 || 0}${steps
-        .map((step: string[]) => step.join(''))
-        .join('')}`;
-    }
-
-    if (cacheKey) {
-      if (!this.cacheKey2IDMap[cacheKey]) {
-        this.cacheKey2IDMap[cacheKey] = `_pattern_${type}_${counter++}`;
-      }
-    }
-
-    return this.cacheKey2IDMap[cacheKey];
-  }
-
-  private createPattern(
-    parsedColor: ParsedStyleProperty<PARSED_COLOR_TYPE.Pattern, Pattern, string>,
-    patternId: string,
-  ) {
-    const { src } = parsedColor.value;
-    // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/pattern
-    const $pattern = createSVGElement('pattern') as SVGPatternElement;
-    $pattern.setAttribute('patternUnits', 'userSpaceOnUse');
-    const $image = createSVGElement('image');
-    $pattern.appendChild($image);
-    $pattern.id = patternId;
-    this.$def.appendChild($pattern);
-
-    $image.setAttribute('href', src);
-
-    const img = new Image();
-    if (!src.match(/^data:/i)) {
-      img.crossOrigin = 'Anonymous';
-    }
-    img.src = src;
-    function onload() {
-      $pattern.setAttribute('width', `${img.width}`);
-      $pattern.setAttribute('height', `${img.height}`);
-    }
-    if (img.complete) {
-      onload();
-    } else {
-      img.onload = onload;
-      // Fix onload() bug in IE9
-      img.src = img.src;
-    }
-  }
-
-  private createGradient(
-    parsedColor:
-      | ParsedStyleProperty<PARSED_COLOR_TYPE.LinearGradient, LinearGradient, string>
-      | ParsedStyleProperty<PARSED_COLOR_TYPE.RadialGradient, RadialGradient, string>,
-    gradientId: string,
-  ) {
-    // <linearGradient> <radialGradient>
-    // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/linearGradient
-    // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/radialGradient
-    const $gradient = createSVGElement(
-      parsedColor.type === PARSED_COLOR_TYPE.LinearGradient ? 'linearGradient' : 'radialGradient',
-    );
-    if (parsedColor.type === PARSED_COLOR_TYPE.LinearGradient) {
-      const { x0, y0, x1, y1 } = parsedColor.value;
-      $gradient.setAttribute('x1', `${x0}`);
-      $gradient.setAttribute('y1', `${y0}`);
-      $gradient.setAttribute('x2', `${x1}`);
-      $gradient.setAttribute('y2', `${y1}`);
-    } else {
-      const { x0, y0, r1 } = parsedColor.value;
-      $gradient.setAttribute('cx', `${x0}`);
-      $gradient.setAttribute('cy', `${y0}`);
-      $gradient.setAttribute('r', `${r1 / 2}`);
-    }
-
-    // add stops
-    let innerHTML = '';
-    parsedColor.value.steps.forEach(([offset, color]) => {
-      innerHTML += `<stop offset="${offset}" stop-color="${color}"></stop>`;
-    });
-    $gradient.innerHTML = innerHTML;
-    $gradient.id = gradientId;
-    this.$def.appendChild($gradient);
   }
 }

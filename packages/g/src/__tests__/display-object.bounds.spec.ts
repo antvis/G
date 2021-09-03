@@ -5,14 +5,14 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { DisplayObject, Rect, Circle, Line, Polyline, SHAPE } from '..';
+import { DisplayObject, Rect, Circle, Group, Line, Polyline, SHAPE } from '..';
 import { vec3 } from 'gl-matrix';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
 
 describe('DisplayObject get(Local)Bounds() API', () => {
-  it('should calc Circle\'s bounds correctly', () => {
+  it("should calc Circle's bounds correctly", () => {
     const circle = new Circle({
       style: {
         x: 100,
@@ -56,7 +56,7 @@ describe('DisplayObject get(Local)Bounds() API', () => {
     }
   });
 
-  it('should calc Rect\'s bounds correctly', () => {
+  it("should calc Rect's bounds correctly", () => {
     const rect = new Rect({
       style: {
         x: 100,
@@ -83,7 +83,7 @@ describe('DisplayObject get(Local)Bounds() API', () => {
     const clipPath = new Circle({
       style: {
         r: 20,
-      }
+      },
     });
     // clipped by Circle
     rect.style.clipPath = clipPath;
@@ -101,12 +101,41 @@ describe('DisplayObject get(Local)Bounds() API', () => {
       expect(bounds.halfExtents).eqls(vec3.fromValues(40, 40, 0));
     }
 
-    // clear clip path 
+    // clear clip path
     rect.style.clipPath = null;
     bounds = rect.getBounds();
     if (bounds) {
       expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
       expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+    }
+  });
+
+  it("should calc Group's bounds correctly", () => {
+    const group = new Group();
+    let bounds = group.getBounds();
+    expect(bounds).to.be.null;
+
+    const circle = new Circle({
+      style: {
+        x: 100,
+        y: 100,
+        r: 100,
+      },
+    });
+    group.appendChild(circle);
+
+    bounds = group.getBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+    }
+
+    // change circle's radius
+    circle.style.r = 200;
+    bounds = group.getBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(200, 200, 0));
     }
   });
 });
