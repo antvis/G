@@ -4,7 +4,7 @@
  */
 import { interfaces } from 'inversify';
 
-export const ContributionProvider = Symbol('ContributionProvider');
+export const ContributionProvider = 'ContributionProvider';
 
 export interface ContributionProvider<T extends object> {
   /**
@@ -18,7 +18,7 @@ class ContainerBasedContributionProvider<T extends object> implements Contributi
 
   constructor(
     protected readonly serviceIdentifier: interfaces.ServiceIdentifier<T>,
-    protected readonly container: interfaces.Container
+    protected readonly container: interfaces.Container,
   ) {}
 
   getContributions(recursive?: boolean): T[] {

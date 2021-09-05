@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 import { ICamera, IView, IViewport } from './services/renderer';
 
-export const Views = Symbol('Views');
+export const Views = 'Views';
 
 @injectable()
 export class View implements IView {

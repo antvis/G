@@ -8,7 +8,7 @@ export function isPointInPath(
     y: number;
   },
 ): boolean {
-  const { x1, y1, x2, y2, lineWidth = 0, x = 0, y = 0 } = displayObject.parsedStyle;
+  const { x1, y1, x2, y2, lineWidth = 0, defX: x = 0, defY: y = 0 } = displayObject.parsedStyle;
 
   return inLine(x1, y1, x2, y2, lineWidth, position.x + x, position.y + y);
 }

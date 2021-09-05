@@ -1,10 +1,10 @@
 import { injectable } from 'inversify';
 import type { GeometryAABBUpdater } from '.';
-import type { LineStyleProps } from '../../display-objects/Line';
+import type { ParsedLineStyleProps } from '../../display-objects/Line';
 
 @injectable()
-export class LineUpdater implements GeometryAABBUpdater<LineStyleProps> {
-  update(parsedStyle: LineStyleProps) {
+export class LineUpdater implements GeometryAABBUpdater<ParsedLineStyleProps> {
+  update(parsedStyle: ParsedLineStyleProps) {
     const { x1, y1, x2, y2 } = parsedStyle;
     const minX = Math.min(x1, x2);
     const maxX = Math.max(x1, x2);

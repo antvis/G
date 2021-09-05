@@ -2,8 +2,8 @@ import { injectable } from 'inversify';
 import { SceneGraphNode } from '../components';
 import { DisplayObject } from '../DisplayObject';
 
-export const SceneGraphSelectorFactory = Symbol('SceneGraphSelectorFactory');
-export const SceneGraphSelector = Symbol('SceneGraphSelector');
+export const SceneGraphSelectorFactory = 'SceneGraphSelectorFactory';
+export const SceneGraphSelector = 'SceneGraphSelector';
 export interface SceneGraphSelector {
   selectOne(query: string, object: DisplayObject): DisplayObject | null;
   selectAll(query: string, object: DisplayObject): DisplayObject[];

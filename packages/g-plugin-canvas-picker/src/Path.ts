@@ -120,8 +120,8 @@ export function isPointInPath(
     lineWidth = 0,
     stroke,
     fill,
-    x = 0,
-    y = 0,
+    defX: x = 0,
+    defY: y = 0,
     clipPathTargets,
     path,
   } = displayObject.parsedStyle;

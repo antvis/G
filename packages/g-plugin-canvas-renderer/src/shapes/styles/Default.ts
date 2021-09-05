@@ -35,6 +35,7 @@ export class DefaultRenderer implements StyleRenderer {
           context.lineJoin = lineJoin!;
         }
 
+        // prevent inner shadow when drawing stroke, toggle shadowBlur & filter(drop-shadow)
         // save shadow blur
         const shadowBlur = context.shadowBlur;
         const shadowColor = context.shadowColor;
@@ -42,11 +43,22 @@ export class DefaultRenderer implements StyleRenderer {
           context.shadowColor = 'transparent';
           context.shadowBlur = 0;
         }
+
+        // save drop-shadow filter
+        const filter = context.filter;
+        if (!isNil(filter) && filter.indexOf('drop-shadow') > -1) {
+          context.filter = filter.replace(/drop-shadow\([^)]*\)/, '').trim() || 'none';
+        }
+
         context.stroke();
         // restore shadow blur
         if (!isNil(shadowBlur)) {
           context.shadowColor = shadowColor;
           context.shadowBlur = shadowBlur;
+        }
+        // restore filters
+        if (!isNil(filter)) {
+          context.filter = filter;
         }
       }
     }

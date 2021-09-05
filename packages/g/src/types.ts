@@ -137,6 +137,16 @@ export interface ParsedBaseStyleProps
   y?: number;
   width?: number;
   height?: number;
+  /**
+   * x according to definition, eg. Line's x1/x2, Polyline's points
+   */
+  defX?: number;
+  defY?: number;
+  /**
+   * offset relative to initial definition
+   */
+  offsetX?: number;
+  offsetY?: number;
 }
 
 // export type ShapeAttrs = {
@@ -218,7 +228,7 @@ export interface RendererConfig {
   enableTAA: boolean;
 }
 
-export const CanvasConfig = Symbol('CanvasConfig');
+export const CanvasConfig = 'CanvasConfig';
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface CanvasConfig {
   /**

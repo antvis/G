@@ -3,7 +3,7 @@ title: Polyline 折线
 order: 7
 ---
 
-如下 [示例](/zh/examples/shape#polyline) 定义了一条折线，两个端点为：
+如下 [示例](/zh/examples/shape#polyline) 定义了一条折线，各个端点依次为：
 
 ```javascript
 const polyline = new Polyline({
@@ -30,6 +30,12 @@ const polyline = new Polyline({
         lineWidth: 2,
     },
 });
+```
+
+对于折线，默认锚点定义的位置为包围盒左上角顶点，其中各个端点坐标均定义在局部坐标系下。因此如果此时获取上面折线在局部坐标系的坐标，会得到包围盒左上角的坐标，也恰巧是第一个顶点的坐标，即 `[50, 50]`：
+
+```js
+polyline.getLocalPosition(); // [50, 50]
 ```
 
 # 继承自
@@ -66,3 +72,11 @@ export type Point = {
     y: number;
 };
 ```
+
+## getStartTangent(): number[][]
+
+获取起点的切向量，形如: `[[10, 10], [20, 20]]`
+
+## getEndTangent(): number[][]
+
+获取终点的切向量，形如: `[[10, 10], [20, 20]]`

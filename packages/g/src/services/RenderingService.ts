@@ -12,7 +12,7 @@ import { Batch } from '../Batch';
 export interface RenderingPlugin {
   apply(renderer: RenderingService): void;
 }
-export const RenderingPluginContribution = Symbol('RenderingPluginContribution');
+export const RenderingPluginContribution = 'RenderingPluginContribution';
 
 export interface PickingResult {
   position: EventPosition;
@@ -117,8 +117,7 @@ export class RenderingService implements CanvasService {
       entity.getComponent(Renderable).dirty = false;
     }
 
-    if (objectToRender?.getEntity()
-      .getComponent(SceneGraphNode)?.tagName !== Batch.tag) {
+    if (objectToRender?.getEntity().getComponent(SceneGraphNode)?.tagName !== Batch.tag) {
       // sort is very expensive, use cached result if posible
       const sortable = entity.getComponent(Sortable);
       if (sortable.dirty) {

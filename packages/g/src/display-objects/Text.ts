@@ -28,8 +28,8 @@ export interface TextStyleProps extends BaseStyleProps {
   leading?: number;
   wordWrap?: boolean;
   wordWrapWidth?: number;
-  dropShadow?: boolean;
-  dropShadowDistance?: number;
+  // dropShadow?: boolean;
+  // dropShadowDistance?: number;
 }
 export class Text extends DisplayObject<TextStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<TextStyleProps>) {
@@ -47,12 +47,12 @@ export class Text extends DisplayObject<TextStyleProps> {
         fontVariant: 'normal',
         textAlign: 'start',
         textBaseline: 'alphabetic',
-        dropShadow: false,
+        // dropShadow: false,
         // dropShadowAlpha: 1,
         // dropShadowAngle: Math.PI / 6,
         // dropShadowBlur: 0,
         // dropShadowColor: '#000',
-        dropShadowDistance: 5,
+        // dropShadowDistance: 5,
         fill: '#000',
         letterSpacing: 0,
         lineHeight: 0,

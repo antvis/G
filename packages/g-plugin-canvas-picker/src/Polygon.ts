@@ -10,8 +10,8 @@ export function isPointInPath(
     fill,
     lineWidth = 0,
     points,
-    x = 0,
-    y = 0,
+    defX: x = 0,
+    defY: y = 0,
     clipPathTargets,
   } = displayObject.parsedStyle;
   const isClipPath = !!clipPathTargets?.length;

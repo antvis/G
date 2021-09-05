@@ -7,8 +7,8 @@ import { ResourceEntry } from './components/framegraph/ResourceEntry';
 import { ResourceNode } from './components/framegraph/ResourceNode';
 import { RenderingEngine } from './services/renderer';
 
-export const RenderPassFactory = Symbol('RenderPassFactory');
-export const IRenderPass = Symbol('IRenderPass');
+export const RenderPassFactory = 'RenderPassFactory';
+export const IRenderPass = 'IRenderPass';
 export interface IRenderPass<RenderPassData> {
   /**
    * 只声明虚拟资源及其读写关系，不进行具体资源 Texture | Framebuffer 的实例化
@@ -55,7 +55,7 @@ export class FrameGraphEngine {
     name: string,
     setup: (fg: FrameGraphEngine, passNode: PassNode, pass: FrameGraphPass<PassData>) => void,
     execute: (fg: FrameGraphEngine, pass: FrameGraphPass<PassData>) => void,
-    tearDown?: () => void
+    tearDown?: () => void,
   ) {
     const frameGraphPass = new FrameGraphPass<PassData>();
     frameGraphPass.execute = execute;
@@ -219,7 +219,7 @@ export class FrameGraphEngine {
       },
       () => {
         // 不需要执行
-      }
+      },
     );
   }
 }

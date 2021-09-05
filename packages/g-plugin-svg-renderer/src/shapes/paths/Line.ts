@@ -6,7 +6,7 @@ import { injectable } from 'inversify';
 export class LineRenderer implements ElementRenderer<ParsedBaseStyleProps> {
   dependencies = ['x1', 'y1', 'x2', 'y2'];
   apply($el: SVGElement, parsedStyle: ParsedBaseStyleProps) {
-    const { x1, y1, x2, y2, x = 0, y = 0, stroke } = parsedStyle;
+    const { x1, y1, x2, y2, defX: x = 0, defY: y = 0, stroke } = parsedStyle;
 
     $el.setAttribute('x1', `${x1 - x}`);
     $el.setAttribute('y1', `${y1 - y}`);

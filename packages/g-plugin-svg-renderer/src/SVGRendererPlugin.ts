@@ -131,12 +131,16 @@ export class SVGRendererPlugin implements RenderingPlugin {
   apply(renderingService: RenderingService) {
     renderingService.hooks.init.tap(SVGRendererPlugin.tag, () => {
       this.$def = createSVGElement('defs') as SVGDefsElement;
-      this.contextService.getContext()?.appendChild(this.$def);
+      const $svg = this.contextService.getContext()!;
+      $svg.appendChild(this.$def);
+
+      // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color-interpolation-filters
+      $svg.setAttribute('color-interpolation-filters', 'sRGB');
 
       this.$camera = createSVGElement('g');
       this.$camera.id = `${G_SVG_PREFIX}_camera`;
       this.applyTransform(this.$camera, this.camera.getOrthoMatrix());
-      this.contextService.getContext()?.appendChild(this.$camera);
+      $svg.appendChild(this.$camera);
     });
 
     renderingService.hooks.mounted.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {

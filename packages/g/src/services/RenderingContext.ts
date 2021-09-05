@@ -11,7 +11,7 @@ export enum RENDER_REASON {
   DisplayObjectRemoved,
   None,
 }
-export const RenderingContext = Symbol('RenderingContext');
+export const RenderingContext = 'RenderingContext';
 export interface RenderingContext {
   /**
    * root of scenegraph

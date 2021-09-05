@@ -40,7 +40,7 @@
   "dependencies": {
     "@antv/g-ecs": "^1.0.0-alpha.3",
     "@antv/g-math": "^1.0.0-alpha.2",
-    "@antv/path-util": "^2.0.10",
+    "@antv/path-util": "^2.0.11",
     "@antv/util": "^2.0.13",
     "d3-color": "^1.4.0",
     "eventemitter3": "^4.0.0",

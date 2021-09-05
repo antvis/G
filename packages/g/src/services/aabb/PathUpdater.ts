@@ -7,14 +7,9 @@ import type { ParsedBaseStyleProps, PathCommand } from '../../types';
 @injectable()
 export class PathUpdater implements GeometryAABBUpdater<ParsedBaseStyleProps> {
   update(parsedStyle: ParsedBaseStyleProps, object: DisplayObject) {
-    const { path, originalX = 0, originalY = 0 } = parsedStyle;
+    const { path } = parsedStyle;
 
     const { x: minX, y: minY, width, height } = path!.rect;
-
-    parsedStyle.diffX = minX - originalX;
-    parsedStyle.diffY = minY - originalY;
-    parsedStyle.originalX = minX;
-    parsedStyle.originalY = minY;
 
     return {
       width,

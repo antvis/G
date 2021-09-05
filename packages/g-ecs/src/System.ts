@@ -1,7 +1,7 @@
 import { Entity } from './Entity';
 import { Matcher } from './Matcher';
 
-export const System = Symbol('System');
+export const System = 'System';
 /**
  * inspired by Entitas' Systems
  * @see https://github.com/sschmid/Entitas-CSharp/wiki/Systems

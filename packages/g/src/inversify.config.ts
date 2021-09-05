@@ -1,16 +1,9 @@
 import { Container } from 'inversify';
 import { containerModule as ecsModule, World } from '@antv/g-ecs';
 import { containerModule as globalModule } from './global-module';
-import {
-  Sortable,
-  Cullable,
-  Geometry,
-  SceneGraphNode,
-  Renderable,
-  Transform,
-} from './components';
+import { Sortable, Cullable, Geometry, SceneGraphNode, Renderable, Transform } from './components';
 
-export const CanvasContainerModuleFactory = Symbol('CanvasContainerModuleFactory');
+export const CanvasContainerModuleFactory = 'CanvasContainerModuleFactory';
 
 const container = new Container();
 // bind ECS

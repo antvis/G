@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
 import { parseTransform, mergeTransforms } from '../transform';
 
-describe('Transform', () => {
+describe('Property Transform', () => {
   it('parse none transform', () => {
     expect(parseTransform('none')).to.be.eqls([]);
   });

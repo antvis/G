@@ -1,11 +1,11 @@
 import { numberToString } from './numeric';
 import type { DisplayObject } from '../DisplayObject';
 import { rad2deg } from '../utils/math';
-import { Geometry } from '../components';
+import { isFinite } from '@antv/util';
 
 export type LengthUnit = 'px' | '%';
 export type AngleUnit = 'deg' | 'rad' | 'turn';
-export type Unit = LengthUnit | AngleUnit;
+export type Unit = LengthUnit | AngleUnit | '';
 export interface ParsedElement {
   unit: Unit;
   value: number;
@@ -30,6 +30,10 @@ export function parseDimension(unitRegExp: RegExp, string: string): ParsedElemen
       // 0 -> 0%
       return { unit: '%', value: 0 };
     }
+  }
+
+  if (isFinite(Number(string))) {
+    return { unit: '', value: Number(string) };
   }
 
   const matchedUnits: Unit[] = [];

@@ -13,6 +13,7 @@
     "build": "father build",
     "watch": "father build -w",
     "test": "jest",
+    "test-g": "jest packages/g/",
     "test-watch": "jest --watch",
     "cov": "jest --coverage",
     "contributor": "git-contributor",

@@ -27,8 +27,12 @@ line1.getLocalPosition(); // [200, 100]
 
 对于上面的直线为 `(200, 100)`。当我们想沿 X 轴向右移动该直线 100 距离时，可以有以下三种做法：
 
+-   使用 translate 在世界坐标系下平移一段相对距离
+-   使用 setPosition 设置世界坐标系下的绝对坐标
+-   直接修改直线定义中的 x1/x2 属性
+
 ```javascript
-// 平移相对距离
+// 平移相对距离，此时 x1/x2 不变
 line1.translate(100, 0);
 // 或者，直接设置锚点位置
 line1.setPosition(200 + 100, 0);
@@ -37,6 +41,13 @@ line1.attr({
     x1: 200 + 100,
     x2: 400 + 100,
 });
+```
+
+如果想更改默认的锚点位置，可以通过 `anchor` 属性修改，例如把直线的中点作为锚点，此时直线局部坐标系下的坐标不变，但会把锚点移动到 `[200, 100]`，因此展示效果会发生改变：
+
+```js
+line.style.anchor = [0.5, 0.5];
+line.getLocalPosition(); // [200, 100]
 ```
 
 # 继承自
@@ -49,6 +60,8 @@ line1.attr({
 
 ### x1
 
+<tag color="green" text="可应用动画">可应用动画</tag>
+
 **类型**： `number`
 
 **默认值**：无
@@ -56,6 +69,8 @@ line1.attr({
 **是否必须**：`true`
 
 ### y1
+
+<tag color="green" text="可应用动画">可应用动画</tag>
 
 **类型**： `number`
 
@@ -65,6 +80,8 @@ line1.attr({
 
 ### x2
 
+<tag color="green" text="可应用动画">可应用动画</tag>
+
 **类型**： `number`
 
 **默认值**：无
@@ -72,6 +89,8 @@ line1.attr({
 **是否必须**：`true`
 
 ### y2
+
+<tag color="green" text="可应用动画">可应用动画</tag>
 
 **类型**： `number`
 

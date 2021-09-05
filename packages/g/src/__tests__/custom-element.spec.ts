@@ -1,6 +1,6 @@
-import type { DisplayObjectConfig } from '@antv/g';
-import { CustomElement } from '../CustomElement';
-import { Circle } from '../display-objects/Circle';
+// import type { DisplayObjectConfig } from '@antv/g';
+// import { CustomElement } from '../CustomElement';
+// import { Circle } from '../display-objects/Circle';
 
 interface AProps {
   size: number;

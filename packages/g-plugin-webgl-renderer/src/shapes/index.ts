@@ -1,7 +1,7 @@
 import { DisplayObject } from '@antv/g';
 
-export const ModelBuilderFactory = Symbol('ModelBuilderFactory');
-export const ModelBuilder = Symbol('ModelBuilder');
+export const ModelBuilderFactory = 'ModelBuilderFactory';
+export const ModelBuilder = 'ModelBuilder';
 export interface ModelBuilder {
   /**
    * prepare model for single shape or a batch of shapes

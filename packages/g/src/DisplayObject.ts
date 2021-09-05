@@ -328,6 +328,10 @@ export class DisplayObject<
     return this.attributes[name as keyof StyleProps];
   }
 
+  /**
+   * is destroyed or not
+   */
+  destroyed = false;
   destroy() {
     // remove from scenegraph first
     this.remove(false);
@@ -343,6 +347,8 @@ export class DisplayObject<
     this.getAnimations().forEach((animation) => {
       animation.cancel();
     });
+
+    this.destroyed = true;
   }
 
   /** scene graph operations */

@@ -2,12 +2,12 @@
 import type { DisplayObject } from '../DisplayObject';
 import { SceneGraphService } from '../services';
 
-export const StylePropertyParser = Symbol('StylePropertyParser');
+export const StylePropertyParser = 'StylePropertyParser';
 export type StylePropertyParser<Original, Parsed> = (
   value: Original,
   displayObject: DisplayObject | null,
 ) => Parsed;
-export const StylePropertyParserFactory = Symbol('StylePropertyParserFactory');
+export const StylePropertyParserFactory = 'StylePropertyParserFactory';
 export type StylePropertyParserFactory = <Original, Parsed>(
   name: string,
 ) => StylePropertyParser<Original, Parsed>;
@@ -18,25 +18,25 @@ export interface ParsedStyleProperty<T, V, Formatted = string> {
 }
 export type Interpolatable = number | boolean | number[] | boolean[];
 
-export const StylePropertyUpdater = Symbol('StylePropertyUpdater');
+export const StylePropertyUpdater = 'StylePropertyUpdater';
 export type StylePropertyUpdater<Original> = (
   oldValue: Original,
   newValue: Original,
   displayObject: DisplayObject,
   sceneGraphService: SceneGraphService,
 ) => void;
-export const StylePropertyUpdaterFactory = Symbol('StylePropertyUpdaterFactory');
+export const StylePropertyUpdaterFactory = 'StylePropertyUpdaterFactory';
 export type StylePropertyUpdaterFactory = <Original>(
   name: string,
 ) => StylePropertyUpdater<Original>;
 
-export const StylePropertyMerger = Symbol('StylePropertyMerger');
+export const StylePropertyMerger = 'StylePropertyMerger';
 export type StylePropertyMerger<Parsed, T extends Interpolatable = number> = (
   left: Parsed,
   right: Parsed,
   displayObject: DisplayObject | null,
 ) => [T, T, (i: T) => string] | undefined;
-export const StylePropertyMergerFactory = Symbol('StylePropertyMergerFactory');
+export const StylePropertyMergerFactory = 'StylePropertyMergerFactory';
 export type StylePropertyMergerFactory = <Parsed>(name: string) => StylePropertyMerger<Parsed>;
 
 export * from './aabb';

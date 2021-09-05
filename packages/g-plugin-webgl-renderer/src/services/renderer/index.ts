@@ -4,7 +4,7 @@ import { mat4, vec3 } from 'gl-matrix';
 import { TranspileTarget } from '../shader-module';
 import { gl } from './constants';
 
-export const RenderingEngine = Symbol('RenderingEngine');
+export const RenderingEngine = 'RenderingEngine';
 
 export interface IBufferInitializationOptions {
   data: BufferData;

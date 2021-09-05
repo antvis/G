@@ -1,6 +1,7 @@
 module.exports = {
   collectCoverageFrom: [
-    'packages/**/*.{ts,tsx}',
+    // 'packages/**/*.{ts,tsx}',
+    'packages/g/**/*.{ts,tsx}',
     '!**/node_modules/**',
     '!**/__tests__/**',
     '!**/*.d.ts',
@@ -23,11 +24,11 @@ module.exports = {
     'ts-jest': {
       isolatedModules: true,
       tsConfig: {
-        target: 'ES2019'
-      }
-    }
+        target: 'ES2019',
+      },
+    },
   },
   testMatch: ['**/*/__tests__/*.spec.+(ts|tsx|js)'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
-  modulePathIgnorePatterns: ['dist'],
+  modulePathIgnorePatterns: ['dist', '.fatherrc.ts'],
 };

@@ -1,5 +1,5 @@
 import { SHAPE } from '../types';
-import type { BaseStyleProps } from '../types';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from '../DisplayObject';
 import { DisplayObjectConfig } from '../DisplayObject';
 import { Line as LineUtil } from '@antv/g-math';
@@ -11,7 +11,15 @@ export interface LineStyleProps extends BaseStyleProps {
   x2: number;
   y2: number;
 }
-export class Line extends DisplayObject<LineStyleProps> {
+export interface ParsedLineStyleProps extends ParsedBaseStyleProps {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  defX: number;
+  defY: number;
+}
+export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<LineStyleProps>) {
     super({
       type: SHAPE.Line,
@@ -33,19 +41,14 @@ export class Line extends DisplayObject<LineStyleProps> {
     });
   }
 
-  private totalLength: number;
-
   getPoint(ratio: number): Point {
-    const { x1, y1, x2, y2 } = this.attributes;
+    const { x1, y1, x2, y2 } = this.parsedStyle;
     const point = LineUtil.pointAt(x1, y1, x2, y2, ratio);
     return new Point(point.x, point.y);
   }
 
   getTotalLength() {
-    if (!this.totalLength) {
-      const { x1, y1, x2, y2 } = this.attributes;
-      this.totalLength = LineUtil.length(x1, y1, x2, y2);
-    }
-    return this.totalLength;
+    const { x1, y1, x2, y2 } = this.parsedStyle;
+    return LineUtil.length(x1, y1, x2, y2);
   }
 }

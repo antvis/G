@@ -6,7 +6,6 @@ import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 
 const blur = 'blur(5px)';
-const brightness = 'brightness(0.4)';
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
@@ -76,11 +75,7 @@ const circleConfig = {
   strokeOpacity: 1,
   anchorX: 0.5,
   anchorY: 0.5,
-  filter: blur,
 };
-circleFolder.add(circleConfig, 'filter', [blur]).onChange((filter) => {
-  circle.style.filter = filter;
-});
 circleFolder.add(circleConfig, 'r', 50, 200).onChange((radius) => {
   circle.style.r = radius;
 });
@@ -106,4 +101,147 @@ circleFolder.add(circleConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
   circle.attr('anchor', [circleConfig.anchorX, anchorY]);
 });
 
-circleFolder.open();
+const blurFolder = gui.addFolder('blur');
+const blurConfig = {
+  enable: true,
+  radius: 5,
+};
+blurFolder.add(blurConfig, 'enable').onChange(() => {
+  circle.style.filter = generateFilter();
+});
+blurFolder.add(blurConfig, 'radius', 0, 20).onChange(() => {
+  circle.style.filter = generateFilter();
+});
+blurFolder.open();
+
+const brightnessFolder = gui.addFolder('brightness');
+const brightnessConfig = {
+  enable: false,
+  brightness: 1,
+};
+brightnessFolder.add(brightnessConfig, 'enable').onChange(() => {
+  circle.style.filter = generateFilter();
+});
+brightnessFolder.add(brightnessConfig, 'brightness', 0, 4, 0.1).onChange(() => {
+  circle.style.filter = generateFilter();
+});
+brightnessFolder.open();
+
+const dropShadowFolder = gui.addFolder('drop-shadow');
+const dropShadowConfig = {
+  enable: false,
+  offsetX: 0,
+  offsetY: 0,
+  radius: 0,
+  color: '#000',
+};
+dropShadowFolder.add(dropShadowConfig, 'enable').onChange(() => {
+  circle.style.filter = generateFilter();
+});
+dropShadowFolder.add(dropShadowConfig, 'offsetX', -10, 10).onChange(() => {
+  circle.style.filter = generateFilter();
+});
+dropShadowFolder.add(dropShadowConfig, 'offsetY', -10, 10).onChange(() => {
+  circle.style.filter = generateFilter();
+});
+dropShadowFolder.add(dropShadowConfig, 'radius', 0, 10).onChange(() => {
+  circle.style.filter = generateFilter();
+});
+dropShadowFolder.addColor(dropShadowConfig, 'color').onChange(() => {
+  circle.style.filter = generateFilter();
+});
+dropShadowFolder.open();
+
+const contrastFolder = gui.addFolder('contrast');
+const contrastConfig = {
+  enable: false,
+  contrast: 1,
+};
+contrastFolder.add(contrastConfig, 'enable').onChange(() => {
+  circle.style.filter = generateFilter();
+});
+contrastFolder.add(contrastConfig, 'contrast', 0, 4, 0.1).onChange(() => {
+  circle.style.filter = generateFilter();
+});
+contrastFolder.open();
+
+const grayscaleFolder = gui.addFolder('grayscale');
+const grayscaleConfig = {
+  enable: false,
+  grayscale: 0,
+};
+grayscaleFolder.add(grayscaleConfig, 'enable').onChange(() => {
+  circle.style.filter = generateFilter();
+});
+grayscaleFolder.add(grayscaleConfig, 'grayscale', 0, 1, 0.1).onChange(() => {
+  circle.style.filter = generateFilter();
+});
+grayscaleFolder.open();
+
+const sepiaFolder = gui.addFolder('sepia');
+const sepiaConfig = {
+  enable: false,
+  sepia: 0,
+};
+sepiaFolder.add(sepiaConfig, 'enable').onChange(() => {
+  circle.style.filter = generateFilter();
+});
+sepiaFolder.add(sepiaConfig, 'sepia', 0, 1, 0.1).onChange(() => {
+  circle.style.filter = generateFilter();
+});
+sepiaFolder.open();
+
+const saturateFolder = gui.addFolder('saturate');
+const saturateConfig = {
+  enable: false,
+  saturate: 0,
+};
+saturateFolder.add(saturateConfig, 'enable').onChange(() => {
+  circle.style.filter = generateFilter();
+});
+saturateFolder.add(saturateConfig, 'saturate', 0, 1, 0.1).onChange(() => {
+  circle.style.filter = generateFilter();
+});
+saturateFolder.open();
+
+const hueRotateFolder = gui.addFolder('hue-rotate');
+const hueRotateConfig = {
+  enable: false,
+  angle: 0,
+};
+hueRotateFolder.add(hueRotateConfig, 'enable').onChange(() => {
+  circle.style.filter = generateFilter();
+});
+hueRotateFolder.add(hueRotateConfig, 'angle', 0, 360).onChange(() => {
+  circle.style.filter = generateFilter();
+});
+hueRotateFolder.open();
+
+const invertFolder = gui.addFolder('invert');
+const invertConfig = {
+  enable: false,
+  amount: 0,
+};
+invertFolder.add(invertConfig, 'enable').onChange(() => {
+  circle.style.filter = generateFilter();
+});
+invertFolder.add(invertConfig, 'amount', 0, 1, 0.1).onChange(() => {
+  circle.style.filter = generateFilter();
+});
+invertFolder.open();
+
+const generateFilter = () => {
+  return [
+    blurConfig.enable ? `blur(${blurConfig.radius}px)` : '',
+    brightnessConfig.enable ? `brightness(${brightnessConfig.brightness})` : '',
+    dropShadowConfig.enable
+      ? `drop-shadow(${dropShadowConfig.offsetX}px ${dropShadowConfig.offsetY}px ${dropShadowConfig.radius}px ${dropShadowConfig.color})`
+      : '',
+    contrastConfig.enable ? `contrast(${contrastConfig.contrast})` : '',
+    grayscaleConfig.enable ? `grayscale(${grayscaleConfig.grayscale})` : '',
+    sepiaConfig.enable ? `sepia(${sepiaConfig.sepia})` : '',
+    saturateConfig.enable ? `saturate(${saturateConfig.saturate})` : '',
+    hueRotateConfig.enable ? `hue-rotate(${hueRotateConfig.angle}deg)` : '',
+    invertConfig.enable ? `invert(${invertConfig.amount})` : '',
+  ].join(' ');
+};

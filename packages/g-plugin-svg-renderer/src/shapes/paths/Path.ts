@@ -6,7 +6,7 @@ import { injectable } from 'inversify';
 export class PathRenderer implements ElementRenderer<ParsedBaseStyleProps> {
   dependencies = ['path'];
   apply($el: SVGElement, parsedStyle: ParsedBaseStyleProps) {
-    const { path, x = 0, y = 0 } = parsedStyle;
+    const { path, defX: x = 0, defY: y = 0 } = parsedStyle;
     $el.setAttribute('d', this.formatPath(path!.absolutePath as PathCommand[], x, y));
   }
 

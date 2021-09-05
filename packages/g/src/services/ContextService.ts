@@ -1,6 +1,6 @@
 import { CanvasService } from '../Canvas';
 
-export const ContextService = Symbol('ContextService');
+export const ContextService = 'ContextService';
 export interface ContextService<Context> extends CanvasService {
   getContext(): Context | null;
   getDomElement(): HTMLElement | null;

@@ -280,7 +280,19 @@ circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘�
 
 **是否必须**：`false`
 
-**说明**：透明度，取值范围为 `[0, 1]`
+**说明**：图形整体透明度，取值范围为 `[0, 1]`
+
+### fillOpacity
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+**类型**： `number`
+
+**默认值**：1
+
+**是否必须**：`false`
+
+**说明**：填充色透明度，取值范围为 `[0, 1]`
 
 ### fill
 
@@ -442,7 +454,7 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 **是否必须**：`false`
 
-**说明**：阴影效果模糊程度，不允许为负数。越大代表越模糊，为 0 时不展示阴影。
+**说明**：阴影效果模糊程度，不允许为负数。越大代表越模糊，为 0 时无模糊效果。
 
 ### shadowOffsetX
 
@@ -467,6 +479,151 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 **是否必须**：`false`
 
 **说明**：垂直方向偏移量，例如负数让阴影往上移，正数向下
+
+## 滤镜
+
+滤镜（Filter）可以对已生成的图像进行一些处理，例如模糊、高亮、提升对比度等。在 Web 端有以下实现：
+
+-   CSS Filter：https://developer.mozilla.org/en-US/docs/Web/CSS/filter
+-   Canvas Filter：https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/filter
+-   SVG Filter：https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/filter
+-   WebGL 中一般称作后处理
+
+参考 CSS Filter 语法，我们支持对图形应用一个或多个滤镜效果，[示例](/zh/examples/shape#filter)：
+
+```js
+circle.style.filter = 'blur(5px)';
+circle.style.filter = 'blur(5px) brightness(0.4)'; // 可叠加
+```
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3MxRTpAT77gAAAAAAAAAAAAAARQnAQ)
+
+目前可以在 g-canvas/svg/webgl 渲染器中使用滤镜，有以下注意事项：
+
+-   由于 Canvas Filter 支持度不佳，主要是 [Safari 不支持](https://caniuse.com/mdn-api_canvasrenderingcontext2d_filter)，因此使用 g-canvas 无法在 Safari 中正常展示滤镜
+-   g-canvas 和 g-svg 在部分 filter 效果上略有差异
+-   可以施加在所有基础图形以及 Group 上
+-   该属性暂不支持动画
+
+### blur
+
+将高斯模糊应用于输入图像。其中 radius 定义了高斯函数的标准偏差值，或者屏幕上有多少像素相互融合，因此较大的值将产生更多的模糊，默认值为 0。该参数可以指定为 CSS 长度，但不接受百分比值。
+
+```js
+circle.style.filter = 'blur(5px)';
+```
+
+下图依次展示了 2px 4px 和 10px 的模糊效果，[示例](/zh/examples/shape#filter)：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*rYA_TLechgYAAAAAAAAAAAAAARQnAQ)
+
+### brightness
+
+将线性乘法器应用于输入图像，让它变亮或变暗，默认值为 1。值为 0％ 将创建全黑图像。值为 100％ 会使输入保持不变。其他值是效果的线性乘数。如果值大于 100% 提供更明亮的结果。
+
+```js
+circle.style.filter = 'brightness(2)';
+circle.style.filter = 'brightness(200%)';
+```
+
+下图依次展示了 0 100% 和 200% 的明亮效果，[示例](/zh/examples/shape#filter)：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*LG_pQ6GzA3wAAAAAAAAAAAAAARQnAQ)
+
+### drop-shadow
+
+在图像下展示阴影，可以设置阴影颜色、偏移量与模糊效果，依次传入以下参数：
+
+-   offset-x 描述阴影的水平偏移距离，单位 px
+-   offset-y 描述阴影的垂直偏移距离，单位 px
+-   blur-radius 数值越大越模糊，单位 px，不允许为负数
+-   color 阴影颜色
+
+```js
+circle.style.filter = 'drop-shadow(16px 16px 10px black)';
+```
+
+下图依次展示了上面配置的效果，[示例](/zh/examples/shape#filter)：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ)
+
+### contrast
+
+调节图像的对比度。当数值为 0% 时，图像会完全变黑。当数值为 100% 时，图像没有任何变化。
+
+```js
+circle.style.filter = 'contrast(2)';
+circle.style.filter = 'contrast(200%)';
+```
+
+下图依次展示了 0 1 和 10 的对比度效果，[示例](/zh/examples/shape#filter)：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gc-1QJYr2awAAAAAAAAAAAAAARQnAQ)
+
+### grayscale
+
+将图像转换成灰色的图片。当值为 100% 时，图像会完全变成灰色。 当值为 0% 时，图像没有任何变化。
+
+```js
+circle.style.filter = 'grayscale(1)';
+circle.style.filter = 'grayscale(100%)';
+```
+
+下图依次展示了 0 50% 和 100% 的灰度效果，[示例](/zh/examples/shape#filter)：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OadOQLl_bH0AAAAAAAAAAAAAARQnAQ)
+
+### saturate
+
+对图像进行饱和度的处理。当值为 0% 时，图像完全不饱和。当值为 100% 时，图像没有任何变化。
+
+```js
+circle.style.filter = 'saturate(1)';
+circle.style.filter = 'saturate(100%)';
+```
+
+下图依次展示了 0 50% 和 100% 的饱和度效果，[示例](/zh/examples/shape#filter)：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8J4IRJTJcVUAAAAAAAAAAAAAARQnAQ)
+
+### sepia
+
+对图像进行深褐色处理（怀旧风格）。当值为 100% 时，图像完全变成深褐色。当值为 0% 时，图像没有任何变化。
+
+```js
+circle.style.filter = 'sepia(1)';
+circle.style.filter = 'sepia(100%)';
+```
+
+下图依次展示了 0 50% 和 100% 的处理效果，[示例](/zh/examples/shape#filter)：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*79UARqYrimcAAAAAAAAAAAAAARQnAQ)
+
+### hue-rotate
+
+在输入图像上应用色相旋转，可设定图像会被调整的色环角度值。值为 0deg 时图像无变化。
+
+```js
+circle.style.filter = 'hue-rotate(30deg)';
+circle.style.filter = 'hue-rotate(180deg)';
+```
+
+下图依次展示了 0 90deg 和 180deg 的处理效果，[示例](/zh/examples/shape#filter)：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*k8rsSbW4WRwAAAAAAAAAAAAAARQnAQ)
+
+### invert
+
+反转输入图像的颜色。amount 的值定义转换的比例，100% 代表完全反转，0% 则图像无变化。
+
+```js
+circle.style.filter = 'invert(1)';
+circle.style.filter = 'invert(100%)';
+```
+
+下图依次展示了 0 50% 和 100% 的反转效果，[示例](/zh/examples/shape#filter)：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N1OjR6pR0CMAAAAAAAAAAAAAARQnAQ)
 
 ## 渲染次序
 
@@ -626,25 +783,41 @@ const animation = circle.animate(
 
 对于平移操作，我们提供了局部/世界坐标系下，移动绝对/相对距离的 API：
 
-| 名称 | 参数 | 返回值 | 备注 |
-| --- | --- | --- | --- |
-| translate | `[number, number]` | 无 | 在 **世界坐标系** 下，相对当前位置移动 |
-| translateLocal | `[number, number]` | 无 | 在 **局部坐标系** 下，相对当前位置移动 |
-| setPosition | `[number, number]` | 无 | 设置 **世界坐标系** 下的位置 |
-| setLocalPosition | `[number, number]` | 无 | 设置 **局部坐标系** 下的位置 |
-| getPosition | 无 | `[number, number]` | 获取 **世界坐标系** 下的位置 |
-| getLocalPosition | 无 | `[number, number]` | 获取 **局部坐标系** 下的位置 |
+| 名称             | 参数              | 返回值             | 备注                         |
+| ---------------- | ----------------- | ------------------ | ---------------------------- | --- | -------------------------------------- |
+| translate        | `[number, number] | number, number     | number`                      | 无  | 在 **世界坐标系** 下，相对当前位置移动 |
+| translateLocal   | `[number, number] | number, number     | number`                      | 无  | 在 **局部坐标系** 下，相对当前位置移动 |
+| setPosition      | `[number, number] | number, number     | number`                      | 无  | 设置 **世界坐标系** 下的位置           |
+| setLocalPosition | `[number, number] | number, number     | number`                      | 无  | 设置 **局部坐标系** 下的位置           |
+| getPosition      | 无                | `[number, number]` | 获取 **世界坐标系** 下的位置 |
+| getLocalPosition | 无                | `[number, number]` | 获取 **局部坐标系** 下的位置 |
+
+其中 translate/translateLocal/setPosition/setLocalPosition 支持以下入参形式，其中如果只想修改 X 轴方向，可以只传一个数字：
+
+```js
+circle.translate([100, 0]); // [number, number]
+circle.translate(100, 0); // number, number
+circle.translate(100); // number
+```
 
 ## 缩放
 
 和平移不同，我们无法提供 `setScale` 这样设置世界坐标系下缩放的方法，因此全局坐标系下缩放是只读的，这在 Unity 中称之为 [lossyScale](https://forum.unity.com/threads/solved-why-is-transform-lossyscale-readonly.363594/)。
 
-| 名称 | 参数 | 返回值 | 备注 |
-| --- | --- | --- | --- |
-| scaleLocal | `[number, number]` | 无 | 在 **局部坐标系** 下，相对当前缩放比例继续缩放 |
-| setLocalScale | `[number, number]` | 无 | 设置 **局部坐标系** 下的缩放比例 |
-| getScale | 无 | `[number, number]` | 获取 **世界坐标系** 下的缩放比例 |
-| getLocalScale | 无 | `[number, number]` | 获取 **局部坐标系** 下的缩放比例 |
+| 名称          | 参数              | 返回值             | 备注                             |
+| ------------- | ----------------- | ------------------ | -------------------------------- | --- | ---------------------------------------------- |
+| scaleLocal    | `[number, number] | number, number     | number`                          | 无  | 在 **局部坐标系** 下，相对当前缩放比例继续缩放 |
+| setLocalScale | `[number, number] | number, number     | number`                          | 无  | 设置 **局部坐标系** 下的缩放比例               |
+| getScale      | 无                | `[number, number]` | 获取 **世界坐标系** 下的缩放比例 |
+| getLocalScale | 无                | `[number, number]` | 获取 **局部坐标系** 下的缩放比例 |
+
+其中 scaleLocal/setLocalScale 支持以下入参形式，其中如果水平/垂直方向缩放比例相等时，可以只传一个数字：
+
+```js
+circle.scaleLocal([2, 2]); // [number, number]
+circle.scaleLocal(2, 2); // number, number
+circle.scaleLocal(2); // number
+```
 
 ## 旋转
 

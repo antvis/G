@@ -1,4 +1,4 @@
-import { Canvas, Circle, Path, convertToPath } from '@antv/g';
+import { Canvas, Path } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -55,14 +55,18 @@ const path3 = new Path({
   },
 });
 
-const circle = new Circle({
-  style: {
-    r: 100,
-  },
-});
+function getCirclePath(cx, cy, rx, ry) {
+  return [
+    ['M', cx, cy - ry],
+    ['A', rx, ry, 0, 1, 1, cx, cy + ry],
+    ['A', rx, ry, 0, 1, 1, cx, cy - ry],
+    ['Z'],
+  ];
+}
+
 const circlePath = new Path({
   style: {
-    path: convertToPath,
+    path: getCirclePath(0, 0, 100, 100),
     lineWidth: 1,
     stroke: '#54BECC',
   },
@@ -72,6 +76,7 @@ canvas.appendChild(path1);
 canvas.appendChild(path2);
 canvas.appendChild(path3);
 canvas.appendChild(circlePath);
+circlePath.setPosition(100, 300);
 
 // stats
 const stats = new Stats();
@@ -82,6 +87,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
+
 canvas.on('afterRender', () => {
   if (stats) {
     stats.update();
@@ -101,3 +107,12 @@ rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onCha
   );
 });
 rendererFolder.open();
+
+const circleFolder = gui.addFolder('circle');
+const circleConfig = {
+  r: 100,
+};
+circleFolder.add(circleConfig, 'r', 0, 200).onChange((r) => {
+  circlePath.style.path = getCirclePath(0, 0, r, r);
+});
+circleFolder.open();

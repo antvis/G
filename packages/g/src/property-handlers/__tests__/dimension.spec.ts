@@ -10,7 +10,7 @@ const circle = new Circle({
   },
 });
 
-describe('Dimension', () => {
+describe('Property Dimension', () => {
   it('parse length with unit', () => {
     expect(parseLength('10px')).to.be.eqls({ unit: 'px', value: 10 });
     expect(parseLength('10.5px')).to.be.eqls({ unit: 'px', value: 10.5 });

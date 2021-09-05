@@ -165,6 +165,7 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
       'shadowOffsetY',
       'lineWidth',
       'lineAppendWidth',
+      'filter',
       'font',
       'fontSize',
       'fontFamily',

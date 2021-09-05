@@ -28,7 +28,7 @@ import { GradientPool } from './shapes/GradientPool';
 import { ImagePool } from './shapes/ImagePool';
 import { RBushNode, RBushNodeAABB } from './components/RBushNode';
 
-export const RBushRoot = Symbol('RBushRoot');
+export const RBushRoot = 'RBushRoot';
 
 interface Rect {
   x: number;

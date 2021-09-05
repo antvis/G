@@ -206,7 +206,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
 
         const material = entity.getComponent(Material3D);
 
-        const { fill, opacity, fillOpacity } = object.parsedStyle;
+        const { fill, opacity = 1, fillOpacity = 1 } = object.parsedStyle;
         material.setUniform(UNIFORM.Opacity, opacity);
         material.setUniform(UNIFORM.FillOpacity, fillOpacity);
         await this.updateFill(fill, object, renderingService);

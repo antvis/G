@@ -13,6 +13,7 @@ import { containerModule as commonContainerModule } from './canvas-module';
 import { AbstractRenderer, IRenderer } from './AbstractRenderer';
 import { AnimationTimeline } from './Timeline';
 import { cancelAnimationFrame } from './utils/raf';
+import { Point } from './shapes';
 
 export interface CanvasService {
   init(): void;
@@ -239,7 +240,9 @@ export class Canvas extends EventEmitter {
       child.on(DISPLAY_OBJECT_EVENT.ChildInserted, (grandchild: DisplayObject) =>
         this.decorate(grandchild, renderingService, root),
       );
-      child.on(DISPLAY_OBJECT_EVENT.ChildRemoved, (grandchild: DisplayObject) => this.unmountChildren(grandchild));
+      child.on(DISPLAY_OBJECT_EVENT.ChildRemoved, (grandchild: DisplayObject) =>
+        this.unmountChildren(grandchild),
+      );
     });
   }
 
@@ -354,5 +357,15 @@ export class Canvas extends EventEmitter {
       renderingService.hooks.mounted.call(child);
       child.isConnected = true;
     }
+  }
+
+  getPointByClient(clientX: number, clientY: number): Point {
+    const bbox = this.getContextService().getBoundingClientRect();
+    return new Point(clientX - (bbox?.left || 0), clientY - (bbox?.top || 0));
+  }
+
+  getClientByPoint(x: number, y: number): Point {
+    const bbox = this.getContextService().getBoundingClientRect();
+    return new Point(x + (bbox?.left || 0), y + (bbox?.top || 0));
   }
 }

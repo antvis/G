@@ -6,7 +6,7 @@ import { RenderingService, RenderingPlugin } from '../services/RenderingService'
 import { RenderingContext, RENDER_REASON } from '../services/RenderingContext';
 import { CanvasConfig } from '../types';
 
-export const CullingStrategy = Symbol('CullingStrategy');
+export const CullingStrategy = 'CullingStrategy';
 export interface CullingStrategy {
   isVisible(object: DisplayObject): boolean;
 }
@@ -39,12 +39,12 @@ export class CullingPlugin implements RenderingPlugin {
           cullable.visible = true;
         } else {
           // eg. implemented by g-webgl(frustum culling)
-          cullable.visible = this.strategies.getContributions(true).every((strategy) => strategy.isVisible(object));
+          cullable.visible = this.strategies
+            .getContributions(true)
+            .every((strategy) => strategy.isVisible(object));
         }
 
-        if (object.style.visibility === 'visible'
-          && (!cullable || cullable.visible)
-        ) {
+        if (object.style.visibility === 'visible' && (!cullable || cullable.visible)) {
           return object;
         } else {
           // Those invisible objects which get renderred in last frame should be saved for later use.

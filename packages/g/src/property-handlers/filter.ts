@@ -1,12 +1,25 @@
 import type { DisplayObject } from '../DisplayObject';
+import { parseColor, ParsedColorStyleProperty } from './color';
 import { ParsedElement, parseDimension } from './dimension';
 
 export interface ParsedFilterStyleProperty {
   name: string;
-  params: ParsedElement[];
+  params: (ParsedElement | ParsedColorStyleProperty)[];
 }
 
 export const parseParam = parseDimension.bind(null, /deg|rad|grad|turn|px|%/g);
+
+const supportedFilters = [
+  'blur',
+  'brightness',
+  'drop-shadow',
+  'contrast',
+  'grayscale',
+  'sepia',
+  'saturate',
+  'hue-rotate',
+  'invert',
+];
 
 export function parseFilter(
   filterStr: string = '',
@@ -16,21 +29,24 @@ export function parseFilter(
   if (filterStr === 'none') {
     return [];
   }
-  const transformRegExp = /\s*(\w+)\(([^)]*)\)/g;
+  const filterRegExp = /\s*([\w-]+)\(([^)]*)\)/g;
   const result: ParsedFilterStyleProperty[] = [];
   let match;
   let prevLastIndex = 0;
-  while ((match = transformRegExp.exec(filterStr))) {
+  while ((match = filterRegExp.exec(filterStr))) {
     if (match.index !== prevLastIndex) {
       return [];
     }
     prevLastIndex = match.index + match[0].length;
-    result.push({
-      name: match[1],
-      params: match[2].split(' ').map((p) => parseParam(p)!),
-    });
 
-    if (transformRegExp.lastIndex === filterStr.length) {
+    if (supportedFilters.indexOf(match[1]) > -1) {
+      result.push({
+        name: match[1],
+        params: match[2].split(' ').map((p) => parseParam(p) || parseColor(p, null)),
+      });
+    }
+
+    if (filterRegExp.lastIndex === filterStr.length) {
       return result;
     }
   }

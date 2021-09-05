@@ -43,10 +43,10 @@ export enum TranspileTarget {
 export enum ShaderType {
   Vertex,
   Fragment,
-  Compute
+  Compute,
 }
 
-export const ShaderModuleService = Symbol('ShaderModuleService');
+export const ShaderModuleService = 'ShaderModuleService';
 export interface ShaderModuleService {
   registerModule(moduleName: string, moduleParams: IModuleParams): void;
   getModule(moduleName: string): IModuleParams;
@@ -60,7 +60,12 @@ export interface ShaderModuleService {
   /**
    * transpile GLSL 1.0 to 3.0
    */
-  transpile(content: string, type: ShaderType, target: TranspileTarget, defines?: Record<string, number | boolean>): string;
+  transpile(
+    content: string,
+    type: ShaderType,
+    target: TranspileTarget,
+    defines?: Record<string, number | boolean>,
+  ): string;
 }
 
 @injectable()
@@ -135,14 +140,17 @@ export class DefaultShaderModuleService implements ShaderModuleService {
     return this.moduleCache[moduleName];
   }
 
-  transpile(content: string, type: ShaderType, target: TranspileTarget, defines?: Record<string, number | boolean>) {
+  transpile(
+    content: string,
+    type: ShaderType,
+    target: TranspileTarget,
+    defines?: Record<string, number | boolean>,
+  ) {
     let header = '';
     if (target === TranspileTarget.GLSL3) {
       header = '#version 300 es';
       if (type === ShaderType.Vertex) {
-        content = content
-          .replace(/varying/g, 'out')
-          .replace(/attribute/g, 'in');
+        content = content.replace(/varying/g, 'out').replace(/attribute/g, 'in');
       } else if (type === ShaderType.Fragment) {
         content = content
           .replace(/varying/g, 'in')
@@ -197,7 +205,7 @@ ${content}`;
   private processModule(
     rawContent: string,
     includeList: string[],
-    type: 'vs' | 'fs'
+    type: 'vs' | 'fs',
   ): {
     content: string;
     includeList: string[];

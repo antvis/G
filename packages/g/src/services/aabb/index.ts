@@ -1,9 +1,9 @@
 import { DisplayObject } from '../../DisplayObject';
 import type { ParsedBaseStyleProps } from '../../types';
 
-export const GeometryUpdaterFactory = Symbol('GeometryUpdaterFactory');
+export const GeometryUpdaterFactory = 'GeometryUpdaterFactory';
 
-export const GeometryAABBUpdater = Symbol('GeometryAABBGenerator');
+export const GeometryAABBUpdater = 'GeometryAABBGenerator';
 export interface GeometryAABBUpdater<T extends ParsedBaseStyleProps = any> {
   update: (
     parsedStyle: T,

@@ -6,9 +6,9 @@ import { injectable } from 'inversify';
 export class PolylineRenderer implements ElementRenderer<ParsedBaseStyleProps> {
   dependencies = ['points'];
   apply($el: SVGElement, parsedStyle: ParsedBaseStyleProps) {
-    const { points, x = 0, y = 0 } = parsedStyle;
+    const { points, defX: x = 0, defY: y = 0 } = parsedStyle;
 
-    if (points.points && points.points.length >= 2) {
+    if (points && points.points && points.points.length >= 2) {
       $el.setAttribute(
         'points',
         points.points.map((point: [number, number]) => `${point[0] - x},${point[1] - y}`).join(' '),

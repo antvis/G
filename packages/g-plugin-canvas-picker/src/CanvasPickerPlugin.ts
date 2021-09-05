@@ -22,7 +22,7 @@ import {
 import { mat4, vec3 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
 
-export const PointInPathPickerFactory = Symbol('PointInPathPicker');
+export const PointInPathPickerFactory = 'PointInPathPicker';
 export type PointInPathPicker<T extends BaseStyleProps> = (
   displayObject: DisplayObject<T>,
   point: Point,

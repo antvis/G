@@ -34,7 +34,24 @@ const ANCHOR_MAP: Record<string, string> = {
 
 @injectable()
 export class TextRenderer implements ElementRenderer<TextStyleProps> {
-  dependencies = ['text'];
+  dependencies = [
+    'text',
+    'font',
+    'fontSize',
+    'fontFamily',
+    'fontStyle',
+    'fontWeight',
+    'fontVariant',
+    'lineHeight',
+    'letterSpacing',
+    'padding',
+    'wordWrap',
+    'wordWrapWidth',
+    'leading',
+    'textBaseline',
+    'textAlign',
+    'whiteSpace',
+  ];
   @inject(TextService)
   private textService: TextService;
 

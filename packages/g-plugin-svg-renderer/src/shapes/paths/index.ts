@@ -1,8 +1,8 @@
-import { BaseStyleProps } from '@antv/g';
+import { ParsedBaseStyleProps } from '@antv/g';
 
-export const ElementRendererFactory = Symbol('ElementRendererFactory');
-export const ElementRenderer = Symbol('ElementRenderer');
-export interface ElementRenderer<T extends BaseStyleProps> {
+export const ElementRendererFactory = 'ElementRendererFactory';
+export const ElementRenderer = 'ElementRenderer';
+export interface ElementRenderer<T extends ParsedBaseStyleProps> {
   dependencies: Array<keyof T>;
   apply(context: SVGElement, attributes: T): void;
 }

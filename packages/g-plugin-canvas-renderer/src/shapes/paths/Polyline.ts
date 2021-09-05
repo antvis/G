@@ -1,8 +1,8 @@
 import { ParsedBaseStyleProps } from '@antv/g';
 
-export function generatePath(context: CanvasRenderingContext2D, attributes: ParsedBaseStyleProps) {
-  const { x = 0, y = 0 } = attributes;
-  const points = attributes.points.points;
+export function generatePath(context: CanvasRenderingContext2D, parsedStyle: ParsedBaseStyleProps) {
+  const { defX: x = 0, defY: y = 0 } = parsedStyle;
+  const points = parsedStyle.points!.points;
   const length = points.length;
 
   let x1 = points[0][0] - x;
