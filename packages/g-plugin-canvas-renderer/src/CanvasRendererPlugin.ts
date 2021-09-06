@@ -27,6 +27,7 @@ import { StyleRenderer, StyleRendererFactory } from './shapes/styles';
 import { GradientPool } from './shapes/GradientPool';
 import { ImagePool } from './shapes/ImagePool';
 import { RBushNode, RBushNodeAABB } from './components/RBushNode';
+import { Cullable } from '@antv/g';
 
 export const RBushRoot = 'RBushRoot';
 
@@ -175,6 +176,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
         // search objects intersect with dirty rectangle
         const dirtyObjects = this.searchDirtyObjects(dirtyAABB);
+        // append uncullable objects in renderQueue
+        const uncullableObjects = this.renderQueue.filter(
+          (object) => !object.getEntity().getComponent(Cullable).enable,
+        );
+
+        dirtyObjects.push(...uncullableObjects);
 
         // do rendering
         dirtyObjects
@@ -271,7 +278,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       // fill & stroke
       const styleRenderer = this.styleRendererFactory(nodeName);
       if (styleRenderer) {
-        styleRenderer.render(context, object.parsedStyle);
+        styleRenderer.render(context, object.parsedStyle, object);
       }
     });
 
@@ -379,6 +386,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
 
     const renderable = entity.getComponent(Renderable);
+
+    if (!entity.hasComponent(RBushNode)) {
+      return;
+    }
+
     const rBushNode = entity.getComponent(RBushNode);
 
     if (rBushNode) {

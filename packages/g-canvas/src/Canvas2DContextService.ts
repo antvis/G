@@ -33,6 +33,10 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
     }
   }
 
+  getContainer() {
+    return this.$container;
+  }
+
   getContext() {
     return this.context;
   }

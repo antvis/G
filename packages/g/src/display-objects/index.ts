@@ -8,3 +8,4 @@ export * from './Polygon';
 export * from './Polyline';
 export * from './Rect';
 export * from './Text';
+export * from './HTML';

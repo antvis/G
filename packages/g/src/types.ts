@@ -15,6 +15,7 @@ export enum SHAPE {
   Polygon = 'polygon',
   Text = 'text',
   Path = 'path',
+  HTML = 'html',
 }
 
 type ColorType = string | null;

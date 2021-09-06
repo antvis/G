@@ -1,7 +1,7 @@
 import { ParsedBaseStyleProps } from '@antv/g';
 
 export const PathGeneratorFactory = 'PathGeneratorFactory';
-export const PathGenerator = 'PathGenerator';
+export const PathGenerator = 'Path';
 
 /**
  * generate path in local space

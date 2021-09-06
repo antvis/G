@@ -1,5 +1,5 @@
 import { RenderingPluginContribution, RendererPlugin, SHAPE, container, world } from '@antv/g';
-import { ContainerModule, Container } from 'inversify';
+import { ContainerModule, Container, interfaces } from 'inversify';
 import RBush from 'rbush';
 import { DefaultRenderer, StyleRenderer, StyleRendererFactory } from './shapes/styles';
 import { ImageRenderer } from './shapes/styles/Image';
@@ -21,55 +21,61 @@ import { CanvasRendererPlugin, RBushRoot } from './CanvasRendererPlugin';
 import { LoadImagePlugin } from './LoadImagePlugin';
 import { RBushNode, RBushNodeAABB } from './components/RBushNode';
 
-export { PathGeneratorFactory, PathGenerator, RBushNode, RBushNodeAABB, RBushRoot, RBush };
+export {
+  PathGeneratorFactory,
+  PathGenerator,
+  StyleRenderer,
+  RBushNode,
+  RBushNodeAABB,
+  RBushRoot,
+  RBush,
+};
 
 world.registerComponent(RBushNode);
 
 /**
  * register shape renderers
  */
-container.bind(PathGeneratorFactory).toFactory<PathGenerator<any> | null>((ctx) => (tagName: SHAPE) => {
-  if (tagName === SHAPE.Circle) {
-    return CirclePath;
-  } else if (tagName === SHAPE.Ellipse) {
-    return EllipsePath;
-  } else if (tagName === SHAPE.Rect) {
-    return RectPath;
-  } else if (tagName === SHAPE.Line) {
-    return LinePath;
-  } else if (tagName === SHAPE.Polyline) {
-    return PolylinePath;
-  } else if (tagName === SHAPE.Polygon) {
-    return PolygonPath;
-  } else if (tagName === SHAPE.Path) {
-    return PathPath;
-  }
+container.bind(PathGenerator).toConstantValue(CirclePath).whenTargetNamed(SHAPE.Circle);
+container.bind(PathGenerator).toConstantValue(EllipsePath).whenTargetNamed(SHAPE.Ellipse);
+container.bind(PathGenerator).toConstantValue(RectPath).whenTargetNamed(SHAPE.Rect);
+container.bind(PathGenerator).toConstantValue(LinePath).whenTargetNamed(SHAPE.Line);
+container.bind(PathGenerator).toConstantValue(PolylinePath).whenTargetNamed(SHAPE.Polyline);
+container.bind(PathGenerator).toConstantValue(PolygonPath).whenTargetNamed(SHAPE.Polygon);
+container.bind(PathGenerator).toConstantValue(PathPath).whenTargetNamed(SHAPE.Path);
+container
+  .bind(PathGeneratorFactory)
+  .toFactory<PathGenerator<any> | null>((ctx) => (tagName: SHAPE) => {
+    if (ctx.container.isBoundNamed(PathGenerator, tagName)) {
+      return ctx.container.getNamed(PathGenerator, tagName);
+    }
 
-  return null;
-});
+    return null;
+  });
 
+let bindFunc: interfaces.Bind;
 const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
+  bindFunc = bind;
+
   bind(ImagePool).toSelf().inSingletonScope();
   bind(RBushRoot).toConstantValue(new RBush<RBushNodeAABB>());
 
   bind(DefaultRenderer).toSelf().inSingletonScope();
   bind(ImageRenderer).toSelf().inSingletonScope();
   bind(TextRenderer).toSelf().inSingletonScope();
+
+  bind(StyleRenderer).to(DefaultRenderer).inSingletonScope().whenTargetNamed(SHAPE.Circle);
+  bind(StyleRenderer).to(DefaultRenderer).inSingletonScope().whenTargetNamed(SHAPE.Ellipse);
+  bind(StyleRenderer).to(DefaultRenderer).inSingletonScope().whenTargetNamed(SHAPE.Rect);
+  bind(StyleRenderer).to(DefaultRenderer).inSingletonScope().whenTargetNamed(SHAPE.Line);
+  bind(StyleRenderer).to(DefaultRenderer).inSingletonScope().whenTargetNamed(SHAPE.Polyline);
+  bind(StyleRenderer).to(DefaultRenderer).inSingletonScope().whenTargetNamed(SHAPE.Polygon);
+  bind(StyleRenderer).to(DefaultRenderer).inSingletonScope().whenTargetNamed(SHAPE.Path);
+  bind(StyleRenderer).to(ImageRenderer).inSingletonScope().whenTargetNamed(SHAPE.Image);
+  bind(StyleRenderer).to(TextRenderer).inSingletonScope().whenTargetNamed(SHAPE.Text);
   bind(StyleRendererFactory).toFactory<StyleRenderer | null>((ctx) => (tagName: SHAPE) => {
-    if (
-      tagName === SHAPE.Circle ||
-      tagName === SHAPE.Ellipse ||
-      tagName === SHAPE.Rect ||
-      tagName === SHAPE.Line ||
-      tagName === SHAPE.Polyline ||
-      tagName === SHAPE.Polygon ||
-      tagName === SHAPE.Path
-    ) {
-      return ctx.container.get(DefaultRenderer);
-    } else if (tagName === SHAPE.Image) {
-      return ctx.container.get(ImageRenderer);
-    } else if (tagName === SHAPE.Text) {
-      return ctx.container.get(TextRenderer);
+    if (ctx.container.isBoundNamed(StyleRenderer, tagName)) {
+      return ctx.container.getNamed(StyleRenderer, tagName);
     }
 
     return null;
@@ -91,4 +97,11 @@ export class Plugin implements RendererPlugin {
   destroy(container: Container): void {
     container.unload(containerModule);
   }
+}
+
+export function registerStyleRenderer(
+  tagName: string,
+  RendererClazz: new (...args: any[]) => StyleRenderer,
+) {
+  bindFunc(StyleRenderer).to(RendererClazz).inSingletonScope().whenTargetNamed(tagName);
 }

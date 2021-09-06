@@ -1,7 +1,10 @@
-import { CircleStyleProps } from '@antv/g';
+import { ParsedCircleStyleProps } from '@antv/g';
 
-export function generatePath(context: CanvasRenderingContext2D, attributes: CircleStyleProps) {
+export function generatePath(
+  context: CanvasRenderingContext2D,
+  parsedStyle: ParsedCircleStyleProps,
+) {
   context.beginPath();
-  const { r = 0 } = attributes;
+  const { r = 0 } = parsedStyle;
   context.arc(r, r, r, 0, Math.PI * 2, false);
 }
