@@ -403,6 +403,12 @@ export class DisplayObject<
     this.emitter.emit(DISPLAY_OBJECT_EVENT.ChildInserted, child);
     child.emitter.emit(DISPLAY_OBJECT_EVENT.Inserted, this);
 
+    // when appending to document
+    if (this.defaultView) {
+      child.ownerDocument = this;
+      this.defaultView.decorate(child, this.defaultView.getRenderingService(), this);
+    }
+
     return child;
   }
   insertBefore(group: DisplayObject, reference?: DisplayObject): DisplayObject {

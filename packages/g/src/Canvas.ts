@@ -225,15 +225,10 @@ export class Canvas extends EventEmitter {
   }
 
   appendChild(node: DisplayObject) {
-    const renderingService = this.container.get<RenderingService>(RenderingService);
-    const root = this.getRoot();
-    root.appendChild(node);
-    node.ownerDocument = root;
-
-    this.decorate(node, renderingService, root);
+    this.document.appendChild(node);
   }
 
-  private decorate(object: DisplayObject, renderingService: RenderingService, root: DisplayObject) {
+  decorate(object: DisplayObject, renderingService: RenderingService, root: DisplayObject) {
     object.forEach((child: DisplayObject) => {
       this.mountChild(child);
 
@@ -247,11 +242,11 @@ export class Canvas extends EventEmitter {
   }
 
   removeChild(node: DisplayObject, destroy?: boolean) {
-    this.getRoot().removeChild(node, destroy);
+    this.document.removeChild(node, destroy);
   }
 
   removeChildren() {
-    this.getRoot().removeChildren();
+    this.document.removeChildren();
   }
 
   render() {
