@@ -1,10 +1,15 @@
 import { inject, injectable } from 'inversify';
-import { Camera, DisplayObject } from '@antv/g';
+import { Camera, DefaultCamera, DisplayObject } from '@antv/g';
 import blendFS from '../services/shader-module/shaders/webgl.blend.frag.glsl';
 import copyFS from '../services/shader-module/shaders/webgl.copy.frag.glsl';
 import quadVS from '../services/shader-module/shaders/webgl.copy.vert.glsl';
 import { FrameGraphEngine, IRenderPass, RenderPassFactory } from '../FrameGraphEngine';
-import { IFramebuffer, IModel, IModelInitializationOptions, RenderingEngine } from '../services/renderer';
+import {
+  IFramebuffer,
+  IModel,
+  IModelInitializationOptions,
+  RenderingEngine,
+} from '../services/renderer';
 import { ShaderModuleService, ShaderType } from '../services/shader-module';
 import { FrameGraphHandle } from '../components/framegraph/FrameGraphHandle';
 import { gl } from '../services/renderer/constants';
@@ -64,7 +69,7 @@ export default class TAAPass implements IRenderPass<TAAPassData> {
   @inject(View)
   private view: View;
 
-  @inject(Camera)
+  @inject(DefaultCamera)
   private camera: Camera;
 
   /**
@@ -131,9 +136,7 @@ export default class TAAPass implements IRenderPass<TAAPassData> {
       this.haltonSequence.push([halton(i, 2), halton(i, 3)]);
     }
 
-    this.renderPass = this.renderPassFactory<RenderPassData>(
-      RenderPass.IDENTIFIER,
-    ) as RenderPass;
+    this.renderPass = this.renderPassFactory<RenderPassData>(RenderPass.IDENTIFIER) as RenderPass;
   };
 
   execute = (
@@ -141,9 +144,7 @@ export default class TAAPass implements IRenderPass<TAAPassData> {
     pass: FrameGraphPass<TAAPassData>,
     displayObjects: DisplayObject[],
   ) => {
-    this.copyPass = this.renderPassFactory<CopyPassData>(
-      CopyPass.IDENTIFIER,
-    ) as CopyPass;
+    this.copyPass = this.renderPassFactory<CopyPassData>(CopyPass.IDENTIFIER) as CopyPass;
 
     if (!this.blendModel) {
       this.blendModel = this.createTriangleModel('blend-pass', blendFS);
@@ -173,10 +174,18 @@ export default class TAAPass implements IRenderPass<TAAPassData> {
 
     const viewport = this.view.getViewport();
 
-    this.sampleRenderTarget = this.resourcePool.getOrCreateResource(fg.getResourceNode(pass.data.sample).resource);
-    this.prevRenderTarget = this.resourcePool.getOrCreateResource(fg.getResourceNode(pass.data.prev).resource);
-    this.outputRenderTarget = this.resourcePool.getOrCreateResource(fg.getResourceNode(pass.data.output).resource);
-    this.copyRenderTarget = this.resourcePool.getOrCreateResource(fg.getResourceNode(pass.data.copy).resource);
+    this.sampleRenderTarget = this.resourcePool.getOrCreateResource(
+      fg.getResourceNode(pass.data.sample).resource,
+    );
+    this.prevRenderTarget = this.resourcePool.getOrCreateResource(
+      fg.getResourceNode(pass.data.prev).resource,
+    );
+    this.outputRenderTarget = this.resourcePool.getOrCreateResource(
+      fg.getResourceNode(pass.data.output).resource,
+    );
+    this.copyRenderTarget = this.resourcePool.getOrCreateResource(
+      fg.getResourceNode(pass.data.copy).resource,
+    );
     this.sampleRenderTarget.resize(viewport);
     this.prevRenderTarget.resize(viewport);
     this.outputRenderTarget.resize(viewport);
@@ -188,18 +197,21 @@ export default class TAAPass implements IRenderPass<TAAPassData> {
 
     const { clear, useFramebuffer } = this.engine;
     // 先输出到 copy
-    useFramebuffer({
-      framebuffer: this.copyRenderTarget,
-    }, () => {
-      clear({
-        color: [0, 0, 0, 0],
-        depth: 1,
-        stencil: 0,
+    useFramebuffer(
+      {
         framebuffer: this.copyRenderTarget,
-      });
+      },
+      () => {
+        clear({
+          color: [0, 0, 0, 0],
+          depth: 1,
+          stencil: 0,
+          framebuffer: this.copyRenderTarget,
+        });
 
-      this.renderPass.renderDisplayObjects(displayObjects);
-    });
+        this.renderPass.renderDisplayObjects(displayObjects);
+      },
+    );
 
     const accumulate = (id: number) => {
       // 在开启新一轮累加之前，需要先结束掉之前的累加
@@ -220,8 +232,7 @@ export default class TAAPass implements IRenderPass<TAAPassData> {
     this.timer = window.setTimeout(() => {
       accumulate(this.accumulatingId);
     }, 50);
-  }
-
+  };
 
   //   // 先输出到 PostProcessor
   //   const readFBO = layer.multiPassRenderer.getPostProcessor().getReadFBO();
@@ -254,36 +265,42 @@ export default class TAAPass implements IRenderPass<TAAPassData> {
     );
 
     // 按抖动后的投影矩阵渲染
-    useFramebuffer({
-      framebuffer: this.sampleRenderTarget,
-    }, () => {
-      clear({
-        color: [0, 0, 0, 0],
-        depth: 1,
-        stencil: 0,
+    useFramebuffer(
+      {
         framebuffer: this.sampleRenderTarget,
-      });
+      },
+      () => {
+        clear({
+          color: [0, 0, 0, 0],
+          depth: 1,
+          stencil: 0,
+          framebuffer: this.sampleRenderTarget,
+        });
 
-      this.renderPass.renderDisplayObjects(displayObjects);
-    });
+        this.renderPass.renderDisplayObjects(displayObjects);
+      },
+    );
 
     // 混合
-    useFramebuffer({
-      framebuffer: this.outputRenderTarget,
-    }, () => {
-      this.blendModel.draw({
-        uniforms: {
-          u_Opacity: 1,
-          u_MixRatio: this.frame === 0 ? 1 : 0.9,
-          u_Diffuse1: this.sampleRenderTarget,
-          u_Diffuse2:
-            this.frame === 0
-              // ? layer.multiPassRenderer.getPostProcessor().getReadFBO()
-              ? this.copyRenderTarget
-              : this.prevRenderTarget,
-        },
-      });
-    });
+    useFramebuffer(
+      {
+        framebuffer: this.outputRenderTarget,
+      },
+      () => {
+        this.blendModel.draw({
+          uniforms: {
+            u_Opacity: 1,
+            u_MixRatio: this.frame === 0 ? 1 : 0.9,
+            u_Diffuse1: this.sampleRenderTarget,
+            u_Diffuse2:
+              this.frame === 0
+                ? // ? layer.multiPassRenderer.getPostProcessor().getReadFBO()
+                  this.copyRenderTarget
+                : this.prevRenderTarget,
+          },
+        });
+      },
+    );
 
     // 输出累加结果
     if (this.frame === 0) {
@@ -296,15 +313,18 @@ export default class TAAPass implements IRenderPass<TAAPassData> {
     }
 
     if (this.frame >= 1) {
-      useFramebuffer({
-        framebuffer: this.copyRenderTarget,
-      }, () => {
-        this.outputModel.draw({
-          uniforms: {
-            u_Texture: this.outputRenderTarget,
-          },
-        });
-      });
+      useFramebuffer(
+        {
+          framebuffer: this.copyRenderTarget,
+        },
+        () => {
+          this.outputModel.draw({
+            uniforms: {
+              u_Texture: this.outputRenderTarget,
+            },
+          });
+        },
+      );
 
       this.copyPass.render(this.copyRenderTarget);
 
@@ -359,9 +379,7 @@ export default class TAAPass implements IRenderPass<TAAPassData> {
       fs: fragmentShader,
     });
 
-    const { vs = '', fs = '', uniforms } = this.shaderModuleService.getModule(
-      shaderModuleName,
-    );
+    const { vs = '', fs = '', uniforms } = this.shaderModuleService.getModule(shaderModuleName);
 
     return createModel({
       vs: this.shaderModuleService.transpile(vs, ShaderType.Vertex, this.engine.shaderLanguage),

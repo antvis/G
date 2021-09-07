@@ -1,7 +1,7 @@
 {
-  "name": "@antv/g-plugin-canvas-renderer",
-  "version": "1.0.0-alpha.17",
-  "description": "A G plugin of renderer implementation with Canvas2D API",
+  "name": "@antv/g-plugin-html-renderer",
+  "version": "1.0.0-alpha.0",
+  "description": "A G plugin for rendering HTML",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
@@ -32,11 +32,7 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.16",
-    "@antv/g-ecs": "^1.0.0-alpha.4",
-    "@antv/g-math": "^1.0.0-alpha.2",
-    "@antv/path-util": "^2.0.12",
-    "rbush": "^3.0.1"
+    "@antv/g": "^1.0.0-alpha.16"
   },
   "devDependencies": {
     "@types/jest": "^25.0.0",

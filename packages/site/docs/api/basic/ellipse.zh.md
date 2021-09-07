@@ -13,7 +13,7 @@ order: 3
 
 # 额外属性
 
-### rx
+## rx
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
@@ -25,7 +25,7 @@ order: 3
 
 **说明**：椭圆的水平半径
 
-### ry
+## ry
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 

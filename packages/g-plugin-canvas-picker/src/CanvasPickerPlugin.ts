@@ -9,6 +9,7 @@ import {
   PickingResult,
   OffscreenCanvasCreator,
   Camera,
+  DefaultCamera,
   BaseStyleProps,
   Point,
 } from '@antv/g';
@@ -39,7 +40,7 @@ export type PointInPathPicker<T extends BaseStyleProps> = (
 export class CanvasPickerPlugin implements RenderingPlugin {
   static tag = 'CanvasPickerPlugin';
 
-  @inject(Camera)
+  @inject(DefaultCamera)
   private camera: Camera;
 
   @inject(SceneGraphService)

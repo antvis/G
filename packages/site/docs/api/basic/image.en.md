@@ -1,92 +1,57 @@
 ---
-title: Image 图片
-order: 5
+title: HTML 内容
+order: 9
 ---
 
-如下 [示例](/zh/examples/shape#image) 定义了一个图片，左上角顶点位置为 `(200, 100)`：
+有时我们需要在画布上增加一些 HUD（Head-Up Display），例如 Tooltip。此时用 HTML + CSS 展现相比使用基础图形绘制有以下优势：
 
-```javascript
-const image = new Image({
-  style: {
-    x: 200,
-    y: 100,
-    width: 200,
-    height: 200,
-    img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-  },
+-   很多原生 HTML 组件难以绘制，例如一些输入类组件 `<input>` `<select>`
+-   部分 HTML 原生特性难以实现，例如使用 g-canvas/webgl 绘制文本后无法选中，而如果用 HTML 展示文本就可以
+
+```js
+const html = new HTML({
+    style: {
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
+        html: '<h1>This is Title</h1>',
+    },
 });
 ```
 
-通常我们习惯以图片中心，此时可以通过锚点 [anchor](/zh/docs/api/display-object#anchor) 进行修改：
+在实现中 g-canvas/webgl 会将 HTML 内容包裹在 `<div>` 中，以 `<canvas>` 的兄弟节点放在容器内。而在 g-svg 中使用 `<foreignObject>` 放入
 
-```javascript
-const image = new Image({
-  style: {
-    // 省略其他属性
-    anchor: [0.5, 0.5],
-  },
-});
+```html
+// g-canvas/webgl 的 DOM 结构
+<div id="container">
+    <canvas></canvas>
+    <div>...</div>
+</div>
+
+// g-svg 的 DOM 结构
 ```
-
-# 继承自
-
-- [DisplayObject](/zh/docs/api/basic/display-object)
-
-通过 `(x, y)` 定义的位置为左上角顶点，可以通过锚点位置 [anchor](/zh/docs/api/display-object#anchor) 改变。
 
 # 额外属性
 
-### img
+## width
 
-**类型**： `string | Image`
+**类型**： `number`
 
 **默认值**：无
 
 **是否必须**：`true`
 
-**说明**：图片来源，支持以下两种：
+**说明**：内容宽度
 
-- 图片地址字符串，加载成功后展示
-- 自行创建 [Image](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image) 对象，在 `onload` 回调中创建 G Image，示例如下：
-
-```js
-import { Image as GImage, Canvas } from '@antv/g';
-
-let image;
-const img = new Image();
-img.src = 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ';
-img.crossOrigin = 'Anonymous';
-img.onload = () => {
-  // 图片加载成功后创建
-  image = new GImage({
-    style: {
-      x: 200,
-      y: 100,
-      width: 200,
-      height: 200,
-      img, // 传入 Image 对象
-    },
-  });
-  canvas.appendChild(image);
-};
-```
-
-### width
+## height
 
 **类型**： `number`
 
 **默认值**：无
 
-**是否必须**：`false`
+**是否必须**：`true`
 
-**说明**：图片宽度
+**说明**：内容高度
 
-### height
-
-**类型**： `number`
-
-**默认值**：无
-
-**是否必须**：`false`
-
-**说明**：图片高度
+# 注意事项

@@ -1,4 +1,12 @@
-import { ContextService, RenderingPlugin, RenderingService, RenderingContext, Camera, CanvasConfig } from '@antv/g';
+import {
+  ContextService,
+  RenderingPlugin,
+  RenderingService,
+  RenderingContext,
+  Camera,
+  CanvasConfig,
+  DefaultCamera,
+} from '@antv/g';
 import { inject, injectable } from 'inversify';
 import Hammer from 'hammerjs';
 
@@ -16,7 +24,7 @@ export class ControlPlugin implements RenderingPlugin {
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
-  @inject(Camera)
+  @inject(DefaultCamera)
   private camera: Camera;
 
   @inject(CanvasConfig)
@@ -62,7 +70,7 @@ export class ControlPlugin implements RenderingPlugin {
     this.lastX = e.center.x;
     this.lastY = e.center.y;
     this.isMoving = true;
-  }
+  };
 
   private onPanmove = (e: HammerInput) => {
     this.ctrlKey = e.srcEvent.ctrlKey;
@@ -87,20 +95,20 @@ export class ControlPlugin implements RenderingPlugin {
         this.rotate(deltaX, deltaY);
       }
     }
-  }
+  };
 
   private onPanend = (e: HammerInput) => {
     this.isMoving = false;
-  }
+  };
 
   private onPinch = (e: HammerInput) => {
     const deltaZ = (1 - e.scale) * 10;
     this.dolly(deltaZ);
-  }
+  };
 
   private onMousewheel = (e: WheelEvent) => {
     this.dolly(e.deltaY);
-  }
+  };
 
   private dolly(z: number) {
     this.camera.dolly(z);

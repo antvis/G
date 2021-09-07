@@ -33,14 +33,18 @@ const p1 = new HTML({
   style: {
     x: 200,
     y: 100,
-    html: 'p1',
+    width: 60,
+    height: 30,
+    innerHTML: 'p1',
   },
 });
 const p2 = new HTML({
   style: {
     x: 400,
     y: 100,
-    html: 'p2',
+    width: 60,
+    height: 30,
+    innerHTML: 'p2',
   },
 });
 
@@ -70,7 +74,9 @@ const tooltip = new HTML({
   style: {
     x: 0,
     y: 0,
-    html: 'Tooltip',
+    innerHTML: 'Tooltip',
+    width: 100,
+    height: 30,
     // visibility: 'hidden',
   },
 });

@@ -6,6 +6,7 @@ import {
   SHAPE,
   ContextService,
   Camera,
+  DefaultCamera,
   DisplayObject,
   Batch,
   Renderable,
@@ -101,7 +102,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
   @inject(ModelBuilderFactory)
   private modelBuilderFactory: (shape: SHAPE) => ModelBuilder;
 
-  @inject(Camera)
+  @inject(DefaultCamera)
   private camera: Camera;
 
   @inject(View)

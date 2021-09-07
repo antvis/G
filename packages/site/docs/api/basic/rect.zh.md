@@ -7,28 +7,28 @@ order: 4
 
 ```javascript
 const rect = new Rect({
-  style: {
-    x: 200,
-    y: 100,
-    width: 300,
-    height: 200,
-    fill: '#1890FF',
-    stroke: '#F04864',
-    lineWidth: 4,
-    radius: 8,
-  },
+    style: {
+        x: 200,
+        y: 100,
+        width: 300,
+        height: 200,
+        fill: '#1890FF',
+        stroke: '#F04864',
+        lineWidth: 4,
+        radius: 8,
+    },
 });
 ```
 
 # 继承自
 
-- [DisplayObject](/zh/docs/api/basic/display-object)
+-   [DisplayObject](/zh/docs/api/basic/display-object)
 
 通过 `(x, y)` 定义的位置为左上角顶点。
 
 # 额外属性
 
-### width
+## width
 
 **类型**： `number`
 
@@ -38,7 +38,7 @@ const rect = new Rect({
 
 **说明**：宽度
 
-### height
+## height
 
 **类型**： `number`
 
@@ -48,7 +48,7 @@ const rect = new Rect({
 
 **说明**：高度
 
-### radius
+## radius
 
 **类型**： `number`
 

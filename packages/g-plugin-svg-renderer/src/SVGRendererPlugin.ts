@@ -14,6 +14,7 @@ import {
   Camera,
   RENDER_REASON,
   PARSED_COLOR_TYPE,
+  DefaultCamera,
 } from '@antv/g';
 import type {
   ParsedBaseStyleProps,
@@ -43,7 +44,7 @@ export const SHAPE_TO_TAGS: Record<SHAPE | string, string> = {
   [SHAPE.Polygon]: 'polygon',
   [SHAPE.Text]: 'text',
   [SHAPE.Path]: 'path',
-  // dom: 'foreignObject',
+  [SHAPE.HTML]: 'foreignObject',
 };
 
 export const SVG_ATTR_MAP: Record<string, string> = {
@@ -91,6 +92,7 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   shadowOffsetX: 'dx',
   shadowOffsetY: 'dy',
   filter: 'filter',
+  innerHTML: 'innerHTML',
 };
 
 export type GradientParams = (LinearGradient | RadialGradient) & { type: PARSED_COLOR_TYPE };
@@ -103,7 +105,7 @@ let counter = 0;
 export class SVGRendererPlugin implements RenderingPlugin {
   static tag = 'SVGRendererPlugin';
 
-  @inject(Camera)
+  @inject(DefaultCamera)
   private camera: Camera;
 
   @inject(ContextService)
@@ -318,6 +320,15 @@ export class SVGRendererPlugin implements RenderingPlugin {
         createOrUpdateShadow(this.$def, object, $el!, name);
       } else if (name === 'filter') {
         createOrUpdateFilter(this.$def, object, $el!, parsedStyle[name]);
+      } else if (name === 'innerHTML') {
+        const $div = document.createElement('div');
+        if (typeof value === 'string') {
+          $div.innerHTML = value;
+        } else {
+          $div.appendChild(value);
+        }
+        $el!.innerHTML = '';
+        $el!.appendChild($div);
       } else {
         if (
           // (!object.style.clipPathTargets) &&
@@ -352,6 +363,12 @@ export class SVGRendererPlugin implements RenderingPlugin {
       let $groupEl;
 
       const $el = createSVGElement(type);
+
+      // save $el on parsedStyle, which will be returned in getDomElement()
+      if (object.nodeName === SHAPE.HTML) {
+        object.parsedStyle.$el = $el;
+      }
+
       $el.id = `${G_SVG_PREFIX}_${object.nodeName}_${entity.getName()}`;
 
       if (type !== 'g' && !noWrapWithGroup) {

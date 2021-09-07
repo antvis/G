@@ -23,6 +23,9 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
       const $canvas = document.createElement('canvas');
       this.context = $canvas.getContext('2d');
       this.$container.appendChild($canvas);
+      if (!this.$container.style.position) {
+        this.$container.style.position = 'relative';
+      }
       this.$canvas = $canvas;
 
       let dpr = window.devicePixelRatio || 1;
@@ -31,10 +34,6 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
 
       this.resize(width, height);
     }
-  }
-
-  getContainer() {
-    return this.$container;
   }
 
   getContext() {

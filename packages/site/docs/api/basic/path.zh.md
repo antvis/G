@@ -45,7 +45,7 @@ line.translateLocal(100, 0); // 沿 X 轴平移
 
 # 额外属性
 
-### path
+## path
 
 路径，支持 `字符串`和 `数组` 两种形式，可参考 [SVG path](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths)：
 

@@ -53,10 +53,7 @@ container
     return null;
   });
 
-let bindFunc: interfaces.Bind;
 const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
-  bindFunc = bind;
-
   bind(ImagePool).toSelf().inSingletonScope();
   bind(RBushRoot).toConstantValue(new RBush<RBushNodeAABB>());
 
@@ -97,11 +94,4 @@ export class Plugin implements RendererPlugin {
   destroy(container: Container): void {
     container.unload(containerModule);
   }
-}
-
-export function registerStyleRenderer(
-  tagName: string,
-  RendererClazz: new (...args: any[]) => StyleRenderer,
-) {
-  bindFunc(StyleRenderer).to(RendererClazz).inSingletonScope().whenTargetNamed(tagName);
 }

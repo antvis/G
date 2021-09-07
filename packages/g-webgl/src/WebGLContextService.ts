@@ -22,6 +22,9 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
       // create canvas
       const $canvas = document.createElement('canvas');
       this.$container.appendChild($canvas);
+      if (!this.$container.style.position) {
+        this.$container.style.position = 'relative';
+      }
       this.$canvas = $canvas;
 
       // this.camera.setPosition(0, 0, 1).setOrthographic(

@@ -58,7 +58,7 @@ line.getLocalPosition(); // [200, 100]
 
 # 额外属性
 
-### x1
+## x1
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
@@ -68,7 +68,7 @@ line.getLocalPosition(); // [200, 100]
 
 **是否必须**：`true`
 
-### y1
+## y1
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
@@ -78,7 +78,7 @@ line.getLocalPosition(); // [200, 100]
 
 **是否必须**：`true`
 
-### x2
+## x2
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
@@ -88,7 +88,7 @@ line.getLocalPosition(); // [200, 100]
 
 **是否必须**：`true`
 
-### y2
+## y2
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 

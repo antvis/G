@@ -8,7 +8,7 @@ import { container } from './inversify.config';
 import { RenderingService } from './services/RenderingService';
 import { RenderingContext, RENDER_REASON } from './services/RenderingContext';
 import { EventService } from './services/EventService';
-import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE } from './Camera';
+import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE, DefaultCamera } from './Camera';
 import { containerModule as commonContainerModule } from './canvas-module';
 import { AbstractRenderer, IRenderer } from './AbstractRenderer';
 import { AnimationTimeline } from './Timeline';
@@ -125,7 +125,7 @@ export class Canvas extends EventEmitter {
       context.renderReasons.add(RENDER_REASON.CameraChanged);
     });
     // bind camera
-    this.container.bind(Camera).toConstantValue(camera);
+    this.container.bind(DefaultCamera).toConstantValue(camera);
   }
 
   getConfig() {
@@ -143,7 +143,7 @@ export class Canvas extends EventEmitter {
    * get the camera of canvas
    */
   getCamera() {
-    return this.container.get(Camera);
+    return this.container.get(DefaultCamera);
   }
 
   getContextService() {
@@ -208,7 +208,7 @@ export class Canvas extends EventEmitter {
     this.getContextService().resize(width, height);
 
     // resize camera
-    const camera = this.container.get(Camera);
+    const camera = this.container.get<Camera>(DefaultCamera);
     const projectionMode = camera.getProjectionMode();
     if (projectionMode === CAMERA_PROJECTION_MODE.ORTHOGRAPHIC) {
       camera.setOrthographic(

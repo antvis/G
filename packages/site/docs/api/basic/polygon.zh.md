@@ -28,7 +28,7 @@ const polygon = new Polygon({
 
 # 额外属性
 
-### points
+## points
 
 **类型**： `[number, number][]`
 

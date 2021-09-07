@@ -18,6 +18,9 @@ export class SVGContextService implements ContextService<SVGElement> {
     // create container
     this.$container = isString(container) ? document.getElementById(container) : container;
     if (this.$container) {
+      if (!this.$container.style.position) {
+        this.$container.style.position = 'relative';
+      }
       const $namespace = createSVGElement('svg');
       $namespace.setAttribute('width', `${this.canvasConfig.width}`);
       $namespace.setAttribute('height', `${this.canvasConfig.height}`);

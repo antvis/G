@@ -3,6 +3,7 @@ import {
   Renderable,
   Transform,
   Camera,
+  DefaultCamera,
   SceneGraphNode,
   SHAPE,
   Batch,
@@ -73,7 +74,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
   @inject(View)
   private view: View;
 
-  @inject(Camera)
+  @inject(DefaultCamera)
   private camera: Camera;
 
   @inject(ModelBuilderFactory)

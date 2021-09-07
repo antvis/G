@@ -6,6 +6,8 @@ import { Frustum } from './shapes';
 import { createVec3, getAngle } from './utils/math';
 import { requestAnimationFrame, cancelAnimationFrame } from './utils/raf';
 
+export const DefaultCamera = 'DefaultCamera';
+
 export enum CAMERA_TYPE {
   ORBITING = 'ORBITING',
   EXPLORING = 'EXPLORING',

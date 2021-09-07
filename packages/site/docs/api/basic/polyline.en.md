@@ -46,7 +46,7 @@ polyline.getLocalPosition(); // [50, 50]
 
 # 额外属性
 
-### points
+## points
 
 **类型**： `[number, number][]`
 

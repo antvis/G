@@ -14,6 +14,7 @@ import {
   getEuler,
   fromRotationTranslationScale,
   Camera,
+  DefaultCamera,
   ParsedColorStyleProperty,
   PARSED_COLOR_TYPE,
   RENDER_REASON,
@@ -56,7 +57,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
-  @inject(Camera)
+  @inject(DefaultCamera)
   private camera: Camera;
 
   @inject(ContextService)

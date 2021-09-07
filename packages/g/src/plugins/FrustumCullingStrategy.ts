@@ -3,12 +3,12 @@ import { inject, injectable } from 'inversify';
 import { Cullable } from '../components';
 import { CullingStrategy } from './CullingPlugin';
 import { AABB, Mask, Plane } from '../shapes';
-import { Camera } from '../Camera';
+import { DefaultCamera, Camera } from '../Camera';
 import { DisplayObject } from '../DisplayObject';
 
 @injectable()
 export class FrustumCullingStrategy implements CullingStrategy {
-  @inject(Camera)
+  @inject(DefaultCamera)
   private camera: Camera;
 
   isVisible(object: DisplayObject) {
