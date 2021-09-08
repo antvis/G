@@ -39,7 +39,7 @@
     "webpack-cli": "^3.3.7"
   },
   "homepage": "https://github.com/antvis/g#readme",
-  "dependencies": {
+  "peerDependencies": {
     "@antv/g": "^1.0.0-alpha.17"
   }
 }

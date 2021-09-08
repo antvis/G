@@ -32,7 +32,6 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.17",
     "@antv/g-ecs": "^1.0.0-alpha.4",
     "detect-browser": "^5.0.0"
   },

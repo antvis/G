@@ -27,13 +27,20 @@ export enum SCENE_GRAPH_EVENT {
   AABBChanged = 'AABBChanged',
 }
 
+export const SceneGraphService = 'SceneGraphService';
+export interface SceneGraphService {
+  matches(query: string, root: DisplayObject): boolean;
+  querySelector(query: string, root: DisplayObject): DisplayObject | null;
+  querySelectorAll(query: string, root: DisplayObject): DisplayObject[];
+}
+
 /**
  * update transform in scene graph
  *
  * @see https://community.khronos.org/t/scene-graphs/50542/7
  */
 @injectable()
-export class SceneGraphService extends EventEmitter {
+export class DefaultSceneGraphService extends EventEmitter implements SceneGraphService {
   @inject(SceneGraphSelectorFactory)
   private sceneGraphSelectorFactory: () => SceneGraphSelector;
 

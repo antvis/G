@@ -13,13 +13,8 @@ import {
   BaseStyleProps,
   Point,
 } from '@antv/g';
-import {
-  PathGeneratorFactory,
-  PathGenerator,
-  RBushRoot,
-  RBushNodeAABB,
-  RBush,
-} from '@antv/g-plugin-canvas-renderer';
+import { PathGeneratorFactory, RBushRoot } from '@antv/g-plugin-canvas-renderer';
+import type { RBush, PathGenerator, RBushNodeAABB } from '@antv/g-plugin-canvas-renderer';
 import { mat4, vec3 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
 

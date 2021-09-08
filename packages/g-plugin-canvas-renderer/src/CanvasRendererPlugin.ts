@@ -11,6 +11,7 @@ import {
   RenderingService,
   RenderingContext,
   RenderingPlugin,
+  Cullable,
   getEuler,
   fromRotationTranslationScale,
   Camera,
@@ -27,8 +28,8 @@ import { PathGeneratorFactory, PathGenerator } from './shapes/paths';
 import { StyleRenderer, StyleRendererFactory } from './shapes/styles';
 import { GradientPool } from './shapes/GradientPool';
 import { ImagePool } from './shapes/ImagePool';
-import { RBushNode, RBushNodeAABB } from './components/RBushNode';
-import { Cullable } from '@antv/g';
+import { RBushNode } from './components/RBushNode';
+import type { RBushNodeAABB } from './components/RBushNode';
 
 export const RBushRoot = 'RBushRoot';
 

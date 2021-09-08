@@ -32,7 +32,6 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.17",
     "hammerjs": "^2.0.8"
   },
   "devDependencies": {
@@ -44,6 +43,6 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "peerDependencies": {
-    "@antv/g": "^1.0.0-alpha.2"
+    "@antv/g": "^1.0.0-alpha.17"
   }
 }

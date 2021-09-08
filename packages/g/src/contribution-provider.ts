@@ -2,6 +2,7 @@
  * borrow from theia's contribution provider
  * @see https://github.com/eclipse-theia/theia/blob/c5f3253a1b53293eb60f125bbc8ef93663ba2e52/packages/core/src/common/contribution-provider.ts#L21
  */
+import { isNil } from '@antv/util';
 import { interfaces } from 'inversify';
 
 export const ContributionProvider = 'ContributionProvider';
@@ -25,7 +26,7 @@ class ContainerBasedContributionProvider<T extends object> implements Contributi
     if (this.services === undefined) {
       const currentServices: T[] = [];
       let currentContainer: interfaces.Container | null = this.container;
-      while (currentContainer !== null) {
+      while (!isNil(currentContainer)) {
         if (currentContainer.isBound(this.serviceIdentifier)) {
           try {
             currentServices.push(...currentContainer.getAll(this.serviceIdentifier));

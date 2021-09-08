@@ -19,14 +19,15 @@ import {
 import { TextRenderer } from './shapes/styles/Text';
 import { CanvasRendererPlugin, RBushRoot } from './CanvasRendererPlugin';
 import { LoadImagePlugin } from './LoadImagePlugin';
-import { RBushNode, RBushNodeAABB } from './components/RBushNode';
+import { RBushNode } from './components/RBushNode';
+import type { RBushNodeAABB } from './components/RBushNode';
 
 export {
   PathGeneratorFactory,
   PathGenerator,
   StyleRenderer,
   RBushNode,
-  RBushNodeAABB,
+  // RBushNodeAABB,
   RBushRoot,
   RBush,
 };

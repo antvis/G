@@ -1,6 +1,8 @@
 export default {
   cjs: 'rollup',
   esm: 'rollup',
+  // cjs: 'babel',
+  // esm: 'babel',
   // umd: {
   //   minFile: true,
   // },

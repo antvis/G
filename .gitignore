@@ -54,7 +54,7 @@ typings/
 .idea
 
 # build
-esm
+es
 lib
 dist
 build

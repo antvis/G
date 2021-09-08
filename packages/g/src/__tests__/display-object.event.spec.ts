@@ -5,7 +5,7 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { Group, Canvas, Circle, Rect, CustomEvent, DISPLAY_OBJECT_EVENT } from '@antv/g';
+import { Group, Canvas, Circle, Rect, CustomEvent, DISPLAY_OBJECT_EVENT } from '../';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 
 chai.use(chaiAlmost());
@@ -77,7 +77,7 @@ describe('DisplayObject Lifecyle Event API', () => {
     const circle = new Circle({
       style: {
         r: 10,
-      }
+      },
     });
 
     const attributeChangedCallback = sinon.spy();
@@ -103,7 +103,7 @@ describe('DisplayObject Lifecyle Event API', () => {
     const circle = new Circle({
       style: {
         r: 10,
-      }
+      },
     });
 
     const destroyChangedCallback = sinon.spy();

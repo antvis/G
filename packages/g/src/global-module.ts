@@ -1,7 +1,7 @@
 import type { interfaces } from 'inversify';
 import { ContainerModule } from 'inversify';
 import { DisplayObjectPool } from './DisplayObjectPool';
-import { SceneGraphService } from './services/SceneGraphService';
+import { DefaultSceneGraphService, SceneGraphService } from './services/SceneGraphService';
 import {
   CircleUpdater,
   EllipseUpdater,
@@ -68,7 +68,10 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
       return () => context.container.get(SceneGraphSelector);
     },
   );
-  bind(SceneGraphService).toSelf().inSingletonScope();
+
+  // bind scenegraph service
+  bind(DefaultSceneGraphService).toSelf().inSingletonScope();
+  bind(SceneGraphService).toService(DefaultSceneGraphService);
 
   // bind text service
   bind(OffscreenCanvasCreator).toSelf().inSingletonScope();

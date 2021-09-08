@@ -6,7 +6,7 @@ import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
 
-import { Group, Circle, Canvas, Text, Rect, DISPLAY_OBJECT_EVENT } from '../';
+import { Group, Circle, Canvas, Text, Rect, DISPLAY_OBJECT_EVENT } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 
 chai.use(chaiAlmost());
@@ -35,5 +35,15 @@ describe('Canvas', () => {
     point = canvas.getPointByClient(8, 8);
     expect(point.x).eqls(0);
     expect(point.y).eqls(0);
+
+    // const circle = new Circle({
+    //   style: {
+    //     x: 100,
+    //     y: 100,
+    //     r: 100,
+    //   },
+    // });
+
+    // canvas.appendChild(circle);
   });
 });

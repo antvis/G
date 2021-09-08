@@ -137,7 +137,7 @@ export class DisplayObject<
 
   private displayObjectPool: DisplayObjectPool = container.get(DisplayObjectPool);
 
-  private sceneGraphService = container.get(SceneGraphService);
+  private sceneGraphService = container.get<SceneGraphService>(SceneGraphService);
 
   private stylePropertyUpdaterFactory = container.get<
     <Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyUpdater<any>[]
