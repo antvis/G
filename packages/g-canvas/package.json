@@ -8,7 +8,7 @@
   "sideEffects": false,
   "files": [
     "package.json",
-    "esm",
+    "es",
     "lib",
     "dist",
     "LICENSE",
@@ -43,6 +43,7 @@
     "@antv/g-plugin-canvas-picker": "^1.0.0-alpha.13",
     "@antv/g-plugin-canvas-renderer": "^1.0.0-alpha.19",
     "@antv/g-plugin-dom-interaction": "^1.0.0-alpha.19",
+    "@antv/g-plugin-html-renderer": "^1.0.0-alpha.2",
     "@antv/util": "^2.0.13"
   },
   "peerDependencies": {

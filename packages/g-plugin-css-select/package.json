@@ -7,7 +7,7 @@
   "types": "lib/index.d.ts",
   "files": [
     "package.json",
-    "esm",
+    "es",
     "lib",
     "dist",
     "LICENSE",

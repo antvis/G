@@ -5,7 +5,7 @@
   "description": "G sites deployed on gh-pages",
   "files": [
     "package.json",
-    "esm",
+    "es",
     "lib",
     "dist",
     "LICENSE",

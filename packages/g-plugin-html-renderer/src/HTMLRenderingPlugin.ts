@@ -12,7 +12,6 @@ import {
   getEuler,
 } from '@antv/g';
 import { isString } from '@antv/util';
-import { mat4, quat, vec3 } from 'gl-matrix';
 
 const HTML_PREFIX = 'g-html-';
 

@@ -1,4 +1,3 @@
-import { Cubic as CubicUtil } from '@antv/g-math';
 import { injectable } from 'inversify';
 import type { GeometryAABBUpdater } from '.';
 import type { DisplayObject } from '../../DisplayObject';
