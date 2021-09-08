@@ -2,10 +2,9 @@
   "name": "@antv/g-plugin-webgl-renderer",
   "version": "1.0.0-alpha.18",
   "description": "A G plugin of renderer implementation with WebGL1",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
-  "unpkg": "dist/index.umd.min.js",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "package.json",
     "esm",

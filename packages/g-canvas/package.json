@@ -2,10 +2,9 @@
   "name": "@antv/g-canvas",
   "version": "1.0.0-alpha.18",
   "description": "A renderer implemented by Canvas 2D API",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
-  "unpkg": "dist/index.umd.min.js",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "lib/index.d.ts",
   "sideEffects": false,
   "files": [
     "package.json",

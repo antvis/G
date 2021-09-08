@@ -2,10 +2,9 @@
   "name": "@antv/g-plugin-html-renderer",
   "version": "1.0.0-alpha.1",
   "description": "A G plugin for rendering HTML",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
-  "unpkg": "dist/index.umd.min.js",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "package.json",
     "esm",

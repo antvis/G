@@ -20,7 +20,10 @@ class ContainerBasedContributionProvider<T extends object> implements Contributi
   constructor(
     protected readonly serviceIdentifier: interfaces.ServiceIdentifier<T>,
     protected readonly container: interfaces.Container,
-  ) {}
+  ) {
+    this.serviceIdentifier = serviceIdentifier;
+    this.container = container;
+  }
 
   getContributions(recursive?: boolean): T[] {
     if (this.services === undefined) {
