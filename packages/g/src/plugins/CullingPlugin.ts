@@ -44,7 +44,7 @@ export class CullingPlugin implements RenderingPlugin {
             .every((strategy) => strategy.isVisible(object));
         }
 
-        if (object.style.visibility === 'visible' && (!cullable || cullable.visible)) {
+        if (object.isVisible()) {
           return object;
         } else {
           // Those invisible objects which get renderred in last frame should be saved for later use.

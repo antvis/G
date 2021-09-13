@@ -1,7 +1,7 @@
 import { isObject, isNil } from '@antv/util';
 import type { mat3 } from 'gl-matrix';
 import { vec2, vec3, mat4, quat } from 'gl-matrix';
-import { Renderable, Transform } from './components';
+import { Cullable, Renderable, Transform } from './components';
 import { createVec3, rad2deg, getEuler, fromRotationTranslationScale } from './utils/math';
 import type { BaseStyleProps, ParsedBaseStyleProps } from './types';
 import { SHAPE } from './types';
@@ -559,7 +559,8 @@ export class DisplayObject<
   }
 
   isVisible() {
-    return this.style.visibility === 'visible';
+    const cullable = this.getEntity().getComponent(Cullable);
+    return this.style.visibility === 'visible' && (!cullable || (cullable && !cullable.isCulled()));
   }
 
   /**

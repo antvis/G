@@ -17,4 +17,8 @@ export class Cullable extends Component {
   visible = false;
 
   enable = true;
+
+  isCulled() {
+    return this.enable && !this.visible;
+  }
 }

@@ -16,15 +16,7 @@ import {
   PARSED_COLOR_TYPE,
   DefaultCamera,
 } from '@antv/g';
-import type {
-  ParsedBaseStyleProps,
-  ParsedStyleProperty,
-  ParsedColorStyleProperty,
-  LinearGradient,
-  RadialGradient,
-  Pattern,
-  ParsedFilterStyleProperty,
-} from '@antv/g';
+import type { LinearGradient, RadialGradient } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
 import { createSVGElement } from './utils/dom';
 import { numberToLongString } from './utils/format';
@@ -99,7 +91,6 @@ export type GradientParams = (LinearGradient | RadialGradient) & { type: PARSED_
 
 const G_SVG_PREFIX = 'g_svg';
 const CLIP_PATH_PREFIX = 'clip-path-';
-let counter = 0;
 
 @injectable()
 export class SVGRendererPlugin implements RenderingPlugin {
@@ -164,6 +155,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
 
       if ($el && $groupEl) {
+        // 不可见
+        if (!object.isVisible()) {
+          console.log('remove....');
+        }
+
         // apply local RTS transformation to <group> wrapper
         // account for anchor
         this.applyTransform($groupEl, object.getLocalTransform());
