@@ -1,18 +1,16 @@
 # Change Log
 
-## [1.0.0-alpha.19] - 2021-09-13
-
-Here we write upgrading notes for brands. It's a team effort to make them as straightforward as possible.
+## [1.0.0-alpha.20] - 2021-09-13
 
 ### 新增特性
 
--   `removeAllEventListeners` 移除元素上所有事件监听器：
+-   `removeAllEventListeners` 移除元素上所有事件监听器：https://g-next.antv.vision/zh/docs/api/event#removealleventlisteners
     ```js
     circle.removeAllEventListeners();
     // 或者
     circle.off(); // 兼容旧版 API
     ```
--   `getLineBoundingRects` 获取 Text 多行文本包围盒：
+-   `getLineBoundingRects` 获取 Text 多行文本包围盒：https://g-next.antv.vision/zh/docs/api/basic/text#getlineboundingrects-rectangle
     ```js
     text.getLineBoundingRects(); // Rectangle[]
     ```
@@ -33,18 +31,17 @@ Here we write upgrading notes for brands. It's a team effort to make them as str
     -   `replaceChild` 用指定的节点替换当前节点的一个子节点，并返回被替换掉的节点
     -   `replaceWith` 在父节点的子节点列表中，用传入的节点列表替换该节点
     -   `replaceChildren` 替换该节点的所有子节点。不传参数时则会清空该节点的所有子节点
--   基础图形 HTML。
+-   基础图形 HTML。https://g-next.antv.vision/zh/docs/api/basic/html
 -   文档：
     -   内置对象文档：
-        -   EventTarget
-        -   Node
-        -   Element
-        -   Document
+        -   EventTarget https://g-next.antv.vision/zh/docs/api/builtin-objects/event-target
+        -   Node https://g-next.antv.vision/zh/docs/api/builtin-objects/node
+        -   Element https://g-next.antv.vision/zh/docs/api/builtin-objects/element
+        -   Document https://g-next.antv.vision/zh/docs/api/builtin-objects/document
     -   事件系统文档，包含以下问题的说明或者解决方案：
-        -   事件触发顺序。click 事件会在 pointerdown 和 pointerup 触发之后。
-        -   在 Chrome 中禁止页面默认滚动行为。
-        -   其他原生事件用法，例如双击、键盘、剪切板等。
-    -   HTML 图形文档。
+        -   事件触发顺序。click 事件会在 pointerdown 和 pointerup 触发之后。https://g-next.antv.vision/zh/docs/api/event#%E4%BA%8B%E4%BB%B6%E8%A7%A6%E5%8F%91%E9%A1%BA%E5%BA%8F
+        -   在 Chrome 中禁止页面默认滚动行为。https://g-next.antv.vision/zh/docs/api/event#%E5%9C%A8-chrome-%E4%B8%AD%E7%A6%81%E6%AD%A2%E9%A1%B5%E9%9D%A2%E9%BB%98%E8%AE%A4%E6%BB%9A%E5%8A%A8%E8%A1%8C%E4%B8%BA
+        -   其他原生事件用法，例如双击、键盘、剪切板等。https://g-next.antv.vision/zh/docs/api/event#%E5%85%B6%E4%BB%96%E4%BA%8B%E4%BB%B6
 
 ### 改动
 
@@ -54,7 +51,7 @@ Here we write upgrading notes for brands. It's a team effort to make them as str
     -   Canvas -> EventTarget
     -   Document -> Node -> EventTarget
     -   DisplayObject -> Element -> Node -> EventTarget
--   Canvas 提供获取入口和场景图根节点方法：
+-   Canvas 提供获取入口和场景图根节点方法：https://g-next.antv.vision/zh/docs/api/canvas#%E5%85%A5%E5%8F%A3%E4%B8%8E%E6%A0%B9%E8%8A%82%E7%82%B9
 
     ```js
     canvas.document; // 入口
