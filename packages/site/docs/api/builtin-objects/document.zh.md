@@ -7,6 +7,10 @@ order: 4
 
 -   Document -> Node -> EventTarget
 
+# 继承自
+
+[Node](/zh/docs/api/builtin-objects/node)
+
 # 属性
 
 ## nodeName

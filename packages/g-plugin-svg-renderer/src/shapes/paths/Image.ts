@@ -8,7 +8,7 @@ export class ImageRenderer implements ElementRenderer<ParsedImageStyleProps> {
   dependencies = ['img', 'width', 'height'];
 
   apply($el: SVGElement, attributes: ParsedImageStyleProps) {
-    const { img, width = 0, height = 0 } = attributes;
+    const { img = '', width = 0, height = 0 } = attributes;
 
     $el.setAttribute('x', '0');
     $el.setAttribute('y', '0');
@@ -26,11 +26,11 @@ export class ImageRenderer implements ElementRenderer<ParsedImageStyleProps> {
         // this.attr('height', img.height);
       }
       $el.setAttribute('href', img.src);
-      // @ts-ignore
     } else if (
+      // @ts-ignore
       img instanceof HTMLElement &&
-      isString(img.nodeName) &&
-      img.nodeName.toUpperCase() === 'CANVAS'
+      isString((img as HTMLElement).nodeName) &&
+      (img as HTMLElement).nodeName.toUpperCase() === 'CANVAS'
     ) {
       $el.setAttribute('href', (img as HTMLCanvasElement).toDataURL());
       // @ts-ignore

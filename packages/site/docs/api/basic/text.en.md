@@ -9,7 +9,7 @@ order: 1
 
 # 继承自
 
-- [DisplayObject](/zh/docs/api/basic/display-object)
+-   [DisplayObject](/zh/docs/api/basic/display-object)
 
 文本/文本块的位置通过文本锚点描述，围绕该锚点通过 `textBaseline`（单行/多行）、`textAlign`（多行）等属性调整自身位置。
 
@@ -91,8 +91,7 @@ order: 1
 
 是否必须：false
 
-说明：在垂直方向的对齐通过 `textBaseline` 实现，下图展示了不同取值下的对齐效果：
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1g1SQZlEBCAAAAAAAAAAAAAAARQnAQ)
+说明：在垂直方向的对齐通过 `textBaseline` 实现，下图展示了不同取值下的对齐效果： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1g1SQZlEBCAAAAAAAAAAAAAAARQnAQ)
 
 以文本当前位置为锚点，下图依次展示了 `top` `middle` 和 `bottom` 的效果。除了单行也适用于多行文本块：
 
@@ -174,3 +173,44 @@ order: 1
 说明：行间距
 
 ## [WIP] 阴影
+
+# 方法
+
+## getLineBoundingRects(): Rectangle[]
+
+获取每一行文本的包围盒，例如：
+
+```js
+text.getLineBoundingRects(); // Rectangle[]
+```
+
+其中包围盒结构如下，其中 x/y 相对于文本的局部坐标系：
+
+```js
+interface Rectangle {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+}
+```
+
+在[示例](/zh/examples/shape#text)中，我们绘制出了多行文本中每一行的包围盒，可以根据包围盒信息实现例如下划线、删除线等高级文本特性：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4bL1QaVJ40MAAAAAAAAAAAAAARQnAQ)
+
+```js
+text.getLineBoundingRects().forEach(({ x, y, width, height }) => {
+    const block = new Rect({
+        style: {
+            x,
+            y,
+            width,
+            height,
+            stroke: 'black',
+            lineWidth: 2,
+        },
+    });
+    text.appendChild(block);
+});
+```

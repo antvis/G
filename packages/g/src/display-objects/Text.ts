@@ -2,6 +2,7 @@ import { SHAPE } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from '../DisplayObject';
 import { DisplayObjectConfig } from '../DisplayObject';
+import { TextMetrics } from '../services';
 
 export interface TextStyleProps extends BaseStyleProps {
   text: string;
@@ -58,6 +59,7 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   wordWrapWidth?: number;
   dropShadow?: boolean;
   dropShadowDistance?: number;
+  metrics?: TextMetrics;
 }
 export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<TextStyleProps>) {
@@ -98,5 +100,9 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
       },
       ...rest,
     });
+  }
+
+  getLineBoundingRects() {
+    return this.parsedStyle.metrics?.lineMetrics!;
   }
 }

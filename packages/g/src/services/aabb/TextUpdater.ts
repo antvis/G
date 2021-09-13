@@ -12,10 +12,9 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   update(parsedStyle: ParsedTextStyleProps) {
     const { text = '', textAlign, lineWidth = 0, textBaseline, x = 0, y = 0 } = parsedStyle;
 
-    const { width, height, lineHeight, fontProperties } = this.textService.measureText(
-      text,
-      parsedStyle,
-    );
+    const metrics = this.textService.measureText(text, parsedStyle);
+    parsedStyle.metrics = metrics;
+    const { width, height, lineHeight, fontProperties } = metrics;
 
     // anchor is left-top by default
     const halfExtents = vec3.fromValues(width / 2, height / 2, 0);

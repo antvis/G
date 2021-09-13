@@ -189,8 +189,26 @@ multilineFolder.add(multilineConfig, 'breakWords').onChange((breakWords) => {
 multilineFolder.add(multilineConfig, 'wordWrap').onChange((wordWrap) => {
   text.attr('wordWrap', wordWrap);
 });
+
+const lineBlocks = [];
 multilineFolder.add(multilineConfig, 'wordWrapWidth', 0, 500).onChange((wordWrapWidth) => {
   text.attr('wordWrapWidth', wordWrapWidth);
+  lineBlocks.forEach((block) => block.remove());
+
+  text.getLineBoundingRects().forEach(({ x, y, width, height }) => {
+    const block = new Rect({
+      style: {
+        x,
+        y,
+        width,
+        height,
+        stroke: 'black',
+        lineWidth: 2,
+      },
+    });
+    lineBlocks.push(block);
+    text.appendChild(block);
+  });
 });
 multilineFolder.add(multilineConfig, 'lineHeight', 0, 100).onChange((lineHeight) => {
   text.attr('lineHeight', lineHeight);

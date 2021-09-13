@@ -1,7 +1,20 @@
 import { inject, injectable } from 'inversify';
 import type { ParsedTextStyleProps } from '../../display-objects/Text';
+import { Rectangle } from '../../shapes';
 import { toFontString } from '../../utils/text';
 import { OffscreenCanvasCreator } from './OffscreenCanvasCreator';
+
+export interface TextMetrics {
+  font: string;
+  width: number;
+  height: number;
+  lines: string[];
+  lineWidths: number[];
+  lineHeight: number;
+  maxLineWidth: number;
+  fontProperties: IFontMetrics;
+  lineMetrics: Rectangle[];
+}
 
 interface IFontMetrics {
   ascent: number;
@@ -141,12 +154,14 @@ export class TextService {
     return properties;
   }
 
-  measureText(text: string, attributes: ParsedTextStyleProps) {
+  measureText(text: string, attributes: ParsedTextStyleProps): TextMetrics {
     const {
       fontSize = 0,
       wordWrap,
       lineHeight: strokeHeight = 0,
-      lineWidth: strokeThickness = 0,
+      lineWidth = 0,
+      textBaseline,
+      textAlign,
       letterSpacing = 0,
       dropShadow,
       dropShadowDistance = 0,
@@ -174,16 +189,31 @@ export class TextService {
       lineWidths[i] = lineWidth;
       maxLineWidth = Math.max(maxLineWidth, lineWidth);
     }
-    let width = maxLineWidth + strokeThickness;
+    let width = maxLineWidth + lineWidth;
     if (dropShadow) {
       width += dropShadowDistance;
     }
-    const lineHeight = strokeHeight || fontProperties.fontSize + strokeThickness;
+    let lineHeight = strokeHeight || fontProperties.fontSize + lineWidth;
     let height =
-      Math.max(lineHeight, fontProperties.fontSize + strokeThickness) +
+      Math.max(lineHeight, fontProperties.fontSize + lineWidth) +
       (lines.length - 1) * (lineHeight + leading);
     if (dropShadow) {
       height += dropShadowDistance;
+    }
+    lineHeight += leading;
+
+    // handle vertical text baseline
+    let offsetY = 0;
+    if (textBaseline === 'middle') {
+      offsetY = -height / 2;
+    } else if (
+      textBaseline === 'bottom' ||
+      textBaseline === 'alphabetic' ||
+      textBaseline === 'ideographic'
+    ) {
+      offsetY = -height;
+    } else if (textBaseline === 'top' || textBaseline === 'hanging') {
+      offsetY = 0;
     }
 
     return {
@@ -192,9 +222,25 @@ export class TextService {
       height,
       lines,
       lineWidths,
-      lineHeight: lineHeight + leading,
+      lineHeight,
       maxLineWidth,
       fontProperties,
+      lineMetrics: lineWidths.map((width, i) => {
+        let offsetX = 0;
+        // handle horizontal text align
+        if (textAlign === 'center') {
+          offsetX -= width / 2;
+        } else if (textAlign === 'right' || textAlign === 'end') {
+          offsetX -= width;
+        }
+
+        return new Rectangle(
+          offsetX - lineWidth / 2,
+          offsetY + i * lineHeight,
+          width + lineWidth,
+          lineHeight,
+        );
+      }),
     };
   }
 

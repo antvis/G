@@ -1,4 +1,4 @@
-import { TextService, DisplayObject, Text, ParsedTextStyleProps } from '@antv/g';
+import { DisplayObject, Text, ParsedTextStyleProps } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { ShaderModuleService } from '../services/shader-module';
 // @ts-ignore
@@ -43,9 +43,6 @@ const UNIFORM = {
 export class TextModelBuilder implements ModelBuilder {
   @inject(ShaderModuleService)
   private shaderModule: ShaderModuleService;
-
-  @inject(TextService)
-  private textService: TextService;
 
   @inject(GlyphManager)
   private glyphManager: GlyphManager;
@@ -204,13 +201,11 @@ export class TextModelBuilder implements ModelBuilder {
       fontFamily = '',
       fontWeight = 'normal',
       letterSpacing = 0,
+      metrics,
     } = object.parsedStyle;
 
     // shaping text
-    const { font, lines, height, lineHeight, maxLineWidth } = this.textService.measureText(
-      text,
-      object.parsedStyle,
-    );
+    const { font, lines, height, lineHeight, maxLineWidth } = metrics;
 
     // @ts-ignore
     this.glyphManager.generateAtlas(font, fontFamily, fontWeight, text, renderable3d.engine);

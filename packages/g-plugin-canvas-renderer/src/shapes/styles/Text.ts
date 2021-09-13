@@ -8,7 +8,7 @@ export class TextRenderer implements StyleRenderer {
   @inject(TextService)
   private textService: TextService;
 
-  render(context: CanvasRenderingContext2D, attributes: ParsedTextStyleProps) {
+  render(context: CanvasRenderingContext2D, parsedStyle: ParsedTextStyleProps) {
     const {
       text = '',
       lineWidth = 0,
@@ -23,9 +23,10 @@ export class TextRenderer implements StyleRenderer {
       fillOpacity,
       strokeOpacity,
       opacity,
-    } = attributes;
+      metrics,
+    } = parsedStyle;
 
-    const { font, lines, height, lineHeight } = this.textService.measureText(text, attributes);
+    const { font, lines, height, lineHeight } = metrics;
 
     context.font = font;
     context.lineWidth = lineWidth!;

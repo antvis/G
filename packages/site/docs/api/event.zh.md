@@ -159,15 +159,17 @@ circle.emit('build', { prop1: 'xx' });
 
 ### pointerType
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType
+返回 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) 的设备类型，返回值如下：
 
 -   pointer
 -   mouse
 -   touch
 
+https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType
+
 ### type
 
-事件类型，目前支持如下事件：
+事件类型，目前支持监听如下事件：
 
 Pointer 系列：
 
@@ -358,7 +360,9 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Event/stopPropagation
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Event/preventDefault
 
-阻止浏览器默认行为。
+阻止浏览器默认行为。对于 Passive 事件调用该方法无效，并且会抛出警告。
+
+关于 wheel 事件的解决方案可以参考：[在 Chrome 中禁止页面默认滚动行为](/zh/docs/api/event#在-chrome-中禁止页面默认滚动行为)。
 
 ### composedPath
 
@@ -545,26 +549,12 @@ mouseenter 不会冒泡，而 mouseover 会。同理 mouseleave 不会冒泡，�
 
 ## 拾取判定
 
-事件系统只会响应 Canvas 画布范围之内的事件，例如监听了 mousemove 时，在画布之外的其他页面区域移动并不会触发该事件处理器。当拾取到画布空白区域时，事件对象的 [target](/zh/docs/api/event#target) 属性会返回 [Document](/zh/docs/api/builtin-objects/document)：
+事件系统只会响应 Canvas 画布范围之内的事件，例如监听了 mousemove 时，在画布之外的其他页面区域移动并不会触发该事件处理器。当拾取到画布空白区域（未命中任何可见图形）时，事件对象的 [target](/zh/docs/api/event#target) 属性会返回 [Document](/zh/docs/api/builtin-objects/document)：
 
 ```js
 canvas.addEventListener('mousemove', (e) => {
     if (e.target.nodeName === 'document') {
         // 在空白区域移动
-    }
-});
-```
-
-## 鼠标双击事件
-
-由于需要尽可能兼容 PC 和移动端事件，我们并没有监听原生的 [dblclick](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/dblclick_event) 事件，而是通过监听 pointerdown 与 pointerup，将一定时间间隔（200ms）内的点击次数记录在 [detail](/zh/docs/api/event#detail) 属性中，这样就可以区分单击与双击：
-
-```js
-canvas.addEventListener('click', (e) => {
-    if (e.detail === 2) {
-        // 双击
-    } else if (e.detail === 1) {
-        // 单击
     }
 });
 ```
@@ -610,6 +600,49 @@ canvas
         },
         { passive: false },
     );
+```
+
+## 其他事件
+
+其他绝大部分原生事件，尤其是需要绑定在 window/document 上的键盘、剪切板事件用法在 G 中并没有特殊之处，可以直接参考相关事件文档。
+
+### 键盘事件
+
+可以直接使用 [KeyboardEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/KeyboardEvent)：
+
+```js
+window.addEventListener('keydown', () => {}, false);
+```
+
+但目前我们还没有实现 A11y 相关的功能，例如使用 tab 在画布内图形间切换选中。
+
+### 剪切板事件
+
+可以直接使用 [ClipboardEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/ClipboardEvent)
+
+### 焦点相关事件
+
+我们并没有内置 focus/blur 这样的[焦点事件](https://developer.mozilla.org/zh-CN/docs/Web/API/FocusEvent)，因此以下代码无效：
+
+```js
+circle.addEventListener('focus', () => {});
+circle.addEventListener('blur', () => {});
+```
+
+可以通过 click/mouseenter/mouseleave 等事件实现焦点相关功能。[示例](/zh/examples/event#circle)
+
+### 鼠标双击事件
+
+由于需要尽可能兼容 PC 和移动端事件，我们并没有监听原生的 [dblclick](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/dblclick_event) 事件，而是通过监听 pointerdown 与 pointerup，将一定时间间隔（200ms）内的点击次数记录在 [detail](/zh/docs/api/event#detail) 属性中，这样就可以区分单击与双击：
+
+```js
+canvas.addEventListener('click', (e) => {
+    if (e.detail === 2) {
+        // 双击
+    } else if (e.detail === 1) {
+        // 单击
+    }
+});
 ```
 
 ## 旧版兼容

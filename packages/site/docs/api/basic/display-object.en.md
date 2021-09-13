@@ -12,6 +12,10 @@ DisplayObject 是所有图形的基类，例如 `Group` `Circle` `Text` 等都�
 -   使用 CSS 选择器进行[高级查询](/zh/docs/plugins/css-select)
 -   使用 Hammer.js [扩展手势](/zh/docs/api/event#直接使用-hammerjs)
 
+# 继承自
+
+[Element](/zh/docs/api/builtin-objects/element)
+
 # id
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/id
@@ -900,12 +904,16 @@ interface Rect {
 | 名称            | 属性/方法 | 返回值            | 备注                           |
 | --------------- | --------- | ----------------- | ------------------------------ | ------------------------------------ |
 | parentNode      | 属性      | `DisplayObject    | null`                          | 父节点（如有）                       |
+| parentElement   | 属性      | `DisplayObject    | null`                          | 父节点（如有）                       |
+| childNodes      | 属性      | `DisplayObject[]` | 子节点列表                     |
 | children        | 属性      | `DisplayObject[]` | 子节点列表                     |
 | firstChild      | 属性      | `DisplayObject    | null`                          | 返回子节点列表中第一个节点（如有）   |
 | lastChild       | 属性      | `DisplayObject    | null`                          | 返回子节点列表中最后一个节点（如有） |
 | nextSibling     | 属性      | `DisplayObject    | null`                          | 返回后一个兄弟节点（如有）           |
 | previousSibling | 属性      | `DisplayObject    | null`                          | 返回前一个兄弟节点（如有）           |
 | contains        | 方法      | `boolean`         | 子树中是否包含某个节点（入参） |
+| getRootNode     | 方法      | `Node`            | 返回当前节点的根节点           |
+| ownerDocument   | 属性      | `Document`        | 返回画布入口 Document          |
 | isConnected     | 属性      | `boolean`         | 节点是否被添加到画布中         |
 
 ## 高级查询
@@ -920,6 +928,8 @@ interface Rect {
 | getElementsByTagName | `(tagName: string)` | `DisplayObject[]` | 通过 `tagName` 查询子节点列表 |
 | querySelector | `(selector: string)` | `DisplayObject ｜ null` | 查询满足条件的第一个子节点 |
 | querySelectorAll | `(selector: string)` | `DisplayObject[]` | 查询满足条件的所有子节点列表 |
+| find | `(filter: Function)` | `DisplayObject ｜ null` | 查询满足条件的第一个子节点 |
+| findAll | `(filter: Function)` | `DisplayObject[]` | 查询满足条件的所有子节点列表 |
 
 下面我们以上面太阳系的例子，演示如何使用这些查询方法。
 
@@ -938,15 +948,34 @@ solarSystem.querySelectorAll('[r=25]');
 // [moon]
 ```
 
+有时查询条件不好用 CSS 选择器描述，此时可以使用自定义查询方法：find/findAll。它们可以类比成 querySelector/querySelectorAll。不同之处在于前者需要传入一个 filter，例如以下写法等价：
+
+```js
+solarSystem.querySelector('[name=sun]');
+solarSystem.find((element) => element.name === 'sun');
+
+solarSystem.querySelectorAll('[r=25]');
+solarSystem.findAll((element) => element.style.r === 25);
+```
+
 ## 添加/删除节点
+
+以下添加/删除节点能力来自继承的 [Element](/zh/docs/api/builtin-objects/element) 基类。
 
 | 名称 | 参数 | 返回值 | 备注 |
 | --- | --- | --- | --- |
 | appendChild | `child: DisplayObject` | `DisplayObject` | 添加子节点，返回添加的节点 |
 | insertBefore | `child: DisplayObject`<br/>`reference?: DisplayObject` | `DisplayObject` | 添加子节点，在某个子节点之前（如有），返回添加的节点 |
+| append | `...nodes: DisplayObject[]` |  | 在当前节点的子节点列表末尾批量添加一组节点 |
+| prepend | `...nodes: DisplayObject[]` |  | 在当前节点的子节点列表头部批量添加一组节点 |
+| after | `...nodes: DisplayObject[]` |  | 在当前节点之后批量添加一些兄弟节点 |
+| before | `...nodes: DisplayObject[]` |  | 在当前节点之前批量添加一些兄弟节点 |
 | removeChild | `child: DisplayObject`<br/>`destroy = true` | `DisplayObject` | 删除子节点，返回被删除的节点。`destroy` 表示是否要销毁 |
 | removeChildren | `destroy = true` |  | 删除全部子节点。`destroy` 表示是否要销毁 |
 | remove | `destroy = true` | `DisplayObject` | 从父节点（如有）中移除自身，`destroy` 表示是否要销毁 |
+| replaceChild | `child: DisplayObject` | `DisplayObject` | 用指定的节点替换当前节点的一个子节点，并返回被替换掉的节点 |
+| replaceWith | `...nodes: DisplayObject[]` |  | 在父节点的子节点列表中，用传入的节点列表替换该节点 |
+| replaceChildren | `...nodes: DisplayObject[]` |  | 替换该节点的所有子节点。不传参数时则会清空该节点的所有子节点 |
 
 从父节点中删除子节点并销毁有以下两种方式：
 
@@ -958,7 +987,7 @@ parent.removeChild(child);
 child.remove();
 ```
 
-删除所有子节点有以下两种方式：
+删除所有子节点有以下三种方式：
 
 ```js
 parent.removeChildren();
@@ -966,6 +995,9 @@ parent.removeChildren();
 // 等价于
 [...parent.children].forEach((child) => parent.removeChild(child));
 [...parent.children].forEach((child) => child.remove());
+
+// 等价于
+parent.replaceChildren();
 ```
 
 ## 获取/设置属性值

@@ -1,6 +1,6 @@
-import { TextService, ParsedTextStyleProps } from '@antv/g';
+import { ParsedTextStyleProps } from '@antv/g';
 import { detect } from 'detect-browser';
-import { inject, injectable } from 'inversify';
+import { injectable } from 'inversify';
 import { ElementRenderer } from '.';
 
 // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/alignment-baseline
@@ -52,10 +52,8 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
     'textAlign',
     'whiteSpace',
   ];
-  @inject(TextService)
-  private textService: TextService;
 
-  apply($el: SVGElement, attributes: ParsedTextStyleProps) {
+  apply($el: SVGElement, parsedStyle: ParsedTextStyleProps) {
     const {
       textAlign,
       text,
@@ -64,7 +62,8 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
       lineCap,
       lineJoin,
       lineWidth = 0,
-    } = attributes;
+      metrics,
+    } = parsedStyle;
 
     const browser = detect();
     if (browser && browser.name === 'firefox') {
@@ -82,7 +81,7 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
     $el.setAttribute('paint-order', 'stroke');
     $el.setAttribute('style', `stroke-linecap:${lineCap}; stroke-linejoin:${lineJoin};`);
 
-    const { lines, lineHeight, height } = this.textService.measureText(text, attributes);
+    const { lines, lineHeight, height } = metrics;
 
     const lineNum = lines.length;
 

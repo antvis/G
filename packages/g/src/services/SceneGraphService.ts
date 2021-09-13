@@ -211,7 +211,7 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
         parentSortable.sorted = [...parent.childNodes];
       }
       if (parentSortable.dirty) {
-        parentSortable.sorted.sort(sortByZIndex);
+        parentSortable.sorted = [...parent.childNodes].sort(sortByZIndex);
         parentSortable.dirty = false;
       }
 
@@ -379,6 +379,11 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
     return (element: Element, position: vec3 | vec2) => {
       const transform = element.getEntity().getComponent(Transform);
       position = vec3.fromValues(position[0], position[1], position[2] || transform.position[2]);
+
+      if (vec3.equals(transform.position, position)) {
+        return;
+      }
+
       transform.position = position;
 
       if (element.parentNode === null) {
