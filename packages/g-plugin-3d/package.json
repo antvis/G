@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-3d",
-  "version": "1.0.0-alpha.20",
+  "version": "1.0.0-alpha.21",
   "description": "Provide 3D extension for G",
   "main": "lib/index.js",
   "module": "es/index.js",

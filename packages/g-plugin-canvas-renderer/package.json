@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvas-renderer",
-  "version": "1.0.0-alpha.20",
+  "version": "1.0.0-alpha.21",
   "description": "A G plugin of renderer implementation with Canvas2D API",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -31,8 +31,8 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g-ecs": "^1.0.0-alpha.6",
-    "@antv/g-math": "^1.0.0-alpha.4",
+    "@antv/g-ecs": "^1.0.0-alpha.7",
+    "@antv/g-math": "^1.0.0-alpha.5",
     "@antv/path-util": "^2.0.12",
     "rbush": "^3.0.1"
   },
