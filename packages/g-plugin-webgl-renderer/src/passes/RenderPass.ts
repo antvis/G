@@ -4,7 +4,6 @@ import {
   Transform,
   Camera,
   DefaultCamera,
-  SceneGraphNode,
   SHAPE,
   Batch,
   DisplayObject,
@@ -78,7 +77,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
   private camera: Camera;
 
   @inject(ModelBuilderFactory)
-  private modelBuilderFactory: (shape: SHAPE) => ModelBuilder;
+  private modelBuilderFactory: (shape: string) => ModelBuilder;
 
   private pickingFramebuffer: IFramebuffer;
 
@@ -302,8 +301,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
     }
 
     const geometry = entity.getComponent(Geometry3D);
-    const sceneGraphNode = entity.getComponent(SceneGraphNode);
-    const batchSize = (sceneGraphNode.tagName === Batch.tag && displayObject.children.length) || 0;
+    const batchSize = (displayObject.nodeName === Batch.tag && displayObject.children.length) || 0;
 
     // create model(program) first
     if (!renderable3d.model) {
@@ -328,7 +326,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
 
     // update instance model matrix
     if (batchSize) {
-      if ((displayObject as Batch<any>).dirty) {
+      if ((displayObject as Batch).dirty) {
         const modelMatrixAttribute0 = geometry.getAttribute(ATTRIBUTE.ModelMatrix0);
         const modelMatrixAttribute1 = geometry.getAttribute(ATTRIBUTE.ModelMatrix1);
         const modelMatrixAttribute2 = geometry.getAttribute(ATTRIBUTE.ModelMatrix2);
@@ -366,7 +364,7 @@ export class RenderPass implements IRenderPass<RenderPassData> {
           offset: 0,
         });
 
-        (displayObject as Batch<any>).dirty = false;
+        (displayObject as Batch).dirty = false;
       }
     } else {
       const modelMatrix = displayObject.getWorldTransform();

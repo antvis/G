@@ -1,14 +1,14 @@
-import { RectStyleProps } from '@antv/g';
+import { ParsedRectStyleProps } from '@antv/g';
 import { isArray } from '@antv/util';
 import { parseRadius } from '../../utils/format';
 import { injectable } from 'inversify';
 import { ElementRenderer } from '.';
 
 @injectable()
-export class RectRenderer implements ElementRenderer<RectStyleProps> {
+export class RectRenderer implements ElementRenderer<ParsedRectStyleProps> {
   dependencies = ['radius', 'width', 'height'];
 
-  apply($el: SVGElement, attributes: RectStyleProps) {
+  apply($el: SVGElement, attributes: ParsedRectStyleProps) {
     const { radius = 0, width = 0, height = 0 } = attributes;
 
     let d = '';

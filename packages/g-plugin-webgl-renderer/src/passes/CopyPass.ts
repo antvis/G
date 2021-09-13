@@ -1,5 +1,7 @@
 import { inject, injectable } from 'inversify';
+// @ts-ignore
 import copyFrag from '../services/shader-module/shaders/webgl.copy.frag.glsl';
+// @ts-ignore
 import copyVert from '../services/shader-module/shaders/webgl.copy.vert.glsl';
 import { FrameGraphHandle } from '../components/framegraph/FrameGraphHandle';
 import { FrameGraphPass } from '../components/framegraph/FrameGraphPass';
@@ -37,8 +39,16 @@ export class CopyPass implements IRenderPass<CopyPassData> {
     const { createModel, createAttribute, createBuffer } = this.engine;
     if (!this.model) {
       const model = createModel({
-        vs: this.shaderModuleService.transpile(copyVert, ShaderType.Vertex, this.engine.shaderLanguage),
-        fs: this.shaderModuleService.transpile(copyFrag, ShaderType.Fragment, this.engine.shaderLanguage),
+        vs: this.shaderModuleService.transpile(
+          copyVert,
+          ShaderType.Vertex,
+          this.engine.shaderLanguage,
+        ),
+        fs: this.shaderModuleService.transpile(
+          copyFrag,
+          ShaderType.Fragment,
+          this.engine.shaderLanguage,
+        ),
         attributes: {
           // rendering a fullscreen triangle instead of quad
           // @see https://www.saschawillems.de/blog/2016/08/13/vulkan-tutorial-on-rendering-a-fullscreen-quad-without-buffers/
@@ -105,7 +115,7 @@ export class CopyPass implements IRenderPass<CopyPassData> {
             u_Texture: framebuffer,
           },
         });
-      }
+      },
     );
   }
 }

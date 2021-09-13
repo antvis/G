@@ -11,7 +11,7 @@ export function compareAnimations(leftAnimation: Animation, rightAnimation: Anim
  * @see https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/web-animations-js/index.d.ts
  */
 @injectable()
-export class AnimationTimeline implements globalThis.AnimationTimeline {
+export class AnimationTimeline implements AnimationTimeline {
   /**
    * all active animations
    */
@@ -69,11 +69,7 @@ export class AnimationTimeline implements globalThis.AnimationTimeline {
     animations.sort(compareAnimations);
 
     // clear inactive animations
-    const inactiveAnimations = this.tick(
-      Number(this.currentTime),
-      false,
-      animations.slice()
-    )[1];
+    const inactiveAnimations = this.tick(Number(this.currentTime), false, animations.slice())[1];
     inactiveAnimations.forEach((animation) => {
       const index = this.animations.indexOf(animation);
       if (index !== -1) {
@@ -86,7 +82,7 @@ export class AnimationTimeline implements globalThis.AnimationTimeline {
   restart() {
     if (!this.ticking) {
       this.ticking = true;
-      this.requestAnimationFrame(() => { });
+      this.requestAnimationFrame(() => {});
       this.hasRestartedThisFrame = true;
     }
     return this.hasRestartedThisFrame;
@@ -121,7 +117,7 @@ export class AnimationTimeline implements globalThis.AnimationTimeline {
       this.timelineTicking = true;
       this.requestAnimationFrame(this.webAnimationsNextTick);
     }
-  };
+  }
 
   private webAnimationsNextTick = (t: number) => {
     this.currentTime = t;
@@ -136,11 +132,12 @@ export class AnimationTimeline implements globalThis.AnimationTimeline {
   private processRafCallbacks = (t: number) => {
     const processing = this.rafCallbacks;
     this.rafCallbacks = [];
-    if (t < Number(this.currentTime))
-      t = Number(this.currentTime);
+    if (t < Number(this.currentTime)) t = Number(this.currentTime);
     this.animations.sort(compareAnimations);
     this.animations = this.tick(t, true, this.animations)[0];
-    processing.forEach((entry) => { entry[1](t); });
+    processing.forEach((entry) => {
+      entry[1](t);
+    });
     this.applyPendingEffects();
   };
 
@@ -184,8 +181,7 @@ export class AnimationTimeline implements globalThis.AnimationTimeline {
         animation.markTarget();
       }
 
-      if (animation._needsTick)
-        this.ticking = true;
+      if (animation._needsTick) this.ticking = true;
 
       const alive = animation._inEffect || animation._needsTick;
       animation._inTimeline = alive;
@@ -199,8 +195,7 @@ export class AnimationTimeline implements globalThis.AnimationTimeline {
     this.pendingEffects.push(...newPendingClears);
     this.pendingEffects.push(...newPendingEffects);
 
-    if (this.ticking)
-      this.requestAnimationFrame(() => { });
+    if (this.ticking) this.requestAnimationFrame(() => {});
 
     this.inTick = false;
     return [activeAnimations, inactiveAnimations];

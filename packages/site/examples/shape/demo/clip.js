@@ -102,11 +102,7 @@ canvas.appendChild(image);
 canvas.appendChild(image2);
 canvas.appendChild(group);
 
-clipPathCircle.animate(
-  [
-    { transform: 'scale(1)' },
-    { transform: 'scale(1.2)' },
-  ], {
+clipPathCircle.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }], {
   duration: 1500,
   iterations: Infinity,
 });
@@ -120,7 +116,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterRender', () => {
+canvas.on('afterrender', () => {
   if (stats) {
     stats.update();
   }

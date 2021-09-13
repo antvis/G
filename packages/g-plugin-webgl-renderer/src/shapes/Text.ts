@@ -1,9 +1,10 @@
-import { SceneGraphNode, TextService, DisplayObject, TextStyleProps } from '@antv/g';
+import { TextService, DisplayObject, Text, ParsedTextStyleProps } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { ShaderModuleService } from '../services/shader-module';
+// @ts-ignore
 import symbolVertex from './shaders/webgl.symbol.vert.glsl';
+// @ts-ignore
 import symbolFragment from './shaders/webgl.symbol.frag.glsl';
-import { rgb2arr } from '../utils/color';
 import { gl } from '../services/renderer/constants';
 import { IUniformBinding, Material3D } from '../components/Material3D';
 import { Geometry3D } from '../components/Geometry3D';
@@ -49,19 +50,19 @@ export class TextModelBuilder implements ModelBuilder {
   @inject(GlyphManager)
   private glyphManager: GlyphManager;
 
-  onAttributeChanged(object: DisplayObject<TextStyleProps>, name: string, value: any) {
+  onAttributeChanged(object: DisplayObject, name: string, value: any) {
     const entity = object.getEntity();
     const material = entity.getComponent(Material3D);
 
     if (name === 'fontSize') {
       material.setUniform(UNIFORM.FontSize, value);
     } else if (name === 'fill') {
-      const fillColor = rgb2arr(value);
+      const fillColor = value.value;
       material.setUniform(UNIFORM.FontColor, Float32Array.from(fillColor));
     } else if (name === 'fillOpacity') {
       material.setUniform(UNIFORM.FillOpacity, value);
     } else if (name === 'stroke') {
-      const strokeColor = rgb2arr(value);
+      const strokeColor = value.value;
       material.setUniform(UNIFORM.StrokeColor, strokeColor);
     } else if (name === 'strokeOpacity') {
       material.setUniform(UNIFORM.StrokeOpacity, value);
@@ -81,22 +82,21 @@ export class TextModelBuilder implements ModelBuilder {
     }
   }
 
-  prepareModel(object: DisplayObject<TextStyleProps>) {
+  prepareModel(object: Text) {
     const entity = object.getEntity();
-    const { attributes } = entity.getComponent(SceneGraphNode);
     const material = entity.getComponent(Material3D);
 
     const {
-      fill = '',
+      fill,
       fillOpacity = 1,
-      stroke = '',
+      stroke,
       strokeOpacity = 1,
       fontSize = 0,
       lineWidth = 0,
-    } = attributes;
+    } = object.parsedStyle;
 
-    const fillColor = rgb2arr(fill);
-    const strokeColor = rgb2arr(stroke);
+    const fillColor = fill.value;
+    const strokeColor = stroke.value;
 
     this.shaderModule.registerModule('symbol', {
       vs: symbolVertex,
@@ -122,6 +122,7 @@ export class TextModelBuilder implements ModelBuilder {
     };
 
     // TODO: support define stroke-relative props per point
+    // @ts-ignore
     material.setUniform({
       ...(extractedUniforms as Record<string, BufferData>),
       [UNIFORM.FontColor]: fillColor,
@@ -138,9 +139,11 @@ export class TextModelBuilder implements ModelBuilder {
   /**
    * draw 2 passes: stroke & fill
    */
-  renderModel(object: DisplayObject<TextStyleProps>) {
+  renderModel(object: Text) {
     const entity = object.getEntity();
-    const { attributes: { stroke, lineWidth } } = entity.getComponent(SceneGraphNode);
+    const {
+      style: { stroke, lineWidth },
+    } = object;
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
     const renderable3d = entity.getComponent(Renderable3D);
@@ -153,13 +156,10 @@ export class TextModelBuilder implements ModelBuilder {
         },
         {},
       );
-      const attributes = geometry.attributes.reduce(
-        (cur: { [key: string]: any }, prev: any) => {
-          cur[prev.name] = prev.buffer;
-          return cur;
-        },
-        {},
-      );
+      const attributes = geometry.attributes.reduce((cur: { [key: string]: any }, prev: any) => {
+        cur[prev.name] = prev.buffer;
+        return cur;
+      }, {});
 
       // props in each rendering batch
       const drawProps = {
@@ -192,9 +192,8 @@ export class TextModelBuilder implements ModelBuilder {
     }
   }
 
-  private generateAtlas(object: DisplayObject<TextStyleProps>) {
+  private generateAtlas(object: Text) {
     const entity = object.getEntity();
-    const { attributes } = entity.getComponent(SceneGraphNode);
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
     const renderable3d = entity.getComponent(Renderable3D);
@@ -205,10 +204,13 @@ export class TextModelBuilder implements ModelBuilder {
       fontFamily = '',
       fontWeight = 'normal',
       letterSpacing = 0,
-    } = attributes;
+    } = object.parsedStyle;
 
     // shaping text
-    const { font, lines, height, lineHeight, maxLineWidth } = this.textService.measureText(text, attributes);
+    const { font, lines, height, lineHeight, maxLineWidth } = this.textService.measureText(
+      text,
+      object.parsedStyle,
+    );
 
     // @ts-ignore
     this.glyphManager.generateAtlas(font, fontFamily, fontWeight, text, renderable3d.engine);
@@ -229,14 +231,18 @@ export class TextModelBuilder implements ModelBuilder {
     // handle vertical text baseline
     if (textBaseline === 'middle') {
       linePositionY = -height / 2;
-    } else if (textBaseline === 'bottom' || textBaseline === 'alphabetic' || textBaseline === 'ideographic') {
+    } else if (
+      textBaseline === 'bottom' ||
+      textBaseline === 'alphabetic' ||
+      textBaseline === 'ideographic'
+    ) {
       linePositionY = -height;
     } else if (textBaseline === 'top' || textBaseline === 'hanging') {
       linePositionY = 0;
     }
 
     const { indexBuffer, charOffsetBuffer, charUVBuffer } = this.buildTextBuffers({
-      attributes,
+      attributes: object.parsedStyle,
       lines,
       fontStack: font,
       lineHeight: fontScale * lineHeight,
@@ -282,7 +288,7 @@ export class TextModelBuilder implements ModelBuilder {
     offsetY,
     glyphAtlas,
   }: {
-    attributes: TextStyleProps;
+    attributes: ParsedTextStyleProps;
     lines: string[];
     fontStack: string;
     lineHeight: number;
@@ -290,9 +296,7 @@ export class TextModelBuilder implements ModelBuilder {
     offsetY: number;
     glyphAtlas: GlyphAtlas;
   }) {
-    const {
-      textAlign = 'start',
-    } = attributes;
+    const { textAlign = 'start' } = attributes;
 
     const charUVBuffer: number[] = [];
     const charOffsetBuffer: number[] = [];
@@ -300,9 +304,13 @@ export class TextModelBuilder implements ModelBuilder {
 
     let i = 0;
     const positionedGlyphs = this.glyphManager.layout(
-      lines, fontStack, lineHeight,
-      textAlign, letterSpacing, offsetY);
-
+      lines,
+      fontStack,
+      lineHeight,
+      textAlign,
+      letterSpacing,
+      offsetY,
+    );
 
     // 计算每个独立字符相对于锚点的位置信息
     const glyphQuads = getGlyphQuads(positionedGlyphs, glyphAtlas.positions);

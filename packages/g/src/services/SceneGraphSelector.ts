@@ -1,13 +1,12 @@
 import { injectable } from 'inversify';
-import { SceneGraphNode } from '../components';
-import { DisplayObject } from '../DisplayObject';
+import { Element } from '../dom/Element';
 
 export const SceneGraphSelectorFactory = 'SceneGraphSelectorFactory';
 export const SceneGraphSelector = 'SceneGraphSelector';
 export interface SceneGraphSelector {
-  selectOne(query: string, object: DisplayObject): DisplayObject | null;
-  selectAll(query: string, object: DisplayObject): DisplayObject[];
-  is(query: string, group: DisplayObject): boolean;
+  selectOne<T extends Element>(query: string, element: T): T | null;
+  selectAll<T extends Element>(query: string, element: T): T[];
+  is<T extends Element>(query: string, element: T): boolean;
 }
 
 /**
@@ -19,39 +18,33 @@ export interface SceneGraphSelector {
  */
 @injectable()
 export class DefaultSceneGraphSelector implements SceneGraphSelector {
-  selectOne(query: string, object: DisplayObject) {
+  selectOne<T extends Element>(query: string, object: T) {
     if (query.startsWith('#')) {
       // getElementById('id')
       return object.find((node) => {
-        const sceneGraphNode = node.getEntity().getComponent(SceneGraphNode);
-        // return !sceneGraphNode.shadow && sceneGraphNode.id === query.substring(1);
-        return sceneGraphNode.id === query.substring(1);
+        // return !node.shadow && node.id === query.substring(1);
+        return node.id === query.substring(1);
       });
     }
     return null;
   }
 
-  selectAll(query: string, object: DisplayObject) {
+  selectAll<T extends Element>(query: string, object: T) {
     // TODO: only support `[name="${name}"]` `.className`
     if (query.startsWith('.')) {
       // getElementsByClassName('className');
       // TODO: should include itself?
-      return object.findAll(
-        (node: DisplayObject) =>
-          node.getEntity().getComponent(SceneGraphNode).class === query.substring(1),
-      );
+      return object.findAll((node) => node.className === query.substring(1));
     } else if (query.startsWith('[name=')) {
       // getElementsByName();
-      return object.findAll(
-        (node: DisplayObject) => node.name === query.substring(7, query.length - 2),
-      );
+      return object.findAll((node) => node.name === query.substring(7, query.length - 2));
     } else {
       // getElementsByTag('circle');
       return object.findAll((node) => node.nodeName === query);
     }
   }
 
-  is(query: string, group: DisplayObject) {
+  is<T extends Element>(query: string, group: T) {
     // TODO: need a simple `matches` implementation
     return true;
   }

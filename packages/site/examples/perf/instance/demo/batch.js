@@ -53,15 +53,9 @@ canvas.addEventListener('wheel', (e) => {
 
   let zoom;
   if (e.deltaY < 0) {
-    zoom = Math.max(
-      minZoom,
-      Math.min(maxZoom, camera.getZoom() / 0.95),
-    );
+    zoom = Math.max(minZoom, Math.min(maxZoom, camera.getZoom() / 0.95));
   } else {
-    zoom = Math.max(
-      minZoom,
-      Math.min(maxZoom, camera.getZoom() * 0.95),
-    );
+    zoom = Math.max(minZoom, Math.min(maxZoom, camera.getZoom() * 0.95));
   }
   camera.setZoom(zoom);
 });
@@ -72,7 +66,7 @@ interact(canvas.document, {
   onmove: function (event) {
     const { dx, dy } = event;
     // circle.translateLocal(dx, dy);
-  }
+  },
 });
 
 // stats
@@ -84,7 +78,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterRender', () => {
+canvas.on('afterrender', () => {
   if (stats) {
     stats.update();
   }

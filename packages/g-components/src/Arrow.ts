@@ -53,6 +53,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
 
     // append arrow body
     this.body = body;
+    // @ts-ignore
     this.appendChild(this.body!);
 
     if (startHead) {
@@ -97,13 +98,17 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       if (newValue) {
         const { body, startHead, endHead, x, y, ...rest } = this.style;
         // append new arrow head
+        // @ts-ignore
         this.appendArrowHead(this.getArrowHeadType(newValue), isStart);
         this.applyArrowStyle(rest, [isStart ? this.startHead : this.endHead]);
       }
     } else if (name === 'body') {
       const { body, startHead, endHead, x, y, ...rest } = this.style;
+      // @ts-ignore
       this.removeChild(this.body!, true);
+      // @ts-ignore
       this.body = newValue;
+      // @ts-ignore
       this.appendChild(this.body!);
       this.applyArrowStyle(rest, [this.body]);
     }
@@ -137,6 +142,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       this.endHead = head;
     }
 
+    // @ts-ignore
     this.appendChild(head);
   }
 
@@ -185,10 +191,12 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
 
   private destroyArrowHead(isStart: boolean) {
     if (isStart && this.startHead) {
+      // @ts-ignore
       this.removeChild(this.startHead, true);
       this.startHead = undefined;
     }
     if (!isStart && this.endHead) {
+      // @ts-ignore
       this.removeChild(this.endHead, true);
       this.endHead = undefined;
     }

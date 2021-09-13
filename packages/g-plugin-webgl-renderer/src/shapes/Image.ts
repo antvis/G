@@ -1,8 +1,10 @@
-import { DisplayObject, ImageStyleProps, Renderable, SceneGraphNode, RenderingService } from '@antv/g';
+import { DisplayObject, Image, Renderable, RenderingService } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { mat3 } from 'gl-matrix';
 import { ShaderModuleService } from '../services/shader-module';
+// @ts-ignore
 import imageVertex from './shaders/webgl.image.vert.glsl';
+// @ts-ignore
 import imageFragment from './shaders/webgl.image.frag.glsl';
 import { gl } from '../services/renderer/constants';
 import { Material3D } from '../components/Material3D';
@@ -47,7 +49,7 @@ export class ImageModelBuilder implements ModelBuilder {
   @inject(RenderingService)
   private renderingService: RenderingService;
 
-  async onAttributeChanged(object: DisplayObject<ImageStyleProps>, name: string, value: any) {
+  async onAttributeChanged(object: Image, name: string, value: any) {
     const entity = object.getEntity();
     const renderable = entity.getComponent(Renderable);
     const renderable3d = entity.getComponent(Renderable3D);
@@ -58,7 +60,7 @@ export class ImageModelBuilder implements ModelBuilder {
       const material = entity.getComponent(Material3D);
       const geometry = entity.getComponent(Geometry3D);
 
-      const { img, width = 0, height = 0 } = object.attributes;
+      const { img, width = 0, height = 0 } = object.parsedStyle;
       if (name === 'img') {
         const texture = await this.loadImage(img, width, height, renderable3d.engine);
         material.setUniform({
@@ -78,7 +80,7 @@ export class ImageModelBuilder implements ModelBuilder {
     }
   }
 
-  async prepareModel(object: DisplayObject<ImageStyleProps>) {
+  async prepareModel(object: Image) {
     const entity = object.getEntity();
     const renderable = entity.getComponent(Renderable);
     const material = entity.getComponent(Material3D);
@@ -86,7 +88,7 @@ export class ImageModelBuilder implements ModelBuilder {
     const renderable3d = entity.getComponent(Renderable3D);
     const instancing = renderable3d.instances.length > 0;
 
-    const { width = 0, height = 0, img, anchor = [0, 0] } = object.attributes;
+    const { width = 0, height = 0, img, anchor = [0, 0] } = object.parsedStyle;
 
     this.shaderModule.registerModule('image', {
       vs: imageVertex,
@@ -116,6 +118,7 @@ export class ImageModelBuilder implements ModelBuilder {
       USE_UV: 1,
       USE_MAP: 1,
     });
+    // @ts-ignore
     material.setUniform({
       ...(extractedUniforms as Record<string, BufferData>),
       [UNIFORM.Texture]: texture,
@@ -125,12 +128,12 @@ export class ImageModelBuilder implements ModelBuilder {
 
     let config: Partial<IImageConfig>[] = [];
     if (instancing) {
-      config = renderable3d.instanceEntities.map((subEntity) => {
-        const { attributes } = subEntity.getComponent(SceneGraphNode);
-        return {
-          size: [attributes.width || 0, attributes.height || 0],
-        };
-      });
+      // config = renderable3d.instanceEntities.map((subEntity) => {
+      //   const { attributes } = subEntity.getComponent(SceneGraphNode);
+      //   return {
+      //     size: [attributes.width || 0, attributes.height || 0],
+      //   };
+      // });
     } else {
       config.push({
         size: [width, height],
@@ -174,7 +177,11 @@ export class ImageModelBuilder implements ModelBuilder {
     this.renderingService.dirtify();
   }
 
-  private buildAttribute(config: Partial<IImageConfig>, attributes: IInstanceAttributes, index: number) {
+  private buildAttribute(
+    config: Partial<IImageConfig>,
+    attributes: IInstanceAttributes,
+    index: number,
+  ) {
     attributes.instancedSizes.push(...(config.size || [0.2, 0.2]));
   }
 
@@ -199,7 +206,7 @@ export class ImageModelBuilder implements ModelBuilder {
     img: string | HTMLImageElement,
     width = 0,
     height = 0,
-    engine: RenderingEngine
+    engine: RenderingEngine,
   ) {
     // TODO: WebGL don't support mipmap in size of pow2
     const texture = await this.texturePool.getOrCreateTexture2D(engine, img, {

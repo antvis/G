@@ -1,17 +1,21 @@
 import {
   Batch,
+  Circle,
+  Ellipse,
+  Rect,
   CircleStyleProps,
   DisplayObject,
   DisplayObjectPool,
-  ParsedBaseStyleProps,
+  ParsedCircleStyleProps,
   PARSED_COLOR_TYPE,
-  SceneGraphNode,
   SHAPE,
   Tuple4Number,
 } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { ShaderModuleService } from '../services/shader-module';
+// @ts-ignore
 import circleVertex from './shaders/webgl.circle.vert.glsl';
+// @ts-ignore
 import circleFragment from './shaders/webgl.circle.frag.glsl';
 import { gl } from '../services/renderer/constants';
 import { Material3D } from '../components/Material3D';
@@ -19,7 +23,6 @@ import { Geometry3D } from '../components/Geometry3D';
 import { Renderable3D } from '../components/Renderable3D';
 import { BufferData } from '../services/renderer';
 import { ModelBuilder } from '.';
-import { rgb2arr } from '../utils/color';
 
 const pointShapes = ['circle', 'ellipse', 'rect', 'rounded-rect'];
 
@@ -85,14 +88,14 @@ export class CircleModelBuilder implements ModelBuilder {
   //   }
   // }
 
-  onAttributeChanged(object: DisplayObject<CircleStyleProps>, name: string, value: any) {
+  onAttributeChanged(object: Circle | Ellipse | Rect, name: string, value: any) {
     const entity = object.getEntity();
-    const renderable = entity.getComponent(SceneGraphNode);
     const renderable3d = entity.getComponent(Renderable3D);
     // if we are updating sub renderable's attribute
     if (renderable3d && renderable3d.source && renderable3d.sourceEntity) {
       const sourceGeometry = renderable3d.sourceEntity.getComponent(Geometry3D);
       // TODO: update subdata in this buffer
+      // @ts-ignore
       const { r = 0, lineWidth = 0, rx = 0, ry = 0 } = renderable.attributes;
       const index = renderable3d.source.instances.indexOf(renderable3d);
       if (name === 'r') {
@@ -110,18 +113,23 @@ export class CircleModelBuilder implements ModelBuilder {
 
       if (material && geometry) {
         const {
+          // @ts-ignore
           r = 0,
           lineWidth = 0,
+          // @ts-ignore
           rx = 0,
+          // @ts-ignore
           ry = 0,
+          // @ts-ignore
           width = 0,
+          // @ts-ignore
           height = 0,
-        } = renderable.attributes;
+        } = object.parsedStyle;
         if (name === 'fill') {
-          const fillColor = rgb2arr(value);
+          const fillColor = value.value;
           geometry.setAttribute(ATTRIBUTE.Color, Float32Array.from(fillColor));
         } else if (name === 'stroke') {
-          const strokeColor = rgb2arr(value);
+          const strokeColor = value.value;
           material.setUniform(UNIFORM.StrokeColor, strokeColor);
         } else if (name === 'strokeOpacity') {
           material.setUniform(UNIFORM.StrokeOpacity, value);
@@ -167,14 +175,13 @@ export class CircleModelBuilder implements ModelBuilder {
     }
   }
 
-  prepareModel(object: DisplayObject<CircleStyleProps, ParsedBaseStyleProps>) {
+  prepareModel(object: DisplayObject<CircleStyleProps, ParsedCircleStyleProps>) {
     const entity = object.getEntity();
-    const sceneGraphNode = entity.getComponent(SceneGraphNode);
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
 
     // const isBatch = sceneGraphNode.tagName === Batch.tag;
-    let tagName = sceneGraphNode.tagName;
+    let tagName = object.nodeName;
     // if (isBatch) {
     //   tagName = (object as Batch).getBatchType()!;
     // }
@@ -197,6 +204,7 @@ export class CircleModelBuilder implements ModelBuilder {
       stroke,
       strokeOpacity = 1,
       lineWidth = 0,
+      // @ts-ignore
       radius = 0,
     } = object.parsedStyle;
 
@@ -259,7 +267,8 @@ export class CircleModelBuilder implements ModelBuilder {
     //     };
     //   });
     // } else {
-    const [halfWidth, halfHeight] = this.getSize(sceneGraphNode.attributes, tagName);
+    // @ts-ignore
+    const [halfWidth, halfHeight] = this.getSize(object.attributes, tagName);
     config.push({
       size: [halfWidth + lineWidth / 2, halfHeight + lineWidth / 2],
       color: fillColor as [number, number, number, number], // sRGB
@@ -349,8 +358,10 @@ export class CircleModelBuilder implements ModelBuilder {
     if (tagName === SHAPE.Circle) {
       return [attributes.r, attributes.r];
     } else if (tagName === SHAPE.Ellipse) {
+      // @ts-ignore
       return [attributes.rx, attributes.ry];
     } else if (tagName === SHAPE.Rect) {
+      // @ts-ignore
       return [(attributes.width || 0) / 2, (attributes.height || 0) / 2];
     }
     return [0, 0];

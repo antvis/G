@@ -12,7 +12,9 @@ import {
   gl,
   rgb2arr,
 } from '@antv/g-plugin-webgl-renderer';
+// @ts-ignore
 import imageVertex from './shaders/webgl.basic.vert.glsl';
+// @ts-ignore
 import imageFragment from './shaders/webgl.basic.frag.glsl';
 import { CubeStyleProps } from '../Cube';
 
@@ -274,7 +276,7 @@ export class CubeModelBuilder implements ModelBuilder {
     img: string | HTMLImageElement,
     width = 0,
     height = 0,
-    engine: RenderingEngine
+    engine: RenderingEngine,
   ) {
     // TODO: WebGL don't support mipmap in size of pow2
     return this.texturePool.getOrCreateTexture2D(engine, img, {

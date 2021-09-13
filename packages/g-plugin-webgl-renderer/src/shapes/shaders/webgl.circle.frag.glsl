@@ -53,8 +53,6 @@ void main() {
   gl_FragColor = mix(vec4(diffuseColor.rgb, diffuseColor.a * u_FillOpacity), strokeColor * u_StrokeOpacity, color_t);
   gl_FragColor.a = gl_FragColor.a * u_Opacity * opacity_t;
 
-  gl_FragColor.a = 0.5;
-
   if (gl_FragColor.a < 0.01)
     discard;
 

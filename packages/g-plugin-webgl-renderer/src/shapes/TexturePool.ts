@@ -18,7 +18,7 @@ export class TexturePool {
 
   getOrCreateTexture2D(
     engine: RenderingEngine,
-    src: string | HTMLImageElement | HTMLCanvasElement | OffscreenCanvas,
+    src: string | HTMLImageElement | HTMLCanvasElement,
     options: ITexture2DInitializationOptions,
   ): Promise<ITexture2D> {
     if (typeof src === 'string') {

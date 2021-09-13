@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import type { TextStyleProps } from '../../display-objects/Text';
+import type { ParsedTextStyleProps } from '../../display-objects/Text';
 import { toFontString } from '../../utils/text';
 import { OffscreenCanvasCreator } from './OffscreenCanvasCreator';
 
@@ -141,7 +141,7 @@ export class TextService {
     return properties;
   }
 
-  measureText(text: string, attributes: TextStyleProps) {
+  measureText(text: string, attributes: ParsedTextStyleProps) {
     const {
       fontSize = 0,
       wordWrap,
@@ -198,7 +198,10 @@ export class TextService {
     };
   }
 
-  private wordWrap(text: string, { wordWrapWidth = 0, letterSpacing = 0 }: TextStyleProps): string {
+  private wordWrap(
+    text: string,
+    { wordWrapWidth = 0, letterSpacing = 0 }: ParsedTextStyleProps,
+  ): string {
     const context = this.offscreenCanvas.getOrCreateContext();
     const maxWidth = wordWrapWidth + letterSpacing;
 
@@ -208,7 +211,7 @@ export class TextService {
 
     const cache: { [key in string]: number } = {};
     const calcWidth = (char: string): number => {
-      return this.getFromCache(char, letterSpacing, cache, context);
+      return this.getFromCache(char, letterSpacing, cache, context as CanvasRenderingContext2D);
     };
 
     Array.from(text).forEach((char: string, i: number) => {

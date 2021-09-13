@@ -783,14 +783,14 @@ const animation = circle.animate(
 
 对于平移操作，我们提供了局部/世界坐标系下，移动绝对/相对距离的 API：
 
-| 名称             | 参数              | 返回值             | 备注                         |
-| ---------------- | ----------------- | ------------------ | ---------------------------- | --- | -------------------------------------- |
-| translate        | `[number, number] | number, number     | number`                      | 无  | 在 **世界坐标系** 下，相对当前位置移动 |
-| translateLocal   | `[number, number] | number, number     | number`                      | 无  | 在 **局部坐标系** 下，相对当前位置移动 |
-| setPosition      | `[number, number] | number, number     | number`                      | 无  | 设置 **世界坐标系** 下的位置           |
-| setLocalPosition | `[number, number] | number, number     | number`                      | 无  | 设置 **局部坐标系** 下的位置           |
-| getPosition      | 无                | `[number, number]` | 获取 **世界坐标系** 下的位置 |
-| getLocalPosition | 无                | `[number, number]` | 获取 **局部坐标系** 下的位置 |
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| translate | `[number, number]`<br />`number, number`<br />`number` | 无 | 在 **世界坐标系** 下，相对当前位置移动 |
+| translateLocal | `[number, number]`<br />`number, number`<br />`number` | 无 | 在 **局部坐标系** 下，相对当前位置移动 |
+| setPosition | `[number, number]`<br />`number, number`<br />`number` | 无 | 设置 **世界坐标系** 下的位置 |
+| setLocalPosition | `[number, number]`<br />`number, number`<br />`number` | 无 | 设置 **局部坐标系** 下的位置 |
+| getPosition | 无 | `[number, number]` | 获取 **世界坐标系** 下的位置 |
+| getLocalPosition | 无 | `[number, number]` | 获取 **局部坐标系** 下的位置 |
 
 其中 translate/translateLocal/setPosition/setLocalPosition 支持以下入参形式，其中如果只想修改 X 轴方向，可以只传一个数字：
 
@@ -804,12 +804,12 @@ circle.translate(100); // number
 
 和平移不同，我们无法提供 `setScale` 这样设置世界坐标系下缩放的方法，因此全局坐标系下缩放是只读的，这在 Unity 中称之为 [lossyScale](https://forum.unity.com/threads/solved-why-is-transform-lossyscale-readonly.363594/)。
 
-| 名称          | 参数              | 返回值             | 备注                             |
-| ------------- | ----------------- | ------------------ | -------------------------------- | --- | ---------------------------------------------- |
-| scaleLocal    | `[number, number] | number, number     | number`                          | 无  | 在 **局部坐标系** 下，相对当前缩放比例继续缩放 |
-| setLocalScale | `[number, number] | number, number     | number`                          | 无  | 设置 **局部坐标系** 下的缩放比例               |
-| getScale      | 无                | `[number, number]` | 获取 **世界坐标系** 下的缩放比例 |
-| getLocalScale | 无                | `[number, number]` | 获取 **局部坐标系** 下的缩放比例 |
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| scaleLocal | `[number, number]`<br />`number, number`<br />`number` | 无 | 在 **局部坐标系** 下，相对当前缩放比例继续缩放 |
+| setLocalScale | `[number, number]`<br />`number, number`<br />`number` | 无 | 设置 **局部坐标系** 下的缩放比例 |
+| getScale | 无 | `[number, number]` | 获取 **世界坐标系** 下的缩放比例 |
+| getLocalScale | 无 | `[number, number]` | 获取 **局部坐标系** 下的缩放比例 |
 
 其中 scaleLocal/setLocalScale 支持以下入参形式，其中如果水平/垂直方向缩放比例相等时，可以只传一个数字：
 
@@ -942,11 +942,11 @@ solarSystem.querySelectorAll('[r=25]');
 
 | 名称 | 参数 | 返回值 | 备注 |
 | --- | --- | --- | --- |
-| appendChild | `(child: DisplayObject)` | `DisplayObject` | 添加子节点，返回添加的节点 |
-| insertBefore | `(child: DisplayObject, reference?: DisplayObject)` | `DisplayObject` | 添加子节点，在某个子节点之前（如有），返回添加的节点 |
-| removeChild | `(child: DisplayObject, destroy = true)` | `DisplayObject` | 删除子节点，返回被删除的节点。`destroy` 表示是否要销毁 |
-| removeChildren | `(destroy = true)` |  | 删除全部子节点。`destroy` 表示是否要销毁 |
-| remove | `(destroy = true)` | `DisplayObject` | 从父节点（如有）中移除自身，`destroy` 表示是否要销毁 |
+| appendChild | `child: DisplayObject` | `DisplayObject` | 添加子节点，返回添加的节点 |
+| insertBefore | `child: DisplayObject`<br/>`reference?: DisplayObject` | `DisplayObject` | 添加子节点，在某个子节点之前（如有），返回添加的节点 |
+| removeChild | `child: DisplayObject`<br/>`destroy = true` | `DisplayObject` | 删除子节点，返回被删除的节点。`destroy` 表示是否要销毁 |
+| removeChildren | `destroy = true` |  | 删除全部子节点。`destroy` 表示是否要销毁 |
+| remove | `destroy = true` | `DisplayObject` | 从父节点（如有）中移除自身，`destroy` 表示是否要销毁 |
 
 从父节点中删除子节点并销毁有以下两种方式：
 
@@ -1003,7 +1003,49 @@ circle.style.r = 20;
 
 ## 销毁
 
-调用 `destroy()` 将销毁节点。
+调用 `destroy()` 将销毁节点。被销毁的节点将无法被再次加入画布渲染。通过 [destroyed](/zh/docs/api/basic/display-object#destroyed) 属性可以判断一个节点是否已经被销毁。
+
+```js
+circle.destroy();
+```
+
+## 状态
+
+通过以下属性可以判断图形当前的状态，例如是否被加入到画布中，是否已经被销毁等。
+
+### isConnected
+
+用于判断一个图形是否已经被加入到画布中。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isConnected
+
+```js
+circle.isConnected; // false
+canvas.appendChild(circle); // add to canvas
+circle.isConnected; // true
+```
+
+### ownerDocument
+
+指向[画布 Canvas](/zh/docs/api/canvas)。如果当前图形还未添加到画布中，或者从画布中被移除，则返回 null。
+
+https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument
+
+```js
+circle.ownerDocument; // null
+canvas.appendChild(circle); // add to canvas
+circle.ownerDocument; // canvas
+```
+
+### destroyed
+
+用于判断一个图形是否已经被销毁。例如主动销毁自身，或者父节点通过 `removeChildren(true)` 主动移除并销毁所有子节点等。
+
+```js
+circle.destroyed; // false
+circle.destroy();
+circle.destroyed; // true
+```
 
 ## 生命周期事件监听
 

@@ -1,8 +1,8 @@
+import { Line as LineUtil } from '@antv/g-math';
 import { SHAPE } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from '../DisplayObject';
-import { DisplayObjectConfig } from '../DisplayObject';
-import { Line as LineUtil } from '@antv/g-math';
+import type { DisplayObjectConfig } from '../DisplayObject';
 import { Point } from '../shapes';
 
 export interface LineStyleProps extends BaseStyleProps {

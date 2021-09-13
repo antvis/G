@@ -460,7 +460,6 @@ export interface ITexture2DInitializationOptions {
   data?:
     | undefined
     | HTMLCanvasElement
-    | OffscreenCanvas
     | HTMLImageElement
     | number[]
     | number[][]

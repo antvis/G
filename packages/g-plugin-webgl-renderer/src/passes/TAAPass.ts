@@ -1,7 +1,10 @@
 import { inject, injectable } from 'inversify';
 import { Camera, DefaultCamera, DisplayObject } from '@antv/g';
+// @ts-ignore
 import blendFS from '../services/shader-module/shaders/webgl.blend.frag.glsl';
+// @ts-ignore
 import copyFS from '../services/shader-module/shaders/webgl.copy.frag.glsl';
+// @ts-ignore
 import quadVS from '../services/shader-module/shaders/webgl.copy.vert.glsl';
 import { FrameGraphEngine, IRenderPass, RenderPassFactory } from '../FrameGraphEngine';
 import {
@@ -139,6 +142,7 @@ export default class TAAPass implements IRenderPass<TAAPassData> {
     this.renderPass = this.renderPassFactory<RenderPassData>(RenderPass.IDENTIFIER) as RenderPass;
   };
 
+  // @ts-ignore
   execute = (
     fg: FrameGraphEngine,
     pass: FrameGraphPass<TAAPassData>,

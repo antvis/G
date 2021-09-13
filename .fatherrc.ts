@@ -6,7 +6,6 @@ export default {
   // umd: {
   //   minFile: true,
   // },
-  disableTypeCheck: true,
   // yarn build order
   pkgs: [
     'g-math',

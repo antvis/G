@@ -6,7 +6,7 @@ import {
   RenderingPlugin,
   Renderable,
   ContextService,
-  ParsedBaseStyleProps,
+  ParsedHTMLStyleProps,
   PARSED_COLOR_TYPE,
   fromRotationTranslationScale,
   getEuler,
@@ -70,7 +70,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
   private updateCSSStyle(
     $el: HTMLElement,
-    parsedStyle: ParsedBaseStyleProps,
+    parsedStyle: ParsedHTMLStyleProps,
     object: DisplayObject,
   ) {
     const {

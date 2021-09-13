@@ -11,6 +11,7 @@ export * from './contribution-provider';
 export * from './components';
 export * from './services';
 export * from './shapes';
+export * from './dom';
 export * from './display-objects';
 export * from './types';
 export * from './utils';

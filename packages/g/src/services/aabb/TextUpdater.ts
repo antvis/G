@@ -1,15 +1,15 @@
 import { vec3 } from 'gl-matrix';
 import { inject, injectable } from 'inversify';
-import type { GeometryAABBUpdater } from '.';
-import type { TextStyleProps } from '../../display-objects/Text';
+import type { GeometryAABBUpdater } from './interfaces';
+import type { ParsedTextStyleProps } from '../../display-objects/Text';
 import { TextService } from '../text';
 
 @injectable()
-export class TextUpdater implements GeometryAABBUpdater<TextStyleProps> {
+export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   @inject(TextService)
   private textService: TextService;
 
-  update(parsedStyle: TextStyleProps) {
+  update(parsedStyle: ParsedTextStyleProps) {
     const { text = '', textAlign, lineWidth = 0, textBaseline, x = 0, y = 0 } = parsedStyle;
 
     const { width, height, lineHeight, fontProperties } = this.textService.measureText(

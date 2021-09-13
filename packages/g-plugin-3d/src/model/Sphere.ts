@@ -12,7 +12,9 @@ import {
   gl,
   rgb2arr,
 } from '@antv/g-plugin-webgl-renderer';
+// @ts-ignore
 import imageVertex from './shaders/webgl.basic.vert.glsl';
+// @ts-ignore
 import imageFragment from './shaders/webgl.basic.frag.glsl';
 import { SphereStyleProps } from '../Sphere';
 

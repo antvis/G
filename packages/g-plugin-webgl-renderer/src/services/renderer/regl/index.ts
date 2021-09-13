@@ -69,7 +69,11 @@ export class WebGLEngine implements RenderingEngine {
           'OES_standard_derivatives', // wireframe
           'angle_instanced_arrays', // VSM shadow map
         ],
-        optionalExtensions: ['EXT_texture_filter_anisotropic', 'EXT_blend_minmax', 'WEBGL_depth_texture'],
+        optionalExtensions: [
+          'EXT_texture_filter_anisotropic',
+          'EXT_blend_minmax',
+          'WEBGL_depth_texture',
+        ],
       });
 
     const useWebgl1 = cfg.disableWebGL2 || !isWebGL2Supported();
@@ -94,18 +98,21 @@ export class WebGLEngine implements RenderingEngine {
   public createAttribute = (options: IAttributeInitializationOptions): IAttribute =>
     new ReglAttribute(this.gl, options);
 
-  public createBuffer = (options: IBufferInitializationOptions): IBuffer => new ReglBuffer(this.gl, options);
+  public createBuffer = (options: IBufferInitializationOptions): IBuffer =>
+    new ReglBuffer(this.gl, options);
 
-  public createElements = (options: IElementsInitializationOptions): IElements => new ReglElements(this.gl, options);
+  public createElements = (options: IElementsInitializationOptions): IElements =>
+    new ReglElements(this.gl, options);
 
   public createTexture2D = (options: ITexture2DInitializationOptions): ITexture2D =>
     new ReglTexture2D(this.gl, options);
 
-  public createFramebuffer = (options: IFramebufferInitializationOptions) => new ReglFramebuffer(this.gl, options);
+  public createFramebuffer = (options: IFramebufferInitializationOptions) =>
+    new ReglFramebuffer(this.gl, options);
 
   public useFramebuffer = (
     { framebuffer, ...rest }: { framebuffer: IFramebuffer | null },
-    drawCommands: () => void
+    drawCommands: () => void,
   ) => {
     this.gl({
       framebuffer: framebuffer ? (framebuffer as ReglFramebuffer).get() : null,
@@ -125,7 +132,9 @@ export class WebGLEngine implements RenderingEngine {
     // @ts-ignore
     const reglClearOptions: regl.ClearOptions = options;
 
-    reglClearOptions.framebuffer = framebuffer === null ? framebuffer : (framebuffer as ReglFramebuffer).get();
+    // @ts-ignore
+    reglClearOptions.framebuffer =
+      framebuffer === null ? framebuffer : (framebuffer as ReglFramebuffer).get();
 
     this.gl.clear(reglClearOptions);
   };
@@ -134,7 +143,7 @@ export class WebGLEngine implements RenderingEngine {
     scissor: Partial<{
       enable: boolean;
       box: { x: number; y: number; width: number; height: number };
-    }>
+    }>,
   ) => {
     if (this.gl && this.gl._gl) {
       // https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/scissor
@@ -149,7 +158,17 @@ export class WebGLEngine implements RenderingEngine {
     }
   };
 
-  public viewport = ({ x, y, width, height }: { x: number; y: number; width: number; height: number }) => {
+  public viewport = ({
+    x,
+    y,
+    width,
+    height,
+  }: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }) => {
     if (this.gl && this.gl._gl) {
       // use WebGL context directly
       // @see https://github.com/regl-project/regl/blob/gh-pages/API.md#unsafe-escape-hatch

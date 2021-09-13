@@ -1,4 +1,4 @@
-import { ImageStyleProps } from '@antv/g';
+import { ParsedImageStyleProps } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { isNil, isString } from '@antv/util';
 import { ImagePool } from '../ImagePool';
@@ -9,7 +9,8 @@ export class ImageRenderer implements StyleRenderer {
   @inject(ImagePool)
   private imagePool: ImagePool;
 
-  render(context: CanvasRenderingContext2D, attributes: ImageStyleProps) {
+  render(context: CanvasRenderingContext2D, attributes: ParsedImageStyleProps) {
+    // @ts-ignore
     const { width = 0, height = 0, img, sx, sy, swidth, sheight } = attributes;
 
     let image: HTMLImageElement;

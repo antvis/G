@@ -3,7 +3,7 @@ import { ParsedBaseStyleProps } from '@antv/g';
 export const ElementRendererFactory = 'ElementRendererFactory';
 export const ElementRenderer = 'ElementRenderer';
 export interface ElementRenderer<T extends ParsedBaseStyleProps> {
-  dependencies: Array<keyof T>;
+  dependencies: string[];
   apply(context: SVGElement, attributes: T): void;
 }
 

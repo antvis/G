@@ -1,13 +1,12 @@
 import { injectable } from 'inversify';
 import { isString } from '@antv/util';
-import type { GeometryAABBUpdater } from '.';
-import type { RectStyleProps } from '../../display-objects/Rect';
-import type { ImageStyleProps } from '../../display-objects/Image';
+import type { GeometryAABBUpdater } from './interfaces';
+import type { ParsedImageStyleProps } from '../../display-objects/Image';
 
 @injectable()
-export class RectUpdater implements GeometryAABBUpdater<RectStyleProps | ImageStyleProps> {
-  update(attributes: RectStyleProps | ImageStyleProps) {
-    const { img, x = 0, y = 0, width, height } = attributes;
+export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
+  update(attributes: ParsedImageStyleProps) {
+    const { img, x = 0, y = 0, width = 0, height = 0 } = attributes;
 
     let contentWidth;
     let contentHeight;

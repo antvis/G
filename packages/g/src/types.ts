@@ -279,8 +279,6 @@ export type ChangeType =
   | 'matrix'
   | 'clip';
 
-export type GroupFilter = (group: DisplayObject) => boolean;
-
 type A = ['a' | 'A', number, number, number, number, number, number, number];
 type C = ['c' | 'C', number, number, number, number, number, number];
 type O = ['o' | 'O', number, number];

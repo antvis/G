@@ -115,6 +115,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     renderingService.hooks.mounted.tap(CanvasRendererPlugin.tag, (object: DisplayObject) => {
       object.getEntity().addComponent(RBushNode);
+      // @ts-ignore
       this.sceneGraphService.emit(SCENE_GRAPH_EVENT.AABBChanged, object);
     });
 
@@ -375,7 +376,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   private handleEntityAABBChanged = (object: DisplayObject) => {
     // skip if this object mounted on another scenegraph root
-    if (object.ownerDocument !== this.renderingContext.root) {
+    if (object.ownerDocument?.documentElement !== this.renderingContext.root) {
       return;
     }
 

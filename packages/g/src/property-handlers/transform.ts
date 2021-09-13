@@ -264,7 +264,9 @@ export function mergeTransforms(
         typeTo2D(leftType) === typeTo2D(rightType)
       ) {
         type = typeTo2D(leftType);
+        // @ts-ignore
         leftArgs = leftFunctionData[2](leftArgs);
+        // @ts-ignore
         rightArgs = rightFunctionData[2](rightArgs);
       } else if (
         leftFunctionData[1] &&
@@ -272,13 +274,15 @@ export function mergeTransforms(
         typeTo3D(leftType) === typeTo3D(rightType)
       ) {
         type = typeTo3D(leftType);
+        // @ts-ignore
         leftArgs = leftFunctionData[1](leftArgs);
+        // @ts-ignore
         rightArgs = rightFunctionData[1](rightArgs);
       } else {
-        const merged = mergeMatrices(left, right);
-        leftResult = [merged[0]];
-        rightResult = [merged[1]];
-        types = [['matrix', [merged[2]]]];
+        // const merged = mergeMatrices(left, right);
+        // leftResult = [merged[0]];
+        // rightResult = [merged[1]];
+        // types = [['matrix', [merged[2]]]];
         break;
       }
 
@@ -287,6 +291,7 @@ export function mergeTransforms(
       const stringConversions = [];
       for (let j = 0; j < leftArgs.length; j++) {
         const merge = typeof leftArgs[j] === 'number' ? mergeNumbers : mergeDimensions;
+        // @ts-ignore
         const merged = merge(leftArgs[j], rightArgs[j], false, target, j);
         leftArgsCopy[j] = merged[0];
         rightArgsCopy[j] = merged[1];

@@ -1,4 +1,4 @@
-import { TextService, TextStyleProps } from '@antv/g';
+import { TextService, ParsedTextStyleProps } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { isNil } from '@antv/util';
 import { StyleRenderer } from '.';
@@ -8,7 +8,7 @@ export class TextRenderer implements StyleRenderer {
   @inject(TextService)
   private textService: TextService;
 
-  render(context: CanvasRenderingContext2D, attributes: TextStyleProps) {
+  render(context: CanvasRenderingContext2D, attributes: ParsedTextStyleProps) {
     const {
       text = '',
       lineWidth = 0,
@@ -37,7 +37,11 @@ export class TextRenderer implements StyleRenderer {
     // handle vertical text baseline
     if (textBaseline === 'middle') {
       linePositionY = -height / 2 - lineHeight / 2;
-    } else if (textBaseline === 'bottom' || textBaseline === 'alphabetic' || textBaseline === 'ideographic') {
+    } else if (
+      textBaseline === 'bottom' ||
+      textBaseline === 'alphabetic' ||
+      textBaseline === 'ideographic'
+    ) {
       linePositionY = -height;
     } else if (textBaseline === 'top' || textBaseline === 'hanging') {
       linePositionY = -lineHeight;
@@ -60,7 +64,7 @@ export class TextRenderer implements StyleRenderer {
           fillOpacity,
           strokeOpacity,
           opacity,
-          true
+          true,
         );
       }
       if (!isNil(fill)) {
@@ -72,7 +76,7 @@ export class TextRenderer implements StyleRenderer {
           letterSpacing,
           fillOpacity,
           strokeOpacity,
-          opacity
+          opacity,
         );
       }
     }
@@ -87,7 +91,7 @@ export class TextRenderer implements StyleRenderer {
     fillOpacity: number | undefined,
     strokeOpacity: number | undefined,
     opacity: number | undefined,
-    isStroke = false
+    isStroke = false,
   ): void {
     // letterSpacing of 0 means normal
     if (letterSpacing === 0) {
@@ -122,7 +126,7 @@ export class TextRenderer implements StyleRenderer {
     x: number,
     y: number,
     fillOpacity: number | undefined,
-    opacity: number | undefined
+    opacity: number | undefined,
   ) {
     const applyOpacity = !isNil(fillOpacity) && fillOpacity !== 1;
     if (applyOpacity) {
@@ -139,7 +143,7 @@ export class TextRenderer implements StyleRenderer {
     text: string,
     x: number,
     y: number,
-    strokeOpacity: number | undefined
+    strokeOpacity: number | undefined,
   ) {
     const applyOpacity = !isNil(strokeOpacity) && strokeOpacity !== 1;
     if (applyOpacity) {

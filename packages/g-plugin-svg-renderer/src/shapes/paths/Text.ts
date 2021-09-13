@@ -1,4 +1,4 @@
-import { TextService, TextStyleProps } from '@antv/g';
+import { TextService, ParsedTextStyleProps } from '@antv/g';
 import { detect } from 'detect-browser';
 import { inject, injectable } from 'inversify';
 import { ElementRenderer } from '.';
@@ -33,7 +33,7 @@ const ANCHOR_MAP: Record<string, string> = {
 };
 
 @injectable()
-export class TextRenderer implements ElementRenderer<TextStyleProps> {
+export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
   dependencies = [
     'text',
     'font',
@@ -55,7 +55,7 @@ export class TextRenderer implements ElementRenderer<TextStyleProps> {
   @inject(TextService)
   private textService: TextService;
 
-  apply($el: SVGElement, attributes: TextStyleProps) {
+  apply($el: SVGElement, attributes: ParsedTextStyleProps) {
     const {
       textAlign,
       text,

@@ -1,4 +1,5 @@
 // tslint:disable-next-line:no-reference
+/// <reference path="./glsl.d.ts" />
 /// <reference path="../../../node_modules/@webgpu/types/dist/index.d.ts" />
 import { Camera, container, RenderingPluginContribution, RendererPlugin, SHAPE } from '@antv/g';
 import { World } from '@antv/g-ecs';
@@ -69,7 +70,7 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
         }
         return null;
       };
-    }
+    },
   );
 
   /**
@@ -81,15 +82,25 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   /**
    * bind render passes
    */
-  bind<IRenderPass<any>>(IRenderPass).to(RenderPass).inSingletonScope().whenTargetNamed(RenderPass.IDENTIFIER);
-  bind<IRenderPass<any>>(IRenderPass).to(CopyPass).inSingletonScope().whenTargetNamed(CopyPass.IDENTIFIER);
-  bind<IRenderPass<any>>(IRenderPass).to(TAAPass).inSingletonScope().whenTargetNamed(TAAPass.IDENTIFIER);
+  bind<IRenderPass<any>>(IRenderPass)
+    .to(RenderPass)
+    .inSingletonScope()
+    .whenTargetNamed(RenderPass.IDENTIFIER);
+  bind<IRenderPass<any>>(IRenderPass)
+    .to(CopyPass)
+    .inSingletonScope()
+    .whenTargetNamed(CopyPass.IDENTIFIER);
+  // @ts-ignore
+  bind<IRenderPass<any>>(IRenderPass)
+    .to(TAAPass)
+    .inSingletonScope()
+    .whenTargetNamed(TAAPass.IDENTIFIER);
   bind<interfaces.Factory<IRenderPass<any>>>(RenderPassFactory).toFactory<IRenderPass<any>>(
     (context: interfaces.Context) => {
       return (name: string) => {
         return context.container.getNamed(IRenderPass, name);
       };
-    }
+    },
   );
 
   bind(View).toSelf().inSingletonScope();
@@ -112,11 +123,24 @@ export interface WebGLRenderingContext {
   view: IView;
 }
 
-export function registerModelBuilder(builderClazz: new (...args: any[]) => ModelBuilder, name: string) {
+export function registerModelBuilder(
+  builderClazz: new (...args: any[]) => ModelBuilder,
+  name: string,
+) {
   bindFunc(ModelBuilder).to(builderClazz).inSingletonScope().whenTargetNamed(name);
 }
 
-export { Geometry3D, Material3D, Renderable3D, ShaderModuleService, ModelBuilder, TexturePool, RenderingEngine, gl, rgb2arr };
+export {
+  Geometry3D,
+  Material3D,
+  Renderable3D,
+  ShaderModuleService,
+  ModelBuilder,
+  TexturePool,
+  RenderingEngine,
+  gl,
+  rgb2arr,
+};
 
 export class Plugin implements RendererPlugin {
   init(container: Container): void {

@@ -1,27 +1,28 @@
-/* eslint-disable no-plusplus */
 import { inject, injectable, postConstruct } from 'inversify';
 import { EventEmitter } from 'eventemitter3';
 import type { Cursor, EventPosition } from '../types';
 import { CanvasConfig } from '../types';
-import type { DisplayObject } from '../DisplayObject';
 import type { FederatedEvent } from '../dom/FederatedEvent';
 import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
 import { RenderingContext } from './RenderingContext';
+import { Element, EventTarget, Node } from '../dom';
+import { Document } from '../dom/Document';
+import { Canvas } from '../Canvas';
 
-type Picker = (position: EventPosition) => DisplayObject | null;
+type Picker = (position: EventPosition) => Node | null;
 type TrackingData = {
-  pressTargetsByButton: Record<number, DisplayObject[]>;
+  pressTargetsByButton: Record<number, Node[]>;
   clicksByButton: Record<
     number,
     {
       clickCount: number;
-      target: DisplayObject;
+      target: Node;
       timeStamp: number;
     }
   >;
-  overTargets: DisplayObject[] | null;
+  overTargets: Node[] | null;
 };
 type EmitterListeners = Record<
   string,
@@ -38,7 +39,7 @@ export class EventService extends EventEmitter {
   @inject(CanvasConfig)
   protected canvasConfig: CanvasConfig;
 
-  private rootTarget: DisplayObject;
+  private rootTarget: Node;
 
   cursor: Cursor | null = 'default';
 
@@ -58,7 +59,7 @@ export class EventService extends EventEmitter {
 
   @postConstruct()
   init() {
-    this.rootTarget = this.renderingContext.root;
+    this.rootTarget = this.renderingContext.root.parentNode as Node; // document
     this.addEventMapping('pointerdown', this.onPointerDown);
     this.addEventMapping('pointerup', this.onPointerUp);
     this.addEventMapping('pointermove', this.onPointerMove);
@@ -149,7 +150,7 @@ export class EventService extends EventEmitter {
     // pointerupoutside only bubbles. It only bubbles upto the parent that doesn't contain
     // the pointerup location.
     if (pressTarget && !e.composedPath().includes(pressTarget)) {
-      let currentTarget: DisplayObject | null = pressTarget;
+      let currentTarget: Node | null = pressTarget;
 
       while (currentTarget && !e.composedPath().includes(currentTarget)) {
         e.currentTarget = currentTarget;
@@ -236,8 +237,7 @@ export class EventService extends EventEmitter {
 
       // If the pointer exits overTarget and its descendants, then a pointerleave event is also fired. This event
       // is dispatched to all ancestors that no longer capture the pointer.
-      // @ts-ignore
-      if (!e.composedPath().includes(outTarget)) {
+      if (!e.composedPath().includes(outTarget!)) {
         const leaveEvent = this.createPointerEvent(from, 'pointerleave', outTarget || undefined);
 
         leaveEvent.eventPhase = leaveEvent.AT_TARGET;
@@ -266,7 +266,7 @@ export class EventService extends EventEmitter {
       this.dispatchEvent(overEvent, 'pointerover');
       if (isMouse) this.dispatchEvent(overEvent, 'mouseover');
 
-      // Probe whether the newly hovered DisplayObject is an ancestor of the original overTarget.
+      // Probe whether the newly hovered Node is an ancestor of the original overTarget.
       let overTargetAncestor = outTarget?.parentNode;
 
       while (overTargetAncestor && overTargetAncestor !== this.rootTarget?.parentNode) {
@@ -408,7 +408,7 @@ export class EventService extends EventEmitter {
     const e = this.createPointerEvent(from);
 
     if (pressTarget) {
-      let currentTarget: DisplayObject | null = pressTarget;
+      let currentTarget: Node | null = pressTarget;
 
       while (currentTarget) {
         e.currentTarget = currentTarget;
@@ -454,7 +454,7 @@ export class EventService extends EventEmitter {
       return;
     }
 
-    // [target, parent, root]
+    // [target, parent, root, Canvas]
     const composedPath = e.composedPath();
 
     // event flow: capture -> target -> bubbling
@@ -482,8 +482,14 @@ export class EventService extends EventEmitter {
     }
   }
 
-  propagationPath(target: DisplayObject): DisplayObject[] {
+  propagationPath(target: Node): Node[] {
     const propagationPath = [target];
+    const canvas = (this.rootTarget as Document).defaultView || null;
+
+    if (canvas && canvas === (target as unknown as Canvas)) {
+      propagationPath.unshift(canvas.document);
+      return propagationPath;
+    }
 
     for (let i = 0; i < PROPAGATION_LIMIT && target !== this.rootTarget; i++) {
       if (!target.parentNode) {
@@ -495,23 +501,34 @@ export class EventService extends EventEmitter {
       target = target.parentNode;
     }
 
+    if (canvas) {
+      // @ts-ignore
+      propagationPath.push(canvas);
+    }
+
     return propagationPath;
   }
 
-  hitTest(position: EventPosition): DisplayObject | null {
+  hitTest(position: EventPosition): EventTarget | null {
     const { x, y } = position;
     const { width, height } = this.canvasConfig;
     // outside canvas
     if (x < 0 || y < 0 || x > width || y > height) {
       return null;
     }
-    return this.pickHandler(position) || this.rootTarget;
+
+    return (
+      this.pickHandler(position) ||
+      this.rootTarget || // return Document
+      // (this.rootTarget as Document).defaultView || // return Canvas if missing
+      null
+    );
   }
 
   private createPointerEvent(
     from: FederatedPointerEvent,
     type?: string,
-    target?: DisplayObject,
+    target?: Node,
   ): FederatedPointerEvent {
     const event = this.allocateEvent(FederatedPointerEvent);
 
@@ -528,7 +545,7 @@ export class EventService extends EventEmitter {
         clientY: event.clientY,
         x: event.global.x,
         y: event.global.y,
-      }) as DisplayObject);
+      }) as Node);
 
     if (typeof type === 'string') {
       event.type = type;
@@ -551,8 +568,7 @@ export class EventService extends EventEmitter {
       clientY: event.clientY,
       x: event.global.x,
       y: event.global.y,
-    }) as DisplayObject;
-
+    }) as Node;
     return event;
   }
 
@@ -694,14 +710,17 @@ export class EventService extends EventEmitter {
   /**
    * some detached nodes may exist in propagation path, need to skip them
    */
-  private findMountedTarget(propagationPath: DisplayObject[] | null): DisplayObject | null {
+  private findMountedTarget(propagationPath: Node[] | null): Node | null {
     if (!propagationPath) {
       return null;
     }
 
     let currentTarget = propagationPath[propagationPath.length - 1];
     for (let i = propagationPath.length - 2; i >= 0; i--) {
-      if (propagationPath[i].parentNode === currentTarget) {
+      if (
+        propagationPath[i] === this.rootTarget ||
+        propagationPath[i].parentNode === currentTarget
+      ) {
         currentTarget = propagationPath[i];
       } else {
         break;
@@ -711,10 +730,10 @@ export class EventService extends EventEmitter {
     return currentTarget;
   }
 
-  private getCursor(target: DisplayObject | null) {
-    let tmp: DisplayObject | null = target;
+  private getCursor(target: Node | null) {
+    let tmp: Node | null = target;
     while (tmp) {
-      const cursor = tmp.getAttribute('cursor');
+      const cursor = (tmp as Element).getAttribute && (tmp as Element).getAttribute('cursor');
       if (cursor) {
         return cursor;
       }

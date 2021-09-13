@@ -8,7 +8,7 @@ let sequenceNumber = 0;
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Animation/Animation
  */
-export class Animation implements globalThis.Animation {
+export class Animation implements Animation {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect
    */
@@ -133,17 +133,17 @@ export class Animation implements globalThis.Animation {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Animation/onfinish
    */
-  onfinish: ((this: globalThis.Animation, ev: AnimationPlaybackEvent) => any) | null;
+  onfinish: ((this: Animation, ev: AnimationPlaybackEvent) => any) | null;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Animation/oncancel
    */
-  oncancel: ((this: globalThis.Animation, ev: AnimationPlaybackEvent) => any) | null;
+  oncancel: ((this: Animation, ev: AnimationPlaybackEvent) => any) | null;
 
   /**
    * get called after each frame when running
    */
-  onframe: ((this: globalThis.Animation, ev: AnimationPlaybackEvent) => any) | null;
+  onframe: ((this: Animation, ev: AnimationPlaybackEvent) => any) | null;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Animation/currentTime
@@ -443,8 +443,8 @@ export class Animation implements globalThis.Animation {
   dispatchEvent(event: Event): boolean {
     throw new Error('Method not implemented.');
   }
-  onremove: ((this: globalThis.Animation, ev: Event) => any) | null;
-  replaceState: globalThis.AnimationReplaceState;
+  onremove: ((this: Animation, ev: Event) => any) | null;
+  // replaceState: AnimationReplaceState;
   commitStyles(): void {
     throw new Error('Method not implemented.');
   }
@@ -478,6 +478,7 @@ export class Animation implements globalThis.Animation {
     if (this._isFinished) {
       if (!this._finishedFlag) {
         if (this.onfinish) {
+          // @ts-ignore
           const event = new AnimationEvent(null, this, this.currentTime, baseTime);
           setTimeout(() => {
             this.onfinish && this.onfinish(event);
@@ -487,6 +488,7 @@ export class Animation implements globalThis.Animation {
       }
     } else {
       if (this.onframe && this.playState === 'running') {
+        // @ts-ignore
         const event = new AnimationEvent(null, this, this.currentTime, baseTime);
         this.onframe(event);
       }

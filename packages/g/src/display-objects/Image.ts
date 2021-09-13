@@ -1,5 +1,5 @@
 import { SHAPE } from '../types';
-import type { BaseStyleProps } from '../types';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from '../DisplayObject';
 import { DisplayObjectConfig } from '../DisplayObject';
 
@@ -8,7 +8,12 @@ export interface ImageStyleProps extends BaseStyleProps {
   width?: number;
   height?: number;
 }
-export class Image extends DisplayObject<ImageStyleProps> {
+export interface ParsedImageStyleProps extends ParsedBaseStyleProps {
+  img: string | HTMLImageElement;
+  width?: number;
+  height?: number;
+}
+export class Image extends DisplayObject<ImageStyleProps, ParsedImageStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<ImageStyleProps>) {
     super({
       type: SHAPE.Image,

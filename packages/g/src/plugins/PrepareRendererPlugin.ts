@@ -1,6 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { Renderable } from '../components';
-import { DisplayObject, DISPLAY_OBJECT_EVENT } from '../DisplayObject';
+import { DisplayObject } from '../DisplayObject';
+import { DISPLAY_OBJECT_EVENT } from '../dom/Element';
 import { RenderingContext, RENDER_REASON } from '../services';
 import { RenderingService, RenderingPlugin } from '../services/RenderingService';
 import { SceneGraphService, SCENE_GRAPH_EVENT } from '../services/SceneGraphService';
@@ -16,7 +17,12 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
-    const handleAttributeChanged = (name: string, oldValue: any, value: any, object: DisplayObject) => {
+    const handleAttributeChanged = (
+      name: string,
+      oldValue: any,
+      value: any,
+      object: DisplayObject,
+    ) => {
       // need re-render
       this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectChanged);
 

@@ -66,14 +66,18 @@ canvas.appendChild(ul);
 ul.appendChild(li1);
 ul.appendChild(li2);
 
-ul.addEventListener('click', (e) => {
-  console.log('currentTarget', e.currentTarget);
-  console.log('target', e.target);
-  console.log('clientX', e.clientX);
-  console.log('clientY', e.clientY);
-  console.log('x', e.x);
-  console.log('y', e.y);
-  console.log('path', e.composedPath());
+// ul.addEventListener('click', (e) => {
+//   console.log('currentTarget', e.currentTarget);
+//   console.log('target', e.target);
+//   console.log('clientX', e.clientX);
+//   console.log('clientY', e.clientY);
+//   console.log('x', e.x);
+//   console.log('y', e.y);
+//   console.log('path', e.composedPath());
+// });
+
+canvas.addEventListener('click', (e) => {
+  console.log(e.target);
 });
 
 // stats
@@ -85,7 +89,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterRender', () => {
+canvas.on('afterrender', () => {
   if (stats) {
     stats.update();
   }

@@ -40,7 +40,7 @@ for (let i = 0; i < 1000; i++) {
       delay: 0,
       duration: 1000,
       easing: 'easeLinear',
-      callback: () => { },
+      callback: () => {},
       repeat: true,
       direction: 'alternate',
     },
@@ -56,7 +56,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterRender', () => {
+canvas.on('afterrender', () => {
   if (stats) {
     stats.update();
   }

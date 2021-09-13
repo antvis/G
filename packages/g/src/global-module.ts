@@ -143,6 +143,7 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
     clampedMergeNumbers(0, Infinity),
     undefined,
   );
+  // @ts-ignore
   addPropertiesHandler<number[], number[]>(['lineDash'], undefined, mergeNumberLists, undefined);
   addPropertiesHandler<number, number>(
     ['x1', 'x2', 'y1', 'y2', 'lineDashOffset', 'shadowOffsetX', 'shadowOffsetY'],
@@ -201,11 +202,14 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   addPropertyHandler('offsetDistance', undefined, undefined, updateOffsetDistance);
   addPropertyHandler('origin', undefined, undefined, updateOrigin);
   addPropertyHandler('transformOrigin', undefined, undefined, updateTransformOrigin);
+  // @ts-ignore
   addPropertyHandler('transform', parseTransform, mergeTransforms, updateTransform);
 
   // Path.path
+  // @ts-ignore
   addPropertyHandler('path', parsePath, mergePaths, updateGeometry);
   // Polyline.points Polygon.points
+  // @ts-ignore
   addPropertyHandler('points', parsePoints, undefined, updateGeometry);
 
   // update local position

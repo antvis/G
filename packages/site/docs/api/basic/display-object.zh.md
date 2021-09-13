@@ -1027,25 +1027,14 @@ circle.isConnected; // true
 
 ### ownerDocument
 
-指向[画布 Canvas](/zh/docs/api/canvas) 的中的[根节点 document](/zh/docs/api/canvas#document)。如果当前图形还未添加到画布中，或者从画布中被移除，则返回 null。
+指向[画布 Canvas](/zh/docs/api/canvas)。如果当前图形还未添加到画布中，或者从画布中被移除，则返回 null。
 
 https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument
 
 ```js
 circle.ownerDocument; // null
 canvas.appendChild(circle); // add to canvas
-circle.ownerDocument; // canvas.document
-```
-
-### defaultView
-
-只有[根节点 document](/zh/docs/api/canvas#document)才拥有该属性，指向所属的[画布 Canvas](/zh/docs/api/canvas)。
-
-https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
-
-```js
-canvas.document.defaultView; // canvas
-circle.defaultView; // undefined
+circle.ownerDocument; // canvas
 ```
 
 ### destroyed

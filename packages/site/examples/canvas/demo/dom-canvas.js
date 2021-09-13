@@ -81,7 +81,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas1.on('afterRender', () => {
+canvas1.on('afterrender', () => {
   if (stats) {
     stats.update();
   }

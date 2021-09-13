@@ -1,7 +1,7 @@
 import { inject, injectable, named } from 'inversify';
 import { SyncHook, SyncWaterfallHook } from 'tapable';
 import { CanvasService } from '../Canvas';
-import { Renderable, Sortable, SceneGraphNode } from '../components';
+import { Renderable, Sortable } from '../components';
 import { ContributionProvider } from '../contribution-provider';
 import { DisplayObject } from '../DisplayObject';
 import { EventPosition, InteractivePointerEvent } from '../types';
@@ -117,17 +117,17 @@ export class RenderingService implements CanvasService {
       entity.getComponent(Renderable).dirty = false;
     }
 
-    if (objectToRender?.getEntity().getComponent(SceneGraphNode)?.tagName !== Batch.tag) {
+    if (objectToRender?.nodeName !== Batch.tag) {
       // sort is very expensive, use cached result if posible
       const sortable = entity.getComponent(Sortable);
       if (sortable.dirty) {
-        sortable.sorted = [...displayObject.children].sort(sortByZIndex);
+        sortable.sorted = [...displayObject.childNodes].sort(sortByZIndex);
         sortable.dirty = false;
       }
 
       // recursive rendering its children
-      (sortable.sorted || displayObject.children).forEach((child) => {
-        this.renderDisplayObject(child);
+      (sortable.sorted || displayObject.childNodes).forEach((child) => {
+        this.renderDisplayObject(child as DisplayObject);
       });
     }
   }

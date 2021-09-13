@@ -92,6 +92,14 @@ module.exports = {
         },
         order: 2,
       },
+      {
+        slug: 'api/builtin-objects',
+        title: {
+          zh: '内置对象',
+          en: 'Built-in Objects',
+        },
+        order: 3,
+      },
       // 插件
       {
         slug: 'plugins',

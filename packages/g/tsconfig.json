@@ -2,7 +2,23 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "rootDir": "./src",
-        "composite": true
+        "composite": true,
+        "module": "esnext",
+        "declaration": true,
+        "sourceMap": true,
+        "target": "es5",
+        "outDir": "lib",
+        "jsx": "react",
+        "importHelpers": true,
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "lib": ["esnext", "dom"],
+        "types": ["jest"],
+        "experimentalDecorators": true, /* Enables experimental support for ES7 decorators. */
+        "emitDecoratorMetadata": true, /* Enables experimental support for emitting type metadata for decorators. */
+        "downlevelIteration": true
     },
     "include": [
         "src/**/*"
@@ -10,6 +26,9 @@
     "references": [
         {
             "path": "../g-ecs"
+        },
+        {
+            "path": "../g-math"
         }
     ]
 }

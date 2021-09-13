@@ -2,17 +2,18 @@ import { injectable } from 'inversify';
 
 @injectable()
 export class OffscreenCanvasCreator {
-  private canvas: OffscreenCanvas | HTMLCanvasElement;
-  private context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D;
+  private canvas: HTMLCanvasElement;
+  private context: CanvasRenderingContext2D;
 
-  getOrCreateCanvas(): OffscreenCanvas | HTMLCanvasElement {
+  getOrCreateCanvas(): HTMLCanvasElement {
     if (this.canvas) {
       return this.canvas;
     }
 
     try {
       // OffscreenCanvas2D measureText can be up to 40% faster.
-      this.canvas = new OffscreenCanvas(0, 0);
+      // @ts-ignore
+      this.canvas = new window.OffscreenCanvas(0, 0);
       this.context = this.canvas.getContext('2d')!;
       if (!this.context || !this.context.measureText) {
         this.canvas = document.createElement('canvas');

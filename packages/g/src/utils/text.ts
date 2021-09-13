@@ -1,9 +1,9 @@
 import { isNumber } from '@antv/util';
-import type { TextStyleProps } from '../display-objects/Text';
+import type { ParsedTextStyleProps } from '../display-objects/Text';
 
 const genericFontFamilies = ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'];
 
-export function toFontString(attributes: Partial<TextStyleProps>) {
+export function toFontString(attributes: Partial<ParsedTextStyleProps>) {
   const { fontSize, fontFamily, fontStyle, fontVariant, fontWeight } = attributes;
 
   // build canvas api font setting from individual components. Convert a numeric this.fontSize to px

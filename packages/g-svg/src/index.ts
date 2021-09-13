@@ -5,7 +5,7 @@ import { Plugin as SvgPickerPlugin } from '@antv/g-plugin-svg-picker';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export class Renderer extends AbstractRenderer {
-  constructor(config: RendererConfig) {
+  constructor(config?: Partial<RendererConfig>) {
     super(config);
 
     this.registerPlugin(new ContextRegisterPlugin());

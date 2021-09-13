@@ -5,7 +5,7 @@ import type { KeyframeEffect } from './KeyframeEffect';
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming
  */
-export class AnimationEffectTiming implements globalThis.EffectTiming {
+export class AnimationEffectTiming implements EffectTiming {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/delay
    */

@@ -27,7 +27,7 @@ export {
   PathGenerator,
   StyleRenderer,
   RBushNode,
-  // RBushNodeAABB,
+  RBushNodeAABB,
   RBushRoot,
   RBush,
 };

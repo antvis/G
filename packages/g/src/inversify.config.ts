@@ -1,7 +1,7 @@
 import { Container } from 'inversify';
 import { containerModule as ecsModule, World } from '@antv/g-ecs';
 import { containerModule as globalModule } from './global-module';
-import { Sortable, Cullable, Geometry, SceneGraphNode, Renderable, Transform } from './components';
+import { Sortable, Cullable, Geometry, Renderable, Transform } from './components';
 
 export const CanvasContainerModuleFactory = 'CanvasContainerModuleFactory';
 
@@ -14,20 +14,9 @@ container.load(globalModule);
 const world = container.get<World>(World);
 world
   .registerComponent(Transform)
-  .registerComponent(SceneGraphNode)
   .registerComponent(Sortable)
   .registerComponent(Cullable)
   .registerComponent(Geometry)
   .registerComponent(Renderable);
-
-// let lastTime = new Date().getTime();
-// const tick = () => {
-//   const time = new Date().getTime();
-//   const delta = time - lastTime;
-//   world.execute(delta, time);
-//   lastTime = time;
-//   window.requestAnimationFrame(tick);
-// };
-// tick();
 
 export { world, container };

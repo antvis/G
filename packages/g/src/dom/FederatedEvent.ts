@@ -1,6 +1,6 @@
-import type { DisplayObject } from '../DisplayObject';
 import { Point } from '../shapes/Point';
 import type { EventService } from '../services';
+import { Node } from './Node';
 
 /**
  * An DOM-compatible synthetic event implementation that is "forwarded" on behalf of an original
@@ -34,7 +34,7 @@ export class FederatedEvent<N extends Event = Event, T = any> {
    * can be used to implement event delegation
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/target
    */
-  target: DisplayObject | null;
+  target: Node | null;
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/bubbles
@@ -133,7 +133,7 @@ export class FederatedEvent<N extends Event = Event, T = any> {
     this.manager = manager;
   }
 
-  path: DisplayObject[];
+  path: Node[];
   /**
    * The propagation path for this event
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/composedPath
@@ -141,7 +141,7 @@ export class FederatedEvent<N extends Event = Event, T = any> {
    * So composedPath()[0] represents the original target.
    * @see https://polymer-library.polymer-project.org/3.0/docs/devguide/events#retargeting
    */
-  composedPath(): DisplayObject[] {
+  composedPath(): Node[] {
     if (this.manager && (!this.path || this.path[0] !== this.target)) {
       this.path = this.target ? this.manager.propagationPath(this.target) : [];
     }

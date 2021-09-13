@@ -10,7 +10,9 @@ import {
   gl,
   rgb2arr,
 } from '@antv/g-plugin-webgl-renderer';
+// @ts-ignore
 import gridVertex from './shaders/webgl.grid.vert.glsl';
+// @ts-ignore
 import gridFragment from './shaders/webgl.grid.frag.glsl';
 import { GridStyleProps } from '../Grid';
 

@@ -1,8 +1,6 @@
-import { EventEmitter } from 'eventemitter3';
 import { CanvasConfig, Cursor } from './types';
 import { cleanExistedCanvas } from './utils/canvas';
-import { DisplayObject, DISPLAY_OBJECT_EVENT } from './DisplayObject';
-import { Group } from './display-objects/Group';
+import { DisplayObject } from './DisplayObject';
 import { ContextService } from './services';
 import { container } from './inversify.config';
 import { RenderingService } from './services/RenderingService';
@@ -11,9 +9,11 @@ import { EventService } from './services/EventService';
 import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE, DefaultCamera } from './Camera';
 import { containerModule as commonContainerModule } from './canvas-module';
 import { AbstractRenderer, IRenderer } from './AbstractRenderer';
-import { AnimationTimeline } from './Timeline';
 import { cancelAnimationFrame } from './utils/raf';
 import { Point } from './shapes';
+import { DISPLAY_OBJECT_EVENT } from './dom/Element';
+import { EventTarget } from './dom/EventTarget';
+import { Document } from './dom/Document';
 
 export interface CanvasService {
   init(): void;
@@ -21,33 +21,27 @@ export interface CanvasService {
 }
 
 /**
- * mix Window and Document
+ * can be treated like Window in DOM
+ *
+ * prototype chains: Canvas(Window) -> EventTarget
  */
-export class Canvas extends EventEmitter {
+export class Canvas extends EventTarget {
   /**
    * child container of current canvas, use hierarchy container
    */
-  protected container = container.createChild();
+  container = container.createChild();
+
+  /**
+   * window.document
+   */
+  document: Document;
+
+  Element = DisplayObject;
 
   /**
    * rAF in auto rendering
    */
   private frameId?: number;
-
-  /**
-   * window.document
-   */
-  document: DisplayObject;
-
-  scrollX = 0;
-  scrollY = 0;
-
-  Element = DisplayObject;
-
-  /**
-   * document.timeline in WAAPI
-   */
-  timeline = new AnimationTimeline();
 
   constructor(config: CanvasConfig) {
     super();
@@ -64,43 +58,18 @@ export class Canvas extends EventEmitter {
     this.initRenderer(mergedConfig.renderer);
   }
 
-  addEventListener(
-    type: string,
-    listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions,
-  ) {
-    const root = this.getRoot();
-    root.addEventListener(type, listener, options);
-  }
-
-  removeEventListener(
-    type: string,
-    listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions,
-  ) {
-    const root = this.getRoot();
-    root.removeEventListener(type, listener, options);
-  }
-
   private initRenderingContext(mergedConfig: CanvasConfig) {
     this.container.bind<CanvasConfig>(CanvasConfig).toConstantValue(mergedConfig);
-    // bind rendering context, shared by all renderers
-    const root = new Group({
-      style: {},
-    });
-    // ref to Canvas @see https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
-    root.defaultView = this;
-    // ref to itself @see https://developer.mozilla.org/en-US/docs/Web/API/Document/documentElement
-    root.documentElement = root;
 
-    // window.document
-    this.document = root;
-    root.ownerDocument = root;
+    this.document = new Document();
+    this.document.defaultView = this;
+
+    // bind rendering context, shared by all renderers
     this.container.bind<RenderingContext>(RenderingContext).toConstantValue({
       /**
        * the root node in scene graph
        */
-      root,
+      root: this.document.documentElement,
 
       removedAABBs: [],
 
@@ -134,9 +103,10 @@ export class Canvas extends EventEmitter {
 
   /**
    * get the root displayObject in scenegraph
+   * @alias this.document.documentElement
    */
   getRoot() {
-    return this.container.get<RenderingContext>(RenderingContext).root;
+    return this.document.documentElement;
   }
 
   /**
@@ -163,11 +133,11 @@ export class Canvas extends EventEmitter {
   }
 
   getComputedStyle(node: DisplayObject) {
-    return node.style;
+    return node.parsedStyle;
   }
 
   destroy(destroyScenegraph = true) {
-    this.emit('beforeDestroy');
+    this.emit('beforedestroy', () => {});
     if (this.frameId) {
       cancelAnimationFrame(this.frameId);
     }
@@ -180,7 +150,7 @@ export class Canvas extends EventEmitter {
         this.removeChild(child, true);
       });
       // destroy timeline
-      this.timeline.destroy();
+      this.document.timeline.destroy();
     } else {
       this.unmountChildren(root);
     }
@@ -189,7 +159,7 @@ export class Canvas extends EventEmitter {
     this.getContextService().destroy();
     renderingService.destroy();
 
-    this.emit('afterDestroy');
+    this.emit('afterdestroy', {});
   }
 
   /**
@@ -224,8 +194,18 @@ export class Canvas extends EventEmitter {
     }
   }
 
+  // proxy to document.documentElement
   appendChild(node: DisplayObject) {
-    this.document.appendChild(node);
+    return this.document.documentElement.appendChild(node);
+  }
+  insertBefore(group: DisplayObject, reference?: DisplayObject): DisplayObject {
+    return this.document.documentElement.insertBefore(group, reference);
+  }
+  removeChild(node: DisplayObject, destroy?: boolean) {
+    return this.document.documentElement.removeChild(node, destroy);
+  }
+  removeChildren() {
+    this.document.documentElement.removeChildren();
   }
 
   decorate(object: DisplayObject, renderingService: RenderingService, root: DisplayObject) {
@@ -241,23 +221,15 @@ export class Canvas extends EventEmitter {
     });
   }
 
-  removeChild(node: DisplayObject, destroy?: boolean) {
-    this.document.removeChild(node, destroy);
-  }
-
-  removeChildren() {
-    this.document.removeChildren();
-  }
-
   render() {
-    this.emit('beforeRender');
+    this.emit('beforerender', {});
 
     if (this.container.isBound(RenderingService)) {
       const renderingService = this.container.get<RenderingService>(RenderingService);
       renderingService.render();
     }
 
-    this.emit('afterRender');
+    this.emit('afterrender', {});
   }
 
   private run() {

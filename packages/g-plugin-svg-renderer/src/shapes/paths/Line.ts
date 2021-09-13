@@ -1,11 +1,11 @@
-import { PARSED_COLOR_TYPE, ParsedBaseStyleProps } from '@antv/g';
+import { PARSED_COLOR_TYPE, ParsedLineStyleProps } from '@antv/g';
 import { ElementRenderer } from '.';
 import { injectable } from 'inversify';
 
 @injectable()
-export class LineRenderer implements ElementRenderer<ParsedBaseStyleProps> {
+export class LineRenderer implements ElementRenderer<ParsedLineStyleProps> {
   dependencies = ['x1', 'y1', 'x2', 'y2'];
-  apply($el: SVGElement, parsedStyle: ParsedBaseStyleProps) {
+  apply($el: SVGElement, parsedStyle: ParsedLineStyleProps) {
     const { x1, y1, x2, y2, defX: x = 0, defY: y = 0, stroke } = parsedStyle;
 
     $el.setAttribute('x1', `${x1 - x}`);

@@ -31,12 +31,19 @@ function splitCubic(
   const p8 = midPoint(p5, p6, t);
   const p9 = midPoint(p7, p8, t);
 
-  return [['C'].concat(p4, p7, p9) as PathCommand, ['C'].concat(p8, p6, p3) as PathCommand];
+  return [
+    // @ts-ignore
+    ['C'].concat(p4, p7, p9) as PathCommand,
+    // @ts-ignore
+    ['C'].concat(p8, p6, p3) as PathCommand,
+  ];
 }
 
 function getCurveArray(segments: PathCommand[]) {
   return segments.map((segment, i, pathArray) => {
+    // @ts-ignore
     const segmentData = i && pathArray[i - 1].slice(-2).concat(segment.slice(1));
+    // @ts-ignore
     const curveLength = i ? CubicUtil.length(...segmentData) : 0;
 
     let subsegs;
@@ -73,6 +80,7 @@ export function equalizeSegments(
   const dif = [tl - L1, tl - L2];
   let canSplit: number | boolean = 0;
   const result = [c1, c2].map((x, i) =>
+    // @ts-ignore
     x.l === tl
       ? x.map((y) => y.s)
       : x
@@ -133,6 +141,7 @@ export function getPathArea(pathArray: PathCommand[]) {
           y = my;
           return 0;
         default:
+          // @ts-ignore
           len = getCubicSegArea.apply(0, [x, y].concat(seg.slice(1)));
           [x, y] = seg.slice(-2) as [number, number];
           return len;
@@ -146,19 +155,24 @@ export function reverseCurve(pathArray: PathCommand[]): PathCommand[] {
   const rotatedCurve = pathArray
     .slice(1)
     .map((x, i, curveOnly) =>
+      // @ts-ignore
       !i ? pathArray[0].slice(1).concat(x.slice(1)) : curveOnly[i - 1].slice(-2).concat(x.slice(1)),
     )
+    // @ts-ignore
     .map((x) => x.map((y, i) => x[x.length - i - 2 * (1 - (i % 2))]))
     .reverse();
 
+  // @ts-ignore
   return [['M'].concat(rotatedCurve[0].slice(0, 2))].concat(
     rotatedCurve.map((x) => ['C'].concat(x.slice(2))),
   );
 }
 
 export function clonePath(pathArray: PathCommand[]): PathCommand[] {
+  // @ts-ignore
   return pathArray.map((x) => {
     if (Array.isArray(x)) {
+      // @ts-ignore
       return clonePath(x);
     }
     return !Number.isNaN(+x) ? +x : x;
@@ -176,6 +190,7 @@ function getRotations(a: PathCommand[]) {
 
       if (i === 0 || (a[oldSegIdx] && a[oldSegIdx][0] === 'M')) {
         seg = a[oldSegIdx];
+        // @ts-ignore
         return ['M'].concat(seg.slice(-2));
       }
       if (oldSegIdx >= segCount) oldSegIdx -= pointCount;
@@ -197,6 +212,7 @@ export function getRotatedCurve(a: PathCommand[], b: PathCommand[]) {
 
   rotations.forEach((r, i) => {
     a.slice(1).forEach((s, j) => {
+      // @ts-ignore
       sumLensSqrd += distanceSquareRoot(a[(i + j) % segCount].slice(-2), b[j % segCount].slice(-2));
     });
     lineLengths[i] = sumLensSqrd;
@@ -304,12 +320,12 @@ export function convertToPath(object: DisplayObject) {
       commands = lineToCommands(x1, y1, x2, y2);
       break;
     case SHAPE.Circle: {
-      const { r, x, y } = (object as Circle).parsedStyle;
+      const { r, x = 0, y = 0 } = (object as Circle).parsedStyle;
       commands = ellipseToCommands(r, r, x, y);
       break;
     }
     case SHAPE.Ellipse: {
-      const { rx, ry, x, y } = (object as Ellipse).parsedStyle;
+      const { rx, ry, x = 0, y = 0 } = (object as Ellipse).parsedStyle;
       commands = ellipseToCommands(rx, ry, x, y);
       break;
     }

@@ -1,6 +1,6 @@
-import { SceneGraphNode } from './components';
 import type { DisplayObjectConfig } from './DisplayObject';
-import { DisplayObject, DISPLAY_OBJECT_EVENT } from './DisplayObject';
+import { DisplayObject } from './DisplayObject';
+import { DISPLAY_OBJECT_EVENT } from './dom/Element';
 
 // @see https://stackoverflow.com/questions/44153378/typescript-abstract-optional-method
 export interface CustomElement<CustomElementStyleProps> {
@@ -27,7 +27,7 @@ export interface CustomElement<CustomElementStyleProps> {
  */
 export abstract class CustomElement<
   CustomElementStyleProps,
-  > extends DisplayObject<CustomElementStyleProps> {
+> extends DisplayObject<CustomElementStyleProps> {
   private shadowNodes: DisplayObject[] = [];
 
   constructor(config: DisplayObjectConfig<CustomElementStyleProps>) {
@@ -50,7 +50,7 @@ export abstract class CustomElement<
     this.shadowNodes.forEach((node) => {
       // every child and its children should turn into a shadow node
       // a shadow node doesn't mean to be unrenderable, it's just unsearchable in scenegraph
-      node.getEntity().getComponent(SceneGraphNode).shadow = true;
+      node.shadow = true;
     });
 
     if (this.connectedCallback) {
@@ -69,7 +69,7 @@ export abstract class CustomElement<
 
   private handleChildRemoved = (child: DisplayObject) => {
     child.forEach((node) => {
-      node.getEntity().getComponent(SceneGraphNode).shadow = false;
+      node.shadow = false;
     });
   };
 
@@ -78,7 +78,6 @@ export abstract class CustomElement<
     oldValue: CustomElementStyleProps[Key],
     value: CustomElementStyleProps[Key],
   ) => {
-    this.attributeChangedCallback
-      && this.attributeChangedCallback(name, oldValue, value);
+    this.attributeChangedCallback && this.attributeChangedCallback(name, oldValue, value);
   };
 }

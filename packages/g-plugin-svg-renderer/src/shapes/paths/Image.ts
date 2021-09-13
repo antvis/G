@@ -1,13 +1,13 @@
-import { ImageStyleProps } from '@antv/g';
+import { ParsedImageStyleProps } from '@antv/g';
 import { isString } from '@antv/util';
 import { ElementRenderer } from '.';
 import { injectable } from 'inversify';
 
 @injectable()
-export class ImageRenderer implements ElementRenderer<ImageStyleProps> {
+export class ImageRenderer implements ElementRenderer<ParsedImageStyleProps> {
   dependencies = ['img', 'width', 'height'];
 
-  apply($el: SVGElement, attributes: ImageStyleProps) {
+  apply($el: SVGElement, attributes: ParsedImageStyleProps) {
     const { img, width = 0, height = 0 } = attributes;
 
     $el.setAttribute('x', '0');
@@ -27,7 +27,11 @@ export class ImageRenderer implements ElementRenderer<ImageStyleProps> {
       }
       $el.setAttribute('href', img.src);
       // @ts-ignore
-    } else if (img instanceof HTMLElement && isString(img.nodeName) && img.nodeName.toUpperCase() === 'CANVAS') {
+    } else if (
+      img instanceof HTMLElement &&
+      isString(img.nodeName) &&
+      img.nodeName.toUpperCase() === 'CANVAS'
+    ) {
       $el.setAttribute('href', (img as HTMLCanvasElement).toDataURL());
       // @ts-ignore
     } else if (img instanceof ImageData) {

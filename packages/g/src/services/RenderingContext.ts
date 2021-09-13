@@ -1,5 +1,4 @@
-import RBush from 'rbush';
-import { DisplayObject } from '../DisplayObject';
+import { Group } from '../display-objects';
 import { AABB } from '../shapes';
 
 /**
@@ -16,7 +15,7 @@ export interface RenderingContext {
   /**
    * root of scenegraph
    */
-  root: DisplayObject<{}>;
+  root: Group;
 
   /**
    * force rendering at next frame

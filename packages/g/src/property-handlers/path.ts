@@ -173,7 +173,7 @@ function getPathBBox(segments: PathCommand[]): Rect {
       y = s2 as number;
       X.push(s1 as number);
       Y.push(s2 as number);
-    } else {
+    } else if (segment[0] === 'C') {
       // @ts-ignore
       const dim = CubicUtil.box(...[x, y].concat(segment.slice(1)));
       X = X.concat(dim.x, dim.x + dim.width);

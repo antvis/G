@@ -1,4 +1,9 @@
-import { InteractivePointerEvent, ContextService, RenderingPlugin, RenderingService } from '@antv/g';
+import {
+  InteractivePointerEvent,
+  ContextService,
+  RenderingPlugin,
+  RenderingService,
+} from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { supportsPointerEvents, supportsTouchEvents } from './utils';
 
@@ -63,6 +68,8 @@ export class DOMInteractionPlugin implements RenderingPlugin {
         $el.addEventListener('touchmove', onPointerMove, true);
       }
 
+      // use passive event listeners
+      // @see https://zhuanlan.zhihu.com/p/24555031
       $el.addEventListener('wheel', onPointerWheel, {
         passive: true,
         capture: true,

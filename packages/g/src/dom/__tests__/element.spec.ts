@@ -1,0 +1,131 @@
+import chai, { expect } from 'chai';
+// @ts-ignore
+import chaiAlmost from 'chai-almost';
+// @ts-ignore
+import sinon from 'sinon';
+// @ts-ignore
+import sinonChai from 'sinon-chai';
+import { Element } from '../..';
+import { vec3 } from 'gl-matrix';
+
+chai.use(chaiAlmost());
+chai.use(sinonChai);
+
+describe('Element', () => {
+  it('should appendChild with before & after correctly', () => {
+    const group1 = new Element();
+    const group2 = new Element();
+    const group3 = new Element();
+    const group4 = new Element();
+    const group5 = new Element();
+    group5.name = 'group5';
+    expect(group1.hasChildNodes()).to.false;
+    expect(group1.getRootNode()).to.eqls(group1);
+
+    // 1 -> 2 -> 3
+    // 1 -> 4
+    group1.appendChild(group2);
+    group2.appendChild(group3);
+    group1.appendChild(group4);
+
+    // query children & parent
+    expect(group1.contain(group2)).to.true;
+    expect(group1.contains(group3)).to.true;
+    expect(group1.hasChildNodes()).to.true;
+    expect(group1.childElementCount).to.eqls(2);
+    expect(group1.childNodes.length).to.eqls(2);
+    expect(group1.children.length).to.eqls(2);
+    expect(group1.firstElementChild).to.eqls(group2);
+    expect(group1.firstChild).to.eqls(group2);
+    expect(group1.lastElementChild).to.eqls(group4);
+    expect(group1.lastChild).to.eqls(group4);
+    expect(group2.parentNode).to.eqls(group1);
+    expect(group2.parentElement).to.eqls(group1);
+    expect(group1.parentNode).to.null;
+    expect(group3.parentNode).to.eqls(group2);
+    expect(group4.firstChild).to.null;
+    expect(group4.lastChild).to.null;
+    expect(group3.getRootNode()).to.eqls(group1);
+    expect(group3.getAncestor(1)).to.eqls(group2);
+    expect(group3.getAncestor(2)).to.eqls(group1);
+    expect(group3.getAncestor(3)).to.null;
+
+    // 1 -> 5
+    group1.appendChild(group5, 1);
+    expect(group1.contains(group5)).to.true;
+    expect(group1.childNodes.length).to.eqls(3);
+    expect(group1.childNodes[1]).to.eqls(group5);
+    expect(group1.firstChild).to.eqls(group2);
+    expect(group1.lastChild).to.eqls(group4);
+
+    // insert in a batch with after
+    const group6 = new Element();
+    group6.name = 'group6';
+    const group7 = new Element();
+    group7.name = 'group7';
+    group5.after(group6, group7);
+    expect(group1.childNodes.length).to.eqls(5);
+    expect(group5.nextSibling).to.eqls(group6);
+    expect(group6.previousSibling).to.eqls(group5);
+    expect(group6.nextSibling).to.eqls(group7);
+    expect(group7.nextSibling).to.eqls(group4);
+
+    // remove group6 & group7
+    group6.remove(false);
+    group7.remove(false);
+    expect(group1.childNodes.length).to.eqls(3);
+    group5.before(group6, group7);
+    expect(group1.childNodes.length).to.eqls(5);
+    expect(group6.nextSibling).to.eqls(group7);
+    expect(group7.nextSibling).to.eqls(group5);
+  });
+
+  it('should append & prepend correctly', () => {
+    const group1 = new Element();
+    const group2 = new Element();
+    const group3 = new Element();
+    const group4 = new Element();
+    const group5 = new Element();
+
+    group1.append(group2, group3);
+    expect(group1.childNodes.length).to.eqls(2);
+    expect(group1.firstChild).to.eqls(group2);
+    expect(group1.lastChild).to.eqls(group3);
+
+    group1.prepend(group4, group5);
+    expect(group1.childNodes.length).to.eqls(4);
+    expect(group1.firstChild).to.eqls(group4);
+    expect(group1.lastChild).to.eqls(group3);
+  });
+
+  it('should replaceWith correctly', () => {
+    const group1 = new Element();
+    const group2 = new Element();
+    const group3 = new Element();
+    const group4 = new Element();
+    const group5 = new Element();
+    const group6 = new Element();
+    const group7 = new Element();
+
+    // 1 -> 2 -> 3
+    // 1 -> 4
+    group1.appendChild(group2);
+    group2.appendChild(group3);
+    group1.appendChild(group4);
+
+    group2.replaceWith(group5, group6);
+    expect(group1.childNodes.length).to.eqls(3);
+    expect(group5.nextSibling).to.eqls(group6);
+    expect(group6.nextSibling).to.eqls(group4);
+
+    group1.replaceChild(group7, group6, true);
+    expect(group6.destroyed).to.true;
+    expect(group1.childNodes.length).to.eqls(3);
+    expect(group5.nextSibling).to.eqls(group7);
+    expect(group7.nextSibling).to.eqls(group4);
+
+    // clear
+    group1.replaceChildren();
+    expect(group1.childNodes.length).to.eqls(0);
+  });
+});

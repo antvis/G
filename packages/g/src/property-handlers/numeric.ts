@@ -15,7 +15,7 @@ export function parseNumber(string: string | number) {
   }
 }
 
-export function mergeNumbers(left: number, right: number) {
+export function mergeNumbers(left: number, right: number): [number, number, (n: number) => string] {
   return [left, right, numberToString];
 }
 
@@ -27,7 +27,10 @@ export function clampedMergeNumbers(min: number, max: number) {
   ];
 }
 
-export function mergeNumberLists(left: number[], right: number[]) {
+export function mergeNumberLists(
+  left: number[],
+  right: number[],
+): [number[], number[], (numberList: number[]) => number[]] | undefined {
   if (left.length != right.length) {
     return;
   }

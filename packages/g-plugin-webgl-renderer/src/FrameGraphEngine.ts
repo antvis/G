@@ -1,4 +1,3 @@
-import { DisplayObject } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { FrameGraphHandle, TextureDescriptor } from './components/framegraph/FrameGraphHandle';
 import { FrameGraphPass } from './components/framegraph/FrameGraphPass';

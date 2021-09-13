@@ -6,7 +6,7 @@ import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
 
-import { Group, Circle, Canvas, Text, Rect, DISPLAY_OBJECT_EVENT } from '../';
+import { Group, Circle, Canvas, Text, Rect, DISPLAY_OBJECT_EVENT } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 
 chai.use(chaiAlmost());
@@ -49,18 +49,23 @@ describe('Timeline', () => {
     const animation = circle.animate([], {
       duration: 500,
     });
-    expect(canvas.timeline.currentTime).to.be.eqls(0);
+    expect(canvas.document.timeline.currentTime).to.be.eqls(0);
     expect(animation?.currentTime).to.be.eqls(0);
     expect(animation?.playState).to.be.eqls('running');
 
     animation?.ready.then(() => {
-      console.log('ready', canvas.timeline.currentTime, animation.currentTime, animation.playState);
+      console.log(
+        'ready',
+        canvas.document.timeline.currentTime,
+        animation.currentTime,
+        animation.playState,
+      );
     });
 
     animation?.finished.then(() => {
       console.log(
         'finished',
-        canvas.timeline.currentTime,
+        canvas.document.timeline.currentTime,
         animation.currentTime,
         animation.playState,
       );

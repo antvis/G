@@ -4,7 +4,9 @@ import { bezier } from './bezier-easing';
 
 const fills = 'backwards|forwards|both|none'.split('|');
 const directions = 'reverse|alternate|alternate-reverse'.split('|');
-export const linear = (x: number) => { return x; };
+export const linear = (x: number) => {
+  return x;
+};
 
 export function makeTiming(timingInput: KeyframeEffectOptions, forGroup: boolean) {
   const timing = new AnimationEffectTiming();
@@ -16,19 +18,20 @@ export function makeTiming(timingInput: KeyframeEffectOptions, forGroup: boolean
     timing.duration = timingInput;
   } else if (timingInput !== undefined) {
     (Object.keys(timingInput) as Array<keyof EffectTiming>).forEach((property) => {
-      if (timingInput[property] !== undefined
-        && timingInput[property] !== null
-        && timingInput[property] !== 'auto'
+      if (
+        timingInput[property] !== undefined &&
+        timingInput[property] !== null &&
+        timingInput[property] !== 'auto'
       ) {
         if (typeof timing[property] === 'number' || property === 'duration') {
           if (typeof timingInput[property] !== 'number' || isNaN(timingInput[property] as number)) {
             return;
           }
         }
-        if ((property === 'fill') && (fills.indexOf(timingInput[property]!) === -1)) {
+        if (property === 'fill' && fills.indexOf(timingInput[property]!) === -1) {
           return;
         }
-        if ((property === 'direction') && (directions.indexOf(timingInput[property]!) === -1)) {
+        if (property === 'direction' && directions.indexOf(timingInput[property]!) === -1) {
           return;
         }
         // @ts-ignore
@@ -50,7 +53,10 @@ export function numericTimingToObject(timingInput: KeyframeEffectOptions | numbe
   return timingInput;
 }
 
-export function normalizeTimingInput(timingInput: KeyframeEffectOptions | number | undefined, forGroup: boolean) {
+export function normalizeTimingInput(
+  timingInput: KeyframeEffectOptions | number | undefined,
+  forGroup: boolean,
+) {
   timingInput = numericTimingToObject(timingInput ?? { duration: 'auto' });
   return makeTiming(timingInput, forGroup);
 }
@@ -66,12 +72,22 @@ function step(count: number, pos: number) {
     }
     const stepSize = 1 / count;
     x += pos * stepSize;
-    return x - x % stepSize;
-  }
+    return x - (x % stepSize);
+  };
 }
 
 const numberString = '\\s*(-?\\d+\\.?\\d*|-?\\.\\d+)\\s*';
-const cubicBezierRe = new RegExp('cubic-bezier\\(' + numberString + ',' + numberString + ',' + numberString + ',' + numberString + '\\)');
+const cubicBezierRe = new RegExp(
+  'cubic-bezier\\(' +
+    numberString +
+    ',' +
+    numberString +
+    ',' +
+    numberString +
+    ',' +
+    numberString +
+    '\\)',
+);
 const step1Re = /steps\(\s*(\d+)\s*\)/;
 const step2Re = /steps\(\s*(\d+)\s*,\s*(start|middle|end)\s*\)/;
 
@@ -88,12 +104,13 @@ export function parseEasingFunction(normalizedEasing: string) {
   const step2Data = step2Re.exec(normalizedEasing);
   if (step2Data) {
     // @ts-ignore
-    return step(Number(step2Data[1]), { 'start': Start, 'middle': Middle, 'end': End }[step2Data[2]]);
+    return step(Number(step2Data[1]), { start: Start, middle: Middle, end: End }[step2Data[2]]);
   }
   return getEasingFunction(normalizedEasing);
 }
 
 export function calculateActiveDuration(timing: EffectTiming) {
+  // @ts-ignore
   return Math.abs(repeatedDuration(timing) / (timing.playbackRate || 1));
 }
 
@@ -116,7 +133,11 @@ const PhaseBefore = 1;
 const PhaseAfter = 2;
 const PhaseActive = 3;
 
-function calculatePhase(activeDuration: any, localTime: number | null, timing: { delay: number; endDelay: any; }) {
+function calculatePhase(
+  activeDuration: any,
+  localTime: number | null,
+  timing: { delay: number; endDelay: any },
+) {
   // https://drafts.csswg.org/web-animations/#animation-effect-phases-and-states
   if (localTime === null) {
     return PhaseNone;
@@ -133,25 +154,35 @@ function calculatePhase(activeDuration: any, localTime: number | null, timing: {
   return PhaseActive;
 }
 
-function calculateActiveTime(activeDuration: any, fillMode: string, localTime: number, phase: number, delay: number) {
+function calculateActiveTime(
+  activeDuration: any,
+  fillMode: string,
+  localTime: number,
+  phase: number,
+  delay: number,
+) {
   // https://drafts.csswg.org/web-animations/#calculating-the-active-time
   switch (phase) {
     case PhaseBefore:
-      if (fillMode === 'backwards' || fillMode === 'both')
-        return 0;
+      if (fillMode === 'backwards' || fillMode === 'both') return 0;
       return null;
     case PhaseActive:
       return localTime - delay;
     case PhaseAfter:
-      if (fillMode === 'forwards' || fillMode === 'both')
-        return activeDuration;
+      if (fillMode === 'forwards' || fillMode === 'both') return activeDuration;
       return null;
     case PhaseNone:
       return null;
   }
 }
 
-function calculateOverallProgress(iterationDuration: number, phase: number, iterations: any, activeTime: number, iterationStart: any) {
+function calculateOverallProgress(
+  iterationDuration: number,
+  phase: number,
+  iterations: any,
+  activeTime: number,
+  iterationStart: any,
+) {
   // https://drafts.csswg.org/web-animations/#calculating-the-overall-progress
   let overallProgress = iterationStart;
   if (iterationDuration === 0) {
@@ -164,18 +195,35 @@ function calculateOverallProgress(iterationDuration: number, phase: number, iter
   return overallProgress;
 }
 
-function calculateSimpleIterationProgress(overallProgress: number, iterationStart: number, phase: number, iterations: number, activeTime: number, iterationDuration: number) {
+function calculateSimpleIterationProgress(
+  overallProgress: number,
+  iterationStart: number,
+  phase: number,
+  iterations: number,
+  activeTime: number,
+  iterationDuration: number,
+) {
   // https://drafts.csswg.org/web-animations/#calculating-the-simple-iteration-progress
 
-  let simpleIterationProgress = (overallProgress === Infinity) ? iterationStart % 1 : overallProgress % 1;
-  if (simpleIterationProgress === 0 && phase === PhaseAfter && iterations !== 0 &&
-    (activeTime !== 0 || iterationDuration === 0)) {
+  let simpleIterationProgress =
+    overallProgress === Infinity ? iterationStart % 1 : overallProgress % 1;
+  if (
+    simpleIterationProgress === 0 &&
+    phase === PhaseAfter &&
+    iterations !== 0 &&
+    (activeTime !== 0 || iterationDuration === 0)
+  ) {
     simpleIterationProgress = 1;
   }
   return simpleIterationProgress;
 }
 
-function calculateCurrentIteration(phase: number, iterations: number, simpleIterationProgress: number, overallProgress: number) {
+function calculateCurrentIteration(
+  phase: number,
+  iterations: number,
+  simpleIterationProgress: number,
+  overallProgress: number,
+) {
   // https://drafts.csswg.org/web-animations/#calculating-the-current-iteration
   if (phase === PhaseAfter && iterations === Infinity) {
     return Infinity;
@@ -186,7 +234,11 @@ function calculateCurrentIteration(phase: number, iterations: number, simpleIter
   return Math.floor(overallProgress);
 }
 
-function calculateDirectedProgress(playbackDirection: string, currentIteration: number, simpleIterationProgress: number) {
+function calculateDirectedProgress(
+  playbackDirection: string,
+  currentIteration: number,
+  simpleIterationProgress: number,
+) {
   // https://drafts.csswg.org/web-animations/#calculating-the-directed-progress
   let currentDirection = playbackDirection;
   if (playbackDirection !== 'normal' && playbackDirection !== 'reverse') {
@@ -205,17 +257,48 @@ function calculateDirectedProgress(playbackDirection: string, currentIteration: 
   return 1 - simpleIterationProgress;
 }
 
-export function calculateIterationProgress(activeDuration: number, localTime: number, timing: AnimationEffectTiming) {
+export function calculateIterationProgress(
+  activeDuration: number,
+  localTime: number,
+  timing: AnimationEffectTiming,
+) {
   const phase = calculatePhase(activeDuration, localTime, timing);
-  const activeTime = calculateActiveTime(activeDuration, timing.fill, localTime, phase, timing.delay);
-  if (activeTime === null)
-    return null;
+  const activeTime = calculateActiveTime(
+    activeDuration,
+    timing.fill,
+    localTime,
+    phase,
+    timing.delay,
+  );
+  if (activeTime === null) return null;
 
   const duration = timing.duration === 'auto' ? 0 : timing.duration;
-  const overallProgress = calculateOverallProgress(duration, phase, timing.iterations, activeTime, timing.iterationStart);
-  const simpleIterationProgress = calculateSimpleIterationProgress(overallProgress, timing.iterationStart, phase, timing.iterations, activeTime, duration);
-  const currentIteration = calculateCurrentIteration(phase, timing.iterations, simpleIterationProgress, overallProgress);
-  const directedProgress = calculateDirectedProgress(timing.direction, currentIteration, simpleIterationProgress);
+  const overallProgress = calculateOverallProgress(
+    duration,
+    phase,
+    timing.iterations,
+    activeTime,
+    timing.iterationStart,
+  );
+  const simpleIterationProgress = calculateSimpleIterationProgress(
+    overallProgress,
+    timing.iterationStart,
+    phase,
+    timing.iterations,
+    activeTime,
+    duration,
+  );
+  const currentIteration = calculateCurrentIteration(
+    phase,
+    timing.iterations,
+    simpleIterationProgress,
+    overallProgress,
+  );
+  const directedProgress = calculateDirectedProgress(
+    timing.direction,
+    currentIteration,
+    simpleIterationProgress,
+  );
 
   // https://drafts.csswg.org/web-animations/#calculating-the-transformed-progress
   // https://drafts.csswg.org/web-animations/#calculating-the-iteration-progress
@@ -227,64 +310,64 @@ export function calculateIterationProgress(activeDuration: number, localTime: nu
  * Read More about easings on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/easing)
  */
 export const EASINGS: Record<string, string> = {
-  "in": "ease-in",
-  "out": "ease-out",
-  "in-out": "ease-in-out",
+  in: 'ease-in',
+  out: 'ease-out',
+  'in-out': 'ease-in-out',
 
   // Sine
-  "in-sine": "cubic-bezier(0.47, 0, 0.745, 0.715)",
-  "out-sine": "cubic-bezier(0.39, 0.575, 0.565, 1)",
-  "in-out-sine": "cubic-bezier(0.445, 0.05, 0.55, 0.95)",
+  'in-sine': 'cubic-bezier(0.47, 0, 0.745, 0.715)',
+  'out-sine': 'cubic-bezier(0.39, 0.575, 0.565, 1)',
+  'in-out-sine': 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
 
   // Quad
-  "in-quad": "cubic-bezier(0.55, 0.085, 0.68, 0.53)",
-  "out-quad": "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-  "in-out-quad": "cubic-bezier(0.455, 0.03, 0.515, 0.955)",
+  'in-quad': 'cubic-bezier(0.55, 0.085, 0.68, 0.53)',
+  'out-quad': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+  'in-out-quad': 'cubic-bezier(0.455, 0.03, 0.515, 0.955)',
 
   // Cubic
-  "in-cubic": "cubic-bezier(0.55, 0.055, 0.675, 0.19)",
-  "out-cubic": "cubic-bezier(0.215, 0.61, 0.355, 1)",
-  "in-out-cubic": "cubic-bezier(0.645, 0.045, 0.355, 1)",
+  'in-cubic': 'cubic-bezier(0.55, 0.055, 0.675, 0.19)',
+  'out-cubic': 'cubic-bezier(0.215, 0.61, 0.355, 1)',
+  'in-out-cubic': 'cubic-bezier(0.645, 0.045, 0.355, 1)',
 
   // Quart
-  "in-quart": "cubic-bezier(0.895, 0.03, 0.685, 0.22)",
-  "out-quart": "cubic-bezier(0.165, 0.84, 0.44, 1)",
-  "in-out-quart": "cubic-bezier(0.77, 0, 0.175, 1)",
+  'in-quart': 'cubic-bezier(0.895, 0.03, 0.685, 0.22)',
+  'out-quart': 'cubic-bezier(0.165, 0.84, 0.44, 1)',
+  'in-out-quart': 'cubic-bezier(0.77, 0, 0.175, 1)',
 
   // Quint
-  "in-quint": "cubic-bezier(0.755, 0.05, 0.855, 0.06)",
-  "out-quint": "cubic-bezier(0.23, 1, 0.32, 1)",
-  "in-out-quint": "cubic-bezier(0.86, 0, 0.07, 1)",
+  'in-quint': 'cubic-bezier(0.755, 0.05, 0.855, 0.06)',
+  'out-quint': 'cubic-bezier(0.23, 1, 0.32, 1)',
+  'in-out-quint': 'cubic-bezier(0.86, 0, 0.07, 1)',
 
   // Expo
-  "in-expo": "cubic-bezier(0.95, 0.05, 0.795, 0.035)",
-  "out-expo": "cubic-bezier(0.19, 1, 0.22, 1)",
-  "in-out-expo": "cubic-bezier(1, 0, 0, 1)",
+  'in-expo': 'cubic-bezier(0.95, 0.05, 0.795, 0.035)',
+  'out-expo': 'cubic-bezier(0.19, 1, 0.22, 1)',
+  'in-out-expo': 'cubic-bezier(1, 0, 0, 1)',
 
   // Circ
-  "in-circ": "cubic-bezier(0.6, 0.04, 0.98, 0.335)",
-  "out-circ": "cubic-bezier(0.075, 0.82, 0.165, 1)",
-  "in-out-circ": "cubic-bezier(0.785, 0.135, 0.15, 0.86)",
+  'in-circ': 'cubic-bezier(0.6, 0.04, 0.98, 0.335)',
+  'out-circ': 'cubic-bezier(0.075, 0.82, 0.165, 1)',
+  'in-out-circ': 'cubic-bezier(0.785, 0.135, 0.15, 0.86)',
 
   // Back
-  "in-back": "cubic-bezier(0.6, -0.28, 0.735, 0.045)",
-  "out-back": "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-  "in-out-back": "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+  'in-back': 'cubic-bezier(0.6, -0.28, 0.735, 0.045)',
+  'out-back': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+  'in-out-back': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
 };
 export const EasingKeys = Object.keys(EASINGS);
 
 /**
  * Converts users input into a usable easing function string
  */
-export const getEase = (ease: keyof typeof EASINGS | string = "ease"): string => {
+export const getEase = (ease: keyof typeof EASINGS | string = 'ease'): string => {
   // Convert camelCase strings into dashed strings, then Remove the "ease-" keyword
-  let search = convertToDash(ease).replace(/^ease-/, "");
+  let search = convertToDash(ease).replace(/^ease-/, '');
   return EASINGS[search] || ease;
 };
 
 export const convertToDash = (str: string) => {
-  str = str.replace(/([A-Z])/g, letter => `-${letter.toLowerCase()}`);
+  str = str.replace(/([A-Z])/g, (letter) => `-${letter.toLowerCase()}`);
 
   // Remove first dash
-  return (str.charAt(0) === '-') ? str.substr(1) : str;
-}
+  return str.charAt(0) === '-' ? str.substr(1) : str;
+};

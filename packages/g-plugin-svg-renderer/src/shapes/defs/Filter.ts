@@ -30,23 +30,23 @@ export function createOrUpdateFilter(
     const filterIds = filters.map(({ name, params }, i) => {
       const $filter = createSVGElement('filter') as SVGFilterElement;
       if (name === 'blur') {
-        createBlur($filter, params);
+        createBlur($filter, params as ParsedElement[]);
       } else if (name === 'brightness') {
-        createBrightness($filter, params);
+        createBrightness($filter, params as ParsedElement[]);
       } else if (name === 'drop-shadow') {
-        createDropShadow($filter, params);
+        createDropShadow($filter, params as ParsedElement[]);
       } else if (name === 'contrast') {
-        createContrast($filter, params);
+        createContrast($filter, params as ParsedElement[]);
       } else if (name === 'grayscale') {
-        createGrayscale($filter, params);
+        createGrayscale($filter, params as ParsedElement[]);
       } else if (name === 'sepia') {
-        createSepia($filter, params);
+        createSepia($filter, params as ParsedElement[]);
       } else if (name === 'saturate') {
-        createSaturate($filter, params);
+        createSaturate($filter, params as ParsedElement[]);
       } else if (name === 'hue-rotate') {
-        createHueRotate($filter, params);
+        createHueRotate($filter, params as ParsedElement[]);
       } else if (name === 'invert') {
-        createInvert($filter, params);
+        createInvert($filter, params as ParsedElement[]);
       }
 
       $filter.id = `${filterName}-${i}`;
@@ -152,6 +152,7 @@ function createDropShadow($filter: SVGElement, params: ParsedElement[]) {
   const shadowOffsetX = params[0].value as number;
   const shadowOffsetY = params[1].value as number;
   const shadowBlur = params[2].value as number;
+  // @ts-ignore
   const shadowColor = params[3].formatted as string;
   const $feGaussianBlur = createSVGElement('feGaussianBlur');
   $feGaussianBlur.setAttribute('in', 'SourceAlpha');

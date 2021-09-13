@@ -14,6 +14,9 @@ export interface HTMLStyleProps extends BaseStyleProps {
 
 export interface ParsedHTMLStyleProps extends ParsedBaseStyleProps {
   $el: HTMLElement;
+  innerHTML: string | HTMLElement;
+  className?: string | string[];
+  style?: string;
 }
 
 /**
@@ -65,7 +68,7 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
   getBounds() {
     const clientRect = this.getBoundingClientRect();
     // calc context's offset
-    const canvasRect = this.ownerDocument?.defaultView.getContextService().getBoundingClientRect();
+    const canvasRect = this.ownerDocument?.defaultView?.getContextService().getBoundingClientRect();
     if (canvasRect) {
       const minX = clientRect.left - canvasRect.left;
       const minY = clientRect.top - canvasRect.top;
@@ -82,8 +85,8 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
   }
 
   getLocalBounds() {
-    if (this.parent) {
-      const parentInvert = mat4.invert(mat4.create(), this.parent.getWorldTransform());
+    if (this.parentNode) {
+      const parentInvert = mat4.invert(mat4.create(), this.parentNode.getWorldTransform());
       const bounds = this.getBounds();
 
       if (bounds) {

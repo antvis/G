@@ -2,7 +2,6 @@ import {
   RenderingPlugin,
   RenderingService,
   CanvasConfig,
-  SceneGraphNode,
   SHAPE,
   ContextService,
   Camera,
@@ -11,7 +10,6 @@ import {
   Batch,
   Renderable,
   PARSED_COLOR_TYPE,
-  OffscreenCanvasCreator,
   ParsedColorStyleProperty,
 } from '@antv/g';
 import { mat3 } from 'gl-matrix';
@@ -100,7 +98,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
   private pickingIdGenerator: PickingIdGenerator;
 
   @inject(ModelBuilderFactory)
-  private modelBuilderFactory: (shape: SHAPE) => ModelBuilder;
+  private modelBuilderFactory: (shape: string) => ModelBuilder;
 
   @inject(DefaultCamera)
   private camera: Camera;
@@ -191,12 +189,12 @@ export class FrameGraphPlugin implements RenderingPlugin {
         renderable3d.engine = this.engine;
         geometry.engine = this.engine;
 
-        let { tagName, attributes } = entity.getComponent(SceneGraphNode);
+        let tagName = object.nodeName;
 
         // handle batch
         const isBatch = tagName === Batch.tag;
         if (isBatch) {
-          tagName = (object as unknown as Batch<any>).getBatchType()!;
+          tagName = (object as unknown as Batch).getBatchType()!;
         }
 
         const modelBuilder = this.modelBuilderFactory(tagName);
@@ -210,7 +208,9 @@ export class FrameGraphPlugin implements RenderingPlugin {
         const { fill, opacity = 1, fillOpacity = 1 } = object.parsedStyle;
         material.setUniform(UNIFORM.Opacity, opacity);
         material.setUniform(UNIFORM.FillOpacity, fillOpacity);
-        await this.updateFill(fill, object, renderingService);
+        if (fill) {
+          await this.updateFill(fill, object, renderingService);
+        }
 
         // allocate pickingid for each child in batch
         const pickingColorBuffer: number[] = [];
@@ -262,8 +262,7 @@ export class FrameGraphPlugin implements RenderingPlugin {
             await this.updateFill(object.parsedStyle.fill, object, renderingService);
           }
 
-          const sceneGraphNode = entity.getComponent(SceneGraphNode);
-          const modelBuilder = this.modelBuilderFactory(sceneGraphNode.tagName);
+          const modelBuilder = this.modelBuilderFactory(object.nodeName);
           modelBuilder.onAttributeChanged(object, name, value);
         }
       },

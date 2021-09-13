@@ -1,4 +1,5 @@
-import { DisplayObject, BaseStyleProps, DisplayObjectConfig } from '@antv/g';
+import { DisplayObject, DisplayObjectConfig } from '@antv/g';
+import type { ParsedBaseStyleProps, BaseStyleProps } from '@antv/g';
 import { SHAPE_3D } from './types';
 
 export interface CubeStyleProps extends BaseStyleProps {
@@ -10,7 +11,16 @@ export interface CubeStyleProps extends BaseStyleProps {
   depthSegments?: number;
   map?: string;
 }
-export class Cube extends DisplayObject<CubeStyleProps> {
+export interface ParsedCubeStyleProps extends ParsedBaseStyleProps {
+  height: number;
+  width: number;
+  depth: number;
+  widthSegments?: number;
+  heightSegments?: number;
+  depthSegments?: number;
+  map?: string;
+}
+export class Cube extends DisplayObject<CubeStyleProps, ParsedCubeStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<CubeStyleProps>) {
     super({
       // @ts-ignore

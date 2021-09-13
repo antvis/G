@@ -1,7 +1,9 @@
-import { DisplayObject, LineStyleProps, Renderable, SceneGraphNode } from '@antv/g';
+import { DisplayObject, ParsedLineStyleProps, Renderable, Line } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { ShaderModuleService } from '../services/shader-module';
+// @ts-ignore
 import lineVertex from './shaders/webgl.line.vert.glsl';
+// @ts-ignore
 import lineFragment from './shaders/webgl.line.frag.glsl';
 import { gl } from '../services/renderer/constants';
 import { Material3D } from '../components/Material3D';
@@ -9,7 +11,6 @@ import { Geometry3D } from '../components/Geometry3D';
 import { Renderable3D } from '../components/Renderable3D';
 import { BufferData, RenderingEngine } from '../services/renderer';
 import { ModelBuilder } from '.';
-import { rgb2arr } from '../utils/color';
 
 const LINE_CAPS: Record<'round' | 'butt' | 'square', number> = {
   square: 0,
@@ -54,9 +55,8 @@ export class LineModelBuilder implements ModelBuilder {
   @inject(ShaderModuleService)
   private shaderModule: ShaderModuleService;
 
-  onAttributeChanged(object: DisplayObject<LineStyleProps>, name: string, value: any) {
+  onAttributeChanged(object: Line, name: string, value: any) {
     const entity = object.getEntity();
-    const sceneGraphNode = entity.getComponent(SceneGraphNode);
     const renderable = entity.getComponent(Renderable);
     const renderable3d = entity.getComponent(Renderable3D);
     const material = entity.getComponent(Material3D);
@@ -69,9 +69,8 @@ export class LineModelBuilder implements ModelBuilder {
     }
   }
 
-  prepareModel(object: DisplayObject<LineStyleProps>) {
+  prepareModel(object: Line) {
     const entity = object.getEntity();
-    const sceneGraphNode = entity.getComponent(SceneGraphNode);
     const material = entity.getComponent(Material3D);
     const geometry = entity.getComponent(Geometry3D);
     const renderable3d = entity.getComponent(Renderable3D);
@@ -80,7 +79,7 @@ export class LineModelBuilder implements ModelBuilder {
       lineWidth = 1,
       lineCap,
       lineJoin,
-      stroke = '',
+      stroke,
       strokeOpacity = 1,
       x1,
       y1,
@@ -89,8 +88,8 @@ export class LineModelBuilder implements ModelBuilder {
       x = 0,
       y = 0,
       points,
-    } = sceneGraphNode.attributes;
-    const strokeColor = rgb2arr(stroke);
+    } = object.parsedStyle;
+    const strokeColor = stroke.value;
 
     this.shaderModule.registerModule('line', {
       vs: lineVertex,
@@ -132,7 +131,7 @@ export class LineModelBuilder implements ModelBuilder {
       Float32Array.from(
         // [0, 0, 1, 0, 1, 1, 0, 1],
         // [-0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5]
-        [-1, -1, 1, -1, 1, 1, -1, 1]
+        [-1, -1, 1, -1, 1, 1, -1, 1],
       ),
       {
         arrayStride: 4 * 2,
@@ -219,6 +218,7 @@ export class LineModelBuilder implements ModelBuilder {
       ],
     });
 
+    // @ts-ignore
     geometry.setAttribute(ATTRIBUTE.Color, Float32Array.from(strokeColor), {
       arrayStride: 4 * 4,
       stepMode: 'instance',

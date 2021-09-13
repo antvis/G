@@ -1,10 +1,10 @@
-import { Geometry, Renderable, SceneGraphNode, Cullable } from './components';
+import { Renderable, Cullable } from './components';
 import { CustomElement } from './CustomElement';
-import { DisplayObject, DisplayObjectConfig, DISPLAY_OBJECT_EVENT } from './DisplayObject';
-import { BaseStyleProps, SHAPE } from './types';
+import { DisplayObject, DisplayObjectConfig } from './DisplayObject';
+import { BaseStyleProps } from './types';
 
-export interface BatchStyleProps<T> extends BaseStyleProps {
-  instances: DisplayObject<T>[];
+export interface BatchStyleProps extends BaseStyleProps {
+  instances: this[];
 }
 /**
  * A container for multiple display objects with the same `style`,
@@ -12,17 +12,17 @@ export interface BatchStyleProps<T> extends BaseStyleProps {
  *
  * @see https://developer.playcanvas.com/en/user-manual/optimization/batching/
  */
-export class Batch<T> extends CustomElement<BatchStyleProps<T>> {
+export class Batch extends CustomElement<BatchStyleProps> {
   static tag = 'batch';
 
-  private batchType?: SHAPE;
+  private batchType?: string;
 
   /**
    * need to reconstruct batch
    */
   dirty = true;
 
-  constructor({ style = { instances: [] }, ...rest }: DisplayObjectConfig<BatchStyleProps<T>>) {
+  constructor({ style = { instances: [] }, ...rest }: DisplayObjectConfig<BatchStyleProps>) {
     super({
       // @ts-ignore
       type: Batch.tag,
@@ -33,7 +33,8 @@ export class Batch<T> extends CustomElement<BatchStyleProps<T>> {
     this.getEntity().getComponent(Cullable).enable = false;
 
     if (style.instances) {
-      style.instances.forEach((instance: DisplayObject<T>) => {
+      style.instances.forEach((instance) => {
+        // @ts-ignore
         this.appendChild(instance);
       });
     }
@@ -43,7 +44,7 @@ export class Batch<T> extends CustomElement<BatchStyleProps<T>> {
     return this.batchType;
   }
 
-  appendChild(child: DisplayObject<T>) {
+  appendChild(child: this) {
     if (!this.batchType) {
       this.batchType = child.nodeName;
     }
@@ -61,7 +62,7 @@ export class Batch<T> extends CustomElement<BatchStyleProps<T>> {
     return child;
   }
 
-  removeChild(child: DisplayObject<T>) {
+  removeChild(child: this) {
     super.removeChild(child);
 
     child.getEntity().getComponent(Renderable).instanced = false;

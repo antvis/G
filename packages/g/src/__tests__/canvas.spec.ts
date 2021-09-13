@@ -36,14 +36,14 @@ describe('Canvas', () => {
     expect(point.x).eqls(0);
     expect(point.y).eqls(0);
 
-    // const circle = new Circle({
-    //   style: {
-    //     x: 100,
-    //     y: 100,
-    //     r: 100,
-    //   },
-    // });
+    const circle = new Circle({
+      style: {
+        x: 100,
+        y: 100,
+        r: 100,
+      },
+    });
 
-    // canvas.appendChild(circle);
+    canvas.appendChild(circle);
   });
 });

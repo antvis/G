@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import type { GeometryAABBUpdater } from '.';
+import type { GeometryAABBUpdater } from './interfaces';
 import type { ParsedBaseStyleProps } from '../../types';
 
 @injectable()

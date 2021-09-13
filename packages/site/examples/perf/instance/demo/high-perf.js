@@ -98,7 +98,7 @@ const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
 
 const camera = canvas.getCamera();
-canvas.on('afterRender', () => {
+canvas.on('afterrender', () => {
   if (stats) {
     stats.update();
   }
@@ -117,15 +117,9 @@ canvas.addEventListener('wheel', (e) => {
 
   let zoom;
   if (e.deltaY < 0) {
-    zoom = Math.max(
-      minZoom,
-      Math.min(maxZoom, camera.getZoom() / 0.95),
-    );
+    zoom = Math.max(minZoom, Math.min(maxZoom, camera.getZoom() / 0.95));
   } else {
-    zoom = Math.max(
-      minZoom,
-      Math.min(maxZoom, camera.getZoom() * 0.95),
-    );
+    zoom = Math.max(minZoom, Math.min(maxZoom, camera.getZoom() * 0.95));
   }
   camera.setZoom(zoom);
 });
