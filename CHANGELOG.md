@@ -2,6 +2,24 @@
 
 ## [1.0.0-alpha.20] - 2021-09-13
 
+- @antv/g-canvas@1.0.0-alpha.21
+- @antv/g-components@1.0.0-alpha.20
+- @antv/g-ecs@1.0.0-alpha.7
+- @antv/g-math@1.0.0-alpha.5
+- @antv/g-plugin-3d@1.0.0-alpha.21
+- @antv/g-plugin-canvas-picker@1.0.0-alpha.15
+- @antv/g-plugin-canvas-renderer@1.0.0-alpha.21
+- @antv/g-plugin-control@1.0.0-alpha.20
+- @antv/g-plugin-css-select@1.0.0-alpha.20
+- @antv/g-plugin-dom-interaction@1.0.0-alpha.21
+- @antv/g-plugin-html-renderer@1.0.0-alpha.4
+- @antv/g-plugin-svg-picker@1.0.0-alpha.21
+- @antv/g-plugin-svg-renderer@1.0.0-alpha.21
+- @antv/g-plugin-webgl-renderer@1.0.0-alpha.21
+- @antv/g-svg@1.0.0-alpha.21
+- @antv/g-webgl@1.0.0-alpha.21
+- @antv/g@1.0.0-alpha.20
+
 ### 新增特性
 
 -   `removeAllEventListeners` 移除元素上所有事件监听器：https://g-next.antv.vision/zh/docs/api/event#removealleventlisteners
