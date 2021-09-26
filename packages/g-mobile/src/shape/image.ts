@@ -63,7 +63,7 @@ class ImageShape extends ShapeBase {
     if (isString(img)) {
       let image = null;
       if (miniCanvas?.isMiniNative()) {
-        image = miniCanvas?.get('extra').createImage();
+        image = miniCanvas?.get('container').createImage();
       } else {
         image = new Image();
       }

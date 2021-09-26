@@ -1,13 +1,15 @@
-const cache = {};
+const canvas: {
+  requestAnimationFrame?: any;
+  clearAnimationFrame?: any;
+} = {};
 
-export function setExtraFunction(extraData: any = {}) {
-  cache['requestAnimationFrame'] = extraData['requestAnimationFrame'];
-  cache['clearAnimationFrame'] = extraData['cancelAnimationFrame'];
+export function setExtraFunction(canvas: any = {}) {
+  canvas = canvas;
 }
 
 function requestAnimationFrame(fn: FrameRequestCallback) {
-  if (cache['requestAnimationFrame']) {
-    return cache['requestAnimationFrame'](fn);
+  if (canvas?.requestAnimationFrame) {
+    return canvas.requestAnimationFrame(fn);
   }
   const method =
     typeof window === 'object' && window.requestAnimationFrame
@@ -19,8 +21,8 @@ function requestAnimationFrame(fn: FrameRequestCallback) {
 }
 
 function clearAnimationFrame(handler: number) {
-  if (cache['clearAnimationFrame']) {
-    return cache['clearAnimationFrame'](handler);
+  if (canvas?.clearAnimationFrame) {
+    return canvas.clearAnimationFrame(handler);
   }
   const method = typeof window === 'object' && window.cancelAnimationFrame ? window.cancelAnimationFrame : clearTimeout;
   return method(handler);

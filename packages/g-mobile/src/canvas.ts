@@ -20,7 +20,7 @@ class Canvas extends AbstractCanvas {
     if (this.isMini()) {
       if (this.isMiniNative()) {
         // TODO 这里会传递过来extra，里面包含一些来自各个平台的优化函数
-        setExtraFunction(this.get('extra'));
+        setExtraFunction(this.get('container'));
       } else {
         // 小程序使用了自定义的canvas api，不兼容w3c标准
         this.set('context', new Proxy(ctx, new CanvasProxy()));
