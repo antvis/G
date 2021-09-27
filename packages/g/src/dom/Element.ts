@@ -5,7 +5,7 @@ import { Cullable, Geometry, Renderable, Transform, Sortable } from '../componen
 import { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Node } from './Node';
 import { AABB, Rectangle } from '../shapes';
-import type { DisplayObjectConfig, IChildNode, IElement, INode } from './interfaces';
+import type { DisplayObjectConfig, IEventTarget, IChildNode, IElement, INode } from './interfaces';
 
 /**
  * built-in events for element
@@ -50,6 +50,10 @@ export class Element<
   extends Node
   implements IElement<StyleProps, ParsedStyleProps>
 {
+  static isElement(target: IEventTarget | INode | IElement): target is IElement {
+    return !!(target as IElement).getAttribute;
+  }
+
   sceneGraphService = container.get<SceneGraphService>(SceneGraphService);
 
   constructor(config: DisplayObjectConfig<StyleProps>) {

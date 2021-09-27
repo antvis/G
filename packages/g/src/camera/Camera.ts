@@ -1,6 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
 import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
-import { injectable } from 'inversify';
 import { Landmark } from './Landmark';
 import { Frustum } from '../shapes';
 import { createVec3, getAngle } from '../utils/math';
@@ -41,7 +40,7 @@ const RAD_2_DEG = 180 / Math.PI;
  * 3. rotate 以方位角旋转
  * 4. 移动到 Landmark，具有平滑的动画效果，其间禁止其他用户交互
  */
-@injectable()
+
 export class Camera extends EventEmitter {
   static ProjectionMode = {
     ORTHOGRAPHIC: 'ORTHOGRAPHIC',
@@ -201,6 +200,10 @@ export class Camera extends EventEmitter {
 
   getPosition() {
     return this.position;
+  }
+
+  getFocalPoint() {
+    return this.focalPoint;
   }
 
   getNear() {

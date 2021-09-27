@@ -2,18 +2,18 @@
 
 以下版本号以 @antv/g 为准。
 
-## [1.0.0-alpha.21] - 2021-09-21
+## [1.0.0-alpha.21] - 2021-09-27
 
 ### 新增特性
 
--   提供各个坐标系间的转换方法：Client <-> Viewport <-> Canvas
+-   明确了 G 目前使用到的[坐标系](http://g-next.antv.vision/zh/docs/api/canvas#%E5%9D%90%E6%A0%87%E7%B3%BB)，提供各个坐标系间的转换方法：Client <-> Viewport <-> Canvas
 
     -   client2Viewport(client: Point): Point
     -   viewport2Client(canvas: Point): Point
     -   viewport2Canvas(viewport: Point): Point
     -   canvas2Viewport(canvas: Point): Point
 
--   `cloneNode(deep?: boolean)` 在任何时刻都可以进行图形的克隆，例如：
+-   支持[节点克隆](http://g-next.antv.vision/zh/docs/api/basic/display-object#%E5%85%8B%E9%9A%86%E8%8A%82%E7%82%B9)，`cloneNode(deep?: boolean)` 在任何时刻都可以进行图形的克隆，例如：
 
     ```js
     circle.style.r = 20;
@@ -30,7 +30,7 @@
     -   克隆的新节点不会保留原始节点的父子关系，需要使用 `appendChild` 将其加入画布才会被渲染
     -   与 [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes) 保持一致，不会拷贝原图形上的事件监听器。
 
--   `document.createElement()` 创建图形，作为 `new Circle()` 的另一种选择，类似旧版 G 的 `addShape()`：
+-   支持使用 [document.createElement()](http://g-next.antv.vision/zh/docs/api/builtin-objects/document#createelement) 创建图形，作为 `new Circle()` 的另一种选择，类似旧版 G 的 `addShape()`：
 
     ```js
     import { SHAPE, Circle } from '@antv/g';
@@ -49,7 +49,7 @@
     const myCustomShape = canvas.document.createElement(MyCustomShape.tag, {});
     ```
 
--   ComputedEffectTiming
+-   补全 [ComputedEffectTiming](http://g-next.antv.vision/zh/docs/api/animation#computedeffecttiming)
     -   endTime
     -   activeDuration
     -   localTime
@@ -88,7 +88,6 @@
     -   getRenderBounds 会考虑一些绘图属性，例如 lineWidth 边框宽度，padding，阴影以及部分滤镜（blur、drop-shadow），顾名思义它在渲染管线中会使用到：
         -   脏矩阵渲染中清除区域据此计算
         -   内置剔除插件使用该包围盒
-    -   getProjectedBounds 需要考虑相机投影，供拾取使用
 
 ### Bug 修复
 

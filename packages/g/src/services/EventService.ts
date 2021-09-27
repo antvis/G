@@ -2,13 +2,14 @@ import { inject, injectable, postConstruct } from 'inversify';
 import { EventEmitter } from 'eventemitter3';
 import type { Cursor, EventPosition } from '../types';
 import { CanvasConfig } from '../types';
+import { Element } from '../dom/Element';
+import { Node } from '../dom/Node';
 import type { FederatedEvent } from '../dom/FederatedEvent';
 import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
 import { RenderingContext } from './RenderingContext';
 import { IEventTarget, INode, IDocument, ICanvas } from '../dom/interfaces';
-import { isElement, isNode } from '../utils';
 import { Point, PointLike } from '../shapes';
 import { ContextService } from './ContextService';
 import { mat4, vec3 } from 'gl-matrix';
@@ -213,7 +214,7 @@ export class EventService extends EventEmitter {
           this.notifyTarget(e, isRightButton ? 'rightupoutside' : 'mouseupoutside');
         }
 
-        if (isNode(currentTarget)) {
+        if (Node.isNode(currentTarget)) {
           currentTarget = currentTarget.parentNode;
         }
       }
@@ -298,7 +299,7 @@ export class EventService extends EventEmitter {
           this.notifyTarget(leaveEvent);
           if (isMouse) this.notifyTarget(leaveEvent, 'mouseleave');
 
-          if (isNode(leaveEvent.target)) {
+          if (Node.isNode(leaveEvent.target)) {
             leaveEvent.target = leaveEvent.target.parentNode;
           }
         }
@@ -319,11 +320,11 @@ export class EventService extends EventEmitter {
       if (isMouse) this.dispatchEvent(overEvent, 'mouseover');
 
       // Probe whether the newly hovered Node is an ancestor of the original overTarget.
-      let overTargetAncestor = outTarget && isNode(outTarget) && outTarget.parentNode;
+      let overTargetAncestor = outTarget && Node.isNode(outTarget) && outTarget.parentNode;
 
       while (
         overTargetAncestor &&
-        overTargetAncestor !== (isNode(this.rootTarget) && this.rootTarget.parentNode)
+        overTargetAncestor !== (Node.isNode(this.rootTarget) && this.rootTarget.parentNode)
       ) {
         if (overTargetAncestor === e.target) break;
 
@@ -334,7 +335,7 @@ export class EventService extends EventEmitter {
       // event.
       const didPointerEnter =
         !overTargetAncestor ||
-        overTargetAncestor === (isNode(this.rootTarget) && this.rootTarget.parentNode);
+        overTargetAncestor === (Node.isNode(this.rootTarget) && this.rootTarget.parentNode);
 
       if (didPointerEnter) {
         const enterEvent = this.clonePointerEvent(e, 'pointerenter');
@@ -344,14 +345,14 @@ export class EventService extends EventEmitter {
         while (
           enterEvent.target &&
           enterEvent.target !== outTarget &&
-          enterEvent.target !== (isNode(this.rootTarget) && this.rootTarget.parentNode)
+          enterEvent.target !== (Node.isNode(this.rootTarget) && this.rootTarget.parentNode)
         ) {
           enterEvent.currentTarget = enterEvent.target;
 
           this.notifyTarget(enterEvent);
           if (isMouse) this.notifyTarget(enterEvent, 'mouseenter');
 
-          if (isNode(enterEvent.target)) {
+          if (Node.isNode(enterEvent.target)) {
             enterEvent.target = enterEvent.target.parentNode;
           }
         }
@@ -402,14 +403,14 @@ export class EventService extends EventEmitter {
 
       while (
         leaveEvent.target &&
-        leaveEvent.target !== (isNode(this.rootTarget) && this.rootTarget.parentNode)
+        leaveEvent.target !== (Node.isNode(this.rootTarget) && this.rootTarget.parentNode)
       ) {
         leaveEvent.currentTarget = leaveEvent.target;
 
         this.notifyTarget(leaveEvent);
         if (isMouse) this.notifyTarget(leaveEvent, 'mouseleave');
 
-        if (isNode(leaveEvent.target)) {
+        if (Node.isNode(leaveEvent.target)) {
           leaveEvent.target = leaveEvent.target.parentNode;
         }
       }
@@ -444,7 +445,7 @@ export class EventService extends EventEmitter {
 
     while (
       enterEvent.target &&
-      enterEvent.target !== (isNode(this.rootTarget) && this.rootTarget.parentNode)
+      enterEvent.target !== (Node.isNode(this.rootTarget) && this.rootTarget.parentNode)
     ) {
       enterEvent.currentTarget = enterEvent.target;
 
@@ -455,7 +456,7 @@ export class EventService extends EventEmitter {
         this.notifyTarget(enterEvent, 'mouseenter');
       }
 
-      if (isNode(enterEvent.target)) {
+      if (Node.isNode(enterEvent.target)) {
         enterEvent.target = enterEvent.target.parentNode;
       }
     }
@@ -489,7 +490,7 @@ export class EventService extends EventEmitter {
           this.notifyTarget(e, e.button === 2 ? 'rightupoutside' : 'mouseupoutside');
         }
 
-        if (isNode(currentTarget)) {
+        if (Node.isNode(currentTarget)) {
           currentTarget = currentTarget.parentNode;
         }
       }
@@ -562,11 +563,11 @@ export class EventService extends EventEmitter {
     }
 
     for (let i = 0; i < PROPAGATION_LIMIT && target !== this.rootTarget; i++) {
-      if (isNode(target) && !target.parentNode) {
+      if (Node.isNode(target) && !target.parentNode) {
         throw new Error('Cannot find propagation path to disconnected target');
       }
 
-      if (isNode(target)) {
+      if (Node.isNode(target)) {
         // [target, parent, parent, root]
         propagationPath.push(target.parentNode);
         target = target.parentNode;
@@ -802,7 +803,10 @@ export class EventService extends EventEmitter {
     let currentTarget = propagationPath[propagationPath.length - 1];
     for (let i = propagationPath.length - 2; i >= 0; i--) {
       const target = propagationPath[i];
-      if (target === this.rootTarget || (isNode(target) && target.parentNode === currentTarget)) {
+      if (
+        target === this.rootTarget ||
+        (Node.isNode(target) && target.parentNode === currentTarget)
+      ) {
         currentTarget = propagationPath[i];
       } else {
         break;
@@ -815,11 +819,11 @@ export class EventService extends EventEmitter {
   private getCursor(target: IEventTarget | null) {
     let tmp: IEventTarget | null = target;
     while (tmp) {
-      const cursor = isElement(tmp) && tmp.getAttribute('cursor');
+      const cursor = Element.isElement(tmp) && tmp.getAttribute('cursor');
       if (cursor) {
         return cursor;
       }
-      tmp = isNode(tmp) && tmp.parentNode;
+      tmp = Node.isNode(tmp) && tmp.parentNode;
     }
   }
 }

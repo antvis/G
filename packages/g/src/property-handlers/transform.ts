@@ -1,7 +1,7 @@
 import { uniq } from '@antv/util';
 import { parseAngle, parseLength, parseLengthOrPercent, mergeDimensions } from './dimension';
 import { parseNumber, mergeNumbers } from './numeric';
-import { makeMatrixDecomposition, quat, composeMatrix } from '../utils/matrix-decompose';
+// import { makeMatrixDecomposition, quat, composeMatrix } from '../utils/matrix-decompose';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import { ParsedElement } from './dimension';
 

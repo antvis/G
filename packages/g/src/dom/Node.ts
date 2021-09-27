@@ -1,10 +1,21 @@
 import { EventTarget } from './EventTarget';
-import type { IElement, INode, IChildNode, IParentNode, IDocument } from './interfaces';
+import type {
+  IEventTarget,
+  IElement,
+  INode,
+  IChildNode,
+  IParentNode,
+  IDocument,
+} from './interfaces';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Node
  */
 export abstract class Node extends EventTarget implements INode {
+  static isNode(target: IEventTarget | INode): target is INode {
+    return !!(target as INode).childNodes;
+  }
+
   shadow = false;
   /**
    * points to canvas.document

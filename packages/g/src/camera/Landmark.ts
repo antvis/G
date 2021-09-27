@@ -46,19 +46,19 @@ export class Landmark {
     // this.zoom = c.zoom;
   }
 
-  public getPosition() {
+  getPosition() {
     return this.position;
   }
 
-  public getFocalPoint() {
+  getFocalPoint() {
     return this.focalPoint;
   }
 
-  public getRoll() {
+  getRoll() {
     return this.roll;
   }
 
-  public retrieve(c: Camera) {
+  retrieve(c: Camera) {
     c.matrix = mat4.copy(c.matrix, this.matrix);
     c.right = vec3.copy(c.right, this.right);
     c.up = vec3.copy(c.up, this.up);

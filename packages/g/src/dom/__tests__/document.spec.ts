@@ -6,8 +6,9 @@ import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
 
-import { Group, Circle, Canvas, Text, Rect, ElementEvent, SHAPE } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Group, Circle, Canvas, Text, Rect, ElementEvent, SHAPE } from '../..';
+import type { Ellipse, EllipseStyleProps } from '../..';
+import { Renderer as CanvasRenderer } from '../../../../g-canvas';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
@@ -46,7 +47,7 @@ describe('Document', () => {
     canvas.appendChild(circle);
     expect(circle.style.r).to.be.eql(50);
 
-    const ellipse = canvas.document.createElement(SHAPE.Ellipse, {
+    const ellipse = canvas.document.createElement<Ellipse, EllipseStyleProps>(SHAPE.Ellipse, {
       style: {
         rx: 50,
         ry: 50,

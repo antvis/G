@@ -2,7 +2,7 @@ import { isUndefined } from '@antv/util';
 import { InteractivePointerEvent } from '../types';
 // use `self` instead of `window`, account for non-window contexts, such as in Web Workers
 // @see https://developer.mozilla.org/en-US/docs/Web/API/Window/self
-export const supportsTouchEvents = 'ontouchstart' in self;
+export const supportsTouchEvents = !!self.TouchEvent;
 export const supportsPointerEvents = !!self.PointerEvent;
 export const MOUSE_POINTER_ID = 1;
 export const TOUCH_TO_POINTER: Record<string, string> = {
@@ -20,7 +20,8 @@ export function isTouchEvent(event: InteractivePointerEvent): event is TouchEven
 export function isMouseEvent(event: InteractivePointerEvent): event is MouseEvent {
   return (
     !self.MouseEvent ||
-    (event instanceof MouseEvent && (!supportsPointerEvents || !(event instanceof self.PointerEvent)))
+    (event instanceof MouseEvent &&
+      (!supportsPointerEvents || !(event instanceof self.PointerEvent)))
   );
 }
 
