@@ -8,7 +8,6 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import { vec3 } from 'gl-matrix';
 import { DisplayObject, Group, Circle } from '../..';
-import { SHAPE } from '../../..';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);

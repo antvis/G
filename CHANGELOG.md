@@ -2,7 +2,26 @@
 
 以下版本号以 @antv/g 为准。
 
-## [1.0.0-alpha.21] - 2021-09-27
+## [1.0.0-alpha.22] - 2021-09-27
+
+### Bug 修复
+
+-   [g] Canvas 传入参数 Renderer 类型报错
+
+## [1.0.0-alpha.21] - 2021-09-25
+
+-   @antv/g-canvas@1.0.0-alpha.22
+-   @antv/g-components@1.0.0-alpha.21
+-   @antv/g-ecs@1.0.0-alpha.8
+-   @antv/g-plugin-canvas-picker@1.0.0-alpha.16
+-   @antv/g-plugin-canvas-renderer@1.0.0-alpha.22
+-   @antv/g-plugin-css-select@1.0.0-alpha.21
+-   @antv/g-plugin-html-renderer@1.0.0-alpha.5
+-   @antv/g-plugin-svg-renderer@1.0.0-alpha.22
+-   @antv/g-plugin-webgl-renderer@1.0.0-alpha.22
+-   @antv/g-svg@1.0.0-alpha.22
+-   @antv/g-webgl@1.0.0-alpha.22
+-   @antv/g@1.0.0-alpha.21
 
 ### 新增特性
 
@@ -74,7 +93,7 @@
     -   Animatable
     -   Transformable
     -   Visible
--   包围盒 API，区分了 Bounds，LocalBounds，ContentBounds 以及 RenderBounds 这四种包围盒：
+-   包围盒 API，区分了 Bounds，LocalBounds，GeometryBounds 以及 RenderBounds 这四种包围盒：
     -   getBounds 世界坐标系下的包围盒
     -   getLocalBounds 在父元素局部空间下的包围盒
     -   getGeometryBounds 不考虑所有子元素，例如：

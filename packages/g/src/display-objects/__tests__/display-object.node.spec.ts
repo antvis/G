@@ -6,9 +6,8 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { DisplayObject, Group } from '..';
+import { DisplayObject, Group, SHAPE } from '../..';
 import { vec3 } from 'gl-matrix';
-import { SHAPE } from '../..';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);

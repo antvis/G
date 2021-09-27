@@ -1,8 +1,8 @@
 import type { vec2, vec3 } from 'gl-matrix';
-import type { AbstractRenderer } from './AbstractRenderer';
 import { ParsedPathStyleProps, ParsedPolylineStyleProps } from './display-objects';
 import type { DisplayObject } from './display-objects';
 import type { ParsedColorStyleProperty } from './property-handlers';
+import type { IRenderer } from './AbstractRenderer';
 
 export enum SHAPE {
   Group = 'group',
@@ -238,7 +238,7 @@ export interface CanvasConfig {
   /**
    * Renderer
    */
-  renderer: AbstractRenderer;
+  renderer: IRenderer;
   /**
    * 容器
    * @type {string|HTMLElement}

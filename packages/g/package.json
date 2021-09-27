@@ -46,7 +46,6 @@
     "gl-matrix": "^3.1.0",
     "inversify": "^5.0.1",
     "reflect-metadata": "^0.1.13",
-    "tapable": "^2.2.0",
-    "ts-mixer": "^6.0.0"
+    "tapable": "^2.2.0"
   }
 }

@@ -1,13 +1,12 @@
-import { isEqual, isObject } from '@antv/util';
+import { isEqual, isNil, isObject } from '@antv/util';
 import { mat3, mat4, quat, vec2, vec3 } from 'gl-matrix';
-import { mix, settings } from 'ts-mixer';
 import { DisplayObjectPool } from '../DisplayObjectPool';
-import { Element, ElementEvent } from '../dom/Element';
-import { container, DisplayObjectConfig, INode, SHAPE } from '..';
-import { Visible, Transformable, Animatable } from './mixins';
+import { Animation, Element, ElementEvent, KeyframeEffect } from '../dom';
+import type { DisplayObjectConfig, IElement, INode } from '../dom';
+import { container, SHAPE } from '..';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { fromRotationTranslationScale, getEuler } from '../utils';
-import { Renderable } from '../components';
+import { createVec3, fromRotationTranslationScale, getEuler, rad2deg } from '../utils';
+import { Cullable, Renderable } from '../components';
 import {
   StylePropertyParser,
   StylePropertyParserFactory,
@@ -15,9 +14,6 @@ import {
   StylePropertyUpdaterFactory,
 } from '../property-handlers';
 import { dirtifyRenderable } from '../services';
-
-// @see https://github.com/tannerntannern/ts-mixer/blob/master/README.md#dealing-with-constructors
-settings.initFunction = 'init';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
@@ -53,13 +49,6 @@ const DEFAULT_STYLE_PROPS: {
  * * destroy
  * * attributeChanged
  */
-export interface DisplayObject<
-  StyleProps extends BaseStyleProps = any,
-  ParsedStyleProps extends ParsedBaseStyleProps = any,
-> extends Transformable<StyleProps, ParsedStyleProps>,
-    Animatable<StyleProps, ParsedStyleProps>,
-    Visible<StyleProps, ParsedStyleProps> {}
-@mix(Transformable, Animatable, Visible)
 export class DisplayObject<
   StyleProps extends BaseStyleProps = any,
   ParsedStyleProps extends ParsedBaseStyleProps = any,
@@ -70,9 +59,9 @@ export class DisplayObject<
   config: DisplayObjectConfig<StyleProps>;
 
   /**
-   * a pointer to detached parent after called `remove()`
+   * push to active animations after calling `animate()`
    */
-  removedParentNode: DisplayObject | null = null;
+  private activeAnimations: Animation[] = [];
 
   stylePropertyUpdaterFactory = container.get<
     <Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyUpdater<any>[]
@@ -82,7 +71,8 @@ export class DisplayObject<
     <Key extends keyof ParsedStyleProps>(stylePropertyName: Key) => StylePropertyParser<any, any>
   >(StylePropertyParserFactory);
 
-  init(config: DisplayObjectConfig<StyleProps>) {
+  constructor(config: DisplayObjectConfig<StyleProps>) {
+    super(config);
     // assign name, id to config
     // eg. group.get('name')
     this.config = config;
@@ -127,6 +117,11 @@ export class DisplayObject<
 
     // remove from into pool
     container.get(DisplayObjectPool).remove(this.entity.getName());
+
+    // stop all active animations
+    this.getAnimations().forEach((animation) => {
+      animation.cancel();
+    });
   }
 
   cloneNode(deep?: boolean): this {
@@ -277,6 +272,275 @@ export class DisplayObject<
       newValue: value,
     });
   }
+
+  // #region transformable
+  setOrigin(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
+    this.sceneGraphService.setOrigin(this, createVec3(position, y, z));
+    this.attributes.origin = this.getOrigin();
+    return this;
+  }
+  getOrigin(): vec3 {
+    return this.sceneGraphService.getOrigin(this);
+  }
+
+  /**
+   * set position in world space
+   */
+  setPosition(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
+    this.sceneGraphService.setPosition(this, createVec3(position, y, z));
+    this.syncLocalPosition();
+    return this;
+  }
+
+  /**
+   * set position in local space
+   */
+  setLocalPosition(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
+    this.sceneGraphService.setLocalPosition(this, createVec3(position, y, z));
+    this.syncLocalPosition();
+    return this;
+  }
+
+  /**
+   * translate in world space
+   */
+  translate(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
+    this.sceneGraphService.translate(this, createVec3(position, y, z));
+    this.syncLocalPosition();
+    return this;
+  }
+
+  /**
+   * translate in local space
+   */
+  translateLocal(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
+    this.sceneGraphService.translateLocal(this, createVec3(position, y, z));
+    this.syncLocalPosition();
+    return this;
+  }
+
+  getPosition(): vec3 {
+    return this.sceneGraphService.getPosition(this);
+  }
+
+  getLocalPosition(): vec3 {
+    return this.sceneGraphService.getLocalPosition(this);
+  }
+
+  /**
+   * compatible with G 3.0
+   *
+   * scaling in local space
+   * scale(10) = scale(10, 10, 10)
+   *
+   * we can't set scale in world space
+   */
+  scale(scaling: vec3 | vec2 | number, y?: number, z?: number) {
+    return this.scaleLocal(scaling, y, z);
+  }
+  scaleLocal(scaling: vec3 | vec2 | number, y?: number, z?: number) {
+    if (typeof scaling === 'number') {
+      y = y || scaling;
+      z = z || scaling;
+      scaling = createVec3(scaling, y, z);
+    }
+    this.sceneGraphService.scaleLocal(this, scaling);
+    return this;
+  }
+
+  /**
+   * set scaling in local space
+   */
+  setLocalScale(scaling: vec3 | vec2 | number, y?: number, z?: number) {
+    if (typeof scaling === 'number') {
+      y = y || scaling;
+      z = z || scaling;
+      scaling = createVec3(scaling, y, z);
+    }
+
+    this.sceneGraphService.setLocalScale(this, scaling);
+    return this;
+  }
+
+  /**
+   * get scaling in local space
+   */
+  getLocalScale(): vec3 {
+    return this.sceneGraphService.getLocalScale(this);
+  }
+
+  /**
+   * get scaling in world space
+   */
+  getScale(): vec3 {
+    return this.sceneGraphService.getScale(this);
+  }
+
+  /**
+   * only return degrees of Z axis in world space
+   */
+  getEulerAngles() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [ex, ey, ez] = getEuler(vec3.create(), this.sceneGraphService.getWorldTransform(this));
+    return rad2deg(ez);
+  }
+
+  /**
+   * only return degrees of Z axis in local space
+   */
+  getLocalEulerAngles() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [ex, ey, ez] = getEuler(vec3.create(), this.sceneGraphService.getLocalRotation(this));
+    return rad2deg(ez);
+  }
+
+  /**
+   * set euler angles(degrees) in world space
+   */
+  setEulerAngles(z: number) {
+    this.sceneGraphService.setEulerAngles(this, 0, 0, z);
+    return this;
+  }
+
+  /**
+   * set euler angles(degrees) in local space
+   */
+  setLocalEulerAngles(z: number) {
+    this.sceneGraphService.setLocalEulerAngles(this, 0, 0, z);
+    return this;
+  }
+
+  rotateLocal(x: number, y?: number, z?: number) {
+    if (isNil(y) && isNil(z)) {
+      this.sceneGraphService.rotateLocal(this, 0, 0, x);
+    } else {
+      this.sceneGraphService.rotateLocal(this, x, y, z);
+    }
+
+    return this;
+  }
+
+  rotate(x: number, y?: number, z?: number) {
+    if (isNil(y) && isNil(z)) {
+      this.sceneGraphService.rotate(this, 0, 0, x);
+    } else {
+      this.sceneGraphService.rotate(this, x, y, z);
+    }
+
+    return this;
+  }
+
+  getRotation(): quat {
+    return this.sceneGraphService.getRotation(this);
+  }
+
+  getLocalRotation(): quat {
+    return this.sceneGraphService.getLocalRotation(this);
+  }
+
+  getLocalTransform(): mat4 {
+    return this.sceneGraphService.getLocalTransform(this);
+  }
+
+  getWorldTransform(): mat4 {
+    return this.sceneGraphService.getWorldTransform(this);
+  }
+
+  resetLocalTransform(): void {
+    this.sceneGraphService.resetLocalTransform(this);
+  }
+
+  /**
+   * sync style.x/y when local position changed
+   *
+   * Mixins may not declare private/protected properties
+   * however, you can use ES2020 private fields
+   */
+  private syncLocalPosition() {
+    const localPosition = this.getLocalPosition();
+    this.attributes.x = localPosition[0];
+    this.attributes.y = localPosition[1];
+  }
+  // #endregion transformable
+
+  // #region animatable
+  /**
+   * returns an array of all Animation objects affecting this element
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations
+   */
+  getAnimations(): Animation[] {
+    return this.activeAnimations;
+  }
+  /**
+   * create an animation with WAAPI
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/animate
+   */
+  animate(
+    keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
+    options?: number | KeyframeAnimationOptions | undefined,
+  ): Animation | null {
+    let timeline = this.ownerDocument?.timeline;
+
+    // accounte for clip path, use target's timeline
+    if (this.attributes.clipPathTargets && this.attributes.clipPathTargets.length) {
+      const target = this.attributes.clipPathTargets[0];
+      timeline = target.ownerDocument?.timeline;
+    }
+
+    // clear old parsed transform
+    this.parsedStyle.transform = undefined;
+
+    if (timeline) {
+      return timeline.play(new KeyframeEffect(this as IElement, keyframes, options));
+    }
+    return null;
+  }
+  // #endregion animatable
+
+  // #region visible
+  /**
+   * show group, which will also change visibility of its children in sceneGraphNode
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/visibility
+   */
+  show() {
+    this.style.visibility = 'visible';
+  }
+
+  /**
+   * hide group, which will also change visibility of its children in sceneGraphNode
+   */
+  hide() {
+    this.style.visibility = 'hidden';
+  }
+
+  isVisible() {
+    const cullable = this.entity.getComponent(Cullable);
+    return this.style.visibility === 'visible' && (!cullable || (cullable && !cullable.isCulled()));
+  }
+
+  /**
+   * bring to front in current group
+   */
+  toFront() {
+    if (this.parentNode) {
+      this.style.zIndex =
+        Math.max(...this.parentNode.children.map((child) => Number(child.style.zIndex))) + 1;
+    }
+    return this;
+  }
+
+  /**
+   * send to back in current group
+   */
+  toBack() {
+    if (this.parentNode) {
+      this.style.zIndex =
+        Math.min(...this.parentNode.children.map((child) => Number(child.style.zIndex))) - 1;
+    }
+    return this;
+  }
+  // #endregion visible
 
   // #region deprecated
   /**
