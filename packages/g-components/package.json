@@ -30,6 +30,9 @@
   "bugs": {
     "url": "https://github.com/antvis/g/issues"
   },
+  "dependencies": {
+    "@antv/util": "^2.0.13"
+  },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
     "@types/jest": "^25.0.0",

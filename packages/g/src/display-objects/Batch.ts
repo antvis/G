@@ -1,7 +1,6 @@
-import { Renderable, Cullable } from './components';
+import { Renderable, Cullable } from '../components';
 import { CustomElement } from './CustomElement';
-import { DisplayObject, DisplayObjectConfig } from './DisplayObject';
-import { BaseStyleProps } from './types';
+import type { INode, DisplayObjectConfig, BaseStyleProps } from '..';
 
 export interface BatchStyleProps extends BaseStyleProps {
   instances: this[];
@@ -44,7 +43,7 @@ export class Batch extends CustomElement<BatchStyleProps> {
     return this.batchType;
   }
 
-  appendChild(child: this) {
+  appendChild<T extends INode>(child: T): T {
     if (!this.batchType) {
       this.batchType = child.nodeName;
     }
@@ -54,7 +53,7 @@ export class Batch extends CustomElement<BatchStyleProps> {
     child.getEntity().getComponent(Renderable).instanced = true;
 
     const renderable = this.getEntity().getComponent(Renderable);
-    renderable.aabbDirty = true;
+    renderable.boundsDirty = true;
     renderable.dirty = true;
 
     this.dirty = true;
@@ -62,13 +61,13 @@ export class Batch extends CustomElement<BatchStyleProps> {
     return child;
   }
 
-  removeChild(child: this) {
+  removeChild<T extends INode>(child: T): T {
     super.removeChild(child);
 
     child.getEntity().getComponent(Renderable).instanced = false;
 
     const renderable = this.getEntity().getComponent(Renderable);
-    renderable.aabbDirty = true;
+    renderable.boundsDirty = true;
     renderable.dirty = true;
 
     this.dirty = true;

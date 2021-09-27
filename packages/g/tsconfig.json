@@ -1,8 +1,6 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "rootDir": "./src",
-        "composite": true,
         "module": "esnext",
         "declaration": true,
         "sourceMap": true,
@@ -22,13 +20,5 @@
     },
     "include": [
         "src/**/*"
-    ],
-    "references": [
-        {
-            "path": "../g-ecs"
-        },
-        {
-            "path": "../g-math"
-        }
     ]
 }

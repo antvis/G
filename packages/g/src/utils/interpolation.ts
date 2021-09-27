@@ -1,5 +1,5 @@
-import { AnimationEffectTiming } from '../AnimationEffectTiming';
-import { DisplayObject } from '../DisplayObject';
+import type { AnimationEffectTiming } from '../dom';
+import type { IElement } from '../dom/interfaces';
 import { container } from '../inversify.config';
 import {
   Interpolatable,
@@ -9,30 +9,15 @@ import {
 import { parseEasingFunction } from './animation';
 import { TypeEasingFunction } from './custom-easing';
 
-/**
- * handlers for valid properties
- */
-const propertyHandlers: Record<string, [Function, Function][]> = {};
-
-function addPropertyHandler(parser: Function, merger: Function, property: string) {
-  propertyHandlers[property] = propertyHandlers[property] || [];
-  propertyHandlers[property].push([parser, merger]);
-}
-export function addPropertiesHandler(parser: Function, merger: Function, properties: string[]) {
-  for (let i = 0; i < properties.length; i++) {
-    addPropertyHandler(parser, merger, toCamelCase(properties[i]));
-  }
-}
-
 export function convertEffectInput(
   keyframes: ComputedKeyframe[],
   timing: AnimationEffectTiming,
-  target: DisplayObject | null,
+  target: IElement | null,
 ) {
   const propertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups(keyframes, timing);
   const interpolations = makeInterpolations(propertySpecificKeyframeGroups, target);
 
-  return function (target: DisplayObject, fraction: number) {
+  return function (target: IElement, fraction: number) {
     if (fraction !== null) {
       interpolations
         .filter((interpolation) => {
@@ -100,7 +85,7 @@ function makePropertySpecificKeyframeGroups(
 
 function makeInterpolations(
   propertySpecificKeyframeGroups: Record<string, PropertySpecificKeyframe[]>,
-  target: DisplayObject | null,
+  target: IElement | null,
 ) {
   let interpolations = [];
   for (const groupName in propertySpecificKeyframeGroups) {
@@ -152,7 +137,7 @@ function propertyInterpolation(
   property: string,
   left: string | number,
   right: string | number,
-  target: DisplayObject | null,
+  target: IElement | null,
 ) {
   let parsedLeft = left;
   let parsedRight = right;

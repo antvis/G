@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import type { DisplayObject } from './DisplayObject';
+import type { DisplayObject } from './display-objects';
 
 @injectable()
 export class DisplayObjectPool {
@@ -11,5 +11,9 @@ export class DisplayObjectPool {
 
   add(name: string, groupOrShape: DisplayObject) {
     this.pool[name] = groupOrShape;
+  }
+
+  remove(name: string) {
+    delete this.pool[name];
   }
 }

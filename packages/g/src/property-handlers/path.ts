@@ -1,6 +1,6 @@
 import { path2Absolute, path2Segments, path2Curve } from '@antv/path-util';
 import { Cubic as CubicUtil } from '@antv/g-math';
-import type { DisplayObject } from '../DisplayObject';
+import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { PathCommand } from '../types';
 import type { ParsedPathStyleProps } from '../display-objects';
 import {
@@ -21,7 +21,10 @@ export function parsePath(path: string, displayObject: DisplayObject | null): Pa
 
   // convert to curves to do morphing & picking later
   // @see http://thednp.github.io/kute.js/svgCubicMorph.html
-  const curve = path2Curve(clonedAbsolutePath);
+  const [curve, zCommandIndexes] = path2Curve(clonedAbsolutePath, true) as [
+    PathCommand[],
+    number[],
+  ];
   const segments = path2Segments(clonedAbsolutePath);
   const { totalLength, curveSegments } = calcLength(curve);
 
@@ -34,6 +37,7 @@ export function parsePath(path: string, displayObject: DisplayObject | null): Pa
     curve,
     totalLength,
     curveSegments,
+    zCommandIndexes,
     rect: getPathBBox(curve),
   };
 }

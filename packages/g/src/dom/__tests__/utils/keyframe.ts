@@ -4,7 +4,6 @@
 //
 // ==============================
 
-
 // ------------------------------
 //  Composite values
 // ------------------------------
@@ -13,29 +12,20 @@ export const gGoodKeyframeCompositeValueTests: CompositeOperationOrAuto[] = [
   'replace',
   'add',
   'accumulate',
-  'auto'
+  'auto',
 ];
 
-export const gBadKeyframeCompositeValueTests = [
-  'unrecognised', 'replace ', 'Replace', null
-];
+export const gBadKeyframeCompositeValueTests = ['unrecognised', 'replace ', 'Replace', null];
 
-export const gGoodOptionsCompositeValueTests = [
-  'replace', 'add', 'accumulate'
-];
+export const gGoodOptionsCompositeValueTests = ['replace', 'add', 'accumulate'];
 
-export const gBadOptionsCompositeValueTests = [
-  'unrecognised', 'replace ', 'Replace', null
-];
+export const gBadOptionsCompositeValueTests = ['unrecognised', 'replace ', 'Replace', null];
 
 // ------------------------------
 //  Keyframes
 // ------------------------------
 
-export const gEmptyKeyframeListTests = [
-  [],
-  null,
-];
+export const gEmptyKeyframeListTests = [[], null];
 
 // Helper methods to make defining computed keyframes more readable.
 
@@ -50,10 +40,17 @@ const computedOffset = (computedOffset: number) => ({
 });
 
 const keyframe = (
-  offset: { offset: any; computedOffset: any; },
+  offset: { offset: any; computedOffset: any },
   props: {
     left?: string;
-    margin?: string; marginTop?: string; border?: string; borderColor?: string; top?: string; opacity?: string; "--custom"?: string; backgroundColor?: string;
+    margin?: string;
+    marginTop?: string;
+    border?: string;
+    borderColor?: string;
+    top?: string;
+    opacity?: string;
+    '--custom'?: string;
+    backgroundColor?: string;
   },
   easing = 'linear',
   composite?: CompositeOperationOrAuto,
@@ -67,7 +64,6 @@ const keyframe = (
 };
 
 export const gKeyframesTests = [
-
   // ----------- Property-indexed keyframes: property handling -----------
 
   {
@@ -75,24 +71,27 @@ export const gKeyframesTests = [
     input: { left: ['10px', '20px'] },
     output: [
       keyframe(computedOffset(0), { left: '10px' }),
-      keyframe(computedOffset(1), { left: '20px' })
+      keyframe(computedOffset(1), { left: '20px' }),
     ],
   },
   {
-    desc: 'a one shorthand property two value property-indexed keyframes'
-      + ' specification',
+    desc: 'a one shorthand property two value property-indexed keyframes' + ' specification',
     input: { margin: ['10px', '10px 20px 30px 40px'] },
-    output: [keyframe(computedOffset(0), { margin: '10px' }),
-    keyframe(computedOffset(1), { margin: '10px 20px 30px 40px' })],
+    output: [
+      keyframe(computedOffset(0), { margin: '10px' }),
+      keyframe(computedOffset(1), { margin: '10px 20px 30px 40px' }),
+    ],
   },
   {
     desc: 'a two property two value property-indexed keyframes specification',
     input: {
       left: ['10px', '20px'],
-      top: ['30px', '40px']
+      top: ['30px', '40px'],
     },
-    output: [keyframe(computedOffset(0), { left: '10px', top: '30px' }),
-    keyframe(computedOffset(1), { left: '20px', top: '40px' })],
+    output: [
+      keyframe(computedOffset(0), { left: '10px', top: '30px' }),
+      keyframe(computedOffset(1), { left: '20px', top: '40px' }),
+    ],
   },
   // 暂不支持数量不等的 transition
   // {
@@ -112,8 +111,7 @@ export const gKeyframesTests = [
     output: [keyframe(computedOffset(1), { left: '10px' })],
   },
   {
-    desc: 'a one property one non-array value property-indexed keyframes'
-      + ' specification',
+    desc: 'a one property one non-array value property-indexed keyframes' + ' specification',
     input: { left: '10px' },
     output: [keyframe(computedOffset(1), { left: '10px' })],
   },
@@ -687,17 +685,13 @@ export const gKeyframesTests = [
   //   },
 ];
 
-
 const gKeyframeSerializationTests = [
   {
-    desc: 'a on keyframe sequence which requires value serilaization of its'
-      + ' values',
+    desc: 'a on keyframe sequence which requires value serilaization of its' + ' values',
     input: [{ offset: 0, backgroundColor: 'rgb(1,2,3)' }],
     output: [keyframe(offset(0), { backgroundColor: 'rgb(1, 2, 3)' })],
   },
 ];
-
-
 
 // ------------------------------
 //  KeyframeEffectOptions
@@ -716,14 +710,14 @@ const gKeyframeEffectOptionTests = [
       fill: 'auto',
       iterations: 5.5,
       duration: 'auto',
-      direction: 'alternate'
+      direction: 'alternate',
     },
     expected: {
       delay: 1000,
       fill: 'auto',
       iterations: 5.5,
       duration: 'auto',
-      direction: 'alternate'
+      direction: 'alternate',
     },
   },
   {
@@ -760,7 +754,7 @@ const gKeyframeEffectOptionTests = [
     desc: 'a forwards fill',
     input: { fill: 'forwards' },
     expected: { fill: 'forwards' },
-  }
+  },
 ];
 
 const gInvalidKeyframeEffectOptionTests = [
@@ -776,8 +770,8 @@ const gInvalidKeyframeEffectOptionTests = [
   { desc: 'a negative iterations', input: { iterations: -1 } },
   { desc: 'a blank easing', input: { easing: '' } },
   { desc: 'an unrecognized easing', input: { easing: 'unrecognised' } },
-  { desc: 'an \'initial\' easing', input: { easing: 'initial' } },
-  { desc: 'an \'inherit\' easing', input: { easing: 'inherit' } },
+  { desc: "an 'initial' easing", input: { easing: 'initial' } },
+  { desc: "an 'inherit' easing", input: { easing: 'inherit' } },
   { desc: 'a variable easing', input: { easing: 'var(--x)' } },
   { desc: 'a multi-value easing', input: { easing: 'ease-in-out, ease-out' } },
 ];
@@ -789,24 +783,24 @@ const gAnimationTimelineTests = [
   {
     expectedTimeline: document.timeline,
     expectedTimelineDescription: 'document.timeline',
-    description: 'with no timeline parameter'
+    description: 'with no timeline parameter',
   },
   {
     timeline: undefined,
     expectedTimeline: document.timeline,
     expectedTimelineDescription: 'document.timeline',
-    description: 'with undefined timeline'
+    description: 'with undefined timeline',
   },
   {
     timeline: null,
     expectedTimeline: null,
     expectedTimelineDescription: 'null',
-    description: 'with null timeline'
+    description: 'with null timeline',
   },
   {
     timeline: document.timeline,
     expectedTimeline: document.timeline,
     expectedTimelineDescription: 'document.timeline',
-    description: 'with DocumentTimeline'
+    description: 'with DocumentTimeline',
   },
 ];

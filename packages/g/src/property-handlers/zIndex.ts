@@ -1,4 +1,4 @@
-import type { DisplayObject } from '../DisplayObject';
+import type { DisplayObject } from '../display-objects/DisplayObject';
 import { Sortable, Renderable } from '../components';
 
 export function updateZIndex(oldZIndex: number, newZIndex: number, object: DisplayObject) {

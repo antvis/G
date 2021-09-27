@@ -1,35 +1,37 @@
 import { isBoolean, isFunction, isObject } from '@antv/util';
 import { EventEmitter } from 'eventemitter3';
-import { Entity } from '@antv/g-ecs';
-import { world } from '../inversify.config';
+import type { Entity } from '@antv/g-ecs';
+import { world } from '..';
+import { CustomEvent } from './CustomEvent';
 import { FederatedEvent } from './FederatedEvent';
-import { DELEGATION_SPLITTER } from '../services/EventService';
-import { CustomEvent } from '../CustomEvent';
-import type { Element } from './Element';
-import type { Node } from './Node';
-import type { DisplayObject } from '../DisplayObject';
-import type { Canvas } from '../Canvas';
+import type { IElement, INode, IEventTarget } from './interfaces';
+
+export const DELEGATION_SPLITTER = ':';
 
 /**
  * Objects that can receive events and may have listeners for them.
  * eg. Element, Canvas, DisplayObject
  * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
  */
-export class EventTarget {
+export class EventTarget implements IEventTarget {
   /**
    * event emitter
    */
   emitter = new EventEmitter();
 
-  protected entity: Entity;
-  getEntity() {
-    return this.entity;
-  }
+  entity: Entity;
 
   constructor() {
     // create entity with shape's name, unique ID
     const entity = world.createEntity();
     this.entity = entity;
+  }
+
+  /**
+   * @deprecated
+   */
+  getEntity() {
+    return this.entity;
   }
 
   /**
@@ -75,7 +77,7 @@ export class EventTarget {
     if (useDelegatedName) {
       const originListener = listener;
       listener = (...args) => {
-        if ((args[0].target as Element)?.name !== delegatedName) {
+        if ((args[0].target as IElement)?.name !== delegatedName) {
           return;
         }
         originListener(...args);
@@ -105,6 +107,7 @@ export class EventTarget {
       // remove all listeners
       this.removeAllEventListeners();
     }
+    return this;
   }
   removeAllEventListeners() {
     this.emitter.removeAllListeners();
@@ -121,6 +124,8 @@ export class EventTarget {
     listener = isFunction(listener) ? listener : listener.handleEvent;
 
     this.emitter.off(type, listener, context);
+
+    return this;
   }
   /**
    * @deprecated
@@ -138,14 +143,15 @@ export class EventTarget {
     }
 
     const document =
-      (this as unknown as Node).ownerDocument || (this as unknown as Canvas).document;
+      // @ts-ignore
+      (this as unknown as INode).ownerDocument || this.document;
 
     // assign event manager
     if (document) {
       e.manager = document.defaultView?.getEventService() || null;
       e.defaultPrevented = false;
       e.path = [];
-      e.target = this as unknown as DisplayObject;
+      e.target = this;
       e.manager?.dispatchEvent(e);
     }
 

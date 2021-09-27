@@ -1,5 +1,5 @@
-import { AnimationEffectTiming } from '../AnimationEffectTiming';
-import { getEasingFunction } from './custom-easing';
+import { AnimationEffectTiming } from '../dom';
+import { getEasingFunction, convertToDash } from './custom-easing';
 import { bezier } from './bezier-easing';
 
 const fills = 'backwards|forwards|both|none'.split('|');
@@ -179,9 +179,9 @@ function calculateActiveTime(
 function calculateOverallProgress(
   iterationDuration: number,
   phase: number,
-  iterations: any,
+  iterations: number,
   activeTime: number,
-  iterationStart: any,
+  iterationStart: number,
 ) {
   // https://drafts.csswg.org/web-animations/#calculating-the-overall-progress
   let overallProgress = iterationStart;
@@ -294,11 +294,15 @@ export function calculateIterationProgress(
     simpleIterationProgress,
     overallProgress,
   );
+
   const directedProgress = calculateDirectedProgress(
     timing.direction,
     currentIteration,
     simpleIterationProgress,
   );
+
+  timing.currentIteration = currentIteration;
+  timing.progress = directedProgress;
 
   // https://drafts.csswg.org/web-animations/#calculating-the-transformed-progress
   // https://drafts.csswg.org/web-animations/#calculating-the-iteration-progress
@@ -363,11 +367,4 @@ export const getEase = (ease: keyof typeof EASINGS | string = 'ease'): string =>
   // Convert camelCase strings into dashed strings, then Remove the "ease-" keyword
   let search = convertToDash(ease).replace(/^ease-/, '');
   return EASINGS[search] || ease;
-};
-
-export const convertToDash = (str: string) => {
-  str = str.replace(/([A-Z])/g, (letter) => `-${letter.toLowerCase()}`);
-
-  // Remove first dash
-  return str.charAt(0) === '-' ? str.substr(1) : str;
 };

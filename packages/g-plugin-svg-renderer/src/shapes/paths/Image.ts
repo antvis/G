@@ -18,7 +18,7 @@ export class ImageRenderer implements ElementRenderer<ParsedImageStyleProps> {
     } else if (img instanceof Image) {
       if (!width) {
         $el.setAttribute('width', `${img.width}`);
-        // TODO: set renderable.aabbDirty
+        // TODO: set renderable.boundsDirty
         // this.attr('width', img.width);
       }
       if (!height) {

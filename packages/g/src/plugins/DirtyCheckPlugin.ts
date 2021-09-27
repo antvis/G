@@ -3,7 +3,7 @@ import { Renderable } from '../components';
 import { CanvasConfig } from '../types';
 import { RenderingService, RenderingPlugin } from '../services/RenderingService';
 import { RenderingContext, RENDER_REASON } from '../services/RenderingContext';
-import { DisplayObject } from '../DisplayObject';
+import { DisplayObject } from '../display-objects/DisplayObject';
 
 /**
  * Filter dirty renderables and calculate the "dirty rectangle" which will be clear when frame began

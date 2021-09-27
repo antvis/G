@@ -1,8 +1,6 @@
 import { expect } from 'chai';
-import { Circle } from '..';
 import { vec3 } from 'gl-matrix';
-import { Group } from '../display-objects/Group';
-import { KeyframeEffect } from '../KeyframeEffect';
+import { KeyframeEffect, Group, Circle } from '../..';
 import {
   gEmptyKeyframeListTests,
   gGoodKeyframeCompositeValueTests,
@@ -40,9 +38,9 @@ function assert_frames_equal(a: any, b: any) {
 }
 
 /**
- * @see https://github.com/web-platform-tests/wpt/blob/master/web-animations/interfaces/KeyframeEffect/constructor.html
+ * ported from @see https://github.com/web-platform-tests/wpt/blob/master/web-animations/interfaces/KeyframeEffect/constructor.html
  */
-describe('KeyframeEffect', () => {
+describe('Animation KeyframeEffect', () => {
   it('Can be constructed with no frames', () => {
     for (const frames of gEmptyKeyframeListTests) {
       expect(new KeyframeEffect(null, frames).getKeyframes().length).to.be.eql(0);
@@ -67,8 +65,10 @@ describe('KeyframeEffect', () => {
   // });
 
   it('composite values are parsed correctly when passed to the KeyframeEffect constructor in property-indexed keyframes', () => {
-    const getKeyframe =
-      (composite: CompositeOperationOrAuto) => ({ left: ['10px', '20px'], composite: composite });
+    const getKeyframe = (composite: CompositeOperationOrAuto) => ({
+      left: ['10px', '20px'],
+      composite: composite,
+    });
 
     for (const composite of gGoodKeyframeCompositeValueTests) {
       const effect = new KeyframeEffect(null, getKeyframe(composite));
@@ -84,11 +84,10 @@ describe('KeyframeEffect', () => {
   });
 
   it('composite values are parsed correctly when passed to the KeyframeEffect constructor in regular keyframes', () => {
-    const getKeyframe =
-      (composite: CompositeOperationOrAuto) => [
-        { offset: 0, left: '10px', composite: composite },
-        { offset: 1, left: '20px' }
-      ];
+    const getKeyframe = (composite: CompositeOperationOrAuto) => [
+      { offset: 0, left: '10px', composite: composite },
+      { offset: 1, left: '20px' },
+    ];
 
     for (const composite of gGoodKeyframeCompositeValueTests) {
       const effect = new KeyframeEffect(null, getKeyframe(composite));
@@ -105,10 +104,14 @@ describe('KeyframeEffect', () => {
 
   it('composite value is auto if the composite operation specified on the keyframe effect is being used', () => {
     for (const composite of gGoodOptionsCompositeValueTests) {
-      const effect = new KeyframeEffect(null, {
-        left: ['10px', '20px']
+      const effect = new KeyframeEffect(
+        null,
+        {
+          left: ['10px', '20px'],
+        },
         // @ts-ignore
-      }, { composite });
+        { composite },
+      );
       expect(effect.getKeyframes()[0].composite).to.be.eql('auto');
     }
 
@@ -128,7 +131,6 @@ describe('KeyframeEffect', () => {
 
       assert_frame_lists_equal(effect.getKeyframes(), subtest.output);
     });
-
 
     // effect = new KeyframeEffect(null, subtest.input);
     // const secondEffect = new KeyframeEffect(null, effect.getKeyframes());

@@ -65,52 +65,48 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       const { x, y } = result.position;
       const position = vec3.fromValues(x, y, 0);
       const pickedDisplayObjects: DisplayObject[] = [];
-      const invertOrthoMat = mat4.invert(mat4.create(), this.camera.getOrthoMatrix());
-      if (invertOrthoMat) {
-        vec3.transformMat4(position, position, invertOrthoMat);
 
-        // query by AABB first with spatial index(r-tree)
-        const rBushNodes = this.rBush.search({
-          minX: position[0],
-          minY: position[1],
-          maxX: position[0],
-          maxY: position[1],
-        });
+      // query by AABB first with spatial index(r-tree)
+      const rBushNodes = this.rBush.search({
+        minX: position[0],
+        minY: position[1],
+        maxX: position[0],
+        maxY: position[1],
+      });
 
-        const queriedNames = rBushNodes.map((node) => node.name);
-        rBushNodes.forEach(({ name }: { name: string }) => {
-          const displayObject = this.displayObjectPool.getByName(name);
-          if (displayObject.isVisible() && displayObject.interactive) {
-            // parent is not included, eg. parent is clipped
-            if (
-              displayObject.parentNode &&
-              queriedNames.indexOf(displayObject.parentNode.getEntity().getName()) === -1
-            ) {
-              return;
-            }
-
-            // test with clip path
-            const objectToTest = displayObject.style.clipPath || displayObject;
-            let worldTransform = displayObject.getWorldTransform();
-
-            // clipped's world matrix * clipPath's local matrix
-            if (displayObject.style.clipPath) {
-              worldTransform = mat4.multiply(
-                mat4.create(),
-                worldTransform,
-                displayObject.style.clipPath.getLocalTransform(),
-              );
-            }
-
-            if (this.isHit(objectToTest, position, worldTransform)) {
-              pickedDisplayObjects.push(displayObject);
-            }
+      const queriedNames = rBushNodes.map((node) => node.name);
+      rBushNodes.forEach(({ name }: { name: string }) => {
+        const displayObject = this.displayObjectPool.getByName(name);
+        if (displayObject.isVisible() && displayObject.interactive) {
+          // parent is not included, eg. parent is clipped
+          if (
+            displayObject.parentNode &&
+            queriedNames.indexOf(displayObject.parentNode.getEntity().getName()) === -1
+          ) {
+            return;
           }
-        });
 
-        // find group with max z-index
-        pickedDisplayObjects.sort(this.sceneGraphService.sort);
-      }
+          // test with clip path
+          const objectToTest = displayObject.style.clipPath || displayObject;
+          let worldTransform = displayObject.getWorldTransform();
+
+          // clipped's world matrix * clipPath's local matrix
+          if (displayObject.style.clipPath) {
+            worldTransform = mat4.multiply(
+              mat4.create(),
+              worldTransform,
+              displayObject.style.clipPath.getLocalTransform(),
+            );
+          }
+
+          if (this.isHit(objectToTest, position, worldTransform)) {
+            pickedDisplayObjects.push(displayObject);
+          }
+        }
+      });
+
+      // find group with max z-index
+      pickedDisplayObjects.sort(this.sceneGraphService.sort);
 
       return {
         position: result.position,
@@ -135,9 +131,10 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       );
 
       // account for anchor
-      const { width = 0, height = 0, anchor = [0, 0] } = displayObject.parsedStyle;
-      localPosition[0] += anchor[0] * width;
-      localPosition[1] += anchor[1] * height;
+      const { halfExtents } = displayObject.getGeometryBounds();
+      const { anchor = [0, 0] } = displayObject.parsedStyle;
+      localPosition[0] += anchor[0] * halfExtents[0] * 2;
+      localPosition[1] += anchor[1] * halfExtents[1] * 2;
       if (pick(displayObject, new Point(localPosition[0], localPosition[1]), this.isPointInPath)) {
         return true;
       }

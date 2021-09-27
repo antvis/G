@@ -1,4 +1,4 @@
-import { DisplayObject } from '../../DisplayObject';
+import { DisplayObject } from '../../display-objects/DisplayObject';
 import type { ParsedBaseStyleProps } from '../../types';
 
 export const GeometryUpdaterFactory = 'GeometryUpdaterFactory';

@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 import { Animation } from './Animation';
-import { KeyframeEffect } from './KeyframeEffect';
-import { requestAnimationFrame, cancelAnimationFrame } from './utils/raf';
+import type { KeyframeEffect } from './KeyframeEffect';
+import { requestAnimationFrame, cancelAnimationFrame } from '../utils/raf';
 
 export function compareAnimations(leftAnimation: Animation, rightAnimation: Animation) {
   return Number(leftAnimation.id) - Number(rightAnimation.id);

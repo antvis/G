@@ -1,23 +1,26 @@
 import { CanvasConfig, Cursor } from './types';
 import { cleanExistedCanvas } from './utils/canvas';
-import { DisplayObject } from './DisplayObject';
+import { DisplayObject } from './display-objects/DisplayObject';
 import { ContextService } from './services';
 import { container } from './inversify.config';
 import { RenderingService } from './services/RenderingService';
 import { RenderingContext, RENDER_REASON } from './services/RenderingContext';
 import { EventService } from './services/EventService';
-import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE, DefaultCamera } from './Camera';
+import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE, DefaultCamera } from './camera';
 import { containerModule as commonContainerModule } from './canvas-module';
 import { AbstractRenderer, IRenderer } from './AbstractRenderer';
 import { cancelAnimationFrame } from './utils/raf';
-import { Point } from './shapes';
-import { DISPLAY_OBJECT_EVENT } from './dom/Element';
-import { EventTarget } from './dom/EventTarget';
-import { Document } from './dom/Document';
+import type { PointLike } from './shapes';
+import { Document, EventTarget, ElementEvent, FederatedEvent } from './dom';
+import type { IElement, INode, ICanvas } from './dom/interfaces';
+import { CustomElementRegistry } from './dom/CustomElementRegistry';
+import { Renderable } from './components';
 
-export interface CanvasService {
-  init(): void;
-  destroy(): void;
+export enum CanvasEvent {
+  BEFORE_RENDER = 'beforerender',
+  AFTER_RENDER = 'afterrender',
+  BEFORE_DESTROY = 'beforedestroy',
+  AFTER_DESTROY = 'afterdestroy',
 }
 
 /**
@@ -25,7 +28,7 @@ export interface CanvasService {
  *
  * prototype chains: Canvas(Window) -> EventTarget
  */
-export class Canvas extends EventTarget {
+export class Canvas extends EventTarget implements ICanvas {
   /**
    * child container of current canvas, use hierarchy container
    */
@@ -35,6 +38,11 @@ export class Canvas extends EventTarget {
    * window.document
    */
   document: Document;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry
+   */
+  customElements: CustomElementRegistry;
 
   Element = DisplayObject;
 
@@ -64,6 +72,8 @@ export class Canvas extends EventTarget {
     this.document = new Document();
     this.document.defaultView = this;
 
+    this.customElements = new CustomElementRegistry();
+
     // bind rendering context, shared by all renderers
     this.container.bind<RenderingContext>(RenderingContext).toConstantValue({
       /**
@@ -71,13 +81,30 @@ export class Canvas extends EventTarget {
        */
       root: this.document.documentElement,
 
-      removedAABBs: [],
+      /**
+       * removed render bounds
+       */
+      removedRenderBoundsList: [],
 
       renderReasons: new Set(),
 
       force: false,
       dirty: false,
     });
+
+    this.document.documentElement.addEventListener(
+      ElementEvent.CHILD_INSERTED,
+      (e: FederatedEvent<Event, { child: DisplayObject }>) => {
+        this.mountChildren(e.detail.child);
+      },
+    );
+
+    this.document.documentElement.addEventListener(
+      ElementEvent.CHILD_REMOVED,
+      (e: FederatedEvent<Event, { child: DisplayObject }>) => {
+        this.unmountChildren(e.detail.child);
+      },
+    );
   }
 
   private initDefaultCamera(width: number, height: number) {
@@ -113,7 +140,7 @@ export class Canvas extends EventTarget {
    * get the camera of canvas
    */
   getCamera() {
-    return this.container.get(DefaultCamera);
+    return this.container.get<Camera>(DefaultCamera);
   }
 
   getContextService() {
@@ -137,33 +164,30 @@ export class Canvas extends EventTarget {
   }
 
   destroy(destroyScenegraph = true) {
-    this.emit('beforedestroy', () => {});
+    this.emit(CanvasEvent.BEFORE_DESTROY, () => {});
     if (this.frameId) {
       cancelAnimationFrame(this.frameId);
     }
 
     // unmount all children
     const root = this.getRoot();
-    const renderingService = this.container.get<RenderingService>(RenderingService);
+    this.unmountChildren(root);
     if (destroyScenegraph) {
-      root.forEach((child: DisplayObject) => {
-        this.removeChild(child, true);
-      });
-      // destroy timeline
-      this.document.timeline.destroy();
-    } else {
-      this.unmountChildren(root);
+      // destroy Document
+      this.document.destroy();
     }
 
     // destroy services
     this.getContextService().destroy();
-    renderingService.destroy();
+    this.getRenderingService().destroy();
 
-    this.emit('afterdestroy', {});
+    this.emit(CanvasEvent.AFTER_DESTROY, {});
   }
 
   /**
    * compatible with G 3.0
+   * @deprecated
+   * @alias resize
    */
   changeSize(width: number, height: number) {
     this.resize(width, height);
@@ -195,41 +219,28 @@ export class Canvas extends EventTarget {
   }
 
   // proxy to document.documentElement
-  appendChild(node: DisplayObject) {
-    return this.document.documentElement.appendChild(node);
+  appendChild<T extends INode>(child: T, index?: number): T {
+    return this.document.documentElement.appendChild(child, index);
   }
-  insertBefore(group: DisplayObject, reference?: DisplayObject): DisplayObject {
-    return this.document.documentElement.insertBefore(group, reference);
+  insertBefore<T extends INode>(newChild: T, refChild: IElement | null): T {
+    return this.document.documentElement.insertBefore(newChild, refChild);
   }
-  removeChild(node: DisplayObject, destroy?: boolean) {
-    return this.document.documentElement.removeChild(node, destroy);
+  removeChild<T extends INode>(child: T, destroy = true): T {
+    return this.document.documentElement.removeChild(child, destroy);
   }
-  removeChildren() {
-    this.document.documentElement.removeChildren();
-  }
-
-  decorate(object: DisplayObject, renderingService: RenderingService, root: DisplayObject) {
-    object.forEach((child: DisplayObject) => {
-      this.mountChild(child);
-
-      child.on(DISPLAY_OBJECT_EVENT.ChildInserted, (grandchild: DisplayObject) =>
-        this.decorate(grandchild, renderingService, root),
-      );
-      child.on(DISPLAY_OBJECT_EVENT.ChildRemoved, (grandchild: DisplayObject) =>
-        this.unmountChildren(grandchild),
-      );
-    });
+  removeChildren(destroy = true) {
+    this.document.documentElement.removeChildren(destroy);
   }
 
   render() {
-    this.emit('beforerender', {});
+    this.emit(CanvasEvent.BEFORE_DESTROY, {});
 
     if (this.container.isBound(RenderingService)) {
       const renderingService = this.container.get<RenderingService>(RenderingService);
       renderingService.render();
     }
 
-    this.emit('afterrender', {});
+    this.emit(CanvasEvent.AFTER_RENDER, {});
   }
 
   private run() {
@@ -260,6 +271,17 @@ export class Canvas extends EventTarget {
     if (renderer.getConfig().enableAutoRendering) {
       this.run();
     }
+
+    this.getRoot().forEach((node) => {
+      const renderable = node.entity.getComponent(Renderable);
+      if (renderable) {
+        renderable.renderBoundsDirty = true;
+        renderable.boundsDirty = true;
+        renderable.dirty = true;
+
+        // element.emit(ElementEvent.BOUNDS_CHANGED, {});
+      }
+    });
 
     // keep current scenegraph unchanged, just trigger mounted event
     this.mountChildren(this.getRoot());
@@ -299,40 +321,61 @@ export class Canvas extends EventTarget {
     this.initRenderer(renderer);
   }
 
-  private unmountChildren(node: DisplayObject) {
-    const renderingService = this.container.get<RenderingService>(RenderingService);
-    node.forEach((child: DisplayObject) => {
+  private unmountChildren(parent: DisplayObject) {
+    const path = [];
+    parent.forEach((child) => {
       if (child.isConnected) {
-        renderingService.hooks.unmounted.call(child);
-        child.isConnected = false;
-        child.ownerDocument = null;
+        path.push(child);
+      }
+    });
+
+    // unmount from leaf to root
+    path.reverse().forEach((child) => {
+      child.emit(ElementEvent.UNMOUNTED, {});
+      child.ownerDocument = null;
+      child.isConnected = false;
+    });
+  }
+
+  private mountChildren(parent: INode) {
+    parent.forEach((child) => {
+      if (!child.isConnected) {
+        child.ownerDocument = this.document;
+        child.isConnected = true;
+        child.emit(ElementEvent.MOUNTED, {});
       }
     });
   }
 
-  private mountChildren(parent: DisplayObject) {
-    parent.forEach((child: DisplayObject) => {
-      this.mountChild(child);
-    });
+  client2Viewport(client: PointLike): PointLike {
+    return this.getEventService().client2Viewport(client);
   }
 
-  private mountChild(child: DisplayObject) {
-    // trigger mount on node's descendants
-    if (!child.isConnected) {
-      const renderingService = this.container.get<RenderingService>(RenderingService);
-      child.ownerDocument = this.document;
-      renderingService.hooks.mounted.call(child);
-      child.isConnected = true;
-    }
+  viewport2Client(canvas: PointLike): PointLike {
+    return this.getEventService().viewport2Client(canvas);
   }
 
-  getPointByClient(clientX: number, clientY: number): Point {
-    const bbox = this.getContextService().getBoundingClientRect();
-    return new Point(clientX - (bbox?.left || 0), clientY - (bbox?.top || 0));
+  viewport2Canvas(viewport: PointLike): PointLike {
+    return this.getEventService().viewport2Canvas(viewport);
   }
 
-  getClientByPoint(x: number, y: number): Point {
-    const bbox = this.getContextService().getBoundingClientRect();
-    return new Point(x + (bbox?.left || 0), y + (bbox?.top || 0));
+  canvas2Viewport(canvas: PointLike): PointLike {
+    return this.getEventService().canvas2Viewport(canvas);
+  }
+
+  /**
+   * @deprecated
+   * @alias client2Canvas
+   */
+  getPointByClient(clientX: number, clientY: number): PointLike {
+    return this.client2Viewport({ x: clientX, y: clientY });
+  }
+
+  /**
+   * @deprecated
+   * @alias canvas2Client
+   */
+  getClientByPoint(x: number, y: number): PointLike {
+    return this.viewport2Client({ x, y });
   }
 }

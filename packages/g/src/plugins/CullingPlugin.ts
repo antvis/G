@@ -1,7 +1,7 @@
 import { inject, injectable, named } from 'inversify';
 import { Cullable } from '../components';
 import { ContributionProvider } from '../contribution-provider';
-import { DisplayObject } from '../DisplayObject';
+import { DisplayObject } from '../display-objects/DisplayObject';
 import { RenderingService, RenderingPlugin } from '../services/RenderingService';
 import { RenderingContext, RENDER_REASON } from '../services/RenderingContext';
 import { CanvasConfig } from '../types';
@@ -33,8 +33,7 @@ export class CullingPlugin implements RenderingPlugin {
   apply(renderer: RenderingService) {
     renderer.hooks.prepare.tap(CullingPlugin.tag, (object: DisplayObject | null) => {
       if (object) {
-        const entity = object.getEntity();
-        const cullable = entity.getComponent(Cullable);
+        const cullable = object.entity.getComponent(Cullable);
         if (this.strategies.getContributions(true).length === 0) {
           cullable.visible = true;
         } else {
@@ -50,9 +49,9 @@ export class CullingPlugin implements RenderingPlugin {
           // Those invisible objects which get renderred in last frame should be saved for later use.
           const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
           if (enableDirtyRectangleRendering) {
-            const removedAABB = object.getBounds();
-            if (removedAABB) {
-              this.renderingContext.removedAABBs.push(removedAABB);
+            const removedRenderBounds = object.getRenderBounds();
+            if (removedRenderBounds) {
+              this.renderingContext.removedRenderBoundsList.push(removedRenderBounds);
               this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectRemoved);
             }
           }
@@ -64,8 +63,7 @@ export class CullingPlugin implements RenderingPlugin {
     });
 
     renderer.hooks.afterRender.tap(CullingPlugin.tag, (object: DisplayObject) => {
-      const entity = object.getEntity();
-      entity.getComponent(Cullable).visibilityPlaneMask = -1;
+      object.entity.getComponent(Cullable).visibilityPlaneMask = -1;
     });
   }
 }

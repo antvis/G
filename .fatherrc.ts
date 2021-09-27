@@ -3,6 +3,14 @@ export default {
   // esm: 'rollup',
   cjs: 'babel',
   esm: 'babel',
+  extraBabelPlugins: [
+    [
+      'babel-plugin-inline-import',
+      {
+        extensions: ['.glsl'],
+      },
+    ],
+  ],
   // umd: {
   //   minFile: true,
   // },

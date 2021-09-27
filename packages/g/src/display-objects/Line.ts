@@ -1,8 +1,8 @@
 import { Line as LineUtil } from '@antv/g-math';
 import { SHAPE } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { DisplayObject } from '../DisplayObject';
-import type { DisplayObjectConfig } from '../DisplayObject';
+import { DisplayObject } from './DisplayObject';
+import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 
 export interface LineStyleProps extends BaseStyleProps {
@@ -28,13 +28,9 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
         y1: 0,
         x2: 0,
         y2: 0,
-        opacity: 1,
-        fillOpacity: 1,
-        strokeOpacity: 1,
         lineJoin: 'miter',
         lineCap: 'butt',
         lineWidth: 1,
-        anchor: [0, 0],
         ...style,
       },
       ...rest,

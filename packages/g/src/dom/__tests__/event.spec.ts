@@ -5,7 +5,7 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { Group, Canvas, Circle, Rect, CustomEvent, DISPLAY_OBJECT_EVENT } from '../';
+import { Group, Canvas, Circle, Rect, CustomEvent, ElementEvent } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 
 chai.use(chaiAlmost());
@@ -23,54 +23,76 @@ const canvas = new Canvas({
   renderer: new CanvasRenderer(),
 });
 
-describe('DisplayObject Lifecyle Event API', () => {
-  it('should emit inserted event correctly', () => {
-    const group = new Group();
-
-    const childInsertedCallback = sinon.spy();
-    const childInsertedCallback2 = sinon.spy();
-    group.addEventListener(DISPLAY_OBJECT_EVENT.ChildInserted, childInsertedCallback);
-    group.on(DISPLAY_OBJECT_EVENT.ChildInserted, childInsertedCallback2);
-
-    const childGroup = new Group();
-    const insertedCallback = sinon.spy();
-    childGroup.addEventListener(DISPLAY_OBJECT_EVENT.Inserted, insertedCallback);
-    group.appendChild(childGroup);
-
-    // @ts-ignore
-    expect(childInsertedCallback).to.have.been.calledWith(childGroup);
-    // @ts-ignore
-    expect(childInsertedCallback2).to.have.been.calledWith(childGroup);
-    // @ts-ignore
-    expect(insertedCallback).to.have.been.calledWith(group);
+describe('Event API', () => {
+  afterAll(() => {
+    canvas.destroy();
   });
 
-  it('should emit removed event correctly', () => {
+  it('should emit Inserted & ChildInserted event correctly', () => {
     const group = new Group();
+    canvas.appendChild(group);
 
-    const childRemovedCallback = sinon.spy();
-    group.addEventListener(DISPLAY_OBJECT_EVENT.ChildRemoved, childRemovedCallback);
+    const childInsertedCallback = (e) => {
+      expect(e.detail.child).eqls(childGroup);
+    };
+    const insertedCallback = (e) => {
+      expect(e.detail.parent).eqls(group);
+    };
+    group.addEventListener(ElementEvent.CHILD_INSERTED, childInsertedCallback);
+    group.on(ElementEvent.CHILD_INSERTED, childInsertedCallback);
+    group.addEventListener(ElementEvent.INSERTED, insertedCallback);
+
+    canvas.addEventListener(ElementEvent.INSERTED, insertedCallback);
 
     const childGroup = new Group();
-    const removedCallback = sinon.spy();
-    childGroup.addEventListener(DISPLAY_OBJECT_EVENT.Removed, removedCallback);
-    const destroyChangedCallback = sinon.spy();
-    childGroup.addEventListener(DISPLAY_OBJECT_EVENT.Destroy, destroyChangedCallback);
+    group.appendChild(childGroup);
+
+    canvas.removeEventListener(ElementEvent.INSERTED, insertedCallback);
+
+    group.destroy();
+  });
+
+  it('should emit Removed & ChildRemoved event correctly', () => {
+    const group = new Group();
+    canvas.appendChild(group);
+
+    const childRemovedCallbackSpy = sinon.spy();
+    const childRemovedCallback = (e) => {
+      expect(e.detail.child).eqls(childGroup);
+    };
+    const removedCallbackSpy = sinon.spy();
+    const removedCallback = (e) => {
+      expect(e.detail.parent).eqls(group);
+    };
+    const destroyCallbackSpy = sinon.spy();
+    const destroyCallback = (e) => {
+      expect(e.target).eqls(childGroup);
+    };
+    group.addEventListener(ElementEvent.CHILD_REMOVED, childRemovedCallback);
+    group.addEventListener(ElementEvent.REMOVED, removedCallback);
+    group.addEventListener(ElementEvent.DESTROY, destroyCallback);
+
+    group.addEventListener(ElementEvent.CHILD_REMOVED, childRemovedCallbackSpy);
+    group.addEventListener(ElementEvent.REMOVED, removedCallbackSpy);
+    group.addEventListener(ElementEvent.DESTROY, destroyCallbackSpy);
+
+    const childGroup = new Group();
     group.appendChild(childGroup);
     group.removeChild(childGroup, false);
 
     // @ts-ignore
-    expect(childRemovedCallback).to.have.been.calledWith(childGroup);
+    expect(childRemovedCallbackSpy).to.have.been.called;
     // @ts-ignore
-    expect(removedCallback).to.have.been.calledWith(group);
+    expect(removedCallbackSpy).to.have.been.called;
     // @ts-ignore
-    expect(destroyChangedCallback).to.have.not.been.called;
+    expect(destroyCallbackSpy).to.have.not.been.called;
 
     // append again
     group.appendChild(childGroup);
     group.removeChild(childGroup, true);
+
     // @ts-ignore
-    expect(destroyChangedCallback).to.have.been.called;
+    expect(destroyCallbackSpy).to.have.been.called;
   });
 
   it('should emit attribute-changed event correctly', () => {
@@ -79,9 +101,10 @@ describe('DisplayObject Lifecyle Event API', () => {
         r: 10,
       },
     });
+    canvas.appendChild(circle);
 
     const attributeChangedCallback = sinon.spy();
-    circle.addEventListener(DISPLAY_OBJECT_EVENT.AttributeChanged, attributeChangedCallback);
+    circle.addEventListener(ElementEvent.ATTRIBUTE_CHANGED, attributeChangedCallback);
 
     // should not emit if value unchanged
     circle.setAttribute('r', 10);
@@ -91,12 +114,12 @@ describe('DisplayObject Lifecyle Event API', () => {
     // trigger attribute changed
     circle.style.r = 20;
     // @ts-ignore
-    expect(attributeChangedCallback).to.have.been.calledWith('r', 10, 20, circle);
+    expect(attributeChangedCallback).to.have.been.called;
 
     // trigger attribute changed
     circle.attr('r', 30);
     // @ts-ignore
-    expect(attributeChangedCallback).to.have.been.calledWith('r', 20, 30, circle);
+    expect(attributeChangedCallback).to.have.been.called;
   });
 
   it('should emit destroy event correctly', () => {
@@ -105,19 +128,14 @@ describe('DisplayObject Lifecyle Event API', () => {
         r: 10,
       },
     });
+    canvas.appendChild(circle);
 
     const destroyChangedCallback = sinon.spy();
-    circle.addEventListener(DISPLAY_OBJECT_EVENT.Destroy, destroyChangedCallback);
+    circle.addEventListener(ElementEvent.DESTROY, destroyChangedCallback);
 
     circle.destroy();
     // @ts-ignore
     expect(destroyChangedCallback).to.have.been.called;
-  });
-});
-
-describe('Custom Event API', () => {
-  afterEach(() => {
-    canvas.removeChildren();
   });
 
   it('should dispatch custom event in delegation correctly', () => {

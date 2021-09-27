@@ -1,3 +1,8 @@
+export interface PointLike {
+  x: number;
+  y: number;
+}
+
 export class Point {
   x = 0;
   y = 0;

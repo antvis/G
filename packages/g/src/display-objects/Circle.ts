@@ -1,7 +1,6 @@
-import { SHAPE } from '../types';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { DisplayObject } from '../DisplayObject';
-import { DisplayObjectConfig } from '../DisplayObject';
+import { BaseStyleProps, DisplayObjectConfig, ParsedBaseStyleProps } from '..';
+import { SHAPE } from '..';
+import { DisplayObject } from './DisplayObject';
 
 export interface CircleStyleProps extends BaseStyleProps {
   r: number;
@@ -15,9 +14,6 @@ export class Circle extends DisplayObject<CircleStyleProps, ParsedCircleStylePro
       type: SHAPE.Circle,
       style: {
         r: 0,
-        opacity: 1,
-        fillOpacity: 1,
-        strokeOpacity: 1,
         anchor: [0.5, 0.5],
         ...style,
       },

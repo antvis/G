@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { KeyframeEffect } from '../KeyframeEffect';
+import { KeyframeEffect } from '../..';
 
 interface Test {
   desc: string;
@@ -8,80 +8,80 @@ interface Test {
 }
 
 /**
- * @see https://github.com/web-platform-tests/wpt/blob/master/web-animations/interfaces/AnimationEffect/getComputedTiming.html
+ * ported from @see https://github.com/web-platform-tests/wpt/blob/master/web-animations/interfaces/AnimationEffect/getComputedTiming.html
  */
-describe('ComputedTiming', () => {
+describe('Animation ComputedTiming', () => {
   const gGetComputedTimingTests: Test[] = [
-    // {
-    //   desc: 'an empty KeyframeEffectOptions object',
-    //   input: {},
-    //   expected: {}
-    // },
-    // {
-    //   desc: 'a normal KeyframeEffectOptions object',
-    //   input: {
-    //     delay: 1000,
-    //     endDelay: 2000,
-    //     fill: 'auto',
-    //     iterationStart: 0.5,
-    //     iterations: 5.5,
-    //     duration: 'auto',
-    //     direction: 'alternate',
-    //     easing: 'steps(2)'
-    //   },
-    //   expected: {
-    //     delay: 1000,
-    //     endDelay: 2000,
-    //     fill: 'none',
-    //     iterationStart: 0.5,
-    //     iterations: 5.5,
-    //     duration: 0,
-    //     direction: 'alternate',
-    //     easing: 'steps(2)'
-    //   }
-    // },
-    // {
-    //   desc: 'a double value',
-    //   input: 3000,
-    //   // timing:   { duration: 3000 },
-    //   expected: {
-    //     delay: 0,
-    //     fill: 'none',
-    //     iterations: 1,
-    //     duration: 3000,
-    //     direction: 'normal'
-    //   }
-    // },
-    // {
-    //   desc: '+Infinity',
-    //   input: Infinity,
-    //   expected: { duration: Infinity }
-    // },
-    // {
-    //   desc: 'an Infinity duration',
-    //   input: { duration: Infinity },
-    //   expected: { duration: Infinity }
-    // },
-    // {
-    //   desc: 'an auto duration',
-    //   input: { duration: 'auto' },
-    //   expected: { duration: 0 }
-    // },
-    // {
-    //   desc: 'an Infinity iterations',
-    //   input: { iterations: Infinity },
-    //   expected: { iterations: Infinity }
-    // },
-    // {
-    //   desc: 'an auto fill',
-    //   input: { fill: 'auto' },
-    //   expected: { fill: 'none' }
-    // },
-    // {
-    //   desc: 'a forwards fill',
-    //   input: { fill: 'forwards' },
-    //   expected: { fill: 'forwards' }
-    // }
+    {
+      desc: 'an empty KeyframeEffectOptions object',
+      input: {},
+      expected: {},
+    },
+    {
+      desc: 'a normal KeyframeEffectOptions object',
+      input: {
+        delay: 1000,
+        endDelay: 2000,
+        fill: 'auto',
+        iterationStart: 0.5,
+        iterations: 5.5,
+        duration: 'auto',
+        direction: 'alternate',
+        easing: 'steps(2)',
+      },
+      expected: {
+        delay: 1000,
+        endDelay: 2000,
+        fill: 'none',
+        iterationStart: 0.5,
+        iterations: 5.5,
+        duration: 0,
+        direction: 'alternate',
+        easing: 'steps(2)',
+      },
+    },
+    {
+      desc: 'a double value',
+      input: 3000,
+      // timing:   { duration: 3000 },
+      expected: {
+        delay: 0,
+        fill: 'none',
+        iterations: 1,
+        duration: 3000,
+        direction: 'normal',
+      },
+    },
+    {
+      desc: '+Infinity',
+      input: Infinity,
+      expected: { duration: Infinity },
+    },
+    {
+      desc: 'an Infinity duration',
+      input: { duration: Infinity },
+      expected: { duration: Infinity },
+    },
+    {
+      desc: 'an auto duration',
+      input: { duration: 'auto' },
+      expected: { duration: 0 },
+    },
+    {
+      desc: 'an Infinity iterations',
+      input: { iterations: Infinity },
+      expected: { iterations: Infinity },
+    },
+    {
+      desc: 'an auto fill',
+      input: { fill: 'auto' },
+      expected: { fill: 'none' },
+    },
+    {
+      desc: 'a forwards fill',
+      input: { fill: 'forwards' },
+      expected: { fill: 'forwards' },
+    },
   ];
 
   for (const stest of gGetComputedTimingTests) {

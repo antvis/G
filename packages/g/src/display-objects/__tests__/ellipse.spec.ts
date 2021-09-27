@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { Ellipse } from '../..';
 import { vec3 } from 'gl-matrix';
 
-describe('Circle', () => {
+describe('Ellipse', () => {
   it('should calc global bounds correctly', () => {
     const ellipse = new Ellipse({
       style: {
@@ -14,6 +14,7 @@ describe('Circle', () => {
     });
 
     let bounds = ellipse.getBounds();
+    let geometryBounds = ellipse.getGeometryBounds();
 
     if (bounds) {
       expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
@@ -42,6 +43,11 @@ describe('Circle', () => {
     if (bounds) {
       expect(bounds.center).eqls(vec3.fromValues(90, 90, 0));
       expect(bounds.halfExtents).eqls(vec3.fromValues(10, 10, 0));
+    }
+    geometryBounds = ellipse.getGeometryBounds();
+    if (geometryBounds) {
+      expect(geometryBounds.center).eqls(vec3.fromValues(-10, -10, 0));
+      expect(geometryBounds.halfExtents).eqls(vec3.fromValues(10, 10, 0));
     }
   });
 });

@@ -75,6 +75,22 @@
         "en": "Delegate with event's name"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "builtin.js",
+      "title": {
+        "zh": "内置场景图事件",
+        "en": "SceneGraph Events"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "coordinates.js",
+      "title": {
+        "zh": "坐标系转换",
+        "en": "Coordinates"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kPfcTKwZG90AAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

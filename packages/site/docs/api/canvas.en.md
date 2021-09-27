@@ -3,7 +3,7 @@ title: 画布
 order: -100
 ---
 
-我们在 G 核心包 `@antv/g` 中提供了 Canvas 画布这一核心对象，它就是一个“虚拟世界”，承载着以下三类对象：
+我们在 G 核心包 `@antv/g` 中提供了 Canvas 画布这一核心对象，从渲染的角度上看，它是一个在浏览器中实现的“小浏览器”，承载着以下三类对象：
 
 -   [场景图](/zh/docs/guide/diving-deeper/scenegraph)。我们通过它描述场景中的各个图形及其层次关系。
 -   [相机](/zh/docs/api/camera)。我们通过它定义观察整个场景的角度。我们为每一个画布内置了一个默认使用正交投影的相机，后续可随时修改。
@@ -47,30 +47,136 @@ const canvas = new Canvas({
 
 # 坐标系
 
-为了保持与 Canvas 屏幕坐标系的一致，我们设定画布的原点`(0, 0)`为左上角，X 轴正向指向屏幕右侧，Y 轴正向指向屏幕下方。下图为“世界坐标系”，涉及到旋转时，我们设定沿坐标轴正向顺时针为旋转方向。
+当我们说起“位置”，一定是相对于某个坐标系下而言，在 G 中我们会使用到 Client、Screen、Page、Canvas 以及 Viewport 坐标系，例如在[事件系统](/zh/docs/api/event)中可以从事件对象上获取不同坐标系下的坐标：
 
-![](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes/canvas_default_grid.png)
+```js
+canvas.addEventListener('click', (e) => {
+    e.clientX;
+    e.screenX;
+    e.pageX;
+    e.canvasX;
+    e.viewportX;
+});
+```
+
+在这些坐标系中，Client、Screen、Page 都是浏览器原生支持的坐标系，因此我们不会对事件对象上的这些坐标值做任何修改。而 Canvas 画布类似在浏览器中实现的一个“小浏览器”，因此它的视口坐标系即 Viewport 就可以类比成浏览器的 Client 坐标系。而当相机发生移动时，我们的可视范围随之改变，类似页面发生滚动，但图形在世界中的位置并没有改变，因此 Canvas 坐标系就可以类比成浏览器的 Page 坐标系。
+
+这些坐标系都以左上角为原点： ![](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes/canvas_default_grid.png)
 
 ⚠️ 如果使用了 [g-plugin-3d](/zh/docs/plugins/3d) 插件，Z 轴正向指向屏幕外。
 
-除了 Canvas 坐标系，还有基于浏览器的 Client 坐标系，此时会考虑 Canvas 所属的 DOM 元素在页面中的位置，可以通过以下方法转换坐标。
+我们提供了它们之间的转换方法，在这个[示例](/zh/examples/event#coordinates)中，移动鼠标可以看到鼠标所在位置在各个坐标系下的值：
 
-## getPointByClient(clientX: number, clientY: number)
+-   Client <-> Viewport
+-   Canvas <-> Viewport
 
-根据 Client 坐标，获取对应的 Canvas 坐标，返回类型为 `Point`。例如 `<canvas>` 距离浏览器左上角 `[100, 100]` 处：
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kPfcTKwZG90AAAAAAAAAAAAAARQnAQ)
+
+## Client
+
+前端开发者最熟悉的应该是 Client 浏览器坐标系，它以浏览器左上角为原点，G 不会修改原生事件对象的这个坐标值，[示例](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/clientX)。
+
+https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/clientX
+
+如果文档没有滚动，等同于 Page 坐标，下图展示了与 Screen 的差别：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TYQJR40KMm0AAAAAAAAAAAAAARQnAQ)
+
+## Screen
+
+屏幕坐标系也是浏览器常用的坐标系，以屏幕左上角为原点，会受页面滚动影响。G 不会修改原生事件对象的这个坐标值。 https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/screenX
+
+值得一提的是，在双屏下可能会出现负数，例如在左侧屏幕中，[示例](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/screenX)：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*SlEMSJq20R4AAAAAAAAAAAAAARQnAQ)
+
+## Page
+
+以文档左上角为原点，考虑文档滚动，G 不会修改原生事件对象的这个坐标值。 https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/pageX
+
+## Canvas
+
+可以类比浏览器的 Client 坐标系，也称作世界坐标系，我们在创建图形时指定的位置均相对于该坐标系。它以画布 DOM 元素的左上角为原点，X 轴正向指向屏幕右侧，Y 轴正向指向屏幕下方。也称作“世界坐标系”，涉及到旋转时，我们设定沿坐标轴正向顺时针为旋转方向。
+
+## Viewport
+
+在浏览器的 Page 坐标系中，不管页面如何滚动，元素在文档中的坐标都不会改变，改变的是我们的可视区域。
+
+同样的，[相机](/zh/docs/api/camera)决定了我们观察世界的角度，如果相机没有发生移动，Viewport 视口坐标系和 Canvas 坐标系将完全重合，因此在我们的可见范围内，视口左上角坐标与 Canvas 坐标系原点一样，都是 `[0, 0]`。但如果相机发生了平移、旋转、缩放，视口也会发生相应变化，此时视口左上角 `[0, 0]` 对应 Canvas 坐标系下的位置就不再是 `[0, 0]` 了。
+
+## 转换方法
+
+我们提供以下转换方法需要使用到 Point，它的结构如下，可以从 G 核心包中引入，[示例](/zh/examples/event#coordinates)：
 
 ```js
-canvas.getPointByClient(100, 100); // Point { x: 0, y: 0 }
+interface Point {
+    x: number;
+    y: number;
+}
+
+import type { Point } from '@antv/g';
 ```
 
-其中 Point 结构为 `{ x: number; y: number; }`
+### Client <-> Viewport
 
-## getClientByPoint(x: number, y: number)
+我们提供了从浏览器的 Client 坐标系到画布 Viewport 视口坐标系的转换方法，[示例](/zh/examples/event#coordinates)：
 
-根据 Canvas 坐标，获取对应的 Client 坐标，返回类型为 `Point`
+-   client2Viewport(client: Point): Point
+-   viewport2Client(canvas: Point): Point
+
+在内部实现中，我们使用了以下计算逻辑，例如从 Client 到 Viewport，首先获取画布 DOM 元素在 Client 坐标系下的包围盒，使用到了 [getBoundingClientRect](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect)，然后用 clientX/Y 减去包围盒左上角坐标，就得到了相对画布 DOM 元素左上角的坐标，即 Viewport 坐标：
 
 ```js
-canvas.getClientByPoint(0, 0); // Point { x: 100, y: 100 }
+// 获取画布 DOM 元素在 Client 坐标系下的包围盒
+// @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+const bbox = $canvas.getBoundingClientRect();
+
+viewportX = clientX - bbox.left;
+viewportY = clientY - bbox.top;
+```
+
+例如 DOM 树中的 `<canvas>` 元素通过绝对定位，处于距浏览器左上角 `[100, 100]` 的位置，当鼠标移动到 `<canvas>` 左上角 `[0, 0]` 位置时，可以得到 Client 坐标为 `[100, 100]`：
+
+```js
+canvas.viewport2Client({ x: 0, y: 0 }); // Point { x: 100, y: 100 }
+canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
+```
+
+为了兼容旧版 G API，我们也提供了：
+
+-   getPointByClient(clientX: number, clientY: number): Point
+-   getClientByPoint(viewportX: number, viewportY: number): Point
+
+### Canvas <-> Viewport
+
+[相机](/zh/docs/api/camera)决定了我们观察世界的角度，如果相机没有发生移动，Viewport 视口坐标系和 Canvas 坐标系将完全重合，因此在我们的可见范围内，视口左上角坐标与 Canvas 坐标系原点一样，都是 `[0, 0]`。但如果相机发生了平移、旋转、缩放，视口也会发生相应变化，此时视口左上角 `[0, 0]` 对应 Canvas 坐标系下的位置就不再是 `[0, 0]` 了。
+
+在[示例](/zh/examples/event#coordinates)中，我们将相机向上移动了一段距离（整个世界在观察者眼中向下移动），可以发现圆心在 Canvas 坐标系下位置不变，仍然为 `[300, 200]`，但在 Viewport 坐标系下发生了偏移：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qe5tR4G5AD4AAAAAAAAAAAAAARQnAQ)
+
+我们提供了以下转换方法：
+
+-   viewport2Canvas(viewport: Point): Point
+-   canvas2Viewport(canvas: Point): Point
+
+在内部实现中，我们使用了以下计算逻辑，例如从 Canvas 到 Viewport，经历从世界坐标系到裁剪坐标系，再到 NDC，最后到视口坐标系的变换：
+
+```js
+// 计算相机 VP 矩阵
+const camera = canvas.getCamera();
+const projectionMatrix = camera.getPerspective();
+const viewMatrix = camera.getViewTransform();
+const vpMatrix = mat4.multiply(mat4.create(), projectionMatrix, viewMatrix);
+
+// 世界坐标系（Canvas） -> 裁剪坐标系（Clip）
+const clip = vec3.fromValues(canvasX, canvasY, 0);
+vec3.transformMat4(clip, clip, vpMatrix);
+
+// Clip -> NDC -> Viewport 同时翻转 Y 轴
+const { width, height } = this.canvasConfig; // 画布宽高
+viewportX = ((clip[0] + 1) / 2) * width;
+viewportY = (1 - (clip[1] + 1) / 2) * height;
 ```
 
 # 入口与根节点
@@ -149,10 +255,20 @@ canvas.removeChildren();
 
 ## resize(width: number, height: number)
 
-有时我们需要在初始化之后调整画布尺寸，例如当容器尺寸变化时：
+有时我们需要在初始化之后调整画布尺寸，例如使用 [ResizeObserver](https://developer.mozilla.org/zh-CN/docs/Web/API/ResizeObserver) 监听容器尺寸变化：
 
 ```js
-canvas.resize(1000, 1000);
+const resizeObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+        if (entry !== canvas) {
+            continue;
+        }
+        const { width, height } = entry.contentRect;
+        // resize canvas
+        canvas.resize(width, height);
+    }
+});
+resizeObserver.observe($container);
 ```
 
 ## setRenderer(renderer: Renderer)
@@ -284,15 +400,67 @@ canvas.document.addEventListener('click', () => {});
 例如我们在官网所有例子中展示实时帧率，该组件在每次渲染后更新：
 
 ```js
+import { CanvasEvent } from '@antv/g';
+
 canvas.on('afterrender', () => {
     stats.update();
 });
+// 或者
+canvas.on(CanvasEvent.AFTER_RENDER, () => {
+    stats.update();
+});
+```
+
+# 使用 CustomElementRegistry
+
+通常我们建议使用 `new Circle()` 这样的方式创建内置或者自定义图形，但我们也提供了类似 DOM [CustomElementRegistry](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry) API，可以使用 [document.createElement](/zh/docs/api/builtin-objects/document#createelement) 创建完成注册的图形，因此以下写法等价：
+
+```js
+import { SHAPE, Circle } from '@antv/g';
+
+const circle = canvas.document.createElement(SHAPE.Circle, { style: { r: 100 } });
+
+// 或者
+const circle = new Circle({ style: { r: 100 } });
+```
+
+`canvas.customElements` 提供了以下方法。
+
+## define
+
+完整方法签名为：
+
+```js
+define(name: string, new (...any[]) => DisplayObject): void;
+```
+
+所有 G 的内置图形在画布初始化时都完成了注册，对于自定义图形，如果也想通过 createElement 的方法创建，也可以按如下方式完成注册：
+
+```js
+import { MyCustomShape } from 'my-custom-shape';
+canvas.customElements.define(MyCustomShape.tag, MyCustomShape);
+
+const myCustomShape = canvas.document.createElement(MyCustomShape.tag, {});
+```
+
+## get
+
+完整方法签名为：
+
+```js
+get(name: string): new (...any[]) => DisplayObject
+```
+
+根据图形注册时提供的字符串，返回构造函数：
+
+```js
+import { SHAPE } from '@antv/g';
+
+canvas.customElements.get(SHAPE.Circle); // Circle constructor
 ```
 
 # 注意事项
 
 ## 多个画布共存
 
-在同一个页面中，多个画布可以共存，即可以同时存在多个“平行世界”。但受限于底层渲染 API，例如 WebGL 只允许至多 8 个上下文。
-
-[示例](/zh/examples/canvas#multi-canvas)
+在同一个页面中，多个画布可以共存，即可以同时存在多个“平行世界”。但受限于底层渲染 API，例如 WebGL 只允许至多 8 个上下文。[示例](/zh/examples/canvas#multi-canvas)

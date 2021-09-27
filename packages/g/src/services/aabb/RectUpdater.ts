@@ -8,8 +8,8 @@ export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
   update(attributes: ParsedImageStyleProps) {
     const { img, x = 0, y = 0, width = 0, height = 0 } = attributes;
 
-    let contentWidth;
-    let contentHeight;
+    let contentWidth: number;
+    let contentHeight: number;
     // resize with HTMLImageElement's size
     if (img && !isString(img)) {
       if (!attributes.width) {

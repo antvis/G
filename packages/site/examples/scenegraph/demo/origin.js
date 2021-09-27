@@ -1,4 +1,4 @@
-import { Rect, Circle, Text, Canvas } from '@antv/g';
+import { Rect, Circle, Text, Group, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -18,19 +18,36 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const rect = new Rect({
-  id: 'rect',
+const circle = new Circle({
   style: {
-    x: 200,
+    x: 100,
     y: 100,
-    width: 300,
-    height: 200,
+    r: 100,
+    fill: '#1890FF',
+  },
+});
+canvas.appendChild(circle);
+circle.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.5)' }], {
+  duration: 500,
+  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+  iterations: Infinity,
+  direction: 'alternate',
+});
+
+const group = new Group({ id: 'group' });
+const child1 = new Rect({
+  id: 'rect1',
+  style: {
+    width: 100,
+    height: 100,
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
     radius: 8,
   },
 });
+group.appendChild(child1);
+group.setPosition(200, 100);
 
 const origin = new Circle({
   id: 'origin',
@@ -54,7 +71,7 @@ const originText = new Text({
 origin.appendChild(originText);
 origin.setPosition(200, 100);
 
-canvas.appendChild(rect);
+canvas.appendChild(group);
 canvas.appendChild(origin);
 
 // stats
@@ -70,7 +87,7 @@ canvas.on('afterrender', () => {
   if (stats) {
     stats.update();
   }
-  rect.rotateLocal(1);
+  group.rotateLocal(1);
 });
 
 // GUI
@@ -87,33 +104,87 @@ rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onCha
 });
 rendererFolder.open();
 
-const rectFolder = gui.addFolder('Origin');
-const rectConfig = {
+const circleFolder = gui.addFolder('circle');
+const circleConfig = {
   originX: 0,
   originY: 0,
   transformOrigin: 'left top',
 };
-rectFolder
-  .add(rectConfig, 'transformOrigin', ['left top', 'center', 'right bottom', '150px 100px'])
-  .onChange((transformOrigin) => {
-    rect.style.transformOrigin = transformOrigin;
+circleFolder.add(circleConfig, 'originX', -200, 200).onChange((tx) => {
+  circle.style.origin = [tx, circleConfig.originY];
+});
+circleFolder.add(circleConfig, 'originY', -200, 200).onChange((ty) => {
+  circle.style.origin = [circleConfig.originX, ty];
+});
+circleFolder.open();
 
-    if (transformOrigin === 'left top') {
-      origin.setPosition(200, 100);
-    } else if (transformOrigin === 'center') {
-      origin.setPosition(200 + 150, 100 + 100);
-    } else if (transformOrigin === 'right bottom') {
-      origin.setPosition(200 + 300, 100 + 200);
-    } else if (transformOrigin === '150px 100px') {
-      origin.setPosition(200 + 150, 100 + 100);
-    }
+let lastCloned = child1;
+const rectFolder = gui.addFolder('group');
+const rectConfig = {
+  originX: 0,
+  originY: 0,
+  transformOrigin: 'left top',
+  appendChild: () => {
+    // reset rotation
+    group.setEulerAngles(0);
+
+    // clone child
+    const cloned = lastCloned.cloneNode();
+    cloned.id = 'cloned';
+    cloned.translateLocal(0, 100);
+    group.appendChild(cloned);
+    lastCloned = cloned;
+
+    // reset transform origin, which will case re-calc origin
+    group.style.transformOrigin = group.style.transformOrigin;
+
+    // get calculated origin
+    const [ox, oy, oz] = group.style.origin;
+    const [x, y, z] = group.getPosition(); // left top corner of Bounds
+    origin.setPosition(x + ox, y + oy, z + oz);
+
+    // update dat.gui
+    rectConfig.originX = ox;
+    rectConfig.originY = oy;
+  },
+};
+rectFolder
+  .add(rectConfig, 'transformOrigin', [
+    'left top',
+    'center',
+    'right bottom',
+    '50% 50%',
+    '50px 50px',
+  ])
+  .onChange((transformOrigin) => {
+    // reset rotation
+    group.setEulerAngles(0);
+
+    // set transformOrigin
+    group.style.transformOrigin = transformOrigin;
+
+    // get calculated origin
+    const [ox, oy, oz] = group.style.origin;
+    const [x, y, z] = group.getPosition(); // left top corner of Bounds
+    origin.setPosition(x + ox, y + oy, z + oz);
+
+    // update dat.gui
+    rectConfig.originX = ox;
+    rectConfig.originY = oy;
   });
-rectFolder.add(rectConfig, 'originX', -200, 200).onChange((tx) => {
-  rect.style.origin = [tx, rectConfig.originY];
-  origin.setPosition(200 + tx, 100 + rectConfig.originY);
-});
-rectFolder.add(rectConfig, 'originY', -200, 200).onChange((ty) => {
-  rect.style.origin = [rectConfig.originX, ty];
-  origin.setPosition(200 + rectConfig.originX, 100 + ty);
-});
+rectFolder
+  .add(rectConfig, 'originX', -200, 200)
+  .onChange((tx) => {
+    group.style.origin = [tx, rectConfig.originY];
+    origin.setPosition(200 + tx, 100 + rectConfig.originY);
+  })
+  .listen();
+rectFolder
+  .add(rectConfig, 'originY', -200, 200)
+  .onChange((ty) => {
+    group.style.origin = [rectConfig.originX, ty];
+    origin.setPosition(200 + rectConfig.originX, 100 + ty);
+  })
+  .listen();
+rectFolder.add(rectConfig, 'appendChild');
 rectFolder.open();

@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { Element } from '@antv/g';
+import { IElement } from '@antv/g';
 import { Adapter, Predicate } from 'css-select/lib/types';
 
 /**
@@ -7,12 +7,12 @@ import { Adapter, Predicate } from 'css-select/lib/types';
  * @see https://github.com/fb55/css-select/blob/1aa44bdd64aaf2ebdfd7f338e2e76bed36521957/src/types.ts#L6-L96
  */
 @injectable()
-export class SceneGraphAdapter implements Adapter<Element, Element> {
-  isTag(node: Element): node is Element {
+export class SceneGraphAdapter implements Adapter<IElement, IElement> {
+  isTag(node: IElement): node is IElement {
     return true;
   }
 
-  existsOne(test: Predicate<Element>, nodes: Element[]): boolean {
+  existsOne(test: Predicate<IElement>, nodes: IElement[]): boolean {
     return nodes.some((checked) => {
       const groups = this.getChildren(checked);
       return (
@@ -22,7 +22,7 @@ export class SceneGraphAdapter implements Adapter<Element, Element> {
     });
   }
 
-  getAttributeValue(node: Element, name: string): string | undefined {
+  getAttributeValue(node: IElement, name: string): string | undefined {
     if (name === 'id') {
       return node.id;
     } else if (name === 'class') {
@@ -31,36 +31,36 @@ export class SceneGraphAdapter implements Adapter<Element, Element> {
     return (node.attributes && `${node.attributes[name]}`) || '';
   }
 
-  getChildren(node: Element): Element[] {
-    return node.childNodes;
+  getChildren(node: IElement): IElement[] {
+    return node.children;
   }
 
-  getName(node: Element): string {
+  getName(node: IElement): string {
     // the name of the tag
     return node.nodeName;
   }
 
-  getParent(node: Element): Element | null {
-    return node.parentNode;
+  getParent(node: IElement): IElement | null {
+    return node.parentElement;
   }
 
   /**
    * Get the siblings of the node. Note that unlike jQuery's `siblings` method,
    * this is expected to include the current node as well
    */
-  getSiblings(node: Element): Element[] {
-    return (node.parentNode && node.parentNode.childNodes) || [];
+  getSiblings(node: IElement): IElement[] {
+    return (node.parentElement && node.parentElement.children) || [];
   }
 
-  getText(node: Element): string {
+  getText(node: IElement): string {
     return '';
   }
 
-  hasAttrib(node: Element, name: string) {
+  hasAttrib(node: IElement, name: string) {
     return !!(node.attributes && node.attributes[name]);
   }
 
-  removeSubsets(nodes: Element[]): Element[] {
+  removeSubsets(nodes: IElement[]): IElement[] {
     let idx = nodes.length;
     let node;
     let ancestor;
@@ -95,8 +95,8 @@ export class SceneGraphAdapter implements Adapter<Element, Element> {
     return nodes;
   }
 
-  findAll(test: Predicate<Element>, nodes: Element[]): Element[] {
-    let result: Element[] = [];
+  findAll(test: Predicate<IElement>, nodes: IElement[]): IElement[] {
+    let result: IElement[] = [];
     for (let i = 0, j = nodes.length; i < j; i++) {
       if (!this.isTag(nodes[i])) {
         continue;
@@ -112,7 +112,7 @@ export class SceneGraphAdapter implements Adapter<Element, Element> {
     return result;
   }
 
-  findOne(test: Predicate<Element>, nodes: Element[]): Element | null {
+  findOne(test: Predicate<IElement>, nodes: IElement[]): IElement | null {
     let node = null;
     for (let i = 0, l = nodes.length; i < l && !node; i++) {
       if (test(nodes[i])) {
@@ -138,13 +138,13 @@ export class SceneGraphAdapter implements Adapter<Element, Element> {
   // /**
   // * Is the nodeent in hovered state?
   // */
-  // isHovered?: (node: ElementNode) => boolean;
+  // isHovered?: (node: IElementNode) => boolean;
   // /**
   // * Is the nodeent in visited state?
   // */
-  // isVisited?: (node: ElementNode) => boolean;
+  // isVisited?: (node: IElementNode) => boolean;
   // /**
   // * Is the nodeent in active state?
   // */
-  // isActive?: (node: ElementNode) => boolean;
+  // isActive?: (node: IElementNode) => boolean;
 }

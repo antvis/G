@@ -1,26 +1,25 @@
 import { vec3 } from 'gl-matrix';
 import { Geometry } from '../components';
-import type { DisplayObject } from '../DisplayObject';
+import type { DisplayObject } from '../display-objects/DisplayObject';
 import { AABB } from '../shapes';
 import { container } from '../inversify.config';
-import { GeometryAABBUpdater, GeometryUpdaterFactory, SceneGraphService } from '../services';
+import { dirtifyRenderable, GeometryAABBUpdater, GeometryUpdaterFactory } from '../services';
 import { SHAPE } from '../types';
 import { PARSED_COLOR_TYPE } from './color';
 import { ParsedFilterStyleProperty } from './filter';
+import { ElementEvent } from '../dom';
 
-export function updateGeometry(
-  oldValue: number,
-  newValue: number,
-  object: DisplayObject,
-  sceneGraphService: SceneGraphService,
-) {
+export function updateGeometry(oldValue: number, newValue: number, object: DisplayObject) {
   const geometryUpdaterFactory =
     container.get<(tagName: string) => GeometryAABBUpdater<any>>(GeometryUpdaterFactory);
   const geometryUpdater = geometryUpdaterFactory(object.nodeName);
   if (geometryUpdater) {
-    const geometry = object.getEntity().getComponent(Geometry);
-    if (!geometry.aabb) {
-      geometry.aabb = new AABB();
+    const geometry = object.entity.getComponent(Geometry);
+    if (!geometry.contentBounds) {
+      geometry.contentBounds = new AABB();
+    }
+    if (!geometry.renderBounds) {
+      geometry.renderBounds = new AABB();
     }
 
     const {
@@ -61,35 +60,35 @@ export function updateGeometry(
 
     const {
       lineWidth = 0,
-      lineAppendWidth = 0,
-      anchor = [0.5, 0.5],
+      padding = [],
+      anchor = [0, 0],
       shadowColor,
       filter = [],
     } = object.parsedStyle;
-    const center = vec3.fromValues(
-      (1 - anchor[0] * 2) * halfExtents[0] + offsetX,
-      (1 - anchor[1] * 2) * halfExtents[1] + offsetY,
-      (1 - (anchor[2] || 0) * 2) * halfExtents[2] + offsetZ,
-    );
 
     // <Text> use textAlign & textBaseline instead of anchor
     if (object.nodeName === SHAPE.Text) {
       delete object.parsedStyle.anchor;
     }
 
-    // append border
-    vec3.add(
-      halfExtents,
-      halfExtents,
-      vec3.fromValues(lineWidth + lineAppendWidth, lineWidth + lineAppendWidth, 0),
+    const center = vec3.fromValues(
+      (1 - anchor[0] * 2) * halfExtents[0] + offsetX,
+      (1 - anchor[1] * 2) * halfExtents[1] + offsetY,
+      (1 - (anchor[2] || 0) * 2) * halfExtents[2] + offsetZ,
     );
 
     // update geometry's AABB
-    geometry.aabb.update(center, halfExtents);
+    geometry.contentBounds.update(center, halfExtents);
+
+    if (lineWidth) {
+      // append border
+      vec3.add(halfExtents, halfExtents, vec3.fromValues(lineWidth / 2, lineWidth / 2, 0));
+    }
+    geometry.renderBounds.update(center, halfExtents);
 
     // account for shadow, only support constant value now
     if (shadowColor && shadowColor.type === PARSED_COLOR_TYPE.Constant) {
-      const { min, max } = geometry.aabb;
+      const { min, max } = geometry.renderBounds;
 
       const { shadowBlur = 0, shadowOffsetX = 0, shadowOffsetY = 0 } = object.parsedStyle;
       const shadowLeft = min[0] - shadowBlur + shadowOffsetX;
@@ -101,18 +100,18 @@ export function updateGeometry(
       min[1] = Math.min(min[1], shadowTop);
       max[1] = Math.max(max[1], shadowBottom);
 
-      geometry.aabb.setMinMax(min, max);
+      geometry.renderBounds.setMinMax(min, max);
     }
 
     // account for filter, eg. blur(5px), drop-shadow()
     (filter as ParsedFilterStyleProperty[]).forEach(({ name, params }) => {
       if (name === 'blur') {
         const blurRadius = params[0].value as number;
-        geometry.aabb!.update(
-          geometry.aabb!.center,
+        geometry.renderBounds.update(
+          geometry.renderBounds.center,
           vec3.add(
-            geometry.aabb!.halfExtents,
-            geometry.aabb!.halfExtents,
+            geometry.renderBounds.halfExtents,
+            geometry.renderBounds.halfExtents,
             vec3.fromValues(blurRadius, blurRadius, 0),
           ),
         );
@@ -121,7 +120,7 @@ export function updateGeometry(
         const shadowOffsetY = params[1].value as number;
         const shadowBlur = params[2].value as number;
 
-        const { min, max } = geometry.aabb!;
+        const { min, max } = geometry.renderBounds;
         const shadowLeft = min[0] - shadowBlur + shadowOffsetX;
         const shadowRight = max[0] + shadowBlur + shadowOffsetX;
         const shadowTop = min[1] - shadowBlur + shadowOffsetY;
@@ -131,11 +130,10 @@ export function updateGeometry(
         min[1] = Math.min(min[1], shadowTop);
         max[1] = Math.max(max[1], shadowBottom);
 
-        geometry.aabb!.setMinMax(min, max);
+        geometry.renderBounds.setMinMax(min, max);
       }
     });
 
-    // dirtify renderable's AABB
-    sceneGraphService.dirtifyAABBToRoot(object);
+    dirtifyRenderable(object);
   }
 }

@@ -26,7 +26,8 @@
     "pre-publish": "yarn build",
     "publish": "lerna publish",
     "publish:next": "lerna publish prerelease --dist-tag next",
-    "start": "cd ./packages/site && npm run start"
+    "start": "cd ./packages/site && npm run start",
+    "check-circular-deps": "madge --circular --extensions ts ./packages/"
   },
   "lint-staged": {
     "**/*.{js,ts,md}": [
@@ -55,7 +56,7 @@
     "cross-env": "^6.0.3",
     "eslint": "^7.28.0",
     "eslint-plugin-jest": "24.3.6",
-    "father": "^2.30.6",
+    "father": "^2.30.9",
     "git-contributor": "~1.0.8",
     "husky": "^4.2.5",
     "is-ci": "2.0.0",
@@ -63,6 +64,7 @@
     "jest-electron": "^0.1.11",
     "lerna": "^3.4.3",
     "lint-staged": "^10.2.2",
+    "madge": "^5.0.0",
     "prettier": "^2.0.5",
     "sinon": "^11.1.1",
     "sinon-chai": "^3.7.0",

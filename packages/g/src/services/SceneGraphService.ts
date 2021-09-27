@@ -1,15 +1,15 @@
 import { isNil } from '@antv/util';
-import { EventEmitter } from 'eventemitter3';
 import { Transform } from '../components/Transform';
 import { Sortable } from '../components/Sortable';
 import { inject, injectable } from 'inversify';
 import { Geometry, Renderable } from '../components';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
-import { AABB } from '../shapes';
+import { AABB, Rectangle } from '../shapes';
 import { SceneGraphSelector, SceneGraphSelectorFactory } from './SceneGraphSelector';
-import { Element } from '../dom/Element';
+import { IChildNode, IElement, INode, IParentNode } from '../dom/interfaces';
+import { ElementEvent } from '..';
 
-export function sortByZIndex(o1: Element, o2: Element) {
+export function sortByZIndex(o1: IElement, o2: IElement) {
   const zIndex1 = Number(o1.style.zIndex);
   const zIndex2 = Number(o2.style.zIndex);
   if (zIndex1 === zIndex2) {
@@ -22,68 +22,57 @@ export function sortByZIndex(o1: Element, o2: Element) {
   return zIndex1 - zIndex2;
 }
 
-export enum SCENE_GRAPH_EVENT {
-  AABBChanged = 'AABBChanged',
+export function dirtifyRenderable(element: INode, silent = false) {
+  let node = element;
+  while (node) {
+    const renderable = node.entity.getComponent(Renderable);
+    if (renderable) {
+      renderable.renderBoundsDirty = true;
+      renderable.boundsDirty = true;
+      renderable.dirty = true;
+    }
+
+    node = node.parentElement;
+  }
+
+  if (!silent) {
+    element.emit(ElementEvent.BOUNDS_CHANGED, {});
+  }
 }
 
 export const SceneGraphService = 'SceneGraphService';
 export interface SceneGraphService {
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
-   */
-  matches<T extends Element>(query: string, root: T): boolean;
-  querySelector<T extends Element>(query: string, root: T): T | null;
-  querySelectorAll<T extends Element>(query: string, root: T): T[];
-  attach<T extends Element>(child: T, parent: T, index?: number): void;
-  detach<T extends Element>(child: T): void;
-  sort<T extends Element>(object1: T, object2: T): number;
-  getOrigin<T extends Element>(element: T): vec3;
-  setOrigin<T extends Element>(element: T, origin: vec3 | number, y?: number, z?: number): void;
-  setPosition<T extends Element>(element: T, position: vec3 | vec2): void;
-  setLocalPosition<T extends Element>(element: T, position: vec3 | vec2): void;
-  scaleLocal<T extends Element>(element: T, scaling: vec3 | vec2): void;
-  setLocalScale<T extends Element>(element: T, scaling: vec3 | vec2): void;
-  getLocalScale<T extends Element>(element: T): vec3;
-  getScale<T extends Element>(element: T): vec3;
-  translate<T extends Element>(
-    element: T,
-    translation: vec3 | number,
-    y?: number,
-    z?: number,
-  ): void;
-  translateLocal<T extends Element>(
-    element: T,
-    translation: vec3 | number,
-    y?: number,
-    z?: number,
-  ): void;
-  getPosition<T extends Element>(element: T): vec3;
-  getLocalPosition<T extends Element>(element: T): vec3;
-  setEulerAngles<T extends Element>(
-    element: T,
-    degrees: vec3 | number,
-    y?: number,
-    z?: number,
-  ): void;
-  setLocalEulerAngles<T extends Element>(
-    element: T,
-    degrees: vec3 | number,
-    y?: number,
-    z?: number,
-  ): void;
-  rotateLocal<T extends Element>(element: T, degrees: vec3 | number, y?: number, z?: number): void;
-  rotate<T extends Element>(element: T, degrees: vec3 | number, y?: number, z?: number): void;
-  getRotation<T extends Element>(element: T): quat;
-  getLocalRotation<T extends Element>(element: T): quat;
-  getWorldTransform<T extends Element>(element: T, transform?: Transform): mat4;
-  getLocalTransform<T extends Element>(element: T, transform?: Transform): mat4;
-  getBounds<T extends Element>(element: T): AABB | null;
-  getLocalBounds<T extends Element>(element: T): AABB | null;
-  getGeometryBounds<T extends Element>(element: T): AABB | null;
-  on(event: string, fn: (...args: any[]) => void, context?: any): this;
-  off(event: string, fn: (...args: any[]) => void, context?: any): this;
-
-  dirtifyAABBToRoot<T extends Element>(element: T): void;
+  matches<T extends IElement>(query: string, root: T): boolean;
+  querySelector<R extends IElement, T extends IElement>(query: string, root: R): T | null;
+  querySelectorAll<R extends IElement, T extends IElement>(query: string, root: R): T[];
+  attach<C extends INode, P extends INode & IParentNode>(child: C, parent: P, index?: number): void;
+  detach<C extends INode>(child: C): void;
+  sort(object1: IElement, object2: IElement): number;
+  getOrigin(element: INode): vec3;
+  setOrigin(element: INode, origin: vec3 | number, y?: number, z?: number): void;
+  setPosition(element: INode, position: vec3 | vec2): void;
+  setLocalPosition(element: INode, position: vec3 | vec2): void;
+  scaleLocal(element: INode, scaling: vec3 | vec2): void;
+  setLocalScale(element: INode, scaling: vec3 | vec2): void;
+  getLocalScale(element: INode): vec3;
+  getScale(element: INode): vec3;
+  translate(element: INode, translation: vec3 | number, y?: number, z?: number): void;
+  translateLocal(element: INode, translation: vec3 | number, y?: number, z?: number): void;
+  getPosition(element: INode): vec3;
+  getLocalPosition(element: INode): vec3;
+  setEulerAngles(element: INode, degrees: vec3 | number, y?: number, z?: number): void;
+  setLocalEulerAngles(element: INode, degrees: vec3 | number, y?: number, z?: number): void;
+  rotateLocal(element: INode, degrees: vec3 | number, y?: number, z?: number): void;
+  rotate(element: INode, degrees: vec3 | number, y?: number, z?: number): void;
+  getRotation(element: INode): quat;
+  getLocalRotation(element: INode): quat;
+  getWorldTransform(element: INode, transform?: Transform): mat4;
+  getLocalTransform(element: INode, transform?: Transform): mat4;
+  resetLocalTransform(element: INode): void;
+  getBounds(element: INode, render?: boolean): AABB | null;
+  getLocalBounds(element: INode, render?: boolean): AABB | null;
+  getGeometryBounds(element: INode, render?: boolean): AABB | null;
+  getBoundingClientRect(element: INode): Rectangle;
 }
 
 /**
@@ -92,24 +81,24 @@ export interface SceneGraphService {
  * @see https://community.khronos.org/t/scene-graphs/50542/7
  */
 @injectable()
-export class DefaultSceneGraphService extends EventEmitter implements SceneGraphService {
+export class DefaultSceneGraphService implements SceneGraphService {
   @inject(SceneGraphSelectorFactory)
   private sceneGraphSelectorFactory: () => SceneGraphSelector;
 
-  matches(query: string, root: Element) {
+  matches<T extends IElement>(query: string, root: T) {
     return this.sceneGraphSelectorFactory().is(query, root);
   }
 
-  querySelector<T extends Element>(query: string, root: T) {
-    return this.sceneGraphSelectorFactory().selectOne(query, root);
+  querySelector<R extends IElement, T extends IElement>(query: string, root: R): T | null {
+    return this.sceneGraphSelectorFactory().selectOne<R, T>(query, root);
   }
 
-  querySelectorAll<T extends Element>(query: string, root: T) {
-    return this.sceneGraphSelectorFactory().selectAll(query, root);
+  querySelectorAll<R extends IElement, T extends IElement>(query: string, root: R): T[] {
+    return this.sceneGraphSelectorFactory().selectAll<R, T>(query, root);
     // .filter((node) => !node.shadow);
   }
 
-  attach<T extends Element>(child: T, parent: T, index?: number) {
+  attach<C extends INode, P extends INode & IParentNode>(child: C, parent: P, index?: number) {
     if (child.parentNode) {
       this.detach(child);
     }
@@ -117,9 +106,9 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
     const entity = child.getEntity();
     child.parentNode = parent;
     if (!isNil(index)) {
-      child.parentNode.childNodes.splice(index!, 0, child);
+      child.parentNode.childNodes.splice(index!, 0, child as unknown as INode & IChildNode);
     } else {
-      child.parentNode.childNodes.push(child);
+      child.parentNode.childNodes.push(child as unknown as INode & IChildNode);
     }
 
     // parent needs re-sort
@@ -134,7 +123,7 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
     }
   }
 
-  detach(child: Element) {
+  detach<C extends INode>(child: C) {
     if (child.parentNode) {
       const entity = child.getEntity();
 
@@ -153,7 +142,7 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
         sortable.dirty = true;
       }
 
-      const index = child.parentNode.childNodes.indexOf(child);
+      const index = child.parentNode.childNodes.indexOf(child as unknown as IChildNode & INode);
       if (index > -1) {
         child.parentNode.childNodes.splice(index, 1);
       }
@@ -171,7 +160,7 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
    * use materialized path
    * @see https://stackoverflow.com/questions/31470730/comparing-tree-nodes
    */
-  sort = (object1: Element, object2: Element): number => {
+  sort = (object1: INode, object2: INode): number => {
     if (!object1.parentNode) {
       return -1;
     }
@@ -208,10 +197,10 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
 
       // no need to re-sort, use cached sorted children
       if (!parentSortable.sorted) {
-        parentSortable.sorted = [...parent.childNodes];
+        parentSortable.sorted = [...(parent.childNodes as IElement[])];
       }
       if (parentSortable.dirty) {
-        parentSortable.sorted = [...parent.childNodes].sort(sortByZIndex);
+        parentSortable.sorted = [...(parent.childNodes as IElement[])].sort(sortByZIndex);
         parentSortable.dirty = false;
       }
 
@@ -221,8 +210,8 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
     return -1;
   };
 
-  private getDepth(element: Element) {
-    let o: Element = element;
+  private getDepth(element: INode) {
+    let o: INode = element;
     let depth = 0;
     while (o) {
       o = o.parentNode!;
@@ -231,11 +220,11 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
     return depth;
   }
 
-  getOrigin(element: Element) {
+  getOrigin(element: INode) {
     return element.getEntity().getComponent(Transform).origin;
   }
 
-  setOrigin(element: Element, origin: vec3 | number, y = 0, z = 0) {
+  setOrigin(element: INode, origin: vec3 | number, y = 0, z = 0) {
     if (typeof origin === 'number') {
       origin = vec3.fromValues(origin, y, z);
     }
@@ -256,7 +245,7 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
    */
   rotate = (() => {
     const parentInvertRotation = quat.create();
-    return (element: Element, degrees: vec3 | number, y = 0, z = 0) => {
+    return (element: INode, degrees: vec3 | number, y = 0, z = 0) => {
       if (typeof degrees === 'number') {
         degrees = vec3.fromValues(degrees, y, z);
       }
@@ -290,7 +279,7 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
    */
   rotateLocal = (() => {
     const rotation = quat.create();
-    return (element: Element, degrees: vec3 | number, y = 0, z = 0) => {
+    return (element: INode, degrees: vec3 | number, y = 0, z = 0) => {
       if (typeof degrees === 'number') {
         degrees = vec3.fromValues(degrees, y, z);
       }
@@ -310,7 +299,7 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
   setEulerAngles = (() => {
     const invParentRot = quat.create();
 
-    return (element: Element, degrees: vec3 | number, y = 0, z = 0) => {
+    return (element: INode, degrees: vec3 | number, y = 0, z = 0) => {
       if (typeof degrees === 'number') {
         degrees = vec3.fromValues(degrees, y, z);
       }
@@ -333,7 +322,7 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
   /**
    * set euler angles(degrees) in local space
    */
-  setLocalEulerAngles(element: Element, degrees: vec3 | number, y = 0, z = 0) {
+  setLocalEulerAngles(element: INode, degrees: vec3 | number, y = 0, z = 0) {
     if (typeof degrees === 'number') {
       degrees = vec3.fromValues(degrees, y, z);
     }
@@ -352,7 +341,7 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
    * ```
    */
   translateLocal = (() => {
-    return (element: Element, translation: vec3 | number, y: number = 0, z: number = 0) => {
+    return (element: INode, translation: vec3 | number, y: number = 0, z: number = 0) => {
       if (typeof translation === 'number') {
         translation = vec3.fromValues(translation, y, z);
       }
@@ -376,11 +365,11 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
   setPosition = (() => {
     const parentInvertMatrix = mat4.create();
 
-    return (element: Element, position: vec3 | vec2) => {
+    return (element: INode, position: vec3 | vec2) => {
       const transform = element.getEntity().getComponent(Transform);
       position = vec3.fromValues(position[0], position[1], position[2] || transform.position[2]);
 
-      if (vec3.equals(transform.position, position)) {
+      if (vec3.equals(this.getPosition(element), position)) {
         return;
       }
 
@@ -393,7 +382,6 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
         mat4.copy(parentInvertMatrix, parentTransform.worldTransform);
         mat4.invert(parentInvertMatrix, parentInvertMatrix);
         vec3.transformMat4(transform.localPosition, position, parentInvertMatrix);
-        this.dirtifyLocal(element, transform);
       }
 
       if (!transform.localDirtyFlag) {
@@ -405,7 +393,7 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
   /**
    * move to position in local space
    */
-  setLocalPosition(element: Element, position: vec3 | vec2) {
+  setLocalPosition(element: INode, position: vec3 | vec2) {
     const transform = element.getEntity().getComponent(Transform);
     position = vec3.fromValues(position[0], position[1], position[2] || transform.localPosition[2]);
     if (vec3.equals(transform.localPosition, position)) {
@@ -420,7 +408,7 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
   /**
    * scale in local space
    */
-  scaleLocal(element: Element, scaling: vec3 | vec2) {
+  scaleLocal(element: INode, scaling: vec3 | vec2) {
     const transform = element.getEntity().getComponent(Transform);
     vec3.multiply(
       transform.localScale,
@@ -430,7 +418,7 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
     this.dirtifyLocal(element, transform);
   }
 
-  setLocalScale(element: Element, scaling: vec3 | vec2) {
+  setLocalScale(element: INode, scaling: vec3 | vec2) {
     const transform = element.getEntity().getComponent(Transform);
     const updatedScaling = vec3.fromValues(
       scaling[0],
@@ -461,7 +449,7 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
   translate = (() => {
     const tr = vec3.create();
 
-    return (element: Element, translation: vec3 | number, y: number = 0, z: number = 0) => {
+    return (element: INode, translation: vec3 | number, y: number = 0, z: number = 0) => {
       if (typeof translation === 'number') {
         translation = vec3.fromValues(translation, y, z);
       }
@@ -475,7 +463,7 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
     };
   })();
 
-  dirtifyLocal(element: Element, transform: Transform) {
+  dirtifyLocal(element: INode, transform: Transform) {
     if (!transform.localDirtyFlag) {
       transform.localDirtyFlag = true;
       if (!transform.dirtyFlag) {
@@ -484,29 +472,33 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
     }
   }
 
-  dirtifyWorld(element: Element, transform: Transform) {
+  dirtifyWorld(element: INode, transform: Transform) {
     this.dirtifyWorldInternal(element, transform);
   }
 
-  getPosition(element: Element) {
+  getPosition(element: INode) {
     const transform = element.getEntity().getComponent(Transform);
     return mat4.getTranslation(transform.position, this.getWorldTransform(element, transform));
   }
 
-  getRotation(element: Element) {
+  getRotation(element: INode) {
     const transform = element.getEntity().getComponent(Transform);
     return mat4.getRotation(transform.rotation, this.getWorldTransform(element, transform));
   }
 
-  getScale(element: Element) {
+  getScale(element: INode) {
     const transform = element.getEntity().getComponent(Transform);
     return mat4.getScaling(transform.scaling, this.getWorldTransform(element, transform));
   }
 
   getWorldTransform(
-    element: Element,
+    element: INode,
     transform: Transform = element.getEntity().getComponent(Transform),
   ) {
+    if (!transform) {
+      return mat4.create();
+    }
+
     if (!transform.localDirtyFlag && !transform.dirtyFlag) {
       return transform.worldTransform;
     }
@@ -520,19 +512,19 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
     return transform.worldTransform;
   }
 
-  getLocalPosition(element: Element) {
+  getLocalPosition(element: INode) {
     return element.getEntity().getComponent(Transform).localPosition;
   }
 
-  getLocalRotation(element: Element) {
+  getLocalRotation(element: INode) {
     return element.getEntity().getComponent(Transform).localRotation;
   }
 
-  getLocalScale(element: Element) {
+  getLocalScale(element: INode) {
     return element.getEntity().getComponent(Transform).localScale;
   }
 
-  getLocalTransform(element: Element) {
+  getLocalTransform(element: INode) {
     const transform = element.getEntity().getComponent(Transform);
     if (transform.localDirtyFlag) {
       mat4.fromRotationTranslationScaleOrigin(
@@ -547,12 +539,111 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
     return transform.localTransform;
   }
 
+  resetLocalTransform(element: INode) {
+    this.setLocalScale(element, [1, 1, 1]);
+    this.setLocalPosition(element, [0, 0, 0]);
+    this.setLocalEulerAngles(element, [0, 0, 0]);
+  }
+
+  getTransformedGeometryBounds(element: INode, render = false): AABB | null {
+    const bounds = this.getGeometryBounds(element, render);
+    if (bounds) {
+      const aabb = new AABB();
+      aabb.setFromTransformedAABB(bounds, this.getWorldTransform(element));
+      return aabb;
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * won't account for children
+   */
+  getGeometryBounds(element: INode, render = false): AABB | null {
+    const geometry = element.entity.getComponent(Geometry);
+    const bounds = render ? geometry.renderBounds : geometry.contentBounds || null;
+    return (bounds && new AABB(bounds.center, bounds.halfExtents)) || null;
+  }
+
+  /**
+   * account for children in world space
+   */
+  getBounds(element: INode, render = false): AABB | null {
+    const renderable = element.entity.getComponent(Renderable);
+
+    if (!renderable.boundsDirty && !render && renderable.bounds) {
+      return renderable.bounds;
+    }
+
+    if (!renderable.renderBoundsDirty && render && renderable.renderBounds) {
+      return renderable.renderBounds;
+    }
+
+    // reset with geometry's aabb
+    let aabb: AABB = this.getTransformedGeometryBounds(element, render);
+
+    // merge children's aabbs
+    const children = element.childNodes as IElement[];
+    children.forEach((child) => {
+      const childBounds = this.getBounds(child, render);
+      if (childBounds) {
+        if (!aabb) {
+          aabb = new AABB();
+          aabb.update(childBounds.center, childBounds.halfExtents);
+        } else {
+          aabb.add(childBounds);
+        }
+      }
+    });
+
+    // account for clip path
+    const clipPath = (element as IElement).style.clipPath;
+    if (clipPath) {
+      let clipPathBounds = this.getTransformedGeometryBounds(clipPath, true);
+      let transformParentBounds: AABB;
+
+      if (clipPathBounds) {
+        transformParentBounds = new AABB();
+        // intersect with original geometry
+        transformParentBounds.setFromTransformedAABB(
+          clipPathBounds,
+          this.getWorldTransform(element),
+        );
+      }
+      if (!aabb) {
+        aabb = transformParentBounds;
+      } else if (transformParentBounds) {
+        aabb = transformParentBounds.intersection(aabb);
+      }
+    }
+
+    if (aabb) {
+      if (render) {
+        renderable.renderBounds = aabb;
+      } else {
+        renderable.bounds = aabb;
+      }
+    }
+
+    if (render) {
+      renderable.renderBoundsDirty = false;
+    } else {
+      renderable.boundsDirty = false;
+    }
+
+    return aabb || null;
+  }
+
   /**
    * account for children in local space
    */
-  getLocalBounds(element: Element): AABB | null {
+  getLocalBounds(element: INode): AABB | null {
     if (element.parentNode) {
-      const parentInvert = mat4.invert(mat4.create(), this.getWorldTransform(element.parentNode));
+      let parentInvert = mat4.create();
+      if (element.parentNode.entity.hasComponent(Transform)) {
+        parentInvert = mat4.invert(mat4.create(), this.getWorldTransform(element.parentNode));
+      }
+
       const bounds = this.getBounds(element);
 
       if (bounds) {
@@ -565,99 +656,52 @@ export class DefaultSceneGraphService extends EventEmitter implements SceneGraph
     return this.getBounds(element);
   }
 
-  /**
-   * won't account for children
-   */
-  getGeometryBounds(element: Element): AABB | null {
-    const entity = element.getEntity();
-    let geometryAABB = entity.getComponent(Geometry).aabb;
-    let aabb = null;
-    if (geometryAABB) {
+  getBoundingClientRect(element: INode): Rectangle {
+    let aabb: AABB;
+    const bounds = this.getGeometryBounds(element);
+    if (bounds) {
       aabb = new AABB();
       // apply transformation to aabb
-      aabb.setFromTransformedAABB(geometryAABB, this.getWorldTransform(element));
-    }
-    return aabb;
-  }
-
-  /**
-   * account for children in world space
-   */
-  getBounds(element: Element): AABB | null {
-    const entity = element.getEntity();
-    const renderable = entity.getComponent(Renderable);
-    if (!renderable.aabbDirty && renderable.aabb) {
-      return renderable.aabb;
+      aabb.setFromTransformedAABB(bounds, this.getWorldTransform(element));
     }
 
-    // reset with geometry's aabb
-    let aabb = this.getGeometryBounds(element);
-    // merge children's aabbs
-    const children = element.childNodes;
-    children.forEach((child) => {
-      const childBounds = this.getBounds(child);
-      if (childBounds) {
-        if (!aabb) {
-          aabb = new AABB();
-          aabb.update(childBounds.center, childBounds.halfExtents);
-        } else {
-          aabb.add(childBounds);
-        }
-      }
-    });
-
-    // account for clip path
-    if (element.style.clipPath) {
-      const clipPathBounds = this.getGeometryBounds(element.style.clipPath);
-      if (clipPathBounds) {
-        // intersect with original geometry
-        clipPathBounds.setFromTransformedAABB(clipPathBounds, this.getWorldTransform(element));
-      }
-      if (!aabb) {
-        aabb = clipPathBounds;
-      } else if (clipPathBounds) {
-        aabb = clipPathBounds.intersection(aabb);
-      }
-    }
+    // calc context's offset
+    // @ts-ignore
+    const bbox = this.ownerDocument?.defaultView?.getContextService().getBoundingClientRect();
 
     if (aabb) {
-      renderable.aabb = aabb;
-    }
-    renderable.aabbDirty = false;
-    this.emit(SCENE_GRAPH_EVENT.AABBChanged, element);
+      const [left, top] = aabb.getMin();
+      const [right, bottom] = aabb.getMax();
 
-    return renderable.aabb || null;
+      return new Rectangle(
+        left + (bbox?.left || 0),
+        top + (bbox?.top || 0),
+        right - left,
+        bottom - top,
+      );
+    }
+
+    return new Rectangle(bbox?.left || 0, bbox?.top || 0, 0, 0);
   }
 
-  dirtifyAABBToRoot(element: Element) {
-    let p: Element | null = element;
-    while (p) {
-      const renderable = p.getEntity().getComponent(Renderable);
-      if (renderable) {
-        renderable.aabbDirty = true;
-        renderable.dirty = true;
-        this.emit(SCENE_GRAPH_EVENT.AABBChanged, p);
-      }
-      p = p.parentNode;
-    }
-  }
-
-  private dirtifyWorldInternal(element: Element, transform: Transform) {
+  private dirtifyWorldInternal(element: INode, transform: Transform) {
     if (!transform.dirtyFlag) {
       transform.dirtyFlag = true;
       element.childNodes.forEach((child) => {
         const childTransform = child.getEntity().getComponent(Transform);
         if (!childTransform.dirtyFlag) {
-          this.dirtifyWorldInternal(child, childTransform);
+          this.dirtifyWorldInternal(child as IElement, childTransform);
         }
       });
 
-      // bubble up to root
-      this.dirtifyAABBToRoot(element);
+      // emit on leaf node
+      if (element.childNodes.length === 0) {
+        dirtifyRenderable(element);
+      }
     }
   }
 
-  private updateTransform(element: Element, transform: Transform) {
+  private updateTransform(element: INode, transform: Transform) {
     if (transform.localDirtyFlag) {
       this.getLocalTransform(element);
     }

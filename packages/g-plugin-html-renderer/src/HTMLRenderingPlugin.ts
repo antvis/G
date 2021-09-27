@@ -10,6 +10,9 @@ import {
   PARSED_COLOR_TYPE,
   fromRotationTranslationScale,
   getEuler,
+  RenderingContext,
+  ElementEvent,
+  FederatedEvent,
 } from '@antv/g';
 import { isString } from '@antv/util';
 
@@ -22,21 +25,14 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
   @inject(ContextService)
   private contextService: ContextService<CanvasRenderingContext2D>;
 
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
+
   private $camera: HTMLDivElement;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.unmounted.tap(HTMLRenderingPlugin.tag, (object: DisplayObject) => {
-      if (object.nodeName === SHAPE.HTML) {
-        const existedId = HTML_PREFIX + object.getEntity().getName();
-        const $container = this.contextService.getDomElement()!.parentNode!;
-        const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
-        if ($existedElement) {
-          $container.removeChild($existedElement);
-        }
-      }
-    });
-
-    renderingService.hooks.mounted.tap(HTMLRenderingPlugin.tag, (object: DisplayObject) => {
+    const handleMounted = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
       if (object.nodeName === SHAPE.HTML) {
         const { innerHTML } = object.parsedStyle;
         const existedId = HTML_PREFIX + object.getEntity().getName();
@@ -55,6 +51,28 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
           $container.appendChild($div);
         }
       }
+    };
+
+    const handleUnmounted = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+      if (object.nodeName === SHAPE.HTML) {
+        const existedId = HTML_PREFIX + object.getEntity().getName();
+        const $container = this.contextService.getDomElement()!.parentNode!;
+        const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
+        if ($existedElement) {
+          $container.removeChild($existedElement);
+        }
+      }
+    };
+
+    renderingService.hooks.init.tap(HTMLRenderingPlugin.tag, () => {
+      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+    });
+
+    renderingService.hooks.destroy.tap(HTMLRenderingPlugin.tag, () => {
+      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
     });
 
     renderingService.hooks.render.tap(HTMLRenderingPlugin.tag, (object: DisplayObject) => {

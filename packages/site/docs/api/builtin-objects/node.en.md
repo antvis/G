@@ -101,9 +101,35 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Node/previousSibling
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/appendChild
 
-## [WIP] cloneNode
+## cloneNode
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/cloneNode
+方法签名为 `cloneNode(deep?: boolean): this`，可选参数为是否需要深拷贝，返回克隆得到的新节点。
+
+在下面的例子中，我们创建了一个圆，设置了它的半径与位置。拷贝得到的新节点拥有同样的样式属性与位置：
+
+```js
+circle.style.r = 20;
+circle.setPosition(10, 20);
+
+const clonedCircle = circle.cloneNode();
+clonedCircle instanceof Circle; // true
+clonedCircle.style.r; // 20
+clonedCircle.getPosition(); // [10, 20]
+```
+
+注意事项：
+
+-   支持深拷贝，即自身以及整棵子树
+-   克隆的新节点不会保留原始节点的父子关系，需要使用 `appendChild` 将其加入画布才会被渲染
+-   与 [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes) 保持一致，不会拷贝原图形上的事件监听器
+
+在这个[示例](/zh/examples/scenegraph#clone)中，我们展示了以上特性：
+
+-   可以随时更改原始节点的样式属性，得到的拷贝都会是最新的，新节点同样需要被加入到场景图中才会被渲染
+-   但由于不会拷贝事件监听器，因此只有原始节点可以进行拖拽
+-   非深拷贝模式下，Text（Drag me 文本） 作为 Circle 的子节点不会被拷贝
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PwEYSI_ijPEAAAAAAAAAAAAAARQnAQ)
 
 ## contains
 

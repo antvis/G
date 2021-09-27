@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { SceneGraphSelector, Element } from '@antv/g';
+import { SceneGraphSelector, Element, IElement } from '@antv/g';
 import { selectOne, selectAll, is } from 'css-select';
 import { SceneGraphAdapter } from './SceneGraphAdapter';
 
@@ -8,15 +8,15 @@ export class CSSSceneGraphSelector implements SceneGraphSelector {
   @inject(SceneGraphAdapter)
   private sceneGraphAdapter: SceneGraphAdapter;
 
-  is<T extends Element>(query: string, group: T) {
-    return is(group, query, { adapter: this.sceneGraphAdapter });
+  is<T extends IElement>(query: string, element: T) {
+    return is(element, query, { adapter: this.sceneGraphAdapter });
   }
 
-  selectOne<T extends Element>(query: string, group: T): T | null {
-    return selectOne(query, group, { adapter: this.sceneGraphAdapter }) as T | null;
+  selectOne<R extends IElement, T extends IElement>(query: string, root: R): T | null {
+    return selectOne(query, root, { adapter: this.sceneGraphAdapter }) as T | null;
   }
 
-  selectAll<T extends Element>(query: string, group: T): T[] {
-    return selectAll(query, group, { adapter: this.sceneGraphAdapter }) as T[];
+  selectAll<R extends IElement, T extends IElement>(query: string, root: R): T[] {
+    return selectAll(query, root, { adapter: this.sceneGraphAdapter }) as T[];
   }
 }

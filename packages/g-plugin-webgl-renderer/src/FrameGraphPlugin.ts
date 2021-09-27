@@ -11,6 +11,9 @@ import {
   Renderable,
   PARSED_COLOR_TYPE,
   ParsedColorStyleProperty,
+  RenderingContext,
+  ElementEvent,
+  FederatedEvent,
 } from '@antv/g';
 import { mat3 } from 'gl-matrix';
 import { isNil } from '@antv/util';
@@ -76,6 +79,9 @@ export class FrameGraphPlugin implements RenderingPlugin {
   @inject(ContextService)
   private contextService: ContextService<WebGLRenderingContext>;
 
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
+
   @inject(ShaderModuleService)
   private shaderModuleService: ShaderModuleService;
 
@@ -107,69 +113,9 @@ export class FrameGraphPlugin implements RenderingPlugin {
   private view: View;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.destroy.tap(FrameGraphPlugin.tag, () => {
-      this.shaderModuleService.destroy();
-      this.resourcePool.clean();
-      this.texturePool.destroy();
-      this.engine.destroy();
-    });
+    const handleMounted = async (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
 
-    renderingService.hooks.render.tap(FrameGraphPlugin.tag, (dirtyObject: DisplayObject) => {
-      // skip group
-      // const objects = dirtyObjects.filter((object) => object.nodeName !== SHAPE.Group);
-
-      if (
-        dirtyObject.nodeName === SHAPE.Group ||
-        dirtyObject.getEntity().getComponent(Renderable).instanced
-      ) {
-        return;
-      }
-
-      const renderPass = this.renderPassFactory<RenderPassData>(
-        RenderPass.IDENTIFIER,
-      ) as RenderPass;
-      renderPass.pushToRenderQueue(dirtyObject);
-    });
-
-    renderingService.hooks.beginFrame.tap(FrameGraphPlugin.tag, () => {
-      // update viewport
-      const { width, height } = this.canvasConfig;
-      const dpr = this.contextService.getDPR();
-      this.view.setViewport({
-        x: 0,
-        y: 0,
-        width: width * dpr,
-        height: height * dpr,
-      });
-
-      this.engine.beforeRender();
-
-      this.buildFrameGraph();
-    });
-
-    renderingService.hooks.endFrame.tap(FrameGraphPlugin.tag, () => {
-      this.frameGraphSystem.executePassNodes();
-    });
-
-    renderingService.hooks.init.tap(FrameGraphPlugin.tag, async () => {
-      this.canvasConfig.renderer.getConfig().enableDirtyRectangleRendering = false;
-
-      this.shaderModuleService.registerBuiltinModules();
-
-      const dpr = this.contextService.getDPR();
-      const $canvas = this.contextService.getDomElement();
-
-      this.engine.init({
-        canvas: $canvas as HTMLCanvasElement,
-        antialias: false,
-        dpr,
-      });
-
-      const { width, height } = this.canvasConfig;
-      this.contextService.resize(width, height);
-    });
-
-    renderingService.hooks.mounted.tap(FrameGraphPlugin.tag, async (object: DisplayObject) => {
       const entity = object.getEntity();
       const renderable = entity.getComponent(Renderable);
       if (renderable.instanced) {
@@ -238,35 +184,111 @@ export class FrameGraphPlugin implements RenderingPlugin {
 
         renderable3d.modelPrepared = true;
       }
-    });
+    };
 
-    renderingService.hooks.unmounted.tap(FrameGraphPlugin.tag, (object: DisplayObject) => {
-      const entity = object.getEntity();
+    const handleUnmounted = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+      const entity = object.entity;
       entity.removeComponent(Renderable3D, true);
       entity.removeComponent(Geometry3D, true);
       entity.removeComponent(Material3D, true);
+    };
+
+    const handleAttributeChanged = async (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+      const { attributeName, newValue } = e.detail;
+      const entity = object.entity;
+      const renderable3d = entity.getComponent(Renderable3D);
+      const material = entity.getComponent(Material3D);
+      if (renderable3d && renderable3d.modelPrepared) {
+        if (attributeName === STYLE.Opacity) {
+          material.setUniform(UNIFORM.Opacity, newValue);
+        } else if (attributeName === STYLE.FillOpacity) {
+          material.setUniform(UNIFORM.FillOpacity, newValue);
+        } else if (attributeName === STYLE.Fill) {
+          await this.updateFill(object.parsedStyle.fill, object, renderingService);
+        }
+
+        const modelBuilder = this.modelBuilderFactory(object.nodeName);
+        modelBuilder.onAttributeChanged(object, attributeName, newValue);
+      }
+    };
+
+    renderingService.hooks.init.tap(FrameGraphPlugin.tag, async () => {
+      this.canvasConfig.renderer.getConfig().enableDirtyRectangleRendering = false;
+
+      this.shaderModuleService.registerBuiltinModules();
+
+      const dpr = this.contextService.getDPR();
+      const $canvas = this.contextService.getDomElement();
+
+      this.engine.init({
+        canvas: $canvas as HTMLCanvasElement,
+        antialias: false,
+        dpr,
+      });
+
+      const { width, height } = this.canvasConfig;
+      this.contextService.resize(width, height);
+
+      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.addEventListener(
+        ElementEvent.ATTRIBUTE_CHANGED,
+        handleAttributeChanged,
+      );
     });
 
-    renderingService.hooks.attributeChanged.tap(
-      FrameGraphPlugin.tag,
-      async (object: DisplayObject, name: string, value: any) => {
-        const entity = object.getEntity();
-        const renderable3d = entity.getComponent(Renderable3D);
-        const material = entity.getComponent(Material3D);
-        if (renderable3d && renderable3d.modelPrepared) {
-          if (name === STYLE.Opacity) {
-            material.setUniform(UNIFORM.Opacity, value);
-          } else if (name === STYLE.FillOpacity) {
-            material.setUniform(UNIFORM.FillOpacity, value);
-          } else if (name === STYLE.Fill) {
-            await this.updateFill(object.parsedStyle.fill, object, renderingService);
-          }
+    renderingService.hooks.destroy.tap(FrameGraphPlugin.tag, () => {
+      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.removeEventListener(
+        ElementEvent.ATTRIBUTE_CHANGED,
+        handleAttributeChanged,
+      );
 
-          const modelBuilder = this.modelBuilderFactory(object.nodeName);
-          modelBuilder.onAttributeChanged(object, name, value);
-        }
-      },
-    );
+      this.shaderModuleService.destroy();
+      this.resourcePool.clean();
+      this.texturePool.destroy();
+      this.engine.destroy();
+    });
+
+    renderingService.hooks.render.tap(FrameGraphPlugin.tag, (dirtyObject: DisplayObject) => {
+      // skip group
+      // const objects = dirtyObjects.filter((object) => object.nodeName !== SHAPE.Group);
+
+      if (
+        dirtyObject.nodeName === SHAPE.Group ||
+        dirtyObject.getEntity().getComponent(Renderable).instanced
+      ) {
+        return;
+      }
+
+      const renderPass = this.renderPassFactory<RenderPassData>(
+        RenderPass.IDENTIFIER,
+      ) as RenderPass;
+      renderPass.pushToRenderQueue(dirtyObject);
+    });
+
+    renderingService.hooks.beginFrame.tap(FrameGraphPlugin.tag, () => {
+      // update viewport
+      const { width, height } = this.canvasConfig;
+      const dpr = this.contextService.getDPR();
+      this.view.setViewport({
+        x: 0,
+        y: 0,
+        width: width * dpr,
+        height: height * dpr,
+      });
+
+      this.engine.beforeRender();
+
+      this.buildFrameGraph();
+    });
+
+    renderingService.hooks.endFrame.tap(FrameGraphPlugin.tag, () => {
+      this.frameGraphSystem.executePassNodes();
+    });
   }
 
   private buildFrameGraph() {

@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
@@ -5,8 +6,9 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { DisplayObject, Group, SHAPE } from '..';
+import { DisplayObject, Group } from '..';
 import { vec3 } from 'gl-matrix';
+import { SHAPE } from '../..';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
@@ -15,6 +17,8 @@ describe('DisplayObject Node API', () => {
   it('should update transform with its parent group', () => {
     const group1 = new DisplayObject({});
     const group2 = new DisplayObject({});
+
+    group1.setPosition(0, 0);
 
     expect(group1.getPosition()).to.eqls(vec3.create());
     expect(group2.getPosition()).to.eqls(vec3.create());

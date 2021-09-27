@@ -1,7 +1,8 @@
-import type { DisplayObject } from '../DisplayObject';
-import type { vec2, vec3 } from 'gl-matrix';
-import { convertPercentUnit, parseLengthOrPercent } from './dimension';
 import { isNil } from '@antv/util';
+import type { vec2, vec3 } from 'gl-matrix';
+import type { DisplayObject } from '../display-objects/DisplayObject';
+import { convertPercentUnit, parseLengthOrPercent } from './dimension';
+// import { Transform } from '../components';
 
 /**
  * @see /zh/docs/api/animation#%E8%B7%AF%E5%BE%84%E5%8A%A8%E7%94%BB
@@ -14,7 +15,12 @@ export function updateOrigin(oldValue: vec2 | vec3, value: vec2 | vec3, object: 
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin
  * eg. 'center' 'top left' '50px 50px'
  */
-export function updateTransformOrigin(oldValue: string, value: string, object: DisplayObject) {
+export function updateTransformOrigin(
+  oldValue: string,
+  value: string,
+  object: DisplayObject,
+  // silent = false,
+) {
   let values = value.split(' ');
   let originX: number | undefined;
   let originY: number | undefined;
@@ -44,8 +50,15 @@ export function updateTransformOrigin(oldValue: string, value: string, object: D
   }
 
   if (!isNil(originX) && !isNil(originY)) {
+    // if (silent) {
+    //   const transform = object.entity.getComponent(Transform);
+    //   const originVec = transform.origin;
+    //   originVec[0] = originX;
+    //   originVec[1] = originY;
+    // } else {
     // relative to local bounds
-    object.setOrigin(originX!, originY!);
+    object.setOrigin([originX!, originY!]);
+    // }
   }
 }
 

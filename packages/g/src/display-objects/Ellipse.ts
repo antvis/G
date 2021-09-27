@@ -1,7 +1,6 @@
-import { SHAPE } from '../types';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { DisplayObject } from '../DisplayObject';
-import { DisplayObjectConfig } from '../DisplayObject';
+import { DisplayObjectConfig, BaseStyleProps, ParsedBaseStyleProps } from '..';
+import { SHAPE } from '..';
+import { DisplayObject } from './DisplayObject';
 
 export interface EllipseStyleProps extends BaseStyleProps {
   rx: number;
@@ -18,9 +17,6 @@ export class Ellipse extends DisplayObject<EllipseStyleProps, ParsedEllipseStyle
       style: {
         rx: 0,
         ry: 0,
-        opacity: 1,
-        fillOpacity: 1,
-        strokeOpacity: 1,
         anchor: [0.5, 0.5],
         ...style,
       },

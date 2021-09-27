@@ -1,7 +1,7 @@
 import { SHAPE } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { DisplayObject } from '../DisplayObject';
-import { DisplayObjectConfig } from '../DisplayObject';
+import { DisplayObject } from './DisplayObject';
+import { DisplayObjectConfig } from '../dom';
 import { Cullable } from '../components';
 import { AABB } from '../shapes';
 import { mat4, vec3 } from 'gl-matrix';
@@ -31,16 +31,12 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
         innerHTML: '',
         className: '',
         style: '',
-        opacity: 1,
-        fillOpacity: 1,
-        strokeOpacity: 1,
-        anchor: [0, 0],
         ...style,
       },
       ...rest,
     });
 
-    const cullable = this.getEntity().getComponent(Cullable);
+    const cullable = this.entity.getComponent(Cullable);
     cullable.enable = false;
   }
 
@@ -68,6 +64,7 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
   getBounds() {
     const clientRect = this.getBoundingClientRect();
     // calc context's offset
+    // @ts-ignore
     const canvasRect = this.ownerDocument?.defaultView?.getContextService().getBoundingClientRect();
     if (canvasRect) {
       const minX = clientRect.left - canvasRect.left;
@@ -86,7 +83,10 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
 
   getLocalBounds() {
     if (this.parentNode) {
-      const parentInvert = mat4.invert(mat4.create(), this.parentNode.getWorldTransform());
+      const parentInvert = mat4.invert(
+        mat4.create(),
+        (this.parentNode as DisplayObject).getWorldTransform(),
+      );
       const bounds = this.getBounds();
 
       if (bounds) {

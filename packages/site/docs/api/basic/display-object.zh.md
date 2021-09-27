@@ -11,10 +11,179 @@ DisplayObject 是所有图形的基类，例如 `Group` `Circle` `Text` 等都�
 
 -   使用 CSS 选择器进行[高级查询](/zh/docs/plugins/css-select)
 -   使用 Hammer.js [扩展手势](/zh/docs/api/event#直接使用-hammerjs)
+-   使用 Interact.js [实现 Drag&Drop，Resize](/zh/docs/api/event#直接使用-interactjs)
 
 # 继承自
 
 [Element](/zh/docs/api/builtin-objects/element)
+
+# 基础概念
+
+首先需要明确一些概念，例如包围盒、坐标、锚点、变换中心等。了解它们有助于更好地使用具体的 API。
+
+## 层次结构
+
+在[场景图](/zh/docs/guide/diving-deeper/scenegraph)中我们了解到可以在图形之间构建父子关系，这种父子关系有时会与我们的直觉相悖，例如给一根直线（Line）添加一个子节点文本（Text）：
+
+```js
+line.appendChild(text);
+```
+
+但本质上这种层次结构只是定义了一种父子关系，在计算变换时把它考虑进去。例如我们不需要再单独移动直线以及文本，基于这种父子关系，移动直线即可，文本会跟随它移动。在变换过程中，文本相对于直线的位置始终并没有变，即文本在父节点直线的局部坐标系下的坐标没有变。
+
+## 包围盒
+
+为了简化计算，我们需要用一个规则的几何体包裹住图形，通常使用[轴对齐包围盒](https://developer.mozilla.org/zh-CN/docs/Games/Techniques/3D_collision_detection#axis-aligned_bounding_boxes%EF%BC%88aabb%E5%8C%85%E5%9B%B4%E7%9B%92%EF%BC%89)（Axis Aligned Bounding Box），它是一个非旋转的立方体，下图来自：https://developer.mozilla.org/zh-CN/docs/Games/Techniques/3D_collision_detection#axis-aligned_bounding_boxes%EF%BC%88aabb%E5%8C%85%E5%9B%B4%E7%9B%92%EF%BC%89 ![](https://mdn.mozillademos.org/files/11797/Screen%20Shot%202015-10-16%20at%2015.11.21.png)
+
+我们使用如下定义：
+
+```js
+interface AABB {
+    center: [number, number, number]; // 中心坐标
+    halfExtents: [number, number, number]; // 长宽高的一半
+    min: [number, number, number]; // 左上角坐标
+    max: [number, number, number]; // 右下角坐标
+}
+```
+
+在不同情况下，包围盒有不同的含义。我们先看针对单一图形的包围盒代表什么。下图展示了一个半径为 100，边框宽度为 20 的圆，为了更好的说明我们把边框设置成了半透明，同时它还带有阴影效果。
+
+对于用户而言，通常希望使用图形的几何定义，例如这个圆的尺寸就是 `100 * 100`，我们不希望鼠标滑过阴影区域也判定拾取到这个圆。
+
+而对于渲染管线而言，这些样式属性显然都需要考虑进去，例如：
+
+-   在脏矩形渲染中正确的擦除绘制区域，一旦不考虑阴影带来的包围盒尺寸增加，就会出现擦除不干净的“残影”
+-   剔除插件也需要考虑，例如一个图形即使只有阴影部分出现在视口中，它也不应被剔除
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*f0-CTpClWkMAAAAAAAAAAAAAARQnAQ)
+
+我们很容易根据不同类型的图形定义几何包围盒：
+
+-   Geometry Bounds。仅由图形的几何定义决定（因此 Group 会返回 null），不考虑绝大部分绘图属性（几何定义必须的除外，例如 Circle 的半径、Rect 的宽高、Path 的路径等），也不考虑变换（例如放大缩小并不会改变）。可通过 [getGeometryBounds](/zh/docs/api/basic/display-object#getgeometrybounds-aabb) 获取
+
+前面介绍过基于场景图的层次结构，一旦一个图形拥有了子节点，它在计算包围盒时也应当考虑，例如我们想对它做整体旋转时，需要找到这个包围盒的中心作为旋转中心。因此以下包围盒都是会考虑层次结构的：
+
+-   Bounds。在世界坐标系下计算，合并自身以及所有子节点的 Geometry Bounds 得到。用户通常最常用这个包围盒。可通过 [getBounds](/zh/docs/api/basic/display-object#getbounds-aabb) 获取
+-   Local Bounds。和 Bounds 的唯一区别是在父节点的局部坐标系下计算。可通过 [getLocalBounds](/zh/docs/api/basic/display-object#getlocalbounds-aabb) 获取
+-   Render Bounds。在世界坐标系下计算，在 Bounds 的基础上，受部分绘图属性影响，例如边框宽度，阴影，部分滤镜等，同时合并所有子节点的 Render Bounds。可通过 [getRenderBounds](/zh/docs/api/basic/display-object#getrenderbounds-aabb) 获取。用户通常不关心这个包围盒。
+
+在下图中，ul1 拥有两个字节点 li1 和 li2，在计算自身的 Geometry Bounds 时不会考虑它们，而在计算 Bounds 时需要。由于 ul1 还有阴影，因此它的 Render Bounds 要大一圈：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*RjRuQ7iMtwgAAAAAAAAAAAAAARQnAQ)
+
+## 锚点
+
+一个图形的锚点（原点）应该如何定义呢？我们可以基于 [Geometry Bounds](/zh/docs/api/basic/display-object#包围盒) 定义，取值范围 `[0, 0] ~ [1, 1]`，其中 `[0, 0]` 代表 Geometry Bounds 左上角，`[1, 1]` 代表右下角。而不同图形由于几何定义不同，默认锚点如下：
+
+-   [Circle](/zh/docs/api/circle)，[Ellipse](/zh/docs/api/ellipse) 为圆心位置 `[0.5, 0.5]`
+-   [Rect](/zh/docs/api/rect)，[Image](/zh/docs/api/image)，[Line](/zh/docs/api/line)，[Polyline](/zh/docs/api/polyline)，[Polygon](/zh/docs/api/polygon)，[Path](/zh/docs/api/path) 为包围盒左上角顶点位置 `[0, 0]`
+-   [Text](/zh/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/docs/api/basic/text#textbaseline) 与 [textAlign](/zh/docs/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
+-   [Group](/zh/docs/api/text) 无几何定义，因此锚点始终为 `[0, 0]`，设置此属性也无效
+
+有时我们希望改变一个基础图形的原点定义，例如将 Rect 的原点定义为中心而非左上角，[示例](/zh/examples/shape#rect)：
+
+```js
+rect.style.anchor = [0.5, 0.5];
+```
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PamuTYmdbsQAAAAAAAAAAAAAARQnAQ)
+
+那锚点的改变会影响图形在局部/世界坐标系下的坐标吗？答案是不会。我们只是把图形的原点放在这个坐标下而已，无论原点的定义如何修改，这个“位置”坐标始终不会改变：
+
+```js
+rect.getPosition(); // [200, 200]
+rect.style.anchor = [0.5, 0.5];
+rect.getPosition(); // [200, 200]
+```
+
+## 变换中心
+
+对图形进行缩放、旋转变换时，需要指定一个变换中心。例如同样是 `scale(2)`，以圆心作为变换中心与圆的 Geometry Bounds 左上角为变换中心，最终得到的效果完全不一样。在 `gl-matrix` 这样的库中，得到 RTS 变换矩阵通常也需要指定变换中心：
+
+```js
+mat4.fromRotationTranslationScaleOrigin();
+```
+
+### origin
+
+默认情况下 origin（变换中心）与 anchor（锚点）重合。在这个[示例](/zh/examples/scenegraph#origin)中，一个圆（世界坐标系下位置为 `[100, 100]`）以圆心作为变换中心进行缩放，如果我们想让它以 Geometry Bounds 左上角进行缩放，就可以重新设置 origin，让它相对于 anchor 进行偏移：
+
+```js
+const circle = new Circle({
+    style: {
+        r: 100,
+        fill: '#1890FF',
+    },
+});
+circle.setPosition(100, 100);
+circle.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.5)' }], {
+    duration: 500,
+});
+
+// 相对于锚点进行偏移
+circle.style.origin = [-100, -100];
+```
+
+或者我们可以直接设置 anchor 为 `[0, 0]`，这样就无需设置 origin，因为默认两者就是重合的，但是由于 anchor 定义发生了变化，为了让圆心在世界坐标系下不变（`[100, 100]`），需要重新设置圆的位置。因此以下两种写法等价：
+
+```js
+// 让 origin 相对于 anchor 偏移
+circle.setPosition(100, 100);
+circle.style.origin = [-100, -100];
+
+// 或者直接设置 anchor
+circle.setPosition(0, 0);
+circle.style.anchor = [0, 0];
+```
+
+### transformOrigin
+
+相对于 anchor 描述 origin 固然直观，但这需要我们计算出偏移距离。例如我们想让一个包含了很多子元素的 Group 绕中心点旋转，就需要先计算这个 Group 的 Bounds：
+
+```js
+group.appendChild(child1);
+group.appendChild(child2);
+group.appendChild(child3);
+
+// 计算 Bounds，考虑所有子元素
+const { halfExtents } = group.getBounds();
+// 设置 origin 从 [0, 0] 偏移 halfExtents 到中心点
+group.style.origin = halfExtents;
+```
+
+另一个问题是，当图形的 Bounds 发生变化后，我们不得不重新设置它。例如我们在设置了 origin 之后，又向 Group 中添加了子元素，这会造成 Group 的 Bounds 发生变化，基于它计算的 origin 就不是最新的了，为了保持 Group “绕中心点旋转”，我们还得手动重新设置一次 origin：
+
+```js
+const { halfExtents } = group.getBounds(); // [100, 100, 0]
+group.style.origin = halfExtents;
+
+// 添加了新的子元素，此时 group 的 Bounds 发生了变化，但 origin 还是 [100, 100, 0]
+group.appendChild(child4);
+
+const { halfExtents } = group.getBounds(); // [200, 200, 0]
+group.style.origin = halfExtents;
+```
+
+因此在某些场景下，用一些字面量或者百分比定义会更方便。例如 CSS 就提供了 transform-origin 属性，它正是相对于 Bounds 进行定义的，下图来自：https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin：
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_1WJQLRobtgAAAAAAAAAAAAAARQnAQ)
+
+当我们想实现“绕中心点旋转”时，只需要使用字面量或者百分比，这样就能避免进行 Bounds 的获取：
+
+```js
+group.style.transformOrigin = 'center';
+group.style.transformOrigin = 'center center';
+group.style.transformOrigin = '50% 50%';
+```
+
+在这个[示例](/zh/examples/scenegraph#origin)中，每次向 Group 添加子元素后，我们都会重新设置 transformOrigin，因此这个 Group 会始终绕中心旋转：
+
+```js
+group.appendChild(cloned);
+group.style.transformOrigin = 'center';
+```
+
+我们之所以无法做成根据 Bounds 自动计算，是因为导致 Bounds 发生变化的情况实在太多，甚至目标图形自身进行旋转时，Bounds 都在实时改变。试想一个图形正在绕变换中心进行旋转，Bounds 时时刻刻都在改变，如果根据 Bounds 实时计算变换中心，会导致旋转中心不稳定，出现旋转抖动问题：
 
 # id
 
@@ -134,13 +303,14 @@ circle.getLocalPosition(); // [100, 100]，此时为圆包围盒左上角位置
 
 **是否必须**：`false`
 
-**说明** 锚点位置，取值范围 `(0, 0) ~ (1, 1)`，修改它同时会改变图形的包围盒（尺寸不变，中心点发生偏移）
+**说明** 图形的原点（锚点）位置，基于 [Geometry Bounds](/zh/docs/api/basic/display-object#包围盒) 定义，取值范围 `[0, 0] ~ [1, 1]`，其中 `[0, 0]` 代表 Geometry Bounds 左上角，`[1, 1]` 代表右下角。
 
 不同图形的默认锚点如下，[示例](/zh/examples/shape#rect)：
 
 -   [Circle](/zh/docs/api/circle)，[Ellipse](/zh/docs/api/ellipse) 为圆心位置 `[0.5, 0.5]`
 -   [Rect](/zh/docs/api/rect)，[Image](/zh/docs/api/image)，[Line](/zh/docs/api/line)，[Polyline](/zh/docs/api/polyline)，[Polygon](/zh/docs/api/polygon)，[Path](/zh/docs/api/path) 为包围盒左上角顶点位置 `[0, 0]`
--   [Text](/zh/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/docs/api/basic/text#textbaseline) 与 [textAlign](/zh/docs/api/basic/text#textalign) 这两个属性设置
+-   [Text](/zh/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/docs/api/basic/text#textbaseline) 与 [textAlign](/zh/docs/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
+-   [Group](/zh/docs/api/text) 无几何定义，因此设置此属性无效
 
 ### origin
 
@@ -150,9 +320,39 @@ circle.getLocalPosition(); // [100, 100]，此时为圆包围盒左上角位置
 
 **是否必须**：`false`
 
-**说明** 旋转与缩放中心，也称作变换中心，基于自身包围盒表示，包围盒左上角为 `[0, 0]`
+**说明** 旋转与缩放中心，也称作变换中心，数值为相对于[锚点](/zh/docs/api/basic/display-object#anchor)的偏移量，默认值为 `[0, 0]`，因此就是锚点位置。
 
-[示例](/zh/examples/scenegraph#origin)
+在下面的例子中，我们在 `[100, 100]` 处放置了一个半径为 100 的圆：
+
+```js
+const circle = new Circle({
+    style: {
+        x: 100,
+        y: 100,
+        r: 100,
+    },
+});
+```
+
+如果我们想让圆以圆心作为变换中心进行缩放，由于此时锚点就是圆心，因此缩放前后锚点在世界坐标系下位置不变，发生变化的是包围盒：
+
+```js
+circle.style.origin = [0, 0];
+circle.scale(0.5);
+circle.getPosition(); // [100, 100]
+circle.getBounds(); // { center: [100, 100], halfExtents: [50, 50] }
+```
+
+但假如我们想让这个圆以自身包围盒左上角进行缩放，即相对于当前锚点（圆心）偏移 `[-100, -100]`。缩放之后锚点也会发生偏移，圆在世界坐标系下的位置自然也来到了 `[50, 50]`。同理，包围盒的中心点发生了移动：
+
+```js
+circle.style.origin = [-100, -100];
+circle.scale(0.5);
+circle.getPosition(); // [50, 50]
+circle.getBounds(); // { center: [50, 50], halfExtents: [50, 50] }
+```
+
+在下面的[示例](/zh/examples/scenegraph#origin)中，我们创建了一个矩形，它的默认锚点为局部坐标系下包围盒的左上角。如果我们想让它以包围盒中心进行旋转，就需要设置变换中心相对于锚点偏移长宽各一半，即 `[150, 100]`：
 
 ```js
 const rect = new Rect({
@@ -163,27 +363,27 @@ const rect = new Rect({
         origin: [150, 100], // 设置旋转与缩放中心为自身包围盒中心点
     },
 });
-
-rect.style.origin = [0, 0]; // 设置为左上角
-// 或者
-rect.style.transformOrigin = 'top left';
-rect.style.transformOrigin = '0px 0px';
-// 或者
-rect.setOrigin(0, 0);
 ```
 
-也可以使用 [transformOrigin](/zh/docs/api/basic/display-object#transformorigin) 表示。两者都相对于图形自身包围盒定义，但 transformOrigin 可以使用百分比或者关键字描述位置，例如我们想修改一个圆的变换中心到左上角而非圆心，可以这样做：
+需要注意的是，变换中心描述的是相对于当前锚点的偏移量，既然是绝对值有时就需要先计算出图形的包围盒，有些基础图形例如 Circle、Rect 可能不需要计算，但如果是一个复杂组合后的图形，例如包含了一大堆自元素的 Group：
+
+```js
+const { halfExtents } = myShape.getBounds();
+myShape.style.origin = halfExtents;
+```
+
+如果可以使用百分比或者字面量表示就会更方便，此时就可以使用 [transformOrigin](/zh/docs/api/basic/display-object#transformorigin) 表示。例如我们想修改一个圆的变换中心到左上角而非圆心，可以这样做：
 
 ```js
 const circle = new Circle({
     style: {
-        x: 200,
-        y: 200,
+        x: 100,
+        y: 100,
         r: 100,
     },
 });
 
-circle.style.origin = [100, 100]; // 左上角在局部坐标系下坐标为 [100, 100]
+circle.style.origin = [-100, -100]; // 相对于锚点（圆心）偏移 [-100, -100]
 // 或者
 circle.style.transformOrigin = 'left top'; // 包围盒左上角
 // 或者
@@ -191,6 +391,8 @@ circle.style.transformOrigin = '0px 0px';
 // 或者
 circle.style.transformOrigin = '0% 0%';
 ```
+
+两者的区别在于 origin 相对于锚点定义，而 transformOrigin 相对于包围盒定义。
 
 ### transform
 
@@ -248,7 +450,7 @@ circle.translateLocal(100, 100);
 
 **是否必须**：`false`
 
-**说明** 旋转与缩放中心，也称作变换中心，相对于自身包围盒定义。
+**说明** 旋转与缩放中心，也称作变换中心，相对于 Bounds 定义。
 
 和 CSS [transform-origin](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin) 类似，支持以下字符串写法，其中用空格分隔：
 
@@ -270,7 +472,7 @@ circle.style.transformOrigin = '0 50%'; // 包围盒水平方向左侧边缘距�
 circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘距离为 0，垂直方向距离顶部 100px
 ```
 
-⚠️ 暂不支持三个值的写法。
+⚠️ 暂不支持三个值的写法。与 origin 的区别在于，origin 相对于锚点定义，而 transformOrigin 相对于包围盒定义。
 
 ## 填充
 
@@ -396,7 +598,9 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 **是否必须**：`false`
 
-**说明**：描边宽度
+**说明**：描边宽度。与我们熟悉的 [CSS box model](https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing) 不同，边框的一半宽度在图形内，一半在图形外。例如下面这个圆的包围盒宽度为：`r + lineWidth / 2 = 110`
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*f0-CTpClWkMAAAAAAAAAAAAAARQnAQ)
 
 ### lineDash
 
@@ -431,6 +635,14 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 ## 阴影
 
 在图形底部增加阴影效果，支持配置阴影颜色，模糊半径和水平/垂直偏移距离。[示例](/zh/examples/shape#circle)
+
+阴影不会影响图形的包围盒，例如下图中给一个半径为 100 的圆添加阴影后，包围盒尺寸不变：
+
+```js
+circle.getBounds(); // { halfExtents: [100, 100] }
+circle.style.shadowBlur = 20;
+circle.getBounds(); // { halfExtents: [100, 100] }
+```
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ)
 
@@ -513,6 +725,8 @@ circle.style.filter = 'blur(5px) brightness(0.4)'; // 可叠加
 
 将高斯模糊应用于输入图像。其中 radius 定义了高斯函数的标准偏差值，或者屏幕上有多少像素相互融合，因此较大的值将产生更多的模糊，默认值为 0。该参数可以指定为 CSS 长度，但不接受百分比值。
 
+和阴影一样，模糊同样不会影响图形的包围盒尺寸。
+
 ```js
 circle.style.filter = 'blur(5px)';
 ```
@@ -542,6 +756,8 @@ circle.style.filter = 'brightness(200%)';
 -   offset-y 描述阴影的垂直偏移距离，单位 px
 -   blur-radius 数值越大越模糊，单位 px，不允许为负数
 -   color 阴影颜色
+
+阴影不会影响图形的包围盒尺寸。
 
 ```js
 circle.style.filter = 'drop-shadow(16px 16px 10px black)';
@@ -858,26 +1074,75 @@ rect.style.origin = [0, 0]; // 设置为左上角
 // 或者 rect.setOrigin(0, 0);
 ```
 
-## 获取包围盒
+# 获取包围盒
 
-| 名称 | 参数 | 返回值 | 备注 |
-| --- | --- | --- | --- |
-| getBounds | 无 | AABB | 获取世界坐标系下的轴对齐包围盒 |
-| getLocalBounds | 无 | AABB | 获取局部坐标系下的包围盒 |
-| getBoundingClientRect | 无 | Rect | 获取世界坐标系下的包围矩形，不考虑子元素，同时加上画布相对于浏览器的偏移量 |
+基于不同的[包围盒定义](/zh/docs/api/basic/display-object#包围盒)，我们提供了以下获取方法。
 
-其中轴对齐包围盒 `AABB` 结构为：
+## getGeometryBounds(): AABB | null
+
+获取基础图形的几何包围盒，除了定义所需的样式属性（例如 Circle 的 r，Rect 的 width/height），它不受其他绘图属性（例如 lineWidth，fitler，shadowBlur 等）影响：
 
 ```js
-interface AABB {
-    center: [number, number, number];
-    halfExtents: [number, number, number];
-    min: [number, number, number];
-    max: [number, number, number];
-}
+const circle = new Circle({
+    style: {
+        x: 100, // 局部坐标系下的坐标不会影响 Geometry Bounds
+        y: 100, // 局部坐标系下的坐标不会影响 Geometry Bounds
+        r: 100,
+        lineWidth: 20, // 样式属性不会影响 Geometry Bounds
+        shadowBlur: 10, // 样式属性不会影响 Geometry Bounds
+    },
+});
+circle.getGeometryBounds(); // { center: [0, 0], halfExtents: [100, 100] }
 ```
 
-2 维矩形 `Rect` 和 [DOMRect](https://developer.mozilla.org/zh-CN/docs/Web/API/DOMRect) 保持一致，结构为：
+Group 由于没有几何定义，因此会返回 null：
+
+```js
+const group = new Group();
+group.getGeometryBounds(); // null
+```
+
+## getBounds(): AABB | null
+
+合并自身以及子节点在世界坐标系下的 Geometry Bounds。这应当是最常用的计算方式：
+
+```js
+const circle = new Circle({
+    style: {
+        x: 100, // 应用世界坐标系下的变换
+        y: 100,
+        r: 100,
+    },
+});
+circle.getBounds(); // { center: [100, 100], halfExtents: [100, 100] }
+```
+
+## getRenderBounds(): AABB | null
+
+合并自身以及子节点在世界坐标系下的 Render Bounds，在 Geometry Bounds 基础上，受以下样式属性影响： lineWidth，shadowBlur，filter：
+
+```js
+const circle = new Circle({
+    style: {
+        x: 100, // 应用世界坐标系下的变换
+        y: 100,
+        r: 100,
+        lineWidth: 20, // 考虑样式属性
+    },
+});
+// r + lineWidth / 2
+circle.getBounds(); // { center: [100, 100], halfExtents: [110, 110] }
+```
+
+## getLocalBounds(): AABB | null
+
+getBounds 的唯一区别是在父节点的局部坐标系下计算。
+
+## getBoundingClientRect(): Rect
+
+获取浏览器坐标系下的 Geometry Bounds，应用世界坐标系下的变换后，再加上画布相对于浏览器的偏移量。
+
+返回的 2 维矩形 `Rect` 和 [DOMRect](https://developer.mozilla.org/zh-CN/docs/Web/API/DOMRect) 保持一致，结构为：
 
 ```js
 interface Rect {
@@ -890,14 +1155,9 @@ interface Rect {
 }
 ```
 
-`getBounds` 和 `getBoundingClientRect` 有以下区别：
-
--   返回值的结构不同，前者返回一个 3 维的轴对齐包围盒，后者返回一个 2 维矩形
--   前者会考虑子元素，把它们的包围盒合并起来。后者仅考虑自身，不考虑子元素，另外会加上画布相对于浏览器的偏移量
-
 # 节点操作
 
-在场景图中，我们需要构建父子关系，快速获取父子节点，有时还需要在子树中查询某一类型的节点列表。为此，我们参考 DOM API 中的 [Node 接口](https://developer.mozilla.org/en-US/docs/Web/API/Node) 在节点上定义了一系列属性与方法，同时提供了类似 CSS 选择器的节点查询方法，最大程度减少学习成本。
+在场景图中，我们需要构建父子关系，快速获取父子节点，有时还需要在子树中查询某一类型的节点列表。基于继承关系，每个 DisplayObject 都拥有 [Node](/zh/docs/api/builtin-objects/node) 和 [Element](/zh/docs/api/builtin-objects/element) 能力。
 
 ## 简单节点查询
 
@@ -1000,6 +1260,41 @@ parent.removeChildren();
 parent.replaceChildren();
 ```
 
+在添加/删除节点时有以下注意点：
+
+1. 添加节点时会依次触发 ChildInserted 和 Inserted 事件
+2. 删除节点时会依次触发 Removed 和 ChildRemoved 事件，默认会调用 [destroy](/zh/docs/api/basic/display-object#销毁) 销毁自身。如果只是暂时从场景图中移除，后续还可能继续添加回来，可以使用 `remove(false)`
+
+## 克隆节点
+
+方法签名为 `cloneNode(deep?: boolean): this`，可选参数为是否需要深拷贝，返回克隆得到的新节点。
+
+在下面的例子中，我们创建了一个圆，设置了它的半径与位置。拷贝得到的新节点拥有同样的样式属性与位置：
+
+```js
+circle.style.r = 20;
+circle.setPosition(10, 20);
+
+const clonedCircle = circle.cloneNode();
+clonedCircle instanceof Circle; // true
+clonedCircle.style.r; // 20
+clonedCircle.getPosition(); // [10, 20]
+```
+
+注意事项：
+
+-   支持深拷贝，即自身以及整棵子树
+-   克隆的新节点不会保留原始节点的父子关系，需要使用 `appendChild` 将其加入画布才会被渲染
+-   与 [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes) 保持一致，不会拷贝原图形上的事件监听器
+
+在这个[示例](/zh/examples/scenegraph#clone)中，我们展示了以上特性：
+
+-   可以随时更改原始节点的样式属性，得到的拷贝都会是最新的，新节点同样需要被加入到场景图中才会被渲染
+-   但由于不会拷贝事件监听器，因此只有原始节点可以进行拖拽
+-   非深拷贝模式下，Text（Drag me 文本） 作为 Circle 的子节点不会被拷贝
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PwEYSI_ijPEAAAAAAAAAAAAAARQnAQ)
+
 ## 获取/设置属性值
 
 | 名称         | 参数                         | 返回值 | 备注       |
@@ -1041,6 +1336,13 @@ circle.style.r = 20;
 circle.destroy();
 ```
 
+在调用用该方法时，会依次执行以下操作：
+
+1. 触发 Destroy 事件
+2. 调用 `remove()` 将自身从场景图中移除，因此会触发 Removed 和 ChildRemoved 事件
+3. 移除该节点上的所有事件监听器
+4. 将 [destroyed](/zh/docs/api/basic/display-object#destroyed) 标志置为 true
+
 ## 状态
 
 通过以下属性可以判断图形当前的状态，例如是否被加入到画布中，是否已经被销毁等。
@@ -1059,19 +1361,21 @@ circle.isConnected; // true
 
 ### ownerDocument
 
-指向[画布 Canvas](/zh/docs/api/canvas)。如果当前图形还未添加到画布中，或者从画布中被移除，则返回 null。
+指向画布的入口 Document。如果还未加入到画布中，返回 null。
 
 https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument
 
 ```js
 circle.ownerDocument; // null
 canvas.appendChild(circle); // add to canvas
-circle.ownerDocument; // canvas
+circle.ownerDocument; // canvas.document
 ```
 
 ### destroyed
 
-用于判断一个图形是否已经被销毁。例如主动销毁自身，或者父节点通过 `removeChildren(true)` 主动移除并销毁所有子节点等。
+用于判断一个图形是否已经被销毁。
+
+通过调用 `destroy()` 主动销毁自身，或者父节点通过 `removeChildren()` 主动移除并销毁所有子节点等：
 
 ```js
 circle.destroyed; // false
@@ -1081,30 +1385,50 @@ circle.destroyed; // true
 
 ## 生命周期事件监听
 
-可以监听节点添加和删除事件：
+在[事件系统](/zh/docs/api/event)中，我们可以使用类似 DOM Event API 的方式给添加到画布中的节点增加事件监听器。
+
+除了例如 click、mouseenter 这样的交互事件，我们还提供了一系列内置的节点生命周期事件，例如可以监听节点的添加和删除事件，这些事件同样有完整的传播路径（冒泡、捕获），[示例](/zh/examples/event#builtin)：
 
 ```js
-import { DISPLAY_OBJECT_EVENT } from '@antv/g';
+import { ElementEvent } from '@antv/g';
 
 // 监听子节点添加事件
-parent.on(DISPLAY_OBJECT_EVENT.ChildInserted, (childNode) => {
-    console.log(childNode); // child
+parent.on(ElementEvent.CHILD_INSERTED, (e) => {
+    e.target; // parent
+    e.detail.child; // child
 });
-child.on(DISPLAY_OBJECT_EVENT.Inserted, (parentNode) => {
-    console.log(parentNode); // parent
+child.on(ElementEvent.INSERTED, (e) => {
+    e.target; // child
+    e.detail.parent; // parent
+});
+parent.on(ElementEvent.CHILD_REMOVED, (e) => {
+    e.target; // parent
+    e.detail.child; // child
+});
+child.on(ElementEvent.REMOVED, (e) => {
+    e.target; // child
+    e.detail.parent; // parent
+});
+child.on(ElementEvent.ATTRIBUTE_CHANGED, (e) => {
+    e.target; // child
+    e.detail.attributeName; // 属性名
+    e.detail.oldValue; // 旧值
+    e.detail.newValue; // 新值
 });
 
 parent.appendChild(child);
 ```
 
-支持以下事件：
+目前我们支持如下场景图相关事件：
 
--   `ChildInserted` 作为父节点有子节点添加时触发
--   `Inserted` 作为子节点被添加时触发
--   `ChildRemoved` 作为父节点有子节点移除时触发
--   `Removed` 作为子节点被移除时触发
--   `AttributeChanged` 调用 `setAttribute()` 修改属性时触发
--   `Destroy` 调用 `destroy()` 时触发
+-   CHILD_INSERTED 作为父节点有子节点添加时触发
+-   INSERTED 作为子节点被添加时触发
+-   CHILD_REMOVED 作为父节点有子节点移除时触发
+-   REMOVED 作为子节点被移除时触发
+-   MOUNTED 首次进入画布时触发
+-   UNMOUNTED 从画布中移除时触发
+-   ATTRIBUTE_CHANGED 修改属性时触发
+-   DESTROY 销毁时触发
 
 # 可见性与渲染次序
 

@@ -1,12 +1,12 @@
 import { injectable } from 'inversify';
-import { Element } from '../dom/Element';
+import { IElement } from '../dom/interfaces';
 
 export const SceneGraphSelectorFactory = 'SceneGraphSelectorFactory';
 export const SceneGraphSelector = 'SceneGraphSelector';
 export interface SceneGraphSelector {
-  selectOne<T extends Element>(query: string, element: T): T | null;
-  selectAll<T extends Element>(query: string, element: T): T[];
-  is<T extends Element>(query: string, element: T): boolean;
+  selectOne<R extends IElement, T extends IElement>(query: string, root: R): T | null;
+  selectAll<R extends IElement, T extends IElement>(query: string, root: R): T[];
+  is<T extends IElement>(query: string, element: T): boolean;
 }
 
 /**
@@ -18,10 +18,10 @@ export interface SceneGraphSelector {
  */
 @injectable()
 export class DefaultSceneGraphSelector implements SceneGraphSelector {
-  selectOne<T extends Element>(query: string, object: T) {
+  selectOne<R extends IElement, T extends IElement>(query: string, root: R): T | null {
     if (query.startsWith('#')) {
       // getElementById('id')
-      return object.find((node) => {
+      return root.find((node) => {
         // return !node.shadow && node.id === query.substring(1);
         return node.id === query.substring(1);
       });
@@ -29,22 +29,24 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
     return null;
   }
 
-  selectAll<T extends Element>(query: string, object: T) {
+  selectAll<R extends IElement, T extends IElement>(query: string, root: R): T[] {
     // TODO: only support `[name="${name}"]` `.className`
     if (query.startsWith('.')) {
       // getElementsByClassName('className');
       // TODO: should include itself?
-      return object.findAll((node) => node.className === query.substring(1));
+      return root.findAll((node) => node.className === query.substring(1));
+    } else if (query.startsWith('#')) {
+      return root.findAll((node) => node.id === query.substring(1));
     } else if (query.startsWith('[name=')) {
       // getElementsByName();
-      return object.findAll((node) => node.name === query.substring(7, query.length - 2));
+      return root.findAll((node) => node.name === query.substring(7, query.length - 2));
     } else {
       // getElementsByTag('circle');
-      return object.findAll((node) => node.nodeName === query);
+      return root.findAll((node) => node.nodeName === query);
     }
   }
 
-  is<T extends Element>(query: string, group: T) {
+  is<T extends IElement>(query: string, group: T): boolean {
     // TODO: need a simple `matches` implementation
     return true;
   }

@@ -1,5 +1,4 @@
-/* eslint-disable no-underscore-dangle */
-import { linear, parseEasingFunction } from './utils/animation';
+import { linear, parseEasingFunction } from '../utils/animation';
 import type { KeyframeEffect } from './KeyframeEffect';
 
 /**
@@ -73,6 +72,10 @@ export class AnimationEffectTiming implements EffectTiming {
   activeDuration: number;
 
   endTime: number;
+
+  currentIteration: number | null = null;
+
+  progress: number | null = null;
 
   constructor() {}
 }

@@ -1,12 +1,17 @@
 import { SHAPE } from '../types';
 import type { BaseStyleProps } from '../types';
-import { DisplayObject, DisplayObjectConfig } from '../DisplayObject';
+import { DisplayObject } from './DisplayObject';
+import { DisplayObjectConfig } from '../dom';
 
 export class Group extends DisplayObject {
   constructor(config?: DisplayObjectConfig<BaseStyleProps>) {
+    const { style, ...rest } = config || {};
     super({
       type: SHAPE.Group,
-      ...config,
+      style: {
+        ...style,
+      },
+      ...rest,
     });
   }
 }

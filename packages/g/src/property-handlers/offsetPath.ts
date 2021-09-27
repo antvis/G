@@ -1,4 +1,4 @@
-import type { DisplayObject } from '../DisplayObject';
+import type { DisplayObject } from '../display-objects/DisplayObject';
 
 /**
  * @see /zh/docs/api/animation#%E8%B7%AF%E5%BE%84%E5%8A%A8%E7%94%BB

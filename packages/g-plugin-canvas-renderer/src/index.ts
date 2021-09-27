@@ -1,5 +1,5 @@
 import { RenderingPluginContribution, RendererPlugin, SHAPE, container, world } from '@antv/g';
-import { ContainerModule, Container, interfaces } from 'inversify';
+import { ContainerModule, Container } from 'inversify';
 import RBush from 'rbush';
 import { DefaultRenderer, StyleRenderer, StyleRendererFactory } from './shapes/styles';
 import { ImageRenderer } from './shapes/styles/Image';

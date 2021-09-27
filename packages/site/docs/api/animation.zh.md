@@ -362,10 +362,34 @@ animation.effect.target; // circle
 
 返回 [EffectTiming](/zh/docs/api/animation#effecttiming) 对象
 
+https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getTiming
+
 ```js
 const timing = animation.effect.getTiming();
 timing.ease = 'linear';
 ```
+
+## getComputedTiming()
+
+返回 [ComputedEffectTiming](/zh/docs/api/animation#effecttiming) 对象，它与 [EffectTiming](/zh/docs/api/animation#effecttiming) 的区别在于前者会把后者的一些字面量计算后返回：
+
+-   duration 为 'auto' 时返回 0
+-   fill 为 'auto' 时返回 'none'
+
+https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming
+
+## updateTiming()
+
+更新 [EffectTiming](/zh/docs/api/animation#effecttiming) 属性，例如以下两种写法等价：
+
+```js
+const timing = animation.effect.getTiming();
+timing.ease = 'linear';
+
+animation.updateTiming({ ease: 'linear' });
+```
+
+https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/updateTiming
 
 # Keyframe
 
@@ -478,6 +502,10 @@ export default {
 # EffectTiming
 
 https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming
+
+```js
+const timing = animation.effect.getTiming();
+```
 
 ## delay
 
@@ -635,9 +663,49 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterations
 
 **是否必须**：`false`
 
-## [WIP] iterationStart
+## iterationStart
+
+从何处开始执行动画，例如动画总是从 0 开始运行，设置为 0.5 代表动画会从当中开始运行。
 
 https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterationStart
+
+**类型**： `number`
+
+**默认值**：0
+
+**是否必须**：`false`
+
+# ComputedEffectTiming
+
+继承了 [EffectTiming](/zh/docs/api/animation#effecttiming) 的所有属性，同时包含一些只读的、计算后的额外属性。
+
+```js
+const computedTiming = animation.effect.getComputedTiming();
+```
+
+## endTime
+
+动画的预计结束时间，需要考虑前后延迟。计算方式为：[delay](/zh/docs/api/animation#delay) + [activeDuration](/zh/docs/api/animation#activeduration) + [endDelay](/zh/docs/api/animation#enddelay)
+
+https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming#return_value
+
+## activeDuration
+
+动画效果运行的预计时长，单位毫秒。计算方式为 [duration](/zh/docs/api/animation#duration) \* [iterations](/zh/docs/api/animation#iterations)
+
+https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming#return_value
+
+## localTime
+
+同 [currentTime](/zh/docs/api/animation#currenttime)，单位毫秒。
+
+## progress
+
+返回在当前 iteration 内的进度，取值范围为 `[0-1]`。当动画不在运行中时返回 null。
+
+## currentIteration
+
+返回动画当前循环执行的次数，从 0 开始。当动画不在运行中时返回 null。
 
 # 其他类型的 Transition
 

@@ -1,7 +1,6 @@
-import { SHAPE } from '../types';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { DisplayObject } from '../DisplayObject';
-import { DisplayObjectConfig } from '../DisplayObject';
+import { BaseStyleProps, ParsedBaseStyleProps, DisplayObjectConfig } from '..';
+import { SHAPE } from '..';
+import { DisplayObject } from './DisplayObject';
 import { TextMetrics } from '../services';
 
 export interface TextStyleProps extends BaseStyleProps {
@@ -66,9 +65,6 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
     super({
       type: SHAPE.Text,
       style: {
-        opacity: 1,
-        fillOpacity: 1,
-        strokeOpacity: 1,
         text: '',
         fontSize: 12,
         fontFamily: 'sans-serif',

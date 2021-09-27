@@ -75,7 +75,7 @@ export class TextModelBuilder implements ModelBuilder {
       name === 'wordWrap' ||
       name === 'textAlign'
     ) {
-      this.generateAtlas(object);
+      this.generateAtlas(object as Text);
     }
   }
 

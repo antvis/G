@@ -15,6 +15,8 @@ import {
   RENDER_REASON,
   PARSED_COLOR_TYPE,
   DefaultCamera,
+  ElementEvent,
+  FederatedEvent,
 } from '@antv/g';
 import type { LinearGradient, RadialGradient } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
@@ -122,6 +124,35 @@ export class SVGRendererPlugin implements RenderingPlugin {
   private $camera: SVGElement;
 
   apply(renderingService: RenderingService) {
+    const handleMounted = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+      // create SVG DOM Node
+      this.createSVGDom(object, this.$camera);
+    };
+
+    const handleUnmounted = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+      this.removeSVGDom(object);
+    };
+
+    const handleAttributeChanged = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+      const { attributeName, newValue } = e.detail;
+
+      if (attributeName === 'zIndex') {
+        const parent = object.parentNode;
+        const parentEntity = object.parentNode?.getEntity();
+        const $groupEl = parentEntity?.getComponent(ElementSVG)?.$groupEl;
+        const children = [...(parent?.children || [])];
+
+        if ($groupEl) {
+          this.reorderChildren($groupEl, children as DisplayObject[]);
+        }
+      }
+
+      this.updateAttribute(object, attributeName, object.parsedStyle[attributeName]);
+    };
+
     renderingService.hooks.init.tap(SVGRendererPlugin.tag, () => {
       this.$def = createSVGElement('defs') as SVGDefsElement;
       const $svg = this.contextService.getContext()!;
@@ -134,15 +165,22 @@ export class SVGRendererPlugin implements RenderingPlugin {
       this.$camera.id = `${G_SVG_PREFIX}_camera`;
       this.applyTransform(this.$camera, this.camera.getOrthoMatrix());
       $svg.appendChild(this.$camera);
+
+      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.addEventListener(
+        ElementEvent.ATTRIBUTE_CHANGED,
+        handleAttributeChanged,
+      );
     });
 
-    renderingService.hooks.mounted.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
-      // create SVG DOM Node
-      this.createSVGDom(object, this.$camera);
-    });
-
-    renderingService.hooks.unmounted.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
-      this.removeSVGDom(object);
+    renderingService.hooks.destroy.tap(SVGRendererPlugin.tag, () => {
+      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.removeEventListener(
+        ElementEvent.ATTRIBUTE_CHANGED,
+        handleAttributeChanged,
+      );
     });
 
     renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
@@ -155,39 +193,16 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
 
       if ($el && $groupEl) {
-        // 不可见
-        if (!object.isVisible()) {
-          console.log('remove....');
-        }
-
         // apply local RTS transformation to <group> wrapper
         // account for anchor
         this.applyTransform($groupEl, object.getLocalTransform());
 
-        this.reorderChildren($groupEl, object.children || []);
+        this.reorderChildren($groupEl, (object.children as DisplayObject[]) || []);
         // finish rendering, clear dirty flag
         const renderable = entity.getComponent(Renderable);
         renderable.dirty = false;
       }
     });
-
-    renderingService.hooks.attributeChanged.tap(
-      SVGRendererPlugin.tag,
-      (object: DisplayObject, name: string, value: any) => {
-        if (name === 'zIndex') {
-          const parent = object.parentNode;
-          const parentEntity = object.parentNode?.getEntity();
-          const $groupEl = parentEntity?.getComponent(ElementSVG)?.$groupEl;
-          const children = [...(parent?.children || [])];
-
-          if ($groupEl) {
-            this.reorderChildren($groupEl, children);
-          }
-        }
-
-        this.updateAttribute(object, name, object.parsedStyle[name]);
-      },
-    );
   }
 
   private reorderChildren($groupEl: SVGElement, children: DisplayObject[]) {
@@ -403,7 +418,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
    * the origin is bounding box's top left corner
    */
   private updateAnchorWithTransform(object: DisplayObject) {
-    const { width = 0, height = 0, anchor = [0, 0] } = object.parsedStyle || {};
+    const bounds = object.getGeometryBounds();
+    const width = (bounds && bounds.halfExtents[0] * 2) || 0;
+    const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+    const { anchor = [0, 0] } = object.parsedStyle || {};
 
     const $el = object.getEntity().getComponent(ElementSVG)?.$el;
     // apply anchor to element's `transform` property

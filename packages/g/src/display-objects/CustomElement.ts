@@ -1,6 +1,7 @@
-import type { DisplayObjectConfig } from './DisplayObject';
 import { DisplayObject } from './DisplayObject';
-import { DISPLAY_OBJECT_EVENT } from './dom/Element';
+import type { DisplayObjectConfig } from '..';
+import { ElementEvent } from '..';
+import { FederatedEvent } from '../dom';
 
 // @see https://stackoverflow.com/questions/44153378/typescript-abstract-optional-method
 export interface CustomElement<CustomElementStyleProps> {
@@ -33,16 +34,16 @@ export abstract class CustomElement<
   constructor(config: DisplayObjectConfig<CustomElementStyleProps>) {
     super(config);
 
-    this.on(DISPLAY_OBJECT_EVENT.ChildInserted, this.handleChildInserted);
-    this.on(DISPLAY_OBJECT_EVENT.ChildRemoved, this.handleChildRemoved);
+    this.addEventListener(ElementEvent.CHILD_INSERTED, this.handleChildInserted);
+    this.addEventListener(ElementEvent.CHILD_REMOVED, this.handleChildRemoved);
     if (this.attributeChangedCallback) {
-      this.on(DISPLAY_OBJECT_EVENT.AttributeChanged, this.handleAttributeChanged);
+      this.addEventListener(ElementEvent.ATTRIBUTE_CHANGED, this.handleAttributeChanged);
     }
     if (this.connectedCallback) {
-      this.on(DISPLAY_OBJECT_EVENT.Inserted, this.handleMounted);
+      this.addEventListener(ElementEvent.INSERTED, this.handleMounted);
     }
     if (this.disconnectedCallback) {
-      this.on(DISPLAY_OBJECT_EVENT.Removed, this.disconnectedCallback.bind(this));
+      this.addEventListener(ElementEvent.REMOVED, this.disconnectedCallback.bind(this));
     }
   }
 
@@ -58,26 +59,39 @@ export abstract class CustomElement<
     }
   };
 
-  private handleChildInserted = (child: DisplayObject) => {
-    child.forEach((node) => {
+  private handleChildInserted = (e: FederatedEvent) => {
+    (e.target as DisplayObject).forEach((node) => {
       // append children like other shapes after mounted
       if (!this.isConnected) {
-        this.shadowNodes.push(node);
+        this.shadowNodes.push(node as DisplayObject);
       }
     });
   };
 
-  private handleChildRemoved = (child: DisplayObject) => {
-    child.forEach((node) => {
+  private handleChildRemoved = (e: FederatedEvent) => {
+    (e.target as DisplayObject).forEach((node) => {
       node.shadow = false;
     });
   };
 
   private handleAttributeChanged = <Key extends keyof CustomElementStyleProps>(
-    name: Key,
-    oldValue: CustomElementStyleProps[Key],
-    value: CustomElementStyleProps[Key],
+    e: FederatedEvent<
+      Event,
+      {
+        attributeName: Key;
+        oldValue: CustomElementStyleProps[Key];
+        newValue: CustomElementStyleProps[Key];
+      }
+    >,
   ) => {
-    this.attributeChangedCallback && this.attributeChangedCallback(name, oldValue, value);
+    // only listen itself
+    // RangeError: Maximum call stack size exceeded
+    if (e.target !== this) {
+      return;
+    }
+
+    const { attributeName, oldValue, newValue } = e.detail;
+    this.attributeChangedCallback &&
+      this.attributeChangedCallback(attributeName, oldValue, newValue);
   };
 }

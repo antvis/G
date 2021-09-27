@@ -6,7 +6,7 @@ import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
 // @ts-ignore
-import { Group, Circle, Canvas, Text, Rect, DISPLAY_OBJECT_EVENT } from '@antv/g';
+import { Group, Circle, Canvas, Text, Rect, ElementEvent } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Plugin } from '@antv/g-plugin-css-select';
 import interact from 'interactjs';
@@ -31,6 +31,9 @@ const canvas = new Canvas({
 });
 
 describe('Event API like DOM', () => {
+  afterAll(() => {
+    canvas.destroy();
+  });
   // it('pointerdown/mousedown/touchstart/rightdown', () => {
   //   const circle = new Circle({
   //     id: 'circle',

@@ -1,13 +1,7 @@
-import type {
-  DisplayObject,
-  Line,
-  Polyline,
-  BaseStyleProps,
-  DisplayObjectConfig,
-  LineStyleProps,
-} from '@antv/g';
+import type { DisplayObject, Line, Polyline, BaseStyleProps, DisplayObjectConfig } from '@antv/g';
 import { CustomElement, Path, SHAPE } from '@antv/g';
 import { vec3 } from 'gl-matrix';
+import { isNil } from '@antv/util';
 
 type ArrowHead = boolean | DisplayObject;
 type ArrowBody = Line | Path | Polyline;
@@ -223,9 +217,24 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
   }
 
   private applyArrowStyle(attributes: ArrowStyleProps, objects: (DisplayObject | undefined)[]) {
+    const { opacity, stroke, strokeOpacity, lineWidth } = attributes;
     objects.forEach((shape) => {
       if (shape) {
-        shape.attr(attributes);
+        if (!isNil(opacity)) {
+          shape.style.opacity = opacity;
+        }
+
+        if (!isNil(stroke)) {
+          shape.style.stroke = stroke;
+        }
+
+        if (!isNil(strokeOpacity)) {
+          shape.style.strokeOpacity = strokeOpacity;
+        }
+
+        if (!isNil(lineWidth)) {
+          shape.style.lineWidth = lineWidth;
+        }
       }
     });
   }

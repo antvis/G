@@ -1,10 +1,10 @@
 import { EventEmitter } from 'eventemitter3';
 import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
 import { injectable } from 'inversify';
-import Landmark from './Landmark';
-import { Frustum } from './shapes';
-import { createVec3, getAngle } from './utils/math';
-import { requestAnimationFrame, cancelAnimationFrame } from './utils/raf';
+import { Landmark } from './Landmark';
+import { Frustum } from '../shapes';
+import { createVec3, getAngle } from '../utils/math';
+import { requestAnimationFrame, cancelAnimationFrame } from '../utils/raf';
 
 export const DefaultCamera = 'DefaultCamera';
 
@@ -137,7 +137,8 @@ export class Camera extends EventEmitter {
   private rright: number;
   private top: number;
   private bottom: number;
-  private perspective = mat4.create();
+  private projectionMatrix = mat4.create();
+  private projectionMatrixInverse = mat4.create();
   private jitteredProjectionMatrix: mat4 | undefined = undefined;
 
   private view:
@@ -187,7 +188,11 @@ export class Camera extends EventEmitter {
 
   getPerspective() {
     // account for TAA
-    return this.jitteredProjectionMatrix || this.perspective;
+    return this.jitteredProjectionMatrix || this.projectionMatrix;
+  }
+
+  getPerspectiveInverse() {
+    return this.projectionMatrixInverse;
   }
 
   getFrustum() {
@@ -273,7 +278,11 @@ export class Camera extends EventEmitter {
   jitterProjectionMatrix(x: number, y: number) {
     const translation = mat4.fromTranslation(mat4.create(), [x, y, 0]);
 
-    this.jitteredProjectionMatrix = mat4.multiply(mat4.create(), translation, this.perspective);
+    this.jitteredProjectionMatrix = mat4.multiply(
+      mat4.create(),
+      translation,
+      this.projectionMatrix,
+    );
   }
 
   clearJitterProjectionMatrix() {
@@ -400,7 +409,14 @@ export class Camera extends EventEmitter {
     // }
 
     // flip Y
-    mat4.perspective(this.perspective, -this.fov * DEG_2_RAD, -this.aspect, this.near, this.far);
+    mat4.perspective(
+      this.projectionMatrix,
+      -this.fov * DEG_2_RAD,
+      -this.aspect,
+      this.near,
+      this.far,
+    );
+    mat4.invert(this.projectionMatrixInverse, this.projectionMatrix);
     this.emit(CAMERA_EVENT.Updated);
     return this;
   }
@@ -434,7 +450,8 @@ export class Camera extends EventEmitter {
       bottom = top - scaleH * this.view.height;
     }
 
-    mat4.ortho(this.perspective, left, right, bottom, top, near, far);
+    mat4.ortho(this.projectionMatrix, left, right, bottom, top, near, far);
+    mat4.invert(this.projectionMatrixInverse, this.projectionMatrix);
 
     this._getOrthoMatrix();
     this.emit(CAMERA_EVENT.Updated);

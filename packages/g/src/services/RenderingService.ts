@@ -1,13 +1,12 @@
 import { inject, injectable, named } from 'inversify';
 import { SyncHook, SyncWaterfallHook } from 'tapable';
-import { CanvasService } from '../Canvas';
 import { Renderable, Sortable } from '../components';
 import { ContributionProvider } from '../contribution-provider';
-import { DisplayObject } from '../DisplayObject';
+import { DisplayObject, Batch } from '..';
 import { EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext, RENDER_REASON } from './RenderingContext';
 import { sortByZIndex } from './SceneGraphService';
-import { Batch } from '../Batch';
+import { IElement } from '../dom/interfaces';
 
 export interface RenderingPlugin {
   apply(renderer: RenderingService): void;
@@ -29,7 +28,7 @@ export interface PickingResult {
  * * end frame
  */
 @injectable()
-export class RenderingService implements CanvasService {
+export class RenderingService {
   @inject(ContributionProvider)
   @named(RenderingPluginContribution)
   private renderingPluginContribution: ContributionProvider<RenderingPlugin>;
@@ -40,9 +39,6 @@ export class RenderingService implements CanvasService {
   hooks = {
     init: new SyncHook<[]>(),
     prepare: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
-    mounted: new SyncHook<[DisplayObject]>(['object']),
-    unmounted: new SyncHook<[DisplayObject]>(['object']),
-    attributeChanged: new SyncHook<[DisplayObject, string, any]>(['object', 'name', 'value']),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */
@@ -103,7 +99,6 @@ export class RenderingService implements CanvasService {
     // render itself
     const objectToRender = this.hooks.prepare.call(displayObject);
 
-    // console.log(objectToRender);
     if (objectToRender) {
       if (!this.renderingContext.dirty) {
         this.renderingContext.dirty = true;
@@ -121,7 +116,7 @@ export class RenderingService implements CanvasService {
       // sort is very expensive, use cached result if posible
       const sortable = entity.getComponent(Sortable);
       if (sortable.dirty) {
-        sortable.sorted = [...displayObject.childNodes].sort(sortByZIndex);
+        sortable.sorted = [...(displayObject.childNodes as IElement[])].sort(sortByZIndex);
         sortable.dirty = false;
       }
 

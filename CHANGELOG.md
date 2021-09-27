@@ -1,24 +1,124 @@
 # Change Log
 
+以下版本号以 @antv/g 为准。
+
+## [1.0.0-alpha.21] - 2021-09-21
+
+### 新增特性
+
+-   提供各个坐标系间的转换方法：Client <-> Viewport <-> Canvas
+
+    -   client2Viewport(client: Point): Point
+    -   viewport2Client(canvas: Point): Point
+    -   viewport2Canvas(viewport: Point): Point
+    -   canvas2Viewport(canvas: Point): Point
+
+-   `cloneNode(deep?: boolean)` 在任何时刻都可以进行图形的克隆，例如：
+
+    ```js
+    circle.style.r = 20;
+    circle.setPosition(10, 20);
+
+    const clonedCircle = circle.cloneNode();
+    clonedCircle.style.r; // 20
+    clonedCircle.getPosition(); // [10, 20]
+    ```
+
+    注意事项：
+
+    -   支持深拷贝，即自身以及整棵子树
+    -   克隆的新节点不会保留原始节点的父子关系，需要使用 `appendChild` 将其加入画布才会被渲染
+    -   与 [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes) 保持一致，不会拷贝原图形上的事件监听器。
+
+-   `document.createElement()` 创建图形，作为 `new Circle()` 的另一种选择，类似旧版 G 的 `addShape()`：
+
+    ```js
+    import { SHAPE, Circle } from '@antv/g';
+
+    const circle = canvas.document.createElement(SHAPE.Circle, { style: { r: 100 } });
+    // 或者
+    const circle = new Circle({ style: { r: 100 } });
+    ```
+
+    除了内置图形，自定义图形如果也想用这种方式创建，需要先注册：
+
+    ```js
+    import { MyCustomShape } from 'my-custom-shape';
+    canvas.customElements.define(MyCustomShape.tag, MyCustomShape);
+
+    const myCustomShape = canvas.document.createElement(MyCustomShape.tag, {});
+    ```
+
+-   ComputedEffectTiming
+    -   endTime
+    -   activeDuration
+    -   localTime
+    -   progress
+    -   currentIteration
+-   updateTiming
+
+-   resetLocalTransform 重置局部坐标系下的变换 https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/resetTransform
+
+    ```js
+    circle.resetLocalTransform();
+
+    // 等价于
+    circle.setLocalScale(1);
+    circle.setLocalPosition(0, 0);
+    circle.setLocalEulerAngles(0);
+    ```
+
+### 改动
+
+-   重构 DisplayObject，在原有的继承链（DisplayObject -> Element -> Node -> EventTarget）基础上，将动画、变换等能力拆解成多个 mixin：
+    -   Animatable
+    -   Transformable
+    -   Visible
+-   包围盒 API，区分了 Bounds，LocalBounds，ContentBounds 以及 RenderBounds 这四种包围盒：
+    -   getBounds 世界坐标系下的包围盒
+    -   getLocalBounds 在父元素局部空间下的包围盒
+    -   getGeometryBounds 不考虑所有子元素，例如：
+        ```js
+        const geometryBounds = circle.getGeometryBounds();
+        circle.appendChild(child1); // 添加一堆子元素
+        circle.appendChild(child2);
+        circle.appendChild(child3);
+        circle.getGeometryBounds(); // 尺寸依然等于 geometryBounds
+        ```
+    -   getRenderBounds 会考虑一些绘图属性，例如 lineWidth 边框宽度，padding，阴影以及部分滤镜（blur、drop-shadow），顾名思义它在渲染管线中会使用到：
+        -   脏矩阵渲染中清除区域据此计算
+        -   内置剔除插件使用该包围盒
+    -   getProjectedBounds 需要考虑相机投影，供拾取使用
+
+### Bug 修复
+
+-   [g] querySelectorAll 无法按 id 查询问题
+-   [g] 无法获取 style.origin，无法设置 Group 的 origin
+-   [g] 设置 transformOrigin 无效
+-   [g] addEventListener 设置 once 无效
+-   [g-canvas]设置阴影 shadowBlur 影响不应影响子元素
+-   [path-util] 直线转三次贝塞尔曲线有误，导致 getPoint() 无法获取正确点坐标 https://github.com/antvis/util/issues/68
+-   [g-canvas] 相机发生变换后，g-canvas 拾取无效
+
 ## [1.0.0-alpha.20] - 2021-09-13
 
-- @antv/g-canvas@1.0.0-alpha.21
-- @antv/g-components@1.0.0-alpha.20
-- @antv/g-ecs@1.0.0-alpha.7
-- @antv/g-math@1.0.0-alpha.5
-- @antv/g-plugin-3d@1.0.0-alpha.21
-- @antv/g-plugin-canvas-picker@1.0.0-alpha.15
-- @antv/g-plugin-canvas-renderer@1.0.0-alpha.21
-- @antv/g-plugin-control@1.0.0-alpha.20
-- @antv/g-plugin-css-select@1.0.0-alpha.20
-- @antv/g-plugin-dom-interaction@1.0.0-alpha.21
-- @antv/g-plugin-html-renderer@1.0.0-alpha.4
-- @antv/g-plugin-svg-picker@1.0.0-alpha.21
-- @antv/g-plugin-svg-renderer@1.0.0-alpha.21
-- @antv/g-plugin-webgl-renderer@1.0.0-alpha.21
-- @antv/g-svg@1.0.0-alpha.21
-- @antv/g-webgl@1.0.0-alpha.21
-- @antv/g@1.0.0-alpha.20
+-   @antv/g-canvas@1.0.0-alpha.21
+-   @antv/g-components@1.0.0-alpha.20
+-   @antv/g-ecs@1.0.0-alpha.7
+-   @antv/g-math@1.0.0-alpha.5
+-   @antv/g-plugin-3d@1.0.0-alpha.21
+-   @antv/g-plugin-canvas-picker@1.0.0-alpha.15
+-   @antv/g-plugin-canvas-renderer@1.0.0-alpha.21
+-   @antv/g-plugin-control@1.0.0-alpha.20
+-   @antv/g-plugin-css-select@1.0.0-alpha.20
+-   @antv/g-plugin-dom-interaction@1.0.0-alpha.21
+-   @antv/g-plugin-html-renderer@1.0.0-alpha.4
+-   @antv/g-plugin-svg-picker@1.0.0-alpha.21
+-   @antv/g-plugin-svg-renderer@1.0.0-alpha.21
+-   @antv/g-plugin-webgl-renderer@1.0.0-alpha.21
+-   @antv/g-svg@1.0.0-alpha.21
+-   @antv/g-webgl@1.0.0-alpha.21
+-   @antv/g@1.0.0-alpha.20
 
 ### 新增特性
 
@@ -90,6 +190,7 @@
 
 ### 其他已知问题
 
+-   Node.cloneNode 待实现，可进行图形的复制。
 -   视口坐标系与世界坐标系、Client 坐标系的转换方法。
 -   HTML 图形事件响应有问题。
 -   文本阴影待实现。

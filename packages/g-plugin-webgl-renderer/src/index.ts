@@ -90,8 +90,8 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
     .to(CopyPass)
     .inSingletonScope()
     .whenTargetNamed(CopyPass.IDENTIFIER);
-  // @ts-ignore
   bind<IRenderPass<any>>(IRenderPass)
+    // @ts-ignore
     .to(TAAPass)
     .inSingletonScope()
     .whenTargetNamed(TAAPass.IDENTIFIER);

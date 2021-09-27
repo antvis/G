@@ -1,11 +1,11 @@
 /** handle props in keyframe */
-import type { DisplayObject } from '../DisplayObject';
+import type { IElement } from '../dom';
 import { SceneGraphService } from '../services';
 
 export const StylePropertyParser = 'StylePropertyParser';
 export type StylePropertyParser<Original, Parsed> = (
   value: Original,
-  displayObject: DisplayObject | null,
+  displayObject: IElement | null,
 ) => Parsed;
 export const StylePropertyParserFactory = 'StylePropertyParserFactory';
 export type StylePropertyParserFactory = <Original, Parsed>(
@@ -22,7 +22,7 @@ export const StylePropertyUpdater = 'StylePropertyUpdater';
 export type StylePropertyUpdater<Original> = (
   oldValue: Original,
   newValue: Original,
-  displayObject: DisplayObject,
+  displayObject: IElement,
   sceneGraphService: SceneGraphService,
 ) => void;
 export const StylePropertyUpdaterFactory = 'StylePropertyUpdaterFactory';
@@ -34,11 +34,12 @@ export const StylePropertyMerger = 'StylePropertyMerger';
 export type StylePropertyMerger<Parsed, T extends Interpolatable = number> = (
   left: Parsed,
   right: Parsed,
-  displayObject: DisplayObject | null,
+  displayObject: IElement | null,
 ) => [T, T, (i: T) => string] | undefined;
 export const StylePropertyMergerFactory = 'StylePropertyMergerFactory';
 export type StylePropertyMergerFactory = <Parsed>(name: string) => StylePropertyMerger<Parsed>;
 
+export * from './anchor';
 export * from './aabb';
 export * from './localPosition';
 export * from './numeric';

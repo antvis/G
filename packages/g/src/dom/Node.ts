@@ -1,16 +1,16 @@
 import { EventTarget } from './EventTarget';
-
-import { Document } from './Document';
+import type { IElement, INode, IChildNode, IParentNode, IDocument } from './interfaces';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Node
  */
-export abstract class Node extends EventTarget {
+export abstract class Node extends EventTarget implements INode {
+  shadow = false;
   /**
    * points to canvas.document
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument
    */
-  ownerDocument: Document | null = null;
+  ownerDocument: IDocument | null = null;
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isConnected
@@ -22,15 +22,16 @@ export abstract class Node extends EventTarget {
   isConnected = false;
 
   /**
-   * implements Node API
+   * Returns node's node document's document base URL.
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node
    */
   readonly baseURI: string = '';
 
   /**
+   * Returns the children.
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/childNodes
    */
-  childNodes: this[] = [];
+  childNodes: (IChildNode & INode)[] = [];
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeType
@@ -55,8 +56,8 @@ export abstract class Node extends EventTarget {
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/getRootNode
    */
-  getRootNode(options?: GetRootNodeOptions): this {
-    let temp: this | null = this;
+  getRootNode(options?: GetRootNodeOptions): INode {
+    let temp: INode | null = this;
     while (temp.parentNode) {
       temp = temp.parentNode;
     }
@@ -68,102 +69,119 @@ export abstract class Node extends EventTarget {
   isDefaultNamespace(namespace: string | null): boolean {
     throw new Error('Method not implemented.');
   }
+  compareDocumentPosition(other: INode): number {
+    throw new Error('Method not implemented.');
+  }
+  lookupNamespaceURI(prefix: string | null): string | null {
+    throw new Error('Method not implemented.');
+  }
+  lookupPrefix(namespace: string | null): string | null {
+    throw new Error('Method not implemented.');
+  }
+  normalize(): void {
+    throw new Error('Method not implemented.');
+  }
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isEqualNode
    */
-  isEqualNode(otherNode: this | null): boolean {
+  isEqualNode(otherNode: INode | null): boolean {
     return this === otherNode;
   }
-  isSameNode(otherNode: this | null): boolean {
+  isSameNode(otherNode: INode | null): boolean {
     return this.isEqualNode(otherNode);
   }
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/ParentNode
    */
-  parentNode: this | null = null;
+  parentNode: (INode & IParentNode) | null = null;
 
   /**
    * @deprecated
    * @alias parentNode
    */
-  get parent(): this | null {
+  get parent(): INode | null {
     return this.parentNode;
   }
-  get parentElement(): this | null {
-    return this.parentNode;
-  }
-  get nextSibling(): this | null {
-    if (this.parentNode) {
-      const index = this.parentNode.childNodes.indexOf(this);
-      return this.parentNode.childNodes[index + 1] || null;
-    }
-
+  get parentElement(): IElement | null {
     return null;
   }
-  get previousSibling(): this | null {
-    if (this.parentNode) {
-      const index = this.parentNode.childNodes.indexOf(this);
-      return this.parentNode.childNodes[index - 1] || null;
-    }
-
+  get nextSibling(): (IChildNode & INode) | null {
     return null;
   }
-  get firstChild(): this | null {
+  get previousSibling(): (IChildNode & INode) | null {
+    return null;
+  }
+  get firstChild(): (IChildNode & INode) | null {
     return this.childNodes.length > 0 ? this.childNodes[0] : null;
   }
-  get lastChild(): this | null {
+  get lastChild(): (IChildNode & INode) | null {
     return this.childNodes.length > 0 ? this.childNodes[this.childNodes.length - 1] : null;
   }
-  cloneNode() {
-    throw new Error('Method not implemented.');
-  }
 
-  abstract appendChild(child: this, index?: number): this;
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode
+   */
+  abstract cloneNode(deep?: boolean): INode;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild
+   */
+  abstract appendChild<T extends INode>(newChild: T, index?: number): T;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore
    */
-  abstract insertBefore(child: this, reference?: this): this;
+  abstract insertBefore<T extends INode>(newChild: T, refChild: INode | null): T;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/removeChild
    */
-  abstract removeChild(child: this, destroy?: boolean): this;
+  abstract removeChild<T extends INode>(child: T, destroy?: boolean): T;
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/replaceChild
    */
-  replaceChild(newChild: this, oldChild: this, destroy?: boolean): this {
-    const index = this.childNodes.indexOf(oldChild);
-    this.removeChild(oldChild, destroy);
-    this.appendChild(newChild, index);
-    return newChild;
-  }
+  abstract replaceChild<T extends INode & IChildNode>(
+    newChild: INode,
+    oldChild: T,
+    destroy?: boolean,
+  ): T;
+
+  abstract destroy(): void;
 
   /**
    * @deprecated
    * @alias contains
    */
-  contain(group: this) {
-    return this.contains(group);
+  contain(other: INode | null) {
+    return this.contains(other);
   }
-  contains(group: this | null): boolean {
+  contains(other: INode | null): boolean {
     // the node itself, one of its direct children
-    let tmp: this | null = group;
+    let tmp: INode | null = other;
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Node/contains
     while (tmp && this !== tmp) {
       tmp = tmp.parentNode;
     }
     return !!tmp;
   }
-  getAncestor(n: number): this | null {
-    let temp: this | null = this;
+
+  getAncestor(n: number): INode | null {
+    let temp: INode | null = this;
     while (n > 0 && temp) {
       temp = temp.parentNode;
       n--;
     }
     return temp;
+  }
+
+  forEach(callback: (o: INode) => void | boolean) {
+    if (!callback(this)) {
+      this.childNodes.forEach((child) => {
+        child.forEach(callback);
+      });
+    }
   }
 }

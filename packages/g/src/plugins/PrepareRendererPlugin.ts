@@ -1,74 +1,83 @@
 import { inject, injectable } from 'inversify';
-import { Renderable } from '../components';
-import { DisplayObject } from '../DisplayObject';
-import { DISPLAY_OBJECT_EVENT } from '../dom/Element';
-import { RenderingContext, RENDER_REASON } from '../services';
+import type { DisplayObject } from '..';
+import { ElementEvent, FederatedEvent, INode } from '../dom';
+import { updateTransformOrigin } from '../property-handlers';
+import { dirtifyRenderable, RenderingContext, RENDER_REASON } from '../services';
 import { RenderingService, RenderingPlugin } from '../services/RenderingService';
-import { SceneGraphService, SCENE_GRAPH_EVENT } from '../services/SceneGraphService';
 
 @injectable()
 export class PrepareRendererPlugin implements RenderingPlugin {
   static tag = 'PrepareRendererPlugin';
-
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
 
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
     const handleAttributeChanged = (
-      name: string,
-      oldValue: any,
-      value: any,
-      object: DisplayObject,
+      e: FederatedEvent<
+        Event,
+        {
+          attributeName: string;
+          oldValue: any;
+          newValue: any;
+        }
+      >,
     ) => {
-      // need re-render
       this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectChanged);
-
-      // trigger hooks
-      renderingService.hooks.attributeChanged.call(object, name, value);
     };
 
-    const handleAABBChanged = () => {
-      // need re-render
-      this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectChanged);
+    const dirtifyToRoot = (e: FederatedEvent) => {
+      dirtifyRenderable(e.target as INode, true);
+
+      renderingService.dirtify();
+    };
+
+    const handleBoundsChanged = (e: FederatedEvent) => {
+      // const path = e.composedPath().slice(0, -2);
+      // path.forEach((node: DisplayObject) => {
+      //   const parent = node.parentElement as DisplayObject;
+      //   if (parent && parent.style && parent.style.transformOrigin) {
+      //     updateTransformOrigin(
+      //       parent.style.transformOrigin,
+      //       parent.style.transformOrigin,
+      //       parent,
+      //       true,
+      //     );
+      //   }
+      // });
+
+      renderingService.dirtify();
+    };
+
+    const handleMounted = (e: FederatedEvent) => {
+      dirtifyToRoot(e);
+    };
+
+    const handleUnmounted = (e: FederatedEvent) => {
+      dirtifyToRoot(e);
     };
 
     renderingService.hooks.init.tap(PrepareRendererPlugin.tag, () => {
-      this.sceneGraphService.on(SCENE_GRAPH_EVENT.AABBChanged, handleAABBChanged);
+      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.addEventListener(
+        ElementEvent.ATTRIBUTE_CHANGED,
+        handleAttributeChanged,
+      );
+      this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
 
     renderingService.hooks.destroy.tap(PrepareRendererPlugin.tag, () => {
-      this.sceneGraphService.off(SCENE_GRAPH_EVENT.AABBChanged, handleAABBChanged);
-    });
-
-    renderingService.hooks.mounted.tap(PrepareRendererPlugin.tag, (object: DisplayObject) => {
-      const entity = object.getEntity();
-
-      // delegate attribute-changed handler
-      object.on(DISPLAY_OBJECT_EVENT.AttributeChanged, handleAttributeChanged);
-
-      const renderable = entity.getComponent(Renderable);
-      renderable.dirty = true;
-
-      // need re-render
-      this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectChanged);
-    });
-
-    renderingService.hooks.unmounted.tap(PrepareRendererPlugin.tag, (object: DisplayObject) => {
-      // console.log('unmounted', object);
-      object.off(DISPLAY_OBJECT_EVENT.AttributeChanged, handleAttributeChanged);
-
-      const entity = object.getEntity();
-      const renderable = entity.getComponent(Renderable);
-
-      if (renderable.aabb) {
-        this.renderingContext.removedAABBs.push(renderable.aabb);
-      }
-
-      // need re-render
-      this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectChanged);
+      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.removeEventListener(
+        ElementEvent.ATTRIBUTE_CHANGED,
+        handleAttributeChanged,
+      );
+      this.renderingContext.root.removeEventListener(
+        ElementEvent.BOUNDS_CHANGED,
+        handleBoundsChanged,
+      );
     });
   }
 }

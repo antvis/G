@@ -9,9 +9,8 @@ export class ImageRenderer implements StyleRenderer {
   @inject(ImagePool)
   private imagePool: ImagePool;
 
-  render(context: CanvasRenderingContext2D, attributes: ParsedImageStyleProps) {
-    // @ts-ignore
-    const { width = 0, height = 0, img, sx, sy, swidth, sheight } = attributes;
+  render(context: CanvasRenderingContext2D, parsedStyle: ParsedImageStyleProps) {
+    const { width = 0, height = 0, img } = parsedStyle;
 
     let image: HTMLImageElement;
     let iw = width;
@@ -25,11 +24,11 @@ export class ImageRenderer implements StyleRenderer {
       image = img;
     }
 
-    if (!isNil(sx) && !isNil(sy) && !isNil(swidth) && !isNil(sheight)) {
-      // context.drawImage(image, sx, sy, swidth, sheight, -anchor[0] * iw, -anchor[1] * ih, iw, ih);
-      context.drawImage(image, sx, sy, swidth, sheight, 0, 0, iw, ih);
-    } else {
-      context.drawImage(image, 0, 0, iw, ih);
-    }
+    // if (!isNil(sx) && !isNil(sy) && !isNil(swidth) && !isNil(sheight)) {
+    //   // context.drawImage(image, sx, sy, swidth, sheight, -anchor[0] * iw, -anchor[1] * ih, iw, ih);
+    //   context.drawImage(image, sx, sy, swidth, sheight, 0, 0, iw, ih);
+    // } else {
+    context.drawImage(image, 0, 0, iw, ih);
+    // }
   }
 }

@@ -1,6 +1,6 @@
 import * as d3 from 'd3-color';
 import { clamp, isString } from '@antv/util';
-import type { DisplayObject } from '../DisplayObject';
+import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { Tuple4Number } from '../types';
 import { ParsedStyleProperty } from '.';
 

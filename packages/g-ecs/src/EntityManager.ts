@@ -2,7 +2,7 @@ import { EventEmitter } from 'eventemitter3';
 import { inject, injectable } from 'inversify';
 import { IDENTIFIER } from './identifier';
 import { Component, ComponentConstructor } from './Component';
-import { Entity } from './Entity';
+import type { Entity } from './Entity';
 import { ObjectPool } from './ObjectPool';
 import { Matcher } from './Matcher';
 
@@ -18,7 +18,9 @@ export const COMPONENT_EVENT = {
 @injectable()
 export class EntityManager extends EventEmitter {
   @inject(IDENTIFIER.ComponentPoolFactory)
-  private componentPoolFactory: <C extends Component<unknown>>(c: ComponentConstructor<C>) => ObjectPool<C>;
+  private componentPoolFactory: <C extends Component<unknown>>(
+    c: ComponentConstructor<C>,
+  ) => ObjectPool<C>;
 
   private entities: Entity[] = [];
   private entitiesByNames: Record<string, Entity> = {};
@@ -77,7 +79,7 @@ export class EntityManager extends EventEmitter {
   public addComponentToEntity<C extends Component<unknown>>(
     entity: Entity,
     clazz: ComponentConstructor<C>,
-    values?: Partial<Omit<C, keyof Component<unknown>>>
+    values?: Partial<Omit<C, keyof Component<unknown>>>,
   ): C {
     const tag = clazz.tag;
     const components = entity.getComponents();
@@ -85,7 +87,7 @@ export class EntityManager extends EventEmitter {
     if (component) {
       if (!entity.cast(component, clazz)) {
         throw new Error(
-          `There are multiple classes with the same tag or name "${tag}".\nAdd a different property "tag" to one of them.`
+          `There are multiple classes with the same tag or name "${tag}".\nAdd a different property "tag" to one of them.`,
         );
       }
       delete components[tag];
@@ -109,7 +111,7 @@ export class EntityManager extends EventEmitter {
   public removeComponentFromEntity<C extends Component<unknown>>(
     entity: Entity,
     clazz: ComponentConstructor<C>,
-    immediately = false
+    immediately = false,
   ) {
     if (!entity.hasComponent(clazz)) {
       return;
@@ -146,7 +148,10 @@ export class EntityManager extends EventEmitter {
     this.entitiesByNames = {};
   }
 
-  private removeComponentFromEntitySync<C extends Component<unknown>>(entity: Entity, clazz: ComponentConstructor<C>) {
+  private removeComponentFromEntitySync<C extends Component<unknown>>(
+    entity: Entity,
+    clazz: ComponentConstructor<C>,
+  ) {
     // Remove T listing on entity and property ref, then free the component.
     // entity._ComponentTypes.splice(index, 1);
     const component = entity.getComponent(clazz);

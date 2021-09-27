@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
 import type { GeometryAABBUpdater } from './interfaces';
-import type { DisplayObject } from '../../DisplayObject';
+import type { DisplayObject } from '../../display-objects/DisplayObject';
 import type { ParsedBaseStyleProps, PathCommand } from '../../types';
 
 @injectable()

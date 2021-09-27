@@ -5,7 +5,7 @@
 import { Cubic as CubicUtil } from '@antv/g-math';
 import { mat4, vec3 } from 'gl-matrix';
 import type { Circle, Ellipse, Line, Path, Polyline, Rect } from '../display-objects';
-import type { DisplayObject } from '../DisplayObject';
+import type { DisplayObject } from '../display-objects/DisplayObject';
 import { PathCommand, SHAPE } from '../types';
 
 function midPoint(a: [number, number], b: [number, number], t: number): [number, number] {

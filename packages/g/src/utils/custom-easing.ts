@@ -2,32 +2,44 @@
  * ported from https://github.com/okikio/native/blob/master/packages/animate/src/custom-easing.ts
  */
 import { bezier } from './bezier-easing';
-import { convertToDash } from './animation';
 
-export const limit = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+export const convertToDash = (str: string) => {
+  str = str.replace(/([A-Z])/g, (letter) => `-${letter.toLowerCase()}`);
+
+  // Remove first dash
+  return str.charAt(0) === '-' ? str.substr(1) : str;
+};
+
+export const limit = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max);
 
 /**
  * The format to use when defining custom easing functions
  */
-export type TypeEasingFunction = (t: number, params?: (string | number)[], duration?: number) => number;
+export type TypeEasingFunction = (
+  t: number,
+  params?: (string | number)[],
+  duration?: number,
+) => number;
 export type TypeColor = string | number | Array<string | number>;
 export type TypeRGBAFunction = (color: TypeColor) => number[];
 
 /**
   Easing Functions from anime.js, they are tried and true, so, its better to use them instead of other alternatives 
 */
-export const Quad: TypeEasingFunction = t => Math.pow(t, 2);
-export const Cubic: TypeEasingFunction = t => Math.pow(t, 3);
-export const Quart: TypeEasingFunction = t => Math.pow(t, 4);
-export const Quint: TypeEasingFunction = t => Math.pow(t, 5);
-export const Expo: TypeEasingFunction = t => Math.pow(t, 6);
-export const Sine: TypeEasingFunction = t => 1 - Math.cos((t * Math.PI) / 2);
-export const Circ: TypeEasingFunction = t => 1 - Math.sqrt(1 - t * t);
-export const Back: TypeEasingFunction = t => t * t * (3 * t - 2);
+export const Quad: TypeEasingFunction = (t) => Math.pow(t, 2);
+export const Cubic: TypeEasingFunction = (t) => Math.pow(t, 3);
+export const Quart: TypeEasingFunction = (t) => Math.pow(t, 4);
+export const Quint: TypeEasingFunction = (t) => Math.pow(t, 5);
+export const Expo: TypeEasingFunction = (t) => Math.pow(t, 6);
+export const Sine: TypeEasingFunction = (t) => 1 - Math.cos((t * Math.PI) / 2);
+export const Circ: TypeEasingFunction = (t) => 1 - Math.sqrt(1 - t * t);
+export const Back: TypeEasingFunction = (t) => t * t * (3 * t - 2);
 
-export const Bounce: TypeEasingFunction = t => {
-  let pow2: number, b = 4;
-  while (t < ((pow2 = Math.pow(2, --b)) - 1) / 11) { }
+export const Bounce: TypeEasingFunction = (t) => {
+  let pow2: number,
+    b = 4;
+  while (t < ((pow2 = Math.pow(2, --b)) - 1) / 11) {}
   return 1 / Math.pow(4, 3 - b) - 7.5625 * Math.pow((pow2 * 3 - 2) / 22 - t, 2);
 };
 
@@ -36,24 +48,19 @@ export const Elastic: TypeEasingFunction = (t, params: (string | number)[] = [])
   const a = limit(Number(amplitude), 1, 10);
   const p = limit(Number(period), 0.1, 2);
   if (t === 0 || t === 1) return t;
-  return -a *
+  return (
+    -a *
     Math.pow(2, 10 * (t - 1)) *
-    Math.sin(
-      ((t - 1 - (p / (Math.PI * 2)) * Math.asin(1 / a)) * (Math.PI * 2)) / p
-    );
+    Math.sin(((t - 1 - (p / (Math.PI * 2)) * Math.asin(1 / a)) * (Math.PI * 2)) / p)
+  );
 };
 
 export const Spring: TypeEasingFunction = (
   t: number,
   params: (string | number)[] = [],
-  duration?: number
+  duration?: number,
 ) => {
-  let [
-    mass = 1,
-    stiffness = 100,
-    damping = 10,
-    velocity = 0
-  ] = params;
+  let [mass = 1, stiffness = 100, damping = 10, velocity = 0] = params;
 
   mass = limit(mass as number, 0.1, 1000);
   stiffness = limit(stiffness as number, 0.1, 1000);
@@ -69,8 +76,7 @@ export const Spring: TypeEasingFunction = (
   let progress = duration ? (duration * t) / 1000 : t;
   if (zeta < 1) {
     progress =
-      Math.exp(-progress * zeta * w0) *
-      (a * Math.cos(wd * progress) + b * Math.sin(wd * progress));
+      Math.exp(-progress * zeta * w0) * (a * Math.cos(wd * progress) + b * Math.sin(wd * progress));
   } else {
     progress = (a + b * progress) * Math.exp(-progress * w0);
   }
@@ -92,23 +98,24 @@ export const INTINITE_LOOP_LIMIT = 10000;
 /** Convert easing parameters to Array of numbers, e.g. "spring(2, 500)" to [2, 500] */
 export const parseEasingParameters = (str: string) => {
   const match = /(\(|\s)([^)]+)\)?/.exec(str);
-  return match ? match[2].split(",").map(value => {
-    let num = parseFloat(value);
-    return !Number.isNaN(num) ? num : value.trim();
-  }) : [];
+  return match
+    ? match[2].split(',').map((value) => {
+        let num = parseFloat(value);
+        return !Number.isNaN(num) ? num : value.trim();
+      })
+    : [];
 };
 
 /**
- * The spring easing function will only look smooth at certain durations, with certain parameters. 
- * This functions returns the optimal duration to create a smooth springy animation based on physics 
- * 
+ * The spring easing function will only look smooth at certain durations, with certain parameters.
+ * This functions returns the optimal duration to create a smooth springy animation based on physics
+ *
  * Note: it can also be used to determine the optimal duration of other types of easing function, but be careful of 'in-'
  * easing functions, because of the nature of the function it can sometimes create an infinite loop, I suggest only using
  * `getEasingDuration` for `spring`, specifically 'out-spring' and 'spring'
  */
 export const getEasingDuration = (easing: string | TypeEasingFunction = 'spring') => {
-  if (EasingDurationCache.has(easing))
-    return EasingDurationCache.get(easing);
+  if (EasingDurationCache.has(easing)) return EasingDurationCache.get(easing);
 
   const easingFunction = typeof easing == 'function' ? easing : getEasingFunction(easing as string);
   const params = typeof easing == 'function' ? [] : parseEasingParameters(easing);
@@ -131,7 +138,7 @@ export const getEasingDuration = (easing: string | TypeEasingFunction = 'spring'
   const duration = elapsed * frame * 1000;
   EasingDurationCache.set(easing, duration);
   return duration;
-}
+};
 
 /** 
   These Easing Functions are based off of the Sozi Project's easing functions 
@@ -155,13 +162,13 @@ export const easein: TypeEasingFunction = bezier(0.42, 0.0, 1.0, 1.0);
 /** Converts easing functions to their `out`counter parts */
 export const EaseOut = (ease: TypeEasingFunction): TypeEasingFunction => {
   return (t, params = [], duration?: number) => 1 - ease(1 - t, params, duration);
-}
+};
 
 /** Converts easing functions to their `in-out` counter parts */
 export const EaseInOut = (ease: TypeEasingFunction): TypeEasingFunction => {
   return (t, params = [], duration?: number) =>
     t < 0.5 ? ease(t * 2, params, duration) / 2 : 1 - ease(t * -2 + 2, params, duration) / 2;
-}
+};
 
 /** Converts easing functions to their `out-in` counter parts */
 export const EaseOutIn = (ease: TypeEasingFunction): TypeEasingFunction => {
@@ -170,19 +177,19 @@ export const EaseOutIn = (ease: TypeEasingFunction): TypeEasingFunction => {
       ? (1 - ease(1 - t * 2, params, duration)) / 2
       : (ease(t * 2 - 1, params, duration) + 1) / 2;
   };
-}
+};
 
 /**
  * The default list of easing functions, do note this is different from {@link EASING}
  */
 export const EasingFunctions: { [key: string]: TypeEasingFunction } = {
   steps: Steps,
-  'step-start': t => Steps(t, [1, 'start']),
-  'step-end': t => Steps(t, [1, 'end']),
+  'step-start': (t) => Steps(t, [1, 'start']),
+  'step-end': (t) => Steps(t, [1, 'end']),
 
-  linear: t => t,
+  linear: (t) => t,
   'cubic-bezier': Bezier,
-  ease: t => Bezier(t, [0.25, 0.1, 0.25, 1.0]),
+  ease: (t) => Bezier(t, [0.25, 0.1, 0.25, 1.0]),
 
   in: easein,
   out: EaseOut(easein),
@@ -243,16 +250,16 @@ export const EasingFunctions: { [key: string]: TypeEasingFunction } = {
   'spring-in': Spring,
   'spring-out': EaseOut(Spring),
   'spring-in-out': EaseInOut(Spring),
-  'spring-out-in': EaseOutIn(Spring)
+  'spring-out-in': EaseOutIn(Spring),
 };
 
 /**
- * Convert string easing to their proper form 
+ * Convert string easing to their proper form
  */
 export const complexEasingSyntax = (ease: string) =>
   convertToDash(ease)
-    .replace(/^ease-/, "") // Remove the "ease-" keyword
-    .replace(/(\(|\s).+/, "") // Remove the function brackets and parameters
+    .replace(/^ease-/, '') // Remove the "ease-" keyword
+    .replace(/(\(|\s).+/, '') // Remove the function brackets and parameters
     .toLowerCase()
     .trim();
 
@@ -262,17 +269,17 @@ export const getEasingFunction = (ease: string) => {
 };
 
 /**
- * Allows you to register new easing functions 
+ * Allows you to register new easing functions
  */
 export const registerEasingFunction = (key: string, fn: TypeEasingFunction) => {
   Object.assign(EasingFunctions, {
-    [key]: fn
+    [key]: fn,
   });
-}
+};
 
 /**
-* Allows you to register multiple new easing functions 
-*/
+ * Allows you to register multiple new easing functions
+ */
 export const registerEasingFunctions = (...obj: Array<typeof EasingFunctions>) => {
   Object.assign(EasingFunctions, ...obj);
-}
+};

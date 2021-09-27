@@ -22,7 +22,7 @@ export interface RenderingContext {
    */
   force: boolean;
 
-  removedAABBs: AABB[];
+  removedRenderBoundsList: AABB[];
 
   /**
    * reason of re-render, reset after every renderred frame

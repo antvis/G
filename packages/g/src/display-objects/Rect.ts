@@ -1,7 +1,7 @@
 import { SHAPE } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { DisplayObject } from '../DisplayObject';
-import type { DisplayObjectConfig } from '../DisplayObject';
+import { DisplayObject } from './DisplayObject';
+import type { DisplayObjectConfig } from '../dom';
 
 export interface RectStyleProps extends BaseStyleProps {
   width: number;
@@ -22,10 +22,6 @@ export class Rect extends DisplayObject<RectStyleProps, ParsedRectStyleProps> {
       style: {
         width: 0,
         height: 0,
-        opacity: 1,
-        fillOpacity: 1,
-        strokeOpacity: 1,
-        anchor: [0, 0],
         ...style,
       },
       ...rest,

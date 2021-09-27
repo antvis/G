@@ -3,7 +3,11 @@ import type { ParsedBaseStyleProps } from '@antv/g';
 export function generatePath(context: CanvasRenderingContext2D, parsedStyle: ParsedBaseStyleProps) {
   let { defX: x = 0, defY: y = 0 } = parsedStyle;
 
-  const path = parsedStyle.path!.curve;
+  const { curve, zCommandIndexes } = parsedStyle.path!;
+  const path = curve;
+  zCommandIndexes.forEach((zIndex, index) => {
+    path.splice(zIndex + index, 0, ['Z']);
+  });
 
   let currentPoint: [number, number] = [-x, -y]; // 当前图形
   let startMovePoint: [number, number] = [-x, -y]; // 开始 M 的点，可能会有多个

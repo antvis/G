@@ -1,53 +1,40 @@
-import { isEqual, isNil } from '@antv/util';
-import { container } from '../inversify.config';
+import { isNil } from '@antv/util';
+import { container } from '..';
 import { SceneGraphService } from '../services';
 import { Cullable, Geometry, Renderable, Transform, Sortable } from '../components';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Node } from './Node';
-import type { Animation } from '../Animation';
-import { KeyframeEffect } from '../KeyframeEffect';
-import type { DisplayObject } from '../DisplayObject';
 import { AABB, Rectangle } from '../shapes';
+import type { DisplayObjectConfig, IChildNode, IElement, INode } from './interfaces';
 
 /**
- * events for display object
+ * built-in events for element
  */
-export enum DISPLAY_OBJECT_EVENT {
-  Init = 'init',
-  Destroy = 'destroy',
-  AttributeChanged = 'attributeChanged',
+export enum ElementEvent {
+  DESTROY = 'destroy',
+  ATTRIBUTE_CHANGED = 'attribute-changed',
   /**
    * it has been inserted
    */
-  Inserted = 'inserted',
+  INSERTED = 'inserted',
   /**
    * it has had a child inserted
    */
-  ChildInserted = 'child-inserted',
+  CHILD_INSERTED = 'child-inserted',
   /**
    * it has been removed
    */
-  Removed = 'removed',
+  REMOVED = 'removed',
   /**
    * it has had a child removed
    */
-  ChildRemoved = 'child-removed',
-}
+  CHILD_REMOVED = 'child-removed',
 
-export interface ElementConfig<StyleProps> {
-  /**
-   * element's identifier, must be unique in a document.
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/id
-   */
-  id?: string;
+  MOUNTED = 'mounted',
 
-  name?: string;
+  UNMOUNTED = 'unmounted',
 
-  className?: string;
-
-  attributes?: StyleProps;
-
-  type?: string;
+  BOUNDS_CHANGED = 'bounds-changed',
 }
 
 /**
@@ -57,17 +44,15 @@ export interface ElementConfig<StyleProps> {
  * * Animation
  */
 export class Element<
-  StyleProps extends BaseStyleProps = any,
-  ParsedStyleProps extends ParsedBaseStyleProps = any,
-> extends Node {
-  /**
-   * push to active animations after calling `animate()`
-   */
-  activeAnimations: Animation[] = [];
+    StyleProps extends BaseStyleProps = any,
+    ParsedStyleProps extends ParsedBaseStyleProps = any,
+  >
+  extends Node
+  implements IElement<StyleProps, ParsedStyleProps>
+{
+  sceneGraphService = container.get<SceneGraphService>(SceneGraphService);
 
-  protected sceneGraphService = container.get<SceneGraphService>(SceneGraphService);
-
-  constructor() {
+  constructor(config: DisplayObjectConfig<StyleProps>) {
     super();
 
     // create entity with shape's name, unique ID
@@ -107,35 +92,109 @@ export class Element<
 
   interactive: boolean;
 
-  appendChild(child: this, index?: number): this {
+  scrollLeft = 0;
+  scrollTop = 0;
+
+  get tagName(): string {
+    return this.nodeName;
+  }
+
+  get children(): IElement[] {
+    return this.childNodes as IElement[];
+  }
+
+  get childElementCount(): number {
+    return this.childNodes.length;
+  }
+  get firstElementChild(): IElement | null {
+    return this.firstChild as IElement;
+  }
+  get lastElementChild(): IElement | null {
+    return this.lastChild as IElement;
+  }
+
+  get parentElement(): IElement | null {
+    return this.parentNode as IElement;
+  }
+
+  get nextSibling(): IElement | null {
+    if (this.parentNode) {
+      const index = this.parentNode.childNodes.indexOf(this);
+      return (this.parentNode.childNodes[index + 1] as IElement) || null;
+    }
+
+    return null;
+  }
+
+  get previousSibling(): IElement | null {
+    if (this.parentNode) {
+      const index = this.parentNode.childNodes.indexOf(this);
+      return (this.parentNode.childNodes[index - 1] as IElement) || null;
+    }
+
+    return null;
+  }
+
+  cloneNode(deep?: boolean): this {
+    throw new Error('Method not implemented.');
+  }
+
+  appendChild<T extends INode>(child: T, index?: number): T {
     this.sceneGraphService.attach(child, this, index);
 
-    this.emitter.emit(DISPLAY_OBJECT_EVENT.ChildInserted, child);
-    child.emitter.emit(DISPLAY_OBJECT_EVENT.Inserted, this);
+    this.emit(ElementEvent.CHILD_INSERTED, {
+      child,
+    });
+    child.emit(ElementEvent.INSERTED, {
+      parent: this,
+    });
 
     return child;
   }
 
-  insertBefore(group: this, reference?: this): this {
-    if (!reference) {
-      this.appendChild(group);
+  insertBefore<T extends INode>(newChild: T, refChild: IElement | null): T {
+    if (!refChild) {
+      this.appendChild(newChild);
     } else {
-      const index = this.childNodes.indexOf(reference);
-      this.appendChild(group, index - 1);
+      const index = this.childNodes.indexOf(refChild);
+      this.appendChild(newChild, index - 1);
     }
-    return group;
+    return newChild;
   }
 
-  removeChild(child: this, destroy = true) {
+  replaceChild<T extends INode & IChildNode>(newChild: INode, oldChild: T, destroy?: boolean): T {
+    const index = this.childNodes.indexOf(oldChild);
+    this.removeChild(oldChild, destroy);
+    this.appendChild(newChild, index);
+    return oldChild;
+  }
+
+  removeChild<T extends INode>(child: T, destroy = true): T {
+    // should emit on itself before detach
+    child.emit(ElementEvent.REMOVED, {
+      parent: this,
+    });
+
+    // emit destroy event
+    if (destroy) {
+      child.emit(ElementEvent.DESTROY, {});
+      (child as unknown as Element).destroyed = true;
+    }
+
+    // emit on parent
+    this.emit(ElementEvent.CHILD_REMOVED, {
+      child,
+    });
+
+    // remove from scene graph
     this.sceneGraphService.detach(child);
 
-    this.emitter.emit(DISPLAY_OBJECT_EVENT.ChildRemoved, child);
-    child.emitter.emit(DISPLAY_OBJECT_EVENT.Removed, this);
-
+    // cannot emit Destroy event now
     if (destroy) {
-      child.forEach((object) => {
-        object.destroy();
-      });
+      // this.removeChildren();
+      child.entity.destroy();
+      // remove event listeners
+      child.emitter.removeAllListeners();
     }
     return child;
   }
@@ -146,78 +205,177 @@ export class Element<
     });
   }
 
-  get children(): this[] {
-    return this.childNodes;
-  }
-
-  get childElementCount(): number {
-    return this.childNodes.length;
-  }
-  get firstElementChild(): this | null {
-    // To avoid the issue with node.firstChild returning #text or #comment nodes,
-    // ParentNode.firstElementChild can be used to return only the first element node.
-    return this.firstChild;
-  }
-  get lastElementChild(): this | null {
-    return this.lastChild;
-  }
-
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
    */
   matches(selector: string): boolean {
-    return this.sceneGraphService.matches(selector, this);
+    return this.sceneGraphService.matches(selector, this as IElement);
   }
-  getElementById(id: string): this | null {
-    return this.sceneGraphService.querySelector(`#${id}`, this);
+  getElementById<E extends IElement = IElement>(id: string): E | null {
+    return this.sceneGraphService.querySelector<IElement, E>(`#${id}`, this as IElement);
   }
-  getElementsByName(name: string): this[] {
-    return this.sceneGraphService.querySelectorAll(`[name="${name}"]`, this);
+  getElementsByName<E extends IElement = IElement>(name: string): E[] {
+    return this.sceneGraphService.querySelectorAll<IElement, E>(
+      `[name="${name}"]`,
+      this as IElement,
+    );
   }
-  getElementsByClassName(className: string): this[] {
-    return this.sceneGraphService.querySelectorAll(`.${className}`, this);
+  getElementsByClassName<E extends IElement = IElement>(className: string): E[] {
+    return this.sceneGraphService.querySelectorAll<IElement, E>(`.${className}`, this as IElement);
   }
-  getElementsByTagName(tagName: string): this[] {
-    return this.sceneGraphService.querySelectorAll(tagName, this);
+  getElementsByTagName<E extends IElement = IElement>(tagName: string): E[] {
+    return this.sceneGraphService.querySelectorAll<IElement, E>(tagName, this as IElement);
   }
-  querySelector(selector: string): this | null {
-    return this.sceneGraphService.querySelector(selector, this);
+  querySelector<E extends IElement = IElement>(selectors: string): E | null {
+    return this.sceneGraphService.querySelector<IElement, E>(selectors, this as IElement);
   }
-  querySelectorAll(selector: string): this[] {
-    return this.sceneGraphService.querySelectorAll(selector, this);
+  querySelectorAll<E extends IElement = IElement>(selectors: string): E[] {
+    return this.sceneGraphService.querySelectorAll<IElement, E>(selectors, this as IElement);
   }
-  /**
-   * traverse in descendants
-   */
-  forEach(callback: (o: this) => void | boolean) {
-    if (!callback(this)) {
-      this.childNodes.forEach((child) => {
-        child.forEach(callback);
-      });
-    }
-  }
+
   /**
    * search in scene group, but should not include itself
    */
-  find(filter: (node: this) => boolean): this | null {
-    let target: this | null = null;
+  find<E extends IElement = IElement>(filter: (node: E) => boolean): E | null {
+    let target: E | null = null;
     this.forEach((object) => {
-      if (object !== this && filter(object)) {
-        target = object;
+      if (object !== this && filter(object as E)) {
+        target = object as E;
         return true;
       }
       return false;
     });
     return target;
   }
-  findAll(filter: (node: this) => boolean): this[] {
-    const objects: this[] = [];
+  findAll<E extends IElement = IElement>(filter: (node: E) => boolean): E[] {
+    const objects: E[] = [];
     this.forEach((object) => {
-      if (object !== this && filter(object)) {
-        objects.push(object);
+      if (object !== this && filter(object as E)) {
+        objects.push(object as E);
       }
     });
     return objects;
+  }
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/after
+   */
+  after(...nodes: IElement[]) {
+    if (this.parentNode) {
+      const index = this.parentNode.childNodes.indexOf(this);
+      nodes.forEach((node, i) => this.parentNode?.appendChild(node!, index + i + 1));
+    }
+  }
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/before
+   */
+  before(...nodes: IElement[]) {
+    if (this.parentNode) {
+      const index = this.parentNode.childNodes.indexOf(this);
+      const [first, ...rest] = nodes;
+      this.parentNode.appendChild(first!, index);
+      first.after(...rest);
+    }
+  }
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceWith
+   */
+  replaceWith(...nodes: IElement[]) {
+    this.after(...nodes);
+    this.remove();
+  }
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/append
+   */
+  append(...nodes: IElement[]) {
+    nodes.forEach((node) => this.appendChild(node));
+  }
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/prepend
+   */
+  prepend(...nodes: IElement[]) {
+    nodes.forEach((node, i) => this.appendChild(node, i));
+  }
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceChildren
+   */
+  replaceChildren(...nodes: IElement[]) {
+    while (this.childNodes.length && this.firstChild) {
+      this.removeChild(this.firstChild);
+    }
+    this.append(...nodes);
+  }
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/remove
+   */
+  remove(destroy = true): this {
+    if (this.parentNode) {
+      return this.parentNode.removeChild(this, destroy);
+    }
+    return this;
+  }
+
+  /**
+   * is destroyed or not
+   */
+  destroyed = false;
+  destroy() {
+    // destroy itself before remove
+    this.emit(ElementEvent.DESTROY, {});
+
+    // remove from scenegraph first
+    this.remove(false);
+
+    this.entity.destroy();
+
+    // remove event listeners
+    this.emitter.removeAllListeners();
+
+    this.destroyed = true;
+  }
+
+  getGeometryBounds(): AABB | null {
+    return this.sceneGraphService.getGeometryBounds(this);
+  }
+
+  getRenderBounds(): AABB | null {
+    return this.sceneGraphService.getBounds(this, true);
+  }
+
+  /**
+   * get bounds in world space, account for children
+   */
+  getBounds(): AABB | null {
+    return this.sceneGraphService.getBounds(this);
+  }
+
+  /**
+   * get bounds in local space, account for children
+   */
+  getLocalBounds(): AABB | null {
+    return this.sceneGraphService.getLocalBounds(this);
+  }
+
+  /**
+   * account for context's bounds in client space,
+   * but not accounting for children
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+   */
+  getBoundingClientRect(): Rectangle {
+    return this.sceneGraphService.getBoundingClientRect(this);
+  }
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getClientRects
+   */
+  getClientRects() {
+    return [this.getBoundingClientRect()];
   }
 
   /**
@@ -257,197 +415,6 @@ export class Element<
     value: StyleProps[Key],
     force = false,
   ) {
-    if (
-      force ||
-      !isEqual(value, this.attributes[attributeName]) ||
-      attributeName === 'visibility' // will affect children
-    ) {
-      if (attributeName === 'visibility') {
-        // set value cascade
-        this.forEach((object) => {
-          object.changeAttribute(attributeName, value);
-        });
-      } else {
-        this.changeAttribute(attributeName, value);
-      }
-    }
-  }
-
-  /**
-   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/after
-   */
-  after(...nodes: this[]) {
-    if (this.parentNode) {
-      const index = this.parentNode.childNodes.indexOf(this);
-      nodes.forEach((node, i) => this.parentNode?.appendChild(node!, index + i + 1));
-    }
-  }
-
-  /**
-   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/before
-   */
-  before(...nodes: this[]) {
-    if (this.parentNode) {
-      const index = this.parentNode.childNodes.indexOf(this);
-      const [first, ...rest] = nodes;
-      this.parentNode.appendChild(first!, index);
-      first.after(...rest);
-    }
-  }
-
-  /**
-   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceWith
-   */
-  replaceWith(...nodes: this[]) {
-    this.after(...nodes);
-    this.remove();
-  }
-
-  /**
-   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/append
-   */
-  append(...nodes: this[]) {
-    nodes.forEach((node) => this.appendChild(node));
-  }
-
-  /**
-   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/prepend
-   */
-  prepend(...nodes: this[]) {
-    nodes.forEach((node, i) => this.appendChild(node, i));
-  }
-
-  /**
-   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceChildren
-   */
-  replaceChildren(...nodes: this[]) {
-    while (this.childNodes.length && this.firstChild) {
-      this.removeChild(this.firstChild);
-    }
-    this.append(...nodes);
-  }
-
-  /**
-   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/remove
-   */
-  remove(destroy = true): Node {
-    if (this.parentNode) {
-      return this.parentNode.removeChild(this, destroy);
-    }
-    return this;
-  }
-
-  /**
-   * @override
-   */
-  protected changeAttribute<Key extends keyof StyleProps>(name: Key, value: StyleProps[Key]) {
-    throw new Error('Method not implemented.');
-  }
-
-  /**
-   * is destroyed or not
-   */
-  destroyed = false;
-  destroy() {
-    // remove from scenegraph first
-    this.remove(false);
-
-    // then destroy itself
-    this.emitter.emit(DISPLAY_OBJECT_EVENT.Destroy);
-    this.entity.destroy();
-
-    // remove event listeners
-    this.emitter.removeAllListeners();
-
-    // stop all active animations
-    this.getAnimations().forEach((animation) => {
-      animation.cancel();
-    });
-
-    this.destroyed = true;
-  }
-
-  /**
-   * returns an array of all Animation objects affecting this element
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations
-   */
-  getAnimations(): Animation[] {
-    return this.activeAnimations;
-  }
-  /**
-   * create an animation with WAAPI
-   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/animate
-   */
-  animate(
-    keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
-    options?: number | KeyframeAnimationOptions | undefined,
-  ): Animation | null {
-    let timeline = this.ownerDocument?.timeline;
-
-    // accounte for clip path, use target's timeline
-    if (this.attributes.clipPathTargets && this.attributes.clipPathTargets.length) {
-      const target = this.attributes.clipPathTargets[0];
-      timeline = target.ownerDocument?.timeline;
-    }
-
-    // clear old parsed transform
-    this.parsedStyle.transform = undefined;
-
-    if (timeline) {
-      return timeline.play(
-        new KeyframeEffect(this as unknown as DisplayObject, keyframes, options),
-      );
-    }
-    return null;
-  }
-
-  getGeometryBounds(): AABB | null {
-    return this.sceneGraphService.getGeometryBounds(this);
-  }
-
-  /**
-   * get bounds in world space, account for children
-   */
-  getBounds(): AABB | null {
-    return this.sceneGraphService.getBounds(this);
-  }
-
-  /**
-   * get bounds in local space, account for children
-   */
-  getLocalBounds(): AABB | null {
-    return this.sceneGraphService.getLocalBounds(this);
-  }
-
-  /**
-   * account for context's bounds in client space,
-   * but not accounting for children
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
-   */
-  getBoundingClientRect(): Rectangle {
-    const bounds = this.sceneGraphService.getGeometryBounds(this);
-    if (!bounds) {
-      return new Rectangle(0, 0, 0, 0);
-    }
-
-    const [left, top] = bounds.getMin();
-    const [right, bottom] = bounds.getMax();
-
-    // calc context's offset
-    const bbox = this.ownerDocument?.defaultView?.getContextService().getBoundingClientRect();
-
-    return new Rectangle(
-      left + (bbox?.left || 0),
-      top + (bbox?.top || 0),
-      right - left,
-      bottom - top,
-    );
-  }
-
-  /**
-   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getClientRects
-   */
-  getClientRects() {
-    return [this.getBoundingClientRect()];
+    this.attributes[attributeName] = value;
   }
 }

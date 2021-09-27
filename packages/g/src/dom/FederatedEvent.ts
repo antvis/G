@@ -1,6 +1,6 @@
 import { Point } from '../shapes/Point';
 import type { EventService } from '../services';
-import { Node } from './Node';
+import { IEventTarget } from './interfaces';
 
 /**
  * An DOM-compatible synthetic event implementation that is "forwarded" on behalf of an original
@@ -34,7 +34,7 @@ export class FederatedEvent<N extends Event = Event, T = any> {
    * can be used to implement event delegation
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/target
    */
-  target: Node | null;
+  target: IEventTarget | null;
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/bubbles
@@ -51,7 +51,7 @@ export class FederatedEvent<N extends Event = Event, T = any> {
   readonly cancelable = false;
 
   /** the event target when listeners binded */
-  currentTarget: EventTarget | null;
+  currentTarget: IEventTarget | null;
 
   /** Flags whether the default response of the user agent was prevent through this event. */
   defaultPrevented = false;
@@ -124,6 +124,23 @@ export class FederatedEvent<N extends Event = Event, T = any> {
   get y(): number {
     return this.canvas.y;
   }
+  get canvasX(): number {
+    return this.canvas.x;
+  }
+  get canvasY(): number {
+    return this.canvas.y;
+  }
+
+  /**
+   * relative to Viewport, account for Camera
+   */
+  viewport: Point = new Point();
+  get viewportX(): number {
+    return this.viewport.x;
+  }
+  get viewportY(): number {
+    return this.viewport.y;
+  }
 
   /**
    * The event boundary which manages this event. Propagation can only occur
@@ -133,7 +150,7 @@ export class FederatedEvent<N extends Event = Event, T = any> {
     this.manager = manager;
   }
 
-  path: Node[];
+  path: IEventTarget[];
   /**
    * The propagation path for this event
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Event/composedPath
@@ -141,7 +158,7 @@ export class FederatedEvent<N extends Event = Event, T = any> {
    * So composedPath()[0] represents the original target.
    * @see https://polymer-library.polymer-project.org/3.0/docs/devguide/events#retargeting
    */
-  composedPath(): Node[] {
+  composedPath(): IEventTarget[] {
     if (this.manager && (!this.path || this.path[0] !== this.target)) {
       this.path = this.target ? this.manager.propagationPath(this.target) : [];
     }
@@ -189,7 +206,7 @@ export class FederatedEvent<N extends Event = Event, T = any> {
   view: WindowProxy;
   which: number;
   returnValue: boolean;
-  srcElement: EventTarget;
+  srcElement: IEventTarget;
   readonly composed = false;
   isTrusted: boolean;
 

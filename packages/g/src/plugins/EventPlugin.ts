@@ -3,6 +3,7 @@ import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
 import { ContextService, RenderingPlugin, RenderingService, EventService } from '../services';
+import { Point } from '../shapes';
 import { CanvasConfig, Cursor, EventPosition, InteractivePointerEvent } from '../types';
 import { normalizeToPointerEvent, supportsTouchEvents, TOUCH_TO_POINTER } from '../utils/event';
 
@@ -146,14 +147,16 @@ export class EventPlugin implements RenderingPlugin {
     event.twist = nativeEvent.twist;
     this.transferMouseData(event, nativeEvent);
 
-    // calc position
-    const bbox = this.contextService.getBoundingClientRect();
-    // relative to canvas
-    event.canvas.x = nativeEvent.clientX - ((bbox && bbox.left) || 0);
-    event.canvas.y = nativeEvent.clientY - ((bbox && bbox.top) || 0);
-    event.screen.copyFrom(event.canvas);
-    event.global.copyFrom(event.screen);
-    event.offset.copyFrom(event.screen);
+    const { x, y } = this.eventService.client2Viewport(
+      new Point(nativeEvent.clientX, nativeEvent.clientY),
+    );
+    event.viewport.x = x;
+    event.viewport.y = y;
+    const { x: canvasX, y: canvasY } = this.eventService.viewport2Canvas(event.viewport);
+    event.canvas.x = canvasX;
+    event.canvas.y = canvasY;
+    event.global.copyFrom(event.canvas);
+    event.offset.copyFrom(event.canvas);
 
     event.isTrusted = nativeEvent.isTrusted;
     if (event.type === 'pointerleave') {
@@ -179,13 +182,16 @@ export class EventPlugin implements RenderingPlugin {
     event.deltaY = nativeEvent.deltaY;
     event.deltaZ = nativeEvent.deltaZ;
 
-    // calc position
-    const bbox = this.contextService.getBoundingClientRect();
-    event.canvas.x = nativeEvent.clientX - ((bbox && bbox.left) || 0);
-    event.canvas.y = nativeEvent.clientY - ((bbox && bbox.top) || 0);
-    event.screen.copyFrom(event.canvas);
-    event.global.copyFrom(event.screen);
-    event.offset.copyFrom(event.screen);
+    const { x, y } = this.eventService.client2Viewport(
+      new Point(nativeEvent.clientX, nativeEvent.clientY),
+    );
+    event.viewport.x = x;
+    event.viewport.y = y;
+    const { x: canvasX, y: canvasY } = this.eventService.viewport2Canvas(event.viewport);
+    event.canvas.x = canvasX;
+    event.canvas.y = canvasY;
+    event.global.copyFrom(event.canvas);
+    event.offset.copyFrom(event.canvas);
 
     event.nativeEvent = nativeEvent;
     event.type = nativeEvent.type;
@@ -212,6 +218,8 @@ export class EventPlugin implements RenderingPlugin {
     event.movement.y = nativeEvent.movementY;
     event.page.x = nativeEvent.pageX;
     event.page.y = nativeEvent.pageY;
+    event.screen.x = nativeEvent.screenX;
+    event.screen.y = nativeEvent.screenY;
     event.relatedTarget = null;
   }
 

@@ -103,3 +103,18 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelector
 ### querySelectorAll
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelectorAll
+
+## createElement
+
+通常我们建议使用 `new Circle()` 这样的方式创建内置或者自定义图形，但我们也提供了类似 DOM [CustomElementRegistry](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry) API，可以使用 [document.createElement](/zh/docs/api/builtin-objects/document#createelement) 创建完成注册的图形，因此以下写法等价：
+
+```js
+import { SHAPE, Circle } from '@antv/g';
+
+const circle = canvas.document.createElement(SHAPE.Circle, { style: { r: 100 } });
+
+// 或者
+const circle = new Circle({ style: { r: 100 } });
+```
+
+https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement

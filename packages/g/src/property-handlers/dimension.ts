@@ -1,5 +1,5 @@
 import { numberToString } from './numeric';
-import type { DisplayObject } from '../DisplayObject';
+import type { DisplayObject } from '../display-objects/DisplayObject';
 import { rad2deg } from '../utils/math';
 import { isFinite } from '@antv/util';
 
@@ -105,15 +105,12 @@ export function convertPercentUnit(
   if (valueWithUnit.unit === 'px') {
     return Number(valueWithUnit.value);
   } else if (valueWithUnit.unit === '%' && target) {
-    const { width, height } = target.parsedStyle;
-    // const bounds = target.getEntity().getComponent(Geometry).aabb;
-    // can't use bounds
-    // const bounds = target.getLocalBounds();
+    // use bounds
+    const bounds = target.getBounds();
     let size = 0;
-    // if (bounds) {
-    //   size = bounds.halfExtents[vec3Index] * 2;
-    // }
-    size = vec3Index === 0 ? width : height;
+    if (bounds) {
+      size = bounds.halfExtents[vec3Index] * 2;
+    }
     return (Number(valueWithUnit.value) / 100) * size;
   }
   return 0;

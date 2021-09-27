@@ -1,5 +1,5 @@
 import { Component } from '@antv/g-ecs';
-import type { Element } from '../dom/Element';
+import type { INode } from '../dom/interfaces';
 
 export class Sortable extends Component {
   static tag = 'c-sortable';
@@ -12,5 +12,5 @@ export class Sortable extends Component {
   /**
    * sorted child entities
    */
-  sorted: Element[];
+  sorted: INode[];
 }

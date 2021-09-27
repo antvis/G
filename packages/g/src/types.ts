@@ -1,7 +1,7 @@
 import type { vec2, vec3 } from 'gl-matrix';
 import type { AbstractRenderer } from './AbstractRenderer';
 import { ParsedPathStyleProps, ParsedPolylineStyleProps } from './display-objects';
-import type { DisplayObject } from './DisplayObject';
+import type { DisplayObject } from './display-objects';
 import type { ParsedColorStyleProperty } from './property-handlers';
 
 export enum SHAPE {
@@ -23,6 +23,8 @@ type ColorType = string | null;
 export interface EventPosition {
   clientX: number;
   clientY: number;
+  viewportX: number;
+  viewportY: number;
   x: number;
   y: number;
 }
@@ -99,7 +101,6 @@ export interface BaseStyleProps {
   opacity?: number;
   /** 线宽 */
   lineWidth?: number;
-  lineAppendWidth?: number;
   /** 指定如何绘制每一条线段末端 */
   lineCap?: 'butt' | 'round' | 'square';
   /** 用来设置2个长度不为0的相连部分（线段，圆弧，曲线）如何连接在一起的属性（长度为0的变形部分，其指定的末端和控制点在同一位置，会被忽略） */
@@ -108,6 +109,8 @@ export interface BaseStyleProps {
    * 设置线的虚线样式，可以指定一个数组。一组描述交替绘制线段和间距（坐标空间单位）长度的数字。 如果数组元素的数量是奇数， 数组的元素会被复制并重复。例如， [5, 15, 25] 会变成 [5, 15, 25, 5, 15, 25]。这个属性取决于浏览器是否支持 setLineDash() 函数。
    */
   lineDash?: number[] | null;
+
+  padding?: number[] | number;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/shadowBlur

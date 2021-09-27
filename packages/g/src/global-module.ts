@@ -51,8 +51,8 @@ import {
   mergeNumbers,
   mergeNumberLists,
   parseFilter,
+  updateAnchor,
 } from './property-handlers';
-import { container } from './inversify.config';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
@@ -130,6 +130,33 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
     };
   });
 
+  function addPropertyHandler<O, P, I extends Interpolatable = number>(
+    property: string,
+    parser: StylePropertyParser<O, P> | undefined,
+    merger: StylePropertyMerger<P, I> | undefined,
+    updater: StylePropertyUpdater<O> | undefined,
+  ) {
+    if (parser) {
+      bind(StylePropertyParser).toConstantValue(parser).whenTargetNamed(property);
+    }
+    if (merger) {
+      bind(StylePropertyMerger).toConstantValue(merger).whenTargetNamed(property);
+    }
+    if (updater) {
+      bind(StylePropertyUpdater).toConstantValue(updater).whenTargetNamed(property);
+    }
+  }
+  function addPropertiesHandler<O, P, I extends Interpolatable = number>(
+    properties: string[],
+    parser: StylePropertyParser<O, P> | undefined,
+    merger: StylePropertyMerger<P, I> | undefined,
+    updater: StylePropertyUpdater<O> | undefined,
+  ) {
+    for (let i = 0; i < properties.length; i++) {
+      addPropertyHandler<O, P, I>(properties[i], parser, merger, updater);
+    }
+  }
+
   // bind handlers for properties
   addPropertiesHandler<number, number>(
     ['opacity', 'fillOpacity', 'strokeOpacity', 'offsetDistance'],
@@ -138,7 +165,7 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
     undefined,
   );
   addPropertiesHandler<number, number>(
-    ['r', 'rx', 'ry', 'lineWidth', 'lineAppendWidth', 'width', 'height', 'shadowBlur'],
+    ['r', 'rx', 'ry', 'lineWidth', 'width', 'height', 'shadowBlur'],
     parseNumber,
     clampedMergeNumbers(0, Infinity),
     undefined,
@@ -151,9 +178,9 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
     mergeNumbers,
     undefined,
   );
+
   addPropertiesHandler<number, number>(
     [
-      'anchor',
       'x1',
       'x2',
       'y1',
@@ -163,12 +190,13 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
       'ry', // Ellipse
       'width',
       'height', // Image/Rect
+      'path', // Path
+      'points', // Polyline/Polygon
       'text', // Text
       'shadowBlur',
       'shadowOffsetX',
       'shadowOffsetY',
       'lineWidth',
-      'lineAppendWidth',
       'filter',
       'font',
       'fontSize',
@@ -201,16 +229,17 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   addPropertyHandler('offsetPath', undefined, undefined, updateOffsetPath);
   addPropertyHandler('offsetDistance', undefined, undefined, updateOffsetDistance);
   addPropertyHandler('origin', undefined, undefined, updateOrigin);
+  // @ts-ignore
   addPropertyHandler('transformOrigin', undefined, undefined, updateTransformOrigin);
   // @ts-ignore
   addPropertyHandler('transform', parseTransform, mergeTransforms, updateTransform);
 
   // Path.path
   // @ts-ignore
-  addPropertyHandler('path', parsePath, mergePaths, updateGeometry);
+  addPropertyHandler('path', parsePath, mergePaths, undefined);
   // Polyline.points Polygon.points
   // @ts-ignore
-  addPropertyHandler('points', parsePoints, undefined, updateGeometry);
+  addPropertyHandler('points', parsePoints, undefined, undefined);
 
   // update local position
   addPropertiesHandler<number, number>(
@@ -222,31 +251,6 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
   );
 
   addPropertyHandler('filter', parseFilter, undefined, undefined);
-});
 
-function addPropertyHandler<O, P, I extends Interpolatable = number>(
-  property: string,
-  parser: StylePropertyParser<O, P> | undefined,
-  merger: StylePropertyMerger<P, I> | undefined,
-  updater: StylePropertyUpdater<O> | undefined,
-) {
-  if (parser) {
-    container.bind(StylePropertyParser).toConstantValue(parser).whenTargetNamed(property);
-  }
-  if (merger) {
-    container.bind(StylePropertyMerger).toConstantValue(merger).whenTargetNamed(property);
-  }
-  if (updater) {
-    container.bind(StylePropertyUpdater).toConstantValue(updater).whenTargetNamed(property);
-  }
-}
-export function addPropertiesHandler<O, P, I extends Interpolatable = number>(
-  properties: string[],
-  parser: StylePropertyParser<O, P> | undefined,
-  merger: StylePropertyMerger<P, I> | undefined,
-  updater: StylePropertyUpdater<O> | undefined,
-) {
-  for (let i = 0; i < properties.length; i++) {
-    addPropertyHandler<O, P, I>(properties[i], parser, merger, updater);
-  }
-}
+  addPropertyHandler('anchor', undefined, undefined, updateAnchor);
+});

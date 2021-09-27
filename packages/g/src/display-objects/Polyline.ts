@@ -1,7 +1,7 @@
 import { SHAPE } from '../types';
 import type { BaseStyleProps } from '../types';
-import { DisplayObject } from '../DisplayObject';
-import { DisplayObjectConfig } from '../DisplayObject';
+import { DisplayObject } from './DisplayObject';
+import { DisplayObjectConfig } from '../dom';
 import { Line as LineUtil, Polyline as PolylineUtil } from '@antv/g-math';
 import { Point } from '../shapes';
 
@@ -24,13 +24,9 @@ export class Polyline extends DisplayObject<
       type: SHAPE.Polyline,
       style: {
         points: [],
-        opacity: 1,
-        fillOpacity: 1,
-        strokeOpacity: 1,
         lineJoin: 'miter',
         lineCap: 'butt',
         lineWidth: 1,
-        anchor: [0, 0],
         ...style,
       },
       ...rest,

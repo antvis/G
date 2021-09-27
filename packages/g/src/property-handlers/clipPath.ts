@@ -1,5 +1,5 @@
-import type { DisplayObject } from '../DisplayObject';
-import { Renderable } from '../components/Renderable';
+import type { DisplayObject } from '../display-objects/DisplayObject';
+import { dirtifyRenderable } from '../services';
 
 /**
  * @see /zh/docs/api/basic/display-object#clippath
@@ -36,6 +36,5 @@ export function updateClipPath(
     newClipPath.style.clipPathTargets.push(object);
   }
 
-  // re-calc target's AABB
-  object.getEntity().getComponent(Renderable).aabbDirty = true;
+  dirtifyRenderable(object);
 }

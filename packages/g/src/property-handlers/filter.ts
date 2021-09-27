@@ -1,4 +1,4 @@
-import type { DisplayObject } from '../DisplayObject';
+import type { DisplayObject } from '../display-objects/DisplayObject';
 import { parseColor, ParsedColorStyleProperty } from './color';
 import { ParsedElement, parseDimension } from './dimension';
 

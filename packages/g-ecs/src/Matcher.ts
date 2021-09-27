@@ -1,5 +1,5 @@
 import { Component, ComponentConstructor } from './Component';
-import { Entity } from './Entity';
+import type { Entity } from './Entity';
 
 interface IMatcher {
   matches(entity: Entity): boolean;
@@ -30,7 +30,9 @@ interface IAllOfMatcher<C extends Component> extends ICompoundMatcher<C> {
  * matcher.allOf(Position, Velocity).noneOf(NotMovable)
  * ```
  */
-export class Matcher<C extends Component = Component> implements IAllOfMatcher<C>, IAnyOfMatcher<C>, INoneOfMatcher<C> {
+export class Matcher<C extends Component = Component>
+  implements IAllOfMatcher<C>, IAnyOfMatcher<C>, INoneOfMatcher<C>
+{
   public allOfComponentCtors: ComponentConstructor<C>[] = [];
   public anyOfComponentCtors: ComponentConstructor<C>[] = [];
   public noneOfComponentCtors: ComponentConstructor<C>[] = [];
@@ -51,8 +53,12 @@ export class Matcher<C extends Component = Component> implements IAllOfMatcher<C
   }
 
   public matches(entity: Entity): boolean {
-    const matchesAllOf = !this.allOfComponentCtors.length ? true : entity.hasAllComponents(this.allOfComponentCtors);
-    const matchesAnyOf = !this.anyOfComponentCtors.length ? true : entity.hasAnyComponents(this.anyOfComponentCtors);
+    const matchesAllOf = !this.allOfComponentCtors.length
+      ? true
+      : entity.hasAllComponents(this.allOfComponentCtors);
+    const matchesAnyOf = !this.anyOfComponentCtors.length
+      ? true
+      : entity.hasAnyComponents(this.anyOfComponentCtors);
     const matchesNoneOf = !this.noneOfComponentCtors.length
       ? true
       : !entity.hasAnyComponents(this.noneOfComponentCtors);

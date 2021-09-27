@@ -24,7 +24,12 @@ describe('Line', () => {
     let bounds = line.getBounds();
     if (bounds) {
       expect(bounds.center).eqls(vec3.fromValues(300, 100, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(110, 10, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 0, 0));
+    }
+    let geometryBounds = line.getGeometryBounds();
+    if (geometryBounds) {
+      expect(geometryBounds.center).eqls(vec3.fromValues(100, 0, 0));
+      expect(geometryBounds.halfExtents).eqls(vec3.fromValues(100, 0, 0));
     }
 
     // change lineWidth
@@ -32,7 +37,12 @@ describe('Line', () => {
     bounds = line.getBounds();
     if (bounds) {
       expect(bounds.center).eqls(vec3.fromValues(300, 100, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(120, 20, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 0, 0));
+    }
+    geometryBounds = line.getGeometryBounds();
+    if (geometryBounds) {
+      expect(geometryBounds.center).eqls(vec3.fromValues(100, 0, 0));
+      expect(geometryBounds.halfExtents).eqls(vec3.fromValues(100, 0, 0));
     }
 
     // change x1/x2, move right
@@ -43,7 +53,12 @@ describe('Line', () => {
     bounds = line.getBounds();
     if (bounds) {
       expect(bounds.center).eqls(vec3.fromValues(400, 100, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(120, 20, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 0, 0));
+    }
+    geometryBounds = line.getGeometryBounds();
+    if (geometryBounds) {
+      expect(geometryBounds.center).eqls(vec3.fromValues(100, 0, 0));
+      expect(geometryBounds.halfExtents).eqls(vec3.fromValues(100, 0, 0));
     }
   });
 

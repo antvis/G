@@ -1,3 +1,6 @@
+export * from './DisplayObject';
+export * from './CustomElement';
+export * from './Batch';
 export * from './Circle';
 export * from './Ellipse';
 export * from './Group';

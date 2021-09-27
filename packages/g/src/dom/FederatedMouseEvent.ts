@@ -1,10 +1,11 @@
-import type { DisplayObject } from '../DisplayObject';
+import type { DisplayObject } from '../display-objects/DisplayObject';
 import { FederatedEvent } from './FederatedEvent';
 import { Point } from '../shapes/Point';
 
 export class FederatedMouseEvent
   extends FederatedEvent<MouseEvent | PointerEvent | TouchEvent>
-  implements MouseEvent {
+  implements MouseEvent
+{
   /** Whether the "alt" key was pressed when this mouse event occurred. */
   altKey: boolean;
 

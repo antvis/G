@@ -1,6 +1,6 @@
-import { KeyframeEffect } from './KeyframeEffect';
-import { AnimationTimeline } from './Timeline';
-import { DisplayObject } from './DisplayObject';
+import type { KeyframeEffect } from './KeyframeEffect';
+import type { AnimationTimeline } from './AnimationTimeline';
+import type { DisplayObject } from '../display-objects/DisplayObject';
 import { AnimationEvent } from './AnimationEvent';
 
 let sequenceNumber = 0;
@@ -8,7 +8,7 @@ let sequenceNumber = 0;
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Animation/Animation
  */
-export class Animation implements Animation {
+export class Animation {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect
    */
@@ -239,6 +239,7 @@ export class Animation implements Animation {
 
   constructor(effect: KeyframeEffect, timeline: AnimationTimeline) {
     this.effect = effect;
+    effect.animation = this;
     this.timeline = timeline;
     this.id = `${sequenceNumber++}`;
 
@@ -367,7 +368,7 @@ export class Animation implements Animation {
 
   targetAnimations() {
     const target = this.effect?.target as unknown as DisplayObject;
-    return target.activeAnimations;
+    return target.getAnimations();
   }
   markTarget() {
     const animations = this.targetAnimations();
@@ -478,7 +479,6 @@ export class Animation implements Animation {
     if (this._isFinished) {
       if (!this._finishedFlag) {
         if (this.onfinish) {
-          // @ts-ignore
           const event = new AnimationEvent(null, this, this.currentTime, baseTime);
           setTimeout(() => {
             this.onfinish && this.onfinish(event);
@@ -488,7 +488,6 @@ export class Animation implements Animation {
       }
     } else {
       if (this.onframe && this.playState === 'running') {
-        // @ts-ignore
         const event = new AnimationEvent(null, this, this.currentTime, baseTime);
         this.onframe(event);
       }

@@ -1,4 +1,4 @@
-import { AnimationEffectTiming } from './AnimationEffectTiming';
+import type { AnimationEffectTiming } from './AnimationEffectTiming';
 
 /**
  * @example

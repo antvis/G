@@ -101,17 +101,18 @@ describe('Path', () => {
     expect(point.x).eqls(0);
     expect(point.y).eqls(0);
 
-    // point = path.getPoint(0.5)!;
-    // expect(point.x).eqls(50);
-    // expect(point.y).eqls(0);
+    point = path.getPoint(0.5)!;
 
-    // point = path.getPoint(1)!;
-    // expect(point.x).eqls(100);
-    // expect(point.y).eqls(0);
+    expect(point.x).eqls(50);
+    expect(point.y).eqls(0);
 
-    // point = path.getPoint(10)!;
-    // expect(point.x).eqls(0);
-    // expect(point.y).eqls(0);
+    point = path.getPoint(1)!;
+    expect(point.x).eqls(100);
+    expect(point.y).eqls(0);
+
+    point = path.getPoint(10)!;
+    expect(point.x).eqls(0);
+    expect(point.y).eqls(0);
   });
 
   it('should calc tangent correctly', () => {

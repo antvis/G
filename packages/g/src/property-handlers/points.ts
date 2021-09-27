@@ -1,5 +1,5 @@
 import { Line as LineUtil, Polyline as PolylineUtil } from '@antv/g-math';
-import type { DisplayObject } from '../DisplayObject';
+import type { DisplayObject } from '../display-objects/DisplayObject';
 
 export function parsePoints(points: [number, number][], displayObject: DisplayObject | null) {
   const segments: [number, number][] = [];

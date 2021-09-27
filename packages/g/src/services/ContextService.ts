@@ -1,7 +1,7 @@
-import { CanvasService } from '../Canvas';
-
 export const ContextService = 'ContextService';
-export interface ContextService<Context> extends CanvasService {
+export interface ContextService<Context> {
+  init(): void;
+  destroy(): void;
   getContext(): Context | null;
   getDomElement(): HTMLElement | null;
   getDPR(): number;

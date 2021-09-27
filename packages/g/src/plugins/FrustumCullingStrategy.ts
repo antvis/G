@@ -3,8 +3,8 @@ import { inject, injectable } from 'inversify';
 import { Cullable } from '../components';
 import { CullingStrategy } from './CullingPlugin';
 import { AABB, Mask, Plane } from '../shapes';
-import { DefaultCamera, Camera } from '../Camera';
-import { DisplayObject } from '../DisplayObject';
+import { DefaultCamera, Camera } from '../camera/Camera';
+import { DisplayObject } from '../display-objects/DisplayObject';
 
 @injectable()
 export class FrustumCullingStrategy implements CullingStrategy {
@@ -19,8 +19,8 @@ export class FrustumCullingStrategy implements CullingStrategy {
       return true;
     }
 
-    const aabb = object.getBounds();
-    if (!aabb) {
+    const renderBounds = object.getRenderBounds();
+    if (!renderBounds) {
       return false;
     }
 
@@ -34,7 +34,7 @@ export class FrustumCullingStrategy implements CullingStrategy {
       ?.getEntity()
       .getComponent(Cullable)?.visibilityPlaneMask;
     cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
-      aabb,
+      renderBounds,
       parentVisibilityPlaneMask || Mask.INDETERMINATE,
       this.camera.getFrustum().planes,
     );

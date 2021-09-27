@@ -1,10 +1,10 @@
 import { mat4, vec3 } from 'gl-matrix';
-import { Camera } from './Camera';
+import type { Camera } from './Camera';
 
 /**
  * 保存相机状态，便于后续在多个 Landmark 间移动
  */
-export default class Landmark {
+export class Landmark {
   public name: string;
 
   private matrix: mat4;
