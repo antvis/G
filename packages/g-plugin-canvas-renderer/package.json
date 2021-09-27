@@ -33,7 +33,8 @@
   "dependencies": {
     "@antv/g-ecs": "^1.0.0-alpha.8",
     "@antv/g-math": "^1.0.0-alpha.5",
-    "@antv/path-util": "^2.0.13",
+    "@antv/g": "^1.0.0-alpha.22",
+    "@antv/path-util": "^2.0.14",
     "rbush": "^3.0.1"
   },
   "devDependencies": {
@@ -42,8 +43,5 @@
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7"
   },
-  "homepage": "https://github.com/antvis/g#readme",
-  "peerDependencies": {
-    "@antv/g": "^1.0.0-alpha.4"
-  }
+  "homepage": "https://github.com/antvis/g#readme"
 }

@@ -7,7 +7,6 @@ import { dirtifyRenderable, GeometryAABBUpdater, GeometryUpdaterFactory } from '
 import { SHAPE } from '../types';
 import { PARSED_COLOR_TYPE } from './color';
 import { ParsedFilterStyleProperty } from './filter';
-import { ElementEvent } from '../dom';
 
 export function updateGeometry(oldValue: number, newValue: number, object: DisplayObject) {
   const geometryUpdaterFactory =

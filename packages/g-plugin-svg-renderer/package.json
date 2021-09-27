@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@antv/g-ecs": "^1.0.0-alpha.8",
+    "@antv/g": "^1.0.0-alpha.22",
     "detect-browser": "^5.0.0"
   },
   "devDependencies": {
@@ -40,8 +41,5 @@
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7"
   },
-  "homepage": "https://github.com/antvis/g#readme",
-  "peerDependencies": {
-    "@antv/g": "^1.0.0-alpha.4"
-  }
+  "homepage": "https://github.com/antvis/g#readme"
 }

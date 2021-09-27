@@ -6,6 +6,20 @@
 
 ### Bug 修复
 
+-   @antv/g-canvas@1.0.0-alpha.22
+-   @antv/g-components@1.0.0-alpha.21
+-   @antv/g-ecs@1.0.0-alpha.8
+-   @antv/g-plugin-canvas-picker@1.0.0-alpha.16
+-   @antv/g-plugin-canvas-renderer@1.0.0-alpha.22
+-   @antv/g-plugin-css-select@1.0.0-alpha.22
+-   @antv/g-plugin-html-renderer@1.0.0-alpha.5
+-   @antv/g-plugin-svg-renderer@1.0.0-alpha.22
+-   @antv/g-plugin-webgl-renderer@1.0.0-alpha.22
+-   @antv/g-plugin-control@1.0.0-alpha.21
+-   @antv/g-svg@1.0.0-alpha.22
+-   @antv/g-webgl@1.0.0-alpha.22
+-   @antv/g@1.0.0-alpha.22
+
 -   [g] Canvas 传入参数 Renderer 类型报错
 -   [g-plugin-control] 使用 hammer.js 监听手势事件，使用 Passive Event Listener 处理 wheel 事件
 

@@ -40,8 +40,5 @@
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7"
   },
-  "homepage": "https://github.com/antvis/g#readme",
-  "peerDependencies": {
-    "@antv/g": "^1.0.0-alpha.2"
-  }
+  "homepage": "https://github.com/antvis/g#readme"
 }

@@ -1,9 +1,8 @@
 import { Node } from './Node';
 import { AnimationTimeline } from './AnimationTimeline';
 import { Group, DisplayObject } from '../display-objects';
-import type { IDocument, IElement, INode, ICanvas } from './interfaces';
-import { DisplayObjectConfig } from '.';
-import { BaseStyleProps } from '..';
+import type { IDocument, IElement, INode, ICanvas, DisplayObjectConfig } from './interfaces';
+import { BaseStyleProps } from '../types';
 
 /**
  * the entry of DOM tree

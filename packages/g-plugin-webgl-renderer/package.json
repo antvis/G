@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@antv/g-ecs": "^1.0.0-alpha.8",
+    "@antv/g": "^1.0.0-alpha.22",
     "@antv/util": "^2.0.13",
     "@mapbox/tiny-sdf": "^1.1.1",
     "@webgpu/types": "^0.0.31",
@@ -46,8 +47,5 @@
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7"
   },
-  "homepage": "https://github.com/antvis/g#readme",
-  "peerDependencies": {
-    "@antv/g": "^1.0.0-alpha.4"
-  }
+  "homepage": "https://github.com/antvis/g#readme"
 }

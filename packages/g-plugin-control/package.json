@@ -31,6 +31,7 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
+    "@antv/g": "^1.0.0-alpha.22",
     "hammerjs": "^2.0.8"
   },
   "devDependencies": {
@@ -40,8 +41,5 @@
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7"
   },
-  "homepage": "https://github.com/antvis/g#readme",
-  "peerDependencies": {
-    "@antv/g": "^1.0.0-alpha.17"
-  }
+  "homepage": "https://github.com/antvis/g#readme"
 }
