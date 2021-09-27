@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-components",
-  "version": "1.0.0-alpha.20",
+  "version": "1.0.0-alpha.21",
   "description": "Components for g",
   "main": "lib/index.js",
   "module": "es/index.js",
