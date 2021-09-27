@@ -2,9 +2,17 @@
 
 以下版本号以 @antv/g 为准。
 
-## [1.0.0-alpha.22] - 2021-09-27
+## [1.0.0-alpha.23] - 2021-09-27
 
 ### Bug 修复
+
+-   [path-util] 转换无效 A 命令出错，例如 GUI 中使用的：
+
+    ```js
+    [['A', 0, 0, 0, 0, 0, 0, 0]];
+    ```
+
+## [1.0.0-alpha.22] - 2021-09-26
 
 -   @antv/g-canvas@1.0.0-alpha.22
 -   @antv/g-components@1.0.0-alpha.21
@@ -19,6 +27,8 @@
 -   @antv/g-svg@1.0.0-alpha.22
 -   @antv/g-webgl@1.0.0-alpha.22
 -   @antv/g@1.0.0-alpha.22
+
+### Bug 修复
 
 -   [g] Canvas 传入参数 Renderer 类型报错
 -   [g-plugin-control] 使用 hammer.js 监听手势事件，使用 Passive Event Listener 处理 wheel 事件
