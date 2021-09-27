@@ -42,8 +42,7 @@ export class ControlPlugin implements RenderingPlugin {
   apply(renderingService: RenderingService) {
     renderingService.hooks.init.tap(ControlPlugin.tag, () => {
       const root = this.renderingContext.root;
-      // @ts-ignore
-      this.hammertime = new Hammer(root);
+      this.hammertime = new Hammer(root.ownerDocument as unknown as HTMLElement);
 
       this.hammertime.get('pan').set({ direction: Hammer.DIRECTION_ALL });
       this.hammertime.get('pinch').set({ enable: true });
@@ -52,7 +51,9 @@ export class ControlPlugin implements RenderingPlugin {
       this.hammertime.on('panend', this.onPanend);
       this.hammertime.on('pinch', this.onPinch);
 
-      root.addEventListener('wheel', this.onMousewheel);
+      this.contextService
+        .getDomElement()
+        .addEventListener('wheel', this.onMousewheel, { passive: false });
     });
 
     renderingService.hooks.destroy.tap(ControlPlugin.tag, () => {
@@ -61,8 +62,7 @@ export class ControlPlugin implements RenderingPlugin {
       this.hammertime.off('panend', this.onPanend);
       this.hammertime.off('pinch', this.onPinch);
 
-      const root = this.renderingContext.root;
-      root.removeEventListener('wheel', this.onMousewheel);
+      this.contextService.getDomElement().removeEventListener('wheel', this.onMousewheel);
     });
   }
 
@@ -108,6 +108,7 @@ export class ControlPlugin implements RenderingPlugin {
 
   private onMousewheel = (e: WheelEvent) => {
     this.dolly(e.deltaY);
+    e.preventDefault();
   };
 
   private dolly(z: number) {

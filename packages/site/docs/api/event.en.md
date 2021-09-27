@@ -1,5 +1,5 @@
 ---
-title: Event
+title: 事件
 order: -3
 ---
 
@@ -28,6 +28,90 @@ circle.addEventListener('mouseleave', () => {
 ```
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*D7xLQp4L4VoAAAAAAAAAAAAAARQnAQ)
+
+# 可监听事件
+
+目前我们支持对于以下两类事件的监听：交互事件和场景图事件。前者和 DOM Event API 中提供的大部分鼠标、触屏事件相同，后者则是基于场景图在节点添加、删除、属性变换时触发。
+
+## 交互事件
+
+目前支持监听如下交互事件：
+
+Pointer 系列：
+
+-   pointerdown
+-   pointerup
+-   pointerupoutside
+-   pointertap
+-   pointerover
+-   pointerenter
+-   pointerleave
+-   pointerout
+
+Mouse 系列：
+
+-   mousedown
+-   rightdown
+-   mouseup
+-   mouseupoutside
+-   click
+-   mousemove
+-   mouseover
+-   mouseout
+-   mouseenter
+-   mouseleave
+-   wheel
+
+Touch 系列：
+
+-   touchstart
+-   touchend
+-   touchendoutside
+-   touchmove
+-   tap
+
+## 场景图事件
+
+除了交互事件，我们还可以监听一些场景图相关的事件，例如在画布上监听每一个节点的首次加载（g-svg 会在此时创建当前图形相关的 DOM），[示例](/zh/examples/event#builtin)
+
+```js
+import { ElementEvent } from '@antv/g';
+
+canvas.addEventListener(ElementEvent.MOUNTED, (e) => {
+    e.target;
+});
+```
+
+目前我们支持如下场景图相关事件：
+
+-   CHILD_INSERTED 作为父节点有子节点添加时触发
+-   INSERTED 作为子节点被添加时触发
+-   CHILD_REMOVED 作为父节点有子节点移除时触发
+-   REMOVED 作为子节点被移除时触发
+-   MOUNTED 首次进入画布时触发
+-   UNMOUNTED 从画布中移除时触发
+-   ATTRIBUTE_CHANGED 修改属性时触发
+-   DESTROY 销毁时触发
+
+在下面的例子中，画布监听 INSERTED REMOVED MOUNTED 和 UNMOUNTED 事件。在加入、移除场景图时，以下事件会依次触发：
+
+```js
+canvas.addEventListener(ElementEvent.INSERTED, (e) => {
+    console.log(ElementEvent.INSERTED, e.target);
+});
+// 省略其他事件监听器
+
+parent.appendChild(child); // 构建父子关系
+canvas.appendChild(parent); // 加入场景图
+canvas.removeChild(parent, false); // 从场景图中移除，但不销毁
+
+// MOUNTED parent 父节点载入
+// MOUNTED child 子节点载入
+// INSERTED parent 父节点加入场景图
+// REMOVED parent 父节点被移除场景图
+// UNMOUNTED child 子节点卸载
+// UNMOUNTED parent 父节点卸载
+```
 
 # 事件监听
 
@@ -155,7 +239,7 @@ circle.emit('build', { prop1: 'xx' });
 
 ## 属性
 
-事件对象上常用的属性包括事件类型、当前触发事件的图形、位置等。
+事件对象上常用的属性包括事件类型、当前触发事件的图形、位置等，其中位置和[坐标系](/zh/docs/api/canvas#坐标系)相关。
 
 ### pointerType
 
@@ -169,40 +253,15 @@ https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType
 
 ### type
 
-事件类型，目前支持监听如下事件：
+事件类型：
 
-Pointer 系列：
-
--   pointerdown
 -   pointerup
+-   pointerdown
 -   pointerupoutside
--   pointertap
--   pointerover
--   pointerenter
--   pointerleave
--   pointerout
+-   pointermove
+-   pointercancel
 
-Mouse 系列：
-
--   mousedown
--   rightdown
--   mouseup
--   mouseupoutside
--   click
--   mousemove
--   mouseover
--   mouseout
--   mouseenter
--   mouseleave
--   wheel
-
-Touch 系列：
-
--   touchstart
--   touchend
--   touchendoutside
--   touchmove
--   tap
+https://developer.mozilla.org/en-US/docs/Web/API/Event/type
 
 ### target
 
@@ -249,31 +308,96 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Event/currentTarget
 
 原生事件对象。
 
-### x/y
+### canvasX/Y
 
-<tag color="green" text="MouseEvent">MouseEvent</tag>
+<tag color="green" text="MouseEvent">MouseEvent</tag> <tag color="red" text="TouchEvent">TouchEvent</tag>
 
-相对于 Canvas 的坐标，左上角为 `(0, 0)`
+在 [Canvas 坐标系/世界坐标系](/zh/docs/api/canvas#canvas)下，以画布 DOM 元素的左上角为原点，X 轴正向指向屏幕右侧，Y 轴正向指向屏幕下方。可以与 [viewportX/Y](/zh/docs/api/event#viewportxy) 互相转换，[详见](/zh/docs/api/canvas#canvas---viewport)：
+
+```js
+canvas.canvas2Viewport({ x: e.canvasX, y: e.canvasY }); // Point { x: 100, y: 100 }
+canvas.viewport2Canvas({ x: e.viewportX, y: e.viewportY }); // Point { x: 0, y: 0 }
+```
+
+别名为 x/y：
+
+```js
+e.canvasX;
+e.x;
+
+e.canvasY;
+e.y;
+```
+
+### viewportX/Y
+
+<tag color="green" text="MouseEvent">MouseEvent</tag> <tag color="red" text="TouchEvent">TouchEvent</tag>
+
+在 [Viewport 坐标系](/zh/docs/api/canvas#viewport)下，考虑相机变换。
+
+可以与 [canvasX/Y](/zh/docs/api/event#canvasxy) 互相转换，[详见](/zh/docs/api/canvas#canvas---viewport)：
+
+```js
+canvas.canvas2Viewport({ x: e.canvasX, y: e.canvasY }); // Point { x: 100, y: 100 }
+canvas.viewport2Canvas({ x: e.viewportX, y: e.viewportY }); // Point { x: 0, y: 0 }
+```
+
+可以与 [clientX/Y](/zh/docs/api/event#clientxy) 互相转换，[详见](/zh/docs/api/canvas#client---viewport)：
+
+```js
+canvas.viewport2Client({ x: 0, y: 0 }); // Point { x: 100, y: 100 }
+canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
+```
 
 ### clientX/Y
 
-<tag color="green" text="MouseEvent">MouseEvent</tag>
+<tag color="green" text="MouseEvent">MouseEvent</tag> <tag color="red" text="TouchEvent">TouchEvent</tag>
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX
 
-相对于浏览器的坐标，左上角为 `(0, 0)`
+在[浏览器坐标系](/zh/docs/api/canvas#client)下，左上角为 `(0, 0)`。G 不会修改原生事件上的该属性，因此两者完全相同：
+
+```js
+e.clientX;
+e.nativeEvent.clientX;
+```
+
+可以与 [viewportX/Y](/zh/docs/api/event#viewportxy) 互相转换，[详见](/zh/docs/api/canvas#client---viewport)：
+
+```js
+canvas.viewport2Client({ x: 0, y: 0 }); // Point { x: 100, y: 100 }
+canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
+```
+
+### screenX/Y
+
+<tag color="green" text="MouseEvent">MouseEvent</tag> <tag color="red" text="TouchEvent">TouchEvent</tag>
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/screenX
+
+在[屏幕坐标系](/zh/docs/api/canvas#screen)下，不考虑页面滚动。G 不会修改原生事件上的该属性，因此两者完全相同：
+
+```js
+e.screenX;
+e.nativeEvent.screenX;
+```
 
 ### pageX/Y
 
-<tag color="green" text="MouseEvent">MouseEvent</tag>
+<tag color="green" text="MouseEvent">MouseEvent</tag> <tag color="red" text="TouchEvent">TouchEvent</tag>
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX
 
-相对于整个文档的水平/垂直坐标，考虑页面滚动。
+在[文档坐标系](/zh/docs/api/canvas#page)下，考虑页面滚动。G 不会修改原生事件上的该属性，因此两者完全相同：
+
+```js
+e.pageX;
+e.nativeEvent.pageX;
+```
 
 ### movementX/Y
 
-<tag color="green" text="MouseEvent">MouseEvent</tag>
+<tag color="green" text="MouseEvent">MouseEvent</tag> <tag color="red" text="TouchEvent">TouchEvent</tag>
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/movementX
 
@@ -587,7 +711,7 @@ $el.addEventListener('wheel', onPointerWheel, {
 
 关于 Passive 事件处理器，可以参考知乎的这篇文章：https://zhuanlan.zhihu.com/p/24555031 。简而言之是通过这个选项可以提升浏览器的滚动流畅度，相当于提前告知浏览器“我不会阻止你的默认滚动行为”。
 
-现在回到我们的问题，如果用户确实需要禁止默认滚动行为，可以在画布的 DOM 节点上手动添加一个非 Passive 的事件处理器。如何获取画布的 DOM 节点可以使用 [getDomElement](/zh/docs/api/renderer#getdomelement)：
+现在回到我们的问题，如果用户确实需要禁止默认滚动行为，可以在画布的 DOM 节点上手动添加一个非 Passive 的事件处理器，[g-plugin-control](http://g-next.antv.vision/zh/docs/plugins/control) 插件就是这么做的。如何获取画布的 DOM 节点可以使用 [getDomElement](/zh/docs/api/renderer#getdomelement)：
 
 ```js
 canvas

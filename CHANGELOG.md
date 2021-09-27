@@ -7,6 +7,7 @@
 ### Bug 修复
 
 -   [g] Canvas 传入参数 Renderer 类型报错
+-   [g-plugin-control] 使用 hammer.js 监听手势事件，使用 Passive Event Listener 处理 wheel 事件
 
 ## [1.0.0-alpha.21] - 2021-09-25
 
