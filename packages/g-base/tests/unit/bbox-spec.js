@@ -217,6 +217,20 @@ describe('test bbox', () => {
       width: 20,
       height: 10,
     });
+
+    shape.attr('path', [
+      ['M', 100, 100],
+      ['L', NaN, NaN],
+      ['A', 10, 10, 0, 0, 0, 120, 100],
+    ]);
+
+    bbox = shape.getBBox();
+    expect(bbox).eqls({
+      x: 100,
+      y: 100,
+      width: 0,
+      height: 0,
+    });
   });
 
   it('path with angle', () => {
