@@ -48,8 +48,9 @@ function getPathBox(segments, lineWidth) {
   }
   // bbox calculation should ignore NaN for path attribute
   // ref: https://github.com/antvis/g/issues/210
-  xArr = xArr.filter((item) => !Number.isNaN(item));
-  yArr = yArr.filter((item) => !Number.isNaN(item));
+  // ref: https://github.com/antvis/G2/issues/3109
+  xArr = xArr.filter((item) => !Number.isNaN(item) && item !== Infinity && item !== -Infinity);
+  yArr = yArr.filter((item) => !Number.isNaN(item) && item !== Infinity && item !== -Infinity);
   let minX = min(xArr);
   let minY = min(yArr);
   let maxX = max(xArr);
