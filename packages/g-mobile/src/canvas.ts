@@ -134,11 +134,9 @@ class Canvas extends AbstractCanvas {
   initDom() {
     if (this.isMini()) {
       const context = this.get('context');
-      const fitView = this.get('fitView');
       const pixelRatio = this.getPixelRatio();
       // 设置 canvas 元素的宽度和高度，会重置缩放，因此 context.scale 需要在每次设置宽、高后调用
-      // 上层框架控制 fitView，画布缩放会冲突（小程序没传 container，因此画布与container根据pixelRatio同比放大来实现高清的方案在小程序端自行维护）
-      if (!fitView && pixelRatio > 1) {
+      if (pixelRatio > 1) {
         context.scale(pixelRatio, pixelRatio);
       }
       return;
