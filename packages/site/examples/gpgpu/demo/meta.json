@@ -1,0 +1,36 @@
+{
+  "title": {
+    "zh": "GPGPU",
+    "en": "GPGPU"
+  },
+  "demos": [
+    {
+      "filename": "matrix-multiplication.tsx",
+      "title": {
+        "zh": "矩阵乘法",
+        "en": "Matrix multiplication"
+      }
+    },
+    {
+      "filename": "reduce.tsx",
+      "title": {
+        "zh": "Reduce Sum",
+        "en": "Reduce Sum"
+      }
+    },
+    {
+      "filename": "bellman-ford.tsx",
+      "title": {
+        "zh": "Bellman-Ford 最短路径算法",
+        "en": "Bellman-Ford SSSP"
+      }
+    },
+    {
+      "filename": "fruchterman.tsx",
+      "title": {
+        "zh": "Fruchterman 布局算法",
+        "en": "Fruchterman Layout"
+      }
+    }
+  ]
+}

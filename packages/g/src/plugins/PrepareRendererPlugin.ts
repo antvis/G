@@ -3,7 +3,11 @@ import type { DisplayObject } from '..';
 import { ElementEvent, FederatedEvent, INode } from '../dom';
 import { updateTransformOrigin } from '../property-handlers';
 import { dirtifyRenderable, RenderingContext, RENDER_REASON } from '../services';
-import { RenderingService, RenderingPlugin } from '../services/RenderingService';
+import {
+  RenderingService,
+  RenderingPlugin,
+  RenderingServiceEvent,
+} from '../services/RenderingService';
 
 @injectable()
 export class PrepareRendererPlugin implements RenderingPlugin {
@@ -57,7 +61,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       dirtifyToRoot(e);
     };
 
-    renderingService.hooks.init.tap(PrepareRendererPlugin.tag, () => {
+    renderingService.emitter.on(RenderingServiceEvent.Init, () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(
@@ -67,7 +71,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
 
-    renderingService.hooks.destroy.tap(PrepareRendererPlugin.tag, () => {
+    renderingService.emitter.on(RenderingServiceEvent.Destroy, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(

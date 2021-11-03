@@ -20,6 +20,7 @@ import {
   RENDER_REASON,
   ElementEvent,
   FederatedEvent,
+  RenderingServiceEvent,
 } from '@antv/g';
 import { isArray } from '@antv/util';
 import { inject, injectable } from 'inversify';
@@ -151,7 +152,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       });
     };
 
-    renderingService.hooks.init.tap(CanvasRendererPlugin.tag, () => {
+    renderingService.emitter.on(RenderingServiceEvent.Init, () => {
       const context = this.contextService.getContext();
       const dpr = this.contextService.getDPR();
       // scale all drawing operations by the dpr
@@ -163,7 +164,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
 
-    renderingService.hooks.destroy.tap(CanvasRendererPlugin.tag, () => {
+    renderingService.emitter.on(RenderingServiceEvent.Destroy, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(
@@ -172,7 +173,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.hooks.beginFrame.tap(CanvasRendererPlugin.tag, () => {
+    renderingService.emitter.on(RenderingServiceEvent.BeginFrame, () => {
       const context = this.contextService.getContext();
 
       const { enableDirtyRectangleRendering, enableDirtyRectangleRenderingDebug } =
@@ -198,7 +199,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     });
 
     // render at the end of frame
-    renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
+    renderingService.emitter.on(RenderingServiceEvent.EndFrame, () => {
       const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
       const context = this.contextService.getContext()!;
       if (enableDirtyRectangleRendering) {
@@ -260,7 +261,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       context.restore();
     });
 
-    renderingService.hooks.render.tap(CanvasRendererPlugin.tag, (object: DisplayObject) => {
+    renderingService.emitter.on(RenderingServiceEvent.Render, (object: DisplayObject) => {
       const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
       if (!enableDirtyRectangleRendering) {
         // render immediately

@@ -106,6 +106,8 @@ const lineFolder = gui.addFolder('line1');
 const lineConfig = {
   stroke: '#1890FF',
   lineWidth: 2,
+  lineJoin: 'miter',
+  lineCap: 'butt',
   strokeOpacity: 1,
   anchorX: 0,
   anchorY: 0,
@@ -114,6 +116,12 @@ const lineConfig = {
   x2: 400,
   y2: 100,
 };
+lineFolder.add(lineConfig, 'lineJoin', ['miter', 'round', 'bevel']).onChange((lineJoin) => {
+  line1.style.lineJoin = lineJoin;
+});
+lineFolder.add(lineConfig, 'lineCap', ['butt', 'round', 'square']).onChange((lineCap) => {
+  line1.style.lineCap = lineCap;
+});
 lineFolder.add(lineConfig, 'x1', 0, 400).onChange((x1) => {
   line1.style.x1 = x1;
 });

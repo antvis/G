@@ -17,6 +17,7 @@ import {
   DefaultCamera,
   ElementEvent,
   FederatedEvent,
+  RenderingServiceEvent,
 } from '@antv/g';
 import type { LinearGradient, RadialGradient } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
@@ -153,7 +154,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       this.updateAttribute(object, attributeName, object.parsedStyle[attributeName]);
     };
 
-    renderingService.hooks.init.tap(SVGRendererPlugin.tag, () => {
+    renderingService.emitter.on(RenderingServiceEvent.Init, () => {
       this.$def = createSVGElement('defs') as SVGDefsElement;
       const $svg = this.contextService.getContext()!;
       $svg.appendChild(this.$def);
@@ -174,7 +175,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.hooks.destroy.tap(SVGRendererPlugin.tag, () => {
+    renderingService.emitter.on(RenderingServiceEvent.Destroy, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(
@@ -183,7 +184,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
+    renderingService.emitter.on(RenderingServiceEvent.Render, (object: DisplayObject) => {
       if (this.renderingContext.renderReasons.has(RENDER_REASON.CameraChanged)) {
         this.applyTransform(this.$camera, this.camera.getOrthoMatrix());
       }

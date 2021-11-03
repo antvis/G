@@ -14,7 +14,7 @@ import { Point, PointLike } from '../shapes';
 import { ContextService } from './ContextService';
 import { mat4, vec3 } from 'gl-matrix';
 
-type Picker = (position: EventPosition) => IEventTarget | null;
+type Picker = (position: EventPosition) => Promise<IEventTarget | null>;
 type TrackingData = {
   pressTargetsByButton: Record<number, IEventTarget[]>;
   clicksByButton: Record<
@@ -52,7 +52,7 @@ export class EventService extends EventEmitter {
   private mappingTable: Record<
     string,
     {
-      fn: (e: FederatedEvent) => void;
+      fn: (e: FederatedEvent) => Promise<void>;
       priority: number;
     }[]
   > = {};
@@ -123,7 +123,7 @@ export class EventService extends EventEmitter {
     this.pickHandler = pickHandler;
   }
 
-  addEventMapping(type: string, fn: (e: FederatedEvent) => void) {
+  addEventMapping(type: string, fn: (e: FederatedEvent) => Promise<void>) {
     if (!this.mappingTable[type]) {
       this.mappingTable[type] = [];
     }
@@ -151,12 +151,12 @@ export class EventService extends EventEmitter {
     }
   }
 
-  onPointerDown = (from: FederatedEvent) => {
+  onPointerDown = async (from: FederatedEvent) => {
     if (!(from instanceof FederatedPointerEvent)) {
       return;
     }
 
-    const e = this.createPointerEvent(from);
+    const e = await this.createPointerEvent(from);
 
     this.dispatchEvent(e, 'pointerdown');
 
@@ -174,13 +174,13 @@ export class EventService extends EventEmitter {
     this.freeEvent(e);
   };
 
-  onPointerUp = (from: FederatedEvent) => {
+  onPointerUp = async (from: FederatedEvent) => {
     if (!(from instanceof FederatedPointerEvent)) {
       return;
     }
 
     const now = performance.now();
-    const e = this.createPointerEvent(from);
+    const e = await this.createPointerEvent(from);
 
     this.dispatchEvent(e, 'pointerup');
 
@@ -267,12 +267,12 @@ export class EventService extends EventEmitter {
     this.freeEvent(e);
   };
 
-  onPointerMove = (from: FederatedEvent) => {
+  onPointerMove = async (from: FederatedEvent) => {
     if (!(from instanceof FederatedPointerEvent)) {
       return;
     }
 
-    const e = this.createPointerEvent(from);
+    const e = await this.createPointerEvent(from);
     const isMouse = e.pointerType === 'mouse' || e.pointerType === 'pen';
     const trackingData = this.trackingData(from.pointerId);
     const outTarget = this.findMountedTarget(trackingData.overTargets);
@@ -281,7 +281,7 @@ export class EventService extends EventEmitter {
     if (trackingData.overTargets && outTarget !== e.target) {
       // pointerout always occurs on the overTarget when the pointer hovers over another element.
       const outType = from.type === 'mousemove' ? 'mouseout' : 'pointerout';
-      const outEvent = this.createPointerEvent(from, outType, outTarget || undefined);
+      const outEvent = await this.createPointerEvent(from, outType, outTarget || undefined);
 
       this.dispatchEvent(outEvent, 'pointerout');
       if (isMouse) this.dispatchEvent(outEvent, 'mouseout');
@@ -289,7 +289,11 @@ export class EventService extends EventEmitter {
       // If the pointer exits overTarget and its descendants, then a pointerleave event is also fired. This event
       // is dispatched to all ancestors that no longer capture the pointer.
       if (!e.composedPath().includes(outTarget!)) {
-        const leaveEvent = this.createPointerEvent(from, 'pointerleave', outTarget || undefined);
+        const leaveEvent = await this.createPointerEvent(
+          from,
+          'pointerleave',
+          outTarget || undefined,
+        );
 
         leaveEvent.eventPhase = leaveEvent.AT_TARGET;
 
@@ -378,7 +382,7 @@ export class EventService extends EventEmitter {
     this.freeEvent(e);
   };
 
-  onPointerOut = (from: FederatedEvent) => {
+  onPointerOut = async (from: FederatedEvent) => {
     if (!(from instanceof FederatedPointerEvent)) {
       return;
     }
@@ -390,14 +394,18 @@ export class EventService extends EventEmitter {
       const outTarget = this.findMountedTarget(trackingData.overTargets);
 
       // pointerout first
-      const outEvent = this.createPointerEvent(from, 'pointerout', outTarget || undefined);
+      const outEvent = await this.createPointerEvent(from, 'pointerout', outTarget || undefined);
 
       this.dispatchEvent(outEvent);
       if (isMouse) this.dispatchEvent(outEvent, 'mouseout');
 
       // pointerleave(s) are also dispatched b/c the pointer must've left rootTarget and its descendants to
       // get an upstream pointerout event (upstream events do not know rootTarget has descendants).
-      const leaveEvent = this.createPointerEvent(from, 'pointerleave', outTarget || undefined);
+      const leaveEvent = await this.createPointerEvent(
+        from,
+        'pointerleave',
+        outTarget || undefined,
+      );
 
       leaveEvent.eventPhase = leaveEvent.AT_TARGET;
 
@@ -424,13 +432,13 @@ export class EventService extends EventEmitter {
     this.cursor = null;
   };
 
-  onPointerOver = (from: FederatedEvent) => {
+  onPointerOver = async (from: FederatedEvent) => {
     if (!(from instanceof FederatedPointerEvent)) {
       return;
     }
 
     const trackingData = this.trackingData(from.pointerId);
-    const e = this.createPointerEvent(from);
+    const e = await this.createPointerEvent(from);
 
     const isMouse = e.pointerType === 'mouse' || e.pointerType === 'pen';
 
@@ -467,14 +475,14 @@ export class EventService extends EventEmitter {
     this.freeEvent(enterEvent);
   };
 
-  onPointerUpOutside = (from: FederatedEvent) => {
+  onPointerUpOutside = async (from: FederatedEvent) => {
     if (!(from instanceof FederatedPointerEvent)) {
       return;
     }
 
     const trackingData = this.trackingData(from.pointerId);
     const pressTarget = this.findMountedTarget(trackingData.pressTargetsByButton[from.button]);
-    const e = this.createPointerEvent(from);
+    const e = await this.createPointerEvent(from);
 
     if (pressTarget) {
       let currentTarget: IEventTarget | null = pressTarget;
@@ -501,12 +509,12 @@ export class EventService extends EventEmitter {
     this.freeEvent(e);
   };
 
-  onWheel = (from: FederatedEvent) => {
+  onWheel = async (from: FederatedEvent) => {
     if (!(from instanceof FederatedWheelEvent)) {
       return;
     }
 
-    const wheelEvent = this.createWheelEvent(from);
+    const wheelEvent = await this.createWheelEvent(from);
 
     this.dispatchEvent(wheelEvent);
     this.freeEvent(wheelEvent);
@@ -582,7 +590,7 @@ export class EventService extends EventEmitter {
     return propagationPath;
   }
 
-  hitTest(position: EventPosition): IEventTarget | null {
+  async hitTest(position: EventPosition): Promise<IEventTarget | null> {
     const { viewportX, viewportY } = position;
     const { width, height } = this.canvasConfig;
     // outside canvas
@@ -591,17 +599,17 @@ export class EventService extends EventEmitter {
     }
 
     return (
-      this.pickHandler(position) ||
+      (await this.pickHandler(position)) ||
       this.rootTarget || // return Document
       null
     );
   }
 
-  private createPointerEvent(
+  private async createPointerEvent(
     from: FederatedPointerEvent,
     type?: string,
     target?: IEventTarget,
-  ): FederatedPointerEvent {
+  ): Promise<FederatedPointerEvent> {
     const event = this.allocateEvent(FederatedPointerEvent);
 
     this.copyPointerData(from, event);
@@ -612,14 +620,14 @@ export class EventService extends EventEmitter {
     event._originalEvent = from;
     event.target =
       target ??
-      (this.hitTest({
+      ((await this.hitTest({
         clientX: event.clientX,
         clientY: event.clientY,
         viewportX: event.viewportX,
         viewportY: event.viewportY,
         x: event.global.x,
         y: event.global.y,
-      }) as INode);
+      })) as INode);
 
     if (typeof type === 'string') {
       event.type = type;
@@ -628,7 +636,7 @@ export class EventService extends EventEmitter {
     return event;
   }
 
-  private createWheelEvent(from: FederatedWheelEvent): FederatedWheelEvent {
+  private async createWheelEvent(from: FederatedWheelEvent): Promise<FederatedWheelEvent> {
     const event = this.allocateEvent(FederatedWheelEvent);
 
     this.copyWheelData(from, event);
@@ -637,14 +645,14 @@ export class EventService extends EventEmitter {
 
     event.nativeEvent = from.nativeEvent;
     event._originalEvent = from;
-    event.target = this.hitTest({
+    event.target = (await this.hitTest({
       clientX: event.clientX,
       clientY: event.clientY,
       viewportX: event.viewportX,
       viewportY: event.viewportY,
       x: event.global.x,
       y: event.global.y,
-    }) as INode;
+    })) as INode;
     return event;
   }
 

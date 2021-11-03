@@ -5,3 +5,4 @@ export * from './Plane';
 export * from './Ray';
 export * from './Point';
 export * from './Rectangle';
+export * from './Polygon';

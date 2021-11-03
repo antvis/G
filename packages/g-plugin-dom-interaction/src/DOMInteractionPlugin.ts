@@ -3,6 +3,7 @@ import {
   ContextService,
   RenderingPlugin,
   RenderingService,
+  RenderingServiceEvent,
 } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { supportsPointerEvents, supportsTouchEvents } from './utils';
@@ -19,30 +20,30 @@ export class DOMInteractionPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     const onPointerMove = (ev: InteractivePointerEvent) => {
-      renderingService.hooks.pointerMove.call(ev);
+      renderingService.emitter.emit(RenderingServiceEvent.PointerMove, ev);
     };
 
     const onPointerUp = (ev: InteractivePointerEvent) => {
-      renderingService.hooks.pointerUp.call(ev);
+      renderingService.emitter.emit(RenderingServiceEvent.PointerUp, ev);
     };
 
     const onPointerDown = (ev: InteractivePointerEvent) => {
-      renderingService.hooks.pointerDown.call(ev);
+      renderingService.emitter.emit(RenderingServiceEvent.PointerDown, ev);
     };
 
     const onPointerOver = (ev: InteractivePointerEvent) => {
-      renderingService.hooks.pointerOver.call(ev);
+      renderingService.emitter.emit(RenderingServiceEvent.PointerOver, ev);
     };
 
     const onPointerOut = (ev: InteractivePointerEvent) => {
-      renderingService.hooks.pointerOut.call(ev);
+      renderingService.emitter.emit(RenderingServiceEvent.PointerOut, ev);
     };
 
     const onPointerWheel = (ev: InteractivePointerEvent) => {
-      renderingService.hooks.pointerWheel.call(ev);
+      renderingService.emitter.emit(RenderingServiceEvent.PointerWheel, ev);
     };
 
-    renderingService.hooks.init.tap(DOMInteractionPlugin.tag, () => {
+    renderingService.emitter.on(RenderingServiceEvent.Init, () => {
       const $el = this.contextService.getDomElement()!;
 
       if (supportsPointerEvents) {
@@ -76,7 +77,7 @@ export class DOMInteractionPlugin implements RenderingPlugin {
       });
     });
 
-    renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
+    renderingService.emitter.on(RenderingServiceEvent.Destroy, () => {
       const $el = this.contextService.getDomElement()!;
       if (supportsPointerEvents) {
         self.document.removeEventListener('pointermove', onPointerMove, true);

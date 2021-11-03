@@ -1,5 +1,5 @@
 import { Line as LineUtil } from '@antv/g-math';
-import { SHAPE } from '../types';
+import { SHAPE, LINE_CAP, LINE_JOIN } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
@@ -28,8 +28,8 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
         y1: 0,
         x2: 0,
         y2: 0,
-        lineJoin: 'miter',
-        lineCap: 'butt',
+        lineJoin: LINE_JOIN.Miter,
+        lineCap: LINE_CAP.Butt,
         lineWidth: 1,
         ...style,
       },

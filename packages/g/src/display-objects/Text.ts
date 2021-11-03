@@ -1,5 +1,5 @@
 import { BaseStyleProps, ParsedBaseStyleProps, DisplayObjectConfig } from '..';
-import { SHAPE } from '..';
+import { SHAPE, LINE_JOIN, LINE_CAP } from '..';
 import { DisplayObject } from './DisplayObject';
 import { TextMetrics } from '../services';
 
@@ -82,8 +82,8 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
         fill: '#000',
         letterSpacing: 0,
         lineHeight: 0,
-        lineJoin: 'miter',
-        lineCap: 'butt',
+        lineJoin: LINE_JOIN.Miter,
+        lineCap: LINE_CAP.Butt,
         lineWidth: 0,
         miterLimit: 10,
         padding: 0,

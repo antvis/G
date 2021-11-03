@@ -1,7 +1,6 @@
-import { Camera, CanvasConfig, ContextService } from '@antv/g';
+import { CanvasConfig, ContextService } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { isString } from '@antv/util';
-import { WebGLRenderingContext } from '@antv/g-plugin-webgl-renderer';
 import { setDOMSize } from './utils/dom';
 
 @injectable()
@@ -14,7 +13,7 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
   private canvasConfig: CanvasConfig;
 
   init() {
-    const { container, width, height } = this.canvasConfig;
+    const { container } = this.canvasConfig;
 
     // create container
     this.$container = isString(container) ? document.getElementById(container) : container;
@@ -26,26 +25,6 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
         this.$container.style.position = 'relative';
       }
       this.$canvas = $canvas;
-
-      // this.camera.setPosition(0, 0, 1).setOrthographic(
-      //   (width / -2) * dpr,
-      //   (width / 2) * dpr,
-      //   (height / 2) * dpr,
-      //   (height / -2) * dpr,
-      //   // 0,
-      //   // width * dpr,
-      //   // height * dpr,
-      //   // 0,
-      //   0.5,
-      //   2
-      // );
-      // this.camera.setViewOffset(2, 2, 0, 0, 2, 2);
-
-      // this.context = {
-      //   engine: this.engine,
-      //   camera: this.camera,
-      //   view: this.view,
-      // };
     }
   }
 

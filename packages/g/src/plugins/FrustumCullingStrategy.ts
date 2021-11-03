@@ -15,6 +15,8 @@ export class FrustumCullingStrategy implements CullingStrategy {
     const entity = object.getEntity();
     const cullable = entity.getComponent(Cullable);
 
+    return true;
+
     if (!cullable.enable) {
       return true;
     }

@@ -13,4 +13,9 @@ export class Sortable extends Component {
    * sorted child entities
    */
   sorted: INode[];
+
+  /**
+   * index in parent's children
+   */
+  lastSortedIndex: number;
 }

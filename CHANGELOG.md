@@ -4,6 +4,22 @@
 
 ## [1.0.0-alpha.23] - 2021-09-27
 
+-   @antv/g-canvas@1.0.0-alpha.23
+-   @antv/g-components@1.0.0-alpha.22
+-   @antv/g-plugin-3d@1.0.0-alpha.22
+-   @antv/g-plugin-canvas-picker@1.0.0-alpha.17
+-   @antv/g-plugin-canvas-renderer@1.0.0-alpha.23
+-   @antv/g-plugin-control@1.0.0-alpha.22
+-   @antv/g-plugin-css-select@1.0.0-alpha.23
+-   @antv/g-plugin-dom-interaction@1.0.0-alpha.22
+-   @antv/g-plugin-html-renderer@1.0.0-alpha.6
+-   @antv/g-plugin-svg-picker@1.0.0-alpha.22
+-   @antv/g-plugin-svg-renderer@1.0.0-alpha.23
+-   @antv/g-plugin-webgl-renderer@1.0.0-alpha.23
+-   @antv/g-svg@1.0.0-alpha.23
+-   @antv/g-webgl@1.0.0-alpha.23
+-   @antv/g@1.0.0-alpha.23
+
 ### Bug 修复
 
 -   [path-util] 转换无效 A 命令出错，例如 GUI 中使用的：

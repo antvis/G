@@ -6,6 +6,7 @@ import {
   Camera,
   CanvasConfig,
   DefaultCamera,
+  RenderingServiceEvent,
 } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import Hammer from 'hammerjs';
@@ -40,7 +41,7 @@ export class ControlPlugin implements RenderingPlugin {
   private altKey: boolean;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.init.tap(ControlPlugin.tag, () => {
+    renderingService.emitter.on(RenderingServiceEvent.Init, () => {
       const root = this.renderingContext.root;
       this.hammertime = new Hammer(root.ownerDocument as unknown as HTMLElement);
 
@@ -56,7 +57,7 @@ export class ControlPlugin implements RenderingPlugin {
         .addEventListener('wheel', this.onMousewheel, { passive: false });
     });
 
-    renderingService.hooks.destroy.tap(ControlPlugin.tag, () => {
+    renderingService.emitter.on(RenderingServiceEvent.Destroy, () => {
       this.hammertime.off('panstart', this.onPanstart);
       this.hammertime.off('panmove', this.onPanmove);
       this.hammertime.off('panend', this.onPanend);

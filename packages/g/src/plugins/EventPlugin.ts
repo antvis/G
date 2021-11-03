@@ -2,7 +2,13 @@ import { inject, injectable } from 'inversify';
 import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
-import { ContextService, RenderingPlugin, RenderingService, EventService } from '../services';
+import {
+  ContextService,
+  RenderingPlugin,
+  RenderingService,
+  EventService,
+  RenderingServiceEvent,
+} from '../services';
 import { Point } from '../shapes';
 import { CanvasConfig, Cursor, EventPosition, InteractivePointerEvent } from '../types';
 import { normalizeToPointerEvent, supportsTouchEvents, TOUCH_TO_POINTER } from '../utils/event';
@@ -35,25 +41,27 @@ export class EventPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     this.eventService.setPickHandler((position: EventPosition) => {
-      const { picked } = this.renderingService.hooks.pick.call({
-        position,
-        picked: null,
+      return new Promise((resolve, reject) => {
+        const result = {
+          position,
+          picked: null,
+        };
+        this.renderingService.emitter.emit(RenderingServiceEvent.Picking, result, () => {
+          resolve(result.picked);
+        });
       });
-
-      return picked;
     });
 
-    renderingService.hooks.pointerWheel.tap(
-      EventPlugin.tag,
+    renderingService.emitter.on(
+      RenderingServiceEvent.PointerWheel,
       (nativeEvent: InteractivePointerEvent) => {
         const wheelEvent = this.normalizeWheelEvent(nativeEvent as WheelEvent);
 
         this.eventService.mapEvent(wheelEvent);
       },
     );
-
-    renderingService.hooks.pointerDown.tap(
-      EventPlugin.tag,
+    renderingService.emitter.on(
+      RenderingServiceEvent.PointerDown,
       (nativeEvent: InteractivePointerEvent) => {
         if (supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch') {
           return;
@@ -77,9 +85,8 @@ export class EventPlugin implements RenderingPlugin {
         this.setCursor(this.eventService.cursor);
       },
     );
-
-    renderingService.hooks.pointerUp.tap(
-      EventPlugin.tag,
+    renderingService.emitter.on(
+      RenderingServiceEvent.PointerUp,
       (nativeEvent: InteractivePointerEvent) => {
         if (supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch') return;
 
@@ -105,12 +112,9 @@ export class EventPlugin implements RenderingPlugin {
         this.setCursor(this.eventService.cursor);
       },
     );
-
-    renderingService.hooks.pointerMove.tap(EventPlugin.tag, this.onPointerMove);
-
-    renderingService.hooks.pointerOver.tap(EventPlugin.tag, this.onPointerMove);
-
-    renderingService.hooks.pointerOut.tap(EventPlugin.tag, this.onPointerMove);
+    renderingService.emitter.on(RenderingServiceEvent.PointerMove, this.onPointerMove);
+    renderingService.emitter.on(RenderingServiceEvent.PointerOver, this.onPointerMove);
+    renderingService.emitter.on(RenderingServiceEvent.PointerOut, this.onPointerMove);
   }
 
   private onPointerMove = (nativeEvent: InteractivePointerEvent) => {

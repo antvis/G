@@ -1,0 +1,45 @@
+{
+  "title": {
+    "zh": "中文分类",
+    "en": "Category"
+  },
+  "demos": [
+    {
+      "filename": "canvas-dirty-rectangle.js",
+      "title": {
+        "zh": "脏矩形渲染(Canvas)",
+        "en": "Rendering with dirty rectangle(Canvas)"
+      }
+    },
+    {
+      "filename": "nodes-8k.js",
+      "title": {
+        "zh": "8k 节点",
+        "en": "8k nodes"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*D-57RohPWVgAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "nodes-5w.js",
+      "title": {
+        "zh": "5.5w 节点",
+        "en": "5.5w nodes"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dwS2Rb3mq5IAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "images.js",
+      "title": {
+        "zh": "大量图片",
+        "en": "Instanced Image"
+      }
+    },
+    {
+      "filename": "texts.js",
+      "title": {
+        "zh": "大量文本",
+        "en": "Instanced Text"
+      }
+    }
+  ]
+}

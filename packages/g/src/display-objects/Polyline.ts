@@ -1,4 +1,4 @@
-import { SHAPE } from '../types';
+import { SHAPE, LINE_CAP, LINE_JOIN } from '../types';
 import type { BaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import { DisplayObjectConfig } from '../dom';
@@ -24,8 +24,8 @@ export class Polyline extends DisplayObject<
       type: SHAPE.Polyline,
       style: {
         points: [],
-        lineJoin: 'miter',
-        lineCap: 'butt',
+        lineJoin: LINE_JOIN.Miter,
+        lineCap: LINE_CAP.Butt,
         lineWidth: 1,
         ...style,
       },

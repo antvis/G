@@ -17,6 +17,7 @@ import { CustomElementRegistry } from './dom/CustomElementRegistry';
 import { Renderable } from './components';
 
 export enum CanvasEvent {
+  READY = 'ready',
   BEFORE_RENDER = 'beforerender',
   AFTER_RENDER = 'afterrender',
   BEFORE_DESTROY = 'beforedestroy',
@@ -128,6 +129,10 @@ export class Canvas extends EventTarget implements ICanvas {
     return this.container.get<Partial<CanvasConfig>>(CanvasConfig);
   }
 
+  getContainer() {
+    return this.container;
+  }
+
   /**
    * get the root displayObject in scenegraph
    * @alias this.document.documentElement
@@ -233,7 +238,7 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   render() {
-    this.emit(CanvasEvent.BEFORE_DESTROY, {});
+    this.emit(CanvasEvent.BEFORE_RENDER, {});
 
     if (this.container.isBound(RenderingService)) {
       const renderingService = this.container.get<RenderingService>(RenderingService);
@@ -266,7 +271,9 @@ export class Canvas extends EventTarget implements ICanvas {
     const renderingService = this.container.get<RenderingService>(RenderingService);
 
     contextService.init();
-    renderingService.init();
+    renderingService.init().then(() => {
+      this.emit(CanvasEvent.READY, {});
+    });
 
     if (renderer.getConfig().enableAutoRendering) {
       this.run();
@@ -342,6 +349,7 @@ export class Canvas extends EventTarget implements ICanvas {
       if (!child.isConnected) {
         child.ownerDocument = this.document;
         child.isConnected = true;
+        debugger;
         child.emit(ElementEvent.MOUNTED, {});
       }
     });
@@ -365,7 +373,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
   /**
    * @deprecated
-   * @alias client2Canvas
+   * @alias client2Viewport
    */
   getPointByClient(clientX: number, clientY: number): PointLike {
     return this.client2Viewport({ x: clientX, y: clientY });
@@ -373,7 +381,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
   /**
    * @deprecated
-   * @alias canvas2Client
+   * @alias viewport2Client
    */
   getClientByPoint(x: number, y: number): PointLike {
     return this.viewport2Client({ x, y });

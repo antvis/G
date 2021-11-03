@@ -13,6 +13,7 @@ export function sortByZIndex(o1: IElement, o2: IElement) {
   const zIndex1 = Number(o1.style.zIndex);
   const zIndex2 = Number(o2.style.zIndex);
   if (zIndex1 === zIndex2) {
+    // return o1.entity.getComponent(Sortable).lastSortedIndex - o2.entity.getComponent(Sortable).lastSortedIndex;
     const parent = o1.parentNode;
     if (parent) {
       const children = parent.childNodes || [];
@@ -666,8 +667,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }
 
     // calc context's offset
-    // @ts-ignore
-    const bbox = this.ownerDocument?.defaultView?.getContextService().getBoundingClientRect();
+    const bbox = element.ownerDocument?.defaultView?.getContextService().getBoundingClientRect();
 
     if (aabb) {
       const [left, top] = aabb.getMin();
@@ -692,6 +692,20 @@ export class DefaultSceneGraphService implements SceneGraphService {
         if (!childTransform.dirtyFlag) {
           this.dirtifyWorldInternal(child as IElement, childTransform);
         }
+
+        // model matrix changed
+        child.emit(ElementEvent.ATTRIBUTE_CHANGED, {
+          attributeName: 'modelMatrix',
+          oldValue: null,
+          newValue: null,
+        });
+      });
+
+      // model matrix changed
+      element.emit(ElementEvent.ATTRIBUTE_CHANGED, {
+        attributeName: 'modelMatrix',
+        oldValue: null,
+        newValue: null,
       });
 
       // emit on leaf node

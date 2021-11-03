@@ -17,6 +17,7 @@ const canvas = new Canvas({
   height: 500,
   renderer: canvasRenderer,
 });
+const camera = canvas.getCamera();
 
 for (let i = 0; i < 1000; i++) {
   const circle = new Circle({
@@ -54,6 +55,8 @@ canvas.on('afterrender', () => {
   if (stats) {
     stats.update();
   }
+
+  camera.rotate(0, 0, 0.1);
 });
 
 // GUI

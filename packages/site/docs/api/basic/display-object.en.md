@@ -207,7 +207,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/Element/className
 
 是否支持响应[事件](/zh/docs/api/event)，默认为 `true`。在某些不需要支持交互的图形上可以关闭。
 
-例如我们不想让下面这个圆响应鼠标 `mouseenter/leave` 事件，[示例](/zh/examples/event/shape#circle)
+例如我们不想让下面这个圆响应鼠标 `mouseenter/leave` 事件，[示例](/zh/examples/event#circle)
 
 ```js
 // 初始化时禁止交互

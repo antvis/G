@@ -13,6 +13,7 @@ import {
   RenderingContext,
   ElementEvent,
   FederatedEvent,
+  RenderingServiceEvent,
 } from '@antv/g';
 import { isString } from '@antv/util';
 
@@ -65,17 +66,17 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tap(HTMLRenderingPlugin.tag, () => {
+    renderingService.emitter.on(RenderingServiceEvent.Init, () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
     });
 
-    renderingService.hooks.destroy.tap(HTMLRenderingPlugin.tag, () => {
+    renderingService.emitter.on(RenderingServiceEvent.Destroy, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
     });
 
-    renderingService.hooks.render.tap(HTMLRenderingPlugin.tag, (object: DisplayObject) => {
+    renderingService.emitter.on(RenderingServiceEvent.Render, (object: DisplayObject) => {
       if (object.nodeName === SHAPE.HTML) {
         const existedId = HTML_PREFIX + object.getEntity().getName();
         const $container = this.contextService.getDomElement()!.parentNode!;

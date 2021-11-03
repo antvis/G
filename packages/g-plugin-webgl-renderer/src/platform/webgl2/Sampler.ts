@@ -1,0 +1,121 @@
+import { GL } from '../constants';
+import {
+  MipFilterMode,
+  ResourceType,
+  Sampler,
+  SamplerDescriptor,
+  TexFilterMode,
+} from '../interfaces';
+import { assert } from '../utils';
+import { Device_GL } from './Device';
+import { ResourceBase_GL } from './ResourceBase';
+import { Texture_GL } from './Texture';
+import { getPlatformSampler, isWebGL2, translateFilterMode, translateWrapMode } from './utils';
+
+/**
+ * In WebGL 1 texture image data and sampling information are both stored in texture objects
+ * @see https://github.com/shrekshao/MoveWebGL1EngineToWebGL2/blob/master/Move-a-WebGL-1-Engine-To-WebGL-2-Blog-2.md#sampler-objects
+ */
+export class Sampler_GL extends ResourceBase_GL implements Sampler {
+  type: ResourceType.Sampler = ResourceType.Sampler;
+
+  gl_sampler: WebGLSampler;
+  descriptor: SamplerDescriptor;
+
+  constructor({
+    id,
+    device,
+    descriptor,
+  }: {
+    id: number;
+    device: Device_GL;
+    descriptor: SamplerDescriptor;
+  }) {
+    super({ id, device });
+
+    const gl = this.device.gl;
+
+    if (isWebGL2(gl)) {
+      const gl_sampler = this.device.ensureResourceExists(gl.createSampler());
+      gl.samplerParameteri(gl_sampler, GL.TEXTURE_WRAP_S, translateWrapMode(descriptor.wrapS));
+      gl.samplerParameteri(gl_sampler, GL.TEXTURE_WRAP_T, translateWrapMode(descriptor.wrapT));
+      gl.samplerParameteri(
+        gl_sampler,
+        GL.TEXTURE_WRAP_R,
+        translateWrapMode(descriptor.wrapQ ?? descriptor.wrapS),
+      );
+      gl.samplerParameteri(
+        gl_sampler,
+        GL.TEXTURE_MIN_FILTER,
+        translateFilterMode(descriptor.minFilter, descriptor.mipFilter),
+      );
+      gl.samplerParameteri(
+        gl_sampler,
+        GL.TEXTURE_MAG_FILTER,
+        translateFilterMode(descriptor.magFilter, MipFilterMode.NoMip),
+      );
+
+      if (descriptor.minLOD !== undefined)
+        gl.samplerParameterf(gl_sampler, GL.TEXTURE_MIN_LOD, descriptor.minLOD);
+      if (descriptor.maxLOD !== undefined)
+        gl.samplerParameterf(gl_sampler, GL.TEXTURE_MAX_LOD, descriptor.maxLOD);
+
+      const maxAnisotropy = descriptor.maxAnisotropy ?? 1;
+      if (maxAnisotropy > 1 && this.device.EXT_texture_filter_anisotropic !== null) {
+        assert(
+          descriptor.minFilter === TexFilterMode.Bilinear &&
+            descriptor.magFilter === TexFilterMode.Bilinear &&
+            descriptor.mipFilter === MipFilterMode.Linear,
+        );
+        gl.samplerParameterf(
+          gl_sampler,
+          this.device.EXT_texture_filter_anisotropic.TEXTURE_MAX_ANISOTROPY_EXT,
+          maxAnisotropy,
+        );
+      }
+
+      this.gl_sampler = gl_sampler;
+    } else {
+      // use later in WebGL1
+      this.descriptor = descriptor;
+    }
+  }
+
+  setTextureParameters(gl_target: number, gl_texture: WebGLTexture): void {
+    const gl = this.device.gl;
+    const descriptor = this.descriptor;
+    gl.texParameteri(gl_target, GL.TEXTURE_WRAP_S, translateWrapMode(descriptor.wrapS));
+    gl.texParameteri(gl_target, GL.TEXTURE_WRAP_T, translateWrapMode(descriptor.wrapT));
+    gl.texParameteri(
+      gl_target,
+      GL.TEXTURE_MIN_FILTER,
+      translateFilterMode(descriptor.minFilter, descriptor.mipFilter),
+    );
+    gl.texParameteri(
+      gl_target,
+      GL.TEXTURE_MAG_FILTER,
+      translateFilterMode(descriptor.magFilter, MipFilterMode.NoMip),
+    );
+    const maxAnisotropy = descriptor.maxAnisotropy ?? 1;
+    if (maxAnisotropy > 1 && this.device.EXT_texture_filter_anisotropic !== null) {
+      assert(
+        descriptor.minFilter === TexFilterMode.Bilinear &&
+          descriptor.magFilter === TexFilterMode.Bilinear &&
+          descriptor.mipFilter === MipFilterMode.Linear,
+      );
+      gl.texParameteri(
+        gl_target,
+        this.device.EXT_texture_filter_anisotropic.TEXTURE_MAX_ANISOTROPY_EXT,
+        maxAnisotropy,
+      );
+    }
+  }
+
+  destroy() {
+    super.destroy();
+
+    if (isWebGL2(this.device.gl)) {
+      this.device.gl.deleteSampler(getPlatformSampler(this));
+    }
+  }
+}

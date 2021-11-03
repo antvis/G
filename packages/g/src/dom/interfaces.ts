@@ -7,6 +7,7 @@ import { CustomElementRegistry } from './CustomElementRegistry';
 import { DisplayObject } from '..';
 import type { PointLike } from '../shapes';
 import type { Camera } from '../camera';
+import { ContextService } from '../services';
 
 export interface IEventTarget {
   entity: Entity;
@@ -353,6 +354,7 @@ export interface ICanvas extends IEventTarget {
   resize(width: number, height: number): void;
 
   getCamera(): Camera;
+  getContextService(): ContextService<unknown>;
 
   client2Viewport(client: PointLike): PointLike;
   viewport2Client(viewport: PointLike): PointLike;

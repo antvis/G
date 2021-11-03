@@ -1,12 +1,12 @@
 import { inject, injectable, named } from 'inversify';
-import { SyncHook, SyncWaterfallHook } from 'tapable';
 import { Renderable, Sortable } from '../components';
 import { ContributionProvider } from '../contribution-provider';
-import { DisplayObject, Batch } from '..';
+import { DisplayObject } from '..';
 import { EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext, RENDER_REASON } from './RenderingContext';
 import { sortByZIndex } from './SceneGraphService';
 import { IElement } from '../dom/interfaces';
+import AsyncEventEmitter from 'async-eventemitter';
 
 export interface RenderingPlugin {
   apply(renderer: RenderingService): void;
@@ -16,6 +16,24 @@ export const RenderingPluginContribution = 'RenderingPluginContribution';
 export interface PickingResult {
   position: EventPosition;
   picked: DisplayObject | null;
+}
+
+export enum RenderingServiceEvent {
+  PointerDown = 'pointerdown',
+  PointerUp = 'pointerup',
+  PointerMove = 'pointermove',
+  PointerOut = 'pointerout',
+  PointerOver = 'pointerover',
+  PointerWheel = 'pointerwheel',
+  BeginFrame = 'beginframe',
+  EndFrame = 'endframe',
+  Prepare = 'prepare',
+  BeforeRender = 'beforerender',
+  Render = 'render',
+  AfterRender = 'afterrender',
+  Init = 'init',
+  Destroy = 'destroy',
+  Picking = 'picking',
 }
 
 /**
@@ -36,47 +54,32 @@ export class RenderingService {
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
-  hooks = {
-    init: new SyncHook<[]>(),
-    prepare: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
-    /**
-     * called at beginning of each frame, won't get called if nothing to re-render
-     */
-    beginFrame: new SyncHook<[]>([]),
-    beforeRender: new SyncHook<[DisplayObject]>(['objectToRender']),
-    render: new SyncHook<[DisplayObject]>(['objectToRender']),
-    afterRender: new SyncHook<[DisplayObject]>(['objectToRender']),
-    endFrame: new SyncHook<[]>([]),
-    destroy: new SyncHook<[]>(),
-    pick: new SyncWaterfallHook<[PickingResult]>(['result']),
-    pointerDown: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerUp: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerMove: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerOut: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerOver: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerWheel: new SyncHook<[InteractivePointerEvent]>(['event']),
-  };
+  private inited = false;
 
-  init() {
+  emitter = new AsyncEventEmitter();
+
+  async init() {
     // register rendering plugins
     this.renderingPluginContribution.getContributions(true).forEach((plugin) => {
       plugin.apply(this);
     });
-
-    this.hooks.init.call();
+    this.emitter.emit(RenderingServiceEvent.Init, {}, () => {
+      // run after all of the event listeners are done
+      this.inited = true;
+    });
   }
 
   render() {
-    if (this.renderingContext.renderReasons.size) {
+    if (this.renderingContext.renderReasons.size && this.inited) {
       this.renderDisplayObject(this.renderingContext.root);
 
       if (this.renderingContext.dirty) {
-        this.hooks.endFrame.call();
+        this.emitter.emit(RenderingServiceEvent.EndFrame);
         this.renderingContext.dirty = false;
       } else {
         if (this.renderingContext.renderReasons.has(RENDER_REASON.DisplayObjectRemoved)) {
-          this.hooks.beginFrame.call();
-          this.hooks.endFrame.call();
+          this.emitter.emit(RenderingServiceEvent.BeginFrame);
+          this.emitter.emit(RenderingServiceEvent.EndFrame);
         }
       }
 
@@ -85,7 +88,7 @@ export class RenderingService {
   }
 
   destroy() {
-    this.hooks.destroy.call();
+    this.emitter.emit(RenderingServiceEvent.Destroy);
   }
 
   dirtify() {
@@ -94,36 +97,38 @@ export class RenderingService {
   }
 
   private renderDisplayObject(displayObject: DisplayObject) {
-    const entity = displayObject?.getEntity()!;
+    const entity = displayObject.entity;
 
     // render itself
-    const objectToRender = this.hooks.prepare.call(displayObject);
+    this.emitter.emit(
+      RenderingServiceEvent.Prepare,
+      displayObject,
+      (objectToRender: DisplayObject) => {
+        if (objectToRender) {
+          if (!this.renderingContext.dirty) {
+            this.renderingContext.dirty = true;
+            this.emitter.emit(RenderingServiceEvent.BeginFrame);
+          }
 
-    if (objectToRender) {
-      if (!this.renderingContext.dirty) {
-        this.renderingContext.dirty = true;
-        this.hooks.beginFrame.call();
-      }
+          this.emitter.emit(RenderingServiceEvent.BeforeRender, objectToRender);
+          this.emitter.emit(RenderingServiceEvent.Render, objectToRender);
+          this.emitter.emit(RenderingServiceEvent.AfterRender, objectToRender);
 
-      this.hooks.beforeRender.call(objectToRender);
-      this.hooks.render.call(objectToRender);
-      this.hooks.afterRender.call(objectToRender);
+          entity.getComponent(Renderable).dirty = false;
+        }
 
-      entity.getComponent(Renderable).dirty = false;
-    }
+        // sort is very expensive, use cached result if posible
+        const sortable = entity.getComponent(Sortable);
+        if (sortable.dirty) {
+          sortable.sorted = [...(displayObject.childNodes as IElement[])].sort(sortByZIndex);
+          sortable.dirty = false;
+        }
 
-    if (objectToRender?.nodeName !== Batch.tag) {
-      // sort is very expensive, use cached result if posible
-      const sortable = entity.getComponent(Sortable);
-      if (sortable.dirty) {
-        sortable.sorted = [...(displayObject.childNodes as IElement[])].sort(sortByZIndex);
-        sortable.dirty = false;
-      }
-
-      // recursive rendering its children
-      (sortable.sorted || displayObject.childNodes).forEach((child) => {
-        this.renderDisplayObject(child as DisplayObject);
-      });
-    }
+        // recursive rendering its children
+        (sortable.sorted || displayObject.childNodes).forEach((child) => {
+          this.renderDisplayObject(child as DisplayObject);
+        });
+      },
+    );
   }
 }

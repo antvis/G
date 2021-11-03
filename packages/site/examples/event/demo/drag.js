@@ -37,7 +37,6 @@ const text = new Text({
   id: 'text',
   style: {
     fill: '#000',
-    fillOpacity: 0.9,
     font: `normal normal normal 12px Avenir, -apple-system, system-ui, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
     // fontFamily: `Avenir, -apple-system, system-ui, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
     // fontFamily: 'Arial, sans-serif',
@@ -49,14 +48,10 @@ const text = new Text({
     fontStyle: 'normal',
     fontVariant: 'normal',
     fontWeight: 'normal',
-    lineWidth: 1,
-    opacity: 1,
-    strokeOpacity: 1,
     text: 'Drag me',
     textAlign: 'center',
     textBaseline: 'middle',
   },
-  draggable: true,
 });
 
 circle.appendChild(text);

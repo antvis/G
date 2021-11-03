@@ -29,6 +29,7 @@ const polygon = new Polygon({
       [200, 100 + 200 * Math.cos(Math.PI / 6) * 2],
       [200 - 200 * Math.sin(Math.PI / 6), 100 + 200 * Math.cos(Math.PI / 6)],
     ],
+    fill: '#C6E5FF',
     stroke: '#1890FF',
     lineWidth: 2,
   },

@@ -4,7 +4,7 @@ import { Plugin as WebglRendererPlugin } from '@antv/g-plugin-webgl-renderer';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export class Renderer extends AbstractRenderer {
-  constructor(config: RendererConfig) {
+  constructor(config?: Partial<RendererConfig>) {
     super(config);
 
     this.registerPlugin(new ContextRegisterPlugin());
@@ -12,3 +12,5 @@ export class Renderer extends AbstractRenderer {
     this.registerPlugin(new DomInteractionPlugin());
   }
 }
+
+export * from './gpgpu';

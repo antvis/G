@@ -100,6 +100,14 @@ module.exports = {
         },
         order: 3,
       },
+      {
+        slug: 'api/gpgpu',
+        title: {
+          zh: 'GPGPU',
+          en: 'GPGPU',
+        },
+        order: 4,
+      },
       // 插件
       {
         slug: 'plugins',

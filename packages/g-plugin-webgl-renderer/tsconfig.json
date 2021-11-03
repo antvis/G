@@ -15,13 +15,14 @@
         "resolveJsonModule": true,
         "esModuleInterop": true,
         "lib": ["esnext", "dom"],
-        "types": ["jest"],
+        "types": ["jest", "offscreencanvas"],
         "experimentalDecorators": true, /* Enables experimental support for ES7 decorators. */
         "emitDecoratorMetadata": true, /* Enables experimental support for emitting type metadata for decorators. */
         "downlevelIteration": true
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "node_modules/@webgpu/types"
     ],
     "references": [
         {

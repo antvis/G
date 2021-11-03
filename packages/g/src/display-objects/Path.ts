@@ -1,4 +1,4 @@
-import { SHAPE } from '../types';
+import { SHAPE, LINE_CAP, LINE_JOIN } from '../types';
 import type { BaseStyleProps, PathCommand } from '../types';
 import { DisplayObject } from './DisplayObject';
 import { DisplayObjectConfig } from '../dom';
@@ -42,8 +42,8 @@ export class Path extends DisplayObject<
       type: SHAPE.Path,
       style: {
         path: '',
-        lineJoin: 'miter',
-        lineCap: 'butt',
+        lineJoin: LINE_JOIN.Miter,
+        lineCap: LINE_CAP.Butt,
         lineWidth: 1,
         ...style,
       },

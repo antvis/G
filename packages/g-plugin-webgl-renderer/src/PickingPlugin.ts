@@ -5,12 +5,12 @@ import {
   PickingResult,
   Rectangle,
   ContextService,
+  CanvasConfig,
+  RenderingServiceEvent,
 } from '@antv/g';
 import { clamp } from '@antv/util';
 import { inject, injectable } from 'inversify';
-import { IRenderPass, RenderPassFactory } from './FrameGraphEngine';
-import { RenderPass, RenderPassData } from './passes/RenderPass';
-import { View } from './View';
+import { RenderGraphPlugin } from './RenderGraphPlugin';
 
 /**
  * Use color-based picking in GPU
@@ -19,57 +19,55 @@ import { View } from './View';
 export class PickingPlugin implements RenderingPlugin {
   static tag = 'PickingPlugin';
 
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
+
   @inject(SceneGraphService)
   protected sceneGraphService: SceneGraphService;
 
   @inject(ContextService)
   private contextService: ContextService<WebGLRenderingContext>;
 
-  @inject(View)
-  private view: View;
-
-  @inject(RenderPassFactory)
-  private renderPassFactory: <T>(name: string) => IRenderPass<T>;
+  @inject(RenderGraphPlugin)
+  private renderGraphPlugin: RenderGraphPlugin;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.pick.tap(PickingPlugin.tag, (result: PickingResult) => {
-      const { x, y } = result.position;
-      const { width, height } = this.view.getViewport();
+    renderingService.emitter.on(
+      RenderingServiceEvent.Picking,
+      async (result: PickingResult, next) => {
+        // use viewportX/Y
+        const { viewportX: x, viewportY: y } = result.position;
+        const dpr = this.contextService.getDPR();
+        const width = this.canvasConfig.width * dpr;
+        const height = this.canvasConfig.height * dpr;
 
-      const dpr = this.contextService.getDPR();
-      const xInDevicePixel = x * dpr;
-      const yInDevicePixel = y * dpr;
+        const xInDevicePixel = x * dpr;
+        const yInDevicePixel = y * dpr;
 
-      if (
-        xInDevicePixel > width ||
-        xInDevicePixel < 0 ||
-        yInDevicePixel > height ||
-        yInDevicePixel < 0
-      ) {
-        return {
-          position: result.position,
-          picked: null,
-        };
-      }
+        if (
+          xInDevicePixel > width ||
+          xInDevicePixel < 0 ||
+          yInDevicePixel > height ||
+          yInDevicePixel < 0
+        ) {
+          result.picked = null;
+          next(result);
+          return;
+        }
 
-      const renderPass = this.renderPassFactory<RenderPassData>(
-        RenderPass.IDENTIFIER,
-      ) as RenderPass;
+        const [pickedDisplayObject] = await this.renderGraphPlugin.pickByRectangle(
+          new Rectangle(
+            clamp(Math.round(xInDevicePixel), 0, width - 1),
+            // flip Y
+            clamp(Math.round(height - (y + 1) * dpr), 0, height - 1),
+            1,
+            1,
+          ),
+        );
 
-      const [pickedDisplayObject] = renderPass.pickByRectangle(
-        new Rectangle(
-          clamp(Math.round(xInDevicePixel), 0, width - 1),
-          // flip Y
-          clamp(Math.round(height - (y + 1) * dpr), 0, height - 1),
-          1,
-          1,
-        ),
-      );
-
-      return {
-        position: result.position,
-        picked: pickedDisplayObject || null,
-      };
-    });
+        result.picked = pickedDisplayObject || null;
+        next(result);
+      },
+    );
   }
 }
