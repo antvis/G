@@ -2,6 +2,38 @@
 
 以下版本号以 @antv/g 为准。
 
+## [1.0.0-alpha.24] - 2021-11-04
+
+-   @antv/g-canvas@1.0.0-alpha.24
+-   @antv/g-components@1.0.0-alpha.23
+-   @antv/g-plugin-3d@1.0.0-alpha.23
+-   @antv/g-plugin-canvas-picker@1.0.0-alpha.18
+-   @antv/g-plugin-canvas-renderer@1.0.0-alpha.24
+-   @antv/g-plugin-control@1.0.0-alpha.23
+-   @antv/g-plugin-css-select@1.0.0-alpha.24
+-   @antv/g-plugin-dom-interaction@1.0.0-alpha.23
+-   @antv/g-plugin-html-renderer@1.0.0-alpha.7
+-   @antv/g-plugin-svg-picker@1.0.0-alpha.23
+-   @antv/g-plugin-svg-renderer@1.0.0-alpha.24
+-   @antv/g-plugin-webgl-renderer@1.0.0-alpha.24
+-   @antv/g-svg@1.0.0-alpha.24
+-   @antv/g-webgl@1.0.0-alpha.24
+-   @antv/g@1.0.0-alpha.24
+
+### 新增特性
+
+-   [g-webgl] 支持 WebGL2。详见引擎设计。
+-   [g-webgl] 使用 instanced 渲染 Line、Text、Circle、Ellipse 大幅提升渲染性能。详见性能优化。
+
+### Bug 修复
+
+-   [g] 考虑到包体积以及不适合浏览器环境，去除对 [tapable](https://github.com/webpack/tapable) 的依赖，使用 async-emitter 替代。
+
+### 其他已知问题
+
+-   [g-canvas] 频繁修改属性导致重绘性能问题
+-   [g-webgl] 自动降级成 WebGL1，支持 WebGPU。
+
 ## [1.0.0-alpha.23] - 2021-09-27
 
 -   @antv/g-canvas@1.0.0-alpha.23
