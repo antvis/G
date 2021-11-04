@@ -1,4 +1,4 @@
-import Hammer, { TouchInput } from 'g6-hammerjs';
+import Hammer, { TouchInput } from '@antv/f6-hammerjs';
 import { Event as GraphEvent } from '@antv/g-base';
 import { ICanvas, IShape } from '@antv/g-base';
 import { each, isParent } from './util/util';

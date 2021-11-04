@@ -371,6 +371,12 @@ class Canvas extends AbstractCanvas {
     };
   }
 
+  removeDom() {
+    if (!this.isMini()) {
+      super.removeDom();
+    }
+  }
+
   // 实现接口
   getClientByPoint(x: number, y: number): Point {
     if (this.isMini()) {
