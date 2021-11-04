@@ -111,40 +111,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const { width, height } = this.canvasConfig;
       this.contextService.resize(width, height);
 
-      const { targets } = this.pluginOptions;
-
-      if (targets.includes('webgpu')) {
-        // use WebGPU if possible
-        this.swapChain = await createSwapChainForWebGPU($canvas);
-      }
-
-      if (!this.swapChain) {
-        const options: WebGLContextAttributes = {
-          antialias: false,
-          preserveDrawingBuffer: false,
-          // @see https://webglfundamentals.org/webgl/lessons/webgl-and-alpha.html
-          // premultipliedAlpha: false,
-        };
-        this.handleContextEvents(this.pluginOptions, $canvas);
-
-        let gl: WebGLRenderingContext | WebGL2RenderingContext;
-        if (targets.includes('webgl2')) {
-          gl =
-            $canvas.getContext('webgl2', options) ||
-            ($canvas.getContext('experimental-webgl2', options) as WebGL2RenderingContext);
-        }
-
-        if (!gl && targets.includes('webgl1')) {
-          gl =
-            $canvas.getContext('webgl', options) ||
-            ($canvas.getContext('experimental-webgl', options) as WebGLRenderingContext);
-        }
-
-        this.swapChain = new Device_GL(gl as WebGLRenderingContext | WebGL2RenderingContext, {
-          shaderDebug: true,
-          trackResources: true,
-        });
-      }
+      await this.createSwapChain($canvas);
 
       this.device = this.swapChain.getDevice();
       this.renderHelper.setDevice(this.device);
@@ -160,6 +127,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.batches.forEach((batch) => batch.destroy());
     });
 
+    /**
+     * build frame graph at begining of each frame
+     */
     renderingService.emitter.on(RenderingServiceEvent.BeginFrame, () => {
       const canvas = this.swapChain.getCanvas();
       const renderInstManager = this.renderHelper.renderInstManager;
@@ -200,17 +170,17 @@ export class RenderGraphPlugin implements RenderingPlugin {
       });
 
       // WebGL1 need an extra blit pass
-      if (this.device.queryVendorInfo().platformString === 'WebGL1') {
-        pushCopyPass(
-          this.builder,
-          this.renderHelper,
-          {
-            backbufferWidth: canvas.width,
-            backbufferHeight: canvas.height,
-          },
-          mainColorTargetID,
-        );
-      }
+      // if (this.device.queryVendorInfo().platformString === 'WebGL1') {
+      //   pushCopyPass(
+      //     this.builder,
+      //     this.renderHelper,
+      //     {
+      //       backbufferWidth: canvas.width,
+      //       backbufferHeight: canvas.height,
+      //     },
+      //     mainColorTargetID,
+      //   );
+      // }
 
       // TODO: other post-processing passes
       // FXAA
@@ -275,6 +245,13 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       // output to screen
       this.swapChain.present();
+
+      // // need an extra program to render texture to screen in WebGL1
+      // if (this.device.queryVendorInfo().platformString === 'WebGL1') {
+      //   const program = this.renderHelper
+      //   .getCache()
+      //   .createProgramSimple(this.programDescriptorSimpleWithOrig);
+      // }
     });
 
     renderingService.emitter.on(RenderingServiceEvent.Render, (object: DisplayObject) => {
@@ -344,11 +321,74 @@ export class RenderGraphPlugin implements RenderingPlugin {
     };
   }
 
-  private handleContextEvents(
-    pluginOptions: WebGLRendererPluginOptions,
-    $canvas: HTMLCanvasElement,
-  ) {
-    const { onContextLost, onContextRestored, onContextCreationError } = pluginOptions;
+  /**
+   * auto downgrade from WebGPU to WebGL2 & 1
+   */
+  private async createSwapChain($canvas: HTMLCanvasElement) {
+    const { targets } = this.pluginOptions;
+
+    // use WebGPU first
+    if (targets.includes('webgpu')) {
+      // use WebGPU if possible
+      this.swapChain = await this.createSwapChainForWebGPU($canvas);
+    }
+
+    if (!this.swapChain) {
+      const options: WebGLContextAttributes = {
+        antialias: false,
+        preserveDrawingBuffer: false,
+        // @see https://webglfundamentals.org/webgl/lessons/webgl-and-alpha.html
+        // premultipliedAlpha: false,
+      };
+      this.handleContextEvents($canvas);
+
+      let gl: WebGLRenderingContext | WebGL2RenderingContext;
+      if (targets.includes('webgl2')) {
+        gl =
+          $canvas.getContext('webgl2', options) ||
+          ($canvas.getContext('experimental-webgl2', options) as WebGL2RenderingContext);
+      }
+
+      if (!gl && targets.includes('webgl1')) {
+        gl =
+          $canvas.getContext('webgl', options) ||
+          ($canvas.getContext('experimental-webgl', options) as WebGLRenderingContext);
+      }
+
+      this.swapChain = new Device_GL(gl as WebGLRenderingContext | WebGL2RenderingContext, {
+        shaderDebug: true,
+        trackResources: true,
+      });
+    }
+  }
+
+  private async createSwapChainForWebGPU(
+    canvas: HTMLCanvasElement | OffscreenCanvas,
+  ): Promise<SwapChain | null> {
+    if (navigator.gpu === undefined) return null;
+
+    let adapter = null;
+    try {
+      adapter = await navigator.gpu.requestAdapter();
+    } catch (e) {
+      console.log(e);
+    }
+
+    if (adapter === null) return null;
+
+    const device = await adapter.requestDevice();
+
+    if (device === null) return null;
+
+    const context = canvas.getContext('webgpu');
+
+    if (!context) return null;
+
+    return new Device_WebGPU(adapter, device, canvas, context);
+  }
+
+  private handleContextEvents($canvas: HTMLCanvasElement) {
+    const { onContextLost, onContextRestored, onContextCreationError } = this.pluginOptions;
     // bind context event listeners
     if (onContextCreationError) {
       // @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/webglcontextcreationerror_event
@@ -405,29 +445,4 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
     return targets;
   }
-}
-
-export async function createSwapChainForWebGPU(
-  canvas: HTMLCanvasElement | OffscreenCanvas,
-): Promise<SwapChain | null> {
-  if (navigator.gpu === undefined) return null;
-
-  let adapter = null;
-  try {
-    adapter = await navigator.gpu.requestAdapter();
-  } catch (e) {
-    console.log(e);
-  }
-
-  if (adapter === null) return null;
-
-  const device = await adapter.requestDevice();
-
-  if (device === null) return null;
-
-  const context = canvas.getContext('webgpu');
-
-  if (!context) return null;
-
-  return new Device_WebGPU(adapter, device, canvas, context);
 }

@@ -110,7 +110,6 @@ export class Program_GL extends ResourceBase_GL implements Program {
         let value = uniform;
         let textureUpdate = false;
 
-        debugger;
         uniformSetter(value);
 
         // if (value instanceof Framebuffer) {
