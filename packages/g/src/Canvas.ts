@@ -349,7 +349,6 @@ export class Canvas extends EventTarget implements ICanvas {
       if (!child.isConnected) {
         child.ownerDocument = this.document;
         child.isConnected = true;
-        debugger;
         child.emit(ElementEvent.MOUNTED, {});
       }
     });

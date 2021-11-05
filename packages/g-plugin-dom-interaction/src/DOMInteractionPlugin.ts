@@ -3,7 +3,6 @@ import {
   ContextService,
   RenderingPlugin,
   RenderingService,
-  RenderingServiceEvent,
 } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { supportsPointerEvents, supportsTouchEvents } from './utils';
@@ -20,30 +19,30 @@ export class DOMInteractionPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     const onPointerMove = (ev: InteractivePointerEvent) => {
-      renderingService.emitter.emit(RenderingServiceEvent.PointerMove, ev);
+      renderingService.hooks.pointerMove.call(ev);
     };
 
     const onPointerUp = (ev: InteractivePointerEvent) => {
-      renderingService.emitter.emit(RenderingServiceEvent.PointerUp, ev);
+      renderingService.hooks.pointerUp.call(ev);
     };
 
     const onPointerDown = (ev: InteractivePointerEvent) => {
-      renderingService.emitter.emit(RenderingServiceEvent.PointerDown, ev);
+      renderingService.hooks.pointerDown.call(ev);
     };
 
     const onPointerOver = (ev: InteractivePointerEvent) => {
-      renderingService.emitter.emit(RenderingServiceEvent.PointerOver, ev);
+      renderingService.hooks.pointerOver.call(ev);
     };
 
     const onPointerOut = (ev: InteractivePointerEvent) => {
-      renderingService.emitter.emit(RenderingServiceEvent.PointerOut, ev);
+      renderingService.hooks.pointerOut.call(ev);
     };
 
     const onPointerWheel = (ev: InteractivePointerEvent) => {
-      renderingService.emitter.emit(RenderingServiceEvent.PointerWheel, ev);
+      renderingService.hooks.pointerWheel.call(ev);
     };
 
-    renderingService.emitter.on(RenderingServiceEvent.Init, () => {
+    renderingService.hooks.init.tap(DOMInteractionPlugin.tag, () => {
       const $el = this.contextService.getDomElement()!;
 
       if (supportsPointerEvents) {
@@ -77,7 +76,7 @@ export class DOMInteractionPlugin implements RenderingPlugin {
       });
     });
 
-    renderingService.emitter.on(RenderingServiceEvent.Destroy, () => {
+    renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
       const $el = this.contextService.getDomElement()!;
       if (supportsPointerEvents) {
         self.document.removeEventListener('pointermove', onPointerMove, true);

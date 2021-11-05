@@ -6,7 +6,6 @@ import {
   Rectangle,
   ContextService,
   CanvasConfig,
-  RenderingServiceEvent,
 } from '@antv/g';
 import { clamp } from '@antv/util';
 import { inject, injectable } from 'inversify';
@@ -32,42 +31,38 @@ export class PickingPlugin implements RenderingPlugin {
   private renderGraphPlugin: RenderGraphPlugin;
 
   apply(renderingService: RenderingService) {
-    renderingService.emitter.on(
-      RenderingServiceEvent.Picking,
-      async (result: PickingResult, next) => {
-        // use viewportX/Y
-        const { viewportX: x, viewportY: y } = result.position;
-        const dpr = this.contextService.getDPR();
-        const width = this.canvasConfig.width * dpr;
-        const height = this.canvasConfig.height * dpr;
+    renderingService.hooks.pick.tapPromise(PickingPlugin.tag, async (result: PickingResult) => {
+      // use viewportX/Y
+      const { viewportX: x, viewportY: y } = result.position;
+      const dpr = this.contextService.getDPR();
+      const width = this.canvasConfig.width * dpr;
+      const height = this.canvasConfig.height * dpr;
 
-        const xInDevicePixel = x * dpr;
-        const yInDevicePixel = y * dpr;
+      const xInDevicePixel = x * dpr;
+      const yInDevicePixel = y * dpr;
 
-        if (
-          xInDevicePixel > width ||
-          xInDevicePixel < 0 ||
-          yInDevicePixel > height ||
-          yInDevicePixel < 0
-        ) {
-          result.picked = null;
-          next(result);
-          return;
-        }
+      if (
+        xInDevicePixel > width ||
+        xInDevicePixel < 0 ||
+        yInDevicePixel > height ||
+        yInDevicePixel < 0
+      ) {
+        result.picked = null;
+        return result;
+      }
 
-        const [pickedDisplayObject] = await this.renderGraphPlugin.pickByRectangle(
-          new Rectangle(
-            clamp(Math.round(xInDevicePixel), 0, width - 1),
-            // flip Y
-            clamp(Math.round(height - (y + 1) * dpr), 0, height - 1),
-            1,
-            1,
-          ),
-        );
+      const [pickedDisplayObject] = await this.renderGraphPlugin.pickByRectangle(
+        new Rectangle(
+          clamp(Math.round(xInDevicePixel), 0, width - 1),
+          // flip Y
+          clamp(Math.round(height - (y + 1) * dpr), 0, height - 1),
+          1,
+          1,
+        ),
+      );
 
-        result.picked = pickedDisplayObject || null;
-        next(result);
-      },
-    );
+      result.picked = pickedDisplayObject || null;
+      return result;
+    });
   }
 }

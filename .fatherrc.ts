@@ -1,19 +1,28 @@
+// import { wasm } from '@rollup/plugin-wasm';
+import rust from '@wasm-tool/rollup-plugin-rust';
+
 export default {
-  // cjs: 'rollup',
-  // esm: 'rollup',
-  cjs: 'babel',
-  esm: 'babel',
-  extraBabelPlugins: [
-    [
-      'babel-plugin-inline-import',
-      {
-        extensions: ['.glsl'],
-      },
-    ],
+  cjs: 'rollup',
+  esm: 'rollup',
+  extraRollupPlugins: [
+    // wasm()
+    rust({
+      inlineWasm: true,
+    }),
   ],
-  // umd: {
-  //   minFile: true,
-  // },
+  // cjs: 'babel',
+  // esm: 'babel',
+  // extraBabelPlugins: [
+  //   [
+  //     'babel-plugin-inline-import',
+  //     {
+  //       extensions: ['.glsl'],
+  //     },
+  //   ],
+  // ],
+  umd: {
+    minFile: true,
+  },
   // yarn build order
   pkgs: [
     'g-math',

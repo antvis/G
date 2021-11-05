@@ -1,6 +1,6 @@
 import { Device, Program, VendorInfo } from '../platform';
 import { assert, nullify } from '../platform/utils';
-import { preprocessShader_GLSL } from '../shader/compiler';
+import { preprocessShader_GLSL, ShaderFeature, ShaderFeatureMap } from '../shader/compiler';
 
 export class DeviceProgram {
   name: string = '(unnamed)';
@@ -14,6 +14,9 @@ export class DeviceProgram {
   vert: string = '';
   frag: string = '';
   defines = new Map<string, string>();
+  features: ShaderFeatureMap = {
+    MRT: true,
+  };
 
   definesChanged(): void {
     this.preprocessedVert = '';
@@ -53,20 +56,15 @@ export class DeviceProgram {
         'vert',
         this.both + this.vert,
         this.defines,
+        this.features,
       );
       this.preprocessedFrag = preprocessShader_GLSL(
         vendorInfo,
         'frag',
         this.both + this.frag,
         this.defines,
+        this.features,
       );
     }
-  }
-
-  private _gfxDevice: Device | null = null;
-  private _gfxProgram: Program | null = null;
-  associate(device: Device, program: Program): void {
-    this._gfxDevice = device;
-    this._gfxProgram = program;
   }
 }

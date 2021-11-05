@@ -90,6 +90,9 @@ export class RenderGraph implements RGGraphBuilder {
     return this.currentGraph!.resolveTextureRenderTargetIDs.push(renderTargetID) - 1;
   }
 
+  /**
+   * 查找最靠近输出的一个关联目标 RT 的 RGPass
+   */
   private findMostRecentPassThatAttachedRenderTarget(
     renderTargetID: number,
   ): RenderGraphPass | null {
@@ -169,6 +172,7 @@ export class RenderGraph implements RGGraphBuilder {
       const renderTargetID = pass.renderTargetIDs[i];
       if (renderTargetID === undefined) continue;
 
+      // 统计每个 RT 的使用量
       this.renderTargetUseCount[renderTargetID]++;
     }
 
@@ -176,6 +180,7 @@ export class RenderGraph implements RGGraphBuilder {
       const resolveTextureID = pass.resolveTextureInputIDs[i];
       if (resolveTextureID === undefined) continue;
 
+      // 统计每个 texture 的使用量
       this.resolveTextureUseCount[resolveTextureID]++;
 
       const renderTargetID = graph.resolveTextureRenderTargetIDs[resolveTextureID];
@@ -444,18 +449,16 @@ export class RenderGraph implements RGGraphBuilder {
     this.currentPass = null;
   }
 
-  private execGraph(graph: GraphImpl): void {
-    // Schedule our graph.
+  private execGraph(graph: GraphImpl) {
     this.scheduleGraph(graph);
-
-    for (let i = 0; i < graph.passes.length; i++) this.execPass(graph.passes[i]);
-
+    graph.passes.forEach((pass) => {
+      this.execPass(pass);
+    });
     // Clear our transient scope state.
     this.singleSampledTextureForResolveTextureID.length = 0;
   }
 
-  execute(builder: RGGraphBuilder): void {
-    assert(builder === this);
+  execute() {
     const graph = assertExists(this.currentGraph);
     this.execGraph(graph);
     this.currentGraph = null;

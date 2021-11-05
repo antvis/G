@@ -12,7 +12,6 @@ import {
   SHAPE,
   DefaultCamera,
   Camera,
-  RenderingServiceEvent,
 } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import { Batch, RendererFactory } from './drawcall';
@@ -21,9 +20,10 @@ import { Batch, RendererFactory } from './drawcall';
 import { Renderable3D } from './components/Renderable3D';
 import { WebGLRendererPluginOptions } from './interfaces';
 import { pushFXAAPass } from './passes/FXAA';
-import { pushCopyPass } from './passes/Copy';
+import { useCopyPass } from './passes/Copy';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import {
+  BindingLayoutDescriptor,
   BlendFactor,
   BlendMode,
   CompareMode,
@@ -43,6 +43,15 @@ import { RGRenderTargetDescription } from './render/RenderTargetDescription';
 import { fillMatrix4x4, fillVec3v, fillVec4, fillVec4v } from './render/utils';
 import { TransparentWhite, White } from './utils/color';
 import { isWebGL2 } from './platform/webgl2/utils';
+
+// @ts-ignore
+// import wasm from '../rust/Cargo.toml';
+
+async function loadWasm() {
+  // const exports = await wasm();
+  // console.log(exports);
+  // Use functions which were exported from Rust...
+}
 
 @injectable()
 export class RenderGraphPlugin implements RenderingPlugin {
@@ -96,7 +105,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
   }
 
   apply(renderingService: RenderingService) {
-    renderingService.emitter.on(RenderingServiceEvent.Init, async (e, next) => {
+    renderingService.hooks.init.tapPromise(RenderGraphPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(
@@ -117,12 +126,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.renderHelper.setDevice(this.device);
       this.renderHelper.renderInstManager.disableSimpleMode();
       this.swapChain.configureSwapChain($canvas.width, $canvas.height);
-
-      // call next
-      next();
     });
 
-    renderingService.emitter.on(RenderingServiceEvent.Destroy, () => {
+    renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
       this.renderHelper.destroy();
       this.batches.forEach((batch) => batch.destroy());
     });
@@ -130,7 +136,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
     /**
      * build frame graph at begining of each frame
      */
-    renderingService.emitter.on(RenderingServiceEvent.BeginFrame, () => {
+    renderingService.hooks.beginFrame.tap(RenderGraphPlugin.tag, () => {
       const canvas = this.swapChain.getCanvas();
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
@@ -184,15 +190,15 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       // TODO: other post-processing passes
       // FXAA
-      // pushFXAAPass(
-      //   this.builder,
-      //   this.renderHelper,
-      //   {
-      //     backbufferWidth: canvas.width,
-      //     backbufferHeight: canvas.height,
-      //   },
-      //   mainColorTargetID,
-      // );
+      pushFXAAPass(
+        this.builder,
+        this.renderHelper,
+        {
+          backbufferWidth: canvas.width,
+          backbufferHeight: canvas.height,
+        },
+        mainColorTargetID,
+      );
 
       // output to screen
       this.builder.resolveRenderTargetToExternalTexture(
@@ -201,7 +207,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.emitter.on(RenderingServiceEvent.EndFrame, () => {
+    renderingService.hooks.endFrame.tap(RenderGraphPlugin.tag, () => {
       const renderInstManager = this.renderHelper.renderInstManager;
 
       // TODO: time for GPU Animation
@@ -240,21 +246,19 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       renderInstManager.popTemplateRenderInst();
       this.renderHelper.prepareToRender();
-      this.renderHelper.renderGraph.execute(this.builder);
+      this.renderHelper.renderGraph.execute();
       renderInstManager.resetRenderInsts();
 
       // output to screen
       this.swapChain.present();
 
-      // // need an extra program to render texture to screen in WebGL1
+      // need an extra program to render texture to screen in WebGL1
       // if (this.device.queryVendorInfo().platformString === 'WebGL1') {
-      //   const program = this.renderHelper
-      //   .getCache()
-      //   .createProgramSimple(this.programDescriptorSimpleWithOrig);
+      //   useCopyPass(this.renderHelper);
       // }
     });
 
-    renderingService.emitter.on(RenderingServiceEvent.Render, (object: DisplayObject) => {
+    renderingService.hooks.render.tap(RenderGraphPlugin.tag, (object: DisplayObject) => {
       if (object.nodeName === SHAPE.Group) {
         return;
       }
@@ -383,6 +387,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
     const context = canvas.getContext('webgpu');
 
     if (!context) return null;
+
+    // await loadWasm();
 
     return new Device_WebGPU(adapter, device, canvas, context);
   }

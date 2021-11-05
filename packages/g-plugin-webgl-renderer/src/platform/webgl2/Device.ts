@@ -8,14 +8,19 @@ import {
   getFormatFlags,
   FormatFlags,
 } from '..';
+import { makeStaticDataBuffer } from '../../Geometry';
+import { CopyProgram } from '../../passes/Copy';
+import { preprocessProgramObj_GLSL } from '../../shader/compiler';
 import { White } from '../../utils/color';
 import { GL } from '../constants';
 import {
   AttachmentState,
+  BindingLayoutDescriptor,
   Bindings,
   BindingsDescriptor,
   Buffer,
   BufferDescriptor,
+  BufferUsage,
   ChannelWriteMask,
   ClipSpaceNearZ,
   CompareMode,
@@ -34,6 +39,7 @@ import {
   MegaStateDescriptor,
   MipFilterMode,
   PlatformFramebuffer,
+  PrimitiveTopology,
   Program,
   ProgramDescriptorSimple,
   Readback,
@@ -69,6 +75,8 @@ import {
   range,
   prependLineNo,
 } from '../utils';
+import { GPUBufferUsage } from '../webgpu/constants';
+import { translateBufferUsage } from '../webgpu/utils';
 import { Bindings_GL } from './Bindings';
 import { Buffer_GL } from './Buffer';
 import { InputLayout_GL } from './InputLayout';
@@ -172,6 +180,9 @@ export class Device_GL implements SwapChain, Device {
   private resolveDepthStencilAttachmentsChanged: boolean = false;
   private resolveDepthStencilReadFramebuffer: WebGLFramebuffer;
   private resolveDepthStencilDrawFramebuffer: WebGLFramebuffer;
+  /**
+   * use DRAW_FRAMEBUFFER in WebGL2
+   */
   private renderPassDrawFramebuffer: WebGLFramebuffer;
   readbackFramebuffer: WebGLFramebuffer;
   private blackTexture!: WebGLTexture;
@@ -359,9 +370,67 @@ export class Device_GL implements SwapChain, Device {
       }
       gl.clearBufferfv(gl.COLOR, 0, [r, g, b, a]);
     } else {
-      gl.colorMask(true, true, true, true);
-      gl.clearColor(r, g, b, a);
-      gl.clear(gl.COLOR_BUFFER_BIT);
+      // gl.colorMask(true, true, true, true);
+      // gl.clearColor(r, g, b, a);
+      // gl.clear(gl.COLOR_BUFFER_BIT);
+      // const vertexBuffer = makeStaticDataBuffer(
+      //   this,
+      //   BufferUsage.Vertex,
+      //   translateBufferUsage(BufferUsage.Vertex),
+      //   new Float32Array([-4, -4, 4, -4, 0, 4]).buffer,
+      // );
+      // const inputLayout = this.createInputLayout({
+      //   vertexBufferDescriptors: [
+      //     { byteStride: 4 * 2, frequency: VertexBufferFrequency.PerVertex },
+      //   ],
+      //   vertexAttributeDescriptors: [
+      //     {
+      //       format: Format.F32_RG,
+      //       bufferIndex: 0,
+      //       bufferByteOffset: 4 * 0,
+      //       location: 0,
+      //     },
+      //   ],
+      //   indexBufferFormat: null,
+      // });
+      // const inputState = this.createInputState(
+      //   inputLayout,
+      //   [{ buffer: vertexBuffer, byteOffset: 0 }],
+      //   null,
+      // );
+      // const bindingLayouts: BindingLayoutDescriptor[] = [
+      //   { numSamplers: 1, numUniformBuffers: 0 },
+      // ];
+      // const program = this.createProgram(preprocessProgramObj_GLSL(this, new CopyProgram()));
+      // const renderPipeline = this.createRenderPipeline({
+      //   topology: PrimitiveTopology.Triangles,
+      //   sampleCount: 1,
+      //   program,
+      //   bindingLayouts,
+      //   colorAttachmentFormats: [Format.U8_RGBA_RT],
+      //   depthStencilAttachmentFormat: null,
+      //   inputLayout,
+      //   megaStateDescriptor: defaultMegaState,
+      // });
+      // const renderPass = this.createRenderPass({
+      //   colorAttachment: [this.renderTarget],
+      //   colorResolveTo: [this.getOnscreenTexture()],
+      //   colorClearColor: [White],
+      //   depthStencilAttachment: null,
+      //   depthStencilResolveTo: null,
+      //   depthClearValue: 0,
+      //   stencilClearValue: 0,
+      // });
+      // const bindings = this.createBindings({
+      //   bindingLayout: bindingLayouts[0],
+      //   samplerBindings: [{}],
+      //   // uniformBufferBindings: [{ buffer: this.uniformBuffer, wordCount: 16 }],
+      // });
+      // renderPass.setPipeline(renderPipeline);
+      // renderPass.setBindings(0, bindings, [0]);
+      // renderPass.setInputState(inputState);
+      // renderPass.draw(3, 0);
+      // this.submitPass(renderPass);
     }
   }
   //#endregion

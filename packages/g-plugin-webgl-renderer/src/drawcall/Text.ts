@@ -5,7 +5,7 @@ import { fillVec4, makeSortKeyOpaque, RendererLayer } from '../render/utils';
 import { Format, MipFilterMode, TexFilterMode, VertexBufferFrequency, WrapMode } from '../platform';
 import { RenderInst } from '../render/RenderInst';
 import { DeviceProgram } from '../render/DeviceProgram';
-import { Batch } from '.';
+import { Batch, AttributeLocation } from './Batch';
 import { TextureMapping } from '../render/TextureHolder';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
 import { getGlyphQuads } from './symbol/SymbolQuad';
@@ -14,8 +14,8 @@ import { RenderInstList } from '../render/RenderInstList';
 import { Renderable3D } from '../components/Renderable3D';
 
 class TextProgram extends DeviceProgram {
-  static a_Tex = Object.keys(Batch.AttributeLocation).length;
-  static a_Offset = Object.keys(Batch.AttributeLocation).length + 1;
+  static a_Tex = AttributeLocation.MAX;
+  static a_Offset = AttributeLocation.MAX + 1;
 
   static ub_ObjectParams = 1;
 
@@ -138,7 +138,7 @@ export class TextRenderer extends Batch {
       const encodedPickingColor = object.entity.getComponent(Renderable3D).encodedPickingColor;
       // this.geometry.updateVertexBuffer(
       //   Batch.CommonBufferIndex,
-      //   Batch.AttributeLocation.a_PickingColor,
+      //   AttributeLocation.a_PickingColor,
       //   index,
       //   new Uint8Array(
       //     new Float32Array([...encodedPickingColor, object.parsedStyle.zIndex]).buffer,
@@ -296,56 +296,56 @@ export class TextRenderer extends Batch {
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
-          location: Batch.AttributeLocation.a_ModelMatrix0,
+          location: AttributeLocation.a_ModelMatrix0,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 4,
-          location: Batch.AttributeLocation.a_ModelMatrix1,
+          location: AttributeLocation.a_ModelMatrix1,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 8,
-          location: Batch.AttributeLocation.a_ModelMatrix2,
+          location: AttributeLocation.a_ModelMatrix2,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 12,
-          location: Batch.AttributeLocation.a_ModelMatrix3,
+          location: AttributeLocation.a_ModelMatrix3,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 16,
-          location: Batch.AttributeLocation.a_Color,
+          location: AttributeLocation.a_Color,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 20,
-          location: Batch.AttributeLocation.a_StrokeColor,
+          location: AttributeLocation.a_StrokeColor,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 24,
-          location: Batch.AttributeLocation.a_StylePacked1,
+          location: AttributeLocation.a_StylePacked1,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 28,
-          location: Batch.AttributeLocation.a_PickingColor,
+          location: AttributeLocation.a_PickingColor,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },

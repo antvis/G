@@ -12,7 +12,6 @@ import {
   DefaultCamera,
   BaseStyleProps,
   Point,
-  RenderingServiceEvent,
 } from '@antv/g';
 import { PathGeneratorFactory, RBushRoot } from '@antv/g-plugin-canvas-renderer';
 import type { RBush, PathGenerator, RBushNodeAABB } from '@antv/g-plugin-canvas-renderer';
@@ -61,7 +60,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
   private pointInPathPickerFactory: (tagName: SHAPE | string) => PointInPathPicker<any>;
 
   apply(renderingService: RenderingService) {
-    renderingService.emitter.on(RenderingServiceEvent.Picking, (result: PickingResult) => {
+    renderingService.hooks.pick.tap(CanvasPickerPlugin.tag, (result: PickingResult) => {
       // position in world space
       const { x, y } = result.position;
       const position = vec3.fromValues(x, y, 0);
@@ -110,6 +109,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       pickedDisplayObjects.sort(this.sceneGraphService.sort);
 
       result.picked = pickedDisplayObjects[pickedDisplayObjects.length - 1] || null;
+      return result;
     });
   }
 

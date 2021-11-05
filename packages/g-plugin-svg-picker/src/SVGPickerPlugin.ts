@@ -5,7 +5,6 @@ import {
   RenderingPlugin,
   SceneGraphService,
   PickingResult,
-  RenderingServiceEvent,
 } from '@antv/g';
 
 /**
@@ -25,7 +24,7 @@ export class SVGPickerPlugin implements RenderingPlugin {
   private displayObjectPool: DisplayObjectPool;
 
   apply(renderingService: RenderingService) {
-    renderingService.emitter.on(RenderingServiceEvent.Picking, (result: PickingResult) => {
+    renderingService.hooks.pick.tap(SVGPickerPlugin.tag, (result: PickingResult) => {
       const { clientX, clientY } = result.position;
 
       try {
@@ -48,6 +47,7 @@ export class SVGPickerPlugin implements RenderingPlugin {
       } catch (e) {
         result.picked = null;
       }
+      return result;
     });
   }
 }

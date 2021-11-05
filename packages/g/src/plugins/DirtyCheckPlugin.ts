@@ -1,11 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { Renderable } from '../components';
 import { CanvasConfig } from '../types';
-import {
-  RenderingService,
-  RenderingPlugin,
-  RenderingServiceEvent,
-} from '../services/RenderingService';
+import { RenderingService, RenderingPlugin } from '../services/RenderingService';
 import { RenderingContext, RENDER_REASON } from '../services/RenderingContext';
 import { DisplayObject } from '../display-objects/DisplayObject';
 
@@ -23,28 +19,21 @@ export class DirtyCheckPlugin implements RenderingPlugin {
   private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
-    renderingService.emitter.on(
-      RenderingServiceEvent.Prepare,
-      (object: DisplayObject | null, next) => {
-        if (object) {
-          const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
+    renderingService.hooks.prepare.tap(DirtyCheckPlugin.tag, (object: DisplayObject | null) => {
+      if (object) {
+        const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
 
-          const renderable = object.getEntity().getComponent(Renderable);
-          const isDirty =
-            renderable.dirty ||
-            this.renderingContext.renderReasons.has(RENDER_REASON.CameraChanged);
-          if (isDirty || !enableDirtyRectangleRendering) {
-            next(object);
-            return object;
-          } else {
-            next(null);
-            return null;
-          }
+        const renderable = object.getEntity().getComponent(Renderable);
+        const isDirty =
+          renderable.dirty || this.renderingContext.renderReasons.has(RENDER_REASON.CameraChanged);
+        if (isDirty || !enableDirtyRectangleRendering) {
+          return object;
+        } else {
+          return null;
         }
+      }
 
-        next(object);
-        return object;
-      },
-    );
+      return object;
+    });
   }
 }

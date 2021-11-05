@@ -10,13 +10,13 @@ import {
 import { RenderInst } from '../render/RenderInst';
 import { DisplayObject, Image, Renderable, SHAPE } from '@antv/g';
 import { DeviceProgram } from '../render/DeviceProgram';
-import { Batch } from '.';
+import { Batch, AttributeLocation } from '.';
 import { TextureMapping } from '../render/TextureHolder';
 import { TexturePool } from '../TexturePool';
 
 class ImageProgram extends DeviceProgram {
-  static a_Size = Object.keys(Batch.AttributeLocation).length;
-  static a_Uv = Object.keys(Batch.AttributeLocation).length + 1;
+  static a_Size = AttributeLocation.MAX;
+  static a_Uv = AttributeLocation.MAX + 1;
 
   static ub_ObjectParams = 1;
 

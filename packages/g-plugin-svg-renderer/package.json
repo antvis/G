@@ -2,13 +2,11 @@
   "name": "@antv/g-plugin-svg-renderer",
   "version": "1.0.0-alpha.24",
   "description": "A G plugin of renderer implementation with SVG",
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "files": [
     "package.json",
-    "es",
-    "lib",
     "dist",
     "LICENSE",
     "README.md"

@@ -1,8 +1,9 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "module": "esnext",
+        "rootDir": "./src",
         "composite": true,
+        "module": "esnext",
         "declaration": true,
         "sourceMap": true,
         "target": "es5",
@@ -21,5 +22,6 @@
     },
     "include": [
         "src/**/*"
-    ]
+    ],
+    "references": []
 }

@@ -13,6 +13,8 @@ const ES100_REPLACEMENTS: [RegExp, string][] = [
 ];
 
 type DefineMap = Map<string, string>;
+export type ShaderFeature = 'MRT';
+export type ShaderFeatureMap = Partial<Record<ShaderFeature, boolean>>;
 
 function defineStr(k: string, v: string): string {
   return `#define ${k} ${v}`;
@@ -23,9 +25,11 @@ export function preprocessShader_GLSL(
   type: 'vert' | 'frag',
   source: string,
   defines: DefineMap | null = null,
+  features: ShaderFeatureMap | null = null,
 ): string {
   const isGLSL100 = vendorInfo.glslVersion === '#version 100';
-  const supportMRT = vendorInfo.supportMRT;
+  const supportMRT = vendorInfo.supportMRT && !!features.MRT;
+
   // Garbage WebGL2 shader compiler until I get something better down the line...
   const lines = source
     .split('\n')
@@ -141,18 +145,22 @@ ${
 #define main${type === 'vert' ? 'VS' : 'PS'} main
 ${extraDefines}
 ${
-  hasFragColor
-    ? `
+  (hasFragColor &&
+    `
 ${
-  type === 'frag'
-    ? `#define gl_FragColor gbuf_color
+  (type === 'frag' &&
+    !isGLSL100 &&
+    `#define gl_FragColor gbuf_color
 layout(location = 0) out vec4 gbuf_color;
-layout(location = 1) out vec4 gbuf_picking;
-`
-    : ''
+`) ||
+  ''
 }
-`
-    : ``
+${
+  (type === 'frag' && !isGLSL100 && supportMRT && `layout(location = 1) out vec4 gbuf_picking;`) ||
+  ''
+}
+`) ||
+  ''
 }
 ${definesString}
 ${rest}
@@ -227,9 +235,10 @@ export function preprocessProgram_GLSL(
   vert: string,
   frag: string,
   defines: DefineMap | null = null,
+  features: ShaderFeatureMap | null = null,
 ): ProgramDescriptorSimpleWithOrig {
-  const preprocessedVert = preprocessShader_GLSL(vendorInfo, 'vert', vert, defines);
-  const preprocessedFrag = preprocessShader_GLSL(vendorInfo, 'frag', frag, defines);
+  const preprocessedVert = preprocessShader_GLSL(vendorInfo, 'vert', vert, defines, features);
+  const preprocessedFrag = preprocessShader_GLSL(vendorInfo, 'frag', frag, defines, features);
   return { vert, frag, preprocessedVert, preprocessedFrag };
 }
 
@@ -238,6 +247,7 @@ export interface ProgramObjBag {
   vert: string;
   frag: string;
   defines?: DefineMap;
+  features?: ShaderFeatureMap;
 }
 
 export function preprocessProgramObj_GLSL(
@@ -245,7 +255,8 @@ export function preprocessProgramObj_GLSL(
   obj: ProgramObjBag,
 ): ProgramDescriptorSimpleWithOrig {
   const defines = obj.defines !== undefined ? obj.defines : null;
+  const features = obj.features !== undefined ? obj.features : null;
   const vert = obj.both !== undefined ? obj.both + obj.vert : obj.vert;
   const frag = obj.both !== undefined ? obj.both + obj.frag : obj.frag;
-  return preprocessProgram_GLSL(device.queryVendorInfo(), vert, frag, defines);
+  return preprocessProgram_GLSL(device.queryVendorInfo(), vert, frag, defines, features);
 }

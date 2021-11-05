@@ -17,6 +17,7 @@ import {
   RendererFactory,
   ShapeRenderer,
   Batch,
+  AttributeLocation,
   CircleRenderer,
   ImageRenderer,
   TextRenderer,
@@ -119,6 +120,7 @@ export function registerModelBuilder(builderClazz: new (...args: any[]) => Batch
 export {
   Renderable3D,
   Batch,
+  AttributeLocation,
   // ShaderModuleService,
   // ModelBuilder,
   TexturePool,

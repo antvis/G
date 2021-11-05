@@ -5,8 +5,6 @@
   "description": "G sites deployed on gh-pages",
   "files": [
     "package.json",
-    "es",
-    "lib",
     "dist",
     "LICENSE",
     "README.md"

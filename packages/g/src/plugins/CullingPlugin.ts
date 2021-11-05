@@ -2,11 +2,7 @@ import { inject, injectable, named } from 'inversify';
 import { Cullable } from '../components';
 import { ContributionProvider } from '../contribution-provider';
 import { DisplayObject } from '../display-objects/DisplayObject';
-import {
-  RenderingService,
-  RenderingPlugin,
-  RenderingServiceEvent,
-} from '../services/RenderingService';
+import { RenderingService, RenderingPlugin } from '../services/RenderingService';
 import { RenderingContext, RENDER_REASON } from '../services/RenderingContext';
 import { CanvasConfig } from '../types';
 
@@ -35,44 +31,38 @@ export class CullingPlugin implements RenderingPlugin {
   private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
-    renderingService.emitter.on(
-      RenderingServiceEvent.Prepare,
-      (object: DisplayObject | null, next) => {
-        if (object) {
-          const cullable = object.entity.getComponent(Cullable);
-          if (this.strategies.getContributions(true).length === 0) {
-            cullable.visible = true;
-          } else {
-            // eg. implemented by g-webgl(frustum culling)
-            cullable.visible = this.strategies
-              .getContributions(true)
-              .every((strategy) => strategy.isVisible(object));
-          }
-
-          if (object.isVisible()) {
-            next(object);
-            return object;
-          } else {
-            // Those invisible objects which get renderred in last frame should be saved for later use.
-            const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
-            if (enableDirtyRectangleRendering) {
-              const removedRenderBounds = object.getRenderBounds();
-              if (removedRenderBounds) {
-                this.renderingContext.removedRenderBoundsList.push(removedRenderBounds);
-                this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectRemoved);
-              }
-            }
-            next(null);
-            return null;
-          }
+    renderingService.hooks.prepare.tap(CullingPlugin.tag, (object: DisplayObject | null) => {
+      if (object) {
+        const cullable = object.entity.getComponent(Cullable);
+        if (this.strategies.getContributions(true).length === 0) {
+          cullable.visible = true;
+        } else {
+          // eg. implemented by g-webgl(frustum culling)
+          cullable.visible = this.strategies
+            .getContributions(true)
+            .every((strategy) => strategy.isVisible(object));
         }
 
-        next(object);
-        return object;
-      },
-    );
+        if (object.isVisible()) {
+          return object;
+        } else {
+          // Those invisible objects which get renderred in last frame should be saved for later use.
+          const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
+          if (enableDirtyRectangleRendering) {
+            const removedRenderBounds = object.getRenderBounds();
+            if (removedRenderBounds) {
+              this.renderingContext.removedRenderBoundsList.push(removedRenderBounds);
+              this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectRemoved);
+            }
+          }
+          return null;
+        }
+      }
 
-    renderingService.emitter.on(RenderingServiceEvent.AfterRender, (object: DisplayObject) => {
+      return object;
+    });
+
+    renderingService.hooks.afterRender.tap(CullingPlugin.tag, (object: DisplayObject) => {
       object.entity.getComponent(Cullable).visibilityPlaneMask = -1;
     });
   }

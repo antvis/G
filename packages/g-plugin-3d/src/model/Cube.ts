@@ -4,6 +4,7 @@ import { vec3 } from 'gl-matrix';
 import {
   TexturePool,
   Batch,
+  AttributeLocation,
   DeviceProgram,
   Format,
   makeTextureDescriptor2D,
@@ -20,9 +21,9 @@ const primitiveUv1Padding = 4.0 / 64;
 const primitiveUv1PaddingScale = 1.0 - primitiveUv1Padding * 2;
 
 class CubeProgram extends DeviceProgram {
-  static a_Position = Object.keys(Batch.AttributeLocation).length;
-  static a_Normal = Object.keys(Batch.AttributeLocation).length + 1;
-  static a_Uv = Object.keys(Batch.AttributeLocation).length + 2;
+  static a_Position = AttributeLocation.MAX;
+  static a_Normal = AttributeLocation.MAX + 1;
+  static a_Uv = AttributeLocation.MAX + 2;
 
   static ub_ObjectParams = 1;
 

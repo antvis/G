@@ -56,15 +56,12 @@ export interface IRenderGraphPass {
   attachResolveTexture(resolveTextureID: number): void;
 
   /**
-   * Set the pass's execution callback. This will be called with the {@see GfxRenderPass} for the
-   * pass, along with the {@see GfxrPassScope} to access any resources that the system has allocated.
+   * Set the pass's execution callback.
    */
   exec(func: PassExecFunc): void;
 
   /**
-   * Set the pass's post callback. This will be immediately right after the pass is submitted,
-   * allowing you to do additional custom work once the pass has been done. This is expected to be
-   * seldomly used.
+   * Set the pass's post callback
    */
   post(func: PassPostFunc): void;
 }

@@ -4,15 +4,15 @@ import { Format, VertexBufferFrequency } from '../platform';
 import { RenderInst } from '../render/RenderInst';
 import { Circle, CircleStyleProps, DisplayObject, SHAPE } from '@antv/g';
 import { DeviceProgram } from '../render/DeviceProgram';
-import { Batch } from './Batch';
+import { Batch, AttributeLocation } from './Batch';
 import { Program_GL } from '../platform/webgl2/Program';
 
 const PointShapes = ['circle', 'ellipse', 'rect', 'rounded-rect'];
 
 class CircleProgram extends DeviceProgram {
-  static a_Extrude = Object.keys(Batch.AttributeLocation).length;
-  static a_StylePacked2 = Object.keys(Batch.AttributeLocation).length + 1;
-  static a_Size = Object.keys(Batch.AttributeLocation).length + 2;
+  static a_Extrude = AttributeLocation.MAX;
+  static a_StylePacked2 = AttributeLocation.MAX + 1;
+  static a_Size = AttributeLocation.MAX + 2;
 
   static ub_ObjectParams = 1;
 

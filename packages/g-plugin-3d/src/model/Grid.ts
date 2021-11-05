@@ -3,6 +3,7 @@ import { inject, injectable } from 'inversify';
 import { vec3 } from 'gl-matrix';
 import {
   Batch,
+  AttributeLocation,
   CullMode,
   DeviceProgram,
   Format,
@@ -12,8 +13,8 @@ import {
 import { GridStyleProps } from '../Grid';
 
 class GridProgram extends DeviceProgram {
-  static a_Position = Object.keys(Batch.AttributeLocation).length;
-  static a_GridSize = Object.keys(Batch.AttributeLocation).length + 1;
+  static a_Position = AttributeLocation.MAX;
+  static a_GridSize = AttributeLocation.MAX + 1;
 
   static ub_ObjectParams = 1;
 

@@ -6,7 +6,6 @@ import {
   Camera,
   CanvasConfig,
   DefaultCamera,
-  RenderingServiceEvent,
 } from '@antv/g';
 import { inject, injectable } from 'inversify';
 import Hammer from 'hammerjs';
@@ -41,9 +40,10 @@ export class ControlPlugin implements RenderingPlugin {
   private altKey: boolean;
 
   apply(renderingService: RenderingService) {
-    renderingService.emitter.on(RenderingServiceEvent.Init, () => {
+    renderingService.hooks.init.tap(ControlPlugin.tag, () => {
       const root = this.renderingContext.root;
-      this.hammertime = new Hammer(root.ownerDocument as unknown as HTMLElement);
+      // @ts-ignore
+      this.hammertime = new Hammer(root);
 
       this.hammertime.get('pan').set({ direction: Hammer.DIRECTION_ALL });
       this.hammertime.get('pinch').set({ enable: true });
@@ -52,18 +52,17 @@ export class ControlPlugin implements RenderingPlugin {
       this.hammertime.on('panend', this.onPanend);
       this.hammertime.on('pinch', this.onPinch);
 
-      this.contextService
-        .getDomElement()
-        .addEventListener('wheel', this.onMousewheel, { passive: false });
+      root.addEventListener('wheel', this.onMousewheel);
     });
 
-    renderingService.emitter.on(RenderingServiceEvent.Destroy, () => {
+    renderingService.hooks.destroy.tap(ControlPlugin.tag, () => {
       this.hammertime.off('panstart', this.onPanstart);
       this.hammertime.off('panmove', this.onPanmove);
       this.hammertime.off('panend', this.onPanend);
       this.hammertime.off('pinch', this.onPinch);
 
-      this.contextService.getDomElement().removeEventListener('wheel', this.onMousewheel);
+      const root = this.renderingContext.root;
+      root.removeEventListener('wheel', this.onMousewheel);
     });
   }
 
@@ -109,7 +108,6 @@ export class ControlPlugin implements RenderingPlugin {
 
   private onMousewheel = (e: WheelEvent) => {
     this.dolly(e.deltaY);
-    e.preventDefault();
   };
 
   private dolly(z: number) {

@@ -8,7 +8,6 @@ import {
   RenderingContext,
   ElementEvent,
   FederatedEvent,
-  RenderingServiceEvent,
 } from '@antv/g';
 import { ImagePool } from './shapes/ImagePool';
 import { isString } from '@antv/util';
@@ -57,7 +56,7 @@ export class LoadImagePlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.emitter.on(RenderingServiceEvent.Init, () => {
+    renderingService.hooks.init.tap(LoadImagePlugin.tag, () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(
         ElementEvent.ATTRIBUTE_CHANGED,
@@ -65,7 +64,7 @@ export class LoadImagePlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.emitter.on(RenderingServiceEvent.Destroy, () => {
+    renderingService.hooks.destroy.tap(LoadImagePlugin.tag, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(
         ElementEvent.ATTRIBUTE_CHANGED,

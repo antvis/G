@@ -5,14 +5,14 @@ import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RenderInst } from '../render/RenderInst';
 import { DisplayObject, PARSED_COLOR_TYPE, Point, SHAPE, Tuple4Number } from '@antv/g';
 import { DeviceProgram } from '../render/DeviceProgram';
-import { Batch } from '.';
+import { Batch, AttributeLocation } from '.';
 
 const segmentInstanceGeometry = [0, -0.5, 1, -0.5, 1, 0.5, 0, 0.5];
 
 class InstancedLineProgram extends DeviceProgram {
-  static a_Position = Object.keys(Batch.AttributeLocation).length;
-  static a_PointA = Object.keys(Batch.AttributeLocation).length + 1;
-  static a_PointB = Object.keys(Batch.AttributeLocation).length + 2;
+  static a_Position = AttributeLocation.MAX;
+  static a_PointA = AttributeLocation.MAX + 1;
+  static a_PointB = AttributeLocation.MAX + 2;
 
   static ub_ObjectParams = 1;
 
@@ -71,16 +71,21 @@ export class InstancedLineRenderer extends Batch {
   buildGeometry() {
     const interleaved = [];
     const indices = [];
+    let offset = 0;
     this.objects.forEach((object, i) => {
-      const line = object as Line;
-      const offset = i * 4;
-      const { x1, y1, x2, y2, defX, defY } = line.parsedStyle;
-      interleaved.push(x1 - defX, y1 - defY, x2 - defX, y2 - defY);
+      if (object.nodeName === SHAPE.Line) {
+        const line = object as Line;
+        const { x1, y1, x2, y2, defX, defY } = line.parsedStyle;
+        interleaved.push(x1 - defX, y1 - defY, x2 - defX, y2 - defY);
+        offset += i * 4;
+      }
+
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
     });
 
     this.geometry.setIndices(new Uint32Array(indices));
     this.geometry.vertexCount = 6;
+    // this.geometry.maxInstancedCount = 6;
     this.geometry.setVertexBuffer({
       bufferIndex: 1,
       byteStride: 4 * 2,

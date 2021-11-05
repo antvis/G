@@ -8,6 +8,10 @@ import { TextureMapping } from '../render/TextureHolder';
 import { fillVec4, ShaderLibrary } from '../render/utils';
 
 class FXAAProgram extends DeviceProgram {
+  features = {
+    MRT: false,
+  };
+
   both = `
 layout(std140) uniform ub_Params {
     vec4 u_Misc[1];

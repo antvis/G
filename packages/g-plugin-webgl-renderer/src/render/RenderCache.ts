@@ -116,7 +116,6 @@ function bindingsDescriptorHash(a: BindingsDescriptor): number {
 
 interface ProgramDescriptor extends ProgramDescriptorSimple {
   ensurePreprocessed(vendorInfo: VendorInfo): void;
-  associate(device: Device, program: Program): void;
 }
 
 export class RenderCache {
@@ -183,12 +182,6 @@ export class RenderCache {
       const descriptorCopy = programDescriptorSimpleCopy(programDescriptorSimple);
       program = this.device.createProgram(descriptorCopy);
       this.programCache.add(descriptorCopy, program);
-
-      if ('associate' in (programDescriptorSimple as any)) {
-        const programDescriptor = programDescriptorSimple as ProgramDescriptor;
-        programDescriptor.associate(this.device, program);
-        (descriptorCopy as any).orig = programDescriptor;
-      }
     }
 
     return program;
@@ -206,10 +199,6 @@ export class RenderCache {
       this.samplerCache.add(descriptor, sampler);
     }
     return sampler;
-  }
-
-  numBindings(): number {
-    return this.bindingsCache.size();
   }
 
   destroy(): void {

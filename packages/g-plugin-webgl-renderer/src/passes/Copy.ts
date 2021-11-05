@@ -7,9 +7,13 @@ import { RenderHelper } from '../render/RenderHelper';
 import { TextureMapping } from '../render/TextureHolder';
 import { fillVec4, ShaderLibrary } from '../render/utils';
 
-class CopyProgram extends DeviceProgram {
+export class CopyProgram extends DeviceProgram {
   vert = ShaderLibrary.fullscreenVS;
   frag = ShaderLibrary.fullscreenBlitOneTexPS;
+
+  features = {
+    MRT: false,
+  };
 }
 
 interface RenderInput {
@@ -22,69 +26,63 @@ let geometry: Geometry;
 let inputState: InputState;
 let inputLayout: InputLayout;
 
-export function pushCopyPass(
-  builder: RGGraphBuilder,
+export function useCopyPass(
+  // builder: RGGraphBuilder,
   renderHelper: RenderHelper,
-  renderInput: RenderInput,
-  mainColorTargetID: number,
+  // renderInput: RenderInput,
+  // mainColorTargetID: number,
 ): void {
-  builder.pushPass((pass) => {
-    pass.setDebugName('Copy');
-    pass.attachRenderTargetID(RGAttachmentSlot.Color0, mainColorTargetID);
+  // const mainColorResolveTextureID = builder.resolveRenderTarget(mainColorTargetID);
+  // pass.attachResolveTexture(mainColorResolveTextureID);
 
-    const mainColorResolveTextureID = builder.resolveRenderTarget(mainColorTargetID);
-    pass.attachResolveTexture(mainColorResolveTextureID);
+  const renderInst = renderHelper.renderInstManager.newRenderInst();
+  renderInst.setUniformBuffer(renderHelper.uniformBuffer);
+  renderInst.setAllowSkippingIfPipelineNotReady(false);
 
-    const renderInst = renderHelper.renderInstManager.newRenderInst();
-    renderInst.setUniformBuffer(renderHelper.uniformBuffer);
-    renderInst.setAllowSkippingIfPipelineNotReady(false);
+  renderInst.setMegaStateFlags(fullscreenMegaState);
+  renderInst.setBindingLayouts([{ numUniformBuffers: 0, numSamplers: 1 }]);
+  renderInst.drawPrimitives(3);
 
-    renderInst.setMegaStateFlags(fullscreenMegaState);
-    renderInst.setBindingLayouts([{ numUniformBuffers: 0, numSamplers: 1 }]);
-    renderInst.drawPrimitives(3);
+  const copyProgram = new CopyProgram();
+  const program = renderHelper.renderCache.createProgram(copyProgram);
 
-    const copyProgram = new CopyProgram();
-    const program = renderHelper.renderCache.createProgram(copyProgram);
+  renderInst.setProgram(program);
 
-    renderInst.setProgram(program);
-
-    if (!geometry) {
-      geometry = new Geometry();
-      geometry.device = renderHelper.getDevice();
-      geometry.setVertexBuffer({
-        bufferIndex: 0,
-        byteStride: 4 * 2,
-        frequency: VertexBufferFrequency.PerVertex,
-        attributes: [
-          {
-            format: Format.F32_RG,
-            bufferByteOffset: 4 * 0,
-            location: 0,
-          },
-        ],
-        // rendering a fullscreen triangle instead of quad
-        // @see https://www.saschawillems.de/blog/2016/08/13/vulkan-tutorial-on-rendering-a-fullscreen-quad-without-buffers/
-        data: new Float32Array([-4, -4, 4, -4, 0, 4]),
-      });
-      geometry.vertexCount = 3;
-
-      inputLayout = renderHelper.getCache().createInputLayout(geometry.inputLayoutDescriptor);
-
-      inputState = renderHelper.getDevice().createInputState(
-        inputLayout,
-        geometry.vertexBuffers.map((buffer) => ({
-          buffer,
-          byteOffset: 0,
-        })),
-        null,
-      );
-    }
-
-    pass.exec((passRenderer, scope) => {
-      textureMapping[0].texture = scope.getResolveTextureForID(mainColorResolveTextureID);
-      renderInst.setSamplerBindingsFromTextureMappings(textureMapping);
-      renderInst.setInputLayoutAndState(inputLayout, inputState);
-      renderInst.drawOnPass(renderHelper.renderCache, passRenderer);
+  if (!geometry) {
+    geometry = new Geometry();
+    geometry.device = renderHelper.getDevice();
+    geometry.setVertexBuffer({
+      bufferIndex: 0,
+      byteStride: 4 * 2,
+      frequency: VertexBufferFrequency.PerVertex,
+      attributes: [
+        {
+          format: Format.F32_RG,
+          bufferByteOffset: 4 * 0,
+          location: 0,
+        },
+      ],
+      // rendering a fullscreen triangle instead of quad
+      // @see https://www.saschawillems.de/blog/2016/08/13/vulkan-tutorial-on-rendering-a-fullscreen-quad-without-buffers/
+      data: new Float32Array([-4, -4, 4, -4, 0, 4]),
     });
-  });
+    geometry.vertexCount = 3;
+
+    inputLayout = renderHelper.getCache().createInputLayout(geometry.inputLayoutDescriptor);
+
+    inputState = renderHelper.getDevice().createInputState(
+      inputLayout,
+      geometry.vertexBuffers.map((buffer) => ({
+        buffer,
+        byteOffset: 0,
+      })),
+      null,
+    );
+  }
+
+  // textureMapping[0].texture = scope.getResolveTextureForID(mainColorResolveTextureID);
+  // renderInst.setSamplerBindingsFromTextureMappings(textureMapping);
+  renderInst.setInputLayoutAndState(inputLayout, inputState);
+
+  renderInst.drawPrimitives(3);
 }

@@ -27,7 +27,7 @@ type TrackingData = {
   >;
   overTargets: IEventTarget[] | null;
 };
-type EmitterListeners = Record<
+export type EmitterListeners = Record<
   string,
   | { fn: (...args: any[]) => any; context: any; once: boolean }[]
   | { fn: (...args: any[]) => any; context: any; once: boolean }

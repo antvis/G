@@ -26,6 +26,22 @@ export interface Batch {
   beforeRender?(list: RenderInstList): void;
   afterRender?(list: RenderInstList): void;
 }
+
+export enum AttributeLocation {
+  // TODO: bind mat4 in WebGL2 instead of decomposed 4 * vec4?
+  // @see https://stackoverflow.com/questions/38853096/webgl-how-to-bind-values-to-a-mat4-attribute/38853623#38853623
+  a_ModelMatrix0,
+  a_ModelMatrix1,
+  a_ModelMatrix2,
+  a_ModelMatrix3, // model matrix
+  a_Color, // fill color
+  a_StrokeColor, // stroke color
+  a_StylePacked1, // opacity fillOpacity strokeOpacity lineWidth
+  a_PickingColor, // picking color
+  a_Anchor, // anchor
+  MAX,
+}
+
 /**
  * A container for multiple display objects with the same `style`,
  * eg. 1000 Circles with the same stroke color, but their position, radius can be different
@@ -33,23 +49,6 @@ export interface Batch {
 @injectable()
 export abstract class Batch {
   static tag = 'batch';
-
-  /**
-   * common attributes shared by all shapes
-   */
-  static AttributeLocation = {
-    // TODO: bind mat4 in WebGL2 instead of decomposed 4 * vec4?
-    // @see https://stackoverflow.com/questions/38853096/webgl-how-to-bind-values-to-a-mat4-attribute/38853623#38853623
-    a_ModelMatrix0: 0,
-    a_ModelMatrix1: 1,
-    a_ModelMatrix2: 2,
-    a_ModelMatrix3: 3, // model matrix
-    a_Color: 4, // fill color
-    a_StrokeColor: 5, // stroke color
-    a_StylePacked1: 6, // opacity fillOpacity strokeOpacity lineWidth
-    a_PickingColor: 7, // picking color
-    a_Anchor: 8, // anchor
-  };
 
   /**
    * common shader chunks
@@ -65,15 +64,15 @@ layout(std140) uniform ub_SceneParams {
 };
     `,
     VertDeclaration: `
-layout(location = ${Batch.AttributeLocation.a_ModelMatrix0}) attribute vec4 a_ModelMatrix0;
-layout(location = ${Batch.AttributeLocation.a_ModelMatrix1}) attribute vec4 a_ModelMatrix1;
-layout(location = ${Batch.AttributeLocation.a_ModelMatrix2}) attribute vec4 a_ModelMatrix2;
-layout(location = ${Batch.AttributeLocation.a_ModelMatrix3}) attribute vec4 a_ModelMatrix3;
-layout(location = ${Batch.AttributeLocation.a_Color}) attribute vec4 a_Color;
-layout(location = ${Batch.AttributeLocation.a_StrokeColor}) attribute vec4 a_StrokeColor;
-layout(location = ${Batch.AttributeLocation.a_StylePacked1}) attribute vec4 a_StylePacked1;
-layout(location = ${Batch.AttributeLocation.a_PickingColor}) attribute vec4 a_PickingColor;
-layout(location = ${Batch.AttributeLocation.a_Anchor}) attribute vec2 a_Anchor;
+layout(location = ${AttributeLocation.a_ModelMatrix0}) attribute vec4 a_ModelMatrix0;
+layout(location = ${AttributeLocation.a_ModelMatrix1}) attribute vec4 a_ModelMatrix1;
+layout(location = ${AttributeLocation.a_ModelMatrix2}) attribute vec4 a_ModelMatrix2;
+layout(location = ${AttributeLocation.a_ModelMatrix3}) attribute vec4 a_ModelMatrix3;
+layout(location = ${AttributeLocation.a_Color}) attribute vec4 a_Color;
+layout(location = ${AttributeLocation.a_StrokeColor}) attribute vec4 a_StrokeColor;
+layout(location = ${AttributeLocation.a_StylePacked1}) attribute vec4 a_StylePacked1;
+layout(location = ${AttributeLocation.a_PickingColor}) attribute vec4 a_PickingColor;
+layout(location = ${AttributeLocation.a_Anchor}) attribute vec2 a_Anchor;
 
 varying vec4 v_PickingResult;
 varying vec4 v_Color;
@@ -262,55 +261,55 @@ varying vec4 v_StylePacked1;
           {
             format: Format.F32_RGBA,
             bufferByteOffset: 4 * 0,
-            location: Batch.AttributeLocation.a_ModelMatrix0,
+            location: AttributeLocation.a_ModelMatrix0,
             divisor: 1,
           },
           {
             format: Format.F32_RGBA,
             bufferByteOffset: 4 * 4,
-            location: Batch.AttributeLocation.a_ModelMatrix1,
+            location: AttributeLocation.a_ModelMatrix1,
             divisor: 1,
           },
           {
             format: Format.F32_RGBA,
             bufferByteOffset: 4 * 8,
-            location: Batch.AttributeLocation.a_ModelMatrix2,
+            location: AttributeLocation.a_ModelMatrix2,
             divisor: 1,
           },
           {
             format: Format.F32_RGBA,
             bufferByteOffset: 4 * 12,
-            location: Batch.AttributeLocation.a_ModelMatrix3,
+            location: AttributeLocation.a_ModelMatrix3,
             divisor: 1,
           },
           {
             format: Format.F32_RGBA,
             bufferByteOffset: 4 * 16,
-            location: Batch.AttributeLocation.a_Color,
+            location: AttributeLocation.a_Color,
             divisor: 1,
           },
           {
             format: Format.F32_RGBA,
             bufferByteOffset: 4 * 20,
-            location: Batch.AttributeLocation.a_StrokeColor,
+            location: AttributeLocation.a_StrokeColor,
             divisor: 1,
           },
           {
             format: Format.F32_RGBA,
             bufferByteOffset: 4 * 24,
-            location: Batch.AttributeLocation.a_StylePacked1,
+            location: AttributeLocation.a_StylePacked1,
             divisor: 1,
           },
           {
             format: Format.F32_RGBA,
             bufferByteOffset: 4 * 28,
-            location: Batch.AttributeLocation.a_PickingColor,
+            location: AttributeLocation.a_PickingColor,
             divisor: 1,
           },
           {
             format: Format.F32_RG,
             bufferByteOffset: 4 * 32,
-            location: Batch.AttributeLocation.a_Anchor,
+            location: AttributeLocation.a_Anchor,
             divisor: 1,
           },
         ],
@@ -416,7 +415,7 @@ varying vec4 v_StylePacked1;
 
         geometry.updateVertexBuffer(
           Batch.CommonBufferIndex,
-          Batch.AttributeLocation.a_Color,
+          AttributeLocation.a_Color,
           index,
           new Uint8Array(new Float32Array([...fillColor]).buffer),
         );
@@ -429,7 +428,7 @@ varying vec4 v_StylePacked1;
 
         geometry.updateVertexBuffer(
           Batch.CommonBufferIndex,
-          Batch.AttributeLocation.a_StrokeColor,
+          AttributeLocation.a_StrokeColor,
           index,
           new Uint8Array(new Float32Array([...strokeColor]).buffer),
         );
@@ -437,7 +436,7 @@ varying vec4 v_StylePacked1;
         const { opacity, fillOpacity, strokeOpacity, lineWidth = 0 } = object.parsedStyle;
         geometry.updateVertexBuffer(
           Batch.CommonBufferIndex,
-          Batch.AttributeLocation.a_StylePacked1,
+          AttributeLocation.a_StylePacked1,
           index,
           new Uint8Array(new Float32Array([opacity, fillOpacity, strokeOpacity, lineWidth]).buffer),
         );
@@ -445,7 +444,7 @@ varying vec4 v_StylePacked1;
         const encodedPickingColor = object.entity.getComponent(Renderable3D).encodedPickingColor;
         geometry.updateVertexBuffer(
           Batch.CommonBufferIndex,
-          Batch.AttributeLocation.a_PickingColor,
+          AttributeLocation.a_PickingColor,
           index,
           new Uint8Array(
             new Float32Array([...encodedPickingColor, object.parsedStyle.zIndex]).buffer,
@@ -455,7 +454,7 @@ varying vec4 v_StylePacked1;
         const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
         geometry.updateVertexBuffer(
           Batch.CommonBufferIndex,
-          Batch.AttributeLocation.a_ModelMatrix0,
+          AttributeLocation.a_ModelMatrix0,
           index,
           new Uint8Array(new Float32Array(modelMatrix).buffer),
         );
@@ -463,7 +462,7 @@ varying vec4 v_StylePacked1;
         const { anchor } = object.parsedStyle;
         geometry.updateVertexBuffer(
           Batch.CommonBufferIndex,
-          Batch.AttributeLocation.a_Anchor,
+          AttributeLocation.a_Anchor,
           index,
           new Uint8Array(new Float32Array([anchor[0], anchor[1]]).buffer),
         );

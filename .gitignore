@@ -74,3 +74,6 @@ public/
 
 
 tsconfig.tsbuildinfo
+
+
+**/rust/target/
