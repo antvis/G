@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvas-picker",
-  "version": "1.0.0-alpha.18",
+  "version": "1.0.0-alpha.19",
   "description": "A G plugin for picking in canvas",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -29,8 +29,8 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.24",
-    "@antv/g-plugin-canvas-renderer": "^1.0.0-alpha.24"
+    "@antv/g": "^1.0.0-alpha.25",
+    "@antv/g-plugin-canvas-renderer": "^1.0.0-alpha.25"
   },
   "devDependencies": {
     "@types/jest": "^25.0.0",

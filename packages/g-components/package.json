@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-components",
-  "version": "1.0.0-alpha.23",
+  "version": "1.0.0-alpha.24",
   "description": "Components for g",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -29,7 +29,7 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.24",
+    "@antv/g": "^1.0.0-alpha.25",
     "@antv/util": "^2.0.13"
   },
   "devDependencies": {

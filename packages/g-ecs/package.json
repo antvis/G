@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-ecs",
-  "version": "1.0.0-alpha.8",
+  "version": "1.0.0-alpha.9",
   "description": "A simple ECS implement",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
