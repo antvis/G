@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-components",
-  "version": "1.0.0-alpha.25",
+  "version": "1.0.0-alpha.26",
   "description": "Components for g",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -29,9 +29,9 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@babel/runtime": "^7.16.0",
-    "@antv/g": "^1.0.0-alpha.26",
-    "@antv/util": "^2.0.13"
+    "@antv/g": "^1.0.0-alpha.27",
+    "@antv/util": "^2.0.13",
+    "@babel/runtime": "^7.16.0"
   },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
