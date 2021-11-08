@@ -30,7 +30,6 @@ export interface System {
 }
 
 export interface SystemConstructor<T extends System> {
-  tag: string;
   /**
    * all kind of components this system cares about
    */

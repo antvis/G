@@ -1,7 +1,7 @@
 import { DisplayObject } from './DisplayObject';
-import type { DisplayObjectConfig } from '..';
-import { ElementEvent } from '..';
-import { FederatedEvent } from '../dom';
+import type { DisplayObjectConfig } from '../dom/interfaces';
+import { ElementEvent } from '../dom/interfaces';
+import { FederatedEvent } from '../dom/FederatedEvent';
 
 // @see https://stackoverflow.com/questions/44153378/typescript-abstract-optional-method
 export interface CustomElement<CustomElementStyleProps> {

@@ -1,25 +1,22 @@
 import {
-  ContextService,
   RenderingPlugin,
   RenderingService,
   RenderingContext,
+  RenderingPluginContribution,
   Camera,
   CanvasConfig,
   DefaultCamera,
 } from '@antv/g';
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import Hammer from 'hammerjs';
 
 const MOTION_FACTOR = 10;
 // https://gist.github.com/handleman/3c99e754065f647b082f
 const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
-@injectable()
+@singleton({ contrib: RenderingPluginContribution })
 export class ControlPlugin implements RenderingPlugin {
   static tag = 'ControlPlugin';
-
-  @inject(ContextService)
-  private contextService: ContextService<unknown>;
 
   @inject(RenderingContext)
   private renderingContext: RenderingContext;

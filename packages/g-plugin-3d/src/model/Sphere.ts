@@ -1,5 +1,5 @@
 // import { DisplayObject, Renderable } from '@antv/g';
-// import { inject, injectable } from 'inversify';
+// import { inject, injectable } from 'mana-syringe';
 // import { mat3, vec3 } from 'gl-matrix';
 // import {
 //   Material3D,

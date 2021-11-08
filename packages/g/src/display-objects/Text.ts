@@ -1,7 +1,8 @@
-import { BaseStyleProps, ParsedBaseStyleProps, DisplayObjectConfig } from '..';
-import { SHAPE, LINE_JOIN, LINE_CAP } from '..';
+import { TextMetrics } from '../services/text';
+import type { DisplayObjectConfig } from '../dom/interfaces';
+import { SHAPE, LINE_JOIN, LINE_CAP } from '../types';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
-import { TextMetrics } from '../services';
 
 export interface TextStyleProps extends BaseStyleProps {
   text: string;

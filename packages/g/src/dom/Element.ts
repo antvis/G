@@ -1,41 +1,12 @@
 import { isNil } from '@antv/util';
-import { container } from '..';
-import { SceneGraphService } from '../services';
+import { GlobalContainer } from 'mana-syringe';
+import { SceneGraphService } from '../services/SceneGraphService';
 import { Cullable, Geometry, Renderable, Transform, Sortable } from '../components';
 import { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Node } from './Node';
 import { AABB, Rectangle } from '../shapes';
 import type { DisplayObjectConfig, IEventTarget, IChildNode, IElement, INode } from './interfaces';
-
-/**
- * built-in events for element
- */
-export enum ElementEvent {
-  DESTROY = 'destroy',
-  ATTRIBUTE_CHANGED = 'attribute-changed',
-  /**
-   * it has been inserted
-   */
-  INSERTED = 'inserted',
-  /**
-   * it has had a child inserted
-   */
-  CHILD_INSERTED = 'child-inserted',
-  /**
-   * it has been removed
-   */
-  REMOVED = 'removed',
-  /**
-   * it has had a child removed
-   */
-  CHILD_REMOVED = 'child-removed',
-
-  MOUNTED = 'mounted',
-
-  UNMOUNTED = 'unmounted',
-
-  BOUNDS_CHANGED = 'bounds-changed',
-}
+import { ElementEvent } from './interfaces';
 
 /**
  * Has following capabilities:
@@ -54,7 +25,7 @@ export class Element<
     return !!(target as IElement).getAttribute;
   }
 
-  sceneGraphService = container.get<SceneGraphService>(SceneGraphService);
+  sceneGraphService = GlobalContainer.get<SceneGraphService>(SceneGraphService);
 
   constructor(config: DisplayObjectConfig<StyleProps>) {
     super();

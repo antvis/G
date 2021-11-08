@@ -1,13 +1,16 @@
-import { inject, injectable, named } from 'inversify';
+import { inject, singleton, contrib, Syringe, Contribution } from 'mana-syringe';
 import { Cullable } from '../components';
-import { ContributionProvider } from '../contribution-provider';
 import { DisplayObject } from '../display-objects/DisplayObject';
-import { RenderingService, RenderingPlugin } from '../services/RenderingService';
+import {
+  RenderingService,
+  RenderingPlugin,
+  RenderingPluginContribution,
+} from '../services/RenderingService';
 import { RenderingContext, RENDER_REASON } from '../services/RenderingContext';
 import { CanvasConfig } from '../types';
 
-export const CullingStrategy = 'CullingStrategy';
-export interface CullingStrategy {
+export const CullingStrategyContribution = Syringe.defineToken('CullingStrategyContribution');
+export interface CullingStrategyContribution {
   isVisible(object: DisplayObject): boolean;
 }
 
@@ -16,31 +19,30 @@ export interface CullingStrategy {
  * 1. `visibility` in scenegraph node
  * 2. other custom culling strategies, eg. frustum culling
  */
-@injectable()
+@singleton({ contrib: RenderingPluginContribution })
 export class CullingPlugin implements RenderingPlugin {
   static tag = 'CullingPlugin';
 
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
-  @inject(ContributionProvider)
-  @named(CullingStrategy)
-  private strategies: ContributionProvider<CullingStrategy>;
+  @contrib(CullingStrategyContribution)
+  private strategyProvider: Contribution.Provider<CullingStrategyContribution>;
 
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
+    const strategies = this.strategyProvider.getContributions();
+
     renderingService.hooks.prepare.tap(CullingPlugin.tag, (object: DisplayObject | null) => {
       if (object) {
         const cullable = object.entity.getComponent(Cullable);
-        if (this.strategies.getContributions(true).length === 0) {
+        if (strategies.length === 0) {
           cullable.visible = true;
         } else {
           // eg. implemented by g-webgl(frustum culling)
-          cullable.visible = this.strategies
-            .getContributions(true)
-            .every((strategy) => strategy.isVisible(object));
+          cullable.visible = strategies.every((strategy) => strategy.isVisible(object));
         }
 
         if (object.isVisible()) {

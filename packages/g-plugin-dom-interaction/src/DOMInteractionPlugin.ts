@@ -2,15 +2,16 @@ import {
   InteractivePointerEvent,
   ContextService,
   RenderingPlugin,
+  RenderingPluginContribution,
   RenderingService,
 } from '@antv/g';
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import { supportsPointerEvents, supportsTouchEvents } from './utils';
 
 /**
  * listen to mouse/touch/pointer events on DOM wrapper, trigger pointer events
  */
-@injectable()
+@singleton({ contrib: RenderingPluginContribution })
 export class DOMInteractionPlugin implements RenderingPlugin {
   static tag = 'DOMInteractionPlugin';
 

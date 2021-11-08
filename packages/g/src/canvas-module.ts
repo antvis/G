@@ -1,36 +1,38 @@
-import { ContainerModule } from 'inversify';
-import { bindContributionProvider } from './contribution-provider';
+import { Module, Contribution, Syringe } from 'mana-syringe';
 import { DirtyCheckPlugin } from './plugins/DirtyCheckPlugin';
-import { CullingPlugin, CullingStrategy } from './plugins/CullingPlugin';
+import { CullingPlugin, CullingStrategyContribution } from './plugins/CullingPlugin';
 import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
 import { FrustumCullingStrategy } from './plugins/FrustumCullingStrategy';
 import { RenderingPluginContribution, RenderingService } from './services';
 import { EventPlugin } from './plugins/EventPlugin';
 import { EventService } from './services';
 
-export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
-  bind(RenderingService).toSelf().inSingletonScope();
-
-  bindContributionProvider(bind, RenderingPluginContribution);
-
-  bind(EventService).toSelf().inSingletonScope();
-
-  // event plugin
-  bind(EventPlugin).toSelf().inSingletonScope();
-  bind(RenderingPluginContribution).toService(EventPlugin);
-
-  // prerender plugin
-  bind(PrepareRendererPlugin).toSelf().inSingletonScope();
-  bind(RenderingPluginContribution).toService(PrepareRendererPlugin);
-
-  // dirty rectangle plugin
-  bind(DirtyCheckPlugin).toSelf().inSingletonScope();
-  bind(RenderingPluginContribution).toService(DirtyCheckPlugin);
-
+export const containerModule = Module((register) => {
+  Contribution.register(register, RenderingPluginContribution);
   // culling plugin
-  bindContributionProvider(bind, CullingStrategy);
-  bind(FrustumCullingStrategy).toSelf().inSingletonScope();
-  bind(CullingStrategy).toService(FrustumCullingStrategy);
-  bind(CullingPlugin).toSelf().inSingletonScope();
-  bind(RenderingPluginContribution).toService(CullingPlugin);
+  Contribution.register(register, CullingStrategyContribution);
+
+  register(RenderingService);
+  register(EventService);
+
+  register(EventPlugin);
+  register(PrepareRendererPlugin);
+  register(DirtyCheckPlugin);
+  register(CullingPlugin);
+
+  register(FrustumCullingStrategy);
 });
+
+export function unload(container: Syringe.Container) {
+  container.remove(RenderingPluginContribution);
+  container.remove(CullingStrategyContribution);
+
+  container.remove(RenderingService);
+  container.remove(EventService);
+
+  container.remove(EventPlugin);
+  container.remove(PrepareRendererPlugin);
+  container.remove(DirtyCheckPlugin);
+  container.remove(CullingPlugin);
+  container.remove(FrustumCullingStrategy);
+}

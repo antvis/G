@@ -1,13 +1,64 @@
 import type { IElement } from '../dom/interfaces';
-import {
-  normalizeTimingInput,
-  calculateActiveDuration,
-  calculateIterationProgress,
-} from '../utils/animation';
-import type { AnimationEffectTiming } from './AnimationEffectTiming';
+import { calculateActiveDuration, calculateIterationProgress } from '../utils/animation';
+import { AnimationEffectTiming } from './AnimationEffectTiming';
 import type { Animation } from './Animation';
 import { normalizeKeyframes } from './KeyframeList';
 import { convertEffectInput } from '../utils/interpolation';
+
+const fills = 'backwards|forwards|both|none'.split('|');
+const directions = 'reverse|alternate|alternate-reverse'.split('|');
+export function makeTiming(timingInput: KeyframeEffectOptions, forGroup: boolean) {
+  const timing = new AnimationEffectTiming();
+  if (forGroup) {
+    timing.fill = 'both';
+    timing.duration = 'auto';
+  }
+  if (typeof timingInput === 'number' && !isNaN(timingInput)) {
+    timing.duration = timingInput;
+  } else if (timingInput !== undefined) {
+    (Object.keys(timingInput) as Array<keyof EffectTiming>).forEach((property) => {
+      if (
+        timingInput[property] !== undefined &&
+        timingInput[property] !== null &&
+        timingInput[property] !== 'auto'
+      ) {
+        if (typeof timing[property] === 'number' || property === 'duration') {
+          if (typeof timingInput[property] !== 'number' || isNaN(timingInput[property] as number)) {
+            return;
+          }
+        }
+        if (property === 'fill' && fills.indexOf(timingInput[property]!) === -1) {
+          return;
+        }
+        if (property === 'direction' && directions.indexOf(timingInput[property]!) === -1) {
+          return;
+        }
+        // @ts-ignore
+        timing[property] = timingInput[property];
+      }
+    });
+  }
+  return timing;
+}
+
+export function normalizeTimingInput(
+  timingInput: KeyframeEffectOptions | number | undefined,
+  forGroup: boolean,
+) {
+  timingInput = numericTimingToObject(timingInput ?? { duration: 'auto' });
+  return makeTiming(timingInput, forGroup);
+}
+
+export function numericTimingToObject(timingInput: KeyframeEffectOptions | number) {
+  if (typeof timingInput === 'number') {
+    if (isNaN(timingInput)) {
+      timingInput = { duration: 'auto' };
+    } else {
+      timingInput = { duration: timingInput };
+    }
+  }
+  return timingInput;
+}
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect

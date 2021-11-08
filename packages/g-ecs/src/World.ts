@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import { Component, ComponentConstructor } from './Component';
 import { ComponentManager } from './ComponentManager';
 import { Entity } from './Entity';
@@ -28,7 +28,7 @@ interface IWorldLifecycle {
   // register systems
  * ```
  */
-@injectable()
+@singleton()
 export class World implements IWorldLifecycle {
   @inject(IDENTIFIER.EntityPoolFactory)
   private entityPoolFactory: () => ObjectPool<Entity>;

@@ -1,9 +1,10 @@
-import { injectable } from 'inversify';
-import type { GeometryAABBUpdater } from './interfaces';
+import { singleton } from 'mana-syringe';
+import { GeometryAABBUpdater } from './interfaces';
 import type { DisplayObject } from '../../display-objects/DisplayObject';
 import type { ParsedBaseStyleProps, PathCommand } from '../../types';
+import { SHAPE } from '../../types';
 
-@injectable()
+@singleton({ token: { token: GeometryAABBUpdater, named: SHAPE.Path } })
 export class PathUpdater implements GeometryAABBUpdater<ParsedBaseStyleProps> {
   update(parsedStyle: ParsedBaseStyleProps, object: DisplayObject) {
     const { path } = parsedStyle;

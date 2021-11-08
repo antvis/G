@@ -1,5 +1,5 @@
 import { DisplayObject, Renderable } from '@antv/g';
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
 import {
   TexturePool,
@@ -74,7 +74,7 @@ class CubeProgram extends DeviceProgram {
   `;
 }
 
-@injectable()
+@singleton()
 export class CubeModelBuilder extends Batch {
   program = new CubeProgram();
 

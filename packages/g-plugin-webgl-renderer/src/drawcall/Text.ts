@@ -1,6 +1,6 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
-import { DisplayObject, PARSED_COLOR_TYPE, Text, Tuple4Number } from '@antv/g';
+import { DisplayObject, PARSED_COLOR_TYPE, SHAPE, Text, Tuple4Number } from '@antv/g';
 import { fillVec4, makeSortKeyOpaque, RendererLayer } from '../render/utils';
 import { Format, MipFilterMode, TexFilterMode, VertexBufferFrequency, WrapMode } from '../platform';
 import { RenderInst } from '../render/RenderInst';
@@ -12,6 +12,7 @@ import { getGlyphQuads } from './symbol/SymbolQuad';
 import GlyphAtlas from './symbol/GlyphAtlas';
 import { RenderInstList } from '../render/RenderInstList';
 import { Renderable3D } from '../components/Renderable3D';
+import { ShapeRenderer } from '../tokens';
 
 class TextProgram extends DeviceProgram {
   static a_Tex = AttributeLocation.MAX;
@@ -86,7 +87,9 @@ class TextProgram extends DeviceProgram {
   `;
 }
 
-@injectable()
+@injectable({
+  token: [{ token: ShapeRenderer, named: SHAPE.Text }],
+})
 export class TextRenderer extends Batch {
   program = new TextProgram();
 

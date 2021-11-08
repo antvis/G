@@ -1,9 +1,10 @@
 import { vec3 } from 'gl-matrix';
-import { injectable } from 'inversify';
+import { singleton } from 'mana-syringe';
 import { GeometryAABBUpdater, AABB } from '@antv/g';
 import { GridStyleProps } from '../Grid';
+import { SHAPE_3D } from '../types';
 
-@injectable()
+@singleton({ token: { token: GeometryAABBUpdater, named: SHAPE_3D.Grid } })
 // @ts-ignore
 export class GridUpdater implements GeometryAABBUpdater<GridStyleProps> {
   dependencies = ['width', 'height', 'anchor'];

@@ -1,9 +1,19 @@
-import { ParsedBaseStyleProps } from '@antv/g';
-import { injectable } from 'inversify';
+import { ParsedBaseStyleProps, SHAPE } from '@antv/g';
+import { singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
-import { StyleRenderer } from '.';
+import { StyleRenderer } from './interfaces';
 
-@injectable()
+@singleton({
+  token: [
+    { token: StyleRenderer, named: SHAPE.Circle },
+    { token: StyleRenderer, named: SHAPE.Ellipse },
+    { token: StyleRenderer, named: SHAPE.Rect },
+    { token: StyleRenderer, named: SHAPE.Line },
+    { token: StyleRenderer, named: SHAPE.Polyline },
+    { token: StyleRenderer, named: SHAPE.Polygon },
+    { token: StyleRenderer, named: SHAPE.Path },
+  ],
+})
 export class DefaultRenderer implements StyleRenderer {
   render(context: CanvasRenderingContext2D, parsedStyle: ParsedBaseStyleProps) {
     const { fill, opacity, fillOpacity, stroke, strokeOpacity, lineWidth, lineCap, lineJoin } =

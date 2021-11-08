@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { Entity } from '../Entity';
 import { Component } from '../Component';
 import { World } from '../World';
-import { Container } from 'inversify';
+import { Container } from 'mana-syringe';
 import { containerModule } from '..';
 import { Matcher } from '../Matcher';
 
@@ -29,7 +29,12 @@ describe('Group', () => {
   container.load(containerModule);
 
   const world = container.get(World);
-  world.registerComponent(C1).registerComponent(C2).registerComponent(C3).registerComponent(C4).registerComponent(C5);
+  world
+    .registerComponent(C1)
+    .registerComponent(C2)
+    .registerComponent(C3)
+    .registerComponent(C4)
+    .registerComponent(C5);
   let e: Entity;
 
   beforeEach(() => {

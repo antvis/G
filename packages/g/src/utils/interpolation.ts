@@ -1,11 +1,11 @@
+import { GlobalContainer } from 'mana-syringe';
 import type { AnimationEffectTiming } from '../dom';
 import type { IElement } from '../dom/interfaces';
-import { container } from '../inversify.config';
 import {
   Interpolatable,
   StylePropertyMergerFactory,
   StylePropertyParserFactory,
-} from '../property-handlers';
+} from '../property-handlers/interfaces';
 import { parseEasingFunction } from './animation';
 import { TypeEasingFunction } from './custom-easing';
 
@@ -142,9 +142,9 @@ function propertyInterpolation(
   let parsedLeft = left;
   let parsedRight = right;
 
-  const parserFactory = container.get<StylePropertyParserFactory>(StylePropertyParserFactory);
+  const parserFactory = GlobalContainer.get<StylePropertyParserFactory>(StylePropertyParserFactory);
   const parser = parserFactory(property);
-  const mergerFactory = container.get<StylePropertyMergerFactory>(StylePropertyMergerFactory);
+  const mergerFactory = GlobalContainer.get<StylePropertyMergerFactory>(StylePropertyMergerFactory);
   const merger = mergerFactory(property);
 
   // if (left == 'initial' || right == 'initial') {

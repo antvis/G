@@ -1,7 +1,7 @@
 import { DisplayObject } from '@antv/g';
-import { injectable } from 'inversify';
+import { singleton } from 'mana-syringe';
 
-@injectable()
+@singleton()
 export class PickingIdGenerator {
   private counter = 0;
 
@@ -29,6 +29,10 @@ export class PickingIdGenerator {
   }
 
   encodePickingColor(featureIdx: number): [number, number, number] {
-    return [(featureIdx + 1) & 255, ((featureIdx + 1) >> 8) & 255, (((featureIdx + 1) >> 8) >> 8) & 255];
+    return [
+      (featureIdx + 1) & 255,
+      ((featureIdx + 1) >> 8) & 255,
+      (((featureIdx + 1) >> 8) >> 8) & 255,
+    ];
   }
 }

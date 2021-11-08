@@ -1,8 +1,8 @@
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import { IDENTIFIER } from './identifier';
 import { Component, ComponentConstructor } from './Component';
 
-@injectable()
+@singleton()
 export class ComponentManager {
   @inject(IDENTIFIER.ComponentRegistry)
   private registry: (clazz: ComponentConstructor<Component>) => void;

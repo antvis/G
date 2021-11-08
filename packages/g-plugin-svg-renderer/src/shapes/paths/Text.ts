@@ -1,6 +1,6 @@
 import { ParsedTextStyleProps } from '@antv/g';
 import { detect } from 'detect-browser';
-import { injectable } from 'inversify';
+import { singleton } from 'mana-syringe';
 import { ElementRenderer } from '.';
 
 // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/alignment-baseline
@@ -32,7 +32,7 @@ const ANCHOR_MAP: Record<string, string> = {
   end: 'end',
 };
 
-@injectable()
+@singleton()
 export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
   dependencies = [
     'text',

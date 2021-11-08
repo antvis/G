@@ -1,7 +1,7 @@
-import { injectable } from 'inversify';
+import { singleton } from 'mana-syringe';
 import type { DisplayObject } from './display-objects';
 
-@injectable()
+@singleton()
 export class DisplayObjectPool {
   private pool: Record<string, DisplayObject> = {};
 

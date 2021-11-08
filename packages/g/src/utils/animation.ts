@@ -1,65 +1,10 @@
-import { AnimationEffectTiming } from '../dom';
+import type { AnimationEffectTiming } from '../dom/AnimationEffectTiming';
 import { getEasingFunction, convertToDash } from './custom-easing';
 import { bezier } from './bezier-easing';
 
-const fills = 'backwards|forwards|both|none'.split('|');
-const directions = 'reverse|alternate|alternate-reverse'.split('|');
 export const linear = (x: number) => {
   return x;
 };
-
-export function makeTiming(timingInput: KeyframeEffectOptions, forGroup: boolean) {
-  const timing = new AnimationEffectTiming();
-  if (forGroup) {
-    timing.fill = 'both';
-    timing.duration = 'auto';
-  }
-  if (typeof timingInput === 'number' && !isNaN(timingInput)) {
-    timing.duration = timingInput;
-  } else if (timingInput !== undefined) {
-    (Object.keys(timingInput) as Array<keyof EffectTiming>).forEach((property) => {
-      if (
-        timingInput[property] !== undefined &&
-        timingInput[property] !== null &&
-        timingInput[property] !== 'auto'
-      ) {
-        if (typeof timing[property] === 'number' || property === 'duration') {
-          if (typeof timingInput[property] !== 'number' || isNaN(timingInput[property] as number)) {
-            return;
-          }
-        }
-        if (property === 'fill' && fills.indexOf(timingInput[property]!) === -1) {
-          return;
-        }
-        if (property === 'direction' && directions.indexOf(timingInput[property]!) === -1) {
-          return;
-        }
-        // @ts-ignore
-        timing[property] = timingInput[property];
-      }
-    });
-  }
-  return timing;
-}
-
-export function numericTimingToObject(timingInput: KeyframeEffectOptions | number) {
-  if (typeof timingInput === 'number') {
-    if (isNaN(timingInput)) {
-      timingInput = { duration: 'auto' };
-    } else {
-      timingInput = { duration: timingInput };
-    }
-  }
-  return timingInput;
-}
-
-export function normalizeTimingInput(
-  timingInput: KeyframeEffectOptions | number | undefined,
-  forGroup: boolean,
-) {
-  timingInput = numericTimingToObject(timingInput ?? { duration: 'auto' });
-  return makeTiming(timingInput, forGroup);
-}
 
 const Start = 1;
 const Middle = 0.5;

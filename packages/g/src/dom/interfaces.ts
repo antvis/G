@@ -9,6 +9,36 @@ import type { PointLike } from '../shapes';
 import type { Camera } from '../camera';
 import { ContextService } from '../services';
 
+/**
+ * built-in events for element
+ */
+export enum ElementEvent {
+  DESTROY = 'destroy',
+  ATTRIBUTE_CHANGED = 'attribute-changed',
+  /**
+   * it has been inserted
+   */
+  INSERTED = 'inserted',
+  /**
+   * it has had a child inserted
+   */
+  CHILD_INSERTED = 'child-inserted',
+  /**
+   * it has been removed
+   */
+  REMOVED = 'removed',
+  /**
+   * it has had a child removed
+   */
+  CHILD_REMOVED = 'child-removed',
+
+  MOUNTED = 'mounted',
+
+  UNMOUNTED = 'unmounted',
+
+  BOUNDS_CHANGED = 'bounds-changed',
+}
+
 export interface IEventTarget {
   entity: Entity;
   getEntity(): Entity;

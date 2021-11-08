@@ -1,6 +1,7 @@
 import {
   RenderingService,
   RenderingPlugin,
+  RenderingPluginContribution,
   SceneGraphService,
   PickingResult,
   Rectangle,
@@ -8,13 +9,13 @@ import {
   CanvasConfig,
 } from '@antv/g';
 import { clamp } from '@antv/util';
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import { RenderGraphPlugin } from './RenderGraphPlugin';
 
 /**
  * Use color-based picking in GPU
  */
-@injectable()
+@singleton({ contrib: RenderingPluginContribution })
 export class PickingPlugin implements RenderingPlugin {
   static tag = 'PickingPlugin';
 

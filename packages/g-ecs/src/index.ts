@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import { ContainerModule, decorate, injectable, interfaces } from 'inversify';
+import { Module, injectable, decorate } from 'mana-syringe';
 import { EventEmitter } from 'eventemitter3';
-import { ILifecycle, ObjectPool } from './ObjectPool';
+import { ObjectPool } from './ObjectPool';
 import { Component, ComponentConstructor } from './Component';
 import { IDENTIFIER } from './identifier';
 import { EntityManager } from './EntityManager';
@@ -9,44 +9,43 @@ import { Entity } from './Entity';
 import { World } from './World';
 import { ComponentManager } from './ComponentManager';
 import { System, SystemConstructor } from './System';
-import { SystemManager, ISystemRegistry } from './SystemManager';
+import { SystemManager } from './SystemManager';
 import { Matcher } from './Matcher';
 
-// bind EventEmitter only once
-let isEventEmitterBound = false;
-const containerModule = new ContainerModule((bind: interfaces.Bind) => {
-  if (!isEventEmitterBound) {
-    decorate(injectable(), EventEmitter);
-    bind(IDENTIFIER.EventEmitter).to(EventEmitter);
-    isEventEmitterBound = true;
-  }
+const containerModule = Module((register) => {
+  decorate(injectable(), EventEmitter);
 
-  bind<interfaces.Factory<void>>(IDENTIFIER.ComponentRegistry).toFactory<void>((context: interfaces.Context) => {
-    return (clazz: ComponentConstructor<Component>) => {
-      if (!context.container.isBound(clazz)) {
-        context.container.bind(clazz).toSelf();
-      }
-    };
+  register({
+    token: IDENTIFIER.ComponentRegistry,
+    useFactory: (context) => {
+      return (clazz: ComponentConstructor<Component>) => {
+        // if (!context.container.isBound(clazz)) {
+        context.container.register(clazz);
+        // }
+      };
+    },
   });
 
-  bind<ISystemRegistry>(IDENTIFIER.SystemRegistry).toDynamicValue((context: interfaces.Context) => {
-    return {
-      register: (clazz: SystemConstructor<System>) => {
-        if (!context.container.isBoundTagged(System, clazz.tag, clazz)) {
-          context.container.bind(System).to(clazz).inSingletonScope().whenTargetNamed(clazz.tag);
-        }
-      },
-      get: (clazz: SystemConstructor<System>) => {
-        return context.container.getNamed(System, clazz.tag);
-      },
-      has: (clazz: SystemConstructor<System>) => {
-        return context.container.isBoundNamed(System, clazz.tag);
-      },
-    };
+  register({
+    token: IDENTIFIER.SystemRegistry,
+    useDynamic: (context) => {
+      return {
+        register: (clazz: SystemConstructor<System>) => {
+          context.container.register(clazz);
+        },
+        get: (clazz: SystemConstructor<System>) => {
+          return context.container.get(clazz);
+        },
+        has: (clazz: SystemConstructor<System>) => {
+          return context.container.isBound(clazz);
+        },
+      };
+    },
   });
 
-  bind<interfaces.Factory<ObjectPool<Component>>>(IDENTIFIER.ComponentPoolFactory).toFactory<ObjectPool<Component>>(
-    (context: interfaces.Context) => {
+  register({
+    token: IDENTIFIER.ComponentPoolFactory,
+    useFactory: (context) => {
       const factoryRegistry: Record<string, ObjectPool<Component>> = {};
       return (clazz: ComponentConstructor<Component>) => {
         let componentPool = factoryRegistry[clazz.tag];
@@ -55,7 +54,9 @@ const containerModule = new ContainerModule((bind: interfaces.Bind) => {
           componentPool.init(() => {
             const isBound = context.container.isBound(clazz);
             if (!isBound) {
-              throw new Error(`Component "${clazz.tag}" is not registered, please call registerComponent() first.`);
+              throw new Error(
+                `Component "${clazz.tag}" is not registered, please call registerComponent() first.`,
+              );
             }
             const component = context.container.get(clazz);
             return component;
@@ -64,11 +65,12 @@ const containerModule = new ContainerModule((bind: interfaces.Bind) => {
         }
         return componentPool;
       };
-    }
-  );
+    },
+  });
 
-  bind<interfaces.Factory<ObjectPool<Entity>>>(IDENTIFIER.EntityPoolFactory).toFactory<ObjectPool<Entity>>(
-    (context: interfaces.Context) => {
+  register({
+    token: IDENTIFIER.EntityPoolFactory,
+    useFactory: (context) => {
       let entityPool: ObjectPool<Entity>;
       return () => {
         if (!entityPool) {
@@ -77,15 +79,16 @@ const containerModule = new ContainerModule((bind: interfaces.Bind) => {
         }
         return entityPool;
       };
-    }
-  );
+    },
+  });
 
-  bind<EntityManager>(EntityManager).toSelf().inSingletonScope();
-  bind<ComponentManager>(ComponentManager).toSelf().inSingletonScope();
-  bind<SystemManager>(SystemManager).toSelf().inSingletonScope();
-  bind<Entity>(Entity).toSelf();
-  bind<ObjectPool<ILifecycle>>(ObjectPool).toSelf();
-  bind<World>(World).toSelf().inSingletonScope();
+  register(EntityManager);
+  register(ComponentManager);
+  register(SystemManager);
+
+  register(Entity);
+  register(ObjectPool);
+  register(World);
 });
 
 export * from './System';

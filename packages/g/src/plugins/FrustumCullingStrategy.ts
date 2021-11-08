@@ -1,13 +1,13 @@
 import { mat4, vec3 } from 'gl-matrix';
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import { Cullable } from '../components';
-import { CullingStrategy } from './CullingPlugin';
+import { CullingStrategyContribution } from './CullingPlugin';
 import { AABB, Mask, Plane } from '../shapes';
 import { DefaultCamera, Camera } from '../camera/Camera';
 import { DisplayObject } from '../display-objects/DisplayObject';
 
-@injectable()
-export class FrustumCullingStrategy implements CullingStrategy {
+@singleton({ contrib: CullingStrategyContribution })
+export class FrustumCullingStrategy implements CullingStrategyContribution {
   @inject(DefaultCamera)
   private camera: Camera;
 

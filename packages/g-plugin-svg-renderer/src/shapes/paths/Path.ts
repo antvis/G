@@ -1,8 +1,8 @@
 import { ParsedBaseStyleProps, PathCommand } from '@antv/g';
 import { ElementRenderer } from '.';
-import { injectable } from 'inversify';
+import { singleton } from 'mana-syringe';
 
-@injectable()
+@singleton()
 export class PathRenderer implements ElementRenderer<ParsedBaseStyleProps> {
   dependencies = ['path'];
   apply($el: SVGElement, parsedStyle: ParsedBaseStyleProps) {

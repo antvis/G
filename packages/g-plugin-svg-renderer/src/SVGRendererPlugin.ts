@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import { vec3, mat4, quat } from 'gl-matrix';
 import {
   ContextService,
@@ -6,6 +6,7 @@ import {
   RenderingContext,
   SceneGraphService,
   RenderingPlugin,
+  RenderingPluginContribution,
   SHAPE,
   fromRotationTranslationScale,
   getEuler,
@@ -94,7 +95,7 @@ export type GradientParams = (LinearGradient | RadialGradient) & { type: PARSED_
 const G_SVG_PREFIX = 'g_svg';
 const CLIP_PATH_PREFIX = 'clip-path-';
 
-@injectable()
+@singleton({ contrib: RenderingPluginContribution })
 export class SVGRendererPlugin implements RenderingPlugin {
   static tag = 'SVGRendererPlugin';
 

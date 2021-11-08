@@ -1,9 +1,9 @@
-import { injectable } from 'inversify';
+import { transient } from 'mana-syringe';
 import type { ILifecycle } from './ObjectPool';
 
 let counter = 0;
 
-@injectable()
+@transient()
 export class Component<C = {}> implements ILifecycle {
   // eslint-disable-next-line no-plusplus
   readonly pid = counter++;

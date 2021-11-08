@@ -36,6 +36,7 @@
     "d3-color": "^1.4.0",
     "earcut": "^2.2.3",
     "eventemitter3": "^4.0.0",
+    "mana-syringe": "^0.1.0",
     "potpack": "^1.0.1"
   },
   "devDependencies": {

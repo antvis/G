@@ -1,17 +1,19 @@
-import { Container, ContainerModule } from 'inversify';
-import { RendererPlugin, RenderingPluginContribution } from '@antv/g';
+import { Syringe, Module } from 'mana-syringe';
+import { RendererPlugin } from '@antv/g';
 import { HTMLRenderingPlugin } from './HTMLRenderingPlugin';
 
-const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
-  bind(HTMLRenderingPlugin).toSelf().inSingletonScope();
-  bind(RenderingPluginContribution).toService(HTMLRenderingPlugin);
+const containerModule = Module((register) => {
+  register(HTMLRenderingPlugin);
 });
 
 export class Plugin implements RendererPlugin {
-  init(container: Container): void {
+  init(container: Syringe.Container): void {
     container.load(containerModule);
   }
-  destroy(container: Container): void {
-    container.unload(containerModule);
+  destroy(container: Syringe.Container): void {
+    // @ts-ignore
+    // container.container.unload(containerModule);
+    // // container.unload(containerModule);
+    // container.remove(HTMLRenderingPlugin);
   }
 }

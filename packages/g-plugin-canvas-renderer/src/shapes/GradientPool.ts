@@ -1,9 +1,13 @@
 import { LinearGradient, RadialGradient, PARSED_COLOR_TYPE } from '@antv/g';
-import { injectable } from 'inversify';
+import { singleton } from 'mana-syringe';
 
-export type GradientParams = (LinearGradient | RadialGradient) & { width: number; height: number; type: PARSED_COLOR_TYPE; };
+export type GradientParams = (LinearGradient | RadialGradient) & {
+  width: number;
+  height: number;
+  type: PARSED_COLOR_TYPE;
+};
 
-@injectable()
+@singleton()
 export class GradientPool {
   private gradientCache: Record<string, CanvasGradient> = {};
 
@@ -18,12 +22,7 @@ export class GradientPool {
     let gradient: CanvasGradient | null = null;
     if (type === PARSED_COLOR_TYPE.LinearGradient) {
       // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createLinearGradient
-      gradient = context.createLinearGradient(
-        x0 * width,
-        y0 * height,
-        x1 * width,
-        y1 * height,
-      );
+      gradient = context.createLinearGradient(x0 * width, y0 * height, x1 * width, y1 * height);
     } else if (type === PARSED_COLOR_TYPE.RadialGradient) {
       const r = Math.sqrt(width * width + height * height) / 2;
       // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createRadialGradient
@@ -51,6 +50,8 @@ export class GradientPool {
   private generateCacheKey(params: GradientParams): string {
     // @ts-ignore
     const { type, x0, y0, x1, y1, r1, steps, width, height } = params;
-    return `gradient-${type}-${x0}-${y0}-${x1}-${y1}-${r1 || 0}-${width}-${height}-${steps.map((step) => step.join('')).join('-')}`;
+    return `gradient-${type}-${x0}-${y0}-${x1}-${y1}-${r1 || 0}-${width}-${height}-${steps
+      .map((step) => step.join(''))
+      .join('-')}`;
   }
 }

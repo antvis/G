@@ -1,7 +1,7 @@
 import { Pattern } from '@antv/g';
-import { injectable } from 'inversify';
+import { singleton } from 'mana-syringe';
 
-@injectable()
+@singleton()
 export class ImagePool {
   private imageCache: Record<string, HTMLImageElement> = {};
   private patternCache: Record<string, CanvasPattern> = {};

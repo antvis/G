@@ -1,5 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
-import { inject, injectable } from 'inversify';
+import { singleton, inject } from 'mana-syringe';
 import { IDENTIFIER } from './identifier';
 import { Component, ComponentConstructor } from './Component';
 import type { Entity } from './Entity';
@@ -15,7 +15,7 @@ export const COMPONENT_EVENT = {
   Remove: 'Remove',
 };
 
-@injectable()
+@singleton()
 export class EntityManager extends EventEmitter {
   @inject(IDENTIFIER.ComponentPoolFactory)
   private componentPoolFactory: <C extends Component<unknown>>(

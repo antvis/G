@@ -1,17 +1,18 @@
-import { RenderingPluginContribution, RendererPlugin } from '@antv/g';
-import { ContainerModule, Container } from 'inversify';
+import { RendererPlugin } from '@antv/g';
+import { Module, Syringe } from 'mana-syringe';
 import { SVGPickerPlugin } from './SVGPickerPlugin';
 
-const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
-  bind(SVGPickerPlugin).toSelf().inSingletonScope();
-  bind(RenderingPluginContribution).toService(SVGPickerPlugin);
+const containerModule = Module((register) => {
+  register(SVGPickerPlugin);
 });
 
 export class Plugin implements RendererPlugin {
-  init(container: Container): void {
+  init(container: Syringe.Container): void {
     container.load(containerModule);
   }
-  destroy(container: Container): void {
-    container.unload(containerModule);
+  destroy(container: Syringe.Container): void {
+    // @ts-ignore
+    // container.container.unload(containerModule);
+    // container.unload(containerModule);
   }
 }

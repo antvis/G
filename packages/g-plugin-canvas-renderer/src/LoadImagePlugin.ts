@@ -1,9 +1,10 @@
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import {
   SHAPE,
   DisplayObject,
   RenderingService,
   RenderingPlugin,
+  RenderingPluginContribution,
   Renderable,
   RenderingContext,
   ElementEvent,
@@ -12,7 +13,7 @@ import {
 import { ImagePool } from './shapes/ImagePool';
 import { isString } from '@antv/util';
 
-@injectable()
+@singleton({ contrib: RenderingPluginContribution })
 export class LoadImagePlugin implements RenderingPlugin {
   static tag = 'LoadImagePlugin';
 

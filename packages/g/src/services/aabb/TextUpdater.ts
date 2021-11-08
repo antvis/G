@@ -1,10 +1,11 @@
 import { vec3 } from 'gl-matrix';
-import { inject, injectable } from 'inversify';
-import type { GeometryAABBUpdater } from './interfaces';
+import { singleton, inject } from 'mana-syringe';
+import { GeometryAABBUpdater } from './interfaces';
 import type { ParsedTextStyleProps } from '../../display-objects/Text';
 import { TextService } from '../text';
+import { SHAPE } from '../../types';
 
-@injectable()
+@singleton({ token: { token: GeometryAABBUpdater, named: SHAPE.Text } })
 export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   @inject(TextService)
   private textService: TextService;

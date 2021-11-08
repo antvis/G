@@ -1,10 +1,10 @@
 import { ParsedRectStyleProps } from '@antv/g';
 import { isArray } from '@antv/util';
+import { singleton } from 'mana-syringe';
 import { parseRadius } from '../../utils/format';
-import { injectable } from 'inversify';
 import { ElementRenderer } from '.';
 
-@injectable()
+@singleton()
 export class RectRenderer implements ElementRenderer<ParsedRectStyleProps> {
   dependencies = ['radius', 'width', 'height'];
 

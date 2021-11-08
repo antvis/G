@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import { Entity } from './Entity';
 import { COMPONENT_EVENT, EntityManager } from './EntityManager';
 import { IDENTIFIER } from './identifier';
@@ -10,7 +10,7 @@ export interface ISystemRegistry {
   has(clazz: SystemConstructor<System>): boolean;
 }
 
-@injectable()
+@singleton()
 export class SystemManager {
   @inject(IDENTIFIER.SystemRegistry)
   private registry: ISystemRegistry;

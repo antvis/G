@@ -1,7 +1,7 @@
 import { isBoolean, isFunction, isObject } from '@antv/util';
 import { EventEmitter } from 'eventemitter3';
-import type { Entity } from '@antv/g-ecs';
-import { world } from '..';
+import { GlobalContainer } from 'mana-syringe';
+import { Entity, World } from '@antv/g-ecs';
 import { CustomEvent } from './CustomEvent';
 import { FederatedEvent } from './FederatedEvent';
 import type { IElement, INode, IEventTarget } from './interfaces';
@@ -22,6 +22,7 @@ export class EventTarget implements IEventTarget {
   entity: Entity;
 
   constructor() {
+    const world = GlobalContainer.get(World);
     // create entity with shape's name, unique ID
     const entity = world.createEntity();
     this.entity = entity;

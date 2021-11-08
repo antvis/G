@@ -1,8 +1,14 @@
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
-import { ContextService, RenderingPlugin, RenderingService, EventService } from '../services';
+import {
+  ContextService,
+  RenderingPlugin,
+  RenderingService,
+  EventService,
+  RenderingPluginContribution,
+} from '../services';
 import { Point } from '../shapes';
 import { CanvasConfig, Cursor, EventPosition, InteractivePointerEvent } from '../types';
 import { normalizeToPointerEvent, supportsTouchEvents, TOUCH_TO_POINTER } from '../utils/event';
@@ -13,7 +19,7 @@ import { normalizeToPointerEvent, supportsTouchEvents, TOUCH_TO_POINTER } from '
  *
  * also provide some extra events such as `drag`
  */
-@injectable()
+@singleton({ contrib: RenderingPluginContribution })
 export class EventPlugin implements RenderingPlugin {
   static tag = 'EventPlugin';
 

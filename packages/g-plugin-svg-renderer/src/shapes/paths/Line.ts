@@ -1,8 +1,8 @@
 import { PARSED_COLOR_TYPE, ParsedLineStyleProps } from '@antv/g';
 import { ElementRenderer } from '.';
-import { injectable } from 'inversify';
+import { singleton } from 'mana-syringe';
 
-@injectable()
+@singleton()
 export class LineRenderer implements ElementRenderer<ParsedLineStyleProps> {
   dependencies = ['x1', 'y1', 'x2', 'y2'];
   apply($el: SVGElement, parsedStyle: ParsedLineStyleProps) {

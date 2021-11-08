@@ -1,5 +1,6 @@
-import { DisplayObjectConfig, BaseStyleProps, ParsedBaseStyleProps } from '..';
-import { SHAPE } from '..';
+import type { DisplayObjectConfig } from '../dom/interfaces';
+import { SHAPE } from '../types';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 
 export interface EllipseStyleProps extends BaseStyleProps {

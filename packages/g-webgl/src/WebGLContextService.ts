@@ -1,9 +1,9 @@
 import { CanvasConfig, ContextService } from '@antv/g';
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import { isString } from '@antv/util';
 import { setDOMSize } from './utils/dom';
 
-@injectable()
+@singleton({ token: ContextService })
 export class WebGLContextService implements ContextService<WebGLRenderingContext> {
   private $container: HTMLElement | null;
   private $canvas: HTMLCanvasElement | null;

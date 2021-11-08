@@ -1,12 +1,12 @@
-import { injectable } from 'inversify';
+import { singleton } from 'mana-syringe';
 import { IElement } from '@antv/g';
-import { Adapter, Predicate } from 'css-select/lib/types';
+import type { Adapter, Predicate } from 'css-select/lib/types';
 
 /**
  * implements interface Adapter
  * @see https://github.com/fb55/css-select/blob/1aa44bdd64aaf2ebdfd7f338e2e76bed36521957/src/types.ts#L6-L96
  */
-@injectable()
+@singleton()
 export class SceneGraphAdapter implements Adapter<IElement, IElement> {
   isTag(node: IElement): node is IElement {
     return true;

@@ -1,8 +1,8 @@
 import { vec3 } from 'gl-matrix';
+import { GlobalContainer } from 'mana-syringe';
 import { Geometry } from '../components';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import { AABB } from '../shapes';
-import { container } from '../inversify.config';
 import { dirtifyRenderable, GeometryAABBUpdater, GeometryUpdaterFactory } from '../services';
 import { SHAPE } from '../types';
 import { PARSED_COLOR_TYPE } from './color';
@@ -10,7 +10,7 @@ import { ParsedFilterStyleProperty } from './filter';
 
 export function updateGeometry(oldValue: number, newValue: number, object: DisplayObject) {
   const geometryUpdaterFactory =
-    container.get<(tagName: string) => GeometryAABBUpdater<any>>(GeometryUpdaterFactory);
+    GlobalContainer.get<(tagName: string) => GeometryAABBUpdater<any>>(GeometryUpdaterFactory);
   const geometryUpdater = geometryUpdaterFactory(object.nodeName);
   if (geometryUpdater) {
     const geometry = object.entity.getComponent(Geometry);

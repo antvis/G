@@ -1,6 +1,7 @@
 import {
   RenderingService,
   RenderingPlugin,
+  RenderingPluginContribution,
   Rectangle,
   ContextService,
   CanvasConfig,
@@ -13,8 +14,8 @@ import {
   DefaultCamera,
   Camera,
 } from '@antv/g';
-import { inject, injectable } from 'inversify';
-import { Batch, RendererFactory } from './drawcall';
+import { inject, singleton } from 'mana-syringe';
+import { Batch } from './drawcall';
 // import { Geometry3D } from './components/Geometry3D';
 // import { Material3D } from './components/Material3D';
 import { Renderable3D } from './components/Renderable3D';
@@ -43,6 +44,7 @@ import { RGRenderTargetDescription } from './render/RenderTargetDescription';
 import { fillMatrix4x4, fillVec3v, fillVec4, fillVec4v } from './render/utils';
 import { TransparentWhite, White } from './utils/color';
 import { isWebGL2 } from './platform/webgl2/utils';
+import { RendererFactory } from './tokens';
 
 // @ts-ignore
 // import wasm from '../rust/Cargo.toml';
@@ -53,7 +55,7 @@ async function loadWasm() {
   // Use functions which were exported from Rust...
 }
 
-@injectable()
+@singleton({ contrib: RenderingPluginContribution })
 export class RenderGraphPlugin implements RenderingPlugin {
   static tag = 'RenderGraphPlugin';
 

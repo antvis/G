@@ -1,9 +1,10 @@
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import {
   SHAPE,
   DisplayObject,
   RenderingService,
   RenderingPlugin,
+  RenderingPluginContribution,
   Renderable,
   ContextService,
   ParsedHTMLStyleProps,
@@ -18,7 +19,7 @@ import { isString } from '@antv/util';
 
 const HTML_PREFIX = 'g-html-';
 
-@injectable()
+@singleton({ contrib: RenderingPluginContribution })
 export class HTMLRenderingPlugin implements RenderingPlugin {
   static tag = 'HTMLRenderingPlugin';
 

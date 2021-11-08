@@ -1,5 +1,5 @@
 import { DisplayObject, Renderable } from '@antv/g';
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
 import {
   Batch,
@@ -69,7 +69,7 @@ class GridProgram extends DeviceProgram {
   `;
 }
 
-@injectable()
+@singleton()
 export class GridModelBuilder extends Batch {
   program = new GridProgram();
 

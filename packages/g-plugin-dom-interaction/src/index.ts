@@ -1,17 +1,19 @@
-import { RendererPlugin, RenderingPluginContribution } from '@antv/g';
-import { Container, ContainerModule } from 'inversify';
+import { RendererPlugin } from '@antv/g';
+import { Syringe, Module } from 'mana-syringe';
 import { DOMInteractionPlugin } from './DOMInteractionPlugin';
 
-const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
-  bind(DOMInteractionPlugin).toSelf().inSingletonScope();
-  bind(RenderingPluginContribution).toService(DOMInteractionPlugin);
+const containerModule = Module((register) => {
+  register(DOMInteractionPlugin);
 });
 
 export class Plugin implements RendererPlugin {
-  init(container: Container): void {
+  init(container: Syringe.Container): void {
     container.load(containerModule);
   }
-  destroy(container: Container): void {
-    container.unload(containerModule);
+  destroy(container: Syringe.Container): void {
+    // @ts-ignore
+    // container.container.unload(containerModule);
+    // // container.unload(containerModule);
+    // container.remove(DOMInteractionPlugin);
   }
 }

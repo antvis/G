@@ -1,5 +1,5 @@
 import { PARSED_COLOR_TYPE, OffscreenCanvasCreator, LinearGradient, RadialGradient } from '@antv/g';
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import { Device, Texture, TextureDescriptor } from './platform';
 
 export type GradientParams = (LinearGradient | RadialGradient) & {
@@ -8,7 +8,7 @@ export type GradientParams = (LinearGradient | RadialGradient) & {
   type: PARSED_COLOR_TYPE;
 };
 
-@injectable()
+@singleton()
 export class TexturePool {
   @inject(OffscreenCanvasCreator)
   private offscreenCanvas: OffscreenCanvasCreator;

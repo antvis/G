@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from 'mana-syringe';
 import { ComponentConstructor, Component } from './Component';
 import { EntityManager } from './EntityManager';
 import { ILifecycle } from './ObjectPool';
@@ -56,12 +56,15 @@ export class Entity implements ILifecycle {
 
   public addComponent<C extends Component>(
     clazz: ComponentConstructor<C>,
-    values?: Partial<Omit<C, keyof Component>>
+    values?: Partial<Omit<C, keyof Component>>,
   ): C {
     return this.entityManager.addComponentToEntity(this, clazz, values);
   }
 
-  public removeComponent<C extends Component>(clazz: ComponentConstructor<C>, forceImmediate = false) {
+  public removeComponent<C extends Component>(
+    clazz: ComponentConstructor<C>,
+    forceImmediate = false,
+  ) {
     this.entityManager.removeComponentFromEntity(this, clazz, forceImmediate);
     return this;
   }
@@ -84,7 +87,7 @@ export class Entity implements ILifecycle {
 
   public cast<C extends Component>(
     component: Component | undefined | null,
-    componentClass: ComponentConstructor<C>
+    componentClass: ComponentConstructor<C>,
   ): component is C {
     return !!(component && component instanceof componentClass);
   }

@@ -1,9 +1,10 @@
 import { vec3 } from 'gl-matrix';
-import { injectable } from 'inversify';
+import { singleton } from 'mana-syringe';
 import { GeometryAABBUpdater, AABB } from '@antv/g';
 import { ParsedCubeStyleProps } from '../Cube';
+import { SHAPE_3D } from '../types';
 
-@injectable()
+@singleton({ token: { token: GeometryAABBUpdater, named: SHAPE_3D.Cube } })
 export class CubeUpdater implements GeometryAABBUpdater<ParsedCubeStyleProps> {
   dependencies = ['height', 'width', 'depth', 'anchor'];
 

@@ -1,8 +1,9 @@
-import { injectable } from 'inversify';
-import type { GeometryAABBUpdater } from './interfaces';
+import { singleton } from 'mana-syringe';
+import { GeometryAABBUpdater } from './interfaces';
 import type { ParsedEllipseStyleProps } from '../../display-objects/Ellipse';
+import { SHAPE } from '../../types';
 
-@injectable()
+@singleton({ token: { token: GeometryAABBUpdater, named: SHAPE.Ellipse } })
 export class EllipseUpdater implements GeometryAABBUpdater<ParsedEllipseStyleProps> {
   update(parsedStyle: ParsedEllipseStyleProps) {
     const { rx = 0, ry = 0, x = 0, y = 0 } = parsedStyle;

@@ -1,10 +1,10 @@
 import { CanvasConfig } from '@antv/g';
-import type { ContextService } from '@antv/g';
-import { inject, injectable } from 'inversify';
+import { ContextService } from '@antv/g';
+import { inject, singleton } from 'mana-syringe';
 import { isString } from '@antv/util';
 import { setDOMSize } from './utils/dom';
 
-@injectable()
+@singleton({ token: ContextService })
 export class Canvas2DContextService implements ContextService<CanvasRenderingContext2D> {
   private $container: HTMLElement | null;
   private $canvas: HTMLCanvasElement | null;

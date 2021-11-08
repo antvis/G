@@ -1,20 +1,21 @@
-import { Container, ContainerModule } from 'inversify';
+import { Syringe, Module } from 'mana-syringe';
 import { ContextService, RendererPlugin } from '@antv/g';
 import { WebGLContextService } from './WebGLContextService';
 
-const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
+const containerModule = Module((register) => {
   /**
    * implements ContextService
    */
-  bind(WebGLContextService).toSelf().inSingletonScope();
-  bind(ContextService).toService(WebGLContextService);
-})
+  register(WebGLContextService);
+});
 
 export class ContextRegisterPlugin implements RendererPlugin {
-  init(container: Container): void {
+  init(container: Syringe.Container): void {
     container.load(containerModule);
   }
-  destroy(container: Container): void {
-    container.unload(containerModule);
+  destroy(container: Syringe.Container): void {
+    // @ts-ignore
+    // container.container.unload(containerModule);
+    // container.unload(containerModule);
   }
 }

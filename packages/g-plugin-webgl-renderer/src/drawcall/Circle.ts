@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from 'mana-syringe';
 import { fillVec4 } from '../render/utils';
 import { Format, VertexBufferFrequency } from '../platform';
 import { RenderInst } from '../render/RenderInst';
@@ -6,6 +6,7 @@ import { Circle, CircleStyleProps, DisplayObject, SHAPE } from '@antv/g';
 import { DeviceProgram } from '../render/DeviceProgram';
 import { Batch, AttributeLocation } from './Batch';
 import { Program_GL } from '../platform/webgl2/Program';
+import { ShapeRenderer } from '../tokens';
 
 const PointShapes = ['circle', 'ellipse', 'rect', 'rounded-rect'];
 
@@ -122,8 +123,15 @@ void main() {
 }
   `;
 }
-
-@injectable()
+export const TTTT = 'TTTT';
+// @injectable({
+//   token: [
+//     { token: ShapeRenderer, named: SHAPE.Circle },
+//     { token: ShapeRenderer, named: SHAPE.Ellipse },
+//     { token: ShapeRenderer, named: SHAPE.Rect },
+//   ],
+// })
+@injectable({ token: { token: ShapeRenderer, named: SHAPE.Circle } })
 export class CircleRenderer extends Batch {
   protected program = new CircleProgram();
 

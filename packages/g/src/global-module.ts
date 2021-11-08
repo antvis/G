@@ -1,5 +1,4 @@
-import type { interfaces } from 'inversify';
-import { ContainerModule } from 'inversify';
+import { Module } from 'mana-syringe';
 import { DisplayObjectPool } from './DisplayObjectPool';
 import { DefaultSceneGraphService, SceneGraphService } from './services/SceneGraphService';
 import {
@@ -54,80 +53,79 @@ import {
   updateAnchor,
 } from './property-handlers';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
+export const containerModule = Module((register) => {
   // bind DisplayObject pool
-  bind(DisplayObjectPool).toSelf().inSingletonScope();
+  register(DisplayObjectPool);
 
   // bind Selector
-  bind(DefaultSceneGraphSelector).toSelf().inSingletonScope();
-  bind(SceneGraphSelector).toService(DefaultSceneGraphSelector);
-  bind<interfaces.Factory<SceneGraphSelector>>(SceneGraphSelectorFactory).toFactory(
-    (context: interfaces.Context) => {
-      // resolve selector implementation at runtime
+  register({ token: SceneGraphSelector, useClass: DefaultSceneGraphSelector });
+  register({
+    token: SceneGraphSelectorFactory,
+    useFactory: (context) => {
       return () => context.container.get(SceneGraphSelector);
     },
-  );
+  });
 
   // bind scenegraph service
-  bind(DefaultSceneGraphService).toSelf().inSingletonScope();
-  bind(SceneGraphService).toService(DefaultSceneGraphService);
+  register({ token: SceneGraphService, useClass: DefaultSceneGraphService });
 
   // bind text service
-  bind(OffscreenCanvasCreator).toSelf().inSingletonScope();
-  bind(TextService).toSelf().inSingletonScope();
+  register(OffscreenCanvasCreator);
+  register(TextService);
 
   // bind aabb updater
-  bind(GeometryAABBUpdater).to(CircleUpdater).inSingletonScope().whenTargetNamed(SHAPE.Circle);
-  bind(GeometryAABBUpdater).to(EllipseUpdater).inSingletonScope().whenTargetNamed(SHAPE.Ellipse);
-  bind(GeometryAABBUpdater).to(RectUpdater).inSingletonScope().whenTargetNamed(SHAPE.Rect);
-  bind(GeometryAABBUpdater).to(RectUpdater).inSingletonScope().whenTargetNamed(SHAPE.Image);
-  bind(GeometryAABBUpdater).to(TextUpdater).inSingletonScope().whenTargetNamed(SHAPE.Text);
-  bind(GeometryAABBUpdater).to(LineUpdater).inSingletonScope().whenTargetNamed(SHAPE.Line);
-  bind(GeometryAABBUpdater).to(PolylineUpdater).inSingletonScope().whenTargetNamed(SHAPE.Polyline);
-  bind(GeometryAABBUpdater).to(PolylineUpdater).inSingletonScope().whenTargetNamed(SHAPE.Polygon);
-  bind(GeometryAABBUpdater).to(PathUpdater).inSingletonScope().whenTargetNamed(SHAPE.Path);
-  bind<interfaces.Factory<GeometryAABBUpdater | null>>(
-    GeometryUpdaterFactory,
-  ).toFactory<GeometryAABBUpdater | null>((context: interfaces.Context) => {
-    return (tagName: SHAPE) => {
-      if (context.container.isBoundNamed(GeometryAABBUpdater, tagName)) {
-        return context.container.getNamed(GeometryAABBUpdater, tagName);
-      }
-      return null;
-    };
+  register(CircleUpdater);
+  register(EllipseUpdater);
+  register(RectUpdater);
+  register(TextUpdater);
+  register(LineUpdater);
+  register(PolylineUpdater);
+  register(PathUpdater);
+  register({
+    token: GeometryUpdaterFactory,
+    useFactory: (context) => {
+      return (tagName: SHAPE) => {
+        if (context.container.isBoundNamed(GeometryAABBUpdater, tagName)) {
+          return context.container.getNamed(GeometryAABBUpdater, tagName);
+        }
+        return null;
+      };
+    },
   });
 
   // bind style property handlers
-  bind<interfaces.Factory<StylePropertyParser<any, any> | null>>(
-    StylePropertyParserFactory,
-  ).toFactory<StylePropertyParser<any, any> | null>((context: interfaces.Context) => {
-    return (propertyName: string) => {
-      if (context.container.isBoundNamed(StylePropertyParser, propertyName)) {
-        return context.container.getNamed(StylePropertyParser, propertyName);
-      }
-      return null;
-    };
+  register({
+    token: StylePropertyParserFactory,
+    useFactory: (context) => {
+      return (propertyName: string) => {
+        if (context.container.isBoundNamed(StylePropertyParser, propertyName)) {
+          return context.container.getNamed(StylePropertyParser, propertyName);
+        }
+        return null;
+      };
+    },
   });
-  bind<interfaces.Factory<StylePropertyUpdater<any>[] | null>>(
-    StylePropertyUpdaterFactory,
-  ).toFactory<StylePropertyUpdater<any>[] | null>((context: interfaces.Context) => {
-    return (propertyName: string) => {
-      if (context.container.isBoundNamed(StylePropertyUpdater, propertyName)) {
-        return context.container.getAllNamed(StylePropertyUpdater, propertyName);
-      }
-      return null;
-    };
+  register({
+    token: StylePropertyUpdaterFactory,
+    useFactory: (context) => {
+      return (propertyName: string) => {
+        if (context.container.isBoundNamed(StylePropertyUpdater, propertyName)) {
+          return context.container.getAllNamed(StylePropertyUpdater, propertyName);
+        }
+        return null;
+      };
+    },
   });
-  bind<interfaces.Factory<StylePropertyMerger<any> | null>>(
-    StylePropertyMergerFactory,
-  ).toFactory<StylePropertyMerger<any> | null>((context: interfaces.Context) => {
-    return (propertyName: string) => {
-      if (context.container.isBoundNamed(StylePropertyMerger, propertyName)) {
-        return context.container.getNamed(StylePropertyMerger, propertyName);
-      }
-      return null;
-    };
+  register({
+    token: StylePropertyMergerFactory,
+    useFactory: (context) => {
+      return (propertyName: string) => {
+        if (context.container.isBoundNamed(StylePropertyMerger, propertyName)) {
+          return context.container.getNamed(StylePropertyMerger, propertyName);
+        }
+        return null;
+      };
+    },
   });
 
   function addPropertyHandler<O, P, I extends Interpolatable = number>(
@@ -137,13 +135,13 @@ export const containerModule = new ContainerModule((bind, unbind, isBound, rebin
     updater: StylePropertyUpdater<O> | undefined,
   ) {
     if (parser) {
-      bind(StylePropertyParser).toConstantValue(parser).whenTargetNamed(property);
+      register({ token: { token: StylePropertyParser, named: property }, useValue: parser });
     }
     if (merger) {
-      bind(StylePropertyMerger).toConstantValue(merger).whenTargetNamed(property);
+      register({ token: { token: StylePropertyMerger, named: property }, useValue: merger });
     }
     if (updater) {
-      bind(StylePropertyUpdater).toConstantValue(updater).whenTargetNamed(property);
+      register({ token: { token: StylePropertyUpdater, named: property }, useValue: updater });
     }
   }
   function addPropertiesHandler<O, P, I extends Interpolatable = number>(

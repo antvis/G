@@ -1,8 +1,8 @@
 import { ParsedBaseStyleProps } from '@antv/g';
 import { ElementRenderer } from '.';
-import { injectable } from 'inversify';
+import { singleton } from 'mana-syringe';
 
-@injectable()
+@singleton()
 export class PolylineRenderer implements ElementRenderer<ParsedBaseStyleProps> {
   dependencies = ['points'];
   apply($el: SVGElement, parsedStyle: ParsedBaseStyleProps) {

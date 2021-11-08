@@ -1,8 +1,14 @@
-import { injectable } from 'inversify';
-import type { GeometryAABBUpdater } from './interfaces';
+import { singleton } from 'mana-syringe';
+import { GeometryAABBUpdater } from './interfaces';
 import type { ParsedBaseStyleProps } from '../../types';
+import { SHAPE } from '../../types';
 
-@injectable()
+@singleton({
+  token: [
+    { token: GeometryAABBUpdater, named: SHAPE.Polyline },
+    { token: GeometryAABBUpdater, named: SHAPE.Polygon },
+  ],
+})
 export class PolylineUpdater implements GeometryAABBUpdater<ParsedBaseStyleProps> {
   update(parsedStyle: ParsedBaseStyleProps) {
     const { points } = parsedStyle.points!;

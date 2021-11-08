@@ -1,7 +1,25 @@
-export * from './contribution-provider';
+import { GlobalContainer } from 'mana-syringe';
+import { containerModule as ecsModule, World } from '@antv/g-ecs';
+import { containerModule as globalModule } from './global-module';
+import { Sortable, Cullable, Geometry, Renderable, Transform } from './components';
+
+// bind ECS
+GlobalContainer.load(ecsModule);
+GlobalContainer.load(globalModule);
+
+// register components & systems
+const world = GlobalContainer.get<World>(World);
+world
+  .registerComponent(Transform)
+  .registerComponent(Sortable)
+  .registerComponent(Cullable)
+  .registerComponent(Geometry)
+  .registerComponent(Renderable);
+
+export { world };
+
 export * from './types';
 export * from './components';
-export * from './inversify.config';
 export * from './dom';
 export * from './AbstractRenderer';
 export * from './Canvas';

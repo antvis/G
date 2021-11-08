@@ -31,7 +31,8 @@
   "dependencies": {
     "@antv/g": "^1.0.0-alpha.25",
     "@antv/g-ecs": "^1.0.0-alpha.9",
-    "detect-browser": "^5.0.0"
+    "detect-browser": "^5.0.0",
+    "mana-syringe": "^0.1.0"
   },
   "devDependencies": {
     "@types/jest": "^25.0.0",

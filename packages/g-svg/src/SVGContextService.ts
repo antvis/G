@@ -1,9 +1,9 @@
 import { CanvasConfig, ContextService } from '@antv/g';
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import { isString } from '@antv/util';
 import { createSVGElement } from '@antv/g-plugin-svg-renderer';
 
-@injectable()
+@singleton({ token: ContextService })
 export class SVGContextService implements ContextService<SVGElement> {
   private $container: HTMLElement | null;
   private $namespace: SVGElement | null;

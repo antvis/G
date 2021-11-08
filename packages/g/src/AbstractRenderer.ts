@@ -1,9 +1,9 @@
-import { Container } from 'inversify';
+import { Syringe } from 'mana-syringe';
 import { RendererConfig } from './types';
 
 export interface RendererPlugin {
-  init(container: Container): void;
-  destroy(container: Container): void;
+  init(container: Syringe.Container): void;
+  destroy(container: Syringe.Container): void;
 }
 
 export interface IRenderer {

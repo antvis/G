@@ -1,4 +1,3 @@
-import { injectable } from 'inversify';
 import { Animation } from './Animation';
 import type { KeyframeEffect } from './KeyframeEffect';
 import { requestAnimationFrame, cancelAnimationFrame } from '../utils/raf';
@@ -10,7 +9,6 @@ export function compareAnimations(leftAnimation: Animation, rightAnimation: Anim
 /**
  * @see https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/web-animations-js/index.d.ts
  */
-@injectable()
 export class AnimationTimeline implements AnimationTimeline {
   /**
    * all active animations

@@ -1,9 +1,9 @@
 import { ParsedImageStyleProps } from '@antv/g';
 import { isString } from '@antv/util';
+import { singleton } from 'mana-syringe';
 import { ElementRenderer } from '.';
-import { injectable } from 'inversify';
 
-@injectable()
+@singleton()
 export class ImageRenderer implements ElementRenderer<ParsedImageStyleProps> {
   dependencies = ['img', 'width', 'height'];
 

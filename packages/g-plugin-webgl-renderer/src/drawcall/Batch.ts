@@ -1,5 +1,5 @@
 import { vec3, mat4 } from 'gl-matrix';
-import { injectable, inject } from 'inversify';
+import { injectable, inject } from 'mana-syringe';
 import {
   DisplayObject,
   PARSED_COLOR_TYPE,

@@ -1,11 +1,14 @@
-import { inject, injectable } from 'inversify';
-import type { DisplayObject } from '..';
+import { inject, singleton } from 'mana-syringe';
 import { ElementEvent, FederatedEvent, INode } from '../dom';
-import { updateTransformOrigin } from '../property-handlers';
-import { dirtifyRenderable, RenderingContext, RENDER_REASON } from '../services';
+import {
+  dirtifyRenderable,
+  RenderingContext,
+  RENDER_REASON,
+  RenderingPluginContribution,
+} from '../services';
 import { RenderingService, RenderingPlugin } from '../services/RenderingService';
 
-@injectable()
+@singleton({ contrib: RenderingPluginContribution })
 export class PrepareRendererPlugin implements RenderingPlugin {
   static tag = 'PrepareRendererPlugin';
 

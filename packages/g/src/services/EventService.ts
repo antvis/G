@@ -1,4 +1,4 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, singleton, postConstruct } from 'mana-syringe';
 import { EventEmitter } from 'eventemitter3';
 import type { Cursor, EventPosition } from '../types';
 import { CanvasConfig } from '../types';
@@ -34,7 +34,7 @@ export type EmitterListeners = Record<
 >;
 const PROPAGATION_LIMIT = 2048;
 
-@injectable()
+@singleton()
 export class EventService extends EventEmitter {
   @inject(RenderingContext)
   private renderingContext: RenderingContext;

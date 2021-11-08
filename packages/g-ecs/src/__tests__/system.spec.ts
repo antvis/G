@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { Entity } from '../Entity';
 import { Component } from '../Component';
 import { World } from '../World';
-import { Container, inject, injectable } from 'inversify';
+import { Container, singleton } from 'mana-syringe';
 import { containerModule } from '..';
 import { System } from '../System';
 import { Matcher } from '../Matcher';
@@ -23,9 +23,8 @@ class C4 extends Component {
   static tag = 'c4';
 }
 
-@injectable()
+@singleton()
 class S1 implements System {
-  static tag = 's1';
   static trigger = new Matcher().allOf(C1);
   static priority = 0;
   public initialized = false;
@@ -42,9 +41,8 @@ class S1 implements System {
   }
 }
 
-@injectable()
+@singleton()
 class S2 implements System {
-  static tag = 's2';
   static trigger = new Matcher().allOf(C2);
 
   public counter = 0;
@@ -76,9 +74,8 @@ class S2 implements System {
   }
 }
 
-@injectable()
+@singleton()
 class S3 implements System {
-  static tag = 's3';
   static priority = 0;
 
   execute(entities: Entity[]) {
@@ -132,7 +129,7 @@ describe('System', () => {
   });
 
   it('should inform system S2 when component removed', () => {
-    const s2 = container.getNamed(System, S2.tag) as S2;
+    const s2 = container.get(S2);
     s2.reset();
 
     const e1 = world.createEntity();

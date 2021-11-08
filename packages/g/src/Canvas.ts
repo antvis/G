@@ -1,13 +1,13 @@
+import { GlobalContainer } from 'mana-syringe';
 import { CanvasConfig, Cursor } from './types';
 import { cleanExistedCanvas } from './utils/canvas';
 import { DisplayObject } from './display-objects/DisplayObject';
 import { ContextService } from './services';
-import { container } from './inversify.config';
 import { RenderingService } from './services/RenderingService';
 import { RenderingContext, RENDER_REASON } from './services/RenderingContext';
 import { EventService } from './services/EventService';
 import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE, DefaultCamera } from './camera';
-import { containerModule as commonContainerModule } from './canvas-module';
+import { containerModule as commonContainerModule, unload } from './canvas-module';
 import { AbstractRenderer, IRenderer } from './AbstractRenderer';
 import { cancelAnimationFrame } from './utils/raf';
 import type { PointLike } from './shapes';
@@ -33,7 +33,7 @@ export class Canvas extends EventTarget implements ICanvas {
   /**
    * child container of current canvas, use hierarchy container
    */
-  container = container.createChild();
+  container = GlobalContainer.createChild();
 
   /**
    * window.document
@@ -68,7 +68,7 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   private initRenderingContext(mergedConfig: CanvasConfig) {
-    this.container.bind<CanvasConfig>(CanvasConfig).toConstantValue(mergedConfig);
+    this.container.register({ token: CanvasConfig, useValue: mergedConfig });
 
     this.document = new Document();
     this.document.defaultView = this;
@@ -76,21 +76,24 @@ export class Canvas extends EventTarget implements ICanvas {
     this.customElements = new CustomElementRegistry();
 
     // bind rendering context, shared by all renderers
-    this.container.bind<RenderingContext>(RenderingContext).toConstantValue({
-      /**
-       * the root node in scene graph
-       */
-      root: this.document.documentElement,
+    this.container.register({
+      token: RenderingContext,
+      useValue: {
+        /**
+         * the root node in scene graph
+         */
+        root: this.document.documentElement,
 
-      /**
-       * removed render bounds
-       */
-      removedRenderBoundsList: [],
+        /**
+         * removed render bounds
+         */
+        removedRenderBoundsList: [],
 
-      renderReasons: new Set(),
+        renderReasons: new Set(),
 
-      force: false,
-      dirty: false,
+        force: false,
+        dirty: false,
+      },
     });
 
     this.document.documentElement.addEventListener(
@@ -122,7 +125,7 @@ export class Canvas extends EventTarget implements ICanvas {
       context.renderReasons.add(RENDER_REASON.CameraChanged);
     });
     // bind camera
-    this.container.bind(DefaultCamera).toConstantValue(camera);
+    this.container.register({ token: DefaultCamera, useValue: camera });
   }
 
   getConfig() {
@@ -261,7 +264,8 @@ export class Canvas extends EventTarget implements ICanvas {
       throw new Error('Renderer is required.');
     }
 
-    this.container.snapshot();
+    // @ts-ignore
+    // this.container.container.snapshot();
 
     this.loadCommonContainerModule();
     this.loadRendererContainerModule(renderer);
@@ -298,6 +302,10 @@ export class Canvas extends EventTarget implements ICanvas {
     this.container.load(commonContainerModule);
   }
 
+  // private unloadCommonContainerModule() {
+  //   unload(this.container);
+  // }
+
   private loadRendererContainerModule(renderer: IRenderer) {
     // load other container modules provided by g-canvas/g-svg/g-webgl
     const plugins = renderer.getPlugins();
@@ -324,7 +332,9 @@ export class Canvas extends EventTarget implements ICanvas {
       plugin.destroy(this.container);
     });
 
-    this.container.restore();
+    // this.unloadCommonContainerModule();
+    // @ts-ignore
+    // this.container.container.restore();
     this.initRenderer(renderer);
   }
 

@@ -1,6 +1,6 @@
-import { injectable } from 'inversify';
+import { singleton } from 'mana-syringe';
 
-@injectable()
+@singleton()
 export class OffscreenCanvasCreator {
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;

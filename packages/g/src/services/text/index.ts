@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { singleton, inject } from 'mana-syringe';
 import type { ParsedTextStyleProps } from '../../display-objects/Text';
 import { Rectangle } from '../../shapes';
 import { toFontString } from '../../utils/text';
@@ -73,7 +73,7 @@ const regexCannotEnd = new RegExp(
   `${regexCannotEndZhCn.source}|${regexCannotEndZhTw.source}|${regexCannotEndJaJp.source}|${regexCannotEndKoKr.source}`,
 );
 
-@injectable()
+@singleton()
 export class TextService {
   private cache: Record<string, IFontMetrics> = {};
 

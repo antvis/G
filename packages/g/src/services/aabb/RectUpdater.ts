@@ -1,9 +1,15 @@
-import { injectable } from 'inversify';
+import { singleton } from 'mana-syringe';
 import { isString } from '@antv/util';
-import type { GeometryAABBUpdater } from './interfaces';
+import { GeometryAABBUpdater } from './interfaces';
 import type { ParsedImageStyleProps } from '../../display-objects/Image';
+import { SHAPE } from '../../types';
 
-@injectable()
+@singleton({
+  token: [
+    { token: GeometryAABBUpdater, named: SHAPE.Rect },
+    { token: GeometryAABBUpdater, named: SHAPE.Image },
+  ],
+})
 export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
   update(attributes: ParsedImageStyleProps) {
     const { img, x = 0, y = 0, width = 0, height = 0 } = attributes;

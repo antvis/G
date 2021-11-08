@@ -43,6 +43,7 @@
     "@antv/g-plugin-canvas-renderer": "^1.0.0-alpha.25",
     "@antv/g-plugin-dom-interaction": "^1.0.0-alpha.24",
     "@antv/g-plugin-html-renderer": "^1.0.0-alpha.8",
-    "@antv/util": "^2.0.13"
+    "@antv/util": "^2.0.13",
+    "mana-syringe": "^0.1.0"
   }
 }

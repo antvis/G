@@ -1,8 +1,9 @@
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import {
   DisplayObjectPool,
   RenderingService,
   RenderingPlugin,
+  RenderingPluginContribution,
   SceneGraphService,
   PickingResult,
 } from '@antv/g';
@@ -13,7 +14,7 @@ import {
  * 1. find AABB with r-tree
  * 2. use elementFromPoint
  */
-@injectable()
+@singleton({ contrib: RenderingPluginContribution })
 export class SVGPickerPlugin implements RenderingPlugin {
   static tag = 'SVGPickerPlugin';
 

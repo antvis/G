@@ -1,14 +1,18 @@
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import { Renderable } from '../components';
 import { CanvasConfig } from '../types';
-import { RenderingService, RenderingPlugin } from '../services/RenderingService';
+import {
+  RenderingService,
+  RenderingPlugin,
+  RenderingPluginContribution,
+} from '../services/RenderingService';
 import { RenderingContext, RENDER_REASON } from '../services/RenderingContext';
 import { DisplayObject } from '../display-objects/DisplayObject';
 
 /**
  * Filter dirty renderables and calculate the "dirty rectangle" which will be clear when frame began
  */
-@injectable()
+@singleton({ contrib: RenderingPluginContribution })
 export class DirtyCheckPlugin implements RenderingPlugin {
   static tag = 'DirtyCheckPlugin';
 

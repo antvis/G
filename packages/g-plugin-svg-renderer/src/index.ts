@@ -1,8 +1,7 @@
-import { ContainerModule, Container } from 'inversify';
-import { RenderingPluginContribution, RendererPlugin, SHAPE, world } from '@antv/g';
+import { Module, Syringe } from 'mana-syringe';
+import { RendererPlugin, SHAPE, world } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
 import {
-  ElementRenderer,
   ElementRendererFactory,
   ImageRenderer,
   LineRenderer,
@@ -18,42 +17,46 @@ world.registerComponent(ElementSVG);
 export { ElementSVG };
 export * from './utils/dom';
 
-export const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
+export const containerModule = Module((register) => {
   /**
    * register shape renderers
    */
-  bind(RectRenderer).toSelf().inSingletonScope();
-  bind(ImageRenderer).toSelf().inSingletonScope();
-  bind(LineRenderer).toSelf().inSingletonScope();
-  bind(PolylineRenderer).toSelf().inSingletonScope();
-  bind(TextRenderer).toSelf().inSingletonScope();
-  bind(PathRenderer).toSelf().inSingletonScope();
-  bind(ElementRendererFactory).toFactory<ElementRenderer<any> | null>((ctx) => (tagName: SHAPE) => {
-    if (tagName === SHAPE.Rect) {
-      return ctx.container.get(RectRenderer);
-    } else if (tagName === SHAPE.Image) {
-      return ctx.container.get(ImageRenderer);
-    } else if (tagName === SHAPE.Line) {
-      return ctx.container.get(LineRenderer);
-    } else if (tagName === SHAPE.Polyline || tagName === SHAPE.Polygon) {
-      return ctx.container.get(PolylineRenderer);
-    } else if (tagName === SHAPE.Text) {
-      return ctx.container.get(TextRenderer);
-    } else if (tagName === SHAPE.Path) {
-      return ctx.container.get(PathRenderer);
-    }
-    return null;
+  register(RectRenderer);
+  register(ImageRenderer);
+  register(LineRenderer);
+  register(PolylineRenderer);
+  register(TextRenderer);
+  register(PathRenderer);
+  register({
+    token: ElementRendererFactory,
+    useFactory: (ctx) => (tagName: SHAPE) => {
+      if (tagName === SHAPE.Rect) {
+        return ctx.container.get(RectRenderer);
+      } else if (tagName === SHAPE.Image) {
+        return ctx.container.get(ImageRenderer);
+      } else if (tagName === SHAPE.Line) {
+        return ctx.container.get(LineRenderer);
+      } else if (tagName === SHAPE.Polyline || tagName === SHAPE.Polygon) {
+        return ctx.container.get(PolylineRenderer);
+      } else if (tagName === SHAPE.Text) {
+        return ctx.container.get(TextRenderer);
+      } else if (tagName === SHAPE.Path) {
+        return ctx.container.get(PathRenderer);
+      }
+      return null;
+    },
   });
 
-  bind(SVGRendererPlugin).toSelf().inSingletonScope();
-  bind(RenderingPluginContribution).toService(SVGRendererPlugin);
+  register(SVGRendererPlugin);
 });
 
 export class Plugin implements RendererPlugin {
-  init(container: Container): void {
+  init(container: Syringe.Container): void {
     container.load(containerModule);
   }
-  destroy(container: Container): void {
-    container.unload(containerModule);
+  destroy(container: Syringe.Container): void {
+    // @ts-ignore
+    // container.container.unload(containerModule);
+    // container.unload(containerModule);
   }
 }

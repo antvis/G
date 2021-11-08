@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from 'mana-syringe';
 import {
   Format,
   makeTextureDescriptor2D,
@@ -10,7 +10,8 @@ import {
 import { RenderInst } from '../render/RenderInst';
 import { DisplayObject, Image, Renderable, SHAPE } from '@antv/g';
 import { DeviceProgram } from '../render/DeviceProgram';
-import { Batch, AttributeLocation } from '.';
+import { Batch, AttributeLocation } from './Batch';
+import { ShapeRenderer } from '../tokens';
 import { TextureMapping } from '../render/TextureHolder';
 import { TexturePool } from '../TexturePool';
 
@@ -69,7 +70,9 @@ class ImageProgram extends DeviceProgram {
   `;
 }
 
-@injectable()
+@injectable({
+  token: [{ token: ShapeRenderer, named: SHAPE.Image }],
+})
 export class ImageRenderer extends Batch {
   protected program = new ImageProgram();
 

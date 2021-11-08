@@ -1,4 +1,6 @@
-export const ContextService = 'ContextService';
+import { Syringe } from 'mana-syringe';
+
+export const ContextService = Syringe.defineToken('ContextService', { multiple: false });
 export interface ContextService<Context> {
   init(): void;
   destroy(): void;

@@ -38,7 +38,7 @@
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
     "eventemitter3": "^4.0.0",
-    "inversify": "^5.0.1",
+    "mana-syringe": "^0.1.0",
     "reflect-metadata": "^0.1.13"
   }
 }

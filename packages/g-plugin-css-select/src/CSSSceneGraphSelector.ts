@@ -1,9 +1,9 @@
-import { inject, injectable } from 'inversify';
-import { SceneGraphSelector, Element, IElement } from '@antv/g';
+import { inject, singleton } from 'mana-syringe';
+import { SceneGraphSelector, IElement } from '@antv/g';
 import { selectOne, selectAll, is } from 'css-select';
 import { SceneGraphAdapter } from './SceneGraphAdapter';
 
-@injectable()
+@singleton()
 export class CSSSceneGraphSelector implements SceneGraphSelector {
   @inject(SceneGraphAdapter)
   private sceneGraphAdapter: SceneGraphAdapter;

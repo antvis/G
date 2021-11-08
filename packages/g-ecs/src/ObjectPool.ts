@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from 'mana-syringe';
 
 export interface ILifecycle {
   getId(): number;

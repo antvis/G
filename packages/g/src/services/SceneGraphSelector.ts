@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { singleton } from 'mana-syringe';
 import { IElement } from '../dom/interfaces';
 
 export const SceneGraphSelectorFactory = 'SceneGraphSelectorFactory';
@@ -16,7 +16,7 @@ export interface SceneGraphSelector {
  * * getElementsByName
  * * getElementsByTag
  */
-@injectable()
+@singleton()
 export class DefaultSceneGraphSelector implements SceneGraphSelector {
   selectOne<R extends IElement, T extends IElement>(query: string, root: R): T | null {
     if (query.startsWith('#')) {

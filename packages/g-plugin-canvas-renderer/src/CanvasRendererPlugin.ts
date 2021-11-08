@@ -10,6 +10,7 @@ import {
   RenderingService,
   RenderingContext,
   RenderingPlugin,
+  RenderingPluginContribution,
   Cullable,
   getEuler,
   fromRotationTranslationScale,
@@ -22,7 +23,7 @@ import {
   FederatedEvent,
 } from '@antv/g';
 import { isArray } from '@antv/util';
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 import { vec3, mat4, quat } from 'gl-matrix';
 import RBush from 'rbush';
 import { PathGeneratorFactory, PathGenerator } from './shapes/paths';
@@ -52,7 +53,7 @@ const SHAPE_ATTRS_MAP: Record<string, string> = {
  * * immediate
  * * delayed: render at the end of frame with dirty-rectangle
  */
-@injectable()
+@singleton({ contrib: RenderingPluginContribution })
 export class CanvasRendererPlugin implements RenderingPlugin {
   static tag = 'CanvasRendererPlugin';
 

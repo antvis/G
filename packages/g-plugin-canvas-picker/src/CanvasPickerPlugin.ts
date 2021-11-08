@@ -4,19 +4,17 @@ import {
   DisplayObjectPool,
   RenderingService,
   RenderingPlugin,
-  RenderingContext,
+  RenderingPluginContribution,
   SceneGraphService,
   PickingResult,
   OffscreenCanvasCreator,
-  Camera,
-  DefaultCamera,
   BaseStyleProps,
   Point,
 } from '@antv/g';
 import { PathGeneratorFactory, RBushRoot } from '@antv/g-plugin-canvas-renderer';
 import type { RBush, PathGenerator, RBushNodeAABB } from '@antv/g-plugin-canvas-renderer';
 import { mat4, vec3 } from 'gl-matrix';
-import { inject, injectable } from 'inversify';
+import { inject, singleton } from 'mana-syringe';
 
 export const PointInPathPickerFactory = 'PointInPathPicker';
 export type PointInPathPicker<T extends BaseStyleProps> = (
@@ -31,18 +29,12 @@ export type PointInPathPicker<T extends BaseStyleProps> = (
  * 1. find AABB with r-tree
  * 2. do math calculation with geometry in an accurate way
  */
-@injectable()
+@singleton({ contrib: RenderingPluginContribution })
 export class CanvasPickerPlugin implements RenderingPlugin {
   static tag = 'CanvasPickerPlugin';
 
-  @inject(DefaultCamera)
-  private camera: Camera;
-
   @inject(SceneGraphService)
   private sceneGraphService: SceneGraphService;
-
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
 
   @inject(DisplayObjectPool)
   private displayObjectPool: DisplayObjectPool;

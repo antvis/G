@@ -1,7 +1,6 @@
-import { inject, injectable, named } from 'inversify';
+import { inject, singleton, contrib, Syringe, Contribution } from 'mana-syringe';
 import { SyncHook, SyncWaterfallHook, AsyncSeriesHook, AsyncSeriesWaterfallHook } from 'tapable';
 import { Renderable, Sortable } from '../components';
-import { ContributionProvider } from '../contribution-provider';
 import { DisplayObject } from '..';
 import { EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext, RENDER_REASON } from './RenderingContext';
@@ -11,47 +10,14 @@ import { IElement } from '../dom/interfaces';
 export interface RenderingPlugin {
   apply(renderer: RenderingService): void;
 }
-export const RenderingPluginContribution = 'RenderingPluginContribution';
+
+export const RenderingPluginContribution = Syringe.defineToken('RenderingPluginContribution', {
+  multiple: false,
+});
 
 export interface PickingResult {
   position: EventPosition;
   picked: DisplayObject | null;
-}
-
-function renderDisplayObject(
-  displayObject: DisplayObject,
-  hooks: any,
-  renderingContext: RenderingContext,
-) {
-  const entity = displayObject.entity;
-
-  // render itself
-  const objectToRender = hooks.prepare.call(displayObject);
-
-  if (objectToRender) {
-    if (!renderingContext.dirty) {
-      renderingContext.dirty = true;
-      hooks.beginFrame.call();
-    }
-
-    hooks.beforeRender.call(objectToRender);
-    hooks.render.call(objectToRender);
-    hooks.afterRender.call(objectToRender);
-
-    entity.getComponent(Renderable).dirty = false;
-  }
-
-  // sort is very expensive, use cached result if posible
-  const sortable = entity.getComponent(Sortable);
-  if (sortable.dirty) {
-    sortable.sorted = [...(displayObject.childNodes as IElement[])].sort(sortByZIndex);
-    sortable.dirty = false;
-  }
-
-  // recursive rendering its children
-  (sortable.sorted || displayObject.childNodes).forEach((child: DisplayObject) => {
-    renderDisplayObject(child, hooks, renderingContext);
-  });
 }
 
 /**
@@ -63,11 +29,10 @@ function renderDisplayObject(
  * * culling with strategies registered in `g-canvas/webgl`
  * * end frame
  */
-@injectable()
+@singleton()
 export class RenderingService {
-  @inject(ContributionProvider)
-  @named(RenderingPluginContribution)
-  private renderingPluginContribution: ContributionProvider<RenderingPlugin>;
+  @contrib(RenderingPluginContribution)
+  private renderingPluginProvider: Contribution.Provider<RenderingPlugin>;
 
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
@@ -97,7 +62,7 @@ export class RenderingService {
 
   async init() {
     // register rendering plugins
-    this.renderingPluginContribution.getContributions(true).forEach((plugin) => {
+    this.renderingPluginProvider.getContributions().forEach((plugin) => {
       plugin.apply(this);
     });
     await this.hooks.init.promise();
@@ -106,7 +71,7 @@ export class RenderingService {
 
   render() {
     if (this.renderingContext.renderReasons.size && this.inited) {
-      renderDisplayObject(this.renderingContext.root, this.hooks, this.renderingContext);
+      this.renderDisplayObject(this.renderingContext.root);
 
       if (this.renderingContext.dirty) {
         this.hooks.endFrame.call();
@@ -120,6 +85,38 @@ export class RenderingService {
 
       this.renderingContext.renderReasons.clear();
     }
+  }
+
+  private renderDisplayObject(displayObject: DisplayObject) {
+    const entity = displayObject.entity;
+
+    // render itself
+    const objectToRender = this.hooks.prepare.call(displayObject);
+
+    if (objectToRender) {
+      if (!this.renderingContext.dirty) {
+        this.renderingContext.dirty = true;
+        this.hooks.beginFrame.call();
+      }
+
+      this.hooks.beforeRender.call(objectToRender);
+      this.hooks.render.call(objectToRender);
+      this.hooks.afterRender.call(objectToRender);
+
+      entity.getComponent(Renderable).dirty = false;
+    }
+
+    // sort is very expensive, use cached result if posible
+    const sortable = entity.getComponent(Sortable);
+    if (sortable.dirty) {
+      sortable.sorted = [...(displayObject.childNodes as IElement[])].sort(sortByZIndex);
+      sortable.dirty = false;
+    }
+
+    // recursive rendering its children
+    (sortable.sorted || displayObject.childNodes).forEach((child: DisplayObject) => {
+      this.renderDisplayObject(child);
+    });
   }
 
   destroy() {

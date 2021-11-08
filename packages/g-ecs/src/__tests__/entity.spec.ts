@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { expect } from 'chai';
+import { Container } from 'mana-syringe';
 import { Entity } from '../Entity';
 import { Component } from '../Component';
 import { World } from '../World';
-import { Container } from 'inversify';
 import { containerModule } from '..';
 
 class C1 extends Component {

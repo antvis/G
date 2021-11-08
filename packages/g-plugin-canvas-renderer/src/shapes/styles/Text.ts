@@ -1,9 +1,11 @@
-import { TextService, ParsedTextStyleProps } from '@antv/g';
-import { inject, injectable } from 'inversify';
+import { TextService, ParsedTextStyleProps, SHAPE } from '@antv/g';
+import { inject, singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
-import { StyleRenderer } from '.';
+import { StyleRenderer } from './interfaces';
 
-@injectable()
+@singleton({
+  token: { token: StyleRenderer, named: SHAPE.Text },
+})
 export class TextRenderer implements StyleRenderer {
   @inject(TextService)
   private textService: TextService;

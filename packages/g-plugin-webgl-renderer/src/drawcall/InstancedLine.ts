@@ -1,11 +1,12 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from 'mana-syringe';
 import { Line, LINE_CAP, LINE_JOIN, Path, PolygonShape, Polyline } from '@antv/g';
 import { fillMatrix4x4, fillVec4, makeSortKeyOpaque, RendererLayer } from '../render/utils';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RenderInst } from '../render/RenderInst';
 import { DisplayObject, PARSED_COLOR_TYPE, Point, SHAPE, Tuple4Number } from '@antv/g';
 import { DeviceProgram } from '../render/DeviceProgram';
-import { Batch, AttributeLocation } from '.';
+import { Batch, AttributeLocation } from './Batch';
+import { ShapeRenderer } from '../tokens';
 
 const segmentInstanceGeometry = [0, -0.5, 1, -0.5, 1, 0.5, 0, 0.5];
 
@@ -60,7 +61,12 @@ class InstancedLineProgram extends DeviceProgram {
  * TODO: dashed line
  * TODO: joint & cap
  */
-@injectable()
+@injectable({
+  token: [
+    { token: ShapeRenderer, named: SHAPE.Line },
+    { token: ShapeRenderer, named: SHAPE.Polyline },
+  ],
+})
 export class InstancedLineRenderer extends Batch {
   protected program = new InstancedLineProgram();
 

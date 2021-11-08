@@ -20,9 +20,9 @@ export default {
   //     },
   //   ],
   // ],
-  umd: {
-    minFile: true,
-  },
+  // umd: {
+  //   minFile: true,
+  // },
   // yarn build order
   pkgs: [
     'g-math',

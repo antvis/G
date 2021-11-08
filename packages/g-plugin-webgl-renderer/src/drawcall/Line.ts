@@ -1,7 +1,7 @@
 /**
  * @see https://www.khronos.org/assets/uploads/developers/presentations/Crazy_Panda_How_to_draw_lines_in_WebGL.pdf
  */
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from 'mana-syringe';
 import { Line, LINE_CAP, LINE_JOIN, Path, PolygonShape, Polyline } from '@antv/g';
 import earcut from 'earcut';
 import { fillMatrix4x4, fillVec4, makeSortKeyOpaque, RendererLayer } from '../render/utils';
@@ -20,7 +20,8 @@ import { RenderCache } from '../render/RenderCache';
 import { RenderInst } from '../render/RenderInst';
 import { DisplayObject, PARSED_COLOR_TYPE, Point, SHAPE, Tuple4Number } from '@antv/g';
 import { DeviceProgram } from '../render/DeviceProgram';
-import { Batch } from '.';
+import { Batch } from './Batch';
+import { ShapeRenderer } from '../tokens';
 import { Renderable3D } from '../components/Renderable3D';
 
 export enum JOINT_TYPE {
@@ -460,7 +461,12 @@ void main(){
 `;
 }
 
-@injectable()
+@injectable({
+  token: [
+    { token: ShapeRenderer, named: SHAPE.Path },
+    { token: ShapeRenderer, named: SHAPE.Polygon },
+  ],
+})
 export class LineRenderer extends Batch {
   protected program = new LineProgram();
 

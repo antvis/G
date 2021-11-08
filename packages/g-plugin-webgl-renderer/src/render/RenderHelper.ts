@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { singleton } from 'mana-syringe';
 import { Device } from '../platform';
 import { DynamicUniformBuffer } from './DynamicUniformBuffer';
 import { RenderCache } from './RenderCache';
@@ -6,7 +6,7 @@ import { RenderGraph } from './RenderGraph';
 import { RenderInst } from './RenderInst';
 import { RenderInstManager } from './RenderInstManager';
 
-@injectable()
+@singleton()
 export class RenderHelper {
   renderCache: RenderCache;
   renderGraph: RenderGraph;

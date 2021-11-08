@@ -1,5 +1,6 @@
-import { DisplayObject, SHAPE } from '..';
+import { SHAPE } from '../types';
 import {
+  DisplayObject,
   Ellipse,
   Circle,
   Rect,

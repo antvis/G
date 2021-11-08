@@ -1,22 +1,26 @@
-import { RendererPlugin, SceneGraphSelector, container } from '@antv/g';
-import { ContainerModule, Container } from 'inversify';
+import { RendererPlugin, SceneGraphSelector } from '@antv/g';
+import { Module, Syringe } from 'mana-syringe';
 import { CSSSceneGraphSelector } from './CSSSceneGraphSelector';
 import { SceneGraphAdapter } from './SceneGraphAdapter';
 
-const containerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
-  if (!container.isBound(SceneGraphAdapter)) {
-    container.bind(SceneGraphAdapter).toSelf().inSingletonScope();
-    container.bind(CSSSceneGraphSelector).toSelf().inSingletonScope();
-    // rebind default SceneGraphSelector to our implementation
-    container.rebind(SceneGraphSelector).toService(CSSSceneGraphSelector);
-  }
+const containerModule = Module((register) => {
+  register(SceneGraphAdapter);
+  register({ token: SceneGraphSelector, useClass: CSSSceneGraphSelector });
+  // if (!container.isBound(SceneGraphAdapter)) {
+  //   container.bind(SceneGraphAdapter).toSelf().inSingletonScope();
+  //   container.bind(CSSSceneGraphSelector).toSelf().inSingletonScope();
+  //   // rebind default SceneGraphSelector to our implementation
+  //   container.rebind(SceneGraphSelector).toService(CSSSceneGraphSelector);
+  // }
 });
 
 export class Plugin implements RendererPlugin {
-  init(container: Container): void {
+  init(container: Syringe.Container): void {
     container.load(containerModule);
   }
-  destroy(container: Container): void {
-    container.unload(containerModule);
+  destroy(container: Syringe.Container): void {
+    // container.unload(containerModule);
+    // @ts-ignore
+    // container.container.unload(containerModule);
   }
 }

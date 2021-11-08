@@ -1,13 +1,11 @@
+import { inject, singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
-import { Transform } from '../components/Transform';
-import { Sortable } from '../components/Sortable';
-import { inject, injectable } from 'inversify';
-import { Geometry, Renderable } from '../components';
+import { Geometry, Renderable, Sortable, Transform } from '../components';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import { AABB, Rectangle } from '../shapes';
 import { SceneGraphSelector, SceneGraphSelectorFactory } from './SceneGraphSelector';
-import { IChildNode, IElement, INode, IParentNode } from '../dom/interfaces';
-import { ElementEvent } from '..';
+import type { IChildNode, IElement, INode, IParentNode } from '../dom/interfaces';
+import { ElementEvent } from '../dom/interfaces';
 
 export function sortByZIndex(o1: IElement, o2: IElement) {
   const zIndex1 = Number(o1.style.zIndex);
@@ -81,7 +79,7 @@ export interface SceneGraphService {
  *
  * @see https://community.khronos.org/t/scene-graphs/50542/7
  */
-@injectable()
+@singleton()
 export class DefaultSceneGraphService implements SceneGraphService {
   @inject(SceneGraphSelectorFactory)
   private sceneGraphSelectorFactory: () => SceneGraphSelector;
@@ -196,16 +194,18 @@ export class DefaultSceneGraphService implements SceneGraphService {
       const parentEntity = parent.getEntity();
       const parentSortable = parentEntity.getComponent(Sortable);
 
-      // no need to re-sort, use cached sorted children
-      if (!parentSortable.sorted) {
-        parentSortable.sorted = [...(parent.childNodes as IElement[])];
-      }
-      if (parentSortable.dirty) {
-        parentSortable.sorted = [...(parent.childNodes as IElement[])].sort(sortByZIndex);
-        parentSortable.dirty = false;
-      }
+      if (parentSortable) {
+        // no need to re-sort, use cached sorted children
+        if (!parentSortable.sorted) {
+          parentSortable.sorted = [...(parent.childNodes as IElement[])];
+        }
+        if (parentSortable.dirty) {
+          parentSortable.sorted = [...(parent.childNodes as IElement[])].sort(sortByZIndex);
+          parentSortable.dirty = false;
+        }
 
-      return parentSortable.sorted.indexOf(o1) - parentSortable.sorted.indexOf(o2);
+        return parentSortable.sorted.indexOf(o1) - parentSortable.sorted.indexOf(o2);
+      }
     }
 
     return -1;

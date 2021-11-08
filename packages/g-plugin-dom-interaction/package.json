@@ -29,7 +29,8 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.25"
+    "@antv/g": "^1.0.0-alpha.25",
+    "mana-syringe": "^0.1.0"
   },
   "devDependencies": {
     "@types/jest": "^25.0.0",

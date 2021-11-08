@@ -1,9 +1,13 @@
 import { isEqual, isNil, isObject } from '@antv/util';
 import { mat3, mat4, quat, vec2, vec3 } from 'gl-matrix';
+import { GlobalContainer } from 'mana-syringe';
 import { DisplayObjectPool } from '../DisplayObjectPool';
-import { Animation, Element, ElementEvent, KeyframeEffect } from '../dom';
-import type { DisplayObjectConfig, IElement, INode } from '../dom';
-import { container, SHAPE } from '..';
+import { Animation } from '../dom/Animation';
+import { KeyframeEffect } from '../dom/KeyframeEffect';
+import { Element } from '../dom/Element';
+import { ElementEvent } from '../dom/interfaces';
+import type { DisplayObjectConfig, IElement, INode } from '../dom/interfaces';
+import { SHAPE } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { createVec3, fromRotationTranslationScale, getEuler, rad2deg } from '../utils';
 import { Cullable, Renderable } from '../components';
@@ -63,11 +67,11 @@ export class DisplayObject<
    */
   private activeAnimations: Animation[] = [];
 
-  stylePropertyUpdaterFactory = container.get<
+  stylePropertyUpdaterFactory = GlobalContainer.get<
     <Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyUpdater<any>[]
   >(StylePropertyUpdaterFactory);
 
-  stylePropertyParserFactory = container.get<
+  stylePropertyParserFactory = GlobalContainer.get<
     <Key extends keyof ParsedStyleProps>(stylePropertyName: Key) => StylePropertyParser<any, any>
   >(StylePropertyParserFactory);
 
@@ -109,14 +113,14 @@ export class DisplayObject<
     this.initAttributes(this.config.style);
 
     // insert this group into pool
-    container.get(DisplayObjectPool).add(this.entity.getName(), this);
+    GlobalContainer.get(DisplayObjectPool).add(this.entity.getName(), this);
   }
 
   destroy() {
     super.destroy();
 
     // remove from into pool
-    container.get(DisplayObjectPool).remove(this.entity.getName());
+    GlobalContainer.get(DisplayObjectPool).remove(this.entity.getName());
 
     // stop all active animations
     this.getAnimations().forEach((animation) => {

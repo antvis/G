@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@antv/g": "^1.0.0-alpha.25",
+    "mana-syringe": "^0.1.0",
     "hammerjs": "^2.0.8"
   },
   "devDependencies": {
