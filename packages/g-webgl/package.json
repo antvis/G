@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgl",
-  "version": "1.0.0-alpha.25",
+  "version": "1.0.0-alpha.26",
   "description": "A renderer implemented by WebGL1",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -38,10 +38,10 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.25",
-    "@antv/g-plugin-dom-interaction": "^1.0.0-alpha.24",
-    "@antv/g-plugin-html-renderer": "^1.0.0-alpha.8",
-    "@antv/g-plugin-webgl-renderer": "^1.0.0-alpha.25",
+    "@antv/g": "^1.0.0-alpha.26",
+    "@antv/g-plugin-dom-interaction": "^1.0.0-alpha.25",
+    "@antv/g-plugin-html-renderer": "^1.0.0-alpha.9",
+    "@antv/g-plugin-webgl-renderer": "^1.0.0-alpha.26",
     "@antv/util": "^2.0.13",
     "mana-syringe": "^0.1.0"
   }
