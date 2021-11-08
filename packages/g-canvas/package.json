@@ -38,6 +38,7 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
+    "@babel/runtime": "^7.16.0",
     "@antv/g": "^1.0.0-alpha.26",
     "@antv/g-plugin-canvas-picker": "^1.0.0-alpha.20",
     "@antv/g-plugin-canvas-renderer": "^1.0.0-alpha.26",

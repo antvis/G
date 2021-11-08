@@ -2,6 +2,18 @@
 
 以下版本号以 @antv/g 为准。
 
+## [1.0.0-alpha.27] - 2021-11-08
+
+### Bug 修复
+
+-   开启 [runtimehelpers](https://github.com/umijs/father#runtimehelpers)，修复 async/await 编译问题。
+
+## [1.0.0-alpha.26] - 2021-11-08
+
+### 新增特性
+
+使用 mana-syringe 替换 inversify。
+
 ## [1.0.0-alpha.24] - 2021-11-04
 
 -   @antv/g-canvas@1.0.0-alpha.24

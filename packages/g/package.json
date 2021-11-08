@@ -35,6 +35,7 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
+    "@babel/runtime": "^7.16.0",
     "@antv/g-ecs": "^1.0.0-alpha.10",
     "@antv/g-math": "^1.0.0-alpha.6",
     "@antv/path-util": "^2.0.14",

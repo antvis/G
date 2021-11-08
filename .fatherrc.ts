@@ -2,6 +2,7 @@
 import rust from '@wasm-tool/rollup-plugin-rust';
 
 export default {
+  runtimeHelpers: true,
   cjs: 'rollup',
   esm: 'rollup',
   extraRollupPlugins: [
