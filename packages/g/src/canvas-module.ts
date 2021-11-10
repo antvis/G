@@ -8,9 +8,9 @@ import { EventPlugin } from './plugins/EventPlugin';
 import { EventService } from './services';
 
 export const containerModule = Module((register) => {
-  Contribution.register(register, RenderingPluginContribution);
+  Contribution.register(register, RenderingPluginContribution, { cache: false });
   // culling plugin
-  Contribution.register(register, CullingStrategyContribution);
+  Contribution.register(register, CullingStrategyContribution, { cache: false });
 
   register(RenderingService);
   register(EventService);

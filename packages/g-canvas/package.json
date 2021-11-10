@@ -44,7 +44,10 @@
     "@antv/g-plugin-dom-interaction": "^1.0.0-alpha.26",
     "@antv/g-plugin-html-renderer": "^1.0.0-alpha.10",
     "@antv/util": "^2.0.13",
-    "@babel/runtime": "^7.16.0",
+    "@babel/runtime": "^7.16.3",
     "mana-syringe": "^0.1.0"
+  },
+  "peerDependencies": {
+    "@antv/g": "^1.0.0-alpha.27"
   }
 }

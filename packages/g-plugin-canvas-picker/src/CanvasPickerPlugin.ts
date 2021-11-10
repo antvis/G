@@ -73,7 +73,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
           // parent is not included, eg. parent is clipped
           if (
             displayObject.parentNode &&
-            queriedNames.indexOf(displayObject.parentNode.getEntity().getName()) === -1
+            queriedNames.indexOf(displayObject.parentNode.entity.getName()) === -1
           ) {
             return;
           }

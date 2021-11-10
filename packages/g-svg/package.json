@@ -42,7 +42,7 @@
     "@antv/g-plugin-svg-picker": "^1.0.0-alpha.26",
     "@antv/g-plugin-svg-renderer": "^1.0.0-alpha.27",
     "@antv/util": "^2.0.13",
-    "@babel/runtime": "^7.16.0",
+    "@babel/runtime": "^7.16.3",
     "mana-syringe": "^0.1.0"
   }
 }

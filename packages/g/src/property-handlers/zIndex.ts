@@ -3,7 +3,7 @@ import { Sortable, Renderable } from '../components';
 
 export function updateZIndex(oldZIndex: number, newZIndex: number, object: DisplayObject) {
   if (object.parentNode) {
-    const parentEntity = object.parentNode.getEntity();
+    const parentEntity = object.parentNode.entity;
     const parentRenderable = parentEntity.getComponent(Renderable);
     const parentSortable = parentEntity.getComponent(Sortable);
     if (parentRenderable) {

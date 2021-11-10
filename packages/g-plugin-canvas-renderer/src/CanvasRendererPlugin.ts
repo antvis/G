@@ -106,10 +106,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     const handleMounted = (e: FederatedEvent) => {
-      const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
-      if (!enableDirtyRectangleRendering) {
-        return;
-      }
+      // const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
+      // if (!enableDirtyRectangleRendering) {
+      //   return;
+      // }
 
       const object = e.target as DisplayObject;
       object.entity.addComponent(RBushNode);
@@ -118,26 +118,26 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
-      const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
-      if (!enableDirtyRectangleRendering) {
-        return;
-      }
+      // const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
+      // if (!enableDirtyRectangleRendering) {
+      //   return;
+      // }
 
       const object = e.target as DisplayObject;
 
       // remove r-bush node
       const rBushNode = object.entity.getComponent(RBushNode);
-      // this.rBush.remove(rBushNode.aabb);
-      this.rBush.remove(rBushNode.aabb, (a: RBushNodeAABB, b: RBushNodeAABB) => a.name === b.name);
+      this.rBush.remove(rBushNode.aabb);
+      // this.rBush.remove(rBushNode.aabb, (a: RBushNodeAABB, b: RBushNodeAABB) => a.name === b.name);
       object.entity.removeComponent(RBushNode);
     };
 
     const handleBoundsChanged = (e: FederatedEvent) => {
-      const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
-      // don not use rbush when dirty-rectangle rendering disabled
-      if (!enableDirtyRectangleRendering) {
-        return;
-      }
+      // const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
+      // // don not use rbush when dirty-rectangle rendering disabled
+      // if (!enableDirtyRectangleRendering) {
+      //   return;
+      // }
 
       const object = e.target as DisplayObject;
       // skip if this object mounted on another scenegraph root
@@ -225,7 +225,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
         // // append uncullable objects in renderQueue
         // const uncullableObjects = this.renderQueue.filter(
-        //   (object) => !object.getEntity().getComponent(Cullable).enable,
+        //   (object) => !object.entity.getComponent(Cullable).enable,
         // );
 
         // dirtyObjects.push(...uncullableObjects);
@@ -246,17 +246,16 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           this.saveDirtyAABB(object);
         });
 
-        // pop restore stack, eg. root -> parent -> child
-        this.restoreStack.forEach((s) => {
-          context.restore();
-        });
-
         // clear queue
         this.renderQueue = [];
-
-        // clear restore stack
-        this.restoreStack = [];
       }
+
+      // pop restore stack, eg. root -> parent -> child
+      this.restoreStack.forEach((s) => {
+        context.restore();
+      });
+      // clear restore stack
+      this.restoreStack = [];
 
       context.restore();
     });
@@ -278,7 +277,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     // restore to its parent
     let parent = this.restoreStack[this.restoreStack.length - 1];
-    while (parent && object.parent !== parent) {
+    while (parent && object.parentNode !== parent) {
       context.restore();
       this.restoreStack.pop();
       parent = this.restoreStack[this.restoreStack.length - 1];
@@ -335,7 +334,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     context.restore();
 
     // finish rendering, clear dirty flag
-    const renderable = object.getEntity().getComponent(Renderable);
+    const renderable = object.entity.getComponent(Renderable);
     renderable.dirty = false;
 
     this.restoreStack.push(object);
@@ -361,8 +360,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     if (rBushNode) {
       // insert node in RTree
-      // this.rBush.remove(rBushNode.aabb);
-      this.rBush.remove(rBushNode.aabb, (a: RBushNodeAABB, b: RBushNodeAABB) => a.name === b.name);
+      this.rBush.remove(rBushNode.aabb);
+      // this.rBush.remove(rBushNode.aabb, (a: RBushNodeAABB, b: RBushNodeAABB) => a.name === b.name);
 
       const renderBounds = object.getRenderBounds();
       if (renderBounds) {
@@ -503,7 +502,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
             } else {
               this.imagePool.createPattern(parsedColor.value, context).then(() => {
                 // set dirty rectangle flag
-                object.getEntity().getComponent(Renderable).dirty = true;
+                object.entity.getComponent(Renderable).dirty = true;
                 renderingService.dirtify();
               });
             }

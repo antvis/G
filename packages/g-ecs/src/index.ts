@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { Module, injectable, decorate } from 'mana-syringe';
 import { EventEmitter } from 'eventemitter3';
 import { ObjectPool } from './ObjectPool';

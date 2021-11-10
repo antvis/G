@@ -1,10 +1,10 @@
 import { isBoolean, isFunction, isObject } from '@antv/util';
 import { EventEmitter } from 'eventemitter3';
-import { GlobalContainer } from 'mana-syringe';
 import { Entity, World } from '@antv/g-ecs';
 import { CustomEvent } from './CustomEvent';
 import { FederatedEvent } from './FederatedEvent';
 import type { IElement, INode, IEventTarget } from './interfaces';
+import { globalContainer } from '../global-module';
 
 export const DELEGATION_SPLITTER = ':';
 
@@ -22,17 +22,10 @@ export class EventTarget implements IEventTarget {
   entity: Entity;
 
   constructor() {
-    const world = GlobalContainer.get(World);
+    const world = globalContainer.get(World);
     // create entity with shape's name, unique ID
     const entity = world.createEntity();
     this.entity = entity;
-  }
-
-  /**
-   * @deprecated
-   */
-  getEntity() {
-    return this.entity;
   }
 
   /**

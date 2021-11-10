@@ -1,5 +1,6 @@
 import { Syringe } from 'mana-syringe';
 
+// 1 of 1 in each Canvas
 export const ContextService = Syringe.defineToken('ContextService', { multiple: false });
 export interface ContextService<Context> {
   init(): void;

@@ -14,7 +14,7 @@ export function createOrUpdateFilter(
   filters: ParsedFilterStyleProperty[],
 ) {
   // eg. filter="url(#f1) url(#f2)"
-  const filterName = FILTER_PREFIX + object.getEntity().getName();
+  const filterName = FILTER_PREFIX + object.entity.getName();
 
   const $existedFilters = $def.querySelectorAll(`[name=${filterName}]`);
   if ($existedFilters.length) {

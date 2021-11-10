@@ -142,7 +142,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       if (attributeName === 'zIndex') {
         const parent = object.parentNode;
-        const parentEntity = object.parentNode?.getEntity();
+        const parentEntity = object.parentNode?.entity;
         const $groupEl = parentEntity?.getComponent(ElementSVG)?.$groupEl;
         const children = [...(parent?.children || [])];
 
@@ -189,7 +189,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         this.applyTransform(this.$camera, this.camera.getOrthoMatrix());
       }
 
-      const entity = object.getEntity();
+      const entity = object.entity;
       const $el = entity.getComponent(ElementSVG)?.$el;
       const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
 
@@ -213,7 +213,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // create empty fragment
     const fragment = document.createDocumentFragment();
     children.forEach((child: DisplayObject) => {
-      const $el = child.getEntity().getComponent(ElementSVG).$groupEl;
+      const $el = child.entity.getComponent(ElementSVG).$groupEl;
       if ($el) {
         fragment.appendChild($el);
       }
@@ -247,7 +247,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private applyAttributes(object: DisplayObject) {
-    const entity = object.getEntity();
+    const entity = object.entity;
     const $el = entity.getComponent(ElementSVG)?.$el;
     const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
     if ($el && $groupEl) {
@@ -277,7 +277,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     value: any,
     skipGeneratePath = false,
   ) {
-    const entity = object.getEntity();
+    const entity = object.entity;
     const $el = entity.getComponent(ElementSVG)?.$el;
     const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
     const { parsedStyle } = object;
@@ -296,7 +296,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       } else if (name === 'clipPath') {
         const clipPath = value as DisplayObject;
         if (clipPath) {
-          const clipPathId = CLIP_PATH_PREFIX + clipPath.getEntity().getName();
+          const clipPathId = CLIP_PATH_PREFIX + clipPath.entity.getName();
 
           const existed = this.$def.querySelector(`#${clipPathId}`);
           if (!existed) {
@@ -308,10 +308,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
             // <clipPath><circle /></clipPath>
             this.createSVGDom(clipPath, $clipPath, true);
 
-            clipPath.getEntity().getComponent(ElementSVG).$groupEl = $clipPath;
+            clipPath.entity.getComponent(ElementSVG).$groupEl = $clipPath;
           }
 
-          const $groupEl = clipPath.getEntity().getComponent(ElementSVG)?.$groupEl;
+          const $groupEl = clipPath.entity.getComponent(ElementSVG)?.$groupEl;
           if ($groupEl) {
             // apply local RTS transformation to <group> wrapper
             this.applyTransform($groupEl, clipPath.getLocalTransform());
@@ -365,7 +365,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private createSVGDom(object: DisplayObject, root: SVGElement, noWrapWithGroup = false) {
-    const entity = object.getEntity();
+    const entity = object.entity;
     // create svg element
     const svgElement = entity.addComponent(ElementSVG);
 
@@ -394,8 +394,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       svgElement.$groupEl = $groupEl;
 
       const $parentGroupEl =
-        (object.parentNode && object.parentNode.getEntity().getComponent(ElementSVG)?.$groupEl) ||
-        root;
+        (object.parentNode && object.parentNode.entity.getComponent(ElementSVG)?.$groupEl) || root;
 
       if ($parentGroupEl) {
         $parentGroupEl.appendChild($groupEl);
@@ -407,11 +406,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private removeSVGDom(object: DisplayObject) {
-    const $groupEl = object.getEntity().getComponent(ElementSVG)?.$groupEl;
+    const $groupEl = object.entity.getComponent(ElementSVG)?.$groupEl;
     if ($groupEl && $groupEl.parentNode) {
       $groupEl.parentNode.removeChild($groupEl);
 
-      object.getEntity().removeComponent(ElementSVG, true);
+      object.entity.removeComponent(ElementSVG, true);
     }
   }
 
@@ -424,7 +423,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const height = (bounds && bounds.halfExtents[1] * 2) || 0;
     const { anchor = [0, 0] } = object.parsedStyle || {};
 
-    const $el = object.getEntity().getComponent(ElementSVG)?.$el;
+    const $el = object.entity.getComponent(ElementSVG)?.$el;
     // apply anchor to element's `transform` property
     $el?.setAttribute(
       'transform',

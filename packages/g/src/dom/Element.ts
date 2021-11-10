@@ -1,5 +1,4 @@
 import { isNil } from '@antv/util';
-import { GlobalContainer } from 'mana-syringe';
 import { SceneGraphService } from '../services/SceneGraphService';
 import { Cullable, Geometry, Renderable, Transform, Sortable } from '../components';
 import { BaseStyleProps, ParsedBaseStyleProps } from '../types';
@@ -7,6 +6,7 @@ import { Node } from './Node';
 import { AABB, Rectangle } from '../shapes';
 import type { DisplayObjectConfig, IEventTarget, IChildNode, IElement, INode } from './interfaces';
 import { ElementEvent } from './interfaces';
+import { globalContainer } from '../global-module';
 
 /**
  * Has following capabilities:
@@ -25,7 +25,7 @@ export class Element<
     return !!(target as IElement).getAttribute;
   }
 
-  sceneGraphService = GlobalContainer.get<SceneGraphService>(SceneGraphService);
+  sceneGraphService = globalContainer.get<SceneGraphService>(SceneGraphService);
 
   constructor(config: DisplayObjectConfig<StyleProps>) {
     super();

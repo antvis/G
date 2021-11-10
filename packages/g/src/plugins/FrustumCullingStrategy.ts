@@ -12,7 +12,7 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
   private camera: Camera;
 
   isVisible(object: DisplayObject) {
-    const entity = object.getEntity();
+    const entity = object.entity;
     const cullable = entity.getComponent(Cullable);
 
     return true;
@@ -32,9 +32,8 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
     // get VP matrix from camera
     this.camera.getFrustum().extractFromVPMatrix(vpMatrix);
 
-    const parentVisibilityPlaneMask = object.parentNode
-      ?.getEntity()
-      .getComponent(Cullable)?.visibilityPlaneMask;
+    const parentVisibilityPlaneMask =
+      object.parentNode?.entity.getComponent(Cullable)?.visibilityPlaneMask;
     cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
       renderBounds,
       parentVisibilityPlaneMask || Mask.INDETERMINATE,

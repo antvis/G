@@ -1,5 +1,4 @@
-// @ts-ignore
-import * as TinySDF from '@mapbox/tiny-sdf';
+import TinySDF from '@mapbox/tiny-sdf';
 import { injectable } from 'mana-syringe';
 import { Device, Format, makeTextureDescriptor2D, Texture } from '../../platform';
 import { AlphaImage, StyleGlyph } from './AlphaImage';

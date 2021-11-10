@@ -1,6 +1,6 @@
-import { GlobalContainer } from 'mana-syringe';
 import type { AnimationEffectTiming } from '../dom';
 import type { IElement } from '../dom/interfaces';
+import { globalContainer } from '../global-module';
 import {
   Interpolatable,
   StylePropertyMergerFactory,
@@ -142,9 +142,9 @@ function propertyInterpolation(
   let parsedLeft = left;
   let parsedRight = right;
 
-  const parserFactory = GlobalContainer.get<StylePropertyParserFactory>(StylePropertyParserFactory);
+  const parserFactory = globalContainer.get<StylePropertyParserFactory>(StylePropertyParserFactory);
   const parser = parserFactory(property);
-  const mergerFactory = GlobalContainer.get<StylePropertyMergerFactory>(StylePropertyMergerFactory);
+  const mergerFactory = globalContainer.get<StylePropertyMergerFactory>(StylePropertyMergerFactory);
   const merger = mergerFactory(property);
 
   // if (left == 'initial' || right == 'initial') {

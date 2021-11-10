@@ -1,6 +1,5 @@
 import { isEqual, isNil, isObject } from '@antv/util';
 import { mat3, mat4, quat, vec2, vec3 } from 'gl-matrix';
-import { GlobalContainer } from 'mana-syringe';
 import { DisplayObjectPool } from '../DisplayObjectPool';
 import { Animation } from '../dom/Animation';
 import { KeyframeEffect } from '../dom/KeyframeEffect';
@@ -18,6 +17,7 @@ import {
   StylePropertyUpdaterFactory,
 } from '../property-handlers';
 import { dirtifyRenderable } from '../services';
+import { globalContainer } from '../global-module';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
@@ -67,11 +67,11 @@ export class DisplayObject<
    */
   private activeAnimations: Animation[] = [];
 
-  stylePropertyUpdaterFactory = GlobalContainer.get<
+  stylePropertyUpdaterFactory = globalContainer.get<
     <Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyUpdater<any>[]
   >(StylePropertyUpdaterFactory);
 
-  stylePropertyParserFactory = GlobalContainer.get<
+  stylePropertyParserFactory = globalContainer.get<
     <Key extends keyof ParsedStyleProps>(stylePropertyName: Key) => StylePropertyParser<any, any>
   >(StylePropertyParserFactory);
 
@@ -113,14 +113,14 @@ export class DisplayObject<
     this.initAttributes(this.config.style);
 
     // insert this group into pool
-    GlobalContainer.get(DisplayObjectPool).add(this.entity.getName(), this);
+    globalContainer.get(DisplayObjectPool).add(this.entity.getName(), this);
   }
 
   destroy() {
     super.destroy();
 
     // remove from into pool
-    GlobalContainer.get(DisplayObjectPool).remove(this.entity.getName());
+    globalContainer.get(DisplayObjectPool).remove(this.entity.getName());
 
     // stop all active animations
     this.getAnimations().forEach((animation) => {
@@ -239,7 +239,7 @@ export class DisplayObject<
    * called when attributes get changed or initialized
    */
   private changeAttribute<Key extends keyof StyleProps>(name: Key, value: StyleProps[Key]) {
-    const entity = this.getEntity();
+    const entity = this.entity;
     const renderable = entity.getComponent(Renderable);
 
     const oldValue = this.attributes[name];

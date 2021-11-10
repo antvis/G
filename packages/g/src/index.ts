@@ -1,14 +1,13 @@
-import { GlobalContainer } from 'mana-syringe';
 import { containerModule as ecsModule, World } from '@antv/g-ecs';
-import { containerModule as globalModule } from './global-module';
+import { containerModule as globalModule, globalContainer } from './global-module';
 import { Sortable, Cullable, Geometry, Renderable, Transform } from './components';
 
 // bind ECS
-GlobalContainer.load(ecsModule);
-GlobalContainer.load(globalModule);
+globalContainer.load(ecsModule);
+globalContainer.load(globalModule);
 
 // register components & systems
-const world = GlobalContainer.get<World>(World);
+const world = globalContainer.get<World>(World);
 world
   .registerComponent(Transform)
   .registerComponent(Sortable)
@@ -30,3 +29,4 @@ export * from './shapes';
 export * from './utils';
 export * from './property-handlers';
 export * from './display-objects';
+export * from './global-module';

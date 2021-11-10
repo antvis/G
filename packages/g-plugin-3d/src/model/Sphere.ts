@@ -45,7 +45,7 @@
 //   private texturePool: TexturePool;
 
 //   async onAttributeChanged(object: DisplayObject<SphereStyleProps>, name: string, value: any) {
-//     const entity = object.getEntity();
+//     const entity = object.entity;
 //     const renderable = entity.getComponent(Renderable);
 //     const renderable3d = entity.getComponent(Renderable3D);
 //     const material = entity.getComponent(Material3D);
@@ -61,7 +61,7 @@
 //   }
 
 //   async prepareModel(object: DisplayObject<SphereStyleProps>) {
-//     const entity = object.getEntity();
+//     const entity = object.entity;
 //     const renderable = entity.getComponent(Renderable);
 //     const material = entity.getComponent(Material3D);
 //     const geometry = entity.getComponent(Geometry3D);

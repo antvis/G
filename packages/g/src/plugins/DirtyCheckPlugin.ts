@@ -27,7 +27,7 @@ export class DirtyCheckPlugin implements RenderingPlugin {
       if (object) {
         const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
 
-        const renderable = object.getEntity().getComponent(Renderable);
+        const renderable = object.entity.getComponent(Renderable);
         const isDirty =
           renderable.dirty || this.renderingContext.renderReasons.has(RENDER_REASON.CameraChanged);
         if (isDirty || !enableDirtyRectangleRendering) {

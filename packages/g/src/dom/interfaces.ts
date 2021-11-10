@@ -41,7 +41,6 @@ export enum ElementEvent {
 
 export interface IEventTarget {
   entity: Entity;
-  getEntity(): Entity;
   emitter: EventEmitter;
 
   on(

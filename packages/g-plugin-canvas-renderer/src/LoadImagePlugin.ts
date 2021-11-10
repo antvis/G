@@ -33,7 +33,7 @@ export class LoadImagePlugin implements RenderingPlugin {
         if (isString(img)) {
           this.imagePool.getOrCreateImage(img).then(() => {
             // set dirty rectangle flag
-            object.getEntity().getComponent(Renderable).dirty = true;
+            object.entity.getComponent(Renderable).dirty = true;
             renderingService.dirtify();
           });
         }

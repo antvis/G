@@ -1,5 +1,5 @@
-import { DisplayObject, RendererPlugin } from '@antv/g';
-import { Module, GlobalContainer, Syringe } from 'mana-syringe';
+import { DisplayObject, RendererPlugin, globalContainer } from '@antv/g';
+import { Module, Syringe } from 'mana-syringe';
 import { registerModelBuilder, Batch } from '@antv/g-plugin-webgl-renderer';
 import { CubeUpdater } from './aabb/CubeUpdater';
 import { SphereUpdater } from './aabb/SphereUpdater';
@@ -13,9 +13,9 @@ import { Sphere } from './Sphere';
 import { Grid } from './Grid';
 
 // TODO: provide more friendly API like `registerGeometry`
-GlobalContainer.register(CubeUpdater);
-GlobalContainer.register(SphereUpdater);
-GlobalContainer.register(GridUpdater);
+globalContainer.register(CubeUpdater);
+globalContainer.register(SphereUpdater);
+globalContainer.register(GridUpdater);
 
 export const containerModule = Module((register) => {
   registerModelBuilder(CubeModelBuilder, SHAPE_3D.Cube);

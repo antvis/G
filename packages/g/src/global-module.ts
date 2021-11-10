@@ -1,4 +1,4 @@
-import { Module } from 'mana-syringe';
+import { Module, GlobalContainer } from 'mana-syringe';
 import { DisplayObjectPool } from './DisplayObjectPool';
 import { DefaultSceneGraphService, SceneGraphService } from './services/SceneGraphService';
 import {
@@ -52,6 +52,8 @@ import {
   parseFilter,
   updateAnchor,
 } from './property-handlers';
+
+export const globalContainer = GlobalContainer;
 
 export const containerModule = Module((register) => {
   // bind DisplayObject pool

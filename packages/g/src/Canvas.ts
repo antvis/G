@@ -1,4 +1,3 @@
-import { GlobalContainer } from 'mana-syringe';
 import { CanvasConfig, Cursor } from './types';
 import { cleanExistedCanvas } from './utils/canvas';
 import { DisplayObject } from './display-objects/DisplayObject';
@@ -15,6 +14,7 @@ import { Document, EventTarget, ElementEvent, FederatedEvent } from './dom';
 import type { IElement, INode, ICanvas } from './dom/interfaces';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
 import { Renderable } from './components';
+import { globalContainer } from './global-module';
 
 export enum CanvasEvent {
   READY = 'ready',
@@ -33,7 +33,7 @@ export class Canvas extends EventTarget implements ICanvas {
   /**
    * child container of current canvas, use hierarchy container
    */
-  container = GlobalContainer.createChild();
+  container = globalContainer.createChild();
 
   /**
    * window.document
@@ -299,12 +299,12 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   private loadCommonContainerModule() {
-    this.container.load(commonContainerModule);
+    this.container.load(commonContainerModule, true);
   }
 
-  // private unloadCommonContainerModule() {
-  //   unload(this.container);
-  // }
+  private unloadCommonContainerModule() {
+    unload(this.container);
+  }
 
   private loadRendererContainerModule(renderer: IRenderer) {
     // load other container modules provided by g-canvas/g-svg/g-webgl

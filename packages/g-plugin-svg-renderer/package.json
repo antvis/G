@@ -31,7 +31,7 @@
   "dependencies": {
     "@antv/g": "^1.0.0-alpha.27",
     "@antv/g-ecs": "^1.0.0-alpha.11",
-    "@babel/runtime": "^7.16.0",
+    "@babel/runtime": "^7.16.3",
     "detect-browser": "^5.0.0",
     "mana-syringe": "^0.1.0"
   },

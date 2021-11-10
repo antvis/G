@@ -7,7 +7,6 @@ import { Renderable3D } from './components/Renderable3D';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { PickingPlugin } from './PickingPlugin';
 // import { DefaultShaderModuleService, ShaderModuleService } from './services/shader-module';
-import { rgb2arr } from './utils/color';
 import { RenderGraphPlugin } from './RenderGraphPlugin';
 import { WebGLRendererPluginOptions } from './interfaces';
 import { RenderHelper } from './render/RenderHelper';
@@ -39,7 +38,6 @@ export {
   // ShaderModuleService,
   // ModelBuilder,
   TexturePool,
-  rgb2arr,
   RenderGraphPlugin,
 };
 

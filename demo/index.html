@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+  <title>size-sensor: DOM element size sensor which will callback when size changed.</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    #container {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container"></div>
+
+  <script src="../packages/g/dist/index.umd.js" type="application/javascript"></script>
+  <script src="../packages/g-canvas/dist/index.umd.js" type="application/javascript"></script>
+  <!-- <script src="../packages/g-svg/dist/index.umd.js" type="application/javascript"></script>
+  <script src="../packages/g-webgl/dist/index.umd.js" type="application/javascript"></script> -->
+  <script>
+    const { Circle, Canvas } = window.G;
+    const CanvasRenderer = window.GCanvas.Renderer;
+    // create a renderer
+    const canvasRenderer = new CanvasRenderer();
+
+    // create a canvas
+    const canvas = new Canvas({
+      container: 'container',
+      width: 600,
+      height: 500,
+      renderer: canvasRenderer,
+    });
+
+    // create a circle
+    const circle = new Circle({
+      style: {
+        x: 300,
+        y: 200,
+        r: 100,
+        fill: '#1890FF',
+        stroke: '#F04864',
+        lineWidth: 4,
+        shadowColor: 'black',
+        shadowBlur: 20,
+      },
+    });
+
+    // add a circle to canvas
+    canvas.appendChild(circle);
+  </script>
+</body>
+
+</html>

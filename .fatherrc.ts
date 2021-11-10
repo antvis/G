@@ -2,17 +2,23 @@
 import rust from '@wasm-tool/rollup-plugin-rust';
 
 export default {
-  runtimeHelpers: true,
   cjs: 'rollup',
   esm: 'rollup',
-  extraRollupPlugins: [
-    // wasm()
-    rust({
-      inlineWasm: true,
-    }),
-  ],
   // cjs: 'babel',
   // esm: 'babel',
+  umd: {
+    minFile: true,
+  },
+  runtimeHelpers: true,
+  nodeResolveOpts: {
+    mainFields: ['module', 'browser', 'main'],
+  },
+  extraRollupPlugins: [
+    // wasm()
+    // rust({
+    //   inlineWasm: true,
+    // }),
+  ],
   // extraBabelPlugins: [
   //   [
   //     'babel-plugin-inline-import',
@@ -21,9 +27,6 @@ export default {
   //     },
   //   ],
   // ],
-  // umd: {
-  //   minFile: true,
-  // },
   // yarn build order
   pkgs: [
     'g-math',

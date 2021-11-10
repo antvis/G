@@ -1,5 +1,5 @@
-import { RendererPlugin, SHAPE, world } from '@antv/g';
-import { GlobalContainer, Module, Syringe } from 'mana-syringe';
+import { RendererPlugin, SHAPE, world, globalContainer } from '@antv/g';
+import { Module, Syringe } from 'mana-syringe';
 import RBush from 'rbush';
 import { DefaultRenderer, StyleRenderer, StyleRendererFactory } from './shapes/styles';
 import { ImageRenderer } from './shapes/styles/Image';
@@ -37,36 +37,36 @@ world.registerComponent(RBushNode);
 /**
  * register shape renderers
  */
-GlobalContainer.register({
+globalContainer.register({
   token: { token: PathGenerator, named: SHAPE.Circle },
   useValue: CirclePath,
 });
-GlobalContainer.register({
+globalContainer.register({
   token: { token: PathGenerator, named: SHAPE.Ellipse },
   useValue: EllipsePath,
 });
-GlobalContainer.register({
+globalContainer.register({
   token: { token: PathGenerator, named: SHAPE.Rect },
   useValue: RectPath,
 });
-GlobalContainer.register({
+globalContainer.register({
   token: { token: PathGenerator, named: SHAPE.Line },
   useValue: LinePath,
 });
-GlobalContainer.register({
+globalContainer.register({
   token: { token: PathGenerator, named: SHAPE.Polyline },
   useValue: PolylinePath,
 });
-GlobalContainer.register({
+globalContainer.register({
   token: { token: PathGenerator, named: SHAPE.Polygon },
   useValue: PolygonPath,
 });
-GlobalContainer.register({
+globalContainer.register({
   token: { token: PathGenerator, named: SHAPE.Path },
   useValue: PathPath,
 });
 
-GlobalContainer.register({
+globalContainer.register({
   token: PathGeneratorFactory,
   useFactory: (ctx) => {
     return (tagName: SHAPE) => {
