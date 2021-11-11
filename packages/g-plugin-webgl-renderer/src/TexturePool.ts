@@ -33,7 +33,7 @@ export class TexturePool {
       if (typeof src !== 'string') {
         this.textureCache[id].setImageData(src, 0);
       } else {
-        const image = new Image();
+        const image = new window.Image();
         image.onload = () => {
           this.textureCache[id].setImageData(image, 0);
           successCallback();

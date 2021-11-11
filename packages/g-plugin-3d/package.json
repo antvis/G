@@ -38,10 +38,14 @@
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
     "@antv/g": "^1.0.0-alpha.27",
-    "@antv/g-plugin-dom-interaction": "^1.0.0-alpha.26",
     "@antv/g-plugin-webgl-renderer": "^1.0.0-alpha.27",
     "@antv/util": "^2.0.13",
     "@babel/runtime": "^7.16.3",
-    "mana-syringe": "^0.1.0"
+    "mana-syringe": "^0.2.1"
+  },
+  "peerDependencies": {
+    "@antv/g": "^1.0.0-alpha.27",
+    "@antv/g-plugin-webgl-renderer": "^1.0.0-alpha.27",
+    "mana-syringe": "^0.2.1"
   }
 }

@@ -16,7 +16,7 @@ export function parsePath(path: string, displayObject: DisplayObject | null): Pa
   const absolutePath = path2Absolute(path) as PathCommand[];
   const hasArc = hasArcOrBezier(absolutePath);
 
-  const clonedAbsolutePath = [...absolutePath];
+  const clonedAbsolutePath = absolutePath.slice();
   const { polygons, polylines } = extractPolygons(clonedAbsolutePath);
 
   // convert to curves to do morphing & picking later

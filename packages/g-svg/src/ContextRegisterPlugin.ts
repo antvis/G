@@ -1,5 +1,5 @@
 import { Syringe, Module } from 'mana-syringe';
-import { ContextService, RendererPlugin } from '@antv/g';
+import { RendererPlugin } from '@antv/g';
 import { SVGContextService } from './SVGContextService';
 
 const containerModule = Module((register) => {

@@ -1,4 +1,4 @@
-import { Component } from '@antv/g-ecs';
+import { Component } from '@antv/g';
 
 export class ElementSVG extends Component {
   static tag = 'c-svg-element';

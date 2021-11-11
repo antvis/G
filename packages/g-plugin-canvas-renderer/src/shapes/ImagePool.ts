@@ -16,7 +16,7 @@ export class ImagePool {
     }
 
     return new Promise((resolve, reject) => {
-      const image = new Image();
+      const image = new window.Image();
       image.onload = () => {
         resolve(image);
       };

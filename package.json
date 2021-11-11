@@ -77,7 +77,6 @@
   },
   "resolutions": {
     "monaco-editor": "0.21.2",
-    "normalize-url": "^4.0.1",
-    "@babel/runtime": "^7.16.3"
+    "normalize-url": "^4.0.1"
   }
 }

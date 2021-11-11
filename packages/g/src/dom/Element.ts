@@ -175,7 +175,7 @@ export class Element<
   }
 
   removeChildren(destroy = true) {
-    [...this.childNodes].forEach((child) => {
+    this.childNodes.slice().forEach((child) => {
       this.removeChild(child, destroy);
     });
   }

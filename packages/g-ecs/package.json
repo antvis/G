@@ -39,7 +39,6 @@
   "dependencies": {
     "@babel/runtime": "^7.16.3",
     "eventemitter3": "^4.0.0",
-    "mana-syringe": "^0.1.0",
-    "reflect-metadata": "^0.1.13"
+    "mana-syringe": "^0.2.1"
   }
 }

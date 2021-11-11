@@ -32,7 +32,7 @@
     "@antv/g": "^1.0.0-alpha.27",
     "@antv/g-plugin-canvas-renderer": "^1.0.0-alpha.27",
     "@babel/runtime": "^7.16.3",
-    "mana-syringe": "^0.1.0"
+    "mana-syringe": "^0.2.1"
   },
   "devDependencies": {
     "@types/jest": "^25.0.0",
@@ -41,7 +41,9 @@
     "webpack-cli": "^3.3.7"
   },
   "peerDependencies": {
-    "@antv/g": "^1.0.0-alpha.27"
+    "@antv/g": "^1.0.0-alpha.27",
+    "@antv/g-plugin-canvas-renderer": "^1.0.0-alpha.27",
+    "mana-syringe": "^0.2.1"
   },
   "homepage": "https://github.com/antvis/g#readme"
 }

@@ -197,10 +197,10 @@ export class DefaultSceneGraphService implements SceneGraphService {
       if (parentSortable) {
         // no need to re-sort, use cached sorted children
         if (!parentSortable.sorted) {
-          parentSortable.sorted = [...(parent.childNodes as IElement[])];
+          parentSortable.sorted = (parent.childNodes as IElement[]).slice();
         }
         if (parentSortable.dirty) {
-          parentSortable.sorted = [...(parent.childNodes as IElement[])].sort(sortByZIndex);
+          parentSortable.sorted = (parent.childNodes as IElement[]).slice().sort(sortByZIndex);
           parentSortable.dirty = false;
         }
 

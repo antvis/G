@@ -32,13 +32,17 @@
     "@antv/g": "^1.0.0-alpha.27",
     "@babel/runtime": "^7.16.3",
     "css-select": "^3.1.2",
-    "mana-syringe": "^0.1.0"
+    "mana-syringe": "^0.2.1"
   },
   "devDependencies": {
     "@types/jest": "^25.0.0",
     "npm-run-all": "^4.1.5",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7"
+  },
+  "peerDependencies": {
+    "@antv/g": "^1.0.0-alpha.27",
+    "mana-syringe": "^0.2.1"
   },
   "homepage": "https://github.com/antvis/g#readme"
 }

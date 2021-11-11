@@ -1,4 +1,4 @@
-import { Component } from '@antv/g-ecs';
+import { Component } from '@antv/g';
 
 export interface RBushNodeAABB {
   name: string;

@@ -43,6 +43,10 @@
     "@antv/g-plugin-svg-renderer": "^1.0.0-alpha.27",
     "@antv/util": "^2.0.13",
     "@babel/runtime": "^7.16.3",
-    "mana-syringe": "^0.1.0"
+    "mana-syringe": "^0.2.1"
+  },
+  "peerDependencies": {
+    "mana-syringe": "^0.2.1",
+    "@antv/g": "^1.0.0-alpha.27"
   }
 }

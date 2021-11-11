@@ -4,20 +4,15 @@ import rust from '@wasm-tool/rollup-plugin-rust';
 export default {
   cjs: 'rollup',
   esm: 'rollup',
-  // cjs: 'babel',
-  // esm: 'babel',
-  umd: {
-    minFile: true,
-  },
   runtimeHelpers: true,
   nodeResolveOpts: {
     mainFields: ['module', 'browser', 'main'],
   },
   extraRollupPlugins: [
     // wasm()
-    // rust({
-    //   inlineWasm: true,
-    // }),
+    rust({
+      inlineWasm: true,
+    }),
   ],
   // extraBabelPlugins: [
   //   [

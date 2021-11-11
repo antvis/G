@@ -1,4 +1,4 @@
-import { Component } from '@antv/g-ecs';
+import { Component } from '@antv/g';
 
 export class Renderable3D extends Component {
   static tag = 'c-renderable-3d';

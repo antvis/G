@@ -30,13 +30,12 @@
   },
   "dependencies": {
     "@antv/g": "^1.0.0-alpha.27",
-    "@antv/g-ecs": "^1.0.0-alpha.11",
     "@antv/util": "^2.0.13",
     "@babel/runtime": "^7.16.3",
     "@mapbox/tiny-sdf": "^1.1.1",
     "earcut": "^2.2.3",
     "eventemitter3": "^4.0.0",
-    "mana-syringe": "^0.1.0",
+    "mana-syringe": "^0.2.1",
     "potpack": "^1.0.1"
   },
   "devDependencies": {
@@ -44,6 +43,10 @@
     "@types/jest": "^25.0.0",
     "@types/offscreencanvas": "^2019.6.4",
     "@webgpu/types": "^0.1.6"
+  },
+  "peerDependencies": {
+    "@antv/g": "^1.0.0-alpha.27",
+    "mana-syringe": "^0.2.1"
   },
   "homepage": "https://github.com/antvis/g#readme"
 }

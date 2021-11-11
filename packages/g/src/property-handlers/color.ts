@@ -124,7 +124,7 @@ export function mergeColors(
     left.value,
     right.value,
     (color: number[]) => {
-      const rgba = [...color];
+      const rgba = color.slice();
       if (rgba[3]) {
         for (let i = 0; i < 3; i++) rgba[i] = Math.round(clamp(rgba[i] * 255, 0, 255));
       }

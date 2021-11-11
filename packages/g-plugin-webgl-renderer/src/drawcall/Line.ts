@@ -616,7 +616,7 @@ export class LineRenderer extends Batch {
       points = [x1 - defX, y1 - defY, x2 - defX, y2 - defY];
     } else if (object.nodeName === SHAPE.Polyline || object.nodeName === SHAPE.Polygon) {
       points = (object as Polyline).parsedStyle.points.points.reduce((prev, cur) => {
-        prev = [...prev, ...[cur[0] - defX, cur[1] - defY]];
+        prev.push(cur[0] - defX, cur[1] - defY);
         return prev;
       }, [] as number[]);
 

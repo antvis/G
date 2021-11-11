@@ -30,11 +30,10 @@
   },
   "dependencies": {
     "@antv/g": "^1.0.0-alpha.27",
-    "@antv/g-ecs": "^1.0.0-alpha.11",
     "@antv/g-math": "^1.0.0-alpha.7",
     "@antv/path-util": "^2.0.14",
     "@babel/runtime": "^7.16.3",
-    "mana-syringe": "^0.1.0",
+    "mana-syringe": "^0.2.1",
     "rbush": "^3.0.1"
   },
   "devDependencies": {
@@ -45,7 +44,8 @@
     "webpack-cli": "^3.3.7"
   },
   "peerDependencies": {
-    "@antv/g": "^1.0.0-alpha.27"
+    "@antv/g": "^1.0.0-alpha.27",
+    "mana-syringe": "^0.2.1"
   },
   "homepage": "https://github.com/antvis/g#readme"
 }

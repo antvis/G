@@ -11,9 +11,7 @@ export interface RenderingPlugin {
   apply(renderer: RenderingService): void;
 }
 
-export const RenderingPluginContribution = Syringe.defineToken('RenderingPluginContribution', {
-  multiple: false,
-});
+export const RenderingPluginContribution = Syringe.defineToken('RenderingPluginContribution');
 
 export interface PickingResult {
   position: EventPosition;
@@ -63,6 +61,7 @@ export class RenderingService {
   async init() {
     // register rendering plugins
     this.renderingPluginProvider.getContributions().forEach((plugin) => {
+      console.log(plugin);
       plugin.apply(this);
     });
     await this.hooks.init.promise();
@@ -109,7 +108,8 @@ export class RenderingService {
     // sort is very expensive, use cached result if posible
     const sortable = entity.getComponent(Sortable);
     if (sortable.dirty) {
-      sortable.sorted = [...(displayObject.childNodes as IElement[])].sort(sortByZIndex);
+      // sortable.sorted = [...(displayObject.childNodes as IElement[])].sort(sortByZIndex);
+      sortable.sorted = displayObject.childNodes.slice().sort(sortByZIndex);
       sortable.dirty = false;
     }
 

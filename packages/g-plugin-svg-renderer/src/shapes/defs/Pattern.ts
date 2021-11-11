@@ -82,7 +82,7 @@ function createPattern(
 
   $image.setAttribute('href', src);
 
-  const img = new Image();
+  const img = new window.Image();
   if (!src.match(/^data:/i)) {
     img.crossOrigin = 'Anonymous';
   }

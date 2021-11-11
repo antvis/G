@@ -4,5 +4,6 @@ export default {
   // disableTypeCheck: true,
   umd: {
     name: 'G',
+    // minFile: true,
   },
 };

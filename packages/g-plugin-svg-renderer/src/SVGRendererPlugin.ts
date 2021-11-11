@@ -144,7 +144,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         const parent = object.parentNode;
         const parentEntity = object.parentNode?.entity;
         const $groupEl = parentEntity?.getComponent(ElementSVG)?.$groupEl;
-        const children = [...(parent?.children || [])];
+        const children = (parent?.children || []).slice();
 
         if ($groupEl) {
           this.reorderChildren($groupEl, children as DisplayObject[]);

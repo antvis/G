@@ -1,4 +1,5 @@
-import { containerModule as ecsModule, World } from '@antv/g-ecs';
+import { containerModule as ecsModule, World, Component } from '@antv/g-ecs';
+import * as ManaSyringe from 'mana-syringe';
 import { containerModule as globalModule, globalContainer } from './global-module';
 import { Sortable, Cullable, Geometry, Renderable, Transform } from './components';
 
@@ -15,8 +16,6 @@ world
   .registerComponent(Geometry)
   .registerComponent(Renderable);
 
-export { world };
-
 export * from './types';
 export * from './components';
 export * from './dom';
@@ -30,3 +29,5 @@ export * from './utils';
 export * from './property-handlers';
 export * from './display-objects';
 export * from './global-module';
+
+export { ManaSyringe, Component, world };
