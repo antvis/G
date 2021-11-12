@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-dom-interaction",
-  "version": "1.0.0-alpha.26",
+  "version": "1.0.0-alpha.27",
   "description": "A G plugin",
   "main": "lib/index.js",
   "module": "es/index.esm.js",
@@ -29,7 +29,7 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.27",
+    "@antv/g": "^1.0.0-alpha.28",
     "mana-syringe": "^0.2.1"
   },
   "devDependencies": {
