@@ -45,11 +45,11 @@
     "@antv/g-plugin-svg-picker": "^1.0.0-alpha.28",
     "@antv/g-plugin-svg-renderer": "^1.0.0-alpha.29",
     "@antv/util": "^2.0.13",
-    "mana-syringe": "^0.2.1"
+    "mana-syringe": "^0.2.2"
   },
   "peerDependencies": {
     "@antv/g": "^1.0.0-alpha.27",
-    "mana-syringe": "^0.2.1"
+    "mana-syringe": "^0.2.2"
   },
   "scripts": {
     "umd": "webpack"

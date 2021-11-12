@@ -60,7 +60,6 @@ export class RenderingService {
   async init() {
     // register rendering plugins
     this.renderingPluginProvider.getContributions({ cache: false }).forEach((plugin) => {
-      console.log(plugin);
       plugin.apply(this);
     });
     await this.hooks.init.promise();

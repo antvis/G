@@ -116,7 +116,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       );
       this.canvasConfig.renderer.getConfig().enableDirtyRectangleRendering = false;
 
-      const dpr = this.contextService.getDPR();
+      // const dpr = this.contextService.getDPR();
       const $canvas = this.contextService.getDomElement() as HTMLCanvasElement;
 
       const { width, height } = this.canvasConfig;

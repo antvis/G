@@ -41,6 +41,6 @@
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
     "eventemitter3": "^4.0.0",
-    "mana-syringe": "^0.2.1"
+    "mana-syringe": "^0.2.2"
   }
 }

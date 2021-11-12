@@ -34,7 +34,7 @@
   "dependencies": {
     "@antv/g": "^1.0.0-alpha.29",
     "hammerjs": "^2.0.8",
-    "mana-syringe": "^0.2.1"
+    "mana-syringe": "^0.2.2"
   },
   "devDependencies": {
     "@types/hammerjs": "^2.0.36",
@@ -45,7 +45,7 @@
   },
   "peerDependencies": {
     "@antv/g": "^1.0.0-alpha.27",
-    "mana-syringe": "^0.2.1"
+    "mana-syringe": "^0.2.2"
   },
   "scripts": {
     "umd": "webpack"

@@ -1,14 +1,14 @@
+import { Circle, CircleStyleProps, DisplayObject, ContextService, SHAPE } from '@antv/g';
 import { inject, injectable } from 'mana-syringe';
 import { fillVec4 } from '../render/utils';
 import { Format, VertexBufferFrequency } from '../platform';
 import { RenderInst } from '../render/RenderInst';
-import { Circle, CircleStyleProps, DisplayObject, SHAPE } from '@antv/g';
 import { DeviceProgram } from '../render/DeviceProgram';
 import { Batch, AttributeLocation } from './Batch';
 import { Program_GL } from '../platform/webgl2/Program';
 import { ShapeRenderer } from '../tokens';
 
-const PointShapes = ['circle', 'ellipse', 'rect', 'rounded-rect'];
+const PointShapes: string[] = [SHAPE.Circle, SHAPE.Ellipse, SHAPE.Rect];
 
 class CircleProgram extends DeviceProgram {
   static a_Extrude = AttributeLocation.MAX;
@@ -86,7 +86,7 @@ void main() {
 
   float antialiasblur = v_Data.z;
   float antialiased_blur = -max(u_Blur, antialiasblur);
-  vec2 r = v_Radius / (v_Radius + u_StrokeWidth);
+  vec2 r = (v_Radius - u_StrokeWidth) / v_Radius;
 
   float outer_df;
   float inner_df;
@@ -123,16 +123,17 @@ void main() {
 }
   `;
 }
-export const TTTT = 'TTTT';
-// @injectable({
-//   token: [
-//     { token: ShapeRenderer, named: SHAPE.Circle },
-//     { token: ShapeRenderer, named: SHAPE.Ellipse },
-//     { token: ShapeRenderer, named: SHAPE.Rect },
-//   ],
-// })
-@injectable({ token: { token: ShapeRenderer, named: SHAPE.Circle } })
+@injectable({
+  token: [
+    { token: ShapeRenderer, named: SHAPE.Circle },
+    { token: ShapeRenderer, named: SHAPE.Ellipse },
+    { token: ShapeRenderer, named: SHAPE.Rect },
+  ],
+})
 export class CircleRenderer extends Batch {
+  @inject(ContextService)
+  private contextService: ContextService<WebGLRenderingContext>;
+
   protected program = new CircleProgram();
 
   protected validate() {
@@ -232,6 +233,19 @@ export class CircleRenderer extends Batch {
         index,
         new Uint8Array(new Float32Array([...size]).buffer),
       );
+    } else if (name === 'radius') {
+      geometry.updateVertexBuffer(
+        3,
+        CircleProgram.a_StylePacked2,
+        index,
+        new Uint8Array(
+          new Float32Array([
+            PointShapes.indexOf(object.nodeName),
+            ...(object.nodeName === SHAPE.Rect ? [1, 1] : [0, 0]),
+            object.parsedStyle.radius || 0,
+          ]).buffer,
+        ),
+      );
     }
   }
 
@@ -249,7 +263,7 @@ export class CircleRenderer extends Batch {
       u_ProjectionMatrix: this.camera.getPerspective(),
       u_ViewMatrix: this.camera.getViewTransform(),
       u_CameraPosition: this.camera.getPosition(),
-      u_DevicePixelRatio: 2,
+      u_DevicePixelRatio: this.contextService.getDPR(),
       u_Blur: 0,
     });
   }
