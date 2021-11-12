@@ -2,9 +2,9 @@
   "name": "@antv/g",
   "version": "1.0.0-alpha.27",
   "description": "A core module including ECS and DI container.",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "module": "es/index.esm.js",
+  "types": "es/index.d.ts",
   "files": [
     "package.json",
     "dist",
@@ -39,11 +39,13 @@
     "@antv/g-math": "^1.0.0-alpha.7",
     "@antv/path-util": "^2.0.14",
     "@antv/util": "^2.0.13",
-    "@babel/runtime": "^7.16.3",
     "d3-color": "^1.4.0",
     "eventemitter3": "^4.0.0",
     "gl-matrix": "^3.1.0",
     "mana-syringe": "^0.2.1",
     "tapable": "2.2.1"
+  },
+  "scripts": {
+    "umd": "webpack"
   }
 }

@@ -1,4 +1,4 @@
-import { SHAPE, RenderingPluginContribution, RendererPlugin } from '@antv/g';
+import G, { SHAPE, RendererPlugin } from '@antv/g';
 import { Module, Syringe } from 'mana-syringe';
 import {
   CanvasPickerPlugin,

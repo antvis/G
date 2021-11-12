@@ -2,9 +2,9 @@
   "name": "@antv/g-ecs",
   "version": "1.0.0-alpha.11",
   "description": "A simple ECS implement",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "module": "es/index.esm.js",
+  "types": "es/index.d.ts",
   "files": [
     "package.json",
     "dist",
@@ -37,7 +37,6 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@babel/runtime": "^7.16.3",
     "eventemitter3": "^4.0.0",
     "mana-syringe": "^0.2.1"
   }

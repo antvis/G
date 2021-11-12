@@ -46,9 +46,9 @@
     const { Circle, Rect, Ellipse, Image, Line, Polyline, Path, Polygon, Text, Canvas, CanvasEvent } = window.G;
 
     // create a renderer
-    const canvasRenderer = new window.GCanvas.Renderer();
-    const svgRenderer = new window.GSVG.Renderer();
-    const webglRenderer = new window.GWebGL.Renderer();
+    const canvasRenderer = new window.G.Canvas2D.Renderer();
+    const svgRenderer = new window.G.SVG.Renderer();
+    const webglRenderer = new window.G.WebGL.Renderer();
 
     // create a canvas
     const canvas = new Canvas({

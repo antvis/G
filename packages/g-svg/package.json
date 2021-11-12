@@ -2,9 +2,9 @@
   "name": "@antv/g-svg",
   "version": "1.0.0-alpha.27",
   "description": "A renderer implemented by SVG",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "module": "es/index.esm.js",
+  "types": "es/index.d.ts",
   "files": [
     "package.json",
     "dist",
@@ -42,11 +42,13 @@
     "@antv/g-plugin-svg-picker": "^1.0.0-alpha.26",
     "@antv/g-plugin-svg-renderer": "^1.0.0-alpha.27",
     "@antv/util": "^2.0.13",
-    "@babel/runtime": "^7.16.3",
     "mana-syringe": "^0.2.1"
   },
   "peerDependencies": {
     "mana-syringe": "^0.2.1",
     "@antv/g": "^1.0.0-alpha.27"
+  },
+  "scripts": {
+    "umd": "webpack"
   }
 }

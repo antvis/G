@@ -2,9 +2,9 @@
   "name": "@antv/g-canvas",
   "version": "1.0.0-alpha.27",
   "description": "A renderer implemented by Canvas 2D API",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "module": "es/index.esm.js",
+  "types": "es/index.d.ts",
   "files": [
     "package.json",
     "dist",
@@ -48,5 +48,8 @@
   "peerDependencies": {
     "mana-syringe": "^0.2.1",
     "@antv/g": "^1.0.0-alpha.27"
+  },
+  "scripts": {
+    "umd": "webpack"
   }
 }

@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
   <title>Rendering 2w shapes with WebGL</title>
   <script src="https://unpkg.com/stats.js@0.17.0/build/stats.min.js" type="application/javascript"></script>
+  <script src="https://unpkg.com/hammerjs@2.0.8/hammer.js" type="application/javascript"></script>
   <style>
     * {
       margin: 0;
@@ -42,7 +43,7 @@
     $wrapper.appendChild($stats);
 
     const { Circle, Line, Text, Canvas, CanvasEvent } = window.G;
-    const webglRenderer = new window.GWebGL.Renderer();
+    const webglRenderer = new window.G.WebGL.Renderer();
     // create a canvas
     const canvas = new Canvas({
       container: 'container',
@@ -51,6 +52,9 @@
       renderer: webglRenderer,
     });
     const camera = canvas.getCamera();
+    camera.pan(1000, 800);
+    camera.setZoom(0.05);
+
     canvas.on(CanvasEvent.AFTER_RENDER, () => {
       if (stats) {
         stats.update();
@@ -78,7 +82,6 @@
     fetch('https://gw.alipayobjects.com/os/basement_prod/0b9730ff-0850-46ff-84d0-1d4afecd43e6.json')
       .then((res) => res.json())
       .then((data) => {
-        debugger;
         data.nodes.forEach((node) => {
           node.label = node.olabel;
           node.degree = 0;
@@ -142,9 +145,44 @@
             circle.style.fill = '#C6E5FF';
           });
         });
-
-        console.log(canvas);
       });
+
+
+    // handle mouse wheel event
+    const bindWheelHandler = () => {
+      // update Camera's zoom
+      // @see https://github.com/mrdoob/three.js/blob/master/examples/jsm/controls/OrbitControls.js
+      const minZoom = 0;
+      const maxZoom = Infinity;
+      canvas
+        .getContextService()
+        .getDomElement() // g-canvas/webgl 为 <canvas>，g-svg 为 <svg>
+        .addEventListener(
+          'wheel',
+          (e) => {
+            e.preventDefault();
+            let zoom;
+            if (e.deltaY < 0) {
+              zoom = Math.max(minZoom, Math.min(maxZoom, camera.getZoom() / 0.95));
+            } else {
+              zoom = Math.max(minZoom, Math.min(maxZoom, camera.getZoom() * 0.95));
+            }
+            camera.setZoom(zoom);
+          },
+          { passive: false },
+        );
+    };
+
+    // use hammer.js
+    const hammer = new Hammer(canvas);
+    hammer.on('pan', (ev) => {
+      camera.pan(
+        -ev.deltaX / Math.pow(2, camera.getZoom()),
+        -ev.deltaY / Math.pow(2, camera.getZoom()),
+      );
+    });
+
+    bindWheelHandler();
   </script>
 </body>
 

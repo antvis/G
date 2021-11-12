@@ -1,9 +1,11 @@
 import { AbstractRenderer, RendererConfig } from '@antv/g';
-import { Plugin as DomInteractionPlugin } from '@antv/g-plugin-dom-interaction';
-import { Plugin as CanvasRendererPlugin } from '@antv/g-plugin-canvas-renderer';
-import { Plugin as CanvasPickerPlugin } from '@antv/g-plugin-canvas-picker';
-import { Plugin as HTMLRendererPlugin } from '@antv/g-plugin-html-renderer';
+import * as DomInteraction from '@antv/g-plugin-dom-interaction';
+import * as CanvasRenderer from '@antv/g-plugin-canvas-renderer';
+import * as CanvasPicker from '@antv/g-plugin-canvas-picker';
+import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
+
+export { DomInteraction, CanvasRenderer, CanvasPicker, HTMLRenderer };
 
 export class Renderer extends AbstractRenderer {
   constructor(config?: Partial<RendererConfig>) {
@@ -12,12 +14,12 @@ export class Renderer extends AbstractRenderer {
     // register Canvas2DContext
     this.registerPlugin(new ContextRegisterPlugin());
     // enable rendering with Canvas2D API
-    this.registerPlugin(new CanvasRendererPlugin());
-    this.registerPlugin(new DomInteractionPlugin());
+    this.registerPlugin(new CanvasRenderer.Plugin());
+    this.registerPlugin(new DomInteraction.Plugin());
     // enable picking with Canvas2D API
-    this.registerPlugin(new CanvasPickerPlugin());
+    this.registerPlugin(new CanvasPicker.Plugin());
 
     // render HTML component
-    this.registerPlugin(new HTMLRendererPlugin());
+    this.registerPlugin(new HTMLRenderer.Plugin());
   }
 }

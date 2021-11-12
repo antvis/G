@@ -2,9 +2,9 @@
   "name": "@antv/g-plugin-css-select",
   "version": "1.0.0-alpha.27",
   "description": "A G plugin for using CSS select syntax in query selector",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "module": "es/index.esm.js",
+  "types": "es/index.d.ts",
   "files": [
     "package.json",
     "dist",
@@ -30,7 +30,6 @@
   },
   "dependencies": {
     "@antv/g": "^1.0.0-alpha.27",
-    "@babel/runtime": "^7.16.3",
     "css-select": "^3.1.2",
     "mana-syringe": "^0.2.1"
   },
@@ -43,6 +42,9 @@
   "peerDependencies": {
     "@antv/g": "^1.0.0-alpha.27",
     "mana-syringe": "^0.2.1"
+  },
+  "scripts": {
+    "umd": "webpack"
   },
   "homepage": "https://github.com/antvis/g#readme"
 }

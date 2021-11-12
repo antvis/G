@@ -2,9 +2,9 @@
   "name": "@antv/g-plugin-3d",
   "version": "1.0.0-alpha.26",
   "description": "Provide 3D extension for G",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "module": "es/index.esm.js",
+  "types": "es/index.d.ts",
   "files": [
     "package.json",
     "dist",
@@ -40,12 +40,14 @@
     "@antv/g": "^1.0.0-alpha.27",
     "@antv/g-plugin-webgl-renderer": "^1.0.0-alpha.27",
     "@antv/util": "^2.0.13",
-    "@babel/runtime": "^7.16.3",
     "mana-syringe": "^0.2.1"
   },
   "peerDependencies": {
     "@antv/g": "^1.0.0-alpha.27",
     "@antv/g-plugin-webgl-renderer": "^1.0.0-alpha.27",
     "mana-syringe": "^0.2.1"
+  },
+  "scripts": {
+    "umd": "webpack"
   }
 }

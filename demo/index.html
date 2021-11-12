@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
-  <title>size-sensor: DOM element size sensor which will callback when size changed.</title>
+  <title>Show 2D shapes with Canvas2D/SVG/WebGL</title>
   <style>
     * {
       margin: 0;
@@ -34,24 +34,24 @@
   <script src="../packages/g-plugin-css-select/dist/index.umd.js" type="application/javascript"></script>
   <script>
     const { Circle, Rect, Ellipse, Image, Line, Polyline, Path, Polygon, Text, Canvas } = window.G;
-    const CanvasRenderer = window.GCanvas.Renderer;
-    const SVGRenderer = window.GSVG.Renderer;
-    const WebGLRenderer = window.GWebGL.Renderer;
+    const CanvasRenderer = window.G.Canvas2D.Renderer;
+    // const SVGRenderer = window.G.SVG.Renderer;
+    // const WebGLRenderer = window.G.WebGL.Renderer;
 
     // create a renderer
-    // const canvasRenderer = new CanvasRenderer();
-    // canvasRenderer.registerPlugin(new window.GPluginCSSSelect.Plugin());
+    const canvasRenderer = new CanvasRenderer();
+    canvasRenderer.registerPlugin(new window.G.CSSSelect.Plugin());
 
     // const svgRenderer = new SVGRenderer();
-    const webglRenderer = new WebGLRenderer();
+    // const webglRenderer = new WebGLRenderer();
 
     // create a canvas
     const canvas = new Canvas({
       container: 'container',
       width: 600,
       height: 500,
-      // renderer: canvasRenderer,
-      renderer: webglRenderer,
+      renderer: canvasRenderer,
+      // renderer: webglRenderer,
     });
 
     const circle = new Circle({
