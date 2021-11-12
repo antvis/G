@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-webgl-renderer",
-  "version": "1.0.0-alpha.28",
+  "version": "1.0.0-alpha.29",
   "description": "A G plugin of renderer implementation with WebGL1",
   "main": "lib/index.js",
   "module": "es/index.esm.js",
@@ -32,7 +32,7 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.28",
+    "@antv/g": "^1.0.0-alpha.29",
     "@antv/util": "^2.0.13",
     "@mapbox/tiny-sdf": "^1.1.1",
     "earcut": "^2.2.3",

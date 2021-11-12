@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-html-renderer",
-  "version": "1.0.0-alpha.11",
+  "version": "1.0.0-alpha.12",
   "description": "A G plugin for rendering HTML",
   "main": "lib/index.js",
   "module": "es/index.esm.js",
@@ -32,7 +32,7 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.28",
+    "@antv/g": "^1.0.0-alpha.29",
     "mana-syringe": "^0.2.1"
   },
   "devDependencies": {
