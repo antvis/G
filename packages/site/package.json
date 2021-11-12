@@ -6,6 +6,8 @@
   "files": [
     "package.json",
     "dist",
+    "es",
+    "lib",
     "LICENSE",
     "README.md"
   ],

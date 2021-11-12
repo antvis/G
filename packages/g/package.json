@@ -5,9 +5,12 @@
   "main": "lib/index.js",
   "module": "es/index.esm.js",
   "types": "es/index.d.ts",
+  "unpkg": "dist/index.umd.js",
   "files": [
     "package.json",
     "dist",
+    "es",
+    "lib",
     "LICENSE",
     "README.md"
   ],
@@ -43,7 +46,8 @@
     "eventemitter3": "^4.0.0",
     "gl-matrix": "^3.1.0",
     "mana-syringe": "^0.2.1",
-    "tapable": "2.2.1"
+    "tapable": "2.2.1",
+    "@babel/runtime": "^7.16.0"
   },
   "scripts": {
     "umd": "webpack"

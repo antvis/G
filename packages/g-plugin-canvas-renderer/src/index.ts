@@ -105,20 +105,20 @@ const containerModule = Module((register) => {
 
 export class Plugin implements RendererPlugin {
   init(container: Syringe.Container): void {
-    container.load(containerModule);
+    container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
     // @ts-ignore
-    // container.container.unload(containerModule);
-    // // container.unload(containerModule);
-    // container.remove(ImagePool);
-    // container.remove(RBushRoot);
-    // container.remove(DefaultRenderer);
-    // container.remove(ImageRenderer);
-    // container.remove(TextRenderer);
-    // container.remove(StyleRendererFactory);
-    // container.remove(GradientPool);
-    // container.remove(CanvasRendererPlugin);
-    // container.remove(LoadImagePlugin);
+    // container.unload(containerModule);
+    container.remove(ImagePool);
+    container.remove(RBushRoot);
+    container.remove(DefaultRenderer);
+    container.remove(ImageRenderer);
+    container.remove(TextRenderer);
+    container.remove(StyleRenderer);
+    container.remove(StyleRendererFactory);
+    container.remove(GradientPool);
+    container.remove(CanvasRendererPlugin);
+    container.remove(LoadImagePlugin);
   }
 }

@@ -6,7 +6,7 @@ import { RenderingService } from './services/RenderingService';
 import { RenderingContext, RENDER_REASON } from './services/RenderingContext';
 import { EventService } from './services/EventService';
 import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE, DefaultCamera } from './camera';
-import { containerModule as commonContainerModule, unload } from './canvas-module';
+import { containerModule as commonContainerModule } from './canvas-module';
 import { AbstractRenderer, IRenderer } from './AbstractRenderer';
 import { cancelAnimationFrame } from './utils/raf';
 import type { PointLike } from './shapes';
@@ -70,9 +70,11 @@ export class Canvas extends EventTarget implements ICanvas {
   private initRenderingContext(mergedConfig: CanvasConfig) {
     this.container.register({ token: CanvasConfig, useValue: mergedConfig });
 
+    // create document
     this.document = new Document();
     this.document.defaultView = this;
 
+    // create registry of custom elements
     this.customElements = new CustomElementRegistry();
 
     // bind rendering context, shared by all renderers
@@ -264,16 +266,12 @@ export class Canvas extends EventTarget implements ICanvas {
       throw new Error('Renderer is required.');
     }
 
-    // @ts-ignore
-    // this.container.container.snapshot();
-
     this.loadCommonContainerModule();
     this.loadRendererContainerModule(renderer);
 
     // init context
     const contextService = this.container.get<ContextService<unknown>>(ContextService);
     const renderingService = this.container.get<RenderingService>(RenderingService);
-
     contextService.init();
     renderingService.init().then(() => {
       this.emit(CanvasEvent.READY, {});
@@ -302,10 +300,6 @@ export class Canvas extends EventTarget implements ICanvas {
     this.container.load(commonContainerModule, true);
   }
 
-  private unloadCommonContainerModule() {
-    unload(this.container);
-  }
-
   private loadRendererContainerModule(renderer: IRenderer) {
     // load other container modules provided by g-canvas/g-svg/g-webgl
     const plugins = renderer.getPlugins();
@@ -328,13 +322,13 @@ export class Canvas extends EventTarget implements ICanvas {
     this.destroy(false);
 
     // destroy all plugins
-    oldRenderer?.getPlugins().forEach((plugin) => {
-      plugin.destroy(this.container);
-    });
+    oldRenderer
+      ?.getPlugins()
+      .reverse()
+      .forEach((plugin) => {
+        plugin.destroy(this.container);
+      });
 
-    // this.unloadCommonContainerModule();
-    // @ts-ignore
-    // this.container.container.restore();
     this.initRenderer(renderer);
   }
 

@@ -5,7 +5,6 @@ import { DisplayObject } from '..';
 import { EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext, RENDER_REASON } from './RenderingContext';
 import { sortByZIndex } from './SceneGraphService';
-import { IElement } from '../dom/interfaces';
 
 export interface RenderingPlugin {
   apply(renderer: RenderingService): void;
@@ -60,7 +59,8 @@ export class RenderingService {
 
   async init() {
     // register rendering plugins
-    this.renderingPluginProvider.getContributions().forEach((plugin) => {
+    this.renderingPluginProvider.getContributions({ cache: false }).forEach((plugin) => {
+      console.log(plugin);
       plugin.apply(this);
     });
     await this.hooks.init.promise();
@@ -119,6 +119,7 @@ export class RenderingService {
   }
 
   destroy() {
+    this.inited = false;
     this.hooks.destroy.call();
   }
 

@@ -8,9 +8,10 @@ export const containerModule = Module((register) => {
 
 export class Plugin implements RendererPlugin {
   init(container: Syringe.Container): void {
-    container.load(containerModule);
+    container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
+    container.remove(ControlPlugin);
     // container.unload(containerModule);
     // @ts-ignore
     // container.container.unload(containerModule);

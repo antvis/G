@@ -16,11 +16,10 @@ const containerModule = Module((register) => {
 
 export class Plugin implements RendererPlugin {
   init(container: Syringe.Container): void {
-    container.load(containerModule);
+    container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
-    // container.unload(containerModule);
-    // @ts-ignore
-    // container.container.unload(containerModule);
+    container.remove(SceneGraphAdapter);
+    container.remove(CSSSceneGraphSelector);
   }
 }

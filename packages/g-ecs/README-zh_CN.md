@@ -2,31 +2,29 @@
 
 # g-ecs
 
-[![](https://img.shields.io/travis/antvis/g-ecs.svg)](https://travis-ci.org/antvis/g-ecs)
-![](https://img.shields.io/badge/language-javascript-red.svg)
-![](https://img.shields.io/badge/license-MIT-000000.svg)
+[![](https://img.shields.io/travis/antvis/g-ecs.svg)](https://travis-ci.org/antvis/g-ecs) ![](https://img.shields.io/badge/language-javascript-red.svg) ![](https://img.shields.io/badge/license-MIT-000000.svg)
 
 ## 问题背景
 
 原本 `g-base` 中 `Element` 包含了很多属性以及对应操作逻辑，例如：
 
-- 场景图/group
-- RTS 矩阵运算
-- 动画
-- 裁剪
-- 包围盒
-- 其他样式属性（z-index、color...）
-- 事件
+-   场景图/group
+-   RTS 矩阵运算
+-   动画
+-   裁剪
+-   包围盒
+-   其他样式属性（z-index、color...）
+-   事件
 
 导致 `g-canvas/svg/webgl` 扩展起来略显复杂。参考 [Data Oriented Programming](https://en.wikipedia.org/wiki/Entity_component_system)，我们将这些类型的数据和逻辑处理拆分成多组 `Component` 和 `System`，例如：
 
-- SceneGraph 负责场景图
-- Transform 负责 RTS 矩阵运算
-- Geometry 保存几何信息
-- Material 保存样式属性
-- Mesh 保存包围盒，关联一个 Geometry 和 Material
-- Culling 负责裁剪，仅渲染视口内对象
-- Renderer 负责渲染，暴露统一渲染接口供 `g-canvas/svg/webgl/webgpu` 实现
+-   SceneGraph 负责场景图
+-   Transform 负责 RTS 矩阵运算
+-   Geometry 保存几何信息
+-   Material 保存样式属性
+-   Mesh 保存包围盒，关联一个 Geometry 和 Material
+-   Culling 负责裁剪，仅渲染视口内对象
+-   Renderer 负责渲染，暴露统一渲染接口供 `g-canvas/svg/webgl/webgpu` 实现
 
 ## 架构
 
@@ -43,38 +41,38 @@ import { Component, System, World, containerModule } from '@antv/g-ecs';
 // create a container
 const container = new Container();
 // load ECS module
-container.load(containerModule);
+container.load(containerModule, true);
 
 // create a world
 const world = container.get(World);
 
 // register components
 class C1 extends Component {
-  static tag = 'c1';
-  p1: number;
+    static tag = 'c1';
+    p1: number;
 }
 class C2 extends Component {
-  static tag = 'c2';
+    static tag = 'c2';
 }
 class C3 extends Component {
-  static tag = 'c3';
+    static tag = 'c3';
 }
 world.registerComponent(C1).registerComponent(C2).registerComponent(C3);
 
 // register systems
 class S1 extends System {
-  static tag = 's1';
+    static tag = 's1';
 
-  trigger() {
-    return new Matcher().allOf(C1);
-  }
+    trigger() {
+        return new Matcher().allOf(C1);
+    }
 
-  execute(entities: Entity[]) {
-    entities.forEach((entity) => {
-      const c1 = entity.getComponent(C1);
-      c1.p1++;
-    });
-  }
+    execute(entities: Entity[]) {
+        entities.forEach((entity) => {
+            const c1 = entity.getComponent(C1);
+            c1.p1++;
+        });
+    }
 }
 world.registerSystem(S1);
 
@@ -85,13 +83,13 @@ entity.addComponent(C1, { p1: 2 }).addComponent(C2).addComponent(C3);
 // make a loop
 let lastTime = performance.now();
 const run = () => {
-  const time = performance.now();
-  const delta = time - lastTime;
-  // run all the systems
-  world.execute(delta, time);
+    const time = performance.now();
+    const delta = time - lastTime;
+    // run all the systems
+    world.execute(delta, time);
 
-  lastTime = time;
-  requestAnimationFrame(run);
+    lastTime = time;
+    requestAnimationFrame(run);
 };
 run();
 ```
@@ -107,7 +105,7 @@ import { World, containerModule } from '@antv/g-ecs';
 // create a container
 const container = new Container();
 // load ECS module
-container.load(containerModule);
+container.load(containerModule, true);
 
 // create a world
 const world = container.get(World);
@@ -129,14 +127,14 @@ const entity = world.createEntity();
 
 ```javascript
 class C1 extends Component {
-  static tag = 'c1';
-  p1: number;
+    static tag = 'c1';
+    p1: number;
 }
 class C2 extends Component {
-  static tag = 'c2';
+    static tag = 'c2';
 }
 class C3 extends Component {
-  static tag = 'c3';
+    static tag = 'c3';
 }
 world.registerComponent(C1).registerComponent(C2).registerComponent(C3);
 ```
@@ -147,18 +145,18 @@ world.registerComponent(C1).registerComponent(C2).registerComponent(C3);
 
 ```javascript
 class S1 extends System {
-  static tag = 's1';
+    static tag = 's1';
 
-  trigger() {
-    return new Matcher().allOf(C1);
-  }
+    trigger() {
+        return new Matcher().allOf(C1);
+    }
 
-  execute(entities: Entity[]) {
-    entities.forEach((entity) => {
-      const c1 = entity.getComponent(C1);
-      c1.p1++;
-    });
-  }
+    execute(entities: Entity[]) {
+        entities.forEach((entity) => {
+            const c1 = entity.getComponent(C1);
+            c1.p1++;
+        });
+    }
 }
 world.registerSystem(S1);
 ```
@@ -181,10 +179,10 @@ world.execute();
 
 ECS 中的简单查询语言，供 `System` 过滤出包含自己感兴趣 `Component` 的所有实体：
 
-- allOf 包含所有组件
-- anyOf 包含组件之一
-- noneOf 不包含所有组件
-- matches 检测某个实体是否满足查询条件
+-   allOf 包含所有组件
+-   anyOf 包含组件之一
+-   noneOf 不包含所有组件
+-   matches 检测某个实体是否满足查询条件
 
 ```javascript
 new Matcher().allOf(C1, C2).noneOf(C3);
@@ -192,7 +190,7 @@ new Matcher().allOf(C1, C2).noneOf(C3);
 
 ## 参考资料
 
-- [Data Oriented Programming](https://en.wikipedia.org/wiki/Entity_component_system)
-- [ecsy](https://blog.mozvr.com/introducing-ecsy/)
-- [Entitas](https://github.com/sschmid/Entitas-CSharp)
-- [EntitasCookBook](https://github.com/mzaks/EntitasCookBook)
+-   [Data Oriented Programming](https://en.wikipedia.org/wiki/Entity_component_system)
+-   [ecsy](https://blog.mozvr.com/introducing-ecsy/)
+-   [Entitas](https://github.com/sschmid/Entitas-CSharp)
+-   [EntitasCookBook](https://github.com/mzaks/EntitasCookBook)

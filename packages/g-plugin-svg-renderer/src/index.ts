@@ -52,9 +52,17 @@ export const containerModule = Module((register) => {
 
 export class Plugin implements RendererPlugin {
   init(container: Syringe.Container): void {
-    container.load(containerModule);
+    container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
+    container.remove(RectRenderer);
+    container.remove(ImageRenderer);
+    container.remove(LineRenderer);
+    container.remove(PolylineRenderer);
+    container.remove(TextRenderer);
+    container.remove(PathRenderer);
+    container.remove(ElementRendererFactory);
+    container.remove(SVGRendererPlugin);
     // @ts-ignore
     // container.container.unload(containerModule);
     // container.unload(containerModule);

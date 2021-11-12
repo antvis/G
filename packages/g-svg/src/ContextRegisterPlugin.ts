@@ -11,9 +11,10 @@ const containerModule = Module((register) => {
 
 export class ContextRegisterPlugin implements RendererPlugin {
   init(container: Syringe.Container): void {
-    container.load(containerModule);
+    container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
+    container.remove(SVGContextService);
     // @ts-ignore
     // container.container.unload(containerModule);
     // container.unload(containerModule);

@@ -90,9 +90,23 @@ export class Plugin implements RendererPlugin {
         ...this.options,
       },
     });
-    container.load(containerModule);
+    container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
+    container.remove(RenderHelper);
+    container.remove(TexturePool);
+    container.remove(GlyphManager);
+    container.remove(PickingIdGenerator);
+    container.remove(CircleRenderer);
+    container.remove(ImageRenderer);
+    container.remove(InstancedLineRenderer);
+    container.remove(LineRenderer);
+    container.remove(TextRenderer);
+    container.remove(ShapeRenderer);
+    container.remove(RendererFactory);
+    container.remove(RenderGraphPlugin);
+    container.remove(PickingPlugin);
+    container.remove(WebGLRendererPluginOptions);
     // @ts-ignore
     // container.container.unload(containerModule);
     // container.unload(containerModule);

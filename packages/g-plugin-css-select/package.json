@@ -5,9 +5,12 @@
   "main": "lib/index.js",
   "module": "es/index.esm.js",
   "types": "es/index.d.ts",
+  "unpkg": "dist/index.umd.js",
   "files": [
     "package.json",
     "dist",
+    "es",
+    "lib",
     "LICENSE",
     "README.md"
   ],

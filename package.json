@@ -10,7 +10,7 @@
   "author": "",
   "license": "MIT",
   "scripts": {
-    "build": "father build & yarn run umd",
+    "build": "father build",
     "limit-size": "limit-size",
     "umd": "lerna run umd",
     "watch": "father build -w",
