@@ -39,8 +39,12 @@ void main() {
 
   float antialiasblur = 1.0 / (a_Size.x + u_StrokeWidth);
 
-  vec2 u_Anchor = a_StylePacked2.yz;
   vec2 offset = (a_Extrude + vec2(1.0) - 2.0 * a_Anchor) * a_Size;
+
+  int shape = int(floor(a_StylePacked2.x + 0.5));
+  if (shape == 2) {
+    offset = offset - vec2(u_StrokeWidth / 2.0);
+  }
 
   gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * vec4(offset, -u_ZIndex, 1.0);
   
@@ -98,7 +102,7 @@ void main() {
     outer_df = sdEllipsoidApproximated(v_Data.xy, vec2(1.0));
     inner_df = sdEllipsoidApproximated(v_Data.xy, r);
   } else if (shape == 2) {
-    float u_RectRadius = v_StylePacked2.w;
+    float u_RectRadius = v_StylePacked2.y;
     outer_df = sdRoundedBox(v_Data.xy, vec2(1.0), u_RectRadius / v_Radius);
     inner_df = sdRoundedBox(v_Data.xy, r, u_RectRadius / v_Radius);
   }
@@ -153,11 +157,7 @@ export class CircleRenderer extends Batch {
       const [halfWidth, halfHeight] = this.getSize(object.attributes, circle.nodeName);
       const size = [halfWidth + lineWidth / 2, halfHeight + lineWidth / 2];
       instanced.push(...size);
-      instanced2.push(
-        PointShapes.indexOf(circle.nodeName),
-        ...(circle.nodeName === SHAPE.Rect ? [1, 1] : [0, 0]),
-        radius || 0,
-      );
+      instanced2.push(PointShapes.indexOf(circle.nodeName), radius || 0, 0, 0);
 
       interleaved.push(-1, -1, 1, -1, 1, 1, -1, 1);
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
@@ -241,8 +241,9 @@ export class CircleRenderer extends Batch {
         new Uint8Array(
           new Float32Array([
             PointShapes.indexOf(object.nodeName),
-            ...(object.nodeName === SHAPE.Rect ? [1, 1] : [0, 0]),
             object.parsedStyle.radius || 0,
+            0,
+            0,
           ]).buffer,
         ),
       );

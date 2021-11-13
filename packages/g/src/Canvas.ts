@@ -55,6 +55,13 @@ export class Canvas extends EventTarget implements ICanvas {
   constructor(config: CanvasConfig) {
     super();
 
+    // create document
+    this.document = new Document();
+    this.document.defaultView = this;
+
+    // create registry of custom elements
+    this.customElements = new CustomElementRegistry();
+
     cleanExistedCanvas(config.container, this);
 
     const mergedConfig = {
@@ -69,13 +76,6 @@ export class Canvas extends EventTarget implements ICanvas {
 
   private initRenderingContext(mergedConfig: CanvasConfig) {
     this.container.register({ token: CanvasConfig, useValue: mergedConfig });
-
-    // create document
-    this.document = new Document();
-    this.document.defaultView = this;
-
-    // create registry of custom elements
-    this.customElements = new CustomElementRegistry();
 
     // bind rendering context, shared by all renderers
     this.container.register({
