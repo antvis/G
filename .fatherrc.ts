@@ -1,6 +1,3 @@
-// import { wasm } from '@rollup/plugin-wasm';
-import rust from '@wasm-tool/rollup-plugin-rust';
-
 export default {
   // cjs: 'rollup',
   // esm: 'rollup',
@@ -18,7 +15,7 @@ export default {
   //   }),
   // ],
   extraBabelPlugins: [
-    '@babel/plugin-syntax-dynamic-import',
+    // ['@babel/plugin-syntax-dynamic-import'],
     // [
     //   'babel-plugin-inline-import',
     //   {
