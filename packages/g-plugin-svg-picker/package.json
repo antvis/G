@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-svg-picker",
-  "version": "1.0.0-alpha.31",
+  "version": "1.0.0-alpha.32",
   "description": "A G plugin for picking in SVG",
   "main": "lib/index.js",
   "module": "es/index.esm.js",
@@ -32,8 +32,8 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.32",
-    "@antv/g-plugin-svg-renderer": "^1.0.0-alpha.32",
+    "@antv/g": "^1.0.0-alpha.33",
+    "@antv/g-plugin-svg-renderer": "^1.0.0-alpha.33",
     "mana-syringe": "^0.2.2"
   },
   "devDependencies": {
