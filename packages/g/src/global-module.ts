@@ -86,11 +86,14 @@ export const containerModule = Module((register) => {
   register({
     token: GeometryUpdaterFactory,
     useFactory: (context) => {
+      const cache = {};
       return (tagName: SHAPE) => {
-        if (context.container.isBoundNamed(GeometryAABBUpdater, tagName)) {
-          return context.container.getNamed(GeometryAABBUpdater, tagName);
+        if (!cache[tagName]) {
+          if (context.container.isBoundNamed(GeometryAABBUpdater, tagName)) {
+            cache[tagName] = context.container.getNamed(GeometryAABBUpdater, tagName);
+          }
         }
-        return null;
+        return cache[tagName];
       };
     },
   });
@@ -99,33 +102,43 @@ export const containerModule = Module((register) => {
   register({
     token: StylePropertyParserFactory,
     useFactory: (context) => {
+      const cache = {};
       return (propertyName: string) => {
-        if (context.container.isBoundNamed(StylePropertyParser, propertyName)) {
-          return context.container.getNamed(StylePropertyParser, propertyName);
+        if (!cache[propertyName]) {
+          if (context.container.isBoundNamed(StylePropertyParser, propertyName)) {
+            cache[propertyName] = context.container.getNamed(StylePropertyParser, propertyName);
+          }
         }
-        return null;
+        return cache[propertyName];
       };
     },
   });
   register({
     token: StylePropertyUpdaterFactory,
     useFactory: (context) => {
+      const cache = {};
       return (propertyName: string) => {
-        if (context.container.isBoundNamed(StylePropertyUpdater, propertyName)) {
-          return context.container.getAllNamed(StylePropertyUpdater, propertyName);
+        if (!cache[propertyName]) {
+          if (context.container.isBoundNamed(StylePropertyUpdater, propertyName)) {
+            cache[propertyName] = context.container.getAllNamed(StylePropertyUpdater, propertyName);
+          }
         }
-        return null;
+
+        return cache[propertyName];
       };
     },
   });
   register({
     token: StylePropertyMergerFactory,
     useFactory: (context) => {
+      const cache = {};
       return (propertyName: string) => {
-        if (context.container.isBoundNamed(StylePropertyMerger, propertyName)) {
-          return context.container.getNamed(StylePropertyMerger, propertyName);
+        if (!cache[propertyName]) {
+          if (context.container.isBoundNamed(StylePropertyMerger, propertyName)) {
+            cache[propertyName] = context.container.getNamed(StylePropertyMerger, propertyName);
+          }
         }
-        return null;
+        return cache[propertyName];
       };
     },
   });

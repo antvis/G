@@ -10,6 +10,9 @@ export class Transform extends Component {
   dirtyFlag = false;
   localDirtyFlag = false;
 
+  frozen = false;
+  graphDepth = 0;
+
   /**
    * local space RTS
    */

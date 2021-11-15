@@ -571,11 +571,11 @@ export class EventService extends EventEmitter {
     }
 
     for (let i = 0; i < PROPAGATION_LIMIT && target !== this.rootTarget; i++) {
-      if (Node.isNode(target) && !target.parentNode) {
-        throw new Error('Cannot find propagation path to disconnected target');
-      }
+      // if (Node.isNode(target) && !target.parentNode) {
+      //   throw new Error('Cannot find propagation path to disconnected target');
+      // }
 
-      if (Node.isNode(target)) {
+      if (Node.isNode(target) && target.parentNode) {
         // [target, parent, parent, root]
         propagationPath.push(target.parentNode);
         target = target.parentNode;

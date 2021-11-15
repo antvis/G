@@ -72,6 +72,7 @@ export interface SceneGraphService {
   getLocalBounds(element: INode, render?: boolean): AABB | null;
   getGeometryBounds(element: INode, render?: boolean): AABB | null;
   getBoundingClientRect(element: INode): Rectangle;
+  syncHierarchy(element: INode): void;
 }
 
 /**
@@ -105,7 +106,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     const entity = child.entity;
     child.parentNode = parent;
     if (!isNil(index)) {
-      child.parentNode.childNodes.splice(index!, 0, child as unknown as INode & IChildNode);
+      child.parentNode.childNodes.splice(index, 0, child as unknown as INode & IChildNode);
     } else {
       child.parentNode.childNodes.push(child as unknown as INode & IChildNode);
     }
@@ -116,9 +117,15 @@ export class DefaultSceneGraphService implements SceneGraphService {
       sortable.dirty = true;
     }
 
+    this.updateGraphDepth(child);
+
     const transform = entity.getComponent(Transform);
     if (transform) {
       this.dirtifyWorld(child, transform);
+    }
+
+    if (transform.frozen) {
+      this.unfreezeParentToRoot(child);
     }
   }
 
@@ -473,6 +480,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   dirtifyWorld(element: INode, transform: Transform) {
+    if (!transform.dirtyFlag) {
+      this.unfreezeParentToRoot(element);
+    }
     this.dirtifyWorldInternal(element, transform);
   }
 
@@ -492,10 +502,6 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   getWorldTransform(element: INode, transform: Transform = element.entity.getComponent(Transform)) {
-    if (!transform) {
-      return mat4.create();
-    }
-
     if (!transform.localDirtyFlag && !transform.dirtyFlag) {
       return transform.worldTransform;
     }
@@ -504,7 +510,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       this.getWorldTransform(element.parentNode);
     }
 
-    this.updateTransform(element, transform);
+    this.sync(element, transform);
 
     return transform.worldTransform;
   }
@@ -683,6 +689,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
   private dirtifyWorldInternal(element: INode, transform: Transform) {
     if (!transform.dirtyFlag) {
       transform.dirtyFlag = true;
+      transform.frozen = false;
       element.childNodes.forEach((child) => {
         const childTransform = child.entity.getComponent(Transform);
         if (!childTransform.dirtyFlag) {
@@ -690,17 +697,42 @@ export class DefaultSceneGraphService implements SceneGraphService {
         }
       });
 
-      // emit on leaf node
+      // FIXME: emit on leaf node
       if (element.childNodes.length === 0) {
         dirtifyRenderable(element);
       }
     }
   }
 
-  private updateTransform(element: INode, transform: Transform) {
-    if (transform.localDirtyFlag) {
-      this.getLocalTransform(element);
+  syncHierarchy(element: INode) {
+    const transform = element.entity.getComponent(Transform);
+    if (transform.frozen) {
+      return;
     }
+    transform.frozen = true;
+
+    if (transform.localDirtyFlag || transform.dirtyFlag) {
+      this.sync(element, transform);
+    }
+
+    const children = element.childNodes;
+    for (let i = 0; i < children.length; i++) {
+      this.syncHierarchy(children[i]);
+    }
+  }
+
+  private sync(element: INode, transform: Transform) {
+    if (transform.localDirtyFlag) {
+      mat4.fromRotationTranslationScaleOrigin(
+        transform.localTransform,
+        transform.localRotation,
+        transform.localPosition,
+        transform.localScale,
+        transform.origin,
+      );
+      transform.localDirtyFlag = false;
+    }
+
     if (transform.dirtyFlag) {
       const parent = element.parentNode;
       const parentTransform = parent && parent.entity.getComponent(Transform);
@@ -715,7 +747,31 @@ export class DefaultSceneGraphService implements SceneGraphService {
           transform.localTransform,
         );
       }
-      transform.dirtyFlag = false;
+    }
+  }
+
+  private updateGraphDepth(element: INode) {
+    const transform = element.entity.getComponent(Transform);
+    if (element.parentNode) {
+      transform.graphDepth = element.parentNode.entity.getComponent(Transform).graphDepth + 1;
+    } else {
+      transform.graphDepth = 0;
+    }
+
+    const children = element.childNodes;
+    for (let i = 0; i < children.length; i++) {
+      this.updateGraphDepth(children[i]);
+    }
+  }
+
+  private unfreezeParentToRoot(child: INode) {
+    let p = child.parentNode;
+    while (p) {
+      const transform = p.entity.getComponent(Transform);
+      if (transform) {
+        transform.frozen = false;
+      }
+      p = p.parentNode;
     }
   }
 }

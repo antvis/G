@@ -29,13 +29,13 @@ export interface CustomElement<CustomElementStyleProps> {
 export abstract class CustomElement<
   CustomElementStyleProps,
 > extends DisplayObject<CustomElementStyleProps> {
-  private shadowNodes: DisplayObject[] = [];
+  // private shadowNodes: DisplayObject[] = [];
 
   constructor(config: DisplayObjectConfig<CustomElementStyleProps>) {
     super(config);
 
-    this.addEventListener(ElementEvent.CHILD_INSERTED, this.handleChildInserted);
-    this.addEventListener(ElementEvent.CHILD_REMOVED, this.handleChildRemoved);
+    // this.addEventListener(ElementEvent.CHILD_INSERTED, this.handleChildInserted);
+    // this.addEventListener(ElementEvent.CHILD_REMOVED, this.handleChildRemoved);
     if (this.attributeChangedCallback) {
       this.addEventListener(ElementEvent.ATTRIBUTE_CHANGED, this.handleAttributeChanged);
     }
@@ -48,31 +48,31 @@ export abstract class CustomElement<
   }
 
   private handleMounted = () => {
-    this.shadowNodes.forEach((node) => {
-      // every child and its children should turn into a shadow node
-      // a shadow node doesn't mean to be unrenderable, it's just unsearchable in scenegraph
-      node.shadow = true;
-    });
+    // this.shadowNodes.forEach((node) => {
+    //   // every child and its children should turn into a shadow node
+    //   // a shadow node doesn't mean to be unrenderable, it's just unsearchable in scenegraph
+    //   node.shadow = true;
+    // });
 
     if (this.connectedCallback) {
       this.connectedCallback();
     }
   };
 
-  private handleChildInserted = (e: FederatedEvent) => {
-    (e.target as DisplayObject).forEach((node) => {
-      // append children like other shapes after mounted
-      if (!this.isConnected) {
-        this.shadowNodes.push(node as DisplayObject);
-      }
-    });
-  };
+  // private handleChildInserted = (e: FederatedEvent) => {
+  //   (e.target as DisplayObject).forEach((node) => {
+  //     // append children like other shapes after mounted
+  //     if (!this.isConnected) {
+  //       this.shadowNodes.push(node as DisplayObject);
+  //     }
+  //   });
+  // };
 
-  private handleChildRemoved = (e: FederatedEvent) => {
-    (e.target as DisplayObject).forEach((node) => {
-      node.shadow = false;
-    });
-  };
+  // private handleChildRemoved = (e: FederatedEvent) => {
+  //   (e.target as DisplayObject).forEach((node) => {
+  //     node.shadow = false;
+  //   });
+  // };
 
   private handleAttributeChanged = <Key extends keyof CustomElementStyleProps>(
     e: FederatedEvent<

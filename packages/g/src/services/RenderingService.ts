@@ -4,7 +4,7 @@ import { Renderable, Sortable } from '../components';
 import { DisplayObject } from '..';
 import { EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext, RENDER_REASON } from './RenderingContext';
-import { sortByZIndex } from './SceneGraphService';
+import { SceneGraphService, sortByZIndex } from './SceneGraphService';
 
 export interface RenderingPlugin {
   apply(renderer: RenderingService): void;
@@ -33,6 +33,9 @@ export class RenderingService {
 
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
+
+  @inject(SceneGraphService)
+  private sceneGraphService: SceneGraphService;
 
   private inited = false;
 
@@ -67,6 +70,8 @@ export class RenderingService {
   }
 
   render() {
+    this.sceneGraphService.syncHierarchy(this.renderingContext.root);
+
     if (this.renderingContext.renderReasons.size && this.inited) {
       this.renderDisplayObject(this.renderingContext.root);
 
