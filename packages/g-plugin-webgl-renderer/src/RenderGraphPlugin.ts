@@ -46,15 +46,6 @@ import { TransparentWhite, White } from './utils/color';
 import { isWebGL2 } from './platform/webgl2/utils';
 import { RendererFactory } from './tokens';
 
-// @ts-ignore
-// import wasm from '../rust/Cargo.toml';
-
-async function loadWasm() {
-  // const exports = await wasm();
-  // console.log(exports);
-  // Use functions which were exported from Rust...
-}
-
 @singleton({ contrib: RenderingPluginContribution })
 export class RenderGraphPlugin implements RenderingPlugin {
   static tag = 'RenderGraphPlugin';
@@ -192,15 +183,15 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       // TODO: other post-processing passes
       // FXAA
-      pushFXAAPass(
-        this.builder,
-        this.renderHelper,
-        {
-          backbufferWidth: canvas.width,
-          backbufferHeight: canvas.height,
-        },
-        mainColorTargetID,
-      );
+      // pushFXAAPass(
+      //   this.builder,
+      //   this.renderHelper,
+      //   {
+      //     backbufferWidth: canvas.width,
+      //     backbufferHeight: canvas.height,
+      //   },
+      //   mainColorTargetID,
+      // );
 
       // output to screen
       this.builder.resolveRenderTargetToExternalTexture(
@@ -340,32 +331,36 @@ export class RenderGraphPlugin implements RenderingPlugin {
     }
 
     if (!this.swapChain) {
-      const options: WebGLContextAttributes = {
-        antialias: false,
-        preserveDrawingBuffer: false,
-        // @see https://webglfundamentals.org/webgl/lessons/webgl-and-alpha.html
-        // premultipliedAlpha: false,
-      };
-      this.handleContextEvents($canvas);
-
-      let gl: WebGLRenderingContext | WebGL2RenderingContext;
-      if (targets.includes('webgl2')) {
-        gl =
-          $canvas.getContext('webgl2', options) ||
-          ($canvas.getContext('experimental-webgl2', options) as WebGL2RenderingContext);
-      }
-
-      if (!gl && targets.includes('webgl1')) {
-        gl =
-          $canvas.getContext('webgl', options) ||
-          ($canvas.getContext('experimental-webgl', options) as WebGLRenderingContext);
-      }
-
-      this.swapChain = new Device_GL(gl as WebGLRenderingContext | WebGL2RenderingContext, {
-        shaderDebug: true,
-        trackResources: true,
-      });
+      this.swapChain = this.createSwapChainForWebGL($canvas, targets);
     }
+  }
+
+  private createSwapChainForWebGL($canvas: HTMLCanvasElement, targets: string[]) {
+    const options: WebGLContextAttributes = {
+      antialias: false,
+      preserveDrawingBuffer: false,
+      // @see https://webglfundamentals.org/webgl/lessons/webgl-and-alpha.html
+      // premultipliedAlpha: false,
+    };
+    this.handleContextEvents($canvas);
+
+    let gl: WebGLRenderingContext | WebGL2RenderingContext;
+    if (targets.includes('webgl2')) {
+      gl =
+        $canvas.getContext('webgl2', options) ||
+        ($canvas.getContext('experimental-webgl2', options) as WebGL2RenderingContext);
+    }
+
+    if (!gl && targets.includes('webgl1')) {
+      gl =
+        $canvas.getContext('webgl', options) ||
+        ($canvas.getContext('experimental-webgl', options) as WebGLRenderingContext);
+    }
+
+    return new Device_GL(gl as WebGLRenderingContext | WebGL2RenderingContext, {
+      shaderDebug: true,
+      trackResources: true,
+    });
   }
 
   private async createSwapChainForWebGPU(
@@ -390,9 +385,21 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
     if (!context) return null;
 
-    // await loadWasm();
+    const { glsl_compile } = await import('../../../rust/pkg/index');
 
-    return new Device_WebGPU(adapter, device, canvas, context);
+    // console.log(
+    //   glsl_compile(
+    //     `layout(binding = 0, std140) uniform ub_ObjectParams {
+    //   float u_Blur;
+    // };
+    // layout(location = 0) in vec2 a_Extrude;
+    // void main() {}`,
+    //     'vertex',
+    //     true,
+    //   ),
+    // );
+
+    return new Device_WebGPU(adapter, device, canvas, context, glsl_compile);
   }
 
   private handleContextEvents($canvas: HTMLCanvasElement) {

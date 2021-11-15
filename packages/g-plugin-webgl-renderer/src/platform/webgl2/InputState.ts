@@ -11,6 +11,7 @@ import { assert, assertExists } from '../utils';
 import { Buffer_GL } from './Buffer';
 import { Device_GL } from './Device';
 import { InputLayout_GL } from './InputLayout';
+import { Program_GL } from './Program';
 import { ResourceBase_GL } from './ResourceBase';
 import {
   getPlatformBuffer,
@@ -36,12 +37,14 @@ export class InputState_GL extends ResourceBase_GL implements InputState {
     inputLayout,
     vertexBuffers,
     indexBufferBinding,
+    program,
   }: {
     id: number;
     device: Device_GL;
     inputLayout: InputLayout_GL;
     vertexBuffers: (VertexBufferDescriptor | null)[];
     indexBufferBinding: IndexBufferDescriptor | null;
+    program: Program_GL;
   }) {
     super({ id, device });
 
@@ -59,7 +62,9 @@ export class InputState_GL extends ResourceBase_GL implements InputState {
     for (let i = 0; i < inputLayout.vertexAttributeDescriptors.length; i++) {
       const attr = inputLayout.vertexAttributeDescriptors[i];
 
-      const { format, location, divisor = 1, byteStride, bufferByteOffset, bufferIndex } = attr;
+      const { format, divisor = 1, byteStride, bufferByteOffset, bufferIndex } = attr;
+      // find location by name in WebGL1
+      const location = isWebGL2(gl) ? attr.location : program.attributes[i].location;
 
       if (isFormatSizedInteger(format)) {
         // See https://groups.google.com/d/msg/angleproject/yQb5DaCzcWg/Ova0E3wcAQAJ for more info.

@@ -84,7 +84,7 @@ export class Plugin implements RendererPlugin {
       useValue: {
         targets: [
           // 'webgpu',
-          'webgl2',
+          // 'webgl2',
           'webgl1',
         ],
         ...this.options,

@@ -145,7 +145,11 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
   destroy() {
     super.destroy();
     for (let i = 0; i < this.gl_buffer_pages.length; i++) {
-      this.device.gl.deleteBuffer(this.gl_buffer_pages[i]);
+      // no ubo in WebGL1
+      // @ts-ignore
+      if (!this.gl_buffer_pages[i].ubo) {
+        this.device.gl.deleteBuffer(this.gl_buffer_pages[i]);
+      }
     }
   }
 

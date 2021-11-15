@@ -74,6 +74,7 @@ import { HashMap, nullHashFunc } from '../../render/HashMap';
 import { Format } from '../format';
 import { ComputePass_WebGPU } from './ComputePass';
 import { ComputePipeline_WebGPU } from './ComputePipeline';
+import type { glsl_compile as glsl_compile_ } from '../../../../../rust/pkg/index';
 
 export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
   private swapChainWidth = 0;
@@ -106,17 +107,20 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
   device: GPUDevice;
   private canvas: HTMLCanvasElement | OffscreenCanvas;
   private canvasContext: GPUCanvasContext;
+  glsl_compile: typeof glsl_compile_;
 
   constructor(
     adapter: GPUAdapter,
     device: GPUDevice,
     canvas: HTMLCanvasElement | OffscreenCanvas,
     canvasContext: GPUCanvasContext,
+    glsl_compile: typeof glsl_compile_,
   ) {
     this.adapter = adapter;
     this.device = device;
     this.canvas = canvas;
     this.canvasContext = canvasContext;
+    this.glsl_compile = glsl_compile;
 
     this.fallbackTexture = this.createTexture(
       makeTextureDescriptor2D(Format.U8_RGBA_NORM, 1, 1, 1),
@@ -485,6 +489,7 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
       },
     };
 
+    // TODO: async creation
     // @see https://www.w3.org/TR/webgpu/#dom-gpudevice-createrenderpipeline
     renderPipeline.gpuRenderPipeline = this.device.createRenderPipeline(gpuRenderPipeline);
 

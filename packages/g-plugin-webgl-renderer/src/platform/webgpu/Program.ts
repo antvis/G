@@ -1,4 +1,5 @@
 import { Program, ProgramDescriptorSimple, ResourceType } from '../interfaces';
+import { Device_WebGPU } from './Device';
 import { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 
@@ -22,19 +23,54 @@ export class Program_WebGPU extends ResourceBase_WebGPU implements Program {
 
     this.descriptor = descriptor;
     if (descriptor.preprocessedVert) {
-      this.vertexStage = this.createShaderStage(descriptor.preprocessedVert);
+      this.vertexStage = this.createShaderStage(descriptor.preprocessedVert, 'vertex');
     }
     if (descriptor.preprocessedFrag) {
-      this.fragmentStage = this.createShaderStage(descriptor.preprocessedFrag);
+      this.fragmentStage = this.createShaderStage(descriptor.preprocessedFrag, 'fragment');
     }
     if (descriptor.preprocessedCompute) {
-      this.computeStage = this.createShaderStage(descriptor.preprocessedCompute);
+      // FIXME: Only support WGSL now
+      this.computeStage = this.createShaderStage(descriptor.preprocessedCompute, 'compute');
     }
   }
 
-  private createShaderStage(sourceText: string): GPUProgrammableStage {
+  private createShaderStage(
+    sourceText: string,
+    shaderStage: 'vertex' | 'fragment' | 'compute',
+  ): GPUProgrammableStage {
+    const validationEnabled = false;
+
+    let code = sourceText;
+    if (shaderStage !== 'compute') {
+      try {
+        code = (this.device as Device_WebGPU).glsl_compile(
+          sourceText,
+          shaderStage,
+          validationEnabled,
+        );
+      } catch (e) {
+        console.error(sourceText);
+        throw 'whoops';
+      }
+    }
+
+    // Workaround for https://github.com/gfx-rs/naga/issues/1355
+    for (const depthTextureName of ['u_TextureFramebufferDepth']) {
+      if (!code.includes(depthTextureName)) continue;
+
+      code = code.replace(
+        `var T_${depthTextureName}: texture_2d<f32>;`,
+        `var T_${depthTextureName}: texture_depth_2d;`,
+      );
+      code = code.replace(
+        new RegExp(`textureSample\\\(T_${depthTextureName}(.*)\\\);$`, 'gm'),
+        (sub, cap) => {
+          return `vec4<f32>(textureSample(T_${depthTextureName}${cap}), 0.0, 0.0, 0.0);`;
+        },
+      );
+    }
     // @see https://www.w3.org/TR/webgpu/#dom-gpudevice-createshadermodule
-    const shaderModule = this.device.device.createShaderModule({ code: sourceText });
+    const shaderModule = this.device.device.createShaderModule({ code });
     return { module: shaderModule, entryPoint: 'main' };
   }
 }

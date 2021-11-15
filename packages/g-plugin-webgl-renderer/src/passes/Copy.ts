@@ -77,6 +77,7 @@ export function useCopyPass(
         byteOffset: 0,
       })),
       null,
+      program,
     );
   }
 
