@@ -37,6 +37,7 @@ export enum AttributeLocation {
   a_Color, // fill color
   a_StrokeColor, // stroke color
   a_StylePacked1, // opacity fillOpacity strokeOpacity lineWidth
+  a_StylePacked2, // visibility
   a_PickingColor, // picking color
   a_Anchor, // anchor
   MAX,
@@ -71,6 +72,7 @@ layout(location = ${AttributeLocation.a_ModelMatrix3}) attribute vec4 a_ModelMat
 layout(location = ${AttributeLocation.a_Color}) attribute vec4 a_Color;
 layout(location = ${AttributeLocation.a_StrokeColor}) attribute vec4 a_StrokeColor;
 layout(location = ${AttributeLocation.a_StylePacked1}) attribute vec4 a_StylePacked1;
+layout(location = ${AttributeLocation.a_StylePacked2}) attribute vec4 a_StylePacked2;
 layout(location = ${AttributeLocation.a_PickingColor}) attribute vec4 a_PickingColor;
 layout(location = ${AttributeLocation.a_Anchor}) attribute vec2 a_Anchor;
 
@@ -78,6 +80,7 @@ varying vec4 v_PickingResult;
 varying vec4 v_Color;
 varying vec4 v_StrokeColor;
 varying vec4 v_StylePacked1;
+varying vec4 v_StylePacked2;
 
 #define COLOR_SCALE 1. / 255.
 void setPickingColor(vec3 pickingColor) {
@@ -89,6 +92,7 @@ varying vec4 v_PickingResult;
 varying vec4 v_Color;
 varying vec4 v_StrokeColor;
 varying vec4 v_StylePacked1;
+varying vec4 v_StylePacked2;
     `,
     Vert: `
     mat4 u_ModelMatrix = mat4(a_ModelMatrix0, a_ModelMatrix1, a_ModelMatrix2, a_ModelMatrix3);
@@ -108,6 +112,7 @@ varying vec4 v_StylePacked1;
     v_Color = a_Color;
     v_StrokeColor = a_StrokeColor;
     v_StylePacked1 = a_StylePacked1;
+    v_StylePacked2 = a_StylePacked2;
     `,
     Frag: `
     vec4 u_Color = v_Color;
@@ -116,6 +121,7 @@ varying vec4 v_StylePacked1;
     float u_FillOpacity = v_StylePacked1.y;
     float u_StrokeOpacity = v_StylePacked1.z;
     float u_StrokeWidth = v_StylePacked1.w;
+    float u_Visible = v_StylePacked2.x;
 
     gbuf_picking = vec4(v_PickingResult.rgb, 1.0);
     `,
@@ -222,6 +228,7 @@ varying vec4 v_StylePacked1;
           lineWidth = 0,
           anchor,
           zIndex = 0,
+          visibility,
         } = object.parsedStyle;
         let fillColor: Tuple4Number = [0, 0, 0, 0];
         if (fill?.type === PARSED_COLOR_TYPE.Constant) {
@@ -244,6 +251,10 @@ varying vec4 v_StylePacked1;
           fillOpacity,
           strokeOpacity,
           lineWidth,
+          1, // visibility
+          0,
+          0,
+          0,
           ...encodedPickingColor,
           zIndex,
           anchor[0],
@@ -255,7 +266,7 @@ varying vec4 v_StylePacked1;
 
       this.geometry.setVertexBuffer({
         bufferIndex: Batch.CommonBufferIndex,
-        byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4 + 2),
+        byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4 + 4 + 2),
         frequency: VertexBufferFrequency.PerInstance,
         attributes: [
           {
@@ -303,12 +314,18 @@ varying vec4 v_StylePacked1;
           {
             format: Format.F32_RGBA,
             bufferByteOffset: 4 * 28,
+            location: AttributeLocation.a_StylePacked2,
+            divisor: 1,
+          },
+          {
+            format: Format.F32_RGBA,
+            bufferByteOffset: 4 * 32,
             location: AttributeLocation.a_PickingColor,
             divisor: 1,
           },
           {
             format: Format.F32_RG,
-            bufferByteOffset: 4 * 32,
+            bufferByteOffset: 4 * 36,
             location: AttributeLocation.a_Anchor,
             divisor: 1,
           },
@@ -350,6 +367,15 @@ varying vec4 v_StylePacked1;
       .getCache()
       .createInputLayout(this.geometry.inputLayoutDescriptor);
 
+    // use cached program
+    if (this.recreateProgram) {
+      this.programDescriptorSimpleWithOrig = preprocessProgramObj_GLSL(this.device, this.program);
+      this.recreateProgram = false;
+    }
+    const program = this.renderHelper
+      .getCache()
+      .createProgramSimple(this.programDescriptorSimpleWithOrig);
+
     // prevent rebinding VAO too many times
     if (this.recreateInputState) {
       if (this.inputState) {
@@ -362,18 +388,10 @@ varying vec4 v_StylePacked1;
           byteOffset: 0,
         })),
         { buffer: this.geometry.indicesBuffer, byteOffset: 0 },
+        program,
       );
       this.recreateInputState = false;
     }
-
-    // use cached program
-    if (this.recreateProgram) {
-      this.programDescriptorSimpleWithOrig = preprocessProgramObj_GLSL(this.device, this.program);
-      this.recreateProgram = false;
-    }
-    const program = this.renderHelper
-      .getCache()
-      .createProgramSimple(this.programDescriptorSimpleWithOrig);
 
     // new render instance
     const renderInst = this.renderHelper.renderInstManager.newRenderInst();
@@ -466,6 +484,7 @@ varying vec4 v_StylePacked1;
           index,
           new Uint8Array(new Float32Array([anchor[0], anchor[1]]).buffer),
         );
+      } else if (name === 'visibility') {
       }
     }
   }

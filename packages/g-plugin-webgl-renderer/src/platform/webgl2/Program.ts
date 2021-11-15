@@ -21,6 +21,12 @@ export class Program_GL extends ResourceBase_GL implements Program {
   descriptor: ProgramDescriptorSimple;
 
   uniformSetters: Record<string, any> = {};
+  attributes: {
+    name: string;
+    location: number;
+    type: number;
+    size: number;
+  }[] = [];
 
   constructor({
     id,
@@ -70,7 +76,31 @@ export class Program_GL extends ResourceBase_GL implements Program {
     if (!isWebGL2(gl)) {
       // extract uniforms
       this.readUniformLocationsFromLinkedProgram();
+      // extract attributes
+      this.readAttributesFromProgram();
     }
+  }
+
+  private readAttributesFromProgram() {
+    const gl = this.device.gl;
+    const count = gl.getProgramParameter(this.gl_program, gl.ACTIVE_ATTRIBUTES);
+
+    for (let index = 0; index < count; index++) {
+      const { name, type, size } = gl.getActiveAttrib(this.gl_program, index);
+      const location = gl.getAttribLocation(this.gl_program, name);
+      // Add only user provided attributes, for built-in attributes like
+      // `gl_InstanceID` locaiton will be < 0
+      if (location >= 0) {
+        this.attributes.push({
+          name,
+          location,
+          type,
+          size,
+        });
+      }
+    }
+
+    this.attributes.sort((a, b) => a.location - b.location);
   }
 
   private readUniformLocationsFromLinkedProgram() {
@@ -100,7 +130,8 @@ export class Program_GL extends ResourceBase_GL implements Program {
   }
 
   setUniforms(uniforms: Record<string, any> = {}) {
-    this.device.gl.useProgram(this.gl_program);
+    const gl = this.device.gl;
+    gl.useProgram(this.gl_program);
 
     for (const uniformName in uniforms) {
       const uniform = uniforms[uniformName];

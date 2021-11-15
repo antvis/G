@@ -37,7 +37,7 @@ class InstancedLineProgram extends DeviceProgram {
     vec2 yBasis = normalize(vec2(-xBasis.y, xBasis.x));
     vec2 point = a_PointA + xBasis * a_Position.x + yBasis * u_StrokeWidth * a_Position.y;
 
-    point = point - a_Anchor * abs(xBasis);
+    point = point - a_Anchor.xy * abs(xBasis);
 
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * vec4(point, 0.0, 1.0);
   }

@@ -15,7 +15,7 @@ window.gComponents = require('@antv/g-components');
 // plugins
 window.gPluginCssSelect = require('@antv/g-plugin-css-select');
 window.gPlugin3d = require('@antv/g-plugin-3d');
-// window.gPluginControl = require('@antv/g-plugin-control');
+window.gPluginControl = require('@antv/g-plugin-control');
 
 // origin trial for WebGPU
 // @see https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/developer-guide.md#16-can-i-provide-tokens-by-running-script

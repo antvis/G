@@ -501,6 +501,7 @@ export interface Device {
     inputLayout: InputLayout,
     buffers: (VertexBufferDescriptor | null)[],
     indexBuffer: IndexBufferDescriptor | null,
+    program?: Program,
   ): InputState;
   createRenderPipeline(descriptor: RenderPipelineDescriptor): RenderPipeline;
   createComputePipeline(descriptor: ComputePipelineDescriptor): ComputePipeline;

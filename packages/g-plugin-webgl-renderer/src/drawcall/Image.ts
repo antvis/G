@@ -37,7 +37,7 @@ class ImageProgram extends DeviceProgram {
   void main() {
     ${Batch.ShaderLibrary.Vert}
 
-    vec2 offset = (a_Uv - a_Anchor) * a_Size;
+    vec2 offset = (a_Uv - a_Anchor.xy) * a_Size;
 
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * vec4(offset, 0.0, 1.0);
     

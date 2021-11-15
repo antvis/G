@@ -12,7 +12,7 @@ const PointShapes: string[] = [SHAPE.Circle, SHAPE.Ellipse, SHAPE.Rect];
 
 class CircleProgram extends DeviceProgram {
   static a_Extrude = AttributeLocation.MAX;
-  static a_StylePacked2 = AttributeLocation.MAX + 1;
+  static a_StylePacked3 = AttributeLocation.MAX + 1;
   static a_Size = AttributeLocation.MAX + 2;
 
   static ub_ObjectParams = 1;
@@ -27,21 +27,21 @@ layout(std140) uniform ub_ObjectParams {
   vert: string = `
 ${Batch.ShaderLibrary.VertDeclaration}
 layout(location = ${CircleProgram.a_Extrude}) attribute vec2 a_Extrude;
-layout(location = ${CircleProgram.a_StylePacked2}) attribute vec4 a_StylePacked2;
+layout(location = ${CircleProgram.a_StylePacked3}) attribute vec4 a_StylePacked3;
 layout(location = ${CircleProgram.a_Size}) attribute vec2 a_Size;
 
 varying vec4 v_Data;
 varying vec2 v_Radius;
-varying vec4 v_StylePacked2;
+varying vec4 v_StylePacked3;
 
 void main() {
   ${Batch.ShaderLibrary.Vert}
 
   float antialiasblur = 1.0 / (a_Size.x + u_StrokeWidth);
 
-  vec2 offset = (a_Extrude + vec2(1.0) - 2.0 * a_Anchor) * a_Size;
+  vec2 offset = (a_Extrude + vec2(1.0) - 2.0 * a_Anchor.xy) * a_Size;
 
-  int shape = int(floor(a_StylePacked2.x + 0.5));
+  int shape = int(floor(a_StylePacked3.x + 0.5));
   if (shape == 2) {
     offset = offset - vec2(u_StrokeWidth / 2.0);
   }
@@ -49,15 +49,15 @@ void main() {
   gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * vec4(offset, -u_ZIndex, 1.0);
   
   v_Radius = a_Size;
-  v_Data = vec4(a_Extrude, antialiasblur, a_StylePacked2.x);
-  v_StylePacked2 = a_StylePacked2;
+  v_Data = vec4(a_Extrude, antialiasblur, a_StylePacked3.x);
+  v_StylePacked3 = a_StylePacked3;
 }
   `;
 
   frag: string = `
 varying vec4 v_Data;
 varying vec2 v_Radius;
-varying vec4 v_StylePacked2;
+varying vec4 v_StylePacked3;
 
 ${Batch.ShaderLibrary.FragDeclaration}
 
@@ -102,7 +102,7 @@ void main() {
     outer_df = sdEllipsoidApproximated(v_Data.xy, vec2(1.0));
     inner_df = sdEllipsoidApproximated(v_Data.xy, r);
   } else if (shape == 2) {
-    float u_RectRadius = v_StylePacked2.y;
+    float u_RectRadius = v_StylePacked3.y;
     outer_df = sdRoundedBox(v_Data.xy, vec2(1.0), u_RectRadius / v_Radius);
     inner_df = sdRoundedBox(v_Data.xy, r, u_RectRadius / v_Radius);
   }
@@ -200,7 +200,7 @@ export class CircleRenderer extends Batch {
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
-          location: CircleProgram.a_StylePacked2,
+          location: CircleProgram.a_StylePacked3,
           divisor: 1,
         },
       ],
@@ -236,7 +236,7 @@ export class CircleRenderer extends Batch {
     } else if (name === 'radius') {
       geometry.updateVertexBuffer(
         3,
-        CircleProgram.a_StylePacked2,
+        CircleProgram.a_StylePacked3,
         index,
         new Uint8Array(
           new Float32Array([
@@ -260,13 +260,17 @@ export class CircleRenderer extends Batch {
     //   offs += fillMatrix4x4(d, offs, this.camera.getViewTransform()); // ViewMatrix 16
     //   offs += fillVec3v(d, offs, this.camera.getPosition(), this.contextService.getDPR()); // CameraPosition DPR 4
     const program = renderInst.renderPipelineDescriptor.program as Program_GL;
-    program.setUniforms({
-      u_ProjectionMatrix: this.camera.getPerspective(),
-      u_ViewMatrix: this.camera.getViewTransform(),
-      u_CameraPosition: this.camera.getPosition(),
-      u_DevicePixelRatio: this.contextService.getDPR(),
-      u_Blur: 0,
-    });
+
+    // FIXME: use uniform by names in WebGL
+    if (program.gl_program) {
+      program.setUniforms({
+        u_ProjectionMatrix: this.camera.getPerspective(),
+        u_ViewMatrix: this.camera.getViewTransform(),
+        u_CameraPosition: this.camera.getPosition(),
+        u_DevicePixelRatio: this.contextService.getDPR(),
+        u_Blur: 0,
+      });
+    }
   }
 
   private getSize(attributes: CircleStyleProps, tagName: string) {

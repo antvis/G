@@ -103,6 +103,7 @@ export function pushFXAAPass(
           byteOffset: 0,
         })),
         null,
+        program,
       );
     }
 

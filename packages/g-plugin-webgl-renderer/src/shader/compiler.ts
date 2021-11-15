@@ -149,16 +149,14 @@ ${
     `
 ${
   (type === 'frag' &&
-    !isGLSL100 &&
+    supportMRT &&
+    // !isGLSL100 &&
     `#define gl_FragColor gbuf_color
 layout(location = 0) out vec4 gbuf_color;
 `) ||
   ''
 }
-${
-  (type === 'frag' && !isGLSL100 && supportMRT && `layout(location = 1) out vec4 gbuf_picking;`) ||
-  ''
-}
+${(type === 'frag' && supportMRT && `layout(location = 1) out vec4 gbuf_picking;`) || ''}
 `) ||
   ''
 }

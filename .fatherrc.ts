@@ -11,20 +11,21 @@ export default {
   nodeResolveOpts: {
     mainFields: ['module', 'browser', 'main'],
   },
-  extraRollupPlugins: [
-    // wasm()
-    rust({
-      inlineWasm: true,
-    }),
-  ],
-  // extraBabelPlugins: [
-  //   [
-  //     'babel-plugin-inline-import',
-  //     {
-  //       extensions: ['.glsl'],
-  //     },
-  //   ],
+  // extraRollupPlugins: [
+  //   // wasm()
+  //   rust({
+  //     inlineWasm: true,
+  //   }),
   // ],
+  extraBabelPlugins: [
+    '@babel/plugin-syntax-dynamic-import',
+    // [
+    //   'babel-plugin-inline-import',
+    //   {
+    //     extensions: ['.glsl'],
+    //   },
+    // ],
+  ],
   // yarn build order
   pkgs: [
     'g-math',
