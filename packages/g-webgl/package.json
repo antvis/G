@@ -47,7 +47,7 @@
     "@antv/util": "^2.0.13"
   },
   "peerDependencies": {
-    "@antv/g": "^1.0.0-alpha.27",
+    "@antv/g": "next",
     "mana-syringe": "^0.2.2"
   },
   "scripts": {

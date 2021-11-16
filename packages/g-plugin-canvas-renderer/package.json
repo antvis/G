@@ -32,10 +32,8 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.35",
     "@antv/g-math": "^1.0.0-alpha.10",
     "@antv/path-util": "^2.0.14",
-    "mana-syringe": "^0.2.2",
     "rbush": "^3.0.1"
   },
   "devDependencies": {
@@ -46,7 +44,7 @@
     "webpack-cli": "^3.3.7"
   },
   "peerDependencies": {
-    "@antv/g": "^1.0.0-alpha.27",
+    "@antv/g": "next",
     "mana-syringe": "^0.2.2"
   },
   "scripts": {
