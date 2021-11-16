@@ -32,9 +32,7 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.34",
-    "@antv/util": "^2.0.13",
-    "@babel/runtime": "^7.16.0"
+    "@antv/util": "^2.0.13"
   },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
@@ -44,7 +42,7 @@
     "webpack-cli": "^3.3.7"
   },
   "peerDependencies": {
-    "@antv/g": "^1.0.0-alpha.27"
+    "@antv/g": "^1.0.0-alpha.34"
   },
   "scripts": {
     "umd": "webpack"

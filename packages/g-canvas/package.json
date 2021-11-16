@@ -40,16 +40,14 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g": "^1.0.0-alpha.34",
     "@antv/g-plugin-canvas-picker": "^1.0.0-alpha.28",
     "@antv/g-plugin-canvas-renderer": "^1.0.0-alpha.34",
     "@antv/g-plugin-dom-interaction": "^1.0.0-alpha.33",
     "@antv/g-plugin-html-renderer": "^1.0.0-alpha.17",
-    "@antv/util": "^2.0.13",
-    "@babel/runtime": "^7.16.3"
+    "@antv/util": "^2.0.13"
   },
   "peerDependencies": {
-    "@antv/g": "^1.0.0-alpha.27",
+    "@antv/g": "^1.0.0-alpha.34",
     "mana-syringe": "^0.2.2"
   },
   "scripts": {
