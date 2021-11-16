@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-css-select",
-  "version": "1.0.0-alpha.35",
+  "version": "1.0.0-alpha.36",
   "description": "A G plugin for using CSS select syntax in query selector",
   "main": "lib/index.js",
   "module": "es/index.esm.js",

@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-webgl-renderer",
-  "version": "1.0.0-alpha.35",
+  "version": "1.0.0-alpha.36",
   "description": "A G plugin of renderer implementation with WebGL1",
   "main": "es/index.js",
   "module": "es/index.esm.js",

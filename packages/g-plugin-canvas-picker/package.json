@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvas-picker",
-  "version": "1.0.0-alpha.29",
+  "version": "1.0.0-alpha.30",
   "description": "A G plugin for picking in canvas",
   "main": "lib/index.js",
   "module": "es/index.esm.js",
