@@ -1,28 +1,11 @@
 export default {
-  // cjs: 'rollup',
-  // esm: 'rollup',
   cjs: 'babel',
   esm: 'babel',
   umd: false,
-  // runtimeHelpers: true,
   nodeResolveOpts: {
     mainFields: ['module', 'browser', 'main'],
   },
-  // extraRollupPlugins: [
-  //   // wasm()
-  //   rust({
-  //     inlineWasm: true,
-  //   }),
-  // ],
-  extraBabelPlugins: [
-    // ['@babel/plugin-syntax-dynamic-import'],
-    // [
-    //   'babel-plugin-inline-import',
-    //   {
-    //     extensions: ['.glsl'],
-    //   },
-    // ],
-  ],
+  // extraBabelPresets: [['@babel/preset-env', { exclude: ['proposal-dynamic-import'] }]],
   // yarn build order
   pkgs: [
     'g-math',
@@ -42,5 +25,7 @@ export default {
     'g-components',
     'g-plugin-3d',
     'g-plugin-control',
+    'g-plugin-gpgpu',
+    'g-webgpu-compiler',
   ],
 };

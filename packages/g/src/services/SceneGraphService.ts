@@ -470,13 +470,6 @@ export class DefaultSceneGraphService implements SceneGraphService {
         this.dirtifyWorld(element, transform);
       }
     }
-
-    // model matrix changed
-    element.emit(ElementEvent.ATTRIBUTE_CHANGED, {
-      attributeName: 'modelMatrix',
-      oldValue: null,
-      newValue: null,
-    });
   }
 
   dirtifyWorld(element: INode, transform: Transform) {
@@ -697,6 +690,13 @@ export class DefaultSceneGraphService implements SceneGraphService {
         }
       });
 
+      // model matrix changed
+      element.emit(ElementEvent.ATTRIBUTE_CHANGED, {
+        attributeName: 'modelMatrix',
+        oldValue: null,
+        newValue: null,
+      });
+
       // FIXME: emit on leaf node
       if (element.childNodes.length === 0) {
         dirtifyRenderable(element);
@@ -747,6 +747,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
           transform.localTransform,
         );
       }
+
+      transform.dirtyFlag = false;
     }
   }
 

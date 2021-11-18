@@ -832,3 +832,5 @@ export enum GL {
   TIMESTAMP_EXT = 0x8e28,
   GPU_DISJOINT_EXT = 0x8fbb, // A Boolean indicating whether or not the GPU performed any disjoint operation.
 }
+
+export * from './webgpu/constants';

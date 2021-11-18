@@ -1,7 +1,8 @@
 import React, { useCallback, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Canvas, CanvasEvent } from '@antv/g';
-import { Renderer as WebGLRenderer, Kernel } from '@antv/g-webgl';
+import { Renderer } from '@antv/g-webgl';
+import { Plugin, Kernel } from '@antv/g-plugin-gpgpu';
 import * as dat from 'dat.gui';
 
 /**
@@ -19,12 +20,15 @@ const App = function ReduceSum() {
 
   const containerRef = useCallback(node => {
     if (node !== null) {
+      const renderer = new Renderer();
+      renderer.registerPlugin(new Plugin());
+
       // create a canvas
       const canvas = new Canvas({
         container: node,
         width: 1,
         height: 1,
-        renderer: new WebGLRenderer(),
+        renderer,
       });
 
       canvas.addEventListener(CanvasEvent.READY, () => {
@@ -134,11 +138,8 @@ const App = function ReduceSum() {
 
     const result = kernel
       .createBuffer({
-        group: 0,
-        binding: 0,
-        usage: 'storage',
-        accessMode: 'read_write',
-        view: input,
+        name: 'input',
+        data: input,
       });
     kernel.dispatch(Math.ceil(array.length / workgroupSize), 1);
   

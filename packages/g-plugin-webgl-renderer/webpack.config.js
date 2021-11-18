@@ -18,7 +18,7 @@ module.exports = {
     },
   },
   output: {
-    library: ['G', 'SVGRenderer'],
+    library: ['G', 'WebGLRenderer'],
     libraryTarget: 'umd',
     filename: 'index.umd.js',
   },

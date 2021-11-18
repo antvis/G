@@ -76,9 +76,6 @@ class ImageProgram extends DeviceProgram {
 export class ImageRenderer extends Batch {
   protected program = new ImageProgram();
 
-  @inject(TexturePool)
-  private texturePool: TexturePool;
-
   protected validate(object: DisplayObject<any, any>): boolean {
     const instance = this.objects[0];
     if (instance.nodeName === SHAPE.Image) {

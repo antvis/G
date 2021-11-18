@@ -1,6 +1,8 @@
 ---
 title: Architecture
 order: -1
+redirect_from:
+    - /en/docs/inside-g
 ---
 
 # API 风格

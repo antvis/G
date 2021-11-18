@@ -3,7 +3,7 @@
   "version": "1.0.0-alpha.35",
   "description": "A G plugin for orbit control",
   "main": "lib/index.js",
-  "module": "es/index.esm.js",
+  "module": "es/index.js",
   "types": "es/index.d.ts",
   "unpkg": "dist/index.umd.js",
   "files": [

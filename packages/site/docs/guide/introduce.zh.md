@@ -7,15 +7,16 @@ redirect_from:
     - /zh/docs/guide
 ---
 
--   G 是一款易用、高效、强大的 2D 可视化渲染引擎，提供 Canvas、SVG、WebGL 等多种渲染方式的实现。目前，已有多个顶级的可视化开源项目基于 G 开发，比如图形语法库 [G2](https://g2.antv.vision)、图可视化库 [G6](https://g6.antv.vision) 等。
+G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高性能的 2D / 3D 图形渲染能力，适配 Web 端全部底层渲染 API（Canvas2D / SVG / WebGL / WebGPU）。
+
+特别的，针对图场景下适合并行计算的算法提供 GPGPU 支持。
 
 ## 特性
 
--   强大、可扩展的渲染能力，并内置常用的基础图形。
--   极致的渲染性能，支持大数据量的可视化场景。
--   完整模拟浏览器 DOM 的事件，与原生事件的表现无差异。
--   流畅的动画实现，以及丰富的配置接口。
--   同时提供 Canvas、SVG 和 WebGL 版本的实现，API 基本保持一致。
+-   更易用的 API。其中图形、事件系统兼容 DOM API，动画兼容 Web Animation API，自定义图形 CustomElement API。
+-   适配 Web 端全部渲染环境。支持 Canvas2D / SVG / WebGL / WebGPU。
+-   高性能的渲染与计算。为可并行算法提供 GPGPU 支持。
+-   可扩展插件机制。
 
 ## 使用方式
 
@@ -80,14 +81,14 @@ canvas.appendChild(circle);
 
 ```bash
 # 核心包
-$ npm install @antv/g --save
+$ npm install @antv/g@next --save
 
 # Canvas2D 渲染器
-$ npm install @antv/g-canvas --save
+$ npm install @antv/g-canvas@next --save
 # SVG 渲染器
-$ npm install @antv/g-svg --save
+$ npm install @antv/g-svg@next --save
 # WebGL 渲染器
-$ npm install @antv/g-webgl --save
+$ npm install @antv/g-webgl@next --save
 ```
 
 然后就可以在核心包中使用 [Canvas](/zh/docs/api/canvas)、[Circle](/zh/docs/api/basic/circle) 这样的核心基础对象以及 [Renderer](/zh/docs/api/renderer) 这样的渲染器：
@@ -115,3 +116,5 @@ const circle = new Circle({
 
 canvas.appendChild(circle);
 ```
+
+[完整 CodeSandbox 例子](https://codesandbox.io/s/yi-npm-module-xing-shi-shi-yong-g-wjfux?file=/index.js)

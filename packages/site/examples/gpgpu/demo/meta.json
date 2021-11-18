@@ -5,6 +5,13 @@
   },
   "demos": [
     {
+      "filename": "add-2-vectors.tsx",
+      "title": {
+        "zh": "向量加法",
+        "en": "Add 2 Vectors"
+      }
+    },
+    {
       "filename": "matrix-multiplication.tsx",
       "title": {
         "zh": "矩阵乘法",

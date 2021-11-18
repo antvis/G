@@ -14,5 +14,3 @@ export class Renderer extends AbstractRenderer {
     this.registerPlugin(new DomInteraction.Plugin());
   }
 }
-
-export * from './gpgpu';

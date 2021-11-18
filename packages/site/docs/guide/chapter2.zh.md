@@ -7,6 +7,8 @@ order: 2
 
 在上一节我们定义了一个简单的场景，在本节中，我们将学习如何使用[渲染器](/zh/docs/guide/diving-deeper/switch-renderer)完成渲染。[本节示例](/zh/examples/guide#chapter2)
 
+[完整 CodeSandbox 例子](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
+
 # 选择渲染器
 
 首先我们需要引入一个或多个渲染器，如果引入了多个，还可以在[运行时切换](/zh/docs/guide/diving-deeper/switch-renderer#运行时切换)。本例中我们只选择了一个 Canvas2D 渲染器：
@@ -23,10 +25,10 @@ const renderer = new Renderer();
 
 ```javascript
 const canvas = new Canvas({
-  container: 'container', // DOM 节点id
-  width: 600, // 画布宽度
-  height: 500, // 画布高度
-  renderer,
+    container: 'container', // DOM 节点id
+    width: 600, // 画布宽度
+    height: 500, // 画布高度
+    renderer,
 });
 ```
 
@@ -54,8 +56,7 @@ canvas.appendChild(node1);
 canvas.appendChild(node2);
 ```
 
-此时效果就正常了：
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*te-lR4m9mRIAAAAAAAAAAAAAARQnAQ)
+此时效果就正常了： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*te-lR4m9mRIAAAAAAAAAAAAAARQnAQ)
 
 或者，我们也可以通过 `zIndex` 手动调整。
 
@@ -64,6 +65,8 @@ canvas.appendChild(node2);
 类似 CSS 中的 `zIndex`，我们可以手动设置两个节点的绘制顺序，让它们比边高（默认为 0）即可：
 
 ```javascript
-node1.attr('zIndex', 1);
-node2.attr('zIndex', 1);
+node1.style.zIndex = 1;
+node2.style.zIndex = 1;
 ```
+
+基础图形已经绘制出来了，下面让我们增加一些交互吧。

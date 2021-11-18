@@ -1,10 +1,6 @@
-# @antv/g-plugin-canvas-renderer
+# @antv/g-plugin-webgl-renderer
 
-使用 WebGL 绘制各类图形：
+按照 WebGPU -> WebGL2 -> WebGL1 自动降级。
 
-- `init` 初始化渲染引擎，编译内置 shader
-- `destroy` 销毁渲染引擎，释放纹理等 GPU 资源
-- `mounted` 创建待渲染 Model
-- `beginFrame` 创建 FrameGraph
-- `renderFrame` 渲染 FrameGraph，调用 Model 完成渲染
-- `attributeChanged` 更新 Model
+-   `/platform` HAL 硬件适配层，适配 WebGL1/2 和 WebGPU
+-   `/render` 实现 FrameGraph

@@ -29,9 +29,6 @@
         },
         {
             "path": "../g-plugin-webgl-renderer"
-        },
-        {
-            "path": "../g-plugin-dom-interaction"
         }
     ]
 }

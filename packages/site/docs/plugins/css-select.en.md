@@ -7,8 +7,8 @@ order: 0
 
 -   **getElementById** 在当前节点子树下按 id 查找单一元素
 -   **getElementsByName** 在当前节点子树下按 name 查找元素列表
--   **getElementsByClassName** 在当前节点子树下按 className 查找素列表
--   **getElementsByTagName** 在当前节点子树下按 tagName 查找素列表
+-   **getElementsByClassName** 在当前节点子树下按 className 查找元素列表
+-   **getElementsByTagName** 在当前节点子树下按 tagName 查找元素列表
 
 假设我们构建了如下场景图：
 

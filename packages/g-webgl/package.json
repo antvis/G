@@ -1,9 +1,9 @@
 {
   "name": "@antv/g-webgl",
   "version": "1.0.0-alpha.36",
-  "description": "A renderer implemented by WebGL1",
+  "description": "A renderer implemented by WebGL1/2 & WebGPU",
   "main": "lib/index.js",
-  "module": "es/index.esm.js",
+  "module": "es/index.js",
   "types": "es/index.d.ts",
   "unpkg": "dist/index.umd.js",
   "files": [
@@ -21,7 +21,9 @@
   "keywords": [
     "util",
     "antv",
-    "g"
+    "g",
+    "webgl",
+    "webgpu"
   ],
   "publishConfig": {
     "access": "public"

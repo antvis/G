@@ -1,6 +1,8 @@
 ---
 title: 画布
 order: -100
+redirect_from:
+    - /en/docs/api
 ---
 
 我们在 G 核心包 `@antv/g` 中提供了 Canvas 画布这一核心对象，从渲染的角度上看，它是一个在浏览器中实现的“小浏览器”，承载着以下三类对象：

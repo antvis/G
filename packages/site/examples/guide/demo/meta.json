@@ -7,10 +7,16 @@
     {
       "filename": "chapter2.js",
       "title": {
-        "zh": "使用渲染器",
-        "en": "Use renderer"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+        "zh": "基础教程第二节：使用渲染器",
+        "en": "Guide chapter2: use renderer"
+      }
+    },
+    {
+      "filename": "chapter3.js",
+      "title": {
+        "zh": "基础教程第三节：添加交互",
+        "en": "Guide chapter3: interaction"
+      }
     }
   ]
 }

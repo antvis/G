@@ -83,6 +83,7 @@ class TextProgram extends DeviceProgram {
     highp float alpha = smoothstep(buff - gamma_scaled, buff + gamma_scaled, dist);
 
     gl_FragColor = color * (alpha * opacity * u_Opacity);
+    gbuf_color = vec4(1.0, 0.0, 0.0, 1.0);
   }
   `;
 }

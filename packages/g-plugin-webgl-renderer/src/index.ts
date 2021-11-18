@@ -1,7 +1,4 @@
-// tslint:disable-next-line:no-reference
-/// <reference path="./glsl.d.ts" />
-/// <reference path="../../../node_modules/@webgpu/types/dist/index.d.ts" />
-import { Camera, world, RendererPlugin, SHAPE } from '@antv/g';
+import { world, RendererPlugin, SHAPE } from '@antv/g';
 import { Module, Syringe } from 'mana-syringe';
 import { Renderable3D } from './components/Renderable3D';
 import { PickingIdGenerator } from './PickingIdGenerator';

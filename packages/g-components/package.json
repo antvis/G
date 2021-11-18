@@ -3,7 +3,7 @@
   "version": "1.0.0-alpha.34",
   "description": "Components for g",
   "main": "lib/index.js",
-  "module": "es/index.esm.js",
+  "module": "es/index.js",
   "types": "es/index.d.ts",
   "unpkg": "dist/index.umd.js",
   "files": [
@@ -42,7 +42,7 @@
     "webpack-cli": "^3.3.7"
   },
   "peerDependencies": {
-    "@antv/g": "^1.0.0-alpha.34"
+    "@antv/g": "next"
   },
   "scripts": {
     "umd": "webpack"

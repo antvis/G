@@ -21,7 +21,13 @@ export class RenderPass_WebGPU implements RenderPass {
   private debugPointer: any;
 
   constructor() {
+    // FIXME: alloc attachment according to descriptor
     this.gpuColorAttachments = [
+      {
+        view: null!,
+        loadValue: 'load',
+        storeOp: 'store',
+      },
       {
         view: null!,
         loadValue: 'load',

@@ -1,7 +1,8 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Canvas, CanvasEvent } from '@antv/g';
-import { Renderer as WebGLRenderer, Kernel } from '@antv/g-webgl';
+import { Renderer } from '@antv/g-webgl';
+import { Plugin, Kernel } from '@antv/g-plugin-gpgpu';
 import * as dat from 'dat.gui';
 
 /**
@@ -18,16 +19,18 @@ const App = function MatrixMultiplication() {
   const containerRef = useCallback(node => {
     if (node !== null) {
 
+      const renderer = new Renderer();
+      renderer.registerPlugin(new Plugin());
+
       // create a canvas
       const canvas = new Canvas({
         container: node,
         width: 1,
         height: 1,
-        renderer: new WebGLRenderer(),
+        renderer,
       });
 
       canvas.addEventListener(CanvasEvent.READY, () => {
-      console.log('ready...');
         const kernel = new Kernel({
           canvas,
           code: `
@@ -128,25 +131,16 @@ const App = function MatrixMultiplication() {
     const resultMatrix = new Float32Array(resultMatrixBufferSize);
 
     kernel.createBuffer({
-      group: 0,
-      binding: 0,
-      usage: 'storage',
-      accessMode: 'read',
-      view: firstMatrix,
+      name: 'firstMatrix',
+      data: firstMatrix,
     });
     kernel.createBuffer({
-      group: 0,
-      binding: 1,
-      usage: 'storage',
-      accessMode: 'read',
-      view: secondMatrix,
+      name: 'secondMatrix',
+      data: secondMatrix,
     });
     const resultBuffer = kernel.createBuffer({
-      group: 0,
-      binding: 2,
-      usage: 'storage',
-      accessMode: 'write',
-      view: resultMatrix,
+      name: 'resultMatrix',
+      data: resultMatrix,
     });
     kernel.dispatch(x, y);
   

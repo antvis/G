@@ -31,21 +31,20 @@ export class Texture_WebGPU extends ResourceBase_WebGPU implements TextureShared
   }) {
     super({ id, device });
 
-    if (!skipCreate) {
-      this.device.createTextureShared(
-        {
-          pixelFormat: descriptor.pixelFormat,
-          dimension: descriptor.dimension,
-          width: descriptor.width,
-          height: descriptor.height,
-          depthOrArrayLayers: descriptor.depth,
-          numLevels: descriptor.numLevels,
-          usage: descriptor.usage,
-          sampleCount: 1,
-        },
-        this,
-      );
-    }
+    this.device.createTextureShared(
+      {
+        pixelFormat: descriptor.pixelFormat,
+        dimension: descriptor.dimension,
+        width: descriptor.width,
+        height: descriptor.height,
+        depthOrArrayLayers: descriptor.depth,
+        numLevels: descriptor.numLevels,
+        usage: descriptor.usage,
+        sampleCount: 1,
+      },
+      this,
+      skipCreate,
+    );
   }
 
   setImageData(data: TexImageSource, level: number) {

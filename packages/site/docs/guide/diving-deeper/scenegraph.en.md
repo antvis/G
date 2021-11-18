@@ -1,5 +1,5 @@
 ---
-title: Scene Graph
+title: 场景图
 order: 0
 ---
 
@@ -38,7 +38,7 @@ order: 0
 在 G 中使用 `Group` 和 `Circle` 可以很容易构建出它们的层次关系：
 
 ```javascript
-import { Group, Circle } from 'g-core';
+import { Group, Circle } from '@antv/g';
 
 const solarSystem = new Group({
     name: 'solarSystem',
@@ -169,7 +169,7 @@ moonOrbit.translate(100, 0);
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*XcUqQJowVKMAAAAAAAAAAAAAARQnAQ)
 
-最后在每一帧中，我们分别让太阳系和地球轨道在局部坐标系中沿 Z 轴旋转 1 度（你也可以让地球轨道转的更快点），[最终效果](/zh/examples/scenegraph/group#canvas-solarsystem)：
+最后在每一帧中，我们分别让太阳系和地球轨道在局部坐标系中沿 Z 轴旋转 1 度（你也可以让地球轨道转的更快点）：
 
 ```javascript
 solarSystem.rotateLocal(1);
@@ -213,7 +213,7 @@ earthOrbit.rotateLocal(1);
 
 ```javascript
 solarSystem.getElementsByName('sun');
-// sun
+// [sun]
 
 solarSystem.getElementsByTagName('circle');
 solarSystem.getElementsByTagName(SHAPE.Circle);
@@ -266,16 +266,16 @@ group.show();
 
 ### 渲染次序
 
-类似 CSS，我们可以通过 `z-index` 属性控制渲染次序，有两点需要注意：
+类似 CSS，我们可以通过 `zIndex` 属性控制渲染次序，有两点需要注意：
 
 1. 只会影响渲染顺序，并不会改变场景图中的节点结构
 2. 只在当前上下文内生效
 
-| 名称      | 参数     | 返回值 | 备注           |
-| --------- | -------- | ------ | -------------- |
+| 名称      | 参数     | 返回值 | 备注          |
+| --------- | -------- | ------ | ------------- |
 | setZIndex | `number` | 无     | 设置 `zIndex` |
-| toFront   | 无       | 无     | 置顶           |
-| toBack    | 无       | 无     | 置底           |
+| toFront   | 无       | 无     | 置顶          |
+| toBack    | 无       | 无     | 置底          |
 
 ```javascript
 const group = new Group();
@@ -418,18 +418,17 @@ group
 场景图应该能够脱离渲染引擎存在，这样在描述组件时才不需要考虑具体渲染引擎（`g-canvas/svg/webgl`）。因此不再建议使用 `canvas.addGroup` 和 `canvas.addShape` 这样的方法。
 
 ```javascript
-// 不建议使用
+// 不建议使用旧版
 import { Canvas } from 'g-canvas';
 const canvas = new Canvas();
 const circle = canvas.addShape('circle', { style: { r: 25 } });
 
-// 建议使用
+// 建议使用新版
 // 定义组件
-import { Circle } from 'g-core';
+import { Circle, Canvas } from '@antv/g';
 const circle = new Circle({ style: { r: 25 } });
 // 渲染组件
-import { Canvas } from 'g-canvas';
-const canvas = new Canvas();
+const canvas = new Canvas({});
 canvas.appendChild(circle);
 ```
 

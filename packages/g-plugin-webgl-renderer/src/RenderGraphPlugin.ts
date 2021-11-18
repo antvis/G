@@ -124,6 +124,13 @@ export class RenderGraphPlugin implements RenderingPlugin {
     renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
       this.renderHelper.destroy();
       // this.batches.forEach((batch) => batch.destroy());
+
+      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.removeEventListener(
+        ElementEvent.ATTRIBUTE_CHANGED,
+        handleAttributeChanged,
+      );
     });
 
     /**

@@ -45,7 +45,11 @@ export interface IDevice_WebGPU extends Device {
   fallbackTexture: Texture;
   fallbackSampler: Sampler;
 
-  createTextureShared(descriptor: TextureSharedDescriptor, texture: TextureShared_WebGPU): void;
+  createTextureShared(
+    descriptor: TextureSharedDescriptor,
+    texture: TextureShared_WebGPU,
+    skipCreate: boolean,
+  ): void;
   ensureRenderPipeline(renderPipeline: RenderPipeline): void;
   // createBindGroupLayout(bindingLayout: Partial<BindingLayoutDescriptor>): BindGroupLayout;
   // createPipelineLayout(bindingLayouts: BindingLayoutDescriptor[]): GPUPipelineLayout;

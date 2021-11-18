@@ -9,7 +9,9 @@ order: 1
 
 我们的场景十分简单，包含两个节点，用 [Circle](/zh/docs/api/circle) 实现，连接它们的一条边用 [Line](/zh/docs/api/line) 实现，其中每个节点上的文本使用 [Text](/zh/docs/api/text) 实现。
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*te-lR4m9mRIAAAAAAAAAAAAAARQnAQ)
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*5irUQKZPTVoAAAAAAAAAAAAAARQnAQ)
+
+[完整 CodeSandbox 例子](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 
 # 创建节点
 
@@ -24,12 +26,12 @@ import { Circle } from '@antv/g';
 ```javascript
 // 节点1
 const node1 = new Circle({
-  style: {
-    r: 100, // 半径
-    fill: '#1890FF', // 填充色
-    stroke: '#F04864', // 描边颜色
-    lineWidth: 4, // 描边宽度
-  },
+    style: {
+        r: 100, // 半径
+        fill: '#1890FF', // 填充色
+        stroke: '#F04864', // 描边颜色
+        lineWidth: 4, // 描边宽度
+    },
 });
 ```
 
@@ -43,14 +45,14 @@ const node1 = new Circle({
 import { Text } from '@antv/g';
 
 const text1 = new Text({
-  style: {
-    text: 'Node1', // 文本内容
-    fontFamily: 'Avenir', // 字体
-    fontSize: 22, // 字号
-    fill: '#fff', // 文本颜色
-    textAlign: 'center', // 水平居中
-    textBaseline: 'middle', // 垂直居中
-  },
+    style: {
+        text: 'Node1', // 文本内容
+        fontFamily: 'Avenir', // 字体
+        fontSize: 22, // 字号
+        fill: '#fff', // 文本颜色
+        textAlign: 'center', // 水平居中
+        textBaseline: 'middle', // 垂直居中
+    },
 });
 ```
 
@@ -74,14 +76,14 @@ node1.setPosition(200, 200);
 import { Line } from '@antv/g';
 
 const edge = new Line({
-  style: {
-    x1: 200,
-    y1: 200,
-    x2: 400,
-    y2: 200,
-    stroke: '#1890FF',
-    lineWidth: 2,
-  },
+    style: {
+        x1: 200,
+        y1: 200,
+        x2: 400,
+        y2: 200,
+        stroke: '#1890FF',
+        lineWidth: 2,
+    },
 });
 ```
 

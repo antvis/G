@@ -290,7 +290,11 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     });
   }
 
-  createTextureShared(descriptor: TextureSharedDescriptor, texture: TextureShared_WebGPU) {
+  createTextureShared(
+    descriptor: TextureSharedDescriptor,
+    texture: TextureShared_WebGPU,
+    skipCreate: boolean,
+  ) {
     const size: GPUExtent3D = {
       width: descriptor.width,
       height: descriptor.height,
@@ -301,15 +305,6 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     const dimension = translateTextureDimension(descriptor.dimension);
     const usage = translateTextureUsage(descriptor.usage);
 
-    const gpuTexture = this.device.createTexture({
-      size,
-      mipLevelCount,
-      format,
-      dimension,
-      usage,
-    });
-    const gpuTextureView = gpuTexture.createView();
-
     texture.format = format;
     texture.pixelFormat = descriptor.pixelFormat;
     texture.width = descriptor.width;
@@ -318,8 +313,19 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     texture.numLevels = mipLevelCount;
     texture.usage = usage;
     texture.sampleCount = 1;
-    texture.gpuTexture = gpuTexture;
-    texture.gpuTextureView = gpuTextureView;
+
+    if (!skipCreate) {
+      const gpuTexture = this.device.createTexture({
+        size,
+        mipLevelCount,
+        format,
+        dimension,
+        usage,
+      });
+      const gpuTextureView = gpuTexture.createView();
+      texture.gpuTexture = gpuTexture;
+      texture.gpuTextureView = gpuTextureView;
+    }
   }
 
   // private createBindGroupLayoutInternal(bindingLayout: BindingLayoutDescriptor): BindGroupLayout {

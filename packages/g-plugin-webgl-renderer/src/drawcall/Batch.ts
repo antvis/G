@@ -124,6 +124,10 @@ varying vec4 v_StylePacked2;
     float u_Visible = v_StylePacked2.x;
 
     gbuf_picking = vec4(v_PickingResult.rgb, 1.0);
+
+    if (u_Visible < 1.0) {
+      discard;
+    }
     `,
     UvVert: `
     #ifdef USE_UV
@@ -203,8 +207,6 @@ varying vec4 v_StylePacked2;
       this.objects.push(object);
       this.recreateGeometry = true;
     }
-
-    // TODO: z-index
   }
 
   purge(object: DisplayObject) {
@@ -251,7 +253,7 @@ varying vec4 v_StylePacked2;
           fillOpacity,
           strokeOpacity,
           lineWidth,
-          1, // visibility
+          visibility === 'visible' ? 1 : 0,
           0,
           0,
           0,
@@ -460,6 +462,7 @@ varying vec4 v_StylePacked2;
         );
       } else if (name === 'zIndex') {
         const encodedPickingColor = object.entity.getComponent(Renderable3D).encodedPickingColor;
+        // FIXME: z-index should account for context, not global
         geometry.updateVertexBuffer(
           Batch.CommonBufferIndex,
           AttributeLocation.a_PickingColor,
@@ -485,6 +488,13 @@ varying vec4 v_StylePacked2;
           new Uint8Array(new Float32Array([anchor[0], anchor[1]]).buffer),
         );
       } else if (name === 'visibility') {
+        const { visibility } = object.parsedStyle;
+        geometry.updateVertexBuffer(
+          Batch.CommonBufferIndex,
+          AttributeLocation.a_StylePacked2,
+          index,
+          new Uint8Array(new Float32Array([visibility === 'visible' ? 1 : 0]).buffer),
+        );
       }
     }
   }

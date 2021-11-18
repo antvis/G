@@ -21,7 +21,7 @@ module.exports = {
         },
       },
       {
-        slug: 'docs/api/basic',
+        slug: 'docs/api',
         title: {
           zh: 'API 文档',
           en: 'API',
@@ -39,6 +39,13 @@ module.exports = {
         title: {
           zh: '插件',
           en: 'Plugins',
+        },
+      },
+      {
+        slug: 'docs/inside-g',
+        title: {
+          zh: '开发文档',
+          en: 'Inside G',
         },
       },
     ],
@@ -71,10 +78,10 @@ module.exports = {
       {
         slug: 'api/canvas',
         title: {
-          zh: 'Canavs 画布',
+          zh: '画布',
           en: 'Canavs',
         },
-        order: 1,
+        order: 0,
       },
       {
         slug: 'api/basic',
@@ -105,6 +112,14 @@ module.exports = {
         title: {
           zh: 'GPGPU',
           en: 'GPGPU',
+        },
+        order: 4,
+      },
+      {
+        slug: 'api/inside-g',
+        title: {
+          zh: 'Inside G',
+          en: 'Inside G',
         },
         order: 4,
       },

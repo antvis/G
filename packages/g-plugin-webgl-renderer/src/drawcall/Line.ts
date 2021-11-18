@@ -402,7 +402,6 @@ in float v_Type;
 // int float v_Travel;
 
 in vec4 v_PickingResult;
-layout(location = 1) out vec4 gbuf_picking;
 
 void main(){
   gbuf_picking = vec4(v_PickingResult.rgb, 1.0);

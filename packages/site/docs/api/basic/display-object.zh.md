@@ -995,6 +995,21 @@ const animation = circle.animate(
 
 从路径起点出发行进的距离，取值范围为 `[0-1]`，0 代表路径起点，1 代表终点。
 
+## 鼠标样式
+
+当鼠标悬停在图形上时，我们可以改变它的样式，通过修改容器的 CSS 样式实现。
+
+`cursor` 属性支持的值可以参考：https://developer.mozilla.org/zh-CN/docs/Web/CSS/cursor
+
+```js
+const circle = new Circle({
+    style: {
+        //... 省略其他属性
+        cursor: 'pointer',
+    },
+});
+```
+
 # 变换操作
 
 我们提供了一系列变换方法。

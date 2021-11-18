@@ -28,7 +28,7 @@
     "ci": "npm run lint && npm run bootstrap && npm run build && npm run test",
     "pre-publish": "yarn build",
     "publish": "lerna publish",
-    "publish:next": "lerna publish prerelease --dist-tag next",
+    "publish:next": "lerna publish --dist-tag next",
     "start": "cd ./packages/site && npm run start",
     "check-circular-deps": "madge --circular --extensions ts ./packages/"
   },
@@ -45,7 +45,7 @@
     }
   },
   "devDependencies": {
-    "@babel/plugin-syntax-dynamic-import": "latest",
+    "@babel/plugin-proposal-dynamic-import": "latest",
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-angular": "^9.0.1",
     "@wasm-tool/wasm-pack-plugin": "^1.5.0",
