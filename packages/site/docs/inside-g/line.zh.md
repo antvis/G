@@ -25,9 +25,15 @@ WebGL 原生是提供了 LINES 这样的 primitive 的，但在实际使用中�
 
 因此目前几乎所有的引擎都采用了在 CPU 侧进行三角化，根据 Cap、Joint 类型增加顶点。Mapbox 也是如此。另外也有在 Shader 中进行的例如 Geo.js，大量计算在 Fragment Shader 中进行。
 
-下图来自 Pixi.js 团队的分享 PPT： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nUCYTZKHwmAAAAAAAAAAAAAAARQnAQ)
+下图来自 Pixi.js 团队的分享 PPT：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nUCYTZKHwmAAAAAAAAAAAAAAARQnAQ" height='200'/>
 
 在 G 中，除了 Line、Polyline、Path 这些基础图形，在实现 stroke 描边时，也需要使用这一实现。
+
+# Joint & Caps
+
+![](https://wwwtyro.net/media/instanced-lines/caps-n-joins.svg)
 
 # 性能优化
 
@@ -40,3 +46,8 @@ WebGL 原生是提供了 LINES 这样的 primitive 的，但在实际使用中�
 ```glsl
 vec2 point = pointA + xBasis * position.x + yBasis * width * position.y;
 ```
+
+# 参考资料
+
+-   https://wwwtyro.net/2019/11/18/instanced-lines.html
+-   https://www.khronos.org/assets/uploads/developers/presentations/Crazy_Panda_How_to_draw_lines_in_WebGL.pdf

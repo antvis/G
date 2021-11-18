@@ -1,3 +1,5 @@
+// tslint:disable-next-line:no-reference
+/// <reference path="./glsl.d.ts" />
 import { world, RendererPlugin, SHAPE } from '@antv/g';
 import { Module, Syringe } from 'mana-syringe';
 import { Renderable3D } from './components/Renderable3D';

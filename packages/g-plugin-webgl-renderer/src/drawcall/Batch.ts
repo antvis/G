@@ -9,10 +9,20 @@ import {
   Renderable,
   DefaultCamera,
   Camera,
+  ParsedColorStyleProperty,
 } from '@antv/g';
 import { Geometry } from '../Geometry';
 import { Renderable3D } from '../components/Renderable3D';
-import { Device, Format, InputState, VertexBufferFrequency } from '../platform';
+import {
+  Device,
+  Format,
+  InputState,
+  makeTextureDescriptor2D,
+  MipFilterMode,
+  TexFilterMode,
+  VertexBufferFrequency,
+  WrapMode,
+} from '../platform';
 import { TextureMapping } from '../render/TextureHolder';
 import { RenderHelper } from '../render/RenderHelper';
 import { RenderInstList } from '../render/RenderInstList';
@@ -20,6 +30,11 @@ import { DeviceProgram } from '../render/DeviceProgram';
 import { preprocessProgramObj_GLSL, ProgramDescriptorSimpleWithOrig } from '../shader/compiler';
 import { makeSortKeyOpaque, RendererLayer } from '../render/utils';
 import { RenderInst } from '../render/RenderInst';
+import { TexturePool } from '../TexturePool';
+import mapDeclarationFrag from '../shader/chunks/map.declaration.frag.glsl';
+import mapFrag from '../shader/chunks/map.frag.glsl';
+import uvDeclarationFrag from '../shader/chunks/uv.declaration.frag.glsl';
+import uvVert from '../shader/chunks/uv.vert.glsl';
 
 let counter = 1;
 export interface Batch {
@@ -40,6 +55,7 @@ export enum AttributeLocation {
   a_StylePacked2, // visibility
   a_PickingColor, // picking color
   a_Anchor, // anchor
+  // a_Uv, // UV
   MAX,
 }
 
@@ -75,6 +91,7 @@ layout(location = ${AttributeLocation.a_StylePacked1}) attribute vec4 a_StylePac
 layout(location = ${AttributeLocation.a_StylePacked2}) attribute vec4 a_StylePacked2;
 layout(location = ${AttributeLocation.a_PickingColor}) attribute vec4 a_PickingColor;
 layout(location = ${AttributeLocation.a_Anchor}) attribute vec2 a_Anchor;
+// layout(location = {AttributeLocation.a_Uv}) attribute vec2 a_Uv;
 
 varying vec4 v_PickingResult;
 varying vec4 v_Color;
@@ -129,21 +146,19 @@ varying vec4 v_StylePacked2;
       discard;
     }
     `,
-    UvVert: `
-    #ifdef USE_UV
-      v_Uv = a_Uv;
-    #endif
-
-    #ifdef VIEWPORT_ORIGIN_TL
-      v_Uv.y = 1.0 - v_Uv.y;
-    #endif
-    `,
+    UvVert: uvVert,
+    UvFragDeclaration: uvDeclarationFrag,
+    MapFragDeclaration: mapDeclarationFrag,
+    MapFrag: mapFrag,
   };
 
   static CommonBufferIndex = 0;
 
   @inject(RenderHelper)
   protected renderHelper: RenderHelper;
+
+  @inject(TexturePool)
+  protected texturePool: TexturePool;
 
   @inject(DefaultCamera)
   protected camera: Camera;
@@ -176,6 +191,10 @@ varying vec4 v_StylePacked2;
 
   protected instanced = true;
 
+  get instance() {
+    return this.objects[0];
+  }
+
   init(device: Device, renderingService: RenderingService) {
     this.device = device;
     this.renderingService = renderingService;
@@ -192,8 +211,7 @@ varying vec4 v_StylePacked2;
       return true;
     }
 
-    const instance = this.objects[0];
-    if (instance.nodeName !== object.nodeName) {
+    if (this.instance.nodeName !== object.nodeName) {
       return false;
     }
 
@@ -336,7 +354,70 @@ varying vec4 v_StylePacked2;
       });
     }
 
+    this.buildGradient();
     this.buildGeometry();
+  }
+
+  private buildGradient() {
+    const instance = this.instance;
+
+    const fill = (
+      instance.nodeName === SHAPE.Line ? instance.parsedStyle.stroke : instance.parsedStyle.fill
+    ) as ParsedColorStyleProperty;
+    // use pattern & gradient
+    if (
+      fill &&
+      (fill.type === PARSED_COLOR_TYPE.Pattern ||
+        fill.type === PARSED_COLOR_TYPE.LinearGradient ||
+        fill.type === PARSED_COLOR_TYPE.RadialGradient)
+    ) {
+      this.program.setDefineBool('USE_UV', true);
+      this.program.setDefineBool('USE_MAP', true);
+      let texImageSource: string | TexImageSource;
+      if (
+        fill.type === PARSED_COLOR_TYPE.LinearGradient ||
+        fill.type === PARSED_COLOR_TYPE.RadialGradient
+      ) {
+        this.texturePool.getOrCreateGradient({
+          type: fill.type,
+          ...fill.value,
+          width: 128,
+          height: 128,
+        });
+        texImageSource = this.texturePool.getOrCreateCanvas();
+      } else {
+        // FIXME: support repeat
+        texImageSource = fill.value.src;
+      }
+
+      this.mapping = new TextureMapping();
+      this.mapping.texture = this.texturePool.getOrCreateTexture(
+        this.device,
+        texImageSource,
+        makeTextureDescriptor2D(Format.U8_RGBA_NORM, 1, 1, 1),
+        () => {
+          // need re-render
+          this.objects.forEach((object) => {
+            const renderable = object.entity.getComponent(Renderable);
+            renderable.dirty = true;
+
+            this.renderingService.dirtify();
+          });
+        },
+      );
+      this.device.setResourceName(this.mapping.texture, 'Gradient Texture' + this.id);
+      this.mapping.sampler = this.renderHelper.getCache().createSampler({
+        // wrapS: WrapMode.Clamp,
+        // wrapT: WrapMode.Clamp,
+        wrapS: WrapMode.Repeat,
+        wrapT: WrapMode.Repeat,
+        minFilter: TexFilterMode.Bilinear,
+        magFilter: TexFilterMode.Bilinear,
+        mipFilter: MipFilterMode.NoMip,
+        minLOD: 0,
+        maxLOD: 0,
+      });
+    }
   }
 
   destroy() {
@@ -402,6 +483,9 @@ varying vec4 v_StylePacked2;
 
     // bind UBO and upload
     // TODO: no need to re-upload unchanged uniforms
+    if (this.mapping) {
+    }
+
     this.uploadUBO(renderInst);
 
     // draw elements

@@ -28,7 +28,7 @@
     "ci": "npm run lint && npm run bootstrap && npm run build && npm run test",
     "pre-publish": "yarn build",
     "publish": "lerna publish",
-    "publish:next": "lerna publish --dist-tag next",
+    "publish:next": "lerna publish prerelease --dist-tag next",
     "start": "cd ./packages/site && npm run start",
     "check-circular-deps": "madge --circular --extensions ts ./packages/"
   },

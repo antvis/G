@@ -2,23 +2,12 @@
  * @see https://www.khronos.org/assets/uploads/developers/presentations/Crazy_Panda_How_to_draw_lines_in_WebGL.pdf
  */
 import { inject, injectable } from 'mana-syringe';
-import { Line, LINE_CAP, LINE_JOIN, Path, PolygonShape, Polyline } from '@antv/g';
+import { Line, LINE_CAP, LINE_JOIN, Path, Polyline } from '@antv/g';
 import earcut from 'earcut';
-import { fillMatrix4x4, fillVec4, makeSortKeyOpaque, RendererLayer } from '../render/utils';
-import {
-  Buffer,
-  BufferUsage,
-  CullMode,
-  Device,
-  Format,
-  InputLayout,
-  InputState,
-  Program,
-  VertexBufferFrequency,
-} from '../platform';
-import { RenderCache } from '../render/RenderCache';
+import { fillMatrix4x4, fillVec4 } from '../render/utils';
+import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RenderInst } from '../render/RenderInst';
-import { DisplayObject, PARSED_COLOR_TYPE, Point, SHAPE, Tuple4Number } from '@antv/g';
+import { DisplayObject, PARSED_COLOR_TYPE, SHAPE, Tuple4Number } from '@antv/g';
 import { DeviceProgram } from '../render/DeviceProgram';
 import { Batch } from './Batch';
 import { ShapeRenderer } from '../tokens';
@@ -462,6 +451,7 @@ void main(){
 
 @injectable({
   token: [
+    { token: ShapeRenderer, named: SHAPE.Polyline },
     { token: ShapeRenderer, named: SHAPE.Path },
     { token: ShapeRenderer, named: SHAPE.Polygon },
   ],
@@ -560,6 +550,8 @@ export class LineRenderer extends Batch {
       (object.nodeName === SHAPE.Path && name === 'path')
     ) {
       this.recreateGeometry = true;
+    } else if (name === 'visibility') {
+    } else if (name === 'zIndex') {
     }
   }
 

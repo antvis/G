@@ -69,12 +69,15 @@ globalContainer.register({
 globalContainer.register({
   token: PathGeneratorFactory,
   useFactory: (ctx) => {
+    const cache = {};
     return (tagName: SHAPE) => {
-      if (ctx.container.isBoundNamed(PathGenerator, tagName)) {
-        return ctx.container.getNamed(PathGenerator, tagName);
+      if (!cache[tagName]) {
+        if (ctx.container.isBoundNamed(PathGenerator, tagName)) {
+          cache[tagName] = ctx.container.getNamed(PathGenerator, tagName);
+        }
       }
 
-      return null;
+      return cache[tagName];
     };
   },
 });
@@ -88,12 +91,17 @@ const containerModule = Module((register) => {
   register(TextRenderer);
   register({
     token: StyleRendererFactory,
-    useFactory: (ctx) => (tagName: SHAPE) => {
-      if (ctx.container.isBoundNamed(StyleRenderer, tagName)) {
-        return ctx.container.getNamed(StyleRenderer, tagName);
-      }
+    useFactory: (ctx) => {
+      const cache = {};
+      return (tagName: SHAPE) => {
+        if (!cache[tagName]) {
+          if (ctx.container.isBoundNamed(StyleRenderer, tagName)) {
+            cache[tagName] = ctx.container.getNamed(StyleRenderer, tagName);
+          }
+        }
 
-      return null;
+        return cache[tagName];
+      };
     },
   });
 

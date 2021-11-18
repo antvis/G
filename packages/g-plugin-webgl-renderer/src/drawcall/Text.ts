@@ -83,7 +83,6 @@ class TextProgram extends DeviceProgram {
     highp float alpha = smoothstep(buff - gamma_scaled, buff + gamma_scaled, dist);
 
     gl_FragColor = color * (alpha * opacity * u_Opacity);
-    gbuf_color = vec4(1.0, 0.0, 0.0, 1.0);
   }
   `;
 }
@@ -104,7 +103,7 @@ export class TextRenderer extends Batch {
   }
 
   validate(object: DisplayObject) {
-    const instance = this.objects[0] as DisplayObject;
+    const instance = this.instance;
     const instancedAttributes = [
       'fontSize',
       'fontFamily',
@@ -155,9 +154,7 @@ export class TextRenderer extends Batch {
     // need 1 sampler
     renderInst.setBindingLayouts([{ numUniformBuffers: 2, numSamplers: 1 }]);
 
-    const object = this.objects[0];
-
-    const text = object as Text;
+    const text = this.instance as Text;
 
     const { fontSize } = text.parsedStyle;
 
@@ -177,8 +174,7 @@ export class TextRenderer extends Batch {
    * use another draw call for stroke
    */
   afterRender(list: RenderInstList) {
-    const instance = this.objects[0] as Text;
-    const { stroke, lineWidth } = instance.parsedStyle;
+    const { stroke, lineWidth } = this.instance.parsedStyle;
     const hasStroke = stroke && lineWidth;
 
     if (hasStroke) {
@@ -213,7 +209,7 @@ export class TextRenderer extends Batch {
   private generateAtlas() {
     const geometry = this.geometry;
 
-    const object = this.objects[0] as Text;
+    const object = this.instance as Text;
     const {
       textBaseline,
       fontSize = 0,
@@ -293,7 +289,7 @@ export class TextRenderer extends Batch {
     geometry.setIndices(new Uint32Array(indices));
     this.geometry.setVertexBuffer({
       bufferIndex: 0,
-      byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4),
+      byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4 + 4),
       // frequency: VertexBufferFrequency.PerInstance,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
@@ -349,6 +345,13 @@ export class TextRenderer extends Batch {
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 28,
+          location: AttributeLocation.a_StylePacked2,
+          // byteStride: 4 * 4,
+          //          divisor: 1,
+        },
+        {
+          format: Format.F32_RGBA,
+          bufferByteOffset: 4 * 32,
           location: AttributeLocation.a_PickingColor,
           // byteStride: 4 * 4,
           //          divisor: 1,
@@ -398,7 +401,7 @@ export class TextRenderer extends Batch {
   }) {
     const { textAlign = 'start' } = object.parsedStyle;
 
-    const { fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, anchor, zIndex } =
+    const { fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, visibility, zIndex } =
       object.parsedStyle;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (fill?.type === PARSED_COLOR_TYPE.Constant) {
@@ -430,8 +433,7 @@ export class TextRenderer extends Batch {
     const glyphQuads = getGlyphQuads(positionedGlyphs, glyphAtlas.positions);
 
     glyphQuads.forEach((quad) => {
-      // TODO: instanced
-      charPackedBuffer.push(
+      const packed = [
         ...modelMatrix,
         ...fillColor,
         ...strokeColor,
@@ -439,42 +441,15 @@ export class TextRenderer extends Batch {
         fillOpacity,
         strokeOpacity,
         lineWidth,
+        visibility === 'visible' ? 1 : 0,
+        0,
+        0,
+        0,
         ...encodedPickingColor,
         zIndex,
-      );
-      charPackedBuffer.push(
-        ...modelMatrix,
-        ...fillColor,
-        ...strokeColor,
-        opacity,
-        fillOpacity,
-        strokeOpacity,
-        lineWidth,
-        ...encodedPickingColor,
-        zIndex,
-      );
-      charPackedBuffer.push(
-        ...modelMatrix,
-        ...fillColor,
-        ...strokeColor,
-        opacity,
-        fillOpacity,
-        strokeOpacity,
-        lineWidth,
-        ...encodedPickingColor,
-        zIndex,
-      );
-      charPackedBuffer.push(
-        ...modelMatrix,
-        ...fillColor,
-        ...strokeColor,
-        opacity,
-        fillOpacity,
-        strokeOpacity,
-        lineWidth,
-        ...encodedPickingColor,
-        zIndex,
-      );
+      ];
+      // FIXME: instanced
+      charPackedBuffer.push(...packed, ...packed, ...packed, ...packed);
 
       // interleaved uv & offsets
       charUVOffsetBuffer.push(quad.tex.x, quad.tex.y, quad.tl.x, quad.tl.y);

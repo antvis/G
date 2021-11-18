@@ -5,7 +5,7 @@ import { SceneGraphAdapter } from './SceneGraphAdapter';
 
 const containerModule = Module((register) => {
   register(SceneGraphAdapter);
-  register({ token: SceneGraphSelector, useClass: CSSSceneGraphSelector });
+  register(CSSSceneGraphSelector);
   // if (!container.isBound(SceneGraphAdapter)) {
   //   container.bind(SceneGraphAdapter).toSelf().inSingletonScope();
   //   container.bind(CSSSceneGraphSelector).toSelf().inSingletonScope();

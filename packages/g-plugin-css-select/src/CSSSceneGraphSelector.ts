@@ -3,7 +3,7 @@ import { SceneGraphSelector, IElement } from '@antv/g';
 import { selectOne, selectAll, is } from 'css-select';
 import { SceneGraphAdapter } from './SceneGraphAdapter';
 
-@singleton()
+@singleton({ token: SceneGraphSelector })
 export class CSSSceneGraphSelector implements SceneGraphSelector {
   @inject(SceneGraphAdapter)
   private sceneGraphAdapter: SceneGraphAdapter;

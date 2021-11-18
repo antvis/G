@@ -14,6 +14,7 @@ class CircleProgram extends DeviceProgram {
   static a_Extrude = AttributeLocation.MAX;
   static a_StylePacked3 = AttributeLocation.MAX + 1;
   static a_Size = AttributeLocation.MAX + 2;
+  static a_Uv = AttributeLocation.MAX + 3;
 
   static ub_ObjectParams = 1;
 
@@ -29,6 +30,10 @@ ${Batch.ShaderLibrary.VertDeclaration}
 layout(location = ${CircleProgram.a_Extrude}) attribute vec2 a_Extrude;
 layout(location = ${CircleProgram.a_StylePacked3}) attribute vec4 a_StylePacked3;
 layout(location = ${CircleProgram.a_Size}) attribute vec2 a_Size;
+#ifdef USE_UV
+  layout(location = ${CircleProgram.a_Uv}) attribute vec2 a_Uv;
+  varying vec2 v_Uv;
+#endif
 
 varying vec4 v_Data;
 varying vec2 v_Radius;
@@ -36,6 +41,7 @@ varying vec4 v_StylePacked3;
 
 void main() {
   ${Batch.ShaderLibrary.Vert}
+  ${Batch.ShaderLibrary.UvVert}
 
   float antialiasblur = 1.0 / (a_Size.x + u_StrokeWidth);
 
@@ -60,6 +66,8 @@ varying vec2 v_Radius;
 varying vec4 v_StylePacked3;
 
 ${Batch.ShaderLibrary.FragDeclaration}
+${Batch.ShaderLibrary.UvFragDeclaration}
+${Batch.ShaderLibrary.MapFragDeclaration}
 
 /**
  * 2D signed distance field functions
@@ -87,6 +95,8 @@ void main() {
   int shape = int(floor(v_Data.w + 0.5));
 
   ${Batch.ShaderLibrary.Frag}
+
+  ${Batch.ShaderLibrary.MapFrag}
 
   float antialiasblur = v_Data.z;
   float antialiased_blur = -max(u_Blur, antialiasblur);
@@ -159,7 +169,7 @@ export class CircleRenderer extends Batch {
       instanced.push(...size);
       instanced2.push(PointShapes.indexOf(circle.nodeName), radius || 0, 0, 0);
 
-      interleaved.push(-1, -1, 1, -1, 1, 1, -1, 1);
+      interleaved.push(-1, -1, 0, 0, 1, -1, 1, 0, 1, 1, 1, 1, -1, 1, 0, 1);
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
     });
 
@@ -167,13 +177,18 @@ export class CircleRenderer extends Batch {
     this.geometry.vertexCount = 6;
     this.geometry.setVertexBuffer({
       bufferIndex: 1,
-      byteStride: 4 * 2,
+      byteStride: 4 * 4,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
           location: CircleProgram.a_Extrude,
+        },
+        {
+          format: Format.F32_RG,
+          bufferByteOffset: 4 * 2,
+          location: CircleProgram.a_Uv,
         },
       ],
       data: new Float32Array(interleaved),
@@ -251,6 +266,9 @@ export class CircleRenderer extends Batch {
   }
 
   protected uploadUBO(renderInst: RenderInst): void {
+    renderInst.setBindingLayouts([{ numUniformBuffers: 2, numSamplers: 1 }]);
+    renderInst.setSamplerBindingsFromTextureMappings([this.mapping]);
+
     // Upload to our UBO.
     let offs = renderInst.allocateUniformBuffer(CircleProgram.ub_ObjectParams, 4);
     const d = renderInst.mapUniformBufferF32(CircleProgram.ub_ObjectParams);

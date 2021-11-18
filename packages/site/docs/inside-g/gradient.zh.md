@@ -7,6 +7,8 @@ order: 2
 
 支持以下渐变效果，可应用在 `fill` `stroke` 属性上。不支持动画（直接应用，无渐变效果）。
 
+可以在[示例](/zh/examples/shape#gradient)中切换 Canvas2D/SVG/WebGL 查看效果。
+
 线性渐变：
 
 ```

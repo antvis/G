@@ -1,10 +1,11 @@
 export default {
   // disableTypeCheck: true,
-  // umd: {
-  //   name: 'GPluginWebGLRenderer',
-  //   globals: {
-  //     '@antv/g': 'window.G',
-  //     'mana-syringe': 'window.G.ManaSyringe',
-  //   },
-  // },
+  extraBabelPlugins: [
+    [
+      'babel-plugin-inline-import',
+      {
+        extensions: ['.glsl'],
+      },
+    ],
+  ],
 };

@@ -12,10 +12,19 @@ module.exports = {
         use: 'ts-loader',
         exclude: /node_modules/,
       },
+      {
+        test: /\.glsl$/,
+        use: [
+          {
+            loader: 'raw-loader',
+            options: {},
+          },
+        ],
+      },
     ],
   },
   resolve: {
-    extensions: ['.js', '.ts'],
+    extensions: ['.js', '.ts', '.glsl'],
   },
   plugins: [
     new WasmPackPlugin({

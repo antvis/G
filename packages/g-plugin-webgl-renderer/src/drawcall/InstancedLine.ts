@@ -1,5 +1,14 @@
 import { inject, injectable } from 'mana-syringe';
-import { Line, LINE_CAP, LINE_JOIN, Path, PolygonShape, Polyline } from '@antv/g';
+import {
+  Line,
+  LINE_CAP,
+  LINE_JOIN,
+  ParsedColorStyleProperty,
+  Path,
+  Pattern,
+  PolygonShape,
+  Polyline,
+} from '@antv/g';
 import { fillMatrix4x4, fillVec4, makeSortKeyOpaque, RendererLayer } from '../render/utils';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RenderInst } from '../render/RenderInst';
@@ -8,20 +17,18 @@ import { DeviceProgram } from '../render/DeviceProgram';
 import { Batch, AttributeLocation } from './Batch';
 import { ShapeRenderer } from '../tokens';
 
-const segmentInstanceGeometry = [0, -0.5, 1, -0.5, 1, 0.5, 0, 0.5];
+export const segmentInstanceGeometry = [0, -0.5, 0, 0, 1, -0.5, 1, 0, 1, 0.5, 1, 1, 0, 0.5, 0, 1];
 
-class InstancedLineProgram extends DeviceProgram {
+export class InstancedLineProgram extends DeviceProgram {
   static a_Position = AttributeLocation.MAX;
   static a_PointA = AttributeLocation.MAX + 1;
   static a_PointB = AttributeLocation.MAX + 2;
+  static a_Uv = AttributeLocation.MAX + 3;
 
   static ub_ObjectParams = 1;
 
   both: string = `
   ${Batch.ShaderLibrary.BothDeclaration}
-  layout(std140) uniform ub_ObjectParams {
-    vec4 u_Color;
-  };
   `;
 
   vert: string = `
@@ -29,9 +36,14 @@ class InstancedLineProgram extends DeviceProgram {
   layout(location = ${InstancedLineProgram.a_Position}) attribute vec2 a_Position;
   layout(location = ${InstancedLineProgram.a_PointA}) attribute vec2 a_PointA;
   layout(location = ${InstancedLineProgram.a_PointB}) attribute vec2 a_PointB;
+  #ifdef USE_UV
+    layout(location = ${InstancedLineProgram.a_Uv}) attribute vec2 a_Uv;
+    varying vec2 v_Uv;
+  #endif
 
   void main() {
     ${Batch.ShaderLibrary.Vert}
+    ${Batch.ShaderLibrary.UvVert}
 
     vec2 xBasis = a_PointB - a_PointA;
     vec2 yBasis = normalize(vec2(-xBasis.y, xBasis.x));
@@ -45,11 +57,17 @@ class InstancedLineProgram extends DeviceProgram {
 
   frag: string = `
   ${Batch.ShaderLibrary.FragDeclaration}
+  ${Batch.ShaderLibrary.UvFragDeclaration}
+  ${Batch.ShaderLibrary.MapFragDeclaration}
   
   void main() {
     ${Batch.ShaderLibrary.Frag}
+    ${Batch.ShaderLibrary.MapFrag}
 
     gl_FragColor = u_StrokeColor;
+    #ifdef USE_MAP
+      gl_FragColor = u_Color;
+    #endif
     gl_FragColor.a = gl_FragColor.a * u_Opacity;
   }
 `;
@@ -62,15 +80,32 @@ class InstancedLineProgram extends DeviceProgram {
  * TODO: joint & cap
  */
 @injectable({
-  token: [
-    { token: ShapeRenderer, named: SHAPE.Line },
-    { token: ShapeRenderer, named: SHAPE.Polyline },
-  ],
+  token: { token: ShapeRenderer, named: SHAPE.Line },
 })
 export class InstancedLineRenderer extends Batch {
   protected program = new InstancedLineProgram();
 
   validate(object: DisplayObject) {
+    // should split when using gradient & pattern
+    const instance = this.instance;
+    if (instance.nodeName === SHAPE.Line) {
+      const source = instance.parsedStyle.stroke as ParsedColorStyleProperty;
+      const target = object.parsedStyle.stroke as ParsedColorStyleProperty;
+
+      // can't be merged if stroke's types are different
+      if (source.type !== target.type) {
+        return false;
+      }
+
+      // compare hash directly
+      if (
+        source.type !== PARSED_COLOR_TYPE.Constant &&
+        target.type !== PARSED_COLOR_TYPE.Constant
+      ) {
+        return source.value.hash === target.value.hash;
+      }
+    }
+
     return true;
   }
 
@@ -78,29 +113,34 @@ export class InstancedLineRenderer extends Batch {
     const interleaved = [];
     const indices = [];
     let offset = 0;
-    this.objects.forEach((object, i) => {
+    this.objects.forEach((object) => {
       if (object.nodeName === SHAPE.Line) {
         const line = object as Line;
         const { x1, y1, x2, y2, defX, defY } = line.parsedStyle;
         interleaved.push(x1 - defX, y1 - defY, x2 - defX, y2 - defY);
-        offset += i * 4;
+        indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
+        offset += 4;
       }
-
-      indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
     });
 
     this.geometry.setIndices(new Uint32Array(indices));
     this.geometry.vertexCount = 6;
-    // this.geometry.maxInstancedCount = 6;
+    // this.geometry.maxInstancedCount = indices.length / 6;
     this.geometry.setVertexBuffer({
       bufferIndex: 1,
-      byteStride: 4 * 2,
+      byteStride: 4 * 4,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
           location: InstancedLineProgram.a_Position,
+          divisor: 0,
+        },
+        {
+          format: Format.F32_RG,
+          bufferByteOffset: 4 * 2,
+          location: InstancedLineProgram.a_Uv,
           divisor: 0,
         },
       ],
@@ -146,18 +186,7 @@ export class InstancedLineRenderer extends Batch {
   }
 
   uploadUBO(renderInst: RenderInst): void {
-    const instance = this.objects[0];
-
-    const { stroke } = instance.parsedStyle;
-
-    let strokeColor: Tuple4Number = [0, 0, 0, 0];
-    if (stroke?.type === PARSED_COLOR_TYPE.Constant) {
-      strokeColor = stroke.value;
-    }
-
-    // Upload to our UBO.
-    let offs = renderInst.allocateUniformBuffer(InstancedLineProgram.ub_ObjectParams, 4);
-    const d = renderInst.mapUniformBufferF32(InstancedLineProgram.ub_ObjectParams);
-    offs += fillVec4(d, offs, ...strokeColor);
+    renderInst.setBindingLayouts([{ numUniformBuffers: 1, numSamplers: 1 }]);
+    renderInst.setSamplerBindingsFromTextureMappings([this.mapping]);
   }
 }

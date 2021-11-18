@@ -1,4 +1,4 @@
-import { inject, injectable } from 'mana-syringe';
+import { injectable } from 'mana-syringe';
 import {
   Format,
   makeTextureDescriptor2D,
@@ -13,7 +13,6 @@ import { DeviceProgram } from '../render/DeviceProgram';
 import { Batch, AttributeLocation } from './Batch';
 import { ShapeRenderer } from '../tokens';
 import { TextureMapping } from '../render/TextureHolder';
-import { TexturePool } from '../TexturePool';
 
 class ImageProgram extends DeviceProgram {
   static a_Size = AttributeLocation.MAX;
@@ -48,21 +47,13 @@ class ImageProgram extends DeviceProgram {
   frag: string = `
 
   ${Batch.ShaderLibrary.FragDeclaration}
-
-  #ifdef USE_UV
-    in vec2 v_Uv;
-  #endif
-
-  #ifdef USE_MAP
-    uniform sampler2D u_Map;
-  #endif
+  ${Batch.ShaderLibrary.UvFragDeclaration}
+  ${Batch.ShaderLibrary.MapFragDeclaration}
   
   void main() {
     ${Batch.ShaderLibrary.Frag}
 
-    #ifdef USE_MAP
-      vec4 texelColor = texture(SAMPLER_2D(u_Map), v_Uv);
-    #endif
+    ${Batch.ShaderLibrary.MapFrag}
 
     gl_FragColor = texelColor;
     gl_FragColor.a = gl_FragColor.a * u_Opacity;
@@ -77,9 +68,8 @@ export class ImageRenderer extends Batch {
   protected program = new ImageProgram();
 
   protected validate(object: DisplayObject<any, any>): boolean {
-    const instance = this.objects[0];
-    if (instance.nodeName === SHAPE.Image) {
-      if (instance.parsedStyle.img !== object.parsedStyle.img) {
+    if (this.instance.nodeName === SHAPE.Image) {
+      if (this.instance.parsedStyle.img !== object.parsedStyle.img) {
         return false;
       }
     }
@@ -91,7 +81,7 @@ export class ImageRenderer extends Batch {
     this.program.setDefineBool('USE_UV', true);
     this.program.setDefineBool('USE_MAP', true);
 
-    const { img, width, height } = this.objects[0].parsedStyle;
+    const { img, width, height } = this.instance.parsedStyle;
     this.mapping = new TextureMapping();
     this.mapping.texture = this.texturePool.getOrCreateTexture(
       this.device,

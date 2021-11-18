@@ -10,6 +10,7 @@ export interface LinearGradient {
   x1: number;
   y1: number;
   steps: string[][];
+  hash: string;
 }
 
 export interface RadialGradient {
@@ -20,11 +21,13 @@ export interface RadialGradient {
   y1: number;
   r1: number;
   steps: string[][];
+  hash: string;
 }
 
 export interface Pattern {
   repetition: string;
   src: string;
+  hash: string;
 }
 
 export enum PARSED_COLOR_TYPE {
@@ -158,6 +161,7 @@ function parsePattern(patternStr: string): Pattern | null {
     return {
       src,
       repetition,
+      hash: patternStr,
     };
   }
   return null;
@@ -224,6 +228,7 @@ function parseLineGradient(gradientStr: string): LinearGradient | null {
       x1: x,
       y1: y,
       steps,
+      hash: gradientStr,
     };
   }
   return null;
@@ -249,6 +254,7 @@ function parseRadialGradient(gradientStr: string): RadialGradient | string | nul
       y1: 0.5,
       r1: fr,
       steps,
+      hash: gradientStr,
     };
   }
   return null;

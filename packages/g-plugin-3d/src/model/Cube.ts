@@ -78,11 +78,8 @@ class CubeProgram extends DeviceProgram {
 export class CubeModelBuilder extends Batch {
   program = new CubeProgram();
 
-  @inject(TexturePool)
-  private texturePool: TexturePool;
-
   validate(object: DisplayObject) {
-    const instance = this.objects[0];
+    const instance = this.instance;
 
     // TODO: support different tex map, eg. max 24 like PIXI.js
     if (instance.parsedStyle.map && instance.parsedStyle.map !== object.parsedStyle.map) {

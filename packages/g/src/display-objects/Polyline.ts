@@ -1,8 +1,8 @@
+import { Line as LineUtil } from '@antv/g-math';
 import { SHAPE, LINE_CAP, LINE_JOIN } from '../types';
 import type { BaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import { DisplayObjectConfig } from '../dom';
-import { Line as LineUtil, Polyline as PolylineUtil } from '@antv/g-math';
 import { Point } from '../shapes';
 
 export interface PolylineStyleProps extends BaseStyleProps {
@@ -10,6 +10,8 @@ export interface PolylineStyleProps extends BaseStyleProps {
 }
 export interface ParsedPolylineStyleProps {
   points: [number, number][];
+  defX: number;
+  defY: number;
   segments: [number, number][];
   totalLength: number;
 }
