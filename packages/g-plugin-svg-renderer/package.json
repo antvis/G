@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-svg-renderer",
-  "version": "1.0.0-alpha.36",
+  "version": "1.0.0-alpha.37",
   "description": "A G plugin of renderer implementation with SVG",
   "main": "lib/index.js",
   "module": "es/index.js",
