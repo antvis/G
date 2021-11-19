@@ -8,7 +8,7 @@ order: 3
 其中会涉及以下 API：
 
 -   使用 [registerPlugin](/zh/docs/api/renderer#registerplugin) 为渲染器注册插件
--   使用 [getCamera](/zh/docs/api/basic/display-object#平移) 获取画布相机
+-   使用 [getCamera](/zh/docs/api/canvas#getcamera-camera) 获取画布相机
 -   使用 [setPosition](/zh/docs/api/camera#setpositionx-number--vec3-y-number-z-number) 设置相机位置
 
 最终示例：

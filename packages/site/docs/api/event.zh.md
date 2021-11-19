@@ -16,7 +16,7 @@ order: -3
 
 目前我们支持以下[基础事件](/zh/docs/api/event#type)，尽可能兼容了 DOM 事件流，因此在下面的很多 API 介绍中我们都附上了 DOM Event API 对应的参考链接。
 
-例如我们想给这个圆形增加简单的鼠标移入/移出的交互效果，[示例](/zh/examples/event/shape#shapes)
+例如我们想给这个圆形增加简单的鼠标移入/移出的交互效果，[示例](/zh/examples/event#shapes)
 
 ```js
 circle.addEventListener('mouseenter', () => {
@@ -201,7 +201,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
 
 ### 自定义事件
 
-除了内置标准事件，有时我们也需要触发一些自定义事件，参考 [Web CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent)，我们也支持如下写法，[示例](/zh/examples/event/shape#custom)：
+除了内置标准事件，有时我们也需要触发一些自定义事件，参考 [Web CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent)，我们也支持如下写法，[示例](/zh/examples/event#custom)：
 
 ```js
 import { CustomEvent } from '@antv/g';
@@ -296,7 +296,7 @@ ul.addEventListener(
 );
 ```
 
-[示例](/zh/examples/event/shape#delegate)
+[示例](/zh/examples/event#delegate)
 
 ### currentTarget
 
@@ -520,7 +520,7 @@ ul.addEventListener(
 );
 ```
 
-[示例](/zh/examples/event/shape#delegate)
+[示例](/zh/examples/event#delegate)
 
 # 手势和拖拽
 
@@ -540,7 +540,7 @@ hammer.on('press', (e) => {
 });
 ```
 
-[示例](/zh/examples/event/shape#hammer)
+[示例](/zh/examples/event#hammer)
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*i7SaRaYw0YcAAAAAAAAAAAAAARQnAQ)
 
@@ -568,7 +568,7 @@ interact(
 });
 ```
 
-[示例](/zh/examples/event/shape#interact)
+[示例](/zh/examples/event#interact)
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ)
 
@@ -616,7 +616,7 @@ circle
     .on('touchmove', onDragMove);
 ```
 
-[示例](/zh/examples/event/shape#drag)
+[示例](/zh/examples/event#drag)
 
 # 与其他插件的交互
 
@@ -771,7 +771,7 @@ canvas.addEventListener('click', (e) => {
 
 ## 旧版兼容
 
-在旧版中支持以下在事件名中表示委托的写法，格式为 `[被委托图形 name]:[事件名]`，[示例](/zh/examples/event/shape#deprecated-delegate)：
+在旧版中支持以下在事件名中表示委托的写法，格式为 `[被委托图形 name]:[事件名]`，[示例](/zh/examples/event#deprecated-delegate)：
 
 ```js
 // 监听所有 name 为 node 的图形上冒泡上来的 click 事件

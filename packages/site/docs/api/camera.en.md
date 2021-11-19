@@ -92,7 +92,7 @@ camera.setPosition([300, 250, 0]);
 
 ### setZoom(zoom: number)
 
-仅正交投影下生效。`zoom` 大于 1 代表放大，反之代表缩小，[示例](/zh/examples/camera#ortho)。
+`zoom` 大于 1 代表放大，反之代表缩小，[示例](/zh/examples/camera#ortho)。
 
 ### setFov(fov: number)
 

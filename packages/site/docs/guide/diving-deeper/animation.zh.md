@@ -7,7 +7,7 @@ order: 3
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*XPzwTIUwizkAAAAAAAAAAAAAARQnAQ)
 
-其中会涉及以下 API：
+其中会涉及以下 API，如果你熟悉 CSS Animation 或者 [Web Animation API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API)，使用时会相当轻松：
 
 -   使用 [animate](/zh/docs/api/animation#创建) 创建一个 Animation 对象
 -   使用 [onfinish](/zh/docs/api/animation#onfinish) 监听动画结束事件
@@ -18,6 +18,8 @@ order: 3
 -   [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-tai-yang-xi-li-zi-1bphz)
 
 # 使用 Keyframe 定义动画
+
+在定义动画效果时，关键帧是一种非常好用的描述方式。通过用户定义对象在某几个“关键”时间点上的状态，渲染引擎自动完成插值让对象的这些属性连续变化。
 
 我们很容易写出 Scale-In 效果对应的 CSS Animation，其中：
 
