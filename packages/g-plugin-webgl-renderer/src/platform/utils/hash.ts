@@ -213,7 +213,7 @@ export function bindingsDescriptorCopy(a: Readonly<BindingsDescriptor>): Binding
   const bindingLayout = a.bindingLayout;
   const samplerBindings = arrayCopy(a.samplerBindings, samplerBindingCopy);
   const uniformBufferBindings = arrayCopy(a.uniformBufferBindings, bufferBindingCopy);
-  return { bindingLayout, samplerBindings, uniformBufferBindings };
+  return { bindingLayout, samplerBindings, uniformBufferBindings, pipeline: a.pipeline };
 }
 
 export function bindingLayoutDescriptorCopy(

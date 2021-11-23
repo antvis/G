@@ -6,6 +6,11 @@ import { RGRenderTarget } from './RenderTarget';
 import { RGRenderTargetDescription } from './RenderTargetDescription';
 import { SingleSampledTexture } from './SingleSampledTexture';
 
+interface ResolveParam {
+  resolveTo: Texture | null;
+  store: boolean;
+}
+
 class GraphImpl {
   [Symbol.species]?: 'RGGraph';
 
@@ -160,33 +165,31 @@ export class RenderGraph implements RGGraphBuilder {
   //#endregion
 
   //#region Scheduling
-  private renderTargetUseCount: number[] = [];
+  private renderTargetOutputCount: number[] = [];
+  private renderTargetResolveCount: number[] = [];
   private resolveTextureUseCount: number[] = [];
-  private resolveTextureConflict: boolean[] = [];
 
   private renderTargetAliveForID: RGRenderTarget[] = [];
   private singleSampledTextureForResolveTextureID: SingleSampledTexture[] = [];
 
   private scheduleAddUseCount(graph: GraphImpl, pass: RenderGraphPass): void {
-    for (let i = 0; i < pass.renderTargetIDs.length; i++) {
-      const renderTargetID = pass.renderTargetIDs[i];
+    for (let slot = 0; slot < pass.renderTargetIDs.length; slot++) {
+      const renderTargetID = pass.renderTargetIDs[slot];
       if (renderTargetID === undefined) continue;
 
-      // 统计每个 RT 的使用量
-      this.renderTargetUseCount[renderTargetID]++;
+      this.renderTargetOutputCount[renderTargetID]++;
+
+      if (pass.renderTargetExtraRefs[slot]) this.renderTargetOutputCount[renderTargetID]++;
     }
 
     for (let i = 0; i < pass.resolveTextureInputIDs.length; i++) {
       const resolveTextureID = pass.resolveTextureInputIDs[i];
       if (resolveTextureID === undefined) continue;
 
-      // 统计每个 texture 的使用量
       this.resolveTextureUseCount[resolveTextureID]++;
 
       const renderTargetID = graph.resolveTextureRenderTargetIDs[resolveTextureID];
-      this.renderTargetUseCount[renderTargetID]++;
-
-      this.resolveTextureConflict[resolveTextureID] = pass.renderTargetIDs.includes(renderTargetID);
+      this.renderTargetResolveCount[renderTargetID]++;
     }
   }
 
@@ -196,7 +199,7 @@ export class RenderGraph implements RGGraphBuilder {
   ): RGRenderTarget | null {
     if (renderTargetID === undefined) return null;
 
-    assert(this.renderTargetUseCount[renderTargetID] > 0);
+    assert(this.renderTargetOutputCount[renderTargetID] > 0);
 
     if (!this.renderTargetAliveForID[renderTargetID]) {
       const desc = graph.renderTargetDescriptions[renderTargetID];
@@ -208,14 +211,26 @@ export class RenderGraph implements RGGraphBuilder {
     return this.renderTargetAliveForID[renderTargetID];
   }
 
-  private releaseRenderTargetForID(renderTargetID: number | undefined): RGRenderTarget | null {
+  private releaseRenderTargetForID(
+    renderTargetID: number | undefined,
+    forOutput: boolean,
+  ): RGRenderTarget | null {
     if (renderTargetID === undefined) return null;
-
-    assert(this.renderTargetUseCount[renderTargetID] > 0);
 
     const renderTarget = assertExists(this.renderTargetAliveForID[renderTargetID]);
 
-    if (--this.renderTargetUseCount[renderTargetID] === 0) {
+    if (forOutput) {
+      assert(this.renderTargetOutputCount[renderTargetID] > 0);
+      this.renderTargetOutputCount[renderTargetID]--;
+    } else {
+      assert(this.renderTargetResolveCount[renderTargetID] > 0);
+      this.renderTargetResolveCount[renderTargetID]--;
+    }
+
+    if (
+      this.renderTargetOutputCount[renderTargetID] === 0 &&
+      this.renderTargetResolveCount[renderTargetID] === 0
+    ) {
       // This was the last reference to this RT -- steal it from the alive list, and put it back into the pool.
       renderTarget.needsClear = true;
 
@@ -233,18 +248,16 @@ export class RenderGraph implements RGGraphBuilder {
     const renderTargetID = graph.resolveTextureRenderTargetIDs[resolveTextureID];
 
     assert(this.resolveTextureUseCount[resolveTextureID] > 0);
+    this.resolveTextureUseCount[resolveTextureID]--;
 
-    let shouldFree = false;
-    if (--this.resolveTextureUseCount[resolveTextureID] === 0) shouldFree = true;
-
-    const renderTarget = assertExists(this.releaseRenderTargetForID(renderTargetID));
+    const renderTarget = assertExists(this.releaseRenderTargetForID(renderTargetID, false));
 
     if (this.singleSampledTextureForResolveTextureID[resolveTextureID] !== undefined) {
       // The resolved texture belonging to this RT is backed by our own single-sampled texture.
 
       const singleSampledTexture = this.singleSampledTextureForResolveTextureID[resolveTextureID];
 
-      if (shouldFree) {
+      if (this.resolveTextureUseCount[resolveTextureID] === 0) {
         // Release this single-sampled texture back to the pool, if this is the last use of it.
         this.singleSampledTextureDeadPool.push(singleSampledTexture);
       }
@@ -256,11 +269,11 @@ export class RenderGraph implements RGGraphBuilder {
     }
   }
 
-  private determineResolveToTexture(
+  private determineResolveParam(
     graph: GraphImpl,
     pass: RenderGraphPass,
     slot: RGAttachmentSlot,
-  ): Texture | null {
+  ): ResolveParam {
     const renderTargetID = pass.renderTargetIDs[slot];
     const resolveTextureOutputID = pass.resolveTextureOutputIDs[slot];
     const externalTexture = pass.resolveTextureOutputExternalTextures[slot];
@@ -270,32 +283,49 @@ export class RenderGraph implements RGGraphBuilder {
     const hasExternalTexture = externalTexture !== undefined;
     assert(!(hasResolveTextureOutputID && hasExternalTexture));
 
+    let resolveTo: Texture | null = null;
+    let store = false;
+
+    if (this.renderTargetOutputCount[renderTargetID] > 1) {
+      // A future pass is going to render to this RT, we need to store the results.
+      store = true;
+    }
+
     if (hasResolveTextureOutputID) {
       assert(graph.resolveTextureRenderTargetIDs[resolveTextureOutputID] === renderTargetID);
       assert(this.resolveTextureUseCount[resolveTextureOutputID] > 0);
+      assert(this.renderTargetOutputCount[renderTargetID] > 0);
 
       const renderTarget = assertExists(this.renderTargetAliveForID[renderTargetID]);
 
-      // No need to resolve -- we're already rendering into a texture-backed RT.
-      if (renderTarget.texture !== null && !this.resolveTextureConflict[resolveTextureOutputID])
-        return null;
+      // If we're the last user of this RT, then we don't need to resolve -- the texture itself will be enough.
+      // Note that this isn't exactly an exactly correct algorithm. If we have pass A writing to RenderTargetA,
+      // pass B resolving RenderTargetA to ResolveTextureA, and pass C writing to RenderTargetA, then we don't
+      // strictly need to copy, but in order to determine that at the time of pass A, we'd need a much fancier
+      // schedule than just tracking refcounts...
+      if (renderTarget.texture !== null && this.renderTargetOutputCount[renderTargetID] === 1) {
+        resolveTo = null;
+        store = true;
+      } else {
+        if (!this.singleSampledTextureForResolveTextureID[resolveTextureOutputID]) {
+          const desc = assertExists(graph.renderTargetDescriptions[renderTargetID]);
+          this.singleSampledTextureForResolveTextureID[resolveTextureOutputID] =
+            this.acquireSingleSampledTextureForDescription(desc);
+          this.device.setResourceName(
+            this.singleSampledTextureForResolveTextureID[resolveTextureOutputID].texture,
+            renderTarget.debugName + ` (Resolve ${resolveTextureOutputID})`,
+          );
+        }
 
-      if (!this.singleSampledTextureForResolveTextureID[resolveTextureOutputID]) {
-        const desc = assertExists(graph.renderTargetDescriptions[renderTargetID]);
-        this.singleSampledTextureForResolveTextureID[resolveTextureOutputID] =
-          this.acquireSingleSampledTextureForDescription(desc);
-        this.device.setResourceName(
-          this.singleSampledTextureForResolveTextureID[resolveTextureOutputID].texture,
-          renderTarget.debugName + ` (Resolve ${resolveTextureOutputID})`,
-        );
+        resolveTo = this.singleSampledTextureForResolveTextureID[resolveTextureOutputID].texture;
       }
-
-      return this.singleSampledTextureForResolveTextureID[resolveTextureOutputID].texture;
     } else if (hasExternalTexture) {
-      return externalTexture;
+      resolveTo = externalTexture;
     } else {
-      return null;
+      resolveTo = null;
     }
+
+    return { resolveTo, store };
   }
 
   private schedulePass(graph: GraphImpl, pass: RenderGraphPass) {
@@ -307,7 +337,9 @@ export class RenderGraph implements RGGraphBuilder {
       pass.renderTargets[slot] = colorRenderTarget;
       pass.descriptor.colorAttachment[slot] =
         colorRenderTarget !== null ? colorRenderTarget.attachment : null;
-      pass.descriptor.colorResolveTo[slot] = this.determineResolveToTexture(graph, pass, slot);
+      const { resolveTo, store } = this.determineResolveParam(graph, pass, slot);
+      pass.descriptor.colorResolveTo[slot] = resolveTo;
+      pass.descriptor.colorStore[slot] = store;
       pass.descriptor.colorClearColor[slot] =
         colorRenderTarget !== null && colorRenderTarget.needsClear
           ? graph.renderTargetDescriptions[colorRenderTargetID].colorClearColor
@@ -321,11 +353,13 @@ export class RenderGraph implements RGGraphBuilder {
     pass.renderTargets[RGAttachmentSlot.DepthStencil] = depthStencilRenderTarget;
     pass.descriptor.depthStencilAttachment =
       depthStencilRenderTarget !== null ? depthStencilRenderTarget.attachment : null;
-    pass.descriptor.depthStencilResolveTo = this.determineResolveToTexture(
+    const { resolveTo, store } = this.determineResolveParam(
       graph,
       pass,
       RGAttachmentSlot.DepthStencil,
     );
+    pass.descriptor.depthStencilResolveTo = resolveTo;
+    pass.descriptor.depthStencilStore = store;
     pass.descriptor.depthClearValue =
       depthStencilRenderTarget !== null && depthStencilRenderTarget.needsClear
         ? graph.renderTargetDescriptions[depthStencilRenderTargetID].depthClearValue
@@ -335,9 +369,9 @@ export class RenderGraph implements RGGraphBuilder {
         ? graph.renderTargetDescriptions[depthStencilRenderTargetID].stencilClearValue
         : 'load';
 
-    let rtWidth = 0,
-      rtHeight = 0,
-      rtSampleCount = 0;
+    let rtWidth = 0;
+    let rtHeight = 0;
+    let rtSampleCount = 0;
     for (let i = 0; i < pass.renderTargets.length; i++) {
       const renderTarget = pass.renderTargets[i];
       if (!renderTarget) continue;
@@ -373,13 +407,17 @@ export class RenderGraph implements RGGraphBuilder {
       );
     }
 
-    // Now that we're done with the pass, release our render targets back to the pool.
     for (let i = 0; i < pass.renderTargetIDs.length; i++)
-      this.releaseRenderTargetForID(pass.renderTargetIDs[i]);
+      this.releaseRenderTargetForID(pass.renderTargetIDs[i], true);
+
+    for (let slot = 0; slot < pass.renderTargetExtraRefs.length; slot++)
+      if (pass.renderTargetExtraRefs[slot])
+        this.releaseRenderTargetForID(pass.renderTargetIDs[slot], true);
   }
 
   private scheduleGraph(graph: GraphImpl): void {
-    assert(this.renderTargetUseCount.length === 0);
+    assert(this.renderTargetOutputCount.length === 0);
+    assert(this.renderTargetResolveCount.length === 0);
     assert(this.resolveTextureUseCount.length === 0);
 
     // Go through and increment the age of everything in our dead pools to mark that it's old.
@@ -390,9 +428,9 @@ export class RenderGraph implements RGGraphBuilder {
     // Schedule our resources -- first, count up all uses of resources, then hand them out.
 
     // Initialize our accumulators.
-    fillArray(this.renderTargetUseCount, graph.renderTargetDescriptions.length, 0);
+    fillArray(this.renderTargetOutputCount, graph.renderTargetDescriptions.length, 0);
+    fillArray(this.renderTargetResolveCount, graph.renderTargetDescriptions.length, 0);
     fillArray(this.resolveTextureUseCount, graph.resolveTextureRenderTargetIDs.length, 0);
-    fillArray(this.resolveTextureConflict, graph.resolveTextureRenderTargetIDs.length, false);
 
     // Count.
     for (let i = 0; i < graph.passes.length; i++) this.scheduleAddUseCount(graph, graph.passes[i]);
@@ -401,8 +439,10 @@ export class RenderGraph implements RGGraphBuilder {
     for (let i = 0; i < graph.passes.length; i++) this.schedulePass(graph, graph.passes[i]);
 
     // Double-check that all resources were handed out.
-    for (let i = 0; i < this.renderTargetUseCount.length; i++)
-      assert(this.renderTargetUseCount[i] === 0);
+    for (let i = 0; i < this.renderTargetOutputCount.length; i++)
+      assert(this.renderTargetOutputCount[i] === 0);
+    for (let i = 0; i < this.renderTargetResolveCount.length; i++)
+      assert(this.renderTargetResolveCount[i] === 0);
     for (let i = 0; i < this.resolveTextureUseCount.length; i++)
       assert(this.resolveTextureUseCount[i] === 0);
     for (let i = 0; i < this.renderTargetAliveForID.length; i++)
@@ -426,7 +466,8 @@ export class RenderGraph implements RGGraphBuilder {
     }
 
     // Clear out our transient scheduling state.
-    this.renderTargetUseCount.length = 0;
+    this.renderTargetResolveCount.length = 0;
+    this.renderTargetOutputCount.length = 0;
     this.resolveTextureUseCount.length = 0;
   }
   //#endregion
@@ -437,11 +478,13 @@ export class RenderGraph implements RGGraphBuilder {
     this.currentPass = pass;
 
     const renderPass = this.device.createRenderPass(pass.descriptor);
+    renderPass.beginDebugGroup(pass.debugName);
 
     renderPass.setViewport(pass.viewportX, pass.viewportY, pass.viewportW, pass.viewportH);
 
     if (pass.execFunc !== null) pass.execFunc(renderPass, this);
 
+    renderPass.endDebugGroup();
     this.device.submitPass(renderPass);
 
     if (pass.postFunc !== null) pass.postFunc(this);
@@ -489,21 +532,21 @@ export class RenderGraph implements RGGraphBuilder {
 
   //#region GfxrPassScope
   getResolveTextureForID(resolveTextureID: number): Texture {
-    const currentGraphPass = this.currentPass!;
+    const currentGraphPass = this.currentPass;
     const i = currentGraphPass.resolveTextureInputIDs.indexOf(resolveTextureID);
     assert(i >= 0);
     return assertExists(currentGraphPass.resolveTextureInputTextures[i]);
   }
 
   getRenderTargetAttachment(slot: RGAttachmentSlot): RenderTarget | null {
-    const currentGraphPass = this.currentPass!;
+    const currentGraphPass = this.currentPass;
     const renderTarget = currentGraphPass.renderTargets[slot];
     if (!renderTarget) return null;
     return renderTarget.attachment;
   }
 
   getRenderTargetTexture(slot: RGAttachmentSlot): Texture | null {
-    const currentGraphPass = this.currentPass!;
+    const currentGraphPass = this.currentPass;
     const renderTarget = currentGraphPass.renderTargets[slot];
     if (!renderTarget) return null;
     return renderTarget.texture;

@@ -18,6 +18,8 @@ export class RenderGraphPass implements IRenderGraphPass {
   resolveTextureOutputExternalTextures: Texture[] = [];
   // List of resolveTextureIDs that we have a reference to.
   resolveTextureInputIDs: number[] = [];
+  // RGAttachmentSlot => refcount.
+  renderTargetExtraRefs: boolean[] = [];
 
   viewport: NormalizedViewportCoords = IdentityViewportCoords;
 
@@ -29,11 +31,14 @@ export class RenderGraphPass implements IRenderGraphPass {
   descriptor: RenderPassDescriptor = {
     colorAttachment: [],
     colorResolveTo: [],
+    colorStore: [],
     depthStencilAttachment: null,
     depthStencilResolveTo: null,
+    depthStencilStore: true,
     colorClearColor: ['load'],
     depthClearValue: 'load',
     stencilClearValue: 'load',
+    occlusionQueryPool: null,
   };
 
   viewportX: number = 0;

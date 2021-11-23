@@ -51,6 +51,8 @@ export class DeviceProgram {
 
   ensurePreprocessed(vendorInfo: VendorInfo): void {
     if (this.preprocessedVert === '') {
+      console.log(this.defines);
+
       this.preprocessedVert = preprocessShader_GLSL(
         vendorInfo,
         'vert',

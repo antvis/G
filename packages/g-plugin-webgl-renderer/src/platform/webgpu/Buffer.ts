@@ -40,19 +40,17 @@ export class Buffer_WebGPU extends ResourceBase_WebGPU implements Buffer {
       : (viewOrSize + 3) & ~3; // 4 bytes alignments (because of the upload which requires this)
 
     this.usage = translateBufferUsage(usage);
-
-    this.flags = flags;
-
     // @see https://www.w3.org/TR/webgpu/#dom-gpubufferusage-copy_dst
-    // this.usage |= GPUBufferUsage.COPY_DST;
+    this.usage |= GPUBufferUsage.COPY_DST;
     // this.usage |= GPUBufferUsage.COPY_SRC;
 
-    // console.log(this.usage);
+    this.flags = this.usage | flags;
 
     this.size = isView(viewOrSize) ? viewOrSize.byteLength : viewOrSize;
     this.view = isView(viewOrSize) ? viewOrSize : null;
     this.gpuBuffer = this.device.device.createBuffer({
-      usage: flags,
+      usage: this.flags,
+      // usage: this.usage,
       size: alignedLength,
       // mappedAtCreation: true,
     });

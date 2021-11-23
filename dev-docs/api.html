@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <script src='https://www.w3.org/Tools/respec/respec-w3c' async class='remove'></script>
+    <script class='remove'>
+      // All config options at https://respec.org/docs/
+      var respecConfig = {
+        // Working Groups ids at https://respec.org/w3c/groups/
+        group: "webapps", 
+        specStatus: "official",
+        editors: [{
+          name: "xiaoiver",
+          url: "https://github.com/xiaoiver",
+        }],
+        github: {
+          branch: "next",
+          repoURL: "antvis/g", 
+        },
+        // See https://respec.org/docs/#xref for usage.
+        xref: "web-platform",
+      };
+    </script>
+  </head>
+  <body>
+    <h1 id="title">G 渲染引擎 API</h1>
+    <section id='abstract'>
+      <p>
+        <a href="http://g-next.antv.vision/zh">G</a> 作为 AntV 底层渲染引擎，在设计时采用了分层架构。其中核心层提供场景图定义、相机、事件处理、动画以及自定义组件机制。
+        渲染器通过组合一系列插件，在不同的渲染环境下运行。其中，Web 端渲染器 g-canvas/svg/webgl 分别基于 Canvas2D / SVG / WebGL 和 WebGPU 这些底层 API 提供渲染能力。
+        使用插件机制同样可以扩展一个已有的渲染器。
+      </p>
+      <p>
+        除了 Web 端渲染环境，我们希望在 native 环境下也能使用。尽管目前还做不到“一套代码处处运行”，即需要额外的 native 实现，
+        但统一的 API（特别是核心层）能够保证多端下较为统一的开发使用体验，也能为后续新增的 API 提供更多合理性讨论。
+      </p>
+      <p>
+        在设计核心层 API 时，我们更多借鉴了 Web 端已有的标准，例如：
+        <ul>
+          <li>场景图定义、事件系统兼容 DOM API</li>
+          <li>动画兼容 Web Animation API</li>
+          <li>自定义图形机制兼容 CustomElement API</li>
+        </ul>
+        一方面能减轻前端开发者的记忆学习成本，更重要的是能直接使用 Web 端已有生态，例如拖拽与手势库。
+      </p>
+    </section>
+    <section id='sotd'>
+      <p>
+        该文档作为 G 以及 G-Native 内部开发使用，共同维护统一的核心层 API。
+      </p>
+    </section>
+    <section>
+      <h2>场景图</h2>
+      <p>
+        场景图（SceneGraph）是组织和管理二维/三维虚拟场景的一种数据结构，是一个有向无环图。场景图提供了两大能力：
+        <ul>
+          <li>描述父子关系</li>
+          <li>自动完成基于父子关系的某些复杂级联计算</li>
+        </ul>
+        例如下面的例子中，我们为 parent 节点添加了两个子节点。
+      </p>
+      <aside class="example">
+        <p>定义场景</p>
+        <pre class="js">
+        parent.appendChild(child1);
+        parent.appendChild(child2);
+        </pre>
+      </aside>
+      <p>
+        在定义场景时，并不需要渲染器参与。同样的，在组合图形自定义组件时，也应当与具体渲染器无关。
+      </p>
+      <p>
+        场景图中的节点，也就是我们通常说的“图形”，尽管形状各不相同，有的甚至没有实体，但都是通过继承获得基础能力。
+      </p>
+      
+      <section data-dfn-for="EventTarget">
+        <h2>EventTarget</h2>
+        <p>为节点提供事件的绑定/解绑以及触发能力。</p>
+        <pre class="idl">
+          [Exposed=(Window)]
+          interface EventTarget {          
+            undefined addEventListener(DOMString type, EventListener? callback, optional (AddEventListenerOptions or boolean) options = {});
+            undefined removeEventListener(DOMString type, EventListener? callback, optional (EventListenerOptions or boolean) options = {});
+            undefined removeAllEventListeners();
+            boolean dispatchEvent(Event event);
+          };
+          
+          callback interface EventListener {
+            undefined handleEvent(Event event);
+          };
+          
+          dictionary EventListenerOptions {
+            boolean capture = false;
+          };
+          
+          dictionary AddEventListenerOptions : EventListenerOptions {
+            boolean passive = false;
+            boolean once = false;
+          };
+        </pre>
+        <section>
+          <h2><dfn>addEventListener()</dfn> method</h2>
+          <p>为节点添加事件监听器。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{DOMString}} type</code></dt>
+            <dd>事件名称，支持内置事件名与自定义时间名</dd>
+            <dt><code>{{EventListener}} callback</code></dt>
+            <dd>事件监听器，支持以下两种写法：
+              <ul>
+                <li>监听器函数 Function，接受 {{Event}} 作为参数</li>
+                <li>形如 `{ handleEvent: Function }` 的对象</li>
+              </ul>
+            </dd>
+            <dt><code>optional ({{AddEventListenerOptions}} or boolean) options</code></dt>
+            <dd>如果为 {{AddEventListenerOptions}}：
+              <ul>
+                <li>capture，表示仅捕获阶段才会触发 callback，冒泡阶段不会</li>
+                <li>once，表示在添加之后最多只调用一次 callback，触发后自动移除</li>
+              </ul>
+            </dd>
+            <dd>如果为 boolean，则 true 表示仅捕获阶段才会触发 callback，冒泡阶段不会</dd>
+          </dl>
+          <p>返回值：无</p>
+          <aside class="example">
+            <p>绑定事件监听器</p>
+            <pre class="js">
+              // 二者等价
+              button.addEventListener('click', (e) => {});
+              button.addEventListener('click', {
+                handleEvent: (e) => {}
+              });
+            </pre>
+          </aside>
+          <aside class="example">
+            <p>注册仅在捕获阶段执行的监听器</p>
+            <pre class="js">
+              // 二者等价
+              circle.addEventListener('click', () => {}, { capture: true });
+              circle.addEventListener('click', () => {}, true);
+            </pre>
+          </aside>
+          <aside class="example">
+            <p>注册仅执行一次的监听器</p>
+            <pre class="js">
+              circle.addEventListener('click', () => {}, { once: true });
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>removeEventListener()</dfn> method</h2>
+          <p>按事件名移除节点上的事件监听器。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{DOMString}} type</code></dt>
+            <dd>事件名称，支持内置事件名与自定义时间名</dd>
+            <dt><code>{{EventListener}} callback</code></dt>
+            <dd>事件监听器</dd>
+          </dl>
+          <aside class="example">
+            <p>移除事件监听器</p>
+            <pre class="js">
+              button.removeEventListener('click', callback);
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>removeAllEventListeners()</dfn> method</h2>
+          <p>移除节点上全部事件监听器。</p>
+          <aside class="example">
+            <p>移除全部事件监听器</p>
+            <pre class="js">
+              button.removeAllEventListeners();
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>dispatchEvent()</dfn> method</h2>
+          <p>手动触发自定义事件 {{CustomEvent}}，和内置事件一样会经历完整的事件传播流程。</p>
+          <aside class="example">
+            <p>触发自定义事件</p>
+            <pre class="js">
+              // 创建自定义事件
+              const event = new CustomEvent('build', { detail: { prop1: 'xx' } });
+              // 监听自定义事件
+              circle.addEventListener('build', (e) => {
+                  e.target; // circle
+                  e.detail; // { prop1: 'xx' }
+              });
+              // 触发
+              circle.dispatchEvent(event);
+            </pre>
+          </aside>
+        </section>
+      </section>
+      <section data-dfn-for="Node">
+        <h2>Node</h2>
+        <p>代表场景图中的一个节点，继承 {{EventTarget}}。拥有最基础的添加/节点能力。</p>
+        <pre class="idl">
+        [Exposed=Window]
+        interface Node : EventTarget {
+          readonly attribute DOMString       nodeName;
+          readonly attribute Node            parentNode;
+          readonly attribute NodeList        childNodes;
+          readonly attribute Node            firstChild;
+          readonly attribute Node            lastChild;
+          readonly attribute Node            previousSibling;
+          readonly attribute Node            nextSibling;
+          readonly attribute Document        ownerDocument;
+          Node                               appendChild(Node newChild);
+          Node                               cloneNode(boolean deep);
+          boolean                            hasChildNodes();
+          boolean                            contains(Node otherNode);
+          Node                               insertBefore(Node newChild, Node refChild);
+          Node                               replaceChild(Node newChild, Node oldChild);
+          Node                               removeChild(Node oldChild);
+          boolean                            isEqualNode(Node otherNode);
+          boolean                            isSameNode(Node otherNode);
+          Node                               getRootNode();
+        };
+        </pre>
+        <section>
+          <h2><dfn>nodeName</dfn> attribute</h2>
+          <p>返回节点名称，内置的 2D 图形使用以下枚举值：</p>
+          <pre class="idl">
+            enum SHAPE {
+              "group",
+              "circle",
+              "ellipse",
+              "image",
+              "rect",
+              "line",
+              "polyline",
+              "polygon",
+              "text",
+              "path",
+              "html",
+            };
+          </pre>
+          <aside class="example">
+            <p>获取一个 Circle 的名称</p>
+            <pre class="js">
+            circle.nodeName; // "circle"
+            </pre>
+          </aside>
+          <p>对于内置图形之外的自定义图形，需要在定义时提供。</p>
+        </section>
+        <section>
+          <h2><dfn>parentNode</dfn> attribute</h2>
+          <p>返回当前节点的父节点，当没有父节点时返回 null</p>
+          <aside class="example">
+            <p>获取一个子节点的父节点</p>
+            <pre class="js">
+            child.parentNode; // parent
+            orphan.parentNode; // null
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>childNodes</dfn> attribute</h2>
+          <p>返回当前节点的子节点列表</p>
+          <aside class="example">
+            <p>获取一个节点的子节点列表</p>
+            <pre class="js">
+            parent.childNodes; // [child1, child2]
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>firstChild</dfn> attribute</h2>
+          <p>返回当前节点的第一个子节点，如果无子节点，则返回 null。</p>
+        </section>
+        <section>
+          <h2><dfn>lastChild</dfn> attribute</h2>
+          <p>返回当前节点的最后一个子节点，如果无子节点，则返回 null。</p>
+        </section>
+        <section>
+          <h2><dfn>nextSibling</dfn> attribute</h2>
+          <p>返回当前节点的后一个兄弟节点，没有则返回 null。</p>
+        </section>
+        <section>
+          <h2><dfn>previousSibling</dfn> attribute</h2>
+          <p>返回当前节点的前一个兄弟节点，没有则返回 null。</p>
+        </section>
+        <section>
+          <h2><dfn>ownerDocument</dfn> attribute</h2>
+          <p>指向画布的入口 {{Document}}。如果该节点还未加入到画布中，或者该节点是 {{Document}} 本身，返回 null。</p>
+        </section>
+        <section>
+          <h2><dfn>appendChild()</dfn> method</h2>
+          <p>添加一个新节点到目标节点的子节点列表中。如果这个新节点已经在列表中，需要移除后再添加。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{Node}} newChild</code></dt>
+            <dd>新节点</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{Node}}</code></dt>
+            <dd>刚添加的节点</dd>
+          </dl>
+          <aside class="example">
+            <p>添加子节点</p>
+            <pre class="js">
+            parent.appendChild(child); // child
+            parent.childNodes; // [child]
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>cloneNode()</dfn> method</h2>
+          <p>克隆目标节点，返回一个新节点，它拥有原节点的所有样式属性。支持深拷贝，即拷贝自身的同时，也会拷贝它的整棵子树。
+            克隆的新节点不会保留原始节点的父子关系，需要使用 {{Node/appendChild()}} 将其加入画布才会被渲染。
+            另外，与 DOM API 保持一致，不会拷贝原图形上的事件监听器。
+          </p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{boolean}} deep</code></dt>
+            <dd>是否使用深拷贝。如果为 true，递归克隆目标节点以及它的子树。如果为 false，仅克隆自身。</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{Node}}</code></dt>
+            <dd>克隆得到的节点</dd>
+          </dl>
+          <aside class="example">
+            <p>克隆节点，可以使用深拷贝模式</p>
+            <pre class="js">
+            // 目标节点拥有一个子节点
+            parent.appendChild(child);
+            parent.childNodes; // [child]
+            // 克隆目标节点，得到一个新节点，不使用深拷贝
+            const newNode = parent.cloneNode();
+            // 新节点无子节点
+            newNode.childNodes; // []
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>hasChildNodes()</dfn> method</h2>
+          <p>参数列表：无</p>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{boolean}}</code></dt>
+            <dd>是否有子节点</dd>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>contains()</dfn> method</h2>
+          <p>判断传入的节点是否为该节点的后代节点。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{Node}} otherNode</code></dt>
+            <dd>如果 otherNode 是 node 的后代节点或是 node 节点本身，则返回 true，否则返回 false。</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{boolean}}</code></dt>
+            <dd>传入的节点是否为该节点的后代节点。</dd>
+          </dl>
+          <aside class="example">
+            <p>判断传入的节点是否为该节点的后代节点</p>
+            <pre class="js">
+            parent.appendChild(child); // child
+            parent.contains(parent); // true
+            parent.contains(child); // true
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>insertBefore()</dfn> method</h2>
+          <p>添加一个新节点 newChild 到目标节点的子节点列表中，同时以 refChild 作为参考。
+            如果 refChild 为 null，newChild 会被添加在子节点末尾，此时效果和 {{Node/appendChild()}} 效果相同。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{Node}} newChild</code></dt>
+            <dd>待添加的新节点</dd>
+            <dt><code>{{Node}} refChild</code></dt>
+            <dd>参考节点，新节点会以它为参考，插入在它之前</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{Node}}</code></dt>
+            <dd>刚添加的节点</dd>
+          </dl>
+          <aside class="example">
+            <p>添加子节点，配合参考节点</p>
+            <pre class="js">
+            parent.appendChild(child1);
+            parent.childNodes; // [child1]
+            parent.insertBefore(child2, child1);
+            parent.childNodes; // [child2, child1]
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>replaceChild()</dfn> method</h2>
+          <p>用指定的节点 newChild 替换当前节点的一个子节点 oldChild，并返回被替换掉的节点 oldChild。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{Node}} newChild</code></dt>
+            <dd>待添加的新节点</dd>
+            <dt><code>{{Node}} oldChild</code></dt>
+            <dd>被替换的子节点</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{Node}}</code></dt>
+            <dd>被替换的子节点</dd>
+          </dl>
+          <aside class="example">
+            <p>替换一个已有子节点</p>
+            <pre class="js">
+            parent.appendChild(child1);
+            parent.replaceChild(child2, child1); // child1
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>removeChild()</dfn> method</h2>
+          <p>删除一个子节点。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{Node}} oldChild</code></dt>
+            <dd>待删除的已有子节点</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{Node}}</code></dt>
+            <dd>被删除的节点</dd>
+          </dl>
+          <aside class="example">
+            <p>删除已有子节点</p>
+            <pre class="js">
+            parent.appendChild(child);
+            parent.removeChild(child); // [child]
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>isEqualNode()</dfn> method</h2>
+          <p>比较两个节点是否“相等”。需要注意，并不是简单比较引用（可以使用{{Node/isSameNode()}}判断是否“相同”）。
+            “相同”的两个节点一定“相等”，反之则不是。</p>
+          <p>判定条件如下：</p>
+          <ul>
+            <li>{{Node/nodeName}} 相同</li>
+            <li>{{Element/attributes}} 各个属性值相同</li>
+            <li>{{Node/childNodes}} 相同，即子节点列表长度相等，各个子元素相等（使用该方法递归判断）</li>
+          </ul>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{Node}} otherNode</code></dt>
+            <dd>待比较节点</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>boolean</code></dt>
+            <dd>两个节点是否相等</dd>
+          </dl>
+          <aside class="example">
+            <p>判断两个节点是否相等</p>
+            <pre class="js">
+            node.isEqualNode(otherNode);
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>isSameNode()</dfn> method</h2>
+          <p>比较两个节点是否“相同”，简单比较引用即可。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{Node}} otherNode</code></dt>
+            <dd>待比较节点</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>boolean</code></dt>
+            <dd>两个节点是否相同</dd>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>getRootNode()</dfn> method</h2>
+          <p>返回当前节点的根节点。</p>
+          <p>参数列表：无</p>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{Node}}</code></dt>
+            <dd>根节点</dd>
+          </dl>
+        </section>
+      </section>
+      <section data-dfn-for="Element" data-link-for="Element">
+        <h2>Element</h2>
+        <p>继承 {{Node}}，提供属性的获取与设置，节点查询以及更多节点操作能力。</p>
+        <pre class="idl">
+          [Exposed=Window]
+          interface Element : Node {
+            attribute DOMString               id;
+            attribute DOMString               name;
+            attribute DOMString               className;
+            attribute NamedNodeMap            style;
+            readonly attribute NodeList       children;
+            readonly attribute unsigned long  childElementCount;
+            readonly attribute Node           firstElementChild;
+            readonly attribute Node           lastElementChild;
+            readonly attribute NamedNodeMap   attributes;
+            any                               getAttribute(DOMString name);
+            undefined                         setAttribute(DOMString name, any value);
+            undefined                         removeAttribute(DOMString name);
+            DOMRect                           getBoundingClientRect();
+            undefined                         destroy();
+            undefined                         append(Node... nodes);
+            undefined                         prepend(Node... nodes);
+            undefined                         after(Node... nodes);
+            undefined                         before(Node... nodes);
+            undefined                         remove(boolean destroy);
+            undefined                         replaceWith(Node... nodes);
+            undefined                         replaceChildren(Node... nodes);
+            boolean                           matches(DOMString selector);
+            Element                           getElementById(DOMString id);
+            sequence&lt;Element&gt;                 getElementsByName(DOMString name);
+            sequence&lt;Element&gt;                 getElementsByClassName(DOMString className);
+            sequence&lt;Element&gt;                 getElementsByTagName(DOMString tagName);
+            Element                           querySelector(DOMString selector);
+            sequence&lt;Element&gt;                 querySelectorAll(DOMString selector);
+          };
+        </pre>
+        <section>
+          <h2><dfn>id</dfn> attribute</h2>
+          <p>全局唯一的 id，供后续 {{getElementById}} 查询使用。</p>
+          <aside class="example">
+            <p>设置及获取 id</p>
+            <pre class="js">
+            const circle = new Circle({
+              id: 'my-id', // 初始化传入
+              style: { r: 10 },
+            });
+            
+            // 获取 id
+            circle.id; // 'my-id';
+            // 或者
+            circle.getAttribute('id'); // 'my-id';
+  
+            // 设置新 id
+            circle.id = 'another-id';
+            // 或者
+            circle.setAttribute('id', 'another-id');
+
+            // 按 id 查询
+            document.getElementById('another-id'); // circle
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>name</dfn> attribute</h2>
+          <p>name 可重复，供后续 {{getElementsByName}} 查询使用。</p>
+        </section>
+        <section>
+          <h2><dfn>className</dfn> attribute</h2>
+          <p>className 可重复，供后续 {{getElementsByClassName}} 查询使用。</p>
+        </section>
+        <section>
+          <h2><dfn>style</dfn> attribute</h2>
+          <p>样式属性，不同图形有不同的样式属性。</p>
+          <aside class="example">
+            <p>设置及获取 Circle 的样式属性</p>
+            <pre class="js">
+            const circle = new Circle({
+              style: { r: 10 },
+            });
+            
+            // 获取半径
+            circle.style.r; // 10;
+            // 或者
+            circle.getAttribute('style').r; // 10;
+  
+            // 设置半径
+            circle.style.r = 20;
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>children</dfn> attribute</h2>
+          <p>同 {{Node/childNodes}}。</p>
+        </section>
+        <section>
+          <h2><dfn>childElementCount</dfn> attribute</h2>
+          <p>返回 {{Node/childNodes}} 数量。</p>
+        </section>
+        <section>
+          <h2><dfn>firstElementChild</dfn> attribute</h2>
+          <p>同 {{Node/firstChild}}。</p>
+        </section>
+        <section>
+          <h2><dfn>lastElementChild</dfn> attribute</h2>
+          <p>同 {{Node/lastChild}}。</p>
+        </section>
+        <section>
+          <h2><dfn>attributes</dfn> attribute</h2>
+          <p>获取节点的全部属性。</p>
+          <aside class="example">
+            <p>获取节点的全部属性。</p>
+            <pre class="js">
+            const circle = new Circle({
+              id: 'my-id',
+              name: 'my-name',
+              className: 'my-classname',
+              style: { r: 10 },
+            });
+            circle.attributes.id; // 'my-id'
+            circle.attributes.name; // 'my-name'
+            circle.attributes.className; // 'my-classname'
+            circle.attributes.style.r; // 10
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>getAttribute()</dfn> method</h2>
+          <p>按照属性名获取属性值。如果不存在，返回 null。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>DOMString name</code></dt>
+            <dd>属性名</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>any</code></dt>
+            <dd>属性值</dd>
+          </dl>
+          <aside class="example">
+            <p>获取节点属性。</p>
+            <pre class="js">
+            const circle = new Circle({
+              id: 'my-id',
+              name: 'my-name',
+              className: 'my-classname',
+              style: { r: 10 },
+            });
+            circle.getAttribute('id'); // 'my-id'
+            circle.getAttribute('name'); // 'my-name'
+            circle.getAttribute('className'); // 'my-classname'
+            circle.getAttribute('style').r; // 10
+            circle.getAttribute('xxx'); // null
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>setAttribute()</dfn> method</h2>
+          <p>按照属性名设置属性值。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>DOMString name</code></dt>
+            <dd>属性名</dd>
+            <dt><code>any value</code></dt>
+            <dd>属性值</dd>
+          </dl>
+          <p>返回值：无</p>
+        </section>
+        <section>
+          <h2><dfn>removeAttribute()</dfn> method</h2>
+          <p>按照属性名删除属性值。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>DOMString name</code></dt>
+            <dd>属性名</dd>
+          </dl>
+          <p>返回值：无</p>
+        </section>
+        <section>
+          <h2><dfn>destroy()</dfn> method</h2>
+          <p>销毁节点。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>DOMString name</code></dt>
+            <dd>属性名</dd>
+          </dl>
+          <p>返回值：无</p>
+        </section>
+      </section>
+      <section data-dfn-for="DisplayObject" data-link-for="DisplayObject">
+        <h2>DisplayObject</h2>
+        <p>继承 {{Element}}，同时作为其他基础图形的基类，提供变换与动画功能。</p>
+        <pre class="idl">
+          [Exposed=Window]
+          interface DisplayObject : Element {
+            attribute DOMString               id;
+          };
+        </pre>
+      </section>
+      <section data-dfn-for="Circle" data-link-for="Circle">
+        <h2>Circle</h2>
+        <p>继承 {{DisplayObject}}。</p>
+      </section>
+      <section data-dfn-for="Ellipse" data-link-for="Ellipse">
+        <h2>Ellipse</h2>
+        <p>继承 {{DisplayObject}}。</p>
+      </section>
+      <section data-dfn-for="Rect" data-link-for="Rect">
+        <h2>Rect</h2>
+        <p>继承 {{DisplayObject}}。</p>
+      </section>
+      <section data-dfn-for="Image" data-link-for="Image">
+        <h2>Image</h2>
+        <p>继承 {{DisplayObject}}。</p>
+      </section>
+      <section data-dfn-for="Line" data-link-for="Line">
+        <h2>Line</h2>
+        <p>继承 {{DisplayObject}}。</p>
+      </section>
+      <section data-dfn-for="Polyline" data-link-for="Polyline">
+        <h2>Polyline</h2>
+        <p>继承 {{DisplayObject}}。</p>
+      </section>
+      <section data-dfn-for="Polygon" data-link-for="Polygon">
+        <h2>Polygon</h2>
+        <p>继承 {{DisplayObject}}。</p>
+      </section>
+      <section data-dfn-for="Path" data-link-for="Path">
+        <h2>Image</h2>
+        <p>继承 {{DisplayObject}}。</p>
+      </section>
+      <section data-dfn-for="Group" data-link-for="Group">
+        <h2>Group</h2>
+        <p>继承 {{DisplayObject}}。</p>
+      </section>
+      <section data-dfn-for="Document" data-link-for="Document">
+        <h2>Document</h2>
+        <p>描述父子结构，提供场景图中一些快捷的查询属性：</p>
+        <pre class="idl">
+          [Exposed=Window]
+          interface Document : Node {
+            readonly attribute Canvas defaultView;
+          };
+        </pre>
+      </section>
+        
+    </section>
+    <section data-dfn-for="Canvas">
+      <h2>Canvas</h2>
+      <pre class="idl">
+      [Exposed=Window]
+      interface Canvas {
+        readonly attribute Document document;
+        undefined resize(long width, long height);
+      };
+      </pre>
+    </section>
+    <section data-dfn-for="Event">
+      <h2>事件</h2>
+      <p>
+        事件系统能提供丰富的交互，在设计时我们遵循两个原则：
+        <ul>
+          <li>
+            尽可能和 DOM Event API 保持一致，除了能降低学习成本，最重要的是能接入已有生态（例如手势库）。
+          </li>
+          <li>仅提供标准事件。拖拽、手势等高级事件通过扩展方式定义。</li>
+        </ul>
+        熟悉 DOM 事件流的开发者对以下概念肯定不陌生：
+        <ul>
+          <li>事件对象上有一个指向 EventTarget 的引用，在 DOM 中自然是 DOM 元素，在 G 中是 {{EventTarget}}</li>
+          <li>事件流包含捕获和冒泡阶段，可以通过事件对象上的某些方法介入它们</li>
+          <li>可以为某个事件添加一个或多个监听器，它们按照注册顺序依次触发</li>
+        </ul>
+      </p>
+      <section>
+        <h2>事件对象</h2>
+        <pre class="idl">
+        [Exposed=(Window)]
+        interface Event {
+          constructor(DOMString type, optional EventInit eventInitDict = {});
+
+          readonly attribute DOMString type;
+          readonly attribute EventTarget? target;
+          readonly attribute EventTarget? currentTarget;
+          sequence&lt;EventTarget&gt; composedPath();
+
+          const unsigned short NONE = 0;
+          const unsigned short CAPTURING_PHASE = 1;
+          const unsigned short AT_TARGET = 2;
+          const unsigned short BUBBLING_PHASE = 3;
+          readonly attribute unsigned short eventPhase;
+
+          undefined stopPropagation();
+          undefined stopImmediatePropagation();
+
+          readonly attribute boolean bubbles;
+          readonly attribute boolean cancelable;
+
+          undefined preventDefault();
+          readonly attribute boolean defaultPrevented;
+          readonly attribute boolean composed;
+
+          readonly attribute DOMHighResTimeStamp timeStamp;
+        };
+
+        dictionary EventInit {
+          boolean bubbles = false;
+          boolean cancelable = false;
+          boolean composed = false;
+        };
+        </pre>
+      </section>
+      <section>
+        <h2>自定义事件</h2>
+        <pre class="idl">
+        [Exposed=(Window)]
+        interface CustomEvent : Event {
+          constructor(DOMString type, optional CustomEventInit eventInitDict = {});
+          readonly attribute any detail;
+        };
+
+        dictionary CustomEventInit : EventInit {
+          any detail = null;
+        };
+        </pre>
+        <aside class="example">
+          <p>创建自定义事件</p>
+          <pre class="js">
+            // 创建自定义事件
+            const event = new CustomEvent('build', { detail: { prop1: 'xx' } });
+            // 监听自定义事件
+            circle.addEventListener('build', (e) => {
+                e.target; // circle
+                e.detail; // { prop1: 'xx' }
+            });
+            // 触发
+            circle.dispatchEvent(event);
+          </pre>
+        </aside>
+      </section>
+    </section>
+    <section data-dfn-for="Animation">
+      <h2>动画</h2>
+    </section>
+    <section data-dfn-for="Renderer">
+      <h2>渲染器</h2>
+    </section>
+    <section data-dfn-for="Plugin">
+      <h2>插件</h2>
+    </section>
+    <section id='conformance'>
+      <!-- This section is filled automatically by ReSpec. -->
+    </section>
+  </body>
+</html>

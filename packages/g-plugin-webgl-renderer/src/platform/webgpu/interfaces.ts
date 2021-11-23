@@ -7,6 +7,7 @@ import {
   Sampler,
   Device,
   BindingLayoutDescriptor,
+  BindingLayoutSamplerDescriptor,
 } from '../interfaces';
 import { Format } from '../format';
 
@@ -23,6 +24,7 @@ export interface TextureSharedDescriptor {
 
 export interface TextureShared_WebGPU {
   format: GPUTextureFormat;
+  dimension: TextureDimension;
   pixelFormat: Format;
   width: number;
   height: number;
@@ -42,9 +44,9 @@ export interface BindGroupLayout {
 
 export interface IDevice_WebGPU extends Device {
   device: GPUDevice;
-  fallbackTexture: Texture;
   fallbackSampler: Sampler;
 
+  getFallbackTexture(samplerEntry: BindingLayoutSamplerDescriptor): Texture;
   createTextureShared(
     descriptor: TextureSharedDescriptor,
     texture: TextureShared_WebGPU,

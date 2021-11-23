@@ -1,4 +1,3 @@
-import { isTypedArray } from '../../utils/is-typedarray';
 import { GL } from '../constants';
 import { Format, FormatTypeFlags, getFormatCompByteSize, getFormatTypeFlags } from '../format';
 import { Buffer, ResourceType, Texture, TextureDescriptor, TextureDimension } from '../interfaces';
@@ -156,19 +155,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     }
   }
 
-  setImageData(
-    data: TexImageSource | ArrayBufferView,
-    level: number,
-    // levelDatas:
-    //   | HTMLImageElement
-    //   | HTMLCanvasElement
-    //   | HTMLVideoElement
-    //   | Buffer
-    //   | ArrayBufferView[],
-    // firstMipLevel: number,
-    // levelDatasOffs = 0,
-    // levelDatasSize = Array.isArray(levelDatas) ? levelDatas.length : 1 || 0,
-  ) {
+  setImageData(data: TexImageSource | ArrayBufferView[], level: number) {
     const gl = this.device.gl;
     const isCompressed = isTextureFormatCompressed(this.pixelFormat);
     const is3D = this.gl_target === GL.TEXTURE_3D || this.gl_target === GL.TEXTURE_2D_ARRAY;
@@ -179,7 +166,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
 
     let width: number;
     let height: number;
-    if (isTypedArray(data)) {
+    if (Array.isArray(data)) {
       width = this.width;
       height = this.height;
     } else {
@@ -211,7 +198,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
           height,
           gl_format,
           gl_type,
-          data as ArrayBufferView,
+          data[0] as ArrayBufferView,
         );
       } else {
         throw "WebGL1 don't support immutable texture";

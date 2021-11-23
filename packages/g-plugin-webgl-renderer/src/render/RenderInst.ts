@@ -35,8 +35,6 @@ export const enum RenderInstFlags {
   InheritedFlags = Indexed | AllowSkippingIfPipelineNotReady,
 }
 
-const SET_DEBUG_POINTER = false;
-
 export class RenderInst {
   sortKey: number = 0;
 
@@ -412,8 +410,6 @@ export class RenderInst {
         return false;
     }
 
-    if (SET_DEBUG_POINTER) passRenderer.setDebugPointer(this);
-
     passRenderer.setPipeline(gfxPipeline);
 
     passRenderer.setInputState(this.inputState);
@@ -424,7 +420,10 @@ export class RenderInst {
       );
 
     // TODO: Support multiple binding descriptors.
-    const gfxBindings = cache.createBindings(this.bindingDescriptors[0]);
+    const gfxBindings = cache.createBindings({
+      ...this.bindingDescriptors[0],
+      pipeline: gfxPipeline,
+    });
     passRenderer.setBindings(0, gfxBindings, this.dynamicUniformBufferByteOffsets);
 
     // if (this.drawInstanceCount > 0) {

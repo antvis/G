@@ -1,3 +1,4 @@
+import { TransparentBlack } from '../../utils/color';
 import {
   AttachmentState,
   BlendFactor,
@@ -118,10 +119,13 @@ export function setMegaStateFlags(
   dst: MegaStateDescriptor,
   src: Partial<MegaStateDescriptor>,
 ): void {
-  if (src.attachmentsState !== undefined)
+  if (src.attachmentsState !== undefined) {
     copyAttachmentsState(dst.attachmentsState, src.attachmentsState);
+  }
 
-  if (src.blendConstant !== undefined) colorCopy(dst.blendConstant, src.blendConstant);
+  if (src.blendConstant !== undefined) {
+    colorCopy(dst.blendConstant, src.blendConstant);
+  }
 
   dst.depthCompare = fallbackUndefined(src.depthCompare, dst.depthCompare);
   dst.depthWrite = fallbackUndefined(src.depthWrite, dst.depthWrite);
@@ -208,7 +212,7 @@ export const defaultMegaState: MegaStateDescriptor = {
     },
   ],
 
-  blendConstant: { r: 0, g: 0, b: 0, a: 0 },
+  blendConstant: colorNewCopy(TransparentBlack),
   depthWrite: true,
   depthCompare: reverseDepthForCompareMode(CompareMode.LessEqual),
   // depthCompare: reverseDepthForCompareMode(CompareMode.GreaterEqual),

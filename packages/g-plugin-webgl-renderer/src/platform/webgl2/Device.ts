@@ -12,7 +12,7 @@ import { makeStaticDataBuffer } from '../../Geometry';
 import { CopyProgram } from '../../passes/Copy';
 import { TextureMapping } from '../../render';
 import { preprocessProgramObj_GLSL } from '../../shader/compiler';
-import { OpaqueBlack, White } from '../../utils/color';
+import { OpaqueBlack, OpaqueWhite } from '../../utils/color';
 import { GL } from '../constants';
 import {
   AttachmentState,
@@ -42,7 +42,10 @@ import {
   PlatformFramebuffer,
   PrimitiveTopology,
   Program,
+  ProgramDescriptor,
   ProgramDescriptorSimple,
+  QueryPool,
+  QueryPoolType,
   Readback,
   RenderPass,
   RenderPassDescriptor,
@@ -54,6 +57,7 @@ import {
   ResourceType,
   Sampler,
   SamplerDescriptor,
+  SamplerFormatKind,
   SwapChain,
   TexFilterMode,
   Texture,
@@ -83,14 +87,15 @@ import { Buffer_GL } from './Buffer';
 import { InputLayout_GL } from './InputLayout';
 import { InputState_GL } from './InputState';
 import {
+  BindingLayoutSamplerDescriptor_GL,
   EXT_texture_compression_rgtc,
   GPlatformWebGL2Config,
   KHR_parallel_shader_compile,
   OES_draw_buffers_indexed,
 } from './interfaces';
 import { ProgramCompileState_GL, Program_GL } from './Program';
+import { QueryPool_GL } from './QueryPool';
 import { Readback_GL } from './Readback';
-import { RenderPass_GL, RenderPassCmd } from './RenderPass';
 import { RenderPipeline_GL } from './RenderPipeline';
 import { RenderTarget_GL } from './RenderTarget';
 import { ResourceCreationTracker } from './ResourceCreationTracker';
@@ -136,14 +141,6 @@ export class Device_GL implements SwapChain, Device {
   EXT_texture_filter_anisotropic: EXT_texture_filter_anisotropic | null = null;
   KHR_parallel_shader_compile: KHR_parallel_shader_compile | null = null;
 
-  /**
-   * @see https://github.com/shrekshao/MoveWebGL1EngineToWebGL2/blob/master/Move-a-WebGL-1-Engine-To-WebGL-2-Blog-2.md#uniform-buffer
-   */
-  uniformBufferMaxPageByteSize: number;
-
-  // Object pools
-  private renderPassPool: RenderPass_GL[] = [];
-
   // Swap Chain
   private scTexture: Texture_GL | null = null;
   private scPlatformFramebuffer: WebGLFramebuffer | null = null;
@@ -172,8 +169,11 @@ export class Device_GL implements SwapChain, Device {
   private currentUniformBuffers: Buffer[] = [];
   private currentUniformBufferByteOffsets: number[] = [];
   private currentUniformBufferByteSizes: number[] = [];
+  private currentScissorEnabled: boolean = false;
+  private currentStencilRef: number | null = null;
 
   // Pass Execution
+  private currentRenderPassDescriptor: RenderPassDescriptor | null = null;
   private debugGroupStack: DebugGroup[] = [];
   private resolveColorAttachmentsChanged: boolean = false;
   private resolveColorReadFramebuffer: WebGLFramebuffer;
@@ -187,7 +187,12 @@ export class Device_GL implements SwapChain, Device {
    */
   private renderPassDrawFramebuffer: WebGLFramebuffer;
   readbackFramebuffer: WebGLFramebuffer;
-  private blackTexture!: WebGLTexture;
+
+  private fallbackTexture2D: WebGLTexture;
+  private fallbackTexture2DDepth: WebGLTexture;
+  private fallbackTexture2DArray: WebGLTexture;
+  private fallbackTexture3D: WebGLTexture;
+  private fallbackTextureCube: WebGLTexture;
 
   // VendorInfo
   readonly platformString: string;
@@ -200,6 +205,10 @@ export class Device_GL implements SwapChain, Device {
   readonly supportMRT: boolean = false;
 
   // GLimits
+  /**
+   * @see https://github.com/shrekshao/MoveWebGL1EngineToWebGL2/blob/master/Move-a-WebGL-1-Engine-To-WebGL-2-Blog-2.md#uniform-buffer
+   */
+  uniformBufferMaxPageByteSize: number;
   uniformBufferWordAlignment: number;
   uniformBufferMaxPageWordSize: number;
   supportedSampleCounts: number[] = [];
@@ -269,8 +278,8 @@ export class Device_GL implements SwapChain, Device {
     this.renderPassDrawFramebuffer = this.ensureResourceExists(gl.createFramebuffer());
     this.readbackFramebuffer = this.ensureResourceExists(gl.createFramebuffer());
 
-    this.blackTexture = this.ensureResourceExists(gl.createTexture());
-    gl.bindTexture(GL.TEXTURE_2D, this.blackTexture);
+    this.fallbackTexture2D = this.ensureResourceExists(gl.createTexture());
+    gl.bindTexture(GL.TEXTURE_2D, this.fallbackTexture2D);
     gl.texImage2D(
       GL.TEXTURE_2D,
       0,
@@ -283,6 +292,30 @@ export class Device_GL implements SwapChain, Device {
       new Uint8Array(4),
     );
 
+    // this.fallbackTexture2D = this.createFallbackTexture(
+    //   TextureDimension.n2D,
+    //   SamplerFormatKind.Float,
+    // );
+    // this.fallbackTexture2DDepth = this.createFallbackTexture(
+    //   TextureDimension.n2D,
+    //   SamplerFormatKind.Depth,
+    // );
+
+    if (isWebGL2(gl)) {
+      // this.fallbackTexture2DArray = this.createFallbackTexture(
+      //   TextureDimension.n2DArray,
+      //   SamplerFormatKind.Float,
+      // );
+      // this.fallbackTexture3D = this.createFallbackTexture(
+      //   TextureDimension.n3D,
+      //   SamplerFormatKind.Float,
+      // );
+      // this.fallbackTextureCube = this.createFallbackTexture(
+      //   TextureDimension.Cube,
+      //   SamplerFormatKind.Float,
+      // );
+    }
+
     // Adjust for GL defaults.
     this.currentMegaState.depthCompare = CompareMode.Less;
     this.currentMegaState.depthWrite = false;
@@ -293,9 +326,49 @@ export class Device_GL implements SwapChain, Device {
 
     this.checkLimits();
 
-    if (configuration.shaderDebug) this.shaderDebug = true;
+    if (configuration.shaderDebug) {
+      this.shaderDebug = true;
+    }
 
-    if (configuration.trackResources) this.resourceCreationTracker = new ResourceCreationTracker();
+    if (configuration.trackResources) {
+      this.resourceCreationTracker = new ResourceCreationTracker();
+    }
+  }
+
+  private createFallbackTexture(
+    dimension: TextureDimension,
+    formatKind: SamplerFormatKind,
+  ): WebGLTexture {
+    const depth = dimension === TextureDimension.Cube ? 6 : 1;
+    const pixelFormat = formatKind === SamplerFormatKind.Depth ? Format.D24 : Format.U8_RGBA_NORM;
+    const texture = this.createTexture({
+      dimension,
+      pixelFormat,
+      usage: TextureUsage.Sampled,
+      width: 1,
+      height: 1,
+      depth,
+      numLevels: 1,
+    });
+
+    // this.blackTexture = this.ensureResourceExists(gl.createTexture());
+    // gl.bindTexture(GL.TEXTURE_2D, this.blackTexture);
+    // gl.texImage2D(
+    //   GL.TEXTURE_2D,
+    //   0,
+    //   isWebGL2(gl) ? gl.RGBA8 : gl.RGBA,
+    //   1,
+    //   1,
+    //   0,
+    //   gl.RGBA,
+    //   gl.UNSIGNED_BYTE,
+    //   new Uint8Array(4),
+    // )
+
+    if (formatKind === SamplerFormatKind.Float) {
+      texture.setImageData([new Uint8Array(4 * depth)], 0);
+    }
+    return getPlatformTexture(texture);
   }
 
   private getNextUniqueId(): number {
@@ -310,6 +383,7 @@ export class Device_GL implements SwapChain, Device {
         gl.getParameter(gl.MAX_UNIFORM_BLOCK_SIZE),
         UBO_PAGE_MAX_BYTE_SIZE,
       );
+      this.uniformBufferWordAlignment = gl.getParameter(gl.UNIFORM_BUFFER_OFFSET_ALIGNMENT) / 4;
 
       const supportedSampleCounts = gl.getInternalformatParameter(
         gl.RENDERBUFFER,
@@ -317,8 +391,6 @@ export class Device_GL implements SwapChain, Device {
         gl.SAMPLES,
       );
       this.supportedSampleCounts = supportedSampleCounts ? [...supportedSampleCounts] : [];
-
-      this.uniformBufferWordAlignment = gl.getParameter(gl.UNIFORM_BUFFER_OFFSET_ALIGNMENT) / 4;
     } else {
       // mock ubo in WebGL1
       this.uniformBufferWordAlignment = 64;
@@ -369,85 +441,84 @@ export class Device_GL implements SwapChain, Device {
     // TODO: clear depth & stencil
     // @see https://github.com/visgl/luma.gl/blob/30a1039573/modules/webgl/src/classes/clear.ts
 
-    const { r, g, b, a } = White;
+    const { r, g, b, a } = OpaqueWhite;
     if (isWebGL2(gl)) {
+      // gl.clearColor(0, 0, 0, 1);
+      // gl.clear(gl.COLOR_BUFFER_BIT);
       gl.clearBufferfv(gl.COLOR, 0, [r, g, b, a]);
     } else {
-      // gl.colorMask(true, true, true, true);
-      // gl.clearColor(r, g, b, a);
-      // gl.clear(gl.COLOR_BUFFER_BIT);
-      this.inPresent = true;
-      const vertexBuffer = makeStaticDataBuffer(
-        this,
-        BufferUsage.Vertex,
-        translateBufferUsage(BufferUsage.Vertex),
-        new Float32Array([-4, -4, 4, -4, 0, 4]).buffer,
-      );
-      const inputLayout = this.createInputLayout({
-        vertexBufferDescriptors: [
-          { byteStride: 4 * 2, frequency: VertexBufferFrequency.PerVertex },
-        ],
-        vertexAttributeDescriptors: [
-          {
-            format: Format.F32_RG,
-            bufferIndex: 0,
-            bufferByteOffset: 4 * 0,
-            location: 0,
-          },
-        ],
-        indexBufferFormat: null,
-      });
-
-      const bindingLayouts: BindingLayoutDescriptor[] = [{ numSamplers: 1, numUniformBuffers: 0 }];
-      const program = this.createProgram(preprocessProgramObj_GLSL(this, new CopyProgram()));
-
-      const inputState = this.createInputState(
-        inputLayout,
-        [{ buffer: vertexBuffer, byteOffset: 0 }],
-        null,
-        program,
-      );
-
-      const renderPipeline = this.createRenderPipeline({
-        topology: PrimitiveTopology.Triangles,
-        sampleCount: 1,
-        program,
-        bindingLayouts,
-        colorAttachmentFormats: [Format.U8_RGBA_RT],
-        depthStencilAttachmentFormat: null,
-        inputLayout,
-        megaStateDescriptor: defaultMegaState,
-      });
-      const renderPass = this.createRenderPass({
-        colorAttachment: [this.currentColorAttachments[0]],
-        colorResolveTo: [this.getOnscreenTexture()],
-        colorClearColor: [OpaqueBlack],
-        depthStencilAttachment: null,
-        depthStencilResolveTo: null,
-        depthClearValue: 0,
-        stencilClearValue: 0,
-      });
-      const bindings = this.createBindings({
-        bindingLayout: bindingLayouts[0],
-        samplerBindings: [
-          {
-            sampler: null,
-            texture: null,
-            lateBinding: null,
-          },
-        ],
-        uniformBufferBindings: [],
-      });
-      renderPass.setPipeline(renderPipeline);
-      renderPass.setBindings(0, bindings, [0]);
-      renderPass.setInputState(inputState);
-      renderPass.setViewport(0, 0, 1200, 1000);
-      program.setUniforms({
-        u_Texture: 0,
-      });
-      renderPass.draw(3, 0);
-      this.submitPass(renderPass);
-      this.inPresent = false;
+      // // gl.colorMask(true, true, true, true);
+      // // gl.clearColor(r, g, b, a);
+      // // gl.clear(gl.COLOR_BUFFER_BIT);
+      // this.inPresent = true;
+      // const vertexBuffer = makeStaticDataBuffer(
+      //   this,
+      //   BufferUsage.Vertex,
+      //   // translateBufferUsage(BufferUsage.Vertex),
+      //   new Float32Array([-4, -4, 4, -4, 0, 4]).buffer,
+      // );
+      // const inputLayout = this.createInputLayout({
+      //   vertexBufferDescriptors: [
+      //     { byteStride: 4 * 2, frequency: VertexBufferFrequency.PerVertex },
+      //   ],
+      //   vertexAttributeDescriptors: [
+      //     {
+      //       format: Format.F32_RG,
+      //       bufferIndex: 0,
+      //       bufferByteOffset: 4 * 0,
+      //       location: 0,
+      //     },
+      //   ],
+      //   indexBufferFormat: null,
+      // });
+      // const bindingLayouts: BindingLayoutDescriptor[] = [{ numSamplers: 1, numUniformBuffers: 0 }];
+      // const program = this.createProgram(preprocessProgramObj_GLSL(this, new CopyProgram()));
+      // const inputState = this.createInputState(
+      //   inputLayout,
+      //   [{ buffer: vertexBuffer, byteOffset: 0 }],
+      //   null,
+      //   program,
+      // );
+      // const renderPipeline = this.createRenderPipeline({
+      //   topology: PrimitiveTopology.Triangles,
+      //   sampleCount: 1,
+      //   program,
+      //   bindingLayouts,
+      //   colorAttachmentFormats: [Format.U8_RGBA_RT],
+      //   depthStencilAttachmentFormat: null,
+      //   inputLayout,
+      //   megaStateDescriptor: defaultMegaState,
+      // });
+      // const renderPass = this.createRenderPass({
+      //   colorAttachment: [this.currentColorAttachments[0]],
+      //   colorResolveTo: [this.getOnscreenTexture()],
+      //   colorClearColor: [OpaqueBlack],
+      //   depthStencilAttachment: null,
+      //   depthStencilResolveTo: null,
+      //   depthClearValue: 0,
+      //   stencilClearValue: 0,
+      // });
+      // const bindings = this.createBindings({
+      //   bindingLayout: bindingLayouts[0],
+      //   samplerBindings: [
+      //     {
+      //       sampler: null,
+      //       texture: null,
+      //       lateBinding: null,
+      //     },
+      //   ],
+      //   uniformBufferBindings: [],
+      // });
+      // renderPass.setPipeline(renderPipeline);
+      // renderPass.setBindings(0, bindings, [0]);
+      // renderPass.setInputState(inputState);
+      // renderPass.setViewport(0, 0, 1200, 1000);
+      // program.setUniforms({
+      //   u_Texture: 0,
+      // });
+      // renderPass.draw(3, 0);
+      // this.submitPass(renderPass);
+      // this.inPresent = false;
     }
   }
   //#endregion
@@ -616,7 +687,9 @@ export class Device_GL implements SwapChain, Device {
     if (program.compileState === ProgramCompileState_GL.Compiling) {
       program.compileState = ProgramCompileState_GL.NeedsBind;
 
-      if (this.shaderDebug) this.checkProgramCompilationForErrors(program);
+      if (this.shaderDebug) {
+        this.checkProgramCompilationForErrors(program);
+      }
     }
   }
 
@@ -683,7 +756,12 @@ export class Device_GL implements SwapChain, Device {
     }) as RenderTarget_GL;
   }
 
-  createProgram(descriptor: ProgramDescriptorSimple): Program_GL {
+  createProgram(descriptor: ProgramDescriptor): Program_GL {
+    descriptor.ensurePreprocessed(this.queryVendorInfo());
+    return this.createProgramSimple(descriptor);
+  }
+
+  createProgramSimple(descriptor: ProgramDescriptor): Program_GL {
     return new Program_GL({
       id: this.getNextUniqueId(),
       device: this,
@@ -754,9 +832,20 @@ export class Device_GL implements SwapChain, Device {
     });
   }
 
-  createRenderPass(descriptor: RenderPassDescriptor): RenderPass_GL {
-    let pass = this.renderPassPool.pop();
-    if (pass === undefined) pass = new RenderPass_GL();
+  createQueryPool(type: QueryPoolType, elemCount: number): QueryPool {
+    return new QueryPool_GL({
+      id: this.getNextUniqueId(),
+      device: this,
+      descriptor: {
+        type,
+        elemCount,
+      },
+    });
+  }
+
+  createRenderPass(descriptor: RenderPassDescriptor): RenderPass {
+    assert(this.currentRenderPassDescriptor === null);
+    this.currentRenderPassDescriptor = descriptor;
 
     const {
       colorAttachment,
@@ -767,151 +856,82 @@ export class Device_GL implements SwapChain, Device {
       stencilClearValue,
       depthStencilResolveTo,
     } = descriptor;
-
-    let depthClearValueF = -1;
-    let stencilClearValueF = -1;
-    if (depthStencilAttachment !== null) {
-      const attachment = depthStencilAttachment as RenderTarget_GL;
-      const flags = getFormatFlags(attachment.pixelFormat);
-      if (!!(flags & FormatFlags.Depth) && depthClearValue !== 'load')
-        depthClearValueF = depthClearValue;
-      if (!!(flags & FormatFlags.Stencil) && stencilClearValue !== 'load')
-        stencilClearValueF = stencilClearValue;
+    this.setRenderPassParametersBegin(colorAttachment.length);
+    for (let i = 0; i < colorAttachment.length; i++) {
+      this.setRenderPassParametersColor(
+        i,
+        colorAttachment[i] as RenderTarget_GL | null,
+        colorResolveTo[i] as Texture_GL | null,
+      );
     }
-
-    pass.descriptor = descriptor;
-
-    pass.setRenderPassParameters(
-      colorAttachment,
-      colorResolveTo,
-      colorClearColor,
-      depthStencilAttachment,
-      depthStencilResolveTo,
-      depthClearValueF,
-      stencilClearValueF,
+    this.setRenderPassParametersDepthStencil(
+      depthStencilAttachment as RenderTarget_GL | null,
+      depthStencilResolveTo as Texture_GL | null,
     );
-    return pass;
-  }
-
-  submitPass(o: RenderPass): void {
-    if (o instanceof RenderPass_GL) {
-      o.end();
-      this.executeRenderPass(o.u32.b, o.f32.b, o.o);
-      o.reset();
-      this.renderPassPool.push(o);
+    this.validateCurrentAttachments();
+    for (let i = 0; i < colorAttachment.length; i++) {
+      const clearColor = colorClearColor[i];
+      if (clearColor === 'load') continue;
+      this.setRenderPassParametersClearColor(
+        i,
+        clearColor.r,
+        clearColor.g,
+        clearColor.b,
+        clearColor.a,
+      );
     }
+    this.setRenderPassParametersClearDepthStencil(depthClearValue, stencilClearValue);
+    return this;
   }
 
-  private uploadTextureDataInternal(
-    texture: Texture,
-    firstMipLevel: number,
-    levelDatas: ArrayBufferView[],
-    levelDatasOffs: number,
-    levelDatasSize: number,
+  submitPass(pass: RenderPass): void {
+    assert(this.currentRenderPassDescriptor !== null);
+    this.endPass();
+    this.currentRenderPassDescriptor = null;
+  }
+
+  copySubTexture2D(
+    dst_: Texture,
+    dstX: number,
+    dstY: number,
+    src_: Texture,
+    srcX: number,
+    srcY: number,
   ): void {
     const gl = this.gl;
 
-    const { gl_texture, gl_target, pixelFormat, width, height, depth, numLevels } =
-      texture as Texture_GL;
-    const isCompressed = isTextureFormatCompressed(pixelFormat);
+    const dst = dst_ as Texture_GL;
+    const src = src_ as Texture_GL;
+    assert(src.numLevels === 1);
+    assert(dst.numLevels === 1);
 
-    // only WebGL2 support 3D & 2D_ARRAY
-    // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindTexture#parameters
-    const is3D = isWebGL2(gl) && (gl_target === GL.TEXTURE_3D || gl_target === GL.TEXTURE_2D_ARRAY);
-    const isCube = isWebGL2(gl)
-      ? gl_target === GL.TEXTURE_CUBE_MAP
-      : gl_target === GL.TEXTURE_CUBE_MAP;
-
-    this.setActiveTexture(gl.TEXTURE0);
-    this.currentTextures[0] = null;
-    gl.bindTexture(gl_target, gl_texture);
-    let w = width,
-      h = height,
-      d = depth;
-    const maxMipLevel = Math.min(firstMipLevel + levelDatasSize, numLevels);
-
-    const gl_format = this.translateTextureFormat(pixelFormat);
-
-    for (let i = 0; i < maxMipLevel; i++) {
-      if (i >= firstMipLevel) {
-        const levelData = levelDatas[levelDatasOffs++] as ArrayBufferView;
-        const compByteSize = isCompressed ? 1 : getFormatCompByteSize(pixelFormat);
-        const sliceElementSize = levelData.byteLength / compByteSize / depth;
-
-        if (is3D && isCompressed && isWebGL2(gl)) {
-          // Workaround for https://bugs.chromium.org/p/chromium/issues/detail?id=1004511
-          for (let z = 0; z < depth; z++) {
-            gl.compressedTexSubImage3D(
-              gl_target,
-              i,
-              0,
-              0,
-              z,
-              w,
-              h,
-              1,
-              gl_format,
-              levelData,
-              z * sliceElementSize,
-              sliceElementSize,
-            );
-          }
-        } else if (isCube) {
-          for (let z = 0; z < depth; z++) {
-            const face_target = GL.TEXTURE_CUBE_MAP_POSITIVE_X + (z % 6);
-            if (isCompressed) {
-              gl.compressedTexSubImage2D(
-                face_target,
-                i,
-                0,
-                0,
-                w,
-                h,
-                gl_format,
-                levelData,
-                z * sliceElementSize,
-                sliceElementSize,
-              );
-            } else {
-              const gl_type = this.translateTextureType(pixelFormat);
-              gl.texSubImage2D(
-                face_target,
-                i,
-                0,
-                0,
-                w,
-                h,
-                gl_format,
-                gl_type,
-                levelData,
-                z * sliceElementSize,
-              );
-            }
-          }
-        } else if (is3D && isWebGL2(gl)) {
-          if (isCompressed) {
-            gl.compressedTexSubImage3D(gl_target, i, 0, 0, 0, w, h, d, gl_format, levelData);
-          } else {
-            const gl_type = this.translateTextureType(pixelFormat);
-            gl.texSubImage3D(gl_target, i, 0, 0, 0, w, h, d, gl_format, gl_type, levelData);
-          }
-        } else {
-          if (isCompressed) {
-            gl.compressedTexSubImage2D(gl_target, i, 0, 0, w, h, gl_format, levelData);
-          } else {
-            const gl_type = this.translateTextureType(pixelFormat);
-            gl.texSubImage2D(gl_target, i, 0, 0, w, h, gl_format, gl_type, levelData);
-          }
-        }
+    if (isWebGL2(gl)) {
+      if (dst === this.scTexture) {
+        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.scPlatformFramebuffer);
+      } else {
+        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.resolveColorDrawFramebuffer);
+        this.bindFramebufferAttachment(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, dst);
       }
 
-      w = Math.max((w / 2) | 0, 1);
-      h = Math.max((h / 2) | 0, 1);
-    }
-  }
+      gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.resolveColorReadFramebuffer);
+      this.bindFramebufferAttachment(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, src);
 
-  uploadTextureData(texture: Texture, firstMipLevel: number, levelDatas: ArrayBufferView[]): void {
-    this.uploadTextureDataInternal(texture, firstMipLevel, levelDatas, 0, levelDatas.length);
+      gl.blitFramebuffer(
+        srcX,
+        srcY,
+        srcX + src.width,
+        srcY + src.height,
+        dstX,
+        dstY,
+        dstX + src.width,
+        dstY + src.height,
+        gl.COLOR_BUFFER_BIT,
+        gl.LINEAR,
+      );
+
+      gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+      gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+    }
   }
 
   queryLimits(): DeviceLimits {
@@ -983,8 +1003,7 @@ export class Device_GL implements SwapChain, Device {
   }
 
   queryRenderPass(o: RenderPass): Readonly<RenderPassDescriptor> {
-    const pass = o as RenderPass_GL;
-    return pass.descriptor;
+    return this.currentRenderPassDescriptor;
   }
 
   queryRenderTarget(o: RenderTarget): Readonly<RenderTargetDescriptor> {
@@ -1055,73 +1074,6 @@ export class Device_GL implements SwapChain, Device {
   }
   //#endregion
 
-  //#region Pass execution
-  executeRenderPass(u32: Uint32Array, f32: Float32Array, gfxr: (object | null)[]): void {
-    let iu32 = 0,
-      if32 = 0,
-      igfxr = 0;
-    while (true) {
-      const cmd = u32[iu32++] as RenderPassCmd;
-
-      if (cmd === RenderPassCmd.setRenderPassParameters) {
-        const numColorAttachments = u32[iu32++];
-        this.setRenderPassParametersBegin(numColorAttachments);
-        for (let i = 0; i < numColorAttachments; i++)
-          this.setRenderPassParametersColor(
-            i,
-            gfxr[igfxr++] as RenderTarget_GL | null,
-            gfxr[igfxr++] as Texture_GL | null,
-          );
-        this.setRenderPassParametersDepthStencil(
-          gfxr[igfxr++] as RenderTarget_GL | null,
-          gfxr[igfxr++] as Texture_GL | null,
-        );
-        this.validateCurrentAttachments();
-        for (let i = 0; i < numColorAttachments; i++) {
-          const shouldClear = !!u32[iu32++];
-          if (!shouldClear) continue;
-          this.setRenderPassParametersClearColor(
-            i,
-            f32[if32++],
-            f32[if32++],
-            f32[if32++],
-            f32[if32++],
-          );
-        }
-        this.setRenderPassParametersClearDepthStencil(f32[if32++], f32[if32++]);
-      } else if (cmd === RenderPassCmd.setViewport) {
-        this.setViewport(f32[if32++], f32[if32++], f32[if32++], f32[if32++]);
-      } else if (cmd === RenderPassCmd.setScissor) {
-        this.setScissor(f32[if32++], f32[if32++], f32[if32++], f32[if32++]);
-      } else if (cmd === RenderPassCmd.setBindings) {
-        const index = u32[iu32++],
-          numOffsets = u32[iu32++];
-        this.setBindings(index, gfxr[igfxr++] as Bindings, numOffsets, u32, iu32);
-        iu32 += numOffsets;
-      } else if (cmd === RenderPassCmd.setPipeline) {
-        this.setPipeline(gfxr[igfxr++] as RenderPipeline);
-      } else if (cmd === RenderPassCmd.setInputState) {
-        this.setInputState(gfxr[igfxr++] as InputState | null);
-      } else if (cmd === RenderPassCmd.setStencilRef) {
-        this.setStencilRef(f32[if32++]);
-      } else if (cmd === RenderPassCmd.setDebugPointer) {
-        this.setDebugPointer(gfxr[igfxr++]);
-      } else if (cmd === RenderPassCmd.draw) {
-        this.draw(u32[iu32++], u32[iu32++]);
-      } else if (cmd === RenderPassCmd.drawIndexed) {
-        this.drawIndexed(u32[iu32++], u32[iu32++]);
-      } else if (cmd === RenderPassCmd.drawIndexedInstanced) {
-        this.drawIndexedInstanced(u32[iu32++], u32[iu32++], u32[iu32++]);
-      } else if (cmd === RenderPassCmd.end) {
-        this.endPass();
-        return;
-      } else {
-        const m: RenderPassCmd.invalid = cmd;
-        throw new Error('Invalid execution');
-      }
-    }
-  }
-
   private debugGroupStatisticsDrawCall(count: number = 1): void {
     for (let i = this.debugGroupStack.length - 1; i >= 0; i--)
       this.debugGroupStack[i].drawCallCount += count;
@@ -1188,8 +1140,13 @@ export class Device_GL implements SwapChain, Device {
           attachment.gl_renderbuffer,
         );
       } else if (attachment.texture !== null) {
-        const texture = attachment.texture as Texture_GL;
-        gl.framebufferTexture2D(framebuffer, binding, GL.TEXTURE_2D, texture.gl_texture, 0);
+        gl.framebufferTexture2D(
+          framebuffer,
+          binding,
+          GL.TEXTURE_2D,
+          getPlatformTexture(attachment.texture),
+          0,
+        );
       }
     } else if (attachment.type === ResourceType.Texture) {
       // TODO: use Tex2D array with gl.framebufferTextureLayer
@@ -1264,42 +1221,35 @@ export class Device_GL implements SwapChain, Device {
 
   private setRenderPassParametersBegin(numColorAttachments: number): void {
     const gl = this.gl;
-
-    if (!this.inPresent) {
-      if (isWebGL2(gl)) {
-        gl.bindFramebuffer(GL.DRAW_FRAMEBUFFER, this.renderPassDrawFramebuffer);
-      } else {
-        gl.bindFramebuffer(GL.FRAMEBUFFER, this.renderPassDrawFramebuffer);
-      }
-      for (let i = numColorAttachments; i < this.currentColorAttachments.length; i++) {
-        const target = isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER;
-        const attachment = isWebGL2(gl) ? GL.COLOR_ATTACHMENT0 : GL.COLOR_ATTACHMENT0_WEBGL;
-
-        gl.framebufferRenderbuffer(target, attachment + i, GL.RENDERBUFFER, null);
-        gl.framebufferTexture2D(target, attachment + i, GL.TEXTURE_2D, null, 0);
-      }
+    if (isWebGL2(gl)) {
+      gl.bindFramebuffer(GL.DRAW_FRAMEBUFFER, this.renderPassDrawFramebuffer);
     } else {
-      gl.bindFramebuffer(GL.FRAMEBUFFER, null);
+      gl.bindFramebuffer(GL.FRAMEBUFFER, this.renderPassDrawFramebuffer);
+    }
+    for (let i = numColorAttachments; i < this.currentColorAttachments.length; i++) {
+      const target = isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER;
+      const attachment = isWebGL2(gl) ? GL.COLOR_ATTACHMENT0 : GL.COLOR_ATTACHMENT0_WEBGL;
+
+      gl.framebufferRenderbuffer(target, attachment + i, GL.RENDERBUFFER, null);
+      gl.framebufferTexture2D(target, attachment + i, GL.TEXTURE_2D, null, 0);
     }
     this.currentColorAttachments.length = numColorAttachments;
 
-    if (!this.inPresent) {
-      if (isWebGL2(gl)) {
-        gl.drawBuffers([
-          GL.COLOR_ATTACHMENT0,
-          GL.COLOR_ATTACHMENT1,
-          GL.COLOR_ATTACHMENT2,
-          GL.COLOR_ATTACHMENT3,
-        ]);
-      } else {
-        // MRT @see https://github.com/shrekshao/MoveWebGL1EngineToWebGL2/blob/master/Move-a-WebGL-1-Engine-To-WebGL-2-Blog-1.md#multiple-render-targets
-        this.WEBGL_draw_buffers.drawBuffersWEBGL([
-          GL.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
-          GL.COLOR_ATTACHMENT1_WEBGL, // gl_FragData[1]
-          GL.COLOR_ATTACHMENT2_WEBGL, // gl_FragData[2]
-          GL.COLOR_ATTACHMENT3_WEBGL, // gl_FragData[3]
-        ]);
-      }
+    if (isWebGL2(gl)) {
+      gl.drawBuffers([
+        GL.COLOR_ATTACHMENT0,
+        GL.COLOR_ATTACHMENT1,
+        GL.COLOR_ATTACHMENT2,
+        GL.COLOR_ATTACHMENT3,
+      ]);
+    } else {
+      // MRT @see https://github.com/shrekshao/MoveWebGL1EngineToWebGL2/blob/master/Move-a-WebGL-1-Engine-To-WebGL-2-Blog-1.md#multiple-render-targets
+      this.WEBGL_draw_buffers.drawBuffersWEBGL([
+        GL.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
+        GL.COLOR_ATTACHMENT1_WEBGL, // gl_FragData[1]
+        GL.COLOR_ATTACHMENT2_WEBGL, // gl_FragData[2]
+        GL.COLOR_ATTACHMENT3_WEBGL, // gl_FragData[3]
+      ]);
     }
   }
 
@@ -1323,7 +1273,9 @@ export class Device_GL implements SwapChain, Device {
     if (this.currentColorResolveTos[i] !== colorResolveTo) {
       this.currentColorResolveTos[i] = colorResolveTo;
 
-      if (colorResolveTo !== null) this.resolveColorAttachmentsChanged = true;
+      if (colorResolveTo !== null) {
+        this.resolveColorAttachmentsChanged = true;
+      }
     }
   }
 
@@ -1336,19 +1288,19 @@ export class Device_GL implements SwapChain, Device {
     if (this.currentDepthStencilAttachment !== depthStencilAttachment) {
       this.currentDepthStencilAttachment = depthStencilAttachment as RenderTarget_GL | null;
 
-      if (!this.inPresent) {
-        this.bindFramebufferDepthStencilAttachment(
-          isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
-          this.currentDepthStencilAttachment,
-        );
-        this.resolveDepthStencilAttachmentsChanged = true;
-      }
+      this.bindFramebufferDepthStencilAttachment(
+        isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
+        this.currentDepthStencilAttachment,
+      );
+      this.resolveDepthStencilAttachmentsChanged = true;
     }
 
     if (this.currentDepthStencilResolveTo !== depthStencilResolveTo) {
       this.currentDepthStencilResolveTo = depthStencilResolveTo as Texture_GL;
 
-      if (depthStencilResolveTo !== null) this.resolveDepthStencilAttachmentsChanged = true;
+      if (depthStencilResolveTo !== null) {
+        this.resolveDepthStencilAttachmentsChanged = true;
+      }
     }
   }
 
@@ -1375,7 +1327,7 @@ export class Device_GL implements SwapChain, Device {
       }
     }
 
-    gl.disable(gl.SCISSOR_TEST);
+    this.setScissorEnabled(false);
 
     if (isWebGL2(gl)) {
       // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/clearBuffer
@@ -1387,12 +1339,12 @@ export class Device_GL implements SwapChain, Device {
   }
 
   private setRenderPassParametersClearDepthStencil(
-    depthClearValue: number,
-    stencilClearValue: number,
+    depthClearValue: number | 'load',
+    stencilClearValue: number | 'load',
   ): void {
     const gl = this.gl;
 
-    if (depthClearValue > -1) {
+    if (depthClearValue !== 'load') {
       assert(this.currentDepthStencilAttachment !== null);
       // GL clears obey the masks... bad API or worst API?
       if (!this.currentMegaState.depthWrite) {
@@ -1406,7 +1358,7 @@ export class Device_GL implements SwapChain, Device {
         gl.clear(gl.DEPTH_BUFFER_BIT);
       }
     }
-    if (stencilClearValue > -1) {
+    if (stencilClearValue !== 'load') {
       assert(this.currentDepthStencilAttachment !== null);
       if (!this.currentMegaState.stencilWrite) {
         gl.stencilMask(0xff);
@@ -1421,13 +1373,7 @@ export class Device_GL implements SwapChain, Device {
     }
   }
 
-  private setBindings(
-    bindingLayoutIndex: number,
-    bindings_: Bindings,
-    dynamicByteOffsetsCount: number,
-    dynamicByteOffsets: Uint32Array,
-    dynamicByteOffsetsStart: number,
-  ): void {
+  setBindings(bindingLayoutIndex: number, bindings_: Bindings, dynamicByteOffsets: number[]): void {
     const gl = this.gl;
 
     assert(bindingLayoutIndex < this.currentPipeline.bindingLayouts.bindingLayoutTables.length);
@@ -1438,14 +1384,14 @@ export class Device_GL implements SwapChain, Device {
     // Ignore extra bindings.
     assert(uniformBufferBindings.length >= bindingLayoutTable.numUniformBuffers);
     assert(samplerBindings.length >= bindingLayoutTable.numSamplers);
-    assert(dynamicByteOffsetsCount >= uniformBufferBindings.length);
+    assert(dynamicByteOffsets.length >= uniformBufferBindings.length);
 
     for (let i = 0; i < uniformBufferBindings.length; i++) {
       const binding = uniformBufferBindings[i];
       if (binding.wordCount === 0) continue;
       const index = bindingLayoutTable.firstUniformBuffer + i;
       const buffer = binding.buffer as Buffer_GL;
-      const byteOffset = dynamicByteOffsets[dynamicByteOffsetsStart + i];
+      const byteOffset = dynamicByteOffsets[i];
       const byteSize = binding.wordCount * 4;
       if (
         buffer !== this.currentUniformBuffers[index] ||
@@ -1473,9 +1419,10 @@ export class Device_GL implements SwapChain, Device {
       }
     }
 
-    for (let i = 0; i < samplerBindings.length; i++) {
+    for (let i = 0; i < bindingLayoutTable.numSamplers; i++) {
       const binding = samplerBindings[i];
       const samplerIndex = bindingLayoutTable.firstSampler + i;
+      const samplerEntry = bindingLayoutTable.samplerEntries[i];
       const gl_sampler =
         binding !== null && binding.sampler !== null ? getPlatformSampler(binding.sampler) : null;
       const gl_texture =
@@ -1500,22 +1447,26 @@ export class Device_GL implements SwapChain, Device {
           }
 
           this.debugGroupStatisticsTextureBind();
+
+          // TODO(webgpu): Turn this on at some point in the future when we've ported all of the code over.
+          // assert(samplerEntry.gl_target === gl_target);
+          // assert(samplerEntry.formatKind === formatKind);
         } else {
-          gl.bindTexture(GL.TEXTURE_2D, this.blackTexture);
+          gl.bindTexture(GL.TEXTURE_2D, this.getFallbackTexture(samplerEntry));
         }
         this.currentTextures[samplerIndex] = gl_texture;
       }
     }
   }
 
-  private setViewport(x: number, y: number, w: number, h: number): void {
+  setViewport(x: number, y: number, w: number, h: number): void {
     const gl = this.gl;
     gl.viewport(x, y, w, h);
   }
 
-  private setScissor(x: number, y: number, w: number, h: number): void {
+  setScissor(x: number, y: number, w: number, h: number): void {
     const gl = this.gl;
-    gl.enable(gl.SCISSOR_TEST);
+    this.setScissorEnabled(true);
     gl.scissor(x, y, w, h);
   }
 
@@ -1758,15 +1709,18 @@ export class Device_GL implements SwapChain, Device {
       assert(attachment.pixelFormat === pipeline.colorAttachmentFormats[i]);
     }
 
-    if (this.currentDepthStencilAttachment !== null)
+    if (this.currentDepthStencilAttachment !== null) {
       assert(
         this.currentDepthStencilAttachment.pixelFormat === pipeline.depthStencilAttachmentFormat,
       );
+    }
 
-    if (this.currentSampleCount !== -1) assert(this.currentSampleCount === pipeline.sampleCount);
+    if (this.currentSampleCount !== -1) {
+      assert(this.currentSampleCount === pipeline.sampleCount);
+    }
   }
 
-  private setPipeline(o: RenderPipeline): void {
+  setPipeline(o: RenderPipeline): void {
     this.currentPipeline = o as RenderPipeline_GL;
     this.validatePipelineFormats(this.currentPipeline);
 
@@ -1779,8 +1733,8 @@ export class Device_GL implements SwapChain, Device {
     this.useProgram(program);
 
     if (program.compileState === ProgramCompileState_GL.NeedsBind) {
-      const gl = this.gl,
-        prog = program.gl_program!;
+      const gl = this.gl;
+      const prog = program.gl_program!;
       const deviceProgram = program.descriptor;
 
       const uniformBlocks = findall(deviceProgram.preprocessedVert, /uniform (\w+) {([^]*?)}/g);
@@ -1801,23 +1755,19 @@ export class Device_GL implements SwapChain, Device {
 
       const samplers = findall(
         deviceProgram.preprocessedVert,
-        /^uniform .*sampler\S+ (\w+)(?:\[(\d+)\])?;$/gm,
+        /^uniform .*sampler\S+ (\w+);\s* \/\/ BINDING=(\d+)$/gm,
       );
-      let samplerIndex = 0;
       for (let i = 0; i < samplers.length; i++) {
-        const [m, name, arraySizeStr] = samplers[i];
-        const arraySize = arraySizeStr ? parseInt(arraySizeStr) : 1;
-        // Assign identities in order.
+        const [m, name, location] = samplers[i];
         const samplerUniformLocation = gl.getUniformLocation(prog, name);
-        gl.uniform1iv(samplerUniformLocation, range(samplerIndex, arraySize));
-        samplerIndex += arraySize;
+        gl.uniform1i(samplerUniformLocation, parseInt(location));
       }
 
       program.compileState = ProgramCompileState_GL.ReadyToUse;
     }
   }
 
-  private setInputState(inputState_: InputState | null): void {
+  setInputState(inputState_: InputState | null): void {
     const inputState = inputState_ as InputState_GL;
     this.currentInputState = inputState;
     if (this.currentInputState !== null) {
@@ -1829,17 +1779,14 @@ export class Device_GL implements SwapChain, Device {
     }
   }
 
-  private setStencilRef(value: number): void {
+  setStencilRef(value: number): void {
+    this.currentStencilRef = value;
+    this.applyStencil();
     const gl = this.gl;
     gl.stencilFunc(this.currentMegaState.stencilCompare, value, 0xff);
   }
 
-  private debugPointer: any;
-  private setDebugPointer(value: any): void {
-    this.debugPointer = value;
-  }
-
-  private draw(count: number, firstVertex: number): void {
+  draw(count: number, firstVertex: number): void {
     const gl = this.gl;
     const pipeline = this.currentPipeline;
     gl.drawArrays(pipeline.drawMode, firstVertex, count);
@@ -1847,7 +1794,7 @@ export class Device_GL implements SwapChain, Device {
     this.debugGroupStatisticsTriangles(count / 3);
   }
 
-  private drawIndexed(count: number, firstIndex: number): void {
+  drawIndexed(count: number, firstIndex: number): void {
     const gl = this.gl;
     const pipeline = this.currentPipeline;
     const inputState = this.currentInputState;
@@ -1859,7 +1806,7 @@ export class Device_GL implements SwapChain, Device {
     this.debugGroupStatisticsTriangles(count / 3);
   }
 
-  private drawIndexedInstanced(count: number, firstIndex: number, instanceCount: number): void {
+  drawIndexedInstanced(count: number, firstIndex: number, instanceCount: number): void {
     const gl = this.gl;
     const pipeline = this.currentPipeline;
     const inputState = this.currentInputState;
@@ -1883,6 +1830,26 @@ export class Device_GL implements SwapChain, Device {
     this.debugGroupStatisticsDrawCall();
     this.debugGroupStatisticsTriangles((count / 3) * instanceCount);
   }
+
+  beginOcclusionQuery(dstOffs: number): void {
+    const gl = this.gl;
+    if (isWebGL2(gl)) {
+      const queryPool = this.currentRenderPassDescriptor.occlusionQueryPool as QueryPool_GL;
+      gl.beginQuery(queryPool.gl_query_type, queryPool.gl_query[dstOffs]);
+    }
+  }
+
+  endOcclusionQuery(dstOffs: number): void {
+    const gl = this.gl;
+    if (isWebGL2(gl)) {
+      const queryPool = this.currentRenderPassDescriptor!.occlusionQueryPool as QueryPool_GL;
+      gl.endQuery(queryPool.gl_query_type);
+    }
+  }
+
+  beginDebugGroup(name: string): void {}
+
+  endDebugGroup(): void {}
 
   private endPass(): void {
     const gl = this.gl;
@@ -2049,5 +2016,223 @@ export class Device_GL implements SwapChain, Device {
       gl.bindFramebuffer(isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER, null);
     }
   }
-  //#endregion
+
+  // private endPass(): void {
+  //   const gl = this.gl;
+  //   let didUnbindDraw = false;
+
+  //   for (let i = 0; i < this.currentColorAttachments.length; i++) {
+  //     const colorResolveFrom = this.currentColorAttachments[i];
+  //     if (colorResolveFrom !== null) {
+  //       const colorResolveTo = this.currentColorResolveTos[i];
+  //       let didBindRead = false;
+
+  //       if (colorResolveTo !== null) {
+  //         assert(
+  //           colorResolveFrom.width === colorResolveTo.width &&
+  //             colorResolveFrom.height === colorResolveTo.height,
+  //         );
+  //         assert(colorResolveFrom.pixelFormat === colorResolveTo.pixelFormat);
+
+  //         this.setScissorEnabled(false);
+
+  //         if (isWebGL2(gl)) {
+  //           // set read frame buffer
+  //           gl.bindFramebuffer(GL.READ_FRAMEBUFFER, this.resolveColorReadFramebuffer);
+  //           if (this.resolveColorAttachmentsChanged) {
+  //             this.bindFramebufferAttachment(
+  //               gl.READ_FRAMEBUFFER,
+  //               gl.COLOR_ATTACHMENT0,
+  //               colorResolveFrom,
+  //             );
+  //           }
+  //         }
+  //         didBindRead = true;
+
+  //         // Special case: Blitting to the on-screen.
+  //         if (colorResolveTo === this.scTexture) {
+  //           gl.bindFramebuffer(
+  //             isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
+  //             this.scPlatformFramebuffer,
+  //           );
+  //         } else {
+  //           gl.bindFramebuffer(
+  //             isWebGL2(gl) ? gl.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
+  //             this.resolveColorDrawFramebuffer,
+  //           );
+  //           if (this.resolveColorAttachmentsChanged) {
+  //             gl.framebufferTexture2D(
+  //               isWebGL2(gl) ? gl.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
+  //               gl.COLOR_ATTACHMENT0,
+  //               gl.TEXTURE_2D,
+  //               colorResolveTo.gl_texture,
+  //               0,
+  //             );
+  //           }
+  //         }
+
+  //         if (isWebGL2(gl)) {
+  //           gl.blitFramebuffer(
+  //             0,
+  //             0,
+  //             colorResolveFrom.width,
+  //             colorResolveFrom.height,
+  //             0,
+  //             0,
+  //             colorResolveTo.width,
+  //             colorResolveTo.height,
+  //             gl.COLOR_BUFFER_BIT,
+  //             gl.LINEAR,
+  //           );
+  //         }
+  //         gl.bindFramebuffer(isWebGL2(gl) ? gl.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER, null);
+  //         didUnbindDraw = true;
+  //       }
+
+  //       if (!this.currentRenderPassDescriptor.colorStore[i]) {
+  //         if (!didBindRead) {
+  //           if (isWebGL2(gl)) {
+  //             gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.resolveColorReadFramebuffer);
+  //             if (this.resolveColorAttachmentsChanged) {
+  //               this.bindFramebufferAttachment(
+  //                 gl.READ_FRAMEBUFFER,
+  //                 gl.COLOR_ATTACHMENT0,
+  //                 colorResolveFrom,
+  //               );
+  //             }
+  //           }
+  //         }
+
+  //         if (isWebGL2(gl)) {
+  //           // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/invalidateFramebuffer
+  //           gl.invalidateFramebuffer(gl.READ_FRAMEBUFFER, [gl.COLOR_ATTACHMENT0]);
+  //         }
+  //       }
+
+  //       if (isWebGL2(gl)) {
+  //         gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+  //       }
+  //     }
+  //   }
+
+  //   this.resolveColorAttachmentsChanged = false;
+
+  //   const depthStencilResolveFrom = this.currentDepthStencilAttachment;
+  //   if (depthStencilResolveFrom !== null) {
+  //     const depthStencilResolveTo = this.currentDepthStencilResolveTo;
+  //     let didBindRead = false;
+
+  //     if (depthStencilResolveTo !== null) {
+  //       assert(
+  //         depthStencilResolveFrom.width === depthStencilResolveTo.width &&
+  //           depthStencilResolveFrom.height === depthStencilResolveTo.height,
+  //       );
+
+  //       this.setScissorEnabled(false);
+
+  //       if (isWebGL2(gl)) {
+  //         gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.resolveDepthStencilReadFramebuffer);
+  //       }
+  //       gl.bindFramebuffer(
+  //         isWebGL2(gl) ? gl.DRAW_FRAMEBUFFER : gl.FRAMEBUFFER,
+  //         this.resolveDepthStencilDrawFramebuffer,
+  //       );
+  //       if (this.resolveDepthStencilAttachmentsChanged) {
+  //         if (isWebGL2(gl)) {
+  //           this.bindFramebufferDepthStencilAttachment(
+  //             gl.READ_FRAMEBUFFER,
+  //             depthStencilResolveFrom,
+  //           );
+  //         }
+  //         this.bindFramebufferDepthStencilAttachment(
+  //           isWebGL2(gl) ? gl.DRAW_FRAMEBUFFER : gl.FRAMEBUFFER,
+  //           depthStencilResolveTo,
+  //         );
+  //       }
+  //       didBindRead = true;
+
+  //       if (isWebGL2(gl)) {
+  //         gl.blitFramebuffer(
+  //           0,
+  //           0,
+  //           depthStencilResolveFrom.width,
+  //           depthStencilResolveFrom.height,
+  //           0,
+  //           0,
+  //           depthStencilResolveTo.width,
+  //           depthStencilResolveTo.height,
+  //           gl.DEPTH_BUFFER_BIT,
+  //           gl.NEAREST,
+  //         );
+  //         gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+  //       }
+  //       didUnbindDraw = true;
+  //     }
+
+  //     if (!this.currentRenderPassDescriptor!.depthStencilStore) {
+  //       if (!didBindRead) {
+  //         if (isWebGL2(gl)) {
+  //           gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.resolveDepthStencilReadFramebuffer);
+  //           if (this.resolveDepthStencilAttachmentsChanged) {
+  //             this.bindFramebufferDepthStencilAttachment(
+  //               gl.READ_FRAMEBUFFER,
+  //               depthStencilResolveFrom,
+  //             );
+  //           }
+  //         }
+  //         didBindRead = true;
+  //       }
+
+  //       if (isWebGL2(gl)) {
+  //         gl.invalidateFramebuffer(gl.READ_FRAMEBUFFER, [gl.DEPTH_STENCIL_ATTACHMENT]);
+  //       }
+  //     }
+
+  //     if (didBindRead) {
+  //       gl.bindFramebuffer(isWebGL2(gl) ? gl.READ_FRAMEBUFFER : GL.FRAMEBUFFER, null);
+  //     }
+
+  //     this.resolveDepthStencilAttachmentsChanged = false;
+  //   }
+
+  //   if (!didUnbindDraw) {
+  //     // If we did not unbind from a resolve, then we need to unbind our render pass draw FBO here.
+  //     gl.bindFramebuffer(isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER, null);
+  //   }
+  // }
+  // //#endregion
+
+  private setScissorEnabled(v: boolean): void {
+    if (this.currentScissorEnabled === v) {
+      return;
+    }
+
+    const gl = this.gl;
+    if (v) {
+      gl.enable(gl.SCISSOR_TEST);
+    } else {
+      gl.disable(gl.SCISSOR_TEST);
+    }
+    this.currentScissorEnabled = v;
+  }
+
+  private applyStencil(): void {
+    if (this.currentStencilRef === null) {
+      return;
+    }
+    this.gl.stencilFunc(this.currentMegaState.stencilCompare, this.currentStencilRef, 0xff);
+  }
+
+  private getFallbackTexture(samplerEntry: BindingLayoutSamplerDescriptor_GL): WebGLTexture {
+    const gl_target = samplerEntry.gl_target,
+      formatKind = samplerEntry.formatKind;
+    if (gl_target === GL.TEXTURE_2D)
+      return formatKind === SamplerFormatKind.Depth
+        ? this.fallbackTexture2DDepth
+        : this.fallbackTexture2D;
+    else if (gl_target === GL.TEXTURE_2D_ARRAY) return this.fallbackTexture2DArray;
+    else if (gl_target === GL.TEXTURE_3D) return this.fallbackTexture3D;
+    else if (gl_target === GL.TEXTURE_CUBE_MAP) return this.fallbackTextureCube;
+    else throw 'whoops';
+  }
 }

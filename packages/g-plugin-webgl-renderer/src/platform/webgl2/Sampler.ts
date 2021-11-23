@@ -9,7 +9,6 @@ import {
 import { assert } from '../utils';
 import { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
-import { Texture_GL } from './Texture';
 import { getPlatformSampler, isWebGL2, translateFilterMode, translateWrapMode } from './utils';
 
 /**
@@ -55,10 +54,16 @@ export class Sampler_GL extends ResourceBase_GL implements Sampler {
         translateFilterMode(descriptor.magFilter, MipFilterMode.NoMip),
       );
 
-      if (descriptor.minLOD !== undefined)
+      if (descriptor.minLOD !== undefined) {
         gl.samplerParameterf(gl_sampler, GL.TEXTURE_MIN_LOD, descriptor.minLOD);
-      if (descriptor.maxLOD !== undefined)
+      }
+      if (descriptor.maxLOD !== undefined) {
         gl.samplerParameterf(gl_sampler, GL.TEXTURE_MAX_LOD, descriptor.maxLOD);
+      }
+      if (descriptor.compareMode !== undefined) {
+        gl.samplerParameteri(gl_sampler, gl.TEXTURE_COMPARE_MODE, gl.COMPARE_REF_TO_TEXTURE);
+        gl.samplerParameteri(gl_sampler, gl.TEXTURE_COMPARE_FUNC, descriptor.compareMode);
+      }
 
       const maxAnisotropy = descriptor.maxAnisotropy ?? 1;
       if (maxAnisotropy > 1 && this.device.EXT_texture_filter_anisotropic !== null) {

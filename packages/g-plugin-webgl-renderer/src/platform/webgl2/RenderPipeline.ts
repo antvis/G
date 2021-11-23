@@ -6,17 +6,21 @@ import {
   RenderPipelineDescriptor,
   ResourceType,
 } from '../interfaces';
+import { assert } from '../utils';
+import { defaultBindingLayoutSamplerDescriptor } from '../webgpu/Bindings';
 import { Device_GL } from './Device';
 import { InputLayout_GL } from './InputLayout';
+import { BindingLayoutSamplerDescriptor_GL } from './interfaces';
 import { Program_GL } from './Program';
 import { ResourceBase_GL } from './ResourceBase';
-import { translatePrimitiveTopology } from './utils';
+import { translatePrimitiveTopology, translateTextureDimension } from './utils';
 
 export interface BindingLayoutTable_GL {
   firstUniformBuffer: number;
   numUniformBuffers: number;
   firstSampler: number;
   numSamplers: number;
+  samplerEntries: BindingLayoutSamplerDescriptor_GL[];
 }
 
 export interface BindingLayouts_GL {
@@ -62,16 +66,31 @@ export class RenderPipeline_GL extends ResourceBase_GL implements RenderPipeline
   }
 
   private createBindingLayouts(bindingLayouts: BindingLayoutDescriptor[]): BindingLayouts_GL {
-    let firstUniformBuffer = 0,
-      firstSampler = 0;
+    let firstUniformBuffer = 0;
+    let firstSampler = 0;
     const bindingLayoutTables: BindingLayoutTable_GL[] = [];
     for (let i = 0; i < bindingLayouts.length; i++) {
-      const { numUniformBuffers, numSamplers } = bindingLayouts[i];
+      const { numUniformBuffers, numSamplers, samplerEntries } = bindingLayouts[i];
+
+      const bindingSamplerEntries: BindingLayoutSamplerDescriptor_GL[] = [];
+
+      if (samplerEntries !== undefined) {
+        assert(samplerEntries.length === numSamplers);
+      }
+
+      for (let j = 0; j < numSamplers; j++) {
+        const samplerEntry =
+          samplerEntries !== undefined ? samplerEntries[j] : defaultBindingLayoutSamplerDescriptor;
+        const { dimension, formatKind } = samplerEntry;
+        bindingSamplerEntries.push({ gl_target: translateTextureDimension(dimension), formatKind });
+      }
+
       bindingLayoutTables.push({
         firstUniformBuffer,
         numUniformBuffers,
         firstSampler,
         numSamplers,
+        samplerEntries: bindingSamplerEntries,
       });
       firstUniformBuffer += numUniformBuffers;
       firstSampler += numSamplers;

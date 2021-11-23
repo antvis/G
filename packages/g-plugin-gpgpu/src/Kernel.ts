@@ -94,7 +94,7 @@ export class Kernel {
       };
     }
 
-    const program = this.device.createProgram({
+    const program = this.device.createProgramSimple({
       preprocessedCompute: this.bundle.shaders[target],
     });
 

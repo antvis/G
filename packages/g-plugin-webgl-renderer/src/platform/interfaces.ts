@@ -13,6 +13,7 @@ export enum ResourceType {
   RenderPipeline,
   ComputePipeline,
   Readback,
+  QueryPool,
 }
 
 export interface Disposable {
@@ -33,7 +34,7 @@ export interface Buffer extends ResourceBase {
 }
 export interface Texture extends ResourceBase {
   type: ResourceType.Texture;
-  setImageData(data: TexImageSource | ArrayBufferView, level: number): void;
+  setImageData(data: TexImageSource | ArrayBufferView[], firstMipLevel?: number): void;
 }
 export interface RenderTarget extends ResourceBase {
   type: ResourceType.RenderTarget;
@@ -55,6 +56,11 @@ export interface InputState extends ResourceBase {
 }
 export interface RenderPipeline extends ResourceBase {
   type: ResourceType.RenderPipeline;
+}
+export interface QueryPool extends ResourceBase {
+  type: ResourceType.QueryPool;
+
+  queryResultOcclusion(dstOffs: number): boolean | null;
 }
 export interface Readback extends ResourceBase {
   type: ResourceType.Readback;
@@ -165,8 +171,8 @@ export const enum PrimitiveTopology {
 export interface BufferDescriptor {
   viewOrSize: ArrayBufferView | number;
   usage: BufferUsage;
-  flags: GPUBufferUsageFlags;
-  hint: BufferFrequencyHint;
+  flags?: GPUBufferUsageFlags;
+  hint?: BufferFrequencyHint;
 }
 
 /**
@@ -277,6 +283,7 @@ export interface SamplerDescriptor {
   minLOD?: number;
   maxLOD?: number;
   maxAnisotropy?: number;
+  compareMode?: CompareMode;
 }
 
 export interface RenderTargetDescriptor {
@@ -298,11 +305,24 @@ export interface SamplerBinding {
   lateBinding: string | null;
 }
 
+export const enum SamplerFormatKind {
+  Float,
+  Uint,
+  Sint,
+  Depth,
+}
+
+export interface BindingLayoutSamplerDescriptor {
+  dimension: TextureDimension;
+  formatKind: SamplerFormatKind;
+}
+
 export interface BindingLayoutDescriptor {
   numUniformBuffers?: number;
   numSamplers?: number;
   numReadOnlyStorageBuffers?: number;
   numStorageBuffers?: number;
+  samplerEntries?: BindingLayoutSamplerDescriptor[];
 }
 
 export interface BindingsDescriptor {
@@ -317,6 +337,11 @@ export interface ProgramDescriptorSimple {
   preprocessedVert?: string;
   preprocessedFrag?: string;
   preprocessedCompute?: string;
+}
+
+export interface ProgramDescriptor extends ProgramDescriptorSimple {
+  ensurePreprocessed(vendorInfo: VendorInfo): void;
+  associate(device: Device, program: Program): void;
 }
 
 export interface InputLayoutDescriptor {
@@ -379,10 +404,15 @@ export interface RenderPassDescriptor {
   colorAttachment: (RenderTarget | null)[];
   colorClearColor: (Color | 'load')[];
   colorResolveTo: (Texture | null)[];
+  colorStore: boolean[];
   depthStencilAttachment: RenderTarget | null;
   depthStencilResolveTo: Texture | null;
+  depthStencilStore: boolean;
   depthClearValue: number | 'load';
   stencilClearValue: number | 'load';
+
+  // Query system.
+  occlusionQueryPool: QueryPool | null;
 }
 
 export interface ComputePassDescriptor {}
@@ -453,12 +483,19 @@ export interface RenderPass {
   setBindings(bindingLayoutIndex: number, bindings: Bindings, dynamicByteOffsets: number[]): void;
   setInputState(inputState: InputState | null): void;
   setStencilRef(value: number): void;
-  setDebugPointer(value: any): void;
 
   // Draw commands.
   draw(vertexCount: number, firstVertex: number): void;
   drawIndexed(indexCount: number, firstIndex: number): void;
   drawIndexedInstanced(indexCount: number, firstIndex: number, instanceCount: number): void;
+
+  // Query system.
+  beginOcclusionQuery(dstOffs: number): void;
+  endOcclusionQuery(dstOffs: number): void;
+
+  // Debug.
+  beginDebugGroup(name: string): void;
+  endDebugGroup(): void;
 }
 
 export interface ComputePass {
@@ -468,6 +505,10 @@ export interface ComputePass {
    * @see https://www.w3.org/TR/webgpu/#compute-pass-encoder-dispatch
    */
   dispatch(x: number, y?: number, z?: number): void;
+}
+
+export const enum QueryPoolType {
+  OcclusionConservative,
 }
 
 /**
@@ -494,7 +535,8 @@ export interface Device {
   createSampler(descriptor: SamplerDescriptor): Sampler;
   createRenderTarget(descriptor: RenderTargetDescriptor): RenderTarget;
   createRenderTargetFromTexture(texture: Texture): RenderTarget;
-  createProgram(program: ProgramDescriptorSimple): Program;
+  createProgram(program: ProgramDescriptor): Program;
+  createProgramSimple(program: ProgramDescriptorSimple): Program;
   createBindings(bindingsDescriptor: BindingsDescriptor): Bindings;
   createInputLayout(inputLayoutDescriptor: InputLayoutDescriptor): InputLayout;
   createInputState(
@@ -506,17 +548,24 @@ export interface Device {
   createRenderPipeline(descriptor: RenderPipelineDescriptor): RenderPipeline;
   createComputePipeline(descriptor: ComputePipelineDescriptor): ComputePipeline;
   createReadback(): Readback;
+  createQueryPool(type: QueryPoolType, elemCount: number): QueryPool;
 
   createRenderPass(renderPassDescriptor: RenderPassDescriptor): RenderPass;
   createComputePass(computePassDescriptor: ComputePassDescriptor): ComputePass;
   submitPass(pass: RenderPass | ComputePass): void;
 
-  // Data submission
-  uploadTextureData(texture: Texture, firstMipLevel: number, levelDatas: ArrayBufferView[]): void;
+  copySubTexture2D(
+    dst: Texture,
+    dstX: number,
+    dstY: number,
+    src: Texture,
+    srcX: number,
+    srcY: number,
+  ): void;
 
   // Information queries.
   queryLimits(): DeviceLimits;
-  queryTextureFormatSupported(format: Format): boolean;
+  queryTextureFormatSupported(format: Format, width: number, height: number): boolean;
   queryPipelineReady(o: RenderPipeline): boolean;
   queryPlatformAvailable(): boolean;
   queryVendorInfo(): VendorInfo;
