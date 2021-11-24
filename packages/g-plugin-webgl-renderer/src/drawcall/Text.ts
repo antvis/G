@@ -2,7 +2,15 @@ import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
 import { DisplayObject, PARSED_COLOR_TYPE, SHAPE, Text, Tuple4Number } from '@antv/g';
 import { fillVec4, makeSortKeyOpaque, RendererLayer } from '../render/utils';
-import { Format, MipFilterMode, TexFilterMode, VertexBufferFrequency, WrapMode } from '../platform';
+import {
+  Format,
+  MipFilterMode,
+  SamplerFormatKind,
+  TexFilterMode,
+  TextureDimension,
+  VertexBufferFrequency,
+  WrapMode,
+} from '../platform';
 import { RenderInst } from '../render/RenderInst';
 import { DeviceProgram } from '../render/DeviceProgram';
 import { Batch, AttributeLocation } from './Batch';
@@ -152,7 +160,18 @@ export class TextRenderer extends Batch {
 
   uploadUBO(renderInst: RenderInst): void {
     // need 1 sampler
-    renderInst.setBindingLayouts([{ numUniformBuffers: 2, numSamplers: 1 }]);
+    renderInst.setBindingLayouts([
+      {
+        numUniformBuffers: 2,
+        numSamplers: 1,
+        samplerEntries: [
+          {
+            dimension: TextureDimension.n2D,
+            formatKind: SamplerFormatKind.Uint,
+          },
+        ],
+      },
+    ]);
 
     const text = this.instance as Text;
 

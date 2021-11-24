@@ -42,9 +42,15 @@ import { RenderHelper } from './render/RenderHelper';
 import { RenderInstList } from './render/RenderInstList';
 import { RGRenderTargetDescription } from './render/RenderTargetDescription';
 import { fillMatrix4x4, fillVec3v, fillVec4, fillVec4v } from './render/utils';
-import { TransparentWhite, White } from './utils/color';
+import { TransparentWhite, OpaqueWhite } from './utils/color';
 import { isWebGL2 } from './platform/webgl2/utils';
 import { RendererFactory } from './tokens';
+import {
+  AntialiasingMode,
+  makeBackbufferDescSimple,
+  opaqueBlackFullClearRenderPassDescriptor,
+  opaqueWhiteFullClearRenderPassDescriptor,
+} from './render/RenderGraphHelpers';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class RenderGraphPlugin implements RenderingPlugin {
@@ -141,23 +147,30 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
 
+      const renderInput = {
+        backbufferWidth: canvas.width,
+        backbufferHeight: canvas.height,
+        antialiasingMode: AntialiasingMode.None,
+      };
       // create main rt
-      const mainRenderTarget = new RGRenderTargetDescription(Format.U8_RGBA_RT);
-      mainRenderTarget.colorClearColor = White;
-      mainRenderTarget.setDimensions(canvas.width, canvas.height, 1);
-      // create main depth & stencil
-      const mainDepthDesc = new RGRenderTargetDescription(Format.D24);
-      mainDepthDesc.depthClearValue = reverseDepthForClearValue(1.0);
-      mainDepthDesc.stencilClearValue = 0.0;
-      mainDepthDesc.setDimensions(canvas.width, canvas.height, 1);
+      const mainRenderDesc = makeBackbufferDescSimple(
+        RGAttachmentSlot.Color0,
+        renderInput,
+        opaqueWhiteFullClearRenderPassDescriptor,
+      );
+      const mainDepthDesc = makeBackbufferDescSimple(
+        RGAttachmentSlot.DepthStencil,
+        renderInput,
+        opaqueWhiteFullClearRenderPassDescriptor,
+      );
 
       const mainColorTargetID = this.builder.createRenderTargetID(
-        mainRenderTarget,
+        mainRenderDesc,
         'Main Render Target',
       );
       const mainDepthTargetID = this.builder.createRenderTargetID(mainDepthDesc, 'Main Depth');
       const pickingColorTargetID = this.builder.createRenderTargetID(
-        mainRenderTarget,
+        mainRenderDesc,
         'Picking Render Target',
       );
 
@@ -175,30 +188,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
         });
       });
 
-      // WebGL1 need an extra blit pass
-      // if (this.device.queryVendorInfo().platformString === 'WebGL1') {
-      //   pushCopyPass(
-      //     this.builder,
-      //     this.renderHelper,
-      //     {
-      //       backbufferWidth: canvas.width,
-      //       backbufferHeight: canvas.height,
-      //     },
-      //     mainColorTargetID,
-      //   );
-      // }
-
       // TODO: other post-processing passes
       // FXAA
-      // pushFXAAPass(
-      //   this.builder,
-      //   this.renderHelper,
-      //   {
-      //     backbufferWidth: canvas.width,
-      //     backbufferHeight: canvas.height,
-      //   },
-      //   mainColorTargetID,
-      // );
+      // pushFXAAPass(this.builder, this.renderHelper, renderInput, mainColorTargetID);
 
       // output to screen
       this.builder.resolveRenderTargetToExternalTexture(
@@ -251,11 +243,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       // output to screen
       this.swapChain.present();
-
-      // need an extra program to render texture to screen in WebGL1
-      // if (this.device.queryVendorInfo().platformString === 'WebGL1') {
-      //   useCopyPass(this.renderHelper);
-      // }
     });
 
     renderingService.hooks.render.tap(RenderGraphPlugin.tag, (object: DisplayObject) => {
@@ -384,7 +371,14 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
     if (adapter === null) return null;
 
-    const device = await adapter.requestDevice();
+    // @see https://www.w3.org/TR/webgpu/#dom-gpudevicedescriptor-requiredfeatures
+    const optionalFeatures: GPUFeatureName[] = [
+      'depth24unorm-stencil8',
+      'depth32float-stencil8',
+      'texture-compression-bc',
+    ];
+    const requiredFeatures = optionalFeatures.filter((feature) => adapter.features.has(feature));
+    const device = await adapter.requestDevice({ requiredFeatures });
 
     if (device === null) return null;
 
@@ -393,19 +387,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
     if (!context) return null;
 
     const { glsl_compile } = await import('../../../rust/pkg/index');
-
-    // console.log(
-    //   glsl_compile(
-    //     `layout(binding = 0, std140) uniform ub_ObjectParams {
-    //   float u_Blur;
-    // };
-    // layout(location = 0) in vec2 a_Extrude;
-    // void main() {}`,
-    //     'vertex',
-    //     true,
-    //   ),
-    // );
-
     return new Device_WebGPU(adapter, device, canvas, context, glsl_compile);
   }
 

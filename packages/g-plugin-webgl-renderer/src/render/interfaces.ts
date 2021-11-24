@@ -1,4 +1,10 @@
-import { NormalizedViewportCoords, RenderPass, RenderTarget, Texture } from '../platform';
+import {
+  NormalizedViewportCoords,
+  QueryPool,
+  RenderPass,
+  RenderTarget,
+  Texture,
+} from '../platform';
 import { RGRenderTargetDescription } from './RenderTargetDescription';
 
 export const enum RGAttachmentSlot {
@@ -45,6 +51,11 @@ export interface IRenderGraphPass {
   attachRenderTargetID(attachmentSlot: RGAttachmentSlot, renderTargetID: number): void;
 
   /**
+   * Attach the occlusion query pool used by this rendering pass.
+   */
+  attachOcclusionQueryPool(queryPool: QueryPool): void;
+
+  /**
    * Set the viewport used by this rendering pass.
    */
   setViewport(viewport: Readonly<NormalizedViewportCoords>): void;
@@ -64,6 +75,8 @@ export interface IRenderGraphPass {
    * Set the pass's post callback
    */
   post(func: PassPostFunc): void;
+
+  addExtraRef(renderTargetID: RGAttachmentSlot): void;
 }
 
 export interface RGGraphBuilder {

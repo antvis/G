@@ -36,10 +36,7 @@
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
     "@types/jest": "^25.0.0",
-    "@types/offscreencanvas": "^2019.6.4",
-    "npm-run-all": "^4.1.5",
-    "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.7"
+    "@types/offscreencanvas": "^2019.6.4"
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {

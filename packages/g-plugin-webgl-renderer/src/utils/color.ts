@@ -25,4 +25,4 @@ export function colorNewFromRGBA(r: number, g: number, b: number, a: number = 1.
 export const TransparentBlack = colorNewFromRGBA(0, 0, 0, 0);
 export const OpaqueBlack = colorNewFromRGBA(0, 0, 0, 1);
 export const TransparentWhite = colorNewFromRGBA(1, 1, 1, 0);
-export const White = colorNewFromRGBA(1, 1, 1, 1);
+export const OpaqueWhite = colorNewFromRGBA(1, 1, 1, 1);

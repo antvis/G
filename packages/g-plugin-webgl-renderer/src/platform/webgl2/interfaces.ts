@@ -1,3 +1,5 @@
+import { SamplerFormatKind } from '../interfaces';
+
 export interface EXT_texture_compression_rgtc {
   COMPRESSED_RED_RGTC1_EXT: GLenum;
   COMPRESSED_SIGNED_RED_RGTC1_EXT: GLenum;
@@ -28,4 +30,9 @@ export interface KHR_parallel_shader_compile {
 export class GPlatformWebGL2Config {
   public trackResources: boolean = false;
   public shaderDebug: boolean = false;
+}
+
+export interface BindingLayoutSamplerDescriptor_GL {
+  gl_target: GLenum;
+  formatKind: SamplerFormatKind;
 }

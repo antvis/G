@@ -1,5 +1,5 @@
 import { Format } from '../format';
-import { Buffer, ResourceType, Texture, TextureDescriptor } from '../interfaces';
+import { Buffer, ResourceType, Texture, TextureDescriptor, TextureDimension } from '../interfaces';
 import { IDevice_WebGPU } from './interfaces';
 import { TextureShared_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
@@ -8,6 +8,7 @@ export class Texture_WebGPU extends ResourceBase_WebGPU implements TextureShared
   type: ResourceType.Texture = ResourceType.Texture;
 
   pixelFormat: Format;
+  dimension: TextureDimension;
   format: GPUTextureFormat;
   width: number;
   height: number;

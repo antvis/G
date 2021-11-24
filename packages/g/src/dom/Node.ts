@@ -97,6 +97,7 @@ export abstract class Node extends EventTarget implements INode {
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isEqualNode
    */
   isEqualNode(otherNode: INode | null): boolean {
+    // TODO: compare 2 nodes, not sameness
     return this === otherNode;
   }
   isSameNode(otherNode: INode | null): boolean {

@@ -1,3 +1,5 @@
+import { SamplerFormatKind } from './interfaces';
+
 export const enum FormatTypeFlags {
   U8 = 0x01,
   U16,
@@ -201,4 +203,26 @@ export function setFormatFlags(fmt: Format, flags: FormatFlags): Format {
 
 export function setFormatComponentCount(fmt: Format, compFlags: FormatCompFlags): Format {
   return (fmt & 0xffff00ff) | (compFlags << 8);
+}
+
+export function getFormatSamplerKind(fmt: Format): SamplerFormatKind {
+  const flags = getFormatFlags(fmt);
+  if (!!(flags & FormatFlags.Depth)) return SamplerFormatKind.Depth;
+  if (!!(flags & FormatFlags.Normalized)) return SamplerFormatKind.Float;
+  const typeFlags = getFormatTypeFlags(fmt);
+  if (typeFlags === FormatTypeFlags.F16 || typeFlags === FormatTypeFlags.F32)
+    return SamplerFormatKind.Float;
+  else if (
+    typeFlags === FormatTypeFlags.U8 ||
+    typeFlags === FormatTypeFlags.U16 ||
+    typeFlags === FormatTypeFlags.U32
+  )
+    return SamplerFormatKind.Uint;
+  else if (
+    typeFlags === FormatTypeFlags.S8 ||
+    typeFlags === FormatTypeFlags.S16 ||
+    typeFlags === FormatTypeFlags.S32
+  )
+    return SamplerFormatKind.Sint;
+  else throw 'whoops';
 }

@@ -102,7 +102,7 @@ export class DynamicUniformBuffer {
 
       this.buffer = this.device.createBuffer({
         viewOrSize: this.currentBufferWordSize,
-        flags: GPUBufferUsage.UNIFORM,
+        // flags: GPUBufferUsage.UNIFORM,
         usage: BufferUsage.Uniform,
         hint: BufferFrequencyHint.Dynamic,
       });

@@ -7,6 +7,7 @@ export class RenderPipeline_WebGPU extends ResourceBase_WebGPU implements Render
 
   descriptor: RenderPipelineDescriptor;
   isCreating: boolean = false;
+  isCreatingAsync: boolean = false;
   gpuRenderPipeline: GPURenderPipeline | null = null;
 
   constructor({

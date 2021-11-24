@@ -185,7 +185,7 @@ export class ImageRenderer extends Batch {
 
   protected uploadUBO(renderInst: RenderInst): void {
     // need 1 sampler
-    renderInst.setBindingLayouts([{ numUniformBuffers: 2, numSamplers: 1 }]);
+    renderInst.setBindingLayouts([{ numUniformBuffers: 1, numSamplers: 1 }]);
     renderInst.setSamplerBindingsFromTextureMappings([this.mapping]);
   }
 }

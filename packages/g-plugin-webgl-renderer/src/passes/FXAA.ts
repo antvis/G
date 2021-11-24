@@ -23,7 +23,10 @@ layout(std140) uniform ub_Params {
 
   frag = `
 uniform sampler2D u_Texture;
-in vec2 v_TexCoord;
+varying vec2 v_TexCoord;
+
+#define gl_FragColor gbuf_color
+layout(location = 0) out vec4 gbuf_color;
 
 ${ShaderLibrary.monochromeNTSC}
 ${ShaderLibrary.fxaa}

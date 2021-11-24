@@ -17,9 +17,11 @@ import {
   ChannelBlendState,
   MipFilterMode,
   PrimitiveTopology,
+  QueryPoolType,
   Sampler,
   TexFilterMode,
   Texture,
+  TextureDimension,
   WrapMode,
 } from '../interfaces';
 import { Buffer_GL } from './Buffer';
@@ -240,4 +242,21 @@ export function isBlendStateNone(blendState: ChannelBlendState): boolean {
     blendState.blendSrcFactor == BlendFactor.One &&
     blendState.blendDstFactor === BlendFactor.Zero
   );
+}
+
+export function translateQueryPoolType(type: QueryPoolType): GLenum {
+  switch (type) {
+    case QueryPoolType.OcclusionConservative:
+      return GL.ANY_SAMPLES_PASSED_CONSERVATIVE;
+    default:
+      throw 'whoops';
+  }
+}
+
+export function translateTextureDimension(dimension: TextureDimension): GLenum {
+  if (dimension === TextureDimension.n2D) return GL.TEXTURE_2D;
+  else if (dimension === TextureDimension.n2DArray) return GL.TEXTURE_2D_ARRAY;
+  else if (dimension === TextureDimension.Cube) return GL.TEXTURE_CUBE_MAP;
+  else if (dimension === TextureDimension.n3D) return GL.TEXTURE_3D;
+  else throw 'whoops';
 }

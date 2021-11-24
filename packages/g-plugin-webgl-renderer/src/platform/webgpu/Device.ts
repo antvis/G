@@ -38,6 +38,11 @@ import {
   ComputePipeline,
   ComputePass,
   ComputePassDescriptor,
+  BindingLayoutSamplerDescriptor,
+  SamplerFormatKind,
+  QueryPool,
+  QueryPoolType,
+  ProgramDescriptor,
 } from '../interfaces';
 import {
   BindGroupLayout,
@@ -59,6 +64,7 @@ import { InputState_WebGPU } from './InputState';
 import { RenderPipeline_WebGPU } from './RenderPipeline';
 import { Readback_WebGPU } from './Readback';
 import {
+  getFormatBlockSize,
   getPlatformBuffer,
   isFormatTextureCompressionBC,
   translateDepthStencilState,
@@ -75,6 +81,8 @@ import { Format } from '../format';
 import { ComputePass_WebGPU } from './ComputePass';
 import { ComputePipeline_WebGPU } from './ComputePipeline';
 import type { glsl_compile as glsl_compile_ } from '../../../../../rust/pkg/index';
+import { FullscreenAlphaClear } from './FullscreenAlphaClear';
+import { QueryPool_WebGPU } from './QueryPool';
 
 export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
   private swapChainWidth = 0;
@@ -84,14 +92,16 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
 
   private renderPassPool: RenderPass_WebGPU[] = [];
   private computePassPool: ComputePass_WebGPU[] = [];
-  fallbackTexture: Texture;
-  fallbackSampler: Sampler;
-  private _featureTextureCompressionBC: boolean = false;
 
-  private _bindGroupLayoutCache = new HashMap<BindingLayoutDescriptor, BindGroupLayout>(
-    bindingLayoutDescriptorEqual,
-    nullHashFunc,
-  );
+  private fallbackTexture2D: Texture_WebGPU;
+  private fallbackTexture2DDepth: Texture_WebGPU;
+  private fallbackTexture2DArray: Texture_WebGPU;
+  private fallbackTexture3D: Texture_WebGPU;
+  private fallbackTextureCube: Texture_WebGPU;
+  fallbackSampler: Sampler;
+  private featureTextureCompressionBC: boolean = false;
+
+  private fullscreenAlphaClear: FullscreenAlphaClear;
 
   // VendorInfo
   readonly platformString: string = 'WebGPU';
@@ -122,9 +132,27 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     this.canvasContext = canvasContext;
     this.glsl_compile = glsl_compile;
 
-    this.fallbackTexture = this.createTexture(
-      makeTextureDescriptor2D(Format.U8_RGBA_NORM, 1, 1, 1),
+    this.fallbackTexture2D = this.createFallbackTexture(
+      TextureDimension.n2D,
+      SamplerFormatKind.Float,
     );
+    this.fallbackTexture2DDepth = this.createFallbackTexture(
+      TextureDimension.n2D,
+      SamplerFormatKind.Depth,
+    );
+    this.fallbackTexture2DArray = this.createFallbackTexture(
+      TextureDimension.n2DArray,
+      SamplerFormatKind.Float,
+    );
+    this.fallbackTexture3D = this.createFallbackTexture(
+      TextureDimension.n3D,
+      SamplerFormatKind.Float,
+    );
+    this.fallbackTextureCube = this.createFallbackTexture(
+      TextureDimension.Cube,
+      SamplerFormatKind.Float,
+    );
+
     this.fallbackSampler = this.createSampler({
       wrapS: WrapMode.Clamp,
       wrapT: WrapMode.Clamp,
@@ -134,12 +162,15 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     });
 
     // Firefox doesn't support GPUDevice.features yet...
-    if (this.device.features)
-      this._featureTextureCompressionBC = this.device.features.has('texture-compression-bc');
+    if (this.device.features) {
+      this.featureTextureCompressionBC = this.device.features.has('texture-compression-bc');
+    }
 
     this.device.onuncapturederror = (event) => {
       console.error(event.error);
     };
+
+    this.fullscreenAlphaClear = new FullscreenAlphaClear(this.device);
   }
 
   // SwapChain
@@ -193,7 +224,12 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     return this.canvas;
   }
 
-  present(): void {}
+  present(): void {
+    this.fullscreenAlphaClear.render(
+      this.device,
+      this.canvasContext.getCurrentTexture().createView(),
+    );
+  }
 
   private getNextUniqueId(): number {
     return ++this._resourceUniqueId;
@@ -282,7 +318,12 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     return attachment;
   }
 
-  createProgram(descriptor: ProgramDescriptorSimple): Program {
+  createProgram(descriptor: ProgramDescriptor): Program {
+    descriptor.ensurePreprocessed(this);
+    return this.createProgramSimple(descriptor);
+  }
+
+  createProgramSimple(descriptor: ProgramDescriptorSimple): Program {
     return new Program_WebGPU({
       id: this.getNextUniqueId(),
       device: this,
@@ -306,6 +347,7 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     const usage = translateTextureUsage(descriptor.usage);
 
     texture.format = format;
+    texture.dimension = descriptor.dimension;
     texture.pixelFormat = descriptor.pixelFormat;
     texture.width = descriptor.width;
     texture.height = descriptor.height;
@@ -328,78 +370,35 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     }
   }
 
-  // private createBindGroupLayoutInternal(bindingLayout: BindingLayoutDescriptor): BindGroupLayout {
-  //   const entries: GPUBindGroupLayoutEntry[][] = [[], []];
+  getFallbackTexture(samplerEntry: BindingLayoutSamplerDescriptor): Texture {
+    const dimension = samplerEntry.dimension,
+      formatKind = samplerEntry.formatKind;
+    if (dimension === TextureDimension.n2D)
+      return formatKind === SamplerFormatKind.Depth
+        ? this.fallbackTexture2DDepth
+        : this.fallbackTexture2D;
+    else if (dimension === TextureDimension.n2DArray) return this.fallbackTexture2DArray;
+    else if (dimension === TextureDimension.n3D) return this.fallbackTexture3D;
+    else if (dimension === TextureDimension.Cube) return this.fallbackTextureCube;
+    else throw 'whoops';
+  }
 
-  //   /**
-  //    * entries order: Storage(read-only storage) Uniform Sampler
-  //    * @see https://www.w3.org/TR/webgpu/#enumdef-gpubufferbindingtype
-  //    */
-  //   let entriesIndex = 0;
-  //   for (let i = 0; i < bindingLayout.numReadOnlyStorageBuffers; i++) {
-  //     entries[entriesIndex].push({
-  //       binding: entries[entriesIndex].length,
-  //       visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT | GPUShaderStage.COMPUTE,
-  //       buffer: { type: 'read-only-storage' },
-  //     });
-  //   }
-  //   if (bindingLayout.numReadOnlyStorageBuffers) {
-  //     entriesIndex++;
-  //   }
-
-  //   for (let i = 0; i < bindingLayout.numStorageBuffers; i++) {
-  //     entries[entriesIndex].push({
-  //       binding: entries[entriesIndex].length,
-  //       visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT | GPUShaderStage.COMPUTE,
-  //       buffer: { type: 'storage' },
-  //     });
-  //   }
-  //   if (bindingLayout.numStorageBuffers) {
-  //     entriesIndex++;
-  //   }
-
-  //   for (let i = 0; i < bindingLayout.numUniformBuffers; i++) {
-  //     entries[entriesIndex].push({
-  //       binding: entries[entriesIndex].length,
-  //       visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT | GPUShaderStage.COMPUTE,
-  //       buffer: { type: 'uniform', hasDynamicOffset: true },
-  //     });
-  //   }
-  //   if (bindingLayout.numUniformBuffers) {
-  //     entriesIndex++;
-  //   }
-
-  //   for (let i = 0; i < bindingLayout.numSamplers; i++) {
-  //     // TODO(jstpierre): This doesn't work for depth textures
-  //     entries[entriesIndex].push({
-  //       binding: entries[entriesIndex].length,
-  //       visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
-  //       texture: { sampleType: 'float' },
-  //     });
-  //     entries[entriesIndex].push({
-  //       binding: entries[entriesIndex].length,
-  //       visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
-  //       sampler: { type: 'filtering' },
-  //     });
-  //   }
-  //   if (bindingLayout.numSamplers) {
-  //     entriesIndex++;
-  //   }
-
-  //   const gpuBindGroupLayout = entries.map((entries) =>
-  //     this.device.createBindGroupLayout({ entries }),
-  //   );
-  //   return { gpuBindGroupLayout };
-  // }
-
-  // private createBindGroupLayout(bindingLayout: BindingLayoutDescriptor): BindGroupLayout {
-  //   let gpuBindGroupLayout = this._bindGroupLayoutCache.get(bindingLayout);
-  //   if (gpuBindGroupLayout === null) {
-  //     gpuBindGroupLayout = this.createBindGroupLayoutInternal(bindingLayout);
-  //     this._bindGroupLayoutCache.add(bindingLayout, gpuBindGroupLayout);
-  //   }
-  //   return gpuBindGroupLayout;
-  // }
+  private createFallbackTexture(
+    dimension: TextureDimension,
+    formatKind: SamplerFormatKind,
+  ): Texture_WebGPU {
+    const depth = dimension === TextureDimension.Cube ? 6 : 1;
+    const pixelFormat = formatKind === SamplerFormatKind.Float ? Format.U8_RGBA_NORM : Format.D24;
+    return this.createTexture({
+      dimension,
+      pixelFormat,
+      usage: TextureUsage.Sampled,
+      width: 1,
+      height: 1,
+      depth,
+      numLevels: 1,
+    }) as Texture_WebGPU;
+  }
 
   createBindings(descriptor: BindingsDescriptor): Bindings {
     if (descriptor.pipeline) {
@@ -448,6 +447,17 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
       id: this.getNextUniqueId(),
       device: this,
       descriptor,
+    });
+  }
+
+  createQueryPool(type: QueryPoolType, elemCount: number): QueryPool {
+    return new QueryPool_WebGPU({
+      id: this.getNextUniqueId(),
+      device: this,
+      descriptor: {
+        type,
+        elemCount,
+      },
     });
   }
 
@@ -517,7 +527,9 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
 
   createRenderPass(renderPassDescriptor: RenderPassDescriptor): RenderPass {
     let pass = this.renderPassPool.pop();
-    if (pass === undefined) pass = new RenderPass_WebGPU();
+    if (pass === undefined) {
+      pass = new RenderPass_WebGPU();
+    }
     pass.commandEncoder = this.device.createCommandEncoder();
     pass.beginRenderPass(renderPassDescriptor);
     return pass;
@@ -531,43 +543,40 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     return pass;
   }
 
-  submitPass(o: RenderPass | ComputePass): void {
+  submitPass(_pass: RenderPass | ComputePass): void {
     const queue = this.device.queue;
 
-    const pass = o as RenderPass_WebGPU | ComputePass_WebGPU;
+    const pass = _pass as RenderPass_WebGPU | ComputePass_WebGPU;
     const commands = pass.finish();
     queue.submit([commands]);
     pass.commandEncoder = null;
 
-    if (o instanceof RenderPass_WebGPU) {
-      this.renderPassPool.push(o);
+    if (pass instanceof RenderPass_WebGPU) {
+      this.renderPassPool.push(pass);
     } else {
-      this.computePassPool.push(o as ComputePass_WebGPU);
+      this.computePassPool.push(pass);
     }
   }
 
-  uploadTextureData(texture_: Texture, firstMipLevel: number, levelDatas: ArrayBufferView[]): void {
-    const texture = texture_ as Texture_WebGPU;
-    const destination: GPUImageCopyTexture = {
-      texture: texture.gpuTexture,
-    };
-    const layout: GPUImageDataLayout = {};
-    const size: GPUExtent3DStrict = { width: 0, height: 0, depthOrArrayLayers: 1 };
+  copySubTexture2D(
+    dst_: Texture,
+    dstX: number,
+    dstY: number,
+    src_: Texture,
+    srcX: number,
+    srcY: number,
+  ): void {
+    const cmd = this.device.createCommandEncoder();
 
-    for (let i = 0; i < levelDatas.length; i++) {
-      const mipLevel = firstMipLevel + i;
-      destination.mipLevel = mipLevel;
+    const dst = dst_ as Texture_WebGPU;
+    const src = src_ as Texture_WebGPU;
+    const srcCopy: GPUImageCopyTexture = { texture: src.gpuTexture, origin: [srcX, srcY, 0] };
+    const dstCopy: GPUImageCopyTexture = { texture: dst.gpuTexture, origin: [dstX, dstY, 0] };
+    assert(!!(src.usage & GPUTextureUsage.COPY_SRC));
+    assert(!!(dst.usage & GPUTextureUsage.COPY_DST));
+    cmd.copyTextureToTexture(srcCopy, dstCopy, [src.width, src.height, 1]);
 
-      const mipWidth = texture.width >>> mipLevel;
-      const mipHeight = texture.height >>> mipLevel;
-
-      size.width = mipWidth;
-      size.height = mipHeight;
-
-      translateImageLayout(layout, texture.pixelFormat, mipWidth, mipHeight);
-
-      this.device.queue.writeTexture(destination, levelDatas[i], layout, size);
-    }
+    this.device.queue.submit([cmd.finish()]);
   }
 
   queryLimits(): DeviceLimits {
@@ -580,8 +589,14 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     };
   }
 
-  queryTextureFormatSupported(format: Format): boolean {
-    if (isFormatTextureCompressionBC(format)) return this._featureTextureCompressionBC;
+  queryTextureFormatSupported(format: Format, width: number, height: number): boolean {
+    if (isFormatTextureCompressionBC(format)) {
+      if (!this.featureTextureCompressionBC) return false;
+
+      const bb = getFormatBlockSize(format);
+      if (width % bb !== 0 || height % bb !== 0) return false;
+      return this.featureTextureCompressionBC;
+    }
     return true;
   }
 

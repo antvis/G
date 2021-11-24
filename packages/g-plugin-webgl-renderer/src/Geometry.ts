@@ -37,12 +37,12 @@ export interface VertexBufferDescriptor {
 export function makeStaticDataBuffer(
   device: Device,
   usage: BufferUsage,
-  flags: number,
+  // flags: number,
   data: ArrayBufferLike,
 ): Buffer {
   const buffer = device.createBuffer({
     viewOrSize: align(data.byteLength, 4) / 4,
-    flags,
+    // flags,
     usage,
     hint: BufferFrequencyHint.Static,
   });
@@ -123,7 +123,7 @@ export class Geometry {
     const buffer = makeStaticDataBuffer(
       this.device,
       BufferUsage.Vertex,
-      translateBufferUsage(BufferUsage.Vertex),
+      // translateBufferUsage(BufferUsage.Vertex),
       data.buffer,
     );
     this.vertexBuffers[bufferIndex] = buffer;
@@ -167,7 +167,7 @@ export class Geometry {
     this.indicesBuffer = makeStaticDataBuffer(
       this.device,
       BufferUsage.Index,
-      translateBufferUsage(BufferUsage.Index),
+      // translateBufferUsage(BufferUsage.Index),
       new Uint32Array(ArrayBuffer.isView(indices) ? indices.buffer : indices).buffer,
     );
 

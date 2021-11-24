@@ -180,8 +180,16 @@ export class RenderCache {
     let program = this.programCache.get(programDescriptorSimple);
     if (program === null) {
       const descriptorCopy = programDescriptorSimpleCopy(programDescriptorSimple);
-      program = this.device.createProgram(descriptorCopy);
+      program = this.device.createProgramSimple(descriptorCopy);
       this.programCache.add(descriptorCopy, program);
+
+      // // TODO(jstpierre): Ugliness
+      // if ('associate' in (programDescriptorSimple as any)) {
+      //   const gfxProgramDescriptor = programDescriptorSimple as ProgramDescriptor;
+      //   // @ts-ignore
+      //   gfxProgramDescriptor.associate(this.device, program);
+      //   (descriptorCopy as any).orig = gfxProgramDescriptor;
+      // }
     }
 
     return program;

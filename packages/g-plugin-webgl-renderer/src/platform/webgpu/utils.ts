@@ -19,11 +19,14 @@ import {
   CompareMode,
   VertexBufferFrequency,
   TextureUsage,
+  QueryPool,
+  QueryPoolType,
 } from '../interfaces';
 import { align } from '../utils';
 import { Format, FormatTypeFlags, getFormatByteSize, getFormatTypeFlags } from '../format';
 import type { Buffer_WebGPU } from './Buffer';
 import type { Sampler_WebGPU } from './Sampler';
+import type { QueryPool_WebGPU } from './QueryPool';
 
 export function translateBufferUsage(usage: BufferUsage): GPUBufferUsageFlags {
   if (usage === BufferUsage.Index) return GPUBufferUsage.INDEX;
@@ -106,6 +109,16 @@ export function getPlatformBuffer(buffer_: Buffer): GPUBuffer {
 export function getPlatformSampler(sampler_: Sampler): GPUSampler {
   const sampler = sampler_ as Sampler_WebGPU;
   return sampler.gpuSampler;
+}
+
+export function getPlatformQuerySet(queryPool_: QueryPool): GPUQuerySet {
+  const queryPool = queryPool_ as QueryPool_WebGPU;
+  return queryPool.querySet;
+}
+
+export function translateQueryPoolType(type: QueryPoolType): GPUQueryType {
+  if (type === QueryPoolType.OcclusionConservative) return 'occlusion';
+  else throw 'whoops';
 }
 
 // @see https://www.w3.org/TR/webgpu/#primitive-state

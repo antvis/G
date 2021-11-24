@@ -1,133 +1,114 @@
 ---
-title: Performance Optimization
+title: 性能优化
 order: 1
 redirect_from:
-  - /en/docs/guide/advanced-topics
+    - /en/docs/guide/advanced-topics
 ---
 
-减少 drawCall 是提升渲染性能的常用手段，我们应该在每一帧中尽可能减少提交的绘制命令数量。我们在 G 中使用了以下三种优化手段：
+任何一个渲染引擎都会在性能优化上下足功夫，任何优化手段都需要结合场景与具体 API 应用。在我们的可视化场景（2D 图表、大规模图场景）中，高效绘制大量简单图形是一个核心诉求。下面我们结合 Canvas2D / SVG / WebGL 和 WebGPU 这些渲染 API 介绍目前在 G 中使用的优化手段。
 
-- 脏矩形渲染
-- Instance 绘制
-- 剔除策略
+首先我们需要引入一个核心概念 draw call，以下介绍的优化方法大多围绕它展开。
 
-# 脏矩形渲染
+# 什么是 draw call
 
-⚠️ 仅 `g-canvas/g-webgl` 下生效。
+为啥 draw call 多了就会影响性能呢？在 CPU 和 GPU 进行异步协作的过程中，会向 [command buffer](https://www.w3.org/TR/webgpu/#command-buffers) 中提交需要 GPU 执行的命令，例如设置状态、绘制或者拷贝资源。CPU 准备这些命令的速度与 GPU 执行的速度存在不小差异，这就造成了性能瓶颈。
 
-G 4.0 中已经支持了局部渲染，ECharts 5 中称之为[“脏矩形渲染”](https://zhuanlan.zhihu.com/p/346897719)。
-很多 2D 渲染引擎也都支持该优化特性，例如 [egret](https://github.com/egret-labs/egret-docs/blob/master/Engine2D/update/update255/README.md#%E8%84%8F%E7%9F%A9%E5%BD%A2%E5%BC%80%E5%85%B3)。浏览器在绘制页面内容时也使用了这一策略。
+下图来自 https://toncijukic.medium.com/draw-calls-in-a-nutshell-597330a85381，分别展示了每一帧中 CPU 和 GPU 的时间线，可以看出 GPU 总是在执行上一帧 CPU 提交的命令，与此同时 CPU 在准备下一帧的命令。当这些绘制命令数量不多时，两者协作没问题，但如果数量很多，GPU 在做完这一帧的渲染任务后就不得不等待，也就无法在 16ms 内完成了，这造成了卡顿的体感。
 
-例如下图 `Shape` 的位置发生了移动，通过包围盒计算得到了两个待重绘的“脏矩形”，在下一帧渲染时：
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OdI0SqKtWB0AAAAAAAAAAAAAARQnAQ)
 
-- 计算场景内与“脏矩形”相交的所有对象，本例中仅有一个 `Shape`
-- 不需要清空整个画布，只需要清空所有的“脏矩形”
-- 重绘 `Shape`，其他区域可以保持不变
+# 减少 draw call
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*oj9uTJfi9ckAAAAAAAAAAAAAARQnAQ)
+因此我们需要想办法减少 CPU 提交的绘制命令数量，即能少画就少画，能不画就不画。下面我们会介绍不同渲染 API 下常用的优化手段，它们各有适合的场景。
 
-该过程有以下优化点。
+## 剔除
 
-## 加速结构
+图场景中一种常见的交互是通过鼠标滚轮进行放大查看，此时场景中仅有一部分可见，大部分都在视口范围之外。如果我们能将视口之外的图形“剔除”掉，就能减少绘制命令的数量。
 
-对于每一个“脏矩形”，我们都需要在场景中查找与之相交的对象，每次在场景图中都进行遍历完成相交检测显然效率不高，因此可以考虑使用类似空间索引这样的加速结构。
+决定场景中一个图形是否需要绘制的标准是什么呢？在下图中，灰色区域代表画布视口，如果对象“处于”视口内，我们就画（绿色图形），反之则剔除（红色图形）。
 
-在实现中我们选择了 [R-tree](https://github.com/mourner/rbush)。在 `Group/Shape` 被加入画布时向 R-tree 中添加节点，当包围盒改变时更新节点。
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IrstQLn0kVoAAAAAAAAAAAAAARQnAQ)
 
-## 合并脏矩形
+在判断一个图形是否在视口内时，我们通常会使用一种称作“包围盒”的结构。图形可以千变万化，但总可以找到一个包裹住它的最小基础几何结构，这个结构可以是“包围盒”，也可以是“包围球”，总之是为何后续与视口求交方便。在 G 中我们选择轴对齐包围盒。推广到 3D 场景中，视口也变成了视锥，下图来自 [Unreal - Visibility and Occlusion Culling](https://docs.unrealengine.com/Engine/Rendering/VisibilityCulling#viewfrustum)：
 
-产生的 “脏矩形” 过多时可以考虑合并。
+![](https://user-images.githubusercontent.com/3608471/78733815-18111d80-7979-11ea-940b-9886ec5cf5e4.png)
 
-## 清空脏矩形
+在每一帧都在 CPU 端进行这样的求交运算开销不小，特别当场景中图形数量较多时。另外在 3D 场景中视锥与包围盒（立方体）各个面的求交开销更大，因此我们也采用了一系列优化方法：
 
-Canvas 2D 提供了 `clearRect` 和 `clip` API。而 WebGL 则需要通过 stencil 实现。
+在 3D 场景进行视锥剔除时，我们尽量使用了如下[加速检测方法](https://github.com/antvis/GWebGPUEngine/issues/3)：
 
-## 局限性
+-   基础相交测试 the basic intersection test
+-   平面一致性测试 the plane-coherency test
+-   八分测试 the octant test
+-   标记 masking
+-   平移旋转一致性测试 TR coherency test
+
+更多可以参考：
+
+-   [Optimized View Frustum Culling Algorithms for Bounding Boxes](http://fileadmin.cs.lth.se/cs/Personal/Tomas_Akenine-Moller/pubs/vfcullbox.pdf.gz)
+-   [Efficient View Frustum Culling](http://old.cescg.org/CESCG-2002/DSykoraJJelinek/)
+-   [视锥体剔除 AABB 和 OBB 包围盒的优化方法](https://zhuanlan.zhihu.com/p/55915345)
+
+在 2D 场景中我们使用了空间索引（R-tree）进行区域查询的加速。首次为场景对象构建索引需要消耗一定时间，后续当图形发生变换时，也需要随时更新。
+
+最后，由于剔除发生在 CPU 侧，与具体渲染 API 无关，因此这是一种相对通用的优化手段。
+
+### 其他剔除手段
+
+在 WebGL / WebGPU 这样的渲染 API 中，还提供了其他剔除手段：
+
+-   背面剔除，[gl.cullFace](https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/cullFace)
+-   遮挡剔除，[gl.createQuery](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/createQuery)。至少需要 WebGL2，G 中暂未使用
+
+## “脏矩形”渲染
+
+另一种常见的交互是通过鼠标高亮某个图形。此时场景中仅有一小部分发生了改变，擦除画布中的全部图形再重绘就显得没有必要了。类比 React diff 算法能够找出真正变化的最小部分，“脏矩阵”渲染能尽可能复用上一帧的渲染结果，仅绘制变更部分，特别适合 Canvas2D API。
+
+下图展示了这个思路：
+
+-   当鼠标悬停在圆上时，我们知道了对应的“脏矩形”，也就是这个圆的包围盒
+-   找到场景中与这个包围盒区域相交的其他图形，这里找到了另一个矩形
+-   使用 [clearRect](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/clearRect) 清除这个“脏矩形”，代替清空整个画布
+-   按照 z-index 依次绘制一个矩形和圆形
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*6zyLTL-AIbQAAAAAAAAAAAAAARQnAQ)
+
+在以上求交与区域查询的过程中，我们可以复用剔除方案中的优化手段，例如加速结构。
 
 显然当动态变化的对象数目太多时，该优化手段就失去了意义，试想经过一番计算合并后的“脏矩形”几乎等于整个画布，那还不如直接清空重绘所有对象。因此例如 Pixi.js 这样的 2D 游戏渲染引擎就[不考虑内置](https://github.com/pixijs/pixi.js/issues/3503)。
 
 但在可视化这类相对静态的场景下就显得有意义了，例如在触发拾取后只更新图表的局部，其余部分保持不变。
 
-该特性可以通过开关 `dirtyRectangle` 控制，在开发模式下通过 `debug` 选项可以直观地看到“脏矩形”，帮助排查类似“残影”问题：
+我们将该渲染器特性做成了开关，可以随时[根据具体情况关闭](/zh/docs/api/renderer#enabledirtyrectanglerendering)。
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*5gAnS71u5xEAAAAAAAAAAAAAARQnAQ)
+## batching
 
-# Instance 绘制
+以上两种方法当然有不适合的场景，例如希望总览一个大规模图场景的全貌时，无法应用剔除（所有节点/边都在视口内）。拖拽移动整个场景时，“脏矩阵”渲染效果也不佳（整个场景都变“脏”了）。
 
-⚠️ 仅 `g-webgl` 下生效。
+除了使用一些上层的 LOD 手段，例如缩放等级较高时，隐藏掉边和文本（因为也看不清），以此减少绘制命令数量之外，[draw call batching](https://docs.unity3d.com/Manual/DrawCallBatching.html) 是非常合适的。
 
-在可视化场景下常常需要批量绘制同类对象，这些对象往往绝大部分属性一致，仅位置/旋转角度/缩放不同。此时可以使用一种称作 Instance 的技术，最大程度利用 GPU 进行加速，在游戏引擎中常用来生成森林这样的场景。
+不同于 Canvas2D / Skia 提供的抽象层次较高的绘制 API，WebGL / WebGPU 提供了更低层次的 API，可以让我们将一批“同类”图形合并成一次绘制命令。在渲染引擎中，常用于渲染类似森林中大量树木这种场景。图场景同样十分契合，场景中包含大量同类但简单的图形（节点、边）。
 
-例如我们想绘制 1000 个圆，它们仅仅位置、半径不同，通常会使用一个 `for` 循环依次添加到画布中。如果使用 Instance 可以这样：
+结合我们的[这个教程](/zh/docs/guide/diving-deeper/camera)，配合 Chrome Spector.js 插件能看出，一次 draw call 完成了 8k 个节点的绘制，这是性能提升的关键：
 
-```javascript
-// 创建一个圆，仅设置通用样式属性，并不需要设置位置和半径
-const circle = canvas.addShape('circle', {
-  style: {
-    fill: '#1890FF',
-    stroke: '#F04864',
-    lineWidth: 4,
-  },
-});
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*-8GtQrpM-jsAAAAAAAAAAAAAARQnAQ)
 
-for (let i = 0; i < 1000; i++) {
-  // 使用同一个圆创建 1000 个 instance
-  const instance = circle.createInstance({
-    style: {
-      x: Math.random() * 600, // 位置随机
-      y: Math.random() * 500,
-      r: 10 + Math.random() * 5, // 半径随机
-    },
-  });
+通常创建出的 instance 仅具有原图形的部分能力。例如 Babylon.js 只允许每个 instance 在部分变换属性上[有差异](https://doc.babylonjs.com/divingDeeper/mesh/copies/instances)。在 G 中并不需要用户显式声明 instance，按照常规图形创建即可，内部会进行自动合并。
 
-  // 每个 instance 可以单独应用动画
-  instance.animate(
-    {
-      x: Math.random() * 600,
-      y: Math.random() * 500,
-    },
-    {
-      delay: 0,
-      duration: 1000,
-      easing: 'easeLinear',
-      callback: () => {},
-      repeat: true,
-      direction: 'alternate',
-    }
-  );
-}
-```
-
-此时 FPS 仍能维持在 50，相比 `g-canvas` 的 10 左右提升不小。
-
-## 局限性
-
-创建出的 instance 仅具有原 `Shape` 的部分能力。例如 Babylon.js 只允许每个 instance 在部分变换属性上[有差异](https://doc.babylonjs.com/divingDeeper/mesh/copies/instances)。
-
-# 剔除策略
-
-对于视口之外的对象，我们并不希望渲染它们。
-
-## g-canvas
-
-仍然可以通过 R-tree 加速结构查询视口内可见的对象。
-
-## g-webgl
-
-- 背面剔除，简单通过 WebGL 全局状态实现
-- 视锥剔除，基于 masking 等优化手段，[详见](https://github.com/antvis/GWebGPUEngine/issues/3)
-
-⚠️ 遮挡查询需要 WebGL2 暂不支持。
+值得一提的是我们使用 SDF 绘制部分 2D 图形例如 Circle、Ellipse、Rect。一方面能减少顶点数目（通常三角化一个圆需要 30+ 三角形，SDF 固定 2 个），另一方面也增加了不同图形合并的可能性。
 
 # Offscreen Canvas
 
 ⚠️ 仅 `g-webgl` 下生效。
 
-当主线程需要处理较重的交互时，我们可以将 Canvas 的渲染工作交给 Worker 完成，主线程仅负责同步结果。
-目前很多渲染引擎已经支持，例如 [Babylon.js](https://doc.babylonjs.com/divingDeeper/scene/offscreenCanvas)。
+当主线程需要处理较重的交互时，我们可以将 Canvas 的渲染工作交给 Worker 完成，主线程仅负责同步结果。目前很多渲染引擎已经支持，例如 [Babylon.js](https://doc.babylonjs.com/divingDeeper/scene/offscreenCanvas)。
 
 为了支持该特性，引擎本身并不需要做很多改造，只要能够保证 `g-webgl` 能在 Worker 中运行即可。
 
 ## 局限性
 
 由于运行在 Worker 环境，用户需要手动处理一些 DOM 相关的事件。
+
+# 参考资料
+
+-   https://unrealartoptimization.github.io/book/pipelines/

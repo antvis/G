@@ -161,7 +161,7 @@ export class GlyphManager {
         ...makeTextureDescriptor2D(Format.ALPHA, atlasWidth, atlasHeight, 1),
         immutable: false,
       });
-      this.glyphAtlasTexture.setImageData(data, 0);
+      this.glyphAtlasTexture.setImageData([data], 0);
     }
   }
 

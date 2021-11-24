@@ -49,7 +49,7 @@ export class Program_WebGPU extends ResourceBase_WebGPU implements Program {
           validationEnabled,
         );
       } catch (e) {
-        console.error(sourceText);
+        console.error(e, sourceText);
         throw 'whoops';
       }
     }

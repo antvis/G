@@ -62,7 +62,9 @@ export class RenderInstList {
 
   hasLateSamplerBinding(name: string): boolean {
     for (let i = 0; i < this.renderInsts.length; i++)
-      if (this.renderInsts[i].hasLateSamplerBinding(name)) return true;
+      if (this.renderInsts[i].hasLateSamplerBinding(name)) {
+        return true;
+      }
     return false;
   }
 
@@ -74,29 +76,35 @@ export class RenderInstList {
       this.renderInsts[i].resolveLateSamplerBinding(name, binding);
   }
 
-  drawOnPassRendererNoReset(cache: RenderCache, passRenderer: RenderPass): void {
-    if (this.renderInsts.length === 0) return;
-
+  ensureSorted(): void {
     if (this.usePostSort) {
-      this.renderInsts.sort(this.compareFunction!);
+      if (this.renderInsts.length !== 0) this.renderInsts.sort(this.compareFunction!);
       this.usePostSort = false;
     }
+  }
 
+  drawOnPassRendererNoReset(cache: RenderCache, passRenderer: RenderPass): number {
+    this.ensureSorted();
+
+    let numDrawn = 0;
     if (this.executionOrder === RenderInstExecutionOrder.Forwards) {
       for (let i = 0; i < this.renderInsts.length; i++)
-        this.renderInsts[i].drawOnPass(cache, passRenderer);
+        if (this.renderInsts[i].drawOnPass(cache, passRenderer)) numDrawn++;
     } else {
       for (let i = this.renderInsts.length - 1; i >= 0; i--)
-        this.renderInsts[i].drawOnPass(cache, passRenderer);
+        if (this.renderInsts[i].drawOnPass(cache, passRenderer)) numDrawn++;
     }
+
+    return numDrawn;
   }
 
   reset(): void {
     this.renderInsts.length = 0;
   }
 
-  drawOnPassRenderer(cache: RenderCache, passRenderer: RenderPass): void {
-    this.drawOnPassRendererNoReset(cache, passRenderer);
+  drawOnPassRenderer(cache: RenderCache, passRenderer: RenderPass): number {
+    const numDrawn = this.drawOnPassRendererNoReset(cache, passRenderer);
     this.reset();
+    return numDrawn;
   }
 }

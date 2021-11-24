@@ -9,7 +9,9 @@ export class RenderInstPool {
   allocRenderInstIndex(): number {
     this.allocCount++;
 
-    if (this.allocCount > this.pool.length) this.pool.push(new RenderInst());
+    if (this.allocCount > this.pool.length) {
+      this.pool.push(new RenderInst());
+    }
 
     return this.allocCount - 1;
   }
@@ -19,7 +21,9 @@ export class RenderInstPool {
   }
 
   reset(): void {
-    for (let i = 0; i < this.pool.length; i++) this.pool[i].reset();
+    for (let i = 0; i < this.pool.length; i++) {
+      this.pool[i].reset();
+    }
     this.allocCount = 0;
   }
 

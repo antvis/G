@@ -14,6 +14,7 @@ import {
   InputLayoutDescriptor,
   SamplerDescriptor,
 } from '..';
+import { BindingLayoutSamplerDescriptor } from '../interfaces';
 import { colorEqual } from './color';
 import { copyMegaState } from './states';
 
@@ -213,7 +214,15 @@ export function bindingsDescriptorCopy(a: Readonly<BindingsDescriptor>): Binding
   const bindingLayout = a.bindingLayout;
   const samplerBindings = arrayCopy(a.samplerBindings, samplerBindingCopy);
   const uniformBufferBindings = arrayCopy(a.uniformBufferBindings, bufferBindingCopy);
-  return { bindingLayout, samplerBindings, uniformBufferBindings };
+  return { bindingLayout, samplerBindings, uniformBufferBindings, pipeline: a.pipeline };
+}
+
+export function bindingLayoutSamplerDescriptorCopy(
+  a: Readonly<BindingLayoutSamplerDescriptor>,
+): BindingLayoutSamplerDescriptor {
+  const dimension = a.dimension,
+    formatKind = a.formatKind;
+  return { dimension, formatKind };
 }
 
 export function bindingLayoutDescriptorCopy(
@@ -221,7 +230,11 @@ export function bindingLayoutDescriptorCopy(
 ): BindingLayoutDescriptor {
   const numSamplers = a.numSamplers;
   const numUniformBuffers = a.numUniformBuffers;
-  return { numSamplers, numUniformBuffers };
+  const samplerEntries =
+    a.samplerEntries !== undefined
+      ? arrayCopy(a.samplerEntries!, bindingLayoutSamplerDescriptorCopy)
+      : undefined;
+  return { numSamplers, numUniformBuffers, samplerEntries };
 }
 
 export function renderPipelineDescriptorCopy(

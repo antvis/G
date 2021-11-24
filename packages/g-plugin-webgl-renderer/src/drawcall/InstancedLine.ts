@@ -23,7 +23,8 @@ export class InstancedLineProgram extends DeviceProgram {
   static a_Position = AttributeLocation.MAX;
   static a_PointA = AttributeLocation.MAX + 1;
   static a_PointB = AttributeLocation.MAX + 2;
-  static a_Uv = AttributeLocation.MAX + 3;
+  static a_Cap = AttributeLocation.MAX + 3;
+  static a_Uv = AttributeLocation.MAX + 4;
 
   static ub_ObjectParams = 1;
 
@@ -36,6 +37,7 @@ export class InstancedLineProgram extends DeviceProgram {
   layout(location = ${InstancedLineProgram.a_Position}) attribute vec2 a_Position;
   layout(location = ${InstancedLineProgram.a_PointA}) attribute vec2 a_PointA;
   layout(location = ${InstancedLineProgram.a_PointB}) attribute vec2 a_PointB;
+  layout(location = ${InstancedLineProgram.a_Cap}) attribute float a_Cap;
   #ifdef USE_UV
     layout(location = ${InstancedLineProgram.a_Uv}) attribute vec2 a_Uv;
     varying vec2 v_Uv;
@@ -47,8 +49,20 @@ export class InstancedLineProgram extends DeviceProgram {
 
     vec2 xBasis = a_PointB - a_PointA;
     vec2 yBasis = normalize(vec2(-xBasis.y, xBasis.x));
-    vec2 point = a_PointA + xBasis * a_Position.x + yBasis * u_StrokeWidth * a_Position.y;
+    vec2 offset = vec2(0.0);
 
+    // round
+    if (a_Cap > 1.0 && a_Cap <= 2.0) {
+
+    } else if (a_Cap > 2.0 && a_Cap <= 3.0) {
+      if (a_Position.x > 0.0) {
+        offset = vec2(u_StrokeWidth / 2.0, 0.0);
+      } else {
+        offset = -vec2(u_StrokeWidth / 2.0, 0.0);
+      }
+    }
+
+    vec2 point = a_PointA + offset + xBasis * a_Position.x + yBasis * u_StrokeWidth * a_Position.y;
     point = point - a_Anchor.xy * abs(xBasis);
 
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * vec4(point, 0.0, 1.0);
@@ -72,6 +86,12 @@ export class InstancedLineProgram extends DeviceProgram {
   }
 `;
 }
+
+const LINE_CAP_MAP = {
+  [LINE_CAP.Butt]: 1,
+  [LINE_CAP.Round]: 2,
+  [LINE_CAP.Square]: 3,
+};
 
 /**
  * use instanced for each segment
@@ -114,18 +134,15 @@ export class InstancedLineRenderer extends Batch {
     const indices = [];
     let offset = 0;
     this.objects.forEach((object) => {
-      if (object.nodeName === SHAPE.Line) {
-        const line = object as Line;
-        const { x1, y1, x2, y2, defX, defY } = line.parsedStyle;
-        interleaved.push(x1 - defX, y1 - defY, x2 - defX, y2 - defY);
-        indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
-        offset += 4;
-      }
+      const line = object as Line;
+      const { x1, y1, x2, y2, defX, defY, lineCap } = line.parsedStyle;
+      interleaved.push(x1 - defX, y1 - defY, x2 - defX, y2 - defY, LINE_CAP_MAP[lineCap]);
+      indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
+      offset += 4;
     });
 
     this.geometry.setIndices(new Uint32Array(indices));
     this.geometry.vertexCount = 6;
-    // this.geometry.maxInstancedCount = indices.length / 6;
     this.geometry.setVertexBuffer({
       bufferIndex: 1,
       byteStride: 4 * 4,
@@ -148,7 +165,7 @@ export class InstancedLineRenderer extends Batch {
     });
     this.geometry.setVertexBuffer({
       bufferIndex: 2,
-      byteStride: 4 * 4,
+      byteStride: 4 * 5,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
@@ -161,6 +178,12 @@ export class InstancedLineRenderer extends Batch {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 2,
           location: InstancedLineProgram.a_PointB,
+          divisor: 1,
+        },
+        {
+          format: Format.F32_R,
+          bufferByteOffset: 4 * 1,
+          location: InstancedLineProgram.a_Cap,
           divisor: 1,
         },
       ],
