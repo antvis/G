@@ -37,9 +37,9 @@
       <p>
         在设计核心层 API 时，我们更多借鉴了 Web 端已有的标准，例如：
         <ul>
-          <li>场景图定义、事件系统兼容 DOM API</li>
-          <li>动画兼容 Web Animation API</li>
-          <li>自定义图形机制兼容 CustomElement API</li>
+          <li>场景图定义、事件系统兼容 <a href="https://dom.spec.whatwg.org/">DOM API</a></li>
+          <li>动画兼容 <a href='https://drafts.csswg.org/web-animations/'>Web Animation API</a></li>
+          <li>自定义图形机制兼容 <a href="https://html.spec.whatwg.org/multipage/custom-elements.html#custom-elements-api">CustomElements API</a></li>
         </ul>
         一方面能减轻前端开发者的记忆学习成本，更重要的是能直接使用 Web 端已有生态，例如拖拽与手势库。
       </p>
@@ -70,9 +70,18 @@
         在定义场景时，并不需要渲染器参与。同样的，在组合图形自定义组件时，也应当与具体渲染器无关。
       </p>
       <p>
-        场景图中的节点，也就是我们通常说的“图形”，尽管形状各不相同，有的甚至没有实体，但都是通过继承获得基础能力。
+        场景图中的节点，也就是我们通常说的“图形”，尽管形状各不相同，有的甚至没有实体，但都是通过继承获得基础能力，继承关系如下：
       </p>
-      
+      <dl class="def">
+        <dt>{{Canvas}} -> {{EventTarget}}</dt>
+        <dd>画布通过继承拥有了基础的事件监听能力</dd>
+        <dt>{{Document}} -> {{Node}} -> {{EventTarget}}</dt>
+        <dd>文档通过继承拥有基础的节点管理能力</dd>
+        <dt>{{DisplayObject}} -> {{Element}} -> {{Node}} -> {{EventTarget}}</dt>
+        <dd>可渲染对象拥有更高级的节点管理、动画以及变换能力</dd>
+        <dt>{{Circle}} -> {{DisplayObject}}</dt>
+        <dd>基础图形通过继承拥有了被渲染的能力</dd>
+      </dl>
       <section data-dfn-for="EventTarget">
         <h2>EventTarget</h2>
         <p>为节点提供事件的绑定/解绑以及触发能力。</p>
@@ -214,6 +223,7 @@
           Node                               insertBefore(Node newChild, Node refChild);
           Node                               replaceChild(Node newChild, Node oldChild);
           Node                               removeChild(Node oldChild);
+          undefined                          removeChildren();
           boolean                            isEqualNode(Node otherNode);
           boolean                            isSameNode(Node otherNode);
           Node                               getRootNode();
@@ -438,6 +448,10 @@
           </aside>
         </section>
         <section>
+          <h2><dfn>removeChildren()</dfn> method</h2>
+          <p>删除所有子节点。</p>
+        </section>
+        <section>
           <h2><dfn>isEqualNode()</dfn> method</h2>
           <p>比较两个节点是否“相等”。需要注意，并不是简单比较引用（可以使用{{Node/isSameNode()}}判断是否“相同”）。
             “相同”的两个节点一定“相等”，反之则不是。</p>
@@ -492,12 +506,13 @@
       <section data-dfn-for="Element" data-link-for="Element">
         <h2>Element</h2>
         <p>继承 {{Node}}，提供属性的获取与设置，节点查询以及更多节点操作能力。</p>
-        <pre class="idl">
+        <pre class="idl">      
           [Exposed=Window]
           interface Element : Node {
             attribute DOMString               id;
             attribute DOMString               name;
             attribute DOMString               className;
+            attribute boolean                 interactive;
             attribute NamedNodeMap            style;
             readonly attribute NodeList       children;
             readonly attribute unsigned long  childElementCount;
@@ -523,7 +538,11 @@
             sequence&lt;Element&gt;                 getElementsByTagName(DOMString tagName);
             Element                           querySelector(DOMString selector);
             sequence&lt;Element&gt;                 querySelectorAll(DOMString selector);
+            Element                           find(Filter filter);
+            sequence&lt;Element&gt;                 findAll(Filter filter);
           };
+
+          callback Filter = boolean (Element element);
         </pre>
         <section>
           <h2><dfn>id</dfn> attribute</h2>
@@ -558,6 +577,25 @@
         <section>
           <h2><dfn>className</dfn> attribute</h2>
           <p>className 可重复，供后续 {{getElementsByClassName}} 查询使用。</p>
+        </section>
+        <section>
+          <h2><dfn>interactive</dfn> attribute</h2>
+          <p>是否支持响应 {{Event}} 事件，默认为 true。在某些不需要支持交互的图形上可以关闭。</p>
+          <aside class="example">
+            <p>禁止事件属性</p>
+            <pre class="js">
+            // 初始化时禁止交互
+            const circle = new Circle({
+              interactive: false,
+              style: {
+                r: 100,
+              },
+            });
+
+            // 或者后续禁止
+            circle.interactive = false;
+            </pre>
+          </aside>
         </section>
         <section>
           <h2><dfn>style</dfn> attribute</h2>
@@ -676,16 +714,381 @@
           </dl>
           <p>返回值：无</p>
         </section>
+        <section>
+          <h2><dfn>append()</dfn> method</h2>
+          <p>在当前节点的子节点列表末尾批量添加一组节点。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{Node}}... nodes</code></dt>
+            <dd>一组节点</dd>
+          </dl>
+          <p>返回值：无</p>
+          <aside class="example">
+            <p>批量追加节点</p>
+            <pre class="js">
+            parent.appendChild(child1);
+            parent.appendChild(child2); // parent -> [child1, child2]
+            parent.append(child3, child4); // parent -> [child1, child2, child3, child4]
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>prepend()</dfn> method</h2>
+          <p>在当前节点的子节点列表头部批量添加一组节点。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{Node}}... nodes</code></dt>
+            <dd>一组节点</dd>
+          </dl>
+          <p>返回值：无</p>
+          <aside class="example">
+            <p>批量追加节点</p>
+            <pre class="js">
+            parent.appendChild(child1);
+            parent.appendChild(child2); // parent -> [child1, child2]
+            parent.prepend(child3, child34); // parent -> [child3, child4, child1, child2]
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>after()</dfn> method</h2>
+          <p>在当前节点之后批量添加一些兄弟节点。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{Node}}... nodes</code></dt>
+            <dd>一组节点</dd>
+          </dl>
+          <p>返回值：无</p>
+          <aside class="example">
+            <p>在头部批量追加节点</p>
+            <pre class="js">
+            circle.after(sibling1, sibling2); // [circle, sibling1, sibling2]
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>before()</dfn> method</h2>
+          <p>在当前节点之前批量添加一些兄弟节点。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{Node}}... nodes</code></dt>
+            <dd>一组节点</dd>
+          </dl>
+          <p>返回值：无</p>
+          <aside class="example">
+            <p>在头部批量添加兄弟节点</p>
+            <pre class="js">
+            circle.before(sibling1, sibling2); // [sibling1, sibling2, circle]
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>remove()</dfn> method</h2>
+          <p>将自身从场景图中移除，可以选择是否同时销毁，默认会销毁。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{boolean}} destroy</code></dt>
+            <dd>是否同时销毁自身</dd>
+          </dl>
+          <p>返回值：无</p>
+        </section>
+        <section>
+          <h2><dfn>replaceWith()</dfn> method</h2>
+          <p>在父节点的子节点列表中，用传入的节点列表替换该节点。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{Node}}... nodes</code></dt>
+            <dd>一组节点</dd>
+          </dl>
+          <p>返回值：无</p>
+          <aside class="example">
+            <p>在父节点的子节点列表中，用传入的节点列表替换该节点</p>
+            <pre class="js">
+            parent.appendChild(child1);
+            parent.appendChild(child2); // parent -> [child1, child2]
+            child1.replaceWith(node1, node2); // parent -> [node1, node2, child2]
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>replaceChildren()</dfn> method</h2>
+          <p>替换该节点的所有子节点。不传参数时则会清空该节点的所有子节点。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{Node}}... nodes</code></dt>
+            <dd>一组节点</dd>
+          </dl>
+          <p>返回值：无</p>
+          <aside class="example">
+            <p>替换该节点的所有子节点。不传参数时则会清空该节点的所有子节点：</p>
+            <pre class="js">
+            parent.replaceChildren(child1, child2);
+            parent.replaceChildren(); // 清空
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>matches()</dfn> method</h2>
+          <p>是否匹配选择器字符串。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{DOMString}} selector</code></dt>
+            <dd>CSS 选择器字符串</dd>
+          </dl>
+          <p>返回值</p>
+          <dl class="def">
+            <dt><code>{{boolean}}</code></dt>
+            <dd>是否匹配</dd>
+          </dl>
+          <aside class="example">
+            <p>是否匹配选择器字符串</p>
+            <pre class="js">
+            circle.className = 'test';
+            circle.matches('.test'); // true
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>getElementById()</dfn> method</h2>
+          <p>按 id 在自身以及后代节点中查询 {{Element}}。无匹配则返回 null。DOM API 中只有 {{Document}} 上才有此方法，我们扩展到每个 {{Element}}。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{DOMString}} id</code></dt>
+            <dd>全局唯一的 id 字符串</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{Element}} or null</code></dt>
+            <dd>匹配节点或 null</dd>
+          </dl>
+          <aside class="example">
+            <p>按 id 查询节点</p>
+            <pre class="js">
+            circle.getElementById('test'); // circle
+            circle.getElementById('xxx'); // null
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>getElementsByName()</dfn> method</h2>
+          <p>按 name 在自身以及后代节点中查询 {{Element}} 列表。无匹配则返回空数组。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{DOMString}} name</code></dt>
+            <dd>name 字符串</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>sequence&lt;{{Element}}&gt;</code></dt>
+            <dd>匹配节点或 null</dd>
+          </dl>
+          <aside class="example">
+            <p>按 name 查询节点列表</p>
+            <pre class="js">
+            document.getElementsByName('circle'); // [circle1, circle2]
+            document.getElementsByName('xxx'); // []
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>getElementsByClassName()</dfn> method</h2>
+          <p>按 className 在自身以及后代节点中查询 {{Element}} 列表。无匹配则返回空数组。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{DOMString}} className</code></dt>
+            <dd>className 字符串</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>sequence&lt;{{Element}}&gt;</code></dt>
+            <dd>节点数组</dd>
+          </dl>
+          <aside class="example">
+            <p>按 className 查询节点列表</p>
+            <pre class="js">
+            document.getElementsByClassName('circle'); // [circle1, circle2]
+            document.getElementsByClassName('xxx'); // []
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>getElementsByTagName()</dfn> method</h2>
+          <p>按 tagName 在自身以及后代节点中查询 {{Element}} 列表。无匹配则返回空数组。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{DOMString}} tagName</code></dt>
+            <dd>tagName 字符串，支持 {{SHAPE}} 或者自定义图形提供的 tagName</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>sequence&lt;{{Element}}&gt;</code></dt>
+            <dd>节点数组</dd>
+          </dl>
+          <aside class="example">
+            <p>按 tagName 查询节点列表，查询所有的 Circle</p>
+            <pre class="js">
+            // 以下两种写法等价
+            document.getElementsByTagName('circle'); // [circle1, circle2]
+            document.getElementsByTagName(SHAPE.Circle); // [circle1, circle2]
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>querySelector()</dfn> method</h2>
+          <p>按选择器字符串在自身以及后代节点中查询 {{Element}}。无匹配则返回 null。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{DOMString}} selector</code></dt>
+            <dd>CSS Selector 字符串</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{Element}} or null</code></dt>
+            <dd>匹配节点或 null</dd>
+          </dl>
+          <aside class="example">
+            <p>按 CSS 选择器查询，使用属性选择器</p>
+            <pre class="js">
+            solarSystem.querySelector('[name=sun]');
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>querySelectorAll()</dfn> method</h2>
+          <p>按选择器字符串在自身以及后代节点中查询 {{Element}} 列表。无匹配则返回空数组。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{DOMString}} selector</code></dt>
+            <dd>CSS Selector 字符串</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>sequence&lt;{{Element}}&gt;</code></dt>
+            <dd>节点数组</dd>
+          </dl>
+          <aside class="example">
+            <p>按 CSS 选择器查询，使用属性选择器</p>
+            <pre class="js">
+            solarSystem.querySelectorAll('[name=sun]');
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>find()</dfn> method</h2>
+          <p>传入一个 {{Filter}} 查询节点。无匹配则返回 null。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{Filter}} filter</code></dt>
+            <dd>filter</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{Element}} or null</code></dt>
+            <dd>匹配节点或 null</dd>
+          </dl>
+          <aside class="example">
+            <p>自定义查询条件</p>
+            <pre class="js">
+            // 以下写法等价
+            solarSystem.querySelector('[name=sun]');
+            solarSystem.find((element) => element.name === 'sun');
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>findAll()</dfn> method</h2>
+          <p>传入一个 {{Filter}} 查询节点列表。无匹配则返回空数组。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{Filter}} filter</code></dt>
+            <dd>filter</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>sequence&lt;{{Element}}&gt;</code></dt>
+            <dd>节点数组</dd>
+          </dl>
+          <aside class="example">
+            <p>自定义查询条件</p>
+            <pre class="js">
+            // 以下写法等价
+            solarSystem.querySelectorAll('[name=sun]');
+            solarSystem.findAll((element) => element.name === 'sun');
+            </pre>
+          </aside>
+        </section>
       </section>
       <section data-dfn-for="DisplayObject" data-link-for="DisplayObject">
         <h2>DisplayObject</h2>
         <p>继承 {{Element}}，同时作为其他基础图形的基类，提供变换与动画功能。</p>
         <pre class="idl">
+          Element includes Animatable;
+          Element includes Tranformable;
+
           [Exposed=Window]
           interface DisplayObject : Element {
-            attribute DOMString               id;
+            constructor(optional DisplayObjectInit displayObjectInitDict = {});
+          };
+
+          dictionary DisplayObjectInit {
+            DOMString?          id;
+            DOMString?          name;
+            DOMString?          className;
+            boolean?            interactive;
+            DOMString?          type;
+            DisplayObjectStyle? style;
+          };
+
+          dictionary DisplayObjectStyle {
+            double?             x;
+            double?             y;
+            double?             z;
+            double?             zIndex;
+            sequence&lt;double&gt;?   origin;
+            sequence&lt;double&gt;?   anchor;
+            Visibility?         visibility;
+            Cursor?             cursor;
+            DisplayObject?      clipPath;
+            DisplayObject?      offsetPath;
+            DOMString?          transform;
+            DOMString?          transformOrigin;
+            Color?              stroke;
+            double?             strokeOpacity;
+            Color?              fill;
+            double?             fillOpacity;
+            double?             opacity;
+            double?             lineWidth;
+            LineCap?            lineCap;
+            LineJoin?           lineJoin;
+            sequence&lt;double&gt;?   lineDash;
+            double?             shadowBlur;
+            Color?              shadowColor;
+            double?             shadowOffsetX;
+            double?             shadowOffsetY;
+            DOMString?          filter;
           };
         </pre>
+        <section>
+          <h2>Tranformable</h2>
+          <p>在 DOM 中，一个元素的位置由布局引擎考虑 CSS 后计算得到，还可以通过 CSS Transform 对元素进行变换。
+            在 G 中暂无 CSS 实现，因此我们提供了一系列变换方法。</p>
+          <pre class="idl">
+          interface mixin Tranformable {
+            Tranformable            translate((double or sequence&lt;double&gt;) x, double? y, double? z);
+            Tranformable            translateLocal((double or sequence&lt;double&gt;) x, double? y, double? z);
+            Tranformable            setPosition((double or sequence&lt;double&gt;) x, double? y, double? z);
+            Tranformable            setLocalPosition((double or sequence&lt;double&gt;) x, double? y, double? z);
+            sequence&lt;double&gt;        getLocalPosition();
+            sequence&lt;double&gt;        getPosition();
+            Tranformable            scaleLocal((double or sequence&lt;double&gt;) x, double? y, double? z);
+            Tranformable            setScaleLocal((double or sequence&lt;double&gt;) x, double? y, double? z);
+            sequence&lt;double&gt;        getScale();
+            sequence&lt;double&gt;        getLocalScale();
+            Tranformable            rotateLocal((double or sequence&lt;double&gt;) x, double? y, double? z);
+            Tranformable            rotate((double or sequence&lt;double&gt;) x, double? y, double? z);
+          };
+          </pre>
+        </section>
       </section>
       <section data-dfn-for="Circle" data-link-for="Circle">
         <h2>Circle</h2>
@@ -719,31 +1122,383 @@
         <h2>Image</h2>
         <p>继承 {{DisplayObject}}。</p>
       </section>
-      <section data-dfn-for="Group" data-link-for="Group">
-        <h2>Group</h2>
-        <p>继承 {{DisplayObject}}。</p>
+      <section>
+        <h2><dfn>Group</dfn></h2>
+        <p>继承 {{DisplayObject}}。虽然我们支持在所有基础图形上添加子节点表达层次关系，但有时还是需要一种类似“容器”的概念，
+          它本身并无实体，只容纳其他子元素。例如典型的太阳系例子中，太阳轨道、地球轨道就使用了 Group 来创建。
+          虽然 Group 没有绘图属性，但 {{DisplayObject}} 的通用能力它都具有。例如查询子节点、变换、获取包围盒等。</p>
+        <aside class="example">
+          <p>创建 Group</p>
+          <pre class="js">
+          group.appendChild(circle);
+          group.getBounds(); // circle's bounds
+          
+          // transform
+          group.translate(100, 0);
+          
+          // query
+          group.getElementsByTagName('circle'); // [circle]
+          </pre>
+        </aside>
+      </section>
+      <section data-dfn-for="CustomElement" data-link-for="CustomElement">
+        <h2>CustomElement</h2>
+        <p>继承 {{DisplayObject}}，自定义组件的基类。</p>
+        <pre class="idl">
+          [Exposed=Window]
+          interface CustomElement : DisplayObject {
+            undefined   connectedCallback();
+            undefined   disconnectedCallback();
+            undefined   attributeChangedCallback(DOMString name, any oldValue, any newValue);
+          };
+        </pre>
+        <section>
+          <h2><dfn>connectedCallback()</dfn> method</h2>
+          <p>该图形加入画布时触发。</p>
+        </section>
+        <section>
+          <h2><dfn>disconnectedCallback()</dfn> method</h2>
+          <p>从画布移除时触发。</p>
+        </section>
+        <section>
+          <h2><dfn>attributeChangedCallback()</dfn> method</h2>
+          <p>属性发生修改时触发。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{DOMString}} name</code></dt>
+            <dd>属性名</dd>
+            <dt><code>{{any}} oldValue</code></dt>
+            <dd>旧属性值</dd>
+            <dt><code>{{any}} newValue</code></dt>
+            <dd>新属性值</dd>
+          </dl>
+        </section>
       </section>
       <section data-dfn-for="Document" data-link-for="Document">
         <h2>Document</h2>
-        <p>描述父子结构，提供场景图中一些快捷的查询属性：</p>
+        <p>在创建画布时同时会创建一个文档对象，可以类比 DOM 环境中的 `window.document`。
+          后续每一个加入画布的节点都会通过 {{ownerDocument}} 保留它的引用。</p>
+        <p>在创建文档对象时，内部会创建一个根节点 {{documentElement}}，可以使用 {{Group}} 创建，可以类比DOM 环境中的 `window.document.documentElement`。</p>
+        <p>尽管没有继承 {{Element}}，但它仍然具有节点查询能力，可以代理到 {{documentElement}} 上实现。</p>
+        <p>另外，尽管继承了 {{Node}}，但在 Document 上无法调用一些节点操作方法，正如在浏览器中调用 `document.appendChild` 会返回如下错误一样 `Uncaught DOMException: Failed to execute 'appendChild' on 'Node': Only one element on document allowed.`</p>
+        <p>最后，可以通过 {{createElement}} 创建元素，代替 `new Circle()` 这样的实例化方式。</p>
         <pre class="idl">
           [Exposed=Window]
           interface Document : Node {
-            readonly attribute Canvas defaultView;
+            readonly attribute DOMString      nodeName;
+            readonly attribute Document       ownerDocument;
+            readonly attribute Canvas         defaultView;
+            readonly attribute Node           documentElement;
+            readonly attribute Timeline       timeline;
+            Element                           getElementById(DOMString id);
+            sequence&lt;Element&gt;                 getElementsByName(DOMString name);
+            sequence&lt;Element&gt;                 getElementsByClassName(DOMString className);
+            sequence&lt;Element&gt;                 getElementsByTagName(DOMString tagName);
+            Element                           querySelector(DOMString selector);
+            sequence&lt;Element&gt;                 querySelectorAll(DOMString selector);
+            Element                           find(Filter filter);
+            sequence&lt;Element&gt;                 findAll(Filter filter);
+            DisplayObject                     createElement(DOMString nodeName, optional DisplayObjectInit displayObjectInitDict = {});
           };
         </pre>
+        <section>
+          <h2><dfn>nodeName</dfn> attribute</h2>
+          <p>返回 'document'</p>
+        </section>
+        <section>
+          <h2><dfn>ownerDocument</dfn> attribute</h2>
+          <p>返回 null</p>
+        </section>
+        <section>
+          <h2><dfn>defaultView</dfn> attribute</h2>
+          <p>返回 {{Canvas}}。</p>
+          <aside class="example">
+            <p>从文档上获取画布</p>
+            <pre class="js">
+            canvas.document.defaultView; // Canvas
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>documentElement</dfn> attribute</h2>
+          <p>返回场景图中的根节点，在创建 {{Canvas}} 时会默认使用 {{Group}} 创建一个。</p>
+          <aside class="example">
+            <p>获取文档根节点</p>
+            <pre class="js">
+            canvas.document.documentElement; // Group
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>timeline</dfn> attribute</h2>
+          <p>返回默认时间轴，在动画系统中使用。</p>
+        </section>
+        <section>
+          <h2><dfn>createElement()</dfn> method</h2>
+          <p>创建自定义组件时，需要配合 {{CustomElementRegistry}} 使用。</p>
+          <aside class="example">
+            <p>创建元素</p>
+            <pre class="js">
+            // 以下写法等价
+            const circle = canvas.document.createElement(SHAPE.Circle, { style: { r: 100 } });
+            const circle = new Circle({ style: { r: 100 } });
+            </pre>
+          </aside>
+        </section>
       </section>
-        
     </section>
     <section data-dfn-for="Canvas">
-      <h2>Canvas</h2>
+      <h2>画布</h2>
+      <p>从渲染的角度上看，它是一个在浏览器中实现的“小浏览器”，承载着以下三类对象：
+        <ul>
+        <li>场景图。我们通过它描述场景中的各个图形及其层次关系。</li>
+        <li>相机。我们通过它定义观察整个场景的角度。我们为每一个画布内置了一个默认使用正交投影的相机，后续可随时修改。</li>
+        <li>渲染器。我们通过它指定画布使用何种底层技术来渲染场景。不同的渲染器有着不同的渲染能力，例如只有 g-webgl 才能渲染 3D 图形。在 2D 场景下我们会尽力实现不同渲染器下一致的渲染效果。</li>
+        </ul>
+      </p>
       <pre class="idl">
       [Exposed=Window]
-      interface Canvas {
-        readonly attribute Document document;
-        undefined resize(long width, long height);
+      interface Canvas : EventTarget {
+        readonly attribute Document              document;
+        readonly attribute CustomElementRegistry customElements;
+        undefined                   resize(long width, long height);
+        Point                       viewport2Client(Point p);
+        Point                       client2Viewport(Point p);
+        Point                       viewport2Canvas(Point p);
+        Point                       canvas2Viewport(Point p);
+        undefined                   appendChild(DisplayObject o);
+        undefined                   removeChild(DisplayObject o);
+        undefined                   removeChildren();
+        Camera                      getCamera();
+      };
+
+      dictionary Point {
+        required double x;
+        required double y;
       };
       </pre>
+      <section>
+        <h2>坐标系</h2>
+        <p>当我们说起“位置”，一定是相对于某个坐标系下而言，在 G 中我们会使用到 [=Client 坐标系=]、[=Screen 坐标系=]、[=Page 坐标系=]、[=Canvas 坐标系=] 以及 [=Viewport 坐标系=]</p>
+        <p>在这些坐标系中，[=Client 坐标系=]、[=Screen 坐标系=]、[=Page 坐标系=] 都是浏览器原生支持的坐标系，因此我们不会对事件对象上的这些坐标值做任何修改。
+          而 Canvas 画布类似在浏览器中实现的一个“小浏览器”，因此它的视口坐标系即 [=Viewport 坐标系=] 就可以类比成浏览器的 [=Client 坐标系=]。
+          而当相机发生移动时，我们的可视范围随之改变，类似页面发生滚动，但图形在世界中的位置并没有改变，因此 [=Canvas 坐标系=]就可以类比成浏览器的 [=Page 坐标系=]。</p>
+        <p>这些坐标系都以左上角为原点，如果使用了 `g-plugin-3d` 插件，Z 轴正向指向屏幕外</p>
+        <img src="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes/canvas_default_grid.png" />
+
+        <section>
+          <h2><dfn>Client 坐标系</dfn></h2>
+          <p>前端开发者最熟悉的应该是 Client 浏览器坐标系，它以浏览器左上角为原点，G 不会修改原生事件对象的这个坐标值。</p>
+          <p>如果文档没有滚动，等同于 Page 坐标，下图展示了与 Screen 的差别：</p>
+          <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TYQJR40KMm0AAAAAAAAAAAAAARQnAQ" />
+        </section>
+        <section>
+          <h2><dfn>Screen 坐标系</dfn></h2>
+          <p>屏幕坐标系也是浏览器常用的坐标系，以屏幕左上角为原点，会受页面滚动影响。G 不会修改原生事件对象的这个坐标值。</p>
+          <p>值得一提的是，在双屏下可能会出现负数，例如在左侧屏幕中。</p>
+        </section>
+        <section>
+          <h2><dfn>Page 坐标系</dfn></h2>
+          <p>以文档左上角为原点，考虑文档滚动，G 不会修改原生事件对象的这个坐标值。</p>
+        </section>
+        <section>
+          <h2><dfn>Canvas 坐标系</dfn></h2>
+          <p>可以类比浏览器的 Client 坐标系，也称作世界坐标系，我们在创建图形时指定的位置均相对于该坐标系。它以画布 DOM 元素的左上角为原点，X 轴正向指向屏幕右侧，Y 轴正向指向屏幕下方。也称作“世界坐标系”，涉及到旋转时，我们设定沿坐标轴正向顺时针为旋转方向。</p>
+        </section>
+        <section>
+          <h2><dfn>Viewport 坐标系</dfn></h2>
+          <p>在浏览器的 Page 坐标系中，不管页面如何滚动，元素在文档中的坐标都不会改变，改变的是我们的可视区域。
+
+            同样的，相机决定了我们观察世界的角度，如果相机没有发生移动，[=Viewport 坐标系=]和 [=Canvas 坐标系=]将完全重合，因此在我们的可见范围内，视口左上角坐标与 [=Canvas 坐标系=]原点一样，都是 `[0, 0]`。但如果相机发生了平移、旋转、缩放，视口也会发生相应变化，此时视口左上角 `[0, 0]` 对应 Canvas 坐标系下的位置就不再是 `[0, 0]` 了。</p>
+        </section>
+        <section>
+          <h2>Client 与 Viewport 转换</h2>
+          <p>在内部实现中，我们使用了以下计算逻辑，例如从 Client 到 Viewport：
+            <ul>
+              <li>首先获取画布 DOM 元素在 [=Client 坐标系=]下的包围盒，使用到了 {{Element/getBoundingClientRect()}}</li>
+              <li>然后用 clientX/Y 减去包围盒左上角坐标，就得到了相对画布 DOM 元素左上角的坐标，即 Viewport 坐标</li>
+            </ul>
+            <aside class="example">
+              <p>从 Client 到 Viewport 坐标系转换</p>
+              <pre class="js">
+              // 获取画布 DOM 元素在 Client 坐标系下的包围盒
+              // @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+              const bbox = $canvas.getBoundingClientRect();
+  
+              viewportX = clientX - bbox.left;
+              viewportY = clientY - bbox.top;
+              </pre>
+            </aside>
+          <section>
+            <h2><dfn>viewport2Client()</dfn> method</h2>
+            <p></p>
+          </section>
+          <section>
+            <h2><dfn>client2Viewport()</dfn> method</h2>
+            <p></p>
+          </section>
+          <aside class="example">
+            <p>Viewport 坐标系与 Client 坐标系转换</p>
+            <pre class="js">
+            canvas.viewport2Client({ x: 0, y: 0 }); // Point { x: 100, y: 100 }
+            canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2>Canvas 与 Viewport 转换</h2>
+          <p>相机决定了我们观察世界的角度，如果相机没有发生移动，[=Viewport 坐标系=]和 [=Canvas 坐标系=]将完全重合，
+            因此在我们的可见范围内，视口左上角坐标与 Canvas 坐标系原点一样，都是 `[0, 0]`。
+            但如果相机发生了平移、旋转、缩放，视口也会发生相应变化，此时视口左上角 `[0, 0]` 对应 Canvas 坐标系下的位置就不再是 `[0, 0]` 了。</p>
+          <p>在内部实现中，我们使用了以下计算逻辑，例如从 Canvas 到 Viewport，经历从世界坐标系到裁剪坐标系，再到 NDC，最后到视口坐标系的变换：</p>
+          <aside class="example">
+            <p>从 Canvas 到 Viewport 坐标系转换</p>
+            <pre class="js">
+            // 计算相机 VP 矩阵
+            const camera = canvas.getCamera();
+            const projectionMatrix = camera.getPerspective();
+            const viewMatrix = camera.getViewTransform();
+            const vpMatrix = mat4.multiply(mat4.create(), projectionMatrix, viewMatrix);
+            
+            // 世界坐标系（Canvas） -> 裁剪坐标系（Clip）
+            const clip = vec3.fromValues(canvasX, canvasY, 0);
+            vec3.transformMat4(clip, clip, vpMatrix);
+            
+            // Clip -> NDC -> Viewport 同时翻转 Y 轴
+            const { width, height } = this.canvasConfig; // 画布宽高
+            viewportX = ((clip[0] + 1) / 2) * width;
+            viewportY = (1 - (clip[1] + 1) / 2) * height;
+            </pre>
+          </aside>
+          <section>
+            <h2><dfn>viewport2Canvas()</dfn> method</h2>
+            <p></p>
+          </section>
+          <section>
+            <h2><dfn>canvas2Viewport()</dfn> method</h2>
+            <p></p>
+          </section>
+        </section>
+      </section>
+      <section>
+        <h2>画布事件</h2>
+        <p>画布同样具有事件监听能力，除了交互事件，还包括一些画布特有事件，它们在画布的渲染、销毁等生命周期中触发。</p>
+        <pre class="idl">
+          dictionary CanvasEvent {
+            DOMString BEFORE_RENDER = "beforerender";
+            DOMString AFTER_RENDER = "afterrender";
+            DOMString BEFORE_DESTROY = "beforedestroy";
+            DOMString AFTER_DESTROY = "afterdestroy";
+          };
+        </pre>
+        <aside class="example">
+          <p>监听画布事件</p>
+          <pre class="js">
+          canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+            stats.update();
+          });
+          </pre>
+        </aside>
+      </section>
+      <section>
+        <h2>添加/删除节点</h2>
+        <p>加入画布的节点将会被立即渲染。</p>
+        <section>
+          <h2><dfn>appendChild()</dfn> method</h2>
+          <p></p>
+        </section>
+        <section>
+          <h2><dfn>removeChild()</dfn> method</h2>
+          <p></p>
+        </section>
+        <section>
+          <h2><dfn>removeChildren()</dfn> method</h2>
+          <p></p>
+        </section>
+      </section>
+      <section>
+        <h2><dfn>getCamera()</dfn> method</h2>
+        <p>获取默认相机，每个画布在创建时都会同时创建一个默认相机，使用正交投影。</p>
+        <p>返回值：</p>
+        <dl class="def">
+          <dt><code>{{Camera}}</code></dt>
+          <dd>默认相机</dd>
+        </dl>
+      </section>
+      <section data-dfn-for="CustomElementRegistry">
+        <h2>自定义组件注册</h2>
+        <p>自定义组件完成注册后，就可以使用 {{Document/createElement()}} 创建。</p>
+        <pre class="idl">
+        [Exposed=Window]
+        interface CustomElementRegistry {
+          undefined define(DOMString name, CustomElementConstructor constructor);
+          (CustomElementConstructor or undefined) get(DOMString name);
+        };
+
+        callback CustomElementConstructor = DisplayObject ();
+        </pre>
+        <aside class="example">
+          <p>注册自定义组件并创建</p>
+          <pre class="js">
+            // 注册
+            canvas.customElements.define(MyCustomShape.tag, MyCustomShape);
+            // 创建
+            const myCustomShape = canvas.document.createElement(MyCustomShape.tag, {});
+          </pre>
+        </aside>
+        <section>
+          <h2><dfn>define()</dfn> method</h2>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{DOMString}} name</code></dt>
+            <dd>组件名字符串</dd>
+            <dt><code>{{CustomElementConstructor}} constructor</code></dt>
+            <dd>自定义组件构造函数，需要继承 {{CustomElement}}</dd>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>get()</dfn> method</h2>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{DOMString}} name</code></dt>
+            <dd>组件名字符串</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{CustomElementConstructor}}</code></dt>
+            <dd>自定义组件构造函数</dd>
+          </dl>
+        </section>
+      </section>
+    </section>
+    <section data-dfn-for="Camera">
+      <h2>相机</h2>
+      <p>相机描述了我们观察世界的角度。视点、相机位置都会影响最终的成像。</p>
+      <section data-dfn-for="Camera">
+        <h2>Camera</h2>
+        <pre class="idl">
+        [Exposed=(Window)]
+        interface Camera {
+          undefined       setOrthographic(double left, double right, double top, double bottom, double near, double far);
+          undefined       setPerspective(double near, double far, double fov, double aspect);
+          undefined       setPosition((double or sequence&lt;double&gt;) x, double? y, double? z);
+          undefined       setFocalPosition((double or sequence&lt;double&gt;) x, double? y, double? z);
+          undefined       setNear(double near);
+          undefined       setFar(double far);
+          undefined       setFov(double fov);
+          undefined       setAspect(double aspect);
+          undefined       setZoom(double zoom);
+          undefined       setRoll(double angle);
+          undefined       setElevation(double angle);
+          undefined       setAzimuth(double angle);
+          undefined       pan(double tx, double ty);
+          undefined       dolly(double distance);
+          undefined       rotate(double azimuth, double elevation, double roll);
+          Landmark        createLandmark(DOMString name, LandmarkParams params);
+          undefined       gotoLandmark(DOMString name, double? duration);
+        };
+        </pre>
+      </section>
     </section>
     <section data-dfn-for="Event">
       <h2>事件</h2>
@@ -761,17 +1516,21 @@
           <li>事件流包含捕获和冒泡阶段，可以通过事件对象上的某些方法介入它们</li>
           <li>可以为某个事件添加一个或多个监听器，它们按照注册顺序依次触发</li>
         </ul>
+        因此在内部实现中，我们需要监听具体渲染环境下的事件，将原生事件封装成 {{Event}}，模拟 {{Event/nativeEvent}} 原生事件的传播流程。
       </p>
-      <section>
-        <h2>事件对象</h2>
+      <section data-dfn-for="Event">
+        <h2>Event</h2>
         <pre class="idl">
         [Exposed=(Window)]
         interface Event {
           constructor(DOMString type, optional EventInit eventInitDict = {});
-
+          
+          readonly attribute DOMString pointerType;
           readonly attribute DOMString type;
           readonly attribute EventTarget? target;
           readonly attribute EventTarget? currentTarget;
+          readonly attribute Event nativeEvent;
+
           sequence&lt;EventTarget&gt; composedPath();
 
           const unsigned short NONE = 0;
@@ -790,7 +1549,7 @@
           readonly attribute boolean defaultPrevented;
           readonly attribute boolean composed;
 
-          readonly attribute DOMHighResTimeStamp timeStamp;
+          readonly attribute double timeStamp;
         };
 
         dictionary EventInit {
@@ -799,9 +1558,213 @@
           boolean composed = false;
         };
         </pre>
+        <section>
+          <h2><dfn>pointerType</dfn> attribute</h2>
+          <p>只读属性，返回 <a href='https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType'>PointerEvent</a> 的类型：</p>
+          <dl class="def">
+            <dt><code>mouse</code></dt>
+            <dd>由鼠标产生</dd>
+            <dt><code>pen</code></dt>
+            <dd>由笔产生</dd>
+            <dt><code>touch</code></dt>
+            <dd>由可触摸设备产生</dd>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>type</dfn> attribute</h2>
+          <p>只读属性，返回以下值：</p>
+        </section>
+        <section>
+          <h2><dfn>target</dfn> attribute</h2>
+          <p>只读属性，返回事件触发的节点。</p>
+          <aside class="example">
+            <p>获取事件触发节点</p>
+            <pre class="js">
+              const ul = new Group();
+              const li1 = new Rect();
+              const li2 = new Rect();
+              ul.appendChild(li1);
+              ul.appendChild(li2);
+
+              ul.addEventListener(
+                  'click',
+                  (e) => {
+                      e.target; // li1 或者 li2
+                      e.currentTarget; // ul
+                  },
+                  false,
+              );
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>currentTarget</dfn> attribute</h2>
+          <p>只读属性，始终返回事件监听器绑定在哪个节点上。</p>
+          <aside class="example">
+            <p>获取事件绑定节点</p>
+            <pre class="js">
+              const ul = new Group();
+              const li1 = new Rect();
+              const li2 = new Rect();
+              ul.appendChild(li1);
+              ul.appendChild(li2);
+
+              ul.addEventListener(
+                  'click',
+                  (e) => {
+                      e.target; // li1 或者 li2
+                      e.currentTarget; // ul
+                  },
+                  false,
+              );
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>eventPhase</dfn> attribute</h2>
+          <p>只读属性，返回事件对象当前所处在事件处理流程中的哪个阶段。</p>
+          <dl class="def">
+            <dt><dfn>NONE</dfn></dt>
+            <dd>此时该事件还未被处理</dd>
+            <dt><dfn>CAPTURING_PHASE</dfn></dt>
+            <dd>处于向下捕获阶段</dd>
+            <dt><dfn>AT_TARGET</dfn></dt>
+            <dd>事件到达了 {{Event/target}}，节点上的监听器被触发。如果 {{Event/bubbles}} 为 false，事件处理流程到此结束。</dd>
+            <dt><dfn>BUBBLING_PHASE</dfn></dt>
+            <dd>处于向上冒泡阶段</dd>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>stopPropagation()</dfn> method</h2>
+          <p>阻止捕获和冒泡阶段中当前事件的进一步传播。与 {{Event/stopImmediatePropagation()}} 的区别是并不会阻止监听同一事件的其他事件监听器被调用。</p>
+        </section>
+        <section>
+          <h2><dfn>stopImmediatePropagation()</dfn> method</h2>
+          <p>阻止监听同一事件的其他事件监听器被调用，同时阻止冒泡。</p>
+          <aside class="example">
+            <p>阻止监听同一事件的其他事件监听器被调用，同时阻止冒泡</p>
+            <pre class="js">
+            // 场景图：group -> circle
+
+            circle.on(
+                'click',
+                () => {
+                    // 正常执行
+                },
+                false,
+            );
+
+            circle.on(
+                'click',
+                (e) => {
+                    // 正常执行
+                    e.stopImmediatePropagation();
+                },
+                false,
+            );
+
+            circle.on(
+                'click',
+                () => {
+                    // 之后注册的监听器，不会执行
+                },
+                false,
+            );
+
+            group.on(
+                'click',
+                () => {
+                    // 由于阻止了向上冒泡，同样不会执行
+                },
+                false,
+            );
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>bubbles</dfn> attribute</h2>
+          <p>只读属性，是否支持冒泡，默认为 true。{{AnimationPlaybackEvent}} 不支持。</p>
+        </section>
+        <section>
+          <h2><dfn>cancelable</dfn> attribute</h2>
+          <p>只读属性，是否支持取消。
+            内部实现在用户调用 {{Event/preventDefault()}} 前需要检查该属性，如果为 false 则无法取消。
+            用户无法手动设置该属性，内部实现应该从 {{Event/nativeEvent}} 上获取该值。
+          </p>
+        </section>
+        <section>
+          <h2><dfn>preventDefault()</dfn> method</h2>
+          <p>阻止浏览器默认行为，内部实现需要调用原生事件上同名方法。对于 Passive 事件调用该方法无效，并且会抛出警告。</p>
+        </section>
+        <section>
+          <h2><dfn>defaultPrevented</dfn> attribute</h2>
+          <p>只读属性，原生事件是否被阻止。</p>
+        </section>
+        <section>
+          <h2><dfn>composed</dfn> attribute</h2>
+          <p>只读属性，是否支持跨 shadow DOM 传播，默认为 true。目前 G 的自定义图形机制尚未实现该特性，即事件依然会穿透自定义图形的边界向下传播。</p>
+        </section>
+        <section>
+          <h2><dfn>timeStamp</dfn> attribute</h2>
+          <p>只读属性，返回事件创建时的事件（毫秒为单位）。在 DOM 环境可以直接使用 `performance.now()`</p>
+        </section>
+        <section>
+          <h2><dfn>nativeEvent</dfn> attribute</h2>
+          <p>只读属性，返回原生事件。该事件类型完全依赖于渲染环境，例如在 DOM 环境中，可能为 <a href='https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType'>PointerEvent</a>。
+          很多属性需要从原生事件上获取，例如坐标信息，{{Event/cancelable}} 等。
+          </p>
+        </section>
+        <section>
+          <h2><dfn>composedPath()</dfn> method</h2>
+          <p>返回事件路径，是一个包含 {{EventTarget}} 的数组。在这个数组中，{{Event/target}} 为数组的第一个元素，场景图根节点、{{Document}} 和 {{Canvas}} 为数组末尾的三个元素。</p>
+          <aside class="example">
+            <p>获取事件路径</p>
+            <pre class="js">
+              const ul = new Group();
+              const li1 = new Rect();
+              const li2 = new Rect();
+              ul.appendChild(li1);
+              ul.appendChild(li2);
+
+              ul.addEventListener(
+                'click',
+                (e) => {
+                  const path = e.composedPath(); // [li1, ul, Group, Document, Canvas];
+                },
+                false,
+              );
+            </pre>
+          </aside>
+        </section>
       </section>
-      <section>
-        <h2>自定义事件</h2>
+      <section data-dfn-for="AnimationPlaybackEvent">
+        <h2>AnimationPlaybackEvent</h2>
+        <p>在动画监听器的回调函数中，会传入 AnimationPlaybackEvent，它继承了 {{Event}}。特别的是，它的 {{Event/target}} 不再是</p>
+        <aside class="example">
+          <p>创建自定义事件，获取数据</p>
+          <pre class="js">
+          animation.onfinish = function (e) {
+            e.target; // animation
+            e.target.playState; // 'finished'
+          };
+          </pre>
+        </aside>
+        <pre class="idl">
+        [Exposed=Window]
+        interface AnimationPlaybackEvent : Event {
+          constructor(DOMString type, optional AnimationPlaybackEventInit eventInitDict = {});
+          readonly attribute double? currentTime;
+          readonly attribute double? timelineTime;
+        };
+        dictionary AnimationPlaybackEventInit : EventInit {
+          double? currentTime = null;
+          double? timelineTime = null;
+        };
+        </pre>
+      </section>
+      <section data-dfn-for="CustomEvent">
+        <h2>CustomEvent</h2>
+        <p>继承自 {{Event}} 可以在 {{CustomEvent/detail}} 上放置任何数据，用于使用 {{EventTarget/dispatchEvent()}} 手动触发。</p>
         <pre class="idl">
         [Exposed=(Window)]
         interface CustomEvent : Event {
@@ -813,8 +1776,12 @@
           any detail = null;
         };
         </pre>
+        <section>
+          <h2><dfn>detail</dfn> attribute</h2>
+          <p>创建自定义事件时可携带任意类型的数据，后续在事件监听器中的事件对象上访问：</p>
+        </section>
         <aside class="example">
-          <p>创建自定义事件</p>
+          <p>创建自定义事件，获取数据</p>
           <pre class="js">
             // 创建自定义事件
             const event = new CustomEvent('build', { detail: { prop1: 'xx' } });
@@ -831,6 +1798,18 @@
     </section>
     <section data-dfn-for="Animation">
       <h2>动画</h2>
+      <pre class="idl">
+      interface mixin Animatable {
+        Animation           animate(object? keyframes,
+                                    optional (unrestricted double or KeyframeAnimationOptions) options = {});
+        sequence&lt;Animation&gt; getAnimations();
+      };
+    
+      dictionary KeyframeAnimationOptions : KeyframeEffectOptions {
+        DOMString id = "";
+        AnimationTimeline? timeline;
+      };
+  </pre>
     </section>
     <section data-dfn-for="Renderer">
       <h2>渲染器</h2>

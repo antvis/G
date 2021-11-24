@@ -320,8 +320,8 @@ export interface BindingLayoutSamplerDescriptor {
 export interface BindingLayoutDescriptor {
   numUniformBuffers?: number;
   numSamplers?: number;
-  numReadOnlyStorageBuffers?: number;
-  numStorageBuffers?: number;
+  // numReadOnlyStorageBuffers?: number;
+  // numStorageBuffers?: number;
   samplerEntries?: BindingLayoutSamplerDescriptor[];
 }
 

@@ -147,23 +147,20 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
 
+      const renderInput = {
+        backbufferWidth: canvas.width,
+        backbufferHeight: canvas.height,
+        antialiasingMode: AntialiasingMode.None,
+      };
       // create main rt
       const mainRenderDesc = makeBackbufferDescSimple(
         RGAttachmentSlot.Color0,
-        {
-          backbufferWidth: canvas.width,
-          backbufferHeight: canvas.height,
-          antialiasingMode: AntialiasingMode.None,
-        },
+        renderInput,
         opaqueWhiteFullClearRenderPassDescriptor,
       );
       const mainDepthDesc = makeBackbufferDescSimple(
         RGAttachmentSlot.DepthStencil,
-        {
-          backbufferWidth: canvas.width,
-          backbufferHeight: canvas.height,
-          antialiasingMode: AntialiasingMode.None,
-        },
+        renderInput,
         opaqueWhiteFullClearRenderPassDescriptor,
       );
 
@@ -191,30 +188,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
         });
       });
 
-      // WebGL1 need an extra blit pass
-      // if (this.device.queryVendorInfo().platformString === 'WebGL1') {
-      //   pushCopyPass(
-      //     this.builder,
-      //     this.renderHelper,
-      //     {
-      //       backbufferWidth: canvas.width,
-      //       backbufferHeight: canvas.height,
-      //     },
-      //     mainColorTargetID,
-      //   );
-      // }
-
       // TODO: other post-processing passes
       // FXAA
-      // pushFXAAPass(
-      //   this.builder,
-      //   this.renderHelper,
-      //   {
-      //     backbufferWidth: canvas.width,
-      //     backbufferHeight: canvas.height,
-      //   },
-      //   mainColorTargetID,
-      // );
+      // pushFXAAPass(this.builder, this.renderHelper, renderInput, mainColorTargetID);
 
       // output to screen
       this.builder.resolveRenderTargetToExternalTexture(

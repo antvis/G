@@ -1,6 +1,19 @@
 import { GL } from '../constants';
-import { Format, FormatTypeFlags, getFormatCompByteSize, getFormatTypeFlags } from '../format';
-import { Buffer, ResourceType, Texture, TextureDescriptor, TextureDimension } from '../interfaces';
+import {
+  Format,
+  FormatTypeFlags,
+  getFormatCompByteSize,
+  getFormatSamplerKind,
+  getFormatTypeFlags,
+} from '../format';
+import {
+  Buffer,
+  ResourceType,
+  SamplerFormatKind,
+  Texture,
+  TextureDescriptor,
+  TextureDimension,
+} from '../interfaces';
 import { assert, isPowerOfTwo } from '../utils';
 import { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
@@ -18,6 +31,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
   numLevels: number;
   immutable: boolean;
   mipmaps: boolean;
+  formatKind: SamplerFormatKind;
 
   constructor({
     id,
@@ -38,6 +52,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     let numLevels = this.clampNumLevels(descriptor);
     this.immutable = !!descriptor.immutable;
     this.pixelFormat = descriptor.pixelFormat;
+    this.formatKind = getFormatSamplerKind(descriptor.pixelFormat);
     this.width = descriptor.width;
     this.height = descriptor.height;
     this.depth = descriptor.depth;

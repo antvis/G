@@ -9,11 +9,7 @@ export class RGRenderTargetDescription {
   depthClearValue: number | 'load' = 'load';
   stencilClearValue: number | 'load' = 'load';
 
-  pixelFormat: Format;
-
-  constructor(pixelFormat: Format) {
-    this.pixelFormat = pixelFormat;
-  }
+  constructor(public pixelFormat: Format) {}
 
   /**
    * Set the dimensions of a render target description.

@@ -183,13 +183,13 @@ export class RenderCache {
       program = this.device.createProgramSimple(descriptorCopy);
       this.programCache.add(descriptorCopy, program);
 
-      // TODO(jstpierre): Ugliness
-      if ('associate' in (programDescriptorSimple as any)) {
-        const gfxProgramDescriptor = programDescriptorSimple as ProgramDescriptor;
-        // @ts-ignore
-        gfxProgramDescriptor.associate(this.device, program);
-        (descriptorCopy as any).orig = gfxProgramDescriptor;
-      }
+      // // TODO(jstpierre): Ugliness
+      // if ('associate' in (programDescriptorSimple as any)) {
+      //   const gfxProgramDescriptor = programDescriptorSimple as ProgramDescriptor;
+      //   // @ts-ignore
+      //   gfxProgramDescriptor.associate(this.device, program);
+      //   (descriptorCopy as any).orig = gfxProgramDescriptor;
+      // }
     }
 
     return program;

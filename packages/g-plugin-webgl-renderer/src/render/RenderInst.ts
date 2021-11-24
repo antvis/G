@@ -47,7 +47,7 @@ export class RenderInst {
   // Bindings building.
   private uniformBuffer: DynamicUniformBuffer;
   private bindingDescriptors: BindingsDescriptor[] = nArray(1, () => ({
-    bindingLayout: null!,
+    bindingLayout: null,
     samplerBindings: [],
     uniformBufferBindings: [],
   }));
@@ -178,7 +178,7 @@ export class RenderInst {
       i < bindingLayout.numUniformBuffers;
       i++
     )
-      this.bindingDescriptors[0].uniformBufferBindings.push({ buffer: null!, wordCount: 0 });
+      this.bindingDescriptors[0].uniformBufferBindings.push({ buffer: null, wordCount: 0 });
     for (
       let i = this.bindingDescriptors[0].samplerBindings.length;
       i < bindingLayout.numSamplers;
@@ -205,7 +205,6 @@ export class RenderInst {
     this.drawCount = indexCount;
     this.drawStart = indexStart;
     this.drawInstanceCount = 1;
-    // this.drawInstanceCount = 0;
   }
 
   drawIndexesInstanced(indexCount: number, instanceCount: number, indexStart: number = 0): void {
@@ -220,7 +219,6 @@ export class RenderInst {
     this.drawCount = primitiveCount;
     this.drawStart = primitiveStart;
     this.drawInstanceCount = 1;
-    // this.drawInstanceCount = 0;
   }
 
   setUniformBuffer(uniformBuffer: DynamicUniformBuffer): void {
@@ -337,7 +335,9 @@ export class RenderInst {
         } else {
           assert(binding.lateBinding === null);
           dst.texture = binding.texture;
-          if (binding.sampler !== null) dst.sampler = binding.sampler;
+          if (binding.sampler !== null) {
+            dst.sampler = binding.sampler;
+          }
         }
 
         dst.lateBinding = null;
@@ -393,7 +393,12 @@ export class RenderInst {
       depthStencilAttachmentDescriptor !== null
         ? depthStencilAttachmentDescriptor.pixelFormat
         : null;
+    if (depthStencilAttachmentDescriptor !== null) {
+      if (sampleCount === -1) sampleCount = depthStencilAttachmentDescriptor.sampleCount;
+      else assert(sampleCount == depthStencilAttachmentDescriptor.sampleCount);
+    }
 
+    assert(sampleCount > 0);
     this.renderPipelineDescriptor.sampleCount = sampleCount;
   }
 

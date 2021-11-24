@@ -166,7 +166,9 @@ export function copyAttachmentStateFromSimple(
   dst: AttachmentState,
   src: Partial<AttachmentStateSimple>,
 ): void {
-  if (src.channelWriteMask !== undefined) dst.channelWriteMask = src.channelWriteMask;
+  if (src.channelWriteMask !== undefined) {
+    dst.channelWriteMask = src.channelWriteMask;
+  }
 
   if (src.blendMode !== undefined) {
     dst.rgbBlendState.blendMode = src.blendMode;

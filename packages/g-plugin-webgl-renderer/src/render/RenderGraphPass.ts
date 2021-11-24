@@ -1,4 +1,10 @@
-import { NormalizedViewportCoords, RenderPassDescriptor, RenderTarget, Texture } from '../platform';
+import {
+  NormalizedViewportCoords,
+  QueryPool,
+  RenderPassDescriptor,
+  RenderTarget,
+  Texture,
+} from '../platform';
 import { assert } from '../platform/utils';
 import {
   IdentityViewportCoords,
@@ -75,6 +81,10 @@ export class RenderGraphPass implements IRenderGraphPass {
     this.resolveTextureInputIDs.push(resolveTextureID);
   }
 
+  attachOcclusionQueryPool(queryPool: QueryPool): void {
+    this.descriptor.occlusionQueryPool = queryPool;
+  }
+
   resolveToExternalTexture(attachmentSlot: RGAttachmentSlot, texture: Texture): void {
     this.resolveTextureOutputExternalTextures[attachmentSlot] = texture;
   }
@@ -87,5 +97,9 @@ export class RenderGraphPass implements IRenderGraphPass {
   post(func: PassPostFunc): void {
     assert(this.postFunc === null);
     this.postFunc = func;
+  }
+
+  addExtraRef(slot: RGAttachmentSlot): void {
+    this.renderTargetExtraRefs[slot] = true;
   }
 }

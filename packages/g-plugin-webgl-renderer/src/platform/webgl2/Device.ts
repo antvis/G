@@ -181,7 +181,6 @@ export class Device_GL implements SwapChain, Device {
   private resolveDepthStencilAttachmentsChanged: boolean = false;
   private resolveDepthStencilReadFramebuffer: WebGLFramebuffer;
   private resolveDepthStencilDrawFramebuffer: WebGLFramebuffer;
-  private inPresent = false;
   /**
    * use DRAW_FRAMEBUFFER in WebGL2
    */
@@ -278,28 +277,14 @@ export class Device_GL implements SwapChain, Device {
     this.renderPassDrawFramebuffer = this.ensureResourceExists(gl.createFramebuffer());
     this.readbackFramebuffer = this.ensureResourceExists(gl.createFramebuffer());
 
-    this.fallbackTexture2D = this.ensureResourceExists(gl.createTexture());
-    gl.bindTexture(GL.TEXTURE_2D, this.fallbackTexture2D);
-    gl.texImage2D(
-      GL.TEXTURE_2D,
-      0,
-      isWebGL2(gl) ? gl.RGBA8 : gl.RGBA,
-      1,
-      1,
-      0,
-      gl.RGBA,
-      gl.UNSIGNED_BYTE,
-      new Uint8Array(4),
+    this.fallbackTexture2D = this.createFallbackTexture(
+      TextureDimension.n2D,
+      SamplerFormatKind.Float,
     );
-
-    // this.fallbackTexture2D = this.createFallbackTexture(
-    //   TextureDimension.n2D,
-    //   SamplerFormatKind.Float,
-    // );
-    // this.fallbackTexture2DDepth = this.createFallbackTexture(
-    //   TextureDimension.n2D,
-    //   SamplerFormatKind.Depth,
-    // );
+    this.fallbackTexture2DDepth = this.createFallbackTexture(
+      TextureDimension.n2D,
+      SamplerFormatKind.Depth,
+    );
 
     if (isWebGL2(gl)) {
       // this.fallbackTexture2DArray = this.createFallbackTexture(
@@ -1438,7 +1423,7 @@ export class Device_GL implements SwapChain, Device {
       if (this.currentTextures[samplerIndex] !== gl_texture) {
         this.setActiveTexture(gl.TEXTURE0 + samplerIndex);
         if (gl_texture !== null) {
-          const { gl_target } = assertExists(binding).texture as Texture_GL;
+          const { gl_target, formatKind } = assertExists(binding).texture as Texture_GL;
           gl.bindTexture(gl_target, gl_texture);
 
           // In WebGL1 set tex's parameters @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texParameter
@@ -1448,11 +1433,10 @@ export class Device_GL implements SwapChain, Device {
 
           this.debugGroupStatisticsTextureBind();
 
-          // TODO(webgpu): Turn this on at some point in the future when we've ported all of the code over.
-          // assert(samplerEntry.gl_target === gl_target);
+          assert(samplerEntry.gl_target === gl_target);
           // assert(samplerEntry.formatKind === formatKind);
         } else {
-          gl.bindTexture(GL.TEXTURE_2D, this.getFallbackTexture(samplerEntry));
+          gl.bindTexture(samplerEntry.gl_target, this.getFallbackTexture(samplerEntry));
         }
         this.currentTextures[samplerIndex] = gl_texture;
       }
