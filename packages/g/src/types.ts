@@ -121,6 +121,7 @@ export interface BaseStyleProps {
    * 设置线的虚线样式，可以指定一个数组。一组描述交替绘制线段和间距（坐标空间单位）长度的数字。 如果数组元素的数量是奇数， 数组的元素会被复制并重复。例如， [5, 15, 25] 会变成 [5, 15, 25, 5, 15, 25]。这个属性取决于浏览器是否支持 setLineDash() 函数。
    */
   lineDash?: number[] | null;
+  lineDashOffset?: number;
 
   padding?: number[] | number;
 

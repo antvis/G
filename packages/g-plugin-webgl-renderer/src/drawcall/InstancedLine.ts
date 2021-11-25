@@ -25,6 +25,7 @@ export class InstancedLineProgram extends DeviceProgram {
   static a_PointB = AttributeLocation.MAX + 2;
   static a_Cap = AttributeLocation.MAX + 3;
   static a_Uv = AttributeLocation.MAX + 4;
+  static a_Dash = AttributeLocation.MAX + 5;
 
   static ub_ObjectParams = 1;
 
@@ -42,6 +43,10 @@ export class InstancedLineProgram extends DeviceProgram {
     layout(location = ${InstancedLineProgram.a_Uv}) attribute vec2 a_Uv;
     varying vec2 v_Uv;
   #endif
+  layout(location = ${InstancedLineProgram.a_Dash}) attribute vec3 a_Dash;
+
+  varying vec4 v_Dash;
+  // varying vec2 v_Normal;
 
   void main() {
     ${Batch.ShaderLibrary.Vert}
@@ -49,23 +54,21 @@ export class InstancedLineProgram extends DeviceProgram {
 
     vec2 xBasis = a_PointB - a_PointA;
     vec2 yBasis = normalize(vec2(-xBasis.y, xBasis.x));
-    vec2 offset = vec2(0.0);
+    // v_Normal = normalize(yBasis) * sign(a_Position.x - 0.5);
+
+    vec2 point = a_PointA + xBasis * a_Position.x + yBasis * u_StrokeWidth * a_Position.y;
+    point = point - a_Anchor.xy * abs(xBasis);
 
     // round
     if (a_Cap > 1.0 && a_Cap <= 2.0) {
 
     } else if (a_Cap > 2.0 && a_Cap <= 3.0) {
-      if (a_Position.x > 0.0) {
-        offset = vec2(u_StrokeWidth / 2.0, 0.0);
-      } else {
-        offset = -vec2(u_StrokeWidth / 2.0, 0.0);
-      }
+      point += sign(a_Position.x - 0.5) * normalize(xBasis) * vec2(u_StrokeWidth / 2.0);
     }
 
-    vec2 point = a_PointA + offset + xBasis * a_Position.x + yBasis * u_StrokeWidth * a_Position.y;
-    point = point - a_Anchor.xy * abs(xBasis);
-
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * vec4(point, 0.0, 1.0);
+
+    v_Dash = vec4(a_Position.x, a_Dash);
   }
   `;
 
@@ -73,6 +76,9 @@ export class InstancedLineProgram extends DeviceProgram {
   ${Batch.ShaderLibrary.FragDeclaration}
   ${Batch.ShaderLibrary.UvFragDeclaration}
   ${Batch.ShaderLibrary.MapFragDeclaration}
+
+  varying vec4 v_Dash;
+  // varying vec2 v_Normal;
   
   void main() {
     ${Batch.ShaderLibrary.Frag}
@@ -82,7 +88,15 @@ export class InstancedLineProgram extends DeviceProgram {
     #ifdef USE_MAP
       gl_FragColor = u_Color;
     #endif
-    gl_FragColor.a = gl_FragColor.a * u_Opacity;
+
+    // float blur = 1. - smoothstep(0.98, 1., length(v_Normal));
+    float u_dash_offset = v_Dash.y;
+    float u_dash_array = v_Dash.z;
+    float u_dash_ratio = v_Dash.w;
+    gl_FragColor.a = gl_FragColor.a
+      // * blur
+      * u_Opacity
+      * ceil(mod(v_Dash.x + u_dash_offset, u_dash_array) - (u_dash_array * u_dash_ratio));
   }
 `;
 }
@@ -96,7 +110,8 @@ const LINE_CAP_MAP = {
 /**
  * use instanced for each segment
  * @see https://blog.scottlogic.com/2019/11/18/drawing-lines-with-webgl.html
- * TODO: dashed line
+ *
+ * support dash array
  * TODO: joint & cap
  */
 @injectable({
@@ -136,7 +151,23 @@ export class InstancedLineRenderer extends Batch {
     this.objects.forEach((object) => {
       const line = object as Line;
       const { x1, y1, x2, y2, defX, defY, lineCap } = line.parsedStyle;
-      interleaved.push(x1 - defX, y1 - defY, x2 - defX, y2 - defY, LINE_CAP_MAP[lineCap]);
+
+      const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } = this.calcDash(
+        object as Line,
+      );
+
+      interleaved.push(
+        x1 - defX,
+        y1 - defY,
+        x2 - defX,
+        y2 - defY,
+        // caps
+        LINE_CAP_MAP[lineCap],
+        // dash
+        dashOffset,
+        dashSegmentPercent,
+        dashRatioInEachSegment,
+      );
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
       offset += 4;
     });
@@ -165,7 +196,7 @@ export class InstancedLineRenderer extends Batch {
     });
     this.geometry.setVertexBuffer({
       bufferIndex: 2,
-      byteStride: 4 * 5,
+      byteStride: 4 * (2 + 2 + 1 + 3),
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
@@ -182,8 +213,14 @@ export class InstancedLineRenderer extends Batch {
         },
         {
           format: Format.F32_R,
-          bufferByteOffset: 4 * 1,
+          bufferByteOffset: 4 * 4,
           location: InstancedLineProgram.a_Cap,
+          divisor: 1,
+        },
+        {
+          format: Format.F32_RGB,
+          bufferByteOffset: 4 * 5,
+          location: InstancedLineProgram.a_Dash,
           divisor: 1,
         },
       ],
@@ -196,7 +233,7 @@ export class InstancedLineRenderer extends Batch {
     const geometry = this.geometry;
     const index = this.objects.indexOf(object);
 
-    const { x1, y1, x2, y2, defX, defY } = object.parsedStyle;
+    const { x1, y1, x2, y2, defX, defY, lineCap } = object.parsedStyle;
 
     if (name === 'x1' || name === 'y1' || name === 'x2' || name === 'y2') {
       geometry.updateVertexBuffer(
@@ -205,11 +242,49 @@ export class InstancedLineRenderer extends Batch {
         index,
         new Uint8Array(new Float32Array([x1 - defX, y1 - defY, x2 - defX, y2 - defY]).buffer),
       );
+    } else if (name === 'lineDashOffset' || name === 'lineDash') {
+      const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } = this.calcDash(
+        object as Line,
+      );
+      geometry.updateVertexBuffer(
+        2,
+        InstancedLineProgram.a_Dash,
+        index,
+        new Uint8Array(
+          new Float32Array([dashOffset, dashSegmentPercent, dashRatioInEachSegment]).buffer,
+        ),
+      );
+    } else if (name === 'lineCap') {
+      geometry.updateVertexBuffer(
+        2,
+        InstancedLineProgram.a_Cap,
+        index,
+        new Uint8Array(new Float32Array([LINE_CAP_MAP[lineCap]]).buffer),
+      );
     }
   }
 
   uploadUBO(renderInst: RenderInst): void {
     renderInst.setBindingLayouts([{ numUniformBuffers: 1, numSamplers: 1 }]);
     renderInst.setSamplerBindingsFromTextureMappings([this.mapping]);
+  }
+
+  private calcDash(line: Line) {
+    const { lineDash, lineDashOffset } = line.parsedStyle;
+    const totalLength = line.getTotalLength();
+    let dashOffset = 0;
+    let dashSegmentPercent = 1;
+    let dashRatioInEachSegment = 0;
+    if (lineDash && lineDash.length) {
+      dashOffset = lineDashOffset / totalLength;
+      const segmentsLength = lineDash.reduce((cur, prev) => cur + prev, 0);
+      dashSegmentPercent = segmentsLength / totalLength;
+      dashRatioInEachSegment = lineDash[0] / segmentsLength;
+    }
+    return {
+      dashOffset,
+      dashSegmentPercent,
+      dashRatioInEachSegment,
+    };
   }
 }
