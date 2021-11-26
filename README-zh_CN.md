@@ -6,7 +6,7 @@
 
 [![npm package](https://img.shields.io/npm/v/@antv/g-canvas.svg)](https://www.npmjs.com/package/@antv/g-canvas) [![npm downloads](http://img.shields.io/npm/dm/@antv/g-canvas.svg)](https://npmjs.org/package/@antv/g-canvas) [![npm package](https://img.shields.io/npm/v/@antv/g-svg.svg)](https://www.npmjs.com/package/@antv/g-svg) [![npm downloads](http://img.shields.io/npm/dm/@antv/g-svg.svg)](https://npmjs.org/package/@antv/g-svg) [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open')
 
--   一款高效易用的可视化 2D 渲染引擎，同时提供 Canvas 和 SVG 版本的实现。
+-   一款高效易用的可视化 2D 渲染引擎，支持 Web 端 Canvas / SVG / WebGL / WebGPU 渲染 API。
 
 ## ✨ 特性
 
@@ -42,15 +42,15 @@ import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 // import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 // import { Renderer as SVGRenderer } from '@antv/g-svg';
 
-// create a canvas
+// 创建画布
 const canvas = new Canvas({
     container: 'container',
     width: 500,
     height: 500,
-    renderer: new CanvasRenderer(), // select a renderer
+    renderer: new CanvasRenderer(), // 选择一个渲染器
 });
 
-// create a circle
+// 创建一个圆
 const circle = new Circle({
     style: {
         x: 100,
@@ -62,16 +62,27 @@ const circle = new Circle({
     },
 });
 
-// append to canvas
+// 加入画布
 canvas.appendChild(circle);
 ```
 
 ## ⌨️ 开发
 
+启动并预览站点：
+
 ```bash
 $ git clone git@github.com:antvis/g.git
 $ cd g
 $ yarn install
-$ yarn watch
 $ yarn start
 ```
+
+### API Spec
+
+在项目根目录下启动开发服务器，例如 `http-server`:
+
+```bash
+$ http-server -p 9090
+```
+
+访问 `localhost:9090/dev-docs/api.html` 即可预览 API Spec。

@@ -8,7 +8,7 @@
       var respecConfig = {
         // Working Groups ids at https://respec.org/w3c/groups/
         group: "webapps", 
-        specStatus: "official",
+        specStatus: "unofficial",
         editors: [{
           name: "xiaoiver",
           url: "https://github.com/xiaoiver",
@@ -35,14 +35,58 @@
         但统一的 API（特别是核心层）能够保证多端下较为统一的开发使用体验，也能为后续新增的 API 提供更多合理性讨论。
       </p>
       <p>
-        在设计核心层 API 时，我们更多借鉴了 Web 端已有的标准，例如：
+        在设计核心层 API 时，我们更多借鉴了 Web 端已有的标准，尽可能遵循 <a href="https://w3ctag.github.io/design-principles/">Web Platform 设计原则</a>，例如：
         <ul>
           <li>场景图定义、事件系统兼容 <a href="https://dom.spec.whatwg.org/">DOM API</a></li>
           <li>动画兼容 <a href='https://drafts.csswg.org/web-animations/'>Web Animation API</a></li>
           <li>自定义图形机制兼容 <a href="https://html.spec.whatwg.org/multipage/custom-elements.html#custom-elements-api">CustomElements API</a></li>
         </ul>
-        一方面能减轻前端开发者的记忆学习成本，更重要的是能直接使用 Web 端已有生态，例如拖拽与手势库。
       </p>
+      <p>其中接口、方法名、参数遵循以下 <a href="https://w3ctag.github.io/design-principles/#casing-rules">Web API 命名规范</a>：</p>
+      <table class="data complex informative">
+        <thead>
+         <tr>
+          <th>
+          </th><th>Casing rule
+          </th><th>Examples
+        </th></tr></thead><tbody>
+         <tr>
+          <th>Methods and properties<br>(Web IDL attributes, operations, and dictionary keys)
+          </th><td>Camel case
+          </td><td><code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-document-createattribute" id="ref-for-dom-document-createattribute">createAttribute()</a></code><br> <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-document-compatmode" id="ref-for-dom-document-compatmode">compatMode</a></code>
+         </td></tr><tr>
+          <th>Classes and mixins<br>(Web IDL interfaces)
+          </th><td>Pascal case
+          </td><td><code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#namednodemap" id="ref-for-namednodemap">NamedNodeMap</a></code><br> <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#nonelementparentnode" id="ref-for-nonelementparentnode">NonElementParentNode</a></code>
+         </td></tr><tr>
+          <th>Initialisms in APIs
+          </th><td>All caps, except when the first word in a method or property
+          </td><td><code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#htmlcollection" id="ref-for-htmlcollection②">HTMLCollection</a></code><br> <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/DOM-Parsing/#dom-innerhtml-innerhtml" id="ref-for-dom-innerhtml-innerhtml">innerHTML</a></code><br> <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/obsolete.html#dom-document-bgcolor" id="ref-for-dom-document-bgcolor">bgColor</a></code>
+         </td></tr><tr>
+          <th>Repeated initialisms in APIs
+          </th><td>Follow the same rule
+          </td><td><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/grouping-content.html#htmlhrelement" id="ref-for-htmlhrelement">HTMLHRElement</a></code><br> <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/webrtc/#dom-rtcdtmfsender" id="ref-for-dom-rtcdtmfsender">RTCDTMFSender</a></code><br> 
+         </td></tr><tr>
+          <th>The abbreviation of "identity"
+          </th><td><code>Id</code>, except when the first word in a method or property
+          </td><td><code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-nonelementparentnode-getelementbyid" id="ref-for-dom-nonelementparentnode-getelementbyid">getElementById()</a></code><br> <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/pointerevents3/#dom-pointerevent-pointerid" id="ref-for-dom-pointerevent-pointerid">pointerId</a></code><br> <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credential-id" id="ref-for-dom-credential-id">id</a></code>
+         </td></tr><tr>
+          <th>Enumeration values
+          </th><td>Lowercase, dash-delimited
+          </td><td><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-referrer-policy/#dom-referrerpolicy-no-referrer-when-downgrade" id="ref-for-dom-referrerpolicy-no-referrer-when-downgrade">"no-referrer-when-downgrade"</a></code>
+         </td></tr><tr>
+          <th>Events
+          </th><td>Lowercase, concatenated
+          </td><td><code><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/media.html#event-media-canplaythrough" id="ref-for-event-media-canplaythrough">canplaythrough</a></code><br> <code><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/indices.html#event-languagechange" id="ref-for-event-languagechange">languagechange</a></code></code></code>
+         </td></tr><tr>
+          <th>HTML elements and attributes
+          </th><td>Lowercase, concatenated
+          </td><td><code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/grouping-content.html#the-figcaption-element" id="ref-for-the-figcaption-element">figcaption</a></code><br> <a href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fe-maxlength">maxlength</a>
+         </td></tr><tr>
+          <th>JSON keys
+          </th><td>Lowercase, underscore-delimited
+          </td><td><a data-link-type="dfn" href="https://www.w3.org/TR/appmanifest/#dfn-short_name" id="ref-for-dfn-short_name">short_name</a>
+       </td></tr></tbody></table>
     </section>
     <section id='sotd'>
       <p>
@@ -705,6 +749,21 @@
           <p>返回值：无</p>
         </section>
         <section>
+          <h2><dfn>getBoundingClientRect()</dfn> method</h2>
+          <p>计算方式为：首先获取浏览器坐标系下的 [=Geometry Bounds=]，
+            应用世界坐标系下的变换后，再加上 {{Canvas}} 相对于浏览器的偏移量。</p>
+          <pre class="idl">
+          dictionary DOMRect {
+            required double top;
+            required double left;
+            required double right;
+            required double bottom;
+            required double width;
+            required double height;
+          };
+          </pre>
+        </section>
+        <section>
           <h2><dfn>destroy()</dfn> method</h2>
           <p>销毁节点。</p>
           <p>参数列表：</p>
@@ -1023,11 +1082,14 @@
         <p>继承 {{Element}}，同时作为其他基础图形的基类，提供变换与动画功能。</p>
         <pre class="idl">
           Element includes Animatable;
-          Element includes Tranformable;
+          Element includes Transformable;
 
           [Exposed=Window]
           interface DisplayObject : Element {
             constructor(optional DisplayObjectInit displayObjectInitDict = {});
+
+            undefined           hide();
+            undefined           show();
           };
 
           dictionary DisplayObjectInit {
@@ -1042,7 +1104,6 @@
           dictionary DisplayObjectStyle {
             double?             x;
             double?             y;
-            double?             z;
             double?             zIndex;
             sequence&lt;double&gt;?   origin;
             sequence&lt;double&gt;?   anchor;
@@ -1050,6 +1111,7 @@
             Cursor?             cursor;
             DisplayObject?      clipPath;
             DisplayObject?      offsetPath;
+            double?             offsetDistance;
             DOMString?          transform;
             DOMString?          transformOrigin;
             Color?              stroke;
@@ -1061,66 +1123,1234 @@
             LineCap?            lineCap;
             LineJoin?           lineJoin;
             sequence&lt;double&gt;?   lineDash;
+            double?             lineDashOffset;
             double?             shadowBlur;
             Color?              shadowColor;
             double?             shadowOffsetX;
             double?             shadowOffsetY;
             DOMString?          filter;
           };
+
+          enum Visibility { "visible", "hidden" };
+          // @see https://drafts.csswg.org/css-ui/#cursor
+          enum Cursor {
+            "auto", "default", "none", "context-menu", "help", "pointer", "progress", "wait", "cell", "crosshair", "text", "vertical-text", "alias", "copy", "move", "no-drop", "not-allowed", "grab", "grabbing", "all-scroll", "col-resize", "row-resize", "n-resize", "e-resize", "s-resize", "w-resize", "ne-resize", "nw-resize", "se-resize", "sw-resize", "ew-resize", "ns-resize", "nesw-resize", "nwse-resize", "zoom-in", "zoom-out"
+          };
+          enum LineCap { "butt", "round", "square" };
+          enum LineJoin { "bevel", "round", "miter" };
+          typedef (sequence&lt;double&gt; or DOMString) Color;
         </pre>
         <section>
-          <h2>Tranformable</h2>
+          <h2>包围盒</h2>
+          <p>为了简化计算，我们需要用一个规则的几何体包裹住图形，通常使用轴对齐包围盒（Axis Aligned Bounding Box），它是一个非旋转的立方体</p>
+          <pre class="idl">
+          dictionary AABB {
+            sequence&lt;double&gt; center; // 中心坐标
+            sequence&lt;double&gt; halfExtents; // 长宽高的一半
+            sequence&lt;double&gt; min; // 最靠近原点的顶点坐标
+            sequence&lt;double&gt; max; // 最远离原点的顶点坐标
+          };
+          </pre>
+          <p>在不同情况下，包围盒有不同的含义。我们先看针对单一图形的包围盒代表什么。下图展示了一个半径为 100，边框宽度为 20 的圆，为了更好的说明我们把边框设置成了半透明，同时它还带有阴影效果。</p>
+          <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*f0-CTpClWkMAAAAAAAAAAAAAARQnAQ" />
+
+          <p>对于用户而言，通常希望使用图形的几何定义，例如这个圆的尺寸就是 100 * 100，我们不希望鼠标滑过阴影区域也判定拾取到这个圆。</p>
+          <p>而对于渲染管线而言，这些样式属性显然都需要考虑进去，例如：
+            <ul>
+              <li>在脏矩形渲染中正确的擦除绘制区域，一旦不考虑阴影带来的包围盒尺寸增加，就会出现擦除不干净的“残影”</li>
+              <li>剔除插件也需要考虑，例如一个图形即使只有阴影部分出现在视口中，它也不应被剔除</li>
+            </ul>
+          </p>
+
+          <p>我们很容易根据不同类型的图形定义几何包围盒 <dfn>Geometry Bounds</dfn>：仅由图形的几何定义决定（因此 Group 会返回 null），
+            不考虑绝大部分绘图属性（几何定义必须的除外，例如 {{Circle}} 的半径、Rect 的宽高、Path 的路径等），也不考虑变换（例如放大缩小并不会改变）。
+            可通过 {{Transformable/getGeometryBounds()}} 获取</p>
+          <p>前面介绍过基于场景图的层次结构，一旦一个图形拥有了子节点，它在计算包围盒时也应当考虑，例如我们想对它做整体旋转时，需要找到这个包围盒的中心作为旋转中心。因此以下包围盒都是会考虑层次结构的：</p>
+          <ul>
+            <li><dfn>Bounds</dfn>。在世界坐标系下计算，合并自身以及所有子节点的 [=Geometry Bounds=] 得到。
+              用户通常最常用这个包围盒。可通过 {{Transformable/getBounds()}} 获取</li>
+            <li><dfn>Local Bounds</dfn>。和 Bounds 的唯一区别是在父节点的局部坐标系下计算。可通过 {{Transformable/getLocalBounds()}} 获取</li>
+            <li><dfn>Render Bounds</dfn>。在世界坐标系下计算，在 [=Bounds=] 的基础上，受部分绘图属性影响，例如边框宽度，阴影，部分滤镜等，同时合并所有子节点的 Render Bounds。
+              可通过 {{Transformable/getRenderBounds()}} 获取。用户通常不关心这个包围盒。</li>
+          </ul>
+          <p>在下图中，ul1 拥有两个字节点 li1 和 li2，在计算自身的 [=Geometry Bounds=] 时不会考虑它们，而在计算 [=Bounds=] 时需要。由于 ul1 还有阴影，因此它的 Render Bounds 要大一圈：</p>
+          <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*RjRuQ7iMtwgAAAAAAAAAAAAAARQnAQ" />
+        </section>
+        <section data-dfn-for="Transformable">
+          <h2>Transformable</h2>
           <p>在 DOM 中，一个元素的位置由布局引擎考虑 CSS 后计算得到，还可以通过 CSS Transform 对元素进行变换。
             在 G 中暂无 CSS 实现，因此我们提供了一系列变换方法。</p>
           <pre class="idl">
-          interface mixin Tranformable {
-            Tranformable            translate((double or sequence&lt;double&gt;) x, double? y, double? z);
-            Tranformable            translateLocal((double or sequence&lt;double&gt;) x, double? y, double? z);
-            Tranformable            setPosition((double or sequence&lt;double&gt;) x, double? y, double? z);
-            Tranformable            setLocalPosition((double or sequence&lt;double&gt;) x, double? y, double? z);
+          interface mixin Transformable {
+            Transformable           translate((double or sequence&lt;double&gt;) x, double? y, double? z);
+            Transformable           translateLocal((double or sequence&lt;double&gt;) x, double? y, double? z);
+            Transformable           setPosition((double or sequence&lt;double&gt;) x, double? y, double? z);
+            Transformable           setLocalPosition((double or sequence&lt;double&gt;) x, double? y, double? z);
             sequence&lt;double&gt;        getLocalPosition();
             sequence&lt;double&gt;        getPosition();
-            Tranformable            scaleLocal((double or sequence&lt;double&gt;) x, double? y, double? z);
-            Tranformable            setScaleLocal((double or sequence&lt;double&gt;) x, double? y, double? z);
+            Transformable           scaleLocal((double or sequence&lt;double&gt;) x, double? y, double? z);
+            Transformable           setLocalScale((double or sequence&lt;double&gt;) x, double? y, double? z);
             sequence&lt;double&gt;        getScale();
             sequence&lt;double&gt;        getLocalScale();
-            Tranformable            rotateLocal((double or sequence&lt;double&gt;) x, double? y, double? z);
-            Tranformable            rotate((double or sequence&lt;double&gt;) x, double? y, double? z);
+            Transformable           rotateLocal((double or sequence&lt;double&gt;) x, double? y, double? z);
+            Transformable           rotate((double or sequence&lt;double&gt;) x, double? y, double? z);
+
+            AABB                    getGeometryBounds();
+            AABB                    getBounds();
+            AABB                    getRenderBounds();
+            AABB                    getLocalBounds();
           };
           </pre>
+          <section>
+            <h2>局部坐标系与世界坐标系</h2>
+            <p>坐标系可以用来描述场景中物体的位置、旋转和缩放情况，最著名的坐标系是欧式坐标系。在图形学中我们还会使用到重心坐标系。欧式空间可以包含 N 维，在可视化场景中我们只使用二维和三维。</p>
+            <p>当我们在说“月亮绕着地球转”的时候，实际上已经忽略了地球以外的对象。在月亮的“局部坐标系”中，它只是单纯地绕着一个点旋转而已，尽管在整个太阳系这个“世界坐标系”下，地球还在绕着太阳旋转，月球最终沿着上面那个复杂轨迹运动。</p>
+            <p>在二维和三维世界中，都可以使用局部坐标系和世界坐标系的概念，下图来自 playcanvas，左侧为世界坐标系（坐标轴与地面重合），右侧为局部坐标系（考虑物体旋转等变换）：</p>
+            <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kgaHRIYex8MAAAAAAAAAAAAAARQnAQ" width="400" />
+            <p>世界坐标系被整个场景图内的所有节点共享，因此它有一个固定的原点(0, 0)，XYZ 三轴（二维场景中为 XY 轴）的朝向也都是固定的，即使场景中的这个盒子自身发生了旋转，世界坐标系对它来说也不会变化。但对于自身的局部坐标系而言，它的原点首先就不再是 (0, 0) 而是物体自身的位置，坐标轴自然也发生了变化，顾名思义它和物体本身相关联。</p>
+            <p>试想此时我们让这个盒子“沿 X 轴（红色）平移 10 个单位”，在不同坐标系下含义完全不同。因此当我们想对一个物体进行变换时，首先要指明所处的坐标系。</p>
+            <p>另外，局部坐标系也被称作模型坐标系，在描述模型自身的变换时更方便。在下图中放置了两个士兵模型，如果我们想让每一个士兵转一下头，显然在局部坐标系做比较简单，因为“转动”这个变换就是相对于每个模型的头部而言的。</p>
+            <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9B4FRo4UbNsAAAAAAAAAAAAAARQnAQ" width="600" />
+          </section>
+          <section>
+            <h2><dfn>translate()</dfn> method</h2>
+            <p>在世界坐标系下，相对当前位置移动。</p>
+            <p>参数列表：</p>
+            <dl class="def">
+              <dt><code>(double or sequence&lt;double&gt;) x, double? y, double? z</code></dt>
+              <dd>支持两种传参形式，传入一个位置数组，或者分别传入 `x, y, z`。其中 `y, z` 分量不传时使用默认值 0</dd>
+            </dl>
+            <aside class="example">
+              <p>在世界坐标系下平移</p>
+              <pre class="js">
+              circle.translate([100, 0, 0]);
+              circle.translate([100, 0]);
+              circle.translate([100]);
+              circle.translate(100, 0, 0);
+              circle.translate(100, 0);
+              circle.translate(100);
+              </pre>
+            </aside>
+          </section>
+          <section>
+            <h2><dfn>translateLocal()</dfn> method</h2>
+            <p>在局部坐标系下，相对当前位置移动。</p>
+            <p>参数列表：</p>
+            <dl class="def">
+              <dt><code>(double or sequence&lt;double&gt;) x, double? y, double? z</code></dt>
+              <dd>支持两种传参形式，传入一个位置数组，或者分别传入 `x, y, z`。其中 `y, z` 分量不传时使用默认值 0</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>setPosition()</dfn> method</h2>
+            <p>直接设置世界坐标系下的位置。</p>
+            <p>参数列表：</p>
+            <dl class="def">
+              <dt><code>(double or sequence&lt;double&gt;) x, double? y, double? z</code></dt>
+              <dd>支持两种传参形式，传入一个位置数组，或者分别传入 `x, y, z`。其中 `y, z` 分量不传时使用默认值 0</dd>
+            </dl>
+            <aside class="example">
+              <p>设置世界坐标系下的位置</p>
+              <pre class="js">
+              circle.setPosition([100, 0, 0]);
+              circle.setPosition([100, 0]);
+              circle.setPosition([100]);
+              circle.setPosition(100, 0, 0);
+              circle.setPosition(100, 0);
+              circle.setPosition(100);
+              </pre>
+            </aside>
+          </section>
+          <section>
+            <h2><dfn>setLocalPosition()</dfn> method</h2>
+            <p>直接设置局部坐标系下的位置。</p>
+            <p>参数列表：</p>
+            <dl class="def">
+              <dt><code>(double or sequence&lt;double&gt;) x, double? y, double? z</code></dt>
+              <dd>支持两种传参形式，传入一个位置数组，或者分别传入 `x, y, z`。其中 `y, z` 分量不传时使用默认值 0</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>getPosition()</dfn> method</h2>
+            <p>获取世界坐标系下的位置。</p>
+            <p>返回值：</p>
+            <dl class="def">
+              <dt><code>sequence&lt;double&gt;</code></dt>
+              <dd>返回位置数组</dd>
+            </dl>
+            <aside class="example">
+              <p>获取世界坐标系下的位置</p>
+              <pre class="js">
+              circle.getPosition(); // [100, 0, 0]
+              </pre>
+            </aside>
+          </section>
+          <section>
+            <h2><dfn>getLocalPosition()</dfn> method</h2>
+            <p>获取局部坐标系下的位置。</p>
+            <p>返回值：</p>
+            <dl class="def">
+              <dt><code>sequence&lt;double&gt;</code></dt>
+              <dd>返回位置数组</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>scaleLocal()</dfn> method</h2>
+            <p>在局部坐标系下，相对当前缩放比例继续缩放。</p>
+            <p>参数列表：</p>
+            <dl class="def">
+              <dt><code>(double or sequence&lt;double&gt;) x, double? y, double? z</code></dt>
+              <dd>支持两种传参形式，传入一个位置数组，或者分别传入 `x, y, z`。其中 `y, z` 分量不传时使用默认值 1</dd>
+            </dl>
+            <aside class="example">
+              <p>缩放</p>
+              <pre class="js">
+              circle.scaleLocal([2, 2, 2]);
+              circle.scaleLocal(2, 2, 2);
+              </pre>
+            </aside>
+          </section>
+          <section>
+            <h2><dfn>setLocalScale()</dfn> method</h2>
+            <p>设置局部坐标系下的缩放比例。</p>
+          </section>
+          <section>
+            <h2><dfn>getScale()</dfn> method</h2>
+            <p>获取局部坐标系下的缩放比例。</p>
+            <p>返回值：</p>
+            <dl class="def">
+              <dt><code>sequence&lt;double&gt;</code></dt>
+              <dd>返回缩放比例数组</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>getLocalScale()</dfn> method</h2>
+            <p>获取局部坐标系下的缩放比例。</p>
+            <p>返回值：</p>
+            <dl class="def">
+              <dt><code>sequence&lt;double&gt;</code></dt>
+              <dd>返回缩放比例数组</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>rotate()</dfn> method</h2>
+            <p>在 3D 场景中，旋转可以用矩阵、轴角、欧拉角和四元数表示，它们彼此之间可以互相转换。虽然考虑到未来的扩展性，在 G 内部实现中我们使用了四元数，但目前我们仅提供欧拉角的 API。
+              在世界坐标系下，旋转一定的欧拉角，顺时针方向为正，单位为 degree。</p>
+            <p>参数列表：</p>
+            <dl class="def">
+              <dt><code>double angle</code></dt>
+              <dd>旋转一定的欧拉角，顺时针方向为正，单位为 degree。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>rotateLocal()</dfn> method</h2>
+            <p>在 3D 场景中，旋转可以用矩阵、轴角、欧拉角和四元数表示，它们彼此之间可以互相转换。虽然考虑到未来的扩展性，在 G 内部实现中我们使用了四元数，但目前我们仅提供欧拉角的 API。
+              在局部坐标系下，旋转一定的欧拉角，顺时针方向为正，单位为 degree。</p>
+            <p>参数列表：</p>
+            <dl class="def">
+              <dt><code>double angle</code></dt>
+              <dd>旋转一定的欧拉角，顺时针方向为正，单位为 degree。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>getGeometryBounds()</dfn> method</h2>
+            <p>获取基础图形的几何包围盒，除了定义所需的样式属性（例如 {{Circle}} 的 r，Rect 的 width/height），
+              它不受其他绘图属性（例如 lineWidth，fitler，shadowBlur 等）影响</p>
+            <aside class="example">
+              <p>获取 Circle 的 Geometry Bounds</p>
+              <pre class="js">
+              const circle = new Circle({
+                style: {
+                  x: 100, // 局部坐标系下的坐标不会影响 Geometry Bounds
+                  y: 100, // 局部坐标系下的坐标不会影响 Geometry Bounds
+                  r: 100,
+                  lineWidth: 20, // 样式属性不会影响 Geometry Bounds
+                  shadowBlur: 10, // 样式属性不会影响 Geometry Bounds
+                },
+              });
+              circle.getGeometryBounds(); // { center: [0, 0], halfExtents: [100, 100] }
+              </pre>
+            </aside>
+            <p>Group 由于没有几何定义，因此会返回 null：</p>
+            <aside class="example">
+              <p>获取 Group 的 Geometry Bounds</p>
+              <pre class="js">
+              const group = new Group();
+              group.getGeometryBounds(); // null
+              </pre>
+            </aside>
+          </section>
+          <section>
+            <h2><dfn>getBounds()</dfn> method</h2>
+            <p>合并自身以及子节点在世界坐标系下的 [=Geometry Bounds=]。这应当是最常用的计算方式：</p>
+            <aside class="example">
+              <p>获取 Circle 的 Bounds</p>
+              <pre class="js">
+              const circle = new Circle({
+                style: {
+                  x: 100, // 应用世界坐标系下的变换
+                  y: 100,
+                  r: 100,
+                },
+              });
+              circle.getBounds(); // { center: [100, 100], halfExtents: [100, 100] }
+              </pre>
+            </aside>
+          </section>
+          <section>
+            <h2><dfn>getRenderBounds()</dfn> method</h2>
+            <p>合并自身以及子节点在世界坐标系下的 Render Bounds，在 [=Geometry Bounds=] 基础上，受以下样式属性影响： lineWidth，shadowBlur，filter：</p>
+            <aside class="example">
+              <p>获取 Circle 的 Render Bounds</p>
+              <pre class="js">
+              const circle = new Circle({
+                style: {
+                  x: 100, // 应用世界坐标系下的变换
+                  y: 100,
+                  r: 100,
+                  lineWidth: 20, // 考虑样式属性
+                },
+              });
+              // r + lineWidth / 2
+              circle.getRenderBounds(); // { center: [100, 100], halfExtents: [110, 110] }
+              </pre>
+            </aside>
+          </section>
+          <section>
+            <h2><dfn>getLocalBounds()</dfn> method</h2>
+            <p>与 {{Transformable/getBounds()}} 的唯一区别是在父节点的局部坐标系下计算。</p>
+          </section>
+        </section>
+        <section data-dfn-for="DisplayObjectStyle">
+          <h2>公共样式属性</h2>
+          <p>以下样式属性为 G 内置 2D 图形共用，几乎都是可选属性。自定义图形可以自行扩展，例如 3D 图形可以使用 `z` 代替 `z-index`。</p>
+          <section>
+            <h2><dfn>x</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>double</code></dt>
+              <dd>局部坐标系下的图形 x 坐标。默认值为 `0`。</dd>
+            </dl>
+            <aside class="example">
+              <p>设置初始位置</p>
+              <pre class="js">
+              const circle = new Cirle({
+                style: {
+                  x: 100,
+                  y: 100,
+                  r: 100,
+                },
+              });
+              circle.getLocalPosition(); // [100, 100]
+              </pre>
+            </aside>
+          </section>
+          <section>
+            <h2><dfn>y</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>double</code></dt>
+              <dd>局部坐标系下的图形 y 坐标。默认值为 `0`。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>zIndex</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>double</code></dt>
+              <dd>类似 CSS 的 zIndex 属性，用于控制渲染次序。</dd>
+            </dl>
+            <ul>
+              <li>只会影响渲染顺序，并不会改变场景图中的节点结构</li>
+              <li>只在当前上下文内生效</li>
+              <li>默认展示次序为场景图添加顺序，后添加的在之前添加的元素之上</li>
+            </ul>
+            <p>例如下面的场景图中，由于 li2 在 li1 之后加入画布，因此 li2 默认会展示在 li1 之上。如果希望改变这种展示次序，可以修改 li1 的 zIndex</p>
+            <p>再比如尽管 li2 的 zIndex 比 ul2 大很多，但由于 ul1 比 ul2 小，它也只能处于 ul2 之下</p>
+            <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfZhRYJ_rogAAAAAAAAAAAAAARQnAQ" />
+          </section>
+          <section>
+            <h2><dfn>anchor</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>sequence&lt;double&gt;</code></dt>
+              <dd>图形的原点（锚点）位置，基于 [=Geometry Bounds=] 定义，取值范围 `[0, 0] ~ [1, 1]`，
+                其中 `[0, 0]` 代表 [=Geometry Bounds=] 左上角，`[1, 1]` 代表右下角。</dd>
+            </dl>
+            <p>不同图形的默认锚点如下：</p>
+            <ul>
+              <li>{{Circle}}，{{Ellipse}} 为圆心位置 `[0.5, 0.5]`</li>
+              <li>{{Rect}}，{{Image}}，{{Line}}，{{Polyline}}，{{Polygon}}，{{Path}} 为包围盒左上角顶点位置 `[0, 0]`</li>
+              <li>{{Text}} 为文本锚点位置，应该使用 textBaseline 与 textAlign 这两个属性设置，因此设置此属性无效</li>
+              <li>{{Group}} 无几何定义，因此设置此属性无效</li>
+            </ul>
+          </section>
+          <section>
+            <h2><dfn>origin</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>sequence&lt;double&gt;</code></dt>
+              <dd>旋转与缩放中心，也称作变换中心，数值为相对于锚点的偏移量，默认值为 `[0, 0]`，因此就是锚点位置。</dd>
+            </dl>
+            <p>对图形进行缩放、旋转变换时，需要指定一个变换中心。例如同样是 `scale(2)`，
+              以圆心作为变换中心与圆的 [=Geometry Bounds=] 左上角为变换中心，最终得到的效果完全不一样。
+              在 gl-matrix 这样的库中，得到 RTS 变换矩阵通常也需要指定变换中心：`mat4.fromRotationTranslationScaleOrigin();`</p>
+            <p>默认情况下 origin（变换中心）与 anchor（锚点）重合。
+              在这个示例中，一个圆（世界坐标系下位置为 [100, 100]）以圆心作为变换中心进行缩放，
+              如果我们想让它以 [=Geometry Bounds=] 左上角进行缩放，就可以重新设置 origin，让它相对于 anchor 进行偏移：</p>
+            <aside class="example">
+              <p>设置变换中心</p>
+              <pre class="js">
+              const circle = new Circle({
+                style: {
+                  r: 100,
+                  fill: '#1890FF',
+                },
+              });
+              circle.setPosition(100, 100);
+              circle.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.5)' }], {
+                duration: 500,
+              });
+              
+              // 相对于锚点进行偏移
+              circle.style.origin = [-100, -100];
+              </pre>
+            </aside>
+          </section>
+          <section>
+            <h2><dfn>transformOrigin</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{DOMString}}</code></dt>
+              <dd>旋转与缩放中心，也称作变换中心，相对于 [=Bounds=] 定义。</dd>
+            </dl>
+            <p>和 CSS transform-origin 类似，支持以下字符串写法，其中用空格分隔：</p>
+            <dl class="def">
+              <dt>一个值</dt>
+              <dd>单位为 px 的长度，例如 10px。</dd>
+              <dd>单位为 % 的长度，例如 50%。</dd>
+              <dd>关键词 left, center, right, top, bottom，等于用百分比表示，例如 left 等于 0%，center 等于 50%</dd>
+              <dt>两个值</dt>
+              <dd>第一个是单位为 px 或 % 的长度，或 left, center, right 关键字中的一个</dd>
+              <dd>第二个是单位为 px 或 % 的长度，或 top, center, bottom 关键字中的一个</dd>
+            </dl>
+            <p>因此以下写法等价：</p>
+            <aside class="example">
+              <p>设置变换中心</p>
+              <pre class="js">
+              // r = 100
+              circle.style.transformOrigin = 'left';
+              circle.style.transformOrigin = 'left center'; // 包围盒水平方向左侧边缘，垂直方向中点
+              circle.style.transformOrigin = '0 50%'; // 包围盒水平方向左侧边缘距离为 0，垂直方向距离顶部 50% 高度
+              circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘距离为 0，垂直方向距离顶部 100px
+              </pre>
+            </aside>
+            <p>相对于 anchor 描述 origin 固然直观，但这需要我们计算出偏移距离。
+              例如我们想让一个包含了很多子元素的 {{Group}} 绕中心点旋转，就需要先计算这个 Group 的 Bounds：</p>
+            <aside class="example">
+              <p>设置变换中心</p>
+              <pre class="js">
+              group.appendChild(child1);
+              group.appendChild(child2);
+              group.appendChild(child3);
+              
+              // 计算 Bounds，考虑所有子元素
+              const { halfExtents } = group.getBounds();
+              // 设置 origin 从 [0, 0] 偏移 halfExtents 到中心点
+              group.style.origin = halfExtents;
+              </pre>
+            </aside>
+            <p>另一个问题是，当图形的 Bounds 发生变化后，我们不得不重新设置它。例如我们在设置了 origin 之后，又向 Group 中添加了子元素，这会造成 Group 的 Bounds 发生变化，
+              基于它计算的 origin 就不是最新的了，为了保持 Group “绕中心点旋转”，我们还得手动重新设置一次 origin：</p>
+            <aside class="example">
+              <p>设置变换中心</p>
+              <pre class="js">
+              const { halfExtents } = group.getBounds(); // [100, 100, 0]
+              group.style.origin = halfExtents;
+              
+              // 添加了新的子元素，此时 group 的 Bounds 发生了变化，但 origin 还是 [100, 100, 0]
+              group.appendChild(child4);
+              
+              const { halfExtents } = group.getBounds(); // [200, 200, 0]
+              group.style.origin = halfExtents;
+              </pre>
+            </aside>
+            <p>因此在某些场景下，用一些字面量或者百分比定义会更方便。
+              例如 CSS 就提供了 `transform-origin` 属性，它正是相对于 Bounds 进行定义的，下图来自</p>
+            <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_1WJQLRobtgAAAAAAAAAAAAAARQnAQ" />
+            <p>当我们想实现“绕中心点旋转”时，只需要使用字面量或者百分比，这样就能避免进行 Bounds 的获取：</p>
+            <aside class="example">
+              <p>绕中心点旋转</p>
+              <pre class="js">
+              group.style.transformOrigin = 'center';
+              group.style.transformOrigin = 'center center';
+              group.style.transformOrigin = '50% 50%';
+              </pre>
+            </aside>
+          </section>
+          <section>
+            <h2><dfn>transform</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{DOMString}}</code></dt>
+              <dd>字符串，与 CSS Transform 保持一致。</dd>
+            </dl>
+            <p>我们提供了在局部坐标系下进行变换的快捷方式，同时与 CSS Transform 保持一致，支持以下属性值：</p>
+            <dl class="def">
+              <dt>缩放，无单位</dt>
+              <dd><code>scale(x, y)</code></dd>
+              <dd><code>scaleX(x)</code></dd>
+              <dd><code>scaleY(x)</code></dd>
+              <dd><code>scaleZ(z)</code></dd>
+              <dd><code>scale3d(x, y, z)</code></dd>
+              <dt>平移，0 可以不加单位，无单位当作 px 处理，百分比相对于当前图形包围盒</dt>
+              <dd><code>translate(0, 0) translate(0, 30px) translate(100%, 100%)</code></dd>
+              <dd><code>translateX(0)</code></dd>
+              <dd><code>translateY(0)</code></dd>
+              <dd><code>translateZ(0)</code></dd>
+              <dd><code>translate3d(0, 0, 0)</code></dd>
+              <dt>旋转，支持 deg rad turn 这些单位</dt>
+              <dd><code>rotate(0.5turn) rotate(30deg) rotate(1rad)</code></dd>
+              <dt>none 清除变换</dt>
+            </dl>
+            <p>由于是在局部坐标系下进行变换，因此以下写法等价：</p>
+            <aside class="example">
+              <p>三种在局部坐标系下的变换方式</p>
+              <pre class="js">
+              const circle = new Circle({
+                style: {
+                  transform: 'translate(100px, 100px)',
+                  r: 100,
+                },
+              });
+              
+              const circle = new Circle({
+                style: {
+                  x: 100,
+                  y: 100,
+                  r: 100,
+                },
+              });
+              
+              const circle = new Circle({
+                style: {
+                  r: 100,
+                },
+              });
+              circle.translateLocal(100, 100);
+              </pre>
+            </aside>
+          </section>
+          <section>
+            <h2><dfn>opacity</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>图形整体透明度，取值范围为 `[0, 1]`，默认值为 1</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>fillOpacity</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>填充色透明度，取值范围为 `[0, 1]`，默认值为 1</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>fill</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{Color}}</code> 填充色，支持以下写法：</dt>
+              <dd><code>red</code></dd>
+              <dd><code>#1890FF</code></dd>
+              <dd><code>rgba(r, g, b, a)</code></dd>
+              <dd><code>transparent</code></dd>
+              <dd><code>渐变与纹理</code></dd>
+            </dl>
+            <p>为了便于后续动画插值，内部需要转换成数组形式。</p>
+            <p>除了常规色值，颜色字符串还支持渐变与纹理写法。</p>
+            <section>
+              <h2><dfn>线性渐变</dfn></h2>
+              <p>l 表示使用线性渐变，绿色的字体为可变量，由用户自己填写。</p>
+              <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Z5gpQL9ia9kAAAAAAAAAAABkARQnAQ" />
+              <aside class="example">
+                <p>线性渐变</p>
+                <pre class="js">
+                // 使用渐变色描边，渐变角度为 0，渐变的起始点颜色 #ffffff，中点的渐变色为 #7ec2f3，结束的渐变色为 #1890ff
+                stroke: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff';
+                </pre>
+              </aside>
+            </section>
+            <section>
+              <h2><dfn>环状渐变</dfn></h2>
+              <p>r 表示使用放射状渐变，绿色的字体为可变量，由用户自己填写，开始圆的 x、y、r 值均为相对值(0 至 1 范围)。</p>
+              <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9sc1SY2d_0AAAAAAAAAAAABkARQnAQ" />
+              <aside class="example">
+                <p>线性渐变</p>
+                <pre class="js">
+                // 使用渐变色填充，渐变起始圆的圆心坐标为被填充物体的包围盒中心点，半径为(包围盒对角线长度 / 2) 的 0.1 倍，渐变的起始点颜色 #ffffff，中点的渐变色为 #7ec2f3，结束的渐变色为 #1890ff
+                fill: 'r(0.5, 0.5, 0.1) 0:#ffffff 1:#1890ff';
+                </pre>
+              </aside>
+            </section>
+            <section>
+              <h2><dfn>纹理</dfn></h2>
+              <p>p: 表示使用纹理，绿色的字体为可变量，由用户自己填写。</p>
+              <p>a: 该模式在水平和垂直方向重复；</p>
+              <p>x: 该模式只在水平方向重复；</p>
+              <p>y: 该模式只在垂直方向重复；</p>
+              <p>n: 该模式只显示一次（不重复）</p>
+              <p>纹理的内容可以直接是图片或者 Data URLs。</p>
+              <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9sc1SY2d_0AAAAAAAAAAAABkARQnAQ" />
+              <aside class="example">
+                <p>纹理填充</p>
+                <pre class="js">
+                // 使用纹理填充，在水平和垂直方向重复图片
+                fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
+                </pre>
+              </aside>
+            </section>
+          </section>
+          <section>
+            <h2><dfn>strokeOpacity</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>描边透明度，取值范围为 `[0, 1]`，默认值为 1</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>stroke</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{Color}}</code></dt>
+              <dd>描边颜色</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>lineWidth</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>描边宽度。与我们熟悉的 CSS box model 不同，边框的一半宽度在图形内，一半在图形外。
+                例如下面这个圆的包围盒宽度为：`r + lineWidth / 2 = 110`</dd>
+            </dl>
+            <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*f0-CTpClWkMAAAAAAAAAAAAAARQnAQ" width="400"/>
+          </section>
+          <section>
+            <h2><dfn>lineDash</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>sequence&lt;double&gt;</code></dt>
+              <dd>一个数组，描述交替绘制的线段和间距。对它应用动画可以实现[=笔迹动画=]效果。</dd>
+            </dl>
+            <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ" width="400"/>
+          </section>
+          <section>
+            <h2><dfn>lineDashOffset</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>double</code></dt>
+              <dd>虚线偏移量，对它进行变换可以实现[=蚂蚁线效果=]。</dd>
+            </dl>
+            <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ" width="400"/>
+          </section>
+          <section>
+            <h2><dfn>lineCap</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{LineCap}}</code></dt>
+              <dd>描边端点样式。支持 'butt' 'round' 'square' 三种。</dd>
+            </dl>
+            <img src="https://wwwtyro.net/media/instanced-lines/caps-n-joins.svg" width="600"/>
+          </section>
+          <section>
+            <h2><dfn>lineJoin</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{LineJoin}}</code></dt>
+              <dd>描边中连续线段的连接处样式。支持 'miter' 'round' 'bevel' 三种。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>visibility</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{Visibility}}</code></dt>
+              <dd>是否可见。支持 'visible' 和 'hidden' 两个取值。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>cursor</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{Cursor}}</code></dt>
+              <dd>鼠标悬停到该图形时的样式。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>clipPath</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{DisplayObject}}</code></dt>
+              <dd>使用裁剪方式创建元素的可显示区域，区域内的部分显示，区域外的隐藏。
+                可参考 CSS 的 <a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path">clip-path</a>。
+                该属性值可以是任意图形，例如 {{Circle}}、{{Rect}} 等等。
+                同一个裁剪区域可以被多个图形共享使用。最后，裁剪区域也会影响图形的拾取区域。</dd>
+            </dl>
+            <aside class="example">
+              <p>使用一个裁剪区域</p>
+              <pre class="js">
+              const image = new Image({
+                style: {
+                  width: 200,
+                  height: 200,
+                  clipPath: new Circle({
+                    style: {
+                      x: 100, // 处于被裁剪图形局部坐标系下
+                      y: 100,
+                      r: 50,
+                    },
+                  }),
+                },
+              });
+              </pre>
+            </aside>
+            <p>裁剪区域图形本身也是支持修改属性的，受它影响，被裁剪图形会立刻重绘。例如，配合动画系统我们可以对裁剪区域图形进行变换，实现以下效果</p>
+            <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Iy4RQZgT3EUAAAAAAAAAAAAAARQnAQ" />
+            <aside class="example">
+              <p>对裁剪区域应用动画</p>
+              <pre class="js">
+              clipPathCircle.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }], {
+                duration: 1500,
+                iterations: Infinity,
+              });
+              </pre>
+            </aside>
+          </section>
+          <section>
+            <h2><dfn>offsetPath</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{DisplayObject}}</code></dt>
+              <dd>指定一个图形的运动轨迹，目前支持 {{Line}} {{Path}} 和 {{Polyline}} 这三种图形。
+                对 {{DisplayObjectStyle/offsetDistance}} 属性应用变换可以实现[=路径动画=]。</dd>
+            </dl>
+            <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nk1YSrbkQPMAAAAAAAAAAAAAARQnAQ" />
+            <aside class="example">
+              <p>使用[=路径动画=]</p>
+              <pre class="js">
+              const circle = new Circle({
+                style: {
+                  offsetPath: new Line({
+                    // 创建运动轨迹
+                    style: {
+                      // 不需要设置其他与轨迹无关的绘图属性
+                      x1: 100,
+                      y1: 100,
+                      x2: 300,
+                      y2: 100,
+                    },
+                  }),
+                  r: 10,
+                },
+              });
+            
+              const animation = circle.animate(
+                [
+                  { offsetDistance: 0 }, // 变换
+                  { offsetDistance: 1 },
+                ],
+                {
+                  duration: 3000,
+                  easing: 'ease-in-out',
+                  iterations: Infinity,
+                },
+              );
+              </pre>
+            </aside>
+          </section>
+          <section>
+            <h2><dfn>offsetDistance</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>从路径起点出发行进的距离，取值范围为 `[0, 1]`，0 代表路径起点，1 代表终点。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>shadowColor</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{Color}}</code></dt>
+              <dd>阴影色，例如 '#1890FF'。不支持渐变或者纹理写法。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>shadowBlur</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>阴影效果模糊程度，不允许为负数。越大代表越模糊，为 0 时无模糊效果。</dd>
+            </dl>
+            <p>阴影不会影响图形的包围盒，例如下图中给一个半径为 100 的圆添加阴影后，包围盒尺寸不变：</p>
+            <aside class="example">
+              <p>添加阴影</p>
+              <pre class="js">
+              circle.getBounds(); // { halfExtents: [100, 100] }
+              circle.style.shadowBlur = 20;
+              circle.getBounds(); // { halfExtents: [100, 100] }
+            </pre>
+            </aside>
+            <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ" />
+          </section>
+          <section>
+            <h2><dfn>shadowOffsetX</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>水平方向偏移量，例如负数让阴影往左移，正数向右。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>shadowOffsetY</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>垂直方向偏移量，例如负数让阴影往上移，正数向下。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>filter</dfn> attribute</h2>
+            <p>滤镜（Filter）可以对已生成的图像进行一些处理，例如模糊、高亮、提升对比度等。在 Web 端有以下实现：</p>
+            <ul>
+              <li>CSS Filter：https://developer.mozilla.org/en-US/docs/Web/CSS/filter</li>
+              <li>Canvas Filter：https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/filter</li>
+              <li>SVG Filter：https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/filter</li>
+              <li>WebGL 中一般称作后处理</li>
+            </ul>
+            <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3MxRTpAT77gAAAAAAAAAAAAAARQnAQ" />
+            <p>参考 CSS Filter 语法，我们支持对图形应用一个或多个滤镜效果：</p>
+            <aside class="example">
+              <p>应用滤镜</p>
+              <pre class="js">
+              circle.style.filter = 'blur(5px)';
+              circle.style.filter = 'blur(5px) brightness(0.4)'; // 可叠加
+              </pre>
+            </aside>
+            <dl class="def">
+              <dt><code>{{DOMString}}}</code></dt>
+              <dd>滤镜字符串。</dd>
+            </dl>
+          </section>
+        </section>
+        <section>
+          <h2><dfn>hide()</dfn> method</h2>
+          <p>隐藏，效果等同于设置 {{visibility}} 为 `hidden`</p>
+          <aside class="example">
+            <p>隐藏元素</p>
+            <pre class="js">
+            circle.hide();
+            circle.style.visibility = 'hidden';
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>show()</dfn> method</h2>
+          <p>展示，效果等同于设置 {{visibility}} 为 `visible`</p>
+          <aside class="example">
+            <p>展示元素</p>
+            <pre class="js">
+            circle.show();
+            circle.style.visibility = 'visible';
+            </pre>
+          </aside>
         </section>
       </section>
       <section data-dfn-for="Circle" data-link-for="Circle">
         <h2>Circle</h2>
-        <p>继承 {{DisplayObject}}。</p>
+        <p>继承 {{DisplayObject}}。默认 {{DisplayObjectStyle/anchor}} 为圆心，即 `[0.5, 0.5]`。</p>
+        <pre class="idl">
+        [Exposed=Window]
+        interface Circle : DisplayObject {
+          constructor(optional CircleInit circleInitDict = {});
+        };
+
+        dictionary CircleInit {
+          required double          r;
+        };
+        </pre>
+        <section data-dfn-for="CircleInit">
+          <h2>样式属性</h2>
+          <section>
+            <h2><dfn>r</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>必填，圆的半径。</dd>
+            </dl>
+          </section>
+        </section>
       </section>
       <section data-dfn-for="Ellipse" data-link-for="Ellipse">
         <h2>Ellipse</h2>
-        <p>继承 {{DisplayObject}}。</p>
+        <p>继承 {{DisplayObject}}。默认 {{DisplayObjectStyle/anchor}} 为圆心，即 `[0.5, 0.5]`。</p>
+        <pre class="idl">
+        [Exposed=Window]
+        interface Ellipse : DisplayObject {
+          constructor(optional EllipseInit ellipseInitDict = {});
+        };
+
+        dictionary EllipseInit {
+          required double          rx;
+          required double          ry;
+        };
+        </pre>
+        <section data-dfn-for="EllipseInit">
+          <h2>样式属性</h2>
+          <section>
+            <h2><dfn>rx</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>必填，椭圆的水平半径。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>ry</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>必填，椭圆的垂直半径。</dd>
+            </dl>
+          </section>
+        </section>
       </section>
       <section data-dfn-for="Rect" data-link-for="Rect">
         <h2>Rect</h2>
-        <p>继承 {{DisplayObject}}。</p>
+        <p>继承 {{DisplayObject}}。支持圆角矩形。默认 {{DisplayObjectStyle/anchor}} 为左上角顶点，即 `[0, 0]`。</p>
+        <pre class="idl">
+        [Exposed=Window]
+        interface Rect : DisplayObject {
+          constructor(optional RectInit rectInitDict = {});
+        };
+
+        dictionary RectInit {
+          required double          width;
+          required double          height;
+          double?                  radius;
+        };
+        </pre>
+        <section data-dfn-for="RectInit">
+          <h2>样式属性</h2>
+          <section>
+            <h2><dfn>width</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>必填，矩形的宽。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>height</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>必填，矩形的高。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>radius</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double?}}</code></dt>
+              <dd>选填，矩形的圆角半径。</dd>
+            </dl>
+          </section>
+        </section>
       </section>
       <section data-dfn-for="Image" data-link-for="Image">
         <h2>Image</h2>
-        <p>继承 {{DisplayObject}}。</p>
+        <p>继承 {{DisplayObject}}。默认 {{DisplayObjectStyle/anchor}} 为左上角顶点，即 `[0, 0]`。</p>
+        <pre class="idl">
+        [Exposed=Window]
+        interface Image : DisplayObject {
+          constructor(optional ImageInit imageInitDict = {});
+        };
+
+        dictionary ImageInit {
+          required (DOMString or Image)         img;
+        };
+        </pre>
+        <aside class="example">
+          <p>修改图片锚点为中心</p>
+          <pre class="js">
+          const image = new Image({
+            style: {
+              // 省略其他属性
+              anchor: [0.5, 0.5],
+            },
+          });
+          </pre>
+        </aside>
+        <section data-dfn-for="ImageInit">
+          <h2>样式属性</h2>
+          <section>
+            <h2><dfn>img</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{DOMString}} or {{Image}}</code></dt>
+              <dd>必填，图片来源。</dd>
+            </dl>
+            <p class="issue" data-number="814">
+              该属性名是否叫 `src` 更合适？
+            </p>
+          </section>
+          <aside class="example">
+            <p>使用图片 URL 创建</p>
+            <pre class="js">
+            const image = new GImage({
+              style: {
+                x: 200,
+                y: 100,
+                width: 200,
+                height: 200,
+                img: 'http://...', // 传入图片 URL
+              },
+            });
+            </pre>
+          </aside>
+          <aside class="example">
+            <p>使用 {{Image}} 创建</p>
+            <pre class="js">
+            import { Image as GImage, Canvas } from '@antv/g';
+
+            // 使用原生 Image
+            const img = new Image();
+            img.src = 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ';
+            img.crossOrigin = 'Anonymous';
+            img.onload = () => {
+                // 图片加载成功后创建 G 的 Image
+                const image = new GImage({
+                    style: {
+                        x: 200,
+                        y: 100,
+                        width: 200,
+                        height: 200,
+                        img, // 传入 Image 对象
+                    },
+                });
+                canvas.appendChild(image);
+            };
+            </pre>
+          </aside>
+        </section>
       </section>
       <section data-dfn-for="Line" data-link-for="Line">
         <h2>Line</h2>
-        <p>继承 {{DisplayObject}}。</p>
+        <p>继承 {{DisplayObject}}。默认 {{DisplayObjectStyle/anchor}} 为两个端点中靠近原点的那个（左上角顶点）。</p>
+        <pre class="idl">
+        [Exposed=Window]
+        interface Line : DisplayObject {
+          constructor(optional LineInit lineInitDict = {});
+          double                  getTotalLength();
+          Point                   getPoint(double ratio);
+        };
+
+        dictionary LineInit {
+          required double         x1;
+          required double         y1;
+          required double         x2;
+          required double         y2;
+        };
+        </pre>
+        <section data-dfn-for="LineInit">
+          <h2>样式属性</h2>
+          <section>
+            <h2><dfn>x1</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>必填，第一个端点在局部坐标系下的 x 坐标。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>y1</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>必填，第一个端点在局部坐标系下的 y 坐标。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>x2</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>必填，第二个端点在局部坐标系下的 x 坐标。</dd>
+            </dl>
+          </section>
+          <section>
+            <h2><dfn>y2</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>必填，第二个端点在局部坐标系下的 y 坐标。</dd>
+            </dl>
+          </section>
+          <p class="issue" data-number="815">
+            是否应该支持 {{Point}}[] 传参？例如：
+            <aside class="example">
+              <p>使用 points</p>
+              <pre class="js">
+              new Line({
+                style: {
+                  points: [new Point(), new Point()],
+                },
+              });
+              </pre>
+            </aside>
+          </p>
+        </section>
+        <section>
+          <h2><dfn>getTotalLength()</dfn> method</h2>
+          <p>获取线段长度。</p>
+          <aside class="example">
+            <p>获取线段长度</p>
+            <pre class="js">
+            line.getTotalLength(); // 200
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>getPoint()</dfn> method</h2>
+          <p>根据长度比例获取直线上局部坐标系下的点。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{double}} ratio</code></dt>
+            <dd>长度比例（取值范围 `[0, 1]`）</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{Point}}</code></dt>
+            <dd>直线上的点</dd>
+          </dl>
+          <aside class="example">
+            <p>获取直线上局部坐标系下的点</p>
+            <pre class="js">
+            line.getPoint(0.5); // Point {x: 300, y: 100}
+            </pre>
+          </aside>
+        </section>
       </section>
       <section data-dfn-for="Polyline" data-link-for="Polyline">
         <h2>Polyline</h2>
-        <p>继承 {{DisplayObject}}。</p>
+        <p>继承 {{DisplayObject}}。默认 {{DisplayObjectStyle/anchor}} 为包围盒左上角顶点。</p>
+        <pre class="idl">
+        [Exposed=Window]
+        interface Polyline : DisplayObject {
+          constructor(optional PolylineInit polylineInitDict = {});
+          double                  getTotalLength();
+          Point                   getPoint(double ratio);
+        };
+
+        dictionary PolylineInit {
+          required sequence&lt;sequence&lt;double&gt;&gt;        points;
+        };
+        </pre>
+        <section data-dfn-for="PolylineInit">
+          <h2>样式属性</h2>
+          <section>
+            <h2><dfn>points</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>必填，端点列表。</dd>
+            </dl>
+          </section>
+          <p class="issue" data-number="815">
+            是否应该支持 {{Point}}[] 传参？
+          </p>
+          <aside class="example">
+            <p>创建一条折线</p>
+            <pre class="js">
+            const polyline = new Polyline({
+              style: {
+                points: [
+                  [50, 50],
+                  [100, 50],
+                  [100, 100],
+                ],
+                stroke: '#1890FF',
+                lineWidth: 2,
+              },
+            });
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>getTotalLength()</dfn> method</h2>
+          <p>获取折线总长度，将每段线段相加。</p>
+        </section>
+        <section>
+          <h2><dfn>getPoint()</dfn> method</h2>
+          <p>根据长度比例获取折线上局部坐标系下的点。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{double}} ratio</code></dt>
+            <dd>长度比例（取值范围 `[0, 1]`）</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{Point}}</code></dt>
+            <dd>折线上的点</dd>
+          </dl>
+        </section>
       </section>
       <section data-dfn-for="Polygon" data-link-for="Polygon">
         <h2>Polygon</h2>
-        <p>继承 {{DisplayObject}}。</p>
+        <p>继承 {{DisplayObject}}。默认 {{DisplayObjectStyle/anchor}} 为包围盒左上角顶点。</p>
+        <pre class="idl">
+        [Exposed=Window]
+        interface Polygon : DisplayObject {
+          constructor(optional PolygonInit polygonInitDict = {});
+        };
+
+        dictionary PolygonInit {
+          required sequence&lt;sequence&lt;double&gt;&gt;        points;
+        };
+        </pre>
+        <section data-dfn-for="PolygonInit">
+          <h2>样式属性</h2>
+          <section>
+            <h2><dfn>points</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{double}}</code></dt>
+              <dd>必填，端点列表。</dd>
+            </dl>
+          </section>
+        </section>
       </section>
       <section data-dfn-for="Path" data-link-for="Path">
-        <h2>Image</h2>
-        <p>继承 {{DisplayObject}}。</p>
+        <h2>Path</h2>
+        <p>继承 {{DisplayObject}}。默认 {{DisplayObjectStyle/anchor}} 为包围盒左上角顶点。</p>
+        <p><a href="https://www.w3.org/TR/SVG2/paths.html#PathData">PathData</a></p>
+        <pre class="idl">
+        [Exposed=Window]
+        interface Path : DisplayObject {
+          constructor(optional PathInit pathInitDict = {});
+
+          double                  getTotalLength();
+          Point                   getPoint(double ratio);
+        };
+
+        dictionary PathInit {
+          required DOMString        path;
+        };
+        </pre>
+        <section data-dfn-for="PathInit">
+          <h2>样式属性</h2>
+          <section>
+            <h2><dfn>path</dfn> attribute</h2>
+            <dl class="def">
+              <dt><code>{{DOMString}}</code></dt>
+              <dd>路径 <a href="https://www.w3.org/TR/SVG2/paths.html#PathData">PathData</a>。</dd>
+            </dl>
+            <aside class="example">
+              <p>创建一条路径</p>
+              <pre class="js">
+              const path = new Path({
+                style: {
+                  path: 'M 100,100 L 200,200',
+                  stroke: '#1890FF',
+                  lineWidth: 2,
+                },
+              });
+              </pre>
+            </aside>
+          </section>
+        </section>
+        <section>
+          <h2><dfn>getTotalLength()</dfn> method</h2>
+          <p>获取路径总长度。</p>
+        </section>
+        <section>
+          <h2><dfn>getPoint()</dfn> method</h2>
+          <p>根据长度比例获取路径上局部坐标系下的点。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{double}} ratio</code></dt>
+            <dd>长度比例（取值范围 `[0, 1]`）</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{Point}}</code></dt>
+            <dd>路径上的点</dd>
+          </dl>
+        </section>
       </section>
       <section>
         <h2><dfn>Group</dfn></h2>
@@ -1189,7 +2419,7 @@
             readonly attribute Document       ownerDocument;
             readonly attribute Canvas         defaultView;
             readonly attribute Node           documentElement;
-            readonly attribute Timeline       timeline;
+            readonly attribute AnimationTimeline       timeline;
             Element                           getElementById(DOMString id);
             sequence&lt;Element&gt;                 getElementsByName(DOMString name);
             sequence&lt;Element&gt;                 getElementsByClassName(DOMString className);
@@ -1231,7 +2461,7 @@
         </section>
         <section>
           <h2><dfn>timeline</dfn> attribute</h2>
-          <p>返回默认时间轴，在动画系统中使用。</p>
+          <p>返回默认时间轴 {{AnimationTimeline}}，在动画系统中使用。</p>
         </section>
         <section>
           <h2><dfn>createElement()</dfn> method</h2>
@@ -1259,6 +2489,8 @@
       <pre class="idl">
       [Exposed=Window]
       interface Canvas : EventTarget {
+        constructor(CanvasInit canvasInitDict);
+
         readonly attribute Document              document;
         readonly attribute CustomElementRegistry customElements;
         undefined                   resize(long width, long height);
@@ -1270,11 +2502,20 @@
         undefined                   removeChild(DisplayObject o);
         undefined                   removeChildren();
         Camera                      getCamera();
+        undefined                   setRenderer(Renderer renderer);
       };
 
       dictionary Point {
         required double x;
         required double y;
+        double?         z;
+      };
+
+      dictionary CanvasInit {
+        required (DOMString or HTMLDivElement)  container;
+        required double                         width;
+        required double                         height;
+        required Renderer                       renderer;
       };
       </pre>
       <section>
@@ -1380,6 +2621,38 @@
           </section>
         </section>
       </section>
+      <section data-dfn-for="CanvasInit">
+        <h2>构造函数</h2>
+        <aside class="example">
+          <p>创建画布</p>
+          <pre class="js">
+          const canvas = new Canvas({
+            container: 'container', // 画布 DOM 容器 id
+            width: 600, // 画布尺寸
+            height: 500,
+            renderer: webglRenderer, // 指定渲染器
+          });
+          </pre>
+        </aside>
+        <section>
+          <h2><dfn>container</dfn> attribute</h2>
+          <p>画布需要一个容器，在 DOM 中可以是一个 {{HTMLDivElement}}。
+            渲染器 `g-canvas/svg/webgl` 在这个容器内创建具体的画布元素，例如 `&lt;canvas&gt;` 和 `&lt;svg&gt;`。</p>
+          <p>当传入 {{DOMString}} 时，当作 ID 在当前 DOM 树中查找容器元素。</p>
+        </section>
+        <section>
+          <h2><dfn>width</dfn> attribute</h2>
+          <p>画布宽度，以像素为单位，不考虑 devicePixelRatio。</p>
+        </section>
+        <section>
+          <h2><dfn>height</dfn> attribute</h2>
+          <p>画布高度，以像素为单位，不考虑 devicePixelRatio。</p>
+        </section>
+        <section>
+          <h2><dfn>renderer</dfn> attribute</h2>
+          <p>渲染器。后续可以使用 {{Canvas/setRenderer()}} 在运行时动态切换。</p>
+        </section>
+      </section>
       <section>
         <h2>画布事件</h2>
         <p>画布同样具有事件监听能力，除了交互事件，还包括一些画布特有事件，它们在画布的渲染、销毁等生命周期中触发。</p>
@@ -1401,20 +2674,99 @@
         </aside>
       </section>
       <section>
-        <h2>添加/删除节点</h2>
-        <p>加入画布的节点将会被立即渲染。</p>
-        <section>
-          <h2><dfn>appendChild()</dfn> method</h2>
-          <p></p>
-        </section>
-        <section>
-          <h2><dfn>removeChild()</dfn> method</h2>
-          <p></p>
-        </section>
-        <section>
-          <h2><dfn>removeChildren()</dfn> method</h2>
-          <p></p>
-        </section>
+        <h2><dfn>document</dfn> attribute</h2>
+        <dl class="def">
+          <dt><code>{{Document}}</code></dt>
+          <dd>文档</dd>
+        </dl>
+      </section>
+      <section>
+        <h2><dfn>customElements</dfn> attribute</h2>
+        <dl class="def">
+          <dt><code>{{CustomElementRegistry}}</code></dt>
+          <dd>自定义组件注册器</dd>
+        </dl>
+      </section>
+      <section>
+        <h2><dfn>resize()</dfn> method</h2>
+        <p>初始化时指定的画布 {{CanvasInit/width}} 和 {{CanvasInit/height}} 后续有可能发生改变，此时可以使用该方法。</p>
+        <aside class="example">
+          <p>监听容器尺寸改变，同时改变画布尺寸</p>
+          <pre class="js">
+          const resizeObserver = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+              if (entry !== canvas) {
+                continue;
+              }
+              const { width, height } = entry.contentRect;
+              // resize canvas
+              canvas.resize(width, height);
+            }
+          });
+          resizeObserver.observe($container);
+          </pre>
+        </aside>
+      </section>
+      <section>
+        <h2><dfn>setRenderer()</dfn> method</h2>
+        <p>在初始化指定渲染器后，后续可以动态切换。</p>
+        <aside class="example">
+          <p>运行时动态切换渲染器</p>
+          <pre class="js">
+          // 当图元数目很多时切换到 WebGL 渲染器
+          if (tooManyShapes) {
+            canvas.setRenderer(webglRenderer);
+          } else {
+            canvas.setRenderer(svgRenderer);
+          }
+          </pre>
+        </aside>
+      </section>
+      <section>
+        <h2><dfn>appendChild()</dfn> method</h2>
+        <p>添加一个新节点到画布中，立即渲染。等同于在 {{Document/documentElement}} 上调用该同名方法。</p>
+        <p>参数列表：</p>
+        <dl class="def">
+          <dt><code>{{DisplayObject}} newChild</code></dt>
+          <dd>新节点</dd>
+        </dl>
+        <p>返回值：</p>
+        <dl class="def">
+          <dt><code>{{DisplayObject}}</code></dt>
+          <dd>刚添加的节点</dd>
+        </dl>
+        <aside class="example">
+          <p>向画布中添加一个 Circle</p>
+          <pre class="js">
+          canvas.appendChild(circle);
+          // 或者
+          canvas.document.documentElement.appendChild(circle);
+          </pre>
+        </aside>
+      </section>
+      <section>
+        <h2><dfn>removeChild()</dfn> method</h2>
+        <p>从画布中移除对象。如果该对象有子节点也会一并移除。</p>
+        <aside class="example">
+          <p>从画布中删除一个 Circle</p>
+          <pre class="js">
+          canvas.removeChild(circle);
+          // 或者
+          canvas.document.documentElement.removeChild(circle);
+          </pre>
+        </aside>
+      </section>
+      <section>
+        <h2><dfn>removeChildren()</dfn> method</h2>
+        <p>移除并销毁画布中所有对象。</p>
+        <aside class="example">
+          <p>清空画布</p>
+          <pre class="js">
+          canvas.removeChildren();
+          // 或者
+          canvas.document.documentElement.removeChildren();
+          </pre>
+        </aside>
       </section>
       <section>
         <h2><dfn>getCamera()</dfn> method</h2>
@@ -1497,7 +2849,213 @@
           Landmark        createLandmark(DOMString name, LandmarkParams params);
           undefined       gotoLandmark(DOMString name, double? duration);
         };
+
+        dictionary LandmarkParams {
+          required sequence&lt;double&gt; position;
+          required sequence&lt;double&gt; focalPoint;
+          double?                   roll;
+        };
+
+        [Exposed=(Window)]
+        interface Landmark {
+          constructor(DOMString name, Camera c);
+        };
         </pre>
+      </section>
+      <p>正交投影（左图）常用于 CAD 软件和策略类游戏（模拟人生）中。而透视投影（右图）遵循我们认知中的“近大远小”。</p>
+      <p>在 2D 场景中使用的都是正交投影，因此这也是 G 默认的投影模式。而在 3D 场景中，有时我们需要切换到透视投影。</p>
+      <img src="https://www.scratchapixel.com/images/upload/perspective-matrix/projectionsexample.png" />
+      <section>
+        <h2><dfn>setOrthographic()</dfn> method</h2>
+        <p>参数列表：</p>
+        <dl class="def">
+          <dt><code>{{double}} left</code></dt>
+          <dd>x 轴负向最大距离</dd>
+          <dt><code>{{double}} right</code></dt>
+          <dd>x 轴正向最大距离</dd>
+          <dt><code>{{double}} top</code></dt>
+          <dd>y 轴负向最大距离</dd>
+          <dt><code>{{double}} bottom</code></dt>
+          <dd>y 轴正向最大距离</dd>
+          <dt><code>{{double}} near</code></dt>
+          <dd>近平面</dd>
+          <dt><code>{{double}} far</code></dt>
+          <dd>远平面</dd>
+        </dl>
+        <aside class="example">
+          <p>设置正交投影</p>
+          <pre class="js">
+          camera.setOrthographic(-300, 300, -250, 250, 0.1, 1000);
+          </pre>
+        </aside>
+      </section>
+      <section>
+        <h2><dfn>setPerspective()</dfn> method</h2>
+        <p>参数列表：</p>
+        <dl class="def">
+          <dt><code>{{double}} near</code></dt>
+          <dd>近平面</dd>
+          <dt><code>{{double}} far</code></dt>
+          <dd>远平面</dd>
+          <dt><code>{{double}} fov</code></dt>
+          <dd>可视角度，越大意味着能容纳场景中的更多对象</dd>
+          <dt><code>{{double}} aspect</code></dt>
+          <dd>宽高比</dd>
+        </dl>
+        <aside class="example">
+          <p>设置透视投影</p>
+          <pre class="js">
+          camera
+            .setPosition(300, 100, 500)
+            .setFocalPoint(300, 250, 0)
+            .setPerspective(0.1, 1000, 75, 600 / 500);
+          </pre>
+        </aside>
+      </section>
+      <section>
+        <h2><dfn>setPosition()</dfn> method</h2>
+        <p>设置相机在世界坐标系下的位置。在 G 内置的正交投影相机中，默认设置为 `[width / 2, height / 2]`
+          ，其中 width/height 为创建画布时传入的参数。</p>
+        <p>参数列表：</p>
+        <dl class="def">
+          <dt><code>(double or sequence&lt;double&gt;) x, double? y, double? z</code></dt>
+          <dd>支持两种传参形式，传入一个位置数组，或者分别传入 `x, y, z`。其中 `y, z` 分量不传时使用默认值 0</dd>
+        </dl>
+        <aside class="example">
+          <p>设置相机在世界坐标系下的位置</p>
+          <pre class="js">
+          camera.setPosition(300, 250);
+          // 或者
+          camera.setPosition(300, 250, 0);
+          // 或者
+          camera.setPosition([300, 250, 0]);
+          </pre>
+        </aside>
+      </section>
+      <section>
+        <h2><dfn>setFocalPosition()</dfn> method</h2>
+        <p>设置视点位置。</p>
+        <p>参数列表：</p>
+        <dl class="def">
+          <dt><code>(double or sequence&lt;double&gt;) x, double? y, double? z</code></dt>
+          <dd>支持两种传参形式，传入一个位置数组，或者分别传入 `x, y, z`。其中 `y, z` 分量不传时使用默认值 0</dd>
+        </dl>
+      </section>
+      <section>
+        <h2><dfn>setNear()</dfn> method</h2>
+        <p>设置近平面。</p>
+        <p>参数列表：</p>
+        <dl class="def">
+          <dt><code>{{double}} near</code></dt>
+          <dd>近平面距离</dd>
+        </dl>
+      </section>
+      <section>
+        <h2><dfn>setFar()</dfn> method</h2>
+        <p>设置远平面。</p>
+        <p>参数列表：</p>
+        <dl class="def">
+          <dt><code>{{double}} far</code></dt>
+          <dd>远平面距离</dd>
+        </dl>
+      </section>
+      <section>
+        <h2><dfn>setZoom()</dfn> method</h2>
+        <p>缩放比例，大于 1 代表放大，反之代表缩小。</p>
+        <p>参数列表：</p>
+        <dl class="def">
+          <dt><code>{{double}} zoom</code></dt>
+          <dd>缩放比例</dd>
+        </dl>
+      </section>
+      <section>
+        <h2><dfn>pan()</dfn> method</h2>
+        <p>沿水平和垂直方向平移相机。</p>
+        <dl class="def">
+          <dt><code>{{double}} tx</code></dt>
+          <dd>水平平移距离</dd>
+          <dt><code>{{double}} ty</code></dt>
+          <dd>垂直平移距离</dd>
+        </dl>
+        <aside class="example">
+          <p>沿水平和垂直方向平移相机</p>
+          <pre class="js">
+          // 将导致原本处于视点处的物体展示在左上角
+          camera.pan(200, 200);
+          </pre>
+        </aside>
+      </section>
+      <section>
+        <h2><dfn>dolly()</dfn> method</h2>
+        <p>沿 n 轴移动相机。</p>
+        <dl class="def">
+          <dt><code>{{double}} distance</code></dt>
+          <dd>正向远离视点，负向靠近</dd>
+        </dl>
+        <aside class="example">
+          <p>沿水平和垂直方向平移相机</p>
+          <pre class="js">
+          camera.dolly(10); // 远离视点
+          camera.dolly(-10); // 靠近视点
+          </pre>
+        </aside>
+      </section>
+      <section>
+        <h2><dfn>rotate()</dfn> method</h2>
+        <p>按相机方位角旋转。</p>
+        <dl class="def">
+          <dt><code>{{double}} azimuth</code></dt>
+          <dt><code>{{double}} elevation</code></dt>
+          <dt><code>{{double}} roll</code></dt>
+        </dl>
+      </section>
+      <section>
+        <h2><dfn>createLandmark()</dfn> method</h2>
+        <p>我们可以把相机当前的位置、视点记录下来，保存成一个"地标" {{Camera/Landmark}}。
+          随后当相机参数发生改变时，可以随时切换到之前保存的任意一个 {{Camera/Landmark}}，
+          同时带有平滑的切换动画，类似真实片场中的摄像机摇臂。</p>
+        <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*goX8QqgVSMEAAAAAAAAAAAAAARQnAQ" />
+        <dl class="def">
+          <dt><code>DOMString name</code></dt>
+          <dd>地标名称</dd>
+          <dt><code>{{Camera/LandmarkParams}} parmas</code></dt>
+          <dd>
+            <dt><code>sequence&lt;double&gt; position</code></dt>
+            <dd>相机位置</dd>
+            <dt><code>sequence&lt;double&gt; focalPoint</code></dt>
+            <dd>视点位置</dd>
+            <dt><code>{{double}} roll</code></dt>
+            <dd>方位角</dd>
+          </dd>
+        </dl>
+        <aside class="example">
+          <p>创建 {{Camera/Landmark}}</p>
+          <pre class="js">
+          camera.createLandmark('mark1', {
+            position: [300, 250, 400],
+            focalPoint: [300, 250, 0],
+          });
+          camera.createLandmark('mark2', {
+            position: [300, 600, 500],
+            focalPoint: [300, 250, 0],
+          });
+          camera.createLandmark('mark3', {
+            position: [0, 250, 800],
+            focalPoint: [300, 250, 0],
+            roll: 30,
+          });
+          </pre>
+        </aside>
+      </section>
+      <section>
+        <h2><dfn>gotoLandmark()</dfn> method</h2>
+        <p>切换到之前保存的 {{Camera/Landmark}}，具有平滑的动画过度效果。</p>
+        <dl class="def">
+          <dt><code>DOMString name</code></dt>
+          <dd>地标名称</dd>
+          <dt><code>double duration</code></dt>
+          <dd>动画时间</dd>
+        </dl>
       </section>
     </section>
     <section data-dfn-for="Event">
@@ -1796,8 +3354,9 @@
         </aside>
       </section>
     </section>
-    <section data-dfn-for="Animation">
+    <section data-dfn-for="Animatable">
       <h2>动画</h2>
+      <p>参考 <a href='https://drafts.csswg.org/web-animations/'>Web Animation API</a>，它与 CSS Transform/Animation 十分类似。</p>
       <pre class="idl">
       interface mixin Animatable {
         Animation           animate(object? keyframes,
@@ -1809,13 +3368,804 @@
         DOMString id = "";
         AnimationTimeline? timeline;
       };
-  </pre>
+
+      dictionary KeyframeEffectOptions : EffectTiming {
+        CompositeOperation composite = "replace";
+      };
+
+      enum CompositeOperation { "replace", "add", "accumulate" };
+      enum CompositeOperationOrAuto { "replace", "add", "accumulate", "auto" };
+      </pre>
+      <p>由于 mixin 了该接口，{{DisplayObject}} 具有了动画能力。</p>
+      <section>
+        <h2><dfn>animate()</dfn> method</h2>
+        <p>在 {{DisplayObject}} 上调用，创建并返回 {{Animation}}，开始动画。</p>
+        <p>参数列表：</p>
+        <dl class="def">
+          <dt><code>{{KeyframeFormats}} keyframes</code></dt>
+          <dd>关键帧定义</dd>
+          <dt><code>{{double}} or {{KeyframeAnimationOptions}} options</code></dt>
+          <dd>关键帧配置。如果传入 {{double}}，效果等价于设置 {{EffectTiming/duration}}。</dd>
+          <aside class="example">
+            <p>设置动画持续时间</p>
+            <pre class="js">
+            circle.animate(keyframes, {
+              duration: 100,
+            });
+            // 或者
+            circle.animate(keyframes, 100);
+          </pre>
+        </dl>
+        <p>返回值：</p>
+        <dl class="def">
+          <dt><code>{{Animation}}</code></dt>
+        </dl>
+        <aside class="example">
+          <p>创建 {{Animation}}，实现 ScaleIn 效果</p>
+          <pre class="js">
+          const scaleInCenter = circle.animate(
+            [
+              {
+                transform: 'scale(0)', // 起始关键帧
+              },
+              {
+                transform: 'scale(1)', // 结束关键帧
+              },
+            ],
+            {
+              duration: 500, // 持续时间
+              easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)', // 缓动函数
+              fill: 'both', // 动画处于非运行状态时，该图形的展示效果
+            },
+          );
+          </pre>
+        </aside>
+      </section>
+      <section>
+        <h2><dfn>getAnimations()</dfn> method</h2>
+        <p>返回在该对象上的应用的所有 {{Animation}}。</p>
+      </section>
+      <section data-dfn-for="Keyframe">
+        <h2>KeyframeFormats</h2>
+        <p>描述一组关键帧。</p>
+        <pre class="idl">
+        dictionary Keyframe {
+          // ... property-value pairs ...
+          // i.e. DOMString propertyName
+          double?                   offset = null;
+          DOMString                 easing = "linear";
+          CompositeOperationOrAuto  composite = "auto";
+        };
+        
+        dictionary PropertyIndexedKeyframes {
+          // ... property-value and property-valuelist pairs ...
+          // i.e. (DOMString or sequence&lt;DOMString&gt;) propertyName
+          (double? or sequence&lt;double?&gt;)                         offset = [];
+          (DOMString or sequence&lt;DOMString&gt;)                     easing = [];
+          (CompositeOperationOrAuto or sequence&lt;CompositeOperationOrAuto&gt;) composite = [];
+        };
+        
+        typedef (sequence&lt;Keyframe&gt; or PropertyIndexedKeyframes) KeyframeFormats;
+        </pre>
+
+        <section>
+          <h2><dfn>offset</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{double}}</code></dt>
+            <dd>可选，关键帧的偏移量，取值范围为 `[0, 1]`。
+              当不指定时，会通过相邻 {{Keyframe}} 自动计算，
+              例如下面的 3 个 {{Keyframe}} 都未指定，一头一尾默认值为 0 和 1，中间这一帧计算得到 0.5：</dd>
+            <aside class="example">
+              <p>定义一组关键帧</p>
+              <pre class="js">
+              [
+                { transform: 'scale(0)' }, // offset 0
+                { transform: 'scale(2)' }, // offset 0.5
+                { transform: 'scale(1)' }, // offset 1
+              ],
+              </pre>
+            </aside>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>easing</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{DOMString}}</code></dt>
+            <dd>缓动函数</dd>
+            <aside class="example">
+              <p>使用缓动函数</p>
+              <pre class="js">
+              circle.animate(
+              [
+                { opacity: 1, easing: 'ease-out' },
+                { opacity: 0.1, easing: 'ease-in' },
+                { opacity: 0 }
+              ],
+                2000,
+              );
+              </pre>
+            </aside>
+          </dl>
+          <p>内置缓动函数如下，大部分可以通过 cubic-bezier 实现</p>
+          <aside class="example">
+            <p>内置缓动函数</p>
+            <pre class="js">
+            /**
+            * From: [https://easings.net]
+            * Read More about easings on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/easing)
+            */
+            export const EASINGS: Record<string, string> = {
+              in: 'ease-in',
+              out: 'ease-out',
+              'in-out': 'ease-in-out',
+
+              // Sine
+              'in-sine': 'cubic-bezier(0.47, 0, 0.745, 0.715)',
+              'out-sine': 'cubic-bezier(0.39, 0.575, 0.565, 1)',
+              'in-out-sine': 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
+
+              // Quad
+              'in-quad': 'cubic-bezier(0.55, 0.085, 0.68, 0.53)',
+              'out-quad': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+              'in-out-quad': 'cubic-bezier(0.455, 0.03, 0.515, 0.955)',
+
+              // Cubic
+              'in-cubic': 'cubic-bezier(0.55, 0.055, 0.675, 0.19)',
+              'out-cubic': 'cubic-bezier(0.215, 0.61, 0.355, 1)',
+              'in-out-cubic': 'cubic-bezier(0.645, 0.045, 0.355, 1)',
+
+              // Quart
+              'in-quart': 'cubic-bezier(0.895, 0.03, 0.685, 0.22)',
+              'out-quart': 'cubic-bezier(0.165, 0.84, 0.44, 1)',
+              'in-out-quart': 'cubic-bezier(0.77, 0, 0.175, 1)',
+
+              // Quint
+              'in-quint': 'cubic-bezier(0.755, 0.05, 0.855, 0.06)',
+              'out-quint': 'cubic-bezier(0.23, 1, 0.32, 1)',
+              'in-out-quint': 'cubic-bezier(0.86, 0, 0.07, 1)',
+
+              // Expo
+              'in-expo': 'cubic-bezier(0.95, 0.05, 0.795, 0.035)',
+              'out-expo': 'cubic-bezier(0.19, 1, 0.22, 1)',
+              'in-out-expo': 'cubic-bezier(1, 0, 0, 1)',
+
+              // Circ
+              'in-circ': 'cubic-bezier(0.6, 0.04, 0.98, 0.335)',
+              'out-circ': 'cubic-bezier(0.075, 0.82, 0.165, 1)',
+              'in-out-circ': 'cubic-bezier(0.785, 0.135, 0.15, 0.86)',
+
+              // Back
+              'in-back': 'cubic-bezier(0.6, -0.28, 0.735, 0.045)',
+              'out-back': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+              'in-out-back': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+            };
+            </pre>
+          </aside>  
+        </section>
+        <section>
+          <h2>支持变换的属性</h2>
+          <table class="data complex informative">
+            <thead>
+              <tr>
+                <th>图形</th>
+                <th>属性名</th>
+                <th>备注</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>通用</th>
+                <td>{{DisplayObjectStyle/x}} / {{DisplayObjectStyle/y}}</td>
+                <td>局部坐标系下坐标</td>
+              </tr>
+              <tr>
+                <th>通用</th>
+                <td>{{DisplayObjectStyle/transform}}</td>
+                <td>和 CSS Transform 保持一致</td>
+              </tr>
+              <tr>
+                <th>通用</th>
+                <td>{{DisplayObjectStyle/opacity}}</td>
+                <td>透明度</td>
+              </tr>
+              <tr>
+                <th>通用</th>
+                <td>{{DisplayObjectStyle/strokeOpacity}}</td>
+                <td>描边透明度</td>
+              </tr>
+              <tr>
+                <th>通用</th>
+                <td>{{DisplayObjectStyle/fillOpacity}}</td>
+                <td>填充透明度</td>
+              </tr>
+              <tr>
+                <th>通用</th>
+                <td>{{DisplayObjectStyle/fill}}</td>
+                <td>填充色</td>
+              </tr>
+              <tr>
+                <th>通用</th>
+                <td>{{DisplayObjectStyle/stroke}}</td>
+                <td>描边色</td>
+              </tr>
+              <tr>
+                <th>通用</th>
+                <td>{{DisplayObjectStyle/lineWidth}}</td>
+                <td>线宽</td>
+              </tr>
+              <tr>
+                <th>通用</th>
+                <td>{{DisplayObjectStyle/offsetDistance}}</td>
+                <td>路径偏移，在[=路径动画=]中使用</td>
+              </tr>
+              <tr>
+                <th>通用</th>
+                <td>{{DisplayObjectStyle/lineDash}}</td>
+                <td>实线和间隔的长度，在[=笔迹动画=]中使用</td>
+              </tr>
+              <tr>
+                <th>通用</th>
+                <td>{{DisplayObjectStyle/lineDashOffset}}</td>
+                <td>设置虚线的偏移量，在[=蚂蚁线效果=]中使用</td>
+              </tr>
+              <tr>
+                <th>{{Circle}}</th>
+                <td>{{CircleInit/r}}</td>
+                <td>半径</td>
+              </tr>
+              <tr>
+                <th>{{Ellipse}}</th>
+                <td>{{EllipseInit/rx}} / {{EllipseInit/ry}}</td>
+                <td>半径</td>
+              </tr>
+              <tr>
+                <th>{{Rect}} / {{Image}}</th>
+                <td>{{RectInit/width}}</td>
+                <td>宽</td>
+              </tr>
+              <tr>
+                <th>{{Rect}} / {{Image}}</th>
+                <td>{{RectInit/height}}</td>
+                <td>高</td>
+              </tr>
+              <tr>
+                <th>{{Line}}</th>
+                <td>{{LineInit/x1}} / {{LineInit/y1}} / {{LineInit/x2}} / {{LineInit/y2}}</td>
+                <td>端点坐标</td>
+              </tr>
+              <tr>
+                <th>{{Path}}</th>
+                <td>{{PathInit/path}}</td>
+                <td>在[=形变动画=]中使用</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </section>
+
+      <section data-dfn-for="EffectTiming">
+        <h2>EffectTiming</h2>
+        <p>在创建 {{Animation}} 时传入，后续也可以通过如下方式获取：</p>
+        <aside class="example">
+          <p>从 {{Animation}} 上获取 {{EffectTiming}}</p>
+          <pre class="js">
+          const timing = animation.effect.getTiming();
+          </pre>
+        </aside>
+        <pre class="idl">
+        dictionary EffectTiming {
+          double                             delay = 0;
+          double                             endDelay = 0;
+          FillMode                           fill = "auto";
+          double                             iterationStart = 0.0;
+          unrestricted double                iterations = 1.0;
+          (unrestricted double or DOMString) duration = "auto";
+          PlaybackDirection                  direction = "normal";
+          DOMString                          easing = "linear";
+        };
+        </pre>
+        <section>
+          <h2><dfn>delay</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{double}}</code></dt>
+            <dd>选填。开始动画前的延迟，以毫秒为单位，默认值为 0，因此动画会立即开始。</dd>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>endDelay</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{double}}</code></dt>
+            <dd>选填。动画结束前的延迟，以毫秒为单位，默认值为 0，因此动画运行完毕会立即结束。</dd>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>fill</dfn> attribute</h2>
+          <pre class="idl">
+          enum FillMode { "none", "forwards", "backwards", "both", "auto" };
+          </pre>
+          <dl class="def">
+            <dt><code>{{FillMode}}</code></dt>
+            <dd>选填。该属性规定了图形在动画处于非运行状态（例如动画开始前，结束后）时的展示效果。支持以下值：
+              <ul>
+                <li>auto/none 默认值，这意味着动画在第一帧开始前和最后一帧结束后都不会影响到图形的展示效果。例如在动画完成后图形会恢复到动画前状态，如果设置了 delay 在延迟期间也不会应用第一帧的效果。</li>
+                <li>forwards 动画完成后停住，不恢复到初始状态</li>
+                <li>backwards 动画开始前应用第一帧效果</li>
+                <li>both 为 forwards 和 backwards 的组合效果</li>
+              </ul>
+            </dd>
+            <aside class="example">
+              <p>让图形在缩放动画完成后，停在结束状态</p>
+              <pre class="js">
+              const animation = circle.animate(
+                [
+                  { transform: 'scale(1)', fill: '#1890FF', stroke: '#F04864', opacity: 1 },
+                  { transform: 'scale(2)', fill: 'red', stroke: '#1890FF', opacity: 0.8 },
+                ],
+                {
+                  duration: 1500,
+                  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+                  fill: 'both',
+                },
+              );
+              </pre>
+            </aside>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>iterationStart</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{double}}</code></dt>
+            <dd>选填。默认值为 0，从何处开始执行动画，例如动画总是从 0 开始运行，设置为 0.5 代表动画会从当中开始运行。</dd>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>iterations</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{double}}</code></dt>
+            <dd>选填。循环次数，默认值为 1，也可以取大于 0 的小数。当我们想让动画一直运行下去时，可以取 Infinity。</dd>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>duration</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{double}} or {{DOMString}}</code></dt>
+            <dd>选填。动画运行时长，以毫秒为单位，默认为 'auto'，和 0 效果相同。</dd>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>direction</dfn> attribute</h2>
+          <pre class="idl">
+            enum PlaybackDirection { "normal", "reverse", "alternate", "alternate-reverse" };
+          </pre>
+          <dl class="def">
+            <dt><code>{{PlaybackDirection}}</code></dt>
+            <dd>
+              动画在时间线上的运行方向，也会影响到每次迭代结束后的行为。通过该属性我们可以实现往复运动的效果。默认值为 normal。
+              <ul>
+                <li>normal 每次迭代中，动画都从起始帧运行到结束帧</li>
+                <li>reverse 每次迭代中，动画都从结束帧运行到起始帧</li>
+                <li>alternate 每次迭代结束后更换方向，例如第一次迭代从前往后，第二次迭代从后往前</li>
+                <li>alternate-reverse 每次迭代结束后更换方向，例如第一次迭代从后往前，第二次迭代从前往后</li>
+              </ul>
+            </dd>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>easing</dfn> attribute</h2>
+          <p>等同于 {{Keyframe/easing}}。</p>
+        </section>
+      </section>
+      
+      <section>
+        <h2>KeyframeEffect</h2>
+        <pre class="idl">
+        [Exposed=Window]
+        interface KeyframeEffect : AnimationEffect {
+          constructor(Element? target,
+                      object? keyframes,
+                      optional (unrestricted double or KeyframeEffectOptions) options = {});
+
+          attribute Element?                 target;
+          attribute CompositeOperation       composite;
+          sequence&lt;object&gt;                   getKeyframes();
+          undefined                          setKeyframes(object? keyframes);
+        };
+
+        [Exposed=Window]
+        interface AnimationEffect {
+          EffectTiming                       getTiming();
+          ComputedEffectTiming               getComputedTiming();
+          undefined                          updateTiming(optional OptionalEffectTiming timing = {});
+        };
+      
+        dictionary OptionalEffectTiming {
+          double                             delay;
+          double                             endDelay;
+          FillMode                           fill;
+          double                             iterationStart;
+          unrestricted double                iterations;
+          (unrestricted double or DOMString) duration;
+          PlaybackDirection                  direction;
+          DOMString                          easing;
+        };
+
+        dictionary ComputedEffectTiming : EffectTiming {
+          unrestricted double  endTime;
+          unrestricted double  activeDuration;
+          double?              localTime;
+          double?              progress;
+          unrestricted double? currentIteration;
+        };
+        </pre>
+      </section>
+      
+
+      <section data-dfn-for="AnimationTimeline">
+        <h2>AnimationTimeline</h2>
+        <p>时间线与 {{Canvas}} {{Document}} 同步创建。
+          它负责提供当前的时间值（毫秒），通过 {{Document}} 的 {{Document/timeline}} 可以获取。</p>
+        <p>需要配合定时器使用。例如在 DOM 环境下使用 rAF（不支持自动降级到 `setTimeout()`）。</p>
+        <pre class="idl">
+        [Exposed=Window]
+        interface AnimationTimeline {
+          readonly attribute double?  currentTime;
+          sequence&lt;Animation&gt;         getAnimations();
+          Animation                   play(KeyframeEffect effect);
+        };
+        </pre>
+        <section>
+          <h2><dfn>currentTime</dfn> attribute</h2>
+          <p>返回当前时间，单位毫秒</p>
+        </section>
+        <section>
+          <h2><dfn>getAnimations</dfn> method</h2>
+          <p>返回该时间线上激活的 {{Animation}} 列表</p>
+        </section>
+        <section>
+          <h2><dfn>play</dfn> method</h2>
+          <p>根据传入的效果，生成 {{Animation}}，加入激活的动画列表，随后开始播放。</p>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{KeyframeEffect}} effect</code></dt>
+            <dd>关键帧效果</dd>
+          </dl>
+          <p>返回值：</p>
+          <dl class="def">
+            <dt><code>{{Animation}}</code></dt>
+            <dd>生成的 {{Animation}} 对象</dd>
+          </dl>
+        </section>
+      </section>
+
+      <section data-dfn-for="Animation">
+        <h2>Animation</h2>
+        <pre class="idl">
+        [Exposed=Window]
+        interface Animation : EventTarget {
+            constructor(optional AnimationEffect? effect = null,
+                        optional AnimationTimeline? timeline);
+                    attribute DOMString                id;
+                    attribute AnimationEffect?         effect;
+                    attribute AnimationTimeline?       timeline;
+                    attribute double?                  startTime;
+                    attribute double?                  currentTime;
+                    attribute double                   playbackRate;
+            readonly attribute AnimationPlayState      playState;
+            <!-- readonly attribute AnimationReplaceState    replaceState; -->
+            readonly attribute boolean                 pending;
+            readonly attribute Promise&lt;Animation&gt;      ready;
+            readonly attribute Promise&lt;Animation&gt;      finished;
+                    attribute EventHandler             onfinish;
+                    attribute EventHandler             onframe;
+                    <!-- attribute EventHandler             oncancel; -->
+                    <!-- attribute EventHandler             onremove; -->
+            undefined cancel();
+            undefined finish();
+            undefined play();
+            undefined pause();
+            undefined updatePlaybackRate(double playbackRate);
+            undefined reverse();
+            <!-- undefined persist(); -->
+            <!-- undefined commitStyles(); -->
+        };
+        </pre>
+        <section>
+          <h2><dfn>effect</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{AnimationEffect}}</code></dt>
+          </dl>
+          <aside class="example">
+            <p>调整动画效果，修改缓动函数</p>
+            <pre class="js">
+            const effect = animation.effect;
+            effect.getTiming().ease = 'linear';
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>timeline</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{AnimationTimeline}}</code></dt>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>startTime</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{double}}</code></dt>
+            <dd>获取动画开始时间。</dd>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>currentTime</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{double}}</code></dt>
+            <dd>获取或设置动画相对于时间线的当前时间。</dd>
+            <aside class="example">
+              <p>获取或设置动画相对于时间线的当前时间</p>
+              <pre class="js">
+              // 获取
+              const currentTime = animation.currentTime;
+
+              // 设置新时间，会影响动画效果
+              animation.currentTime = newTime;
+              </pre>
+            </aside>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>playbackRate</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{double}}</code></dt>
+            <dd>动画播放的速率，默认值为 1。</dd>
+            <aside class="example">
+              <p>手动控制动画的运行方向，或者降低播放速率</p>
+              <pre class="js">
+              animation.playbackRate = -1;
+              animation.play();
+              
+              // 减速
+              animation.playbackRate *= 0.9;
+              
+              // 加速
+              animation.playbackRate *= 1.1;
+              </pre>
+            </aside>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>playState</dfn> attribute</h2>
+          <pre class="idl">
+          enum AnimationPlayState { "idle", "running", "paused", "finished" };
+          </pre>
+          <dl class="def">
+            <dt><code>{{AnimationPlayState}}</code></dt>
+            <dd>返回动画的运行状态。当一些手动控制方法（例如 {{Animation/pause()}}）被调用后，状态发生改变。</dd>
+            <ul>
+              <li>idle 动画处于未准备好的状态</li>
+              <li>running 动画处于运行状态</li>
+              <li>paused 动画处于暂停状态</li>
+              <li>finished 动画运行完毕.</li>
+            </ul>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>pending</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{boolean}}</code></dt>
+            <dd>动画正在等待一些异步任务完成，例如正在暂停一个运行中的动画。</dd>
+            <aside class="example">
+              <p>手动控制动画的运行方向，或者降低播放速率</p>
+              <pre class="js">
+              animation.playbackRate = -1;
+              animation.play();
+              
+              // 减速
+              animation.playbackRate *= 0.9;
+              
+              // 加速
+              animation.playbackRate *= 1.1;
+              </pre>
+            </aside>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>ready</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{Promise}}&lt;{{Animation}}&gt;</code></dt>
+            <dd>返回一个动画准备开始时 resolve 的 Promise。</dd>
+            <aside class="example">
+              <p>动画准备开始时</p>
+              <pre class="js">
+              animation.ready.then(() => {
+                animation.playState; // running
+                canvas.timeline.currentTime;
+              });
+              </pre>
+            </aside>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>finished</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{Promise}}&lt;{{Animation}}&gt;</code></dt>
+            <dd>返回一个动画结束时 resolve 的 Promise。</dd>
+            <aside class="example">
+              <p>让图形在所有动画结束之后移除自身</p>
+              <pre class="js">
+              Promise.all(circle.getAnimations().map((animation) => animation.finished)).then(() => {
+                return circle.remove();
+              });
+              </pre>
+            </aside>
+            <aside class="example">
+              <p>一组连续动画，例如让一个圆先向右，再向下移动</p>
+              <pre class="js">
+                (async () => {
+                  // 向右移动 100px
+                  const moveRight = circle.animate(
+                    [
+                      {
+                        transform: 'translate(0)',
+                      },
+                      {
+                        transform: 'translate(100px)',
+                      },
+                    ],
+                    {
+                      duration: 1000,
+                      easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+                      fill: 'both',
+                    },
+                  );
+                  // 等待动画完成
+                  await moveRight.finished;
+                
+                  // 完成后向下移动
+                  const moveDown = circle.animate(
+                    //... 省略
+                  );
+              </pre>
+            </aside>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>onfinish</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{EventHandler}}</code></dt>
+            <dd>设置动画完成后的回调函数，类似 animationend 事件。</dd>
+            <aside class="example">
+              <p>监听动画何时结束</p>
+              <pre class="js">
+              animation.onfinish = function (e) {
+                e.target; // animation
+                e.target.playState; // 'finished'
+              };
+              </pre>
+            </aside>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>onframe</dfn> attribute</h2>
+          <dl class="def">
+            <dt><code>{{EventHandler}}</code></dt>
+            <dd>处于运行中的动画，在每一帧结束后调用，此时属性已经完成插值。如果动画处于暂停、未开始或者结束状态不会被调用。</dd>
+            <aside class="example">
+              <p>监听动画每一帧结束</p>
+              <pre class="js">
+              animation.onframe = function (e) {
+                e.target; // animation
+                e.target.playState; // 'running'
+              };
+              </pre>
+            </aside>
+          </dl>
+        </section>
+        <section>
+          <h2><dfn>play()</dfn> method</h2>
+          <p>开始或者继续动画。当动画处于 finished 状态时，调用它会重启动画。</p>
+          <aside class="example">
+            <p>播放动画</p>
+            <pre class="js">
+            animation.play();
+            animation.playState; // 'running'
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>pause()</dfn> method</h2>
+          <aside class="example">
+            <p>暂停动画</p>
+            <pre class="js">
+            animation.play();
+            animation.playState; // 'paused'
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>finish()</dfn> method</h2>
+          <p>将动画的运行时间调整到最后（和运行方向有关）。</p>
+          <aside class="example">
+            <p>暂停动画</p>
+            <pre class="js">
+            animation.finish();
+            animation.playState; // 'finished'
+            </pre>
+          </aside>
+        </section>
+        <section>
+          <h2><dfn>cancel()</dfn> method</h2>
+          <p>清除该动画效果，将 {{Animation/startTime}} 和 {{Animation/currentTime}} 设置为 null。</p>
+        </section>
+        <section>
+          <h2><dfn>reverse()</dfn> method</h2>
+          <p>翻转动画运行方向，效果等同于设置 {{Animation/playbackRate}} 为 -1。</p>
+        </section>
+        <section>
+          <h2><dfn>updatePlaybackRate()</dfn> method</h2>
+          <p>参数列表：</p>
+          <dl class="def">
+            <dt><code>{{double}} rate</code></dt>
+            <dd>控制动画运行速率，默认速率为 1。</dd>
+            <aside class="example">
+              <p>监听动画每一帧结束</p>
+              <pre class="js">
+              animation.updatePlaybackRate(2); // 加速
+              animation.updatePlaybackRate(0.5); // 减速
+              animation.updatePlaybackRate(-1); // 反向
+              </pre>
+            </aside>
+          </dl>
+        </section>
+      </section>
+      <section>
+        <h2>常见动画效果</h2>
+        <section>
+          <h2><dfn>路径动画</dfn></h2>
+          <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nk1YSrbkQPMAAAAAAAAAAAAAARQnAQ" />
+        </section>
+        <section>
+          <h2><dfn>笔迹动画</dfn></h2>
+          <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ" width="400"/>
+        </section>
+        <section>
+          <h2><dfn>蚂蚁线效果</dfn></h2>
+          <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ" width="250"/>
+        </section>
+        <section>
+          <h2><dfn>形变动画</dfn></h2>
+          <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qCHaTJUg_aEAAAAAAAAAAAAAARQnAQ" />
+        </section>
+      </section>
     </section>
     <section data-dfn-for="Renderer">
       <h2>渲染器</h2>
+      <p>在我们的分层设计中，渲染器 = 渲染上下文 + 一系列插件。</p>
+      <pre class="idl">
+      [Exposed=(Window)]
+      interface Renderer {
+        undefined     registerPlugin(Plugin p);
+      };
+      </pre>
+
+      <aside class="example">
+        <p>为渲染器添加新插件</p>
+        <pre class="js">
+        renderer.registerPlugin(new Plugin());
+        </pre>
+      </aside>
     </section>
     <section data-dfn-for="Plugin">
       <h2>插件</h2>
+      <pre class="idl">
+        [Exposed=(Window)]
+        interface Plugin {
+          undefined init();
+          undefined destroy();
+        };
+        </pre>
+    </section>
+    <section data-dfn-for="Q&A">
+      <h2>常见问题</h2>
     </section>
     <section id='conformance'>
       <!-- This section is filled automatically by ReSpec. -->

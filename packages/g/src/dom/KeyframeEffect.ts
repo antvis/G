@@ -76,7 +76,7 @@ export function numericTimingToObject(timingInput: KeyframeEffectOptions | numbe
 export class KeyframeEffect {
   composite: CompositeOperation = 'replace';
   iterationComposite: IterationCompositeOperation = 'replace';
-  pseudoElement: string | null;
+  // pseudoElement: string | null;
   target: IElement | null;
 
   animation: Animation | null;
