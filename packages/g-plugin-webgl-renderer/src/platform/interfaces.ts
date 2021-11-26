@@ -448,7 +448,6 @@ export interface VendorInfo {
   readonly separateSamplerTextures: boolean;
   readonly viewportOrigin: ViewportOrigin;
   readonly clipSpaceNearZ: ClipSpaceNearZ;
-  readonly supportsSyncPipelineCompilation: boolean;
   readonly supportMRT: boolean;
 }
 

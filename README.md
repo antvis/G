@@ -6,7 +6,7 @@ English | [简体中文](./README-zh_CN.md)
 
 [![npm package](https://img.shields.io/npm/v/@antv/g-canvas.svg)](https://www.npmjs.com/package/@antv/g-canvas) [![npm downloads](http://img.shields.io/npm/dm/@antv/g-canvas.svg)](https://npmjs.org/package/@antv/g-canvas) [![npm package](https://img.shields.io/npm/v/@antv/g-svg.svg)](https://www.npmjs.com/package/@antv/g-svg) [![npm downloads](http://img.shields.io/npm/dm/@antv/g-svg.svg)](https://npmjs.org/package/@antv/g-svg) [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open')
 
--   A powerful rendering engine for AntV providing canvas and svg draw.
+-   A powerful rendering engine for AntV implemented with Canvas2D / SVG / WebGL / WebGPU.
 
 ## ✨ Features
 
@@ -68,10 +68,21 @@ canvas.appendChild(circle);
 
 ## ⌨️ Development
 
+Start previewing site:
+
 ```bash
 $ git clone git@github.com:antvis/g.git
 $ cd g
 $ yarn install
-$ yarn watch
 $ yarn start
 ```
+
+### API Spec
+
+Start a dev-server on root dir, eg. `http-server`:
+
+```bash
+$ http-server -p 9090
+```
+
+Open api.html on `localhost:9090/dev-docs/api.html`.

@@ -27,6 +27,17 @@ export interface KHR_parallel_shader_compile {
   COMPLETION_STATUS_KHR: number;
 }
 
+export interface EXT_texture_norm16 {
+  R16_EXT: GLenum;
+  RG16_EXT: GLenum;
+  RGB16_EXT: GLenum;
+  RGBA16_EXT: GLenum;
+  R16_SNORM_EXT: GLenum;
+  RG16_SNORM_EXT: GLenum;
+  RGB16_SNORM_EXT: GLenum;
+  RGBA16_SNORM_EXT: GLenum;
+}
+
 export class GPlatformWebGL2Config {
   public trackResources: boolean = false;
   public shaderDebug: boolean = false;

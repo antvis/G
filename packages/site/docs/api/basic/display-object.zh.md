@@ -1146,7 +1146,7 @@ const circle = new Circle({
     },
 });
 // r + lineWidth / 2
-circle.getBounds(); // { center: [100, 100], halfExtents: [110, 110] }
+circle.getRenderBounds(); // { center: [100, 100], halfExtents: [110, 110] }
 ```
 
 ## getLocalBounds(): AABB | null

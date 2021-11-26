@@ -1,4 +1,6 @@
 ---
-title: 自定义组件
-order: 11
+title: 基础图形
+order: 0
+redirect_from:
+    - /en/examples
 ---

@@ -175,13 +175,14 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     const isCompressed = isTextureFormatCompressed(this.pixelFormat);
     const is3D = this.gl_target === GL.TEXTURE_3D || this.gl_target === GL.TEXTURE_2D_ARRAY;
     const isCube = this.gl_target === GL.TEXTURE_CUBE_MAP;
+    const isArray = Array.isArray(data);
 
     this.device.setActiveTexture(gl.TEXTURE0);
     this.device.currentTextures[0] = null;
 
     let width: number;
     let height: number;
-    if (Array.isArray(data)) {
+    if (isArray) {
       width = this.width;
       height = this.height;
     } else {
@@ -213,7 +214,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
           height,
           gl_format,
           gl_type,
-          data[0] as ArrayBufferView,
+          isArray ? data[0] : data,
         );
       } else {
         throw "WebGL1 don't support immutable texture";
@@ -230,7 +231,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
           0, // border must be 0
           gl_format, // TODO: can be different with gl_format
           gl_type,
-          data as TexImageSource,
+          isArray ? data[0] : data,
         );
       } else {
         // WebGL1:
