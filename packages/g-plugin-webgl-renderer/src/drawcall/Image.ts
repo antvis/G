@@ -90,8 +90,7 @@ export class ImageRenderer extends Batch {
       () => {
         // need re-render
         this.objects.forEach((object) => {
-          const renderable = object.entity.getComponent(Renderable);
-          renderable.dirty = true;
+          object.renderable.dirty = true;
 
           this.renderingService.dirtify();
         });
@@ -173,8 +172,7 @@ export class ImageRenderer extends Batch {
         () => {
           // need re-render
           this.objects.forEach((object) => {
-            const renderable = object.entity.getComponent(Renderable);
-            renderable.dirty = true;
+            object.renderable.dirty = true;
 
             this.renderingService.dirtify();
           });

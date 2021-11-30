@@ -142,8 +142,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       if (attributeName === 'zIndex') {
         const parent = object.parentNode;
-        const parentEntity = object.parentNode?.entity;
-        const $groupEl = parentEntity?.getComponent(ElementSVG)?.$groupEl;
+        // @ts-ignore
+        const $groupEl = object.parentNode?.elementSVG?.$groupEl;
         const children = (parent?.children || []).slice();
 
         if ($groupEl) {
@@ -189,9 +189,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
         this.applyTransform(this.$camera, this.camera.getOrthoMatrix());
       }
 
-      const entity = object.entity;
-      const $el = entity.getComponent(ElementSVG)?.$el;
-      const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
+      // @ts-ignore
+      const $el = object.elementSVG?.$el;
+      // @ts-ignore
+      const $groupEl = object.elementSVG?.$groupEl;
 
       if ($el && $groupEl) {
         // apply local RTS transformation to <group> wrapper
@@ -200,8 +201,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
         this.reorderChildren($groupEl, (object.children as DisplayObject[]) || []);
         // finish rendering, clear dirty flag
-        const renderable = entity.getComponent(Renderable);
-        renderable.dirty = false;
+        object.renderable.dirty = false;
       }
     });
   }
@@ -213,7 +213,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // create empty fragment
     const fragment = document.createDocumentFragment();
     children.forEach((child: DisplayObject) => {
-      const $el = child.entity.getComponent(ElementSVG).$groupEl;
+      // @ts-ignore
+      const $el = child.elementSVG.$groupEl;
       if ($el) {
         fragment.appendChild($el);
       }
@@ -247,9 +248,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private applyAttributes(object: DisplayObject) {
-    const entity = object.entity;
-    const $el = entity.getComponent(ElementSVG)?.$el;
-    const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
+    // @ts-ignore
+    const $el = object.elementSVG?.$el;
+    // @ts-ignore
+    const $groupEl = object.elementSVG?.$groupEl;
     if ($el && $groupEl) {
       const { nodeName, attributes, parsedStyle } = object;
 
@@ -277,9 +279,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
     value: any,
     skipGeneratePath = false,
   ) {
-    const entity = object.entity;
-    const $el = entity.getComponent(ElementSVG)?.$el;
-    const $groupEl = entity.getComponent(ElementSVG)?.$groupEl;
+    // @ts-ignore
+    const $el = object.elementSVG?.$el;
+    // @ts-ignore
+    const $groupEl = object.elementSVG?.$groupEl;
     const { parsedStyle } = object;
     if (SVG_ATTR_MAP[name]) {
       if (name === 'fill' || name === 'stroke') {
@@ -296,7 +299,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       } else if (name === 'clipPath') {
         const clipPath = value as DisplayObject;
         if (clipPath) {
-          const clipPathId = CLIP_PATH_PREFIX + clipPath.entity.getName();
+          const clipPathId = CLIP_PATH_PREFIX + clipPath.id;
 
           const existed = this.$def.querySelector(`#${clipPathId}`);
           if (!existed) {
@@ -308,10 +311,12 @@ export class SVGRendererPlugin implements RenderingPlugin {
             // <clipPath><circle /></clipPath>
             this.createSVGDom(clipPath, $clipPath, true);
 
-            clipPath.entity.getComponent(ElementSVG).$groupEl = $clipPath;
+            // @ts-ignore
+            clipPath.elementSVG.$groupEl = $clipPath;
           }
 
-          const $groupEl = clipPath.entity.getComponent(ElementSVG)?.$groupEl;
+          // @ts-ignore
+          const $groupEl = clipPath.elementSVG?.$groupEl;
           if ($groupEl) {
             // apply local RTS transformation to <group> wrapper
             this.applyTransform($groupEl, clipPath.getLocalTransform());
@@ -365,9 +370,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private createSVGDom(object: DisplayObject, root: SVGElement, noWrapWithGroup = false) {
-    const entity = object.entity;
     // create svg element
-    const svgElement = entity.addComponent(ElementSVG);
+    // @ts-ignore
+    object.elementSVG = new ElementSVG();
+    // @ts-ignore
+    const svgElement = object.elementSVG;
 
     // use <group> as default, eg. CustomElement
     const type = SHAPE_TO_TAGS[object.nodeName] || 'g';
@@ -381,7 +388,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         object.parsedStyle.$el = $el;
       }
 
-      $el.id = `${G_SVG_PREFIX}_${object.nodeName}_${entity.getName()}`;
+      $el.id = `${G_SVG_PREFIX}_${object.nodeName}_${object.entity}`;
 
       if (type !== 'g' && !noWrapWithGroup) {
         $groupEl = createSVGElement('g');
@@ -394,7 +401,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
       svgElement.$groupEl = $groupEl;
 
       const $parentGroupEl =
-        (object.parentNode && object.parentNode.entity.getComponent(ElementSVG)?.$groupEl) || root;
+        // @ts-ignore
+        (object.parentNode && object.parentNode.elementSVG?.$groupEl) || root;
 
       if ($parentGroupEl) {
         $parentGroupEl.appendChild($groupEl);
@@ -406,11 +414,12 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private removeSVGDom(object: DisplayObject) {
-    const $groupEl = object.entity.getComponent(ElementSVG)?.$groupEl;
+    // @ts-ignore
+    const $groupEl = object.elementSVG?.$groupEl;
     if ($groupEl && $groupEl.parentNode) {
       $groupEl.parentNode.removeChild($groupEl);
 
-      object.entity.removeComponent(ElementSVG, true);
+      // object.entity.removeComponent(ElementSVG, true);
     }
   }
 
@@ -423,7 +432,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const height = (bounds && bounds.halfExtents[1] * 2) || 0;
     const { anchor = [0, 0] } = object.parsedStyle || {};
 
-    const $el = object.entity.getComponent(ElementSVG)?.$el;
+    // @ts-ignore
+    const $el = object.elementSVG?.$el;
     // apply anchor to element's `transform` property
     $el?.setAttribute(
       'transform',

@@ -1,10 +1,9 @@
 import { mat4, quat, vec3 } from 'gl-matrix';
-import { Component } from '@antv/g-ecs';
 
 /**
  * do RTS transformation for 2D/3D
  */
-export class Transform extends Component {
+export class Transform {
   static tag = 'c-transform';
 
   dirtyFlag = false;

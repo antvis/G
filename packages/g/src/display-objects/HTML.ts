@@ -2,7 +2,6 @@ import { SHAPE } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import { DisplayObjectConfig } from '../dom';
-import { Cullable } from '../components';
 import { AABB } from '../shapes';
 import { mat4, vec3 } from 'gl-matrix';
 
@@ -36,8 +35,7 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
       ...rest,
     });
 
-    const cullable = this.entity.getComponent(Cullable);
-    cullable.enable = false;
+    this.cullable.enable = false;
   }
 
   /**

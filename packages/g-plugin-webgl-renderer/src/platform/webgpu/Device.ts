@@ -446,7 +446,10 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     return new RenderPipeline_WebGPU({
       id: this.getNextUniqueId(),
       device: this,
-      descriptor,
+      descriptor: {
+        ...descriptor,
+        // isCreatingAsync: false,
+      },
     });
   }
 
@@ -656,4 +659,14 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
   pushDebugGroup(debugGroup: DebugGroup): void {}
 
   popDebugGroup(): void {}
+
+  pipelineQueryReady(o: RenderPipeline): boolean {
+    const renderPipeline = o as RenderPipeline_WebGPU;
+    return renderPipeline.gpuRenderPipeline !== null;
+  }
+
+  pipelineForceReady(o: RenderPipeline): void {
+    const renderPipeline = o as RenderPipeline_WebGPU;
+    // this._createRenderPipeline(renderPipeline, false);
+  }
 }

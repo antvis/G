@@ -102,7 +102,7 @@ export class CubeModelBuilder extends Batch {
       () => {
         // need re-render
         this.objects.forEach((object) => {
-          const renderable = object.entity.getComponent(Renderable);
+          const renderable = object.renderable;
           renderable.dirty = true;
 
           this.renderingService.dirtify();

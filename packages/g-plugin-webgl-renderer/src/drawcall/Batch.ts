@@ -261,7 +261,8 @@ varying vec4 v_StylePacked2;
 
         const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
 
-        const encodedPickingColor = object.entity.getComponent(Renderable3D).encodedPickingColor;
+        // @ts-ignore
+        const encodedPickingColor = object.renderable3D.encodedPickingColor;
 
         packed.push(
           ...modelMatrix,
@@ -398,8 +399,7 @@ varying vec4 v_StylePacked2;
         () => {
           // need re-render
           this.objects.forEach((object) => {
-            const renderable = object.entity.getComponent(Renderable);
-            renderable.dirty = true;
+            object.renderable.dirty = true;
 
             this.renderingService.dirtify();
           });
@@ -499,8 +499,7 @@ varying vec4 v_StylePacked2;
 
     // finish rendering...
     this.objects.forEach((object) => {
-      const renderable = object.entity.getComponent(Renderable);
-      renderable.dirty = false;
+      object.renderable.dirty = false;
     });
   }
 
@@ -545,7 +544,8 @@ varying vec4 v_StylePacked2;
           new Uint8Array(new Float32Array([opacity, fillOpacity, strokeOpacity, lineWidth]).buffer),
         );
       } else if (name === 'zIndex') {
-        const encodedPickingColor = object.entity.getComponent(Renderable3D).encodedPickingColor;
+        // @ts-ignore
+        const encodedPickingColor = object.renderable3D.encodedPickingColor;
         // FIXME: z-index should account for context, not global
         geometry.updateVertexBuffer(
           Batch.CommonBufferIndex,

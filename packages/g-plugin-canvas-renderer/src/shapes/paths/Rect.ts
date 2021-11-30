@@ -4,7 +4,6 @@ import { parseRadius } from '../../utils/parse';
 export function generatePath(context: CanvasRenderingContext2D, attributes: RectStyleProps) {
   const { radius = 0, width = 0, height = 0 } = attributes;
 
-  context.beginPath();
   if (radius === 0) {
     context.rect(0, 0, width, height);
   } else {
@@ -18,6 +17,5 @@ export function generatePath(context: CanvasRenderingContext2D, attributes: Rect
     r4 !== 0 && context.arc(r4, height - r4, r4, Math.PI / 2, Math.PI);
     context.lineTo(0, r1);
     r1 !== 0 && context.arc(r1, r1, r1, Math.PI, Math.PI * 1.5);
-    context.closePath();
   }
 }

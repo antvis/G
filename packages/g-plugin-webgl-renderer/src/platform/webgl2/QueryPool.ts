@@ -1,5 +1,6 @@
 import { QueryPool, QueryPoolType, ResourceType } from '../interfaces';
 import { nArray } from '../utils';
+import { getPlatformQuerySet } from '../webgpu/utils';
 import { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
 import { isWebGL2, translateQueryPoolType } from './utils';
@@ -44,5 +45,10 @@ export class QueryPool_GL extends ResourceBase_GL implements QueryPool {
       return !!gl.getQueryParameter(gl_query, gl.QUERY_RESULT);
     }
     return null;
+  }
+
+  destroy() {
+    super.destroy();
+    getPlatformQuerySet(this).destroy();
   }
 }

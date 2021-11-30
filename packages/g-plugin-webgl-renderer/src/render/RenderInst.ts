@@ -410,9 +410,10 @@ export class RenderInst {
 
     const pipelineReady = device.queryPipelineReady(gfxPipeline);
     if (!pipelineReady) {
-      const needsToSkip = !device.queryVendorInfo().supportsSyncPipelineCompilation;
-      if (needsToSkip || !!(this.flags & RenderInstFlags.AllowSkippingIfPipelineNotReady))
+      if (!!(this.flags & RenderInstFlags.AllowSkippingIfPipelineNotReady)) {
         return false;
+      }
+      device.pipelineForceReady(gfxPipeline);
     }
 
     passRenderer.setPipeline(gfxPipeline);

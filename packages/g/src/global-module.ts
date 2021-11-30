@@ -1,4 +1,5 @@
-import { Module, GlobalContainer } from 'mana-syringe';
+import { Module, GlobalContainer, injectable, decorate } from 'mana-syringe';
+import { EventEmitter } from 'eventemitter3';
 import { DisplayObjectPool } from './DisplayObjectPool';
 import { DefaultSceneGraphService, SceneGraphService } from './services/SceneGraphService';
 import {
@@ -56,6 +57,8 @@ import {
 export const globalContainer = GlobalContainer;
 
 export const containerModule = Module((register) => {
+  decorate(injectable(), EventEmitter);
+
   // bind DisplayObject pool
   register(DisplayObjectPool);
 

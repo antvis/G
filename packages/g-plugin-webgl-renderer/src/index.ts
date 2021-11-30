@@ -1,6 +1,6 @@
 // tslint:disable-next-line:no-reference
 /// <reference path="./glsl.d.ts" />
-import { world, RendererPlugin, SHAPE } from '@antv/g';
+import { RendererPlugin, SHAPE } from '@antv/g';
 import { Module, Syringe } from 'mana-syringe';
 import { Renderable3D } from './components/Renderable3D';
 import { PickingIdGenerator } from './PickingIdGenerator';
@@ -21,8 +21,6 @@ import {
 import { TexturePool } from './TexturePool';
 import { GlyphManager } from './drawcall/symbol/GlyphManager';
 import { RendererFactory, ShapeRenderer } from './tokens';
-
-world.registerComponent(Renderable3D);
 
 let bindFunc: Syringe.Register;
 

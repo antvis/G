@@ -146,7 +146,7 @@ export class TextRenderer extends Batch {
     ) {
       this.recreateGeometry = true;
     } else if (name === 'zIndex') {
-      const encodedPickingColor = object.entity.getComponent(Renderable3D).encodedPickingColor;
+      // const encodedPickingColor = object.entity.getComponent(Renderable3D).encodedPickingColor;
       // this.geometry.updateVertexBuffer(
       //   Batch.CommonBufferIndex,
       //   AttributeLocation.a_PickingColor,
@@ -430,7 +430,8 @@ export class TextRenderer extends Batch {
     if (stroke?.type === PARSED_COLOR_TYPE.Constant) {
       strokeColor = stroke.value;
     }
-    const encodedPickingColor = object.entity.getComponent(Renderable3D).encodedPickingColor;
+    // @ts-ignore
+    const encodedPickingColor = object.renderable3D.encodedPickingColor;
 
     const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
 

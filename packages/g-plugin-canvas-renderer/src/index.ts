@@ -1,4 +1,4 @@
-import { RendererPlugin, SHAPE, world, globalContainer } from '@antv/g';
+import { RendererPlugin, SHAPE, globalContainer } from '@antv/g';
 import { Module, Syringe } from 'mana-syringe';
 import RBush from 'rbush';
 import { DefaultRenderer, StyleRenderer, StyleRendererFactory } from './shapes/styles';
@@ -31,8 +31,6 @@ export {
   RBushRoot,
   RBush,
 };
-
-world.registerComponent(RBushNode);
 
 /**
  * register shape renderers

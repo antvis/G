@@ -10,7 +10,7 @@ import { containerModule as commonContainerModule } from './canvas-module';
 import { AbstractRenderer, IRenderer } from './AbstractRenderer';
 import { cancelAnimationFrame } from './utils/raf';
 import type { PointLike } from './shapes';
-import { Document, EventTarget, ElementEvent, FederatedEvent } from './dom';
+import { Document, EventTarget, ElementEvent, FederatedEvent, Element } from './dom';
 import type { IElement, INode, ICanvas } from './dom/interfaces';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
 import { Renderable } from './components';
@@ -282,7 +282,7 @@ export class Canvas extends EventTarget implements ICanvas {
     }
 
     this.getRoot().forEach((node) => {
-      const renderable = node.entity.getComponent(Renderable);
+      const renderable = (node as Element).renderable;
       if (renderable) {
         renderable.renderBoundsDirty = true;
         renderable.boundsDirty = true;

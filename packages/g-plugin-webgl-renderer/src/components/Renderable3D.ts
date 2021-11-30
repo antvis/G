@@ -1,6 +1,4 @@
-import { Component } from '@antv/g';
-
-export class Renderable3D extends Component {
+export class Renderable3D {
   static tag = 'c-renderable-3d';
 
   pickingId: number;

@@ -1,11 +1,11 @@
 import type { DisplayObject } from '../display-objects/DisplayObject';
-import { Sortable, Renderable } from '../components';
+import { Element } from '../dom';
 
 export function updateZIndex(oldZIndex: number, newZIndex: number, object: DisplayObject) {
   if (object.parentNode) {
-    const parentEntity = object.parentNode.entity;
-    const parentRenderable = parentEntity.getComponent(Renderable);
-    const parentSortable = parentEntity.getComponent(Sortable);
+    const parentEntity = object.parentNode as Element;
+    const parentRenderable = parentEntity.renderable;
+    const parentSortable = parentEntity.sortable;
     if (parentRenderable) {
       parentRenderable.dirty = true;
     }

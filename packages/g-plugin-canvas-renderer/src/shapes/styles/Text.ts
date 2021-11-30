@@ -10,6 +10,10 @@ export class TextRenderer implements StyleRenderer {
   @inject(TextService)
   private textService: TextService;
 
+  hash(parsedStyle: any): string {
+    return '';
+  }
+
   render(context: CanvasRenderingContext2D, parsedStyle: ParsedTextStyleProps) {
     const {
       text = '',

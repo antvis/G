@@ -113,14 +113,14 @@ export class DisplayObject<
     this.initAttributes(this.config.style);
 
     // insert this group into pool
-    globalContainer.get(DisplayObjectPool).add(this.entity.getName(), this);
+    globalContainer.get(DisplayObjectPool).add(this.entity, this);
   }
 
   destroy() {
     super.destroy();
 
     // remove from into pool
-    globalContainer.get(DisplayObjectPool).remove(this.entity.getName());
+    globalContainer.get(DisplayObjectPool).remove(this.entity);
 
     // stop all active animations
     this.getAnimations().forEach((animation) => {
@@ -150,7 +150,7 @@ export class DisplayObject<
   }
 
   private initAttributes(attributes: StyleProps = {} as StyleProps) {
-    const renderable = this.entity.getComponent(Renderable);
+    const renderable = this.renderable;
 
     // parse attributes first
     for (const attributeName in attributes) {
@@ -239,8 +239,7 @@ export class DisplayObject<
    * called when attributes get changed or initialized
    */
   private changeAttribute<Key extends keyof StyleProps>(name: Key, value: StyleProps[Key]) {
-    const entity = this.entity;
-    const renderable = entity.getComponent(Renderable);
+    const renderable = this.renderable;
 
     const oldValue = this.attributes[name];
     // @ts-ignore
@@ -519,7 +518,7 @@ export class DisplayObject<
   }
 
   isVisible() {
-    const cullable = this.entity.getComponent(Cullable);
+    const cullable = this.cullable;
     return this.style.visibility === 'visible' && (!cullable || (cullable && !cullable.isCulled()));
   }
 

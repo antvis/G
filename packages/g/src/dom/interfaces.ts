@@ -1,4 +1,3 @@
-import { Entity } from '@antv/g-ecs';
 import EventEmitter from 'eventemitter3';
 import type { AnimationTimeline } from './AnimationTimeline';
 import { BaseStyleProps, ParsedBaseStyleProps, SHAPE } from '../types';
@@ -40,7 +39,6 @@ export enum ElementEvent {
 }
 
 export interface IEventTarget {
-  entity: Entity;
   emitter: EventEmitter;
 
   on(

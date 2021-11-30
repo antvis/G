@@ -1,10 +1,10 @@
 import { mat4, vec3 } from 'gl-matrix';
 import { inject, singleton } from 'mana-syringe';
-import { Cullable } from '../components';
 import { CullingStrategyContribution } from './CullingPlugin';
 import { AABB, Mask, Plane } from '../shapes';
 import { DefaultCamera, Camera } from '../camera/Camera';
 import { DisplayObject } from '../display-objects/DisplayObject';
+import { Element } from '../dom';
 
 @singleton({ contrib: CullingStrategyContribution })
 export class FrustumCullingStrategy implements CullingStrategyContribution {
@@ -13,7 +13,7 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
 
   isVisible(object: DisplayObject) {
     const entity = object.entity;
-    const cullable = entity.getComponent(Cullable);
+    const cullable = object.cullable;
 
     return true;
 
@@ -32,8 +32,7 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
     // get VP matrix from camera
     this.camera.getFrustum().extractFromVPMatrix(vpMatrix);
 
-    const parentVisibilityPlaneMask =
-      object.parentNode?.entity.getComponent(Cullable)?.visibilityPlaneMask;
+    const parentVisibilityPlaneMask = (object.parentNode as Element)?.cullable?.visibilityPlaneMask;
     cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
       renderBounds,
       parentVisibilityPlaneMask || Mask.INDETERMINATE,

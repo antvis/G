@@ -250,7 +250,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
         return;
       }
 
-      const renderable3d = object.entity.getComponent(Renderable3D);
+      // @ts-ignore
+      const renderable3d = object.renderable3D;
       if (renderable3d && !renderable3d.batchId) {
         let existed = this.batches.find((batch) => batch.checkBatchable(object));
         if (!existed) {
@@ -271,25 +272,28 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
+      const renderable3D = new Renderable3D();
 
-      const renderable3d = object.entity.addComponent(Renderable3D);
       // add geometry & material required by Renderable3D
       // object.entity.addComponent(Geometry3D);
       // object.entity.addComponent(Material3D);
 
       // generate picking id for later use
       const pickingId = this.pickingIdGenerator.getId(object);
-      renderable3d.pickingId = pickingId;
-      renderable3d.encodedPickingColor = this.pickingIdGenerator.encodePickingColor(pickingId);
+      renderable3D.pickingId = pickingId;
+      renderable3D.encodedPickingColor = this.pickingIdGenerator.encodePickingColor(pickingId);
+
+      // @ts-ignore
+      object.renderable3D = renderable3D;
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
-      const entity = object.entity;
 
-      const renderable3d = entity.getComponent(Renderable3D);
-      if (renderable3d && renderable3d.batchId) {
-        const existed = this.batches.find((batch) => batch.id === renderable3d.batchId);
+      // @ts-ignore
+      const renderable3D = object.renderable3D;
+      if (renderable3D && renderable3D.batchId) {
+        const existed = this.batches.find((batch) => batch.id === renderable3D.batchId);
         if (existed) {
           existed.purge(object);
         }
@@ -297,15 +301,15 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       // entity.removeComponent(Geometry3D, true);
       // entity.removeComponent(Material3D, true);
-
-      entity.removeComponent(Renderable3D, true);
+      // entity.removeComponent(Renderable3D, true);
     };
 
     const handleAttributeChanged = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       const { attributeName, newValue } = e.detail;
-      const renderable3d = object.entity.getComponent(Renderable3D);
-      const batch = this.batches.find((batch) => renderable3d.batchId === batch.id);
+      // @ts-ignore
+      const renderable3D = object.renderable3D;
+      const batch = this.batches.find((batch) => renderable3D.batchId === batch.id);
       if (batch) {
         batch.updateAttribute(object, attributeName, newValue);
       }

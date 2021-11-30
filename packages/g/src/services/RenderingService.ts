@@ -1,6 +1,5 @@
 import { inject, singleton, contrib, Syringe, Contribution } from 'mana-syringe';
 import { SyncHook, SyncWaterfallHook, AsyncSeriesHook, AsyncSeriesWaterfallHook } from 'tapable';
-import { Renderable, Sortable } from '../components';
 import { DisplayObject } from '..';
 import { EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext, RENDER_REASON } from './RenderingContext';
@@ -90,8 +89,6 @@ export class RenderingService {
   }
 
   private renderDisplayObject(displayObject: DisplayObject) {
-    const entity = displayObject.entity;
-
     // render itself
     const objectToRender = this.hooks.prepare.call(displayObject);
 
@@ -105,11 +102,11 @@ export class RenderingService {
       this.hooks.render.call(objectToRender);
       this.hooks.afterRender.call(objectToRender);
 
-      entity.getComponent(Renderable).dirty = false;
+      displayObject.renderable.dirty = false;
     }
 
     // sort is very expensive, use cached result if posible
-    const sortable = entity.getComponent(Sortable);
+    const sortable = displayObject.sortable;
     if (sortable.dirty) {
       // sortable.sorted = [...(displayObject.childNodes as IElement[])].sort(sortByZIndex);
       sortable.sorted = displayObject.childNodes.slice().sort(sortByZIndex);

@@ -1,5 +1,5 @@
 import { Module, Syringe } from 'mana-syringe';
-import { RendererPlugin, SHAPE, world } from '@antv/g';
+import { RendererPlugin, SHAPE } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
 import {
   ElementRendererFactory,
@@ -11,8 +11,6 @@ import {
   TextRenderer,
 } from './shapes/paths';
 import { SVGRendererPlugin } from './SVGRendererPlugin';
-
-world.registerComponent(ElementSVG);
 
 export { ElementSVG };
 export * from './utils/dom';

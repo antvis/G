@@ -36,7 +36,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       const object = e.target as DisplayObject;
       if (object.nodeName === SHAPE.HTML) {
         const { innerHTML } = object.parsedStyle;
-        const existedId = HTML_PREFIX + object.entity.getName();
+        const existedId = HTML_PREFIX + object.entity;
         const $container = this.contextService.getDomElement()!.parentNode!;
 
         const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
@@ -57,7 +57,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       if (object.nodeName === SHAPE.HTML) {
-        const existedId = HTML_PREFIX + object.entity.getName();
+        const existedId = HTML_PREFIX + object.entity;
         const $container = this.contextService.getDomElement()!.parentNode!;
         const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
         if ($existedElement) {
@@ -78,7 +78,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
     renderingService.hooks.render.tap(HTMLRenderingPlugin.tag, (object: DisplayObject) => {
       if (object.nodeName === SHAPE.HTML) {
-        const existedId = HTML_PREFIX + object.entity.getName();
+        const existedId = HTML_PREFIX + object.entity;
         const $container = this.contextService.getDomElement()!.parentNode!;
 
         const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);

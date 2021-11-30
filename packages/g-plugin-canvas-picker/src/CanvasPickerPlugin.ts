@@ -10,6 +10,7 @@ import {
   OffscreenCanvasCreator,
   BaseStyleProps,
   Point,
+  Element,
 } from '@antv/g';
 import { PathGeneratorFactory, RBushRoot } from '@antv/g-plugin-canvas-renderer';
 import type { RBush, PathGenerator, RBushNodeAABB } from '@antv/g-plugin-canvas-renderer';
@@ -66,14 +67,14 @@ export class CanvasPickerPlugin implements RenderingPlugin {
         maxY: position[1],
       });
 
-      const queriedNames = rBushNodes.map((node) => node.name);
-      rBushNodes.forEach(({ name }: { name: string }) => {
-        const displayObject = this.displayObjectPool.getByName(name);
+      const queriedIds = rBushNodes.map((node) => node.id);
+      rBushNodes.forEach(({ id }) => {
+        const displayObject = this.displayObjectPool.getByEntity(id);
         if (displayObject.isVisible() && displayObject.interactive) {
           // parent is not included, eg. parent is clipped
           if (
             displayObject.parentNode &&
-            queriedNames.indexOf(displayObject.parentNode.entity.getName()) === -1
+            queriedIds.indexOf((displayObject.parentNode as Element).entity) === -1
           ) {
             return;
           }
