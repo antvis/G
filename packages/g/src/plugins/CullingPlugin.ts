@@ -1,5 +1,4 @@
 import { inject, singleton, contrib, Syringe, Contribution } from 'mana-syringe';
-import { Cullable } from '../components';
 import { DisplayObject } from '../display-objects/DisplayObject';
 import {
   RenderingService,
@@ -37,7 +36,7 @@ export class CullingPlugin implements RenderingPlugin {
 
     renderingService.hooks.prepare.tap(CullingPlugin.tag, (object: DisplayObject | null) => {
       if (object) {
-        const cullable = object.entity.getComponent(Cullable);
+        const cullable = object.cullable;
         if (strategies.length === 0) {
           cullable.visible = true;
         } else {
@@ -65,7 +64,7 @@ export class CullingPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.afterRender.tap(CullingPlugin.tag, (object: DisplayObject) => {
-      object.entity.getComponent(Cullable).visibilityPlaneMask = -1;
+      object.cullable.visibilityPlaneMask = -1;
     });
   }
 }

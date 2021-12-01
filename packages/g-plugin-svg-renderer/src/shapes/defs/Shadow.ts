@@ -13,7 +13,7 @@ export function createOrUpdateShadow(
   $el: SVGElement,
   name: string,
 ) {
-  const shadowId = FILTER_DROPSHADOW_PREFIX + object.entity.getName();
+  const shadowId = FILTER_DROPSHADOW_PREFIX + object.entity;
   let $existedFilter = $def.querySelector(`#${shadowId}`);
   if (!$existedFilter) {
     $existedFilter = createSVGElement('filter') as SVGFilterElement;

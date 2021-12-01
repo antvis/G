@@ -1,8 +1,7 @@
-import { DisplayObject, Renderable } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
+import { DisplayObject } from '@antv/g';
+import { singleton } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
 import {
-  TexturePool,
   Batch,
   AttributeLocation,
   DeviceProgram,
@@ -38,7 +37,7 @@ class CubeProgram extends DeviceProgram {
   layout(location = ${CubeProgram.a_Normal}) attribute vec3 a_Normal;
   #ifdef USE_UV
     layout(location = ${CubeProgram.a_Uv}) attribute vec2 a_Uv;
-    out vec2 v_Uv;
+    varying vec2 v_Uv;
   #endif
   
   void main() {
@@ -52,23 +51,14 @@ class CubeProgram extends DeviceProgram {
 
   frag: string = `
   ${Batch.ShaderLibrary.FragDeclaration}
-
-  #ifdef USE_UV
-    in vec2 v_Uv;
-  #endif
-
-  #ifdef USE_MAP
-    uniform sampler2D u_Map;
-  #endif
+  ${Batch.ShaderLibrary.UvFragDeclaration}
+  ${Batch.ShaderLibrary.MapFragDeclaration}
   
   void main() {
     ${Batch.ShaderLibrary.Frag}
+    ${Batch.ShaderLibrary.MapFrag}
 
-    #ifdef USE_MAP
-      vec4 texelColor = texture(SAMPLER_2D(u_Map), v_Uv);
-    #endif
-
-    gl_FragColor = texelColor * u_Color;
+    gl_FragColor = u_Color;
     gl_FragColor.a = gl_FragColor.a * u_Opacity * u_FillOpacity;
   }
   `;
@@ -91,34 +81,37 @@ export class CubeModelBuilder extends Batch {
 
   buildGeometry() {
     this.program.setDefineBool('USE_UV', true);
-    this.program.setDefineBool('USE_MAP', true);
 
-    const { map } = this.objects[0].parsedStyle;
-    this.mapping = new TextureMapping();
-    this.mapping.texture = this.texturePool.getOrCreateTexture(
-      this.device,
-      map,
-      makeTextureDescriptor2D(Format.U8_RGBA_NORM, 1, 1, 1),
-      () => {
-        // need re-render
-        this.objects.forEach((object) => {
-          const renderable = object.entity.getComponent(Renderable);
-          renderable.dirty = true;
+    const { map } = this.instance.parsedStyle;
 
-          this.renderingService.dirtify();
-        });
-      },
-    );
-    this.device.setResourceName(this.mapping.texture, 'Image Texture');
-    this.mapping.sampler = this.renderHelper.getCache().createSampler({
-      wrapS: WrapMode.Clamp,
-      wrapT: WrapMode.Clamp,
-      minFilter: TexFilterMode.Bilinear,
-      magFilter: TexFilterMode.Bilinear,
-      mipFilter: MipFilterMode.NoMip,
-      minLOD: 0,
-      maxLOD: 0,
-    });
+    if (map) {
+      this.program.setDefineBool('USE_MAP', true);
+      this.mapping = new TextureMapping();
+      this.mapping.texture = this.texturePool.getOrCreateTexture(
+        this.device,
+        map,
+        makeTextureDescriptor2D(Format.U8_RGBA_NORM, 1, 1, 1),
+        () => {
+          // need re-render
+          this.objects.forEach((object) => {
+            const renderable = object.renderable;
+            renderable.dirty = true;
+
+            this.renderingService.dirtify();
+          });
+        },
+      );
+      this.device.setResourceName(this.mapping.texture, 'Image Texture');
+      this.mapping.sampler = this.renderHelper.getCache().createSampler({
+        wrapS: WrapMode.Clamp,
+        wrapT: WrapMode.Clamp,
+        minFilter: TexFilterMode.Bilinear,
+        magFilter: TexFilterMode.Bilinear,
+        mipFilter: MipFilterMode.NoMip,
+        minLOD: 0,
+        maxLOD: 0,
+      });
+    }
 
     const { indices, positions, normals, uvs } = this.buildAttributes(this.objects);
 
@@ -184,7 +177,7 @@ export class CubeModelBuilder extends Batch {
 
   uploadUBO(renderInst: RenderInst): void {
     // need 1 sampler
-    renderInst.setBindingLayouts([{ numUniformBuffers: 2, numSamplers: 1 }]);
+    renderInst.setBindingLayouts([{ numUniformBuffers: 1, numSamplers: 1 }]);
     renderInst.setSamplerBindingsFromTextureMappings([this.mapping]);
   }
 

@@ -569,7 +569,8 @@ export class LineRenderer extends Batch {
       strokeColor = stroke.value;
     }
 
-    const encodedPickingColor = instance.entity.getComponent(Renderable3D).encodedPickingColor;
+    // @ts-ignore
+    const encodedPickingColor = (instance.renderable3D as Renderable3D).encodedPickingColor;
     let translateX = 0;
     let translateY = 0;
     const contentBounds = instance.getGeometryBounds();

@@ -5,7 +5,6 @@ import {
   RenderingService,
   RenderingPlugin,
   RenderingPluginContribution,
-  Renderable,
   RenderingContext,
   ElementEvent,
   FederatedEvent,
@@ -33,7 +32,7 @@ export class LoadImagePlugin implements RenderingPlugin {
         if (isString(img)) {
           this.imagePool.getOrCreateImage(img).then(() => {
             // set dirty rectangle flag
-            object.entity.getComponent(Renderable).dirty = true;
+            object.renderable.dirty = true;
             renderingService.dirtify();
           });
         }
@@ -49,7 +48,7 @@ export class LoadImagePlugin implements RenderingPlugin {
           if (isString(newValue)) {
             this.imagePool.getOrCreateImage(newValue).then(() => {
               // set dirty rectangle flag
-              object.entity.getComponent(Renderable).dirty = true;
+              object.renderable.dirty = true;
               renderingService.dirtify();
             });
           }

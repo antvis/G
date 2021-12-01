@@ -10,7 +10,6 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
   let x2 = points[length - 1][0] - x;
   let y2 = points[length - 1][1] - y;
 
-  context.beginPath();
   context.moveTo(x1, y1);
   for (let i = 0; i < length - 1; i++) {
     const point = points[i];

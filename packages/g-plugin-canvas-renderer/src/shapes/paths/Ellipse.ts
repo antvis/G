@@ -2,7 +2,6 @@ import { EllipseStyleProps } from '@antv/g';
 
 export function generatePath(context: CanvasRenderingContext2D, attributes: EllipseStyleProps) {
   const { rx, ry } = attributes;
-  context.beginPath();
 
   // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/ellipse
   if (context.ellipse) {
@@ -15,8 +14,5 @@ export function generatePath(context: CanvasRenderingContext2D, attributes: Elli
     context.save();
     context.scale(scaleX, scaleY);
     context.arc(0, 0, r, 0, Math.PI * 2);
-
-    context.closePath();
-    context.restore();
   }
 }

@@ -1847,6 +1847,15 @@ export class Device_GL implements SwapChain, Device {
 
   endDebugGroup(): void {}
 
+  pipelineQueryReady(o: RenderPipeline): boolean {
+    const pipeline = o as RenderPipeline_GL;
+    return this.queryProgramReady(pipeline.program);
+  }
+
+  pipelineForceReady(o: RenderPipeline): void {
+    // No need to do anything; it will be forced to compile when used naturally.
+  }
+
   private endPass(): void {
     const gl = this.gl;
 

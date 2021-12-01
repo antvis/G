@@ -22,7 +22,7 @@ import {
   ElementEvent,
   FederatedEvent,
 } from '@antv/g';
-import { isArray } from '@antv/util';
+import { isArray, isNil } from '@antv/util';
 import { inject, singleton } from 'mana-syringe';
 import { vec3, mat4, quat } from 'gl-matrix';
 import RBush from 'rbush';
@@ -41,12 +41,6 @@ interface Rect {
   width: number;
   height: number;
 }
-
-const SHAPE_ATTRS_MAP: Record<string, string> = {
-  fill: 'fillStyle',
-  stroke: 'strokeStyle',
-  opacity: 'globalAlpha',
-};
 
 /**
  * support 2 modes in rendering:
@@ -99,6 +93,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   private clearFullScreen = false;
 
+  private enableBatch = false;
+  private batchedStyleHash = '';
+  private batchedDisplayObject = null;
+
   /**
    * save the last dirty rect in DEBUG mode
    */
@@ -112,7 +110,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       // }
 
       const object = e.target as DisplayObject;
-      object.entity.addComponent(RBushNode);
+      // @ts-ignore
+      object.rBushNode = new RBushNode();
 
       handleBoundsChanged(e);
     };
@@ -126,10 +125,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const object = e.target as DisplayObject;
 
       // remove r-bush node
-      const rBushNode = object.entity.getComponent(RBushNode);
+      // @ts-ignore
+      const rBushNode = object.rBushNode;
       this.rBush.remove(rBushNode.aabb);
       // this.rBush.remove(rBushNode.aabb, (a: RBushNodeAABB, b: RBushNodeAABB) => a.name === b.name);
-      object.entity.removeComponent(RBushNode);
+      // object.entity.removeComponent(RBushNode);
     };
 
     const handleBoundsChanged = (e: FederatedEvent) => {
@@ -153,12 +153,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tap(CanvasRendererPlugin.tag, () => {
-      const context = this.contextService.getContext();
-      const dpr = this.contextService.getDPR();
-      // scale all drawing operations by the dpr
-      // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
-      context && context.scale(dpr, dpr);
-
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
@@ -241,6 +235,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
             }
           });
 
+        if (this.enableBatch && this.batchedStyleHash) {
+          this.flush(context, renderingService);
+        }
+
         // save dirty AABBs in last frame
         this.renderQueue.forEach((object) => {
           this.saveDirtyAABB(object);
@@ -272,6 +270,29 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     });
   }
 
+  private flush(context: CanvasRenderingContext2D, renderingService: RenderingService) {
+    if (this.batchedDisplayObject) {
+      const styleRenderer = this.styleRendererFactory(this.batchedDisplayObject.nodeName);
+      if (styleRenderer) {
+        // apply attributes to context
+        this.applyAttributesToContext(context, this.batchedDisplayObject, renderingService);
+
+        // close path first
+        context.closePath();
+        styleRenderer.render(
+          context,
+          this.batchedDisplayObject.parsedStyle,
+          this.batchedDisplayObject,
+        );
+
+        context.restore();
+      }
+
+      this.batchedStyleHash = '';
+      this.batchedDisplayObject = null;
+    }
+  }
+
   private renderDisplayObject(object: DisplayObject, renderingService: RenderingService) {
     const context = this.contextService.getContext()!;
 
@@ -284,6 +305,22 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
 
     const nodeName = object.nodeName;
+
+    const styleRenderer = this.styleRendererFactory(nodeName);
+
+    let startBatch = false;
+    if (this.enableBatch && styleRenderer) {
+      const hash = styleRenderer.hash(object.attributes);
+      if (this.batchedStyleHash && hash !== this.batchedStyleHash) {
+        this.flush(context, renderingService);
+      }
+
+      if (!this.batchedStyleHash) {
+        this.batchedStyleHash = hash;
+        this.batchedDisplayObject = object;
+        startBatch = true;
+      }
+    }
 
     // reset transformation
     context.save();
@@ -303,7 +340,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const generatePath = this.pathGeneratorFactory(clipPathShape.nodeName);
       if (generatePath) {
         this.useAnchor(context, clipPathShape, () => {
+          context.beginPath();
           generatePath(context, clipPathShape.parsedStyle);
+          context.closePath();
         });
       }
 
@@ -311,31 +350,45 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       context.clip();
     }
 
-    // apply attributes to context
-    context.save();
-    this.applyAttributesToContext(context, object, renderingService);
+    // fill & stroke
+
+    if (!this.enableBatch) {
+      context.save();
+      // apply attributes to context
+      this.applyAttributesToContext(context, object, renderingService);
+    }
 
     // apply anchor in local space
     this.useAnchor(context, object, () => {
       // generate path in local space
       const generatePath = this.pathGeneratorFactory(object.nodeName);
       if (generatePath) {
+        if (startBatch || !this.enableBatch) {
+          context.beginPath();
+        }
         generatePath(context, object.parsedStyle);
+        if (
+          !this.enableBatch &&
+          object.nodeName !== SHAPE.Path &&
+          object.nodeName !== SHAPE.Polyline
+        ) {
+          context.closePath();
+        }
       }
 
       // fill & stroke
-      const styleRenderer = this.styleRendererFactory(nodeName);
-      if (styleRenderer) {
+      if (styleRenderer && !this.enableBatch) {
         styleRenderer.render(context, object.parsedStyle, object);
       }
     });
 
     // restore applied attributes, eg. shadowBlur shadowColor...
-    context.restore();
+    if (!this.enableBatch) {
+      context.restore();
+    }
 
     // finish rendering, clear dirty flag
-    const renderable = object.entity.getComponent(Renderable);
-    renderable.dirty = false;
+    object.renderable.dirty = false;
 
     this.restoreStack.push(object);
   }
@@ -356,7 +409,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   }
 
   private insertRBushNode(object: DisplayObject) {
-    const rBushNode = object.entity.getComponent(RBushNode);
+    // @ts-ignore
+    const rBushNode = object.rBushNode;
 
     if (rBushNode) {
       // insert node in RTree
@@ -368,7 +422,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         const [minX, minY] = renderBounds.getMin();
         const [maxX, maxY] = renderBounds.getMax();
         rBushNode.aabb = {
-          name: object.entity.getName(),
+          id: object.entity,
           minX,
           minY,
           maxX,
@@ -399,7 +453,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         }
       }
 
-      const { dirtyRenderBounds } = object.entity.getComponent(Renderable);
+      const { dirtyRenderBounds } = object.renderable;
       if (dirtyRenderBounds) {
         if (!dirtyRectangle) {
           dirtyRectangle = new AABB(dirtyRenderBounds.center, dirtyRenderBounds.halfExtents);
@@ -423,11 +477,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       maxY,
     });
 
-    return rBushNodes.map(({ name }) => this.displayObjectPool.getByName(name));
+    return rBushNodes.map(({ id }) => this.displayObjectPool.getByEntity(id));
   }
 
   private saveDirtyAABB(object: DisplayObject) {
-    const renderable = object.entity.getComponent(Renderable);
+    const renderable = object.renderable;
     if (!renderable.dirtyRenderBounds) {
       renderable.dirtyRenderBounds = new AABB();
     }
@@ -438,14 +492,14 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
   }
 
-  private drawDirtyRectangle(context: CanvasRenderingContext2D, { x, y, width, height }: Rect) {
-    context.beginPath();
-    context.rect(x + 1, y + 1, width - 1, height - 1);
-    context.closePath();
+  // private drawDirtyRectangle(context: CanvasRenderingContext2D, { x, y, width, height }: Rect) {
+  //   context.beginPath();
+  //   context.rect(x + 1, y + 1, width - 1, height - 1);
+  //   context.closePath();
 
-    context.lineWidth = 1;
-    context.stroke();
-  }
+  //   context.lineWidth = 1;
+  //   context.stroke();
+  // }
 
   private applyTransform(context: CanvasRenderingContext2D, transform: mat4) {
     const [tx, ty] = mat4.getTranslation(vec3.create(), transform);
@@ -459,64 +513,90 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     context.transform(rts[0], rts[1], rts[3], rts[4], rts[6], rts[7]);
   }
 
+  private getColor(
+    parsedColor: ParsedColorStyleProperty,
+    object: DisplayObject,
+    context: CanvasRenderingContext2D,
+    renderingService: RenderingService,
+  ) {
+    let color: CanvasGradient | CanvasPattern | string;
+    if (
+      parsedColor.type === PARSED_COLOR_TYPE.LinearGradient ||
+      parsedColor.type === PARSED_COLOR_TYPE.RadialGradient
+    ) {
+      const bounds = object.getGeometryBounds();
+      const width = (bounds && bounds.halfExtents[0] * 2) || 0;
+      const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+      color = this.gradientPool.getOrCreateGradient(
+        {
+          type: parsedColor.type,
+          ...parsedColor.value,
+          width,
+          height,
+        },
+        context,
+      );
+    } else if (parsedColor.type === PARSED_COLOR_TYPE.Pattern) {
+      const pattern = this.imagePool.getPatternSync(parsedColor.value);
+      if (pattern) {
+        color = pattern;
+      } else {
+        this.imagePool.createPattern(parsedColor.value, context).then(() => {
+          // set dirty rectangle flag
+          object.renderable.dirty = true;
+          renderingService.dirtify();
+        });
+      }
+    } else {
+      // constant, eg. rgba(255,255,255,1)
+      color = parsedColor.formatted;
+    }
+
+    return color;
+  }
+
   private applyAttributesToContext(
     context: CanvasRenderingContext2D,
     object: DisplayObject,
     renderingService: RenderingService,
   ) {
-    const { attributes, parsedStyle } = object;
-    for (const k in attributes) {
-      // reserved keywords in Canvas2DContext
-      if (k === 'transform') {
-        continue;
-      }
+    const {
+      stroke,
+      fill,
+      opacity,
+      lineDash,
+      filter,
+      shadowColor,
+      shadowBlur,
+      shadowOffsetX,
+      shadowOffsetY,
+    } = object.parsedStyle;
+    if (lineDash && isArray(lineDash)) {
+      context.setLineDash(lineDash);
+    }
 
-      let v = attributes[k];
-      // 转换一下不与 canvas 兼容的属性名
-      const name = SHAPE_ATTRS_MAP[k] ? SHAPE_ATTRS_MAP[k] : k;
-      if (name === 'lineDash' && context.setLineDash) {
-        isArray(v) && context.setLineDash(v);
-      } else {
-        if (name === 'strokeStyle' || name === 'fillStyle') {
-          const parsedColor = parsedStyle[k] as ParsedColorStyleProperty;
-          if (
-            parsedColor.type === PARSED_COLOR_TYPE.LinearGradient ||
-            parsedColor.type === PARSED_COLOR_TYPE.RadialGradient
-          ) {
-            const bounds = object.getGeometryBounds();
-            const width = (bounds && bounds.halfExtents[0] * 2) || 0;
-            const height = (bounds && bounds.halfExtents[1] * 2) || 0;
-            v = this.gradientPool.getOrCreateGradient(
-              {
-                type: parsedColor.type,
-                ...parsedColor.value,
-                width,
-                height,
-              },
-              context,
-            );
-          } else if (parsedColor.type === PARSED_COLOR_TYPE.Pattern) {
-            const pattern = this.imagePool.getPatternSync(parsedColor.value);
-            if (pattern) {
-              v = pattern;
-            } else {
-              this.imagePool.createPattern(parsedColor.value, context).then(() => {
-                // set dirty rectangle flag
-                object.entity.getComponent(Renderable).dirty = true;
-                renderingService.dirtify();
-              });
-            }
-          } else {
-            // constant, eg. rgba(255,255,255,1)
-            v = parsedColor.formatted;
-          }
-        } else if (name === 'globalAlpha') {
-          // opacity 效果可以叠加，子元素的 opacity 需要与父元素 opacity 相乘
-          v = v * context.globalAlpha;
-        }
-        // @ts-ignore
-        context[name] = v;
-      }
+    if (!isNil(opacity)) {
+      context.globalAlpha *= opacity;
+    }
+
+    if (!isNil(stroke)) {
+      context.strokeStyle = this.getColor(stroke, object, context, renderingService);
+    }
+
+    if (!isNil(fill)) {
+      context.fillStyle = this.getColor(fill, object, context, renderingService);
+    }
+
+    if (!isNil(filter)) {
+      // use raw filter string
+      context.filter = object.style.filter;
+    }
+
+    if (!isNil(shadowColor)) {
+      context.shadowColor = (shadowColor as ParsedColorStyleProperty).formatted;
+      context.shadowBlur = shadowBlur;
+      context.shadowOffsetX = shadowOffsetX;
+      context.shadowOffsetY = shadowOffsetY;
     }
   }
 

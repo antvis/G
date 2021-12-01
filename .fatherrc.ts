@@ -9,7 +9,6 @@ export default {
   // yarn build order
   pkgs: [
     'g-math',
-    'g-ecs',
     'g',
     'g-plugin-dom-interaction',
     'g-plugin-css-select',

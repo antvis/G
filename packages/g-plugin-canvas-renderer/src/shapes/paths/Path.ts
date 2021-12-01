@@ -11,7 +11,6 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
 
   let currentPoint: [number, number] = [-x, -y]; // 当前图形
   let startMovePoint: [number, number] = [-x, -y]; // 开始 M 的点，可能会有多个
-  context.beginPath();
 
   for (let i = 0; i < path.length; i++) {
     const params = path[i]; // eg. M 100 200

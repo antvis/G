@@ -1,5 +1,4 @@
 import { vec3 } from 'gl-matrix';
-import { Geometry } from '../components';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import { AABB } from '../shapes';
 import { dirtifyRenderable, GeometryAABBUpdater, GeometryUpdaterFactory } from '../services';
@@ -13,7 +12,7 @@ export function updateGeometry(oldValue: number, newValue: number, object: Displ
     globalContainer.get<(tagName: string) => GeometryAABBUpdater<any>>(GeometryUpdaterFactory);
   const geometryUpdater = geometryUpdaterFactory(object.nodeName);
   if (geometryUpdater) {
-    const geometry = object.entity.getComponent(Geometry);
+    const geometry = object.geometry;
     if (!geometry.contentBounds) {
       geometry.contentBounds = new AABB();
     }

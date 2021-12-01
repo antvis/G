@@ -3,17 +3,17 @@ import type { DisplayObject } from './display-objects';
 
 @singleton()
 export class DisplayObjectPool {
-  private pool: Record<string, DisplayObject> = {};
+  private pool: Record<number, DisplayObject> = {};
 
-  getByName(name: string): DisplayObject {
-    return this.pool[name];
+  getByEntity(entity: number): DisplayObject {
+    return this.pool[entity];
   }
 
-  add(name: string, groupOrShape: DisplayObject) {
-    this.pool[name] = groupOrShape;
+  add(entity: number, groupOrShape: DisplayObject) {
+    this.pool[entity] = groupOrShape;
   }
 
-  remove(name: string) {
-    delete this.pool[name];
+  remove(entity: number) {
+    delete this.pool[entity];
   }
 }

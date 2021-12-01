@@ -553,6 +553,10 @@ export interface Device {
   createComputePass(computePassDescriptor: ComputePassDescriptor): ComputePass;
   submitPass(pass: RenderPass | ComputePass): void;
 
+  // Render pipeline compilation control.
+  pipelineQueryReady(o: RenderPipeline): boolean;
+  pipelineForceReady(o: RenderPipeline): void;
+
   copySubTexture2D(
     dst: Texture,
     dstX: number,

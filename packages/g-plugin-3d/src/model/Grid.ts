@@ -28,13 +28,14 @@ class GridProgram extends DeviceProgram {
   layout(location = ${GridProgram.a_Position}) attribute vec3 a_Position;
   layout(location = ${GridProgram.a_GridSize}) attribute vec2 a_GridSize;
 
-  out vec3 v_Position;
-  out vec2 v_GridSize;
+  varying vec3 v_Position;
+  varying vec2 v_GridSize;
   
   void main() {
     ${Batch.ShaderLibrary.Vert}
 
     v_GridSize = a_GridSize;
+    v_Position = a_Position;
 
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * vec4(a_Position, 1.0);
   }
@@ -45,8 +46,8 @@ class GridProgram extends DeviceProgram {
 
   // #extension GL_OES_standard_derivatives : enable
 
-  in vec3 v_Position;
-  in vec2 v_GridSize;
+  varying vec3 v_Position;
+  varying vec2 v_GridSize;
   
   void main() {
     ${Batch.ShaderLibrary.Frag}
@@ -84,13 +85,15 @@ export class GridModelBuilder extends Batch {
   }
 
   uploadUBO(renderInst: RenderInst): void {
-    renderInst.setMegaStateFlags({
-      cullMode: CullMode.None,
-    });
+    // renderInst.setMegaStateFlags({
+    //   depthWrite: true,
+    //   cullMode: CullMode.None,
+    // });
+    renderInst.setBindingLayouts([{ numUniformBuffers: 1, numSamplers: 0 }]);
   }
 
   buildGeometry() {
-    const instance = this.objects[0];
+    const instance = this.instance;
     const { height, width } = instance.attributes;
     const halfWidth = width / 2;
     const halfHeight = height / 2;

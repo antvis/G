@@ -15,9 +15,27 @@ import { StyleRenderer } from './interfaces';
   ],
 })
 export class DefaultRenderer implements StyleRenderer {
-  render(context: CanvasRenderingContext2D, parsedStyle: ParsedBaseStyleProps) {
+  hash(parsedStyle: ParsedBaseStyleProps) {
     const { fill, opacity, fillOpacity, stroke, strokeOpacity, lineWidth, lineCap, lineJoin } =
       parsedStyle;
+
+    // return fill + opacity + fillOpacity + stroke + strokeOpacity + lineWidth + lineCap + lineJoin;
+    return '';
+  }
+
+  render(context: CanvasRenderingContext2D, parsedStyle: ParsedBaseStyleProps) {
+    const {
+      fill,
+      opacity,
+      fillOpacity,
+      stroke,
+      strokeOpacity,
+      lineWidth,
+      lineCap,
+      lineJoin,
+      shadowColor,
+      filter,
+    } = parsedStyle;
 
     if (!isNil(fill)) {
       if (!isNil(fillOpacity) && fillOpacity !== 1) {
@@ -33,42 +51,52 @@ export class DefaultRenderer implements StyleRenderer {
       if (lineWidth && lineWidth > 0) {
         const applyOpacity = !isNil(strokeOpacity) && strokeOpacity !== 1;
         if (applyOpacity) {
-          context.globalAlpha = strokeOpacity!;
+          context.globalAlpha = strokeOpacity;
         }
         context.lineWidth = lineWidth;
 
         if (!isNil(lineCap)) {
-          context.lineCap = lineCap!;
+          context.lineCap = lineCap;
         }
 
         if (!isNil(lineJoin)) {
-          context.lineJoin = lineJoin!;
+          context.lineJoin = lineJoin;
         }
 
-        // prevent inner shadow when drawing stroke, toggle shadowBlur & filter(drop-shadow)
-        // save shadow blur
-        const shadowBlur = context.shadowBlur;
-        const shadowColor = context.shadowColor;
-        if (!isNil(shadowBlur)) {
-          context.shadowColor = 'transparent';
-          context.shadowBlur = 0;
+        let oldShadowBlur: number;
+        let oldShadowColor: string;
+        let oldFilter: string;
+        const hasShadowColor = !isNil(shadowColor);
+        const hasFilter = !isNil(filter);
+
+        if (hasShadowColor) {
+          // prevent inner shadow when drawing stroke, toggle shadowBlur & filter(drop-shadow)
+          // save shadow blur
+          oldShadowBlur = context.shadowBlur;
+          oldShadowColor = context.shadowColor;
+          if (!isNil(oldShadowBlur)) {
+            context.shadowColor = 'transparent';
+            context.shadowBlur = 0;
+          }
         }
 
-        // save drop-shadow filter
-        const filter = context.filter;
-        if (!isNil(filter) && filter.indexOf('drop-shadow') > -1) {
-          context.filter = filter.replace(/drop-shadow\([^)]*\)/, '').trim() || 'none';
+        if (hasFilter) {
+          // save drop-shadow filter
+          oldFilter = context.filter;
+          if (!isNil(oldFilter) && oldFilter.indexOf('drop-shadow') > -1) {
+            context.filter = oldFilter.replace(/drop-shadow\([^)]*\)/, '').trim() || 'none';
+          }
         }
 
         context.stroke();
         // restore shadow blur
-        if (!isNil(shadowBlur)) {
-          context.shadowColor = shadowColor;
-          context.shadowBlur = shadowBlur;
+        if (hasShadowColor) {
+          context.shadowColor = oldShadowColor;
+          context.shadowBlur = oldShadowBlur;
         }
         // restore filters
-        if (!isNil(filter)) {
-          context.filter = filter;
+        if (hasFilter) {
+          context.filter = oldFilter;
         }
       }
     }

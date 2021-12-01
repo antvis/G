@@ -17,7 +17,7 @@ const canvas = new Canvas({
 });
 
 const camera = canvas.getCamera();
-camera.setPerspective(0.1, 1000, 75, 600 / 500).setPosition(300, 250, 500);
+camera.setPosition(300, 100, 500).setFocalPoint(300, 250, 0);
 
 const grid = new Grid({
   style: {
@@ -45,5 +45,5 @@ canvas.on('afterrender', () => {
   if (stats) {
     stats.update();
   }
-  grid.rotate(0, 1, 1);
+  grid.rotate(0, 1, 0);
 });

@@ -1,7 +1,6 @@
-import { Component } from '@antv/g-ecs';
 import type { INode } from '../dom/interfaces';
 
-export class Sortable extends Component {
+export class Sortable {
   static tag = 'c-sortable';
 
   /**

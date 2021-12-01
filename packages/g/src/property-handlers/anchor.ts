@@ -1,5 +1,4 @@
 import { vec2, vec3 } from 'gl-matrix';
-import { Geometry } from '../components';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import { dirtifyRenderable } from '../services';
 import { createVec3 } from '../utils';
@@ -7,7 +6,7 @@ import { createVec3 } from '../utils';
 export function updateAnchor(oldValue: vec2 | vec3, newValue: vec2 | vec3, object: DisplayObject) {
   const bounds = object.getGeometryBounds();
   if (bounds) {
-    const geometry = object.entity.getComponent(Geometry);
+    const geometry = object.geometry;
     if (geometry && geometry.contentBounds) {
       const offset = vec3.multiply(
         vec3.create(),

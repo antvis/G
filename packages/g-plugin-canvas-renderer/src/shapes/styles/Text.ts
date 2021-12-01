@@ -10,6 +10,10 @@ export class TextRenderer implements StyleRenderer {
   @inject(TextService)
   private textService: TextService;
 
+  hash(parsedStyle: any): string {
+    return '';
+  }
+
   render(context: CanvasRenderingContext2D, parsedStyle: ParsedTextStyleProps) {
     const {
       text = '',
@@ -32,6 +36,7 @@ export class TextRenderer implements StyleRenderer {
 
     context.font = font;
     context.lineWidth = lineWidth!;
+    context.textAlign = textAlign;
     context.textBaseline = textBaseline!;
     context.lineJoin = lineJoin!;
     context.miterLimit = miterLimit;

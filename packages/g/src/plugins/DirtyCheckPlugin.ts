@@ -1,5 +1,4 @@
 import { inject, singleton } from 'mana-syringe';
-import { Renderable } from '../components';
 import { CanvasConfig } from '../types';
 import {
   RenderingService,
@@ -27,7 +26,7 @@ export class DirtyCheckPlugin implements RenderingPlugin {
       if (object) {
         const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
 
-        const renderable = object.entity.getComponent(Renderable);
+        const renderable = object.renderable;
         const isDirty =
           renderable.dirty || this.renderingContext.renderReasons.has(RENDER_REASON.CameraChanged);
         if (isDirty || !enableDirtyRectangleRendering) {

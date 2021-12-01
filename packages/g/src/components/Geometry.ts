@@ -1,7 +1,6 @@
-import { Component } from '@antv/g-ecs';
 import { AABB } from '../shapes';
 
-export class Geometry extends Component {
+export class Geometry {
   static tag = 'c-geometry';
 
   /**

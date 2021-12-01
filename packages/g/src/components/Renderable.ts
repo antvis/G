@@ -1,7 +1,6 @@
-import { Component } from '@antv/g-ecs';
 import { AABB } from '../shapes';
 
-export class Renderable extends Component {
+export class Renderable {
   static tag = 'c-renderable';
 
   /**
@@ -29,4 +28,7 @@ export class Renderable extends Component {
    * dirty rectangle flag
    */
   dirty = false;
+
+  normalDirty = false;
+  aabbVer = 0;
 }

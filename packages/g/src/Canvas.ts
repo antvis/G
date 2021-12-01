@@ -10,7 +10,7 @@ import { containerModule as commonContainerModule } from './canvas-module';
 import { AbstractRenderer, IRenderer } from './AbstractRenderer';
 import { cancelAnimationFrame } from './utils/raf';
 import type { PointLike } from './shapes';
-import { Document, EventTarget, ElementEvent, FederatedEvent } from './dom';
+import { Document, EventTarget, ElementEvent, FederatedEvent, Element } from './dom';
 import type { IElement, INode, ICanvas } from './dom/interfaces';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
 import { Renderable } from './components';
@@ -22,6 +22,7 @@ export enum CanvasEvent {
   AFTER_RENDER = 'afterrender',
   BEFORE_DESTROY = 'beforedestroy',
   AFTER_DESTROY = 'afterdestroy',
+  RESIZE = 'resize',
 }
 
 /**
@@ -215,17 +216,22 @@ export class Canvas extends EventTarget implements ICanvas {
     const camera = this.container.get<Camera>(DefaultCamera);
     const projectionMode = camera.getProjectionMode();
     if (projectionMode === CAMERA_PROJECTION_MODE.ORTHOGRAPHIC) {
-      camera.setOrthographic(
-        width / -2,
-        width / 2,
-        height / -2,
-        height / 2,
-        camera.getNear(),
-        camera.getFar(),
-      );
+      camera
+        .setPosition(width / 2, height / 2, 500)
+        .setFocalPoint(width / 2, height / 2, 0)
+        .setOrthographic(
+          width / -2,
+          width / 2,
+          height / -2,
+          height / 2,
+          camera.getNear(),
+          camera.getFar(),
+        );
     } else {
       camera.setAspect(width / height);
     }
+
+    this.emit(CanvasEvent.RESIZE, { width, height });
   }
 
   // proxy to document.documentElement
@@ -282,7 +288,7 @@ export class Canvas extends EventTarget implements ICanvas {
     }
 
     this.getRoot().forEach((node) => {
-      const renderable = node.entity.getComponent(Renderable);
+      const renderable = (node as Element).renderable;
       if (renderable) {
         renderable.renderBoundsDirty = true;
         renderable.boundsDirty = true;

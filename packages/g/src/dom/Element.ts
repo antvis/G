@@ -8,6 +8,8 @@ import type { DisplayObjectConfig, IEventTarget, IChildNode, IElement, INode } f
 import { ElementEvent } from './interfaces';
 import { globalContainer } from '../global-module';
 
+let entityCounter = 0;
+
 /**
  * Has following capabilities:
  * * Node insert/remove, eg. appendChild, removeChild, remove...
@@ -27,17 +29,16 @@ export class Element<
 
   sceneGraphService = globalContainer.get<SceneGraphService>(SceneGraphService);
 
+  entity = entityCounter++;
+
+  renderable = new Renderable();
+  cullable = new Cullable();
+  transformable = new Transform();
+  sortable = new Sortable();
+  geometry = new Geometry();
+
   constructor(config: DisplayObjectConfig<StyleProps>) {
     super();
-
-    // create entity with shape's name, unique ID
-    const entity = this.entity;
-
-    entity.addComponent(Renderable);
-    entity.addComponent(Cullable);
-    entity.addComponent(Transform);
-    entity.addComponent(Sortable);
-    entity.addComponent(Geometry);
   }
 
   /**
@@ -167,7 +168,6 @@ export class Element<
     // cannot emit Destroy event now
     if (destroy) {
       // this.removeChildren();
-      child.entity.destroy();
       // remove event listeners
       child.emitter.removeAllListeners();
     }
@@ -306,8 +306,6 @@ export class Element<
 
     // remove from scenegraph first
     this.remove(false);
-
-    this.entity.destroy();
 
     // remove event listeners
     this.emitter.removeAllListeners();

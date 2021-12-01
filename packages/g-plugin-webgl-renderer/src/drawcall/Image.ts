@@ -55,7 +55,7 @@ class ImageProgram extends DeviceProgram {
 
     ${Batch.ShaderLibrary.MapFrag}
 
-    gl_FragColor = texelColor;
+    gl_FragColor = u_Color;
     gl_FragColor.a = gl_FragColor.a * u_Opacity;
   }
   `;
@@ -90,8 +90,7 @@ export class ImageRenderer extends Batch {
       () => {
         // need re-render
         this.objects.forEach((object) => {
-          const renderable = object.entity.getComponent(Renderable);
-          renderable.dirty = true;
+          object.renderable.dirty = true;
 
           this.renderingService.dirtify();
         });
@@ -173,8 +172,7 @@ export class ImageRenderer extends Batch {
         () => {
           // need re-render
           this.objects.forEach((object) => {
-            const renderable = object.entity.getComponent(Renderable);
-            renderable.dirty = true;
+            object.renderable.dirty = true;
 
             this.renderingService.dirtify();
           });

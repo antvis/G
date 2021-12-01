@@ -11,6 +11,10 @@ export class ImageRenderer implements StyleRenderer {
   @inject(ImagePool)
   private imagePool: ImagePool;
 
+  hash(parsedStyle: ParsedImageStyleProps): string {
+    return '';
+  }
+
   render(context: CanvasRenderingContext2D, parsedStyle: ParsedImageStyleProps) {
     const { width = 0, height = 0, img } = parsedStyle;
 

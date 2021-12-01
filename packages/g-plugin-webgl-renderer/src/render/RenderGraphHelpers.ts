@@ -26,7 +26,7 @@ export const enum AntialiasingMode {
   MSAAx4,
 }
 
-interface RenderInput {
+export interface RenderInput {
   backbufferWidth: number;
   backbufferHeight: number;
   antialiasingMode: AntialiasingMode;

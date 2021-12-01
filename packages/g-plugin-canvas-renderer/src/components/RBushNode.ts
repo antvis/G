@@ -1,13 +1,11 @@
-import { Component } from '@antv/g';
-
 export interface RBushNodeAABB {
-  name: string;
+  id: number;
   minX: number;
   minY: number;
   maxX: number;
   maxY: number;
 }
-export class RBushNode extends Component {
+export class RBushNode {
   static tag = 'c-canvas-rbush-node';
 
   aabb: RBushNodeAABB;

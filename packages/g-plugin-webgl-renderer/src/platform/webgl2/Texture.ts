@@ -214,6 +214,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
           height,
           gl_format,
           gl_type,
+          // @ts-ignore
           isArray ? data[0] : data,
         );
       } else {
@@ -231,6 +232,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
           0, // border must be 0
           gl_format, // TODO: can be different with gl_format
           gl_type,
+          // @ts-ignore
           isArray ? data[0] : data,
         );
       } else {
