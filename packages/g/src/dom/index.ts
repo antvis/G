@@ -1,5 +1,5 @@
 export * from './interfaces';
-export * from './EventTarget';
+export * from './eventTarget';
 export * from './Node';
 export * from './Element';
 export * from './Document';
