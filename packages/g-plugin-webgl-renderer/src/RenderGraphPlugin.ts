@@ -13,6 +13,7 @@ import {
   SHAPE,
   DefaultCamera,
   Camera,
+  CanvasEvent,
 } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { Batch } from './drawcall';
@@ -125,6 +126,10 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.renderHelper.setDevice(this.device);
       this.renderHelper.renderInstManager.disableSimpleMode();
       this.swapChain.configureSwapChain($canvas.width, $canvas.height);
+
+      this.renderingContext.root.ownerDocument.defaultView.on(CanvasEvent.RESIZE, () => {
+        this.swapChain.configureSwapChain($canvas.width, $canvas.height);
+      });
     });
 
     renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
@@ -147,6 +152,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
 
+      // retrieve at each frame since canvas may resize
       const renderInput = {
         backbufferWidth: canvas.width,
         backbufferHeight: canvas.height,
@@ -190,7 +196,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       // TODO: other post-processing passes
       // FXAA
-      pushFXAAPass(this.builder, this.renderHelper, renderInput, mainColorTargetID);
+      // pushFXAAPass(this.builder, this.renderHelper, renderInput, mainColorTargetID);
 
       // output to screen
       this.builder.resolveRenderTargetToExternalTexture(
@@ -216,9 +222,12 @@ export class RenderGraphPlugin implements RenderingPlugin {
             cullMode: CullMode.Back,
           },
           {
-            blendMode: BlendMode.Add,
-            blendSrcFactor: BlendFactor.SrcAlpha,
-            blendDstFactor: BlendFactor.OneMinusSrcAlpha,
+            rgbBlendMode: BlendMode.Add,
+            alphaBlendMode: BlendMode.Add,
+            rgbBlendSrcFactor: BlendFactor.SrcAlpha,
+            alphaBlendSrcFactor: BlendFactor.One,
+            rgbBlendDstFactor: BlendFactor.OneMinusSrcAlpha,
+            alphaBlendDstFactor: BlendFactor.One,
           },
         ),
       );

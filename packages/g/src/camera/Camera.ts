@@ -385,6 +385,8 @@ export class Camera extends EventEmitter {
     this.zoom = zoom;
     if (this.projectionMode === CAMERA_PROJECTION_MODE.ORTHOGRAPHIC) {
       this.setOrthographic(this.left, this.rright, this.top, this.bottom, this.near, this.far);
+    } else if (this.projectionMode === CAMERA_PROJECTION_MODE.PERSPECTIVE) {
+      this.setPerspective(this.near, this.far, this.fov, this.aspect);
     }
     return this;
   }
@@ -464,7 +466,7 @@ export class Camera extends EventEmitter {
   /**
    * 设置相机位置
    */
-  setPosition(x: number | vec3, y?: number, z?: number) {
+  setPosition(x: number | vec3, y: number = 0, z: number = 0) {
     this._setPosition(x, y, z);
     this.setFocalPoint(this.focalPoint);
     return this;

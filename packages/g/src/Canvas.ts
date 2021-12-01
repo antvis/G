@@ -22,6 +22,7 @@ export enum CanvasEvent {
   AFTER_RENDER = 'afterrender',
   BEFORE_DESTROY = 'beforedestroy',
   AFTER_DESTROY = 'afterdestroy',
+  RESIZE = 'resize',
 }
 
 /**
@@ -215,17 +216,22 @@ export class Canvas extends EventTarget implements ICanvas {
     const camera = this.container.get<Camera>(DefaultCamera);
     const projectionMode = camera.getProjectionMode();
     if (projectionMode === CAMERA_PROJECTION_MODE.ORTHOGRAPHIC) {
-      camera.setOrthographic(
-        width / -2,
-        width / 2,
-        height / -2,
-        height / 2,
-        camera.getNear(),
-        camera.getFar(),
-      );
+      camera
+        .setPosition(width / 2, height / 2, 500)
+        .setFocalPoint(width / 2, height / 2, 0)
+        .setOrthographic(
+          width / -2,
+          width / 2,
+          height / -2,
+          height / 2,
+          camera.getNear(),
+          camera.getFar(),
+        );
     } else {
       camera.setAspect(width / height);
     }
+
+    this.emit(CanvasEvent.RESIZE, { width, height });
   }
 
   // proxy to document.documentElement

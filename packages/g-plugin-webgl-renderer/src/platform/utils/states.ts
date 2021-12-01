@@ -157,9 +157,12 @@ export function makeMegaState(
 
 export interface AttachmentStateSimple {
   channelWriteMask: ChannelWriteMask;
-  blendMode: BlendMode;
-  blendSrcFactor: BlendFactor;
-  blendDstFactor: BlendFactor;
+  rgbBlendMode?: BlendMode;
+  alphaBlendMode?: BlendMode;
+  rgbBlendSrcFactor?: BlendFactor;
+  alphaBlendSrcFactor?: BlendFactor;
+  rgbBlendDstFactor?: BlendFactor;
+  alphaBlendDstFactor?: BlendFactor;
 }
 
 export function copyAttachmentStateFromSimple(
@@ -170,19 +173,26 @@ export function copyAttachmentStateFromSimple(
     dst.channelWriteMask = src.channelWriteMask;
   }
 
-  if (src.blendMode !== undefined) {
-    dst.rgbBlendState.blendMode = src.blendMode;
-    dst.alphaBlendState.blendMode = src.blendMode;
+  if (src.rgbBlendMode !== undefined) {
+    dst.rgbBlendState.blendMode = src.rgbBlendMode;
   }
 
-  if (src.blendSrcFactor !== undefined) {
-    dst.rgbBlendState.blendSrcFactor = src.blendSrcFactor;
-    dst.alphaBlendState.blendSrcFactor = src.blendSrcFactor;
+  if (src.alphaBlendMode !== undefined) {
+    dst.alphaBlendState.blendMode = src.alphaBlendMode;
   }
 
-  if (src.blendDstFactor !== undefined) {
-    dst.rgbBlendState.blendDstFactor = src.blendDstFactor;
-    dst.alphaBlendState.blendDstFactor = src.blendDstFactor;
+  if (src.rgbBlendSrcFactor !== undefined) {
+    dst.rgbBlendState.blendSrcFactor = src.rgbBlendSrcFactor;
+  }
+  if (src.alphaBlendSrcFactor !== undefined) {
+    dst.alphaBlendState.blendSrcFactor = src.alphaBlendSrcFactor;
+  }
+
+  if (src.rgbBlendDstFactor !== undefined) {
+    dst.rgbBlendState.blendDstFactor = src.rgbBlendDstFactor;
+  }
+  if (src.alphaBlendDstFactor !== undefined) {
+    dst.alphaBlendState.blendDstFactor = src.alphaBlendDstFactor;
   }
 }
 

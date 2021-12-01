@@ -153,12 +153,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tap(CanvasRendererPlugin.tag, () => {
-      const context = this.contextService.getContext();
-      const dpr = this.contextService.getDPR();
-      // scale all drawing operations by the dpr
-      // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
-      context && context.scale(dpr, dpr);
-
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
@@ -525,7 +519,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     context: CanvasRenderingContext2D,
     renderingService: RenderingService,
   ) {
-    let color: CanvasGradient | CanvasPattern;
+    let color: CanvasGradient | CanvasPattern | string;
     if (
       parsedColor.type === PARSED_COLOR_TYPE.LinearGradient ||
       parsedColor.type === PARSED_COLOR_TYPE.RadialGradient

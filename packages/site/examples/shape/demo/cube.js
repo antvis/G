@@ -25,7 +25,6 @@ const cube = new Cube({
     width: 200,
     height: 200,
     depth: 200,
-    fill: '#1890FF',
     map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
   },
 });
@@ -59,8 +58,7 @@ const cubeConfig = {
   width: 200,
   height: 200,
   depth: 200,
-  fill: '#1890FF',
-  fillOpacity: 1,
+  opacity: 1,
   map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
 };
 cubeFolder.add(cubeConfig, 'width', 50, 300).onChange((width) => {
@@ -72,10 +70,7 @@ cubeFolder.add(cubeConfig, 'height', 50, 300).onChange((height) => {
 cubeFolder.add(cubeConfig, 'depth', 50, 300).onChange((depth) => {
   cube.attr('depth', depth);
 });
-cubeFolder.addColor(cubeConfig, 'fill').onChange((color) => {
-  cube.attr('fill', color);
-});
-cubeFolder.add(cubeConfig, 'fillOpacity', 0, 1, 0.1).onChange((opacity) => {
-  cube.attr('fillOpacity', opacity);
+cubeFolder.add(cubeConfig, 'opacity', 0, 1, 0.1).onChange((opacity) => {
+  cube.attr('opacity', opacity);
 });
 cubeFolder.open();

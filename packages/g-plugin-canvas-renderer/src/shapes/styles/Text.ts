@@ -36,6 +36,7 @@ export class TextRenderer implements StyleRenderer {
 
     context.font = font;
     context.lineWidth = lineWidth!;
+    context.textAlign = textAlign;
     context.textBaseline = textBaseline!;
     context.lineJoin = lineJoin!;
     context.miterLimit = miterLimit;

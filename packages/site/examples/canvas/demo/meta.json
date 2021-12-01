@@ -13,6 +13,14 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*L3OdRpd5UpIAAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "resize.tsx",
+      "title": {
+        "zh": "改变画布大小",
+        "en": "Resize canvas"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*L3OdRpd5UpIAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "rendering-on-demand.js",
       "title": {
         "zh": "按需渲染",

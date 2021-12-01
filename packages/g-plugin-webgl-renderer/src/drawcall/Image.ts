@@ -55,7 +55,7 @@ class ImageProgram extends DeviceProgram {
 
     ${Batch.ShaderLibrary.MapFrag}
 
-    gl_FragColor = texelColor;
+    gl_FragColor = u_Color;
     gl_FragColor.a = gl_FragColor.a * u_Opacity;
   }
   `;

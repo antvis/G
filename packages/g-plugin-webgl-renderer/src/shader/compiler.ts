@@ -1,4 +1,10 @@
-import { Device, ProgramDescriptorSimple, VendorInfo, ViewportOrigin } from '../platform';
+import {
+  ClipSpaceNearZ,
+  Device,
+  ProgramDescriptorSimple,
+  VendorInfo,
+  ViewportOrigin,
+} from '../platform';
 import { assert } from '../platform/utils';
 import { ShaderLibrary } from '../render/utils';
 
@@ -52,10 +58,13 @@ export function preprocessShader_GLSL(
   let rest = lines.filter((line) => !line.startsWith('precision')).join('\n');
   let extraDefines = '';
 
-  if (vendorInfo.viewportOrigin === ViewportOrigin.UpperLeft)
+  if (vendorInfo.viewportOrigin === ViewportOrigin.UpperLeft) {
     extraDefines += `${defineStr(`VIEWPORT_ORIGIN_TL`, `1`)}\n`;
+  }
+  if (vendorInfo.clipSpaceNearZ === ClipSpaceNearZ.Zero) {
+    extraDefines += `${defineStr(`CLIPSPACE_NEAR_ZERO`, `1`)}\n`;
+  }
 
-  let outLayout = '';
   if (vendorInfo.explicitBindingLocations) {
     let set = 0,
       binding = 0,
@@ -87,8 +96,6 @@ layout(set = ${set}, binding = ${binding++}) uniform sampler S_${samplerName};
         return `layout(location = ${location++}) ${tok}`;
       },
     );
-
-    outLayout = 'layout(location = 0) ';
 
     extraDefines += `${defineStr(`gl_VertexID`, `gl_VertexIndex`)}\n`;
   }
