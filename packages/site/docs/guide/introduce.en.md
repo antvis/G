@@ -18,6 +18,8 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 -   高性能的渲染与计算。为可并行算法提供 GPGPU 支持。
 -   可扩展插件机制。
 
+完整 [API Spec](/api.html)。
+
 ## 使用方式
 
 目前我们支持 CDN 和 NPM Module 两种使用方式。
@@ -28,17 +30,14 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 
 ```html
 <!-- G 核心 -->
-<script
-    src="https://unpkg.com/@antv/g@next/dist/index.umd.js"
-    type="application/javascript"
-></script>
+<script src="https://unpkg.com/@antv/g/dist/index.umd.js" type="application/javascript"></script>
 <!-- G 渲染器，支持 Canvas2D/SVG/WebGL -->
 <script
-    src="https://unpkg.com/@antv/g-canvas@next/dist/index.umd.js"
+    src="https://unpkg.com/@antv/g-canvas/dist/index.umd.js"
     type="application/javascript"
 ></script>
-<!-- <script src="https://unpkg.com/@antv/g-svg@next/dist/index.umd.js" type="application/javascript"></script>
-<script src="https://unpkg.com/@antv/g-webgl@next/dist/index.umd.js" type="application/javascript"></script> -->
+<!-- <script src="https://unpkg.com/@antv/g-svg/dist/index.umd.js" type="application/javascript"></script>
+<script src="https://unpkg.com/@antv/g-webgl/dist/index.umd.js" type="application/javascript"></script> -->
 ```
 
 然后就可以在 `window.G` 的命名空间下使用 [Canvas](/zh/docs/api/canvas)、[Circle](/zh/docs/api/basic/circle) 这样的核心基础对象以及 [Canvas2D.Renderer](/zh/docs/api/renderer) 这样的渲染器：
@@ -81,14 +80,14 @@ canvas.appendChild(circle);
 
 ```bash
 # 核心包
-$ npm install @antv/g@next --save
+$ npm install @antv/g --save
 
 # Canvas2D 渲染器
-$ npm install @antv/g-canvas@next --save
+$ npm install @antv/g-canvas --save
 # SVG 渲染器
-$ npm install @antv/g-svg@next --save
+$ npm install @antv/g-svg --save
 # WebGL 渲染器
-$ npm install @antv/g-webgl@next --save
+$ npm install @antv/g-webgl --save
 ```
 
 然后就可以在核心包中使用 [Canvas](/zh/docs/api/canvas)、[Circle](/zh/docs/api/basic/circle) 这样的核心基础对象以及 [Renderer](/zh/docs/api/renderer) 这样的渲染器：

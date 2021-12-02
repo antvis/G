@@ -20,13 +20,13 @@ English | [简体中文](./README-zh_CN.md)
 
 ```bash
 # Install Core
-$ npm install @antv/g@next --save
+$ npm install @antv/g --save
 # Canvas Renderer
-$ npm install @antv/g-canvas@next --save
+$ npm install @antv/g-canvas --save
 # SVG Renderer
-$ npm install @antv/g-svg@next --save
+$ npm install @antv/g-svg --save
 # WebGL Renderer
-$ npm install @antv/g-webgl@next --save
+$ npm install @antv/g-webgl --save
 ```
 
 ## 🔨 Usage

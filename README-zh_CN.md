@@ -20,13 +20,13 @@
 
 ```bash
 # 安装核心包
-$ npm install @antv/g@next --save
+$ npm install @antv/g --save
 # Canvas 渲染器
-$ npm install @antv/g-canvas@next --save
+$ npm install @antv/g-canvas --save
 # SVG 渲染器
-$ npm install @antv/g-svg@next --save
+$ npm install @antv/g-svg --save
 # WebGL 渲染器
-$ npm install @antv/g-webgl@next --save
+$ npm install @antv/g-webgl --save
 ```
 
 ## 🔨 使用
