@@ -12,6 +12,13 @@
       }
     },
     {
+      "filename": "redraw.js",
+      "title": {
+        "zh": "移动大量节点",
+        "en": "Move nodes"
+      }
+    },
+    {
       "filename": "nodes-8k.js",
       "title": {
         "zh": "8k 节点",

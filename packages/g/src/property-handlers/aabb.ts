@@ -1,11 +1,12 @@
 import { vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import { AABB } from '../shapes';
-import { dirtifyRenderable, GeometryAABBUpdater, GeometryUpdaterFactory } from '../services';
+import { GeometryAABBUpdater, GeometryUpdaterFactory } from '../services';
 import { SHAPE } from '../types';
 import { PARSED_COLOR_TYPE } from './color';
 import { ParsedFilterStyleProperty } from './filter';
 import { globalContainer } from '../global-module';
+import { ElementEvent } from '../dom';
 
 export function updateGeometry(oldValue: number, newValue: number, object: DisplayObject) {
   const geometryUpdaterFactory =
@@ -132,6 +133,6 @@ export function updateGeometry(oldValue: number, newValue: number, object: Displ
       }
     });
 
-    dirtifyRenderable(object);
+    object.emit(ElementEvent.BOUNDS_CHANGED, {});
   }
 }

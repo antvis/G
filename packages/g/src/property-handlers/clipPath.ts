@@ -1,5 +1,5 @@
 import type { DisplayObject } from '../display-objects/DisplayObject';
-import { dirtifyRenderable } from '../services';
+import { ElementEvent } from '../dom';
 
 /**
  * @see /zh/docs/api/basic/display-object#clippath
@@ -36,5 +36,5 @@ export function updateClipPath(
     newClipPath.style.clipPathTargets.push(object);
   }
 
-  dirtifyRenderable(object);
+  object.emit(ElementEvent.BOUNDS_CHANGED, {});
 }

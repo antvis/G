@@ -3,7 +3,6 @@ import { EventEmitter } from 'eventemitter3';
 import { CustomEvent } from './CustomEvent';
 import { FederatedEvent } from './FederatedEvent';
 import type { IElement, INode, IEventTarget } from './interfaces';
-import { globalContainer } from '../global-module';
 
 export const DELEGATION_SPLITTER = ':';
 

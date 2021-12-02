@@ -22,24 +22,6 @@ export function sortByZIndex(o1: IElement, o2: IElement) {
   return zIndex1 - zIndex2;
 }
 
-export function dirtifyRenderable(element: INode, silent = false) {
-  let node = element;
-  while (node) {
-    const renderable = (node as Element).renderable;
-    if (renderable) {
-      renderable.renderBoundsDirty = true;
-      renderable.boundsDirty = true;
-      renderable.dirty = true;
-    }
-
-    node = node.parentElement;
-  }
-
-  if (!silent) {
-    element.emit(ElementEvent.BOUNDS_CHANGED, {});
-  }
-}
-
 export const SceneGraphService = 'SceneGraphService';
 export interface SceneGraphService {
   matches<T extends IElement>(query: string, root: T): boolean;
@@ -468,7 +450,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
     if (!transform.dirtyFlag) {
       this.unfreezeParentToRoot(element);
     }
+
     this.dirtifyWorldInternal(element, transform);
+    element.emit(ElementEvent.BOUNDS_CHANGED, { affectChildren: true });
   }
 
   getPosition(element: INode) {
@@ -688,15 +672,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
         oldValue: null,
         newValue: null,
       });
-
-      // FIXME: emit on leaf node
-      if (element.childNodes.length === 0) {
-        dirtifyRenderable(element);
-      }
     }
-
-    (element as Element).renderable.normalDirty = true;
-    (element as Element).renderable.aabbVer++;
   }
 
   syncHierarchy(element: INode) {
