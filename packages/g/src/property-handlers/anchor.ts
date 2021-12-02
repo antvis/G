@@ -1,6 +1,6 @@
 import { vec2, vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects/DisplayObject';
-import { dirtifyRenderable } from '../services';
+import { ElementEvent } from '../dom';
 import { createVec3 } from '../utils';
 
 export function updateAnchor(oldValue: vec2 | vec3, newValue: vec2 | vec3, object: DisplayObject) {
@@ -29,7 +29,7 @@ export function updateAnchor(oldValue: vec2 | vec3, newValue: vec2 | vec3, objec
         geometry.renderBounds.halfExtents,
       );
 
-      dirtifyRenderable(object);
+      object.emit(ElementEvent.BOUNDS_CHANGED, {});
     }
   }
 }

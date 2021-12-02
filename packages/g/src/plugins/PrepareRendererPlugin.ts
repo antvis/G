@@ -1,11 +1,7 @@
 import { inject, singleton } from 'mana-syringe';
+import { DisplayObject } from '..';
 import { ElementEvent, FederatedEvent, INode } from '../dom';
-import {
-  dirtifyRenderable,
-  RenderingContext,
-  RENDER_REASON,
-  RenderingPluginContribution,
-} from '../services';
+import { RenderingContext, RENDER_REASON, RenderingPluginContribution } from '../services';
 import { RenderingService, RenderingPlugin } from '../services/RenderingService';
 
 @singleton({ contrib: RenderingPluginContribution })
@@ -30,26 +26,22 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     };
 
     const dirtifyToRoot = (e: FederatedEvent) => {
-      dirtifyRenderable(e.target as INode, true);
+      // skip Document & Canvas
+      const path = e.composedPath().slice(0, -2);
+      path.forEach((node) => {
+        const renderable = (node as DisplayObject).renderable;
+        if (renderable) {
+          renderable.renderBoundsDirty = true;
+          renderable.boundsDirty = true;
+          renderable.dirty = true;
+        }
+      });
 
       renderingService.dirtify();
     };
 
     const handleBoundsChanged = (e: FederatedEvent) => {
-      // const path = e.composedPath().slice(0, -2);
-      // path.forEach((node: DisplayObject) => {
-      //   const parent = node.parentElement as DisplayObject;
-      //   if (parent && parent.style && parent.style.transformOrigin) {
-      //     updateTransformOrigin(
-      //       parent.style.transformOrigin,
-      //       parent.style.transformOrigin,
-      //       parent,
-      //       true,
-      //     );
-      //   }
-      // });
-
-      renderingService.dirtify();
+      dirtifyToRoot(e);
     };
 
     const handleMounted = (e: FederatedEvent) => {

@@ -97,31 +97,19 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private batchedStyleHash = '';
   private batchedDisplayObject = null;
 
-  /**
-   * save the last dirty rect in DEBUG mode
-   */
-  private lastDirtyRectangle: Rect;
-
   apply(renderingService: RenderingService) {
     const handleMounted = (e: FederatedEvent) => {
-      // const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
-      // if (!enableDirtyRectangleRendering) {
-      //   return;
-      // }
-
       const object = e.target as DisplayObject;
       // @ts-ignore
       object.rBushNode = new RBushNode();
 
-      handleBoundsChanged(e);
+      const path = e.composedPath().slice(0, -2);
+      path.forEach((node: DisplayObject) => {
+        this.insertRBushNode(node);
+      });
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
-      // const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
-      // if (!enableDirtyRectangleRendering) {
-      //   return;
-      // }
-
       const object = e.target as DisplayObject;
 
       // remove r-bush node
@@ -133,22 +121,50 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     };
 
     const handleBoundsChanged = (e: FederatedEvent) => {
-      // const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
-      // // don not use rbush when dirty-rectangle rendering disabled
-      // if (!enableDirtyRectangleRendering) {
-      //   return;
-      // }
-
       const object = e.target as DisplayObject;
       // skip if this object mounted on another scenegraph root
       if (object.ownerDocument?.documentElement !== this.renderingContext.root) {
         return;
       }
 
-      // skip Document & Canvas
+      const { affectChildren } = e.detail;
+
+      if (affectChildren) {
+        // bounds changed, need re-inserting its children
+        const bulk: RBushNodeAABB[] = [];
+        object.forEach((node: DisplayObject) => {
+          // @ts-ignore
+          const rBushNode = node.rBushNode;
+
+          // clear dirty node
+          if (rBushNode) {
+            this.rBush.remove(rBushNode.aabb);
+          }
+
+          const renderBounds = node.getRenderBounds();
+          if (renderBounds) {
+            const [minX, minY] = renderBounds.getMin();
+            const [maxX, maxY] = renderBounds.getMax();
+            rBushNode.aabb = {
+              id: node.entity,
+              minX,
+              minY,
+              maxX,
+              maxY,
+            };
+          }
+          bulk.push(rBushNode.aabb);
+        });
+
+        // use bulk inserting, which is ~2-3 times faster
+        // @see https://github.com/mourner/rbush#bulk-inserting-data
+        this.rBush.load(bulk);
+      }
+
+      // inform parent, skip Document & Canvas
       const path = e.composedPath().slice(0, -2);
-      path.forEach((node) => {
-        this.insertRBushNode(node as DisplayObject);
+      path.forEach((node: DisplayObject) => {
+        this.insertRBushNode(node);
       });
     };
 
@@ -493,15 +509,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
   }
 
-  // private drawDirtyRectangle(context: CanvasRenderingContext2D, { x, y, width, height }: Rect) {
-  //   context.beginPath();
-  //   context.rect(x + 1, y + 1, width - 1, height - 1);
-  //   context.closePath();
-
-  //   context.lineWidth = 1;
-  //   context.stroke();
-  // }
-
   private applyTransform(context: CanvasRenderingContext2D, transform: mat4) {
     const [tx, ty] = mat4.getTranslation(vec3.create(), transform);
     const [sx, sy] = mat4.getScaling(vec3.create(), transform);
@@ -616,16 +623,13 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     const contentBounds = object.getGeometryBounds();
     if (contentBounds) {
       const { halfExtents } = contentBounds;
-      context.save();
 
       // apply anchor, use true size, not include stroke,
       // eg. bounds = true size + half lineWidth
       const { anchor = [0, 0] } = object.parsedStyle || {};
-      // context.translate(-anchor[0] * width, -anchor[1] * height);
       context.translate(-anchor[0] * halfExtents[0] * 2, -anchor[1] * halfExtents[1] * 2);
 
       callback();
-      context.restore();
     } else {
       callback();
     }

@@ -28,7 +28,4 @@ export class Renderable {
    * dirty rectangle flag
    */
   dirty = false;
-
-  normalDirty = false;
-  aabbVer = 0;
 }

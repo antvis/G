@@ -16,7 +16,6 @@ import {
   StylePropertyUpdater,
   StylePropertyUpdaterFactory,
 } from '../property-handlers';
-import { dirtifyRenderable } from '../services';
 import { globalContainer } from '../global-module';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
@@ -257,7 +256,7 @@ export class DisplayObject<
     // inform clip path targets
     if (this.attributes.clipPathTargets && this.attributes.clipPathTargets.length) {
       this.attributes.clipPathTargets.forEach((target) => {
-        dirtifyRenderable(target);
+        target.emit(ElementEvent.BOUNDS_CHANGED, {});
         target.emit(ElementEvent.ATTRIBUTE_CHANGED, {
           attributeName: 'clipPath',
           oldValue: this,
