@@ -1,4 +1,4 @@
 ---
-title: Camera
+title: Plugin
 order: 10
 ---

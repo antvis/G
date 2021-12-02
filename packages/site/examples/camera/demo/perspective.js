@@ -74,6 +74,7 @@ const cameraConfig = {
   fov: 75,
   near: 0.1,
   far: 1000,
+  zoom: 1,
 };
 cameraFolder.add(cameraConfig, 'fov', 0, 180).onChange((fov) => {
   camera.setFov(fov);
@@ -83,5 +84,8 @@ cameraFolder.add(cameraConfig, 'near', 0, 600).onChange((near) => {
 });
 cameraFolder.add(cameraConfig, 'far', 0, 1000).onChange((far) => {
   camera.setFar(far);
+});
+cameraFolder.add(cameraConfig, 'zoom', 0, 10).onChange((zoom) => {
+  camera.setZoom(zoom);
 });
 cameraFolder.open();

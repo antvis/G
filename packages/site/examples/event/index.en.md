@@ -1,4 +1,4 @@
 ---
-title: GPGPU
+title: Event
 order: 1
 ---

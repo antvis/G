@@ -2,7 +2,7 @@ import { EventEmitter } from 'eventemitter3';
 import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
 import { Landmark } from './Landmark';
 import { Frustum } from '../shapes';
-import { createVec3, getAngle } from '../utils/math';
+import { createVec3, getAngle, makePerspective } from '../utils/math';
 import { requestAnimationFrame, cancelAnimationFrame } from '../utils/raf';
 
 export const DefaultCamera = 'DefaultCamera';
@@ -398,29 +398,24 @@ export class Camera extends EventEmitter {
     this.far = far;
     this.aspect = aspect;
 
-    // let top = this.near * Math.tan(DEG_2_RAD * 0.5 * this.fov) / this.zoom;
-    // let height = 2 * top;
-    // let width = this.aspect * height;
-    // let left = -0.5 * width;
+    let top = (this.near * Math.tan(DEG_2_RAD * 0.5 * this.fov)) / this.zoom;
+    let height = 2 * top;
+    let width = this.aspect * height;
+    let left = -0.5 * width;
 
-    // if (this.view !== undefined && this.view.enabled) {
-    //   const fullWidth = this.view.fullWidth;
-    //   const fullHeight = this.view.fullHeight;
+    if (this.view !== undefined && this.view.enabled) {
+      const fullWidth = this.view.fullWidth;
+      const fullHeight = this.view.fullHeight;
 
-    //   left += this.view.offsetX * width / fullWidth;
-    //   top -= this.view.offsetY * height / fullHeight;
-    //   width *= this.view.width / fullWidth;
-    //   height *= this.view.height / fullHeight;
-    // }
+      left += (this.view.offsetX * width) / fullWidth;
+      top -= (this.view.offsetY * height) / fullHeight;
+      width *= this.view.width / fullWidth;
+      height *= this.view.height / fullHeight;
+    }
 
     // flip Y
-    mat4.perspective(
-      this.projectionMatrix,
-      -this.fov * DEG_2_RAD,
-      -this.aspect,
-      this.near,
-      this.far,
-    );
+    makePerspective(this.projectionMatrix, left, left + width, top - height, top, near, this.far);
+
     mat4.invert(this.projectionMatrixInverse, this.projectionMatrix);
     this.emit(CAMERA_EVENT.Updated);
     return this;

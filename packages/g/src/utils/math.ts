@@ -144,3 +144,39 @@ export function fromRotationTranslationScale(
   const sin = Math.sin(rotation);
   return mat3.fromValues(scaleX * cos, scaleY * sin, 0, -scaleX * sin, scaleY * cos, 0, x, y, 1);
 }
+
+export function makePerspective(
+  out: mat4,
+  left: number,
+  right: number,
+  top: number,
+  bottom: number,
+  near: number,
+  far: number,
+) {
+  const x = (2 * near) / (right - left);
+  const y = (2 * near) / (top - bottom);
+
+  const a = (right + left) / (right - left);
+  const b = (top + bottom) / (top - bottom);
+  const c = -(far + near) / (far - near);
+  const d = (-2 * far * near) / (far - near);
+
+  out[0] = x;
+  out[1] = 0;
+  out[2] = 0;
+  out[3] = 0;
+  out[4] = 0;
+  out[5] = y;
+  out[6] = 0;
+  out[7] = 0;
+  out[8] = a;
+  out[9] = b;
+  out[10] = c;
+  out[11] = -1;
+  out[12] = 0;
+  out[13] = 0;
+  out[14] = d;
+  out[15] = 0;
+  return out;
+}

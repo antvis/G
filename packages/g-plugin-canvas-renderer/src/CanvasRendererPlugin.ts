@@ -369,6 +369,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         generatePath(context, object.parsedStyle);
         if (
           !this.enableBatch &&
+          object.nodeName !== SHAPE.Line &&
           object.nodeName !== SHAPE.Path &&
           object.nodeName !== SHAPE.Polyline
         ) {
@@ -565,14 +566,21 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       fill,
       opacity,
       lineDash,
+      lineDashOffset,
       filter,
       shadowColor,
       shadowBlur,
       shadowOffsetX,
       shadowOffsetY,
     } = object.parsedStyle;
+    // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
     if (lineDash && isArray(lineDash)) {
       context.setLineDash(lineDash);
+    }
+
+    // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
+    if (!isNil(lineDashOffset)) {
+      context.lineDashOffset = lineDashOffset;
     }
 
     if (!isNil(opacity)) {

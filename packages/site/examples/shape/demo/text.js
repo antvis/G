@@ -130,6 +130,7 @@ const fillStrokeConfig = {
   strokeOpacity: 1,
   lineWidth: 5,
   lineJoin: 'miter',
+  visible: true,
 };
 fillStrokeFolder.addColor(fillStrokeConfig, 'fill').onChange((color) => {
   text.attr('fill', color);
@@ -150,6 +151,15 @@ fillStrokeFolder
   });
 fillStrokeFolder.add(fillStrokeConfig, 'strokeOpacity', 0, 1).onChange((strokeOpacity) => {
   text.attr('strokeOpacity', strokeOpacity);
+});
+fillStrokeFolder.add(fillStrokeConfig, 'visible').onChange((visible) => {
+  if (visible) {
+    text.style.visibility = 'visible';
+    // text.show();
+  } else {
+    text.style.visibility = 'hidden';
+    // text.hide();
+  }
 });
 
 const layoutFolder = gui.addFolder('layout');

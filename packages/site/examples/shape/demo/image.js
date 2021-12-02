@@ -69,27 +69,28 @@ const config = {
   anchorX: 0,
   anchorY: 0,
   src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+  visible: true,
 };
 imageFolder.add(config, 'x', 0, 400).onChange((x) => {
-  image.attr('x', x);
+  image.style.x = x;
 });
 imageFolder.add(config, 'y', 0, 400).onChange((y) => {
-  image.attr('y', y);
+  image.style.y = y;
 });
 imageFolder.add(config, 'width', 0, 400).onChange((width) => {
-  image.attr('width', width);
+  image.style.width = width;
 });
 imageFolder.add(config, 'height', 0, 400).onChange((height) => {
-  image.attr('height', height);
+  image.style.height = height;
 });
 imageFolder.add(config, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
-  image.attr('anchor', [anchorX, config.anchorY]);
+  image.style.anchor = [anchorX, config.anchorY];
 });
 imageFolder.add(config, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
-  image.attr('anchor', [config.anchorX, anchorY]);
+  image.style.anchor = [config.anchorX, anchorY];
 });
 imageFolder.add(config, 'opacity', 0, 1, 0.1).onChange((opacity) => {
-  image.attr('opacity', opacity);
+  image.style.opacity = opacity;
 });
 imageFolder
   .add(config, 'src', [
@@ -97,6 +98,15 @@ imageFolder
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8eoKRbfOwgAAAAAAAAAAAABkARQnAQ',
   ])
   .onChange((src) => {
-    image.attr('img', src);
+    image.style.img = src;
   });
+imageFolder.add(config, 'visible').onChange((visible) => {
+  if (visible) {
+    image.style.visibility = 'visible';
+    // image.show();
+  } else {
+    image.style.visibility = 'hidden';
+    // image.hide();
+  }
+});
 imageFolder.open();
