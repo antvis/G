@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgpu-compiler",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.1",
   "description": "A compiler transpiling *.g to GLSL/WGSL",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -49,8 +49,8 @@
     "@antv/util": "^2.0.13"
   },
   "peerDependencies": {
-    "@antv/g": "next",
-    "@antv/g-plugin-gpgpu": "^1.0.0-alpha.36",
+    "@antv/g": "^1.0.1",
+    "@antv/g-plugin-gpgpu": "^1.0.1",
     "mana-syringe": "^0.2.2"
   },
   "scripts": {

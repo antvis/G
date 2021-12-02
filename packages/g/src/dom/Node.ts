@@ -1,4 +1,4 @@
-import { EventTarget } from './eventTarget';
+import { EventTarget } from './EventTarget';
 import type {
   IEventTarget,
   IElement,
