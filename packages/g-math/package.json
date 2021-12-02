@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-math",
-  "version": "1.0.0-alpha.12",
+  "version": "1.0.1",
   "description": "Geometry util",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -34,5 +34,6 @@
   "devDependencies": {
     "@types/jest": "^25.0.0"
   },
-  "homepage": "https://github.com/antvis/g#readme"
+  "homepage": "https://github.com/antvis/g#readme",
+  "gitHead": "d09726ac85b8738d53c97002a98848b4a450bfcd"
 }

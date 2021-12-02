@@ -16,5 +16,5 @@ export type SpreadsheetOptions = {
    * // todo 是否需要开启？开始之后包大小增加一倍
    * 渲染器
    */
-  renderer?: 'canvas' | 'svg';
+  renderer?: 'canvas' | 'svg' | 'webgl';
 } & SheetData;

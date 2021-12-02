@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-svg-picker",
-  "version": "1.0.0-alpha.37",
+  "version": "1.0.1",
   "description": "A G plugin for picking in SVG",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -35,12 +35,13 @@
     "@types/jest": "^25.0.0"
   },
   "peerDependencies": {
-    "@antv/g": "next",
-    "@antv/g-plugin-svg-renderer": "next",
+    "@antv/g": "^1.0.1",
+    "@antv/g-plugin-svg-renderer": "^1.0.1",
     "mana-syringe": "^0.2.2"
   },
   "scripts": {
     "umd": "webpack"
   },
-  "homepage": "https://github.com/antvis/g#readme"
+  "homepage": "https://github.com/antvis/g#readme",
+  "gitHead": "d09726ac85b8738d53c97002a98848b4a450bfcd"
 }

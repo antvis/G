@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "1.0.0-alpha.37",
+  "version": "5.0.1",
   "description": "A core module including ECS and DI container.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -49,5 +49,6 @@
   },
   "scripts": {
     "umd": "webpack"
-  }
+  },
+  "gitHead": "d09726ac85b8738d53c97002a98848b4a450bfcd"
 }

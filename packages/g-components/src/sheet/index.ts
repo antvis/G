@@ -57,8 +57,12 @@ export class Spreadsheet {
       container: this.container,
       width,
       height,
-      renderer: renderer === 'svg' ? new SVGRender() : new CanvasRender(),
-      // renderer: new WebGLRender(),
+      renderer:
+        renderer === 'svg'
+          ? new SVGRender()
+          : renderer === 'webgl'
+          ? new WebGLRender()
+          : new CanvasRender(),
     });
   }
 
