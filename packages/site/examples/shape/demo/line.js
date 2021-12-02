@@ -115,12 +115,21 @@ const lineConfig = {
   y1: 100,
   x2: 400,
   y2: 100,
+  lineDash: 0,
+  lineDashOffset: 0,
+  visible: true,
 };
 lineFolder.add(lineConfig, 'lineJoin', ['miter', 'round', 'bevel']).onChange((lineJoin) => {
   line1.style.lineJoin = lineJoin;
 });
 lineFolder.add(lineConfig, 'lineCap', ['butt', 'round', 'square']).onChange((lineCap) => {
   line1.style.lineCap = lineCap;
+});
+lineFolder.add(lineConfig, 'lineDash', 0, 100).onChange((lineDash) => {
+  line1.style.lineDash = [lineDash];
+});
+lineFolder.add(lineConfig, 'lineDashOffset', 0, 100).onChange((lineDashOffset) => {
+  line1.style.lineDashOffset = lineDashOffset;
 });
 lineFolder.add(lineConfig, 'x1', 0, 400).onChange((x1) => {
   line1.style.x1 = x1;
@@ -148,5 +157,14 @@ lineFolder.add(lineConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
 });
 lineFolder.add(lineConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
   line1.attr('anchor', [lineConfig.anchorX, anchorY]);
+});
+lineFolder.add(lineConfig, 'visible').onChange((visible) => {
+  if (visible) {
+    line1.style.visibility = 'visible';
+    // line1.show();
+  } else {
+    line1.style.visibility = 'hidden';
+    // line1.hide();
+  }
 });
 lineFolder.open();

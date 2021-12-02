@@ -614,6 +614,8 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 **说明**：一个数组，描述交替绘制的线段和间距。可参考：https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
 
+目前仅支持形如：`[dash, gap]` 的形式，如果数组中仅有一个元素，即 `[dash]` 等价于 `[dash, dash]`。
+
 对它应用动画可以实现[笔迹动画效果](/zh/docs/api/animation#笔迹动画)。
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ)

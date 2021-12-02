@@ -52,6 +52,7 @@ import {
   mergeNumberLists,
   parseFilter,
   updateAnchor,
+  parseLineDash,
 } from './property-handlers';
 
 export const globalContainer = GlobalContainer;
@@ -186,8 +187,14 @@ export const containerModule = Module((register) => {
     clampedMergeNumbers(0, Infinity),
     undefined,
   );
-  // @ts-ignore
-  addPropertiesHandler<number[], number[]>(['lineDash'], undefined, mergeNumberLists, undefined);
+
+  addPropertiesHandler<number[], number[]>(
+    ['lineDash'],
+    parseLineDash,
+    // @ts-ignore
+    mergeNumberLists,
+    undefined,
+  );
   addPropertiesHandler<number, number>(
     ['x1', 'x2', 'y1', 'y2', 'lineDashOffset', 'shadowOffsetX', 'shadowOffsetY'],
     parseNumber,

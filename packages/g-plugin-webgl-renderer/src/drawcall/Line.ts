@@ -1,17 +1,29 @@
 /**
  * @see https://www.khronos.org/assets/uploads/developers/presentations/Crazy_Panda_How_to_draw_lines_in_WebGL.pdf
  */
-import { inject, injectable } from 'mana-syringe';
-import { Line, LINE_CAP, LINE_JOIN, Path, Polyline } from '@antv/g';
+import { injectable } from 'mana-syringe';
+import {
+  LINE_CAP,
+  LINE_JOIN,
+  Path,
+  Polyline,
+  DisplayObject,
+  PARSED_COLOR_TYPE,
+  SHAPE,
+  Tuple4Number,
+} from '@antv/g';
 import earcut from 'earcut';
 import { fillMatrix4x4, fillVec4 } from '../render/utils';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RenderInst } from '../render/RenderInst';
-import { DisplayObject, PARSED_COLOR_TYPE, SHAPE, Tuple4Number } from '@antv/g';
 import { DeviceProgram } from '../render/DeviceProgram';
 import { Batch } from './Batch';
 import { ShapeRenderer } from '../tokens';
 import { Renderable3D } from '../components/Renderable3D';
+import { RenderInstList } from '../render';
+import { Geometry } from '../Geometry';
+import { isNil } from '@antv/util';
+import { FillRenderer } from './Fill';
 
 export enum JOINT_TYPE {
   NONE = 0,
@@ -62,6 +74,8 @@ class LineProgram extends DeviceProgram {
     float u_Dash;
     float u_Gap;
     vec2 u_Anchor;
+    float u_DashOffset;
+    float u_Visible;
   };
   `;
 
@@ -72,7 +86,7 @@ class LineProgram extends DeviceProgram {
   layout(location = ${LineProgram.a_Next}) attribute vec2 a_Next;
   layout(location = ${LineProgram.a_VertexJoint}) attribute float a_VertexJoint;
   layout(location = ${LineProgram.a_VertexNum}) attribute float a_VertexNum;
-  // layout(location = ${LineProgram.a_Travel}) attribute float a_Travel;
+  layout(location = ${LineProgram.a_Travel}) attribute float a_Travel;
 
   const float FILL = 1.0;
   const float BEVEL = 4.0;
@@ -87,12 +101,12 @@ class LineProgram extends DeviceProgram {
   const float CAP_ROUND = 3.0;
   const float CAP_BUTT2 = 4.0;
 
-  out vec4 v_Distance;
-  out vec4 v_Arc;
-  out float v_Type;
-  // out float v_Travel;
+  varying vec4 v_Distance;
+  varying vec4 v_Arc;
+  varying float v_Type;
+  varying float v_Travel;
 
-  out vec4 v_PickingResult;
+  varying vec4 v_PickingResult;
   #define COLOR_SCALE 1. / 255.
   void setPickingColor(vec3 pickingColor) {
     v_PickingResult.rgb = pickingColor * COLOR_SCALE;
@@ -373,7 +387,7 @@ class LineProgram extends DeviceProgram {
       pos += base;
       v_Distance = vec4(dy, dy2, dy3, lineWidth) * u_DevicePixelRatio;
       v_Arc = v_Arc * u_DevicePixelRatio;
-      // vTravel = a_Travel * lineWidth + dot(pos - pointA, vec2(-norm.y, norm.x));
+      v_Travel = a_Travel + dot(pos - pointA, vec2(-norm.y, norm.x));
     }
 
     pos += u_Anchor;
@@ -385,14 +399,18 @@ class LineProgram extends DeviceProgram {
   `;
 
   frag: string = `
-in vec4 v_Distance;
-in vec4 v_Arc;
-in float v_Type;
-// int float v_Travel;
+varying vec4 v_Distance;
+varying vec4 v_Arc;
+varying float v_Type;
+varying float v_Travel;
 
-in vec4 v_PickingResult;
+varying vec4 v_PickingResult;
 
 void main(){
+  if (u_Visible < 1.0) {
+    discard;
+  }
+
   gbuf_picking = vec4(v_PickingResult.rgb, 1.0);
 
   float alpha = 1.0;
@@ -436,12 +454,12 @@ void main(){
     alpha *= max(min(v_Distance.z + 0.5, 1.0), 0.0);
   }
 
-  // if (u_Dash + u_Gap > 1.0) {
-  //   float travel = mod(v_Travel + u_Gap * 0.5, u_Dash + u_Gap) - (u_Gap * 0.5);
-  //   float left = max(travel - 0.5, -0.5);
-  //   float right = min(travel + 0.5, u_Gap + 0.5);
-  //   alpha *= max(0.0, right - left);
-  // }
+  if (u_Dash + u_Gap > 1.0) {
+    float travel = mod(v_Travel + u_Gap * 0.5 + u_DashOffset, u_Dash + u_Gap) - (u_Gap * 0.5);
+    float left = max(travel - 0.5, -0.5);
+    float right = min(travel + 0.5, u_Gap + 0.5);
+    alpha *= max(0.0, right - left);
+  }
 
   gl_FragColor = u_StrokeColor * alpha;
   gl_FragColor.a = gl_FragColor.a * u_StrokeOpacity;
@@ -461,6 +479,11 @@ export class LineRenderer extends Batch {
 
   instanced = false;
 
+  needFill = false;
+  triangles: number[];
+
+  private fillRenderer: FillRenderer;
+
   validate(object: DisplayObject) {
     return false;
   }
@@ -469,8 +492,17 @@ export class LineRenderer extends Batch {
     const geometry = this.geometry;
     const object = this.objects[0];
 
-    // TODO: use triangles for Polygon
-    let { triangles, pointsBuffer, instanceCount } = this.updateBuffer(object);
+    // use triangles for Polygon
+    let { triangles, pointsBuffer, travelBuffer, instanceCount } = this.updateBuffer(object);
+    if (triangles && triangles.length) {
+      this.needFill = true;
+      this.triangles = triangles;
+
+      // create a submesh
+      // this.fillRenderer = new FillRenderer();
+      // this.fillRenderer.init(this.device, this.renderingService);
+      // this.fillRenderer.geometry.setIndices();
+    }
 
     geometry.setVertexBuffer({
       bufferIndex: 0,
@@ -530,11 +562,37 @@ export class LineRenderer extends Batch {
       ],
       data: new Float32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]),
     });
+    geometry.setVertexBuffer({
+      bufferIndex: 2,
+      byteStride: 4 * 1,
+      frequency: VertexBufferFrequency.PerInstance,
+      attributes: [
+        {
+          format: Format.F32_R,
+          bufferByteOffset: 4 * 0,
+          byteStride: 4 * 1,
+          location: LineProgram.a_Travel,
+          divisor: 1,
+        },
+      ],
+      data: new Float32Array(travelBuffer),
+    });
 
     geometry.vertexCount = 15;
     geometry.maxInstancedCount = instanceCount;
 
     geometry.setIndices(new Uint32Array([0, 2, 1, 0, 3, 2, 4, 6, 5, 4, 7, 6, 4, 7, 8]));
+  }
+
+  /**
+   * use another draw call for fill
+   */
+  afterRender(list: RenderInstList) {
+    const { fill } = this.instance.parsedStyle;
+    if (this.needFill) {
+      // console.log(fill, this.triangles);
+      // this.fillRenderer.render(list);
+    }
   }
 
   updateAttribute(object: DisplayObject, name: string, value: any): void {
@@ -550,7 +608,6 @@ export class LineRenderer extends Batch {
       (object.nodeName === SHAPE.Path && name === 'path')
     ) {
       this.recreateGeometry = true;
-    } else if (name === 'visibility') {
     } else if (name === 'zIndex') {
     }
   }
@@ -558,8 +615,19 @@ export class LineRenderer extends Batch {
   uploadUBO(renderInst: RenderInst): void {
     const instance = this.objects[0];
 
-    const { fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, anchor, zIndex } =
-      instance.parsedStyle;
+    const {
+      fill,
+      stroke,
+      opacity,
+      fillOpacity,
+      strokeOpacity,
+      lineWidth,
+      anchor,
+      lineDash = [],
+      lineDashOffset = 0,
+      zIndex,
+      visibility,
+    } = instance.parsedStyle;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (fill?.type === PARSED_COLOR_TYPE.Constant) {
       fillColor = fill.value;
@@ -581,7 +649,7 @@ export class LineRenderer extends Batch {
     }
 
     // Upload to our UBO.
-    let offs = renderInst.allocateUniformBuffer(LineProgram.ub_ObjectParams, 16 + 4 * 6);
+    let offs = renderInst.allocateUniformBuffer(LineProgram.ub_ObjectParams, 16 + 4 * 7);
     const d = renderInst.mapUniformBufferF32(LineProgram.ub_ObjectParams);
     offs += fillMatrix4x4(d, offs, instance.getWorldTransform());
     offs += fillVec4(d, offs, ...fillColor);
@@ -589,7 +657,8 @@ export class LineRenderer extends Batch {
     offs += fillVec4(d, offs, lineWidth, opacity, fillOpacity, strokeOpacity);
     offs += fillVec4(d, offs, 1, 5, 1, 0.5); // u_Expand u_MiterLimit u_ScaleMode u_Alignment
     offs += fillVec4(d, offs, ...encodedPickingColor);
-    offs += fillVec4(d, offs, 5, 8, translateX, translateY); // u_Dash u_Gap u_Anchor
+    offs += fillVec4(d, offs, lineDash[0] || 0, lineDash[1] || 0, translateX, translateY); // u_Dash u_Gap u_Anchor
+    offs += fillVec4(d, offs, lineDashOffset, visibility === 'visible' ? 1 : 0); // u_DashOffset u_Visible
 
     // keep both faces
     renderInst.setMegaStateFlags({
@@ -598,15 +667,11 @@ export class LineRenderer extends Batch {
   }
 
   private updateBuffer(object: DisplayObject) {
-    const { lineCap, lineJoin, defX, defY } = object.parsedStyle;
+    const { lineCap, lineJoin, defX, defY, lineDash } = object.parsedStyle;
 
     let points: number[] = [];
     let triangles: number[] = [];
-    if (object.nodeName === SHAPE.Line) {
-      const line = object as Line;
-      const { x1, y1, x2, y2 } = line.parsedStyle;
-      points = [x1 - defX, y1 - defY, x2 - defX, y2 - defY];
-    } else if (object.nodeName === SHAPE.Polyline || object.nodeName === SHAPE.Polygon) {
+    if (object.nodeName === SHAPE.Polyline || object.nodeName === SHAPE.Polygon) {
       points = (object as Polyline).parsedStyle.points.points.reduce((prev, cur) => {
         prev.push(cur[0] - defX, cur[1] - defY);
         return prev;
@@ -660,8 +725,23 @@ export class LineRenderer extends Batch {
 
     let j = (Math.round(0 / stridePoints) + 2) * strideFloats;
 
+    const needDash = !isNil(lineDash);
+    let dist = 0;
     const pointsBuffer = [];
+    const travelBuffer = [];
     for (let i = 0; i < points.length; i += stridePoints) {
+      // calc travel
+      if (needDash) {
+        if (i > 1) {
+          dist += Math.sqrt(
+            Math.pow(points[i] - points[i - 2], 2) + Math.pow(points[i + 1] - points[i + 1 - 2], 2),
+          );
+        }
+        travelBuffer.push(0, dist, dist, 0, dist, dist, dist, dist, dist);
+      } else {
+        travelBuffer.push(0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+
       pointsBuffer[j++] = points[i];
       pointsBuffer[j++] = points[i + 1];
       pointsBuffer[j] = jointType;
@@ -689,6 +769,7 @@ export class LineRenderer extends Batch {
 
     return {
       pointsBuffer,
+      travelBuffer,
       triangles,
       instanceCount,
     };

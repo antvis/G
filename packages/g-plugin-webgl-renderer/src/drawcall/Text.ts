@@ -44,8 +44,8 @@ class TextProgram extends DeviceProgram {
   layout(location = ${TextProgram.a_Tex}) attribute vec2 a_Tex;
   layout(location = ${TextProgram.a_Offset}) attribute vec2 a_Offset;
 
-  out vec2 v_UV;
-  out float v_GammaScale;
+  varying vec2 v_UV;
+  varying float v_GammaScale;
   
   void main() {
     ${Batch.ShaderLibrary.Vert}
@@ -60,8 +60,8 @@ class TextProgram extends DeviceProgram {
   `;
 
   frag: string = `
-  in vec2 v_UV;
-  in float v_GammaScale;
+  varying vec2 v_UV;
+  varying float v_GammaScale;
 
   ${Batch.ShaderLibrary.FragDeclaration}
 
@@ -142,9 +142,18 @@ export class TextRenderer extends Batch {
       name === 'lineHeight' ||
       name === 'wordWrap' ||
       name === 'textAlign' ||
-      name === 'modelMatrix'
+      name === 'modelMatrix' ||
+      name === 'visibility'
     ) {
       this.recreateGeometry = true;
+      // } else if (name === 'visibility') {
+      //   const { visibility } = object.parsedStyle;
+      //   this.geometry.updateVertexBuffer(
+      //     Batch.CommonBufferIndex,
+      //     AttributeLocation.a_StylePacked2,
+      //     0,
+      //     new Uint8Array(new Float32Array([visibility === 'visible' ? 1 : 0]).buffer),
+      //   );
     } else if (name === 'zIndex') {
       // const encodedPickingColor = object.entity.getComponent(Renderable3D).encodedPickingColor;
       // this.geometry.updateVertexBuffer(

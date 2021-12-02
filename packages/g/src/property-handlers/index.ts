@@ -16,3 +16,4 @@ export * from './dimension';
 export * from './path';
 export * from './points';
 export * from './filter';
+export * from './lineDash';

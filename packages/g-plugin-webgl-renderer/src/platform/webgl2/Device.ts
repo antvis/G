@@ -311,8 +311,9 @@ export class Device_GL implements SwapChain, Device {
     this.currentMegaState.depthWrite = false;
     this.currentMegaState.attachmentsState[0].channelWriteMask = ChannelWriteMask.AllChannels;
 
-    // We always have depth test enabled.
-    gl.enable(gl.DEPTH_TEST);
+    // TODO: We always have depth test enabled.
+    // gl.enable(gl.DEPTH_TEST);
+    gl.disable(gl.DEPTH_TEST);
 
     this.checkLimits();
 

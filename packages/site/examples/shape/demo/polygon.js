@@ -76,26 +76,34 @@ const polygonConfig = {
   strokeOpacity: 1,
   anchorX: 0,
   anchorY: 0,
+  lineDash: 0,
+  lineDashOffset: 0,
 };
 polygonFolder.addColor(polygonConfig, 'fill').onChange((color) => {
-  polygon.attr('fill', color);
+  polygon.style.fill = color;
 });
 polygonFolder.addColor(polygonConfig, 'stroke').onChange((color) => {
-  polygon.attr('stroke', color);
+  polygon.style.stroke = color;
 });
 polygonFolder.add(polygonConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
-  polygon.attr('lineWidth', lineWidth);
+  polygon.style.lineWidth = lineWidth;
+});
+polygonFolder.add(polygonConfig, 'lineDash', 0, 100).onChange((lineDash) => {
+  polygon.style.lineDash = [lineDash];
+});
+polygonFolder.add(polygonConfig, 'lineDashOffset', 0, 100).onChange((lineDashOffset) => {
+  polygon.style.lineDashOffset = lineDashOffset;
 });
 polygonFolder.add(polygonConfig, 'fillOpacity', 0, 1, 0.1).onChange((opacity) => {
-  polygon.attr('fillOpacity', opacity);
+  polygon.style.fillOpacity = opacity;
 });
 polygonFolder.add(polygonConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
-  polygon.attr('strokeOpacity', opacity);
+  polygon.style.strokeOpacity = opacity;
 });
 polygonFolder.add(polygonConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
-  polygon.attr('anchor', [anchorX, polygonConfig.anchorY]);
+  polygon.style.anchor = [anchorX, polygonConfig.anchorY];
 });
 polygonFolder.add(polygonConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
-  polygon.attr('anchor', [polygonConfig.anchorX, anchorY]);
+  polygon.style.anchor = [polygonConfig.anchorX, anchorY];
 });
 polygonFolder.open();

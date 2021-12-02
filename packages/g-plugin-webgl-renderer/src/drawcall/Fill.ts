@@ -1,5 +1,12 @@
-import { injectable } from 'mana-syringe';
-import { DisplayObject, Image, Renderable, SHAPE } from '@antv/g';
+import { Circle, CircleStyleProps, DisplayObject, ContextService, SHAPE, Image } from '@antv/g';
+import { inject, injectable } from 'mana-syringe';
+import { fillVec4 } from '../render/utils';
+import { RenderInst } from '../render/RenderInst';
+import { DeviceProgram } from '../render/DeviceProgram';
+import { Batch, AttributeLocation } from './Batch';
+import { Program_GL } from '../platform/webgl2/Program';
+import { ShapeRenderer } from '../tokens';
+import { TextureMapping } from '../render/TextureHolder';
 import {
   Format,
   makeTextureDescriptor2D,
@@ -8,13 +15,8 @@ import {
   VertexBufferFrequency,
   WrapMode,
 } from '../platform';
-import { RenderInst } from '../render/RenderInst';
-import { DeviceProgram } from '../render/DeviceProgram';
-import { Batch, AttributeLocation } from './Batch';
-import { ShapeRenderer } from '../tokens';
-import { TextureMapping } from '../render/TextureHolder';
 
-class ImageProgram extends DeviceProgram {
+class FillProgram extends DeviceProgram {
   static a_Size = AttributeLocation.MAX;
   static a_Uv = AttributeLocation.MAX + 1;
 
@@ -26,10 +28,10 @@ class ImageProgram extends DeviceProgram {
 
   vert: string = `
   ${Batch.ShaderLibrary.VertDeclaration}
-  layout(location = ${ImageProgram.a_Size}) attribute vec2 a_Size;
+  layout(location = ${FillProgram.a_Size}) attribute vec2 a_Size;
 
   #ifdef USE_UV
-    layout(location = ${ImageProgram.a_Uv}) attribute vec2 a_Uv;
+    layout(location = ${FillProgram.a_Uv}) attribute vec2 a_Uv;
     varying vec2 v_Uv;
   #endif
   
@@ -61,18 +63,15 @@ class ImageProgram extends DeviceProgram {
   `;
 }
 
-@injectable({
-  token: [{ token: ShapeRenderer, named: SHAPE.Image }],
-})
-export class ImageRenderer extends Batch {
-  protected program = new ImageProgram();
+export class FillRenderer extends Batch {
+  protected program = new FillProgram();
 
   protected validate(object: DisplayObject<any, any>): boolean {
-    if (this.instance.nodeName === SHAPE.Image) {
-      if (this.instance.parsedStyle.img !== object.parsedStyle.img) {
-        return false;
-      }
-    }
+    // if (this.instance.nodeName === SHAPE.Image) {
+    //   if (this.instance.parsedStyle.img !== object.parsedStyle.img) {
+    //     return false;
+    //   }
+    // }
 
     return true;
   }
@@ -129,7 +128,7 @@ export class ImageRenderer extends Batch {
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: ImageProgram.a_Uv,
+          location: FillProgram.a_Uv,
         },
       ],
       data: new Float32Array(interleaved),
@@ -142,7 +141,7 @@ export class ImageRenderer extends Batch {
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: ImageProgram.a_Size,
+          location: FillProgram.a_Size,
         },
       ],
       data: new Float32Array(instanced),
@@ -157,28 +156,28 @@ export class ImageRenderer extends Batch {
     const image = object as Image;
     const { width, height, img } = image.parsedStyle;
 
-    if (name === 'width' || name === 'height') {
-      geometry.updateVertexBuffer(
-        2,
-        ImageProgram.a_Size,
-        index,
-        new Uint8Array(new Float32Array([width, height]).buffer),
-      );
-    } else if (name === 'img') {
-      this.mapping.texture = this.texturePool.getOrCreateTexture(
-        this.device,
-        img,
-        makeTextureDescriptor2D(Format.U8_RGBA_NORM, width, height, 1),
-        () => {
-          // need re-render
-          this.objects.forEach((object) => {
-            object.renderable.dirty = true;
+    // if (name === 'width' || name === 'height') {
+    //   geometry.updateVertexBuffer(
+    //     2,
+    //     ImageProgram.a_Size,
+    //     index,
+    //     new Uint8Array(new Float32Array([width, height]).buffer),
+    //   );
+    // } else if (name === 'img') {
+    //   this.mapping.texture = this.texturePool.getOrCreateTexture(
+    //     this.device,
+    //     img,
+    //     makeTextureDescriptor2D(Format.U8_RGBA_NORM, width, height, 1),
+    //     () => {
+    //       // need re-render
+    //       this.objects.forEach((object) => {
+    //         object.renderable.dirty = true;
 
-            this.renderingService.dirtify();
-          });
-        },
-      );
-    }
+    //         this.renderingService.dirtify();
+    //       });
+    //     },
+    //   );
+    // }
   }
 
   protected uploadUBO(renderInst: RenderInst): void {

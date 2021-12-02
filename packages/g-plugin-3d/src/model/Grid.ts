@@ -85,10 +85,9 @@ export class GridModelBuilder extends Batch {
   }
 
   uploadUBO(renderInst: RenderInst): void {
-    // renderInst.setMegaStateFlags({
-    //   depthWrite: true,
-    //   cullMode: CullMode.None,
-    // });
+    renderInst.setMegaStateFlags({
+      cullMode: CullMode.None,
+    });
     renderInst.setBindingLayouts([{ numUniformBuffers: 1, numSamplers: 0 }]);
   }
 

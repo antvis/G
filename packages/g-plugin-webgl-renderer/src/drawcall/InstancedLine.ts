@@ -8,11 +8,15 @@ import {
   Pattern,
   PolygonShape,
   Polyline,
+  DisplayObject,
+  PARSED_COLOR_TYPE,
+  Point,
+  SHAPE,
+  Tuple4Number,
 } from '@antv/g';
 import { fillMatrix4x4, fillVec4, makeSortKeyOpaque, RendererLayer } from '../render/utils';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RenderInst } from '../render/RenderInst';
-import { DisplayObject, PARSED_COLOR_TYPE, Point, SHAPE, Tuple4Number } from '@antv/g';
 import { DeviceProgram } from '../render/DeviceProgram';
 import { Batch, AttributeLocation } from './Batch';
 import { ShapeRenderer } from '../tokens';
@@ -59,10 +63,8 @@ export class InstancedLineProgram extends DeviceProgram {
     vec2 point = a_PointA + xBasis * a_Position.x + yBasis * u_StrokeWidth * a_Position.y;
     point = point - a_Anchor.xy * abs(xBasis);
 
-    // round
-    if (a_Cap > 1.0 && a_Cap <= 2.0) {
-
-    } else if (a_Cap > 2.0 && a_Cap <= 3.0) {
+    // round & square
+    if (a_Cap > 1.0) {
       point += sign(a_Position.x - 0.5) * normalize(xBasis) * vec2(u_StrokeWidth / 2.0);
     }
 
@@ -270,7 +272,7 @@ export class InstancedLineRenderer extends Batch {
   }
 
   private calcDash(line: Line) {
-    const { lineDash, lineDashOffset } = line.parsedStyle;
+    const { lineDash, lineDashOffset = 0 } = line.parsedStyle;
     const totalLength = line.getTotalLength();
     let dashOffset = 0;
     let dashSegmentPercent = 1;

@@ -82,11 +82,14 @@ const lineConfig = {
   lineWidth: 2,
   lineJoin: 'miter',
   lineCap: 'butt',
+  lineDash: 0,
+  lineDashOffset: 0,
   strokeOpacity: 1,
   anchorX: 0,
   anchorY: 0,
   firstPointX: 50,
   firstPointY: 50,
+  visible: true,
 };
 lineFolder.add(lineConfig, 'firstPointX', 0, 200).onChange((firstPointX) => {
   const newPoints = [...points];
@@ -110,6 +113,12 @@ lineFolder.add(lineConfig, 'lineJoin', ['miter', 'round', 'bevel']).onChange((li
 lineFolder.add(lineConfig, 'lineCap', ['butt', 'round', 'square']).onChange((lineCap) => {
   polyline.attr('lineCap', lineCap);
 });
+lineFolder.add(lineConfig, 'lineDash', 0, 100).onChange((lineDash) => {
+  polyline.style.lineDash = [lineDash];
+});
+lineFolder.add(lineConfig, 'lineDashOffset', 0, 100).onChange((lineDashOffset) => {
+  polyline.style.lineDashOffset = lineDashOffset;
+});
 lineFolder.add(lineConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
   polyline.attr('strokeOpacity', opacity);
 });
@@ -118,5 +127,14 @@ lineFolder.add(lineConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
 });
 lineFolder.add(lineConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
   polyline.attr('anchor', [lineConfig.anchorX, anchorY]);
+});
+lineFolder.add(lineConfig, 'visible').onChange((visible) => {
+  if (visible) {
+    polyline.style.visibility = 'visible';
+    // polyline.show();
+  } else {
+    polyline.style.visibility = 'hidden';
+    // polyline.hide();
+  }
 });
 lineFolder.open();
