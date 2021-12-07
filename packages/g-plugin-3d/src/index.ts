@@ -11,6 +11,7 @@ import { Module, Syringe } from 'mana-syringe';
 // import { Cube } from './Cube';
 // import { Sphere } from './Sphere';
 // import { Grid } from './Grid';
+export * from './geometries';
 
 // // TODO: provide more friendly API like `registerGeometry`
 // globalContainer.register(CubeUpdater);
