@@ -59,12 +59,6 @@ lib
 dist
 build
 
-# lock
-package-lock.json
-
-# yarn-lock
-yarn.lock
-
 # temp
 temp.diff
 .DS_Store

@@ -87,6 +87,15 @@ $ http-server -p 9090
 
 Open api.html on `localhost:9090/dev-docs/api.html`.
 
+### Run test cases
+
+Build and run test cases:
+
+```bash
+$ yarn build
+$ yarn test
+```
+
 <!-- GITCONTRIBUTOR_START -->
 
 ## Contributors

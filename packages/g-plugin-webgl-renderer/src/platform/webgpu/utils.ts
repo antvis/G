@@ -249,7 +249,9 @@ export function translateIndexFormat(format: Format | null): GPUIndexFormat | un
   else throw 'whoops';
 }
 
-export function translateVertexBufferFrequency(frequency: VertexBufferFrequency): GPUInputStepMode {
+export function translateVertexBufferFrequency(
+  frequency: VertexBufferFrequency,
+): GPUVertexStepMode {
   if (frequency === VertexBufferFrequency.PerVertex) return 'vertex';
   else if (frequency === VertexBufferFrequency.PerInstance) return 'instance';
   else throw 'whoops';
