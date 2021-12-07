@@ -125,7 +125,7 @@ export class Element<
     return child;
   }
 
-  insertBefore<T extends INode>(newChild: T, refChild: IElement | null): T {
+  insertBefore<T extends IChildNode, R extends IChildNode>(newChild: T, refChild: R | null): T {
     if (!refChild) {
       this.appendChild(newChild);
     } else {
@@ -135,14 +135,18 @@ export class Element<
     return newChild;
   }
 
-  replaceChild<T extends INode & IChildNode>(newChild: INode, oldChild: T, destroy?: boolean): T {
+  replaceChild<N extends IChildNode, T extends IChildNode>(
+    newChild: N,
+    oldChild: T,
+    destroy?: boolean,
+  ): T {
     const index = this.childNodes.indexOf(oldChild);
     this.removeChild(oldChild, destroy);
     this.appendChild(newChild, index);
     return oldChild;
   }
 
-  removeChild<T extends INode>(child: T, destroy = true): T {
+  removeChild<T extends IChildNode>(child: T, destroy = true): T {
     // should emit on itself before detach
     child.emit(ElementEvent.REMOVED, {
       parent: this,
@@ -232,7 +236,7 @@ export class Element<
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/after
    */
-  after(...nodes: IElement[]) {
+  after(...nodes: IChildNode[]) {
     if (this.parentNode) {
       const index = this.parentNode.childNodes.indexOf(this);
       nodes.forEach((node, i) => this.parentNode?.appendChild(node!, index + i + 1));
@@ -242,7 +246,7 @@ export class Element<
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/before
    */
-  before(...nodes: IElement[]) {
+  before(...nodes: IChildNode[]) {
     if (this.parentNode) {
       const index = this.parentNode.childNodes.indexOf(this);
       const [first, ...rest] = nodes;
@@ -254,7 +258,7 @@ export class Element<
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceWith
    */
-  replaceWith(...nodes: IElement[]) {
+  replaceWith(...nodes: IChildNode[]) {
     this.after(...nodes);
     this.remove();
   }
@@ -262,21 +266,21 @@ export class Element<
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/append
    */
-  append(...nodes: IElement[]) {
+  append(...nodes: IChildNode[]) {
     nodes.forEach((node) => this.appendChild(node));
   }
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/prepend
    */
-  prepend(...nodes: IElement[]) {
+  prepend(...nodes: IChildNode[]) {
     nodes.forEach((node, i) => this.appendChild(node, i));
   }
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceChildren
    */
-  replaceChildren(...nodes: IElement[]) {
+  replaceChildren(...nodes: IChildNode[]) {
     while (this.childNodes.length && this.firstChild) {
       this.removeChild(this.firstChild);
     }

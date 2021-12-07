@@ -69,7 +69,7 @@ export class Document extends Node implements IDocument {
     return new clazz(options) as unknown as T;
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  cloneNode(deep?: boolean): INode {
+  cloneNode(deep?: boolean): this {
     throw new Error('Method not implemented.');
   }
   destroy(): void {
