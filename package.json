@@ -57,7 +57,7 @@
     "cross-env": "^6.0.3",
     "eslint": "^7.28.0",
     "eslint-plugin-jest": "24.3.6",
-    "father-build": "^1.20.4",
+    "father": "^2.30.13",
     "git-contributor": "~1.0.8",
     "husky": "^4.2.5",
     "is-ci": "2.0.0",
