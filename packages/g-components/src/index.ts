@@ -1,2 +1,2 @@
 export { Arrow } from './Arrow';
-export { Spreadsheet } from './sheet';
+// export { Spreadsheet } from './sheet';

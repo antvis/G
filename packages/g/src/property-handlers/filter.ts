@@ -40,7 +40,7 @@ export function parseFilter(filterStr: string = ''): ParsedFilterStyleProperty[]
     if (supportedFilters.indexOf(match[1]) > -1) {
       result.push({
         name: match[1],
-        params: match[2].split(' ').map((p) => parseParam(p) || parseColor(p, null)),
+        params: match[2].split(' ').map((p) => parseParam(p) || parseColor(p)),
       });
     }
 

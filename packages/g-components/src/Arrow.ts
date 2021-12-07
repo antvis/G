@@ -72,6 +72,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     return this.endHead;
   }
 
+  // @ts-ignore
   attributeChangedCallback<Key extends keyof ArrowStyleProps>(
     name: Key,
     oldValue: ArrowStyleProps[Key],
