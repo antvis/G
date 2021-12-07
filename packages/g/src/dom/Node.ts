@@ -124,44 +124,47 @@ export abstract class Node extends EventTarget implements INode {
   get parentElement(): IElement | null {
     return null;
   }
-  get nextSibling(): (IChildNode & INode) | null {
+  get nextSibling(): IChildNode | null {
     return null;
   }
-  get previousSibling(): (IChildNode & INode) | null {
+  get previousSibling(): IChildNode | null {
     return null;
   }
-  get firstChild(): (IChildNode & INode) | null {
+  get firstChild(): IChildNode | null {
     return this.childNodes.length > 0 ? this.childNodes[0] : null;
   }
-  get lastChild(): (IChildNode & INode) | null {
+  get lastChild(): IChildNode | null {
     return this.childNodes.length > 0 ? this.childNodes[this.childNodes.length - 1] : null;
   }
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode
    */
-  abstract cloneNode(deep?: boolean): INode;
+  abstract cloneNode(deep?: boolean): this;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild
    */
-  abstract appendChild<T extends INode>(newChild: T, index?: number): T;
+  abstract appendChild<T extends IChildNode>(newChild: T, index?: number): T;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore
    */
-  abstract insertBefore<T extends INode>(newChild: T, refChild: INode | null): T;
+  abstract insertBefore<T extends IChildNode, R extends IChildNode>(
+    newChild: T,
+    refChild: R | null,
+  ): T;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/removeChild
    */
-  abstract removeChild<T extends INode>(child: T, destroy?: boolean): T;
+  abstract removeChild<T extends IChildNode>(child: T, destroy?: boolean): T;
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/replaceChild
    */
-  abstract replaceChild<T extends INode & IChildNode>(
-    newChild: INode,
+  abstract replaceChild<N extends IChildNode, T extends IChildNode>(
+    newChild: N,
     oldChild: T,
     destroy?: boolean,
   ): T;
@@ -172,10 +175,10 @@ export abstract class Node extends EventTarget implements INode {
    * @deprecated
    * @alias contains
    */
-  contain(other: INode | null) {
+  contain<T extends IChildNode>(other: T | null) {
     return this.contains(other);
   }
-  contains(other: INode | null): boolean {
+  contains<T extends IChildNode>(other: T | null): boolean {
     // the node itself, one of its direct children
     let tmp: INode | null = other;
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Node/contains

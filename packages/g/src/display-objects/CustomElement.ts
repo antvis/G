@@ -3,25 +3,6 @@ import type { DisplayObjectConfig } from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
 import type { FederatedEvent } from '../dom/FederatedEvent';
 
-// @see https://stackoverflow.com/questions/44153378/typescript-abstract-optional-method
-export interface CustomElement<CustomElementStyleProps> {
-  /**
-   * fired after element insert into DOM tree
-   */
-  connectedCallback?: () => void;
-
-  /**
-   * fired before element removed from DOM tree
-   */
-  disconnectedCallback?: () => void;
-
-  attributeChangedCallback?: <Key extends keyof CustomElementStyleProps>(
-    name: Key,
-    oldValue: CustomElementStyleProps[Key],
-    newValue: CustomElementStyleProps[Key],
-  ) => void;
-}
-
 /**
  * shadow root
  * @see https://yuque.antfin-inc.com/antv/czqvg5/pgqipg
@@ -40,22 +21,48 @@ export abstract class CustomElement<
       this.addEventListener(ElementEvent.ATTRIBUTE_CHANGED, this.handleAttributeChanged);
     }
     if (this.connectedCallback) {
-      this.addEventListener(ElementEvent.INSERTED, this.handleMounted);
+      this.addEventListener(ElementEvent.MOUNTED, this.handleMounted);
     }
     if (this.disconnectedCallback) {
-      this.addEventListener(ElementEvent.REMOVED, this.disconnectedCallback.bind(this));
+      this.addEventListener(ElementEvent.UNMOUNTED, this.handleUnmounted);
     }
   }
 
-  private handleMounted = () => {
-    // this.shadowNodes.forEach((node) => {
-    //   // every child and its children should turn into a shadow node
-    //   // a shadow node doesn't mean to be unrenderable, it's just unsearchable in scenegraph
-    //   node.shadow = true;
-    // });
+  /**
+   * fired after element insert into DOM tree
+   */
+  connectedCallback?(): void;
 
-    if (this.connectedCallback) {
-      this.connectedCallback();
+  /**
+   * fired before element removed from DOM tree
+   */
+  disconnectedCallback?(): void;
+
+  attributeChangedCallback?<Key extends keyof CustomElementStyleProps>(
+    name: Key,
+    oldValue: CustomElementStyleProps[Key],
+    newValue: CustomElementStyleProps[Key],
+  ): void;
+
+  private handleMounted = (e: FederatedEvent) => {
+    if (e.target === e.currentTarget) {
+      // this.shadowNodes.forEach((node) => {
+      //   // every child and its children should turn into a shadow node
+      //   // a shadow node doesn't mean to be unrenderable, it's just unsearchable in scenegraph
+      //   node.shadow = true;
+      // });
+
+      if (this.connectedCallback) {
+        this.connectedCallback();
+      }
+    }
+  };
+
+  private handleUnmounted = (e: FederatedEvent) => {
+    if (e.target === e.currentTarget) {
+      if (this.disconnectedCallback) {
+        this.disconnectedCallback();
+      }
     }
   };
 

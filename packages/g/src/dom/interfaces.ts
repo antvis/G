@@ -123,11 +123,11 @@ export interface INode extends IEventTarget {
    */
   readonly previousSibling: (IChildNode & INode) | null;
   textContent: string | null;
-  appendChild: <T extends INode>(newChild: T, index?: number) => T;
+  appendChild: <T extends IChildNode>(newChild: T, index?: number) => T;
   /**
    * Returns a copy of node. If deep is true, the copy also includes the node's descendants.
    */
-  cloneNode: (deep?: boolean) => INode;
+  cloneNode: (deep?: boolean) => this;
   /**
    * Returns a bitmask indicating the position of other relative to node.
    */
@@ -135,7 +135,7 @@ export interface INode extends IEventTarget {
   /**
    * Returns true if other is an inclusive descendant of node, and false otherwise.
    */
-  contains: (other: INode | null) => boolean;
+  contains: <T extends IChildNode>(other: T | null) => boolean;
   /**
    * Returns node's root.
    */
@@ -152,7 +152,7 @@ export interface INode extends IEventTarget {
    * Returns whether node has children.
    */
   hasChildNodes: () => boolean;
-  insertBefore: <T extends INode>(newChild: T, refChild: INode | null) => T;
+  insertBefore: <T extends IChildNode, R extends IChildNode>(newChild: T, refChild: R | null) => T;
   isDefaultNamespace: (namespace: string | null) => boolean;
   /**
    * Returns whether node and otherNode have the same properties.
@@ -165,9 +165,9 @@ export interface INode extends IEventTarget {
    * Removes empty exclusive Text nodes and concatenates the data of remaining contiguous exclusive Text nodes into the first of their nodes.
    */
   normalize: () => void;
-  removeChild: <T extends INode>(oldChild: T, destroy?: boolean) => T;
-  replaceChild: <T extends INode & IChildNode>(
-    newChild: INode,
+  removeChild: <T extends IChildNode>(oldChild: T, destroy?: boolean) => T;
+  replaceChild: <T extends IChildNode, R extends IChildNode>(
+    newChild: R,
     oldChild: T,
     destroy?: boolean,
   ) => T;
@@ -228,13 +228,13 @@ export interface IChildNode extends INode {
    *
    * Throws a "HierarchyRequestError" DOMException if the constraints of the node tree are violated.
    */
-  after: (...nodes: INode[]) => void;
+  after: (...nodes: IChildNode[]) => void;
   /**
    * Inserts nodes just before node, while replacing strings in nodes with equivalent Text nodes.
    *
    * Throws a "HierarchyRequestError" DOMException if the constraints of the node tree are violated.
    */
-  before: (...nodes: INode[]) => void;
+  before: (...nodes: IChildNode[]) => void;
   /**
    * Removes node.
    */
@@ -244,7 +244,7 @@ export interface IChildNode extends INode {
    *
    * Throws a "HierarchyRequestError" DOMException if the constraints of the node tree are violated.
    */
-  replaceWith: (...nodes: INode[]) => void;
+  replaceWith: (...nodes: IChildNode[]) => void;
 }
 
 export interface DisplayObjectConfig<StyleProps> {

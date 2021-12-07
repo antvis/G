@@ -11,7 +11,7 @@ import { containerModule as commonContainerModule } from './canvas-module';
 import type { AbstractRenderer, IRenderer } from './AbstractRenderer';
 import { cancelAnimationFrame } from './utils/raf';
 import type { PointLike } from './shapes';
-import type { FederatedEvent, Element } from './dom';
+import type { FederatedEvent, Element, IChildNode } from './dom';
 import { Document, EventTarget, ElementEvent } from './dom';
 import type { IElement, INode, ICanvas } from './dom/interfaces';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
@@ -236,13 +236,13 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   // proxy to document.documentElement
-  appendChild<T extends INode>(child: T, index?: number): T {
+  appendChild<T extends IChildNode>(child: T, index?: number): T {
     return this.document.documentElement.appendChild(child, index);
   }
-  insertBefore<T extends INode>(newChild: T, refChild: IElement | null): T {
+  insertBefore<T extends IChildNode, N extends IChildNode>(newChild: T, refChild: N | null): T {
     return this.document.documentElement.insertBefore(newChild, refChild);
   }
-  removeChild<T extends INode>(child: T, destroy = true): T {
+  removeChild<T extends IChildNode>(child: T, destroy = true): T {
     return this.document.documentElement.removeChild(child, destroy);
   }
   removeChildren(destroy = true) {
