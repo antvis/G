@@ -4,7 +4,6 @@ import { wasm } from '@rollup/plugin-wasm';
 export default {
   cjs: 'rollup',
   esm: 'rollup',
-  runtimeHelpers: true,
   extraRollupPlugins: [
     glslify({
       // disable compressing shader
