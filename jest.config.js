@@ -7,7 +7,7 @@ module.exports = {
     '!**/*.d.ts',
   ],
   coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'clover'],
+  coverageReporters: ['text', 'clover', 'lcov'],
   // coverageThreshold: {
   //   global: {
   //     branches: 80,
