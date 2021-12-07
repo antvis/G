@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-webgl-renderer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A G plugin of renderer implementation with WebGL1",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -35,8 +35,8 @@
     "earcut": "^2.2.3",
     "eventemitter3": "^4.0.0",
     "potpack": "^1.0.1",
-    "tslib": "^2.3.1",
-    "regenerator-runtime": "^0.13.9"
+    "regenerator-runtime": "^0.13.9",
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@rollup/plugin-wasm": "^5.1.2",
