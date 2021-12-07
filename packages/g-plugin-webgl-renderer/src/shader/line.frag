@@ -1,0 +1,68 @@
+#pragma glslify: import('./chunks/scene.both.glsl')
+#pragma glslify: import('./chunks/line.both.glsl')
+
+varying vec4 v_Distance;
+varying vec4 v_Arc;
+varying float v_Type;
+varying float v_Travel;
+
+varying vec4 v_PickingResult;
+
+void main(){
+  if (u_Visible < 1.0) {
+    discard;
+  }
+
+  gbuf_picking = vec4(v_PickingResult.rgb, 1.0);
+
+  float alpha = 1.0;
+  float lineWidth = v_Distance.w;
+  if (v_Type < 0.5) {
+    float left = max(v_Distance.x - 0.5, -v_Distance.w);
+    float right = min(v_Distance.x + 0.5, v_Distance.w);
+    float near = v_Distance.y - 0.5;
+    float far = min(v_Distance.y + 0.5, 0.0);
+    float top = v_Distance.z - 0.5;
+    float bottom = min(v_Distance.z + 0.5, 0.0);
+    alpha = max(right - left, 0.0) * max(bottom - top, 0.0) * max(far - near, 0.0);
+  } else if (v_Type < 1.5) {
+    float a1 = clamp(v_Distance.x + 0.5 - lineWidth, 0.0, 1.0);
+    float a2 = clamp(v_Distance.x + 0.5 + lineWidth, 0.0, 1.0);
+    float b1 = clamp(v_Distance.y + 0.5 - lineWidth, 0.0, 1.0);
+    float b2 = clamp(v_Distance.y + 0.5 + lineWidth, 0.0, 1.0);
+    alpha = a2 * b2 - a1 * b1;
+  } else if (v_Type < 2.5) {
+    alpha *= max(min(v_Distance.x + 0.5, 1.0), 0.0);
+    alpha *= max(min(v_Distance.y + 0.5, 1.0), 0.0);
+    alpha *= max(min(v_Distance.z + 0.5, 1.0), 0.0);
+  } else if (v_Type < 3.5) {
+    float a1 = clamp(v_Distance.x + 0.5 - lineWidth, 0.0, 1.0);
+    float a2 = clamp(v_Distance.x + 0.5 + lineWidth, 0.0, 1.0);
+    float b1 = clamp(v_Distance.y + 0.5 - lineWidth, 0.0, 1.0);
+    float b2 = clamp(v_Distance.y + 0.5 + lineWidth, 0.0, 1.0);
+    float alpha_miter = a2 * b2 - a1 * b1;
+    float alpha_plane = max(min(v_Distance.z + 0.5, 1.0), 0.0);
+    float d = length(v_Arc.xy);
+    float circle_hor = max(min(v_Arc.w, d + 0.5) - max(-v_Arc.w, d - 0.5), 0.0);
+    float circle_vert = min(v_Arc.w * 2.0, 1.0);
+    float alpha_circle = circle_hor * circle_vert;
+    alpha = min(alpha_miter, max(alpha_circle, alpha_plane));
+  } else {
+    float a1 = clamp(v_Distance.x + 0.5 - lineWidth, 0.0, 1.0);
+    float a2 = clamp(v_Distance.x + 0.5 + lineWidth, 0.0, 1.0);
+    float b1 = clamp(v_Distance.y + 0.5 - lineWidth, 0.0, 1.0);
+    float b2 = clamp(v_Distance.y + 0.5 + lineWidth, 0.0, 1.0);
+    alpha = a2 * b2 - a1 * b1;
+    alpha *= max(min(v_Distance.z + 0.5, 1.0), 0.0);
+  }
+
+  if (u_Dash + u_Gap > 1.0) {
+    float travel = mod(v_Travel + u_Gap * 0.5 + u_DashOffset, u_Dash + u_Gap) - (u_Gap * 0.5);
+    float left = max(travel - 0.5, -0.5);
+    float right = min(travel + 0.5, u_Gap + 0.5);
+    alpha *= max(0.0, right - left);
+  }
+
+  gl_FragColor = u_StrokeColor * alpha;
+  gl_FragColor.a = gl_FragColor.a * u_StrokeOpacity;
+}

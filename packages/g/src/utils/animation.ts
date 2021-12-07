@@ -310,6 +310,6 @@ export const EasingKeys = Object.keys(EASINGS);
  */
 export const getEase = (ease: keyof typeof EASINGS | string = 'ease'): string => {
   // Convert camelCase strings into dashed strings, then Remove the "ease-" keyword
-  let search = convertToDash(ease).replace(/^ease-/, '');
+  const search = convertToDash(ease).replace(/^ease-/, '');
   return EASINGS[search] || ease;
 };

@@ -1,4 +1,4 @@
-import { TextMetrics } from '../services/text';
+import type { TextMetrics } from '../services/text';
 import type { DisplayObjectConfig } from '../dom/interfaces';
 import { SHAPE, LINE_JOIN, LINE_CAP } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
@@ -100,6 +100,6 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
   }
 
   getLineBoundingRects() {
-    return this.parsedStyle.metrics?.lineMetrics!;
+    return this.parsedStyle.metrics?.lineMetrics || [];
   }
 }

@@ -1,8 +1,8 @@
 build
 coverage
-esm
+es
 lib
 dist
-build
 mocks
+**/*.spec.ts
 node_modules

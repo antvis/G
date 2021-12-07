@@ -817,8 +817,6 @@ export class Camera extends EventEmitter {
    * 计算相机矩阵
    */
   private computeMatrix() {
-    let rotX;
-    let rotY;
     // 使用四元数描述 3D 旋转
     // @see https://xiaoiver.github.io/coding/2018/12/28/Camera-%E8%AE%BE%E8%AE%A1-%E4%B8%80.html
     const rotZ = quat.setAxisAngle(quat.create(), [0, 0, 1], this.roll * DEG_2_RAD);
@@ -826,7 +824,7 @@ export class Camera extends EventEmitter {
     mat4.identity(this.matrix);
 
     // only consider HCS for EXPLORING and ORBITING cameras
-    rotX = quat.setAxisAngle(
+    const rotX = quat.setAxisAngle(
       quat.create(),
       [1, 0, 0],
       ((this.rotateWorld && this.type !== CAMERA_TYPE.TRACKING) ||
@@ -836,7 +834,7 @@ export class Camera extends EventEmitter {
         this.elevation *
         DEG_2_RAD,
     );
-    rotY = quat.setAxisAngle(
+    const rotY = quat.setAxisAngle(
       quat.create(),
       [0, 1, 0],
       ((this.rotateWorld && this.type !== CAMERA_TYPE.TRACKING) ||

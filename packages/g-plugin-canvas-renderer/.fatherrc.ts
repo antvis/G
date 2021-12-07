@@ -1,7 +1,6 @@
 export default {
-  // disableTypeCheck: true,
   // umd: {
-  //   name: 'GPluginCanvasRenderer',
+  //   name: 'G.Plugin.CanvasRenderer',
   //   globals: {
   //     '@antv/g': 'window.G',
   //     'mana-syringe': 'window.G.ManaSyringe',

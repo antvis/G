@@ -62,6 +62,7 @@ describe('Property Color', () => {
     expect(parseColor('l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff', rect)).to.be.eqls({
       type: PARSED_COLOR_TYPE.LinearGradient,
       value: {
+        hash: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff',
         steps: [
           ['0', '#ffffff'],
           ['0.5', '#7ec2f3'],
@@ -78,6 +79,7 @@ describe('Property Color', () => {
     expect(parseColor('l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff', circle)).to.be.eqls({
       type: PARSED_COLOR_TYPE.LinearGradient,
       value: {
+        hash: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff',
         steps: [
           ['0', '#ffffff'],
           ['0.5', '#7ec2f3'],
@@ -120,6 +122,7 @@ describe('Property Color', () => {
       {
         type: PARSED_COLOR_TYPE.LinearGradient,
         value: {
+          hash: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff',
           steps: [
             ['0', '#ffffff'],
             ['0.5', '#7ec2f3'],

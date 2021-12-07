@@ -1,8 +1,9 @@
-import { DisplayObject } from '../../display-objects/DisplayObject';
+import type { DisplayObject } from '../../display-objects/DisplayObject';
 import type { ParsedBaseStyleProps } from '../../types';
 
 export const GeometryUpdaterFactory = 'GeometryUpdaterFactory';
 export const GeometryAABBUpdater = 'GeometryAABBGenerator';
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface GeometryAABBUpdater<T extends ParsedBaseStyleProps = any> {
   update: (
     parsedStyle: T,

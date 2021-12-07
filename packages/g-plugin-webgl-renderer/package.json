@@ -1,16 +1,14 @@
 {
   "name": "@antv/g-plugin-webgl-renderer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A G plugin of renderer implementation with WebGL1",
-  "main": "es/index.js",
-  "module": "es/index.js",
-  "types": "es/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "unpkg": "dist/index.umd.js",
   "files": [
     "package.json",
     "dist",
-    "es",
-    "lib",
     "LICENSE",
     "README.md"
   ],
@@ -33,23 +31,34 @@
   },
   "dependencies": {
     "@antv/util": "^2.0.13",
+    "@babel/runtime": "^7.16.3",
     "@mapbox/tiny-sdf": "^1.1.1",
     "earcut": "^2.2.3",
     "eventemitter3": "^4.0.0",
-    "potpack": "^1.0.1"
+    "potpack": "^1.0.1",
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
+    "@rollup/plugin-wasm": "^5.1.2",
     "@types/earcut": "^2.1.1",
     "@types/jest": "^25.0.0",
     "@types/offscreencanvas": "^2019.6.4",
-    "@webgpu/types": "^0.1.6"
+    "@webgpu/types": "^0.1.6",
+    "glslify-import": "3.1.0",
+    "rollup-plugin-glslify": "^1.2.1"
   },
   "peerDependencies": {
-    "@antv/g": "^1.0.1",
+    "@antv/g": "^5.0.1",
     "mana-syringe": "^0.2.2"
   },
-  "scripts": {
-    "umd": "webpack"
+  "browser": {
+    "fs": false,
+    "path": false
+  },
+  "glslify": {
+    "transform": [
+      "glslify-import"
+    ]
   },
   "homepage": "https://github.com/antvis/g#readme",
   "gitHead": "d09726ac85b8738d53c97002a98848b4a450bfcd"

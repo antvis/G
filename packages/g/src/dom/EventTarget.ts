@@ -114,6 +114,7 @@ export class EventTarget implements IEventTarget {
    * @deprecated
    * @alias dispatchEvent
    */
+  // eslint-disable-next-line @typescript-eslint/ban-types
   emit(eventName: string, object: object) {
     this.dispatchEvent(new CustomEvent(eventName, object));
   }

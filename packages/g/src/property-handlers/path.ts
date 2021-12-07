@@ -1,6 +1,5 @@
 import { path2Absolute, path2Segments, path2Curve } from '@antv/path-util';
 import { Cubic as CubicUtil } from '@antv/g-math';
-import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { PathCommand } from '../types';
 import type { ParsedPathStyleProps } from '../display-objects';
 import {
@@ -12,7 +11,7 @@ import {
 } from '../utils/path';
 import { Rect } from '../shapes/Rect';
 
-export function parsePath(path: string, displayObject: DisplayObject | null): ParsedPathStyleProps {
+export function parsePath(path: string): ParsedPathStyleProps {
   const absolutePath = path2Absolute(path) as PathCommand[];
   const hasArc = hasArcOrBezier(absolutePath);
 
@@ -197,11 +196,7 @@ function getPathBBox(segments: PathCommand[]): Rect {
   return new Rect(xTop, yTop, width, height);
 }
 
-export function mergePaths(
-  left: ParsedPathStyleProps,
-  right: ParsedPathStyleProps,
-  displayObject: DisplayObject | null,
-) {
+export function mergePaths(left: ParsedPathStyleProps, right: ParsedPathStyleProps) {
   const curve1 = left.curve;
   const curve2 = right.curve;
   let curves = [curve1, curve2];

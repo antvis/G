@@ -1,10 +1,10 @@
 import { isNil } from '@antv/util';
 import { SceneGraphService } from '../services/SceneGraphService';
 import { Cullable, Geometry, Renderable, Transform, Sortable } from '../components';
-import { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Node } from './Node';
-import { AABB, Rectangle } from '../shapes';
-import type { DisplayObjectConfig, IEventTarget, IChildNode, IElement, INode } from './interfaces';
+import type { AABB, Rectangle } from '../shapes';
+import type { IEventTarget, IChildNode, IElement, INode } from './interfaces';
 import { ElementEvent } from './interfaces';
 import { globalContainer } from '../global-module';
 
@@ -36,10 +36,6 @@ export class Element<
   transformable = new Transform();
   sortable = new Sortable();
   geometry = new Geometry();
-
-  constructor(config: DisplayObjectConfig<StyleProps>) {
-    super();
-  }
 
   /**
    * used with `getElementById()`
@@ -111,6 +107,7 @@ export class Element<
     return null;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   cloneNode(deep?: boolean): this {
     throw new Error('Method not implemented.');
   }
@@ -386,6 +383,7 @@ export class Element<
   setAttribute<Key extends keyof StyleProps>(
     attributeName: Key,
     value: StyleProps[Key],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     force = false,
   ) {
     this.attributes[attributeName] = value;

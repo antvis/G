@@ -1,7 +1,6 @@
 export default {
-  // disableTypeCheck: true,
   // umd: {
-  //   name: 'GPluginCSSSelect',
+  //   name: 'G.Plugin.CSSSelect',
   //   globals: {
   //     '@antv/g': 'window.G',
   //     'mana-syringe': 'window.G.ManaSyringe',

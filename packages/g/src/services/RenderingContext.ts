@@ -1,5 +1,5 @@
-import { Group } from '../display-objects';
-import { AABB } from '../shapes';
+import type { Group } from '../display-objects';
+import type { AABB } from '../shapes';
 
 /**
  * why we need re-render
@@ -11,6 +11,7 @@ export enum RENDER_REASON {
   None,
 }
 export const RenderingContext = 'RenderingContext';
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface RenderingContext {
   /**
    * root of scenegraph

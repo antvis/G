@@ -1,7 +1,7 @@
 import { vec3 } from 'gl-matrix';
-import { AABB } from './AABB';
-import { BoundingSphere } from './BoundingSphere';
-import { Plane } from './Plane';
+import type { AABB } from './AABB';
+import type { BoundingSphere } from './BoundingSphere';
+import type { Plane } from './Plane';
 
 const tmpVecA = vec3.create();
 const tmpVecB = vec3.create();
@@ -60,7 +60,9 @@ export class Ray {
   }
 
   public intersectsPlane(plane: Plane, intersection?: vec3) {
-    const t = (plane.distance - vec3.dot(plane.normal, this.origin)) / vec3.dot(plane.normal, this.direction);
+    const t =
+      (plane.distance - vec3.dot(plane.normal, this.origin)) /
+      vec3.dot(plane.normal, this.direction);
     const intersects = t >= 0;
     if (intersects && intersection) {
       vec3.scaleAndAdd(intersection, this.origin, this.direction, t);
@@ -138,13 +140,13 @@ export class Ray {
       tmpVecC,
       Math.min(tMin[0], tMax[0]),
       Math.min(tMin[1], tMax[1]),
-      Math.min(tMin[2], tMax[2])
+      Math.min(tMin[2], tMax[2]),
     );
     const realMax = vec3.set(
       tmpVecD,
       Math.max(tMin[0], tMax[0]),
       Math.max(tMin[1], tMax[1]),
-      Math.max(tMin[2], tMax[2])
+      Math.max(tMin[2], tMax[2]),
     );
 
     const minMax = Math.min(Math.min(realMax[0], realMax[1]), realMax[2]);

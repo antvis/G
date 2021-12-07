@@ -8,8 +8,8 @@ import {
   gGoodOptionsCompositeValueTests,
   gBadOptionsCompositeValueTests,
   gKeyframesTests,
-} from './utils/keyframe';
-import { gEasingParsingTests, gInvalidEasings } from './utils/easing';
+} from './utils/keyframe.spec';
+import { gEasingParsingTests, gInvalidEasings } from './utils/easing.spec.ts';
 
 interface Test {
   desc: string;
@@ -127,7 +127,7 @@ describe('Animation KeyframeEffect', () => {
 
   for (const subtest of gKeyframesTests) {
     it(`A KeyframeEffect can be constructed with ${subtest.desc}`, () => {
-      let effect = new KeyframeEffect(null, subtest.input);
+      const effect = new KeyframeEffect(null, subtest.input);
 
       assert_frame_lists_equal(effect.getKeyframes(), subtest.output);
     });

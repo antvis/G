@@ -1,4 +1,4 @@
-import { AABB } from '../shapes';
+import type { AABB } from '../shapes';
 
 export class Geometry {
   static tag = 'c-geometry';

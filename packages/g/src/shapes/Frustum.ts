@@ -1,4 +1,5 @@
-import { mat4, vec3 } from 'gl-matrix';
+import type { mat4 } from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
 import { Plane } from './Plane';
 
 export enum Mask {

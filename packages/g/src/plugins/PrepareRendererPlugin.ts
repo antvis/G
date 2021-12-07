@@ -1,8 +1,13 @@
 import { inject, singleton } from 'mana-syringe';
-import { DisplayObject } from '..';
-import { ElementEvent, FederatedEvent, INode } from '../dom';
-import { RenderingContext, RENDER_REASON, RenderingPluginContribution } from '../services';
-import { RenderingService, RenderingPlugin } from '../services/RenderingService';
+import type { Element, FederatedEvent } from '../dom';
+import { ElementEvent } from '../dom';
+import {
+  RenderingContext,
+  RENDER_REASON,
+  RenderingPluginContribution,
+  dirtifyToRoot,
+} from '../services';
+import type { RenderingService, RenderingPlugin } from '../services/RenderingService';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class PrepareRendererPlugin implements RenderingPlugin {
@@ -12,44 +17,22 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
-    const handleAttributeChanged = (
-      e: FederatedEvent<
-        Event,
-        {
-          attributeName: string;
-          oldValue: any;
-          newValue: any;
-        }
-      >,
-    ) => {
+    const handleAttributeChanged = () => {
       this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectChanged);
     };
 
-    const dirtifyToRoot = (e: FederatedEvent) => {
-      // skip Document & Canvas
-      const path = e.composedPath().slice(0, -2);
-      path.forEach((node) => {
-        const renderable = (node as DisplayObject).renderable;
-        if (renderable) {
-          renderable.renderBoundsDirty = true;
-          renderable.boundsDirty = true;
-          renderable.dirty = true;
-        }
-      });
-
+    const handleBoundsChanged = () => {
       renderingService.dirtify();
     };
 
-    const handleBoundsChanged = (e: FederatedEvent) => {
-      dirtifyToRoot(e);
-    };
-
     const handleMounted = (e: FederatedEvent) => {
-      dirtifyToRoot(e);
+      dirtifyToRoot(e.target as Element);
+      renderingService.dirtify();
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
-      dirtifyToRoot(e);
+      dirtifyToRoot(e.target as Element);
+      renderingService.dirtify();
     };
 
     renderingService.hooks.init.tap(PrepareRendererPlugin.tag, () => {

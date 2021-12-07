@@ -21,6 +21,7 @@ import {
 import { TexturePool } from './TexturePool';
 import { GlyphManager } from './drawcall/symbol/GlyphManager';
 import { RendererFactory, ShapeRenderer } from './tokens';
+import { Geometry } from './Geometry';
 
 let bindFunc: Syringe.Register;
 
@@ -36,6 +37,7 @@ export {
   // ModelBuilder,
   TexturePool,
   RenderGraphPlugin,
+  Geometry,
 };
 
 export * from './platform';

@@ -1,12 +1,14 @@
 import { inject, singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
-import { Geometry, Renderable, Sortable, Transform } from '../components';
-import { mat4, quat, vec2, vec3 } from 'gl-matrix';
+import type { Transform } from '../components';
+import type { vec2 } from 'gl-matrix';
+import { mat4, quat, vec3 } from 'gl-matrix';
 import { AABB, Rectangle } from '../shapes';
-import { SceneGraphSelector, SceneGraphSelectorFactory } from './SceneGraphSelector';
+import type { SceneGraphSelector } from './SceneGraphSelector';
+import { SceneGraphSelectorFactory } from './SceneGraphSelector';
 import type { IChildNode, IElement, INode, IParentNode } from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
-import { Element } from '../dom';
+import type { Element } from '../dom';
 
 export function sortByZIndex(o1: IElement, o2: IElement) {
   const zIndex1 = Number(o1.style.zIndex);
@@ -22,40 +24,60 @@ export function sortByZIndex(o1: IElement, o2: IElement) {
   return zIndex1 - zIndex2;
 }
 
+export function dirtifyToRoot(element: INode, affectChildren = false) {
+  let p = element;
+  while (p) {
+    const renderable = (p as Element).renderable;
+    if (renderable) {
+      renderable.renderBoundsDirty = true;
+      renderable.boundsDirty = true;
+      renderable.dirty = true;
+    }
+    p = p.parentNode;
+  }
+
+  element.emit(ElementEvent.BOUNDS_CHANGED, { affectChildren });
+}
+
 export const SceneGraphService = 'SceneGraphService';
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface SceneGraphService {
-  matches<T extends IElement>(query: string, root: T): boolean;
-  querySelector<R extends IElement, T extends IElement>(query: string, root: R): T | null;
-  querySelectorAll<R extends IElement, T extends IElement>(query: string, root: R): T[];
-  attach<C extends INode, P extends INode & IParentNode>(child: C, parent: P, index?: number): void;
-  detach<C extends INode>(child: C): void;
-  sort(object1: IElement, object2: IElement): number;
-  getOrigin(element: INode): vec3;
-  setOrigin(element: INode, origin: vec3 | number, y?: number, z?: number): void;
-  setPosition(element: INode, position: vec3 | vec2): void;
-  setLocalPosition(element: INode, position: vec3 | vec2): void;
-  scaleLocal(element: INode, scaling: vec3 | vec2): void;
-  setLocalScale(element: INode, scaling: vec3 | vec2): void;
-  getLocalScale(element: INode): vec3;
-  getScale(element: INode): vec3;
-  translate(element: INode, translation: vec3 | number, y?: number, z?: number): void;
-  translateLocal(element: INode, translation: vec3 | number, y?: number, z?: number): void;
-  getPosition(element: INode): vec3;
-  getLocalPosition(element: INode): vec3;
-  setEulerAngles(element: INode, degrees: vec3 | number, y?: number, z?: number): void;
-  setLocalEulerAngles(element: INode, degrees: vec3 | number, y?: number, z?: number): void;
-  rotateLocal(element: INode, degrees: vec3 | number, y?: number, z?: number): void;
-  rotate(element: INode, degrees: vec3 | number, y?: number, z?: number): void;
-  getRotation(element: INode): quat;
-  getLocalRotation(element: INode): quat;
-  getWorldTransform(element: INode, transform?: Transform): mat4;
-  getLocalTransform(element: INode, transform?: Transform): mat4;
-  resetLocalTransform(element: INode): void;
-  getBounds(element: INode, render?: boolean): AABB | null;
-  getLocalBounds(element: INode, render?: boolean): AABB | null;
-  getGeometryBounds(element: INode, render?: boolean): AABB | null;
-  getBoundingClientRect(element: INode): Rectangle;
-  syncHierarchy(element: INode): void;
+  matches: <T extends IElement>(query: string, root: T) => boolean;
+  querySelector: <R extends IElement, T extends IElement>(query: string, root: R) => T | null;
+  querySelectorAll: <R extends IElement, T extends IElement>(query: string, root: R) => T[];
+  attach: <C extends INode, P extends INode & IParentNode>(
+    child: C,
+    parent: P,
+    index?: number,
+  ) => void;
+  detach: <C extends INode>(child: C) => void;
+  sort: (object1: IElement, object2: IElement) => number;
+  getOrigin: (element: INode) => vec3;
+  setOrigin: (element: INode, origin: vec3 | number, y?: number, z?: number) => void;
+  setPosition: (element: INode, position: vec3 | vec2) => void;
+  setLocalPosition: (element: INode, position: vec3 | vec2) => void;
+  scaleLocal: (element: INode, scaling: vec3 | vec2) => void;
+  setLocalScale: (element: INode, scaling: vec3 | vec2) => void;
+  getLocalScale: (element: INode) => vec3;
+  getScale: (element: INode) => vec3;
+  translate: (element: INode, translation: vec3 | number, y?: number, z?: number) => void;
+  translateLocal: (element: INode, translation: vec3 | number, y?: number, z?: number) => void;
+  getPosition: (element: INode) => vec3;
+  getLocalPosition: (element: INode) => vec3;
+  setEulerAngles: (element: INode, degrees: vec3 | number, y?: number, z?: number) => void;
+  setLocalEulerAngles: (element: INode, degrees: vec3 | number, y?: number, z?: number) => void;
+  rotateLocal: (element: INode, degrees: vec3 | number, y?: number, z?: number) => void;
+  rotate: (element: INode, degrees: vec3 | number, y?: number, z?: number) => void;
+  getRotation: (element: INode) => quat;
+  getLocalRotation: (element: INode) => quat;
+  getWorldTransform: (element: INode, transform?: Transform) => mat4;
+  getLocalTransform: (element: INode, transform?: Transform) => mat4;
+  resetLocalTransform: (element: INode) => void;
+  getBounds: (element: INode, render?: boolean) => AABB | null;
+  getLocalBounds: (element: INode, render?: boolean) => AABB | null;
+  getGeometryBounds: (element: INode, render?: boolean) => AABB | null;
+  getBoundingClientRect: (element: INode) => Rectangle;
+  syncHierarchy: (element: INode) => void;
 }
 
 /**
@@ -452,7 +474,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }
 
     this.dirtifyWorldInternal(element, transform);
-    element.emit(ElementEvent.BOUNDS_CHANGED, { affectChildren: true });
+    dirtifyToRoot(element, true);
   }
 
   getPosition(element: INode) {
@@ -571,7 +593,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     // account for clip path
     const clipPath = (element as IElement).style.clipPath;
     if (clipPath) {
-      let clipPathBounds = this.getTransformedGeometryBounds(clipPath, true);
+      const clipPathBounds = this.getTransformedGeometryBounds(clipPath, true);
       let transformParentBounds: AABB;
 
       if (clipPathBounds) {
@@ -665,6 +687,13 @@ export class DefaultSceneGraphService implements SceneGraphService {
           this.dirtifyWorldInternal(child as IElement, childTransform);
         }
       });
+
+      const renderable = (element as Element).renderable;
+      if (renderable) {
+        renderable.renderBoundsDirty = true;
+        renderable.boundsDirty = true;
+        renderable.dirty = true;
+      }
 
       // model matrix changed
       element.emit(ElementEvent.ATTRIBUTE_CHANGED, {

@@ -1,7 +1,7 @@
 import { SHAPE, LINE_CAP, LINE_JOIN } from '../types';
 import type { BaseStyleProps, PathCommand } from '../types';
 import { DisplayObject } from './DisplayObject';
-import { DisplayObjectConfig } from '../dom';
+import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import { isNil } from '@antv/util';

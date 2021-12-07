@@ -1,4 +1,3 @@
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const common = require('../../webpack.config');
 
 module.exports = {
@@ -24,7 +23,7 @@ module.exports = {
     },
   },
   output: {
-    library: ['G', 'Plugin', 'GPGPU'],
+    library: ['G', 'GPGPU'],
     libraryTarget: 'umd',
     filename: 'index.umd.js',
   },

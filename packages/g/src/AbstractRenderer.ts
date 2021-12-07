@@ -1,23 +1,23 @@
-import { Syringe } from 'mana-syringe';
-import { RendererConfig } from './types';
+import type { Syringe } from 'mana-syringe';
+import type { RendererConfig } from './types';
 
 export interface RendererPlugin {
-  init(container: Syringe.Container): void;
-  destroy(container: Syringe.Container): void;
+  init: (container: Syringe.Container) => void;
+  destroy: (container: Syringe.Container) => void;
 }
 
 export interface IRenderer {
-  getConfig(): RendererConfig;
+  getConfig: () => RendererConfig;
 
   /**
    * register plugin at runtime
    */
-  registerPlugin(plugin: RendererPlugin): void;
+  registerPlugin: (plugin: RendererPlugin) => void;
 
   /**
    * return all registered plugins
    */
-  getPlugins(): RendererPlugin[];
+  getPlugins: () => RendererPlugin[];
 }
 
 export class AbstractRenderer implements IRenderer {

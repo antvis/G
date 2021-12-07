@@ -1,12 +1,12 @@
 import { inject, singleton, contrib, Syringe, Contribution } from 'mana-syringe';
 import { SyncHook, SyncWaterfallHook, AsyncSeriesHook, AsyncSeriesWaterfallHook } from 'tapable';
-import { DisplayObject } from '..';
-import { EventPosition, InteractivePointerEvent } from '../types';
+import type { DisplayObject } from '..';
+import type { EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext, RENDER_REASON } from './RenderingContext';
 import { SceneGraphService, sortByZIndex } from './SceneGraphService';
 
 export interface RenderingPlugin {
-  apply(renderer: RenderingService): void;
+  apply: (renderer: RenderingService) => void;
 }
 
 export const RenderingPluginContribution = Syringe.defineToken('RenderingPluginContribution');
@@ -39,24 +39,24 @@ export class RenderingService {
   private inited = false;
 
   hooks = {
-    init: new AsyncSeriesHook(),
-    prepare: new SyncWaterfallHook<DisplayObject | null>(['object']),
+    init: new AsyncSeriesHook<[]>(),
+    prepare: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */
-    beginFrame: new SyncHook(),
-    beforeRender: new SyncHook<DisplayObject>(['objectToRender']),
-    render: new SyncHook<DisplayObject>(['objectToRender']),
-    afterRender: new SyncHook<DisplayObject>(['objectToRender']),
-    endFrame: new SyncHook(),
-    destroy: new SyncHook(),
-    pick: new AsyncSeriesWaterfallHook<PickingResult, PickingResult>(['result']),
-    pointerDown: new SyncHook<InteractivePointerEvent>(['event']),
-    pointerUp: new SyncHook<InteractivePointerEvent>(['event']),
-    pointerMove: new SyncHook<InteractivePointerEvent>(['event']),
-    pointerOut: new SyncHook<InteractivePointerEvent>(['event']),
-    pointerOver: new SyncHook<InteractivePointerEvent>(['event']),
-    pointerWheel: new SyncHook<InteractivePointerEvent>(['event']),
+    beginFrame: new SyncHook<[]>([]),
+    beforeRender: new SyncHook<[DisplayObject]>(['objectToRender']),
+    render: new SyncHook<[DisplayObject]>(['objectToRender']),
+    afterRender: new SyncHook<[DisplayObject]>(['objectToRender']),
+    endFrame: new SyncHook<[]>([]),
+    destroy: new SyncHook<[]>([]),
+    pick: new AsyncSeriesWaterfallHook<[PickingResult], PickingResult>(['result']),
+    pointerDown: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerUp: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerMove: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerOut: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerOver: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerWheel: new SyncHook<[InteractivePointerEvent]>(['event']),
   };
 
   async init() {

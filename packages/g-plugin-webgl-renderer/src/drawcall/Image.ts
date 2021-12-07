@@ -13,6 +13,8 @@ import { DeviceProgram } from '../render/DeviceProgram';
 import { Batch, AttributeLocation } from './Batch';
 import { ShapeRenderer } from '../tokens';
 import { TextureMapping } from '../render/TextureHolder';
+import vert from '../shader/image.vert';
+import frag from '../shader/image.frag';
 
 class ImageProgram extends DeviceProgram {
   static a_Size = AttributeLocation.MAX;
@@ -20,45 +22,9 @@ class ImageProgram extends DeviceProgram {
 
   static ub_ObjectParams = 1;
 
-  both: string = `
-  ${Batch.ShaderLibrary.BothDeclaration}
-  `;
+  vert: string = vert;
 
-  vert: string = `
-  ${Batch.ShaderLibrary.VertDeclaration}
-  layout(location = ${ImageProgram.a_Size}) attribute vec2 a_Size;
-
-  #ifdef USE_UV
-    layout(location = ${ImageProgram.a_Uv}) attribute vec2 a_Uv;
-    varying vec2 v_Uv;
-  #endif
-  
-  void main() {
-    ${Batch.ShaderLibrary.Vert}
-
-    vec2 offset = (a_Uv - a_Anchor.xy) * a_Size;
-
-    gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * vec4(offset, 0.0, 1.0);
-    
-    ${Batch.ShaderLibrary.UvVert}
-  }
-  `;
-
-  frag: string = `
-
-  ${Batch.ShaderLibrary.FragDeclaration}
-  ${Batch.ShaderLibrary.UvFragDeclaration}
-  ${Batch.ShaderLibrary.MapFragDeclaration}
-  
-  void main() {
-    ${Batch.ShaderLibrary.Frag}
-
-    ${Batch.ShaderLibrary.MapFrag}
-
-    gl_FragColor = u_Color;
-    gl_FragColor.a = gl_FragColor.a * u_Opacity;
-  }
-  `;
+  frag: string = frag;
 }
 
 @injectable({

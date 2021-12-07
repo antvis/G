@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-css-select",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A G plugin for using CSS select syntax in query selector",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -32,13 +32,14 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "css-select": "^3.1.2"
+    "css-select": "^3.1.2",
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@types/jest": "^25.0.0"
   },
   "peerDependencies": {
-    "@antv/g": "^1.0.1",
+    "@antv/g": "^5.0.1",
     "mana-syringe": "^0.2.2"
   },
   "scripts": {

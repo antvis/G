@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { expect } from 'chai';
 import { Camera, Landmark } from '../';
 import { vec3 } from 'gl-matrix';

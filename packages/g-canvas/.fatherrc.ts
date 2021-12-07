@@ -1,8 +1,6 @@
 export default {
-  // disableTypeCheck: true,
-  // entry: 'es/index.js',
   // umd: {
-  //   name: 'GCanvas',
+  //   name: 'G.Canvas2D',
   //   globals: {
   //     '@antv/g': 'window.G',
   //     'mana-syringe': 'window.G.ManaSyringe',

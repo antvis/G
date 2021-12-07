@@ -52,6 +52,7 @@ import {
   opaqueBlackFullClearRenderPassDescriptor,
   opaqueWhiteFullClearRenderPassDescriptor,
 } from './render/RenderGraphHelpers';
+import naga from '../../../rust/pkg/index_bg.wasm';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class RenderGraphPlugin implements RenderingPlugin {
@@ -399,7 +400,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
     if (!context) return null;
 
-    const { glsl_compile } = await import('../../../rust/pkg/index');
+    // @ts-ignore
+    const { glsl_compile } = await naga();
     return new Device_WebGPU(adapter, device, canvas, context, glsl_compile);
   }
 

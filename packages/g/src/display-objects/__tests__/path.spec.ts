@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { Path } from '../..';
 import { vec3 } from 'gl-matrix';
-import { PathCommand } from '../../types';
+import type { PathCommand } from '../../types';
 
 describe('Path', () => {
   it('should calc global bounds correctly', () => {
@@ -79,7 +79,7 @@ describe('Path', () => {
 
     expect(path.getTotalLength()).eqls(0);
 
-    let point = path.getPoint(0)!;
+    const point = path.getPoint(0)!;
     expect(point.x).eqls(0);
     expect(point.y).eqls(0);
   });

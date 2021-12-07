@@ -230,6 +230,8 @@ export class Device_GL implements SwapChain, Device {
       this.OES_texture_float = gl.getExtension('OES_texture_float');
       this.WEBGL_draw_buffers = gl.getExtension('WEBGL_draw_buffers');
       this.WEBGL_depth_texture = gl.getExtension('WEBGL_depth_texture');
+      // @see https://developer.mozilla.org/en-US/docs/Web/API/EXT_frag_depth
+      gl.getExtension('EXT_frag_depth');
       // @see https://developer.mozilla.org/en-US/docs/Web/API/OES_element_index_uint
       gl.getExtension('OES_element_index_uint');
 

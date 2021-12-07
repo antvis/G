@@ -6,11 +6,11 @@ Provide some 3D shapes such as Cube, Sphere, support `g-webgl` only.
 
 ```js
 import { Canvas, Group } from '@antv/g';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { Cube, Plugin } from '@antv/g-plugin-3d';
+import { Renderer } from '@antv/g-webgl';
+import { CubeGeometry, MeshBasicMaterial, Mesh, Plugin } from '@antv/g-plugin-3d';
 
 // create a webgl renderer
-const webglRenderer = new WebGLRenderer();
+const webglRenderer = new Renderer();
 webglRenderer.registerPlugin(new Plugin());
 
 // create a canvas
@@ -21,13 +21,29 @@ const canvas = new Canvas({
     renderer: webglRenderer,
 });
 
-// create a cube
-const cube = new Cube({
+// create a geometry
+const geometry = new CubeGeometry({
+    width: 200,
+    height: 200,
+    depth: 200,
+});
+
+// create a material
+const material = new MeshBasicMaterial({
+    color: '#1890FF',
+});
+
+// create a cube mesh
+const cube = new Mesh({
     style: {
-        width: 200,
-        height: 200,
-        depth: 200,
-        fill: '#1890FF',
+        geometry,
+        material,
     },
 });
+
+// append to canvas
+canvas.appendChild(cube);
+
+// transform it like other 2D shapes
+cube.translate(100, 100, 0);
 ```

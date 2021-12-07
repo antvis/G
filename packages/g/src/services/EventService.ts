@@ -9,8 +9,9 @@ import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
 import { RenderingContext } from './RenderingContext';
-import { IEventTarget, INode, IDocument, ICanvas } from '../dom/interfaces';
-import { Point, PointLike } from '../shapes';
+import type { IEventTarget, INode, IDocument, ICanvas } from '../dom/interfaces';
+import type { PointLike } from '../shapes';
+import { Point } from '../shapes';
 import { ContextService } from './ContextService';
 import { mat4, vec3 } from 'gl-matrix';
 

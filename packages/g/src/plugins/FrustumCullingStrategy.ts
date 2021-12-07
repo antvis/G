@@ -1,47 +1,48 @@
-import { mat4, vec3 } from 'gl-matrix';
-import { inject, singleton } from 'mana-syringe';
+import { vec3 } from 'gl-matrix';
+import { singleton } from 'mana-syringe';
 import { CullingStrategyContribution } from './CullingPlugin';
-import { AABB, Mask, Plane } from '../shapes';
-import { DefaultCamera, Camera } from '../camera/Camera';
-import { DisplayObject } from '../display-objects/DisplayObject';
-import { Element } from '../dom';
+import type { AABB, Plane } from '../shapes';
+import { Mask } from '../shapes';
+// import { DefaultCamera, Camera } from '../camera/Camera';
+import type { DisplayObject } from '../display-objects/DisplayObject';
+// import type { Element } from '../dom';
 
 @singleton({ contrib: CullingStrategyContribution })
 export class FrustumCullingStrategy implements CullingStrategyContribution {
-  @inject(DefaultCamera)
-  private camera: Camera;
+  // @inject(DefaultCamera)
+  // private camera: Camera;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isVisible(object: DisplayObject) {
-    const entity = object.entity;
-    const cullable = object.cullable;
-
     return true;
 
-    if (!cullable.enable) {
-      return true;
-    }
+    // const entity = object.entity;
+    // const cullable = object.cullable;
+    // if (!cullable.enable) {
+    //   return true;
+    // }
 
-    const renderBounds = object.getRenderBounds();
-    if (!renderBounds) {
-      return false;
-    }
+    // const renderBounds = object.getRenderBounds();
+    // if (!renderBounds) {
+    //   return false;
+    // }
 
-    const viewMatrix = this.camera.getViewTransform();
-    const vpMatrix = mat4.multiply(mat4.create(), this.camera.getPerspective(), viewMatrix);
+    // const viewMatrix = this.camera.getViewTransform();
+    // const vpMatrix = mat4.multiply(mat4.create(), this.camera.getPerspective(), viewMatrix);
 
-    // get VP matrix from camera
-    this.camera.getFrustum().extractFromVPMatrix(vpMatrix);
+    // // get VP matrix from camera
+    // this.camera.getFrustum().extractFromVPMatrix(vpMatrix);
 
-    const parentVisibilityPlaneMask = (object.parentNode as Element)?.cullable?.visibilityPlaneMask;
-    cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
-      renderBounds,
-      parentVisibilityPlaneMask || Mask.INDETERMINATE,
-      this.camera.getFrustum().planes,
-    );
+    // const parentVisibilityPlaneMask = (object.parentNode as Element)?.cullable?.visibilityPlaneMask;
+    // cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
+    //   renderBounds,
+    //   parentVisibilityPlaneMask || Mask.INDETERMINATE,
+    //   this.camera.getFrustum().planes,
+    // );
 
-    cullable.visible = cullable.visibilityPlaneMask !== Mask.OUTSIDE;
+    // cullable.visible = cullable.visibilityPlaneMask !== Mask.OUTSIDE;
 
-    return cullable.visible;
+    // return cullable.visible;
   }
 
   /**

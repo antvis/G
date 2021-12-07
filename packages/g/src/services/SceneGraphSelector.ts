@@ -1,12 +1,13 @@
 import { singleton } from 'mana-syringe';
-import { IElement } from '../dom/interfaces';
+import type { IElement } from '../dom/interfaces';
 
 export const SceneGraphSelectorFactory = 'SceneGraphSelectorFactory';
 export const SceneGraphSelector = 'SceneGraphSelector';
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface SceneGraphSelector {
-  selectOne<R extends IElement, T extends IElement>(query: string, root: R): T | null;
-  selectAll<R extends IElement, T extends IElement>(query: string, root: R): T[];
-  is<T extends IElement>(query: string, element: T): boolean;
+  selectOne: <R extends IElement, T extends IElement>(query: string, root: R) => T | null;
+  selectAll: <R extends IElement, T extends IElement>(query: string, root: R) => T[];
+  is: <T extends IElement>(query: string, element: T) => boolean;
 }
 
 /**
@@ -46,7 +47,8 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
     }
   }
 
-  is<T extends IElement>(query: string, group: T): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  is<T extends IElement>(): boolean {
     // TODO: need a simple `matches` implementation
     return true;
   }

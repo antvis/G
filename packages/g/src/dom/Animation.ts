@@ -60,9 +60,13 @@ export class Animation {
 
   private readyPromise: Promise<any> | undefined;
   private finishedPromise: Promise<any> | undefined;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   private resolveReadyPromise: Function;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   private rejectReadyPromise: Function;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   private resolveFinishedPromise: Function;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   private rejectFinishedPromise: Function;
 
   /**
@@ -425,6 +429,7 @@ export class Animation {
     listener: EventListenerOrEventListenerObject,
     options?: boolean | AddEventListenerOptions,
   ): void;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   addEventListener(type: any, listener: any, options?: any): void {
     throw new Error('Method not implemented.');
   }
@@ -438,9 +443,11 @@ export class Animation {
     listener: EventListenerOrEventListenerObject,
     options?: boolean | EventListenerOptions,
   ): void;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   removeEventListener(type: any, listener: any, options?: any): void {
     throw new Error('Method not implemented.');
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   dispatchEvent(event: Event): boolean {
     throw new Error('Method not implemented.');
   }
@@ -481,7 +488,9 @@ export class Animation {
         if (this.onfinish) {
           const event = new AnimationEvent(null, this, this.currentTime, baseTime);
           setTimeout(() => {
-            this.onfinish && this.onfinish(event);
+            if (this.onfinish) {
+              this.onfinish(event);
+            }
           });
         }
         this._finishedFlag = true;

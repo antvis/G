@@ -13,9 +13,9 @@ describe('Circle', () => {
     });
 
     let bounds = circle.getBounds();
-    let localBounds = circle.getLocalBounds();
+    const localBounds = circle.getLocalBounds();
     let geometryBounds = circle.getGeometryBounds();
-    let renderBounds = circle.getRenderBounds();
+    const renderBounds = circle.getRenderBounds();
 
     if (bounds) {
       expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));

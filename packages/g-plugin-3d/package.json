@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-3d",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Provide 3D extension for G",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -37,10 +37,11 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/util": "^2.0.13"
+    "@antv/util": "^2.0.13",
+    "tslib": "^2.3.1"
   },
   "peerDependencies": {
-    "@antv/g": "^1.0.1",
+    "@antv/g": "^5.0.1",
     "@antv/g-plugin-webgl-renderer": "^1.0.1",
     "mana-syringe": "^0.2.2"
   },

@@ -1,8 +1,7 @@
 import * as d3 from 'd3-color';
 import { clamp, isString } from '@antv/util';
-import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { Tuple4Number } from '../types';
-import { ParsedStyleProperty } from '.';
+import type { ParsedStyleProperty } from '.';
 
 export interface LinearGradient {
   x0: number;
@@ -48,10 +47,7 @@ const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexPR = /^p\s*\(\s*([axyn])\s*\)\s*(.*)/i;
 const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/gi;
 
-export function parseColor(
-  colorStr: string = '',
-  displayObject: DisplayObject | null,
-): ParsedColorStyleProperty {
+export function parseColor(colorStr: string = ''): ParsedColorStyleProperty {
   if (colorStr === 'transparent') {
     return {
       type: PARSED_COLOR_TYPE.Constant,
@@ -116,7 +112,6 @@ export function parseColor(
 export function mergeColors(
   left: ParsedColorStyleProperty,
   right: ParsedColorStyleProperty,
-  displayObject: DisplayObject | null,
 ): [number[], number[], (color: number[]) => string] | undefined {
   // only support constant value, exclude gradient & pattern
   if (left.type !== PARSED_COLOR_TYPE.Constant || right.type !== PARSED_COLOR_TYPE.Constant) {

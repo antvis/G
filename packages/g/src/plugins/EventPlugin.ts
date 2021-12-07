@@ -1,16 +1,17 @@
 import { inject, singleton } from 'mana-syringe';
-import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
+import type { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
+import type { RenderingPlugin } from '../services';
 import {
   ContextService,
-  RenderingPlugin,
   RenderingService,
   EventService,
   RenderingPluginContribution,
 } from '../services';
 import { Point } from '../shapes';
-import { CanvasConfig, Cursor, EventPosition, InteractivePointerEvent } from '../types';
+import type { Cursor, EventPosition, InteractivePointerEvent } from '../types';
+import { CanvasConfig } from '../types';
 import { normalizeToPointerEvent, supportsTouchEvents, TOUCH_TO_POINTER } from '../utils/event';
 
 /**

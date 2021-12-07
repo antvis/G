@@ -1,3 +1,5 @@
 export default {
-  // disableTypeCheck: true,
+  // umd: {
+  //   name: 'G.Math',
+  // },
 };

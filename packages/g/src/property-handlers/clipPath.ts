@@ -1,5 +1,5 @@
 import type { DisplayObject } from '../display-objects/DisplayObject';
-import { ElementEvent } from '../dom';
+import { dirtifyToRoot } from '../services';
 
 /**
  * @see /zh/docs/api/basic/display-object#clippath
@@ -36,5 +36,5 @@ export function updateClipPath(
     newClipPath.style.clipPathTargets.push(object);
   }
 
-  object.emit(ElementEvent.BOUNDS_CHANGED, {});
+  dirtifyToRoot(object);
 }
