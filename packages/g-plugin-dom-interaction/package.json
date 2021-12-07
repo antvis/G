@@ -1,12 +1,12 @@
 {
   "name": "@antv/g-plugin-dom-interaction",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A G plugin",
   "main": "lib/index.js",
   "module": "es/index.js",
   "types": "es/index.d.ts",
   "unpkg": "dist/index.umd.js",
-   "files": [
+  "files": [
     "package.json",
     "dist",
     "es",
