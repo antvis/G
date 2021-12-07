@@ -35,7 +35,8 @@
     "@mapbox/tiny-sdf": "^1.1.1",
     "earcut": "^2.2.3",
     "eventemitter3": "^4.0.0",
-    "potpack": "^1.0.1"
+    "potpack": "^1.0.1",
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@types/earcut": "^2.1.1",

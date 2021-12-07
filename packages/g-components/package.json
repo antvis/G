@@ -30,7 +30,8 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/util": "^2.0.13"
+    "@antv/util": "^2.0.13",
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
