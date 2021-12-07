@@ -1,6 +1,7 @@
-import type { DisplayObject } from '../display-objects/DisplayObject';
-import { parseColor, ParsedColorStyleProperty } from './color';
-import { ParsedElement, parseDimension } from './dimension';
+import type { ParsedColorStyleProperty } from './color';
+import { parseColor } from './color';
+import type { ParsedElement } from './dimension';
+import { parseDimension } from './dimension';
 
 export interface ParsedFilterStyleProperty {
   name: string;
@@ -21,10 +22,7 @@ const supportedFilters = [
   'invert',
 ];
 
-export function parseFilter(
-  filterStr: string = '',
-  displayObject: DisplayObject | null,
-): ParsedFilterStyleProperty[] {
+export function parseFilter(filterStr: string = ''): ParsedFilterStyleProperty[] {
   filterStr = filterStr.toLowerCase().trim();
   if (filterStr === 'none') {
     return [];

@@ -1,7 +1,8 @@
 import { isEqual, isNil, isObject } from '@antv/util';
-import { mat3, mat4, quat, vec2, vec3 } from 'gl-matrix';
+import type { mat3, vec2 } from 'gl-matrix';
+import { mat4, quat, vec3 } from 'gl-matrix';
 import { DisplayObjectPool } from '../DisplayObjectPool';
-import { Animation } from '../dom/Animation';
+import type { Animation } from '../dom/Animation';
 import { KeyframeEffect } from '../dom/KeyframeEffect';
 import { Element } from '../dom/Element';
 import { ElementEvent } from '../dom/interfaces';
@@ -9,14 +10,10 @@ import type { DisplayObjectConfig, IElement, INode } from '../dom/interfaces';
 import { SHAPE } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { createVec3, fromRotationTranslationScale, getEuler, rad2deg } from '../utils';
-import { Cullable, Renderable } from '../components';
-import {
-  StylePropertyParser,
-  StylePropertyParserFactory,
-  StylePropertyUpdater,
-  StylePropertyUpdaterFactory,
-} from '../property-handlers';
+import type { StylePropertyParser, StylePropertyUpdater } from '../property-handlers';
+import { StylePropertyParserFactory, StylePropertyUpdaterFactory } from '../property-handlers';
 import { globalContainer } from '../global-module';
+import { dirtifyToRoot } from '../services';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
@@ -75,7 +72,7 @@ export class DisplayObject<
   >(StylePropertyParserFactory);
 
   constructor(config: DisplayObjectConfig<StyleProps>) {
-    super(config);
+    super();
     // assign name, id to config
     // eg. group.get('name')
     this.config = config;
@@ -256,7 +253,7 @@ export class DisplayObject<
     // inform clip path targets
     if (this.attributes.clipPathTargets && this.attributes.clipPathTargets.length) {
       this.attributes.clipPathTargets.forEach((target) => {
-        target.emit(ElementEvent.BOUNDS_CHANGED, {});
+        dirtifyToRoot(target);
         target.emit(ElementEvent.ATTRIBUTE_CHANGED, {
           attributeName: 'clipPath',
           oldValue: this,
@@ -721,6 +718,7 @@ export class DisplayObject<
     const [tx, ty] = mat4.getTranslation(vec3.create(), transform);
     const [sx, sy] = mat4.getScaling(vec3.create(), transform);
     const rotation = mat4.getRotation(quat.create(), transform);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [eux, euy, euz] = getEuler(vec3.create(), rotation);
     // gimbal lock at 90 degrees
     return fromRotationTranslationScale(eux || euz, tx, ty, sx, sy);

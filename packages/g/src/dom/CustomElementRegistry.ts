@@ -1,6 +1,6 @@
 import { SHAPE } from '../types';
+import type { DisplayObject } from '../display-objects';
 import {
-  DisplayObject,
   Ellipse,
   Circle,
   Rect,

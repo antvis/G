@@ -1,10 +1,9 @@
-import 'reflect-metadata';
 import { expect } from 'chai';
-import { container, Group } from '../..';
-import { SceneGraphService } from '../../services';
+import { Group } from '../..';
+import { DefaultSceneGraphService } from '../../services/SceneGraphService';
 
 describe('Mixin Visible', () => {
-  const sceneGraphService = container.get<SceneGraphService>(SceneGraphService);
+  const sceneGraphService = new DefaultSceneGraphService();
 
   it('should hide/show itself correctly', () => {
     const group = new Group();

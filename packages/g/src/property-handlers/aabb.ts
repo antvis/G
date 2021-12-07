@@ -1,12 +1,12 @@
 import { vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import { AABB } from '../shapes';
-import { GeometryAABBUpdater, GeometryUpdaterFactory } from '../services';
+import type { GeometryAABBUpdater } from '../services';
+import { dirtifyToRoot, GeometryUpdaterFactory } from '../services';
 import { SHAPE } from '../types';
 import { PARSED_COLOR_TYPE } from './color';
-import { ParsedFilterStyleProperty } from './filter';
+import type { ParsedFilterStyleProperty } from './filter';
 import { globalContainer } from '../global-module';
-import { ElementEvent } from '../dom';
 
 export function updateGeometry(oldValue: number, newValue: number, object: DisplayObject) {
   const geometryUpdaterFactory =
@@ -57,13 +57,7 @@ export function updateGeometry(oldValue: number, newValue: number, object: Displ
     const halfExtents = vec3.fromValues(width / 2, height / 2, depth / 2);
     // anchor is center by default, don't account for lineWidth here
 
-    const {
-      lineWidth = 0,
-      padding = [],
-      anchor = [0, 0],
-      shadowColor,
-      filter = [],
-    } = object.parsedStyle;
+    const { lineWidth = 0, anchor = [0, 0], shadowColor, filter = [] } = object.parsedStyle;
 
     // <Text> use textAlign & textBaseline instead of anchor
     if (object.nodeName === SHAPE.Text) {
@@ -133,6 +127,6 @@ export function updateGeometry(oldValue: number, newValue: number, object: Displ
       }
     });
 
-    object.emit(ElementEvent.BOUNDS_CHANGED, {});
+    dirtifyToRoot(object);
   }
 }

@@ -1,12 +1,9 @@
 import { inject, singleton } from 'mana-syringe';
 import { CanvasConfig } from '../types';
-import {
-  RenderingService,
-  RenderingPlugin,
-  RenderingPluginContribution,
-} from '../services/RenderingService';
+import type { RenderingService, RenderingPlugin } from '../services/RenderingService';
+import { RenderingPluginContribution } from '../services/RenderingService';
 import { RenderingContext, RENDER_REASON } from '../services/RenderingContext';
-import { DisplayObject } from '../display-objects/DisplayObject';
+import type { DisplayObject } from '../display-objects/DisplayObject';
 
 /**
  * Filter dirty renderables and calculate the "dirty rectangle" which will be clear when frame began

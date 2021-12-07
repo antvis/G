@@ -298,7 +298,7 @@ export class TextService {
     return lines.join('\n');
   }
 
-  private isBreakingSpace(char: string, _nextChar?: string): boolean {
+  private isBreakingSpace(char: string): boolean {
     if (typeof char !== 'string') {
       return false;
     }

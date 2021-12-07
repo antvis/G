@@ -1,6 +1,6 @@
 import type { Canvas } from '../Canvas';
 
-let canvasMap: Record<string, Canvas> = {};
+const canvasMap: Record<string, Canvas> = {};
 let defaultCanvasIdCounter = 0;
 /**
  * destroy existed canvas with the same id

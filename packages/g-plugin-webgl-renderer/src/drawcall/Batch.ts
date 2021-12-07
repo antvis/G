@@ -31,10 +31,6 @@ import { preprocessProgramObj_GLSL, ProgramDescriptorSimpleWithOrig } from '../s
 import { makeSortKeyOpaque, RendererLayer } from '../render/utils';
 import { RenderInst } from '../render/RenderInst';
 import { TexturePool } from '../TexturePool';
-import mapDeclarationFrag from '../shader/chunks/map.declaration.frag.glsl';
-import mapFrag from '../shader/chunks/map.frag.glsl';
-import uvDeclarationFrag from '../shader/chunks/uv.declaration.frag.glsl';
-import uvVert from '../shader/chunks/uv.vert.glsl';
 
 let counter = 1;
 export interface Batch {
@@ -66,91 +62,6 @@ export enum AttributeLocation {
 @injectable()
 export abstract class Batch {
   static tag = 'batch';
-
-  /**
-   * common shader chunks
-   * TODO: use *.glsl instead of string
-   */
-  static ShaderLibrary = {
-    BothDeclaration: `
-layout(std140) uniform ub_SceneParams {
-  mat4 u_ProjectionMatrix;
-  mat4 u_ViewMatrix;
-  vec3 u_CameraPosition;
-  float u_DevicePixelRatio;
-};
-    `,
-    VertDeclaration: `
-layout(location = ${AttributeLocation.a_ModelMatrix0}) attribute vec4 a_ModelMatrix0;
-layout(location = ${AttributeLocation.a_ModelMatrix1}) attribute vec4 a_ModelMatrix1;
-layout(location = ${AttributeLocation.a_ModelMatrix2}) attribute vec4 a_ModelMatrix2;
-layout(location = ${AttributeLocation.a_ModelMatrix3}) attribute vec4 a_ModelMatrix3;
-layout(location = ${AttributeLocation.a_Color}) attribute vec4 a_Color;
-layout(location = ${AttributeLocation.a_StrokeColor}) attribute vec4 a_StrokeColor;
-layout(location = ${AttributeLocation.a_StylePacked1}) attribute vec4 a_StylePacked1;
-layout(location = ${AttributeLocation.a_StylePacked2}) attribute vec4 a_StylePacked2;
-layout(location = ${AttributeLocation.a_PickingColor}) attribute vec4 a_PickingColor;
-layout(location = ${AttributeLocation.a_Anchor}) attribute vec2 a_Anchor;
-// layout(location = {AttributeLocation.a_Uv}) attribute vec2 a_Uv;
-
-varying vec4 v_PickingResult;
-varying vec4 v_Color;
-varying vec4 v_StrokeColor;
-varying vec4 v_StylePacked1;
-varying vec4 v_StylePacked2;
-
-#define COLOR_SCALE 1. / 255.
-void setPickingColor(vec3 pickingColor) {
-  v_PickingResult.rgb = pickingColor * COLOR_SCALE;
-}
-    `,
-    FragDeclaration: `
-varying vec4 v_PickingResult;
-varying vec4 v_Color;
-varying vec4 v_StrokeColor;
-varying vec4 v_StylePacked1;
-varying vec4 v_StylePacked2;
-    `,
-    Vert: `
-    mat4 u_ModelMatrix = mat4(a_ModelMatrix0, a_ModelMatrix1, a_ModelMatrix2, a_ModelMatrix3);
-    vec4 u_StrokeColor = a_StrokeColor;
-    float u_Opacity = a_StylePacked1.x;
-    float u_FillOpacity = a_StylePacked1.y;
-    float u_StrokeOpacity = a_StylePacked1.z;
-    float u_StrokeWidth = a_StylePacked1.w;
-    float u_ZIndex = a_PickingColor.w;
-
-    setPickingColor(a_PickingColor.xyz);
-
-    v_Color = a_Color;
-    v_StrokeColor = a_StrokeColor;
-    v_StylePacked1 = a_StylePacked1;
-    v_StylePacked2 = a_StylePacked2;
-
-    #ifdef CLIPSPACE_NEAR_ZERO
-      gl_Position.z = gl_Position.z * 0.5 + 0.5;
-    #endif
-    `,
-    Frag: `
-    vec4 u_Color = v_Color;
-    vec4 u_StrokeColor = v_StrokeColor;
-    float u_Opacity = v_StylePacked1.x;
-    float u_FillOpacity = v_StylePacked1.y;
-    float u_StrokeOpacity = v_StylePacked1.z;
-    float u_StrokeWidth = v_StylePacked1.w;
-    float u_Visible = v_StylePacked2.x;
-
-    gbuf_picking = vec4(v_PickingResult.rgb, 1.0);
-
-    if (u_Visible < 1.0) {
-      discard;
-    }
-    `,
-    UvVert: uvVert,
-    UvFragDeclaration: uvDeclarationFrag,
-    MapFragDeclaration: mapDeclarationFrag,
-    MapFrag: mapFrag,
-  };
 
   static CommonBufferIndex = 0;
 

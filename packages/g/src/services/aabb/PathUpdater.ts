@@ -1,12 +1,11 @@
 import { singleton } from 'mana-syringe';
 import { GeometryAABBUpdater } from './interfaces';
-import type { DisplayObject } from '../../display-objects/DisplayObject';
-import type { ParsedBaseStyleProps, PathCommand } from '../../types';
+import type { ParsedBaseStyleProps } from '../../types';
 import { SHAPE } from '../../types';
 
 @singleton({ token: { token: GeometryAABBUpdater, named: SHAPE.Path } })
 export class PathUpdater implements GeometryAABBUpdater<ParsedBaseStyleProps> {
-  update(parsedStyle: ParsedBaseStyleProps, object: DisplayObject) {
+  update(parsedStyle: ParsedBaseStyleProps) {
     const { path } = parsedStyle;
 
     const { x: minX, y: minY, width, height } = path!.rect;

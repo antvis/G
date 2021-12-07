@@ -1,7 +1,8 @@
 import React, { useCallback, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Canvas, CanvasEvent } from '@antv/g';
-import { Renderer as WebGLRenderer, Kernel } from '@antv/g-webgl';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Plugin, Kernel } from '@antv/g-plugin-gpgpu';
 import { Select, Table } from 'antd';
 
 /**
@@ -37,48 +38,30 @@ const App = function BellmanFordSSSP() {
   const calcShortestPath = async () => {
 
     kernel.createBuffer({
-      group: 0,
-      binding: 0,
-      usage: 'storage',
-      accessMode: 'read',
-      view: new Float32Array(V),
+      name: 'd_in_V',
+      data: new Float32Array(V),
     });
     kernel.createBuffer({
-      group: 0,
-      binding: 1,
-      usage: 'storage',
-      accessMode: 'read',
-      view: new Float32Array(E),
+      name: 'd_in_E',
+      data: new Float32Array(E),
     });
     kernel.createBuffer({
-      group: 0,
-      binding: 2,
-      usage: 'storage',
-      accessMode: 'read',
-      view: new Float32Array(I),
+      name: 'd_in_I',
+      data: new Float32Array(I),
     });
     kernel.createBuffer({
-      group: 0,
-      binding: 3,
-      usage: 'storage',
-      accessMode: 'read',
-      view: new Float32Array(W),
+      name: 'd_in_W',
+      data: new Float32Array(W),
     });
     
     const d_out_D = kernel.createBuffer({
-      group: 0,
-      binding: 4,
-      usage: 'storage',
-      accessMode: 'read_write',
+      name: 'd_out_D',
       view: new Float32Array(new Array(VSize).fill(MAX_DISTANCE)),
     });
     const d_out_Di_View = new Float32Array(new Array(VSize).fill(MAX_DISTANCE));
     const d_out_Di = kernel.createBuffer({
-      group: 0,
-      binding: 5,
-      usage: 'storage',
-      accessMode: 'read_write',
-      view: d_out_Di_View,
+      name: 'd_out_Di',
+      data: d_out_Di_View,
     });
 
     let startTime = window.performance.now();

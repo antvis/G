@@ -12,7 +12,7 @@ import {
   PolylineUpdater,
   RectUpdater,
 } from './services/aabb';
-import { SHAPE } from './types';
+import type { SHAPE } from './types';
 import { TextService } from './services/text';
 import { TextUpdater } from './services/aabb/TextUpdater';
 import { OffscreenCanvasCreator } from './services/text/OffscreenCanvasCreator';
@@ -21,6 +21,7 @@ import {
   SceneGraphSelector,
   SceneGraphSelectorFactory,
 } from './services/SceneGraphSelector';
+import type { ParsedColorStyleProperty, Interpolatable } from './property-handlers';
 import {
   StylePropertyParser,
   StylePropertyMerger,
@@ -43,8 +44,6 @@ import {
   updateTransformOrigin,
   parseTransform,
   mergeTransforms,
-  ParsedColorStyleProperty,
-  Interpolatable,
   parsePath,
   parsePoints,
   mergePaths,

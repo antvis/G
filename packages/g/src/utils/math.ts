@@ -1,5 +1,6 @@
 import { isNumber } from '@antv/util';
-import { mat3, mat4, quat, vec2, vec3, vec4 } from 'gl-matrix';
+import type { quat, vec2, vec4 } from 'gl-matrix';
+import { mat3, mat4, vec3 } from 'gl-matrix';
 
 export function getAngle(angle: number | undefined) {
   if (angle === undefined) {
@@ -39,10 +40,10 @@ export function rad2deg(rad: number) {
  * @see https://math.stackexchange.com/a/417813
  */
 export function getScaling(out: vec2, mat: mat3): vec2 {
-  let m11 = mat[0];
-  let m12 = mat[1];
-  let m21 = mat[3];
-  let m22 = mat[4];
+  const m11 = mat[0];
+  const m12 = mat[1];
+  const m21 = mat[3];
+  const m22 = mat[4];
 
   out[0] = Math.hypot(m11, m12);
   out[1] = Math.hypot(m21, m22);
@@ -58,16 +59,16 @@ export function getRotationInRadians(mat: mat3): number {
 }
 
 function getEulerFromQuat(out: vec3, quat: quat) {
-  let x = quat[0];
-  let y = quat[1];
-  let z = quat[2];
-  let w = quat[3];
-  let x2 = x * x;
-  let y2 = y * y;
-  let z2 = z * z;
-  let w2 = w * w;
-  let unit = x2 + y2 + z2 + w2;
-  let test = x * w - y * z;
+  const x = quat[0];
+  const y = quat[1];
+  const z = quat[2];
+  const w = quat[3];
+  const x2 = x * x;
+  const y2 = y * y;
+  const z2 = z * z;
+  const w2 = w * w;
+  const unit = x2 + y2 + z2 + w2;
+  const test = x * w - y * z;
   if (test > 0.499995 * unit) {
     // TODO: Use glmatrix.EPSILON
     // singularity at the north pole
@@ -90,14 +91,13 @@ function getEulerFromQuat(out: vec3, quat: quat) {
 }
 
 function getEulerFromMat4(out: vec3, m: mat4) {
-  let x;
-  let y;
-  let z;
+  let x: number;
+  let z: number;
   const halfPi = Math.PI * 0.5;
 
   const [sx, sy, sz] = mat4.getScaling(vec3.create(), m);
 
-  y = Math.asin(-m[2] / sx);
+  const y = Math.asin(-m[2] / sx);
 
   if (y < halfPi) {
     if (y > -halfPi) {

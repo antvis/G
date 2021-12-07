@@ -13,6 +13,7 @@ import { FederatedEvent } from './FederatedEvent';
   circle.dispatchEvent(event);
  */
 export class CustomEvent extends FederatedEvent {
+  // eslint-disable-next-line @typescript-eslint/ban-types
   constructor(eventName: string, object?: object) {
     super(null);
 

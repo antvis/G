@@ -1,12 +1,12 @@
-import EventEmitter from 'eventemitter3';
+import type EventEmitter from 'eventemitter3';
 import type { AnimationTimeline } from './AnimationTimeline';
-import { BaseStyleProps, ParsedBaseStyleProps, SHAPE } from '../types';
+import type { BaseStyleProps, ParsedBaseStyleProps, SHAPE } from '../types';
 import type { FederatedEvent } from './FederatedEvent';
-import { CustomElementRegistry } from './CustomElementRegistry';
-import { DisplayObject } from '..';
+import type { CustomElementRegistry } from './CustomElementRegistry';
+import type { DisplayObject } from '..';
 import type { PointLike } from '../shapes';
 import type { Camera } from '../camera';
-import { ContextService } from '../services';
+import type { ContextService } from '../services';
 
 /**
  * built-in events for element
@@ -41,31 +41,33 @@ export enum ElementEvent {
 export interface IEventTarget {
   emitter: EventEmitter;
 
-  on(
+  on: (
     type: string,
     listener: EventListenerOrEventListenerObject | ((...args: any[]) => void),
     options?: boolean | AddEventListenerOptions,
-  ): this;
-  addEventListener(
+  ) => this;
+  addEventListener: (
     type: string,
     listener: EventListenerOrEventListenerObject,
     options?: boolean | AddEventListenerOptions,
-  ): this;
+  ) => this;
 
-  off(
+  off: (
     type: string,
     listener: EventListenerOrEventListenerObject | ((...args: any[]) => void),
     options?: boolean | AddEventListenerOptions,
-  ): this;
-  removeEventListener(
+  ) => this;
+  removeEventListener: (
     type: string,
     listener: EventListenerOrEventListenerObject,
     options?: boolean | AddEventListenerOptions,
-  ): this;
-  removeAllEventListeners(): void;
+  ) => this;
+  removeAllEventListeners: () => void;
 
-  dispatchEvent<T extends FederatedEvent>(e: T): boolean;
-  emit(eventName: string, object: object): void;
+  dispatchEvent: <T extends FederatedEvent>(e: T) => boolean;
+
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  emit: (eventName: string, object: object) => void;
 }
 
 export interface INode extends IEventTarget {
@@ -121,55 +123,59 @@ export interface INode extends IEventTarget {
    */
   readonly previousSibling: (IChildNode & INode) | null;
   textContent: string | null;
-  appendChild<T extends INode>(newChild: T, index?: number): T;
+  appendChild: <T extends INode>(newChild: T, index?: number) => T;
   /**
    * Returns a copy of node. If deep is true, the copy also includes the node's descendants.
    */
-  cloneNode(deep?: boolean): INode;
+  cloneNode: (deep?: boolean) => INode;
   /**
    * Returns a bitmask indicating the position of other relative to node.
    */
-  compareDocumentPosition(other: INode): number;
+  compareDocumentPosition: (other: INode) => number;
   /**
    * Returns true if other is an inclusive descendant of node, and false otherwise.
    */
-  contains(other: INode | null): boolean;
+  contains: (other: INode | null) => boolean;
   /**
    * Returns node's root.
    */
-  getRootNode(options?: GetRootNodeOptions): INode;
+  getRootNode: (options?: GetRootNodeOptions) => INode;
   /**
    * Returns node's ancestor.
    */
-  getAncestor(n: number): INode | null;
+  getAncestor: (n: number) => INode | null;
   /**
    * Traverse in sub tree.
    */
-  forEach(callback: (o: INode) => void | boolean): void;
+  forEach: (callback: (o: INode) => void | boolean) => void;
   /**
    * Returns whether node has children.
    */
-  hasChildNodes(): boolean;
-  insertBefore<T extends INode>(newChild: T, refChild: INode | null): T;
-  isDefaultNamespace(namespace: string | null): boolean;
+  hasChildNodes: () => boolean;
+  insertBefore: <T extends INode>(newChild: T, refChild: INode | null) => T;
+  isDefaultNamespace: (namespace: string | null) => boolean;
   /**
    * Returns whether node and otherNode have the same properties.
    */
-  isEqualNode(otherNode: INode | null): boolean;
-  isSameNode(otherNode: INode | null): boolean;
-  lookupNamespaceURI(prefix: string | null): string | null;
-  lookupPrefix(namespace: string | null): string | null;
+  isEqualNode: (otherNode: INode | null) => boolean;
+  isSameNode: (otherNode: INode | null) => boolean;
+  lookupNamespaceURI: (prefix: string | null) => string | null;
+  lookupPrefix: (namespace: string | null) => string | null;
   /**
    * Removes empty exclusive Text nodes and concatenates the data of remaining contiguous exclusive Text nodes into the first of their nodes.
    */
-  normalize(): void;
-  removeChild<T extends INode>(oldChild: T, destroy?: boolean): T;
-  replaceChild<T extends INode & IChildNode>(newChild: INode, oldChild: T, destroy?: boolean): T;
+  normalize: () => void;
+  removeChild: <T extends INode>(oldChild: T, destroy?: boolean) => T;
+  replaceChild: <T extends INode & IChildNode>(
+    newChild: INode,
+    oldChild: T,
+    destroy?: boolean,
+  ) => T;
 
   /**
    * Destroy itself.
    */
-  destroy(): void;
+  destroy: () => void;
 }
 
 export interface IParentNode {
@@ -191,29 +197,29 @@ export interface IParentNode {
    *
    * Throws a "HierarchyRequestError" DOMException if the constraints of the node tree are violated.
    */
-  append(...nodes: INode[]): void;
+  append: (...nodes: INode[]) => void;
   /**
    * Inserts nodes before the first child of node, while replacing strings in nodes with equivalent Text nodes.
    *
    * Throws a "HierarchyRequestError" DOMException if the constraints of the node tree are violated.
    */
-  prepend(...nodes: INode[]): void;
+  prepend: (...nodes: INode[]) => void;
   /**
    * Returns the first element that is a descendant of node that matches selectors.
    */
-  querySelector<E extends IElement = IElement>(selectors: string): E | null;
+  querySelector: <E extends IElement = IElement>(selectors: string) => E | null;
   /**
    * Returns all element descendants of node that match selectors.
    */
-  querySelectorAll<E extends IElement = IElement>(selectors: string): E[];
+  querySelectorAll: <E extends IElement = IElement>(selectors: string) => E[];
   /**
    * Similar to querySelector, use custom filter instead of selectors.
    */
-  find<E extends IElement = IElement>(filter: (node: E) => boolean): E | null;
+  find: <E extends IElement = IElement>(filter: (node: E) => boolean) => E | null;
   /**
    * Similar to querySelectorAll, use custom filter instead of selectors.
    */
-  findAll<E extends IElement = IElement>(filter: (node: E) => boolean): E[];
+  findAll: <E extends IElement = IElement>(filter: (node: E) => boolean) => E[];
 }
 
 export interface IChildNode extends INode {
@@ -222,23 +228,23 @@ export interface IChildNode extends INode {
    *
    * Throws a "HierarchyRequestError" DOMException if the constraints of the node tree are violated.
    */
-  after(...nodes: INode[]): void;
+  after: (...nodes: INode[]) => void;
   /**
    * Inserts nodes just before node, while replacing strings in nodes with equivalent Text nodes.
    *
    * Throws a "HierarchyRequestError" DOMException if the constraints of the node tree are violated.
    */
-  before(...nodes: INode[]): void;
+  before: (...nodes: INode[]) => void;
   /**
    * Removes node.
    */
-  remove(): void;
+  remove: () => void;
   /**
    * Replaces node with nodes, while replacing strings in nodes with equivalent Text nodes.
    *
    * Throws a "HierarchyRequestError" DOMException if the constraints of the node tree are violated.
    */
-  replaceWith(...nodes: INode[]): void;
+  replaceWith: (...nodes: INode[]) => void;
 }
 
 export interface DisplayObjectConfig<StyleProps> {
@@ -322,10 +328,10 @@ export interface IElement<
   style: StyleProps;
   parsedStyle: ParsedStyleProps;
 
-  getElementById<E extends IElement = IElement>(id: string): E | null;
-  getElementsByName<E extends IElement = IElement>(name: string): E[];
-  getElementsByClassName<E extends IElement = IElement>(className: string): E[];
-  getElementsByTagName<E extends IElement = IElement>(tagName: string): E[];
+  getElementById: <E extends IElement = IElement>(id: string) => E | null;
+  getElementsByName: <E extends IElement = IElement>(name: string) => E[];
+  getElementsByClassName: <E extends IElement = IElement>(className: string) => E[];
+  getElementsByTagName: <E extends IElement = IElement>(tagName: string) => E[];
 
   scrollLeft: number;
   scrollTop: number;
@@ -333,21 +339,21 @@ export interface IElement<
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute
    */
-  setAttribute<Key extends keyof StyleProps>(
+  setAttribute: <Key extends keyof StyleProps>(
     attributeName: Key,
     value: StyleProps[Key],
     force?: boolean,
-  ): void;
+  ) => void;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute
    */
-  getAttribute(attributeName: keyof StyleProps): StyleProps[keyof StyleProps] | undefined;
+  getAttribute: (attributeName: keyof StyleProps) => StyleProps[keyof StyleProps] | undefined;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
    */
-  removeAttribute(attributeName: keyof StyleProps): void;
+  removeAttribute: (attributeName: keyof StyleProps) => void;
 }
 
 export interface IDocument extends INode, IParentNode {
@@ -367,24 +373,24 @@ export interface IDocument extends INode, IParentNode {
   /**
    * Creates an instance of the element for the specified tag.
    */
-  createElement<T extends DisplayObject<StyleProps>, StyleProps extends BaseStyleProps>(
+  createElement: <T extends DisplayObject<StyleProps>, StyleProps extends BaseStyleProps>(
     tagName: string,
     options: DisplayObjectConfig<StyleProps>,
-  ): T;
+  ) => T;
 }
 
 export interface ICanvas extends IEventTarget {
   document: IDocument;
   customElements: CustomElementRegistry;
-  render(): void;
-  destroy(destroyScenegraph?: boolean): void;
-  resize(width: number, height: number): void;
+  render: () => void;
+  destroy: (destroyScenegraph?: boolean) => void;
+  resize: (width: number, height: number) => void;
 
-  getCamera(): Camera;
-  getContextService(): ContextService<unknown>;
+  getCamera: () => Camera;
+  getContextService: () => ContextService<unknown>;
 
-  client2Viewport(client: PointLike): PointLike;
-  viewport2Client(viewport: PointLike): PointLike;
-  canvas2Viewport(canvas: PointLike): PointLike;
-  viewport2Canvas(viewport: PointLike): PointLike;
+  client2Viewport: (client: PointLike) => PointLike;
+  viewport2Client: (viewport: PointLike) => PointLike;
+  canvas2Viewport: (canvas: PointLike) => PointLike;
+  viewport2Canvas: (viewport: PointLike) => PointLike;
 }

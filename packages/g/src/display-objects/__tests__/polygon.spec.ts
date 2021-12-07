@@ -21,7 +21,7 @@ describe('Polygon', () => {
     expect(polygon.getLocalPosition()).eqls(vec3.fromValues(0, 0, 0));
 
     // get bounds
-    let bounds = polygon.getBounds();
+    const bounds = polygon.getBounds();
     if (bounds) {
       expect(bounds.center).eqls(vec3.fromValues(50, 50, 0));
       expect(bounds.halfExtents).eqls(vec3.fromValues(50, 50, 0));

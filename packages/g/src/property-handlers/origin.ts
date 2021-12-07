@@ -21,7 +21,7 @@ export function updateTransformOrigin(
   object: DisplayObject,
   // silent = false,
 ) {
-  let values = value.split(' ');
+  const values = value.split(' ');
   let originX: number | undefined;
   let originY: number | undefined;
 

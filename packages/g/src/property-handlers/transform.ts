@@ -3,7 +3,7 @@ import { parseAngle, parseLength, parseLengthOrPercent, mergeDimensions } from '
 import { parseNumber, mergeNumbers } from './numeric';
 // import { makeMatrixDecomposition, quat, composeMatrix } from '../utils/matrix-decompose';
 import type { DisplayObject } from '../display-objects/DisplayObject';
-import { ParsedElement } from './dimension';
+import type { ParsedElement } from './dimension';
 
 // eg. { t: 'scale', d: [1, 2] }
 interface ParsedTransform {
@@ -149,10 +149,6 @@ export function parseTransform(string: string): ParsedTransform[] {
   return [];
 }
 
-function numberToLongString(x: number) {
-  return x.toFixed(6).replace('.000000', '');
-}
-
 // function mergeMatrices(left: number[][], right: number[][]): [
 //   number[][], number[][], () => string,
 // ] {
@@ -231,7 +227,7 @@ export function mergeTransforms(
 
   let leftResult: number[][] = [];
   let rightResult: number[][] = [];
-  let types: any = [];
+  const types: any = [];
 
   // merge matrix() with matrix3d()
   if (left.length !== right.length) {
@@ -304,7 +300,7 @@ export function mergeTransforms(
   }
 
   if (flipResults) {
-    let tmp = leftResult;
+    const tmp = leftResult;
     leftResult = rightResult;
     rightResult = tmp;
   }
@@ -369,8 +365,8 @@ export function updateTransform(
     ...(newValue || []).map(({ t }) => t),
   ]);
   uniqTypes.forEach((t) => {
-    let value = (newValue || []).find((o) => o.t === t);
-    let old = (oldValue || []).find((o) => o.t === t);
+    const value = (newValue || []).find((o) => o.t === t);
+    const old = (oldValue || []).find((o) => o.t === t);
     if (t === 'scale') {
       // scale(1) scale(1, 1)
       const newScale = (value && (value.d as number[])) || [1, 1];

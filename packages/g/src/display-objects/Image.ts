@@ -1,7 +1,7 @@
 import { SHAPE } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
-import { DisplayObjectConfig } from '../dom';
+import type { DisplayObjectConfig } from '../dom';
 
 export interface ImageStyleProps extends BaseStyleProps {
   img: string | HTMLImageElement;

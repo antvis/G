@@ -5,8 +5,8 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { Group, Canvas, Circle, Rect, CustomEvent, ElementEvent } from '../../';
-import { Renderer as CanvasRenderer } from '../../../../g-canvas';
+import { Group, Canvas, Circle, Rect, CustomEvent, ElementEvent } from '../../../lib';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);

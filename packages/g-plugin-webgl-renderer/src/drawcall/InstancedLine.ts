@@ -20,6 +20,8 @@ import { RenderInst } from '../render/RenderInst';
 import { DeviceProgram } from '../render/DeviceProgram';
 import { Batch, AttributeLocation } from './Batch';
 import { ShapeRenderer } from '../tokens';
+import vert from '../shader/instanced-line.vert';
+import frag from '../shader/instanced-line.frag';
 
 export const segmentInstanceGeometry = [0, -0.5, 0, 0, 1, -0.5, 1, 0, 1, 0.5, 1, 1, 0, 0.5, 0, 1];
 
@@ -33,74 +35,9 @@ export class InstancedLineProgram extends DeviceProgram {
 
   static ub_ObjectParams = 1;
 
-  both: string = `
-  ${Batch.ShaderLibrary.BothDeclaration}
-  `;
+  vert: string = vert;
 
-  vert: string = `
-  ${Batch.ShaderLibrary.VertDeclaration}
-  layout(location = ${InstancedLineProgram.a_Position}) attribute vec2 a_Position;
-  layout(location = ${InstancedLineProgram.a_PointA}) attribute vec2 a_PointA;
-  layout(location = ${InstancedLineProgram.a_PointB}) attribute vec2 a_PointB;
-  layout(location = ${InstancedLineProgram.a_Cap}) attribute float a_Cap;
-  #ifdef USE_UV
-    layout(location = ${InstancedLineProgram.a_Uv}) attribute vec2 a_Uv;
-    varying vec2 v_Uv;
-  #endif
-  layout(location = ${InstancedLineProgram.a_Dash}) attribute vec3 a_Dash;
-
-  varying vec4 v_Dash;
-  // varying vec2 v_Normal;
-
-  void main() {
-    ${Batch.ShaderLibrary.Vert}
-    ${Batch.ShaderLibrary.UvVert}
-
-    vec2 xBasis = a_PointB - a_PointA;
-    vec2 yBasis = normalize(vec2(-xBasis.y, xBasis.x));
-    // v_Normal = normalize(yBasis) * sign(a_Position.x - 0.5);
-
-    vec2 point = a_PointA + xBasis * a_Position.x + yBasis * u_StrokeWidth * a_Position.y;
-    point = point - a_Anchor.xy * abs(xBasis);
-
-    // round & square
-    if (a_Cap > 1.0) {
-      point += sign(a_Position.x - 0.5) * normalize(xBasis) * vec2(u_StrokeWidth / 2.0);
-    }
-
-    gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * vec4(point, 0.0, 1.0);
-
-    v_Dash = vec4(a_Position.x, a_Dash);
-  }
-  `;
-
-  frag: string = `
-  ${Batch.ShaderLibrary.FragDeclaration}
-  ${Batch.ShaderLibrary.UvFragDeclaration}
-  ${Batch.ShaderLibrary.MapFragDeclaration}
-
-  varying vec4 v_Dash;
-  // varying vec2 v_Normal;
-  
-  void main() {
-    ${Batch.ShaderLibrary.Frag}
-    ${Batch.ShaderLibrary.MapFrag}
-
-    gl_FragColor = u_StrokeColor;
-    #ifdef USE_MAP
-      gl_FragColor = u_Color;
-    #endif
-
-    // float blur = 1. - smoothstep(0.98, 1., length(v_Normal));
-    float u_dash_offset = v_Dash.y;
-    float u_dash_array = v_Dash.z;
-    float u_dash_ratio = v_Dash.w;
-    gl_FragColor.a = gl_FragColor.a
-      // * blur
-      * u_Opacity
-      * ceil(mod(v_Dash.x + u_dash_offset, u_dash_array) - (u_dash_array * u_dash_ratio));
-  }
-`;
+  frag: string = frag;
 }
 
 const LINE_CAP_MAP = {

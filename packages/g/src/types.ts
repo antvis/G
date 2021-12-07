@@ -1,5 +1,5 @@
 import type { vec2, vec3 } from 'gl-matrix';
-import { ParsedPathStyleProps, ParsedPolylineStyleProps } from './display-objects';
+import type { ParsedPathStyleProps, ParsedPolylineStyleProps } from './display-objects';
 import type { DisplayObject } from './display-objects';
 import type { ParsedColorStyleProperty } from './property-handlers';
 import type { IRenderer } from './AbstractRenderer';

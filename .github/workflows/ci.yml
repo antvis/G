@@ -1,0 +1,56 @@
+name: CI
+
+on: ['push', 'pull_request']
+
+jobs:
+  lint:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: npm install
+        run: |
+          npm install
+      - name: lint
+        run: |
+          npm run lint
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: npm install
+        run: |
+          npm install
+      - name: build
+        run: |
+          npm run build
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: npm install
+        run: |
+          npm install
+      - name: build
+        run: |
+          npm run build
+      - name: test
+        run: |
+          npm run cov
+        env:
+          CI: true
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

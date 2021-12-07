@@ -76,6 +76,4 @@ export class AnimationEffectTiming implements EffectTiming {
   currentIteration: number | null = null;
 
   progress: number | null = null;
-
-  constructor() {}
 }

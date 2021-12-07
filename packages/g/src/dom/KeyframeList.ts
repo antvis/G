@@ -150,7 +150,7 @@ export function normalizeKeyframes(
     let previousIndex = 0;
     let previousOffset = Number(keyframes[0].computedOffset);
     for (let i = 1; i < length; i++) {
-      let offset = Number(keyframes[i].computedOffset);
+      const offset = Number(keyframes[i].computedOffset);
       if (
         offset !== null &&
         offset !== undefined &&

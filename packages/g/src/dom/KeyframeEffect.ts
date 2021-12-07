@@ -16,7 +16,7 @@ export function makeTiming(timingInput: KeyframeEffectOptions, forGroup: boolean
   if (typeof timingInput === 'number' && !isNaN(timingInput)) {
     timing.duration = timingInput;
   } else if (timingInput !== undefined) {
-    (Object.keys(timingInput) as Array<keyof EffectTiming>).forEach((property) => {
+    (Object.keys(timingInput) as (keyof EffectTiming)[]).forEach((property) => {
       if (
         timingInput[property] !== undefined &&
         timingInput[property] !== null &&
@@ -128,7 +128,7 @@ export class KeyframeEffect {
         }
         return target[prop];
       },
-      set: (_, prop, value) => {
+      set: () => {
         return true;
       },
     });

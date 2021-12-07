@@ -21,7 +21,7 @@ export type TypeEasingFunction = (
   params?: (string | number)[],
   duration?: number,
 ) => number;
-export type TypeColor = string | number | Array<string | number>;
+export type TypeColor = string | number | (string | number)[];
 export type TypeRGBAFunction = (color: TypeColor) => number[];
 
 /**
@@ -44,7 +44,7 @@ export const Bounce: TypeEasingFunction = (t) => {
 };
 
 export const Elastic: TypeEasingFunction = (t, params: (string | number)[] = []) => {
-  let [amplitude = 1, period = 0.5] = params;
+  const [amplitude = 1, period = 0.5] = params;
   const a = limit(Number(amplitude), 1, 10);
   const p = limit(Number(period), 0.1, 2);
   if (t === 0 || t === 1) return t;
@@ -100,7 +100,7 @@ export const parseEasingParameters = (str: string) => {
   const match = /(\(|\s)([^)]+)\)?/.exec(str);
   return match
     ? match[2].split(',').map((value) => {
-        let num = parseFloat(value);
+        const num = parseFloat(value);
         return !Number.isNaN(num) ? num : value.trim();
       })
     : [];
@@ -117,6 +117,7 @@ export const parseEasingParameters = (str: string) => {
 export const getEasingDuration = (easing: string | TypeEasingFunction = 'spring') => {
   if (EasingDurationCache.has(easing)) return EasingDurationCache.get(easing);
 
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const easingFunction = typeof easing == 'function' ? easing : getEasingFunction(easing as string);
   const params = typeof easing == 'function' ? [] : parseEasingParameters(easing);
   const frame = 1 / 6;
@@ -145,14 +146,14 @@ export const getEasingDuration = (easing: string | TypeEasingFunction = 'spring'
   https://github.com/sozi-projects/Sozi/blob/d72e44ebd580dc7579d1e177406ad41e632f961d/src/js/player/Timing.js
 */
 export const Steps: TypeEasingFunction = (t: number, params = []) => {
-  let [steps = 10, type] = params as [number, string];
+  const [steps = 10, type] = params as [number, string];
   const trunc = type == 'start' ? Math.ceil : Math.floor;
   return trunc(limit(t, 0, 1) * steps) / steps;
 };
 
 // @ts-ignore
 export const Bezier: TypeEasingFunction = (t: number, params: number[] = []) => {
-  let [mX1, mY1, mX2, mY2] = params;
+  const [mX1, mY1, mX2, mY2] = params;
   return bezier(mX1, mY1, mX2, mY2)(t);
 };
 
@@ -182,7 +183,7 @@ export const EaseOutIn = (ease: TypeEasingFunction): TypeEasingFunction => {
 /**
  * The default list of easing functions, do note this is different from {@link EASING}
  */
-export const EasingFunctions: { [key: string]: TypeEasingFunction } = {
+export const EasingFunctions: Record<string, TypeEasingFunction> = {
   steps: Steps,
   'step-start': (t) => Steps(t, [1, 'start']),
   'step-end': (t) => Steps(t, [1, 'end']),
@@ -280,6 +281,6 @@ export const registerEasingFunction = (key: string, fn: TypeEasingFunction) => {
 /**
  * Allows you to register multiple new easing functions
  */
-export const registerEasingFunctions = (...obj: Array<typeof EasingFunctions>) => {
+export const registerEasingFunctions = (...obj: typeof EasingFunctions[]) => {
   Object.assign(EasingFunctions, ...obj);
 };

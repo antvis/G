@@ -1,7 +1,6 @@
 export default {
-  // disableTypeCheck: true,
   // umd: {
-  //   name: 'GWebGL',
+  //   name: 'G.WebGL',
   //   globals: {
   //     '@antv/g': 'window.G',
   //     'mana-syringe': 'window.G.ManaSyringe',

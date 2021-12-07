@@ -1,5 +1,6 @@
-import { mat4, vec3 } from 'gl-matrix';
-import { Plane } from './Plane';
+import type { mat4 } from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
+import type { Plane } from './Plane';
 
 /**
  * Axis-Aligned Bounding Box
@@ -139,14 +140,14 @@ export class AABB {
       bc,
       m[12] + mx0 * ac[0] + mx1 * ac[1] + mx2 * ac[2],
       m[13] + my0 * ac[0] + my1 * ac[1] + my2 * ac[2],
-      m[14] + mz0 * ac[0] + mz1 * ac[1] + mz2 * ac[2]
+      m[14] + mz0 * ac[0] + mz1 * ac[1] + mz2 * ac[2],
     );
 
     vec3.set(
       br,
       mx0a * ar[0] + mx1a * ar[1] + mx2a * ar[2],
       my0a * ar[0] + my1a * ar[1] + my2a * ar[2],
-      mz0a * ar[0] + mz1a * ar[1] + mz2a * ar[2]
+      mz0a * ar[0] + mz1a * ar[1] + mz2a * ar[2],
     );
 
     this.min = vec3.sub(this.min, bc, br);

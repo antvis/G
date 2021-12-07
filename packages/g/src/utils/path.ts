@@ -3,10 +3,12 @@
  * @see http://thednp.github.io/kute.js/svgCubicMorph.html
  */
 import { Cubic as CubicUtil } from '@antv/g-math';
-import { mat4, vec3 } from 'gl-matrix';
+import type { mat4 } from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
 import type { Circle, Ellipse, Line, Path, Polyline, Rect } from '../display-objects';
 import type { DisplayObject } from '../display-objects/DisplayObject';
-import { PathCommand, SHAPE } from '../types';
+import type { PathCommand } from '../types';
+import { SHAPE } from '../types';
 
 function midPoint(a: [number, number], b: [number, number], t: number): [number, number] {
   const ax = a[0];
@@ -230,7 +232,7 @@ function commandsToPathString(
   anchor: [number, number],
   parsedStyle: any,
 ) {
-  const { x, y, width, height } = parsedStyle;
+  const { x, y } = parsedStyle;
   return commands.reduce((prev, cur) => {
     let path = '';
     if (cur[0] === 'M' || cur[0] === 'L') {
@@ -264,12 +266,12 @@ function lineToCommands(x1: number, y1: number, x2: number, y2: number): PathCom
 
 function ellipseToCommands(rx: number, ry: number, cx: number, cy: number): PathCommand[] {
   const factor = ((-1 + Math.sqrt(2)) / 3) * 4;
-  let dx = rx * factor;
-  let dy = ry * factor;
-  let left = cx - rx;
-  let right = cx + rx;
-  let top = cy - ry;
-  let bottom = cy + ry;
+  const dx = rx * factor;
+  const dy = ry * factor;
+  const left = cx - rx;
+  const right = cx + rx;
+  const top = cy - ry;
+  const bottom = cy + ry;
 
   return [
     ['M', left, cy],
@@ -287,13 +289,7 @@ function polygonToCommands(points: [number, number][]): PathCommand[] {
   });
 }
 
-function rectToCommands(
-  width: number,
-  height: number,
-  x: number,
-  y: number,
-  radius: number,
-): PathCommand[] {
+function rectToCommands(width: number, height: number, x: number, y: number): PathCommand[] {
   // FIXME: account for radius
   return [
     ['M', x, y],
@@ -335,8 +331,8 @@ export function convertToPath(object: DisplayObject) {
       commands = polygonToCommands(points.points);
       break;
     case SHAPE.Rect:
-      const { width, height, x, y, radius } = (object as Rect).parsedStyle;
-      commands = rectToCommands(width, height, x, y, radius);
+      const { width, height, x, y } = (object as Rect).parsedStyle;
+      commands = rectToCommands(width, height, x, y);
       break;
     case SHAPE.Path:
       commands = (object as Path).parsedStyle.path.curve;

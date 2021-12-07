@@ -1,25 +1,25 @@
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
-import { FederatedEvent } from '../dom/FederatedEvent';
+import type { FederatedEvent } from '../dom/FederatedEvent';
 
 // @see https://stackoverflow.com/questions/44153378/typescript-abstract-optional-method
 export interface CustomElement<CustomElementStyleProps> {
   /**
    * fired after element insert into DOM tree
    */
-  connectedCallback?(): void;
+  connectedCallback?: () => void;
 
   /**
    * fired before element removed from DOM tree
    */
-  disconnectedCallback?(): void;
+  disconnectedCallback?: () => void;
 
-  attributeChangedCallback?<Key extends keyof CustomElementStyleProps>(
+  attributeChangedCallback?: <Key extends keyof CustomElementStyleProps>(
     name: Key,
     oldValue: CustomElementStyleProps[Key],
     newValue: CustomElementStyleProps[Key],
-  ): void;
+  ) => void;
 }
 
 /**
@@ -91,7 +91,8 @@ export abstract class CustomElement<
     }
 
     const { attributeName, oldValue, newValue } = e.detail;
-    this.attributeChangedCallback &&
+    if (this.attributeChangedCallback) {
       this.attributeChangedCallback(attributeName, oldValue, newValue);
+    }
   };
 }

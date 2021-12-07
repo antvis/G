@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';

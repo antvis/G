@@ -1,7 +1,6 @@
 export default {
-  // disableTypeCheck: true,
   // umd: {
-  //   name: 'GPluginControl',
+  //   name: 'G.Plugin.Control',
   //   globals: {
   //     '@antv/g': 'window.G',
   //     'mana-syringe': 'window.G.ManaSyringe',

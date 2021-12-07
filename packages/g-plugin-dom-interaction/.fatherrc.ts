@@ -1,7 +1,6 @@
 export default {
-  // disableTypeCheck: true,
   // umd: {
-  //   name: 'GPluginDOMInteraction',
+  //   name: 'G.Plugin.DOMInteraction',
   //   globals: {
   //     '@antv/g': 'window.G',
   //     'mana-syringe': 'window.G.ManaSyringe',

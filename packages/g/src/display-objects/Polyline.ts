@@ -2,7 +2,7 @@ import { Line as LineUtil } from '@antv/g-math';
 import { SHAPE, LINE_CAP, LINE_JOIN } from '../types';
 import type { BaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
-import { DisplayObjectConfig } from '../dom';
+import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 
 export interface PolylineStyleProps extends BaseStyleProps {

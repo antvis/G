@@ -1,13 +1,13 @@
 import type { AnimationEffectTiming } from '../dom';
 import type { IElement } from '../dom/interfaces';
 import { globalContainer } from '../global-module';
+import type { Interpolatable } from '../property-handlers/interfaces';
 import {
-  Interpolatable,
   StylePropertyMergerFactory,
   StylePropertyParserFactory,
 } from '../property-handlers/interfaces';
 import { parseEasingFunction } from './animation';
-import { TypeEasingFunction } from './custom-easing';
+import type { TypeEasingFunction } from './custom-easing';
 
 export function convertEffectInput(
   keyframes: ComputedKeyframe[],
@@ -87,14 +87,14 @@ function makeInterpolations(
   propertySpecificKeyframeGroups: Record<string, PropertySpecificKeyframe[]>,
   target: IElement | null,
 ) {
-  let interpolations = [];
+  const interpolations = [];
   for (const groupName in propertySpecificKeyframeGroups) {
     const keyframes = propertySpecificKeyframeGroups[groupName];
     for (let i = 0; i < keyframes.length - 1; i++) {
       let startIndex = i;
       let endIndex = i + 1;
-      let startOffset = keyframes[startIndex].computedOffset;
-      let endOffset = keyframes[endIndex].computedOffset;
+      const startOffset = keyframes[startIndex].computedOffset;
+      const endOffset = keyframes[endIndex].computedOffset;
       let applyFrom = startOffset;
       let applyTo = endOffset;
 
@@ -164,6 +164,7 @@ function propertyInterpolation(
   // merger [left, right, n2string()]
   const interpolationArgs = merger && merger(parsedLeft, parsedRight, target);
   if (interpolationArgs) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const interp = InterpolationFactory(...interpolationArgs);
     return function (t: number) {
       if (t === 0) return left;
@@ -172,14 +173,9 @@ function propertyInterpolation(
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   return InterpolationFactory(false, true, function (bool: boolean) {
     return bool ? right : left;
-  });
-}
-
-function toCamelCase(property: string) {
-  return property.replace(/-(.)/g, function (_, c) {
-    return c.toUpperCase();
   });
 }
 
@@ -207,12 +203,13 @@ function interpolate(from: Interpolatable, to: Interpolatable, f: number): Inter
       return r;
     }
   }
-  throw 'Mismatched interpolation arguments ' + from + ':' + to;
+  throw new Error('Mismatched interpolation arguments ' + from + ':' + to);
 }
 
 const InterpolationFactory = (
   from: Interpolatable,
   to: Interpolatable,
+  // eslint-disable-next-line @typescript-eslint/ban-types
   convertToString: Function,
 ) => {
   return (f: number) => {

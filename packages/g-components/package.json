@@ -9,8 +9,6 @@
   "files": [
     "package.json",
     "dist",
-    "es",
-    "lib",
     "LICENSE",
     "README.md"
   ],
@@ -39,7 +37,8 @@
     "@types/jest": "^25.0.0"
   },
   "peerDependencies": {
-    "@antv/g": "^1.0.1"
+    "@antv/g": "^5.0.1",
+    "mana-syringe": "^0.2.2"
   },
   "scripts": {
     "umd": "webpack"

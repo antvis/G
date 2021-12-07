@@ -67,7 +67,8 @@ export abstract class Node extends EventTarget implements INode {
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/getRootNode
    */
-  getRootNode(options?: GetRootNodeOptions): INode {
+  getRootNode(): INode {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     let temp: INode | null = this;
     while (temp.parentNode) {
       temp = temp.parentNode;
@@ -77,15 +78,19 @@ export abstract class Node extends EventTarget implements INode {
   hasChildNodes(): boolean {
     return this.childNodes.length > 0;
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isDefaultNamespace(namespace: string | null): boolean {
     throw new Error('Method not implemented.');
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   compareDocumentPosition(other: INode): number {
     throw new Error('Method not implemented.');
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   lookupNamespaceURI(prefix: string | null): string | null {
     throw new Error('Method not implemented.');
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   lookupPrefix(namespace: string | null): string | null {
     throw new Error('Method not implemented.');
   }
@@ -181,6 +186,7 @@ export abstract class Node extends EventTarget implements INode {
   }
 
   getAncestor(n: number): INode | null {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     let temp: INode | null = this;
     while (n > 0 && temp) {
       temp = temp.parentNode;

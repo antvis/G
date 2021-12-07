@@ -9,7 +9,7 @@
         "target": "es5",
         "outDir": "lib",
         "jsx": "react",
-        "importHelpers": true,
+        "importHelpers": false,
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,

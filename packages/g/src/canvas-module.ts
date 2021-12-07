@@ -3,7 +3,7 @@ import { DirtyCheckPlugin } from './plugins/DirtyCheckPlugin';
 import { CullingPlugin, CullingStrategyContribution } from './plugins/CullingPlugin';
 import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
 import { FrustumCullingStrategy } from './plugins/FrustumCullingStrategy';
-import { ContextService, RenderingPluginContribution, RenderingService } from './services';
+import { RenderingPluginContribution, RenderingService } from './services';
 import { EventPlugin } from './plugins/EventPlugin';
 import { EventService } from './services';
 

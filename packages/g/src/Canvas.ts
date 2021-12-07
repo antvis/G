@@ -1,4 +1,5 @@
-import { CanvasConfig, Cursor } from './types';
+import type { Cursor } from './types';
+import { CanvasConfig } from './types';
 import { cleanExistedCanvas } from './utils/canvas';
 import { DisplayObject } from './display-objects/DisplayObject';
 import { ContextService } from './services';
@@ -7,13 +8,13 @@ import { RenderingContext, RENDER_REASON } from './services/RenderingContext';
 import { EventService } from './services/EventService';
 import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE, DefaultCamera } from './camera';
 import { containerModule as commonContainerModule } from './canvas-module';
-import { AbstractRenderer, IRenderer } from './AbstractRenderer';
+import type { AbstractRenderer, IRenderer } from './AbstractRenderer';
 import { cancelAnimationFrame } from './utils/raf';
 import type { PointLike } from './shapes';
-import { Document, EventTarget, ElementEvent, FederatedEvent, Element } from './dom';
+import type { FederatedEvent, Element } from './dom';
+import { Document, EventTarget, ElementEvent } from './dom';
 import type { IElement, INode, ICanvas } from './dom/interfaces';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
-import { Renderable } from './components';
 import { globalContainer } from './global-module';
 
 export enum CanvasEvent {
@@ -293,8 +294,6 @@ export class Canvas extends EventTarget implements ICanvas {
         renderable.renderBoundsDirty = true;
         renderable.boundsDirty = true;
         renderable.dirty = true;
-
-        // element.emit(ElementEvent.BOUNDS_CHANGED, {});
       }
     });
 

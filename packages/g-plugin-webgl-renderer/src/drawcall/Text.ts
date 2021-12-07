@@ -21,6 +21,8 @@ import GlyphAtlas from './symbol/GlyphAtlas';
 import { RenderInstList } from '../render/RenderInstList';
 import { Renderable3D } from '../components/Renderable3D';
 import { ShapeRenderer } from '../tokens';
+import vert from '../shader/text.vert';
+import frag from '../shader/text.frag';
 
 class TextProgram extends DeviceProgram {
   static a_Tex = AttributeLocation.MAX;
@@ -28,71 +30,9 @@ class TextProgram extends DeviceProgram {
 
   static ub_ObjectParams = 1;
 
-  both: string = `
-  ${Batch.ShaderLibrary.BothDeclaration}
-  layout(std140) uniform ub_ObjectParams {
-    vec2 u_SDFMapSize;
-    float u_FontSize;
-    float u_GammaScale;
-    float u_StrokeBlur;
-    bool u_HasStroke;
-  };
-  `;
+  vert: string = vert;
 
-  vert: string = `
-  ${Batch.ShaderLibrary.VertDeclaration}
-  layout(location = ${TextProgram.a_Tex}) attribute vec2 a_Tex;
-  layout(location = ${TextProgram.a_Offset}) attribute vec2 a_Offset;
-
-  varying vec2 v_UV;
-  varying float v_GammaScale;
-  
-  void main() {
-    ${Batch.ShaderLibrary.Vert}
-
-    v_UV = a_Tex / u_SDFMapSize;
-
-    float fontScale = u_FontSize / 24.;
-
-    gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * vec4(a_Offset * fontScale, -u_ZIndex, 1.0);
-    v_GammaScale = gl_Position.w;
-  }
-  `;
-
-  frag: string = `
-  varying vec2 v_UV;
-  varying float v_GammaScale;
-
-  ${Batch.ShaderLibrary.FragDeclaration}
-
-  uniform sampler2D u_SDFMap;
-
-  #define SDF_PX 8.0
-  
-  void main() {
-    ${Batch.ShaderLibrary.Frag}
-
-    float dist = texture(SAMPLER_2D(u_SDFMap), v_UV).a;
-
-    float EDGE_GAMMA = 0.105 / u_DevicePixelRatio;
-    float fontScale = u_FontSize / 24.0;
-    highp float gamma = EDGE_GAMMA / (fontScale * u_GammaScale);
-    lowp vec4 color = u_Color;
-    lowp float buff = (256.0 - 64.0) / 256.0;
-    float opacity = u_FillOpacity;
-    if (u_HasStroke && u_StrokeWidth > 0.0) {
-      color = u_StrokeColor;
-      gamma = (u_StrokeBlur * 1.19 / SDF_PX + EDGE_GAMMA) / (fontScale * u_GammaScale);
-      buff = (6.0 - u_StrokeWidth / fontScale / 2.0) / SDF_PX;
-      opacity = u_StrokeOpacity;
-    }
-
-    highp float gamma_scaled = gamma * v_GammaScale;
-    highp float alpha = smoothstep(buff - gamma_scaled, buff + gamma_scaled, dist);
-
-    gl_FragColor = color * (alpha * opacity * u_Opacity);
-  }
-  `;
+  frag: string = frag;
 }
 
 @injectable({

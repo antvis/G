@@ -1,5 +1,5 @@
 import type { DisplayObject } from '../display-objects/DisplayObject';
-import { Element } from '../dom';
+import type { Element } from '../dom';
 
 export function updateZIndex(oldZIndex: number, newZIndex: number, object: DisplayObject) {
   if (object.parentNode) {

@@ -5,7 +5,6 @@ export default {
   nodeResolveOpts: {
     mainFields: ['module', 'browser', 'main'],
   },
-  // extraBabelPresets: [['@babel/preset-env', { exclude: ['proposal-dynamic-import'] }]],
   // yarn build order
   pkgs: [
     'g-math',
@@ -21,10 +20,10 @@ export default {
     'g-svg',
     'g-plugin-webgl-renderer',
     'g-webgl',
-    'g-components',
     'g-plugin-3d',
     'g-plugin-control',
     'g-plugin-gpgpu',
     'g-webgpu-compiler',
+    'g-components',
   ],
 };

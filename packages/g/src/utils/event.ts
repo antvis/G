@@ -1,5 +1,5 @@
 import { isUndefined } from '@antv/util';
-import { InteractivePointerEvent } from '../types';
+import type { InteractivePointerEvent } from '../types';
 // use `self` instead of `window`, account for non-window contexts, such as in Web Workers
 // @see https://developer.mozilla.org/en-US/docs/Web/API/Window/self
 export const supportsTouchEvents = !!self.TouchEvent;
