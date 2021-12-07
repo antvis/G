@@ -77,4 +77,4 @@ tsconfig.tsbuildinfo
 
 
 **/rust/target/
-**/*/pkg/
+packages/**/*/pkg/
