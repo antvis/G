@@ -12,11 +12,11 @@ chai.use(sinonChai);
 
 describe('DOM Element API', () => {
   it('should appendChild with before & after correctly', () => {
-    const group1 = new Element({});
-    const group2 = new Element({});
-    const group3 = new Element({});
-    const group4 = new Element({});
-    const group5 = new Element({});
+    const group1 = new Element();
+    const group2 = new Element();
+    const group3 = new Element();
+    const group4 = new Element();
+    const group5 = new Element();
     group5.name = 'group5';
     expect(group1.hasChildNodes()).to.false;
     expect(group1.getRootNode()).to.eqls(group1);
@@ -58,9 +58,9 @@ describe('DOM Element API', () => {
     expect(group1.lastChild).to.eqls(group4);
 
     // insert in a batch with after
-    const group6 = new Element({});
+    const group6 = new Element();
     group6.name = 'group6';
-    const group7 = new Element({});
+    const group7 = new Element();
     group7.name = 'group7';
     group5.after(group6, group7);
     expect(group1.childNodes.length).to.eqls(5);
@@ -80,11 +80,11 @@ describe('DOM Element API', () => {
   });
 
   it('should append & prepend correctly', () => {
-    const group1 = new Element({});
-    const group2 = new Element({});
-    const group3 = new Element({});
-    const group4 = new Element({});
-    const group5 = new Element({});
+    const group1 = new Element();
+    const group2 = new Element();
+    const group3 = new Element();
+    const group4 = new Element();
+    const group5 = new Element();
 
     group1.append(group2, group3);
     expect(group1.childNodes.length).to.eqls(2);
@@ -98,13 +98,13 @@ describe('DOM Element API', () => {
   });
 
   it('should replaceWith correctly', () => {
-    const group1 = new Element({});
-    const group2 = new Element({});
-    const group3 = new Element({});
-    const group4 = new Element({});
-    const group5 = new Element({});
-    const group6 = new Element({});
-    const group7 = new Element({});
+    const group1 = new Element();
+    const group2 = new Element();
+    const group3 = new Element();
+    const group4 = new Element();
+    const group5 = new Element();
+    const group6 = new Element();
+    const group7 = new Element();
 
     // 1 -> 2 -> 3
     // 1 -> 4

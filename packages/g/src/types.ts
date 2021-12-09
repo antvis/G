@@ -166,26 +166,6 @@ export interface ParsedBaseStyleProps
   offsetY?: number;
 }
 
-// export type ShapeAttrs = {
-//   /** 圆半径 */
-//   r?: number;
-
-//
-//   /** Path 路径 */
-//   path?: string | object[];
-//   /** 图形坐标点 */
-//   points?: object[];
-
-//   /** 阴影模糊效果程度 */
-//   shadowBlur?: number;
-//   /** 阴影颜色 */
-//   shadowColor?: ColorType;
-//   /** 阴影 x 方向偏移量 */
-//   shadowOffsetX?: number;
-//   /** 阴影 y 方向偏移量 */
-//   shadowOffsetY?: number;
-//
-
 // Cursor style
 // See: https://developer.mozilla.org/en-US/docs/Web/CSS/cursor
 export type Cursor =
@@ -281,19 +261,6 @@ export interface CanvasConfig {
 
   [key: string]: any;
 }
-
-export type ChangeType =
-  | 'changeSize'
-  | 'add'
-  | 'sort'
-  | 'clear'
-  | 'attr'
-  | 'show'
-  | 'hide'
-  | 'zIndex'
-  | 'remove'
-  | 'matrix'
-  | 'clip';
 
 type A = ['a' | 'A', number, number, number, number, number, number, number];
 type C = ['c' | 'C', number, number, number, number, number, number];

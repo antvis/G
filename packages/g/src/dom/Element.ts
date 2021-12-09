@@ -108,7 +108,7 @@ export class Element<
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  cloneNode(deep?: boolean): this {
+  cloneNode(deep?: boolean): INode {
     throw new Error('Method not implemented.');
   }
 
@@ -125,28 +125,24 @@ export class Element<
     return child;
   }
 
-  insertBefore<T extends IChildNode, R extends IChildNode>(newChild: T, refChild: R | null): T {
+  insertBefore<T extends INode>(newChild: T, refChild: INode | null): T {
     if (!refChild) {
       this.appendChild(newChild);
     } else {
-      const index = this.childNodes.indexOf(refChild);
+      const index = this.childNodes.indexOf(refChild as IChildNode);
       this.appendChild(newChild, index - 1);
     }
     return newChild;
   }
 
-  replaceChild<N extends IChildNode, T extends IChildNode>(
-    newChild: N,
-    oldChild: T,
-    destroy?: boolean,
-  ): T {
-    const index = this.childNodes.indexOf(oldChild);
+  replaceChild<T extends INode>(newChild: INode, oldChild: T, destroy?: boolean): T {
+    const index = this.childNodes.indexOf(oldChild as unknown as IChildNode);
     this.removeChild(oldChild, destroy);
     this.appendChild(newChild, index);
     return oldChild;
   }
 
-  removeChild<T extends IChildNode>(child: T, destroy = true): T {
+  removeChild<T extends INode>(child: T, destroy = true): T {
     // should emit on itself before detach
     child.emit(ElementEvent.REMOVED, {
       parent: this,
@@ -236,7 +232,7 @@ export class Element<
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/after
    */
-  after(...nodes: IChildNode[]) {
+  after(...nodes: INode[]) {
     if (this.parentNode) {
       const index = this.parentNode.childNodes.indexOf(this);
       nodes.forEach((node, i) => this.parentNode?.appendChild(node!, index + i + 1));
@@ -246,19 +242,19 @@ export class Element<
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/before
    */
-  before(...nodes: IChildNode[]) {
+  before(...nodes: INode[]) {
     if (this.parentNode) {
       const index = this.parentNode.childNodes.indexOf(this);
       const [first, ...rest] = nodes;
       this.parentNode.appendChild(first!, index);
-      first.after(...rest);
+      (first as IChildNode).after(...rest);
     }
   }
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceWith
    */
-  replaceWith(...nodes: IChildNode[]) {
+  replaceWith(...nodes: INode[]) {
     this.after(...nodes);
     this.remove();
   }
@@ -266,21 +262,21 @@ export class Element<
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/append
    */
-  append(...nodes: IChildNode[]) {
+  append(...nodes: INode[]) {
     nodes.forEach((node) => this.appendChild(node));
   }
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/prepend
    */
-  prepend(...nodes: IChildNode[]) {
+  prepend(...nodes: INode[]) {
     nodes.forEach((node, i) => this.appendChild(node, i));
   }
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceChildren
    */
-  replaceChildren(...nodes: IChildNode[]) {
+  replaceChildren(...nodes: INode[]) {
     while (this.childNodes.length && this.firstChild) {
       this.removeChild(this.firstChild);
     }

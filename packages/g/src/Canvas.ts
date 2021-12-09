@@ -13,7 +13,7 @@ import { cancelAnimationFrame } from './utils/raf';
 import type { PointLike } from './shapes';
 import type { FederatedEvent, Element, IChildNode } from './dom';
 import { Document, EventTarget, ElementEvent } from './dom';
-import type { IElement, INode, ICanvas } from './dom/interfaces';
+import type { INode, ICanvas } from './dom/interfaces';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
 import { globalContainer } from './global-module';
 
