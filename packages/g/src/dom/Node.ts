@@ -42,7 +42,7 @@ export abstract class Node extends EventTarget implements INode {
    * Returns the children.
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/childNodes
    */
-  childNodes: (IChildNode & INode)[] = [];
+  childNodes: IChildNode[] = [];
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeType
@@ -145,29 +145,22 @@ export abstract class Node extends EventTarget implements INode {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild
    */
-  abstract appendChild<T extends IChildNode>(newChild: T, index?: number): T;
+  abstract appendChild<T extends INode>(newChild: T, index?: number): T;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore
    */
-  abstract insertBefore<T extends IChildNode, R extends IChildNode>(
-    newChild: T,
-    refChild: R | null,
-  ): T;
+  abstract insertBefore<T extends INode>(newChild: T, refChild: INode | null): T;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/removeChild
    */
-  abstract removeChild<T extends IChildNode>(child: T, destroy?: boolean): T;
+  abstract removeChild<T extends INode>(child: T, destroy?: boolean): T;
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/replaceChild
    */
-  abstract replaceChild<N extends IChildNode, T extends IChildNode>(
-    newChild: N,
-    oldChild: T,
-    destroy?: boolean,
-  ): T;
+  abstract replaceChild<T extends INode>(newChild: INode, oldChild: T, destroy?: boolean): T;
 
   abstract destroy(): void;
 
@@ -175,10 +168,10 @@ export abstract class Node extends EventTarget implements INode {
    * @deprecated
    * @alias contains
    */
-  contain<T extends IChildNode>(other: T | null) {
+  contain<T extends INode>(other: T | null) {
     return this.contains(other);
   }
-  contains<T extends IChildNode>(other: T | null): boolean {
+  contains<T extends INode>(other: T | null): boolean {
     // the node itself, one of its direct children
     let tmp: INode | null = other;
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Node/contains

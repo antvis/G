@@ -1,13 +1,22 @@
 import chai, { expect } from 'chai';
-// @ts-ignore
 import chaiAlmost from 'chai-almost';
-// @ts-ignore
 import sinon from 'sinon';
-// @ts-ignore
 import sinonChai from 'sinon-chai';
 
-import { Group, Circle, Canvas, Text, Rect, ElementEvent, SHAPE } from '../../../lib';
-import type { Ellipse, EllipseStyleProps } from '../..';
+import {
+  Group,
+  Circle,
+  Canvas,
+  Text,
+  Rect,
+  ElementEvent,
+  SHAPE,
+  Ellipse,
+  EllipseStyleProps,
+  RectStyleProps,
+  Image,
+  ImageStyleProps,
+} from '../../../lib';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 
 chai.use(chaiAlmost());
@@ -57,7 +66,7 @@ describe('Document', () => {
     expect(ellipse.style.rx).to.be.eql(50);
     expect(ellipse.style.ry).to.be.eql(50);
 
-    const rect = canvas.document.createElement(SHAPE.Rect, {
+    const rect = canvas.document.createElement<Rect, RectStyleProps>(SHAPE.Rect, {
       style: {
         width: 50,
         height: 50,
@@ -67,7 +76,7 @@ describe('Document', () => {
     expect(rect.style.width).to.be.eql(50);
     expect(rect.style.height).to.be.eql(50);
 
-    const image = canvas.document.createElement(SHAPE.Image, {
+    const image = canvas.document.createElement<Image, ImageStyleProps>(SHAPE.Image, {
       style: {
         img: '',
         width: 50,
@@ -100,7 +109,7 @@ describe('Document', () => {
   it('should proxy query methods to documentElement', () => {
     canvas.removeChildren();
 
-    const ellipse = canvas.document.createElement(SHAPE.Ellipse, {
+    const ellipse = canvas.document.createElement<Ellipse, EllipseStyleProps>(SHAPE.Ellipse, {
       id: 'ellipse',
       name: 'ellipse-name',
       className: 'ellipse-classname',
@@ -109,9 +118,10 @@ describe('Document', () => {
         ry: 50,
       },
     });
+
     canvas.appendChild(ellipse);
 
-    expect(canvas.document.getElementById('ellipse')).eqls(ellipse);
+    expect(canvas.document.getElementById('ellipse') as Ellipse).eqls(ellipse);
     expect(canvas.document.getElementsByName('ellipse-name')[0]).eqls(ellipse);
     expect(canvas.document.getElementsByTagName(SHAPE.Ellipse)[0]).eqls(ellipse);
     expect(canvas.document.getElementsByClassName('ellipse-classname')[0]).eqls(ellipse);

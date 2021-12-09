@@ -6,7 +6,7 @@ import type { Animation } from '../dom/Animation';
 import { KeyframeEffect } from '../dom/KeyframeEffect';
 import { Element } from '../dom/Element';
 import { ElementEvent } from '../dom/interfaces';
-import type { DisplayObjectConfig, IElement, INode } from '../dom/interfaces';
+import type { DisplayObjectConfig, IElement, IChildNode } from '../dom/interfaces';
 import { SHAPE } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { createVec3, fromRotationTranslationScale, getEuler, rad2deg } from '../utils';
@@ -602,7 +602,7 @@ export class DisplayObject<
    * compatible with G 3.0
    * @deprecated
    */
-  add<T extends INode>(child: T, index?: number): T {
+  add<T extends IChildNode>(child: T, index?: number): T {
     return this.appendChild(child, index);
   }
 
