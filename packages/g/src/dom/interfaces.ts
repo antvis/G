@@ -218,9 +218,6 @@ export interface IParentNode {
   findAll: <E extends IElement = IElement>(filter: (node: E) => boolean) => E[];
 }
 
-const a = window.document.createElement('div');
-window.document.appendChild(a);
-
 export interface IChildNode extends INode {
   /**
    * Inserts nodes just after node, while replacing strings in nodes with equivalent Text nodes.
