@@ -1,6 +1,6 @@
 import type EventEmitter from 'eventemitter3';
 import type { AnimationTimeline } from './AnimationTimeline';
-import type { BaseStyleProps, ParsedBaseStyleProps, SHAPE } from '../types';
+import type { BaseStyleProps, SHAPE } from '../types';
 import type { FederatedEvent } from './FederatedEvent';
 import type { CustomElementRegistry } from './CustomElementRegistry';
 import type { DisplayObject } from '..';
@@ -79,11 +79,11 @@ export interface INode extends IEventTarget {
   /**
    * Returns the children.
    */
-  readonly childNodes: (IChildNode & INode)[];
+  readonly childNodes: IChildNode[];
   /**
    * Returns the first child.
    */
-  readonly firstChild: (IChildNode & INode) | null;
+  readonly firstChild: IChildNode | null;
   /**
    * Returns true if node is connected and false otherwise.
    */
@@ -91,12 +91,12 @@ export interface INode extends IEventTarget {
   /**
    * Returns the last child.
    */
-  readonly lastChild: (IChildNode & INode) | null;
+  readonly lastChild: IChildNode | null;
 
   /**
    * Returns the next sibling.
    */
-  readonly nextSibling: (IChildNode & INode) | null;
+  readonly nextSibling: IChildNode | null;
   /**
    * Returns a string appropriate for the type of node.
    */
@@ -121,13 +121,13 @@ export interface INode extends IEventTarget {
   /**
    * Returns the previous sibling.
    */
-  readonly previousSibling: (IChildNode & INode) | null;
+  readonly previousSibling: IChildNode | null;
   textContent: string | null;
-  appendChild: <T extends IChildNode>(newChild: T, index?: number) => T;
+  appendChild: <T extends INode>(newChild: T, index?: number) => T;
   /**
    * Returns a copy of node. If deep is true, the copy also includes the node's descendants.
    */
-  cloneNode: (deep?: boolean) => this;
+  cloneNode: (deep?: boolean) => INode;
   /**
    * Returns a bitmask indicating the position of other relative to node.
    */
@@ -135,7 +135,7 @@ export interface INode extends IEventTarget {
   /**
    * Returns true if other is an inclusive descendant of node, and false otherwise.
    */
-  contains: <T extends IChildNode>(other: T | null) => boolean;
+  contains: (other: INode | null) => boolean;
   /**
    * Returns node's root.
    */
@@ -152,7 +152,7 @@ export interface INode extends IEventTarget {
    * Returns whether node has children.
    */
   hasChildNodes: () => boolean;
-  insertBefore: <T extends IChildNode, R extends IChildNode>(newChild: T, refChild: R | null) => T;
+  insertBefore: <T extends INode>(newChild: T, refChild: INode | null) => T;
   isDefaultNamespace: (namespace: string | null) => boolean;
   /**
    * Returns whether node and otherNode have the same properties.
@@ -165,12 +165,8 @@ export interface INode extends IEventTarget {
    * Removes empty exclusive Text nodes and concatenates the data of remaining contiguous exclusive Text nodes into the first of their nodes.
    */
   normalize: () => void;
-  removeChild: <T extends IChildNode>(oldChild: T, destroy?: boolean) => T;
-  replaceChild: <T extends IChildNode, R extends IChildNode>(
-    newChild: R,
-    oldChild: T,
-    destroy?: boolean,
-  ) => T;
+  removeChild: <T extends INode>(oldChild: T, destroy?: boolean) => T;
+  replaceChild: <T extends INode>(newChild: INode, oldChild: T, destroy?: boolean) => T;
 
   /**
    * Destroy itself.
@@ -228,13 +224,13 @@ export interface IChildNode extends INode {
    *
    * Throws a "HierarchyRequestError" DOMException if the constraints of the node tree are violated.
    */
-  after: (...nodes: IChildNode[]) => void;
+  after: (...nodes: INode[]) => void;
   /**
    * Inserts nodes just before node, while replacing strings in nodes with equivalent Text nodes.
    *
    * Throws a "HierarchyRequestError" DOMException if the constraints of the node tree are violated.
    */
-  before: (...nodes: IChildNode[]) => void;
+  before: (...nodes: INode[]) => void;
   /**
    * Removes node.
    */
@@ -244,7 +240,7 @@ export interface IChildNode extends INode {
    *
    * Throws a "HierarchyRequestError" DOMException if the constraints of the node tree are violated.
    */
-  replaceWith: (...nodes: IChildNode[]) => void;
+  replaceWith: (...nodes: INode[]) => void;
 }
 
 export interface DisplayObjectConfig<StyleProps> {
@@ -293,10 +289,8 @@ export interface DisplayObjectConfig<StyleProps> {
   interactive?: boolean;
 }
 
-export interface IElement<
-  StyleProps extends BaseStyleProps = any,
-  ParsedStyleProps extends ParsedBaseStyleProps = any,
-> extends INode,
+export interface IElement<StyleProps = any, ParsedStyleProps = any>
+  extends INode,
     IChildNode,
     IParentNode {
   /**

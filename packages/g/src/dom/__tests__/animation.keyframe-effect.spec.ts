@@ -9,7 +9,7 @@ import {
   gBadOptionsCompositeValueTests,
   gKeyframesTests,
 } from './utils/keyframe.spec';
-import { gEasingParsingTests, gInvalidEasings } from './utils/easing.spec.ts';
+import { gEasingParsingTests, gInvalidEasings } from './utils/easing.spec';
 
 interface Test {
   desc: string;
