@@ -1,7 +1,7 @@
-import { DisplayObject, DisplayObjectConfig } from '@antv/g';
+import { CustomElement, DisplayObject, DisplayObjectConfig } from '@antv/g';
 import type { ParsedBaseStyleProps, BaseStyleProps } from '@antv/g';
-import { Geometry } from './Geometry';
-import { Material } from './material/Material';
+import { Geometry } from './geometries';
+import { Material } from './materials';
 
 export interface MeshStyleProps extends BaseStyleProps {
   geometry: Geometry;
@@ -13,10 +13,12 @@ export interface ParsedMeshStyleProps extends ParsedBaseStyleProps {
   material: Material;
 }
 
-export class Mesh extends DisplayObject<MeshStyleProps, ParsedMeshStyleProps> {
+export class Mesh extends DisplayObject<MeshStyleProps> {
+  static tag = 'mesh';
+
   constructor({ style, ...rest }: DisplayObjectConfig<MeshStyleProps>) {
     super({
-      type: 'mesh',
+      type: Mesh.tag,
       style: {
         ...style,
       },

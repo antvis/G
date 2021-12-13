@@ -18,11 +18,12 @@ import {
   TextRenderer,
   LineRenderer,
   InstancedLineRenderer,
+  MeshRenderer,
 } from './drawcall';
 import { TexturePool } from './TexturePool';
 import { GlyphManager } from './drawcall/symbol/GlyphManager';
 import { RendererFactory, ShapeRenderer } from './tokens';
-import { Geometry } from './Geometry';
+import { Mesh } from './Mesh';
 
 let bindFunc: Syringe.Register;
 
@@ -38,11 +39,13 @@ export {
   // ModelBuilder,
   TexturePool,
   RenderGraphPlugin,
-  Geometry,
+  Mesh,
 };
 
 export * from './platform';
 export * from './render';
+export * from './geometries';
+export * from './materials';
 
 export const containerModule = Module((register) => {
   bindFunc = register;
@@ -62,6 +65,7 @@ export const containerModule = Module((register) => {
   register(InstancedLineRenderer);
   register(LineRenderer);
   register(TextRenderer);
+  register(MeshRenderer);
   register({
     token: RendererFactory,
     useFactory: (context) => {

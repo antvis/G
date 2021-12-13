@@ -11,7 +11,7 @@ import {
   Camera,
   ParsedColorStyleProperty,
 } from '@antv/g';
-import { Geometry } from '../Geometry';
+import { Geometry } from '../geometries';
 import { Renderable3D } from '../components/Renderable3D';
 import {
   Device,
@@ -88,7 +88,7 @@ export abstract class Batch {
 
   inputState: InputState;
 
-  mapping: TextureMapping;
+  fillMapping: TextureMapping;
 
   recreateGeometry = true;
 
@@ -147,6 +147,8 @@ export abstract class Batch {
   protected abstract buildGeometry(): void;
 
   private createGeometry() {
+    this.buildGeometry();
+
     if (this.instanced) {
       const packed = [];
       this.objects.forEach((object) => {
@@ -267,7 +269,6 @@ export abstract class Batch {
     }
 
     this.buildGradient();
-    this.buildGeometry();
   }
 
   private buildGradient() {
@@ -302,8 +303,8 @@ export abstract class Batch {
         texImageSource = fill.value.src;
       }
 
-      this.mapping = new TextureMapping();
-      this.mapping.texture = this.texturePool.getOrCreateTexture(
+      this.fillMapping = new TextureMapping();
+      this.fillMapping.texture = this.texturePool.getOrCreateTexture(
         this.device,
         texImageSource,
         makeTextureDescriptor2D(Format.U8_RGBA_NORM, 1, 1, 1),
@@ -316,8 +317,8 @@ export abstract class Batch {
           });
         },
       );
-      this.device.setResourceName(this.mapping.texture, 'Gradient Texture' + this.id);
-      this.mapping.sampler = this.renderHelper.getCache().createSampler({
+      this.device.setResourceName(this.fillMapping.texture, 'Fill Texture' + this.id);
+      this.fillMapping.sampler = this.renderHelper.getCache().createSampler({
         // wrapS: WrapMode.Clamp,
         // wrapT: WrapMode.Clamp,
         wrapS: WrapMode.Repeat,
@@ -394,7 +395,7 @@ export abstract class Batch {
 
     // bind UBO and upload
     // TODO: no need to re-upload unchanged uniforms
-    if (this.mapping) {
+    if (this.fillMapping) {
     }
 
     this.uploadUBO(renderInst);

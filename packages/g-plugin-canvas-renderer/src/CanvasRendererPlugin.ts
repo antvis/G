@@ -6,12 +6,10 @@ import {
   CanvasConfig,
   ContextService,
   SceneGraphService,
-  Renderable,
   RenderingService,
   RenderingContext,
   RenderingPlugin,
   RenderingPluginContribution,
-  Cullable,
   getEuler,
   fromRotationTranslationScale,
   Camera,
@@ -97,16 +95,55 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private batchedStyleHash = '';
   private batchedDisplayObject = null;
 
+  private syncRTree() {
+    // bounds changed, need re-inserting its children
+    const bulk: RBushNodeAABB[] = [];
+    this.toSync.forEach((node: DisplayObject) => {
+      // @ts-ignore
+      const rBushNode = node.rBushNode;
+
+      // clear dirty node
+      if (rBushNode) {
+        this.rBush.remove(rBushNode.aabb);
+      }
+
+      const renderBounds = node.getRenderBounds();
+      if (renderBounds) {
+        const [minX, minY] = renderBounds.getMin();
+        const [maxX, maxY] = renderBounds.getMax();
+        rBushNode.aabb = {
+          id: node.entity,
+          minX,
+          minY,
+          maxX,
+          maxY,
+        };
+      }
+      bulk.push(rBushNode.aabb);
+    });
+
+    // use bulk inserting, which is ~2-3 times faster
+    // @see https://github.com/mourner/rbush#bulk-inserting-data
+    this.rBush.load(bulk);
+
+    this.toSync.clear();
+  }
+
+  private toSync = new Set<DisplayObject>();
+  private pushToSync(list: DisplayObject[]) {
+    list.forEach((i) => {
+      this.toSync.add(i);
+    });
+  }
+
   apply(renderingService: RenderingService) {
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       // @ts-ignore
       object.rBushNode = new RBushNode();
 
-      const path = e.composedPath().slice(0, -2);
-      path.forEach((node: DisplayObject) => {
-        this.insertRBushNode(node);
-      });
+      // @ts-ignore
+      this.pushToSync(e.composedPath().slice(0, -2));
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
@@ -116,8 +153,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       // @ts-ignore
       const rBushNode = object.rBushNode;
       this.rBush.remove(rBushNode.aabb);
-      // this.rBush.remove(rBushNode.aabb, (a: RBushNodeAABB, b: RBushNodeAABB) => a.name === b.name);
-      // object.entity.removeComponent(RBushNode);
+
+      this.toSync.delete(object);
     };
 
     const handleBoundsChanged = (e: FederatedEvent) => {
@@ -130,42 +167,13 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const { affectChildren } = e.detail;
 
       if (affectChildren) {
-        // bounds changed, need re-inserting its children
-        const bulk: RBushNodeAABB[] = [];
         object.forEach((node: DisplayObject) => {
-          // @ts-ignore
-          const rBushNode = node.rBushNode;
-
-          // clear dirty node
-          if (rBushNode) {
-            this.rBush.remove(rBushNode.aabb);
-          }
-
-          const renderBounds = node.getRenderBounds();
-          if (renderBounds) {
-            const [minX, minY] = renderBounds.getMin();
-            const [maxX, maxY] = renderBounds.getMax();
-            rBushNode.aabb = {
-              id: node.entity,
-              minX,
-              minY,
-              maxX,
-              maxY,
-            };
-          }
-          bulk.push(rBushNode.aabb);
+          this.pushToSync([node]);
         });
-
-        // use bulk inserting, which is ~2-3 times faster
-        // @see https://github.com/mourner/rbush#bulk-inserting-data
-        this.rBush.load(bulk);
       }
 
-      // inform parent, skip Document & Canvas
-      const path = e.composedPath().slice(0, -2);
-      path.forEach((node: DisplayObject) => {
-        this.insertRBushNode(node);
-      });
+      // @ts-ignore
+      this.pushToSync(e.composedPath().slice(0, -2));
     };
 
     renderingService.hooks.init.tap(CanvasRendererPlugin.tag, () => {
@@ -210,6 +218,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     // render at the end of frame
     renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
+      this.syncRTree();
+
       const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
       const context = this.contextService.getContext()!;
       if (enableDirtyRectangleRendering) {

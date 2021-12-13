@@ -121,6 +121,7 @@ canvas.on('afterrender', () => {
   if (stats) {
     stats.update();
   }
+  console.log(canvas.getStats());
 
   // manipulate camera instead of the root of canvas
   camera.rotate(0, 0, 0.1);

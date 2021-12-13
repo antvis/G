@@ -21,7 +21,6 @@ import { Batch } from './Batch';
 import { ShapeRenderer } from '../tokens';
 import { Renderable3D } from '../components/Renderable3D';
 import { RenderInstList } from '../render';
-import { Geometry } from '../Geometry';
 import { isNil } from '@antv/util';
 // import { FillRenderer } from './Fill';
 import vert from '../shader/line.vert';
@@ -86,10 +85,9 @@ export class LineRenderer extends Batch {
 
   buildGeometry() {
     const geometry = this.geometry;
-    const object = this.objects[0];
 
     // use triangles for Polygon
-    let { triangles, pointsBuffer, travelBuffer, instanceCount } = this.updateBuffer(object);
+    let { triangles, pointsBuffer, travelBuffer, instanceCount } = this.updateBuffer(this.instance);
     if (triangles && triangles.length) {
       this.needFill = true;
       this.triangles = triangles;

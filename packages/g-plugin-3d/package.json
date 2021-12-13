@@ -2,15 +2,13 @@
   "name": "@antv/g-plugin-3d",
   "version": "1.0.4",
   "description": "Provide 3D extension for G",
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "types": "es/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "unpkg": "dist/index.umd.js",
   "files": [
     "package.json",
     "dist",
-    "es",
-    "lib",
     "LICENSE",
     "README.md"
   ],
@@ -33,10 +31,14 @@
   },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
-    "@types/jest": "^25.0.0"
+    "@types/jest": "^25.0.0",
+    "glslify-import": "3.1.0",
+    "rollup-plugin-glslify": "^1.2.1"
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
+    "@antv/g-shader-components": "^1.0.1",
+    "@antv/g-plugin-webgl-renderer": "^1.0.1",
     "@antv/util": "^2.0.13",
     "tslib": "^2.3.1"
   },
@@ -45,8 +47,10 @@
     "@antv/g-plugin-webgl-renderer": "^1.0.1",
     "mana-syringe": "^0.2.2"
   },
-  "scripts": {
-    "umd": "webpack"
+  "glslify": {
+    "transform": [
+      "glslify-import"
+    ]
   },
   "gitHead": "d09726ac85b8738d53c97002a98848b4a450bfcd"
 }

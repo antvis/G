@@ -205,7 +205,7 @@ export class InstancedLineRenderer extends Batch {
 
   uploadUBO(renderInst: RenderInst): void {
     renderInst.setBindingLayouts([{ numUniformBuffers: 1, numSamplers: 1 }]);
-    renderInst.setSamplerBindingsFromTextureMappings([this.mapping]);
+    renderInst.setSamplerBindingsFromTextureMappings([this.fillMapping]);
   }
 
   private calcDash(line: Line) {

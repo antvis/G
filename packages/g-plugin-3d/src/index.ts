@@ -1,6 +1,8 @@
+// tslint:disable-next-line:no-reference
+/// <reference path="./glsl.d.ts" />
 import { DisplayObject, RendererPlugin, globalContainer } from '@antv/g';
 import { Module, Syringe } from 'mana-syringe';
-// import { registerModelBuilder, Batch } from '@antv/g-plugin-webgl-renderer';
+import { Mesh, registerModelBuilder, Batch } from '@antv/g-plugin-webgl-renderer';
 // import { CubeUpdater } from './aabb/CubeUpdater';
 // import { SphereUpdater } from './aabb/SphereUpdater';
 // import { GridUpdater } from './aabb/GridUpdater';
@@ -12,6 +14,8 @@ import { Module, Syringe } from 'mana-syringe';
 // import { Sphere } from './Sphere';
 // import { Grid } from './Grid';
 export * from './geometries';
+export * from './materials';
+export { Mesh };
 
 // // TODO: provide more friendly API like `registerGeometry`
 // globalContainer.register(CubeUpdater);

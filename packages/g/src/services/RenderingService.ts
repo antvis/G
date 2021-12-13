@@ -38,6 +38,11 @@ export class RenderingService {
 
   private inited = false;
 
+  private stats = {
+    total: 0,
+    rendered: 0,
+  };
+
   hooks = {
     init: new AsyncSeriesHook<[]>(),
     prepare: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
@@ -68,7 +73,14 @@ export class RenderingService {
     this.inited = true;
   }
 
+  getStats() {
+    return this.stats;
+  }
+
   render() {
+    this.stats.total = 0;
+    this.stats.rendered = 0;
+
     this.sceneGraphService.syncHierarchy(this.renderingContext.root);
 
     if (this.renderingContext.renderReasons.size && this.inited) {
@@ -86,13 +98,17 @@ export class RenderingService {
 
       this.renderingContext.renderReasons.clear();
     }
+
+    // console.log('render objects: ', this.stats.count);
   }
 
   private renderDisplayObject(displayObject: DisplayObject) {
     // render itself
     const objectToRender = this.hooks.prepare.call(displayObject);
 
+    this.stats.total++;
     if (objectToRender) {
+      this.stats.rendered++;
       if (!this.renderingContext.dirty) {
         this.renderingContext.dirty = true;
         this.hooks.beginFrame.call();

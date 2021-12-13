@@ -33,6 +33,8 @@ class ImageProgram extends DeviceProgram {
 export class ImageRenderer extends Batch {
   protected program = new ImageProgram();
 
+  private mapping: TextureMapping;
+
   protected validate(object: DisplayObject<any, any>): boolean {
     if (this.instance.nodeName === SHAPE.Image) {
       if (this.instance.parsedStyle.img !== object.parsedStyle.img) {
@@ -62,7 +64,7 @@ export class ImageRenderer extends Batch {
         });
       },
     );
-    this.device.setResourceName(this.mapping.texture, 'Image Texture');
+    this.device.setResourceName(this.mapping.texture, 'Image Texture' + this.id);
     this.mapping.sampler = this.renderHelper.getCache().createSampler({
       wrapS: WrapMode.Clamp,
       wrapT: WrapMode.Clamp,

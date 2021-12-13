@@ -1,5 +1,5 @@
-#pragma glslify: import('./chunks/scene.both.glsl')
-#pragma glslify: import('./chunks/line.both.glsl')
+#pragma glslify: import('@antv/g-shader-components/scene.both.glsl')
+#pragma glslify: import('@antv/g-shader-components/line.both.glsl')
 
 varying vec4 v_Distance;
 varying vec4 v_Arc;

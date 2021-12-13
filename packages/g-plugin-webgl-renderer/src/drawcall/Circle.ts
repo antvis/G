@@ -154,7 +154,7 @@ export class CircleRenderer extends Batch {
 
   protected uploadUBO(renderInst: RenderInst): void {
     renderInst.setBindingLayouts([{ numUniformBuffers: 1, numSamplers: 1 }]);
-    renderInst.setSamplerBindingsFromTextureMappings([this.mapping]);
+    renderInst.setSamplerBindingsFromTextureMappings([this.fillMapping]);
 
     // offs += fillMatrix4x4(d, offs, this.camera.getPerspective()); // ProjectionMatrix 16
     //   offs += fillMatrix4x4(d, offs, this.camera.getViewTransform()); // ViewMatrix 16

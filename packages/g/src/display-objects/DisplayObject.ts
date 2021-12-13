@@ -10,9 +10,13 @@ import type { DisplayObjectConfig, IElement, IChildNode } from '../dom/interface
 import { SHAPE } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { createVec3, fromRotationTranslationScale, getEuler, rad2deg } from '../utils';
-import type { StylePropertyParser, StylePropertyUpdater } from '../property-handlers';
-import { StylePropertyParserFactory, StylePropertyUpdaterFactory } from '../property-handlers';
-import { globalContainer } from '../global-module';
+// import type { StylePropertyParser, StylePropertyUpdater } from '../property-handlers';
+// import { StylePropertyParserFactory, StylePropertyUpdaterFactory } from '../property-handlers';
+import {
+  globalContainer,
+  stylePropertyParserFactory,
+  stylePropertyUpdaterFactory,
+} from '../global-module';
 import { dirtifyToRoot } from '../services';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
@@ -63,13 +67,13 @@ export class DisplayObject<
    */
   private activeAnimations: Animation[] = [];
 
-  stylePropertyUpdaterFactory = globalContainer.get<
-    <Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyUpdater<any>[]
-  >(StylePropertyUpdaterFactory);
+  // stylePropertyUpdaterFactory = globalContainer.get<
+  //   <Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyUpdater<any>[]
+  // >(StylePropertyUpdaterFactory);
 
-  stylePropertyParserFactory = globalContainer.get<
-    <Key extends keyof ParsedStyleProps>(stylePropertyName: Key) => StylePropertyParser<any, any>
-  >(StylePropertyParserFactory);
+  // stylePropertyParserFactory = globalContainer.get<
+  //   <Key extends keyof ParsedStyleProps>(stylePropertyName: Key) => StylePropertyParser<any, any>
+  // >(StylePropertyParserFactory);
 
   constructor(config: DisplayObjectConfig<StyleProps>) {
     super();
@@ -206,7 +210,8 @@ export class DisplayObject<
     name: Key,
     value: ParsedStyleProps[Key],
   ) {
-    const stylePropertyParser = this.stylePropertyParserFactory(name);
+    // const stylePropertyParser = this.stylePropertyParserFactory(name);
+    const stylePropertyParser = stylePropertyParserFactory[name as string];
     if (stylePropertyParser) {
       // @ts-ignore
       this.parsedStyle[name] = stylePropertyParser(value, this);
@@ -222,7 +227,8 @@ export class DisplayObject<
   ) {
     // update property, which may cause AABB re-calc
     // @ts-ignore
-    const stylePropertyUpdaters = this.stylePropertyUpdaterFactory(name);
+    // const stylePropertyUpdaters = this.stylePropertyUpdaterFactory(name);
+    const stylePropertyUpdaters = stylePropertyUpdaterFactory[name];
     if (stylePropertyUpdaters) {
       stylePropertyUpdaters.forEach((updater) => {
         // @ts-ignore

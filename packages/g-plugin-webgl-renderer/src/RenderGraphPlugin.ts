@@ -303,11 +303,20 @@ export class RenderGraphPlugin implements RenderingPlugin {
       // @ts-ignore
       const renderable3D = object.renderable3D;
       if (renderable3D && renderable3D.batchId) {
-        const existed = this.batches.find((batch) => batch.id === renderable3D.batchId);
+        const existedIndex = this.batches.findIndex((batch) => batch.id === renderable3D.batchId);
+        const existed = this.batches[existedIndex];
         if (existed) {
           existed.purge(object);
+
+          // remove batch
+          if (existed.objects.length === 0) {
+            this.batches.splice(existedIndex, 1);
+          }
         }
       }
+
+      // @ts-ignore
+      delete object.renderable3D;
 
       // entity.removeComponent(Geometry3D, true);
       // entity.removeComponent(Material3D, true);

@@ -43,6 +43,8 @@ export class TextRenderer extends Batch {
 
   instanced = false;
 
+  private mapping: TextureMapping;
+
   @inject(GlyphManager)
   private glyphManager: GlyphManager;
 

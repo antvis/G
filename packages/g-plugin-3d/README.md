@@ -30,11 +30,13 @@ const geometry = new CubeGeometry({
 
 // create a material
 const material = new MeshBasicMaterial({
-    color: '#1890FF',
+    map: 'https://xxx.png',
 });
 
 // create a cube mesh
 const cube = new Mesh({
+    fill: '#1890FF',
+    opacity: 1,
     style: {
         geometry,
         material,

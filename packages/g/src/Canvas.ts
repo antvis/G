@@ -54,6 +54,12 @@ export class Canvas extends EventTarget implements ICanvas {
    */
   private frameId?: number;
 
+  /**
+   * cache here since inversify's resolving is very slow
+   */
+  private eventService: EventService;
+  private renderingService: RenderingService;
+
   constructor(config: CanvasConfig) {
     super();
 
@@ -160,15 +166,19 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   getEventService() {
-    return this.container.get<EventService>(EventService);
+    return this.eventService;
   }
 
   getRenderingService() {
-    return this.container.get<RenderingService>(RenderingService);
+    return this.renderingService;
   }
 
   getRenderingContext() {
     return this.container.get<RenderingContext>(RenderingContext);
+  }
+
+  getStats() {
+    return this.getRenderingService().getStats();
   }
 
   getComputedStyle(node: DisplayObject) {
@@ -278,9 +288,12 @@ export class Canvas extends EventTarget implements ICanvas {
 
     // init context
     const contextService = this.container.get<ContextService<unknown>>(ContextService);
-    const renderingService = this.container.get<RenderingService>(RenderingService);
+
+    this.renderingService = this.container.get<RenderingService>(RenderingService);
+    this.eventService = this.container.get<EventService>(EventService);
+
     contextService.init();
-    renderingService.init().then(() => {
+    this.renderingService.init().then(() => {
       this.emit(CanvasEvent.READY, {});
     });
 

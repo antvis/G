@@ -1,10 +1,21 @@
+import glslify from 'rollup-plugin-glslify';
+
 export default {
-  // umd: {
-  //   name: 'G.Plugin.3D',
-  //   globals: {
-  //     '@antv/g': 'window.G',
-  //     '@antv/g-plugin-webgl-renderer': 'window.Plugin.WebGLRenderer',
-  //     'mana-syringe': 'window.G.ManaSyringe',
-  //   },
-  // },
+  cjs: 'rollup',
+  esm: 'rollup',
+  extraRollupPlugins: [
+    glslify({
+      // disable compressing shader
+      // @see https://github.com/antvis/g/issues/832
+      compress: false,
+    }),
+  ],
+  umd: {
+    name: 'G.3D',
+    globals: {
+      '@antv/g': 'window.G',
+      'mana-syringe': 'window.G.ManaSyringe',
+      '@antv/g-plugin-webgl-renderer': 'window.G.WebGL.WebGLRenderer',
+    },
+  },
 };

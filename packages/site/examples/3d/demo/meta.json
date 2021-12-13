@@ -1,0 +1,15 @@
+{
+  "title": {
+    "zh": "中文分类",
+    "en": "Category"
+  },
+  "demos": [
+    {
+      "filename": "cube.js",
+      "title": {
+        "zh": "立方体",
+        "en": "Cube"
+      }
+    }
+  ]
+}

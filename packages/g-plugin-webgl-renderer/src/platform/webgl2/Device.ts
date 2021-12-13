@@ -8,7 +8,6 @@ import {
   getFormatFlags,
   FormatFlags,
 } from '..';
-import { makeStaticDataBuffer } from '../../Geometry';
 import { CopyProgram } from '../../passes/Copy';
 import { TextureMapping } from '../../render';
 import { preprocessProgramObj_GLSL } from '../../shader/compiler';

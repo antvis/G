@@ -43,5 +43,10 @@ export class Material {
   // @see https://doc.babylonjs.com/advanced_topics/shaders/Fog+ShaderMat
   fog = false;
 
-  opacity = 1;
+  defines: Record<string, number | boolean> = {};
+
+  uniform: Record<string, number | boolean> = {};
+
+  vertexShader = '';
+  fragmentShader = '';
 }

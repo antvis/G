@@ -47,6 +47,7 @@ $wrapper.appendChild($stats);
 
 let t = 0;
 const spin = () => {
+  console.log(canvas.getStats());
   if (stats) {
     stats.update();
   }

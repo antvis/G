@@ -291,10 +291,11 @@ export class RenderInst {
    * SamplerBinding to record that it can be resolved later, and use {@see RenderInst.resolveLateSamplerBinding}
    * or equivalent to fill it in later.
    */
-  setSamplerBindingsFromTextureMappings(m: (SamplerBinding | null)[]): void {
+  setSamplerBindingsFromTextureMappings(mappings: (SamplerBinding | null)[]): void {
+    mappings = mappings.filter((m) => m);
     for (let i = 0; i < this.bindingDescriptors[0].samplerBindings.length; i++) {
       const dst = this.bindingDescriptors[0].samplerBindings[i];
-      const binding = m[i];
+      const binding = mappings[i];
 
       if (binding === undefined || binding === null) {
         dst.texture = null;
