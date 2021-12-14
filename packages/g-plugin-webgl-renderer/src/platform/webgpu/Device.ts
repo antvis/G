@@ -80,7 +80,7 @@ import { HashMap, nullHashFunc } from '../../render/HashMap';
 import { Format } from '../format';
 import { ComputePass_WebGPU } from './ComputePass';
 import { ComputePipeline_WebGPU } from './ComputePipeline';
-import type { glsl_compile as glsl_compile_ } from '../../../../../rust/pkg/index';
+import type { glsl_compile as glsl_compile_ } from '../../../../../rust/pkg/glsl_wgsl_compiler';
 import { FullscreenAlphaClear } from './FullscreenAlphaClear';
 import { QueryPool_WebGPU } from './QueryPool';
 
@@ -92,6 +92,11 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
 
   private renderPassPool: RenderPass_WebGPU[] = [];
   private computePassPool: ComputePass_WebGPU[] = [];
+
+  bindGroupLayoutCache = new HashMap<BindingLayoutDescriptor, BindGroupLayout>(
+    bindingLayoutDescriptorEqual,
+    nullHashFunc,
+  );
 
   private fallbackTexture2D: Texture_WebGPU;
   private fallbackTexture2DDepth: Texture_WebGPU;
