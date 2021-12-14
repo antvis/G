@@ -308,13 +308,13 @@ export class Device_GL implements SwapChain, Device {
     }
 
     // Adjust for GL defaults.
-    this.currentMegaState.depthCompare = CompareMode.Less;
+    this.currentMegaState.depthCompare = CompareMode.LessEqual;
     this.currentMegaState.depthWrite = false;
     this.currentMegaState.attachmentsState[0].channelWriteMask = ChannelWriteMask.AllChannels;
 
     // TODO: We always have depth test enabled.
-    // gl.enable(gl.DEPTH_TEST);
-    gl.disable(gl.DEPTH_TEST);
+    gl.enable(gl.DEPTH_TEST);
+    // gl.disable(gl.DEPTH_TEST);
 
     this.checkLimits();
 

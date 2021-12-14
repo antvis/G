@@ -113,6 +113,10 @@ export class RenderGraphPlugin implements RenderingPlugin {
         ElementEvent.ATTRIBUTE_CHANGED,
         handleAttributeChanged,
       );
+      this.renderingContext.root.addEventListener(
+        ElementEvent.RENDER_ORDER_CHANGED,
+        handleRenderOrderChanged,
+      );
       this.canvasConfig.renderer.getConfig().enableDirtyRectangleRendering = false;
 
       // const dpr = this.contextService.getDPR();
@@ -142,6 +146,10 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.renderingContext.root.removeEventListener(
         ElementEvent.ATTRIBUTE_CHANGED,
         handleAttributeChanged,
+      );
+      this.renderingContext.root.removeEventListener(
+        ElementEvent.RENDER_ORDER_CHANGED,
+        handleRenderOrderChanged,
       );
     });
 
@@ -331,6 +339,17 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const batch = this.batches.find((batch) => renderable3D.batchId === batch.id);
       if (batch) {
         batch.updateAttribute(object, attributeName, newValue);
+      }
+    };
+
+    const handleRenderOrderChanged = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+      const { renderOrder } = e.detail;
+      // @ts-ignore
+      const renderable3D = object.renderable3D;
+      const batch = this.batches.find((batch) => renderable3D.batchId === batch.id);
+      if (batch) {
+        batch.changeRenderOrder(object, renderOrder);
       }
     };
   }

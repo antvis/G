@@ -189,6 +189,10 @@ export class LineRenderer extends Batch {
     }
   }
 
+  changeRenderOrder(object: DisplayObject, renderOrder: number) {
+    this.recreateGeometry = true;
+  }
+
   updateAttribute(object: DisplayObject, name: string, value: any): void {
     super.updateAttribute(object, name, value);
 
@@ -202,7 +206,6 @@ export class LineRenderer extends Batch {
       (object.nodeName === SHAPE.Path && name === 'path')
     ) {
       this.recreateGeometry = true;
-    } else if (name === 'zIndex') {
     }
   }
 
@@ -219,7 +222,6 @@ export class LineRenderer extends Batch {
       anchor,
       lineDash = [],
       lineDashOffset = 0,
-      zIndex,
       visibility,
     } = instance.parsedStyle;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
@@ -252,7 +254,13 @@ export class LineRenderer extends Batch {
     offs += fillVec4(d, offs, 1, 5, 1, 0.5); // u_Expand u_MiterLimit u_ScaleMode u_Alignment
     offs += fillVec4(d, offs, ...encodedPickingColor);
     offs += fillVec4(d, offs, lineDash[0] || 0, lineDash[1] || 0, translateX, translateY); // u_Dash u_Gap u_Anchor
-    offs += fillVec4(d, offs, lineDashOffset, visibility === 'visible' ? 1 : 0); // u_DashOffset u_Visible
+    offs += fillVec4(
+      d,
+      offs,
+      lineDashOffset,
+      visibility === 'visible' ? 1 : 0,
+      instance.sortable.renderOrder,
+    ); // u_DashOffset u_Visible u_ZIndex
 
     // keep both faces
     renderInst.setMegaStateFlags({

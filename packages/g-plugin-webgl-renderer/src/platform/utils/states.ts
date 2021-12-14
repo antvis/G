@@ -226,6 +226,7 @@ export const defaultMegaState: MegaStateDescriptor = {
 
   blendConstant: colorNewCopy(TransparentBlack),
   depthWrite: true,
+  // depthCompare: CompareMode.LessEqual,
   depthCompare: reverseDepthForCompareMode(CompareMode.LessEqual),
   // depthCompare: reverseDepthForCompareMode(CompareMode.GreaterEqual),
   stencilCompare: CompareMode.Never,

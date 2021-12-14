@@ -36,6 +36,11 @@ export enum ElementEvent {
   UNMOUNTED = 'unmounted',
 
   BOUNDS_CHANGED = 'bounds-changed',
+
+  /**
+   * trigger when z-index changed
+   */
+  RENDER_ORDER_CHANGED = 'render-order-changed',
 }
 
 export interface IEventTarget {

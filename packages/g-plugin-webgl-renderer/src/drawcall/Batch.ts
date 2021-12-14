@@ -160,7 +160,6 @@ export abstract class Batch {
           strokeOpacity,
           lineWidth = 0,
           anchor,
-          zIndex = 0,
           visibility,
         } = object.parsedStyle;
         let fillColor: Tuple4Number = [0, 0, 0, 0];
@@ -190,7 +189,7 @@ export abstract class Batch {
           0,
           0,
           ...encodedPickingColor,
-          zIndex,
+          object.sortable.renderOrder,
           anchor[0],
           anchor[1],
         );
@@ -415,6 +414,23 @@ export abstract class Batch {
     });
   }
 
+  changeRenderOrder(object: DisplayObject, renderOrder: number) {
+    const index = this.objects.indexOf(object);
+    const geometry = this.geometry;
+
+    if (this.instanced) {
+      // @ts-ignore
+      const encodedPickingColor = object.renderable3D.encodedPickingColor;
+      // FIXME: z-index should account for context, not global
+      geometry.updateVertexBuffer(
+        Batch.CommonBufferIndex,
+        AttributeLocation.a_PickingColor,
+        index,
+        new Uint8Array(new Float32Array([...encodedPickingColor, renderOrder]).buffer),
+      );
+    }
+  }
+
   updateAttribute(object: DisplayObject, name: string, value: any): void {
     const index = this.objects.indexOf(object);
     const geometry = this.geometry;
@@ -454,18 +470,6 @@ export abstract class Batch {
           AttributeLocation.a_StylePacked1,
           index,
           new Uint8Array(new Float32Array([opacity, fillOpacity, strokeOpacity, lineWidth]).buffer),
-        );
-      } else if (name === 'zIndex') {
-        // @ts-ignore
-        const encodedPickingColor = object.renderable3D.encodedPickingColor;
-        // FIXME: z-index should account for context, not global
-        geometry.updateVertexBuffer(
-          Batch.CommonBufferIndex,
-          AttributeLocation.a_PickingColor,
-          index,
-          new Uint8Array(
-            new Float32Array([...encodedPickingColor, object.parsedStyle.zIndex]).buffer,
-          ),
         );
       } else if (name === 'modelMatrix') {
         const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());

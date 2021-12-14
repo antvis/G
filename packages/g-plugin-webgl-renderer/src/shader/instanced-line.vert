@@ -32,7 +32,7 @@ void main() {
     point += sign(a_Position.x - 0.5) * normalize(xBasis) * vec2(u_StrokeWidth / 2.0);
   }
 
-  gl_Position = project(vec4(point, 0.0, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+  gl_Position = project(vec4(point, -u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
 
   v_Dash = vec4(a_Position.x, a_Dash);
 }

@@ -16,4 +16,5 @@ layout(std140) uniform ub_ObjectParams {
     vec2 u_Anchor;
     float u_DashOffset;
     float u_Visible;
+    float u_ZIndex;
 };

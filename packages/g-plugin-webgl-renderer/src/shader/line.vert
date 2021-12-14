@@ -313,7 +313,7 @@ if (type >= BEVEL) {
 
 pos += u_Anchor;
 
-gl_Position = u_ProjectionMatrix * u_ViewMatrix * vec4(pos, 0.0, 1.0);
+gl_Position = u_ProjectionMatrix * u_ViewMatrix * vec4(pos, -u_ZIndex, 1.0);
 
 setPickingColor(u_PickingColor.xyz);
 }

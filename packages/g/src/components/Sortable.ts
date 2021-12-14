@@ -17,4 +17,9 @@ export class Sortable {
    * index in parent's children
    */
   lastSortedIndex: number;
+
+  /**
+   * render order in whole scenegraph
+   */
+  renderOrder: number = 0;
 }

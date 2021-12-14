@@ -80,7 +80,7 @@ import { HashMap, nullHashFunc } from '../../render/HashMap';
 import { Format } from '../format';
 import { ComputePass_WebGPU } from './ComputePass';
 import { ComputePipeline_WebGPU } from './ComputePipeline';
-import type { glsl_compile as glsl_compile_ } from '../../../../../rust/pkg/glsl_wgsl_compiler';
+import type { glsl_compile as glsl_compile_ } from '../../../../../rust/pkg/index';
 import { FullscreenAlphaClear } from './FullscreenAlphaClear';
 import { QueryPool_WebGPU } from './QueryPool';
 

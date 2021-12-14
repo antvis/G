@@ -1,6 +1,7 @@
 import { inject, singleton, contrib, Syringe, Contribution } from 'mana-syringe';
 import { SyncHook, SyncWaterfallHook, AsyncSeriesHook, AsyncSeriesWaterfallHook } from 'tapable';
 import type { DisplayObject } from '..';
+import { ElementEvent } from '../dom';
 import type { EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext, RENDER_REASON } from './RenderingContext';
 import { SceneGraphService, sortByZIndex } from './SceneGraphService';
@@ -43,6 +44,8 @@ export class RenderingService {
     rendered: 0,
   };
 
+  private zIndexCounter = 0;
+
   hooks = {
     init: new AsyncSeriesHook<[]>(),
     prepare: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
@@ -80,6 +83,7 @@ export class RenderingService {
   render() {
     this.stats.total = 0;
     this.stats.rendered = 0;
+    this.zIndexCounter = 0;
 
     this.sceneGraphService.syncHierarchy(this.renderingContext.root);
 
@@ -105,6 +109,7 @@ export class RenderingService {
   private renderDisplayObject(displayObject: DisplayObject) {
     // render itself
     const objectToRender = this.hooks.prepare.call(displayObject);
+    displayObject.sortable.renderOrder = this.zIndexCounter++;
 
     this.stats.total++;
     if (objectToRender) {
@@ -123,9 +128,11 @@ export class RenderingService {
 
     // sort is very expensive, use cached result if posible
     const sortable = displayObject.sortable;
+    let renderOrderChanged = false;
     if (sortable.dirty) {
       // sortable.sorted = [...(displayObject.childNodes as IElement[])].sort(sortByZIndex);
       sortable.sorted = displayObject.childNodes.slice().sort(sortByZIndex);
+      renderOrderChanged = true;
       sortable.dirty = false;
     }
 
@@ -133,6 +140,14 @@ export class RenderingService {
     (sortable.sorted || displayObject.childNodes).forEach((child: DisplayObject) => {
       this.renderDisplayObject(child);
     });
+
+    if (renderOrderChanged) {
+      displayObject.forEach((child: DisplayObject) => {
+        child.emit(ElementEvent.RENDER_ORDER_CHANGED, {
+          renderOrder: child.sortable.renderOrder,
+        });
+      });
+    }
   }
 
   destroy() {
