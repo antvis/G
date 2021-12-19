@@ -9,7 +9,8 @@ export function makeAttachmentClearDescriptor(
 ): GfxrAttachmentClearDescriptor {
   return {
     colorClearColor: clearColor,
-    depthClearValue: reverseDepthForClearValue(1.0),
+    // depthClearValue: reverseDepthForClearValue(1.0),
+    depthClearValue: 1,
     stencilClearValue: 0.0,
   };
 }

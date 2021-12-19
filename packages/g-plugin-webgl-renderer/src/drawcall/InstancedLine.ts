@@ -23,7 +23,9 @@ import { ShapeRenderer } from '../tokens';
 import vert from '../shader/instanced-line.vert';
 import frag from '../shader/instanced-line.frag';
 
-export const segmentInstanceGeometry = [0, -0.5, 0, 0, 1, -0.5, 1, 0, 1, 0.5, 1, 1, 0, 0.5, 0, 1];
+export const segmentInstanceGeometry = [
+  0, -0.5, 0, 0, 0, 1, -0.5, 1, 1, 0, 1, 0.5, 1, 1, 1, 0, 0.5, 0, 0, 1,
+];
 
 export class InstancedLineProgram extends DeviceProgram {
   static a_Position = AttributeLocation.MAX;
@@ -89,7 +91,7 @@ export class InstancedLineRenderer extends Batch {
     let offset = 0;
     this.objects.forEach((object) => {
       const line = object as Line;
-      const { x1, y1, x2, y2, defX, defY, lineCap } = line.parsedStyle;
+      const { x1, y1, x2, y2, z1, z2, defX, defY, lineCap } = line.parsedStyle;
 
       const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } = this.calcDash(
         object as Line,
@@ -98,8 +100,10 @@ export class InstancedLineRenderer extends Batch {
       interleaved.push(
         x1 - defX,
         y1 - defY,
+        z1,
         x2 - defX,
         y2 - defY,
+        z2,
         // caps
         LINE_CAP_MAP[lineCap],
         // dash
@@ -115,18 +119,18 @@ export class InstancedLineRenderer extends Batch {
     this.geometry.vertexCount = 6;
     this.geometry.setVertexBuffer({
       bufferIndex: 1,
-      byteStride: 4 * 4,
+      byteStride: 4 * 5,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
-          format: Format.F32_RG,
+          format: Format.F32_RGB,
           bufferByteOffset: 4 * 0,
           location: InstancedLineProgram.a_Position,
           divisor: 0,
         },
         {
           format: Format.F32_RG,
-          bufferByteOffset: 4 * 2,
+          bufferByteOffset: 4 * 3,
           location: InstancedLineProgram.a_Uv,
           divisor: 0,
         },
@@ -135,30 +139,30 @@ export class InstancedLineRenderer extends Batch {
     });
     this.geometry.setVertexBuffer({
       bufferIndex: 2,
-      byteStride: 4 * (2 + 2 + 1 + 3),
+      byteStride: 4 * (3 + 3 + 1 + 3),
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
-          format: Format.F32_RG,
+          format: Format.F32_RGB,
           bufferByteOffset: 4 * 0,
           location: InstancedLineProgram.a_PointA,
           divisor: 1,
         },
         {
-          format: Format.F32_RG,
-          bufferByteOffset: 4 * 2,
+          format: Format.F32_RGB,
+          bufferByteOffset: 4 * 3,
           location: InstancedLineProgram.a_PointB,
           divisor: 1,
         },
         {
           format: Format.F32_R,
-          bufferByteOffset: 4 * 4,
+          bufferByteOffset: 4 * 6,
           location: InstancedLineProgram.a_Cap,
           divisor: 1,
         },
         {
           format: Format.F32_RGB,
-          bufferByteOffset: 4 * 5,
+          bufferByteOffset: 4 * 7,
           location: InstancedLineProgram.a_Dash,
           divisor: 1,
         },
@@ -172,14 +176,23 @@ export class InstancedLineRenderer extends Batch {
     const geometry = this.geometry;
     const index = this.objects.indexOf(object);
 
-    const { x1, y1, x2, y2, defX, defY, lineCap } = object.parsedStyle;
+    const { x1, y1, x2, y2, z1, z2, defX, defY, lineCap } = object.parsedStyle;
 
-    if (name === 'x1' || name === 'y1' || name === 'x2' || name === 'y2') {
+    if (
+      name === 'x1' ||
+      name === 'y1' ||
+      name === 'x2' ||
+      name === 'y2' ||
+      name === 'z1' ||
+      name === 'z2'
+    ) {
       geometry.updateVertexBuffer(
         2,
         InstancedLineProgram.a_PointA,
         index,
-        new Uint8Array(new Float32Array([x1 - defX, y1 - defY, x2 - defX, y2 - defY]).buffer),
+        new Uint8Array(
+          new Float32Array([x1 - defX, y1 - defY, z1, x2 - defX, y2 - defY, z2]).buffer,
+        ),
       );
     } else if (name === 'lineDashOffset' || name === 'lineDash') {
       const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } = this.calcDash(

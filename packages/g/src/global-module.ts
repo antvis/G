@@ -277,8 +277,7 @@ export const containerModule = Module((register) => {
 
   // update local position
   addPropertiesHandler<number, number>(
-    ['x', 'y', 'points', 'path', 'x1', 'x2', 'y1', 'y2'],
-    // ['x', 'y'],
+    ['x', 'y', 'z', 'points', 'path', 'x1', 'x2', 'y1', 'y2', 'z1', 'z2'],
     undefined,
     undefined,
     updateLocalPosition,

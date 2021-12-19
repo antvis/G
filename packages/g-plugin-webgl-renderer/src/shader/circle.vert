@@ -28,7 +28,7 @@ void main() {
     offset = offset - vec2(u_StrokeWidth / 2.0);
   }
 
-  gl_Position = project(vec4(offset, -u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+  gl_Position = project(vec4(offset, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
   
   v_Radius = a_Size;
   v_Data = vec4(a_Extrude, antialiasblur, a_StylePacked3.x);

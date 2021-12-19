@@ -14,7 +14,7 @@ void main() {
 
   vec2 offset = (a_Uv - a_Anchor.xy) * a_Size;
 
-  gl_Position = project(vec4(offset, -u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+  gl_Position = project(vec4(offset, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
 
   #pragma glslify: import('@antv/g-shader-components/uv.vert')
 }

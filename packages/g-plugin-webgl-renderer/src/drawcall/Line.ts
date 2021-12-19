@@ -17,7 +17,7 @@ import { fillMatrix4x4, fillVec4 } from '../render/utils';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RenderInst } from '../render/RenderInst';
 import { DeviceProgram } from '../render/DeviceProgram';
-import { Batch } from './Batch';
+import { Batch, RENDER_ORDER_SCALE } from './Batch';
 import { ShapeRenderer } from '../tokens';
 import { Renderable3D } from '../components/Renderable3D';
 import { RenderInstList } from '../render';
@@ -190,7 +190,7 @@ export class LineRenderer extends Batch {
   }
 
   changeRenderOrder(object: DisplayObject, renderOrder: number) {
-    this.recreateGeometry = true;
+    this.geometryDirty = true;
   }
 
   updateAttribute(object: DisplayObject, name: string, value: any): void {
@@ -205,7 +205,7 @@ export class LineRenderer extends Batch {
       (object.nodeName === SHAPE.Polygon && name === 'points') ||
       (object.nodeName === SHAPE.Path && name === 'path')
     ) {
-      this.recreateGeometry = true;
+      this.geometryDirty = true;
     }
   }
 
@@ -259,7 +259,7 @@ export class LineRenderer extends Batch {
       offs,
       lineDashOffset,
       visibility === 'visible' ? 1 : 0,
-      instance.sortable.renderOrder,
+      instance.sortable.renderOrder * RENDER_ORDER_SCALE,
     ); // u_DashOffset u_Visible u_ZIndex
 
     // keep both faces

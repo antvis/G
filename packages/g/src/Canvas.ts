@@ -73,8 +73,11 @@ export class Canvas extends EventTarget implements ICanvas {
     cleanExistedCanvas(config.container, this);
 
     const mergedConfig = {
-      ...config,
+      width: 300,
+      height: 150,
       cursor: 'default' as Cursor,
+      background: 'white',
+      ...config,
     };
 
     this.initRenderingContext(mergedConfig);
@@ -126,8 +129,7 @@ export class Canvas extends EventTarget implements ICanvas {
     const camera = new Camera()
       .setPosition(width / 2, height / 2, 500)
       .setFocalPoint(width / 2, height / 2, 0)
-      // origin to be in the top left
-      .setOrthographic(width / -2, width / 2, height / -2, height / 2, 0.1, 1000);
+      .setOrthographic(width / -2, width / 2, height / 2, height / -2, 0.1, 1000);
 
     // redraw when camera changed
     const context = this.container.get<RenderingContext>(RenderingContext);
@@ -226,18 +228,16 @@ export class Canvas extends EventTarget implements ICanvas {
     // resize camera
     const camera = this.container.get<Camera>(DefaultCamera);
     const projectionMode = camera.getProjectionMode();
+    camera.setPosition(width / 2, height / 2, 500).setFocalPoint(width / 2, height / 2, 0);
     if (projectionMode === CAMERA_PROJECTION_MODE.ORTHOGRAPHIC) {
-      camera
-        .setPosition(width / 2, height / 2, 500)
-        .setFocalPoint(width / 2, height / 2, 0)
-        .setOrthographic(
-          width / -2,
-          width / 2,
-          height / -2,
-          height / 2,
-          camera.getNear(),
-          camera.getFar(),
-        );
+      camera.setOrthographic(
+        width / -2,
+        width / 2,
+        height / 2,
+        height / -2,
+        camera.getNear(),
+        camera.getFar(),
+      );
     } else {
       camera.setAspect(width / height);
     }

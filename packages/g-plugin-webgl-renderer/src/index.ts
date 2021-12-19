@@ -24,6 +24,9 @@ import { TexturePool } from './TexturePool';
 import { GlyphManager } from './drawcall/symbol/GlyphManager';
 import { RendererFactory, ShapeRenderer } from './tokens';
 import { Mesh } from './Mesh';
+import { Texture2D } from './Texture2D';
+import { Sampler } from './Sampler';
+import { LightPool } from './LightPool';
 
 let bindFunc: Syringe.Register;
 
@@ -40,17 +43,21 @@ export {
   TexturePool,
   RenderGraphPlugin,
   Mesh,
+  Texture2D,
+  Sampler,
 };
 
 export * from './platform';
 export * from './render';
 export * from './geometries';
 export * from './materials';
+export * from './lights';
 
 export const containerModule = Module((register) => {
   bindFunc = register;
   register(RenderHelper);
   register(TexturePool);
+  register(LightPool);
   register(GlyphManager);
   register(PickingIdGenerator);
 

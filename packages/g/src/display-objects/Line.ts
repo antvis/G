@@ -10,12 +10,16 @@ export interface LineStyleProps extends BaseStyleProps {
   y1: number;
   x2: number;
   y2: number;
+  z1?: number;
+  z2?: number;
 }
 export interface ParsedLineStyleProps extends ParsedBaseStyleProps {
   x1: number;
   y1: number;
   x2: number;
   y2: number;
+  z1?: number;
+  z2?: number;
   defX: number;
   defY: number;
 }
@@ -28,6 +32,8 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
         y1: 0,
         x2: 0,
         y2: 0,
+        z1: 0,
+        z2: 0,
         lineJoin: LINE_JOIN.Miter,
         lineCap: LINE_CAP.Butt,
         lineWidth: 1,

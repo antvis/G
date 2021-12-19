@@ -14,6 +14,8 @@ import {
   DefaultCamera,
   Camera,
   CanvasEvent,
+  parseColor,
+  Tuple4Number,
 } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { Batch } from './drawcall';
@@ -43,16 +45,19 @@ import { RenderHelper } from './render/RenderHelper';
 import { RenderInstList } from './render/RenderInstList';
 import { RGRenderTargetDescription } from './render/RenderTargetDescription';
 import { fillMatrix4x4, fillVec3v, fillVec4, fillVec4v } from './render/utils';
-import { TransparentWhite, OpaqueWhite } from './utils/color';
+import { TransparentWhite, OpaqueWhite, colorNewFromRGBA } from './utils/color';
 import { isWebGL2 } from './platform/webgl2/utils';
 import { RendererFactory } from './tokens';
 import {
   AntialiasingMode,
+  makeAttachmentClearDescriptor,
   makeBackbufferDescSimple,
   opaqueBlackFullClearRenderPassDescriptor,
   opaqueWhiteFullClearRenderPassDescriptor,
 } from './render/RenderGraphHelpers';
 import naga from '../../../rust/pkg/index_bg.wasm';
+import { Light } from './lights';
+import { LightPool } from './LightPool';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class RenderGraphPlugin implements RenderingPlugin {
@@ -81,6 +86,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
   @inject(RenderHelper)
   private renderHelper: RenderHelper;
+
+  @inject(LightPool)
+  private lightPool: LightPool;
 
   private device: Device;
 
@@ -161,6 +169,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
 
+      const clearColor = parseColor(this.canvasConfig.background).value as Tuple4Number;
+
       // retrieve at each frame since canvas may resize
       const renderInput = {
         backbufferWidth: canvas.width,
@@ -171,7 +181,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const mainRenderDesc = makeBackbufferDescSimple(
         RGAttachmentSlot.Color0,
         renderInput,
-        opaqueWhiteFullClearRenderPassDescriptor,
+        // opaqueWhiteFullClearRenderPassDescriptor,
+        makeAttachmentClearDescriptor(colorNewFromRGBA(...clearColor)),
       );
       const mainDepthDesc = makeBackbufferDescSimple(
         RGAttachmentSlot.DepthStencil,
@@ -228,7 +239,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
         setAttachmentStateSimple(
           {
             depthWrite: true,
-            cullMode: CullMode.Back,
+            // cullMode: CullMode.Back,
           },
           {
             rgbBlendMode: BlendMode.Add,
@@ -242,11 +253,13 @@ export class RenderGraphPlugin implements RenderingPlugin {
       );
 
       // Update Scene Params
-      let offs = template.allocateUniformBuffer(0, 16 + 16 + 4);
+      let offs = template.allocateUniformBuffer(0, 16 + 16 + 4 + 4);
       let d = template.mapUniformBufferF32(0);
       offs += fillMatrix4x4(d, offs, this.camera.getPerspective()); // ProjectionMatrix 16
       offs += fillMatrix4x4(d, offs, this.camera.getViewTransform()); // ViewMatrix 16
-      offs += fillVec3v(d, offs, this.camera.getPosition(), this.contextService.getDPR()); // CameraPosition DPR 4
+      offs += fillVec3v(d, offs, this.camera.getPosition(), this.contextService.getDPR()); // CameraPosition DPR isOrtho 4
+      const { width, height } = this.canvasConfig;
+      offs += fillVec4(d, offs, width, height, this.camera.isOrtho() ? 1 : 0);
 
       renderInstManager.setCurrentRenderInstList(this.renderLists.world);
       // render batches
@@ -290,6 +303,13 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
+
+      // collect lights
+      if (object.nodeName === Light.tag) {
+        this.lightPool.addLight(object as Light);
+        return;
+      }
+
       const renderable3D = new Renderable3D();
 
       // add geometry & material required by Renderable3D
@@ -336,9 +356,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const { attributeName, newValue } = e.detail;
       // @ts-ignore
       const renderable3D = object.renderable3D;
-      const batch = this.batches.find((batch) => renderable3D.batchId === batch.id);
-      if (batch) {
-        batch.updateAttribute(object, attributeName, newValue);
+      if (renderable3D) {
+        const batch = this.batches.find((batch) => renderable3D.batchId === batch.id);
+        if (batch) {
+          batch.updateAttribute(object, attributeName, newValue);
+        }
       }
     };
 
@@ -347,9 +369,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const { renderOrder } = e.detail;
       // @ts-ignore
       const renderable3D = object.renderable3D;
-      const batch = this.batches.find((batch) => renderable3D.batchId === batch.id);
-      if (batch) {
-        batch.changeRenderOrder(object, renderOrder);
+      if (renderable3D) {
+        const batch = this.batches.find((batch) => renderable3D.batchId === batch.id);
+        if (batch) {
+          batch.changeRenderOrder(object, renderOrder);
+        }
       }
     };
   }
@@ -375,6 +399,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
     const options: WebGLContextAttributes = {
       antialias: false,
       preserveDrawingBuffer: false,
+      // @see https://webglfundamentals.org/webgl/lessons/webgl-qna-how-to-use-the-stencil-buffer.html
+      stencil: true,
       // @see https://webglfundamentals.org/webgl/lessons/webgl-and-alpha.html
       // premultipliedAlpha: false,
     };

@@ -10,6 +10,27 @@
         "zh": "立方体",
         "en": "Cube"
       }
+    },
+    {
+      "filename": "sphere.js",
+      "title": {
+        "zh": "球",
+        "en": "Sphere"
+      }
+    },
+    {
+      "filename": "torus.js",
+      "title": {
+        "zh": "圆环",
+        "en": "Torus"
+      }
+    },
+    {
+      "filename": "force-3d.js",
+      "title": {
+        "zh": "3D 力导布局",
+        "en": "Force 3D"
+      }
     }
   ]
 }

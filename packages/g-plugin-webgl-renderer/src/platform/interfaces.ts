@@ -259,6 +259,7 @@ export interface TextureDescriptor {
   numLevels: number;
   usage: TextureUsage;
   immutable?: boolean;
+  flipY?: boolean;
 }
 
 export function makeTextureDescriptor2D(

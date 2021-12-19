@@ -13,7 +13,7 @@ import {
 } from '../platform';
 import { RenderInst } from '../render/RenderInst';
 import { DeviceProgram } from '../render/DeviceProgram';
-import { Batch, AttributeLocation } from './Batch';
+import { Batch, AttributeLocation, RENDER_ORDER_SCALE } from './Batch';
 import { TextureMapping } from '../render/TextureHolder';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
 import { getGlyphQuads } from './symbol/SymbolQuad';
@@ -87,12 +87,12 @@ export class TextRenderer extends Batch {
       name === 'modelMatrix' ||
       name === 'visibility'
     ) {
-      this.recreateGeometry = true;
+      this.geometryDirty = true;
     }
   }
 
   changeRenderOrder(object: DisplayObject, renderOrder: number) {
-    this.recreateGeometry = true;
+    this.geometryDirty = true;
   }
 
   uploadUBO(renderInst: RenderInst): void {
@@ -403,7 +403,7 @@ export class TextRenderer extends Batch {
         0,
         0,
         ...encodedPickingColor,
-        object.sortable.renderOrder,
+        object.sortable.renderOrder * RENDER_ORDER_SCALE,
       ];
       // FIXME: instanced
       charPackedBuffer.push(...packed, ...packed, ...packed, ...packed);

@@ -1,12 +1,14 @@
 import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer } from '@antv/g-webgl';
-import { MeshBasicMaterial, CubeGeometry, Mesh, Cube, Plugin } from '@antv/g-plugin-3d';
+import { MeshBasicMaterial, CubeGeometry, Mesh, Plugin as Plugin3D } from '@antv/g-plugin-3d';
+import { Plugin as PluginControl } from '@antv/g-plugin-control';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 
 // create a renderer
 const renderer = new Renderer();
-renderer.registerPlugin(new Plugin());
+renderer.registerPlugin(new Plugin3D());
+renderer.registerPlugin(new PluginControl());
 
 // create a canvas
 const canvas = new Canvas({
@@ -16,37 +18,27 @@ const canvas = new Canvas({
   renderer,
 });
 
-// const cube = new Cube({
-//   style: {
-//     width: 200,
-//     height: 200,
-//     depth: 200,
-//     fill: 'red',
-//     // map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
-//   },
-// });
+const cubeGeometry = new CubeGeometry();
+const basicMaterial = new MeshBasicMaterial({
+  // wireframe: true,
+  map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
+});
 
 const cube = new Mesh({
   style: {
     fill: '#1890FF',
     opacity: 1,
-    geometry: new CubeGeometry({
-      width: 200,
-      height: 200,
-      depth: 200,
-    }),
-    material: new MeshBasicMaterial({
-      map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
-    }),
+    width: 200,
+    height: 200,
+    depth: 200,
+    geometry: cubeGeometry,
+    material: basicMaterial,
   },
 });
 
 cube.setPosition(300, 250, 0);
 
 canvas.appendChild(cube);
-
-const camera = canvas.getCamera();
-camera.setPosition(300, 20, 500);
 
 // stats
 const stats = new Stats();
@@ -88,18 +80,37 @@ const geometryConfig = {
   depth: 200,
 };
 geometryFolder.add(geometryConfig, 'width', 50, 300).onChange((width) => {
-  cube.style.geometry.width = width;
+  cube.style.width = width;
 });
 geometryFolder.add(geometryConfig, 'height', 50, 300).onChange((height) => {
-  cube.style.geometry.height = height;
+  cube.style.height = height;
 });
 geometryFolder.add(geometryConfig, 'depth', 50, 300).onChange((depth) => {
-  cube.style.geometry.depth = depth;
+  cube.style.depth = depth;
 });
 geometryFolder.open();
 
 const materialFolder = gui.addFolder('material');
 const materialConfig = {
   map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
+  enableMap: true,
 };
+materialFolder
+  .add(materialConfig, 'enableMap')
+  .onChange((enable) => {
+    cube.style.material.props.map = enable ? materialConfig.map : '';
+  })
+  .listen();
+materialFolder
+  .add(materialConfig, 'map', [
+    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
+    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
+    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+  ])
+  .onChange((map) => {
+    materialConfig.enableMap = true;
+    cube.style.material.props.map = map;
+    // or
+    // basicMaterial.props.map = map;
+  });
 materialFolder.open();

@@ -17,6 +17,6 @@ void main() {
 
   float fontScale = u_FontSize / 24.;
 
-  gl_Position = project(vec4(a_Offset * fontScale, -u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+  gl_Position = project(vec4(a_Offset * fontScale, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
   v_GammaScale = gl_Position.w;
 }
