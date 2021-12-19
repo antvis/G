@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "5.0.5",
+  "version": "5.0.6",
   "description": "A core module including ECS and DI container.",
   "main": "lib/index.js",
   "module": "es/index.js",
