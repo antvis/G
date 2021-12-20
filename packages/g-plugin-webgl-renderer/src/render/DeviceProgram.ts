@@ -18,6 +18,8 @@ export class DeviceProgram {
     MRT: true,
   };
 
+  dirty = true;
+
   definesChanged(): void {
     this.preprocessedVert = '';
     this.preprocessedFrag = '';

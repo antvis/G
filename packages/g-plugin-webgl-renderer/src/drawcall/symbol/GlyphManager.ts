@@ -204,7 +204,7 @@ export class GlyphManager {
         width: BASE_FONT_WIDTH,
         height: BASE_FONT_WIDTH,
         left: 0,
-        top: -8,
+        top: -2,
         advance: isCJK(charCode) ? BASE_FONT_WIDTH : this.textMetricsCache[fontStack][char],
       },
     };

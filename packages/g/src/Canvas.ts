@@ -54,6 +54,12 @@ export class Canvas extends EventTarget implements ICanvas {
    */
   private frameId?: number;
 
+  /**
+   * cache here since inversify's resolving is very slow
+   */
+  private eventService: EventService;
+  private renderingService: RenderingService;
+
   constructor(config: CanvasConfig) {
     super();
 
@@ -67,8 +73,11 @@ export class Canvas extends EventTarget implements ICanvas {
     cleanExistedCanvas(config.container, this);
 
     const mergedConfig = {
-      ...config,
+      width: 300,
+      height: 150,
       cursor: 'default' as Cursor,
+      background: 'white',
+      ...config,
     };
 
     this.initRenderingContext(mergedConfig);
@@ -120,8 +129,7 @@ export class Canvas extends EventTarget implements ICanvas {
     const camera = new Camera()
       .setPosition(width / 2, height / 2, 500)
       .setFocalPoint(width / 2, height / 2, 0)
-      // origin to be in the top left
-      .setOrthographic(width / -2, width / 2, height / -2, height / 2, 0.1, 1000);
+      .setOrthographic(width / -2, width / 2, height / 2, height / -2, 0.1, 1000);
 
     // redraw when camera changed
     const context = this.container.get<RenderingContext>(RenderingContext);
@@ -160,15 +168,19 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   getEventService() {
-    return this.container.get<EventService>(EventService);
+    return this.eventService;
   }
 
   getRenderingService() {
-    return this.container.get<RenderingService>(RenderingService);
+    return this.renderingService;
   }
 
   getRenderingContext() {
     return this.container.get<RenderingContext>(RenderingContext);
+  }
+
+  getStats() {
+    return this.getRenderingService().getStats();
   }
 
   getComputedStyle(node: DisplayObject) {
@@ -216,18 +228,16 @@ export class Canvas extends EventTarget implements ICanvas {
     // resize camera
     const camera = this.container.get<Camera>(DefaultCamera);
     const projectionMode = camera.getProjectionMode();
+    camera.setPosition(width / 2, height / 2, 500).setFocalPoint(width / 2, height / 2, 0);
     if (projectionMode === CAMERA_PROJECTION_MODE.ORTHOGRAPHIC) {
-      camera
-        .setPosition(width / 2, height / 2, 500)
-        .setFocalPoint(width / 2, height / 2, 0)
-        .setOrthographic(
-          width / -2,
-          width / 2,
-          height / -2,
-          height / 2,
-          camera.getNear(),
-          camera.getFar(),
-        );
+      camera.setOrthographic(
+        width / -2,
+        width / 2,
+        height / 2,
+        height / -2,
+        camera.getNear(),
+        camera.getFar(),
+      );
     } else {
       camera.setAspect(width / height);
     }
@@ -278,9 +288,12 @@ export class Canvas extends EventTarget implements ICanvas {
 
     // init context
     const contextService = this.container.get<ContextService<unknown>>(ContextService);
-    const renderingService = this.container.get<RenderingService>(RenderingService);
+
+    this.renderingService = this.container.get<RenderingService>(RenderingService);
+    this.eventService = this.container.get<EventService>(EventService);
+
     contextService.init();
-    renderingService.init().then(() => {
+    this.renderingService.init().then(() => {
       this.emit(CanvasEvent.READY, {});
     });
 

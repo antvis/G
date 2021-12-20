@@ -31,6 +31,7 @@ const ul1 = new Rect({
   },
 });
 const ul1Text = new Text({
+  id: 'ui1-text',
   style: {
     text: 'ul1',
     fontSize: 16,
@@ -48,6 +49,7 @@ const ul2 = new Rect({
   },
 });
 const ul2Text = new Text({
+  id: 'ui2-text',
   style: {
     text: 'ul2',
     fontSize: 16,
@@ -66,6 +68,7 @@ const li1 = new Rect({
   },
 });
 const li1Text = new Text({
+  id: 'li1-text',
   style: {
     text: 'li1',
     fontSize: 16,
@@ -83,6 +86,7 @@ const li2 = new Rect({
   },
 });
 const li2Text = new Text({
+  id: 'li2-text',
   style: {
     text: 'li2',
     fontSize: 16,

@@ -57,6 +57,8 @@ canvas.on('afterrender', () => {
   }
 
   camera.rotate(0, 0, 0.1);
+
+  console.log(canvas.getStats());
 });
 
 // GUI

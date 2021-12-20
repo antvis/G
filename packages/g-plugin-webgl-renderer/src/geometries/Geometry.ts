@@ -7,9 +7,8 @@ import {
   InputLayoutDescriptor,
   PrimitiveTopology,
   VertexBufferFrequency,
-} from './platform';
-import { align } from './platform/utils';
-import { translateBufferUsage } from './platform/webgpu/utils';
+} from '../platform';
+import { align } from '../platform/utils';
 
 export type IndicesArray = number[] | Int32Array | Uint32Array | Uint16Array;
 
@@ -20,7 +19,7 @@ export const enum Attribute {
   Normal,
 }
 
-export interface VertexBufferDescriptor {
+export interface GeometryVertexBufferDescriptor {
   bufferIndex: number;
   byteStride: number;
   frequency: VertexBufferFrequency;
@@ -51,11 +50,24 @@ export function makeStaticDataBuffer(
 }
 
 export class Geometry {
+  /**
+   * 绘制模式
+   */
   drawMode: PrimitiveTopology = PrimitiveTopology.Triangles;
 
+  /**
+   * 硬件抽象层，提供 GPU 能力，例如创建 Buffer
+   */
   device: Device;
 
+  /**
+   * 存放 Attribute Buffer 列表
+   */
   vertexBuffers: Buffer[] = [];
+
+  /**
+   * 存放 Index Buffer
+   */
   indicesBuffer: Buffer;
 
   inputLayoutDescriptor: InputLayoutDescriptor = {
@@ -68,6 +80,8 @@ export class Geometry {
 
   // instanced count
   maxInstancedCount: number;
+
+  init?(): void;
 
   destroy() {
     this.vertexBuffers.forEach((buffer) => {
@@ -86,7 +100,7 @@ export class Geometry {
     this.maxInstancedCount = 0;
   }
 
-  setVertexBuffer(descriptor: VertexBufferDescriptor) {
+  setVertexBuffer(descriptor: GeometryVertexBufferDescriptor) {
     const { bufferIndex, byteStride, frequency, attributes, data } = descriptor;
 
     this.inputLayoutDescriptor.vertexBufferDescriptors[bufferIndex] = {

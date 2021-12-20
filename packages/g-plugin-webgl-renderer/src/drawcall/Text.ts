@@ -13,7 +13,7 @@ import {
 } from '../platform';
 import { RenderInst } from '../render/RenderInst';
 import { DeviceProgram } from '../render/DeviceProgram';
-import { Batch, AttributeLocation } from './Batch';
+import { Batch, AttributeLocation, RENDER_ORDER_SCALE } from './Batch';
 import { TextureMapping } from '../render/TextureHolder';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
 import { getGlyphQuads } from './symbol/SymbolQuad';
@@ -42,6 +42,8 @@ export class TextRenderer extends Batch {
   program = new TextProgram();
 
   instanced = false;
+
+  private mapping: TextureMapping;
 
   @inject(GlyphManager)
   private glyphManager: GlyphManager;
@@ -85,26 +87,12 @@ export class TextRenderer extends Batch {
       name === 'modelMatrix' ||
       name === 'visibility'
     ) {
-      this.recreateGeometry = true;
-      // } else if (name === 'visibility') {
-      //   const { visibility } = object.parsedStyle;
-      //   this.geometry.updateVertexBuffer(
-      //     Batch.CommonBufferIndex,
-      //     AttributeLocation.a_StylePacked2,
-      //     0,
-      //     new Uint8Array(new Float32Array([visibility === 'visible' ? 1 : 0]).buffer),
-      //   );
-    } else if (name === 'zIndex') {
-      // const encodedPickingColor = object.entity.getComponent(Renderable3D).encodedPickingColor;
-      // this.geometry.updateVertexBuffer(
-      //   Batch.CommonBufferIndex,
-      //   AttributeLocation.a_PickingColor,
-      //   index,
-      //   new Uint8Array(
-      //     new Float32Array([...encodedPickingColor, object.parsedStyle.zIndex]).buffer,
-      //   ),
-      // );
+      this.geometryDirty = true;
     }
+  }
+
+  changeRenderOrder(object: DisplayObject, renderOrder: number) {
+    this.geometryDirty = true;
   }
 
   uploadUBO(renderInst: RenderInst): void {
@@ -223,14 +211,14 @@ export class TextRenderer extends Batch {
       // handle vertical text baseline
       if (textBaseline === 'middle') {
         linePositionY = -height / 2;
-      } else if (
-        textBaseline === 'bottom' ||
-        textBaseline === 'alphabetic' ||
-        textBaseline === 'ideographic'
-      ) {
+      } else if (textBaseline === 'bottom') {
         linePositionY = -height;
       } else if (textBaseline === 'top' || textBaseline === 'hanging') {
         linePositionY = 0;
+      } else if (textBaseline === 'alphabetic') {
+        linePositionY = -height * 0.75;
+      } else if (textBaseline === 'ideographic') {
+        linePositionY = -height;
       }
 
       const { indicesOffset, indexBuffer, charUVOffsetBuffer, charPackedBuffer } =
@@ -369,7 +357,7 @@ export class TextRenderer extends Batch {
   }) {
     const { textAlign = 'start' } = object.parsedStyle;
 
-    const { fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, visibility, zIndex } =
+    const { fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, visibility } =
       object.parsedStyle;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (fill?.type === PARSED_COLOR_TYPE.Constant) {
@@ -415,7 +403,7 @@ export class TextRenderer extends Batch {
         0,
         0,
         ...encodedPickingColor,
-        zIndex,
+        object.sortable.renderOrder * RENDER_ORDER_SCALE,
       ];
       // FIXME: instanced
       charPackedBuffer.push(...packed, ...packed, ...packed, ...packed);

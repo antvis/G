@@ -21,6 +21,8 @@ import {
   TextureUsage,
   QueryPool,
   QueryPoolType,
+  BindingLayoutSamplerDescriptor,
+  SamplerFormatKind,
 } from '../interfaces';
 import { align } from '../utils';
 import { Format, FormatTypeFlags, getFormatByteSize, getFormatTypeFlags } from '../format';
@@ -99,6 +101,29 @@ export function translateMipFilter(mipFilter: MipFilterMode): GPUFilterMode {
   else if (mipFilter === MipFilterMode.Nearest) return 'nearest';
   else if (mipFilter === MipFilterMode.NoMip) return 'nearest';
   else throw 'whoops';
+}
+
+function translateSampleType(type: SamplerFormatKind): GPUTextureSampleType {
+  if (type === SamplerFormatKind.Float) return 'float';
+  else if (type === SamplerFormatKind.Depth) return 'depth';
+  else throw 'whoops';
+}
+
+function translateViewDimension(dimension: TextureDimension): GPUTextureViewDimension {
+  if (dimension === TextureDimension.n2D) return '2d';
+  else if (dimension === TextureDimension.n2DArray) return '2d-array';
+  else if (dimension === TextureDimension.n3D) return '3d';
+  else if (dimension === TextureDimension.Cube) return 'cube';
+  else throw 'whoops';
+}
+
+export function translateBindGroupTextureBinding(
+  sampler: BindingLayoutSamplerDescriptor,
+): GPUTextureBindingLayout {
+  return {
+    sampleType: translateSampleType(sampler.formatKind),
+    viewDimension: translateViewDimension(sampler.dimension),
+  };
 }
 
 export function getPlatformBuffer(buffer_: Buffer): GPUBuffer {

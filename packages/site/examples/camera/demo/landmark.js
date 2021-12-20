@@ -1,12 +1,14 @@
 import { Canvas, Group } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { Cube, Grid, Plugin } from '@antv/g-plugin-3d';
+import { MeshBasicMaterial, CubeGeometry, Mesh, Plugin as Plugin3D } from '@antv/g-plugin-3d';
+import { Plugin as PluginControl } from '@antv/g-plugin-control';
 import * as dat from 'dat.gui';
 import Stats from 'stats.js';
 
 // create a webgl renderer
 const webglRenderer = new WebGLRenderer();
-webglRenderer.registerPlugin(new Plugin());
+webglRenderer.registerPlugin(new Plugin3D());
+webglRenderer.registerPlugin(new PluginControl());
 
 // create a canvas
 const canvas = new Canvas({
@@ -34,31 +36,26 @@ camera.createLandmark('mark3', {
   roll: 30,
 });
 
-const group = new Group({});
-// create a cube
-const cube = new Cube({
-  style: {
-    width: 200,
-    height: 200,
-    depth: 200,
-    fill: '#FFF',
-    map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
-  },
+const group = new Group();
+const cubeGeometry = new CubeGeometry();
+const basicMaterial = new MeshBasicMaterial({
+  map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
 });
-const grid = new Grid({
-  style: {
-    width: 200,
-    height: 200,
-    depth: 200,
-    fill: '#1890FF',
-  },
-});
-group.appendChild(grid);
-group.appendChild(cube);
-group.setPosition(300, 250, 0);
 
-// add a cube to canvas
-canvas.appendChild(group);
+const cube = new Mesh({
+  style: {
+    fill: '#1890FF',
+    opacity: 1,
+    width: 200,
+    height: 200,
+    depth: 200,
+    geometry: cubeGeometry,
+    material: basicMaterial,
+  },
+});
+cube.setPosition(300, 250, 0);
+
+canvas.appendChild(cube);
 
 // stats
 const stats = new Stats();

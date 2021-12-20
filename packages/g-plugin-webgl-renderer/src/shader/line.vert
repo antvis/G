@@ -1,5 +1,5 @@
-#pragma glslify: import('./chunks/scene.both.glsl')
-#pragma glslify: import('./chunks/line.both.glsl')
+#pragma glslify: import('@antv/g-shader-components/scene.both.glsl')
+#pragma glslify: import('@antv/g-shader-components/line.both.glsl')
 
 layout(location = 0) attribute vec2 a_Prev;
 layout(location = 1) attribute vec2 a_Point1;
@@ -313,7 +313,7 @@ if (type >= BEVEL) {
 
 pos += u_Anchor;
 
-gl_Position = u_ProjectionMatrix * u_ViewMatrix * vec4(pos, 0.0, 1.0);
+gl_Position = u_ProjectionMatrix * u_ViewMatrix * vec4(pos, u_ZIndex, 1.0);
 
 setPickingColor(u_PickingColor.xyz);
 }

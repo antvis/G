@@ -115,47 +115,45 @@ export function translatePrimitiveTopology(topology: PrimitiveTopology): GLenum 
   }
 }
 
+function translateType(flags: FormatTypeFlags): GLenum {
+  switch (flags) {
+    case FormatTypeFlags.U8:
+      return GL.UNSIGNED_BYTE;
+    case FormatTypeFlags.U16:
+      return GL.UNSIGNED_SHORT;
+    case FormatTypeFlags.U32:
+      return GL.UNSIGNED_INT;
+    case FormatTypeFlags.S8:
+      return GL.BYTE;
+    case FormatTypeFlags.S16:
+      return GL.SHORT;
+    case FormatTypeFlags.S32:
+      return GL.INT;
+    case FormatTypeFlags.F16:
+      return GL.HALF_FLOAT;
+    case FormatTypeFlags.F32:
+      return GL.FLOAT;
+    default:
+      throw 'whoops';
+  }
+}
+function translateSize(flags: FormatCompFlags): number {
+  switch (flags) {
+    case FormatCompFlags.R:
+      return 1;
+    case FormatCompFlags.RG:
+      return 2;
+    case FormatCompFlags.RGB:
+      return 3;
+    case FormatCompFlags.RGBA:
+      return 4;
+  }
+}
 export function translateVertexFormat(fmt: Format): {
   size: number;
   type: GLenum;
   normalized: boolean;
 } {
-  function translateType(flags: FormatTypeFlags): GLenum {
-    switch (flags) {
-      case FormatTypeFlags.U8:
-        return GL.UNSIGNED_BYTE;
-      case FormatTypeFlags.U16:
-        return GL.UNSIGNED_SHORT;
-      case FormatTypeFlags.U32:
-        return GL.UNSIGNED_INT;
-      case FormatTypeFlags.S8:
-        return GL.BYTE;
-      case FormatTypeFlags.S16:
-        return GL.SHORT;
-      case FormatTypeFlags.S32:
-        return GL.INT;
-      case FormatTypeFlags.F16:
-        return GL.HALF_FLOAT;
-      case FormatTypeFlags.F32:
-        return GL.FLOAT;
-      default:
-        throw 'whoops';
-    }
-  }
-
-  function translateSize(flags: FormatCompFlags): number {
-    switch (flags) {
-      case FormatCompFlags.R:
-        return 1;
-      case FormatCompFlags.RG:
-        return 2;
-      case FormatCompFlags.RGB:
-        return 3;
-      case FormatCompFlags.RGBA:
-        return 4;
-    }
-  }
-
   const typeFlags = getFormatTypeFlags(fmt);
   const compFlags = getFormatCompFlags(fmt);
   const flags = getFormatFlags(fmt);

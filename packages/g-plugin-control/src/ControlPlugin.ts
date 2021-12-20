@@ -38,7 +38,7 @@ export class ControlPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     renderingService.hooks.init.tap(ControlPlugin.tag, () => {
-      const root = this.renderingContext.root;
+      const root = this.renderingContext.root.ownerDocument.defaultView;
       // @ts-ignore
       this.hammertime = new Hammer(root);
 
@@ -129,8 +129,8 @@ export class ControlPlugin implements RenderingPlugin {
 
   private rotate(rx: number, ry: number) {
     const { width, height } = this.canvasConfig;
-    const dx = -20.0 / height;
-    const dy = -20.0 / width;
+    const dx = 20.0 / height;
+    const dy = 20.0 / width;
     let motionFactorX = MOTION_FACTOR;
     let motionFactorY = MOTION_FACTOR;
     if (rx * rx > 2 * ry * ry) {
@@ -142,6 +142,6 @@ export class ControlPlugin implements RenderingPlugin {
     const rotX = rx * dx * motionFactorX;
     const rotY = ry * dy * motionFactorY;
 
-    this.camera.rotate(rotX, rotY, 0);
+    this.camera.rotate(rotX, -rotY, 0);
   }
 }

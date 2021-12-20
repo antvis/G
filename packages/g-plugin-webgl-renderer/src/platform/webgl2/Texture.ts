@@ -30,6 +30,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
   depth: number;
   numLevels: number;
   immutable: boolean;
+  flipY: boolean;
   mipmaps: boolean;
   formatKind: SamplerFormatKind;
 
@@ -51,6 +52,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     let gl_texture: WebGLTexture;
     let numLevels = this.clampNumLevels(descriptor);
     this.immutable = !!descriptor.immutable;
+    this.flipY = !!descriptor.flipY;
     this.pixelFormat = descriptor.pixelFormat;
     this.formatKind = getFormatSamplerKind(descriptor.pixelFormat);
     this.width = descriptor.width;
@@ -65,6 +67,10 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
       const internalformat = this.device.translateTextureInternalFormat(descriptor.pixelFormat);
       this.device.setActiveTexture(gl.TEXTURE0);
       this.device.currentTextures[0] = null;
+
+      if (this.flipY) {
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+      }
 
       if (descriptor.dimension === TextureDimension.n2D) {
         gl_target = GL.TEXTURE_2D;
@@ -199,11 +205,14 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     const gl_format = this.device.translateTextureFormat(this.pixelFormat);
     const gl_type = this.device.translateTextureType(this.pixelFormat);
 
+    if (this.flipY) {
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+    }
+
     if (this.immutable) {
       if (isWebGL2(gl)) {
         // must use texSubImage2D instead of texImage2D, since texture is immutable
         // @see https://stackoverflow.com/questions/56123201/unity-plugin-texture-is-immutable?rq=1
-        // gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
         // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 0);
         gl.texSubImage2D(
           this.gl_target,

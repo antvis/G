@@ -64,6 +64,8 @@ describe('Canvas', () => {
     canvas.appendChild(circle);
 
     const handlePointerDown = (e) => {
+      const stats = canvas.getStats();
+
       // target
       expect(e.target).to.be.eqls(circle);
 

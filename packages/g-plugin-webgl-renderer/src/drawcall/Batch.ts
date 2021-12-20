@@ -1,4 +1,4 @@
-import { vec3, mat4 } from 'gl-matrix';
+import { vec3, mat3, mat4 } from 'gl-matrix';
 import { injectable, inject } from 'mana-syringe';
 import {
   DisplayObject,
@@ -11,7 +11,7 @@ import {
   Camera,
   ParsedColorStyleProperty,
 } from '@antv/g';
-import { Geometry } from '../Geometry';
+import { Geometry } from '../geometries';
 import { Renderable3D } from '../components/Renderable3D';
 import {
   Device,
@@ -31,6 +31,11 @@ import { preprocessProgramObj_GLSL, ProgramDescriptorSimpleWithOrig } from '../s
 import { makeSortKeyOpaque, RendererLayer } from '../render/utils';
 import { RenderInst } from '../render/RenderInst';
 import { TexturePool } from '../TexturePool';
+
+/**
+ * render order start from 0, our default camera's Z is 500
+ */
+export const RENDER_ORDER_SCALE = 1 / 200;
 
 let counter = 1;
 export interface Batch {
@@ -88,13 +93,11 @@ export abstract class Batch {
 
   inputState: InputState;
 
-  mapping: TextureMapping;
+  fillMapping: TextureMapping;
 
-  recreateGeometry = true;
+  geometryDirty = true;
 
-  recreateInputState = true;
-
-  recreateProgram = true;
+  inputStateDirty = true;
 
   programDescriptorSimpleWithOrig: ProgramDescriptorSimpleWithOrig;
 
@@ -134,12 +137,12 @@ export abstract class Batch {
 
     if (this.objects.indexOf(object) === -1) {
       this.objects.push(object);
-      this.recreateGeometry = true;
+      this.geometryDirty = true;
     }
   }
 
   purge(object: DisplayObject) {
-    this.recreateGeometry = true;
+    this.geometryDirty = true;
     const index = this.objects.indexOf(object);
     this.objects.splice(index, 1);
   }
@@ -147,6 +150,11 @@ export abstract class Batch {
   protected abstract buildGeometry(): void;
 
   private createGeometry() {
+    this.buildGeometry();
+    const modelMatrix = mat4.create();
+    const modelViewMatrix = mat4.create();
+    const normalMatrix = mat3.create();
+
     if (this.instanced) {
       const packed = [];
       this.objects.forEach((object) => {
@@ -158,7 +166,6 @@ export abstract class Batch {
           strokeOpacity,
           lineWidth = 0,
           anchor,
-          zIndex = 0,
           visibility,
         } = object.parsedStyle;
         let fillColor: Tuple4Number = [0, 0, 0, 0];
@@ -170,7 +177,13 @@ export abstract class Batch {
           strokeColor = stroke.value;
         }
 
-        const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
+        mat4.copy(modelMatrix, object.getWorldTransform());
+        mat4.mul(modelViewMatrix, this.camera.getViewTransform(), modelMatrix);
+        // should not calc normal matrix in shader, mat3.invert is not cheap
+        // @see https://stackoverflow.com/a/21079741
+        mat3.fromMat4(normalMatrix, modelViewMatrix);
+        mat3.invert(normalMatrix, normalMatrix);
+        mat3.transpose(normalMatrix, normalMatrix);
 
         // @ts-ignore
         const encodedPickingColor = object.renderable3D.encodedPickingColor;
@@ -188,7 +201,7 @@ export abstract class Batch {
           0,
           0,
           ...encodedPickingColor,
-          zIndex,
+          object.sortable.renderOrder * RENDER_ORDER_SCALE,
           anchor[0],
           anchor[1],
         );
@@ -267,7 +280,6 @@ export abstract class Batch {
     }
 
     this.buildGradient();
-    this.buildGeometry();
   }
 
   private buildGradient() {
@@ -302,8 +314,8 @@ export abstract class Batch {
         texImageSource = fill.value.src;
       }
 
-      this.mapping = new TextureMapping();
-      this.mapping.texture = this.texturePool.getOrCreateTexture(
+      this.fillMapping = new TextureMapping();
+      this.fillMapping.texture = this.texturePool.getOrCreateTexture(
         this.device,
         texImageSource,
         makeTextureDescriptor2D(Format.U8_RGBA_NORM, 1, 1, 1),
@@ -316,8 +328,8 @@ export abstract class Batch {
           });
         },
       );
-      this.device.setResourceName(this.mapping.texture, 'Gradient Texture' + this.id);
-      this.mapping.sampler = this.renderHelper.getCache().createSampler({
+      this.device.setResourceName(this.fillMapping.texture, 'Fill Texture' + this.id);
+      this.fillMapping.sampler = this.renderHelper.getCache().createSampler({
         // wrapS: WrapMode.Clamp,
         // wrapT: WrapMode.Clamp,
         wrapS: WrapMode.Repeat,
@@ -343,17 +355,17 @@ export abstract class Batch {
   protected abstract uploadUBO(renderInst: RenderInst): void;
 
   render(list: RenderInstList) {
-    if (this.recreateGeometry) {
+    if (this.beforeRender) {
+      this.beforeRender(list);
+    }
+
+    if (this.geometryDirty) {
       if (this.geometry) {
         this.geometry.destroy();
       }
       this.createGeometry();
-      this.recreateGeometry = false;
-      this.recreateInputState = true;
-    }
-
-    if (this.beforeRender) {
-      this.beforeRender(list);
+      this.geometryDirty = false;
+      this.inputStateDirty = true;
     }
 
     // cached input layout
@@ -362,16 +374,16 @@ export abstract class Batch {
       .createInputLayout(this.geometry.inputLayoutDescriptor);
 
     // use cached program
-    if (this.recreateProgram) {
+    if (this.program.dirty) {
       this.programDescriptorSimpleWithOrig = preprocessProgramObj_GLSL(this.device, this.program);
-      this.recreateProgram = false;
+      this.program.dirty = false;
     }
     const program = this.renderHelper
       .getCache()
       .createProgramSimple(this.programDescriptorSimpleWithOrig);
 
     // prevent rebinding VAO too many times
-    if (this.recreateInputState) {
+    if (this.inputStateDirty) {
       if (this.inputState) {
         this.inputState.destroy();
       }
@@ -384,7 +396,7 @@ export abstract class Batch {
         { buffer: this.geometry.indicesBuffer, byteOffset: 0 },
         program,
       );
-      this.recreateInputState = false;
+      this.inputStateDirty = false;
     }
 
     // new render instance
@@ -394,7 +406,7 @@ export abstract class Batch {
 
     // bind UBO and upload
     // TODO: no need to re-upload unchanged uniforms
-    if (this.mapping) {
+    if (this.fillMapping) {
     }
 
     this.uploadUBO(renderInst);
@@ -412,6 +424,24 @@ export abstract class Batch {
     this.objects.forEach((object) => {
       object.renderable.dirty = false;
     });
+  }
+
+  changeRenderOrder(object: DisplayObject, renderOrder: number) {
+    const index = this.objects.indexOf(object);
+    const geometry = this.geometry;
+
+    if (this.instanced && geometry.vertexBuffers.length) {
+      // @ts-ignore
+      const encodedPickingColor = object.renderable3D.encodedPickingColor;
+      geometry.updateVertexBuffer(
+        Batch.CommonBufferIndex,
+        AttributeLocation.a_PickingColor,
+        index,
+        new Uint8Array(
+          new Float32Array([...encodedPickingColor, renderOrder * RENDER_ORDER_SCALE]).buffer,
+        ),
+      );
+    }
   }
 
   updateAttribute(object: DisplayObject, name: string, value: any): void {
@@ -453,18 +483,6 @@ export abstract class Batch {
           AttributeLocation.a_StylePacked1,
           index,
           new Uint8Array(new Float32Array([opacity, fillOpacity, strokeOpacity, lineWidth]).buffer),
-        );
-      } else if (name === 'zIndex') {
-        // @ts-ignore
-        const encodedPickingColor = object.renderable3D.encodedPickingColor;
-        // FIXME: z-index should account for context, not global
-        geometry.updateVertexBuffer(
-          Batch.CommonBufferIndex,
-          AttributeLocation.a_PickingColor,
-          index,
-          new Uint8Array(
-            new Float32Array([...encodedPickingColor, object.parsedStyle.zIndex]).buffer,
-          ),
         );
       } else if (name === 'modelMatrix') {
         const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());

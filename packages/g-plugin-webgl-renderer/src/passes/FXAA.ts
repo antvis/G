@@ -1,4 +1,4 @@
-import { Geometry } from '../Geometry';
+import { Geometry } from '../geometries';
 import { Format, InputLayout, InputState, VertexBufferFrequency } from '../platform';
 import { fullscreenMegaState, nArray } from '../platform/utils';
 import { DeviceProgram } from '../render/DeviceProgram';

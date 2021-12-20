@@ -1,11 +1,12 @@
 import type { AnimationEffectTiming } from '../dom';
 import type { IElement } from '../dom/interfaces';
-import { globalContainer } from '../global-module';
+import { stylePropertyMergerFactory, stylePropertyParserFactory } from '../global-module';
+// import { globalContainer } from '../global-module';
 import type { Interpolatable } from '../property-handlers/interfaces';
-import {
-  StylePropertyMergerFactory,
-  StylePropertyParserFactory,
-} from '../property-handlers/interfaces';
+// import {
+//   StylePropertyMergerFactory,
+//   StylePropertyParserFactory,
+// } from '../property-handlers/interfaces';
 import { parseEasingFunction } from './animation';
 import type { TypeEasingFunction } from './custom-easing';
 
@@ -142,10 +143,10 @@ function propertyInterpolation(
   let parsedLeft = left;
   let parsedRight = right;
 
-  const parserFactory = globalContainer.get<StylePropertyParserFactory>(StylePropertyParserFactory);
-  const parser = parserFactory(property);
-  const mergerFactory = globalContainer.get<StylePropertyMergerFactory>(StylePropertyMergerFactory);
-  const merger = mergerFactory(property);
+  // const parserFactory = globalContainer.get<StylePropertyParserFactory>(StylePropertyParserFactory);
+  const parser = stylePropertyParserFactory[property];
+  // const mergerFactory = globalContainer.get<StylePropertyMergerFactory>(StylePropertyMergerFactory);
+  const merger = stylePropertyMergerFactory[property];
 
   // if (left == 'initial' || right == 'initial') {
   //   if (left == 'initial')

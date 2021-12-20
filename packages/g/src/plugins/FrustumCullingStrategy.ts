@@ -1,3 +1,5 @@
+// import { vec3, mat4 } from 'gl-matrix';
+// import { inject, singleton } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
 import { singleton } from 'mana-syringe';
 import { CullingStrategyContribution } from './CullingPlugin';

@@ -8,7 +8,6 @@ import {
   getFormatFlags,
   FormatFlags,
 } from '..';
-import { makeStaticDataBuffer } from '../../Geometry';
 import { CopyProgram } from '../../passes/Copy';
 import { TextureMapping } from '../../render';
 import { preprocessProgramObj_GLSL } from '../../shader/compiler';
@@ -313,9 +312,9 @@ export class Device_GL implements SwapChain, Device {
     this.currentMegaState.depthWrite = false;
     this.currentMegaState.attachmentsState[0].channelWriteMask = ChannelWriteMask.AllChannels;
 
-    // TODO: We always have depth test enabled.
-    // gl.enable(gl.DEPTH_TEST);
-    gl.disable(gl.DEPTH_TEST);
+    // always have depth test enabled.
+    gl.enable(gl.DEPTH_TEST);
+    // gl.enable(gl.STENCIL_TEST);
 
     this.checkLimits();
 

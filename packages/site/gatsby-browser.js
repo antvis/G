@@ -7,6 +7,7 @@ window.stats = require('stats.js');
 window.dat = require('dat.gui');
 window.hammerjs = require('hammerjs');
 window.interactjs = require('interactjs');
+window.d3Force3d = require('d3-force-3d');
 window.g = require('@antv/g');
 window.gCanvas = require('@antv/g-canvas');
 window.gWebgl = require('@antv/g-webgl');

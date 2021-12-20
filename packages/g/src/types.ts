@@ -53,6 +53,11 @@ export interface BaseStyleProps {
   y?: number;
 
   /**
+   * z in local space
+   */
+  z?: number;
+
+  /**
    * the origin of rotation and scaling, default to (0, 0)
    */
   origin?: vec2 | vec3;
@@ -247,6 +252,12 @@ export interface CanvasConfig {
    * @type {number}
    */
   height: number;
+
+  /**
+   * 画布背景色
+   */
+  background?: ColorType;
+
   /**
    * 是否可监听
    * @type {boolean}

@@ -93,6 +93,11 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
   private renderPassPool: RenderPass_WebGPU[] = [];
   private computePassPool: ComputePass_WebGPU[] = [];
 
+  bindGroupLayoutCache = new HashMap<BindingLayoutDescriptor, BindGroupLayout>(
+    bindingLayoutDescriptorEqual,
+    nullHashFunc,
+  );
+
   private fallbackTexture2D: Texture_WebGPU;
   private fallbackTexture2DDepth: Texture_WebGPU;
   private fallbackTexture2DArray: Texture_WebGPU;

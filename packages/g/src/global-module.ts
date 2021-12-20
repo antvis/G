@@ -22,13 +22,15 @@ import {
   SceneGraphSelectorFactory,
 } from './services/SceneGraphSelector';
 import type { ParsedColorStyleProperty, Interpolatable } from './property-handlers';
-import {
+import type {
   StylePropertyParser,
   StylePropertyMerger,
   StylePropertyUpdater,
-  StylePropertyParserFactory,
-  StylePropertyUpdaterFactory,
-  StylePropertyMergerFactory,
+} from './property-handlers';
+import {
+  // StylePropertyParserFactory,
+  // StylePropertyUpdaterFactory,
+  // StylePropertyMergerFactory,
   clampedMergeNumbers,
   parseNumber,
   mergeColors,
@@ -55,6 +57,10 @@ import {
 } from './property-handlers';
 
 export const globalContainer = GlobalContainer;
+
+export const stylePropertyParserFactory: Record<string, StylePropertyParser<any, any>> = {};
+export const stylePropertyUpdaterFactory: Record<string, StylePropertyUpdater<any>[]> = {};
+export const stylePropertyMergerFactory: Record<string, StylePropertyMerger<any, any>> = {};
 
 export const containerModule = Module((register) => {
   decorate(injectable(), EventEmitter);
@@ -101,50 +107,50 @@ export const containerModule = Module((register) => {
     },
   });
 
-  // bind style property handlers
-  register({
-    token: StylePropertyParserFactory,
-    useFactory: (context) => {
-      const cache = {};
-      return (propertyName: string) => {
-        if (!cache[propertyName]) {
-          if (context.container.isBoundNamed(StylePropertyParser, propertyName)) {
-            cache[propertyName] = context.container.getNamed(StylePropertyParser, propertyName);
-          }
-        }
-        return cache[propertyName];
-      };
-    },
-  });
-  register({
-    token: StylePropertyUpdaterFactory,
-    useFactory: (context) => {
-      const cache = {};
-      return (propertyName: string) => {
-        if (!cache[propertyName]) {
-          if (context.container.isBoundNamed(StylePropertyUpdater, propertyName)) {
-            cache[propertyName] = context.container.getAllNamed(StylePropertyUpdater, propertyName);
-          }
-        }
+  // // bind style property handlers
+  // register({
+  //   token: StylePropertyParserFactory,
+  //   useFactory: (context) => {
+  //     const cache = {};
+  //     return (propertyName: string) => {
+  //       if (!cache[propertyName]) {
+  //         if (context.container.isBoundNamed(StylePropertyParser, propertyName)) {
+  //           cache[propertyName] = context.container.getNamed(StylePropertyParser, propertyName);
+  //         }
+  //       }
+  //       return cache[propertyName];
+  //     };
+  //   },
+  // });
+  // register({
+  //   token: StylePropertyUpdaterFactory,
+  //   useFactory: (context) => {
+  //     const cache = {};
+  //     return (propertyName: string) => {
+  //       if (!cache[propertyName]) {
+  //         if (context.container.isBoundNamed(StylePropertyUpdater, propertyName)) {
+  //           cache[propertyName] = context.container.getAllNamed(StylePropertyUpdater, propertyName);
+  //         }
+  //       }
 
-        return cache[propertyName];
-      };
-    },
-  });
-  register({
-    token: StylePropertyMergerFactory,
-    useFactory: (context) => {
-      const cache = {};
-      return (propertyName: string) => {
-        if (!cache[propertyName]) {
-          if (context.container.isBoundNamed(StylePropertyMerger, propertyName)) {
-            cache[propertyName] = context.container.getNamed(StylePropertyMerger, propertyName);
-          }
-        }
-        return cache[propertyName];
-      };
-    },
-  });
+  //       return cache[propertyName];
+  //     };
+  //   },
+  // });
+  // register({
+  //   token: StylePropertyMergerFactory,
+  //   useFactory: (context) => {
+  //     const cache = {};
+  //     return (propertyName: string) => {
+  //       if (!cache[propertyName]) {
+  //         if (context.container.isBoundNamed(StylePropertyMerger, propertyName)) {
+  //           cache[propertyName] = context.container.getNamed(StylePropertyMerger, propertyName);
+  //         }
+  //       }
+  //       return cache[propertyName];
+  //     };
+  //   },
+  // });
 
   function addPropertyHandler<O, P, I extends Interpolatable = number>(
     property: string,
@@ -153,13 +159,19 @@ export const containerModule = Module((register) => {
     updater: StylePropertyUpdater<O> | undefined,
   ) {
     if (parser) {
-      register({ token: { token: StylePropertyParser, named: property }, useValue: parser });
+      stylePropertyParserFactory[property] = parser;
+      // register({ token: { token: StylePropertyParser, named: property }, useValue: parser });
     }
     if (merger) {
-      register({ token: { token: StylePropertyMerger, named: property }, useValue: merger });
+      stylePropertyMergerFactory[property] = merger;
+      // register({ token: { token: StylePropertyMerger, named: property }, useValue: merger });
     }
     if (updater) {
-      register({ token: { token: StylePropertyUpdater, named: property }, useValue: updater });
+      if (!stylePropertyUpdaterFactory[property]) {
+        stylePropertyUpdaterFactory[property] = [];
+      }
+      stylePropertyUpdaterFactory[property].push(updater);
+      // register({ token: { token: StylePropertyUpdater, named: property }, useValue: updater });
     }
   }
   function addPropertiesHandler<O, P, I extends Interpolatable = number>(
@@ -265,8 +277,7 @@ export const containerModule = Module((register) => {
 
   // update local position
   addPropertiesHandler<number, number>(
-    ['x', 'y', 'points', 'path', 'x1', 'x2', 'y1', 'y2'],
-    // ['x', 'y'],
+    ['x', 'y', 'z', 'points', 'path', 'x1', 'x2', 'y1', 'y2', 'z1', 'z2'],
     undefined,
     undefined,
     updateLocalPosition,

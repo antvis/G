@@ -130,7 +130,7 @@ export class Camera extends EventEmitter {
    */
   private fov = 30;
   private near = 0.1;
-  private far = 10000;
+  private far = 1000;
   private aspect = 1;
   private left: number;
   private rright: number;
@@ -173,6 +173,10 @@ export class Camera extends EventEmitter {
    * ortho matrix for Canvas2D & SVG
    */
   private orthoMatrix: mat4 = mat4.create();
+
+  isOrtho() {
+    return this.projectionMode === CAMERA_PROJECTION_MODE.ORTHOGRAPHIC;
+  }
 
   clone(): Camera {
     const camera = new Camera();
@@ -303,6 +307,7 @@ export class Camera extends EventEmitter {
 
   setFov(fov: number) {
     this.setPerspective(this.near, this.far, fov, this.aspect);
+    return this;
   }
 
   setAspect(aspect: number) {
@@ -413,8 +418,9 @@ export class Camera extends EventEmitter {
       height *= this.view.height / fullHeight;
     }
 
-    // flip Y
-    makePerspective(this.projectionMatrix, left, left + width, top - height, top, near, this.far);
+    makePerspective(this.projectionMatrix, left, left + width, top, top - height, near, this.far);
+    // flipY since the origin of OpenGL/WebGL is bottom-left compared with top-left in Canvas2D
+    mat4.scale(this.projectionMatrix, this.projectionMatrix, vec3.fromValues(1, -1, 1));
 
     mat4.invert(this.projectionMatrixInverse, this.projectionMatrix);
     this.emit(CAMERA_EVENT.Updated);
@@ -451,6 +457,10 @@ export class Camera extends EventEmitter {
     }
 
     mat4.ortho(this.projectionMatrix, left, right, bottom, top, near, far);
+
+    // flipY since the origin of OpenGL/WebGL is bottom-left compared with top-left in Canvas2D
+    mat4.scale(this.projectionMatrix, this.projectionMatrix, vec3.fromValues(1, -1, 1));
+
     mat4.invert(this.projectionMatrixInverse, this.projectionMatrix);
 
     this._getOrthoMatrix();
@@ -968,7 +978,7 @@ export class Camera extends EventEmitter {
       rotZ,
       vec3.fromValues(
         (this.rright - this.left) / 2 - position[0],
-        (this.bottom - this.top) / 2 - position[1],
+        (this.top - this.bottom) / 2 - position[1],
         0,
       ),
       vec3.fromValues(this.zoom, this.zoom, 1),

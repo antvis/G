@@ -1,22 +1,24 @@
-import { DisplayObject, DisplayObjectConfig } from '@antv/g';
+import { CustomElement, DisplayObject, DisplayObjectConfig, ElementEvent } from '@antv/g';
 import type { ParsedBaseStyleProps, BaseStyleProps } from '@antv/g';
-import { Geometry } from './Geometry';
-import { Material } from './material/Material';
+import { BufferGeometry } from './geometries';
+import { Material } from './materials';
 
 export interface MeshStyleProps extends BaseStyleProps {
-  geometry: Geometry;
+  geometry: BufferGeometry;
   material: Material;
 }
 
 export interface ParsedMeshStyleProps extends ParsedBaseStyleProps {
-  geometry: Geometry;
+  geometry: BufferGeometry;
   material: Material;
 }
 
-export class Mesh extends DisplayObject<MeshStyleProps, ParsedMeshStyleProps> {
-  constructor({ style, ...rest }: DisplayObjectConfig<MeshStyleProps>) {
+export class Mesh<GeometryProps = any> extends DisplayObject<GeometryProps & MeshStyleProps> {
+  static tag = 'mesh';
+
+  constructor({ style, ...rest }: DisplayObjectConfig<GeometryProps & MeshStyleProps>) {
     super({
-      type: 'mesh',
+      type: Mesh.tag,
       style: {
         ...style,
       },
@@ -27,6 +29,6 @@ export class Mesh extends DisplayObject<MeshStyleProps, ParsedMeshStyleProps> {
   destroy() {
     super.destroy();
 
-    this.style.geometry.destroy();
+    // this.style.geometry.destroy();
   }
 }
