@@ -1,17 +1,17 @@
 import { EventEmitter } from 'eventemitter3';
 import { Mesh } from '../Mesh';
-import {
-  Buffer,
-  BufferFrequencyHint,
-  BufferUsage,
-  Device,
-  Format,
-  InputLayoutDescriptor,
-  PrimitiveTopology,
-  VertexBufferFrequency,
-} from '../platform';
+import { Format, InputLayoutDescriptor, PrimitiveTopology } from '../platform';
 import { GeometryVertexBufferDescriptor, IndicesArray } from './Geometry';
 
+export interface GeometryPatch {
+  bufferIndex: number;
+  location: number;
+  data: ArrayBufferView;
+}
+
+/**
+ * just hold descriptors of buffers & indices, won't use underlying GPU resources
+ */
 export abstract class BufferGeometry<GeometryProps = any> extends EventEmitter {
   /**
    * 绘制模式
@@ -36,19 +36,16 @@ export abstract class BufferGeometry<GeometryProps = any> extends EventEmitter {
 
   abstract build(meshes: Mesh<GeometryProps>[]): void;
 
+  abstract update<Key extends keyof GeometryProps>(
+    index: number,
+    mesh: Mesh,
+    name: Key,
+    value: GeometryProps[Key],
+  ): GeometryPatch[];
+
   setIndices(indices: IndicesArray) {
     this.indices = indices;
   }
-
-  // updateIndices(indices: IndicesArray, offset: number = 0) {
-  //   if (this.indicesBuffer) {
-  //     this.indicesBuffer.setSubData(
-  //       offset,
-  //       ArrayBuffer.isView(indices) ? indices : new Uint32Array(indices),
-  //     );
-  //   }
-  //   return this;
-  // }
 
   setVertexBuffer(descriptor: GeometryVertexBufferDescriptor) {
     const { bufferIndex, byteStride, frequency, attributes, data } = descriptor;

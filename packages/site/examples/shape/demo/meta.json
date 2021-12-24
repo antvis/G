@@ -85,22 +85,6 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*EzqjQYMeYoMAAAAAAAAAAAAAARQnAQ"
     },
     {
-      "filename": "cube.js",
-      "title": {
-        "zh": "立方体",
-        "en": "Cube"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*5ghvQIpw3MgAAAAAAAAAAAAAARQnAQ"
-    },
-    {
-      "filename": "grid.js",
-      "title": {
-        "zh": "网格",
-        "en": "Grid"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PAy7TY7DDaIAAAAAAAAAAAAAARQnAQ"
-    },
-    {
       "filename": "clip.js",
       "title": {
         "zh": "裁剪区域",

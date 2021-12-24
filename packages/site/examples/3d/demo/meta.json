@@ -5,6 +5,13 @@
   },
   "demos": [
     {
+      "filename": "plane.js",
+      "title": {
+        "zh": "平面",
+        "en": "Plane"
+      }
+    },
+    {
       "filename": "cube.js",
       "title": {
         "zh": "立方体",

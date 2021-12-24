@@ -10,21 +10,23 @@ export enum ProceduralGeometryAttributeLocation {
 
 export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<GeometryProps> {
   /**
+   * flip Y, since +Y is down in G's world coords
+   */
+  protected flipYMatrix = mat4.fromScaling(mat4.create(), vec3.fromValues(1, -1, 1));
+
+  /**
    * create geometry attributes
    */
-  protected abstract createTopology(meshes: Mesh<GeometryProps>[]): {
+  protected abstract createTopology(mesh: Mesh<GeometryProps>): {
     indices: number[];
     positions: number[];
     normals: number[];
     uvs: number[];
-    uvs1: number[];
-    vertexCountPerInstance: number;
+    uv1s: number[];
   };
 
-  applyMat4(mat: mat4) {
-    const positions = this.vertexBuffers[ProceduralGeometryAttributeLocation.POSITION];
+  protected applyMa4Position(mat: mat4, positions: ArrayBufferView) {
     const v = vec4.create();
-
     for (let i = 0; i < positions.byteLength / 4; i += 3) {
       v[0] = positions[i];
       v[1] = positions[i + 1];
@@ -35,8 +37,10 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
       positions[i + 1] = v[1];
       positions[i + 2] = v[2];
     }
+  }
 
-    const normals = this.vertexBuffers[ProceduralGeometryAttributeLocation.NORMAL];
+  protected applyMa4Normal(mat: mat4, normals: ArrayBufferView) {
+    const v = vec4.create();
     const normalMatrix = mat4.copy(mat4.create(), mat);
     mat4.invert(normalMatrix, normalMatrix);
     mat4.transpose(normalMatrix, normalMatrix);
@@ -50,7 +54,11 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
       normals[i + 1] = v[1];
       normals[i + 2] = v[2];
     }
+  }
 
+  applyMat4(mat: mat4) {
+    this.applyMa4Position(mat, this.vertexBuffers[ProceduralGeometryAttributeLocation.POSITION]);
+    this.applyMa4Normal(mat, this.vertexBuffers[ProceduralGeometryAttributeLocation.NORMAL]);
     // transform tangent
   }
 
@@ -59,11 +67,25 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
   }
 
   build(meshes: Mesh<GeometryProps>[]) {
-    const { indices, positions, normals, uvs, vertexCountPerInstance } =
-      this.createTopology(meshes);
+    const positionsAll: number[] = [];
+    const normalsAll: number[] = [];
+    const uvsAll: number[] = [];
+    const uv1sAll: number[] = [];
+    const indicesAll: number[] = [];
+    let indiceStart = 0;
+    meshes.forEach((mesh) => {
+      const { indices, positions, normals, uvs, uv1s } = this.createTopology(mesh);
 
-    this.setIndices(new Uint32Array(indices));
-    this.vertexCount = vertexCountPerInstance;
+      positionsAll.push(...positions);
+      normalsAll.push(...normals);
+      uvsAll.push(...uvs);
+      uv1sAll.push(...uv1s);
+      indicesAll.push(...indices.map((i) => i + indiceStart));
+      indiceStart = indices.length;
+    });
+
+    this.setIndices(new Uint32Array(indicesAll));
+    this.vertexCount = indicesAll.length / meshes.length;
     this.setVertexBuffer({
       bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
       byteStride: 4 * 3,
@@ -75,7 +97,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
           location: 10,
         },
       ],
-      data: Float32Array.from(positions),
+      data: Float32Array.from(positionsAll),
     });
     this.setVertexBuffer({
       bufferIndex: ProceduralGeometryAttributeLocation.NORMAL,
@@ -88,7 +110,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
           location: 11,
         },
       ],
-      data: Float32Array.from(normals),
+      data: Float32Array.from(normalsAll),
     });
     this.setVertexBuffer({
       bufferIndex: ProceduralGeometryAttributeLocation.UV,
@@ -101,10 +123,18 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
           location: 12,
         },
       ],
-      data: Float32Array.from(uvs),
+      data: Float32Array.from(uvsAll),
     });
 
-    // flip Y
-    this.applyMat4(mat4.fromScaling(mat4.create(), vec3.fromValues(1, -1, 1)));
+    this.applyMat4(this.flipYMatrix);
+  }
+
+  update<Key extends keyof GeometryProps>(
+    index: number,
+    mesh: Mesh,
+    name: Key,
+    value: GeometryProps[Key],
+  ) {
+    return [];
   }
 }

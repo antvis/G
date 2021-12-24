@@ -4,5 +4,5 @@ layout(std140) uniform ub_SceneParams {
   vec3 u_CameraPosition;
   float u_DevicePixelRatio;
   vec2 u_Viewport;
-  bool u_IsOrtho;
+  float u_IsOrtho;
 };

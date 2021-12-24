@@ -5,6 +5,7 @@ import {
   SphereGeometry,
   DirectionalLight,
   Mesh,
+  Fog,
   FogType,
   Plugin as Plugin3D,
 } from '@antv/g-plugin-3d';
@@ -82,6 +83,9 @@ const light = new DirectionalLight({
 });
 canvas.appendChild(light);
 
+// create fog, append to canvas later
+const fog = new Fog();
+
 // stats
 const stats = new Stats();
 stats.showPanel(0);
@@ -105,11 +109,65 @@ $wrapper.appendChild(gui.domElement);
 const lightFolder = gui.addFolder('light');
 const lightConfig = {
   fill: '#FFF',
+  intensity: Math.PI,
+  directionX: -1,
+  directionY: 0,
+  directionZ: 1,
 };
 lightFolder.addColor(lightConfig, 'fill').onChange((fill) => {
   light.style.fill = fill;
 });
+lightFolder.add(lightConfig, 'intensity', 0, 20).onChange((intensity) => {
+  light.style.intensity = intensity;
+});
+lightFolder.add(lightConfig, 'directionX', -1, 1).onChange((directionX) => {
+  const direction = light.style.direction;
+  light.style.direction = [directionX, direction[1], direction[2]];
+});
+lightFolder.add(lightConfig, 'directionY', -1, 1).onChange((directionY) => {
+  const direction = light.style.direction;
+  light.style.direction = [direction[0], directionY, direction[2]];
+});
+lightFolder.add(lightConfig, 'directionZ', -1, 1).onChange((directionZ) => {
+  const direction = light.style.direction;
+  light.style.direction = [direction[0], direction[1], directionZ];
+});
 lightFolder.open();
+
+const fogFolder = gui.addFolder('fog');
+const fogConfig = {
+  enable: false,
+  type: FogType.NONE,
+  fill: '#000',
+  start: 1,
+  end: 1000,
+  density: 0,
+};
+fogFolder.add(fogConfig, 'enable').onChange((enable) => {
+  if (enable) {
+    canvas.appendChild(fog);
+  } else {
+    canvas.removeChild(fog);
+  }
+});
+fogFolder
+  .add(fogConfig, 'type', [FogType.NONE, FogType.EXP, FogType.EXP2, FogType.LINEAR])
+  .onChange((type) => {
+    fog.style.type = type;
+  });
+fogFolder.addColor(fogConfig, 'fill').onChange((fill) => {
+  fog.style.fill = fill;
+});
+fogFolder.add(fogConfig, 'start', 0, 1000).onChange((start) => {
+  fog.style.start = start;
+});
+fogFolder.add(fogConfig, 'end', 0, 1000).onChange((end) => {
+  fog.style.end = end;
+});
+fogFolder.add(fogConfig, 'density', 0, 5).onChange((density) => {
+  fog.style.density = density;
+});
+fogFolder.open();
 
 const sphereFolder = gui.addFolder('sphere');
 const sphereConfig = {
@@ -133,36 +191,26 @@ const geometryConfig = {
 geometryFolder.add(geometryConfig, 'radius', 50, 300).onChange((radius) => {
   sphere.style.radius = radius;
 });
-geometryFolder.add(geometryConfig, 'latitudeBands', 8, 32).onChange((latitudeBands) => {
-  sphere.style.latitudeBands = latitudeBands;
-});
-geometryFolder.add(geometryConfig, 'longitudeBands', 8, 32).onChange((longitudeBands) => {
-  sphere.style.longitudeBands = longitudeBands;
-});
+// geometryFolder.add(geometryConfig, 'latitudeBands', 8, 32).onChange((latitudeBands) => {
+//   sphere.style.latitudeBands = latitudeBands;
+// });
+// geometryFolder.add(geometryConfig, 'longitudeBands', 8, 32).onChange((longitudeBands) => {
+//   sphere.style.longitudeBands = longitudeBands;
+// });
 geometryFolder.open();
 
 const materialFolder = gui.addFolder('material');
 const materialConfig = {
+  map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*npAsSLPX4A4AAAAAAAAAAAAAARQnAQ',
   emissive: '#000000',
   specular: '#FFFFFF',
+  specularMap:
+    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8wz0QaP_bjoAAAAAAAAAAAAAARQnAQ',
   shininess: 10,
-  map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*npAsSLPX4A4AAAAAAAAAAAAAARQnAQ',
-  fogType: FogType.NONE,
-  fogColor: '#000000',
-  fogDensity: 0.5,
-  fogStart: 1,
-  fogEnd: 1000,
+  bumpMap: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kuUITY47ZhMAAAAAAAAAAAAAARQnAQ',
   bumpScale: 5,
+  wireframe: false,
 };
-materialFolder.addColor(materialConfig, 'emissive').onChange((emissive) => {
-  sphere.style.material.props.emissive = emissive;
-});
-materialFolder.addColor(materialConfig, 'specular').onChange((specular) => {
-  sphere.style.material.props.specular = specular;
-});
-materialFolder.add(materialConfig, 'shininess', 0, 100).onChange((shininess) => {
-  sphere.style.material.props.shininess = shininess;
-});
 materialFolder
   .add(materialConfig, 'map', [
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*npAsSLPX4A4AAAAAAAAAAAAAARQnAQ',
@@ -171,29 +219,48 @@ materialFolder
   ])
   .onChange((map) => {
     if (map === 'none') {
-      sphere.style.material.props.map = null;
+      sphere.style.material.map = null;
     } else {
-      sphere.style.material.props.map = map;
+      sphere.style.material.map = map;
     }
   });
-const fogTypes = [FogType.NONE, FogType.EXP, FogType.EXP2, FogType.LINEAR];
-materialFolder.add(materialConfig, 'fogType', fogTypes).onChange((fogType) => {
-  // FogType.NONE
-  sphere.style.material.props.fogType = fogType;
+materialFolder.addColor(materialConfig, 'emissive').onChange((emissive) => {
+  sphere.style.material.emissive = emissive;
 });
-materialFolder.addColor(materialConfig, 'fogColor').onChange((fogColor) => {
-  sphere.style.material.props.fogColor = fogColor;
+materialFolder.addColor(materialConfig, 'specular').onChange((specular) => {
+  sphere.style.material.specular = specular;
 });
-materialFolder.add(materialConfig, 'fogDensity', 0, 10).onChange((fogDensity) => {
-  sphere.style.material.props.fogDensity = fogDensity;
+materialFolder
+  .add(materialConfig, 'specularMap', [
+    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8wz0QaP_bjoAAAAAAAAAAAAAARQnAQ',
+    'none',
+  ])
+  .onChange((specularMap) => {
+    if (specularMap === 'none') {
+      sphere.style.material.specularMap = null;
+    } else {
+      sphere.style.material.specularMap = specularMap;
+    }
+  });
+materialFolder.add(materialConfig, 'shininess', 0, 100).onChange((shininess) => {
+  sphere.style.material.shininess = shininess;
 });
-materialFolder.add(materialConfig, 'fogStart', 0, 1000).onChange((fogStart) => {
-  sphere.style.material.props.fogStart = fogStart;
-});
-materialFolder.add(materialConfig, 'fogEnd', 0, 1000).onChange((fogEnd) => {
-  sphere.style.material.props.fogEnd = fogEnd;
-});
+materialFolder
+  .add(materialConfig, 'bumpMap', [
+    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kuUITY47ZhMAAAAAAAAAAAAAARQnAQ',
+    'none',
+  ])
+  .onChange((bumpMap) => {
+    if (bumpMap === 'none') {
+      sphere.style.material.bumpMap = null;
+    } else {
+      sphere.style.material.bumpMap = bumpMap;
+    }
+  });
 materialFolder.add(materialConfig, 'bumpScale', 0, 10).onChange((bumpScale) => {
-  sphere.style.material.props.bumpScale = bumpScale;
+  sphere.style.material.bumpScale = bumpScale;
+});
+materialFolder.add(materialConfig, 'wireframe', 0, 10).onChange((enable) => {
+  sphere.style.material.wireframe = enable;
 });
 materialFolder.open();

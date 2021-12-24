@@ -78,6 +78,16 @@ line.getLocalPosition(); // [200, 100]
 
 **是否必须**：`true`
 
+## z1
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+**类型**： `number`
+
+**默认值**：无
+
+**是否必须**：`false`
+
 ## x2
 
 <tag color="green" text="可应用动画">可应用动画</tag>
@@ -97,6 +107,26 @@ line.getLocalPosition(); // [200, 100]
 **默认值**：无
 
 **是否必须**：`true`
+
+## z2
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+**类型**： `number`
+
+**默认值**：无
+
+**是否必须**：`false`
+
+## isBillboard
+
+3D 场景中生效，始终朝向屏幕，因此线宽不受透视投影影像。[示例](/zh/examples/3d#force-3d)
+
+**类型**： `boolean`
+
+**默认值**：`false`
+
+**是否必须**：`false`
 
 # 方法
 

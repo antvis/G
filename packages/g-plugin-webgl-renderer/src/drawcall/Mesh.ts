@@ -25,9 +25,10 @@ import { ShapeRenderer } from '../tokens';
 import { TextureMapping } from '../render/TextureHolder';
 import { Mesh } from '../Mesh';
 import { BufferGeometry, makeStaticDataBuffer } from '../geometries';
-import { FogType, Material } from '../materials';
+import { Material } from '../materials';
 import { fillVec4 } from '../render/utils';
 import { LightPool } from '../LightPool';
+import { Fog } from '../lights';
 
 @injectable({
   token: [{ token: ShapeRenderer, named: Mesh.tag }],
@@ -40,7 +41,10 @@ export class MeshRenderer extends Batch {
   @inject(LightPool)
   private lightPool: LightPool;
 
-  materialDirty = true;
+  /**
+   * material can be shared between many Canvases
+   */
+  private materialDirty = true;
 
   protected validate(object: Mesh): boolean {
     if (this.instance.nodeName === Mesh.tag) {
@@ -63,12 +67,22 @@ export class MeshRenderer extends Batch {
     if (material.dirty || this.materialDirty) {
       this.textureMappings = [];
 
-      const lights = this.lightPool.getAll();
+      const lights = this.lightPool.getAllLights();
       const useLight = !!lights.length;
 
+      const lightCategory = {};
+      lights.forEach((light) => {
+        if (!lightCategory[light.define]) {
+          lightCategory[light.define] = 0;
+        }
+        lightCategory[light.define]++;
+      });
+      material.defines = {
+        ...material.defines,
+        ...lightCategory,
+      };
       if (useLight) {
         material.defines.USE_LIGHT = true;
-        material.defines.NUM_DIR_LIGHTS = lights.length;
       }
 
       // set defines
@@ -82,8 +96,8 @@ export class MeshRenderer extends Batch {
       });
 
       // build shaders
-      this.program.vert = material.props.vertexShader;
-      this.program.frag = material.props.fragmentShader;
+      this.program.vert = material.vertexShader;
+      this.program.frag = material.fragmentShader;
       this.program.dirty = true;
 
       // set texture mappings
@@ -112,6 +126,12 @@ export class MeshRenderer extends Batch {
         mapping.sampler = this.renderHelper.getCache().createSampler(sampler);
 
         this.textureMappings.push(mapping);
+
+        // wireframe 需要额外生成 geometry 重心坐标
+        if (material.defines.USE_WIREFRAME) {
+          this.geometryDirty = true;
+          this.inputStateDirty = true;
+        }
       });
 
       material.dirty = false;
@@ -126,68 +146,13 @@ export class MeshRenderer extends Batch {
 
     // build batched geometry
     geometry.build(this.objects);
-    // geometry.setVertexBuffer({
-
-    // });
-
-    const common = this.geometry.inputLayoutDescriptor.vertexBufferDescriptors[0];
 
     // generate wireframe
-    if (material.props.wireframe) {
-      // need generate barycentric coordinates
-      const indices = geometry.indices;
-      const indiceNum = geometry.indices.length;
-
-      for (let i = 1; i < geometry.vertexBuffers.length; i++) {
-        const { byteStride } = geometry.inputLayoutDescriptor.vertexBufferDescriptors[i];
-        geometry.vertexBuffers[i] = new Float32Array((byteStride / 4) * indiceNum);
-      }
-
-      // reallocate attribute data
-      let cursor = 0;
-      const uniqueIndices = new Uint32Array(indiceNum);
-      for (var i = 0; i < indiceNum; i++) {
-        var ii = indices[i];
-
-        for (let j = 1; j < geometry.vertexBuffers.length; j++) {
-          const { byteStride } = geometry.inputLayoutDescriptor.vertexBufferDescriptors[j];
-          const size = byteStride / 4;
-
-          for (var k = 0; k < size; k++) {
-            geometry.vertexBuffers[j][cursor * size + k] = geometry.vertexBuffers[j][ii * size + k];
-          }
-        }
-
-        uniqueIndices[i] = cursor;
-        cursor++;
-      }
-
-      // create barycentric attributes
-      const barycentricBuffer = new Float32Array(indiceNum * 3);
-      for (let i = 0; i < indiceNum; ) {
-        for (let j = 0; j < 3; j++) {
-          const ii = uniqueIndices[i++];
-          barycentricBuffer[ii * 3 + j] = 1;
-        }
-      }
-
-      geometry.setVertexBuffer({
-        bufferIndex: 4,
-        byteStride: 4 * 3,
-        frequency: VertexBufferFrequency.PerVertex,
-        attributes: [
-          {
-            format: Format.F32_RGB,
-            bufferByteOffset: 4 * 0,
-            location: 13,
-          },
-        ],
-        data: barycentricBuffer,
-      });
-
-      geometry.setIndices(uniqueIndices);
+    if (material.wireframe) {
+      this.generateWireframe(geometry);
     }
 
+    // sync to internal Geometry
     this.geometry.setIndices(geometry.indices);
     this.geometry.vertexCount = geometry.vertexCount;
     this.geometry.maxInstancedCount = geometry.instancedCount;
@@ -205,15 +170,35 @@ export class MeshRenderer extends Batch {
 
     const instance = this.instance as Mesh;
     const geometry = instance.style.geometry as BufferGeometry;
+    const patches = geometry.update(index, object, name, value);
+    patches.forEach(({ bufferIndex, location, data }) => {
+      this.geometry.updateVertexBuffer(bufferIndex, location, index, new Uint8Array(data.buffer));
+    });
+  }
 
-    // this.geometry.updateVertexBuffer(
-    //   Batch.CommonBufferIndex,
-    //   AttributeLocation.a_Color,
-    //   index,
-    //   new Uint8Array(new Float32Array([...fillColor]).buffer),
-    // );
+  private uploadFog(d: Float32Array, offs: number, fog: Fog) {
+    const { type, fill, start, end, density } = fog.parsedStyle;
 
-    // console.log('updated', index, this.objects, name, value);
+    if (fill?.type === PARSED_COLOR_TYPE.Constant) {
+      const fillColor = fill.value as Tuple4Number;
+      offs += fillVec4(d, offs, type, start, end, density); // u_FogInfos
+      offs += fillVec4(d, offs, ...fillColor); // u_FogColor
+    }
+    return offs;
+  }
+
+  private uploadMaterial(d: Float32Array, offs: number, material: Material) {
+    for (let i = 0; i < material.uboBuffer.length; i += 4) {
+      offs += fillVec4(
+        d,
+        offs,
+        material.uboBuffer[i],
+        material.uboBuffer[i + 1],
+        material.uboBuffer[i + 2],
+        material.uboBuffer[i + 3],
+      );
+    }
+    return offs;
   }
 
   protected uploadUBO(renderInst: RenderInst): void {
@@ -222,65 +207,42 @@ export class MeshRenderer extends Batch {
     let numUniformBuffers = 1; // Scene UBO
     let wordCount = 0;
 
-    const lights = this.lightPool.getAll();
+    const lights = this.lightPool.getAllLights();
+    const fog = this.lightPool.getFog();
 
-    wordCount += material.getUniformWordCount();
-    if (material.defines.USE_FOG) {
-      wordCount += 8;
+    // toggle fog, need re-compile material
+    if (!!fog !== material.defines.USE_FOG) {
+      material.dirty = true;
     }
+
+    // add fog
+    if (fog) {
+      material.defines.USE_FOG = true;
+      wordCount += 8;
+    } else {
+      material.defines.USE_FOG = false;
+    }
+
+    // materials
+    wordCount += 4; // placeholder
+    wordCount += material.uboBuffer.length;
     if (material.defines.USE_LIGHT) {
       wordCount += lights.reduce((prev, cur) => prev + cur.getUniformWordCount(), 0);
-    }
-    if (material.defines.USE_BUMPMAP) {
-      wordCount += 4;
     }
 
     let offs = renderInst.allocateUniformBuffer(numUniformBuffers, wordCount);
     const d = renderInst.mapUniformBufferF32(numUniformBuffers);
+    offs += fillVec4(d, offs, 0, 0, 0, 0); // u_Placeholder
 
-    const { emissive, shininess, specular } = material.props;
-    // Phong Material
-    // vec3 u_Emissive;
-    // float u_Shininess;
-    // vec3 u_Specular;
-    // vec3 u_AmbientLightColor
-    const emissiveColor = parseColor(emissive).value as Tuple4Number;
-    const specularColor = parseColor(specular).value as Tuple4Number;
-    offs += fillVec4(d, offs, emissiveColor[0], emissiveColor[1], emissiveColor[2], shininess);
-    offs += fillVec4(d, offs, ...specularColor);
-    offs += fillVec4(d, offs, 0, 0, 0, 0);
-
-    if (material.defines.USE_FOG) {
-      const {
-        fogType = FogType.NONE,
-        fogColor = 'black',
-        fogStart = 1,
-        fogEnd = 1000,
-        fogDensity = 0,
-      } = material.props;
-
-      const parsedFogColor = parseColor(fogColor).value as Tuple4Number;
-      offs += fillVec4(d, offs, fogType, fogStart, fogEnd, fogDensity); // u_FogInfos
-      offs += fillVec4(d, offs, ...parsedFogColor); // u_FogColor
+    if (fog) {
+      offs = this.uploadFog(d, offs, fog);
     }
+    offs = this.uploadMaterial(d, offs, material);
 
     if (material.defines.USE_LIGHT) {
       lights.forEach((light) => {
-        // offs += light.uploadUBO(d, offs);
-        const { fill, direction, intensity } = light.parsedStyle;
-
-        if (fill?.type === PARSED_COLOR_TYPE.Constant) {
-          const fillColor = fill.value as Tuple4Number;
-          // @ts-ignore
-          offs += fillVec4(d, offs, ...direction, intensity); // direction
-          offs += fillVec4(d, offs, ...fillColor); // color
-        }
+        offs += light.uploadUBO(d, offs);
       });
-    }
-
-    if (material.defines.USE_BUMPMAP) {
-      const { bumpScale } = material.props;
-      offs += fillVec4(d, offs, bumpScale); // u_BumpScale
     }
 
     const {
@@ -298,7 +260,7 @@ export class MeshRenderer extends Batch {
       blendDst,
       blendSrcAlpha,
       blendDstAlpha,
-    } = material.props;
+    } = material;
 
     renderInst.setMegaStateFlags({
       attachmentsState: [
@@ -329,5 +291,65 @@ export class MeshRenderer extends Batch {
 
     renderInst.setBindingLayouts([{ numUniformBuffers, numSamplers: this.textureMappings.length }]);
     renderInst.setSamplerBindingsFromTextureMappings(this.textureMappings);
+  }
+
+  private generateWireframe(geometry: BufferGeometry) {
+    // need generate barycentric coordinates
+    const indices = geometry.indices;
+    const indiceNum = geometry.indices.length;
+
+    const originalVertexBuffers = geometry.vertexBuffers.map((buffer) => {
+      // @ts-ignore
+      return buffer.slice();
+    });
+
+    for (let i = 1; i < geometry.vertexBuffers.length; i++) {
+      const { byteStride } = geometry.inputLayoutDescriptor.vertexBufferDescriptors[i];
+      geometry.vertexBuffers[i] = new Float32Array((byteStride / 4) * indiceNum);
+    }
+
+    // reallocate attribute data
+    let cursor = 0;
+    const uniqueIndices = new Uint32Array(indiceNum);
+    for (var i = 0; i < indiceNum; i++) {
+      var ii = indices[i];
+
+      for (let j = 1; j < geometry.vertexBuffers.length; j++) {
+        const { byteStride } = geometry.inputLayoutDescriptor.vertexBufferDescriptors[j];
+        const size = byteStride / 4;
+
+        for (var k = 0; k < size; k++) {
+          geometry.vertexBuffers[j][cursor * size + k] = originalVertexBuffers[j][ii * size + k];
+        }
+      }
+
+      uniqueIndices[i] = cursor;
+      cursor++;
+    }
+
+    // create barycentric attributes
+    const barycentricBuffer = new Float32Array(indiceNum * 3);
+    for (let i = 0; i < indiceNum; ) {
+      for (let j = 0; j < 3; j++) {
+        const ii = uniqueIndices[i++];
+        barycentricBuffer[ii * 3 + j] = 1;
+      }
+    }
+
+    geometry.setVertexBuffer({
+      bufferIndex: 4,
+      byteStride: 4 * 3,
+      frequency: VertexBufferFrequency.PerVertex,
+      attributes: [
+        {
+          format: Format.F32_RGB,
+          bufferByteOffset: 4 * 0,
+          location: 13,
+        },
+      ],
+      data: barycentricBuffer,
+    });
+
+    geometry.setIndices(uniqueIndices);
   }
 }

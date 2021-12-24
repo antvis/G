@@ -6,6 +6,7 @@ import {
   Mesh,
   Texture2D,
   Sampler,
+  Fog,
   FogType,
   registerModelBuilder,
   Batch,
@@ -23,7 +24,7 @@ import {
 export * from './geometries';
 export * from './materials';
 export * from './lights';
-export { Mesh, Texture2D, Sampler, FogType };
+export { Mesh, Texture2D, Sampler, Fog, FogType };
 
 // // TODO: provide more friendly API like `registerGeometry`
 // globalContainer.register(CubeUpdater);

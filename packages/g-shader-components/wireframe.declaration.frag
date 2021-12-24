@@ -1,6 +1,3 @@
-// uniform vec3 u_WireframeLineColor;
-// uniform float u_WireframeLineWidth;
-
 #ifdef USE_WIREFRAME
   varying vec3 v_Barycentric;
 

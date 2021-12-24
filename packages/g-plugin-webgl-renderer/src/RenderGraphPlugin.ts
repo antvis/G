@@ -56,7 +56,7 @@ import {
   opaqueWhiteFullClearRenderPassDescriptor,
 } from './render/RenderGraphHelpers';
 import naga from '../../../rust/pkg/index_bg.wasm';
-import { Light } from './lights';
+import { Fog, Light } from './lights';
 import { LightPool } from './LightPool';
 
 @singleton({ contrib: RenderingPluginContribution })
@@ -181,7 +181,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const mainRenderDesc = makeBackbufferDescSimple(
         RGAttachmentSlot.Color0,
         renderInput,
-        // opaqueWhiteFullClearRenderPassDescriptor,
         makeAttachmentClearDescriptor(colorNewFromRGBA(...clearColor)),
       );
       const mainDepthDesc = makeBackbufferDescSimple(
@@ -239,7 +238,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
         setAttachmentStateSimple(
           {
             depthWrite: true,
-            // cullMode: CullMode.Back,
           },
           {
             rgbBlendMode: BlendMode.Add,
@@ -259,7 +257,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       offs += fillMatrix4x4(d, offs, this.camera.getViewTransform()); // ViewMatrix 16
       offs += fillVec3v(d, offs, this.camera.getPosition(), this.contextService.getDPR()); // CameraPosition DPR isOrtho 4
       const { width, height } = this.canvasConfig;
-      offs += fillVec4(d, offs, width, height, this.camera.isOrtho() ? 1 : 0);
+      offs += fillVec4(d, offs, width, height, this.camera.isOrtho() ? 1 : 0); // Viewport isOrtho
 
       renderInstManager.setCurrentRenderInstList(this.renderLists.world);
       // render batches
@@ -308,6 +306,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
       if (object.nodeName === Light.tag) {
         this.lightPool.addLight(object as Light);
         return;
+      } else if (object.nodeName === Fog.tag) {
+        this.lightPool.addFog(object as Fog);
+        return;
       }
 
       const renderable3D = new Renderable3D();
@@ -327,6 +328,14 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
+
+      if (object.nodeName === Light.tag) {
+        this.lightPool.removeLight(object as Light);
+        return;
+      } else if (object.nodeName === Fog.tag) {
+        this.lightPool.removeFog(object as Fog);
+        return;
+      }
 
       // @ts-ignore
       const renderable3D = object.renderable3D;

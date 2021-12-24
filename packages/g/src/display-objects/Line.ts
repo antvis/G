@@ -12,6 +12,7 @@ export interface LineStyleProps extends BaseStyleProps {
   y2: number;
   z1?: number;
   z2?: number;
+  isBillboard?: boolean;
 }
 export interface ParsedLineStyleProps extends ParsedBaseStyleProps {
   x1: number;
@@ -22,6 +23,7 @@ export interface ParsedLineStyleProps extends ParsedBaseStyleProps {
   z2?: number;
   defX: number;
   defY: number;
+  isBillboard?: boolean;
 }
 export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<LineStyleProps>) {
@@ -37,6 +39,7 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
         lineJoin: LINE_JOIN.Miter,
         lineCap: LINE_CAP.Butt,
         lineWidth: 1,
+        isBillboard: false,
         ...style,
       },
       ...rest,

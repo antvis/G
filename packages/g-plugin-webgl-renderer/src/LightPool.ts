@@ -1,15 +1,46 @@
 import { singleton } from 'mana-syringe';
-import { Light } from './lights';
+import { Light, Fog } from './lights';
 
 @singleton()
 export class LightPool {
-  private cache: Light[] = [];
+  /**
+   * lights
+   */
+  private lights: Light[] = [];
+
+  /**
+   * support only 1 fog
+   */
+  private fog: Fog;
 
   addLight(light: Light) {
-    this.cache.push(light);
+    this.lights.push(light);
+    this.sortLights();
   }
 
-  getAll() {
-    return this.cache;
+  removeLight(light: Light) {
+    const i = this.lights.indexOf(light);
+    this.lights.splice(i, 1);
+    this.sortLights();
+  }
+
+  addFog(fog: Fog) {
+    this.fog = fog;
+  }
+
+  removeFog(fog: Fog) {
+    this.fog = null;
+  }
+
+  getFog() {
+    return this.fog;
+  }
+
+  getAllLights() {
+    return this.lights;
+  }
+
+  private sortLights() {
+    this.lights.sort((a, b) => a.order - b.order);
   }
 }

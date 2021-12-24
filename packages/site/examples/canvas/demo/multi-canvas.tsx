@@ -4,7 +4,7 @@ import SplitPane from 'react-split-pane';
 import Stats from 'stats.js';
 import { Canvas, Group } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { Mesh, CubeGeometry, MeshPhongMaterial, Plugin as Plugin3D } from '@antv/g-plugin-3d';
+import { Mesh, CubeGeometry, MeshBasicMaterial, Plugin as Plugin3D } from '@antv/g-plugin-3d';
 import { Plugin as PluginControl } from '@antv/g-plugin-control';
 
 // scene1 + scene2
@@ -57,7 +57,7 @@ const App = function MultiWorld() {
 
     const group1 = new Group();
     const cubeGeometry = new CubeGeometry();
-    const basicMaterial = new MeshPhongMaterial({
+    const basicMaterial = new MeshBasicMaterial({
       map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
     });
 
