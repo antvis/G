@@ -75,12 +75,20 @@ const basicMaterial = new MeshBasicMaterial({
 });
 ```
 
+## wireframeColor
+
+开启 wireframe 后可指定颜色，默认为 `'black'`。
+
+## wireframeLineWidth
+
+开启 wireframe 后可指定线宽，默认为 1。
+
 ## cullMode
 
 支持以下枚举值，默认使用 `CullMode.NONE`，即不开启背面剔除：
 
 ```js
-export const enum CullMode {
+export enum CullMode {
   None,
   Front,
   Back,

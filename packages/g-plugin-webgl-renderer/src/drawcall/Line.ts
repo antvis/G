@@ -174,7 +174,7 @@ export class LineRenderer extends Batch {
     });
 
     geometry.vertexCount = 15;
-    geometry.maxInstancedCount = instanceCount;
+    geometry.instancedCount = instanceCount;
 
     geometry.setIndices(new Uint32Array([0, 2, 1, 0, 3, 2, 4, 6, 5, 4, 7, 6, 4, 7, 8]));
   }

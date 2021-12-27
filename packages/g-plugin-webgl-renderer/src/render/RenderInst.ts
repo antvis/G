@@ -23,7 +23,7 @@ import {
 import { DynamicUniformBuffer } from './DynamicUniformBuffer';
 import { RenderCache } from './RenderCache';
 
-export const enum RenderInstFlags {
+export enum RenderInstFlags {
   Indexed = 1 << 0,
   AllowSkippingIfPipelineNotReady = 1 << 1,
 

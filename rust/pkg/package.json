@@ -2,12 +2,11 @@
   "name": "glsl-wgsl-compiler",
   "version": "0.1.0",
   "files": [
-    "index_bg.wasm",
-    "index.js",
-    "index_bg.js",
-    "index.d.ts"
+    "glsl_wgsl_compiler_bg.wasm",
+    "glsl_wgsl_compiler.js",
+    "glsl_wgsl_compiler.d.ts"
   ],
-  "module": "index.js",
-  "types": "index.d.ts",
+  "module": "glsl_wgsl_compiler.js",
+  "types": "glsl_wgsl_compiler.d.ts",
   "sideEffects": false
 }

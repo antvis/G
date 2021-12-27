@@ -2,10 +2,10 @@ import { Material, Texture2D, CullMode, IMaterial } from '@antv/g-plugin-webgl-r
 import vert from '../shaders/material.basic.vert';
 import frag from '../shaders/material.basic.frag';
 
-const enum Uniform {
+enum Uniform {
   MAP = 'u_Map',
 }
-const enum SamplerLocation {
+enum SamplerLocation {
   MAP = 0,
 }
 

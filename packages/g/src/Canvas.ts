@@ -76,7 +76,7 @@ export class Canvas extends EventTarget implements ICanvas {
       width: 300,
       height: 150,
       cursor: 'default' as Cursor,
-      background: 'white',
+      // background: 'white',
       ...config,
     };
 

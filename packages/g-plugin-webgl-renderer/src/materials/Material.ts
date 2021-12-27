@@ -1,4 +1,5 @@
 import type { Tuple4Number } from '@antv/g';
+import { Mesh } from '../Mesh';
 import {
   BlendFactor,
   BlendMode,
@@ -40,6 +41,8 @@ export interface IMaterial {
 
   // @see https://doc.babylonjs.com/divingDeeper/materials/using/materials_introduction#wireframe
   wireframe: boolean;
+  wireframeColor: string;
+  wireframeLineWidth: number;
 
   vertexShader: string;
   fragmentShader: string;
@@ -65,6 +68,11 @@ export interface MaterialUniform {
  */
 export abstract class Material<T extends IMaterial = any> {
   protected props: T = {} as T;
+
+  /**
+   * relative meshes
+   */
+  meshes: Mesh[] = [];
 
   /**
    * cullFace
@@ -191,6 +199,19 @@ export abstract class Material<T extends IMaterial = any> {
     this.defines.USE_WIREFRAME = !!value;
   }
 
+  get wireframeColor() {
+    return this.props.wireframeColor;
+  }
+  set wireframeColor(value) {
+    this.props.wireframeColor = value;
+  }
+  get wireframeLineWidth() {
+    return this.props.wireframeLineWidth;
+  }
+  set wireframeLineWidth(value) {
+    this.props.wireframeLineWidth = value;
+  }
+
   // shader pairs
   get vertexShader() {
     return this.props.vertexShader;
@@ -260,6 +281,8 @@ export abstract class Material<T extends IMaterial = any> {
       blendDstAlpha: null,
       dithering: false,
       wireframe: false,
+      wireframeColor: 'black',
+      wireframeLineWidth: 1,
       vertexShader: '',
       fragmentShader: '',
       ...props,

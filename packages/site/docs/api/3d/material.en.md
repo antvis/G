@@ -80,7 +80,7 @@ const basicMaterial = new MeshBasicMaterial({
 支持以下枚举值，默认使用 `CullMode.NONE`，即不开启背面剔除：
 
 ```js
-export const enum CullMode {
+export enum CullMode {
   None,
   Front,
   Back,

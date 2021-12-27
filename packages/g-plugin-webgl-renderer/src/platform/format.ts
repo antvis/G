@@ -1,6 +1,6 @@
 import { SamplerFormatKind } from './interfaces';
 
-export const enum FormatTypeFlags {
+export enum FormatTypeFlags {
   U8 = 0x01,
   U16,
   U32,
@@ -29,7 +29,7 @@ export const enum FormatTypeFlags {
   D32FS8,
 }
 
-export const enum FormatCompFlags {
+export enum FormatCompFlags {
   R = 0x01,
   RG = 0x02,
   RGB = 0x03,
@@ -42,7 +42,7 @@ export function getFormatCompFlagsComponentCount(n: FormatCompFlags): number {
   return n;
 }
 
-export const enum FormatFlags {
+export enum FormatFlags {
   None = 0b00000000,
   Normalized = 0b00000001,
   sRGB = 0b00000010,

@@ -1,4 +1,10 @@
-import { Format, BufferGeometry, VertexBufferFrequency, Mesh } from '@antv/g-plugin-webgl-renderer';
+import {
+  Format,
+  BufferGeometry,
+  VertexBufferFrequency,
+  VertexAttributeLocation,
+  Mesh,
+} from '@antv/g-plugin-webgl-renderer';
 import { mat4, vec3, vec4 } from 'gl-matrix';
 
 export enum ProceduralGeometryAttributeLocation {
@@ -94,7 +100,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
         {
           format: Format.F32_RGB,
           bufferByteOffset: 4 * 0,
-          location: 10,
+          location: VertexAttributeLocation.POSITION,
         },
       ],
       data: Float32Array.from(positionsAll),
@@ -107,7 +113,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
         {
           format: Format.F32_RGB,
           bufferByteOffset: 4 * 0,
-          location: 11,
+          location: VertexAttributeLocation.NORMAL,
         },
       ],
       data: Float32Array.from(normalsAll),
@@ -120,7 +126,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: 12,
+          location: VertexAttributeLocation.UV,
         },
       ],
       data: Float32Array.from(uvsAll),

@@ -207,7 +207,7 @@ export abstract class Batch {
         );
       });
 
-      this.geometry.maxInstancedCount = this.objects.length;
+      this.geometry.instancedCount = this.objects.length;
 
       this.geometry.setVertexBuffer({
         bufferIndex: Batch.CommonBufferIndex,
@@ -382,6 +382,7 @@ export abstract class Batch {
       .getCache()
       .createProgramSimple(this.programDescriptorSimpleWithOrig);
 
+    const useIndexes = !!this.geometry.indicesBuffer;
     // prevent rebinding VAO too many times
     if (this.inputStateDirty) {
       if (this.inputState) {
@@ -393,7 +394,7 @@ export abstract class Batch {
           buffer,
           byteOffset: 0,
         })),
-        { buffer: this.geometry.indicesBuffer, byteOffset: 0 },
+        useIndexes ? { buffer: this.geometry.indicesBuffer, byteOffset: 0 } : null,
         program,
       );
       this.inputStateDirty = false;
@@ -412,7 +413,15 @@ export abstract class Batch {
     this.uploadUBO(renderInst);
 
     // draw elements
-    renderInst.drawIndexesInstanced(this.geometry.vertexCount, this.geometry.maxInstancedCount);
+    if (useIndexes) {
+      renderInst.drawIndexesInstanced(
+        this.geometry.vertexCount,
+        this.geometry.instancedCount,
+        this.geometry.indexStart,
+      );
+    } else {
+      renderInst.drawPrimitives(this.geometry.vertexCount, this.geometry.primitiveStart);
+    }
     renderInst.sortKey = makeSortKeyOpaque(RendererLayer.OPAQUE, program.id);
     this.renderHelper.renderInstManager.submitRenderInst(renderInst, list);
 

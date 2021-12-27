@@ -2,29 +2,11 @@
 /// <reference path="./glsl.d.ts" />
 import { DisplayObject, RendererPlugin, globalContainer } from '@antv/g';
 import { Module, Syringe } from 'mana-syringe';
-import {
-  Mesh,
-  Texture2D,
-  Sampler,
-  Fog,
-  FogType,
-  registerModelBuilder,
-  Batch,
-} from '@antv/g-plugin-webgl-renderer';
-// import { CubeUpdater } from './aabb/CubeUpdater';
-// import { SphereUpdater } from './aabb/SphereUpdater';
-// import { GridUpdater } from './aabb/GridUpdater';
-// import { CubeModelBuilder } from './model/Cube';
-// // import { SphereModelBuilder } from './model/Sphere';
-// import { GridModelBuilder } from './model/Grid';
-// import { SHAPE_3D } from './types';
-// import { Cube } from './Cube';
-// import { Sphere } from './Sphere';
-// import { Grid } from './Grid';
+
+export * from '@antv/g-plugin-webgl-renderer';
 export * from './geometries';
 export * from './materials';
 export * from './lights';
-export { Mesh, Texture2D, Sampler, Fog, FogType };
 
 // // TODO: provide more friendly API like `registerGeometry`
 // globalContainer.register(CubeUpdater);
@@ -46,5 +28,3 @@ export class Plugin implements RendererPlugin {
     // container.container.unload(containerModule);
   }
 }
-
-// export { Cube, Sphere, Grid };

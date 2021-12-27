@@ -14,7 +14,7 @@ export interface IMeshPhongMaterial extends IMeshBasicMaterial {
   doubleSide: boolean;
 }
 
-const enum Uniform {
+enum Uniform {
   EMISSIVE = 'u_Emissive',
   SHININESS = 'u_Shininess',
   SPECULAR = 'u_Specular',
@@ -23,7 +23,7 @@ const enum Uniform {
   BUMP_MAP = 'u_BumpMap',
 }
 
-const enum SamplerLocation {
+enum SamplerLocation {
   BUMP_MAP = 1,
   SPECULAR_MAP,
 }

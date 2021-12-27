@@ -9,7 +9,7 @@ export function renderInstCompareSortKey(a: RenderInst, b: RenderInst): number {
   return a.sortKey - b.sortKey;
 }
 
-export const enum RenderInstExecutionOrder {
+export enum RenderInstExecutionOrder {
   Forwards,
   Backwards,
 }

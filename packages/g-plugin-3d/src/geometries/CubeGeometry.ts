@@ -1,4 +1,4 @@
-import { Mesh } from '@antv/g-plugin-webgl-renderer';
+import { Mesh, VertexAttributeLocation } from '@antv/g-plugin-webgl-renderer';
 import { vec3 } from 'gl-matrix';
 import { ProceduralGeometry, ProceduralGeometryAttributeLocation } from './ProceduralGeometry';
 
@@ -150,7 +150,7 @@ export class CubeGeometry extends ProceduralGeometry<CubeGeometryProps> {
       return [
         {
           bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
-          location: 10,
+          location: VertexAttributeLocation.POSITION,
           data: p,
         },
       ];

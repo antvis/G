@@ -4,7 +4,7 @@ import { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
 import { isWebGL2 } from './utils';
 
-export const enum ProgramCompileState_GL {
+export enum ProgramCompileState_GL {
   NeedsCompile,
   Compiling,
   NeedsBind,

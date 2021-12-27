@@ -137,6 +137,18 @@ export class MeshRenderer extends Batch {
       material.dirty = false;
       this.materialDirty = false;
     }
+
+    const geometry = instance.style.geometry as BufferGeometry;
+    geometry.vertexBuffersToUpdate.forEach(({ bufferIndex, bufferByteOffset, data }) => {
+      this.geometry.updateVertexBufferData(
+        bufferIndex,
+        bufferByteOffset,
+        new Uint8Array(data.buffer),
+      );
+
+      this.inputStateDirty = true;
+    });
+    geometry.vertexBuffersToUpdate = [];
   }
 
   protected buildGeometry() {
@@ -145,7 +157,7 @@ export class MeshRenderer extends Batch {
     const material = instance.style.material as Material;
 
     // build batched geometry
-    geometry.build(this.objects);
+    geometry.build(this.objects as Mesh[]);
 
     // generate wireframe
     if (material.wireframe) {
@@ -153,9 +165,13 @@ export class MeshRenderer extends Batch {
     }
 
     // sync to internal Geometry
-    this.geometry.setIndices(geometry.indices);
+    if (geometry.indices) {
+      this.geometry.setIndices(geometry.indices);
+    }
+    this.geometry.primitiveStart = geometry.primitiveStart;
+    this.geometry.indexStart = geometry.indexStart;
     this.geometry.vertexCount = geometry.vertexCount;
-    this.geometry.maxInstancedCount = geometry.instancedCount;
+    this.geometry.instancedCount = geometry.instancedCount;
 
     this.geometry.inputLayoutDescriptor = geometry.inputLayoutDescriptor;
     geometry.vertexBuffers.forEach((data, i) => {
@@ -170,7 +186,7 @@ export class MeshRenderer extends Batch {
 
     const instance = this.instance as Mesh;
     const geometry = instance.style.geometry as BufferGeometry;
-    const patches = geometry.update(index, object, name, value);
+    const patches = geometry.update(index, object as Mesh, name, value);
     patches.forEach(({ bufferIndex, location, data }) => {
       this.geometry.updateVertexBuffer(bufferIndex, location, index, new Uint8Array(data.buffer));
     });
@@ -224,7 +240,7 @@ export class MeshRenderer extends Batch {
     }
 
     // materials
-    wordCount += 4; // placeholder
+    wordCount += 4; // u_WireframeLineColor & u_WireframeLineWidth
     wordCount += material.uboBuffer.length;
     if (material.defines.USE_LIGHT) {
       wordCount += lights.reduce((prev, cur) => prev + cur.getUniformWordCount(), 0);
@@ -232,7 +248,13 @@ export class MeshRenderer extends Batch {
 
     let offs = renderInst.allocateUniformBuffer(numUniformBuffers, wordCount);
     const d = renderInst.mapUniformBufferF32(numUniformBuffers);
-    offs += fillVec4(d, offs, 0, 0, 0, 0); // u_Placeholder
+    const wireframeColor = parseColor(material.wireframeColor).value as Tuple4Number;
+    offs += fillVec4(
+      d,
+      offs,
+      ...(wireframeColor.slice(0, 3) as [number, number, number]),
+      material.wireframeLineWidth,
+    ); // u_WireframeLineColor & u_WireframeLineWidth
 
     if (fog) {
       offs = this.uploadFog(d, offs, fog);

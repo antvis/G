@@ -1,4 +1,4 @@
-import { Mesh } from '@antv/g-plugin-webgl-renderer';
+import { Mesh, VertexAttributeLocation } from '@antv/g-plugin-webgl-renderer';
 import { ProceduralGeometry, ProceduralGeometryAttributeLocation } from './ProceduralGeometry';
 
 export interface PlaneGeometryProps {
@@ -62,8 +62,6 @@ export class PlaneGeometry extends ProceduralGeometry<PlaneGeometryProps> {
       }
     }
 
-    console.log(positions);
-
     return {
       indices,
       positions,
@@ -88,7 +86,7 @@ export class PlaneGeometry extends ProceduralGeometry<PlaneGeometryProps> {
       return [
         {
           bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
-          location: 10,
+          location: VertexAttributeLocation.POSITION,
           data: p,
         },
       ];

@@ -80,7 +80,7 @@ import { HashMap, nullHashFunc } from '../../render/HashMap';
 import { Format } from '../format';
 import { ComputePass_WebGPU } from './ComputePass';
 import { ComputePipeline_WebGPU } from './ComputePipeline';
-import type { glsl_compile as glsl_compile_ } from '../../../../../rust/pkg/index';
+// import type { glsl_compile as glsl_compile_ } from '../../../../../rust/pkg/glsl_wgsl_compiler';
 import { FullscreenAlphaClear } from './FullscreenAlphaClear';
 import { QueryPool_WebGPU } from './QueryPool';
 
@@ -122,14 +122,14 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
   device: GPUDevice;
   private canvas: HTMLCanvasElement | OffscreenCanvas;
   private canvasContext: GPUCanvasContext;
-  glsl_compile: typeof glsl_compile_;
+  glsl_compile: any;
 
   constructor(
     adapter: GPUAdapter,
     device: GPUDevice,
     canvas: HTMLCanvasElement | OffscreenCanvas,
     canvasContext: GPUCanvasContext,
-    glsl_compile: typeof glsl_compile_,
+    glsl_compile: any,
   ) {
     this.adapter = adapter;
     this.device = device;

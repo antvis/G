@@ -1,4 +1,4 @@
-import { Mesh } from '@antv/g-plugin-webgl-renderer';
+import { Mesh, VertexAttributeLocation } from '@antv/g-plugin-webgl-renderer';
 import { ProceduralGeometry, ProceduralGeometryAttributeLocation } from './ProceduralGeometry';
 
 export interface SphereGeometryProps {
@@ -89,7 +89,7 @@ export class SphereGeometry extends ProceduralGeometry<SphereGeometryProps> {
       return [
         {
           bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
-          location: 10,
+          location: VertexAttributeLocation.POSITION,
           data: p,
         },
       ];

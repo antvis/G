@@ -26,17 +26,7 @@ import { WebGLRendererPluginOptions } from './interfaces';
 import { pushFXAAPass } from './passes/FXAA';
 import { useCopyPass } from './passes/Copy';
 import { PickingIdGenerator } from './PickingIdGenerator';
-import {
-  BindingLayoutDescriptor,
-  BlendFactor,
-  BlendMode,
-  CompareMode,
-  CullMode,
-  Device,
-  Format,
-  SwapChain,
-  Texture,
-} from './platform';
+import { BlendFactor, BlendMode, Device, SwapChain, Texture } from './platform';
 import { reverseDepthForClearValue, setAttachmentStateSimple } from './platform/utils';
 import { Device_GL } from './platform/webgl2/Device';
 import { Device_WebGPU } from './platform/webgpu/Device';
@@ -45,7 +35,7 @@ import { RenderHelper } from './render/RenderHelper';
 import { RenderInstList } from './render/RenderInstList';
 import { RGRenderTargetDescription } from './render/RenderTargetDescription';
 import { fillMatrix4x4, fillVec3v, fillVec4, fillVec4v } from './render/utils';
-import { TransparentWhite, OpaqueWhite, colorNewFromRGBA } from './utils/color';
+import { TransparentBlack, TransparentWhite, colorNewFromRGBA } from './utils/color';
 import { isWebGL2 } from './platform/webgl2/utils';
 import { RendererFactory } from './tokens';
 import {
@@ -55,7 +45,7 @@ import {
   opaqueBlackFullClearRenderPassDescriptor,
   opaqueWhiteFullClearRenderPassDescriptor,
 } from './render/RenderGraphHelpers';
-import naga from '../../../rust/pkg/index_bg.wasm';
+import init from '../../../rust/pkg/glsl_wgsl_compiler';
 import { Fog, Light } from './lights';
 import { LightPool } from './LightPool';
 
@@ -169,7 +159,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
 
-      const clearColor = parseColor(this.canvasConfig.background).value as Tuple4Number;
+      const clearColor = this.canvasConfig.background
+        ? colorNewFromRGBA(...(parseColor(this.canvasConfig.background).value as Tuple4Number))
+        : TransparentWhite;
 
       // retrieve at each frame since canvas may resize
       const renderInput = {
@@ -181,7 +173,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const mainRenderDesc = makeBackbufferDescSimple(
         RGAttachmentSlot.Color0,
         renderInput,
-        makeAttachmentClearDescriptor(colorNewFromRGBA(...clearColor)),
+        makeAttachmentClearDescriptor(clearColor),
       );
       const mainDepthDesc = makeBackbufferDescSimple(
         RGAttachmentSlot.DepthStencil,
@@ -463,9 +455,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
     if (!context) return null;
 
-    // @ts-ignore
-    const { glsl_compile } = await naga();
-    return new Device_WebGPU(adapter, device, canvas, context, glsl_compile);
+    const naga = await init('/glsl_wgsl_compiler_bg.wasm');
+    return new Device_WebGPU(adapter, device, canvas, context, naga.glsl_compile);
   }
 
   private handleContextEvents($canvas: HTMLCanvasElement) {

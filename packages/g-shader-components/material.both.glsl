@@ -1,5 +1,6 @@
 layout(std140) uniform ub_MaterialParams {
-  vec4 u_Placeholder;
+  vec3 u_WireframeLineColor;
+  float u_WireframeLineWidth;
 
   #ifdef USE_FOG
     vec4 u_FogInfos;

@@ -13,7 +13,7 @@ import { align } from '../platform/utils';
 export type IndicesArray = number[] | Int32Array | Uint32Array | Uint16Array;
 
 // built-in attribute name
-export const enum Attribute {
+export enum Attribute {
   Position,
   Color,
   Normal,
@@ -70,6 +70,13 @@ export class Geometry {
    */
   indicesBuffer: Buffer;
 
+  /**
+   * start of indices
+   */
+  indexStart: number = 0;
+
+  primitiveStart: number = 0;
+
   inputLayoutDescriptor: InputLayoutDescriptor = {
     vertexBufferDescriptors: [],
     vertexAttributeDescriptors: [],
@@ -79,7 +86,7 @@ export class Geometry {
   vertexCount: number = 0;
 
   // instanced count
-  maxInstancedCount: number;
+  instancedCount: number;
 
   init?(): void;
 
@@ -97,7 +104,7 @@ export class Geometry {
     this.indicesBuffer = undefined;
     this.vertexBuffers = [];
     this.vertexCount = 0;
-    this.maxInstancedCount = 0;
+    this.instancedCount = 0;
   }
 
   setVertexBuffer(descriptor: GeometryVertexBufferDescriptor) {
@@ -147,6 +154,13 @@ export class Geometry {
 
   getVertexBuffer(bufferIndex: number) {
     return this.vertexBuffers[bufferIndex];
+  }
+
+  updateVertexBufferData(bufferIndex: number, offset: number, data: Uint8Array) {
+    const vertexBuffer = this.getVertexBuffer(bufferIndex);
+    if (vertexBuffer) {
+      vertexBuffer.setSubData(offset, data);
+    }
   }
 
   updateVertexBuffer(bufferIndex: number, location: number, index: number, data: Uint8Array) {

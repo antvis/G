@@ -156,7 +156,7 @@ export class TextRenderer extends Batch {
       fillVec4(d, offs + 4, 0.2, 0); // u_HasStroke
 
       // draw elements
-      renderInst.drawIndexesInstanced(this.geometry.vertexCount, this.geometry.maxInstancedCount);
+      renderInst.drawIndexesInstanced(this.geometry.vertexCount, this.geometry.instancedCount);
       renderInst.sortKey = makeSortKeyOpaque(RendererLayer.OPAQUE, program.id);
       this.renderHelper.renderInstManager.submitRenderInst(renderInst, list);
     }
@@ -241,7 +241,7 @@ export class TextRenderer extends Batch {
 
     geometry.vertexCount = indices.length;
     // geometry.vertexCount = 6;
-    // geometry.maxInstancedCount = indices.length / 6;
+    // geometry.instancedCount = indices.length / 6;
     geometry.setIndices(new Uint32Array(indices));
     this.geometry.setVertexBuffer({
       bufferIndex: 0,
