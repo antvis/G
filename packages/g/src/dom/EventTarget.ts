@@ -97,7 +97,7 @@ export class EventTarget implements IEventTarget {
   }
   removeEventListener(
     type: string,
-    listener: EventListenerOrEventListenerObject,
+    listener?: EventListenerOrEventListenerObject,
     options?: boolean | AddEventListenerOptions,
   ) {
     const capture = (isBoolean(options) && options) || (isObject(options) && options.capture);
