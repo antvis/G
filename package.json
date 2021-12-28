@@ -28,7 +28,8 @@
     "publish": "lerna publish",
     "publish:next": "lerna publish prerelease --dist-tag next",
     "start": "cd ./packages/site && npm run start",
-    "check-circular-deps": "madge --circular --extensions ts ./packages/"
+    "check-circular-deps": "madge --circular --extensions ts ./packages/",
+    "doc": "dumi dev"
   },
   "lint-staged": {
     "**/*.{js,ts,md}": [
@@ -52,9 +53,11 @@
     "@typescript-eslint/parser": "^4.27.0",
     "@umijs/fabric": "^2.5.13",
     "antd": "^4.2.4",
+    "babel-plugin-const-enum": "^1.2.0",
     "chai": "^4.3.4",
     "chai-almost": "^1.0.1",
     "cross-env": "^6.0.3",
+    "dumi": "^1.1.37",
     "eslint": "^7.28.0",
     "eslint-plugin-jest": "24.3.6",
     "father": "^2.30.13",
