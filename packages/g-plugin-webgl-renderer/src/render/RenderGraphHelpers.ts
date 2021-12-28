@@ -21,7 +21,7 @@ export const standardFullClearRenderPassDescriptor = makeAttachmentClearDescript
 export const opaqueBlackFullClearRenderPassDescriptor = makeAttachmentClearDescriptor(OpaqueBlack);
 export const opaqueWhiteFullClearRenderPassDescriptor = makeAttachmentClearDescriptor(OpaqueWhite);
 
-export const enum AntialiasingMode {
+export enum AntialiasingMode {
   None,
   FXAA,
   MSAAx4,

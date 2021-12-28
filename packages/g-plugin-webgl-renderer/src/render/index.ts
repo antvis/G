@@ -7,3 +7,4 @@ export * from './RenderInst';
 export * from './RenderInstList';
 export * from './RenderInstManager';
 export * from './TextureHolder';
+export * from './utils';

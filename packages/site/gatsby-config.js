@@ -100,6 +100,14 @@ module.exports = {
         order: 2,
       },
       {
+        slug: 'api/3d',
+        title: {
+          zh: '三维世界',
+          en: '3D',
+        },
+        order: 3,
+      },
+      {
         slug: 'api/builtin-objects',
         title: {
           zh: '内置对象',

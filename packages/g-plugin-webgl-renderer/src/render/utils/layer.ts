@@ -6,7 +6,7 @@ import { assert } from '../../platform/utils';
 // TRANSLUCENT is meant to be used as a bitflag. It's special as it changes the behavior of the generic sort key
 
 // functions like makeSortKey and setSortKeyDepth.
-export const enum RendererLayer {
+export enum RendererLayer {
   BACKGROUND = 0x00,
   ALPHA_TEST = 0x10,
   OPAQUE = 0x20,

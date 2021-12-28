@@ -1,7 +1,6 @@
-
+use std::error::Error;
 use wasm_bindgen::prelude::wasm_bindgen;
 use web_sys::console;
-use std::error::Error;
 
 fn show_error(place: &str, error: impl Error) {
     console::log_2(&place.into(), &error.to_string().into());
@@ -15,17 +14,23 @@ fn show_error(place: &str, error: impl Error) {
 
 #[wasm_bindgen]
 pub fn glsl_compile(source: &str, stage: &str, validation_enabled: bool) -> String {
+    console::log_2(&source.to_string().into(), &"Hello, world!".into());
+
     let naga_stage = match stage {
         "vertex" => Ok(naga::ShaderStage::Vertex),
         "fragment" => Ok(naga::ShaderStage::Fragment),
-        _ => Err("unknown shader stage")
-    }.unwrap();
+        _ => Err("unknown shader stage"),
+    }
+    .unwrap();
 
     let mut parser = naga::front::glsl::Parser::default();
-    let module = match parser.parse(&naga::front::glsl::Options {
-        stage: naga_stage,
-        defines: Default::default(),
-    }, &source) {
+    let module = match parser.parse(
+        &naga::front::glsl::Options {
+            stage: naga_stage,
+            defines: Default::default(),
+        },
+        &source,
+    ) {
         Ok(v) => v,
         Err(errors) => {
             for e in errors {
@@ -33,11 +38,17 @@ pub fn glsl_compile(source: &str, stage: &str, validation_enabled: bool) -> Stri
             }
 
             panic!();
-        },
+        }
     };
 
-    let validation_flags = if validation_enabled { naga::valid::ValidationFlags::all() } else { naga::valid::ValidationFlags::empty() };
-    let info = match naga::valid::Validator::new(validation_flags, naga::valid::Capabilities::all()).validate(&module) {
+    let validation_flags = if validation_enabled {
+        naga::valid::ValidationFlags::all()
+    } else {
+        naga::valid::ValidationFlags::empty()
+    };
+    let info = match naga::valid::Validator::new(validation_flags, naga::valid::Capabilities::all())
+        .validate(&module)
+    {
         Ok(v) => v,
         Err(e) => {
             show_error(&"validator", e);

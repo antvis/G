@@ -117,7 +117,7 @@ export enum FrontFaceMode {
   CW = GL.CW,
 }
 
-export const enum CullMode {
+export enum CullMode {
   None,
   Front,
   Back,
@@ -143,21 +143,21 @@ export enum BlendMode {
   ReverseSubtract = GL.FUNC_REVERSE_SUBTRACT,
 }
 
-export const enum WrapMode {
+export enum WrapMode {
   Clamp,
   Repeat,
   Mirror,
 }
-export const enum TexFilterMode {
+export enum TexFilterMode {
   Point,
   Bilinear,
 }
-export const enum MipFilterMode {
+export enum MipFilterMode {
   NoMip,
   Nearest,
   Linear,
 }
-export const enum PrimitiveTopology {
+export enum PrimitiveTopology {
   Points,
   Triangles,
   TriangleStrip,
@@ -178,36 +178,36 @@ export interface BufferDescriptor {
 /**
  * @see https://www.w3.org/TR/webgpu/#buffer-usage
  */
-export const enum BufferUsage {
+export enum BufferUsage {
   Index = 0x01,
   Vertex = 0x02,
   Uniform = 0x03,
   Storage = 0x04,
 }
 
-export const enum BufferFrequencyHint {
+export enum BufferFrequencyHint {
   Static = 0x01,
   Dynamic = 0x02,
 }
 
-export const enum VertexBufferFrequency {
+export enum VertexBufferFrequency {
   PerVertex = 0x01,
   PerInstance = 0x02,
 }
 
-export const enum TextureDimension {
+export enum TextureDimension {
   n2D,
   n2DArray,
   n3D,
   Cube,
 }
 
-export const enum TextureUsage {
+export enum TextureUsage {
   Sampled = 0x01,
   RenderTarget = 0x02,
 }
 
-export const enum ChannelWriteMask {
+export enum ChannelWriteMask {
   None = 0x00,
   Red = 0x01,
   Green = 0x02,
@@ -306,7 +306,7 @@ export interface SamplerBinding {
   lateBinding: string | null;
 }
 
-export const enum SamplerFormatKind {
+export enum SamplerFormatKind {
   Float,
   Uint,
   Sint,
@@ -432,12 +432,12 @@ export interface DebugGroup {
   triangleCount: number;
 }
 
-export const enum ViewportOrigin {
+export enum ViewportOrigin {
   LowerLeft,
   UpperLeft,
 }
 
-export const enum ClipSpaceNearZ {
+export enum ClipSpaceNearZ {
   NegativeOne,
   Zero,
 }
@@ -507,7 +507,7 @@ export interface ComputePass {
   dispatch(x: number, y?: number, z?: number): void;
 }
 
-export const enum QueryPoolType {
+export enum QueryPoolType {
   OcclusionConservative,
 }
 

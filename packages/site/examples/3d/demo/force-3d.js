@@ -1633,11 +1633,27 @@ const material = new MeshPhongMaterial({
   shininess: 30,
 });
 
+// @see https://antv.vision/en/docs/specification/language/palette#%E5%88%86%E7%B1%BB%E8%89%B2%E6%9D%BF
+const colorPalette = [
+  '#5B8FF9',
+  '#CDDDFD',
+  '#61DDAA',
+  '#CDF3E4',
+  '#65789B',
+  '#F6BD16',
+  '#7262fd',
+  '#78D3F8',
+  '#9661BC',
+  '#F6903D',
+  '#008685',
+  '#F08BB4',
+];
 dataset.nodes.forEach((node) => {
+  const fill = colorPalette[node.group];
   // create a mesh
   const sphere = new Mesh({
     style: {
-      fill: '#1890FF',
+      fill,
       opacity: 1,
       radius: 10,
       latitudeBands: 32,
@@ -1654,7 +1670,7 @@ dataset.nodes.forEach((node) => {
     sphere.style.fill = 'red';
   });
   sphere.addEventListener('mouseleave', () => {
-    sphere.style.fill = '#1890FF';
+    sphere.style.fill = fill;
   });
 });
 
@@ -1671,6 +1687,7 @@ dataset.links.forEach((edge) => {
       stroke: 'black',
       lineWidth: 2,
       opacity: 0.5,
+      isBillboard: true, // 始终面向屏幕
     },
   });
   canvas.appendChild(line);

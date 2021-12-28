@@ -122,26 +122,26 @@ materialFolder
   ])
   .onChange((map) => {
     if (map === 'none') {
-      torus.style.material.props.map = null;
+      torus.style.material.map = null;
     } else {
-      torus.style.material.props.map = map;
+      torus.style.material.map = map;
     }
   });
 const fogTypes = [FogType.NONE, FogType.EXP, FogType.EXP2, FogType.LINEAR];
 materialFolder.add(materialConfig, 'fogType', fogTypes).onChange((fogType) => {
   // FogType.NONE
-  torus.style.material.props.fogType = fogType;
+  torus.style.material.fogType = fogType;
 });
 materialFolder.addColor(materialConfig, 'fogColor').onChange((fogColor) => {
-  torus.style.material.props.fogColor = fogColor;
+  torus.style.material.fogColor = fogColor;
 });
 materialFolder.add(materialConfig, 'fogDensity', 0, 10).onChange((fogDensity) => {
-  torus.style.material.props.fogDensity = fogDensity;
+  torus.style.material.fogDensity = fogDensity;
 });
 materialFolder.add(materialConfig, 'fogStart', 0, 1000).onChange((fogStart) => {
-  torus.style.material.props.fogStart = fogStart;
+  torus.style.material.fogStart = fogStart;
 });
 materialFolder.add(materialConfig, 'fogEnd', 0, 1000).onChange((fogEnd) => {
-  torus.style.material.props.fogEnd = fogEnd;
+  torus.style.material.fogEnd = fogEnd;
 });
 materialFolder.open();

@@ -7,7 +7,7 @@ import {
 } from '../platform';
 import { RGRenderTargetDescription } from './RenderTargetDescription';
 
-export const enum RGAttachmentSlot {
+export enum RGAttachmentSlot {
   Color0 = 0,
   Color1 = 1,
   Color2 = 2,

@@ -1,6 +1,6 @@
 import { assert } from '../platform/utils';
 
-export const enum Topology {
+export enum Topology {
   TRIANGLES,
   TRISTRIP,
   TRIFAN,

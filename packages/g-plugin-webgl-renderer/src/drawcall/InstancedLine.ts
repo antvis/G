@@ -91,7 +91,7 @@ export class InstancedLineRenderer extends Batch {
     let offset = 0;
     this.objects.forEach((object) => {
       const line = object as Line;
-      const { x1, y1, x2, y2, z1, z2, defX, defY, lineCap } = line.parsedStyle;
+      const { x1, y1, x2, y2, z1, z2, defX, defY, lineCap, isBillboard } = line.parsedStyle;
 
       const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } = this.calcDash(
         object as Line,
@@ -110,6 +110,8 @@ export class InstancedLineRenderer extends Batch {
         dashOffset,
         dashSegmentPercent,
         dashRatioInEachSegment,
+        // isBillboard
+        isBillboard ? 1 : 0,
       );
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
       offset += 4;
@@ -139,7 +141,7 @@ export class InstancedLineRenderer extends Batch {
     });
     this.geometry.setVertexBuffer({
       bufferIndex: 2,
-      byteStride: 4 * (3 + 3 + 1 + 3),
+      byteStride: 4 * (3 + 3 + 1 + 4),
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
@@ -161,7 +163,7 @@ export class InstancedLineRenderer extends Batch {
           divisor: 1,
         },
         {
-          format: Format.F32_RGB,
+          format: Format.F32_RGBA,
           bufferByteOffset: 4 * 7,
           location: InstancedLineProgram.a_Dash,
           divisor: 1,

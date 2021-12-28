@@ -7,12 +7,13 @@ window.stats = require('stats.js');
 window.dat = require('dat.gui');
 window.hammerjs = require('hammerjs');
 window.interactjs = require('interactjs');
+window.simplexNoise = require('simplex-noise');
 window.d3Force3d = require('d3-force-3d');
 window.g = require('@antv/g');
 window.gCanvas = require('@antv/g-canvas');
 window.gWebgl = require('@antv/g-webgl');
 window.gSvg = require('@antv/g-svg');
-// window.gComponents = require('@antv/g-components');
+window.gComponents = require('@antv/g-components');
 // plugins
 window.gPluginCssSelect = require('@antv/g-plugin-css-select');
 window.gPlugin3d = require('@antv/g-plugin-3d');

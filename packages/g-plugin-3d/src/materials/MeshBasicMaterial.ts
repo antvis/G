@@ -1,8 +1,15 @@
-import { Material, Texture2D, MaterialProps, CullMode } from '@antv/g-plugin-webgl-renderer';
+import { Material, Texture2D, CullMode, IMaterial } from '@antv/g-plugin-webgl-renderer';
 import vert from '../shaders/material.basic.vert';
 import frag from '../shaders/material.basic.frag';
 
-export interface MeshBasicMaterialProps extends MaterialProps {
+enum Uniform {
+  MAP = 'u_Map',
+}
+enum SamplerLocation {
+  MAP = 0,
+}
+
+export interface IMeshBasicMaterial extends IMaterial {
   /**
    * color map, will override fill color
    */
@@ -18,8 +25,34 @@ export interface MeshBasicMaterialProps extends MaterialProps {
  * not affected by lights
  * @see https://threejs.org/docs/#api/en/materials/MeshBasicMaterial
  */
-export class MeshBasicMaterial extends Material<MeshBasicMaterialProps> {
-  constructor(props?: MeshBasicMaterialProps) {
+export class MeshBasicMaterial<T extends IMeshBasicMaterial> extends Material<T> {
+  /**
+   * color map, will override fill color
+   */
+  get map() {
+    return this.props.map;
+  }
+  set map(v) {
+    if (this.props.map !== v) {
+      this.props.map = v;
+      this.dirty = true;
+    }
+
+    this.defines.USE_MAP = !!v;
+    this.addTexture(v, Uniform.MAP, SamplerLocation.MAP);
+  }
+
+  /**
+   * AO map
+   */
+  get aoMap() {
+    return this.props.aoMap;
+  }
+  set aoMap(v) {
+    this.props.aoMap = v;
+  }
+
+  constructor(props?: Partial<IMeshBasicMaterial>) {
     super({
       vertexShader: vert,
       fragmentShader: frag,
@@ -28,56 +61,18 @@ export class MeshBasicMaterial extends Material<MeshBasicMaterialProps> {
     });
 
     this.defines = {
+      ...this.defines,
       USE_UV: true,
       USE_MAP: false,
       USE_WIREFRAME: false,
       USE_FOG: false,
+      USE_LIGHT: false,
     };
 
     const { map, wireframe } = props || {};
-    this.setMap(map);
-    this.setWireframe(wireframe);
-    this.setFog();
-  }
-
-  getUniformWordCount() {
-    // vec3 u_Emissive;
-    // float u_Shininess;
-    // vec3 u_Specular;
-    // vec3 u_AmbientLightColor;
-    return 4 + 4 + 4;
-  }
-
-  protected setAttribute<Key extends keyof MeshBasicMaterialProps>(
-    name: Key,
-    value: MeshBasicMaterialProps[Key],
-  ) {
-    super.setAttribute(name, value);
-    if (name === 'map') {
-      this.setMap(value as MeshBasicMaterialProps['map']);
-    } else if (
-      name === 'fogType' ||
-      name === 'fogColor' ||
-      name === 'fogStart' ||
-      name === 'fogEnd' ||
-      name === 'fogDensity'
-    ) {
-      this.setFog();
+    if (map) {
+      this.map = map;
     }
-  }
-
-  private setMap(map: string | TexImageSource | Texture2D) {
-    // set MAP define
-    this.defines.USE_MAP = !!map;
-
-    this.addTexture(map, 'map');
-  }
-
-  private setWireframe(wireframe: boolean) {
-    this.defines.USE_WIREFRAME = !!wireframe;
-  }
-
-  private setFog() {
-    this.defines.USE_FOG = !!this.props.fogType;
+    this.wireframe = wireframe;
   }
 }

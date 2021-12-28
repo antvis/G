@@ -1,8 +1,6 @@
 layout(std140) uniform ub_MaterialParams {
-  vec3 u_Emissive;
-  float u_Shininess;
-  vec3 u_Specular;
-  vec3 u_AmbientLightColor;
+  vec3 u_WireframeLineColor;
+  float u_WireframeLineWidth;
 
   #ifdef USE_FOG
     vec4 u_FogInfos;
@@ -10,12 +8,19 @@ layout(std140) uniform ub_MaterialParams {
   #endif
 
   #ifdef USE_LIGHT
-    #if NUM_DIR_LIGHTS > 0
+    vec3 u_Emissive;
+    float u_Shininess;
+    vec3 u_Specular;
+    #ifdef USE_BUMPMAP
+      float u_BumpScale;
+    #endif
+
+    #ifdef NUM_AMBIENT_LIGHTS
+      vec3 u_AmbientLightColor;
+    #endif
+
+    #ifdef NUM_DIR_LIGHTS
       DirectionalLight directionalLights[ NUM_DIR_LIGHTS ];
     #endif
-  #endif
-
-  #ifdef USE_BUMPMAP
-    float u_BumpScale;
   #endif
 };

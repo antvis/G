@@ -13,6 +13,7 @@ import {
   Tuple4Number,
 } from '@antv/g';
 import earcut from 'earcut';
+import { vec3, mat4 } from 'gl-matrix';
 import { fillMatrix4x4, fillVec4 } from '../render/utils';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RenderInst } from '../render/RenderInst';
@@ -173,7 +174,7 @@ export class LineRenderer extends Batch {
     });
 
     geometry.vertexCount = 15;
-    geometry.maxInstancedCount = instanceCount;
+    geometry.instancedCount = instanceCount;
 
     geometry.setIndices(new Uint32Array([0, 2, 1, 0, 3, 2, 4, 6, 5, 4, 7, 6, 4, 7, 8]));
   }
@@ -247,7 +248,13 @@ export class LineRenderer extends Batch {
     // Upload to our UBO.
     let offs = renderInst.allocateUniformBuffer(LineProgram.ub_ObjectParams, 16 + 4 * 7);
     const d = renderInst.mapUniformBufferF32(LineProgram.ub_ObjectParams);
-    offs += fillMatrix4x4(d, offs, instance.getWorldTransform());
+    const m = mat4.create();
+    mat4.mul(
+      m,
+      instance.getWorldTransform(), // apply anchor
+      mat4.fromTranslation(m, vec3.fromValues(translateX, translateY, 0)),
+    );
+    offs += fillMatrix4x4(d, offs, m);
     offs += fillVec4(d, offs, ...(fillColor as [number, number, number, number]));
     offs += fillVec4(d, offs, ...(strokeColor as [number, number, number, number]));
     offs += fillVec4(d, offs, lineWidth, opacity, fillOpacity, strokeOpacity);

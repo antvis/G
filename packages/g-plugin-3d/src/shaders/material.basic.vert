@@ -5,7 +5,6 @@
 #pragma glslify: project = require('@antv/g-shader-components/project.vert')
 
 layout(location = 10) attribute vec3 a_Position;
-layout(location = 11) attribute vec3 a_Normal;
 
 #ifdef USE_UV
   layout(location = 12) attribute vec2 a_Uv;

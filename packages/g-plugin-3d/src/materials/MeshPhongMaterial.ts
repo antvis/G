@@ -1,9 +1,10 @@
-import { Texture2D } from '@antv/g-plugin-webgl-renderer';
-import { MeshBasicMaterial, MeshBasicMaterialProps } from './MeshBasicMaterial';
+import { parseColor, Tuple4Number } from '@antv/g';
+import { Format, Texture2D } from '@antv/g-plugin-webgl-renderer';
+import { MeshBasicMaterial, IMeshBasicMaterial } from './MeshBasicMaterial';
 import vert from '../shaders/material.phong.vert';
 import frag from '../shaders/material.phong.frag';
 
-export interface MeshPhongMaterialProps extends MeshBasicMaterialProps {
+export interface IMeshPhongMaterial extends IMeshBasicMaterial {
   emissive: string;
   shininess: number;
   specular: string;
@@ -13,59 +14,129 @@ export interface MeshPhongMaterialProps extends MeshBasicMaterialProps {
   doubleSide: boolean;
 }
 
-export class MeshPhongMaterial extends MeshBasicMaterial {
-  constructor(props?: MeshPhongMaterialProps) {
+enum Uniform {
+  EMISSIVE = 'u_Emissive',
+  SHININESS = 'u_Shininess',
+  SPECULAR = 'u_Specular',
+  BUMP_SCALE = 'u_BumpScale',
+  SPECULAR_MAP = 'u_SpecularMap',
+  BUMP_MAP = 'u_BumpMap',
+}
+
+enum SamplerLocation {
+  BUMP_MAP = 1,
+  SPECULAR_MAP,
+}
+
+export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
+  get emissive() {
+    return this.props.emissive;
+  }
+  set emissive(v) {
+    this.props.emissive = v;
+    const emissiveColor = parseColor(v).value as Tuple4Number;
+    this.updateUniformData(Uniform.EMISSIVE, emissiveColor.slice(0, 3) as [number, number, number]);
+  }
+
+  get shininess() {
+    return this.props.shininess;
+  }
+  set shininess(v) {
+    this.props.shininess = v;
+    this.updateUniformData(Uniform.SHININESS, v);
+  }
+
+  get specular() {
+    return this.props.specular;
+  }
+  set specular(v) {
+    this.props.specular = v;
+    const specularColor = parseColor(v).value as Tuple4Number;
+    this.updateUniformData(Uniform.SPECULAR, specularColor.slice(0, 3) as [number, number, number]);
+  }
+
+  get specularMap() {
+    return this.props.specularMap;
+  }
+  set specularMap(v) {
+    this.props.specularMap = v;
+    this.defines.USE_SPECULARMAP = !!v;
+    this.addTexture(v, Uniform.SPECULAR_MAP, SamplerLocation.SPECULAR_MAP);
+  }
+
+  get bumpMap() {
+    return this.props.bumpMap;
+  }
+  set bumpMap(map) {
+    this.props.bumpMap = map;
+    this.defines.USE_BUMPMAP = !!map;
+    if (map) {
+      this.addTexture(map, Uniform.BUMP_MAP, SamplerLocation.BUMP_MAP);
+      this.addUniform({
+        name: Uniform.BUMP_SCALE,
+        format: Format.F32_R,
+        data: this.bumpScale,
+      });
+    } else {
+      this.removeUniform(Uniform.BUMP_SCALE);
+    }
+  }
+  get bumpScale() {
+    return this.props.bumpScale;
+  }
+  set bumpScale(v) {
+    this.props.bumpScale = v;
+    this.updateUniformData(Uniform.BUMP_SCALE, v);
+  }
+
+  get doubleSide() {
+    return this.props.doubleSide;
+  }
+  set doubleSide(v) {
+    this.props.doubleSide = v;
+    this.defines.USE_DOUBLESIDE = v;
+  }
+
+  constructor(props?: Partial<IMeshPhongMaterial>) {
     super({
       vertexShader: vert,
       fragmentShader: frag,
       emissive: 'black',
-      specular: '#111111',
       shininess: 30,
+      specular: '#111111',
       bumpScale: 1,
       doubleSide: false,
       ...props,
     });
 
-    const { specularMap, bumpMap, doubleSide } = props || {};
-    this.setSpecularMap(specularMap);
-    this.setBumpMap(bumpMap);
-    this.setDoubleSide(doubleSide);
-  }
+    const { specularMap, bumpMap, doubleSide, emissive, shininess, specular } = this;
 
-  protected setAttribute<Key extends keyof MeshPhongMaterialProps>(
-    name: Key,
-    value: MeshPhongMaterialProps[Key],
-  ) {
-    // @ts-ignore
-    super.setAttribute(name, value);
-    if (name === 'specularMap') {
-      this.setSpecularMap(value as MeshPhongMaterialProps['specularMap']);
-    } else if (name === 'bumpMap') {
-      this.setBumpMap(value as MeshPhongMaterialProps['bumpMap']);
-    } else if (name === 'doubleSide') {
-      this.setDoubleSide(value as MeshPhongMaterialProps['doubleSide']);
+    const emissiveColor = parseColor(emissive).value as Tuple4Number;
+    const specularColor = parseColor(specular).value as Tuple4Number;
+    this.addUniform({
+      name: Uniform.EMISSIVE,
+      format: Format.F32_RGB,
+      data: emissiveColor,
+    });
+    this.addUniform({
+      name: Uniform.SHININESS,
+      format: Format.F32_R,
+      data: shininess,
+    });
+    this.addUniform({
+      name: Uniform.SPECULAR,
+      format: Format.F32_RGB,
+      data: specularColor,
+    });
+
+    if (specularMap) {
+      this.specularMap = specularMap;
     }
-  }
 
-  private setSpecularMap(map: string | TexImageSource | Texture2D) {
-    this.defines.USE_SPECULARMAP = !!map;
-    this.addTexture(map, 'specular-map');
-  }
+    if (bumpMap) {
+      this.bumpMap = bumpMap;
+    }
 
-  private setBumpMap(map: string | TexImageSource | Texture2D) {
-    this.defines.USE_BUMPMAP = !!map;
-    this.addTexture(map, 'bump-map');
-  }
-
-  private setDoubleSide(enabled: boolean) {
-    this.defines.USE_DOUBLESIDE = enabled;
-  }
-
-  getUniformWordCount() {
-    // vec3 u_Emissive;
-    // float u_Shininess;
-    // vec3 u_Specular;
-    // vec3 u_AmbientLightColor;
-    return 4 + 4 + 4;
+    this.doubleSide = doubleSide;
   }
 }

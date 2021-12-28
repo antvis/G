@@ -256,7 +256,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
       const transform = (element as Element).transformable;
 
-      if (element.parentNode === null) {
+      if (element.parentNode === null || !(element.parentNode as Element).transformable) {
         this.rotateLocal(element, degrees);
       } else {
         const rotation = quat.create();
@@ -306,7 +306,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
       const transform = (element as Element).transformable;
 
-      if (element.parentNode === null) {
+      if (element.parentNode === null || !(element.parentNode as Element).transformable) {
         this.setLocalEulerAngles(element, degrees);
       } else {
         quat.fromEuler(transform.localRotation, degrees[0], degrees[1], degrees[2]);
@@ -375,7 +375,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
       transform.position = position;
 
-      if (element.parentNode === null) {
+      if (element.parentNode === null || !(element.parentNode as Element).transformable) {
         vec3.copy(transform.localPosition, position);
       } else {
         const parentTransform = (element.parentNode as Element).transformable;
@@ -497,7 +497,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       return transform.worldTransform;
     }
 
-    if (element.parentNode) {
+    if (element.parentNode && (element.parentNode as Element).transformable) {
       this.getWorldTransform(element.parentNode);
     }
 

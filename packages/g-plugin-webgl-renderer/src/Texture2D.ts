@@ -4,6 +4,7 @@ export interface Texture2DDescriptor {
   src: string | TexImageSource;
   sampler?: SamplerDescriptor;
   flipY?: boolean;
+  order?: number;
   // encoding
   // anisotropy
 }

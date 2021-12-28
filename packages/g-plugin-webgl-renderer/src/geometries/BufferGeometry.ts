@@ -1,23 +1,40 @@
+import { ElementEvent } from '@antv/g';
 import { EventEmitter } from 'eventemitter3';
 import { Mesh } from '../Mesh';
-import {
-  Buffer,
-  BufferFrequencyHint,
-  BufferUsage,
-  Device,
-  Format,
-  InputLayoutDescriptor,
-  PrimitiveTopology,
-  VertexBufferFrequency,
-} from '../platform';
+import { Format, InputLayoutDescriptor, PrimitiveTopology } from '../platform';
 import { GeometryVertexBufferDescriptor, IndicesArray } from './Geometry';
 
-export abstract class BufferGeometry<GeometryProps = any> extends EventEmitter {
+export interface GeometryPatch {
+  bufferIndex: number;
+  location: number;
+  data: ArrayBufferView;
+}
+
+export interface VertexBufferToUpdateDescriptor {
+  bufferIndex: number;
+  bufferByteOffset?: number;
+  data: ArrayBufferView;
+}
+
+export enum VertexAttributeLocation {
+  POSITION = 10,
+  NORMAL,
+  UV,
+  MAX,
+}
+
+/**
+ * just hold descriptors of buffers & indices, won't use underlying GPU resources
+ */
+export class BufferGeometry<GeometryProps = any> extends EventEmitter {
   /**
    * 绘制模式
    */
   drawMode: PrimitiveTopology = PrimitiveTopology.Triangles;
 
+  /**
+   * 索引数组
+   */
   indices: IndicesArray;
 
   inputLayoutDescriptor: InputLayoutDescriptor = {
@@ -28,27 +45,34 @@ export abstract class BufferGeometry<GeometryProps = any> extends EventEmitter {
 
   vertexBuffers: ArrayBufferView[] = [];
 
+  vertexBuffersToUpdate: VertexBufferToUpdateDescriptor[] = [];
+
   vertexCount: number = 0;
 
   instancedCount: number = 0;
 
+  indexStart: number = 0;
+
+  primitiveStart: number = 0;
+
   dirty = true;
 
-  abstract build(meshes: Mesh<GeometryProps>[]): void;
+  meshes: Mesh[] = [];
+
+  build(meshes: Mesh<GeometryProps>[]) {}
+
+  update<Key extends keyof GeometryProps>(
+    index: number,
+    mesh: Mesh,
+    name: Key,
+    value: GeometryProps[Key],
+  ): GeometryPatch[] {
+    return [];
+  }
 
   setIndices(indices: IndicesArray) {
     this.indices = indices;
   }
-
-  // updateIndices(indices: IndicesArray, offset: number = 0) {
-  //   if (this.indicesBuffer) {
-  //     this.indicesBuffer.setSubData(
-  //       offset,
-  //       ArrayBuffer.isView(indices) ? indices : new Uint32Array(indices),
-  //     );
-  //   }
-  //   return this;
-  // }
 
   setVertexBuffer(descriptor: GeometryVertexBufferDescriptor) {
     const { bufferIndex, byteStride, frequency, attributes, data } = descriptor;
@@ -80,5 +104,19 @@ export abstract class BufferGeometry<GeometryProps = any> extends EventEmitter {
     });
 
     this.vertexBuffers[bufferIndex] = data;
+  }
+
+  updateVertexBufferData(descriptor: VertexBufferToUpdateDescriptor) {
+    this.vertexBuffersToUpdate.push({
+      bufferByteOffset: 0,
+      ...descriptor,
+    });
+
+    // trigger re-render
+    this.meshes.forEach((mesh) => {
+      mesh.emit(ElementEvent.ATTRIBUTE_CHANGED, {
+        attributeName: 'geometry',
+      });
+    });
   }
 }

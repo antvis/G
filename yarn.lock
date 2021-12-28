@@ -28080,6 +28080,11 @@ simplebar@^4.2.3:
     lodash.throttle "^4.1.1"
     resize-observer-polyfill "^1.5.1"
 
+simplex-noise@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/simplex-noise/-/simplex-noise-3.0.0.tgz#0bbb8bbb3b13483d53b282a9ab59d6c9b978ac7a"
+  integrity sha512-sZP1EvUpRW/f3wjeSWUs94Xp4+S46oLGNiqkaROM92m3FvFm5ymJFMg67LcHpqikI8isXJlN/sE1Cfpe86xp0w==
+
 single-trailing-newline@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/single-trailing-newline/-/single-trailing-newline-1.0.0.tgz#81f0ad2ad645181945c80952a5c1414992ee9664"

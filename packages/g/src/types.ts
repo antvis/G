@@ -29,13 +29,13 @@ export interface EventPosition {
   y: number;
 }
 
-export const enum LINE_CAP {
+export enum LINE_CAP {
   Butt = 'butt',
   Round = 'round',
   Square = 'square',
 }
 
-export const enum LINE_JOIN {
+export enum LINE_JOIN {
   Bevel = 'bevel',
   Round = 'round',
   Miter = 'miter',

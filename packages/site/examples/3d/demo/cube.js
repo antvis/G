@@ -93,24 +93,19 @@ geometryFolder.open();
 const materialFolder = gui.addFolder('material');
 const materialConfig = {
   map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
-  enableMap: true,
 };
-materialFolder
-  .add(materialConfig, 'enableMap')
-  .onChange((enable) => {
-    cube.style.material.props.map = enable ? materialConfig.map : '';
-  })
-  .listen();
 materialFolder
   .add(materialConfig, 'map', [
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    'none',
   ])
   .onChange((map) => {
-    materialConfig.enableMap = true;
-    cube.style.material.props.map = map;
-    // or
-    // basicMaterial.props.map = map;
+    if (map === 'none') {
+      cube.style.material.map = null;
+    } else {
+      cube.style.material.map = map;
+    }
   });
 materialFolder.open();

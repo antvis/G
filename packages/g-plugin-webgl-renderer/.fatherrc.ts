@@ -10,7 +10,9 @@ export default {
       // @see https://github.com/antvis/g/issues/832
       compress: false,
     }),
-    wasm(),
+    // wasm({
+    //   publicPath: '/',
+    // }),
   ],
   umd: {
     name: 'G.WebGLRenderer',

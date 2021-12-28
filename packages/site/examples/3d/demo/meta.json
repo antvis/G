@@ -5,6 +5,13 @@
   },
   "demos": [
     {
+      "filename": "plane.js",
+      "title": {
+        "zh": "平面",
+        "en": "Plane"
+      }
+    },
+    {
       "filename": "cube.js",
       "title": {
         "zh": "立方体",
@@ -30,6 +37,29 @@
       "title": {
         "zh": "3D 力导布局",
         "en": "Force 3D"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "music-viz.tsx",
+      "title": {
+        "zh": "音乐可视化",
+        "en": "Music Visualization"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nKFQQZdL3-IAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "buffer-geometry.js",
+      "title": {
+        "zh": "自定义 Geometry",
+        "en": "Use BufferGeometry"
+      }
+    },
+    {
+      "filename": "shader-material.js",
+      "title": {
+        "zh": "自定义 Material",
+        "en": "Use ShaderMaterial"
       }
     }
   ]

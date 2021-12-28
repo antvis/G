@@ -4,10 +4,13 @@
   #define FOGMODE_EXP2 2.
   #define FOGMODE_LINEAR 3.
 
+  // varying float v_FogDepth;
+
   float dBlendModeFogFactor = 1.0;
 
   vec3 addFog(vec3 color) {
     float depth = gl_FragCoord.z / gl_FragCoord.w;
+    // float depth = v_FogDepth;
     float fogFactor;
     float fogStart = u_FogInfos.y;
     float fogEnd = u_FogInfos.z;
