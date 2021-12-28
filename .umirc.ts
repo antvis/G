@@ -6,5 +6,4 @@ export default {
   history: {
     type: 'hash',
   },
-  extraBabelPlugins: ['babel-plugin-const-enum'],
 };

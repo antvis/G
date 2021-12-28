@@ -1319,13 +1319,6 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.14.5"
 
-"@babel/plugin-syntax-typescript@^7.3.3":
-  version "7.16.5"
-  resolved "https://registry.npmmirror.com/@babel/plugin-syntax-typescript/download/@babel/plugin-syntax-typescript-7.16.5.tgz#f47a33e4eee38554f00fb6b2f894fa1f5649b0b3"
-  integrity sha512-/d4//lZ1Vqb4mZ5xTep3dDK888j7BGM/iKqBmndBaoYAFPlPKrGU608VVBz5JeyAb6YQDjRu1UKqj86UhwWVgw==
-  dependencies:
-    "@babel/helper-plugin-utils" "^7.16.5"
-
 "@babel/plugin-transform-arrow-functions@^7.12.1", "@babel/plugin-transform-arrow-functions@^7.16.0", "@babel/plugin-transform-arrow-functions@^7.2.0", "@babel/plugin-transform-arrow-functions@^7.8.3":
   version "7.16.0"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-arrow-functions/-/plugin-transform-arrow-functions-7.16.0.tgz#951706f8b449c834ed07bd474c0924c944b95a8e"
@@ -7966,15 +7959,6 @@ babel-plugin-apply-mdx-type-prop@1.6.22:
   dependencies:
     "@babel/helper-plugin-utils" "7.10.4"
     "@mdx-js/util" "1.6.22"
-
-babel-plugin-const-enum@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.npmmirror.com/babel-plugin-const-enum/download/babel-plugin-const-enum-1.2.0.tgz#3d25524106f68f081e187829ba736b251c289861"
-  integrity sha1-PSVSQQb2jwgeGHgpunNrJRwomGE=
-  dependencies:
-    "@babel/helper-plugin-utils" "^7.0.0"
-    "@babel/plugin-syntax-typescript" "^7.3.3"
-    "@babel/traverse" "^7.16.0"
 
 babel-plugin-dynamic-import-node@^2.3.3:
   version "2.3.3"

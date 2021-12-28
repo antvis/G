@@ -25,7 +25,6 @@ import type {
   Container,
   SuspenseInstance,
 } from './types';
-import { getClosestInstanceFromNode } from './ReactDOMComponentTree';
 import type { Canvas, Element } from '@antv/g';
 
 export const reconsiler = ReactReconciler<
@@ -185,6 +184,32 @@ export const reconsiler = ReactReconciler<
   },
   resetTextContent(instance: Instance): void {},
 
+  /**
+   * This method should make the `instance` invisible without removing it from the tree. For example, it can apply visual styling to hide it. It is used by Suspense to hide the tree while the fallback is visible.
+   */
+  // tslint:enable:max-line-length
+  hideInstance(instance: Instance): void {},
+
+  /**
+   * Same as `hideInstance`, but for nodes created by `createTextInstance`.
+   */
+  hideTextInstance(textInstance: TextInstance): void {},
+
+  /**
+   * This method should make the `instance` visible, undoing what `hideInstance` did.
+   */
+  unhideInstance(instance: Instance, props: Props): void {},
+
+  /**
+   * Same as `unhideInstance`, but for nodes created by `createTextInstance`.
+   */
+  unhideTextInstance(textInstance: TextInstance, text: string): void {},
+
+  /**
+   * This method should mutate the `container` root node and remove all children from it.
+   */
+  clearContainer(container: Container): void {},
+
   // -------------------
   //     Persistence
   //     (optional)
@@ -216,8 +241,9 @@ export const reconsiler = ReactReconciler<
   canHydrateInstance(instance: HydratableInstance, type: Type, props: Props): null | Instance {
     return instance;
   },
-  // @ts-ignore
-  canHydrateTextInstance(instance: HydratableInstance, text: string): null | TextInstance {},
+  canHydrateTextInstance(instance: HydratableInstance, text: string): null | TextInstance {
+    return null;
+  },
   getNextHydratableSibling(
     instance: Instance | TextInstance | HydratableInstance,
   ): null | HydratableInstance {},
@@ -281,7 +307,7 @@ export const reconsiler = ReactReconciler<
 });
 
 reconsiler.injectIntoDevTools({
-  findFiberByHostInstance: getClosestInstanceFromNode,
+  // findFiberByHostInstance: () => {},
   // @ts-ignore
   bundleType: process.env.NODE_ENV !== 'production' ? 1 : 0,
   version: React.version,

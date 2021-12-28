@@ -53,7 +53,6 @@
     "@typescript-eslint/parser": "^4.27.0",
     "@umijs/fabric": "^2.5.13",
     "antd": "^4.2.4",
-    "babel-plugin-const-enum": "^1.2.0",
     "chai": "^4.3.4",
     "chai-almost": "^1.0.1",
     "cross-env": "^6.0.3",

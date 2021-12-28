@@ -8,7 +8,7 @@ const renderer = new WebGLRenderer();
 const App = () => {
   return (
     <Canvas width={600} height={500} renderer={renderer}>
-      <Circle x={100} y={200} r={50} />{' '}
+      <Circle x={100} y={200} r={50} />
     </Canvas>
   );
 };

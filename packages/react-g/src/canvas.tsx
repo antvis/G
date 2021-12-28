@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import type { CanvasConfig } from '@antv/g';
 import { Canvas as GCanvas } from '@antv/g';
-import React, { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { forwardRef, useLayoutEffect, useRef } from 'react';
 import type { FiberRoot } from 'react-reconciler';
 import { reconsiler } from './reconciler';
 import { assertRef } from './util';
@@ -40,8 +39,8 @@ export const Canvas = forwardRef<GCanvas, CanvasProps>(
 
       canvasRef.current = canvas;
 
-      container.current = reconsiler.createContainer(canvas as any, 0, false, null);
-      // reconsiler.updateContainer(children, container.current, null);
+      container.current = reconsiler.createContainer(canvas as any, 1, false, null);
+      console.log('render', reconsiler, canvas);
 
       return () => {
         reconsiler.updateContainer(null, container.current, null);
@@ -50,23 +49,23 @@ export const Canvas = forwardRef<GCanvas, CanvasProps>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
       if (container.current) {
         reconsiler.updateContainer(children, container.current, null);
       }
-    }, [children]);
+    });
 
-    useEffect(() => {
+    useLayoutEffect(() => {
       canvasRef.current?.setRenderer(renderer);
-    }, [renderer]);
+    }, [canvasRef, renderer]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
       canvasRef.current?.setCursor(cursor);
-    }, [cursor]);
+    }, [canvasRef, cursor]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
       canvasRef.current.resize(width, height);
-    }, [width, height]);
+    }, [width, height, canvasRef]);
 
     return (
       <div
