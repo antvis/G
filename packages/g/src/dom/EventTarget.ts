@@ -104,7 +104,7 @@ export class EventTarget implements IEventTarget {
     const context = isFunction(listener) ? undefined : listener;
 
     type = capture ? `${type}capture` : type;
-    listener = isFunction(listener) ? listener : listener.handleEvent;
+    listener = isFunction(listener) ? listener : listener?.handleEvent;
 
     this.emitter.off(type, listener, context);
 

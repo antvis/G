@@ -1,4 +1,4 @@
-import type { Element, SHAPE } from '@antv/g';
+import type { Element, InteractivePointerEvent, SHAPE } from '@antv/g';
 
 type ElementType = SHAPE;
 
@@ -25,25 +25,35 @@ type IInstance = Element;
  * event
  */
 export type GEvents = Partial<{
-  onMousedown: (evt: Event) => void;
-  onMouseup: (evt: Event) => void;
-  onClick: (evt: Event) => void;
-  onDblclick: (evt: Event) => void;
-  onMousemove: (evt: Event) => void;
-  onMouseover: (evt: Event) => void;
-  onMouseout: (evt: Event) => void;
-  onMouseenter: (evt: Event) => void;
-  onMouseleave: (evt: Event) => void;
-  onTouchstart: (evt: Event) => void;
-  onTouchmove: (evt: Event) => void;
-  onTouchend: (evt: Event) => void;
-  onDragstart: (evt: Event) => void;
-  onDrag: (evt: Event) => void;
-  onDragend: (evt: Event) => void;
-  onDragenter: (evt: Event) => void;
-  onDragleave: (evt: Event) => void;
-  onDragover: (evt: Event) => void;
-  onDrop: (evt: Event) => void;
-  onContextmenu: (evt: Event) => void;
-  onMousewheel: (evt: Event) => void;
+  // pointer
+  onPointerdown: (evt: InteractivePointerEvent) => void;
+  onPointerup: (evt: InteractivePointerEvent) => void;
+  onPointerupoutside: (evt: InteractivePointerEvent) => void;
+  onPointertap: (evt: InteractivePointerEvent) => void;
+  onPointerover: (evt: InteractivePointerEvent) => void;
+  onPointerenter: (evt: InteractivePointerEvent) => void;
+  onPointerleave: (evt: InteractivePointerEvent) => void;
+  onPointerout: (evt: InteractivePointerEvent) => void;
+
+  // mouse
+  onMousedown: (evt: InteractivePointerEvent) => void;
+  onRightdown: (evt: InteractivePointerEvent) => void;
+  onMouseup: (evt: InteractivePointerEvent) => void;
+  onMouseupoutside: (evt: InteractivePointerEvent) => void;
+  onClick: (evt: InteractivePointerEvent) => void;
+  onMousemove: (evt: InteractivePointerEvent) => void;
+  onMouseover: (evt: InteractivePointerEvent) => void;
+  onMouseout: (evt: InteractivePointerEvent) => void;
+  onMouseenter: (evt: InteractivePointerEvent) => void;
+  onMouseleave: (evt: InteractivePointerEvent) => void;
+
+  // touch
+  onTouchstart: (evt: InteractivePointerEvent) => void;
+  onTouchend: (evt: InteractivePointerEvent) => void;
+  onTouchendoutside: (evt: InteractivePointerEvent) => void;
+  onTouchmove: (evt: InteractivePointerEvent) => void;
+  onTap: (evt: InteractivePointerEvent) => void;
+
+  // wheel
+  onWheel: (evt: InteractivePointerEvent) => void;
 }>;

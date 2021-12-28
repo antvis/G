@@ -24,12 +24,14 @@ import type {
   Rect as GRect,
   Text as GText,
 } from '@antv/g';
+import type { GEvents } from './types';
 
 type BaseProps<Element, Prop> = {
   key?: Key;
   ref?: Ref<Element>;
   children?: ReactNode;
-} & Prop;
+} & Prop &
+  GEvents;
 
 export function ElementOf<Element, Prop, T extends string>(
   type: T,

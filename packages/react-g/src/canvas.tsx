@@ -40,7 +40,6 @@ export const Canvas = forwardRef<GCanvas, CanvasProps>(
       canvasRef.current = canvas;
 
       container.current = reconsiler.createContainer(canvas as any, 1, false, null);
-      console.log('render', reconsiler, canvas);
 
       return () => {
         reconsiler.updateContainer(null, container.current, null);
@@ -53,7 +52,7 @@ export const Canvas = forwardRef<GCanvas, CanvasProps>(
       if (container.current) {
         reconsiler.updateContainer(children, container.current, null);
       }
-    });
+    }, [children]);
 
     useLayoutEffect(() => {
       canvasRef.current?.setRenderer(renderer);
