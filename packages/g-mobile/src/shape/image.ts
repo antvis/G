@@ -142,6 +142,10 @@ class ImageShape extends ShapeBase {
       }
     }
   }
+
+  strokeAndFill() {
+    // image 不需要调用调用fill&stroke,因为上一步并没有绘制path, 再调用一次会重复绘制一次上一次结束的绘制
+  }
 }
 
 export default ImageShape;
