@@ -22,6 +22,8 @@ window.gPluginGpgpu = require('@antv/g-plugin-gpgpu');
 // compiler for GPGPU
 window.gWebgpuCompiler = require('@antv/g-webgpu-compiler');
 
+window.reactG = require('@antv/react-g');
+
 // origin trial for WebGPU
 // @see https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/developer-guide.md#16-can-i-provide-tokens-by-running-script
 const tokenElement1 = document.createElement('meta');

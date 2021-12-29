@@ -8,7 +8,7 @@ import { RenderingContext, RENDER_REASON } from './services/RenderingContext';
 import { EventService } from './services/EventService';
 import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE, DefaultCamera } from './camera';
 import { containerModule as commonContainerModule } from './canvas-module';
-import type { AbstractRenderer, IRenderer } from './AbstractRenderer';
+import type { IRenderer } from './AbstractRenderer';
 import { cancelAnimationFrame } from './utils/raf';
 import type { PointLike } from './shapes';
 import type { FederatedEvent, Element, IChildNode } from './dom';
@@ -326,7 +326,7 @@ export class Canvas extends EventTarget implements ICanvas {
     });
   }
 
-  setRenderer(renderer: AbstractRenderer) {
+  setRenderer(renderer: IRenderer) {
     // update canvas' config
     const canvasConfig = this.getConfig();
     if (canvasConfig.renderer === renderer) {
@@ -348,6 +348,10 @@ export class Canvas extends EventTarget implements ICanvas {
       });
 
     this.initRenderer(renderer);
+  }
+
+  setCursor(cursor: Cursor) {
+    this.getContextService().applyCursorStyle(cursor);
   }
 
   private unmountChildren(parent: DisplayObject) {

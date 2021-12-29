@@ -1,5 +1,7 @@
-import { RendererPlugin, SHAPE, globalContainer } from '@antv/g';
-import { Module, Syringe } from 'mana-syringe';
+import type { RendererPlugin } from '@antv/g';
+import { SHAPE, globalContainer } from '@antv/g';
+import type { Syringe } from 'mana-syringe';
+import { Module } from 'mana-syringe';
 import RBush from 'rbush';
 import { DefaultRenderer, StyleRenderer, StyleRendererFactory } from './shapes/styles';
 import { ImageRenderer } from './shapes/styles/Image';
@@ -22,15 +24,9 @@ import { LoadImagePlugin } from './LoadImagePlugin';
 import { RBushNode } from './components/RBushNode';
 import type { RBushNodeAABB } from './components/RBushNode';
 
-export {
-  PathGeneratorFactory,
-  PathGenerator,
-  StyleRenderer,
-  RBushNode,
-  RBushNodeAABB,
-  RBushRoot,
-  RBush,
-};
+export { PathGeneratorFactory, PathGenerator, StyleRenderer, RBushNode, RBushRoot, RBush };
+
+export type { RBushNodeAABB };
 
 /**
  * register shape renderers

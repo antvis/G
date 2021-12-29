@@ -1,4 +1,5 @@
-import { AbstractRenderer, RendererConfig } from '@antv/g';
+import type { RendererConfig } from '@antv/g';
+import { AbstractRenderer } from '@antv/g';
 import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as CanvasRenderer from '@antv/g-plugin-canvas-renderer';
 import * as CanvasPicker from '@antv/g-plugin-canvas-picker';

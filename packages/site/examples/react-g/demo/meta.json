@@ -1,0 +1,15 @@
+{
+    "title": {
+      "zh": "中文分类",
+      "en": "Category"
+    },
+    "demos": [
+      {
+        "filename": "basic.js",
+        "title": {
+          "zh": "基础",
+          "en": "basic"
+        }
+      }
+    ]
+  }

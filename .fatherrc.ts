@@ -25,5 +25,6 @@ export default {
     'g-plugin-gpgpu',
     'g-webgpu-compiler',
     'g-components',
+    'react-g',
   ],
 };

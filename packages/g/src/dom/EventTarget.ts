@@ -97,14 +97,14 @@ export class EventTarget implements IEventTarget {
   }
   removeEventListener(
     type: string,
-    listener: EventListenerOrEventListenerObject,
+    listener?: EventListenerOrEventListenerObject,
     options?: boolean | AddEventListenerOptions,
   ) {
     const capture = (isBoolean(options) && options) || (isObject(options) && options.capture);
     const context = isFunction(listener) ? undefined : listener;
 
     type = capture ? `${type}capture` : type;
-    listener = isFunction(listener) ? listener : listener.handleEvent;
+    listener = isFunction(listener) ? listener : listener?.handleEvent;
 
     this.emitter.off(type, listener, context);
 

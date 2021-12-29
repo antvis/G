@@ -72,3 +72,6 @@ tsconfig.tsbuildinfo
 
 **/rust/target/
 packages/**/*/pkg/
+
+.umi
+.umi-production
