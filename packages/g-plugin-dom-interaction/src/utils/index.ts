@@ -1,4 +1,4 @@
-import { InteractivePointerEvent } from '@antv/g';
+import type { InteractivePointerEvent } from '@antv/g';
 
 // use `self` instead of `window`, account for non-window contexts, such as in Web Workers
 // @see https://developer.mozilla.org/en-US/docs/Web/API/Window/self
@@ -12,6 +12,7 @@ export function isTouchEvent(event: InteractivePointerEvent): event is TouchEven
 export function isMouseEvent(event: InteractivePointerEvent): event is MouseEvent {
   return (
     !self.MouseEvent ||
-    (event instanceof MouseEvent && (!supportsPointerEvents || !(event instanceof self.PointerEvent)))
+    (event instanceof MouseEvent &&
+      (!supportsPointerEvents || !(event instanceof self.PointerEvent)))
   );
 }
