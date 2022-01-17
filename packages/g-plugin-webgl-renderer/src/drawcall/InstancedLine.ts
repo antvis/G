@@ -19,27 +19,22 @@ import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RenderInst } from '../render/RenderInst';
 import { DeviceProgram } from '../render/DeviceProgram';
 import { Batch, AttributeLocation } from './Batch';
-import { ShapeRenderer } from '../tokens';
+import { ShapeMesh, ShapeRenderer } from '../tokens';
 import vert from '../shader/instanced-line.vert';
 import frag from '../shader/instanced-line.frag';
+import { BatchMesh } from './BatchMesh';
 
 export const segmentInstanceGeometry = [
   0, -0.5, 0, 0, 0, 1, -0.5, 1, 1, 0, 1, 0.5, 1, 1, 1, 0, 0.5, 0, 0, 1,
 ];
 
-export class InstancedLineProgram extends DeviceProgram {
-  static a_Position = AttributeLocation.MAX;
-  static a_PointA = AttributeLocation.MAX + 1;
-  static a_PointB = AttributeLocation.MAX + 2;
-  static a_Cap = AttributeLocation.MAX + 3;
-  static a_Uv = AttributeLocation.MAX + 4;
-  static a_Dash = AttributeLocation.MAX + 5;
-
-  static ub_ObjectParams = 1;
-
-  vert: string = vert;
-
-  frag: string = frag;
+enum InstancedLineProgram {
+  a_Position = AttributeLocation.MAX,
+  a_PointA,
+  a_PointB,
+  a_Cap,
+  a_Uv,
+  a_Dash,
 }
 
 const LINE_CAP_MAP = {
@@ -48,48 +43,23 @@ const LINE_CAP_MAP = {
   [LINE_CAP.Square]: 3,
 };
 
-/**
- * use instanced for each segment
- * @see https://blog.scottlogic.com/2019/11/18/drawing-lines-with-webgl.html
- *
- * support dash array
- * TODO: joint & cap
- */
 @injectable({
-  token: { token: ShapeRenderer, named: SHAPE.Line },
+  token: [{ token: ShapeMesh, named: SHAPE.Line }],
 })
-export class InstancedLineRenderer extends Batch {
-  protected program = new InstancedLineProgram();
-
-  validate(object: DisplayObject) {
-    // should split when using gradient & pattern
-    const instance = this.instance;
-    if (instance.nodeName === SHAPE.Line) {
-      const source = instance.parsedStyle.stroke as ParsedColorStyleProperty;
-      const target = object.parsedStyle.stroke as ParsedColorStyleProperty;
-
-      // can't be merged if stroke's types are different
-      if (source.type !== target.type) {
-        return false;
-      }
-
-      // compare hash directly
-      if (
-        source.type !== PARSED_COLOR_TYPE.Constant &&
-        target.type !== PARSED_COLOR_TYPE.Constant
-      ) {
-        return source.value.hash === target.value.hash;
-      }
-    }
-
-    return true;
+export class InstancedLineBatchMesh extends BatchMesh {
+  protected createMaterial(objects: DisplayObject[]): void {
+    this.material.vertexShader = vert;
+    this.material.fragmentShader = frag;
   }
 
-  buildGeometry() {
+  protected createGeometry(objects: DisplayObject[]): void {
+    // use default common attributes
+    this.createBatchedGeometry(objects);
+
     const interleaved = [];
     const indices = [];
     let offset = 0;
-    this.objects.forEach((object) => {
+    objects.forEach((object) => {
       const line = object as Line;
       const { x1, y1, x2, y2, z1, z2, defX, defY, lineCap, isBillboard } = line.parsedStyle;
 
@@ -117,9 +87,9 @@ export class InstancedLineRenderer extends Batch {
       offset += 4;
     });
 
-    this.geometry.setIndices(new Uint32Array(indices));
-    this.geometry.vertexCount = 6;
-    this.geometry.setVertexBuffer({
+    this.bufferGeometry.setIndices(new Uint32Array(indices));
+    this.bufferGeometry.vertexCount = 6;
+    this.bufferGeometry.setVertexBuffer({
       bufferIndex: 1,
       byteStride: 4 * 5,
       frequency: VertexBufferFrequency.PerInstance,
@@ -139,7 +109,7 @@ export class InstancedLineRenderer extends Batch {
       ],
       data: new Float32Array(segmentInstanceGeometry),
     });
-    this.geometry.setVertexBuffer({
+    this.bufferGeometry.setVertexBuffer({
       bufferIndex: 2,
       byteStride: 4 * (3 + 3 + 1 + 4),
       frequency: VertexBufferFrequency.PerInstance,
@@ -173,10 +143,8 @@ export class InstancedLineRenderer extends Batch {
     });
   }
 
-  updateAttribute(object: DisplayObject, name: string, value: any): void {
-    super.updateAttribute(object, name, value);
-    const geometry = this.geometry;
-    const index = this.objects.indexOf(object);
+  protected updateMeshAttribute(object: DisplayObject, index: number, name: string, value: any) {
+    this.updateBatchedAttribute(object, index, name, value);
 
     const { x1, y1, x2, y2, z1, z2, defX, defY, lineCap } = object.parsedStyle;
 
@@ -188,7 +156,7 @@ export class InstancedLineRenderer extends Batch {
       name === 'z1' ||
       name === 'z2'
     ) {
-      geometry.updateVertexBuffer(
+      this.geometry.updateVertexBuffer(
         2,
         InstancedLineProgram.a_PointA,
         index,
@@ -200,7 +168,7 @@ export class InstancedLineRenderer extends Batch {
       const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } = this.calcDash(
         object as Line,
       );
-      geometry.updateVertexBuffer(
+      this.geometry.updateVertexBuffer(
         2,
         InstancedLineProgram.a_Dash,
         index,
@@ -209,18 +177,13 @@ export class InstancedLineRenderer extends Batch {
         ),
       );
     } else if (name === 'lineCap') {
-      geometry.updateVertexBuffer(
+      this.geometry.updateVertexBuffer(
         2,
         InstancedLineProgram.a_Cap,
         index,
         new Uint8Array(new Float32Array([LINE_CAP_MAP[lineCap]]).buffer),
       );
     }
-  }
-
-  uploadUBO(renderInst: RenderInst): void {
-    renderInst.setBindingLayouts([{ numUniformBuffers: 1, numSamplers: 1 }]);
-    renderInst.setSamplerBindingsFromTextureMappings([this.fillMapping]);
   }
 
   private calcDash(line: Line) {
@@ -240,5 +203,45 @@ export class InstancedLineRenderer extends Batch {
       dashSegmentPercent,
       dashRatioInEachSegment,
     };
+  }
+}
+
+/**
+ * use instanced for each segment
+ * @see https://blog.scottlogic.com/2019/11/18/drawing-lines-with-webgl.html
+ *
+ * support dash array
+ * TODO: joint & cap
+ */
+@injectable({
+  token: { token: ShapeRenderer, named: SHAPE.Line },
+})
+export class InstancedLineRenderer extends Batch {
+  protected createBatchMeshList(): void {
+    this.batchMeshList.push(this.meshFactory(SHAPE.Line));
+  }
+
+  validate(object: DisplayObject) {
+    // should split when using gradient & pattern
+    const instance = this.instance;
+    if (instance.nodeName === SHAPE.Line) {
+      const source = instance.parsedStyle.stroke as ParsedColorStyleProperty;
+      const target = object.parsedStyle.stroke as ParsedColorStyleProperty;
+
+      // can't be merged if stroke's types are different
+      if (source.type !== target.type) {
+        return false;
+      }
+
+      // compare hash directly
+      if (
+        source.type !== PARSED_COLOR_TYPE.Constant &&
+        target.type !== PARSED_COLOR_TYPE.Constant
+      ) {
+        return source.value.hash === target.value.hash;
+      }
+    }
+
+    return true;
   }
 }

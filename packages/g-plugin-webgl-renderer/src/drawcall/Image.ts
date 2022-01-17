@@ -1,84 +1,42 @@
 import { injectable } from 'mana-syringe';
-import { DisplayObject, Image, Renderable, SHAPE } from '@antv/g';
-import {
-  Format,
-  makeTextureDescriptor2D,
-  MipFilterMode,
-  TexFilterMode,
-  VertexBufferFrequency,
-  WrapMode,
-} from '../platform';
-import { RenderInst } from '../render/RenderInst';
-import { DeviceProgram } from '../render/DeviceProgram';
+import { DisplayObject, Image, SHAPE } from '@antv/g';
+import { Format, VertexBufferFrequency } from '../platform';
 import { Batch, AttributeLocation } from './Batch';
-import { ShapeRenderer } from '../tokens';
-import { TextureMapping } from '../render/TextureHolder';
+import { ShapeMesh, ShapeRenderer } from '../tokens';
 import vert from '../shader/image.vert';
 import frag from '../shader/image.frag';
+import { BatchMesh } from './BatchMesh';
+import { CircleBatchMesh } from './Circle';
 
-class ImageProgram extends DeviceProgram {
-  static a_Size = AttributeLocation.MAX;
-  static a_Uv = AttributeLocation.MAX + 1;
-
-  static ub_ObjectParams = 1;
-
-  vert: string = vert;
-
-  frag: string = frag;
+enum ImageProgram {
+  a_Size = AttributeLocation.MAX,
+  a_Uv,
 }
 
+const IMAGE_TEXTURE_MAPPING = 'IMAGE_TEXTURE_MAPPING';
+
 @injectable({
-  token: [{ token: ShapeRenderer, named: SHAPE.Image }],
+  token: [{ token: ShapeMesh, named: SHAPE.Image }],
 })
-export class ImageRenderer extends Batch {
-  protected program = new ImageProgram();
-
-  private mapping: TextureMapping;
-
-  protected validate(object: DisplayObject<any, any>): boolean {
-    if (this.instance.nodeName === SHAPE.Image) {
-      if (this.instance.parsedStyle.img !== object.parsedStyle.img) {
-        return false;
-      }
-    }
-
-    return true;
+export class ImageBatchMesh extends BatchMesh {
+  protected createMaterial(objects: DisplayObject[]): void {
+    const instance = objects[0];
+    const { img } = instance.parsedStyle;
+    this.material.defines.USE_UV = true;
+    this.material.defines.USE_MAP = true;
+    this.material.vertexShader = vert;
+    this.material.fragmentShader = frag;
+    this.material.addTexture(img, IMAGE_TEXTURE_MAPPING);
   }
 
-  protected buildGeometry() {
-    this.program.setDefineBool('USE_UV', true);
-    this.program.setDefineBool('USE_MAP', true);
-
-    const { img, width, height } = this.instance.parsedStyle;
-    this.mapping = new TextureMapping();
-    this.mapping.texture = this.texturePool.getOrCreateTexture(
-      this.device,
-      img,
-      makeTextureDescriptor2D(Format.U8_RGBA_NORM, width, height, 1),
-      () => {
-        // need re-render
-        this.objects.forEach((object) => {
-          object.renderable.dirty = true;
-
-          this.renderingService.dirtify();
-        });
-      },
-    );
-    this.device.setResourceName(this.mapping.texture, 'Image Texture' + this.id);
-    this.mapping.sampler = this.renderHelper.getCache().createSampler({
-      wrapS: WrapMode.Clamp,
-      wrapT: WrapMode.Clamp,
-      minFilter: TexFilterMode.Bilinear,
-      magFilter: TexFilterMode.Bilinear,
-      mipFilter: MipFilterMode.NoMip,
-      minLOD: 0,
-      maxLOD: 0,
-    });
+  protected createGeometry(objects: DisplayObject[]): void {
+    // use default common attributes
+    this.createBatchedGeometry(objects);
 
     const instanced = [];
     const interleaved = [];
     const indices = [];
-    this.objects.forEach((object, i) => {
+    objects.forEach((object, i) => {
       const image = object as Image;
       const offset = i * 4;
       const { width, height } = image.parsedStyle;
@@ -87,9 +45,9 @@ export class ImageRenderer extends Batch {
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
     });
 
-    this.geometry.setIndices(new Uint32Array(indices));
-    this.geometry.vertexCount = 6;
-    this.geometry.setVertexBuffer({
+    this.bufferGeometry.setIndices(new Uint32Array(indices));
+    this.bufferGeometry.vertexCount = 6;
+    this.bufferGeometry.setVertexBuffer({
       bufferIndex: 1,
       byteStride: 4 * 2,
       frequency: VertexBufferFrequency.PerVertex,
@@ -102,7 +60,7 @@ export class ImageRenderer extends Batch {
       ],
       data: new Float32Array(interleaved),
     });
-    this.geometry.setVertexBuffer({
+    this.bufferGeometry.setVertexBuffer({
       bufferIndex: 2,
       byteStride: 4 * 2,
       frequency: VertexBufferFrequency.PerInstance,
@@ -117,41 +75,40 @@ export class ImageRenderer extends Batch {
     });
   }
 
-  updateAttribute(object: DisplayObject, name: string, value: any): void {
-    super.updateAttribute(object, name, value);
+  protected updateMeshAttribute(object: DisplayObject, index: number, name: string, value: any) {
+    this.updateBatchedAttribute(object, index, name, value);
 
-    const index = this.objects.indexOf(object);
-    const geometry = this.geometry;
     const image = object as Image;
-    const { width, height, img } = image.parsedStyle;
+    const { width, height } = image.parsedStyle;
 
     if (name === 'width' || name === 'height') {
-      geometry.updateVertexBuffer(
+      this.geometry.updateVertexBuffer(
         2,
         ImageProgram.a_Size,
         index,
         new Uint8Array(new Float32Array([width, height]).buffer),
       );
     } else if (name === 'img') {
-      this.mapping.texture = this.texturePool.getOrCreateTexture(
-        this.device,
-        img,
-        makeTextureDescriptor2D(Format.U8_RGBA_NORM, width, height, 1),
-        () => {
-          // need re-render
-          this.objects.forEach((object) => {
-            object.renderable.dirty = true;
-
-            this.renderingService.dirtify();
-          });
-        },
-      );
+      this.material.addTexture(value, IMAGE_TEXTURE_MAPPING);
     }
   }
+}
 
-  protected uploadUBO(renderInst: RenderInst): void {
-    // need 1 sampler
-    renderInst.setBindingLayouts([{ numUniformBuffers: 1, numSamplers: 1 }]);
-    renderInst.setSamplerBindingsFromTextureMappings([this.mapping]);
+@injectable({
+  token: [{ token: ShapeRenderer, named: SHAPE.Image }],
+})
+export class ImageRenderer extends Batch {
+  protected createBatchMeshList(): void {
+    this.batchMeshList.push(this.meshFactory(SHAPE.Image));
+  }
+
+  protected validate(object: DisplayObject<any, any>): boolean {
+    if (this.instance.nodeName === SHAPE.Image) {
+      if (this.instance.parsedStyle.img !== object.parsedStyle.img) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

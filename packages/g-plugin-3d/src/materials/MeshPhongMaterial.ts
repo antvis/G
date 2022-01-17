@@ -59,25 +59,38 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
     return this.props.specularMap;
   }
   set specularMap(v) {
-    this.props.specularMap = v;
+    if (this.props.map !== v) {
+      this.props.specularMap = v;
+      this.programDirty = true;
+    }
+
     this.defines.USE_SPECULARMAP = !!v;
-    this.addTexture(v, Uniform.SPECULAR_MAP, SamplerLocation.SPECULAR_MAP);
+    if (v) {
+      this.addTexture(v, Uniform.SPECULAR_MAP, SamplerLocation.SPECULAR_MAP);
+    } else {
+      this.removeTexture(Uniform.SPECULAR_MAP);
+    }
   }
 
   get bumpMap() {
     return this.props.bumpMap;
   }
-  set bumpMap(map) {
-    this.props.bumpMap = map;
-    this.defines.USE_BUMPMAP = !!map;
-    if (map) {
-      this.addTexture(map, Uniform.BUMP_MAP, SamplerLocation.BUMP_MAP);
+  set bumpMap(v) {
+    if (this.props.map !== v) {
+      this.props.bumpMap = v;
+      this.programDirty = true;
+    }
+
+    this.defines.USE_BUMPMAP = !!v;
+    if (v) {
+      this.addTexture(v, Uniform.BUMP_MAP, SamplerLocation.BUMP_MAP);
       this.addUniform({
         name: Uniform.BUMP_SCALE,
         format: Format.F32_R,
         data: this.bumpScale,
       });
     } else {
+      this.removeTexture(Uniform.BUMP_MAP);
       this.removeUniform(Uniform.BUMP_SCALE);
     }
   }
@@ -113,6 +126,7 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
 
     const emissiveColor = parseColor(emissive).value as Tuple4Number;
     const specularColor = parseColor(specular).value as Tuple4Number;
+    this.removeUniform('u_Placeholder');
     this.addUniform({
       name: Uniform.EMISSIVE,
       format: Format.F32_RGB,

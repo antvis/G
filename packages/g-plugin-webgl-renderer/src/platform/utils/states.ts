@@ -132,6 +132,7 @@ export function setMegaStateFlags(
   dst.stencilCompare = fallbackUndefined(src.stencilCompare, dst.stencilCompare);
   dst.stencilWrite = fallbackUndefined(src.stencilWrite, dst.stencilWrite);
   dst.stencilPassOp = fallbackUndefined(src.stencilPassOp, dst.stencilPassOp);
+  dst.stencilRef = fallbackUndefined(src.stencilRef, dst.stencilRef);
   dst.cullMode = fallbackUndefined(src.cullMode, dst.cullMode);
   dst.frontFace = fallbackUndefined(src.frontFace, dst.frontFace);
   dst.polygonOffset = fallbackUndefined(src.polygonOffset, dst.polygonOffset);
@@ -228,10 +229,11 @@ export const defaultMegaState: MegaStateDescriptor = {
   depthWrite: true,
   depthCompare: CompareMode.LessEqual,
   // depthCompare: reverseDepthForCompareMode(CompareMode.LessEqual),
-  // depthCompare: reverseDepthForCompareMode(CompareMode.GreaterEqual),
-  stencilCompare: CompareMode.Never,
+  // stencilCompare: CompareMode.Never,
+  stencilCompare: CompareMode.Always,
   stencilWrite: false,
   stencilPassOp: StencilOp.Keep,
+  stencilRef: 0,
   cullMode: CullMode.None,
   frontFace: FrontFaceMode.CCW,
   polygonOffset: false,

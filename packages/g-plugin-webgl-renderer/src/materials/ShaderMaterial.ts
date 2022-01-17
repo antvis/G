@@ -1,9 +1,8 @@
-import { Material, Texture2D, CullMode, IMaterial } from '@antv/g-plugin-webgl-renderer';
+import { Material, IMaterial } from './Material';
 
 export class ShaderMaterial extends Material {
   constructor(props?: Partial<IMaterial>) {
     super({
-      cullMode: CullMode.Back,
       ...props,
     });
 

@@ -35,6 +35,8 @@ export enum FormatCompFlags {
   RGB = 0x03,
   RGBA = 0x04,
   A = 0x05,
+  MAT3 = 0x06,
+  MAT4 = 0x07,
 }
 
 export function getFormatCompFlagsComponentCount(n: FormatCompFlags): number {
@@ -68,6 +70,8 @@ export enum Format {
   F32_RG = makeFormat(FormatTypeFlags.F32, FormatCompFlags.RG, FormatFlags.None),
   F32_RGB = makeFormat(FormatTypeFlags.F32, FormatCompFlags.RGB, FormatFlags.None),
   F32_RGBA = makeFormat(FormatTypeFlags.F32, FormatCompFlags.RGBA, FormatFlags.None),
+  F32_MAT3 = makeFormat(FormatTypeFlags.F32, FormatCompFlags.MAT3, FormatFlags.None),
+  F32_MAT4 = makeFormat(FormatTypeFlags.F32, FormatCompFlags.MAT4, FormatFlags.None),
   U8_R = makeFormat(FormatTypeFlags.U8, FormatCompFlags.R, FormatFlags.None),
   U8_R_NORM = makeFormat(FormatTypeFlags.U8, FormatCompFlags.R, FormatFlags.Normalized),
   U8_RG = makeFormat(FormatTypeFlags.U8, FormatCompFlags.RG, FormatFlags.None),

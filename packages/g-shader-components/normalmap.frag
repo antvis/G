@@ -20,6 +20,6 @@
   //   normal = perturbNormal2Arb( - v_ViewPosition, normal, mapN, faceDirection );
   // #endif
 
-#elif defined(USE_BUMPMAP)
+#elif defined(USE_BUMPMAP) && defined(USE_LIGHT)
   normal = perturbNormalArb( - v_ViewPosition, normal, dHdxy_fwd(), faceDirection );
 #endif

@@ -314,7 +314,6 @@ export class Device_GL implements SwapChain, Device {
 
     // always have depth test enabled.
     gl.enable(gl.DEPTH_TEST);
-    // gl.enable(gl.STENCIL_TEST);
 
     this.checkLimits();
 
@@ -620,6 +619,7 @@ export class Device_GL implements SwapChain, Device {
       case FormatTypeFlags.D24:
         return isWebGL2(this.gl) ? GL.UNSIGNED_INT_24_8 : GL.UNSIGNED_SHORT;
       case FormatTypeFlags.D24S8:
+        // @see https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_depth_texture
         return GL.UNSIGNED_INT_24_8;
       case FormatTypeFlags.D32FS8:
         return GL.FLOAT_32_UNSIGNED_INT_24_8_REV;
@@ -1360,6 +1360,7 @@ export class Device_GL implements SwapChain, Device {
     if (stencilClearValue !== 'load') {
       assert(this.currentDepthStencilAttachment !== null);
       if (!this.currentMegaState.stencilWrite) {
+        gl.enable(gl.STENCIL_TEST);
         gl.stencilMask(0xff);
         this.currentMegaState.stencilWrite = true;
       }
@@ -1656,22 +1657,23 @@ export class Device_GL implements SwapChain, Device {
       currentMegaState.depthWrite = newMegaState.depthWrite;
     }
 
-    if (currentMegaState.stencilCompare !== newMegaState.stencilCompare) {
-      const stencilRef = gl.getParameter(gl.STENCIL_REF);
-      gl.stencilFunc(newMegaState.stencilCompare, stencilRef, 0xff);
-      currentMegaState.stencilCompare = newMegaState.stencilCompare;
-    }
-
     if (currentMegaState.stencilWrite !== newMegaState.stencilWrite) {
+      // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/stencilMask
       gl.stencilMask(newMegaState.stencilWrite ? 0xff : 0x00);
       currentMegaState.stencilWrite = newMegaState.stencilWrite;
     }
 
-    if (currentMegaState.stencilWrite) {
-      if (currentMegaState.stencilPassOp !== newMegaState.stencilPassOp) {
-        gl.stencilOp(gl.KEEP, gl.KEEP, newMegaState.stencilPassOp);
-        currentMegaState.stencilPassOp = newMegaState.stencilPassOp;
-      }
+    if (currentMegaState.stencilPassOp !== newMegaState.stencilPassOp) {
+      gl.stencilOp(gl.KEEP, gl.KEEP, newMegaState.stencilPassOp);
+      currentMegaState.stencilPassOp = newMegaState.stencilPassOp;
+    }
+
+    if (
+      currentMegaState.stencilRef !== newMegaState.stencilRef ||
+      currentMegaState.stencilCompare !== newMegaState.stencilCompare
+    ) {
+      currentMegaState.stencilCompare = newMegaState.stencilCompare;
+      this.setStencilRef(newMegaState.stencilRef);
     }
 
     if (currentMegaState.cullMode !== newMegaState.cullMode) {
@@ -1780,8 +1782,6 @@ export class Device_GL implements SwapChain, Device {
   setStencilRef(value: number): void {
     this.currentStencilRef = value;
     this.applyStencil();
-    const gl = this.gl;
-    gl.stencilFunc(this.currentMegaState.stencilCompare, value, 0xff);
   }
 
   draw(count: number, firstVertex: number): void {

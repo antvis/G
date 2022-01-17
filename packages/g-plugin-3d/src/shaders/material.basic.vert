@@ -1,5 +1,5 @@
 #pragma glslify: import('@antv/g-shader-components/scene.both.glsl')
-#pragma glslify: import('@antv/g-shader-components/material.both.glsl')
+#pragma glslify: import('@antv/g-shader-components/material.basic.glsl')
 
 #pragma glslify: import('@antv/g-shader-components/batch.declaration.vert')
 #pragma glslify: project = require('@antv/g-shader-components/project.vert')

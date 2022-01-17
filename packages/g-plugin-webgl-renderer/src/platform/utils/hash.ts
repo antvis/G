@@ -97,6 +97,7 @@ function megaStateDescriptorEquals(a: MegaStateDescriptor, b: MegaStateDescripto
     a.stencilCompare === b.stencilCompare &&
     a.stencilWrite === b.stencilWrite &&
     a.stencilPassOp === b.stencilPassOp &&
+    a.stencilRef === b.stencilRef &&
     a.cullMode === b.cullMode &&
     a.frontFace === b.frontFace &&
     a.polygonOffset === b.polygonOffset

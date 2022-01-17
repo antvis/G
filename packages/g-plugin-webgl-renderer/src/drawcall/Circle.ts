@@ -1,52 +1,42 @@
-import { Circle, CircleStyleProps, DisplayObject, ContextService, SHAPE } from '@antv/g';
-import { inject, injectable } from 'mana-syringe';
-import { fillVec4 } from '../render/utils';
+import { Circle, CircleStyleProps, DisplayObject, SHAPE, RenderingService } from '@antv/g';
+import { injectable } from 'mana-syringe';
 import { Format, VertexBufferFrequency } from '../platform';
-import { RenderInst } from '../render/RenderInst';
-import { DeviceProgram } from '../render/DeviceProgram';
 import { Batch, AttributeLocation } from './Batch';
-import { Program_GL } from '../platform/webgl2/Program';
-import { ShapeRenderer } from '../tokens';
+import { ShapeRenderer, ShapeMesh } from '../tokens';
 import vert from '../shader/circle.vert';
 import frag from '../shader/circle.frag';
+import { BatchMesh } from './BatchMesh';
+
+enum CircleProgram {
+  a_Extrude = AttributeLocation.MAX,
+  a_StylePacked3,
+  a_Size,
+  a_Uv,
+}
 
 const PointShapes: string[] = [SHAPE.Circle, SHAPE.Ellipse, SHAPE.Rect];
 
-class CircleProgram extends DeviceProgram {
-  static a_Extrude = AttributeLocation.MAX;
-  static a_StylePacked3 = AttributeLocation.MAX + 1;
-  static a_Size = AttributeLocation.MAX + 2;
-  static a_Uv = AttributeLocation.MAX + 3;
-
-  static ub_ObjectParams = 1;
-
-  vert: string = vert;
-
-  frag: string = frag;
-}
 @injectable({
   token: [
-    { token: ShapeRenderer, named: SHAPE.Circle },
-    { token: ShapeRenderer, named: SHAPE.Ellipse },
-    { token: ShapeRenderer, named: SHAPE.Rect },
+    { token: ShapeMesh, named: SHAPE.Circle },
+    { token: ShapeMesh, named: SHAPE.Ellipse },
+    { token: ShapeMesh, named: SHAPE.Rect },
   ],
 })
-export class CircleRenderer extends Batch {
-  @inject(ContextService)
-  private contextService: ContextService<WebGLRenderingContext>;
-
-  protected program = new CircleProgram();
-
-  protected validate() {
-    return true;
+export class CircleBatchMesh extends BatchMesh {
+  protected createMaterial(objects: DisplayObject[]): void {
+    this.material.vertexShader = vert;
+    this.material.fragmentShader = frag;
   }
+  protected createGeometry(objects: DisplayObject[]): void {
+    // use default common attributes
+    this.createBatchedGeometry(objects);
 
-  protected buildGeometry() {
     const interleaved = [];
     const instanced = [];
     const instanced2 = [];
     const indices = [];
-    this.objects.forEach((object, i) => {
+    objects.forEach((object, i) => {
       const circle = object as Circle;
       const offset = i * 4;
       // @ts-ignore
@@ -60,9 +50,9 @@ export class CircleRenderer extends Batch {
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
     });
 
-    this.geometry.setIndices(new Uint32Array(indices));
-    this.geometry.vertexCount = 6;
-    this.geometry.setVertexBuffer({
+    this.bufferGeometry.setIndices(new Uint32Array(indices));
+    this.bufferGeometry.vertexCount = 6;
+    this.bufferGeometry.setVertexBuffer({
       bufferIndex: 1,
       byteStride: 4 * 4,
       frequency: VertexBufferFrequency.PerVertex,
@@ -80,7 +70,7 @@ export class CircleRenderer extends Batch {
       ],
       data: new Float32Array(interleaved),
     });
-    this.geometry.setVertexBuffer({
+    this.bufferGeometry.setVertexBuffer({
       bufferIndex: 2,
       byteStride: 4 * 2,
       frequency: VertexBufferFrequency.PerInstance,
@@ -94,7 +84,7 @@ export class CircleRenderer extends Batch {
       ],
       data: new Float32Array(instanced),
     });
-    this.geometry.setVertexBuffer({
+    this.bufferGeometry.setVertexBuffer({
       bufferIndex: 3,
       byteStride: 4 * 4,
       frequency: VertexBufferFrequency.PerInstance,
@@ -110,11 +100,8 @@ export class CircleRenderer extends Batch {
     });
   }
 
-  updateAttribute(object: DisplayObject, name: string, value: any): void {
-    super.updateAttribute(object, name, value);
-
-    const index = this.objects.indexOf(object);
-    const geometry = this.geometry;
+  protected updateMeshAttribute(object: DisplayObject, index: number, name: string, value: any) {
+    this.updateBatchedAttribute(object, index, name, value);
 
     if (
       name === 'r' ||
@@ -129,14 +116,14 @@ export class CircleRenderer extends Batch {
       const [halfWidth, halfHeight] = this.getSize(object.attributes, object.nodeName);
       const size = [halfWidth + lineWidth / 2, halfHeight + lineWidth / 2];
 
-      geometry.updateVertexBuffer(
+      this.geometry.updateVertexBuffer(
         2,
         CircleProgram.a_Size,
         index,
         new Uint8Array(new Float32Array([...size]).buffer),
       );
     } else if (name === 'radius') {
-      geometry.updateVertexBuffer(
+      this.geometry.updateVertexBuffer(
         3,
         CircleProgram.a_StylePacked3,
         index,
@@ -152,26 +139,6 @@ export class CircleRenderer extends Batch {
     }
   }
 
-  protected uploadUBO(renderInst: RenderInst): void {
-    renderInst.setBindingLayouts([{ numUniformBuffers: 1, numSamplers: 1 }]);
-    renderInst.setSamplerBindingsFromTextureMappings([this.fillMapping]);
-
-    // offs += fillMatrix4x4(d, offs, this.camera.getPerspective()); // ProjectionMatrix 16
-    //   offs += fillMatrix4x4(d, offs, this.camera.getViewTransform()); // ViewMatrix 16
-    //   offs += fillVec3v(d, offs, this.camera.getPosition(), this.contextService.getDPR()); // CameraPosition DPR 4
-    const program = renderInst.renderPipelineDescriptor.program as Program_GL;
-
-    // FIXME: use uniform by names in WebGL
-    if (program.gl_program) {
-      program.setUniforms({
-        u_ProjectionMatrix: this.camera.getPerspective(),
-        u_ViewMatrix: this.camera.getViewTransform(),
-        u_CameraPosition: this.camera.getPosition(),
-        u_DevicePixelRatio: this.contextService.getDPR(),
-      });
-    }
-  }
-
   private getSize(attributes: CircleStyleProps, tagName: string) {
     if (tagName === SHAPE.Circle) {
       return [attributes.r, attributes.r];
@@ -184,4 +151,32 @@ export class CircleRenderer extends Batch {
     }
     return [0, 0];
   }
+}
+
+@injectable({
+  token: [
+    { token: ShapeRenderer, named: SHAPE.Circle },
+    { token: ShapeRenderer, named: SHAPE.Ellipse },
+    { token: ShapeRenderer, named: SHAPE.Rect },
+  ],
+})
+export class CircleRenderer extends Batch {
+  protected validate() {
+    return true;
+  }
+
+  protected createBatchMeshList() {
+    this.batchMeshList.push(this.meshFactory(SHAPE.Circle));
+  }
+
+  // FIXME: use uniform by names in WebGL
+  // if (program.gl_program) {
+  //   program.setUniforms({
+  //     u_ProjectionMatrix: this.camera.getPerspective(),
+  //     u_ViewMatrix: this.camera.getViewTransform(),
+  //     u_CameraPosition: this.camera.getPosition(),
+  //     u_DevicePixelRatio: this.contextService.getDPR(),
+  //   });
+  // }
+  // }
 }

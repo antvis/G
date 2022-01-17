@@ -35,7 +35,7 @@ export interface RenderInput {
 
 function selectFormatSimple(slot: RGAttachmentSlot): Format {
   if (slot === RGAttachmentSlot.Color0) return Format.U8_RGBA_RT;
-  else if (slot === RGAttachmentSlot.DepthStencil) return Format.D24;
+  else if (slot === RGAttachmentSlot.DepthStencil) return Format.D24_S8;
   else throw 'whoops';
 }
 

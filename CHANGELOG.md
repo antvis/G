@@ -2,6 +2,22 @@
 
 以下版本号以 @antv/g 为准。
 
+## [5.0.6] - 2022-1-17
+
+### 新增特性
+
+-   [g-webgl] 支持基础几何 https://antv-g-next.gitee.io/zh/docs/api/3d/geometry
+-   [g-webgl] 支持基础材质 https://antv-g-next.gitee.io/zh/docs/api/3d/material https://github.com/antvis/g/issues/826
+-   [g-webgl] 支持平行光 https://antv-g-next.gitee.io/zh/docs/api/3d/light
+-   [g-webgl] 支持 clipPath。https://github.com/antvis/g/issues/825
+
+### Bug 修复
+
+-   [g-webgl] 内置 potpack https://github.com/antvis/g/issues/836
+-   [g-webgl] 使用 depth buffer 实现 z-index 特性 https://github.com/antvis/g/issues/842
+-   [g-canvas] 修复插入 RTree 节点时获取包围盒 undefined 的问题
+-   [g-canvas] 修复同时设置 Text 的 letterSpacing 与 textAlign 属性的问题 https://github.com/antvis/g/issues/854
+
 ## [1.0.0-alpha.37] - 2021-12-02
 
 ### Bug 修复

@@ -1,10 +1,15 @@
-import { MipFilterMode, SamplerDescriptor, TexFilterMode, WrapMode } from './platform';
+import { MipFilterMode, SamplerDescriptor, TexFilterMode, Texture, WrapMode } from './platform';
 
 export interface Texture2DDescriptor {
-  src: string | TexImageSource;
+  src?: string | TexImageSource;
   sampler?: SamplerDescriptor;
-  flipY?: boolean;
   order?: number;
+  loadedTexture?: Texture;
+  pixelStore?: Partial<{
+    packAlignment: number;
+    unpackAlignment: number;
+    unpackFlipY: boolean;
+  }>;
   // encoding
   // anisotropy
 }

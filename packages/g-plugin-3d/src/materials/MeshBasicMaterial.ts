@@ -1,9 +1,10 @@
-import { Material, Texture2D, CullMode, IMaterial } from '@antv/g-plugin-webgl-renderer';
+import { Material, Texture2D, CullMode, IMaterial, Format } from '@antv/g-plugin-webgl-renderer';
 import vert from '../shaders/material.basic.vert';
 import frag from '../shaders/material.basic.frag';
 
 enum Uniform {
   MAP = 'u_Map',
+  PLACE_HOLDER = 'u_Placeholder',
 }
 enum SamplerLocation {
   MAP = 0,
@@ -35,11 +36,15 @@ export class MeshBasicMaterial<T extends IMeshBasicMaterial> extends Material<T>
   set map(v) {
     if (this.props.map !== v) {
       this.props.map = v;
-      this.dirty = true;
+      this.programDirty = true;
     }
 
     this.defines.USE_MAP = !!v;
-    this.addTexture(v, Uniform.MAP, SamplerLocation.MAP);
+    if (v) {
+      this.addTexture(v, Uniform.MAP, SamplerLocation.MAP);
+    } else {
+      this.removeTexture(Uniform.MAP);
+    }
   }
 
   /**
@@ -74,5 +79,11 @@ export class MeshBasicMaterial<T extends IMeshBasicMaterial> extends Material<T>
       this.map = map;
     }
     this.wireframe = wireframe;
+
+    this.addUniform({
+      name: Uniform.PLACE_HOLDER,
+      format: Format.F32_RGBA,
+      data: [0, 0, 0, 0],
+    });
   }
 }

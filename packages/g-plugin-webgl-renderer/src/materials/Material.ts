@@ -30,6 +30,7 @@ export interface IMaterial {
   stencilCompare: CompareMode;
   stencilWrite: boolean;
   stencilPassOp: StencilOp;
+  stencilRef: number;
 
   frontFace: FrontFaceMode;
 
@@ -53,7 +54,73 @@ type MaterialUniformData =
   | [number]
   | [number, number]
   | [number, number, number]
-  | Tuple4Number;
+  | Tuple4Number
+  | [
+      // mat2
+      [number, number],
+      [number, number],
+    ]
+  | [
+      // mat3
+      [number, number, number],
+      [number, number, number],
+      [number, number, number],
+    ]
+  | [
+      // mat4
+      [number, number, number, number],
+      [number, number, number, number],
+      [number, number, number, number],
+      [number, number, number, number],
+    ];
+
+function isMatrix(
+  data:
+    | number[]
+    | [number]
+    | [number, number]
+    | [number, number, number]
+    | Tuple4Number
+    | [
+        // mat2
+        [number, number],
+        [number, number],
+      ]
+    | [
+        // mat3
+        [number, number, number],
+        [number, number, number],
+        [number, number, number],
+      ]
+    | [
+        // mat4
+        [number, number, number, number],
+        [number, number, number, number],
+        [number, number, number, number],
+        [number, number, number, number],
+      ],
+): data is
+  | [
+      // mat2
+      [number, number],
+      [number, number],
+    ]
+  | [
+      // mat3
+      [number, number, number],
+      [number, number, number],
+      [number, number, number],
+    ]
+  | [
+      // mat4
+      [number, number, number, number],
+      [number, number, number, number],
+      [number, number, number, number],
+      [number, number, number, number],
+    ] {
+  return Array.isArray(data) && Array.isArray(data[0]);
+}
+
 export interface MaterialUniform {
   name: string;
   format: Format;
@@ -168,6 +235,12 @@ export abstract class Material<T extends IMaterial = any> {
   set stencilPassOp(value) {
     this.props.stencilPassOp = value;
   }
+  get stencilRef() {
+    return this.props.stencilRef;
+  }
+  set stencilRef(value) {
+    this.props.stencilRef = value;
+  }
 
   // @see https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/polygonOffset
   get polygonOffset() {
@@ -192,7 +265,8 @@ export abstract class Material<T extends IMaterial = any> {
   set wireframe(value) {
     if (this.props.wireframe !== value) {
       // need re-generate geometry
-      this.dirty = true;
+      this.geometryDirty = true;
+      this.programDirty = true;
       this.props.wireframe = value;
     }
 
@@ -218,7 +292,7 @@ export abstract class Material<T extends IMaterial = any> {
   }
   set vertexShader(value) {
     if (this.props.vertexShader !== value) {
-      this.dirty = true;
+      this.programDirty = true;
       this.props.vertexShader = value;
     }
   }
@@ -227,7 +301,7 @@ export abstract class Material<T extends IMaterial = any> {
   }
   set fragmentShader(value) {
     if (this.props.fragmentShader !== value) {
-      this.dirty = true;
+      this.programDirty = true;
       this.props.fragmentShader = value;
     }
   }
@@ -246,7 +320,17 @@ export abstract class Material<T extends IMaterial = any> {
   /**
    * need re-compiling like vs/fs changed
    */
-  dirty = true;
+  programDirty = true;
+
+  /**
+   * need re-upload textures
+   */
+  textureDirty = true;
+
+  /**
+   * inform geometry to rebuild, eg. wireframe
+   */
+  geometryDirty = true;
 
   constructor(props: Partial<IMaterial>) {
     const {
@@ -274,7 +358,7 @@ export abstract class Material<T extends IMaterial = any> {
       polygonOffset,
       attachmentsState,
       blendEquation: BlendMode.Add,
-      blendEquationAlpha: null,
+      blendEquationAlpha: BlendMode.Add,
       blendSrc: BlendFactor.SrcAlpha,
       blendDst: BlendFactor.OneMinusSrcAlpha,
       blendSrcAlpha: null,
@@ -299,8 +383,8 @@ export abstract class Material<T extends IMaterial = any> {
       const { format, data } = uniform;
       const array = typeof data === 'number' ? [data] : data;
       const formatByteSize = getFormatByteSize(format);
-      uniform.size = formatByteSize;
-
+      const matrix = isMatrix(array);
+      uniform.size = matrix ? formatByteSize * array.length : formatByteSize;
       // std140 UBO layout
       const emptySpace = 4 - (offset % 4);
       if (emptySpace !== 4) {
@@ -314,10 +398,14 @@ export abstract class Material<T extends IMaterial = any> {
       }
 
       uniform.offset = offset;
-      offset += formatByteSize;
+      offset += uniform.size;
 
       for (let j = 0; j < formatByteSize / 4; j++) {
-        this.uboBuffer.push(array[j]);
+        if (isMatrix(array)) {
+          this.uboBuffer.push(...array[j]);
+        } else {
+          this.uboBuffer.push(array[j]);
+        }
       }
     });
 
@@ -340,13 +428,13 @@ export abstract class Material<T extends IMaterial = any> {
    *    value: [1, 1, 1],
    * });
    */
-  protected addUniform(uniform: MaterialUniform) {
+  addUniform(uniform: MaterialUniform) {
     this.removeUniform(uniform.name);
     this.uniforms.push(uniform);
     this.updateUniformOffset();
   }
 
-  protected removeUniform(uniformName: string) {
+  removeUniform(uniformName: string) {
     const index = this.uniforms.findIndex(({ name }) => name === uniformName);
     if (index > -1) {
       this.uniforms.splice(index, 1);
@@ -354,21 +442,26 @@ export abstract class Material<T extends IMaterial = any> {
     }
   }
 
-  protected updateUniformData(uniformName: string, data: MaterialUniformData) {
+  updateUniformData(uniformName: string, data: MaterialUniformData) {
     const existed = this.uniforms.find(({ name }) => name === uniformName);
     if (existed) {
       const array = typeof data === 'number' ? [data] : data;
       const { offset, size } = existed;
-      this.uboBuffer.splice(offset / 4, size / 4, ...array);
+      if (isMatrix(array)) {
+        this.uboBuffer.splice(
+          offset / 4,
+          size / 4,
+          // @ts-ignore
+          ...array.reduce((accumulator, value) => accumulator.concat(value), []),
+        );
+      } else {
+        this.uboBuffer.splice(offset / 4, size / 4, ...array);
+      }
     }
   }
 
-  protected addTexture(map: string | TexImageSource | Texture2D, textureName: string, order = 0) {
-    // remove old texture, maybe need destroy underlying texture?
-    const index = this.textures.findIndex(({ name }) => name === textureName);
-    if (index > -1) {
-      this.textures.splice(index, 1);
-    }
+  addTexture(map: string | TexImageSource | Texture2D, textureName: string, order = 0) {
+    this.removeTexture(textureName);
 
     // create map texture
     if (map) {
@@ -378,7 +471,9 @@ export abstract class Material<T extends IMaterial = any> {
       } else {
         mapTexture = new Texture2D({
           src: map,
-          flipY: false,
+          pixelStore: {
+            unpackFlipY: false,
+          },
           order,
         });
       }
@@ -388,6 +483,21 @@ export abstract class Material<T extends IMaterial = any> {
       });
     }
 
+    this.sortTextures();
+    this.textureDirty = true;
+  }
+
+  removeTexture(textureName: string) {
+    // remove old texture, maybe need destroy underlying texture?
+    const index = this.textures.findIndex(({ name }) => name === textureName);
+    if (index > -1) {
+      this.textures.splice(index, 1);
+    }
+    this.sortTextures();
+    this.textureDirty = true;
+  }
+
+  private sortTextures() {
     this.textures.sort((a, b) => a.texture.descriptor.order - b.texture.descriptor.order);
   }
 }

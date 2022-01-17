@@ -1,13 +1,6 @@
 import { GL } from '../constants';
+import { Format, FormatTypeFlags, getFormatSamplerKind, getFormatTypeFlags } from '../format';
 import {
-  Format,
-  FormatTypeFlags,
-  getFormatCompByteSize,
-  getFormatSamplerKind,
-  getFormatTypeFlags,
-} from '../format';
-import {
-  Buffer,
   ResourceType,
   SamplerFormatKind,
   Texture,
@@ -30,7 +23,12 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
   depth: number;
   numLevels: number;
   immutable: boolean;
-  flipY: boolean;
+  // @see https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/pixelStorei
+  pixelStore: Partial<{
+    packAlignment: number;
+    unpackAlignment: number;
+    unpackFlipY: boolean;
+  }>;
   mipmaps: boolean;
   formatKind: SamplerFormatKind;
 
@@ -52,7 +50,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     let gl_texture: WebGLTexture;
     let numLevels = this.clampNumLevels(descriptor);
     this.immutable = !!descriptor.immutable;
-    this.flipY = !!descriptor.flipY;
+    this.pixelStore = descriptor.pixelStore;
     this.pixelFormat = descriptor.pixelFormat;
     this.formatKind = getFormatSamplerKind(descriptor.pixelFormat);
     this.width = descriptor.width;
@@ -68,9 +66,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
       this.device.setActiveTexture(gl.TEXTURE0);
       this.device.currentTextures[0] = null;
 
-      if (this.flipY) {
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
-      }
+      this.preprocessImage();
 
       if (descriptor.dimension === TextureDimension.n2D) {
         gl_target = GL.TEXTURE_2D;
@@ -205,30 +201,24 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     const gl_format = this.device.translateTextureFormat(this.pixelFormat);
     const gl_type = this.device.translateTextureType(this.pixelFormat);
 
-    if (this.flipY) {
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
-    }
+    this.preprocessImage();
 
     if (this.immutable) {
-      if (isWebGL2(gl)) {
-        // must use texSubImage2D instead of texImage2D, since texture is immutable
-        // @see https://stackoverflow.com/questions/56123201/unity-plugin-texture-is-immutable?rq=1
-        // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 0);
-        gl.texSubImage2D(
-          this.gl_target,
-          level,
-          0,
-          0,
-          width,
-          height,
-          gl_format,
-          gl_type,
-          // @ts-ignore
-          isArray ? data[0] : data,
-        );
-      } else {
-        throw "WebGL1 don't support immutable texture";
-      }
+      // must use texSubImage2D instead of texImage2D, since texture is immutable
+      // @see https://stackoverflow.com/questions/56123201/unity-plugin-texture-is-immutable?rq=1
+      // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texSubImage2D
+      gl.texSubImage2D(
+        this.gl_target,
+        level,
+        0,
+        0,
+        width,
+        height,
+        gl_format,
+        gl_type,
+        // @ts-ignore
+        isArray ? data[0] : data,
+      );
     } else {
       if (isWebGL2(gl)) {
         // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
@@ -366,6 +356,21 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     }
 
     return descriptor.numLevels;
+  }
+
+  private preprocessImage() {
+    const gl = this.device.gl;
+    if (this.pixelStore) {
+      if (this.pixelStore.unpackFlipY) {
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      }
+      if (this.pixelStore.packAlignment) {
+        gl.pixelStorei(gl.PACK_ALIGNMENT, this.pixelStore.packAlignment);
+      }
+      if (this.pixelStore.unpackAlignment) {
+        gl.pixelStorei(gl.UNPACK_ALIGNMENT, this.pixelStore.unpackAlignment);
+      }
+    }
   }
 
   private generateMipmap(): this {

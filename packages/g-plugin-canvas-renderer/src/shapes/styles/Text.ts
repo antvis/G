@@ -1,4 +1,4 @@
-import { TextService, ParsedTextStyleProps, SHAPE } from '@antv/g';
+import { TextService, ParsedTextStyleProps, SHAPE, Rectangle } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import { StyleRenderer } from './interfaces';
@@ -32,7 +32,7 @@ export class TextRenderer implements StyleRenderer {
       metrics,
     } = parsedStyle;
 
-    const { font, lines, height, lineHeight } = metrics;
+    const { font, lines, height, lineHeight, lineMetrics } = metrics;
 
     context.font = font;
     context.lineWidth = lineWidth!;
@@ -66,6 +66,8 @@ export class TextRenderer implements StyleRenderer {
         this.drawLetterSpacing(
           context,
           lines[i],
+          lineMetrics[i],
+          textAlign,
           linePositionX + padding,
           linePositionY + padding,
           letterSpacing,
@@ -79,6 +81,8 @@ export class TextRenderer implements StyleRenderer {
         this.drawLetterSpacing(
           context,
           lines[i],
+          lineMetrics[i],
+          textAlign,
           linePositionX + padding,
           linePositionY + padding,
           letterSpacing,
@@ -93,6 +97,8 @@ export class TextRenderer implements StyleRenderer {
   private drawLetterSpacing(
     context: CanvasRenderingContext2D,
     text: string,
+    lineMetrics: Rectangle,
+    textAlign: 'start' | 'center' | 'end' | 'left' | 'right',
     x: number,
     y: number,
     letterSpacing: number,
@@ -101,7 +107,7 @@ export class TextRenderer implements StyleRenderer {
     opacity: number | undefined,
     isStroke = false,
   ): void {
-    // letterSpacing of 0 means normal
+    // letterSpacing of 0 means normal, render all texts directly
     if (letterSpacing === 0) {
       if (isStroke) {
         this.strokeText(context, text, x, y, strokeOpacity);
@@ -110,7 +116,17 @@ export class TextRenderer implements StyleRenderer {
       }
       return;
     }
+
+    // draw text using left align
+    const currentTextAlign = context.textAlign;
+    context.textAlign = 'left';
+
     let currentPosition = x;
+    if (textAlign === 'center') {
+      currentPosition = x - lineMetrics.width / 2;
+    } else if (textAlign === 'right' || textAlign === 'end') {
+      currentPosition = x - lineMetrics.width;
+    }
 
     const stringArray = Array.from(text);
     let previousWidth = context.measureText(text).width;
@@ -126,6 +142,8 @@ export class TextRenderer implements StyleRenderer {
       currentPosition += previousWidth - currentWidth + letterSpacing;
       previousWidth = currentWidth;
     }
+
+    context.textAlign = currentTextAlign;
   }
 
   private fillText(
@@ -136,13 +154,15 @@ export class TextRenderer implements StyleRenderer {
     fillOpacity: number | undefined,
     opacity: number | undefined,
   ) {
+    let currentGlobalAlpha: number;
     const applyOpacity = !isNil(fillOpacity) && fillOpacity !== 1;
     if (applyOpacity) {
-      context.globalAlpha = fillOpacity!;
+      currentGlobalAlpha = context.globalAlpha;
+      context.globalAlpha = fillOpacity * opacity;
     }
     context.fillText(text, x, y);
     if (applyOpacity) {
-      context.globalAlpha = opacity!;
+      context.globalAlpha = currentGlobalAlpha;
     }
   }
 
@@ -153,10 +173,15 @@ export class TextRenderer implements StyleRenderer {
     y: number,
     strokeOpacity: number | undefined,
   ) {
+    let currentGlobalAlpha: number;
     const applyOpacity = !isNil(strokeOpacity) && strokeOpacity !== 1;
     if (applyOpacity) {
+      currentGlobalAlpha = context.globalAlpha;
       context.globalAlpha = strokeOpacity!;
     }
     context.strokeText(text, x, y);
+    if (applyOpacity) {
+      context.globalAlpha = currentGlobalAlpha;
+    }
   }
 }

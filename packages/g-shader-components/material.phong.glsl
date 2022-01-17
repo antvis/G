@@ -1,16 +1,19 @@
 layout(std140) uniform ub_MaterialParams {
-  vec3 u_WireframeLineColor;
-  float u_WireframeLineWidth;
+  #ifdef USE_WIREFRAME
+    vec3 u_WireframeLineColor;
+    float u_WireframeLineWidth;
+  #endif
 
   #ifdef USE_FOG
     vec4 u_FogInfos;
     vec3 u_FogColor;
   #endif
 
+  vec3 u_Emissive;
+  float u_Shininess;
+  vec3 u_Specular;
+
   #ifdef USE_LIGHT
-    vec3 u_Emissive;
-    float u_Shininess;
-    vec3 u_Specular;
     #ifdef USE_BUMPMAP
       float u_BumpScale;
     #endif

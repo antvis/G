@@ -1,200 +1,42 @@
 import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
 import { DisplayObject, PARSED_COLOR_TYPE, SHAPE, Text, Tuple4Number } from '@antv/g';
-import { fillVec4, makeSortKeyOpaque, RendererLayer } from '../render/utils';
-import {
-  Format,
-  MipFilterMode,
-  SamplerFormatKind,
-  TexFilterMode,
-  TextureDimension,
-  VertexBufferFrequency,
-  WrapMode,
-} from '../platform';
+import { Format, VertexBufferFrequency } from '../platform';
 import { RenderInst } from '../render/RenderInst';
-import { DeviceProgram } from '../render/DeviceProgram';
 import { Batch, AttributeLocation, RENDER_ORDER_SCALE } from './Batch';
-import { TextureMapping } from '../render/TextureHolder';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
 import { getGlyphQuads } from './symbol/SymbolQuad';
 import GlyphAtlas from './symbol/GlyphAtlas';
-import { RenderInstList } from '../render/RenderInstList';
-import { Renderable3D } from '../components/Renderable3D';
-import { ShapeRenderer } from '../tokens';
+import { ShapeMesh, ShapeRenderer } from '../tokens';
 import vert from '../shader/text.vert';
 import frag from '../shader/text.frag';
+import { BatchMesh } from './BatchMesh';
+import { Texture2D } from '../Texture2D';
 
-class TextProgram extends DeviceProgram {
-  static a_Tex = AttributeLocation.MAX;
-  static a_Offset = AttributeLocation.MAX + 1;
-
-  static ub_ObjectParams = 1;
-
-  vert: string = vert;
-
-  frag: string = frag;
+enum TextProgram {
+  a_Tex = AttributeLocation.MAX,
+  a_Offset,
 }
 
+enum Uniform {
+  SDF_MAP_SIZE = 'u_SDFMapSize',
+  FONT_SIZE = 'u_FontSize',
+  GAMMA_SCALE = 'u_GammaScale',
+  STROKE_BLUR = 'u_StrokeBlur',
+  HAS_STROKE = 'u_HasStroke',
+}
+
+const SDF_TEXTURE_MAPPING = 'SDF_TEXTURE_MAPPING';
+
 @injectable({
-  token: [{ token: ShapeRenderer, named: SHAPE.Text }],
+  token: [{ token: ShapeMesh, named: SHAPE.Text }],
 })
-export class TextRenderer extends Batch {
-  program = new TextProgram();
+export class TextBatchMesh extends BatchMesh {
+  glyphManager: GlyphManager;
 
-  instanced = false;
-
-  private mapping: TextureMapping;
-
-  @inject(GlyphManager)
-  private glyphManager: GlyphManager;
-
-  buildGeometry() {
-    this.generateAtlas();
-  }
-
-  validate(object: DisplayObject) {
-    const instance = this.instance;
-    const instancedAttributes = [
-      'fontSize',
-      'fontFamily',
-      'fontWeight',
-      'textBaseline',
-      'letterSpacing',
-    ];
-    // fontStack & fontSize should be same
-    if (
-      instance.parsedStyle.metrics.font !== object.parsedStyle.metrics.font ||
-      instancedAttributes.some((name) => instance.parsedStyle[name] !== object.parsedStyle[name])
-    ) {
-      return false;
-    }
-
-    return true;
-  }
-
-  updateAttribute(object: DisplayObject, name: string, value: any): void {
-    super.updateAttribute(object, name, value);
-
-    if (
-      name === 'text' ||
-      name === 'fontFamily' ||
-      name === 'textBaseline' ||
-      name === 'letterSpacing' ||
-      name === 'wordWrapWidth' ||
-      name === 'lineHeight' ||
-      name === 'wordWrap' ||
-      name === 'textAlign' ||
-      name === 'modelMatrix' ||
-      name === 'visibility'
-    ) {
-      this.geometryDirty = true;
-    }
-  }
-
-  changeRenderOrder(object: DisplayObject, renderOrder: number) {
-    this.geometryDirty = true;
-  }
-
-  uploadUBO(renderInst: RenderInst): void {
-    // need 1 sampler
-    renderInst.setBindingLayouts([
-      {
-        numUniformBuffers: 2,
-        numSamplers: 1,
-        samplerEntries: [
-          {
-            dimension: TextureDimension.n2D,
-            formatKind: SamplerFormatKind.Uint,
-          },
-        ],
-      },
-    ]);
-
-    const text = this.instance as Text;
-
-    const { fontSize } = text.parsedStyle;
-
-    renderInst.setSamplerBindingsFromTextureMappings([this.mapping]);
-
-    const glyphAtlas = this.glyphManager.getAtlas();
-    const { width: atlasWidth, height: atlasHeight } = glyphAtlas.image;
-
-    // Upload to our UBO.
-    let offs = renderInst.allocateUniformBuffer(TextProgram.ub_ObjectParams, 4 + 4);
-    const d = renderInst.mapUniformBufferF32(TextProgram.ub_ObjectParams);
-    offs += fillVec4(d, offs, atlasWidth, atlasHeight, fontSize, 1);
-    offs += fillVec4(d, offs, 0.2, 1); // u_HasStroke
-  }
-
-  /**
-   * use another draw call for stroke
-   */
-  afterRender(list: RenderInstList) {
-    const { stroke, lineWidth } = this.instance.parsedStyle;
-    const hasStroke = stroke && lineWidth;
-
-    if (hasStroke) {
-      // cached input layout
-      const inputLayout = this.renderHelper
-        .getCache()
-        .createInputLayout(this.geometry.inputLayoutDescriptor);
-
-      // cached program
-      const program = this.renderHelper
-        .getCache()
-        .createProgramSimple(this.programDescriptorSimpleWithOrig);
-
-      // new render instance
-      const renderInst = this.renderHelper.renderInstManager.newRenderInst();
-      renderInst.setProgram(program);
-      renderInst.setInputLayoutAndState(inputLayout, this.inputState);
-
-      // upload UBO
-      this.uploadUBO(renderInst);
-      let offs = renderInst.getUniformBufferOffset(TextProgram.ub_ObjectParams);
-      const d = renderInst.mapUniformBufferF32(TextProgram.ub_ObjectParams);
-      fillVec4(d, offs + 4, 0.2, 0); // u_HasStroke
-
-      // draw elements
-      renderInst.drawIndexesInstanced(this.geometry.vertexCount, this.geometry.instancedCount);
-      renderInst.sortKey = makeSortKeyOpaque(RendererLayer.OPAQUE, program.id);
-      this.renderHelper.renderInstManager.submitRenderInst(renderInst, list);
-    }
-  }
-
-  private generateAtlas() {
-    const geometry = this.geometry;
-
-    const object = this.instance as Text;
-    const {
-      textBaseline,
-      fontSize = 0,
-      fontFamily = '',
-      fontWeight = 'normal',
-      letterSpacing = 0,
-      metrics,
-    } = object.parsedStyle;
-    const { font } = metrics;
-
-    const allText = this.objects.map((object) => object.parsedStyle.text).join('');
-
-    this.glyphManager.generateAtlas(font, fontFamily, fontWeight, allText, this.device);
-    const glyphAtlasTexture = this.glyphManager.getAtlasTexture();
-    const glyphAtlas = this.glyphManager.getAtlas();
-
-    const mapping = new TextureMapping();
-    mapping.texture = glyphAtlasTexture;
-    this.device.setResourceName(mapping.texture, 'TextSDF Texture');
-    mapping.sampler = this.renderHelper.getCache().createSampler({
-      wrapS: WrapMode.Clamp,
-      wrapT: WrapMode.Clamp,
-      minFilter: TexFilterMode.Bilinear,
-      magFilter: TexFilterMode.Bilinear,
-      mipFilter: MipFilterMode.NoMip,
-      minLOD: 0,
-      maxLOD: 0,
-    });
-    this.mapping = mapping;
+  protected createGeometry(objects: DisplayObject<any, any>[]): void {
+    const object = objects[0] as Text;
+    const { textBaseline, fontSize = 0, letterSpacing = 0 } = object.parsedStyle;
 
     // scale current font size to base(24)
     const fontScale = BASE_FONT_WIDTH / fontSize;
@@ -203,7 +45,7 @@ export class TextRenderer extends Batch {
     const uvOffsets = [];
     const packed = [];
     let indicesOff = 0;
-    this.objects.forEach((object) => {
+    objects.forEach((object) => {
       const { metrics } = object.parsedStyle;
       const { font, lines, height, lineHeight } = metrics;
 
@@ -216,11 +58,12 @@ export class TextRenderer extends Batch {
       } else if (textBaseline === 'top' || textBaseline === 'hanging') {
         linePositionY = 0;
       } else if (textBaseline === 'alphabetic') {
-        linePositionY = -height * 0.75;
+        linePositionY = -height + lineHeight * 0.25;
       } else if (textBaseline === 'ideographic') {
         linePositionY = -height;
       }
 
+      const glyphAtlas = this.glyphManager.getAtlas();
       const { indicesOffset, indexBuffer, charUVOffsetBuffer, charPackedBuffer } =
         this.buildTextBuffers({
           object,
@@ -239,11 +82,9 @@ export class TextRenderer extends Batch {
       indices.push(...indexBuffer);
     });
 
-    geometry.vertexCount = indices.length;
-    // geometry.vertexCount = 6;
-    // geometry.instancedCount = indices.length / 6;
-    geometry.setIndices(new Uint32Array(indices));
-    this.geometry.setVertexBuffer({
+    this.bufferGeometry.vertexCount = indices.length;
+    this.bufferGeometry.setIndices(new Uint32Array(indices));
+    this.bufferGeometry.setVertexBuffer({
       bufferIndex: 0,
       byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4 + 4),
       // frequency: VertexBufferFrequency.PerInstance,
@@ -316,7 +157,7 @@ export class TextRenderer extends Batch {
       data: new Float32Array(packed),
     });
 
-    geometry.setVertexBuffer({
+    this.bufferGeometry.setVertexBuffer({
       bufferIndex: 1,
       byteStride: 4 * (2 + 2),
       frequency: VertexBufferFrequency.PerVertex,
@@ -334,6 +175,132 @@ export class TextRenderer extends Batch {
       ],
       data: new Float32Array(uvOffsets),
     });
+  }
+
+  protected createMaterial(objects: DisplayObject<any, any>[]): void {
+    this.material.vertexShader = vert;
+    this.material.fragmentShader = frag;
+
+    const object = objects[0] as Text;
+    const {
+      fontSize = 0,
+      fontFamily = '',
+      fontWeight = 'normal',
+      fontStyle,
+      metrics,
+    } = object.parsedStyle;
+    const { font } = metrics;
+    const allText = objects.map((object) => object.parsedStyle.text).join('');
+
+    this.glyphManager.generateAtlas(
+      font,
+      fontFamily,
+      fontWeight,
+      fontStyle,
+      allText,
+      this.geometry.device,
+    );
+    const glyphAtlasTexture = this.glyphManager.getAtlasTexture();
+    const glyphAtlas = this.glyphManager.getAtlas();
+
+    this.geometry.device.setResourceName(glyphAtlasTexture, 'TextSDF Texture');
+
+    this.material.addTexture(
+      new Texture2D({
+        loadedTexture: glyphAtlasTexture,
+      }),
+      SDF_TEXTURE_MAPPING,
+    );
+
+    const { width: atlasWidth, height: atlasHeight } = glyphAtlas.image;
+
+    this.material.addUniform({
+      name: Uniform.SDF_MAP_SIZE,
+      format: Format.U32_RG,
+      data: [atlasWidth, atlasHeight],
+    });
+    this.material.addUniform({
+      name: Uniform.FONT_SIZE,
+      format: Format.U32_R,
+      data: fontSize,
+    });
+    this.material.addUniform({
+      name: Uniform.GAMMA_SCALE,
+      format: Format.U32_R,
+      data: 1,
+    });
+    this.material.addUniform({
+      name: Uniform.STROKE_BLUR,
+      format: Format.U32_R,
+      data: 0.2,
+    });
+    this.material.addUniform({
+      name: Uniform.HAS_STROKE,
+      format: Format.U32_R,
+      data: 1,
+    });
+  }
+
+  beforeUploadUBO(renderInst: RenderInst, objects: DisplayObject[], index: number) {
+    this.material.updateUniformData(Uniform.HAS_STROKE, 1 - index);
+  }
+
+  shouldSubmitRenderInst(renderInst: RenderInst, objects: DisplayObject[], index: number) {
+    const { stroke, lineWidth } = objects[0].parsedStyle;
+    const hasStroke = !!(stroke && lineWidth);
+
+    if (!hasStroke && index === 1) {
+      // skip rendering stroke
+      return false;
+    }
+    return true;
+  }
+
+  changeRenderOrder(object: DisplayObject, index: number, renderOrder: number) {
+    this.material.programDirty = true;
+    this.material.geometryDirty = true;
+  }
+
+  protected updateMeshAttribute(
+    object: DisplayObject<any, any>,
+    index: number,
+    name: string,
+    value: any,
+  ): void {
+    if (
+      name === 'text' ||
+      name === 'fontFamily' ||
+      name === 'fontWeight' ||
+      name === 'fontStyle' ||
+      name === 'fontVariant' ||
+      name === 'textBaseline' ||
+      name === 'letterSpacing' ||
+      name === 'wordWrapWidth' ||
+      name === 'lineHeight' ||
+      name === 'wordWrap' ||
+      name === 'textAlign' ||
+      name === 'modelMatrix' ||
+      name === 'visibility'
+    ) {
+      this.material.programDirty = true;
+      this.material.geometryDirty = true;
+      // need re-upload SDF texture
+      this.material.textureDirty = true;
+    } else if (name === 'fontSize') {
+      // no need to re-upload SDF texture
+      this.material.programDirty = true;
+      this.material.geometryDirty = true;
+    } else if (
+      name === 'fill' ||
+      name === 'fillOpacity' ||
+      name === 'stroke' ||
+      name === 'strokeOpacity' ||
+      name === 'opacity' ||
+      name === 'lineWidth' ||
+      name === 'visibility'
+    ) {
+      this.material.geometryDirty = true;
+    }
   }
 
   private buildTextBuffers({
@@ -368,7 +335,7 @@ export class TextRenderer extends Batch {
       strokeColor = stroke.value;
     }
     // @ts-ignore
-    const encodedPickingColor = object.renderable3D.encodedPickingColor;
+    const encodedPickingColor = object.renderable3D?.encodedPickingColor || [0, 0, 0];
 
     const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
 
@@ -430,5 +397,40 @@ export class TextRenderer extends Batch {
       charPackedBuffer,
       indicesOffset: i,
     };
+  }
+}
+
+@injectable({
+  token: [{ token: ShapeRenderer, named: SHAPE.Text }],
+})
+export class TextRenderer extends Batch {
+  @inject(GlyphManager)
+  private glyphManager: GlyphManager;
+
+  protected createBatchMeshList(): void {
+    const mesh = this.meshFactory(SHAPE.Text) as TextBatchMesh;
+    mesh.glyphManager = this.glyphManager;
+    // use 2 meshes to draw stroke & fill
+    this.batchMeshList.push(mesh, mesh);
+  }
+
+  validate(object: DisplayObject) {
+    const instance = this.instance;
+    const instancedAttributes = [
+      'fontSize',
+      'fontFamily',
+      'fontWeight',
+      'textBaseline',
+      'letterSpacing',
+    ];
+    // fontStack & fontSize should be same
+    if (
+      instance.parsedStyle.metrics.font !== object.parsedStyle.metrics.font ||
+      instancedAttributes.some((name) => instance.parsedStyle[name] !== object.parsedStyle[name])
+    ) {
+      return false;
+    }
+
+    return true;
   }
 }
