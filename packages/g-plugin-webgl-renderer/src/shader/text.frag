@@ -21,7 +21,7 @@ void main() {
   lowp vec4 color = u_Color;
   lowp float buff = (256.0 - 64.0) / 256.0;
   float opacity = u_FillOpacity;
-  if (u_HasStroke && u_StrokeWidth > 0.0) {
+  if (u_HasStroke > 0.5 && u_StrokeWidth > 0.0) {
     color = u_StrokeColor;
     gamma = (u_StrokeBlur * 1.19 / SDF_PX + EDGE_GAMMA) / (fontScale * u_GammaScale);
     buff = (6.0 - u_StrokeWidth / fontScale / 2.0) / SDF_PX;

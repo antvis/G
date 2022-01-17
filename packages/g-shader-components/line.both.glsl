@@ -13,7 +13,6 @@ layout(std140) uniform ub_ObjectParams {
   vec4 u_PickingColor;
   float u_Dash;
   float u_Gap;
-  vec2 u_Anchor;
   float u_DashOffset;
   float u_Visible;
   float u_ZIndex;

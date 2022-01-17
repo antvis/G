@@ -119,7 +119,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           maxY,
         };
       }
-      bulk.push(rBushNode.aabb);
+
+      if (rBushNode.aabb) {
+        bulk.push(rBushNode.aabb);
+      }
     });
 
     // use bulk inserting, which is ~2-3 times faster

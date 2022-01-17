@@ -40,6 +40,26 @@ export class LightPool {
     return this.lights;
   }
 
+  /**
+   * USE_LIGHT
+   * NUM_AMBIENT_LIGHTS
+   * NUM_DIR_LIGHTS
+   */
+  getDefines(): Record<string, number | boolean> {
+    const defines = {
+      USE_LIGHT: !!this.lights.length,
+    };
+    this.lights.forEach((light) => {
+      if (!defines[light.define]) {
+        defines[light.define] = 0;
+      }
+
+      defines[light.define]++;
+    });
+
+    return defines;
+  }
+
   private sortLights() {
     this.lights.sort((a, b) => a.order - b.order);
   }

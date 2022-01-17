@@ -4,7 +4,7 @@ geometry.normal = normal;
 geometry.viewDir = u_IsOrtho == 1.0 ? vec3(0, 0, 1) : normalize(v_ViewPosition);
 
 IncidentLight directLight;
-#if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )
+#if defined( NUM_DIR_LIGHTS ) && ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )
   DirectionalLight directionalLight;
   #if defined( USE_SHADOWMAP ) && NUM_DIR_LIGHT_SHADOWS > 0
     DirectionalLightShadow directionalLightShadow;

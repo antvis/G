@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/g-site",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "G sites deployed on gh-pages",
   "files": [
     "package.json",
@@ -34,13 +34,13 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^5.0.6",
-    "@antv/g-canvas": "^1.0.5",
-    "@antv/g-components": "^1.0.5",
-    "@antv/g-plugin-3d": "^1.0.6",
-    "@antv/g-plugin-css-select": "^1.0.5",
-    "@antv/g-svg": "^1.0.5",
-    "@antv/g-webgl": "^1.0.8",
+    "@antv/g": "^5.0.7",
+    "@antv/g-canvas": "^1.0.6",
+    "@antv/g-components": "^1.0.6",
+    "@antv/g-plugin-3d": "^1.0.7",
+    "@antv/g-plugin-css-select": "^1.0.6",
+    "@antv/g-svg": "^1.0.6",
+    "@antv/g-webgl": "^1.0.9",
     "@antv/react-g": "^1.0.0",
     "@antv/gatsby-theme-antv": "^1.1.15",
     "@types/gl-matrix": "^2.4.5",
@@ -57,8 +57,8 @@
     "react-dom": "^16.0.2",
     "react-i18next": "^11.1.0",
     "react-split-pane": "^0.1.92",
-    "stats.js": "^0.17.0",
     "simplex-noise": "^3.0.0",
+    "stats.js": "^0.17.0",
     "typedoc": "^0.17.6",
     "typedoc-plugin-markdown": "^2.2.11"
   },

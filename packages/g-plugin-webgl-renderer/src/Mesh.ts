@@ -26,6 +26,7 @@ export class Mesh<GeometryProps = any> extends DisplayObject<GeometryProps & Mes
     });
 
     this.style.geometry.meshes.push(this);
+    this.style.geometry.build(this.style.geometry.meshes);
     this.style.material.meshes.push(this);
   }
 

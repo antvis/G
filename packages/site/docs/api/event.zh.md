@@ -50,17 +50,19 @@ Pointer 系列：
 
 Mouse 系列：
 
--   mousedown
--   rightdown
--   mouseup
--   mouseupoutside
--   click
--   mousemove
--   mouseover
--   mouseout
--   mouseenter
--   mouseleave
--   wheel
+-   mousedown 鼠标左键按下
+-   rightdown 鼠标右键按下
+-   mouseup 鼠标左键抬起
+-   rightup 鼠标右键抬起
+-   mouseupoutside 鼠标左键抬起时与按下时图形不同
+-   rightupoutside 鼠标右键抬起与按下时图形不同
+-   click 单击 & 双击
+-   mousemove 鼠标持续在该图形上移动
+-   mouseover 鼠标从该图形上移入，会冒泡
+-   mouseout 鼠标从该图形上移出，会冒泡
+-   mouseenter 鼠标从该图形上移入，不会冒泡
+-   mouseleave 鼠标从该图形上移出，不会冒泡
+-   wheel 滚轮
 
 Touch 系列：
 

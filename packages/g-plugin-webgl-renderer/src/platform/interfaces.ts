@@ -259,7 +259,11 @@ export interface TextureDescriptor {
   numLevels: number;
   usage: TextureUsage;
   immutable?: boolean;
-  flipY?: boolean;
+  pixelStore?: Partial<{
+    packAlignment: number;
+    unpackAlignment: number;
+    unpackFlipY: boolean;
+  }>;
 }
 
 export function makeTextureDescriptor2D(
@@ -371,6 +375,7 @@ export interface MegaStateDescriptor {
   stencilCompare: CompareMode;
   stencilWrite: boolean;
   stencilPassOp: StencilOp;
+  stencilRef: number;
   cullMode: CullMode;
   frontFace: FrontFaceMode;
   polygonOffset: boolean;

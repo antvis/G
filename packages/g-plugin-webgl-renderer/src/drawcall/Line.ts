@@ -14,18 +14,16 @@ import {
 } from '@antv/g';
 import earcut from 'earcut';
 import { vec3, mat4 } from 'gl-matrix';
-import { fillMatrix4x4, fillVec4 } from '../render/utils';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
-import { RenderInst } from '../render/RenderInst';
-import { DeviceProgram } from '../render/DeviceProgram';
 import { Batch, RENDER_ORDER_SCALE } from './Batch';
-import { ShapeRenderer } from '../tokens';
+import { ShapeMesh, ShapeRenderer } from '../tokens';
 import { Renderable3D } from '../components/Renderable3D';
-import { RenderInstList } from '../render';
 import { isNil } from '@antv/util';
-// import { FillRenderer } from './Fill';
 import vert from '../shader/line.vert';
 import frag from '../shader/line.frag';
+import meshVert from '../shader/mesh.vert';
+import meshFrag from '../shader/mesh.frag';
+import { BatchMesh } from './BatchMesh';
 
 export enum JOINT_TYPE {
   NONE = 0,
@@ -47,59 +45,287 @@ const stridePoints = 2;
 const strideFloats = 3;
 const strideBytes = 3 * 4;
 
-class LineProgram extends DeviceProgram {
-  static a_Prev = 0;
-  static a_Point1 = 0 + 1;
-  static a_Point2 = 0 + 2;
-  static a_Next = 0 + 3;
-  static a_VertexJoint = 0 + 4;
-  static a_VertexNum = 0 + 5;
-  static a_Travel = 6;
+enum LineProgram {
+  a_Prev = 0,
+  a_Point1,
+  a_Point2,
+  a_Next,
+  a_VertexJoint,
+  a_VertexNum,
+  a_Travel,
+}
 
-  static ub_ObjectParams = 1;
+enum Uniform {
+  MODEL_MATRIX = 'u_ModelMatrix',
+  COLOR = 'u_Color',
+  STROKE_COLOR = 'u_StrokeColor',
+  STROKE_WIDTH = 'u_StrokeWidth',
+  OPACITY = 'u_Opacity',
+  FILL_OPACITY = 'u_FillOpacity',
+  STROKE_OPACITY = 'u_StrokeOpacity',
+  EXPAND = 'u_Expand',
+  MITER_LIMIT = 'u_MiterLimit',
+  SCALE_MODE = 'u_ScaleMode',
+  ALIGNMENT = 'u_Alignment',
+  PICKING_COLOR = 'u_PickingColor',
+  DASH = 'u_Dash',
+  GAP = 'u_Gap',
+  DASH_OFFSET = 'u_DashOffset',
+  VISIBLE = 'u_Visible',
+  Z_INDEX = 'u_ZIndex',
+}
 
-  vert: string = vert;
+enum MeshProgram {
+  a_Position = 0,
+}
 
-  frag: string = frag;
+enum MeshUniform {
+  MODEL_MATRIX = 'u_ModelMatrix',
+  COLOR = 'u_Color',
+  PICKING_COLOR = 'u_PickingColor',
+  OPACITY = 'u_Opacity',
+  FILL_OPACITY = 'u_FillOpacity',
+  VISIBLE = 'u_Visible',
+  Z_INDEX = 'u_ZIndex',
 }
 
 @injectable({
   token: [
-    { token: ShapeRenderer, named: SHAPE.Polyline },
-    { token: ShapeRenderer, named: SHAPE.Path },
-    { token: ShapeRenderer, named: SHAPE.Polygon },
+    { token: ShapeMesh, named: SHAPE.Polyline },
+    { token: ShapeMesh, named: SHAPE.Path },
+    { token: ShapeMesh, named: SHAPE.Polygon },
   ],
 })
-export class LineRenderer extends Batch {
-  protected program = new LineProgram();
+export class LineBatchMesh extends BatchMesh {
+  protected updateMeshAttribute(
+    object: DisplayObject<any, any>,
+    index: number,
+    name: string,
+    value: any,
+  ): void {
+    const {
+      fill,
+      stroke,
+      opacity,
+      fillOpacity,
+      strokeOpacity,
+      lineWidth,
+      anchor,
+      lineDash = [],
+      lineDashOffset = 0,
+      visibility,
+    } = object.parsedStyle;
+    if (
+      name === 'lineJoin' ||
+      name === 'lineCap' ||
+      (object.nodeName === SHAPE.Line &&
+        (name === 'x1' || name === 'y1' || name === 'x2' || name === 'y2')) ||
+      (object.nodeName === SHAPE.Polyline && name === 'points') ||
+      (object.nodeName === SHAPE.Polygon && name === 'points') ||
+      (object.nodeName === SHAPE.Path && name === 'path')
+    ) {
+      // need re-calc geometry
+      this.material.geometryDirty = true;
+      this.material.programDirty = true;
+    } else if (name === 'stroke') {
+      let strokeColor: Tuple4Number = [0, 0, 0, 0];
+      if (stroke?.type === PARSED_COLOR_TYPE.Constant) {
+        strokeColor = stroke.value;
+      }
+      this.material.updateUniformData(Uniform.STROKE_COLOR, strokeColor);
+    } else if (name === 'opacity') {
+      this.material.updateUniformData(Uniform.OPACITY, opacity);
+    } else if (name === 'fillOpacity') {
+      this.material.updateUniformData(Uniform.FILL_OPACITY, fillOpacity);
+    } else if (name === 'strokeOpacity') {
+      this.material.updateUniformData(Uniform.STROKE_OPACITY, strokeOpacity);
+    } else if (name === 'lineWidth') {
+      this.material.updateUniformData(Uniform.STROKE_WIDTH, lineWidth);
+    } else if (name === 'anchor' || name === 'modelMatrix') {
+      let translateX = 0;
+      let translateY = 0;
+      const contentBounds = object.getGeometryBounds();
+      if (contentBounds) {
+        const { halfExtents } = contentBounds;
+        translateX = -halfExtents[0] * anchor[0] * 2;
+        translateY = -halfExtents[1] * anchor[1] * 2;
+      }
+      const m = mat4.create();
+      mat4.mul(
+        m,
+        object.getWorldTransform(), // apply anchor
+        mat4.fromTranslation(m, vec3.fromValues(translateX, translateY, 0)),
+      );
 
-  instanced = false;
-
-  needFill = false;
-  triangles: number[];
-
-  // private fillRenderer: FillRenderer;
-
-  validate(object: DisplayObject) {
-    return false;
+      this.material.updateUniformData(Uniform.MODEL_MATRIX, [
+        [m[0], m[1], m[2], m[3]],
+        [m[4], m[5], m[6], m[7]],
+        [m[8], m[9], m[10], m[11]],
+        [m[12], m[13], m[14], m[15]],
+      ]);
+    } else if (name === 'visibility') {
+      this.material.updateUniformData(Uniform.VISIBLE, visibility === 'visible' ? 1 : 0);
+    } else if (name === 'lineDash') {
+      this.material.updateUniformData(Uniform.DASH, lineDash[0] || 0);
+      this.material.updateUniformData(Uniform.GAP, lineDash[1] || 0);
+    } else if (name === 'lineDashOffset') {
+      this.material.updateUniformData(Uniform.DASH_OFFSET, lineDashOffset);
+    }
   }
 
-  buildGeometry() {
-    const geometry = this.geometry;
+  changeRenderOrder(object: DisplayObject, index: number, renderOrder: number) {
+    this.material.addUniform({
+      name: Uniform.Z_INDEX,
+      format: Format.F32_R,
+      data: renderOrder * RENDER_ORDER_SCALE,
+    });
+  }
 
-    // use triangles for Polygon
-    let { triangles, pointsBuffer, travelBuffer, instanceCount } = this.updateBuffer(this.instance);
-    if (triangles && triangles.length) {
-      this.needFill = true;
-      this.triangles = triangles;
+  protected createMaterial(objects: DisplayObject[]): void {
+    this.material.vertexShader = vert;
+    this.material.fragmentShader = frag;
 
-      // create a submesh
-      // this.fillRenderer = new FillRenderer();
-      // this.fillRenderer.init(this.device, this.renderingService);
-      // this.fillRenderer.geometry.setIndices();
+    const instance = objects[0];
+
+    const {
+      fill,
+      stroke,
+      opacity,
+      fillOpacity,
+      strokeOpacity,
+      lineWidth,
+      anchor,
+      lineDash = [],
+      lineDashOffset = 0,
+      visibility,
+    } = instance.parsedStyle;
+    let fillColor: Tuple4Number = [0, 0, 0, 0];
+    if (fill?.type === PARSED_COLOR_TYPE.Constant) {
+      fillColor = fill.value;
+    }
+    let strokeColor: Tuple4Number = [0, 0, 0, 0];
+    if (stroke?.type === PARSED_COLOR_TYPE.Constant) {
+      strokeColor = stroke.value;
     }
 
-    geometry.setVertexBuffer({
+    // @ts-ignore
+    const encodedPickingColor = instance.renderable3D?.encodedPickingColor || [0, 0, 0];
+    let translateX = 0;
+    let translateY = 0;
+    const contentBounds = instance.getGeometryBounds();
+    if (contentBounds) {
+      const { halfExtents } = contentBounds;
+      translateX = -halfExtents[0] * anchor[0] * 2;
+      translateY = -halfExtents[1] * anchor[1] * 2;
+    }
+
+    const m = mat4.create();
+    mat4.mul(
+      m,
+      instance.getWorldTransform(), // apply anchor
+      mat4.fromTranslation(m, vec3.fromValues(translateX, translateY, 0)),
+    );
+
+    this.material.addUniform({
+      name: Uniform.MODEL_MATRIX,
+      format: Format.F32_RGBA,
+      data: [
+        [m[0], m[1], m[2], m[3]],
+        [m[4], m[5], m[6], m[7]],
+        [m[8], m[9], m[10], m[11]],
+        [m[12], m[13], m[14], m[15]],
+      ],
+    });
+    this.material.addUniform({
+      name: Uniform.COLOR,
+      format: Format.F32_RGBA,
+      data: fillColor,
+    });
+    this.material.addUniform({
+      name: Uniform.STROKE_COLOR,
+      format: Format.F32_RGBA,
+      data: strokeColor,
+    });
+    this.material.addUniform({
+      name: Uniform.STROKE_WIDTH,
+      format: Format.F32_R,
+      data: lineWidth,
+    });
+    this.material.addUniform({
+      name: Uniform.OPACITY,
+      format: Format.F32_R,
+      data: opacity,
+    });
+    this.material.addUniform({
+      name: Uniform.FILL_OPACITY,
+      format: Format.F32_R,
+      data: fillOpacity,
+    });
+    this.material.addUniform({
+      name: Uniform.STROKE_OPACITY,
+      format: Format.F32_R,
+      data: strokeOpacity,
+    });
+    this.material.addUniform({
+      name: Uniform.EXPAND,
+      format: Format.F32_R,
+      data: 1,
+    });
+    this.material.addUniform({
+      name: Uniform.MITER_LIMIT,
+      format: Format.F32_R,
+      data: 5,
+    });
+    this.material.addUniform({
+      name: Uniform.SCALE_MODE,
+      format: Format.F32_R,
+      data: 1,
+    });
+    this.material.addUniform({
+      name: Uniform.ALIGNMENT,
+      format: Format.F32_R,
+      data: 0.5,
+    });
+    this.material.addUniform({
+      name: Uniform.PICKING_COLOR,
+      format: Format.F32_RGBA,
+      data: encodedPickingColor,
+    });
+    this.material.addUniform({
+      name: Uniform.DASH,
+      format: Format.F32_R,
+      data: lineDash[0] || 0,
+    });
+    this.material.addUniform({
+      name: Uniform.GAP,
+      format: Format.F32_R,
+      data: lineDash[1] || 0,
+    });
+    this.material.addUniform({
+      name: Uniform.DASH_OFFSET,
+      format: Format.F32_R,
+      data: lineDashOffset,
+    });
+    this.material.addUniform({
+      name: Uniform.VISIBLE,
+      format: Format.F32_R,
+      data: visibility === 'visible' ? 1 : 0,
+    });
+    this.material.addUniform({
+      name: Uniform.Z_INDEX,
+      format: Format.F32_R,
+      data: instance.sortable.renderOrder * RENDER_ORDER_SCALE,
+    });
+    this.material.cullMode = CullMode.None;
+  }
+
+  protected createGeometry(objects: DisplayObject[]): void {
+    const instance = objects[0];
+
+    // use triangles for Polygon
+    let { pointsBuffer, travelBuffer, instanceCount } = updateBuffer(instance);
+
+    this.bufferGeometry.setVertexBuffer({
       bufferIndex: 0,
       byteStride: 4 * (3 + 3 + 3 + 3),
       frequency: VertexBufferFrequency.PerInstance,
@@ -142,7 +368,7 @@ export class LineRenderer extends Batch {
       ],
       data: new Float32Array(pointsBuffer),
     });
-    geometry.setVertexBuffer({
+    this.bufferGeometry.setVertexBuffer({
       bufferIndex: 1,
       byteStride: 4 * 1,
       frequency: VertexBufferFrequency.PerInstance,
@@ -157,7 +383,7 @@ export class LineRenderer extends Batch {
       ],
       data: new Float32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]),
     });
-    geometry.setVertexBuffer({
+    this.bufferGeometry.setVertexBuffer({
       bufferIndex: 2,
       byteStride: 4 * 1,
       frequency: VertexBufferFrequency.PerInstance,
@@ -173,69 +399,54 @@ export class LineRenderer extends Batch {
       data: new Float32Array(travelBuffer),
     });
 
-    geometry.vertexCount = 15;
-    geometry.instancedCount = instanceCount;
+    this.bufferGeometry.vertexCount = 15;
+    this.bufferGeometry.instancedCount = instanceCount;
 
-    geometry.setIndices(new Uint32Array([0, 2, 1, 0, 3, 2, 4, 6, 5, 4, 7, 6, 4, 7, 8]));
+    this.bufferGeometry.setIndices(new Uint32Array([0, 2, 1, 0, 3, 2, 4, 6, 5, 4, 7, 6, 4, 7, 8]));
+  }
+}
+
+@injectable({
+  token: [{ token: ShapeMesh, named: 'Fill' }],
+})
+export class FillBatchMesh extends BatchMesh {
+  protected createGeometry(objects: DisplayObject<any, any>[]): void {
+    const instance = objects[0];
+
+    // use triangles for Polygon
+    const { triangles, pointsBuffer } = updateBuffer(instance, true);
+    this.bufferGeometry.setVertexBuffer({
+      bufferIndex: 0,
+      byteStride: 4 * 2,
+      frequency: VertexBufferFrequency.PerVertex,
+      attributes: [
+        {
+          format: Format.F32_RG,
+          bufferByteOffset: 4 * 0,
+          byteStride: 4 * 2,
+          location: MeshProgram.a_Position,
+        },
+      ],
+      data: new Float32Array(pointsBuffer),
+    });
+    this.bufferGeometry.vertexCount = triangles.length;
+    this.bufferGeometry.setIndices(new Uint32Array(triangles));
   }
 
-  /**
-   * use another draw call for fill
-   */
-  afterRender(list: RenderInstList) {
-    const { fill } = this.instance.parsedStyle;
-    if (this.needFill) {
-      // console.log(fill, this.triangles);
-      // this.fillRenderer.render(list);
-    }
-  }
+  protected createMaterial(objects: DisplayObject<any, any>[]): void {
+    this.material.vertexShader = meshVert;
+    this.material.fragmentShader = meshFrag;
 
-  changeRenderOrder(object: DisplayObject, renderOrder: number) {
-    this.geometryDirty = true;
-  }
+    const instance = objects[0];
 
-  updateAttribute(object: DisplayObject, name: string, value: any): void {
-    super.updateAttribute(object, name, value);
-
-    if (
-      name === 'lineJoin' ||
-      name === 'lineCap' ||
-      (object.nodeName === SHAPE.Line &&
-        (name === 'x1' || name === 'y1' || name === 'x2' || name === 'y2')) ||
-      (object.nodeName === SHAPE.Polyline && name === 'points') ||
-      (object.nodeName === SHAPE.Polygon && name === 'points') ||
-      (object.nodeName === SHAPE.Path && name === 'path')
-    ) {
-      this.geometryDirty = true;
-    }
-  }
-
-  uploadUBO(renderInst: RenderInst): void {
-    const instance = this.objects[0];
-
-    const {
-      fill,
-      stroke,
-      opacity,
-      fillOpacity,
-      strokeOpacity,
-      lineWidth,
-      anchor,
-      lineDash = [],
-      lineDashOffset = 0,
-      visibility,
-    } = instance.parsedStyle;
+    const { fill, opacity, fillOpacity, anchor, visibility } = instance.parsedStyle;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (fill?.type === PARSED_COLOR_TYPE.Constant) {
       fillColor = fill.value;
     }
-    let strokeColor: Tuple4Number = [0, 0, 0, 0];
-    if (stroke?.type === PARSED_COLOR_TYPE.Constant) {
-      strokeColor = stroke.value;
-    }
 
     // @ts-ignore
-    const encodedPickingColor = (instance.renderable3D as Renderable3D).encodedPickingColor;
+    const encodedPickingColor = instance.renderable3D?.encodedPickingColor || [0, 0, 0];
     let translateX = 0;
     let translateY = 0;
     const contentBounds = instance.getGeometryBounds();
@@ -245,179 +456,133 @@ export class LineRenderer extends Batch {
       translateY = -halfExtents[1] * anchor[1] * 2;
     }
 
-    // Upload to our UBO.
-    let offs = renderInst.allocateUniformBuffer(LineProgram.ub_ObjectParams, 16 + 4 * 7);
-    const d = renderInst.mapUniformBufferF32(LineProgram.ub_ObjectParams);
     const m = mat4.create();
     mat4.mul(
       m,
       instance.getWorldTransform(), // apply anchor
       mat4.fromTranslation(m, vec3.fromValues(translateX, translateY, 0)),
     );
-    offs += fillMatrix4x4(d, offs, m);
-    offs += fillVec4(d, offs, ...(fillColor as [number, number, number, number]));
-    offs += fillVec4(d, offs, ...(strokeColor as [number, number, number, number]));
-    offs += fillVec4(d, offs, lineWidth, opacity, fillOpacity, strokeOpacity);
-    offs += fillVec4(d, offs, 1, 5, 1, 0.5); // u_Expand u_MiterLimit u_ScaleMode u_Alignment
-    offs += fillVec4(d, offs, ...encodedPickingColor);
-    offs += fillVec4(d, offs, lineDash[0] || 0, lineDash[1] || 0, translateX, translateY); // u_Dash u_Gap u_Anchor
-    offs += fillVec4(
-      d,
-      offs,
-      lineDashOffset,
-      visibility === 'visible' ? 1 : 0,
-      instance.sortable.renderOrder * RENDER_ORDER_SCALE,
-    ); // u_DashOffset u_Visible u_ZIndex
 
-    // keep both faces
-    renderInst.setMegaStateFlags({
-      cullMode: CullMode.None,
+    this.material.addUniform({
+      name: Uniform.MODEL_MATRIX,
+      format: Format.F32_RGBA,
+      data: [
+        [m[0], m[1], m[2], m[3]],
+        [m[4], m[5], m[6], m[7]],
+        [m[8], m[9], m[10], m[11]],
+        [m[12], m[13], m[14], m[15]],
+      ],
+    });
+    this.material.addUniform({
+      name: Uniform.COLOR,
+      format: Format.F32_RGBA,
+      data: fillColor,
+    });
+    this.material.addUniform({
+      name: Uniform.PICKING_COLOR,
+      format: Format.F32_RGBA,
+      data: encodedPickingColor,
+    });
+    this.material.addUniform({
+      name: Uniform.OPACITY,
+      format: Format.F32_R,
+      data: opacity,
+    });
+    this.material.addUniform({
+      name: Uniform.FILL_OPACITY,
+      format: Format.F32_R,
+      data: fillOpacity,
+    });
+    this.material.addUniform({
+      name: Uniform.VISIBLE,
+      format: Format.F32_R,
+      data: visibility === 'visible' ? 1 : 0,
+    });
+    this.material.addUniform({
+      name: Uniform.Z_INDEX,
+      format: Format.F32_R,
+      data: instance.sortable.renderOrder * RENDER_ORDER_SCALE,
     });
   }
-
-  private updateBuffer(object: DisplayObject) {
-    const { lineCap, lineJoin, defX, defY, lineDash } = object.parsedStyle;
-
-    let points: number[] = [];
-    let triangles: number[] = [];
-    if (object.nodeName === SHAPE.Polyline || object.nodeName === SHAPE.Polygon) {
-      points = (object as Polyline).parsedStyle.points.points.reduce((prev, cur) => {
-        prev.push(cur[0] - defX, cur[1] - defY);
-        return prev;
-      }, [] as number[]);
-
-      // TODO: close polygon, dealing with extra joint
-      if (object.nodeName === SHAPE.Polygon) {
-        points.push(points[0], points[1]);
-
-        // use earcut for triangulation
-        triangles = earcut(points, [], 2);
+  protected updateMeshAttribute(
+    object: DisplayObject<any, any>,
+    index: number,
+    name: string,
+    value: any,
+  ): void {
+    const { fill, opacity, fillOpacity, anchor, visibility } = object.parsedStyle;
+    if (
+      name === 'lineJoin' ||
+      name === 'lineCap' ||
+      (object.nodeName === SHAPE.Line &&
+        (name === 'x1' || name === 'y1' || name === 'x2' || name === 'y2')) ||
+      (object.nodeName === SHAPE.Polyline && name === 'points') ||
+      (object.nodeName === SHAPE.Polygon && name === 'points') ||
+      (object.nodeName === SHAPE.Path && name === 'path')
+    ) {
+      // need re-calc geometry
+      this.material.geometryDirty = true;
+      this.material.programDirty = true;
+    } else if (name === 'fill') {
+      let fillColor: Tuple4Number = [0, 0, 0, 0];
+      if (fill?.type === PARSED_COLOR_TYPE.Constant) {
+        fillColor = fill.value;
       }
-    } else if (object.nodeName === SHAPE.Path) {
-      const {
-        path: { curve, totalLength },
-      } = (object as Path).parsedStyle;
-      let startPoint: [number, number];
-      curve.forEach(([command, ...params]) => {
-        if (command === 'M') {
-          points.push(params[0] - defX, params[1] - defY);
-          startPoint = [params[0] - defX, params[1] - defY];
-        } else if (command === 'C') {
-          curveTo(
-            params[0] - defX,
-            params[1] - defY,
-            params[2] - defX,
-            params[3] - defY,
-            params[4] - defX,
-            params[5] - defY,
-            totalLength,
-            points,
-          );
-        } else if (command === 'Z') {
-          points.push(startPoint[0], startPoint[1]);
-        }
-      });
-    }
-
-    const jointType = this.jointType(lineJoin);
-    const capType = this.capType(lineCap);
-    let endJoint = capType;
-    if (capType === JOINT_TYPE.CAP_ROUND) {
-      endJoint = JOINT_TYPE.JOINT_CAP_ROUND;
-    }
-    if (capType === JOINT_TYPE.CAP_BUTT) {
-      endJoint = JOINT_TYPE.JOINT_CAP_BUTT;
-    }
-    if (capType === JOINT_TYPE.CAP_SQUARE) {
-      endJoint = JOINT_TYPE.JOINT_CAP_SQUARE;
-    }
-
-    let j = (Math.round(0 / stridePoints) + 2) * strideFloats;
-
-    const needDash = !isNil(lineDash);
-    let dist = 0;
-    const pointsBuffer = [];
-    const travelBuffer = [];
-    for (let i = 0; i < points.length; i += stridePoints) {
-      // calc travel
-      if (needDash) {
-        if (i > 1) {
-          dist += Math.sqrt(
-            Math.pow(points[i] - points[i - 2], 2) + Math.pow(points[i + 1] - points[i + 1 - 2], 2),
-          );
-        }
-        travelBuffer.push(0, dist, dist, 0, dist, dist, dist, dist, dist);
-      } else {
-        travelBuffer.push(0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this.material.updateUniformData(Uniform.COLOR, fillColor);
+    } else if (name === 'opacity') {
+      this.material.updateUniformData(Uniform.OPACITY, opacity);
+    } else if (name === 'fillOpacity') {
+      this.material.updateUniformData(Uniform.FILL_OPACITY, fillOpacity);
+    } else if (name === 'anchor' || name === 'modelMatrix') {
+      let translateX = 0;
+      let translateY = 0;
+      const contentBounds = object.getGeometryBounds();
+      if (contentBounds) {
+        const { halfExtents } = contentBounds;
+        translateX = -halfExtents[0] * anchor[0] * 2;
+        translateY = -halfExtents[1] * anchor[1] * 2;
       }
+      const m = mat4.create();
+      mat4.mul(
+        m,
+        object.getWorldTransform(), // apply anchor
+        mat4.fromTranslation(m, vec3.fromValues(translateX, translateY, 0)),
+      );
 
-      pointsBuffer[j++] = points[i];
-      pointsBuffer[j++] = points[i + 1];
-      pointsBuffer[j] = jointType;
-      if (i == 0 && capType !== JOINT_TYPE.CAP_ROUND) {
-        pointsBuffer[j] += capType;
-      }
-      if (i + stridePoints * 2 >= points.length) {
-        pointsBuffer[j] += endJoint - jointType;
-      } else if (i + stridePoints >= points.length) {
-        pointsBuffer[j] = 0;
-      }
-      j++;
+      this.material.updateUniformData(Uniform.MODEL_MATRIX, [
+        [m[0], m[1], m[2], m[3]],
+        [m[4], m[5], m[6], m[7]],
+        [m[8], m[9], m[10], m[11]],
+        [m[12], m[13], m[14], m[15]],
+      ]);
+    } else if (name === 'visibility') {
+      this.material.updateUniformData(Uniform.VISIBLE, visibility === 'visible' ? 1 : 0);
     }
-    pointsBuffer[j++] = points[points.length - 4];
-    pointsBuffer[j++] = points[points.length - 3];
-    pointsBuffer[j++] = 0;
-    pointsBuffer[0] = points[0];
-    pointsBuffer[1] = points[1];
-    pointsBuffer[2] = 0;
-    pointsBuffer[3] = points[2];
-    pointsBuffer[4] = points[3];
-    pointsBuffer[5] = capType === JOINT_TYPE.CAP_ROUND ? capType : 0;
+  }
+  changeRenderOrder(object: DisplayObject, index: number, renderOrder: number) {
+    this.material.addUniform({
+      name: Uniform.Z_INDEX,
+      format: Format.F32_R,
+      data: renderOrder * RENDER_ORDER_SCALE,
+    });
+  }
+}
 
-    const instanceCount = Math.round(points.length / stridePoints);
-
-    return {
-      pointsBuffer,
-      travelBuffer,
-      triangles,
-      instanceCount,
-    };
+@injectable({
+  token: [
+    { token: ShapeRenderer, named: SHAPE.Polyline },
+    { token: ShapeRenderer, named: SHAPE.Path },
+    { token: ShapeRenderer, named: SHAPE.Polygon },
+  ],
+})
+export class LineRenderer extends Batch {
+  protected createBatchMeshList(): void {
+    this.batchMeshList.push(this.meshFactory('Fill'));
+    this.batchMeshList.push(this.meshFactory(SHAPE.Path));
   }
 
-  private jointType(lineJoin: LINE_JOIN) {
-    let joint: number;
-
-    switch (lineJoin) {
-      case LINE_JOIN.Bevel:
-        joint = JOINT_TYPE.JOINT_BEVEL;
-        break;
-      case LINE_JOIN.Round:
-        joint = JOINT_TYPE.JOINT_ROUND;
-        break;
-      default:
-        joint = JOINT_TYPE.JOINT_MITER;
-        break;
-    }
-
-    return joint;
-  }
-
-  private capType(lineCap: LINE_CAP) {
-    let cap: number;
-
-    switch (lineCap) {
-      case LINE_CAP.Square:
-        cap = JOINT_TYPE.CAP_SQUARE;
-        break;
-      case LINE_CAP.Round:
-        cap = JOINT_TYPE.CAP_ROUND;
-        break;
-      default:
-        cap = JOINT_TYPE.CAP_BUTT;
-        break;
-    }
-
-    return cap;
+  validate(object: DisplayObject) {
+    return false;
   }
 }
 
@@ -482,4 +647,168 @@ function segmentsCount(length: number, defaultSegments = 20) {
   // }
 
   return result;
+}
+
+function updateBuffer(object: DisplayObject, needEarcut = false) {
+  const { lineCap, lineJoin, defX, defY, lineDash } = object.parsedStyle;
+
+  let points: number[] = [];
+  let triangles: number[] = [];
+  if (object.nodeName === SHAPE.Polyline || object.nodeName === SHAPE.Polygon) {
+    points = (object as Polyline).parsedStyle.points.points.reduce((prev, cur) => {
+      prev.push(cur[0] - defX, cur[1] - defY);
+      return prev;
+    }, [] as number[]);
+
+    // TODO: close polygon, dealing with extra joint
+    if (object.nodeName === SHAPE.Polygon) {
+      if (needEarcut) {
+        // use earcut for triangulation
+        triangles = earcut(points, [], 2);
+        return {
+          pointsBuffer: points,
+          travelBuffer: [],
+          triangles,
+          instanceCount: Math.round(points.length / stridePoints),
+        };
+      } else {
+        points.push(points[0], points[1]);
+      }
+    }
+  } else if (object.nodeName === SHAPE.Path) {
+    const {
+      path: { curve, totalLength },
+    } = (object as Path).parsedStyle;
+    let startPoint: [number, number];
+    curve.forEach(([command, ...params]) => {
+      if (command === 'M') {
+        points.push(params[0] - defX, params[1] - defY);
+        startPoint = [params[0] - defX, params[1] - defY];
+      } else if (command === 'C') {
+        curveTo(
+          params[0] - defX,
+          params[1] - defY,
+          params[2] - defX,
+          params[3] - defY,
+          params[4] - defX,
+          params[5] - defY,
+          totalLength,
+          points,
+        );
+      } else if (command === 'Z') {
+        points.push(startPoint[0], startPoint[1]);
+      }
+    });
+
+    if (needEarcut) {
+      // use earcut for triangulation
+      triangles = earcut(points, [], 2);
+      return {
+        pointsBuffer: points,
+        travelBuffer: [],
+        triangles,
+        instanceCount: Math.round(points.length / stridePoints),
+      };
+    }
+  }
+
+  const jointType = getJointType(lineJoin);
+  const capType = getCapType(lineCap);
+  let endJoint = capType;
+  if (capType === JOINT_TYPE.CAP_ROUND) {
+    endJoint = JOINT_TYPE.JOINT_CAP_ROUND;
+  }
+  if (capType === JOINT_TYPE.CAP_BUTT) {
+    endJoint = JOINT_TYPE.JOINT_CAP_BUTT;
+  }
+  if (capType === JOINT_TYPE.CAP_SQUARE) {
+    endJoint = JOINT_TYPE.JOINT_CAP_SQUARE;
+  }
+
+  let j = (Math.round(0 / stridePoints) + 2) * strideFloats;
+
+  const needDash = !isNil(lineDash);
+  let dist = 0;
+  const pointsBuffer = [];
+  const travelBuffer = [];
+  for (let i = 0; i < points.length; i += stridePoints) {
+    // calc travel
+    if (needDash) {
+      if (i > 1) {
+        dist += Math.sqrt(
+          Math.pow(points[i] - points[i - 2], 2) + Math.pow(points[i + 1] - points[i + 1 - 2], 2),
+        );
+      }
+      travelBuffer.push(0, dist, dist, 0, dist, dist, dist, dist, dist);
+    } else {
+      travelBuffer.push(0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+
+    pointsBuffer[j++] = points[i];
+    pointsBuffer[j++] = points[i + 1];
+    pointsBuffer[j] = jointType;
+    if (i == 0 && capType !== JOINT_TYPE.CAP_ROUND) {
+      pointsBuffer[j] += capType;
+    }
+    if (i + stridePoints * 2 >= points.length) {
+      pointsBuffer[j] += endJoint - jointType;
+    } else if (i + stridePoints >= points.length) {
+      pointsBuffer[j] = 0;
+    }
+    j++;
+  }
+  pointsBuffer[j++] = points[points.length - 4];
+  pointsBuffer[j++] = points[points.length - 3];
+  pointsBuffer[j++] = 0;
+  pointsBuffer[0] = points[0];
+  pointsBuffer[1] = points[1];
+  pointsBuffer[2] = 0;
+  pointsBuffer[3] = points[2];
+  pointsBuffer[4] = points[3];
+  pointsBuffer[5] = capType === JOINT_TYPE.CAP_ROUND ? capType : 0;
+
+  const instanceCount = Math.round(points.length / stridePoints);
+
+  return {
+    pointsBuffer,
+    travelBuffer,
+    triangles,
+    instanceCount,
+  };
+}
+
+function getJointType(lineJoin: LINE_JOIN) {
+  let joint: number;
+
+  switch (lineJoin) {
+    case LINE_JOIN.Bevel:
+      joint = JOINT_TYPE.JOINT_BEVEL;
+      break;
+    case LINE_JOIN.Round:
+      joint = JOINT_TYPE.JOINT_ROUND;
+      break;
+    default:
+      joint = JOINT_TYPE.JOINT_MITER;
+      break;
+  }
+
+  return joint;
+}
+
+function getCapType(lineCap: LINE_CAP) {
+  let cap: number;
+
+  switch (lineCap) {
+    case LINE_CAP.Square:
+      cap = JOINT_TYPE.CAP_SQUARE;
+      break;
+    case LINE_CAP.Round:
+      cap = JOINT_TYPE.CAP_ROUND;
+      break;
+    default:
+      cap = JOINT_TYPE.CAP_BUTT;
+      break;
+  }
+
+  return cap;
 }

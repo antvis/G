@@ -311,8 +311,6 @@ void main() {
       v_Travel = a_Travel + dot(pos - pointA, vec2(-norm.y, norm.x));
   }
 
-  // pos += u_Anchor;
-
   gl_Position = u_ProjectionMatrix * u_ViewMatrix * vec4(pos, u_ZIndex, 1.0);
 
   setPickingColor(u_PickingColor.xyz);

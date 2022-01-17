@@ -2,6 +2,42 @@
 
 以下版本号以 @antv/g 为准。
 
+## [5.0.7] - 2022-1-17
+
+-   @antv/g-canvas@1.0.6
+-   @antv/g-components@1.0.6
+-   @antv/g-math@1.0.6
+-   @antv/g-plugin-3d@1.0.7
+-   @antv/g-plugin-canvas-picker@1.0.6
+-   @antv/g-plugin-canvas-renderer@1.0.6
+-   @antv/g-plugin-control@1.0.7
+-   @antv/g-plugin-css-select@1.0.6
+-   @antv/g-plugin-dom-interaction@1.0.6
+-   @antv/g-plugin-gpgpu@1.0.6
+-   @antv/g-plugin-html-renderer@1.0.6
+-   @antv/g-plugin-svg-picker@1.0.6
+-   @antv/g-plugin-svg-renderer@1.0.6
+-   @antv/g-plugin-webgl-renderer@1.0.9
+-   @antv/g-shader-components@1.0.4
+-   @antv/g-svg@1.0.6
+-   @antv/g-webgl@1.0.9
+-   @antv/g-webgpu-compiler@1.0.6
+-   @antv/g@5.0.7
+
+### 新增特性
+
+-   [g-webgl] 支持基础几何 https://antv-g-next.gitee.io/zh/docs/api/3d/geometry
+-   [g-webgl] 支持基础材质 https://antv-g-next.gitee.io/zh/docs/api/3d/material https://github.com/antvis/g/issues/826
+-   [g-webgl] 支持平行光 https://antv-g-next.gitee.io/zh/docs/api/3d/light
+-   [g-webgl] 支持 clipPath。https://github.com/antvis/g/issues/825
+
+### Bug 修复
+
+-   [g-webgl] 内置 potpack https://github.com/antvis/g/issues/836
+-   [g-webgl] 使用 depth buffer 实现 z-index 特性 https://github.com/antvis/g/issues/842
+-   [g-canvas] 修复插入 RTree 节点时获取包围盒 undefined 的问题
+-   [g-canvas] 修复同时设置 Text 的 letterSpacing 与 textAlign 属性的问题 https://github.com/antvis/g/issues/854
+
 ## [1.0.0-alpha.37] - 2021-12-02
 
 ### Bug 修复

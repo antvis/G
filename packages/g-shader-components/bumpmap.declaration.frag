@@ -1,4 +1,4 @@
-#ifdef USE_BUMPMAP
+#if defined(USE_BUMPMAP) && defined(USE_LIGHT)
   uniform sampler2D u_BumpMap;
 
   // Bump Mapping Unparametrized Surfaces on the GPU by Morten S. Mikkelsen

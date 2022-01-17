@@ -15,7 +15,7 @@ export type PositionedGlyph = {
 export const BASE_FONT_WIDTH = 24;
 export const BASE_FONT_BUFFER = 3;
 
-const fontsize = BASE_FONT_WIDTH; // Font size in pixels
+const fontSize = BASE_FONT_WIDTH; // Font size in pixels
 const buffer = BASE_FONT_BUFFER; // Whitespace buffer around a glyph in pixels
 const radius = 8; // How many pixels around the glyph shape to use for encoding distance
 const cutoff = 0.25; // How much of the radius (relative) is used for the inside part the glyph
@@ -120,6 +120,7 @@ export class GlyphManager {
     fontStack: string = '',
     fontFamily: string,
     fontWeight: 'normal' | 'bold' | 'bolder' | 'lighter' | number,
+    fontStyle: string = '',
     text: string,
     device: Device,
   ) {
@@ -138,7 +139,7 @@ export class GlyphManager {
     if (newChars.length) {
       const glyphMap = newChars
         .map((char) => {
-          return this.generateSDF(fontStack, fontFamily, fontWeight.toString(), char);
+          return this.generateSDF(fontStack, fontFamily, fontWeight.toString(), fontStyle, char);
         })
         .reduce((prev, cur) => {
           // @ts-ignore
@@ -159,6 +160,10 @@ export class GlyphManager {
 
       this.glyphAtlasTexture = device.createTexture({
         ...makeTextureDescriptor2D(Format.ALPHA, atlasWidth, atlasHeight, 1),
+        pixelStore: {
+          unpackFlipY: false,
+          unpackAlignment: 1,
+        },
         immutable: false,
       });
       this.glyphAtlasTexture.setImageData([data], 0);
@@ -169,6 +174,7 @@ export class GlyphManager {
     fontStack: string = '',
     fontFamily: string,
     fontWeight: string,
+    fontStyle: string,
     char: string,
   ): StyleGlyph {
     const charCode = char.charCodeAt(0);
@@ -177,7 +183,15 @@ export class GlyphManager {
       // 创建 SDF
       sdfGenerator = this.sdfGeneratorCache[fontStack] =
         // TODO: use OffscreenCanvas in TextService
-        new TinySDF(fontsize, buffer, radius, cutoff, fontFamily, fontWeight);
+        new TinySDF({
+          fontSize,
+          fontFamily,
+          fontWeight,
+          fontStyle,
+          buffer,
+          radius,
+          cutoff,
+        });
     }
 
     if (!this.textMetricsCache[fontStack]) {
@@ -187,25 +201,30 @@ export class GlyphManager {
     if (!this.textMetricsCache[fontStack][char]) {
       // 使用 mapbox/tiny-sdf 中的 context
       // @see https://stackoverflow.com/questions/46126565/how-to-get-font-glyphs-metrics-details-in-javascript
+      // @ts-ignore
       this.textMetricsCache[fontStack][char] = sdfGenerator.ctx.measureText(char).width;
     }
+
+    // use sdf 2.x @see https://github.com/mapbox/tiny-sdf
+    const { data, width, height, glyphWidth, glyphHeight, glyphLeft, glyphTop, glyphAdvance } =
+      sdfGenerator.draw(char);
 
     return {
       id: charCode,
       // 在 canvas 中绘制字符，使用 Uint8Array 存储 30*30 sdf 数据
       bitmap: new AlphaImage(
         {
-          width: BASE_FONT_BUFFER * 2 + BASE_FONT_WIDTH,
-          height: BASE_FONT_BUFFER * 2 + BASE_FONT_WIDTH,
+          width,
+          height,
         },
-        sdfGenerator.draw(char),
+        data,
       ),
       metrics: {
-        width: BASE_FONT_WIDTH,
-        height: BASE_FONT_WIDTH,
-        left: 0,
-        top: -2,
-        advance: isCJK(charCode) ? BASE_FONT_WIDTH : this.textMetricsCache[fontStack][char],
+        width: glyphWidth,
+        height: glyphHeight,
+        left: glyphLeft,
+        top: glyphTop - BASE_FONT_WIDTH + BASE_FONT_BUFFER,
+        advance: glyphAdvance,
       },
     };
   }

@@ -22,6 +22,6 @@ void main() {
   float u_dash_ratio = v_Dash.w;
   gl_FragColor.a = gl_FragColor.a
     // * blur
-    * u_Opacity
+    * u_Opacity * u_StrokeOpacity
     * ceil(mod(v_Dash.x + u_dash_offset, u_dash_array) - (u_dash_array * u_dash_ratio));
 }

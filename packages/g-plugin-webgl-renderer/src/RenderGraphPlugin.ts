@@ -9,7 +9,6 @@ import {
   ElementEvent,
   FederatedEvent,
   DisplayObject,
-  Renderable,
   SHAPE,
   DefaultCamera,
   Camera,
@@ -18,31 +17,25 @@ import {
   Tuple4Number,
 } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-import { Batch } from './drawcall';
-// import { Geometry3D } from './components/Geometry3D';
-// import { Material3D } from './components/Material3D';
+import { BatchManager } from './drawcall';
 import { Renderable3D } from './components/Renderable3D';
 import { WebGLRendererPluginOptions } from './interfaces';
-import { pushFXAAPass } from './passes/FXAA';
-import { useCopyPass } from './passes/Copy';
+// import { pushFXAAPass } from './passes/FXAA';
+// import { useCopyPass } from './passes/Copy';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { BlendFactor, BlendMode, Device, SwapChain, Texture } from './platform';
-import { reverseDepthForClearValue, setAttachmentStateSimple } from './platform/utils';
+import { setAttachmentStateSimple } from './platform/utils';
 import { Device_GL } from './platform/webgl2/Device';
 import { Device_WebGPU } from './platform/webgpu/Device';
 import { RGAttachmentSlot, RGGraphBuilder } from './render/interfaces';
 import { RenderHelper } from './render/RenderHelper';
 import { RenderInstList } from './render/RenderInstList';
-import { RGRenderTargetDescription } from './render/RenderTargetDescription';
-import { fillMatrix4x4, fillVec3v, fillVec4, fillVec4v } from './render/utils';
-import { TransparentBlack, TransparentWhite, colorNewFromRGBA } from './utils/color';
-import { isWebGL2 } from './platform/webgl2/utils';
-import { RendererFactory } from './tokens';
+import { fillMatrix4x4, fillVec3v, fillVec4 } from './render/utils';
+import { TransparentWhite, colorNewFromRGBA } from './utils/color';
 import {
   AntialiasingMode,
   makeAttachmentClearDescriptor,
   makeBackbufferDescSimple,
-  opaqueBlackFullClearRenderPassDescriptor,
   opaqueWhiteFullClearRenderPassDescriptor,
 } from './render/RenderGraphHelpers';
 // import init from '../../../rust/pkg/glsl_wgsl_compiler';
@@ -71,20 +64,18 @@ export class RenderGraphPlugin implements RenderingPlugin {
   @inject(PickingIdGenerator)
   private pickingIdGenerator: PickingIdGenerator;
 
-  @inject(RendererFactory)
-  private rendererFactory: (shape: string) => Batch;
-
   @inject(RenderHelper)
   private renderHelper: RenderHelper;
 
   @inject(LightPool)
   private lightPool: LightPool;
 
+  @inject(BatchManager)
+  private batchManager: BatchManager;
+
   private device: Device;
 
   private swapChain: SwapChain;
-
-  private batches: Batch[] = [];
 
   private renderLists = {
     skyscape: new RenderInstList(),
@@ -133,6 +124,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.renderingContext.root.ownerDocument.defaultView.on(CanvasEvent.RESIZE, () => {
         this.swapChain.configureSwapChain($canvas.width, $canvas.height);
       });
+
+      this.batchManager.attach(this.device, renderingService);
     });
 
     renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
@@ -152,13 +145,14 @@ export class RenderGraphPlugin implements RenderingPlugin {
     });
 
     /**
-     * build frame graph at begining of each frame
+     * build frame graph at the beginning of each frame
      */
     renderingService.hooks.beginFrame.tap(RenderGraphPlugin.tag, () => {
       const canvas = this.swapChain.getCanvas();
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
 
+      // use canvas.background
       const clearColor = this.canvasConfig.background
         ? colorNewFromRGBA(...(parseColor(this.canvasConfig.background).value as Tuple4Number))
         : TransparentWhite;
@@ -169,12 +163,13 @@ export class RenderGraphPlugin implements RenderingPlugin {
         backbufferHeight: canvas.height,
         antialiasingMode: AntialiasingMode.None,
       };
-      // create main rt
+      // create main Color RT
       const mainRenderDesc = makeBackbufferDescSimple(
         RGAttachmentSlot.Color0,
         renderInput,
         makeAttachmentClearDescriptor(clearColor),
       );
+      // create main Depth RT
       const mainDepthDesc = makeBackbufferDescSimple(
         RGAttachmentSlot.DepthStencil,
         renderInput,
@@ -253,7 +248,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       renderInstManager.setCurrentRenderInstList(this.renderLists.world);
       // render batches
-      this.batches.forEach((batch) => {
+      this.batchManager.getBatches().forEach((batch) => {
         batch.render(this.renderLists.world);
       });
 
@@ -267,28 +262,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.render.tap(RenderGraphPlugin.tag, (object: DisplayObject) => {
-      if (object.nodeName === SHAPE.Group) {
-        return;
-      }
-
-      // @ts-ignore
-      const renderable3d = object.renderable3D;
-      if (renderable3d && !renderable3d.batchId) {
-        let existed = this.batches.find((batch) => batch.checkBatchable(object));
-        if (!existed) {
-          existed = this.rendererFactory(object.nodeName);
-
-          if (existed) {
-            existed.init(this.device, renderingService);
-            this.batches.push(existed);
-          }
-        }
-
-        if (existed) {
-          existed.merge(object);
-          renderable3d.batchId = existed.id;
-        }
-      }
+      this.batchManager.add(object);
     });
 
     const handleMounted = (e: FederatedEvent) => {
@@ -329,20 +303,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
         return;
       }
 
-      // @ts-ignore
-      const renderable3D = object.renderable3D;
-      if (renderable3D && renderable3D.batchId) {
-        const existedIndex = this.batches.findIndex((batch) => batch.id === renderable3D.batchId);
-        const existed = this.batches[existedIndex];
-        if (existed) {
-          existed.purge(object);
-
-          // remove batch
-          if (existed.objects.length === 0) {
-            this.batches.splice(existedIndex, 1);
-          }
-        }
-      }
+      this.batchManager.remove(object);
 
       // @ts-ignore
       delete object.renderable3D;
@@ -355,27 +316,13 @@ export class RenderGraphPlugin implements RenderingPlugin {
     const handleAttributeChanged = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       const { attributeName, newValue } = e.detail;
-      // @ts-ignore
-      const renderable3D = object.renderable3D;
-      if (renderable3D) {
-        const batch = this.batches.find((batch) => renderable3D.batchId === batch.id);
-        if (batch) {
-          batch.updateAttribute(object, attributeName, newValue);
-        }
-      }
+      this.batchManager.updateAttribute(object, attributeName, newValue);
     };
 
     const handleRenderOrderChanged = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       const { renderOrder } = e.detail;
-      // @ts-ignore
-      const renderable3D = object.renderable3D;
-      if (renderable3D) {
-        const batch = this.batches.find((batch) => renderable3D.batchId === batch.id);
-        if (batch) {
-          batch.changeRenderOrder(object, renderOrder);
-        }
-      }
+      this.batchManager.changeRenderOrder(object, renderOrder);
     };
   }
 
@@ -399,6 +346,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
   private createSwapChainForWebGL($canvas: HTMLCanvasElement, targets: string[]) {
     const options: WebGLContextAttributes = {
       antialias: false,
+      // @see https://stackoverflow.com/questions/27746091/preservedrawingbuffer-false-is-it-worth-the-effort
       preserveDrawingBuffer: false,
       // @see https://webglfundamentals.org/webgl/lessons/webgl-qna-how-to-use-the-stencil-buffer.html
       stencil: true,

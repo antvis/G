@@ -1,6 +1,9 @@
 import { mat4 } from 'gl-matrix';
 import { CompareMode } from '../interfaces';
 
+/**
+ * @see https://forum.babylonjs.com/t/reverse-depth-buffer-z-buffer/6905/2
+ */
 export const IsDepthReversed = true;
 
 export function reverseDepthForPerspectiveProjectionMatrix(

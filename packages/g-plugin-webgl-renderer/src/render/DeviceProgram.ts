@@ -1,6 +1,6 @@
-import { Device, Program, VendorInfo } from '../platform';
+import { VendorInfo } from '../platform';
 import { assert, nullify } from '../platform/utils';
-import { preprocessShader_GLSL, ShaderFeature, ShaderFeatureMap } from '../shader/compiler';
+import { preprocessShader_GLSL, ShaderFeatureMap } from '../shader/compiler';
 
 export class DeviceProgram {
   name: string = '(unnamed)';
@@ -17,8 +17,6 @@ export class DeviceProgram {
   features: ShaderFeatureMap = {
     MRT: true,
   };
-
-  dirty = true;
 
   definesChanged(): void {
     this.preprocessedVert = '';
