@@ -1,71 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+    <title>Show 3D shapes WebGL</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
-  <title>Show 3D shapes WebGL</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+      html,
+      body {
+        height: 100%;
+      }
 
-    html,
-    body {
-      height: 100%;
-    }
+      #container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
 
-    #container {
-      width: 100%;
-      height: 100%;
-    }
-  </style>
-</head>
+  <body>
+    <div id="container"></div>
 
-<body>
-  <div id="container"></div>
+    <script src="../packages/g/dist/index.umd.min.js" type="application/javascript"></script>
+    <script src="../packages/g-webgl/dist/index.umd.min.js" type="application/javascript"></script>
+    <script
+      src="../packages/g-plugin-3d/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../packages/g-plugin-control/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script>
+      const { Canvas, CanvasEvent } = window.G;
+      const { MeshBasicMaterial, CubeGeometry, Mesh, Plugin } = window.G['3D'];
+      const webglRenderer = new window.G.WebGL.Renderer();
 
-  <script src="../packages/g/dist/index.umd.js" type="application/javascript"></script>
-  <script src="../packages/g-webgl/dist/index.umd.js" type="application/javascript"></script>
-  <script src="../packages/g-plugin-3d/dist/index.umd.js" type="application/javascript"></script>
-  <script>
-    const { Canvas, CanvasEvent } = window.G;
-    const { Cube, Plugin } = window.G['3D'];
-    const webglRenderer = new window.G.WebGL.Renderer();
+      webglRenderer.registerPlugin(new Plugin());
+      webglRenderer.registerPlugin(new window.G.Control.Plugin());
 
-    webglRenderer.registerPlugin(new Plugin());
+      const canvas = new Canvas({
+        container: 'container',
+        width: 600,
+        height: 500,
+        renderer: webglRenderer,
+      });
 
-    const canvas = new Canvas({
-      container: 'container',
-      width: 600,
-      height: 500,
-      renderer: webglRenderer,
-    });
+      const cubeGeometry = new CubeGeometry();
+      const basicMaterial = new MeshBasicMaterial({
+        // wireframe: true,
+        map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
+      });
 
-    const camera = canvas.getCamera();
-    camera.setPosition(300, 20, 500);
+      const cube = new Mesh({
+        style: {
+          fill: '#1890FF',
+          opacity: 1,
+          width: 200,
+          height: 200,
+          depth: 200,
+          geometry: cubeGeometry,
+          material: basicMaterial,
+        },
+      });
 
-    // create a cube
-    const cube = new Cube({
-      style: {
-        width: 200,
-        height: 200,
-        depth: 200,
-        fill: '#1890FF',
-        map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
-      },
-    });
-    cube.setPosition(300, 250, 0);
+      cube.setPosition(300, 250, 0);
 
-    // add a cube to canvas
-    canvas.appendChild(cube);
+      canvas.appendChild(cube);
 
-    canvas.on(CanvasEvent.AFTER_RENDER, () => {
-      cube.rotate(0, 1, 0);
-    });
-  </script>
-</body>
-
+      canvas.on(CanvasEvent.AFTER_RENDER, () => {
+        cube.rotate(0, 1, 0);
+      });
+    </script>
+  </body>
 </html>

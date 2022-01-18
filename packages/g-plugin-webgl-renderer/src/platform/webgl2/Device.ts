@@ -620,7 +620,7 @@ export class Device_GL implements SwapChain, Device {
         return isWebGL2(this.gl) ? GL.UNSIGNED_INT_24_8 : GL.UNSIGNED_SHORT;
       case FormatTypeFlags.D24S8:
         // @see https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_depth_texture
-        return GL.UNSIGNED_INT_24_8;
+        return isWebGL2(this.gl) ? GL.UNSIGNED_INT_24_8 : GL.UNSIGNED_INT_24_8_WEBGL;
       case FormatTypeFlags.D32FS8:
         return GL.FLOAT_32_UNSIGNED_INT_24_8_REV;
       default:

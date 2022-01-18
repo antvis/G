@@ -1,3 +1,4 @@
+import { getAttributeLocations } from '../../shader/compiler';
 import { ResourceType, Program, ProgramDescriptorSimple } from '../interfaces';
 import { assert, getUniformSetter, parseUniformName } from '../utils';
 import { Device_GL } from './Device';
@@ -23,7 +24,7 @@ export class Program_GL extends ResourceBase_GL implements Program {
   uniformSetters: Record<string, any> = {};
   attributes: {
     name: string;
-    location: number;
+    location: number; // getAttribLocation()
     type: number;
     size: number;
   }[] = [];
@@ -85,22 +86,25 @@ export class Program_GL extends ResourceBase_GL implements Program {
     const gl = this.device.gl;
     const count = gl.getProgramParameter(this.gl_program, gl.ACTIVE_ATTRIBUTES);
 
+    const locations = getAttributeLocations(this.descriptor.vert);
     for (let index = 0; index < count; index++) {
       const { name, type, size } = gl.getActiveAttrib(this.gl_program, index);
       const location = gl.getAttribLocation(this.gl_program, name);
+
+      const definedLocation = locations.find((l) => l.name === name)?.location;
       // Add only user provided attributes, for built-in attributes like
       // `gl_InstanceID` locaiton will be < 0
       if (location >= 0) {
-        this.attributes.push({
+        this.attributes[definedLocation] = {
           name,
           location,
           type,
           size,
-        });
+        };
       }
     }
 
-    this.attributes.sort((a, b) => a.location - b.location);
+    // this.attributes.sort((a, b) => a.location - b.location);
   }
 
   private readUniformLocationsFromLinkedProgram() {

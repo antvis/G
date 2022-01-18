@@ -1,94 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
-  <title>Picking</title>
-  <script src="https://unpkg.com/stats.js@0.17.0/build/stats.min.js" type="application/javascript"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      height: 100%;
-    }
-
-    #container {
-      width: 100%;
-      height: 100%;
-    }
-  </style>
-</head>
-
-<body>
-  <div id="container"></div>
-  
-  <script src="../packages/g/dist/index.umd.js" type="application/javascript"></script>
-  <script src="../packages/g-canvas/dist/index.umd.js" type="application/javascript"></script>
-  <script src="../packages/g-svg/dist/index.umd.js" type="application/javascript"></script>
-  <script src="../packages/g-webgl/dist/index.umd.js" type="application/javascript"></script>
-  <script>
-    // stats
-    const stats = new Stats();
-    stats.showPanel(0);
-    const $stats = stats.dom;
-    $stats.style.position = 'absolute';
-    $stats.style.left = '0px';
-    $stats.style.top = '0px';
-    const $wrapper = document.getElementById('container');
-    $wrapper.appendChild($stats);
-  
-    const { Circle, Rect, Ellipse, Image, Line, Polyline, Path, Polygon, Text, Canvas, CanvasEvent } = window.G;
-
-    // create a renderer
-    const canvasRenderer = new window.G.Canvas2D.Renderer();
-    const svgRenderer = new window.G.SVG.Renderer();
-    const webglRenderer = new window.G.WebGL.Renderer();
-
-    // create a canvas
-    const canvas = new Canvas({
-      container: 'container',
-      width: 600,
-      height: 500,
-      renderer: webglRenderer,
-      // renderer: canvasRenderer,
-    });
-    canvas.on(CanvasEvent.AFTER_RENDER, () => {
-      if (stats) {
-        stats.update();
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+    <title>Picking</title>
+    <script
+      src="https://unpkg.com/stats.js@0.17.0/build/stats.min.js"
+      type="application/javascript"
+    ></script>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
-      camera.rotate(0, 0, 0.1);
-    });
-    
-    const camera = canvas.getCamera();
-    for (let i = 0; i < 1000; i++) {
-      const circle = new Circle({
-        style: {
-          x: Math.random() * 600,
-          y: Math.random() * 500,
-          r: 20 + Math.random() * 10,
-          fill: '#1890FF',
-          stroke: '#F04864',
-          lineWidth: 4,
-        },
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      #container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+
+    <script src="../packages/g/dist/index.umd.min.js" type="application/javascript"></script>
+    <script src="../packages/g-canvas/dist/index.umd.min.js" type="application/javascript"></script>
+    <script src="../packages/g-svg/dist/index.umd.min.js" type="application/javascript"></script>
+    <script src="../packages/g-webgl/dist/index.umd.min.js" type="application/javascript"></script>
+    <script>
+      // stats
+      const stats = new Stats();
+      stats.showPanel(0);
+      const $stats = stats.dom;
+      $stats.style.position = 'absolute';
+      $stats.style.left = '0px';
+      $stats.style.top = '0px';
+      const $wrapper = document.getElementById('container');
+      $wrapper.appendChild($stats);
+
+      const {
+        Circle,
+        Rect,
+        Ellipse,
+        Image,
+        Line,
+        Polyline,
+        Path,
+        Polygon,
+        Text,
+        Canvas,
+        CanvasEvent,
+      } = window.G;
+
+      // create a renderer
+      const canvasRenderer = new window.G.Canvas2D.Renderer();
+      const svgRenderer = new window.G.SVG.Renderer();
+      const webglRenderer = new window.G.WebGL.Renderer();
+
+      // create a canvas
+      const canvas = new Canvas({
+        container: 'container',
+        width: 600,
+        height: 500,
+        renderer: webglRenderer,
+        // renderer: canvasRenderer,
+      });
+      canvas.on(CanvasEvent.AFTER_RENDER, () => {
+        if (stats) {
+          stats.update();
+        }
+        camera.rotate(0, 0, 0.1);
       });
 
-      canvas.appendChild(circle);
+      const camera = canvas.getCamera();
+      for (let i = 0; i < 1000; i++) {
+        const circle = new Circle({
+          style: {
+            x: Math.random() * 600,
+            y: Math.random() * 500,
+            r: 20 + Math.random() * 10,
+            fill: '#1890FF',
+            stroke: '#F04864',
+            lineWidth: 4,
+          },
+        });
 
-      circle.on('mouseenter', () => {
-        circle.attr('fill', '#2FC25B');
-      });
+        canvas.appendChild(circle);
 
-      circle.on('mouseleave', () => {
-        circle.attr('fill', '#1890FF');
-      });
-    }
-  </script>
-</body>
+        circle.on('mouseenter', () => {
+          circle.attr('fill', '#2FC25B');
+        });
 
+        circle.on('mouseleave', () => {
+          circle.attr('fill', '#1890FF');
+        });
+      }
+    </script>
+  </body>
 </html>

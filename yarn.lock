@@ -4170,6 +4170,19 @@
   dependencies:
     unist-util-visit "^1.4.1"
 
+"@mapbox/hast-util-to-jsx@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/hast-util-to-jsx/-/hast-util-to-jsx-1.0.0.tgz#90ce46b0d2dde42d5ea4d4a1e0b26b9ce2215013"
+  integrity sha512-HJRp3qkr0uGIBFASzA8rVATLo6y/UoOMoD8eXsG8HVofk5Dokc9PV+dh266zYLZniYgtpJbc2+AKf1fNpsVqAA==
+  dependencies:
+    kebab-case "^1.0.0"
+    postcss "^7.0.31"
+    postcss-js "^2.0.3"
+    property-information "^5.5.0"
+    react-attr-converter "^0.3.1"
+    stringify-entities "^3.0.1"
+    stringify-object "^3.3.0"
+
 "@mapbox/tiny-sdf@^2.0.4":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@mapbox/tiny-sdf/-/tiny-sdf-2.0.4.tgz#497d7153a61b7cef4638b9e9e91cd37403dead07"

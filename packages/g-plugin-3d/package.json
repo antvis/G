@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
-  "unpkg": "dist/index.umd.js",
+  "unpkg": "dist/index.umd.min.js",
   "files": [
     "package.json",
     "dist",

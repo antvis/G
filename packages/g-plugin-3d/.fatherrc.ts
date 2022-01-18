@@ -12,6 +12,7 @@ export default {
   ],
   umd: {
     name: 'G.3D',
+    minFile: true,
     globals: {
       '@antv/g': 'window.G',
       'mana-syringe': 'window.G.ManaSyringe',

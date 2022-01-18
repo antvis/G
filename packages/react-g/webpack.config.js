@@ -13,6 +13,6 @@ module.exports = {
   output: {
     library: ['ReactG'],
     libraryTarget: 'umd',
-    filename: 'index.umd.js',
+    filename: 'index.umd.min.js',
   },
 };

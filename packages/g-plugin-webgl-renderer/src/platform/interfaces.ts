@@ -339,6 +339,8 @@ export interface BindingsDescriptor {
 }
 
 export interface ProgramDescriptorSimple {
+  vert?: string;
+  frag?: string;
   preprocessedVert?: string;
   preprocessedFrag?: string;
   preprocessedCompute?: string;
