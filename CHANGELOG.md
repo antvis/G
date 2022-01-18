@@ -2,6 +2,35 @@
 
 以下版本号以 @antv/g 为准。
 
+## [5.0.8] - 2022-1-18
+
+-   @antv/g-canvas@1.0.7
+-   @antv/g-components@1.0.7
+-   @antv/g-math@1.0.7
+-   @antv/g-plugin-3d@1.0.8
+-   @antv/g-plugin-canvas-picker@1.0.7
+-   @antv/g-plugin-canvas-renderer@1.0.7
+-   @antv/g-plugin-control@1.0.8
+-   @antv/g-plugin-css-select@1.0.7
+-   @antv/g-plugin-dom-interaction@1.0.7
+-   @antv/g-plugin-gpgpu@1.0.7
+-   @antv/g-plugin-html-renderer@1.0.7
+-   @antv/g-plugin-svg-picker@1.0.7
+-   @antv/g-plugin-svg-renderer@1.0.7
+-   @antv/g-plugin-webgl-renderer@1.0.10
+-   @antv/g-shader-components@1.0.5
+-   @antv/g-svg@1.0.7
+-   @antv/g-webgl@1.0.10
+-   @antv/g-webgpu-compiler@1.0.7
+-   @antv/g@5.0.8
+-   @antv/react-g@1.0.1
+
+无新增特性。重命名 `dist/index.umd.js` -> `dist/index.umd.min.js`
+
+### Bug 修复
+
+修复 `g-plugin-3d` UMD 打包问题。
+
 ## [5.0.7] - 2022-1-17
 
 -   @antv/g-canvas@1.0.6
