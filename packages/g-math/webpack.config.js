@@ -5,6 +5,6 @@ module.exports = {
   output: {
     library: ['G', 'Math'],
     libraryTarget: 'umd',
-    filename: 'index.umd.js',
+    filename: 'index.umd.min.js',
   },
 };

@@ -26,6 +26,20 @@ function defineStr(k: string, v: string): string {
   return `#define ${k} ${v}`;
 }
 
+export function getAttributeLocations(vert: string): { location: number; name: string }[] {
+  'layout(location = 0) attribute vec4 a_ModelMatrix0;';
+
+  const locations = [];
+  vert.replace(
+    /^\s*layout\(location\s*=\s*(\d*)\)\s*attribute\s*vec\d*\s*(.*);$/gm,
+    (_, location, name) => {
+      locations.push({ location: Number(location), name });
+      return '';
+    },
+  );
+  return locations;
+}
+
 export function preprocessShader_GLSL(
   vendorInfo: VendorInfo,
   type: 'vert' | 'frag',

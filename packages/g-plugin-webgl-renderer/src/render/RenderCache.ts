@@ -41,7 +41,9 @@ function programDescriptorSimpleEquals(
 function programDescriptorSimpleCopy(a: ProgramDescriptorSimple): ProgramDescriptorSimple {
   const preprocessedVert = a.preprocessedVert;
   const preprocessedFrag = a.preprocessedFrag;
-  return { preprocessedVert, preprocessedFrag };
+  const vert = a.vert;
+  const frag = a.frag;
+  return { preprocessedVert, preprocessedFrag, vert, frag };
 }
 
 function renderBindingLayoutHash(hash: number, a: BindingLayoutDescriptor): number {
@@ -182,14 +184,6 @@ export class RenderCache {
       const descriptorCopy = programDescriptorSimpleCopy(programDescriptorSimple);
       program = this.device.createProgramSimple(descriptorCopy);
       this.programCache.add(descriptorCopy, program);
-
-      // // TODO(jstpierre): Ugliness
-      // if ('associate' in (programDescriptorSimple as any)) {
-      //   const gfxProgramDescriptor = programDescriptorSimple as ProgramDescriptor;
-      //   // @ts-ignore
-      //   gfxProgramDescriptor.associate(this.device, program);
-      //   (descriptorCopy as any).orig = gfxProgramDescriptor;
-      // }
     }
 
     return program;

@@ -85,7 +85,7 @@
   },
   "limit-size": [
     {
-      "path": "packages/g/dist/index.umd.js",
+      "path": "packages/g/dist/index.umd.min.js",
       "limit": "150 Kb",
       "gzip": true
     }

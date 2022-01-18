@@ -1,11 +1,11 @@
 {
   "name": "@antv/g-webgpu-compiler",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A compiler transpiling *.g to GLSL/WGSL",
   "main": "lib/index.js",
   "module": "es/index.js",
   "types": "es/index.d.ts",
-  "unpkg": "dist/index.umd.js",
+  "unpkg": "dist/index.umd.min.js",
   "files": [
     "package.json",
     "dist",

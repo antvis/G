@@ -68,7 +68,7 @@ module.exports = {
     output: {
         library: ['G', 'Canvas2D'], // 暴露 window.G.Canvas2D
         libraryTarget: 'umd',
-        filename: 'index.umd.js',
+        filename: 'index.umd.min.js',
     },
 };
 ```

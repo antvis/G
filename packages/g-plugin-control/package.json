@@ -1,11 +1,11 @@
 {
   "name": "@antv/g-plugin-control",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A G plugin for orbit control",
   "main": "lib/index.js",
   "module": "es/index.js",
   "types": "es/index.d.ts",
-  "unpkg": "dist/index.umd.js",
+  "unpkg": "dist/index.umd.min.js",
   "files": [
     "package.json",
     "dist",

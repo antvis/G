@@ -1,3 +1,4 @@
+import { isNil } from '@antv/util';
 import { getFormatCompByteSize } from '../format';
 import {
   BufferUsage,
@@ -64,44 +65,46 @@ export class InputState_GL extends ResourceBase_GL implements InputState {
 
       const { format, divisor = 1, byteStride, bufferByteOffset, bufferIndex } = attr;
       // find location by name in WebGL1
-      const location = isWebGL2(gl) ? attr.location : program.attributes[i].location;
+      const location = isWebGL2(gl) ? attr.location : program.attributes[attr.location]?.location;
 
-      if (isFormatSizedInteger(format)) {
-        // See https://groups.google.com/d/msg/angleproject/yQb5DaCzcWg/Ova0E3wcAQAJ for more info.
-        // console.warn("Vertex format uses sized integer types; this will cause a shader recompile on ANGLE platforms");
-        // debugger;
-      }
-
-      const { size, type, normalized } = translateVertexFormat(format);
-      const vertexBuffer = vertexBuffers[bufferIndex];
-      if (vertexBuffer === null) continue;
-
-      const inputLayoutBuffer = assertExists(inputLayout.vertexBufferDescriptors[bufferIndex]);
-
-      const buffer = vertexBuffer.buffer as Buffer_GL;
-      assert(buffer.usage === BufferUsage.Vertex);
-      gl.bindBuffer(gl.ARRAY_BUFFER, getPlatformBuffer(vertexBuffer.buffer));
-
-      const bufferOffset = vertexBuffer.byteOffset + bufferByteOffset;
-      gl.vertexAttribPointer(
-        location,
-        size,
-        type,
-        normalized,
-        byteStride || inputLayoutBuffer.byteStride,
-        bufferOffset,
-      );
-
-      if (inputLayoutBuffer.frequency === VertexBufferFrequency.PerInstance) {
-        if (isWebGL2(gl)) {
-          // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/vertexAttribDivisor
-          gl.vertexAttribDivisor(location, divisor);
-        } else {
-          device.ANGLE_instanced_arrays.vertexAttribDivisorANGLE(location, divisor);
+      if (!isNil(location)) {
+        if (isFormatSizedInteger(format)) {
+          // See https://groups.google.com/d/msg/angleproject/yQb5DaCzcWg/Ova0E3wcAQAJ for more info.
+          // console.warn("Vertex format uses sized integer types; this will cause a shader recompile on ANGLE platforms");
+          // debugger;
         }
-      }
 
-      gl.enableVertexAttribArray(location);
+        const { size, type, normalized } = translateVertexFormat(format);
+        const vertexBuffer = vertexBuffers[bufferIndex];
+        if (vertexBuffer === null) continue;
+
+        const inputLayoutBuffer = assertExists(inputLayout.vertexBufferDescriptors[bufferIndex]);
+
+        const buffer = vertexBuffer.buffer as Buffer_GL;
+        assert(buffer.usage === BufferUsage.Vertex);
+        gl.bindBuffer(gl.ARRAY_BUFFER, getPlatformBuffer(vertexBuffer.buffer));
+
+        const bufferOffset = vertexBuffer.byteOffset + bufferByteOffset;
+        gl.vertexAttribPointer(
+          location,
+          size,
+          type,
+          normalized,
+          byteStride || inputLayoutBuffer.byteStride,
+          bufferOffset,
+        );
+
+        if (inputLayoutBuffer.frequency === VertexBufferFrequency.PerInstance) {
+          if (isWebGL2(gl)) {
+            // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/vertexAttribDivisor
+            gl.vertexAttribDivisor(location, divisor);
+          } else {
+            device.ANGLE_instanced_arrays.vertexAttribDivisorANGLE(location, divisor);
+          }
+        }
+
+        gl.enableVertexAttribArray(location);
+      }
     }
 
     let indexBufferType: GLenum | null = null;

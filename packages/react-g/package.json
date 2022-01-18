@@ -1,11 +1,11 @@
 {
   "name": "@antv/react-g",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "react render for @antv/g",
   "main": "lib/index.js",
   "module": "es/index.js",
   "types": "es/index.d.ts",
-  "unpkg": "dist/index.umd.js",
+  "unpkg": "dist/index.umd.min.js",
   "files": [
     "package.json",
     "dist",
@@ -32,16 +32,16 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "devDependencies": {
+    "@types/jest": "^25.0.0",
     "@types/node": "^17.0.0",
     "@types/react-reconciler": "^0.26.0",
-    "@types/scheduler": "^0.16.0",
-    "@types/jest": "^25.0.0"
+    "@types/scheduler": "^0.16.0"
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
+    "@antv/g": "^5.0.8",
     "react-reconciler": "^0.26.2",
     "scheduler": "^0.20.2",
-    "@antv/g": "^5.0.1",
     "tslib": "^2.3.1"
   },
   "peerDependencies": {

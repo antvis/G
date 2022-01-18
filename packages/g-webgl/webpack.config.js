@@ -19,6 +19,6 @@ module.exports = {
   output: {
     library: ['G', 'WebGL'],
     libraryTarget: 'umd',
-    filename: 'index.umd.js',
+    filename: 'index.umd.min.js',
   },
 };

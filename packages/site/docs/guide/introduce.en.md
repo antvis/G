@@ -30,14 +30,17 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 
 ```html
 <!-- G 核心 -->
-<script src="https://unpkg.com/@antv/g/dist/index.umd.js" type="application/javascript"></script>
-<!-- G 渲染器，支持 Canvas2D/SVG/WebGL -->
 <script
-    src="https://unpkg.com/@antv/g-canvas/dist/index.umd.js"
+    src="https://unpkg.com/@antv/g/dist/index.umd.min.js"
     type="application/javascript"
 ></script>
-<!-- <script src="https://unpkg.com/@antv/g-svg/dist/index.umd.js" type="application/javascript"></script>
-<script src="https://unpkg.com/@antv/g-webgl/dist/index.umd.js" type="application/javascript"></script> -->
+<!-- G 渲染器，支持 Canvas2D/SVG/WebGL -->
+<script
+    src="https://unpkg.com/@antv/g-canvas/dist/index.umd.min.js"
+    type="application/javascript"
+></script>
+<!-- <script src="https://unpkg.com/@antv/g-svg/dist/index.umd.min.js" type="application/javascript"></script>
+<script src="https://unpkg.com/@antv/g-webgl/dist/index.umd.min.js" type="application/javascript"></script> -->
 ```
 
 然后就可以在 `window.G` 的命名空间下使用 [Canvas](/zh/docs/api/canvas)、[Circle](/zh/docs/api/basic/circle) 这样的核心基础对象以及 [Canvas2D.Renderer](/zh/docs/api/renderer) 这样的渲染器：
