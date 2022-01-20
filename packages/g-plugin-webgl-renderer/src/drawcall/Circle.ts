@@ -161,11 +161,18 @@ export class CircleBatchMesh extends BatchMesh {
   ],
 })
 export class CircleRenderer extends Batch {
-  protected validate() {
+  protected validate(object: DisplayObject<any, any>): boolean {
+    // cannot be merged when lineDash used
+    if (object.parsedStyle.lineDash) {
+      return false;
+    }
+
     return true;
   }
 
   protected createBatchMeshList() {
+    // draw stroke separate
     this.batchMeshList.push(this.meshFactory(SHAPE.Circle));
+    // this.batchMeshList.push(this.meshFactory(SHAPE.Path));
   }
 }

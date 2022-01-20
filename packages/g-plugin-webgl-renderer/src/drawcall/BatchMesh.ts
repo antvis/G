@@ -100,6 +100,7 @@ export abstract class BatchMesh {
         fillOpacity,
         strokeOpacity,
         lineWidth = 0,
+        lineDash,
         anchor,
         visibility,
       } = object.parsedStyle;
@@ -109,6 +110,7 @@ export abstract class BatchMesh {
       }
       let strokeColor: Tuple4Number = [0, 0, 0, 0];
       if (stroke?.type === PARSED_COLOR_TYPE.Constant) {
+        // if (object.)
         strokeColor = stroke.value;
       }
 
@@ -426,7 +428,7 @@ export abstract class BatchMesh {
       renderInst.drawPrimitives(this.geometry.vertexCount, this.geometry.primitiveStart);
     }
     // FIXME: 暂时都当作非透明物体，按照创建顺序排序
-    renderInst.sortKey = makeSortKeyOpaque(RendererLayer.OPAQUE, this.id);
+    renderInst.sortKey = makeSortKeyOpaque(RendererLayer.OPAQUE, objects[0].sortable.renderOrder);
   }
 
   protected updateBatchedAttribute(object: DisplayObject, index: number, name: string, value: any) {

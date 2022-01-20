@@ -82,6 +82,9 @@ moonOrbit.translate(100, 0);
 
 canvas.appendChild(solarSystem);
 
+// use AntV G devtools
+window.__g_instances__ = [canvas];
+
 // stats
 const stats = new Stats();
 stats.showPanel(0);

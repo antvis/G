@@ -12,6 +12,7 @@ import {
   SHAPE,
   Tuple4Number,
 } from '@antv/g';
+import { Cubic as CubicUtil } from '@antv/g-math';
 import earcut from 'earcut';
 import { vec3, mat4 } from 'gl-matrix';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
@@ -492,7 +493,6 @@ function curveTo(
   cpY2: number,
   toX: number,
   toY: number,
-  curveLength: number,
   points: Array<number>,
 ): void {
   const fromX = points[points.length - 2];
@@ -500,7 +500,8 @@ function curveTo(
 
   points.length -= 2;
 
-  const n = segmentsCount(curveLength);
+  const l = CubicUtil.length(fromX, fromY, cpX, cpY, cpX2, cpY2, toX, toY);
+  const n = segmentsCount(l);
 
   let dt = 0;
   let dt2 = 0;
@@ -529,21 +530,21 @@ function curveTo(
 
 const adaptive = true;
 const maxLength = 10;
-// const minSegments = 8;
-// const maxSegments = 2048;
+const minSegments = 8;
+const maxSegments = 2048;
 
 function segmentsCount(length: number, defaultSegments = 20) {
-  if (!adaptive || !length || isNaN(length)) {
-    return defaultSegments;
-  }
+  // if (!adaptive || !length || isNaN(length)) {
+  //   return defaultSegments;
+  // }
 
   let result = Math.ceil(length / maxLength);
 
-  // if (result < minSegments) {
-  //   result = minSegments;
-  // } else if (result > maxSegments) {
-  //   result = maxSegments;
-  // }
+  if (result < minSegments) {
+    result = minSegments;
+  } else if (result > maxSegments) {
+    result = maxSegments;
+  }
 
   return result;
 }
@@ -559,7 +560,7 @@ function updateBuffer(object: DisplayObject, needEarcut = false) {
       return prev;
     }, [] as number[]);
 
-    // TODO: close polygon, dealing with extra joint
+    // close polygon, dealing with extra joint
     if (object.nodeName === SHAPE.Polygon) {
       if (needEarcut) {
         // use earcut for triangulation
@@ -572,17 +573,18 @@ function updateBuffer(object: DisplayObject, needEarcut = false) {
         };
       } else {
         points.push(points[0], points[1]);
+        points.push(...addTailSegment(points[0], points[1], points[2], points[3]));
       }
     }
   } else if (object.nodeName === SHAPE.Path) {
     const {
-      path: { curve, totalLength },
+      path: { curve },
     } = (object as Path).parsedStyle;
-    let startPoint: [number, number];
+    let startPointIndex = -1;
     curve.forEach(([command, ...params]) => {
       if (command === 'M') {
+        startPointIndex = points.length;
         points.push(params[0] - defX, params[1] - defY);
-        startPoint = [params[0] - defX, params[1] - defY];
       } else if (command === 'C') {
         curveTo(
           params[0] - defX,
@@ -591,11 +593,18 @@ function updateBuffer(object: DisplayObject, needEarcut = false) {
           params[3] - defY,
           params[4] - defX,
           params[5] - defY,
-          totalLength,
           points,
         );
       } else if (command === 'Z') {
-        points.push(startPoint[0], startPoint[1]);
+        points.push(points[startPointIndex], points[startPointIndex + 1]);
+        points.push(
+          ...addTailSegment(
+            points[startPointIndex],
+            points[startPointIndex + 1],
+            points[startPointIndex + 2],
+            points[startPointIndex + 3],
+          ),
+        );
       }
     });
 
@@ -710,4 +719,10 @@ function getCapType(lineCap: LINE_CAP) {
   }
 
   return cap;
+}
+
+function addTailSegment(x1: number, y1: number, x2: number = x1, y2: number = y1) {
+  const vec = [x2 - x1, y2 - y1];
+  const length = 0.01;
+  return [x1 + vec[0] * length, y1 + vec[1] * length];
 }
