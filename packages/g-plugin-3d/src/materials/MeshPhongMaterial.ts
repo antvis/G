@@ -35,7 +35,9 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
   set emissive(v) {
     this.props.emissive = v;
     const emissiveColor = parseColor(v).value as Tuple4Number;
-    this.updateUniformData(Uniform.EMISSIVE, emissiveColor.slice(0, 3) as [number, number, number]);
+    this.setUniforms({
+      [Uniform.EMISSIVE]: emissiveColor.slice(0, 3) as [number, number, number],
+    });
   }
 
   get shininess() {
@@ -43,7 +45,9 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
   }
   set shininess(v) {
     this.props.shininess = v;
-    this.updateUniformData(Uniform.SHININESS, v);
+    this.setUniforms({
+      [Uniform.SHININESS]: v,
+    });
   }
 
   get specular() {
@@ -52,7 +56,9 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
   set specular(v) {
     this.props.specular = v;
     const specularColor = parseColor(v).value as Tuple4Number;
-    this.updateUniformData(Uniform.SPECULAR, specularColor.slice(0, 3) as [number, number, number]);
+    this.setUniforms({
+      [Uniform.SPECULAR]: specularColor.slice(0, 3) as [number, number, number],
+    });
   }
 
   get specularMap() {
@@ -84,14 +90,14 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
     this.defines.USE_BUMPMAP = !!v;
     if (v) {
       this.addTexture(v, Uniform.BUMP_MAP, SamplerLocation.BUMP_MAP);
-      this.addUniform({
-        name: Uniform.BUMP_SCALE,
-        format: Format.F32_R,
-        data: this.bumpScale,
+      this.setUniforms({
+        [Uniform.BUMP_SCALE]: this.bumpScale,
       });
     } else {
       this.removeTexture(Uniform.BUMP_MAP);
-      this.removeUniform(Uniform.BUMP_SCALE);
+      this.setUniforms({
+        [Uniform.BUMP_SCALE]: null,
+      });
     }
   }
   get bumpScale() {
@@ -99,7 +105,9 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
   }
   set bumpScale(v) {
     this.props.bumpScale = v;
-    this.updateUniformData(Uniform.BUMP_SCALE, v);
+    this.setUniforms({
+      [Uniform.BUMP_SCALE]: v,
+    });
   }
 
   get doubleSide() {
@@ -126,21 +134,11 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
 
     const emissiveColor = parseColor(emissive).value as Tuple4Number;
     const specularColor = parseColor(specular).value as Tuple4Number;
-    this.removeUniform('u_Placeholder');
-    this.addUniform({
-      name: Uniform.EMISSIVE,
-      format: Format.F32_RGB,
-      data: emissiveColor,
-    });
-    this.addUniform({
-      name: Uniform.SHININESS,
-      format: Format.F32_R,
-      data: shininess,
-    });
-    this.addUniform({
-      name: Uniform.SPECULAR,
-      format: Format.F32_RGB,
-      data: specularColor,
+    this.setUniforms({
+      u_Placeholder: null,
+      [Uniform.EMISSIVE]: emissiveColor.slice(0, 3) as [number, number, number],
+      [Uniform.SHININESS]: shininess,
+      [Uniform.SPECULAR]: specularColor.slice(0, 3) as [number, number, number],
     });
 
     if (specularMap) {

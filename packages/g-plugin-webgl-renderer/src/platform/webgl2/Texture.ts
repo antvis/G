@@ -71,8 +71,8 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
       if (descriptor.dimension === TextureDimension.n2D) {
         gl_target = GL.TEXTURE_2D;
         gl.bindTexture(gl_target, gl_texture);
-        if (isWebGL2(gl)) {
-          if (this.immutable) {
+        if (this.immutable) {
+          if (isWebGL2(gl)) {
             // texStorage2D will create an immutable texture(fixed size)
             // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/texStorage2D
             // @see https://github.com/visgl/luma.gl/issues/193
@@ -84,11 +84,10 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
               descriptor.width,
               descriptor.height,
             );
-          }
-        } else {
-          if (this.immutable) {
+          } else {
             // texImage2D: level must be 0 for DEPTH_COMPONENT format
-            const level = internalformat === GL.DEPTH_COMPONENT || this.isNPOT() ? 0 : numLevels;
+            // const level = internalformat === GL.DEPTH_COMPONENT || this.isNPOT() ? 0 : numLevels;
+            const level = internalformat === GL.DEPTH_COMPONENT || this.isNPOT() ? 0 : 0;
 
             // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
             gl.texImage2D(
@@ -97,7 +96,6 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
               internalformat,
               descriptor.width,
               descriptor.height,
-              // texImage2D: border != 0
               0,
               internalformat,
               gl_type,
@@ -166,10 +164,6 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     this.gl_texture = gl_texture;
     this.gl_target = gl_target;
     this.numLevels = numLevels;
-
-    if (this.mipmaps) {
-      this.generateMipmap();
-    }
   }
 
   setImageData(data: TexImageSource | ArrayBufferView[], level: number) {
@@ -190,6 +184,9 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     } else {
       width = (data as TexImageSource).width;
       height = (data as TexImageSource).height;
+      // update size
+      this.width = width;
+      this.height = height;
     }
 
     gl.bindTexture(this.gl_target, this.gl_texture);
@@ -209,7 +206,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
       // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texSubImage2D
       gl.texSubImage2D(
         this.gl_target,
-        level,
+        0,
         0,
         0,
         width,
@@ -224,7 +221,8 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
         // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
         gl.texImage2D(
           this.gl_target,
-          level,
+          // level,
+          0,
           gl_format,
           width,
           height,
@@ -238,7 +236,8 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
         // WebGL1:
         (gl as WebGLRenderingContext).texImage2D(
           this.gl_target,
-          level,
+          // level,
+          0,
           gl_format,
           gl_format,
           gl_type,
@@ -375,15 +374,16 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
 
   private generateMipmap(): this {
     const gl = this.device.gl;
-    if (this.isNPOT()) {
+    if (!isWebGL2(gl) && this.isNPOT()) {
       return this;
     }
 
-    // if (this.gl_texture && this.gl_target) {
-    //   gl.bindTexture(this.gl_target, this.gl_texture);
-    //   gl.generateMipmap(this.gl_target);
-    //   gl.bindTexture(this.gl_target, null);
-    // }
+    if (this.gl_texture && this.gl_target) {
+      gl.bindTexture(this.gl_target, this.gl_texture);
+      gl.generateMipmap(this.gl_target);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_LINEAR);
+      gl.bindTexture(this.gl_target, null);
+    }
     return this;
   }
 

@@ -22,6 +22,7 @@ import {
 } from '../platform/utils';
 import { DynamicUniformBuffer } from './DynamicUniformBuffer';
 import { RenderCache } from './RenderCache';
+import { fillVec4 } from './utils';
 
 export enum RenderInstFlags {
   Indexed = 1 << 0,
@@ -35,6 +36,11 @@ export enum RenderInstFlags {
   InheritedFlags = Indexed | AllowSkippingIfPipelineNotReady,
 }
 
+export interface RenderInstUniform {
+  name: string;
+  value: number | number[] | Float32Array;
+}
+
 export class RenderInst {
   sortKey: number = 0;
 
@@ -46,6 +52,9 @@ export class RenderInst {
 
   // Bindings building.
   private uniformBuffer: DynamicUniformBuffer;
+
+  uniforms: RenderInstUniform[][] = [];
+
   private bindingDescriptors: BindingsDescriptor[] = nArray(1, () => ({
     bindingLayout: null,
     samplerBindings: [],
@@ -109,6 +118,7 @@ export class RenderInst {
     this.renderPipelineDescriptor.sampleCount = o.renderPipelineDescriptor.sampleCount;
     this.inputState = o.inputState;
     this.uniformBuffer = o.uniformBuffer;
+    this.uniforms = o.uniforms;
     this.drawCount = o.drawCount;
     this.drawStart = o.drawStart;
     this.drawInstanceCount = o.drawInstanceCount;
@@ -219,6 +229,54 @@ export class RenderInst {
     this.drawCount = primitiveCount;
     this.drawStart = primitiveStart;
     this.drawInstanceCount = 1;
+  }
+
+  /**
+   * account for WebGL1
+   */
+  setUniforms(bufferIndex: number, uniforms: RenderInstUniform[]) {
+    // use later in WebGL1
+    this.uniforms[bufferIndex] = uniforms;
+
+    // calc buffer size
+    let offset = 0;
+    const uboBuffer = [];
+    uniforms.forEach((uniform) => {
+      const { name, value } = uniform;
+      const array = typeof value === 'number' ? [value] : value;
+      const formatByteSize = array.length > 4 ? 4 : array.length;
+
+      // std140 UBO layout
+      const emptySpace = 4 - (offset % 4);
+      if (emptySpace !== 4) {
+        if (emptySpace >= formatByteSize) {
+        } else {
+          offset += emptySpace;
+          for (let j = 0; j < emptySpace; j++) {
+            uboBuffer.push(0); // padding
+          }
+        }
+      }
+
+      offset += array.length;
+
+      uboBuffer.push(...array);
+    });
+
+    // padding
+    const emptySpace = 4 - (uboBuffer.length % 4);
+    if (emptySpace !== 4) {
+      for (let j = 0; j < emptySpace; j++) {
+        uboBuffer.push(0);
+      }
+    }
+
+    // upload UBO
+    let offs = this.allocateUniformBuffer(bufferIndex, uboBuffer.length);
+    let d = this.mapUniformBufferF32(bufferIndex);
+    for (let i = 0; i < uboBuffer.length; i += 4) {
+      offs += fillVec4(d, offs, uboBuffer[i], uboBuffer[i + 1], uboBuffer[i + 2], uboBuffer[i + 3]);
+    }
   }
 
   setUniformBuffer(uniformBuffer: DynamicUniformBuffer): void {

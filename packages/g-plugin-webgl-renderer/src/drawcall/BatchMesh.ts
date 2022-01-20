@@ -34,6 +34,7 @@ import {
   RendererLayer,
   RenderHelper,
   RenderInst,
+  RenderInstUniform,
   TextureMapping,
 } from '../render';
 import { preprocessProgramObj_GLSL, ProgramDescriptorSimpleWithOrig } from '../shader/compiler';
@@ -41,6 +42,8 @@ import { AttributeLocation, RENDER_ORDER_SCALE, Batch } from './Batch';
 import { TexturePool } from '../TexturePool';
 import { Fog } from '../lights';
 import { LightPool } from '../LightPool';
+import { Program_GL } from '../platform/webgl2/Program';
+import { isWebGL2 } from '../platform/webgl2/utils';
 
 let counter = 1;
 const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
@@ -422,7 +425,8 @@ export abstract class BatchMesh {
       // drawArrays
       renderInst.drawPrimitives(this.geometry.vertexCount, this.geometry.primitiveStart);
     }
-    renderInst.sortKey = makeSortKeyOpaque(RendererLayer.OPAQUE, program.id);
+    // FIXME: 暂时都当作非透明物体，按照创建顺序排序
+    renderInst.sortKey = makeSortKeyOpaque(RendererLayer.OPAQUE, this.id);
   }
 
   protected updateBatchedAttribute(object: DisplayObject, index: number, name: string, value: any) {
@@ -596,8 +600,6 @@ export abstract class BatchMesh {
   protected beforeUploadUBO(renderInst: RenderInst, objects: DisplayObject[], i: number): void {}
   private uploadUBO(renderInst: RenderInst): void {
     let numUniformBuffers = 1; // Scene UBO
-    let wordCount = 0;
-
     const material = this.material;
     const lights = this.lightPool.getAllLights();
     const fog = this.lightPool.getFog();
@@ -605,41 +607,39 @@ export abstract class BatchMesh {
     const useLight = !!lights.length;
     const useWireframe = material.defines.USE_WIREFRAME;
 
-    // materials
-    wordCount += material.uboBuffer.length;
-    if (useWireframe) {
-      wordCount += 4; // u_WireframeLineColor & u_WireframeLineWidth
-    }
-    // add fog
-    if (useFog) {
-      wordCount += 8;
-    }
-    if (useLight) {
-      wordCount += lights.reduce((prev, cur) => prev + cur.getUniformWordCount(), 0);
-    }
-
-    let offs = renderInst.allocateUniformBuffer(numUniformBuffers, wordCount);
-    const d = renderInst.mapUniformBufferF32(numUniformBuffers);
+    // collect uniforms
+    const uniforms = [];
     if (useWireframe) {
       const wireframeColor = parseColor(material.wireframeColor).value as Tuple4Number;
-      offs += fillVec4(
-        d,
-        offs,
-        ...(wireframeColor.slice(0, 3) as [number, number, number]),
-        material.wireframeLineWidth,
-      ); // u_WireframeLineColor & u_WireframeLineWidth
+      uniforms.push({
+        name: 'u_WireframeLineColor',
+        value: wireframeColor.slice(0, 3),
+      });
+      uniforms.push({
+        name: 'u_WireframeLineWidth',
+        value: material.wireframeLineWidth,
+      });
     }
 
     if (useFog) {
-      offs = this.uploadFog(d, offs, fog);
+      this.uploadFog(uniforms, fog);
     }
-    offs = this.uploadMaterial(d, offs, material);
+    this.uploadMaterial(uniforms, material);
 
     if (useLight) {
+      const counter: Record<string, number> = {};
       lights.forEach((light) => {
-        offs += light.uploadUBO(d, offs);
+        if (!counter[light.define]) {
+          counter[light.define] = -1;
+        }
+
+        counter[light.define]++;
+
+        light.uploadUBO(uniforms, counter[light.define]);
       });
     }
+
+    renderInst.setUniforms(numUniformBuffers, uniforms);
 
     const {
       depthCompare,
@@ -700,31 +700,42 @@ export abstract class BatchMesh {
     ]);
 
     renderInst.setSamplerBindingsFromTextureMappings(this.textureMappings);
+
+    // upload in WebGL
+    if ((renderInst.renderPipelineDescriptor.program as Program_GL).gl_program) {
+      renderInst.uniforms.forEach((uniforms) => {
+        const uniformsMap = {};
+        uniforms.forEach(({ name, value }) => {
+          uniformsMap[name] = value;
+        });
+        (renderInst.renderPipelineDescriptor.program as Program_GL).setUniforms(uniformsMap);
+      });
+    }
   }
 
-  private uploadFog(d: Float32Array, offs: number, fog: Fog) {
+  private uploadFog(uniforms: RenderInstUniform[], fog: Fog) {
     const { type, fill, start, end, density } = fog.parsedStyle;
 
     if (fill?.type === PARSED_COLOR_TYPE.Constant) {
       const fillColor = fill.value as Tuple4Number;
-      offs += fillVec4(d, offs, type, start, end, density); // u_FogInfos
-      offs += fillVec4(d, offs, ...fillColor); // u_FogColor
+      uniforms.push({
+        name: 'u_FogInfos',
+        value: [type, start, end, density],
+      });
+      uniforms.push({
+        name: 'u_FogColor',
+        value: fillColor,
+      });
     }
-    return offs;
   }
 
-  private uploadMaterial(d: Float32Array, offs: number, material: Material) {
-    for (let i = 0; i < material.uboBuffer.length; i += 4) {
-      offs += fillVec4(
-        d,
-        offs,
-        material.uboBuffer[i],
-        material.uboBuffer[i + 1],
-        material.uboBuffer[i + 2],
-        material.uboBuffer[i + 3],
-      );
-    }
-    return offs;
+  private uploadMaterial(uniforms: RenderInstUniform[], material: Material) {
+    // sort
+    const materialUniforms = Object.keys(material.uniforms).map((name) => ({
+      name,
+      value: material.uniforms[name],
+    }));
+    uniforms.push(...materialUniforms);
   }
 
   protected createFillGradientTextureMapping(objects: DisplayObject[]): TextureMapping | null {

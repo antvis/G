@@ -1,4 +1,4 @@
-import { Material, Texture2D, CullMode, IMaterial, Format } from '@antv/g-plugin-webgl-renderer';
+import { Material, Texture2D, CullMode, IMaterial } from '@antv/g-plugin-webgl-renderer';
 import vert from '../shaders/material.basic.vert';
 import frag from '../shaders/material.basic.frag';
 
@@ -80,10 +80,8 @@ export class MeshBasicMaterial<T extends IMeshBasicMaterial> extends Material<T>
     }
     this.wireframe = wireframe;
 
-    this.addUniform({
-      name: Uniform.PLACE_HOLDER,
-      format: Format.F32_RGBA,
-      data: [0, 0, 0, 0],
+    this.setUniforms({
+      [Uniform.PLACE_HOLDER]: [0, 0, 0, 0],
     });
   }
 }

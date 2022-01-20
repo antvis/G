@@ -135,50 +135,53 @@ export class Program_GL extends ResourceBase_GL implements Program {
 
   setUniforms(uniforms: Record<string, any> = {}) {
     const gl = this.device.gl;
-    gl.useProgram(this.gl_program);
 
-    for (const uniformName in uniforms) {
-      const uniform = uniforms[uniformName];
-      const uniformSetter = this.uniformSetters[uniformName];
+    if (!isWebGL2(gl)) {
+      gl.useProgram(this.gl_program);
 
-      if (uniformSetter) {
-        let value = uniform;
-        let textureUpdate = false;
+      for (const uniformName in uniforms) {
+        const uniform = uniforms[uniformName];
+        const uniformSetter = this.uniformSetters[uniformName];
 
-        uniformSetter(value);
+        if (uniformSetter) {
+          let value = uniform;
+          let textureUpdate = false;
 
-        // if (value instanceof Framebuffer) {
-        //   value = value.texture;
-        // }
-        // if (value instanceof Texture) {
-        //   textureUpdate = this.uniforms[uniformName] !== uniform;
+          uniformSetter(value);
 
-        //   if (textureUpdate) {
-        //     // eslint-disable-next-line max-depth
-        //     if (uniformSetter.textureIndex === undefined) {
-        //       uniformSetter.textureIndex = this._textureIndexCounter++;
-        //     }
+          // if (value instanceof Framebuffer) {
+          //   value = value.texture;
+          // }
+          // if (value instanceof Texture) {
+          //   textureUpdate = this.uniforms[uniformName] !== uniform;
 
-        //     // Bind texture to index
-        //     const texture = value;
-        //     const {textureIndex} = uniformSetter;
+          //   if (textureUpdate) {
+          //     // eslint-disable-next-line max-depth
+          //     if (uniformSetter.textureIndex === undefined) {
+          //       uniformSetter.textureIndex = this._textureIndexCounter++;
+          //     }
 
-        //     texture.bind(textureIndex);
-        //     value = textureIndex;
+          //     // Bind texture to index
+          //     const texture = value;
+          //     const {textureIndex} = uniformSetter;
 
-        //     this._textureUniforms[uniformName] = texture;
-        //   } else {
-        //     value = uniformSetter.textureIndex;
-        //   }
-        // } else if (this._textureUniforms[uniformName]) {
-        //   delete this._textureUniforms[uniformName];
-        // }
+          //     texture.bind(textureIndex);
+          //     value = textureIndex;
 
-        // NOTE(Tarek): uniformSetter returns whether
-        //   value had to be updated or not.
-        // if (uniformSetter(value) || textureUpdate) {
-        //   // copyUniform(this.uniforms, uniformName, uniform);
-        // }
+          //     this._textureUniforms[uniformName] = texture;
+          //   } else {
+          //     value = uniformSetter.textureIndex;
+          //   }
+          // } else if (this._textureUniforms[uniformName]) {
+          //   delete this._textureUniforms[uniformName];
+          // }
+
+          // NOTE(Tarek): uniformSetter returns whether
+          //   value had to be updated or not.
+          // if (uniformSetter(value) || textureUpdate) {
+          //   // copyUniform(this.uniforms, uniformName, uniform);
+          // }
+        }
       }
     }
 

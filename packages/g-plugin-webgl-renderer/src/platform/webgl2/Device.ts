@@ -8,6 +8,7 @@ import {
   getFormatFlags,
   FormatFlags,
 } from '..';
+import { makeStaticDataBuffer } from '../../geometries';
 import { CopyProgram } from '../../passes/Copy';
 import { TextureMapping } from '../../render';
 import { preprocessProgramObj_GLSL } from '../../shader/compiler';
@@ -204,6 +205,11 @@ export class Device_GL implements SwapChain, Device {
   readonly clipSpaceNearZ = ClipSpaceNearZ.NegativeOne;
 
   readonly supportMRT: boolean = false;
+
+  private inBlitRenderPass = false;
+  private blitRenderPipeline: RenderPipeline;
+  private blitInputState: InputState;
+  private blitBindings: Bindings;
 
   // GLimits
   /**
@@ -435,82 +441,12 @@ export class Device_GL implements SwapChain, Device {
 
     const { r, g, b, a } = OpaqueWhite;
     if (isWebGL2(gl)) {
-      // gl.clearColor(0, 0, 0, 1);
-      // gl.clear(gl.COLOR_BUFFER_BIT);
       gl.clearBufferfv(gl.COLOR, 0, [r, g, b, a]);
     } else {
+      this.submitBlitRenderPass();
       // // gl.colorMask(true, true, true, true);
       // // gl.clearColor(r, g, b, a);
       // // gl.clear(gl.COLOR_BUFFER_BIT);
-      // this.inPresent = true;
-      // const vertexBuffer = makeStaticDataBuffer(
-      //   this,
-      //   BufferUsage.Vertex,
-      //   // translateBufferUsage(BufferUsage.Vertex),
-      //   new Float32Array([-4, -4, 4, -4, 0, 4]).buffer,
-      // );
-      // const inputLayout = this.createInputLayout({
-      //   vertexBufferDescriptors: [
-      //     { byteStride: 4 * 2, frequency: VertexBufferFrequency.PerVertex },
-      //   ],
-      //   vertexAttributeDescriptors: [
-      //     {
-      //       format: Format.F32_RG,
-      //       bufferIndex: 0,
-      //       bufferByteOffset: 4 * 0,
-      //       location: 0,
-      //     },
-      //   ],
-      //   indexBufferFormat: null,
-      // });
-      // const bindingLayouts: BindingLayoutDescriptor[] = [{ numSamplers: 1, numUniformBuffers: 0 }];
-      // const program = this.createProgram(preprocessProgramObj_GLSL(this, new CopyProgram()));
-      // const inputState = this.createInputState(
-      //   inputLayout,
-      //   [{ buffer: vertexBuffer, byteOffset: 0 }],
-      //   null,
-      //   program,
-      // );
-      // const renderPipeline = this.createRenderPipeline({
-      //   topology: PrimitiveTopology.Triangles,
-      //   sampleCount: 1,
-      //   program,
-      //   bindingLayouts,
-      //   colorAttachmentFormats: [Format.U8_RGBA_RT],
-      //   depthStencilAttachmentFormat: null,
-      //   inputLayout,
-      //   megaStateDescriptor: defaultMegaState,
-      // });
-      // const renderPass = this.createRenderPass({
-      //   colorAttachment: [this.currentColorAttachments[0]],
-      //   colorResolveTo: [this.getOnscreenTexture()],
-      //   colorClearColor: [OpaqueBlack],
-      //   depthStencilAttachment: null,
-      //   depthStencilResolveTo: null,
-      //   depthClearValue: 0,
-      //   stencilClearValue: 0,
-      // });
-      // const bindings = this.createBindings({
-      //   bindingLayout: bindingLayouts[0],
-      //   samplerBindings: [
-      //     {
-      //       sampler: null,
-      //       texture: null,
-      //       lateBinding: null,
-      //     },
-      //   ],
-      //   uniformBufferBindings: [],
-      // });
-      // renderPass.setPipeline(renderPipeline);
-      // renderPass.setBindings(0, bindings, [0]);
-      // renderPass.setInputState(inputState);
-      // renderPass.setViewport(0, 0, 1200, 1000);
-      // program.setUniforms({
-      //   u_Texture: 0,
-      // });
-      // renderPass.draw(3, 0);
-      // this.submitPass(renderPass);
-      // this.inPresent = false;
     }
   }
   //#endregion
@@ -585,11 +521,11 @@ export class Device_GL implements SwapChain, Device {
       case Format.BC5_SNORM:
         return this.EXT_texture_compression_rgtc!.COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT;
       case Format.D32F_S8:
-        return GL.DEPTH32F_STENCIL8;
+        return isWebGL2(this.gl) ? GL.DEPTH32F_STENCIL8 : GL.DEPTH_STENCIL;
       case Format.D24_S8:
-        return GL.DEPTH24_STENCIL8;
+        return isWebGL2(this.gl) ? GL.DEPTH24_STENCIL8 : GL.DEPTH_STENCIL;
       case Format.D32F:
-        return GL.DEPTH_COMPONENT32F;
+        return isWebGL2(this.gl) ? GL.DEPTH_COMPONENT32F : GL.DEPTH_COMPONENT;
       case Format.D24:
         return isWebGL2(this.gl) ? GL.DEPTH_COMPONENT24 : GL.DEPTH_COMPONENT;
       default:
@@ -1223,14 +1159,19 @@ export class Device_GL implements SwapChain, Device {
     if (isWebGL2(gl)) {
       gl.bindFramebuffer(GL.DRAW_FRAMEBUFFER, this.renderPassDrawFramebuffer);
     } else {
-      gl.bindFramebuffer(GL.FRAMEBUFFER, this.renderPassDrawFramebuffer);
+      if (!this.inBlitRenderPass) {
+        gl.bindFramebuffer(GL.FRAMEBUFFER, this.renderPassDrawFramebuffer);
+      }
     }
-    for (let i = numColorAttachments; i < this.currentColorAttachments.length; i++) {
-      const target = isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER;
-      const attachment = isWebGL2(gl) ? GL.COLOR_ATTACHMENT0 : GL.COLOR_ATTACHMENT0_WEBGL;
 
-      gl.framebufferRenderbuffer(target, attachment + i, GL.RENDERBUFFER, null);
-      gl.framebufferTexture2D(target, attachment + i, GL.TEXTURE_2D, null, 0);
+    if (!this.inBlitRenderPass) {
+      for (let i = numColorAttachments; i < this.currentColorAttachments.length; i++) {
+        const target = isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER;
+        const attachment = isWebGL2(gl) ? GL.COLOR_ATTACHMENT0 : GL.COLOR_ATTACHMENT0_WEBGL;
+
+        gl.framebufferRenderbuffer(target, attachment + i, GL.RENDERBUFFER, null);
+        gl.framebufferTexture2D(target, attachment + i, GL.TEXTURE_2D, null, 0);
+      }
     }
     this.currentColorAttachments.length = numColorAttachments;
 
@@ -1242,13 +1183,15 @@ export class Device_GL implements SwapChain, Device {
         GL.COLOR_ATTACHMENT3,
       ]);
     } else {
-      // MRT @see https://github.com/shrekshao/MoveWebGL1EngineToWebGL2/blob/master/Move-a-WebGL-1-Engine-To-WebGL-2-Blog-1.md#multiple-render-targets
-      this.WEBGL_draw_buffers.drawBuffersWEBGL([
-        GL.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
-        GL.COLOR_ATTACHMENT1_WEBGL, // gl_FragData[1]
-        GL.COLOR_ATTACHMENT2_WEBGL, // gl_FragData[2]
-        GL.COLOR_ATTACHMENT3_WEBGL, // gl_FragData[3]
-      ]);
+      if (!this.inBlitRenderPass) {
+        // MRT @see https://github.com/shrekshao/MoveWebGL1EngineToWebGL2/blob/master/Move-a-WebGL-1-Engine-To-WebGL-2-Blog-1.md#multiple-render-targets
+        this.WEBGL_draw_buffers.drawBuffersWEBGL([
+          GL.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
+          GL.COLOR_ATTACHMENT1_WEBGL, // gl_FragData[1]
+          GL.COLOR_ATTACHMENT2_WEBGL, // gl_FragData[2]
+          GL.COLOR_ATTACHMENT3_WEBGL, // gl_FragData[3]
+        ]);
+      }
     }
   }
 
@@ -1287,10 +1230,12 @@ export class Device_GL implements SwapChain, Device {
     if (this.currentDepthStencilAttachment !== depthStencilAttachment) {
       this.currentDepthStencilAttachment = depthStencilAttachment as RenderTarget_GL | null;
 
-      this.bindFramebufferDepthStencilAttachment(
-        isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
-        this.currentDepthStencilAttachment,
-      );
+      if (!this.inBlitRenderPass) {
+        this.bindFramebufferDepthStencilAttachment(
+          isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
+          this.currentDepthStencilAttachment,
+        );
+      }
       this.resolveDepthStencilAttachmentsChanged = true;
     }
 
@@ -2056,5 +2001,91 @@ export class Device_GL implements SwapChain, Device {
     else if (gl_target === GL.TEXTURE_3D) return this.fallbackTexture3D;
     else if (gl_target === GL.TEXTURE_CUBE_MAP) return this.fallbackTextureCube;
     else throw 'whoops';
+  }
+
+  private submitBlitRenderPass() {
+    if (!this.blitRenderPipeline) {
+      const vertexBuffer = makeStaticDataBuffer(
+        this,
+        BufferUsage.Vertex,
+        // translateBufferUsage(BufferUsage.Vertex),
+        new Float32Array([-4, -4, 4, -4, 0, 4]).buffer,
+      );
+      const inputLayout = this.createInputLayout({
+        vertexBufferDescriptors: [
+          { byteStride: 4 * 2, frequency: VertexBufferFrequency.PerVertex },
+        ],
+        vertexAttributeDescriptors: [
+          {
+            format: Format.F32_RG,
+            bufferIndex: 0,
+            bufferByteOffset: 4 * 0,
+            location: 0,
+          },
+        ],
+        indexBufferFormat: null,
+      });
+      const bindingLayouts: BindingLayoutDescriptor[] = [{ numSamplers: 1, numUniformBuffers: 0 }];
+      const program = this.createProgram({
+        ...preprocessProgramObj_GLSL(this, new CopyProgram()),
+        ensurePreprocessed: () => {},
+        associate: () => {},
+      });
+      this.blitInputState = this.createInputState(
+        inputLayout,
+        [{ buffer: vertexBuffer, byteOffset: 0 }],
+        null,
+        program,
+      );
+      this.blitRenderPipeline = this.createRenderPipeline({
+        topology: PrimitiveTopology.Triangles,
+        sampleCount: 1,
+        program,
+        bindingLayouts,
+        colorAttachmentFormats: [Format.U8_RGBA_RT],
+        depthStencilAttachmentFormat: null,
+        inputLayout,
+        megaStateDescriptor: defaultMegaState,
+      });
+
+      this.blitBindings = this.createBindings({
+        bindingLayout: bindingLayouts[0],
+        samplerBindings: [
+          {
+            sampler: null,
+            texture: null,
+            lateBinding: null,
+          },
+        ],
+        uniformBufferBindings: [],
+      });
+      program.setUniforms({
+        u_Texture: 0,
+      });
+    }
+
+    this.inBlitRenderPass = true;
+
+    const blitRenderPass = this.createRenderPass({
+      colorAttachment: [this.currentColorAttachments[0]],
+      colorResolveTo: [this.getOnscreenTexture()],
+      colorClearColor: [OpaqueBlack],
+      colorStore: [true],
+      depthStencilAttachment: null,
+      depthStencilResolveTo: null,
+      depthStencilStore: true,
+      depthClearValue: 'load',
+      stencilClearValue: 'load',
+      occlusionQueryPool: null,
+    });
+
+    const { width, height } = this.getCanvas();
+    blitRenderPass.setPipeline(this.blitRenderPipeline);
+    blitRenderPass.setBindings(0, this.blitBindings, [0]);
+    blitRenderPass.setInputState(this.blitInputState);
+    blitRenderPass.setViewport(0, 0, width, height);
+    blitRenderPass.draw(3, 0);
+    this.submitPass(blitRenderPass);
+    this.inBlitRenderPass = false;
   }
 }

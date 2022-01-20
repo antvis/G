@@ -10,7 +10,7 @@ layout(std140) uniform ub_ObjectParams {
   float u_MiterLimit;
   float u_ScaleMode;
   float u_Alignment;
-  vec4 u_PickingColor;
+  vec3 u_PickingColor;
   float u_Dash;
   float u_Gap;
   float u_DashOffset;

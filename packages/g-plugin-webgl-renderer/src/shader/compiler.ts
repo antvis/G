@@ -31,7 +31,7 @@ export function getAttributeLocations(vert: string): { location: number; name: s
 
   const locations = [];
   vert.replace(
-    /^\s*layout\(location\s*=\s*(\d*)\)\s*attribute\s*vec\d*\s*(.*);$/gm,
+    /^\s*layout\(location\s*=\s*(\d*)\)\s*attribute\s*\S+\s*(.*);$/gm,
     (_, location, name) => {
       locations.push({ location: Number(location), name });
       return '';

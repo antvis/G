@@ -184,15 +184,11 @@ const shaderMaterial = new ShaderMaterial({
   }
   `,
 });
-shaderMaterial.addUniform({
-  name: 'u_Level',
-  format: Format.F32_R,
-  data: 5,
+shaderMaterial.setUniforms({
+  u_Level: 5,
 });
-// shaderMaterial.addUniform({
-//   name: 'u_NoiseMode',
-//   format: Format.F32_R,
-//   data: 0,
+// shaderMaterial.setUniforms({
+//   u_NoiseMode: 0,
 // });
 
 const mesh = new Mesh({
@@ -230,6 +226,6 @@ const noiseConfig = {
   level: 5,
 };
 noiseFolder.add(noiseConfig, 'level', 1, 100, 1).onChange((level) => {
-  shaderMaterial.updateUniformData('u_Level', level);
+  shaderMaterial.setUniform({ u_Level: level });
 });
 noiseFolder.open();

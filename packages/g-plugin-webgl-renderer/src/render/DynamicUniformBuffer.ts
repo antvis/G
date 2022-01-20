@@ -1,6 +1,5 @@
 import { Device, BufferUsage, BufferFrequencyHint, Buffer } from '../platform';
 import { alignNonPowerOfTwo, assert, assertExists } from '../platform/utils';
-import { GPUBufferUsage } from '../platform/webgpu/constants';
 
 // This is a very basic linear allocator. We allocate offsets in-order.
 export class DynamicUniformBuffer {

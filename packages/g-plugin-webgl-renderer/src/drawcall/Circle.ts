@@ -168,15 +168,4 @@ export class CircleRenderer extends Batch {
   protected createBatchMeshList() {
     this.batchMeshList.push(this.meshFactory(SHAPE.Circle));
   }
-
-  // FIXME: use uniform by names in WebGL
-  // if (program.gl_program) {
-  //   program.setUniforms({
-  //     u_ProjectionMatrix: this.camera.getPerspective(),
-  //     u_ViewMatrix: this.camera.getViewTransform(),
-  //     u_CameraPosition: this.camera.getPosition(),
-  //     u_DevicePixelRatio: this.contextService.getDPR(),
-  //   });
-  // }
-  // }
 }

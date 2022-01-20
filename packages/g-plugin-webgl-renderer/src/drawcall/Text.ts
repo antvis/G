@@ -214,35 +214,19 @@ export class TextBatchMesh extends BatchMesh {
 
     const { width: atlasWidth, height: atlasHeight } = glyphAtlas.image;
 
-    this.material.addUniform({
-      name: Uniform.SDF_MAP_SIZE,
-      format: Format.U32_RG,
-      data: [atlasWidth, atlasHeight],
-    });
-    this.material.addUniform({
-      name: Uniform.FONT_SIZE,
-      format: Format.U32_R,
-      data: fontSize,
-    });
-    this.material.addUniform({
-      name: Uniform.GAMMA_SCALE,
-      format: Format.U32_R,
-      data: 1,
-    });
-    this.material.addUniform({
-      name: Uniform.STROKE_BLUR,
-      format: Format.U32_R,
-      data: 0.2,
-    });
-    this.material.addUniform({
-      name: Uniform.HAS_STROKE,
-      format: Format.U32_R,
-      data: 1,
+    this.material.setUniforms({
+      [Uniform.SDF_MAP_SIZE]: [atlasWidth, atlasHeight],
+      [Uniform.FONT_SIZE]: fontSize,
+      [Uniform.GAMMA_SCALE]: 1,
+      [Uniform.STROKE_BLUR]: 0.2,
+      [Uniform.HAS_STROKE]: 1,
     });
   }
 
   beforeUploadUBO(renderInst: RenderInst, objects: DisplayObject[], index: number) {
-    this.material.updateUniformData(Uniform.HAS_STROKE, 1 - index);
+    this.material.setUniforms({
+      [Uniform.HAS_STROKE]: 1 - index,
+    });
   }
 
   shouldSubmitRenderInst(renderInst: RenderInst, objects: DisplayObject[], index: number) {

@@ -2,22 +2,12 @@ import { inject, injectable } from 'mana-syringe';
 import {
   Line,
   LINE_CAP,
-  LINE_JOIN,
   ParsedColorStyleProperty,
-  Path,
-  Pattern,
-  PolygonShape,
-  Polyline,
   DisplayObject,
   PARSED_COLOR_TYPE,
-  Point,
   SHAPE,
-  Tuple4Number,
 } from '@antv/g';
-import { fillMatrix4x4, fillVec4, makeSortKeyOpaque, RendererLayer } from '../render/utils';
-import { CullMode, Format, VertexBufferFrequency } from '../platform';
-import { RenderInst } from '../render/RenderInst';
-import { DeviceProgram } from '../render/DeviceProgram';
+import { Format, VertexBufferFrequency } from '../platform';
 import { Batch, AttributeLocation } from './Batch';
 import { ShapeMesh, ShapeRenderer } from '../tokens';
 import vert from '../shader/instanced-line.vert';
