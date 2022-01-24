@@ -55,6 +55,7 @@ export {
   Sampler,
 };
 
+export * from './interfaces';
 export * from './platform';
 export * from './render';
 export * from './geometries';
