@@ -12,7 +12,6 @@ import { WebGLRendererPluginOptions } from './interfaces';
 import { RenderHelper } from './render/RenderHelper';
 import {
   Batch,
-  AttributeLocation,
   CircleRenderer,
   ImageRenderer,
   TextRenderer,
@@ -47,7 +46,6 @@ export function registerModelBuilder(builderClazz: new (...args: any[]) => Batch
 export {
   Renderable3D,
   Batch,
-  AttributeLocation,
   // ShaderModuleService,
   // ModelBuilder,
   TexturePool,
@@ -57,6 +55,7 @@ export {
   Sampler,
 };
 
+export * from './interfaces';
 export * from './platform';
 export * from './render';
 export * from './geometries';

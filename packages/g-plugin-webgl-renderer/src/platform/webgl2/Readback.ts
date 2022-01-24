@@ -115,7 +115,15 @@ export class Readback_GL extends ResourceBase_GL implements Readback {
         length,
       );
     } else {
-      // TODO:
+      gl.bindFramebuffer(GL.FRAMEBUFFER, this.device.readbackFramebuffer);
+      gl.framebufferTexture2D(
+        GL.FRAMEBUFFER,
+        GL.COLOR_ATTACHMENT0,
+        GL.TEXTURE_2D,
+        texture.gl_texture,
+        0,
+      );
+      // slow requires roundtrip to GPU
       // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/pixelStorei
       gl.pixelStorei(gl.PACK_ALIGNMENT, 4);
       gl.readPixels(x, y, width, height, gl.RGBA, gl_type, dstBuffer);

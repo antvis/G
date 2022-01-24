@@ -6,16 +6,16 @@
 #pragma glslify: import('@antv/g-shader-components/batch.declaration.vert')
 #pragma glslify: project = require('@antv/g-shader-components/project.vert')
 
-layout(location = 10) attribute vec3 a_Position;
-layout(location = 11) attribute vec3 a_Normal;
+layout(location = POSITION) attribute vec3 a_Position;
+layout(location = NORMAL) attribute vec3 a_Normal;
 
 #ifdef USE_UV
-  layout(location = 12) attribute vec2 a_Uv;
+  layout(location = UV) attribute vec2 a_Uv;
   varying vec2 v_Uv;
 #endif
 
 #ifdef USE_WIREFRAME
-  layout(location = 13) attribute vec3 a_Barycentric;
+  layout(location = BARYCENTRIC) attribute vec3 a_Barycentric;
   varying vec3 v_Barycentric;
 #endif
 
@@ -34,7 +34,7 @@ void main() {
 
   // v_ViewPosition = vec3(mvPosition) / mvPosition.w;
 
-  mat3 normalWorld = mat3(transpose(inverse(u_ViewMatrix * u_ModelMatrix)));
+  mat3 normalWorld = mat3(transposeMat3(inverseMat3(mat3(u_ViewMatrix * u_ModelMatrix))));
   v_Normal = normalize(normalWorld * a_Normal);
 
   #pragma glslify: import('@antv/g-shader-components/uv.vert')

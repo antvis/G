@@ -35,6 +35,9 @@ const circle = new Circle({
 // add a circle to canvas
 canvas.appendChild(circle);
 
+// use AntV G devtools
+window.__g_instances__ = [canvas];
+
 // stats
 const stats = new Stats();
 stats.showPanel(0);
@@ -70,6 +73,8 @@ const circleConfig = {
   fill: '#1890FF',
   stroke: '#F04864',
   lineWidth: 4,
+  lineDash: 0,
+  lineDashOffset: 0,
   fillOpacity: 1,
   strokeOpacity: 1,
   anchorX: 0.5,
@@ -102,6 +107,12 @@ circleFolder.add(circleConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY
 });
 circleFolder.add(circleConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
   circle.attr('lineWidth', lineWidth);
+});
+circleFolder.add(circleConfig, 'lineDash', 0, 100).onChange((lineDash) => {
+  circle.style.lineDash = [lineDash];
+});
+circleFolder.add(circleConfig, 'lineDashOffset', 0, 100).onChange((lineDashOffset) => {
+  circle.style.lineDashOffset = lineDashOffset;
 });
 circleFolder.add(circleConfig, 'fillOpacity', 0, 1, 0.1).onChange((opacity) => {
   circle.attr('fillOpacity', opacity);

@@ -19,9 +19,9 @@ export class Texture2D {
     descriptor.sampler = {
       wrapS: WrapMode.Clamp,
       wrapT: WrapMode.Clamp,
-      minFilter: TexFilterMode.Bilinear,
+      minFilter: TexFilterMode.Point,
       magFilter: TexFilterMode.Bilinear,
-      mipFilter: MipFilterMode.NoMip,
+      mipFilter: MipFilterMode.Linear,
       minLOD: 0,
       maxLOD: 0,
       ...descriptor.sampler,

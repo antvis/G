@@ -89,7 +89,7 @@ export class SphereGeometry extends ProceduralGeometry<SphereGeometryProps> {
       return [
         {
           bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
-          location: VertexAttributeLocation.POSITION,
+          location: VertexAttributeLocation.MAX,
           data: p,
         },
       ];

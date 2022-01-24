@@ -1,4 +1,5 @@
-import type { Tuple4Number } from '@antv/g';
+import { ElementEvent, Tuple4Number } from '@antv/g';
+import { isNil } from '@antv/util';
 import { Mesh } from '../Mesh';
 import {
   BlendFactor,
@@ -309,7 +310,8 @@ export abstract class Material<T extends IMaterial = any> {
   // USE_XXX
   defines: Record<string, number | boolean> = {};
 
-  uniforms: MaterialUniform[] = [];
+  // uniforms: MaterialUniform[] = [];
+  uniforms: Record<string, number | number[] | Float32Array> = {};
   uboBuffer: number[] = [];
 
   textures: {
@@ -361,8 +363,8 @@ export abstract class Material<T extends IMaterial = any> {
       blendEquationAlpha: BlendMode.Add,
       blendSrc: BlendFactor.SrcAlpha,
       blendDst: BlendFactor.OneMinusSrcAlpha,
-      blendSrcAlpha: null,
-      blendDstAlpha: null,
+      blendSrcAlpha: BlendFactor.Zero,
+      blendDstAlpha: BlendFactor.One,
       dithering: false,
       wireframe: false,
       wireframeColor: 'black',
@@ -374,90 +376,30 @@ export abstract class Material<T extends IMaterial = any> {
   }
 
   /**
-   * calculate uniform word count, which will be used in Mesh's uploadUBO
+   * @example
+   * material.setUniforms({
+   *   u_ModelMatrix: [1, 2, 3, 4],
+   *   u_Time: 1,
+   * })
    */
-  private updateUniformOffset() {
-    let offset = 0;
-    this.uboBuffer = [];
-    this.uniforms.forEach((uniform) => {
-      const { format, data } = uniform;
-      const array = typeof data === 'number' ? [data] : data;
-      const formatByteSize = getFormatByteSize(format);
-      const matrix = isMatrix(array);
-      uniform.size = matrix ? formatByteSize * array.length : formatByteSize;
-      // std140 UBO layout
-      const emptySpace = 4 - (offset % 4);
-      if (emptySpace !== 4) {
-        if (emptySpace >= formatByteSize) {
-        } else {
-          offset += emptySpace;
-          for (let j = 0; j < emptySpace; j++) {
-            this.uboBuffer.push(0); // padding
-          }
-        }
-      }
+  setUniforms(uniforms: Record<string, null | number | number[] | Float32Array>) {
+    this.uniforms = {
+      ...this.uniforms,
+      ...uniforms,
+    };
 
-      uniform.offset = offset;
-      offset += uniform.size;
-
-      for (let j = 0; j < formatByteSize / 4; j++) {
-        if (isMatrix(array)) {
-          this.uboBuffer.push(...array[j]);
-        } else {
-          this.uboBuffer.push(array[j]);
-        }
+    Object.keys(this.uniforms).forEach((key) => {
+      if (isNil(this.uniforms[key])) {
+        delete this.uniforms[key];
       }
     });
 
-    // padding
-    const emptySpace = 4 - (this.uboBuffer.length % 4);
-    if (emptySpace !== 4) {
-      for (let j = 0; j < emptySpace; j++) {
-        this.uboBuffer.push(0);
-      }
-    }
-  }
-
-  /**
-   * add uniform
-   *
-   * @example
-   * material.addUniform({
-   *    name: 'u_U1',
-   *    component: FormatCompFlags.RGB,
-   *    value: [1, 1, 1],
-   * });
-   */
-  addUniform(uniform: MaterialUniform) {
-    this.removeUniform(uniform.name);
-    this.uniforms.push(uniform);
-    this.updateUniformOffset();
-  }
-
-  removeUniform(uniformName: string) {
-    const index = this.uniforms.findIndex(({ name }) => name === uniformName);
-    if (index > -1) {
-      this.uniforms.splice(index, 1);
-      this.updateUniformOffset();
-    }
-  }
-
-  updateUniformData(uniformName: string, data: MaterialUniformData) {
-    const existed = this.uniforms.find(({ name }) => name === uniformName);
-    if (existed) {
-      const array = typeof data === 'number' ? [data] : data;
-      const { offset, size } = existed;
-      if (isMatrix(array)) {
-        this.uboBuffer.splice(
-          offset / 4,
-          size / 4,
-          // @ts-ignore
-          ...array.reduce((accumulator, value) => accumulator.concat(value), []),
-        );
-      } else {
-        this.uboBuffer.splice(offset / 4, size / 4, ...array);
-      }
-    }
+    // trigger re-render
+    this.meshes.forEach((mesh) => {
+      mesh.emit(ElementEvent.ATTRIBUTE_CHANGED, {
+        attributeName: 'geometry',
+      });
+    });
   }
 
   addTexture(map: string | TexImageSource | Texture2D, textureName: string, order = 0) {
