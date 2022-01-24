@@ -16,7 +16,7 @@ export class Renderer extends AbstractRenderer {
     this.registerPlugin(new ContextRegisterPlugin());
     this.registerPlugin(
       new WebGLRenderer.Plugin(
-        config.targets
+        config?.targets
           ? {
               targets: config.targets,
             }
