@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/g-site",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "G sites deployed on gh-pages",
   "files": [
     "package.json",
@@ -34,15 +34,15 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "@antv/g": "^5.0.8",
-    "@antv/g-canvas": "^1.0.7",
-    "@antv/g-components": "^1.0.7",
-    "@antv/g-plugin-3d": "^1.0.8",
-    "@antv/g-plugin-css-select": "^1.0.7",
-    "@antv/g-svg": "^1.0.7",
-    "@antv/g-webgl": "^1.0.10",
+    "@antv/g": "^5.0.9",
+    "@antv/g-canvas": "^1.0.8",
+    "@antv/g-components": "^1.0.8",
+    "@antv/g-plugin-3d": "^1.0.9",
+    "@antv/g-plugin-css-select": "^1.0.8",
+    "@antv/g-svg": "^1.0.8",
+    "@antv/g-webgl": "^1.0.11",
     "@antv/gatsby-theme-antv": "^1.1.15",
-    "@antv/react-g": "^1.0.1",
+    "@antv/react-g": "^1.0.2",
     "@types/gl-matrix": "^2.4.5",
     "@types/jest": "^25.0.0",
     "@types/react": "^16.9.35",
