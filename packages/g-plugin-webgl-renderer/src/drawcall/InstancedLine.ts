@@ -8,18 +8,19 @@ import {
   SHAPE,
 } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
-import { Batch, AttributeLocation } from './Batch';
+import { Batch } from './Batch';
 import { ShapeMesh, ShapeRenderer } from '../tokens';
 import vert from '../shader/instanced-line.vert';
 import frag from '../shader/instanced-line.frag';
 import { BatchMesh } from './BatchMesh';
+import { VertexAttributeLocation } from '../geometries';
 
 export const segmentInstanceGeometry = [
   0, -0.5, 0, 0, 0, 1, -0.5, 1, 1, 0, 1, 0.5, 1, 1, 1, 0, 0.5, 0, 0, 1,
 ];
 
 enum InstancedLineProgram {
-  a_Position = AttributeLocation.MAX,
+  a_Position = VertexAttributeLocation.MAX,
   a_PointA,
   a_PointB,
   a_Cap,

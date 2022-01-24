@@ -86,7 +86,7 @@ export class PlaneGeometry extends ProceduralGeometry<PlaneGeometryProps> {
       return [
         {
           bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
-          location: VertexAttributeLocation.POSITION,
+          location: VertexAttributeLocation.MAX,
           data: p,
         },
       ];

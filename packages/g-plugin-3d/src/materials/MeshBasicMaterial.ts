@@ -1,4 +1,10 @@
-import { Material, Texture2D, CullMode, IMaterial } from '@antv/g-plugin-webgl-renderer';
+import {
+  Material,
+  Texture2D,
+  CullMode,
+  IMaterial,
+  VertexAttributeLocation,
+} from '@antv/g-plugin-webgl-renderer';
 import vert from '../shaders/material.basic.vert';
 import frag from '../shaders/material.basic.frag';
 
@@ -72,6 +78,9 @@ export class MeshBasicMaterial<T extends IMeshBasicMaterial> extends Material<T>
       USE_WIREFRAME: false,
       USE_FOG: false,
       USE_LIGHT: false,
+      POSITION: VertexAttributeLocation.MAX,
+      UV: VertexAttributeLocation.MAX + 2,
+      BARYCENTRIC: VertexAttributeLocation.MAX + 3,
     };
 
     const { map, wireframe } = props || {};

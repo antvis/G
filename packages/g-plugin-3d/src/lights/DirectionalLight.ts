@@ -39,7 +39,7 @@ export class DirectionalLight extends Light {
       });
       uniforms.push({
         name: `directionalLights[${index}].color`,
-        value: fillColor,
+        value: fillColor.slice(0, 3),
       });
     }
   }

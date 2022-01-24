@@ -31,6 +31,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
   }>;
   mipmaps: boolean;
   formatKind: SamplerFormatKind;
+  textureIndex: number; // used in WebGL1
 
   constructor({
     id,
@@ -233,103 +234,35 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
           isArray ? data[0] : data,
         );
       } else {
-        // WebGL1:
-        (gl as WebGLRenderingContext).texImage2D(
-          this.gl_target,
-          // level,
-          0,
-          gl_format,
-          gl_format,
-          gl_type,
-          data as ImageData,
-        );
+        // WebGL1: upload Array & Image separately
+        if (isArray) {
+          (gl as WebGLRenderingContext).texImage2D(
+            this.gl_target,
+            0,
+            gl_format,
+            width,
+            height,
+            0,
+            gl_format,
+            gl_type,
+            data[0],
+          );
+        } else {
+          (gl as WebGLRenderingContext).texImage2D(
+            this.gl_target,
+            0,
+            gl_format,
+            gl_format,
+            gl_type,
+            data as TexImageSource,
+          );
+        }
       }
     }
 
     if (this.mipmaps) {
       this.generateMipmap();
     }
-
-    // for (let i = 0; i < maxMipLevel; i++) {
-    //   if (i >= firstMipLevel) {
-    //     const levelData = levelDatas[levelDatasOffs++] as ArrayBufferView;
-    //     const compByteSize = isCompressed ? 1 : getFormatCompByteSize(this.pixelFormat);
-    //     const sliceElementSize = levelData.byteLength / compByteSize / this.depth;
-
-    //     // TODO: Buffer
-
-    //     if (is3D && isCompressed) {
-    //       // Workaround for https://bugs.chromium.org/p/chromium/issues/detail?id=1004511
-    //       for (let z = 0; z < this.depth; z++) {
-    //         if (isWebGL2(gl)) {
-    //           gl.compressedTexSubImage3D(
-    //             this.gl_target,
-    //             i,
-    //             0,
-    //             0,
-    //             z,
-    //             w,
-    //             h,
-    //             1,
-    //             gl_format,
-    //             levelData,
-    //             z * sliceElementSize,
-    //             sliceElementSize,
-    //           );
-    //         }
-    //       }
-    //     } else if (isCube) {
-    //       for (let z = 0; z < this.depth; z++) {
-    //         const face_target = GL.TEXTURE_CUBE_MAP_POSITIVE_X + (z % 6);
-    //         if (isCompressed) {
-    //           gl.compressedTexSubImage2D(
-    //             face_target,
-    //             i,
-    //             0,
-    //             0,
-    //             w,
-    //             h,
-    //             gl_format,
-    //             levelData,
-    //             z * sliceElementSize,
-    //             sliceElementSize,
-    //           );
-    //         } else {
-    //           gl.texSubImage2D(
-    //             face_target,
-    //             i,
-    //             0,
-    //             0,
-    //             w,
-    //             h,
-    //             gl_format,
-    //             gl_type,
-    //             levelData,
-    //             z * sliceElementSize,
-    //           );
-    //         }
-    //       }
-    //     } else if (is3D) {
-    //       if (isWebGL2(gl)) {
-    //         if (isCompressed) {
-    //           gl.compressedTexSubImage3D(this.gl_target, i, 0, 0, 0, w, h, d, gl_format, levelData);
-    //         } else {
-    //           gl.texSubImage3D(this.gl_target, i, 0, 0, 0, w, h, d, gl_format, gl_type, levelData);
-    //         }
-    //       }
-    //     } else {
-    //       if (isCompressed) {
-    //         gl.compressedTexSubImage2D(this.gl_target, i, 0, 0, w, h, gl_format, levelData);
-    //       } else {
-    //         // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texSubImage2D
-    //         gl.texSubImage2D(this.gl_target, i, 0, 0, w, h, gl_format, gl_type, levelData);
-    //       }
-    //     }
-    //   }
-
-    //   w = Math.max((w / 2) | 0, 1);
-    //   h = Math.max((h / 2) | 0, 1);
-    // }
   }
 
   destroy() {
@@ -361,13 +294,13 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     const gl = this.device.gl;
     if (this.pixelStore) {
       if (this.pixelStore.unpackFlipY) {
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.pixelStorei(GL.UNPACK_FLIP_Y_WEBGL, true);
       }
       if (this.pixelStore.packAlignment) {
-        gl.pixelStorei(gl.PACK_ALIGNMENT, this.pixelStore.packAlignment);
+        gl.pixelStorei(GL.PACK_ALIGNMENT, this.pixelStore.packAlignment);
       }
       if (this.pixelStore.unpackAlignment) {
-        gl.pixelStorei(gl.UNPACK_ALIGNMENT, this.pixelStore.unpackAlignment);
+        gl.pixelStorei(GL.UNPACK_ALIGNMENT, this.pixelStore.unpackAlignment);
       }
     }
   }
@@ -381,7 +314,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     if (this.gl_texture && this.gl_target) {
       gl.bindTexture(this.gl_target, this.gl_texture);
       gl.generateMipmap(this.gl_target);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_LINEAR);
+      gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST_MIPMAP_LINEAR);
       gl.bindTexture(this.gl_target, null);
     }
     return this;

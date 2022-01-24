@@ -1,4 +1,4 @@
-import type { Tuple4Number } from '@antv/g';
+import { ElementEvent, Tuple4Number } from '@antv/g';
 import { isNil } from '@antv/util';
 import { Mesh } from '../Mesh';
 import {
@@ -392,6 +392,13 @@ export abstract class Material<T extends IMaterial = any> {
       if (isNil(this.uniforms[key])) {
         delete this.uniforms[key];
       }
+    });
+
+    // trigger re-render
+    this.meshes.forEach((mesh) => {
+      mesh.emit(ElementEvent.ATTRIBUTE_CHANGED, {
+        attributeName: 'geometry',
+      });
     });
   }
 

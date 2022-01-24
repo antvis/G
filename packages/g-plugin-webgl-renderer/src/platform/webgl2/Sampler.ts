@@ -6,7 +6,7 @@ import {
   SamplerDescriptor,
   TexFilterMode,
 } from '../interfaces';
-import { assert } from '../utils';
+import { assert, isPowerOfTwo } from '../utils';
 import { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
 import { getPlatformSampler, isWebGL2, translateFilterMode, translateWrapMode } from './utils';
@@ -86,21 +86,36 @@ export class Sampler_GL extends ResourceBase_GL implements Sampler {
     }
   }
 
-  setTextureParameters(gl_target: number, gl_texture: WebGLTexture): void {
+  setTextureParameters(gl_target: number, width: number, height: number): void {
     const gl = this.device.gl;
     const descriptor = this.descriptor;
-    gl.texParameteri(gl_target, GL.TEXTURE_WRAP_S, translateWrapMode(descriptor.wrapS));
-    gl.texParameteri(gl_target, GL.TEXTURE_WRAP_T, translateWrapMode(descriptor.wrapT));
-    gl.texParameteri(
-      gl_target,
-      GL.TEXTURE_MIN_FILTER,
-      translateFilterMode(descriptor.minFilter, descriptor.mipFilter),
-    );
+
+    // @see https://developer.mozilla.org/zh-CN/docs/Web/API/WebGL_API/Tutorial/Using_textures_in_WebGL#%E9%9D%9E2%E7%9A%84%E5%B9%82%E7%BA%B9%E7%90%86
+    if (this.isNPOT(width, height)) {
+      gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
+    } else {
+      gl.texParameteri(
+        gl_target,
+        GL.TEXTURE_MIN_FILTER,
+        translateFilterMode(descriptor.minFilter, descriptor.mipFilter),
+      );
+    }
+    gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, translateWrapMode(descriptor.wrapS));
+    gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, translateWrapMode(descriptor.wrapT));
+
     gl.texParameteri(
       gl_target,
       GL.TEXTURE_MAG_FILTER,
       translateFilterMode(descriptor.magFilter, MipFilterMode.NoMip),
     );
+
+    // if (descriptor.minLOD !== undefined) {
+    //   gl.texParameterf(gl_target, GL.TEXTURE_MIN_LOD, descriptor.minLOD);
+    // }
+    // if (descriptor.maxLOD !== undefined) {
+    //   gl.texParameterf(gl_target, GL.TEXTURE_MAX_LOD, descriptor.maxLOD);
+    // }
+
     const maxAnisotropy = descriptor.maxAnisotropy ?? 1;
     if (maxAnisotropy > 1 && this.device.EXT_texture_filter_anisotropic !== null) {
       assert(
@@ -122,5 +137,9 @@ export class Sampler_GL extends ResourceBase_GL implements Sampler {
     if (isWebGL2(this.device.gl)) {
       this.device.gl.deleteSampler(getPlatformSampler(this));
     }
+  }
+
+  isNPOT(width: number, height: number): boolean {
+    return !isPowerOfTwo(width) || !isPowerOfTwo(height);
   }
 }

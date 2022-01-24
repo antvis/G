@@ -20,6 +20,7 @@ import {
   setBitFlagEnabled,
   setMegaStateFlags,
 } from '../platform/utils';
+import { Program_GL } from '../platform/webgl2/Program';
 import { DynamicUniformBuffer } from './DynamicUniformBuffer';
 import { RenderCache } from './RenderCache';
 import { fillVec4 } from './utils';
@@ -118,7 +119,7 @@ export class RenderInst {
     this.renderPipelineDescriptor.sampleCount = o.renderPipelineDescriptor.sampleCount;
     this.inputState = o.inputState;
     this.uniformBuffer = o.uniformBuffer;
-    this.uniforms = o.uniforms;
+    this.uniforms = [...o.uniforms];
     this.drawCount = o.drawCount;
     this.drawStart = o.drawStart;
     this.drawInstanceCount = o.drawInstanceCount;
@@ -479,10 +480,21 @@ export class RenderInst {
 
     passRenderer.setInputState(this.inputState);
 
+    // upload uniforms
     for (let i = 0; i < this.bindingDescriptors[0].uniformBufferBindings.length; i++)
       this.bindingDescriptors[0].uniformBufferBindings[i].buffer = assertExists(
         this.uniformBuffer.buffer,
       );
+
+    if ((this.renderPipelineDescriptor.program as Program_GL).gl_program) {
+      this.uniforms.forEach((uniforms) => {
+        const uniformsMap = {};
+        uniforms.forEach(({ name, value }) => {
+          uniformsMap[name] = value;
+        });
+        (this.renderPipelineDescriptor.program as Program_GL).setUniforms(uniformsMap);
+      });
+    }
 
     // TODO: Support multiple binding descriptors.
     const gfxBindings = cache.createBindings({

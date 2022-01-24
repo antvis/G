@@ -1,17 +1,18 @@
 import { Circle, CircleStyleProps, DisplayObject, SHAPE, RenderingService } from '@antv/g';
 import { injectable } from 'mana-syringe';
 import { Format, VertexBufferFrequency } from '../platform';
-import { Batch, AttributeLocation } from './Batch';
+import { Batch } from './Batch';
 import { ShapeRenderer, ShapeMesh } from '../tokens';
 import vert from '../shader/circle.vert';
 import frag from '../shader/circle.frag';
 import { BatchMesh } from './BatchMesh';
+import { VertexAttributeLocation } from '../geometries';
 
-enum CircleProgram {
-  a_Extrude = AttributeLocation.MAX,
-  a_StylePacked3,
-  a_Size,
-  a_Uv,
+enum CircleVertexAttributeLocation {
+  EXTRUDE = VertexAttributeLocation.MAX,
+  PACKED_STYLE3,
+  SIZE,
+  UV,
 }
 
 const PointShapes: string[] = [SHAPE.Circle, SHAPE.Ellipse, SHAPE.Rect];
@@ -60,12 +61,12 @@ export class CircleBatchMesh extends BatchMesh {
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: CircleProgram.a_Extrude,
+          location: CircleVertexAttributeLocation.EXTRUDE,
         },
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 2,
-          location: CircleProgram.a_Uv,
+          location: CircleVertexAttributeLocation.UV,
         },
       ],
       data: new Float32Array(interleaved),
@@ -78,7 +79,7 @@ export class CircleBatchMesh extends BatchMesh {
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: CircleProgram.a_Size,
+          location: CircleVertexAttributeLocation.SIZE,
           divisor: 1,
         },
       ],
@@ -92,7 +93,7 @@ export class CircleBatchMesh extends BatchMesh {
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
-          location: CircleProgram.a_StylePacked3,
+          location: CircleVertexAttributeLocation.PACKED_STYLE3,
           divisor: 1,
         },
       ],
@@ -118,14 +119,14 @@ export class CircleBatchMesh extends BatchMesh {
 
       this.geometry.updateVertexBuffer(
         2,
-        CircleProgram.a_Size,
+        CircleVertexAttributeLocation.SIZE,
         index,
         new Uint8Array(new Float32Array([...size]).buffer),
       );
     } else if (name === 'radius') {
       this.geometry.updateVertexBuffer(
         3,
-        CircleProgram.a_StylePacked3,
+        CircleVertexAttributeLocation.PACKED_STYLE3,
         index,
         new Uint8Array(
           new Float32Array([

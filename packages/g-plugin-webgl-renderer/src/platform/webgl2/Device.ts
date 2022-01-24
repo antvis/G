@@ -219,6 +219,7 @@ export class Device_GL implements SwapChain, Device {
   uniformBufferWordAlignment: number;
   uniformBufferMaxPageWordSize: number;
   supportedSampleCounts: number[] = [];
+  maxVertexAttribs: number;
 
   gl: WebGLRenderingContext | WebGL2RenderingContext;
 
@@ -239,6 +240,8 @@ export class Device_GL implements SwapChain, Device {
       gl.getExtension('EXT_frag_depth');
       // @see https://developer.mozilla.org/en-US/docs/Web/API/OES_element_index_uint
       gl.getExtension('OES_element_index_uint');
+      // @see https://developer.mozilla.org/en-US/docs/Web/API/OES_standard_derivatives
+      gl.getExtension('OES_standard_derivatives');
 
       if (this.WEBGL_draw_buffers) {
         this.supportMRT = true;
@@ -376,9 +379,11 @@ export class Device_GL implements SwapChain, Device {
   private checkLimits(): void {
     const gl = this.gl;
 
+    this.maxVertexAttribs = gl.getParameter(GL.MAX_VERTEX_ATTRIBS);
+
     if (isWebGL2(gl)) {
       this.uniformBufferMaxPageByteSize = Math.min(
-        gl.getParameter(gl.MAX_UNIFORM_BLOCK_SIZE),
+        gl.getParameter(GL.MAX_UNIFORM_BLOCK_SIZE),
         UBO_PAGE_MAX_BYTE_SIZE,
       );
       this.uniformBufferWordAlignment = gl.getParameter(gl.UNIFORM_BUFFER_OFFSET_ALIGNMENT) / 4;
@@ -1383,12 +1388,15 @@ export class Device_GL implements SwapChain, Device {
       if (this.currentTextures[samplerIndex] !== gl_texture) {
         this.setActiveTexture(gl.TEXTURE0 + samplerIndex);
         if (gl_texture !== null) {
-          const { gl_target, formatKind } = assertExists(binding).texture as Texture_GL;
+          // update index
+          (binding.texture as Texture_GL).textureIndex = samplerIndex;
+          const { gl_target, formatKind, width, height } = assertExists(binding)
+            .texture as Texture_GL;
           gl.bindTexture(gl_target, gl_texture);
 
           // In WebGL1 set tex's parameters @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texParameter
           if (!isWebGL2(gl)) {
-            (binding.sampler as Sampler_GL)?.setTextureParameters(gl_target, gl_texture);
+            (binding.sampler as Sampler_GL)?.setTextureParameters(gl_target, width, height);
           }
 
           this.debugGroupStatisticsTextureBind();
@@ -2008,7 +2016,6 @@ export class Device_GL implements SwapChain, Device {
       const vertexBuffer = makeStaticDataBuffer(
         this,
         BufferUsage.Vertex,
-        // translateBufferUsage(BufferUsage.Vertex),
         new Float32Array([-4, -4, 4, -4, 0, 4]).buffer,
       );
       const inputLayout = this.createInputLayout({
@@ -2048,19 +2055,21 @@ export class Device_GL implements SwapChain, Device {
         megaStateDescriptor: defaultMegaState,
       });
 
+      const colorTexture = this.currentColorAttachments[0].texture;
       this.blitBindings = this.createBindings({
         bindingLayout: bindingLayouts[0],
         samplerBindings: [
           {
             sampler: null,
-            texture: null,
+            texture: colorTexture,
             lateBinding: null,
           },
         ],
         uniformBufferBindings: [],
       });
+
       program.setUniforms({
-        u_Texture: 0,
+        u_Texture: colorTexture,
       });
     }
 

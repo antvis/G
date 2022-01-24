@@ -10,8 +10,13 @@ import {
 } from '@antv/g';
 import type { Tuple4Number } from '@antv/g';
 import { inject, injectable } from 'mana-syringe';
-import { mat3, mat4 } from 'gl-matrix';
-import { BufferGeometry, Geometry, makeStaticDataBuffer } from '../geometries';
+import { mat4 } from 'gl-matrix';
+import {
+  BufferGeometry,
+  Geometry,
+  makeStaticDataBuffer,
+  VertexAttributeLocation,
+} from '../geometries';
 import { Material, ShaderMaterial } from '../materials';
 import {
   BindingLayoutSamplerDescriptor,
@@ -29,7 +34,6 @@ import {
 } from '../platform';
 import {
   DeviceProgram,
-  fillVec4,
   makeSortKeyOpaque,
   RendererLayer,
   RenderHelper,
@@ -38,12 +42,10 @@ import {
   TextureMapping,
 } from '../render';
 import { preprocessProgramObj_GLSL, ProgramDescriptorSimpleWithOrig } from '../shader/compiler';
-import { AttributeLocation, RENDER_ORDER_SCALE, Batch } from './Batch';
+import { RENDER_ORDER_SCALE, Batch } from './Batch';
 import { TexturePool } from '../TexturePool';
 import { Fog } from '../lights';
 import { LightPool } from '../LightPool';
-import { Program_GL } from '../platform/webgl2/Program';
-import { isWebGL2 } from '../platform/webgl2/utils';
 
 let counter = 1;
 const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
@@ -77,6 +79,11 @@ export abstract class BatchMesh {
   private program: DeviceProgram = new DeviceProgram();
   private programDescriptorSimpleWithOrig?: ProgramDescriptorSimpleWithOrig;
   geometryDirty = true;
+
+  /**
+   * the same material maybe shared between different canvases
+   */
+  materialDirty = true;
   private inputStateDirty = true;
   /**
    * texture mappings
@@ -90,8 +97,11 @@ export abstract class BatchMesh {
   protected createBatchedGeometry(objects: DisplayObject[]) {
     const modelMatrix = mat4.create();
     const modelViewMatrix = mat4.create();
-    const normalMatrix = mat3.create();
+    // const normalMatrix = mat3.create();
     const packed = [];
+
+    // const useNormal = this.material.defines.NORMAL;
+
     objects.forEach((object) => {
       const {
         fill,
@@ -123,11 +133,6 @@ export abstract class BatchMesh {
         mat4.copy(modelMatrix, object.getWorldTransform());
       }
       mat4.mul(modelViewMatrix, this.camera.getViewTransform(), modelMatrix);
-      // should not calc normal matrix in shader, mat3.invert is not cheap
-      // @see https://stackoverflow.com/a/21079741
-      mat3.fromMat4(normalMatrix, modelViewMatrix);
-      mat3.invert(normalMatrix, normalMatrix);
-      mat3.transpose(normalMatrix, normalMatrix);
 
       // @ts-ignore
       const encodedPickingColor = object.renderable3D?.encodedPickingColor || [0, 0, 0];
@@ -149,6 +154,42 @@ export abstract class BatchMesh {
         anchor[0],
         anchor[1],
       );
+
+      // if (useNormal) {
+      //   // should not calc normal matrix in shader, mat3.invert is not cheap
+      //   // @see https://stackoverflow.com/a/21079741
+      //   mat3.fromMat4(normalMatrix, modelViewMatrix);
+      //   mat3.invert(normalMatrix, normalMatrix);
+      //   mat3.transpose(normalMatrix, normalMatrix);
+
+      //   const { NORMAL_MATRIX0, NORMAL_MATRIX1, NORMAL_MATRIX2 } = this.material.defines;
+      //   this.bufferGeometry.setVertexBuffer({
+      //     bufferIndex: 4,
+      //     byteStride: 4 * (3 * 3),
+      //     frequency: VertexBufferFrequency.PerInstance,
+      //     attributes: [
+      //       {
+      //         format: Format.F32_RGB,
+      //         bufferByteOffset: 4 * 0,
+      //         location: Number(NORMAL_MATRIX0),
+      //         divisor: 1,
+      //       },
+      //       {
+      //         format: Format.F32_RGB,
+      //         bufferByteOffset: 4 * 3,
+      //         location: Number(NORMAL_MATRIX1),
+      //         divisor: 1,
+      //       },
+      //       {
+      //         format: Format.F32_RGB,
+      //         bufferByteOffset: 4 * 6,
+      //         location: Number(NORMAL_MATRIX2),
+      //         divisor: 1,
+      //       },
+      //     ],
+      //     data: new Float32Array(normalMatrix),
+      //   });
+      // }
     });
 
     this.bufferGeometry.instancedCount = objects.length;
@@ -161,61 +202,61 @@ export abstract class BatchMesh {
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
-          location: AttributeLocation.a_ModelMatrix0,
+          location: VertexAttributeLocation.MODEL_MATRIX0,
           divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 4,
-          location: AttributeLocation.a_ModelMatrix1,
+          location: VertexAttributeLocation.MODEL_MATRIX1,
           divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 8,
-          location: AttributeLocation.a_ModelMatrix2,
+          location: VertexAttributeLocation.MODEL_MATRIX2,
           divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 12,
-          location: AttributeLocation.a_ModelMatrix3,
+          location: VertexAttributeLocation.MODEL_MATRIX3,
           divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 16,
-          location: AttributeLocation.a_Color,
+          location: VertexAttributeLocation.COLOR,
           divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 20,
-          location: AttributeLocation.a_StrokeColor,
+          location: VertexAttributeLocation.STROKE_COLOR,
           divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 24,
-          location: AttributeLocation.a_StylePacked1,
+          location: VertexAttributeLocation.PACKED_STYLE1,
           divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 28,
-          location: AttributeLocation.a_StylePacked2,
+          location: VertexAttributeLocation.PACKED_STYLE2,
           divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 32,
-          location: AttributeLocation.a_PickingColor,
+          location: VertexAttributeLocation.PICKING_COLOR,
           divisor: 1,
         },
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 36,
-          location: AttributeLocation.a_Anchor,
+          location: VertexAttributeLocation.ANCHOR,
           divisor: 1,
         },
       ],
@@ -273,7 +314,7 @@ export abstract class BatchMesh {
     }
 
     // re-upload textures
-    if (this.material.textureDirty) {
+    if (this.material.textureDirty || this.materialDirty) {
       this.textureMappings = [];
 
       // set texture mappings
@@ -286,7 +327,7 @@ export abstract class BatchMesh {
     }
 
     // re-compile program, eg. DEFINE changed
-    if (this.material.programDirty) {
+    if (this.material.programDirty || this.materialDirty) {
       this.createMaterial(objects);
       // set defines
       Object.keys(this.material.defines).forEach((key) => {
@@ -309,7 +350,7 @@ export abstract class BatchMesh {
       this.material.programDirty = false;
     }
 
-    if (this.material.textureDirty) {
+    if (this.material.textureDirty || this.materialDirty) {
       this.material.textures.forEach(({ name, texture }) => {
         const mapping = new TextureMapping();
         const { src, sampler, pixelStore, loadedTexture } = texture.descriptor;
@@ -342,6 +383,8 @@ export abstract class BatchMesh {
         this.textureMappings.push(mapping);
       });
       this.material.textureDirty = false;
+
+      this.materialDirty = false;
     }
 
     if (this.material.geometryDirty) {
@@ -443,7 +486,7 @@ export abstract class BatchMesh {
 
         this.geometry.updateVertexBuffer(
           Batch.CommonBufferIndex,
-          AttributeLocation.a_Color,
+          VertexAttributeLocation.COLOR,
           index,
           new Uint8Array(new Float32Array([...fillColor]).buffer),
         );
@@ -467,7 +510,7 @@ export abstract class BatchMesh {
 
       this.geometry.updateVertexBuffer(
         Batch.CommonBufferIndex,
-        AttributeLocation.a_StrokeColor,
+        VertexAttributeLocation.STROKE_COLOR,
         index,
         new Uint8Array(new Float32Array([...strokeColor]).buffer),
       );
@@ -475,7 +518,7 @@ export abstract class BatchMesh {
       const { opacity, fillOpacity, strokeOpacity, lineWidth = 0 } = object.parsedStyle;
       this.geometry.updateVertexBuffer(
         Batch.CommonBufferIndex,
-        AttributeLocation.a_StylePacked1,
+        VertexAttributeLocation.PACKED_STYLE1,
         index,
         new Uint8Array(new Float32Array([opacity, fillOpacity, strokeOpacity, lineWidth]).buffer),
       );
@@ -483,7 +526,7 @@ export abstract class BatchMesh {
       const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
       this.geometry.updateVertexBuffer(
         Batch.CommonBufferIndex,
-        AttributeLocation.a_ModelMatrix0,
+        VertexAttributeLocation.MODEL_MATRIX0,
         index,
         new Uint8Array(new Float32Array(modelMatrix).buffer),
       );
@@ -491,7 +534,7 @@ export abstract class BatchMesh {
       const { anchor } = object.parsedStyle;
       this.geometry.updateVertexBuffer(
         Batch.CommonBufferIndex,
-        AttributeLocation.a_Anchor,
+        VertexAttributeLocation.ANCHOR,
         index,
         new Uint8Array(new Float32Array([anchor[0], anchor[1]]).buffer),
       );
@@ -499,7 +542,7 @@ export abstract class BatchMesh {
       const { visibility } = object.parsedStyle;
       this.geometry.updateVertexBuffer(
         Batch.CommonBufferIndex,
-        AttributeLocation.a_StylePacked2,
+        VertexAttributeLocation.PACKED_STYLE2,
         index,
         new Uint8Array(new Float32Array([visibility === 'visible' ? 1 : 0]).buffer),
       );
@@ -531,7 +574,7 @@ export abstract class BatchMesh {
     const encodedPickingColor = object.renderable3D?.encodedPickingColor || [0, 0, 0];
     this.geometry.updateVertexBuffer(
       Batch.CommonBufferIndex,
-      AttributeLocation.a_PickingColor,
+      VertexAttributeLocation.PICKING_COLOR,
       index,
       new Uint8Array(
         new Float32Array([...encodedPickingColor, renderOrder * RENDER_ORDER_SCALE]).buffer,
@@ -590,7 +633,7 @@ export abstract class BatchMesh {
         {
           format: Format.F32_RGB,
           bufferByteOffset: 4 * 0,
-          location: 13,
+          location: Number(this.material.defines.BARYCENTRIC),
         },
       ],
       data: barycentricBuffer,
@@ -702,17 +745,6 @@ export abstract class BatchMesh {
     ]);
 
     renderInst.setSamplerBindingsFromTextureMappings(this.textureMappings);
-
-    // upload in WebGL
-    if ((renderInst.renderPipelineDescriptor.program as Program_GL).gl_program) {
-      renderInst.uniforms.forEach((uniforms) => {
-        const uniformsMap = {};
-        uniforms.forEach(({ name, value }) => {
-          uniformsMap[name] = value;
-        });
-        (renderInst.renderPipelineDescriptor.program as Program_GL).setUniforms(uniformsMap);
-      });
-    }
   }
 
   private uploadFog(uniforms: RenderInstUniform[], fog: Fog) {
@@ -793,9 +825,9 @@ export abstract class BatchMesh {
         // wrapT: WrapMode.Clamp,
         wrapS: WrapMode.Repeat,
         wrapT: WrapMode.Repeat,
-        minFilter: TexFilterMode.Bilinear,
+        minFilter: TexFilterMode.Point,
         magFilter: TexFilterMode.Bilinear,
-        mipFilter: MipFilterMode.NoMip,
+        mipFilter: MipFilterMode.Linear,
         minLOD: 0,
         maxLOD: 0,
       });

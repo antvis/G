@@ -100,7 +100,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
         {
           format: Format.F32_RGB,
           bufferByteOffset: 4 * 0,
-          location: VertexAttributeLocation.POSITION,
+          location: VertexAttributeLocation.MAX,
         },
       ],
       data: Float32Array.from(positionsAll),
@@ -113,7 +113,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
         {
           format: Format.F32_RGB,
           bufferByteOffset: 4 * 0,
-          location: VertexAttributeLocation.NORMAL,
+          location: VertexAttributeLocation.MAX + 1,
         },
       ],
       data: Float32Array.from(normalsAll),
@@ -126,7 +126,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: VertexAttributeLocation.UV,
+          location: VertexAttributeLocation.MAX + 2,
         },
       ],
       data: Float32Array.from(uvsAll),

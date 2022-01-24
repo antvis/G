@@ -1,16 +1,16 @@
 import { injectable } from 'mana-syringe';
 import { DisplayObject, Image, SHAPE } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
-import { Batch, AttributeLocation } from './Batch';
+import { Batch } from './Batch';
 import { ShapeMesh, ShapeRenderer } from '../tokens';
 import vert from '../shader/image.vert';
 import frag from '../shader/image.frag';
 import { BatchMesh } from './BatchMesh';
-import { CircleBatchMesh } from './Circle';
+import { VertexAttributeLocation } from '../geometries';
 
-enum ImageProgram {
-  a_Size = AttributeLocation.MAX,
-  a_Uv,
+enum ImageVertexAttributeLocation {
+  SIZE = VertexAttributeLocation.MAX,
+  UV,
 }
 
 const IMAGE_TEXTURE_MAPPING = 'IMAGE_TEXTURE_MAPPING';
@@ -55,7 +55,7 @@ export class ImageBatchMesh extends BatchMesh {
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: ImageProgram.a_Uv,
+          location: ImageVertexAttributeLocation.UV,
         },
       ],
       data: new Float32Array(interleaved),
@@ -68,7 +68,7 @@ export class ImageBatchMesh extends BatchMesh {
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: ImageProgram.a_Size,
+          location: ImageVertexAttributeLocation.SIZE,
         },
       ],
       data: new Float32Array(instanced),
@@ -84,7 +84,7 @@ export class ImageBatchMesh extends BatchMesh {
     if (name === 'width' || name === 'height') {
       this.geometry.updateVertexBuffer(
         2,
-        ImageProgram.a_Size,
+        ImageVertexAttributeLocation.SIZE,
         index,
         new Uint8Array(new Float32Array([width, height]).buffer),
       );
