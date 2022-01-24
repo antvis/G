@@ -2,6 +2,35 @@
 
 以下版本号以 @antv/g 为准。
 
+## [5.0.9] - 2022-1-24
+
+-   @antv/g-canvas@1.0.8
+-   @antv/g-components@1.0.8
+-   @antv/g-math@1.0.8
+-   @antv/g-plugin-3d@1.0.9
+-   @antv/g-plugin-canvas-picker@1.0.8
+-   @antv/g-plugin-canvas-renderer@1.0.8
+-   @antv/g-plugin-control@1.0.9
+-   @antv/g-plugin-css-select@1.0.8
+-   @antv/g-plugin-dom-interaction@1.0.8
+-   @antv/g-plugin-gpgpu@1.0.8
+-   @antv/g-plugin-html-renderer@1.0.8
+-   @antv/g-plugin-svg-picker@1.0.8
+-   @antv/g-plugin-svg-renderer@1.0.8
+-   @antv/g-plugin-webgl-renderer@1.0.11
+-   @antv/g-shader-components@1.0.6
+-   @antv/g-svg@1.0.8
+-   @antv/g-webgl@1.0.11
+-   @antv/g-webgpu-compiler@1.0.8
+-   @antv/g@5.0.9
+-   @antv/react-g@1.0.2
+
+### Bug 修复
+
+-   [g-webgl] 硬件适配层支持 WebGL1 #851
+-   [g-webgl] Polygon Path 描边闭合 #860
+-   [g-webgl] 渲染次序问题 #859
+
 ## [5.0.8] - 2022-1-18
 
 -   @antv/g-canvas@1.0.7
