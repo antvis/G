@@ -1,8 +1,67 @@
+use std::error::Error;
+use wasm_bindgen::prelude::*;
+use web_sys::console;
 
-// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
-// allocator.
-#[cfg(feature = "wee_alloc")]
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+fn show_error(place: &str, error: impl Error) {
+    console::log_2(&place.into(), &error.to_string().into());
 
-pub mod glsl_compile;
+    let mut e = error.source();
+    while let Some(source) = e {
+        console::log_1(&source.to_string().into());
+        e = source.source();
+    }
+}
+
+#[wasm_bindgen]
+pub fn glsl_compile(source: &str, stage: &str, validation_enabled: bool) -> String {
+    let naga_stage = match stage {
+        "vertex" => Ok(naga::ShaderStage::Vertex),
+        "fragment" => Ok(naga::ShaderStage::Fragment),
+        _ => Err("unknown shader stage"),
+    }
+    .unwrap();
+
+    let mut parser = naga::front::glsl::Parser::default();
+    let module = match parser.parse(
+        &naga::front::glsl::Options {
+            stage: naga_stage,
+            defines: Default::default(),
+        },
+        &source,
+    ) {
+        Ok(v) => v,
+        Err(errors) => {
+            for e in errors {
+                show_error(&"glsl::parse_str", e);
+            }
+
+            panic!();
+        }
+    };
+
+    let validation_flags = if validation_enabled {
+        naga::valid::ValidationFlags::all()
+    } else {
+        naga::valid::ValidationFlags::empty()
+    };
+    let info = match naga::valid::Validator::new(validation_flags, naga::valid::Capabilities::all())
+        .validate(&module)
+    {
+        Ok(v) => v,
+        Err(e) => {
+            show_error(&"validator", e);
+            panic!();
+        }
+    };
+
+    use naga::back::wgsl;
+
+    let flags = wgsl::WriterFlags::empty();
+    match wgsl::write_string(&module, &info, flags) {
+        Ok(v) => v,
+        Err(e) => {
+            show_error(&"wgsl::write_string", e);
+            panic!();
+        }
+    }
+}

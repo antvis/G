@@ -10,19 +10,24 @@ interface WebGLRendererConfig extends RendererConfig {
 }
 
 export class Renderer extends AbstractRenderer {
+  private renderGraphPlugin: WebGLRenderer.Plugin;
+
   constructor(config?: Partial<WebGLRendererConfig>) {
     super(config);
 
     this.registerPlugin(new ContextRegisterPlugin());
-    this.registerPlugin(
-      new WebGLRenderer.Plugin(
-        config.targets
-          ? {
-              targets: config.targets,
-            }
-          : {},
-      ),
+    this.renderGraphPlugin = new WebGLRenderer.Plugin(
+      config?.targets
+        ? {
+            targets: config.targets,
+          }
+        : {},
     );
+    this.registerPlugin(this.renderGraphPlugin);
     this.registerPlugin(new DomInteraction.Plugin());
+  }
+
+  getDevice() {
+    return this.renderGraphPlugin.getDevice();
   }
 }

@@ -1,22 +1,16 @@
-import type { Canvas } from '@antv/g';
-import {
-  Buffer,
-  BufferFrequencyHint,
-  BufferUsage,
-  RenderGraphPlugin,
-  GPUBufferUsage,
-} from '@antv/g-plugin-webgl-renderer';
+import { Buffer, BufferFrequencyHint, BufferUsage } from '@antv/g-plugin-webgl-renderer';
 import type { Device, ComputePipeline } from '@antv/g-plugin-webgl-renderer';
 import { AST_TOKEN_TYPES, KernelBundle, STORAGE_CLASS, Target } from './interface';
 
 export interface KernelOptions {
-  canvas: Canvas;
-  code?: string;
+  device: Device;
+  computeShader?: string;
   bundle?: KernelBundle;
 }
 
 export interface KernelBufferDescriptor {
-  name: string;
+  name?: string;
+  binding?: number;
   data: ArrayBufferView;
 }
 
@@ -28,14 +22,9 @@ const platformString2Target: Record<string, Target> = {
 
 export class Kernel {
   /**
-   * Canvas from `@antv/g`
-   */
-  private canvas: Canvas;
-
-  /**
    * WGSL code, won't be transpiled by compiler
    */
-  private code: string;
+  private computeShader: string;
 
   /**
    * bundle contains GLSL/WGSL
@@ -49,32 +38,30 @@ export class Kernel {
 
   private computePipeline: ComputePipeline;
 
-  private bufferCache: Record<
-    string,
-    {
-      buffer: Buffer;
-      group: number;
-      binding: number;
-    }
-  > = {};
+  private buffers: {
+    name: string;
+    buffer: Buffer;
+    wordCount: number;
+    group: number;
+    binding: number;
+    bindingType: 'uniform' | 'storage' | 'read-only-storage';
+  }[] = [];
 
-  constructor({ canvas, code, bundle }: KernelOptions) {
-    this.canvas = canvas;
-    this.code = code;
+  constructor({ device, computeShader, bundle }: KernelOptions) {
+    this.device = device;
+    this.computeShader = computeShader;
     this.bundle = bundle;
 
     this.init();
   }
 
   private init() {
-    const renderPlugin = this.canvas.container.get<RenderGraphPlugin>(RenderGraphPlugin);
-    this.device = renderPlugin.getDevice();
     const target = platformString2Target[this.device.queryVendorInfo().platformString];
 
-    if (this.code) {
+    if (this.computeShader) {
       this.bundle = {
         shaders: {
-          WGSL: this.code,
+          WGSL: this.computeShader,
           GLSL450: '',
           GLSL100: '',
         },
@@ -87,7 +74,7 @@ export class Kernel {
           output: {
             name: '',
           },
-          uniforms: this.extractStorages(this.code),
+          uniforms: this.extractStorages(this.computeShader),
           defines: [],
           globalDeclarations: [],
         },
@@ -105,36 +92,45 @@ export class Kernel {
     });
   }
 
-  createBuffer(descriptor: KernelBufferDescriptor): Buffer {
-    const { name, data } = descriptor;
-
-    const existed = this.bufferCache[name];
+  /**
+   * set or update buffer by binding number,
+   * it should match binding declared in compute shader
+   */
+  setBinding(binding: number, buffer: Buffer) {
+    // search by binding
+    const existed = this.buffers.find((buffer) => buffer.binding === binding);
     if (existed) {
       existed.buffer.destroy();
+      this.buffers.splice(this.buffers.indexOf(existed), 1);
     }
 
     const storages = this.bundle.context.uniforms;
-    const existedIndex = storages.findIndex((u) => u.name === name);
+    const existedIndex = storages.findIndex((u) => u.binding === binding);
+
     if (existedIndex > -1) {
-      const { storageClass, writeonly, readonly, group, binding } = storages[existedIndex];
+      const { storageClass, readonly, writeonly, group, binding, name } = storages[existedIndex];
       const isUniform = storageClass === STORAGE_CLASS.Uniform;
-      const buffer = this.device.createBuffer({
-        usage: isUniform ? BufferUsage.Uniform : BufferUsage.Storage,
-        hint: BufferFrequencyHint.Dynamic,
-        flags: isUniform
-          ? GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
-          : GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
-        viewOrSize: data,
+      // const buffer = this.device.createBuffer({
+      //   usage: isUniform ? BufferUsage.Uniform : BufferUsage.Storage,
+      //   hint: BufferFrequencyHint.Dynamic,
+      //   flags: !readonly ? BufferUsage.COPY_SRC : 0,
+      //   viewOrSize: data,
+      // });
+
+      this.buffers.push({
+        name,
+        buffer,
+        // @ts-ignore
+        wordCount: buffer.size / 4,
+        binding: binding,
+        bindingType: isUniform ? 'uniform' : readonly ? 'read-only-storage' : 'storage',
+        group: group || 0, // fixed group 0
       });
 
-      this.bufferCache[name] = {
-        buffer,
-        binding: binding || existedIndex,
-        group: group || 0, // fixed group 0
-      };
+      return buffer;
     }
 
-    return this.bufferCache[name].buffer;
+    return null;
   }
 
   dispatch(x: [number, number, number] | number, y: number = 1, z: number = 1) {
@@ -148,17 +144,23 @@ export class Kernel {
     const computePass = this.device.createComputePass({});
     computePass.setPipeline(this.computePipeline);
 
+    const uniforms = this.buffers.filter(({ bindingType }) => bindingType === 'uniform');
+    const storages = this.buffers.filter(({ bindingType }) => bindingType !== 'uniform');
+
     const bindings = this.device.createBindings({
       pipeline: this.computePipeline,
       bindingLayout: {
-        numUniformBuffers: Object.keys(this.bufferCache).length,
+        numUniformBuffers: uniforms.length,
+        storageEntries: storages.map(({ bindingType }) => ({ type: bindingType })),
       },
-      uniformBufferBindings: Object.keys(this.bufferCache).map((name) => {
-        return {
-          buffer: this.bufferCache[name].buffer,
-          wordCount: 0,
-        };
-      }),
+      uniformBufferBindings: uniforms.map(({ buffer, wordCount }) => ({
+        buffer,
+        wordCount,
+      })),
+      storageBufferBindings: storages.map(({ buffer, wordCount }) => ({
+        buffer,
+        wordCount,
+      })),
     });
 
     // fixed bind group 0
@@ -176,8 +178,8 @@ export class Kernel {
   }
 
   destroy() {
-    Object.keys(this.bufferCache).forEach((name) => {
-      this.bufferCache[name].buffer.destroy();
+    this.buffers.forEach(({ buffer }) => {
+      buffer.destroy();
     });
   }
 
@@ -193,8 +195,24 @@ export class Kernel {
           readonly: accessMode === 'read',
           writeonly: accessMode === 'write',
           type: AST_TOKEN_TYPES.Void, // FIXME: Struct
-          group,
-          binding,
+          group: Number(group),
+          binding: Number(binding),
+        });
+        return '';
+      },
+    );
+
+    wgslCode.replace(
+      /\[\[\s*group\((\d+)\)\s*,\s*binding\((\d+)\)\]\]\s+var<uniform>\s*(\S*)\s*\:/g,
+      (_, group, binding, name) => {
+        storages.push({
+          name,
+          storageClass: STORAGE_CLASS.Uniform,
+          readonly: true,
+          writeonly: false,
+          type: AST_TOKEN_TYPES.Void, // FIXME: Struct
+          group: Number(group),
+          binding: Number(binding),
         });
         return '';
       },

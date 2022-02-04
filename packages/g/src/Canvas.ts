@@ -60,6 +60,10 @@ export class Canvas extends EventTarget implements ICanvas {
   private eventService: EventService;
   private renderingService: RenderingService;
 
+  private inited = false;
+  private readyPromise: Promise<any> | undefined;
+  private resolveReadyPromise: Function;
+
   constructor(config: CanvasConfig) {
     super();
 
@@ -187,6 +191,20 @@ export class Canvas extends EventTarget implements ICanvas {
     return node.parsedStyle;
   }
 
+  get ready() {
+    if (!this.readyPromise) {
+      this.readyPromise = new Promise((resolve) => {
+        this.resolveReadyPromise = () => {
+          resolve(this);
+        };
+      });
+      if (this.inited) {
+        this.resolveReadyPromise();
+      }
+    }
+    return this.readyPromise;
+  }
+
   destroy(destroyScenegraph = true) {
     this.emit(CanvasEvent.BEFORE_DESTROY, () => {});
     if (this.frameId) {
@@ -283,6 +301,10 @@ export class Canvas extends EventTarget implements ICanvas {
       throw new Error('Renderer is required.');
     }
 
+    // reset
+    this.inited = false;
+    this.readyPromise = undefined;
+
     this.loadCommonContainerModule();
     this.loadRendererContainerModule(renderer);
 
@@ -295,6 +317,12 @@ export class Canvas extends EventTarget implements ICanvas {
     contextService.init();
     this.renderingService.init().then(() => {
       this.emit(CanvasEvent.READY, {});
+
+      if (this.readyPromise) {
+        this.resolveReadyPromise();
+      }
+
+      this.inited = true;
     });
 
     if (renderer.getConfig().enableAutoRendering) {

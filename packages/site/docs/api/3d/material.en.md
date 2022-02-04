@@ -362,7 +362,7 @@ for (let i = 0; i < 1000; i++) {
 
 ```glsl
 // GLSL
-layout(std140, set = 0, binding = 0) uniform ub_SceneParams {
+layout(std140) uniform ub_SceneParams {
   mat4 u_ProjectionMatrix;
   mat4 u_ViewMatrix;
   vec3 u_CameraPosition;

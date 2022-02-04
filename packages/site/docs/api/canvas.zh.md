@@ -290,6 +290,18 @@ if (tooManyShapes) {
 
 在实例化时会进行初始化逻辑，随后可调用以下生命周期方法。
 
+## ready
+
+初始化工作完成后，返回一个 Promise，等价于监听 `CanvasEvent.READY` 事件：
+
+```js
+await canvas.ready;
+
+// 等价于
+import { CanvasEvent } from '@antv/g';
+canvas.addEventListener(CanvasEvent.READY, () => {});
+```
+
 ## render()
 
 渲染画布，由于渲染器默认开启了自动渲染，大多数情况下不需要手动调用。但有些场景需要手动控制渲染时机，此时可以进行[按需渲染](/zh/docs/guide/diving-deeper/rendering-on-demand) [示例](/zh/examples/canvas#rendering-on-demand)：
@@ -394,6 +406,7 @@ canvas.document.addEventListener('click', () => {});
 
 目前可以监听以下画布相关事件：
 
+-   `ready` 画布相关服务准备就绪后触发
 -   `beforerender` 在每一帧渲染前触发
 -   `afterrender` 在每一帧渲染后触发
 -   `beforedestroy` 在销毁前触发

@@ -1,7 +1,6 @@
 import { Buffer, BufferDescriptor, BufferUsage, ResourceType } from '../interfaces';
 import { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
-import { translateBufferUsage } from './utils';
 
 function isView(viewOrSize: ArrayBufferView | number): viewOrSize is ArrayBufferView {
   return (viewOrSize as ArrayBufferView).byteLength !== undefined;
@@ -20,8 +19,6 @@ export class Buffer_WebGPU extends ResourceBase_WebGPU implements Buffer {
 
   usage: BufferUsage;
 
-  flags: number;
-
   constructor({
     id,
     device,
@@ -33,30 +30,35 @@ export class Buffer_WebGPU extends ResourceBase_WebGPU implements Buffer {
   }) {
     super({ id, device });
 
-    const { usage, flags, viewOrSize } = descriptor;
+    const { usage, viewOrSize } = descriptor;
 
     const alignedLength = isView(viewOrSize)
       ? (viewOrSize.byteLength + 3) & ~3
       : (viewOrSize + 3) & ~3; // 4 bytes alignments (because of the upload which requires this)
 
-    this.usage = translateBufferUsage(usage);
-    // @see https://www.w3.org/TR/webgpu/#dom-gpubufferusage-copy_dst
-    this.usage |= GPUBufferUsage.COPY_DST;
-    // this.usage |= GPUBufferUsage.COPY_SRC;
+    this.usage = usage;
 
-    this.flags = this.usage | flags;
+    // Buffer usages (BufferUsage::(MapRead|CopyDst|Storage)) is invalid. If a buffer usage contains BufferUsage::MapRead the only other allowed usage is BufferUsage::CopyDst.
+    // @see https://www.w3.org/TR/webgpu/#dom-gpubufferusage-copy_dst
+    if (this.usage & BufferUsage.MAP_READ) {
+      this.usage = BufferUsage.MAP_READ | BufferUsage.COPY_DST;
+    }
+
+    const mapBuffer = isView(viewOrSize);
 
     this.size = isView(viewOrSize) ? viewOrSize.byteLength : viewOrSize;
     this.view = isView(viewOrSize) ? viewOrSize : null;
     this.gpuBuffer = this.device.device.createBuffer({
-      usage: this.flags,
-      // usage: this.usage,
+      usage: this.usage,
       size: alignedLength,
-      // mappedAtCreation: true,
+      mappedAtCreation: mapBuffer,
     });
 
-    if (isView(viewOrSize)) {
-      this.setSubData(0, viewOrSize);
+    if (mapBuffer) {
+      const arrayBuffer = this.gpuBuffer.getMappedRange();
+      // @ts-expect-error
+      new viewOrSize.constructor(arrayBuffer).set(viewOrSize);
+      this.gpuBuffer.unmap();
     }
   }
 

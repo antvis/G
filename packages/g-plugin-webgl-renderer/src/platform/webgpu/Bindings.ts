@@ -47,6 +47,17 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
     // entries orders: Storage(read-only storage) Uniform Sampler
     const gpuBindGroupEntries: GPUBindGroupEntry[][] = [[], []];
     let numBindings = 0;
+    for (let i = 0; i < bindingLayout.storageEntries.length; i++) {
+      const binding = descriptor.storageBufferBindings[i];
+      assert(binding.wordCount > 0);
+      const gpuBufferBinding: GPUBufferBinding = {
+        buffer: getPlatformBuffer(binding.buffer),
+        offset: 0,
+        size: binding.wordCount << 2,
+      };
+      gpuBindGroupEntries[0].push({ binding: numBindings++, resource: gpuBufferBinding });
+    }
+
     for (let i = 0; i < bindingLayout.numUniformBuffers; i++) {
       const binding = descriptor.uniformBufferBindings[i];
       assert(binding.wordCount > 0);
@@ -82,17 +93,11 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
 
     this.gpuBindGroup = gpuBindGroupEntries.map((gpuBindGroupEntry, i) =>
       this.device.device.createBindGroup({
-        layout: bindGroupLayout.gpuBindGroupLayout[i],
+        layout: (pipeline as RenderPipeline_WebGPU).getBindGroupLayout(i),
+        // layout: bindGroupLayout.gpuBindGroupLayout[i],
         entries: gpuBindGroupEntry,
       }),
     );
-
-    // this.gpuBindGroup = gpuBindGroupEntries.map((gpuBindGroupEntry, i) =>
-    //   this.device.device.createBindGroup({
-    //     layout: (pipeline as RenderPipeline_WebGPU).getBindGroupLayout(i),
-    //     entries: gpuBindGroupEntry,
-    //   }),
-    // );
     this.bindingLayout = descriptor.bindingLayout;
   }
 
@@ -107,6 +112,16 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
 
   private _createBindGroupLayoutInternal(bindingLayout: BindingLayoutDescriptor): BindGroupLayout {
     const entries: GPUBindGroupLayoutEntry[][] = [[], []];
+
+    if (bindingLayout.storageEntries) {
+      for (let i = 0; i < bindingLayout.storageEntries.length; i++) {
+        entries[0].push({
+          binding: entries[0].length,
+          visibility: GPUShaderStage.COMPUTE,
+          buffer: { type: bindingLayout.storageEntries[i].type },
+        });
+      }
+    }
 
     for (let i = 0; i < bindingLayout.numUniformBuffers; i++)
       entries[0].push({

@@ -417,7 +417,7 @@ export abstract class BatchMesh {
       this.geometry.instancedCount = this.bufferGeometry.instancedCount;
       this.geometry.inputLayoutDescriptor = this.bufferGeometry.inputLayoutDescriptor;
       this.bufferGeometry.vertexBuffers.forEach((data, i) => {
-        const buffer = makeStaticDataBuffer(this.geometry.device, BufferUsage.Vertex, data.buffer);
+        const buffer = makeStaticDataBuffer(this.geometry.device, BufferUsage.VERTEX, data.buffer);
         this.geometry.vertexBuffers[i] = buffer;
       });
 

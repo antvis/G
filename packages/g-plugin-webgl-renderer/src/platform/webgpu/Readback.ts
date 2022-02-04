@@ -9,7 +9,7 @@ import {
 import { Buffer_WebGPU } from './Buffer';
 import { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
-import { GPUBufferUsage, GPUMapMode } from './constants';
+import { GPUMapMode } from './constants';
 import { allocateAndCopyTypedBuffer, halfFloat2Number } from './utils';
 import { Texture_WebGPU } from './Texture';
 import { Format, getFormatCompByteSize } from '../format';
@@ -43,10 +43,9 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
     const size = bytesPerRowAligned * height;
 
     const buffer = this.device.createBuffer({
-      flags: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
+      usage: BufferUsage.STORAGE | BufferUsage.MAP_READ | BufferUsage.COPY_DST,
       hint: BufferFrequencyHint.Static,
       viewOrSize: size,
-      usage: BufferUsage.Storage,
     }) as Buffer_WebGPU;
 
     const commandEncoder = this.device.device.createCommandEncoder();
@@ -103,14 +102,13 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
     let gpuReadBuffer: Buffer_WebGPU = buffer;
 
     // can read buffer directly?
-    if (!(buffer.flags & GPUBufferUsage.MAP_READ && buffer.flags & GPUBufferUsage.COPY_DST)) {
+    if (!(buffer.usage & BufferUsage.MAP_READ && buffer.usage & BufferUsage.COPY_DST)) {
       const commandEncoder = this.device.device.createCommandEncoder();
 
       gpuReadBuffer = this.device.createBuffer({
-        flags: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
+        usage: BufferUsage.STORAGE | BufferUsage.MAP_READ | BufferUsage.COPY_DST,
         hint: BufferFrequencyHint.Static,
         viewOrSize: size,
-        usage: BufferUsage.Storage,
       }) as Buffer_WebGPU;
 
       // Encode commands for copying buffer to buffer.
@@ -168,8 +166,12 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
                   );
                   break;
                 case 4: // float
-                  data = new Float32Array(data.buffer);
-                  (data as Float32Array).set(new Float32Array(copyArrayBuffer));
+                  const ctor = (dst && dst.constructor) || Float32Array;
+
+                  // @ts-ignore
+                  data = new ctor(data.buffer);
+                  // @ts-ignore
+                  (data as ctor).set(new ctor(copyArrayBuffer));
                   break;
               }
             }

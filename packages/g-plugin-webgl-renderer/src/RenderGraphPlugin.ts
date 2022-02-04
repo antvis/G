@@ -38,7 +38,7 @@ import {
   makeBackbufferDescSimple,
   opaqueWhiteFullClearRenderPassDescriptor,
 } from './render/RenderGraphHelpers';
-// import init from '../../../rust/pkg/glsl_wgsl_compiler';
+import init, { glsl_compile } from '../../../rust/pkg/glsl_wgsl_compiler';
 import { Fog, Light } from './lights';
 import { LightPool } from './LightPool';
 
@@ -281,8 +281,12 @@ export class RenderGraphPlugin implements RenderingPlugin {
       });
 
       renderInstManager.popTemplateRenderInst();
-      this.renderHelper.prepareToRender();
+
+      if (this.renderLists.world.renderInsts.length > 0) {
+        this.renderHelper.prepareToRender();
+      }
       this.renderHelper.renderGraph.execute();
+
       renderInstManager.resetRenderInsts();
 
       // output to screen
@@ -431,9 +435,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
     if (!context) return null;
 
-    // const naga = await init('/glsl_wgsl_compiler_bg.wasm');
-    // return new Device_WebGPU(adapter, device, canvas, context, naga.glsl_compile);
-    return new Device_WebGPU(adapter, device, canvas, context, () => {});
+    await init('/glsl_wgsl_compiler_bg.wasm');
+    return new Device_WebGPU(adapter, device, canvas, context, glsl_compile);
+    // return new Device_WebGPU(adapter, device, canvas, context, () => {});
   }
 
   private handleContextEvents($canvas: HTMLCanvasElement) {

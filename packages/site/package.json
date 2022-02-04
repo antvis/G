@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "@antv/g": "^5.0.8",
+    "@antv/g6": "^4.5.2",
     "@antv/g-canvas": "^1.0.7",
     "@antv/g-components": "^1.0.7",
     "@antv/g-plugin-3d": "^1.0.8",

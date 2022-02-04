@@ -38,7 +38,7 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
 
     const { viewOrSize, usage, hint } = descriptor;
     const { uniformBufferMaxPageByteSize, gl } = device;
-    const isUBO = usage === BufferUsage.Uniform;
+    const isUBO = usage & BufferUsage.UNIFORM;
 
     if (!isUBO) {
       if (isWebGL2(gl)) {
@@ -159,7 +159,7 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
     hint: BufferFrequencyHint,
   ): WebGLBuffer {
     const gl = this.device.gl;
-    const isUBO = usage === BufferUsage.Uniform;
+    const isUBO = usage & BufferUsage.UNIFORM;
     if (!isWebGL2(gl) && isUBO) {
       return {
         ubo: true,

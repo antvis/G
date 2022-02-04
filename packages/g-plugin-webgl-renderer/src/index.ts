@@ -120,7 +120,10 @@ export const containerModule = Module((register) => {
 export class Plugin implements RendererPlugin {
   constructor(private options?: Partial<WebGLRendererPluginOptions>) {}
 
+  private container: Syringe.Container;
+
   init(container: Syringe.Container): void {
+    this.container = container;
     container.register({
       token: WebGLRendererPluginOptions,
       useValue: {
@@ -166,6 +169,10 @@ export class Plugin implements RendererPlugin {
     // @ts-ignore
     // container.container.unload(containerModule);
     // container.unload(containerModule);
+  }
+
+  getDevice() {
+    return this.container.get(RenderGraphPlugin).getDevice();
   }
 }
 

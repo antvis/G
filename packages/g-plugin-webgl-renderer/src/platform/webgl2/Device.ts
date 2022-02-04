@@ -80,8 +80,6 @@ import {
   range,
   prependLineNo,
 } from '../utils';
-import { GPUBufferUsage } from '../webgpu/constants';
-import { translateBufferUsage } from '../webgpu/utils';
 import { Bindings_GL } from './Bindings';
 import { Buffer_GL } from './Buffer';
 import { InputLayout_GL } from './InputLayout';
@@ -2015,7 +2013,7 @@ export class Device_GL implements SwapChain, Device {
     if (!this.blitRenderPipeline) {
       const vertexBuffer = makeStaticDataBuffer(
         this,
-        BufferUsage.Vertex,
+        BufferUsage.VERTEX,
         new Float32Array([-4, -4, 4, -4, 0, 4]).buffer,
       );
       const inputLayout = this.createInputLayout({

@@ -88,13 +88,12 @@ export function translateBufferHint(hint: BufferFrequencyHint): GLenum {
 }
 
 export function translateBufferUsageToTarget(usage: BufferUsage): GLenum {
-  switch (usage) {
-    case BufferUsage.Index:
-      return GL.ELEMENT_ARRAY_BUFFER;
-    case BufferUsage.Vertex:
-      return GL.ARRAY_BUFFER;
-    case BufferUsage.Uniform:
-      return GL.UNIFORM_BUFFER;
+  if (usage & BufferUsage.INDEX) {
+    return GL.ELEMENT_ARRAY_BUFFER;
+  } else if (usage & BufferUsage.VERTEX) {
+    return GL.ARRAY_BUFFER;
+  } else if (usage & BufferUsage.UNIFORM) {
+    return GL.UNIFORM_BUFFER;
   }
 }
 
