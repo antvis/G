@@ -1,10 +1,8 @@
-import { isNil } from '@antv/util';
-import { getAttributeLocations, getDefines } from '../../shader/compiler';
+import { getAttributeLocations } from '../../shader/compiler';
 import { ResourceType, Program, ProgramDescriptorSimple } from '../interfaces';
 import { assert, getUniformSetter, parseUniformName } from '../utils';
 import { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
-import { Texture_GL } from './Texture';
 import { isWebGL2 } from './utils';
 
 export enum ProgramCompileState_GL {
@@ -88,8 +86,7 @@ export class Program_GL extends ResourceBase_GL implements Program {
     const gl = this.device.gl;
     const count = gl.getProgramParameter(this.gl_program, gl.ACTIVE_ATTRIBUTES);
 
-    const defines = getDefines(this.descriptor.preprocessedVert);
-    const locations = getAttributeLocations(this.descriptor.vert, defines);
+    const locations = getAttributeLocations(this.descriptor.vert);
     for (let index = 0; index < count; index++) {
       const { name, type, size } = gl.getActiveAttrib(this.gl_program, index);
       const location = gl.getAttribLocation(this.gl_program, name);
@@ -97,7 +94,7 @@ export class Program_GL extends ResourceBase_GL implements Program {
       const definedLocation = locations.find((l) => l.name === name)?.location;
       // Add only user provided attributes, for built-in attributes like
       // `gl_InstanceID` locaiton will be < 0
-      if (location >= 0 && !isNil(definedLocation)) {
+      if (location >= 0) {
         this.attributes[definedLocation] = {
           name,
           location,
@@ -106,6 +103,8 @@ export class Program_GL extends ResourceBase_GL implements Program {
         };
       }
     }
+
+    // this.attributes.sort((a, b) => a.location - b.location);
   }
 
   private readUniformLocationsFromLinkedProgram() {
@@ -136,24 +135,50 @@ export class Program_GL extends ResourceBase_GL implements Program {
 
   setUniforms(uniforms: Record<string, any> = {}) {
     const gl = this.device.gl;
+    gl.useProgram(this.gl_program);
 
-    if (!isWebGL2(gl)) {
-      let programUsed = false;
-      for (const uniformName in uniforms) {
-        if (!programUsed) {
-          gl.useProgram(this.gl_program);
-          programUsed = true;
-        }
+    for (const uniformName in uniforms) {
+      const uniform = uniforms[uniformName];
+      const uniformSetter = this.uniformSetters[uniformName];
 
-        const uniform = uniforms[uniformName];
-        const uniformSetter = this.uniformSetters[uniformName];
-        if (uniformSetter) {
-          let value = uniform;
-          if (value instanceof Texture_GL) {
-            value = value.textureIndex;
-          }
-          uniformSetter(value);
-        }
+      if (uniformSetter) {
+        let value = uniform;
+        let textureUpdate = false;
+
+        uniformSetter(value);
+
+        // if (value instanceof Framebuffer) {
+        //   value = value.texture;
+        // }
+        // if (value instanceof Texture) {
+        //   textureUpdate = this.uniforms[uniformName] !== uniform;
+
+        //   if (textureUpdate) {
+        //     // eslint-disable-next-line max-depth
+        //     if (uniformSetter.textureIndex === undefined) {
+        //       uniformSetter.textureIndex = this._textureIndexCounter++;
+        //     }
+
+        //     // Bind texture to index
+        //     const texture = value;
+        //     const {textureIndex} = uniformSetter;
+
+        //     texture.bind(textureIndex);
+        //     value = textureIndex;
+
+        //     this._textureUniforms[uniformName] = texture;
+        //   } else {
+        //     value = uniformSetter.textureIndex;
+        //   }
+        // } else if (this._textureUniforms[uniformName]) {
+        //   delete this._textureUniforms[uniformName];
+        // }
+
+        // NOTE(Tarek): uniformSetter returns whether
+        //   value had to be updated or not.
+        // if (uniformSetter(value) || textureUpdate) {
+        //   // copyUniform(this.uniforms, uniformName, uniform);
+        // }
       }
     }
 

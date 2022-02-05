@@ -20,6 +20,23 @@ export interface Batch {
   afterRender?(list: RenderInstList): void;
 }
 
+export enum AttributeLocation {
+  // TODO: bind mat4 in WebGL2 instead of decomposed 4 * vec4?
+  // @see https://stackoverflow.com/questions/38853096/webgl-how-to-bind-values-to-a-mat4-attribute/38853623#38853623
+  a_ModelMatrix0,
+  a_ModelMatrix1,
+  a_ModelMatrix2,
+  a_ModelMatrix3, // model matrix
+  a_Color, // fill color
+  a_StrokeColor, // stroke color
+  a_StylePacked1, // opacity fillOpacity strokeOpacity lineWidth
+  a_StylePacked2, // visibility
+  a_PickingColor, // picking color
+  a_Anchor, // anchor
+  // a_Uv, // UV
+  MAX,
+}
+
 /**
  * A container for multiple display objects with the same `style`,
  * eg. 1000 Circles with the same stroke color, but their position, radius can be different

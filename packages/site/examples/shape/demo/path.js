@@ -21,10 +21,9 @@ const path1 = new Path({
   style: {
     path: [
       ['M', 100, 100],
-      ['L', 200, 100],
+      ['L', 200, 200],
     ],
     stroke: '#F04864',
-    lineDash: [10],
   },
 });
 const path2 = new Path({
@@ -116,20 +115,8 @@ rendererFolder.open();
 const circleFolder = gui.addFolder('circle');
 const circleConfig = {
   r: 100,
-  lineWidth: 1,
-  lineDash: 0,
-  lineDashOffset: 0,
 };
 circleFolder.add(circleConfig, 'r', 0, 200).onChange((r) => {
   circlePath.style.path = getCirclePath(0, 0, r, r);
-});
-circleFolder.add(circleConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
-  circlePath.style.lineWidth = lineWidth;
-});
-circleFolder.add(circleConfig, 'lineDash', 0, 100).onChange((lineDash) => {
-  circlePath.style.lineDash = [lineDash];
-});
-circleFolder.add(circleConfig, 'lineDashOffset', 0, 100).onChange((lineDashOffset) => {
-  circlePath.style.lineDashOffset = lineDashOffset;
 });
 circleFolder.open();

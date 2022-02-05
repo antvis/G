@@ -5,24 +5,12 @@ import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export { DomInteraction, WebGLRenderer };
 
-interface WebGLRendererConfig extends RendererConfig {
-  targets: ('webgl1' | 'webgl2' | 'webgpu')[];
-}
-
 export class Renderer extends AbstractRenderer {
-  constructor(config?: Partial<WebGLRendererConfig>) {
+  constructor(config?: Partial<RendererConfig>) {
     super(config);
 
     this.registerPlugin(new ContextRegisterPlugin());
-    this.registerPlugin(
-      new WebGLRenderer.Plugin(
-        config.targets
-          ? {
-              targets: config.targets,
-            }
-          : {},
-      ),
-    );
+    this.registerPlugin(new WebGLRenderer.Plugin());
     this.registerPlugin(new DomInteraction.Plugin());
   }
 }

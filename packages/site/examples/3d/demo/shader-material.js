@@ -9,12 +9,14 @@ import {
   VertexAttributeLocation,
   Plugin as Plugin3D,
 } from '@antv/g-plugin-3d';
+import { Plugin as PluginControl } from '@antv/g-plugin-control';
 import Stats from 'stats.js';
 import * as dat from 'dat.gui';
 
 // create a renderer
 const renderer = new Renderer();
 renderer.registerPlugin(new Plugin3D());
+renderer.registerPlugin(new PluginControl());
 
 // create a canvas
 const canvas = new Canvas({
@@ -34,7 +36,7 @@ bufferGeometry.setVertexBuffer({
     {
       format: Format.F32_RGB,
       bufferByteOffset: 4 * 0,
-      location: VertexAttributeLocation.MAX,
+      location: VertexAttributeLocation.POSITION,
     },
   ],
   // use 6 vertices
@@ -61,15 +63,45 @@ const shaderMaterial = new ShaderMaterial({
     // float u_NoiseMode;
   };
 
-  layout(location = ${VertexAttributeLocation.MODEL_MATRIX0}) attribute vec4 a_ModelMatrix0;
-  layout(location = ${VertexAttributeLocation.MODEL_MATRIX1}) attribute vec4 a_ModelMatrix1;
-  layout(location = ${VertexAttributeLocation.MODEL_MATRIX2}) attribute vec4 a_ModelMatrix2;
-  layout(location = ${VertexAttributeLocation.MODEL_MATRIX3}) attribute vec4 a_ModelMatrix3;
-  layout(location = ${VertexAttributeLocation.MAX}) attribute vec3 a_Position;
+  layout(location = 0) attribute vec4 a_ModelMatrix0;
+  layout(location = 1) attribute vec4 a_ModelMatrix1;
+  layout(location = 2) attribute vec4 a_ModelMatrix2;
+  layout(location = 3) attribute vec4 a_ModelMatrix3;
+  layout(location = 4) attribute vec4 a_Color;
+  layout(location = 5) attribute vec4 a_StrokeColor;
+  layout(location = 6) attribute vec4 a_StylePacked1;
+  layout(location = 7) attribute vec4 a_StylePacked2;
+  layout(location = 8) attribute vec4 a_PickingColor;
+  layout(location = 9) attribute vec2 a_Anchor;
+  varying vec4 v_PickingResult;
+  varying vec4 v_Color;
+  varying vec4 v_StrokeColor;
+  varying vec4 v_StylePacked1;
+  varying vec4 v_StylePacked2;
+  #define COLOR_SCALE 1. / 255.
+  void setPickingColor(vec3 pickingColor) {
+    v_PickingResult.rgb = pickingColor * COLOR_SCALE;
+  }
+  vec4 project(vec4 pos, mat4 pm, mat4 vm, mat4 mm) {
+    return pm * vm * mm * pos;
+  }
+  layout(location = 10) attribute vec3 a_Position;
 
   void main() {
     mat4 u_ModelMatrix = mat4(a_ModelMatrix0, a_ModelMatrix1, a_ModelMatrix2, a_ModelMatrix3);
-    gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * vec4(a_Position, 1.0);
+    vec4 u_StrokeColor = a_StrokeColor;
+    float u_Opacity = a_StylePacked1.x;
+    float u_FillOpacity = a_StylePacked1.y;
+    float u_StrokeOpacity = a_StylePacked1.z;
+    float u_StrokeWidth = a_StylePacked1.w;
+    float u_ZIndex = a_PickingColor.w;
+    setPickingColor(a_PickingColor.xyz);
+    v_Color = a_Color;
+    v_StrokeColor = a_StrokeColor;
+    v_StylePacked1 = a_StylePacked1;
+    v_StylePacked2 = a_StylePacked2;
+
+    gl_Position = project(vec4(a_Position, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
   }
   `,
   fragmentShader: ` 
@@ -86,6 +118,12 @@ const shaderMaterial = new ShaderMaterial({
     float u_Level;
     // float u_NoiseMode;
   };
+
+  varying vec4 v_PickingResult;
+  varying vec4 v_Color;
+  varying vec4 v_StrokeColor;
+  varying vec4 v_StylePacked1;
+  varying vec4 v_StylePacked2;
 
   float random (vec2 st) {
     return fract(sin(
@@ -125,6 +163,20 @@ const shaderMaterial = new ShaderMaterial({
   // }
 
   void main() {
+    vec4 u_Color = v_Color;
+    vec4 u_StrokeColor = v_StrokeColor;
+    float u_Opacity = v_StylePacked1.x;
+    float u_FillOpacity = v_StylePacked1.y;
+    float u_StrokeOpacity = v_StylePacked1.z;
+    float u_StrokeWidth = v_StylePacked1.w;
+    float u_Visible = v_StylePacked2.x;
+    gbuf_picking = vec4(v_PickingResult.rgb, 1.0);
+    if (u_Visible < 1.0) {
+      discard;
+    }
+    gl_FragColor = u_Color;
+    gl_FragColor.a = gl_FragColor.a * u_Opacity;
+
     vec2 st = gl_FragCoord.xy / u_Viewport;
     vec2 pos = vec2(st * u_Level);
     float n = noise(pos);
@@ -132,10 +184,17 @@ const shaderMaterial = new ShaderMaterial({
   }
   `,
 });
-shaderMaterial.setUniforms({
-  u_Level: 5,
-  u_NoiseMode: 0,
+shaderMaterial.addUniform({
+  name: 'u_Level',
+  format: Format.F32_R,
+  data: 5,
 });
+// shaderMaterial.addUniform({
+//   name: 'u_NoiseMode',
+//   format: Format.F32_R,
+//   data: 0,
+// });
+
 const mesh = new Mesh({
   style: {
     fill: '#1890FF',
@@ -171,6 +230,6 @@ const noiseConfig = {
   level: 5,
 };
 noiseFolder.add(noiseConfig, 'level', 1, 100, 1).onChange((level) => {
-  shaderMaterial.setUniforms({ u_Level: level });
+  shaderMaterial.updateUniformData('u_Level', level);
 });
 noiseFolder.open();

@@ -150,7 +150,7 @@ export class CubeGeometry extends ProceduralGeometry<CubeGeometryProps> {
       return [
         {
           bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
-          location: VertexAttributeLocation.MAX,
+          location: VertexAttributeLocation.POSITION,
           data: p,
         },
       ];

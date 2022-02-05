@@ -1,4 +1,3 @@
-import { isNil } from '@antv/util';
 import {
   BufferBinding,
   SamplerBinding,
@@ -151,8 +150,8 @@ export function inputLayoutBufferDescriptorEquals(
   a: Readonly<InputLayoutBufferDescriptor | null>,
   b: Readonly<InputLayoutBufferDescriptor | null>,
 ): boolean {
-  if (isNil(a)) return isNil(b);
-  if (isNil(b)) return false;
+  if (a === null) return b === null;
+  if (b === null) return false;
   return a.byteStride === b.byteStride && a.frequency === b.frequency;
 }
 
@@ -277,12 +276,12 @@ export function vertexAttributeDescriptorCopy(
 export function inputLayoutBufferDescriptorCopy(
   a: Readonly<InputLayoutBufferDescriptor | null>,
 ): InputLayoutBufferDescriptor | null {
-  if (!isNil(a)) {
+  if (a !== null) {
     const byteStride = a.byteStride;
     const frequency = a.frequency;
     return { byteStride, frequency };
   } else {
-    return a;
+    return null;
   }
 }
 

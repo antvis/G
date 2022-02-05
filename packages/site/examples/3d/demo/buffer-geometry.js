@@ -35,7 +35,7 @@ bufferGeometry.setVertexBuffer({
     {
       format: Format.F32_RGB,
       bufferByteOffset: 4 * 0,
-      location: VertexAttributeLocation.MAX,
+      location: VertexAttributeLocation.POSITION,
     },
   ],
   // use 6 vertices

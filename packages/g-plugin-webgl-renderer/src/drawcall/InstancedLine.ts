@@ -2,25 +2,34 @@ import { inject, injectable } from 'mana-syringe';
 import {
   Line,
   LINE_CAP,
+  LINE_JOIN,
   ParsedColorStyleProperty,
+  Path,
+  Pattern,
+  PolygonShape,
+  Polyline,
   DisplayObject,
   PARSED_COLOR_TYPE,
+  Point,
   SHAPE,
+  Tuple4Number,
 } from '@antv/g';
-import { Format, VertexBufferFrequency } from '../platform';
-import { Batch } from './Batch';
+import { fillMatrix4x4, fillVec4, makeSortKeyOpaque, RendererLayer } from '../render/utils';
+import { CullMode, Format, VertexBufferFrequency } from '../platform';
+import { RenderInst } from '../render/RenderInst';
+import { DeviceProgram } from '../render/DeviceProgram';
+import { Batch, AttributeLocation } from './Batch';
 import { ShapeMesh, ShapeRenderer } from '../tokens';
 import vert from '../shader/instanced-line.vert';
 import frag from '../shader/instanced-line.frag';
 import { BatchMesh } from './BatchMesh';
-import { VertexAttributeLocation } from '../geometries';
 
 export const segmentInstanceGeometry = [
   0, -0.5, 0, 0, 0, 1, -0.5, 1, 1, 0, 1, 0.5, 1, 1, 1, 0, 0.5, 0, 0, 1,
 ];
 
 enum InstancedLineProgram {
-  a_Position = VertexAttributeLocation.MAX,
+  a_Position = AttributeLocation.MAX,
   a_PointA,
   a_PointB,
   a_Cap,

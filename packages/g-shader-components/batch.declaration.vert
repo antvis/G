@@ -8,6 +8,7 @@ layout(location = 6) attribute vec4 a_StylePacked1;
 layout(location = 7) attribute vec4 a_StylePacked2;
 layout(location = 8) attribute vec4 a_PickingColor;
 layout(location = 9) attribute vec2 a_Anchor;
+// layout(location = {AttributeLocation.a_Uv}) attribute vec2 a_Uv;
 
 varying vec4 v_PickingResult;
 varying vec4 v_Color;

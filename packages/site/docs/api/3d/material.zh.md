@@ -200,23 +200,71 @@ export enum BlendFactor {
 
 # 基础方法
 
-## setUniforms
+## addUniform
 
-添加一组 Uniform
+添加一个 MaterialUniform
 
 参数列表：
 
--   uniforms: `Record<string, number | number[]>`
+-   uniform: MaterialUniform
+
+```js
+type MaterialUniformData =
+    | number
+    | [number]
+    | [number, number]
+    | [number, number, number]
+    | Tuple4Number;
+export interface MaterialUniform {
+    name: string;
+    format: Format;
+    data: MaterialUniformData;
+}
+```
+
+其中 Format 支持以下枚举值，与 Shader 中基础数据类型对应关系如下：
+
+```js
+export enum Format {
+    F32_R, // float
+    F32_RG, // vec2
+    F32_RGB, // vec3
+    F32_RGBA, // vec4
+}
+```
 
 例如 MeshPhongMaterial 在初始化时会添加如下：
 
 ```js
-material.setUniform({
-    u_BumpScale: 5,
+material.addUniform({
+    name: 'u_BumpScale',
+    format: Format.F32_R,
+    data: 5,
 });
 
 // 对应 shader 中的:
 // uniform float u_BumpScale;
+```
+
+## removeUniform
+
+按名称删除 MaterialUniform。
+
+参数列表：
+
+-   uniformName: string
+
+## updateUniformData
+
+更新 MaterialUniform 的数据。
+
+参数列表：
+
+-   uniformName: string Shader 中使用的 uniform 名称
+-   data: MaterialUniformData 数据
+
+```js
+material.updateUniformData('u_BumpScale', 5);
 ```
 
 ## addTexture

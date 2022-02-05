@@ -31,7 +31,6 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
   }>;
   mipmaps: boolean;
   formatKind: SamplerFormatKind;
-  textureIndex: number; // used in WebGL1
 
   constructor({
     id,
@@ -72,8 +71,8 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
       if (descriptor.dimension === TextureDimension.n2D) {
         gl_target = GL.TEXTURE_2D;
         gl.bindTexture(gl_target, gl_texture);
-        if (this.immutable) {
-          if (isWebGL2(gl)) {
+        if (isWebGL2(gl)) {
+          if (this.immutable) {
             // texStorage2D will create an immutable texture(fixed size)
             // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/texStorage2D
             // @see https://github.com/visgl/luma.gl/issues/193
@@ -85,10 +84,11 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
               descriptor.width,
               descriptor.height,
             );
-          } else {
+          }
+        } else {
+          if (this.immutable) {
             // texImage2D: level must be 0 for DEPTH_COMPONENT format
-            // const level = internalformat === GL.DEPTH_COMPONENT || this.isNPOT() ? 0 : numLevels;
-            const level = internalformat === GL.DEPTH_COMPONENT || this.isNPOT() ? 0 : 0;
+            const level = internalformat === GL.DEPTH_COMPONENT || this.isNPOT() ? 0 : numLevels;
 
             // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
             gl.texImage2D(
@@ -97,6 +97,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
               internalformat,
               descriptor.width,
               descriptor.height,
+              // texImage2D: border != 0
               0,
               internalformat,
               gl_type,
@@ -165,6 +166,10 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     this.gl_texture = gl_texture;
     this.gl_target = gl_target;
     this.numLevels = numLevels;
+
+    if (this.mipmaps) {
+      this.generateMipmap();
+    }
   }
 
   setImageData(data: TexImageSource | ArrayBufferView[], level: number) {
@@ -185,9 +190,6 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     } else {
       width = (data as TexImageSource).width;
       height = (data as TexImageSource).height;
-      // update size
-      this.width = width;
-      this.height = height;
     }
 
     gl.bindTexture(this.gl_target, this.gl_texture);
@@ -207,7 +209,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
       // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texSubImage2D
       gl.texSubImage2D(
         this.gl_target,
-        0,
+        level,
         0,
         0,
         width,
@@ -222,8 +224,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
         // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
         gl.texImage2D(
           this.gl_target,
-          // level,
-          0,
+          level,
           gl_format,
           width,
           height,
@@ -234,35 +235,102 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
           isArray ? data[0] : data,
         );
       } else {
-        // WebGL1: upload Array & Image separately
-        if (isArray) {
-          (gl as WebGLRenderingContext).texImage2D(
-            this.gl_target,
-            0,
-            gl_format,
-            width,
-            height,
-            0,
-            gl_format,
-            gl_type,
-            data[0],
-          );
-        } else {
-          (gl as WebGLRenderingContext).texImage2D(
-            this.gl_target,
-            0,
-            gl_format,
-            gl_format,
-            gl_type,
-            data as TexImageSource,
-          );
-        }
+        // WebGL1:
+        (gl as WebGLRenderingContext).texImage2D(
+          this.gl_target,
+          level,
+          gl_format,
+          gl_format,
+          gl_type,
+          data as ImageData,
+        );
       }
     }
 
     if (this.mipmaps) {
       this.generateMipmap();
     }
+
+    // for (let i = 0; i < maxMipLevel; i++) {
+    //   if (i >= firstMipLevel) {
+    //     const levelData = levelDatas[levelDatasOffs++] as ArrayBufferView;
+    //     const compByteSize = isCompressed ? 1 : getFormatCompByteSize(this.pixelFormat);
+    //     const sliceElementSize = levelData.byteLength / compByteSize / this.depth;
+
+    //     // TODO: Buffer
+
+    //     if (is3D && isCompressed) {
+    //       // Workaround for https://bugs.chromium.org/p/chromium/issues/detail?id=1004511
+    //       for (let z = 0; z < this.depth; z++) {
+    //         if (isWebGL2(gl)) {
+    //           gl.compressedTexSubImage3D(
+    //             this.gl_target,
+    //             i,
+    //             0,
+    //             0,
+    //             z,
+    //             w,
+    //             h,
+    //             1,
+    //             gl_format,
+    //             levelData,
+    //             z * sliceElementSize,
+    //             sliceElementSize,
+    //           );
+    //         }
+    //       }
+    //     } else if (isCube) {
+    //       for (let z = 0; z < this.depth; z++) {
+    //         const face_target = GL.TEXTURE_CUBE_MAP_POSITIVE_X + (z % 6);
+    //         if (isCompressed) {
+    //           gl.compressedTexSubImage2D(
+    //             face_target,
+    //             i,
+    //             0,
+    //             0,
+    //             w,
+    //             h,
+    //             gl_format,
+    //             levelData,
+    //             z * sliceElementSize,
+    //             sliceElementSize,
+    //           );
+    //         } else {
+    //           gl.texSubImage2D(
+    //             face_target,
+    //             i,
+    //             0,
+    //             0,
+    //             w,
+    //             h,
+    //             gl_format,
+    //             gl_type,
+    //             levelData,
+    //             z * sliceElementSize,
+    //           );
+    //         }
+    //       }
+    //     } else if (is3D) {
+    //       if (isWebGL2(gl)) {
+    //         if (isCompressed) {
+    //           gl.compressedTexSubImage3D(this.gl_target, i, 0, 0, 0, w, h, d, gl_format, levelData);
+    //         } else {
+    //           gl.texSubImage3D(this.gl_target, i, 0, 0, 0, w, h, d, gl_format, gl_type, levelData);
+    //         }
+    //       }
+    //     } else {
+    //       if (isCompressed) {
+    //         gl.compressedTexSubImage2D(this.gl_target, i, 0, 0, w, h, gl_format, levelData);
+    //       } else {
+    //         // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texSubImage2D
+    //         gl.texSubImage2D(this.gl_target, i, 0, 0, w, h, gl_format, gl_type, levelData);
+    //       }
+    //     }
+    //   }
+
+    //   w = Math.max((w / 2) | 0, 1);
+    //   h = Math.max((h / 2) | 0, 1);
+    // }
   }
 
   destroy() {
@@ -294,29 +362,28 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     const gl = this.device.gl;
     if (this.pixelStore) {
       if (this.pixelStore.unpackFlipY) {
-        gl.pixelStorei(GL.UNPACK_FLIP_Y_WEBGL, true);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
       }
       if (this.pixelStore.packAlignment) {
-        gl.pixelStorei(GL.PACK_ALIGNMENT, this.pixelStore.packAlignment);
+        gl.pixelStorei(gl.PACK_ALIGNMENT, this.pixelStore.packAlignment);
       }
       if (this.pixelStore.unpackAlignment) {
-        gl.pixelStorei(GL.UNPACK_ALIGNMENT, this.pixelStore.unpackAlignment);
+        gl.pixelStorei(gl.UNPACK_ALIGNMENT, this.pixelStore.unpackAlignment);
       }
     }
   }
 
   private generateMipmap(): this {
     const gl = this.device.gl;
-    if (!isWebGL2(gl) && this.isNPOT()) {
+    if (this.isNPOT()) {
       return this;
     }
 
-    if (this.gl_texture && this.gl_target) {
-      gl.bindTexture(this.gl_target, this.gl_texture);
-      gl.generateMipmap(this.gl_target);
-      gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST_MIPMAP_LINEAR);
-      gl.bindTexture(this.gl_target, null);
-    }
+    // if (this.gl_texture && this.gl_target) {
+    //   gl.bindTexture(this.gl_target, this.gl_texture);
+    //   gl.generateMipmap(this.gl_target);
+    //   gl.bindTexture(this.gl_target, null);
+    // }
     return this;
   }
 

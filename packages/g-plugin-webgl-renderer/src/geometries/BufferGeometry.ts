@@ -17,18 +17,9 @@ export interface VertexBufferToUpdateDescriptor {
 }
 
 export enum VertexAttributeLocation {
-  // TODO: bind mat4 in WebGL2 instead of decomposed 4 * vec4?
-  // @see https://stackoverflow.com/questions/38853096/webgl-how-to-bind-values-to-a-mat4-attribute/38853623#38853623
-  MODEL_MATRIX0,
-  MODEL_MATRIX1,
-  MODEL_MATRIX2,
-  MODEL_MATRIX3,
-  COLOR,
-  STROKE_COLOR,
-  PACKED_STYLE1, // opacity fillOpacity strokeOpacity lineWidth
-  PACKED_STYLE2, // visibility
-  PICKING_COLOR,
-  ANCHOR,
+  POSITION = 10,
+  NORMAL,
+  UV,
   MAX,
 }
 

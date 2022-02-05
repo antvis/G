@@ -3,7 +3,7 @@ import { mat4 } from 'gl-matrix';
 import { DisplayObject, PARSED_COLOR_TYPE, SHAPE, Text, Tuple4Number } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
 import { RenderInst } from '../render/RenderInst';
-import { Batch, RENDER_ORDER_SCALE } from './Batch';
+import { Batch, AttributeLocation, RENDER_ORDER_SCALE } from './Batch';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
 import { getGlyphQuads } from './symbol/SymbolQuad';
 import GlyphAtlas from './symbol/GlyphAtlas';
@@ -12,10 +12,9 @@ import vert from '../shader/text.vert';
 import frag from '../shader/text.frag';
 import { BatchMesh } from './BatchMesh';
 import { Texture2D } from '../Texture2D';
-import { VertexAttributeLocation } from '../geometries';
 
-enum TextVertexAttributeLocation {
-  a_Tex = VertexAttributeLocation.MAX,
+enum TextProgram {
+  a_Tex = AttributeLocation.MAX,
   a_Offset,
 }
 
@@ -94,63 +93,63 @@ export class TextBatchMesh extends BatchMesh {
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
-          location: VertexAttributeLocation.MODEL_MATRIX0,
+          location: AttributeLocation.a_ModelMatrix0,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 4,
-          location: VertexAttributeLocation.MODEL_MATRIX1,
+          location: AttributeLocation.a_ModelMatrix1,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 8,
-          location: VertexAttributeLocation.MODEL_MATRIX2,
+          location: AttributeLocation.a_ModelMatrix2,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 12,
-          location: VertexAttributeLocation.MODEL_MATRIX3,
+          location: AttributeLocation.a_ModelMatrix3,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 16,
-          location: VertexAttributeLocation.COLOR,
+          location: AttributeLocation.a_Color,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 20,
-          location: VertexAttributeLocation.STROKE_COLOR,
+          location: AttributeLocation.a_StrokeColor,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 24,
-          location: VertexAttributeLocation.PACKED_STYLE1,
+          location: AttributeLocation.a_StylePacked1,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 28,
-          location: VertexAttributeLocation.PACKED_STYLE2,
+          location: AttributeLocation.a_StylePacked2,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 32,
-          location: VertexAttributeLocation.PICKING_COLOR,
+          location: AttributeLocation.a_PickingColor,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
@@ -166,12 +165,12 @@ export class TextBatchMesh extends BatchMesh {
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: TextVertexAttributeLocation.a_Tex,
+          location: TextProgram.a_Tex,
         },
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 2,
-          location: TextVertexAttributeLocation.a_Offset,
+          location: TextProgram.a_Offset,
         },
       ],
       data: new Float32Array(uvOffsets),
@@ -215,19 +214,35 @@ export class TextBatchMesh extends BatchMesh {
 
     const { width: atlasWidth, height: atlasHeight } = glyphAtlas.image;
 
-    this.material.setUniforms({
-      [Uniform.SDF_MAP_SIZE]: [atlasWidth, atlasHeight],
-      [Uniform.FONT_SIZE]: fontSize,
-      [Uniform.GAMMA_SCALE]: 1,
-      [Uniform.STROKE_BLUR]: 0.2,
-      [Uniform.HAS_STROKE]: 1,
+    this.material.addUniform({
+      name: Uniform.SDF_MAP_SIZE,
+      format: Format.U32_RG,
+      data: [atlasWidth, atlasHeight],
+    });
+    this.material.addUniform({
+      name: Uniform.FONT_SIZE,
+      format: Format.U32_R,
+      data: fontSize,
+    });
+    this.material.addUniform({
+      name: Uniform.GAMMA_SCALE,
+      format: Format.U32_R,
+      data: 1,
+    });
+    this.material.addUniform({
+      name: Uniform.STROKE_BLUR,
+      format: Format.U32_R,
+      data: 0.2,
+    });
+    this.material.addUniform({
+      name: Uniform.HAS_STROKE,
+      format: Format.U32_R,
+      data: 1,
     });
   }
 
   beforeUploadUBO(renderInst: RenderInst, objects: DisplayObject[], index: number) {
-    this.material.setUniforms({
-      [Uniform.HAS_STROKE]: 1 - index,
-    });
+    this.material.updateUniformData(Uniform.HAS_STROKE, 1 - index);
   }
 
   shouldSubmitRenderInst(renderInst: RenderInst, objects: DisplayObject[], index: number) {

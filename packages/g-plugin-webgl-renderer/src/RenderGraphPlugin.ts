@@ -42,16 +42,6 @@ import {
 import { Fog, Light } from './lights';
 import { LightPool } from './LightPool';
 
-// uniforms in scene level
-export enum SceneUniform {
-  PROJECTION_MATRIX = 'u_ProjectionMatrix',
-  VIEW_MATRIX = 'u_ViewMatrix',
-  CAMERA_POSITION = 'u_CameraPosition',
-  DEVICE_PIXEL_RATIO = 'u_DevicePixelRatio',
-  VIEWPORT = 'u_Viewport',
-  IS_ORTHO = 'u_IsOrtho',
-}
-
 @singleton({ contrib: RenderingPluginContribution })
 export class RenderGraphPlugin implements RenderingPlugin {
   static tag = 'RenderGraphPlugin';
@@ -88,7 +78,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
   private swapChain: SwapChain;
 
   private renderLists = {
+    skyscape: new RenderInstList(),
     world: new RenderInstList(),
+    picking: new RenderInstList(),
   };
 
   /**
@@ -238,7 +230,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
             rgbBlendMode: BlendMode.Add,
             alphaBlendMode: BlendMode.Add,
             rgbBlendSrcFactor: BlendFactor.SrcAlpha,
-            alphaBlendSrcFactor: BlendFactor.Zero,
+            alphaBlendSrcFactor: BlendFactor.One,
             rgbBlendDstFactor: BlendFactor.OneMinusSrcAlpha,
             alphaBlendDstFactor: BlendFactor.One,
           },
@@ -246,33 +238,13 @@ export class RenderGraphPlugin implements RenderingPlugin {
       );
 
       // Update Scene Params
+      let offs = template.allocateUniformBuffer(0, 16 + 16 + 4 + 4);
+      let d = template.mapUniformBufferF32(0);
+      offs += fillMatrix4x4(d, offs, this.camera.getPerspective()); // ProjectionMatrix 16
+      offs += fillMatrix4x4(d, offs, this.camera.getViewTransform()); // ViewMatrix 16
+      offs += fillVec3v(d, offs, this.camera.getPosition(), this.contextService.getDPR()); // CameraPosition DPR isOrtho 4
       const { width, height } = this.canvasConfig;
-      template.setUniforms(0, [
-        {
-          name: SceneUniform.PROJECTION_MATRIX,
-          value: this.camera.getPerspective(),
-        },
-        {
-          name: SceneUniform.VIEW_MATRIX,
-          value: this.camera.getViewTransform(),
-        },
-        {
-          name: SceneUniform.CAMERA_POSITION,
-          value: this.camera.getPosition(),
-        },
-        {
-          name: SceneUniform.DEVICE_PIXEL_RATIO,
-          value: this.contextService.getDPR(),
-        },
-        {
-          name: SceneUniform.VIEWPORT,
-          value: [width, height],
-        },
-        {
-          name: SceneUniform.IS_ORTHO,
-          value: this.camera.isOrtho() ? 1 : 0,
-        },
-      ]);
+      offs += fillVec4(d, offs, width, height, this.camera.isOrtho() ? 1 : 0); // Viewport isOrtho
 
       renderInstManager.setCurrentRenderInstList(this.renderLists.world);
       // render batches

@@ -26,26 +26,14 @@ function defineStr(k: string, v: string): string {
   return `#define ${k} ${v}`;
 }
 
-export function getDefines(shader: string): Record<string, number> {
-  const defines = {};
-  shader.replace(/^\s*#define\s*(\S*)\s*(\S*)\s*$/gm, (_, name, value) => {
-    const v = Number(value);
-    defines[name] = isNaN(v) ? value : v;
-    return '';
-  });
-  return defines;
-}
+export function getAttributeLocations(vert: string): { location: number; name: string }[] {
+  'layout(location = 0) attribute vec4 a_ModelMatrix0;';
 
-export function getAttributeLocations(
-  vert: string,
-  defines: Record<string, number>,
-): { location: number; name: string }[] {
   const locations = [];
   vert.replace(
-    /^\s*layout\(location\s*=\s*(\S*)\)\s*attribute\s*\S+\s*(.*);$/gm,
+    /^\s*layout\(location\s*=\s*(\d*)\)\s*attribute\s*vec\d*\s*(.*);$/gm,
     (_, location, name) => {
-      const l = Number(location);
-      locations.push({ location: isNaN(l) ? defines[location] : l, name });
+      locations.push({ location: Number(location), name });
       return '';
     },
   );
@@ -62,6 +50,7 @@ export function preprocessShader_GLSL(
   const isGLSL100 = vendorInfo.glslVersion === '#version 100';
   const supportMRT = vendorInfo.supportMRT && !!features.MRT;
 
+  // Garbage WebGL2 shader compiler until I get something better down the line...
   const lines = source
     .split('\n')
     .map((n) => {
@@ -164,7 +153,6 @@ layout(set = ${set}, binding = ${binding++}) uniform sampler S_${samplerName};
   let concat = `
 ${vendorInfo.glslVersion}
 ${isGLSL100 && supportMRT ? '#extension GL_EXT_draw_buffers : require' : ''}
-${isGLSL100 && type === 'frag' ? '#extension GL_OES_standard_derivatives : enable' : ''}
 ${precision}
 #define ${type.toUpperCase()}
 ${
@@ -183,12 +171,13 @@ ${
 ${
   (type === 'frag' &&
     supportMRT &&
+    // !isGLSL100 &&
     `#define gl_FragColor gbuf_color
 layout(location = 0) out vec4 gbuf_color;
-layout(location = 1) out vec4 gbuf_picking;
 `) ||
   ''
 }
+${(type === 'frag' && supportMRT && `layout(location = 1) out vec4 gbuf_picking;`) || ''}
 `) ||
   ''
 }
@@ -207,12 +196,7 @@ ${rest}
     // interface blocks supported in GLSL ES 3.00 and above only
     concat = concat.replace(/\s*uniform\s*.*\s*{((?:\s*.*\s*)*?)};/g, (substr, uniforms) => {
       return uniforms.trim().replace(/^.*$/gm, (uniform: string) => {
-        // eg. #ifdef
-        const trimmed = uniform.trim();
-        if (trimmed.startsWith('#')) {
-          return trimmed;
-        }
-        return uniform ? `uniform ${trimmed}` : '';
+        return uniform ? `uniform ${uniform.trim()}` : '';
       });
     });
 
@@ -229,7 +213,7 @@ ${rest}
         );
 
         // append at the end of fragment shader
-        concat = concat.replace(/^\s*void\s*main\(\)\s*{\s*$/gm, () => {
+        concat = concat.replace(/^void\s*main\(\)\s*{$/gm, () => {
           return `void main() {
   ${gBuffers.map((gBuffer) => `vec4 ${gBuffer};`).join('\n')}
 `;

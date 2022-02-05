@@ -1,18 +1,17 @@
 import { Circle, CircleStyleProps, DisplayObject, SHAPE, RenderingService } from '@antv/g';
 import { injectable } from 'mana-syringe';
 import { Format, VertexBufferFrequency } from '../platform';
-import { Batch } from './Batch';
+import { Batch, AttributeLocation } from './Batch';
 import { ShapeRenderer, ShapeMesh } from '../tokens';
 import vert from '../shader/circle.vert';
 import frag from '../shader/circle.frag';
 import { BatchMesh } from './BatchMesh';
-import { VertexAttributeLocation } from '../geometries';
 
-enum CircleVertexAttributeLocation {
-  EXTRUDE = VertexAttributeLocation.MAX,
-  PACKED_STYLE3,
-  SIZE,
-  UV,
+enum CircleProgram {
+  a_Extrude = AttributeLocation.MAX,
+  a_StylePacked3,
+  a_Size,
+  a_Uv,
 }
 
 const PointShapes: string[] = [SHAPE.Circle, SHAPE.Ellipse, SHAPE.Rect];
@@ -61,12 +60,12 @@ export class CircleBatchMesh extends BatchMesh {
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: CircleVertexAttributeLocation.EXTRUDE,
+          location: CircleProgram.a_Extrude,
         },
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 2,
-          location: CircleVertexAttributeLocation.UV,
+          location: CircleProgram.a_Uv,
         },
       ],
       data: new Float32Array(interleaved),
@@ -79,7 +78,7 @@ export class CircleBatchMesh extends BatchMesh {
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: CircleVertexAttributeLocation.SIZE,
+          location: CircleProgram.a_Size,
           divisor: 1,
         },
       ],
@@ -93,7 +92,7 @@ export class CircleBatchMesh extends BatchMesh {
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
-          location: CircleVertexAttributeLocation.PACKED_STYLE3,
+          location: CircleProgram.a_StylePacked3,
           divisor: 1,
         },
       ],
@@ -119,14 +118,14 @@ export class CircleBatchMesh extends BatchMesh {
 
       this.geometry.updateVertexBuffer(
         2,
-        CircleVertexAttributeLocation.SIZE,
+        CircleProgram.a_Size,
         index,
         new Uint8Array(new Float32Array([...size]).buffer),
       );
     } else if (name === 'radius') {
       this.geometry.updateVertexBuffer(
         3,
-        CircleVertexAttributeLocation.PACKED_STYLE3,
+        CircleProgram.a_StylePacked3,
         index,
         new Uint8Array(
           new Float32Array([
@@ -162,18 +161,22 @@ export class CircleBatchMesh extends BatchMesh {
   ],
 })
 export class CircleRenderer extends Batch {
-  protected validate(object: DisplayObject<any, any>): boolean {
-    // cannot be merged when lineDash used
-    if (object.parsedStyle.lineDash) {
-      return false;
-    }
-
+  protected validate() {
     return true;
   }
 
   protected createBatchMeshList() {
-    // draw stroke separate
     this.batchMeshList.push(this.meshFactory(SHAPE.Circle));
-    // this.batchMeshList.push(this.meshFactory(SHAPE.Path));
   }
+
+  // FIXME: use uniform by names in WebGL
+  // if (program.gl_program) {
+  //   program.setUniforms({
+  //     u_ProjectionMatrix: this.camera.getPerspective(),
+  //     u_ViewMatrix: this.camera.getViewTransform(),
+  //     u_CameraPosition: this.camera.getPosition(),
+  //     u_DevicePixelRatio: this.contextService.getDPR(),
+  //   });
+  // }
+  // }
 }

@@ -12,12 +12,12 @@ import {
   SHAPE,
   Tuple4Number,
 } from '@antv/g';
-import { Cubic as CubicUtil } from '@antv/g-math';
 import earcut from 'earcut';
 import { vec3, mat4 } from 'gl-matrix';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { Batch, RENDER_ORDER_SCALE } from './Batch';
 import { ShapeMesh, ShapeRenderer } from '../tokens';
+import { Renderable3D } from '../components/Renderable3D';
 import { isNil } from '@antv/util';
 import vert from '../shader/line.vert';
 import frag from '../shader/line.frag';
@@ -79,6 +79,16 @@ enum MeshProgram {
   a_Position = 0,
 }
 
+enum MeshUniform {
+  MODEL_MATRIX = 'u_ModelMatrix',
+  COLOR = 'u_Color',
+  PICKING_COLOR = 'u_PickingColor',
+  OPACITY = 'u_Opacity',
+  FILL_OPACITY = 'u_FillOpacity',
+  VISIBLE = 'u_Visible',
+  Z_INDEX = 'u_ZIndex',
+}
+
 @injectable({
   token: [
     { token: ShapeMesh, named: SHAPE.Polyline },
@@ -122,25 +132,15 @@ export class LineBatchMesh extends BatchMesh {
       if (stroke?.type === PARSED_COLOR_TYPE.Constant) {
         strokeColor = stroke.value;
       }
-      this.material.setUniforms({
-        [Uniform.STROKE_COLOR]: strokeColor,
-      });
+      this.material.updateUniformData(Uniform.STROKE_COLOR, strokeColor);
     } else if (name === 'opacity') {
-      this.material.setUniforms({
-        [Uniform.OPACITY]: opacity,
-      });
+      this.material.updateUniformData(Uniform.OPACITY, opacity);
     } else if (name === 'fillOpacity') {
-      this.material.setUniforms({
-        [Uniform.FILL_OPACITY]: fillOpacity,
-      });
+      this.material.updateUniformData(Uniform.FILL_OPACITY, fillOpacity);
     } else if (name === 'strokeOpacity') {
-      this.material.setUniforms({
-        [Uniform.STROKE_OPACITY]: strokeOpacity,
-      });
+      this.material.updateUniformData(Uniform.STROKE_OPACITY, strokeOpacity);
     } else if (name === 'lineWidth') {
-      this.material.setUniforms({
-        [Uniform.STROKE_WIDTH]: lineWidth,
-      });
+      this.material.updateUniformData(Uniform.STROKE_WIDTH, lineWidth);
     } else if (name === 'anchor' || name === 'modelMatrix') {
       let translateX = 0;
       let translateY = 0;
@@ -156,28 +156,28 @@ export class LineBatchMesh extends BatchMesh {
         object.getWorldTransform(), // apply anchor
         mat4.fromTranslation(m, vec3.fromValues(translateX, translateY, 0)),
       );
-      this.material.setUniforms({
-        [Uniform.MODEL_MATRIX]: m,
-      });
+
+      this.material.updateUniformData(Uniform.MODEL_MATRIX, [
+        [m[0], m[1], m[2], m[3]],
+        [m[4], m[5], m[6], m[7]],
+        [m[8], m[9], m[10], m[11]],
+        [m[12], m[13], m[14], m[15]],
+      ]);
     } else if (name === 'visibility') {
-      this.material.setUniforms({
-        [Uniform.VISIBLE]: visibility === 'visible' ? 1 : 0,
-      });
+      this.material.updateUniformData(Uniform.VISIBLE, visibility === 'visible' ? 1 : 0);
     } else if (name === 'lineDash') {
-      this.material.setUniforms({
-        [Uniform.DASH]: lineDash[0] || 0,
-        [Uniform.GAP]: lineDash[1] || 0,
-      });
+      this.material.updateUniformData(Uniform.DASH, lineDash[0] || 0);
+      this.material.updateUniformData(Uniform.GAP, lineDash[1] || 0);
     } else if (name === 'lineDashOffset') {
-      this.material.setUniforms({
-        [Uniform.DASH_OFFSET]: lineDashOffset,
-      });
+      this.material.updateUniformData(Uniform.DASH_OFFSET, lineDashOffset);
     }
   }
 
   changeRenderOrder(object: DisplayObject, index: number, renderOrder: number) {
-    this.material.setUniforms({
-      [Uniform.Z_INDEX]: renderOrder * RENDER_ORDER_SCALE,
+    this.material.addUniform({
+      name: Uniform.Z_INDEX,
+      format: Format.F32_R,
+      data: renderOrder * RENDER_ORDER_SCALE,
     });
   }
 
@@ -226,24 +226,95 @@ export class LineBatchMesh extends BatchMesh {
       mat4.fromTranslation(m, vec3.fromValues(translateX, translateY, 0)),
     );
 
-    this.material.setUniforms({
-      [Uniform.MODEL_MATRIX]: m,
-      [Uniform.COLOR]: fillColor,
-      [Uniform.STROKE_COLOR]: strokeColor,
-      [Uniform.STROKE_WIDTH]: lineWidth,
-      [Uniform.OPACITY]: opacity,
-      [Uniform.FILL_OPACITY]: fillOpacity,
-      [Uniform.STROKE_OPACITY]: strokeOpacity,
-      [Uniform.EXPAND]: 1,
-      [Uniform.MITER_LIMIT]: 5,
-      [Uniform.SCALE_MODE]: 1,
-      [Uniform.ALIGNMENT]: 0.5,
-      [Uniform.PICKING_COLOR]: encodedPickingColor,
-      [Uniform.DASH]: lineDash[0] || 0,
-      [Uniform.GAP]: lineDash[1] || 0,
-      [Uniform.DASH_OFFSET]: lineDashOffset,
-      [Uniform.VISIBLE]: visibility === 'visible' ? 1 : 0,
-      [Uniform.Z_INDEX]: instance.sortable.renderOrder * RENDER_ORDER_SCALE,
+    this.material.addUniform({
+      name: Uniform.MODEL_MATRIX,
+      format: Format.F32_RGBA,
+      data: [
+        [m[0], m[1], m[2], m[3]],
+        [m[4], m[5], m[6], m[7]],
+        [m[8], m[9], m[10], m[11]],
+        [m[12], m[13], m[14], m[15]],
+      ],
+    });
+    this.material.addUniform({
+      name: Uniform.COLOR,
+      format: Format.F32_RGBA,
+      data: fillColor,
+    });
+    this.material.addUniform({
+      name: Uniform.STROKE_COLOR,
+      format: Format.F32_RGBA,
+      data: strokeColor,
+    });
+    this.material.addUniform({
+      name: Uniform.STROKE_WIDTH,
+      format: Format.F32_R,
+      data: lineWidth,
+    });
+    this.material.addUniform({
+      name: Uniform.OPACITY,
+      format: Format.F32_R,
+      data: opacity,
+    });
+    this.material.addUniform({
+      name: Uniform.FILL_OPACITY,
+      format: Format.F32_R,
+      data: fillOpacity,
+    });
+    this.material.addUniform({
+      name: Uniform.STROKE_OPACITY,
+      format: Format.F32_R,
+      data: strokeOpacity,
+    });
+    this.material.addUniform({
+      name: Uniform.EXPAND,
+      format: Format.F32_R,
+      data: 1,
+    });
+    this.material.addUniform({
+      name: Uniform.MITER_LIMIT,
+      format: Format.F32_R,
+      data: 5,
+    });
+    this.material.addUniform({
+      name: Uniform.SCALE_MODE,
+      format: Format.F32_R,
+      data: 1,
+    });
+    this.material.addUniform({
+      name: Uniform.ALIGNMENT,
+      format: Format.F32_R,
+      data: 0.5,
+    });
+    this.material.addUniform({
+      name: Uniform.PICKING_COLOR,
+      format: Format.F32_RGBA,
+      data: encodedPickingColor,
+    });
+    this.material.addUniform({
+      name: Uniform.DASH,
+      format: Format.F32_R,
+      data: lineDash[0] || 0,
+    });
+    this.material.addUniform({
+      name: Uniform.GAP,
+      format: Format.F32_R,
+      data: lineDash[1] || 0,
+    });
+    this.material.addUniform({
+      name: Uniform.DASH_OFFSET,
+      format: Format.F32_R,
+      data: lineDashOffset,
+    });
+    this.material.addUniform({
+      name: Uniform.VISIBLE,
+      format: Format.F32_R,
+      data: visibility === 'visible' ? 1 : 0,
+    });
+    this.material.addUniform({
+      name: Uniform.Z_INDEX,
+      format: Format.F32_R,
+      data: instance.sortable.renderOrder * RENDER_ORDER_SCALE,
     });
     this.material.cullMode = CullMode.None;
   }
@@ -392,14 +463,45 @@ export class FillBatchMesh extends BatchMesh {
       mat4.fromTranslation(m, vec3.fromValues(translateX, translateY, 0)),
     );
 
-    this.material.setUniforms({
-      [Uniform.MODEL_MATRIX]: m,
-      [Uniform.COLOR]: fillColor,
-      [Uniform.PICKING_COLOR]: encodedPickingColor,
-      [Uniform.OPACITY]: opacity,
-      [Uniform.FILL_OPACITY]: fillOpacity,
-      [Uniform.VISIBLE]: visibility === 'visible' ? 1 : 0,
-      [Uniform.Z_INDEX]: instance.sortable.renderOrder * RENDER_ORDER_SCALE,
+    this.material.addUniform({
+      name: Uniform.MODEL_MATRIX,
+      format: Format.F32_RGBA,
+      data: [
+        [m[0], m[1], m[2], m[3]],
+        [m[4], m[5], m[6], m[7]],
+        [m[8], m[9], m[10], m[11]],
+        [m[12], m[13], m[14], m[15]],
+      ],
+    });
+    this.material.addUniform({
+      name: Uniform.COLOR,
+      format: Format.F32_RGBA,
+      data: fillColor,
+    });
+    this.material.addUniform({
+      name: Uniform.PICKING_COLOR,
+      format: Format.F32_RGBA,
+      data: encodedPickingColor,
+    });
+    this.material.addUniform({
+      name: Uniform.OPACITY,
+      format: Format.F32_R,
+      data: opacity,
+    });
+    this.material.addUniform({
+      name: Uniform.FILL_OPACITY,
+      format: Format.F32_R,
+      data: fillOpacity,
+    });
+    this.material.addUniform({
+      name: Uniform.VISIBLE,
+      format: Format.F32_R,
+      data: visibility === 'visible' ? 1 : 0,
+    });
+    this.material.addUniform({
+      name: Uniform.Z_INDEX,
+      format: Format.F32_R,
+      data: instance.sortable.renderOrder * RENDER_ORDER_SCALE,
     });
   }
   protected updateMeshAttribute(
@@ -426,17 +528,11 @@ export class FillBatchMesh extends BatchMesh {
       if (fill?.type === PARSED_COLOR_TYPE.Constant) {
         fillColor = fill.value;
       }
-      this.material.setUniforms({
-        [Uniform.COLOR]: fillColor,
-      });
+      this.material.updateUniformData(Uniform.COLOR, fillColor);
     } else if (name === 'opacity') {
-      this.material.setUniforms({
-        [Uniform.OPACITY]: opacity,
-      });
+      this.material.updateUniformData(Uniform.OPACITY, opacity);
     } else if (name === 'fillOpacity') {
-      this.material.setUniforms({
-        [Uniform.FILL_OPACITY]: fillOpacity,
-      });
+      this.material.updateUniformData(Uniform.FILL_OPACITY, fillOpacity);
     } else if (name === 'anchor' || name === 'modelMatrix') {
       let translateX = 0;
       let translateY = 0;
@@ -452,18 +548,22 @@ export class FillBatchMesh extends BatchMesh {
         object.getWorldTransform(), // apply anchor
         mat4.fromTranslation(m, vec3.fromValues(translateX, translateY, 0)),
       );
-      this.material.setUniforms({
-        [Uniform.MODEL_MATRIX]: m,
-      });
+
+      this.material.updateUniformData(Uniform.MODEL_MATRIX, [
+        [m[0], m[1], m[2], m[3]],
+        [m[4], m[5], m[6], m[7]],
+        [m[8], m[9], m[10], m[11]],
+        [m[12], m[13], m[14], m[15]],
+      ]);
     } else if (name === 'visibility') {
-      this.material.setUniforms({
-        [Uniform.VISIBLE]: visibility === 'visible' ? 1 : 0,
-      });
+      this.material.updateUniformData(Uniform.VISIBLE, visibility === 'visible' ? 1 : 0);
     }
   }
   changeRenderOrder(object: DisplayObject, index: number, renderOrder: number) {
-    this.material.setUniforms({
-      [Uniform.Z_INDEX]: renderOrder * RENDER_ORDER_SCALE,
+    this.material.addUniform({
+      name: Uniform.Z_INDEX,
+      format: Format.F32_R,
+      data: renderOrder * RENDER_ORDER_SCALE,
     });
   }
 }
@@ -493,6 +593,7 @@ function curveTo(
   cpY2: number,
   toX: number,
   toY: number,
+  curveLength: number,
   points: Array<number>,
 ): void {
   const fromX = points[points.length - 2];
@@ -500,8 +601,7 @@ function curveTo(
 
   points.length -= 2;
 
-  const l = CubicUtil.length(fromX, fromY, cpX, cpY, cpX2, cpY2, toX, toY);
-  const n = segmentsCount(l);
+  const n = segmentsCount(curveLength);
 
   let dt = 0;
   let dt2 = 0;
@@ -530,21 +630,21 @@ function curveTo(
 
 const adaptive = true;
 const maxLength = 10;
-const minSegments = 8;
-const maxSegments = 2048;
+// const minSegments = 8;
+// const maxSegments = 2048;
 
 function segmentsCount(length: number, defaultSegments = 20) {
-  // if (!adaptive || !length || isNaN(length)) {
-  //   return defaultSegments;
-  // }
+  if (!adaptive || !length || isNaN(length)) {
+    return defaultSegments;
+  }
 
   let result = Math.ceil(length / maxLength);
 
-  if (result < minSegments) {
-    result = minSegments;
-  } else if (result > maxSegments) {
-    result = maxSegments;
-  }
+  // if (result < minSegments) {
+  //   result = minSegments;
+  // } else if (result > maxSegments) {
+  //   result = maxSegments;
+  // }
 
   return result;
 }
@@ -560,7 +660,7 @@ function updateBuffer(object: DisplayObject, needEarcut = false) {
       return prev;
     }, [] as number[]);
 
-    // close polygon, dealing with extra joint
+    // TODO: close polygon, dealing with extra joint
     if (object.nodeName === SHAPE.Polygon) {
       if (needEarcut) {
         // use earcut for triangulation
@@ -573,18 +673,17 @@ function updateBuffer(object: DisplayObject, needEarcut = false) {
         };
       } else {
         points.push(points[0], points[1]);
-        points.push(...addTailSegment(points[0], points[1], points[2], points[3]));
       }
     }
   } else if (object.nodeName === SHAPE.Path) {
     const {
-      path: { curve },
+      path: { curve, totalLength },
     } = (object as Path).parsedStyle;
-    let startPointIndex = -1;
+    let startPoint: [number, number];
     curve.forEach(([command, ...params]) => {
       if (command === 'M') {
-        startPointIndex = points.length;
         points.push(params[0] - defX, params[1] - defY);
+        startPoint = [params[0] - defX, params[1] - defY];
       } else if (command === 'C') {
         curveTo(
           params[0] - defX,
@@ -593,18 +692,11 @@ function updateBuffer(object: DisplayObject, needEarcut = false) {
           params[3] - defY,
           params[4] - defX,
           params[5] - defY,
+          totalLength,
           points,
         );
       } else if (command === 'Z') {
-        points.push(points[startPointIndex], points[startPointIndex + 1]);
-        points.push(
-          ...addTailSegment(
-            points[startPointIndex],
-            points[startPointIndex + 1],
-            points[startPointIndex + 2],
-            points[startPointIndex + 3],
-          ),
-        );
+        points.push(startPoint[0], startPoint[1]);
       }
     });
 
@@ -719,10 +811,4 @@ function getCapType(lineCap: LINE_CAP) {
   }
 
   return cap;
-}
-
-function addTailSegment(x1: number, y1: number, x2: number = x1, y2: number = y1) {
-  const vec = [x2 - x1, y2 - y1];
-  const length = 0.01;
-  return [x1 + vec[0] * length, y1 + vec[1] * length];
 }

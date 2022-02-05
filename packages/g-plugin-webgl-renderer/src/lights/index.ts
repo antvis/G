@@ -1,5 +1,5 @@
 import { DisplayObject, DisplayObjectConfig, BaseStyleProps } from '@antv/g';
-import { RenderInstUniform } from '../render';
+import { Material } from '../materials';
 
 export interface LightProps extends BaseStyleProps {
   intensity: number;
@@ -21,7 +21,9 @@ export abstract class Light extends DisplayObject<LightProps> {
     });
   }
 
-  abstract uploadUBO(uniforms: RenderInstUniform[], index: number): void;
+  abstract getUniformWordCount(): number;
+
+  abstract uploadUBO(d: Float32Array, off: number): number;
 }
 
 export * from './Fog';
