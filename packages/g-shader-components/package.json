@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-shader-components",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Shader components based on glslify",
   "main": "scene.both.glsl",
   "files": [
