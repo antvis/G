@@ -2,6 +2,38 @@
 
 以下版本号以 @antv/g 为准。
 
+## [5.0.10] - 2022-2-5
+
+-   @antv/g-canvas@1.0.9
+-   @antv/g-components@1.0.9
+-   @antv/g-math@1.0.9
+-   @antv/g-plugin-3d@1.0.10
+-   @antv/g-plugin-canvas-picker@1.0.9
+-   @antv/g-plugin-canvas-renderer@1.0.9
+-   @antv/g-plugin-control@1.0.10
+-   @antv/g-plugin-css-select@1.0.9
+-   @antv/g-plugin-dom-interaction@1.0.9
+-   @antv/g-plugin-gpgpu@1.0.9
+-   @antv/g-plugin-html-renderer@1.0.9
+-   @antv/g-plugin-svg-picker@1.0.9
+-   @antv/g-plugin-svg-renderer@1.0.9
+-   @antv/g-plugin-webgl-renderer@1.0.12
+-   @antv/g-shader-components@1.0.7
+-   @antv/g-svg@1.0.9
+-   @antv/g-webgl@1.0.12
+-   @antv/g-webgpu-compiler@1.0.9
+-   @antv/g@5.0.10
+-   @antv/react-g@1.0.3
+
+### 新增特性
+
+-   [g-plugin-gpgpu] 支持 GPGPU https://github.com/antvis/g/issues/864
+-   [g] 支持通过 `await canvas.ready;` 等待画布完成初始化工作
+
+### Bug 修复
+
+-   [g] CanvasEvent.READY 触发两次问题 https://github.com/antvis/g/issues/865
+
 ## [5.0.9] - 2022-1-24
 
 -   @antv/g-canvas@1.0.8
