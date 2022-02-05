@@ -10,7 +10,7 @@
   "author": "",
   "license": "MIT",
   "scripts": {
-    "build": "father build",
+    "build": "father build && lerna run umd",
     "umd": "lerna run umd",
     "limit-size": "limit-size",
     "wasm": "wasm-pack build ./rust --target web",
