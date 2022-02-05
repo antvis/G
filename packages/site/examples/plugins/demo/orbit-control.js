@@ -2,7 +2,7 @@ import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer } from '@antv/g-webgl';
 import { MeshBasicMaterial, CubeGeometry, Mesh, Plugin as Plugin3D } from '@antv/g-plugin-3d';
 import { Plugin as PluginControl } from '@antv/g-plugin-control';
-import * as dat from 'dat.gui';
+import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 // create a renderer
@@ -57,5 +57,5 @@ canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
 });
 
 // GUI
-const gui = new dat.GUI({ autoPlace: false });
+const gui = new lil.GUI({ autoPlace: false });
 $wrapper.appendChild(gui.domElement);

@@ -1,6 +1,6 @@
 import { Canvas, CanvasEvent } from '@antv/g';
 import { Spreadsheet } from '@antv/g-components';
-import * as dat from 'dat.gui';
+import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 const sheet = new Spreadsheet('container', {

@@ -1,7 +1,7 @@
 import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer } from '@antv/g-webgl';
 import { Plugin, Kernel, BufferUsage } from '@antv/g-plugin-gpgpu';
-import * as dat from 'dat.gui';
+import * as lil from 'lil-gui';
 
 /**
  * ported from https://web.dev/gpu-compute/
@@ -70,7 +70,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   );
 
   // GUI
-  const gui = new dat.GUI({ autoPlace: false });
+  const gui = new lil.GUI({ autoPlace: false });
   $wrapper.appendChild(gui.domElement);
   const folder = gui.addFolder('matrix size');
   const config = {

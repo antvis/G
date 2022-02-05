@@ -1,21 +1,21 @@
-.dg.main {
-    position: absolute;
-    right: 0;
-    top: 0;
-    background: black;
-    z-index: 1;
+.lil-gui.root {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  background: black;
 }
 
-.dg.main li {
-    margin-left: 0 !important;
-    padding-left: 0 !important;
-    list-style-type: none !important;
+.lil-gui.main li {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  list-style-type: none !important;
 }
 
-.dg li.title {
-    padding-left: 16px !important;
+.lil-gui li.title {
+  padding-left: 16px !important;
 }
 
-.dg .c select {
-    color: black;
+.lil-gui .c select {
+  color: black;
 }

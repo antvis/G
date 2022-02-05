@@ -255,6 +255,7 @@ export class TextBatchMesh extends BatchMesh {
     if (
       name === 'text' ||
       name === 'fontFamily' ||
+      name === 'fontSize' ||
       name === 'fontWeight' ||
       name === 'fontStyle' ||
       name === 'fontVariant' ||
@@ -271,10 +272,6 @@ export class TextBatchMesh extends BatchMesh {
       this.material.geometryDirty = true;
       // need re-upload SDF texture
       this.material.textureDirty = true;
-    } else if (name === 'fontSize') {
-      // no need to re-upload SDF texture
-      this.material.programDirty = true;
-      this.material.geometryDirty = true;
     } else if (
       name === 'fill' ||
       name === 'fillOpacity' ||

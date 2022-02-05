@@ -1,7 +1,7 @@
 import { Canvas, Group, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Plugin } from '@antv/g-plugin-css-select';
-import * as dat from 'dat.gui';
+import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 /**
@@ -100,7 +100,7 @@ canvas.on('afterrender', () => {
 });
 
 // GUI
-const gui = new dat.GUI({ autoPlace: false, width: 400 });
+const gui = new lil.GUI({ autoPlace: false, width: 400 });
 $wrapper.appendChild(gui.domElement);
 const selectorFolder = gui.addFolder('CSS Selector');
 const selectorConfig = {

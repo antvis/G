@@ -11750,11 +11750,6 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
-dat.gui@^0.7.2:
-  version "0.7.7"
-  resolved "https://registry.yarnpkg.com/dat.gui/-/dat.gui-0.7.7.tgz#7f96dbd21621a76385203659aebfa264ee6ae89b"
-  integrity sha512-sRl/28gF/XRC5ywC9I4zriATTsQcpSsRG7seXCPnTkK8/EQMIbCu5NPMpICLGxX9ZEUvcXR3ArLYCtgreFoMDw==
-
 data-urls@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/data-urls/-/data-urls-1.1.0.tgz#15ee0582baa5e22bb59c77140da8f9c76963bbfe"
@@ -20743,6 +20738,11 @@ libnpmteam@^1.0.1:
     figgy-pudding "^3.4.1"
     get-stream "^4.0.0"
     npm-registry-fetch "^4.0.0"
+
+lil-gui@^0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/lil-gui/-/lil-gui-0.16.0.tgz#ac3f38e4b73331688f10f4430b1324cf888d3c41"
+  integrity sha512-wDySFozDfOed8UymoMprgQ+xuEZhbOP9h6cagszu/gIRpGjfoo8lHPYXXJN5OluHoM1Z4Y2ac0FJhiMQC5Ac0Q==
 
 limit-size@^0.1.4:
   version "0.1.4"

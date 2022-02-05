@@ -1,7 +1,7 @@
 import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer } from '@antv/g-webgl';
 import { Plugin, Kernel, BufferUsage } from '@antv/g-plugin-gpgpu';
-import * as dat from 'dat.gui';
+import * as lil from 'lil-gui';
 
 /**
  * ported from https://github.com/9ballsyndrome/WebGL_Compute_shader/blob/master/webgl-compute-bitonicSort/js/script.js
@@ -95,7 +95,7 @@ fn main(
   calc(kernel, device, new Array(200).fill(1));
 
   // GUI
-  const gui = new dat.GUI({ autoPlace: false });
+  const gui = new lil.GUI({ autoPlace: false });
   $wrapper.appendChild(gui.domElement);
   const folder = gui.addFolder('array size');
   const config = {

@@ -9,7 +9,7 @@ import {
   Plugin as Plugin3D,
 } from '@antv/g-plugin-3d';
 import { Plugin as PluginControl } from '@antv/g-plugin-control';
-import * as dat from 'dat.gui';
+import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 import { forceLink, forceSimulation, forceManyBody, forceCenter } from 'd3-force-3d';
 
@@ -1722,5 +1722,5 @@ canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
 });
 
 // GUI
-const gui = new dat.GUI({ autoPlace: false });
+const gui = new lil.GUI({ autoPlace: false });
 $wrapper.appendChild(gui.domElement);
