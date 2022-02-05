@@ -29,7 +29,7 @@ const canvas = new Canvas({
 
 # 获取 Device
 
-在创建一个计算任务时，我们需要获取 GPU 设备（Device），用它创建 Buffer 等底层对象。在画布的 [READY](/zh/docs/api/canvas#画布特有事件) 事件处理器中，我们可以通过渲染器获取 Device：
+在创建一个计算任务时，我们需要获取 GPU 设备（Device），用它创建 Buffer 等底层对象。在画布的 [READY](/zh/docs/api/canvas#画布特有事件) 事件处理器中或者等待 `canvas.ready` Promise 完成后，我们都可以通过渲染器获取 Device，[完整 Device API](/zh/docs/plugins/webgl-renderer#device)：
 
 ```js
 import { CanvasEvent } from '@antv/g';
@@ -41,6 +41,10 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
     // 使用 Device 创建 GPU 相关对象，见下节
 });
+
+// 或者
+await canvas.ready;
+const device = renderer.getDevice();
 ```
 
 # 创建 Kernel
@@ -72,6 +76,12 @@ const firstMatrixBuffer = device.createBuffer({
 ```js
 kernel.setBinding(0, firstMatrixBuffer);
 ```
+
+下面列出 usage 与 Compute Shader 中 Buffer 对应的常用配置：
+
+-   `var<storage, read>` 对应 `BufferUsage.STORAGE`
+-   `var<storage, read_write>` 对应 `BufferUsage.STORAGE | BufferUsage.COPY_SRC`
+-   `var<uniform>` 对应 `BufferUsage.UNIFORM | BufferUsage.COPY_DST | BufferUsage.COPY_SRC`
 
 # dispatch
 

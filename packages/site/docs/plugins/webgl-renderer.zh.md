@@ -3,8 +3,7 @@ title: g-plugin-webgl-renderer
 order: 2
 ---
 
-提供基于 WebGL 的渲染能力，也包括基于 GPU 的拾取能力。
-内置 G 核心包提供的全部 2D 基础图形，同时暴露其他自定义 2D/3D 图形的扩展能力。
+提供基于 WebGL 1/2 和 WebGPU 的渲染能力，也包括基于 GPU 的拾取能力。内置 G 核心包提供的全部 2D 基础图形，同时暴露其他自定义 2D/3D 图形的扩展能力。
 
 # 安装方式
 
@@ -13,89 +12,361 @@ order: 2
 ```js
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 // 创建 WebGL 渲染器，其中内置了该插件
-const webglRenderer = new WebGLRenderer();
+const renderer = new WebGLRenderer();
 ```
 
-# 扩展能力
+# Device
 
-该插件提供以下扩展能力，例如 [g-plugin-3d](/zh/docs/plugins/3d) 正是基于该插件提供了 Cube 等 3D 图形。
+它代表 GPU 设备（与之相对 Host 通常指指 CPU），提供统一的 HAL 硬件适配层供 WebGL 1/2 和 WebGPU 实现。在设计相关 API 时大量参考了 WebGPU [相关 API](https://www.w3.org/TR/webgpu/)。
 
-## 组件
+由于设备初始化可能为异步操作（例如 WebGPU 的 `adapter.requestDevice()`），因此提供了两种获取 Device 方式：
 
-我们为每个实体扩充了以下组件，可以随时获取它们：
 ```js
-const entity = displayObject.getEntity();
-const renderable = entity.getComponent(Renderable3D);
-const material = entity.getComponent(Material3D);
-const geometry = entity.getComponent(Geometry3D);
+import { CanvasEvent } from '@antv/g';
+
+// 监听画布准备就绪事件
+canvas.addEventListener(CanvasEvent.READY, () => {
+    // 通过渲染器获取 Device
+    const device = renderer.getDevice();
+});
+
+// 或者等待画布准备就绪
+await canvas.ready;
+// 通过渲染器获取 Device
+const device = renderer.getDevice();
 ```
 
-### Renderable3D
+获取 Device 之后可以使用它创建一系列 GPU 相关的资源，例如 Buffer、Texture 等。
 
-包含 Model
+## Buffer
 
-### Geometry3D
-
-包含了各顶点数组、索引数组。
-
-#### setAttribute(name: string, data: BufferData)
-
-设置/更新顶点数组。
-
-#### setIndex(data: number[] | Uint8Array | Uint16Array | Uint32Array)
-
-设置/更新索引数组。
-
-### Material3D
-
-包含了编译后的 vertex/fragment shader，以及 WebGL 全局状态设置。
-
-#### setDefines(defines: Record<string, boolean | number>)
-向 shader 中注入 `#define key value`。
-
-#### setUniform(name: string | Record<string, BufferData>, data?: BufferData)
-传入一个/组 uniform 变量。
-
-#### setCull(cull: IModelInitializationOptions['cull'])
-设置正/背面剔除。
-
-#### setBlend(blend: IModelInitializationOptions['blend'])
-设置混合。
-
-## ShaderModuleService
-
-提供简易的 Shader 模块化构建服务：
-* 片段引入
-* uniform 默认值
+Buffer 代表 GPU 操作中使用的一块内存，在创建时可以指定初始化数据，随后也可以对其中部分数据进行修改。数据以线性布局的方式存储。当需要在 CPU 侧（Host）读取其中的数据时，需要通过 [Readback](/zh/docs/plugins/webgl-renderer#readback) 完成。
 
 ```ts
-import { ShaderModuleService } from '@antv/g-plugin-webgl-renderer';
+export interface Buffer {
+    setSubData(
+        dstByteOffset: number,
+        src: ArrayBufferView,
+        srcByteOffset?: number,
+        byteLength?: number,
+    ): void;
 
-// 从容器中注入
-@inject(ShaderModuleService)
-private shaderModule: ShaderModuleService;
-
-// 注册 shader 模块
-this.shaderModule.registerModule('material-basic', {
-  vs: imageVertex,
-  fs: imageFragment,
-});
-// 取得编译结果
-const { vs, fs, uniforms: extractedUniforms } = this.shaderModule.getModule('material-basic');
+    destroy(): void;
+}
 ```
 
-在 Shader 中可以使用 `#pragma include` 预编译指令引入代码片段，例如在 vertex shader 中使用贴图代码片段：
-```glsl
-uniform float u_Opacity : 1.0;
+### createBuffer
 
-#pragma include "map.declaration"
+创建 Buffer 方式如下，需要指定：
 
-void main() {
-  vec4 diffuseColor = v_Color;
+-   viewOrSize 必填，指定初始化数据或者 Buffer 大小
+-   usage 必填，内存用途，完全参考 [WebGPU Buffer Usage](https://www.w3.org/TR/webgpu/#buffer-usage)
+-   hint 可选，仅 WebGL 环境下生效
 
-  #pragma include "map"
-
-  gl_FragColor = diffuseColor;
-  gl_FragColor.a = gl_FragColor.a * u_Opacity;
+```ts
+interface Device {
+    createBuffer(descriptor: BufferDescriptor): Buffer;
 }
+
+export interface BufferDescriptor {
+    viewOrSize: ArrayBufferView | number;
+    usage: BufferUsage;
+    hint?: BufferFrequencyHint;
+}
+
+export enum BufferUsage {
+    MAP_READ = 0x0001,
+    MAP_WRITE = 0x0002,
+    COPY_SRC = 0x0004,
+    COPY_DST = 0x0008,
+    INDEX = 0x0010,
+    VERTEX = 0x0020,
+    UNIFORM = 0x0040,
+    STORAGE = 0x0080,
+    INDIRECT = 0x0100,
+    QUERY_RESOLVE = 0x0200,
+}
+
+export enum BufferFrequencyHint {
+    Static = 0x01,
+    Dynamic = 0x02,
+}
+```
+
+例如配合 [g-plugin-gpgpu](/zh/docs/plugins/gpgpu) 使用时，用来分配输入和输出 Buffer：
+
+```js
+const buffer = device.createBuffer({
+    usage: BufferUsage.STORAGE | BufferUsage.COPY_SRC,
+    viewOrSize: new Float32Array([1, 2, 3, 4]),
+});
+```
+
+### setSubData
+
+-   dstByteOffset 必填，目标 Buffer 中的偏移量，以 Byte 为单位
+-   src 必填，类型为 ArrayBufferView
+-   srcByteOffset 选填，src 中起始偏移量，以 Byte 为单位
+-   byteLength 选填，src 中长度，以 Byte 为单位
+
+例如修改 Uniform 中的某个变量，它位于原始 Buffer 中的第 20 个 bytes：
+
+```js
+paramBuffer.setSubData(5 * Float32Array.BYTES_PER_ELEMENT, new Float32Array([maxDisplace]));
+```
+
+### destroy
+
+释放 Buffer 资源。
+
+```js
+buffer.destroy();
+```
+
+## Readback
+
+有时我们需要在 CPU 侧(Host)读取 GPU 侧(Device) Buffer 或者 Texture 中的数据，此时需要通过 Readback 对象实现，它提供异步读取方法。
+
+### createReadback
+
+```js
+interface Device {
+    createReadback(): Readback;
+}
+```
+
+### readBuffer
+
+异步读取 Buffer 内容。
+
+-   WebGPU 中通过 [copyBufferToBuffer](https://www.w3.org/TR/webgpu/#dom-gpucommandencoder-copybuffertobuffer) 实现，
+-   WebGL2 中通过 [fenceSync](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/fenceSync) 实现
+-   WebGL1 不支持
+
+参数列表如下：
+
+-   srcBuffer 必填，源 Buffer
+-   srcByteOffset 选填，目标 Buffer 起始偏移量，默认为 0，即从头读取
+-   dstBuffer 选填，读取内容存放至目标 ArrayBufferView，不填自动创建，最终以结果形式返回
+-   dstOffset 选填，目标 ArrayBufferView 偏移量，默认为 0，即从头写入
+-   length 选填，读取长度，默认为全部
+
+返回值为读取结果 ArrayBufferView。
+
+```js
+export interface Readback {
+    readBuffer(
+        srcBuffer: Buffer,
+        srcByteOffset?: number,
+        dstBuffer?: ArrayBufferView,
+        dstOffset?: number,
+        length?: number,
+    ): Promise<ArrayBufferView>;
+}
+```
+
+例如配合 `g-plugin-gpgpu` 使用时，读取计算结果：
+
+```js
+const result = await readback.readBuffer(resultBuffer); // Float32Array([...])
+```
+
+### readTexture
+
+读取纹理内容。
+
+-   WebGL1 通过 [readPixels](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/readPixels) 实现
+-   WebGL2 中和 readBuffer 一样通过 [fenceSync](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/fenceSync) 实现
+-   WebGPU 中使用 [copyTextureToBuffer](https://www.w3.org/TR/webgpu/#dom-gpucommandencoder-copytexturetobuffer) 后，再使用 readBuffer 一样的实现方式
+
+参数列表如下：
+
+-   texture 必填，源 Texture
+-   x 必填，读取区域起始 X 坐标
+-   y 必填，读取区域起始 Y 坐标
+-   width 必填，读取区域宽度
+-   height 必填，读取区域高度
+-   dstBuffer 必填，读取内容存放至目标 ArrayBufferView，最终以结果形式返回
+-   dstOffset 选填，目标 ArrayBufferView 偏移量，默认为 0，即从头写入
+-   length 选填，读取长度，默认为全部
+
+返回值为读取结果 ArrayBufferView。
+
+```js
+export interface Readback {
+    readTexture(
+        t: Texture,
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        dstBuffer: ArrayBufferView,
+        dstOffset?: number,
+        length?: number,
+    ): Promise<ArrayBufferView>;
+}
+```
+
+例如在实现基于 GPU 颜色编码的拾取时：
+
+```js
+const pickedColors = await readback.readTexture(
+    this.pickingTexture,
+    rect.x,
+    rect.y,
+    rect.width,
+    rect.height,
+    new Uint8Array(rect.width * rect.height * 4),
+);
+```
+
+### destroy
+
+释放 Readback 资源。
+
+```js
+readback.destroy();
+```
+
+## Texture
+
+纹理是很常用的 GPU 资源。
+
+```js
+export interface Texture {
+    setImageData(data: TexImageSource | ArrayBufferView[]): void;
+}
+```
+
+### createTexture
+
+```js
+interface Device {
+    createTexture(descriptor: TextureDescriptor): Texture;
+}
+
+export interface TextureDescriptor {
+    dimension: TextureDimension;
+    pixelFormat: Format;
+    width: number;
+    height: number;
+    depth: number;
+    numLevels: number;
+    usage: TextureUsage;
+    immutable?: boolean;
+    pixelStore?: Partial<{
+        packAlignment: number,
+        unpackAlignment: number,
+        unpackFlipY: boolean,
+    }>;
+}
+```
+
+### setImageData
+
+例如在加载图片成功后，设置纹理内容：
+
+```js
+const image = new window.Image();
+image.onload = () => {
+    // 设置纹理内容，以 Image 形式
+    texture.setImageData(image);
+};
+image.onerror = () => {};
+image.crossOrigin = 'Anonymous';
+image.src = src;
+```
+
+### destroy
+
+释放 Texture 资源。
+
+```js
+texture.destroy();
+```
+
+## Sampler
+
+### createSampler
+
+```js
+interface Device {
+    createSampler(descriptor: SamplerDescriptor): Sampler;
+}
+
+export interface SamplerDescriptor {
+    wrapS: WrapMode;
+    wrapT: WrapMode;
+    wrapQ?: WrapMode;
+    minFilter: TexFilterMode;
+    magFilter: TexFilterMode;
+    mipFilter: MipFilterMode;
+    minLOD?: number;
+    maxLOD?: number;
+    maxAnisotropy?: number;
+    compareMode?: CompareMode;
+}
+```
+
+### destroy
+
+释放 Sampler 资源。
+
+```js
+sampler.destroy();
+```
+
+## RenderTarget
+
+### createRenderTarget
+
+有两种方式可以创建：
+
+```js
+interface Device {
+    createRenderTarget(descriptor: RenderTargetDescriptor): RenderTarget;
+    createRenderTargetFromTexture(texture: Texture): RenderTarget;
+}
+
+export interface RenderTargetDescriptor {
+    pixelFormat: Format;
+    width: number;
+    height: number;
+    sampleCount: number;
+    texture?: Texture;
+}
+```
+
+### destroy
+
+释放 RenderTarget 资源。
+
+```js
+renderTarget.destroy();
+```
+
+## Program
+
+### createProgram
+
+```js
+interface Device {
+    createProgram(program: ProgramDescriptor): Program;
+}
+
+export interface ProgramDescriptor {
+    vert?: string;
+    frag?: string;
+    preprocessedVert?: string;
+    preprocessedFrag?: string;
+    preprocessedCompute?: string;
+}
+```
+
+### destroy
+
+释放 Program 资源。
+
+```js
+program.destroy();
 ```
