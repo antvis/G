@@ -2,6 +2,20 @@
 
 以下版本号以 @antv/g 为准。
 
+## [5.0.10] - 2022-2-7
+
+-   @antv/g-plugin-3d@1.0.11
+-   @antv/g-plugin-webgl-renderer@1.0.13
+-   @antv/g-webgl@1.0.13
+
+### Bug 修复
+
+-   [g-webgl] 修改了 BufferGeometry 的用法，需要使用 Device 创建
+
+### 其他
+
+-   [官网] 使用 lil-gui 替换 dat.gui https://github.com/antvis/g/issues/871
+
 ## [5.0.10] - 2022-2-5
 
 -   @antv/g-canvas@1.0.9
