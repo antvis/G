@@ -1,9 +1,10 @@
 import {
   Material,
-  Texture2D,
   CullMode,
   IMaterial,
   VertexAttributeLocation,
+  Texture,
+  Device,
 } from '@antv/g-plugin-webgl-renderer';
 import vert from '../shaders/material.basic.vert';
 import frag from '../shaders/material.basic.frag';
@@ -20,12 +21,12 @@ export interface IMeshBasicMaterial extends IMaterial {
   /**
    * color map, will override fill color
    */
-  map?: string | TexImageSource | Texture2D;
+  map?: Texture;
 
   /**
    * AO map
    */
-  aoMap?: string | TexImageSource | Texture2D;
+  aoMap?: Texture;
 }
 
 /**
@@ -46,11 +47,9 @@ export class MeshBasicMaterial<T extends IMeshBasicMaterial> extends Material<T>
     }
 
     this.defines.USE_MAP = !!v;
-    if (v) {
-      this.addTexture(v, Uniform.MAP, SamplerLocation.MAP);
-    } else {
-      this.removeTexture(Uniform.MAP);
-    }
+    this.setUniforms({
+      [Uniform.MAP]: v,
+    });
   }
 
   /**
@@ -63,8 +62,8 @@ export class MeshBasicMaterial<T extends IMeshBasicMaterial> extends Material<T>
     this.props.aoMap = v;
   }
 
-  constructor(props?: Partial<IMeshBasicMaterial>) {
-    super({
+  constructor(device: Device, props?: Partial<IMeshBasicMaterial>) {
+    super(device, {
       vertexShader: vert,
       fragmentShader: frag,
       cullMode: CullMode.Back,

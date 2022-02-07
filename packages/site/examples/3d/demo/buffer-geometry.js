@@ -25,54 +25,62 @@ const canvas = new Canvas({
   renderer,
 });
 
-// create buffer geometry
-const bufferGeometry = new BufferGeometry();
-bufferGeometry.setVertexBuffer({
-  bufferIndex: 1,
-  byteStride: 4 * 3,
-  frequency: VertexBufferFrequency.PerVertex,
-  attributes: [
-    {
-      format: Format.F32_RGB,
-      bufferByteOffset: 4 * 0,
-      location: VertexAttributeLocation.MAX,
+(async () => {
+  // wait for canvas' initialization complete
+  await canvas.ready;
+
+  // use GPU device
+  const device = renderer.getDevice();
+
+  // create buffer geometry
+  const bufferGeometry = new BufferGeometry(device);
+  bufferGeometry.setVertexBuffer({
+    bufferIndex: 1,
+    byteStride: 4 * 3,
+    frequency: VertexBufferFrequency.PerVertex,
+    attributes: [
+      {
+        format: Format.F32_RGB,
+        bufferByteOffset: 4 * 0,
+        location: VertexAttributeLocation.MAX,
+      },
+    ],
+    // use 6 vertices
+    data: Float32Array.from([
+      -100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, -100.0, 100.0, 100.0, -100.0, 100.0, -100.0,
+      -100.0, 100.0, -100.0, 100.0, 100.0,
+    ]),
+  });
+  // draw 6 vertices
+  bufferGeometry.vertexCount = 6;
+  // start from...
+  // bufferGeometry.primitiveStart = 0;
+
+  const basicMaterial = new MeshBasicMaterial(device);
+
+  const mesh = new Mesh({
+    style: {
+      fill: '#1890FF',
+      opacity: 1,
+      geometry: bufferGeometry,
+      material: basicMaterial,
     },
-  ],
-  // use 6 vertices
-  data: Float32Array.from([
-    -100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, -100.0, 100.0, 100.0, -100.0, 100.0, -100.0,
-    -100.0, 100.0, -100.0, 100.0, 100.0,
-  ]),
-});
-// draw 6 vertices
-bufferGeometry.vertexCount = 6;
-// start from...
-// bufferGeometry.primitiveStart = 0;
+  });
+  mesh.setPosition(300, 250, 0);
+  canvas.appendChild(mesh);
 
-const basicMaterial = new MeshBasicMaterial();
-
-const mesh = new Mesh({
-  style: {
-    fill: '#1890FF',
-    opacity: 1,
-    geometry: bufferGeometry,
-    material: basicMaterial,
-  },
-});
-mesh.setPosition(300, 250, 0);
-canvas.appendChild(mesh);
-
-// stats
-const stats = new Stats();
-stats.showPanel(0);
-const $stats = stats.dom;
-$stats.style.position = 'absolute';
-$stats.style.left = '0px';
-$stats.style.top = '0px';
-const $wrapper = document.getElementById('container');
-$wrapper.appendChild($stats);
-canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
-  if (stats) {
-    stats.update();
-  }
-});
+  // stats
+  const stats = new Stats();
+  stats.showPanel(0);
+  const $stats = stats.dom;
+  $stats.style.position = 'absolute';
+  $stats.style.left = '0px';
+  $stats.style.top = '0px';
+  const $wrapper = document.getElementById('container');
+  $wrapper.appendChild($stats);
+  canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+    if (stats) {
+      stats.update();
+    }
+  });
+})();

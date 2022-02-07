@@ -19,24 +19,23 @@ material.wireframe = true;
 
 # 内置几何
 
-几何只是定义一类“图形”，场景中的 1k 个图形都是 Cube，但它们可以拥有不同的长、宽、高。因此在使用时应该谨慎创建几何，如果场景中完全由一种几何组成，那就只应该创建一个。
-
-当我们想修改几何信息时，例如改变一个几何形状为 CubeGeometry 的 Mesh 时，应该在 Mesh 而非几何上操作：
+当我们想修改几何信息时，例如改变一个几何形状为 CubeGeometry 的 Mesh 时，应该在几何而非 Mesh 上操作：
 
 ```js
 import { MeshBasicMaterial, CubeGeometry, Mesh, Plugin as Plugin3D } from '@antv/g-plugin-3d';
 
 // 创建几何
-const cubeGeometry = new CubeGeometry();
+const cubeGeometry = new CubeGeometry(device, {
+    width: 200,
+    height: 200,
+    depth: 200,
+});
 
 // 创建 Mesh
 const cube = new Mesh({
     style: {
         fill: '#1890FF',
         opacity: 1,
-        width: 200, // 来自 CubeGeometry 的定义
-        height: 200, // 来自 CubeGeometry 的定义
-        depth: 200, // 来自 CubeGeometry 的定义
         geometry: cubeGeometry,
         material: basicMaterial,
     },
@@ -44,15 +43,19 @@ const cube = new Mesh({
 
 // 修改这个形状为 Cube 的 Mesh 宽度
 // 正确用法
-cube.style.width = 300;
+cubeGeometry.width = 300;
+// 或者
+cube.style.geometry.width = 300;
 
 // 错误用法
-cube.style.geometry.width = 300;
+cube.style.width = 300;
 ```
 
 ## CubeGeometry
 
 立方体，[示例](/zh/examples/3d#cube)
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*sHGXQpeIYzoAAAAAAAAAAAAAARQnAQ" height='200'/>
 
 ### width
 
@@ -82,6 +85,8 @@ cube.style.geometry.width = 300;
 
 球体，[示例](/zh/examples/3d#sphere)
 
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" height='200'/>
+
 ### radius
 
 球半径，必填，默认值为 0.5
@@ -97,6 +102,8 @@ cube.style.geometry.width = 300;
 ## PlaneGeometry
 
 平面，默认躺在 XZ 平面上，[示例](/zh/examples/3d#plane)
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jN9zQp3RflAAAAAAAAAAAAAAARQnAQ" height='200'/>
 
 ### width
 
@@ -116,9 +123,204 @@ cube.style.geometry.width = 300;
 
 ## TorusGeometry
 
-[示例](/zh/examples/3d#torus)
+圆环，[示例](/zh/examples/3d#torus)
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*So7oT4qDvLkAAAAAAAAAAAAAARQnAQ" height='200'/>
+
+### tubeRadius
+
+选填，默认值为 0.2
+
+### ringRadius
+
+选填，默认值为 0.3
+
+### segments
+
+选填，默认值为 30
+
+### sides
+
+选填，默认值为 20
+
+# BufferGeometry
+
+以上内置几何都继承自 BufferGeometry，因此需要自定义时也可以使用它。
+
+在[示例](/zh/examples/3d#buffer-geometry)中，我们创建了一个完全自定义的几何体，配合 [Mesh](/zh/docs/api/3d/mesh) 和 [MeshBasicMaterial](/zh/docs/api/3d/material#meshbasicmaterial)：
+
+```js
+import { BufferGeometry, MeshBasicMaterial, Mesh } from '@antv/g-plugin-3d';
+
+const bufferGeometry = new BufferGeometry(device);
+const basicMaterial = new MeshBasicMaterial(device);
+const mesh = new Mesh({
+    style: {
+        fill: '#1890FF',
+        opacity: 1,
+        geometry: bufferGeometry,
+        material: basicMaterial,
+    },
+});
+
+bufferGeometry.setVertexBuffer({
+    bufferIndex: 1,
+    byteStride: 4 * 3,
+    frequency: VertexBufferFrequency.PerVertex,
+    attributes: [
+        {
+            format: Format.F32_RGB,
+            bufferByteOffset: 4 * 0,
+            location: VertexAttributeLocation.POSITION,
+        },
+    ],
+    data: Float32Array.from([
+        -100.0,
+        100.0,
+        100.0, // 顶点1
+        100.0,
+        100.0,
+        100.0, // 顶点2
+        100.0,
+        -100.0,
+        100.0, // 顶点3
+        100.0,
+        -100.0,
+        100.0, // 顶点4
+        -100.0,
+        -100.0,
+        100.0, // 顶点5
+        -100.0,
+        100.0,
+        100.0, // 顶点6
+    ]),
+});
+bufferGeometry.vertexCount = 6;
+```
+
+## vertexCount
+
+设置需要绘制的顶点数目，默认全部绘制，后续可以随时修改。
+
+```js
+geometry.vertexCount = 10;
+```
+
+## instancedCount
+
+在 instanced 模式下，绘制的实例数目。
+
+```js
+geometry.instancedCount = 10;
+```
+
+## indexStart
+
+使用索引数组（drawElements）绘制时的起始位置，默认为 0。
+
+```js
+geometry.indexStart = 3;
+```
+
+## primitiveStart
+
+使用非索引数组（drawArrays）绘制时的起始位置，默认为 0。
+
+```js
+geometry.primitiveStart = 3;
+```
 
 # 通用方法
+
+## setIndices
+
+设置索引数组。
+
+参数列表：
+
+-   indices `number[] | Int32Array | Uint32Array | Uint16Array` 索引数组
+
+例如在内置程序化生成的几何中，最终都会设置索引数组：
+
+```js
+geometry.setIndices(new Uint32Array(indices));
+```
+
+## setVertexBuffer
+
+设置顶点数组。
+
+参数列表：
+
+-   descriptor `GeometryVertexBufferDescriptor` 顶点描述符
+
+其中描述符结构如下：
+
+-   bufferIndex 索引
+-   byteStride stride 长度（以 byte 为单位）
+-   frequency 支持 vertex 和 instance 两种
+-   attributes 支持 interleave，其中每个属性包括：
+    -   format 对应 Shader 中的数据类型
+    -   bufferByteOffset 在 stride 中的偏移量
+    -   byteStride 属性长度
+    -   location 与 Shader 中 location 对应
+    -   divisor 选择 instance 模式后生效
+-   data 数据
+
+```js
+export interface GeometryVertexBufferDescriptor {
+    bufferIndex: number;
+    byteStride: number;
+    frequency: VertexBufferFrequency;
+    attributes: Array<{
+        format: Format,
+        bufferByteOffset: number,
+        byteStride?: number,
+        location: number,
+        divisor?: number,
+    }>;
+    data: ArrayBufferView;
+}
+```
+
+例如在 Vertex Shader 中声明了如下顶点属性：
+
+```glsl
+layout(location = 10) attribute vec3 a_Position;
+```
+
+在不使用 interleave 的情况下，数组中仅包含位置属性：
+
+```js
+geometry.setVertexBuffer({
+    bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
+    byteStride: 4 * 3,
+    frequency: VertexBufferFrequency.PerVertex,
+    attributes: [
+        {
+            format: Format.F32_RGB, // 与 vec3 对应
+            bufferByteOffset: 4 * 0,
+            location: VertexAttributeLocation.POSITION, // 与 location 对应
+        },
+    ],
+    data: Float32Array.from(positions),
+});
+```
+
+## updateVertexBuffer
+
+在初始化之后，顶点数据有时也需要修改。
+
+例如更新上面的位置属性时，首先通过 `bufferIndex` 定位到具体 Buffer，再通过 `bufferByteOffset` 指定偏移量，最后更新部分或者全部数据：
+
+```js
+geometry.updateVertexBuffer(
+    ProceduralGeometryAttributeLocation.POSITION,
+    VertexAttributeLocation.MAX,
+    0,
+    new Uint8Array(positions.buffer),
+);
+```
 
 ## applyMat4
 
@@ -126,7 +328,7 @@ cube.style.geometry.width = 300;
 
 参数列表：
 
--   matrix mat4 变换矩阵
+-   matrix `mat4` 变换矩阵
 
 ```js
 geometry.applyMat4(mat4.fromScaling(mat4.create(), vec3.fromValues(1, -1, 1)));

@@ -31,7 +31,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   const kernel = new Kernel({
     device,
     computeShader: `
-  struct Matrix {
+  [[block]] struct Matrix {
     size : vec2<f32>;
     numbers: array<f32>;
   };

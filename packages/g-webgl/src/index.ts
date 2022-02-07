@@ -1,6 +1,7 @@
 import { AbstractRenderer, RendererConfig } from '@antv/g';
 import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as WebGLRenderer from '@antv/g-plugin-webgl-renderer';
+import { TextureDescriptor } from '@antv/g-plugin-webgl-renderer';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export { DomInteraction, WebGLRenderer };
@@ -29,5 +30,13 @@ export class Renderer extends AbstractRenderer {
 
   getDevice() {
     return this.renderGraphPlugin.getDevice();
+  }
+
+  loadTexture(
+    src: string | TexImageSource,
+    descriptor?: TextureDescriptor,
+    successCallback?: Function,
+  ) {
+    return this.renderGraphPlugin.loadTexture(src, descriptor, successCallback);
   }
 }

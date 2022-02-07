@@ -1,4 +1,4 @@
-import { inject, injectable } from 'mana-syringe';
+import { injectable } from 'mana-syringe';
 import {
   Line,
   LINE_CAP,
@@ -78,9 +78,9 @@ export class InstancedLineBatchMesh extends BatchMesh {
       offset += 4;
     });
 
-    this.bufferGeometry.setIndices(new Uint32Array(indices));
-    this.bufferGeometry.vertexCount = 6;
-    this.bufferGeometry.setVertexBuffer({
+    this.geometry.setIndexBuffer(new Uint32Array(indices));
+    this.geometry.vertexCount = 6;
+    this.geometry.setVertexBuffer({
       bufferIndex: 1,
       byteStride: 4 * 5,
       frequency: VertexBufferFrequency.PerInstance,
@@ -100,7 +100,7 @@ export class InstancedLineBatchMesh extends BatchMesh {
       ],
       data: new Float32Array(segmentInstanceGeometry),
     });
-    this.bufferGeometry.setVertexBuffer({
+    this.geometry.setVertexBuffer({
       bufferIndex: 2,
       byteStride: 4 * (3 + 3 + 1 + 4),
       frequency: VertexBufferFrequency.PerInstance,

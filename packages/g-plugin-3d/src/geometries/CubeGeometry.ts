@@ -1,6 +1,6 @@
-import { Mesh, VertexAttributeLocation } from '@antv/g-plugin-webgl-renderer';
+import { Device, Mesh } from '@antv/g-plugin-webgl-renderer';
 import { vec3 } from 'gl-matrix';
-import { ProceduralGeometry, ProceduralGeometryAttributeLocation } from './ProceduralGeometry';
+import { ProceduralGeometry } from './ProceduralGeometry';
 
 const primitiveUv1Padding = 4.0 / 64;
 const primitiveUv1PaddingScale = 1.0 - primitiveUv1Padding * 2;
@@ -15,15 +15,87 @@ export interface CubeGeometryProps {
 }
 
 export class CubeGeometry extends ProceduralGeometry<CubeGeometryProps> {
-  createTopology(mesh: Mesh<CubeGeometryProps>) {
+  constructor(device: Device, props: Partial<CubeGeometryProps> = {}) {
+    super(device, {
+      width: 1,
+      height: 1,
+      depth: 1,
+      widthSegments: 1,
+      heightSegments: 1,
+      depthSegments: 1,
+      ...props,
+    });
+  }
+
+  get width() {
+    return this.props.width;
+  }
+  set width(v) {
+    if (this.props.width !== v) {
+      this.props.width = v;
+      this.rebuildPosition();
+    }
+  }
+
+  get height() {
+    return this.props.height;
+  }
+  set height(v) {
+    if (this.props.height !== v) {
+      this.props.height = v;
+      this.rebuildPosition();
+    }
+  }
+
+  get depth() {
+    return this.props.depth;
+  }
+  set depth(v) {
+    if (this.props.depth !== v) {
+      this.props.depth = v;
+      this.rebuildPosition();
+    }
+  }
+
+  get widthSegments() {
+    return this.props.widthSegments;
+  }
+  set widthSegments(v) {
+    if (this.props.widthSegments !== v) {
+      this.props.widthSegments = v;
+      this.build();
+    }
+  }
+
+  get heightSegments() {
+    return this.props.heightSegments;
+  }
+  set heightSegments(v) {
+    if (this.props.heightSegments !== v) {
+      this.props.heightSegments = v;
+      this.build();
+    }
+  }
+
+  get depthSegments() {
+    return this.props.depthSegments;
+  }
+  set depthSegments(v) {
+    if (this.props.depthSegments !== v) {
+      this.props.depthSegments = v;
+      this.build();
+    }
+  }
+
+  createTopology() {
     const {
       widthSegments = 1,
       heightSegments = 1,
       depthSegments = 1,
-      height = 0,
-      width = 0,
-      depth = 0,
-    } = mesh.style;
+      height = 1,
+      width = 1,
+      depth = 1,
+    } = this.props;
     const ws = widthSegments;
     const hs = heightSegments;
     const ds = depthSegments;
@@ -133,29 +205,5 @@ export class CubeGeometry extends ProceduralGeometry<CubeGeometryProps> {
       uvs: uvs,
       uv1s: uvs1,
     };
-  }
-
-  update<Key extends keyof CubeGeometryProps>(
-    index: number,
-    mesh: Mesh,
-    name: Key,
-    value: CubeGeometryProps[Key],
-  ) {
-    if (name === 'width' || name === 'height' || name === 'depth') {
-      const { positions } = this.createTopology(mesh);
-
-      const p = Float32Array.from(positions);
-      this.applyMa4Position(this.flipYMatrix, p);
-
-      return [
-        {
-          bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
-          location: VertexAttributeLocation.MAX,
-          data: p,
-        },
-      ];
-    }
-
-    return [];
   }
 }

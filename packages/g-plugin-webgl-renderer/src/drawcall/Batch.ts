@@ -8,6 +8,7 @@ import { BatchMesh } from './BatchMesh';
 import { LightPool } from '../LightPool';
 import { MeshFactory } from '../tokens';
 import { BatchManager } from './BatchManager';
+import { ShaderMaterial } from '../materials';
 
 /**
  * render order start from 0, our default camera's Z is 500
@@ -136,7 +137,7 @@ export abstract class Batch {
       // new render instance
       const renderInst = this.renderHelper.renderInstManager.newRenderInst();
 
-      mesh.geometry.device = this.device;
+      mesh.device = this.device;
 
       let objects = this.objects;
       if (mesh.clipPathTarget) {
@@ -197,6 +198,10 @@ export abstract class Batch {
 
       this.batchMeshList.forEach((mesh, i) => {
         mesh.clipPath = clipPathShape;
+
+        if (!mesh.material) {
+          mesh.material = new ShaderMaterial(this.device);
+        }
         mesh.material.stencilRef = this.batchManager.getStencilRef(clipPathShape);
       });
     }

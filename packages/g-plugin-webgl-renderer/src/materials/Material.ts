@@ -6,13 +6,13 @@ import {
   BlendMode,
   CompareMode,
   CullMode,
+  Device,
   Format,
   FrontFaceMode,
-  getFormatByteSize,
   StencilOp,
+  Texture,
 } from '../platform';
 import { copyMegaState, defaultMegaState } from '../platform/utils';
-import { Texture2D } from '../Texture2D';
 
 export interface IMaterial {
   cullMode: CullMode;
@@ -75,53 +75,6 @@ type MaterialUniformData =
       [number, number, number, number],
     ];
 
-function isMatrix(
-  data:
-    | number[]
-    | [number]
-    | [number, number]
-    | [number, number, number]
-    | Tuple4Number
-    | [
-        // mat2
-        [number, number],
-        [number, number],
-      ]
-    | [
-        // mat3
-        [number, number, number],
-        [number, number, number],
-        [number, number, number],
-      ]
-    | [
-        // mat4
-        [number, number, number, number],
-        [number, number, number, number],
-        [number, number, number, number],
-        [number, number, number, number],
-      ],
-): data is
-  | [
-      // mat2
-      [number, number],
-      [number, number],
-    ]
-  | [
-      // mat3
-      [number, number, number],
-      [number, number, number],
-      [number, number, number],
-    ]
-  | [
-      // mat4
-      [number, number, number, number],
-      [number, number, number, number],
-      [number, number, number, number],
-      [number, number, number, number],
-    ] {
-  return Array.isArray(data) && Array.isArray(data[0]);
-}
-
 export interface MaterialUniform {
   name: string;
   format: Format;
@@ -130,11 +83,16 @@ export interface MaterialUniform {
   size?: number;
 }
 
+function isTexture(t: any): t is Texture {
+  return !!(t && t.type);
+}
+
 /**
  * an encapsulation on top of shaders
  * @see https://doc.babylonjs.com/divingDeeper/materials/using/materials_introduction
  */
 export abstract class Material<T extends IMaterial = any> {
+  protected device: Device;
   protected props: T = {} as T;
 
   /**
@@ -310,14 +268,11 @@ export abstract class Material<T extends IMaterial = any> {
   // USE_XXX
   defines: Record<string, number | boolean> = {};
 
-  // uniforms: MaterialUniform[] = [];
   uniforms: Record<string, number | number[] | Float32Array> = {};
   uboBuffer: number[] = [];
 
-  textures: {
-    name: string;
-    texture: Texture2D;
-  }[] = [];
+  textures: Record<string, Texture> = {};
+  samplers: string[] = [];
 
   /**
    * need re-compiling like vs/fs changed
@@ -334,7 +289,7 @@ export abstract class Material<T extends IMaterial = any> {
    */
   geometryDirty = true;
 
-  constructor(props: Partial<IMaterial>) {
+  constructor(device: Device, props: Partial<IMaterial>) {
     const {
       cullMode,
       depthCompare,
@@ -346,6 +301,8 @@ export abstract class Material<T extends IMaterial = any> {
       polygonOffset,
       attachmentsState,
     } = copyMegaState(defaultMegaState);
+
+    this.device = device;
 
     // @ts-ignore
     this.props = {
@@ -373,6 +330,12 @@ export abstract class Material<T extends IMaterial = any> {
       fragmentShader: '',
       ...props,
     };
+
+    // uniform sampler2D u_Texture0;
+    this.props.fragmentShader.replace(/^\s*uniform\s*sampler2D\s*(.*)\s*;$/gm, (_, name) => {
+      this.samplers.push(name);
+      return '';
+    });
   }
 
   /**
@@ -380,16 +343,27 @@ export abstract class Material<T extends IMaterial = any> {
    * material.setUniforms({
    *   u_ModelMatrix: [1, 2, 3, 4],
    *   u_Time: 1,
+   *   u_Map: texture,
    * })
    */
-  setUniforms(uniforms: Record<string, null | number | number[] | Float32Array>) {
-    this.uniforms = {
-      ...this.uniforms,
-      ...uniforms,
-    };
+  setUniforms(uniforms: Record<string, null | number | number[] | Float32Array | Texture>) {
+    Object.keys(uniforms).forEach((key) => {
+      const value = uniforms[key];
+      const existedTexture = this.textures[key];
+      if (existedTexture && existedTexture !== value) {
+        // existedTexture.destroy();
+        this.textureDirty = true;
+      }
 
-    Object.keys(this.uniforms).forEach((key) => {
-      if (isNil(this.uniforms[key])) {
+      if (isTexture(value)) {
+        this.textures[key] = value;
+        this.textureDirty = true;
+      } else {
+        this.uniforms[key] = value;
+      }
+
+      if (isNil(uniforms[key])) {
+        delete this.textures[key];
         delete this.uniforms[key];
       }
     });
@@ -397,49 +371,8 @@ export abstract class Material<T extends IMaterial = any> {
     // trigger re-render
     this.meshes.forEach((mesh) => {
       mesh.emit(ElementEvent.ATTRIBUTE_CHANGED, {
-        attributeName: 'geometry',
+        attributeName: 'material',
       });
     });
-  }
-
-  addTexture(map: string | TexImageSource | Texture2D, textureName: string, order = 0) {
-    this.removeTexture(textureName);
-
-    // create map texture
-    if (map) {
-      let mapTexture: Texture2D;
-      if (map instanceof Texture2D) {
-        mapTexture = map;
-      } else {
-        mapTexture = new Texture2D({
-          src: map,
-          pixelStore: {
-            unpackFlipY: false,
-          },
-          order,
-        });
-      }
-      this.textures.push({
-        name: textureName,
-        texture: mapTexture,
-      });
-    }
-
-    this.sortTextures();
-    this.textureDirty = true;
-  }
-
-  removeTexture(textureName: string) {
-    // remove old texture, maybe need destroy underlying texture?
-    const index = this.textures.findIndex(({ name }) => name === textureName);
-    if (index > -1) {
-      this.textures.splice(index, 1);
-    }
-    this.sortTextures();
-    this.textureDirty = true;
-  }
-
-  private sortTextures() {
-    this.textures.sort((a, b) => a.texture.descriptor.order - b.texture.descriptor.order);
   }
 }

@@ -1,8 +1,47 @@
 import { ElementEvent } from '@antv/g';
 import { EventEmitter } from 'eventemitter3';
 import { Mesh } from '../Mesh';
-import { Format, InputLayoutDescriptor, PrimitiveTopology } from '../platform';
-import { GeometryVertexBufferDescriptor, IndicesArray } from './Geometry';
+import {
+  Buffer,
+  BufferFrequencyHint,
+  BufferUsage,
+  Device,
+  Format,
+  InputLayoutDescriptor,
+  PrimitiveTopology,
+  VertexBufferFrequency,
+} from '../platform';
+import { align } from '../platform/utils';
+
+export function makeStaticDataBuffer(
+  device: Device,
+  usage: BufferUsage,
+  data: ArrayBufferLike,
+): Buffer {
+  const buffer = device.createBuffer({
+    viewOrSize: align(data.byteLength, 4) / 4,
+    usage,
+    hint: BufferFrequencyHint.Static,
+  });
+  buffer.setSubData(0, new Uint8Array(data));
+  return buffer;
+}
+
+export type IndicesArray = number[] | Int32Array | Uint32Array | Uint16Array;
+
+export interface GeometryVertexBufferDescriptor {
+  bufferIndex: number;
+  byteStride: number;
+  frequency: VertexBufferFrequency;
+  attributes: Array<{
+    format: Format;
+    bufferByteOffset: number;
+    byteStride?: number;
+    location: number;
+    divisor?: number;
+  }>;
+  data: ArrayBufferView;
+}
 
 export interface GeometryPatch {
   bufferIndex: number;
@@ -42,6 +81,18 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
   drawMode: PrimitiveTopology = PrimitiveTopology.Triangles;
 
   /**
+   * 存放 Attribute Buffer 列表
+   */
+  vertexBuffers: Buffer[] = [];
+
+  vertices: ArrayBufferView[] = [];
+
+  /**
+   * 存放 Index Buffer
+   */
+  indexBuffer: Buffer;
+
+  /**
    * 索引数组
    */
   indices: IndicesArray;
@@ -51,10 +102,6 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
     vertexAttributeDescriptors: [],
     indexBufferFormat: Format.U32_R,
   };
-
-  vertexBuffers: ArrayBufferView[] = [];
-
-  vertexBuffersToUpdate: VertexBufferToUpdateDescriptor[] = [];
 
   vertexCount: number = 0;
 
@@ -68,19 +115,30 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
 
   meshes: Mesh[] = [];
 
-  build(meshes: Mesh<GeometryProps>[]) {}
-
-  update<Key extends keyof GeometryProps>(
-    index: number,
-    mesh: Mesh,
-    name: Key,
-    value: GeometryProps[Key],
-  ): GeometryPatch[] {
-    return [];
+  constructor(public device: Device, public props: Partial<GeometryProps> = {}) {
+    super();
   }
 
-  setIndices(indices: IndicesArray) {
+  validate(mesh: Mesh) {
+    return true;
+  }
+
+  build(meshes: Mesh<GeometryProps>[]) {}
+
+  setIndexBuffer(indices: IndicesArray) {
+    if (this.indexBuffer) {
+      this.indexBuffer.destroy();
+    }
+
+    this.indexBuffer = makeStaticDataBuffer(
+      this.device,
+      BufferUsage.INDEX,
+      new Uint32Array(ArrayBuffer.isView(indices) ? indices.buffer : indices).buffer,
+    );
+
     this.indices = indices;
+
+    return this;
   }
 
   setVertexBuffer(descriptor: GeometryVertexBufferDescriptor) {
@@ -90,6 +148,8 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
       byteStride,
       frequency,
     };
+
+    this.vertices[bufferIndex] = data;
 
     attributes.forEach(({ format, bufferByteOffset, location, divisor, byteStride }) => {
       const existed = this.inputLayoutDescriptor.vertexAttributeDescriptors.find(
@@ -112,14 +172,33 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
       }
     });
 
-    this.vertexBuffers[bufferIndex] = data;
+    // create GPUBuffer
+    if (this.vertexBuffers[bufferIndex]) {
+      this.vertexBuffers[bufferIndex].destroy();
+    }
+
+    const buffer = makeStaticDataBuffer(this.device, BufferUsage.VERTEX, data.buffer);
+    this.vertexBuffers[bufferIndex] = buffer;
+
+    return this;
   }
 
-  updateVertexBufferData(descriptor: VertexBufferToUpdateDescriptor) {
-    this.vertexBuffersToUpdate.push({
-      bufferByteOffset: 0,
-      ...descriptor,
-    });
+  getVertexBuffer(bufferIndex: number) {
+    return this.vertexBuffers[bufferIndex];
+  }
+
+  updateVertexBuffer(bufferIndex: number, location: number, index: number, data: Uint8Array) {
+    const { byteStride } = this.inputLayoutDescriptor.vertexBufferDescriptors[bufferIndex];
+
+    const descriptor = this.inputLayoutDescriptor.vertexAttributeDescriptors.find(
+      (d) => d.location === location,
+    );
+
+    if (descriptor) {
+      const vertexBuffer = this.getVertexBuffer(bufferIndex);
+      const offset = index * byteStride;
+      vertexBuffer.setSubData(descriptor.bufferByteOffset + offset, data);
+    }
 
     // trigger re-render
     this.meshes.forEach((mesh) => {
@@ -127,5 +206,37 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
         attributeName: 'geometry',
       });
     });
+  }
+
+  updateIndices(indices: IndicesArray, offset: number = 0) {
+    if (this.indexBuffer) {
+      this.indexBuffer.setSubData(
+        offset,
+        ArrayBuffer.isView(indices) ? indices : new Uint32Array(indices),
+      );
+    }
+    return this;
+  }
+
+  destroy() {
+    this.vertexBuffers.forEach((buffer) => {
+      if (buffer) {
+        buffer.destroy();
+      }
+    });
+
+    if (this.indexBuffer) {
+      this.indexBuffer.destroy();
+    }
+
+    this.inputLayoutDescriptor.vertexAttributeDescriptors = [];
+    this.inputLayoutDescriptor.vertexBufferDescriptors = [];
+
+    this.indexBuffer = undefined;
+    this.vertexBuffers = [];
+    this.indices = undefined;
+    this.vertices = [];
+    this.vertexCount = 0;
+    this.instancedCount = 0;
   }
 }

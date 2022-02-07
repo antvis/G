@@ -16,10 +16,6 @@ export class MeshBatchMesh extends BatchMesh {
     value: any,
   ): void {
     this.updateBatchedAttribute(object, index, name, value);
-    const patches = this.bufferGeometry.update(index, object as Mesh, name, value);
-    patches.forEach(({ bufferIndex, location, data }) => {
-      this.geometry.updateVertexBuffer(bufferIndex, location, index, new Uint8Array(data.buffer));
-    });
   }
 
   protected createMaterial(objects: DisplayObject[]): void {
@@ -31,10 +27,12 @@ export class MeshBatchMesh extends BatchMesh {
   protected createGeometry(objects: DisplayObject[]): void {
     const instance = objects[0] as Mesh;
     const { geometry } = instance.parsedStyle;
-    this.bufferGeometry = geometry;
+    this.geometry = geometry;
 
     // use default common attributes
     this.createBatchedGeometry(objects);
+
+    this.geometry.build(objects as Mesh[]);
   }
 }
 

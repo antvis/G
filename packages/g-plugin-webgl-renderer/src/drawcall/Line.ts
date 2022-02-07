@@ -254,7 +254,7 @@ export class LineBatchMesh extends BatchMesh {
     // use triangles for Polygon
     let { pointsBuffer, travelBuffer, instanceCount } = updateBuffer(instance);
 
-    this.bufferGeometry.setVertexBuffer({
+    this.geometry.setVertexBuffer({
       bufferIndex: 0,
       byteStride: 4 * (3 + 3 + 3 + 3),
       frequency: VertexBufferFrequency.PerInstance,
@@ -297,7 +297,7 @@ export class LineBatchMesh extends BatchMesh {
       ],
       data: new Float32Array(pointsBuffer),
     });
-    this.bufferGeometry.setVertexBuffer({
+    this.geometry.setVertexBuffer({
       bufferIndex: 1,
       byteStride: 4 * 1,
       frequency: VertexBufferFrequency.PerInstance,
@@ -312,7 +312,7 @@ export class LineBatchMesh extends BatchMesh {
       ],
       data: new Float32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]),
     });
-    this.bufferGeometry.setVertexBuffer({
+    this.geometry.setVertexBuffer({
       bufferIndex: 2,
       byteStride: 4 * 1,
       frequency: VertexBufferFrequency.PerInstance,
@@ -328,10 +328,10 @@ export class LineBatchMesh extends BatchMesh {
       data: new Float32Array(travelBuffer),
     });
 
-    this.bufferGeometry.vertexCount = 15;
-    this.bufferGeometry.instancedCount = instanceCount;
+    this.geometry.vertexCount = 15;
+    this.geometry.instancedCount = instanceCount;
 
-    this.bufferGeometry.setIndices(new Uint32Array([0, 2, 1, 0, 3, 2, 4, 6, 5, 4, 7, 6, 4, 7, 8]));
+    this.geometry.setIndexBuffer(new Uint32Array([0, 2, 1, 0, 3, 2, 4, 6, 5, 4, 7, 6, 4, 7, 8]));
   }
 }
 
@@ -344,7 +344,7 @@ export class FillBatchMesh extends BatchMesh {
 
     // use triangles for Polygon
     const { triangles, pointsBuffer } = updateBuffer(instance, true);
-    this.bufferGeometry.setVertexBuffer({
+    this.geometry.setVertexBuffer({
       bufferIndex: 0,
       byteStride: 4 * 2,
       frequency: VertexBufferFrequency.PerVertex,
@@ -358,8 +358,8 @@ export class FillBatchMesh extends BatchMesh {
       ],
       data: new Float32Array(pointsBuffer),
     });
-    this.bufferGeometry.vertexCount = triangles.length;
-    this.bufferGeometry.setIndices(new Uint32Array(triangles));
+    this.geometry.vertexCount = triangles.length;
+    this.geometry.setIndexBuffer(new Uint32Array(triangles));
   }
 
   protected createMaterial(objects: DisplayObject<any, any>[]): void {

@@ -23,7 +23,7 @@ import { WebGLRendererPluginOptions } from './interfaces';
 // import { pushFXAAPass } from './passes/FXAA';
 // import { useCopyPass } from './passes/Copy';
 import { PickingIdGenerator } from './PickingIdGenerator';
-import { BlendFactor, BlendMode, Device, SwapChain, Texture } from './platform';
+import { BlendFactor, BlendMode, Device, SwapChain, Texture, TextureDescriptor } from './platform';
 import { setAttachmentStateSimple } from './platform/utils';
 import { Device_GL } from './platform/webgl2/Device';
 import { Device_WebGPU } from './platform/webgpu/Device';
@@ -41,6 +41,7 @@ import {
 import init, { glsl_compile } from '../../../rust/pkg/glsl_wgsl_compiler';
 import { Fog, Light } from './lights';
 import { LightPool } from './LightPool';
+import { TexturePool } from './TexturePool';
 
 // uniforms in scene level
 export enum SceneUniform {
@@ -80,8 +81,13 @@ export class RenderGraphPlugin implements RenderingPlugin {
   @inject(LightPool)
   private lightPool: LightPool;
 
+  @inject(TexturePool)
+  private texturePool: TexturePool;
+
   @inject(BatchManager)
   private batchManager: BatchManager;
+
+  private renderingService: RenderingService;
 
   private device: Device;
 
@@ -103,6 +109,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
   }
 
   apply(renderingService: RenderingService) {
+    this.renderingService = renderingService;
     renderingService.hooks.init.tapPromise(RenderGraphPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
@@ -498,5 +505,18 @@ export class RenderGraphPlugin implements RenderingPlugin {
     }
 
     return targets;
+  }
+
+  loadTexture(
+    src: string | TexImageSource,
+    descriptor?: TextureDescriptor,
+    successCallback?: Function,
+  ) {
+    return this.texturePool.getOrCreateTexture(this.device, src, descriptor, () => {
+      this.renderingService.dirtify();
+      if (successCallback) {
+        successCallback();
+      }
+    });
   }
 }

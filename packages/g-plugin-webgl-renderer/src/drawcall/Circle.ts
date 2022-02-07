@@ -51,9 +51,9 @@ export class CircleBatchMesh extends BatchMesh {
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
     });
 
-    this.bufferGeometry.setIndices(new Uint32Array(indices));
-    this.bufferGeometry.vertexCount = 6;
-    this.bufferGeometry.setVertexBuffer({
+    this.geometry.setIndexBuffer(new Uint32Array(indices));
+    this.geometry.vertexCount = 6;
+    this.geometry.setVertexBuffer({
       bufferIndex: 1,
       byteStride: 4 * 4,
       frequency: VertexBufferFrequency.PerVertex,
@@ -71,7 +71,7 @@ export class CircleBatchMesh extends BatchMesh {
       ],
       data: new Float32Array(interleaved),
     });
-    this.bufferGeometry.setVertexBuffer({
+    this.geometry.setVertexBuffer({
       bufferIndex: 2,
       byteStride: 4 * 2,
       frequency: VertexBufferFrequency.PerInstance,
@@ -85,7 +85,7 @@ export class CircleBatchMesh extends BatchMesh {
       ],
       data: new Float32Array(instanced),
     });
-    this.bufferGeometry.setVertexBuffer({
+    this.geometry.setVertexBuffer({
       bufferIndex: 3,
       byteStride: 4 * 4,
       frequency: VertexBufferFrequency.PerInstance,

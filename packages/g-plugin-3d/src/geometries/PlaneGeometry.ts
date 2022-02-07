@@ -1,5 +1,5 @@
-import { Mesh, VertexAttributeLocation } from '@antv/g-plugin-webgl-renderer';
-import { ProceduralGeometry, ProceduralGeometryAttributeLocation } from './ProceduralGeometry';
+import { Device } from '@antv/g-plugin-webgl-renderer';
+import { ProceduralGeometry } from './ProceduralGeometry';
 
 export interface PlaneGeometryProps {
   width: number;
@@ -9,13 +9,63 @@ export interface PlaneGeometryProps {
 }
 
 export class PlaneGeometry extends ProceduralGeometry<PlaneGeometryProps> {
-  createTopology(mesh: Mesh<PlaneGeometryProps>) {
+  get width() {
+    return this.props.width;
+  }
+  set width(v) {
+    if (this.props.width !== v) {
+      this.props.width = v;
+      this.rebuildPosition();
+    }
+  }
+
+  get depth() {
+    return this.props.depth;
+  }
+  set depth(v) {
+    if (this.props.depth !== v) {
+      this.props.depth = v;
+      this.rebuildPosition();
+    }
+  }
+
+  get widthSegments() {
+    return this.props.widthSegments;
+  }
+  set widthSegments(v) {
+    if (this.props.widthSegments !== v) {
+      this.props.widthSegments = v;
+      this.build();
+    }
+  }
+
+  get depthSegments() {
+    return this.props.depthSegments;
+  }
+  set depthSegments(v) {
+    if (this.props.depthSegments !== v) {
+      this.props.depthSegments = v;
+      this.build();
+    }
+  }
+
+  constructor(device: Device, props: Partial<PlaneGeometryProps> = {}) {
+    super(device, {
+      width: 1,
+      depth: 1,
+      widthSegments: 5,
+      depthSegments: 5,
+      ...props,
+    });
+  }
+
+  createTopology() {
     const positions: number[] = [];
     const normals: number[] = [];
     const uvs: number[] = [];
     const indices: number[] = [];
 
-    const { widthSegments = 5, depthSegments = 5, width = 1, depth = 1 } = mesh.style;
+    const { widthSegments = 5, depthSegments = 5, width = 1, depth = 1 } = this.props;
 
     const he = { x: width / 2, y: depth / 2 };
     const ws = widthSegments;
@@ -69,29 +119,5 @@ export class PlaneGeometry extends ProceduralGeometry<PlaneGeometryProps> {
       uvs,
       uv1s: uvs,
     };
-  }
-
-  update<Key extends keyof PlaneGeometryProps>(
-    index: number,
-    mesh: Mesh,
-    name: Key,
-    value: PlaneGeometryProps[Key],
-  ) {
-    if (name === 'width' || name === 'depth') {
-      const { positions } = this.createTopology(mesh);
-
-      const p = Float32Array.from(positions);
-      this.applyMa4Position(this.flipYMatrix, p);
-
-      return [
-        {
-          bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
-          location: VertexAttributeLocation.MAX,
-          data: p,
-        },
-      ];
-    }
-
-    return [];
   }
 }

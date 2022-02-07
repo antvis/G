@@ -4,13 +4,11 @@ import {
   getFormatCompFlags,
   FormatTypeFlags,
   getFormatTypeFlags,
-  getFormatCompByteSize,
   getFormatFlags,
   FormatFlags,
 } from '..';
 import { makeStaticDataBuffer } from '../../geometries';
 import { CopyProgram } from '../../passes/Copy';
-import { TextureMapping } from '../../render';
 import { preprocessProgramObj_GLSL } from '../../shader/compiler';
 import { OpaqueBlack, OpaqueWhite } from '../../utils/color';
 import { GL } from '../constants';
@@ -77,7 +75,6 @@ import {
   nullify,
   assert,
   assertExists,
-  range,
   prependLineNo,
 } from '../utils';
 import { Bindings_GL } from './Bindings';

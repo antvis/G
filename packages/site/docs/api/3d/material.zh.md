@@ -22,8 +22,15 @@ import {
     Plugin as Plugin3D,
 } from '@antv/g-plugin-3d';
 
-const sphereGeometry = new SphereGeometry();
-const material = new MeshPhongMaterial({
+// 等待画布初始化完成
+await canvas.ready;
+// 获取 GPU Device
+const device = renderer.getDevice();
+
+const sphereGeometry = new SphereGeometry(device, {
+    radius: 200,
+});
+const material = new MeshPhongMaterial(device, {
     map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*npAsSLPX4A4AAAAAAAAAAAAAARQnAQ',
     // 省略其他参数,
 });
@@ -36,7 +43,6 @@ const sphere = new Mesh({
         z: 0, // z 轴坐标
         fill: '#1890FF',
         opacity: 1,
-        radius: 200,
         geometry: sphereGeometry,
         material,
     },

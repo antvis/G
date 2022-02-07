@@ -11,7 +11,6 @@ import { ShapeMesh, ShapeRenderer } from '../tokens';
 import vert from '../shader/text.vert';
 import frag from '../shader/text.frag';
 import { BatchMesh } from './BatchMesh';
-import { Texture2D } from '../Texture2D';
 import { VertexAttributeLocation } from '../geometries';
 
 enum TextVertexAttributeLocation {
@@ -20,14 +19,13 @@ enum TextVertexAttributeLocation {
 }
 
 enum Uniform {
+  SDF_MAP = 'u_SDFMap',
   SDF_MAP_SIZE = 'u_SDFMapSize',
   FONT_SIZE = 'u_FontSize',
   GAMMA_SCALE = 'u_GammaScale',
   STROKE_BLUR = 'u_StrokeBlur',
   HAS_STROKE = 'u_HasStroke',
 }
-
-const SDF_TEXTURE_MAPPING = 'SDF_TEXTURE_MAPPING';
 
 @injectable({
   token: [{ token: ShapeMesh, named: SHAPE.Text }],
@@ -83,9 +81,9 @@ export class TextBatchMesh extends BatchMesh {
       indices.push(...indexBuffer);
     });
 
-    this.bufferGeometry.vertexCount = indices.length;
-    this.bufferGeometry.setIndices(new Uint32Array(indices));
-    this.bufferGeometry.setVertexBuffer({
+    this.geometry.vertexCount = indices.length;
+    this.geometry.setIndexBuffer(new Uint32Array(indices));
+    this.geometry.setVertexBuffer({
       bufferIndex: 0,
       byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4 + 4),
       // frequency: VertexBufferFrequency.PerInstance,
@@ -158,7 +156,7 @@ export class TextBatchMesh extends BatchMesh {
       data: new Float32Array(packed),
     });
 
-    this.bufferGeometry.setVertexBuffer({
+    this.geometry.setVertexBuffer({
       bufferIndex: 1,
       byteStride: 4 * (2 + 2),
       frequency: VertexBufferFrequency.PerVertex,
@@ -193,29 +191,16 @@ export class TextBatchMesh extends BatchMesh {
     const { font } = metrics;
     const allText = objects.map((object) => object.parsedStyle.text).join('');
 
-    this.glyphManager.generateAtlas(
-      font,
-      fontFamily,
-      fontWeight,
-      fontStyle,
-      allText,
-      this.geometry.device,
-    );
+    this.glyphManager.generateAtlas(font, fontFamily, fontWeight, fontStyle, allText, this.device);
     const glyphAtlasTexture = this.glyphManager.getAtlasTexture();
     const glyphAtlas = this.glyphManager.getAtlas();
 
-    this.geometry.device.setResourceName(glyphAtlasTexture, 'TextSDF Texture');
-
-    this.material.addTexture(
-      new Texture2D({
-        loadedTexture: glyphAtlasTexture,
-      }),
-      SDF_TEXTURE_MAPPING,
-    );
+    this.device.setResourceName(glyphAtlasTexture, 'TextSDF Texture');
 
     const { width: atlasWidth, height: atlasHeight } = glyphAtlas.image;
 
     this.material.setUniforms({
+      [Uniform.SDF_MAP]: glyphAtlasTexture,
       [Uniform.SDF_MAP_SIZE]: [atlasWidth, atlasHeight],
       [Uniform.FONT_SIZE]: fontSize,
       [Uniform.GAMMA_SCALE]: 1,

@@ -11,18 +11,14 @@ import {
 import type { Tuple4Number } from '@antv/g';
 import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
-import {
-  BufferGeometry,
-  Geometry,
-  makeStaticDataBuffer,
-  VertexAttributeLocation,
-} from '../geometries';
+import { BufferGeometry, makeStaticDataBuffer, VertexAttributeLocation } from '../geometries';
 import { Material, ShaderMaterial } from '../materials';
 import {
   BindingLayoutSamplerDescriptor,
   BufferUsage,
   ChannelWriteMask,
   CompareMode,
+  Device,
   Format,
   InputState,
   makeTextureDescriptor2D,
@@ -66,11 +62,12 @@ export abstract class BatchMesh {
   @inject(LightPool)
   protected lightPool: LightPool;
 
+  device: Device;
+
   renderingService: RenderingService;
 
-  bufferGeometry: BufferGeometry = new BufferGeometry();
-  material: Material = new ShaderMaterial();
-  geometry: Geometry = new Geometry();
+  material: Material;
+  geometry: BufferGeometry;
 
   clipPath: DisplayObject;
   clipPathTarget: DisplayObject;
@@ -192,9 +189,9 @@ export abstract class BatchMesh {
       // }
     });
 
-    this.bufferGeometry.instancedCount = objects.length;
+    this.geometry.instancedCount = objects.length;
 
-    this.bufferGeometry.setVertexBuffer({
+    this.geometry.setVertexBuffer({
       bufferIndex: Batch.CommonBufferIndex,
       byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4 + 4 + 2),
       frequency: VertexBufferFrequency.PerInstance,
@@ -278,6 +275,13 @@ export abstract class BatchMesh {
   }
 
   applyRenderInst(renderInst: RenderInst, objects: DisplayObject[], i: number) {
+    if (!this.material) {
+      this.material = new ShaderMaterial(this.device);
+    }
+    if (!this.geometry) {
+      this.geometry = new BufferGeometry(this.device);
+    }
+
     // detect if scene changed, eg. lights & fog
     const lights = this.lightPool.getAllLights();
     const fog = this.lightPool.getFog();
@@ -343,47 +347,33 @@ export abstract class BatchMesh {
       this.program.vert = this.material.vertexShader;
       this.program.frag = this.material.fragmentShader;
       // use cached program
-      this.programDescriptorSimpleWithOrig = preprocessProgramObj_GLSL(
-        this.geometry.device,
-        this.program,
-      );
+      this.programDescriptorSimpleWithOrig = preprocessProgramObj_GLSL(this.device, this.program);
       this.material.programDirty = false;
     }
 
     if (this.material.textureDirty || this.materialDirty) {
-      this.material.textures.forEach(({ name, texture }) => {
-        const mapping = new TextureMapping();
-        const { src, sampler, pixelStore, loadedTexture } = texture.descriptor;
+      Object.keys(this.material.textures)
+        .sort((a, b) => this.material.samplers.indexOf(a) - this.material.samplers.indexOf(b))
+        .forEach((key) => {
+          const mapping = new TextureMapping();
+          mapping.name = key;
+          mapping.texture = this.material.textures[key];
 
-        mapping.name = name;
-        if (loadedTexture) {
-          mapping.texture = loadedTexture;
-        } else {
-          mapping.texture = this.texturePool.getOrCreateTexture(
-            this.geometry.device,
-            src,
-            {
-              ...makeTextureDescriptor2D(Format.U8_RGBA_NORM, 1, 1, 1),
-              pixelStore,
-            },
-            () => {
-              // need re-render
-              objects.forEach((object) => {
-                const renderable = object.renderable;
-                renderable.dirty = true;
+          this.device.setResourceName(mapping.texture, 'Material Texture ' + key);
+          mapping.sampler = this.renderHelper.getCache().createSampler({
+            wrapS: WrapMode.Clamp,
+            wrapT: WrapMode.Clamp,
+            minFilter: TexFilterMode.Point,
+            magFilter: TexFilterMode.Bilinear,
+            mipFilter: MipFilterMode.Linear,
+            minLOD: 0,
+            maxLOD: 0,
+          });
 
-                this.renderingService.dirtify();
-              });
-            },
-          );
-        }
-        this.geometry.device.setResourceName(mapping.texture, 'Material Texture ' + name);
-        mapping.sampler = this.renderHelper.getCache().createSampler(sampler);
+          this.textureMappings.push(mapping);
+        });
 
-        this.textureMappings.push(mapping);
-      });
       this.material.textureDirty = false;
-
       this.materialDirty = false;
     }
 
@@ -394,7 +384,7 @@ export abstract class BatchMesh {
       this.material.geometryDirty = false;
     }
 
-    if (this.geometryDirty) {
+    if (this.geometryDirty || this.geometry.dirty) {
       // destroy first
       if (this.geometry) {
         this.geometry.destroy();
@@ -404,24 +394,12 @@ export abstract class BatchMesh {
 
       // generate wireframe
       if (this.material.wireframe) {
-        this.generateWireframe(this.bufferGeometry);
+        this.generateWireframe(this.geometry);
       }
 
       // sync to internal Geometry
-      if (this.bufferGeometry.indices) {
-        this.geometry.setIndices(this.bufferGeometry.indices);
-      }
-      this.geometry.primitiveStart = this.bufferGeometry.primitiveStart;
-      this.geometry.indexStart = this.bufferGeometry.indexStart;
-      this.geometry.vertexCount = this.bufferGeometry.vertexCount;
-      this.geometry.instancedCount = this.bufferGeometry.instancedCount;
-      this.geometry.inputLayoutDescriptor = this.bufferGeometry.inputLayoutDescriptor;
-      this.bufferGeometry.vertexBuffers.forEach((data, i) => {
-        const buffer = makeStaticDataBuffer(this.geometry.device, BufferUsage.VERTEX, data.buffer);
-        this.geometry.vertexBuffers[i] = buffer;
-      });
-
       this.geometryDirty = false;
+      this.geometry.dirty = false;
       this.inputStateDirty = true;
     }
 
@@ -434,19 +412,19 @@ export abstract class BatchMesh {
       .getCache()
       .createProgramSimple(this.programDescriptorSimpleWithOrig);
 
-    const useIndexes = !!this.geometry.indicesBuffer;
+    const useIndexes = !!this.geometry.indexBuffer;
     // prevent rebinding VAO too many times
     if (this.inputStateDirty) {
       if (this.inputState) {
         this.inputState.destroy();
       }
-      this.inputState = this.geometry.device.createInputState(
+      this.inputState = this.device.createInputState(
         inputLayout,
         this.geometry.vertexBuffers.map((buffer) => ({
           buffer,
           byteOffset: 0,
         })),
-        useIndexes ? { buffer: this.geometry.indicesBuffer, byteOffset: 0 } : null,
+        useIndexes ? { buffer: this.geometry.indexBuffer, byteOffset: 0 } : null,
         program,
       );
       this.inputStateDirty = false;
@@ -567,7 +545,7 @@ export abstract class BatchMesh {
 
   changeRenderOrder(object: DisplayObject, index: number, renderOrder: number) {
     // wait for geometry updated
-    if (!this.geometry.device || this.geometryDirty) {
+    if (!this.device || this.geometry || this.geometryDirty) {
       return;
     }
     // @ts-ignore
@@ -587,14 +565,14 @@ export abstract class BatchMesh {
     const indices = geometry.indices;
     const indiceNum = geometry.indices.length;
 
-    const originalVertexBuffers = geometry.vertexBuffers.map((buffer) => {
+    const originalVertexBuffers = geometry.vertices.map((buffer) => {
       // @ts-ignore
       return buffer.slice();
-    });
+    }) as ArrayBufferView[];
 
     for (let i = 1; i < geometry.vertexBuffers.length; i++) {
       const { byteStride } = geometry.inputLayoutDescriptor.vertexBufferDescriptors[i];
-      geometry.vertexBuffers[i] = new Float32Array((byteStride / 4) * indiceNum);
+      geometry.vertices[i] = new Float32Array((byteStride / 4) * indiceNum);
     }
 
     // reallocate attribute data
@@ -603,17 +581,54 @@ export abstract class BatchMesh {
     for (var i = 0; i < indiceNum; i++) {
       var ii = indices[i];
 
-      for (let j = 1; j < geometry.vertexBuffers.length; j++) {
+      for (let j = 1; j < geometry.vertices.length; j++) {
         const { byteStride } = geometry.inputLayoutDescriptor.vertexBufferDescriptors[j];
         const size = byteStride / 4;
 
         for (var k = 0; k < size; k++) {
-          geometry.vertexBuffers[j][cursor * size + k] = originalVertexBuffers[j][ii * size + k];
+          geometry.vertices[j][cursor * size + k] = originalVertexBuffers[j][ii * size + k];
         }
       }
 
       uniqueIndices[i] = cursor;
       cursor++;
+    }
+
+    for (let i = 1; i < geometry.vertexBuffers.length; i++) {
+      if (i === 4) {
+        continue;
+      }
+
+      const { frequency, byteStride } = geometry.inputLayoutDescriptor.vertexBufferDescriptors[i];
+
+      const descriptor = geometry.inputLayoutDescriptor.vertexAttributeDescriptors.find(
+        ({ bufferIndex }) => bufferIndex === i,
+      );
+      if (descriptor) {
+        const { location, bufferIndex, bufferByteOffset, format, divisor } = descriptor;
+
+        geometry.setVertexBuffer({
+          bufferIndex,
+          byteStride,
+          frequency,
+          attributes: [
+            {
+              format,
+              bufferByteOffset,
+              location,
+              divisor,
+            },
+          ],
+          data: geometry.vertices[i],
+        });
+
+        // geometry.updateVertexBuffer(
+        //   bufferIndex,
+        //   location,
+        //   0,
+        //   new Uint8Array(geometry.vertices[i].buffer),
+        // );
+      }
     }
 
     // create barycentric attributes
@@ -639,7 +654,7 @@ export abstract class BatchMesh {
       data: barycentricBuffer,
     });
 
-    geometry.setIndices(uniqueIndices);
+    geometry.setIndexBuffer(uniqueIndices);
   }
 
   protected beforeUploadUBO(renderInst: RenderInst, objects: DisplayObject[], i: number): void {}
@@ -673,6 +688,7 @@ export abstract class BatchMesh {
 
     if (useLight) {
       const counter: Record<string, number> = {};
+
       lights.forEach((light) => {
         if (!counter[light.define]) {
           counter[light.define] = -1;
@@ -807,7 +823,7 @@ export abstract class BatchMesh {
       const fillMapping = new TextureMapping();
       fillMapping.name = FILL_TEXTURE_MAPPING;
       fillMapping.texture = this.texturePool.getOrCreateTexture(
-        this.geometry.device,
+        this.device,
         texImageSource,
         makeTextureDescriptor2D(Format.U8_RGBA_NORM, 1, 1, 1),
         () => {
@@ -819,7 +835,7 @@ export abstract class BatchMesh {
           });
         },
       );
-      this.geometry.device.setResourceName(fillMapping.texture, 'Fill Texture' + this.id);
+      this.device.setResourceName(fillMapping.texture, 'Fill Texture' + this.id);
       fillMapping.sampler = this.renderHelper.getCache().createSampler({
         // wrapS: WrapMode.Clamp,
         // wrapT: WrapMode.Clamp,

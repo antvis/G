@@ -1,8 +1,9 @@
+import { Device } from '../platform';
 import { Material, IMaterial } from './Material';
 
 export class ShaderMaterial extends Material {
-  constructor(props?: Partial<IMaterial>) {
-    super({
+  constructor(device: Device, props?: Partial<IMaterial>) {
+    super(device, {
       ...props,
     });
 

@@ -18,70 +18,101 @@ const canvas = new Canvas({
   renderer,
 });
 
-const planeGeometry = new PlaneGeometry();
-const basicMaterial = new MeshBasicMaterial({
-  wireframe: true,
-});
+(async () => {
+  // wait for canvas' initialization complete
+  await canvas.ready;
 
-const plane = new Mesh({
-  style: {
-    fill: '#1890FF',
-    opacity: 1,
+  // use GPU device
+  const device = renderer.getDevice();
+
+  const planeGeometry = new PlaneGeometry(device, {
     width: 200,
     depth: 200,
-    geometry: planeGeometry,
-    material: basicMaterial,
-  },
-});
+    widthSegments: 1,
+    depthSegments: 1,
+  });
+  const basicMaterial = new MeshBasicMaterial(device, {
+    wireframe: true,
+  });
 
-plane.setPosition(300, 250, 0);
+  const plane = new Mesh({
+    style: {
+      fill: '#1890FF',
+      opacity: 1,
+      geometry: planeGeometry,
+      material: basicMaterial,
+    },
+  });
 
-canvas.appendChild(plane);
+  plane.setPosition(300, 250, 0);
+  canvas.appendChild(plane);
 
-canvas.getCamera().setPosition(300, 0, 500);
+  const plane2 = new Mesh({
+    style: {
+      fill: '#1890FF',
+      opacity: 1,
+      width: 400,
+      depth: 400,
+      geometry: planeGeometry,
+      material: basicMaterial,
+    },
+  });
+  plane2.setPosition(300, 450, 0);
+  canvas.appendChild(plane2);
 
-// stats
-const stats = new Stats();
-stats.showPanel(0);
-const $stats = stats.dom;
-$stats.style.position = 'absolute';
-$stats.style.left = '0px';
-$stats.style.top = '0px';
-const $wrapper = document.getElementById('container');
-$wrapper.appendChild($stats);
-canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
-  if (stats) {
-    stats.update();
-  }
-  plane.rotate(0, 1, 0);
-});
+  canvas.getCamera().setPosition(300, 0, 500);
 
-// GUI
-const gui = new lil.GUI({ autoPlace: false });
-$wrapper.appendChild(gui.domElement);
+  // stats
+  const stats = new Stats();
+  stats.showPanel(0);
+  const $stats = stats.dom;
+  $stats.style.position = 'absolute';
+  $stats.style.left = '0px';
+  $stats.style.top = '0px';
+  const $wrapper = document.getElementById('container');
+  $wrapper.appendChild($stats);
+  canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+    if (stats) {
+      stats.update();
+    }
+    // plane.rotate(0, 1, 0);
+  });
 
-const planeFolder = gui.addFolder('plane');
-const planeConfig = {
-  opacity: 1,
-  fill: '#1890FF',
-};
-planeFolder.add(planeConfig, 'opacity', 0, 1, 0.1).onChange((opacity) => {
-  plane.style.opacity = opacity;
-});
-planeFolder.addColor(planeConfig, 'fill').onChange((color) => {
-  plane.style.fill = color;
-});
-planeFolder.open();
+  // GUI
+  const gui = new lil.GUI({ autoPlace: false });
+  $wrapper.appendChild(gui.domElement);
 
-const geometryFolder = gui.addFolder('geometry');
-const geometryConfig = {
-  width: 200,
-  depth: 200,
-};
-geometryFolder.add(geometryConfig, 'width', 50, 300).onChange((width) => {
-  plane.style.width = width;
-});
-geometryFolder.add(geometryConfig, 'depth', 50, 300).onChange((depth) => {
-  plane.style.depth = depth;
-});
-geometryFolder.open();
+  const planeFolder = gui.addFolder('plane');
+  const planeConfig = {
+    opacity: 1,
+    fill: '#1890FF',
+  };
+  planeFolder.add(planeConfig, 'opacity', 0, 1, 0.1).onChange((opacity) => {
+    plane.style.opacity = opacity;
+  });
+  planeFolder.addColor(planeConfig, 'fill').onChange((color) => {
+    plane.style.fill = color;
+  });
+  planeFolder.open();
+
+  const geometryFolder = gui.addFolder('geometry');
+  const geometryConfig = {
+    width: 200,
+    depth: 200,
+    widthSegments: 5,
+    depthSegments: 5,
+  };
+  geometryFolder.add(geometryConfig, 'width', 50, 300).onChange((width) => {
+    planeGeometry.width = width;
+  });
+  geometryFolder.add(geometryConfig, 'depth', 50, 300).onChange((depth) => {
+    planeGeometry.depth = depth;
+  });
+  geometryFolder.add(geometryConfig, 'widthSegments', 1, 10, 1).onChange((widthSegments) => {
+    planeGeometry.widthSegments = widthSegments;
+  });
+  geometryFolder.add(geometryConfig, 'depthSegments', 1, 10, 1).onChange((depthSegments) => {
+    planeGeometry.depthSegments = depthSegments;
+  });
+  geometryFolder.open();
+})();

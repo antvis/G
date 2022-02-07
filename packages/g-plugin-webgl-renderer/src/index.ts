@@ -6,7 +6,6 @@ import { Module, Syringe } from 'mana-syringe';
 import { Renderable3D } from './components/Renderable3D';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { PickingPlugin } from './PickingPlugin';
-// import { DefaultShaderModuleService, ShaderModuleService } from './services/shader-module';
 import { RenderGraphPlugin } from './RenderGraphPlugin';
 import { WebGLRendererPluginOptions } from './interfaces';
 import { RenderHelper } from './render/RenderHelper';
@@ -33,9 +32,9 @@ import { TexturePool } from './TexturePool';
 import { GlyphManager } from './drawcall/symbol/GlyphManager';
 import { MeshFactory, RendererFactory, ShapeMesh, ShapeRenderer } from './tokens';
 import { Mesh } from './Mesh';
-import { Texture2D } from './Texture2D';
 import { Sampler } from './Sampler';
 import { LightPool } from './LightPool';
+import { TextureDescriptor } from './platform';
 
 let bindFunc: Syringe.Register;
 
@@ -51,7 +50,6 @@ export {
   TexturePool,
   RenderGraphPlugin,
   Mesh,
-  Texture2D,
   Sampler,
 };
 
@@ -173,6 +171,14 @@ export class Plugin implements RendererPlugin {
 
   getDevice() {
     return this.container.get(RenderGraphPlugin).getDevice();
+  }
+
+  loadTexture(
+    src: string | TexImageSource,
+    descriptor?: TextureDescriptor,
+    successCallback?: Function,
+  ) {
+    return this.container.get(RenderGraphPlugin).loadTexture(src, descriptor, successCallback);
   }
 }
 
