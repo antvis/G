@@ -38,7 +38,7 @@ import {
   makeBackbufferDescSimple,
   opaqueWhiteFullClearRenderPassDescriptor,
 } from './render/RenderGraphHelpers';
-import init, { glsl_compile } from '../../../rust/pkg/glsl_wgsl_compiler';
+// import init, { glsl_compile } from '../../../rust/pkg/glsl_wgsl_compiler';
 import { Fog, Light } from './lights';
 import { LightPool } from './LightPool';
 import { TexturePool } from './TexturePool';
@@ -442,10 +442,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
     if (!context) return null;
 
-    try {
-      await init('/glsl_wgsl_compiler_bg.wasm');
-    } catch (e) {}
-    return new Device_WebGPU(adapter, device, canvas, context, glsl_compile);
+    // try {
+    //   await init('/glsl_wgsl_compiler_bg.wasm');
+    // } catch (e) {}
+    // return new Device_WebGPU(adapter, device, canvas, context, glsl_compile);
+    return new Device_WebGPU(adapter, device, canvas, context, () => {});
   }
 
   private handleContextEvents($canvas: HTMLCanvasElement) {

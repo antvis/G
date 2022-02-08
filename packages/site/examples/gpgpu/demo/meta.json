@@ -43,7 +43,7 @@
       "filename": "pagerank-big-dataset.js",
       "title": {
         "zh": "Pagerank 算法（1k 节点 50w 边）",
-        "en": "Pagerank(1k vertices & 5k edges)"
+        "en": "Pagerank(1k vertices & 50w edges)"
       }
     },
     {

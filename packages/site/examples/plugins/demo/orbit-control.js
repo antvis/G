@@ -18,44 +18,53 @@ const canvas = new Canvas({
   renderer,
 });
 
-const cubeGeometry = new CubeGeometry();
-const basicMaterial = new MeshBasicMaterial({
-  // wireframe: true,
-  map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
-});
+(async () => {
+  await canvas.ready;
+  const device = renderer.getDevice();
+  const map = renderer.loadTexture(
+    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
+  );
 
-const cube = new Mesh({
-  style: {
-    fill: '#1890FF',
-    opacity: 1,
+  const cubeGeometry = new CubeGeometry(device, {
     width: 200,
     height: 200,
     depth: 200,
-    geometry: cubeGeometry,
-    material: basicMaterial,
-  },
-});
+  });
+  const basicMaterial = new MeshBasicMaterial(device, {
+    // wireframe: true,
+    map,
+  });
 
-cube.setPosition(300, 250, 0);
+  const cube = new Mesh({
+    style: {
+      fill: '#1890FF',
+      opacity: 1,
+      geometry: cubeGeometry,
+      material: basicMaterial,
+    },
+  });
 
-canvas.appendChild(cube);
+  cube.setPosition(300, 250, 0);
 
-// stats
-const stats = new Stats();
-stats.showPanel(0);
-const $stats = stats.dom;
-$stats.style.position = 'absolute';
-$stats.style.left = '0px';
-$stats.style.top = '0px';
-const $wrapper = document.getElementById('container');
-$wrapper.appendChild($stats);
-canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
-  if (stats) {
-    stats.update();
-  }
-  cube.rotate(0, 1, 0);
-});
+  canvas.appendChild(cube);
 
-// GUI
-const gui = new lil.GUI({ autoPlace: false });
-$wrapper.appendChild(gui.domElement);
+  // stats
+  const stats = new Stats();
+  stats.showPanel(0);
+  const $stats = stats.dom;
+  $stats.style.position = 'absolute';
+  $stats.style.left = '0px';
+  $stats.style.top = '0px';
+  const $wrapper = document.getElementById('container');
+  $wrapper.appendChild($stats);
+  canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+    if (stats) {
+      stats.update();
+    }
+    cube.rotate(0, 1, 0);
+  });
+
+  // GUI
+  const gui = new lil.GUI({ autoPlace: false });
+  $wrapper.appendChild(gui.domElement);
+})();

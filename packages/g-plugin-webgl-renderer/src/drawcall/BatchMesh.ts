@@ -545,9 +545,10 @@ export abstract class BatchMesh {
 
   changeRenderOrder(object: DisplayObject, index: number, renderOrder: number) {
     // wait for geometry updated
-    if (!this.device || this.geometry || this.geometryDirty) {
+    if (!this.device || this.geometryDirty) {
       return;
     }
+
     // @ts-ignore
     const encodedPickingColor = object.renderable3D?.encodedPickingColor || [0, 0, 0];
     this.geometry.updateVertexBuffer(

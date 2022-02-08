@@ -23,25 +23,35 @@ const camera = canvas.getCamera();
 camera.setPerspective(0.1, 1000, 75, 600 / 500);
 
 const group = new Group();
-const cubeGeometry = new CubeGeometry();
-const basicMaterial = new MeshBasicMaterial({
-  map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
-});
 
-const cube = new Mesh({
-  style: {
-    fill: '#1890FF',
-    opacity: 1,
+(async () => {
+  await canvas.ready;
+  const device = webglRenderer.getDevice();
+  const map = webglRenderer.loadTexture(
+    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
+  );
+
+  const cubeGeometry = new CubeGeometry(device, {
     width: 200,
     height: 200,
     depth: 200,
-    geometry: cubeGeometry,
-    material: basicMaterial,
-  },
-});
-cube.setPosition(300, 250, 0);
+  });
+  const basicMaterial = new MeshBasicMaterial(device, {
+    map,
+  });
 
-canvas.appendChild(cube);
+  const cube = new Mesh({
+    style: {
+      fill: '#1890FF',
+      opacity: 1,
+      geometry: cubeGeometry,
+      material: basicMaterial,
+    },
+  });
+  cube.setPosition(300, 250, 0);
+
+  canvas.appendChild(cube);
+})();
 
 // stats
 const stats = new Stats();

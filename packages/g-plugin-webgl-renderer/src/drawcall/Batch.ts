@@ -9,6 +9,7 @@ import { LightPool } from '../LightPool';
 import { MeshFactory } from '../tokens';
 import { BatchManager } from './BatchManager';
 import { ShaderMaterial } from '../materials';
+import { BufferGeometry } from '../geometries';
 
 /**
  * render order start from 0, our default camera's Z is 500
@@ -162,12 +163,28 @@ export abstract class Batch {
 
   changeRenderOrder(object: DisplayObject, renderOrder: number) {
     const index = this.objects.indexOf(object);
-    this.batchMeshList.forEach((mesh) => mesh.changeRenderOrder(object, index, renderOrder));
+    this.batchMeshList.forEach((mesh) => {
+      if (!mesh.material) {
+        mesh.material = new ShaderMaterial(this.device);
+      }
+      if (!mesh.geometry) {
+        mesh.geometry = new BufferGeometry(this.device);
+      }
+      mesh.changeRenderOrder(object, index, renderOrder);
+    });
   }
 
   updateAttribute(object: DisplayObject, name: string, value: any): void {
     const index = this.objects.indexOf(object);
-    this.batchMeshList.forEach((mesh) => mesh.updateAttribute(object, index, name, value));
+    this.batchMeshList.forEach((mesh) => {
+      if (!mesh.material) {
+        mesh.material = new ShaderMaterial(this.device);
+      }
+      if (!mesh.geometry) {
+        mesh.geometry = new BufferGeometry(this.device);
+      }
+      mesh.updateAttribute(object, index, name, value);
+    });
   }
 
   private findClipPath(): DisplayObject | null {
