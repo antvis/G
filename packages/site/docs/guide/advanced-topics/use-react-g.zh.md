@@ -15,7 +15,7 @@ npm i @antv/react-g
 
 ## 使用方式
 
-react-g 提供一下内置组件，可以直接引入使用，属性和原生的 g 对象是一致的:
+react-g 提供以下内置组件，可以直接引入使用，属性和原生的 g 对象是一致的:
 
 -   Container: `Canvas` and `Group`.
 -   Shape: `Text`, `Circle`, `Ellipse`, `Image`, `Line`, `Marker`, `Path`, `Polygon` and `Polyline`.
