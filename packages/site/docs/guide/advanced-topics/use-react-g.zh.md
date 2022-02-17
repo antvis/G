@@ -1,21 +1,26 @@
-# react-g
+---
+title: 使用React定义图形
+order: 5
+---
 
-react render for @antv/g
+react 通过 `react-reconcilor` 提供了自定义 render 的能力，`react-g` 便是一个 react 到 g 的 render。
 
-## Install
+`react-g` 目前处于实验状态，欢迎试用和反馈。
+
+## 安装
 
 ```sh
 npm i @antv/react-g
 ```
 
-## Usage
+## 使用方式
 
-react-g provide host-component:
+react-g 提供以下内置组件，可以直接引入使用，属性和原生的 g 对象是一致的:
 
 -   Container: `Canvas` and `Group`.
 -   Shape: `Text`, `Circle`, `Ellipse`, `Image`, `Line`, `Marker`, `Path`, `Polygon` and `Polyline`.
 
-### Basic usage
+### 基本用法
 
 ```tsx
 import React, { useState } from 'react';
@@ -46,9 +51,7 @@ const App = () => {
 export default App;
 ```
 
-### Use ref to access shape instance
-
-Like react-dom, you can use `ref` to access the shape instance.
+### 使用 ref 可以获取 g 中的对象实例
 
 ```tsx
 import React, { useState, useRef } from 'react';
@@ -81,7 +84,7 @@ const App = () => {
 export default App;
 ```
 
-### `render` react-g component to target g element
+### 使用 `render` 函数可以将 react-g 的组件渲染到已有的 g 对象实例中
 
 -   将 react-g 组件渲染到任意的 g 实例（Canvas/Group/Shape）中
 -   意味着可以将 react-g 组件渲染到 g2,g6 等其他库中

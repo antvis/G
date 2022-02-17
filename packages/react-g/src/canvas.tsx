@@ -2,7 +2,7 @@ import type { CanvasConfig } from '@antv/g';
 import { Canvas as GCanvas } from '@antv/g';
 import React, { forwardRef, useLayoutEffect, useRef } from 'react';
 import type { FiberRoot } from 'react-reconciler';
-import { reconsiler } from './reconciler';
+import { reconcilor } from './reconciler';
 import { assertRef } from './util';
 
 export interface CanvasProps extends CanvasConfig {
@@ -39,10 +39,10 @@ export const Canvas = forwardRef<GCanvas, CanvasProps>(
 
       canvasRef.current = canvas;
 
-      container.current = reconsiler.createContainer(canvas as any, 1, false, null);
+      container.current = reconcilor.createContainer(canvas as any, 1, false, null);
 
       return () => {
-        reconsiler.updateContainer(null, container.current, null);
+        reconcilor.updateContainer(null, container.current, null);
       };
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -50,7 +50,7 @@ export const Canvas = forwardRef<GCanvas, CanvasProps>(
 
     useLayoutEffect(() => {
       if (container.current) {
-        reconsiler.updateContainer(children, container.current, null);
+        reconcilor.updateContainer(children, container.current, null);
       }
     }, [children]);
 

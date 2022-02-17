@@ -1,3 +1,8 @@
+---
+title: use react-g
+order: 5
+---
+
 # react-g
 
 react render for @antv/g

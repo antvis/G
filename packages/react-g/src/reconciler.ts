@@ -27,7 +27,7 @@ import type {
 } from './types';
 import type { Canvas, Element } from '@antv/g';
 
-export const reconsiler = ReactReconciler<
+export const reconcilor = ReactReconciler<
   Type,
   Props,
   Container,
@@ -208,7 +208,9 @@ export const reconsiler = ReactReconciler<
   /**
    * This method should mutate the `container` root node and remove all children from it.
    */
-  clearContainer(container: Container): void {},
+  clearContainer(container: Container): void {
+    container.removeChildren();
+  },
 
   // -------------------
   //     Persistence
@@ -306,7 +308,7 @@ export const reconsiler = ReactReconciler<
   ): void {},
 });
 
-reconsiler.injectIntoDevTools({
+reconcilor.injectIntoDevTools({
   // findFiberByHostInstance: () => {},
   // @ts-ignore
   bundleType: process.env.NODE_ENV !== 'production' ? 1 : 0,
@@ -318,3 +320,20 @@ reconsiler.injectIntoDevTools({
     },
   },
 });
+
+/**
+ * render react-g component to target g element
+ * 将react-g组件渲染到任意的g实例（Canvas/Group/Shape）中
+ * @param component react-g component
+ * @param target g element, Canvas/Group/Shape instance
+ * @param callback callback after render finished
+ * @returns void
+ */
+export const render = (
+  component: React.ReactNode,
+  target: Element | Canvas,
+  callback?: (() => void) | null,
+) => {
+  const container = reconcilor.createContainer(target as any, 1, false, null);
+  reconcilor.updateContainer(component, container, null, callback);
+};
