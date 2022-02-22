@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-base",
-  "version": "0.5.9",
+  "version": "0.5.10",
   "description": "A common util collection for antv projects",
   "main": "lib/index.js",
   "module": "esm/index.js",
