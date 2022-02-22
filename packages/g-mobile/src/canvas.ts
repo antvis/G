@@ -154,12 +154,22 @@ class Canvas extends AbstractCanvas {
   }
 
   setDOMSize(width: number, height: number) {
-    super.setDOMSize(width, height);
+    // 小程序调用会报错
+    !this.isMini() && super.setDOMSize(width, height);
     const context = this.get('context');
-    const el = this.get('el');
     const pixelRatio = this.getPixelRatio();
-    el.width = pixelRatio * width;
-    el.height = pixelRatio * height;
+    let el = this.get('el');
+    if (this.isMini()) {
+      el = this.get('container');
+      // mini-native 必须传入container
+      if (this.isMiniNative() && !el) {
+        console.warn('changeSize失败，缺少container');
+      }
+    }
+    if (el) {
+      el.width = pixelRatio * width;
+      el.height = pixelRatio * height;
+    }
     // 设置 canvas 元素的宽度和高度，会重置缩放，因此 context.scale 需要在每次设置宽、高后调用
     if (pixelRatio > 1) {
       context.scale(pixelRatio, pixelRatio);
