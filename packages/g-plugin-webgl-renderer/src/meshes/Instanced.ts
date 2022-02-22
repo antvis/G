@@ -11,11 +11,10 @@ import {
 import type { Tuple4Number } from '@antv/g';
 import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
-import { BufferGeometry, makeStaticDataBuffer, VertexAttributeLocation } from '../geometries';
+import { BufferGeometry, VertexAttributeLocation } from '../geometries';
 import { Material, ShaderMaterial } from '../materials';
 import {
   BindingLayoutSamplerDescriptor,
-  BufferUsage,
   ChannelWriteMask,
   CompareMode,
   Device,
@@ -38,7 +37,7 @@ import {
   TextureMapping,
 } from '../render';
 import { preprocessProgramObj_GLSL, ProgramDescriptorSimpleWithOrig } from '../shader/compiler';
-import { RENDER_ORDER_SCALE, Batch } from './Batch';
+import { RENDER_ORDER_SCALE, Batch } from '../renderer/Batch';
 import { TexturePool } from '../TexturePool';
 import { Fog } from '../lights';
 import { LightPool } from '../LightPool';
@@ -46,9 +45,26 @@ import { LightPool } from '../LightPool';
 let counter = 1;
 const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
 
+export enum InstancedVertexAttributeBufferIndex {
+  INSTANCED = 0,
+  MAX,
+}
+
+/**
+ * Instanced mesh
+ */
 @injectable()
-export abstract class BatchMesh {
+export abstract class Instanced {
+  /**
+   * unique ID
+   */
   id = counter++;
+  renderer: Batch;
+
+  /**
+   * index in renderer.meshes
+   */
+  index = -1;
 
   @inject(RenderHelper)
   protected renderHelper: RenderHelper;
@@ -65,6 +81,11 @@ export abstract class BatchMesh {
   device: Device;
 
   renderingService: RenderingService;
+
+  /**
+   * instances
+   */
+  objects: DisplayObject[] = [];
 
   material: Material;
   geometry: BufferGeometry;
@@ -88,10 +109,48 @@ export abstract class BatchMesh {
   protected textureMappings: TextureMapping[] = [];
   protected samplerEntries: BindingLayoutSamplerDescriptor[];
 
-  protected abstract createGeometry(objects: DisplayObject[]): void;
   protected abstract createMaterial(objects: DisplayObject[]): void;
 
-  protected createBatchedGeometry(objects: DisplayObject[]) {
+  get instance() {
+    return this.objects[0];
+  }
+
+  inited = false;
+  init(device: Device, renderingService: RenderingService) {
+    if (this.inited) {
+      return;
+    }
+
+    this.renderer.beforeInitMesh(this);
+    this.device = device;
+    this.renderingService = renderingService;
+    this.material = new ShaderMaterial(this.device);
+    this.geometry = new BufferGeometry(this.device);
+    this.inited = true;
+    this.renderer.afterInitMesh(this);
+  }
+
+  /**
+   * should be merged into current InstancedMesh
+   */
+  shouldMerge(object: DisplayObject, index: number): boolean {
+    if (!this.instance) {
+      return true;
+    }
+
+    if (this.instance.nodeName !== object.nodeName) {
+      return false;
+    }
+
+    // can't be merged when using clipPath
+    if (object.parsedStyle.clipPath) {
+      return false;
+    }
+
+    return true;
+  }
+
+  protected createGeometry(objects: DisplayObject[]) {
     const modelMatrix = mat4.create();
     const modelViewMatrix = mat4.create();
     // const normalMatrix = mat3.create();
@@ -192,7 +251,7 @@ export abstract class BatchMesh {
     this.geometry.instancedCount = objects.length;
 
     this.geometry.setVertexBuffer({
-      bufferIndex: Batch.CommonBufferIndex,
+      bufferIndex: InstancedVertexAttributeBufferIndex.INSTANCED,
       byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4 + 4 + 2),
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
@@ -270,18 +329,7 @@ export abstract class BatchMesh {
     }
   }
 
-  shouldSubmitRenderInst(renderInst: RenderInst, objects: DisplayObject[], index: number) {
-    return true;
-  }
-
-  applyRenderInst(renderInst: RenderInst, objects: DisplayObject[], i: number) {
-    if (!this.material) {
-      this.material = new ShaderMaterial(this.device);
-    }
-    if (!this.geometry) {
-      this.geometry = new BufferGeometry(this.device);
-    }
-
+  applyRenderInst(renderInst: RenderInst, objects: DisplayObject[]) {
     // detect if scene changed, eg. lights & fog
     const lights = this.lightPool.getAllLights();
     const fog = this.lightPool.getFog();
@@ -433,7 +481,7 @@ export abstract class BatchMesh {
     renderInst.setProgram(program);
     renderInst.setInputLayoutAndState(inputLayout, this.inputState);
 
-    this.beforeUploadUBO(renderInst, objects, i);
+    this.renderer.beforeUploadUBO(renderInst, this, this.index);
     // upload uniform buffer object
     this.uploadUBO(renderInst);
 
@@ -463,7 +511,7 @@ export abstract class BatchMesh {
         fillColor = fill.value;
 
         this.geometry.updateVertexBuffer(
-          Batch.CommonBufferIndex,
+          InstancedVertexAttributeBufferIndex.INSTANCED,
           VertexAttributeLocation.COLOR,
           index,
           new Uint8Array(new Float32Array([...fillColor]).buffer),
@@ -487,7 +535,7 @@ export abstract class BatchMesh {
       }
 
       this.geometry.updateVertexBuffer(
-        Batch.CommonBufferIndex,
+        InstancedVertexAttributeBufferIndex.INSTANCED,
         VertexAttributeLocation.STROKE_COLOR,
         index,
         new Uint8Array(new Float32Array([...strokeColor]).buffer),
@@ -495,7 +543,7 @@ export abstract class BatchMesh {
     } else if (stylePacked1.indexOf(name) > -1) {
       const { opacity, fillOpacity, strokeOpacity, lineWidth = 0 } = object.parsedStyle;
       this.geometry.updateVertexBuffer(
-        Batch.CommonBufferIndex,
+        InstancedVertexAttributeBufferIndex.INSTANCED,
         VertexAttributeLocation.PACKED_STYLE1,
         index,
         new Uint8Array(new Float32Array([opacity, fillOpacity, strokeOpacity, lineWidth]).buffer),
@@ -503,7 +551,7 @@ export abstract class BatchMesh {
     } else if (name === 'modelMatrix') {
       const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
       this.geometry.updateVertexBuffer(
-        Batch.CommonBufferIndex,
+        InstancedVertexAttributeBufferIndex.INSTANCED,
         VertexAttributeLocation.MODEL_MATRIX0,
         index,
         new Uint8Array(new Float32Array(modelMatrix).buffer),
@@ -511,7 +559,7 @@ export abstract class BatchMesh {
     } else if (name === 'anchor') {
       const { anchor } = object.parsedStyle;
       this.geometry.updateVertexBuffer(
-        Batch.CommonBufferIndex,
+        InstancedVertexAttributeBufferIndex.INSTANCED,
         VertexAttributeLocation.ANCHOR,
         index,
         new Uint8Array(new Float32Array([anchor[0], anchor[1]]).buffer),
@@ -519,7 +567,7 @@ export abstract class BatchMesh {
     } else if (name === 'visibility') {
       const { visibility } = object.parsedStyle;
       this.geometry.updateVertexBuffer(
-        Batch.CommonBufferIndex,
+        InstancedVertexAttributeBufferIndex.INSTANCED,
         VertexAttributeLocation.PACKED_STYLE2,
         index,
         new Uint8Array(new Float32Array([visibility === 'visible' ? 1 : 0]).buffer),
@@ -527,32 +575,21 @@ export abstract class BatchMesh {
     }
   }
 
-  protected abstract updateMeshAttribute(
-    object: DisplayObject,
-    index: number,
-    name: string,
-    value: any,
-  ): void;
-  updateAttribute(object: DisplayObject, index: number, name: string, value: any): void {
+  updateAttribute(object: DisplayObject, name: string, value: any): void {
     if (name === 'clipPath') {
       if (this.clipPath) {
         this.geometryDirty = true;
       }
     }
-
-    this.updateMeshAttribute(object, index, name, value);
   }
 
-  changeRenderOrder(object: DisplayObject, index: number, renderOrder: number) {
-    // wait for geometry updated
-    if (!this.device || this.geometryDirty) {
-      return;
-    }
+  changeRenderOrder(object: DisplayObject, renderOrder: number) {
+    const index = this.objects.indexOf(object);
 
     // @ts-ignore
     const encodedPickingColor = object.renderable3D?.encodedPickingColor || [0, 0, 0];
     this.geometry.updateVertexBuffer(
-      Batch.CommonBufferIndex,
+      InstancedVertexAttributeBufferIndex.INSTANCED,
       VertexAttributeLocation.PICKING_COLOR,
       index,
       new Uint8Array(
@@ -700,6 +737,11 @@ export abstract class BatchMesh {
         light.uploadUBO(uniforms, counter[light.define]);
       });
     }
+
+    uniforms.sort(
+      (a, b) =>
+        this.material.uniformNames.indexOf(a.name) - this.material.uniformNames.indexOf(b.name),
+    );
 
     renderInst.setUniforms(numUniformBuffers, uniforms);
 

@@ -1,5 +1,3 @@
-// tslint:disable-next-line:no-reference
-/// <reference path="./glsl.d.ts" />
 import 'regenerator-runtime/runtime';
 import { RendererPlugin, SHAPE } from '@antv/g';
 import { Module, Syringe } from 'mana-syringe';
@@ -12,29 +10,28 @@ import { RenderHelper } from './render/RenderHelper';
 import {
   Batch,
   CircleRenderer,
+  PathRenderer,
   ImageRenderer,
-  TextRenderer,
-  LineRenderer,
-  InstancedLineRenderer,
   MeshRenderer,
   BatchManager,
-  CircleBatchMesh,
-  ImageBatchMesh,
-  TextBatchMesh,
-  LineBatchMesh,
-  InstancedLineBatchMesh,
-  MeshBatchMesh,
-  FillBatchMesh,
-  GroupRenderer,
-  GroupBatchMesh,
-} from './drawcall';
+  LineRenderer,
+  TextRenderer,
+} from './renderer';
 import { TexturePool } from './TexturePool';
-import { GlyphManager } from './drawcall/symbol/GlyphManager';
-import { MeshFactory, RendererFactory, ShapeMesh, ShapeRenderer } from './tokens';
+import { GlyphManager } from './meshes/symbol/GlyphManager';
+import { MeshFactory, RendererFactory, ShapeRenderer } from './tokens';
 import { Mesh } from './Mesh';
-import { Sampler } from './Sampler';
 import { LightPool } from './LightPool';
 import { TextureDescriptor } from './platform';
+import {
+  FillMesh,
+  ImageMesh,
+  InstancedLineMesh,
+  LineMesh,
+  SDFMesh,
+  TextMesh,
+  MeshMesh,
+} from './meshes';
 
 let bindFunc: Syringe.Register;
 
@@ -42,16 +39,7 @@ export function registerModelBuilder(builderClazz: new (...args: any[]) => Batch
   bindFunc({ token: { token: ShapeRenderer, named }, useClass: builderClazz });
 }
 
-export {
-  Renderable3D,
-  Batch,
-  // ShaderModuleService,
-  // ModelBuilder,
-  TexturePool,
-  RenderGraphPlugin,
-  Mesh,
-  Sampler,
-};
+export { Renderable3D, Batch, TexturePool, RenderGraphPlugin, Mesh };
 
 export * from './interfaces';
 export * from './platform';
@@ -72,20 +60,19 @@ export const containerModule = Module((register) => {
   register(RenderGraphPlugin);
   register(PickingPlugin);
 
-  register(CircleBatchMesh);
-  register(ImageBatchMesh);
-  register(InstancedLineBatchMesh);
-  register(LineBatchMesh);
-  register(TextBatchMesh);
-  register(MeshBatchMesh);
-  register(FillBatchMesh);
-  register(GroupBatchMesh);
+  register(SDFMesh);
+  register(InstancedLineMesh);
+  register(LineMesh);
+  register(FillMesh);
+  register(ImageMesh);
+  register(TextMesh);
+  register(MeshMesh);
   register({
     token: MeshFactory,
     useFactory: (context) => {
       return (tagName: SHAPE) => {
-        if (context.container.isBoundNamed(ShapeMesh, tagName)) {
-          return context.container.getNamed(ShapeMesh, tagName) || null;
+        if (context.container.isBound(tagName)) {
+          return context.container.get(tagName) || null;
         }
         return null;
       };
@@ -96,12 +83,12 @@ export const containerModule = Module((register) => {
    * bind model builder for each kind of Shape
    */
   register(CircleRenderer);
+  register(PathRenderer);
   register(ImageRenderer);
-  register(InstancedLineRenderer);
   register(LineRenderer);
   register(TextRenderer);
   register(MeshRenderer);
-  register(GroupRenderer);
+  // register(GroupRenderer);
   register({
     token: RendererFactory,
     useFactory: (context) => {
@@ -141,24 +128,23 @@ export class Plugin implements RendererPlugin {
     container.remove(GlyphManager);
     container.remove(PickingIdGenerator);
     container.remove(CircleRenderer);
-    container.remove(ImageRenderer);
-    container.remove(InstancedLineRenderer);
+    container.remove(PathRenderer);
     container.remove(LineRenderer);
+    container.remove(ImageRenderer);
+
     container.remove(TextRenderer);
     container.remove(MeshRenderer);
-    container.remove(GroupRenderer);
+    // container.remove(GroupRenderer);
     container.remove(ShapeRenderer);
     container.remove(RendererFactory);
 
-    container.remove(CircleBatchMesh);
-    container.remove(ImageBatchMesh);
-    container.remove(InstancedLineBatchMesh);
-    container.remove(LineBatchMesh);
-    container.remove(TextBatchMesh);
-    container.remove(FillBatchMesh);
-    container.remove(MeshBatchMesh);
-    container.remove(GroupBatchMesh);
-    container.remove(ShapeMesh);
+    container.remove(SDFMesh);
+    container.remove(InstancedLineMesh);
+    container.remove(LineMesh);
+    container.remove(FillMesh);
+    container.remove(ImageMesh);
+    container.remove(TextMesh);
+    container.remove(MeshMesh);
     container.remove(MeshFactory);
 
     container.remove(RenderGraphPlugin);

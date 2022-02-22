@@ -73,6 +73,8 @@ const rectConfig = {
   fill: '#1890FF',
   stroke: '#F04864',
   lineWidth: 4,
+  lineDash: 0,
+  lineDashOffset: 0,
   radius: 8,
   fillOpacity: 1,
   strokeOpacity: 1,
@@ -106,6 +108,12 @@ rectFolder.add(rectConfig, 'radius', 0, 20).onChange((radius) => {
 });
 rectFolder.add(rectConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
   rect.attr('lineWidth', lineWidth);
+});
+rectFolder.add(rectConfig, 'lineDash', 0, 100).onChange((lineDash) => {
+  rect.style.lineDash = [lineDash];
+});
+rectFolder.add(rectConfig, 'lineDashOffset', 0, 100).onChange((lineDashOffset) => {
+  rect.style.lineDashOffset = lineDashOffset;
 });
 rectFolder.add(rectConfig, 'fillOpacity', 0, 1, 0.1).onChange((opacity) => {
   rect.attr('fillOpacity', opacity);

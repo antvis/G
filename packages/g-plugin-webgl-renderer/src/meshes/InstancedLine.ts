@@ -2,30 +2,33 @@ import { injectable } from 'mana-syringe';
 import {
   Line,
   LINE_CAP,
-  ParsedColorStyleProperty,
   DisplayObject,
-  PARSED_COLOR_TYPE,
   SHAPE,
+  ParsedColorStyleProperty,
+  PARSED_COLOR_TYPE,
 } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
-import { Batch } from './Batch';
-import { ShapeMesh, ShapeRenderer } from '../tokens';
 import vert from '../shader/instanced-line.vert';
 import frag from '../shader/instanced-line.frag';
-import { BatchMesh } from './BatchMesh';
+import { Instanced, InstancedVertexAttributeBufferIndex } from './Instanced';
 import { VertexAttributeLocation } from '../geometries';
 
 export const segmentInstanceGeometry = [
   0, -0.5, 0, 0, 0, 1, -0.5, 1, 1, 0, 1, 0.5, 1, 1, 1, 0, 0.5, 0, 0, 1,
 ];
 
-enum InstancedLineProgram {
-  a_Position = VertexAttributeLocation.MAX,
-  a_PointA,
-  a_PointB,
-  a_Cap,
-  a_Uv,
-  a_Dash,
+enum InstancedLineVertexAttributeBufferIndex {
+  POSITION_UV = InstancedVertexAttributeBufferIndex.MAX,
+  POINT_CAP_DASH,
+}
+
+enum InstancedLineVertexAttributeLocation {
+  POSITION = VertexAttributeLocation.MAX,
+  POINTA,
+  POINTB,
+  CAP,
+  UV,
+  DASH,
 }
 
 const LINE_CAP_MAP = {
@@ -34,18 +37,45 @@ const LINE_CAP_MAP = {
   [LINE_CAP.Square]: 3,
 };
 
-@injectable({
-  token: [{ token: ShapeMesh, named: SHAPE.Line }],
-})
-export class InstancedLineBatchMesh extends BatchMesh {
-  protected createMaterial(objects: DisplayObject[]): void {
+@injectable()
+export class InstancedLineMesh extends Instanced {
+  shouldMerge(object: DisplayObject, index: number) {
+    const shouldMerge = super.shouldMerge(object, index);
+    if (!shouldMerge) {
+      return false;
+    }
+
+    // should split when using gradient & pattern
+    const instance = this.instance;
+    if (instance.nodeName === SHAPE.Line) {
+      const source = instance.parsedStyle.stroke as ParsedColorStyleProperty;
+      const target = object.parsedStyle.stroke as ParsedColorStyleProperty;
+
+      // can't be merged if stroke's types are different
+      if (source.type !== target.type) {
+        return false;
+      }
+
+      // compare hash directly
+      if (
+        source.type !== PARSED_COLOR_TYPE.Constant &&
+        target.type !== PARSED_COLOR_TYPE.Constant
+      ) {
+        return source.value.hash === target.value.hash;
+      }
+    }
+
+    return true;
+  }
+
+  createMaterial(objects: DisplayObject[]): void {
     this.material.vertexShader = vert;
     this.material.fragmentShader = frag;
   }
 
-  protected createGeometry(objects: DisplayObject[]): void {
+  createGeometry(objects: DisplayObject[]): void {
     // use default common attributes
-    this.createBatchedGeometry(objects);
+    super.createGeometry(objects);
 
     const interleaved = [];
     const indices = [];
@@ -81,52 +111,52 @@ export class InstancedLineBatchMesh extends BatchMesh {
     this.geometry.setIndexBuffer(new Uint32Array(indices));
     this.geometry.vertexCount = 6;
     this.geometry.setVertexBuffer({
-      bufferIndex: 1,
+      bufferIndex: InstancedLineVertexAttributeBufferIndex.POSITION_UV,
       byteStride: 4 * 5,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
           format: Format.F32_RGB,
           bufferByteOffset: 4 * 0,
-          location: InstancedLineProgram.a_Position,
+          location: InstancedLineVertexAttributeLocation.POSITION,
           divisor: 0,
         },
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 3,
-          location: InstancedLineProgram.a_Uv,
+          location: InstancedLineVertexAttributeLocation.UV,
           divisor: 0,
         },
       ],
       data: new Float32Array(segmentInstanceGeometry),
     });
     this.geometry.setVertexBuffer({
-      bufferIndex: 2,
+      bufferIndex: InstancedLineVertexAttributeBufferIndex.POINT_CAP_DASH,
       byteStride: 4 * (3 + 3 + 1 + 4),
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
           format: Format.F32_RGB,
           bufferByteOffset: 4 * 0,
-          location: InstancedLineProgram.a_PointA,
+          location: InstancedLineVertexAttributeLocation.POINTA,
           divisor: 1,
         },
         {
           format: Format.F32_RGB,
           bufferByteOffset: 4 * 3,
-          location: InstancedLineProgram.a_PointB,
+          location: InstancedLineVertexAttributeLocation.POINTB,
           divisor: 1,
         },
         {
           format: Format.F32_R,
           bufferByteOffset: 4 * 6,
-          location: InstancedLineProgram.a_Cap,
+          location: InstancedLineVertexAttributeLocation.CAP,
           divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 7,
-          location: InstancedLineProgram.a_Dash,
+          location: InstancedLineVertexAttributeLocation.DASH,
           divisor: 1,
         },
       ],
@@ -134,7 +164,10 @@ export class InstancedLineBatchMesh extends BatchMesh {
     });
   }
 
-  protected updateMeshAttribute(object: DisplayObject, index: number, name: string, value: any) {
+  updateAttribute(object: DisplayObject, name: string, value: any) {
+    super.updateAttribute(object, name, value);
+
+    const index = this.objects.indexOf(object);
     this.updateBatchedAttribute(object, index, name, value);
 
     const { x1, y1, x2, y2, z1, z2, defX, defY, lineCap } = object.parsedStyle;
@@ -148,8 +181,8 @@ export class InstancedLineBatchMesh extends BatchMesh {
       name === 'z2'
     ) {
       this.geometry.updateVertexBuffer(
-        2,
-        InstancedLineProgram.a_PointA,
+        InstancedLineVertexAttributeBufferIndex.POINT_CAP_DASH,
+        InstancedLineVertexAttributeLocation.POINTA,
         index,
         new Uint8Array(
           new Float32Array([x1 - defX, y1 - defY, z1, x2 - defX, y2 - defY, z2]).buffer,
@@ -160,8 +193,8 @@ export class InstancedLineBatchMesh extends BatchMesh {
         object as Line,
       );
       this.geometry.updateVertexBuffer(
-        2,
-        InstancedLineProgram.a_Dash,
+        InstancedLineVertexAttributeBufferIndex.POINT_CAP_DASH,
+        InstancedLineVertexAttributeLocation.DASH,
         index,
         new Uint8Array(
           new Float32Array([dashOffset, dashSegmentPercent, dashRatioInEachSegment]).buffer,
@@ -169,8 +202,8 @@ export class InstancedLineBatchMesh extends BatchMesh {
       );
     } else if (name === 'lineCap') {
       this.geometry.updateVertexBuffer(
-        2,
-        InstancedLineProgram.a_Cap,
+        InstancedLineVertexAttributeBufferIndex.POINT_CAP_DASH,
+        InstancedLineVertexAttributeLocation.CAP,
         index,
         new Uint8Array(new Float32Array([LINE_CAP_MAP[lineCap]]).buffer),
       );
@@ -194,45 +227,5 @@ export class InstancedLineBatchMesh extends BatchMesh {
       dashSegmentPercent,
       dashRatioInEachSegment,
     };
-  }
-}
-
-/**
- * use instanced for each segment
- * @see https://blog.scottlogic.com/2019/11/18/drawing-lines-with-webgl.html
- *
- * support dash array
- * TODO: joint & cap
- */
-@injectable({
-  token: { token: ShapeRenderer, named: SHAPE.Line },
-})
-export class InstancedLineRenderer extends Batch {
-  protected createBatchMeshList(): void {
-    this.batchMeshList.push(this.meshFactory(SHAPE.Line));
-  }
-
-  validate(object: DisplayObject) {
-    // should split when using gradient & pattern
-    const instance = this.instance;
-    if (instance.nodeName === SHAPE.Line) {
-      const source = instance.parsedStyle.stroke as ParsedColorStyleProperty;
-      const target = object.parsedStyle.stroke as ParsedColorStyleProperty;
-
-      // can't be merged if stroke's types are different
-      if (source.type !== target.type) {
-        return false;
-      }
-
-      // compare hash directly
-      if (
-        source.type !== PARSED_COLOR_TYPE.Constant &&
-        target.type !== PARSED_COLOR_TYPE.Constant
-      ) {
-        return source.value.hash === target.value.hash;
-      }
-    }
-
-    return true;
   }
 }

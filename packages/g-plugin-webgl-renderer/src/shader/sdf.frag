@@ -10,7 +10,6 @@ varying vec4 v_StylePacked3;
 
 #pragma glslify: sdCircle = require('@antv/g-shader-components/sdf.circle.glsl')
 #pragma glslify: sdEllipsoidApproximated = require('@antv/g-shader-components/sdf.ellipse.glsl')
-#pragma glslify: sdRoundedBox = require('@antv/g-shader-components/sdf.rect.glsl')
 
 void main() {
   int shape = int(floor(v_Data.w + 0.5));
@@ -18,9 +17,11 @@ void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
   #pragma glslify: import('@antv/g-shader-components/map.frag')
 
+  bool omitStroke = v_StylePacked3.z == 1.0;
+
   float antialiasblur = v_Data.z;
   float antialiased_blur = -max(0.0, antialiasblur);
-  vec2 r = (v_Radius - u_StrokeWidth) / v_Radius;
+  vec2 r = (v_Radius - (omitStroke ? 0.0 : u_StrokeWidth)) / v_Radius;
 
   float outer_df;
   float inner_df;
@@ -31,10 +32,6 @@ void main() {
   } else if (shape == 1) {
     outer_df = sdEllipsoidApproximated(v_Data.xy, vec2(1.0));
     inner_df = sdEllipsoidApproximated(v_Data.xy, r);
-  } else if (shape == 2) {
-  float u_RectRadius = v_StylePacked3.y;
-    outer_df = sdRoundedBox(v_Data.xy, vec2(1.0), u_RectRadius / v_Radius);
-    inner_df = sdRoundedBox(v_Data.xy, r, u_RectRadius / v_Radius);
   }
 
   float opacity_t = smoothstep(0.0, antialiased_blur, outer_df);
@@ -47,7 +44,7 @@ void main() {
 
   vec4 diffuseColor = u_Color;
 
-  vec4 strokeColor = u_StrokeColor == vec4(0) ? diffuseColor : u_StrokeColor;
+  vec4 strokeColor = (u_StrokeColor == vec4(0) || omitStroke) ? vec4(0.0) : u_StrokeColor;
 
   gl_FragColor = mix(vec4(diffuseColor.rgb, diffuseColor.a * u_FillOpacity), strokeColor * u_StrokeOpacity, color_t);
   gl_FragColor.a = gl_FragColor.a * u_Opacity * opacity_t;

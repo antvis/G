@@ -59,6 +59,13 @@
         "zh": "Compute Shader 测试",
         "en": "Compute Shader"
       }
+    },
+    {
+      "filename": "webgpu-graph-pagerank.js",
+      "title": {
+        "zh": "WebGPU Graph PageRank",
+        "en": "WebGPU Graph PageRank"
+      }
     }
   ]
 }

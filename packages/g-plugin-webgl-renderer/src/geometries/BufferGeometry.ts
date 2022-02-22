@@ -198,6 +198,9 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
       const vertexBuffer = this.getVertexBuffer(bufferIndex);
       const offset = index * byteStride;
       vertexBuffer.setSubData(descriptor.bufferByteOffset + offset, data);
+
+      // TODO: update vertices
+      // this.vertices[bufferIndex] = data;
     }
 
     // trigger re-render

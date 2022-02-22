@@ -13,6 +13,7 @@ import {
   Texture,
 } from '../platform';
 import { copyMegaState, defaultMegaState } from '../platform/utils';
+import { getUniforms } from '../shader/compiler';
 
 export interface IMaterial {
   cullMode: CullMode;
@@ -253,6 +254,7 @@ export abstract class Material<T extends IMaterial = any> {
     if (this.props.vertexShader !== value) {
       this.programDirty = true;
       this.props.vertexShader = value;
+      this.compile();
     }
   }
   get fragmentShader() {
@@ -262,6 +264,7 @@ export abstract class Material<T extends IMaterial = any> {
     if (this.props.fragmentShader !== value) {
       this.programDirty = true;
       this.props.fragmentShader = value;
+      this.compile();
     }
   }
 
@@ -269,6 +272,8 @@ export abstract class Material<T extends IMaterial = any> {
   defines: Record<string, number | boolean> = {};
 
   uniforms: Record<string, number | number[] | Float32Array> = {};
+  // used when sorting before inserted into WebGL2's UBO
+  uniformNames: string[];
   uboBuffer: number[] = [];
 
   textures: Record<string, Texture> = {};
@@ -331,11 +336,28 @@ export abstract class Material<T extends IMaterial = any> {
       ...props,
     };
 
+    this.compile();
+  }
+
+  private compile() {
     // uniform sampler2D u_Texture0;
     this.props.fragmentShader.replace(/^\s*uniform\s*sampler2D\s*(.*)\s*;$/gm, (_, name) => {
       this.samplers.push(name);
       return '';
     });
+
+    /**
+     * extract from uniform buffer object, should account for struct & pre-defines, eg.
+     * layout(std140) uniform ub_ObjectParams {
+     *   mat4 u_ModelMatrix;
+     *   vec4 u_Color;
+     *   vec4 u_StrokeColor;
+     *   #ifdef NUM_DIR_LIGHTS
+     *     DirectionalLight directionalLights[ NUM_DIR_LIGHTS ];
+     *   #endif
+     * }
+     */
+    this.uniformNames = getUniforms(this.props.fragmentShader);
   }
 
   /**

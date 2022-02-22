@@ -1,24 +1,29 @@
 import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
-import { DisplayObject, PARSED_COLOR_TYPE, SHAPE, Text, Tuple4Number } from '@antv/g';
-import { Format, VertexBufferFrequency } from '../platform';
-import { RenderInst } from '../render/RenderInst';
-import { Batch, RENDER_ORDER_SCALE } from './Batch';
+import {
+  DisplayObject,
+  PARSED_COLOR_TYPE,
+  RenderingService,
+  SHAPE,
+  Text as TextShape,
+  Tuple4Number,
+} from '@antv/g';
+import { Format, VertexBufferFrequency, CullMode, Device } from '../platform';
+import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
 import { getGlyphQuads } from './symbol/SymbolQuad';
 import GlyphAtlas from './symbol/GlyphAtlas';
-import { ShapeMesh, ShapeRenderer } from '../tokens';
 import vert from '../shader/text.vert';
 import frag from '../shader/text.frag';
-import { BatchMesh } from './BatchMesh';
 import { VertexAttributeLocation } from '../geometries';
+import { Instanced } from './Instanced';
 
 enum TextVertexAttributeLocation {
   a_Tex = VertexAttributeLocation.MAX,
   a_Offset,
 }
 
-enum Uniform {
+export enum TextUniform {
   SDF_MAP = 'u_SDFMap',
   SDF_MAP_SIZE = 'u_SDFMapSize',
   FONT_SIZE = 'u_FontSize',
@@ -27,14 +32,43 @@ enum Uniform {
   HAS_STROKE = 'u_HasStroke',
 }
 
-@injectable({
-  token: [{ token: ShapeMesh, named: SHAPE.Text }],
-})
-export class TextBatchMesh extends BatchMesh {
-  glyphManager: GlyphManager;
+@injectable()
+export class TextMesh extends Instanced {
+  @inject(GlyphManager)
+  private glyphManager: GlyphManager;
 
-  protected createGeometry(objects: DisplayObject<any, any>[]): void {
-    const object = objects[0] as Text;
+  shouldMerge(object: DisplayObject, index: number) {
+    const shouldMerge = super.shouldMerge(object, index);
+
+    if (!shouldMerge) {
+      return false;
+    }
+
+    if (this.index !== index) {
+      return false;
+    }
+
+    const instance = this.instance;
+    const instancedAttributes = [
+      'fontSize',
+      'fontFamily',
+      'fontWeight',
+      'textBaseline',
+      'letterSpacing',
+    ];
+    // fontStack & fontSize should be same
+    if (
+      instance.parsedStyle.metrics.font !== object.parsedStyle.metrics.font ||
+      instancedAttributes.some((name) => instance.parsedStyle[name] !== object.parsedStyle[name])
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
+  createGeometry(objects: DisplayObject[]): void {
+    const object = this.instance as TextShape;
     const { textBaseline, fontSize = 0, letterSpacing = 0 } = object.parsedStyle;
 
     // scale current font size to base(24)
@@ -69,6 +103,7 @@ export class TextBatchMesh extends BatchMesh {
           lines,
           fontStack: font,
           lineHeight: fontScale * lineHeight,
+          offsetX: fontScale * 2,
           offsetY: fontScale * linePositionY,
           letterSpacing: fontScale * letterSpacing,
           glyphAtlas,
@@ -176,11 +211,12 @@ export class TextBatchMesh extends BatchMesh {
     });
   }
 
-  protected createMaterial(objects: DisplayObject<any, any>[]): void {
+  protected createMaterial(objects: DisplayObject[]): void {
     this.material.vertexShader = vert;
     this.material.fragmentShader = frag;
+    this.material.cullMode = CullMode.Back;
 
-    const object = objects[0] as Text;
+    const object = this.instance as TextShape;
     const {
       fontSize = 0,
       fontFamily = '',
@@ -200,43 +236,23 @@ export class TextBatchMesh extends BatchMesh {
     const { width: atlasWidth, height: atlasHeight } = glyphAtlas.image;
 
     this.material.setUniforms({
-      [Uniform.SDF_MAP]: glyphAtlasTexture,
-      [Uniform.SDF_MAP_SIZE]: [atlasWidth, atlasHeight],
-      [Uniform.FONT_SIZE]: fontSize,
-      [Uniform.GAMMA_SCALE]: 1,
-      [Uniform.STROKE_BLUR]: 0.2,
-      [Uniform.HAS_STROKE]: 1,
+      [TextUniform.SDF_MAP]: glyphAtlasTexture,
+      [TextUniform.SDF_MAP_SIZE]: [atlasWidth, atlasHeight],
+      [TextUniform.FONT_SIZE]: fontSize,
+      [TextUniform.GAMMA_SCALE]: 1,
+      [TextUniform.STROKE_BLUR]: 0.2,
+      [TextUniform.HAS_STROKE]: this.index,
     });
   }
 
-  beforeUploadUBO(renderInst: RenderInst, objects: DisplayObject[], index: number) {
-    this.material.setUniforms({
-      [Uniform.HAS_STROKE]: 1 - index,
-    });
-  }
-
-  shouldSubmitRenderInst(renderInst: RenderInst, objects: DisplayObject[], index: number) {
-    const { stroke, lineWidth } = objects[0].parsedStyle;
-    const hasStroke = !!(stroke && lineWidth);
-
-    if (!hasStroke && index === 1) {
-      // skip rendering stroke
-      return false;
+  changeRenderOrder(object: DisplayObject, renderOrder: number) {
+    if (this.material) {
+      this.material.programDirty = true;
+      this.material.geometryDirty = true;
     }
-    return true;
   }
 
-  changeRenderOrder(object: DisplayObject, index: number, renderOrder: number) {
-    this.material.programDirty = true;
-    this.material.geometryDirty = true;
-  }
-
-  protected updateMeshAttribute(
-    object: DisplayObject<any, any>,
-    index: number,
-    name: string,
-    value: any,
-  ): void {
+  updateAttribute(object: DisplayObject, name: string, value: any): void {
     if (
       name === 'text' ||
       name === 'fontFamily' ||
@@ -276,6 +292,7 @@ export class TextBatchMesh extends BatchMesh {
     fontStack,
     lineHeight,
     letterSpacing,
+    offsetX,
     offsetY,
     glyphAtlas,
     indicesOffset,
@@ -285,6 +302,7 @@ export class TextBatchMesh extends BatchMesh {
     fontStack: string;
     lineHeight: number;
     letterSpacing: number;
+    offsetX: number;
     offsetY: number;
     glyphAtlas: GlyphAtlas;
     indicesOffset: number;
@@ -317,6 +335,7 @@ export class TextBatchMesh extends BatchMesh {
       lineHeight,
       textAlign,
       letterSpacing,
+      offsetX,
       offsetY,
     );
 
@@ -364,40 +383,5 @@ export class TextBatchMesh extends BatchMesh {
       charPackedBuffer,
       indicesOffset: i,
     };
-  }
-}
-
-@injectable({
-  token: [{ token: ShapeRenderer, named: SHAPE.Text }],
-})
-export class TextRenderer extends Batch {
-  @inject(GlyphManager)
-  private glyphManager: GlyphManager;
-
-  protected createBatchMeshList(): void {
-    const mesh = this.meshFactory(SHAPE.Text) as TextBatchMesh;
-    mesh.glyphManager = this.glyphManager;
-    // use 2 meshes to draw stroke & fill
-    this.batchMeshList.push(mesh, mesh);
-  }
-
-  validate(object: DisplayObject) {
-    const instance = this.instance;
-    const instancedAttributes = [
-      'fontSize',
-      'fontFamily',
-      'fontWeight',
-      'textBaseline',
-      'letterSpacing',
-    ];
-    // fontStack & fontSize should be same
-    if (
-      instance.parsedStyle.metrics.font !== object.parsedStyle.metrics.font ||
-      instancedAttributes.some((name) => instance.parsedStyle[name] !== object.parsedStyle[name])
-    ) {
-      return false;
-    }
-
-    return true;
   }
 }

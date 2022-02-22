@@ -27,12 +27,16 @@ const DEFAULT_STYLE_PROPS: {
   opacity: number;
   fillOpacity: number;
   strokeOpacity: number;
+  fill: string;
+  stroke: string;
 } = {
   anchor: [0, 0, 0],
   origin: [0, 0, 0],
   opacity: 1,
   fillOpacity: 1,
   strokeOpacity: 1,
+  fill: 'transparent',
+  stroke: 'transparent',
 };
 
 /**

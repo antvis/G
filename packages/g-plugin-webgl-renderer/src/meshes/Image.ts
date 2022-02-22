@@ -1,11 +1,9 @@
 import { injectable } from 'mana-syringe';
-import { DisplayObject, Image, SHAPE } from '@antv/g';
+import { DisplayObject, Image as ImageShape } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
-import { Batch } from './Batch';
-import { ShapeMesh, ShapeRenderer } from '../tokens';
 import vert from '../shader/image.vert';
 import frag from '../shader/image.frag';
-import { BatchMesh } from './BatchMesh';
+import { Instanced } from '../meshes/Instanced';
 import { VertexAttributeLocation } from '../geometries';
 
 enum ImageVertexAttributeLocation {
@@ -13,11 +11,23 @@ enum ImageVertexAttributeLocation {
   UV,
 }
 
-@injectable({
-  token: [{ token: ShapeMesh, named: SHAPE.Image }],
-})
-export class ImageBatchMesh extends BatchMesh {
-  protected createMaterial(objects: DisplayObject[]): void {
+@injectable()
+export class ImageMesh extends Instanced {
+  shouldMerge(object: DisplayObject, index: number) {
+    const shouldMerge = super.shouldMerge(object, index);
+
+    if (!shouldMerge) {
+      return false;
+    }
+
+    if (this.instance.parsedStyle.img !== object.parsedStyle.img) {
+      return false;
+    }
+
+    return true;
+  }
+
+  createMaterial(objects: DisplayObject[]): void {
     const instance = objects[0];
     const { img } = instance.parsedStyle;
     this.material.defines.USE_UV = true;
@@ -40,15 +50,15 @@ export class ImageBatchMesh extends BatchMesh {
     });
   }
 
-  protected createGeometry(objects: DisplayObject[]): void {
+  createGeometry(objects: DisplayObject[]): void {
     // use default common attributes
-    this.createBatchedGeometry(objects);
+    super.createGeometry(objects);
 
     const instanced = [];
     const interleaved = [];
     const indices = [];
     objects.forEach((object, i) => {
-      const image = object as Image;
+      const image = object as ImageShape;
       const offset = i * 4;
       const { width, height } = image.parsedStyle;
       instanced.push(width, height);
@@ -86,10 +96,13 @@ export class ImageBatchMesh extends BatchMesh {
     });
   }
 
-  protected updateMeshAttribute(object: DisplayObject, index: number, name: string, value: any) {
+  updateAttribute(object: DisplayObject, name: string, value: any) {
+    super.updateAttribute(object, name, value);
+
+    const index = this.objects.indexOf(object);
     this.updateBatchedAttribute(object, index, name, value);
 
-    const image = object as Image;
+    const image = object as ImageShape;
     const { width, height } = image.parsedStyle;
 
     if (name === 'width' || name === 'height') {
@@ -110,24 +123,5 @@ export class ImageBatchMesh extends BatchMesh {
         u_Map: map,
       });
     }
-  }
-}
-
-@injectable({
-  token: [{ token: ShapeRenderer, named: SHAPE.Image }],
-})
-export class ImageRenderer extends Batch {
-  protected createBatchMeshList(): void {
-    this.batchMeshList.push(this.meshFactory(SHAPE.Image));
-  }
-
-  protected validate(object: DisplayObject<any, any>): boolean {
-    if (this.instance.nodeName === SHAPE.Image) {
-      if (this.instance.parsedStyle.img !== object.parsedStyle.img) {
-        return false;
-      }
-    }
-
-    return true;
   }
 }

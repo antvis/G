@@ -1529,13 +1529,14 @@ export class Device_GL implements SwapChain, Device {
       if (
         isBlendStateNone(currentAttachmentState.rgbBlendState) &&
         isBlendStateNone(currentAttachmentState.alphaBlendState)
-      )
+      ) {
         gl.enable(gl.BLEND);
-      else if (
+      } else if (
         isBlendStateNone(newAttachmentState.rgbBlendState) &&
         isBlendStateNone(newAttachmentState.alphaBlendState)
-      )
+      ) {
         gl.disable(gl.BLEND);
+      }
     }
 
     if (blendModeChanged) {
@@ -2083,7 +2084,7 @@ export class Device_GL implements SwapChain, Device {
       occlusionQueryPool: null,
     });
 
-    const { width, height } = this.getCanvas();
+    const { width, height } = this.getCanvas() as HTMLCanvasElement;
     blitRenderPass.setPipeline(this.blitRenderPipeline);
     blitRenderPass.setBindings(0, this.blitBindings, [0]);
     blitRenderPass.setInputState(this.blitInputState);

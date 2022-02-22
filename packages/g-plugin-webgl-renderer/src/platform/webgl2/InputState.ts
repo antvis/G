@@ -59,6 +59,7 @@ export class InputState_GL extends ResourceBase_GL implements InputState {
     } else {
       device.OES_vertex_array_object.bindVertexArrayOES(vao);
     }
+    device.currentBoundVAO = vao;
 
     for (let i = 0; i < inputLayout.vertexAttributeDescriptors.length; i++) {
       const attr = inputLayout.vertexAttributeDescriptors[i];
@@ -124,6 +125,7 @@ export class InputState_GL extends ResourceBase_GL implements InputState {
     } else {
       device.OES_vertex_array_object.bindVertexArrayOES(null);
     }
+    device.currentBoundVAO = null;
 
     this.vao = vao;
     this.indexBufferByteOffset = indexBufferByteOffset;

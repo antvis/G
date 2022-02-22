@@ -30,27 +30,27 @@ varying float v_Travel;
 varying vec4 v_PickingResult;
 #define COLOR_SCALE 1. / 255.
 void setPickingColor(vec3 pickingColor) {
-    v_PickingResult.rgb = pickingColor * COLOR_SCALE;
+  v_PickingResult.rgb = pickingColor * COLOR_SCALE;
 }
 
 vec2 doBisect(
-vec2 norm, float len, vec2 norm2, float len2, float dy, float inner
+  vec2 norm, float len, vec2 norm2, float len2, float dy, float inner
 ) {
-vec2 bisect = (norm + norm2) / 2.0;
-bisect /= dot(norm, bisect);
-vec2 shift = dy * bisect;
-if (inner > 0.5) {
+  vec2 bisect = (norm + norm2) / 2.0;
+  bisect /= dot(norm, bisect);
+  vec2 shift = dy * bisect;
+  if (inner > 0.5) {
     if (len < len2) {
-    if (abs(dy * (bisect.x * norm.y - bisect.y * norm.x)) > len) {
+      if (abs(dy * (bisect.x * norm.y - bisect.y * norm.x)) > len) {
         return dy * norm;
-    }
+      }
     } else {
-    if (abs(dy * (bisect.x * norm2.y - bisect.y * norm2.x)) > len2) {
+      if (abs(dy * (bisect.x * norm2.y - bisect.y * norm2.x)) > len2) {
         return dy * norm;
+      }
     }
-    }
-}
-return dy * bisect;
+  }
+  return dy * bisect;
 }
 
 void main() {

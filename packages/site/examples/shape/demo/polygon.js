@@ -69,9 +69,9 @@ rendererFolder.open();
 
 const polygonFolder = gui.addFolder('polygon');
 const polygonConfig = {
-  fill: '#fff',
-  stroke: '#F04864',
-  lineWidth: 4,
+  fill: '#C6E5FF',
+  stroke: '#1890FF',
+  lineWidth: 2,
   fillOpacity: 1,
   strokeOpacity: 1,
   anchorX: 0,

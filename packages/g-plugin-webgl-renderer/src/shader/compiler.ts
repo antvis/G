@@ -6,7 +6,6 @@ import {
   ViewportOrigin,
 } from '../platform';
 import { assert } from '../platform/utils';
-import { ShaderLibrary } from '../render/utils';
 
 const ES100_REPLACEMENTS: [RegExp, string][] = [
   // In GLSL 1.00 ES these functions are provided by an extension
@@ -50,6 +49,85 @@ export function getAttributeLocations(
     },
   );
   return locations;
+}
+
+/**
+ * struct DirectionalLight {
+    vec3 direction;
+    float intensity;
+    vec3 color;
+};
+ */
+interface StructInfo {
+  type: string;
+  uniforms: {
+    type: string;
+    name: string;
+  }[];
+}
+export function getUniforms(vert: string) {
+  const uniformNames: string[] = [];
+  const structs: StructInfo[] = [];
+
+  vert.replace(/\s*struct\s*(.*)\s*{((?:\s*.*\s*)*?)};/g, (_, type, uniformStr) => {
+    const uniforms = [];
+    uniformStr
+      .trim()
+      .split('\n')
+      .forEach((line) => {
+        const [type, name] = line.trim().split(/\s+/);
+        uniforms.push({
+          type: type.trim(),
+          name: name.replace(';', '').trim(),
+        });
+      });
+    structs.push({
+      type: type.trim(),
+      uniforms,
+    });
+    return '';
+  });
+
+  vert.replace(/\s*uniform\s*.*\s*{((?:\s*.*\s*)*?)};/g, (_, uniforms) => {
+    uniforms
+      .trim()
+      .split('\n')
+      .forEach((line) => {
+        let [type = '', name = ''] = line.trim().split(' ');
+        // DirectionalLight directionalLights[ NUM_DIR_LIGHTS ];
+        const isArray = name.indexOf('[') > -1;
+        name = name.replace(';', '').replace('[', '').trim();
+        // ignore conditional comments
+        if (type.startsWith('#')) {
+          return;
+        }
+
+        // account for structs
+        if (type) {
+          const struct = structs.find((struct) => type === struct.type);
+          if (struct) {
+            if (isArray) {
+              for (let i = 0; i < 5; i++) {
+                struct.uniforms.forEach((uniform) => {
+                  uniformNames.push(`${name}[${i}].${uniform.name}`);
+                });
+              }
+            } else {
+              struct.uniforms.forEach((uniform) => {
+                uniformNames.push(`${name}.${uniform.name}`);
+              });
+            }
+          }
+        }
+
+        if (name) {
+          uniformNames.push(name);
+        }
+      });
+    return '';
+  });
+
+  return uniformNames;
 }
 
 export function preprocessShader_GLSL(

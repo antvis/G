@@ -21,16 +21,13 @@ void main() {
 
   float antialiasblur = 1.0 / (a_Size.x + u_StrokeWidth);
 
-  vec2 offset = (a_Extrude + vec2(1.0) - 2.0 * a_Anchor.xy) * a_Size;
-
-  int shape = int(floor(a_StylePacked3.x + 0.5));
-  if (shape == 2) {
-    offset = offset - vec2(u_StrokeWidth / 2.0);
-  }
+  bool omitStroke = a_StylePacked3.z == 1.0;
+  vec2 radius = a_Size + vec2(omitStroke ? 0.0 : u_StrokeWidth / 2.0);
+  vec2 offset = (a_Extrude + vec2(1.0) - 2.0 * a_Anchor.xy) * radius;
 
   gl_Position = project(vec4(offset, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
   
-  v_Radius = a_Size;
+  v_Radius = radius;
   v_Data = vec4(a_Extrude, antialiasblur, a_StylePacked3.x);
   v_StylePacked3 = a_StylePacked3;
 }

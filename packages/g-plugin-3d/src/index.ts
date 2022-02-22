@@ -1,5 +1,3 @@
-// tslint:disable-next-line:no-reference
-/// <reference path="./glsl.d.ts" />
 import { DisplayObject, RendererPlugin, globalContainer } from '@antv/g';
 import { Module, Syringe } from 'mana-syringe';
 import {
@@ -21,7 +19,6 @@ import {
   Mesh,
   MipFilterMode,
   PrimitiveTopology,
-  Sampler,
   SamplerFormatKind,
   ShaderMaterial,
   StencilOp,
@@ -55,7 +52,6 @@ export {
   Mesh,
   MipFilterMode,
   PrimitiveTopology,
-  Sampler,
   SamplerFormatKind,
   ShaderMaterial,
   StencilOp,

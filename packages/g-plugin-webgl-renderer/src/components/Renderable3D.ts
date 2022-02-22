@@ -1,3 +1,5 @@
+import { Instanced } from '../meshes';
+
 export class Renderable3D {
   static tag = 'c-renderable-3d';
 
@@ -5,5 +7,5 @@ export class Renderable3D {
 
   encodedPickingColor: [number, number, number];
 
-  batchId: number;
+  meshes: Instanced[] = [];
 }

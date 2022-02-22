@@ -22,6 +22,7 @@ window.gPluginControl = require('@antv/g-plugin-control');
 window.gPluginGpgpu = require('@antv/g-plugin-gpgpu');
 // compiler for GPGPU
 window.gWebgpuCompiler = require('@antv/g-webgpu-compiler');
+// window.webgpuGraph = require('@antv/webgpu-graph');
 
 window.reactG = require('@antv/react-g');
 

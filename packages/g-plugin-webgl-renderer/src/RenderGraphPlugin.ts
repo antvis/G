@@ -9,7 +9,6 @@ import {
   ElementEvent,
   FederatedEvent,
   DisplayObject,
-  SHAPE,
   DefaultCamera,
   Camera,
   CanvasEvent,
@@ -17,7 +16,7 @@ import {
   Tuple4Number,
 } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-import { BatchManager } from './drawcall';
+import { BatchManager } from './renderer';
 import { Renderable3D } from './components/Renderable3D';
 import { WebGLRendererPluginOptions } from './interfaces';
 // import { pushFXAAPass } from './passes/FXAA';
@@ -30,7 +29,6 @@ import { Device_WebGPU } from './platform/webgpu/Device';
 import { RGAttachmentSlot, RGGraphBuilder } from './render/interfaces';
 import { RenderHelper } from './render/RenderHelper';
 import { RenderInstList } from './render/RenderInstList';
-import { fillMatrix4x4, fillVec3v, fillVec4 } from './render/utils';
 import { TransparentWhite, colorNewFromRGBA } from './utils/color';
 import {
   AntialiasingMode,
@@ -163,7 +161,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
      * build frame graph at the beginning of each frame
      */
     renderingService.hooks.beginFrame.tap(RenderGraphPlugin.tag, () => {
-      const canvas = this.swapChain.getCanvas();
+      const canvas = this.swapChain.getCanvas() as HTMLCanvasElement;
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
 
@@ -282,10 +280,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       ]);
 
       renderInstManager.setCurrentRenderInstList(this.renderLists.world);
-      // render batches
-      this.batchManager.getBatches().forEach((batch) => {
-        batch.render(this.renderLists.world);
-      });
+      this.batchManager.render(this.renderLists.world);
 
       renderInstManager.popTemplateRenderInst();
 
@@ -298,10 +293,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       // output to screen
       this.swapChain.present();
-    });
-
-    renderingService.hooks.render.tap(RenderGraphPlugin.tag, (object: DisplayObject) => {
-      this.batchManager.add(object);
     });
 
     const handleMounted = (e: FederatedEvent) => {
@@ -329,6 +320,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       // @ts-ignore
       object.renderable3D = renderable3D;
+
+      this.batchManager.add(object);
     };
 
     const handleUnmounted = (e: FederatedEvent) => {

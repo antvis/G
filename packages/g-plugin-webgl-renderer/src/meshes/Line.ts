@@ -5,25 +5,24 @@ import { injectable } from 'mana-syringe';
 import {
   LINE_CAP,
   LINE_JOIN,
-  Path,
   Polyline,
   DisplayObject,
   PARSED_COLOR_TYPE,
   SHAPE,
   Tuple4Number,
+  convertToPath,
+  ParsedPathStyleProps,
+  parsePath,
+  PathCommand,
 } from '@antv/g';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import earcut from 'earcut';
 import { vec3, mat4 } from 'gl-matrix';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
-import { Batch, RENDER_ORDER_SCALE } from './Batch';
-import { ShapeMesh, ShapeRenderer } from '../tokens';
-import { isNil } from '@antv/util';
 import vert from '../shader/line.vert';
 import frag from '../shader/line.frag';
-import meshVert from '../shader/mesh.vert';
-import meshFrag from '../shader/mesh.frag';
-import { BatchMesh } from './BatchMesh';
+import { Instanced } from './Instanced';
+import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 
 export enum JOINT_TYPE {
   NONE = 0,
@@ -55,7 +54,7 @@ enum LineProgram {
   a_Travel,
 }
 
-enum Uniform {
+export enum Uniform {
   MODEL_MATRIX = 'u_ModelMatrix',
   COLOR = 'u_Color',
   STROKE_COLOR = 'u_StrokeColor',
@@ -75,24 +74,15 @@ enum Uniform {
   Z_INDEX = 'u_ZIndex',
 }
 
-enum MeshProgram {
-  a_Position = 0,
-}
+@injectable()
+export class LineMesh extends Instanced {
+  shouldMerge(object: DisplayObject, index: number) {
+    return false;
+  }
 
-@injectable({
-  token: [
-    { token: ShapeMesh, named: SHAPE.Polyline },
-    { token: ShapeMesh, named: SHAPE.Path },
-    { token: ShapeMesh, named: SHAPE.Polygon },
-  ],
-})
-export class LineBatchMesh extends BatchMesh {
-  protected updateMeshAttribute(
-    object: DisplayObject<any, any>,
-    index: number,
-    name: string,
-    value: any,
-  ): void {
+  updateAttribute(object: DisplayObject, name: string, value: any): void {
+    super.updateAttribute(object, name, value);
+
     const {
       fill,
       stroke,
@@ -108,6 +98,11 @@ export class LineBatchMesh extends BatchMesh {
     if (
       name === 'lineJoin' ||
       name === 'lineCap' ||
+      name === 'lineDash' ||
+      (object.nodeName === SHAPE.Circle && name === 'r') ||
+      (object.nodeName === SHAPE.Ellipse && (name === 'rx' || name === 'ry')) ||
+      (object.nodeName === SHAPE.Rect &&
+        (name === 'width' || name === 'height' || name === 'radius')) ||
       (object.nodeName === SHAPE.Line &&
         (name === 'x1' || name === 'y1' || name === 'x2' || name === 'y2')) ||
       (object.nodeName === SHAPE.Polyline && name === 'points') ||
@@ -175,13 +170,15 @@ export class LineBatchMesh extends BatchMesh {
     }
   }
 
-  changeRenderOrder(object: DisplayObject, index: number, renderOrder: number) {
-    this.material.setUniforms({
-      [Uniform.Z_INDEX]: renderOrder * RENDER_ORDER_SCALE,
-    });
+  changeRenderOrder(object: DisplayObject, renderOrder: number) {
+    if (this.material) {
+      this.material.setUniforms({
+        [Uniform.Z_INDEX]: renderOrder * RENDER_ORDER_SCALE,
+      });
+    }
   }
 
-  protected createMaterial(objects: DisplayObject[]): void {
+  createMaterial(objects: DisplayObject[]): void {
     this.material.vertexShader = vert;
     this.material.fragmentShader = frag;
 
@@ -248,11 +245,11 @@ export class LineBatchMesh extends BatchMesh {
     this.material.cullMode = CullMode.None;
   }
 
-  protected createGeometry(objects: DisplayObject[]): void {
+  createGeometry(objects: DisplayObject[]): void {
     const instance = objects[0];
 
     // use triangles for Polygon
-    let { pointsBuffer, travelBuffer, instanceCount } = updateBuffer(instance);
+    let { pointsBuffer, travelBuffer, instancedCount } = updateBuffer(instance);
 
     this.geometry.setVertexBuffer({
       bufferIndex: 0,
@@ -329,160 +326,9 @@ export class LineBatchMesh extends BatchMesh {
     });
 
     this.geometry.vertexCount = 15;
-    this.geometry.instancedCount = instanceCount;
+    this.geometry.instancedCount = instancedCount;
 
     this.geometry.setIndexBuffer(new Uint32Array([0, 2, 1, 0, 3, 2, 4, 6, 5, 4, 7, 6, 4, 7, 8]));
-  }
-}
-
-@injectable({
-  token: [{ token: ShapeMesh, named: 'Fill' }],
-})
-export class FillBatchMesh extends BatchMesh {
-  protected createGeometry(objects: DisplayObject<any, any>[]): void {
-    const instance = objects[0];
-
-    // use triangles for Polygon
-    const { triangles, pointsBuffer } = updateBuffer(instance, true);
-    this.geometry.setVertexBuffer({
-      bufferIndex: 0,
-      byteStride: 4 * 2,
-      frequency: VertexBufferFrequency.PerVertex,
-      attributes: [
-        {
-          format: Format.F32_RG,
-          bufferByteOffset: 4 * 0,
-          byteStride: 4 * 2,
-          location: MeshProgram.a_Position,
-        },
-      ],
-      data: new Float32Array(pointsBuffer),
-    });
-    this.geometry.vertexCount = triangles.length;
-    this.geometry.setIndexBuffer(new Uint32Array(triangles));
-  }
-
-  protected createMaterial(objects: DisplayObject<any, any>[]): void {
-    this.material.vertexShader = meshVert;
-    this.material.fragmentShader = meshFrag;
-
-    const instance = objects[0];
-
-    const { fill, opacity, fillOpacity, anchor, visibility } = instance.parsedStyle;
-    let fillColor: Tuple4Number = [0, 0, 0, 0];
-    if (fill?.type === PARSED_COLOR_TYPE.Constant) {
-      fillColor = fill.value;
-    }
-
-    // @ts-ignore
-    const encodedPickingColor = instance.renderable3D?.encodedPickingColor || [0, 0, 0];
-    let translateX = 0;
-    let translateY = 0;
-    const contentBounds = instance.getGeometryBounds();
-    if (contentBounds) {
-      const { halfExtents } = contentBounds;
-      translateX = -halfExtents[0] * anchor[0] * 2;
-      translateY = -halfExtents[1] * anchor[1] * 2;
-    }
-
-    const m = mat4.create();
-    mat4.mul(
-      m,
-      instance.getWorldTransform(), // apply anchor
-      mat4.fromTranslation(m, vec3.fromValues(translateX, translateY, 0)),
-    );
-
-    this.material.setUniforms({
-      [Uniform.MODEL_MATRIX]: m,
-      [Uniform.COLOR]: fillColor,
-      [Uniform.PICKING_COLOR]: encodedPickingColor,
-      [Uniform.OPACITY]: opacity,
-      [Uniform.FILL_OPACITY]: fillOpacity,
-      [Uniform.VISIBLE]: visibility === 'visible' ? 1 : 0,
-      [Uniform.Z_INDEX]: instance.sortable.renderOrder * RENDER_ORDER_SCALE,
-    });
-  }
-  protected updateMeshAttribute(
-    object: DisplayObject<any, any>,
-    index: number,
-    name: string,
-    value: any,
-  ): void {
-    const { fill, opacity, fillOpacity, anchor, visibility } = object.parsedStyle;
-    if (
-      name === 'lineJoin' ||
-      name === 'lineCap' ||
-      (object.nodeName === SHAPE.Line &&
-        (name === 'x1' || name === 'y1' || name === 'x2' || name === 'y2')) ||
-      (object.nodeName === SHAPE.Polyline && name === 'points') ||
-      (object.nodeName === SHAPE.Polygon && name === 'points') ||
-      (object.nodeName === SHAPE.Path && name === 'path')
-    ) {
-      // need re-calc geometry
-      this.material.geometryDirty = true;
-      this.material.programDirty = true;
-    } else if (name === 'fill') {
-      let fillColor: Tuple4Number = [0, 0, 0, 0];
-      if (fill?.type === PARSED_COLOR_TYPE.Constant) {
-        fillColor = fill.value;
-      }
-      this.material.setUniforms({
-        [Uniform.COLOR]: fillColor,
-      });
-    } else if (name === 'opacity') {
-      this.material.setUniforms({
-        [Uniform.OPACITY]: opacity,
-      });
-    } else if (name === 'fillOpacity') {
-      this.material.setUniforms({
-        [Uniform.FILL_OPACITY]: fillOpacity,
-      });
-    } else if (name === 'anchor' || name === 'modelMatrix') {
-      let translateX = 0;
-      let translateY = 0;
-      const contentBounds = object.getGeometryBounds();
-      if (contentBounds) {
-        const { halfExtents } = contentBounds;
-        translateX = -halfExtents[0] * anchor[0] * 2;
-        translateY = -halfExtents[1] * anchor[1] * 2;
-      }
-      const m = mat4.create();
-      mat4.mul(
-        m,
-        object.getWorldTransform(), // apply anchor
-        mat4.fromTranslation(m, vec3.fromValues(translateX, translateY, 0)),
-      );
-      this.material.setUniforms({
-        [Uniform.MODEL_MATRIX]: m,
-      });
-    } else if (name === 'visibility') {
-      this.material.setUniforms({
-        [Uniform.VISIBLE]: visibility === 'visible' ? 1 : 0,
-      });
-    }
-  }
-  changeRenderOrder(object: DisplayObject, index: number, renderOrder: number) {
-    this.material.setUniforms({
-      [Uniform.Z_INDEX]: renderOrder * RENDER_ORDER_SCALE,
-    });
-  }
-}
-
-@injectable({
-  token: [
-    { token: ShapeRenderer, named: SHAPE.Polyline },
-    { token: ShapeRenderer, named: SHAPE.Path },
-    { token: ShapeRenderer, named: SHAPE.Polygon },
-  ],
-})
-export class LineRenderer extends Batch {
-  protected createBatchMeshList(): void {
-    this.batchMeshList.push(this.meshFactory('Fill'));
-    this.batchMeshList.push(this.meshFactory(SHAPE.Path));
-  }
-
-  validate(object: DisplayObject) {
-    return false;
   }
 }
 
@@ -549,8 +395,8 @@ function segmentsCount(length: number, defaultSegments = 20) {
   return result;
 }
 
-function updateBuffer(object: DisplayObject, needEarcut = false) {
-  const { lineCap, lineJoin, defX, defY, lineDash } = object.parsedStyle;
+export function updateBuffer(object: DisplayObject, needEarcut = false) {
+  let { lineCap, lineJoin, defX, defY } = object.parsedStyle;
 
   let points: number[] = [];
   let triangles: number[] = [];
@@ -569,17 +415,33 @@ function updateBuffer(object: DisplayObject, needEarcut = false) {
           pointsBuffer: points,
           travelBuffer: [],
           triangles,
-          instanceCount: Math.round(points.length / stridePoints),
+          instancedCount: Math.round(points.length / stridePoints),
         };
       } else {
         points.push(points[0], points[1]);
         points.push(...addTailSegment(points[0], points[1], points[2], points[3]));
       }
     }
-  } else if (object.nodeName === SHAPE.Path) {
-    const {
-      path: { curve },
-    } = (object as Path).parsedStyle;
+  } else if (
+    object.nodeName === SHAPE.Path ||
+    object.nodeName === SHAPE.Circle ||
+    object.nodeName === SHAPE.Ellipse ||
+    object.nodeName === SHAPE.Rect
+  ) {
+    let path: ParsedPathStyleProps;
+    if (object.nodeName !== SHAPE.Path) {
+      path = parsePath(convertToPath(object));
+      defX = path.rect.x;
+      defY = path.rect.y;
+    } else {
+      path = object.parsedStyle.path;
+    }
+    const { zCommandIndexes } = path;
+
+    const curve = [...path.curve].map((c, i) =>
+      zCommandIndexes.includes(i) ? ['Z'] : c,
+    ) as PathCommand[];
+
     let startPointIndex = -1;
     curve.forEach(([command, ...params]) => {
       if (command === 'M') {
@@ -595,7 +457,10 @@ function updateBuffer(object: DisplayObject, needEarcut = false) {
           params[5] - defY,
           points,
         );
-      } else if (command === 'Z') {
+      } else if (
+        command === 'Z' &&
+        (object.nodeName === SHAPE.Path || object.nodeName === SHAPE.Rect)
+      ) {
         points.push(points[startPointIndex], points[startPointIndex + 1]);
         points.push(
           ...addTailSegment(
@@ -615,7 +480,7 @@ function updateBuffer(object: DisplayObject, needEarcut = false) {
         pointsBuffer: points,
         travelBuffer: [],
         triangles,
-        instanceCount: Math.round(points.length / stridePoints),
+        instancedCount: Math.round(points.length / stridePoints),
       };
     }
   }
@@ -635,22 +500,22 @@ function updateBuffer(object: DisplayObject, needEarcut = false) {
 
   let j = (Math.round(0 / stridePoints) + 2) * strideFloats;
 
-  const needDash = !isNil(lineDash);
+  // const needDash = !isNil(lineDash);
   let dist = 0;
   const pointsBuffer = [];
   const travelBuffer = [];
   for (let i = 0; i < points.length; i += stridePoints) {
     // calc travel
-    if (needDash) {
-      if (i > 1) {
-        dist += Math.sqrt(
-          Math.pow(points[i] - points[i - 2], 2) + Math.pow(points[i + 1] - points[i + 1 - 2], 2),
-        );
-      }
-      travelBuffer.push(0, dist, dist, 0, dist, dist, dist, dist, dist);
-    } else {
-      travelBuffer.push(0, 0, 0, 0, 0, 0, 0, 0, 0);
+    // if (needDash) {
+    if (i > 1) {
+      dist += Math.sqrt(
+        Math.pow(points[i] - points[i - 2], 2) + Math.pow(points[i + 1] - points[i + 1 - 2], 2),
+      );
     }
+    travelBuffer.push(dist);
+    // } else {
+    //   travelBuffer.push(0);
+    // }
 
     pointsBuffer[j++] = points[i];
     pointsBuffer[j++] = points[i + 1];
@@ -675,13 +540,13 @@ function updateBuffer(object: DisplayObject, needEarcut = false) {
   pointsBuffer[4] = points[3];
   pointsBuffer[5] = capType === JOINT_TYPE.CAP_ROUND ? capType : 0;
 
-  const instanceCount = Math.round(points.length / stridePoints);
+  const instancedCount = Math.round(points.length / stridePoints);
 
   return {
     pointsBuffer,
     travelBuffer,
     triangles,
-    instanceCount,
+    instancedCount,
   };
 }
 

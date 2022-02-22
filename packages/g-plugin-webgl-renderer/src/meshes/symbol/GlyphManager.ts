@@ -69,13 +69,13 @@ export class GlyphManager {
     lineHeight: number,
     textAlign: 'start' | 'center' | 'end' | 'left' | 'right',
     letterSpacing: number,
+    offsetX: number,
     offsetY: number,
   ): PositionedGlyph[] {
     const positionedGlyphs: PositionedGlyph[] = [];
-    const yOffset = offsetY;
 
-    let x = 0;
-    let y = yOffset;
+    let x = offsetX;
+    let y = offsetY;
 
     const justify =
       textAlign === 'right' || textAlign === 'end'

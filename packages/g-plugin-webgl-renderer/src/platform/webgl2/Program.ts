@@ -80,11 +80,11 @@ export class Program_GL extends ResourceBase_GL implements Program {
       // extract uniforms
       this.readUniformLocationsFromLinkedProgram();
       // extract attributes
-      this.readAttributesFromProgram();
+      this.readAttributesFromLinkedProgram();
     }
   }
 
-  private readAttributesFromProgram() {
+  private readAttributesFromLinkedProgram() {
     const gl = this.device.gl;
     const count = gl.getProgramParameter(this.gl_program, gl.ACTIVE_ATTRIBUTES);
 

@@ -405,6 +405,18 @@
     csstype "^3.0.8"
     tslib "^2.0.3"
 
+"@antv/webgpu-graph@^0.0.1-alpha.0":
+  version "0.0.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@antv/webgpu-graph/-/webgpu-graph-0.0.1-alpha.0.tgz#123fad8f048286692b5f1c1f604efeba31fd12fa"
+  integrity sha512-eKgKdBSvFN1pdrbMKXl9g0mc8EvkizQpHKzKLRvPL3wsgK1nh/ty0NyQ5XCdeQ4nmMCs44W5eT4Y/LgW1m9Pxg==
+  dependencies:
+    "@antv/g" "^5.0.1"
+    "@antv/g-plugin-gpgpu" "^1.0.1"
+    "@antv/g-webgl" "^1.0.1"
+    "@types/offscreencanvas" "^2019.6.4"
+    "@webgpu/types" "^0.1.6"
+    tslib "^2.0.0"
+
 "@ardatan/aggregate-error@0.0.6":
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@ardatan/aggregate-error/-/aggregate-error-0.0.6.tgz#fe6924771ea40fc98dc7a7045c2e872dc8527609"

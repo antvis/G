@@ -208,34 +208,71 @@ export enum BlendFactor {
 
 ## setUniforms
 
-添加一组 Uniform
+添加一组 Uniform，需要与 Shader 中声明的变量类型匹配。
 
 参数列表：
 
--   uniforms: `Record<string, number | number[]>`
+-   uniforms: `Record<string, number | number[] | Texture>`
 
 例如 MeshPhongMaterial 在初始化时会添加如下：
 
 ```js
 material.setUniform({
+    u_Specular: [0, 0, 0],
     u_BumpScale: 5,
+    u_Map: mapTexture,
 });
-
-// 对应 shader 中的:
-// uniform float u_BumpScale;
 ```
 
-## addTexture
+对应 Shader 中的 Uniform 声明，例如 `u_Specular` 的类型为 `vec3`，在设置时就需要使用长度为 3 的数组进行赋值：
 
-添加一个纹理。
+```glsl
+layout(std140) uniform ub_MaterialParams {
+  vec3 u_Specular;
+  float u_BumpScale;
+};
 
-参数列表：
+uniform sampler2D u_Map;
+```
 
--   texture: string | TexImageSource | Texture2D 纹理内容，支持图片 URL 字符串
--   name: string 在 Shader 中的名称
+### 纹理
+
+一个特殊的情况是纹理，例如上面的例子中 `u_Map` 为采样器，在设置时就需要使用纹理：
 
 ```js
-material.addTexture('http://xxx.png', 'u_Map');
+const mapTexture = renderer.loadTexture(
+    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
+);
+material.setUniform({
+    u_Map: mapTexture,
+});
+```
+
+### 结构体
+
+例如我们为平行光定义了如下结构体：
+
+```glsl
+struct DirectionalLight {
+  vec3 direction;
+  float intensity;
+  vec3 color;
+};
+```
+
+一种特殊情况是结构体数组，例如在 Shader 中声明了一个平行光数组：
+
+```glsl
+DirectionalLight directionalLights[NUM_DIR_LIGHTS];
+```
+
+当我们想给数组中第一个元素赋值时：
+
+```js
+material.setUniform({
+    'directionalLights[0].direction': [0, 0, 0],
+    'directionalLights[0].color': [0, 0, 0],
+});
 ```
 
 # 内置材质
@@ -330,6 +367,15 @@ const basicMaterial = new MeshBasicMaterial({
 凹凸贴图影响程度。
 
 ## ShaderMaterial
+
+自定义材质，其中 vertex/fragmentShader 需要指定：
+
+```js
+const shaderMaterial = new ShaderMaterial(device, {
+    vertexShader: ``,
+    fragmentShader: ``,
+});
+```
 
 # 注意事项
 

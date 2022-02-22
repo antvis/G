@@ -83,7 +83,6 @@ const canvas = new Canvas({
     };
     layout(std140) uniform ub_MaterialParams {
       float u_Level;
-      // float u_NoiseMode;
     };
 
     layout(location = ${VertexAttributeLocation.MODEL_MATRIX0}) attribute vec4 a_ModelMatrix0;
@@ -109,7 +108,6 @@ const canvas = new Canvas({
 
     layout(std140) uniform ub_MaterialParams {
       float u_Level;
-      // float u_NoiseMode;
     };
 
     float random (vec2 st) {
@@ -150,6 +148,8 @@ const canvas = new Canvas({
     // }
 
     void main() {
+      gbuf_picking = vec4(0.0);
+
       vec2 st = gl_FragCoord.xy / u_Viewport;
       vec2 pos = vec2(st * u_Level);
       float n = noise(pos);
@@ -159,7 +159,6 @@ const canvas = new Canvas({
   });
   shaderMaterial.setUniforms({
     u_Level: 5,
-    u_NoiseMode: 0,
   });
   const mesh = new Mesh({
     style: {
