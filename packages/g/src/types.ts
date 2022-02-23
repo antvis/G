@@ -231,6 +231,7 @@ export interface RendererConfig {
 }
 
 export const CanvasConfig = 'CanvasConfig';
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface CanvasConfig {
   /**
    * Renderer
