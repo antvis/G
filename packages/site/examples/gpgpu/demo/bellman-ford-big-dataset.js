@@ -96,8 +96,7 @@ const calculateInGPU = async (V, E, I, W) => {
   // wait for canvas' services ready
   await canvas.ready;
   const device = renderer.getDevice();
-  const relaxKernel = new Kernel({
-    device,
+  const relaxKernel = new Kernel(device, {
     computeShader: `
 [[block]] struct Buffer {
   data: array<i32>;
@@ -135,8 +134,7 @@ fn main(
 }`,
   });
 
-  const updateDistanceKernel = new Kernel({
-    device,
+  const updateDistanceKernel = new Kernel(device, {
     computeShader: `
 [[block]] struct Buffer {
   data: array<i32>;
@@ -160,8 +158,7 @@ fn main(
     `,
   });
 
-  const updatePredKernel = new Kernel({
-    device,
+  const updatePredKernel = new Kernel(device, {
     computeShader: `
 [[block]] struct Buffer {
   data: array<i32>;

@@ -28,8 +28,7 @@ const canvas = new Canvas({
 canvas.addEventListener(CanvasEvent.READY, () => {
   const device = renderer.getDevice();
 
-  const kernel = new Kernel({
-    device,
+  const kernel = new Kernel(device, {
     computeShader: `
   [[block]] struct Matrix {
     size : vec2<f32>;

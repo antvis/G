@@ -116,8 +116,7 @@ const calculateInGPU = async (V, From, To) => {
     }
   }
 
-  const storeKernel = new Kernel({
-    device,
+  const storeKernel = new Kernel(device, {
     computeShader: `
 [[block]] struct Buffer {
   data: array<f32>;
@@ -137,8 +136,7 @@ fn main(
 }`,
   });
 
-  const matmulKernel = new Kernel({
-    device,
+  const matmulKernel = new Kernel(device, {
     computeShader: `
 [[block]] struct Buffer {
   data: array<f32>;
@@ -164,8 +162,7 @@ fn main(
     `,
   });
 
-  const rankDiffKernel = new Kernel({
-    device,
+  const rankDiffKernel = new Kernel(device, {
     computeShader: `
 [[block]] struct Buffer {
   data: array<f32>;

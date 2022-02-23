@@ -3,7 +3,6 @@ import type { Device, ComputePipeline } from '@antv/g-plugin-webgl-renderer';
 import { AST_TOKEN_TYPES, KernelBundle, STORAGE_CLASS, Target } from './interface';
 
 export interface KernelOptions {
-  device: Device;
   computeShader?: string;
   bundle?: KernelBundle;
 }
@@ -47,7 +46,7 @@ export class Kernel {
     bindingType: 'uniform' | 'storage' | 'read-only-storage';
   }[] = [];
 
-  constructor({ device, computeShader, bundle }: KernelOptions) {
+  constructor(device: Device, { computeShader, bundle }: KernelOptions) {
     this.device = device;
     this.computeShader = computeShader;
     this.bundle = bundle;

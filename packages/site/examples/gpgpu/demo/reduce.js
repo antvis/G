@@ -26,8 +26,7 @@ const workgroupSize = 128;
 
 canvas.addEventListener(CanvasEvent.READY, () => {
   const device = renderer.getDevice();
-  const kernel = new Kernel({
-    device,
+  const kernel = new Kernel(device, {
     computeShader: `
 [[block]] struct Array {
   size: u32;

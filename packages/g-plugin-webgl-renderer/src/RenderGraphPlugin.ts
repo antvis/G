@@ -400,8 +400,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
         ($canvas.getContext('experimental-webgl', options) as WebGLRenderingContext);
     }
 
-    console.log($canvas, gl);
-
     return new Device_GL(gl as WebGLRenderingContext | WebGL2RenderingContext, {
       shaderDebug: true,
       trackResources: true,

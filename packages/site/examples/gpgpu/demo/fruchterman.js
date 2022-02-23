@@ -58,8 +58,7 @@ const canvas = new Canvas({
   const k = Math.sqrt(k2);
 
   const device = renderer.getDevice();
-  const kernel = new Kernel({
-    device,
+  const kernel = new Kernel(device, {
     computeShader: `
 [[block]] struct Buffer {
   data: array<i32>;

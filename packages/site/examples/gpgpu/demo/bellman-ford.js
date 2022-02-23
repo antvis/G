@@ -45,8 +45,7 @@ const canvas = new Canvas({
 
 canvas.addEventListener(CanvasEvent.READY, () => {
   const device = renderer.getDevice();
-  const kernel = new Kernel({
-    device,
+  const kernel = new Kernel(device, {
     computeShader: `
 [[block]] struct Buffer {
   data: array<i32>;
@@ -84,8 +83,7 @@ fn main(
 }`,
   });
 
-  const updateDistanceKernel = new Kernel({
-    device,
+  const updateDistanceKernel = new Kernel(device, {
     computeShader: `
 [[block]] struct Buffer {
   data: array<i32>;
@@ -109,8 +107,7 @@ fn main(
     `,
   });
 
-  const updatePredKernel = new Kernel({
-    device,
+  const updatePredKernel = new Kernel(device, {
     computeShader: `
 [[block]] struct Buffer {
   data: array<i32>;

@@ -76,8 +76,7 @@ const device = renderer.getDevice();
 ```js
 import { Kernel } from '@antv/g-plugin-gpgpu';
 
-const kernel = new Kernel({
-    device,
+const kernel = new Kernel(device, {
     computeShader: `...`,
 });
 ```
