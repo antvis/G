@@ -16,7 +16,7 @@ jobs:
         id: preview_step
         with:
           project_name: 'G'
-          dist_command: 'umd'
+          dist_command: 'build'
           project_branch: ${{ env.BRANCH_NAME }}
           surge_token: ${{ secrets.SURGE_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
