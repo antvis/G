@@ -8,15 +8,15 @@ import { Plugin, Kernel, BufferUsage } from '@antv/g-plugin-gpgpu';
  */
 
 const CANVAS_SIZE = 1;
+const $canvas = document.createElement('canvas');
 
 // use WebGPU
 const renderer = new Renderer({ targets: ['webgpu'] });
 renderer.registerPlugin(new Plugin());
 
 // create a canvas
-const $wrapper = document.getElementById('container');
 const canvas = new Canvas({
-  container: $wrapper,
+  canvas: $canvas,
   width: CANVAS_SIZE,
   height: CANVAS_SIZE,
   renderer,

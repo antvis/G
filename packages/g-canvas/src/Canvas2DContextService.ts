@@ -2,6 +2,7 @@ import { CanvasConfig, ContextService } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { isString } from '@antv/util';
 import { setDOMSize } from './utils/dom';
+import { isBrowser } from './utils/browser';
 
 @singleton({ token: ContextService })
 export class Canvas2DContextService implements ContextService<CanvasRenderingContext2D> {
@@ -14,7 +15,7 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   private canvasConfig: CanvasConfig;
 
   init() {
-    const { container, width, height } = this.canvasConfig;
+    const { container, width, height, devicePixelRatio } = this.canvasConfig;
     // create container
     this.$container = isString(container) ? document.getElementById(container) : container;
     if (this.$container) {
@@ -27,7 +28,8 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
       }
       this.$canvas = $canvas;
 
-      let dpr = window.devicePixelRatio || 1;
+      // use user-defined dpr first
+      let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
       dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
       this.dpr = dpr;
 

@@ -104,6 +104,10 @@ export class TexturePool {
       this.gradientCache[key] = gradient;
     }
 
+    // used as canvas' ID
+    // @ts-ignore
+    canvas.src = key;
+
     if (gradient) {
       context.fillStyle = gradient;
       context.fillRect(0, 0, width, height);

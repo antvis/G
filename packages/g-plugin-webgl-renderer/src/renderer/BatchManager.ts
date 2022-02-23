@@ -36,8 +36,6 @@ export class BatchManager {
   private stencilRefCache: Record<number, number> = {};
 
   render(list: RenderInstList) {
-    // this.applyClipPath();
-
     this.meshes.forEach((mesh) => {
       // init rendering service, create geometry & material
       mesh.init(this.device, this.renderingService);
@@ -196,4 +194,48 @@ export class BatchManager {
     }
     return this.stencilRefCache[object.entity];
   }
+
+  // private findClipPath(): DisplayObject | null {
+  //   let node = this.instance;
+  //   while (node && node.style) {
+  //     if (node.style.clipPath) {
+  //       return node.style.clipPath;
+  //     }
+  //     node = node.parentNode as DisplayObject;
+  //   }
+  //   return null;
+  // }
+
+  // private applyClipPath() {
+  //   // find clipPath
+  //   const clipPathShape = this.findClipPath();
+  //   if (clipPathShape && !this.clipPathMeshCreated) {
+  //     if (this.batchMeshList.length === 0) {
+  //       return;
+  //     }
+
+  //     const clipPathMesh = this.meshFactory(clipPathShape.nodeName);
+  //     clipPathMesh.clipPathTarget = this.instance;
+
+  //     // draw clipPath first
+  //     this.batchMeshList.unshift(clipPathMesh);
+  //     this.clipPathMeshCreated = true;
+
+  //     this.batchMeshList.forEach((mesh, i) => {
+  //       mesh.clipPath = clipPathShape;
+
+  //       // if (!mesh.material) {
+  //       //   mesh.material = new ShaderMaterial(this.device);
+  //       // }
+  //       mesh.material.stencilRef = this.batchManager.getStencilRef(clipPathShape);
+  //     });
+  //   }
+
+  //   // remove clipPath from render queue
+  //   if (!clipPathShape) {
+  //     if (this.batchMeshList.length && this.batchMeshList[0].clipPathTarget) {
+  //       this.batchMeshList.shift();
+  //     }
+  //   }
+  // }
 }

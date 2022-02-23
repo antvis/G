@@ -8,6 +8,9 @@ export { DomInteraction, WebGLRenderer };
 
 interface WebGLRendererConfig extends RendererConfig {
   targets: ('webgl1' | 'webgl2' | 'webgpu')[];
+  plugins: {
+    enableDOMInteraction: boolean;
+  };
 }
 
 export class Renderer extends AbstractRenderer {
@@ -25,7 +28,10 @@ export class Renderer extends AbstractRenderer {
         : {},
     );
     this.registerPlugin(this.renderGraphPlugin);
-    this.registerPlugin(new DomInteraction.Plugin());
+
+    if (config?.plugins?.enableDOMInteraction !== false) {
+      this.registerPlugin(new DomInteraction.Plugin());
+    }
   }
 
   getDevice() {

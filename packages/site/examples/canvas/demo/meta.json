@@ -35,6 +35,13 @@
         "en": "Use a DOM element for container"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "offscreen-canvas.ts",
+      "title": {
+        "zh": "OffscreenCanvas",
+        "en": "OffscreenCanvas"
+      }
     }
   ]
 }

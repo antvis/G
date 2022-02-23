@@ -95,6 +95,7 @@ export class EventPlugin implements RenderingPlugin {
           $element &&
           nativeEvent.target &&
           nativeEvent.target !== $element &&
+          // @ts-ignore
           $element.contains &&
           // @ts-ignore
           !$element.contains(nativeEvent.target)

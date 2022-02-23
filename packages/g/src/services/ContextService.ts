@@ -7,7 +7,7 @@ export interface ContextService<Context> {
   init: () => void;
   destroy: () => void;
   getContext: () => Context | null;
-  getDomElement: () => HTMLElement | null;
+  getDomElement: () => HTMLElement | OffscreenCanvas | null;
   getDPR: () => number;
   getBoundingClientRect: () => DOMRect | undefined;
   resize: (width: number, height: number) => void;

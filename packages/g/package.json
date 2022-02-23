@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
+    "@types/offscreencanvas": "^2019.6.4",
     "@antv/g-math": "^1.0.9",
     "@antv/path-util": "^2.0.14",
     "@antv/util": "^2.0.13",
@@ -44,6 +45,7 @@
     "eventemitter3": "^4.0.0",
     "gl-matrix": "^3.1.0",
     "mana-syringe": "^0.2.2",
+    "request-animation-frame-polyfill": "^1.1.2",
     "tapable": "^2.2.1",
     "tslib": "^2.3.1"
   },

@@ -42,6 +42,10 @@ void main() {
     inner_df
   );
 
+  // vec2 imagecoord = mod(v_Uv, 0.1);
+  // vec4 texel = texture(SAMPLER_2D(u_Map), imagecoord);
+  // u_Color = texel;
+
   vec4 diffuseColor = u_Color;
 
   vec4 strokeColor = (u_StrokeColor == vec4(0) || omitStroke) ? vec4(0.0) : u_StrokeColor;

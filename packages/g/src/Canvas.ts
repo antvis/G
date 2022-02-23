@@ -9,7 +9,7 @@ import { EventService } from './services/EventService';
 import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE, DefaultCamera } from './camera';
 import { containerModule as commonContainerModule } from './canvas-module';
 import type { IRenderer } from './AbstractRenderer';
-import { cancelAnimationFrame } from './utils/raf';
+import { cancelAnimationFrame, requestAnimationFrame } from './utils/raf';
 import type { PointLike } from './shapes';
 import type { FederatedEvent, Element, IChildNode } from './dom';
 import { Document, EventTarget, ElementEvent } from './dom';
@@ -208,7 +208,8 @@ export class Canvas extends EventTarget implements ICanvas {
   destroy(destroyScenegraph = true) {
     this.emit(CanvasEvent.BEFORE_DESTROY, () => {});
     if (this.frameId) {
-      cancelAnimationFrame(this.frameId);
+      const cancelRAF = this.getConfig().cancelAnimationFrame || cancelAnimationFrame;
+      cancelRAF(this.frameId);
     }
 
     // unmount all children
@@ -289,9 +290,10 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   private run() {
+    const rAF = this.getConfig().requestAnimationFrame || requestAnimationFrame;
     const tick = () => {
       this.render();
-      this.frameId = requestAnimationFrame(tick);
+      this.frameId = rAF(tick);
     };
     tick();
   }
