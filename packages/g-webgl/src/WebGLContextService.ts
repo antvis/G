@@ -19,6 +19,13 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
 
     if (canvas) {
       this.$canvas = canvas;
+
+      if (container && (canvas as HTMLCanvasElement).parentElement !== container) {
+        (container as HTMLElement).appendChild(canvas as HTMLCanvasElement);
+      }
+
+      this.$container = (canvas as HTMLCanvasElement).parentElement;
+      this.canvasConfig.container = this.$container;
     } else if (container) {
       // create container
       this.$container = isString(container) ? document.getElementById(container) : container;
@@ -77,7 +84,7 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
   }
 
   applyCursorStyle(cursor: string) {
-    if (this.$container) {
+    if (this.$container && this.$container.style) {
       this.$container.style.cursor = cursor;
     }
   }

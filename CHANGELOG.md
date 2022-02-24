@@ -4,6 +4,28 @@
 
 ## [5.0.11] - 2022-2-22
 
+-   @antv/g-canvas@1.0.10
+-   @antv/g-plugin-3d@1.0.12
+-   @antv/g-plugin-gpgpu@1.0.10
+-   @antv/g-plugin-html-renderer@1.0.10
+-   @antv/g-plugin-webgl-renderer@1.0.14
+-   @antv/g-webgl@1.0.14
+-   @antv/g-webgpu-compiler@1.0.10
+-   @antv/g@5.0.11
+-   @antv/react-g@1.0.4
+
+### 新增特性
+
+-   [g] 支持 OffscreenCanvas，现在 g 和 g-webgl 均可以在 WebWorker 中运行 https://github.com/antvis/g/issues/874
+-   [g] 创建 Canvas 支持传入 `canvas`，如果传入 G 不会再自动创建 `<canvas>`，因此 `container` 不再是必填项。当用户想使用已有 `<canvas>` 或在 WebWorker 中使用 OffscreenCanvas，现在 时适用
+-   [g] 创建 Canvas 支持传入 `devicePixelRatio`
+-   [g-webgl] 重构了自动合并 mesh 逻辑
+-   [g-plugin-gpgpu] Kernel 第一个参数为 device，和其他 GPU 对象例如 Geometry / Material 保持风格一致
+
+### Bug 修复
+
+-   [g-webgl] Circle / Ellipse / Rect 支持虚线描边 https://github.com/antvis/g/issues/824
+
 ### 其他
 
 <!-- - 升级 mana-syringe，支持 `container.unload()` -->

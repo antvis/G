@@ -1,6 +1,6 @@
 import type { Cursor } from './types';
 import { CanvasConfig } from './types';
-import { cleanExistedCanvas } from './utils/canvas';
+import { cleanExistedCanvas, isBrowser } from './utils/canvas';
 import { DisplayObject } from './display-objects/DisplayObject';
 import { ContextService } from './services';
 import { RenderingService } from './services/RenderingService';
@@ -74,19 +74,34 @@ export class Canvas extends EventTarget implements ICanvas {
     // create registry of custom elements
     this.customElements = new CustomElementRegistry();
 
-    cleanExistedCanvas(config.container, this);
+    let { container, canvas, width, height, devicePixelRatio, renderer, background } = config;
 
-    const mergedConfig = {
-      width: 300,
-      height: 150,
+    cleanExistedCanvas(container, this);
+
+    // use user-defined <canvas> or OffscreenCanvas
+    if (canvas) {
+      // infer width & height with dpr
+      let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
+      dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
+      width = width || canvas.width / dpr;
+      height = height || canvas.height / dpr;
+      devicePixelRatio = dpr;
+    }
+
+    this.initRenderingContext({
+      container,
+      canvas,
+      width,
+      height,
+      renderer,
+      devicePixelRatio,
       cursor: 'default' as Cursor,
+      background,
       // background: 'white',
-      ...config,
-    };
+    });
 
-    this.initRenderingContext(mergedConfig);
-    this.initDefaultCamera(mergedConfig.width, mergedConfig.height);
-    this.initRenderer(mergedConfig.renderer);
+    this.initDefaultCamera(width, height);
+    this.initRenderer(renderer);
   }
 
   private initRenderingContext(mergedConfig: CanvasConfig) {

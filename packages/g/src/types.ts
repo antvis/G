@@ -262,21 +262,16 @@ export interface CanvasConfig {
   /**
    * 画布宽度
    */
-  width: number;
+  width?: number;
   /**
    * 画布高度
    */
-  height: number;
+  height?: number;
 
   /**
    * 画布背景色
    */
   background?: ColorType;
-
-  /**
-   * 是否可监听
-   */
-  capture?: boolean;
 
   /**
    * 画布的 cursor 样式

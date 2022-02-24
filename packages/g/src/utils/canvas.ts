@@ -16,3 +16,5 @@ export function cleanExistedCanvas(container: string | HTMLElement, canvas: Canv
     canvasMap[id] = canvas;
   }
 }
+
+export const isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';

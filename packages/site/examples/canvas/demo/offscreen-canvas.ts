@@ -6,8 +6,11 @@ const worker = new Worker();
 
 // create a canvas in main thread
 const $canvas = document.createElement('canvas') as HTMLCanvasElement;
-$canvas.height = 600;
-$canvas.width = 500;
+const dpr = window.devicePixelRatio;
+$canvas.height = dpr * 600;
+$canvas.width = dpr * 500;
+$canvas.style.height = '600px';
+$canvas.style.width = '500px';
 document.getElementById('container').appendChild($canvas);
 
 // transfer canvas to worker
@@ -26,5 +29,5 @@ setupTransferableMethodsOnMain(
 );
 
 (async () => {
-  await worker.render(offscreen, window.devicePixelRatio);
+  await worker.render(offscreen, dpr);
 })();

@@ -23,8 +23,6 @@ export function render(offscreenCanvas, devicePixelRatio) {
   const canvas = new Canvas({
     canvas: offscreenCanvas,
     devicePixelRatio,
-    width: 600,
-    height: 500,
     renderer,
   });
 

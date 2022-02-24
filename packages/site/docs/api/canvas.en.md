@@ -25,11 +25,11 @@ redirect_from:
 
 # 初始化
 
-在创建一个画布时，我们需要传入以下初始化参数：
+在创建一个画布时，我们可以传入以下初始化参数，这也是最简单的初始化方式：
 
--   画布容器的 id 或 DOM 元素
--   画布宽度和高度
--   渲染器
+-   container 画布容器的 id 或 DOM 元素，后续在该 DOM 元素内自动创建 `<canvas>/<svg>`
+-   width / height 画布宽度和高度
+-   renderer 渲染器，目前支持 `g-canvas` `g-svg` 和 `g-webgl`
 
 ```js
 import { Canvas } from '@antv/g';
@@ -41,11 +41,66 @@ const webglRenderer = new WebGLRenderer();
 // 创建画布
 const canvas = new Canvas({
     container: 'container', // 画布 DOM 容器 id
-    width: 600, // 画布尺寸
-    height: 500,
+    width: 600, // 画布宽度
+    height: 500, // 画布高度
     renderer: webglRenderer, // 指定渲染器
 });
 ```
+
+以上初始化方式只需要提供一个承载 `<canvas>/<svg>` 的容器 `container`，但有时我们有如下自定义需求：
+
+-   自行创建 `<canvas>`，[详见](/zh/docs/api/canvas#使用创建好的-canvas-元素)
+-   或者在 WebWorker 中使用 OffscreenCanvas，[详见](/zh/docs/api/canvas#在-webworker-中使用-offscreencanvas)
+
+此时可以使用 `canvas` 代替 `container`，更多初始化参数如下。
+
+## container
+
+可选，`string | HTMLElement`，画布容器的 id 或 DOM 元素。后续当渲染器初始化时，会在该容器 DOM 元素内自动创建 `<canvas>/<svg>`。
+
+## canvas
+
+可选，`HTMLCanvasElement | OffscreenCanvas`，已创建好的 `<canvas>` 元素或者 OffscreenCanvas。
+
+当传入此参数时，[container](/zh/docs/api/canvas#container) 参数将被忽略，我们假定 `<canvas>` 已经创建完毕并且加入到文档中，例如：
+
+```js
+// 用户自行创建 <canvas>
+const $canvas = document.createElement('canvas');
+// 设置画布大小
+const dpr = window.devicePixelRatio;
+$canvas.height = dpr * 600;
+$canvas.width = dpr * 500;
+$canvas.style.height = '600px';
+$canvas.style.width = '500px';
+// 用户自行将 <canvas> 加入文档
+document.getElementById('container').appendChild($canvas);
+
+// 使用创建好的 <canvas> 创建画布
+const canvas = new Canvas({
+    canvas: $canvas,
+    renderer: canvasRenderer,
+});
+```
+
+除了 `<canvas>`，还可以使用 OffscreenCanvas，甚至在 WebWorker 中运行，[详见](/zh/docs/api/canvas#在-webworker-中使用-offscreencanvas)。
+
+需要注意的是，一旦使用了该参数，就不再支持运行时切换渲染器了。
+
+## width / height
+
+画布宽高。
+
+-   如果设置了 [container](/zh/docs/api/canvas#container)，必填。渲染器创建 `<canvas>` 时将使用传入的宽高设置。
+-   如果设置了 [canvas](/zh/docs/api/canvas#canvas)，选填。如果不填写，将使用 `canvas.width/height` 与 `devicePixelRatio` 计算。
+
+## renderer
+
+必填，渲染器，目前支持 `g-canvas` `g-svg` 和 `g-webgl`，后续可以在运行时通过 [setRenderer()](/zh/docs/api/canvas#setrendererrenderer-renderer) 切换。
+
+## devicePixelRatio
+
+可选。默认将使用 `window.devicePixelRatio`，如果运行环境中无 `window` 对象，例如 WebWorker 中，可以手动传入，如果仍未传入则使用 1。
 
 # 坐标系
 
@@ -479,3 +534,49 @@ canvas.customElements.get(SHAPE.Circle); // Circle constructor
 ## 多个画布共存
 
 在同一个页面中，多个画布可以共存，即可以同时存在多个“平行世界”。但受限于底层渲染 API，例如 WebGL 只允许至多 8 个上下文。[示例](/zh/examples/canvas#multi-canvas)
+
+## 使用创建好的 canvas 元素
+
+在该 [示例](/zh/examples/canvas#user-defined-canvas) 中，我们自行创建 `<canvas>` 元素，用它来创建画布：
+
+```js
+const $canvas = document.createElement('canvas');
+$canvas.width = 600;
+$canvas.height = 500;
+document.getElementById('container').appendChild($canvas);
+
+const canvas = new Canvas({
+    canvas: $canvas,
+    renderer: new CanvasRenderer(),
+});
+```
+
+## 在 WebWorker 中使用 OffscreenCanvas
+
+以下两个场景会使用到 OffscreenCanvas，主要利用 Worker 解放主线程压力：
+
+1. GPGPU 配合 g-webgl 和 g-plugin-gpgpu 使用，例如上层的图分析算法库
+2. g-webgl 在 Worker 中渲染，同步结果到主线程
+
+在该 [示例](/zh/examples/canvas#offscreen-canvas) 中我们演示了第二种用法，在主线程创建 `<canvas>`，通过 `transferControlToOffscreen()` 将控制权转移给 WebWorker，后续在 WebWorker 中完成渲染，将结果同步给主线程：
+
+```js
+// 主线程
+const $canvas = document.createElement('canvas') as HTMLCanvasElement;
+const dpr = window.devicePixelRatio;
+$canvas.height = dpr * 600;
+$canvas.width = dpr * 500;
+$canvas.style.height = '600px';
+$canvas.style.width = '500px';
+document.getElementById('container').appendChild($canvas);
+const offscreen = $canvas.transferControlToOffscreen();
+
+// 省略 Worker 创建过程
+
+// 在 WebWorker 中使用 OffscreenCanvas
+const canvas = new Canvas({
+  canvas: offscreenCanvas, // 从主线程
+  devicePixelRatio,
+  renderer,
+});
+```
