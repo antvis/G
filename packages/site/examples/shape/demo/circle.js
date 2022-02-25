@@ -15,7 +15,7 @@ const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: canvasRenderer,
+  renderer: webglRenderer,
 });
 
 // create a circle

@@ -9,7 +9,7 @@ import { EventService } from './services/EventService';
 import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE, DefaultCamera } from './camera';
 import { containerModule as commonContainerModule } from './canvas-module';
 import type { IRenderer } from './AbstractRenderer';
-import { cancelAnimationFrame, requestAnimationFrame } from './utils/raf';
+import { cancelAnimationFrame, requestAnimationFrame, patch } from './utils/raf';
 import type { PointLike } from './shapes';
 import type { FederatedEvent, Element, IChildNode } from './dom';
 import { Document, EventTarget, ElementEvent } from './dom';
@@ -74,33 +74,49 @@ export class Canvas extends EventTarget implements ICanvas {
     // create registry of custom elements
     this.customElements = new CustomElementRegistry();
 
-    let { container, canvas, width, height, devicePixelRatio, renderer, background } = config;
+    const {
+      container,
+      canvas,
+      width,
+      height,
+      devicePixelRatio,
+      renderer,
+      background,
+      requestAnimationFrame,
+      cancelAnimationFrame,
+    } = config;
 
     cleanExistedCanvas(container, this);
 
+    let canvasWidth = width;
+    let canvasHeight = height;
+    let dpr = devicePixelRatio;
     // use user-defined <canvas> or OffscreenCanvas
     if (canvas) {
       // infer width & height with dpr
-      let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
+      dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
       dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
-      width = width || canvas.width / dpr;
-      height = height || canvas.height / dpr;
-      devicePixelRatio = dpr;
+      canvasWidth = width || canvas.width / dpr;
+      canvasHeight = height || canvas.height / dpr;
+    }
+
+    if (requestAnimationFrame && cancelAnimationFrame) {
+      patch(requestAnimationFrame, cancelAnimationFrame);
     }
 
     this.initRenderingContext({
       container,
       canvas,
-      width,
-      height,
+      width: canvasWidth,
+      height: canvasHeight,
       renderer,
-      devicePixelRatio,
+      devicePixelRatio: dpr,
       cursor: 'default' as Cursor,
       background,
       // background: 'white',
     });
 
-    this.initDefaultCamera(width, height);
+    this.initDefaultCamera(canvasWidth, canvasHeight);
     this.initRenderer(renderer);
   }
 
@@ -305,10 +321,9 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   private run() {
-    const rAF = this.getConfig().requestAnimationFrame || requestAnimationFrame;
     const tick = () => {
       this.render();
-      this.frameId = rAF(tick);
+      this.frameId = requestAnimationFrame(tick);
     };
     tick();
   }

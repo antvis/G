@@ -102,6 +102,14 @@ const canvas = new Canvas({
 
 可选。默认将使用 `window.devicePixelRatio`，如果运行环境中无 `window` 对象，例如 WebWorker 中，可以手动传入，如果仍未传入则使用 1。
 
+## requestAnimationFrame
+
+可选。默认将使用 `window.requestAnimationFrame`，如果运行环境中无 `window` 对象，例如小程序环境，可以手动传入。
+
+## cancelAnimationFrame
+
+可选。默认将使用 `window.cancelAnimationFrame`，如果运行环境中无 `window` 对象，例如小程序环境，可以手动传入。
+
 # 坐标系
 
 当我们说起“位置”，一定是相对于某个坐标系下而言，在 G 中我们会使用到 Client、Screen、Page、Canvas 以及 Viewport 坐标系，例如在[事件系统](/zh/docs/api/event)中可以从事件对象上获取不同坐标系下的坐标：
