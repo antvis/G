@@ -59,6 +59,7 @@ export class InputState_GL extends ResourceBase_GL implements InputState {
     } else {
       device.OES_vertex_array_object.bindVertexArrayOES(vao);
     }
+    device.currentBoundVAO = vao;
 
     for (let i = 0; i < inputLayout.vertexAttributeDescriptors.length; i++) {
       const attr = inputLayout.vertexAttributeDescriptors[i];
@@ -81,7 +82,7 @@ export class InputState_GL extends ResourceBase_GL implements InputState {
         const inputLayoutBuffer = assertExists(inputLayout.vertexBufferDescriptors[bufferIndex]);
 
         const buffer = vertexBuffer.buffer as Buffer_GL;
-        assert(buffer.usage === BufferUsage.Vertex);
+        assert(!!(buffer.usage & BufferUsage.VERTEX));
         gl.bindBuffer(gl.ARRAY_BUFFER, getPlatformBuffer(vertexBuffer.buffer));
 
         const bufferOffset = vertexBuffer.byteOffset + bufferByteOffset;
@@ -112,7 +113,7 @@ export class InputState_GL extends ResourceBase_GL implements InputState {
     let indexBufferByteOffset: number | null = null;
     if (indexBufferBinding !== null) {
       const buffer = indexBufferBinding.buffer as Buffer_GL;
-      assert(buffer.usage === BufferUsage.Index);
+      assert(!!(buffer.usage & BufferUsage.INDEX));
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, getPlatformBuffer(indexBufferBinding.buffer));
       indexBufferType = translateIndexFormat(assertExists(inputLayout.indexBufferFormat));
       indexBufferCompByteSize = getFormatCompByteSize(inputLayout.indexBufferFormat!);
@@ -124,6 +125,7 @@ export class InputState_GL extends ResourceBase_GL implements InputState {
     } else {
       device.OES_vertex_array_object.bindVertexArrayOES(null);
     }
+    device.currentBoundVAO = null;
 
     this.vao = vao;
     this.indexBufferByteOffset = indexBufferByteOffset;

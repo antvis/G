@@ -251,6 +251,10 @@ function commandsToPathString(
       vec3.transformMat4(p3, p3, localTransform);
 
       path = `${cur[0]}${p1[0]},${p1[1]},${p2[0]},${p2[1]},${p3[0]},${p3[1]}`;
+    } else if (cur[0] === 'A') {
+      const c = vec3.fromValues(cur[6] - x, cur[7] - y, 0);
+      vec3.transformMat4(c, c, localTransform);
+      path = `${cur[0]}${cur[1]},${cur[2]},${cur[3]},${cur[4]},${cur[5]},${c[0]},${c[1]}`;
     }
 
     return (prev += path);
@@ -289,8 +293,28 @@ function polygonToCommands(points: [number, number][]): PathCommand[] {
   });
 }
 
-function rectToCommands(width: number, height: number, x: number, y: number): PathCommand[] {
-  // FIXME: account for radius
+function rectToCommands(
+  width: number,
+  height: number,
+  x: number,
+  y: number,
+  radius: number,
+): PathCommand[] {
+  // @see https://gist.github.com/danielpquinn/dd966af424030d47e476
+  if (radius) {
+    return [
+      ['M', x, radius + y],
+      ['A', radius, radius, 0, 0, 1, radius + x, y],
+      ['L', width - radius + x, y],
+      ['A', radius, radius, 0, 0, 1, width + x, radius + y],
+      ['L', width + x, height - radius + y],
+      ['A', radius, radius, 0, 0, 1, width - radius + x, height + y],
+      ['L', radius + x, height + y],
+      ['A', radius, radius, 0, 0, 1, x, height - radius + y],
+      ['Z'],
+    ];
+  }
+
   return [
     ['M', x, y],
     ['L', x + width, y],
@@ -331,8 +355,8 @@ export function convertToPath(object: DisplayObject) {
       commands = polygonToCommands(points.points);
       break;
     case SHAPE.Rect:
-      const { width, height, x, y } = (object as Rect).parsedStyle;
-      commands = rectToCommands(width, height, x, y);
+      const { width, height, x, y, radius } = (object as Rect).parsedStyle;
+      commands = rectToCommands(width, height, x, y, radius);
       break;
     case SHAPE.Path:
       commands = (object as Path).parsedStyle.path.curve;

@@ -237,21 +237,36 @@ export interface CanvasConfig {
    * Renderer
    */
   renderer: IRenderer;
+
   /**
    * 容器
-   * @type {string|HTMLElement}
    */
-  container: string | HTMLElement;
+  container?: string | HTMLElement;
+
+  /**
+   * support OffscreenCanvas
+   */
+  canvas?: HTMLCanvasElement | OffscreenCanvas;
+
+  /**
+   * window.devicePixelRatio
+   */
+  devicePixelRatio?: number;
+
+  /**
+   * rAF
+   */
+  requestAnimationFrame?: (callback: FrameRequestCallback) => number;
+  cancelAnimationFrame?: (id: number) => void;
+
   /**
    * 画布宽度
-   * @type {number}
    */
-  width: number;
+  width?: number;
   /**
    * 画布高度
-   * @type {number}
    */
-  height: number;
+  height?: number;
 
   /**
    * 画布背景色
@@ -259,14 +274,7 @@ export interface CanvasConfig {
   background?: ColorType;
 
   /**
-   * 是否可监听
-   * @type {boolean}
-   */
-  capture?: boolean;
-
-  /**
    * 画布的 cursor 样式
-   * @type {Cursor}
    */
   cursor?: Cursor;
 

@@ -1,6 +1,6 @@
 import type { Cursor } from './types';
 import { CanvasConfig } from './types';
-import { cleanExistedCanvas } from './utils/canvas';
+import { cleanExistedCanvas, isBrowser } from './utils/canvas';
 import { DisplayObject } from './display-objects/DisplayObject';
 import { ContextService } from './services';
 import { RenderingService } from './services/RenderingService';
@@ -9,7 +9,7 @@ import { EventService } from './services/EventService';
 import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE, DefaultCamera } from './camera';
 import { containerModule as commonContainerModule } from './canvas-module';
 import type { IRenderer } from './AbstractRenderer';
-import { cancelAnimationFrame } from './utils/raf';
+import { cancelAnimationFrame, requestAnimationFrame, patch } from './utils/raf';
 import type { PointLike } from './shapes';
 import type { FederatedEvent, Element, IChildNode } from './dom';
 import { Document, EventTarget, ElementEvent } from './dom';
@@ -60,6 +60,10 @@ export class Canvas extends EventTarget implements ICanvas {
   private eventService: EventService;
   private renderingService: RenderingService;
 
+  private inited = false;
+  private readyPromise: Promise<any> | undefined;
+  private resolveReadyPromise: Function;
+
   constructor(config: CanvasConfig) {
     super();
 
@@ -70,19 +74,50 @@ export class Canvas extends EventTarget implements ICanvas {
     // create registry of custom elements
     this.customElements = new CustomElementRegistry();
 
-    cleanExistedCanvas(config.container, this);
+    const {
+      container,
+      canvas,
+      width,
+      height,
+      devicePixelRatio,
+      renderer,
+      background,
+      requestAnimationFrame,
+      cancelAnimationFrame,
+    } = config;
 
-    const mergedConfig = {
-      width: 300,
-      height: 150,
+    cleanExistedCanvas(container, this);
+
+    let canvasWidth = width;
+    let canvasHeight = height;
+    let dpr = devicePixelRatio;
+    // use user-defined <canvas> or OffscreenCanvas
+    if (canvas) {
+      // infer width & height with dpr
+      dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
+      dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
+      canvasWidth = width || canvas.width / dpr;
+      canvasHeight = height || canvas.height / dpr;
+    }
+
+    if (requestAnimationFrame && cancelAnimationFrame) {
+      patch(requestAnimationFrame, cancelAnimationFrame);
+    }
+
+    this.initRenderingContext({
+      container,
+      canvas,
+      width: canvasWidth,
+      height: canvasHeight,
+      renderer,
+      devicePixelRatio: dpr,
       cursor: 'default' as Cursor,
+      background,
       // background: 'white',
-      ...config,
-    };
+    });
 
-    this.initRenderingContext(mergedConfig);
-    this.initDefaultCamera(mergedConfig.width, mergedConfig.height);
-    this.initRenderer(mergedConfig.renderer);
+    this.initDefaultCamera(canvasWidth, canvasHeight);
+    this.initRenderer(renderer);
   }
 
   private initRenderingContext(mergedConfig: CanvasConfig) {
@@ -187,10 +222,25 @@ export class Canvas extends EventTarget implements ICanvas {
     return node.parsedStyle;
   }
 
+  get ready() {
+    if (!this.readyPromise) {
+      this.readyPromise = new Promise((resolve) => {
+        this.resolveReadyPromise = () => {
+          resolve(this);
+        };
+      });
+      if (this.inited) {
+        this.resolveReadyPromise();
+      }
+    }
+    return this.readyPromise;
+  }
+
   destroy(destroyScenegraph = true) {
     this.emit(CanvasEvent.BEFORE_DESTROY, () => {});
     if (this.frameId) {
-      cancelAnimationFrame(this.frameId);
+      const cancelRAF = this.getConfig().cancelAnimationFrame || cancelAnimationFrame;
+      cancelRAF(this.frameId);
     }
 
     // unmount all children
@@ -283,6 +333,10 @@ export class Canvas extends EventTarget implements ICanvas {
       throw new Error('Renderer is required.');
     }
 
+    // reset
+    this.inited = false;
+    this.readyPromise = undefined;
+
     this.loadCommonContainerModule();
     this.loadRendererContainerModule(renderer);
 
@@ -295,6 +349,12 @@ export class Canvas extends EventTarget implements ICanvas {
     contextService.init();
     this.renderingService.init().then(() => {
       this.emit(CanvasEvent.READY, {});
+
+      if (this.readyPromise) {
+        this.resolveReadyPromise();
+      }
+
+      this.inited = true;
     });
 
     if (renderer.getConfig().enableAutoRendering) {

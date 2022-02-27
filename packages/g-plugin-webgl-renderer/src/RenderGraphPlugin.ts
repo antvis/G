@@ -9,7 +9,6 @@ import {
   ElementEvent,
   FederatedEvent,
   DisplayObject,
-  SHAPE,
   DefaultCamera,
   Camera,
   CanvasEvent,
@@ -17,20 +16,19 @@ import {
   Tuple4Number,
 } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-import { BatchManager } from './drawcall';
+import { BatchManager } from './renderer';
 import { Renderable3D } from './components/Renderable3D';
 import { WebGLRendererPluginOptions } from './interfaces';
 // import { pushFXAAPass } from './passes/FXAA';
 // import { useCopyPass } from './passes/Copy';
 import { PickingIdGenerator } from './PickingIdGenerator';
-import { BlendFactor, BlendMode, Device, SwapChain, Texture } from './platform';
+import { BlendFactor, BlendMode, Device, SwapChain, Texture, TextureDescriptor } from './platform';
 import { setAttachmentStateSimple } from './platform/utils';
 import { Device_GL } from './platform/webgl2/Device';
 import { Device_WebGPU } from './platform/webgpu/Device';
 import { RGAttachmentSlot, RGGraphBuilder } from './render/interfaces';
 import { RenderHelper } from './render/RenderHelper';
 import { RenderInstList } from './render/RenderInstList';
-import { fillMatrix4x4, fillVec3v, fillVec4 } from './render/utils';
 import { TransparentWhite, colorNewFromRGBA } from './utils/color';
 import {
   AntialiasingMode,
@@ -38,9 +36,10 @@ import {
   makeBackbufferDescSimple,
   opaqueWhiteFullClearRenderPassDescriptor,
 } from './render/RenderGraphHelpers';
-// import init from '../../../rust/pkg/glsl_wgsl_compiler';
+// import init, { glsl_compile } from '../../../rust/pkg/glsl_wgsl_compiler';
 import { Fog, Light } from './lights';
 import { LightPool } from './LightPool';
+import { TexturePool } from './TexturePool';
 
 // uniforms in scene level
 export enum SceneUniform {
@@ -80,8 +79,13 @@ export class RenderGraphPlugin implements RenderingPlugin {
   @inject(LightPool)
   private lightPool: LightPool;
 
+  @inject(TexturePool)
+  private texturePool: TexturePool;
+
   @inject(BatchManager)
   private batchManager: BatchManager;
+
+  private renderingService: RenderingService;
 
   private device: Device;
 
@@ -103,6 +107,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
   }
 
   apply(renderingService: RenderingService) {
+    this.renderingService = renderingService;
     renderingService.hooks.init.tapPromise(RenderGraphPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
@@ -156,7 +161,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
      * build frame graph at the beginning of each frame
      */
     renderingService.hooks.beginFrame.tap(RenderGraphPlugin.tag, () => {
-      const canvas = this.swapChain.getCanvas();
+      const canvas = this.swapChain.getCanvas() as HTMLCanvasElement;
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
 
@@ -275,22 +280,19 @@ export class RenderGraphPlugin implements RenderingPlugin {
       ]);
 
       renderInstManager.setCurrentRenderInstList(this.renderLists.world);
-      // render batches
-      this.batchManager.getBatches().forEach((batch) => {
-        batch.render(this.renderLists.world);
-      });
+      this.batchManager.render(this.renderLists.world);
 
       renderInstManager.popTemplateRenderInst();
-      this.renderHelper.prepareToRender();
+
+      if (this.renderLists.world.renderInsts.length > 0) {
+        this.renderHelper.prepareToRender();
+      }
       this.renderHelper.renderGraph.execute();
+
       renderInstManager.resetRenderInsts();
 
       // output to screen
       this.swapChain.present();
-    });
-
-    renderingService.hooks.render.tap(RenderGraphPlugin.tag, (object: DisplayObject) => {
-      this.batchManager.add(object);
     });
 
     const handleMounted = (e: FederatedEvent) => {
@@ -318,6 +320,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       // @ts-ignore
       object.renderable3D = renderable3D;
+
+      this.batchManager.add(object);
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
@@ -431,8 +435,10 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
     if (!context) return null;
 
-    // const naga = await init('/glsl_wgsl_compiler_bg.wasm');
-    // return new Device_WebGPU(adapter, device, canvas, context, naga.glsl_compile);
+    // try {
+    //   await init('/glsl_wgsl_compiler_bg.wasm');
+    // } catch (e) {}
+    // return new Device_WebGPU(adapter, device, canvas, context, glsl_compile);
     return new Device_WebGPU(adapter, device, canvas, context, () => {});
   }
 
@@ -493,5 +499,18 @@ export class RenderGraphPlugin implements RenderingPlugin {
     }
 
     return targets;
+  }
+
+  loadTexture(
+    src: string | TexImageSource,
+    descriptor?: TextureDescriptor,
+    successCallback?: Function,
+  ) {
+    return this.texturePool.getOrCreateTexture(this.device, src, descriptor, () => {
+      this.renderingService.dirtify();
+      if (successCallback) {
+        successCallback();
+      }
+    });
   }
 }

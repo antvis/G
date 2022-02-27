@@ -37,19 +37,21 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       if (object.nodeName === SHAPE.HTML) {
         const { innerHTML } = object.parsedStyle;
         const existedId = HTML_PREFIX + object.entity;
-        const $container = this.contextService.getDomElement()!.parentNode!;
+        const $container = (this.contextService.getDomElement() as HTMLElement).parentNode;
 
-        const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
-        if (!$existedElement) {
-          const $div = document.createElement('div');
-          object.parsedStyle.$el = $div;
-          $div.id = existedId;
-          if (isString(innerHTML)) {
-            $div.innerHTML = innerHTML;
-          } else {
-            $div.appendChild(innerHTML);
+        if ($container) {
+          const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
+          if (!$existedElement) {
+            const $div = document.createElement('div');
+            object.parsedStyle.$el = $div;
+            $div.id = existedId;
+            if (isString(innerHTML)) {
+              $div.innerHTML = innerHTML;
+            } else {
+              $div.appendChild(innerHTML);
+            }
+            $container.appendChild($div);
           }
-          $container.appendChild($div);
         }
       }
     };
@@ -58,10 +60,12 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       const object = e.target as DisplayObject;
       if (object.nodeName === SHAPE.HTML) {
         const existedId = HTML_PREFIX + object.entity;
-        const $container = this.contextService.getDomElement()!.parentNode!;
-        const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
-        if ($existedElement) {
-          $container.removeChild($existedElement);
+        const $container = (this.contextService.getDomElement() as HTMLElement).parentNode;
+        if ($container) {
+          const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
+          if ($existedElement) {
+            $container.removeChild($existedElement);
+          }
         }
       }
     };
@@ -79,10 +83,11 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     renderingService.hooks.render.tap(HTMLRenderingPlugin.tag, (object: DisplayObject) => {
       if (object.nodeName === SHAPE.HTML) {
         const existedId = HTML_PREFIX + object.entity;
-        const $container = this.contextService.getDomElement()!.parentNode!;
-
-        const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
-        this.updateCSSStyle($existedElement!, object.parsedStyle, object);
+        const $container = (this.contextService.getDomElement() as HTMLElement).parentNode;
+        if ($container) {
+          const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
+          this.updateCSSStyle($existedElement!, object.parsedStyle, object);
+        }
       }
     });
   }

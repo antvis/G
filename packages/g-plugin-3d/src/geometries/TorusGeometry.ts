@@ -1,4 +1,4 @@
-import { Mesh } from '@antv/g-plugin-webgl-renderer';
+import { Device, Mesh } from '@antv/g-plugin-webgl-renderer';
 import { ProceduralGeometry } from './ProceduralGeometry';
 
 export interface TorusGeometryProps {
@@ -9,7 +9,57 @@ export interface TorusGeometryProps {
 }
 
 export class TorusGeometry extends ProceduralGeometry<TorusGeometryProps> {
-  createTopology(mesh: Mesh<TorusGeometryProps>) {
+  constructor(device: Device, props: Partial<TorusGeometryProps> = {}) {
+    super(device, {
+      tubeRadius: 0.2,
+      ringRadius: 0.3,
+      segments: 30,
+      sides: 20,
+      ...props,
+    });
+  }
+
+  get tubeRadius() {
+    return this.props.tubeRadius;
+  }
+  set tubeRadius(v) {
+    if (this.props.tubeRadius !== v) {
+      this.props.tubeRadius = v;
+      this.build();
+    }
+  }
+
+  get ringRadius() {
+    return this.props.ringRadius;
+  }
+  set ringRadius(v) {
+    if (this.props.ringRadius !== v) {
+      this.props.ringRadius = v;
+      this.build();
+    }
+  }
+
+  get segments() {
+    return this.props.segments;
+  }
+  set segments(v) {
+    if (this.props.segments !== v) {
+      this.props.segments = v;
+      this.build();
+    }
+  }
+
+  get sides() {
+    return this.props.sides;
+  }
+  set sides(v) {
+    if (this.props.sides !== v) {
+      this.props.sides = v;
+      this.build();
+    }
+  }
+
+  createTopology() {
     let x: number;
     let y: number;
     let z: number;
@@ -21,7 +71,7 @@ export class TorusGeometry extends ProceduralGeometry<TorusGeometryProps> {
     let i: number;
     let j: number;
 
-    const { tubeRadius = 0.2, ringRadius = 0.3, segments = 30, sides = 20 } = mesh.style;
+    const { tubeRadius = 0.2, ringRadius = 0.3, segments = 30, sides = 20 } = this.props;
 
     const rc = tubeRadius;
     const rt = ringRadius;

@@ -19,24 +19,23 @@ material.wireframe = true;
 
 # 内置几何
 
-几何只是定义一类“图形”，场景中的 1k 个图形都是 Cube，但它们可以拥有不同的长、宽、高。因此在使用时应该谨慎创建几何，如果场景中完全由一种几何组成，那就只应该创建一个。
-
-当我们想修改几何信息时，例如改变一个几何形状为 CubeGeometry 的 Mesh 时，应该在 Mesh 而非几何上操作：
+当我们想修改几何信息时，例如改变一个几何形状为 CubeGeometry 的 Mesh 时，应该在几何而非 Mesh 上操作：
 
 ```js
 import { MeshBasicMaterial, CubeGeometry, Mesh, Plugin as Plugin3D } from '@antv/g-plugin-3d';
 
 // 创建几何
-const cubeGeometry = new CubeGeometry();
+const cubeGeometry = new CubeGeometry(device, {
+    width: 200,
+    height: 200,
+    depth: 200,
+});
 
 // 创建 Mesh
 const cube = new Mesh({
     style: {
         fill: '#1890FF',
         opacity: 1,
-        width: 200, // 来自 CubeGeometry 的定义
-        height: 200, // 来自 CubeGeometry 的定义
-        depth: 200, // 来自 CubeGeometry 的定义
         geometry: cubeGeometry,
         material: basicMaterial,
     },
@@ -44,10 +43,12 @@ const cube = new Mesh({
 
 // 修改这个形状为 Cube 的 Mesh 宽度
 // 正确用法
-cube.style.width = 300;
+cubeGeometry.width = 300;
+// 或者
+cube.style.geometry.width = 300;
 
 // 错误用法
-cube.style.geometry.width = 300;
+cube.style.width = 300;
 ```
 
 ## CubeGeometry
@@ -151,8 +152,8 @@ cube.style.geometry.width = 300;
 ```js
 import { BufferGeometry, MeshBasicMaterial, Mesh } from '@antv/g-plugin-3d';
 
-const bufferGeometry = new BufferGeometry();
-const basicMaterial = new MeshBasicMaterial();
+const bufferGeometry = new BufferGeometry(device);
+const basicMaterial = new MeshBasicMaterial(device);
 const mesh = new Mesh({
     style: {
         fill: '#1890FF',
@@ -306,18 +307,19 @@ geometry.setVertexBuffer({
 });
 ```
 
-## updateVertexBufferData
+## updateVertexBuffer
 
 在初始化之后，顶点数据有时也需要修改。
 
 例如更新上面的位置属性时，首先通过 `bufferIndex` 定位到具体 Buffer，再通过 `bufferByteOffset` 指定偏移量，最后更新部分或者全部数据：
 
 ```js
-geometry.updateVertexBufferData({
-    bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
-    bufferByteOffset: 0,
-    data: Float32Array.from(positions),
-});
+geometry.updateVertexBuffer(
+    ProceduralGeometryAttributeLocation.POSITION,
+    VertexAttributeLocation.MAX,
+    0,
+    new Uint8Array(positions.buffer),
+);
 ```
 
 ## applyMat4

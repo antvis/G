@@ -55,39 +55,70 @@ const App = function MultiWorld() {
       .setFocalPoint(150, 250, 0)
       .setPerspective(0.1, 1000, 75, TOTAL_WIDTH / 2 / SCENE_HEIGHT);
 
-    const group1 = new Group();
-    const cubeGeometry = new CubeGeometry();
-    const basicMaterial = new MeshBasicMaterial({
-      map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
-    });
+    (async () => {
+      await canvas1.ready;
+      const device1 = webglRenderer1.getDevice();
+      const map = webglRenderer1.loadTexture(
+        'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
+      );
 
-    const cube1 = new Mesh({
-      style: {
-        fill: '#1890FF',
-        opacity: 1,
+      await canvas2.ready;
+      const device2 = webglRenderer2.getDevice();
+
+      const group1 = new Group();
+      const cubeGeometry = new CubeGeometry(device1, {
         width: 200,
         height: 200,
         depth: 200,
-        geometry: cubeGeometry,
-        material: basicMaterial,
-      },
-    });
+      });
+      const basicMaterial = new MeshBasicMaterial(device1, {
+        map,
+      });
 
-    group1.appendChild(cube1);
-    group1.setPosition(150, 250, 0);
-    canvas1.appendChild(group1);
+      const cube1 = new Mesh({
+        style: {
+          fill: '#1890FF',
+          opacity: 1,
+          geometry: cubeGeometry,
+          material: basicMaterial,
+        },
+      });
 
-    // scene2
-    const camera2 = canvas2.getCamera();
-    camera2
-      .setPosition(150, 20, 500)
-      .setFocalPoint(150, 250, 0);
+      group1.appendChild(cube1);
+      group1.setPosition(150, 250, 0);
+      canvas1.appendChild(group1);
 
-    const group2 = new Group();
-    const cube2 = cube1.cloneNode();
-    group2.appendChild(cube2);
-    group2.setPosition(150, 250, 0);
-    canvas2.appendChild(group2);
+      // scene2
+      const camera2 = canvas2.getCamera();
+      camera2.setPosition(150, 20, 500).setFocalPoint(150, 250, 0);
+
+      const map2 = webglRenderer2.loadTexture(
+        'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
+      );
+
+      const cubeGeometry2 = new CubeGeometry(device2, {
+        width: 200,
+        height: 200,
+        depth: 200,
+      });
+      const basicMaterial2 = new MeshBasicMaterial(device2, {
+        map: map2,
+      });
+
+      const cube2 = new Mesh({
+        style: {
+          fill: '#1890FF',
+          opacity: 1,
+          geometry: cubeGeometry2,
+          material: basicMaterial2,
+        },
+      });
+
+      const group2 = new Group();
+      group2.appendChild(cube2);
+      group2.setPosition(150, 250, 0);
+      canvas2.appendChild(group2);
+    })();
   });
 
   return (
@@ -100,14 +131,20 @@ const App = function MultiWorld() {
           canvas2.resize(TOTAL_WIDTH - width, SCENE_HEIGHT);
         }}
       >
-        <div id='container1' style={{
-          width: '100%',
-          height: '100%',
-        }} />
-        <div id='container2' style={{
-          width: '100%',
-          height: '100%',
-        }} />
+        <div
+          id="container1"
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+        />
+        <div
+          id="container2"
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+        />
       </SplitPane>
     </>
   );

@@ -553,9 +553,12 @@ export class EventService extends EventEmitter {
     this.notifyTarget(e, type);
     if (e.propagationStopped || e.propagationImmediatelyStopped) return;
 
+    // find current target in composed path
+    const index = composedPath.indexOf(e.currentTarget);
+
     // bubbling phase
     e.eventPhase = e.BUBBLING_PHASE;
-    for (let i = 1; i < composedPath.length; i++) {
+    for (let i = index + 1; i < composedPath.length; i++) {
       e.currentTarget = composedPath[i];
       this.notifyTarget(e, type);
       if (e.propagationStopped || e.propagationImmediatelyStopped) return;

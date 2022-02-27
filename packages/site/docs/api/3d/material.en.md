@@ -22,8 +22,15 @@ import {
     Plugin as Plugin3D,
 } from '@antv/g-plugin-3d';
 
-const sphereGeometry = new SphereGeometry();
-const material = new MeshPhongMaterial({
+// 等待画布初始化完成
+await canvas.ready;
+// 获取 GPU Device
+const device = renderer.getDevice();
+
+const sphereGeometry = new SphereGeometry(device, {
+    radius: 200,
+});
+const material = new MeshPhongMaterial(device, {
     map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*npAsSLPX4A4AAAAAAAAAAAAAARQnAQ',
     // 省略其他参数,
 });
@@ -36,7 +43,6 @@ const sphere = new Mesh({
         z: 0, // z 轴坐标
         fill: '#1890FF',
         opacity: 1,
-        radius: 200,
         geometry: sphereGeometry,
         material,
     },
@@ -202,34 +208,71 @@ export enum BlendFactor {
 
 ## setUniforms
 
-添加一组 Uniform
+添加一组 Uniform，需要与 Shader 中声明的变量类型匹配。
 
 参数列表：
 
--   uniforms: `Record<string, number | number[]>`
+-   uniforms: `Record<string, number | number[] | Texture>`
 
 例如 MeshPhongMaterial 在初始化时会添加如下：
 
 ```js
 material.setUniform({
+    u_Specular: [0, 0, 0],
     u_BumpScale: 5,
+    u_Map: mapTexture,
 });
-
-// 对应 shader 中的:
-// uniform float u_BumpScale;
 ```
 
-## addTexture
+对应 Shader 中的 Uniform 声明，例如 `u_Specular` 的类型为 `vec3`，在设置时就需要使用长度为 3 的数组进行赋值：
 
-添加一个纹理。
+```glsl
+layout(std140) uniform ub_MaterialParams {
+  vec3 u_Specular;
+  float u_BumpScale;
+};
 
-参数列表：
+uniform sampler2D u_Map;
+```
 
--   texture: string | TexImageSource | Texture2D 纹理内容，支持图片 URL 字符串
--   name: string 在 Shader 中的名称
+### 纹理
+
+一个特殊的情况是纹理，例如上面的例子中 `u_Map` 为采样器，在设置时就需要使用纹理：
 
 ```js
-material.addTexture('http://xxx.png', 'u_Map');
+const mapTexture = renderer.loadTexture(
+    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
+);
+material.setUniform({
+    u_Map: mapTexture,
+});
+```
+
+### 结构体
+
+例如我们为平行光定义了如下结构体：
+
+```glsl
+struct DirectionalLight {
+  vec3 direction;
+  float intensity;
+  vec3 color;
+};
+```
+
+一种特殊情况是结构体数组，例如在 Shader 中声明了一个平行光数组：
+
+```glsl
+DirectionalLight directionalLights[NUM_DIR_LIGHTS];
+```
+
+当我们想给数组中第一个元素赋值时：
+
+```js
+material.setUniform({
+    'directionalLights[0].direction': [0, 0, 0],
+    'directionalLights[0].color': [0, 0, 0],
+});
 ```
 
 # 内置材质
@@ -325,6 +368,15 @@ const basicMaterial = new MeshBasicMaterial({
 
 ## ShaderMaterial
 
+自定义材质，其中 vertex/fragmentShader 需要指定：
+
+```js
+const shaderMaterial = new ShaderMaterial(device, {
+    vertexShader: ``,
+    fragmentShader: ``,
+});
+```
+
 # 注意事项
 
 ## 尽可能复用
@@ -362,7 +414,7 @@ for (let i = 0; i < 1000; i++) {
 
 ```glsl
 // GLSL
-layout(std140, set = 0, binding = 0) uniform ub_SceneParams {
+layout(std140) uniform ub_SceneParams {
   mat4 u_ProjectionMatrix;
   mat4 u_ViewMatrix;
   vec3 u_CameraPosition;

@@ -6,6 +6,7 @@ module.exports = {
         GATrackingId: `UA-148148901-3`,
       },
     },
+    'gatsby-plugin-workerize-loader',
   ],
   siteMetadata: {
     title: 'G',

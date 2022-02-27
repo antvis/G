@@ -14,6 +14,7 @@ export interface GeometryAABBUpdater<T extends ParsedBaseStyleProps = any> {
     depth?: number;
     x: number;
     y: number;
+    z?: number;
     offsetX?: number;
     offsetY?: number;
     offsetZ?: number;

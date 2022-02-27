@@ -4,13 +4,11 @@ import {
   getFormatCompFlags,
   FormatTypeFlags,
   getFormatTypeFlags,
-  getFormatCompByteSize,
   getFormatFlags,
   FormatFlags,
 } from '..';
 import { makeStaticDataBuffer } from '../../geometries';
 import { CopyProgram } from '../../passes/Copy';
-import { TextureMapping } from '../../render';
 import { preprocessProgramObj_GLSL } from '../../shader/compiler';
 import { OpaqueBlack, OpaqueWhite } from '../../utils/color';
 import { GL } from '../constants';
@@ -77,11 +75,8 @@ import {
   nullify,
   assert,
   assertExists,
-  range,
   prependLineNo,
 } from '../utils';
-import { GPUBufferUsage } from '../webgpu/constants';
-import { translateBufferUsage } from '../webgpu/utils';
 import { Bindings_GL } from './Bindings';
 import { Buffer_GL } from './Buffer';
 import { InputLayout_GL } from './InputLayout';
@@ -323,6 +318,7 @@ export class Device_GL implements SwapChain, Device {
 
     // always have depth test enabled.
     gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.STENCIL_TEST);
 
     this.checkLimits();
 
@@ -446,6 +442,8 @@ export class Device_GL implements SwapChain, Device {
 
     const { r, g, b, a } = OpaqueWhite;
     if (isWebGL2(gl)) {
+      // gl.clearColor(0, 0, 0, 1);
+      // gl.clear(gl.COLOR_BUFFER_BIT);
       gl.clearBufferfv(gl.COLOR, 0, [r, g, b, a]);
     } else {
       this.submitBlitRenderPass();
@@ -453,6 +451,9 @@ export class Device_GL implements SwapChain, Device {
       // // gl.clearColor(r, g, b, a);
       // // gl.clear(gl.COLOR_BUFFER_BIT);
     }
+
+    // @see https://stackoverflow.com/questions/2143240/opengl-glflush-vs-glfinish
+    // gl.flush();
   }
   //#endregion
 
@@ -1264,13 +1265,13 @@ export class Device_GL implements SwapChain, Device {
 
     if (this.OES_draw_buffers_indexed !== null) {
       const attachment = this.currentMegaState.attachmentsState[slot];
-      if (attachment.channelWriteMask !== ChannelWriteMask.AllChannels) {
+      if (attachment && attachment.channelWriteMask !== ChannelWriteMask.AllChannels) {
         this.OES_draw_buffers_indexed.colorMaskiOES(slot, true, true, true, true);
         attachment.channelWriteMask = ChannelWriteMask.AllChannels;
       }
     } else {
       const attachment = this.currentMegaState.attachmentsState[0];
-      if (attachment.channelWriteMask !== ChannelWriteMask.AllChannels) {
+      if (attachment && attachment.channelWriteMask !== ChannelWriteMask.AllChannels) {
         gl.colorMask(true, true, true, true);
         attachment.channelWriteMask = ChannelWriteMask.AllChannels;
       }
@@ -1534,13 +1535,14 @@ export class Device_GL implements SwapChain, Device {
       if (
         isBlendStateNone(currentAttachmentState.rgbBlendState) &&
         isBlendStateNone(currentAttachmentState.alphaBlendState)
-      )
+      ) {
         gl.enable(gl.BLEND);
-      else if (
+      } else if (
         isBlendStateNone(newAttachmentState.rgbBlendState) &&
         isBlendStateNone(newAttachmentState.alphaBlendState)
-      )
+      ) {
         gl.disable(gl.BLEND);
+      }
     }
 
     if (blendModeChanged) {
@@ -1977,6 +1979,189 @@ export class Device_GL implements SwapChain, Device {
     }
   }
 
+  // private endPass(): void {
+  //   const gl = this.gl;
+
+  //   let didUnbindDraw = false;
+
+  //   for (let i = 0; i < this.currentColorAttachments.length; i++) {
+  //     const colorResolveFrom = this.currentColorAttachments[i];
+
+  //     if (colorResolveFrom !== null) {
+  //       const colorResolveTo = this.currentColorResolveTos[i];
+  //       let didBindRead = false;
+
+  //       if (colorResolveTo !== null) {
+  //         assert(
+  //           colorResolveFrom.width === colorResolveTo.width &&
+  //             colorResolveFrom.height === colorResolveTo.height,
+  //         );
+  //         assert(colorResolveFrom.pixelFormat === colorResolveTo.pixelFormat);
+
+  //         this.setScissorEnabled(false);
+  //         if (isWebGL2(gl)) {
+  //           gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.resolveColorReadFramebuffer);
+  //         }
+  //         if (this.resolveColorAttachmentsChanged) {
+  //           if (isWebGL2(gl)) {
+  //             this.bindFramebufferAttachment(
+  //               gl.READ_FRAMEBUFFER,
+  //               gl.COLOR_ATTACHMENT0,
+  //               colorResolveFrom,
+  //             );
+  //           }
+  //         }
+  //         didBindRead = true;
+
+  //         // Special case: Blitting to the on-screen.
+  //         if (colorResolveTo === this.scTexture) {
+  //           gl.bindFramebuffer(
+  //             isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
+  //             this.scPlatformFramebuffer,
+  //           );
+  //         } else {
+  //           gl.bindFramebuffer(
+  //             isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
+  //             this.resolveColorDrawFramebuffer,
+  //           );
+  //           if (this.resolveColorAttachmentsChanged)
+  //             gl.framebufferTexture2D(
+  //               isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
+  //               gl.COLOR_ATTACHMENT0,
+  //               gl.TEXTURE_2D,
+  //               colorResolveTo.gl_texture,
+  //               0,
+  //             );
+  //         }
+
+  //         if (isWebGL2(gl)) {
+  //           gl.blitFramebuffer(
+  //             0,
+  //             0,
+  //             colorResolveFrom.width,
+  //             colorResolveFrom.height,
+  //             0,
+  //             0,
+  //             colorResolveTo.width,
+  //             colorResolveTo.height,
+  //             gl.COLOR_BUFFER_BIT,
+  //             gl.LINEAR,
+  //           );
+  //           gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+  //         } else {
+  //           // render target texture
+  //           gl.bindTexture(GL.TEXTURE_2D, (colorResolveFrom.texture as Texture_GL).gl_texture);
+  //         }
+  //         didUnbindDraw = true;
+  //       }
+
+  //       if (!this.currentRenderPassDescriptor!.colorStore[i]) {
+  //         if (!didBindRead) {
+  //           gl.bindFramebuffer(
+  //             isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
+  //             this.resolveColorReadFramebuffer,
+  //           );
+  //           if (this.resolveColorAttachmentsChanged)
+  //             this.bindFramebufferAttachment(
+  //               isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
+  //               gl.COLOR_ATTACHMENT0,
+  //               colorResolveFrom,
+  //             );
+  //         }
+
+  //         if (isWebGL2(gl)) {
+  //           // gl.invalidateFramebuffer(gl.READ_FRAMEBUFFER, [gl.COLOR_ATTACHMENT0]);
+  //         }
+  //       }
+
+  //       gl.bindFramebuffer(isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER, null);
+  //     }
+  //   }
+
+  //   this.resolveColorAttachmentsChanged = false;
+
+  //   const depthStencilResolveFrom = this.currentDepthStencilAttachment;
+  //   if (depthStencilResolveFrom !== null) {
+  //     const depthStencilResolveTo = this.currentDepthStencilResolveTo;
+  //     let didBindRead = false;
+
+  //     if (depthStencilResolveTo !== null) {
+  //       assert(
+  //         depthStencilResolveFrom.width === depthStencilResolveTo.width &&
+  //           depthStencilResolveFrom.height === depthStencilResolveTo.height,
+  //       );
+
+  //       this.setScissorEnabled(false);
+
+  //       gl.bindFramebuffer(
+  //         isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
+  //         this.resolveDepthStencilReadFramebuffer,
+  //       );
+  //       gl.bindFramebuffer(
+  //         isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
+  //         this.resolveDepthStencilDrawFramebuffer,
+  //       );
+  //       if (this.resolveDepthStencilAttachmentsChanged) {
+  //         this.bindFramebufferDepthStencilAttachment(
+  //           isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
+  //           depthStencilResolveFrom,
+  //         );
+  //         this.bindFramebufferDepthStencilAttachment(
+  //           isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
+  //           depthStencilResolveTo,
+  //         );
+  //       }
+  //       didBindRead = true;
+
+  //       if (isWebGL2(gl)) {
+  //         gl.blitFramebuffer(
+  //           0,
+  //           0,
+  //           depthStencilResolveFrom.width,
+  //           depthStencilResolveFrom.height,
+  //           0,
+  //           0,
+  //           depthStencilResolveTo.width,
+  //           depthStencilResolveTo.height,
+  //           gl.DEPTH_BUFFER_BIT,
+  //           gl.NEAREST,
+  //         );
+  //       }
+  //       gl.bindFramebuffer(isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER, null);
+  //       didUnbindDraw = true;
+  //     }
+
+  //     if (!this.currentRenderPassDescriptor!.depthStencilStore) {
+  //       if (!didBindRead) {
+  //         gl.bindFramebuffer(
+  //           isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
+  //           this.resolveDepthStencilReadFramebuffer,
+  //         );
+  //         if (this.resolveDepthStencilAttachmentsChanged)
+  //           this.bindFramebufferDepthStencilAttachment(
+  //             isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
+  //             depthStencilResolveFrom,
+  //           );
+  //         didBindRead = true;
+  //       }
+
+  //       if (isWebGL2(gl)) {
+  //         // gl.invalidateFramebuffer(gl.READ_FRAMEBUFFER, [gl.DEPTH_STENCIL_ATTACHMENT]);
+  //       }
+  //     }
+
+  //     if (didBindRead)
+  //       gl.bindFramebuffer(isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER, null);
+
+  //     this.resolveDepthStencilAttachmentsChanged = false;
+  //   }
+
+  //   if (!didUnbindDraw) {
+  //     // If we did not unbind from a resolve, then we need to unbind our render pass draw FBO here.
+  //     gl.bindFramebuffer(isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER, null);
+  //   }
+  // }
+
   private setScissorEnabled(v: boolean): void {
     if (this.currentScissorEnabled === v) {
       return;
@@ -2015,7 +2200,7 @@ export class Device_GL implements SwapChain, Device {
     if (!this.blitRenderPipeline) {
       const vertexBuffer = makeStaticDataBuffer(
         this,
-        BufferUsage.Vertex,
+        BufferUsage.VERTEX,
         new Float32Array([-4, -4, 4, -4, 0, 4]).buffer,
       );
       const inputLayout = this.createInputLayout({
@@ -2088,7 +2273,7 @@ export class Device_GL implements SwapChain, Device {
       occlusionQueryPool: null,
     });
 
-    const { width, height } = this.getCanvas();
+    const { width, height } = this.getCanvas() as HTMLCanvasElement;
     blitRenderPass.setPipeline(this.blitRenderPipeline);
     blitRenderPass.setBindings(0, this.blitBindings, [0]);
     blitRenderPass.setInputState(this.blitInputState);

@@ -31,5 +31,11 @@ void main() {
   highp float gamma_scaled = gamma * v_GammaScale;
   highp float alpha = smoothstep(buff - gamma_scaled, buff + gamma_scaled, dist);
 
-  gl_FragColor = color * (alpha * opacity * u_Opacity);
+  opacity *= alpha * u_Opacity;
+  if (opacity < 0.001) {
+    discard;
+  }
+
+  gl_FragColor = color;
+  gl_FragColor.a *= opacity;
 }

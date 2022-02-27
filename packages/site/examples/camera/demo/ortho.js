@@ -2,7 +2,7 @@ import { Canvas, Group } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { MeshBasicMaterial, CubeGeometry, Mesh, Plugin as Plugin3D } from '@antv/g-plugin-3d';
 import { Plugin as PluginControl } from '@antv/g-plugin-control';
-import * as dat from 'dat.gui';
+import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 // create a renderer
@@ -20,27 +20,36 @@ const canvas = new Canvas({
 
 // create an orthographic camera
 const camera = canvas.getCamera();
-
 const group = new Group();
-const cubeGeometry = new CubeGeometry();
-const basicMaterial = new MeshBasicMaterial({
-  map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
-});
 
-const cube = new Mesh({
-  style: {
-    fill: '#1890FF',
-    opacity: 1,
+(async () => {
+  await canvas.ready;
+  const device = webglRenderer.getDevice();
+  const map = webglRenderer.loadTexture(
+    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
+  );
+
+  const cubeGeometry = new CubeGeometry(device, {
     width: 200,
     height: 200,
     depth: 200,
-    geometry: cubeGeometry,
-    material: basicMaterial,
-  },
-});
-cube.setPosition(300, 250, 0);
+  });
+  const basicMaterial = new MeshBasicMaterial(device, {
+    map,
+  });
 
-canvas.appendChild(cube);
+  const cube = new Mesh({
+    style: {
+      fill: '#1890FF',
+      opacity: 1,
+      geometry: cubeGeometry,
+      material: basicMaterial,
+    },
+  });
+  cube.setPosition(300, 250, 0);
+
+  canvas.appendChild(cube);
+})();
 
 // stats
 const stats = new Stats();
@@ -59,7 +68,7 @@ canvas.on('afterrender', () => {
 });
 
 // GUI
-const gui = new dat.GUI({ autoPlace: false });
+const gui = new lil.GUI({ autoPlace: false });
 $wrapper.appendChild(gui.domElement);
 const cameraFolder = gui.addFolder('orthographic projection');
 const cameraConfig = {

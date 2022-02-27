@@ -69,6 +69,20 @@ export interface SceneGraphService {
   rotateLocal: (element: INode, degrees: vec3 | number, y?: number, z?: number) => void;
   rotate: (element: INode, degrees: vec3 | number, y?: number, z?: number) => void;
   getRotation: (element: INode) => quat;
+  setRotation: (
+    element: INode,
+    rotation: quat | number,
+    y?: number,
+    z?: number,
+    w?: number,
+  ) => void;
+  setLocalRotation: (
+    element: INode,
+    rotation: quat | number,
+    y?: number,
+    z?: number,
+    w?: number,
+  ) => void;
   getLocalRotation: (element: INode) => quat;
   getWorldTransform: (element: INode, transform?: Transform) => mat4;
   getLocalTransform: (element: INode, transform?: Transform) => mat4;
@@ -266,7 +280,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
         quat.copy(parentInvertRotation, parentRot);
         quat.invert(parentInvertRotation, parentInvertRotation);
-        quat.multiply(parentInvertRotation, parentInvertRotation, rotation);
+        quat.multiply(rotation, parentInvertRotation, rotation);
         quat.multiply(transform.localRotation, rotation, rot);
         quat.normalize(transform.localRotation, transform.localRotation);
 
@@ -458,6 +472,38 @@ export class DefaultSceneGraphService implements SceneGraphService {
       this.setPosition(element, tr);
     };
   })();
+
+  setRotation = () => {
+    const parentInvertRotation = quat.create();
+    return (element: INode, rotation: quat | number, y?: number, z?: number, w?: number) => {
+      const transform = (element as Element).transformable;
+      if (typeof rotation === 'number') {
+        rotation = quat.fromValues(rotation, y, z, w);
+      }
+
+      if (element.parentNode === null || !(element.parentNode as Element).transformable) {
+        this.setLocalRotation(element, rotation);
+      } else {
+        const parentRot = this.getRotation(element.parentNode);
+
+        quat.copy(parentInvertRotation, parentRot);
+        quat.invert(parentInvertRotation, parentInvertRotation);
+        quat.multiply(transform.localRotation, parentInvertRotation, rotation);
+        quat.normalize(transform.localRotation, transform.localRotation);
+
+        this.dirtifyLocal(element, transform);
+      }
+    };
+  };
+
+  setLocalRotation(element: INode, rotation: quat | number, y?: number, z?: number, w?: number) {
+    if (typeof rotation === 'number') {
+      rotation = quat.fromValues(rotation, y, z, w);
+    }
+    const transform = (element as Element).transformable;
+    quat.copy(transform.localRotation, rotation);
+    this.dirtifyLocal(element, transform);
+  }
 
   dirtifyLocal(element: INode, transform: Transform) {
     if (!transform.localDirtyFlag) {

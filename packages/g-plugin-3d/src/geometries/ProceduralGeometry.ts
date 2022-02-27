@@ -23,7 +23,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
   /**
    * create geometry attributes
    */
-  protected abstract createTopology(mesh: Mesh<GeometryProps>): {
+  protected abstract createTopology(): {
     indices: number[];
     positions: number[];
     normals: number[];
@@ -43,6 +43,13 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
       positions[i + 1] = v[1];
       positions[i + 2] = v[2];
     }
+
+    this.updateVertexBuffer(
+      ProceduralGeometryAttributeLocation.POSITION,
+      VertexAttributeLocation.MAX,
+      0,
+      new Uint8Array(positions.buffer),
+    );
   }
 
   protected applyMa4Normal(mat: mat4, normals: ArrayBufferView) {
@@ -60,11 +67,27 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
       normals[i + 1] = v[1];
       normals[i + 2] = v[2];
     }
+
+    this.updateVertexBuffer(
+      ProceduralGeometryAttributeLocation.NORMAL,
+      VertexAttributeLocation.MAX + 1,
+      0,
+      new Uint8Array(normals.buffer),
+    );
+  }
+
+  protected rebuildPosition() {
+    const { positions } = this.createTopology();
+
+    const p = Float32Array.from(positions);
+    this.applyMa4Position(this.flipYMatrix, p);
+
+    this.dirty = true;
   }
 
   applyMat4(mat: mat4) {
-    this.applyMa4Position(mat, this.vertexBuffers[ProceduralGeometryAttributeLocation.POSITION]);
-    this.applyMa4Normal(mat, this.vertexBuffers[ProceduralGeometryAttributeLocation.NORMAL]);
+    this.applyMa4Position(mat, this.vertices[ProceduralGeometryAttributeLocation.POSITION]);
+    this.applyMa4Normal(mat, this.vertices[ProceduralGeometryAttributeLocation.NORMAL]);
     // transform tangent
   }
 
@@ -72,26 +95,11 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
     // 根据 ProceduralGeometryAttributeLocation.POSITION 计算
   }
 
-  build(meshes: Mesh<GeometryProps>[]) {
-    const positionsAll: number[] = [];
-    const normalsAll: number[] = [];
-    const uvsAll: number[] = [];
-    const uv1sAll: number[] = [];
-    const indicesAll: number[] = [];
-    let indiceStart = 0;
-    meshes.forEach((mesh) => {
-      const { indices, positions, normals, uvs, uv1s } = this.createTopology(mesh);
+  build() {
+    const { indices, positions, normals, uvs, uv1s } = this.createTopology();
 
-      positionsAll.push(...positions);
-      normalsAll.push(...normals);
-      uvsAll.push(...uvs);
-      uv1sAll.push(...uv1s);
-      indicesAll.push(...indices.map((i) => i + indiceStart));
-      indiceStart = indices.length;
-    });
-
-    this.setIndices(new Uint32Array(indicesAll));
-    this.vertexCount = indicesAll.length / meshes.length;
+    this.setIndexBuffer(new Uint32Array(indices));
+    this.vertexCount = indices.length;
     this.setVertexBuffer({
       bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
       byteStride: 4 * 3,
@@ -103,7 +111,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
           location: VertexAttributeLocation.MAX,
         },
       ],
-      data: Float32Array.from(positionsAll),
+      data: Float32Array.from(positions),
     });
     this.setVertexBuffer({
       bufferIndex: ProceduralGeometryAttributeLocation.NORMAL,
@@ -116,7 +124,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
           location: VertexAttributeLocation.MAX + 1,
         },
       ],
-      data: Float32Array.from(normalsAll),
+      data: Float32Array.from(normals),
     });
     this.setVertexBuffer({
       bufferIndex: ProceduralGeometryAttributeLocation.UV,
@@ -129,18 +137,11 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
           location: VertexAttributeLocation.MAX + 2,
         },
       ],
-      data: Float32Array.from(uvsAll),
+      data: Float32Array.from(uvs),
     });
 
     this.applyMat4(this.flipYMatrix);
-  }
 
-  update<Key extends keyof GeometryProps>(
-    index: number,
-    mesh: Mesh,
-    name: Key,
-    value: GeometryProps[Key],
-  ) {
-    return [];
+    this.dirty = true;
   }
 }

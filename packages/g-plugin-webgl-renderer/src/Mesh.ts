@@ -1,4 +1,4 @@
-import { CustomElement, DisplayObject, DisplayObjectConfig, ElementEvent } from '@antv/g';
+import { DisplayObject, DisplayObjectConfig } from '@antv/g';
 import type { ParsedBaseStyleProps, BaseStyleProps } from '@antv/g';
 import { BufferGeometry } from './geometries';
 import { Material } from './materials';
@@ -26,19 +26,18 @@ export class Mesh<GeometryProps = any> extends DisplayObject<GeometryProps & Mes
     });
 
     this.style.geometry.meshes.push(this);
-    this.style.geometry.build(this.style.geometry.meshes);
     this.style.material.meshes.push(this);
   }
 
-  getVertexBufferData(bufferIndex: number) {
-    return this.style.geometry.vertexBuffers[bufferIndex];
-  }
+  // getVertexBufferData(bufferIndex: number) {
+  //   return this.style.geometry.vertexBuffers[bufferIndex];
+  // }
 
-  setVertexBufferData(descriptor: {
-    bufferIndex: number;
-    byteOffset: number;
-    data: ArrayBufferView;
-  }) {}
+  // setVertexBufferData(descriptor: {
+  //   bufferIndex: number;
+  //   byteOffset: number;
+  //   data: ArrayBufferView;
+  // }) {}
 
   destroy() {
     super.destroy();

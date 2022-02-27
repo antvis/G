@@ -22,7 +22,6 @@
     },
     "include": [
         "src/**/*",
-        "node_modules/@webgpu/types"
     ],
     "references": [
         {

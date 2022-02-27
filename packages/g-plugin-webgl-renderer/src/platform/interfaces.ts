@@ -171,7 +171,6 @@ export enum PrimitiveTopology {
 export interface BufferDescriptor {
   viewOrSize: ArrayBufferView | number;
   usage: BufferUsage;
-  flags?: GPUBufferUsageFlags;
   hint?: BufferFrequencyHint;
 }
 
@@ -179,10 +178,16 @@ export interface BufferDescriptor {
  * @see https://www.w3.org/TR/webgpu/#buffer-usage
  */
 export enum BufferUsage {
-  Index = 0x01,
-  Vertex = 0x02,
-  Uniform = 0x03,
-  Storage = 0x04,
+  MAP_READ = 0x0001,
+  MAP_WRITE = 0x0002,
+  COPY_SRC = 0x0004,
+  COPY_DST = 0x0008,
+  INDEX = 0x0010,
+  VERTEX = 0x0020,
+  UNIFORM = 0x0040,
+  STORAGE = 0x0080,
+  INDIRECT = 0x0100,
+  QUERY_RESOLVE = 0x0200,
 }
 
 export enum BufferFrequencyHint {
@@ -317,16 +322,21 @@ export enum SamplerFormatKind {
   Depth,
 }
 
+export type BufferBindingType = 'uniform' | 'storage' | 'read-only-storage';
+
 export interface BindingLayoutSamplerDescriptor {
   dimension: TextureDimension;
   formatKind: SamplerFormatKind;
 }
 
+export interface BindingLayoutStorageDescriptor {
+  type: BufferBindingType;
+}
+
 export interface BindingLayoutDescriptor {
   numUniformBuffers?: number;
   numSamplers?: number;
-  // numReadOnlyStorageBuffers?: number;
-  // numStorageBuffers?: number;
+  storageEntries?: BindingLayoutStorageDescriptor[]; // used in compute shader
   samplerEntries?: BindingLayoutSamplerDescriptor[];
 }
 
@@ -336,6 +346,7 @@ export interface BindingsDescriptor {
   pipeline?: RenderPipeline | ComputePipeline;
   uniformBufferBindings?: BufferBinding[];
   samplerBindings?: SamplerBinding[];
+  storageBufferBindings?: BufferBinding[];
 }
 
 export interface ProgramDescriptorSimple {

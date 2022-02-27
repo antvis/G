@@ -55,16 +55,9 @@ GPU 强大的计算能力早已不局限于渲染，<strong>G</strong>eneral-<st
 
 ![image](https://user-images.githubusercontent.com/3608471/83626014-6d5b5b00-a5c7-11ea-8ec1-410cb4e5dcfc.png)
 
-除了计算，浏览器实现 WebGPU API 时封装了 Vulkan、DX12、Metal 这些现代化图形 API 而非 OpenGL，进一步降低了驱动开销，也更好地支持多线程。对于使用者而言，过去 WebGL API 中存在的种种问题也将得到解决。值得一提的是，虽然各个浏览器在 WebGPU API 上达成了一致，但在 Shader 语言的选择上分成了两派，这也是目前 WebGPU 的 Demo 大多都无法同时运行在所有浏览器中：
+除了计算，浏览器实现 WebGPU API 时封装了 Vulkan、DX12、Metal 这些现代化图形 API 而非 OpenGL，进一步降低了驱动开销，也更好地支持多线程。对于使用者而言，过去 WebGL API 中存在的种种问题也将得到解决。目前 WebGPU 的 Shader 语言已经确定为 [WGSL](https://www.w3.org/TR/WGSL)。
 
--   在 Chrome/Edge 中使用 GLSL 4.5，通过官方提供的第三方库将其转成二进制码（SPIR-V）
--   在 Safari 中使用 WSL
-
-Updated: 目前 WebGPU 的 Shader 语言已经确定为 [WGSL](https://www.w3.org/TR/WGSL)。
-
-当然这也成为了我们的项目尝试解决的问题之一。
-
-最后，虽然 WebGPU 还处于完善阶段，但也有了很多优秀的实践，例如：
+虽然 WebGPU 还处于开发中阶段，但也有了很多优秀的实践，例如：
 
 -   tensorflow.js 正在尝试 [基于 WebGPU 的 backend 实现](https://github.com/tensorflow/tfjs/tree/master/tfjs-backend-webgpu/src)。
 -   Babylon.js 正在尝试实现 [基于 WebGPU 渲染引擎](https://doc.babylonjs.com/extensions/webgpu)。
@@ -76,21 +69,3 @@ Updated: 目前 WebGPU 的 Shader 语言已经确定为 [WGSL](https://www.w3.or
 -   布局计算。G6 中的 [Fruchterman 布局算法](https://github.com/antvis/G6/blob/master/src/layout/fruchterman.ts)是一个很典型的例子，在每次迭代中每个节点的位置都需要根据其他节点位置进行计算，并且需要经历很多次迭代才能达到稳定状态，因此计算量很大。
 -   Instanced-based 可视化。Stardust.js 正是针对这个场景，例如 sanddance 效果。
 -   data transformation。在海量数据要求高交互的图表场景下，很多可并行的算法例如 reduce & scan 都可以在 GPU 中执行。P4 & P5（IEEE TRANSACTIONS ON VISUALIZATION AND COMPUTER GRAPHICS, VOL. 26, NO. 3, MARCH 2020） 在这方面有很多实践。
-
-在这些场景下，我们希望提供通用的计算能力，让前端开发者可以通过面向 GPU 编程实现自己的计算任务。因此我们面临一些挑战：
-
--   编程语言对前端开发者友好。这样在迁移已有算法时，学习成本不会太高。
--   开发者写一套代码，能够在支持 WebGPU 的各个浏览器中运行，并且尽可能兼容 WebGL。
--   更好的向前端开发者传递线程组、共享内存、同步、内存布局这些概念，写出更高效的并行算法。
-
-# 核心特性
-
-我们希望 GWebGPU 最终提供可独立使用的计算和渲染能力： ![image](https://user-images.githubusercontent.com/3608471/83701621-cd401900-a63c-11ea-9dcc-ccd3ff3d87b4.png)
-
-目前我们重点实现了一些计算特性：
-
--   Shader 语言选择 TypeScript 语法，对前端开发者友好。另外后续我们会提供 VS Code Extension，进一步提升前端开发者的开发体验。
--   WebGPU 优先，兼容 WebGL。编译生成适合不同运行环境的多份 Shader 代码，优先使用更高效的 WebGPU 实现。
--   支持预编译，减少运行时间。
-
-如果对我们的 Shader 语法感兴趣，可以进一步阅读[语法](/zh/docs/api/syntax)。

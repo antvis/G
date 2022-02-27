@@ -1,5 +1,5 @@
 import { inject, singleton, contrib, Syringe, Contribution } from 'mana-syringe';
-import { SyncHook, SyncWaterfallHook, AsyncSeriesHook, AsyncSeriesWaterfallHook } from 'tapable';
+import { SyncHook, SyncWaterfallHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from 'tapable';
 import type { DisplayObject } from '..';
 import { ElementEvent } from '../dom';
 import type { EventPosition, InteractivePointerEvent } from '../types';
@@ -47,7 +47,7 @@ export class RenderingService {
   private zIndexCounter = 0;
 
   hooks = {
-    init: new AsyncSeriesHook<[]>(),
+    init: new AsyncParallelHook<[]>(),
     prepare: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render

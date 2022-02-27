@@ -2,6 +2,97 @@
 
 以下版本号以 @antv/g 为准。
 
+## [5.0.12] - 2022-2-27
+
+-   @antv/g-canvas@1.0.11
+-   @antv/g-plugin-3d@1.0.13
+-   @antv/g-plugin-box2d@1.0.2
+-   @antv/g-plugin-physx@1.0.2
+-   @antv/g-plugin-webgl-renderer@1.0.15
+-   @antv/g-webgl@1.0.15
+-   @antv/g@5.0.12
+-   @antv/react-g@1.0.5
+
+### 新增特性
+
+-   [g] 支持通过 `displayObject.getRotation()` 等方式获取/设置旋转四元数
+-   [g] 支持创建画布时通过 `requestAnimationFrame/cancelAnimationFrame` 设置自定义函数，适用于非浏览器环境
+-   [g-plugin-box2d] 支持 Box2D 物理引擎
+
+## [5.0.11] - 2022-2-22
+
+-   @antv/g-canvas@1.0.10
+-   @antv/g-plugin-3d@1.0.12
+-   @antv/g-plugin-gpgpu@1.0.10
+-   @antv/g-plugin-html-renderer@1.0.10
+-   @antv/g-plugin-webgl-renderer@1.0.14
+-   @antv/g-webgl@1.0.14
+-   @antv/g-webgpu-compiler@1.0.10
+-   @antv/g@5.0.11
+-   @antv/react-g@1.0.4
+
+### 新增特性
+
+-   [g] 支持 OffscreenCanvas，现在 g 和 g-webgl 均可以在 WebWorker 中运行 https://github.com/antvis/g/issues/874
+-   [g] 创建 Canvas 支持传入 `canvas`，如果传入 G 不会再自动创建 `<canvas>`，因此 `container` 不再是必填项。当用户想使用已有 `<canvas>` 或在 WebWorker 中使用 OffscreenCanvas，现在 时适用
+-   [g] 创建 Canvas 支持传入 `devicePixelRatio`
+-   [g-webgl] 重构了自动合并 mesh 逻辑
+-   [g-plugin-gpgpu] Kernel 第一个参数为 device，和其他 GPU 对象例如 Geometry / Material 保持风格一致
+
+### Bug 修复
+
+-   [g-webgl] Circle / Ellipse / Rect 支持虚线描边 https://github.com/antvis/g/issues/824
+
+### 其他
+
+<!-- - 升级 mana-syringe，支持 `container.unload()` -->
+
+## [5.0.10] - 2022-2-7
+
+-   @antv/g-plugin-3d@1.0.11
+-   @antv/g-plugin-webgl-renderer@1.0.13
+-   @antv/g-webgl@1.0.13
+
+### Bug 修复
+
+-   [g-webgl] 修改了 BufferGeometry 的用法，需要使用 Device 创建
+
+### 其他
+
+-   [官网] 使用 lil-gui 替换 dat.gui https://github.com/antvis/g/issues/871
+
+## [5.0.10] - 2022-2-5
+
+-   @antv/g-canvas@1.0.9
+-   @antv/g-components@1.0.9
+-   @antv/g-math@1.0.9
+-   @antv/g-plugin-3d@1.0.10
+-   @antv/g-plugin-canvas-picker@1.0.9
+-   @antv/g-plugin-canvas-renderer@1.0.9
+-   @antv/g-plugin-control@1.0.10
+-   @antv/g-plugin-css-select@1.0.9
+-   @antv/g-plugin-dom-interaction@1.0.9
+-   @antv/g-plugin-gpgpu@1.0.9
+-   @antv/g-plugin-html-renderer@1.0.9
+-   @antv/g-plugin-svg-picker@1.0.9
+-   @antv/g-plugin-svg-renderer@1.0.9
+-   @antv/g-plugin-webgl-renderer@1.0.12
+-   @antv/g-shader-components@1.0.7
+-   @antv/g-svg@1.0.9
+-   @antv/g-webgl@1.0.12
+-   @antv/g-webgpu-compiler@1.0.9
+-   @antv/g@5.0.10
+-   @antv/react-g@1.0.3
+
+### 新增特性
+
+-   [g-plugin-gpgpu] 支持 GPGPU https://github.com/antvis/g/issues/864
+-   [g] 支持通过 `await canvas.ready;` 等待画布完成初始化工作
+
+### Bug 修复
+
+-   [g] CanvasEvent.READY 触发两次问题 https://github.com/antvis/g/issues/865
+
 ## [5.0.9] - 2022-1-24
 
 -   @antv/g-canvas@1.0.8

@@ -1,4 +1,4 @@
-import { Geometry } from '../geometries';
+// import { Geometry } from '../geometries';
 import { Format, InputLayout, InputState, VertexBufferFrequency } from '../platform';
 import { fullscreenMegaState, nArray } from '../platform/utils';
 import { DeviceProgram } from '../render/DeviceProgram';
@@ -16,74 +16,74 @@ export class CopyProgram extends DeviceProgram {
   };
 }
 
-interface RenderInput {
-  backbufferWidth: number;
-  backbufferHeight: number;
-}
+// interface RenderInput {
+//   backbufferWidth: number;
+//   backbufferHeight: number;
+// }
 
-const textureMapping = nArray(1, () => new TextureMapping());
-let geometry: Geometry;
-let inputState: InputState;
-let inputLayout: InputLayout;
+// const textureMapping = nArray(1, () => new TextureMapping());
+// let geometry: Geometry;
+// let inputState: InputState;
+// let inputLayout: InputLayout;
 
-export function useCopyPass(
-  // builder: RGGraphBuilder,
-  renderHelper: RenderHelper,
-  // renderInput: RenderInput,
-  // mainColorTargetID: number,
-): void {
-  // const mainColorResolveTextureID = builder.resolveRenderTarget(mainColorTargetID);
-  // pass.attachResolveTexture(mainColorResolveTextureID);
+// export function useCopyPass(
+//   // builder: RGGraphBuilder,
+//   renderHelper: RenderHelper,
+//   // renderInput: RenderInput,
+//   // mainColorTargetID: number,
+// ): void {
+//   // const mainColorResolveTextureID = builder.resolveRenderTarget(mainColorTargetID);
+//   // pass.attachResolveTexture(mainColorResolveTextureID);
 
-  const renderInst = renderHelper.renderInstManager.newRenderInst();
-  renderInst.setUniformBuffer(renderHelper.uniformBuffer);
-  renderInst.setAllowSkippingIfPipelineNotReady(false);
+//   const renderInst = renderHelper.renderInstManager.newRenderInst();
+//   renderInst.setUniformBuffer(renderHelper.uniformBuffer);
+//   renderInst.setAllowSkippingIfPipelineNotReady(false);
 
-  renderInst.setMegaStateFlags(fullscreenMegaState);
-  renderInst.setBindingLayouts([{ numUniformBuffers: 0, numSamplers: 1 }]);
-  renderInst.drawPrimitives(3);
+//   renderInst.setMegaStateFlags(fullscreenMegaState);
+//   renderInst.setBindingLayouts([{ numUniformBuffers: 0, numSamplers: 1 }]);
+//   renderInst.drawPrimitives(3);
 
-  const copyProgram = new CopyProgram();
-  const program = renderHelper.renderCache.createProgram(copyProgram);
+//   const copyProgram = new CopyProgram();
+//   const program = renderHelper.renderCache.createProgram(copyProgram);
 
-  renderInst.setProgram(program);
+//   renderInst.setProgram(program);
 
-  if (!geometry) {
-    geometry = new Geometry();
-    geometry.device = renderHelper.getDevice();
-    geometry.setVertexBuffer({
-      bufferIndex: 0,
-      byteStride: 4 * 2,
-      frequency: VertexBufferFrequency.PerVertex,
-      attributes: [
-        {
-          format: Format.F32_RG,
-          bufferByteOffset: 4 * 0,
-          location: 0,
-        },
-      ],
-      // rendering a fullscreen triangle instead of quad
-      // @see https://www.saschawillems.de/blog/2016/08/13/vulkan-tutorial-on-rendering-a-fullscreen-quad-without-buffers/
-      data: new Float32Array([-4, -4, 4, -4, 0, 4]),
-    });
-    geometry.vertexCount = 3;
+//   if (!geometry) {
+//     geometry = new Geometry();
+//     geometry.device = renderHelper.getDevice();
+//     geometry.setVertexBuffer({
+//       bufferIndex: 0,
+//       byteStride: 4 * 2,
+//       frequency: VertexBufferFrequency.PerVertex,
+//       attributes: [
+//         {
+//           format: Format.F32_RG,
+//           bufferByteOffset: 4 * 0,
+//           location: 0,
+//         },
+//       ],
+//       // rendering a fullscreen triangle instead of quad
+//       // @see https://www.saschawillems.de/blog/2016/08/13/vulkan-tutorial-on-rendering-a-fullscreen-quad-without-buffers/
+//       data: new Float32Array([-4, -4, 4, -4, 0, 4]),
+//     });
+//     geometry.vertexCount = 3;
 
-    inputLayout = renderHelper.getCache().createInputLayout(geometry.inputLayoutDescriptor);
+//     inputLayout = renderHelper.getCache().createInputLayout(geometry.inputLayoutDescriptor);
 
-    inputState = renderHelper.getDevice().createInputState(
-      inputLayout,
-      geometry.vertexBuffers.map((buffer) => ({
-        buffer,
-        byteOffset: 0,
-      })),
-      null,
-      program,
-    );
-  }
+//     inputState = renderHelper.getDevice().createInputState(
+//       inputLayout,
+//       geometry.vertexBuffers.map((buffer) => ({
+//         buffer,
+//         byteOffset: 0,
+//       })),
+//       null,
+//       program,
+//     );
+//   }
 
-  // textureMapping[0].texture = scope.getResolveTextureForID(mainColorResolveTextureID);
-  // renderInst.setSamplerBindingsFromTextureMappings(textureMapping);
-  renderInst.setInputLayoutAndState(inputLayout, inputState);
+//   // textureMapping[0].texture = scope.getResolveTextureForID(mainColorResolveTextureID);
+//   // renderInst.setSamplerBindingsFromTextureMappings(textureMapping);
+//   renderInst.setInputLayoutAndState(inputLayout, inputState);
 
-  renderInst.drawPrimitives(3);
-}
+//   renderInst.drawPrimitives(3);
+// }

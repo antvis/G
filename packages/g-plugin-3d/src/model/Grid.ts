@@ -97,7 +97,7 @@
 //     const halfWidth = width / 2;
 //     const halfHeight = height / 2;
 
-//     this.geometry.setIndices(new Uint32Array([0, 3, 2, 2, 1, 0]));
+//     this.geometry.setIndexBuffer(new Uint32Array([0, 3, 2, 2, 1, 0]));
 //     this.geometry.vertexCount = 6;
 //     this.geometry.setVertexBuffer({
 //       bufferIndex: 1,

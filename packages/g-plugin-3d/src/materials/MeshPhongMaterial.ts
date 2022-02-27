@@ -1,5 +1,5 @@
 import { parseColor, Tuple4Number } from '@antv/g';
-import { Format, Texture2D, VertexAttributeLocation } from '@antv/g-plugin-webgl-renderer';
+import { Device, Texture, VertexAttributeLocation } from '@antv/g-plugin-webgl-renderer';
 import { MeshBasicMaterial, IMeshBasicMaterial } from './MeshBasicMaterial';
 import vert from '../shaders/material.phong.vert';
 import frag from '../shaders/material.phong.frag';
@@ -8,8 +8,8 @@ export interface IMeshPhongMaterial extends IMeshBasicMaterial {
   emissive: string;
   shininess: number;
   specular: string;
-  specularMap: string | TexImageSource | Texture2D;
-  bumpMap: string | TexImageSource | Texture2D;
+  specularMap: Texture;
+  bumpMap: Texture;
   bumpScale: number;
   doubleSide: boolean;
 }
@@ -71,11 +71,9 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
     }
 
     this.defines.USE_SPECULARMAP = !!v;
-    if (v) {
-      this.addTexture(v, Uniform.SPECULAR_MAP, SamplerLocation.SPECULAR_MAP);
-    } else {
-      this.removeTexture(Uniform.SPECULAR_MAP);
-    }
+    this.setUniforms({
+      [Uniform.SPECULAR_MAP]: v,
+    });
   }
 
   get bumpMap() {
@@ -88,17 +86,10 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
     }
 
     this.defines.USE_BUMPMAP = !!v;
-    if (v) {
-      this.addTexture(v, Uniform.BUMP_MAP, SamplerLocation.BUMP_MAP);
-      this.setUniforms({
-        [Uniform.BUMP_SCALE]: this.bumpScale,
-      });
-    } else {
-      this.removeTexture(Uniform.BUMP_MAP);
-      this.setUniforms({
-        [Uniform.BUMP_SCALE]: null,
-      });
-    }
+    this.setUniforms({
+      [Uniform.BUMP_MAP]: v,
+      [Uniform.BUMP_SCALE]: this.bumpScale,
+    });
   }
   get bumpScale() {
     return this.props.bumpScale;
@@ -118,8 +109,8 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
     this.defines.USE_DOUBLESIDE = v;
   }
 
-  constructor(props?: Partial<IMeshPhongMaterial>) {
-    super({
+  constructor(device: Device, props?: Partial<IMeshPhongMaterial>) {
+    super(device, {
       vertexShader: vert,
       fragmentShader: frag,
       emissive: 'black',

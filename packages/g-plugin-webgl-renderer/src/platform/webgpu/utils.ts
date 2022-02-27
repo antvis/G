@@ -1,8 +1,6 @@
-import { GPUBufferUsage, GPUTextureUsage } from './constants';
+import { GPUTextureUsage } from './constants';
 import {
-  SwapChain,
   Buffer,
-  BufferUsage,
   Sampler,
   WrapMode,
   TexFilterMode,
@@ -29,14 +27,6 @@ import { Format, FormatTypeFlags, getFormatByteSize, getFormatTypeFlags } from '
 import type { Buffer_WebGPU } from './Buffer';
 import type { Sampler_WebGPU } from './Sampler';
 import type { QueryPool_WebGPU } from './QueryPool';
-
-export function translateBufferUsage(usage: BufferUsage): GPUBufferUsageFlags {
-  if (usage === BufferUsage.Index) return GPUBufferUsage.INDEX;
-  else if (usage === BufferUsage.Vertex) return GPUBufferUsage.VERTEX;
-  else if (usage === BufferUsage.Uniform) return GPUBufferUsage.UNIFORM;
-  else if (usage === BufferUsage.Storage) return GPUBufferUsage.STORAGE;
-  else throw 'whoops';
-}
 
 export function translateTextureUsage(usage: TextureUsage): GPUTextureUsageFlags {
   let gpuUsage: GPUTextureUsageFlags = 0;

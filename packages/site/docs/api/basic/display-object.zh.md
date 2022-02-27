@@ -1058,7 +1058,7 @@ circle.scaleLocal(2); // number
 
 ## 旋转
 
-在 3D 场景中，旋转可以用矩阵、轴角、欧拉角和四元数表示，它们彼此之间可以互相转换。虽然考虑到未来的扩展性，在 G 内部实现中我们使用了四元数，但目前我们仅提供欧拉角的 API。
+在 3D 场景中，旋转可以用矩阵、轴角、欧拉角和四元数表示，它们彼此之间可以互相转换。虽然考虑到未来的扩展性，在 G 内部实现中我们使用了四元数。
 
 | 名称 | 参数 | 返回值 | 备注 |
 | --- | --- | --- | --- |
@@ -1066,8 +1066,12 @@ circle.scaleLocal(2); // number
 | rotate | `number` | 无 | 在 **世界坐标系** 下，旋转一定的欧拉角 |
 | setEulerAngles | `number` | 无 | 设置 **世界坐标系** 下的欧拉角 |
 | setLocalEulerAngles | `number` | 无 | 设置 **局部坐标系** 下的欧拉角 |
+| setLocalRotation | `quat` | 无 | 设置 **局部坐标系** 下的四元数 |
+| setRotation | `quat` | 无 | 设置 **世界坐标系** 下的四元数 |
 | getEulerAngles | 无 | `number` | 获取 **世界坐标系** 下的欧拉角 |
 | getLocalEulerAngles | 无 | `number` | 获取 **局部坐标系** 下的欧拉角 |
+| getLocalRotation | 无 | `quat` | 获取 **局部坐标系** 下的四元数 |
+| getRotation | 无 | `quat` | 获取 **世界坐标系** 下的四元数 |
 
 ## 设置缩放和旋转中心
 

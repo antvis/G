@@ -13,6 +13,8 @@ import {
   FogType,
   Plugin as Plugin3D,
   CullMode,
+  ProceduralGeometryAttributeLocation,
+  VertexAttributeLocation,
 } from '@antv/g-plugin-3d';
 import { Plugin as PluginControl } from '@antv/g-plugin-control';
 
@@ -59,164 +61,181 @@ const App = function MusicViz() {
       }),
     );
 
-    const sphereGeometry = new SphereGeometry();
-    const groundGeometry = new PlaneGeometry();
-    const skyGeometry = new PlaneGeometry();
-    const planeMaterial = new MeshBasicMaterial({
-      wireframe: true,
-      wireframeColor: 'purple',
-      cullMode: CullMode.None,
-    });
-    const basicMaterial = new MeshBasicMaterial({
-      wireframe: true,
-      wireframeColor: '#ff00ee',
-    });
+    (async () => {
+      await canvas.ready;
 
-    const sphere = new Mesh({
-      style: {
-        x: 300,
-        y: 200,
-        fill: '#120f6c',
-        opacity: 1,
+      const device = renderer.getDevice();
+
+      const sphereGeometry = new SphereGeometry(device, {
         radius: 100,
         latitudeBands: 32,
         longitudeBands: 32,
-        geometry: sphereGeometry,
-        material: basicMaterial,
-      },
-    });
-    canvas.appendChild(sphere);
-
-    const ground = new Mesh({
-      style: {
-        x: 300,
-        y: 250,
-        fill: '#120f6c',
-        opacity: 1,
+      });
+      const groundGeometry = new PlaneGeometry(device, {
         width: 800,
         depth: 800,
         widthSegments: 20,
         depthSegments: 20,
-        geometry: groundGeometry,
-        material: planeMaterial,
-      },
-    });
-    canvas.appendChild(ground);
-
-    const sky = new Mesh({
-      style: {
-        x: 300,
-        y: 0,
-        fill: 'white',
-        opacity: 1,
+      });
+      const skyGeometry = new PlaneGeometry(device, {
         width: 800,
         depth: 800,
         widthSegments: 20,
         depthSegments: 20,
-        geometry: skyGeometry,
-        material: planeMaterial,
-      },
-    });
-    canvas.appendChild(sky);
+      });
+      const planeMaterial = new MeshBasicMaterial(device, {
+        wireframe: true,
+        wireframeColor: 'purple',
+        cullMode: CullMode.None,
+      });
+      const basicMaterial = new MeshBasicMaterial(device, {
+        wireframe: true,
+        wireframeColor: '#ff00ee',
+      });
 
-    canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
-      if (stats) {
-        stats.update();
-      }
+      const sphere = new Mesh({
+        style: {
+          x: 300,
+          y: 200,
+          fill: '#120f6c',
+          opacity: 1,
+          geometry: sphereGeometry,
+          material: basicMaterial,
+        },
+      });
+      canvas.appendChild(sphere);
 
-      canvas.document.documentElement.setOrigin(300, 250, 0);
-      canvas.document.documentElement.rotate(0, 0.2, 0);
+      const ground = new Mesh({
+        style: {
+          x: 300,
+          y: 250,
+          fill: '#120f6c',
+          opacity: 1,
+          geometry: groundGeometry,
+          material: planeMaterial,
+        },
+      });
+      canvas.appendChild(ground);
 
-      if (analyser && dataArray) {
-        analyser.getByteFrequencyData(dataArray);
+      const sky = new Mesh({
+        style: {
+          x: 300,
+          y: 0,
+          fill: 'white',
+          opacity: 1,
+          geometry: skyGeometry,
+          material: planeMaterial,
+        },
+      });
+      canvas.appendChild(sky);
 
-        const lowerHalfArray = dataArray.slice(0, dataArray.length / 2 - 1);
-        const upperHalfArray = dataArray.slice(dataArray.length / 2 - 1, dataArray.length - 1);
+      canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+        if (stats) {
+          stats.update();
+        }
 
-        const overallAvg = avg(dataArray);
-        const lowerMax = max(lowerHalfArray);
-        const lowerAvg = avg(lowerHalfArray);
-        const upperMax = max(upperHalfArray);
-        const upperAvg = avg(upperHalfArray);
+        canvas.document.documentElement.setOrigin(300, 250, 0);
+        canvas.document.documentElement.rotate(0, 0.2, 0);
 
-        const lowerMaxFr = lowerMax / lowerHalfArray.length;
-        const lowerAvgFr = lowerAvg / lowerHalfArray.length;
-        const upperMaxFr = upperMax / upperHalfArray.length;
-        const upperAvgFr = upperAvg / upperHalfArray.length;
+        if (analyser && dataArray) {
+          analyser.getByteFrequencyData(dataArray);
 
-        makeRoughGround(groundGeometry, modulate(lowerMaxFr, 0, 1, 0.5, 4));
-        makeRoughGround(skyGeometry, modulate(upperAvgFr, 0, 1, 0.5, 4));
-        makeRoughBall(
-          sphereGeometry,
-          modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8),
-          modulate(upperAvgFr, 0, 1, 0, 4),
+          const lowerHalfArray = dataArray.slice(0, dataArray.length / 2 - 1);
+          const upperHalfArray = dataArray.slice(dataArray.length / 2 - 1, dataArray.length - 1);
+
+          const overallAvg = avg(dataArray);
+          const lowerMax = max(lowerHalfArray);
+          const lowerAvg = avg(lowerHalfArray);
+          const upperMax = max(upperHalfArray);
+          const upperAvg = avg(upperHalfArray);
+
+          const lowerMaxFr = lowerMax / lowerHalfArray.length;
+          const lowerAvgFr = lowerAvg / lowerHalfArray.length;
+          const upperMaxFr = upperMax / upperHalfArray.length;
+          const upperAvgFr = upperAvg / upperHalfArray.length;
+
+          makeRoughGround(groundGeometry, modulate(lowerMaxFr, 0, 1, 0.5, 4));
+          makeRoughGround(skyGeometry, modulate(upperAvgFr, 0, 1, 0.5, 4));
+          makeRoughBall(
+            sphereGeometry,
+            modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8),
+            modulate(upperAvgFr, 0, 1, 0, 4),
+          );
+        }
+      });
+
+      const makeRoughGround = (geometry, distortionFr) => {
+        const bufferIndex = ProceduralGeometryAttributeLocation.POSITION;
+        const positions = geometry.vertices[bufferIndex];
+
+        for (let i = 0; i < positions.length; i += 3) {
+          const x = positions[i];
+          const y = positions[i + 1];
+          const z = positions[i + 2];
+
+          const amp = 2;
+          const time = window.performance.now();
+          const distance = noise.noise2D(x + time * 0.003, z + time * 0.001) * distortionFr * amp;
+          positions[i + 1] = distance;
+        }
+
+        geometry.updateVertexBuffer(
+          bufferIndex,
+          VertexAttributeLocation.MAX,
+          0,
+          new Uint8Array(positions.buffer),
         );
-      }
-    });
+      };
 
-    const makeRoughGround = (geometry, distortionFr) => {
-      const bufferIndex = 1;
-      const positions = geometry.vertexBuffers[bufferIndex];
+      const makeRoughBall = (geometry, bassFr, treFr) => {
+        const bufferIndex = ProceduralGeometryAttributeLocation.POSITION;
+        const positions = geometry.vertices[bufferIndex];
 
-      for (let i = 0; i < positions.length; i += 3) {
-        const x = positions[i];
-        const y = positions[i + 1];
-        const z = positions[i + 2];
+        for (let i = 0; i < positions.length; i += 3) {
+          const x = positions[i];
+          const y = positions[i + 1];
+          const z = positions[i + 2];
 
-        const amp = 2;
-        const time = window.performance.now();
-        const distance = noise.noise2D(x + time * 0.003, z + time * 0.001) * distortionFr * amp;
-        positions[i + 1] = distance;
-      }
+          const amp = 7;
+          const time = window.performance.now();
+          const radius = 100;
+          const vec3 = [x, y, z];
 
-      geometry.updateVertexBufferData({
-        bufferIndex,
-        data: positions,
-      });
-    };
+          normalize(vec3, vec3);
+          const rf = 0.0001;
+          const distance =
+            radius +
+            bassFr +
+            noise.noise3D(
+              vec3[0] + time * rf * 7,
+              vec3[1] + time * rf * 8,
+              vec3[2] + time * rf * 9,
+            ) *
+              amp *
+              treFr;
 
-    const makeRoughBall = (geometry, bassFr, treFr) => {
-      const bufferIndex = 1;
-      const positions = geometry.vertexBuffers[bufferIndex];
+          positions[i] = vec3[0] * distance;
+          positions[i + 1] = vec3[1] * distance;
+          positions[i + 2] = vec3[2] * distance;
+        }
 
-      for (let i = 0; i < positions.length; i += 3) {
-        const x = positions[i];
-        const y = positions[i + 1];
-        const z = positions[i + 2];
+        geometry.updateVertexBuffer(
+          bufferIndex,
+          VertexAttributeLocation.MAX,
+          0,
+          new Uint8Array(positions.buffer),
+        );
+      };
 
-        const amp = 7;
-        const time = window.performance.now();
-        const radius = 100;
-        const vec3 = [x, y, z];
-
-        normalize(vec3, vec3);
-        const rf = 0.0001;
-        const distance =
-          radius +
-          bassFr +
-          noise.noise3D(vec3[0] + time * rf * 7, vec3[1] + time * rf * 8, vec3[2] + time * rf * 9) *
-            amp *
-            treFr;
-
-        positions[i] = vec3[0] * distance;
-        positions[i + 1] = vec3[1] * distance;
-        positions[i + 2] = vec3[2] * distance;
-      }
-
-      geometry.updateVertexBufferData({
-        bufferIndex,
-        data: positions,
-      });
-    };
-
-    const stats = new Stats();
-    stats.showPanel(0);
-    const $stats = stats.dom;
-    $stats.style.position = 'absolute';
-    $stats.style.left = '0px';
-    $stats.style.top = '0px';
-    const $wrapper = containerRef.current;
-    $wrapper.appendChild($stats);
+      const stats = new Stats();
+      stats.showPanel(0);
+      const $stats = stats.dom;
+      $stats.style.position = 'absolute';
+      $stats.style.left = '0px';
+      $stats.style.top = '0px';
+      const $wrapper = containerRef.current;
+      $wrapper.appendChild($stats);
+    })();
   }, []);
 
   const handleFileChanged = (e) => {

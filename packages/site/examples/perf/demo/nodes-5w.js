@@ -2,7 +2,7 @@ import { Circle, Line, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
-import * as dat from 'dat.gui';
+import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 import Hammer from 'hammerjs';
 
@@ -140,7 +140,7 @@ hammer.on('pan', (ev) => {
 bindWheelHandler();
 
 // GUI
-const gui = new dat.GUI({ autoPlace: false });
+const gui = new lil.GUI({ autoPlace: false });
 $wrapper.appendChild(gui.domElement);
 const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {

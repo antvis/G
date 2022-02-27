@@ -15,7 +15,7 @@ order: 3
 最终示例：
 
 -   [官网示例](/zh/examples/animation#lifecycle)
--   [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-tai-yang-xi-li-zi-1bphz)
+-   [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-dong-hua-li-zi-sfphx?file=/index.js)
 
 # 使用 Keyframe 定义动画
 

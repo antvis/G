@@ -63,6 +63,6 @@ void main(){
     alpha *= max(0.0, right - left);
   }
 
-  gl_FragColor = u_StrokeColor * alpha;
-  gl_FragColor.a = gl_FragColor.a * u_Opacity * u_StrokeOpacity;
+  gl_FragColor = u_StrokeColor;
+  gl_FragColor.a *= alpha * u_Opacity * u_StrokeOpacity;
 }

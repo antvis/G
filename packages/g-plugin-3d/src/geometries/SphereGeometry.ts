@@ -1,5 +1,5 @@
-import { Mesh, VertexAttributeLocation } from '@antv/g-plugin-webgl-renderer';
-import { ProceduralGeometry, ProceduralGeometryAttributeLocation } from './ProceduralGeometry';
+import { Device } from '@antv/g-plugin-webgl-renderer';
+import { ProceduralGeometry } from './ProceduralGeometry';
 
 export interface SphereGeometryProps {
   radius: number;
@@ -8,7 +8,46 @@ export interface SphereGeometryProps {
 }
 
 export class SphereGeometry extends ProceduralGeometry<SphereGeometryProps> {
-  createTopology(mesh: Mesh<SphereGeometryProps>) {
+  constructor(device: Device, props: Partial<SphereGeometryProps> = {}) {
+    super(device, {
+      radius: 0.5,
+      latitudeBands: 16,
+      longitudeBands: 16,
+      ...props,
+    });
+  }
+
+  get radius() {
+    return this.props.radius;
+  }
+  set radius(v) {
+    if (this.props.radius !== v) {
+      this.props.radius = v;
+      this.build();
+    }
+  }
+
+  get latitudeBands() {
+    return this.props.latitudeBands;
+  }
+  set latitudeBands(v) {
+    if (this.props.latitudeBands !== v) {
+      this.props.latitudeBands = v;
+      this.build();
+    }
+  }
+
+  get longitudeBands() {
+    return this.props.longitudeBands;
+  }
+  set longitudeBands(v) {
+    if (this.props.longitudeBands !== v) {
+      this.props.longitudeBands = v;
+      this.build();
+    }
+  }
+
+  createTopology() {
     let lon: number;
     let lat: number;
     let theta: number;
@@ -25,7 +64,7 @@ export class SphereGeometry extends ProceduralGeometry<SphereGeometryProps> {
     let u: number;
     let v: number;
 
-    const { radius = 0.5, latitudeBands = 16, longitudeBands = 16 } = mesh.style;
+    const { radius = 0.5, latitudeBands = 16, longitudeBands = 16 } = this.props;
 
     const positions: number[] = [];
     const normals: number[] = [];
@@ -72,29 +111,5 @@ export class SphereGeometry extends ProceduralGeometry<SphereGeometryProps> {
       uvs,
       uv1s: uvs,
     };
-  }
-
-  update<Key extends keyof SphereGeometryProps>(
-    index: number,
-    mesh: Mesh,
-    name: Key,
-    value: SphereGeometryProps[Key],
-  ) {
-    if (name === 'radius') {
-      const { positions } = this.createTopology(mesh);
-
-      const p = Float32Array.from(positions);
-      this.applyMa4Position(this.flipYMatrix, p);
-
-      return [
-        {
-          bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
-          location: VertexAttributeLocation.MAX,
-          data: p,
-        },
-      ];
-    }
-
-    return [];
   }
 }

@@ -1,5 +1,3 @@
-// tslint:disable-next-line:no-reference
-/// <reference path="./glsl.d.ts" />
 import { DisplayObject, RendererPlugin, globalContainer } from '@antv/g';
 import { Module, Syringe } from 'mana-syringe';
 import {
@@ -14,7 +12,6 @@ import {
   FogType,
   Format,
   FrontFaceMode,
-  GPUBufferUsage,
   GPUMapMode,
   GPUTextureUsage,
   Light,
@@ -22,11 +19,11 @@ import {
   Mesh,
   MipFilterMode,
   PrimitiveTopology,
-  Sampler,
   SamplerFormatKind,
   ShaderMaterial,
   StencilOp,
-  Texture2D,
+  TextureDimension,
+  TextureUsage,
   GL,
   VertexAttributeLocation,
   VertexBufferFrequency,
@@ -48,7 +45,6 @@ export {
   FogType,
   Format,
   FrontFaceMode,
-  GPUBufferUsage,
   GPUMapMode,
   GPUTextureUsage,
   Light,
@@ -56,11 +52,11 @@ export {
   Mesh,
   MipFilterMode,
   PrimitiveTopology,
-  Sampler,
   SamplerFormatKind,
   ShaderMaterial,
   StencilOp,
-  Texture2D,
+  TextureDimension,
+  TextureUsage,
   GL,
   VertexAttributeLocation,
   VertexBufferFrequency,

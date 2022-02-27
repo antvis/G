@@ -1,6 +1,13 @@
 import { PARSED_COLOR_TYPE, OffscreenCanvasCreator, LinearGradient, RadialGradient } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-import { Device, Texture, TextureDescriptor } from './platform';
+import {
+  Device,
+  Format,
+  Texture,
+  TextureDescriptor,
+  TextureDimension,
+  TextureUsage,
+} from './platform';
 
 export type GradientParams = (LinearGradient | RadialGradient) & {
   width: number;
@@ -19,24 +26,37 @@ export class TexturePool {
   getOrCreateTexture(
     device: Device,
     src: string | TexImageSource,
-    descriptor: TextureDescriptor,
-    successCallback: Function,
+    descriptor?: TextureDescriptor,
+    successCallback?: Function,
   ): Texture {
     // @ts-ignore
     const id = typeof src === 'string' ? src : src.src || '';
 
     if (!this.textureCache[id]) {
       this.textureCache[id] = device.createTexture({
-        ...descriptor,
+        pixelFormat: Format.U8_RGBA_NORM,
+        width: 1,
+        height: 1,
+        depth: 1,
+        numLevels: 1,
+        dimension: TextureDimension.n2D,
+        usage: TextureUsage.Sampled,
+        pixelStore: {
+          unpackFlipY: false,
+        },
         immutable: false,
+        ...descriptor,
       });
       if (typeof src !== 'string') {
-        this.textureCache[id].setImageData(src, 0);
+        this.textureCache[id].setImageData(src);
       } else {
         const image = new window.Image();
         image.onload = () => {
-          this.textureCache[id].setImageData(image, 0);
-          successCallback();
+          this.textureCache[id].setImageData(image);
+
+          if (successCallback) {
+            successCallback();
+          }
         };
         image.onerror = () => {};
         image.crossOrigin = 'Anonymous';
@@ -83,6 +103,10 @@ export class TexturePool {
 
       this.gradientCache[key] = gradient;
     }
+
+    // used as canvas' ID
+    // @ts-ignore
+    canvas.src = key;
 
     if (gradient) {
       context.fillStyle = gradient;

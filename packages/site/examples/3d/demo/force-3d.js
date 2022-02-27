@@ -9,7 +9,7 @@ import {
   Plugin as Plugin3D,
 } from '@antv/g-plugin-3d';
 import { Plugin as PluginControl } from '@antv/g-plugin-control';
-import * as dat from 'dat.gui';
+import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 import { forceLink, forceSimulation, forceManyBody, forceCenter } from 'd3-force-3d';
 
@@ -1626,101 +1626,109 @@ const canvas = new Canvas({
   renderer,
 });
 
-// create a sphere geometry
-const sphereGeometry = new SphereGeometry();
-// create a material with Phong lighting model
-const material = new MeshPhongMaterial({
-  shininess: 30,
-});
+(async () => {
+  // wait for canvas' initialization complete
+  await canvas.ready;
+  // use GPU device
+  const device = renderer.getDevice();
 
-// @see https://antv.vision/en/docs/specification/language/palette#%E5%88%86%E7%B1%BB%E8%89%B2%E6%9D%BF
-const colorPalette = [
-  '#5B8FF9',
-  '#CDDDFD',
-  '#61DDAA',
-  '#CDF3E4',
-  '#65789B',
-  '#F6BD16',
-  '#7262fd',
-  '#78D3F8',
-  '#9661BC',
-  '#F6903D',
-  '#008685',
-  '#F08BB4',
-];
-dataset.nodes.forEach((node) => {
-  const fill = colorPalette[node.group];
-  // create a mesh
-  const sphere = new Mesh({
+  // create a sphere geometry
+  const sphereGeometry = new SphereGeometry(device, {
+    radius: 10,
+    latitudeBands: 32,
+    longitudeBands: 32,
+  });
+  // create a material with Phong lighting model
+  const material = new MeshPhongMaterial(device, {
+    shininess: 30,
+  });
+
+  // @see https://antv.vision/en/docs/specification/language/palette#%E5%88%86%E7%B1%BB%E8%89%B2%E6%9D%BF
+  const colorPalette = [
+    '#5B8FF9',
+    '#CDDDFD',
+    '#61DDAA',
+    '#CDF3E4',
+    '#65789B',
+    '#F6BD16',
+    '#7262fd',
+    '#78D3F8',
+    '#9661BC',
+    '#F6903D',
+    '#008685',
+    '#F08BB4',
+  ];
+  dataset.nodes.forEach((node) => {
+    const fill = colorPalette[node.group];
+    // create a mesh
+    const sphere = new Mesh({
+      style: {
+        fill,
+        opacity: 1,
+        geometry: sphereGeometry,
+        material,
+        cursor: 'pointer',
+      },
+    });
+    sphere.setPosition(node.x + 300, node.y + 250, node.z);
+    canvas.appendChild(sphere);
+
+    sphere.addEventListener('mouseenter', () => {
+      sphere.style.fill = 'red';
+    });
+    sphere.addEventListener('mouseleave', () => {
+      sphere.style.fill = fill;
+    });
+  });
+
+  dataset.links.forEach((edge) => {
+    const { source, target } = edge;
+    const line = new Line({
+      style: {
+        x1: source.x + 300,
+        y1: source.y + 250,
+        z1: source.z,
+        x2: target.x + 300,
+        y2: target.y + 250,
+        z2: target.z,
+        stroke: 'black',
+        lineWidth: 2,
+        opacity: 0.5,
+        isBillboard: true, // 始终面向屏幕
+      },
+    });
+    canvas.appendChild(line);
+  });
+
+  // add a directional light into scene
+  const light = new DirectionalLight({
     style: {
-      fill,
-      opacity: 1,
-      radius: 10,
-      latitudeBands: 32,
-      longitudeBands: 32,
-      geometry: sphereGeometry,
-      material,
-      cursor: 'pointer',
+      fill: 'white',
+      direction: [-1, 0, 1],
     },
   });
-  sphere.setPosition(node.x + 300, node.y + 250, node.z);
-  canvas.appendChild(sphere);
+  canvas.appendChild(light);
 
-  sphere.addEventListener('mouseenter', () => {
-    sphere.style.fill = 'red';
+  // adjust camera's position
+  const camera = canvas.getCamera();
+  camera.setPerspective(0.1, 1000, 45, 600 / 500);
+
+  // stats
+  const stats = new Stats();
+  stats.showPanel(0);
+  const $stats = stats.dom;
+  $stats.style.position = 'absolute';
+  $stats.style.left = '0px';
+  $stats.style.top = '0px';
+  const $wrapper = document.getElementById('container');
+  $wrapper.appendChild($stats);
+  canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+    if (stats) {
+      stats.update();
+    }
   });
-  sphere.addEventListener('mouseleave', () => {
-    sphere.style.fill = fill;
-  });
-});
 
-dataset.links.forEach((edge) => {
-  const { source, target } = edge;
-  const line = new Line({
-    style: {
-      x1: source.x + 300,
-      y1: source.y + 250,
-      z1: source.z,
-      x2: target.x + 300,
-      y2: target.y + 250,
-      z2: target.z,
-      stroke: 'black',
-      lineWidth: 2,
-      opacity: 0.5,
-      isBillboard: true, // 始终面向屏幕
-    },
-  });
-  canvas.appendChild(line);
-});
-
-// add a directional light into scene
-const light = new DirectionalLight({
-  style: {
-    fill: 'white',
-    direction: [-1, 0, 1],
-  },
-});
-canvas.appendChild(light);
-
-// adjust camera's position
-const camera = canvas.getCamera();
-camera.setPerspective(0.1, 1000, 45, 600 / 500);
-
-// stats
-const stats = new Stats();
-stats.showPanel(0);
-const $stats = stats.dom;
-$stats.style.position = 'absolute';
-$stats.style.left = '0px';
-$stats.style.top = '0px';
-const $wrapper = document.getElementById('container');
-$wrapper.appendChild($stats);
-canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
-  if (stats) {
-    stats.update();
-  }
-});
-
-// GUI
-const gui = new dat.GUI({ autoPlace: false });
-$wrapper.appendChild(gui.domElement);
+  // GUI
+  const gui = new lil.GUI({ autoPlace: false });
+  $wrapper.appendChild(gui.domElement);
+})();

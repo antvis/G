@@ -2,30 +2,48 @@ import { CanvasConfig, ContextService } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { isString } from '@antv/util';
 import { setDOMSize } from './utils/dom';
+import { isBrowser } from './utils/browser';
 
 @singleton({ token: ContextService })
 export class WebGLContextService implements ContextService<WebGLRenderingContext> {
   private $container: HTMLElement | null;
-  private $canvas: HTMLCanvasElement | null;
+  private $canvas: HTMLCanvasElement | OffscreenCanvas | null;
+  private dpr: number;
   private context: WebGLRenderingContext | null;
 
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
   init() {
-    const { container } = this.canvasConfig;
+    const { container, canvas, devicePixelRatio } = this.canvasConfig;
 
-    // create container
-    this.$container = isString(container) ? document.getElementById(container) : container;
-    if (this.$container) {
-      // create canvas
-      const $canvas = document.createElement('canvas');
-      this.$container.appendChild($canvas);
-      if (!this.$container.style.position) {
-        this.$container.style.position = 'relative';
+    if (canvas) {
+      this.$canvas = canvas;
+
+      if (container && (canvas as HTMLCanvasElement).parentElement !== container) {
+        (container as HTMLElement).appendChild(canvas as HTMLCanvasElement);
       }
-      this.$canvas = $canvas;
+
+      this.$container = (canvas as HTMLCanvasElement).parentElement;
+      this.canvasConfig.container = this.$container;
+    } else if (container) {
+      // create container
+      this.$container = isString(container) ? document.getElementById(container) : container;
+      if (this.$container) {
+        // create canvas
+        const $canvas = document.createElement('canvas');
+        this.$container.appendChild($canvas);
+        if (!this.$container.style.position) {
+          this.$container.style.position = 'relative';
+        }
+        this.$canvas = $canvas;
+      }
     }
+
+    // use user-defined dpr first
+    let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
+    dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
+    this.dpr = dpr;
   }
 
   getDomElement() {
@@ -41,7 +59,9 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
   }
 
   destroy() {
+    // @ts-ignore
     if (this.$container && this.$canvas && this.$canvas.parentNode) {
+      // @ts-ignore
       this.$container.removeChild(this.$canvas);
     }
   }
@@ -60,13 +80,11 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
   }
 
   getDPR() {
-    let dpr = window.devicePixelRatio || 1;
-    dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
-    return dpr;
+    return this.dpr;
   }
 
   applyCursorStyle(cursor: string) {
-    if (this.$container) {
+    if (this.$container && this.$container.style) {
       this.$container.style.cursor = cursor;
     }
   }

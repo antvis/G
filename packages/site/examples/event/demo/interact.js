@@ -3,7 +3,7 @@ import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Plugin } from '@antv/g-plugin-css-select';
-import * as dat from 'dat.gui';
+import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 import interact from 'interactjs';
 
@@ -260,7 +260,7 @@ canvas.on('afterrender', () => {
 });
 
 // GUI
-const gui = new dat.GUI({ autoPlace: false });
+const gui = new lil.GUI({ autoPlace: false });
 $wrapper.appendChild(gui.domElement);
 const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
