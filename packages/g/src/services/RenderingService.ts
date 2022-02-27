@@ -1,11 +1,5 @@
 import { inject, singleton, contrib, Syringe, Contribution } from 'mana-syringe';
-import {
-  SyncHook,
-  SyncWaterfallHook,
-  AsyncParallelHook,
-  AsyncSeriesHook,
-  AsyncSeriesWaterfallHook,
-} from 'tapable';
+import { SyncHook, SyncWaterfallHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from 'tapable';
 import type { DisplayObject } from '..';
 import { ElementEvent } from '../dom';
 import type { EventPosition, InteractivePointerEvent } from '../types';
