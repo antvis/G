@@ -23,6 +23,8 @@ export default {
     'g-plugin-3d',
     'g-plugin-control',
     'g-plugin-gpgpu',
+    'g-plugin-physx',
+    'g-plugin-box2d',
     'g-webgpu-compiler',
     'g-components',
     'react-g',

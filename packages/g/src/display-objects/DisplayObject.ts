@@ -439,6 +439,16 @@ export class DisplayObject<
     return this;
   }
 
+  setRotation(rotation: quat | number, y?: number, z?: number, w?: number) {
+    this.sceneGraphService.setRotation(this, rotation, y, z, w);
+    return this;
+  }
+
+  setLocalRotation(rotation: quat | number, y?: number, z?: number, w?: number) {
+    this.sceneGraphService.setLocalRotation(this, rotation, y, z, w);
+    return this;
+  }
+
   getRotation(): quat {
     return this.sceneGraphService.getRotation(this);
   }

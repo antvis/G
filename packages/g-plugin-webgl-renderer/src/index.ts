@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime';
-import { RendererPlugin, SHAPE } from '@antv/g';
+import { globalContainer, RendererPlugin, SHAPE } from '@antv/g';
 import { Module, Syringe } from 'mana-syringe';
 import { Renderable3D } from './components/Renderable3D';
 import { PickingIdGenerator } from './PickingIdGenerator';
@@ -32,6 +32,7 @@ import {
   TextMesh,
   MeshMesh,
 } from './meshes';
+import { MeshUpdater } from './MeshUpdater';
 
 let bindFunc: Syringe.Register;
 
@@ -108,6 +109,8 @@ export class Plugin implements RendererPlugin {
   private container: Syringe.Container;
 
   init(container: Syringe.Container): void {
+    globalContainer.register(MeshUpdater);
+
     this.container = container;
     container.register({
       token: WebGLRendererPluginOptions,
@@ -123,6 +126,7 @@ export class Plugin implements RendererPlugin {
     container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
+    globalContainer.remove(MeshUpdater);
     container.remove(RenderHelper);
     container.remove(TexturePool);
     container.remove(GlyphManager);

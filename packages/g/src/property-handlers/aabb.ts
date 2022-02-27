@@ -27,6 +27,7 @@ export function updateGeometry(oldValue: number, newValue: number, object: Displ
       depth = 0,
       x = 0,
       y = 0,
+      z = 0,
       offsetX = 0,
       offsetY = 0,
       offsetZ = 0,
@@ -48,9 +49,11 @@ export function updateGeometry(oldValue: number, newValue: number, object: Displ
       object.translateLocal(object.parsedStyle.offsetX, object.parsedStyle.offsetY);
       object.parsedStyle.x = object.style.x;
       object.parsedStyle.y = object.style.y;
+      object.parsedStyle.z = z;
     } else {
       object.parsedStyle.x = x;
       object.parsedStyle.y = y;
+      object.parsedStyle.z = z;
     }
 
     // init with content box

@@ -20,6 +20,8 @@ window.gPluginCssSelect = require('@antv/g-plugin-css-select');
 window.gPlugin3d = require('@antv/g-plugin-3d');
 window.gPluginControl = require('@antv/g-plugin-control');
 window.gPluginGpgpu = require('@antv/g-plugin-gpgpu');
+window.gPluginPhysx = require('@antv/g-plugin-physx');
+window.gPluginBox2d = require('@antv/g-plugin-box2d');
 // compiler for GPGPU
 window.gWebgpuCompiler = require('@antv/g-webgpu-compiler');
 // window.webgpuGraph = require('@antv/webgpu-graph');
