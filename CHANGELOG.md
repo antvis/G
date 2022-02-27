@@ -2,6 +2,23 @@
 
 以下版本号以 @antv/g 为准。
 
+## [5.0.12] - 2022-2-27
+
+-   @antv/g-canvas@1.0.11
+-   @antv/g-plugin-3d@1.0.13
+-   @antv/g-plugin-box2d@1.0.2
+-   @antv/g-plugin-physx@1.0.2
+-   @antv/g-plugin-webgl-renderer@1.0.15
+-   @antv/g-webgl@1.0.15
+-   @antv/g@5.0.12
+-   @antv/react-g@1.0.5
+
+### 新增特性
+
+-   [g] 支持通过 `displayObject.getRotation()` 等方式获取/设置旋转四元数
+-   [g] 支持创建画布时通过 `requestAnimationFrame/cancelAnimationFrame` 设置自定义函数，适用于非浏览器环境
+-   [g-plugin-box2d] 支持 Box2D 物理引擎
+
 ## [5.0.11] - 2022-2-22
 
 -   @antv/g-canvas@1.0.10
