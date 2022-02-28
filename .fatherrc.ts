@@ -25,6 +25,7 @@ export default {
     'g-plugin-gpgpu',
     'g-plugin-physx',
     'g-plugin-box2d',
+    'g-plugin-matterjs',
     'g-webgpu-compiler',
     'g-components',
     'react-g',

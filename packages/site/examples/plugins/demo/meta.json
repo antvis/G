@@ -27,6 +27,13 @@
       }
     },
     {
+      "filename": "matterjs.js",
+      "title": {
+        "zh": "在 2D 场景中使用 MatterJS 物理引擎",
+        "en": "Use MatterJS in 2D scene"
+      }
+    },
+    {
       "filename": "physx.js",
       "title": {
         "zh": "在 3D 场景中使用 PhysX 物理引擎",
