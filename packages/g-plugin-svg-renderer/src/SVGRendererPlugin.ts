@@ -208,7 +208,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
   private reorderChildren($groupEl: SVGElement, children: DisplayObject[]) {
     // need to reorder parent's children
-    children.sort(this.sceneGraphService.sort);
+    children.sort((a, b) => a.sortable.renderOrder - b.sortable.renderOrder);
 
     // create empty fragment
     const fragment = document.createDocumentFragment();

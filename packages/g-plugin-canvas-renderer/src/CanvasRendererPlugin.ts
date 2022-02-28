@@ -257,7 +257,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         dirtyObjects
           // .filter((object) => object && object.isConnected)
           // sort by z-index
-          .sort(this.sceneGraphService.sort)
+          .sort((a, b) => a.sortable.renderOrder - b.sortable.renderOrder)
           .forEach((object) => {
             if (object.isVisible()) {
               this.renderDisplayObject(object, renderingService);

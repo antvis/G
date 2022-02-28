@@ -51,7 +51,7 @@ export interface SceneGraphService {
     index?: number,
   ) => void;
   detach: <C extends INode>(child: C) => void;
-  sort: (object1: IElement, object2: IElement) => number;
+  // sort: (object1: IElement, object2: IElement) => number;
   getOrigin: (element: INode) => vec3;
   setOrigin: (element: INode, origin: vec3 | number, y?: number, z?: number) => void;
   setPosition: (element: INode, position: vec3 | vec2) => void;
@@ -182,61 +182,61 @@ export class DefaultSceneGraphService implements SceneGraphService {
    * use materialized path
    * @see https://stackoverflow.com/questions/31470730/comparing-tree-nodes
    */
-  sort = (object1: INode, object2: INode): number => {
-    if (!object1.parentNode) {
-      return -1;
-    }
+  // sort = (object1: INode, object2: INode): number => {
+  //   if (!object1.parentNode) {
+  //     return -1;
+  //   }
 
-    if (!object2.parentNode) {
-      return 1;
-    }
+  //   if (!object2.parentNode) {
+  //     return 1;
+  //   }
 
-    const hierarchyDiff =
-      (object1 as Element).transformable.graphDepth - (object2 as Element).transformable.graphDepth;
+  //   const hierarchyDiff =
+  //     (object1 as Element).transformable.graphDepth - (object2 as Element).transformable.graphDepth;
 
-    let o1 = object1;
-    let o2 = object2;
-    if (hierarchyDiff < 0) {
-      o2 = object2.getAncestor(-hierarchyDiff)!;
-      if (o2 === o1) {
-        return -1;
-      }
-    } else if (hierarchyDiff > 0) {
-      o1 = object1.getAncestor(hierarchyDiff)!;
-      if (o2 === o1) {
-        return 1;
-      }
-    }
+  //   let o1 = object1;
+  //   let o2 = object2;
+  //   if (hierarchyDiff < 0) {
+  //     o2 = object2.getAncestor(-hierarchyDiff)!;
+  //     if (o2 === o1) {
+  //       return -1;
+  //     }
+  //   } else if (hierarchyDiff > 0) {
+  //     o1 = object1.getAncestor(hierarchyDiff)!;
+  //     if (o2 === o1) {
+  //       return 1;
+  //     }
+  //   }
 
-    while (o1 && o2 && o1.parentNode !== o2.parentNode) {
-      o1 = o1.parentNode!;
-      o2 = o2.parentNode!;
-    }
+  //   while (o1 && o2 && o1.parentNode !== o2.parentNode) {
+  //     o1 = o1.parentNode!;
+  //     o2 = o2.parentNode!;
+  //   }
 
-    const parent = o1.parentNode;
-    if (parent) {
-      const parentSortable = (parent as Element).sortable;
+  //   const parent = o1.parentNode;
+  //   if (parent) {
+  //     const parentSortable = (parent as Element).sortable;
 
-      if (parentSortable) {
-        // no need to re-sort, use cached sorted children
-        if (!parentSortable.sorted) {
-          parentSortable.sorted = (parent.childNodes as IElement[]).slice();
-        }
-        if (parentSortable.dirty) {
-          parentSortable.sorted = (parent.childNodes as IElement[]).slice().sort(sortByZIndex);
-          // parentSortable.sorted.forEach(
-          //   (child, i) => ((child as Element).sortable.lastSortedIndex = i),
-          // );
-          parentSortable.dirty = false;
-        }
+  //     if (parentSortable) {
+  //       // no need to re-sort, use cached sorted children
+  //       if (!parentSortable.sorted) {
+  //         parentSortable.sorted = (parent.childNodes as IElement[]).slice();
+  //       }
+  //       if (parentSortable.dirty) {
+  //         parentSortable.sorted = (parent.childNodes as IElement[]).slice().sort(sortByZIndex);
+  //         // parentSortable.sorted.forEach(
+  //         //   (child, i) => ((child as Element).sortable.lastSortedIndex = i),
+  //         // );
+  //         parentSortable.dirty = false;
+  //       }
 
-        // return (o1 as Element).sortable.lastSortedIndex - (o2 as Element).sortable.lastSortedIndex;
-        return parentSortable.sorted.indexOf(o1) - parentSortable.sorted.indexOf(o2);
-      }
-    }
+  //       // return (o1 as Element).sortable.lastSortedIndex - (o2 as Element).sortable.lastSortedIndex;
+  //       return parentSortable.sorted.indexOf(o1) - parentSortable.sorted.indexOf(o2);
+  //     }
+  //   }
 
-    return -1;
-  };
+  //   return -1;
+  // };
 
   getOrigin(element: INode) {
     return (element as Element).transformable.origin;

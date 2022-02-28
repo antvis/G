@@ -99,7 +99,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       });
 
       // find group with max z-index
-      pickedDisplayObjects.sort(this.sceneGraphService.sort);
+      pickedDisplayObjects.sort((a, b) => a.sortable.renderOrder - b.sortable.renderOrder);
 
       result.picked = pickedDisplayObjects[pickedDisplayObjects.length - 1] || null;
       return result;
