@@ -75,12 +75,19 @@ export class FederatedPointerEvent extends FederatedMouseEvent implements Pointe
    */
   twist: number;
 
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/getCoalescedEvents
+   */
   getCoalescedEvents(): PointerEvent[] {
     if (this.type === 'pointermove' || this.type === 'mousemove' || this.type === 'touchmove') {
       return [this];
     }
     return [];
   }
+
+  /**
+   * @see https://chromestatus.com/feature/5765569655603200
+   */
   getPredictedEvents(): PointerEvent[] {
     throw new Error('getPredictedEvents is not supported!');
   }

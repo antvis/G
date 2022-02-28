@@ -5,6 +5,13 @@
   },
   "demos": [
     {
+      "filename": "vs-g4.0.js",
+      "title": {
+        "zh": "与 G 4.0 对比",
+        "en": "Compared with G 4.0"
+      }
+    },
+    {
       "filename": "canvas-dirty-rectangle.js",
       "title": {
         "zh": "脏矩形渲染(Canvas)",

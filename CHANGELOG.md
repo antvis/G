@@ -2,6 +2,36 @@
 
 以下版本号以 @antv/g 为准。
 
+## [5.0.13] - 2022-2-28
+
+-   @antv/g-canvas@1.0.12
+-   @antv/g-components@1.0.10
+-   @antv/g-math@1.0.10
+-   @antv/g-plugin-3d@1.0.14
+-   @antv/g-plugin-box2d@1.0.3
+-   @antv/g-plugin-canvas-picker@1.0.10
+-   @antv/g-plugin-canvas-renderer@1.0.10
+-   @antv/g-plugin-control@1.0.11
+-   @antv/g-plugin-css-select@1.0.10
+-   @antv/g-plugin-dom-interaction@1.0.10
+-   @antv/g-plugin-gpgpu@1.0.11
+-   @antv/g-plugin-html-renderer@1.0.11
+-   @antv/g-plugin-physx@1.0.3
+-   @antv/g-plugin-svg-picker@1.0.10
+-   @antv/g-plugin-svg-renderer@1.0.10
+-   @antv/g-plugin-webgl-renderer@1.0.16
+-   @antv/g-shader-components@1.0.8
+-   @antv/g-svg@1.0.10
+-   @antv/g-webgl@1.0.16
+-   @antv/g-webgpu-compiler@1.0.11
+-   @antv/g@5.0.13
+-   @antv/react-g@1.0.6
+-   @antv/g-site@1.0.16
+
+### Bug 修复
+
+-   [g] 去除了严重影响性能的渲染排序 https://github.com/antvis/g/issues/816
+
 ## [5.0.12] - 2022-2-27
 
 -   @antv/g-canvas@1.0.11
