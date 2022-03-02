@@ -67,7 +67,7 @@ export class MatterJSPlugin implements RenderingPlugin {
 
     renderingService.hooks.destroy.tap(MatterJSPlugin.tag, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(
         ElementEvent.ATTRIBUTE_CHANGED,
         handleAttributeChanged,

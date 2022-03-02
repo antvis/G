@@ -26,6 +26,7 @@ export class Plugin implements RendererPlugin {
     container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
+    container.remove(Box2DPluginOptions);
     container.remove(Box2DPlugin);
     // @ts-ignore
     // container.container.unload(containerModule);

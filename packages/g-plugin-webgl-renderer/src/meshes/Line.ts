@@ -23,6 +23,7 @@ import vert from '../shader/line.vert';
 import frag from '../shader/line.frag';
 import { Instanced } from './Instanced';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
+import { enumToObject } from '../utils/enum';
 
 export enum JOINT_TYPE {
   NONE = 0,
@@ -44,14 +45,14 @@ const stridePoints = 2;
 const strideFloats = 3;
 const strideBytes = 3 * 4;
 
-enum LineProgram {
-  a_Prev = 0,
-  a_Point1,
-  a_Point2,
-  a_Next,
-  a_VertexJoint,
-  a_VertexNum,
-  a_Travel,
+enum LineVertexAttributeLocation {
+  PREV = 0,
+  POINT1,
+  POINT2,
+  NEXT,
+  VERTEX_JOINT,
+  VERTEX_NUM,
+  TRAVEL,
 }
 
 export enum Uniform {
@@ -181,6 +182,10 @@ export class LineMesh extends Instanced {
   createMaterial(objects: DisplayObject[]): void {
     this.material.vertexShader = vert;
     this.material.fragmentShader = frag;
+    this.material.defines = {
+      ...this.material.defines,
+      ...enumToObject(LineVertexAttributeLocation),
+    };
 
     const instance = objects[0];
 
@@ -260,35 +265,35 @@ export class LineMesh extends Instanced {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
           byteStride: 4 * 3,
-          location: LineProgram.a_Prev,
+          location: LineVertexAttributeLocation.PREV,
           divisor: 1,
         },
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 3,
           byteStride: 4 * 3,
-          location: LineProgram.a_Point1,
+          location: LineVertexAttributeLocation.POINT1,
           divisor: 1,
         },
         {
           format: Format.F32_R,
           bufferByteOffset: 4 * 5,
           byteStride: 4 * 3,
-          location: LineProgram.a_VertexJoint,
+          location: LineVertexAttributeLocation.VERTEX_JOINT,
           divisor: 1,
         },
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 6,
           byteStride: 4 * 3,
-          location: LineProgram.a_Point2,
+          location: LineVertexAttributeLocation.POINT2,
           divisor: 1,
         },
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 9,
           byteStride: 4 * 3,
-          location: LineProgram.a_Next,
+          location: LineVertexAttributeLocation.NEXT,
           divisor: 1,
         },
       ],
@@ -303,7 +308,7 @@ export class LineMesh extends Instanced {
           format: Format.F32_R,
           bufferByteOffset: 4 * 0,
           byteStride: 4 * 1,
-          location: LineProgram.a_VertexNum,
+          location: LineVertexAttributeLocation.VERTEX_NUM,
           divisor: 0,
         },
       ],
@@ -318,7 +323,7 @@ export class LineMesh extends Instanced {
           format: Format.F32_R,
           bufferByteOffset: 4 * 0,
           byteStride: 4 * 1,
-          location: LineProgram.a_Travel,
+          location: LineVertexAttributeLocation.TRAVEL,
           divisor: 1,
         },
       ],

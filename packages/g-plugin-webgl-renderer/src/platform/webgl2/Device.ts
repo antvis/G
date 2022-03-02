@@ -441,15 +441,12 @@ export class Device_GL implements SwapChain, Device {
     // @see https://github.com/visgl/luma.gl/blob/30a1039573/modules/webgl/src/classes/clear.ts
 
     const { r, g, b, a } = OpaqueWhite;
+    gl.clearColor(r, g, b, a);
+    gl.clear(gl.COLOR_BUFFER_BIT);
     if (isWebGL2(gl)) {
-      // gl.clearColor(0, 0, 0, 1);
-      // gl.clear(gl.COLOR_BUFFER_BIT);
       gl.clearBufferfv(gl.COLOR, 0, [r, g, b, a]);
     } else {
       this.submitBlitRenderPass();
-      // // gl.colorMask(true, true, true, true);
-      // // gl.clearColor(r, g, b, a);
-      // // gl.clear(gl.COLOR_BUFFER_BIT);
     }
 
     // @see https://stackoverflow.com/questions/2143240/opengl-glflush-vs-glfinish

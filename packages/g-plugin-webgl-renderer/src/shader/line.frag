@@ -1,12 +1,14 @@
 #pragma glslify: import('@antv/g-shader-components/scene.both.glsl')
 #pragma glslify: import('@antv/g-shader-components/line.both.glsl')
 
-varying vec4 v_Distance;
-varying vec4 v_Arc;
-varying float v_Type;
-varying float v_Travel;
+in vec4 v_Distance;
+in vec4 v_Arc;
+in float v_Type;
+in float v_Travel;
+in vec4 v_PickingResult;
 
-varying vec4 v_PickingResult;
+layout(location = 0) out vec4 gbuf_color;
+layout(location = 1) out vec4 gbuf_picking;
 
 void main(){
   if (u_Visible < 1.0) {
@@ -63,6 +65,6 @@ void main(){
     alpha *= max(0.0, right - left);
   }
 
-  gl_FragColor = u_StrokeColor;
-  gl_FragColor.a *= alpha * u_Opacity * u_StrokeOpacity;
+  gbuf_color = u_StrokeColor;
+  gbuf_color.a *= alpha * u_Opacity * u_StrokeOpacity;
 }

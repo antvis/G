@@ -12,6 +12,7 @@ import vert from '../shader/instanced-line.vert';
 import frag from '../shader/instanced-line.frag';
 import { Instanced, InstancedVertexAttributeBufferIndex } from './Instanced';
 import { VertexAttributeLocation } from '../geometries';
+import { enumToObject } from '../utils/enum';
 
 export const segmentInstanceGeometry = [
   0, -0.5, 0, 0, 0, 1, -0.5, 1, 1, 0, 1, 0.5, 1, 1, 1, 0, 0.5, 0, 0, 1,
@@ -71,6 +72,10 @@ export class InstancedLineMesh extends Instanced {
   createMaterial(objects: DisplayObject[]): void {
     this.material.vertexShader = vert;
     this.material.fragmentShader = frag;
+    this.material.defines = {
+      ...this.material.defines,
+      ...enumToObject(InstancedLineVertexAttributeLocation),
+    };
   }
 
   createGeometry(objects: DisplayObject[]): void {

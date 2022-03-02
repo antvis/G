@@ -11,6 +11,7 @@ import vert from '../shader/sdf.vert';
 import frag from '../shader/sdf.frag';
 import { Instanced, InstancedVertexAttributeBufferIndex } from './Instanced';
 import { VertexAttributeLocation } from '../geometries';
+import { enumToObject } from '../utils/enum';
 
 enum SDFVertexAttributeBufferIndex {
   EXTRUDE_UV = InstancedVertexAttributeBufferIndex.MAX,
@@ -50,6 +51,10 @@ export class SDFMesh extends Instanced {
   createMaterial(objects: DisplayObject[]) {
     this.material.vertexShader = vert;
     this.material.fragmentShader = frag;
+    this.material.defines = {
+      ...this.material.defines,
+      ...enumToObject(SDFVertexAttributeLocation),
+    };
   }
 
   createGeometry(objects: DisplayObject[]) {

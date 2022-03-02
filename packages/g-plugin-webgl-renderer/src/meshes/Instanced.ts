@@ -41,6 +41,7 @@ import { RENDER_ORDER_SCALE, Batch } from '../renderer/Batch';
 import { TexturePool } from '../TexturePool';
 import { Fog } from '../lights';
 import { LightPool } from '../LightPool';
+import { enumToObject } from '../utils/enum';
 
 let counter = 1;
 const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
@@ -382,6 +383,10 @@ export abstract class Instanced {
     if (this.material.programDirty || this.materialDirty) {
       this.createMaterial(objects);
       // set defines
+      this.material.defines = {
+        ...this.material.defines,
+        ...enumToObject(VertexAttributeLocation),
+      };
       Object.keys(this.material.defines).forEach((key) => {
         const value = this.material.defines[key];
         if (typeof value === 'number') {

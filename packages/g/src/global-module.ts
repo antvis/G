@@ -240,7 +240,7 @@ export const containerModule = Module((register) => {
       'fontVariant',
       'lineHeight',
       'letterSpacing',
-      'padding',
+      // 'padding',
       'wordWrap',
       'wordWrapWidth',
       'leading',

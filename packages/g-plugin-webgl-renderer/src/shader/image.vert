@@ -2,11 +2,11 @@
 #pragma glslify: import('@antv/g-shader-components/batch.declaration.vert')
 #pragma glslify: project = require('@antv/g-shader-components/project.vert')
 
-layout(location = 10) attribute vec2 a_Size;
+layout(location = SIZE) in vec2 a_Size;
 
 #ifdef USE_UV
-  layout(location = 11) attribute vec2 a_Uv;
-  varying vec2 v_Uv;
+  layout(location = UV) in vec2 a_Uv;
+  out vec2 v_Uv;
 #endif
 
 void main() {

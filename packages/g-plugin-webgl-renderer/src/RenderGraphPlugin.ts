@@ -19,7 +19,7 @@ import { inject, singleton } from 'mana-syringe';
 import { BatchManager } from './renderer';
 import { Renderable3D } from './components/Renderable3D';
 import { WebGLRendererPluginOptions } from './interfaces';
-// import { pushFXAAPass } from './passes/FXAA';
+import { pushFXAAPass } from './passes/FXAA';
 // import { useCopyPass } from './passes/Copy';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { BlendFactor, BlendMode, Device, SwapChain, Texture, TextureDescriptor } from './platform';

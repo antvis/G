@@ -120,6 +120,7 @@ export class Element<
     });
     child.emit(ElementEvent.INSERTED, {
       parent: this,
+      index,
     });
 
     return child;

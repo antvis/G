@@ -18,7 +18,7 @@ const ES100_REPLACEMENTS: [RegExp, string][] = [
 ];
 
 type DefineMap = Map<string, string>;
-export type ShaderFeature = 'MRT';
+export type ShaderFeature = 'MRT' | 'PICKING';
 export type ShaderFeatureMap = Partial<Record<ShaderFeature, boolean>>;
 
 function defineStr(k: string, v: string): string {
@@ -40,14 +40,11 @@ export function getAttributeLocations(
   defines: Record<string, number>,
 ): { location: number; name: string }[] {
   const locations = [];
-  vert.replace(
-    /^\s*layout\(location\s*=\s*(\S*)\)\s*attribute\s*\S+\s*(.*);$/gm,
-    (_, location, name) => {
-      const l = Number(location);
-      locations.push({ location: isNaN(l) ? defines[location] : l, name });
-      return '';
-    },
-  );
+  vert.replace(/^\s*layout\(location\s*=\s*(\S*)\)\s*in\s+\S+\s*(.*);$/gm, (_, location, name) => {
+    const l = Number(location);
+    locations.push({ location: isNaN(l) ? defines[location] : l, name });
+    return '';
+  });
   return locations;
 }
 
@@ -139,6 +136,7 @@ export function preprocessShader_GLSL(
 ): string {
   const isGLSL100 = vendorInfo.glslVersion === '#version 100';
   const supportMRT = vendorInfo.supportMRT && !!features.MRT;
+  const needPicking = features.PICKING;
 
   const lines = source
     .split('\n')
@@ -152,6 +150,7 @@ export function preprocessShader_GLSL(
       return !isEmpty;
     });
 
+  // #define KEY VAR
   let definesString: string = '';
   if (defines !== null)
     definesString = [...defines.entries()].map(([k, v]) => defineStr(k, v)).join('\n');
@@ -237,39 +236,16 @@ layout(set = ${set}, binding = ${binding++}) uniform sampler S_${samplerName};
     });
   }
 
-  const hasFragColor = rest.includes('gl_FragColor');
+  // using #define means we can't use `const in/out` in params
+  //   ${isGLSL100 && type === 'vert' ? '#define in attribute\n#define out varying' : ''}
+  // ${isGLSL100 && type === 'frag' ? '#define in varying' : ''}
 
   let concat = `
 ${vendorInfo.glslVersion}
 ${isGLSL100 && supportMRT ? '#extension GL_EXT_draw_buffers : require' : ''}
 ${isGLSL100 && type === 'frag' ? '#extension GL_OES_standard_derivatives : enable' : ''}
 ${precision}
-#define ${type.toUpperCase()}
-${
-  !isGLSL100
-    ? `
-#define attribute in
-#define varying ${type === 'vert' ? 'out' : 'in'}
-`
-    : ``
-}
-#define main${type === 'vert' ? 'VS' : 'PS'} main
 ${extraDefines}
-${
-  (hasFragColor &&
-    `
-${
-  (type === 'frag' &&
-    supportMRT &&
-    `#define gl_FragColor gbuf_color
-layout(location = 0) out vec4 gbuf_color;
-layout(location = 1) out vec4 gbuf_picking;
-`) ||
-  ''
-}
-`) ||
-  ''
-}
 ${definesString}
 ${rest}
 `.trim();
@@ -280,8 +256,29 @@ ${rest}
     });
   }
 
-  // GLSL 100 -> 300
+  // GLSL 300 -> 100
   if (isGLSL100) {
+    // in -> varying
+    if (type === 'frag') {
+      concat = concat.replace(/^\s*in\s+(\S+)\s*(.*);$/gm, (_, dataType, name) => {
+        return `varying ${dataType} ${name};\n`;
+      });
+    }
+    if (type === 'vert') {
+      // out -> varying
+      concat = concat.replace(/^\s*out\s+(\S+)\s*(.*);$/gm, (_, dataType, name) => {
+        return `varying ${dataType} ${name};\n`;
+      });
+      // in -> attribute
+      concat = concat.replace(
+        // /^\s*layout\(location\s*=\s*\d*\)\s*in\s*(.*)\s*(.*);$/gm,
+        /^\s*layout\(location\s*=\s*\S*\)\s*in\s+(\S+)\s*(.*);$/gm,
+        (_, dataType, name) => {
+          return `attribute ${dataType} ${name};\n`;
+        },
+      );
+    }
+
     // interface blocks supported in GLSL ES 3.00 and above only
     concat = concat.replace(/\s*uniform\s*.*\s*{((?:\s*.*\s*)*?)};/g, (substr, uniforms) => {
       return uniforms.trim().replace(/^.*$/gm, (uniform: string) => {
@@ -299,30 +296,23 @@ ${rest}
       if (type === 'frag') {
         const gBuffers = [];
         concat = concat.replace(
-          /^layout\(location\s*=\s*\d*\)\s*out\s*vec4\s*(.*);$/gm,
+          /^\s*layout\(location\s*=\s*\d*\)\s*out\s+vec4\s*(.*);$/gm,
           (_, buffer) => {
             gBuffers.push(buffer);
-            return '';
+            return `vec4 ${buffer};\n`;
           },
         );
-
-        // append at the end of fragment shader
-        concat = concat.replace(/^\s*void\s*main\(\)\s*{\s*$/gm, () => {
-          return `void main() {
-  ${gBuffers.map((gBuffer) => `vec4 ${gBuffer};`).join('\n')}
-`;
-        });
 
         const lastIndexOfMain = concat.lastIndexOf('}');
         concat =
           concat.substring(0, lastIndexOfMain) +
-          `gbuf_color = gl_FragColor;
-${gBuffers
-  .map(
-    (gBuffer, i) => `gl_FragData[${i}] = ${gBuffer};
-`,
-  )
-  .join('\n')}` +
+          `
+    ${gBuffers
+      .map(
+        (gBuffer, i) => `gl_FragData[${i}] = ${gBuffer};
+    `,
+      )
+      .join('\n')}` +
           concat.substring(lastIndexOfMain);
       }
     }
@@ -330,6 +320,7 @@ ${gBuffers
     // remove layout(location = 0)
     concat = concat.replace(/^\s*layout\((.*)\)/gm, '');
 
+    // replace texture with texture2D
     for (const [pattern, replacement] of ES100_REPLACEMENTS) {
       concat = concat.replace(pattern, replacement);
     }

@@ -7,9 +7,10 @@ import meshFrag from '../shader/mesh.frag';
 import { Instanced } from '../meshes/Instanced';
 import { Uniform, updateBuffer } from './Line';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
+import { enumToObject } from '../utils/enum';
 
-enum MeshProgram {
-  a_Position = 0,
+enum MeshVertexAttributeLocation {
+  POSITION = 0,
 }
 
 @injectable()
@@ -32,7 +33,7 @@ export class FillMesh extends Instanced {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
           byteStride: 4 * 2,
-          location: MeshProgram.a_Position,
+          location: MeshVertexAttributeLocation.POSITION,
         },
       ],
       data: new Float32Array(pointsBuffer),
@@ -44,6 +45,10 @@ export class FillMesh extends Instanced {
   createMaterial(objects: DisplayObject[]): void {
     this.material.vertexShader = meshVert;
     this.material.fragmentShader = meshFrag;
+    this.material.defines = {
+      ...this.material.defines,
+      ...enumToObject(MeshVertexAttributeLocation),
+    };
 
     const instance = objects[0];
 

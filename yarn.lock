@@ -6074,7 +6074,7 @@
   resolved "https://registry.npmmirror.com/@types/mathjax/download/@types/mathjax-0.0.36.tgz#18cf766f88ac0cd4e7ee8282b1286049bb6aa682"
   integrity sha1-GM92b4isDNTn7oKCsShgSbtqpoI=
 
-"@types/matter-js@^0.18.0":
+"@types/matter-js@^0.17.7":
   version "0.17.7"
   resolved "https://registry.yarnpkg.com/@types/matter-js/-/matter-js-0.17.7.tgz#4919813a91fb0424ea8aa4f4c6eaf9b79cf65ff5"
   integrity sha512-LHx3Kf1vY68wEgSAuQkMShfGxB9YVKtcFYqPTMAcmUCnHuvcPkfnlbveMkH8xG/s1EIYcbBVTnUNDV/CA5B2RA==

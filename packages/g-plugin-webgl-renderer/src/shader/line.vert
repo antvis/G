@@ -1,13 +1,13 @@
 #pragma glslify: import('@antv/g-shader-components/scene.both.glsl')
 #pragma glslify: import('@antv/g-shader-components/line.both.glsl')
 
-layout(location = 0) attribute vec2 a_Prev;
-layout(location = 1) attribute vec2 a_Point1;
-layout(location = 2) attribute vec2 a_Point2;
-layout(location = 3) attribute vec2 a_Next;
-layout(location = 4) attribute float a_VertexJoint;
-layout(location = 5) attribute float a_VertexNum;
-layout(location = 6) attribute float a_Travel;
+layout(location = PREV) in vec2 a_Prev;
+layout(location = POINT1) in vec2 a_Point1;
+layout(location = POINT2) in vec2 a_Point2;
+layout(location = NEXT) in vec2 a_Next;
+layout(location = VERTEX_JOINT) in float a_VertexJoint;
+layout(location = VERTEX_NUM) in float a_VertexNum;
+layout(location = TRAVEL) in float a_Travel;
 
 const float FILL = 1.0;
 const float BEVEL = 4.0;
@@ -22,12 +22,12 @@ const float CAP_SQUARE = 2.0;
 const float CAP_ROUND = 3.0;
 const float CAP_BUTT2 = 4.0;
 
-varying vec4 v_Distance;
-varying vec4 v_Arc;
-varying float v_Type;
-varying float v_Travel;
+out vec4 v_Distance;
+out vec4 v_Arc;
+out float v_Type;
+out float v_Travel;
 
-varying vec4 v_PickingResult;
+out vec4 v_PickingResult;
 #define COLOR_SCALE 1. / 255.
 void setPickingColor(vec3 pickingColor) {
   v_PickingResult.rgb = pickingColor * COLOR_SCALE;

@@ -8,6 +8,6 @@ void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
   #pragma glslify: import('@antv/g-shader-components/map.frag')
 
-  gl_FragColor = u_Color;
-  gl_FragColor.a = gl_FragColor.a * u_Opacity;
+  gbuf_color = u_Color;
+  gbuf_color.a = gbuf_color.a * u_Opacity;
 }

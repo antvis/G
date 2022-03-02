@@ -1,9 +1,9 @@
 #pragma glslify: import('@antv/g-shader-components/scene.both.glsl')
 #pragma glslify: import('@antv/g-shader-components/mesh.both.glsl')
 
-layout(location = 0) attribute vec2 a_Position;
+layout(location = POSITION) in vec2 a_Position;
 
-varying vec4 v_PickingResult;
+out vec4 v_PickingResult;
 #define COLOR_SCALE 1. / 255.
 void setPickingColor(vec3 pickingColor) {
   v_PickingResult.rgb = pickingColor * COLOR_SCALE;

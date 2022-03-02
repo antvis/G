@@ -25,8 +25,8 @@ void main() {
   // 贴图
   #pragma glslify: import('@antv/g-shader-components/map.frag')
 
-  gl_FragColor = u_Color;
-  gl_FragColor.a = gl_FragColor.a * u_Opacity;
+  gbuf_color = u_Color;
+  gbuf_color.a = gbuf_color.a * u_Opacity;
 
   // 绘制 wireframe
   #pragma glslify: import('@antv/g-shader-components/wireframe.frag')

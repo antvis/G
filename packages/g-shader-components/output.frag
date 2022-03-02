@@ -1,1 +1,1 @@
-gl_FragColor = vec4(outgoingLight, diffuseColor.a);
+gbuf_color = vec4(outgoingLight, diffuseColor.a);
