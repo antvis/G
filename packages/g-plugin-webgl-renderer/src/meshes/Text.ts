@@ -1,14 +1,7 @@
 import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
-import {
-  DisplayObject,
-  PARSED_COLOR_TYPE,
-  RenderingService,
-  SHAPE,
-  Text as TextShape,
-  Tuple4Number,
-} from '@antv/g';
-import { Format, VertexBufferFrequency, CullMode, Device } from '../platform';
+import { DisplayObject, PARSED_COLOR_TYPE, Text as TextShape, Tuple4Number } from '@antv/g';
+import { Format, VertexBufferFrequency, CullMode } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
 import { getGlyphQuads } from './symbol/SymbolQuad';
@@ -17,10 +10,11 @@ import vert from '../shader/text.vert';
 import frag from '../shader/text.frag';
 import { VertexAttributeLocation } from '../geometries';
 import { Instanced } from './Instanced';
+import { enumToObject } from '../utils/enum';
 
 enum TextVertexAttributeLocation {
-  a_Tex = VertexAttributeLocation.MAX,
-  a_Offset,
+  TEX = VertexAttributeLocation.MAX,
+  OFFSET,
 }
 
 export enum TextUniform {
@@ -199,12 +193,12 @@ export class TextMesh extends Instanced {
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: TextVertexAttributeLocation.a_Tex,
+          location: TextVertexAttributeLocation.TEX,
         },
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 2,
-          location: TextVertexAttributeLocation.a_Offset,
+          location: TextVertexAttributeLocation.OFFSET,
         },
       ],
       data: new Float32Array(uvOffsets),
@@ -215,6 +209,10 @@ export class TextMesh extends Instanced {
     this.material.vertexShader = vert;
     this.material.fragmentShader = frag;
     this.material.cullMode = CullMode.Back;
+    this.material.defines = {
+      ...this.material.defines,
+      ...enumToObject(TextVertexAttributeLocation),
+    };
 
     const object = this.instance as TextShape;
     const {

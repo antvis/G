@@ -1,3 +1,3 @@
 #ifdef USE_FOG
-  gl_FragColor.rgb = addFog(gl_FragColor.rgb);
+  gbuf_color.rgb = addFog(gbuf_color.rgb);
 #endif

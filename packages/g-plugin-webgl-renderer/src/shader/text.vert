@@ -4,11 +4,11 @@
 #pragma glslify: import('@antv/g-shader-components/batch.declaration.vert')
 #pragma glslify: project = require('@antv/g-shader-components/project.vert')
 
-layout(location = 10) attribute vec2 a_Tex;
-layout(location = 11) attribute vec2 a_Offset;
+layout(location = TEX) in vec2 a_Tex;
+layout(location = OFFSET) in vec2 a_Offset;
 
-varying vec2 v_UV;
-varying float v_GammaScale;
+out vec2 v_UV;
+out float v_GammaScale;
 
 void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.vert')

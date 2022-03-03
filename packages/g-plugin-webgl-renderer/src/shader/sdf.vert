@@ -3,17 +3,17 @@
 #pragma glslify: import('@antv/g-shader-components/batch.declaration.vert')
 #pragma glslify: project = require('@antv/g-shader-components/project.vert')
 
-layout(location = 10) attribute vec2 a_Extrude;
-layout(location = 11) attribute vec4 a_StylePacked3;
-layout(location = 12) attribute vec2 a_Size;
+layout(location = EXTRUDE) in vec2 a_Extrude;
+layout(location = PACKED_STYLE3) in vec4 a_StylePacked3;
+layout(location = SIZE) in vec2 a_Size;
 #ifdef USE_UV
-  layout(location = 13) attribute vec2 a_Uv;
-  varying vec2 v_Uv;
+  layout(location = UV) in vec2 a_Uv;
+  out vec2 v_Uv;
 #endif
 
-varying vec4 v_Data;
-varying vec2 v_Radius;
-varying vec4 v_StylePacked3;
+out vec4 v_Data;
+out vec2 v_Radius;
+out vec4 v_StylePacked3;
 
 void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.vert')

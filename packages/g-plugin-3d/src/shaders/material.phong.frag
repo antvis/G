@@ -13,8 +13,8 @@
 #pragma glslify: import('@antv/g-shader-components/fog.declaration.frag')
 #pragma glslify: import('@antv/g-shader-components/light.phong.declaration.frag')
 
-varying vec3 v_ViewPosition;
-varying vec3 v_Normal;
+in vec3 v_ViewPosition;
+in vec3 v_Normal;
 
 void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
@@ -27,10 +27,10 @@ void main() {
   #pragma glslify: import('@antv/g-shader-components/normal.frag')
   #pragma glslify: import('@antv/g-shader-components/normalmap.frag')
 
-  gl_FragColor = u_Color;
-  gl_FragColor.a = gl_FragColor.a * u_Opacity;
+  gbuf_color = u_Color;
+  gbuf_color.a = gbuf_color.a * u_Opacity;
 
-  vec4 diffuseColor = gl_FragColor;
+  vec4 diffuseColor = gbuf_color;
   ReflectedLight reflectedLight = ReflectedLight(vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ));
   vec3 totalEmissiveRadiance = u_Emissive;
 

@@ -387,7 +387,7 @@ vec4 getDatavectorA(int address1D) {
   return getDatavectorA(float(address1D));
 }
 void main() {vec4 a = getDatavectorA(globalInvocationID.x);
-gl_FragColor = vec4(vec4(1.0, 2.0, 3.0, 4.0));`);
+gbuf_color = vec4(vec4(1.0, 2.0, 3.0, 4.0));`);
       });
     });
 
@@ -423,8 +423,8 @@ gl_FragColor = vec4(vec4(1.0, 2.0, 3.0, 4.0));`);
         expect(compiler.generateCode(shaderProgram))
           .toContain(`float a = getDatavectorA(globalInvocationID.x);
 float b = getDatavectorB(globalInvocationID.x);
-gl_FragColor = vec4(sum(a, b));if (gWebGPUDebug) {
-  gl_FragColor = gWebGPUDebugOutput;
+gbuf_color = vec4(sum(a, b));if (gWebGPUDebug) {
+  gbuf_color = gWebGPUDebugOutput;
 }}`);
       });
     });

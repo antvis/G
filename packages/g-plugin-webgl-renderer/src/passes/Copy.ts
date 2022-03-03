@@ -1,18 +1,21 @@
-// import { Geometry } from '../geometries';
-import { Format, InputLayout, InputState, VertexBufferFrequency } from '../platform';
-import { fullscreenMegaState, nArray } from '../platform/utils';
+// import { BufferGeometry } from '../geometries';
+// import { Format, InputLayout, InputState, VertexBufferFrequency } from '../platform';
+// import { fullscreenMegaState, nArray } from '../platform/utils';
 import { DeviceProgram } from '../render/DeviceProgram';
-import { RGAttachmentSlot, RGGraphBuilder } from '../render/interfaces';
-import { RenderHelper } from '../render/RenderHelper';
-import { TextureMapping } from '../render/TextureHolder';
-import { fillVec4, ShaderLibrary } from '../render/utils';
+// import { RGAttachmentSlot, RGGraphBuilder } from '../render/interfaces';
+// import { RenderHelper } from '../render/RenderHelper';
+// import { TextureMapping } from '../render/TextureHolder';
+// import { fillVec4, ShaderLibrary } from '../render/utils';
+import vert from '../shader/passes/fullscreen.vert';
+import frag from '../shader/passes/copy.frag';
 
 export class CopyProgram extends DeviceProgram {
-  vert = ShaderLibrary.fullscreenVS;
-  frag = ShaderLibrary.fullscreenBlitOneTexPS;
+  vert = vert;
+  frag = frag;
 
   features = {
-    MRT: false,
+    MRT: true,
+    // PICKING: false,
   };
 }
 

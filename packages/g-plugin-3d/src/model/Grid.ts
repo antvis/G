@@ -28,8 +28,8 @@
 //   layout(location = ${GridProgram.a_Position}) attribute vec3 a_Position;
 //   layout(location = ${GridProgram.a_GridSize}) attribute vec2 a_GridSize;
 
-//   varying vec3 v_Position;
-//   varying vec2 v_GridSize;
+//   out vec3 v_Position;
+//   out vec2 v_GridSize;
 
 //   void main() {
 //     ${Batch.ShaderLibrary.Vert}
@@ -46,8 +46,8 @@
 
 //   // #extension GL_OES_standard_derivatives : enable
 
-//   varying vec3 v_Position;
-//   varying vec2 v_GridSize;
+//   out vec3 v_Position;
+//   out vec2 v_GridSize;
 
 //   void main() {
 //     ${Batch.ShaderLibrary.Frag}
@@ -63,9 +63,9 @@
 //     float z1 = abs(fract(wz / u_GridSize2 - 0.5) - 0.5) / fwidth(wz) * u_GridSize2;
 
 //     float v1 = 1.0 - clamp(min(x1, z1), 0.0, 1.0);
-//     gl_FragColor = mix(gl_FragColor, u_GridColor, v1);
+//     gbuf_color = mix(gbuf_color, u_GridColor, v1);
 
-//     gl_FragColor.a = gl_FragColor.a * u_Opacity;
+//     gbuf_color.a = gbuf_color.a * u_Opacity;
 //   }
 //   `;
 // }

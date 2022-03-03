@@ -128,7 +128,7 @@ export interface BaseStyleProps {
   lineDash?: number[] | null;
   lineDashOffset?: number;
 
-  padding?: number[] | number;
+  // padding?: number[] | number;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/shadowBlur

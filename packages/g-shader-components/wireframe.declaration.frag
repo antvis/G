@@ -1,5 +1,5 @@
 #ifdef USE_WIREFRAME
-  varying vec3 v_Barycentric;
+  in vec3 v_Barycentric;
 
   float edgeFactor() {
     vec3 d = fwidth(v_Barycentric);

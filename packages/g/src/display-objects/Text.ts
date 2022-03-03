@@ -24,7 +24,7 @@ export interface TextStyleProps extends BaseStyleProps {
   lineHeight?: number;
   letterSpacing?: number;
   miterLimit?: number;
-  padding?: number;
+  // padding?: number;
   whiteSpace?: 'pre';
   leading?: number;
   wordWrap?: boolean;
@@ -52,7 +52,7 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   lineHeight?: number;
   letterSpacing?: number;
   miterLimit?: number;
-  padding?: number;
+  // padding?: number;
   whiteSpace?: 'pre';
   leading?: number;
   wordWrap?: boolean;
@@ -87,7 +87,7 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
         lineCap: LINE_CAP.Butt,
         lineWidth: 0,
         miterLimit: 10,
-        padding: 0,
+        // padding: 0,
         stroke: '#000',
         whiteSpace: 'pre',
         wordWrap: false,

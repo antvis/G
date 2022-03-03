@@ -5,6 +5,7 @@ import vert from '../shader/image.vert';
 import frag from '../shader/image.frag';
 import { Instanced } from '../meshes/Instanced';
 import { VertexAttributeLocation } from '../geometries';
+import { enumToObject } from '../utils/enum';
 
 enum ImageVertexAttributeLocation {
   SIZE = VertexAttributeLocation.MAX,
@@ -30,8 +31,14 @@ export class ImageMesh extends Instanced {
   createMaterial(objects: DisplayObject[]): void {
     const instance = objects[0];
     const { img } = instance.parsedStyle;
-    this.material.defines.USE_UV = true;
-    this.material.defines.USE_MAP = true;
+    // @ts-ignore
+    this.material.defines = {
+      ...this.material.defines,
+      USE_UV: true,
+      USE_MAP: true,
+      ...enumToObject(ImageVertexAttributeLocation),
+    };
+
     this.material.vertexShader = vert;
     this.material.fragmentShader = frag;
 

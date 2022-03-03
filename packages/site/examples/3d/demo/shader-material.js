@@ -85,11 +85,11 @@ const canvas = new Canvas({
       float u_Level;
     };
 
-    layout(location = ${VertexAttributeLocation.MODEL_MATRIX0}) attribute vec4 a_ModelMatrix0;
-    layout(location = ${VertexAttributeLocation.MODEL_MATRIX1}) attribute vec4 a_ModelMatrix1;
-    layout(location = ${VertexAttributeLocation.MODEL_MATRIX2}) attribute vec4 a_ModelMatrix2;
-    layout(location = ${VertexAttributeLocation.MODEL_MATRIX3}) attribute vec4 a_ModelMatrix3;
-    layout(location = ${VertexAttributeLocation.MAX}) attribute vec3 a_Position;
+    layout(location = ${VertexAttributeLocation.MODEL_MATRIX0}) in vec4 a_ModelMatrix0;
+    layout(location = ${VertexAttributeLocation.MODEL_MATRIX1}) in vec4 a_ModelMatrix1;
+    layout(location = ${VertexAttributeLocation.MODEL_MATRIX2}) in vec4 a_ModelMatrix2;
+    layout(location = ${VertexAttributeLocation.MODEL_MATRIX3}) in vec4 a_ModelMatrix3;
+    layout(location = ${VertexAttributeLocation.MAX}) in vec3 a_Position;
 
     void main() {
       mat4 u_ModelMatrix = mat4(a_ModelMatrix0, a_ModelMatrix1, a_ModelMatrix2, a_ModelMatrix3);
@@ -109,6 +109,9 @@ const canvas = new Canvas({
     layout(std140) uniform ub_MaterialParams {
       float u_Level;
     };
+
+    layout(location = 0) out vec4 gbuf_color;
+    layout(location = 1) out vec4 gbuf_picking;
 
     float random (vec2 st) {
       return fract(sin(
@@ -148,12 +151,11 @@ const canvas = new Canvas({
     // }
 
     void main() {
-      gbuf_picking = vec4(0.0);
-
       vec2 st = gl_FragCoord.xy / u_Viewport;
       vec2 pos = vec2(st * u_Level);
       float n = noise(pos);
-      gl_FragColor = vec4(vec3(n), 1.0);
+      gbuf_color = vec4(vec3(n), 1.0);
+      gbuf_picking = vec4(0.0);
     }
     `,
   });

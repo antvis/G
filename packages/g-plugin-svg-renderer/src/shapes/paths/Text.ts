@@ -44,7 +44,7 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
     'fontVariant',
     'lineHeight',
     'letterSpacing',
-    'padding',
+    // 'padding',
     'wordWrap',
     'wordWrapWidth',
     'leading',

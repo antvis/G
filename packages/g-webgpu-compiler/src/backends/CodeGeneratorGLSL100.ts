@@ -304,7 +304,7 @@ int localInvocationIndex = localInvocationID.z * workGroupSize.x * workGroupSize
 
       if (stmt.id?.name === 'main') {
         append = `if (gWebGPUDebug) {
-  gl_FragColor = gWebGPUDebugOutput;
+  gbuf_color = gWebGPUDebugOutput;
 }`;
       }
 
@@ -393,7 +393,7 @@ int localInvocationIndex = localInvocationID.z * workGroupSize.x * workGroupSize
 
       if (id && isArray(id.dataType)) {
         if (isLeftSide) {
-          return 'gl_FragColor';
+          return 'gbuf_color';
         } else {
           return this.generateExpression({
             type: AST_NODE_TYPES.CallExpression,
@@ -465,8 +465,8 @@ int localInvocationIndex = localInvocationID.z * workGroupSize.x * workGroupSize
   ): string {
     const left = this.generateExpression(expression.left, dataType);
     let castVec4 = false;
-    if (left === 'gl_FragColor') {
-      // gl_FragColor = vec4();
+    if (left === 'gbuf_color') {
+      // gbuf_color = vec4();
       // dt = AST_TOKEN_TYPES.Vector4Float;
       castVec4 = true;
     }

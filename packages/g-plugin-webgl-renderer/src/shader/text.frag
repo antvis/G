@@ -3,8 +3,8 @@
 
 #pragma glslify: import('@antv/g-shader-components/batch.declaration.frag')
 
-varying vec2 v_UV;
-varying float v_GammaScale;
+in vec2 v_UV;
+in float v_GammaScale;
 
 uniform sampler2D u_SDFMap;
 
@@ -36,6 +36,6 @@ void main() {
     discard;
   }
 
-  gl_FragColor = color;
-  gl_FragColor.a *= opacity;
+  gbuf_color = color;
+  gbuf_color.a *= opacity;
 }

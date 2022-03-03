@@ -4,7 +4,7 @@
   #define FOGMODE_EXP2 2.
   #define FOGMODE_LINEAR 3.
 
-  // varying float v_FogDepth;
+  // in float v_FogDepth;
 
   float dBlendModeFogFactor = 1.0;
 

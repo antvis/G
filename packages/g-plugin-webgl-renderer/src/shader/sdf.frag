@@ -4,9 +4,9 @@
 #pragma glslify: import('@antv/g-shader-components/uv.declaration.frag')
 #pragma glslify: import('@antv/g-shader-components/map.declaration.frag')
 
-varying vec4 v_Data;
-varying vec2 v_Radius;
-varying vec4 v_StylePacked3;
+in vec4 v_Data;
+in vec2 v_Radius;
+in vec4 v_StylePacked3;
 
 #pragma glslify: sdCircle = require('@antv/g-shader-components/sdf.circle.glsl')
 #pragma glslify: sdEllipsoidApproximated = require('@antv/g-shader-components/sdf.ellipse.glsl')
@@ -50,9 +50,9 @@ void main() {
 
   vec4 strokeColor = (u_StrokeColor == vec4(0) || omitStroke) ? vec4(0.0) : u_StrokeColor;
 
-  gl_FragColor = mix(vec4(diffuseColor.rgb, diffuseColor.a * u_FillOpacity), strokeColor * u_StrokeOpacity, color_t);
-  gl_FragColor.a = gl_FragColor.a * u_Opacity * opacity_t;
+  gbuf_color = mix(vec4(diffuseColor.rgb, diffuseColor.a * u_FillOpacity), strokeColor * u_StrokeOpacity, color_t);
+  gbuf_color.a = gbuf_color.a * u_Opacity * opacity_t;
 
-  if (gl_FragColor.a < 0.001)
+  if (gbuf_color.a < 0.001)
     discard;
 }

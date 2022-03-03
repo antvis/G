@@ -3,18 +3,18 @@
 #pragma glslify: import('@antv/g-shader-components/batch.declaration.vert')
 #pragma glslify: project = require('@antv/g-shader-components/project.vert')
 
-layout(location = 10) attribute vec3 a_Position;
-layout(location = 11) attribute vec3 a_PointA;
-layout(location = 12) attribute vec3 a_PointB;
-layout(location = 13) attribute float a_Cap;
+layout(location = POSITION) in vec3 a_Position;
+layout(location = POINTA) in vec3 a_PointA;
+layout(location = POINTB) in vec3 a_PointB;
+layout(location = CAP) in float a_Cap;
 #ifdef USE_UV
-  layout(location = 14) attribute vec2 a_Uv;
-  varying vec2 v_Uv;
+  layout(location = UV) in vec2 a_Uv;
+  out vec2 v_Uv;
 #endif
-layout(location = 15) attribute vec4 a_Dash;
+layout(location = DASH) in vec4 a_Dash;
 
-varying vec4 v_Dash;
-// varying vec2 v_Normal;
+out vec4 v_Dash;
+// out vec2 v_Normal;
 
 void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.vert')
