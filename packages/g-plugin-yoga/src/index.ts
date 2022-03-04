@@ -23,9 +23,6 @@ export class Plugin implements RendererPlugin {
   }
   destroy(container: Syringe.Container): void {
     container.remove(YogaPluginOptions);
-    container.remove(YogaPlugin);
-    // @ts-ignore
-    // container.container.unload(containerModule);
-    // container.unload(containerModule);
+    container.unload(containerModule);
   }
 }

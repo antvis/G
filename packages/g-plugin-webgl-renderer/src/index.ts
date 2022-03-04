@@ -127,36 +127,8 @@ export class Plugin implements RendererPlugin {
   }
   destroy(container: Syringe.Container): void {
     globalContainer.remove(MeshUpdater);
-    container.remove(RenderHelper);
-    container.remove(TexturePool);
-    container.remove(GlyphManager);
-    container.remove(PickingIdGenerator);
-    container.remove(CircleRenderer);
-    container.remove(PathRenderer);
-    container.remove(LineRenderer);
-    container.remove(ImageRenderer);
-
-    container.remove(TextRenderer);
-    container.remove(MeshRenderer);
-    // container.remove(GroupRenderer);
-    container.remove(ShapeRenderer);
-    container.remove(RendererFactory);
-
-    container.remove(SDFMesh);
-    container.remove(InstancedLineMesh);
-    container.remove(LineMesh);
-    container.remove(FillMesh);
-    container.remove(ImageMesh);
-    container.remove(TextMesh);
-    container.remove(MeshMesh);
-    container.remove(MeshFactory);
-
-    container.remove(RenderGraphPlugin);
-    container.remove(PickingPlugin);
     container.remove(WebGLRendererPluginOptions);
-    // @ts-ignore
-    // container.container.unload(containerModule);
-    // container.unload(containerModule);
+    container.unload(containerModule);
   }
 
   getDevice() {

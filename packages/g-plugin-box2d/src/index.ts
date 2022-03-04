@@ -27,10 +27,7 @@ export class Plugin implements RendererPlugin {
   }
   destroy(container: Syringe.Container): void {
     container.remove(Box2DPluginOptions);
-    container.remove(Box2DPlugin);
-    // @ts-ignore
-    // container.container.unload(containerModule);
-    // container.unload(containerModule);
+    container.unload(containerModule);
   }
 
   applyForce(object: DisplayObject, force: [number, number], point: [number, number]) {

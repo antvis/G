@@ -12,6 +12,6 @@ export class Plugin implements RendererPlugin {
     container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
-    container.remove(DOMInteractionPlugin);
+    container.unload(containerModule);
   }
 }

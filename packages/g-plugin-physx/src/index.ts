@@ -15,9 +15,6 @@ export class Plugin implements RendererPlugin {
     container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
-    container.remove(PhysXPlugin);
-    // @ts-ignore
-    // container.container.unload(containerModule);
-    // container.unload(containerModule);
+    container.unload(containerModule);
   }
 }

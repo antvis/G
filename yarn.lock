@@ -21490,10 +21490,10 @@ makeerror@1.0.12:
   dependencies:
     tmpl "1.0.5"
 
-mana-syringe@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/mana-syringe/-/mana-syringe-0.2.2.tgz#5bb973a778c9c91277e6f4fa3cfda8df618aa4ba"
-  integrity sha512-Sv5r0/PrQRq4pW+9lDicGsEPzPLkd1PwjTs5zHUV1I293S3alkBNyuSjktVeBploofH8MAMLd4DS2crwct48wg==
+mana-syringe@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/mana-syringe/-/mana-syringe-0.3.0.tgz#b54cfd669374753148a72c490b2245e3ad34606d"
+  integrity sha512-2CBMyvv+41krXZvPQVQRPvJuknkgte3FV+8dIJ6rMRv6QUvXZd+v0gTBKEU6oDRaP6XrZctLXEhgLvUvkMmwlg==
   dependencies:
     inversify "^5.0.1"
 

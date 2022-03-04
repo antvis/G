@@ -52,7 +52,6 @@ export class Plugin implements RendererPlugin {
     container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
-    container.remove(PointInPathPickerFactory);
-    container.remove(CanvasPickerPlugin);
+    container.unload(containerModule);
   }
 }

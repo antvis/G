@@ -51,7 +51,7 @@
   "peerDependencies": {
     "@antv/g": "^5.0.1",
     "@antv/g-plugin-gpgpu": "^1.0.1",
-    "mana-syringe": "^0.2.2"
+    "mana-syringe": "^0.3.0"
   },
   "scripts": {
     "pegjs": "node scripts/generate-parser"

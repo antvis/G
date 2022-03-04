@@ -335,3 +335,9 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 目前 [Text](/zh/docs/api/basic/text) 已经支持多行文本，自动换行。
 
 当文本作为子元素时，需要支持自动换行，即无需用户手动设置文本行宽。
+
+## 3D 图形是否可以使用布局？
+
+需要指定一个平面，然后才能应用 Yoga 这样的 2D 布局引擎。
+
+例如 [react-three-flex](https://github.com/pmndrs/react-three-flex) 中使用 `xy` `yz` `xz`。

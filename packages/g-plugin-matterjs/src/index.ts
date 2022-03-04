@@ -28,10 +28,7 @@ export class Plugin implements RendererPlugin {
   }
   destroy(container: Syringe.Container): void {
     container.remove(MatterJSPluginOptions);
-    container.remove(MatterJSPlugin);
-    // @ts-ignore
-    // container.container.unload(containerModule);
-    // container.unload(containerModule);
+    container.unload(containerModule);
   }
 
   applyForce(object: DisplayObject, force: [number, number], point: [number, number]) {

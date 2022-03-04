@@ -110,17 +110,6 @@ export class Plugin implements RendererPlugin {
     container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
-    // @ts-ignore
-    // container.unload(containerModule);
-    container.remove(ImagePool);
-    container.remove(RBushRoot);
-    container.remove(DefaultRenderer);
-    container.remove(ImageRenderer);
-    container.remove(TextRenderer);
-    container.remove(StyleRenderer);
-    container.remove(StyleRendererFactory);
-    container.remove(GradientPool);
-    container.remove(CanvasRendererPlugin);
-    container.remove(LoadImagePlugin);
+    container.unload(containerModule);
   }
 }

@@ -375,6 +375,7 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   private loadCommonContainerModule() {
+    this.container.unload(commonContainerModule);
     this.container.load(commonContainerModule, true);
   }
 
