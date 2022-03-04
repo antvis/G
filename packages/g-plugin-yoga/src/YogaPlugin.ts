@@ -1,6 +1,6 @@
 import { inject, singleton } from 'mana-syringe';
 import {
-  DisplayObjectPool,
+  AABB,
   RenderingService,
   RenderingPlugin,
   RenderingPluginContribution,
@@ -8,9 +8,9 @@ import {
   RenderingContext,
   ElementEvent,
   DisplayObject,
-  IElement,
+  SHAPE,
 } from '@antv/g';
-import type { Element, FederatedEvent } from '@antv/g';
+import type { FederatedEvent } from '@antv/g';
 import Yoga, {
   YogaNode,
   FLEX_DIRECTION_ROW,
@@ -51,13 +51,13 @@ export class YogaPlugin implements RenderingPlugin {
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
-  @inject(DisplayObjectPool)
-  private displayObjectPool: DisplayObjectPool;
-
   @inject(YogaPluginOptions)
   private options: YogaPluginOptions;
 
+  // displayObject.entity -> YogaNode
   private nodes: Record<number, YogaNode> = {};
+
+  private needRecalculateLayout = true;
 
   apply(renderingService: RenderingService) {
     renderingService.hooks.init.tap(YogaPlugin.tag, () => {
@@ -85,67 +85,82 @@ export class YogaPlugin implements RenderingPlugin {
         ElementEvent.ATTRIBUTE_CHANGED,
         handleAttributeChanged,
       );
-
-      // destroy all nodes
-      Object.keys(this.nodes).forEach((key) => {
-        const node = this.nodes[key] as Yoga.YogaNode;
-        Yoga.Node.destroy(node);
-      });
-      this.nodes = {};
     });
+
+    // const printYogaTree = (node: YogaNode) => {
+    //   console.log(node);
+
+    //   const num = node.getChildCount();
+    //   for (let i = 0; i < num; i++) {
+    //     const child = node.getChild(i);
+    //     printYogaTree(child);
+    //   }
+    // };
 
     renderingService.hooks.beginFrame.tap(YogaPlugin.tag, () => {
-      this.toSync.forEach((object) => {
-        const node = this.nodes[object.entity];
-        if (node) {
-          const bounds = object.getBounds();
-          if (bounds) {
-            const [minX, minY] = bounds.getMin();
-            const [maxX, maxY] = bounds.getMax();
-            node.setWidth(maxX - minX);
-            node.setHeight(maxY - minY);
-            node.calculateLayout();
+      if (this.needRecalculateLayout) {
+        // printYogaTree(this.nodes[this.renderingContext.root.entity]);
 
-            // console.log('calc', object.id);
-
-            this.updateDisplayObjectPosition(object, node);
+        this.renderingContext.root.forEach((object: DisplayObject) => {
+          const node = this.nodes[object.entity];
+          if (node) {
+            let bounds: AABB;
+            // flex container
+            if (this.isFlex(object)) {
+              bounds = object.getGeometryBounds();
+            } else {
+              bounds = object.getBounds();
+            }
+            if (bounds) {
+              const [minX, minY] = bounds.getMin();
+              const [maxX, maxY] = bounds.getMax();
+              node.setWidth(maxX - minX);
+              node.setHeight(maxY - minY);
+            }
           }
-        }
-      });
-      this.toSync.clear();
+        });
+        this.renderingContext.root.forEach((object: DisplayObject) => {
+          const node = this.nodes[object.entity];
+          node.calculateLayout();
+          this.updateDisplayObjectPosition(object, node);
+        });
+        this.needRecalculateLayout = false;
+      }
     });
 
+    /**
+     * create YogaNode for everty displayObject
+     */
     const handleMounted = (e: FederatedEvent) => {
       const target = e.target as DisplayObject;
 
       const node = Yoga.Node.create();
       this.nodes[target.entity] = node;
 
-      // default values
+      // set default values
       node.setFlexDirection(FLEX_DIRECTION_ROW);
       node.setAlignItems(ALIGN_FLEX_START);
       node.setAlignContent(ALIGN_FLEX_START);
       node.setWidth('auto');
       node.setHeight('auto');
 
-      // sync YogaNode
-      const needRecalculateLayout = this.syncAttributes(target, target.parsedStyle);
-      // if (needRecalculateLayout) {
-      //   this.requestLayoutUpdate(target);
-      // }
+      // sync YogaNode attributes
+      this.syncAttributes(target, target.parsedStyle);
+
+      const parent = target.parentElement as DisplayObject;
+      const parentNode = this.nodes[parent.entity];
+      if (parentNode) {
+        const i = parent.children.indexOf(target);
+        parentNode.insertChild(node, i);
+      }
     };
 
+    /**
+     * destroy YogaNode
+     */
     const handleUnmounted = (e: FederatedEvent) => {
       const target = e.target as DisplayObject;
-      const parent = target.parentElement as DisplayObject;
-      if (parent) {
-        const parentNode = this.nodes[parent.entity];
-        // if (parentNode) {
-        //   this.requestLayoutUpdate(parent);
-        // }
-      }
-
-      const node = this.nodes[target.entity];
+      const node = this.nodes[(target as DisplayObject).entity];
       if (node) {
         Yoga.Node.destroy(node);
         delete this.nodes[target.entity];
@@ -154,34 +169,40 @@ export class YogaPlugin implements RenderingPlugin {
 
     const handleInserted = (e: FederatedEvent) => {
       const child = e.target as DisplayObject;
-      const { parent, index } = e.detail;
 
-      const childNode = this.nodes[child.entity];
-      const parentNode = this.nodes[parent.entity];
+      // build subtree with YogaNode
+      child.forEach((object: DisplayObject) => {
+        const parent = object.parentElement as DisplayObject;
+        const childNode = this.nodes[object.entity];
+        const parentNode = this.nodes[parent.entity];
+        const i = parent.children.indexOf(object);
 
-      parentNode.insertChild(childNode, index || parentNode.getChildCount());
+        if (!parentNode.getChild(i)) {
+          parentNode.insertChild(childNode, i);
+        }
+      });
     };
 
     const handleRemoved = (e: FederatedEvent) => {
       const child = e.target as DisplayObject;
-      const parent = e.detail.parent as DisplayObject;
 
-      const childNode = this.nodes[child.entity];
-      const parentNode = this.nodes[parent.entity];
-
-      parentNode.removeChild(childNode);
+      child.forEach((object: DisplayObject) => {
+        const parent = object.parentElement as DisplayObject;
+        const childNode = this.nodes[object.entity];
+        const parentNode = this.nodes[parent.entity];
+        parentNode.removeChild(childNode);
+      });
     };
 
     const handleAttributeChanged = (e: FederatedEvent) => {
       const target = e.target as DisplayObject;
-      const node = this.nodes[target.entity];
       const { attributeName, newValue } = e.detail;
       const needRecalculateLayout = this.syncAttributes(target, {
         [attributeName]: newValue,
       });
 
       if (needRecalculateLayout) {
-        this.requestLayoutUpdate(target);
+        this.needRecalculateLayout = true;
       }
     };
 
@@ -191,21 +212,8 @@ export class YogaPlugin implements RenderingPlugin {
       if (object.ownerDocument?.documentElement !== this.renderingContext.root) {
         return;
       }
-
-      object.forEach((node: DisplayObject) => {
-        this.pushToSync([node]);
-      });
-
-      // @ts-ignore
-      this.pushToSync(e.composedPath().slice(0, -2));
+      this.needRecalculateLayout = true;
     };
-  }
-
-  private toSync = new Set<DisplayObject>();
-  private pushToSync(list: DisplayObject[]) {
-    list.forEach((i) => {
-      this.toSync.add(i);
-    });
   }
 
   /**
@@ -340,42 +348,27 @@ export class YogaPlugin implements RenderingPlugin {
     return needRecalculateLayout;
   }
 
-  private findFlexRoot(object: DisplayObject): DisplayObject {
-    let currentNode: IElement = object;
-    while (currentNode.parentElement) {
-      if (currentNode.parentElement?.parsedStyle?.display === 'flex') {
-        return currentNode.parentElement as DisplayObject;
-      }
-      currentNode = currentNode.parentElement;
-    }
-    return null;
-  }
-
-  private updateLayout(object: DisplayObject): void {
-    const node = this.nodes[object.entity];
-    if (node) {
-      node.calculateLayout();
-      this.updateDisplayObjectPosition(object, node);
-    }
-
-    object.children.forEach((child: DisplayObject) => {
-      this.updateLayout(child);
-    });
-  }
-
-  private requestLayoutUpdate(object: DisplayObject) {
-    const root = this.findFlexRoot(object);
-    this.updateLayout(root || object);
+  private isFlex(object: DisplayObject) {
+    return object?.parsedStyle?.display === 'flex';
   }
 
   private updateDisplayObjectPosition(object: DisplayObject, node: Yoga.YogaNode) {
-    const isInFlexContainer = object?.parentElement?.parsedStyle?.display === 'flex';
+    const isInFlexContainer = this.isFlex(object?.parentElement as DisplayObject);
     if (isInFlexContainer) {
       const layout = node.getComputedLayout();
-      const { top, left } = layout;
-      object.setLocalPosition(left, top);
+      const { top, left, width, height, bottom, right } = layout;
 
-      // console.log(object.id, layout);
+      // update size, only Rect & Image can be updated
+      object.style.width = width;
+      object.style.height = height;
+      // reset origin to top-left
+      object.parsedStyle.origin = [0, 0];
+      if (object.nodeName === SHAPE.Text) {
+        object.parsedStyle.textBaseline = 'top';
+      }
+
+      // update local position
+      object.setLocalPosition(left, top);
     }
   }
 }

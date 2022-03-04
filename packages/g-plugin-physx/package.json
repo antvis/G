@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-physx",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A G plugin for PhysX",
   "main": "lib/index.js",
   "module": "es/index.js",

@@ -2,6 +2,41 @@
 
 以下版本号以 @antv/g 为准。
 
+## [5.0.14] - 2022-3-4
+
+-   @antv/g-canvas@1.0.13
+-   @antv/g-components@1.0.11
+-   @antv/g-math@1.0.11
+-   @antv/g-plugin-3d@1.0.15
+-   @antv/g-plugin-box2d@1.0.4
+-   @antv/g-plugin-canvas-picker@1.0.11
+-   @antv/g-plugin-canvas-renderer@1.0.11
+-   @antv/g-plugin-control@1.0.12
+-   @antv/g-plugin-css-select@1.0.11
+-   @antv/g-plugin-dom-interaction@1.0.11
+-   @antv/g-plugin-gpgpu@1.0.12
+-   @antv/g-plugin-html-renderer@1.0.12
+-   @antv/g-plugin-matterjs@1.0.1
+-   @antv/g-plugin-physx@1.0.4
+-   @antv/g-plugin-svg-picker@1.0.11
+-   @antv/g-plugin-svg-renderer@1.0.11
+-   @antv/g-plugin-webgl-renderer@1.0.17
+-   @antv/g-plugin-yoga@1.0.1
+-   @antv/g-shader-components@1.0.9
+-   @antv/g-svg@1.0.11
+-   @antv/g-webgl@1.0.17
+-   @antv/g-webgpu-compiler@1.0.12
+-   @antv/g@5.0.14
+-   @antv/react-g@1.0.7
+
+### 新增特性
+
+-   [g-plugin-yoga] 支持 Yoga 布局引擎 https://g-next.antv.vision/zh/docs/plugins/yoga
+
+### Bug 修复
+
+-   [g-webgl] WebGL2 首屏渲染白屏
+
 ## [5.0.13] - 2022-2-28
 
 -   @antv/g-canvas@1.0.12
