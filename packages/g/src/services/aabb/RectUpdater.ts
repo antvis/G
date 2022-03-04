@@ -8,6 +8,7 @@ import { SHAPE } from '../../types';
   token: [
     { token: GeometryAABBUpdater, named: SHAPE.Rect },
     { token: GeometryAABBUpdater, named: SHAPE.Image },
+    { token: GeometryAABBUpdater, named: SHAPE.Group },
   ],
 })
 export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {

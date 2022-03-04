@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Rect, Line, Polyline, Polygon, Circle, Image, Text } from '@antv/g';
+import { Canvas, CanvasEvent, Rect, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -7,12 +7,14 @@ import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 const canvasRenderer = new CanvasRenderer();
-// const webglRenderer = new WebGLRenderer();
-// const svgRenderer = new SVGRenderer();
+const webglRenderer = new WebGLRenderer();
+const svgRenderer = new SVGRenderer();
 
-canvasRenderer.registerPlugin(new PluginYoga());
-// webglRenderer.registerPlugin(new PluginYoga());
-// svgRenderer.registerPlugin(new PluginYoga());
+const plugin = new PluginYoga();
+
+canvasRenderer.registerPlugin(plugin);
+webglRenderer.registerPlugin(plugin);
+svgRenderer.registerPlugin(plugin);
 
 const canvas = new Canvas({
   container: 'container',
@@ -21,6 +23,7 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
+// you can use Group if you want this container invisible
 const root = new Rect({
   id: 'root',
   style: {
@@ -41,30 +44,33 @@ const node1 = new Rect({
     fill: 'white',
     stroke: 'grey',
     lineWidth: 1,
+    opacity: 0.8,
     width: 100,
     height: 100,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    // alignSelf: 'center'
   },
 });
-// node1.appendChild(
-//   new Text({
-//     id: 'node1-text',
-//     style: {
-//       fontFamily: 'PingFang SC',
-//       fontSize: 32,
-//       fill: '#1890FF',
-//       text: '1',
-//     },
-//   }),
-// );
+node1.appendChild(
+  new Text({
+    id: 'node1-text',
+    style: {
+      fontFamily: 'PingFang SC',
+      fontSize: 32,
+      fill: '#1890FF',
+      text: '1',
+    },
+  }),
+);
 const node2 = new Rect({
   id: 'node2',
   style: {
     fill: 'white',
     stroke: 'grey',
     lineWidth: 1,
+    opacity: 0.8,
     width: 100,
     height: 100,
     display: 'flex',
@@ -72,17 +78,17 @@ const node2 = new Rect({
     alignItems: 'center',
   },
 });
-// node2.appendChild(
-//   new Text({
-//     id: 'node2-text',
-//     style: {
-//       fontFamily: 'PingFang SC',
-//       fontSize: 32,
-//       fill: '#1890FF',
-//       text: '2',
-//     },
-//   }),
-// );
+node2.appendChild(
+  new Text({
+    id: 'node2-text',
+    style: {
+      fontFamily: 'PingFang SC',
+      fontSize: 32,
+      fill: '#1890FF',
+      text: '2',
+    },
+  }),
+);
 root.appendChild(node1);
 root.appendChild(node2);
 
@@ -95,7 +101,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }
@@ -116,17 +122,63 @@ rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onCha
 rendererFolder.open();
 
 const layoutFolder = gui.addFolder('Layout');
+const flexFolder = gui.addFolder('Flex');
 const config = {
+  flexDirection: 'row',
+  flexWrap: 'no-wrap',
   justifyContent: 'center',
   alignItems: 'stretch',
+  alignContent: 'flex-start',
   width: 500,
   height: 300,
   paddingTop: 0,
   paddingRight: 0,
   paddingBottom: 0,
   paddingLeft: 0,
-  appendChild: () => {},
+  appendChild: () => {
+    const num = root.children.length;
+    const id = num + 1;
+    const rect = new Rect({
+      id: `node${id}`,
+      style: {
+        fill: 'white',
+        stroke: 'grey',
+        lineWidth: 1,
+        opacity: 0.8,
+        width: 100,
+        height: 100,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+    });
+    const text = new Text({
+      id: `node${id}-text`,
+      style: {
+        fontFamily: 'PingFang SC',
+        fontSize: 32,
+        fill: '#1890FF',
+        text: `${id}`,
+      },
+    });
+    rect.appendChild(text);
+    root.appendChild(rect);
+  },
+  removeChild: () => {
+    const num = root.children.length;
+    if (num) {
+      root.removeChild(root.children[num - 1]);
+    }
+  },
 };
+flexFolder
+  .add(config, 'flexDirection', ['row', 'column', 'row-reverse', 'column-reverse'])
+  .onChange((flexDirection) => {
+    root.style.flexDirection = flexDirection;
+  });
+flexFolder.add(config, 'flexWrap', ['wrap', 'no-wrap', 'wrap-reverse']).onChange((flexWrap) => {
+  root.style.flexWrap = flexWrap;
+});
 layoutFolder
   .add(config, 'justifyContent', [
     'flex-start',
@@ -153,6 +205,18 @@ layoutFolder
   .onChange((alignItems) => {
     root.style.alignItems = alignItems;
   });
+layoutFolder
+  .add(config, 'alignContent', [
+    'stretch',
+    'center',
+    'flex-start',
+    'flex-end',
+    'space-between',
+    'space-around',
+  ])
+  .onChange((alignContent) => {
+    root.style.alignContent = alignContent;
+  });
 layoutFolder.add(config, 'width', 200, 600).onChange((width) => {
   root.style.width = width;
 });
@@ -171,3 +235,5 @@ layoutFolder.add(config, 'paddingBottom', 0, 50).onChange((paddingBottom) => {
 layoutFolder.add(config, 'paddingLeft', 0, 50).onChange((paddingLeft) => {
   root.style.paddingLeft = paddingLeft;
 });
+layoutFolder.add(config, 'appendChild').name('appendChild');
+layoutFolder.add(config, 'removeChild').name('removeChild');

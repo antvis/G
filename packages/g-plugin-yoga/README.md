@@ -18,17 +18,19 @@ renderer.registerPlugin(new PluginYoga());
 
 # 使用方式
 
-声明一个使用 flex 布局的 Group：
+声明一个使用 flex 布局的 Rect
 
 ```js
-const group = new Group({
+const container = new Rect({
     style: {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        width: 500,
+        height: 300,
     },
 });
 
-group.appendChild(rect1);
-group.appendChild(rect2);
+container.appendChild(child1);
+container.appendChild(child2);
 ```
