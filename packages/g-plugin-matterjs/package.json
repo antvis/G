@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-matterjs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A G plugin for matter.js physics engine",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -36,8 +36,8 @@
     "tslib": "^2.3.1"
   },
   "devDependencies": {
-    "@types/matter-js": "^0.17.7",
-    "@types/jest": "^25.0.0"
+    "@types/jest": "^25.0.0",
+    "@types/matter-js": "^0.17.7"
   },
   "peerDependencies": {
     "@antv/g": "^5.0.1",
