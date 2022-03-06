@@ -24,6 +24,7 @@ window.gPluginPhysx = require('@antv/g-plugin-physx');
 window.gPluginBox2d = require('@antv/g-plugin-box2d');
 window.gPluginMatterjs = require('@antv/g-plugin-matterjs');
 window.gPluginYoga = require('@antv/g-plugin-yoga');
+// window.gPluginYogaWasm = require('@antv/g-plugin-yoga-wasm');
 // compiler for GPGPU
 window.gWebgpuCompiler = require('@antv/g-webgpu-compiler');
 // window.webgpuGraph = require('@antv/webgpu-graph');

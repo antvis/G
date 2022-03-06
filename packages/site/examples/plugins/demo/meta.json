@@ -60,6 +60,20 @@
         "zh": "使用 Yoga 排版引擎 - 可用空间",
         "en": "Use Yoga layout engine - available space"
       }
+    },
+    {
+      "filename": "yoga-text.js",
+      "title": {
+        "zh": "使用 Yoga 排版引擎 - 文字排版",
+        "en": "Use Yoga layout engine - text"
+      }
+    },
+    {
+      "filename": "yoga-container-wasm.js",
+      "title": {
+        "zh": "使用 Yoga 排版引擎 - WASM 版",
+        "en": "Use Yoga layout engine - WASM"
+      }
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
-  "name": "@antv/g-plugin-yoga",
-  "version": "1.0.1",
-  "description": "A G plugin for Yoga layout engine",
+  "name": "@antv/g-plugin-yoga-wasm",
+  "version": "1.0.0",
+  "description": "A G plugin for Yoga layout engine, using a runtime WASM version",
   "main": "lib/index.js",
   "module": "es/index.js",
   "types": "es/index.d.ts",
@@ -32,8 +32,8 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "tslib": "^2.3.1",
-    "yoga-layout-prebuilt": "^1.10.0"
+    "@types/yoga-layout": "^1.9.4",
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@types/jest": "^25.0.0"

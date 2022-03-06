@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Rect, Text } from '@antv/g';
+import { Canvas, CanvasEvent, Rect, Text, Group } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Plugin as PluginYoga } from '@antv/g-plugin-yoga';
 import * as lil from 'lil-gui';
@@ -21,57 +21,65 @@ const root = new Rect({
     fill: '#C6E5FF',
     width: 500,
     height: 300,
-    display: 'flex',
     x: 50,
     y: 50,
+    display: 'flex',
+    padding: [10, 10, 10, 10],
   },
 });
 canvas.appendChild(root);
 
-const node1 = new Rect({
-  id: 'node1',
+const leftPanel = new Rect({
   style: {
     fill: 'white',
     stroke: 'grey',
     lineWidth: 1,
     opacity: 0.8,
-    width: 100,
-    height: 100,
     display: 'flex',
+    width: 'auto',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     flexGrow: 1,
+    marginRight: 10,
+    padding: [10, 10, 10, 10],
   },
 });
-node1.appendChild(
+leftPanel.appendChild(
   new Text({
-    id: 'node1-text',
     style: {
       fontFamily: 'PingFang SC',
       fontSize: 32,
       fill: '#1890FF',
-      text: '1',
+      text: '这是测试文字，这是测试文字，这是测试文字，这是测试文字',
+      wordWrap: true,
     },
   }),
 );
-const node2 = new Rect({
-  id: 'node2',
+const rightPanel = new Group({
+  style: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: 100,
+    height: '100%',
+  },
+});
+const node1 = new Rect({
   style: {
     fill: 'white',
     stroke: 'grey',
     lineWidth: 1,
     opacity: 0.8,
-    width: 100,
     height: 100,
+    width: '100%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    flexGrow: 1,
+    marginBottom: 10,
   },
 });
-node2.appendChild(
+node1.appendChild(
   new Text({
-    id: 'node2-text',
     style: {
       fontFamily: 'PingFang SC',
       fontSize: 32,
@@ -80,9 +88,34 @@ node2.appendChild(
     },
   }),
 );
+const node2 = new Rect({
+  style: {
+    fill: 'white',
+    stroke: 'grey',
+    lineWidth: 1,
+    opacity: 0.8,
+    width: '100%',
+    display: 'flex',
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+node2.appendChild(
+  new Text({
+    style: {
+      fontFamily: 'PingFang SC',
+      fontSize: 32,
+      fill: '#1890FF',
+      text: '3',
+    },
+  }),
+);
 
-root.appendChild(node1);
-root.appendChild(node2);
+root.appendChild(leftPanel);
+root.appendChild(rightPanel);
+rightPanel.appendChild(node1);
+rightPanel.appendChild(node2);
 
 // stats
 const stats = new Stats();
@@ -102,62 +135,6 @@ canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
 // GUI
 const gui = new lil.GUI({ autoPlace: false });
 $wrapper.appendChild(gui.domElement);
-
-const flexFolder1 = gui.addFolder("Node1's Flex");
-const config1 = {
-  flexGrow: 1,
-  flexShrink: 1,
-  maxWidth: 0,
-  minWidth: 0,
-  setMaxWidthNaN: () => {
-    node1.style.maxWidth = NaN;
-  },
-  setMinWidthNaN: () => {
-    node1.style.minWidth = NaN;
-  },
-};
-flexFolder1.add(config1, 'flexGrow', 0, 1).onChange((flexGrow) => {
-  node1.style.flexGrow = flexGrow;
-});
-flexFolder1.add(config1, 'flexShrink', 0, 1).onChange((flexShrink) => {
-  node1.style.flexShrink = flexShrink;
-});
-flexFolder1.add(config1, 'maxWidth', 0, 300).onChange((maxWidth) => {
-  node1.style.maxWidth = maxWidth;
-});
-flexFolder1.add(config1, 'setMaxWidthNaN').name('set maxWidth to NaN');
-flexFolder1.add(config1, 'minWidth', 0, 300).onChange((minWidth) => {
-  node1.style.minWidth = minWidth;
-});
-flexFolder1.add(config1, 'setMinWidthNaN').name('set minWidth to NaN');
-
-const flexFolder2 = gui.addFolder("Node2's Flex");
-const config2 = {
-  flexGrow: 1,
-  flexShrink: 1,
-  maxWidth: 0,
-  minWidth: 0,
-  setMaxWidthNaN: () => {
-    node2.style.maxWidth = NaN;
-  },
-  setMinWidthNaN: () => {
-    node2.style.minWidth = NaN;
-  },
-};
-flexFolder2.add(config2, 'flexGrow', 0, 1).onChange((flexGrow) => {
-  node2.style.flexGrow = flexGrow;
-});
-flexFolder2.add(config2, 'flexShrink', 0, 1).onChange((flexShrink) => {
-  node2.style.flexShrink = flexShrink;
-});
-flexFolder2.add(config2, 'maxWidth', 0, 300).onChange((maxWidth) => {
-  node2.style.maxWidth = maxWidth;
-});
-flexFolder2.add(config2, 'setMaxWidthNaN').name('set maxWidth to NaN');
-flexFolder2.add(config2, 'minWidth', 0, 300).onChange((minWidth) => {
-  node2.style.minWidth = minWidth;
-});
-flexFolder2.add(config2, 'setMinWidthNaN').name('set minWidth to NaN');
 
 const layoutConfig = {
   width: 500,

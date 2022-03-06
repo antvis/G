@@ -2,7 +2,7 @@ import { Canvas, CanvasEvent, Rect, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
-import { Plugin as PluginYoga } from '@antv/g-plugin-yoga';
+import { Plugin as PluginYogaWasm } from '@antv/g-plugin-yoga';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -10,7 +10,7 @@ const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
 
-const plugin = new PluginYoga();
+const plugin = new PluginYogaWasm();
 
 canvasRenderer.registerPlugin(plugin);
 webglRenderer.registerPlugin(plugin);
@@ -135,10 +135,6 @@ const config = {
   paddingRight: 0,
   paddingBottom: 0,
   paddingLeft: 0,
-  'paddingTop(percent)': 0,
-  'paddingRight(percent)': 0,
-  'paddingBottom(percent)': 0,
-  'paddingLeft(percent)': 0,
   appendChild: () => {
     const num = root.children.length;
     const id = num + 1;
@@ -238,18 +234,6 @@ layoutFolder.add(config, 'paddingBottom', 0, 50).onChange((paddingBottom) => {
 });
 layoutFolder.add(config, 'paddingLeft', 0, 50).onChange((paddingLeft) => {
   root.style.paddingLeft = paddingLeft;
-});
-layoutFolder.add(config, 'paddingTop(percent)', 0, 100).onChange((paddingTop) => {
-  root.style.paddingTop = `${paddingTop}%`;
-});
-layoutFolder.add(config, 'paddingRight(percent)', 0, 100).onChange((paddingRight) => {
-  root.style.paddingRight = `${paddingRight}%`;
-});
-layoutFolder.add(config, 'paddingBottom(percent)', 0, 100).onChange((paddingBottom) => {
-  root.style.paddingBottom = `${paddingBottom}%`;
-});
-layoutFolder.add(config, 'paddingLeft(percent)', 0, 100).onChange((paddingLeft) => {
-  root.style.paddingLeft = `${paddingLeft}%`;
 });
 layoutFolder.add(config, 'appendChild').name('appendChild');
 layoutFolder.add(config, 'removeChild').name('removeChild');

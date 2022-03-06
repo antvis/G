@@ -9,6 +9,7 @@ order: -1
 
 -   [容器相关配置](/zh/examples/plugins#yoga-container)
 -   [子元素相关配置](/zh/examples/plugins#yoga-child)
+-   [自适应布局](/zh/examples/plugins#yoga-available-space)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*B_DmQ6lzHcIAAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -59,8 +60,8 @@ const node2 = new Rect({
         height: 100,
     },
 });
-root.appendChild(node1);
-root.appendChild(node2);
+container.appendChild(node1);
+container.appendChild(node2);
 ```
 
 # 支持属性
@@ -125,7 +126,9 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 ### minWidth / minHeight / maxWidth / maxHeight
 
-最大最小约束，优先级高于其他属性。
+最大最小约束，优先级高于其他属性。可以配合 [flexGrow](/zh/docs/plugins/yoga#flexgrow) 使用。
+
+默认值为 NaN，即无约束。
 
 ### padding
 
@@ -212,7 +215,39 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qOimRKvKZ8UAAAAAAAAAAAAAARQnAQ" width="300px">
 
-### [WIP] flexBasis
+### flexGrow
+
+该属性是处理子元素在主轴上增加空间的问题。当 Flex 容器首次分配完子元素空间之后，如果还有剩余空间，它会按照这些子元素的 flexGrow 属性进行二次分配。
+
+默认值为 0，支持大于等于 0 的取值，作为分配剩余空间的权重。
+
+例如下图中，Node1 和 Node2 都设置了初始大小 `{ width: 100, height: 100 }`，但 Node1 额外设置了 `{ flexGrow: 1 }`，因此它将占据容器主轴上的全部剩余空间（总宽度 500 - Node2 宽度 100 = 400），效果上看就被“拉长”了：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*YCtYQL8IPwcAAAAAAAAAAAAAARQnAQ" width="300px">
+
+如果想让 Node1 和 Node2 平分空间，可以在 Node2 上也设置 `{ flexGrow: 1 }`。
+
+可以在该[示例](/zh/examples/plugins#yoga-available-space)中调整以观察效果。特别适合实现“自适应”布局，当容器宽度发生修改时，剩余空间也跟着改变。
+
+另外，剩余空间的分配也会考虑到子元素上 [min/maxWidth/Height](/zh/docs/plugins/yoga#minwidth--minheight--maxwidth--maxheight) 这样的约束条件，在该[示例](/zh/examples/plugins#yoga-available-space)中，Node1 同时设置了 `{ maxWidth: 200 }`，因此即使容器还有更多剩余空间，也不会分配给它（注意下图右侧容器的空白部分）：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fbvlTpdHR0IAAAAAAAAAAAAAARQnAQ" width="500px">
+
+同样，当剩余空间不足时，`minWidth` 也能做为一个下限，例如下图中 Node1 最小宽度设置为 50，因此即使容器宽度仅有 100，也将保证它的展示宽度：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*VpsQR72y3dsAAAAAAAAAAAAAARQnAQ" width="400px">
+
+### flexShrink
+
+该属性是处理子元素收缩的问题。如果容器中没有足够排列元素的空间，那么可以把子元素的 flexShrink 属性设置为正整数来缩小它所占空间到 flexBasis 以下。与 flexGrow 属性一样，可以赋予不同的值来控制子元素收缩的程度，即给 flexShrink 属性赋予更大的数值可以比赋予小数值的同级元素收缩程度更大。
+
+默认值为 1，支持大于等于 0 的取值。
+
+例如下图当容器宽度不足以容纳 Node1 和 Node2 设置的初始宽度时，会按照 flexShrink 进行缩放，两个字节点都设置为 1 因此缩放程度一致：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kf8jQKLjAA4AAAAAAAAAAAAAARQnAQ" width="300px">
+
+### flexBasis
 
 来自 [MDN 的说明](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#flex_%E5%85%83%E7%B4%A0%E4%B8%8A%E7%9A%84%E5%B1%9E%E6%80%A7)
 
@@ -220,15 +255,9 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 [Yoga 示例](https://yogalayout.com/docs/flex/)
 
-定义了该元素的空间大小。
+定义了该元素在主轴上的默认空间大小。
 
-### [WIP] flexShrink
-
-该属性是处理 flex 元素收缩的问题。
-
-### [WIP] flexGrow
-
-该属性是处理 flex 元素在主轴上增加空间的问题
+默认值为 NaN。
 
 ## Alignment
 
@@ -335,3 +364,9 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 目前 [Text](/zh/docs/api/basic/text) 已经支持多行文本，自动换行。
 
 当文本作为子元素时，需要支持自动换行，即无需用户手动设置文本行宽。
+
+## 3D 图形是否可以使用布局？
+
+需要指定一个平面，然后才能应用 Yoga 这样的 2D 布局引擎。
+
+例如 [react-three-flex](https://github.com/pmndrs/react-three-flex) 中使用 `xy` `yz` `xz`。

@@ -9,6 +9,7 @@ order: -1
 
 -   [容器相关配置](/zh/examples/plugins#yoga-container)
 -   [子元素相关配置](/zh/examples/plugins#yoga-child)
+-   [自适应布局](/zh/examples/plugins#yoga-available-space)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*B_DmQ6lzHcIAAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -59,8 +60,8 @@ const node2 = new Rect({
         height: 100,
     },
 });
-root.appendChild(node1);
-root.appendChild(node2);
+container.appendChild(node1);
+container.appendChild(node2);
 ```
 
 # 支持属性
@@ -113,23 +114,48 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 ### top / right / botton / left
 
-下图中 Node1 使用 `absolute` 进行绝对定位，`top` 和 `left` 设置为 10：
+支持绝对值与百分比，例如 `{ top: 10 }`、`{ top: '50%' }`。当传入百分比字符串时，相对于父元素的尺寸。
+
+例如下图中 Node1 使用 `absolute` 进行绝对定位，`top` 和 `left` 设置为 10：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*2zZaS6PlrOcAAAAAAAAAAAAAARQnAQ" width="300px">
 
+下图中 Node1 使用 `absolute` 进行绝对定位，`top` 取 `'50%'`，即父元素高度的一半：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zSqHQJWIH1UAAAAAAAAAAAAAARQnAQ" width="300px">
+
+下图中 Node1 使用 `absolute` 进行绝对定位，`top` 取 `-50`：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*xj7YT4DOTOEAAAAAAAAAAAAAARQnAQ" width="300px">
+
 ### width / height
 
-设置自身宽高尺寸，例如下图中 Node1 设置了一个稍大一些的长宽：
+设置自身宽高尺寸。默认值为 `'auto'`。
+
+支持百分比和绝对值，取百分比时相对于父元素尺寸。
+
+例如下图中 Node1 设置了一个稍大一些的长宽：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*GzGKRarp_EEAAAAAAAAAAAAAARQnAQ" width="300px">
 
 ### minWidth / minHeight / maxWidth / maxHeight
 
-最大最小约束，优先级高于其他属性。
+最大最小约束，优先级高于其他属性。可以配合 [flexGrow](/zh/docs/plugins/yoga#flexgrow) 使用。
+
+默认值为 NaN，即无约束。支持百分比和绝对值，取百分比时相对于父元素尺寸，例如 `{ minWidth: 50% }`。
+
+例如下图 Node1 设置了 `{ flexGrow: 1, maxWidth: 50% }`，因此它最多只能占据父元素宽度的一半：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*cUDJSI8WKNIAAAAAAAAAAAAAARQnAQ" width="300px">
 
 ### padding
 
-数据类型为 `[number, number, number, number]`，一次性设置上右下左的 padding。
+数据类型为 `[number | string, number | string, number | string, number | string]`，一次性设置上右下左的 padding。
+
+支持以下取值，可参考 [CSS padding 属性](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding)：
+
+-   绝对像素值，不支持负值，例如 `10`
+-   百分比字符串，不支持负值，例如 `'50%'`，取百分比时相对于**自身的宽度**
 
 例如以下两种写法等价：
 
@@ -147,7 +173,7 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 ### paddingAll
 
-数据类型为 `number`，统一设置上右下左的 padding。
+数据类型为 `number | string`，统一设置上右下左的 padding。
 
 ### paddingTop / paddingRight / paddingBottom / paddingLeft
 
@@ -155,19 +181,39 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 ### margin
 
-数据类型为 `[number, number, number, number]`，一次性设置上右下左的 margin。
+```ts
+type PixelsOrPercentage = number | string;
+type YogaSize = PixelsOrPercentage | 'auto';
+```
 
-例如下图中 Node1 设置了 `marginRight: 10`
+数据类型为 `[YogaSize, YogaSize, YogaSize, YogaSize]`，一次性设置上右下左的 margin。
+
+支持以下取值，可参考 [CSS margin 属性](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin)：
+
+-   绝对像素值，支持负值，例如 `10` `-50`
+-   百分比字符串，支持负值，例如 `'50%'` `'-20%'`，取百分比时相对于**父元素的宽度**
+-   `'auto'`，让布局引擎选择合适的外边距，可实现元素居中
+
+例如下图中 Node1 分别设置了 `marginRight: 10` 和 `marginLeft: -50`：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*6qPTRKwDtqsAAAAAAAAAAAAAARQnAQ" width="300px">
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qrzWT6TchH0AAAAAAAAAAAAAARQnAQ" width="300px">
+
+下图展示了 `marginTop: '50%'` 的效果，以父元素宽度（500）为基准：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Kh90SJPkqr4AAAAAAAAAAAAAARQnAQ" width="200px">
+
+下图展示了 `margin: [0, 'auto', 0, 'auto']` 的效果，让元素水平居中：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*GCpwRa6aFsIAAAAAAAAAAAAAARQnAQ" width="300px">
 
 ### marginAll
 
-数据类型为 `number`，统一设置上右下左的 margin。
+数据类型为 `YogaSize`，统一设置上右下左的 margin。详见 [margin](/zh/docs/plugins/yoga#margin)。
 
 ### marginTop / marginRight / marginBottom / marginLeft
 
-单独设置上右下左的 margin。
+单独设置上右下左的 margin。详见 [margin](/zh/docs/plugins/yoga#margin)。
 
 ### border
 
@@ -206,13 +252,45 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 -   no-wrap 默认值
 -   wrap-reverse
 
-在该[示例](/zh/examples/plugins#yoga-container)中，可以点击 `appendChild` 按钮向容器中添加子元素。下左图展示了容器默认 `no-wrap` 的效果，下右图设置为 `wrap` 自动换行：
+在该[示例](/zh/examples/plugins#yoga-container)中，可以点击 `appendChild` 按钮向容器中添加子元素。下左图展示了容器默认 `no-wrap` 的效果（注意由于不允许换行，子元素在宽度上被压缩了），下右图设置为 `wrap` 自动换行：
 
-<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PWBqQ6vbk68AAAAAAAAAAAAAARQnAQ" width="300px">
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*BUfETp4tDZAAAAAAAAAAAAAAARQnAQ" width="300px">
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qOimRKvKZ8UAAAAAAAAAAAAAARQnAQ" width="300px">
 
-### [WIP] flexBasis
+### flexGrow
+
+该属性是处理子元素在主轴上增加空间的问题。当 Flex 容器首次分配完子元素空间之后，如果还有剩余空间，它会按照这些子元素的 flexGrow 属性进行二次分配。
+
+默认值为 0，支持大于等于 0 的取值，作为分配剩余空间的权重。
+
+例如下图中，Node1 和 Node2 都设置了初始大小 `{ width: 100, height: 100 }`，但 Node1 额外设置了 `{ flexGrow: 1 }`，因此它将占据容器主轴上的全部剩余空间（总宽度 500 - Node2 宽度 100 = 400），效果上看就被“拉长”了：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*YCtYQL8IPwcAAAAAAAAAAAAAARQnAQ" width="300px">
+
+如果想让 Node1 和 Node2 平分空间，可以在 Node2 上也设置 `{ flexGrow: 1 }`。
+
+可以在该[示例](/zh/examples/plugins#yoga-available-space)中调整以观察效果。特别适合实现“自适应”布局，当容器宽度发生修改时，剩余空间也跟着改变。
+
+另外，剩余空间的分配也会考虑到子元素上 [min/maxWidth/Height](/zh/docs/plugins/yoga#minwidth--minheight--maxwidth--maxheight) 这样的约束条件，在该[示例](/zh/examples/plugins#yoga-available-space)中，Node1 同时设置了 `{ maxWidth: 200 }`，因此即使容器还有更多剩余空间，也不会分配给它（注意下图右侧容器的空白部分）：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fbvlTpdHR0IAAAAAAAAAAAAAARQnAQ" width="500px">
+
+同样，当剩余空间不足时，`minWidth` 也能做为一个下限，例如下图中 Node1 最小宽度设置为 50，因此即使容器宽度仅有 100，也将保证它的展示宽度：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*VpsQR72y3dsAAAAAAAAAAAAAARQnAQ" width="400px">
+
+### flexShrink
+
+该属性是处理子元素收缩的问题。如果容器中没有足够排列元素的空间，那么可以把子元素的 flexShrink 属性设置为正整数来缩小它所占空间到 flexBasis 以下。与 flexGrow 属性一样，可以赋予不同的值来控制子元素收缩的程度，即给 flexShrink 属性赋予更大的数值可以比赋予小数值的同级元素收缩程度更大。
+
+默认值为 1，支持大于等于 0 的取值。
+
+例如下图当容器宽度不足以容纳 Node1 和 Node2 设置的初始宽度时，会按照 flexShrink 进行缩放，两个字节点都设置为 1 因此缩放程度一致：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kf8jQKLjAA4AAAAAAAAAAAAAARQnAQ" width="300px">
+
+### flexBasis
 
 来自 [MDN 的说明](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#flex_%E5%85%83%E7%B4%A0%E4%B8%8A%E7%9A%84%E5%B1%9E%E6%80%A7)
 
@@ -220,15 +298,9 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 [Yoga 示例](https://yogalayout.com/docs/flex/)
 
-定义了该元素的空间大小。
+定义了该元素在主轴上的默认空间大小。
 
-### [WIP] flexShrink
-
-该属性是处理 flex 元素收缩的问题。
-
-### [WIP] flexGrow
-
-该属性是处理 flex 元素在主轴上增加空间的问题
+默认值为 NaN。
 
 ## Alignment
 
@@ -321,7 +393,9 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 ## 支持除绝对值之外的百分比吗？
 
-需要支持，实现中。例如使用相对于父元素百分比的宽高：
+支持。但不同属性使用百分比的参考值并不相同。
+
+例如 [width/height](/zh/docs/plugins/yoga#width--height) 相对于父元素的宽高：
 
 ```js
 {
@@ -335,6 +409,10 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 目前 [Text](/zh/docs/api/basic/text) 已经支持多行文本，自动换行。
 
 当文本作为子元素时，需要支持自动换行，即无需用户手动设置文本行宽。
+
+## 新增的属性是否支持动画？
+
+Flex 布局新增了很多新属性，例如 [padding](/zh/docs/plugins/yoga#padding) [margin](/zh/docs/plugins/yoga#margin) 等，在 CSS 中是可以对这些属性进行动画的。
 
 ## 3D 图形是否可以使用布局？
 
