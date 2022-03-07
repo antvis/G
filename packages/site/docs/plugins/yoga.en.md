@@ -428,11 +428,26 @@ type YogaSize = PixelsOrPercentage | 'auto';
 }
 ```
 
-## 文本自动换行
+## 是否支持文本自动换行？
 
 目前 [Text](/zh/docs/api/basic/text) 已经支持多行文本，自动换行，但需要用户手动设置 `wordWrapWidth`，超出后换行。
 
-在 Flex 布局中，当文本作为子元素时，无需用户手动设置文本行宽，只需要开启 `wordWrap` 即可：
+在 Flex 布局中，当文本作为子元素时，无需用户手动设置文本行宽，只需要开启 `wordWrap`，配合 `width` 即可：
+
+```js
+const text = new Text({
+    style: {
+        fontFamily: 'PingFang SC',
+        fontSize: 32,
+        fill: '#1890FF',
+        text: '这是测试文字，这是测试文字，这是测试文字，这是测试文字',
+        wordWrap: true, // 开启自动换行
+        width: '100%', // 行宽
+    },
+});
+```
+
+在该[示例](/zh/examples/plugins#yoga-text)中，可以随时改变需要换行文本的行宽，下图为 `width: '100%'` 的效果：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" width="300px">
 

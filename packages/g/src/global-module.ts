@@ -21,13 +21,10 @@ import {
   SceneGraphSelector,
   SceneGraphSelectorFactory,
 } from './services/SceneGraphSelector';
-import {
-  ParsedColorStyleProperty,
-  Interpolatable,
-  parseLengthOrPercent,
-  mergeDimensions,
-} from './property-handlers';
+import { parseLengthOrPercent, mergeDimensions } from './property-handlers';
 import type {
+  Interpolatable,
+  ParsedColorStyleProperty,
   StylePropertyParser,
   StylePropertyMerger,
   StylePropertyUpdater,
