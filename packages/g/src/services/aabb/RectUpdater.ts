@@ -12,21 +12,11 @@ import { SHAPE } from '../../types';
   ],
 })
 export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
-  update(attributes: ParsedImageStyleProps, object: Image) {
-    const { img, x = 0, y = 0, width, height } = attributes;
+  update(parsedStyle: ParsedImageStyleProps, object: Image) {
+    const { img, x = 0, y = 0, width, height } = parsedStyle;
 
     let contentWidth = 0;
     let contentHeight = 0;
-    // resize with HTMLImageElement's size
-    if (img && !isString(img)) {
-      if (!attributes.width) {
-        contentWidth = img.width;
-      }
-      if (!attributes.height) {
-        contentHeight = img.height;
-      }
-    }
-
     const { unit: widthUnit, value: widthValue } = width;
     const { unit: heightUnit, value: heightValue } = height;
     if (widthUnit === '' || widthUnit === 'px') {
@@ -34,6 +24,16 @@ export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
     }
     if (heightUnit === '' || heightUnit === 'px') {
       contentHeight = heightValue;
+    }
+
+    // resize with HTMLImageElement's size
+    if (img && !isString(img)) {
+      if (!contentWidth) {
+        contentWidth = img.width;
+      }
+      if (!contentHeight) {
+        contentHeight = img.height;
+      }
     }
 
     object.parsedStyle.widthInPixels = contentWidth;

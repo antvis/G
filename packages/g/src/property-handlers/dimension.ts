@@ -5,7 +5,7 @@ import { isFinite } from '@antv/util';
 
 export type LengthUnit = 'px' | '%';
 export type AngleUnit = 'deg' | 'rad' | 'turn';
-export type Unit = LengthUnit | AngleUnit | '';
+export type Unit = LengthUnit | AngleUnit | '' | 'auto';
 export interface ParsedElement {
   unit: Unit;
   value: number;
@@ -34,6 +34,8 @@ export function parseDimension(unitRegExp: RegExp, string: string): ParsedElemen
       // 0 -> 0%
       return { unit: '%', value: 0 };
     }
+  } else if (string === 'auto') {
+    return { unit: 'auto', value: 0 };
   }
 
   const matchedUnits: Unit[] = [];
@@ -96,6 +98,30 @@ const lengthUnits = 'px';
 export const parseLength = parseDimension.bind(null, new RegExp(lengthUnits, 'g'));
 export const parseLengthOrPercent = parseDimension.bind(null, new RegExp(lengthUnits + '|%', 'g'));
 export const parseAngle = parseDimension.bind(null, /deg|rad|grad|turn/g);
+
+export function parseLengthOrPercentList(list: (string | number)[]): ParsedElement[] {
+  return list.map(parseLengthOrPercent);
+}
+// export function mergeDimensionsLists(
+//   left: ParsedElement[],
+//   right: ParsedElement[],
+//   target: DisplayObject | null,
+// ): [ParsedElement[], ParsedElement[], (list: ParsedElement[]) => string] | undefined {
+//   if (left.length != right.length) {
+//     return;
+//   }
+
+//   return [
+//     leftValue,
+//     rightValue,
+//     (value: number) => {
+//       if (nonNegative) {
+//         value = Math.max(value, 0);
+//       }
+//       return numberToString(value) + unit;
+//     },
+//   ];
+// }
 
 export function convertPercentUnit(
   valueWithUnit: ParsedElement,

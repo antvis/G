@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Rect, Polygon, Image, Text } from '@antv/g';
+import { Canvas, CanvasEvent, Rect, Polygon, Image, Text, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Plugin as PluginYoga } from '@antv/g-plugin-yoga';
 import * as lil from 'lil-gui';
@@ -102,11 +102,18 @@ const polygon = new Polygon({
     lineWidth: 2,
   },
 });
+const circle = new Circle({
+  style: {
+    r: 20,
+    fill: '#1890FF',
+  },
+});
 
 root.appendChild(node1);
 root.appendChild(node2);
 root.appendChild(image);
 root.appendChild(polygon);
+root.appendChild(circle);
 
 // stats
 const stats = new Stats();

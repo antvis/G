@@ -85,8 +85,8 @@ root.appendChild(node2);
 
 node1.animate(
   [
-    { top: 0, left: 0, width: 100, margin: [0, 0, 0, 0], paddingLeft: 0 },
-    { top: 100, left: 100, width: 200, margin: [20, 20, 20, 20], paddingLeft: 50 },
+    { top: 0, left: 0, width: 100, marginAll: 0, paddingLeft: 0 },
+    { top: 100, left: 100, width: 200, marginAll: 20, paddingLeft: 50 },
   ],
   {
     duration: 1000,

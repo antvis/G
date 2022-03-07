@@ -5,8 +5,8 @@ import type { DisplayObjectConfig } from '../dom';
 import type { ParsedElement } from '../property-handlers';
 
 export interface RectStyleProps extends BaseStyleProps {
-  width: number;
-  height: number;
+  width: number | string;
+  height: number | string;
   radius?: number;
 }
 
@@ -23,8 +23,8 @@ export class Rect extends DisplayObject<RectStyleProps, ParsedRectStyleProps> {
     super({
       type: SHAPE.Rect,
       style: {
-        width: 0,
-        height: 0,
+        width: 'auto',
+        height: 'auto',
         ...style,
       },
       ...rest,

@@ -6,8 +6,8 @@ import type { ParsedElement } from '../property-handlers';
 
 export interface ImageStyleProps extends BaseStyleProps {
   img: string | HTMLImageElement;
-  width?: number;
-  height?: number;
+  width?: number | string;
+  height?: number | string;
 }
 export interface ParsedImageStyleProps extends ParsedBaseStyleProps {
   img: string | HTMLImageElement;
@@ -22,6 +22,8 @@ export class Image extends DisplayObject<ImageStyleProps, ParsedImageStyleProps>
       type: SHAPE.Image,
       style: {
         img: '',
+        width: 'auto',
+        height: 'auto',
         ...style,
       },
       ...rest,

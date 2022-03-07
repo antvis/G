@@ -3,6 +3,7 @@ import {
   RendererPlugin,
   parseNumber,
   parseLengthOrPercent,
+  parseLengthOrPercentList,
   clampedMergeNumbers,
   mergeDimensions,
   mergeNumberLists,
@@ -43,9 +44,11 @@ addPropertiesHandler<number, number>(
 );
 addPropertiesHandler<number[], number[]>(
   ['margin', 'padding'],
-  undefined,
   // @ts-ignore
-  mergeNumberLists,
+  parseLengthOrPercentList,
+  // @ts-ignore
+  // mergeNumberLists,
+  undefined,
   undefined,
 );
 

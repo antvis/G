@@ -9,6 +9,9 @@ import {
   ElementEvent,
   DisplayObject,
   SHAPE,
+  ParsedBaseStyleProps,
+  ParsedRectStyleProps,
+  ParsedTextStyleProps,
 } from '@antv/g';
 import type { FederatedEvent, ParsedElement } from '@antv/g';
 import Yoga, {
@@ -210,15 +213,16 @@ export class YogaPlugin implements RenderingPlugin {
   private resizeYogaNode(object: DisplayObject) {
     const node = this.nodes[object.entity];
     if (node) {
-      const { width, height } = object.style;
-
-      if (width || height) {
-        if (width) {
-          this.setWidth(node, width);
-        }
-        if (height) {
-          this.setHeight(node, height);
-        }
+      // block element use user-defined width/height
+      if (
+        object.nodeName === SHAPE.Group ||
+        object.nodeName === SHAPE.Rect ||
+        object.nodeName === SHAPE.Image
+      ) {
+        const { width = { unit: 'auto', value: 0 }, height = { unit: 'auto', value: 0 } } =
+          object.parsedStyle as ParsedRectStyleProps;
+        this.setWidth(node, width);
+        this.setHeight(node, height);
       } else {
         let bounds: AABB;
         // flex container
@@ -228,10 +232,19 @@ export class YogaPlugin implements RenderingPlugin {
           bounds = object.getBounds();
         }
         if (bounds) {
-          const [minX, minY] = bounds.getMin();
-          const [maxX, maxY] = bounds.getMax();
-          node.setWidth(maxX - minX);
-          node.setHeight(maxY - minY);
+          const [halfWidth, halfHeight] = bounds.halfExtents;
+          node.setWidth(halfWidth * 2);
+          node.setHeight(halfHeight * 2);
+        }
+
+        if (object.nodeName === SHAPE.Text) {
+          // @ts-ignore
+          const { wordWrap, width } = object.parsedStyle as ParsedTextStyleProps;
+
+          if (wordWrap) {
+            this.setWidth(node, width);
+            node.setHeightAuto();
+          }
         }
       }
     }
@@ -438,22 +451,13 @@ export class YogaPlugin implements RenderingPlugin {
 
   private setWidth(node: YogaNode, parsed: ParsedElement) {
     const { unit, value } = parsed;
-
-    console.log(unit, value);
-
     if (unit === '' || unit === 'px') {
       node.setWidth(value);
     } else if (unit === '%') {
       node.setWidthPercent(value);
+    } else if (unit === 'auto') {
+      node.setWidthAuto();
     }
-
-    // if (value === 'auto') {
-    //   node.setWidthAuto();
-    // } else if (typeof value === 'string') {
-    //   node.setWidthPercent(this.getPercent(value));
-    // } else {
-    //   node.setWidth(value);
-    // }
   }
   private setHeight(node: YogaNode, parsed: ParsedElement) {
     const { unit, value } = parsed;
@@ -462,14 +466,9 @@ export class YogaPlugin implements RenderingPlugin {
       node.setHeight(value);
     } else if (unit === '%') {
       node.setHeightPercent(value);
+    } else if (unit === 'auto') {
+      node.setHeightAuto();
     }
-    // if (value === 'auto') {
-    //   node.setHeightAuto();
-    // } else if (typeof value === 'string') {
-    //   node.setHeightPercent(this.getPercent(value));
-    // } else {
-    //   node.setHeight(value);
-    // }
   }
   private setMaxWidth(node: YogaNode, parsed: ParsedElement) {
     const { unit, value } = parsed;
@@ -508,18 +507,23 @@ export class YogaPlugin implements RenderingPlugin {
     const isInFlexContainer = this.isFlex(object?.parentElement as DisplayObject);
     if (isInFlexContainer) {
       const layout = node.getComputedLayout();
-      const { top, left, width, height } = layout;
+      let { top, left, width, height } = layout;
       // update size, only Rect & Image can be updated
       object.style.yogaUpdatingFlag = true;
       object.style.width = width;
       object.style.height = height;
       object.style.yogaUpdatingFlag = false;
-      // reset origin to top-left
-      object.parsedStyle.origin = [0, 0];
+
+      const { anchor = [0, 0] } = object.parsedStyle as ParsedBaseStyleProps;
+
+      // calculate local position instead of modify origin directly
+      left += anchor[0] * width;
+      top += anchor[1] * height;
+
       if (object.nodeName === SHAPE.Text) {
-        object.parsedStyle.textBaseline = 'top';
-        if (object.parsedStyle.wordWrap) {
-          object.parsedStyle.wordWrapWidth = width;
+        object.style.textBaseline = 'top';
+        if (object.style.wordWrap) {
+          object.style.wordWrapWidth = width;
         }
       }
 

@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Rect, Text, Group } from '@antv/g';
+import { Canvas, CanvasEvent, Rect, Text, Group, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Plugin as PluginYoga } from '@antv/g-plugin-yoga';
 import * as lil from 'lil-gui';
@@ -24,11 +24,44 @@ const root = new Rect({
     x: 50,
     y: 50,
     display: 'flex',
+    flexDirection: 'column',
     padding: [10, 10, 10, 10],
   },
 });
 canvas.appendChild(root);
 
+const topPanel = new Rect({
+  style: {
+    fill: 'white',
+    stroke: 'grey',
+    lineWidth: 1,
+    opacity: 0.8,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: 60,
+    padding: [10, 10, 10, 10],
+    marginBottom: 10,
+  },
+});
+topPanel.appendChild(
+  new Text({
+    style: {
+      fontFamily: 'PingFang SC',
+      fontSize: 24,
+      fill: '#1890FF',
+      text: '1',
+    },
+  }),
+);
+const bottomPanel = new Group({
+  style: {
+    display: 'flex',
+    width: '100%',
+    flexGrow: 1,
+  },
+});
 const leftPanel = new Rect({
   style: {
     fill: 'white',
@@ -36,30 +69,28 @@ const leftPanel = new Rect({
     lineWidth: 1,
     opacity: 0.8,
     display: 'flex',
-    width: 'auto',
     height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
     flexGrow: 1,
     marginRight: 10,
     padding: [10, 10, 10, 10],
   },
 });
-leftPanel.appendChild(
-  new Text({
-    style: {
-      fontFamily: 'PingFang SC',
-      fontSize: 32,
-      fill: '#1890FF',
-      text: '这是测试文字，这是测试文字，这是测试文字，这是测试文字',
-      wordWrap: true,
-    },
-  }),
-);
+const leftPanelText = new Text({
+  style: {
+    fontFamily: 'PingFang SC',
+    fontSize: 32,
+    fill: '#1890FF',
+    text: '这是测试文字，这是测试文字，这是测试文字，这是测试文字',
+    wordWrap: true,
+    width: '100%',
+  },
+});
+leftPanel.appendChild(leftPanelText);
 const rightPanel = new Group({
   style: {
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
     width: 100,
     height: '100%',
   },
@@ -111,11 +142,21 @@ node2.appendChild(
     },
   }),
 );
+const circle = new Circle({
+  style: {
+    r: 20,
+    fill: '#1890FF',
+    marginTop: 10,
+  },
+});
 
-root.appendChild(leftPanel);
-root.appendChild(rightPanel);
+root.appendChild(topPanel);
+root.appendChild(bottomPanel);
+bottomPanel.appendChild(leftPanel);
+bottomPanel.appendChild(rightPanel);
 rightPanel.appendChild(node1);
 rightPanel.appendChild(node2);
+rightPanel.appendChild(circle);
 
 // stats
 const stats = new Stats();
@@ -146,4 +187,12 @@ layoutFolder.add(layoutConfig, 'width', 100, 600).onChange((width) => {
 });
 layoutFolder.add(layoutConfig, 'height', 200, 500).onChange((height) => {
   root.style.height = height;
+});
+
+const leftConfig = {
+  'width(percent)': 100,
+};
+const leftFolder = gui.addFolder("LeftPanel's Layout");
+leftFolder.add(leftConfig, 'width(percent)', 0, 100).onChange((width) => {
+  leftPanelText.style.width = `${width}%`;
 });

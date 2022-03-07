@@ -3,6 +3,7 @@ import type { DisplayObjectConfig } from '../dom/interfaces';
 import { SHAPE, LINE_JOIN, LINE_CAP } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
+import type { ParsedElement } from '../property-handlers';
 
 export interface TextStyleProps extends BaseStyleProps {
   text: string;
@@ -91,7 +92,7 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
         stroke: '#000',
         whiteSpace: 'pre',
         wordWrap: false,
-        wordWrapWidth: 100,
+        wordWrapWidth: 0,
         leading: 0,
         ...style,
       },
