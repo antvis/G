@@ -61,14 +61,14 @@ export class ImageMesh extends Instanced {
     // use default common attributes
     super.createGeometry(objects);
 
-    const instanced = [];
-    const interleaved = [];
-    const indices = [];
+    const instanced: number[] = [];
+    const interleaved: number[] = [];
+    const indices: number[] = [];
     objects.forEach((object, i) => {
       const image = object as ImageShape;
       const offset = i * 4;
-      const { width, height } = image.parsedStyle;
-      instanced.push(width, height);
+      const { widthInPixels, heightInPixels } = image.parsedStyle;
+      instanced.push(widthInPixels, heightInPixels);
       interleaved.push(0, 0, 1, 0, 1, 1, 0, 1);
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
     });
@@ -110,14 +110,14 @@ export class ImageMesh extends Instanced {
     this.updateBatchedAttribute(object, index, name, value);
 
     const image = object as ImageShape;
-    const { width, height } = image.parsedStyle;
+    const { widthInPixels, heightInPixels } = image.parsedStyle;
 
     if (name === 'width' || name === 'height') {
       this.geometry.updateVertexBuffer(
         2,
         ImageVertexAttributeLocation.SIZE,
         index,
-        new Uint8Array(new Float32Array([width, height]).buffer),
+        new Uint8Array(new Float32Array([widthInPixels, heightInPixels]).buffer),
       );
     } else if (name === 'img') {
       const map = this.texturePool.getOrCreateTexture(this.device, value, undefined, () => {

@@ -69,6 +69,13 @@
       }
     },
     {
+      "filename": "yoga-animation.js",
+      "title": {
+        "zh": "使用 Yoga 排版引擎 - 对属性应用动画",
+        "en": "Use Yoga layout engine - use animation"
+      }
+    },
+    {
       "filename": "yoga-container-wasm.js",
       "title": {
         "zh": "使用 Yoga 排版引擎 - WASM 版",

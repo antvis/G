@@ -1,7 +1,7 @@
 import type { vec2, vec3 } from 'gl-matrix';
 import type { ParsedPathStyleProps, ParsedPolylineStyleProps } from './display-objects';
 import type { DisplayObject } from './display-objects';
-import type { ParsedColorStyleProperty } from './property-handlers';
+import type { ParsedColorStyleProperty, ParsedElement } from './property-handlers';
 import type { IRenderer } from './AbstractRenderer';
 
 export enum SHAPE {
@@ -157,8 +157,8 @@ export interface ParsedBaseStyleProps
   points?: ParsedPolylineStyleProps;
   x?: number;
   y?: number;
-  width?: number;
-  height?: number;
+  // width?: ParsedElement;
+  // height?: ParsedElement;
   /**
    * x according to definition, eg. Line's x1/x2, Polyline's points
    */

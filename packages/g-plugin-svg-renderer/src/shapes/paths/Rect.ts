@@ -9,7 +9,7 @@ export class RectRenderer implements ElementRenderer<ParsedRectStyleProps> {
   dependencies = ['radius', 'width', 'height'];
 
   apply($el: SVGElement, attributes: ParsedRectStyleProps) {
-    const { radius = 0, width = 0, height = 0 } = attributes;
+    const { radius = 0, widthInPixels: width, heightInPixels: height } = attributes;
 
     let d = '';
     if (!radius) {

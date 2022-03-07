@@ -1,15 +1,31 @@
 import { singleton } from 'mana-syringe';
 import { GeometryAABBUpdater } from './interfaces';
-import type { ParsedEllipseStyleProps } from '../../display-objects/Ellipse';
+import type { Ellipse, ParsedEllipseStyleProps } from '../../display-objects/Ellipse';
 import { SHAPE } from '../../types';
 
 @singleton({ token: { token: GeometryAABBUpdater, named: SHAPE.Ellipse } })
 export class EllipseUpdater implements GeometryAABBUpdater<ParsedEllipseStyleProps> {
-  update(parsedStyle: ParsedEllipseStyleProps) {
-    const { rx = 0, ry = 0, x = 0, y = 0 } = parsedStyle;
+  update(parsedStyle: ParsedEllipseStyleProps, object: Ellipse) {
+    const { rx, ry, x = 0, y = 0 } = parsedStyle;
+
+    const { unit: rxUnit, value: rxValue } = rx;
+    const { unit: ryUnit, value: ryValue } = ry;
+
+    let width = 0;
+    let height = 0;
+    if (rxUnit === '' || rxUnit === 'px') {
+      width = rxValue * 2;
+    }
+    if (ryUnit === '' || ryUnit === 'px') {
+      height = ryValue * 2;
+    }
+
+    object.parsedStyle.rxInPixels = width / 2;
+    object.parsedStyle.ryInPixels = height / 2;
+
     return {
-      width: rx * 2,
-      height: ry * 2,
+      width,
+      height,
       x,
       y,
     };

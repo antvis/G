@@ -2,14 +2,17 @@ import type { DisplayObjectConfig } from '../dom/interfaces';
 import { SHAPE } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
+import type { ParsedElement } from '../property-handlers';
 
 export interface EllipseStyleProps extends BaseStyleProps {
   rx: number;
   ry: number;
 }
 export interface ParsedEllipseStyleProps extends ParsedBaseStyleProps {
-  rx: number;
-  ry: number;
+  rx: ParsedElement;
+  ry: ParsedElement;
+  rxInPixels: number;
+  ryInPixels: number;
 }
 export class Ellipse extends DisplayObject<EllipseStyleProps, ParsedEllipseStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<EllipseStyleProps>) {

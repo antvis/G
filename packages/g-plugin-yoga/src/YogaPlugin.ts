@@ -10,7 +10,7 @@ import {
   DisplayObject,
   SHAPE,
 } from '@antv/g';
-import type { FederatedEvent } from '@antv/g';
+import type { FederatedEvent, ParsedElement } from '@antv/g';
 import Yoga, {
   FLEX_DIRECTION_ROW,
   ALIGN_FLEX_START,
@@ -182,9 +182,10 @@ export class YogaPlugin implements RenderingPlugin {
 
     const handleAttributeChanged = (e: FederatedEvent) => {
       const target = e.target as DisplayObject;
-      const { attributeName, newValue } = e.detail;
+      // use parsed value, eg. `top: 10` instead of `top: '10'`
+      const { attributeName, newParsedValue } = e.detail;
       const needRecalculateLayout = this.syncAttributes(target, {
-        [attributeName]: newValue,
+        [attributeName]: newParsedValue,
       });
 
       if (needRecalculateLayout) {
@@ -397,81 +398,110 @@ export class YogaPlugin implements RenderingPlugin {
     node.setFlexShrink(1);
   }
 
-  private setMargin(node: YogaNode, edge: YogaEdge, value: YogaSize) {
-    if (value === 'auto') {
-      node.setMarginAuto(edge);
-    } else if (typeof value === 'string') {
-      node.setMarginPercent(edge, this.getPercent(value));
-    } else {
+  private setMargin(node: YogaNode, edge: YogaEdge, parsed: ParsedElement) {
+    const { unit, value } = parsed;
+
+    if (unit === '' || unit === 'px') {
       node.setMargin(edge, value);
+    } else if (unit === '%') {
+      node.setMarginPercent(edge, value);
     }
+
+    // if (value === 'auto') {
+    //   node.setMarginAuto(edge);
+    // } else if (typeof value === 'string') {
+    //   node.setMarginPercent(edge, this.getPercent(value));
+    // } else {
+    //   node.setMargin(edge, value);
+    // }
   }
 
-  private setPadding(node: YogaNode, edge: YogaEdge, value: PixelsOrPercentage) {
-    if (typeof value === 'string') {
-      node.setPaddingPercent(edge, this.getPercent(value));
-    } else {
+  private setPadding(node: YogaNode, edge: YogaEdge, parsed: ParsedElement) {
+    const { unit, value } = parsed;
+
+    if (unit === '' || unit === 'px') {
       node.setPadding(edge, value);
+    } else if (unit === '%') {
+      node.setPaddingPercent(edge, value);
     }
   }
 
-  private setPosition(node: YogaNode, edge: YogaEdge, value: PixelsOrPercentage) {
-    if (typeof value === 'string') {
-      node.setPositionPercent(edge, this.getPercent(value));
-    } else {
+  private setPosition(node: YogaNode, edge: YogaEdge, parsed: ParsedElement) {
+    const { unit, value } = parsed;
+
+    if (unit === '' || unit === 'px') {
       node.setPosition(edge, value);
+    } else if (unit === '%') {
+      node.setPositionPercent(edge, value);
     }
   }
 
-  private setWidth(node: YogaNode, value: YogaSize) {
-    if (value === 'auto') {
-      node.setWidthAuto();
-    } else if (typeof value === 'string') {
-      node.setWidthPercent(this.getPercent(value));
-    } else {
+  private setWidth(node: YogaNode, parsed: ParsedElement) {
+    const { unit, value } = parsed;
+
+    console.log(unit, value);
+
+    if (unit === '' || unit === 'px') {
       node.setWidth(value);
+    } else if (unit === '%') {
+      node.setWidthPercent(value);
     }
-  }
-  private setHeight(node: YogaNode, value: YogaSize) {
-    if (value === 'auto') {
-      node.setHeightAuto();
-    } else if (typeof value === 'string') {
-      node.setHeightPercent(this.getPercent(value));
-    } else {
-      node.setHeight(value);
-    }
-  }
-  private setMaxWidth(node: YogaNode, value: PixelsOrPercentage) {
-    if (typeof value === 'string') {
-      node.setMaxWidthPercent(this.getPercent(value));
-    } else {
-      node.setMaxWidth(value);
-    }
-  }
-  private setMinWidth(node: YogaNode, value: PixelsOrPercentage) {
-    if (typeof value === 'string') {
-      node.setMinWidthPercent(this.getPercent(value));
-    } else {
-      node.setMinWidth(value);
-    }
-  }
-  private setMaxHeight(node: YogaNode, value: PixelsOrPercentage) {
-    if (typeof value === 'string') {
-      node.setMaxHeightPercent(this.getPercent(value));
-    } else {
-      node.setMaxHeight(value);
-    }
-  }
-  private setMinHeight(node: YogaNode, value: PixelsOrPercentage) {
-    if (typeof value === 'string') {
-      node.setMinHeightPercent(this.getPercent(value));
-    } else {
-      node.setMinHeight(value);
-    }
-  }
 
-  private getPercent(value: string) {
-    return Number(value.replace('%', ''));
+    // if (value === 'auto') {
+    //   node.setWidthAuto();
+    // } else if (typeof value === 'string') {
+    //   node.setWidthPercent(this.getPercent(value));
+    // } else {
+    //   node.setWidth(value);
+    // }
+  }
+  private setHeight(node: YogaNode, parsed: ParsedElement) {
+    const { unit, value } = parsed;
+
+    if (unit === '' || unit === 'px') {
+      node.setHeight(value);
+    } else if (unit === '%') {
+      node.setHeightPercent(value);
+    }
+    // if (value === 'auto') {
+    //   node.setHeightAuto();
+    // } else if (typeof value === 'string') {
+    //   node.setHeightPercent(this.getPercent(value));
+    // } else {
+    //   node.setHeight(value);
+    // }
+  }
+  private setMaxWidth(node: YogaNode, parsed: ParsedElement) {
+    const { unit, value } = parsed;
+    if (unit === '' || unit === 'px') {
+      node.setMaxWidth(value);
+    } else if (unit === '%') {
+      node.setMaxWidthPercent(value);
+    }
+  }
+  private setMinWidth(node: YogaNode, parsed: ParsedElement) {
+    const { unit, value } = parsed;
+    if (unit === '' || unit === 'px') {
+      node.setMinWidth(value);
+    } else if (unit === '%') {
+      node.setMinWidthPercent(value);
+    }
+  }
+  private setMaxHeight(node: YogaNode, parsed: ParsedElement) {
+    const { unit, value } = parsed;
+    if (unit === '' || unit === 'px') {
+      node.setMaxHeight(value);
+    } else if (unit === '%') {
+      node.setMaxHeightPercent(value);
+    }
+  }
+  private setMinHeight(node: YogaNode, parsed: ParsedElement) {
+    const { unit, value } = parsed;
+    if (unit === '' || unit === 'px') {
+      node.setMinHeight(value);
+    } else if (unit === '%') {
+      node.setMinHeightPercent(value);
+    }
   }
 
   private updateDisplayObjectPosition(object: DisplayObject, node: YogaNode) {

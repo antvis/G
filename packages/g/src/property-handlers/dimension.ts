@@ -20,6 +20,10 @@ function isAngleUnit(unit: string) {
 }
 
 export function parseDimension(unitRegExp: RegExp, string: string): ParsedElement | undefined {
+  if (isFinite(Number(string))) {
+    return { unit: '', value: Number(string) };
+  }
+
   string = string.trim().toLowerCase();
 
   if (string === '0') {
@@ -30,10 +34,6 @@ export function parseDimension(unitRegExp: RegExp, string: string): ParsedElemen
       // 0 -> 0%
       return { unit: '%', value: 0 };
     }
-  }
-
-  if (isFinite(Number(string))) {
-    return { unit: '', value: Number(string) };
   }
 
   const matchedUnits: Unit[] = [];

@@ -8,7 +8,7 @@ export class ImageRenderer implements ElementRenderer<ParsedImageStyleProps> {
   dependencies = ['img', 'width', 'height'];
 
   apply($el: SVGElement, attributes: ParsedImageStyleProps) {
-    const { img = '', width = 0, height = 0 } = attributes;
+    const { img = '', widthInPixels: width, heightInPixels: height } = attributes;
 
     $el.setAttribute('x', '0');
     $el.setAttribute('y', '0');

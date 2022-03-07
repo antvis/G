@@ -1,8 +1,8 @@
-import { RectStyleProps } from '@antv/g';
+import { ParsedRectStyleProps } from '@antv/g';
 import { parseRadius } from '../../utils/parse';
 
-export function generatePath(context: CanvasRenderingContext2D, attributes: RectStyleProps) {
-  const { radius = 0, width = 0, height = 0 } = attributes;
+export function generatePath(context: CanvasRenderingContext2D, parsedStyle: ParsedRectStyleProps) {
+  const { radius = 0, widthInPixels: width, heightInPixels: height } = parsedStyle;
 
   if (radius === 0) {
     context.rect(0, 0, width, height);

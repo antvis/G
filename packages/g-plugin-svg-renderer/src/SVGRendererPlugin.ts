@@ -42,6 +42,14 @@ export const SHAPE_TO_TAGS: Record<SHAPE | string, string> = {
   [SHAPE.HTML]: 'foreignObject',
 };
 
+const ATTR_IN_PIXEL_MAP = {
+  r: 'rInPixels',
+  rx: 'rxInPixels',
+  ry: 'ryInPixels',
+  width: 'widthInPixels',
+  height: 'heightInPixels',
+};
+
 export const SVG_ATTR_MAP: Record<string, string> = {
   opacity: 'opacity',
   fillStyle: 'fill',
@@ -355,7 +363,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
           this.updateAnchorWithTransform(object);
         }
         if (name !== 'anchor') {
-          $el?.setAttribute(SVG_ATTR_MAP[name], `${value}`);
+          if (ATTR_IN_PIXEL_MAP[name]) {
+            $el?.setAttribute(SVG_ATTR_MAP[name], `${parsedStyle[ATTR_IN_PIXEL_MAP[name]]}`);
+          } else {
+            $el?.setAttribute(SVG_ATTR_MAP[name], `${value}`);
+          }
         }
       }
     }

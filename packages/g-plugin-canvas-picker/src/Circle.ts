@@ -1,12 +1,17 @@
-import { CircleStyleProps, DisplayObject, Point } from '@antv/g';
+import { CircleStyleProps, DisplayObject, ParsedCircleStyleProps, Point } from '@antv/g';
 import { distance } from './utils/math';
 
 export function isPointInPath(
   displayObject: DisplayObject<CircleStyleProps>,
   position: Point,
 ): boolean {
-  const { r = 0, fill, stroke, lineWidth = 0, clipPathTargets } = displayObject.parsedStyle;
-
+  const {
+    rInPixels: r,
+    fill,
+    stroke,
+    lineWidth = 0,
+    clipPathTargets,
+  } = displayObject.parsedStyle as ParsedCircleStyleProps;
   const halfLineWidth = lineWidth / 2;
   const absDistance = distance(r, r, position.x, position.y);
   const isClipPath = !!clipPathTargets?.length;

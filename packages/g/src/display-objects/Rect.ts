@@ -2,6 +2,7 @@ import { SHAPE } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
+import type { ParsedElement } from '../property-handlers';
 
 export interface RectStyleProps extends BaseStyleProps {
   width: number;
@@ -10,8 +11,10 @@ export interface RectStyleProps extends BaseStyleProps {
 }
 
 export interface ParsedRectStyleProps extends ParsedBaseStyleProps {
-  width: number;
-  height: number;
+  width: ParsedElement;
+  height: ParsedElement;
+  widthInPixels: number;
+  heightInPixels: number;
   radius?: number;
 }
 

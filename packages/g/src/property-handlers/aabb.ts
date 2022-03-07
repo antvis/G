@@ -32,9 +32,9 @@ export function updateGeometry(oldValue: number, newValue: number, object: Displ
       offsetY = 0,
       offsetZ = 0,
     } = geometryUpdater.update(object.parsedStyle, object);
-    object.parsedStyle.width = width;
-    object.parsedStyle.height = height;
-    object.parsedStyle.depth = depth;
+    // object.parsedStyle.width = width;
+    // object.parsedStyle.height = height;
+    // object.parsedStyle.depth = depth;
 
     if (
       object.nodeName === SHAPE.Line ||

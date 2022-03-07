@@ -4,6 +4,7 @@ import {
   SHAPE,
   ParsedBaseStyleProps,
   ParsedCircleStyleProps,
+  ParsedEllipseStyleProps,
 } from '@antv/g';
 import { injectable } from 'mana-syringe';
 import { Format, VertexBufferFrequency } from '../platform';
@@ -71,7 +72,7 @@ export class SDFMesh extends Instanced {
       // @ts-ignore
       const { radius } = circle.parsedStyle;
       const omitStroke = this.shouldOmitStroke(circle.parsedStyle);
-      const size = this.getSize(object.attributes, circle.nodeName);
+      const size = this.getSize(object.parsedStyle, circle.nodeName);
       instanced.push(...size);
       instanced2.push(SDF_SHAPE.indexOf(circle.nodeName), radius || 0, omitStroke ? 1 : 0, 0);
 
@@ -136,7 +137,7 @@ export class SDFMesh extends Instanced {
     this.updateBatchedAttribute(object, index, name, value);
 
     if (name === 'r' || name === 'rx' || name === 'ry' || name === 'lineWidth') {
-      const [halfWidth, halfHeight] = this.getSize(object.attributes, object.nodeName);
+      const [halfWidth, halfHeight] = this.getSize(object.parsedStyle, object.nodeName);
       const size = [halfWidth, halfHeight];
 
       this.geometry.updateVertexBuffer(
@@ -165,13 +166,14 @@ export class SDFMesh extends Instanced {
     }
   }
 
-  private getSize(attributes: ParsedCircleStyleProps, tagName: string) {
+  private getSize(parsed: ParsedCircleStyleProps | ParsedEllipseStyleProps, tagName: string) {
     let size: [number, number] = [0, 0];
     if (tagName === SHAPE.Circle) {
-      size = [attributes.r, attributes.r];
+      const { rInPixels } = parsed as ParsedCircleStyleProps;
+      size = [rInPixels, rInPixels];
     } else if (tagName === SHAPE.Ellipse) {
-      // @ts-ignore
-      size = [attributes.rx, attributes.ry];
+      const { rxInPixels, ryInPixels } = parsed as ParsedEllipseStyleProps;
+      size = [rxInPixels, ryInPixels];
     }
 
     return size;

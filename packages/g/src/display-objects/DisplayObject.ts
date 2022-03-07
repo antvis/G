@@ -258,7 +258,10 @@ export class DisplayObject<
     this.parseStyleProperty(name, value);
 
     // @ts-ignore
-    this.updateStyleProperty(name, oldParsedValue, this.parsedStyle[name]);
+    const newParsedValue = this.parsedStyle[name];
+
+    // @ts-ignore
+    this.updateStyleProperty(name, oldParsedValue, newParsedValue);
 
     // inform clip path targets
     if (this.attributes.clipPathTargets && this.attributes.clipPathTargets.length) {
@@ -279,6 +282,8 @@ export class DisplayObject<
       attributeName: name,
       oldValue,
       newValue: value,
+      oldParsedValue,
+      newParsedValue,
     });
   }
 

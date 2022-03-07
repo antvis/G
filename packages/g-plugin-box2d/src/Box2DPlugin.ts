@@ -283,14 +283,29 @@ export class Box2DPlugin implements RenderingPlugin {
       );
     } else if (nodeName === SHAPE.Rect || nodeName === SHAPE.Image) {
       const { width, height } = parsedStyle as ParsedRectStyleProps;
+      const { unit: widthUnit, value: widthValue } = width;
+      const { unit: heightUnit, value: heightValue } = height;
+      let contentWidth = 0;
+      let contentHeight = 0;
+      if (widthUnit === '' || widthUnit === 'px') {
+        contentWidth = widthValue;
+      }
+      if (heightUnit === '' || heightUnit === 'px') {
+        contentHeight = heightValue;
+      }
       shape = new b2PolygonShape();
       // @see https://box2d.org/documentation/classb2_polygon_shape.html#af80eb52027ffe85dd4d0a3110eae9d1b
-      shape.SetAsBox(width / 2, height / 2, new b2Vec2(width / 2, height / 2), 0);
+      shape.SetAsBox(
+        contentWidth / 2,
+        contentHeight / 2,
+        new b2Vec2(contentWidth / 2, contentHeight / 2),
+        0,
+      );
     } else if (nodeName === SHAPE.Circle) {
       // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_collision.html#autotoc_md37
-      const { r } = parsedStyle as ParsedCircleStyleProps;
+      const { rInPixels } = parsedStyle as ParsedCircleStyleProps;
       shape = new b2CircleShape();
-      shape.set_m_radius(r);
+      shape.set_m_radius(rInPixels);
     } else if (nodeName === SHAPE.Ellipse) {
       // @see https://stackoverflow.com/questions/10032756/how-to-create-ellipse-shapes-in-box2d
     } else if (nodeName === SHAPE.Polygon) {

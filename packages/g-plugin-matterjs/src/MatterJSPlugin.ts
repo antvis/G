@@ -248,10 +248,10 @@ export class MatterJSPlugin implements RenderingPlugin {
       //     // new b2Vec2(next[0] - defX + eps, next[1] - defY),
       //   );
     } else if (nodeName === SHAPE.Rect || nodeName === SHAPE.Image) {
-      const { width, height } = parsedStyle as ParsedRectStyleProps;
-      body = Bodies.rectangle(0, 0, width, height, config);
+      const { widthInPixels, heightInPixels } = parsedStyle as ParsedRectStyleProps;
+      body = Bodies.rectangle(0, 0, widthInPixels, heightInPixels, config);
     } else if (nodeName === SHAPE.Circle) {
-      const { r } = parsedStyle as ParsedCircleStyleProps;
+      const { rInPixels: r } = parsedStyle as ParsedCircleStyleProps;
       body = Bodies.circle(0, 0, r, config);
     } else if (nodeName === SHAPE.Ellipse) {
       //   // @see https://stackoverflow.com/questions/10032756/how-to-create-ellipse-shapes-in-box2d
