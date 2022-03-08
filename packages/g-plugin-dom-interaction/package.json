@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-dom-interaction",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "A G plugin",
   "main": "lib/index.js",
   "module": "es/index.js",
