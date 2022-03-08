@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Rect, Polygon, Image, Text } from '@antv/g';
+import { Canvas, CanvasEvent, Rect, Polygon, Image, Text, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Plugin as PluginYoga } from '@antv/g-plugin-yoga';
 import * as lil from 'lil-gui';
@@ -102,11 +102,18 @@ const polygon = new Polygon({
     lineWidth: 2,
   },
 });
+const circle = new Circle({
+  style: {
+    r: 20,
+    fill: '#1890FF',
+  },
+});
 
 root.appendChild(node1);
 root.appendChild(node2);
 root.appendChild(image);
 root.appendChild(polygon);
+root.appendChild(circle);
 
 // stats
 const stats = new Stats();
@@ -137,12 +144,22 @@ const config = {
   right: 0,
   bottom: 0,
   left: 0,
+  'top(percent)': 0,
+  'right(percent)': 0,
+  'bottom(percent)': 0,
+  'left(percent)': 0,
   width: 100,
   height: 100,
+  'width(percent)': 0,
+  'height(percent)': 0,
   marginTop: 0,
   marginRight: 0,
   marginBottom: 0,
   marginLeft: 0,
+  'marginTop(percent)': 0,
+  'marginRight(percent)': 0,
+  'marginBottom(percent)': 0,
+  'marginLeft(percent)': 0,
   paddingTop: 0,
   paddingRight: 0,
   paddingBottom: 0,
@@ -150,28 +167,32 @@ const config = {
   justifyContent: 'center',
   alignItems: 'center',
 };
-// flexFolder
-//   .add(config, 'flexDirection', ['row', 'column', 'row-reverse', 'column-reverse'])
-//   .onChange((flexDirection) => {
-//     root.style.flexDirection = flexDirection;
-//   });
-// flexFolder.add(config, 'flexWrap', ['wrap', 'no-wrap', 'wrap-reverse']).onChange((flexWrap) => {
-//   root.style.flexWrap = flexWrap;
-// });
 layoutFolder.add(config, 'position', ['relative', 'absolute']).onChange((position) => {
   node1.style.position = position;
 });
-layoutFolder.add(config, 'top', 0, 50).onChange((top) => {
+layoutFolder.add(config, 'top', -50, 50).onChange((top) => {
   node1.style.top = top;
 });
-layoutFolder.add(config, 'right', 0, 50).onChange((right) => {
+layoutFolder.add(config, 'right', -50, 50).onChange((right) => {
   node1.style.right = right;
 });
-layoutFolder.add(config, 'bottom', 0, 50).onChange((bottom) => {
+layoutFolder.add(config, 'bottom', -50, 50).onChange((bottom) => {
   node1.style.bottom = bottom;
 });
-layoutFolder.add(config, 'left', 0, 50).onChange((left) => {
+layoutFolder.add(config, 'left', -50, 50).onChange((left) => {
   node1.style.left = left;
+});
+layoutFolder.add(config, 'top(percent)', -100, 100).onChange((topPercent) => {
+  node1.style.top = `${topPercent}%`;
+});
+layoutFolder.add(config, 'right(percent)', -100, 100).onChange((rightPercent) => {
+  node1.style.right = `${rightPercent}%`;
+});
+layoutFolder.add(config, 'bottom(percent)', -100, 100).onChange((bottomPercent) => {
+  node1.style.bottom = `${bottomPercent}%`;
+});
+layoutFolder.add(config, 'left(percent)', -100, 100).onChange((leftPercent) => {
+  node1.style.left = `${leftPercent}%`;
 });
 layoutFolder
   .add(config, 'justifyContent', [
@@ -205,6 +226,12 @@ layoutFolder.add(config, 'width', 50, 200).onChange((width) => {
 layoutFolder.add(config, 'height', 50, 200).onChange((height) => {
   node1.style.height = height;
 });
+layoutFolder.add(config, 'width(percent)', 0, 100).onChange((widthPercent) => {
+  node1.style.width = `${widthPercent}%`;
+});
+layoutFolder.add(config, 'height(percent)', 0, 100).onChange((heightPercent) => {
+  node1.style.height = `${heightPercent}%`;
+});
 layoutFolder.add(config, 'marginTop', 0, 50).onChange((marginTop) => {
   node1.style.marginTop = marginTop;
 });
@@ -216,6 +243,18 @@ layoutFolder.add(config, 'marginBottom', 0, 50).onChange((marginBottom) => {
 });
 layoutFolder.add(config, 'marginLeft', 0, 50).onChange((marginLeft) => {
   node1.style.marginLeft = marginLeft;
+});
+layoutFolder.add(config, 'marginTop(percent)', 0, 100).onChange((marginTop) => {
+  node1.style.marginTop = `${marginTop}%`;
+});
+layoutFolder.add(config, 'marginRight(percent)', 0, 100).onChange((marginRight) => {
+  node1.style.marginRight = `${marginRight}%`;
+});
+layoutFolder.add(config, 'marginBottom(percent)', 0, 100).onChange((marginBottom) => {
+  node1.style.marginBottom = `${marginBottom}%`;
+});
+layoutFolder.add(config, 'marginLeft(percent)', 0, 100).onChange((marginLeft) => {
+  node1.style.marginLeft = `${marginLeft}%`;
 });
 layoutFolder.add(config, 'paddingTop', 0, 50).onChange((paddingTop) => {
   node1.style.paddingTop = paddingTop;

@@ -40,7 +40,6 @@ const node1 = new Rect({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    flexGrow: 1,
   },
 });
 node1.appendChild(
@@ -84,6 +83,28 @@ node2.appendChild(
 root.appendChild(node1);
 root.appendChild(node2);
 
+node1.animate(
+  [
+    { top: 0, left: 0, width: 100, marginAll: 0, paddingLeft: 0 },
+    { top: 100, left: 100, width: 200, marginAll: 20, paddingLeft: 50 },
+  ],
+  {
+    duration: 1000,
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+    fill: 'both',
+    iterations: Infinity,
+    direction: 'alternate-reverse',
+  },
+);
+
+node2.animate([{ flexGrow: 1 }, { flexGrow: 0.5 }], {
+  duration: 1000,
+  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+  fill: 'both',
+  iterations: Infinity,
+  direction: 'alternate-reverse',
+});
+
 // stats
 const stats = new Stats();
 stats.showPanel(0);
@@ -102,62 +123,6 @@ canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
 // GUI
 const gui = new lil.GUI({ autoPlace: false });
 $wrapper.appendChild(gui.domElement);
-
-const flexFolder1 = gui.addFolder("Node1's Flex");
-const config1 = {
-  flexGrow: 1,
-  flexShrink: 1,
-  maxWidth: 0,
-  minWidth: 0,
-  setMaxWidthNaN: () => {
-    node1.style.maxWidth = NaN;
-  },
-  setMinWidthNaN: () => {
-    node1.style.minWidth = NaN;
-  },
-};
-flexFolder1.add(config1, 'flexGrow', 0, 1).onChange((flexGrow) => {
-  node1.style.flexGrow = flexGrow;
-});
-flexFolder1.add(config1, 'flexShrink', 0, 1).onChange((flexShrink) => {
-  node1.style.flexShrink = flexShrink;
-});
-flexFolder1.add(config1, 'maxWidth', 0, 300).onChange((maxWidth) => {
-  node1.style.maxWidth = maxWidth;
-});
-flexFolder1.add(config1, 'setMaxWidthNaN').name('set maxWidth to NaN');
-flexFolder1.add(config1, 'minWidth', 0, 300).onChange((minWidth) => {
-  node1.style.minWidth = minWidth;
-});
-flexFolder1.add(config1, 'setMinWidthNaN').name('set minWidth to NaN');
-
-const flexFolder2 = gui.addFolder("Node2's Flex");
-const config2 = {
-  flexGrow: 1,
-  flexShrink: 1,
-  maxWidth: 0,
-  minWidth: 0,
-  setMaxWidthNaN: () => {
-    node2.style.maxWidth = NaN;
-  },
-  setMinWidthNaN: () => {
-    node2.style.minWidth = NaN;
-  },
-};
-flexFolder2.add(config2, 'flexGrow', 0, 1).onChange((flexGrow) => {
-  node2.style.flexGrow = flexGrow;
-});
-flexFolder2.add(config2, 'flexShrink', 0, 1).onChange((flexShrink) => {
-  node2.style.flexShrink = flexShrink;
-});
-flexFolder2.add(config2, 'maxWidth', 0, 300).onChange((maxWidth) => {
-  node2.style.maxWidth = maxWidth;
-});
-flexFolder2.add(config2, 'setMaxWidthNaN').name('set maxWidth to NaN');
-flexFolder2.add(config2, 'minWidth', 0, 300).onChange((minWidth) => {
-  node2.style.minWidth = minWidth;
-});
-flexFolder2.add(config2, 'setMinWidthNaN').name('set minWidth to NaN');
 
 const layoutConfig = {
   width: 500,

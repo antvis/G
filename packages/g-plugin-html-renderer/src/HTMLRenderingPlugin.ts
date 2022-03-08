@@ -106,19 +106,30 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       lineDash,
       stroke,
       anchor,
-      width = 0,
-      height = 0,
+      width,
+      height,
       style: initialStyle = '',
       className = '',
     } = parsedStyle;
+
+    let contentWidth = 0;
+    let contentHeight = 0;
+    const { unit: widthUnit, value: widthValue } = width;
+    const { unit: heightUnit, value: heightValue } = height;
+    if (widthUnit === '' || widthUnit === 'px') {
+      contentWidth = widthValue;
+    }
+    if (heightUnit === '' || heightUnit === 'px') {
+      contentHeight = heightValue;
+    }
 
     const style: Record<string, string | number> = {};
     // use absolute position
     style.position = 'absolute';
     style.top = 0;
     style.left = 0;
-    style.width = `${width}px`;
-    style.height = `${height}px`;
+    style.width = `${contentWidth}px`;
+    style.height = `${contentHeight}px`;
 
     // use transform
     style.transform = `matrix3d(${object.getWorldTransform().join(',')})`;

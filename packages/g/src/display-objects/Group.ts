@@ -9,6 +9,8 @@ export class Group extends DisplayObject {
     super({
       type: SHAPE.Group,
       style: {
+        width: 'auto',
+        height: 'auto',
         ...style,
       },
       ...rest,

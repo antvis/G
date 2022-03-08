@@ -12,15 +12,15 @@ import {
   CanvasEvent,
   SHAPE,
   ParsedLineStyleProps,
-  ParsedPolylineStyleProps,
   ParsedCircleStyleProps,
   ParsedRectStyleProps,
   ParsedBaseStyleProps,
   rad2deg,
   deg2rad,
+  AABB,
 } from '@antv/g';
-import type { Element, FederatedEvent } from '@antv/g';
-import { Engine, Runner, Bodies, Body, Composite, World } from 'matter-js';
+import type { FederatedEvent } from '@antv/g';
+import { Engine, Render, Bodies, Body, Composite, World } from 'matter-js';
 import { MatterJSPluginOptions } from './tokens';
 import { sortPointsInCCW } from './utils';
 
@@ -41,7 +41,6 @@ export class MatterJSPlugin implements RenderingPlugin {
   private options: MatterJSPluginOptions;
 
   private engine: Engine;
-  private runner: Runner;
 
   private bodies: Record<number, Body> = {};
   private pendingDisplayObjects: DisplayObject[] = [];
@@ -84,15 +83,19 @@ export class MatterJSPlugin implements RenderingPlugin {
 
         Object.keys(this.bodies).forEach((entity) => {
           const displayObject = this.displayObjectPool.getByEntity(Number(entity));
-          const body = this.bodies[entity] as Body;
-          const x = body.position.x;
-          const y = body.position.y;
-          const angle = body.angle;
+          const bounds = displayObject.getBounds();
 
-          console.log(body, x, y, angle);
+          if (!AABB.isEmpty(bounds)) {
+            const { anchor = [0, 0] } = displayObject.parsedStyle;
+            const { halfExtents } = bounds;
+            const body = this.bodies[entity] as Body;
+            let x = body.position.x - (1 - anchor[0] * 2) * halfExtents[0];
+            let y = body.position.y - (1 - anchor[1] * 2) * halfExtents[1];
+            const angle = body.angle;
 
-          displayObject.setPosition(x, y);
-          displayObject.setEulerAngles(rad2deg(angle));
+            displayObject.setPosition(x, y);
+            displayObject.setEulerAngles(rad2deg(angle));
+          }
         });
       }
     };
@@ -118,156 +121,184 @@ export class MatterJSPlugin implements RenderingPlugin {
     };
 
     const handleAttributeChanged = (e: FederatedEvent) => {
-      // if (!this.Box2D) {
-      //   return;
-      // }
-      // const object = e.target as DisplayObject;
-      // const { attributeName, newValue } = e.detail;
-      // const { b2_staticBody, b2_dynamicBody } = this.Box2D;
-      // const body = this.bodies[object.entity];
-      // const fixture = this.fixtures[object.entity];
-      // if (body) {
-      //   const geometryAttributes = ['points', 'r', 'width', 'height', 'x1', 'y1', 'x2', 'y2'];
-      //   if (geometryAttributes.indexOf(attributeName) > -1) {
-      //     // need re-create body
-      //   } else if (attributeName === 'rigid') {
-      //     body.SetType(newValue === 'static' ? b2_staticBody : b2_dynamicBody);
-      //   } else if (attributeName === 'linearVelocity') {
-      //     this.temp.set_x(newValue[0]);
-      //     this.temp.set_y(newValue[1]);
-      //     body.SetLinearVelocity(this.temp);
-      //   } else if (attributeName === 'angularVelocity') {
-      //     body.SetAngularVelocity(newValue);
-      //   } else if (attributeName === 'gravityScale') {
-      //     body.SetGravityScale(newValue);
-      //   } else if (attributeName === 'linearDamping') {
-      //     body.SetLinearDamping(newValue);
-      //   } else if (attributeName === 'angularDamping') {
-      //     body.SetAngularDamping(newValue);
-      //   } else if (attributeName === 'fixedRotation') {
-      //     body.SetFixedRotation(newValue);
-      //   } else if (attributeName === 'bullet') {
-      //     body.SetBullet(newValue);
-      //   } else if (attributeName === 'density') {
-      //     // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md76
-      //     fixture.SetDensity(newValue);
-      //     body.ResetMassData();
-      //   } else if (attributeName === 'friction') {
-      //     fixture.SetFriction(newValue);
-      //   } else if (attributeName === 'restitution') {
-      //     fixture.SetRestitution(newValue);
-      //   }
-      // }
+      if (!this.engine) {
+        return;
+      }
+      const object = e.target as DisplayObject;
+      const { attributeName, newValue } = e.detail;
+      const body = this.bodies[object.entity];
+
+      if (body) {
+        const geometryAttributes = ['points', 'r', 'width', 'height', 'x1', 'y1', 'x2', 'y2'];
+        if (geometryAttributes.indexOf(attributeName) > -1) {
+          // need re-create body
+        } else if (attributeName === 'rigid') {
+          Body.setStatic(body, newValue === 'static');
+        } else if (attributeName === 'velocity') {
+          Body.setVelocity(body, { x: newValue[0], y: newValue[1] });
+        } else if (attributeName === 'angularVelocity') {
+          Body.setAngularVelocity(body, newValue);
+        } else if (attributeName === 'density') {
+          Body.setDensity(body, newValue);
+        } else if (attributeName === 'friction') {
+          body.friction = newValue;
+        } else if (attributeName === 'frictionAir') {
+          body.frictionAir = newValue;
+        } else if (attributeName === 'frictionStatic') {
+          body.frictionStatic = newValue;
+        } else if (attributeName === 'restitution') {
+          body.restitution = newValue;
+        }
+      }
     };
   }
 
+  /**
+   * @see https://brm.io/matter-js/docs/classes/Body.html#method_applyForce
+   */
   applyForce(object: DisplayObject, force: [number, number], point: [number, number]) {
     const body = this.bodies[object.entity];
-    // if (body) {
-    //   this.temp.set_x(force[0]);
-    //   this.temp.set_y(force[1]);
-    //   this.temp2.set_x(point[0]);
-    //   this.temp2.set_y(point[1]);
-
-    //   // body.ApplyForce(this.temp, body.GetWorldCenter(), false);
-    //   body.ApplyForceToCenter(this.temp, true);
-    // }
+    if (body) {
+      Body.applyForce(body, { x: point[0], y: point[1] }, { x: force[0], y: force[1] });
+    }
   }
 
   private createScene() {
     this.engine = Engine.create();
-    // this.runner = Runner.create();
 
-    const { velocityIterations, positionIterations, gravity, gravityScale } = this.options;
+    const {
+      debug,
+      debugContainer,
+      debugCanvasHeight,
+      debugCanvasWidth,
+      velocityIterations,
+      positionIterations,
+      gravity,
+      gravityScale,
+    } = this.options;
+
+    if (debug && debugContainer) {
+      const render = Render.create({
+        element: debugContainer,
+        engine: this.engine,
+        options: {
+          width: debugCanvasWidth,
+          height: debugCanvasHeight,
+          wireframes: true,
+        },
+      });
+      Render.run(render);
+    }
 
     // @see https://brm.io/matter-js/docs/classes/Engine.html#property_gravity
-    // this.engine.gravity = {
-    //   x: gravity[0],
-    //   y: gravity[1],
-    //   scale: gravityScale,
-    // };
+    this.engine.gravity = {
+      x: gravity[0],
+      y: gravity[1],
+      scale: gravityScale,
+    };
 
-    // // @see https://brm.io/matter-js/docs/classes/Engine.html#property_positionIterations
-    // this.engine.positionIterations = positionIterations;
-
-    // // @see https://brm.io/matter-js/docs/classes/Engine.html#property_velocityIterations
-    // this.engine.velocityIterations = velocityIterations;
-
-    // start simulation
-    // Runner.run(this.runner, this.engine);
+    // @see https://brm.io/matter-js/docs/classes/Engine.html#property_positionIterations
+    this.engine.positionIterations = positionIterations;
+    // @see https://brm.io/matter-js/docs/classes/Engine.html#property_velocityIterations
+    this.engine.velocityIterations = velocityIterations;
   }
 
   private addActor(target: DisplayObject) {
     const { entity, nodeName, parsedStyle } = target;
-    const { rigid, restitution = 0, friction = 0.1, density = 1 } = parsedStyle;
+    const {
+      rigid,
+      restitution = 0,
+      friction = 0.1,
+      frictionAir = 0.01,
+      frictionStatic = 0.5,
+      density = 0.001,
+      anchor = [0, 0],
+      velocity = [0, 0],
+      angularVelocity = 0,
+    } = parsedStyle;
+    const bounds = target.getBounds();
 
-    // RTS in worldspace
-    const [x, y] = target.getPosition();
-    const angle = target.getEulerAngles();
-    const config = {
-      angle: deg2rad(angle),
-      position: { x, y },
-      isStatic: rigid === 'static',
-      // @see https://brm.io/matter-js/docs/classes/Body.html#property_angularDamping
-      restitution,
-      // @see https://brm.io/matter-js/docs/classes/Body.html#property_friction
-      friction,
-      // @see https://brm.io/matter-js/docs/classes/Body.html#property_density
-      density: density / 1000,
-    };
+    if (!AABB.isEmpty(bounds)) {
+      const { halfExtents } = bounds;
+      // RTS in worldspace
+      const [x, y] = target.getPosition();
+      const angle = target.getEulerAngles();
+      const config = {
+        angle: deg2rad(angle),
+        position: {
+          x: x + (1 - anchor[0] * 2) * halfExtents[0],
+          y: y + (1 - anchor[1] * 2) * halfExtents[1],
+        },
+        isStatic: rigid === 'static',
+        // @see https://brm.io/matter-js/docs/classes/Body.html#property_restitution
+        restitution,
+        // @see https://brm.io/matter-js/docs/classes/Body.html#property_friction
+        friction,
+        frictionAir,
+        frictionStatic,
+        // @see https://brm.io/matter-js/docs/classes/Body.html#property_density
+        density,
+        velocity,
+        angularVelocity,
+      };
 
-    let body: Body;
-    if (nodeName === SHAPE.Line) {
-      const { x1, y1, x2, y2, defX, defY, lineWidth } = parsedStyle as ParsedLineStyleProps;
-      const p1 = vec2.fromValues(x1 - defX, y1 - defY);
-      const p2 = vec2.fromValues(x2 - defX, y2 - defY);
-      const basis = vec2.sub(vec2.create(), p2, p1);
-      const normal = vec2.normalize(vec2.create(), vec2.fromValues(-basis[1], basis[0]));
-      const extrude1 = vec2.scaleAndAdd(vec2.create(), p1, normal, lineWidth / 2);
-      const extrude2 = vec2.scaleAndAdd(vec2.create(), p1, normal, -lineWidth / 2);
-      const extrude3 = vec2.scaleAndAdd(vec2.create(), p2, normal, lineWidth / 2);
-      const extrude4 = vec2.scaleAndAdd(vec2.create(), p2, normal, -lineWidth / 2);
+      let body: Body;
+      if (nodeName === SHAPE.Line) {
+        const { x1, y1, x2, y2, defX, defY, lineWidth } = parsedStyle as ParsedLineStyleProps;
+        const p1 = vec2.fromValues(x1 - defX, y1 - defY);
+        const p2 = vec2.fromValues(x2 - defX, y2 - defY);
+        const basis = vec2.sub(vec2.create(), p2, p1);
+        const normal = vec2.normalize(vec2.create(), vec2.fromValues(-basis[1], basis[0]));
+        const extrude1 = vec2.scaleAndAdd(vec2.create(), p1, normal, lineWidth / 2);
+        const extrude2 = vec2.scaleAndAdd(vec2.create(), p1, normal, -lineWidth / 2);
+        const extrude3 = vec2.scaleAndAdd(vec2.create(), p2, normal, lineWidth / 2);
+        const extrude4 = vec2.scaleAndAdd(vec2.create(), p2, normal, -lineWidth / 2);
 
-      // @ts-ignore
-      const points = sortPointsInCCW([extrude1, extrude2, extrude3, extrude4]);
-      body = Bodies.fromVertices(0, 0, [points.map(([x, y]) => ({ x, y }))], config);
-    } else if (nodeName === SHAPE.Polyline) {
-      //   const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
-      //   const pointsInCCW = sortPointsInCCW(points.points);
-      //   const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x - defX, y - defY));
-      //   const prev = pointsInCCW[0];
-      //   const next = pointsInCCW[pointsInCCW.length - 1];
-      //   const eps = 0.1;
-      //   shape = createChainShape(
-      //     this.Box2D,
-      //     vertices,
-      //     false,
-      //     vertices[0],
-      //     vertices[vertices.length - 1],
-      //     // new b2Vec2(prev[0] - defX + eps, prev[1] - defY),
-      //     // new b2Vec2(next[0] - defX + eps, next[1] - defY),
-      //   );
-    } else if (nodeName === SHAPE.Rect || nodeName === SHAPE.Image) {
-      const { width, height } = parsedStyle as ParsedRectStyleProps;
-      body = Bodies.rectangle(0, 0, width, height, config);
-    } else if (nodeName === SHAPE.Circle) {
-      const { r } = parsedStyle as ParsedCircleStyleProps;
-      body = Bodies.circle(0, 0, r, config);
-    } else if (nodeName === SHAPE.Ellipse) {
-      //   // @see https://stackoverflow.com/questions/10032756/how-to-create-ellipse-shapes-in-box2d
-    } else if (nodeName === SHAPE.Polygon) {
-      // @see https://brm.io/matter-js/docs/classes/Bodies.html#method_polygon
-      //   const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
-      //   const pointsInCCW = sortPointsInCCW(points.points);
-      //   const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x - defX, y - defY));
-      //   shape = createPolygonShape(this.Box2D, vertices);
-    } else if (nodeName === SHAPE.Path) {
-    } else if (nodeName === SHAPE.Text) {
-    }
-    if (body) {
-      this.bodies[entity] = body;
+        // @ts-ignore
+        const points = sortPointsInCCW([extrude1, extrude2, extrude3, extrude4]);
+        body = Bodies.fromVertices(0, 0, [points.map(([x, y]) => ({ x, y }))], config);
+      } else if (nodeName === SHAPE.Polyline) {
+        //   const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
+        //   const pointsInCCW = sortPointsInCCW(points.points);
+        //   const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x - defX, y - defY));
+        //   const prev = pointsInCCW[0];
+        //   const next = pointsInCCW[pointsInCCW.length - 1];
+        //   const eps = 0.1;
+        //   shape = createChainShape(
+        //     this.Box2D,
+        //     vertices,
+        //     false,
+        //     vertices[0],
+        //     vertices[vertices.length - 1],
+        //     // new b2Vec2(prev[0] - defX + eps, prev[1] - defY),
+        //     // new b2Vec2(next[0] - defX + eps, next[1] - defY),
+        //   );
+      } else if (nodeName === SHAPE.Rect || nodeName === SHAPE.Image) {
+        const { widthInPixels, heightInPixels } = parsedStyle as ParsedRectStyleProps;
+        // matterjs set origin to center of rectangle
+        target.style.transformOrigin = 'center center';
+        // target.style.origin = [widthInPixels / 2, heightInPixels / 2];
+        body = Bodies.rectangle(0, 0, widthInPixels, heightInPixels, config);
+      } else if (nodeName === SHAPE.Circle) {
+        const { rInPixels: r } = parsedStyle as ParsedCircleStyleProps;
+        // matter.js also use polygon inside
+        body = Bodies.circle(0, 0, r, config);
+      } else if (nodeName === SHAPE.Ellipse) {
+        // @see https://stackoverflow.com/questions/10032756/how-to-create-ellipse-shapes-in-box2d
+      } else if (nodeName === SHAPE.Polygon) {
+        // @see https://brm.io/matter-js/docs/classes/Bodies.html#method_polygon
+        const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
+        const pts = sortPointsInCCW(points.points.map(([x, y]) => [x - defX, y - defY]));
+        target.style.transformOrigin = 'center center';
+        body = Bodies.fromVertices(0, 0, [pts.map(([x, y]) => ({ x, y }))], config);
+      } else if (nodeName === SHAPE.Path) {
+      } else if (nodeName === SHAPE.Text) {
+      }
+      if (body) {
+        this.bodies[entity] = body;
 
-      World.addBody(this.engine.world, body);
+        Composite.add(this.engine.world, body);
+      }
     }
   }
 

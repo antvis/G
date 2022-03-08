@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-components",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Components for g",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -39,7 +39,7 @@
   },
   "peerDependencies": {
     "@antv/g": "^5.0.1",
-    "mana-syringe": "^0.2.2"
+    "mana-syringe": "^0.3.0"
   },
   "scripts": {
     "umd": "webpack"

@@ -9,6 +9,7 @@ import {
   ElementEvent,
   DisplayObject,
   CanvasEvent,
+  AABB,
 } from '@antv/g';
 import type { Element, FederatedEvent } from '@antv/g';
 
@@ -169,7 +170,7 @@ export class PhysXPlugin implements RenderingPlugin {
   private addActor(target: DisplayObject) {
     const entity = target.entity;
     const bounds = target.getBounds();
-    if (bounds && target.parsedStyle.rigid) {
+    if (!AABB.isEmpty(bounds) && target.parsedStyle.rigid) {
       const { halfExtents } = bounds;
 
       const PhysX = this.PhysX;

@@ -91,7 +91,7 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
         stroke: '#000',
         whiteSpace: 'pre',
         wordWrap: false,
-        wordWrapWidth: 100,
+        wordWrapWidth: 0,
         leading: 0,
         ...style,
       },

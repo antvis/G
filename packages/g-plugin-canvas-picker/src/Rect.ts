@@ -11,11 +11,22 @@ export function isPointInPath(
     fill,
     stroke,
     lineWidth = 0,
-    width,
-    height,
+    width: parsedWidth,
+    height: parsedHeight,
     clipPathTargets,
   } = displayObject.parsedStyle;
   const isClipPath = !!clipPathTargets?.length;
+
+  const { unit: widthUnit, value: widthValue } = parsedWidth;
+  const { unit: heightUnit, value: heightValue } = parsedHeight;
+  let width = 0;
+  let height = 0;
+  if (widthUnit === '' || widthUnit === 'px') {
+    width = widthValue;
+  }
+  if (heightUnit === '' || heightUnit === 'px') {
+    height = heightValue;
+  }
 
   // 无圆角时的策略
   if (!radius) {

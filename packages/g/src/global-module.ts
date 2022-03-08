@@ -21,8 +21,10 @@ import {
   SceneGraphSelector,
   SceneGraphSelectorFactory,
 } from './services/SceneGraphSelector';
-import type { ParsedColorStyleProperty, Interpolatable } from './property-handlers';
+import { parseLengthOrPercent, mergeDimensions } from './property-handlers';
 import type {
+  Interpolatable,
+  ParsedColorStyleProperty,
   StylePropertyParser,
   StylePropertyMerger,
   StylePropertyUpdater,
@@ -61,6 +63,38 @@ export const globalContainer = GlobalContainer;
 export const stylePropertyParserFactory: Record<string, StylePropertyParser<any, any>> = {};
 export const stylePropertyUpdaterFactory: Record<string, StylePropertyUpdater<any>[]> = {};
 export const stylePropertyMergerFactory: Record<string, StylePropertyMerger<any, any>> = {};
+export function addPropertyHandler<O, P, I extends Interpolatable = number>(
+  property: string,
+  parser: StylePropertyParser<O, P> | undefined,
+  merger: StylePropertyMerger<P, I> | undefined,
+  updater: StylePropertyUpdater<O> | undefined,
+) {
+  if (parser) {
+    stylePropertyParserFactory[property] = parser;
+    // register({ token: { token: StylePropertyParser, named: property }, useValue: parser });
+  }
+  if (merger) {
+    stylePropertyMergerFactory[property] = merger;
+    // register({ token: { token: StylePropertyMerger, named: property }, useValue: merger });
+  }
+  if (updater) {
+    if (!stylePropertyUpdaterFactory[property]) {
+      stylePropertyUpdaterFactory[property] = [];
+    }
+    stylePropertyUpdaterFactory[property].push(updater);
+    // register({ token: { token: StylePropertyUpdater, named: property }, useValue: updater });
+  }
+}
+export function addPropertiesHandler<O, P, I extends Interpolatable = number>(
+  properties: string[],
+  parser: StylePropertyParser<O, P> | undefined,
+  merger: StylePropertyMerger<P, I> | undefined,
+  updater: StylePropertyUpdater<O> | undefined,
+) {
+  for (let i = 0; i < properties.length; i++) {
+    addPropertyHandler<O, P, I>(properties[i], parser, merger, updater);
+  }
+}
 
 export const containerModule = Module((register) => {
   decorate(injectable(), EventEmitter);
@@ -107,84 +141,6 @@ export const containerModule = Module((register) => {
     },
   });
 
-  // // bind style property handlers
-  // register({
-  //   token: StylePropertyParserFactory,
-  //   useFactory: (context) => {
-  //     const cache = {};
-  //     return (propertyName: string) => {
-  //       if (!cache[propertyName]) {
-  //         if (context.container.isBoundNamed(StylePropertyParser, propertyName)) {
-  //           cache[propertyName] = context.container.getNamed(StylePropertyParser, propertyName);
-  //         }
-  //       }
-  //       return cache[propertyName];
-  //     };
-  //   },
-  // });
-  // register({
-  //   token: StylePropertyUpdaterFactory,
-  //   useFactory: (context) => {
-  //     const cache = {};
-  //     return (propertyName: string) => {
-  //       if (!cache[propertyName]) {
-  //         if (context.container.isBoundNamed(StylePropertyUpdater, propertyName)) {
-  //           cache[propertyName] = context.container.getAllNamed(StylePropertyUpdater, propertyName);
-  //         }
-  //       }
-
-  //       return cache[propertyName];
-  //     };
-  //   },
-  // });
-  // register({
-  //   token: StylePropertyMergerFactory,
-  //   useFactory: (context) => {
-  //     const cache = {};
-  //     return (propertyName: string) => {
-  //       if (!cache[propertyName]) {
-  //         if (context.container.isBoundNamed(StylePropertyMerger, propertyName)) {
-  //           cache[propertyName] = context.container.getNamed(StylePropertyMerger, propertyName);
-  //         }
-  //       }
-  //       return cache[propertyName];
-  //     };
-  //   },
-  // });
-
-  function addPropertyHandler<O, P, I extends Interpolatable = number>(
-    property: string,
-    parser: StylePropertyParser<O, P> | undefined,
-    merger: StylePropertyMerger<P, I> | undefined,
-    updater: StylePropertyUpdater<O> | undefined,
-  ) {
-    if (parser) {
-      stylePropertyParserFactory[property] = parser;
-      // register({ token: { token: StylePropertyParser, named: property }, useValue: parser });
-    }
-    if (merger) {
-      stylePropertyMergerFactory[property] = merger;
-      // register({ token: { token: StylePropertyMerger, named: property }, useValue: merger });
-    }
-    if (updater) {
-      if (!stylePropertyUpdaterFactory[property]) {
-        stylePropertyUpdaterFactory[property] = [];
-      }
-      stylePropertyUpdaterFactory[property].push(updater);
-      // register({ token: { token: StylePropertyUpdater, named: property }, useValue: updater });
-    }
-  }
-  function addPropertiesHandler<O, P, I extends Interpolatable = number>(
-    properties: string[],
-    parser: StylePropertyParser<O, P> | undefined,
-    merger: StylePropertyMerger<P, I> | undefined,
-    updater: StylePropertyUpdater<O> | undefined,
-  ) {
-    for (let i = 0; i < properties.length; i++) {
-      addPropertyHandler<O, P, I>(properties[i], parser, merger, updater);
-    }
-  }
-
   // bind handlers for properties
   addPropertiesHandler<number, number>(
     ['opacity', 'fillOpacity', 'strokeOpacity', 'offsetDistance'],
@@ -192,10 +148,20 @@ export const containerModule = Module((register) => {
     clampedMergeNumbers(0, 1),
     undefined,
   );
+
   addPropertiesHandler<number, number>(
-    ['r', 'rx', 'ry', 'lineWidth', 'width', 'height', 'shadowBlur'],
+    ['lineWidth', 'shadowBlur'],
     parseNumber,
     clampedMergeNumbers(0, Infinity),
+    undefined,
+  );
+
+  // support percent
+  addPropertiesHandler<number, number>(
+    ['r', 'rx', 'ry', 'width', 'height'],
+    parseLengthOrPercent,
+    // @ts-ignore
+    mergeDimensions,
     undefined,
   );
 

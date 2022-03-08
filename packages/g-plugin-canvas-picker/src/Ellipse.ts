@@ -1,4 +1,4 @@
-import { DisplayObject, EllipseStyleProps } from '@antv/g';
+import { DisplayObject, EllipseStyleProps, ParsedEllipseStyleProps } from '@antv/g';
 
 function ellipseDistance(squareX: number, squareY: number, rx: number, ry: number) {
   return squareX / (rx * rx) + squareY / (ry * ry);
@@ -9,13 +9,13 @@ export function isPointInPath(
   { x, y }: { x: number; y: number },
 ): boolean {
   const {
-    rx = 0,
-    ry = 0,
+    rxInPixels: rx,
+    ryInPixels: ry,
     fill,
     stroke,
     lineWidth = 0,
     clipPathTargets,
-  } = displayObject.parsedStyle;
+  } = displayObject.parsedStyle as ParsedEllipseStyleProps;
   const isClipPath = !!clipPathTargets?.length;
 
   const halfLineWith = lineWidth / 2;

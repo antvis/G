@@ -1,7 +1,7 @@
 import { singleton } from 'mana-syringe';
 import { isString } from '@antv/util';
 import { GeometryAABBUpdater } from './interfaces';
-import type { ParsedImageStyleProps } from '../../display-objects/Image';
+import type { Image, ParsedImageStyleProps } from '../../display-objects/Image';
 import { SHAPE } from '../../types';
 
 @singleton({
@@ -12,24 +12,36 @@ import { SHAPE } from '../../types';
   ],
 })
 export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
-  update(attributes: ParsedImageStyleProps) {
-    const { img, x = 0, y = 0, width = 0, height = 0 } = attributes;
+  update(parsedStyle: ParsedImageStyleProps, object: Image) {
+    const { img, x = 0, y = 0, width, height } = parsedStyle;
 
-    let contentWidth: number;
-    let contentHeight: number;
+    let contentWidth = 0;
+    let contentHeight = 0;
+    const { unit: widthUnit, value: widthValue } = width;
+    const { unit: heightUnit, value: heightValue } = height;
+    if (widthUnit === '' || widthUnit === 'px') {
+      contentWidth = widthValue;
+    }
+    if (heightUnit === '' || heightUnit === 'px') {
+      contentHeight = heightValue;
+    }
+
     // resize with HTMLImageElement's size
     if (img && !isString(img)) {
-      if (!attributes.width) {
+      if (!contentWidth) {
         contentWidth = img.width;
       }
-      if (!attributes.height) {
+      if (!contentHeight) {
         contentHeight = img.height;
       }
     }
 
+    object.parsedStyle.widthInPixels = contentWidth;
+    object.parsedStyle.heightInPixels = contentHeight;
+
     return {
-      width: contentWidth || width,
-      height: contentHeight || height,
+      width: contentWidth,
+      height: contentHeight,
       x,
       y,
     };

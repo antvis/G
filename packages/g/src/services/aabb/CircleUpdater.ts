@@ -1,15 +1,26 @@
 import { singleton } from 'mana-syringe';
 import { GeometryAABBUpdater } from './interfaces';
-import type { ParsedCircleStyleProps } from '../../display-objects/Circle';
+import type { Circle, ParsedCircleStyleProps } from '../../display-objects/Circle';
 import { SHAPE } from '../../types';
 
 @singleton({ token: { token: GeometryAABBUpdater, named: SHAPE.Circle } })
 export class CircleUpdater implements GeometryAABBUpdater<ParsedCircleStyleProps> {
-  update(parsedStyle: ParsedCircleStyleProps) {
-    const { r = 0, x = 0, y = 0 } = parsedStyle;
+  update(parsedStyle: ParsedCircleStyleProps, object: Circle) {
+    const { r, x = 0, y = 0 } = parsedStyle;
+    const { unit, value } = r;
+
+    let width = 0;
+    let height = 0;
+    if (unit === '' || unit === 'px') {
+      width = value * 2;
+      height = value * 2;
+    }
+
+    object.parsedStyle.rInPixels = width / 2;
+
     return {
-      width: r * 2,
-      height: r * 2,
+      width,
+      height,
       x,
       y,
     };

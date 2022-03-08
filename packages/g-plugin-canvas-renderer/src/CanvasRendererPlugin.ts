@@ -438,33 +438,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     return { x: minX, y: minY, width, height };
   }
 
-  private insertRBushNode(object: DisplayObject) {
-    // @ts-ignore
-    const rBushNode = object.rBushNode;
-
-    if (rBushNode) {
-      // insert node in RTree
-      this.rBush.remove(rBushNode.aabb);
-      // this.rBush.remove(rBushNode.aabb, (a: RBushNodeAABB, b: RBushNodeAABB) => a.name === b.name);
-
-      const renderBounds = object.getRenderBounds();
-      if (renderBounds) {
-        const [minX, minY] = renderBounds.getMin();
-        const [maxX, maxY] = renderBounds.getMax();
-        rBushNode.aabb = {
-          id: object.entity,
-          minX,
-          minY,
-          maxX,
-          maxY,
-        };
-      }
-
-      // sync rbush node with object's bounds
-      this.rBush.insert(rBushNode.aabb);
-    }
-  }
-
   /**
    * TODO: merge dirty rectangles with some strategies.
    * For now, we just simply merge all the rectangles into one.

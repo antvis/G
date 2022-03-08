@@ -157,8 +157,8 @@ export interface ParsedBaseStyleProps
   points?: ParsedPolylineStyleProps;
   x?: number;
   y?: number;
-  width?: number;
-  height?: number;
+  // width?: ParsedElement;
+  // height?: ParsedElement;
   /**
    * x according to definition, eg. Line's x1/x2, Polyline's points
    */

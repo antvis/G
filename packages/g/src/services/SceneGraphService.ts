@@ -87,9 +87,9 @@ export interface SceneGraphService {
   getWorldTransform: (element: INode, transform?: Transform) => mat4;
   getLocalTransform: (element: INode, transform?: Transform) => mat4;
   resetLocalTransform: (element: INode) => void;
-  getBounds: (element: INode, render?: boolean) => AABB | null;
-  getLocalBounds: (element: INode, render?: boolean) => AABB | null;
-  getGeometryBounds: (element: INode, render?: boolean) => AABB | null;
+  getBounds: (element: INode, render?: boolean) => AABB;
+  getLocalBounds: (element: INode, render?: boolean) => AABB;
+  getGeometryBounds: (element: INode, render?: boolean) => AABB;
   getBoundingClientRect: (element: INode) => Rectangle;
   syncHierarchy: (element: INode) => void;
 }
@@ -585,9 +585,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
     this.setLocalEulerAngles(element, [0, 0, 0]);
   }
 
-  getTransformedGeometryBounds(element: INode, render = false): AABB | null {
+  private getTransformedGeometryBounds(element: INode, render = false): AABB | null {
     const bounds = this.getGeometryBounds(element, render);
-    if (bounds) {
+    if (!AABB.isEmpty(bounds)) {
       const aabb = new AABB();
       aabb.setFromTransformedAABB(bounds, this.getWorldTransform(element));
       return aabb;
@@ -599,16 +599,16 @@ export class DefaultSceneGraphService implements SceneGraphService {
   /**
    * won't account for children
    */
-  getGeometryBounds(element: INode, render = false): AABB | null {
+  getGeometryBounds(element: INode, render = false): AABB {
     const geometry = (element as Element).geometry;
     const bounds = render ? geometry.renderBounds : geometry.contentBounds || null;
-    return (bounds && new AABB(bounds.center, bounds.halfExtents)) || null;
+    return (bounds && new AABB(bounds.center, bounds.halfExtents)) || new AABB();
   }
 
   /**
    * account for children in world space
    */
-  getBounds(element: INode, render = false): AABB | null {
+  getBounds(element: INode, render = false): AABB {
     const renderable = (element as Element).renderable;
 
     if (!renderable.boundsDirty && !render && renderable.bounds) {
@@ -671,13 +671,13 @@ export class DefaultSceneGraphService implements SceneGraphService {
       renderable.boundsDirty = false;
     }
 
-    return aabb || null;
+    return aabb || new AABB();
   }
 
   /**
    * account for children in local space
    */
-  getLocalBounds(element: INode): AABB | null {
+  getLocalBounds(element: INode): AABB {
     if (element.parentNode) {
       let parentInvert = mat4.create();
       if ((element.parentNode as Element).transformable) {
@@ -686,7 +686,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
       const bounds = this.getBounds(element);
 
-      if (bounds) {
+      if (!AABB.isEmpty(bounds)) {
         const localBounds = new AABB();
         localBounds.setFromTransformedAABB(bounds, parentInvert);
         return localBounds;
@@ -699,7 +699,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
   getBoundingClientRect(element: INode): Rectangle {
     let aabb: AABB;
     const bounds = this.getGeometryBounds(element);
-    if (bounds) {
+    if (!AABB.isEmpty(bounds)) {
       aabb = new AABB();
       // apply transformation to aabb
       aabb.setFromTransformedAABB(bounds, this.getWorldTransform(element));

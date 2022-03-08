@@ -2,6 +2,40 @@
 
 以下版本号以 @antv/g 为准。
 
+## [5.0.15] - 2022-3-8
+
+-   @antv/g-canvas@1.0.14
+-   @antv/g-components@1.0.12
+-   @antv/g-math@1.0.12
+-   @antv/g-plugin-3d@1.0.16
+-   @antv/g-plugin-box2d@1.0.5
+-   @antv/g-plugin-canvas-picker@1.0.12
+-   @antv/g-plugin-canvas-renderer@1.0.12
+-   @antv/g-plugin-control@1.0.13
+-   @antv/g-plugin-css-select@1.0.12
+-   @antv/g-plugin-dom-interaction@1.0.12
+-   @antv/g-plugin-gpgpu@1.0.13
+-   @antv/g-plugin-html-renderer@1.0.13
+-   @antv/g-plugin-matterjs@1.0.2
+-   @antv/g-plugin-physx@1.0.5
+-   @antv/g-plugin-svg-picker@1.0.12
+-   @antv/g-plugin-svg-renderer@1.0.12
+-   @antv/g-plugin-webgl-renderer@1.0.18
+-   @antv/g-plugin-yoga@1.0.2
+-   @antv/g-shader-components@1.0.10
+-   @antv/g-svg@1.0.12
+-   @antv/g-webgl@1.0.18
+-   @antv/g-webgpu-compiler@1.0.13
+-   @antv/g@5.0.15
+-   @antv/react-g@1.0.8
+
+### 新增特性
+
+-   [g] 升级 mana-syringe 到 `0.3.0`，使用 `container.unload()` 写法
+-   [g] `getBounds` 不再会返回 null，而是空的 AABB（长宽中心点坐标都为 0）
+-   [g-plugin-yoga] 部分 flex 属性支持百分比单位与动画 https://antv-g-next.gitee.io/zh/docs/plugins/yoga
+-   [g-plugin-matterjs] 支持 matter.js 2D 物理引擎 https://antv-g-next.gitee.io/zh/docs/plugins/matterjs
+
 ## [5.0.14] - 2022-3-4
 
 -   @antv/g-canvas@1.0.13

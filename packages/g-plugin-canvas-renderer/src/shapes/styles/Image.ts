@@ -16,11 +16,12 @@ export class ImageRenderer implements StyleRenderer {
   }
 
   render(context: CanvasRenderingContext2D, parsedStyle: ParsedImageStyleProps) {
-    const { width = 0, height = 0, img } = parsedStyle;
+    const { widthInPixels, heightInPixels, img } = parsedStyle;
 
     let image: HTMLImageElement;
-    let iw = width;
-    let ih = height;
+    let iw = widthInPixels;
+    let ih = heightInPixels;
+
     if (isString(img)) {
       // image has been loaded in `mounted` hook
       image = this.imagePool.getImageSync(img);

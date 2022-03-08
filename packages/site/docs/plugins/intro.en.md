@@ -28,7 +28,7 @@ renderer.registerPlugin(new Plugin());
 ```json
 "peerDependencies": {
     "@antv/g": "^5.0.1",
-    "mana-syringe": "^0.2.2"
+    "mana-syringe": "^0.3.0"
 },
 ```
 

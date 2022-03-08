@@ -7,17 +7,10 @@ import { RenderingPluginContribution, RenderingService } from './services';
 import { EventPlugin } from './plugins/EventPlugin';
 import { EventService } from './services';
 
-export const containerModule = Module((register, context) => {
-  if (context.container.isBound(RenderingService)) {
-    // remove rendering plugins
-    context.container.remove(RenderingPluginContribution);
-    context.container.remove(RenderingService);
-    context.container.remove(FrustumCullingStrategy);
-  } else {
-    Contribution.register(register, RenderingPluginContribution, { cache: false });
-    // culling plugin
-    Contribution.register(register, CullingStrategyContribution, { cache: false });
-  }
+export const containerModule = Module((register) => {
+  Contribution.register(register, RenderingPluginContribution, { cache: false });
+  // culling plugin
+  Contribution.register(register, CullingStrategyContribution, { cache: false });
 
   // register built-in rendering plugins
   register(RenderingService);

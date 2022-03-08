@@ -4,9 +4,12 @@ import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
 import { AABB } from '../shapes';
 import { mat4, vec3 } from 'gl-matrix';
+import type { ParsedElement } from '../property-handlers';
 
 export interface HTMLStyleProps extends BaseStyleProps {
   innerHTML: string | HTMLElement;
+  width: number;
+  height: number;
   className?: string | string[];
   style?: string;
 }
@@ -14,6 +17,8 @@ export interface HTMLStyleProps extends BaseStyleProps {
 export interface ParsedHTMLStyleProps extends ParsedBaseStyleProps {
   $el: HTMLElement;
   innerHTML: string | HTMLElement;
+  width: ParsedElement;
+  height: ParsedElement;
   className?: string | string[];
   style?: string;
 }
@@ -87,7 +92,7 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
       );
       const bounds = this.getBounds();
 
-      if (bounds) {
+      if (!AABB.isEmpty(bounds)) {
         const localBounds = new AABB();
         localBounds.setFromTransformedAABB(bounds, parentInvert);
         return localBounds;

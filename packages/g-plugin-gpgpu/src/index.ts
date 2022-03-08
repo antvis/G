@@ -13,9 +13,6 @@ export class Plugin implements RendererPlugin {
     // container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
-    // @ts-ignore
-    // container.container.unload(containerModule);
-    // // container.unload(containerModule);
-    // container.remove(HTMLRenderingPlugin);
+    // container.unload(containerModule);
   }
 }

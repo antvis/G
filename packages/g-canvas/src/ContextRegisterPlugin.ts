@@ -14,9 +14,6 @@ export class ContextRegisterPlugin implements RendererPlugin {
     container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
-    container.remove(Canvas2DContextService);
-    // @ts-ignore
-    // container.container.unload(containerModule);
-    // container.remove(Canvas2DContextService);
+    container.unload(containerModule);
   }
 }

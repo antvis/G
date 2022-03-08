@@ -340,12 +340,12 @@ export function convertToPath(object: DisplayObject) {
       commands = lineToCommands(x1, y1, x2, y2);
       break;
     case SHAPE.Circle: {
-      const { r, x = 0, y = 0 } = (object as Circle).parsedStyle;
+      const { rInPixels: r, x = 0, y = 0 } = (object as Circle).parsedStyle;
       commands = ellipseToCommands(r, r, x, y);
       break;
     }
     case SHAPE.Ellipse: {
-      const { rx, ry, x = 0, y = 0 } = (object as Ellipse).parsedStyle;
+      const { rxInPixels: rx, ryInPixels: ry, x = 0, y = 0 } = (object as Ellipse).parsedStyle;
       commands = ellipseToCommands(rx, ry, x, y);
       break;
     }
@@ -355,7 +355,13 @@ export function convertToPath(object: DisplayObject) {
       commands = polygonToCommands(points.points);
       break;
     case SHAPE.Rect:
-      const { width, height, x, y, radius } = (object as Rect).parsedStyle;
+      const {
+        widthInPixels: width,
+        heightInPixels: height,
+        x,
+        y,
+        radius,
+      } = (object as Rect).parsedStyle;
       commands = rectToCommands(width, height, x, y, radius);
       break;
     case SHAPE.Path:

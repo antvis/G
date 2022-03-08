@@ -53,16 +53,6 @@ export class Plugin implements RendererPlugin {
     container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
-    container.remove(RectRenderer);
-    container.remove(ImageRenderer);
-    container.remove(LineRenderer);
-    container.remove(PolylineRenderer);
-    container.remove(TextRenderer);
-    container.remove(PathRenderer);
-    container.remove(ElementRendererFactory);
-    container.remove(SVGRendererPlugin);
-    // @ts-ignore
-    // container.container.unload(containerModule);
-    // container.unload(containerModule);
+    container.unload(containerModule);
   }
 }

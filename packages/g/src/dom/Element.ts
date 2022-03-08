@@ -311,25 +311,25 @@ export class Element<
     this.destroyed = true;
   }
 
-  getGeometryBounds(): AABB | null {
+  getGeometryBounds(): AABB {
     return this.sceneGraphService.getGeometryBounds(this);
   }
 
-  getRenderBounds(): AABB | null {
+  getRenderBounds(): AABB {
     return this.sceneGraphService.getBounds(this, true);
   }
 
   /**
    * get bounds in world space, account for children
    */
-  getBounds(): AABB | null {
+  getBounds(): AABB {
     return this.sceneGraphService.getBounds(this);
   }
 
   /**
    * get bounds in local space, account for children
    */
-  getLocalBounds(): AABB | null {
+  getLocalBounds(): AABB {
     return this.sceneGraphService.getLocalBounds(this);
   }
 

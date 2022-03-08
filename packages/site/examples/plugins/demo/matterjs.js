@@ -5,7 +5,12 @@ import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 const renderer = new Renderer();
-const plugin = new PluginBox2D();
+const plugin = new PluginBox2D({
+  debug: true, // 开启 debug 模式，将物理引擎世界也渲染出来
+  debugContainer: document.getElementById('container'),
+  debugCanvasWidth: 600,
+  debugCanvasHeight: 500,
+});
 renderer.registerPlugin(plugin);
 
 const canvas = new Canvas({
@@ -14,6 +19,18 @@ const canvas = new Canvas({
   height: 500,
   renderer,
 });
+
+// const ground = new Rect({
+//   style: {
+//     fill: '#C6E5FF',
+//     width: 550,
+//     height: 10,
+//     rigid: 'static',
+//     x: 0,
+//     y: 400,
+//   },
+// });
+// canvas.appendChild(ground);
 
 const ground1 = new Line({
   style: {
@@ -68,12 +85,10 @@ for (let i = 0; i < 10; i++) {
       height: 50,
       rigid: 'dynamic',
       density: 0.1,
-      x: Math.random() * 100,
+      x: Math.random() * 100 + 100,
       y: Math.random() * 100,
     },
   });
-
-  rect.setRotation(0, 0, 0.3, 0.7);
   canvas.appendChild(rect);
 }
 
@@ -89,18 +104,18 @@ const circle = new Circle({
   },
 });
 canvas.appendChild(circle);
-const text = new Text({
-  id: 'text',
-  style: {
-    fontFamily: 'PingFang SC',
-    text: 'Circle',
-    fontSize: 16,
-    fill: '#fFF',
-    textAlign: 'center',
-    textBaseline: 'middle',
-  },
-});
-circle.appendChild(text);
+// const text = new Text({
+//   id: 'text',
+//   style: {
+//     fontFamily: 'PingFang SC',
+//     text: 'Circle',
+//     fontSize: 16,
+//     fill: '#fFF',
+//     textAlign: 'center',
+//     textBaseline: 'middle',
+//   },
+// });
+// circle.appendChild(text);
 
 const polygon = new Polygon({
   style: {
@@ -111,6 +126,10 @@ const polygon = new Polygon({
       [40, 10 + 20 * Math.cos(Math.PI / 6) * 2],
       [20, 10 + 20 * Math.cos(Math.PI / 6) * 2],
       [20 - 20 * Math.sin(Math.PI / 6), 10 + 20 * Math.cos(Math.PI / 6)],
+      // [10, 10],
+      // [30, 10],
+      // [30, 30],
+      // [10, 30],
     ],
     fill: '#C6E5FF',
     stroke: '#1890FF',
@@ -122,18 +141,18 @@ const polygon = new Polygon({
 polygon.setPosition(100, 100);
 canvas.appendChild(polygon);
 
-// const image = new Image({
-//   style: {
-//     x: 200,
-//     y: 100,
-//     width: 80,
-//     height: 80,
-//     img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-//     rigid: 'dynamic',
-//     density: 10,
-//   },
-// });
-// canvas.appendChild(image);
+const image = new Image({
+  style: {
+    x: 200,
+    y: 100,
+    width: 80,
+    height: 80,
+    img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    rigid: 'dynamic',
+    density: 10,
+  },
+});
+canvas.appendChild(image);
 
 // const slope = new Polyline({
 //   style: {
@@ -166,12 +185,12 @@ canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
 });
 
 // GUI
-// const gui = new lil.GUI({ autoPlace: false });
-// $wrapper.appendChild(gui.domElement);
-// const forceFolder = gui.addFolder('force');
-// const forceConfig = {
-//   applyForce: () => {
-//     plugin.applyForce(circle, [0, -100], [0, 0]);
-//   },
-// };
-// forceFolder.add(forceConfig, 'applyForce').name('applyForce');
+const gui = new lil.GUI({ autoPlace: false });
+$wrapper.appendChild(gui.domElement);
+const forceFolder = gui.addFolder('force');
+const forceConfig = {
+  applyForce: () => {
+    plugin.applyForce(circle, [0, -10], [0, 0]);
+  },
+};
+forceFolder.add(forceConfig, 'applyForce').name('applyForce to circle');
