@@ -84,6 +84,10 @@ export class RenderInst {
     this.reset();
   }
 
+  setTopology(topology: PrimitiveTopology) {
+    this.renderPipelineDescriptor.topology = topology;
+  }
+
   /**
    * Resets a render inst to be boring, so it can re-enter the pool.
    * Normally, you should not need to call this.
@@ -465,7 +469,7 @@ export class RenderInst {
   drawOnPass(cache: RenderCache, passRenderer: RenderPass): boolean {
     const device = cache.device;
     this.setAttachmentFormatsFromRenderPass(device, passRenderer);
-
+    // console.log('this.renderPipelineDescriptor', this.renderPipelineDescriptor)
     const gfxPipeline = cache.createRenderPipeline(this.renderPipelineDescriptor);
 
     const pipelineReady = device.queryPipelineReady(gfxPipeline);
@@ -501,8 +505,8 @@ export class RenderInst {
       ...this.bindingDescriptors[0],
       pipeline: gfxPipeline,
     });
-    passRenderer.setBindings(0, gfxBindings, this.dynamicUniformBufferByteOffsets);
 
+    passRenderer.setBindings(0, gfxBindings, this.dynamicUniformBufferByteOffsets);
     // if (this.drawInstanceCount > 0) {
     if (this.drawInstanceCount > 1) {
       assert(!!(this.flags & RenderInstFlags.Indexed));

@@ -1,11 +1,9 @@
 #pragma glslify:import('@antv/g-shader-components/common.glsl')
 #pragma glslify:import('@antv/g-shader-components/scene.both.glsl')
-#pragma glslify:import('@antv/g-shader-components/material.basic.glsl')
+#pragma glslify:import('@antv/g-shader-components/material.sprite.glsl')
 
 #pragma glslify:import('@antv/g-shader-components/batch.declaration.frag')
-#pragma glslify:import('@antv/g-shader-components/uv.declaration.frag')
 #pragma glslify:import('@antv/g-shader-components/map.declaration.frag')
-#pragma glslify:import('@antv/g-shader-components/wireframe.declaration.frag')
 #pragma glslify:import('@antv/g-shader-components/fog.declaration.frag')
 
 void main(){
@@ -23,6 +21,5 @@ void main(){
   vec3 outgoingLight=reflectedLight.indirectDiffuse;
   
   #pragma glslify:import('@antv/g-shader-components/output.frag')
-  #pragma glslify:import('@antv/g-shader-components/wireframe.frag')
   #pragma glslify:import('@antv/g-shader-components/fog.frag')
 }

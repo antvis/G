@@ -22,6 +22,7 @@ import {
   InputState,
   makeTextureDescriptor2D,
   MipFilterMode,
+  PrimitiveTopology,
   StencilOp,
   TexFilterMode,
   VertexBufferFrequency,
@@ -454,6 +455,11 @@ export abstract class Instanced {
       this.geometryDirty = false;
       this.geometry.dirty = false;
       this.inputStateDirty = true;
+    }
+
+    // gl.POINTS
+    if (this.geometry.drawMode === 0) {
+      renderInst.setTopology(PrimitiveTopology.Points);
     }
 
     // cached input layout

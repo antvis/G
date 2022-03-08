@@ -12,6 +12,13 @@
       }
     },
     {
+      "filename": "sprite.js",
+      "title": {
+        "zh": "CludGeometry",
+        "en": "CludGeometry"
+      }
+    },
+    {
       "filename": "cube.js",
       "title": {
         "zh": "立方体",

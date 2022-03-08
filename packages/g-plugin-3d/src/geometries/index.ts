@@ -3,3 +3,4 @@ export * from './CubeGeometry';
 export * from './SphereGeometry';
 export * from './TorusGeometry';
 export * from './PlaneGeometry';
+export * from './CloudGeometry';

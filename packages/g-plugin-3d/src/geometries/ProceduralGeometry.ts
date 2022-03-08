@@ -24,11 +24,12 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
    * create geometry attributes
    */
   protected abstract createTopology(): {
-    indices: number[];
+    vertexCount?: number;
+    indices?: number[];
     positions: number[];
-    normals: number[];
-    uvs: number[];
-    uv1s: number[];
+    normals?: number[];
+    uvs?: number[];
+    uv1s?: number[];
   };
 
   protected applyMa4Position(mat: mat4, positions: ArrayBufferView) {
@@ -53,6 +54,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
   }
 
   protected applyMa4Normal(mat: mat4, normals: ArrayBufferView) {
+    if (!normals) return;
     const v = vec4.create();
     const normalMatrix = mat4.copy(mat4.create(), mat);
     mat4.invert(normalMatrix, normalMatrix);
