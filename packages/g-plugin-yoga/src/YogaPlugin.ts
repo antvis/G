@@ -231,7 +231,7 @@ export class YogaPlugin implements RenderingPlugin {
         } else {
           bounds = object.getBounds();
         }
-        if (bounds) {
+        if (!AABB.isEmpty(bounds)) {
           const [halfWidth, halfHeight] = bounds.halfExtents;
           node.setWidth(halfWidth * 2);
           node.setHeight(halfHeight * 2);

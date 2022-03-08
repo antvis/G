@@ -8,6 +8,12 @@ import type { Plane } from './Plane';
  * @see https://github.com/antvis/GWebGPUEngine/issues/3
  */
 export class AABB {
+  static isEmpty(aabb: AABB) {
+    return (
+      !aabb || (aabb.halfExtents[0] === 0 && aabb.halfExtents[1] === 0 && aabb.halfExtents[2] === 0)
+    );
+  }
+
   center: vec3;
 
   halfExtents: vec3;
@@ -46,6 +52,10 @@ export class AABB {
   }
 
   add(aabb: AABB) {
+    if (AABB.isEmpty(aabb)) {
+      return;
+    }
+
     const tc = this.center;
     const tcx = tc[0];
     const tcy = tc[1];

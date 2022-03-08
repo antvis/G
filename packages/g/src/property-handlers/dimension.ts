@@ -2,6 +2,7 @@ import { numberToString } from './numeric';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import { rad2deg } from '../utils/math';
 import { isFinite } from '@antv/util';
+import { AABB } from '../shapes';
 
 export type LengthUnit = 'px' | '%';
 export type AngleUnit = 'deg' | 'rad' | 'turn';
@@ -20,11 +21,7 @@ function isAngleUnit(unit: string) {
 }
 
 export function parseDimension(unitRegExp: RegExp, string: string): ParsedElement | undefined {
-  if (isFinite(Number(string))) {
-    return { unit: '', value: Number(string) };
-  }
-
-  string = string.trim().toLowerCase();
+  string = `${string}`.trim().toLowerCase();
 
   if (string === '0') {
     if ('px'.search(unitRegExp) >= 0) {
@@ -36,6 +33,10 @@ export function parseDimension(unitRegExp: RegExp, string: string): ParsedElemen
     }
   } else if (string === 'auto') {
     return { unit: 'auto', value: 0 };
+  }
+
+  if (isFinite(Number(string))) {
+    return { unit: '', value: Number(string) };
   }
 
   const matchedUnits: Unit[] = [];
@@ -134,7 +135,7 @@ export function convertPercentUnit(
     // use bounds
     const bounds = target.getBounds();
     let size = 0;
-    if (bounds) {
+    if (!AABB.isEmpty(bounds)) {
       size = bounds.halfExtents[vec3Index] * 2;
     }
     return (Number(valueWithUnit.value) / 100) * size;

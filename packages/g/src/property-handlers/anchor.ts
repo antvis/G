@@ -2,11 +2,12 @@ import type { vec2 } from 'gl-matrix';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import { dirtifyToRoot } from '../services';
+import { AABB } from '../shapes';
 import { createVec3 } from '../utils';
 
 export function updateAnchor(oldValue: vec2 | vec3, newValue: vec2 | vec3, object: DisplayObject) {
   const bounds = object.getGeometryBounds();
-  if (bounds) {
+  if (!AABB.isEmpty(bounds)) {
     const geometry = object.geometry;
     if (geometry && geometry.contentBounds) {
       const offset = vec3.multiply(

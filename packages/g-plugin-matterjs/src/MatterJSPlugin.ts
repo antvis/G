@@ -17,6 +17,7 @@ import {
   ParsedBaseStyleProps,
   rad2deg,
   deg2rad,
+  AABB,
 } from '@antv/g';
 import type { FederatedEvent } from '@antv/g';
 import { Engine, Render, Bodies, Body, Composite, World } from 'matter-js';
@@ -84,7 +85,7 @@ export class MatterJSPlugin implements RenderingPlugin {
           const displayObject = this.displayObjectPool.getByEntity(Number(entity));
           const bounds = displayObject.getBounds();
 
-          if (bounds) {
+          if (!AABB.isEmpty(bounds)) {
             const { anchor = [0, 0] } = displayObject.parsedStyle;
             const { halfExtents } = bounds;
             const body = this.bodies[entity] as Body;
@@ -217,7 +218,7 @@ export class MatterJSPlugin implements RenderingPlugin {
     } = parsedStyle;
     const bounds = target.getBounds();
 
-    if (bounds) {
+    if (!AABB.isEmpty(bounds)) {
       const { halfExtents } = bounds;
       // RTS in worldspace
       const [x, y] = target.getPosition();

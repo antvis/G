@@ -92,7 +92,7 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
       );
       const bounds = this.getBounds();
 
-      if (bounds) {
+      if (!AABB.isEmpty(bounds)) {
         const localBounds = new AABB();
         localBounds.setFromTransformedAABB(bounds, parentInvert);
         return localBounds;

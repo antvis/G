@@ -287,9 +287,12 @@ describe('DisplayObject Bounds API', () => {
     let bounds = group.getBounds();
     let geometryBounds = group.getGeometryBounds();
     let renderBounds = group.getRenderBounds();
-    expect(bounds).to.be.null;
-    expect(geometryBounds).to.be.null;
-    expect(renderBounds).to.be.null;
+    expect(bounds.center).eqls(vec3.fromValues(0, 0, 0));
+    expect(bounds.halfExtents).eqls(vec3.fromValues(0, 0, 0));
+    expect(geometryBounds.center).eqls(vec3.fromValues(0, 0, 0));
+    expect(geometryBounds.halfExtents).eqls(vec3.fromValues(0, 0, 0));
+    expect(renderBounds.center).eqls(vec3.fromValues(0, 0, 0));
+    expect(renderBounds.halfExtents).eqls(vec3.fromValues(0, 0, 0));
 
     const circle = new Circle({
       style: {
@@ -306,7 +309,8 @@ describe('DisplayObject Bounds API', () => {
       expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
     }
     geometryBounds = group.getGeometryBounds();
-    expect(geometryBounds).to.be.null;
+    expect(geometryBounds.center).eqls(vec3.fromValues(0, 0, 0));
+    expect(geometryBounds.halfExtents).eqls(vec3.fromValues(0, 0, 0));
     renderBounds = group.getRenderBounds();
     if (renderBounds) {
       expect(renderBounds.center).eqls(vec3.fromValues(100, 100, 0));
@@ -321,7 +325,8 @@ describe('DisplayObject Bounds API', () => {
       expect(bounds.halfExtents).eqls(vec3.fromValues(200, 200, 0));
     }
     geometryBounds = group.getGeometryBounds();
-    expect(geometryBounds).to.be.null;
+    expect(geometryBounds.center).eqls(vec3.fromValues(0, 0, 0));
+    expect(geometryBounds.halfExtents).eqls(vec3.fromValues(0, 0, 0));
     renderBounds = group.getRenderBounds();
     if (renderBounds) {
       expect(renderBounds.center).eqls(vec3.fromValues(100, 100, 0));
@@ -333,7 +338,8 @@ describe('DisplayObject Bounds API', () => {
     const group = new Group();
     // group has no bounds
     let bounds = group.getBounds();
-    expect(bounds).to.be.null;
+    expect(bounds.center).eqls(vec3.fromValues(0, 0, 0));
+    expect(bounds.halfExtents).eqls(vec3.fromValues(0, 0, 0));
 
     const circle1 = new Circle({
       style: {
