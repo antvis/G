@@ -3,11 +3,11 @@ title: g-plugin-matterjs
 order: -1
 ---
 
-支持 [MatterJS](https://brm.io/matter-js/) 物理引擎（仅支持刚体）。2D 图形初始化后开始仿真，除了受重力和表面摩擦力，在任意时刻也可以施加外力改变图形的位置和旋转角度。
+支持 [matter.js](https://brm.io/matter-js/) 物理引擎（仅支持刚体）。2D 图形初始化后开始仿真，除了受重力和表面摩擦力，在任意时刻也可以施加外力改变图形的位置和旋转角度。
 
-支持以下 2D 图形：Circle、Rect、Line、Image、Polygon
+支持以下 2D 图形：[Circle](/zh/docs/api/basic/circle)、[Rect](/zh/docs/api/basic/rect)、[Line](/zh/docs/api/basic/line)、[Image](/zh/docs/api/basic/image)、[Polygon](/zh/docs/api/basic/polygon)
 
-在该[示例](/zh/examples/plugins#box2d)中，我们创建了一系列动态物体，让它们进行自由落体，最终停留在“U 形槽”中。
+在该[示例](/zh/examples/plugins#matterjs)中，我们创建了一系列动态物体，让它们进行自由落体，最终停留在“U 形槽”中。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -36,17 +36,54 @@ new Circle({
 
 全局物理世界配置。
 
-## gravity
+## debug
 
-重力方向向量，默认值为 `[0, 100]`。
-
-例如设置成 `[100, 100]`，物体会自然向右下角运动：
+matter.js  本身支持渲染。开启后配合 [debugContainer](/zh/docs/plugins/matterjs#debugcontainer) 可以绘制物理引擎世界中每个对象的 wireframe，便于 debug：
 
 ```js
-new PluginBox2D({
-  gravity: [100, 100],
+const plugin = new PluginBox2D({
+    debug: true,
+    debugContainer: document.getElementById('container'),
+    debugCanvasWidth: 600,
+    debugCanvasHeight: 500,
+});
+```
+
+例如下图展示了三堵静态墙壁和一些动态物体的 wireframe：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Z5XLQ5zRKzkAAAAAAAAAAAAAARQnAQ" width="300px">
+
+## debugContainer
+
+类型为 `HTMLElement`，matter.js 会在容器内创建 `<canvas>` 用于渲染。
+
+## debugCanvasWidth
+
+类型为 `number`，用于调试的 `<canvas>` 的宽度。
+
+## debugCanvasHeight
+
+类型为 `number`，用于调试的 `<canvas>` 的高度。
+
+## gravity
+
+重力方向向量，默认值为 `[0, 1]`。
+
+https://brm.io/matter-js/docs/classes/Engine.html#property_gravity
+
+例如设置成 `[1, 1]`，物体会自然向右下角运动：
+
+```js
+new PluginMatterjs({
+  gravity: [1, 1],
 }),
 ```
+
+## gravityScale
+
+类型为 `number`，重力缩放系数。
+
+https://brm.io/matter-js/docs/classes/Engine.html#property_gravity.scale
 
 ## timeStep
 
@@ -54,33 +91,17 @@ new PluginBox2D({
 
 ## velocityIterations
 
-计算加速度迭代次数，默认值为 `8`，越高计算开销越大
+计算加速度迭代次数，默认值为 `4`，越高计算开销越大
+
+https://brm.io/matter-js/docs/classes/Engine.html#property_velocityIterations
 
 ## positionIterations
 
-计算位置迭代次数，默认值为 `3`，越高计算开销越大
+计算位置迭代次数，默认值为 `6`，越高计算开销越大
 
-## onContact
-
-可以监听两个物体表面接触：
-
-```js
-new PluginBox2D({
-  onContact: (objectA, objectB) => {
-    // 两个物体表面发生了接触
-  }
-}),
-```
-
-https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md105
+https://brm.io/matter-js/docs/classes/Engine.html#property_positionIterations
 
 # 图形物理属性
-
-Box2D 使用如下物理单位：米、千克和秒。
-
-https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_loose_ends.html#autotoc_md124
-
-> Box2D uses MKS (meters, kilograms, and seconds) units and radians for angles.
 
 以下属性大部分都支持运行时修改，例如修改密度：
 
@@ -101,74 +122,55 @@ circle.style.density = 100;
 
 密度，千克/平方米。静态物体为 0。
 
-## linearVelocity
+https://brm.io/matter-js/docs/classes/Body.html#property_density
+
+## velocity
 
 线速度，默认值为 `[0, 0]`。
+
+https://brm.io/matter-js/docs/classes/Body.html#property_velocity
 
 ## angularVelocity
 
 角速度，默认值为 `0`。
 
-## gravityScale
-
-重力因子，默认值为 `1`。 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md60
-
-## linearDamping
-
-阻尼，默认值为 `0`。https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md59
-
-## angularDamping
-
-角阻尼，默认值为 `0`。https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md59
-
-## fixedRotation
-
-固定旋转角度，默认值为 `false`。https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md62
-
-## bullet
-
-默认值为 `false`。https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md63
+https://brm.io/matter-js/docs/classes/Body.html#property_angularVelocity
 
 ## friction
 
-摩擦力，取值范围为 `[0 - 1]`
+摩擦力，取值范围为 `[0 - 1]`，默认值为 `0.1`。`0` 代表物体会无限滑动下去，`1` 表示物体受力后会立刻停止。
+
+https://brm.io/matter-js/docs/classes/Body.html#property_friction
+
+## frictionAir
+
+定义在空气中的摩擦力，`0` 表示无重力，值越高物体在空间中移动减速就越明显，默认值为 `0.01`。
+
+https://brm.io/matter-js/docs/classes/Body.html#property_frictionAir
+
+## frictionStatic
+
+默认值为 `0.5`
+
+https://brm.io/matter-js/docs/classes/Body.html#property_frictionStatic
 
 ## restitution
 
 恢复力，取值范围为 `[0 - 1]`。例如一个球落向地面，恢复力为 0 时则不会弹起。
 
-# [WIP] 对物体施加外力
+# 对物体施加外力
 
 除了通过初始化参数进行仿真，在任意时刻都可以通过施加外力，改变物体的位置和旋转角度。
 
-https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md71
-
-```c++
-void b2Body::ApplyForce(const b2Vec2& force, const b2Vec2& point);
-void b2Body::ApplyTorque(float torque);
-void b2Body::ApplyLinearImpulse(const b2Vec2& impulse, const b2Vec2& point);
-void b2Body::ApplyAngularImpulse(float impulse);
-```
-
 ## applyForce
 
-```js
-const plugin = new PluginBox2D();
-plugin.applyForce(circle, [0, 0], [0, 0]);
+方法签名，对一个图形在某个点上施加力：
+
+```ts
+applyForce(object: DisplayObject, force: [number, number], point: [number, number])
 ```
 
-## applyTorque
-
-## applyLinearImpulse
-
-## applyAngularImpulse
-
-# [WIP] Joint
-
-物理间的连接会导致作用力的发生。Box2D 提供了一系列连接的描述。
-
-https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md82
-
-# [WIP] 流体
-
-使用 liquidfun：https://github.com/Birch-san/box2d-wasm/blob/c04514c040/README.md#alternative-distributions
+```js
+const plugin = new PluginMatterjs();
+plugin.applyForce(circle, [10, 0], [0, 0]);
+```

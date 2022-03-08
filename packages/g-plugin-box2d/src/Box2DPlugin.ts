@@ -282,25 +282,10 @@ export class Box2DPlugin implements RenderingPlugin {
         // new b2Vec2(next[0] - defX + eps, next[1] - defY),
       );
     } else if (nodeName === SHAPE.Rect || nodeName === SHAPE.Image) {
-      const { width, height } = parsedStyle as ParsedRectStyleProps;
-      const { unit: widthUnit, value: widthValue } = width;
-      const { unit: heightUnit, value: heightValue } = height;
-      let contentWidth = 0;
-      let contentHeight = 0;
-      if (widthUnit === '' || widthUnit === 'px') {
-        contentWidth = widthValue;
-      }
-      if (heightUnit === '' || heightUnit === 'px') {
-        contentHeight = heightValue;
-      }
+      const { widthInPixels: width, heightInPixels: height } = parsedStyle as ParsedRectStyleProps;
       shape = new b2PolygonShape();
       // @see https://box2d.org/documentation/classb2_polygon_shape.html#af80eb52027ffe85dd4d0a3110eae9d1b
-      shape.SetAsBox(
-        contentWidth / 2,
-        contentHeight / 2,
-        new b2Vec2(contentWidth / 2, contentHeight / 2),
-        0,
-      );
+      shape.SetAsBox(width / 2, height / 2, new b2Vec2(width / 2, height / 2), 0);
     } else if (nodeName === SHAPE.Circle) {
       // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_collision.html#autotoc_md37
       const { rInPixels } = parsedStyle as ParsedCircleStyleProps;
@@ -345,11 +330,6 @@ export class Box2DPlugin implements RenderingPlugin {
       }
 
       if (bodyDef) {
-        // set position & angle
-        // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md58
-        // bodyDef.set_position(new b2Vec2(0, 0));
-        // bodyDef.set_angle
-
         // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md60
         bodyDef.set_gravityScale(gravityScale);
 
