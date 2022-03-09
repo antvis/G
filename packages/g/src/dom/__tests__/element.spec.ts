@@ -18,6 +18,8 @@ describe('DOM Element API', () => {
     const group4 = new Element();
     const group5 = new Element();
     group5.name = 'group5';
+    expect(group1.nodeValue).to.be.null;
+    expect(group1.textContent).to.eqls('');
     expect(group1.hasChildNodes()).to.false;
     expect(group1.getRootNode()).to.eqls(group1);
     expect(group1.compareDocumentPosition(group1)).to.eqls(0);
@@ -38,8 +40,8 @@ describe('DOM Element API', () => {
     expect(group2.compareDocumentPosition(group1)).to.eqls(
       Node.DOCUMENT_POSITION_CONTAINS | Node.DOCUMENT_POSITION_PRECEDING,
     );
-    expect(group2.compareDocumentPosition(group4)).to.eqls(Node.DOCUMENT_POSITION_PRECEDING);
-    expect(group4.compareDocumentPosition(group2)).to.eqls(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(group4.compareDocumentPosition(group2)).to.eqls(Node.DOCUMENT_POSITION_PRECEDING);
+    expect(group2.compareDocumentPosition(group4)).to.eqls(Node.DOCUMENT_POSITION_FOLLOWING);
 
     // query children & parent
     expect(group1.contain(group2)).to.true;

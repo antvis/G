@@ -1,3 +1,5 @@
+import { SHAPE } from '..';
+// import { Text } from '../display-objects/Text';
 import { EventTarget } from './EventTarget';
 import type {
   IEventTarget,
@@ -93,7 +95,44 @@ export abstract class Node extends EventTarget implements INode {
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/textContent
    */
-  textContent: string | null = null;
+  get textContent(): string {
+    let out = '';
+
+    if (this.nodeName === SHAPE.Text) {
+      // @ts-ignore
+      out += this.style.text;
+    }
+
+    for (const child of this.childNodes) {
+      if (child.nodeName === SHAPE.Text) {
+        out += child.nodeValue;
+      } else {
+        out += child.textContent;
+      }
+    }
+
+    return out;
+  }
+
+  set textContent(content: string) {
+    // remove all children
+    this.childNodes.slice().forEach((child) => {
+      this.removeChild(child, true);
+    });
+
+    if (this.nodeName === SHAPE.Text) {
+      // @ts-ignore
+      this.style.text = content;
+    } else {
+      // this.appendChild(
+      //   new Text({
+      //     style: {
+      //       text: content,
+      //     },
+      //   }),
+      // );
+    }
+  }
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/getRootNode
@@ -182,6 +221,7 @@ export abstract class Node extends EventTarget implements INode {
     }
 
     let node1Root: INode = other;
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     let node2Root: INode = this;
     const node1Hierarchy: INode[] = [node1Root];
     const node2Hierarchy: INode[] = [node2Root];

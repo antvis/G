@@ -62,7 +62,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
   private inited = false;
   private readyPromise: Promise<any> | undefined;
-  private resolveReadyPromise: Function;
+  private resolveReadyPromise: () => void;
 
   constructor(config: CanvasConfig) {
     super();

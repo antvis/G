@@ -148,8 +148,7 @@ export class AnimationTimeline implements AnimationTimeline {
     return id;
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  private requestAnimationFrame(f: Function) {
+  private requestAnimationFrame(f: (ts: number) => void) {
     return this.rAF((x: number) => {
       this.updateAnimationsPromises();
       f(x);

@@ -18,7 +18,7 @@ order: 2
 
 ## nodeName
 
-返回节点名称，例如：
+只读，返回节点名称，例如：
 
 ```js
 circle.nodeName; // 'circle'
@@ -27,9 +27,42 @@ rect.nodeName; // 'rect'
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeName
 
+G 内置图形名称如下：
+
+```js
+export enum SHAPE {
+  Group = 'group',
+  Circle = 'circle',
+  Ellipse = 'ellipse',
+  Image = 'image',
+  Rect = 'rect',
+  Line = 'line',
+  Polyline = 'polyline',
+  Polygon = 'polygon',
+  Text = 'text',
+  Path = 'path',
+  HTML = 'html',
+  Mesh = 'mesh'
+}
+```
+
+## nodeValue
+
+只读，返回节点字符串，默认为 null。[Text](/zh/docs/api/basic/text) 会返回文本字符串。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeValue
+
+```js
+const group = new Group();
+group.nodeValue; // null
+
+const text = new Text({ style: { text: 'test' } });
+text.nodeValue; // 'test'
+```
+
 ## isConnected
 
-是否被加入到画布中，例如：
+只读，是否被加入到画布中，例如：
 
 ```js
 circle.isConnected; // false
@@ -41,7 +74,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isConnected
 
 ## ownerDocument
 
-指向画布的入口 [Document](/zh/docs/api/builtin-objects/document)。如果还未加入到画布中，返回 null，例如：
+只读，指向画布的入口 [Document](/zh/docs/api/builtin-objects/document)。如果还未加入到画布中，返回 null，例如：
 
 ```js
 circle.ownerDocument; // null
@@ -53,45 +86,73 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Node/ownerDocument
 
 ## parentNode
 
-返回当前节点的父节点。
+只读，返回当前节点的父节点。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentNode
 
 ## parentElement
 
-在目前的实现中同 parentNode。
+只读，在目前的实现中同 parentNode。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentElement
 
 ## childNodes
 
-返回当前节点的子节点列表。
+只读，返回当前节点的子节点列表。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/childNodes
 
 ## firstChild
 
-返回当前节点的第一个子节点，如果无子节点，则返回 null。
+只读，返回当前节点的第一个子节点，如果无子节点，则返回 null。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/firstChild
 
 ## lastChild
 
-返回当前节点的最后一个子节点，如果无子节点，则返回 null。
+只读，返回当前节点的最后一个子节点，如果无子节点，则返回 null。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/lastChild
 
 ## nextSibling
 
-返回当前节点的后一个兄弟节点，没有则返回 null。
+只读，返回当前节点的后一个兄弟节点，没有则返回 null。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nextSibling
 
 ## previousSibling
 
-返回当前节点的前一个兄弟节点，没有则返回 null。
+只读，返回当前节点的前一个兄弟节点，没有则返回 null。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/previousSibling
+
+## textContent
+
+读写属性，获取或者设置节点的文本内容。默认返回空字符串，[Text](/zh/docs/api/basic/text) 会返回文本字符串。
+
+在读取时，该方法会递归计算子节点，将最终拼接而成的字符串返回：
+
+```js
+const group = new Group();
+group.textContent; // ''
+
+const text = new Text({ style: { text: 'test' } });
+group.appendChild(text);
+
+text.textContent; // 'test'
+group.textContent; // 'test'
+```
+
+在设置时，会首先移除该节点的所有子节点，如果该节点是 [Text](/zh/docs/api/basic/text)，直接修改文本内容；如果该节点不是 [Text](/zh/docs/api/basic/text)，会创建一个 [Text](/zh/docs/api/basic/text) 作为子节点并设置文本内容。
+
+```js
+const text = new Text({ style: { text: 'test' } });
+text.textContent = 'changed';
+
+// create a Text & insertChild
+group.textContent = 'changed';
+group.childNodes; // [Text]
+```
 
 # 方法
 

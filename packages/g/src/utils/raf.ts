@@ -13,7 +13,7 @@ let cancelAF = cancelRAF;
  * use user-defined raf instead of requestAnimationFrame
  */
 export function patch(
-  requestAFPatch: (callback: Function) => number,
+  requestAFPatch: (callback: (timestamp: number) => void) => number,
   cancelAFPatch: (id: number) => void,
 ) {
   requestAF = requestAFPatch;

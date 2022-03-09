@@ -30,9 +30,6 @@ import type {
   StylePropertyUpdater,
 } from './property-handlers';
 import {
-  // StylePropertyParserFactory,
-  // StylePropertyUpdaterFactory,
-  // StylePropertyMergerFactory,
   clampedMergeNumbers,
   parseNumber,
   mergeColors,
@@ -46,6 +43,7 @@ import {
   updateOrigin,
   updateTransform,
   updateTransformOrigin,
+  updateText,
   parseTransform,
   mergeTransforms,
   parsePath,
@@ -233,6 +231,7 @@ export const containerModule = Module((register) => {
   addPropertyHandler('transformOrigin', undefined, undefined, updateTransformOrigin);
   // @ts-ignore
   addPropertyHandler('transform', parseTransform, mergeTransforms, updateTransform);
+  addPropertyHandler('text', undefined, undefined, updateText);
 
   // Path.path
   // @ts-ignore

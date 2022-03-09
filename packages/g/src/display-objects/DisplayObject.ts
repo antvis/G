@@ -10,8 +10,6 @@ import type { DisplayObjectConfig, IElement, IChildNode } from '../dom/interface
 import { SHAPE } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { createVec3, fromRotationTranslationScale, getEuler, rad2deg } from '../utils';
-// import type { StylePropertyParser, StylePropertyUpdater } from '../property-handlers';
-// import { StylePropertyParserFactory, StylePropertyUpdaterFactory } from '../property-handlers';
 import {
   globalContainer,
   stylePropertyParserFactory,
@@ -70,14 +68,6 @@ export class DisplayObject<
    * push to active animations after calling `animate()`
    */
   private activeAnimations: Animation[] = [];
-
-  // stylePropertyUpdaterFactory = globalContainer.get<
-  //   <Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyUpdater<any>[]
-  // >(StylePropertyUpdaterFactory);
-
-  // stylePropertyParserFactory = globalContainer.get<
-  //   <Key extends keyof ParsedStyleProps>(stylePropertyName: Key) => StylePropertyParser<any, any>
-  // >(StylePropertyParserFactory);
 
   constructor(config: DisplayObjectConfig<StyleProps>) {
     super();
@@ -229,9 +219,7 @@ export class DisplayObject<
     oldParsedValue: ParsedStyleProps[Key],
     newParsedValue: ParsedStyleProps[Key],
   ) {
-    // update property, which may cause AABB re-calc
     // @ts-ignore
-    // const stylePropertyUpdaters = this.stylePropertyUpdaterFactory(name);
     const stylePropertyUpdaters = stylePropertyUpdaterFactory[name];
     if (stylePropertyUpdaters) {
       stylePropertyUpdaters.forEach((updater) => {
