@@ -14,7 +14,7 @@ export interface ParsedPolylineStyleProps {
   totalLength: number;
 }
 export class Polyline extends DisplayObject<PolylineStyleProps, ParsedBaseStyleProps> {
-  constructor({ style, ...rest }: DisplayObjectConfig<PolylineStyleProps>) {
+  constructor({ style, ...rest }: DisplayObjectConfig<PolylineStyleProps> = {}) {
     super({
       type: SHAPE.Polyline,
       style: {

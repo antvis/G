@@ -62,7 +62,7 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   metrics?: TextMetrics;
 }
 export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
-  constructor({ style, ...rest }: DisplayObjectConfig<TextStyleProps>) {
+  constructor({ style, ...rest }: DisplayObjectConfig<TextStyleProps> = {}) {
     super({
       type: SHAPE.Text,
       style: {

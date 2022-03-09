@@ -17,7 +17,7 @@ export interface ParsedImageStyleProps extends ParsedBaseStyleProps {
   heightInPixels?: number;
 }
 export class Image extends DisplayObject<ImageStyleProps, ParsedImageStyleProps> {
-  constructor({ style, ...rest }: DisplayObjectConfig<ImageStyleProps>) {
+  constructor({ style, ...rest }: DisplayObjectConfig<ImageStyleProps> = {}) {
     super({
       type: SHAPE.Image,
       style: {

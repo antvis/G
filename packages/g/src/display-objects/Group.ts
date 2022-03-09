@@ -4,8 +4,7 @@ import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
 
 export class Group extends DisplayObject {
-  constructor(config?: DisplayObjectConfig<BaseStyleProps>) {
-    const { style, ...rest } = config || {};
+  constructor({ style, ...rest }: DisplayObjectConfig<BaseStyleProps> = {}) {
     super({
       type: SHAPE.Group,
       style: {

@@ -56,6 +56,11 @@ export class Element<
   name: string;
 
   /**
+   * https://developer.mozilla.org/zh-CN/docs/Web/API/Element/namespaceURI
+   */
+  namespaceURI = 'g';
+
+  /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
    */
   get classList() {

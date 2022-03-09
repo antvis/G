@@ -37,7 +37,7 @@ export class Path extends DisplayObject<
     path: ParsedPathStyleProps;
   }
 > {
-  constructor({ style, ...rest }: DisplayObjectConfig<PathStyleProps>) {
+  constructor({ style, ...rest }: DisplayObjectConfig<PathStyleProps> = {}) {
     super({
       type: SHAPE.Path,
       style: {

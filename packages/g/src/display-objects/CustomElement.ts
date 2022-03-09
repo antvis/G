@@ -12,7 +12,7 @@ export abstract class CustomElement<
 > extends DisplayObject<CustomElementStyleProps> {
   // private shadowNodes: DisplayObject[] = [];
 
-  constructor(config: DisplayObjectConfig<CustomElementStyleProps>) {
+  constructor(config: DisplayObjectConfig<CustomElementStyleProps> = {}) {
     super(config);
 
     // this.addEventListener(ElementEvent.CHILD_INSERTED, this.handleChildInserted);

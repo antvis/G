@@ -204,3 +204,62 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Node/replaceChild
 判断两个节点是否相等。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isEqualNode
+
+## compareDocumentPosition
+
+比较两个节点在场景图中的位置。
+
+https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition
+
+例如自己和自己比较返回 0：
+
+```js
+const group1 = new Element();
+expect(group1.compareDocumentPosition(group1)).to.eqls(0);
+```
+
+和另一个无共同祖先的节点比较：
+
+```js
+const group1 = new Element();
+const group2 = new Element();
+expect(group1.compareDocumentPosition(group2)).to.eqls(
+    Node.DOCUMENT_POSITION_DISCONNECTED |
+        Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC |
+        Node.DOCUMENT_POSITION_PRECEDING,
+);
+```
+
+父子节点：
+
+```js
+group1.appendChild(group2);
+expect(group1.compareDocumentPosition(group2)).to.eqls(
+    Node.DOCUMENT_POSITION_CONTAINED_BY | Node.DOCUMENT_POSITION_FOLLOWING,
+);
+expect(group2.compareDocumentPosition(group1)).to.eqls(
+    Node.DOCUMENT_POSITION_CONTAINS | Node.DOCUMENT_POSITION_PRECEDING,
+);
+```
+
+兄弟节点：
+
+```js
+// 1 -> 2
+// 1 -> 4
+group1.appendChild(group2);
+group1.appendChild(group4);
+expect(group2.compareDocumentPosition(group4)).to.eqls(Node.DOCUMENT_POSITION_PRECEDING);
+expect(group4.compareDocumentPosition(group2)).to.eqls(Node.DOCUMENT_POSITION_FOLLOWING);
+```
+
+枚举值如下：
+
+```js
+static DOCUMENT_POSITION_DISCONNECTED = 1;
+static DOCUMENT_POSITION_PRECEDING = 2;
+static DOCUMENT_POSITION_FOLLOWING = 4;
+static DOCUMENT_POSITION_CONTAINS = 8;
+static DOCUMENT_POSITION_CONTAINED_BY = 16;
+static DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC = 32;
+```

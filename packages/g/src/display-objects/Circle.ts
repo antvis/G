@@ -12,7 +12,7 @@ export interface ParsedCircleStyleProps extends ParsedBaseStyleProps {
   rInPixels: number;
 }
 export class Circle extends DisplayObject<CircleStyleProps, ParsedCircleStyleProps> {
-  constructor({ style, ...rest }: DisplayObjectConfig<CircleStyleProps>) {
+  constructor({ style, ...rest }: DisplayObjectConfig<CircleStyleProps> = {}) {
     super({
       type: SHAPE.Circle,
       style: {

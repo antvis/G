@@ -5,6 +5,31 @@ redirect_from:
     - /en/docs/plugins
 ---
 
+# 插件集
+
+-   渲染相关
+    -   [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
+    -   [g-plugin-svg-renderer](/zh/docs/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
+    -   [g-plugin-webgl-renderer](/zh/docs/plugins/webgl-renderer) 基于 WebGPU / WebGL 渲染 2D 图形
+    -   [g-plugin-html-renderer](/zh/docs/plugins/html-renderer) 渲染 DOM 元素
+    -   [g-plugin-3d](/zh/docs/plugins/3d) 基于 g-plugin-webgl-renderer 扩展 3D 能力
+-   拾取
+    -   [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 基于 Canvas2D
+    -   [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 基于 SVG
+-   交互
+    -   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
+    -   [g-plugin-control](/zh/docs/plugins/control) 为 3D 场景提供相机交互
+-   物理引擎
+    -   [g-plugin-box2d](/zh/docs/plugins/box2d) 基于 Box2D
+    -   [g-plugin-matterjs](/zh/docs/plugins/matterjs) 基于 matter.js
+    -   [g-plugin-physx](/zh/docs/plugins/physx) 基于 PhysX
+-   布局引擎
+    -   [g-plugin-yoga](/zh/docs/plugins/yoga) 基于 Yoga 提供 Flex 布局能力
+-   GPGPU
+    -   [g-plugin-gpgpu](/zh/docs/plugins/gpgpu) 基于 WebGPU 提供 GPGPU 能力
+-   CSS 选择器
+    -   [g-plugin-css-select](/zh/docs/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
+
 # 与渲染器的关系
 
 `g-canvas/svg/webgl` 这些渲染器本质上是由一组插件组成，通过插件也可以扩展它们的能力：
