@@ -27,5 +27,22 @@ describe('canvas', () => {
     });
 
     canvas.appendChild(circle);
+
+    canvas.addEventListener('touchstart', (e) => {
+      console.log('touchstart');
+    });
+    canvas.addEventListener('touchend', (e) => {
+      console.log('touchend');
+    });
+    canvas.addEventListener('touchmove', (e) => {
+      console.log('touchmove');
+    });
+
+    canvas.addEventListener('click', (e) => {
+      console.log('click');
+    });
+    canvas.addEventListener('mouseover', (e) => {
+      console.log('mouseover');
+    });
   });
 });
