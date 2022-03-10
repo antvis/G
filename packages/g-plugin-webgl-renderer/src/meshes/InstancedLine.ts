@@ -225,7 +225,7 @@ export class InstancedLineMesh extends Instanced {
       dashOffset = lineDashOffset / totalLength;
       const segmentsLength = lineDash.reduce((cur, prev) => cur + prev, 0);
       dashSegmentPercent = segmentsLength / totalLength;
-      dashRatioInEachSegment = lineDash[0] / segmentsLength;
+      dashRatioInEachSegment = lineDash[1] / segmentsLength;
     }
     return {
       dashOffset,

@@ -242,7 +242,19 @@ const rect = new Rect({
 });
 ```
 
-⚠️ 熟悉 DOM API 的开发者可以参考 [HTMLElement Style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) 使用。
+属性名也可以使用连字符形式，因此以下写法完全等同，完整用法详见[获取/设置属性值](/zh/docs/api/basic/display-object#获取设置属性值)：
+
+```js
+const rect = new Rect({
+    'line-width': 4,
+    // lineWidth: 4,
+});
+
+rect.style.lineWidth = 4;
+rect.style['line-width'] = 4;
+rect.style.setProperty('lineWidth', 4);
+rect.style.setProperty('line-width', 4);
+```
 
 ## 位置
 
@@ -518,6 +530,7 @@ circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘�
 -   `'#1890FF'`
 -   `'rgba(r, g, b, a)'`
 -   `'transparent'` 完全透明，等价于 `'rgba(0,0,0,0)'`
+-   `'currentColor'` Canvas / WebGL 渲染环境中等同于 `black`，SVG 中为[同名属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/color)效果
 
 除此之外，支持以下渐变色写法。[示例](/zh/examples/shape#gradient)
 
@@ -587,6 +600,18 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 **是否必须**：`false`
 
 **说明**：描边色，例如 `'#1890FF'`
+
+### strokeWidth
+
+[lineWidth](/zh/docs/api/basic/display-object#linewidth) 的别名，和 [SVG 属性名](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-width)保持一致。
+
+### strokeDasharray
+
+[lineDash](/zh/docs/api/basic/display-object#linedash) 的别名，和 [SVG 属性名](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-dasharray)保持一致。
+
+### strokeDashoffset
+
+[lineDashOffset](/zh/docs/api/basic/display-object#linedash) 的别名，和 [SVG 属性名](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-dashoffset)保持一致。
 
 ### lineWidth
 
@@ -1325,14 +1350,18 @@ clonedCircle.getPosition(); // [10, 20]
 
 ⚠️ 兼容旧版 `attr(name: string, value?: any)`，获取以及设置属性值。
 
-⚠️ 兼容 [HTMLElement Style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style)
+⚠️ 兼容 [HTMLElement Style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style)，因此可以使用以下方法：
 
-因此以下用法等价：
+-   style.[getPropertyValue](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/getPropertyValue)
+-   style.[setProperty](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/setProperty)
+-   style.[removeProperty](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/removeProperty)
+
+以下用法等价：
 
 ```js
 const circle = new Circle({
     style: {
-        // 或者使用 style
+        // 或者使用 attrs
         r: 10,
         fill: 'red',
     },
@@ -1342,11 +1371,13 @@ const circle = new Circle({
 circle.getAttribute('fill'); // red
 circle.attr('fill'); // red
 circle.style.fill; // red
+circle.style.getPropertyValue('fill');
 
 // 设置属性值
 circle.setAttribute('r', 20);
 circle.attr('r', 20);
 circle.style.r = 20;
+circle.style.setProperty('r', 20);
 ```
 
 ## 销毁

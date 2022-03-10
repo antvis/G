@@ -215,11 +215,27 @@ const InterpolationFactory = (
 };
 
 const FORMAT_ATTR_MAP = {
-  d: 'path',
-  textAnchor: 'textAlign',
+  d: {
+    alias: 'path',
+  },
+  strokeDasharray: {
+    alias: 'lineDash',
+  },
+  strokeWidth: {
+    alias: 'lineWidth',
+  },
+  textAnchor: {
+    alias: 'textAlign',
+    values: {
+      middle: 'center',
+    },
+  },
 };
-export function formatAttribute(name: string): string {
+
+export function formatAttribute(name: string, value: any): [string, any] {
   let attributeName = camelCase(name);
-  attributeName = FORMAT_ATTR_MAP[attributeName] || attributeName;
-  return attributeName;
+  const map = FORMAT_ATTR_MAP[attributeName];
+  attributeName = map?.alias || attributeName;
+  const attributeValue = map?.values?.[value] || value;
+  return [attributeName, attributeValue];
 }

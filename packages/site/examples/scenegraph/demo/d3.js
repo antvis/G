@@ -94,8 +94,7 @@ const drawBars = async () => {
     .attr('y', (d) => yScale(yAccessor(d)) - 5)
     .text(yAccessor)
     .attr('fill', 'darkgrey')
-    // .style('text-anchor', 'middle')
-    .style('text-align', 'center')
+    .style('text-anchor', 'middle')
     .style('font-size', 12)
     .style('font-family', 'sans-serif');
 
@@ -106,10 +105,9 @@ const drawBars = async () => {
     .attr('x2', xScale(mean))
     .attr('y1', -15)
     .attr('y2', dimensions.boundedHeight)
-    .attr('lineWidth', 1)
+    .attr('stroke-width', 1)
     .attr('stroke', 'maroon')
-    .attr('line-dash', [2, 4]);
-  // .attr("stroke-dasharray", "2px 4px")
+    .attr('stroke-dasharray', '2px 4px');
 
   const meanLabel = container
     .append('text')
@@ -118,7 +116,7 @@ const drawBars = async () => {
     .text('mean')
     .attr('fill', 'maroon')
     .style('font-size', 12)
-    .style('text-align', 'center');
+    .style('text-anchor', 'middle');
 
   // 6. Draw peripherals
   const xAxisGenerator = d3.axisBottom().scale(xScale);

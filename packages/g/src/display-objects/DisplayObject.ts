@@ -208,22 +208,25 @@ export class DisplayObject<
   }
 
   setAttribute<Key extends keyof StyleProps>(name: Key, value: StyleProps[Key], force = false) {
-    const attributeName = formatAttribute(name as string) as Key;
+    const [attributeName, attributeValue] = formatAttribute(name as string, value) as [
+      Key,
+      StyleProps[Key],
+    ];
     if (
       force ||
-      !isEqual(value, this.attributes[attributeName]) ||
+      !isEqual(attributeValue, this.attributes[attributeName]) ||
       attributeName === 'transformOrigin' ||
       attributeName === 'visibility' // will affect children
     ) {
       if (attributeName === 'visibility') {
         // set value cascade
         this.forEach((object) => {
-          (object as DisplayObject).changeAttribute(attributeName, value);
+          (object as DisplayObject).changeAttribute(attributeName, attributeValue);
         });
       } else {
-        this.changeAttribute(attributeName, value);
+        this.changeAttribute(attributeName, attributeValue);
       }
-      super.setAttribute(attributeName, value);
+      super.setAttribute(attributeName, attributeValue);
     }
   }
 
