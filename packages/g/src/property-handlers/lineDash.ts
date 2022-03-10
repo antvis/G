@@ -1,5 +1,6 @@
 import { isString } from '@antv/util';
-import { ParsedElement, parseLength } from './dimension';
+import { parseLength } from './dimension';
+import type { ParsedElement } from './dimension';
 
 /**
  * format lineDash to [dash, dash]

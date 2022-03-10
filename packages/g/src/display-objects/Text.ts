@@ -3,7 +3,7 @@ import type { DisplayObjectConfig } from '../dom/interfaces';
 import { SHAPE, LINE_JOIN, LINE_CAP } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
-import { ParsedElement } from '../property-handlers';
+import type { ParsedElement } from '../property-handlers';
 
 export interface TextStyleProps extends BaseStyleProps {
   text: string;

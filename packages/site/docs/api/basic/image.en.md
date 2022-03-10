@@ -71,6 +71,10 @@ img.onload = () => {
 };
 ```
 
+## src
+
+该属性为 [img](/zh/docs/api/basic/image) 的别名。
+
 ## width
 
 **类型**： `number`
