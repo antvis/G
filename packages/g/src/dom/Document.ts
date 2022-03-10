@@ -74,8 +74,7 @@ export class Document extends Node implements IDocument {
     tagName: string,
     options: DisplayObjectConfig<StyleProps>,
   ): T {
-    const clazz = this.defaultView.customElements.get(tagName);
-    return new clazz(options) as unknown as T;
+    return this.createElement(tagName, options);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

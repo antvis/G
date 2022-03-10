@@ -8,7 +8,8 @@ import { isNil } from '@antv/util';
 import type { Rect } from '../shapes/Rect';
 
 export interface PathStyleProps extends BaseStyleProps {
-  path: string | PathCommand[];
+  path?: string | PathCommand[];
+  d?: string | PathCommand[];
 }
 export interface PathSegment {
   command: PathCommand[0];

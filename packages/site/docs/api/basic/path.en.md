@@ -58,6 +58,10 @@ line.translateLocal(100, 0); // 沿 X 轴平移
 
 **是否必须**：`true`
 
+## d
+
+[path](/zh/docs/api/basic/path#path) 属性的别名，与 SVG 中的 `<path>` 命名保持一致。
+
 # 方法
 
 ## getTotalLength(): number

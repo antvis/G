@@ -24,6 +24,10 @@ describe('Text', () => {
       },
     });
 
+    // @ts-ignore
+    text.setAttribute('font-size', 30);
+    expect(text.style.fontSize).to.eqls(30);
+
     expect(text.nodeValue).eqls('这是测试文本This is text');
     expect(text.textContent).eqls('这是测试文本This is text');
 

@@ -1,14 +1,10 @@
 import type { AnimationEffectTiming } from '../dom';
 import type { IElement } from '../dom/interfaces';
 import { stylePropertyMergerFactory, stylePropertyParserFactory } from '../global-module';
-// import { globalContainer } from '../global-module';
 import type { Interpolatable } from '../property-handlers/interfaces';
-// import {
-//   StylePropertyMergerFactory,
-//   StylePropertyParserFactory,
-// } from '../property-handlers/interfaces';
 import { parseEasingFunction } from './animation';
 import type { TypeEasingFunction } from './custom-easing';
+import { camelCase } from './string';
 
 export function convertEffectInput(
   keyframes: ComputedKeyframe[],
@@ -217,3 +213,13 @@ const InterpolationFactory = (
     return convertToString(interpolate(from, to, f));
   };
 };
+
+const FORMAT_ATTR_MAP = {
+  d: 'path',
+  textAnchor: 'textAlign',
+};
+export function formatAttribute(name: string): string {
+  let attributeName = camelCase(name);
+  attributeName = FORMAT_ATTR_MAP[attributeName] || attributeName;
+  return attributeName;
+}

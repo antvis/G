@@ -26,13 +26,6 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-// create a group
-const container = d3
-  .select(
-    canvas.document.documentElement, // Canvas' document element
-  )
-  .append('group'); // use G's Group
-
 const width = 600;
 let dimensions = {
   width: width,
@@ -47,12 +40,23 @@ let dimensions = {
 dimensions.boundedWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right;
 dimensions.boundedHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
 
+// create a group
+const container = d3
+  .select(
+    canvas.document.documentElement, // Canvas' document element
+  )
+  .append('g')
+  .attr('x', dimensions.margin.left)
+  .attr('y', dimensions.margin.top); // use G's Group
+
 const drawBars = async () => {
   const dataset = await d3.json(
     'https://gw.alipayobjects.com/os/bmw-prod/8e7cfeb6-28e5-4e78-8d16-c08468360f5f.json',
   );
   const metricAccessor = (d) => d.humidity;
   const yAccessor = (d) => d.length;
+
+  // 4. Create scales
 
   const xScale = d3
     .scaleLinear()
@@ -70,9 +74,9 @@ const drawBars = async () => {
     .range([dimensions.boundedHeight, 0])
     .nice();
 
-  const binsGroup = container.append('group');
-
-  const binGroups = binsGroup.selectAll('group').data(bins).join('group').attr('class', 'bin');
+  // 5. Draw data
+  const binsGroup = container.append('g');
+  const binGroups = binsGroup.selectAll('g').data(bins).join('g').attr('class', 'bin');
 
   const barPadding = 1;
   const barRects = binGroups
@@ -83,16 +87,56 @@ const drawBars = async () => {
     .attr('height', (d) => dimensions.boundedHeight - yScale(yAccessor(d)))
     .attr('fill', 'cornflowerblue');
 
-  // const barText = binGroups
-  //   .filter(yAccessor)
-  //   .append('text')
-  //   .attr('x', (d) => xScale(d.x0) + (xScale(d.x1) - xScale(d.x0)) / 2)
-  //   .attr('y', (d) => yScale(yAccessor(d)) - 5)
-  //   .text(yAccessor)
-  //   .style('text-anchor', 'middle')
-  //   .attr('fill', 'darkgrey')
-  //   .style('font-size', '12px')
-  //   .style('font-family', 'sans-serif');
+  const barText = binGroups
+    .filter(yAccessor)
+    .append('text')
+    .attr('x', (d) => xScale(d.x0) + (xScale(d.x1) - xScale(d.x0)) / 2)
+    .attr('y', (d) => yScale(yAccessor(d)) - 5)
+    .text(yAccessor)
+    .attr('fill', 'darkgrey')
+    // .style('text-anchor', 'middle')
+    .style('text-align', 'center')
+    .style('font-size', 12)
+    .style('font-family', 'sans-serif');
+
+  const mean = d3.mean(dataset, metricAccessor);
+  const meanLine = container
+    .append('line')
+    .attr('x1', xScale(mean))
+    .attr('x2', xScale(mean))
+    .attr('y1', -15)
+    .attr('y2', dimensions.boundedHeight)
+    .attr('lineWidth', 1)
+    .attr('stroke', 'maroon')
+    .attr('line-dash', [2, 4]);
+  // .attr("stroke-dasharray", "2px 4px")
+
+  const meanLabel = container
+    .append('text')
+    .attr('x', xScale(mean))
+    .attr('y', -20)
+    .text('mean')
+    .attr('fill', 'maroon')
+    .style('font-size', 12)
+    .style('text-align', 'center');
+
+  // 6. Draw peripherals
+  const xAxisGenerator = d3.axisBottom().scale(xScale);
+
+  const xAxis = container
+    .append('g')
+    .call(xAxisGenerator)
+    .attr('transform', `translateY(${dimensions.boundedHeight}px)`)
+    .attr('fill', 'black');
+
+  const xAxisLabel = xAxis
+    .append('text')
+    .attr('x', dimensions.boundedWidth / 2)
+    .attr('y', dimensions.margin.bottom - 10)
+    .attr('fill', 'black')
+    .style('font-size', 10)
+    .text('Humidity');
+  // .style("text-transform", "capitalize");
 };
 
 drawBars();

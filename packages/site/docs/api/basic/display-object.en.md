@@ -1472,6 +1472,8 @@ group.show();
 // or group.setAttribute('visibility', 'visible');
 ```
 
+⚠️ 当图形隐藏时不会被拾取。
+
 ## 渲染次序
 
 类似 CSS，我们可以通过 `zIndex` 属性控制渲染次序，有两点需要注意：

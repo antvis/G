@@ -324,7 +324,7 @@ export interface IElement<StyleProps = any, ParsedStyleProps = any>
    * compatible with `style`
    * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style
    */
-  style: StyleProps;
+  style: StyleProps & ICSSStyleDeclaration<StyleProps>;
   parsedStyle: ParsedStyleProps;
 
   getElementById: <E extends IElement = IElement>(id: string) => E | null;
@@ -376,6 +376,20 @@ export interface IDocument extends INode, IParentNode {
     tagName: string,
     options: DisplayObjectConfig<StyleProps>,
   ) => T;
+}
+
+/**
+ * @see https://developer.mozilla.org/zh-CN/docs/Web/API/CSSStyleDeclaration
+ */
+export interface ICSSStyleDeclaration<StyleProps> {
+  setProperty: <Key extends keyof StyleProps>(
+    propertyName: Key,
+    value: StyleProps[Key],
+    priority?: string,
+  ) => void;
+  getPropertyValue: (propertyName: keyof StyleProps) => StyleProps[keyof StyleProps] | undefined;
+  removeProperty: (propertyName: keyof StyleProps) => void;
+  item: (index: number) => string;
 }
 
 export interface ICanvas extends IEventTarget {

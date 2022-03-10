@@ -122,7 +122,7 @@ export abstract class Node extends EventTarget implements INode {
 
     if (this.nodeName === SHAPE.Text) {
       // @ts-ignore
-      this.style.text = content;
+      this.style.text = `${content}`;
     } else {
       // this.appendChild(
       //   new Text({
