@@ -10,7 +10,6 @@ export class Transform {
   localDirtyFlag = false;
 
   frozen = false;
-  graphDepth = 0;
 
   /**
    * local space RTS

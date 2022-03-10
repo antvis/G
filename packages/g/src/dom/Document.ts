@@ -68,6 +68,15 @@ export class Document extends Node implements IDocument {
     const clazz = this.defaultView.customElements.get(tagName);
     return new clazz(options) as unknown as T;
   }
+
+  createElementNS<T extends DisplayObject<StyleProps>, StyleProps extends BaseStyleProps>(
+    namespaceURI: string,
+    tagName: string,
+    options: DisplayObjectConfig<StyleProps>,
+  ): T {
+    return this.createElement(tagName, options);
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   cloneNode(deep?: boolean): this {
     throw new Error('Method not implemented.');

@@ -1,0 +1,49 @@
+{
+  "name": "@antv/g-plugin-mobile-interaction",
+  "version": "0.0.1",
+  "description": "A G plugin listening events in mobile environment",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "es/index.d.ts",
+  "unpkg": "dist/index.umd.min.js",
+  "files": [
+    "package.json",
+    "dist",
+    "es",
+    "lib",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antvis/g.git"
+  },
+  "keywords": [
+    "util",
+    "antv",
+    "g"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "https://github.com/orgs/antvis/people",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/antvis/g/issues"
+  },
+  "dependencies": {
+    "tslib": "^2.3.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.0.0"
+  },
+  "peerDependencies": {
+    "@antv/g": "^5.0.1",
+    "mana-syringe": "^0.3.0"
+  },
+  "scripts": {
+    "umd": "webpack"
+  },
+  "homepage": "https://github.com/antvis/g#readme",
+  "gitHead": "d09726ac85b8738d53c97002a98848b4a450bfcd"
+}

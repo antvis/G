@@ -1,11 +1,11 @@
 import { Canvas, CanvasEvent, Rect, Line, Polyline, Polygon, Circle, Image, Text } from '@antv/g';
 import { Renderer } from '@antv/g-canvas';
-import { Plugin as PluginBox2D } from '@antv/g-plugin-matterjs';
+import { Plugin as PluginMatterjs } from '@antv/g-plugin-matterjs';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 const renderer = new Renderer();
-const plugin = new PluginBox2D({
+const plugin = new PluginMatterjs({
   debug: true, // 开启 debug 模式，将物理引擎世界也渲染出来
   debugContainer: document.getElementById('container'),
   debugCanvasWidth: 600,

@@ -1,5 +1,5 @@
 import chai, { expect } from 'chai';
-import { Text } from '../..';
+import { Text, Group } from '../..';
 import { vec3 } from 'gl-matrix';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
@@ -24,8 +24,34 @@ describe('Text', () => {
       },
     });
 
+    // @ts-ignore
+    text.setAttribute('font-size', 30);
+    expect(text.style.fontSize).to.eqls(30);
+
+    // parse font size with unit
+    text.style.fontSize = '40px';
+    expect(text.parsedStyle.fontSize).to.eqls({ unit: 'px', value: 40 });
+
+    expect(text.nodeValue).eqls('这是测试文本This is text');
+    expect(text.textContent).eqls('这是测试文本This is text');
+
     // get local position
     expect(text.getLocalPosition()).eqls(vec3.fromValues(0, 0, 0));
+
+    text.style.text = 'changed';
+    expect(text.nodeValue).eqls('changed');
+    expect(text.textContent).eqls('changed');
+
+    const group = new Group();
+    expect(group.nodeValue).to.be.null;
+    expect(group.textContent).eqls('');
+    group.appendChild(text);
+    expect(group.nodeValue).to.be.null;
+    expect(group.textContent).eqls('changed');
+
+    text.textContent = 'changed again';
+    expect(text.nodeValue).eqls('changed again');
+    expect(text.textContent).eqls('changed again');
 
     // // get bounds
     // let bounds = text.getBounds();

@@ -8,7 +8,7 @@ export interface PolygonStyleProps extends BaseStyleProps {
 }
 
 export class Polygon extends DisplayObject<PolygonStyleProps, ParsedBaseStyleProps> {
-  constructor({ style, ...rest }: DisplayObjectConfig<PolygonStyleProps>) {
+  constructor({ style, ...rest }: DisplayObjectConfig<PolygonStyleProps> = {}) {
     super({
       type: SHAPE.Polygon,
       style: {

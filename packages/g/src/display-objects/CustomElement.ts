@@ -2,17 +2,18 @@ import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
 import type { FederatedEvent } from '../dom/FederatedEvent';
+import type { BaseStyleProps } from '../types';
 
 /**
  * shadow root
  * @see https://yuque.antfin-inc.com/antv/czqvg5/pgqipg
  */
 export abstract class CustomElement<
-  CustomElementStyleProps,
+  CustomElementStyleProps extends BaseStyleProps,
 > extends DisplayObject<CustomElementStyleProps> {
   // private shadowNodes: DisplayObject[] = [];
 
-  constructor(config: DisplayObjectConfig<CustomElementStyleProps>) {
+  constructor(config: DisplayObjectConfig<CustomElementStyleProps> = {}) {
     super(config);
 
     // this.addEventListener(ElementEvent.CHILD_INSERTED, this.handleChildInserted);

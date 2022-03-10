@@ -10,6 +10,7 @@ export default {
     'g-math',
     'g',
     'g-plugin-dom-interaction',
+    'g-plugin-mobile-interaction',
     'g-plugin-css-select',
     'g-plugin-canvas-renderer',
     'g-plugin-canvas-picker',
@@ -31,5 +32,6 @@ export default {
     'g-webgpu-compiler',
     'g-components',
     'react-g',
+    'g-mobile',
   ],
 };

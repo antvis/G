@@ -5,7 +5,7 @@ describe('Text utils', () => {
   it('should convert font string correctly', () => {
     expect(
       toFontString({
-        fontSize: 12,
+        fontSize: { value: 12, unit: 'px' },
         fontFamily: 'sans-serif',
         fontStyle: 'normal',
         fontWeight: 'normal',
@@ -15,8 +15,7 @@ describe('Text utils', () => {
 
     expect(
       toFontString({
-        // @ts-ignore
-        fontSize: '12px',
+        fontSize: { value: 12, unit: 'px' },
         fontFamily: 'sans-serif',
         fontStyle: 'normal',
         fontWeight: 'normal',
@@ -26,7 +25,7 @@ describe('Text utils', () => {
 
     expect(
       toFontString({
-        fontSize: 12,
+        fontSize: { value: 12, unit: 'px' },
         fontFamily: 'sans-serif,Yahei',
         fontStyle: 'normal',
         fontWeight: 'normal',
@@ -36,7 +35,7 @@ describe('Text utils', () => {
 
     expect(
       toFontString({
-        fontSize: 12,
+        fontSize: { value: 12, unit: 'px' },
         fontFamily: 'sans-serif,"Yahei"',
         fontStyle: 'normal',
         fontWeight: 'normal',

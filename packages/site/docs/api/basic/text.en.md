@@ -25,6 +25,21 @@ order: 1
 
 **说明**：文本内容，可以包含换行符，例如 `"测试文本\n另起一行"`
 
+## textTransform
+
+**类型**： `String`
+
+**默认值**：`'none'`
+
+**是否必须**：`false`
+
+**说明**：对文本内容进行转换，支持以下枚举值：
+
+-   'capitalize'
+-   'uppercase'
+-   'lowercase'
+-   'none'
+
 ## 字体相关
 
 ### fontFamily

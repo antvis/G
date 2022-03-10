@@ -4,9 +4,10 @@ import { Cullable, Geometry, Renderable, Transform, Sortable } from '../componen
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Node } from './Node';
 import type { AABB, Rectangle } from '../shapes';
-import type { IEventTarget, IChildNode, IElement, INode } from './interfaces';
+import type { IEventTarget, IChildNode, IElement, INode, ICSSStyleDeclaration } from './interfaces';
 import { ElementEvent } from './interfaces';
 import { globalContainer } from '../global-module';
+import { formatAttribute } from '../utils';
 
 let entityCounter = 0;
 
@@ -54,6 +55,11 @@ export class Element<
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByName
    */
   name: string;
+
+  /**
+   * https://developer.mozilla.org/zh-CN/docs/Web/API/Element/namespaceURI
+   */
+  namespaceURI = 'g';
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
@@ -353,7 +359,8 @@ export class Element<
    * compatible with `style`
    * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style
    */
-  style: StyleProps = {} as StyleProps;
+  style: StyleProps & ICSSStyleDeclaration<StyleProps> = {} as StyleProps &
+    ICSSStyleDeclaration<StyleProps>;
   parsedStyle: ParsedStyleProps = {} as ParsedStyleProps;
 
   /**
@@ -364,7 +371,8 @@ export class Element<
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute
    */
-  getAttribute(attributeName: keyof StyleProps) {
+  getAttribute(name: keyof StyleProps) {
+    const [attributeName] = formatAttribute(name as string, '');
     const value = this.attributes[attributeName];
     // if the given attribute does not exist, the value returned will either be null or ""
     return isNil(value) ? undefined : value;

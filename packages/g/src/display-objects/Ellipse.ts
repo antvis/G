@@ -15,7 +15,7 @@ export interface ParsedEllipseStyleProps extends ParsedBaseStyleProps {
   ryInPixels: number;
 }
 export class Ellipse extends DisplayObject<EllipseStyleProps, ParsedEllipseStyleProps> {
-  constructor({ style, ...rest }: DisplayObjectConfig<EllipseStyleProps>) {
+  constructor({ style, ...rest }: DisplayObjectConfig<EllipseStyleProps> = {}) {
     super({
       type: SHAPE.Ellipse,
       style: {

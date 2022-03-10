@@ -35,8 +35,13 @@ export function createOrUpdateGradientAndPattern(
     }
     $el?.setAttribute(name, `url(#${gradientId})`);
   } else {
-    // constant value, eg. '#fff'
-    $el?.setAttribute(name, `${parsedColor.formatted}`);
+    // keep using currentColor @see https://github.com/d3/d3-axis/issues/49
+    if (object.style[name] === 'currentColor') {
+      $el?.setAttribute(name, 'currentColor');
+    } else {
+      // constant value, eg. '#fff'
+      $el?.setAttribute(name, `${parsedColor.formatted}`);
+    }
   }
 }
 

@@ -239,4 +239,22 @@ describe('DisplayObject Node API', () => {
     [...group1.children].forEach((child) => child.remove());
     expect(group1.children.length).to.be.eqls(0);
   });
+
+  it('should set attr & style correctly', () => {
+    const group = new Group({
+      style: {
+        width: 1,
+        height: 1,
+      },
+    });
+
+    expect(group.style.getPropertyValue('width')).to.eqls(1);
+    expect(group.style.getPropertyValue('height')).to.eqls(1);
+
+    group.style.setProperty('width', 2);
+    expect(group.style.getPropertyValue('width')).to.eqls(2);
+
+    group.style.removeProperty('width');
+    expect(group.style.getPropertyValue('width')).to.undefined;
+  });
 });

@@ -50,20 +50,12 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
     'leading',
     'textBaseline',
     'textAlign',
+    'textTransform',
     'whiteSpace',
   ];
 
   apply($el: SVGElement, parsedStyle: ParsedTextStyleProps) {
-    const {
-      textAlign,
-      text,
-      textBaseline,
-      fontSize = 0,
-      lineCap,
-      lineJoin,
-      lineWidth = 0,
-      metrics,
-    } = parsedStyle;
+    const { textAlign, textBaseline, lineCap, lineJoin, lineWidth = 0, metrics } = parsedStyle;
 
     const browser = detect();
     if (browser && browser.name === 'firefox') {

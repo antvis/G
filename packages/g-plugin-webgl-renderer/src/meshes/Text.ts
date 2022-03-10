@@ -63,10 +63,10 @@ export class TextMesh extends Instanced {
 
   createGeometry(objects: DisplayObject[]): void {
     const object = this.instance as TextShape;
-    const { textBaseline, fontSize = 0, letterSpacing = 0 } = object.parsedStyle;
+    const { textBaseline, fontSize, letterSpacing = 0 } = object.parsedStyle;
 
     // scale current font size to base(24)
-    const fontScale = BASE_FONT_WIDTH / fontSize;
+    const fontScale = BASE_FONT_WIDTH / fontSize.value;
 
     const indices = [];
     const uvOffsets = [];
@@ -216,7 +216,7 @@ export class TextMesh extends Instanced {
 
     const object = this.instance as TextShape;
     const {
-      fontSize = 0,
+      fontSize,
       fontFamily = '',
       fontWeight = 'normal',
       fontStyle,
@@ -236,7 +236,7 @@ export class TextMesh extends Instanced {
     this.material.setUniforms({
       [TextUniform.SDF_MAP]: glyphAtlasTexture,
       [TextUniform.SDF_MAP_SIZE]: [atlasWidth, atlasHeight],
-      [TextUniform.FONT_SIZE]: fontSize,
+      [TextUniform.FONT_SIZE]: fontSize.value,
       [TextUniform.GAMMA_SCALE]: 1,
       [TextUniform.STROKE_BLUR]: 0.2,
       [TextUniform.HAS_STROKE]: this.index,

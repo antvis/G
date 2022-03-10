@@ -16,13 +16,11 @@ export class TextRenderer implements StyleRenderer {
 
   render(context: CanvasRenderingContext2D, parsedStyle: ParsedTextStyleProps) {
     const {
-      text = '',
       lineWidth = 0,
       textAlign,
       textBaseline,
       lineJoin,
       miterLimit = 0,
-      // padding = 0,
       letterSpacing = 0,
       stroke,
       fill,

@@ -54,6 +54,9 @@ export function parseColor(colorStr: string = ''): ParsedColorStyleProperty {
       value: [0, 0, 0, 0],
       formatted: 'rgba(0,0,0,0)',
     };
+  } else if (colorStr === 'currentColor') {
+    // @see https://github.com/adobe-webplatform/Snap.svg/issues/526
+    colorStr = 'black';
   }
 
   const type = colorStr[0];

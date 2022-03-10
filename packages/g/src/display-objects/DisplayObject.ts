@@ -6,12 +6,21 @@ import type { Animation } from '../dom/Animation';
 import { KeyframeEffect } from '../dom/KeyframeEffect';
 import { Element } from '../dom/Element';
 import { ElementEvent } from '../dom/interfaces';
-import type { DisplayObjectConfig, IElement, IChildNode } from '../dom/interfaces';
+import type {
+  DisplayObjectConfig,
+  IElement,
+  IChildNode,
+  ICSSStyleDeclaration,
+} from '../dom/interfaces';
 import { SHAPE } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { createVec3, fromRotationTranslationScale, getEuler, rad2deg } from '../utils';
-// import type { StylePropertyParser, StylePropertyUpdater } from '../property-handlers';
-// import { StylePropertyParserFactory, StylePropertyUpdaterFactory } from '../property-handlers';
+import {
+  createVec3,
+  formatAttribute,
+  fromRotationTranslationScale,
+  getEuler,
+  rad2deg,
+} from '../utils';
 import {
   globalContainer,
   stylePropertyParserFactory,
@@ -71,14 +80,6 @@ export class DisplayObject<
    */
   private activeAnimations: Animation[] = [];
 
-  // stylePropertyUpdaterFactory = globalContainer.get<
-  //   <Key extends keyof StyleProps>(stylePropertyName: Key) => StylePropertyUpdater<any>[]
-  // >(StylePropertyUpdaterFactory);
-
-  // stylePropertyParserFactory = globalContainer.get<
-  //   <Key extends keyof ParsedStyleProps>(stylePropertyName: Key) => StylePropertyParser<any, any>
-  // >(StylePropertyParserFactory);
-
   constructor(config: DisplayObjectConfig<StyleProps>) {
     super();
     // assign name, id to config
@@ -104,15 +105,39 @@ export class DisplayObject<
       ...this.config.attrs,
     };
 
-    this.style = new Proxy<StyleProps>(this.attributes, {
-      get: (_, prop) => {
-        return this.getAttribute(prop as keyof StyleProps);
+    this.style = new Proxy<StyleProps & ICSSStyleDeclaration<StyleProps>>(
+      {
+        ...this.attributes,
+        setProperty: <Key extends keyof StyleProps>(
+          propertyName: Key,
+          value: StyleProps[Key],
+          // priority?: string,
+        ) => {
+          this.setAttribute(propertyName, value);
+        },
+        getPropertyValue: (propertyName: keyof StyleProps) => {
+          return this.getAttribute(propertyName);
+        },
+        removeProperty: (propertyName: keyof StyleProps) => {
+          this.removeAttribute(propertyName);
+        },
+        item: () => {
+          return '';
+        },
       },
-      set: (_, prop, value) => {
-        this.setAttribute(prop as keyof StyleProps, value);
-        return true;
+      {
+        get: (target, name) => {
+          if (name in target) {
+            return target[name];
+          }
+          return this.getAttribute(name as keyof StyleProps);
+        },
+        set: (_, prop, value) => {
+          this.setAttribute(prop as keyof StyleProps, value);
+          return true;
+        },
       },
-    });
+    );
 
     this.initAttributes(this.config.style);
 
@@ -165,8 +190,8 @@ export class DisplayObject<
     }
 
     const priorities: Record<string, number> = {
-      x: 1000,
-      y: 1000,
+      x: Infinity,
+      y: Infinity,
     };
 
     // update x, y at last
@@ -182,26 +207,26 @@ export class DisplayObject<
     renderable.dirty = true;
   }
 
-  setAttribute<Key extends keyof StyleProps>(
-    attributeName: Key,
-    value: StyleProps[Key],
-    force = false,
-  ) {
+  setAttribute<Key extends keyof StyleProps>(name: Key, value: StyleProps[Key], force = false) {
+    const [attributeName, attributeValue] = formatAttribute(name as string, value) as [
+      Key,
+      StyleProps[Key],
+    ];
     if (
       force ||
-      !isEqual(value, this.attributes[attributeName]) ||
+      !isEqual(attributeValue, this.attributes[attributeName]) ||
       attributeName === 'transformOrigin' ||
       attributeName === 'visibility' // will affect children
     ) {
       if (attributeName === 'visibility') {
         // set value cascade
         this.forEach((object) => {
-          (object as DisplayObject).changeAttribute(attributeName, value);
+          (object as DisplayObject).changeAttribute(attributeName, attributeValue);
         });
       } else {
-        this.changeAttribute(attributeName, value);
+        this.changeAttribute(attributeName, attributeValue);
       }
-      super.setAttribute(attributeName, value);
+      super.setAttribute(attributeName, attributeValue);
     }
   }
 
@@ -229,9 +254,7 @@ export class DisplayObject<
     oldParsedValue: ParsedStyleProps[Key],
     newParsedValue: ParsedStyleProps[Key],
   ) {
-    // update property, which may cause AABB re-calc
     // @ts-ignore
-    // const stylePropertyUpdaters = this.stylePropertyUpdaterFactory(name);
     const stylePropertyUpdaters = stylePropertyUpdaterFactory[name];
     if (stylePropertyUpdaters) {
       stylePropertyUpdaters.forEach((updater) => {

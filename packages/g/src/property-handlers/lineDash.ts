@@ -1,8 +1,25 @@
-// format lineDash to [dash, dash]
-export function parseLineDash(lineDash: number[]): number[] {
-  if (lineDash && lineDash.length === 1) {
-    return [lineDash[0], lineDash[0]];
+import { isString } from '@antv/util';
+import { ParsedElement, parseLength } from './dimension';
+
+/**
+ * format lineDash to [dash, dash]
+ *
+ * also support string format such as `"stroke-dasharray": "2px 4px"`
+ */
+export function parseLineDash(lineDash: number[] | string): number[] {
+  const formatted: number[] = [];
+  if (isString(lineDash)) {
+    lineDash.split(' ').forEach((segment) => {
+      const dimension = parseLength(segment) as ParsedElement;
+      formatted.push(dimension.value);
+    });
+  } else {
+    formatted.push(...lineDash);
   }
 
-  return [lineDash[0], lineDash[1]];
+  if (formatted && formatted.length === 1) {
+    return [formatted[0], formatted[0]];
+  }
+
+  return [formatted[0], formatted[1]];
 }

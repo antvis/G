@@ -15,6 +15,13 @@ import {
 } from '../display-objects';
 
 /**
+ * compatible with SVG's naming rules like D3
+ */
+const ALIAS_2_TAGNAME_MAP = {
+  g: SHAPE.Group,
+};
+
+/**
  * canvas.customElements
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry
@@ -44,6 +51,7 @@ export class CustomElementRegistry {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/get
    */
   get<T extends DisplayObject>(name: string): new (...args: any[]) => T {
-    return this.registry[name] as new (...args: any[]) => T;
+    const mappedTagName = ALIAS_2_TAGNAME_MAP[name] || name;
+    return this.registry[mappedTagName] as new (...args: any[]) => T;
   }
 }

@@ -26,7 +26,7 @@ export interface ParsedLineStyleProps extends ParsedBaseStyleProps {
   isBillboard?: boolean;
 }
 export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
-  constructor({ style, ...rest }: DisplayObjectConfig<LineStyleProps>) {
+  constructor({ style, ...rest }: DisplayObjectConfig<LineStyleProps> = {}) {
     super({
       type: SHAPE.Line,
       style: {

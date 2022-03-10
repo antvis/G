@@ -182,6 +182,14 @@ circle.remove();
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/remove
 
+### removeChildren(destroy = true)
+
+将所有子节点从场景图中移除，可以选择是否同时销毁，默认会销毁。
+
+```js
+parent.removeChildren();
+```
+
 ### replaceWith(...nodes: Element[])
 
 在父节点的子节点列表中，用传入的节点列表替换该节点：
@@ -196,7 +204,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceWith
 
 ### replaceChildren(...nodes: Element[])
 
-替换该节点的所有子节点。不传参数时则会清空该节点的所有子节点：
+替换该节点的所有子节点。不传参数时则会清空并销毁该节点的所有子节点：
 
 ```js
 parent.replaceChildren(child1, child2);

@@ -21,7 +21,7 @@ import {
   SceneGraphSelector,
   SceneGraphSelectorFactory,
 } from './services/SceneGraphSelector';
-import { parseLengthOrPercent, mergeDimensions } from './property-handlers';
+import { parseLengthOrPercent, mergeDimensions, updateTextTransform } from './property-handlers';
 import type {
   Interpolatable,
   ParsedColorStyleProperty,
@@ -30,9 +30,6 @@ import type {
   StylePropertyUpdater,
 } from './property-handlers';
 import {
-  // StylePropertyParserFactory,
-  // StylePropertyUpdaterFactory,
-  // StylePropertyMergerFactory,
   clampedMergeNumbers,
   parseNumber,
   mergeColors,
@@ -46,6 +43,7 @@ import {
   updateOrigin,
   updateTransform,
   updateTransformOrigin,
+  updateText,
   parseTransform,
   mergeTransforms,
   parsePath,
@@ -158,7 +156,7 @@ export const containerModule = Module((register) => {
 
   // support percent
   addPropertiesHandler<number, number>(
-    ['r', 'rx', 'ry', 'width', 'height'],
+    ['r', 'rx', 'ry', 'width', 'height', 'fontSize'],
     parseLengthOrPercent,
     // @ts-ignore
     mergeDimensions,
@@ -233,6 +231,8 @@ export const containerModule = Module((register) => {
   addPropertyHandler('transformOrigin', undefined, undefined, updateTransformOrigin);
   // @ts-ignore
   addPropertyHandler('transform', parseTransform, mergeTransforms, updateTransform);
+  addPropertyHandler('text', undefined, undefined, updateText);
+  addPropertyHandler('textTransform', undefined, undefined, updateTextTransform);
 
   // Path.path
   // @ts-ignore

@@ -23,6 +23,10 @@ describe('Path', () => {
     // get length
     expect(path.getTotalLength()).eqls(100);
 
+    path.style.setProperty('d', 'M 0 0 L 200 0');
+    expect(path.getLocalPosition()).eqls(vec3.fromValues(0, 0, 0));
+    expect(path.getTotalLength()).eqls(200);
+
     // // get bounds
     // let bounds = polyline.getBounds();
     // if (bounds) {
