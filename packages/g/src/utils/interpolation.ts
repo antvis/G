@@ -230,6 +230,9 @@ const FORMAT_ATTR_MAP = {
       middle: 'center',
     },
   },
+  src: {
+    alias: 'img',
+  },
 };
 
 export function formatAttribute(name: string, value: any): [string, any] {

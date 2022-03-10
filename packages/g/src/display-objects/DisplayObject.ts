@@ -183,10 +183,10 @@ export class DisplayObject<
 
     // parse attributes first
     for (const attributeName in attributes) {
-      const value = attributes[attributeName];
-      this.attributes[attributeName] = value;
+      const [name, value] = formatAttribute(attributeName, attributes[attributeName]);
+      this.attributes[name] = value;
       // @ts-ignore
-      this.parseStyleProperty(attributeName, value);
+      this.parseStyleProperty(name, value);
     }
 
     const priorities: Record<string, number> = {
@@ -199,8 +199,9 @@ export class DisplayObject<
       (a, b) => (priorities[a] || 0) - (priorities[b] || 0),
     );
     sortedNames.forEach((attributeName) => {
+      const [name] = formatAttribute(attributeName, '');
       // @ts-ignore
-      this.updateStyleProperty(attributeName, undefined, this.parsedStyle[attributeName]);
+      this.updateStyleProperty(name, undefined, this.parsedStyle[name]);
     });
 
     // redraw at next frame
