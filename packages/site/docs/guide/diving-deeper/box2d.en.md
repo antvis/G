@@ -42,7 +42,7 @@ const plugin = new PluginBox2D({
 
 # 创建静态地面
 
-我们使用 [Line]() 创建一个平地，需要特别注意 [rigid](/zh/docs/plugins/box2d#rigid) 属性，设置为 `static` 表明它不受重力等作用力影响：
+我们使用 [Line](/zh/docs/api/basic/line) 创建一个平地，需要特别注意 [rigid](/zh/docs/plugins/box2d#rigid) 属性，设置为 `static` 表明它不受重力等作用力影响：
 
 ```js
 const ground = new Line({
