@@ -50,6 +50,7 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
     'leading',
     'textBaseline',
     'textAlign',
+    'textTransform',
     'whiteSpace',
   ];
 

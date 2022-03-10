@@ -18,3 +18,4 @@ export * from './points';
 export * from './filter';
 export * from './lineDash';
 export * from './text';
+export * from './textTransform';

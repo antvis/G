@@ -41,6 +41,13 @@ export enum LINE_JOIN {
   Miter = 'miter',
 }
 
+export enum TextTransform {
+  CAPITALIZE = 'capitalize',
+  UPPERCASE = 'uppercase',
+  LOWERCASE = 'lowercase',
+  NONE = 'none',
+}
+
 export interface BaseStyleProps {
   /**
    * x in local space
@@ -147,6 +154,11 @@ export interface BaseStyleProps {
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/filter
    */
   filter?: string;
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-transform
+   */
+  textTransform?: TextTransform;
 }
 
 export interface ParsedBaseStyleProps

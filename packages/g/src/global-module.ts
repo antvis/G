@@ -21,7 +21,7 @@ import {
   SceneGraphSelector,
   SceneGraphSelectorFactory,
 } from './services/SceneGraphSelector';
-import { parseLengthOrPercent, mergeDimensions } from './property-handlers';
+import { parseLengthOrPercent, mergeDimensions, updateTextTransform } from './property-handlers';
 import type {
   Interpolatable,
   ParsedColorStyleProperty,
@@ -232,6 +232,7 @@ export const containerModule = Module((register) => {
   // @ts-ignore
   addPropertyHandler('transform', parseTransform, mergeTransforms, updateTransform);
   addPropertyHandler('text', undefined, undefined, updateText);
+  addPropertyHandler('textTransform', undefined, undefined, updateTextTransform);
 
   // Path.path
   // @ts-ignore

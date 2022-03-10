@@ -133,8 +133,8 @@ const drawBars = async () => {
     .attr('y', dimensions.margin.bottom - 10)
     .attr('fill', 'black')
     .style('font-size', 10)
-    .text('Humidity');
-  // .style("text-transform", "capitalize");
+    .text('Humidity')
+    .style('text-transform', 'capitalize');
 };
 
 drawBars();

@@ -98,6 +98,7 @@ const fontConfig = {
   fontStyle: 'normal',
   fontWeight: 'normal',
   fontVariant: 'normal',
+  textTransform: 'none',
 };
 fontFolder.add(fontConfig, 'text').onFinishChange((content) => {
   text.attr('text', content);
@@ -121,6 +122,11 @@ fontFolder
 fontFolder.add(fontConfig, 'fontVariant', ['normal', 'small-caps']).onChange((fontVariant) => {
   text.attr('fontVariant', fontVariant);
 });
+fontFolder
+  .add(fontConfig, 'textTransform', ['capitalize', 'uppercase', 'lowercase', 'none'])
+  .onChange((transform) => {
+    text.attr('textTransform', transform);
+  });
 
 const fillStrokeFolder = gui.addFolder('fill & stroke');
 const fillStrokeConfig = {
