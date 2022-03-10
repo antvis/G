@@ -1,4 +1,4 @@
-import { CanvasConfig, ContextService, HTML } from '@antv/g';
+import { CanvasConfig, ContextService } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { isString } from '@antv/util';
 import { setDOMSize } from './utils/dom';
