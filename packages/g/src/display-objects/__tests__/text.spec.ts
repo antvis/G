@@ -28,6 +28,10 @@ describe('Text', () => {
     text.setAttribute('font-size', 30);
     expect(text.style.fontSize).to.eqls(30);
 
+    // parse font size with unit
+    text.style.fontSize = '40px';
+    expect(text.parsedStyle.fontSize).to.eqls({ unit: 'px', value: 40 });
+
     expect(text.nodeValue).eqls('这是测试文本This is text');
     expect(text.textContent).eqls('这是测试文本This is text');
 

@@ -156,7 +156,7 @@ export class TextService {
 
   measureText(text: string, attributes: ParsedTextStyleProps): TextMetrics {
     const {
-      fontSize = 0,
+      fontSize,
       wordWrap,
       lineHeight: strokeHeight = 0,
       lineWidth = 0,
@@ -173,8 +173,8 @@ export class TextService {
     // fallback in case UA disallow canvas data extraction
     // (toDataURI, getImageData functions)
     if (fontProperties.fontSize === 0) {
-      fontProperties.fontSize = fontSize;
-      fontProperties.ascent = fontSize;
+      fontProperties.fontSize = fontSize.value;
+      fontProperties.ascent = fontSize.value;
     }
 
     const context = this.offscreenCanvas.getOrCreateContext();

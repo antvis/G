@@ -3,6 +3,7 @@ import type { DisplayObjectConfig } from '../dom/interfaces';
 import { SHAPE, LINE_JOIN, LINE_CAP } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
+import { ParsedElement } from '../property-handlers';
 
 export interface TextStyleProps extends BaseStyleProps {
   text: string;
@@ -13,7 +14,7 @@ export interface TextStyleProps extends BaseStyleProps {
   /** 字体样式 */
   fontStyle?: 'normal' | 'italic' | 'oblique';
   /** 文本字体大小 */
-  fontSize?: number;
+  fontSize?: number | string;
   /** 文本字体 */
   fontFamily?: string;
   /** 文本粗细 */
@@ -24,7 +25,6 @@ export interface TextStyleProps extends BaseStyleProps {
   lineHeight?: number;
   letterSpacing?: number;
   miterLimit?: number;
-  // padding?: number;
   whiteSpace?: 'pre';
   leading?: number;
   wordWrap?: boolean;
@@ -41,7 +41,7 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   /** 字体样式 */
   fontStyle?: 'normal' | 'italic' | 'oblique';
   /** 文本字体大小 */
-  fontSize?: number;
+  fontSize?: ParsedElement;
   /** 文本字体 */
   fontFamily?: string;
   /** 文本粗细 */
@@ -52,7 +52,6 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   lineHeight?: number;
   letterSpacing?: number;
   miterLimit?: number;
-  // padding?: number;
   whiteSpace?: 'pre';
   leading?: number;
   wordWrap?: boolean;
@@ -87,7 +86,6 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
         lineCap: LINE_CAP.Butt,
         lineWidth: 0,
         miterLimit: 10,
-        // padding: 0,
         stroke: '#000',
         whiteSpace: 'pre',
         wordWrap: false,

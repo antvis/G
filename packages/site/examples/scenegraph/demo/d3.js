@@ -95,7 +95,7 @@ const drawBars = async () => {
     .text(yAccessor)
     .attr('fill', 'darkgrey')
     .style('text-anchor', 'middle')
-    .style('font-size', 12)
+    .style('font-size', '12px')
     .style('font-family', 'sans-serif');
 
   const mean = d3.mean(dataset, metricAccessor);
@@ -115,7 +115,7 @@ const drawBars = async () => {
     .attr('y', -20)
     .text('mean')
     .attr('fill', 'maroon')
-    .style('font-size', 12)
+    .style('font-size', '12px')
     .style('text-anchor', 'middle');
 
   // 6. Draw peripherals
@@ -132,7 +132,7 @@ const drawBars = async () => {
     .attr('x', dimensions.boundedWidth / 2)
     .attr('y', dimensions.margin.bottom - 10)
     .attr('fill', 'black')
-    .style('font-size', 10)
+    .style('font-size', '10px')
     .text('Humidity')
     .style('text-transform', 'capitalize');
 };

@@ -156,7 +156,7 @@ export const containerModule = Module((register) => {
 
   // support percent
   addPropertiesHandler<number, number>(
-    ['r', 'rx', 'ry', 'width', 'height'],
+    ['r', 'rx', 'ry', 'width', 'height', 'fontSize'],
     parseLengthOrPercent,
     // @ts-ignore
     mergeDimensions,

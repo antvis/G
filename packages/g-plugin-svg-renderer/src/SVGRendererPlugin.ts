@@ -363,11 +363,18 @@ export class SVGRendererPlugin implements RenderingPlugin {
           this.updateAnchorWithTransform(object);
         }
         if (name !== 'anchor') {
+          let valueStr: string;
           if (ATTR_IN_PIXEL_MAP[name]) {
-            $el?.setAttribute(SVG_ATTR_MAP[name], `${parsedStyle[ATTR_IN_PIXEL_MAP[name]]}`);
+            valueStr = `${parsedStyle[ATTR_IN_PIXEL_MAP[name]]}`;
           } else {
-            $el?.setAttribute(SVG_ATTR_MAP[name], `${value}`);
+            if (name === 'fontSize') {
+              valueStr = value.value + value.unit;
+            } else {
+              valueStr = `${value}`;
+            }
           }
+
+          $el?.setAttribute(SVG_ATTR_MAP[name], valueStr);
         }
       }
     }
