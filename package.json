@@ -16,7 +16,7 @@
     "wasm": "wasm-pack build ./rust --target web",
     "watch": "father build -w",
     "test": "jest packages/g/",
-    "test-watch": "DEBUG=1 jest packages/g/ -w",
+    "test-watch": "DEBUG_MODE=1 jest --watch",
     "cov": "jest --coverage",
     "contributor": "git-contributor",
     "lint": "npm run eslint",
