@@ -4,6 +4,7 @@ import { Group } from '../display-objects/Group';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { IDocument, IElement, INode, ICanvas, DisplayObjectConfig } from './interfaces';
 import type { BaseStyleProps } from '../types';
+import { TextAlign } from '../types';
 
 /**
  * the entry of DOM tree
@@ -23,7 +24,7 @@ export class Document extends Node implements IDocument {
     this.documentElement = new Group({
       id: 'g-root',
       style: {
-        textAlign: 'start',
+        textAlign: TextAlign.START,
         fontSize: '16px',
       },
     });

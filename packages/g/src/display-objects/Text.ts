@@ -31,11 +31,13 @@ export interface TextStyleProps extends BaseStyleProps {
   wordWrapWidth?: number;
   dropShadow?: boolean;
   dropShadowDistance?: number;
+  dx?: number | string;
+  dy?: number | string;
 }
 export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   text: string;
   /** 设置文本内容的当前对齐方式 */
-  textAlign?: 'inherit' | 'start' | 'center' | 'end' | 'left' | 'right';
+  textAlign?: 'start' | 'center' | 'end' | 'left' | 'right';
   /** 设置在绘制文本时使用的当前文本基线 */
   textBaseline?: 'top' | 'hanging' | 'middle' | 'alphabetic' | 'ideographic' | 'bottom';
   /** 字体样式 */
@@ -59,6 +61,8 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   dropShadow?: boolean;
   dropShadowDistance?: number;
   metrics?: TextMetrics;
+  dx?: ParsedElement;
+  dy?: ParsedElement;
 }
 export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<TextStyleProps> = {}) {
@@ -71,7 +75,6 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
         fontStyle: 'normal',
         fontWeight: 'normal',
         fontVariant: 'normal',
-        // textAlign: 'start',
         textAlign: 'inherit',
         textBaseline: 'alphabetic',
         dropShadow: false,
@@ -92,6 +95,8 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
         wordWrap: false,
         wordWrapWidth: 0,
         leading: 0,
+        dx: 0,
+        dy: 0,
         ...style,
       },
       ...rest,

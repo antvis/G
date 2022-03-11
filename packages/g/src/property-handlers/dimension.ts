@@ -4,7 +4,7 @@ import { rad2deg } from '../utils/math';
 import { isFinite } from '@antv/util';
 import { AABB } from '../shapes';
 
-export type LengthUnit = 'px' | '%';
+export type LengthUnit = 'px' | '%' | 'em';
 export type AngleUnit = 'deg' | 'rad' | 'turn';
 export type Unit = LengthUnit | AngleUnit | '' | 'auto';
 export interface ParsedElement {
@@ -13,7 +13,7 @@ export interface ParsedElement {
 }
 
 function isLengthUnit(unit: string) {
-  return unit === 'px' || unit === '%';
+  return unit === 'px' || unit === '%' || unit === 'em';
 }
 
 function isAngleUnit(unit: string) {
@@ -97,7 +97,10 @@ export function mergeDimensions(
 
 const lengthUnits = 'px';
 export const parseLength = parseDimension.bind(null, new RegExp(lengthUnits, 'g'));
-export const parseLengthOrPercent = parseDimension.bind(null, new RegExp(lengthUnits + '|%', 'g'));
+export const parseLengthOrPercent = parseDimension.bind(
+  null,
+  new RegExp(lengthUnits + '|%|em', 'g'),
+);
 export const parseAngle = parseDimension.bind(null, /deg|rad|grad|turn/g);
 
 export function parseLengthOrPercentList(list: (string | number)[]): ParsedElement[] {

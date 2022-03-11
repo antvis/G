@@ -1,4 +1,5 @@
-import { TextService, ParsedTextStyleProps, SHAPE, Rectangle } from '@antv/g';
+import { TextService, SHAPE } from '@antv/g';
+import type { ParsedTextStyleProps, Rectangle, DisplayObject } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import { StyleRenderer } from './interfaces';
@@ -14,7 +15,11 @@ export class TextRenderer implements StyleRenderer {
     return '';
   }
 
-  render(context: CanvasRenderingContext2D, parsedStyle: ParsedTextStyleProps) {
+  render(
+    context: CanvasRenderingContext2D,
+    parsedStyle: ParsedTextStyleProps,
+    object: DisplayObject,
+  ) {
     const {
       lineWidth = 0,
       textAlign,
@@ -33,7 +38,24 @@ export class TextRenderer implements StyleRenderer {
     const { font, lines, height, lineHeight, lineMetrics } = metrics;
 
     context.font = font;
-    context.lineWidth = lineWidth!;
+    context.lineWidth = lineWidth;
+
+    // let calculatedTextAlign: TextAlign = textAlign;
+    // if (object.style.textAlign === 'inherit') {
+    //   let tmp = object.parentElement as DisplayObject;
+    //   while (tmp) {
+    //     if (tmp.style.textAlign !== 'inherit') {
+    //       calculatedTextAlign = tmp.style.textAlign;
+    //       break;
+    //     }
+    //     tmp = tmp.parentElement as DisplayObject;
+    //   }
+
+    //   console.log('changed', calculatedTextAlign, object);
+
+    //   object.style.textAlign = calculatedTextAlign;
+    // }
+
     context.textAlign = textAlign;
     context.textBaseline = textBaseline!;
     context.lineJoin = lineJoin!;
