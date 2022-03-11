@@ -7,6 +7,9 @@ import type { ParsedElement } from '../property-handlers';
 export interface GroupStyleProps extends BaseStyleProps {
   width?: number | string;
   height?: number | string;
+  textAlign?: 'start' | 'center' | 'end' | 'left' | 'right' | 'inherit';
+  fontSize?: number | string;
+  fontFamily?: string;
 }
 
 export interface ParsedGroupStyleProps extends ParsedBaseStyleProps {
@@ -14,6 +17,8 @@ export interface ParsedGroupStyleProps extends ParsedBaseStyleProps {
   height?: ParsedElement;
   widthInPixels?: number;
   heightInPixels?: number;
+  textAlign?: string;
+  fontSize?: ParsedElement;
 }
 
 export class Group extends DisplayObject {

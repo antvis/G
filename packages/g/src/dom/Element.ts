@@ -366,7 +366,7 @@ export class Element<
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes
    */
-  attributes: StyleProps = {} as StyleProps;
+  readonly attributes: StyleProps = {} as StyleProps;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute

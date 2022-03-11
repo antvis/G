@@ -56,7 +56,7 @@ Mouse 系列：
 -   rightup 鼠标右键抬起
 -   mouseupoutside 鼠标左键抬起时与按下时图形不同
 -   rightupoutside 鼠标右键抬起与按下时图形不同
--   click 单击 & 双击
+-   click 单击 & 双击 [如何区分?](/zh/docs/api/event#鼠标双击事件)
 -   mousemove 鼠标持续在该图形上移动
 -   mouseover 鼠标从该图形上移入，会冒泡
 -   mouseout 鼠标从该图形上移出，会冒泡
@@ -70,7 +70,6 @@ Touch 系列：
 -   touchend
 -   touchendoutside
 -   touchmove
--   tap
 
 ## 场景图事件
 

@@ -20,7 +20,13 @@ export class Document extends Node implements IDocument {
     this.timeline = new AnimationTimeline();
 
     // like <html> in DOM tree
-    this.documentElement = new Group({ id: 'g-root' });
+    this.documentElement = new Group({
+      id: 'g-root',
+      style: {
+        textAlign: 'start',
+        fontSize: '16px',
+      },
+    });
     this.documentElement.ownerDocument = this;
     this.documentElement.parentNode = this;
     this.childNodes = [this.documentElement];

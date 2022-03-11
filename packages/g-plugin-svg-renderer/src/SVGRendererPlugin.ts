@@ -96,6 +96,32 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   shadowOffsetY: 'dy',
   filter: 'filter',
   innerHTML: 'innerHTML',
+  textAlign: 'text-anchor',
+};
+
+const FORMAT_VALUE_MAP = {
+  textAlign: {
+    inherit: 'inherit',
+    left: 'left',
+    start: 'left',
+    center: 'middle',
+    right: 'end',
+    end: 'end',
+  },
+};
+
+export const DEFAULT_VALUE_MAP: Record<string, string> = {
+  textAlign: 'inherit',
+  // @see https://www.w3.org/TR/SVG/painting.html#LineCaps
+  lineCap: 'butt',
+  // @see https://www.w3.org/TR/SVG/painting.html#LineJoin
+  lineJoin: 'miter',
+  opacity: '1',
+  fillOpacity: '1',
+  strokeOpacity: '1',
+  strokeWidth: '0',
+  strokeMiterLimit: '4',
+  letterSpacing: '0',
 };
 
 export type GradientParams = (LinearGradient | RadialGradient) & { type: PARSED_COLOR_TYPE };
@@ -374,7 +400,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
             }
           }
 
-          $el?.setAttribute(SVG_ATTR_MAP[name], valueStr);
+          if (valueStr !== DEFAULT_VALUE_MAP[name]) {
+            const formattedValueStr = FORMAT_VALUE_MAP[name]?.[valueStr] || valueStr;
+            $el?.setAttribute(SVG_ATTR_MAP[name], formattedValueStr);
+          }
         }
       }
     }

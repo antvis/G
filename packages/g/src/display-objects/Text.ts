@@ -8,7 +8,7 @@ import type { ParsedElement } from '../property-handlers';
 export interface TextStyleProps extends BaseStyleProps {
   text: string;
   /** 设置文本内容的当前对齐方式 */
-  textAlign?: 'start' | 'center' | 'end' | 'left' | 'right';
+  textAlign?: 'inherit' | 'start' | 'center' | 'end' | 'left' | 'right';
   /** 设置在绘制文本时使用的当前文本基线 */
   textBaseline?: 'top' | 'hanging' | 'middle' | 'alphabetic' | 'ideographic' | 'bottom';
   /** 字体样式 */
@@ -35,7 +35,7 @@ export interface TextStyleProps extends BaseStyleProps {
 export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   text: string;
   /** 设置文本内容的当前对齐方式 */
-  textAlign?: 'start' | 'center' | 'end' | 'left' | 'right';
+  textAlign?: 'inherit' | 'start' | 'center' | 'end' | 'left' | 'right';
   /** 设置在绘制文本时使用的当前文本基线 */
   textBaseline?: 'top' | 'hanging' | 'middle' | 'alphabetic' | 'ideographic' | 'bottom';
   /** 字体样式 */
@@ -71,7 +71,8 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
         fontStyle: 'normal',
         fontWeight: 'normal',
         fontVariant: 'normal',
-        textAlign: 'start',
+        // textAlign: 'start',
+        textAlign: 'inherit',
         textBaseline: 'alphabetic',
         dropShadow: false,
         // dropShadowAlpha: 1,
