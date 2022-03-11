@@ -80,7 +80,10 @@
     "webpack-cli": "^3.1.2"
   },
   "resolutions": {
-    "monaco-editor": "0.21.2",
+    "signal-exit": "3.0.3",
+    "react-monaco-editor": "0.34.0",
+    "monaco-editor": "0.20.0",
+    "monaco-editor-webpack-plugin": "1.9.1",
     "normalize-url": "^4.0.1"
   },
   "limit-size": [
