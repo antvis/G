@@ -28,7 +28,7 @@ const CANVAS_SIZE = 1;
 
 const $wrapper = document.getElementById('container');
 const $text = document.createElement('div');
-$text.textContent = 'Please open the devtools, the shortest paths will be printed in console.';
+$text.textContent = 'Please open the devtools, the top nodes will be printed in console.';
 $wrapper.appendChild($text);
 
 // use WebGPU
@@ -47,16 +47,16 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   const device = renderer.getDevice();
   const storeKernel = new Kernel(device, {
     computeShader: `
-[[block]] struct Buffer {
+struct Buffer {
   data: array<f32>;
 };
 
-[[group(0), binding(0)]] var<storage, read> r : Buffer;
-[[group(0), binding(1)]] var<storage, write> r_last : Buffer;
+@group(0) @binding(0) var<storage, read> r : Buffer;
+@group(0) @binding(1) var<storage, write> r_last : Buffer;
 
-[[stage(compute), workgroup_size(${BLOCKS}, ${BLOCK_SIZE})]]
+@stage(compute) @workgroup_size(${BLOCKS}, ${BLOCK_SIZE})
 fn main(
-  [[builtin(global_invocation_id)]] global_id : vec3<u32>
+  @builtin(global_invocation_id) global_id : vec3<u32>
 ) {
   var index = global_id.x;
   if (index < ${V.length}u) {
@@ -67,17 +67,17 @@ fn main(
 
   const matmulKernel = new Kernel(device, {
     computeShader: `
-[[block]] struct Buffer {
+struct Buffer {
   data: array<f32>;
 };
 
-[[group(0), binding(0)]] var<storage, read> graph : Buffer;
-[[group(0), binding(1)]] var<storage, read_write> r : Buffer;
-[[group(0), binding(2)]] var<storage, read> r_last : Buffer;
+@group(0) @binding(0) var<storage, read> graph : Buffer;
+@group(0) @binding(1) var<storage, read_write> r : Buffer;
+@group(0) @binding(2) var<storage, read> r_last : Buffer;
 
-[[stage(compute), workgroup_size(${BLOCKS}, ${BLOCK_SIZE})]]
+@stage(compute) @workgroup_size(${BLOCKS}, ${BLOCK_SIZE})
 fn main(
-  [[builtin(global_invocation_id)]] global_id : vec3<u32>
+  @builtin(global_invocation_id) global_id : vec3<u32>
 ) {
   var index = global_id.x;
   if (index < ${V.length}u) {
@@ -93,16 +93,16 @@ fn main(
 
   const rankDiffKernel = new Kernel(device, {
     computeShader: `
-[[block]] struct Buffer {
+struct Buffer {
   data: array<f32>;
 };
 
-[[group(0), binding(0)]] var<storage, read> r : Buffer;
-[[group(0), binding(1)]] var<storage, read_write> r_last : Buffer;
+@group(0) @binding(0) var<storage, read> r : Buffer;
+@group(0) @binding(1) var<storage, read_write> r_last : Buffer;
 
-[[stage(compute), workgroup_size(${BLOCKS}, ${BLOCK_SIZE})]]
+@stage(compute) @workgroup_size(${BLOCKS}, ${BLOCK_SIZE})
 fn main(
-  [[builtin(global_invocation_id)]] global_id : vec3<u32>
+  @builtin(global_invocation_id) global_id : vec3<u32>
 ) {
   var index = global_id.x;
   if (index < ${V.length}u) {
