@@ -70,8 +70,8 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
       type: SHAPE.Text,
       style: {
         text: '',
-        fontSize: 12,
-        fontFamily: 'sans-serif',
+        fontSize: 'inherit',
+        fontFamily: 'inherit',
         fontStyle: 'normal',
         fontWeight: 'normal',
         fontVariant: 'normal',

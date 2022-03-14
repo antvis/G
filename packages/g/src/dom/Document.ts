@@ -26,6 +26,10 @@ export class Document extends Node implements IDocument {
       style: {
         textAlign: TextAlign.START,
         fontSize: '16px',
+        fontFamily: 'sans-serif',
+        // fontStyle: 'normal',
+        // fontWeight: 'normal',
+        // fontVariant: 'normal',
       },
     });
     this.documentElement.ownerDocument = this;

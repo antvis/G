@@ -3,6 +3,7 @@ import type { DisplayObjectConfig } from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
 import type { FederatedEvent } from '../dom/FederatedEvent';
 import type { BaseStyleProps } from '../types';
+import type { MutationEvent } from '../dom/MutationEvent';
 
 /**
  * shadow root
@@ -19,7 +20,7 @@ export abstract class CustomElement<
     // this.addEventListener(ElementEvent.CHILD_INSERTED, this.handleChildInserted);
     // this.addEventListener(ElementEvent.CHILD_REMOVED, this.handleChildRemoved);
     if (this.attributeChangedCallback) {
-      this.addEventListener(ElementEvent.ATTRIBUTE_CHANGED, this.handleAttributeChanged);
+      this.addEventListener(ElementEvent.ATTR_MODIFIED, this.handleAttributeChanged);
     }
     if (this.connectedCallback) {
       this.addEventListener(ElementEvent.MOUNTED, this.handleMounted);
@@ -83,14 +84,7 @@ export abstract class CustomElement<
   // };
 
   private handleAttributeChanged = <Key extends keyof CustomElementStyleProps>(
-    e: FederatedEvent<
-      Event,
-      {
-        attributeName: Key;
-        oldValue: CustomElementStyleProps[Key];
-        newValue: CustomElementStyleProps[Key];
-      }
-    >,
+    e: MutationEvent,
   ) => {
     // only listen itself
     // RangeError: Maximum call stack size exceeded
@@ -98,9 +92,9 @@ export abstract class CustomElement<
       return;
     }
 
-    const { attributeName, oldValue, newValue } = e.detail;
+    const { attrName, prevValue, newValue } = e;
     if (this.attributeChangedCallback) {
-      this.attributeChangedCallback(attributeName, oldValue, newValue);
+      this.attributeChangedCallback(attrName as Key, prevValue, newValue);
     }
   };
 }

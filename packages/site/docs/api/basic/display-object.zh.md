@@ -516,7 +516,7 @@ circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘�
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
-**类型**： `String`
+**类型**： `string`
 
 **默认值**：无
 
@@ -593,7 +593,7 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
-**类型**： `String`
+**类型**： `string`
 
 **默认值**：无
 
@@ -679,7 +679,7 @@ circle.getBounds(); // { halfExtents: [100, 100] }
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
-**类型**： `String`
+**类型**： `string`
 
 **默认值**：无
 
@@ -1442,16 +1442,16 @@ circle.destroyed; // true
 除了例如 click、mouseenter 这样的交互事件，我们还提供了一系列内置的节点生命周期事件，例如可以监听节点的添加和删除事件，这些事件同样有完整的传播路径（冒泡、捕获），[示例](/zh/examples/event#builtin)：
 
 ```js
-import { ElementEvent } from '@antv/g';
+import { ElementEvent, MutationEvent } from '@antv/g';
 
 // 监听子节点添加事件
 parent.on(ElementEvent.CHILD_INSERTED, (e) => {
     e.target; // parent
     e.detail.child; // child
 });
-child.on(ElementEvent.INSERTED, (e) => {
+child.on(ElementEvent.INSERTED, (e: MutationEvent) => {
     e.target; // child
-    e.detail.parent; // parent
+    e.relatedNode; // parent
 });
 parent.on(ElementEvent.CHILD_REMOVED, (e) => {
     e.target; // parent
@@ -1459,13 +1459,13 @@ parent.on(ElementEvent.CHILD_REMOVED, (e) => {
 });
 child.on(ElementEvent.REMOVED, (e) => {
     e.target; // child
-    e.detail.parent; // parent
+    e.relatedNode; // parent
 });
-child.on(ElementEvent.ATTRIBUTE_CHANGED, (e) => {
+child.on(ElementEvent.ATTR_MODIFIED, (e) => {
     e.target; // child
-    e.detail.attributeName; // 属性名
-    e.detail.oldValue; // 旧值
-    e.detail.newValue; // 新值
+    e.attrName; // 属性名
+    e.prevValue; // 旧值
+    e.newValue; // 新值
 });
 
 parent.appendChild(child);
@@ -1479,7 +1479,7 @@ parent.appendChild(child);
 -   REMOVED 作为子节点被移除时触发
 -   MOUNTED 首次进入画布时触发
 -   UNMOUNTED 从画布中移除时触发
--   ATTRIBUTE_CHANGED 修改属性时触发
+-   ATTR_MODIFIED 修改属性时触发
 -   DESTROY 销毁时触发
 
 # 可见性与渲染次序

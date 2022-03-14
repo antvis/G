@@ -57,6 +57,7 @@ export function updateTransformOrigin(
     //   originVec[1] = originY;
     // } else {
     // relative to local bounds
+    debugger;
     object.setOrigin([originX!, originY!]);
     // }
   }

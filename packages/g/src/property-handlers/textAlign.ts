@@ -1,4 +1,4 @@
-import { TextAlign } from '../types';
+import type { TextAlign } from '../types';
 import type { DisplayObject } from '../display-objects';
 
 export function updateTextAlign(

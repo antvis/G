@@ -1,15 +1,14 @@
 import { SHAPE } from '../types';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import type { BaseStyleProps, ParsedBaseStyleProps, TextAlign } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
 import type { ParsedElement } from '../property-handlers';
-import { TextAlign } from '../types';
 
 export interface GroupStyleProps extends BaseStyleProps {
   width?: number | string;
   height?: number | string;
   textAlign?: TextAlign | 'inherit';
-  fontSize?: number | string;
+  fontSize?: number | string | 'inherit';
   fontFamily?: string;
 }
 
@@ -30,6 +29,7 @@ export class Group extends DisplayObject {
         width: 'auto',
         height: 'auto',
         textAlign: 'inherit',
+        fontSize: 'inherit',
         ...style,
       },
       ...rest,

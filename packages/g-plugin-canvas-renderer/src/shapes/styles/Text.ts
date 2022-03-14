@@ -33,29 +33,14 @@ export class TextRenderer implements StyleRenderer {
       strokeOpacity,
       opacity,
       metrics,
+      dx,
+      dy,
     } = parsedStyle;
 
     const { font, lines, height, lineHeight, lineMetrics } = metrics;
 
     context.font = font;
     context.lineWidth = lineWidth;
-
-    // let calculatedTextAlign: TextAlign = textAlign;
-    // if (object.style.textAlign === 'inherit') {
-    //   let tmp = object.parentElement as DisplayObject;
-    //   while (tmp) {
-    //     if (tmp.style.textAlign !== 'inherit') {
-    //       calculatedTextAlign = tmp.style.textAlign;
-    //       break;
-    //     }
-    //     tmp = tmp.parentElement as DisplayObject;
-    //   }
-
-    //   console.log('changed', calculatedTextAlign, object);
-
-    //   object.style.textAlign = calculatedTextAlign;
-    // }
-
     context.textAlign = textAlign;
     context.textBaseline = textBaseline!;
     context.lineJoin = lineJoin!;
@@ -75,9 +60,18 @@ export class TextRenderer implements StyleRenderer {
       linePositionY = -lineHeight;
     }
 
+    // account for dx & dy
+    let offsetX = 0;
+    if (dx && dx.unit === 'px') {
+      offsetX += dx.value;
+    }
+    if (dy && dy.unit === 'px') {
+      linePositionY += dy.value;
+    }
+
     // draw lines line by line
     for (let i = 0; i < lines.length; i++) {
-      let linePositionX = lineWidth / 2;
+      let linePositionX = lineWidth / 2 + offsetX;
       linePositionY += lineHeight;
 
       // no need to re-position X, cause we already set text align

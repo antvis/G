@@ -43,19 +43,12 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
     'textAlign',
     'textTransform',
     'whiteSpace',
+    'dx',
+    'dy',
   ];
 
   apply($el: SVGElement, parsedStyle: ParsedTextStyleProps) {
-    const {
-      textAlign,
-      textBaseline,
-      lineCap,
-      lineJoin,
-      lineWidth = 0,
-      metrics,
-      dx,
-      dy,
-    } = parsedStyle;
+    const { textBaseline, lineWidth = 0, metrics, dx, dy } = parsedStyle;
 
     const browser = detect();
     if (browser && browser.name === 'firefox') {
@@ -70,33 +63,15 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
     }
 
     $el.setAttribute('paint-order', 'stroke');
-
-    // let offsetX = 0;
-    // let offsetY = 0;
-    // if (dx) {
-    //   if (dx.unit === 'em') {
-
-    //   } else if (dx.unit === 'px') {
-    //     offsetX = dx.value;
-    //   }
-    // }
-
-    // if (dy) {
-    //   if (dy.unit === 'em') {
-
-    //   } else if (dy.unit === 'px') {
-    //     offsetY = dy.value;
-    //   }
-    // }
-
     const { lines, lineHeight, height } = metrics;
 
     const lineNum = lines.length;
 
+    $el.setAttribute('style', `transform:translate(${dx.value}${dx.unit}, ${dy.value}${dy.unit});`);
+
     if (lineNum === 1) {
       $el.innerHTML = lines[0];
-      $el.setAttribute('dx', `${lineWidth / 2 + dx.value}${dx.unit}`);
-      $el.setAttribute('dy', `${dy.value}${dy.unit}`);
+      $el.setAttribute('dx', `${lineWidth / 2}`);
     } else {
       $el.innerHTML = lines
         .map((line: string, i: number) => {

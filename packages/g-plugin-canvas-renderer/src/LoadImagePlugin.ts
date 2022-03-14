@@ -8,6 +8,7 @@ import {
   RenderingContext,
   ElementEvent,
   FederatedEvent,
+  MutationEvent,
 } from '@antv/g';
 import { ImagePool } from './shapes/ImagePool';
 import { isString } from '@antv/util';
@@ -39,12 +40,12 @@ export class LoadImagePlugin implements RenderingPlugin {
       }
     };
 
-    const handleAttributeChanged = (e: FederatedEvent) => {
+    const handleAttributeChanged = (e: MutationEvent) => {
       const object = e.target as DisplayObject;
-      const { attributeName, newValue } = e.detail;
+      const { attrName, newValue } = e;
 
       if (object.nodeName === SHAPE.Image) {
-        if (attributeName === 'img') {
+        if (attrName === 'img') {
           if (isString(newValue)) {
             this.imagePool.getOrCreateImage(newValue).then(() => {
               // set dirty rectangle flag
@@ -59,7 +60,7 @@ export class LoadImagePlugin implements RenderingPlugin {
     renderingService.hooks.init.tap(LoadImagePlugin.tag, () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
     });
@@ -67,7 +68,7 @@ export class LoadImagePlugin implements RenderingPlugin {
     renderingService.hooks.destroy.tap(LoadImagePlugin.tag, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
     });

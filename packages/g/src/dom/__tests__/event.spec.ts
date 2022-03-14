@@ -5,8 +5,36 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { Group, Canvas, Circle, Rect, CustomEvent, ElementEvent } from '../../../lib';
+import {
+  Group,
+  Canvas,
+  Circle,
+  Rect,
+  DisplayObject,
+  CustomEvent,
+  ElementEvent,
+  MutationEvent,
+  MutationObserver,
+  MutationRecord,
+} from '../../../lib';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+
+let addedNodes: DisplayObject[] = [];
+let removedNodes: DisplayObject[] = [];
+function mergeRecords(records: MutationRecord[]) {
+  records.forEach(function (record) {
+    if (record.addedNodes) addedNodes.push.apply(addedNodes, record.addedNodes);
+    if (record.removedNodes) removedNodes.push.apply(removedNodes, record.removedNodes);
+  });
+}
+
+const sleep = (n) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(undefined);
+    }, n);
+  });
+};
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
@@ -35,8 +63,9 @@ describe('Event API', () => {
     const childInsertedCallback = (e) => {
       expect(e.detail.child).eqls(childGroup);
     };
-    const insertedCallback = (e) => {
-      expect(e.detail.parent).eqls(group);
+    const insertedCallback = (e: MutationEvent) => {
+      expect(e.target).eqls(childGroup);
+      expect(e.relatedNode).eqls(group);
     };
     group.addEventListener(ElementEvent.CHILD_INSERTED, childInsertedCallback);
     group.on(ElementEvent.CHILD_INSERTED, childInsertedCallback);
@@ -61,8 +90,8 @@ describe('Event API', () => {
       expect(e.detail.child).eqls(childGroup);
     };
     const removedCallbackSpy = sinon.spy();
-    const removedCallback = (e) => {
-      expect(e.detail.parent).eqls(group);
+    const removedCallback = (e: MutationEvent) => {
+      expect(e.relatedNode).eqls(group);
     };
     const destroyCallbackSpy = sinon.spy();
     const destroyCallback = (e) => {
@@ -95,7 +124,7 @@ describe('Event API', () => {
     expect(destroyCallbackSpy).to.have.been.called;
   });
 
-  it('should emit attribute-changed event correctly', () => {
+  it('should emit attribute-changed event correctly', async () => {
     const circle = new Circle({
       style: {
         r: 10,
@@ -104,7 +133,7 @@ describe('Event API', () => {
     canvas.appendChild(circle);
 
     const attributeChangedCallback = sinon.spy();
-    circle.addEventListener(ElementEvent.ATTRIBUTE_CHANGED, attributeChangedCallback);
+    circle.addEventListener(ElementEvent.ATTR_MODIFIED, attributeChangedCallback);
 
     // should not emit if value unchanged
     circle.setAttribute('r', 10);
@@ -116,10 +145,37 @@ describe('Event API', () => {
     // @ts-ignore
     expect(attributeChangedCallback).to.have.been.called;
 
+    const attributeModifiedCallback = (e: MutationEvent) => {
+      expect(e.type).eqls(ElementEvent.ATTR_MODIFIED);
+      expect(e.attrChange).eqls(MutationEvent.MODIFICATION);
+      expect(e.attrName).eqls('r');
+      expect(e.prevValue).eqls(20);
+      expect(e.newValue).eqls(30);
+      expect(e.prevParsedValue).eqls({ unit: 'px', value: 20 });
+      expect(e.newParsedValue).eqls({ unit: 'px', value: 30 });
+    };
+    circle.addEventListener(ElementEvent.ATTR_MODIFIED, attributeModifiedCallback);
+
+    // use mutation observer
+    const config = { attributes: true, childList: true, subtree: true };
+    const observer = new MutationObserver((mutationsList, observer) => {
+      for (const mutation of mutationsList) {
+        if (mutation.type === 'attributes') {
+          expect(mutation.target).eqls(circle);
+          expect(mutation.attributeName).eqls('r');
+          expect(mutation.attributeNamespace).eqls('g');
+          expect(mutation.oldValue).to.be.null;
+        }
+      }
+    });
+    observer.observe(circle, config);
+
     // trigger attribute changed
     circle.attr('r', 30);
     // @ts-ignore
     expect(attributeChangedCallback).to.have.been.called;
+
+    await sleep(500);
   });
 
   it('should emit destroy event correctly', () => {
@@ -219,5 +275,201 @@ describe('Event API', () => {
     li1.emit('click', {});
     // @ts-ignore
     expect(callback).to.have.been.called;
+  });
+
+  it('should record childList mutations when appendChild correctly', () => {
+    const group1 = new Group();
+    const group2 = new Group();
+    const group3 = new Group();
+
+    canvas.appendChild(group1);
+
+    const observer = new MutationObserver(() => {});
+    observer.observe(group1, { childList: true });
+
+    group1.appendChild(group2);
+    group1.appendChild(group3);
+
+    const records = observer.takeRecords();
+    expect(records.length).to.eqls(2);
+
+    expect(records[0].type).to.eqls('childList');
+    expect(records[0].target).to.eqls(group1);
+    expect(records[0].addedNodes.length).to.eqls(1);
+    expect(records[0].addedNodes[0]).to.eqls(group2);
+
+    expect(records[1].type).to.eqls('childList');
+    expect(records[1].target).to.eqls(group1);
+    expect(records[1].addedNodes.length).to.eqls(1);
+    expect(records[1].addedNodes[0]).to.eqls(group3);
+    expect(records[1].previousSibling).to.eqls(group2);
+  });
+
+  it('should record childList mutations when removeChild correctly', () => {
+    const div = new Group();
+    const a = new Group();
+    const b = new Group();
+    const c = new Group();
+
+    canvas.appendChild(div);
+    div.appendChild(a);
+    div.appendChild(b);
+    div.appendChild(c);
+
+    const observer = new MutationObserver(() => {});
+    observer.observe(div, { childList: true });
+
+    div.removeChild(b);
+    div.removeChild(a);
+
+    const records = observer.takeRecords();
+    expect(records.length).to.eqls(2);
+
+    expect(records[0].type).to.eqls('childList');
+    expect(records[0].target).to.eqls(div);
+    expect(records[0].removedNodes.length).to.eqls(1);
+    expect(records[0].removedNodes[0]).to.eqls(b);
+    expect(records[0].nextSibling).to.eqls(c);
+    expect(records[0].previousSibling).to.eqls(a);
+
+    expect(records[1].type).to.eqls('childList');
+    expect(records[1].target).to.eqls(div);
+    expect(records[1].removedNodes.length).to.eqls(1);
+    expect(records[1].removedNodes[0]).to.eqls(a);
+    expect(records[1].nextSibling).to.eqls(c);
+  });
+
+  // @see https://github.com/googlearchive/MutationObservers/blob/master/test/childList.js#L137
+  it('should record childList mutations when removeChild correctly', () => {
+    const div = new Group();
+    const a = new Group();
+    const b = new Group();
+
+    canvas.appendChild(div);
+    const observer = new MutationObserver(() => {});
+    observer.observe(div, { childList: true });
+
+    div.appendChild(a);
+    div.insertBefore(b, a);
+    div.removeChild(b);
+
+    const records = observer.takeRecords();
+    expect(records.length).to.eqls(3);
+
+    expect(records[0].type).to.eqls('childList');
+    expect(records[0].target).to.eqls(div);
+    expect(records[0].addedNodes.length).to.eqls(1);
+    expect(records[0].addedNodes[0]).to.eqls(a);
+
+    expect(records[1].type).to.eqls('childList');
+    expect(records[1].target).to.eqls(div);
+    expect(records[1].addedNodes.length).to.eqls(1);
+    expect(records[1].addedNodes[0]).to.eqls(b);
+    expect(records[1].nextSibling).to.eqls(a);
+
+    expect(records[2].type).to.eqls('childList');
+    expect(records[2].target).to.eqls(div);
+    expect(records[2].removedNodes.length).to.eqls(1);
+    expect(records[2].removedNodes[0]).to.eqls(b);
+    expect(records[2].nextSibling).to.eqls(a);
+  });
+
+  it('should record childList but not subtree mutations correctly', () => {
+    const div = new Group();
+    const child = new Group();
+    const a = new Group();
+    const b = new Group();
+
+    canvas.appendChild(div);
+    div.appendChild(child);
+    const observer = new MutationObserver(() => {});
+    observer.observe(child, { childList: true });
+
+    child.appendChild(a);
+    child.insertBefore(b, a);
+    child.removeChild(b);
+
+    const records = observer.takeRecords();
+    expect(records.length).to.eqls(3);
+
+    expect(records[0].type).to.eqls('childList');
+    expect(records[0].target).to.eqls(child);
+    expect(records[0].addedNodes.length).to.eqls(1);
+    expect(records[0].addedNodes[0]).to.eqls(a);
+
+    expect(records[1].type).to.eqls('childList');
+    expect(records[1].target).to.eqls(child);
+    expect(records[1].addedNodes.length).to.eqls(1);
+    expect(records[1].addedNodes[0]).to.eqls(b);
+    expect(records[1].nextSibling).to.eqls(a);
+
+    expect(records[2].type).to.eqls('childList');
+    expect(records[2].target).to.eqls(child);
+    expect(records[2].removedNodes.length).to.eqls(1);
+    expect(records[2].removedNodes[0]).to.eqls(b);
+    expect(records[2].nextSibling).to.eqls(a);
+  });
+
+  it('should record childList & subtree mutations correctly', () => {
+    const div = new Group();
+    const child = new Group();
+    const a = new Group();
+    const b = new Group();
+
+    canvas.appendChild(div);
+    div.appendChild(child);
+    const observer = new MutationObserver(() => {});
+    observer.observe(div, {
+      childList: true,
+      subtree: true,
+    });
+    observer.observe(child, {
+      childList: true,
+    });
+
+    child.appendChild(a);
+    div.appendChild(b);
+
+    const records = observer.takeRecords();
+    expect(records.length).to.eqls(2);
+
+    expect(records[0].type).to.eqls('childList');
+    expect(records[0].target).to.eqls(child);
+    expect(records[0].addedNodes.length).to.eqls(1);
+    expect(records[0].addedNodes[0]).to.eqls(a);
+
+    expect(records[1].type).to.eqls('childList');
+    expect(records[1].target).to.eqls(div);
+    expect(records[1].addedNodes.length).to.eqls(1);
+    expect(records[1].addedNodes[0]).to.eqls(b);
+    expect(records[1].previousSibling).to.eqls(child);
+  });
+
+  it('should remove all children', () => {
+    const div = new Group();
+    const a = new Group();
+    const b = new Group();
+    const c = new Group();
+
+    canvas.appendChild(div);
+    div.appendChild(a);
+    div.appendChild(b);
+    div.appendChild(c);
+
+    const observer = new MutationObserver(() => {});
+    observer.observe(div, {
+      childList: true,
+    });
+
+    div.removeChildren();
+
+    const records = observer.takeRecords();
+    mergeRecords(records);
+
+    expect(addedNodes.length).to.eqls(0);
+    expect(removedNodes.length).to.eqls(3);
+    expect(removedNodes[0]).to.eqls(a);
+    expect(removedNodes[1]).to.eqls(b);
+    expect(removedNodes[2]).to.eqls(c);
   });
 });

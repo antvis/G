@@ -8,6 +8,7 @@ import {
   SceneGraphService,
   RenderingContext,
   ElementEvent,
+  MutationEvent,
   DisplayObject,
   CanvasEvent,
   SHAPE,
@@ -50,7 +51,7 @@ export class MatterJSPlugin implements RenderingPlugin {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
 
@@ -68,7 +69,7 @@ export class MatterJSPlugin implements RenderingPlugin {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
     });
@@ -120,33 +121,33 @@ export class MatterJSPlugin implements RenderingPlugin {
       }
     };
 
-    const handleAttributeChanged = (e: FederatedEvent) => {
+    const handleAttributeChanged = (e: MutationEvent) => {
       if (!this.engine) {
         return;
       }
       const object = e.target as DisplayObject;
-      const { attributeName, newValue } = e.detail;
+      const { attrName, newValue } = e;
       const body = this.bodies[object.entity];
 
       if (body) {
         const geometryAttributes = ['points', 'r', 'width', 'height', 'x1', 'y1', 'x2', 'y2'];
-        if (geometryAttributes.indexOf(attributeName) > -1) {
+        if (geometryAttributes.indexOf(attrName) > -1) {
           // need re-create body
-        } else if (attributeName === 'rigid') {
+        } else if (attrName === 'rigid') {
           Body.setStatic(body, newValue === 'static');
-        } else if (attributeName === 'velocity') {
+        } else if (attrName === 'velocity') {
           Body.setVelocity(body, { x: newValue[0], y: newValue[1] });
-        } else if (attributeName === 'angularVelocity') {
+        } else if (attrName === 'angularVelocity') {
           Body.setAngularVelocity(body, newValue);
-        } else if (attributeName === 'density') {
+        } else if (attrName === 'density') {
           Body.setDensity(body, newValue);
-        } else if (attributeName === 'friction') {
+        } else if (attrName === 'friction') {
           body.friction = newValue;
-        } else if (attributeName === 'frictionAir') {
+        } else if (attrName === 'frictionAir') {
           body.frictionAir = newValue;
-        } else if (attributeName === 'frictionStatic') {
+        } else if (attrName === 'frictionStatic') {
           body.frictionStatic = newValue;
-        } else if (attributeName === 'restitution') {
+        } else if (attrName === 'restitution') {
           body.restitution = newValue;
         }
       }

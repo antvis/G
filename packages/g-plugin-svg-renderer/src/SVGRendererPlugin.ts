@@ -4,19 +4,18 @@ import {
   ContextService,
   RenderingService,
   RenderingContext,
-  SceneGraphService,
   RenderingPlugin,
   RenderingPluginContribution,
   SHAPE,
   fromRotationTranslationScale,
   getEuler,
-  Renderable,
   DisplayObject,
   Camera,
   RENDER_REASON,
   PARSED_COLOR_TYPE,
   DefaultCamera,
   ElementEvent,
+  MutationEvent,
   FederatedEvent,
 } from '@antv/g';
 import type { LinearGradient, RadialGradient } from '@antv/g';
@@ -122,6 +121,8 @@ export const DEFAULT_VALUE_MAP: Record<string, string> = {
   strokeWidth: '0',
   strokeMiterLimit: '4',
   letterSpacing: '0',
+  fontSize: 'inherit',
+  fontFamily: 'inherit',
 };
 
 export type GradientParams = (LinearGradient | RadialGradient) & { type: PARSED_COLOR_TYPE };
@@ -141,9 +142,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
-
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
 
   @inject(ElementRendererFactory)
   private elementRendererFactory: (tagName: string) => ElementRenderer<any>;
@@ -170,11 +168,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
       this.removeSVGDom(object);
     };
 
-    const handleAttributeChanged = (e: FederatedEvent) => {
+    const handleAttributeChanged = (e: MutationEvent) => {
       const object = e.target as DisplayObject;
-      const { attributeName, newValue } = e.detail;
+      const { attrName, newValue } = e;
 
-      if (attributeName === 'zIndex') {
+      if (attrName === 'zIndex') {
         const parent = object.parentNode;
         // @ts-ignore
         const $groupEl = object.parentNode?.elementSVG?.$groupEl;
@@ -185,7 +183,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         }
       }
 
-      this.updateAttribute(object, attributeName, object.parsedStyle[attributeName]);
+      this.updateAttribute(object, attrName, object.parsedStyle[attrName]);
     };
 
     renderingService.hooks.init.tap(SVGRendererPlugin.tag, () => {
@@ -204,7 +202,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
     });
@@ -213,7 +211,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
     });

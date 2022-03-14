@@ -10,7 +10,8 @@ import Stats from 'stats.js';
  * inspired by sprite.js
  * @see http://spritejs.com/#/en/guide/d3
  *
- * ported from @see https://codesandbox.io/s/vllpx?file=/chart.js
+ * ported from fullstack-d3
+ * @see https://codesandbox.io/s/vllpx?file=/chart.js
  */
 
 // create a renderer
@@ -26,35 +27,37 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const width = 600;
-let dimensions = {
-  width: width,
-  height: width * 0.6,
-  margin: {
-    top: 30,
-    right: 10,
-    bottom: 50,
-    left: 50,
-  },
-};
-dimensions.boundedWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right;
-dimensions.boundedHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
-
-// create a group
-const container = d3
-  .select(
-    canvas.document.documentElement, // Canvas' document element
-  )
-  .append('g')
-  .attr('x', dimensions.margin.left)
-  .attr('y', dimensions.margin.top); // use G's Group
-
 const drawBars = async () => {
+  // 1. Access data
   const dataset = await d3.json(
     'https://gw.alipayobjects.com/os/bmw-prod/8e7cfeb6-28e5-4e78-8d16-c08468360f5f.json',
   );
   const metricAccessor = (d) => d.humidity;
   const yAccessor = (d) => d.length;
+
+  // 2. Create chart dimensions
+  const width = 600;
+  let dimensions = {
+    width: width,
+    height: width * 0.6,
+    margin: {
+      top: 30,
+      right: 10,
+      bottom: 50,
+      left: 50,
+    },
+  };
+  dimensions.boundedWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right;
+  dimensions.boundedHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
+
+  // 3. Draw canvas
+  const container = d3
+    .select(
+      canvas.document.documentElement, // use GCanvas' document element instead of a real DOM
+    )
+    .append('g')
+    .attr('x', dimensions.margin.left)
+    .attr('y', dimensions.margin.top);
 
   // 4. Create scales
 
@@ -80,7 +83,7 @@ const drawBars = async () => {
 
   const barPadding = 1;
   const barRects = binGroups
-    .append('rect') // use G's Rect
+    .append('rect')
     .attr('x', (d) => xScale(d.x0) + barPadding / 2)
     .attr('y', (d) => yScale(yAccessor(d)))
     .attr('width', (d) => d3.max([0, xScale(d.x1) - xScale(d.x0) - barPadding]))
