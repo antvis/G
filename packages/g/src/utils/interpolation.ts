@@ -218,6 +218,12 @@ const FORMAT_ATTR_MAP = {
   d: {
     alias: 'path',
   },
+  cx: {
+    alias: 'x',
+  },
+  cy: {
+    alias: 'y',
+  },
   strokeDasharray: {
     alias: 'lineDash',
   },

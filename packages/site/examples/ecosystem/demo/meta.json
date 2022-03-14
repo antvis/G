@@ -1,0 +1,36 @@
+{
+  "title": {
+    "zh": "生态",
+    "en": "Ecosystem"
+  },
+  "demos": [
+    {
+      "filename": "d3-barchart.js",
+      "title": {
+        "zh": "替换 D3 渲染层 - 柱状图",
+        "en": "Takeover D3's rendering layer"
+      }
+    },
+    {
+      "filename": "d3-linechart.js",
+      "title": {
+        "zh": "替换 D3 渲染层 - 折线图",
+        "en": "D3's Linechart"
+      }
+    },
+    {
+      "filename": "d3-scatterplot.js",
+      "title": {
+        "zh": "替换 D3 渲染层 - 散点图",
+        "en": "D3's Scatterplot"
+      }
+    },
+    {
+      "filename": "react-g.js",
+      "title": {
+        "zh": "ReactG",
+        "en": "ReactG"
+      }
+    }
+  ]
+}

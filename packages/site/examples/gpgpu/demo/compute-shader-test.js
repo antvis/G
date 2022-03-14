@@ -27,24 +27,24 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
   const kernel = new Kernel(device, {
     computeShader: `
-[[block]] struct Buffer {
+struct Buffer {
   data: array<i32>;
 };
-[[block]] struct AtomicBuffer {
+struct AtomicBuffer {
   data: array<atomic<i32>>;
 };
-[[block]] struct Params {
+struct Params {
   k: i32;
   center: vec2<i32>;
 };
 
-[[group(0), binding(0)]] var<storage, read_write> input : Buffer;
-[[group(0), binding(1)]] var<storage, read_write> output : AtomicBuffer;
-[[group(0), binding(2)]] var<uniform> params : Params;
+@binding(0) @group(0) var<storage, read_write> input : Buffer;
+@binding(1) @group(0) var<storage, read_write> output : AtomicBuffer;
+@binding(2) @group(0) var<uniform> params : Params;
 
-[[stage(compute), workgroup_size(8, 8)]]
+@stage(compute) @workgroup_size(8, 8)
 fn main(
-  [[builtin(global_invocation_id)]] global_id : vec3<u32>
+  @builtin(global_invocation_id) global_id : vec3<u32>
 ) {
   var index = global_id.x;
   if (index >= u32(4)) {

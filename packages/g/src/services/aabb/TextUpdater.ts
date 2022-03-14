@@ -11,7 +11,7 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   private textService: TextService;
 
   update(parsedStyle: ParsedTextStyleProps) {
-    const { text = '', textAlign, lineWidth = 0, textBaseline, x = 0, y = 0 } = parsedStyle;
+    const { text = '', textAlign, lineWidth = 0, textBaseline, x = 0, y = 0, dx, dy } = parsedStyle;
 
     const metrics = this.textService.measureText(text, parsedStyle);
     parsedStyle.metrics = metrics;
@@ -45,6 +45,13 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
       lineYOffset = 0;
     }
     // TODO: ideographic & bottom
+
+    if (dx && dx.unit === 'px') {
+      lineXOffset += dx.value;
+    }
+    if (dy && dy.unit === 'px') {
+      lineYOffset += dy.value;
+    }
 
     return {
       width: halfExtents[0] * 2,

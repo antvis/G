@@ -10,30 +10,50 @@ import type { ContextService } from '../services';
 
 /**
  * built-in events for element
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/MutationEvent
+ *
+ * TODO: use MutationObserver instead
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
  */
 export enum ElementEvent {
   DESTROY = 'destroy',
-  ATTRIBUTE_CHANGED = 'attribute-changed',
+
+  /**
+   * @see https://www.w3.org/TR/DOM-Level-3-Events/#event-type-DOMAttrModified
+   */
+  ATTR_MODIFIED = 'DOMAttrModified',
+
   /**
    * it has been inserted
+   * @see https://www.w3.org/TR/DOM-Level-3-Events/#event-type-DOMNodeInserted
    */
-  INSERTED = 'inserted',
+  INSERTED = 'DOMNodeInserted',
+
   /**
    * it has had a child inserted
    */
   CHILD_INSERTED = 'child-inserted',
+
   /**
-   * it has been removed
+   * it is being removed
+   * @see https://www.w3.org/TR/DOM-Level-3-Events/#event-type-DOMNodeRemoved
    */
   REMOVED = 'removed',
+
   /**
    * it has had a child removed
    */
   CHILD_REMOVED = 'child-removed',
 
-  MOUNTED = 'mounted',
+  /**
+   * @see https://www.w3.org/TR/DOM-Level-3-Events/#domnodeinsertedintodocument
+   */
+  MOUNTED = 'DOMNodeInsertedIntoDocument',
 
-  UNMOUNTED = 'unmounted',
+  /**
+   * @see https://www.w3.org/TR/DOM-Level-3-Events/#domnoderemovedfromdocument
+   */
+  UNMOUNTED = 'DOMNodeRemovedFromDocument',
 
   BOUNDS_CHANGED = 'bounds-changed',
 

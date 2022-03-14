@@ -11,6 +11,7 @@ export class CircleUpdater implements GeometryAABBUpdater<ParsedCircleStyleProps
 
     let width = 0;
     let height = 0;
+    // absolute unit
     if (unit === '' || unit === 'px') {
       width = value * 2;
       height = value * 2;

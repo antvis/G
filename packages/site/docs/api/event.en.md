@@ -56,7 +56,7 @@ Mouse 系列：
 -   rightup 鼠标右键抬起
 -   mouseupoutside 鼠标左键抬起时与按下时图形不同
 -   rightupoutside 鼠标右键抬起与按下时图形不同
--   click 单击 & 双击
+-   click 单击 & 双击 [如何区分?](/zh/docs/api/event#鼠标双击事件)
 -   mousemove 鼠标持续在该图形上移动
 -   mouseover 鼠标从该图形上移入，会冒泡
 -   mouseout 鼠标从该图形上移出，会冒泡
@@ -70,7 +70,6 @@ Touch 系列：
 -   touchend
 -   touchendoutside
 -   touchmove
--   tap
 
 ## 场景图事件
 
@@ -92,7 +91,7 @@ canvas.addEventListener(ElementEvent.MOUNTED, (e) => {
 -   REMOVED 作为子节点被移除时触发
 -   MOUNTED 首次进入画布时触发
 -   UNMOUNTED 从画布中移除时触发
--   ATTRIBUTE_CHANGED 修改属性时触发
+-   ATTR_MODIFIED 修改属性时触发
 -   DESTROY 销毁时触发
 
 在下面的例子中，画布监听 INSERTED REMOVED MOUNTED 和 UNMOUNTED 事件。在加入、移除场景图时，以下事件会依次触发：

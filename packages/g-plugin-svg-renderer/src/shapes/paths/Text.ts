@@ -24,14 +24,6 @@ const BASELINE_MAP_FOR_FIREFOX: Record<string, string> = {
   hanging: 'hanging',
 };
 
-const ANCHOR_MAP: Record<string, string> = {
-  left: 'left',
-  start: 'left',
-  center: 'middle',
-  right: 'end',
-  end: 'end',
-};
-
 @singleton()
 export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
   dependencies = [
@@ -44,7 +36,6 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
     'fontVariant',
     'lineHeight',
     'letterSpacing',
-    // 'padding',
     'wordWrap',
     'wordWrapWidth',
     'leading',
@@ -52,10 +43,12 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
     'textAlign',
     'textTransform',
     'whiteSpace',
+    'dx',
+    'dy',
   ];
 
   apply($el: SVGElement, parsedStyle: ParsedTextStyleProps) {
-    const { textAlign, textBaseline, lineCap, lineJoin, lineWidth = 0, metrics } = parsedStyle;
+    const { textBaseline, lineWidth = 0, metrics, dx, dy } = parsedStyle;
 
     const browser = detect();
     if (browser && browser.name === 'firefox') {
@@ -69,13 +62,12 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
       $el.setAttribute('alignment-baseline', BASELINE_MAP[textBaseline!]);
     }
 
-    $el.setAttribute('text-anchor', ANCHOR_MAP[textAlign!]);
     $el.setAttribute('paint-order', 'stroke');
-    $el.setAttribute('style', `stroke-linecap:${lineCap}; stroke-linejoin:${lineJoin};`);
-
     const { lines, lineHeight, height } = metrics;
 
     const lineNum = lines.length;
+
+    $el.setAttribute('style', `transform:translate(${dx.value}${dx.unit}, ${dy.value}${dy.unit});`);
 
     if (lineNum === 1) {
       $el.innerHTML = lines[0];

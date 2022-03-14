@@ -47,22 +47,22 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   const device = renderer.getDevice();
   const kernel = new Kernel(device, {
     computeShader: `
-[[block]] struct Buffer {
+struct Buffer {
   data: array<i32>;
 };
-[[block]] struct AtomicBuffer {
+struct AtomicBuffer {
   data: array<atomic<i32>>;
 };
 
-[[group(0), binding(0)]] var<storage, read> d_in_E : Buffer;
-[[group(0), binding(1)]] var<storage, read> d_in_I : Buffer;
-[[group(0), binding(2)]] var<storage, read> d_in_W : Buffer;
-[[group(0), binding(3)]] var<storage, read> d_out_D : Buffer;
-[[group(0), binding(4)]] var<storage, read_write> d_out_Di : AtomicBuffer;
+@group(0) @binding(0) var<storage, read> d_in_E : Buffer;
+@group(0) @binding(1) var<storage, read> d_in_I : Buffer;
+@group(0) @binding(2) var<storage, read> d_in_W : Buffer;
+@group(0) @binding(3) var<storage, read> d_out_D : Buffer;
+@group(0) @binding(4) var<storage, read_write> d_out_Di : AtomicBuffer;
 
-[[stage(compute), workgroup_size(${BLOCKS}, ${BLOCK_SIZE})]]
+@stage(compute) @workgroup_size(${BLOCKS}, ${BLOCK_SIZE})
 fn main(
-  [[builtin(global_invocation_id)]] global_id : vec3<u32>
+  @builtin(global_invocation_id) global_id : vec3<u32>
 ) {
   var index = global_id.x;
   if (index < ${V.length}u) {
@@ -85,16 +85,16 @@ fn main(
 
   const updateDistanceKernel = new Kernel(device, {
     computeShader: `
-[[block]] struct Buffer {
+struct Buffer {
   data: array<i32>;
 };
 
-[[group(0), binding(0)]] var<storage, read_write> d_out_D : Buffer;
-[[group(0), binding(1)]] var<storage, read_write> d_out_Di : Buffer;
+@group(0) @binding(0) var<storage, read_write> d_out_D : Buffer;
+@group(0) @binding(1) var<storage, read_write> d_out_Di : Buffer;
 
-[[stage(compute), workgroup_size(${BLOCKS}, ${BLOCK_SIZE})]]
+@stage(compute) @workgroup_size(${BLOCKS}, ${BLOCK_SIZE})
 fn main(
-  [[builtin(global_invocation_id)]] global_id : vec3<u32>
+  @builtin(global_invocation_id) global_id : vec3<u32>
 ) {
   var index = global_id.x;
   if (index < ${V.length}u) {
@@ -109,23 +109,23 @@ fn main(
 
   const updatePredKernel = new Kernel(device, {
     computeShader: `
-[[block]] struct Buffer {
+struct Buffer {
   data: array<i32>;
 };
-[[block]] struct AtomicBuffer {
+struct AtomicBuffer {
   data: array<atomic<i32>>;
 };
 
-[[group(0), binding(0)]] var<storage, read> d_in_V : Buffer;
-[[group(0), binding(1)]] var<storage, read> d_in_E : Buffer;
-[[group(0), binding(2)]] var<storage, read> d_in_I : Buffer;
-[[group(0), binding(3)]] var<storage, read> d_in_W : Buffer;
-[[group(0), binding(4)]] var<storage, read> d_out_D : Buffer;
-[[group(0), binding(5)]] var<storage, read_write> d_out_P : AtomicBuffer;
+@group(0) @binding(0) var<storage, read> d_in_V : Buffer;
+@group(0) @binding(1) var<storage, read> d_in_E : Buffer;
+@group(0) @binding(2) var<storage, read> d_in_I : Buffer;
+@group(0) @binding(3) var<storage, read> d_in_W : Buffer;
+@group(0) @binding(4) var<storage, read> d_out_D : Buffer;
+@group(0) @binding(5) var<storage, read_write> d_out_P : AtomicBuffer;
 
-[[stage(compute), workgroup_size(${BLOCKS}, ${BLOCK_SIZE})]]
+@stage(compute) @workgroup_size(${BLOCKS}, ${BLOCK_SIZE})
 fn main(
-  [[builtin(global_invocation_id)]] global_id : vec3<u32>
+  @builtin(global_invocation_id) global_id : vec3<u32>
 ) {
   var index = global_id.x;
   if (index < ${V.length}u) {

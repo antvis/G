@@ -1,4 +1,4 @@
-import { ElementEvent } from '@antv/g';
+import { ElementEvent, MutationEvent } from '@antv/g';
 import { EventEmitter } from 'eventemitter3';
 import { Mesh } from '../Mesh';
 import {
@@ -205,9 +205,21 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
 
     // trigger re-render
     this.meshes.forEach((mesh) => {
-      mesh.emit(ElementEvent.ATTRIBUTE_CHANGED, {
-        attributeName: 'geometry',
-      });
+      // mesh.emit(ElementEvent.ATTR_MODIFIED, {
+      //   attributeName: 'geometry',
+      // });
+      mesh.dispatchEvent(
+        new MutationEvent(
+          ElementEvent.ATTR_MODIFIED,
+          mesh,
+          null,
+          null,
+          'geometry',
+          MutationEvent.MODIFICATION,
+          null,
+          null,
+        ),
+      );
     });
   }
 

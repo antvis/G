@@ -4,16 +4,19 @@ import { rad2deg } from '../utils/math';
 import { isFinite } from '@antv/util';
 import { AABB } from '../shapes';
 
-export type LengthUnit = 'px' | '%';
+export type LengthUnit = 'px' | '%' | 'em';
 export type AngleUnit = 'deg' | 'rad' | 'turn';
-export type Unit = LengthUnit | AngleUnit | '' | 'auto';
+export type Unit = LengthUnit | AngleUnit | '';
 export interface ParsedElement {
   unit: Unit;
+  /**
+   * absolute value in pixels
+   */
   value: number;
 }
 
 function isLengthUnit(unit: string) {
-  return unit === 'px' || unit === '%';
+  return unit === 'px' || unit === '%' || unit === 'em';
 }
 
 function isAngleUnit(unit: string) {
@@ -31,13 +34,19 @@ export function parseDimension(unitRegExp: RegExp, string: string): ParsedElemen
       // 0 -> 0%
       return { unit: '%', value: 0 };
     }
-  } else if (string === 'auto') {
-    return { unit: 'auto', value: 0 };
+  } else if (string === 'auto' || string === 'inherit') {
+    return { unit: '', value: 0 };
   }
 
   if (isFinite(Number(string))) {
-    return { unit: '', value: Number(string) };
+    if ('px'.search(unitRegExp) >= 0) {
+      return { unit: 'px', value: Number(string) };
+    } else {
+      return { unit: '', value: Number(string) };
+    }
   }
+
+  // if (string.endsWith('em')) {}
 
   const matchedUnits: Unit[] = [];
   string = string.replace(unitRegExp, (match: string) => {
@@ -97,7 +106,10 @@ export function mergeDimensions(
 
 const lengthUnits = 'px';
 export const parseLength = parseDimension.bind(null, new RegExp(lengthUnits, 'g'));
-export const parseLengthOrPercent = parseDimension.bind(null, new RegExp(lengthUnits + '|%', 'g'));
+export const parseLengthOrPercent = parseDimension.bind(
+  null,
+  new RegExp(lengthUnits + '|%|em', 'g'),
+);
 export const parseAngle = parseDimension.bind(null, /deg|rad|grad|turn/g);
 
 export function parseLengthOrPercentList(list: (string | number)[]): ParsedElement[] {

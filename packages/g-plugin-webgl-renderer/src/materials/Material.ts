@@ -1,4 +1,4 @@
-import { ElementEvent, Tuple4Number } from '@antv/g';
+import { ElementEvent, MutationEvent, Tuple4Number } from '@antv/g';
 import { isNil } from '@antv/util';
 import { Mesh } from '../Mesh';
 import {
@@ -392,9 +392,21 @@ export abstract class Material<T extends IMaterial = any> {
 
     // trigger re-render
     this.meshes.forEach((mesh) => {
-      mesh.emit(ElementEvent.ATTRIBUTE_CHANGED, {
-        attributeName: 'material',
-      });
+      // mesh.emit(ElementEvent.ATTR_MODIFIED, {
+      //   attributeName: 'material',
+      // });
+      mesh.dispatchEvent(
+        new MutationEvent(
+          ElementEvent.ATTR_MODIFIED,
+          mesh,
+          null,
+          null,
+          'material',
+          MutationEvent.MODIFICATION,
+          null,
+          null,
+        ),
+      );
     });
   }
 }

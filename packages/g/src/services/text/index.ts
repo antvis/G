@@ -110,7 +110,7 @@ export class TextService {
     context.textBaseline = 'alphabetic';
     context.fillStyle = '#000';
     context.fillText(metricsString, 0, baseline);
-    const imagedata = context.getImageData(0, 0, width, height).data;
+    const imagedata = context.getImageData(0, 0, width || 1, height || 1).data;
     const pixels = imagedata.length;
     const line = width * 4;
     let i = 0;
@@ -173,8 +173,8 @@ export class TextService {
     // fallback in case UA disallow canvas data extraction
     // (toDataURI, getImageData functions)
     if (fontProperties.fontSize === 0) {
-      fontProperties.fontSize = fontSize.value;
-      fontProperties.ascent = fontSize.value;
+      fontProperties.fontSize = fontSize.value as number;
+      fontProperties.ascent = fontSize.value as number;
     }
 
     const context = this.offscreenCanvas.getOrCreateContext();
