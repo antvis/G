@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import * as ManaSyringe from 'mana-syringe';
 import { containerModule as globalModule, globalContainer } from './global-module';
 
