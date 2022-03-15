@@ -51,13 +51,13 @@ const drawBars = async () => {
   dimensions.boundedHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
 
   // 3. Draw canvas
-  const container = d3
-    .select(
-      canvas.document.documentElement, // use GCanvas' document element instead of a real DOM
-    )
+  const wrapper = d3.select(
+    canvas.document.documentElement, // use GCanvas' document element instead of a real DOM
+  );
+
+  const bounds = wrapper
     .append('g')
-    .attr('x', dimensions.margin.left)
-    .attr('y', dimensions.margin.top);
+    .style('transform', `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`);
 
   // 4. Create scales
 
@@ -78,7 +78,7 @@ const drawBars = async () => {
     .nice();
 
   // 5. Draw data
-  const binsGroup = container.append('g');
+  const binsGroup = bounds.append('g');
   const binGroups = binsGroup.selectAll('g').data(bins).join('g').attr('class', 'bin');
 
   const barPadding = 1;
@@ -88,7 +88,13 @@ const drawBars = async () => {
     .attr('y', (d) => yScale(yAccessor(d)))
     .attr('width', (d) => d3.max([0, xScale(d.x1) - xScale(d.x0) - barPadding]))
     .attr('height', (d) => dimensions.boundedHeight - yScale(yAccessor(d)))
-    .attr('fill', 'cornflowerblue');
+    .attr('fill', 'cornflowerblue')
+    .on('mouseenter', function (e) {
+      d3.select(e.target).attr('fill', 'red');
+    })
+    .on('mouseleave', function (e) {
+      d3.select(e.target).attr('fill', 'cornflowerblue');
+    });
 
   const barText = binGroups
     .filter(yAccessor)
@@ -102,7 +108,7 @@ const drawBars = async () => {
     .style('font-family', 'sans-serif');
 
   const mean = d3.mean(dataset, metricAccessor);
-  const meanLine = container
+  const meanLine = bounds
     .append('line')
     .attr('x1', xScale(mean))
     .attr('x2', xScale(mean))
@@ -112,7 +118,7 @@ const drawBars = async () => {
     .attr('stroke', 'maroon')
     .attr('stroke-dasharray', '2px 4px');
 
-  const meanLabel = container
+  const meanLabel = bounds
     .append('text')
     .attr('x', xScale(mean))
     .attr('y', -20)
@@ -124,7 +130,7 @@ const drawBars = async () => {
   // 6. Draw peripherals
   const xAxisGenerator = d3.axisBottom().scale(xScale);
 
-  const xAxis = container
+  const xAxis = bounds
     .append('g')
     .call(xAxisGenerator)
     .attr('transform', `translateY(${dimensions.boundedHeight}px)`)
