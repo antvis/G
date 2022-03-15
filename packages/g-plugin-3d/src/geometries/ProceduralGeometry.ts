@@ -1,14 +1,14 @@
 import {
   Format,
   BufferGeometry,
+  VertexAttributeBufferIndex,
   VertexBufferFrequency,
   VertexAttributeLocation,
-  Mesh,
 } from '@antv/g-plugin-webgl-renderer';
 import { mat4, vec3, vec4 } from 'gl-matrix';
 
-export enum ProceduralGeometryAttributeLocation {
-  POSITION = 1,
+export enum ProceduralGeometryAttributeBufferIndex {
+  POSITION = VertexAttributeBufferIndex.MAX,
   NORMAL,
   UV,
   MAX,
@@ -45,7 +45,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
     }
 
     this.updateVertexBuffer(
-      ProceduralGeometryAttributeLocation.POSITION,
+      ProceduralGeometryAttributeBufferIndex.POSITION,
       VertexAttributeLocation.MAX,
       0,
       new Uint8Array(positions.buffer),
@@ -69,7 +69,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
     }
 
     this.updateVertexBuffer(
-      ProceduralGeometryAttributeLocation.NORMAL,
+      ProceduralGeometryAttributeBufferIndex.NORMAL,
       VertexAttributeLocation.MAX + 1,
       0,
       new Uint8Array(normals.buffer),
@@ -86,8 +86,8 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
   }
 
   applyMat4(mat: mat4) {
-    this.applyMa4Position(mat, this.vertices[ProceduralGeometryAttributeLocation.POSITION]);
-    this.applyMa4Normal(mat, this.vertices[ProceduralGeometryAttributeLocation.NORMAL]);
+    this.applyMa4Position(mat, this.vertices[ProceduralGeometryAttributeBufferIndex.POSITION]);
+    this.applyMa4Normal(mat, this.vertices[ProceduralGeometryAttributeBufferIndex.NORMAL]);
     // transform tangent
   }
 
@@ -101,7 +101,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
     this.setIndexBuffer(new Uint32Array(indices));
     this.vertexCount = indices.length;
     this.setVertexBuffer({
-      bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
+      bufferIndex: ProceduralGeometryAttributeBufferIndex.POSITION,
       byteStride: 4 * 3,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
@@ -114,7 +114,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
       data: Float32Array.from(positions),
     });
     this.setVertexBuffer({
-      bufferIndex: ProceduralGeometryAttributeLocation.NORMAL,
+      bufferIndex: ProceduralGeometryAttributeBufferIndex.NORMAL,
       byteStride: 4 * 3,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
@@ -127,7 +127,7 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
       data: Float32Array.from(normals),
     });
     this.setVertexBuffer({
-      bufferIndex: ProceduralGeometryAttributeLocation.UV,
+      bufferIndex: ProceduralGeometryAttributeBufferIndex.UV,
       byteStride: 4 * 2,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [

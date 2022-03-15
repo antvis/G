@@ -5,6 +5,13 @@
   },
   "demos": [
     {
+      "filename": "point.js",
+      "title": {
+        "zh": "点",
+        "en": "Point"
+      }
+    },
+    {
       "filename": "plane.js",
       "title": {
         "zh": "平面",

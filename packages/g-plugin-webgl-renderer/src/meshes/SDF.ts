@@ -10,12 +10,12 @@ import { injectable } from 'mana-syringe';
 import { Format, VertexBufferFrequency } from '../platform';
 import vert from '../shader/sdf.vert';
 import frag from '../shader/sdf.frag';
-import { Instanced, InstancedVertexAttributeBufferIndex } from './Instanced';
+import { Instanced, VertexAttributeBufferIndex } from './Instanced';
 import { VertexAttributeLocation } from '../geometries';
 import { enumToObject } from '../utils/enum';
 
 enum SDFVertexAttributeBufferIndex {
-  EXTRUDE_UV = InstancedVertexAttributeBufferIndex.MAX,
+  EXTRUDE_UV = VertexAttributeBufferIndex.MAX,
   SIZE,
   PACKED_STYLE3,
 }

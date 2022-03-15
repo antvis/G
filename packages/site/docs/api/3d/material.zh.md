@@ -277,6 +277,18 @@ material.setUniform({
 
 # 内置材质
 
+## PointMaterial
+
+使用 Point 原语绘制。[示例](/zh/examples/3d#point)
+
+### size
+
+默认值为 1。例如 WebGL 有最大值限制 `gl.ALIASED_POINT_SIZE_RANGE`。
+
+### map
+
+贴图。
+
 ## MeshBasicMaterial
 
 和 Three.js 保持一致：https://threejs.org/docs/#api/en/materials/MeshBasicMaterial
@@ -317,8 +329,11 @@ void main() {
 漫反射贴图，例如：
 
 ```js
+const map = renderer.loadTexture(
+    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
+);
 const basicMaterial = new MeshBasicMaterial({
-    map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
+    map,
 });
 ```
 
