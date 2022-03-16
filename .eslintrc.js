@@ -10,6 +10,13 @@ module.exports = {
     '@typescript-eslint/no-parameter-properties': 0,
     'no-param-reassign': 0,
     'no-redeclare': 'off',
+    '@typescript-eslint/no-invalid-this': 0,
     '@typescript-eslint/no-redeclare': ['error'],
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        args: 'none',
+      },
+    ],
   },
 };
