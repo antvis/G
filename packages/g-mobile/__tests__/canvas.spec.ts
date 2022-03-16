@@ -9,6 +9,7 @@ describe('canvas', () => {
     const renderer = new Renderer();
     const canvas = new Canvas({
       context,
+      devicePixelRatio: 2,
       renderer,
     });
 
@@ -28,20 +29,20 @@ describe('canvas', () => {
 
     canvas.appendChild(circle);
 
-    canvas.addEventListener('touchstart', (e) => {
+    circle.addEventListener('touchstart', (e) => {
       console.log('touchstart');
     });
-    canvas.addEventListener('touchend', (e) => {
+    circle.addEventListener('touchend', (e) => {
       console.log('touchend');
     });
-    canvas.addEventListener('touchmove', (e) => {
+    circle.addEventListener('touchmove', (e) => {
       console.log('touchmove');
     });
 
-    canvas.addEventListener('click', (e) => {
+    circle.addEventListener('click', (e) => {
       console.log('click');
     });
-    canvas.addEventListener('mouseover', (e) => {
+    circle.addEventListener('mouseover', (e) => {
       console.log('mouseover');
     });
   });

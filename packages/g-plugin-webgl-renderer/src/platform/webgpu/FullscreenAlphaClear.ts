@@ -45,7 +45,9 @@ fn fs() -> FragmentOutput {
   render(device: GPUDevice, onscreenTexture: GPUTextureView): void {
     const encoder = device.createCommandEncoder();
     const renderPass = encoder.beginRenderPass({
-      colorAttachments: [{ view: onscreenTexture, loadValue: 'load', storeOp: 'store' }],
+      colorAttachments: [
+        { view: onscreenTexture, loadOp: 'load', loadValue: 'load', storeOp: 'store' },
+      ],
     });
     renderPass.setPipeline(this.pipeline);
     renderPass.draw(3);

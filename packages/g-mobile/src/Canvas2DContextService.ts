@@ -50,22 +50,6 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   }
 
   resize(width: number, height: number) {
-    if (this.$canvas) {
-      // set canvas width & height
-      this.$canvas.width = this.dpr * width;
-      this.$canvas.height = this.dpr * height;
-
-      // TODO: 小程序环境设置 canvas 的 width & height
-      this.changeSize(width, height);
-
-      const dpr = this.getDPR();
-      // scale all drawing operations by the dpr
-      // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
-      this.context.scale(dpr, dpr);
-    }
-  }
-
-  changeSize(width, height) {
     const pixelRatio = devicePixelRatio;
     const canvasDOM = this.$canvas; // HTMLCanvasElement or canvasElement
 

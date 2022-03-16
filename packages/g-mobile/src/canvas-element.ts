@@ -30,6 +30,10 @@ class CanvasElement {
       right: width,
       bottom: height,
       left: 0,
+      width,
+      height,
+      x: 0,
+      y: 0,
     };
   }
 
@@ -76,7 +80,7 @@ export default {
     if (supportEventListener(ctx.canvas)) {
       return ctx.canvas;
     }
-    // @ts-ignore
-    return new CanvasElement(ctx);
+
+    return new CanvasElement(ctx) as unknown as HTMLCanvasElement;
   },
 };
