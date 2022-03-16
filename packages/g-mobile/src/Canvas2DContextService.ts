@@ -1,5 +1,6 @@
 import { CanvasConfig, ContextService } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
+import { isCanvasElement } from './dom';
 
 @singleton({ token: ContextService })
 export class Canvas2DContextService implements ContextService<CanvasRenderingContext2D> {
@@ -44,22 +45,27 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
 
   destroy() {
     // TODO: 小程序环境销毁 context
+    this.context = null;
+    this.$canvas = null;
   }
 
   resize(width: number, height: number) {
-    if (this.$canvas) {
-      // set canvas width & height
-      this.$canvas.width = this.dpr * width;
-      this.$canvas.height = this.dpr * height;
+    const pixelRatio = devicePixelRatio;
+    const canvasDOM = this.$canvas; // HTMLCanvasElement or canvasElement
 
-      // TODO: 小程序环境设置 canvas 的 width & height
-      // set CSS style width & height
-      // setDOMSize(this.$canvas, width, height);
+    // 浏览器环境设置style样式
+    if (canvasDOM.style) {
+      canvasDOM.style.width = width + 'px';
+      canvasDOM.style.height = height + 'px';
+    }
 
-      const dpr = this.getDPR();
-      // scale all drawing operations by the dpr
-      // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
-      this.context.scale(dpr, dpr);
+    if (isCanvasElement(canvasDOM)) {
+      canvasDOM.width = width * pixelRatio;
+      canvasDOM.height = height * pixelRatio;
+
+      if (pixelRatio !== 1) {
+        this.context.scale(pixelRatio, pixelRatio);
+      }
     }
   }
 

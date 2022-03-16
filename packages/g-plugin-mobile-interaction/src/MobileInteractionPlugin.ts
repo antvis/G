@@ -1,7 +1,6 @@
 import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from '@antv/g';
 import { ContextService, RenderingPluginContribution } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-
 /**
  * listen to mouse/touch/pointer events on DOM wrapper, trigger pointer events
  */
@@ -13,18 +12,20 @@ export class MobileInteractionPlugin implements RenderingPlugin {
   private contextService: ContextService<CanvasRenderingContext2D>;
 
   apply(renderingService: RenderingService) {
-    const onPointerMove = (ev: InteractivePointerEvent) => {
-      // 触发 G 定义的标准 pointerMove 事件
-      renderingService.hooks.pointerMove.call(ev);
-    };
-
-    const onPointerUp = (ev: InteractivePointerEvent) => {
-      // 触发 G 定义的标准 pointerUp 事件
-      renderingService.hooks.pointerUp.call(ev);
-    };
+    // 获取小程序上下文
+    const canvasEl = this.contextService.getDomElement();
 
     const onPointerDown = (ev: InteractivePointerEvent) => {
       renderingService.hooks.pointerDown.call(ev);
+    };
+
+    const onPointerUp = (ev: InteractivePointerEvent) => {
+      renderingService.hooks.pointerUp.call(ev);
+    };
+
+    const onPointerMove = (ev: InteractivePointerEvent) => {
+      // 触发 G 定义的标准 pointerMove 事件
+      renderingService.hooks.pointerMove.call(ev);
     };
 
     const onPointerOver = (ev: InteractivePointerEvent) => {
@@ -35,75 +36,30 @@ export class MobileInteractionPlugin implements RenderingPlugin {
       renderingService.hooks.pointerOut.call(ev);
     };
 
-    // TODO: 移动端应该无需滚轮事件？
-    // const onPointerWheel = (ev: InteractivePointerEvent) => {
-    //   renderingService.hooks.pointerWheel.call(ev);
-    // };
-
     renderingService.hooks.init.tap(MobileInteractionPlugin.tag, () => {
-      // 获取小程序上下文
-      const context = this.contextService.getContext();
-
       // 基于小程序上下文的事件监听方式，绑定事件监听，可以参考下面基于 DOM 的方式
+      canvasEl.addEventListener('touchstart', onPointerDown, true);
+      canvasEl.addEventListener('touchend', onPointerUp, true);
+      canvasEl.addEventListener('touchmove', onPointerMove, true);
 
-      // if (supportsPointerEvents) {
-      //   self.document.addEventListener('pointermove', onPointerMove, true);
-      //   $el.addEventListener('pointerdown', onPointerDown, true);
-      //   $el.addEventListener('pointerleave', onPointerOut, true);
-      //   $el.addEventListener('pointerover', onPointerOver, true);
-      //   self.addEventListener('pointerup', onPointerUp, true);
-      // } else {
-      //   self.document.addEventListener('mousemove', onPointerMove, true);
-      //   $el.addEventListener('mousedown', onPointerDown, true);
-      //   $el.addEventListener('mouseout', onPointerOut, true);
-      //   $el.addEventListener('mouseover', onPointerOver, true);
-      //   self.addEventListener('mouseup', onPointerUp, true);
-      // }
-
-      // always look directly for touch events so that we can provide original data
-      // In a future version we should change this to being just a fallback and rely solely on
-      // PointerEvents whenever available
-      // if (supportsTouchEvents) {
-      //   $el.addEventListener('touchstart', onPointerDown, true);
-      //   $el.addEventListener('touchend', onPointerUp, true);
-      //   $el.addEventListener('touchmove', onPointerMove, true);
-      // }
-
-      // // use passive event listeners
-      // // @see https://zhuanlan.zhihu.com/p/24555031
-      // $el.addEventListener('wheel', onPointerWheel, {
-      //   passive: true,
-      //   capture: true,
-      // });
+      canvasEl.addEventListener('mousemove', onPointerMove, true);
+      canvasEl.addEventListener('mousedown', onPointerDown, true);
+      canvasEl.addEventListener('mouseout', onPointerOut, true);
+      canvasEl.addEventListener('mouseover', onPointerOver, true);
+      canvasEl.addEventListener('mouseup', onPointerUp, true);
     });
 
     renderingService.hooks.destroy.tap(MobileInteractionPlugin.tag, () => {
-      // 获取小程序上下文
-      const context = this.contextService.getContext();
-
       // 基于小程序上下文的事件监听方式，移除事件监听
+      canvasEl.removeEventListener('touchstart', onPointerDown, true);
+      canvasEl.removeEventListener('touchend', onPointerUp, true);
+      canvasEl.removeEventListener('touchmove', onPointerMove, true);
 
-      // if (supportsPointerEvents) {
-      //   self.document.removeEventListener('pointermove', onPointerMove, true);
-      //   $el.removeEventListener('pointerdown', onPointerDown, true);
-      //   $el.removeEventListener('pointerleave', onPointerOut, true);
-      //   $el.removeEventListener('pointerover', onPointerOver, true);
-      //   self.removeEventListener('pointerup', onPointerUp, true);
-      // } else {
-      //   self.document.removeEventListener('mousemove', onPointerMove, true);
-      //   $el.removeEventListener('mousedown', onPointerDown, true);
-      //   $el.removeEventListener('mouseout', onPointerOut, true);
-      //   $el.removeEventListener('mouseover', onPointerOver, true);
-      //   self.removeEventListener('mouseup', onPointerUp, true);
-      // }
-
-      // if (supportsTouchEvents) {
-      //   $el.removeEventListener('touchstart', onPointerDown, true);
-      //   $el.removeEventListener('touchend', onPointerUp, true);
-      //   $el.removeEventListener('touchmove', onPointerMove, true);
-      // }
-
-      // $el.removeEventListener('wheel', onPointerWheel, true);
+      canvasEl.removeEventListener('mousemove', onPointerMove, true);
+      canvasEl.removeEventListener('mousedown', onPointerDown, true);
+      canvasEl.removeEventListener('mouseout', onPointerOut, true);
+      canvasEl.removeEventListener('mouseover', onPointerOver, true);
+      canvasEl.removeEventListener('mouseup', onPointerUp, true);
     });
   }
 }
