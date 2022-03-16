@@ -254,10 +254,8 @@ export class EventService extends EventEmitter {
 
       clickEvent.detail = clickHistory.clickCount;
 
-      if (clickEvent.pointerType === 'mouse') {
+      if (clickEvent.pointerType === 'mouse' || clickEvent.pointerType === 'touch') {
         this.dispatchEvent(clickEvent, 'click');
-      } else if (clickEvent.pointerType === 'touch') {
-        this.dispatchEvent(clickEvent, 'tap');
       } else {
         this.dispatchEvent(clickEvent, 'pointertap');
       }

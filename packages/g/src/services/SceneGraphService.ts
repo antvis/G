@@ -9,6 +9,7 @@ import { SceneGraphSelectorFactory } from './SceneGraphSelector';
 import type { IChildNode, IElement, INode, IParentNode } from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
 import type { Element } from '../dom';
+import { MutationEvent } from '../dom/MutationEvent';
 
 export function sortByZIndex(o1: IElement, o2: IElement) {
   const zIndex1 = Number(o1.style.zIndex);
@@ -679,11 +680,24 @@ export class DefaultSceneGraphService implements SceneGraphService {
       }
 
       // model matrix changed
-      element.emit(ElementEvent.ATTRIBUTE_CHANGED, {
-        attributeName: 'modelMatrix',
-        oldValue: null,
-        newValue: null,
-      });
+      // element.emit(ElementEvent.ATTR_MODIFIED, {
+      //   attributeName: 'modelMatrix',
+      //   oldValue: null,
+      //   newValue: null,
+      // });
+
+      element.dispatchEvent(
+        new MutationEvent(
+          ElementEvent.ATTR_MODIFIED,
+          element as IElement,
+          null,
+          null,
+          'modelMatrix',
+          MutationEvent.MODIFICATION,
+          null,
+          null,
+        ),
+      );
     }
   }
 

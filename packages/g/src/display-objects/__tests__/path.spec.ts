@@ -88,6 +88,22 @@ describe('Path', () => {
     expect(point.y).eqls(0);
   });
 
+  it('should use `d` property in path correctly', () => {
+    const pathArray: PathCommand[] = [
+      ['M', 0, 0],
+      ['L', 10, 0],
+    ];
+
+    const path = new Path({
+      style: {
+        d: pathArray,
+        lineWidth: 10,
+      },
+    });
+
+    expect(path.getTotalLength()).eqls(10);
+  });
+
   it('should getPoint at ratio correctly', () => {
     const pathArray: PathCommand[] = [
       ['M', 0, 0],

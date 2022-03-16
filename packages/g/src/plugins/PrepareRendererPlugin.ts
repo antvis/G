@@ -39,7 +39,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
       this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
@@ -49,7 +49,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
       this.renderingContext.root.removeEventListener(

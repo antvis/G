@@ -35,7 +35,7 @@ export class EventTarget implements IEventTarget {
    */
   addEventListener(
     type: string,
-    listener: EventListenerOrEventListenerObject,
+    listener: EventListenerOrEventListenerObject | ((...args: any[]) => void),
     options?: boolean | AddEventListenerOptions,
   ) {
     const capture = (isBoolean(options) && options) || (isObject(options) && options.capture);
@@ -63,6 +63,7 @@ export class EventTarget implements IEventTarget {
         if ((args[0].target as IElement)?.name !== delegatedName) {
           return;
         }
+        // @ts-ignore
         originListener(...args);
       };
     }
@@ -97,7 +98,7 @@ export class EventTarget implements IEventTarget {
   }
   removeEventListener(
     type: string,
-    listener?: EventListenerOrEventListenerObject,
+    listener?: EventListenerOrEventListenerObject | ((...args: any[]) => void),
     options?: boolean | AddEventListenerOptions,
   ) {
     const capture = (isBoolean(options) && options) || (isObject(options) && options.capture);

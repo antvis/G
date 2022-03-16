@@ -63,7 +63,17 @@ export class TextMesh extends Instanced {
 
   createGeometry(objects: DisplayObject[]): void {
     const object = this.instance as TextShape;
-    const { textBaseline, fontSize, letterSpacing = 0 } = object.parsedStyle;
+    const { textBaseline, fontSize, letterSpacing = 0, dx, dy } = object.parsedStyle;
+
+    // account for dx & dy
+    let offsetX = 0;
+    let offsetY = 0;
+    if (dx && dx.unit === 'px') {
+      offsetX += dx.value;
+    }
+    if (dy && dy.unit === 'px') {
+      offsetY += dy.value;
+    }
 
     // scale current font size to base(24)
     const fontScale = BASE_FONT_WIDTH / fontSize.value;
@@ -97,8 +107,8 @@ export class TextMesh extends Instanced {
           lines,
           fontStack: font,
           lineHeight: fontScale * lineHeight,
-          offsetX: fontScale * 2,
-          offsetY: fontScale * linePositionY,
+          offsetX: fontScale * offsetX,
+          offsetY: fontScale * (linePositionY + offsetY),
           letterSpacing: fontScale * letterSpacing,
           glyphAtlas,
           indicesOffset: indicesOff,
@@ -265,7 +275,9 @@ export class TextMesh extends Instanced {
       name === 'wordWrap' ||
       name === 'textAlign' ||
       name === 'modelMatrix' ||
-      name === 'visibility'
+      name === 'visibility' ||
+      name === 'dx' ||
+      name === 'dy'
     ) {
       this.material.programDirty = true;
       this.material.geometryDirty = true;

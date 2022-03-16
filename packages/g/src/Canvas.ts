@@ -218,6 +218,9 @@ export class Canvas extends EventTarget implements ICanvas {
     return this.getRenderingService().getStats();
   }
 
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Window/getComputedStyle
+   */
   getComputedStyle(node: DisplayObject) {
     return node.parsedStyle;
   }

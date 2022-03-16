@@ -7,6 +7,7 @@ import {
   SceneGraphService,
   RenderingContext,
   ElementEvent,
+  MutationEvent,
   DisplayObject,
   CanvasEvent,
   SHAPE,
@@ -18,7 +19,7 @@ import {
   rad2deg,
   deg2rad,
 } from '@antv/g';
-import type { Element, FederatedEvent } from '@antv/g';
+import type { FederatedEvent } from '@antv/g';
 import type Box2DFactory from 'box2d-wasm';
 import { Box2DPluginOptions } from './tokens';
 import { createChainShape, createPolygonShape, sortPointsInCCW } from './utils';
@@ -67,7 +68,7 @@ export class Box2DPlugin implements RenderingPlugin {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
 
@@ -89,7 +90,7 @@ export class Box2DPlugin implements RenderingPlugin {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
 
@@ -149,13 +150,13 @@ export class Box2DPlugin implements RenderingPlugin {
       }
     };
 
-    const handleAttributeChanged = (e: FederatedEvent) => {
+    const handleAttributeChanged = (e: MutationEvent) => {
       if (!this.Box2D) {
         return;
       }
 
       const object = e.target as DisplayObject;
-      const { attributeName, newValue } = e.detail;
+      const { attrName, newValue } = e;
       const { b2_staticBody, b2_dynamicBody } = this.Box2D;
 
       const body = this.bodies[object.entity];
@@ -163,33 +164,33 @@ export class Box2DPlugin implements RenderingPlugin {
 
       if (body) {
         const geometryAttributes = ['points', 'r', 'width', 'height', 'x1', 'y1', 'x2', 'y2'];
-        if (geometryAttributes.indexOf(attributeName) > -1) {
+        if (geometryAttributes.indexOf(attrName) > -1) {
           // need re-create body
-        } else if (attributeName === 'rigid') {
+        } else if (attrName === 'rigid') {
           body.SetType(newValue === 'static' ? b2_staticBody : b2_dynamicBody);
-        } else if (attributeName === 'linearVelocity') {
+        } else if (attrName === 'linearVelocity') {
           this.temp.set_x(newValue[0]);
           this.temp.set_y(newValue[1]);
           body.SetLinearVelocity(this.temp);
-        } else if (attributeName === 'angularVelocity') {
+        } else if (attrName === 'angularVelocity') {
           body.SetAngularVelocity(newValue);
-        } else if (attributeName === 'gravityScale') {
+        } else if (attrName === 'gravityScale') {
           body.SetGravityScale(newValue);
-        } else if (attributeName === 'linearDamping') {
+        } else if (attrName === 'linearDamping') {
           body.SetLinearDamping(newValue);
-        } else if (attributeName === 'angularDamping') {
+        } else if (attrName === 'angularDamping') {
           body.SetAngularDamping(newValue);
-        } else if (attributeName === 'fixedRotation') {
+        } else if (attrName === 'fixedRotation') {
           body.SetFixedRotation(newValue);
-        } else if (attributeName === 'bullet') {
+        } else if (attrName === 'bullet') {
           body.SetBullet(newValue);
-        } else if (attributeName === 'density') {
+        } else if (attrName === 'density') {
           // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md76
           fixture.SetDensity(newValue);
           body.ResetMassData();
-        } else if (attributeName === 'friction') {
+        } else if (attrName === 'friction') {
           fixture.SetFriction(newValue);
-        } else if (attributeName === 'restitution') {
+        } else if (attrName === 'restitution') {
           fixture.SetRestitution(newValue);
         }
       }

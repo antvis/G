@@ -4,19 +4,18 @@ import {
   ContextService,
   RenderingService,
   RenderingContext,
-  SceneGraphService,
   RenderingPlugin,
   RenderingPluginContribution,
   SHAPE,
   fromRotationTranslationScale,
   getEuler,
-  Renderable,
   DisplayObject,
   Camera,
   RENDER_REASON,
   PARSED_COLOR_TYPE,
   DefaultCamera,
   ElementEvent,
+  MutationEvent,
   FederatedEvent,
 } from '@antv/g';
 import type { LinearGradient, RadialGradient } from '@antv/g';
@@ -96,6 +95,34 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   shadowOffsetY: 'dy',
   filter: 'filter',
   innerHTML: 'innerHTML',
+  textAlign: 'text-anchor',
+};
+
+const FORMAT_VALUE_MAP = {
+  textAlign: {
+    inherit: 'inherit',
+    left: 'left',
+    start: 'left',
+    center: 'middle',
+    right: 'end',
+    end: 'end',
+  },
+};
+
+export const DEFAULT_VALUE_MAP: Record<string, string> = {
+  textAlign: 'inherit',
+  // @see https://www.w3.org/TR/SVG/painting.html#LineCaps
+  lineCap: 'butt',
+  // @see https://www.w3.org/TR/SVG/painting.html#LineJoin
+  lineJoin: 'miter',
+  opacity: '1',
+  fillOpacity: '1',
+  strokeOpacity: '1',
+  strokeWidth: '0',
+  strokeMiterLimit: '4',
+  letterSpacing: '0',
+  fontSize: 'inherit',
+  fontFamily: 'inherit',
 };
 
 export type GradientParams = (LinearGradient | RadialGradient) & { type: PARSED_COLOR_TYPE };
@@ -115,9 +142,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
-
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
 
   @inject(ElementRendererFactory)
   private elementRendererFactory: (tagName: string) => ElementRenderer<any>;
@@ -144,11 +168,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
       this.removeSVGDom(object);
     };
 
-    const handleAttributeChanged = (e: FederatedEvent) => {
+    const handleAttributeChanged = (e: MutationEvent) => {
       const object = e.target as DisplayObject;
-      const { attributeName, newValue } = e.detail;
+      const { attrName, newValue } = e;
 
-      if (attributeName === 'zIndex') {
+      if (attrName === 'zIndex') {
         const parent = object.parentNode;
         // @ts-ignore
         const $groupEl = object.parentNode?.elementSVG?.$groupEl;
@@ -159,7 +183,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         }
       }
 
-      this.updateAttribute(object, attributeName, object.parsedStyle[attributeName]);
+      this.updateAttribute(object, attrName, object.parsedStyle[attrName]);
     };
 
     renderingService.hooks.init.tap(SVGRendererPlugin.tag, () => {
@@ -178,7 +202,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
     });
@@ -187,7 +211,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
     });
@@ -374,7 +398,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
             }
           }
 
-          $el?.setAttribute(SVG_ATTR_MAP[name], valueStr);
+          if (valueStr !== DEFAULT_VALUE_MAP[name]) {
+            const formattedValueStr = FORMAT_VALUE_MAP[name]?.[valueStr] || valueStr;
+            $el?.setAttribute(SVG_ATTR_MAP[name], formattedValueStr);
+          }
         }
       }
     }

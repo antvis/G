@@ -39,7 +39,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       type: Arrow.tag,
     });
 
-    const { body, startHead, endHead, ...rest } = this.style;
+    const { body, startHead, endHead, ...rest } = this.attributes;
 
     if (!body) {
       throw new Error("Arrow's body is required");
@@ -72,7 +72,6 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     return this.endHead;
   }
 
-  // @ts-ignore
   attributeChangedCallback<Key extends keyof ArrowStyleProps>(
     name: Key,
     oldValue: ArrowStyleProps[Key],
@@ -91,14 +90,14 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       this.destroyArrowHead(isStart);
 
       if (newValue) {
-        const { body, startHead, endHead, x, y, ...rest } = this.style;
+        const { body, startHead, endHead, x, y, ...rest } = this.attributes;
         // append new arrow head
         // @ts-ignore
         this.appendArrowHead(this.getArrowHeadType(newValue), isStart);
         this.applyArrowStyle(rest, [isStart ? this.startHead : this.endHead]);
       }
     } else if (name === 'body') {
-      const { body, startHead, endHead, x, y, ...rest } = this.style;
+      const { body, startHead, endHead, x, y, ...rest } = this.attributes;
       // @ts-ignore
       this.removeChild(this.body!, true);
       // @ts-ignore
@@ -122,7 +121,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       head = this.createDefaultArrowHead();
     } else {
       // @ts-ignore
-      head = isStart ? this.style.startHead : this.style.endHead;
+      head = isStart ? this.attributes.startHead : this.attributes.endHead;
     }
 
     // set position & rotation
@@ -155,13 +154,13 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     const bodyType = this.body && this.body.nodeName;
 
     if (bodyType === SHAPE.Line) {
-      const { x1: _x1, x2: _x2, y1: _y1, y2: _y2 } = (this.body as Line).style;
+      const { x1: _x1, x2: _x2, y1: _y1, y2: _y2 } = (this.body as Line).attributes;
       x1 = isStart ? _x1 : _x2;
       x2 = isStart ? _x2 : _x1;
       y1 = isStart ? _y1 : _y2;
       y2 = isStart ? _y2 : _y1;
     } else if (bodyType === SHAPE.Polyline) {
-      const points = (this.body as Polyline).style.points;
+      const points = (this.body as Polyline).attributes.points;
       const { length } = points;
       x1 = isStart ? points[1][0] : points[length - 2][0];
       y1 = isStart ? points[1][1] : points[length - 2][1];
@@ -202,7 +201,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
   }
 
   private createDefaultArrowHead() {
-    const { stroke, lineWidth } = this.style;
+    const { stroke, lineWidth } = this.attributes;
     const { sin, cos, PI } = Math;
     return new Path({
       style: {

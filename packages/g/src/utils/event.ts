@@ -69,8 +69,10 @@ export function normalizeToPointerEvent(event: InteractivePointerEvent): Pointer
     for (let i = 0; i < event.changedTouches.length; i++) {
       const touch = event.changedTouches[i] as FormattedTouch;
 
-      if (isUndefined(touch.button)) touch.button = event.touches.length ? 1 : 0;
-      if (isUndefined(touch.buttons)) touch.buttons = event.touches.length ? 1 : 0;
+      // use changedTouches instead of touches since touchend has no touches
+      // @see https://stackoverflow.com/a/10079076
+      if (isUndefined(touch.button)) touch.button = event.changedTouches.length ? 1 : 0;
+      if (isUndefined(touch.buttons)) touch.buttons = event.changedTouches.length ? 1 : 0;
       if (isUndefined(touch.isPrimary)) {
         touch.isPrimary = event.touches.length === 1 && event.type === 'touchstart';
       }
