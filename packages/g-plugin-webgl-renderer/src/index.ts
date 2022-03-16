@@ -47,6 +47,7 @@ export * from './platform';
 export * from './render';
 export * from './geometries';
 export * from './materials';
+export * from './meshes';
 export * from './lights';
 
 export const containerModule = Module((register) => {

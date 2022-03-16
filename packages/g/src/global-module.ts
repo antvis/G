@@ -21,7 +21,6 @@ import {
   SceneGraphSelector,
   SceneGraphSelectorFactory,
 } from './services/SceneGraphSelector';
-import { parseLengthOrPercent, mergeDimensions, updateTextTransform } from './property-handlers';
 import type {
   Interpolatable,
   ParsedColorStyleProperty,
@@ -54,6 +53,10 @@ import {
   parseFilter,
   updateAnchor,
   parseLineDash,
+  parseLengthOrPercent,
+  mergeDimensions,
+  updateTextTransform,
+  // updateTextAlign,
 } from './property-handlers';
 
 export const globalContainer = GlobalContainer;
@@ -156,7 +159,7 @@ export const containerModule = Module((register) => {
 
   // support percent
   addPropertiesHandler<number, number>(
-    ['r', 'rx', 'ry', 'width', 'height', 'fontSize'],
+    ['r', 'rx', 'ry', 'width', 'height', 'fontSize', 'dx', 'dy'],
     parseLengthOrPercent,
     // @ts-ignore
     mergeDimensions,
@@ -177,6 +180,7 @@ export const containerModule = Module((register) => {
     undefined,
   );
 
+  // addPropertyHandler('textAlign', undefined, undefined, updateTextAlign);
   addPropertiesHandler<number, number>(
     [
       'x1',

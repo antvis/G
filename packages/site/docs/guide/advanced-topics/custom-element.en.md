@@ -73,7 +73,8 @@ constructor(config: DisplayObjectConfig<ArrowStyleProps>) {
   });
 
   // 获取用户传入的自定义属性
-  const { body, startHead, endHead, ...rest } = this.style;
+  // @see /zh/docs/api/builtin-objects/element#attributes
+  const { body, startHead, endHead, ...rest } = this.attributes;
 
   // 躯干部分必须指定
   if (!body) {
@@ -109,7 +110,7 @@ private appendArrowHead(type: ArrowHeadType, isStart: boolean) {
     head = this.createDefaultArrowHead();
   } else {
     // 使用用户传入的端点
-    head = isStart ? this.style.startHead : this.style.endHead;
+    head = isStart ? this.attributes.startHead : this.attributes.endHead;
   }
 
   // 对端点进行变换
@@ -135,7 +136,7 @@ private appendArrowHead(type: ArrowHeadType, isStart: boolean) {
 ```js
 private createDefaultArrowHead() {
   // 沿用箭头的自定义属性
-  const { stroke, lineWidth } = this.style;
+  const { stroke, lineWidth } = this.attributes;
   const { sin, cos, PI } = Math;
   return new Path({
     style: {

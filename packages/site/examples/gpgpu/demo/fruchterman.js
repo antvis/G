@@ -60,17 +60,17 @@ const canvas = new Canvas({
   const device = renderer.getDevice();
   const kernel = new Kernel(device, {
     computeShader: `
-[[block]] struct Buffer {
+struct Buffer {
   data: array<i32>;
 };
-[[block]] struct PositionBuffer {
+struct PositionBuffer {
   data: array<vec2<f32>>;
 };
-[[group(0), binding(0)]] var<storage, read> edges : Buffer;
-[[group(0), binding(1)]] var<storage, read> indices : Buffer;
-[[group(0), binding(2)]] var<storage, read_write> positions : PositionBuffer;
+@group(0) @binding(0) var<storage, read> edges : Buffer;
+@group(0) @binding(1) var<storage, read> indices : Buffer;
+@group(0) @binding(2) var<storage, read_write> positions : PositionBuffer;
 
-[[block]] struct Params {
+struct Params {
   vertexNum: f32;
   k: f32;
   k2: f32;
@@ -79,7 +79,7 @@ const canvas = new Canvas({
   maxDisplace: f32;
   center: vec2<f32>;
 };
-[[group(0), binding(3)]] var<uniform> params : Params;
+@group(0) @binding(3) var<uniform> params : Params;
 
 fn calc_repulsive(i: u32, current_node: vec2<f32>) -> vec2<f32> {
   var dx = 0.0;
@@ -131,9 +131,9 @@ fn calc_attractive(i: u32, current_node: vec2<f32>) -> vec2<f32> {
   return vec2<f32>(dx, dy);
 }
 
-[[stage(compute), workgroup_size(1, 1)]]
+@stage(compute) @workgroup_size(1, 1)
 fn main(
-  [[builtin(global_invocation_id)]] global_id : vec3<u32>,
+  @builtin(global_invocation_id) global_id : vec3<u32>,
 ) {
   var i = global_id.x;
   if (i < u32(params.vertexNum)) {

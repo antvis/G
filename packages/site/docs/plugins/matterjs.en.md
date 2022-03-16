@@ -41,7 +41,7 @@ new Circle({
 matter.js  本身支持渲染。开启后配合 [debugContainer](/zh/docs/plugins/matterjs#debugcontainer) 可以绘制物理引擎世界中每个对象的 wireframe，便于 debug：
 
 ```js
-const plugin = new PluginBox2D({
+const plugin = new PluginMatterjs({
     debug: true,
     debugContainer: document.getElementById('container'),
     debugCanvasWidth: 600,

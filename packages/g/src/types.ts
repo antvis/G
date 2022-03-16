@@ -48,6 +48,14 @@ export enum TextTransform {
   NONE = 'none',
 }
 
+export enum TextAlign {
+  START = 'start',
+  CENTER = 'center',
+  END = 'end',
+  LEFT = 'left',
+  RIGHT = 'right',
+}
+
 export interface BaseStyleProps {
   /**
    * x in local space

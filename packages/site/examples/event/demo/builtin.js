@@ -1,4 +1,4 @@
-import { Circle, Text, Canvas, ElementEvent } from '@antv/g';
+import { Circle, Text, Canvas, ElementEvent, MutationObserver } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -33,6 +33,10 @@ canvas.addEventListener(ElementEvent.REMOVED, (e) => {
 canvas.addEventListener(ElementEvent.DESTROY, (e) => {
   console.log('destroyed', e.target);
 });
+
+// observe root node
+const observer = new MutationObserver(() => {});
+observer.observe(canvas.document.documentElement, { childList: true });
 
 // stats
 const stats = new Stats();
@@ -94,6 +98,9 @@ const circleConfig = {
     circles.push(circle);
     canvas.appendChild(circle);
     circle.setPosition(300 + Math.random() * 200, 250 + Math.random() * 200);
+
+    const records = observer.takeRecords();
+    console.log(records);
   },
   remove: () => {
     const circle = circles.pop();
@@ -108,6 +115,8 @@ const circleConfig = {
     if (circle) {
       circles.push(circle);
       canvas.appendChild(circle);
+      const records = observer.takeRecords();
+      console.log(records);
     }
   },
   destroy: () => {

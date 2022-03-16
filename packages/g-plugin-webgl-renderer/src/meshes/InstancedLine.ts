@@ -10,7 +10,7 @@ import {
 import { Format, VertexBufferFrequency } from '../platform';
 import vert from '../shader/instanced-line.vert';
 import frag from '../shader/instanced-line.frag';
-import { Instanced, InstancedVertexAttributeBufferIndex } from './Instanced';
+import { Instanced, VertexAttributeBufferIndex } from './Instanced';
 import { VertexAttributeLocation } from '../geometries';
 import { enumToObject } from '../utils/enum';
 
@@ -19,7 +19,7 @@ export const segmentInstanceGeometry = [
 ];
 
 enum InstancedLineVertexAttributeBufferIndex {
-  POSITION_UV = InstancedVertexAttributeBufferIndex.MAX,
+  POSITION_UV = VertexAttributeBufferIndex.MAX,
   POINT_CAP_DASH,
 }
 

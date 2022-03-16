@@ -7,6 +7,7 @@ import {
   SceneGraphService,
   RenderingContext,
   ElementEvent,
+  MutationEvent,
   DisplayObject,
   SHAPE,
   ParsedBaseStyleProps,
@@ -72,7 +73,7 @@ export class YogaPlugin implements RenderingPlugin {
       this.renderingContext.root.addEventListener(ElementEvent.REMOVED, handleRemoved);
       this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
       this.renderingContext.root.addEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
     });
@@ -87,7 +88,7 @@ export class YogaPlugin implements RenderingPlugin {
         handleBoundsChanged,
       );
       this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
     });
@@ -129,7 +130,7 @@ export class YogaPlugin implements RenderingPlugin {
       this.setDefaultValues(node);
 
       // sync YogaNode attributes
-      this.syncAttributes(target, target.parsedStyle);
+      this.syncAttributes(target, target.attributes, target.parsedStyle);
 
       // mount to parent
       const parent = target.parentElement as DisplayObject;
@@ -183,13 +184,19 @@ export class YogaPlugin implements RenderingPlugin {
       });
     };
 
-    const handleAttributeChanged = (e: FederatedEvent) => {
+    const handleAttributeChanged = (e: MutationEvent) => {
       const target = e.target as DisplayObject;
       // use parsed value, eg. `top: 10` instead of `top: '10'`
-      const { attributeName, newParsedValue } = e.detail;
-      const needRecalculateLayout = this.syncAttributes(target, {
-        [attributeName]: newParsedValue,
-      });
+      const { attrName, newValue, newParsedValue } = e;
+      const needRecalculateLayout = this.syncAttributes(
+        target,
+        {
+          [attrName]: newValue,
+        },
+        {
+          [attrName]: newParsedValue,
+        },
+      );
 
       if (needRecalculateLayout) {
         this.needRecalculateLayout = true;
@@ -219,10 +226,10 @@ export class YogaPlugin implements RenderingPlugin {
         object.nodeName === SHAPE.Rect ||
         object.nodeName === SHAPE.Image
       ) {
-        const { width = { unit: 'auto', value: 0 }, height = { unit: 'auto', value: 0 } } =
+        const { width = { unit: 'px', value: 0 }, height = { unit: 'px', value: 0 } } =
           object.parsedStyle as ParsedRectStyleProps;
-        this.setWidth(node, width);
-        this.setHeight(node, height);
+        this.setWidth(node, object.style.width, width);
+        this.setHeight(node, object.style.height, height);
       } else {
         let bounds: AABB;
         // flex container
@@ -242,7 +249,7 @@ export class YogaPlugin implements RenderingPlugin {
           const { wordWrap, width } = object.parsedStyle as ParsedTextStyleProps;
 
           if (wordWrap) {
-            this.setWidth(node, width);
+            this.setWidth(node, object.style.width, width);
             node.setHeightAuto();
           }
         }
@@ -253,15 +260,19 @@ export class YogaPlugin implements RenderingPlugin {
   /**
    * sync YogaNode
    */
-  private syncAttributes(object: DisplayObject, attributes: Record<string, any>): boolean {
+  private syncAttributes(
+    object: DisplayObject,
+    raw: Record<string, any>,
+    parsed: Record<string, any>,
+  ): boolean {
     const node = this.nodes[object.entity];
     const { yogaUpdatingFlag } = object.style;
 
     // TODO: border, gap
 
     let needRecalculateLayout = false;
-    Object.keys(attributes).forEach((attributeName) => {
-      const newValue = attributes[attributeName];
+    Object.keys(parsed).forEach((attributeName) => {
+      const newValue = parsed[attributeName];
       if (attributeName === 'flexDirection') {
         node.setFlexDirection(
           <YogaFlexDirection>YogaConstants.FlexDirection[newValue as keyof typeof FlexDirection],
@@ -378,9 +389,9 @@ export class YogaPlugin implements RenderingPlugin {
         node.setDisplay(<YogaDisplay>YogaConstants.Display[newValue as keyof typeof Display]);
         needRecalculateLayout = true;
       } else if (attributeName === 'width' && !yogaUpdatingFlag) {
-        this.setWidth(node, newValue);
+        this.setWidth(node, raw.width, newValue);
       } else if (attributeName === 'height' && !yogaUpdatingFlag) {
-        this.setHeight(node, newValue);
+        this.setHeight(node, raw.height, newValue);
       }
     });
 
@@ -441,33 +452,36 @@ export class YogaPlugin implements RenderingPlugin {
 
   private setPosition(node: YogaNode, edge: YogaEdge, parsed: ParsedElement) {
     const { unit, value } = parsed;
-
-    if (unit === '' || unit === 'px') {
-      node.setPosition(edge, value);
-    } else if (unit === '%') {
+    if (unit === '%') {
       node.setPositionPercent(edge, value);
+    } else if (unit === '' || unit === 'px') {
+      node.setPosition(edge, value);
     }
   }
 
-  private setWidth(node: YogaNode, parsed: ParsedElement) {
-    const { unit, value } = parsed;
-    if (unit === '' || unit === 'px') {
-      node.setWidth(value);
-    } else if (unit === '%') {
-      node.setWidthPercent(value);
-    } else if (unit === 'auto') {
+  private setWidth(node: YogaNode, raw: any, parsed: ParsedElement) {
+    if (raw === 'auto') {
       node.setWidthAuto();
+    } else {
+      const { unit, value } = parsed;
+      if (unit === '' || unit === 'px') {
+        node.setWidth(value);
+      } else if (unit === '%') {
+        node.setWidthPercent(value);
+      }
     }
   }
-  private setHeight(node: YogaNode, parsed: ParsedElement) {
-    const { unit, value } = parsed;
-
-    if (unit === '' || unit === 'px') {
-      node.setHeight(value);
-    } else if (unit === '%') {
-      node.setHeightPercent(value);
-    } else if (unit === 'auto') {
+  private setHeight(node: YogaNode, raw: any, parsed: ParsedElement) {
+    if (raw === 'auto') {
       node.setHeightAuto();
+    } else {
+      const { unit, value } = parsed;
+
+      if (unit === '' || unit === 'px') {
+        node.setHeight(value);
+      } else if (unit === '%') {
+        node.setHeightPercent(value);
+      }
     }
   }
   private setMaxWidth(node: YogaNode, parsed: ParsedElement) {

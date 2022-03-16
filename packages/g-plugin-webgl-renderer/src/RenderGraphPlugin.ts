@@ -12,6 +12,7 @@ import {
   DefaultCamera,
   Camera,
   CanvasEvent,
+  MutationEvent,
   parseColor,
   Tuple4Number,
 } from '@antv/g';
@@ -114,7 +115,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
       this.renderingContext.root.addEventListener(
@@ -150,7 +151,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTRIBUTE_CHANGED,
+        ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
       this.renderingContext.root.removeEventListener(
@@ -356,10 +357,10 @@ export class RenderGraphPlugin implements RenderingPlugin {
       // entity.removeComponent(Renderable3D, true);
     };
 
-    const handleAttributeChanged = (e: FederatedEvent) => {
+    const handleAttributeChanged = (e: MutationEvent) => {
       const object = e.target as DisplayObject;
-      const { attributeName, newValue } = e.detail;
-      this.batchManager.updateAttribute(object, attributeName, newValue);
+      const { attrName, newValue } = e;
+      this.batchManager.updateAttribute(object, attrName, newValue);
     };
 
     const handleRenderOrderChanged = (e: FederatedEvent) => {

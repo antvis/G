@@ -1,6 +1,6 @@
-import { Buffer, BufferFrequencyHint, BufferUsage } from '@antv/g-plugin-webgl-renderer';
+import { Buffer, BufferUsage } from '@antv/g-plugin-webgl-renderer';
 import type { Device, ComputePipeline } from '@antv/g-plugin-webgl-renderer';
-import { AST_TOKEN_TYPES, KernelBundle, STORAGE_CLASS, Target } from './interface';
+import { KernelBundle, Target } from './interface';
 
 export interface KernelOptions {
   computeShader?: string;
@@ -73,7 +73,7 @@ export class Kernel {
           output: {
             name: '',
           },
-          uniforms: this.extractStorages(this.computeShader),
+          uniforms: [],
           defines: [],
           globalDeclarations: [],
         },
@@ -96,6 +96,12 @@ export class Kernel {
    * it should match binding declared in compute shader
    */
   setBinding(binding: number, buffer: Buffer) {
+    // @ts-ignore
+    const { usage } = buffer;
+
+    const isUniform = usage & BufferUsage.UNIFORM;
+    const isWritable = usage & BufferUsage.COPY_SRC;
+
     // search by binding
     const existed = this.buffers.find((buffer) => buffer.binding === binding);
     if (existed) {
@@ -103,31 +109,15 @@ export class Kernel {
       this.buffers.splice(this.buffers.indexOf(existed), 1);
     }
 
-    const storages = this.bundle.context.uniforms;
-    const existedIndex = storages.findIndex((u) => u.binding === binding);
-
-    if (existedIndex > -1) {
-      const { storageClass, readonly, writeonly, group, binding, name } = storages[existedIndex];
-      const isUniform = storageClass === STORAGE_CLASS.Uniform;
-      // const buffer = this.device.createBuffer({
-      //   usage: isUniform ? BufferUsage.Uniform : BufferUsage.Storage,
-      //   hint: BufferFrequencyHint.Dynamic,
-      //   flags: !readonly ? BufferUsage.COPY_SRC : 0,
-      //   viewOrSize: data,
-      // });
-
-      this.buffers.push({
-        name,
-        buffer,
-        // @ts-ignore
-        wordCount: buffer.size / 4,
-        binding: binding,
-        bindingType: isUniform ? 'uniform' : readonly ? 'read-only-storage' : 'storage',
-        group: group || 0, // fixed group 0
-      });
-
-      return buffer;
-    }
+    this.buffers.push({
+      name: '',
+      buffer,
+      // @ts-ignore
+      wordCount: buffer.size / 4,
+      binding,
+      bindingType: isUniform ? 'uniform' : isWritable ? 'storage' : 'read-only-storage',
+      group: 0, // fixed group 0
+    });
 
     return null;
   }
@@ -180,43 +170,5 @@ export class Kernel {
     this.buffers.forEach(({ buffer }) => {
       buffer.destroy();
     });
-  }
-
-  private extractStorages(wgslCode: string): KernelBundle['context']['uniforms'] {
-    // [[group(0), binding(0)]] var<storage, read> firstMatrix : Matrix;
-    const storages: KernelBundle['context']['uniforms'] = [];
-    wgslCode.replace(
-      /\[\[\s*group\((\d+)\)\s*,\s*binding\((\d+)\)\]\]\s+var<(.*),\s*(.*)>\s*(\S*)\s*\:/g,
-      (_, group, binding, storage, accessMode, name) => {
-        storages.push({
-          name,
-          storageClass: storage === 'storage' ? STORAGE_CLASS.StorageBuffer : STORAGE_CLASS.Uniform,
-          readonly: accessMode === 'read',
-          writeonly: accessMode === 'write',
-          type: AST_TOKEN_TYPES.Void, // FIXME: Struct
-          group: Number(group),
-          binding: Number(binding),
-        });
-        return '';
-      },
-    );
-
-    wgslCode.replace(
-      /\[\[\s*group\((\d+)\)\s*,\s*binding\((\d+)\)\]\]\s+var<uniform>\s*(\S*)\s*\:/g,
-      (_, group, binding, name) => {
-        storages.push({
-          name,
-          storageClass: STORAGE_CLASS.Uniform,
-          readonly: true,
-          writeonly: false,
-          type: AST_TOKEN_TYPES.Void, // FIXME: Struct
-          group: Number(group),
-          binding: Number(binding),
-        });
-        return '';
-      },
-    );
-
-    return storages;
   }
 }

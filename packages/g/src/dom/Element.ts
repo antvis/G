@@ -8,6 +8,7 @@ import type { IEventTarget, IChildNode, IElement, INode, ICSSStyleDeclaration } 
 import { ElementEvent } from './interfaces';
 import { globalContainer } from '../global-module';
 import { formatAttribute } from '../utils';
+import { MutationEvent } from '..';
 
 let entityCounter = 0;
 
@@ -124,10 +125,13 @@ export class Element<
     this.emit(ElementEvent.CHILD_INSERTED, {
       child,
     });
-    child.emit(ElementEvent.INSERTED, {
-      parent: this,
-      index,
-    });
+    // child.emit(ElementEvent.INSERTED, {
+    //   parent: this,
+    //   index,
+    // });
+    child.dispatchEvent(
+      new MutationEvent(ElementEvent.INSERTED, this as IElement, '', '', '', 0, '', ''),
+    );
 
     return child;
   }
@@ -151,9 +155,13 @@ export class Element<
 
   removeChild<T extends INode>(child: T, destroy = true): T {
     // should emit on itself before detach
-    child.emit(ElementEvent.REMOVED, {
-      parent: this,
-    });
+    // child.emit(ElementEvent.REMOVED, {
+    //   parent: this,
+    // });
+
+    child.dispatchEvent(
+      new MutationEvent(ElementEvent.REMOVED, this as IElement, '', '', '', 0, '', ''),
+    );
 
     // emit destroy event
     if (destroy) {
@@ -366,7 +374,7 @@ export class Element<
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes
    */
-  attributes: StyleProps = {} as StyleProps;
+  readonly attributes: StyleProps = {} as StyleProps;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute

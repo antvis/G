@@ -5,12 +5,14 @@ import type { DisplayObjectConfig } from '../dom';
 import type { ParsedElement } from '../property-handlers';
 
 export interface ImageStyleProps extends BaseStyleProps {
-  img: string | HTMLImageElement;
+  img?: string | HTMLImageElement;
+  src?: string | HTMLImageElement;
   width?: number | string;
   height?: number | string;
 }
 export interface ParsedImageStyleProps extends ParsedBaseStyleProps {
-  img: string | HTMLImageElement;
+  img?: string | HTMLImageElement;
+  src?: string | HTMLImageElement;
   width?: ParsedElement;
   height?: ParsedElement;
   widthInPixels?: number;

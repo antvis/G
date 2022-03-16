@@ -27,6 +27,7 @@ import {
   stylePropertyUpdaterFactory,
 } from '../global-module';
 import { dirtifyToRoot } from '../services';
+import { MutationEvent } from '../dom/MutationEvent';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
@@ -165,7 +166,7 @@ export class DisplayObject<
       name: this.name,
       className: this.name,
       interactive: this.interactive,
-      style: { ...this.style },
+      style: { ...this.attributes },
     });
 
     if (deep) {
@@ -183,10 +184,10 @@ export class DisplayObject<
 
     // parse attributes first
     for (const attributeName in attributes) {
-      const value = attributes[attributeName];
-      this.attributes[attributeName] = value;
+      const [name, value] = formatAttribute(attributeName, attributes[attributeName]);
+      this.attributes[name] = value;
       // @ts-ignore
-      this.parseStyleProperty(attributeName, value);
+      this.parseStyleProperty(name, value);
     }
 
     const priorities: Record<string, number> = {
@@ -199,8 +200,9 @@ export class DisplayObject<
       (a, b) => (priorities[a] || 0) - (priorities[b] || 0),
     );
     sortedNames.forEach((attributeName) => {
+      const [name] = formatAttribute(attributeName, '');
       // @ts-ignore
-      this.updateStyleProperty(attributeName, undefined, this.parsedStyle[attributeName]);
+      this.updateStyleProperty(name, undefined, this.parsedStyle[name]);
     });
 
     // redraw at next frame
@@ -235,10 +237,7 @@ export class DisplayObject<
    * * fill: 'red' => [1, 0, 0, 1]
    * * translateX: '10px' => { unit: 'px', value: 10 }
    */
-  private parseStyleProperty<Key extends keyof ParsedStyleProps>(
-    name: Key,
-    value: ParsedStyleProps[Key],
-  ) {
+  parseStyleProperty<Key extends keyof ParsedStyleProps>(name: Key, value: ParsedStyleProps[Key]) {
     // const stylePropertyParser = this.stylePropertyParserFactory(name);
     const stylePropertyParser = stylePropertyParserFactory[name as string];
     if (stylePropertyParser) {
@@ -249,7 +248,7 @@ export class DisplayObject<
     }
   }
 
-  private updateStyleProperty<Key extends keyof ParsedStyleProps>(
+  updateStyleProperty<Key extends keyof ParsedStyleProps>(
     name: Key,
     oldParsedValue: ParsedStyleProps[Key],
     newParsedValue: ParsedStyleProps[Key],
@@ -290,24 +289,52 @@ export class DisplayObject<
     if (this.attributes.clipPathTargets && this.attributes.clipPathTargets.length) {
       this.attributes.clipPathTargets.forEach((target) => {
         dirtifyToRoot(target);
-        target.emit(ElementEvent.ATTRIBUTE_CHANGED, {
-          attributeName: 'clipPath',
-          oldValue: this,
-          newValue: this,
-        });
+        // target.emit(ElementEvent.ATTR_MODIFIED, {
+        //   attributeName: 'clipPath',
+        //   oldValue: this,
+        //   newValue: this,
+        // });
+
+        target.dispatchEvent(
+          new MutationEvent(
+            ElementEvent.ATTR_MODIFIED,
+            target as IElement,
+            this,
+            this,
+            'clipPath',
+            MutationEvent.MODIFICATION,
+            this,
+            this,
+          ),
+        );
       });
     }
 
     // redraw at next frame
     renderable.dirty = true;
 
-    this.emit(ElementEvent.ATTRIBUTE_CHANGED, {
-      attributeName: name,
-      oldValue,
-      newValue: value,
-      oldParsedValue,
-      newParsedValue,
-    });
+    this.dispatchEvent(
+      new MutationEvent(
+        ElementEvent.ATTR_MODIFIED,
+        this as IElement,
+        oldValue,
+        value,
+        name as string,
+        MutationEvent.MODIFICATION,
+        oldParsedValue,
+        newParsedValue,
+      ),
+    );
+
+    // this.emit(ElementEvent.ATTR_MODIFIED, {
+    //   attrName: name,
+    //   attributeName: name,
+    //   prevValue: oldValue,
+    //   oldValue,
+    //   newValue: value,
+    //   oldParsedValue,
+    //   newParsedValue,
+    // });
   }
 
   // #region transformable

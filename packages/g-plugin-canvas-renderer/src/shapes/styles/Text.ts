@@ -1,4 +1,5 @@
-import { TextService, ParsedTextStyleProps, SHAPE, Rectangle } from '@antv/g';
+import { TextService, SHAPE } from '@antv/g';
+import type { ParsedTextStyleProps, Rectangle, DisplayObject } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import { StyleRenderer } from './interfaces';
@@ -14,7 +15,11 @@ export class TextRenderer implements StyleRenderer {
     return '';
   }
 
-  render(context: CanvasRenderingContext2D, parsedStyle: ParsedTextStyleProps) {
+  render(
+    context: CanvasRenderingContext2D,
+    parsedStyle: ParsedTextStyleProps,
+    object: DisplayObject,
+  ) {
     const {
       lineWidth = 0,
       textAlign,
@@ -28,12 +33,14 @@ export class TextRenderer implements StyleRenderer {
       strokeOpacity,
       opacity,
       metrics,
+      dx,
+      dy,
     } = parsedStyle;
 
     const { font, lines, height, lineHeight, lineMetrics } = metrics;
 
     context.font = font;
-    context.lineWidth = lineWidth!;
+    context.lineWidth = lineWidth;
     context.textAlign = textAlign;
     context.textBaseline = textBaseline!;
     context.lineJoin = lineJoin!;
@@ -53,9 +60,18 @@ export class TextRenderer implements StyleRenderer {
       linePositionY = -lineHeight;
     }
 
+    // account for dx & dy
+    let offsetX = 0;
+    if (dx && dx.unit === 'px') {
+      offsetX += dx.value;
+    }
+    if (dy && dy.unit === 'px') {
+      linePositionY += dy.value;
+    }
+
     // draw lines line by line
     for (let i = 0; i < lines.length; i++) {
-      let linePositionX = lineWidth / 2;
+      let linePositionX = lineWidth / 2 + offsetX;
       linePositionY += lineHeight;
 
       // no need to re-position X, cause we already set text align

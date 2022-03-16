@@ -17,7 +17,7 @@ order: 1
 
 ## text
 
-**类型**： `String`
+**类型**： `string`
 
 **默认值**：无
 
@@ -27,24 +27,44 @@ order: 1
 
 ## textTransform
 
-**类型**： `String`
+**类型**： `string`
 
 **默认值**：`'none'`
 
 **是否必须**：`false`
 
-**说明**：对文本内容进行转换，支持以下枚举值：
+**说明**：与 [CSS text-transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-transform) 一致，对文本内容进行转换，支持以下枚举值：
 
--   'capitalize'
--   'uppercase'
--   'lowercase'
--   'none'
+-   'capitalize' 首字母大写
+-   'uppercase' 全大写
+-   'lowercase' 全小写
+-   'none' 不做转换
+
+## dx / dy
+
+**类型**： `number` | `string`
+
+**默认值**：`0`
+
+**是否必须**：`false`
+
+**说明**：与 [SVG dx / dy 属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/dx)对应，在水平和垂直方向增加偏移量
+
+支持 `px` 和 `em` 两种单位，使用 `number` 类型时默认 `px` 单位：
+
+```js
+{
+    dx: 10;
+    dx: '10px';
+    dx: '0.5em';
+}
+```
 
 ## 字体相关
 
 ### fontFamily
 
-**类型**： `String`
+**类型**： `string`
 
 **默认值**：无
 
@@ -64,7 +84,7 @@ order: 1
 
 ### fontWeight
 
-**类型**： `String` | `number`
+**类型**： `string` | `number`
 
 **默认值**：`normal`
 
@@ -74,7 +94,7 @@ order: 1
 
 ### fontStyle
 
-**类型**： `String`
+**类型**： `string`
 
 **默认值**：`normal`
 
@@ -86,7 +106,7 @@ order: 1
 
 ### fontVariant
 
-**类型**： `String`
+**类型**： `string`
 
 **默认值**：`normal`
 
