@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<head>
+    <title>Test G Web Component</title>
+    <script src="../lib/gcanvas.min.js"></script>
+</head>
+<body>
+  <g-canvas style="width: 800px; height: 800px;display: block;">
+    <g-rect fill="#2f54eb" radius="[0, 24, 24]" x="12" y="24" width="200" height="50">
+      <g-circle fill="#adc6ff" r="16" x="25" y="25"></g-circle>
+      <g-text fill="#fff" x="50" y="20" >我是一段文字</g-text>
+    </g-rect>
+    <g-path stroke="#2f54eb" path='[["M",-32,0],["a",32,32,0,1,0,64,0],["a",32,32,0,1,0,-64,0],["M",-28,0],["L",28,0],["M",0,-28],["L",0,28]]' x="100" y="200"></g-path>
+    <g-html x="10" y="400" width="120" height="400">
+      <div>
+        <h2>hahahah</h2>
+        <hr />
+        <p>bsdkjfbkjsadbfkjabnjfnalsjkfnkja</p>
+        </div>
+    </g-html>
+  </g-canvas>
+</body>
