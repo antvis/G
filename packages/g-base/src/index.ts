@@ -19,5 +19,7 @@ export { getTextHeight, assembleFont } from './util/text';
 export { isAllowCapture } from './util/util';
 export { multiplyVec2, invert } from './util/matrix';
 export { getOffScreenContext } from './util/offscreen';
+export { registerEasing } from './animate/register';
 
-export const version = '0.5.9';
+export const version = '0.5.11';
+

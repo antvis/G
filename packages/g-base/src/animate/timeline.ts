@@ -1,7 +1,7 @@
 import { isEqual, isNumber, isFunction } from '@antv/util';
 import * as d3Timer from 'd3-timer';
-import * as d3Ease from 'd3-ease';
 import { interpolate, interpolateArray } from 'd3-interpolate'; // 目前整体动画只需要数值和数组的差值计算
+import { getEasing } from './register';
 import * as PathUtil from '../util/path';
 import { isColorProp, isGradientColor } from '../util/color';
 import { ICanvas, IElement } from '../interfaces';
@@ -94,17 +94,19 @@ function update(shape: IElement, animation: Animation, elapsed: number) {
   let ratio;
   const duration = animation.duration;
   const easing = animation.easing;
+  const easeFn = getEasing(easing);
+  
   // 已执行时间
   elapsed = elapsed - startTime - animation.delay;
   if (animation.repeat) {
     // 如果动画重复执行，则 elapsed > duration，计算 ratio 时需取模
     ratio = (elapsed % duration) / duration;
-    ratio = d3Ease[easing](ratio);
+    ratio = easeFn(ratio);
   } else {
     ratio = elapsed / duration;
     if (ratio < 1) {
       // 动画未执行完
-      ratio = d3Ease[easing](ratio);
+      ratio = easeFn(ratio);
     } else {
       // 动画已执行完
       if (animation.onFrame) {
