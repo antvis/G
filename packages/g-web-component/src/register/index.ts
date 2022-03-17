@@ -16,7 +16,7 @@ export const registerGWebComponent = (name: string, Component: CustomElementCons
   customElements.define(`${DEFAULT_TAG_PREFIX}-${name}`, Component);
 }
 
-const cleanGWebComponent = (name: string) => {
+export const cleanGWebComponent = (name: string) => {
   customElements.define(name, HTMLElement);
 } 
 

@@ -1,4 +1,4 @@
-import { IElement, Rect, RectStyleProps } from "@antv/g";
+import { Rect, RectStyleProps } from "@antv/g";
 import { BaseShape } from "./BaseShape";
 
 export class RectShape extends BaseShape {

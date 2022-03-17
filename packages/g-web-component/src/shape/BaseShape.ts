@@ -1,4 +1,4 @@
-import { IElement, Element, DisplayObject, BaseStyleProps } from "@antv/g";
+import { DisplayObject } from "@antv/g";
 import { styleAttributeNames } from "../enum";
 import GElement from "../GElement";
 
