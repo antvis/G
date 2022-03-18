@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import Canvas from '../../src/abstract/canvas';
 import Shape from '../../src/abstract/shape';
+import { registerEasing } from '../../src';
 
 const dom = document.createElement('div');
 document.body.appendChild(dom);
@@ -27,6 +28,7 @@ describe('animate', () => {
   });
 
   it('animate(toAttrs, duration, easing, callback, delay)', (done) => {
+    registerEasing('custom-easing', (t) => t * t);
     const shape = new Shape({
       attrs: {
         x: 50,
@@ -41,7 +43,7 @@ describe('animate', () => {
         y: 100,
       },
       500,
-      'easeLinear',
+      'custom-easing',
       () => {
         flag = true;
       },
