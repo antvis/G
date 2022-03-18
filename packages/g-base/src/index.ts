@@ -22,4 +22,3 @@ export { getOffScreenContext } from './util/offscreen';
 export { registerEasing } from './animate/register';
 
 export const version = '0.5.11';
-

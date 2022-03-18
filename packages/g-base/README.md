@@ -2,7 +2,6 @@
 
 > 可视化的绘图引擎的接口定义和抽象实现
 
-
 ## 安装下载
 
 > tnpm i --save @antv/g-base
@@ -10,20 +9,19 @@
 ```js
 import { Base } from '@antv/g-base';
 
-class MyClass extends Base {
-
-}
-
+class MyClass extends Base {}
 ```
 
-
 ## API 文档
+
 G-Base 中定义了绘图引擎的接口、抽象类和工具方法
 
 ### 接口定义
 
 #### IBase
+
 事件接口定义
+
 ```ts
   /**
    * 绑定事件
@@ -59,6 +57,7 @@ G-Base 中定义了绘图引擎的接口、抽象类和工具方法
    */
   emit(eventName: string, eventObject: object);
 ```
+
 属性接口定义
 
 ```ts
@@ -94,7 +93,6 @@ G-Base 中定义了绘图引擎的接口、抽象类和工具方法
 #### IShape
 
 #### ICanvas
-
 
 ### 抽象类定义
 

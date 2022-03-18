@@ -28,7 +28,7 @@ describe('animate', () => {
   });
 
   it('animate(toAttrs, duration, easing, callback, delay)', (done) => {
-    registerEasing('custom-easing', (t) => t * t); 
+    registerEasing('custom-easing', (t) => t * t);
     const shape = new Shape({
       attrs: {
         x: 50,

@@ -95,7 +95,7 @@ function update(shape: IElement, animation: Animation, elapsed: number) {
   const duration = animation.duration;
   const easing = animation.easing;
   const easeFn = getEasing(easing);
-  
+
   // 已执行时间
   elapsed = elapsed - startTime - animation.delay;
   if (animation.repeat) {

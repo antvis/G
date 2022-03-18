@@ -195,7 +195,7 @@ export function parseStyle(context: CanvasRenderingContext2D, element: IElement,
     return color;
   }
 
-  if(color instanceof CanvasPattern) {
+  if (color instanceof CanvasPattern) {
     return color;
   }
 }
