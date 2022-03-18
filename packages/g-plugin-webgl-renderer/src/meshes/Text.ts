@@ -43,14 +43,12 @@ export class TextMesh extends Instanced {
     }
 
     const instance = this.instance;
-    const instancedAttributes = [
-      'fontSize',
-      'fontFamily',
-      'fontWeight',
-      'textBaseline',
-      'letterSpacing',
-    ];
+    const instancedAttributes = ['fontFamily', 'fontWeight', 'textBaseline', 'letterSpacing'];
+
     // fontStack & fontSize should be same
+    if (instance.parsedStyle.fontSize.value !== object.parsedStyle.fontSize.value) {
+      return false;
+    }
     if (
       instance.parsedStyle.metrics.font !== object.parsedStyle.metrics.font ||
       instancedAttributes.some((name) => instance.parsedStyle[name] !== object.parsedStyle[name])

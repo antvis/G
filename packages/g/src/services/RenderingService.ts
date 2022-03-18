@@ -3,7 +3,7 @@ import { SyncHook, SyncWaterfallHook, AsyncParallelHook, AsyncSeriesWaterfallHoo
 import type { DisplayObject } from '..';
 import { ElementEvent } from '../dom';
 import type { EventPosition, InteractivePointerEvent } from '../types';
-import { RenderingContext, RENDER_REASON } from './RenderingContext';
+import { RenderingContext, RenderReason } from './RenderingContext';
 import { SceneGraphService, sortByZIndex } from './SceneGraphService';
 
 export interface RenderingPlugin {
@@ -93,11 +93,6 @@ export class RenderingService {
       if (this.renderingContext.dirty) {
         this.hooks.endFrame.call();
         this.renderingContext.dirty = false;
-      } else {
-        if (this.renderingContext.renderReasons.has(RENDER_REASON.DisplayObjectRemoved)) {
-          this.hooks.beginFrame.call();
-          this.hooks.endFrame.call();
-        }
       }
 
       this.renderingContext.renderReasons.clear();
@@ -130,7 +125,6 @@ export class RenderingService {
     const sortable = displayObject.sortable;
     let renderOrderChanged = false;
     if (sortable.dirty) {
-      // sortable.sorted = [...(displayObject.childNodes as IElement[])].sort(sortByZIndex);
       sortable.sorted = displayObject.childNodes.slice().sort(sortByZIndex);
       renderOrderChanged = true;
       sortable.dirty = false;
@@ -157,6 +151,6 @@ export class RenderingService {
 
   dirtify() {
     // need re-render
-    this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectChanged);
+    this.renderingContext.renderReasons.add(RenderReason.DISPLAY_OBJECT_CHANGED);
   }
 }

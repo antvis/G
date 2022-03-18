@@ -11,7 +11,7 @@ import {
   getEuler,
   DisplayObject,
   Camera,
-  RENDER_REASON,
+  RenderReason,
   PARSED_COLOR_TYPE,
   DefaultCamera,
   ElementEvent,
@@ -156,6 +156,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
    */
   private $camera: SVGElement;
 
+  /**
+   * render at the end of frame
+   */
+  private renderQueue: DisplayObject[] = [];
+
   apply(renderingService: RenderingService) {
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
@@ -217,24 +222,32 @@ export class SVGRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
-      if (this.renderingContext.renderReasons.has(RENDER_REASON.CameraChanged)) {
+      this.renderQueue.push(object);
+    });
+
+    renderingService.hooks.endFrame.tap(SVGRendererPlugin.tag, () => {
+      if (this.renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)) {
         this.applyTransform(this.$camera, this.camera.getOrthoMatrix());
       }
 
-      // @ts-ignore
-      const $el = object.elementSVG?.$el;
-      // @ts-ignore
-      const $groupEl = object.elementSVG?.$groupEl;
+      this.renderQueue.forEach((object) => {
+        // @ts-ignore
+        const $el = object.elementSVG?.$el;
+        // @ts-ignore
+        const $groupEl = object.elementSVG?.$groupEl;
 
-      if ($el && $groupEl) {
-        // apply local RTS transformation to <group> wrapper
-        // account for anchor
-        this.applyTransform($groupEl, object.getLocalTransform());
+        if ($el && $groupEl) {
+          // apply local RTS transformation to <group> wrapper
+          // account for anchor
+          this.applyTransform($groupEl, object.getLocalTransform());
 
-        this.reorderChildren($groupEl, (object.children as DisplayObject[]) || []);
-        // finish rendering, clear dirty flag
-        object.renderable.dirty = false;
-      }
+          const children = (object?.children || []).slice() as DisplayObject[];
+          this.reorderChildren($groupEl, children || []);
+          // finish rendering, clear dirty flag
+          object.renderable.dirty = false;
+        }
+      });
+      this.renderQueue = [];
     });
   }
 
@@ -242,17 +255,19 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // need to reorder parent's children
     children.sort((a, b) => a.sortable.renderOrder - b.sortable.renderOrder);
 
-    // create empty fragment
-    const fragment = document.createDocumentFragment();
-    children.forEach((child: DisplayObject) => {
-      // @ts-ignore
-      const $el = child.elementSVG.$groupEl;
-      if ($el) {
-        fragment.appendChild($el);
-      }
-    });
+    if (children.length) {
+      // create empty fragment
+      const fragment = document.createDocumentFragment();
+      children.forEach((child: DisplayObject) => {
+        // @ts-ignore
+        const $el = child.elementSVG.$groupEl;
+        if ($el) {
+          fragment.appendChild($el);
+        }
+      });
 
-    $groupEl.appendChild(fragment);
+      $groupEl.appendChild(fragment);
+    }
   }
 
   private applyTransform($el: SVGElement, transform: mat4) {

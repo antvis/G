@@ -7,7 +7,7 @@ order: -99
 
 -   基于 Canvas2D 的 `g-canvas`
 -   基于 SVG 的 `g-svg`
--   基于 WebGL 的 `g-webgl`
+-   基于 WebGL 2/1 的 `g-webgl`
 
 渲染器由一个渲染上下文和一组插件组成，通过插件可以在运行时动态扩展渲染器的能力。
 
@@ -26,7 +26,29 @@ const webglRenderer = new WebGLRenderer({
 
 ## enableDirtyRectangleRendering
 
-是否开启脏矩阵渲染，仅 `g-canvas` 生效。
+是否开启脏矩形渲染，仅 `g-canvas` 生效。
+
+开启后将大幅提升 Canvas2D 环境下的渲染性能。
+
+## targets
+
+选择渲染环境，仅 `g-webgl` 生效。默认值为 `['webgpu', 'webgl2', 'webgl1']` 并自动按该优先级自动降级。
+
+例如在某些特殊环境下，仅选择在 WebGL1 环境下运行：
+
+```js
+const webglRenderer = new WebGLRenderer({
+    targets: ['webgl1'],
+});
+```
+
+或者配合 [g-plugin-gpgpu](/zh/docs/plugins/gpgpu) 使用时，仅支持在 WebGPU 环境下运行：
+
+```js
+const webglRenderer = new WebGLRenderer({
+    targets: ['webgpu'],
+});
+```
 
 # 修改配置
 
@@ -49,12 +71,14 @@ webglRenderer.registerPlugin(new Plugin());
 # 自定义渲染器
 
 当已有的 `g-canvas/svg/webgl` 这些渲染器不能满足当前渲染环境时，可以按照以下两步完成自定义：
+
 1. 自定义渲染环境上下文服务
 2. 继承 `AbstractRenderer` 实现一个 `Renderer`
 
 ## 自定义渲染环境上下文服务
 
 一个渲染上下文需要实现 `ContextService` 接口：
+
 ```js
 import type { ContextService } from '@antv/g';
 
@@ -79,6 +103,7 @@ export class MyCustomContextService implements ContextService<MyCustomContext> {
 ```
 
 定义完成后，可以在其他插件中通过注入使用该上下文：
+
 ```js
 @injectable()
 export class EventPlugin implements RenderingPlugin {
@@ -98,15 +123,16 @@ export class EventPlugin implements RenderingPlugin {
 ### getContext
 
 返回自定义渲染上下文。
-* `g-canvas` 返回 `CanvasRenderingContext2D`
-* `g-svg` 返回 `SVGElement`
-* `g-webgl` 返回一个复杂对象 `WebGLRenderingContext`
+
+-   `g-canvas` 返回 `CanvasRenderingContext2D`
+-   `g-svg` 返回 `SVGElement`
+-   `g-webgl` 返回一个复杂对象 `WebGLRenderingContext`
 
 ```js
 interface WebGLRenderingContext {
-  engine: RenderingEngine;
-  camera: Camera;
-  view: IView;
+    engine: RenderingEngine;
+    camera: Camera;
+    view: IView;
 }
 ```
 
@@ -123,6 +149,7 @@ interface WebGLRenderingContext {
 ## 实现自定义渲染器
 
 渲染器由一系列插件组成：
+
 ```js
 import { AbstractRenderer, RendererConfig } from '@antv/g';
 import { Plugin as DomInteractionPlugin } from '@antv/g-plugin-dom-interaction';
@@ -131,14 +158,14 @@ import { Plugin as CanvasPickerPlugin } from '@antv/g-plugin-canvas-picker';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export class Renderer extends AbstractRenderer {
-  constructor(config?: Partial<RendererConfig>) {
-    super(config);
+    constructor(config?: Partial<RendererConfig>) {
+        super(config);
 
-    // 注册一系列插件
-    this.registerPlugin(new ContextRegisterPlugin());
-    this.registerPlugin(new CanvasRendererPlugin());
-    this.registerPlugin(new DomInteractionPlugin());
-    this.registerPlugin(new CanvasPickerPlugin());
-  }
+        // 注册一系列插件
+        this.registerPlugin(new ContextRegisterPlugin());
+        this.registerPlugin(new CanvasRendererPlugin());
+        this.registerPlugin(new DomInteractionPlugin());
+        this.registerPlugin(new CanvasPickerPlugin());
+    }
 }
 ```

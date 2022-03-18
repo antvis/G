@@ -109,7 +109,7 @@ canvas.setRenderer({
 
 ## 性能相关
 
-### 脏矩阵渲染
+### 脏矩形渲染
 
 ⚠️ 仅 `g-canvas/g-webgl` 生效
 

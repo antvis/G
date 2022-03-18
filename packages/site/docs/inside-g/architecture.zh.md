@@ -50,7 +50,7 @@ hooks = {
 
 -   prepareEntities 首次挂载到画布时调用，触发渲染对象的 `mounted` 生命周期
 
-**DirtyCheckPlugin** 实现[脏矩阵渲染](/zh/docs/guide/advanced-topics/performance-optimization#脏矩形渲染)
+**DirtyCheckPlugin** 实现[脏矩形渲染](/zh/docs/guide/advanced-topics/performance-optimization#脏矩形渲染)
 
 -   init 监听每个待渲染对象的包围盒变更
 -   prepareEntities 过滤包含了脏标记的待渲染对象列表，合并脏矩形，通过 R-Tree 加速查询增量重绘对象列表
@@ -71,7 +71,7 @@ hooks = {
 
 -   beginFrame
     -   `context.save()`
-    -   擦除脏矩阵，创建 clip
+    -   擦除脏矩形，创建 clip
 -   renderFrame
     -   应用变换矩阵
     -   在 Canvas 2D 上下文中应用属性

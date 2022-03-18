@@ -590,7 +590,10 @@ export class DisplayObject<
 
   isVisible() {
     const cullable = this.cullable;
-    return this.style.visibility === 'visible' && (!cullable || (cullable && !cullable.isCulled()));
+    return (
+      this.getAttribute('visibility') === 'visible' &&
+      (!cullable || (cullable && !cullable.isCulled()))
+    );
   }
 
   /**

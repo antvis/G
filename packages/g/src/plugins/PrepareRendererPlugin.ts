@@ -3,7 +3,7 @@ import type { Element, FederatedEvent } from '../dom';
 import { ElementEvent } from '../dom';
 import {
   RenderingContext,
-  RENDER_REASON,
+  RenderReason,
   RenderingPluginContribution,
   dirtifyToRoot,
 } from '../services';
@@ -18,7 +18,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     const handleAttributeChanged = () => {
-      this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectChanged);
+      this.renderingContext.renderReasons.add(RenderReason.DISPLAY_OBJECT_CHANGED);
     };
 
     const handleBoundsChanged = () => {

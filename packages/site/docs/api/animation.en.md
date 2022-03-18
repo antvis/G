@@ -157,6 +157,8 @@ const currentTime = animation.currentTime;
 animation.currentTime = newTime;
 ```
 
+在该[示例](/zh/examples/animation#offset-path)中，可以随时修改改属性，由于该动画单次执行时间为 3500ms，缓动函数又是线性，因此小圆形会回到路径对应的位置，再继续移动。
+
 ### playState
 
 返回动画的运行状态。当一些手动控制方法（例如 `pause()`）被调用后，状态发生改变。

@@ -1,50 +1,41 @@
-// import { vec3, mat4 } from 'gl-matrix';
-// import { inject, singleton } from 'mana-syringe';
+import { inject, singleton } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
-import { singleton } from 'mana-syringe';
 import { CullingStrategyContribution } from './CullingPlugin';
 import type { AABB, Plane } from '../shapes';
 import { Mask } from '../shapes';
-// import { DefaultCamera, Camera } from '../camera/Camera';
+import { DefaultCamera, Camera } from '../camera/Camera';
 import type { DisplayObject } from '../display-objects/DisplayObject';
-// import type { Element } from '../dom';
+import type { Element } from '../dom';
 
 @singleton({ contrib: CullingStrategyContribution })
 export class FrustumCullingStrategy implements CullingStrategyContribution {
-  // @inject(DefaultCamera)
-  // private camera: Camera;
+  @inject(DefaultCamera)
+  private camera: Camera;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isVisible(object: DisplayObject) {
-    return true;
+    const cullable = object.cullable;
+    if (!cullable.enable) {
+      return true;
+    }
 
-    // const entity = object.entity;
-    // const cullable = object.cullable;
-    // if (!cullable.enable) {
-    //   return true;
-    // }
+    const renderBounds = object.getRenderBounds();
+    if (!renderBounds) {
+      return false;
+    }
 
-    // const renderBounds = object.getRenderBounds();
-    // if (!renderBounds) {
-    //   return false;
-    // }
+    // get VP matrix from camera
+    const frustum = this.camera.getFrustum();
 
-    // const viewMatrix = this.camera.getViewTransform();
-    // const vpMatrix = mat4.multiply(mat4.create(), this.camera.getPerspective(), viewMatrix);
+    const parentVisibilityPlaneMask = (object.parentNode as Element)?.cullable?.visibilityPlaneMask;
+    cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
+      renderBounds,
+      parentVisibilityPlaneMask || Mask.INDETERMINATE,
+      frustum.planes,
+    );
 
-    // // get VP matrix from camera
-    // this.camera.getFrustum().extractFromVPMatrix(vpMatrix);
+    cullable.visible = cullable.visibilityPlaneMask !== Mask.OUTSIDE;
 
-    // const parentVisibilityPlaneMask = (object.parentNode as Element)?.cullable?.visibilityPlaneMask;
-    // cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
-    //   renderBounds,
-    //   parentVisibilityPlaneMask || Mask.INDETERMINATE,
-    //   this.camera.getFrustum().planes,
-    // );
-
-    // cullable.visible = cullable.visibilityPlaneMask !== Mask.OUTSIDE;
-
-    // return cullable.visible;
+    return cullable.visible;
   }
 
   /**

@@ -483,7 +483,7 @@
         circle.getGeometryBounds(); // 尺寸依然等于 geometryBounds
         ```
     -   getRenderBounds 会考虑一些绘图属性，例如 lineWidth 边框宽度，padding，阴影以及部分滤镜（blur、drop-shadow），顾名思义它在渲染管线中会使用到：
-        -   脏矩阵渲染中清除区域据此计算
+        -   脏矩形渲染中清除区域据此计算
         -   内置剔除插件使用该包围盒
 
 ### Bug 修复
