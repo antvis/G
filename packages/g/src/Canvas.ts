@@ -10,7 +10,7 @@ import { Camera, CameraEvent, CAMERA_PROJECTION_MODE, DefaultCamera } from './ca
 import { containerModule as commonContainerModule } from './canvas-module';
 import type { IRenderer } from './AbstractRenderer';
 import { cancelAnimationFrame, requestAnimationFrame, patch } from './utils/raf';
-import { AABB, PointLike } from './shapes';
+import type { PointLike } from './shapes';
 import type { FederatedEvent, Element, IChildNode } from './dom';
 import { Document, EventTarget, ElementEvent } from './dom';
 import type { INode, ICanvas } from './dom/interfaces';

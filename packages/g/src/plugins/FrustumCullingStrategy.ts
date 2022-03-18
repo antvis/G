@@ -1,7 +1,7 @@
 import { inject, singleton } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
 import { CullingStrategyContribution } from './CullingPlugin';
-import { AABB, Plane } from '../shapes';
+import type { AABB, Plane } from '../shapes';
 import { Mask } from '../shapes';
 import { DefaultCamera, Camera } from '../camera/Camera';
 import type { DisplayObject } from '../display-objects/DisplayObject';

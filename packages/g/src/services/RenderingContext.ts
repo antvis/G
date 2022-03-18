@@ -1,5 +1,4 @@
 import type { Group } from '../display-objects';
-import { AABB } from '../shapes';
 
 /**
  * why we need re-render
