@@ -23,7 +23,11 @@ function isAngleUnit(unit: string) {
   return unit === 'deg' || unit === 'rad' || unit === 'turn';
 }
 
-export function parseDimension(unitRegExp: RegExp, string: string): ParsedElement | undefined {
+export function parseDimension(
+  unitRegExp: RegExp,
+  string: string,
+  object: DisplayObject,
+): ParsedElement | undefined {
   string = `${string}`.trim().toLowerCase();
 
   if (string === '0') {
@@ -46,7 +50,10 @@ export function parseDimension(unitRegExp: RegExp, string: string): ParsedElemen
     }
   }
 
-  // if (string.endsWith('em')) {}
+  if (string.endsWith('em')) {
+    const { value: parentFontSize } = (object.parentElement as DisplayObject).parsedStyle.fontSize;
+    return { unit: 'px', value: parentFontSize * Number(string.replace('em', '')) };
+  }
 
   const matchedUnits: Unit[] = [];
   string = string.replace(unitRegExp, (match: string) => {
@@ -151,6 +158,12 @@ export function convertPercentUnit(
       size = bounds.halfExtents[vec3Index] * 2;
     }
     return (Number(valueWithUnit.value) / 100) * size;
+    // } else if (valueWithUnit.unit === 'em' && target) {
+    //   const { value: parentFontSize } = (target.parentElement as DisplayObject).parsedStyle.fontSize;
+
+    //   console.log(target, parentFontSize, valueWithUnit.value);
+
+    //   return valueWithUnit.value * parentFontSize;
   }
   return 0;
 }

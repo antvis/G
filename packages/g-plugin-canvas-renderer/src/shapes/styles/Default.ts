@@ -35,6 +35,7 @@ export class DefaultRenderer implements StyleRenderer {
       lineJoin,
       shadowColor,
       filter,
+      miterLimit,
     } = parsedStyle;
 
     if (!isNil(fill)) {
@@ -54,6 +55,9 @@ export class DefaultRenderer implements StyleRenderer {
           context.globalAlpha = strokeOpacity;
         }
         context.lineWidth = lineWidth;
+        if (!isNil(miterLimit)) {
+          context.miterLimit = miterLimit;
+        }
 
         if (!isNil(lineCap)) {
           context.lineCap = lineCap;

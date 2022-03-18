@@ -13,6 +13,7 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedBaseStylePro
       type: SHAPE.Polygon,
       style: {
         points: [],
+        miterLimit: 4,
         ...style,
       },
       ...rest,

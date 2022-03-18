@@ -1,4 +1,5 @@
 import { inject, singleton } from 'mana-syringe';
+import type { DisplayObject } from '..';
 import type { Element, FederatedEvent } from '../dom';
 import { ElementEvent } from '../dom';
 import {
@@ -8,6 +9,9 @@ import {
   dirtifyToRoot,
 } from '../services';
 import type { RenderingService, RenderingPlugin } from '../services/RenderingService';
+
+const INHERIT_PROPERTIES = ['textAlign', 'fontSize', 'fontFamily', 'fontWeight', 'fontStyle'];
+const RELATIVE_PROPERTIES = ['dx', 'dy'];
 
 @singleton({ contrib: RenderingPluginContribution })
 export class PrepareRendererPlugin implements RenderingPlugin {
@@ -26,7 +30,32 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     };
 
     const handleMounted = (e: FederatedEvent) => {
-      dirtifyToRoot(e.target as Element);
+      const object = e.target as DisplayObject;
+      // compute some style
+      INHERIT_PROPERTIES.forEach((name) => {
+        if (object.getAttribute(name) === 'inherit') {
+          const calculated = this.calculateInheritStyleProperty(object, name);
+          object.parsedStyle[name] = calculated;
+          object.updateStyleProperty(name, 'inherit', calculated);
+
+          console.log('parsed relative', name, calculated, object.style.text);
+        }
+      });
+
+      // RELATIVE_PROPERTIES.forEach((name) => {
+      //   if (object.parsedStyle.hasOwnProperty(name)) {
+      //     const oldParsedValue = object.parsedStyle[name];
+      //     const { unit, value } = oldParsedValue;
+      //     if (unit === 'em') {
+      //       const { value: parentFontSize } = (object.parentElement as DisplayObject).parsedStyle
+      //         .fontSize;
+      //       object.parsedStyle[name] = { unit: 'px', value: value * parentFontSize };
+      //       object.updateStyleProperty(name, oldParsedValue, object.parsedStyle[name]);
+      //     }
+      //   }
+      // });
+
+      dirtifyToRoot(object);
       renderingService.dirtify();
     };
 
@@ -57,5 +86,19 @@ export class PrepareRendererPlugin implements RenderingPlugin {
         handleBoundsChanged,
       );
     });
+  }
+
+  private calculateInheritStyleProperty(child: DisplayObject, name: string) {
+    let ascendant = child.parentElement;
+    while (ascendant) {
+      if (
+        ascendant.getAttribute(name) !== 'inherit' &&
+        ascendant.parsedStyle.hasOwnProperty(name)
+      ) {
+        return ascendant.parsedStyle[name];
+      }
+      ascendant = ascendant.parentElement;
+    }
+    return null;
   }
 }

@@ -111,6 +111,7 @@ const FORMAT_VALUE_MAP = {
 
 export const DEFAULT_VALUE_MAP: Record<string, string> = {
   textAlign: 'inherit',
+  // textBaseline: 'alphabetic',
   // @see https://www.w3.org/TR/SVG/painting.html#LineCaps
   lineCap: 'butt',
   // @see https://www.w3.org/TR/SVG/painting.html#LineJoin

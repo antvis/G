@@ -22,6 +22,7 @@ export class Polyline extends DisplayObject<PolylineStyleProps, ParsedBaseStyleP
         lineJoin: LINE_JOIN.Miter,
         lineCap: LINE_CAP.Butt,
         lineWidth: 1,
+        miterLimit: 4,
         ...style,
       },
       ...rest,

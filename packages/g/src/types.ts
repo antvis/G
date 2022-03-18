@@ -167,6 +167,11 @@ export interface BaseStyleProps {
    * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-transform
    */
   textTransform?: TextTransform;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/miterLimit
+   */
+  miterLimit?: number;
 }
 
 export interface ParsedBaseStyleProps

@@ -24,22 +24,22 @@ export class CSSCalculatorPlugin implements RenderingPlugin {
       this.renderingContext.root.forEach((child: DisplayObject) => {
         INHERIT_PROPERTIES.forEach((name) => {
           if (child.getAttribute(name) === 'inherit') {
-            const calculated = this.calculateInheritStyleProperty(child, name);
-            child.parsedStyle[name] = calculated;
-            child.updateStyleProperty(name, 'inherit', calculated);
+            // const calculated = this.calculateInheritStyleProperty(child, name);
+            // child.parsedStyle[name] = calculated;
+            // child.updateStyleProperty(name, 'inherit', calculated);
           }
         });
 
         RELATIVE_PROPERTIES.forEach((name) => {
           if (child.parsedStyle.hasOwnProperty(name)) {
-            const oldParsedValue = child.parsedStyle[name];
-            const { unit, value } = oldParsedValue;
-            if (unit === 'em') {
-              const { value: parentFontSize } = (child.parentElement as DisplayObject).parsedStyle
-                .fontSize;
-              child.parsedStyle[name] = { unit: 'px', value: value * parentFontSize };
-              child.updateStyleProperty(name, oldParsedValue, child.parsedStyle[name]);
-            }
+            // const oldParsedValue = child.parsedStyle[name];
+            // const { unit, value } = oldParsedValue;
+            // if (unit === 'em') {
+            //   const { value: parentFontSize } = (child.parentElement as DisplayObject).parsedStyle
+            //     .fontSize;
+            //   child.parsedStyle[name] = { unit: 'px', value: value * parentFontSize };
+            //   child.updateStyleProperty(name, oldParsedValue, child.parsedStyle[name]);
+            // }
           }
         });
       });

@@ -118,6 +118,22 @@ line.getLocalPosition(); // [200, 100]
 
 **是否必须**：`false`
 
+## lineCap
+
+**类型**： `string`
+
+**默认值**：`miter`
+
+**是否必须**：`false`
+
+端点样式，支持以下取值：
+
+-   'butt' 默认值
+-   'round'
+-   'square'
+
+可参考 Canvas2D [同名属性](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineCap)。
+
 ## isBillboard
 
 3D 场景中生效，始终朝向屏幕，因此线宽不受透视投影影像。[示例](/zh/examples/3d#force-3d)

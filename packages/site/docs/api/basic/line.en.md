@@ -118,6 +118,22 @@ line.getLocalPosition(); // [200, 100]
 
 **是否必须**：`false`
 
+## lineCap
+
+**类型**： `string`
+
+**默认值**：`miter`
+
+**是否必须**：`false`
+
+端点样式，支持以下取值：
+
+-   'butt' 默认值
+-   'round'
+-   'square'
+
+可参考 Canvas2D [同名属性](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineCap)。
+
 ## isBillboard
 
 3D 场景中生效，始终朝向屏幕，因此线宽不受透视投影影像。[示例](/zh/examples/3d#force-3d)
@@ -156,3 +172,24 @@ export type Point = {
 ```js
 line.getPoint(0.5); // Point {x: 300, y: 100}
 ```
+
+# 3D 场景中的线
+
+需要配合 `g-webgl` 渲染器与 `g-plugin-3d` 插件使用。
+
+将端点坐标拓展到三维：
+
+```js
+new Line({
+    style: {
+        x1: 200,
+        y1: 100,
+        z1: 0, // Z 轴坐标
+        x2: 400,
+        y2: 100,
+        z2: 100, // Z 轴坐标
+    },
+});
+```
+
+2D 的线在正交投影下可以保证一致的宽度，但是在透视投影下就无法保证了。在某些需要时刻保持线宽一致的 3D 场景下，可以开启 [isBillboard](/zh/docs/api/basic/line#isbillboard)，[示例](/zh/examples/3d#force-3d)

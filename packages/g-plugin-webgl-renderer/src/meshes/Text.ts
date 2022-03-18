@@ -61,17 +61,7 @@ export class TextMesh extends Instanced {
 
   createGeometry(objects: DisplayObject[]): void {
     const object = this.instance as TextShape;
-    const { textBaseline, fontSize, letterSpacing = 0, dx, dy } = object.parsedStyle;
-
-    // account for dx & dy
-    let offsetX = 0;
-    let offsetY = 0;
-    if (dx && dx.unit === 'px') {
-      offsetX += dx.value;
-    }
-    if (dy && dy.unit === 'px') {
-      offsetY += dy.value;
-    }
+    const { textBaseline, fontSize, letterSpacing = 0 } = object.parsedStyle;
 
     // scale current font size to base(24)
     const fontScale = BASE_FONT_WIDTH / fontSize.value;
@@ -81,8 +71,18 @@ export class TextMesh extends Instanced {
     const packed = [];
     let indicesOff = 0;
     objects.forEach((object) => {
-      const { metrics } = object.parsedStyle;
+      const { metrics, dx, dy } = object.parsedStyle;
       const { font, lines, height, lineHeight } = metrics;
+
+      // account for dx & dy
+      let offsetX = 0;
+      let offsetY = 0;
+      if (dx && dx.unit === 'px') {
+        offsetX += dx.value;
+      }
+      if (dy && dy.unit === 'px') {
+        offsetY += dy.value;
+      }
 
       let linePositionY = 0;
       // handle vertical text baseline
