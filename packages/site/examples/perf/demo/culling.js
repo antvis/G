@@ -1,4 +1,4 @@
-import { Circle, Text, Canvas } from '@antv/g';
+import { Rect, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -20,31 +20,32 @@ const canvas = new Canvas({
 const camera = canvas.getCamera();
 camera.setZoom(0.1);
 
-// add a circle to canvas
-const circle = new Circle({
+const rect = new Rect({
   style: {
     x: 250,
     y: 250,
-    r: 1000,
+    width: 2000,
+    height: 2000,
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
   },
 });
 
-const culledCircle = new Circle({
+const culledRect = new Rect({
   style: {
     x: 250 - 2500,
     y: 250 - 2500,
-    r: 1000,
+    width: 2000,
+    height: 2000,
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
   },
 });
 
-canvas.appendChild(circle);
-canvas.appendChild(culledCircle);
+canvas.appendChild(rect);
+canvas.appendChild(culledRect);
 
 // stats
 const stats = new Stats();
@@ -83,8 +84,8 @@ const cameraConfig = {
   roll: 0,
 };
 const printVisibility = () => {
-  console.log("circle1's visibility:", circle.isVisible() ? 'visible' : 'hidden');
-  console.log("circle2's visibility:", culledCircle.isVisible() ? 'visible' : 'hidden');
+  console.log("rect1's visibility:", rect.isVisible() ? 'visible' : 'hidden');
+  console.log("rect2's visibility:", culledRect.isVisible() ? 'visible' : 'hidden');
 };
 
 const origin = camera.getPosition();

@@ -1,9 +1,7 @@
-import { inject, singleton, contrib, Syringe, Contribution } from 'mana-syringe';
+import { singleton, contrib, Syringe, Contribution } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { RenderingService, RenderingPlugin } from '../services/RenderingService';
 import { RenderingPluginContribution } from '../services/RenderingService';
-import { RenderingContext } from '../services/RenderingContext';
-import { CanvasConfig } from '../types';
 
 export const CullingStrategyContribution = Syringe.defineToken('CullingStrategyContribution');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -20,14 +18,8 @@ export interface CullingStrategyContribution {
 export class CullingPlugin implements RenderingPlugin {
   static tag = 'CullingPlugin';
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
-
   @contrib(CullingStrategyContribution)
   private strategyProvider: Contribution.Provider<CullingStrategyContribution>;
-
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
     const strategies = this.strategyProvider.getContributions();

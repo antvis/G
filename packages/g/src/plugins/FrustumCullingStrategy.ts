@@ -1,11 +1,26 @@
 import { inject, singleton } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
 import { CullingStrategyContribution } from './CullingPlugin';
-import type { AABB, Plane } from '../shapes';
+import { AABB, Plane } from '../shapes';
 import { Mask } from '../shapes';
 import { DefaultCamera, Camera } from '../camera/Camera';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { Element } from '../dom';
+import { SHAPE } from '..';
+
+// group is not a 2d shape
+const shape2D = [
+  SHAPE.Circle,
+  SHAPE.Ellipse,
+  SHAPE.Image,
+  SHAPE.Rect,
+  SHAPE.Line,
+  SHAPE.Polyline,
+  SHAPE.Polygon,
+  SHAPE.Text,
+  SHAPE.Path,
+  SHAPE.HTML,
+];
 
 @singleton({ contrib: CullingStrategyContribution })
 export class FrustumCullingStrategy implements CullingStrategyContribution {
@@ -28,6 +43,7 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
 
     const parentVisibilityPlaneMask = (object.parentNode as Element)?.cullable?.visibilityPlaneMask;
     cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
+      object,
       renderBounds,
       parentVisibilityPlaneMask || Mask.INDETERMINATE,
       frustum.planes,
@@ -52,7 +68,12 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
    * @param parentPlaneMask mask of parent
    * @param planes planes of frustum
    */
-  private computeVisibilityWithPlaneMask(aabb: AABB, parentPlaneMask: Mask, planes: Plane[]) {
+  private computeVisibilityWithPlaneMask(
+    object: DisplayObject,
+    aabb: AABB,
+    parentPlaneMask: Mask,
+    planes: Plane[],
+  ) {
     if (parentPlaneMask === Mask.OUTSIDE || parentPlaneMask === Mask.INSIDE) {
       // 父节点完全位于视锥内或者外部，直接返回
       return parentPlaneMask;
@@ -62,11 +83,21 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
     // (Because if there are fewer than 31 planes, the upper bits wont be changed.)
     let mask = Mask.INSIDE;
 
+    const isShape2D = shape2D.indexOf(object.nodeName as SHAPE) > -1;
+
+    // Use viewport culling for 2D shapes
+    // @see https://github.com/antvis/g/issues/914
     for (let k = 0, len = planes.length; k < len; ++k) {
       // For k greater than 31 (since 31 is the maximum number of INSIDE/INTERSECTING bits we can store), skip the optimization.
-      const flag = k < 31 ? 1 << k : 0;
-      if (k < 31 && (parentPlaneMask & flag) === 0) {
+      const flag = 1 << k;
+
+      if ((parentPlaneMask & flag) === 0) {
         // 父节点处于当前面内部，可以跳过
+        continue;
+      }
+
+      // skip near & far planes when testing 2D shapes
+      if (isShape2D && (k === 4 || k === 5)) {
         continue;
       }
 

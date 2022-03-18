@@ -275,7 +275,7 @@ export class Camera extends EventEmitter {
    * 计算 MV 矩阵，为相机矩阵的逆矩阵
    */
   getViewTransform(): mat4 {
-    return mat4.invert(mat4.create(), this.matrix)!;
+    return mat4.invert(mat4.create(), this.matrix);
   }
 
   getWorldTransform(): mat4 {
