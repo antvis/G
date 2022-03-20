@@ -1,5 +1,5 @@
 import type { RendererPlugin } from '@antv/g';
-import { SHAPE, globalContainer } from '@antv/g';
+import { Shape, globalContainer } from '@antv/g';
 import type { Syringe } from 'mana-syringe';
 import { Module } from 'mana-syringe';
 import RBush from 'rbush';
@@ -32,31 +32,31 @@ export type { RBushNodeAABB };
  * register shape renderers
  */
 globalContainer.register({
-  token: { token: PathGenerator, named: SHAPE.Circle },
+  token: { token: PathGenerator, named: Shape.CIRCLE },
   useValue: CirclePath,
 });
 globalContainer.register({
-  token: { token: PathGenerator, named: SHAPE.Ellipse },
+  token: { token: PathGenerator, named: Shape.ELLIPSE },
   useValue: EllipsePath,
 });
 globalContainer.register({
-  token: { token: PathGenerator, named: SHAPE.Rect },
+  token: { token: PathGenerator, named: Shape.RECT },
   useValue: RectPath,
 });
 globalContainer.register({
-  token: { token: PathGenerator, named: SHAPE.Line },
+  token: { token: PathGenerator, named: Shape.LINE },
   useValue: LinePath,
 });
 globalContainer.register({
-  token: { token: PathGenerator, named: SHAPE.Polyline },
+  token: { token: PathGenerator, named: Shape.POLYLINE },
   useValue: PolylinePath,
 });
 globalContainer.register({
-  token: { token: PathGenerator, named: SHAPE.Polygon },
+  token: { token: PathGenerator, named: Shape.POLYGON },
   useValue: PolygonPath,
 });
 globalContainer.register({
-  token: { token: PathGenerator, named: SHAPE.Path },
+  token: { token: PathGenerator, named: Shape.PATH },
   useValue: PathPath,
 });
 
@@ -64,7 +64,7 @@ globalContainer.register({
   token: PathGeneratorFactory,
   useFactory: (ctx) => {
     const cache = {};
-    return (tagName: SHAPE) => {
+    return (tagName: Shape) => {
       if (!cache[tagName]) {
         if (ctx.container.isBoundNamed(PathGenerator, tagName)) {
           cache[tagName] = ctx.container.getNamed(PathGenerator, tagName);
@@ -87,7 +87,7 @@ const containerModule = Module((register) => {
     token: StyleRendererFactory,
     useFactory: (ctx) => {
       const cache = {};
-      return (tagName: SHAPE) => {
+      return (tagName: Shape) => {
         if (!cache[tagName]) {
           if (ctx.container.isBoundNamed(StyleRenderer, tagName)) {
             cache[tagName] = ctx.container.getNamed(StyleRenderer, tagName);

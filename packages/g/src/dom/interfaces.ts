@@ -1,6 +1,6 @@
 import type EventEmitter from 'eventemitter3';
 import type { AnimationTimeline } from './AnimationTimeline';
-import type { BaseStyleProps, SHAPE } from '../types';
+import type { BaseStyleProps, Shape } from '../types';
 import type { FederatedEvent } from './FederatedEvent';
 import type { CustomElementRegistry } from './CustomElementRegistry';
 import type { DisplayObject } from '..';
@@ -277,6 +277,10 @@ export interface DisplayObjectConfig<StyleProps> {
 
   name?: string;
 
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/className
+   */
+  class?: string;
   className?: string;
 
   /**
@@ -291,7 +295,7 @@ export interface DisplayObjectConfig<StyleProps> {
    */
   attrs?: StyleProps;
 
-  type?: SHAPE | string;
+  type?: Shape | string;
 
   /**
    * @deprecated use `style.zIndex` instead

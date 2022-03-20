@@ -36,10 +36,10 @@ export class SVGPickerPlugin implements RenderingPlugin {
         let target = null;
         // eg. g_svg_circle_345
         const id = element && element.getAttribute('id');
-        if (id) {
+        if (id && id.startsWith('g_')) {
           const index = id.lastIndexOf('_');
           target = this.displayObjectPool.getByEntity(Number(id.substring(index + 1)));
-          if (!target.interactive) {
+          if (target && !target.interactive) {
             target = null;
           }
         }

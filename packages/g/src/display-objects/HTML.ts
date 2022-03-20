@@ -1,4 +1,4 @@
-import { SHAPE } from '../types';
+import { Shape } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
@@ -30,7 +30,7 @@ export interface ParsedHTMLStyleProps extends ParsedBaseStyleProps {
 export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<HTMLStyleProps> = {}) {
     super({
-      type: SHAPE.HTML,
+      type: Shape.HTML,
       style: {
         innerHTML: '',
         className: '',

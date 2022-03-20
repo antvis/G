@@ -1,4 +1,4 @@
-import { DisplayObject, SHAPE } from '@antv/g';
+import { DisplayObject, Shape } from '@antv/g';
 import { injectable } from 'mana-syringe';
 import { InstancedLineMesh } from '../meshes';
 import { ShapeRenderer } from '../tokens';
@@ -12,7 +12,7 @@ import { Batch } from './Batch';
  * TODO: joint & cap
  */
 @injectable({
-  token: { token: ShapeRenderer, named: SHAPE.Line },
+  token: { token: ShapeRenderer, named: Shape.LINE },
 })
 export class LineRenderer extends Batch {
   meshes = [InstancedLineMesh];

@@ -1,11 +1,11 @@
-import { ParsedImageStyleProps, SHAPE } from '@antv/g';
+import { ParsedImageStyleProps, Shape } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { isNil, isString } from '@antv/util';
 import { ImagePool } from '../ImagePool';
 import { StyleRenderer } from './interfaces';
 
 @singleton({
-  token: { token: StyleRenderer, named: SHAPE.Image },
+  token: { token: StyleRenderer, named: Shape.IMAGE },
 })
 export class ImageRenderer implements StyleRenderer {
   @inject(ImagePool)

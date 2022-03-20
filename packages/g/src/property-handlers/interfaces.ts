@@ -6,6 +6,7 @@ export const StylePropertyParser = 'StylePropertyParser';
 export type StylePropertyParser<Original, Parsed> = (
   value: Original,
   displayObject: IElement | null,
+  name: string,
 ) => Parsed;
 export const StylePropertyParserFactory = 'StylePropertyParserFactory';
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -26,6 +27,7 @@ export type StylePropertyUpdater<Original> = (
   newValue: Original,
   displayObject: IElement,
   sceneGraphService: SceneGraphService,
+  name: string,
 ) => void;
 export const StylePropertyUpdaterFactory = 'StylePropertyUpdaterFactory';
 // eslint-disable-next-line @typescript-eslint/no-redeclare

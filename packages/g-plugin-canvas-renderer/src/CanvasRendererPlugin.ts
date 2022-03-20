@@ -1,6 +1,6 @@
 import {
   AABB,
-  SHAPE,
+  Shape,
   DisplayObject,
   DisplayObjectPool,
   CanvasConfig,
@@ -67,10 +67,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private gradientPool: GradientPool;
 
   @inject(PathGeneratorFactory)
-  private pathGeneratorFactory: (tagName: SHAPE | string) => PathGenerator<any>;
+  private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>;
 
   @inject(StyleRendererFactory)
-  private styleRendererFactory: (tagName: SHAPE | string) => StyleRenderer;
+  private styleRendererFactory: (tagName: Shape | string) => StyleRenderer;
 
   @inject(DisplayObjectPool)
   private displayObjectPool: DisplayObjectPool;
@@ -236,7 +236,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         if (!this.clearFullScreen) {
           // merge removed AABB
           const dirtyRenderBounds = this.safeMergeAABB(
-            this.mergeDirtyAABBs(this.renderQueue.filter((o) => o.nodeName !== SHAPE.Group)),
+            this.mergeDirtyAABBs(this.renderQueue.filter((o) => o.nodeName !== Shape.GROUP)),
             ...this.removedRBushNodeAABBs.map(({ minX, minY, maxX, maxY }) => {
               const aabb = new AABB();
               aabb.setMinMax(vec3.fromValues(minX, minY, 0), vec3.fromValues(maxX, maxY, 0));
@@ -406,9 +406,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         generatePath(context, object.parsedStyle);
         if (
           !this.enableBatch &&
-          object.nodeName !== SHAPE.Line &&
-          object.nodeName !== SHAPE.Path &&
-          object.nodeName !== SHAPE.Polyline
+          object.nodeName !== Shape.LINE &&
+          object.nodeName !== Shape.PATH &&
+          object.nodeName !== Shape.POLYLINE
         ) {
           context.closePath();
         }

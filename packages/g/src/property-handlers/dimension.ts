@@ -1,8 +1,13 @@
 import { numberToString } from './numeric';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import { rad2deg } from '../utils/math';
-import { isFinite } from '@antv/util';
+import { isFinite, isNil } from '@antv/util';
 import { AABB } from '../shapes';
+import { computeInheritStyleProperty } from './inherit';
+
+/**
+ * @see https://drafts.csswg.org/css-values-4/#dimension
+ */
 
 export type LengthUnit = 'px' | '%' | 'em';
 export type AngleUnit = 'deg' | 'rad' | 'turn';
@@ -27,8 +32,16 @@ export function parseDimension(
   unitRegExp: RegExp,
   string: string,
   object: DisplayObject,
+  name: string,
 ): ParsedElement | undefined {
   string = `${string}`.trim().toLowerCase();
+
+  if (string === 'inherit') {
+    const computed = computeInheritStyleProperty(object, name);
+    if (!isNil(computed)) {
+      return computed;
+    }
+  }
 
   if (string === '0') {
     if ('px'.search(unitRegExp) >= 0) {
@@ -51,8 +64,14 @@ export function parseDimension(
   }
 
   if (string.endsWith('em')) {
-    const { value: parentFontSize } = (object.parentElement as DisplayObject).parsedStyle.fontSize;
-    return { unit: 'px', value: parentFontSize * Number(string.replace('em', '')) };
+    let pxValue = 0;
+    if (object.parentElement) {
+      const { fontSize } = object.parentElement.parsedStyle;
+      if (fontSize && fontSize.value) {
+        pxValue = fontSize.value * Number(string.replace('em', ''));
+      }
+    }
+    return { unit: 'px', value: pxValue };
   }
 
   const matchedUnits: Unit[] = [];
@@ -112,11 +131,20 @@ export function mergeDimensions(
 }
 
 const lengthUnits = 'px';
+
+/**
+ * length with only absolute unit, eg. 1px
+ */
 export const parseLength = parseDimension.bind(null, new RegExp(lengthUnits, 'g'));
+
+/**
+ * length with absolute or relative unit, eg. 1px, 0.7em, 50%
+ */
 export const parseLengthOrPercent = parseDimension.bind(
   null,
   new RegExp(lengthUnits + '|%|em', 'g'),
 );
+
 export const parseAngle = parseDimension.bind(null, /deg|rad|grad|turn/g);
 
 export function parseLengthOrPercentList(list: (string | number)[]): ParsedElement[] {
@@ -158,12 +186,6 @@ export function convertPercentUnit(
       size = bounds.halfExtents[vec3Index] * 2;
     }
     return (Number(valueWithUnit.value) / 100) * size;
-    // } else if (valueWithUnit.unit === 'em' && target) {
-    //   const { value: parentFontSize } = (target.parentElement as DisplayObject).parsedStyle.fontSize;
-
-    //   console.log(target, parentFontSize, valueWithUnit.value);
-
-    //   return valueWithUnit.value * parentFontSize;
   }
   return 0;
 }

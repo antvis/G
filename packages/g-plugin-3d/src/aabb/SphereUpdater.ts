@@ -2,9 +2,9 @@
 // import { singleton } from 'mana-syringe';
 // import { GeometryAABBUpdater, AABB } from '@antv/g';
 // import { SphereStyleProps } from '../Sphere';
-// import { SHAPE_3D } from '../types';
+// import { Shape_3D } from '../types';
 
-// @singleton({ token: { token: GeometryAABBUpdater, named: SHAPE_3D.Sphere } })
+// @singleton({ token: { token: GeometryAABBUpdater, named: Shape_3D.Sphere } })
 // // @ts-ignore
 // export class SphereUpdater implements GeometryAABBUpdater<SphereStyleProps> {
 //   dependencies = ['height', 'width', 'depth', 'anchor'];

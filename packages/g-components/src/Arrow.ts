@@ -1,5 +1,5 @@
 import type { DisplayObject, Line, Polyline, BaseStyleProps, DisplayObjectConfig } from '@antv/g';
-import { CustomElement, Path, SHAPE } from '@antv/g';
+import { CustomElement, Path, Shape } from '@antv/g';
 import { vec3 } from 'gl-matrix';
 import { isNil } from '@antv/util';
 
@@ -153,20 +153,20 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
 
     const bodyType = this.body && this.body.nodeName;
 
-    if (bodyType === SHAPE.Line) {
+    if (bodyType === Shape.LINE) {
       const { x1: _x1, x2: _x2, y1: _y1, y2: _y2 } = (this.body as Line).attributes;
       x1 = isStart ? _x1 : _x2;
       x2 = isStart ? _x2 : _x1;
       y1 = isStart ? _y1 : _y2;
       y2 = isStart ? _y2 : _y1;
-    } else if (bodyType === SHAPE.Polyline) {
+    } else if (bodyType === Shape.POLYLINE) {
       const points = (this.body as Polyline).attributes.points;
       const { length } = points;
       x1 = isStart ? points[1][0] : points[length - 2][0];
       y1 = isStart ? points[1][1] : points[length - 2][1];
       x2 = isStart ? points[0][0] : points[length - 1][0];
       y2 = isStart ? points[0][1] : points[length - 1][1];
-    } else if (bodyType === SHAPE.Path) {
+    } else if (bodyType === Shape.PATH) {
       const [p1, p2] = this.getTangent(this.body as Path, isStart);
       x1 = p1[0];
       y1 = p1[1];

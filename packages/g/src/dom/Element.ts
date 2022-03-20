@@ -49,7 +49,13 @@ export class Element<
    * used in `getElementsByClassName`
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByClassName
    */
-  className: string;
+  get className() {
+    return this.getAttribute('class') || '';
+  }
+
+  set className(className: string) {
+    this.setAttribute('class', className);
+  }
 
   /**
    * used in `getElementsByName`
@@ -383,7 +389,7 @@ export class Element<
     const [attributeName] = formatAttribute(name as string, '');
     const value = this.attributes[attributeName];
     // if the given attribute does not exist, the value returned will either be null or ""
-    return isNil(value) ? undefined : value;
+    return isNil(value) ? null : value;
   }
 
   /**

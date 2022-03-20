@@ -3,10 +3,11 @@ import {
   DefaultCamera,
   DisplayObject,
   parseColor,
+  ParsedBaseStyleProps,
   ParsedColorStyleProperty,
   PARSED_COLOR_TYPE,
   RenderingService,
-  SHAPE,
+  Shape,
 } from '@antv/g';
 import type { Tuple4Number } from '@antv/g';
 import { inject, injectable } from 'mana-syringe';
@@ -166,11 +167,11 @@ export abstract class Instanced {
         opacity,
         fillOpacity,
         strokeOpacity,
-        lineWidth = 0,
+        lineWidth,
         lineDash,
         anchor,
         visibility,
-      } = object.parsedStyle;
+      } = object.parsedStyle as ParsedBaseStyleProps;
       let fillColor: Tuple4Number = [0, 0, 0, 0];
       if (fill?.type === PARSED_COLOR_TYPE.Constant) {
         fillColor = fill.value;
@@ -201,7 +202,7 @@ export abstract class Instanced {
         opacity,
         fillOpacity,
         strokeOpacity,
-        lineWidth,
+        lineWidth.value,
         visibility === 'visible' ? 1 : 0,
         0,
         0,
@@ -547,12 +548,15 @@ export abstract class Instanced {
         new Uint8Array(new Float32Array([...strokeColor]).buffer),
       );
     } else if (stylePacked1.indexOf(name) > -1) {
-      const { opacity, fillOpacity, strokeOpacity, lineWidth = 0 } = object.parsedStyle;
+      const { opacity, fillOpacity, strokeOpacity, lineWidth } =
+        object.parsedStyle as ParsedBaseStyleProps;
       this.geometry.updateVertexBuffer(
         VertexAttributeBufferIndex.INSTANCED,
         VertexAttributeLocation.PACKED_STYLE1,
         index,
-        new Uint8Array(new Float32Array([opacity, fillOpacity, strokeOpacity, lineWidth]).buffer),
+        new Uint8Array(
+          new Float32Array([opacity, fillOpacity, strokeOpacity, lineWidth.value]).buffer,
+        ),
       );
     } else if (name === 'modelMatrix') {
       const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
@@ -841,7 +845,7 @@ export abstract class Instanced {
     const instance = objects[0];
 
     const fill = (
-      instance.nodeName === SHAPE.Line ? instance.parsedStyle.stroke : instance.parsedStyle.fill
+      instance.nodeName === Shape.LINE ? instance.parsedStyle.stroke : instance.parsedStyle.fill
     ) as ParsedColorStyleProperty;
     // use pattern & gradient
     if (

@@ -1,7 +1,7 @@
 import {
   Circle,
   DisplayObject,
-  SHAPE,
+  Shape,
   ParsedBaseStyleProps,
   ParsedCircleStyleProps,
   ParsedEllipseStyleProps,
@@ -27,7 +27,7 @@ enum SDFVertexAttributeLocation {
   UV,
 }
 
-const SDF_SHAPE: string[] = [SHAPE.Circle, SHAPE.Ellipse];
+const SDF_Shape: string[] = [Shape.CIRCLE, Shape.ELLIPSE];
 
 /**
  * Use SDF to render 2D shapes, eg. circle, ellipse.
@@ -74,7 +74,7 @@ export class SDFMesh extends Instanced {
       const omitStroke = this.shouldOmitStroke(circle.parsedStyle);
       const size = this.getSize(object.parsedStyle, circle.nodeName);
       instanced.push(...size);
-      instanced2.push(SDF_SHAPE.indexOf(circle.nodeName), radius || 0, omitStroke ? 1 : 0, 0);
+      instanced2.push(SDF_Shape.indexOf(circle.nodeName), radius || 0, omitStroke ? 1 : 0, 0);
 
       interleaved.push(-1, -1, 0, 0, 1, -1, 1, 0, 1, 1, 1, 1, -1, 1, 0, 1);
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
@@ -156,7 +156,7 @@ export class SDFMesh extends Instanced {
         index,
         new Uint8Array(
           new Float32Array([
-            SDF_SHAPE.indexOf(object.nodeName),
+            SDF_Shape.indexOf(object.nodeName),
             object.parsedStyle.radius || 0,
             omitStroke ? 1 : 0,
             0,
@@ -168,10 +168,10 @@ export class SDFMesh extends Instanced {
 
   private getSize(parsed: ParsedCircleStyleProps | ParsedEllipseStyleProps, tagName: string) {
     let size: [number, number] = [0, 0];
-    if (tagName === SHAPE.Circle) {
+    if (tagName === Shape.CIRCLE) {
       const { rInPixels } = parsed as ParsedCircleStyleProps;
       size = [rInPixels, rInPixels];
-    } else if (tagName === SHAPE.Ellipse) {
+    } else if (tagName === Shape.ELLIPSE) {
       const { rxInPixels, ryInPixels } = parsed as ParsedEllipseStyleProps;
       size = [rxInPixels, ryInPixels];
     }
@@ -188,10 +188,11 @@ export class SDFMesh extends Instanced {
   }
 
   private needDrawStrokeSeparately(object: DisplayObject) {
-    const { stroke, lineDash, lineWidth, strokeOpacity } = object.parsedStyle;
+    const { stroke, lineDash, lineWidth, strokeOpacity } =
+      object.parsedStyle as ParsedBaseStyleProps;
     return (
       stroke &&
-      lineWidth > 0 &&
+      lineWidth.value > 0 &&
       (strokeOpacity < 1 || (lineDash && lineDash.length && lineDash.every((item) => item !== 0)))
     );
   }

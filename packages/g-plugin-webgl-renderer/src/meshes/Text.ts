@@ -1,6 +1,12 @@
 import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
-import { DisplayObject, PARSED_COLOR_TYPE, Text as TextShape, Tuple4Number } from '@antv/g';
+import {
+  DisplayObject,
+  ParsedTextStyleProps,
+  PARSED_COLOR_TYPE,
+  Text as TextShape,
+  Tuple4Number,
+} from '@antv/g';
 import { Format, VertexBufferFrequency, CullMode } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
@@ -318,7 +324,7 @@ export class TextMesh extends Instanced {
     const { textAlign = 'start' } = object.parsedStyle;
 
     const { fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, visibility } =
-      object.parsedStyle;
+      object.parsedStyle as ParsedTextStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (fill?.type === PARSED_COLOR_TYPE.Constant) {
       fillColor = fill.value;
@@ -351,14 +357,14 @@ export class TextMesh extends Instanced {
     const glyphQuads = getGlyphQuads(positionedGlyphs, glyphAtlas.positions);
 
     glyphQuads.forEach((quad) => {
-      const packed = [
+      const packed: number[] = [
         ...modelMatrix,
         ...fillColor,
         ...strokeColor,
         opacity,
         fillOpacity,
         strokeOpacity,
-        lineWidth,
+        lineWidth.value,
         visibility === 'visible' ? 1 : 0,
         0,
         0,

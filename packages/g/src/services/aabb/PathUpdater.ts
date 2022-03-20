@@ -1,9 +1,9 @@
 import { singleton } from 'mana-syringe';
 import { GeometryAABBUpdater } from './interfaces';
 import type { ParsedBaseStyleProps } from '../../types';
-import { SHAPE } from '../../types';
+import { Shape } from '../../types';
 
-@singleton({ token: { token: GeometryAABBUpdater, named: SHAPE.Path } })
+@singleton({ token: { token: GeometryAABBUpdater, named: Shape.PATH } })
 export class PathUpdater implements GeometryAABBUpdater<ParsedBaseStyleProps> {
   update(parsedStyle: ParsedBaseStyleProps) {
     const { path } = parsedStyle;

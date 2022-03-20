@@ -31,7 +31,7 @@ G 内置图形名称如下：
 
 ```js
 export enum SHAPE {
-  Group = 'group',
+  Group = 'g',
   Circle = 'circle',
   Ellipse = 'ellipse',
   Image = 'image',

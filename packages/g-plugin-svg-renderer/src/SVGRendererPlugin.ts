@@ -6,7 +6,7 @@ import {
   RenderingContext,
   RenderingPlugin,
   RenderingPluginContribution,
-  SHAPE,
+  Shape,
   fromRotationTranslationScale,
   getEuler,
   DisplayObject,
@@ -27,18 +27,18 @@ import { createOrUpdateFilter } from './shapes/defs/Filter';
 import { createOrUpdateGradientAndPattern } from './shapes/defs/Pattern';
 import { createOrUpdateShadow } from './shapes/defs/Shadow';
 
-export const SHAPE_TO_TAGS: Record<SHAPE | string, string> = {
-  [SHAPE.Rect]: 'path',
-  [SHAPE.Circle]: 'circle',
-  [SHAPE.Ellipse]: 'ellipse',
-  [SHAPE.Image]: 'image',
-  [SHAPE.Group]: 'g',
-  [SHAPE.Line]: 'line',
-  [SHAPE.Polyline]: 'polyline',
-  [SHAPE.Polygon]: 'polygon',
-  [SHAPE.Text]: 'text',
-  [SHAPE.Path]: 'path',
-  [SHAPE.HTML]: 'foreignObject',
+export const Shape_TO_TAGS: Record<Shape | string, string> = {
+  [Shape.RECT]: 'path',
+  [Shape.CIRCLE]: 'circle',
+  [Shape.ELLIPSE]: 'ellipse',
+  [Shape.IMAGE]: 'image',
+  [Shape.GROUP]: 'g',
+  [Shape.LINE]: 'line',
+  [Shape.POLYLINE]: 'polyline',
+  [Shape.POLYGON]: 'polygon',
+  [Shape.TEXT]: 'text',
+  [Shape.PATH]: 'path',
+  [Shape.HTML]: 'foreignObject',
 };
 
 const ATTR_IN_PIXEL_MAP = {
@@ -116,6 +116,8 @@ export const DEFAULT_VALUE_MAP: Record<string, string> = {
   lineCap: 'butt',
   // @see https://www.w3.org/TR/SVG/painting.html#LineJoin
   lineJoin: 'miter',
+  // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-width
+  lineWidth: '1px',
   opacity: '1',
   fillOpacity: '1',
   strokeOpacity: '1',
@@ -304,7 +306,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const { nodeName, attributes, parsedStyle } = object;
 
       $el.setAttribute('fill', 'none');
-      if (nodeName === SHAPE.Image) {
+      if (nodeName === Shape.IMAGE) {
         $el.setAttribute('preserveAspectRatio', 'none');
       }
 
@@ -397,7 +399,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       } else {
         if (
           // (!object.style.clipPathTargets) &&
-          object.nodeName !== SHAPE.Text && // text' anchor is controlled by `textAnchor` property
+          object.nodeName !== Shape.TEXT && // text' anchor is controlled by `textAnchor` property
           ['anchor', 'width', 'height', 'r', 'rx', 'ry'].indexOf(name) > -1
         ) {
           this.updateAnchorWithTransform(object);
@@ -407,7 +409,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
           if (ATTR_IN_PIXEL_MAP[name]) {
             valueStr = `${parsedStyle[ATTR_IN_PIXEL_MAP[name]]}`;
           } else {
-            if (name === 'fontSize') {
+            if (name === 'fontSize' || name === 'lineWidth') {
               valueStr = value.value + value.unit;
             } else {
               valueStr = `${value}`;
@@ -439,14 +441,14 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const svgElement = object.elementSVG;
 
     // use <group> as default, eg. CustomElement
-    const type = SHAPE_TO_TAGS[object.nodeName] || 'g';
+    const type = Shape_TO_TAGS[object.nodeName] || 'g';
     if (type) {
       let $groupEl;
 
       const $el = createSVGElement(type);
 
       // save $el on parsedStyle, which will be returned in getDomElement()
-      if (object.nodeName === SHAPE.HTML) {
+      if (object.nodeName === Shape.HTML) {
         object.parsedStyle.$el = $el;
       }
 
@@ -504,7 +506,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       `translate(-${anchor[0] * width},-${anchor[1] * height})`,
     );
 
-    if (object.nodeName === SHAPE.Circle || object.nodeName === SHAPE.Ellipse) {
+    if (object.nodeName === Shape.CIRCLE || object.nodeName === Shape.ELLIPSE) {
       $el?.setAttribute('cx', `${width / 2}`);
       $el?.setAttribute('cy', `${height / 2}`);
     }

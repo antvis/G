@@ -187,7 +187,7 @@ export class PhysXPlugin implements RenderingPlugin {
       const material = this.physics.createMaterial(0.2, 0.2, 0.2);
       const flags = new PhysX.PxShapeFlags(
         // @see https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxapi/files/structPxShapeFlag.html#a6edb481aaa3a998c5d6dd3fc4ad87f1aa7fa4fea0eecda9cc80a7aaa11a22df52
-        PhysX.PxShapeFlag.eSCENE_QUERY_SHAPE.value | PhysX.PxShapeFlag.eSIMULATION_SHAPE.value,
+        PhysX.PxShapeFlag.eSCENE_QUERY_Shape.value | PhysX.PxShapeFlag.eSIMULATION_Shape.value,
       );
       // @see https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxapi/files/classPxPhysics.html#abc564607f208cbc1944880172a3d62fe
       const shape = this.physics.createShape(geometry, material, false, flags);

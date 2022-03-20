@@ -1,5 +1,5 @@
 import type { Key, ReactElement, ReactNode, Ref } from 'react';
-import { SHAPE } from '@antv/g';
+import { Shape } from '@antv/g';
 import type {
   BaseStyleProps,
   CircleStyleProps,
@@ -39,14 +39,14 @@ export function ElementOf<Element, Prop, T extends string>(
   return type as any;
 }
 
-export const Circle = ElementOf<GCircle, CircleStyleProps, SHAPE.Circle>(SHAPE.Circle);
-export const Ellipse = ElementOf<GEllipse, EllipseStyleProps, SHAPE.Ellipse>(SHAPE.Ellipse);
-export const Group = ElementOf<GGroup, BaseStyleProps, SHAPE.Group>(SHAPE.Group);
-export const HTML = ElementOf<GHTML, HTMLStyleProps, SHAPE.HTML>(SHAPE.HTML);
-export const Image = ElementOf<GImage, ImageStyleProps, SHAPE.Image>(SHAPE.Image);
-export const Line = ElementOf<GLine, LineStyleProps, SHAPE.Line>(SHAPE.Line);
-export const Path = ElementOf<GPath, PathStyleProps, SHAPE.Path>(SHAPE.Path);
-export const Polygon = ElementOf<GPolygon, PolygonStyleProps, SHAPE.Polygon>(SHAPE.Polygon);
-export const Polyline = ElementOf<GPolyline, PolylineStyleProps, SHAPE.Polyline>(SHAPE.Polyline);
-export const Rect = ElementOf<GRect, RectStyleProps, SHAPE.Rect>(SHAPE.Rect);
-export const Text = ElementOf<GText, TextStyleProps, SHAPE.Text>(SHAPE.Text);
+export const Circle = ElementOf<GCircle, CircleStyleProps, Shape.CIRCLE>(Shape.CIRCLE);
+export const Ellipse = ElementOf<GEllipse, EllipseStyleProps, Shape.ELLIPSE>(Shape.ELLIPSE);
+export const Group = ElementOf<GGroup, BaseStyleProps, Shape.GROUP>(Shape.GROUP);
+export const HTML = ElementOf<GHTML, HTMLStyleProps, Shape.HTML>(Shape.HTML);
+export const Image = ElementOf<GImage, ImageStyleProps, Shape.IMAGE>(Shape.IMAGE);
+export const Line = ElementOf<GLine, LineStyleProps, Shape.LINE>(Shape.LINE);
+export const Path = ElementOf<GPath, PathStyleProps, Shape.PATH>(Shape.PATH);
+export const Polygon = ElementOf<GPolygon, PolygonStyleProps, Shape.POLYGON>(Shape.POLYGON);
+export const Polyline = ElementOf<GPolyline, PolylineStyleProps, Shape.POLYLINE>(Shape.POLYLINE);
+export const Rect = ElementOf<GRect, RectStyleProps, Shape.RECT>(Shape.RECT);
+export const Text = ElementOf<GText, TextStyleProps, Shape.TEXT>(Shape.TEXT);

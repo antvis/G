@@ -76,7 +76,14 @@ export class Document extends Node implements IDocument {
     tagName: string,
     options: DisplayObjectConfig<StyleProps>,
   ): T {
-    const clazz = this.defaultView.customElements.get(tagName);
+    // d3 will use <tspan>
+    let clazz = this.defaultView.customElements.get(tagName);
+
+    if (!clazz) {
+      console.warn('Unsupported tagName: ', tagName);
+      clazz = Group;
+    }
+
     return new clazz(options) as unknown as T;
   }
 

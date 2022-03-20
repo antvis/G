@@ -1,5 +1,5 @@
 import type { DisplayObjectConfig } from '../dom/interfaces';
-import { SHAPE } from '../types';
+import { Shape } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { ParsedElement } from '../property-handlers';
@@ -17,11 +17,12 @@ export interface ParsedEllipseStyleProps extends ParsedBaseStyleProps {
 export class Ellipse extends DisplayObject<EllipseStyleProps, ParsedEllipseStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<EllipseStyleProps> = {}) {
     super({
-      type: SHAPE.Ellipse,
+      type: Shape.ELLIPSE,
       style: {
         rx: 0,
         ry: 0,
         anchor: [0.5, 0.5],
+        lineWidth: 0,
         ...style,
       },
       ...rest,

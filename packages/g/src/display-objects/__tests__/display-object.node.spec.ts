@@ -5,7 +5,7 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { DisplayObject, Group, SHAPE } from '../..';
+import { DisplayObject, Group, Shape } from '../..';
 import { vec3 } from 'gl-matrix';
 
 chai.use(chaiAlmost());
@@ -153,6 +153,10 @@ describe('DisplayObject Node API', () => {
     expect(group3.getParent()).to.eqls(group2);
     expect(group4.getFirst()).to.null;
     expect(group4.getLast()).to.null;
+    expect(group1.getAttribute('class')).to.eqls(null);
+    expect(group1.className).to.eqls('');
+    expect(group4.getAttribute('class')).to.eqls('className4');
+    expect(group4.className).to.eqls('className4');
 
     // search in scene graph
     expect(
@@ -187,8 +191,8 @@ describe('DisplayObject Node API', () => {
     expect(group1.getElementsByClassName('className4')[0]).to.eqls(group4);
     expect(group1.getElementsByClassName('className10')).to.eqls([]);
 
-    expect(group1.getElementsByTagName(SHAPE.Group).length).to.eqls(3);
-    expect(group1.getElementsByTagName(SHAPE.Circle).length).to.eqls(0);
+    expect(group1.getElementsByTagName(Shape.GROUP).length).to.eqls(3);
+    expect(group1.getElementsByTagName(Shape.CIRCLE).length).to.eqls(0);
   });
 
   it('should remove children recursively', () => {
@@ -255,6 +259,6 @@ describe('DisplayObject Node API', () => {
     expect(group.style.getPropertyValue('width')).to.eqls(2);
 
     group.style.removeProperty('width');
-    expect(group.style.getPropertyValue('width')).to.undefined;
+    expect(group.style.getPropertyValue('width')).to.null;
   });
 });

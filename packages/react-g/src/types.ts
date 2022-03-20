@@ -1,6 +1,6 @@
-import type { Element, InteractivePointerEvent, SHAPE } from '@antv/g';
+import type { Element, InteractivePointerEvent, Shape } from '@antv/g';
 
-type ElementType = SHAPE;
+type ElementType = Shape;
 
 /**
  * host config type

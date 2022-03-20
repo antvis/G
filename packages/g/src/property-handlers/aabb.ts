@@ -3,10 +3,11 @@ import type { DisplayObject } from '../display-objects/DisplayObject';
 import { AABB } from '../shapes';
 import type { GeometryAABBUpdater } from '../services';
 import { dirtifyToRoot, GeometryUpdaterFactory } from '../services';
-import { SHAPE } from '../types';
+import { Shape } from '../types';
 import { PARSED_COLOR_TYPE } from './color';
 import type { ParsedFilterStyleProperty } from './filter';
 import { globalContainer } from '../global-module';
+import { ParsedBaseStyleProps } from '..';
 
 export function updateGeometry(oldValue: number, newValue: number, object: DisplayObject) {
   const geometryUpdaterFactory =
@@ -37,10 +38,10 @@ export function updateGeometry(oldValue: number, newValue: number, object: Displ
     // object.parsedStyle.depth = depth;
 
     if (
-      object.nodeName === SHAPE.Line ||
-      object.nodeName === SHAPE.Polyline ||
-      object.nodeName === SHAPE.Polygon ||
-      object.nodeName === SHAPE.Path
+      object.nodeName === Shape.LINE ||
+      object.nodeName === Shape.POLYLINE ||
+      object.nodeName === Shape.POLYGON ||
+      object.nodeName === Shape.PATH
     ) {
       object.parsedStyle.offsetX = x - (object.parsedStyle.defX || 0);
       object.parsedStyle.offsetY = y - (object.parsedStyle.defY || 0);
@@ -60,10 +61,15 @@ export function updateGeometry(oldValue: number, newValue: number, object: Displ
     const halfExtents = vec3.fromValues(width / 2, height / 2, depth / 2);
     // anchor is center by default, don't account for lineWidth here
 
-    const { lineWidth = 0, anchor = [0, 0], shadowColor, filter = [] } = object.parsedStyle;
+    const {
+      lineWidth,
+      anchor = [0, 0],
+      shadowColor,
+      filter = [],
+    } = object.parsedStyle as ParsedBaseStyleProps;
 
     // <Text> use textAlign & textBaseline instead of anchor
-    if (object.nodeName === SHAPE.Text) {
+    if (object.nodeName === Shape.TEXT) {
       delete object.parsedStyle.anchor;
     }
 
@@ -78,7 +84,11 @@ export function updateGeometry(oldValue: number, newValue: number, object: Displ
 
     if (lineWidth) {
       // append border
-      vec3.add(halfExtents, halfExtents, vec3.fromValues(lineWidth / 2, lineWidth / 2, 0));
+      vec3.add(
+        halfExtents,
+        halfExtents,
+        vec3.fromValues(lineWidth.value / 2, lineWidth.value / 2, 0),
+      );
     }
     geometry.renderBounds.update(center, halfExtents);
 

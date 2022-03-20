@@ -3,17 +3,18 @@
  */
 import { injectable } from 'mana-syringe';
 import {
-  LINE_CAP,
-  LINE_JOIN,
+  LineCap,
+  LineJoin,
   Polyline,
   DisplayObject,
   PARSED_COLOR_TYPE,
-  SHAPE,
+  Shape,
   Tuple4Number,
   convertToPath,
   ParsedPathStyleProps,
   parsePath,
   PathCommand,
+  ParsedLineStyleProps,
 } from '@antv/g';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import earcut from 'earcut';
@@ -95,20 +96,20 @@ export class LineMesh extends Instanced {
       lineDash = [],
       lineDashOffset = 0,
       visibility,
-    } = object.parsedStyle;
+    } = object.parsedStyle as ParsedLineStyleProps;
     if (
       name === 'lineJoin' ||
       name === 'lineCap' ||
       name === 'lineDash' ||
-      (object.nodeName === SHAPE.Circle && name === 'r') ||
-      (object.nodeName === SHAPE.Ellipse && (name === 'rx' || name === 'ry')) ||
-      (object.nodeName === SHAPE.Rect &&
+      (object.nodeName === Shape.CIRCLE && name === 'r') ||
+      (object.nodeName === Shape.ELLIPSE && (name === 'rx' || name === 'ry')) ||
+      (object.nodeName === Shape.RECT &&
         (name === 'width' || name === 'height' || name === 'radius')) ||
-      (object.nodeName === SHAPE.Line &&
+      (object.nodeName === Shape.LINE &&
         (name === 'x1' || name === 'y1' || name === 'x2' || name === 'y2')) ||
-      (object.nodeName === SHAPE.Polyline && name === 'points') ||
-      (object.nodeName === SHAPE.Polygon && name === 'points') ||
-      (object.nodeName === SHAPE.Path && name === 'path')
+      (object.nodeName === Shape.POLYLINE && name === 'points') ||
+      (object.nodeName === Shape.POLYGON && name === 'points') ||
+      (object.nodeName === Shape.PATH && name === 'path')
     ) {
       // need re-calc geometry
       this.material.geometryDirty = true;
@@ -135,7 +136,7 @@ export class LineMesh extends Instanced {
       });
     } else if (name === 'lineWidth') {
       this.material.setUniforms({
-        [Uniform.STROKE_WIDTH]: lineWidth,
+        [Uniform.STROKE_WIDTH]: lineWidth.value,
       });
     } else if (name === 'anchor' || name === 'modelMatrix') {
       let translateX = 0;
@@ -200,7 +201,7 @@ export class LineMesh extends Instanced {
       lineDash = [],
       lineDashOffset = 0,
       visibility,
-    } = instance.parsedStyle;
+    } = instance.parsedStyle as ParsedLineStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (fill?.type === PARSED_COLOR_TYPE.Constant) {
       fillColor = fill.value;
@@ -232,7 +233,7 @@ export class LineMesh extends Instanced {
       [Uniform.MODEL_MATRIX]: m,
       [Uniform.COLOR]: fillColor,
       [Uniform.STROKE_COLOR]: strokeColor,
-      [Uniform.STROKE_WIDTH]: lineWidth,
+      [Uniform.STROKE_WIDTH]: lineWidth.value,
       [Uniform.OPACITY]: opacity,
       [Uniform.FILL_OPACITY]: fillOpacity,
       [Uniform.STROKE_OPACITY]: strokeOpacity,
@@ -405,14 +406,14 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
 
   let points: number[] = [];
   let triangles: number[] = [];
-  if (object.nodeName === SHAPE.Polyline || object.nodeName === SHAPE.Polygon) {
+  if (object.nodeName === Shape.POLYLINE || object.nodeName === Shape.POLYGON) {
     points = (object as Polyline).parsedStyle.points.points.reduce((prev, cur) => {
       prev.push(cur[0] - defX, cur[1] - defY);
       return prev;
     }, [] as number[]);
 
     // close polygon, dealing with extra joint
-    if (object.nodeName === SHAPE.Polygon) {
+    if (object.nodeName === Shape.POLYGON) {
       if (needEarcut) {
         // use earcut for triangulation
         triangles = earcut(points, [], 2);
@@ -428,13 +429,13 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
       }
     }
   } else if (
-    object.nodeName === SHAPE.Path ||
-    object.nodeName === SHAPE.Circle ||
-    object.nodeName === SHAPE.Ellipse ||
-    object.nodeName === SHAPE.Rect
+    object.nodeName === Shape.PATH ||
+    object.nodeName === Shape.CIRCLE ||
+    object.nodeName === Shape.ELLIPSE ||
+    object.nodeName === Shape.RECT
   ) {
     let path: ParsedPathStyleProps;
-    if (object.nodeName !== SHAPE.Path) {
+    if (object.nodeName !== Shape.PATH) {
       path = parsePath(convertToPath(object));
       defX = path.rect.x;
       defY = path.rect.y;
@@ -464,7 +465,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
         );
       } else if (
         command === 'Z' &&
-        (object.nodeName === SHAPE.Path || object.nodeName === SHAPE.Rect)
+        (object.nodeName === Shape.PATH || object.nodeName === Shape.RECT)
       ) {
         points.push(points[startPointIndex], points[startPointIndex + 1]);
         points.push(
@@ -555,14 +556,14 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
   };
 }
 
-function getJointType(lineJoin: LINE_JOIN) {
+function getJointType(lineJoin: LineJoin) {
   let joint: number;
 
   switch (lineJoin) {
-    case LINE_JOIN.Bevel:
+    case LineJoin.BEVEL:
       joint = JOINT_TYPE.JOINT_BEVEL;
       break;
-    case LINE_JOIN.Round:
+    case LineJoin.ROUND:
       joint = JOINT_TYPE.JOINT_ROUND;
       break;
     default:
@@ -573,14 +574,14 @@ function getJointType(lineJoin: LINE_JOIN) {
   return joint;
 }
 
-function getCapType(lineCap: LINE_CAP) {
+function getCapType(lineCap: LineCap) {
   let cap: number;
 
   switch (lineCap) {
-    case LINE_CAP.Square:
+    case LineCap.SQUARE:
       cap = JOINT_TYPE.CAP_SQUARE;
       break;
-    case LINE_CAP.Round:
+    case LineCap.ROUND:
       cap = JOINT_TYPE.CAP_ROUND;
       break;
     default:

@@ -6,20 +6,20 @@ import { Mask } from '../shapes';
 import { DefaultCamera, Camera } from '../camera/Camera';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { Element } from '../dom';
-import { SHAPE } from '..';
+import { Shape } from '..';
 
 // group is not a 2d shape
 const shape2D = [
-  SHAPE.Circle,
-  SHAPE.Ellipse,
-  SHAPE.Image,
-  SHAPE.Rect,
-  SHAPE.Line,
-  SHAPE.Polyline,
-  SHAPE.Polygon,
-  SHAPE.Text,
-  SHAPE.Path,
-  SHAPE.HTML,
+  Shape.CIRCLE,
+  Shape.ELLIPSE,
+  Shape.IMAGE,
+  Shape.RECT,
+  Shape.LINE,
+  Shape.POLYLINE,
+  Shape.POLYGON,
+  Shape.TEXT,
+  Shape.PATH,
+  Shape.HTML,
 ];
 
 @singleton({ contrib: CullingStrategyContribution })
@@ -83,7 +83,7 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
     // (Because if there are fewer than 31 planes, the upper bits wont be changed.)
     let mask = Mask.INSIDE;
 
-    const isShape2D = shape2D.indexOf(object.nodeName as SHAPE) > -1;
+    const isShape2D = shape2D.indexOf(object.nodeName as Shape) > -1;
 
     // Use viewport culling for 2D shapes
     // @see https://github.com/antvis/g/issues/914

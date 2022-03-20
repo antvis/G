@@ -44,6 +44,7 @@
     "@types/react-dom": "^16.9.8",
     "d3": "^7.3.0",
     "d3-force-3d": "^3.0.3",
+    "d3-svg-annotation": "^2.5.0",
     "gatsby": "^2.24.40",
     "gatsby-plugin-workerize-loader": "^1.5.0",
     "gh-pages": "^3.2.3",

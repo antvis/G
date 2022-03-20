@@ -19,4 +19,4 @@ export * from './filter';
 export * from './lineDash';
 export * from './text';
 export * from './textTransform';
-export * from './textAlign';
+export * from './inherit';

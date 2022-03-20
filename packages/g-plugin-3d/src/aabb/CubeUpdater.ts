@@ -2,9 +2,9 @@
 // import { singleton } from 'mana-syringe';
 // import { GeometryAABBUpdater, AABB } from '@antv/g';
 // import { ParsedCubeStyleProps } from '../Cube';
-// import { SHAPE_3D } from '../types';
+// import { Shape_3D } from '../types';
 
-// @singleton({ token: { token: GeometryAABBUpdater, named: SHAPE_3D.Cube } })
+// @singleton({ token: { token: GeometryAABBUpdater, named: Shape_3D.Cube } })
 // export class CubeUpdater implements GeometryAABBUpdater<ParsedCubeStyleProps> {
 //   dependencies = ['height', 'width', 'depth', 'anchor'];
 

@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime';
-import { globalContainer, RendererPlugin, SHAPE } from '@antv/g';
+import { globalContainer, RendererPlugin, Shape } from '@antv/g';
 import { Module, Syringe } from 'mana-syringe';
 import { Renderable3D } from './components/Renderable3D';
 import { PickingIdGenerator } from './PickingIdGenerator';
@@ -72,7 +72,7 @@ export const containerModule = Module((register) => {
   register({
     token: MeshFactory,
     useFactory: (context) => {
-      return (tagName: SHAPE) => {
+      return (tagName: Shape) => {
         if (context.container.isBound(tagName)) {
           return context.container.get(tagName) || null;
         }
@@ -94,7 +94,7 @@ export const containerModule = Module((register) => {
   register({
     token: RendererFactory,
     useFactory: (context) => {
-      return (tagName: SHAPE) => {
+      return (tagName: Shape) => {
         if (context.container.isBoundNamed(ShapeRenderer, tagName)) {
           return context.container.getNamed(ShapeRenderer, tagName) || null;
         }

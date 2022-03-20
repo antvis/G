@@ -1,4 +1,4 @@
-import { SHAPE } from '../types';
+import { Shape } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps, TextAlign } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
@@ -24,7 +24,7 @@ export interface ParsedGroupStyleProps extends ParsedBaseStyleProps {
 export class Group extends DisplayObject {
   constructor({ style, ...rest }: DisplayObjectConfig<GroupStyleProps> = {}) {
     super({
-      type: SHAPE.Group,
+      type: Shape.GROUP,
       style: {
         width: 'auto',
         height: 'auto',

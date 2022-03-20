@@ -9,7 +9,7 @@ import {
   ElementEvent,
   MutationEvent,
   DisplayObject,
-  SHAPE,
+  Shape,
   ParsedBaseStyleProps,
   ParsedRectStyleProps,
   ParsedTextStyleProps,
@@ -222,9 +222,9 @@ export class YogaPlugin implements RenderingPlugin {
     if (node) {
       // block element use user-defined width/height
       if (
-        object.nodeName === SHAPE.Group ||
-        object.nodeName === SHAPE.Rect ||
-        object.nodeName === SHAPE.Image
+        object.nodeName === Shape.GROUP ||
+        object.nodeName === Shape.RECT ||
+        object.nodeName === Shape.IMAGE
       ) {
         const { width = { unit: 'px', value: 0 }, height = { unit: 'px', value: 0 } } =
           object.parsedStyle as ParsedRectStyleProps;
@@ -244,7 +244,7 @@ export class YogaPlugin implements RenderingPlugin {
           node.setHeight(halfHeight * 2);
         }
 
-        if (object.nodeName === SHAPE.Text) {
+        if (object.nodeName === Shape.TEXT) {
           // @ts-ignore
           const { wordWrap, width } = object.parsedStyle as ParsedTextStyleProps;
 
@@ -534,7 +534,7 @@ export class YogaPlugin implements RenderingPlugin {
       left += anchor[0] * width;
       top += anchor[1] * height;
 
-      if (object.nodeName === SHAPE.Text) {
+      if (object.nodeName === Shape.TEXT) {
         object.style.textBaseline = 'top';
         if (object.style.wordWrap) {
           object.style.wordWrapWidth = width;

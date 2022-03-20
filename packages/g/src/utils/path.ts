@@ -8,7 +8,7 @@ import { vec3 } from 'gl-matrix';
 import type { Circle, Ellipse, Line, Path, Polyline, Rect } from '../display-objects';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { PathCommand } from '../types';
-import { SHAPE } from '../types';
+import { Shape } from '../types';
 
 function midPoint(a: [number, number], b: [number, number], t: number): [number, number] {
   const ax = a[0];
@@ -335,26 +335,26 @@ export function convertToPath(object: DisplayObject) {
   const anchor = object.style.anchor;
   let commands: PathCommand[] = [];
   switch (object.nodeName) {
-    case SHAPE.Line:
+    case Shape.LINE:
       const { x1, y1, x2, y2 } = (object as Line).parsedStyle;
       commands = lineToCommands(x1, y1, x2, y2);
       break;
-    case SHAPE.Circle: {
+    case Shape.CIRCLE: {
       const { rInPixels: r, x = 0, y = 0 } = (object as Circle).parsedStyle;
       commands = ellipseToCommands(r, r, x, y);
       break;
     }
-    case SHAPE.Ellipse: {
+    case Shape.ELLIPSE: {
       const { rxInPixels: rx, ryInPixels: ry, x = 0, y = 0 } = (object as Ellipse).parsedStyle;
       commands = ellipseToCommands(rx, ry, x, y);
       break;
     }
-    case SHAPE.Polyline:
-    case SHAPE.Polygon:
+    case Shape.POLYLINE:
+    case Shape.POLYGON:
       const { points } = (object as Polyline).parsedStyle;
       commands = polygonToCommands(points.points);
       break;
-    case SHAPE.Rect:
+    case Shape.RECT:
       const {
         widthInPixels: width,
         heightInPixels: height,
@@ -364,7 +364,7 @@ export function convertToPath(object: DisplayObject) {
       } = (object as Rect).parsedStyle;
       commands = rectToCommands(width, height, x, y, radius);
       break;
-    case SHAPE.Path:
+    case Shape.PATH:
       commands = (object as Path).parsedStyle.path.curve;
       break;
   }
