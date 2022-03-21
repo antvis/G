@@ -55,5 +55,6 @@
   },
   "scripts": {
     "pegjs": "node scripts/generate-parser"
-  }
+  },
+  "gitHead": "0c7b71ca68a0ada7e50c9eeec3c47f9b7de44f01"
 }
