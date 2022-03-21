@@ -2,6 +2,28 @@
 
 以下版本号以 @antv/g 为准。
 
+## [5.0.16] - 2022-3-8
+
+### 新增特性
+
+-   [g] 支持使用 MutationObserver 监听属性变更，[文档](/zh/docs/api/builtin-objects/mutation-observer)
+-   [g] 部分属性支持继承，例如 fontSize #895
+-   [g] width / height / lineWidth / fontSize 支持使用单位，类型支持 `number | string` #895
+-   [g] Polygon / Polyline / Path 支持 [miterLimit 属性](/zh/docs/api/basic/polyline#miterlimit)
+-   [g] Image 支持 [src 属性](/zh/docs/api/basic/image#src) #814
+-   [g-mobile] 移动端渲染器，和 `g-canvas` 共用部分 Canvas2D 插件 [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) #910
+-   [g-plugin-mobile-interaction] 移动端监听事件并触发 G 原生事件
+-   [g-webgl] 支持 [PointMaterial](/zh/docs/api/3d/material#pointmaterial)
+-   [g-devtools] 开发者工具 Chrome 插件 #911
+
+### Bug 修复
+
+-   [g] 移动端不会触发 `tap` 事件，使用 `click` 事件代替
+-   [g] 为 2D 图形提供更快的剔除 #914 #908
+-   [g-svg] 初始渲染次序问题
+
+### Bug 修复
+
 ## [5.0.15] - 2022-3-8
 
 -   @antv/g-canvas@1.0.14
