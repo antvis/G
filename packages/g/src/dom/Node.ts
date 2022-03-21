@@ -1,4 +1,4 @@
-import { SHAPE } from '..';
+import { Shape } from '..';
 // import { Text } from '../display-objects/Text';
 import { EventTarget } from './EventTarget';
 import type {
@@ -98,13 +98,13 @@ export abstract class Node extends EventTarget implements INode {
   get textContent(): string {
     let out = '';
 
-    if (this.nodeName === SHAPE.Text) {
+    if (this.nodeName === Shape.TEXT) {
       // @ts-ignore
       out += this.style.text;
     }
 
     for (const child of this.childNodes) {
-      if (child.nodeName === SHAPE.Text) {
+      if (child.nodeName === Shape.TEXT) {
         out += child.nodeValue;
       } else {
         out += child.textContent;
@@ -120,7 +120,7 @@ export abstract class Node extends EventTarget implements INode {
       this.removeChild(child, true);
     });
 
-    if (this.nodeName === SHAPE.Text) {
+    if (this.nodeName === Shape.TEXT) {
       // @ts-ignore
       this.style.text = `${content}`;
     } else {

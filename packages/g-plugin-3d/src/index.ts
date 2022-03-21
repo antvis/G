@@ -71,9 +71,9 @@ export {
 // globalContainer.register(GridUpdater);
 
 export const containerModule = Module((register) => {
-  //   registerModelBuilder(CubeModelBuilder, SHAPE_3D.Cube);
-  //   // registerModelBuilder(SphereModelBuilder, SHAPE_3D.Sphere);
-  //   registerModelBuilder(GridModelBuilder, SHAPE_3D.Grid);
+  //   registerModelBuilder(CubeModelBuilder, Shape_3D.Cube);
+  //   // registerModelBuilder(SphereModelBuilder, Shape_3D.Sphere);
+  //   registerModelBuilder(GridModelBuilder, Shape_3D.Grid);
 });
 
 export class Plugin implements RendererPlugin {

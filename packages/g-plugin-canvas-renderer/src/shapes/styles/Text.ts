@@ -1,11 +1,11 @@
-import { TextService, SHAPE } from '@antv/g';
+import { TextService, Shape } from '@antv/g';
 import type { ParsedTextStyleProps, Rectangle, DisplayObject } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import { StyleRenderer } from './interfaces';
 
 @singleton({
-  token: { token: StyleRenderer, named: SHAPE.Text },
+  token: { token: StyleRenderer, named: Shape.TEXT },
 })
 export class TextRenderer implements StyleRenderer {
   @inject(TextService)
@@ -21,7 +21,7 @@ export class TextRenderer implements StyleRenderer {
     object: DisplayObject,
   ) {
     const {
-      lineWidth = 0,
+      lineWidth,
       textAlign,
       textBaseline,
       lineJoin,
@@ -40,7 +40,7 @@ export class TextRenderer implements StyleRenderer {
     const { font, lines, height, lineHeight, lineMetrics } = metrics;
 
     context.font = font;
-    context.lineWidth = lineWidth;
+    context.lineWidth = lineWidth.value;
     context.textAlign = textAlign;
     context.textBaseline = textBaseline!;
     context.lineJoin = lineJoin!;
@@ -71,12 +71,12 @@ export class TextRenderer implements StyleRenderer {
 
     // draw lines line by line
     for (let i = 0; i < lines.length; i++) {
-      let linePositionX = lineWidth / 2 + offsetX;
+      let linePositionX = lineWidth.value / 2 + offsetX;
       linePositionY += lineHeight;
 
       // no need to re-position X, cause we already set text align
       // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/textAlign
-      if (!isNil(stroke) && lineWidth) {
+      if (!isNil(stroke) && lineWidth && lineWidth.value) {
         this.drawLetterSpacing(
           context,
           lines[i],

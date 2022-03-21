@@ -12,6 +12,13 @@
       }
     },
     {
+      "filename": "culling.js",
+      "title": {
+        "zh": "视口剔除",
+        "en": "Viewport culling"
+      }
+    },
+    {
       "filename": "canvas-dirty-rectangle.js",
       "title": {
         "zh": "脏矩形渲染(Canvas)",

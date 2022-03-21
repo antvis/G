@@ -25,8 +25,8 @@ export enum CAMERA_PROJECTION_MODE {
   PERSPECTIVE = 'PERSPECTIVE',
 }
 
-export const CAMERA_EVENT = {
-  Updated: 'updated',
+export const CameraEvent = {
+  UPDATED: 'updated',
 };
 
 const DEG_2_RAD = Math.PI / 180;
@@ -275,7 +275,7 @@ export class Camera extends EventEmitter {
    * 计算 MV 矩阵，为相机矩阵的逆矩阵
    */
   getViewTransform(): mat4 {
-    return mat4.invert(mat4.create(), this.matrix)!;
+    return mat4.invert(mat4.create(), this.matrix);
   }
 
   getWorldTransform(): mat4 {
@@ -423,7 +423,8 @@ export class Camera extends EventEmitter {
     mat4.scale(this.projectionMatrix, this.projectionMatrix, vec3.fromValues(1, -1, 1));
 
     mat4.invert(this.projectionMatrixInverse, this.projectionMatrix);
-    this.emit(CAMERA_EVENT.Updated);
+
+    this.triggerUpdate();
     return this;
   }
 
@@ -464,7 +465,7 @@ export class Camera extends EventEmitter {
     mat4.invert(this.projectionMatrixInverse, this.projectionMatrix);
 
     this._getOrthoMatrix();
-    this.emit(CAMERA_EVENT.Updated);
+    this.triggerUpdate();
     return this;
   }
 
@@ -686,7 +687,7 @@ export class Camera extends EventEmitter {
 
     this._setPosition(pos);
 
-    this.emit(CAMERA_EVENT.Updated);
+    this.triggerUpdate();
 
     return this;
   }
@@ -715,7 +716,7 @@ export class Camera extends EventEmitter {
       vec3.add(this.focalPoint, pos, this.distanceVector);
     }
 
-    this.emit(CAMERA_EVENT.Updated);
+    this.triggerUpdate();
     return this;
   }
 
@@ -785,7 +786,7 @@ export class Camera extends EventEmitter {
         this.setRoll(interRoll);
         this.computeMatrix();
 
-        this.emit(CAMERA_EVENT.Updated);
+        this.triggerUpdate();
 
         const dist =
           vec3.dist(interFocalPoint, destFocalPoint) + vec3.dist(interPosition, destPosition);
@@ -820,7 +821,7 @@ export class Camera extends EventEmitter {
     this._getAngles();
     this._getOrthoMatrix();
 
-    this.emit(CAMERA_EVENT.Updated);
+    this.triggerUpdate();
   }
 
   /**
@@ -984,5 +985,14 @@ export class Camera extends EventEmitter {
       vec3.fromValues(this.zoom, this.zoom, 1),
       position,
     );
+  }
+
+  private triggerUpdate() {
+    // update frustum
+    const viewMatrix = this.getViewTransform();
+    const vpMatrix = mat4.multiply(mat4.create(), this.getPerspective(), viewMatrix);
+    this.getFrustum().extractFromVPMatrix(vpMatrix);
+
+    this.emit(CameraEvent.UPDATED);
   }
 }

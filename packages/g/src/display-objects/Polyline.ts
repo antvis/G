@@ -1,5 +1,5 @@
 import { Line as LineUtil } from '@antv/g-math';
-import { SHAPE, LINE_CAP, LINE_JOIN } from '../types';
+import { Shape, LineCap, LineJoin } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
@@ -16,12 +16,13 @@ export interface ParsedPolylineStyleProps {
 export class Polyline extends DisplayObject<PolylineStyleProps, ParsedBaseStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<PolylineStyleProps> = {}) {
     super({
-      type: SHAPE.Polyline,
+      type: Shape.POLYLINE,
       style: {
         points: [],
-        lineJoin: LINE_JOIN.Miter,
-        lineCap: LINE_CAP.Butt,
+        lineJoin: LineJoin.MITER,
+        lineCap: LineCap.BUTT,
         lineWidth: 1,
+        miterLimit: 4,
         ...style,
       },
       ...rest,

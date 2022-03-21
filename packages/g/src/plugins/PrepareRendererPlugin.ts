@@ -1,9 +1,13 @@
+import { isNil } from '@antv/util';
 import { inject, singleton } from 'mana-syringe';
+import type { DisplayObject } from '..';
 import type { Element, FederatedEvent } from '../dom';
 import { ElementEvent } from '../dom';
+import { INHERIT_PROPERTIES } from '../global-module';
+import { computeInheritStyleProperty } from '../property-handlers';
 import {
   RenderingContext,
-  RENDER_REASON,
+  RenderReason,
   RenderingPluginContribution,
   dirtifyToRoot,
 } from '../services';
@@ -18,7 +22,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     const handleAttributeChanged = () => {
-      this.renderingContext.renderReasons.add(RENDER_REASON.DisplayObjectChanged);
+      this.renderingContext.renderReasons.add(RenderReason.DISPLAY_OBJECT_CHANGED);
     };
 
     const handleBoundsChanged = () => {
@@ -26,7 +30,21 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     };
 
     const handleMounted = (e: FederatedEvent) => {
-      dirtifyToRoot(e.target as Element);
+      const object = e.target as DisplayObject;
+      // compute some style when mounted
+      INHERIT_PROPERTIES.forEach((name) => {
+        if (object.getAttribute(name) === 'inherit') {
+          const computedValue = computeInheritStyleProperty(object, name);
+
+          if (!isNil(computedValue)) {
+            const oldParsedValue = object.parsedStyle[name];
+            object.parsedStyle[name] = computedValue;
+            object.updateStyleProperty(name, oldParsedValue, computedValue);
+          }
+        }
+      });
+
+      dirtifyToRoot(object);
       renderingService.dirtify();
     };
 

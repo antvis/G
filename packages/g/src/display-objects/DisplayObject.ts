@@ -12,7 +12,7 @@ import type {
   IChildNode,
   ICSSStyleDeclaration,
 } from '../dom/interfaces';
-import { SHAPE } from '../types';
+import { Shape } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import {
   createVec3,
@@ -93,9 +93,11 @@ export class DisplayObject<
     // init scene graph node
     this.id = this.config.id || '';
     this.name = this.config.name || '';
-    this.className = this.config.className || '';
+    if (this.config.className || this.config.class) {
+      this.className = this.config.className || this.config.class;
+    }
     this.interactive = this.config.interactive ?? true;
-    this.nodeName = this.config.type || SHAPE.Group;
+    this.nodeName = this.config.type || Shape.GROUP;
 
     // compatible with G 3.0
     this.config.style = {
@@ -236,13 +238,14 @@ export class DisplayObject<
    * parse property, eg.
    * * fill: 'red' => [1, 0, 0, 1]
    * * translateX: '10px' => { unit: 'px', value: 10 }
+   * * fontSize: '2em' => { unit: 'px', value: 32 }
    */
   parseStyleProperty<Key extends keyof ParsedStyleProps>(name: Key, value: ParsedStyleProps[Key]) {
     // const stylePropertyParser = this.stylePropertyParserFactory(name);
     const stylePropertyParser = stylePropertyParserFactory[name as string];
     if (stylePropertyParser) {
       // @ts-ignore
-      this.parsedStyle[name] = stylePropertyParser(value, this);
+      this.parsedStyle[name] = stylePropertyParser(value, this, name);
     } else {
       this.parsedStyle[name] = value;
     }
@@ -258,7 +261,7 @@ export class DisplayObject<
     if (stylePropertyUpdaters) {
       stylePropertyUpdaters.forEach((updater) => {
         // @ts-ignore
-        updater(oldParsedValue, newParsedValue, this, this.sceneGraphService);
+        updater(oldParsedValue, newParsedValue, this, this.sceneGraphService, name);
       });
     }
   }
@@ -590,7 +593,10 @@ export class DisplayObject<
 
   isVisible() {
     const cullable = this.cullable;
-    return this.style.visibility === 'visible' && (!cullable || (cullable && !cullable.isCulled()));
+    return (
+      this.getAttribute('visibility') === 'visible' &&
+      (!cullable || (cullable && !cullable.isCulled()))
+    );
   }
 
   /**

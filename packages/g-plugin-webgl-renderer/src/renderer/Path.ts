@@ -2,39 +2,39 @@
  * @see https://www.khronos.org/assets/uploads/developers/presentations/Crazy_Panda_How_to_draw_lines_in_WebGL.pdf
  */
 import { injectable } from 'mana-syringe';
-import { DisplayObject, SHAPE } from '@antv/g';
+import { DisplayObject, ParsedBaseStyleProps, Shape } from '@antv/g';
 import { Batch } from './Batch';
 import { ShapeRenderer } from '../tokens';
 import { FillMesh, LineMesh } from '../meshes';
 
 @injectable({
   token: [
-    { token: ShapeRenderer, named: SHAPE.Polyline },
-    { token: ShapeRenderer, named: SHAPE.Path },
-    { token: ShapeRenderer, named: SHAPE.Polygon },
-    { token: ShapeRenderer, named: SHAPE.Rect },
+    { token: ShapeRenderer, named: Shape.POLYLINE },
+    { token: ShapeRenderer, named: Shape.PATH },
+    { token: ShapeRenderer, named: Shape.POLYGON },
+    { token: ShapeRenderer, named: Shape.RECT },
   ],
 })
 export class PathRenderer extends Batch {
   meshes = [FillMesh, LineMesh];
 
   shouldSubmitRenderInst(object: DisplayObject, index: number) {
-    const { strokeOpacity, lineDash, lineWidth } = object.parsedStyle;
+    const { strokeOpacity, lineDash, lineWidth } = object.parsedStyle as ParsedBaseStyleProps;
     const nodeName = object.nodeName;
 
     // Polyline don't need fill
-    if (index === 0 && object.nodeName === SHAPE.Polyline) {
+    if (index === 0 && object.nodeName === Shape.POLYLINE) {
       return false;
     }
 
     // stroke mesh
     if (index === 1) {
-      if (strokeOpacity === 0 || lineWidth === 0) {
+      if (strokeOpacity === 0 || lineWidth.value === 0) {
         return false;
       }
 
       const hasDash = lineDash && lineDash.length && lineDash.every((item) => item !== 0);
-      if (nodeName === SHAPE.Circle || nodeName === SHAPE.Ellipse) {
+      if (nodeName === Shape.CIRCLE || nodeName === Shape.ELLIPSE) {
         // @see https://github.com/antvis/g/issues/824
         return hasDash;
       }

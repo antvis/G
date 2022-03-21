@@ -1,14 +1,12 @@
 import type { Group } from '../display-objects';
-import type { AABB } from '../shapes';
 
 /**
  * why we need re-render
  */
-export enum RENDER_REASON {
-  CameraChanged,
-  DisplayObjectChanged,
-  DisplayObjectRemoved,
-  None,
+export enum RenderReason {
+  CAMERA_CHANGED,
+  DISPLAY_OBJECT_CHANGED,
+  NONE,
 }
 export const RenderingContext = 'RenderingContext';
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -23,12 +21,10 @@ export interface RenderingContext {
    */
   force: boolean;
 
-  removedRenderBoundsList: AABB[];
-
   /**
    * reason of re-render, reset after every renderred frame
    */
-  renderReasons: Set<RENDER_REASON>;
+  renderReasons: Set<RenderReason>;
 
   dirty: boolean;
 }

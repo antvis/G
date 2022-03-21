@@ -1,4 +1,4 @@
-import { DisplayObject, SHAPE } from '@antv/g';
+import { DisplayObject, ParsedCircleStyleProps, Shape } from '@antv/g';
 import { injectable } from 'mana-syringe';
 import { Batch } from './Batch';
 import { ShapeRenderer } from '../tokens';
@@ -11,8 +11,8 @@ import { LineMesh, SDFMesh } from '../meshes';
  */
 @injectable({
   token: [
-    { token: ShapeRenderer, named: SHAPE.Circle },
-    { token: ShapeRenderer, named: SHAPE.Ellipse },
+    { token: ShapeRenderer, named: Shape.CIRCLE },
+    { token: ShapeRenderer, named: Shape.ELLIPSE },
   ],
 })
 export class CircleRenderer extends Batch {
@@ -32,10 +32,11 @@ export class CircleRenderer extends Batch {
    * 2. lineDash used
    */
   private needDrawStrokeSeparately(object: DisplayObject) {
-    const { stroke, lineDash, lineWidth, strokeOpacity } = object.parsedStyle;
+    const { stroke, lineDash, lineWidth, strokeOpacity } =
+      object.parsedStyle as ParsedCircleStyleProps;
     return (
       stroke &&
-      lineWidth > 0 &&
+      lineWidth.value > 0 &&
       (strokeOpacity < 1 || (lineDash && lineDash.length && lineDash.every((item) => item !== 0)))
     );
   }

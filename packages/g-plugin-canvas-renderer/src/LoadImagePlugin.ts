@@ -1,6 +1,6 @@
 import { inject, singleton } from 'mana-syringe';
 import {
-  SHAPE,
+  Shape,
   DisplayObject,
   RenderingService,
   RenderingPlugin,
@@ -27,7 +27,7 @@ export class LoadImagePlugin implements RenderingPlugin {
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       const { nodeName, attributes } = object;
-      if (nodeName === SHAPE.Image) {
+      if (nodeName === Shape.IMAGE) {
         const { img } = attributes;
 
         if (isString(img)) {
@@ -44,7 +44,7 @@ export class LoadImagePlugin implements RenderingPlugin {
       const object = e.target as DisplayObject;
       const { attrName, newValue } = e;
 
-      if (object.nodeName === SHAPE.Image) {
+      if (object.nodeName === Shape.IMAGE) {
         if (attrName === 'img') {
           if (isString(newValue)) {
             this.imagePool.getOrCreateImage(newValue).then(() => {

@@ -1,4 +1,4 @@
-import { SHAPE } from '../types';
+import { Shape } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
@@ -21,10 +21,11 @@ export interface ParsedRectStyleProps extends ParsedBaseStyleProps {
 export class Rect extends DisplayObject<RectStyleProps, ParsedRectStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<RectStyleProps> = {}) {
     super({
-      type: SHAPE.Rect,
+      type: Shape.RECT,
       style: {
         width: 'auto',
         height: 'auto',
+        lineWidth: 0,
         ...style,
       },
       ...rest,

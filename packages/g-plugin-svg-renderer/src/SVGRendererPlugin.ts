@@ -6,12 +6,12 @@ import {
   RenderingContext,
   RenderingPlugin,
   RenderingPluginContribution,
-  SHAPE,
+  Shape,
   fromRotationTranslationScale,
   getEuler,
   DisplayObject,
   Camera,
-  RENDER_REASON,
+  RenderReason,
   PARSED_COLOR_TYPE,
   DefaultCamera,
   ElementEvent,
@@ -27,18 +27,18 @@ import { createOrUpdateFilter } from './shapes/defs/Filter';
 import { createOrUpdateGradientAndPattern } from './shapes/defs/Pattern';
 import { createOrUpdateShadow } from './shapes/defs/Shadow';
 
-export const SHAPE_TO_TAGS: Record<SHAPE | string, string> = {
-  [SHAPE.Rect]: 'path',
-  [SHAPE.Circle]: 'circle',
-  [SHAPE.Ellipse]: 'ellipse',
-  [SHAPE.Image]: 'image',
-  [SHAPE.Group]: 'g',
-  [SHAPE.Line]: 'line',
-  [SHAPE.Polyline]: 'polyline',
-  [SHAPE.Polygon]: 'polygon',
-  [SHAPE.Text]: 'text',
-  [SHAPE.Path]: 'path',
-  [SHAPE.HTML]: 'foreignObject',
+export const Shape_TO_TAGS: Record<Shape | string, string> = {
+  [Shape.RECT]: 'path',
+  [Shape.CIRCLE]: 'circle',
+  [Shape.ELLIPSE]: 'ellipse',
+  [Shape.IMAGE]: 'image',
+  [Shape.GROUP]: 'g',
+  [Shape.LINE]: 'line',
+  [Shape.POLYLINE]: 'polyline',
+  [Shape.POLYGON]: 'polygon',
+  [Shape.TEXT]: 'text',
+  [Shape.PATH]: 'path',
+  [Shape.HTML]: 'foreignObject',
 };
 
 const ATTR_IN_PIXEL_MAP = {
@@ -111,10 +111,13 @@ const FORMAT_VALUE_MAP = {
 
 export const DEFAULT_VALUE_MAP: Record<string, string> = {
   textAlign: 'inherit',
+  // textBaseline: 'alphabetic',
   // @see https://www.w3.org/TR/SVG/painting.html#LineCaps
   lineCap: 'butt',
   // @see https://www.w3.org/TR/SVG/painting.html#LineJoin
   lineJoin: 'miter',
+  // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-width
+  lineWidth: '1px',
   opacity: '1',
   fillOpacity: '1',
   strokeOpacity: '1',
@@ -155,6 +158,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
    * <camera>
    */
   private $camera: SVGElement;
+
+  /**
+   * render at the end of frame
+   */
+  private renderQueue: DisplayObject[] = [];
 
   apply(renderingService: RenderingService) {
     const handleMounted = (e: FederatedEvent) => {
@@ -217,24 +225,32 @@ export class SVGRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
-      if (this.renderingContext.renderReasons.has(RENDER_REASON.CameraChanged)) {
+      this.renderQueue.push(object);
+    });
+
+    renderingService.hooks.endFrame.tap(SVGRendererPlugin.tag, () => {
+      if (this.renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)) {
         this.applyTransform(this.$camera, this.camera.getOrthoMatrix());
       }
 
-      // @ts-ignore
-      const $el = object.elementSVG?.$el;
-      // @ts-ignore
-      const $groupEl = object.elementSVG?.$groupEl;
+      this.renderQueue.forEach((object) => {
+        // @ts-ignore
+        const $el = object.elementSVG?.$el;
+        // @ts-ignore
+        const $groupEl = object.elementSVG?.$groupEl;
 
-      if ($el && $groupEl) {
-        // apply local RTS transformation to <group> wrapper
-        // account for anchor
-        this.applyTransform($groupEl, object.getLocalTransform());
+        if ($el && $groupEl) {
+          // apply local RTS transformation to <group> wrapper
+          // account for anchor
+          this.applyTransform($groupEl, object.getLocalTransform());
 
-        this.reorderChildren($groupEl, (object.children as DisplayObject[]) || []);
-        // finish rendering, clear dirty flag
-        object.renderable.dirty = false;
-      }
+          const children = (object?.children || []).slice() as DisplayObject[];
+          this.reorderChildren($groupEl, children || []);
+          // finish rendering, clear dirty flag
+          object.renderable.dirty = false;
+        }
+      });
+      this.renderQueue = [];
     });
   }
 
@@ -242,17 +258,19 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // need to reorder parent's children
     children.sort((a, b) => a.sortable.renderOrder - b.sortable.renderOrder);
 
-    // create empty fragment
-    const fragment = document.createDocumentFragment();
-    children.forEach((child: DisplayObject) => {
-      // @ts-ignore
-      const $el = child.elementSVG.$groupEl;
-      if ($el) {
-        fragment.appendChild($el);
-      }
-    });
+    if (children.length) {
+      // create empty fragment
+      const fragment = document.createDocumentFragment();
+      children.forEach((child: DisplayObject) => {
+        // @ts-ignore
+        const $el = child.elementSVG.$groupEl;
+        if ($el) {
+          fragment.appendChild($el);
+        }
+      });
 
-    $groupEl.appendChild(fragment);
+      $groupEl.appendChild(fragment);
+    }
   }
 
   private applyTransform($el: SVGElement, transform: mat4) {
@@ -288,7 +306,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const { nodeName, attributes, parsedStyle } = object;
 
       $el.setAttribute('fill', 'none');
-      if (nodeName === SHAPE.Image) {
+      if (nodeName === Shape.IMAGE) {
         $el.setAttribute('preserveAspectRatio', 'none');
       }
 
@@ -381,7 +399,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       } else {
         if (
           // (!object.style.clipPathTargets) &&
-          object.nodeName !== SHAPE.Text && // text' anchor is controlled by `textAnchor` property
+          object.nodeName !== Shape.TEXT && // text' anchor is controlled by `textAnchor` property
           ['anchor', 'width', 'height', 'r', 'rx', 'ry'].indexOf(name) > -1
         ) {
           this.updateAnchorWithTransform(object);
@@ -391,7 +409,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
           if (ATTR_IN_PIXEL_MAP[name]) {
             valueStr = `${parsedStyle[ATTR_IN_PIXEL_MAP[name]]}`;
           } else {
-            if (name === 'fontSize') {
+            if (name === 'fontSize' || name === 'lineWidth') {
               valueStr = value.value + value.unit;
             } else {
               valueStr = `${value}`;
@@ -423,14 +441,14 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const svgElement = object.elementSVG;
 
     // use <group> as default, eg. CustomElement
-    const type = SHAPE_TO_TAGS[object.nodeName] || 'g';
+    const type = Shape_TO_TAGS[object.nodeName] || 'g';
     if (type) {
       let $groupEl;
 
       const $el = createSVGElement(type);
 
       // save $el on parsedStyle, which will be returned in getDomElement()
-      if (object.nodeName === SHAPE.HTML) {
+      if (object.nodeName === Shape.HTML) {
         object.parsedStyle.$el = $el;
       }
 
@@ -488,7 +506,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       `translate(-${anchor[0] * width},-${anchor[1] * height})`,
     );
 
-    if (object.nodeName === SHAPE.Circle || object.nodeName === SHAPE.Ellipse) {
+    if (object.nodeName === Shape.CIRCLE || object.nodeName === Shape.ELLIPSE) {
       $el?.setAttribute('cx', `${width / 2}`);
       $el?.setAttribute('cy', `${height / 2}`);
     }

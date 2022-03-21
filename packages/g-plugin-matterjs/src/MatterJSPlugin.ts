@@ -11,7 +11,7 @@ import {
   MutationEvent,
   DisplayObject,
   CanvasEvent,
-  SHAPE,
+  Shape,
   ParsedLineStyleProps,
   ParsedCircleStyleProps,
   ParsedRectStyleProps,
@@ -244,21 +244,21 @@ export class MatterJSPlugin implements RenderingPlugin {
       };
 
       let body: Body;
-      if (nodeName === SHAPE.Line) {
+      if (nodeName === Shape.LINE) {
         const { x1, y1, x2, y2, defX, defY, lineWidth } = parsedStyle as ParsedLineStyleProps;
         const p1 = vec2.fromValues(x1 - defX, y1 - defY);
         const p2 = vec2.fromValues(x2 - defX, y2 - defY);
         const basis = vec2.sub(vec2.create(), p2, p1);
         const normal = vec2.normalize(vec2.create(), vec2.fromValues(-basis[1], basis[0]));
-        const extrude1 = vec2.scaleAndAdd(vec2.create(), p1, normal, lineWidth / 2);
-        const extrude2 = vec2.scaleAndAdd(vec2.create(), p1, normal, -lineWidth / 2);
-        const extrude3 = vec2.scaleAndAdd(vec2.create(), p2, normal, lineWidth / 2);
-        const extrude4 = vec2.scaleAndAdd(vec2.create(), p2, normal, -lineWidth / 2);
+        const extrude1 = vec2.scaleAndAdd(vec2.create(), p1, normal, lineWidth.value / 2);
+        const extrude2 = vec2.scaleAndAdd(vec2.create(), p1, normal, -lineWidth.value / 2);
+        const extrude3 = vec2.scaleAndAdd(vec2.create(), p2, normal, lineWidth.value / 2);
+        const extrude4 = vec2.scaleAndAdd(vec2.create(), p2, normal, -lineWidth.value / 2);
 
         // @ts-ignore
         const points = sortPointsInCCW([extrude1, extrude2, extrude3, extrude4]);
         body = Bodies.fromVertices(0, 0, [points.map(([x, y]) => ({ x, y }))], config);
-      } else if (nodeName === SHAPE.Polyline) {
+      } else if (nodeName === Shape.POLYLINE) {
         //   const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
         //   const pointsInCCW = sortPointsInCCW(points.points);
         //   const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x - defX, y - defY));
@@ -274,26 +274,26 @@ export class MatterJSPlugin implements RenderingPlugin {
         //     // new b2Vec2(prev[0] - defX + eps, prev[1] - defY),
         //     // new b2Vec2(next[0] - defX + eps, next[1] - defY),
         //   );
-      } else if (nodeName === SHAPE.Rect || nodeName === SHAPE.Image) {
+      } else if (nodeName === Shape.RECT || nodeName === Shape.IMAGE) {
         const { widthInPixels, heightInPixels } = parsedStyle as ParsedRectStyleProps;
         // matterjs set origin to center of rectangle
         target.style.transformOrigin = 'center center';
         // target.style.origin = [widthInPixels / 2, heightInPixels / 2];
         body = Bodies.rectangle(0, 0, widthInPixels, heightInPixels, config);
-      } else if (nodeName === SHAPE.Circle) {
+      } else if (nodeName === Shape.CIRCLE) {
         const { rInPixels: r } = parsedStyle as ParsedCircleStyleProps;
         // matter.js also use polygon inside
         body = Bodies.circle(0, 0, r, config);
-      } else if (nodeName === SHAPE.Ellipse) {
+      } else if (nodeName === Shape.ELLIPSE) {
         // @see https://stackoverflow.com/questions/10032756/how-to-create-ellipse-shapes-in-box2d
-      } else if (nodeName === SHAPE.Polygon) {
+      } else if (nodeName === Shape.POLYGON) {
         // @see https://brm.io/matter-js/docs/classes/Bodies.html#method_polygon
         const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
         const pts = sortPointsInCCW(points.points.map(([x, y]) => [x - defX, y - defY]));
         target.style.transformOrigin = 'center center';
         body = Bodies.fromVertices(0, 0, [pts.map(([x, y]) => ({ x, y }))], config);
-      } else if (nodeName === SHAPE.Path) {
-      } else if (nodeName === SHAPE.Text) {
+      } else if (nodeName === Shape.PATH) {
+      } else if (nodeName === Shape.TEXT) {
       }
       if (body) {
         this.bodies[entity] = body;

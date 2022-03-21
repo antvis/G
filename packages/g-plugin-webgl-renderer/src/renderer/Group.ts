@@ -1,11 +1,11 @@
-import { DisplayObject, SHAPE } from '@antv/g';
+import { DisplayObject, Shape } from '@antv/g';
 import { injectable } from 'mana-syringe';
 import { Batch } from './Batch';
 import { ShapeRenderer } from '../tokens';
 // import { BatchMesh } from '../meshes/Instanced';
 
 // @injectable({
-//   token: [{ token: ShapeMesh, named: SHAPE.Group }],
+//   token: [{ token: ShapeMesh, named: Shape.GROUP }],
 // })
 // export class GroupBatchMesh extends BatchMesh {
 //   protected createMaterial(objects: DisplayObject[]): void {}
@@ -15,7 +15,7 @@ import { ShapeRenderer } from '../tokens';
 // }
 
 @injectable({
-  token: [{ token: ShapeRenderer, named: SHAPE.Group }],
+  token: [{ token: ShapeRenderer, named: Shape.GROUP }],
 })
 export class GroupRenderer extends Batch {
   meshes = [];

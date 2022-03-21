@@ -153,9 +153,9 @@ function propertyInterpolation(
 
   if (parser) {
     // @ts-ignore
-    parsedLeft = parser(left, target);
+    parsedLeft = parser(left, target, property);
     // @ts-ignore
-    parsedRight = parser(right, target);
+    parsedRight = parser(right, target, property);
   }
 
   // merger [left, right, n2string()]

@@ -12,7 +12,7 @@ import {
   PolylineUpdater,
   RectUpdater,
 } from './services/aabb';
-import type { SHAPE } from './types';
+import type { Shape } from './types';
 import { TextService } from './services/text';
 import { TextUpdater } from './services/aabb/TextUpdater';
 import { OffscreenCanvasCreator } from './services/text/OffscreenCanvasCreator';
@@ -56,10 +56,19 @@ import {
   parseLengthOrPercent,
   mergeDimensions,
   updateTextTransform,
-  // updateTextAlign,
+  updateInherit,
 } from './property-handlers';
 
 export const globalContainer = GlobalContainer;
+
+// some properties support 'inherit' value
+export const INHERIT_PROPERTIES = [
+  'textAlign',
+  'fontSize',
+  'fontFamily',
+  'fontWeight',
+  'fontStyle',
+];
 
 export const stylePropertyParserFactory: Record<string, StylePropertyParser<any, any>> = {};
 export const stylePropertyUpdaterFactory: Record<string, StylePropertyUpdater<any>[]> = {};
@@ -104,7 +113,7 @@ export const containerModule = Module((register) => {
   register(DisplayObjectPool);
 
   // bind Selector
-  register({ token: SceneGraphSelector, useClass: DefaultSceneGraphSelector });
+  register(DefaultSceneGraphSelector);
   register({
     token: SceneGraphSelectorFactory,
     useFactory: (context) => {
@@ -131,7 +140,7 @@ export const containerModule = Module((register) => {
     token: GeometryUpdaterFactory,
     useFactory: (context) => {
       const cache = {};
-      return (tagName: SHAPE) => {
+      return (tagName: Shape) => {
         if (!cache[tagName]) {
           if (context.container.isBoundNamed(GeometryAABBUpdater, tagName)) {
             cache[tagName] = context.container.getNamed(GeometryAABBUpdater, tagName);
@@ -151,7 +160,7 @@ export const containerModule = Module((register) => {
   );
 
   addPropertiesHandler<number, number>(
-    ['lineWidth', 'shadowBlur'],
+    ['shadowBlur'],
     parseNumber,
     clampedMergeNumbers(0, Infinity),
     undefined,
@@ -159,7 +168,7 @@ export const containerModule = Module((register) => {
 
   // support percent
   addPropertiesHandler<number, number>(
-    ['r', 'rx', 'ry', 'width', 'height', 'fontSize', 'dx', 'dy'],
+    ['r', 'rx', 'ry', 'width', 'height', 'fontSize', 'lineWidth', 'dx', 'dy'],
     parseLengthOrPercent,
     // @ts-ignore
     mergeDimensions,
@@ -180,7 +189,7 @@ export const containerModule = Module((register) => {
     undefined,
   );
 
-  // addPropertyHandler('textAlign', undefined, undefined, updateTextAlign);
+  addPropertiesHandler(INHERIT_PROPERTIES, undefined, undefined, updateInherit);
   addPropertiesHandler<number, number>(
     [
       'x1',

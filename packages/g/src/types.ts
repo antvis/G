@@ -1,20 +1,20 @@
 import type { vec2, vec3 } from 'gl-matrix';
 import type { ParsedPathStyleProps, ParsedPolylineStyleProps } from './display-objects';
 import type { DisplayObject } from './display-objects';
-import type { ParsedColorStyleProperty } from './property-handlers';
+import type { ParsedColorStyleProperty, ParsedElement } from './property-handlers';
 import type { IRenderer } from './AbstractRenderer';
 
-export enum SHAPE {
-  Group = 'group',
-  Circle = 'circle',
-  Ellipse = 'ellipse',
-  Image = 'image',
-  Rect = 'rect',
-  Line = 'line',
-  Polyline = 'polyline',
-  Polygon = 'polygon',
-  Text = 'text',
-  Path = 'path',
+export enum Shape {
+  GROUP = 'g',
+  CIRCLE = 'circle',
+  ELLIPSE = 'ellipse',
+  IMAGE = 'image',
+  RECT = 'rect',
+  LINE = 'line',
+  POLYLINE = 'polyline',
+  POLYGON = 'polygon',
+  TEXT = 'text',
+  PATH = 'path',
   HTML = 'html',
 }
 
@@ -29,16 +29,16 @@ export interface EventPosition {
   y: number;
 }
 
-export enum LINE_CAP {
-  Butt = 'butt',
-  Round = 'round',
-  Square = 'square',
+export enum LineCap {
+  BUTT = 'butt',
+  ROUND = 'round',
+  SQUARE = 'square',
 }
 
-export enum LINE_JOIN {
-  Bevel = 'bevel',
-  Round = 'round',
-  Miter = 'miter',
+export enum LineJoin {
+  BEVEL = 'bevel',
+  ROUND = 'round',
+  MITER = 'miter',
 }
 
 export enum TextTransform {
@@ -57,6 +57,7 @@ export enum TextAlign {
 }
 
 export interface BaseStyleProps {
+  class?: string;
   /**
    * x in local space
    */
@@ -132,11 +133,11 @@ export interface BaseStyleProps {
   /** 整体透明度 */
   opacity?: number;
   /** 线宽 */
-  lineWidth?: number;
+  lineWidth?: string | number;
   /** 指定如何绘制每一条线段末端 */
-  lineCap?: LINE_CAP;
+  lineCap?: LineCap;
   /** 用来设置2个长度不为0的相连部分（线段，圆弧，曲线）如何连接在一起的属性（长度为0的变形部分，其指定的末端和控制点在同一位置，会被忽略） */
-  lineJoin?: LINE_JOIN;
+  lineJoin?: LineJoin;
   /**
    * 设置线的虚线样式，可以指定一个数组。一组描述交替绘制线段和间距（坐标空间单位）长度的数字。 如果数组元素的数量是奇数， 数组的元素会被复制并重复。例如， [5, 15, 25] 会变成 [5, 15, 25, 5, 15, 25]。这个属性取决于浏览器是否支持 setLineDash() 函数。
    */
@@ -167,10 +168,18 @@ export interface BaseStyleProps {
    * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-transform
    */
   textTransform?: TextTransform;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/miterLimit
+   */
+  miterLimit?: number;
 }
 
 export interface ParsedBaseStyleProps
-  extends Omit<BaseStyleProps, 'fill' | 'stroke' | 'path' | 'points'> {
+  extends Omit<
+    BaseStyleProps,
+    'fill' | 'stroke' | 'path' | 'points' | 'lineWidth' | 'shadowColor'
+  > {
   fill?: ParsedColorStyleProperty;
   stroke?: ParsedColorStyleProperty;
   path?: ParsedPathStyleProps;
@@ -179,6 +188,7 @@ export interface ParsedBaseStyleProps
   y?: number;
   // width?: ParsedElement;
   // height?: ParsedElement;
+  lineWidth?: ParsedElement;
   /**
    * x according to definition, eg. Line's x1/x2, Polyline's points
    */
@@ -189,6 +199,7 @@ export interface ParsedBaseStyleProps
    */
   offsetX?: number;
   offsetY?: number;
+  shadowColor?: ParsedColorStyleProperty;
 }
 
 // Cursor style

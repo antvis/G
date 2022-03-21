@@ -1,5 +1,5 @@
 import {
-  SHAPE,
+  Shape,
   DisplayObject,
   DisplayObjectPool,
   RenderingService,
@@ -47,10 +47,10 @@ export class CanvasPickerPlugin implements RenderingPlugin {
   private rBush: RBush<RBushNodeAABB>;
 
   @inject(PathGeneratorFactory)
-  private pathGeneratorFactory: (tagName: SHAPE | string) => PathGenerator<any>;
+  private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>;
 
   @inject(PointInPathPickerFactory)
-  private pointInPathPickerFactory: (tagName: SHAPE | string) => PointInPathPicker<any>;
+  private pointInPathPickerFactory: (tagName: Shape | string) => PointInPathPicker<any>;
 
   apply(renderingService: RenderingService) {
     renderingService.hooks.pick.tap(CanvasPickerPlugin.tag, (result: PickingResult) => {

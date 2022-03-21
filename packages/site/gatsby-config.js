@@ -125,6 +125,14 @@ module.exports = {
         order: 4,
       },
       {
+        slug: 'api/devtools',
+        title: {
+          zh: '开发调试工具',
+          en: 'Devtools',
+        },
+        order: 5,
+      },
+      {
         slug: 'api/inside-g',
         title: {
           zh: 'Inside G',

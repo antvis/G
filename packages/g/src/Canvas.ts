@@ -4,9 +4,9 @@ import { cleanExistedCanvas, isBrowser } from './utils/canvas';
 import { DisplayObject } from './display-objects/DisplayObject';
 import { ContextService } from './services';
 import { RenderingService } from './services/RenderingService';
-import { RenderingContext, RENDER_REASON } from './services/RenderingContext';
+import { RenderingContext, RenderReason } from './services/RenderingContext';
 import { EventService } from './services/EventService';
-import { Camera, CAMERA_EVENT, CAMERA_PROJECTION_MODE, DefaultCamera } from './camera';
+import { Camera, CameraEvent, CAMERA_PROJECTION_MODE, DefaultCamera } from './camera';
 import { containerModule as commonContainerModule } from './canvas-module';
 import type { IRenderer } from './AbstractRenderer';
 import { cancelAnimationFrame, requestAnimationFrame, patch } from './utils/raf';
@@ -132,11 +132,6 @@ export class Canvas extends EventTarget implements ICanvas {
          */
         root: this.document.documentElement,
 
-        /**
-         * removed render bounds
-         */
-        removedRenderBoundsList: [],
-
         renderReasons: new Set(),
 
         force: false,
@@ -168,8 +163,8 @@ export class Canvas extends EventTarget implements ICanvas {
 
     // redraw when camera changed
     const context = this.container.get<RenderingContext>(RenderingContext);
-    camera.on(CAMERA_EVENT.Updated, () => {
-      context.renderReasons.add(RENDER_REASON.CameraChanged);
+    camera.on(CameraEvent.UPDATED, () => {
+      context.renderReasons.add(RenderReason.CAMERA_CHANGED);
     });
     // bind camera
     this.container.register({ token: DefaultCamera, useValue: camera });

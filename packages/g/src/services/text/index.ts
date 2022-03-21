@@ -159,7 +159,7 @@ export class TextService {
       fontSize,
       wordWrap,
       lineHeight: strokeHeight = 0,
-      lineWidth = 0,
+      lineWidth,
       textBaseline,
       textAlign,
       letterSpacing = 0,
@@ -189,13 +189,13 @@ export class TextService {
       lineWidths[i] = lineWidth;
       maxLineWidth = Math.max(maxLineWidth, lineWidth);
     }
-    let width = maxLineWidth + lineWidth;
+    let width = maxLineWidth + lineWidth.value;
     if (dropShadow) {
       width += dropShadowDistance;
     }
-    let lineHeight = strokeHeight || fontProperties.fontSize + lineWidth;
+    let lineHeight = strokeHeight || fontProperties.fontSize + lineWidth.value;
     let height =
-      Math.max(lineHeight, fontProperties.fontSize + lineWidth) +
+      Math.max(lineHeight, fontProperties.fontSize + lineWidth.value) +
       (lines.length - 1) * (lineHeight + leading);
     if (dropShadow) {
       height += dropShadowDistance;
@@ -235,9 +235,9 @@ export class TextService {
         }
 
         return new Rectangle(
-          offsetX - lineWidth / 2,
+          offsetX - lineWidth.value / 2,
           offsetY + i * lineHeight,
-          width + lineWidth,
+          width + lineWidth.value,
           lineHeight,
         );
       }),

@@ -25,7 +25,11 @@ const line = new Path({
 
 默认锚点定义的位置为包围盒左上角顶点，可以通过 [anchor](/zh/docs/api/display-object#anchor) 改变。
 
-例如这条直线路径 `[ ['M', 100, 100], ['L', 200, 200] ]` 在局部坐标系下的 “位置” 为 `[100, 100]`：
+关于这一点我们参考了 SVG 的实际表现，以下图为例我们以 `[100, 100]` 为起点定义了一段圆弧，显然它的包围盒左上角顶点并不是 `[0, 0]` 或者 `[100, 100]`，而是需要根据 path 的真实形状计算得出，我们将把这个计算结果作为默认锚点位置，也是局部坐标系下的坐标：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nLVmQ4nZc1oAAAAAAAAAAAAAARQnAQ" width="600px">
+
+再比如这条直线路径 `[ ['M', 100, 100], ['L', 200, 200] ]` 在局部坐标系下的 “位置” 为 `[100, 100]`：
 
 ```js
 const line = new Path({
@@ -61,6 +65,50 @@ line.translateLocal(100, 0); // 沿 X 轴平移
 ## d
 
 [path](/zh/docs/api/basic/path#path) 属性的别名，与 SVG 中的 `<path>` 命名保持一致。
+
+## lineJoin
+
+**类型**： `string`
+
+**默认值**：`miter`
+
+**是否必须**：`false`
+
+相邻两个线段的接头样式，支持以下取值：
+
+-   'miter' 默认值
+-   'bevel'
+-   'round'
+
+效果可参考 Canvas2D [同名属性](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineJoin)。
+
+## lineCap
+
+**类型**： `string`
+
+**默认值**：`miter`
+
+**是否必须**：`false`
+
+端点样式，支持以下取值：
+
+-   'butt' 默认值
+-   'round'
+-   'square'
+
+可参考 Canvas2D [同名属性](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineCap)。
+
+## miterLimit
+
+**类型**： `number`
+
+**默认值**：`4`
+
+**是否必须**：`false`
+
+miter 接头斜接面限制比例，SVG 和 Canvas2D 的默认值不同，前者为 4 而后者为 10。
+
+可参考 Canvas2D [同名属性](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterLimit)。
 
 # 方法
 

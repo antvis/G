@@ -1,11 +1,10 @@
 import {
   AABB,
-  SHAPE,
+  Shape,
   DisplayObject,
   DisplayObjectPool,
   CanvasConfig,
   ContextService,
-  SceneGraphService,
   RenderingService,
   RenderingContext,
   RenderingPlugin,
@@ -16,7 +15,7 @@ import {
   DefaultCamera,
   ParsedColorStyleProperty,
   PARSED_COLOR_TYPE,
-  RENDER_REASON,
+  RenderReason,
   ElementEvent,
   FederatedEvent,
 } from '@antv/g';
@@ -58,9 +57,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   @inject(ContextService)
   private contextService: ContextService<CanvasRenderingContext2D>;
 
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
-
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
@@ -71,10 +67,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private gradientPool: GradientPool;
 
   @inject(PathGeneratorFactory)
-  private pathGeneratorFactory: (tagName: SHAPE | string) => PathGenerator<any>;
+  private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>;
 
   @inject(StyleRendererFactory)
-  private styleRendererFactory: (tagName: SHAPE | string) => StyleRenderer;
+  private styleRendererFactory: (tagName: Shape | string) => StyleRenderer;
 
   @inject(DisplayObjectPool)
   private displayObjectPool: DisplayObjectPool;
@@ -84,6 +80,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
    */
   @inject(RBushRoot)
   private rBush: RBush<RBushNodeAABB>;
+
+  private removedRBushNodeAABBs: RBushNodeAABB[] = [];
 
   private renderQueue: DisplayObject[] = [];
 
@@ -155,9 +153,15 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       // remove r-bush node
       // @ts-ignore
       const rBushNode = object.rBushNode;
-      this.rBush.remove(rBushNode.aabb);
 
-      this.toSync.delete(object);
+      if (rBushNode.aabb) {
+        this.rBush.remove(rBushNode.aabb);
+
+        this.toSync.delete(object);
+
+        // save removed aabbs for dirty-rectangle rendering later
+        this.removedRBushNodeAABBs.push(rBushNode.aabb);
+      }
     };
 
     const handleBoundsChanged = (e: FederatedEvent) => {
@@ -205,7 +209,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       // 2. camera changed
       this.clearFullScreen =
         !enableDirtyRectangleRendering ||
-        this.renderingContext.renderReasons.has(RENDER_REASON.CameraChanged);
+        this.renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED);
 
       if (context) {
         context.save();
@@ -225,41 +229,44 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
       const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
       const context = this.contextService.getContext()!;
+      let dirtyObjects = this.renderQueue;
+
       if (enableDirtyRectangleRendering) {
-        // merge removed AABB
-        const dirtyRenderBounds = this.safeMergeAABB(
-          this.mergeDirtyAABBs(this.renderQueue),
-          ...this.renderingContext.removedRenderBoundsList,
-        );
-        this.renderingContext.removedRenderBoundsList = [];
-        if (!dirtyRenderBounds) {
-          return;
+        // eg. camera changed
+        if (!this.clearFullScreen) {
+          // merge removed AABB
+          const dirtyRenderBounds = this.safeMergeAABB(
+            this.mergeDirtyAABBs(this.renderQueue.filter((o) => o.nodeName !== Shape.GROUP)),
+            ...this.removedRBushNodeAABBs.map(({ minX, minY, maxX, maxY }) => {
+              const aabb = new AABB();
+              aabb.setMinMax(vec3.fromValues(minX, minY, 0), vec3.fromValues(maxX, maxY, 0));
+              return aabb;
+            }),
+          );
+          this.removedRBushNodeAABBs = [];
+
+          if (!dirtyRenderBounds || AABB.isEmpty(dirtyRenderBounds)) {
+            return;
+          }
+
+          // clear & clip dirty rectangle
+          const { x, y, width, height } = this.convertAABB2Rect(dirtyRenderBounds);
+          context.clearRect(x, y, width, height);
+          context.beginPath();
+          context.rect(x, y, width, height);
+          context.clip();
+
+          // search objects intersect with dirty rectangle
+          dirtyObjects = this.searchDirtyObjects(dirtyRenderBounds);
         }
-
-        // clear & clip dirty rectangle
-        const { x, y, width, height } = this.convertAABB2Rect(dirtyRenderBounds);
-        context.clearRect(x, y, width, height);
-        context.beginPath();
-        context.rect(x, y, width, height);
-        context.clip();
-
-        // search objects intersect with dirty rectangle
-        const dirtyObjects = this.searchDirtyObjects(dirtyRenderBounds);
-
-        // // append uncullable objects in renderQueue
-        // const uncullableObjects = this.renderQueue.filter(
-        //   (object) => !object.entity.getComponent(Cullable).enable,
-        // );
-
-        // dirtyObjects.push(...uncullableObjects);
 
         // do rendering
         dirtyObjects
-          // .filter((object) => object && object.isConnected)
           // sort by z-index
           .sort((a, b) => a.sortable.renderOrder - b.sortable.renderOrder)
           .forEach((object) => {
-            if (object.isVisible()) {
+            // culled object should not be rendered
+            if (object && object.isVisible()) {
               this.renderDisplayObject(object, renderingService);
             }
           });
@@ -283,6 +290,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       });
       // clear restore stack
       this.restoreStack = [];
+      this.clearFullScreen = false;
 
       context.restore();
     });
@@ -398,9 +406,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         generatePath(context, object.parsedStyle);
         if (
           !this.enableBatch &&
-          object.nodeName !== SHAPE.Line &&
-          object.nodeName !== SHAPE.Path &&
-          object.nodeName !== SHAPE.Polyline
+          object.nodeName !== Shape.LINE &&
+          object.nodeName !== Shape.PATH &&
+          object.nodeName !== Shape.POLYLINE
         ) {
           context.closePath();
         }
@@ -443,26 +451,16 @@ export class CanvasRendererPlugin implements RenderingPlugin {
    * For now, we just simply merge all the rectangles into one.
    * @see https://idom.me/articles/841.html
    */
-  private mergeDirtyAABBs(dirtyObjects: DisplayObject[]): AABB | undefined {
+  private mergeDirtyAABBs(dirtyObjects: DisplayObject[]): AABB {
     // merge into a big AABB
-    let dirtyRectangle: AABB | undefined;
+    let dirtyRectangle: AABB = new AABB();
     dirtyObjects.forEach((object) => {
       const renderBounds = object.getRenderBounds();
-      if (renderBounds) {
-        if (!dirtyRectangle) {
-          dirtyRectangle = new AABB(renderBounds.center, renderBounds.halfExtents);
-        } else {
-          dirtyRectangle.add(renderBounds);
-        }
-      }
+      dirtyRectangle.add(renderBounds);
 
       const { dirtyRenderBounds } = object.renderable;
       if (dirtyRenderBounds) {
-        if (!dirtyRectangle) {
-          dirtyRectangle = new AABB(dirtyRenderBounds.center, dirtyRenderBounds.halfExtents);
-        } else {
-          dirtyRectangle.add(dirtyRenderBounds);
-        }
+        dirtyRectangle.add(dirtyRenderBounds);
       }
     });
 
@@ -621,16 +619,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
   }
 
-  private safeMergeAABB(...aabbs: (AABB | undefined)[]): AABB | undefined {
-    let merged: AABB | undefined;
+  private safeMergeAABB(...aabbs: AABB[]): AABB {
+    const merged = new AABB();
     aabbs.forEach((aabb) => {
-      if (aabb) {
-        if (!merged) {
-          merged = aabb;
-        } else {
-          merged.add(aabb);
-        }
-      }
+      merged.add(aabb);
     });
     return merged;
   }

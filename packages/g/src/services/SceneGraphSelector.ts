@@ -1,8 +1,8 @@
-import { singleton } from 'mana-syringe';
+import { singleton, Syringe } from 'mana-syringe';
 import type { IElement } from '../dom/interfaces';
 
-export const SceneGraphSelectorFactory = 'SceneGraphSelectorFactory';
-export const SceneGraphSelector = 'SceneGraphSelector';
+export const SceneGraphSelectorFactory = Syringe.defineToken('SceneGraphSelectorFactory');
+export const SceneGraphSelector = Syringe.defineToken('SceneGraphSelector', { multiple: false });
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface SceneGraphSelector {
   selectOne: <R extends IElement, T extends IElement>(query: string, root: R) => T | null;
@@ -17,7 +17,7 @@ export interface SceneGraphSelector {
  * * getElementsByName
  * * getElementsByTag
  */
-@singleton()
+@singleton({ token: SceneGraphSelector })
 export class DefaultSceneGraphSelector implements SceneGraphSelector {
   selectOne<R extends IElement, T extends IElement>(query: string, root: R): T | null {
     if (query.startsWith('#')) {

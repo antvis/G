@@ -136,7 +136,7 @@ const rectConfig = {
     lastCloned = cloned;
 
     // reset transform origin, which will case re-calc origin
-    group.style.transformOrigin = group.style.transformOrigin;
+    group.style.transformOrigin = group.style.transformOrigin || 'left top';
 
     // get calculated origin
     const [ox, oy, oz] = group.style.origin;

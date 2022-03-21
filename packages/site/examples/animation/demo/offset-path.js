@@ -117,12 +117,13 @@ circle1.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
   iterations: Infinity,
   direction: 'alternate',
 });
-circle2.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
+const animation = circle2.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
   duration: 3500,
-  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+  easing: 'linear',
   iterations: Infinity,
   direction: 'alternate',
 });
+
 circle3.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
   duration: 4500,
   easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
@@ -151,10 +152,14 @@ $wrapper.appendChild(gui.domElement);
 const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
   renderer: 'canvas',
+  currentTime: 0,
 };
 rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
   canvas.setRenderer(
     renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
   );
+});
+rendererFolder.add(rendererConfig, 'currentTime', 0, 3500).onChange((currentTime) => {
+  animation.currentTime = currentTime;
 });
 rendererFolder.open();

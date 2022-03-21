@@ -1,17 +1,17 @@
-import { ParsedBaseStyleProps, SHAPE } from '@antv/g';
+import { ParsedBaseStyleProps, Shape } from '@antv/g';
 import { singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import { StyleRenderer } from './interfaces';
 
 @singleton({
   token: [
-    { token: StyleRenderer, named: SHAPE.Circle },
-    { token: StyleRenderer, named: SHAPE.Ellipse },
-    { token: StyleRenderer, named: SHAPE.Rect },
-    { token: StyleRenderer, named: SHAPE.Line },
-    { token: StyleRenderer, named: SHAPE.Polyline },
-    { token: StyleRenderer, named: SHAPE.Polygon },
-    { token: StyleRenderer, named: SHAPE.Path },
+    { token: StyleRenderer, named: Shape.CIRCLE },
+    { token: StyleRenderer, named: Shape.ELLIPSE },
+    { token: StyleRenderer, named: Shape.RECT },
+    { token: StyleRenderer, named: Shape.LINE },
+    { token: StyleRenderer, named: Shape.POLYLINE },
+    { token: StyleRenderer, named: Shape.POLYGON },
+    { token: StyleRenderer, named: Shape.PATH },
   ],
 })
 export class DefaultRenderer implements StyleRenderer {
@@ -35,6 +35,7 @@ export class DefaultRenderer implements StyleRenderer {
       lineJoin,
       shadowColor,
       filter,
+      miterLimit,
     } = parsedStyle;
 
     if (!isNil(fill)) {
@@ -48,12 +49,15 @@ export class DefaultRenderer implements StyleRenderer {
     }
 
     if (!isNil(stroke)) {
-      if (lineWidth && lineWidth > 0) {
+      if (lineWidth && lineWidth.value > 0) {
         const applyOpacity = !isNil(strokeOpacity) && strokeOpacity !== 1;
         if (applyOpacity) {
           context.globalAlpha = strokeOpacity;
         }
-        context.lineWidth = lineWidth;
+        context.lineWidth = lineWidth.value;
+        if (!isNil(miterLimit)) {
+          context.miterLimit = miterLimit;
+        }
 
         if (!isNil(lineCap)) {
           context.lineCap = lineCap;

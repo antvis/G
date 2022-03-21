@@ -1,6 +1,6 @@
 import type { TextMetrics } from '../services/text';
 import type { DisplayObjectConfig } from '../dom/interfaces';
-import { SHAPE, LINE_JOIN, LINE_CAP } from '../types';
+import { Shape, LineJoin, LineCap } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { ParsedElement } from '../property-handlers';
@@ -67,7 +67,7 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
 export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<TextStyleProps> = {}) {
     super({
-      type: SHAPE.Text,
+      type: Shape.TEXT,
       style: {
         text: '',
         fontSize: 'inherit',
@@ -86,8 +86,8 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
         fill: '#000',
         letterSpacing: 0,
         lineHeight: 0,
-        lineJoin: LINE_JOIN.Miter,
-        lineCap: LINE_CAP.Butt,
+        lineJoin: LineJoin.MITER,
+        lineCap: LineCap.BUTT,
         lineWidth: 0,
         miterLimit: 10,
         stroke: '#000',

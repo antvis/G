@@ -3,15 +3,15 @@ import { singleton, inject } from 'mana-syringe';
 import { GeometryAABBUpdater } from './interfaces';
 import type { ParsedTextStyleProps } from '../../display-objects/Text';
 import { TextService } from '../text';
-import { SHAPE } from '../../types';
+import { Shape } from '../../types';
 
-@singleton({ token: { token: GeometryAABBUpdater, named: SHAPE.Text } })
+@singleton({ token: { token: GeometryAABBUpdater, named: Shape.TEXT } })
 export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   @inject(TextService)
   private textService: TextService;
 
   update(parsedStyle: ParsedTextStyleProps) {
-    const { text = '', textAlign, lineWidth = 0, textBaseline, x = 0, y = 0, dx, dy } = parsedStyle;
+    const { text = '', textAlign, lineWidth, textBaseline, x = 0, y = 0, dx, dy } = parsedStyle;
 
     const metrics = this.textService.measureText(text, parsedStyle);
     parsedStyle.metrics = metrics;
@@ -24,10 +24,10 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
     let anchor: [number, number] = [0, 1];
     let lineXOffset = 0;
     if (textAlign === 'center') {
-      lineXOffset = lineWidth / 2;
+      lineXOffset = lineWidth.value / 2;
       anchor = [0.5, 1];
     } else if (textAlign === 'right' || textAlign === 'end') {
-      lineXOffset = lineWidth;
+      lineXOffset = lineWidth.value;
       anchor = [1, 1];
     }
     // update anchor

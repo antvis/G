@@ -10,7 +10,7 @@ import {
   MutationEvent,
   DisplayObject,
   CanvasEvent,
-  SHAPE,
+  Shape,
   ParsedLineStyleProps,
   ParsedPolylineStyleProps,
   ParsedCircleStyleProps,
@@ -254,7 +254,7 @@ export class Box2DPlugin implements RenderingPlugin {
     const { entity, nodeName, parsedStyle } = target;
 
     let shape: Box2D.b2EdgeShape | Box2D.b2CircleShape | Box2D.b2PolygonShape | Box2D.b2ChainShape;
-    if (nodeName === SHAPE.Line) {
+    if (nodeName === Shape.LINE) {
       const { x1, y1, x2, y2, defX, defY } = parsedStyle as ParsedLineStyleProps;
       // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_collision.html#autotoc_md39
       shape = new b2EdgeShape();
@@ -266,7 +266,7 @@ export class Box2DPlugin implements RenderingPlugin {
         new b2Vec2(points[0][0] - defX, points[0][1] - defY),
         new b2Vec2(points[1][0] - defX, points[1][1] - defY),
       );
-    } else if (nodeName === SHAPE.Polyline) {
+    } else if (nodeName === Shape.POLYLINE) {
       const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
       const pointsInCCW = sortPointsInCCW(points.points);
       const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x - defX, y - defY));
@@ -282,26 +282,26 @@ export class Box2DPlugin implements RenderingPlugin {
         // new b2Vec2(prev[0] - defX + eps, prev[1] - defY),
         // new b2Vec2(next[0] - defX + eps, next[1] - defY),
       );
-    } else if (nodeName === SHAPE.Rect || nodeName === SHAPE.Image) {
+    } else if (nodeName === Shape.RECT || nodeName === Shape.IMAGE) {
       const { widthInPixels: width, heightInPixels: height } = parsedStyle as ParsedRectStyleProps;
       shape = new b2PolygonShape();
       // @see https://box2d.org/documentation/classb2_polygon_shape.html#af80eb52027ffe85dd4d0a3110eae9d1b
       shape.SetAsBox(width / 2, height / 2, new b2Vec2(width / 2, height / 2), 0);
-    } else if (nodeName === SHAPE.Circle) {
+    } else if (nodeName === Shape.CIRCLE) {
       // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_collision.html#autotoc_md37
       const { rInPixels } = parsedStyle as ParsedCircleStyleProps;
       shape = new b2CircleShape();
       shape.set_m_radius(rInPixels);
-    } else if (nodeName === SHAPE.Ellipse) {
+    } else if (nodeName === Shape.ELLIPSE) {
       // @see https://stackoverflow.com/questions/10032756/how-to-create-ellipse-shapes-in-box2d
-    } else if (nodeName === SHAPE.Polygon) {
+    } else if (nodeName === Shape.POLYGON) {
       const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
 
       const pointsInCCW = sortPointsInCCW(points.points);
       const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x - defX, y - defY));
       shape = createPolygonShape(this.Box2D, vertices);
-    } else if (nodeName === SHAPE.Path) {
-    } else if (nodeName === SHAPE.Text) {
+    } else if (nodeName === Shape.PATH) {
+    } else if (nodeName === Shape.TEXT) {
     }
 
     if (shape) {

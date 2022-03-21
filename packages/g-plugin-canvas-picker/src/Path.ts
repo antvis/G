@@ -1,5 +1,5 @@
-import { DisplayObject, PathStyleProps, Point } from '@antv/g';
-import { mat3, vec2, vec3 } from 'gl-matrix';
+import type { DisplayObject, ParsedBaseStyleProps, PathStyleProps, Point } from '@antv/g';
+import { mat3, vec2 } from 'gl-matrix';
 import { Quad as QuadUtil, Cubic as CubicUtil, Line as LineUtil } from '@antv/g-math';
 import { inArc, inBox, inLine, inPolygons } from './utils/math';
 
@@ -117,21 +117,29 @@ export function isPointInPath(
   isPointInPath: (displayObject: DisplayObject<PathStyleProps>, position: Point) => boolean,
 ): boolean {
   const {
-    lineWidth = 0,
+    lineWidth,
     stroke,
     fill,
     defX: x = 0,
     defY: y = 0,
     clipPathTargets,
     path,
-  } = displayObject.parsedStyle;
+  } = displayObject.parsedStyle as ParsedBaseStyleProps;
   const { segments, hasArc, polylines, polygons, totalLength } = path;
 
   const isClipPath = !!clipPathTargets?.length;
 
   let isHit = false;
   if (stroke || isClipPath) {
-    isHit = isPointInStroke(segments, lineWidth, position.x + x, position.y + y, totalLength, x, y);
+    isHit = isPointInStroke(
+      segments,
+      lineWidth.value,
+      position.x + x,
+      position.y + y,
+      totalLength,
+      x,
+      y,
+    );
   }
   if (!isHit && (fill || isClipPath)) {
     if (hasArc) {

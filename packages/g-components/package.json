@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-components",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Components for g",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -45,5 +45,5 @@
     "umd": "webpack"
   },
   "homepage": "https://github.com/antvis/g#readme",
-  "gitHead": "d09726ac85b8738d53c97002a98848b4a450bfcd"
+  "gitHead": "0c7b71ca68a0ada7e50c9eeec3c47f9b7de44f01"
 }

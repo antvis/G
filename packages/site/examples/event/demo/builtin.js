@@ -97,7 +97,7 @@ const circleConfig = {
 
     circles.push(circle);
     canvas.appendChild(circle);
-    circle.setPosition(300 + Math.random() * 200, 250 + Math.random() * 200);
+    circle.setPosition(300 + (circles.length - 1) * 20, 250);
 
     const records = observer.takeRecords();
     console.log(records);

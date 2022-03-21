@@ -48,7 +48,7 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
   ];
 
   apply($el: SVGElement, parsedStyle: ParsedTextStyleProps) {
-    const { textBaseline, lineWidth = 0, metrics, dx, dy } = parsedStyle;
+    const { textBaseline, lineWidth, metrics, dx, dy } = parsedStyle;
 
     const browser = detect();
     if (browser && browser.name === 'firefox') {
@@ -71,11 +71,11 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
 
     if (lineNum === 1) {
       $el.innerHTML = lines[0];
-      $el.setAttribute('dx', `${lineWidth / 2}`);
+      $el.setAttribute('dx', `${lineWidth.value / 2}`);
     } else {
       $el.innerHTML = lines
         .map((line: string, i: number) => {
-          let dx = lineWidth / 2;
+          let dx = lineWidth.value / 2;
           let dy = 0;
           if (i === 0) {
             // TODO: handle other textBaseline values

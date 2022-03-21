@@ -1,9 +1,9 @@
 import { singleton } from 'mana-syringe';
 import { GeometryAABBUpdater } from './interfaces';
 import type { ParsedLineStyleProps } from '../../display-objects/Line';
-import { SHAPE } from '../../types';
+import { Shape } from '../../types';
 
-@singleton({ token: { token: GeometryAABBUpdater, named: SHAPE.Line } })
+@singleton({ token: { token: GeometryAABBUpdater, named: Shape.LINE } })
 export class LineUpdater implements GeometryAABBUpdater<ParsedLineStyleProps> {
   update(parsedStyle: ParsedLineStyleProps) {
     const { x1, y1, x2, y2 } = parsedStyle;

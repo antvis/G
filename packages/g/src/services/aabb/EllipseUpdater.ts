@@ -1,9 +1,9 @@
 import { singleton } from 'mana-syringe';
 import { GeometryAABBUpdater } from './interfaces';
 import type { Ellipse, ParsedEllipseStyleProps } from '../../display-objects/Ellipse';
-import { SHAPE } from '../../types';
+import { Shape } from '../../types';
 
-@singleton({ token: { token: GeometryAABBUpdater, named: SHAPE.Ellipse } })
+@singleton({ token: { token: GeometryAABBUpdater, named: Shape.ELLIPSE } })
 export class EllipseUpdater implements GeometryAABBUpdater<ParsedEllipseStyleProps> {
   update(parsedStyle: ParsedEllipseStyleProps, object: Ellipse) {
     const { rx, ry, x = 0, y = 0 } = parsedStyle;

@@ -9,8 +9,7 @@
       "title": {
         "zh": "事件委托",
         "en": "Delegate"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*xJB7TY68IVUAAAAAAAAAAABkARQnAQ"
+      }
     },
     {
       "filename": "shapes.js",
@@ -65,24 +64,21 @@
       "title": {
         "zh": "触发自定义事件",
         "en": "Dispatch custom event"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ"
+      }
     },
     {
       "filename": "deprecated-delegate.js",
       "title": {
         "zh": "兼容旧版的事件委托写法",
         "en": "Delegate with event's name"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ"
+      }
     },
     {
       "filename": "builtin.js",
       "title": {
         "zh": "内置场景图事件",
         "en": "SceneGraph Events"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ"
+      }
     },
     {
       "filename": "coordinates.js",

@@ -10,7 +10,7 @@ import {
   Text,
   Rect,
   ElementEvent,
-  SHAPE,
+  Shape,
   Ellipse,
   EllipseStyleProps,
   RectStyleProps,
@@ -41,7 +41,7 @@ describe('Document', () => {
     canvas.destroy();
   });
   it('should createElement correctly', () => {
-    const circle = canvas.document.createElement(SHAPE.Circle, {
+    const circle = canvas.document.createElement(Shape.CIRCLE, {
       style: {
         fill: 'rgb(239, 244, 255)',
         fillOpacity: 1,
@@ -56,7 +56,7 @@ describe('Document', () => {
     canvas.appendChild(circle);
     expect(circle.style.r).to.be.eql(50);
 
-    const ellipse = canvas.document.createElement<Ellipse, EllipseStyleProps>(SHAPE.Ellipse, {
+    const ellipse = canvas.document.createElement<Ellipse, EllipseStyleProps>(Shape.ELLIPSE, {
       style: {
         rx: 50,
         ry: 50,
@@ -66,7 +66,7 @@ describe('Document', () => {
     expect(ellipse.style.rx).to.be.eql(50);
     expect(ellipse.style.ry).to.be.eql(50);
 
-    const rect = canvas.document.createElement<Rect, RectStyleProps>(SHAPE.Rect, {
+    const rect = canvas.document.createElement<Rect, RectStyleProps>(Shape.RECT, {
       style: {
         width: 50,
         height: 50,
@@ -76,7 +76,7 @@ describe('Document', () => {
     expect(rect.style.width).to.be.eql(50);
     expect(rect.style.height).to.be.eql(50);
 
-    const image = canvas.document.createElement<Image, ImageStyleProps>(SHAPE.Image, {
+    const image = canvas.document.createElement<Image, ImageStyleProps>(Shape.IMAGE, {
       style: {
         img: '',
         width: 50,
@@ -109,7 +109,7 @@ describe('Document', () => {
   it('should proxy query methods to documentElement', () => {
     canvas.removeChildren();
 
-    const ellipse = canvas.document.createElement<Ellipse, EllipseStyleProps>(SHAPE.Ellipse, {
+    const ellipse = canvas.document.createElement<Ellipse, EllipseStyleProps>(Shape.ELLIPSE, {
       id: 'ellipse',
       name: 'ellipse-name',
       className: 'ellipse-classname',
@@ -123,7 +123,7 @@ describe('Document', () => {
 
     expect(canvas.document.getElementById('ellipse') as Ellipse).eqls(ellipse);
     expect(canvas.document.getElementsByName('ellipse-name')[0]).eqls(ellipse);
-    expect(canvas.document.getElementsByTagName(SHAPE.Ellipse)[0]).eqls(ellipse);
+    expect(canvas.document.getElementsByTagName(Shape.ELLIPSE)[0]).eqls(ellipse);
     expect(canvas.document.getElementsByClassName('ellipse-classname')[0]).eqls(ellipse);
     expect(canvas.document.querySelector('#ellipse')).eqls(ellipse);
     expect(canvas.document.querySelectorAll('#ellipse')[0]).eqls(ellipse);

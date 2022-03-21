@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-3d",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "Provide 3D extension for G",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -37,8 +37,8 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g-plugin-webgl-renderer": "^1.0.18",
-    "@antv/g-shader-components": "^1.0.10",
+    "@antv/g-plugin-webgl-renderer": "^1.0.19",
+    "@antv/g-shader-components": "^1.0.11",
     "@antv/util": "^2.0.13",
     "tslib": "^2.3.1"
   },
@@ -52,5 +52,5 @@
       "glslify-import"
     ]
   },
-  "gitHead": "d09726ac85b8738d53c97002a98848b4a450bfcd"
+  "gitHead": "0c7b71ca68a0ada7e50c9eeec3c47f9b7de44f01"
 }

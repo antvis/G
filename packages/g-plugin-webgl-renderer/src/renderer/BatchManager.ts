@@ -1,4 +1,4 @@
-import { DisplayObject, RenderingService, SHAPE } from '@antv/g';
+import { DisplayObject, RenderingService, Shape } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { Device } from '../platform';
 import { MeshFactory, RendererFactory } from '../tokens';

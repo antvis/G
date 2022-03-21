@@ -1,5 +1,5 @@
 import { Line as LineUtil } from '@antv/g-math';
-import { SHAPE, LINE_CAP, LINE_JOIN } from '../types';
+import { Shape, LineCap, LineJoin } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
@@ -28,7 +28,7 @@ export interface ParsedLineStyleProps extends ParsedBaseStyleProps {
 export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<LineStyleProps> = {}) {
     super({
-      type: SHAPE.Line,
+      type: Shape.LINE,
       style: {
         x1: 0,
         y1: 0,
@@ -36,8 +36,11 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
         y2: 0,
         z1: 0,
         z2: 0,
-        lineJoin: LINE_JOIN.Miter,
-        lineCap: LINE_CAP.Butt,
+        lineJoin: LineJoin.MITER,
+        lineCap: LineCap.BUTT,
+        /**
+         * @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-width
+         */
         lineWidth: 1,
         isBillboard: false,
         ...style,

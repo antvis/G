@@ -118,3 +118,7 @@ const circle = new Circle({ style: { r: 100 } });
 ```
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
+
+## createElementNS
+
+目前实现同 createElement。

@@ -1,5 +1,5 @@
 import { injectable } from 'mana-syringe';
-import { DisplayObject, PARSED_COLOR_TYPE, SHAPE, Tuple4Number } from '@antv/g';
+import { DisplayObject, PARSED_COLOR_TYPE, Shape, Tuple4Number } from '@antv/g';
 import { vec3, mat4 } from 'gl-matrix';
 import { Format, VertexBufferFrequency } from '../platform';
 import meshVert from '../shader/mesh.vert';
@@ -94,13 +94,13 @@ export class FillMesh extends Instanced {
     if (
       name === 'lineJoin' ||
       name === 'lineCap' ||
-      (object.nodeName === SHAPE.Rect &&
+      (object.nodeName === Shape.RECT &&
         (name === 'width' || name === 'height' || name === 'radius')) ||
-      (object.nodeName === SHAPE.Line &&
+      (object.nodeName === Shape.LINE &&
         (name === 'x1' || name === 'y1' || name === 'x2' || name === 'y2')) ||
-      (object.nodeName === SHAPE.Polyline && name === 'points') ||
-      (object.nodeName === SHAPE.Polygon && name === 'points') ||
-      (object.nodeName === SHAPE.Path && name === 'path')
+      (object.nodeName === Shape.POLYLINE && name === 'points') ||
+      (object.nodeName === Shape.POLYGON && name === 'points') ||
+      (object.nodeName === Shape.PATH && name === 'path')
     ) {
       // need re-calc geometry
       this.material.geometryDirty = true;

@@ -1,6 +1,6 @@
 import { TextTransform } from '../types';
 import type { DisplayObject, Text } from '../display-objects';
-import { SHAPE } from '..';
+import { Shape } from '..';
 
 /**
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-transform
@@ -10,7 +10,7 @@ export function updateTextTransform(
   newTextTransform: TextTransform,
   o: DisplayObject,
 ) {
-  if (o.nodeName === SHAPE.Text) {
+  if (o.nodeName === Shape.TEXT) {
     const object = o as Text;
     if (newTextTransform === TextTransform.CAPITALIZE) {
       object.style.text = object.style.text.charAt(0).toUpperCase() + object.style.text.slice(1);

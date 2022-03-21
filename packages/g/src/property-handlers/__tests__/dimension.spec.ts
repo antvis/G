@@ -1,6 +1,6 @@
 import chai, { expect } from 'chai';
 import { parseLength, parseAngle, parseLengthOrPercent, mergeDimensions } from '../dimension';
-import { Circle } from '../..';
+import { Circle, Group } from '../..';
 
 const circle = new Circle({
   style: {
@@ -23,6 +23,18 @@ describe('Property Dimension', () => {
     expect(parseLengthOrPercent('0.5px')).to.be.eqls({ unit: 'px', value: 0.5 });
     expect(parseLengthOrPercent('30%')).to.be.eqls({ unit: '%', value: 30 });
     expect(parseLengthOrPercent('30.5%')).to.be.eqls({ unit: '%', value: 30.5 });
+  });
+
+  it('parse length with em', () => {
+    const group = new Group({
+      style: {
+        fontSize: 10,
+      },
+    });
+    expect(parseLengthOrPercent('1.5em', circle)).to.be.eqls({ unit: 'px', value: 0 });
+
+    group.appendChild(circle);
+    expect(parseLengthOrPercent('1.5em', circle)).to.be.eqls({ unit: 'px', value: 15 });
   });
 
   it('parse angle with unit', () => {

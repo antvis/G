@@ -1,4 +1,4 @@
-import { DisplayObject, RectStyleProps, Point } from '@antv/g';
+import type { DisplayObject, RectStyleProps, Point, ParsedRectStyleProps } from '@antv/g';
 import { inLine, inArc, inBox, inRect } from './utils/math';
 
 export function isPointInPath(
@@ -10,11 +10,11 @@ export function isPointInPath(
     radius,
     fill,
     stroke,
-    lineWidth = 0,
+    lineWidth,
     width: parsedWidth,
     height: parsedHeight,
     clipPathTargets,
-  } = displayObject.parsedStyle;
+  } = displayObject.parsedStyle as ParsedRectStyleProps;
   const isClipPath = !!clipPathTargets?.length;
 
   const { unit: widthUnit, value: widthValue } = parsedWidth;
@@ -30,7 +30,7 @@ export function isPointInPath(
 
   // 无圆角时的策略
   if (!radius) {
-    const halfWidth = lineWidth / 2;
+    const halfWidth = lineWidth.value / 2;
     // 同时填充和带有边框
     if ((fill && stroke) || isClipPath) {
       return inBox(
@@ -47,12 +47,21 @@ export function isPointInPath(
       return inBox(0, 0, width, height, position.x, position.y);
     }
     if (stroke) {
-      return inRect(0, 0, width, height, lineWidth, position.x, position.y);
+      return inRect(0, 0, width, height, lineWidth.value, position.x, position.y);
     }
   } else {
     let isHit = false;
     if (stroke || isClipPath) {
-      isHit = inRectWithRadius(0, 0, width, height, radius, lineWidth, position.x, position.y);
+      isHit = inRectWithRadius(
+        0,
+        0,
+        width,
+        height,
+        radius,
+        lineWidth.value,
+        position.x,
+        position.y,
+      );
     }
     // 仅填充时带有圆角的矩形直接通过图形拾取
     // 以后可以改成纯数学的近似拾取，将圆弧切割成多边形

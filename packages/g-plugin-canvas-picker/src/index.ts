@@ -1,10 +1,6 @@
-import G, { SHAPE, RendererPlugin } from '@antv/g';
+import { Shape, RendererPlugin } from '@antv/g';
 import { Module, Syringe } from 'mana-syringe';
-import {
-  CanvasPickerPlugin,
-  PointInPathPickerFactory,
-  PointInPathPicker,
-} from './CanvasPickerPlugin';
+import { CanvasPickerPlugin, PointInPathPickerFactory } from './CanvasPickerPlugin';
 import { isPointInPath as CirclePicker } from './Circle';
 import { isPointInPath as EllipsePicker } from './Ellipse';
 import { isPointInPath as LinePicker } from './Line';
@@ -17,25 +13,25 @@ const containerModule = Module((register) => {
   register({
     token: PointInPathPickerFactory,
     useFactory: (context) => {
-      return (tagName: SHAPE) => {
-        if (tagName === SHAPE.Circle) {
+      return (tagName: Shape) => {
+        if (tagName === Shape.CIRCLE) {
           return CirclePicker;
-        } else if (tagName === SHAPE.Ellipse) {
+        } else if (tagName === Shape.ELLIPSE) {
           return EllipsePicker;
-        } else if (tagName === SHAPE.Rect) {
+        } else if (tagName === Shape.RECT) {
           return RectPicker;
-        } else if (tagName === SHAPE.Line) {
+        } else if (tagName === Shape.LINE) {
           return LinePicker;
-        } else if (tagName === SHAPE.Polyline) {
+        } else if (tagName === Shape.POLYLINE) {
           return PolylinePicker;
-        } else if (tagName === SHAPE.Polygon) {
+        } else if (tagName === Shape.POLYGON) {
           return PolygonPicker;
-        } else if (tagName === SHAPE.Path) {
+        } else if (tagName === Shape.PATH) {
           return PathPicker;
         } else if (
-          tagName === SHAPE.Image ||
-          tagName === SHAPE.Text
-          // tagName === SHAPE.Group
+          tagName === Shape.IMAGE ||
+          tagName === Shape.TEXT
+          // tagName === Shape.GROUP
         ) {
           return () => true;
         }

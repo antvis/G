@@ -1,9 +1,9 @@
 import { injectable } from 'mana-syringe';
 import {
   Line,
-  LINE_CAP,
+  LineCap,
   DisplayObject,
-  SHAPE,
+  Shape,
   ParsedColorStyleProperty,
   PARSED_COLOR_TYPE,
 } from '@antv/g';
@@ -32,10 +32,10 @@ enum InstancedLineVertexAttributeLocation {
   DASH,
 }
 
-const LINE_CAP_MAP = {
-  [LINE_CAP.Butt]: 1,
-  [LINE_CAP.Round]: 2,
-  [LINE_CAP.Square]: 3,
+const LineCap_MAP = {
+  [LineCap.BUTT]: 1,
+  [LineCap.ROUND]: 2,
+  [LineCap.SQUARE]: 3,
 };
 
 @injectable()
@@ -48,7 +48,7 @@ export class InstancedLineMesh extends Instanced {
 
     // should split when using gradient & pattern
     const instance = this.instance;
-    if (instance.nodeName === SHAPE.Line) {
+    if (instance.nodeName === Shape.LINE) {
       const source = instance.parsedStyle.stroke as ParsedColorStyleProperty;
       const target = object.parsedStyle.stroke as ParsedColorStyleProperty;
 
@@ -101,7 +101,7 @@ export class InstancedLineMesh extends Instanced {
         y2 - defY,
         z2,
         // caps
-        LINE_CAP_MAP[lineCap],
+        LineCap_MAP[lineCap],
         // dash
         dashOffset,
         dashSegmentPercent,
@@ -210,7 +210,7 @@ export class InstancedLineMesh extends Instanced {
         InstancedLineVertexAttributeBufferIndex.POINT_CAP_DASH,
         InstancedLineVertexAttributeLocation.CAP,
         index,
-        new Uint8Array(new Float32Array([LINE_CAP_MAP[lineCap]]).buffer),
+        new Uint8Array(new Float32Array([LineCap_MAP[lineCap]]).buffer),
       );
     }
   }

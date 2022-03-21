@@ -1,6 +1,6 @@
 import { inject, singleton } from 'mana-syringe';
 import {
-  SHAPE,
+  Shape,
   DisplayObject,
   RenderingService,
   RenderingPlugin,
@@ -34,7 +34,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
   apply(renderingService: RenderingService) {
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
-      if (object.nodeName === SHAPE.HTML) {
+      if (object.nodeName === Shape.HTML) {
         const { innerHTML } = object.parsedStyle;
         const existedId = HTML_PREFIX + object.entity;
         const $container = (this.contextService.getDomElement() as HTMLElement).parentNode;
@@ -58,7 +58,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
-      if (object.nodeName === SHAPE.HTML) {
+      if (object.nodeName === Shape.HTML) {
         const existedId = HTML_PREFIX + object.entity;
         const $container = (this.contextService.getDomElement() as HTMLElement).parentNode;
         if ($container) {
@@ -81,7 +81,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.render.tap(HTMLRenderingPlugin.tag, (object: DisplayObject) => {
-      if (object.nodeName === SHAPE.HTML) {
+      if (object.nodeName === Shape.HTML) {
         const existedId = HTML_PREFIX + object.entity;
         const $container = (this.contextService.getDomElement() as HTMLElement).parentNode;
         if ($container) {
@@ -102,7 +102,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       visibility = 'visible',
       opacity = 1,
       fill,
-      lineWidth = 0,
+      lineWidth,
       lineDash,
       stroke,
       anchor,
@@ -170,7 +170,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     }
 
     // border
-    style['border-width'] = `${lineWidth}px`;
+    style['border-width'] = `${lineWidth.value}px`;
     if (stroke && stroke.type === PARSED_COLOR_TYPE.Constant) {
       style['border-color'] = stroke.formatted;
       style['border-style'] = 'solid';

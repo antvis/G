@@ -1,6 +1,12 @@
 import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
-import { DisplayObject, PARSED_COLOR_TYPE, Text as TextShape, Tuple4Number } from '@antv/g';
+import {
+  DisplayObject,
+  ParsedTextStyleProps,
+  PARSED_COLOR_TYPE,
+  Text as TextShape,
+  Tuple4Number,
+} from '@antv/g';
 import { Format, VertexBufferFrequency, CullMode } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
@@ -43,14 +49,12 @@ export class TextMesh extends Instanced {
     }
 
     const instance = this.instance;
-    const instancedAttributes = [
-      'fontSize',
-      'fontFamily',
-      'fontWeight',
-      'textBaseline',
-      'letterSpacing',
-    ];
+    const instancedAttributes = ['fontFamily', 'fontWeight', 'textBaseline', 'letterSpacing'];
+
     // fontStack & fontSize should be same
+    if (instance.parsedStyle.fontSize.value !== object.parsedStyle.fontSize.value) {
+      return false;
+    }
     if (
       instance.parsedStyle.metrics.font !== object.parsedStyle.metrics.font ||
       instancedAttributes.some((name) => instance.parsedStyle[name] !== object.parsedStyle[name])
@@ -63,17 +67,7 @@ export class TextMesh extends Instanced {
 
   createGeometry(objects: DisplayObject[]): void {
     const object = this.instance as TextShape;
-    const { textBaseline, fontSize, letterSpacing = 0, dx, dy } = object.parsedStyle;
-
-    // account for dx & dy
-    let offsetX = 0;
-    let offsetY = 0;
-    if (dx && dx.unit === 'px') {
-      offsetX += dx.value;
-    }
-    if (dy && dy.unit === 'px') {
-      offsetY += dy.value;
-    }
+    const { textBaseline, fontSize, letterSpacing = 0 } = object.parsedStyle;
 
     // scale current font size to base(24)
     const fontScale = BASE_FONT_WIDTH / fontSize.value;
@@ -83,8 +77,18 @@ export class TextMesh extends Instanced {
     const packed = [];
     let indicesOff = 0;
     objects.forEach((object) => {
-      const { metrics } = object.parsedStyle;
+      const { metrics, dx, dy } = object.parsedStyle;
       const { font, lines, height, lineHeight } = metrics;
+
+      // account for dx & dy
+      let offsetX = 0;
+      let offsetY = 0;
+      if (dx && dx.unit === 'px') {
+        offsetX += dx.value;
+      }
+      if (dy && dy.unit === 'px') {
+        offsetY += dy.value;
+      }
 
       let linePositionY = 0;
       // handle vertical text baseline
@@ -320,7 +324,7 @@ export class TextMesh extends Instanced {
     const { textAlign = 'start' } = object.parsedStyle;
 
     const { fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, visibility } =
-      object.parsedStyle;
+      object.parsedStyle as ParsedTextStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (fill?.type === PARSED_COLOR_TYPE.Constant) {
       fillColor = fill.value;
@@ -353,14 +357,14 @@ export class TextMesh extends Instanced {
     const glyphQuads = getGlyphQuads(positionedGlyphs, glyphAtlas.positions);
 
     glyphQuads.forEach((quad) => {
-      const packed = [
+      const packed: number[] = [
         ...modelMatrix,
         ...fillColor,
         ...strokeColor,
         opacity,
         fillOpacity,
         strokeOpacity,
-        lineWidth,
+        lineWidth.value,
         visibility === 'visible' ? 1 : 0,
         0,
         0,

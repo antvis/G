@@ -1,5 +1,5 @@
 import { Module, Syringe } from 'mana-syringe';
-import { RendererPlugin, SHAPE } from '@antv/g';
+import { RendererPlugin, Shape } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
 import {
   ElementRendererFactory,
@@ -27,18 +27,18 @@ export const containerModule = Module((register) => {
   register(PathRenderer);
   register({
     token: ElementRendererFactory,
-    useFactory: (ctx) => (tagName: SHAPE) => {
-      if (tagName === SHAPE.Rect) {
+    useFactory: (ctx) => (tagName: Shape) => {
+      if (tagName === Shape.RECT) {
         return ctx.container.get(RectRenderer);
-      } else if (tagName === SHAPE.Image) {
+      } else if (tagName === Shape.IMAGE) {
         return ctx.container.get(ImageRenderer);
-      } else if (tagName === SHAPE.Line) {
+      } else if (tagName === Shape.LINE) {
         return ctx.container.get(LineRenderer);
-      } else if (tagName === SHAPE.Polyline || tagName === SHAPE.Polygon) {
+      } else if (tagName === Shape.POLYLINE || tagName === Shape.POLYGON) {
         return ctx.container.get(PolylineRenderer);
-      } else if (tagName === SHAPE.Text) {
+      } else if (tagName === Shape.TEXT) {
         return ctx.container.get(TextRenderer);
-      } else if (tagName === SHAPE.Path) {
+      } else if (tagName === Shape.PATH) {
         return ctx.container.get(PathRenderer);
       }
       return null;
