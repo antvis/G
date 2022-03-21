@@ -97,6 +97,7 @@
   "resolutions": {
     "@babel/core": "7.12.17",
     "@babel/standalone": "7.12.6",
-    "monaco-editor": "0.21.2"
+    "monaco-editor": "0.21.2",
+    "remark-mdx": "1.6.22"
   }
 }
