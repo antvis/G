@@ -10,6 +10,7 @@
 -   [g] 部分属性支持继承，例如 fontSize #895
 -   [g] width / height / lineWidth / fontSize 支持使用单位，类型支持 `number | string` #895
 -   [g] Polygon / Polyline / Path 支持 [miterLimit 属性](/zh/docs/api/basic/polyline#miterlimit)
+-   [g] 考虑 D3 等基于 SVG 项目的兼容，支持属性名的连字符写法，例如 `font-size`，效果等同驼峰写法。同时增加以下属性作为已由属性的别名 `stroke-width` `stroke-dasharray`
 -   [g] Image 支持 [src 属性](/zh/docs/api/basic/image#src) #814
 -   [g-mobile] 移动端渲染器，和 `g-canvas` 共用部分 Canvas2D 插件 [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) #910
 -   [g-plugin-mobile-interaction] 移动端监听事件并触发 G 原生事件

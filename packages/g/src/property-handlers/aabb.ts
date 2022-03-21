@@ -7,7 +7,7 @@ import { Shape } from '../types';
 import { PARSED_COLOR_TYPE } from './color';
 import type { ParsedFilterStyleProperty } from './filter';
 import { globalContainer } from '../global-module';
-import { ParsedBaseStyleProps } from '..';
+import type { ParsedBaseStyleProps } from '..';
 
 export function updateGeometry(oldValue: number, newValue: number, object: DisplayObject) {
   const geometryUpdaterFactory =

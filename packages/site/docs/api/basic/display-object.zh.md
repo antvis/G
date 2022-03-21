@@ -619,7 +619,7 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 **类型**： `number`
 
-**默认值**：1
+**默认值**：[Text](/zh/docs/api/basic/text) 为 `0`，其余图形为 `1`
 
 **是否必须**：`false`
 

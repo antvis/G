@@ -619,7 +619,7 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 **类型**： `number`
 
-**默认值**：1
+**默认值**：[Text](/zh/docs/api/basic/text) 为 `0`，其余图形为 `1`
 
 **是否必须**：`false`
 
@@ -1442,16 +1442,16 @@ circle.destroyed; // true
 除了例如 click、mouseenter 这样的交互事件，我们还提供了一系列内置的节点生命周期事件，例如可以监听节点的添加和删除事件，这些事件同样有完整的传播路径（冒泡、捕获），[示例](/zh/examples/event#builtin)：
 
 ```js
-import { ElementEvent } from '@antv/g';
+import { ElementEvent, MutationEvent } from '@antv/g';
 
 // 监听子节点添加事件
 parent.on(ElementEvent.CHILD_INSERTED, (e) => {
     e.target; // parent
     e.detail.child; // child
 });
-child.on(ElementEvent.INSERTED, (e) => {
+child.on(ElementEvent.INSERTED, (e: MutationEvent) => {
     e.target; // child
-    e.detail.parent; // parent
+    e.relatedNode; // parent
 });
 parent.on(ElementEvent.CHILD_REMOVED, (e) => {
     e.target; // parent
@@ -1459,13 +1459,13 @@ parent.on(ElementEvent.CHILD_REMOVED, (e) => {
 });
 child.on(ElementEvent.REMOVED, (e) => {
     e.target; // child
-    e.detail.parent; // parent
+    e.relatedNode; // parent
 });
 child.on(ElementEvent.ATTR_MODIFIED, (e) => {
     e.target; // child
-    e.detail.attributeName; // 属性名
-    e.detail.oldValue; // 旧值
-    e.detail.newValue; // 新值
+    e.attrName; // 属性名
+    e.prevValue; // 旧值
+    e.newValue; // 新值
 });
 
 parent.appendChild(child);
