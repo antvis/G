@@ -2,7 +2,8 @@ import { inject, singleton } from 'mana-syringe';
 import type { ICanvas, FederatedMouseEvent } from '../dom';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
-import { RenderingContext, RenderingPlugin } from '../services';
+import { RenderingContext } from '../services';
+import type { RenderingPlugin } from '../services';
 import {
   ContextService,
   RenderingService,
