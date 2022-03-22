@@ -1,6 +1,6 @@
 import { Node } from './Node';
 import { AnimationTimeline } from './AnimationTimeline';
-import { Group } from '../display-objects/Group';
+import { Group, Text } from '../display-objects';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { IDocument, IElement, INode, ICanvas, DisplayObjectConfig } from './interfaces';
 import type { BaseStyleProps } from '../types';
@@ -81,7 +81,7 @@ export class Document extends Node implements IDocument {
 
     if (!clazz) {
       console.warn('Unsupported tagName: ', tagName);
-      clazz = Group;
+      clazz = tagName === 'tspan' ? Text : Group;
     }
 
     return new clazz(options) as unknown as T;

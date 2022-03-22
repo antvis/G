@@ -75,6 +75,14 @@
         "en": "Useful animations"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*WRp0SbVfgjUAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "onframe.js",
+      "title": {
+        "zh": "onframe 回调函数",
+        "en": "Use onframe callback"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*vatoRoHF64MAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

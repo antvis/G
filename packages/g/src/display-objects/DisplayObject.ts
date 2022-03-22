@@ -28,6 +28,7 @@ import {
 } from '../global-module';
 import { dirtifyToRoot } from '../services';
 import { MutationEvent } from '../dom/MutationEvent';
+import { Rectangle } from '../shapes';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
@@ -341,6 +342,17 @@ export class DisplayObject<
   }
 
   // #region transformable
+  /**
+   * returns different values than getBoundingClientRect(), as the latter returns value relative to the viewport
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/getBBox
+   */
+  getBBox(): DOMRect {
+    const aabb = this.getBounds();
+    const [left, top] = aabb.getMin();
+    const [right, bottom] = aabb.getMax();
+    return new Rectangle(left, top, right - left, bottom - top);
+  }
+
   setOrigin(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
     this.sceneGraphService.setOrigin(this, createVec3(position, y, z));
     this.attributes.origin = this.getOrigin();

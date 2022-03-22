@@ -253,7 +253,7 @@ animation.onfinish = function (e) {
 
 ### onframe
 
-处于运行中的动画，在每一帧结束后调用，此时属性已经完成插值。如果动画处于暂停、未开始或者结束状态不会被调用。
+处于运行中的动画，在每一帧结束后调用，此时属性已经完成插值。如果动画处于暂停、未开始或者结束状态不会被调用。[示例](/zh/examples/animation#onframe)
 
 ```js
 animation.onframe = function (e) {
@@ -626,6 +626,16 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/endDelay
 
 **是否必须**：`false`
 
+我们也可以设置一个负数，让动画提前结束：
+
+```js
+const animation = circle.animate([{ transform: 'scale(1)' }, { transform: 'scale(2)' }], {
+    duration: 2000,
+    endDelay: -1000, // 动画执行到一半会立刻结束
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+});
+```
+
 ## fill
 
 该属性规定了图形在动画处于非运行状态（例如动画开始前，结束后）时的展示效果。支持以下值：
@@ -704,6 +714,14 @@ https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTimi
 ## progress
 
 返回在当前 iteration 内的进度，取值范围为 `[0-1]`。当动画不在运行中时返回 null。
+
+在该[示例](/zh/examples/animation#lifecycle)中，我们在每一帧结束的 [onframe](/zh/docs/api/animation#onframe) 回调函数中打印进度值：
+
+```js
+animation.onframe = (e) => {
+    console.log(e.target.effect.getComputedTiming().progress);
+};
+```
 
 ## currentIteration
 

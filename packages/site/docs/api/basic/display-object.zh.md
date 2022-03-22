@@ -1184,14 +1184,12 @@ circle.getRenderBounds(); // { center: [100, 100], halfExtents: [110, 110] }
 
 getBounds 的唯一区别是在父节点的局部坐标系下计算。
 
-## getBoundingClientRect(): Rect
+## getBBox(): Rect
 
-获取浏览器坐标系下的 Geometry Bounds，应用世界坐标系下的变换后，再加上画布相对于浏览器的偏移量。
-
-返回的 2 维矩形 `Rect` 和 [DOMRect](https://developer.mozilla.org/zh-CN/docs/Web/API/DOMRect) 保持一致，结构为：
+兼容 [SVG 同名方法](https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/getBBox)，计算方式等同于 getBounds，区别仅在于返回值类型不同，后者返回的是 AABB，而该方法返回一个 [DOMRect](https://developer.mozilla.org/zh-CN/docs/Web/API/DOMRect)：
 
 ```js
-interface Rect {
+interface DOMRect {
     top: number;
     left: number;
     right: number;
@@ -1200,6 +1198,10 @@ interface Rect {
     height: number;
 }
 ```
+
+## getBoundingClientRect(): DOMRect
+
+获取浏览器坐标系下的 Geometry Bounds，应用世界坐标系下的变换后，再加上画布相对于浏览器的偏移量。
 
 # 节点操作
 
@@ -1378,6 +1380,39 @@ circle.setAttribute('r', 20);
 circle.attr('r', 20);
 circle.style.r = 20;
 circle.style.setProperty('r', 20);
+```
+
+## 获取解析后的属性值
+
+部分属性例如 [Rect](/zh/docs/api/basic/rect) 的 width / height 是支持单位的，如果想获取计算后的值，可以使用 `parsedStyle`：
+
+```js
+rect.style.width = '100px';
+rect.parsedStyle.width; // { unit: 'px', value: 100 }
+```
+
+返回的 `ParsedElement` 格式如下：
+
+```js
+// 长度单位
+export type LengthUnit = 'px' | '%' | 'em';
+// 角度单位
+export type AngleUnit = 'deg' | 'rad' | 'turn';
+export type Unit = LengthUnit | AngleUnit | '';
+
+export interface ParsedElement {
+    unit: Unit;
+    value: number;
+}
+```
+
+需要注意的是，目前在使用[动画](/zh/docs/api/animation)时，我们也会将待插值的属性值进行转换，因此如果想获取以 px 为单位的绝对值，需要使用 `parsedStyle` [示例](/zh/examples/animation#onframe)：
+
+```js
+animation.onframe = () => {
+    rect.style.width; // '100px'
+    rect.parsedStyle.width; // { unit: 'px', value: 100 }
+};
 ```
 
 ## 销毁

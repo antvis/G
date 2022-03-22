@@ -66,6 +66,13 @@
         "zh": "WebGPU Graph PageRank",
         "en": "WebGPU Graph PageRank"
       }
+    },
+    {
+      "filename": "webgpu-graph-sssp.js",
+      "title": {
+        "zh": "WebGPU Graph SSSP",
+        "en": "WebGPU Graph SSSP"
+      }
     }
   ]
 }

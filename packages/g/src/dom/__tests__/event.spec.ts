@@ -61,6 +61,7 @@ describe('Event API', () => {
     canvas.appendChild(group);
 
     const childInsertedCallback = (e) => {
+      // expect(e.view).eqls(canvas);
       expect(e.detail.child).eqls(childGroup);
     };
     const insertedCallback = (e: MutationEvent) => {

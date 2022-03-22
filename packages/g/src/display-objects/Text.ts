@@ -64,7 +64,18 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   dx?: ParsedElement;
   dy?: ParsedElement;
 }
+
+/**
+ * <text> @see https://developer.mozilla.org/en-US/docs/Web/API/SVGTextElement
+ */
 export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement#constants
+   */
+  LENGTHADJUST_SPACING: number = 1;
+  LENGTHADJUST_SPACINGANDGLYPHS: number = 2;
+  LENGTHADJUST_UNKNOWN: number = 0;
+
   constructor({ style, ...rest }: DisplayObjectConfig<TextStyleProps> = {}) {
     super({
       type: Shape.TEXT,
@@ -101,6 +112,43 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
       },
       ...rest,
     });
+  }
+
+  lengthAdjust: SVGAnimatedEnumeration;
+  textLength: SVGAnimatedLength;
+  getCharNumAtPosition(point?: DOMPointInit): number {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement
+   */
+  getComputedTextLength(): number {
+    return this.parsedStyle.metrics?.maxLineWidth || 0;
+  }
+
+  getEndPositionOfChar(charnum: number): DOMPoint {
+    throw new Error('Method not implemented.');
+  }
+  getExtentOfChar(charnum: number): DOMRect {
+    throw new Error('Method not implemented.');
+  }
+  getNumberOfChars(): number {
+    throw new Error('Method not implemented.');
+  }
+  getRotationOfChar(charnum: number): number {
+    throw new Error('Method not implemented.');
+  }
+  getStartPositionOfChar(charnum: number): DOMPoint {
+    throw new Error('Method not implemented.');
+  }
+
+  getSubStringLength(charnum: number, nchars: number): number {
+    throw new Error('Method not implemented.');
+  }
+
+  selectSubString(charnum: number, nchars: number): void {
+    throw new Error('Method not implemented.');
   }
 
   getLineBoundingRects() {

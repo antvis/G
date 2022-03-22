@@ -1,6 +1,6 @@
 import { Point } from '../shapes/Point';
 import type { EventService } from '../services';
-import type { IEventTarget } from './interfaces';
+import type { IEventTarget, ICanvas } from './interfaces';
 
 /**
  * An DOM-compatible synthetic event implementation that is "forwarded" on behalf of an original
@@ -198,12 +198,16 @@ export class FederatedEvent<N extends Event = Event, T = any> {
   }
 
   /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/view
+   */
+  view: ICanvas;
+
+  /**
    * added for compatibility with DOM Event,
    * deprecated props and methods
    */
   initEvent(): void {}
   initUIEvent(): void {}
-  view: WindowProxy;
   which: number;
   returnValue: boolean;
   srcElement: IEventTarget;

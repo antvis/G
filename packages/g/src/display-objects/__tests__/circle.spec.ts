@@ -12,10 +12,34 @@ describe('Circle', () => {
       },
     });
 
+    expect(circle.getAttributeNames()).to.eqls([
+      'anchor',
+      'origin',
+      'opacity',
+      'fillOpacity',
+      'strokeOpacity',
+      'fill',
+      'stroke',
+      'zIndex',
+      'visibility',
+      'r',
+      'lineWidth',
+      'x',
+      'y',
+    ]);
+    expect(circle.hasAttribute('r')).to.be.true;
+    expect(circle.hasAttributes()).to.be.true;
+
     let bounds = circle.getBounds();
     const localBounds = circle.getLocalBounds();
     let geometryBounds = circle.getGeometryBounds();
     const renderBounds = circle.getRenderBounds();
+    const bbox = circle.getBBox();
+
+    expect(bbox.x).to.eqls(0);
+    expect(bbox.y).to.eqls(0);
+    expect(bbox.width).to.eqls(200);
+    expect(bbox.height).to.eqls(200);
 
     if (bounds) {
       expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));

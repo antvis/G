@@ -29,7 +29,7 @@ window.gPluginYoga = require('@antv/g-plugin-yoga');
 // window.gPluginYogaWasm = require('@antv/g-plugin-yoga-wasm');
 // compiler for GPGPU
 window.gWebgpuCompiler = require('@antv/g-webgpu-compiler');
-// window.webgpuGraph = require('@antv/webgpu-graph');
+window.webgpuGraph = require('@antv/webgpu-graph');
 
 window.reactG = require('@antv/react-g');
 window.mainWorker = require('./examples/canvas/demo/main.worker.js');
