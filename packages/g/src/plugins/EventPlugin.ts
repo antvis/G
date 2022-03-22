@@ -69,9 +69,9 @@ export class EventPlugin implements RenderingPlugin {
           return;
         }
 
-        const events = normalizeToPointerEvent(nativeEvent);
+        const event = normalizeToPointerEvent(nativeEvent);
 
-        if (this.autoPreventDefault && (events[0] as any).isNormalized) {
+        if (this.autoPreventDefault && (event as any).isNormalized) {
           const cancelable = nativeEvent.cancelable || !('cancelable' in nativeEvent);
 
           if (cancelable) {
@@ -79,14 +79,12 @@ export class EventPlugin implements RenderingPlugin {
           }
         }
 
-        for (const event of events) {
-          const federatedEvent = this.bootstrapEvent(
-            this.rootPointerEvent,
-            event,
-            this.renderingContext.root?.ownerDocument?.defaultView,
-          );
-          this.eventService.mapEvent(federatedEvent);
-        }
+        const federatedEvent = this.bootstrapEvent(
+          this.rootPointerEvent,
+          event,
+          this.renderingContext.root?.ownerDocument?.defaultView,
+        );
+        this.eventService.mapEvent(federatedEvent);
 
         this.setCursor(this.eventService.cursor);
       },
@@ -109,17 +107,15 @@ export class EventPlugin implements RenderingPlugin {
           !$element.contains(nativeEvent.target)
             ? 'outside'
             : '';
-        const normalizedEvents = normalizeToPointerEvent(nativeEvent);
+        const normalizedEvent = normalizeToPointerEvent(nativeEvent);
 
-        for (const normalizedEvent of normalizedEvents) {
-          const event = this.bootstrapEvent(
-            this.rootPointerEvent,
-            normalizedEvent,
-            this.renderingContext.root?.ownerDocument?.defaultView,
-          );
-          event.type += outside;
-          this.eventService.mapEvent(event);
-        }
+        const event = this.bootstrapEvent(
+          this.rootPointerEvent,
+          normalizedEvent,
+          this.renderingContext.root?.ownerDocument?.defaultView,
+        );
+        event.type += outside;
+        this.eventService.mapEvent(event);
 
         this.setCursor(this.eventService.cursor);
       },
@@ -135,17 +131,15 @@ export class EventPlugin implements RenderingPlugin {
   private onPointerMove = (nativeEvent: InteractivePointerEvent) => {
     if (supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch') return;
 
-    const normalizedEvents = normalizeToPointerEvent(nativeEvent);
+    const normalizedEvent = normalizeToPointerEvent(nativeEvent);
 
-    for (const normalizedEvent of normalizedEvents) {
-      const event = this.bootstrapEvent(
-        this.rootPointerEvent,
-        normalizedEvent,
-        this.renderingContext.root?.ownerDocument?.defaultView,
-      );
+    const event = this.bootstrapEvent(
+      this.rootPointerEvent,
+      normalizedEvent,
+      this.renderingContext.root?.ownerDocument?.defaultView,
+    );
 
-      this.eventService.mapEvent(event);
-    }
+    this.eventService.mapEvent(event);
 
     this.setCursor(this.eventService.cursor);
   };

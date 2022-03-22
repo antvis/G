@@ -63,9 +63,10 @@ interface FormattedTouch extends Touch {
 /**
  * borrow from pixi/events
  */
-export function normalizeToPointerEvent(event: InteractivePointerEvent): PointerEvent[] {
-  const normalizedEvents = [];
+export function normalizeToPointerEvent(event: InteractivePointerEvent): PointerEvent {
+  let normalizedEvent;
   if (isTouchEvent(event)) {
+    const touches = [];
     for (let i = 0; i < event.changedTouches.length; i++) {
       const touch = event.changedTouches[i] as FormattedTouch;
 
@@ -87,9 +88,9 @@ export function normalizeToPointerEvent(event: InteractivePointerEvent): Pointer
       if (isUndefined(touch.tangentialPressure)) touch.tangentialPressure = 0;
       touch.isNormalized = true;
       touch.type = event.type;
-
-      normalizedEvents.push(touch);
+      touches.push(touch);
     }
+    normalizedEvent = { ...event, touches };
   } else if (isMouseEvent(event)) {
     const tempEvent = event as FormattedPointerEvent;
     if (isUndefined(tempEvent.isPrimary)) tempEvent.isPrimary = true;
@@ -104,10 +105,10 @@ export function normalizeToPointerEvent(event: InteractivePointerEvent): Pointer
     if (isUndefined(tempEvent.tangentialPressure)) tempEvent.tangentialPressure = 0;
     tempEvent.isNormalized = true;
 
-    normalizedEvents.push(tempEvent);
+    normalizedEvent = tempEvent;
   } else {
-    normalizedEvents.push(event);
+    normalizedEvent = event;
   }
 
-  return normalizedEvents as PointerEvent[];
+  return normalizedEvent as PointerEvent;
 }
