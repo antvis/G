@@ -2,7 +2,17 @@
 
 以下版本号以 @antv/g 为准。
 
-## [5.0.16] - 2022-3-8
+## [5.0.17] - 2022-3-22
+
+### Bug 修复
+
+-   [g] keyframe 动画 delay 属性问题 #919
+
+### 其他
+
+-   增加 webgpu-graph 文档 https://g-next.antv.vision/zh/docs/api/gpgpu/webgpu-graph
+
+## [5.0.16] - 2022-3-20
 
 ### 新增特性
 

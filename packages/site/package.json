@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/g-site",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "G sites deployed on gh-pages",
   "files": [
     "package.json",
@@ -36,7 +36,7 @@
   "dependencies": {
     "@antv/g6": "^4.5.2",
     "@antv/gatsby-theme-antv": "^1.1.15",
-    "@antv/webgpu-graph": "^0.0.1-alpha.0",
+    "@antv/webgpu-graph": "^1.0.0",
     "@naoak/workerize-transferable": "^0.1.0",
     "@types/gl-matrix": "^2.4.5",
     "@types/jest": "^25.0.0",

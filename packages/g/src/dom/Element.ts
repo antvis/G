@@ -383,6 +383,13 @@ export class Element<
   readonly attributes: StyleProps = {} as StyleProps;
 
   /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttributeNames
+   */
+  getAttributeNames(): string[] {
+    return Object.keys(this.attributes);
+  }
+
+  /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute
    */
   getAttribute(name: keyof StyleProps) {
@@ -390,6 +397,20 @@ export class Element<
     const value = this.attributes[attributeName];
     // if the given attribute does not exist, the value returned will either be null or ""
     return isNil(value) ? null : value;
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/hasAttribute
+   */
+  hasAttribute(qualifiedName: string): boolean {
+    return this.getAttributeNames().includes(qualifiedName);
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/hasAttributes
+   */
+  hasAttributes(): boolean {
+    return !!this.getAttributeNames().length;
   }
 
   /**
@@ -410,5 +431,41 @@ export class Element<
     force = false,
   ) {
     this.attributes[attributeName] = value;
+  }
+
+  getAttributeNS(namespace: string, localName: string): string {
+    throw new Error('Method not implemented.');
+  }
+
+  getAttributeNode(qualifiedName: string): Attr {
+    throw new Error('Method not implemented.');
+  }
+  getAttributeNodeNS(namespace: string, localName: string): Attr {
+    throw new Error('Method not implemented.');
+  }
+
+  hasAttributeNS(namespace: string, localName: string): boolean {
+    throw new Error('Method not implemented.');
+  }
+
+  removeAttributeNS(namespace: string, localName: string): void {
+    throw new Error('Method not implemented.');
+  }
+  removeAttributeNode(attr: Attr): Attr {
+    throw new Error('Method not implemented.');
+  }
+
+  setAttributeNS(namespace: string, qualifiedName: string, value: string): void {
+    throw new Error('Method not implemented.');
+  }
+  setAttributeNode(attr: Attr): Attr {
+    throw new Error('Method not implemented.');
+  }
+  setAttributeNodeNS(attr: Attr): Attr {
+    throw new Error('Method not implemented.');
+  }
+
+  toggleAttribute(qualifiedName: string, force?: boolean): boolean {
+    throw new Error('Method not implemented.');
   }
 }

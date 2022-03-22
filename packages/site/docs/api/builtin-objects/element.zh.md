@@ -74,6 +74,10 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/lastElementChild
 
 # 方法
 
+## getAttributeNames
+
+https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttributeNames
+
 ## getAttribute
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute
@@ -85,6 +89,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
 ## setAttribute
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute
+
+## hasAttribute
+
+https://developer.mozilla.org/en-US/docs/Web/API/Element/hasAttribute
 
 ## getBoundingClientRect
 

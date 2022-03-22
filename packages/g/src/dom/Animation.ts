@@ -232,7 +232,7 @@ export class Animation {
   }
 
   get totalDuration() {
-    return Number(this.effect?.getComputedTiming().activeDuration);
+    return Number(this.effect?.getComputedTiming().endTime);
   }
 
   _inEffect: boolean;

@@ -18,6 +18,8 @@ describe('DOM Element API', () => {
     const group4 = new Element();
     const group5 = new Element();
     group5.name = 'group5';
+    expect(group1.getAttributeNames()).to.eqls([]);
+    expect(group1.hasAttributes()).to.be.false;
     expect(group1.nodeValue).to.be.null;
     expect(group1.textContent).to.eqls('');
     expect(group1.hasChildNodes()).to.false;

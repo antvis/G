@@ -79,16 +79,16 @@ const PhaseAfter = 2;
 const PhaseActive = 3;
 
 function calculatePhase(
-  activeDuration: any,
+  activeDuration: number,
   localTime: number | null,
-  timing: { delay: number; endDelay: any },
+  timing: AnimationEffectTiming,
 ) {
   // https://drafts.csswg.org/web-animations/#animation-effect-phases-and-states
   if (localTime === null) {
     return PhaseNone;
   }
 
-  const endTime = timing.delay + activeDuration + timing.endDelay;
+  const endTime = timing.endTime;
   if (localTime < Math.min(timing.delay, endTime)) {
     return PhaseBefore;
   }

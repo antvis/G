@@ -309,6 +309,12 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Event/currentTarget
 
 原生事件对象。
 
+### view
+
+指向 [Canvas](/zh/docs/api/canvas)。
+
+https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/view
+
 ### canvasX/Y
 
 <tag color="green" text="MouseEvent">MouseEvent</tag> <tag color="red" text="TouchEvent">TouchEvent</tag>

@@ -1,7 +1,8 @@
 import { inject, singleton } from 'mana-syringe';
-import type { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
+import type { ICanvas, FederatedMouseEvent } from '../dom';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
+import { RenderingContext } from '../services';
 import type { RenderingPlugin } from '../services';
 import {
   ContextService,
@@ -32,6 +33,9 @@ export class EventPlugin implements RenderingPlugin {
 
   @inject(RenderingService)
   private renderingService: RenderingService;
+
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
 
   @inject(EventService)
   private eventService: EventService;
@@ -76,7 +80,11 @@ export class EventPlugin implements RenderingPlugin {
         }
 
         for (const event of events) {
-          const federatedEvent = this.bootstrapEvent(this.rootPointerEvent, event);
+          const federatedEvent = this.bootstrapEvent(
+            this.rootPointerEvent,
+            event,
+            this.renderingContext.root?.ownerDocument?.defaultView,
+          );
           this.eventService.mapEvent(federatedEvent);
         }
 
@@ -104,7 +112,11 @@ export class EventPlugin implements RenderingPlugin {
         const normalizedEvents = normalizeToPointerEvent(nativeEvent);
 
         for (const normalizedEvent of normalizedEvents) {
-          const event = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent);
+          const event = this.bootstrapEvent(
+            this.rootPointerEvent,
+            normalizedEvent,
+            this.renderingContext.root?.ownerDocument?.defaultView,
+          );
           event.type += outside;
           this.eventService.mapEvent(event);
         }
@@ -126,7 +138,11 @@ export class EventPlugin implements RenderingPlugin {
     const normalizedEvents = normalizeToPointerEvent(nativeEvent);
 
     for (const normalizedEvent of normalizedEvents) {
-      const event = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent);
+      const event = this.bootstrapEvent(
+        this.rootPointerEvent,
+        normalizedEvent,
+        this.renderingContext.root?.ownerDocument?.defaultView,
+      );
 
       this.eventService.mapEvent(event);
     }
@@ -137,7 +153,9 @@ export class EventPlugin implements RenderingPlugin {
   private bootstrapEvent(
     event: FederatedPointerEvent,
     nativeEvent: PointerEvent,
+    view: ICanvas,
   ): FederatedPointerEvent {
+    event.view = view;
     // @ts-ignore
     event._originalEvent = null;
     event.nativeEvent = nativeEvent;

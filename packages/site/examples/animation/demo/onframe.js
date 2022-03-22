@@ -1,13 +1,9 @@
-import { Circle, Canvas } from '@antv/g';
+import { Circle, Rect, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
-
-/**
- * ported from https://animista.net/play/entrances/scale-in
- */
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
@@ -22,35 +18,57 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const circle = new Circle({
+const rect = new Rect({
   style: {
-    x: 200,
-    y: 200,
-    r: 60,
+    width: 100,
+    height: 40,
+    fill: 'red',
+  },
+});
+
+const circle1 = new Circle({
+  style: {
+    y: 20,
+    r: 20,
+    fill: '#1890FF',
+    stroke: '#F04864',
+    lineWidth: 4,
+  },
+});
+const circle2 = new Circle({
+  style: {
+    x: 100,
+    y: 20,
+    r: 20,
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
   },
 });
 
-canvas.appendChild(circle);
+rect.setPosition(100, 100);
+rect.appendChild(circle1);
+rect.appendChild(circle2);
+canvas.appendChild(rect);
 
-const animation = circle.animate([{ transform: 'scale(1)' }, { transform: 'scale(2)' }], {
-  duration: 500,
-  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-});
-
-// get triggered when animation finished
-animation.onfinish = (e) => {
-  console.log('finish!', e.target, e.target.playState);
-};
-animation.finished.then(() => {
-  console.log('finish promise resolved');
-});
-// get triggered at the end of each frame in a running animation
-animation.onframe = (e) => {
-  console.log(e.target.effect.getComputedTiming().progress);
-  console.log('frame ended!', e.target, e.target.playState);
+const animation = rect.animate(
+  [
+    {
+      width: 100,
+    },
+    {
+      width: 400,
+    },
+  ],
+  {
+    duration: 1500,
+    iterations: Infinity,
+  },
+);
+animation.onframe = () => {
+  // use parsed value here
+  circle2.setLocalPosition(rect.parsedStyle.width.value, 20);
+  // circle2.setLocalPosition(Number(`${rect.style.width}`.replace('px', '')), 20);
 };
 
 // stats
@@ -81,24 +99,3 @@ rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onCha
   );
 });
 rendererFolder.open();
-
-const animationFolder = gui.addFolder('animation');
-const animationConfig = {
-  play: () => {
-    animation.play();
-  },
-  pause: () => {
-    animation.pause();
-  },
-  reverse: () => {
-    animation.reverse();
-  },
-  finish: () => {
-    animation.finish();
-  },
-};
-animationFolder.add(animationConfig, 'play').name('Play');
-animationFolder.add(animationConfig, 'pause').name('Pause');
-animationFolder.add(animationConfig, 'reverse').name('Reverse');
-animationFolder.add(animationConfig, 'finish').name('Finish');
-animationFolder.open();
