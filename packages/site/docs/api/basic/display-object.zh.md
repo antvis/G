@@ -2,16 +2,16 @@
 title: DisplayObject
 order: 0
 redirect_from:
-    - /zh/docs/api/basic
+  - /zh/docs/api/basic
 ---
 
 DisplayObject 是所有图形的基类，例如 `Group` `Circle` `Text` 等都会继承它。
 
 我们尝试让它尽可能兼容 [DOM Element](https://developer.mozilla.org/en-US/docs/Web/API/Element)，除了能降低学习成本，还能将自身伪装成 DOM Element 来充分利用已有的 Web 生态，例如：
 
--   使用 CSS 选择器进行[高级查询](/zh/docs/plugins/css-select)
--   使用 Hammer.js [扩展手势](/zh/docs/api/event#直接使用-hammerjs)
--   使用 Interact.js [实现 Drag&Drop，Resize](/zh/docs/api/event#直接使用-interactjs)
+- 使用 CSS 选择器进行[高级查询](/zh/docs/plugins/css-select)
+- 使用 Hammer.js [扩展手势](/zh/docs/api/event#直接使用-hammerjs)
+- 使用 Interact.js [实现 Drag&Drop，Resize](/zh/docs/api/event#直接使用-interactjs)
 
 # 继承自
 
@@ -39,10 +39,10 @@ line.appendChild(text);
 
 ```js
 interface AABB {
-    center: [number, number, number]; // 中心坐标
-    halfExtents: [number, number, number]; // 长宽高的一半
-    min: [number, number, number]; // 左上角坐标
-    max: [number, number, number]; // 右下角坐标
+  center: [number, number, number]; // 中心坐标
+  halfExtents: [number, number, number]; // 长宽高的一半
+  min: [number, number, number]; // 左上角坐标
+  max: [number, number, number]; // 右下角坐标
 }
 ```
 
@@ -52,20 +52,20 @@ interface AABB {
 
 而对于渲染管线而言，这些样式属性显然都需要考虑进去，例如：
 
--   在脏矩形渲染中正确的擦除绘制区域，一旦不考虑阴影带来的包围盒尺寸增加，就会出现擦除不干净的“残影”
--   剔除插件也需要考虑，例如一个图形即使只有阴影部分出现在视口中，它也不应被剔除
+- 在脏矩形渲染中正确的擦除绘制区域，一旦不考虑阴影带来的包围盒尺寸增加，就会出现擦除不干净的“残影”
+- 剔除插件也需要考虑，例如一个图形即使只有阴影部分出现在视口中，它也不应被剔除
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*f0-CTpClWkMAAAAAAAAAAAAAARQnAQ)
 
 我们很容易根据不同类型的图形定义几何包围盒：
 
--   Geometry Bounds。仅由图形的几何定义决定（因此 Group 会返回 null），不考虑绝大部分绘图属性（几何定义必须的除外，例如 Circle 的半径、Rect 的宽高、Path 的路径等），也不考虑变换（例如放大缩小并不会改变）。可通过 [getGeometryBounds](/zh/docs/api/basic/display-object#getgeometrybounds-aabb) 获取
+- Geometry Bounds。仅由图形的几何定义决定（因此 Group 会返回 null），不考虑绝大部分绘图属性（几何定义必须的除外，例如 Circle 的半径、Rect 的宽高、Path 的路径等），也不考虑变换（例如放大缩小并不会改变）。可通过 [getGeometryBounds](/zh/docs/api/basic/display-object#getgeometrybounds-aabb) 获取
 
 前面介绍过基于场景图的层次结构，一旦一个图形拥有了子节点，它在计算包围盒时也应当考虑，例如我们想对它做整体旋转时，需要找到这个包围盒的中心作为旋转中心。因此以下包围盒都是会考虑层次结构的：
 
--   Bounds。在世界坐标系下计算，合并自身以及所有子节点的 Geometry Bounds 得到。用户通常最常用这个包围盒。可通过 [getBounds](/zh/docs/api/basic/display-object#getbounds-aabb) 获取
--   Local Bounds。和 Bounds 的唯一区别是在父节点的局部坐标系下计算。可通过 [getLocalBounds](/zh/docs/api/basic/display-object#getlocalbounds-aabb) 获取
--   Render Bounds。在世界坐标系下计算，在 Bounds 的基础上，受部分绘图属性影响，例如边框宽度，阴影，部分滤镜等，同时合并所有子节点的 Render Bounds。可通过 [getRenderBounds](/zh/docs/api/basic/display-object#getrenderbounds-aabb) 获取。用户通常不关心这个包围盒。
+- Bounds。在世界坐标系下计算，合并自身以及所有子节点的 Geometry Bounds 得到。用户通常最常用这个包围盒。可通过 [getBounds](/zh/docs/api/basic/display-object#getbounds-aabb) 获取
+- Local Bounds。和 Bounds 的唯一区别是在父节点的局部坐标系下计算。可通过 [getLocalBounds](/zh/docs/api/basic/display-object#getlocalbounds-aabb) 获取
+- Render Bounds。在世界坐标系下计算，在 Bounds 的基础上，受部分绘图属性影响，例如边框宽度，阴影，部分滤镜等，同时合并所有子节点的 Render Bounds。可通过 [getRenderBounds](/zh/docs/api/basic/display-object#getrenderbounds-aabb) 获取。用户通常不关心这个包围盒。
 
 在下图中，ul1 拥有两个字节点 li1 和 li2，在计算自身的 Geometry Bounds 时不会考虑它们，而在计算 Bounds 时需要。由于 ul1 还有阴影，因此它的 Render Bounds 要大一圈：
 
@@ -75,10 +75,10 @@ interface AABB {
 
 一个图形的锚点（原点）应该如何定义呢？我们可以基于 [Geometry Bounds](/zh/docs/api/basic/display-object#包围盒) 定义，取值范围 `[0, 0] ~ [1, 1]`，其中 `[0, 0]` 代表 Geometry Bounds 左上角，`[1, 1]` 代表右下角。而不同图形由于几何定义不同，默认锚点如下：
 
--   [Circle](/zh/docs/api/circle)，[Ellipse](/zh/docs/api/ellipse) 为圆心位置 `[0.5, 0.5]`
--   [Rect](/zh/docs/api/rect)，[Image](/zh/docs/api/image)，[Line](/zh/docs/api/line)，[Polyline](/zh/docs/api/polyline)，[Polygon](/zh/docs/api/polygon)，[Path](/zh/docs/api/path) 为包围盒左上角顶点位置 `[0, 0]`
--   [Text](/zh/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/docs/api/basic/text#textbaseline) 与 [textAlign](/zh/docs/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
--   [Group](/zh/docs/api/text) 无几何定义，因此锚点始终为 `[0, 0]`，设置此属性也无效
+- [Circle](/zh/docs/api/circle)，[Ellipse](/zh/docs/api/ellipse) 为圆心位置 `[0.5, 0.5]`
+- [Rect](/zh/docs/api/rect)，[Image](/zh/docs/api/image)，[Line](/zh/docs/api/line)，[Polyline](/zh/docs/api/polyline)，[Polygon](/zh/docs/api/polygon)，[Path](/zh/docs/api/path) 为包围盒左上角顶点位置 `[0, 0]`
+- [Text](/zh/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/docs/api/basic/text#textbaseline) 与 [textAlign](/zh/docs/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
+- [Group](/zh/docs/api/text) 无几何定义，因此锚点始终为 `[0, 0]`，设置此属性也无效
 
 有时我们希望改变一个基础图形的原点定义，例如将 Rect 的原点定义为中心而非左上角，[示例](/zh/examples/shape#rect)：
 
@@ -110,14 +110,14 @@ mat4.fromRotationTranslationScaleOrigin();
 
 ```js
 const circle = new Circle({
-    style: {
-        r: 100,
-        fill: '#1890FF',
-    },
+  style: {
+    r: 100,
+    fill: '#1890FF',
+  },
 });
 circle.setPosition(100, 100);
 circle.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.5)' }], {
-    duration: 500,
+  duration: 500,
 });
 
 // 相对于锚点进行偏移
@@ -212,10 +212,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/Element/className
 ```js
 // 初始化时禁止交互
 const circle = new Circle({
-    interactive: false,
-    style: {
-        r: 100,
-    },
+  interactive: false,
+  style: {
+    r: 100,
+  },
 });
 
 // 或者后续禁止
@@ -228,17 +228,17 @@ circle.interactive = false;
 
 ```javascript
 const rect = new Rect({
-    style: {
-        // 或者使用 attrs
-        x: 200,
-        y: 100,
-        fill: '#1890FF',
-        stroke: '#F04864',
-        lineWidth: 4,
-        width: 300,
-        height: 200,
-        radius: 8,
-    },
+  style: {
+    // 或者使用 attrs
+    x: 200,
+    y: 100,
+    fill: '#1890FF',
+    stroke: '#F04864',
+    lineWidth: 4,
+    width: 300,
+    height: 200,
+    radius: 8,
+  },
 });
 ```
 
@@ -246,8 +246,8 @@ const rect = new Rect({
 
 ```js
 const rect = new Rect({
-    'line-width': 4,
-    // lineWidth: 4,
+  'line-width': 4,
+  // lineWidth: 4,
 });
 
 rect.style.lineWidth = 4;
@@ -262,10 +262,10 @@ rect.style.setProperty('line-width', 4);
 
 对于不同的图形，“位置”的几何意义也不同，例如：
 
--   [Circle](/zh/docs/api/circle)，[Ellipse](/zh/docs/api/ellipse) 为圆心位置
--   [Rect](/zh/docs/api/rect)，[Image](/zh/docs/api/image) 为左上角顶点位置
--   [Text](/zh/docs/api/text) 为文本锚点位置
--   [Line](/zh/docs/api/line)，[Polyline](/zh/docs/api/polyline)，[Polygon](/zh/docs/api/polygon)，[Path](/zh/docs/api/path) 为包围盒左上角顶点位置
+- [Circle](/zh/docs/api/circle)，[Ellipse](/zh/docs/api/ellipse) 为圆心位置
+- [Rect](/zh/docs/api/rect)，[Image](/zh/docs/api/image) 为左上角顶点位置
+- [Text](/zh/docs/api/text) 为文本锚点位置
+- [Line](/zh/docs/api/line)，[Polyline](/zh/docs/api/polyline)，[Polygon](/zh/docs/api/polygon)，[Path](/zh/docs/api/path) 为包围盒左上角顶点位置
 
 有时我们需要更改这个 “位置” 的几何意义，例如将 Rect 的中心而非左上角设置成 “锚点”，此时我们可以使用 [anchor](/zh/docs/api/display-object#anchor)，将它设置成 `[0.5, 0.5]`。需要注意的是，修改前后图形在局部坐标系下的坐标并不会改变。
 
@@ -273,11 +273,11 @@ rect.style.setProperty('line-width', 4);
 
 ```js
 const circle = new Cirle({
-    style: {
-        x: 100,
-        y: 100,
-        r: 100,
-    },
+  style: {
+    x: 100,
+    y: 100,
+    r: 100,
+  },
 });
 circle.getLocalPosition(); // [100, 100]，此时为圆心所在位置
 ```
@@ -319,10 +319,10 @@ circle.getLocalPosition(); // [100, 100]，此时为圆包围盒左上角位置
 
 不同图形的默认锚点如下，[示例](/zh/examples/shape#rect)：
 
--   [Circle](/zh/docs/api/circle)，[Ellipse](/zh/docs/api/ellipse) 为圆心位置 `[0.5, 0.5]`
--   [Rect](/zh/docs/api/rect)，[Image](/zh/docs/api/image)，[Line](/zh/docs/api/line)，[Polyline](/zh/docs/api/polyline)，[Polygon](/zh/docs/api/polygon)，[Path](/zh/docs/api/path) 为包围盒左上角顶点位置 `[0, 0]`
--   [Text](/zh/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/docs/api/basic/text#textbaseline) 与 [textAlign](/zh/docs/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
--   [Group](/zh/docs/api/text) 无几何定义，因此设置此属性无效
+- [Circle](/zh/docs/api/circle)，[Ellipse](/zh/docs/api/ellipse) 为圆心位置 `[0.5, 0.5]`
+- [Rect](/zh/docs/api/rect)，[Image](/zh/docs/api/image)，[Line](/zh/docs/api/line)，[Polyline](/zh/docs/api/polyline)，[Polygon](/zh/docs/api/polygon)，[Path](/zh/docs/api/path) 为包围盒左上角顶点位置 `[0, 0]`
+- [Text](/zh/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/docs/api/basic/text#textbaseline) 与 [textAlign](/zh/docs/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
+- [Group](/zh/docs/api/text) 无几何定义，因此设置此属性无效
 
 ### origin
 
@@ -338,11 +338,11 @@ circle.getLocalPosition(); // [100, 100]，此时为圆包围盒左上角位置
 
 ```js
 const circle = new Circle({
-    style: {
-        x: 100,
-        y: 100,
-        r: 100,
-    },
+  style: {
+    x: 100,
+    y: 100,
+    r: 100,
+  },
 });
 ```
 
@@ -368,12 +368,12 @@ circle.getBounds(); // { center: [50, 50], halfExtents: [50, 50] }
 
 ```js
 const rect = new Rect({
-    id: 'rect',
-    style: {
-        width: 300,
-        height: 200,
-        origin: [150, 100], // 设置旋转与缩放中心为自身包围盒中心点
-    },
+  id: 'rect',
+  style: {
+    width: 300,
+    height: 200,
+    origin: [150, 100], // 设置旋转与缩放中心为自身包围盒中心点
+  },
 });
 ```
 
@@ -388,11 +388,11 @@ myShape.style.origin = halfExtents;
 
 ```js
 const circle = new Circle({
-    style: {
-        x: 100,
-        y: 100,
-        r: 100,
-    },
+  style: {
+    x: 100,
+    y: 100,
+    r: 100,
+  },
 });
 
 circle.style.origin = [-100, -100]; // 相对于锚点（圆心）偏移 [-100, -100]
@@ -412,44 +412,44 @@ circle.style.transformOrigin = '0% 0%';
 
 我们提供了在局部坐标系下进行变换的快捷方式，同时与[CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 保持一致，支持以下属性值：
 
--   缩放，无单位
-    -   scale(x, y)
-    -   scaleX(x)
-    -   scaleY(x)
-    -   scaleZ(z)
-    -   scale3d(x, y, z)
--   平移，0 可以不加单位，无单位当作 px 处理，百分比相对于当前图形包围盒
-    -   translate(0, 0) translate(0, 30px) translate(100%, 100%)
-    -   translateX(0)
-    -   translateY(0)
-    -   translateZ(0)
-    -   translate3d(0, 0, 0)
--   旋转，支持 deg rad turn 这些单位
-    -   rotate(0.5turn) rotate(30deg) rotate(1rad)
--   none 清除变换
+- 缩放，无单位
+  - scale(x, y)
+  - scaleX(x)
+  - scaleY(x)
+  - scaleZ(z)
+  - scale3d(x, y, z)
+- 平移，0 可以不加单位，无单位当作 px 处理，百分比相对于当前图形包围盒
+  - translate(0, 0) translate(0, 30px) translate(100%, 100%)
+  - translateX(0)
+  - translateY(0)
+  - translateZ(0)
+  - translate3d(0, 0, 0)
+- 旋转，支持 deg rad turn 这些单位
+  - rotate(0.5turn) rotate(30deg) rotate(1rad)
+- none 清除变换
 
 由于是在局部坐标系下进行变换，因此以下写法等价：
 
 ```js
 const circle = new Circle({
-    style: {
-        transform: 'translate(100px, 100px)',
-        r: 100,
-    },
+  style: {
+    transform: 'translate(100px, 100px)',
+    r: 100,
+  },
 });
 
 const circle = new Circle({
-    style: {
-        x: 100,
-        y: 100,
-        r: 100,
-    },
+  style: {
+    x: 100,
+    y: 100,
+    r: 100,
+  },
 });
 
 const circle = new Circle({
-    style: {
-        r: 100,
-    },
+  style: {
+    r: 100,
+  },
 });
 circle.translateLocal(100, 100);
 ```
@@ -466,13 +466,13 @@ circle.translateLocal(100, 100);
 
 和 CSS [transform-origin](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin) 类似，支持以下字符串写法，其中用空格分隔：
 
--   一个值
-    -   单位为 px 的长度，例如 10px
-    -   单位为 % 的长度，例如 50%
-    -   关键词 left, center, right, top, bottom，等于用百分比表示，例如 left 等于 0%，center 等于 50%
--   两个值
-    -   第一个是单位为 px 或 % 的长度，或 left, center, right 关键字中的一个
-    -   第二个是单位为 px 或 % 的长度，或 top, center, bottom 关键字中的一个
+- 一个值
+  - 单位为 px 的长度，例如 10px
+  - 单位为 % 的长度，例如 50%
+  - 关键词 left, center, right, top, bottom，等于用百分比表示，例如 left 等于 0%，center 等于 50%
+- 两个值
+  - 第一个是单位为 px 或 % 的长度，或 left, center, right 关键字中的一个
+  - 第二个是单位为 px 或 % 的长度，或 top, center, bottom 关键字中的一个
 
 因此以下写法等价：
 
@@ -526,11 +526,11 @@ circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘�
 
 支持以下格式的颜色值：
 
--   `'red'`
--   `'#1890FF'`
--   `'rgba(r, g, b, a)'`
--   `'transparent'` 完全透明，等价于 `'rgba(0,0,0,0)'`
--   `'currentColor'` Canvas / WebGL 渲染环境中等同于 `black`，SVG 中为[同名属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/color)效果
+- `'red'`
+- `'#1890FF'`
+- `'rgba(r, g, b, a)'`
+- `'transparent'` 完全透明，等价于 `'rgba(0,0,0,0)'`
+- `'currentColor'` Canvas / WebGL 渲染环境中等同于 `black`，SVG 中为[同名属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/color)效果
 
 除此之外，支持以下渐变色写法。[示例](/zh/examples/shape#gradient)
 
@@ -538,7 +538,7 @@ circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘�
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Z5gpQL9ia9kAAAAAAAAAAABkARQnAQ)
 
--   `l` 表示使用线性渐变，绿色的字体为可变量，由用户自己填写。
+- `l` 表示使用线性渐变，绿色的字体为可变量，由用户自己填写。
 
 ```js
 // example
@@ -550,7 +550,7 @@ stroke: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9sc1SY2d_0AAAAAAAAAAAABkARQnAQ)
 
--   `r` 表示使用放射状渐变，绿色的字体为可变量，由用户自己填写，开始圆的 `x`、`y`、`r` 值均为相对值(0 至 1 范围)。
+- `r` 表示使用放射状渐变，绿色的字体为可变量，由用户自己填写，开始圆的 `x`、`y`、`r` 值均为相对值(0 至 1 范围)。
 
 ```js
 // example
@@ -562,12 +562,12 @@ fill: 'r(0.5, 0.5, 0.1) 0:#ffffff 1:#1890ff';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8FjsSoqE1mYAAAAAAAAAAABkARQnAQ)
 
--   `p`: 表示使用纹理，绿色的字体为可变量，由用户自己填写。
--   `a`: 该模式在水平和垂直方向重复；
--   `x`: 该模式只在水平方向重复；
--   `y`: 该模式只在垂直方向重复；
--   `n`: 该模式只显示一次（不重复）。
--   纹理的内容可以直接是图片或者 [Data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)。
+- `p`: 表示使用纹理，绿色的字体为可变量，由用户自己填写。
+- `a`: 该模式在水平和垂直方向重复；
+- `x`: 该模式只在水平方向重复；
+- `y`: 该模式只在垂直方向重复；
+- `n`: 该模式只显示一次（不重复）。
+- 纹理的内容可以直接是图片或者 [Data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)。
 
 ```js
 // example
@@ -727,10 +727,10 @@ circle.getBounds(); // { halfExtents: [100, 100] }
 
 滤镜（Filter）可以对已生成的图像进行一些处理，例如模糊、高亮、提升对比度等。在 Web 端有以下实现：
 
--   CSS Filter：https://developer.mozilla.org/en-US/docs/Web/CSS/filter
--   Canvas Filter：https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/filter
--   SVG Filter：https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/filter
--   WebGL 中一般称作后处理
+- CSS Filter：https://developer.mozilla.org/en-US/docs/Web/CSS/filter
+- Canvas Filter：https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/filter
+- SVG Filter：https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/filter
+- WebGL 中一般称作后处理
 
 参考 CSS Filter 语法，我们支持对图形应用一个或多个滤镜效果，[示例](/zh/examples/shape#filter)：
 
@@ -743,10 +743,10 @@ circle.style.filter = 'blur(5px) brightness(0.4)'; // 可叠加
 
 目前可以在 g-canvas/svg/webgl 渲染器中使用滤镜，有以下注意事项：
 
--   由于 Canvas Filter 支持度不佳，主要是 [Safari 不支持](https://caniuse.com/mdn-api_canvasrenderingcontext2d_filter)，因此使用 g-canvas 无法在 Safari 中正常展示滤镜
--   g-canvas 和 g-svg 在部分 filter 效果上略有差异
--   可以施加在所有基础图形以及 Group 上
--   该属性暂不支持动画
+- 由于 Canvas Filter 支持度不佳，主要是 [Safari 不支持](https://caniuse.com/mdn-api_canvasrenderingcontext2d_filter)，因此使用 g-canvas 无法在 Safari 中正常展示滤镜
+- g-canvas 和 g-svg 在部分 filter 效果上略有差异
+- 可以施加在所有基础图形以及 Group 上
+- 该属性暂不支持动画
 
 ### blur
 
@@ -779,10 +779,10 @@ circle.style.filter = 'brightness(200%)';
 
 在图像下展示阴影，可以设置阴影颜色、偏移量与模糊效果，依次传入以下参数：
 
--   offset-x 描述阴影的水平偏移距离，单位 px
--   offset-y 描述阴影的垂直偏移距离，单位 px
--   blur-radius 数值越大越模糊，单位 px，不允许为负数
--   color 阴影颜色
+- offset-x 描述阴影的水平偏移距离，单位 px
+- offset-y 描述阴影的垂直偏移距离，单位 px
+- blur-radius 数值越大越模糊，单位 px，不允许为负数
+- color 阴影颜色
 
 阴影不会影响图形的包围盒尺寸。
 
@@ -912,17 +912,17 @@ li1.style.zIndex = 1; // li1 在 li2 之上
 
 ```js
 const image = new Image({
-    style: {
-        width: 200,
-        height: 200,
-        clipPath: new Circle({
-            style: {
-                x: 100, // 处于被裁剪图形局部坐标系下
-                y: 100,
-                r: 50,
-            },
-        }),
-    },
+  style: {
+    width: 200,
+    height: 200,
+    clipPath: new Circle({
+      style: {
+        x: 100, // 处于被裁剪图形局部坐标系下
+        y: 100,
+        r: 50,
+      },
+    }),
+  },
 });
 ```
 
@@ -930,27 +930,27 @@ const image = new Image({
 
 ```js
 const image = new Image({
-    style: {
-        //... 省略其他属性
-    },
+  style: {
+    //... 省略其他属性
+  },
 });
 
 image.style.clipPath = new Circle({
-    style: {
-        x: 100, // 处于被裁剪图形局部坐标系下
-        y: 100,
-        r: 50,
-    },
+  style: {
+    x: 100, // 处于被裁剪图形局部坐标系下
+    y: 100,
+    r: 50,
+  },
 });
 // 或者兼容旧版写法
 image.setClip(
-    new Circle({
-        style: {
-            x: 100, // 处于被裁剪图形局部坐标系下
-            y: 100,
-            r: 50,
-        },
-    }),
+  new Circle({
+    style: {
+      x: 100, // 处于被裁剪图形局部坐标系下
+      y: 100,
+      r: 50,
+    },
+  }),
 );
 ```
 
@@ -971,8 +971,8 @@ image.setClip(null);
 ```js
 // 对裁剪区域应用动画
 clipPathCircle.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }], {
-    duration: 1500,
-    iterations: Infinity,
+  duration: 1500,
+  iterations: Infinity,
 });
 ```
 
@@ -984,31 +984,31 @@ clipPathCircle.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }],
 
 ```js
 const circle = new Circle({
-    style: {
-        offsetPath: new Line({
-            // 创建运动轨迹
-            style: {
-                // 不需要设置其他与轨迹无关的绘图属性
-                x1: 100,
-                y1: 100,
-                x2: 300,
-                y2: 100,
-            },
-        }),
-        r: 10,
-    },
+  style: {
+    offsetPath: new Line({
+      // 创建运动轨迹
+      style: {
+        // 不需要设置其他与轨迹无关的绘图属性
+        x1: 100,
+        y1: 100,
+        x2: 300,
+        y2: 100,
+      },
+    }),
+    r: 10,
+  },
 });
 
 const animation = circle.animate(
-    [
-        { offsetDistance: 0 }, // 变换
-        { offsetDistance: 1 },
-    ],
-    {
-        duration: 3000,
-        easing: 'ease-in-out',
-        iterations: Infinity,
-    },
+  [
+    { offsetDistance: 0 }, // 变换
+    { offsetDistance: 1 },
+  ],
+  {
+    duration: 3000,
+    easing: 'ease-in-out',
+    iterations: Infinity,
+  },
 );
 ```
 
@@ -1030,10 +1030,10 @@ const animation = circle.animate(
 
 ```js
 const circle = new Circle({
-    style: {
-        //... 省略其他属性
-        cursor: 'pointer',
-    },
+  style: {
+    //... 省略其他属性
+    cursor: 'pointer',
+  },
 });
 ```
 
@@ -1108,12 +1108,12 @@ circle.scaleLocal(2); // number
 
 ```js
 const rect = new Rect({
-    id: 'rect',
-    style: {
-        width: 300,
-        height: 200,
-        origin: [150, 100], // 设置旋转与缩放中心，局部坐标系下的中点
-    },
+  id: 'rect',
+  style: {
+    width: 300,
+    height: 200,
+    origin: [150, 100], // 设置旋转与缩放中心，局部坐标系下的中点
+  },
 });
 
 rect.style.origin = [0, 0]; // 设置为左上角
@@ -1130,13 +1130,13 @@ rect.style.origin = [0, 0]; // 设置为左上角
 
 ```js
 const circle = new Circle({
-    style: {
-        x: 100, // 局部坐标系下的坐标不会影响 Geometry Bounds
-        y: 100, // 局部坐标系下的坐标不会影响 Geometry Bounds
-        r: 100,
-        lineWidth: 20, // 样式属性不会影响 Geometry Bounds
-        shadowBlur: 10, // 样式属性不会影响 Geometry Bounds
-    },
+  style: {
+    x: 100, // 局部坐标系下的坐标不会影响 Geometry Bounds
+    y: 100, // 局部坐标系下的坐标不会影响 Geometry Bounds
+    r: 100,
+    lineWidth: 20, // 样式属性不会影响 Geometry Bounds
+    shadowBlur: 10, // 样式属性不会影响 Geometry Bounds
+  },
 });
 circle.getGeometryBounds(); // { center: [0, 0], halfExtents: [100, 100] }
 ```
@@ -1154,11 +1154,11 @@ group.getGeometryBounds(); // null
 
 ```js
 const circle = new Circle({
-    style: {
-        x: 100, // 应用世界坐标系下的变换
-        y: 100,
-        r: 100,
-    },
+  style: {
+    x: 100, // 应用世界坐标系下的变换
+    y: 100,
+    r: 100,
+  },
 });
 circle.getBounds(); // { center: [100, 100], halfExtents: [100, 100] }
 ```
@@ -1169,12 +1169,12 @@ circle.getBounds(); // { center: [100, 100], halfExtents: [100, 100] }
 
 ```js
 const circle = new Circle({
-    style: {
-        x: 100, // 应用世界坐标系下的变换
-        y: 100,
-        r: 100,
-        lineWidth: 20, // 考虑样式属性
-    },
+  style: {
+    x: 100, // 应用世界坐标系下的变换
+    y: 100,
+    r: 100,
+    lineWidth: 20, // 考虑样式属性
+  },
 });
 // r + lineWidth / 2
 circle.getRenderBounds(); // { center: [100, 100], halfExtents: [110, 110] }
@@ -1190,12 +1190,12 @@ getBounds 的唯一区别是在父节点的局部坐标系下计算。
 
 ```js
 interface DOMRect {
-    top: number;
-    left: number;
-    right: number;
-    bottom: number;
-    width: number;
-    height: number;
+  top: number;
+  left: number;
+  right: number;
+  bottom: number;
+  width: number;
+  height: number;
 }
 ```
 
@@ -1331,15 +1331,15 @@ clonedCircle.getPosition(); // [10, 20]
 
 注意事项：
 
--   支持深拷贝，即自身以及整棵子树
--   克隆的新节点不会保留原始节点的父子关系，需要使用 `appendChild` 将其加入画布才会被渲染
--   与 [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes) 保持一致，不会拷贝原图形上的事件监听器
+- 支持深拷贝，即自身以及整棵子树
+- 克隆的新节点不会保留原始节点的父子关系，需要使用 `appendChild` 将其加入画布才会被渲染
+- 与 [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes) 保持一致，不会拷贝原图形上的事件监听器
 
 在这个[示例](/zh/examples/scenegraph#clone)中，我们展示了以上特性：
 
--   可以随时更改原始节点的样式属性，得到的拷贝都会是最新的，新节点同样需要被加入到场景图中才会被渲染
--   但由于不会拷贝事件监听器，因此只有原始节点可以进行拖拽
--   非深拷贝模式下，Text（Drag me 文本） 作为 Circle 的子节点不会被拷贝
+- 可以随时更改原始节点的样式属性，得到的拷贝都会是最新的，新节点同样需要被加入到场景图中才会被渲染
+- 但由于不会拷贝事件监听器，因此只有原始节点可以进行拖拽
+- 非深拷贝模式下，Text（Drag me 文本） 作为 Circle 的子节点不会被拷贝
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PwEYSI_ijPEAAAAAAAAAAAAAARQnAQ)
 
@@ -1354,19 +1354,19 @@ clonedCircle.getPosition(); // [10, 20]
 
 ⚠️ 兼容 [HTMLElement Style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style)，因此可以使用以下方法：
 
--   style.[getPropertyValue](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/getPropertyValue)
--   style.[setProperty](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/setProperty)
--   style.[removeProperty](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/removeProperty)
+- style.[getPropertyValue](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/getPropertyValue)
+- style.[setProperty](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/setProperty)
+- style.[removeProperty](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/removeProperty)
 
 以下用法等价：
 
 ```js
 const circle = new Circle({
-    style: {
-        // 或者使用 attrs
-        r: 10,
-        fill: 'red',
-    },
+  style: {
+    // 或者使用 attrs
+    r: 10,
+    fill: 'red',
+  },
 });
 
 // 获取属性值
@@ -1401,8 +1401,8 @@ export type AngleUnit = 'deg' | 'rad' | 'turn';
 export type Unit = LengthUnit | AngleUnit | '';
 
 export interface ParsedElement {
-    unit: Unit;
-    value: number;
+  unit: Unit;
+  value: number;
 }
 ```
 
@@ -1410,8 +1410,8 @@ export interface ParsedElement {
 
 ```js
 animation.onframe = () => {
-    rect.style.width; // '100px'
-    rect.parsedStyle.width; // { unit: 'px', value: 100 }
+  rect.style.width; // '100px'
+  rect.parsedStyle.width; // { unit: 'px', value: 100 }
 };
 ```
 
@@ -1481,26 +1481,26 @@ import { ElementEvent, MutationEvent } from '@antv/g';
 
 // 监听子节点添加事件
 parent.on(ElementEvent.CHILD_INSERTED, (e) => {
-    e.target; // parent
-    e.detail.child; // child
+  e.target; // parent
+  e.detail.child; // child
 });
 child.on(ElementEvent.INSERTED, (e: MutationEvent) => {
-    e.target; // child
-    e.relatedNode; // parent
+  e.target; // child
+  e.relatedNode; // parent
 });
 parent.on(ElementEvent.CHILD_REMOVED, (e) => {
-    e.target; // parent
-    e.detail.child; // child
+  e.target; // parent
+  e.detail.child; // child
 });
 child.on(ElementEvent.REMOVED, (e) => {
-    e.target; // child
-    e.relatedNode; // parent
+  e.target; // child
+  e.relatedNode; // parent
 });
 child.on(ElementEvent.ATTR_MODIFIED, (e) => {
-    e.target; // child
-    e.attrName; // 属性名
-    e.prevValue; // 旧值
-    e.newValue; // 新值
+  e.target; // child
+  e.attrName; // 属性名
+  e.prevValue; // 旧值
+  e.newValue; // 新值
 });
 
 parent.appendChild(child);
@@ -1508,14 +1508,14 @@ parent.appendChild(child);
 
 目前我们支持如下场景图相关事件：
 
--   CHILD_INSERTED 作为父节点有子节点添加时触发
--   INSERTED 作为子节点被添加时触发
--   CHILD_REMOVED 作为父节点有子节点移除时触发
--   REMOVED 作为子节点被移除时触发
--   MOUNTED 首次进入画布时触发
--   UNMOUNTED 从画布中移除时触发
--   ATTR_MODIFIED 修改属性时触发
--   DESTROY 销毁时触发
+- CHILD_INSERTED 作为父节点有子节点添加时触发
+- INSERTED 作为子节点被添加时触发
+- CHILD_REMOVED 作为父节点有子节点移除时触发
+- REMOVED 作为子节点被移除时触发
+- MOUNTED 首次进入画布时触发
+- UNMOUNTED 从画布中移除时触发
+- ATTR_MODIFIED 修改属性时触发
+- DESTROY 销毁时触发
 
 # 可见性与渲染次序
 
@@ -1538,7 +1538,10 @@ group.show();
 // or group.setAttribute('visibility', 'visible');
 ```
 
-⚠️ 当图形隐藏时不会被拾取。
+关于可见性有两点需要注意：
+
+1. 当图形隐藏时不会被拾取
+2. 隐藏的元素仍然需要参与包围盒运算，即仍会占据空间。如果想完全移出元素，应该使用 [removeChild](/zh/docs/api/basic/display-object#添加删除节点)
 
 ## 渲染次序
 
@@ -1564,19 +1567,19 @@ group.setZIndex(100);
 
 ```js
 circle.animate(
-    [
-        {
-            transform: 'scale(0)',
-        },
-        {
-            transform: 'scale(1)',
-        },
-    ],
+  [
     {
-        duration: 500,
-        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-        iterations: Infinity,
+      transform: 'scale(0)',
     },
+    {
+      transform: 'scale(1)',
+    },
+  ],
+  {
+    duration: 500,
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+    iterations: Infinity,
+  },
 );
 ```
 

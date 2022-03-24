@@ -1,4 +1,4 @@
-import { DisplayObject, RendererPlugin, globalContainer } from '@antv/g';
+import { RendererPlugin } from '@antv/g';
 import { Module, Syringe } from 'mana-syringe';
 import {
   BlendFactor,
@@ -65,16 +65,7 @@ export {
   WrapMode,
 };
 
-// // TODO: provide more friendly API like `registerGeometry`
-// globalContainer.register(CubeUpdater);
-// globalContainer.register(SphereUpdater);
-// globalContainer.register(GridUpdater);
-
-export const containerModule = Module((register) => {
-  //   registerModelBuilder(CubeModelBuilder, Shape_3D.Cube);
-  //   // registerModelBuilder(SphereModelBuilder, Shape_3D.Sphere);
-  //   registerModelBuilder(GridModelBuilder, Shape_3D.Grid);
-});
+export const containerModule = Module((register) => {});
 
 export class Plugin implements RendererPlugin {
   init(container: Syringe.Container): void {

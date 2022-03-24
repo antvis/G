@@ -34,6 +34,9 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
     }
 
     const renderBounds = object.getRenderBounds();
+
+    console.log(object, renderBounds);
+
     if (!renderBounds) {
       return false;
     }

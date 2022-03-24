@@ -1,3 +1,4 @@
+import { AABB } from '@antv/g';
 import {
   Format,
   BufferGeometry,
@@ -91,8 +92,11 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
     // transform tangent
   }
 
-  getBoundingBox() {
+  computeBoundingBox(): AABB {
     // 根据 ProceduralGeometryAttributeLocation.POSITION 计算
+    const buffer = this.getVertexBuffer(ProceduralGeometryAttributeBufferIndex.POSITION);
+
+    return new AABB();
   }
 
   build() {

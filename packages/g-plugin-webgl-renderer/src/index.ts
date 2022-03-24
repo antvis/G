@@ -34,12 +34,6 @@ import {
 } from './meshes';
 import { MeshUpdater } from './MeshUpdater';
 
-let bindFunc: Syringe.Register;
-
-export function registerModelBuilder(builderClazz: new (...args: any[]) => Batch, named: string) {
-  bindFunc({ token: { token: ShapeRenderer, named }, useClass: builderClazz });
-}
-
 export { Renderable3D, Batch, TexturePool, RenderGraphPlugin, Mesh };
 
 export * from './interfaces';
@@ -51,7 +45,6 @@ export * from './meshes';
 export * from './lights';
 
 export const containerModule = Module((register) => {
-  bindFunc = register;
   register(RenderHelper);
   register(TexturePool);
   register(LightPool);
@@ -110,7 +103,7 @@ export class Plugin implements RendererPlugin {
   private container: Syringe.Container;
 
   init(container: Syringe.Container): void {
-    if (globalContainer.isBound(MeshUpdater)) {
+    if (!globalContainer.isBound(MeshUpdater)) {
       globalContainer.register(MeshUpdater);
     }
     this.container = container;
@@ -128,7 +121,9 @@ export class Plugin implements RendererPlugin {
     container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
-    globalContainer.remove(MeshUpdater);
+    if (globalContainer.isBound(MeshUpdater)) {
+      globalContainer.remove(MeshUpdater);
+    }
     container.remove(WebGLRendererPluginOptions);
     container.unload(containerModule);
   }

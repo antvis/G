@@ -6,6 +6,8 @@ import { Mesh, ParsedMeshStyleProps } from './Mesh';
 export class MeshUpdater implements GeometryAABBUpdater<ParsedMeshStyleProps> {
   update(parsedStyle: ParsedMeshStyleProps) {
     const { geometry } = parsedStyle;
+
+    geometry.computeBoundingBox();
     // const minX = Math.min(x1, x2);
     // const maxX = Math.max(x1, x2);
     // const minY = Math.min(y1, y2);

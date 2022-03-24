@@ -1,3 +1,4 @@
+import { AABB } from '@antv/g';
 import { ElementEvent, MutationEvent } from '@antv/g';
 import { EventEmitter } from 'eventemitter3';
 import { Mesh } from '../Mesh';
@@ -124,6 +125,10 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
   }
 
   build(meshes: Mesh<GeometryProps>[]) {}
+
+  computeBoundingBox(): AABB {
+    return new AABB();
+  }
 
   setIndexBuffer(indices: IndicesArray) {
     if (this.indexBuffer) {
