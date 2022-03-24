@@ -1,7 +1,30 @@
 import { WebGPUGraph } from '@antv/webgpu-graph';
+import { Algorithm } from '@antv/g6';
 import * as lil from 'lil-gui';
 
-const data = {
+/**
+ * @see /zh/docs/api/gpgpu/webgpu-graph#pagerank
+ */
+
+// GPU version
+const graph = new WebGPUGraph();
+// CPU version
+const { pageRank } = Algorithm;
+
+const calcInCPU = (data) => {
+  const startTime = window.performance.now();
+  const result = pageRank(data);
+  console.log(`CPU Time Elapsed: ${window.performance.now() - startTime}ms`);
+  // console.log('CPU result: ', result);
+};
+const calcInGPU = async (data) => {
+  const startTime = window.performance.now();
+  const result = await graph.pageRank(data);
+  console.log(`GPU Time Elapsed: ${window.performance.now() - startTime}ms`);
+  // console.log('GPU result: ', result);
+};
+
+const simpleDataset = {
   nodes: [
     {
       id: 'A',
@@ -120,17 +143,8 @@ const data = {
   ],
 };
 
-const graph = new WebGPUGraph();
-
-// const showResult = (label, startTime, endTime, topNodes) => {
-//   const $cpu = document.createElement('div');
-//   $cpu.textContent = `${label} Time Elapsed: ${Number.parseFloat(endTime - startTime).toFixed(
-//     2,
-//   )}ms`;
-//   $wrapper.appendChild($cpu);
-//   // print top nodes
-//   console.log(topNodes);
-// };
+calcInCPU(simpleDataset);
+calcInGPU(simpleDataset);
 
 // GUI
 const gui = new lil.GUI({ autoPlace: false });
@@ -140,13 +154,25 @@ const folder = gui.addFolder('dataset');
 const config = {
   dataset: 'simple',
 };
-folder.add(config, 'dataset', ['simple', '1k nodes & 500k edges']).onChange(async (dataset) => {
-  let result;
-  if (dataset === 'simple') {
-    result = await graph.pageRank(data);
-  } else {
-    result = await graph.pageRank(data);
-  }
-  console.log(result);
-});
+folder
+  .add(config, 'dataset', ['simple', '8k nodes & 5k edges', '1k nodes & 500k edges'])
+  .onChange(async (dataset) => {
+    let input;
+    if (dataset === 'simple') {
+      input = simpleDataset;
+    } else if (dataset === '8k nodes & 5k edges') {
+      const res = await fetch(
+        'https://gw.alipayobjects.com/os/basement_prod/0b9730ff-0850-46ff-84d0-1d4afecd43e6.json',
+      );
+      input = await res.json();
+    } else if (dataset === '1k nodes & 500k edges') {
+      const res = await fetch(
+        'https://gw.alipayobjects.com/os/bmw-prod/db52686c-423b-41d8-956b-38536252a48f.json',
+      );
+      input = await res.json();
+    }
+
+    calcInCPU(input);
+    calcInGPU(input);
+  });
 folder.open();

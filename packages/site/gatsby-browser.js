@@ -7,6 +7,7 @@ window.g6 = require('@antv/g6');
 window.stats = require('stats.js');
 window.lilGui = require('lil-gui');
 window.hammerjs = require('hammerjs');
+window.hammerTouchemulator = require('hammer-touchemulator');
 window.interactjs = require('interactjs');
 window.simplexNoise = require('simplex-noise');
 window.d3 = require('d3');

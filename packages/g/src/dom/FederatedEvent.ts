@@ -200,7 +200,7 @@ export class FederatedEvent<N extends Event = Event, T = any> {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/view
    */
-  view: ICanvas;
+  view: any;
 
   /**
    * added for compatibility with DOM Event,
