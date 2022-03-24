@@ -20,6 +20,7 @@ export class Mesh<GeometryProps = any> extends DisplayObject<GeometryProps & Mes
     super({
       type: Mesh.tag,
       style: {
+        lineWidth: 0,
         ...style,
       },
       ...rest,

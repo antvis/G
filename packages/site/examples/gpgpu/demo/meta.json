@@ -73,6 +73,13 @@
         "zh": "WebGPU Graph SSSP",
         "en": "WebGPU Graph SSSP"
       }
+    },
+    {
+      "filename": "webgpu-graph-bfs.js",
+      "title": {
+        "zh": "WebGPU Graph BFS",
+        "en": "WebGPU Graph BFS"
+      }
     }
   ]
 }

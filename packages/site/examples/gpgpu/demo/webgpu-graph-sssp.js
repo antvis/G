@@ -1,7 +1,39 @@
+import { Algorithm } from '@antv/g6';
 import { WebGPUGraph } from '@antv/webgpu-graph';
 import * as lil from 'lil-gui';
 
-const data = {
+/**
+ * @see /zh/docs/api/gpgpu/webgpu-graph#sssp
+ */
+
+// GPU version
+const graph = new WebGPUGraph();
+// CPU version
+const { findShortestPath } = Algorithm;
+
+const calcInCPU = (data, sourceId, weightPropertyName) => {
+  const startTime = window.performance.now();
+  for (let i = 0; i < data.nodes.length; i++) {
+    const { length, path, allPath } = findShortestPath(
+      data,
+      sourceId,
+      data.nodes[i].id,
+      true,
+      weightPropertyName,
+    );
+    // console.log(`from A to ${data.nodes[i].id} = ${length}: `, path);
+  }
+  console.log(`CPU Time Elapsed: ${window.performance.now() - startTime}ms`);
+};
+const calcInGPU = async (data, sourceId, weightPropertyName) => {
+  const startTime = window.performance.now();
+  const result = await graph.sssp(data, sourceId, weightPropertyName);
+  console.log(`GPU Time Elapsed: ${window.performance.now() - startTime}ms`);
+
+  // console.log(result);
+};
+
+const simpleDataset = {
   nodes: [
     {
       id: 'A',
@@ -73,7 +105,8 @@ const data = {
   ],
 };
 
-const graph = new WebGPUGraph();
+calcInGPU(simpleDataset, 'A', 'weight');
+calcInCPU(simpleDataset, 'A', 'weight');
 
 // GUI
 const gui = new lil.GUI({ autoPlace: false });
@@ -83,13 +116,21 @@ const folder = gui.addFolder('dataset');
 const config = {
   dataset: 'simple',
 };
-folder.add(config, 'dataset', ['simple', '1k nodes & 500k edges']).onChange(async (dataset) => {
-  let result;
+folder.add(config, 'dataset', ['simple', '1k nodes & 5k edges']).onChange(async (dataset) => {
   if (dataset === 'simple') {
-    result = await graph.sssp(data, 'A', 'weight');
-  } else {
-    result = await graph.sssp(data, 'A', 'weight');
+    calcInGPU(simpleDataset, 'A', 'weight');
+    calcInCPU(simpleDataset, 'A', 'weight');
+  } else if (dataset === '1k nodes & 5k edges') {
+    const res = await fetch(
+      'https://gw.alipayobjects.com/os/bmw-prod/180daecd-28d0-4d8f-ac4b-064d21062c12.json',
+    );
+    const input = await res.json();
+    calcInGPU(input, '0', 'weight');
+    calcInCPU(input, '0', 'weight');
   }
-  console.log(result);
 });
 folder.open();
+
+const $text = document.createElement('div');
+$text.textContent = 'Please open the devtools, the shortest paths will be printed in console.';
+$wrapper.appendChild($text);

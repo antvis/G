@@ -1,9 +1,10 @@
 import { isUndefined } from '@antv/util';
 import type { InteractivePointerEvent } from '../types';
 // use `self` instead of `window`, account for non-window contexts, such as in Web Workers
+// @see https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/globalThis
 // @see https://developer.mozilla.org/en-US/docs/Web/API/Window/self
-export const supportsTouchEvents = !!self.TouchEvent;
-export const supportsPointerEvents = !!self.PointerEvent;
+export const supportsTouchEvents = !!globalThis.TouchEvent;
+export const supportsPointerEvents = !!globalThis.PointerEvent;
 export const MOUSE_POINTER_ID = 1;
 export const TOUCH_TO_POINTER: Record<string, string> = {
   touchstart: 'pointerdown',
@@ -19,9 +20,9 @@ export function isTouchEvent(event: InteractivePointerEvent): event is TouchEven
 
 export function isMouseEvent(event: InteractivePointerEvent): event is MouseEvent {
   return (
-    !self.MouseEvent ||
+    !globalThis.MouseEvent ||
     (event instanceof MouseEvent &&
-      (!supportsPointerEvents || !(event instanceof self.PointerEvent)))
+      (!supportsPointerEvents || !(event instanceof globalThis.PointerEvent)))
   );
 }
 
@@ -71,8 +72,8 @@ export function normalizeToPointerEvent(event: InteractivePointerEvent): Pointer
 
       // use changedTouches instead of touches since touchend has no touches
       // @see https://stackoverflow.com/a/10079076
-      if (isUndefined(touch.button)) touch.button = event.changedTouches.length ? 1 : 0;
-      if (isUndefined(touch.buttons)) touch.buttons = event.changedTouches.length ? 1 : 0;
+      if (isUndefined(touch.button)) touch.button = event.touches.length ? 1 : 0;
+      if (isUndefined(touch.buttons)) touch.buttons = event.touches.length ? 1 : 0;
       if (isUndefined(touch.isPrimary)) {
         touch.isPrimary = event.touches.length === 1 && event.type === 'touchstart';
       }
