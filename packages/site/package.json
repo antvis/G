@@ -49,6 +49,7 @@
     "gatsby-plugin-workerize-loader": "^1.5.0",
     "gh-pages": "^3.2.3",
     "hammerjs": "^2.0.8",
+    "hammer-touchemulator": "^0.0.2",
     "interactjs": "^1.10.11",
     "lil-gui": "^0.16.0",
     "react": "^16.0.2",

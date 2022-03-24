@@ -110,8 +110,9 @@ export class Plugin implements RendererPlugin {
   private container: Syringe.Container;
 
   init(container: Syringe.Container): void {
-    globalContainer.register(MeshUpdater);
-
+    if (globalContainer.isBound(MeshUpdater)) {
+      globalContainer.register(MeshUpdater);
+    }
     this.container = container;
     container.register({
       token: WebGLRendererPluginOptions,
