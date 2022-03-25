@@ -191,17 +191,78 @@ https://developer.mozilla.org/en-US/docs/Web/API/Element/id
 
 全局唯一的标识，可通过 [getElementById](/zh/docs/api/display-object#高级查询) 查询。
 
+```js
+const circle = new Circle({
+  id: 'my-circle-id',
+  style: {
+    r: 10,
+  },
+});
+circle.id; // 'my-circle-id'
+canvas.getElementById('my-circle-id'); // circle
+```
+
 # name
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByName
 
-可通过 [getElementsByName](/zh/docs/api/display-object#高级查询) 查询
+图形名称，不要求全局唯一，可通过 [getElementsByName](/zh/docs/api/display-object#高级查询) 查询。
+
+```js
+const circle = new Circle({
+  name: 'my-circle-name',
+  style: {
+    r: 10,
+  },
+});
+circle.name; // 'my-circle-name'
+canvas.getElementsByName('my-circle-name'); // [circle]
+```
 
 # className
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/className
 
-可通过 [getElementsByClassName](/zh/docs/api/display-object#高级查询) 查询
+图形拥有的类名，可通过它获取/设置图形的类名。后续可以使用 [getElementsByClassName](/zh/docs/api/display-object#高级查询) 查询。
+
+```js
+const circle = new Circle({
+  className: 'my-circle-classname',
+  style: {
+    r: 10,
+  },
+});
+circle.className; // 'my-circle-classname'
+canvas.getElementsByClassName('my-circle-classname'); // [circle]
+```
+
+可以使用空格隔开多个类名，随后使用 [classList](/zh/docs/api/builtin-objects/element#classlist) 只读属性获取类名列表：
+
+```js
+circle.className = 'c1 c2';
+circle.classList; // ['c1', 'c2']
+```
+
+未指定类名将返回空字符串：
+
+```js
+const group = new Group();
+group.className; // ''
+```
+
+最后在设置时还可以使用 `class` 作为别名：
+
+```js
+const group = new Group({
+  class: 'my-classname',
+  // className: 'my-classname'
+});
+
+group.setAttribute('class', 'my-classname');
+
+// 但不可以使用 class 属性，为保留字
+group.class;
+```
 
 # interactive
 

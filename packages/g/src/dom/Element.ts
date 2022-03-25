@@ -72,7 +72,7 @@ export class Element<
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
    */
   get classList() {
-    return this.className.split(' ');
+    return this.className.split(' ').filter((c) => c !== '');
   }
 
   interactive: boolean;

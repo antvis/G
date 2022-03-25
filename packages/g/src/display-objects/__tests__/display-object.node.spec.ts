@@ -123,10 +123,12 @@ describe('DisplayObject Node API', () => {
     const group2 = new Group({
       id: 'id2',
       name: 'group2',
+      class: 'c1 c2', // use class alias of className
     });
     const group3 = new Group({
       id: 'id3',
       name: 'group3',
+      class: 'c1 c2 c3',
     });
     const group4 = new Group({
       id: 'id4',
@@ -155,8 +157,23 @@ describe('DisplayObject Node API', () => {
     expect(group4.getLast()).to.null;
     expect(group1.getAttribute('class')).to.eqls(null);
     expect(group1.className).to.eqls('');
+    expect(group1.classList).to.eqls([]);
+    expect(group2.className).to.eqls('c1 c2');
+    expect(group2.classList).to.eqls(['c1', 'c2']);
     expect(group4.getAttribute('class')).to.eqls('className4');
     expect(group4.className).to.eqls('className4');
+    expect(group4.classList).to.eqls(['className4']);
+    expect(group3.className).to.eqls('c1 c2 c3');
+    expect(group3.classList).to.eqls(['c1', 'c2', 'c3']);
+
+    group3.className = 'c1 c2';
+    expect(group3.classList).to.eqls(['c1', 'c2']);
+
+    group3.setAttribute('class', 'c1 c2 c3');
+    expect(group3.classList).to.eqls(['c1', 'c2', 'c3']);
+
+    group3.setAttribute('class', '');
+    expect(group3.classList).to.eqls([]);
 
     // search in scene graph
     expect(

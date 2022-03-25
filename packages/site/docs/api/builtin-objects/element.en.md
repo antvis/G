@@ -38,7 +38,14 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/className
 
 ## classList
 
+只读属性，返回类名列表。
+
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/classList
+
+```js
+circle.className = 'c1 c2';
+circle.classList; // ['c1', 'c2']
+```
 
 ## attributes
 
