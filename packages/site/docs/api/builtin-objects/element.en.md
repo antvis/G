@@ -5,7 +5,7 @@ order: 3
 
 在 G 中有以下继承关系：
 
--   DisplayObject -> Element -> Node -> EventTarget
+- DisplayObject -> Element -> Node -> EventTarget
 
 # 继承自
 
@@ -19,8 +19,8 @@ order: 3
 
 ```js
 const circle = new Circle({
-    id: 'my-id',
-    style: { r: 10 },
+  id: 'my-id',
+  style: { r: 10 },
 });
 
 circle.id; // 'my-id';
@@ -35,6 +35,10 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/name
 ## className
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/className
+
+## classList
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/Element/classList
 
 ## attributes
 
@@ -62,15 +66,21 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/childElementCount
 
 ## firstElementChild
 
-和 Node.firstChild 等价。
+和 [Node.firstChild](/zh/docs/api/builtin-objects/node#firstchild) 等价。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/firstElementChild
 
 ## lastElementChild
 
-和 Node.lastChild 等价。
+和 [Node.lastChild](/zh/docs/api/builtin-objects/node#lastchild) 等价。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/lastElementChild
+
+## clientTop / clientLeft
+
+由于暂不支持 border，始终返回 0。
+
+https://developer.mozilla.org/en-US/docs/Web/API/Element/clientTop
 
 # 方法
 

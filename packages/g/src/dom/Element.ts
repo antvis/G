@@ -80,6 +80,13 @@ export class Element<
   scrollLeft = 0;
   scrollTop = 0;
 
+  /**
+   * We don't support border now
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/clientTop
+   */
+  clientTop = 0;
+  clientLeft = 0;
+
   get tagName(): string {
     return this.nodeName;
   }

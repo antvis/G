@@ -377,6 +377,8 @@ export interface IElement<StyleProps = any, ParsedStyleProps = any>
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
    */
   removeAttribute: (attributeName: keyof StyleProps) => void;
+
+  hasAttribute(qualifiedName: string): boolean;
 }
 
 export interface IDocument extends INode, IParentNode {

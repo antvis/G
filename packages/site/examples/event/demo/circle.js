@@ -33,11 +33,13 @@ const circle = new Circle({
 
 canvas.appendChild(circle);
 
-circle.addEventListener('mouseenter', () => {
+circle.addEventListener('mouseenter', function (e) {
+  console.log(this, e.currentTarget);
   circle.style.fill = '#2FC25B';
 });
 
 circle.addEventListener('mouseleave', () => {
+  console.log(this);
   circle.style.fill = '#1890FF';
 });
 
