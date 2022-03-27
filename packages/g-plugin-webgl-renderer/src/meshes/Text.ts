@@ -264,7 +264,7 @@ export class TextMesh extends Instanced {
     }
   }
 
-  updateAttribute(object: DisplayObject, name: string, value: any): void {
+  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any): void {
     if (
       name === 'text' ||
       name === 'fontFamily' ||

@@ -44,7 +44,9 @@ export class RenderHelper {
     if (this.uniformBuffer) {
       this.uniformBuffer.destroy();
     }
-    this.renderInstManager.destroy();
+    if (this.renderInstManager) {
+      this.renderInstManager.destroy();
+    }
     this.renderCache.destroy();
     this.renderGraph.destroy();
   }

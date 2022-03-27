@@ -287,24 +287,15 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       renderInstManager.popTemplateRenderInst();
 
-      if (this.renderLists.world.renderInsts.length > 0) {
-        this.renderHelper.prepareToRender();
-      }
+      // if (this.renderLists.world.renderInsts.length > 0) {
+      this.renderHelper.prepareToRender();
+      // }
       this.renderHelper.renderGraph.execute();
 
       renderInstManager.resetRenderInsts();
 
       // output to screen
       this.swapChain.present();
-
-      // @ts-ignore
-      // FIXME: this is a hack to make sure the GPU is done with the previous frame
-      if (this.device.platformString === 'WebGL2' && this.firstFrame) {
-        this.firstFrame = false;
-        setTimeout(() => {
-          this.renderingService.dirtify();
-        });
-      }
     });
 
     const handleMounted = (e: FederatedEvent) => {

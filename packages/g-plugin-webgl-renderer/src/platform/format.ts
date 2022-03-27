@@ -35,8 +35,6 @@ export enum FormatCompFlags {
   RGB = 0x03,
   RGBA = 0x04,
   A = 0x05,
-  MAT3 = 0x06,
-  MAT4 = 0x07,
 }
 
 export function getFormatCompFlagsComponentCount(n: FormatCompFlags): number {
@@ -63,6 +61,7 @@ export function makeFormat(
 
 export enum Format {
   ALPHA = makeFormat(FormatTypeFlags.U8, FormatCompFlags.A, FormatFlags.None),
+  F16_R = makeFormat(FormatTypeFlags.F16, FormatCompFlags.R, FormatFlags.None),
   F16_RG = makeFormat(FormatTypeFlags.F16, FormatCompFlags.RG, FormatFlags.None),
   F16_RGB = makeFormat(FormatTypeFlags.F16, FormatCompFlags.RGB, FormatFlags.None),
   F16_RGBA = makeFormat(FormatTypeFlags.F16, FormatCompFlags.RGBA, FormatFlags.None),
@@ -70,8 +69,6 @@ export enum Format {
   F32_RG = makeFormat(FormatTypeFlags.F32, FormatCompFlags.RG, FormatFlags.None),
   F32_RGB = makeFormat(FormatTypeFlags.F32, FormatCompFlags.RGB, FormatFlags.None),
   F32_RGBA = makeFormat(FormatTypeFlags.F32, FormatCompFlags.RGBA, FormatFlags.None),
-  F32_MAT3 = makeFormat(FormatTypeFlags.F32, FormatCompFlags.MAT3, FormatFlags.None),
-  F32_MAT4 = makeFormat(FormatTypeFlags.F32, FormatCompFlags.MAT4, FormatFlags.None),
   U8_R = makeFormat(FormatTypeFlags.U8, FormatCompFlags.R, FormatFlags.None),
   U8_R_NORM = makeFormat(FormatTypeFlags.U8, FormatCompFlags.R, FormatFlags.Normalized),
   U8_RG = makeFormat(FormatTypeFlags.U8, FormatCompFlags.RG, FormatFlags.None),
@@ -118,16 +115,28 @@ export enum Format {
   ),
 
   // Compressed
-  BC1 = makeFormat(FormatTypeFlags.BC1, FormatCompFlags.RGBA, FormatFlags.None),
-  BC1_SRGB = makeFormat(FormatTypeFlags.BC1, FormatCompFlags.RGBA, FormatFlags.sRGB),
-  BC2 = makeFormat(FormatTypeFlags.BC2, FormatCompFlags.RGBA, FormatFlags.None),
-  BC2_SRGB = makeFormat(FormatTypeFlags.BC2, FormatCompFlags.RGBA, FormatFlags.sRGB),
-  BC3 = makeFormat(FormatTypeFlags.BC3, FormatCompFlags.RGBA, FormatFlags.None),
-  BC3_SRGB = makeFormat(FormatTypeFlags.BC3, FormatCompFlags.RGBA, FormatFlags.sRGB),
-  BC4_UNORM = makeFormat(FormatTypeFlags.BC4_UNORM, FormatCompFlags.R, FormatFlags.None),
-  BC4_SNORM = makeFormat(FormatTypeFlags.BC4_SNORM, FormatCompFlags.R, FormatFlags.None),
-  BC5_UNORM = makeFormat(FormatTypeFlags.BC5_UNORM, FormatCompFlags.RG, FormatFlags.None),
-  BC5_SNORM = makeFormat(FormatTypeFlags.BC5_SNORM, FormatCompFlags.RG, FormatFlags.None),
+  BC1 = makeFormat(FormatTypeFlags.BC1, FormatCompFlags.RGBA, FormatFlags.Normalized),
+  BC1_SRGB = makeFormat(
+    FormatTypeFlags.BC1,
+    FormatCompFlags.RGBA,
+    FormatFlags.Normalized | FormatFlags.sRGB,
+  ),
+  BC2 = makeFormat(FormatTypeFlags.BC2, FormatCompFlags.RGBA, FormatFlags.Normalized),
+  BC2_SRGB = makeFormat(
+    FormatTypeFlags.BC2,
+    FormatCompFlags.RGBA,
+    FormatFlags.Normalized | FormatFlags.sRGB,
+  ),
+  BC3 = makeFormat(FormatTypeFlags.BC3, FormatCompFlags.RGBA, FormatFlags.Normalized),
+  BC3_SRGB = makeFormat(
+    FormatTypeFlags.BC3,
+    FormatCompFlags.RGBA,
+    FormatFlags.Normalized | FormatFlags.sRGB,
+  ),
+  BC4_UNORM = makeFormat(FormatTypeFlags.BC4_UNORM, FormatCompFlags.R, FormatFlags.Normalized),
+  BC4_SNORM = makeFormat(FormatTypeFlags.BC4_SNORM, FormatCompFlags.R, FormatFlags.Normalized),
+  BC5_UNORM = makeFormat(FormatTypeFlags.BC5_UNORM, FormatCompFlags.RG, FormatFlags.Normalized),
+  BC5_SNORM = makeFormat(FormatTypeFlags.BC5_SNORM, FormatCompFlags.RG, FormatFlags.Normalized),
 
   // Depth/Stencil
   D24 = makeFormat(FormatTypeFlags.D24, FormatCompFlags.R, FormatFlags.Depth),
@@ -144,12 +153,20 @@ export enum Format {
   ),
 
   // Special RT formats for preferred backend support.
-  U8_RGB_RT = makeFormat(FormatTypeFlags.U8, FormatCompFlags.RGB, FormatFlags.RenderTarget),
-  U8_RGBA_RT = makeFormat(FormatTypeFlags.U8, FormatCompFlags.RGBA, FormatFlags.RenderTarget),
+  U8_RGB_RT = makeFormat(
+    FormatTypeFlags.U8,
+    FormatCompFlags.RGB,
+    FormatFlags.RenderTarget | FormatFlags.Normalized,
+  ),
+  U8_RGBA_RT = makeFormat(
+    FormatTypeFlags.U8,
+    FormatCompFlags.RGBA,
+    FormatFlags.RenderTarget | FormatFlags.Normalized,
+  ),
   U8_RGBA_RT_SRGB = makeFormat(
     FormatTypeFlags.U8,
     FormatCompFlags.RGBA,
-    FormatFlags.RenderTarget | FormatFlags.sRGB,
+    FormatFlags.RenderTarget | FormatFlags.Normalized | FormatFlags.sRGB,
   ),
 }
 
@@ -211,22 +228,28 @@ export function setFormatComponentCount(fmt: Format, compFlags: FormatCompFlags)
 
 export function getFormatSamplerKind(fmt: Format): SamplerFormatKind {
   const flags = getFormatFlags(fmt);
-  if (!!(flags & FormatFlags.Depth)) return SamplerFormatKind.Depth;
-  if (!!(flags & FormatFlags.Normalized)) return SamplerFormatKind.Float;
-  const typeFlags = getFormatTypeFlags(fmt);
-  if (typeFlags === FormatTypeFlags.F16 || typeFlags === FormatTypeFlags.F32)
+  if (!!(flags & FormatFlags.Depth)) {
+    return SamplerFormatKind.Depth;
+  }
+  if (!!(flags & FormatFlags.Normalized)) {
     return SamplerFormatKind.Float;
-  else if (
+  }
+  const typeFlags = getFormatTypeFlags(fmt);
+  if (typeFlags === FormatTypeFlags.F16 || typeFlags === FormatTypeFlags.F32) {
+    return SamplerFormatKind.Float;
+  } else if (
     typeFlags === FormatTypeFlags.U8 ||
     typeFlags === FormatTypeFlags.U16 ||
     typeFlags === FormatTypeFlags.U32
-  )
+  ) {
     return SamplerFormatKind.Uint;
-  else if (
+  } else if (
     typeFlags === FormatTypeFlags.S8 ||
     typeFlags === FormatTypeFlags.S16 ||
     typeFlags === FormatTypeFlags.S32
-  )
+  ) {
     return SamplerFormatKind.Sint;
-  else throw 'whoops';
+  } else {
+    throw 'whoops';
+  }
 }

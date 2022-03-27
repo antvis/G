@@ -35,11 +35,15 @@ export class RGRenderTarget {
     } else {
       // Single-sampled textures can be backed by regular textures.
       this.texture = device.createTexture(this);
-      device.setResourceName(this.texture, this.debugName);
-
       this.attachment = device.createRenderTargetFromTexture(this.texture);
     }
+  }
 
+  setDebugName(device: Device, debugName: string): void {
+    this.debugName = debugName;
+    if (this.texture !== null) {
+      device.setResourceName(this.texture, this.debugName);
+    }
     device.setResourceName(this.attachment, this.debugName);
   }
 

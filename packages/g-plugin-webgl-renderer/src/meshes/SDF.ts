@@ -130,38 +130,42 @@ export class SDFMesh extends Instanced {
     });
   }
 
-  updateAttribute(object: DisplayObject, name: string, value: any) {
-    super.updateAttribute(object, name, value);
+  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any) {
+    super.updateAttribute(objects, startIndex, name, value);
 
-    const index = this.objects.indexOf(object);
-    this.updateBatchedAttribute(object, index, name, value);
+    this.updateBatchedAttribute(objects, startIndex, name, value);
 
     if (name === 'r' || name === 'rx' || name === 'ry' || name === 'lineWidth') {
-      const [halfWidth, halfHeight] = this.getSize(object.parsedStyle, object.nodeName);
-      const size = [halfWidth, halfHeight];
-
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const [halfWidth, halfHeight] = this.getSize(object.parsedStyle, object.nodeName);
+        const size = [halfWidth, halfHeight];
+        packed.push(...size);
+      });
       this.geometry.updateVertexBuffer(
         SDFVertexAttributeBufferIndex.SIZE,
         SDFVertexAttributeLocation.SIZE,
-        index,
-        new Uint8Array(new Float32Array([...size]).buffer),
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
       );
     } else if (name === 'stroke' || name === 'lineDash' || name === 'strokeOpacity') {
-      const circle = object as Circle;
-      const omitStroke = this.shouldOmitStroke(circle.parsedStyle);
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const circle = object as Circle;
+        const omitStroke = this.shouldOmitStroke(circle.parsedStyle);
+        packed.push(
+          SDF_Shape.indexOf(object.nodeName),
+          object.parsedStyle.radius || 0,
+          omitStroke ? 1 : 0,
+          0,
+        );
+      });
 
       this.geometry.updateVertexBuffer(
         SDFVertexAttributeBufferIndex.PACKED_STYLE3,
         SDFVertexAttributeLocation.PACKED_STYLE3,
-        index,
-        new Uint8Array(
-          new Float32Array([
-            SDF_Shape.indexOf(object.nodeName),
-            object.parsedStyle.radius || 0,
-            omitStroke ? 1 : 0,
-            0,
-          ]).buffer,
-        ),
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
       );
     }
   }

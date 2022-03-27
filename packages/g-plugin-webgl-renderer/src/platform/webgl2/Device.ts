@@ -107,6 +107,7 @@ import {
   isBlendStateNone,
   isTextureFormatCompressed,
   isWebGL2,
+  isBlockCompressSized,
 } from './utils';
 
 // This is a workaround for ANGLE not supporting UBOs greater than 64kb (the limit of D3D).
@@ -138,6 +139,8 @@ export class Device_GL implements SwapChain, Device {
   KHR_parallel_shader_compile: KHR_parallel_shader_compile | null = null;
   // @see https://developer.mozilla.org/en-US/docs/Web/API/EXT_texture_norm16
   EXT_texture_norm16: EXT_texture_norm16 | null = null;
+  OES_texture_float_linear: OES_texture_float_linear | null = null;
+  OES_texture_half_float_linear: OES_texture_half_float_linear | null = null;
 
   // Swap Chain
   private scTexture: Texture_GL | null = null;
@@ -215,6 +218,7 @@ export class Device_GL implements SwapChain, Device {
   uniformBufferMaxPageWordSize: number;
   supportedSampleCounts: number[] = [];
   maxVertexAttribs: number;
+  occlusionQueriesRecommended: boolean = false;
 
   gl: WebGLRenderingContext | WebGL2RenderingContext;
 
@@ -250,6 +254,9 @@ export class Device_GL implements SwapChain, Device {
     this.WEBGL_compressed_texture_s3tc_srgb = gl.getExtension('WEBGL_compressed_texture_s3tc_srgb');
     this.EXT_texture_compression_rgtc = gl.getExtension('EXT_texture_compression_rgtc');
     this.EXT_texture_filter_anisotropic = gl.getExtension('EXT_texture_filter_anisotropic');
+    this.EXT_texture_norm16 = gl.getExtension('EXT_texture_norm16');
+    this.OES_texture_float_linear = gl.getExtension('OES_texture_float_linear');
+    this.OES_texture_half_float_linear = gl.getExtension('OES_texture_half_float_linear');
     this.KHR_parallel_shader_compile = gl.getExtension('KHR_parallel_shader_compile');
     this.OES_draw_buffers_indexed = gl.getExtension('OES_draw_buffers_indexed');
 
@@ -336,7 +343,7 @@ export class Device_GL implements SwapChain, Device {
     formatKind: SamplerFormatKind,
   ): WebGLTexture {
     const depth = dimension === TextureDimension.Cube ? 6 : 1;
-    const pixelFormat = formatKind === SamplerFormatKind.Depth ? Format.D24 : Format.U8_RGBA_NORM;
+    const pixelFormat = formatKind === SamplerFormatKind.Depth ? Format.D32F : Format.U8_RGBA_NORM;
     const texture = this.createTexture({
       dimension,
       pixelFormat,
@@ -390,6 +397,7 @@ export class Device_GL implements SwapChain, Device {
         gl.SAMPLES,
       );
       this.supportedSampleCounts = supportedSampleCounts ? [...supportedSampleCounts] : [];
+      this.occlusionQueriesRecommended = true;
     } else {
       // mock ubo in WebGL1
       this.uniformBufferWordAlignment = 64;
@@ -441,8 +449,8 @@ export class Device_GL implements SwapChain, Device {
     // @see https://github.com/visgl/luma.gl/blob/30a1039573/modules/webgl/src/classes/clear.ts
 
     const { r, g, b, a } = OpaqueWhite;
-    // gl.clearColor(r, g, b, a);
-    // gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.clearColor(r, g, b, a);
+    gl.clear(gl.COLOR_BUFFER_BIT);
     if (isWebGL2(gl)) {
       gl.clearBufferfv(gl.COLOR, 0, [r, g, b, a]);
     } else {
@@ -460,6 +468,12 @@ export class Device_GL implements SwapChain, Device {
     switch (fmt) {
       case Format.ALPHA:
         return GL.ALPHA;
+      case Format.F16_R:
+        return GL.R16F;
+      case Format.F16_RG:
+        return GL.RG16F;
+      case Format.F16_RGB:
+        return GL.RGB16F;
       case Format.F16_RGBA:
         return GL.RGBA16F;
       case Format.F32_R:
@@ -708,10 +722,6 @@ export class Device_GL implements SwapChain, Device {
   }
 
   createBindings(descriptor: BindingsDescriptor): Bindings {
-    const { bindingLayout, uniformBufferBindings, samplerBindings } = descriptor;
-    assert(uniformBufferBindings.length >= bindingLayout.numUniformBuffers);
-    assert(samplerBindings.length >= bindingLayout.numSamplers);
-
     return new Bindings_GL({
       id: this.getNextUniqueId(),
       device: this,
@@ -876,21 +886,41 @@ export class Device_GL implements SwapChain, Device {
     return this;
   }
 
-  queryTextureFormatSupported(format: Format): boolean {
+  queryTextureFormatSupported(format: Format, width: number, height: number): boolean {
     switch (format) {
       case Format.BC1_SRGB:
       case Format.BC2_SRGB:
       case Format.BC3_SRGB:
-        return this.WEBGL_compressed_texture_s3tc_srgb !== null;
+        if (this.WEBGL_compressed_texture_s3tc_srgb !== null)
+          return isBlockCompressSized(width, height, 4, 4);
+        return false;
       case Format.BC1:
       case Format.BC2:
       case Format.BC3:
-        return this.WEBGL_compressed_texture_s3tc !== null;
+        if (this.WEBGL_compressed_texture_s3tc !== null)
+          return isBlockCompressSized(width, height, 4, 4);
+        return false;
       case Format.BC4_UNORM:
       case Format.BC4_SNORM:
       case Format.BC5_UNORM:
       case Format.BC5_SNORM:
-        return this.EXT_texture_compression_rgtc !== null;
+        if (this.EXT_texture_compression_rgtc !== null)
+          return isBlockCompressSized(width, height, 4, 4);
+        return false;
+      case Format.U16_R_NORM:
+      case Format.U16_RG_NORM:
+      case Format.U16_RGBA_NORM:
+        return this.EXT_texture_norm16 !== null;
+      case Format.F32_R:
+      case Format.F32_RG:
+      case Format.F32_RGB:
+      case Format.F32_RGBA:
+        return this.OES_texture_float_linear !== null;
+      case Format.F16_R:
+      case Format.F16_RG:
+      case Format.F16_RGB:
+      case Format.F16_RGBA:
+        return this.OES_texture_half_float_linear !== null;
       default:
         return true;
     }
@@ -1629,12 +1659,19 @@ export class Device_GL implements SwapChain, Device {
     }
 
     if (currentMegaState.cullMode !== newMegaState.cullMode) {
-      if (currentMegaState.cullMode === CullMode.None) gl.enable(gl.CULL_FACE);
-      else if (newMegaState.cullMode === CullMode.None) gl.disable(gl.CULL_FACE);
+      if (currentMegaState.cullMode === CullMode.None) {
+        gl.enable(gl.CULL_FACE);
+      } else if (newMegaState.cullMode === CullMode.None) {
+        gl.disable(gl.CULL_FACE);
+      }
 
-      if (newMegaState.cullMode === CullMode.Back) gl.cullFace(gl.BACK);
-      else if (newMegaState.cullMode === CullMode.Front) gl.cullFace(gl.FRONT);
-      else if (newMegaState.cullMode === CullMode.FrontAndBack) gl.cullFace(gl.FRONT_AND_BACK);
+      if (newMegaState.cullMode === CullMode.Back) {
+        gl.cullFace(gl.BACK);
+      } else if (newMegaState.cullMode === CullMode.Front) {
+        gl.cullFace(gl.FRONT);
+      } else if (newMegaState.cullMode === CullMode.FrontAndBack) {
+        gl.cullFace(gl.FRONT_AND_BACK);
+      }
       currentMegaState.cullMode = newMegaState.cullMode;
     }
 
@@ -1701,9 +1738,7 @@ export class Device_GL implements SwapChain, Device {
             gl.uniformBlockBinding(prog, blockIdx, i);
           }
         }
-      } else {
       }
-      // TODO: uniform1iv in WebGL1
 
       const samplers = findall(
         deviceProgram.preprocessedVert,
@@ -1732,6 +1767,9 @@ export class Device_GL implements SwapChain, Device {
   }
 
   setStencilRef(value: number): void {
+    if (this.currentStencilRef === value) {
+      return;
+    }
     this.currentStencilRef = value;
     this.applyStencil();
   }
@@ -1813,82 +1851,56 @@ export class Device_GL implements SwapChain, Device {
   private endPass(): void {
     const gl = this.gl;
 
-    let didUnbind = false;
+    let didUnbindDraw = false;
 
     for (let i = 0; i < this.currentColorAttachments.length; i++) {
-      const colorResolveTo = this.currentColorResolveTos[i];
+      const colorResolveFrom = this.currentColorAttachments[i];
 
-      if (colorResolveTo !== null) {
-        const colorResolveFrom = assertExists(this.currentColorAttachments[i]);
-        assert(
-          colorResolveFrom.width === colorResolveTo.width &&
-            colorResolveFrom.height === colorResolveTo.height,
-        );
-        assert(colorResolveFrom.pixelFormat === colorResolveTo.pixelFormat);
+      if (colorResolveFrom !== null) {
+        const colorResolveTo = this.currentColorResolveTos[i];
+        let didBindRead = false;
 
-        gl.disable(GL.SCISSOR_TEST);
-
-        if (isWebGL2(gl)) {
-          // set read frame buffer
-          gl.bindFramebuffer(GL.READ_FRAMEBUFFER, this.resolveColorReadFramebuffer);
-        }
-
-        // Special case: Blitting to the on-screen.
-        if (colorResolveTo === this.scTexture) {
-          gl.bindFramebuffer(
-            isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
-            this.scPlatformFramebuffer,
+        if (colorResolveTo !== null) {
+          assert(
+            colorResolveFrom.width === colorResolveTo.width &&
+              colorResolveFrom.height === colorResolveTo.height,
           );
+          assert(colorResolveFrom.pixelFormat === colorResolveTo.pixelFormat);
 
-          if (this.resolveColorAttachmentsChanged) {
-            if (isWebGL2(gl)) {
-              this.bindFramebufferAttachment(
-                GL.READ_FRAMEBUFFER,
-                GL.COLOR_ATTACHMENT0,
-                colorResolveFrom,
-              );
-            }
-          }
-
+          this.setScissorEnabled(false);
           if (isWebGL2(gl)) {
-            // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/blitFramebuffer
-            gl.blitFramebuffer(
-              0,
-              0,
-              colorResolveFrom.width,
-              colorResolveFrom.height,
-              0,
-              0,
-              colorResolveTo.width,
-              colorResolveTo.height,
-              GL.COLOR_BUFFER_BIT,
-              GL.LINEAR,
-            );
-          } else {
-            // render target texture
-            gl.bindTexture(GL.TEXTURE_2D, (colorResolveFrom.texture as Texture_GL).gl_texture);
+            gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.resolveColorReadFramebuffer);
           }
-          didUnbind = true;
-        } else {
-          gl.bindFramebuffer(
-            isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
-            this.resolveColorDrawFramebuffer,
-          );
-
-          if (this.resolveColorAttachmentsChanged) {
+          // if (this.resolveColorAttachmentsChanged) {
+          if (isWebGL2(gl)) {
             this.bindFramebufferAttachment(
-              isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
-              isWebGL2(gl) ? GL.COLOR_ATTACHMENT0 : GL.COLOR_ATTACHMENT0_WEBGL,
+              gl.READ_FRAMEBUFFER,
+              gl.COLOR_ATTACHMENT0,
               colorResolveFrom,
             );
+          }
+          // }
+          didBindRead = true;
 
-            gl.framebufferTexture2D(
+          // Special case: Blitting to the on-screen.
+          if (colorResolveTo === this.scTexture) {
+            gl.bindFramebuffer(
               isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
-              isWebGL2(gl) ? GL.COLOR_ATTACHMENT0 : GL.COLOR_ATTACHMENT0_WEBGL,
-              GL.TEXTURE_2D,
-              colorResolveTo.gl_texture,
-              0,
+              this.scPlatformFramebuffer,
             );
+          } else {
+            gl.bindFramebuffer(
+              isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
+              this.resolveColorDrawFramebuffer,
+            );
+            if (this.resolveColorAttachmentsChanged)
+              gl.framebufferTexture2D(
+                isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
+                gl.COLOR_ATTACHMENT0,
+                gl.TEXTURE_2D,
+                colorResolveTo.gl_texture,
+                0,
+              );
           }
 
           if (isWebGL2(gl)) {
@@ -1904,402 +1916,120 @@ export class Device_GL implements SwapChain, Device {
               gl.COLOR_BUFFER_BIT,
               gl.LINEAR,
             );
+            gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+          } else {
+            // render target texture
+            gl.bindTexture(GL.TEXTURE_2D, (colorResolveFrom.texture as Texture_GL).gl_texture);
+          }
+          didUnbindDraw = true;
+        }
+
+        if (!this.currentRenderPassDescriptor!.colorStore[i]) {
+          if (!didBindRead) {
+            gl.bindFramebuffer(
+              isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
+              this.resolveColorReadFramebuffer,
+            );
+            if (this.resolveColorAttachmentsChanged)
+              this.bindFramebufferAttachment(
+                isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
+                gl.COLOR_ATTACHMENT0,
+                colorResolveFrom,
+              );
           }
 
-          gl.bindFramebuffer(isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER, null);
-          didUnbind = true;
+          if (isWebGL2(gl)) {
+            gl.invalidateFramebuffer(gl.READ_FRAMEBUFFER, [gl.COLOR_ATTACHMENT0]);
+          }
         }
 
-        if (isWebGL2(gl)) {
-          gl.bindFramebuffer(GL.READ_FRAMEBUFFER, null);
-        }
+        gl.bindFramebuffer(isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER, null);
       }
     }
 
     this.resolveColorAttachmentsChanged = false;
 
     const depthStencilResolveFrom = this.currentDepthStencilAttachment;
-    const depthStencilResolveTo = this.currentDepthStencilResolveTo;
+    if (depthStencilResolveFrom !== null) {
+      const depthStencilResolveTo = this.currentDepthStencilResolveTo;
+      let didBindRead = false;
 
-    if (depthStencilResolveFrom !== null && depthStencilResolveTo !== null) {
-      assert(
-        depthStencilResolveFrom.width === depthStencilResolveTo.width &&
-          depthStencilResolveFrom.height === depthStencilResolveTo.height,
-      );
+      if (depthStencilResolveTo !== null) {
+        assert(
+          depthStencilResolveFrom.width === depthStencilResolveTo.width &&
+            depthStencilResolveFrom.height === depthStencilResolveTo.height,
+        );
 
-      gl.disable(gl.SCISSOR_TEST);
-      gl.bindFramebuffer(
-        isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
-        this.resolveDepthStencilReadFramebuffer,
-      );
-      gl.bindFramebuffer(
-        isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
-        this.resolveDepthStencilDrawFramebuffer,
-      );
+        this.setScissorEnabled(false);
 
-      if (this.resolveDepthStencilAttachmentsChanged) {
-        this.bindFramebufferDepthStencilAttachment(
+        gl.bindFramebuffer(
           isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
-          depthStencilResolveFrom,
+          this.resolveDepthStencilReadFramebuffer,
         );
-        this.bindFramebufferDepthStencilAttachment(
+        gl.bindFramebuffer(
           isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
-          depthStencilResolveTo,
+          this.resolveDepthStencilDrawFramebuffer,
         );
+        if (this.resolveDepthStencilAttachmentsChanged) {
+          this.bindFramebufferDepthStencilAttachment(
+            isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
+            depthStencilResolveFrom,
+          );
+          this.bindFramebufferDepthStencilAttachment(
+            isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
+            depthStencilResolveTo,
+          );
+        }
+        didBindRead = true;
+
+        if (isWebGL2(gl)) {
+          gl.blitFramebuffer(
+            0,
+            0,
+            depthStencilResolveFrom.width,
+            depthStencilResolveFrom.height,
+            0,
+            0,
+            depthStencilResolveTo.width,
+            depthStencilResolveTo.height,
+            gl.DEPTH_BUFFER_BIT,
+            gl.NEAREST,
+          );
+        }
+        gl.bindFramebuffer(isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER, null);
+        didUnbindDraw = true;
       }
 
-      if (isWebGL2(gl)) {
-        gl.blitFramebuffer(
-          0,
-          0,
-          depthStencilResolveFrom.width,
-          depthStencilResolveFrom.height,
-          0,
-          0,
-          depthStencilResolveTo.width,
-          depthStencilResolveTo.height,
-          gl.DEPTH_BUFFER_BIT,
-          gl.NEAREST,
-        );
+      if (!this.currentRenderPassDescriptor!.depthStencilStore) {
+        if (!didBindRead) {
+          gl.bindFramebuffer(
+            isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
+            this.resolveDepthStencilReadFramebuffer,
+          );
+          if (this.resolveDepthStencilAttachmentsChanged)
+            this.bindFramebufferDepthStencilAttachment(
+              isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
+              depthStencilResolveFrom,
+            );
+          didBindRead = true;
+        }
+
+        if (isWebGL2(gl)) {
+          gl.invalidateFramebuffer(gl.READ_FRAMEBUFFER, [gl.DEPTH_STENCIL_ATTACHMENT]);
+        }
       }
 
-      gl.bindFramebuffer(isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER, null);
-      gl.bindFramebuffer(isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER, null);
-      didUnbind = true;
+      if (didBindRead)
+        gl.bindFramebuffer(isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER, null);
+
+      this.resolveDepthStencilAttachmentsChanged = false;
     }
 
-    this.resolveDepthStencilAttachmentsChanged = false;
-
-    if (!didUnbind) {
+    if (!didUnbindDraw) {
       // If we did not unbind from a resolve, then we need to unbind our render pass draw FBO here.
       gl.bindFramebuffer(isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER, null);
     }
   }
-
-  // private endPass(): void {
-  //   const gl = this.gl;
-
-  //   let didUnbindDraw = false;
-
-  //   for (let i = 0; i < this.currentColorAttachments.length; i++) {
-  //     const colorResolveFrom = this.currentColorAttachments[i];
-
-  //     if (colorResolveFrom !== null) {
-  //       const colorResolveTo = this.currentColorResolveTos[i];
-  //       let didBindRead = false;
-
-  //       if (colorResolveTo !== null) {
-  //         assert(
-  //           colorResolveFrom.width === colorResolveTo.width &&
-  //             colorResolveFrom.height === colorResolveTo.height,
-  //         );
-  //         assert(colorResolveFrom.pixelFormat === colorResolveTo.pixelFormat);
-
-  //         this.setScissorEnabled(false);
-  //         if (isWebGL2(gl)) {
-  //           gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.resolveColorReadFramebuffer);
-  //         }
-  //         if (this.resolveColorAttachmentsChanged) {
-  //           if (isWebGL2(gl)) {
-  //             this.bindFramebufferAttachment(
-  //               gl.READ_FRAMEBUFFER,
-  //               gl.COLOR_ATTACHMENT0,
-  //               colorResolveFrom,
-  //             );
-  //           }
-  //         }
-  //         didBindRead = true;
-
-  //         // Special case: Blitting to the on-screen.
-  //         if (colorResolveTo === this.scTexture) {
-  //           gl.bindFramebuffer(
-  //             isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
-  //             this.scPlatformFramebuffer,
-  //           );
-  //         } else {
-  //           gl.bindFramebuffer(
-  //             isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
-  //             this.resolveColorDrawFramebuffer,
-  //           );
-  //           if (this.resolveColorAttachmentsChanged)
-  //             gl.framebufferTexture2D(
-  //               isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
-  //               gl.COLOR_ATTACHMENT0,
-  //               gl.TEXTURE_2D,
-  //               colorResolveTo.gl_texture,
-  //               0,
-  //             );
-  //         }
-
-  //         if (isWebGL2(gl)) {
-  //           gl.blitFramebuffer(
-  //             0,
-  //             0,
-  //             colorResolveFrom.width,
-  //             colorResolveFrom.height,
-  //             0,
-  //             0,
-  //             colorResolveTo.width,
-  //             colorResolveTo.height,
-  //             gl.COLOR_BUFFER_BIT,
-  //             gl.LINEAR,
-  //           );
-  //           gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-  //         } else {
-  //           // render target texture
-  //           gl.bindTexture(GL.TEXTURE_2D, (colorResolveFrom.texture as Texture_GL).gl_texture);
-  //         }
-  //         didUnbindDraw = true;
-  //       }
-
-  //       if (!this.currentRenderPassDescriptor!.colorStore[i]) {
-  //         if (!didBindRead) {
-  //           gl.bindFramebuffer(
-  //             isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
-  //             this.resolveColorReadFramebuffer,
-  //           );
-  //           if (this.resolveColorAttachmentsChanged)
-  //             this.bindFramebufferAttachment(
-  //               isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
-  //               gl.COLOR_ATTACHMENT0,
-  //               colorResolveFrom,
-  //             );
-  //         }
-
-  //         if (isWebGL2(gl)) {
-  //           gl.invalidateFramebuffer(gl.READ_FRAMEBUFFER, [gl.COLOR_ATTACHMENT0]);
-  //         }
-  //       }
-
-  //       gl.bindFramebuffer(isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER, null);
-  //     }
-  //   }
-
-  //   this.resolveColorAttachmentsChanged = false;
-
-  //   const depthStencilResolveFrom = this.currentDepthStencilAttachment;
-  //   if (depthStencilResolveFrom !== null) {
-  //     const depthStencilResolveTo = this.currentDepthStencilResolveTo;
-  //     let didBindRead = false;
-
-  //     if (depthStencilResolveTo !== null) {
-  //       assert(
-  //         depthStencilResolveFrom.width === depthStencilResolveTo.width &&
-  //           depthStencilResolveFrom.height === depthStencilResolveTo.height,
-  //       );
-
-  //       this.setScissorEnabled(false);
-
-  //       gl.bindFramebuffer(
-  //         isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
-  //         this.resolveDepthStencilReadFramebuffer,
-  //       );
-  //       gl.bindFramebuffer(
-  //         isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
-  //         this.resolveDepthStencilDrawFramebuffer,
-  //       );
-  //       if (this.resolveDepthStencilAttachmentsChanged) {
-  //         this.bindFramebufferDepthStencilAttachment(
-  //           isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
-  //           depthStencilResolveFrom,
-  //         );
-  //         this.bindFramebufferDepthStencilAttachment(
-  //           isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
-  //           depthStencilResolveTo,
-  //         );
-  //       }
-  //       didBindRead = true;
-
-  //       if (isWebGL2(gl)) {
-  //         gl.blitFramebuffer(
-  //           0,
-  //           0,
-  //           depthStencilResolveFrom.width,
-  //           depthStencilResolveFrom.height,
-  //           0,
-  //           0,
-  //           depthStencilResolveTo.width,
-  //           depthStencilResolveTo.height,
-  //           gl.DEPTH_BUFFER_BIT,
-  //           gl.NEAREST,
-  //         );
-  //       }
-  //       gl.bindFramebuffer(isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER, null);
-  //       didUnbindDraw = true;
-  //     }
-
-  //     if (!this.currentRenderPassDescriptor!.depthStencilStore) {
-  //       if (!didBindRead) {
-  //         gl.bindFramebuffer(
-  //           isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
-  //           this.resolveDepthStencilReadFramebuffer,
-  //         );
-  //         if (this.resolveDepthStencilAttachmentsChanged)
-  //           this.bindFramebufferDepthStencilAttachment(
-  //             isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
-  //             depthStencilResolveFrom,
-  //           );
-  //         didBindRead = true;
-  //       }
-
-  //       if (isWebGL2(gl)) {
-  //         // gl.invalidateFramebuffer(gl.READ_FRAMEBUFFER, [gl.DEPTH_STENCIL_ATTACHMENT]);
-  //       }
-  //     }
-
-  //     if (didBindRead)
-  //       gl.bindFramebuffer(isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER, null);
-
-  //     this.resolveDepthStencilAttachmentsChanged = false;
-  //   }
-
-  //   if (!didUnbindDraw) {
-  //     // If we did not unbind from a resolve, then we need to unbind our render pass draw FBO here.
-  //     gl.bindFramebuffer(isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER, null);
-  //   }
-  // }
-
-  // private endPass(): void {
-  //   const gl = this.gl as WebGL2RenderingContext;
-
-  //   let didUnbindDraw = false;
-
-  //   for (let i = 0; i < this.currentColorAttachments.length; i++) {
-  //     const colorResolveFrom = this.currentColorAttachments[i];
-
-  //     if (colorResolveFrom !== null) {
-  //       const colorResolveTo = this.currentColorResolveTos[i];
-  //       let didBindRead = false;
-
-  //       if (colorResolveTo !== null) {
-  //         assert(
-  //           colorResolveFrom.width === colorResolveTo.width &&
-  //             colorResolveFrom.height === colorResolveTo.height,
-  //         );
-  //         assert(colorResolveFrom.pixelFormat === colorResolveTo.pixelFormat);
-
-  //         this.setScissorEnabled(false);
-  //         gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.resolveColorReadFramebuffer);
-  //         if (this.resolveColorAttachmentsChanged)
-  //           this.bindFramebufferAttachment(
-  //             gl.READ_FRAMEBUFFER,
-  //             gl.COLOR_ATTACHMENT0,
-  //             colorResolveFrom,
-  //           );
-  //         didBindRead = true;
-
-  //         // Special case: Blitting to the on-screen.
-  //         if (colorResolveTo === this.scTexture) {
-  //           gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.scPlatformFramebuffer);
-  //         } else {
-  //           gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.resolveColorDrawFramebuffer);
-  //           if (this.resolveColorAttachmentsChanged)
-  //             gl.framebufferTexture2D(
-  //               gl.DRAW_FRAMEBUFFER,
-  //               gl.COLOR_ATTACHMENT0,
-  //               gl.TEXTURE_2D,
-  //               colorResolveTo.gl_texture,
-  //               0,
-  //             );
-  //         }
-
-  //         gl.blitFramebuffer(
-  //           0,
-  //           0,
-  //           colorResolveFrom.width,
-  //           colorResolveFrom.height,
-  //           0,
-  //           0,
-  //           colorResolveTo.width,
-  //           colorResolveTo.height,
-  //           gl.COLOR_BUFFER_BIT,
-  //           gl.LINEAR,
-  //         );
-  //         gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-  //         didUnbindDraw = true;
-  //       }
-
-  //       if (!this.currentRenderPassDescriptor!.colorStore[i]) {
-  //         if (!didBindRead) {
-  //           gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.resolveColorReadFramebuffer);
-  //           if (this.resolveColorAttachmentsChanged)
-  //             this.bindFramebufferAttachment(
-  //               gl.READ_FRAMEBUFFER,
-  //               gl.COLOR_ATTACHMENT0,
-  //               colorResolveFrom,
-  //             );
-  //         }
-
-  //         gl.invalidateFramebuffer(gl.READ_FRAMEBUFFER, [gl.COLOR_ATTACHMENT0]);
-  //       }
-
-  //       gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
-  //     }
-  //   }
-
-  //   this.resolveColorAttachmentsChanged = false;
-
-  //   const depthStencilResolveFrom = this.currentDepthStencilAttachment;
-  //   if (depthStencilResolveFrom !== null) {
-  //     const depthStencilResolveTo = this.currentDepthStencilResolveTo;
-  //     let didBindRead = false;
-
-  //     if (depthStencilResolveTo !== null) {
-  //       assert(
-  //         depthStencilResolveFrom.width === depthStencilResolveTo.width &&
-  //           depthStencilResolveFrom.height === depthStencilResolveTo.height,
-  //       );
-
-  //       this.setScissorEnabled(false);
-
-  //       gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.resolveDepthStencilReadFramebuffer);
-  //       gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.resolveDepthStencilDrawFramebuffer);
-  //       if (this.resolveDepthStencilAttachmentsChanged) {
-  //         this.bindFramebufferDepthStencilAttachment(gl.READ_FRAMEBUFFER, depthStencilResolveFrom);
-  //         this.bindFramebufferDepthStencilAttachment(gl.DRAW_FRAMEBUFFER, depthStencilResolveTo);
-  //       }
-  //       didBindRead = true;
-
-  //       gl.blitFramebuffer(
-  //         0,
-  //         0,
-  //         depthStencilResolveFrom.width,
-  //         depthStencilResolveFrom.height,
-  //         0,
-  //         0,
-  //         depthStencilResolveTo.width,
-  //         depthStencilResolveTo.height,
-  //         gl.DEPTH_BUFFER_BIT,
-  //         gl.NEAREST,
-  //       );
-  //       gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-  //       didUnbindDraw = true;
-  //     }
-
-  //     if (!this.currentRenderPassDescriptor!.depthStencilStore) {
-  //       if (!didBindRead) {
-  //         gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.resolveDepthStencilReadFramebuffer);
-  //         if (this.resolveDepthStencilAttachmentsChanged)
-  //           this.bindFramebufferDepthStencilAttachment(
-  //             gl.READ_FRAMEBUFFER,
-  //             depthStencilResolveFrom,
-  //           );
-  //         didBindRead = true;
-  //       }
-
-  //       gl.invalidateFramebuffer(gl.READ_FRAMEBUFFER, [gl.DEPTH_STENCIL_ATTACHMENT]);
-  //     }
-
-  //     if (didBindRead) gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
-
-  //     this.resolveDepthStencilAttachmentsChanged = false;
-  //   }
-
-  //   if (!didUnbindDraw) {
-  //     // If we did not unbind from a resolve, then we need to unbind our render pass draw FBO here.
-  //     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-  //   }
-  // }
 
   private setScissorEnabled(v: boolean): void {
     if (this.currentScissorEnabled === v) {

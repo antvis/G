@@ -44,7 +44,13 @@ export enum JOINT_TYPE {
 
 const stridePoints = 2;
 const strideFloats = 3;
-const strideBytes = 3 * 4;
+// const strideBytes = 3 * 4;
+
+enum LineVertexAttributeBufferIndex {
+  PACKED = 0,
+  VERTEX_NUM,
+  TRAVEL,
+}
 
 enum LineVertexAttributeLocation {
   PREV = 0,
@@ -82,94 +88,95 @@ export class LineMesh extends Instanced {
     return false;
   }
 
-  updateAttribute(object: DisplayObject, name: string, value: any): void {
-    super.updateAttribute(object, name, value);
+  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any): void {
+    super.updateAttribute(objects, startIndex, name, value);
 
-    const {
-      fill,
-      stroke,
-      opacity,
-      fillOpacity,
-      strokeOpacity,
-      lineWidth,
-      anchor,
-      lineDash = [],
-      lineDashOffset = 0,
-      visibility,
-    } = object.parsedStyle as ParsedLineStyleProps;
-    if (
-      name === 'lineJoin' ||
-      name === 'lineCap' ||
-      name === 'lineDash' ||
-      (object.nodeName === Shape.CIRCLE && name === 'r') ||
-      (object.nodeName === Shape.ELLIPSE && (name === 'rx' || name === 'ry')) ||
-      (object.nodeName === Shape.RECT &&
-        (name === 'width' || name === 'height' || name === 'radius')) ||
-      (object.nodeName === Shape.LINE &&
-        (name === 'x1' || name === 'y1' || name === 'x2' || name === 'y2')) ||
-      (object.nodeName === Shape.POLYLINE && name === 'points') ||
-      (object.nodeName === Shape.POLYGON && name === 'points') ||
-      (object.nodeName === Shape.PATH && name === 'path')
-    ) {
-      // need re-calc geometry
-      this.material.geometryDirty = true;
-      this.material.programDirty = true;
-    } else if (name === 'stroke') {
-      let strokeColor: Tuple4Number = [0, 0, 0, 0];
-      if (stroke?.type === PARSED_COLOR_TYPE.Constant) {
-        strokeColor = stroke.value;
+    objects.forEach((object) => {
+      const {
+        stroke,
+        opacity,
+        fillOpacity,
+        strokeOpacity,
+        lineWidth,
+        anchor,
+        lineDash = [],
+        lineDashOffset = 0,
+        visibility,
+      } = object.parsedStyle as ParsedLineStyleProps;
+      if (
+        name === 'lineJoin' ||
+        name === 'lineCap' ||
+        name === 'lineDash' ||
+        (object.nodeName === Shape.CIRCLE && name === 'r') ||
+        (object.nodeName === Shape.ELLIPSE && (name === 'rx' || name === 'ry')) ||
+        (object.nodeName === Shape.RECT &&
+          (name === 'width' || name === 'height' || name === 'radius')) ||
+        (object.nodeName === Shape.LINE &&
+          (name === 'x1' || name === 'y1' || name === 'x2' || name === 'y2')) ||
+        (object.nodeName === Shape.POLYLINE && name === 'points') ||
+        (object.nodeName === Shape.POLYGON && name === 'points') ||
+        (object.nodeName === Shape.PATH && name === 'path')
+      ) {
+        // need re-calc geometry
+        this.material.geometryDirty = true;
+        this.material.programDirty = true;
+      } else if (name === 'stroke') {
+        let strokeColor: Tuple4Number = [0, 0, 0, 0];
+        if (stroke?.type === PARSED_COLOR_TYPE.Constant) {
+          strokeColor = stroke.value;
+        }
+        this.material.setUniforms({
+          [Uniform.STROKE_COLOR]: strokeColor,
+        });
+      } else if (name === 'opacity') {
+        this.material.setUniforms({
+          [Uniform.OPACITY]: opacity,
+        });
+      } else if (name === 'fillOpacity') {
+        this.material.setUniforms({
+          [Uniform.FILL_OPACITY]: fillOpacity,
+        });
+      } else if (name === 'strokeOpacity') {
+        this.material.setUniforms({
+          [Uniform.STROKE_OPACITY]: strokeOpacity,
+        });
+      } else if (name === 'lineWidth') {
+        this.material.setUniforms({
+          [Uniform.STROKE_WIDTH]: lineWidth.value,
+        });
+      } else if (name === 'anchor' || name === 'modelMatrix') {
+        let translateX = 0;
+        let translateY = 0;
+        const contentBounds = object.getGeometryBounds();
+        if (contentBounds) {
+          const { halfExtents } = contentBounds;
+          translateX = -halfExtents[0] * anchor[0] * 2;
+          translateY = -halfExtents[1] * anchor[1] * 2;
+        }
+        const m = mat4.create();
+        mat4.mul(
+          m,
+          object.getWorldTransform(), // apply anchor
+          mat4.fromTranslation(m, vec3.fromValues(translateX, translateY, 0)),
+        );
+        this.material.setUniforms({
+          [Uniform.MODEL_MATRIX]: m,
+        });
+      } else if (name === 'visibility') {
+        this.material.setUniforms({
+          [Uniform.VISIBLE]: visibility === 'visible' ? 1 : 0,
+        });
+      } else if (name === 'lineDash') {
+        this.material.setUniforms({
+          [Uniform.DASH]: lineDash[0] || 0,
+          [Uniform.GAP]: lineDash[1] || 0,
+        });
+      } else if (name === 'lineDashOffset') {
+        this.material.setUniforms({
+          [Uniform.DASH_OFFSET]: lineDashOffset,
+        });
       }
-      this.material.setUniforms({
-        [Uniform.STROKE_COLOR]: strokeColor,
-      });
-    } else if (name === 'opacity') {
-      this.material.setUniforms({
-        [Uniform.OPACITY]: opacity,
-      });
-    } else if (name === 'fillOpacity') {
-      this.material.setUniforms({
-        [Uniform.FILL_OPACITY]: fillOpacity,
-      });
-    } else if (name === 'strokeOpacity') {
-      this.material.setUniforms({
-        [Uniform.STROKE_OPACITY]: strokeOpacity,
-      });
-    } else if (name === 'lineWidth') {
-      this.material.setUniforms({
-        [Uniform.STROKE_WIDTH]: lineWidth.value,
-      });
-    } else if (name === 'anchor' || name === 'modelMatrix') {
-      let translateX = 0;
-      let translateY = 0;
-      const contentBounds = object.getGeometryBounds();
-      if (contentBounds) {
-        const { halfExtents } = contentBounds;
-        translateX = -halfExtents[0] * anchor[0] * 2;
-        translateY = -halfExtents[1] * anchor[1] * 2;
-      }
-      const m = mat4.create();
-      mat4.mul(
-        m,
-        object.getWorldTransform(), // apply anchor
-        mat4.fromTranslation(m, vec3.fromValues(translateX, translateY, 0)),
-      );
-      this.material.setUniforms({
-        [Uniform.MODEL_MATRIX]: m,
-      });
-    } else if (name === 'visibility') {
-      this.material.setUniforms({
-        [Uniform.VISIBLE]: visibility === 'visible' ? 1 : 0,
-      });
-    } else if (name === 'lineDash') {
-      this.material.setUniforms({
-        [Uniform.DASH]: lineDash[0] || 0,
-        [Uniform.GAP]: lineDash[1] || 0,
-      });
-    } else if (name === 'lineDashOffset') {
-      this.material.setUniforms({
-        [Uniform.DASH_OFFSET]: lineDashOffset,
-      });
-    }
+    });
   }
 
   changeRenderOrder(object: DisplayObject, renderOrder: number) {
@@ -258,7 +265,7 @@ export class LineMesh extends Instanced {
     let { pointsBuffer, travelBuffer, instancedCount } = updateBuffer(instance);
 
     this.geometry.setVertexBuffer({
-      bufferIndex: 0,
+      bufferIndex: LineVertexAttributeBufferIndex.PACKED,
       byteStride: 4 * (3 + 3 + 3 + 3),
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
@@ -301,7 +308,7 @@ export class LineMesh extends Instanced {
       data: new Float32Array(pointsBuffer),
     });
     this.geometry.setVertexBuffer({
-      bufferIndex: 1,
+      bufferIndex: LineVertexAttributeBufferIndex.VERTEX_NUM,
       byteStride: 4 * 1,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
@@ -316,7 +323,7 @@ export class LineMesh extends Instanced {
       data: new Float32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]),
     });
     this.geometry.setVertexBuffer({
-      bufferIndex: 2,
+      bufferIndex: LineVertexAttributeBufferIndex.TRAVEL,
       byteStride: 4 * 1,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [

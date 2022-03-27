@@ -7,6 +7,10 @@ import * as lil from 'lil-gui';
 import * as d3 from 'd3';
 import Stats from 'stats.js';
 
+/**
+ * ported from https://observablehq.com/@d3/force-directed-graph
+ */
+
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();

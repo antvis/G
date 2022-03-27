@@ -191,7 +191,9 @@ export function samplerDescriptorEquals(
     a.magFilter === b.magFilter &&
     a.mipFilter === b.mipFilter &&
     a.minLOD === b.minLOD &&
-    a.maxLOD === b.maxLOD
+    a.maxLOD === b.maxLOD &&
+    a.maxAnisotropy === b.maxAnisotropy &&
+    a.compareMode === b.compareMode
   );
 }
 

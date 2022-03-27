@@ -13,7 +13,7 @@ import Stats from 'stats.js';
 import * as lil from 'lil-gui';
 
 // create a renderer
-const renderer = new Renderer();
+const renderer = new Renderer({ targets: ['webgl2'] });
 renderer.registerPlugin(new Plugin3D());
 
 // create a canvas

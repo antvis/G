@@ -87,11 +87,14 @@ export const containerModule = Module((register) => {
   register({
     token: RendererFactory,
     useFactory: (context) => {
+      const cache = {};
       return (tagName: Shape) => {
-        if (context.container.isBoundNamed(ShapeRenderer, tagName)) {
-          return context.container.getNamed(ShapeRenderer, tagName) || null;
+        if (!cache[tagName]) {
+          if (context.container.isBoundNamed(ShapeRenderer, tagName)) {
+            cache[tagName] = context.container.getNamed(ShapeRenderer, tagName);
+          }
         }
-        return null;
+        return cache[tagName] || null;
       };
     },
   });
@@ -140,5 +143,3 @@ export class Plugin implements RendererPlugin {
     return this.container.get(RenderGraphPlugin).loadTexture(src, descriptor, successCallback);
   }
 }
-
-export * from './platform';

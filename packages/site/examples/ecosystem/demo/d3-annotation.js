@@ -239,9 +239,11 @@ const drawBars = async () => {
   });
 
   canvas.document.querySelectorAll('.annotation-note-title').forEach((title) => {
-    console.log(title);
     title.style['font-weight'] = 'bold';
   });
+
+  const handle = canvas.document.querySelector('.annotation.xythreshold');
+  handle.style.cursor = 'move';
   // console.log(t, svg.selectAll('.annotation path'));
 };
 

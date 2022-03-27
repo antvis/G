@@ -5,7 +5,7 @@ import { RenderHelper } from '../render/RenderHelper';
 import { TexturePool } from '../TexturePool';
 import { Instanced } from '../meshes/Instanced';
 import { LightPool } from '../LightPool';
-import { MeshFactory } from '../tokens';
+// import { MeshFactory } from '../tokens';
 import { BatchManager } from './BatchManager';
 import { RenderInst } from '../render/RenderInst';
 
@@ -37,8 +37,8 @@ export abstract class Batch {
   @inject(BatchManager)
   protected batchManager: BatchManager;
 
-  @inject(MeshFactory)
-  protected meshFactory: (shape: string) => Instanced;
+  // @inject(MeshFactory)
+  // protected meshFactory: (shape: string) => Instanced;
 
   device: Device;
 

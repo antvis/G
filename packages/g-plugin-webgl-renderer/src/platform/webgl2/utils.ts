@@ -190,16 +190,24 @@ export function translateWrapMode(wrapMode: WrapMode): GLenum {
 }
 
 export function translateFilterMode(filter: TexFilterMode, mipFilter: MipFilterMode): GLenum {
-  if (mipFilter === MipFilterMode.Linear && filter === TexFilterMode.Bilinear)
+  if (mipFilter === MipFilterMode.Linear && filter === TexFilterMode.Bilinear) {
     return GL.LINEAR_MIPMAP_LINEAR;
-  if (mipFilter === MipFilterMode.Linear && filter === TexFilterMode.Point)
+  }
+  if (mipFilter === MipFilterMode.Linear && filter === TexFilterMode.Point) {
     return GL.NEAREST_MIPMAP_LINEAR;
-  if (mipFilter === MipFilterMode.Nearest && filter === TexFilterMode.Bilinear)
+  }
+  if (mipFilter === MipFilterMode.Nearest && filter === TexFilterMode.Bilinear) {
     return GL.LINEAR_MIPMAP_NEAREST;
-  if (mipFilter === MipFilterMode.Nearest && filter === TexFilterMode.Point)
+  }
+  if (mipFilter === MipFilterMode.Nearest && filter === TexFilterMode.Point) {
     return GL.NEAREST_MIPMAP_NEAREST;
-  if (mipFilter === MipFilterMode.NoMip && filter === TexFilterMode.Bilinear) return GL.LINEAR;
-  if (mipFilter === MipFilterMode.NoMip && filter === TexFilterMode.Point) return GL.NEAREST;
+  }
+  if (mipFilter === MipFilterMode.NoMip && filter === TexFilterMode.Bilinear) {
+    return GL.LINEAR;
+  }
+  if (mipFilter === MipFilterMode.NoMip && filter === TexFilterMode.Point) {
+    return GL.NEAREST;
+  }
   throw new Error('Unknown texture filter mode');
 }
 
@@ -256,4 +264,10 @@ export function translateTextureDimension(dimension: TextureDimension): GLenum {
   else if (dimension === TextureDimension.Cube) return GL.TEXTURE_CUBE_MAP;
   else if (dimension === TextureDimension.n3D) return GL.TEXTURE_3D;
   else throw 'whoops';
+}
+
+export function isBlockCompressSized(w: number, h: number, bw: number, bh: number): boolean {
+  if (w % bw !== 0) return false;
+  if (h % bh !== 0) return false;
+  return true;
 }

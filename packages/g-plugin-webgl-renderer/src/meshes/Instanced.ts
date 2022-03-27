@@ -48,7 +48,13 @@ let counter = 1;
 const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
 
 export enum VertexAttributeBufferIndex {
-  INSTANCED = 0,
+  MODEL_MATRIX = 0,
+  FILL,
+  STROKE,
+  PACKED_STYLE1,
+  PACKED_STYLE2,
+  PICKING_COLOR,
+  ANCHOR,
   MAX,
 }
 
@@ -156,22 +162,19 @@ export abstract class Instanced {
     const modelMatrix = mat4.create();
     const modelViewMatrix = mat4.create();
     // const normalMatrix = mat3.create();
-    const packed = [];
+    const packedModelMatrix: number[] = [];
+    const packedFill: number[] = [];
+    const packedStroke: number[] = [];
+    const packedStyle1: number[] = [];
+    const packedStyle2: number[] = [];
+    const packedPicking: number[] = [];
+    const packedAnchor: number[] = [];
 
     // const useNormal = this.material.defines.NORMAL;
 
     objects.forEach((object) => {
-      const {
-        fill,
-        stroke,
-        opacity,
-        fillOpacity,
-        strokeOpacity,
-        lineWidth,
-        lineDash,
-        anchor,
-        visibility,
-      } = object.parsedStyle as ParsedBaseStyleProps;
+      const { fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, anchor, visibility } =
+        object.parsedStyle as ParsedBaseStyleProps;
       let fillColor: Tuple4Number = [0, 0, 0, 0];
       if (fill?.type === PARSED_COLOR_TYPE.Constant) {
         fillColor = fill.value;
@@ -195,23 +198,13 @@ export abstract class Instanced {
       // @ts-ignore
       const encodedPickingColor = object.renderable3D?.encodedPickingColor || [0, 0, 0];
 
-      packed.push(
-        ...modelMatrix,
-        ...fillColor,
-        ...strokeColor,
-        opacity,
-        fillOpacity,
-        strokeOpacity,
-        lineWidth.value,
-        visibility === 'visible' ? 1 : 0,
-        0,
-        0,
-        0,
-        ...encodedPickingColor,
-        object.sortable.renderOrder * RENDER_ORDER_SCALE,
-        anchor[0],
-        anchor[1],
-      );
+      packedModelMatrix.push(...modelMatrix);
+      packedFill.push(...fillColor);
+      packedStroke.push(...strokeColor);
+      packedStyle1.push(opacity, fillOpacity, strokeOpacity, lineWidth.value);
+      packedStyle2.push(visibility === 'visible' ? 1 : 0, 0, 0, 0);
+      packedPicking.push(...encodedPickingColor, object.sortable.renderOrder * RENDER_ORDER_SCALE);
+      packedAnchor.push(anchor[0], anchor[1]);
 
       // if (useNormal) {
       //   // should not calc normal matrix in shader, mat3.invert is not cheap
@@ -253,8 +246,8 @@ export abstract class Instanced {
     this.geometry.instancedCount = objects.length;
 
     this.geometry.setVertexBuffer({
-      bufferIndex: VertexAttributeBufferIndex.INSTANCED,
-      byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4 + 4 + 2),
+      bufferIndex: VertexAttributeBufferIndex.MODEL_MATRIX,
+      byteStride: 4 * (4 * 4),
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
@@ -281,44 +274,98 @@ export abstract class Instanced {
           location: VertexAttributeLocation.MODEL_MATRIX3,
           divisor: 1,
         },
+      ],
+      data: new Float32Array(packedModelMatrix),
+    });
+
+    this.geometry.setVertexBuffer({
+      bufferIndex: VertexAttributeBufferIndex.FILL,
+      byteStride: 4 * 4,
+      frequency: VertexBufferFrequency.PerInstance,
+      attributes: [
         {
           format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 16,
+          bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.COLOR,
           divisor: 1,
         },
+      ],
+      data: new Float32Array(packedFill),
+    });
+
+    this.geometry.setVertexBuffer({
+      bufferIndex: VertexAttributeBufferIndex.STROKE,
+      byteStride: 4 * 4,
+      frequency: VertexBufferFrequency.PerInstance,
+      attributes: [
         {
           format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 20,
+          bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.STROKE_COLOR,
           divisor: 1,
         },
+      ],
+      data: new Float32Array(packedStroke),
+    });
+
+    this.geometry.setVertexBuffer({
+      bufferIndex: VertexAttributeBufferIndex.PACKED_STYLE1,
+      byteStride: 4 * 4,
+      frequency: VertexBufferFrequency.PerInstance,
+      attributes: [
         {
           format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 24,
+          bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.PACKED_STYLE1,
           divisor: 1,
         },
+      ],
+      data: new Float32Array(packedStyle1),
+    });
+
+    this.geometry.setVertexBuffer({
+      bufferIndex: VertexAttributeBufferIndex.PACKED_STYLE2,
+      byteStride: 4 * 4,
+      frequency: VertexBufferFrequency.PerInstance,
+      attributes: [
         {
           format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 28,
+          bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.PACKED_STYLE2,
           divisor: 1,
         },
+      ],
+      data: new Float32Array(packedStyle2),
+    });
+
+    this.geometry.setVertexBuffer({
+      bufferIndex: VertexAttributeBufferIndex.PICKING_COLOR,
+      byteStride: 4 * 4,
+      frequency: VertexBufferFrequency.PerInstance,
+      attributes: [
         {
           format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 32,
+          bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.PICKING_COLOR,
           divisor: 1,
         },
+      ],
+      data: new Float32Array(packedPicking),
+    });
+
+    this.geometry.setVertexBuffer({
+      bufferIndex: VertexAttributeBufferIndex.ANCHOR,
+      byteStride: 4 * 2,
+      frequency: VertexBufferFrequency.PerInstance,
+      attributes: [
         {
           format: Format.F32_RG,
-          bufferByteOffset: 4 * 36,
+          bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.ANCHOR,
           divisor: 1,
         },
       ],
-      data: new Float32Array(packed),
+      data: new Float32Array(packedAnchor),
     });
   }
 
@@ -337,7 +384,6 @@ export abstract class Instanced {
     const fog = this.lightPool.getFog();
     const useFog = !!fog;
     const useLight = !!lights.length;
-    const useWireframe = this.material.defines.USE_WIREFRAME;
 
     // toggle fog, need re-compile material
     if (useFog !== this.material.defines.USE_FOG || useLight !== this.material.defines.USE_LIGHT) {
@@ -507,85 +553,107 @@ export abstract class Instanced {
     renderInst.sortKey = makeSortKeyOpaque(RendererLayer.OPAQUE, objects[0].sortable.renderOrder);
   }
 
-  protected updateBatchedAttribute(object: DisplayObject, index: number, name: string, value: any) {
+  /**
+   * update a continuous GPU buffer
+   */
+  protected updateBatchedAttribute(
+    objects: DisplayObject[],
+    startIndex: number,
+    name: string,
+    value: any,
+  ) {
     const stylePacked1 = ['opacity', 'fillOpacity', 'strokeOpacity', 'lineWidth'];
 
     if (name === 'fill') {
-      const { fill } = object.parsedStyle;
+      const { fill } = this.instance.parsedStyle;
       const i = this.textureMappings.findIndex((m) => m.name === FILL_TEXTURE_MAPPING);
-      let fillColor: Tuple4Number = [0, 0, 0, 0];
       if (fill?.type === PARSED_COLOR_TYPE.Constant) {
-        fillColor = fill.value;
+        const fillColors: number[] = [];
+        objects.forEach((object) => fillColors.push(...object.parsedStyle.fill.value));
 
         this.geometry.updateVertexBuffer(
-          VertexAttributeBufferIndex.INSTANCED,
+          VertexAttributeBufferIndex.FILL,
           VertexAttributeLocation.COLOR,
-          index,
-          new Uint8Array(new Float32Array([...fillColor]).buffer),
+          startIndex,
+          new Uint8Array(new Float32Array(fillColors).buffer),
         );
         if (i >= 0) {
           // remove original fill texture mapping
           this.textureMappings.splice(i, -1);
         }
       } else {
-        const fillTextureMapping = this.createFillGradientTextureMapping([object]);
+        const fillTextureMapping = this.createFillGradientTextureMapping([this.instance]);
         if (i >= 0) {
           this.textureMappings.splice(i, 1, fillTextureMapping);
         }
         this.material.textureDirty = true;
       }
     } else if (name === 'stroke') {
-      const { stroke } = object.parsedStyle;
-      let strokeColor: Tuple4Number = [0, 0, 0, 0];
-      if (stroke?.type === PARSED_COLOR_TYPE.Constant) {
-        strokeColor = stroke.value;
-      }
+      const strokeColors: number[] = [];
+      objects.forEach((object) => strokeColors.push(...object.parsedStyle.stroke.value));
 
       this.geometry.updateVertexBuffer(
-        VertexAttributeBufferIndex.INSTANCED,
+        VertexAttributeBufferIndex.STROKE,
         VertexAttributeLocation.STROKE_COLOR,
-        index,
-        new Uint8Array(new Float32Array([...strokeColor]).buffer),
+        startIndex,
+        new Uint8Array(new Float32Array(strokeColors).buffer),
       );
     } else if (stylePacked1.indexOf(name) > -1) {
-      const { opacity, fillOpacity, strokeOpacity, lineWidth } =
-        object.parsedStyle as ParsedBaseStyleProps;
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const { opacity, fillOpacity, strokeOpacity, lineWidth } =
+          object.parsedStyle as ParsedBaseStyleProps;
+        packed.push(opacity, fillOpacity, strokeOpacity, lineWidth.value);
+      });
+
       this.geometry.updateVertexBuffer(
-        VertexAttributeBufferIndex.INSTANCED,
+        VertexAttributeBufferIndex.PACKED_STYLE1,
         VertexAttributeLocation.PACKED_STYLE1,
-        index,
-        new Uint8Array(
-          new Float32Array([opacity, fillOpacity, strokeOpacity, lineWidth.value]).buffer,
-        ),
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
       );
     } else if (name === 'modelMatrix') {
-      const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
+        packed.push(...modelMatrix);
+      });
+
       this.geometry.updateVertexBuffer(
-        VertexAttributeBufferIndex.INSTANCED,
+        VertexAttributeBufferIndex.MODEL_MATRIX,
         VertexAttributeLocation.MODEL_MATRIX0,
-        index,
-        new Uint8Array(new Float32Array(modelMatrix).buffer),
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
       );
     } else if (name === 'anchor') {
-      const { anchor } = object.parsedStyle;
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const { anchor } = object.parsedStyle;
+        packed.push(anchor[0], anchor[1]);
+      });
+
       this.geometry.updateVertexBuffer(
-        VertexAttributeBufferIndex.INSTANCED,
+        VertexAttributeBufferIndex.ANCHOR,
         VertexAttributeLocation.ANCHOR,
-        index,
-        new Uint8Array(new Float32Array([anchor[0], anchor[1]]).buffer),
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
       );
     } else if (name === 'visibility') {
-      const { visibility } = object.parsedStyle;
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const { visibility } = object.parsedStyle;
+        packed.push(visibility === 'visible' ? 1 : 0);
+      });
       this.geometry.updateVertexBuffer(
-        VertexAttributeBufferIndex.INSTANCED,
+        VertexAttributeBufferIndex.PACKED_STYLE2,
         VertexAttributeLocation.PACKED_STYLE2,
-        index,
-        new Uint8Array(new Float32Array([visibility === 'visible' ? 1 : 0]).buffer),
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
       );
     }
   }
 
-  updateAttribute(object: DisplayObject, name: string, value: any): void {
+  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any): void {
     if (name === 'clipPath') {
       if (this.clipPath) {
         this.geometryDirty = true;
@@ -599,7 +667,7 @@ export abstract class Instanced {
     // @ts-ignore
     const encodedPickingColor = object.renderable3D?.encodedPickingColor || [0, 0, 0];
     this.geometry.updateVertexBuffer(
-      VertexAttributeBufferIndex.INSTANCED,
+      VertexAttributeBufferIndex.PICKING_COLOR,
       VertexAttributeLocation.PICKING_COLOR,
       index,
       new Uint8Array(

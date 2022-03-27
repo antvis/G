@@ -3,10 +3,14 @@ import { DisplayObject, Image as ImageShape } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
 import vert from '../shader/image.vert';
 import frag from '../shader/image.frag';
-import { Instanced } from '../meshes/Instanced';
+import { Instanced, VertexAttributeBufferIndex } from '../meshes/Instanced';
 import { VertexAttributeLocation } from '../geometries';
 import { enumToObject } from '../utils/enum';
 
+enum ImageVertexAttributeBufferIndex {
+  SIZE = VertexAttributeBufferIndex.MAX,
+  UV,
+}
 enum ImageVertexAttributeLocation {
   SIZE = VertexAttributeLocation.MAX,
   UV,
@@ -76,20 +80,7 @@ export class ImageMesh extends Instanced {
     this.geometry.setIndexBuffer(new Uint32Array(indices));
     this.geometry.vertexCount = 6;
     this.geometry.setVertexBuffer({
-      bufferIndex: 1,
-      byteStride: 4 * 2,
-      frequency: VertexBufferFrequency.PerVertex,
-      attributes: [
-        {
-          format: Format.F32_RG,
-          bufferByteOffset: 4 * 0,
-          location: ImageVertexAttributeLocation.UV,
-        },
-      ],
-      data: new Float32Array(interleaved),
-    });
-    this.geometry.setVertexBuffer({
-      bufferIndex: 2,
+      bufferIndex: ImageVertexAttributeBufferIndex.SIZE,
       byteStride: 4 * 2,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
@@ -101,29 +92,47 @@ export class ImageMesh extends Instanced {
       ],
       data: new Float32Array(instanced),
     });
+    this.geometry.setVertexBuffer({
+      bufferIndex: ImageVertexAttributeBufferIndex.UV,
+      byteStride: 4 * 2,
+      frequency: VertexBufferFrequency.PerVertex,
+      attributes: [
+        {
+          format: Format.F32_RG,
+          bufferByteOffset: 4 * 0,
+          location: ImageVertexAttributeLocation.UV,
+        },
+      ],
+      data: new Float32Array(interleaved),
+    });
   }
 
-  updateAttribute(object: DisplayObject, name: string, value: any) {
-    super.updateAttribute(object, name, value);
+  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any) {
+    super.updateAttribute(objects, startIndex, name, value);
 
-    const index = this.objects.indexOf(object);
-    this.updateBatchedAttribute(object, index, name, value);
-
-    const image = object as ImageShape;
-    const { widthInPixels, heightInPixels } = image.parsedStyle;
+    this.updateBatchedAttribute(objects, startIndex, name, value);
 
     if (name === 'width' || name === 'height') {
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const image = object as ImageShape;
+        const { widthInPixels, heightInPixels } = image.parsedStyle;
+        packed.push(widthInPixels, heightInPixels);
+      });
+
       this.geometry.updateVertexBuffer(
-        2,
+        ImageVertexAttributeBufferIndex.SIZE,
         ImageVertexAttributeLocation.SIZE,
-        index,
-        new Uint8Array(new Float32Array([widthInPixels, heightInPixels]).buffer),
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
       );
     } else if (name === 'img') {
       const map = this.texturePool.getOrCreateTexture(this.device, value, undefined, () => {
         // need re-render
-        const renderable = object.renderable;
-        renderable.dirty = true;
+        objects.forEach((object) => {
+          const renderable = object.renderable;
+          renderable.dirty = true;
+        });
         this.renderingService.dirtify();
       });
       this.material.setUniforms({

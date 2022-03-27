@@ -1,7 +1,8 @@
 import { inject, singleton } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
 import { CullingStrategyContribution } from './CullingPlugin';
-import type { AABB, Plane } from '../shapes';
+import { AABB } from '../shapes';
+import type { Plane } from '../shapes';
 import { Mask } from '../shapes';
 import { DefaultCamera, Camera } from '../camera/Camera';
 import type { DisplayObject } from '../display-objects/DisplayObject';
@@ -28,6 +29,8 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
   private camera: Camera;
 
   isVisible(object: DisplayObject) {
+    // return true;
+
     const cullable = object.cullable;
     if (!cullable.enable) {
       return true;
@@ -35,7 +38,7 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
 
     const renderBounds = object.getRenderBounds();
 
-    if (!renderBounds) {
+    if (AABB.isEmpty(renderBounds)) {
       return false;
     }
 
