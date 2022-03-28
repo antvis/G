@@ -1,5 +1,5 @@
 import { parseColor, Tuple4Number } from '@antv/g';
-import { Device, Texture, VertexAttributeLocation } from '@antv/g-plugin-webgl-renderer';
+import { Device, Texture } from '@antv/g-plugin-webgl-renderer';
 import { MeshBasicMaterial, IMeshBasicMaterial } from './MeshBasicMaterial';
 import vert from '../shaders/material.phong.vert';
 import frag from '../shaders/material.phong.frag';
@@ -144,7 +144,6 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
 
     this.defines = {
       ...this.defines,
-      NORMAL: VertexAttributeLocation.MAX + 1,
     };
   }
 }

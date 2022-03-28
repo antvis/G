@@ -7,7 +7,6 @@ layout(location = STROKE_COLOR) in vec4 a_StrokeColor;
 layout(location = PACKED_STYLE1) in vec4 a_StylePacked1;
 layout(location = PACKED_STYLE2) in vec4 a_StylePacked2;
 layout(location = PICKING_COLOR) in vec4 a_PickingColor;
-layout(location = ANCHOR) in vec2 a_Anchor;
 
 out vec4 v_PickingResult;
 out vec4 v_Color;

@@ -8,13 +8,6 @@ import {
 } from '@antv/g-plugin-webgl-renderer';
 import { mat4, vec3, vec4 } from 'gl-matrix';
 
-export enum ProceduralGeometryAttributeBufferIndex {
-  POSITION = VertexAttributeBufferIndex.MAX,
-  NORMAL,
-  UV,
-  MAX,
-}
-
 export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<GeometryProps> {
   /**
    * flip Y, since +Y is down in G's world coords
@@ -46,8 +39,8 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
     }
 
     this.updateVertexBuffer(
-      ProceduralGeometryAttributeBufferIndex.POSITION,
-      VertexAttributeLocation.MAX,
+      VertexAttributeBufferIndex.POSITION,
+      VertexAttributeLocation.POSITION,
       0,
       new Uint8Array(positions.buffer),
     );
@@ -70,8 +63,8 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
     }
 
     this.updateVertexBuffer(
-      ProceduralGeometryAttributeBufferIndex.NORMAL,
-      VertexAttributeLocation.MAX + 1,
+      VertexAttributeBufferIndex.NORMAL,
+      VertexAttributeLocation.NORMAL,
       0,
       new Uint8Array(normals.buffer),
     );
@@ -87,14 +80,14 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
   }
 
   applyMat4(mat: mat4) {
-    this.applyMa4Position(mat, this.vertices[ProceduralGeometryAttributeBufferIndex.POSITION]);
-    this.applyMa4Normal(mat, this.vertices[ProceduralGeometryAttributeBufferIndex.NORMAL]);
+    this.applyMa4Position(mat, this.vertices[VertexAttributeBufferIndex.POSITION]);
+    this.applyMa4Normal(mat, this.vertices[VertexAttributeBufferIndex.NORMAL]);
     // transform tangent
   }
 
   computeBoundingBox(): AABB {
     // 根据 ProceduralGeometryAttributeLocation.POSITION 计算
-    const buffer = this.getVertexBuffer(ProceduralGeometryAttributeBufferIndex.POSITION);
+    const buffer = this.getVertexBuffer(VertexAttributeBufferIndex.POSITION);
 
     return new AABB();
   }
@@ -105,40 +98,40 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
     this.setIndexBuffer(new Uint32Array(indices));
     this.vertexCount = indices.length;
     this.setVertexBuffer({
-      bufferIndex: ProceduralGeometryAttributeBufferIndex.POSITION,
+      bufferIndex: VertexAttributeBufferIndex.POSITION,
       byteStride: 4 * 3,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
         {
           format: Format.F32_RGB,
           bufferByteOffset: 4 * 0,
-          location: VertexAttributeLocation.MAX,
+          location: VertexAttributeLocation.POSITION,
         },
       ],
       data: Float32Array.from(positions),
     });
     this.setVertexBuffer({
-      bufferIndex: ProceduralGeometryAttributeBufferIndex.NORMAL,
+      bufferIndex: VertexAttributeBufferIndex.NORMAL,
       byteStride: 4 * 3,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
         {
           format: Format.F32_RGB,
           bufferByteOffset: 4 * 0,
-          location: VertexAttributeLocation.MAX + 1,
+          location: VertexAttributeLocation.NORMAL,
         },
       ],
       data: Float32Array.from(normals),
     });
     this.setVertexBuffer({
-      bufferIndex: ProceduralGeometryAttributeBufferIndex.UV,
+      bufferIndex: VertexAttributeBufferIndex.UV,
       byteStride: 4 * 2,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: VertexAttributeLocation.MAX + 2,
+          location: VertexAttributeLocation.UV,
         },
       ],
       data: Float32Array.from(uvs),

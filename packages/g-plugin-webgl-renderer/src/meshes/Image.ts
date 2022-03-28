@@ -3,18 +3,11 @@ import { DisplayObject, Image as ImageShape } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
 import vert from '../shader/image.vert';
 import frag from '../shader/image.frag';
-import { Instanced, VertexAttributeBufferIndex } from '../meshes/Instanced';
-import { VertexAttributeLocation } from '../geometries';
-import { enumToObject } from '../utils/enum';
-
-enum ImageVertexAttributeBufferIndex {
-  SIZE = VertexAttributeBufferIndex.MAX,
-  UV,
-}
-enum ImageVertexAttributeLocation {
-  SIZE = VertexAttributeLocation.MAX,
-  UV,
-}
+import {
+  Instanced,
+  VertexAttributeBufferIndex,
+  VertexAttributeLocation,
+} from '../meshes/Instanced';
 
 @injectable()
 export class ImageMesh extends Instanced {
@@ -40,7 +33,6 @@ export class ImageMesh extends Instanced {
       ...this.material.defines,
       USE_UV: true,
       USE_MAP: true,
-      ...enumToObject(ImageVertexAttributeLocation),
     };
 
     this.material.vertexShader = vert;
@@ -80,27 +72,27 @@ export class ImageMesh extends Instanced {
     this.geometry.setIndexBuffer(new Uint32Array(indices));
     this.geometry.vertexCount = 6;
     this.geometry.setVertexBuffer({
-      bufferIndex: ImageVertexAttributeBufferIndex.SIZE,
+      bufferIndex: VertexAttributeBufferIndex.POSITION,
       byteStride: 4 * 2,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: ImageVertexAttributeLocation.SIZE,
+          location: VertexAttributeLocation.POSITION,
         },
       ],
       data: new Float32Array(instanced),
     });
     this.geometry.setVertexBuffer({
-      bufferIndex: ImageVertexAttributeBufferIndex.UV,
+      bufferIndex: VertexAttributeBufferIndex.UV,
       byteStride: 4 * 2,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: ImageVertexAttributeLocation.UV,
+          location: VertexAttributeLocation.UV,
         },
       ],
       data: new Float32Array(interleaved),
@@ -121,8 +113,8 @@ export class ImageMesh extends Instanced {
       });
 
       this.geometry.updateVertexBuffer(
-        ImageVertexAttributeBufferIndex.SIZE,
-        ImageVertexAttributeLocation.SIZE,
+        VertexAttributeBufferIndex.POSITION,
+        VertexAttributeLocation.POSITION,
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
       );

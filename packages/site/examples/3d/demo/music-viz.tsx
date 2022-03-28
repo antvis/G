@@ -13,7 +13,7 @@ import {
   FogType,
   Plugin as Plugin3D,
   CullMode,
-  ProceduralGeometryAttributeLocation,
+  VertexAttributeBufferIndex,
   VertexAttributeLocation,
 } from '@antv/g-plugin-3d';
 import { Plugin as PluginControl } from '@antv/g-plugin-control';
@@ -165,7 +165,7 @@ const App = function MusicViz() {
       });
 
       const makeRoughGround = (geometry, distortionFr) => {
-        const bufferIndex = ProceduralGeometryAttributeLocation.POSITION;
+        const bufferIndex = VertexAttributeBufferIndex.POSITION;
         const positions = geometry.vertices[bufferIndex];
 
         for (let i = 0; i < positions.length; i += 3) {
@@ -181,14 +181,14 @@ const App = function MusicViz() {
 
         geometry.updateVertexBuffer(
           bufferIndex,
-          VertexAttributeLocation.MAX,
+          VertexAttributeLocation.POSITION,
           0,
           new Uint8Array(positions.buffer),
         );
       };
 
       const makeRoughBall = (geometry, bassFr, treFr) => {
-        const bufferIndex = ProceduralGeometryAttributeLocation.POSITION;
+        const bufferIndex = VertexAttributeBufferIndex.POSITION;
         const positions = geometry.vertices[bufferIndex];
 
         for (let i = 0; i < positions.length; i += 3) {
@@ -221,7 +221,7 @@ const App = function MusicViz() {
 
         geometry.updateVertexBuffer(
           bufferIndex,
-          VertexAttributeLocation.MAX,
+          VertexAttributeLocation.POSITION,
           0,
           new Uint8Array(positions.buffer),
         );

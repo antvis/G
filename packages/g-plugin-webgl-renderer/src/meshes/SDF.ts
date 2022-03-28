@@ -10,21 +10,17 @@ import { injectable } from 'mana-syringe';
 import { Format, VertexBufferFrequency } from '../platform';
 import vert from '../shader/sdf.vert';
 import frag from '../shader/sdf.frag';
-import { Instanced, VertexAttributeBufferIndex } from './Instanced';
-import { VertexAttributeLocation } from '../geometries';
+import { Instanced, VertexAttributeBufferIndex, VertexAttributeLocation } from './Instanced';
 import { enumToObject } from '../utils/enum';
 
 enum SDFVertexAttributeBufferIndex {
-  EXTRUDE_UV = VertexAttributeBufferIndex.MAX,
+  PACKED_STYLE3 = VertexAttributeBufferIndex.MAX,
   SIZE,
-  PACKED_STYLE3,
 }
 
 enum SDFVertexAttributeLocation {
-  EXTRUDE = VertexAttributeLocation.MAX,
-  PACKED_STYLE3,
+  PACKED_STYLE3 = VertexAttributeLocation.MAX,
   SIZE,
-  UV,
 }
 
 const SDF_Shape: string[] = [Shape.CIRCLE, Shape.ELLIPSE];
@@ -83,19 +79,19 @@ export class SDFMesh extends Instanced {
     this.geometry.setIndexBuffer(new Uint32Array(indices));
     this.geometry.vertexCount = 6;
     this.geometry.setVertexBuffer({
-      bufferIndex: SDFVertexAttributeBufferIndex.EXTRUDE_UV,
+      bufferIndex: VertexAttributeBufferIndex.POSITION,
       byteStride: 4 * 4,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: SDFVertexAttributeLocation.EXTRUDE,
+          location: VertexAttributeLocation.POSITION,
         },
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 2,
-          location: SDFVertexAttributeLocation.UV,
+          location: VertexAttributeLocation.UV,
         },
       ],
       data: new Float32Array(interleaved),

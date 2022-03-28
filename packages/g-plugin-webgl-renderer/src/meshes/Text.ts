@@ -14,8 +14,7 @@ import { getGlyphQuads } from './symbol/SymbolQuad';
 import GlyphAtlas from './symbol/GlyphAtlas';
 import vert from '../shader/text.vert';
 import frag from '../shader/text.frag';
-import { VertexAttributeLocation } from '../geometries';
-import { Instanced } from './Instanced';
+import { Instanced, VertexAttributeLocation } from './Instanced';
 import { enumToObject } from '../utils/enum';
 
 enum TextVertexAttributeLocation {

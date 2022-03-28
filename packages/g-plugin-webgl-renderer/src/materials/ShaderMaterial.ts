@@ -1,4 +1,6 @@
+import { VertexAttributeLocation } from '../meshes/Instanced';
 import { Device } from '../platform';
+import { enumToObject } from '../utils/enum';
 import { Material, IMaterial } from './Material';
 
 export class ShaderMaterial extends Material {
@@ -14,6 +16,7 @@ export class ShaderMaterial extends Material {
       USE_WIREFRAME: false,
       USE_FOG: false,
       USE_LIGHT: false,
+      ...enumToObject(VertexAttributeLocation),
     };
   }
 }

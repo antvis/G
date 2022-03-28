@@ -26,6 +26,8 @@ export class Mesh<GeometryProps = any> extends DisplayObject<GeometryProps & Mes
       ...rest,
     });
 
+    this.cullable.enable = false;
+
     this.style.geometry.meshes.push(this);
     this.style.material.meshes.push(this);
   }

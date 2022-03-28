@@ -6,6 +6,7 @@ import {
   Mesh,
   VertexBufferFrequency,
   Format,
+  VertexAttributeBufferIndex,
   VertexAttributeLocation,
   Plugin as Plugin3D,
 } from '@antv/g-plugin-3d';
@@ -36,14 +37,14 @@ const canvas = new Canvas({
   // create buffer geometry
   const bufferGeometry = new BufferGeometry(device);
   bufferGeometry.setVertexBuffer({
-    bufferIndex: 1,
+    bufferIndex: VertexAttributeBufferIndex.POSITION,
     byteStride: 4 * 3,
     frequency: VertexBufferFrequency.PerVertex,
     attributes: [
       {
         format: Format.F32_RGB,
         bufferByteOffset: 4 * 0,
-        location: VertexAttributeLocation.MAX,
+        location: VertexAttributeLocation.POSITION,
       },
     ],
     // use 6 vertices
@@ -89,7 +90,7 @@ const canvas = new Canvas({
     layout(location = ${VertexAttributeLocation.MODEL_MATRIX1}) in vec4 a_ModelMatrix1;
     layout(location = ${VertexAttributeLocation.MODEL_MATRIX2}) in vec4 a_ModelMatrix2;
     layout(location = ${VertexAttributeLocation.MODEL_MATRIX3}) in vec4 a_ModelMatrix3;
-    layout(location = ${VertexAttributeLocation.MAX}) in vec3 a_Position;
+    layout(location = ${VertexAttributeLocation.POSITION}) in vec3 a_Position;
 
     void main() {
       mat4 u_ModelMatrix = mat4(a_ModelMatrix0, a_ModelMatrix1, a_ModelMatrix2, a_ModelMatrix3);

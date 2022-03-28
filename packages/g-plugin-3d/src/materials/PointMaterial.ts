@@ -1,11 +1,4 @@
-import {
-  Material,
-  CullMode,
-  IMaterial,
-  VertexAttributeLocation,
-  Texture,
-  Device,
-} from '@antv/g-plugin-webgl-renderer';
+import { Material, CullMode, IMaterial, Texture, Device } from '@antv/g-plugin-webgl-renderer';
 import vert from '../shaders/point.vert';
 import frag from '../shaders/point.frag';
 
@@ -78,8 +71,6 @@ export class PointMaterial<T extends IPointMaterial> extends Material<T> {
       USE_WIREFRAME: false,
       USE_FOG: false,
       USE_LIGHT: false,
-      POSITION: VertexAttributeLocation.MAX,
-      UV: VertexAttributeLocation.MAX + 2,
     };
 
     const { map, size } = props || {};

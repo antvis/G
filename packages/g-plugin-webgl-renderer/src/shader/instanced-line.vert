@@ -26,7 +26,7 @@ void main() {
     vec2 yBasis = normalize(vec2(-xBasis.y, xBasis.x));
 
     vec2 point = a_PointA.xy + xBasis * a_Position.x + yBasis * u_StrokeWidth * a_Position.y;
-    point = point - a_Anchor.xy * abs(xBasis);
+    point = point - u_Anchor.xy * abs(xBasis);
 
     // round & square
     if (a_Cap > 1.0) {

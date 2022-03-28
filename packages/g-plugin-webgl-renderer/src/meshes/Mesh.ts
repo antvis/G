@@ -24,7 +24,7 @@ export class MeshMesh extends Instanced {
     return true;
   }
 
-  updateAttributes(objects: DisplayObject[], startIndex: number, name: string, value: any): void {
+  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any): void {
     super.updateAttribute(objects, startIndex, name, value);
     this.updateBatchedAttribute(objects, startIndex, name, value);
   }

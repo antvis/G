@@ -10,8 +10,7 @@ import {
 import { Format, VertexBufferFrequency } from '../platform';
 import vert from '../shader/instanced-line.vert';
 import frag from '../shader/instanced-line.frag';
-import { Instanced, VertexAttributeBufferIndex } from './Instanced';
-import { VertexAttributeLocation } from '../geometries';
+import { Instanced, VertexAttributeBufferIndex, VertexAttributeLocation } from './Instanced';
 import { enumToObject } from '../utils/enum';
 
 export const segmentInstanceGeometry = [
@@ -19,19 +18,18 @@ export const segmentInstanceGeometry = [
 ];
 
 enum InstancedLineVertexAttributeBufferIndex {
-  POSITION_UV = VertexAttributeBufferIndex.MAX,
-  POINT,
+  POINT = VertexAttributeBufferIndex.MAX,
   CAP,
   DASH,
 }
 
 enum InstancedLineVertexAttributeLocation {
-  POSITION = VertexAttributeLocation.MAX,
-  POINTA,
-  POINTB,
-  CAP,
-  UV,
-  DASH,
+  POSITION = VertexAttributeLocation.POSITION,
+  UV = VertexAttributeLocation.UV,
+  POINTA = VertexAttributeLocation.NORMAL,
+  POINTB = VertexAttributeLocation.BARYCENTRIC,
+  CAP = VertexAttributeLocation.MAX,
+  DASH = VertexAttributeLocation.MAX + 1,
 }
 
 const LineCap_MAP = {
@@ -117,7 +115,7 @@ export class InstancedLineMesh extends Instanced {
     this.geometry.setIndexBuffer(new Uint32Array(indices));
     this.geometry.vertexCount = 6;
     this.geometry.setVertexBuffer({
-      bufferIndex: InstancedLineVertexAttributeBufferIndex.POSITION_UV,
+      bufferIndex: VertexAttributeBufferIndex.POSITION,
       byteStride: 4 * 5,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [

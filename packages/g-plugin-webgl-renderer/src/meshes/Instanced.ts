@@ -12,7 +12,7 @@ import {
 import type { Tuple4Number } from '@antv/g';
 import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
-import { BufferGeometry, VertexAttributeLocation } from '../geometries';
+import { BufferGeometry } from '../geometries';
 import { Material, ShaderMaterial } from '../materials';
 import {
   BindingLayoutSamplerDescriptor,
@@ -53,8 +53,33 @@ export enum VertexAttributeBufferIndex {
   STROKE,
   PACKED_STYLE1,
   PACKED_STYLE2,
+  PICKING_COLOR, // built-in
+  POSITION,
+  NORMAL,
+  UV,
+  BARYCENTRIC,
+  MAX,
+}
+
+/**
+ * GL.MAX_VERTEX_ATTRIBS
+ */
+export enum VertexAttributeLocation {
+  // TODO: bind mat4 in WebGL2 instead of decomposed 4 * vec4?
+  // @see https://stackoverflow.com/questions/38853096/webgl-how-to-bind-values-to-a-mat4-attribute/38853623#38853623
+  MODEL_MATRIX0,
+  MODEL_MATRIX1,
+  MODEL_MATRIX2,
+  MODEL_MATRIX3,
+  COLOR,
+  STROKE_COLOR,
+  PACKED_STYLE1, // opacity fillOpacity strokeOpacity lineWidth
+  PACKED_STYLE2, // visibility anchorX anchorY
   PICKING_COLOR,
-  ANCHOR,
+  POSITION,
+  NORMAL,
+  UV,
+  BARYCENTRIC,
   MAX,
 }
 
@@ -168,7 +193,6 @@ export abstract class Instanced {
     const packedStyle1: number[] = [];
     const packedStyle2: number[] = [];
     const packedPicking: number[] = [];
-    const packedAnchor: number[] = [];
 
     // const useNormal = this.material.defines.NORMAL;
 
@@ -202,9 +226,8 @@ export abstract class Instanced {
       packedFill.push(...fillColor);
       packedStroke.push(...strokeColor);
       packedStyle1.push(opacity, fillOpacity, strokeOpacity, lineWidth.value);
-      packedStyle2.push(visibility === 'visible' ? 1 : 0, 0, 0, 0);
+      packedStyle2.push(visibility === 'visible' ? 1 : 0, anchor[0], anchor[1], 0);
       packedPicking.push(...encodedPickingColor, object.sortable.renderOrder * RENDER_ORDER_SCALE);
-      packedAnchor.push(anchor[0], anchor[1]);
 
       // if (useNormal) {
       //   // should not calc normal matrix in shader, mat3.invert is not cheap
@@ -351,21 +374,6 @@ export abstract class Instanced {
         },
       ],
       data: new Float32Array(packedPicking),
-    });
-
-    this.geometry.setVertexBuffer({
-      bufferIndex: VertexAttributeBufferIndex.ANCHOR,
-      byteStride: 4 * 2,
-      frequency: VertexBufferFrequency.PerInstance,
-      attributes: [
-        {
-          format: Format.F32_RG,
-          bufferByteOffset: 4 * 0,
-          location: VertexAttributeLocation.ANCHOR,
-          divisor: 1,
-        },
-      ],
-      data: new Float32Array(packedAnchor),
     });
   }
 
@@ -625,24 +633,11 @@ export abstract class Instanced {
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
       );
-    } else if (name === 'anchor') {
+    } else if (name === 'visibility' || name === 'anchor') {
       const packed: number[] = [];
       objects.forEach((object) => {
-        const { anchor } = object.parsedStyle;
-        packed.push(anchor[0], anchor[1]);
-      });
-
-      this.geometry.updateVertexBuffer(
-        VertexAttributeBufferIndex.ANCHOR,
-        VertexAttributeLocation.ANCHOR,
-        startIndex,
-        new Uint8Array(new Float32Array(packed).buffer),
-      );
-    } else if (name === 'visibility') {
-      const packed: number[] = [];
-      objects.forEach((object) => {
-        const { visibility } = object.parsedStyle;
-        packed.push(visibility === 'visible' ? 1 : 0);
+        const { visibility, anchor } = object.parsedStyle;
+        packed.push(visibility === 'visible' ? 1 : 0, anchor[0], anchor[1], 0);
       });
       this.geometry.updateVertexBuffer(
         VertexAttributeBufferIndex.PACKED_STYLE2,
@@ -686,7 +681,7 @@ export abstract class Instanced {
       return buffer.slice();
     }) as ArrayBufferView[];
 
-    for (let i = 1; i < geometry.vertexBuffers.length; i++) {
+    for (let i = VertexAttributeBufferIndex.PICKING_COLOR; i < geometry.vertexBuffers.length; i++) {
       const { byteStride } = geometry.inputLayoutDescriptor.vertexBufferDescriptors[i];
       geometry.vertices[i] = new Float32Array((byteStride / 4) * indiceNum);
     }
@@ -710,7 +705,7 @@ export abstract class Instanced {
       cursor++;
     }
 
-    for (let i = 1; i < geometry.vertexBuffers.length; i++) {
+    for (let i = VertexAttributeBufferIndex.PICKING_COLOR; i < geometry.vertexBuffers.length; i++) {
       if (i === 4) {
         continue;
       }
@@ -757,14 +752,14 @@ export abstract class Instanced {
     }
 
     geometry.setVertexBuffer({
-      bufferIndex: 4,
+      bufferIndex: VertexAttributeBufferIndex.BARYCENTRIC,
       byteStride: 4 * 3,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
         {
           format: Format.F32_RGB,
           bufferByteOffset: 4 * 0,
-          location: Number(this.material.defines.BARYCENTRIC),
+          location: Number(VertexAttributeLocation.BARYCENTRIC),
         },
       ],
       data: barycentricBuffer,
