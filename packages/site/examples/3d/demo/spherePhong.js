@@ -61,7 +61,7 @@ const canvas = new Canvas({
       x: 300,
       y: 250,
       z: 0,
-      fill: '#f00',
+      fill: '#ff0',
       opacity: 1,
       geometry: geometry,
       material: basicMaterial,
