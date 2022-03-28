@@ -33,6 +33,13 @@
       }
     },
     {
+      "filename": "spherePhong.js",
+      "title": {
+        "zh": "球 phong",
+        "en": "Sphere"
+      }
+    },
+    {
       "filename": "torus.js",
       "title": {
         "zh": "圆环",
