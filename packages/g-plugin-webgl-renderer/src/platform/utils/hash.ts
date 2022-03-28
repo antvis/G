@@ -1,5 +1,5 @@
 import { isNil } from '@antv/util';
-import {
+import type {
   BufferBinding,
   SamplerBinding,
   BindingLayoutDescriptor,
@@ -15,7 +15,7 @@ import {
   InputLayoutDescriptor,
   SamplerDescriptor,
 } from '..';
-import { BindingLayoutSamplerDescriptor } from '../interfaces';
+import type { BindingLayoutSamplerDescriptor } from '../interfaces';
 import { colorEqual } from './color';
 import { copyMegaState } from './states';
 

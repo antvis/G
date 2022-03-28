@@ -196,7 +196,7 @@ export function getFormatTypeFlagsByteSize(typeFlags: FormatTypeFlags): 1 | 2 | 
     case FormatTypeFlags.S8:
       return 1;
     default:
-      throw 'whoops';
+      throw new Error('whoops');
   }
 }
 
@@ -250,6 +250,6 @@ export function getFormatSamplerKind(fmt: Format): SamplerFormatKind {
   ) {
     return SamplerFormatKind.Sint;
   } else {
-    throw 'whoops';
+    throw new Error('whoops');
   }
 }

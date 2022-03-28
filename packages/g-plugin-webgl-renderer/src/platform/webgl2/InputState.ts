@@ -1,18 +1,19 @@
 import { isNil } from '@antv/util';
 import { getFormatCompByteSize } from '../format';
-import {
-  BufferUsage,
+import type {
   IndexBufferDescriptor,
   InputState,
+  VertexBufferDescriptor} from '../interfaces';
+import {
+  BufferUsage,
   ResourceType,
-  VertexBufferDescriptor,
   VertexBufferFrequency,
 } from '../interfaces';
 import { assert, assertExists } from '../utils';
-import { Buffer_GL } from './Buffer';
-import { Device_GL } from './Device';
-import { InputLayout_GL } from './InputLayout';
-import { Program_GL } from './Program';
+import type { Buffer_GL } from './Buffer';
+import type { Device_GL } from './Device';
+import type { InputLayout_GL } from './InputLayout';
+import type { Program_GL } from './Program';
 import { ResourceBase_GL } from './ResourceBase';
 import {
   getPlatformBuffer,

@@ -1,4 +1,5 @@
-import { AlphaImage, GlyphMetrics, StyleGlyph } from './AlphaImage';
+import type { GlyphMetrics, StyleGlyph } from './AlphaImage';
+import { AlphaImage } from './AlphaImage';
 
 // borrow from https://github.com/mapbox/potpack/blob/master/index.mjs
 // @see https://github.com/antvis/g/issues/836
@@ -113,7 +114,7 @@ export type GlyphPosition = {
   metrics: GlyphMetrics;
 };
 
-export type GlyphPositions = { [key: string]: { [key: number]: GlyphPosition } };
+export type GlyphPositions = Record<string, Record<number, GlyphPosition>>;
 
 /**
  * Merge SDFs into a large squared atlas with `potpack`,
@@ -125,7 +126,7 @@ export default class GlyphAtlas {
   image: AlphaImage;
   positions: GlyphPositions;
 
-  constructor(stacks: { [key: string]: { [key: number]: StyleGlyph } }) {
+  constructor(stacks: Record<string, Record<number, StyleGlyph>>) {
     const positions = {};
     const bins: {
       x: number;

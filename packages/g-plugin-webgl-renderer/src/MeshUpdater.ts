@@ -1,6 +1,7 @@
 import { GeometryAABBUpdater } from '@antv/g';
 import { singleton } from 'mana-syringe';
-import { Mesh, ParsedMeshStyleProps } from './Mesh';
+import type { ParsedMeshStyleProps } from './Mesh';
+import { Mesh } from './Mesh';
 
 @singleton({ token: { token: GeometryAABBUpdater, named: Mesh.tag } })
 export class MeshUpdater implements GeometryAABBUpdater<ParsedMeshStyleProps> {

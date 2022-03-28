@@ -12,22 +12,17 @@ import { CopyProgram } from '../../passes/Copy';
 import { preprocessProgramObj_GLSL } from '../../shader/compiler';
 import { OpaqueBlack, OpaqueWhite } from '../../utils/color';
 import { GL } from '../constants';
-import {
+import type {
   AttachmentState,
   BindingLayoutDescriptor,
   Bindings,
   BindingsDescriptor,
   Buffer,
   BufferDescriptor,
-  BufferUsage,
-  ChannelWriteMask,
-  ClipSpaceNearZ,
-  CompareMode,
   ComputePass,
   ComputePassDescriptor,
   ComputePipeline,
   ComputePipelineDescriptor,
-  CullMode,
   DebugGroup,
   Device,
   DeviceLimits,
@@ -36,9 +31,7 @@ import {
   InputLayoutDescriptor,
   InputState,
   MegaStateDescriptor,
-  MipFilterMode,
   PlatformFramebuffer,
-  PrimitiveTopology,
   Program,
   ProgramDescriptor,
   ProgramDescriptorSimple,
@@ -52,18 +45,25 @@ import {
   RenderTarget,
   RenderTargetDescriptor,
   Resource,
-  ResourceType,
   Sampler,
   SamplerDescriptor,
-  SamplerFormatKind,
   SwapChain,
-  TexFilterMode,
   Texture,
   TextureDescriptor,
-  TextureDimension,
-  TextureUsage,
   VendorInfo,
   VertexBufferDescriptor,
+} from '../interfaces';
+import {
+  BufferUsage,
+  ChannelWriteMask,
+  ClipSpaceNearZ,
+  CompareMode,
+  CullMode,
+  PrimitiveTopology,
+  ResourceType,
+  SamplerFormatKind,
+  TextureDimension,
+  TextureUsage,
   VertexBufferFrequency,
   ViewportOrigin,
 } from '../interfaces';
@@ -81,7 +81,7 @@ import { Bindings_GL } from './Bindings';
 import { Buffer_GL } from './Buffer';
 import { InputLayout_GL } from './InputLayout';
 import { InputState_GL } from './InputState';
-import {
+import type {
   BindingLayoutSamplerDescriptor_GL,
   EXT_texture_compression_rgtc,
   EXT_texture_norm16,
@@ -546,7 +546,7 @@ export class Device_GL implements SwapChain, Device {
       case Format.D24:
         return isWebGL2(this.gl) ? GL.DEPTH_COMPONENT24 : GL.DEPTH_COMPONENT;
       default:
-        throw 'whoops';
+        throw new Error('whoops');
     }
   }
 
@@ -577,7 +577,7 @@ export class Device_GL implements SwapChain, Device {
       case FormatTypeFlags.D32FS8:
         return GL.FLOAT_32_UNSIGNED_INT_24_8_REV;
       default:
-        throw 'whoops';
+        throw new Error('whoops');
     }
   }
 
@@ -931,7 +931,7 @@ export class Device_GL implements SwapChain, Device {
 
     if (program.compileState === ProgramCompileState_GL.NeedsCompile) {
       // This should not happen.
-      throw 'whoops';
+      throw new Error('whoops');
     }
     if (program.compileState === ProgramCompileState_GL.Compiling) {
       let complete: boolean;
@@ -1418,8 +1418,7 @@ export class Device_GL implements SwapChain, Device {
         if (gl_texture !== null) {
           // update index
           (binding.texture as Texture_GL).textureIndex = samplerIndex;
-          const { gl_target, formatKind, width, height } = assertExists(binding)
-            .texture as Texture_GL;
+          const { gl_target, width, height } = assertExists(binding).texture as Texture_GL;
           gl.bindTexture(gl_target, gl_texture);
 
           // In WebGL1 set tex's parameters @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texParameter
@@ -1730,6 +1729,7 @@ export class Device_GL implements SwapChain, Device {
 
       if (isWebGL2(gl)) {
         for (let i = 0; i < uniformBlocks.length; i++) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const [m, blockName, contents] = uniformBlocks[i];
           // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/getUniformBlockIndex
           const blockIdx = gl.getUniformBlockIndex(prog, blockName);
@@ -1745,6 +1745,7 @@ export class Device_GL implements SwapChain, Device {
         /^uniform .*sampler\S+ (\w+);\s* \/\/ BINDING=(\d+)$/gm,
       );
       for (let i = 0; i < samplers.length; i++) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [m, name, location] = samplers[i];
         const samplerUniformLocation = gl.getUniformLocation(prog, name);
         gl.uniform1i(samplerUniformLocation, parseInt(location));
@@ -2062,7 +2063,7 @@ export class Device_GL implements SwapChain, Device {
     else if (gl_target === GL.TEXTURE_2D_ARRAY) return this.fallbackTexture2DArray;
     else if (gl_target === GL.TEXTURE_3D) return this.fallbackTexture3D;
     else if (gl_target === GL.TEXTURE_CUBE_MAP) return this.fallbackTextureCube;
-    else throw 'whoops';
+    else throw new Error('whoops');
   }
 
   private submitBlitRenderPass() {

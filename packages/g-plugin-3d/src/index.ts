@@ -1,5 +1,6 @@
-import { RendererPlugin } from '@antv/g';
-import { Module, Syringe } from 'mana-syringe';
+import type { RendererPlugin } from '@antv/g';
+import { Module } from 'mana-syringe';
+import type { Syringe } from 'mana-syringe';
 import {
   BlendFactor,
   BlendMode,

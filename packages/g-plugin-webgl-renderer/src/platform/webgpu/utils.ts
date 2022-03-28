@@ -1,25 +1,27 @@
 import { GPUTextureUsage } from './constants';
-import {
+import type {
   Buffer,
   Sampler,
+  MegaStateDescriptor,
+  AttachmentState,
+  ChannelBlendState,
+  QueryPool,
+  BindingLayoutSamplerDescriptor,
+} from '../interfaces';
+import {
   WrapMode,
   TexFilterMode,
   MipFilterMode,
   TextureDimension,
   PrimitiveTopology,
-  MegaStateDescriptor,
   CullMode,
   FrontFaceMode,
-  AttachmentState,
-  ChannelBlendState,
   BlendFactor,
   BlendMode,
   CompareMode,
   VertexBufferFrequency,
   TextureUsage,
-  QueryPool,
   QueryPoolType,
-  BindingLayoutSamplerDescriptor,
   SamplerFormatKind,
 } from '../interfaces';
 import { align } from '../utils';
@@ -62,7 +64,7 @@ export function translateTextureFormat(format: Format): GPUTextureFormat {
   else if (format === Format.BC4_UNORM) return 'bc4-r-unorm';
   else if (format === Format.BC5_SNORM) return 'bc5-rg-snorm';
   else if (format === Format.BC5_UNORM) return 'bc5-rg-unorm';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 export function translateTextureDimension(dimension: TextureDimension): GPUTextureDimension {
@@ -70,33 +72,33 @@ export function translateTextureDimension(dimension: TextureDimension): GPUTextu
   else if (dimension === TextureDimension.Cube) return '3d';
   else if (dimension === TextureDimension.n2DArray) return '3d';
   else if (dimension === TextureDimension.n3D) return '3d';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 export function translateWrapMode(wrapMode: WrapMode): GPUAddressMode {
   if (wrapMode === WrapMode.Clamp) return 'clamp-to-edge';
   else if (wrapMode === WrapMode.Repeat) return 'repeat';
   else if (wrapMode === WrapMode.Mirror) return 'mirror-repeat';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 export function translateMinMagFilter(texFilter: TexFilterMode): GPUFilterMode {
   if (texFilter === TexFilterMode.Bilinear) return 'linear';
   else if (texFilter === TexFilterMode.Point) return 'nearest';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 export function translateMipFilter(mipFilter: MipFilterMode): GPUFilterMode {
   if (mipFilter === MipFilterMode.Linear) return 'linear';
   else if (mipFilter === MipFilterMode.Nearest) return 'nearest';
   else if (mipFilter === MipFilterMode.NoMip) return 'nearest';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 function translateSampleType(type: SamplerFormatKind): GPUTextureSampleType {
   if (type === SamplerFormatKind.Float) return 'float';
   else if (type === SamplerFormatKind.Depth) return 'depth';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 function translateViewDimension(dimension: TextureDimension): GPUTextureViewDimension {
@@ -104,7 +106,7 @@ function translateViewDimension(dimension: TextureDimension): GPUTextureViewDime
   else if (dimension === TextureDimension.n2DArray) return '2d-array';
   else if (dimension === TextureDimension.n3D) return '3d';
   else if (dimension === TextureDimension.Cube) return 'cube';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 export function translateBindGroupTextureBinding(
@@ -133,7 +135,7 @@ export function getPlatformQuerySet(queryPool_: QueryPool): GPUQuerySet {
 
 export function translateQueryPoolType(type: QueryPoolType): GPUQueryType {
   if (type === QueryPoolType.OcclusionConservative) return 'occlusion';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 // @see https://www.w3.org/TR/webgpu/#primitive-state
@@ -158,13 +160,13 @@ export function translateCullMode(cullMode: CullMode): GPUCullMode {
   if (cullMode === CullMode.None) return 'none';
   else if (cullMode === CullMode.Front) return 'front';
   else if (cullMode === CullMode.Back) return 'back';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 export function translateFrontFace(frontFaceMode: FrontFaceMode): GPUFrontFace {
   if (frontFaceMode === FrontFaceMode.CCW) return 'ccw';
   else if (frontFaceMode === FrontFaceMode.CW) return 'cw';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 export function translatePrimitiveState(
@@ -189,14 +191,14 @@ export function translateBlendFactor(factor: BlendFactor): GPUBlendFactor {
   else if (factor === BlendFactor.OneMinusSrcAlpha) return 'one-minus-src-alpha';
   else if (factor === BlendFactor.DstAlpha) return 'dst-alpha';
   else if (factor === BlendFactor.OneMinusDstAlpha) return 'one-minus-dst-alpha';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 export function translateBlendMode(mode: BlendMode): GPUBlendOperation {
   if (mode === BlendMode.Add) return 'add';
   else if (mode === BlendMode.Subtract) return 'subtract';
   else if (mode === BlendMode.ReverseSubtract) return 'reverse-subtract';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 export function translateBlendState(blendState: ChannelBlendState): GPUBlendComponent {
@@ -239,7 +241,7 @@ export function translateCompareMode(compareMode: CompareMode): GPUCompareFuncti
   else if (compareMode === CompareMode.NotEqual) return 'not-equal';
   else if (compareMode === CompareMode.GreaterEqual) return 'greater-equal';
   else if (compareMode === CompareMode.Always) return 'always';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 export function translateDepthStencilState(
@@ -261,7 +263,7 @@ export function translateIndexFormat(format: Format | null): GPUIndexFormat | un
   if (format === null) return undefined;
   else if (format === Format.U16_R) return 'uint16';
   else if (format === Format.U32_R) return 'uint32';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 export function translateVertexBufferFrequency(
@@ -269,7 +271,7 @@ export function translateVertexBufferFrequency(
 ): GPUVertexStepMode {
   if (frequency === VertexBufferFrequency.PerVertex) return 'vertex';
   else if (frequency === VertexBufferFrequency.PerInstance) return 'instance';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 export function translateVertexFormat(format: Format): GPUVertexFormat {
@@ -285,7 +287,7 @@ export function translateVertexFormat(format: Format): GPUVertexFormat {
   else if (format === Format.F32_RG) return 'float32x2';
   else if (format === Format.F32_RGB) return 'float32x3';
   else if (format === Format.F32_RGBA) return 'float32x4';
-  else throw 'whoops';
+  else throw new Error('whoops');
 }
 
 export function isFormatTextureCompressionBC(format: Format): boolean {
@@ -300,9 +302,9 @@ export function isFormatTextureCompressionBC(format: Format): boolean {
     case FormatTypeFlags.BC5_SNORM:
     case FormatTypeFlags.BC5_UNORM:
       return true;
+    default:
+      return false;
   }
-
-  return false;
 }
 
 export function getFormatByteSizePerBlock(format: Format): number {
@@ -318,9 +320,9 @@ export function getFormatByteSizePerBlock(format: Format): number {
     case FormatTypeFlags.BC5_SNORM:
     case FormatTypeFlags.BC5_UNORM:
       return 16;
+    default:
+      return getFormatByteSize(format);
   }
-
-  return getFormatByteSize(format);
 }
 
 export function getFormatBlockSize(format: Format): number {
@@ -335,9 +337,9 @@ export function getFormatBlockSize(format: Format): number {
     case FormatTypeFlags.BC5_SNORM:
     case FormatTypeFlags.BC5_UNORM:
       return 4;
+    default:
+      return 1;
   }
-
-  return 1;
 }
 
 export function translateImageLayout(

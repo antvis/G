@@ -1,17 +1,14 @@
 import { inject, singleton } from 'mana-syringe';
 import {
   DisplayObjectPool,
-  RenderingService,
-  RenderingPlugin,
   RenderingPluginContribution,
   SceneGraphService,
   RenderingContext,
   ElementEvent,
-  DisplayObject,
   CanvasEvent,
   AABB,
 } from '@antv/g';
-import type { Element, FederatedEvent } from '@antv/g';
+import type { FederatedEvent, RenderingService, RenderingPlugin, DisplayObject } from '@antv/g';
 
 /**
  * PhysX runtime mode.
@@ -45,6 +42,17 @@ export class PhysXPlugin implements RenderingPlugin {
   private pendingDisplayObjects: DisplayObject[] = [];
 
   apply(renderingService: RenderingService) {
+    const handleMounted = (e: FederatedEvent) => {
+      const PhysX = this.PhysX;
+      const target = e.target as DisplayObject;
+
+      if (PhysX) {
+        this.addActor(target);
+      } else {
+        this.pendingDisplayObjects.push(target);
+      }
+    };
+
     renderingService.hooks.init.tapPromise(PhysXPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
 
@@ -76,17 +84,6 @@ export class PhysXPlugin implements RenderingPlugin {
     renderingService.hooks.destroy.tap(PhysXPlugin.tag, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
     });
-
-    const handleMounted = (e: FederatedEvent) => {
-      const PhysX = this.PhysX;
-      const target = e.target as DisplayObject;
-
-      if (PhysX) {
-        this.addActor(target);
-      } else {
-        this.pendingDisplayObjects.push(target);
-      }
-    };
   }
 
   // @see https://github.com/oasis-engine/engine/blob/main/packages/physics-physx/src/PhysXPhysics.ts#L39

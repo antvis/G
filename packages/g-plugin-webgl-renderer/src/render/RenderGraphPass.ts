@@ -1,19 +1,13 @@
-import {
+import type {
   NormalizedViewportCoords,
   QueryPool,
   RenderPassDescriptor,
-  RenderTarget,
   Texture,
 } from '../platform';
 import { assert } from '../platform/utils';
-import {
-  IdentityViewportCoords,
-  IRenderGraphPass,
-  PassExecFunc,
-  PassPostFunc,
-  RGAttachmentSlot,
-} from './interfaces';
-import { RGRenderTarget } from './RenderTarget';
+import type { IRenderGraphPass, PassExecFunc, PassPostFunc, RGAttachmentSlot } from './interfaces';
+import { IdentityViewportCoords } from './interfaces';
+import type { RGRenderTarget } from './RenderTarget';
 
 export class RenderGraphPass implements IRenderGraphPass {
   // RenderTargetAttachmentSlot => renderTargetID

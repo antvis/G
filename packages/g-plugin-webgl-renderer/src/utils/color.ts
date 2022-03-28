@@ -1,4 +1,4 @@
-import { Color } from '../platform';
+import type { Color } from '../platform';
 
 export function colorCopy(dst: Color, src: Color, a: number = src.a): void {
   dst.r = src.r;

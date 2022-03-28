@@ -1,10 +1,5 @@
-import {
-  ClipSpaceNearZ,
-  Device,
-  ProgramDescriptorSimple,
-  VendorInfo,
-  ViewportOrigin,
-} from '../platform';
+import type { Device, ProgramDescriptorSimple, VendorInfo } from '../platform';
+import { ClipSpaceNearZ, ViewportOrigin } from '../platform';
 import { assert } from '../platform/utils';
 
 const ES100_REPLACEMENTS: [RegExp, string][] = [
@@ -89,9 +84,11 @@ export function getUniforms(vert: string) {
     uniforms
       .trim()
       .split('\n')
-      .forEach((line) => {
-        let [type = '', name = ''] = line.trim().split(' ');
-        // DirectionalLight directionalLights[ NUM_DIR_LIGHTS ];
+      .forEach((line: string) => {
+        const result = line.trim().split(' ');
+        const type = result[0] || '';
+        let name = result[1] || '';
+        // DirectionalLight directionalLights[  NUM_DIR_LIGHTS ];
         const isArray = name.indexOf('[') > -1;
         name = name.replace(';', '').replace('[', '').trim();
         // ignore conditional comments
@@ -136,7 +133,7 @@ export function preprocessShader_GLSL(
 ): string {
   const isGLSL100 = vendorInfo.glslVersion === '#version 100';
   const supportMRT = vendorInfo.supportMRT && !!features.MRT;
-  const needPicking = features.PICKING;
+  // const needPicking = features.PICKING;
 
   const lines = source
     .split('\n')

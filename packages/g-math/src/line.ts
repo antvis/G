@@ -1,6 +1,6 @@
 import { distance, getBBoxByArray } from './util';
 import { vec2 } from 'gl-matrix';
-import { BBox, Point } from './types';
+import type { BBox, Point } from './types';
 
 export default {
   /**

@@ -1,4 +1,5 @@
-import { Line, LineStyleProps } from "@antv/g";
+import type { LineStyleProps } from "@antv/g";
+import { Line } from "@antv/g";
 import { BaseShape } from "./BaseShape";
 
 export class LineShape extends BaseShape {

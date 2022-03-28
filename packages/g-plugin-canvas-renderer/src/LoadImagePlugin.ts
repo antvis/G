@@ -1,14 +1,15 @@
 import { inject, singleton } from 'mana-syringe';
-import {
-  Shape,
+import type {
   DisplayObject,
   RenderingService,
   RenderingPlugin,
+  FederatedEvent,
+  MutationEvent} from '@antv/g';
+import {
+  Shape,
   RenderingPluginContribution,
   RenderingContext,
-  ElementEvent,
-  FederatedEvent,
-  MutationEvent,
+  ElementEvent
 } from '@antv/g';
 import { ImagePool } from './shapes/ImagePool';
 import { isString } from '@antv/util';

@@ -71,7 +71,7 @@ export class TextRenderer implements StyleRenderer {
 
     // draw lines line by line
     for (let i = 0; i < lines.length; i++) {
-      let linePositionX = lineWidth.value / 2 + offsetX;
+      const linePositionX = lineWidth.value / 2 + offsetX;
       linePositionY += lineHeight;
 
       // no need to re-position X, cause we already set text align

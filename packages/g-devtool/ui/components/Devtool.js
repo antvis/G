@@ -61,7 +61,7 @@ const HeadBar = (props) => {
     return () => {
       clearInterval(itv);
     };
-  }, [actions, setData, selectedData]);
+  }, [actions, setData, selectedData, selectedHash]);
 
   useEffect(() => {
     if (!canvasAlive) {
@@ -72,7 +72,7 @@ const HeadBar = (props) => {
         }
       });
     }
-  }, [canvasAlive]);
+  }, [actions, canvasAlive, setData, setSelectedHash]);
 
   return (
     <Row
@@ -121,7 +121,7 @@ const HeadBar = (props) => {
       {selectedData && <Col>{selectedData?.count} Shapes</Col>}
       {selectedData?.memory > 0 && <Col>HeapMemory:{convertMemoryUnit(selectedData.memory)}</Col>}
       {selectedData?.fps > 0 && <Col>FPS: {selectedData?.fps}</Col>}
-      <Col flex={1}></Col>
+      <Col flex={1} />
       <Col>
         <Button
           size="small"
@@ -150,7 +150,7 @@ const Devtool = (props) => {
       actions.cleanAllRect();
       actions.startFPSMonitor();
     };
-  }, [selectedHash]);
+  }, [actions, selectedHash]);
 
   useEffect(() => {
     const target = data.find((e) => e.hash === selectedHash);

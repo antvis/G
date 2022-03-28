@@ -1,7 +1,8 @@
-import { Format } from '../format';
-import { Buffer, ResourceType, Texture, TextureDescriptor, TextureDimension } from '../interfaces';
-import { IDevice_WebGPU } from './interfaces';
-import { TextureShared_WebGPU } from './interfaces';
+import type { Format } from '../format';
+import type { Texture, TextureDescriptor, TextureDimension } from '../interfaces';
+import { ResourceType } from '../interfaces';
+import type { IDevice_WebGPU } from './interfaces';
+import type { TextureShared_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 
 // @see https://toji.github.io/webgpu-best-practices/img-textures.html

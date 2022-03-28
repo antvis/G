@@ -1,22 +1,14 @@
 import { GPUTextureUsage } from './constants';
-import {
+import type {
   SwapChain,
   Device,
   Sampler,
   Buffer,
   BindingLayoutDescriptor,
-  ViewportOrigin,
-  ClipSpaceNearZ,
-  makeTextureDescriptor2D,
-  WrapMode,
-  TexFilterMode,
-  MipFilterMode,
   TextureDescriptor,
   SamplerDescriptor,
   RenderTargetDescriptor,
   RenderTarget,
-  TextureDimension,
-  TextureUsage,
   ProgramDescriptorSimple,
   Program,
   BindingsDescriptor,
@@ -39,12 +31,21 @@ import {
   ComputePass,
   ComputePassDescriptor,
   BindingLayoutSamplerDescriptor,
-  SamplerFormatKind,
   QueryPool,
   QueryPoolType,
   ProgramDescriptor,
 } from '../interfaces';
 import {
+  ViewportOrigin,
+  ClipSpaceNearZ,
+  WrapMode,
+  TexFilterMode,
+  MipFilterMode,
+  TextureDimension,
+  TextureUsage,
+  SamplerFormatKind,
+} from '../interfaces';
+import type {
   BindGroupLayout,
   Attachment_WebGPU,
   TextureSharedDescriptor,
@@ -52,7 +53,8 @@ import {
   IDevice_WebGPU,
 } from './interfaces';
 
-import { BufferDescriptor, Resource, ResourceType, Texture } from '../interfaces';
+import type { BufferDescriptor, Resource, Texture } from '../interfaces';
+import { ResourceType } from '../interfaces';
 import { Bindings_WebGPU } from './Bindings';
 import { Buffer_WebGPU } from './Buffer';
 import { InputLayout_WebGPU } from './InputLayout';
@@ -65,17 +67,15 @@ import { RenderPipeline_WebGPU } from './RenderPipeline';
 import { Readback_WebGPU } from './Readback';
 import {
   getFormatBlockSize,
-  getPlatformBuffer,
   isFormatTextureCompressionBC,
   translateDepthStencilState,
-  translateImageLayout,
   translatePrimitiveState,
   translateTargets,
   translateTextureDimension,
   translateTextureFormat,
   translateTextureUsage,
 } from './utils';
-import { assert, align, bindingLayoutDescriptorEqual } from '../utils';
+import { assert, bindingLayoutDescriptorEqual } from '../utils';
 import { HashMap, nullHashFunc } from '../../render/HashMap';
 import { Format } from '../format';
 import { ComputePass_WebGPU } from './ComputePass';
@@ -385,7 +385,7 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     else if (dimension === TextureDimension.n2DArray) return this.fallbackTexture2DArray;
     else if (dimension === TextureDimension.n3D) return this.fallbackTexture3D;
     else if (dimension === TextureDimension.Cube) return this.fallbackTextureCube;
-    else throw 'whoops';
+    else throw new Error('whoops');
   }
 
   private createFallbackTexture(
@@ -671,7 +671,7 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
   }
 
   pipelineForceReady(o: RenderPipeline): void {
-    const renderPipeline = o as RenderPipeline_WebGPU;
+    // const renderPipeline = o as RenderPipeline_WebGPU;
     // this._createRenderPipeline(renderPipeline, false);
   }
 }

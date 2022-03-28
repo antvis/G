@@ -1,13 +1,11 @@
-import { Material, CullMode, IMaterial, Texture, Device } from '@antv/g-plugin-webgl-renderer';
+import type { IMaterial, Texture, Device } from '@antv/g-plugin-webgl-renderer';
+import { Material, CullMode } from '@antv/g-plugin-webgl-renderer';
 import vert from '../shaders/material.basic.vert';
 import frag from '../shaders/material.basic.frag';
 
 enum Uniform {
   MAP = 'u_Map',
   PLACE_HOLDER = 'u_Placeholder',
-}
-enum SamplerLocation {
-  MAP = 0,
 }
 
 export interface IMeshBasicMaterial extends IMaterial {

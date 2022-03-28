@@ -1,5 +1,6 @@
 import * as yoga from 'yoga-layout-prebuilt';
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace YogaConstants {
   export enum FlexDirection {
     'column' = yoga.FLEX_DIRECTION_COLUMN,

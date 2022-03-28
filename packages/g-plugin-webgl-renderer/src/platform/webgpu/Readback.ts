@@ -1,17 +1,11 @@
-import {
-  Buffer,
-  BufferFrequencyHint,
-  BufferUsage,
-  Readback,
-  ResourceType,
-  Texture,
-} from '../interfaces';
-import { Buffer_WebGPU } from './Buffer';
-import { IDevice_WebGPU } from './interfaces';
+import type { Buffer, Readback, Texture } from '../interfaces';
+import { BufferFrequencyHint, BufferUsage, ResourceType } from '../interfaces';
+import type { Buffer_WebGPU } from './Buffer';
+import type { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 import { GPUMapMode } from './constants';
 import { allocateAndCopyTypedBuffer, halfFloat2Number } from './utils';
-import { Texture_WebGPU } from './Texture';
+import type { Texture_WebGPU } from './Texture';
 import { Format, getFormatCompByteSize } from '../format';
 
 export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
@@ -280,13 +274,13 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
         return { width: 1, height: 1, length: 16 };
       // Depth and stencil formats
       case 'stencil8':
-        throw 'No fixed size for Stencil8 format!';
+        throw new Error('No fixed size for Stencil8 format!');
       case 'depth16unorm':
         return { width: 1, height: 1, length: 2 };
       case 'depth24plus':
-        throw 'No fixed size for Depth24Plus format!';
+        throw new Error('No fixed size for Depth24Plus format!');
       case 'depth24plus-stencil8':
-        throw 'No fixed size for Depth24PlusStencil8 format!';
+        throw new Error('No fixed size for Depth24PlusStencil8 format!');
       case 'depth32float':
         return { width: 1, height: 1, length: 4 };
       case 'depth24unorm-stencil8':
@@ -312,8 +306,8 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
       case 'bc1-rgba-unorm':
       case 'bc1-rgba-unorm-srgb':
         return { width: 4, height: 4, length: 8 };
+      default:
+        return { width: 1, height: 1, length: 4 };
     }
-
-    // return { width: 1, height: 1, length: 4 };
   }
 }

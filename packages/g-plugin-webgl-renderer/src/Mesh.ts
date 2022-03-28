@@ -1,7 +1,7 @@
-import { DisplayObject, DisplayObjectConfig } from '@antv/g';
-import type { ParsedBaseStyleProps, BaseStyleProps } from '@antv/g';
-import { BufferGeometry } from './geometries';
-import { Material } from './materials';
+import { DisplayObject } from '@antv/g';
+import type { ParsedBaseStyleProps, BaseStyleProps, DisplayObjectConfig } from '@antv/g';
+import type { BufferGeometry } from './geometries';
+import type { Material } from './materials';
 
 export interface MeshStyleProps extends BaseStyleProps {
   geometry: BufferGeometry;

@@ -1,5 +1,5 @@
 import { max, min } from '@antv/util';
-import { BBox } from './types';
+import type { BBox } from './types';
 
 /**
  * 两点之间的距离

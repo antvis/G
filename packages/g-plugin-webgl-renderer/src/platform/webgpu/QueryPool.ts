@@ -1,5 +1,6 @@
-import { QueryPool, QueryPoolType, ResourceType } from '../interfaces';
-import { IDevice_WebGPU } from './interfaces';
+import type { QueryPool, QueryPoolType} from '../interfaces';
+import { ResourceType } from '../interfaces';
+import type { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 import { translateQueryPoolType } from './utils';
 

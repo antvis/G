@@ -1,6 +1,7 @@
-import { ParsedImageStyleProps, Shape } from '@antv/g';
+import type { ParsedImageStyleProps } from '@antv/g';
+import { Shape } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-import { isNil, isString } from '@antv/util';
+import { isString } from '@antv/util';
 import { ImagePool } from '../ImagePool';
 import { StyleRenderer } from './interfaces';
 

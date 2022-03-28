@@ -1,33 +1,37 @@
-import {
+import type {
   RenderingService,
   RenderingPlugin,
-  RenderingPluginContribution,
   Rectangle,
+  FederatedEvent,
+  DisplayObject,
+  MutationEvent,
+  Tuple4Number,
+} from '@antv/g';
+import {
+  RenderingPluginContribution,
   ContextService,
   CanvasConfig,
   RenderingContext,
   ElementEvent,
-  FederatedEvent,
-  DisplayObject,
   DefaultCamera,
   Camera,
   CanvasEvent,
-  MutationEvent,
   parseColor,
-  Tuple4Number,
 } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { BatchManager } from './renderer';
 import { Renderable3D } from './components/Renderable3D';
 import { WebGLRendererPluginOptions } from './interfaces';
-import { pushFXAAPass } from './passes/FXAA';
+// import { pushFXAAPass } from './passes/FXAA';
 // import { useCopyPass } from './passes/Copy';
 import { PickingIdGenerator } from './PickingIdGenerator';
-import { BlendFactor, BlendMode, Device, SwapChain, Texture, TextureDescriptor } from './platform';
+import type { Device, SwapChain, Texture, TextureDescriptor } from './platform';
+import { BlendFactor, BlendMode } from './platform';
 import { setAttachmentStateSimple } from './platform/utils';
 import { Device_GL } from './platform/webgl2/Device';
 import { Device_WebGPU } from './platform/webgpu/Device';
-import { RGAttachmentSlot, RGGraphBuilder } from './render/interfaces';
+import type { RGGraphBuilder } from './render/interfaces';
+import { RGAttachmentSlot } from './render/interfaces';
 import { RenderHelper } from './render/RenderHelper';
 import { RenderInstList } from './render/RenderInstList';
 import { TransparentWhite, colorNewFromRGBA } from './utils/color';
@@ -111,6 +115,69 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     this.renderingService = renderingService;
+
+    const handleMounted = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+
+      // collect lights
+      if (object.nodeName === Light.tag) {
+        this.lightPool.addLight(object as unknown as Light);
+        return;
+      } else if (object.nodeName === Fog.tag) {
+        this.lightPool.addFog(object as Fog);
+        return;
+      }
+
+      const renderable3D = new Renderable3D();
+
+      // add geometry & material required by Renderable3D
+      // object.entity.addComponent(Geometry3D);
+      // object.entity.addComponent(Material3D);
+
+      // generate picking id for later use
+      const pickingId = this.pickingIdGenerator.getId(object);
+      renderable3D.pickingId = pickingId;
+      renderable3D.encodedPickingColor = this.pickingIdGenerator.encodePickingColor(pickingId);
+
+      // @ts-ignore
+      object.renderable3D = renderable3D;
+
+      this.batchManager.add(object);
+    };
+
+    const handleUnmounted = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+
+      if (object.nodeName === Light.tag) {
+        this.lightPool.removeLight(object as unknown as Light);
+        return;
+      } else if (object.nodeName === Fog.tag) {
+        this.lightPool.removeFog(object as Fog);
+        return;
+      }
+
+      this.batchManager.remove(object);
+
+      // @ts-ignore
+      delete object.renderable3D;
+
+      // entity.removeComponent(Geometry3D, true);
+      // entity.removeComponent(Material3D, true);
+      // entity.removeComponent(Renderable3D, true);
+    };
+
+    const handleAttributeChanged = (e: MutationEvent) => {
+      const object = e.target as DisplayObject;
+      const { attrName, newValue } = e;
+      this.batchManager.updateAttribute(object, attrName, newValue);
+    };
+
+    const handleRenderOrderChanged = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+      const { renderOrder } = e.detail;
+      this.batchManager.changeRenderOrder(object, renderOrder);
+    };
+
     renderingService.hooks.init.tapPromise(RenderGraphPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
@@ -297,68 +364,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
       // output to screen
       this.swapChain.present();
     });
-
-    const handleMounted = (e: FederatedEvent) => {
-      const object = e.target as DisplayObject;
-
-      // collect lights
-      if (object.nodeName === Light.tag) {
-        this.lightPool.addLight(object as Light);
-        return;
-      } else if (object.nodeName === Fog.tag) {
-        this.lightPool.addFog(object as Fog);
-        return;
-      }
-
-      const renderable3D = new Renderable3D();
-
-      // add geometry & material required by Renderable3D
-      // object.entity.addComponent(Geometry3D);
-      // object.entity.addComponent(Material3D);
-
-      // generate picking id for later use
-      const pickingId = this.pickingIdGenerator.getId(object);
-      renderable3D.pickingId = pickingId;
-      renderable3D.encodedPickingColor = this.pickingIdGenerator.encodePickingColor(pickingId);
-
-      // @ts-ignore
-      object.renderable3D = renderable3D;
-
-      this.batchManager.add(object);
-    };
-
-    const handleUnmounted = (e: FederatedEvent) => {
-      const object = e.target as DisplayObject;
-
-      if (object.nodeName === Light.tag) {
-        this.lightPool.removeLight(object as Light);
-        return;
-      } else if (object.nodeName === Fog.tag) {
-        this.lightPool.removeFog(object as Fog);
-        return;
-      }
-
-      this.batchManager.remove(object);
-
-      // @ts-ignore
-      delete object.renderable3D;
-
-      // entity.removeComponent(Geometry3D, true);
-      // entity.removeComponent(Material3D, true);
-      // entity.removeComponent(Renderable3D, true);
-    };
-
-    const handleAttributeChanged = (e: MutationEvent) => {
-      const object = e.target as DisplayObject;
-      const { attrName, newValue } = e;
-      this.batchManager.updateAttribute(object, attrName, newValue);
-    };
-
-    const handleRenderOrderChanged = (e: FederatedEvent) => {
-      const object = e.target as DisplayObject;
-      const { renderOrder } = e.detail;
-      this.batchManager.changeRenderOrder(object, renderOrder);
-    };
   }
 
   /**
@@ -507,7 +512,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
   loadTexture(
     src: string | TexImageSource,
     descriptor?: TextureDescriptor,
-    successCallback?: Function,
+    successCallback?: () => void,
   ) {
     return this.texturePool.getOrCreateTexture(this.device, src, descriptor, () => {
       this.renderingService.dirtify();

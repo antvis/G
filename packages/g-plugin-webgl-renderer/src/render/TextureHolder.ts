@@ -1,4 +1,4 @@
-import { Device, Sampler, Texture } from '../platform';
+import type { Sampler, Texture } from '../platform';
 
 export interface ViewerTexture {
   name: string;

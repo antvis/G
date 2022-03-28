@@ -1,7 +1,8 @@
-import { RenderPass, SamplerBinding } from '../platform';
+import type { RenderPass, SamplerBinding } from '../platform';
 import { spliceBisectRight } from '../platform/utils';
-import { RenderCache } from './RenderCache';
-import { RenderInst, RenderInstFlags } from './RenderInst';
+import type { RenderCache } from './RenderCache';
+import type { RenderInst } from './RenderInst';
+import { RenderInstFlags } from './RenderInst';
 
 export const renderInstCompareNone = null;
 

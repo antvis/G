@@ -1,17 +1,9 @@
 import { AABB } from '@antv/g';
 import { ElementEvent, MutationEvent } from '@antv/g';
 import { EventEmitter } from 'eventemitter3';
-import { Mesh } from '../Mesh';
-import {
-  Buffer,
-  BufferFrequencyHint,
-  BufferUsage,
-  Device,
-  Format,
-  InputLayoutDescriptor,
-  PrimitiveTopology,
-  VertexBufferFrequency,
-} from '../platform';
+import type { Mesh } from '../Mesh';
+import type { Buffer, Device, InputLayoutDescriptor, VertexBufferFrequency } from '../platform';
+import { BufferFrequencyHint, BufferUsage, Format, PrimitiveTopology } from '../platform';
 import { align } from '../platform/utils';
 
 export function makeStaticDataBuffer(
@@ -34,13 +26,13 @@ export interface GeometryVertexBufferDescriptor {
   bufferIndex: number;
   byteStride: number;
   frequency: VertexBufferFrequency;
-  attributes: Array<{
+  attributes: {
     format: Format;
     bufferByteOffset: number;
     byteStride?: number;
     location: number;
     divisor?: number;
-  }>;
+  }[];
   data: ArrayBufferView;
 }
 

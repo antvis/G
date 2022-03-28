@@ -30,18 +30,6 @@ export function parseUniformName(name: string): { name: string; isArray: boolean
   };
 }
 
-export function getUniformSetter(
-  gl: WebGLRenderingContext,
-  location: WebGLUniformLocation,
-  info: WebGLActiveInfo,
-): any {
-  const setter = UNIFORM_SETTERS[info.type];
-  if (!setter) {
-    throw new Error(`Unknown GLSL uniform type ${info.type}`);
-  }
-  return setter().bind(null, gl, location);
-}
-
 function getSamplerSetter() {
   let cache = null;
   return (gl: WebGLRenderingContextBase, location: WebGLUniformLocation, value: any) => {
@@ -273,3 +261,15 @@ export const UNIFORM_SETTERS = {
   [GL.UNSIGNED_INT_SAMPLER_CUBE]: getSamplerSetter,
   [GL.UNSIGNED_INT_SAMPLER_2D_ARRAY]: getSamplerSetter,
 };
+
+export function getUniformSetter(
+  gl: WebGLRenderingContext,
+  location: WebGLUniformLocation,
+  info: WebGLActiveInfo,
+): any {
+  const setter = UNIFORM_SETTERS[info.type];
+  if (!setter) {
+    throw new Error(`Unknown GLSL uniform type ${info.type}`);
+  }
+  return setter().bind(null, gl, location);
+}

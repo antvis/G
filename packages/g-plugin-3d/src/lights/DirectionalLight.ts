@@ -1,5 +1,7 @@
-import { DisplayObjectConfig, PARSED_COLOR_TYPE, Tuple4Number } from '@antv/g';
-import { Light, LightProps, RenderInstUniform } from '@antv/g-plugin-webgl-renderer';
+import type { DisplayObjectConfig, Tuple4Number } from '@antv/g';
+import { PARSED_COLOR_TYPE } from '@antv/g';
+import type { LightProps, RenderInstUniform } from '@antv/g-plugin-webgl-renderer';
+import { Light } from '@antv/g-plugin-webgl-renderer';
 import { vec3 } from 'gl-matrix';
 
 export interface DirectionalLightProps extends LightProps {

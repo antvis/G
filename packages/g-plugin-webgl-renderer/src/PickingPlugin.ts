@@ -1,9 +1,7 @@
+import type { RenderingService, RenderingPlugin, PickingResult } from '@antv/g';
 import {
-  RenderingService,
-  RenderingPlugin,
   RenderingPluginContribution,
   SceneGraphService,
-  PickingResult,
   Rectangle,
   ContextService,
   CanvasConfig,

@@ -1,7 +1,7 @@
-import { ParsedImageStyleProps } from '@antv/g';
+import type { ParsedImageStyleProps } from '@antv/g';
 import { isString } from '@antv/util';
 import { singleton } from 'mana-syringe';
-import { ElementRenderer } from '.';
+import type { ElementRenderer } from '.';
 
 @singleton()
 export class ImageRenderer implements ElementRenderer<ParsedImageStyleProps> {

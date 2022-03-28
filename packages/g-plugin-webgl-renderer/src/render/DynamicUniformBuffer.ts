@@ -1,4 +1,5 @@
-import { Device, BufferUsage, BufferFrequencyHint, Buffer } from '../platform';
+import type { Device, Buffer } from '../platform';
+import { BufferUsage, BufferFrequencyHint } from '../platform';
 import { alignNonPowerOfTwo, assert, assertExists } from '../platform/utils';
 
 // This is a very basic linear allocator. We allocate offsets in-order.

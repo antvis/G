@@ -1,4 +1,4 @@
-import { Format } from './format';
+import type { Format } from './format';
 import { GL } from './constants';
 
 export enum ResourceType {
@@ -17,7 +17,7 @@ export enum ResourceType {
 }
 
 export interface Disposable {
-  destroy(): void;
+  destroy: () => void;
 }
 export interface ResourceBase extends Disposable {
   id: number;
@@ -25,16 +25,16 @@ export interface ResourceBase extends Disposable {
 }
 export interface Buffer extends ResourceBase {
   type: ResourceType.Buffer;
-  setSubData(
+  setSubData: (
     dstByteOffset: number,
     src: ArrayBufferView,
     srcByteOffset?: number,
     byteLength?: number,
-  ): void;
+  ) => void;
 }
 export interface Texture extends ResourceBase {
   type: ResourceType.Texture;
-  setImageData(data: TexImageSource | ArrayBufferView[], firstMipLevel?: number): void;
+  setImageData: (data: TexImageSource | ArrayBufferView[], firstMipLevel?: number) => void;
 }
 export interface RenderTarget extends ResourceBase {
   type: ResourceType.RenderTarget;
@@ -60,12 +60,12 @@ export interface RenderPipeline extends ResourceBase {
 export interface QueryPool extends ResourceBase {
   type: ResourceType.QueryPool;
 
-  queryResultOcclusion(dstOffs: number): boolean | null;
+  queryResultOcclusion: (dstOffs: number) => boolean | null;
 }
 export interface Readback extends ResourceBase {
   type: ResourceType.Readback;
 
-  readTexture(
+  readTexture: (
     t: Texture,
     x: number,
     y: number,
@@ -74,15 +74,15 @@ export interface Readback extends ResourceBase {
     dst: ArrayBufferView,
     dstOffset?: number,
     length?: number,
-  ): Promise<ArrayBufferView>;
+  ) => Promise<ArrayBufferView>;
 
-  readBuffer(
+  readBuffer: (
     b: Buffer,
     srcByteOffset?: number,
     dst?: ArrayBufferView,
     dstOffset?: number,
     length?: number,
-  ): Promise<ArrayBufferView>;
+  ) => Promise<ArrayBufferView>;
 }
 export interface ComputePipeline extends ResourceBase {
   type: ResourceType.ComputePipeline;
@@ -239,7 +239,7 @@ export interface VertexBufferDescriptor {
   byteOffset: number;
 }
 
-export interface IndexBufferDescriptor extends VertexBufferDescriptor {}
+export type IndexBufferDescriptor = VertexBufferDescriptor;
 
 export interface VertexAttributeDescriptor {
   location: number;
@@ -358,8 +358,8 @@ export interface ProgramDescriptorSimple {
 }
 
 export interface ProgramDescriptor extends ProgramDescriptorSimple {
-  ensurePreprocessed(vendorInfo: VendorInfo): void;
-  associate(device: Device, program: Program): void;
+  ensurePreprocessed: (vendorInfo: VendorInfo) => void;
+  associate: (device: Device, program: Program) => void;
 }
 
 export interface InputLayoutDescriptor {
@@ -410,7 +410,7 @@ export interface RenderPipelineDescriptor extends PipelineDescriptor {
   sampleCount: number;
 }
 
-export interface ComputePipelineDescriptor extends PipelineDescriptor {}
+export type ComputePipelineDescriptor = PipelineDescriptor;
 
 export interface Color {
   r: number;
@@ -434,6 +434,7 @@ export interface RenderPassDescriptor {
   occlusionQueryPool: QueryPool | null;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ComputePassDescriptor {}
 
 export interface DeviceLimits {
@@ -482,47 +483,51 @@ export interface NormalizedViewportCoords {
 
 export interface SwapChain {
   // @see https://www.w3.org/TR/webgpu/#canvas-configuration
-  configureSwapChain(
+  configureSwapChain: (
     width: number,
     height: number,
     platformFramebuffer?: PlatformFramebuffer,
-  ): void;
-  getDevice(): Device;
-  getCanvas(): HTMLCanvasElement | OffscreenCanvas;
-  getOnscreenTexture(): Texture;
-  present(): void;
+  ) => void;
+  getDevice: () => Device;
+  getCanvas: () => HTMLCanvasElement | OffscreenCanvas;
+  getOnscreenTexture: () => Texture;
+  present: () => void;
 }
 
 export interface RenderPass {
   // State management.
-  setViewport(x: number, y: number, w: number, h: number): void;
-  setScissor(x: number, y: number, w: number, h: number): void;
-  setPipeline(pipeline: RenderPipeline): void;
-  setBindings(bindingLayoutIndex: number, bindings: Bindings, dynamicByteOffsets: number[]): void;
-  setInputState(inputState: InputState | null): void;
-  setStencilRef(value: number): void;
+  setViewport: (x: number, y: number, w: number, h: number) => void;
+  setScissor: (x: number, y: number, w: number, h: number) => void;
+  setPipeline: (pipeline: RenderPipeline) => void;
+  setBindings: (
+    bindingLayoutIndex: number,
+    bindings: Bindings,
+    dynamicByteOffsets: number[],
+  ) => void;
+  setInputState: (inputState: InputState | null) => void;
+  setStencilRef: (value: number) => void;
 
   // Draw commands.
-  draw(vertexCount: number, firstVertex: number): void;
-  drawIndexed(indexCount: number, firstIndex: number): void;
-  drawIndexedInstanced(indexCount: number, firstIndex: number, instanceCount: number): void;
+  draw: (vertexCount: number, firstVertex: number) => void;
+  drawIndexed: (indexCount: number, firstIndex: number) => void;
+  drawIndexedInstanced: (indexCount: number, firstIndex: number, instanceCount: number) => void;
 
   // Query system.
-  beginOcclusionQuery(dstOffs: number): void;
-  endOcclusionQuery(dstOffs: number): void;
+  beginOcclusionQuery: (dstOffs: number) => void;
+  endOcclusionQuery: (dstOffs: number) => void;
 
   // Debug.
-  beginDebugGroup(name: string): void;
-  endDebugGroup(): void;
+  beginDebugGroup: (name: string) => void;
+  endDebugGroup: () => void;
 }
 
 export interface ComputePass {
-  setPipeline(pipeline: ComputePipeline): void;
-  setBindings(bindingLayoutIndex: number, bindings: Bindings): void;
+  setPipeline: (pipeline: ComputePipeline) => void;
+  setBindings: (bindingLayoutIndex: number, bindings: Bindings) => void;
   /**
    * @see https://www.w3.org/TR/webgpu/#compute-pass-encoder-dispatch
    */
-  dispatch(x: number, y?: number, z?: number): void;
+  dispatch: (x: number, y?: number, z?: number) => void;
 }
 
 export enum QueryPoolType {
@@ -548,57 +553,57 @@ export interface Device {
   /**
    * @see https://www.w3.org/TR/webgpu/#dom-gpudevice-createbuffer
    */
-  createBuffer(descriptor: BufferDescriptor): Buffer;
-  createTexture(descriptor: TextureDescriptor): Texture;
-  createSampler(descriptor: SamplerDescriptor): Sampler;
-  createRenderTarget(descriptor: RenderTargetDescriptor): RenderTarget;
-  createRenderTargetFromTexture(texture: Texture): RenderTarget;
-  createProgram(program: ProgramDescriptor): Program;
-  createProgramSimple(program: ProgramDescriptorSimple): Program;
-  createBindings(bindingsDescriptor: BindingsDescriptor): Bindings;
-  createInputLayout(inputLayoutDescriptor: InputLayoutDescriptor): InputLayout;
-  createInputState(
+  createBuffer: (descriptor: BufferDescriptor) => Buffer;
+  createTexture: (descriptor: TextureDescriptor) => Texture;
+  createSampler: (descriptor: SamplerDescriptor) => Sampler;
+  createRenderTarget: (descriptor: RenderTargetDescriptor) => RenderTarget;
+  createRenderTargetFromTexture: (texture: Texture) => RenderTarget;
+  createProgram: (program: ProgramDescriptor) => Program;
+  createProgramSimple: (program: ProgramDescriptorSimple) => Program;
+  createBindings: (bindingsDescriptor: BindingsDescriptor) => Bindings;
+  createInputLayout: (inputLayoutDescriptor: InputLayoutDescriptor) => InputLayout;
+  createInputState: (
     inputLayout: InputLayout,
     buffers: (VertexBufferDescriptor | null)[],
     indexBuffer: IndexBufferDescriptor | null,
     program?: Program,
-  ): InputState;
-  createRenderPipeline(descriptor: RenderPipelineDescriptor): RenderPipeline;
-  createComputePipeline(descriptor: ComputePipelineDescriptor): ComputePipeline;
-  createReadback(): Readback;
-  createQueryPool(type: QueryPoolType, elemCount: number): QueryPool;
+  ) => InputState;
+  createRenderPipeline: (descriptor: RenderPipelineDescriptor) => RenderPipeline;
+  createComputePipeline: (descriptor: ComputePipelineDescriptor) => ComputePipeline;
+  createReadback: () => Readback;
+  createQueryPool: (type: QueryPoolType, elemCount: number) => QueryPool;
 
-  createRenderPass(renderPassDescriptor: RenderPassDescriptor): RenderPass;
-  createComputePass(computePassDescriptor: ComputePassDescriptor): ComputePass;
-  submitPass(pass: RenderPass | ComputePass): void;
+  createRenderPass: (renderPassDescriptor: RenderPassDescriptor) => RenderPass;
+  createComputePass: (computePassDescriptor: ComputePassDescriptor) => ComputePass;
+  submitPass: (pass: RenderPass | ComputePass) => void;
 
   // Render pipeline compilation control.
-  pipelineQueryReady(o: RenderPipeline): boolean;
-  pipelineForceReady(o: RenderPipeline): void;
+  pipelineQueryReady: (o: RenderPipeline) => boolean;
+  pipelineForceReady: (o: RenderPipeline) => void;
 
-  copySubTexture2D(
+  copySubTexture2D: (
     dst: Texture,
     dstX: number,
     dstY: number,
     src: Texture,
     srcX: number,
     srcY: number,
-  ): void;
+  ) => void;
 
   // Information queries.
-  queryLimits(): DeviceLimits;
-  queryTextureFormatSupported(format: Format, width: number, height: number): boolean;
-  queryPipelineReady(o: RenderPipeline): boolean;
-  queryPlatformAvailable(): boolean;
-  queryVendorInfo(): VendorInfo;
-  queryRenderPass(o: RenderPass): Readonly<RenderPassDescriptor>;
-  queryRenderTarget(o: RenderTarget): Readonly<RenderTargetDescriptor>;
+  queryLimits: () => DeviceLimits;
+  queryTextureFormatSupported: (format: Format, width: number, height: number) => boolean;
+  queryPipelineReady: (o: RenderPipeline) => boolean;
+  queryPlatformAvailable: () => boolean;
+  queryVendorInfo: () => VendorInfo;
+  queryRenderPass: (o: RenderPass) => Readonly<RenderPassDescriptor>;
+  queryRenderTarget: (o: RenderTarget) => Readonly<RenderTargetDescriptor>;
 
   // Debugging.
-  setResourceName(o: Resource, s: string): void;
-  setResourceLeakCheck(o: Resource, v: boolean): void;
-  checkForLeaks(): void;
-  programPatched(o: Program, descriptor: ProgramDescriptorSimple): void;
-  pushDebugGroup(debugGroup: DebugGroup): void;
-  popDebugGroup(): void;
+  setResourceName: (o: Resource, s: string) => void;
+  setResourceLeakCheck: (o: Resource, v: boolean) => void;
+  checkForLeaks: () => void;
+  programPatched: (o: Program, descriptor: ProgramDescriptorSimple) => void;
+  pushDebugGroup: (debugGroup: DebugGroup) => void;
+  popDebugGroup: () => void;
 }

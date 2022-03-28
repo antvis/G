@@ -1,7 +1,9 @@
 import TinySDF from '@mapbox/tiny-sdf';
 import { injectable } from 'mana-syringe';
-import { Device, Format, makeTextureDescriptor2D, Texture } from '../../platform';
-import { AlphaImage, StyleGlyph } from './AlphaImage';
+import type { Device, Texture } from '../../platform';
+import { Format, makeTextureDescriptor2D } from '../../platform';
+import type { StyleGlyph } from './AlphaImage';
+import { AlphaImage } from './AlphaImage';
 import GlyphAtlas from './GlyphAtlas';
 
 export type PositionedGlyph = {
@@ -37,18 +39,12 @@ export function getDefaultCharacterSet(): string[] {
  */
 @injectable()
 export class GlyphManager {
-  private sdfGeneratorCache: {
-    [fontStack: string]: TinySDF;
-  } = {};
+  private sdfGeneratorCache: Record<string, TinySDF> = {};
 
-  private textMetricsCache: {
-    [fontStack: string]: {
-      [char: string]: number;
-    };
-  } = {};
+  private textMetricsCache: Record<string, Record<string, number>> = {};
 
   private glyphAtlas: GlyphAtlas;
-  private glyphMap: { [key: string]: { [key: number]: StyleGlyph } } = {};
+  private glyphMap: Record<string, Record<number, StyleGlyph>> = {};
   private glyphAtlasTexture: Texture;
 
   getMap() {
@@ -85,7 +81,7 @@ export class GlyphManager {
         : 0.5;
 
     lines.forEach((line) => {
-      let lineStartIndex = positionedGlyphs.length;
+      const lineStartIndex = positionedGlyphs.length;
       Array.from(line).forEach((char) => {
         // fontStack
         const positions = this.glyphMap[fontStack];

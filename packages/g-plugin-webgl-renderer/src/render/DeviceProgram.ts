@@ -1,6 +1,7 @@
-import { VendorInfo } from '../platform';
+import type { VendorInfo } from '../platform';
 import { assert, nullify } from '../platform/utils';
-import { preprocessShader_GLSL, ShaderFeatureMap } from '../shader/compiler';
+import type { ShaderFeatureMap } from '../shader/compiler';
+import { preprocessShader_GLSL } from '../shader/compiler';
 
 export class DeviceProgram {
   name: string = '(unnamed)';

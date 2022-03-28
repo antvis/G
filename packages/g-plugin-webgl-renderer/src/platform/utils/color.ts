@@ -1,4 +1,4 @@
-import { Color } from '../interfaces';
+import type { Color } from '../interfaces';
 
 export function colorEqual(c0: Readonly<Color>, c1: Readonly<Color>): boolean {
   return c0.r === c1.r && c0.g === c1.g && c0.b === c1.b && c0.a === c1.a;

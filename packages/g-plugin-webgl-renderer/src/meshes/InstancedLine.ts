@@ -1,12 +1,6 @@
 import { injectable } from 'mana-syringe';
-import {
-  Line,
-  LineCap,
-  DisplayObject,
-  Shape,
-  ParsedColorStyleProperty,
-  PARSED_COLOR_TYPE,
-} from '@antv/g';
+import type { Line, DisplayObject, ParsedColorStyleProperty } from '@antv/g';
+import { LineCap, Shape, PARSED_COLOR_TYPE } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
 import vert from '../shader/instanced-line.vert';
 import frag from '../shader/instanced-line.frag';

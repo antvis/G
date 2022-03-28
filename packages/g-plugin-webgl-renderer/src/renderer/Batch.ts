@@ -1,13 +1,14 @@
 import { injectable, inject } from 'mana-syringe';
-import { DisplayObject, RenderingService, DefaultCamera, Camera } from '@antv/g';
-import { Device } from '../platform';
+import type { DisplayObject, RenderingService } from '@antv/g';
+import { DefaultCamera, Camera } from '@antv/g';
+import type { Device } from '../platform';
 import { RenderHelper } from '../render/RenderHelper';
 import { TexturePool } from '../TexturePool';
-import { Instanced } from '../meshes/Instanced';
+import type { Instanced } from '../meshes/Instanced';
 import { LightPool } from '../LightPool';
 // import { MeshFactory } from '../tokens';
 import { BatchManager } from './BatchManager';
-import { RenderInst } from '../render/RenderInst';
+import type { RenderInst } from '../render/RenderInst';
 
 /**
  * render order start from 0, our default camera's Z is 500

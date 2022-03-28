@@ -1,19 +1,18 @@
 import { inject, singleton } from 'mana-syringe';
-import {
-  Shape,
+import type {
   DisplayObject,
   RenderingService,
   RenderingPlugin,
-  RenderingPluginContribution,
-  Renderable,
-  ContextService,
   ParsedHTMLStyleProps,
+  FederatedEvent,
+} from '@antv/g';
+import {
+  Shape,
+  RenderingPluginContribution,
+  ContextService,
   PARSED_COLOR_TYPE,
-  fromRotationTranslationScale,
-  getEuler,
   RenderingContext,
   ElementEvent,
-  FederatedEvent,
 } from '@antv/g';
 import { isString } from '@antv/util';
 

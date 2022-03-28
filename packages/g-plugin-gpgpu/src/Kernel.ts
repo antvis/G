@@ -1,6 +1,8 @@
-import { Buffer, BufferUsage } from '@antv/g-plugin-webgl-renderer';
+import type { Buffer } from '@antv/g-plugin-webgl-renderer';
+import { BufferUsage } from '@antv/g-plugin-webgl-renderer';
 import type { Device, ComputePipeline } from '@antv/g-plugin-webgl-renderer';
-import { KernelBundle, Target } from './interface';
+import type { KernelBundle } from './interface';
+import { Target } from './interface';
 
 export interface KernelOptions {
   computeShader?: string;

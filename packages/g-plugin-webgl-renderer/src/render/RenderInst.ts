@@ -1,8 +1,7 @@
-import {
+import type {
   RenderPipelineDescriptor,
   BindingsDescriptor,
   InputState,
-  PrimitiveTopology,
   Program,
   MegaStateDescriptor,
   InputLayout,
@@ -11,6 +10,7 @@ import {
   Device,
   RenderPass,
 } from '../platform';
+import { PrimitiveTopology } from '../platform';
 import {
   assert,
   assertExists,
@@ -20,9 +20,9 @@ import {
   setBitFlagEnabled,
   setMegaStateFlags,
 } from '../platform/utils';
-import { Program_GL } from '../platform/webgl2/Program';
-import { DynamicUniformBuffer } from './DynamicUniformBuffer';
-import { RenderCache } from './RenderCache';
+import type { Program_GL } from '../platform/webgl2/Program';
+import type { DynamicUniformBuffer } from './DynamicUniformBuffer';
+import type { RenderCache } from './RenderCache';
 import { fillVec4 } from './utils';
 
 export enum RenderInstFlags {
@@ -243,7 +243,7 @@ export class RenderInst {
     let offset = 0;
     const uboBuffer = [];
     uniforms.forEach((uniform) => {
-      const { name, value } = uniform;
+      const { value } = uniform;
       const array = typeof value === 'number' ? [value] : value;
       const formatByteSize = array.length > 4 ? 4 : array.length;
 
@@ -274,7 +274,7 @@ export class RenderInst {
 
     // upload UBO
     let offs = this.allocateUniformBuffer(bufferIndex, uboBuffer.length);
-    let d = this.mapUniformBufferF32(bufferIndex);
+    const d = this.mapUniformBufferF32(bufferIndex);
     for (let i = 0; i < uboBuffer.length; i += 4) {
       offs += fillVec4(d, offs, uboBuffer[i], uboBuffer[i + 1], uboBuffer[i + 2], uboBuffer[i + 3]);
     }

@@ -1,17 +1,18 @@
-import { Format } from '../format';
-import {
+import type { Format } from '../format';
+import type {
   BindingLayoutDescriptor,
   MegaStateDescriptor,
   RenderPipeline,
-  RenderPipelineDescriptor,
+  RenderPipelineDescriptor} from '../interfaces';
+import {
   ResourceType,
 } from '../interfaces';
 import { assert } from '../utils';
 import { defaultBindingLayoutSamplerDescriptor } from '../webgpu/Bindings';
-import { Device_GL } from './Device';
-import { InputLayout_GL } from './InputLayout';
-import { BindingLayoutSamplerDescriptor_GL } from './interfaces';
-import { Program_GL } from './Program';
+import type { Device_GL } from './Device';
+import type { InputLayout_GL } from './InputLayout';
+import type { BindingLayoutSamplerDescriptor_GL } from './interfaces';
+import type { Program_GL } from './Program';
 import { ResourceBase_GL } from './ResourceBase';
 import { translatePrimitiveTopology, translateTextureDimension } from './utils';
 

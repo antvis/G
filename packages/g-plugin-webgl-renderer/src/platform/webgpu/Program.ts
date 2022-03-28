@@ -1,6 +1,7 @@
-import { Program, ProgramDescriptorSimple, ResourceType } from '../interfaces';
-import { Device_WebGPU } from './Device';
-import { IDevice_WebGPU } from './interfaces';
+import type { Program, ProgramDescriptorSimple } from '../interfaces';
+import { ResourceType } from '../interfaces';
+import type { Device_WebGPU } from './Device';
+import type { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 
 export class Program_WebGPU extends ResourceBase_WebGPU implements Program {
@@ -50,7 +51,7 @@ export class Program_WebGPU extends ResourceBase_WebGPU implements Program {
         );
       } catch (e) {
         console.error(e, sourceText);
-        throw 'whoops';
+        throw new Error('whoops');
       }
     }
 

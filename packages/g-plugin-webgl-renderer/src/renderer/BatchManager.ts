@@ -1,11 +1,12 @@
-import { DisplayObject, RenderingService } from '@antv/g';
+import type { DisplayObject, RenderingService } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-import { Device } from '../platform';
+import type { Device } from '../platform';
 import { MeshFactory, RendererFactory } from '../tokens';
-import { Batch } from './Batch';
-import { Instanced } from '../meshes/Instanced';
-import { RenderHelper, RenderInstList } from '../render';
-import { Renderable3D } from '../components/Renderable3D';
+import type { Batch } from './Batch';
+import type { Instanced } from '../meshes/Instanced';
+import type { RenderInstList } from '../render';
+import { RenderHelper } from '../render';
+import type { Renderable3D } from '../components/Renderable3D';
 // import { BufferGeometry } from '../geometries';
 // import { ShaderMaterial } from '../materials';
 

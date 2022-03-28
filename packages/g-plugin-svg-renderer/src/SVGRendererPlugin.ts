@@ -2,27 +2,31 @@ import { inject, singleton } from 'mana-syringe';
 import { vec3, mat4, quat } from 'gl-matrix';
 import {
   ContextService,
-  RenderingService,
   RenderingContext,
-  RenderingPlugin,
   RenderingPluginContribution,
   Shape,
   fromRotationTranslationScale,
   getEuler,
-  DisplayObject,
   Camera,
   RenderReason,
-  PARSED_COLOR_TYPE,
   DefaultCamera,
   ElementEvent,
+} from '@antv/g';
+import type {
+  LinearGradient,
+  RadialGradient,
+  RenderingService,
+  RenderingPlugin,
+  DisplayObject,
+  PARSED_COLOR_TYPE,
   MutationEvent,
   FederatedEvent,
 } from '@antv/g';
-import type { LinearGradient, RadialGradient } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
 import { createSVGElement } from './utils/dom';
 import { numberToLongString } from './utils/format';
-import { ElementRenderer, ElementRendererFactory } from './shapes/paths';
+import type { ElementRenderer } from './shapes/paths';
+import { ElementRendererFactory } from './shapes/paths';
 import { createOrUpdateFilter } from './shapes/defs/Filter';
 import { createOrUpdateGradientAndPattern } from './shapes/defs/Pattern';
 import { createOrUpdateShadow } from './shapes/defs/Shadow';
@@ -178,7 +182,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
     const handleAttributeChanged = (e: MutationEvent) => {
       const object = e.target as DisplayObject;
-      const { attrName, newValue } = e;
+      const { attrName } = e;
 
       if (attrName === 'zIndex') {
         const parent = object.parentNode;
@@ -280,6 +284,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
     const [x, y] = translation;
     const [scaleX, scaleY] = scaling;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [ex, ey, ez] = getEuler(vec3.create(), rotation);
 
     // gimbal lock at 90 degrees

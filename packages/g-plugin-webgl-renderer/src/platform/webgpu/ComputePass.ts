@@ -1,7 +1,7 @@
-import { Bindings, ComputePass, ComputePassDescriptor, ComputePipeline } from '../interfaces';
+import type { Bindings, ComputePass, ComputePassDescriptor, ComputePipeline } from '../interfaces';
 import { assert, assertExists } from '../utils';
-import { Bindings_WebGPU } from './Bindings';
-import { ComputePipeline_WebGPU } from './ComputePipeline';
+import type { Bindings_WebGPU } from './Bindings';
+import type { ComputePipeline_WebGPU } from './ComputePipeline';
 
 export class ComputePass_WebGPU implements ComputePass {
   commandEncoder: GPUCommandEncoder | null = null;

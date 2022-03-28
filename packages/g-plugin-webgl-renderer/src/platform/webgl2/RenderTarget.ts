@@ -1,7 +1,8 @@
 import { GL } from '../constants';
-import { Format } from '../format';
-import { RenderTarget, RenderTargetDescriptor, ResourceType, Texture } from '../interfaces';
-import { Device_GL } from './Device';
+import type { Format } from '../format';
+import type { RenderTarget, RenderTargetDescriptor, Texture } from '../interfaces';
+import { ResourceType } from '../interfaces';
+import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
 import { isWebGL2 } from './utils';
 

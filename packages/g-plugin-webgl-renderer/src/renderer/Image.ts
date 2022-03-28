@@ -1,5 +1,6 @@
 import { injectable } from 'mana-syringe';
-import { DisplayObject, Shape } from '@antv/g';
+import type { DisplayObject } from '@antv/g';
+import { Shape } from '@antv/g';
 import { Batch } from './Batch';
 import { ShapeRenderer } from '../tokens';
 import { ImageMesh } from '../meshes';

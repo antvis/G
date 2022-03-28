@@ -1,16 +1,12 @@
 import { GL } from '../constants';
-import { Format, FormatTypeFlags, getFormatSamplerKind, getFormatTypeFlags } from '../format';
-import {
-  ResourceType,
-  SamplerFormatKind,
-  Texture,
-  TextureDescriptor,
-  TextureDimension,
-} from '../interfaces';
+import type { Format } from '../format';
+import { FormatTypeFlags, getFormatSamplerKind, getFormatTypeFlags } from '../format';
+import type { SamplerFormatKind, Texture, TextureDescriptor } from '../interfaces';
+import { ResourceType, TextureDimension } from '../interfaces';
 import { assert, isPowerOfTwo } from '../utils';
-import { Device_GL } from './Device';
+import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
-import { getPlatformTexture, isTextureFormatCompressed, isWebGL2 } from './utils';
+import { getPlatformTexture, isWebGL2 } from './utils';
 
 export class Texture_GL extends ResourceBase_GL implements Texture {
   type: ResourceType.Texture = ResourceType.Texture;
@@ -49,7 +45,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     const gl = this.device.gl;
     let gl_target: GLenum;
     let gl_texture: WebGLTexture;
-    let numLevels = this.clampNumLevels(descriptor);
+    const numLevels = this.clampNumLevels(descriptor);
     this.immutable = !!descriptor.immutable;
     this.pixelStore = descriptor.pixelStore;
     this.pixelFormat = descriptor.pixelFormat;
@@ -158,7 +154,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
         }
         assert(descriptor.depth === 6);
       } else {
-        throw 'whoops';
+        throw new Error('whoops');
       }
     }
 
@@ -169,9 +165,9 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
 
   setImageData(data: TexImageSource | ArrayBufferView[], level: number) {
     const gl = this.device.gl;
-    const isCompressed = isTextureFormatCompressed(this.pixelFormat);
-    const is3D = this.gl_target === GL.TEXTURE_3D || this.gl_target === GL.TEXTURE_2D_ARRAY;
-    const isCube = this.gl_target === GL.TEXTURE_CUBE_MAP;
+    // const isCompressed = isTextureFormatCompressed(this.pixelFormat);
+    // const is3D = this.gl_target === GL.TEXTURE_3D || this.gl_target === GL.TEXTURE_2D_ARRAY;
+    // const isCube = this.gl_target === GL.TEXTURE_CUBE_MAP;
     const isArray = Array.isArray(data);
 
     this.device.setActiveTexture(gl.TEXTURE0);

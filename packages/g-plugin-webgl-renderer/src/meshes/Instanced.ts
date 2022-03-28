@@ -1,26 +1,21 @@
-import {
-  Camera,
-  DefaultCamera,
+import { Camera, DefaultCamera, parseColor, PARSED_COLOR_TYPE, Shape } from '@antv/g';
+import type {
+  Tuple4Number,
   DisplayObject,
-  parseColor,
   ParsedBaseStyleProps,
   ParsedColorStyleProperty,
-  PARSED_COLOR_TYPE,
   RenderingService,
-  Shape,
 } from '@antv/g';
-import type { Tuple4Number } from '@antv/g';
 import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
 import { BufferGeometry } from '../geometries';
-import { Material, ShaderMaterial } from '../materials';
+import type { Material } from '../materials';
+import { ShaderMaterial } from '../materials';
+import type { BindingLayoutSamplerDescriptor, Device, InputState } from '../platform';
 import {
-  BindingLayoutSamplerDescriptor,
   ChannelWriteMask,
   CompareMode,
-  Device,
   Format,
-  InputState,
   makeTextureDescriptor2D,
   MipFilterMode,
   StencilOp,
@@ -28,19 +23,20 @@ import {
   VertexBufferFrequency,
   WrapMode,
 } from '../platform';
+import type { RenderInst, RenderInstUniform } from '../render';
 import {
   DeviceProgram,
   makeSortKeyOpaque,
   RendererLayer,
   RenderHelper,
-  RenderInst,
-  RenderInstUniform,
   TextureMapping,
 } from '../render';
-import { preprocessProgramObj_GLSL, ProgramDescriptorSimpleWithOrig } from '../shader/compiler';
-import { RENDER_ORDER_SCALE, Batch } from '../renderer/Batch';
+import type { ProgramDescriptorSimpleWithOrig } from '../shader/compiler';
+import { preprocessProgramObj_GLSL } from '../shader/compiler';
+import type { Batch } from '../renderer/Batch';
+import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import { TexturePool } from '../TexturePool';
-import { Fog } from '../lights';
+import type { Fog } from '../lights';
 import { LightPool } from '../LightPool';
 import { enumToObject } from '../utils/enum';
 
@@ -158,6 +154,10 @@ export abstract class Instanced {
     this.device = device;
     this.renderingService = renderingService;
     this.material = new ShaderMaterial(this.device);
+    this.material.defines = {
+      ...enumToObject(VertexAttributeLocation),
+      ...this.material.defines,
+    };
     this.geometry = new BufferGeometry(this.device);
     this.inited = true;
     this.renderer.afterInitMesh(this);
@@ -689,14 +689,14 @@ export abstract class Instanced {
     // reallocate attribute data
     let cursor = 0;
     const uniqueIndices = new Uint32Array(indiceNum);
-    for (var i = 0; i < indiceNum; i++) {
-      var ii = indices[i];
+    for (let i = 0; i < indiceNum; i++) {
+      const ii = indices[i];
 
       for (let j = 1; j < geometry.vertices.length; j++) {
         const { byteStride } = geometry.inputLayoutDescriptor.vertexBufferDescriptors[j];
         const size = byteStride / 4;
 
-        for (var k = 0; k < size; k++) {
+        for (let k = 0; k < size; k++) {
           geometry.vertices[j][cursor * size + k] = originalVertexBuffers[j][ii * size + k];
         }
       }
@@ -770,7 +770,7 @@ export abstract class Instanced {
 
   protected beforeUploadUBO(renderInst: RenderInst, objects: DisplayObject[], i: number): void {}
   private uploadUBO(renderInst: RenderInst): void {
-    let numUniformBuffers = 1; // Scene UBO
+    const numUniformBuffers = 1; // Scene UBO
     const material = this.material;
     const lights = this.lightPool.getAllLights();
     const fog = this.lightPool.getFog();

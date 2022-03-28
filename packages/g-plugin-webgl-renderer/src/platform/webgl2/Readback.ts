@@ -1,11 +1,11 @@
 import { clamp } from '@antv/util';
 import { GL } from '../constants';
 import { getFormatByteSize } from '../format';
-import { Buffer, Readback, ResourceType, Texture } from '../interfaces';
-import { Buffer_GL } from './Buffer';
-import { Device_GL } from './Device';
+import type { Buffer, Readback, Texture } from '../interfaces';
+import { ResourceType } from '../interfaces';
+import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
-import { Texture_GL } from './Texture';
+import type { Texture_GL } from './Texture';
 import { getPlatformBuffer, isWebGL2 } from './utils';
 
 export class Readback_GL extends ResourceBase_GL implements Readback {

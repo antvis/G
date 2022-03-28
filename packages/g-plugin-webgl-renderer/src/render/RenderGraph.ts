@@ -1,9 +1,10 @@
-import { Device, RenderTarget, Texture } from '../platform';
+import type { Device, RenderTarget, Texture } from '../platform';
 import { assert, assertExists, fillArray } from '../platform/utils';
-import { PassSetupFunc, RGAttachmentSlot, RGGraphBuilder, RGGraphBuilderDebug } from './interfaces';
+import type { PassSetupFunc, RGGraphBuilder, RGGraphBuilderDebug } from './interfaces';
+import { RGAttachmentSlot } from './interfaces';
 import { RenderGraphPass } from './RenderGraphPass';
 import { RGRenderTarget } from './RenderTarget';
-import { RGRenderTargetDescription } from './RenderTargetDescription';
+import type { RGRenderTargetDescription } from './RenderTargetDescription';
 import { SingleSampledTexture } from './SingleSampledTexture';
 
 interface ResolveParam {

@@ -1,4 +1,4 @@
-import { DisplayObject } from '@antv/g';
+import type { DisplayObject } from '@antv/g';
 import { singleton } from 'mana-syringe';
 
 @singleton()

@@ -1,17 +1,17 @@
 import { injectable } from 'mana-syringe';
-import { DisplayObject, PARSED_COLOR_TYPE, Shape, Tuple4Number } from '@antv/g';
+import type { DisplayObject, Tuple4Number } from '@antv/g';
+import { PARSED_COLOR_TYPE, Shape } from '@antv/g';
 import { vec3, mat4 } from 'gl-matrix';
 import { Format, VertexBufferFrequency } from '../platform';
 import meshVert from '../shader/mesh.vert';
 import meshFrag from '../shader/mesh.frag';
-import { Instanced } from '../meshes/Instanced';
+import {
+  Instanced,
+  VertexAttributeBufferIndex,
+  VertexAttributeLocation,
+} from '../meshes/Instanced';
 import { Uniform, updateBuffer } from './Line';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
-import { enumToObject } from '../utils/enum';
-
-enum MeshVertexAttributeLocation {
-  POSITION = 0,
-}
 
 @injectable()
 export class FillMesh extends Instanced {
@@ -25,7 +25,7 @@ export class FillMesh extends Instanced {
     // use triangles for Polygon
     const { triangles, pointsBuffer } = updateBuffer(instance, true);
     this.geometry.setVertexBuffer({
-      bufferIndex: 0,
+      bufferIndex: VertexAttributeBufferIndex.POSITION,
       byteStride: 4 * 2,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
@@ -33,7 +33,7 @@ export class FillMesh extends Instanced {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
           byteStride: 4 * 2,
-          location: MeshVertexAttributeLocation.POSITION,
+          location: VertexAttributeLocation.POSITION,
         },
       ],
       data: new Float32Array(pointsBuffer),
@@ -45,10 +45,6 @@ export class FillMesh extends Instanced {
   createMaterial(objects: DisplayObject[]): void {
     this.material.vertexShader = meshVert;
     this.material.fragmentShader = meshFrag;
-    this.material.defines = {
-      ...this.material.defines,
-      ...enumToObject(MeshVertexAttributeLocation),
-    };
 
     const instance = objects[0];
 

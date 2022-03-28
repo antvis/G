@@ -1,5 +1,5 @@
 import { injectable } from 'mana-syringe';
-import { DisplayObject, Image as ImageShape } from '@antv/g';
+import type { DisplayObject, Image as ImageShape } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
 import vert from '../shader/image.vert';
 import frag from '../shader/image.frag';

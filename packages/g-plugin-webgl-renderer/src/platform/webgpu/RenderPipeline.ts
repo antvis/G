@@ -1,5 +1,6 @@
-import { RenderPipeline, RenderPipelineDescriptor, ResourceType } from '../interfaces';
-import { IDevice_WebGPU } from './interfaces';
+import type { RenderPipeline, RenderPipelineDescriptor} from '../interfaces';
+import { ResourceType } from '../interfaces';
+import type { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 
 export class RenderPipeline_WebGPU extends ResourceBase_WebGPU implements RenderPipeline {

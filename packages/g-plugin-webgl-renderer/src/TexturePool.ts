@@ -1,13 +1,8 @@
-import { PARSED_COLOR_TYPE, OffscreenCanvasCreator, LinearGradient, RadialGradient } from '@antv/g';
+import type { LinearGradient, RadialGradient } from '@antv/g';
+import { PARSED_COLOR_TYPE, OffscreenCanvasCreator } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-import {
-  Device,
-  Format,
-  Texture,
-  TextureDescriptor,
-  TextureDimension,
-  TextureUsage,
-} from './platform';
+import type { Device, Texture, TextureDescriptor } from './platform';
+import { Format, TextureDimension, TextureUsage } from './platform';
 
 export type GradientParams = (LinearGradient | RadialGradient) & {
   width: number;
@@ -27,7 +22,7 @@ export class TexturePool {
     device: Device,
     src: string | TexImageSource,
     descriptor?: TextureDescriptor,
-    successCallback?: Function,
+    successCallback?: () => void,
   ): Texture {
     // @ts-ignore
     const id = typeof src === 'string' ? src : src.src || '';

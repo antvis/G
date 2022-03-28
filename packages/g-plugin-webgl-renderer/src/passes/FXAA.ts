@@ -1,9 +1,11 @@
 import { BufferGeometry } from '../geometries';
-import { Format, InputLayout, InputState, VertexBufferFrequency } from '../platform';
+import type { InputLayout, InputState} from '../platform';
+import { Format, VertexBufferFrequency } from '../platform';
 import { fullscreenMegaState, nArray } from '../platform/utils';
 import { DeviceProgram } from '../render/DeviceProgram';
-import { RGAttachmentSlot, RGGraphBuilder } from '../render/interfaces';
-import { RenderHelper } from '../render/RenderHelper';
+import type { RGGraphBuilder } from '../render/interfaces';
+import { RGAttachmentSlot } from '../render/interfaces';
+import type { RenderHelper } from '../render/RenderHelper';
 import { TextureMapping } from '../render/TextureHolder';
 import { fillVec4 } from '../render/utils';
 import vert from '../shader/passes/fullscreen.vert';
@@ -57,7 +59,7 @@ export function pushFXAAPass(
     renderInst.drawPrimitives(3);
 
     // since gl_VertexID is not available in GLSL 100, we need to use a geometry
-    let offs = renderInst.allocateUniformBuffer(0, 4);
+    const offs = renderInst.allocateUniformBuffer(0, 4);
     const d = renderInst.mapUniformBufferF32(0);
     fillVec4(d, offs, 1.0 / renderInput.backbufferWidth, 1.0 / renderInput.backbufferHeight);
 

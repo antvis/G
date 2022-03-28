@@ -1,6 +1,6 @@
 import line from './line';
 import { distance } from './util';
-import { Point, PointTuple, Segment } from './types';
+import type { Point, PointTuple, Segment } from './types';
 
 function analyzePoints(points: PointTuple[]) {
   // 计算每段的长度和总的长度

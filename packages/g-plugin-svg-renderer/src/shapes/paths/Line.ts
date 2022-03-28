@@ -1,5 +1,6 @@
-import { PARSED_COLOR_TYPE, ParsedLineStyleProps } from '@antv/g';
-import { ElementRenderer } from '.';
+import type { ParsedLineStyleProps } from '@antv/g';
+import { PARSED_COLOR_TYPE } from '@antv/g';
+import type { ElementRenderer } from '.';
 import { singleton } from 'mana-syringe';
 
 @singleton()

@@ -1,6 +1,8 @@
 import 'regenerator-runtime/runtime';
-import { globalContainer, RendererPlugin, Shape } from '@antv/g';
-import { Module, Syringe } from 'mana-syringe';
+import type { RendererPlugin, Shape } from '@antv/g';
+import { globalContainer } from '@antv/g';
+import type { Syringe } from 'mana-syringe';
+import { Module } from 'mana-syringe';
 import { Renderable3D } from './components/Renderable3D';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { PickingPlugin } from './PickingPlugin';
@@ -22,7 +24,7 @@ import { GlyphManager } from './meshes/symbol/GlyphManager';
 import { MeshFactory, RendererFactory, ShapeRenderer } from './tokens';
 import { Mesh } from './Mesh';
 import { LightPool } from './LightPool';
-import { TextureDescriptor } from './platform';
+import type { TextureDescriptor } from './platform';
 import {
   FillMesh,
   ImageMesh,
@@ -138,7 +140,7 @@ export class Plugin implements RendererPlugin {
   loadTexture(
     src: string | TexImageSource,
     descriptor?: TextureDescriptor,
-    successCallback?: Function,
+    successCallback?: () => void,
   ) {
     return this.container.get(RenderGraphPlugin).loadTexture(src, descriptor, successCallback);
   }

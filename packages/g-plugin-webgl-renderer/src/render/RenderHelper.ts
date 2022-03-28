@@ -1,9 +1,9 @@
 import { singleton } from 'mana-syringe';
-import { Device } from '../platform';
+import type { Device } from '../platform';
 import { DynamicUniformBuffer } from './DynamicUniformBuffer';
 import { RenderCache } from './RenderCache';
 import { RenderGraph } from './RenderGraph';
-import { RenderInst } from './RenderInst';
+import type { RenderInst } from './RenderInst';
 import { RenderInstManager } from './RenderInstManager';
 
 @singleton()

@@ -1,6 +1,6 @@
 import { pointAtSegments, angleAtSegments, distanceAtSegment, lengthOfSegment } from './segments';
 import { getBBoxByArray } from './util';
-import { PointTuple, BBox } from './types';
+import type { PointTuple, BBox } from './types';
 
 export default {
   /**

@@ -1,30 +1,34 @@
+import type {
+  DisplayObject,
+  RenderingService,
+  RenderingPlugin,
+  ParsedColorStyleProperty,
+  FederatedEvent,
+} from '@antv/g';
 import {
   AABB,
   Shape,
-  DisplayObject,
   DisplayObjectPool,
   CanvasConfig,
   ContextService,
-  RenderingService,
   RenderingContext,
-  RenderingPlugin,
   RenderingPluginContribution,
   getEuler,
   fromRotationTranslationScale,
   Camera,
   DefaultCamera,
-  ParsedColorStyleProperty,
   PARSED_COLOR_TYPE,
   RenderReason,
   ElementEvent,
-  FederatedEvent,
 } from '@antv/g';
 import { isArray, isNil } from '@antv/util';
 import { inject, singleton } from 'mana-syringe';
 import { vec3, mat4, quat } from 'gl-matrix';
 import RBush from 'rbush';
-import { PathGeneratorFactory, PathGenerator } from './shapes/paths';
-import { StyleRenderer, StyleRendererFactory } from './shapes/styles';
+import type { PathGenerator } from './shapes/paths';
+import { PathGeneratorFactory } from './shapes/paths';
+import type { StyleRenderer } from './shapes/styles';
+import { StyleRendererFactory } from './shapes/styles';
 import { GradientPool } from './shapes/GradientPool';
 import { ImagePool } from './shapes/ImagePool';
 import { RBushNode } from './components/RBushNode';
@@ -201,8 +205,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.beginFrame.tap(CanvasRendererPlugin.tag, () => {
       const context = this.contextService.getContext();
 
-      const { enableDirtyRectangleRendering, enableDirtyRectangleRenderingDebug } =
-        this.canvasConfig.renderer.getConfig();
+      const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
 
       // clear fullscreen when:
       // 1. dirty rectangle rendering disabled
@@ -453,7 +456,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
    */
   private mergeDirtyAABBs(dirtyObjects: DisplayObject[]): AABB {
     // merge into a big AABB
-    let dirtyRectangle: AABB = new AABB();
+    const dirtyRectangle: AABB = new AABB();
     dirtyObjects.forEach((object) => {
       const renderBounds = object.getRenderBounds();
       dirtyRectangle.add(renderBounds);
@@ -497,6 +500,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     const [tx, ty] = mat4.getTranslation(vec3.create(), transform);
     const [sx, sy] = mat4.getScaling(vec3.create(), transform);
     const rotation = mat4.getRotation(quat.create(), transform);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [eux, euy, euz] = getEuler(vec3.create(), rotation);
     // gimbal lock at 90 degrees
     const rts = fromRotationTranslationScale(eux || euz, tx, ty, sx, sy);
@@ -602,7 +606,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private useAnchor(
     context: CanvasRenderingContext2D,
     object: DisplayObject,
-    callback: Function,
+    callback: () => void,
   ): void {
     const contentBounds = object.getGeometryBounds();
     if (contentBounds) {

@@ -1,11 +1,11 @@
-import {
+import type {
   NormalizedViewportCoords,
   QueryPool,
   RenderPass,
   RenderTarget,
   Texture,
 } from '../platform';
-import { RGRenderTargetDescription } from './RenderTargetDescription';
+import type { RGRenderTargetDescription } from './RenderTargetDescription';
 
 export enum RGAttachmentSlot {
   Color0 = 0,
@@ -17,9 +17,9 @@ export enum RGAttachmentSlot {
 }
 
 export interface RGPassScope {
-  getResolveTextureForID(id: number): Texture;
-  getRenderTargetAttachment(slot: RGAttachmentSlot): RenderTarget | null;
-  getRenderTargetTexture(slot: RGAttachmentSlot): Texture | null;
+  getResolveTextureForID: (id: number) => Texture;
+  getRenderTargetAttachment: (slot: RGAttachmentSlot) => RenderTarget | null;
+  getRenderTargetTexture: (slot: RGAttachmentSlot) => Texture | null;
 }
 
 export const IdentityViewportCoords: Readonly<NormalizedViewportCoords> = {
@@ -37,46 +37,46 @@ export interface IRenderGraphPass {
   /**
    * Set the debug name of a given pass.
    */
-  setDebugName(debugName: string): void;
+  setDebugName: (debugName: string) => void;
 
   /**
    * Set whether to output a debug thumbnail. false by default.
    */
-  pushDebugThumbnail(attachmentSlot: RGAttachmentSlot): void;
+  pushDebugThumbnail: (attachmentSlot: RGAttachmentSlot) => void;
 
   /**
    * Attach the given renderTargetID to the given attachmentSlot.
    * This determines which render targets this pass will render to.
    */
-  attachRenderTargetID(attachmentSlot: RGAttachmentSlot, renderTargetID: number): void;
+  attachRenderTargetID: (attachmentSlot: RGAttachmentSlot, renderTargetID: number) => void;
 
   /**
    * Attach the occlusion query pool used by this rendering pass.
    */
-  attachOcclusionQueryPool(queryPool: QueryPool): void;
+  attachOcclusionQueryPool: (queryPool: QueryPool) => void;
 
   /**
    * Set the viewport used by this rendering pass.
    */
-  setViewport(viewport: Readonly<NormalizedViewportCoords>): void;
+  setViewport: (viewport: Readonly<NormalizedViewportCoords>) => void;
 
   /**
    * Attach the resolve texture ID to the given pass. All resolve textures used within the pass
    * must be attached before-hand in order for the scheduler to properly allocate our resolve texture.
    */
-  attachResolveTexture(resolveTextureID: number): void;
+  attachResolveTexture: (resolveTextureID: number) => void;
 
   /**
    * Set the pass's execution callback.
    */
-  exec(func: PassExecFunc): void;
+  exec: (func: PassExecFunc) => void;
 
   /**
    * Set the pass's post callback
    */
-  post(func: PassPostFunc): void;
+  post: (func: PassPostFunc) => void;
 
-  addExtraRef(renderTargetID: RGAttachmentSlot): void;
+  addExtraRef: (renderTargetID: RGAttachmentSlot) => void;
 }
 
 export interface RGGraphBuilder {
@@ -86,7 +86,7 @@ export interface RGGraphBuilder {
    * is possible I might change this in the future to limit the allocations caused
    * by closures.
    */
-  pushPass(setupFunc: PassSetupFunc): void;
+  pushPass: (setupFunc: PassSetupFunc) => void;
 
   /**
    * Tell the system about a render target with the given descriptions. Render targets
@@ -103,7 +103,7 @@ export interface RGGraphBuilder {
    * use the {@see GfxrPassScope} given to the pass's execution or post callbacks, however
    * this usage should be rarer than the resolve case.
    */
-  createRenderTargetID(desc: Readonly<RGRenderTargetDescription>, debugName: string): number;
+  createRenderTargetID: (desc: Readonly<RGRenderTargetDescription>, debugName: string) => number;
 
   /**
    * Resolve the render target in slot {@param attachmentSlot} of pass {@param pass}, and return
@@ -115,10 +115,10 @@ export interface RGGraphBuilder {
    * you can retrieve a proper {@param GfxTexture} for a resolve texture ID with
    * {@see GfxrPassScope::getResolveTextureForID}}.
    */
-  resolveRenderTargetPassAttachmentSlot(
+  resolveRenderTargetPassAttachmentSlot: (
     pass: IRenderGraphPass,
     attachmentSlot: RGAttachmentSlot,
-  ): number;
+  ) => number;
 
   /**
    * Resolve the render target ID {@param renderTargetID}, and return the resolve texture ID.
@@ -132,7 +132,7 @@ export interface RGGraphBuilder {
    * This just looks up the last pass that drew to the render target {@param renderTargetID},
    * and then calls {@see resolveRenderTargetPassAttachmentSlot} using the information it found.
    */
-  resolveRenderTarget(renderTargetID: number): number;
+  resolveRenderTarget: (renderTargetID: number) => number;
 
   /**
    * Specify that the render target ID {@param renderTargetID} should be resolved to an
@@ -141,23 +141,23 @@ export interface RGGraphBuilder {
    *
    * Warning: This API might change in the near future.
    */
-  resolveRenderTargetToExternalTexture(renderTargetID: number, texture: Texture): void;
+  resolveRenderTargetToExternalTexture: (renderTargetID: number, texture: Texture) => void;
 
   /**
    * Return the description that a render target was created with. This allows the creator to
    * not have to pass information to any dependent modules to derive from it.
    */
-  getRenderTargetDescription(renderTargetID: number): Readonly<RGRenderTargetDescription>;
+  getRenderTargetDescription: (renderTargetID: number) => Readonly<RGRenderTargetDescription>;
 
   /**
    * Internal API.
    */
-  getDebug(): RGGraphBuilderDebug;
+  getDebug: () => RGGraphBuilderDebug;
 }
 
 export interface RGGraphBuilderDebug {
-  getPasses(): IRenderGraphPass[];
-  getPassDebugThumbnails(pass: IRenderGraphPass): boolean[];
-  getPassRenderTargetID(pass: IRenderGraphPass, slot: RGAttachmentSlot): number;
-  getRenderTargetIDDebugName(renderTargetID: number): string;
+  getPasses: () => IRenderGraphPass[];
+  getPassDebugThumbnails: (pass: IRenderGraphPass) => boolean[];
+  getPassRenderTargetID: (pass: IRenderGraphPass, slot: RGAttachmentSlot) => number;
+  getRenderTargetIDDebugName: (renderTargetID: number) => string;
 }

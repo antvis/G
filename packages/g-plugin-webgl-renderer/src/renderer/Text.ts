@@ -1,9 +1,11 @@
 import { injectable } from 'mana-syringe';
-import { DisplayObject, ParsedTextStyleProps, Shape } from '@antv/g';
+import type { DisplayObject, ParsedTextStyleProps } from '@antv/g';
+import { Shape } from '@antv/g';
 import { Batch } from './Batch';
 import { ShapeRenderer } from '../tokens';
-import { Instanced, TextMesh, TextUniform } from '../meshes';
-import { RenderInst } from '../render/RenderInst';
+import type { Instanced } from '../meshes';
+import { TextMesh, TextUniform } from '../meshes';
+import type { RenderInst } from '../render/RenderInst';
 
 @injectable({
   token: [{ token: ShapeRenderer, named: Shape.TEXT }],

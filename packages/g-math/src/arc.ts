@@ -1,6 +1,6 @@
 import { distance, piMod } from './util';
 import ellipse from './ellipse';
-import { Point, BBox } from './types';
+import type { Point, BBox } from './types';
 
 // 偏导数 x
 function derivativeXAt(

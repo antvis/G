@@ -1,4 +1,4 @@
-import { Pattern } from '@antv/g';
+import type { Pattern } from '@antv/g';
 import { singleton } from 'mana-syringe';
 
 @singleton()

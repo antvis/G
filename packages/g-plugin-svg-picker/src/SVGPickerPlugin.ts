@@ -1,12 +1,6 @@
 import { inject, singleton } from 'mana-syringe';
-import {
-  DisplayObjectPool,
-  RenderingService,
-  RenderingPlugin,
-  RenderingPluginContribution,
-  SceneGraphService,
-  PickingResult,
-} from '@antv/g';
+import type { RenderingService, RenderingPlugin, PickingResult } from '@antv/g';
+import { DisplayObjectPool, RenderingPluginContribution, SceneGraphService } from '@antv/g';
 
 /**
  * pick shape(s) with Mouse/Touch event

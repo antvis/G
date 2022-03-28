@@ -1,6 +1,7 @@
-import { Device, Format, RenderTarget, Texture, TextureDimension, TextureUsage } from '../platform';
+import type { Device, Format, RenderTarget, Texture } from '../platform';
+import { TextureDimension, TextureUsage } from '../platform';
 import { assert } from '../platform/utils';
-import { RGRenderTargetDescription } from './RenderTargetDescription';
+import type { RGRenderTargetDescription } from './RenderTargetDescription';
 
 export class RGRenderTarget {
   debugName: string;

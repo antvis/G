@@ -1,13 +1,14 @@
 import { isNumber } from '@antv/util';
-import {
+import type {
   Buffer,
   BufferDescriptor,
-  BufferFrequencyHint,
+  BufferFrequencyHint} from '../interfaces';
+import {
   BufferUsage,
   ResourceType,
 } from '../interfaces';
 import { assert } from '../utils';
-import { Device_GL } from './Device';
+import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
 import {
   getPlatformBuffer,

@@ -1,8 +1,8 @@
-import { ParsedRectStyleProps } from '@antv/g';
+import type { ParsedRectStyleProps } from '@antv/g';
 import { isArray } from '@antv/util';
 import { singleton } from 'mana-syringe';
 import { parseRadius } from '../../utils/format';
-import { ElementRenderer } from '.';
+import type { ElementRenderer } from '.';
 
 @singleton()
 export class RectRenderer implements ElementRenderer<ParsedRectStyleProps> {

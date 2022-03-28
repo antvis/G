@@ -1,4 +1,5 @@
-import { Material, CullMode, IMaterial, Texture, Device } from '@antv/g-plugin-webgl-renderer';
+import type { IMaterial, Texture, Device } from '@antv/g-plugin-webgl-renderer';
+import { Material, CullMode } from '@antv/g-plugin-webgl-renderer';
 import vert from '../shaders/point.vert';
 import frag from '../shaders/point.frag';
 
@@ -6,9 +7,6 @@ enum Uniform {
   MAP = 'u_Map',
   PLACE_HOLDER = 'u_Placeholder',
   SIZE = 'u_Size',
-}
-enum SamplerLocation {
-  MAP = 0,
 }
 
 export interface IPointMaterial extends IMaterial {

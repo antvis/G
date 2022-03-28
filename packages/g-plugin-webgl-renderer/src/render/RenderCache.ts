@@ -1,4 +1,4 @@
-import {
+import type {
   AttachmentState,
   BindingLayoutDescriptor,
   Bindings,
@@ -117,7 +117,7 @@ function bindingsDescriptorHash(a: BindingsDescriptor): number {
 }
 
 interface ProgramDescriptor extends ProgramDescriptorSimple {
-  ensurePreprocessed(vendorInfo: VendorInfo): void;
+  ensurePreprocessed: (vendorInfo: VendorInfo) => void;
 }
 
 export class RenderCache {

@@ -2,20 +2,15 @@
  * @see https://www.khronos.org/assets/uploads/developers/presentations/Crazy_Panda_How_to_draw_lines_in_WebGL.pdf
  */
 import { injectable } from 'mana-syringe';
-import {
-  LineCap,
-  LineJoin,
+import type {
   Polyline,
   DisplayObject,
-  PARSED_COLOR_TYPE,
-  Shape,
   Tuple4Number,
-  convertToPath,
   ParsedPathStyleProps,
-  parsePath,
   PathCommand,
   ParsedLineStyleProps,
 } from '@antv/g';
+import { LineCap, LineJoin, PARSED_COLOR_TYPE, Shape, convertToPath, parsePath } from '@antv/g';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import earcut from 'earcut';
 import { vec3, mat4 } from 'gl-matrix';
@@ -262,7 +257,7 @@ export class LineMesh extends Instanced {
     const instance = objects[0];
 
     // use triangles for Polygon
-    let { pointsBuffer, travelBuffer, instancedCount } = updateBuffer(instance);
+    const { pointsBuffer, travelBuffer, instancedCount } = updateBuffer(instance);
 
     this.geometry.setVertexBuffer({
       bufferIndex: LineVertexAttributeBufferIndex.PACKED,
@@ -352,7 +347,7 @@ function curveTo(
   cpY2: number,
   toX: number,
   toY: number,
-  points: Array<number>,
+  points: number[],
 ): void {
   const fromX = points[points.length - 2];
   const fromY = points[points.length - 1];
@@ -387,7 +382,7 @@ function curveTo(
   }
 }
 
-const adaptive = true;
+// const adaptive = true;
 const maxLength = 10;
 const minSegments = 8;
 const maxSegments = 2048;
@@ -409,7 +404,8 @@ function segmentsCount(length: number, defaultSegments = 20) {
 }
 
 export function updateBuffer(object: DisplayObject, needEarcut = false) {
-  let { lineCap, lineJoin, defX, defY } = object.parsedStyle;
+  const { lineCap, lineJoin } = object.parsedStyle;
+  let { defX, defY } = object.parsedStyle;
 
   let points: number[] = [];
   let triangles: number[] = [];

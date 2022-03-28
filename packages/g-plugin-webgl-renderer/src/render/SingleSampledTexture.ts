@@ -1,5 +1,6 @@
-import { Device, Format, Texture, TextureDimension, TextureUsage } from '../platform';
-import { RGRenderTargetDescription } from './RenderTargetDescription';
+import type { Device, Format, Texture } from '../platform';
+import { TextureDimension, TextureUsage } from '../platform';
+import type { RGRenderTargetDescription } from './RenderTargetDescription';
 import { assert } from '../platform/utils';
 
 // Whenever we need to resolve a multi-sampled render target to a single-sampled texture,

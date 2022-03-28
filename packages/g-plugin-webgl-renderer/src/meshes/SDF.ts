@@ -1,11 +1,11 @@
-import {
+import type {
   Circle,
   DisplayObject,
-  Shape,
   ParsedBaseStyleProps,
   ParsedCircleStyleProps,
   ParsedEllipseStyleProps,
 } from '@antv/g';
+import { Shape } from '@antv/g';
 import { injectable } from 'mana-syringe';
 import { Format, VertexBufferFrequency } from '../platform';
 import vert from '../shader/sdf.vert';

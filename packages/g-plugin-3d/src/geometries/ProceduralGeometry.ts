@@ -87,13 +87,13 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
 
   computeBoundingBox(): AABB {
     // 根据 ProceduralGeometryAttributeLocation.POSITION 计算
-    const buffer = this.getVertexBuffer(VertexAttributeBufferIndex.POSITION);
+    // const buffer = this.getVertexBuffer(VertexAttributeBufferIndex.POSITION);
 
     return new AABB();
   }
 
   build() {
-    const { indices, positions, normals, uvs, uv1s } = this.createTopology();
+    const { indices, positions, normals, uvs } = this.createTopology();
 
     this.setIndexBuffer(new Uint32Array(indices));
     this.vertexCount = indices.length;
