@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/g-site",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "G sites deployed on gh-pages",
   "files": [
     "package.json",
@@ -48,8 +48,8 @@
     "gatsby": "^2.24.40",
     "gatsby-plugin-workerize-loader": "^1.5.0",
     "gh-pages": "^3.2.3",
-    "hammerjs": "^2.0.8",
     "hammer-touchemulator": "^0.0.2",
+    "hammerjs": "^2.0.8",
     "interactjs": "^1.10.11",
     "lil-gui": "^0.16.0",
     "react": "^16.0.2",
