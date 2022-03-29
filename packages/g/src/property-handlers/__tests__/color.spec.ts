@@ -50,6 +50,12 @@ describe('Property Color', () => {
       value: [1, 1, 1, 1],
       formatted: 'rgba(255,255,255,1)',
     });
+    // @see https://github.com/d3/d3-color/issues/52
+    expect(parseColor('rgba(0,0,0,0)', null)).to.be.eqls({
+      type: PARSED_COLOR_TYPE.Constant,
+      value: [NaN, NaN, NaN, 0],
+      formatted: 'rgba(0,0,0,0)',
+    });
     // invalid color
     expect(parseColor('xxx', null)).to.be.eqls({
       type: PARSED_COLOR_TYPE.Constant,
