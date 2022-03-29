@@ -100,32 +100,36 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private syncRTree() {
     // bounds changed, need re-inserting its children
     const bulk: RBushNodeAABB[] = [];
-    this.toSync.forEach((node: DisplayObject) => {
-      // @ts-ignore
-      const rBushNode = node.rBushNode;
 
-      // clear dirty node
-      if (rBushNode) {
-        this.rBush.remove(rBushNode.aabb);
-      }
+    Array.from(this.toSync)
+      // some objects may be removed since last frame
+      .filter((object) => object.isConnected)
+      .forEach((node: DisplayObject) => {
+        // @ts-ignore
+        const rBushNode = node.rBushNode;
 
-      const renderBounds = node.getRenderBounds();
-      if (renderBounds) {
-        const [minX, minY] = renderBounds.getMin();
-        const [maxX, maxY] = renderBounds.getMax();
-        rBushNode.aabb = {
-          id: node.entity,
-          minX,
-          minY,
-          maxX,
-          maxY,
-        };
-      }
+        // clear dirty node
+        if (rBushNode) {
+          this.rBush.remove(rBushNode.aabb);
+        }
 
-      if (rBushNode.aabb) {
-        bulk.push(rBushNode.aabb);
-      }
-    });
+        const renderBounds = node.getRenderBounds();
+        if (renderBounds) {
+          const [minX, minY] = renderBounds.getMin();
+          const [maxX, maxY] = renderBounds.getMax();
+          rBushNode.aabb = {
+            id: node.entity,
+            minX,
+            minY,
+            maxX,
+            maxY,
+          };
+        }
+
+        if (rBushNode.aabb) {
+          bulk.push(rBushNode.aabb);
+        }
+      });
 
     // use bulk inserting, which is ~2-3 times faster
     // @see https://github.com/mourner/rbush#bulk-inserting-data
@@ -134,6 +138,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     this.toSync.clear();
   }
 
+  /**
+   * sync to RBush later
+   */
   private toSync = new Set<DisplayObject>();
   private pushToSync(list: DisplayObject[]) {
     list.forEach((i) => {
