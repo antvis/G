@@ -30,4 +30,6 @@ void main() {
   v_Radius = radius;
   v_Data = vec4(a_Extrude, antialiasblur, a_StylePacked3.x);
   v_StylePacked3 = a_StylePacked3;
+
+  setPickingColor(a_PickingColor.xyz);
 }

@@ -6,5 +6,7 @@ export * from './RenderHelper';
 export * from './RenderInst';
 export * from './RenderInstList';
 export * from './RenderInstManager';
+export * from './SingleSampledTexture';
 export * from './TextureHolder';
+export * from './TemporalTexture';
 export * from './utils';

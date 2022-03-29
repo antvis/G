@@ -1,1 +1,1 @@
-gbuf_color = vec4(outgoingLight, diffuseColor.a);
+outputColor = vec4(outgoingLight, diffuseColor.a);

@@ -205,7 +205,7 @@ export class RenderGraph implements RGGraphBuilder {
     if (!this.renderTargetAliveForID[renderTargetID]) {
       const desc = graph.renderTargetDescriptions[renderTargetID];
       const newRenderTarget = this.acquireRenderTargetForDescription(desc);
-      newRenderTarget.debugName = graph.renderTargetDebugNames[renderTargetID];
+      newRenderTarget.setDebugName(this.device, graph.renderTargetDebugNames[renderTargetID]);
       this.renderTargetAliveForID[renderTargetID] = newRenderTarget;
     }
 

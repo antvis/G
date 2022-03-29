@@ -14,7 +14,7 @@ import Stats from 'stats.js';
 import * as lil from 'lil-gui';
 
 // create a renderer
-const renderer = new Renderer({ targets: ['webgl2'] });
+const renderer = new Renderer();
 renderer.registerPlugin(new Plugin3D());
 
 // create a canvas
@@ -111,8 +111,7 @@ const canvas = new Canvas({
       float u_Level;
     };
 
-    layout(location = 0) out vec4 gbuf_color;
-    layout(location = 1) out vec4 gbuf_picking;
+    out vec4 outputColor;
 
     float random (vec2 st) {
       return fract(sin(
@@ -155,8 +154,7 @@ const canvas = new Canvas({
       vec2 st = gl_FragCoord.xy / u_Viewport;
       vec2 pos = vec2(st * u_Level);
       float n = noise(pos);
-      gbuf_color = vec4(vec3(n), 1.0);
-      gbuf_picking = vec4(0.0);
+      outputColor = vec4(vec3(n), 1.0);
     }
     `,
   });

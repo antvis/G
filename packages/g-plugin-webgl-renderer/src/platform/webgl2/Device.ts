@@ -129,7 +129,7 @@ export class Device_GL implements SwapChain, Device {
   // @see https://www.khronos.org/registry/webgl/extensions/OES_draw_buffers_indexed/
   OES_draw_buffers_indexed: OES_draw_buffers_indexed | null = null;
   // @see https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_draw_buffers
-  WEBGL_draw_buffers: WEBGL_draw_buffers | null = null;
+  // WEBGL_draw_buffers: WEBGL_draw_buffers | null = null;
   // @see https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_depth_texture
   WEBGL_depth_texture: WEBGL_depth_texture | null = null;
   WEBGL_compressed_texture_s3tc: WEBGL_compressed_texture_s3tc | null = null;
@@ -231,9 +231,10 @@ export class Device_GL implements SwapChain, Device {
 
     if (!isWebGL2(gl)) {
       this.OES_vertex_array_object = gl.getExtension('OES_vertex_array_object');
+      // TODO: when ANGLE_instanced_arrays unavailable...
       this.ANGLE_instanced_arrays = gl.getExtension('ANGLE_instanced_arrays');
       this.OES_texture_float = gl.getExtension('OES_texture_float');
-      this.WEBGL_draw_buffers = gl.getExtension('WEBGL_draw_buffers');
+      // this.WEBGL_draw_buffers = gl.getExtension('WEBGL_draw_buffers');
       this.WEBGL_depth_texture = gl.getExtension('WEBGL_depth_texture');
       // @see https://developer.mozilla.org/en-US/docs/Web/API/EXT_frag_depth
       gl.getExtension('EXT_frag_depth');
@@ -242,12 +243,13 @@ export class Device_GL implements SwapChain, Device {
       // @see https://developer.mozilla.org/en-US/docs/Web/API/OES_standard_derivatives
       gl.getExtension('OES_standard_derivatives');
 
-      if (this.WEBGL_draw_buffers) {
-        this.supportMRT = true;
-      }
+      // won't use MRT anymore...
+      // if (this.WEBGL_draw_buffers) {
+      //   this.supportMRT = true;
+      // }
     } else {
       this.EXT_texture_norm16 = gl.getExtension('EXT_texture_norm16');
-      this.supportMRT = true;
+      // this.supportMRT = true;
     }
 
     this.WEBGL_compressed_texture_s3tc = gl.getExtension('WEBGL_compressed_texture_s3tc');
@@ -449,11 +451,11 @@ export class Device_GL implements SwapChain, Device {
     // @see https://github.com/visgl/luma.gl/blob/30a1039573/modules/webgl/src/classes/clear.ts
 
     const { r, g, b, a } = OpaqueWhite;
-    gl.clearColor(r, g, b, a);
-    gl.clear(gl.COLOR_BUFFER_BIT);
     if (isWebGL2(gl)) {
       gl.clearBufferfv(gl.COLOR, 0, [r, g, b, a]);
     } else {
+      gl.clearColor(r, g, b, a);
+      gl.clear(gl.COLOR_BUFFER_BIT);
       this.submitBlitRenderPass();
     }
 
@@ -1208,24 +1210,24 @@ export class Device_GL implements SwapChain, Device {
     }
     this.currentColorAttachments.length = numColorAttachments;
 
-    if (isWebGL2(gl)) {
-      gl.drawBuffers([
-        GL.COLOR_ATTACHMENT0,
-        GL.COLOR_ATTACHMENT1,
-        GL.COLOR_ATTACHMENT2,
-        GL.COLOR_ATTACHMENT3,
-      ]);
-    } else {
-      if (!this.inBlitRenderPass) {
-        // MRT @see https://github.com/shrekshao/MoveWebGL1EngineToWebGL2/blob/master/Move-a-WebGL-1-Engine-To-WebGL-2-Blog-1.md#multiple-render-targets
-        this.WEBGL_draw_buffers.drawBuffersWEBGL([
-          GL.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
-          GL.COLOR_ATTACHMENT1_WEBGL, // gl_FragData[1]
-          GL.COLOR_ATTACHMENT2_WEBGL, // gl_FragData[2]
-          GL.COLOR_ATTACHMENT3_WEBGL, // gl_FragData[3]
-        ]);
-      }
-    }
+    // if (isWebGL2(gl)) {
+    //   gl.drawBuffers([
+    //     GL.COLOR_ATTACHMENT0,
+    //     GL.COLOR_ATTACHMENT1,
+    //     GL.COLOR_ATTACHMENT2,
+    //     GL.COLOR_ATTACHMENT3,
+    //   ]);
+    // } else {
+    //   if (!this.inBlitRenderPass) {
+    //     // MRT @see https://github.com/shrekshao/MoveWebGL1EngineToWebGL2/blob/master/Move-a-WebGL-1-Engine-To-WebGL-2-Blog-1.md#multiple-render-targets
+    //     this.WEBGL_draw_buffers.drawBuffersWEBGL([
+    //       GL.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
+    //       GL.COLOR_ATTACHMENT1_WEBGL, // gl_FragData[1]
+    //       GL.COLOR_ATTACHMENT2_WEBGL, // gl_FragData[2]
+    //       GL.COLOR_ATTACHMENT3_WEBGL, // gl_FragData[3]
+    //     ]);
+    //   }
+    // }
   }
 
   private setRenderPassParametersColor(
@@ -1872,15 +1874,15 @@ export class Device_GL implements SwapChain, Device {
           if (isWebGL2(gl)) {
             gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.resolveColorReadFramebuffer);
           }
-          // if (this.resolveColorAttachmentsChanged) {
-          if (isWebGL2(gl)) {
-            this.bindFramebufferAttachment(
-              gl.READ_FRAMEBUFFER,
-              gl.COLOR_ATTACHMENT0,
-              colorResolveFrom,
-            );
+          if (this.resolveColorAttachmentsChanged) {
+            if (isWebGL2(gl)) {
+              this.bindFramebufferAttachment(
+                gl.READ_FRAMEBUFFER,
+                gl.COLOR_ATTACHMENT0,
+                colorResolveFrom,
+              );
+            }
           }
-          // }
           didBindRead = true;
 
           // Special case: Blitting to the on-screen.

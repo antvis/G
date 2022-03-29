@@ -27,10 +27,10 @@ void main() {
   #pragma glslify: import('@antv/g-shader-components/normal.frag')
   #pragma glslify: import('@antv/g-shader-components/normalmap.frag')
 
-  gbuf_color = u_Color;
-  gbuf_color.a = gbuf_color.a * u_Opacity;
+  outputColor = u_Color;
+  outputColor.a = outputColor.a * u_Opacity;
 
-  vec4 diffuseColor = gbuf_color;
+  vec4 diffuseColor = outputColor;
   ReflectedLight reflectedLight = ReflectedLight(vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ));
   vec3 totalEmissiveRadiance = u_Emissive;
 

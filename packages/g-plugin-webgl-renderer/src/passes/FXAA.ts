@@ -1,5 +1,5 @@
 import { BufferGeometry } from '../geometries';
-import type { InputLayout, InputState} from '../platform';
+import type { InputLayout, InputState } from '../platform';
 import { Format, VertexBufferFrequency } from '../platform';
 import { fullscreenMegaState, nArray } from '../platform/utils';
 import { DeviceProgram } from '../render/DeviceProgram';
@@ -12,9 +12,7 @@ import vert from '../shader/passes/fullscreen.vert';
 import frag from '../shader/passes/fxaa.frag';
 
 class FXAAProgram extends DeviceProgram {
-  features = {
-    MRT: true,
-  };
+  features = {};
 
   both = `
 layout(std140) uniform ub_Params {

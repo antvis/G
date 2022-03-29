@@ -35,16 +35,21 @@ export interface RenderInput {
 }
 
 function selectFormatSimple(slot: RGAttachmentSlot): Format {
-  if (slot === RGAttachmentSlot.Color0) return Format.U8_RGBA_RT;
-  else if (slot === RGAttachmentSlot.DepthStencil) return Format.D24_S8;
-  else {
+  if (slot === RGAttachmentSlot.Color0) {
+    return Format.U8_RGBA_RT;
+  } else if (slot === RGAttachmentSlot.DepthStencil) {
+    return Format.D24_S8;
+  } else {
     throw new Error('whoops');
   }
 }
 
 function selectSampleCount(renderInput: RenderInput): number {
-  if (renderInput.antialiasingMode === AntialiasingMode.MSAAx4) return 4;
-  else return 1;
+  if (renderInput.antialiasingMode === AntialiasingMode.MSAAx4) {
+    return 4;
+  } else {
+    return 1;
+  }
 }
 
 export function setBackbufferDescSimple(

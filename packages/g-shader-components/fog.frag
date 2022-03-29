@@ -1,3 +1,3 @@
 #ifdef USE_FOG
-  gbuf_color.rgb = addFog(gbuf_color.rgb);
+  outputColor.rgb = addFog(outputColor.rgb);
 #endif

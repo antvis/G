@@ -54,6 +54,8 @@ vec2 doBisect(
 }
 
 void main() {
+  setPickingColor(u_PickingColor.xyz);
+
   vec2 pointA = (u_ModelMatrix * vec4(a_Point1, 0., 1.0)).xy;
   vec2 pointB = (u_ModelMatrix * vec4(a_Point2, 0., 1.0)).xy;
 
@@ -312,6 +314,4 @@ void main() {
   }
 
   gl_Position = u_ProjectionMatrix * u_ViewMatrix * vec4(pos, u_ZIndex, 1.0);
-
-  setPickingColor(u_PickingColor.xyz);
 }

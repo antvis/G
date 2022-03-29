@@ -19,4 +19,6 @@ void main() {
 
   gl_Position = project(vec4(a_Offset * fontScale, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
   v_GammaScale = gl_Position.w;
+
+  setPickingColor(a_PickingColor.xyz);
 }

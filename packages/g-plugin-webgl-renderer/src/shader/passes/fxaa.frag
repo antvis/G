@@ -1,7 +1,7 @@
 uniform sampler2D u_Texture;
 in vec2 v_TexCoord;
 
-layout(location = 0) out vec4 gbuf_color;
+out vec4 outputColor;
 
 float MonochromeNTSC(vec3 t_Color) {
   // NTSC primaries.
@@ -63,5 +63,5 @@ vec4 FXAA(PD_SAMPLER_2D(t_Texture), in vec2 t_PixelCenter, in vec2 t_InvResoluti
 }
 
 void main() {
-  gbuf_color = FXAA(PP_SAMPLER_2D(u_Texture), v_TexCoord.xy, u_InvResolution.xy);
+  outputColor = FXAA(PP_SAMPLER_2D(u_Texture), v_TexCoord.xy, u_InvResolution.xy);
 }

@@ -5,4 +5,5 @@ layout(std140) uniform ub_SceneParams {
   float u_DevicePixelRatio;
   vec2 u_Viewport;
   float u_IsOrtho;
+  float u_IsPicking;
 };

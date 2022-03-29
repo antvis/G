@@ -12,13 +12,13 @@ void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
   #pragma glslify: import('@antv/g-shader-components/map.frag')
 
-  gbuf_color = u_Color;
-  gbuf_color.a = gbuf_color.a * u_Opacity;
-  vec4 diffuseColor = gbuf_color;
+  outputColor = u_Color;
+  outputColor.a = outputColor.a * u_Opacity;
+  vec4 diffuseColor = outputColor;
 
   ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
   reflectedLight.indirectDiffuse += vec3( 1.0 );
-  reflectedLight.indirectDiffuse *= gbuf_color.rgb;
+  reflectedLight.indirectDiffuse *= outputColor.rgb;
 
   vec3 outgoingLight = reflectedLight.indirectDiffuse;
   

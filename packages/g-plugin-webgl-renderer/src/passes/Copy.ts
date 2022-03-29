@@ -13,10 +13,7 @@ export class CopyProgram extends DeviceProgram {
   vert = vert;
   frag = frag;
 
-  features = {
-    MRT: true,
-    // PICKING: false,
-  };
+  features = {};
 }
 
 // interface RenderInput {

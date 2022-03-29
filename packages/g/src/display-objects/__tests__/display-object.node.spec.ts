@@ -94,8 +94,9 @@ describe('DisplayObject Node API', () => {
     group1.removeChildren();
 
     expect(group1.getScale()).to.eqls(vec3.fromValues(10, 10, 10));
-    // should keep scaling when detached
-    expect(group2.getScale()).to.eqls(vec3.fromValues(20, 20, 20));
+    // should not keep scaling when detached
+    // @see https://github.com/antvis/g/issues/935
+    expect(group2.getScale()).to.eqls(vec3.fromValues(2, 2, 2));
   });
 
   it('should update rotation with its parent group', () => {

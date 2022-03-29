@@ -104,14 +104,14 @@ export class RenderInstManager {
     this.simpleRenderInstList = null;
   }
 
-  /**
-   * Execute all scheduled render insts in {@param list} onto the {@param RenderPass},
-   * using {@param device} and {@param cache} to create any device-specific resources
-   * necessary to complete the draws.
-   */
-  drawListOnPassRenderer(list: RenderInstList, passRenderer: RenderPass): void {
-    list.drawOnPassRenderer(this.renderCache, passRenderer);
-  }
+  // /**
+  //  * Execute all scheduled render insts in {@param list} onto the {@param RenderPass},
+  //  * using {@param device} and {@param cache} to create any device-specific resources
+  //  * necessary to complete the draws.
+  //  */
+  // drawListOnPassRenderer(list: RenderInstList, passRenderer: RenderPass): void {
+  //   list.drawOnPassRenderer(this.renderCache, passRenderer);
+  // }
 
   drawOnPassRenderer(passRenderer: RenderPass): void {
     const list = assertExists(this.simpleRenderInstList);

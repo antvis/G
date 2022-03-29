@@ -150,13 +150,13 @@ export class DefaultSceneGraphService implements SceneGraphService {
   detach<C extends INode>(child: C) {
     if (child.parentNode) {
       const transform = (child as unknown as Element).transformable;
-      if (transform) {
-        const worldTransform = this.getWorldTransform(child, transform);
-        mat4.getScaling(transform.localScale, worldTransform);
-        mat4.getTranslation(transform.localPosition, worldTransform);
-        mat4.getRotation(transform.localRotation, worldTransform);
-        transform.localDirtyFlag = true;
-      }
+      // if (transform) {
+      //   const worldTransform = this.getWorldTransform(child, transform);
+      //   mat4.getScaling(transform.localScale, worldTransform);
+      //   mat4.getTranslation(transform.localPosition, worldTransform);
+      //   mat4.getRotation(transform.localRotation, worldTransform);
+      //   transform.localDirtyFlag = true;
+      // }
 
       // parent needs re-sort
       const sortable = (child.parentNode as Element).sortable;

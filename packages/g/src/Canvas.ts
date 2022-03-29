@@ -312,7 +312,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
     if (this.container.isBound(RenderingService)) {
       const renderingService = this.container.get<RenderingService>(RenderingService);
-      renderingService.render();
+      renderingService.render(this.getConfig());
     }
 
     this.emit(CanvasEvent.AFTER_RENDER, {});

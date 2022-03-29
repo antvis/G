@@ -61,6 +61,7 @@ export class BatchManager {
 
       // new render instance
       const renderInst = this.renderHelper.renderInstManager.newRenderInst();
+      renderInst.setAllowSkippingIfPipelineNotReady(false);
       mesh.applyRenderInst(renderInst, objects);
       this.renderHelper.renderInstManager.submitRenderInst(renderInst, list);
 

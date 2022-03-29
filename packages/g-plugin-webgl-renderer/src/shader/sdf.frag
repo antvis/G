@@ -8,6 +8,8 @@ in vec4 v_Data;
 in vec2 v_Radius;
 in vec4 v_StylePacked3;
 
+out vec4 outputColor;
+
 #pragma glslify: sdCircle = require('@antv/g-shader-components/sdf.circle.glsl')
 #pragma glslify: sdEllipsoidApproximated = require('@antv/g-shader-components/sdf.ellipse.glsl')
 
@@ -50,9 +52,13 @@ void main() {
 
   vec4 strokeColor = (u_StrokeColor == vec4(0) || omitStroke) ? vec4(0.0) : u_StrokeColor;
 
-  gbuf_color = mix(vec4(diffuseColor.rgb, diffuseColor.a * u_FillOpacity), strokeColor * u_StrokeOpacity, color_t);
-  gbuf_color.a = gbuf_color.a * u_Opacity * opacity_t;
+  outputColor = mix(vec4(diffuseColor.rgb, diffuseColor.a * u_FillOpacity), strokeColor * u_StrokeOpacity, color_t);
+  outputColor.a = outputColor.a * u_Opacity * opacity_t;
 
-  if (gbuf_color.a < 0.001)
+  if (outputColor.a < 0.001)
     discard;
+
+  if (u_IsPicking > 0.5) {
+    outputColor = vec4(v_PickingResult.xyz, 1.0);
+  }
 }

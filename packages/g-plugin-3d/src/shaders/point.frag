@@ -10,9 +10,9 @@ void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
   #pragma glslify: import('@antv/g-shader-components/map.point.frag')
 
-  gbuf_color = u_Color;
-  gbuf_color.a = gbuf_color.a * u_Opacity;
-  vec4 diffuseColor = gbuf_color;
+  outputColor = u_Color;
+  outputColor.a = outputColor.a * u_Opacity;
+  vec4 diffuseColor = outputColor;
 
   vec3 outgoingLight = diffuseColor.rgb;
   

@@ -1,6 +1,6 @@
 import { inject, singleton, contrib, Syringe, Contribution } from 'mana-syringe';
 import { SyncHook, SyncWaterfallHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from 'tapable';
-import type { DisplayObject } from '..';
+import type { CanvasConfig, DisplayObject } from '..';
 import { ElementEvent } from '../dom';
 import type { EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext, RenderReason } from './RenderingContext';
@@ -40,8 +40,18 @@ export class RenderingService {
   private inited = false;
 
   private stats = {
+    /**
+     * total display objects in scenegraph
+     */
     total: 0,
+    /**
+     * number of display objects need to render in current frame
+     */
     rendered: 0,
+    /**
+     * number of display objects displayed on screen
+     */
+    renderedOnscreen: 0,
   };
 
   private zIndexCounter = 0;
@@ -80,7 +90,7 @@ export class RenderingService {
     return this.stats;
   }
 
-  render() {
+  render(canvasConfig: Partial<CanvasConfig>) {
     this.stats.total = 0;
     this.stats.rendered = 0;
     this.zIndexCounter = 0;
@@ -90,7 +100,15 @@ export class RenderingService {
     if (this.renderingContext.renderReasons.size && this.inited) {
       this.renderDisplayObject(this.renderingContext.root);
 
-      if (this.renderingContext.dirty) {
+      if (
+        this.renderingContext.dirty ||
+        (canvasConfig.renderer.getConfig().enableDirtyRectangleRendering && this.stats.total === 1)
+      ) {
+        if (!this.renderingContext.dirty) {
+          this.hooks.beginFrame.call();
+        }
+
+        this.stats.renderedOnscreen = this.stats.rendered;
         this.hooks.endFrame.call();
         this.renderingContext.dirty = false;
       }
@@ -98,7 +116,7 @@ export class RenderingService {
       this.renderingContext.renderReasons.clear();
     }
 
-    // console.log('render objects: ', this.stats.count);
+    // console.log('stats', this.stats);
   }
 
   private renderDisplayObject(displayObject: DisplayObject) {

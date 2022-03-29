@@ -230,7 +230,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
       this.syncRTree();
 
-      const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
+      const { enableDirtyRectangleRendering, enableDirtyRectangleRenderingDebug } =
+        this.canvasConfig.renderer.getConfig();
       const context = this.contextService.getContext()!;
       let dirtyObjects = this.renderQueue;
 
@@ -248,7 +249,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           );
           this.removedRBushNodeAABBs = [];
 
-          if (!dirtyRenderBounds || AABB.isEmpty(dirtyRenderBounds)) {
+          if (AABB.isEmpty(dirtyRenderBounds)) {
             return;
           }
 
@@ -258,6 +259,15 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           context.beginPath();
           context.rect(x, y, width, height);
           context.clip();
+
+          // draw dirty rectangle
+          if (enableDirtyRectangleRenderingDebug) {
+            context.lineWidth = 4;
+            context.strokeStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${
+              Math.random() * 255
+            }, 1)`;
+            context.strokeRect(x, y, width, height);
+          }
 
           // search objects intersect with dirty rectangle
           dirtyObjects = this.searchDirtyObjects(dirtyRenderBounds);
@@ -456,18 +466,18 @@ export class CanvasRendererPlugin implements RenderingPlugin {
    */
   private mergeDirtyAABBs(dirtyObjects: DisplayObject[]): AABB {
     // merge into a big AABB
-    const dirtyRectangle: AABB = new AABB();
+    const aabb = new AABB();
     dirtyObjects.forEach((object) => {
       const renderBounds = object.getRenderBounds();
-      dirtyRectangle.add(renderBounds);
+      aabb.add(renderBounds);
 
       const { dirtyRenderBounds } = object.renderable;
       if (dirtyRenderBounds) {
-        dirtyRectangle.add(dirtyRenderBounds);
+        aabb.add(dirtyRenderBounds);
       }
     });
 
-    return dirtyRectangle;
+    return aabb;
   }
 
   private searchDirtyObjects(dirtyRectangle: AABB): DisplayObject[] {

@@ -103,9 +103,8 @@ export class RenderInstList {
     this.renderInsts.length = 0;
   }
 
-  drawOnPassRenderer(cache: RenderCache, passRenderer: RenderPass): number {
-    const numDrawn = this.drawOnPassRendererNoReset(cache, passRenderer);
+  drawOnPassRenderer(cache: RenderCache, passRenderer: RenderPass) {
+    this.drawOnPassRendererNoReset(cache, passRenderer);
     this.reset();
-    return numDrawn;
   }
 }

@@ -3,16 +3,18 @@
 
 in vec4 v_PickingResult;
 
-layout(location = 0) out vec4 gbuf_color;
-layout(location = 1) out vec4 gbuf_picking;
+out vec4 outputColor;
 
 void main(){
-  if (u_Visible < 1.0) {
+  if (u_Visible < 0.5) {
     discard;
   }
 
-  gbuf_picking = vec4(v_PickingResult.rgb, 1.0);
+  if (u_IsPicking > 0.5) {
+    outputColor = vec4(v_PickingResult.xyz, 1.0);
+    return;
+  }
 
-  gbuf_color = u_Color;
-  gbuf_color.a = gbuf_color.a * u_Opacity * u_FillOpacity;
+  outputColor = u_Color;
+  outputColor.a = outputColor.a * u_Opacity * u_FillOpacity;
 }
