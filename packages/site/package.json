@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/g-site",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "G sites deployed on gh-pages",
   "files": [
     "package.json",
