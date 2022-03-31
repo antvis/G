@@ -13,10 +13,10 @@ order: 3
 import { DirectionalLight } from '@antv/g-plugin-3d';
 // 创建一个平行光
 const light = new DirectionalLight({
-    style: {
-        fill: 'white',
-        direction: [-1, 0, 1],
-    },
+  style: {
+    fill: 'white',
+    direction: [-1, 0, 1],
+  },
 });
 // 加入画布
 canvas.appendChild(light);
@@ -51,7 +51,7 @@ light.style.fill = 'red';
 
 ### direction
 
-世界坐标系下的方向，类型为 `[number, number, number]`。
+世界坐标系下的方向，类型为 `[number, number, number]`。[示例](/zh/examples/3d#sphere)
 
 ```js
 light.style.direction = [-1, 0, 1];
@@ -63,14 +63,14 @@ light.style.direction = [-1, 0, 1];
 
 ## 环境光
 
-严格意义上讲这并不是一种光源，它是一种简单模拟全局光照的手段。当我们想提亮整个场景时，可以使用它。
+严格意义上讲这并不是一种光源，它是一种简单模拟全局光照的手段。当我们想提亮整个场景时，可以使用它。[示例](/zh/examples/3d#sphere)
 
 ```js
 import { AmbientLight } from '@antv/g-plugin-3d';
 const ambientLight = new AmbientLight({
-    style: {
-        fill: 'white',
-    },
+  style: {
+    fill: 'white',
+  },
 });
 canvas.appendChild(ambientLight);
 ```

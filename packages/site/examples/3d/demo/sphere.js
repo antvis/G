@@ -3,6 +3,7 @@ import { Renderer } from '@antv/g-webgl';
 import {
   MeshPhongMaterial,
   SphereGeometry,
+  AmbientLight,
   DirectionalLight,
   Mesh,
   Fog,
@@ -99,6 +100,13 @@ const canvas = new Canvas({
   });
   canvas.appendChild(light);
 
+  const ambientLight = new AmbientLight({
+    style: {
+      fill: '#000',
+    },
+  });
+  canvas.appendChild(ambientLight);
+
   // create fog, append to canvas later
   const fog = new Fog();
 
@@ -122,7 +130,15 @@ const canvas = new Canvas({
   const gui = new lil.GUI({ autoPlace: false });
   $wrapper.appendChild(gui.domElement);
 
-  const lightFolder = gui.addFolder('light');
+  const ambientFolder = gui.addFolder('ambient light');
+  const ambientLightConfig = {
+    fill: '#000',
+  };
+  ambientFolder.addColor(ambientLightConfig, 'fill').onChange((fill) => {
+    ambientLight.style.fill = fill;
+  });
+
+  const lightFolder = gui.addFolder('directional light');
   const lightConfig = {
     fill: '#FFF',
     intensity: Math.PI,

@@ -339,6 +339,10 @@ export type Tuple4<T> = [T, T, T, T];
 
 export type Tuple4Number = Tuple4<number>;
 
+export type Tuple3<T> = [T, T, T];
+
+export type Tuple3Number = Tuple3<number>;
+
 export type ComninedValue<T> = T | [T] | [T, T] | [T, T, T] | Tuple4<T>;
 
 export type CombinedNumber = ComninedValue<number>;
