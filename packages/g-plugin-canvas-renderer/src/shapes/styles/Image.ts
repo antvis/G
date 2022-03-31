@@ -32,11 +32,8 @@ export class ImageRenderer implements StyleRenderer {
       image = img;
     }
 
-    // if (!isNil(sx) && !isNil(sy) && !isNil(swidth) && !isNil(sheight)) {
-    //   // context.drawImage(image, sx, sy, swidth, sheight, -anchor[0] * iw, -anchor[1] * ih, iw, ih);
-    //   context.drawImage(image, sx, sy, swidth, sheight, 0, 0, iw, ih);
-    // } else {
-    context.drawImage(image, 0, 0, iw, ih);
-    // }
+    if (image) {
+      context.drawImage(image, 0, 0, iw, ih);
+    }
   }
 }

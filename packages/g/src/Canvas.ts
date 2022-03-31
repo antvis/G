@@ -84,6 +84,7 @@ export class Canvas extends EventTarget implements ICanvas {
       background,
       requestAnimationFrame,
       cancelAnimationFrame,
+      createImage,
     } = config;
 
     cleanExistedCanvas(container, this);
@@ -113,6 +114,7 @@ export class Canvas extends EventTarget implements ICanvas {
       devicePixelRatio: dpr,
       cursor: 'default' as Cursor,
       background,
+      createImage,
       // background: 'white',
     });
 

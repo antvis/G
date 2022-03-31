@@ -1,5 +1,5 @@
 import type { LinearGradient, RadialGradient } from '@antv/g';
-import { PARSED_COLOR_TYPE, OffscreenCanvasCreator } from '@antv/g';
+import { PARSED_COLOR_TYPE, OffscreenCanvasCreator, CanvasConfig, isBrowser } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import type { Device, Texture, TextureDescriptor } from './platform';
 import { Format, TextureDimension, TextureUsage } from './platform';
@@ -14,6 +14,9 @@ export type GradientParams = (LinearGradient | RadialGradient) & {
 export class TexturePool {
   @inject(OffscreenCanvasCreator)
   private offscreenCanvas: OffscreenCanvasCreator;
+
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
   private textureCache: Record<string, Texture> = {};
   private gradientCache: Record<string, CanvasGradient> = {};
@@ -45,17 +48,28 @@ export class TexturePool {
       if (typeof src !== 'string') {
         this.textureCache[id].setImageData(src);
       } else {
-        const image = new window.Image();
-        image.onload = () => {
-          this.textureCache[id].setImageData(image);
+        // @see https://github.com/antvis/g/issues/938
+        const { createImage } = this.canvasConfig;
 
-          if (successCallback) {
-            successCallback();
-          }
-        };
-        image.onerror = () => {};
-        image.crossOrigin = 'Anonymous';
-        image.src = src;
+        let image: HTMLImageElement;
+        if (createImage) {
+          image = createImage();
+        } else if (isBrowser) {
+          image = new window.Image();
+        }
+
+        if (image) {
+          image.onload = () => {
+            this.textureCache[id].setImageData(image);
+
+            if (successCallback) {
+              successCallback();
+            }
+          };
+          image.onerror = () => {};
+          image.crossOrigin = 'Anonymous';
+          image.src = src;
+        }
       }
     }
     return this.textureCache[id];

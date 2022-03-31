@@ -2,20 +2,20 @@
 title: 画布
 order: -100
 redirect_from:
-    - /zh/docs/api
+  - /zh/docs/api
 ---
 
 我们在 G 核心包 `@antv/g` 中提供了 Canvas 画布这一核心对象，从渲染的角度上看，它是一个在浏览器中实现的“小浏览器”，承载着以下三类对象：
 
--   [场景图](/zh/docs/guide/diving-deeper/scenegraph)。我们通过它描述场景中的各个图形及其层次关系。
--   [相机](/zh/docs/api/camera)。我们通过它定义观察整个场景的角度。我们为每一个画布内置了一个默认使用正交投影的相机，后续可随时修改。
--   [渲染器](/zh/docs/api/renderer)。我们通过它指定画布使用何种底层技术来渲染场景。不同的渲染器有着不同的渲染能力，例如只有 `g-webgl` 才能渲染 3D 图形。在 2D 场景下我们会尽力实现不同渲染器下一致的渲染效果。
+- [场景图](/zh/docs/guide/diving-deeper/scenegraph)。我们通过它描述场景中的各个图形及其层次关系。
+- [相机](/zh/docs/api/camera)。我们通过它定义观察整个场景的角度。我们为每一个画布内置了一个默认使用正交投影的相机，后续可随时修改。
+- [渲染器](/zh/docs/api/renderer)。我们通过它指定画布使用何种底层技术来渲染场景。不同的渲染器有着不同的渲染能力，例如只有 `g-webgl` 才能渲染 3D 图形。在 2D 场景下我们会尽力实现不同渲染器下一致的渲染效果。
 
 在设计画布 API 时，我们参考了 DOM API，因此它们有着很多相似之处：
 
--   画布可以类比成浏览器环境中的 [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) 对象。和 window 一样，在内部实现中我们也让画布继承了 [EventTarget](/zh/docs/api/builtin-objects/event-target)。与 window 不同的是，在同一个页面中，多个画布可以共存，即可以同时存在多个“平行世界”。
--   在 DOM 树中页面的入口为 [window.document](https://developer.mozilla.org/en-US/docs/Web/API/Document)，在画布中为 `canvas.document`。
--   在 DOM 树中根节点为 [document.documentElement](https://developer.mozilla.org/en-US/docs/Web/API/Document/documentElement)，也就是 `<html>`。在画布中同样可以通过 `canvas.document.documentElement` 访问。
+- 画布可以类比成浏览器环境中的 [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) 对象。和 window 一样，在内部实现中我们也让画布继承了 [EventTarget](/zh/docs/api/builtin-objects/event-target)。与 window 不同的是，在同一个页面中，多个画布可以共存，即可以同时存在多个“平行世界”。
+- 在 DOM 树中页面的入口为 [window.document](https://developer.mozilla.org/en-US/docs/Web/API/Document)，在画布中为 `canvas.document`。
+- 在 DOM 树中根节点为 [document.documentElement](https://developer.mozilla.org/en-US/docs/Web/API/Document/documentElement)，也就是 `<html>`。在画布中同样可以通过 `canvas.document.documentElement` 访问。
 
 我们选择尽可能兼容 DOM API，一方面降低了前端使用者的记忆学习成本，另一方面可以充分利用现有的 Web 生态，例如可以无缝接入[现有的手势和拖拽库](/zh/docs/api/event#手势和拖拽)。
 
@@ -27,9 +27,9 @@ redirect_from:
 
 在创建一个画布时，我们可以传入以下初始化参数，这也是最简单的初始化方式：
 
--   container 画布容器的 id 或 DOM 元素，后续在该 DOM 元素内自动创建 `<canvas>/<svg>`
--   width / height 画布宽度和高度
--   renderer 渲染器，目前支持 `g-canvas` `g-svg` 和 `g-webgl`
+- container 画布容器的 id 或 DOM 元素，后续在该 DOM 元素内自动创建 `<canvas>/<svg>`
+- width / height 画布宽度和高度
+- renderer 渲染器，目前支持 `g-canvas` `g-svg` 和 `g-webgl`
 
 ```js
 import { Canvas } from '@antv/g';
@@ -40,17 +40,17 @@ const webglRenderer = new WebGLRenderer();
 
 // 创建画布
 const canvas = new Canvas({
-    container: 'container', // 画布 DOM 容器 id
-    width: 600, // 画布宽度
-    height: 500, // 画布高度
-    renderer: webglRenderer, // 指定渲染器
+  container: 'container', // 画布 DOM 容器 id
+  width: 600, // 画布宽度
+  height: 500, // 画布高度
+  renderer: webglRenderer, // 指定渲染器
 });
 ```
 
 以上初始化方式只需要提供一个承载 `<canvas>/<svg>` 的容器 `container`，但有时我们有如下自定义需求：
 
--   自行创建 `<canvas>`，[详见](/zh/docs/api/canvas#使用创建好的-canvas-元素)
--   或者在 WebWorker 中使用 OffscreenCanvas，[详见](/zh/docs/api/canvas#在-webworker-中使用-offscreencanvas)
+- 自行创建 `<canvas>`，[详见](/zh/docs/api/canvas#使用创建好的-canvas-元素)
+- 或者在 WebWorker 中使用 OffscreenCanvas，[详见](/zh/docs/api/canvas#在-webworker-中使用-offscreencanvas)
 
 此时可以使用 `canvas` 代替 `container`，更多初始化参数如下。
 
@@ -78,8 +78,8 @@ document.getElementById('container').appendChild($canvas);
 
 // 使用创建好的 <canvas> 创建画布
 const canvas = new Canvas({
-    canvas: $canvas,
-    renderer: canvasRenderer,
+  canvas: $canvas,
+  renderer: canvasRenderer,
 });
 ```
 
@@ -91,8 +91,8 @@ const canvas = new Canvas({
 
 画布宽高。
 
--   如果设置了 [container](/zh/docs/api/canvas#container)，必填。渲染器创建 `<canvas>` 时将使用传入的宽高设置。
--   如果设置了 [canvas](/zh/docs/api/canvas#canvas)，选填。如果不填写，将使用 `canvas.width/height` 与 `devicePixelRatio` 计算。
+- 如果设置了 [container](/zh/docs/api/canvas#container)，必填。渲染器创建 `<canvas>` 时将使用传入的宽高设置。
+- 如果设置了 [canvas](/zh/docs/api/canvas#canvas)，选填。如果不填写，将使用 `canvas.width/height` 与 `devicePixelRatio` 计算。
 
 ## renderer
 
@@ -110,17 +110,30 @@ const canvas = new Canvas({
 
 可选。默认将使用 `window.cancelAnimationFrame`，如果运行环境中无 `window` 对象，例如小程序环境，可以手动传入。
 
+## createImage
+
+可选。返回一个 `HTMLImageElement` 或类似对象，默认将使用 `() => new window.Image()` 创建，如果运行环境中无 `window` 对象，例如小程序环境，可以手动传入。
+
+例如支付宝小程序中使用 [createImage](https://opendocs.alipay.com/mini/api/createimage)：
+
+```js
+const canvas = new Canvas({
+  // 省略其他参数
+  createImage: () => canvas.createImage(),
+});
+```
+
 # 坐标系
 
 当我们说起“位置”，一定是相对于某个坐标系下而言，在 G 中我们会使用到 Client、Screen、Page、Canvas 以及 Viewport 坐标系，例如在[事件系统](/zh/docs/api/event)中可以从事件对象上获取不同坐标系下的坐标：
 
 ```js
 canvas.addEventListener('click', (e) => {
-    e.clientX;
-    e.screenX;
-    e.pageX;
-    e.canvasX;
-    e.viewportX;
+  e.clientX;
+  e.screenX;
+  e.pageX;
+  e.canvasX;
+  e.viewportX;
 });
 ```
 
@@ -132,8 +145,8 @@ canvas.addEventListener('click', (e) => {
 
 我们提供了它们之间的转换方法，在这个[示例](/zh/examples/event#coordinates)中，移动鼠标可以看到鼠标所在位置在各个坐标系下的值：
 
--   Client <-> Viewport
--   Canvas <-> Viewport
+- Client <-> Viewport
+- Canvas <-> Viewport
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kPfcTKwZG90AAAAAAAAAAAAAARQnAQ)
 
@@ -175,8 +188,8 @@ https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/clientX
 
 ```js
 interface Point {
-    x: number;
-    y: number;
+  x: number;
+  y: number;
 }
 
 import type { Point } from '@antv/g';
@@ -186,8 +199,8 @@ import type { Point } from '@antv/g';
 
 我们提供了从浏览器的 Client 坐标系到画布 Viewport 视口坐标系的转换方法，[示例](/zh/examples/event#coordinates)：
 
--   client2Viewport(client: Point): Point
--   viewport2Client(canvas: Point): Point
+- client2Viewport(client: Point): Point
+- viewport2Client(canvas: Point): Point
 
 在内部实现中，我们使用了以下计算逻辑，例如从 Client 到 Viewport，首先获取画布 DOM 元素在 Client 坐标系下的包围盒，使用到了 [getBoundingClientRect](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect)，然后用 clientX/Y 减去包围盒左上角坐标，就得到了相对画布 DOM 元素左上角的坐标，即 Viewport 坐标：
 
@@ -209,8 +222,8 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 为了兼容旧版 G API，我们也提供了：
 
--   getPointByClient(clientX: number, clientY: number): Point
--   getClientByPoint(viewportX: number, viewportY: number): Point
+- getPointByClient(clientX: number, clientY: number): Point
+- getClientByPoint(viewportX: number, viewportY: number): Point
 
 ### Canvas <-> Viewport
 
@@ -222,8 +235,8 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 我们提供了以下转换方法：
 
--   viewport2Canvas(viewport: Point): Point
--   canvas2Viewport(canvas: Point): Point
+- viewport2Canvas(viewport: Point): Point
+- canvas2Viewport(canvas: Point): Point
 
 在内部实现中，我们使用了以下计算逻辑，例如从 Canvas 到 Viewport，经历从世界坐标系到裁剪坐标系，再到 NDC，最后到视口坐标系的变换：
 
@@ -324,14 +337,14 @@ canvas.removeChildren();
 
 ```js
 const resizeObserver = new ResizeObserver((entries) => {
-    for (const entry of entries) {
-        if (entry !== canvas) {
-            continue;
-        }
-        const { width, height } = entry.contentRect;
-        // resize canvas
-        canvas.resize(width, height);
+  for (const entry of entries) {
+    if (entry !== canvas) {
+      continue;
     }
+    const { width, height } = entry.contentRect;
+    // resize canvas
+    canvas.resize(width, height);
+  }
 });
 resizeObserver.observe($container);
 ```
@@ -343,9 +356,9 @@ resizeObserver.observe($container);
 ```js
 // 当图元数目很多时切换到 WebGL 渲染器
 if (tooManyShapes) {
-    canvas.setRenderer(webglRenderer);
+  canvas.setRenderer(webglRenderer);
 } else {
-    canvas.setRenderer(svgRenderer);
+  canvas.setRenderer(svgRenderer);
 }
 ```
 
@@ -372,7 +385,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {});
 ```js
 // 关闭自动渲染
 const webglRenderer = new WebGLRenderer({
-    enableAutoRendering: false,
+  enableAutoRendering: false,
 });
 
 canvas.render();
@@ -382,9 +395,9 @@ canvas.render();
 
 销毁画布，依次执行以下销毁逻辑：
 
--   如果开启了自动渲染，停止主渲染循环
--   将整个场景图从画布中移除，如果设置了 `destroyScenegraph` 还会销毁整个场景图
--   销毁渲染上下文
+- 如果开启了自动渲染，停止主渲染循环
+- 将整个场景图从画布中移除，如果设置了 `destroyScenegraph` 还会销毁整个场景图
+- 销毁渲染上下文
 
 ```js
 // 仅销毁画布，保留场景图
@@ -404,10 +417,10 @@ canvas.destroy(true);
 
 ```js
 const canvas = new Canvas({
-    container: 'container',
-    width: 600,
-    height: 500,
-    renderer: webglRenderer,
+  container: 'container',
+  width: 600,
+  height: 500,
+  renderer: webglRenderer,
 });
 canvas.getConfig(); // { container: 'container', width: 600, ... }
 ```
@@ -416,8 +429,8 @@ canvas.getConfig(); // { container: 'container', width: 600, ... }
 
 获取[渲染上下文](/zh/docs/api/renderer#渲染环境上下文)，由渲染器（`g-canvas/svg/webgl`）实现。该渲染上下文上有很多常用的方法，例如：
 
--   getDomElement() 返回上下文所处的 DOM 元素，例如 `g-canvas/webgl` 会返回 `<canvas>`，而 `g-svg` 会返回 `<svg>`
--   getDPR() 返回上下文的 devicePixelRatio
+- getDomElement() 返回上下文所处的 DOM 元素，例如 `g-canvas/webgl` 会返回 `<canvas>`，而 `g-svg` 会返回 `<svg>`
+- getDPR() 返回上下文的 devicePixelRatio
 
 ## getCamera(): Camera
 
@@ -432,9 +445,9 @@ camera.rotate();
 
 // 切换透视投影模式
 camera
-    .setPosition(300, 100, 500)
-    .setFocalPoint(300, 250, 0)
-    .setPerspective(0.1, 1000, 75, 600 / 500);
+  .setPosition(300, 100, 500)
+  .setFocalPoint(300, 250, 0)
+  .setPerspective(0.1, 1000, 75, 600 / 500);
 ```
 
 # 事件
@@ -447,7 +460,7 @@ Circle -> Group(canvas.document.documentElement) -> Document(canvas.document) ->
 
 ```js
 canvas.addEventListener('click', (e) => {
-    e.propagationPath(); // [Circle, Group, Document, Canvas]
+  e.propagationPath(); // [Circle, Group, Document, Canvas]
 });
 ```
 
@@ -469,11 +482,11 @@ canvas.document.addEventListener('click', () => {});
 
 目前可以监听以下画布相关事件：
 
--   `ready` 画布相关服务准备就绪后触发
--   `beforerender` 在每一帧渲染前触发
--   `afterrender` 在每一帧渲染后触发
--   `beforedestroy` 在销毁前触发
--   `afterdestroy` 在销毁后触发
+- `ready` 画布相关服务准备就绪后触发
+- `beforerender` 在每一帧渲染前触发
+- `afterrender` 在每一帧渲染后触发
+- `beforedestroy` 在销毁前触发
+- `afterdestroy` 在销毁后触发
 
 例如我们在官网所有例子中展示实时帧率，该组件在每次渲染后更新：
 
@@ -481,11 +494,11 @@ canvas.document.addEventListener('click', () => {});
 import { CanvasEvent } from '@antv/g';
 
 canvas.on('afterrender', () => {
-    stats.update();
+  stats.update();
 });
 // 或者
 canvas.on(CanvasEvent.AFTER_RENDER, () => {
-    stats.update();
+  stats.update();
 });
 ```
 
@@ -554,8 +567,8 @@ $canvas.height = 500;
 document.getElementById('container').appendChild($canvas);
 
 const canvas = new Canvas({
-    canvas: $canvas,
-    renderer: new CanvasRenderer(),
+  canvas: $canvas,
+  renderer: new CanvasRenderer(),
 });
 ```
 
