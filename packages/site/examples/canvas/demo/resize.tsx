@@ -57,6 +57,12 @@ const App = function MultiWorld() {
       },
     });
     canvas1.appendChild(circle1);
+    circle1.on('mouseenter', () => {
+      circle1.attr('fill', 'yellow');
+    });
+    circle1.on('mouseleave', () => {
+      circle1.attr('fill', 'blue');
+    });
 
     const circle2 = new Circle({
       style: {
@@ -67,6 +73,12 @@ const App = function MultiWorld() {
       },
     });
     canvas2.appendChild(circle2);
+    circle2.on('mouseenter', () => {
+      circle2.attr('fill', 'green');
+    });
+    circle2.on('mouseleave', () => {
+      circle2.attr('fill', 'red');
+    });
 
     // GUI
     const gui = new lil.GUI({ autoPlace: false });

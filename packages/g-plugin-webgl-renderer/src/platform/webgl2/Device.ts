@@ -456,7 +456,6 @@ export class Device_GL implements SwapChain, Device {
     } else {
       gl.clearColor(r, g, b, a);
       gl.clear(gl.COLOR_BUFFER_BIT);
-      this.submitBlitRenderPass();
     }
 
     // @see https://stackoverflow.com/questions/2143240/opengl-glflush-vs-glfinish
@@ -941,14 +940,16 @@ export class Device_GL implements SwapChain, Device {
       if (this.KHR_parallel_shader_compile !== null) {
         complete = gl.getProgramParameter(
           program.gl_program,
-          this.KHR_parallel_shader_compile!.COMPLETION_STATUS_KHR,
+          this.KHR_parallel_shader_compile.COMPLETION_STATUS_KHR,
         );
       } else {
         // If we don't have async shader compilation, assume all compilation is done immediately :/
         complete = true;
       }
 
-      if (complete) this.programCompiled(program);
+      if (complete) {
+        this.programCompiled(program);
+      }
 
       return complete;
     }
@@ -1239,11 +1240,16 @@ export class Device_GL implements SwapChain, Device {
 
     if (this.currentColorAttachments[i] !== colorAttachment) {
       this.currentColorAttachments[i] = colorAttachment;
-      this.bindFramebufferAttachment(
-        isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
-        (isWebGL2(gl) ? GL.COLOR_ATTACHMENT0 : GL.COLOR_ATTACHMENT0_WEBGL) + i,
-        colorAttachment,
-      );
+
+      // disable MRT in WebGL1
+      if (isWebGL2(gl) || i === 0) {
+        this.bindFramebufferAttachment(
+          isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER,
+          (isWebGL2(gl) ? GL.COLOR_ATTACHMENT0 : GL.COLOR_ATTACHMENT0_WEBGL) + i,
+          colorAttachment,
+        );
+      }
+
       this.resolveColorAttachmentsChanged = true;
     }
 
@@ -1921,8 +1927,8 @@ export class Device_GL implements SwapChain, Device {
             );
             gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
           } else {
-            // render target texture
-            gl.bindTexture(GL.TEXTURE_2D, (colorResolveFrom.texture as Texture_GL).gl_texture);
+            // need an extra render pass in WebGL1
+            this.submitBlitRenderPass(colorResolveFrom, colorResolveTo);
           }
           didUnbindDraw = true;
         }
@@ -1998,6 +2004,7 @@ export class Device_GL implements SwapChain, Device {
             gl.DEPTH_BUFFER_BIT,
             gl.NEAREST,
           );
+        } else {
         }
         gl.bindFramebuffer(isWebGL2(gl) ? GL.DRAW_FRAMEBUFFER : GL.FRAMEBUFFER, null);
         didUnbindDraw = true;
@@ -2068,7 +2075,7 @@ export class Device_GL implements SwapChain, Device {
     else throw new Error('whoops');
   }
 
-  private submitBlitRenderPass() {
+  private submitBlitRenderPass(resolveFrom: RenderTarget_GL, resolveTo: Texture_GL) {
     if (!this.blitRenderPipeline) {
       const vertexBuffer = makeStaticDataBuffer(
         this,
@@ -2109,16 +2116,16 @@ export class Device_GL implements SwapChain, Device {
         colorAttachmentFormats: [Format.U8_RGBA_RT],
         depthStencilAttachmentFormat: null,
         inputLayout,
-        megaStateDescriptor: defaultMegaState,
+        megaStateDescriptor: copyMegaState(defaultMegaState),
       });
 
-      const colorTexture = this.currentColorAttachments[0].texture;
+      // const colorTexture = this.currentColorAttachments[0].texture;
       this.blitBindings = this.createBindings({
         bindingLayout: bindingLayouts[0],
         samplerBindings: [
           {
             sampler: null,
-            texture: colorTexture,
+            texture: resolveFrom.texture,
             lateBinding: null,
           },
         ],
@@ -2126,15 +2133,19 @@ export class Device_GL implements SwapChain, Device {
       });
 
       program.setUniforms({
-        u_Texture: colorTexture,
+        u_Texture: resolveFrom,
       });
     }
+
+    // save currentRenderPassDescriptor since we're already in a render pass
+    const currentRenderPassDescriptor = this.currentRenderPassDescriptor;
+    this.currentRenderPassDescriptor = null;
 
     this.inBlitRenderPass = true;
 
     const blitRenderPass = this.createRenderPass({
-      colorAttachment: [this.currentColorAttachments[0]],
-      colorResolveTo: [this.getOnscreenTexture()],
+      colorAttachment: [resolveFrom],
+      colorResolveTo: [resolveTo],
       colorClearColor: [OpaqueBlack],
       colorStore: [true],
       depthStencilAttachment: null,
@@ -2151,7 +2162,9 @@ export class Device_GL implements SwapChain, Device {
     blitRenderPass.setInputState(this.blitInputState);
     blitRenderPass.setViewport(0, 0, width, height);
     blitRenderPass.draw(3, 0);
-    this.submitPass(blitRenderPass);
+
+    // restore
+    this.currentRenderPassDescriptor = currentRenderPassDescriptor;
     this.inBlitRenderPass = false;
   }
 }

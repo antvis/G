@@ -7,8 +7,6 @@ import type { Instanced } from '../meshes/Instanced';
 import type { RenderInstList } from '../render';
 import { RenderHelper } from '../render';
 import type { Renderable3D } from '../components/Renderable3D';
-// import { BufferGeometry } from '../geometries';
-// import { ShaderMaterial } from '../materials';
 
 let stencilRefCounter = 1;
 
@@ -49,7 +47,9 @@ export class BatchManager {
 
   private stencilRefCache: Record<number, number> = {};
 
-  render(list: RenderInstList) {
+  render(lists: RenderInstList[]) {
+    this.updatePendingPatches();
+
     this.meshes.forEach((mesh) => {
       // init rendering service, create geometry & material
       mesh.init(this.device, this.renderingService);
@@ -63,7 +63,10 @@ export class BatchManager {
       const renderInst = this.renderHelper.renderInstManager.newRenderInst();
       renderInst.setAllowSkippingIfPipelineNotReady(false);
       mesh.applyRenderInst(renderInst, objects);
-      this.renderHelper.renderInstManager.submitRenderInst(renderInst, list);
+
+      lists.forEach((list) => {
+        this.renderHelper.renderInstManager.submitRenderInst(renderInst, list);
+      });
 
       // console.log('submit: ', mesh);
 
@@ -72,33 +75,6 @@ export class BatchManager {
         object.renderable.dirty = false;
       });
     });
-
-    // merge update patches to reduce `setSubData` calls
-    Object.keys(this.pendingUpdatePatches).forEach((patchKey) => {
-      const { instance, objectIndices, name, value } = this.pendingUpdatePatches[patchKey];
-      objectIndices.sort((a, b) => a - b);
-
-      const updateBatches: number[][] = [];
-      objectIndices.forEach((i) => {
-        const lastUpdateBatch = updateBatches[updateBatches.length - 1];
-
-        if (!lastUpdateBatch || i !== lastUpdateBatch[lastUpdateBatch.length - 1] + 1) {
-          updateBatches.push([i]);
-        } else {
-          lastUpdateBatch.push(i);
-        }
-      });
-
-      updateBatches.forEach((indices) => {
-        instance.updateAttribute(
-          instance.objects.slice(indices[0], indices[0] + indices.length),
-          indices[0],
-          name,
-          value,
-        );
-      });
-    });
-    this.pendingUpdatePatches = {};
   }
 
   /**
@@ -248,6 +224,35 @@ export class BatchManager {
       this.stencilRefCache[object.entity] = stencilRefCounter++;
     }
     return this.stencilRefCache[object.entity];
+  }
+
+  private updatePendingPatches() {
+    // merge update patches to reduce `setSubData` calls
+    Object.keys(this.pendingUpdatePatches).forEach((patchKey) => {
+      const { instance, objectIndices, name, value } = this.pendingUpdatePatches[patchKey];
+      objectIndices.sort((a, b) => a - b);
+
+      const updatePatches: number[][] = [];
+      objectIndices.forEach((i) => {
+        const lastUpdateBatch = updatePatches[updatePatches.length - 1];
+
+        if (!lastUpdateBatch || i !== lastUpdateBatch[lastUpdateBatch.length - 1] + 1) {
+          updatePatches.push([i]);
+        } else {
+          lastUpdateBatch.push(i);
+        }
+      });
+
+      updatePatches.forEach((indices) => {
+        instance.updateAttribute(
+          instance.objects.slice(indices[0], indices[0] + indices.length),
+          indices[0],
+          name,
+          value,
+        );
+      });
+    });
+    this.pendingUpdatePatches = {};
   }
 
   // private findClipPath(): DisplayObject | null {

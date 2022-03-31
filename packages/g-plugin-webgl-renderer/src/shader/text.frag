@@ -37,13 +37,13 @@ void main() {
 
   if (u_IsPicking > 0.5) {
     outputColor = vec4(v_PickingResult.xyz, 1.0);
-    return;
-  }
+  } else {
 
-  if (opacity < 0.001) {
-    discard;
-  }
+    if (opacity < 0.001) {
+      discard;
+    }
 
-  outputColor = color;
-  outputColor.a *= opacity;
+    outputColor = color;
+    outputColor.a *= opacity;
+  }
 }

@@ -1,5 +1,5 @@
 import type { Device, Texture } from '../platform';
-import { assert, assertExists } from '../platform/utils';
+import { assert } from '../platform/utils';
 import type { RGRenderTargetDescription } from './RenderTargetDescription';
 import { SingleSampledTexture } from './SingleSampledTexture';
 
@@ -17,7 +17,7 @@ export class TemporalTexture {
     // and create a new outputTexture.
 
     if (this.inputTexture !== this.outputTexture) {
-      if (this.inputTexture !== null) this.inputTexture.destroy(device);
+      if (this.inputTexture !== null) this.inputTexture.destroy();
 
       // Set the input texture to our old output texture.
       this.inputTexture = this.outputTexture;
@@ -36,16 +36,16 @@ export class TemporalTexture {
   }
 
   getTextureForResolving(): Texture {
-    return assertExists(this.outputTexture).texture;
+    return this.outputTexture?.texture;
   }
 
-  destroy(device: Device): void {
+  destroy(): void {
     if (this.outputTexture !== null && this.outputTexture !== this.inputTexture) {
-      this.outputTexture.destroy(device);
+      this.outputTexture.destroy();
       this.outputTexture = null;
     }
     if (this.inputTexture !== null) {
-      this.inputTexture.destroy(device);
+      this.inputTexture.destroy();
       this.inputTexture = null;
     }
   }

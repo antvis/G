@@ -17,6 +17,4 @@ void main() {
   gl_Position = project(vec4(offset, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
 
   #pragma glslify: import('@antv/g-shader-components/uv.vert')
-
-  setPickingColor(a_PickingColor.xyz);
 }

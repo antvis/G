@@ -236,6 +236,10 @@ export class RenderInst {
    * account for WebGL1
    */
   setUniforms(bufferIndex: number, uniforms: RenderInstUniform[]) {
+    if (uniforms.length === 0) {
+      return;
+    }
+
     // use later in WebGL1
     this.uniforms[bufferIndex] = uniforms;
 

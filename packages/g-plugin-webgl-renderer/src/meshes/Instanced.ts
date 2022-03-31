@@ -816,6 +816,7 @@ export abstract class Instanced {
         this.material.uniformNames.indexOf(a.name) - this.material.uniformNames.indexOf(b.name),
     );
 
+    // TODO: should not upload all uniforms if no change
     renderInst.setUniforms(numUniformBuffers, uniforms);
 
     const {

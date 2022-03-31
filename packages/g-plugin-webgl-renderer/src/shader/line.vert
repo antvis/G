@@ -27,12 +27,6 @@ out vec4 v_Arc;
 out float v_Type;
 out float v_Travel;
 
-out vec4 v_PickingResult;
-#define COLOR_SCALE 1. / 255.
-void setPickingColor(vec3 pickingColor) {
-  v_PickingResult.rgb = pickingColor * COLOR_SCALE;
-}
-
 vec2 doBisect(
   vec2 norm, float len, vec2 norm2, float len2, float dy, float inner
 ) {
@@ -54,8 +48,6 @@ vec2 doBisect(
 }
 
 void main() {
-  setPickingColor(u_PickingColor.xyz);
-
   vec2 pointA = (u_ModelMatrix * vec4(a_Point1, 0., 1.0)).xy;
   vec2 pointB = (u_ModelMatrix * vec4(a_Point2, 0., 1.0)).xy;
 

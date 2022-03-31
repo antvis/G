@@ -16,6 +16,8 @@
 in vec3 v_ViewPosition;
 in vec3 v_Normal;
 
+out vec4 outputColor;
+
 void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
 
@@ -27,25 +29,29 @@ void main() {
   #pragma glslify: import('@antv/g-shader-components/normal.frag')
   #pragma glslify: import('@antv/g-shader-components/normalmap.frag')
 
-  outputColor = u_Color;
-  outputColor.a = outputColor.a * u_Opacity;
+  if (u_IsPicking > 0.5) {
+    outputColor = vec4(v_PickingResult.xyz, 1.0);
+  } else {
+    outputColor = u_Color;
+    outputColor.a = outputColor.a * u_Opacity;
 
-  vec4 diffuseColor = outputColor;
-  ReflectedLight reflectedLight = ReflectedLight(vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ));
-  vec3 totalEmissiveRadiance = u_Emissive;
+    vec4 diffuseColor = outputColor;
+    ReflectedLight reflectedLight = ReflectedLight(vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ));
+    vec3 totalEmissiveRadiance = u_Emissive;
 
-  // calculate lighting accumulation
-  #pragma glslify: import('@antv/g-shader-components/light.phong.frag')
-  #pragma glslify: import('@antv/g-shader-components/light.begin.frag')
-  #pragma glslify: import('@antv/g-shader-components/light.end.frag')
+    // calculate lighting accumulation
+    #pragma glslify: import('@antv/g-shader-components/light.phong.frag')
+    #pragma glslify: import('@antv/g-shader-components/light.begin.frag')
+    #pragma glslify: import('@antv/g-shader-components/light.end.frag')
 
-  vec3 outgoingLight = reflectedLight.directDiffuse +
-    reflectedLight.indirectDiffuse + 
-    reflectedLight.directSpecular + 
-    reflectedLight.indirectSpecular + 
-    totalEmissiveRadiance;
+    vec3 outgoingLight = reflectedLight.directDiffuse +
+      reflectedLight.indirectDiffuse + 
+      reflectedLight.directSpecular + 
+      reflectedLight.indirectSpecular + 
+      totalEmissiveRadiance;
 
-  #pragma glslify: import('@antv/g-shader-components/output.frag')
-  #pragma glslify: import('@antv/g-shader-components/wireframe.frag')
-  #pragma glslify: import('@antv/g-shader-components/fog.frag')
+    #pragma glslify: import('@antv/g-shader-components/output.frag')
+    #pragma glslify: import('@antv/g-shader-components/wireframe.frag')
+    #pragma glslify: import('@antv/g-shader-components/fog.frag')
+  }
 }

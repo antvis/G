@@ -51,6 +51,4 @@ void main() {
   }
 
   v_Dash = vec4(a_Position.x, a_Dash.xyz);
-
-  setPickingColor(a_PickingColor.xyz);
 }

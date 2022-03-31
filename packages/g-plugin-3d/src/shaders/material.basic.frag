@@ -8,21 +8,27 @@
 #pragma glslify: import('@antv/g-shader-components/wireframe.declaration.frag')
 #pragma glslify: import('@antv/g-shader-components/fog.declaration.frag')
 
+out vec4 outputColor;
+
 void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
   #pragma glslify: import('@antv/g-shader-components/map.frag')
 
-  outputColor = u_Color;
-  outputColor.a = outputColor.a * u_Opacity;
-  vec4 diffuseColor = outputColor;
+  if (u_IsPicking > 0.5) {
+    outputColor = vec4(v_PickingResult.xyz, 1.0);
+  } else {
+    outputColor = u_Color;
+    outputColor.a = outputColor.a * u_Opacity;
+    vec4 diffuseColor = outputColor;
 
-  ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
-  reflectedLight.indirectDiffuse += vec3( 1.0 );
-  reflectedLight.indirectDiffuse *= outputColor.rgb;
+    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
+    reflectedLight.indirectDiffuse += vec3( 1.0 );
+    reflectedLight.indirectDiffuse *= outputColor.rgb;
 
-  vec3 outgoingLight = reflectedLight.indirectDiffuse;
-  
-  #pragma glslify: import('@antv/g-shader-components/output.frag')
-  #pragma glslify: import('@antv/g-shader-components/wireframe.frag')
-  #pragma glslify: import('@antv/g-shader-components/fog.frag')
+    vec3 outgoingLight = reflectedLight.indirectDiffuse;
+    
+    #pragma glslify: import('@antv/g-shader-components/output.frag')
+    #pragma glslify: import('@antv/g-shader-components/wireframe.frag')
+    #pragma glslify: import('@antv/g-shader-components/fog.frag')
+  }
 }

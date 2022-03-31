@@ -5,9 +5,10 @@ in vec4 v_Distance;
 in vec4 v_Arc;
 in float v_Type;
 in float v_Travel;
-in vec4 v_PickingResult;
 
 out vec4 outputColor;
+
+#define COLOR_SCALE 1. / 255.
 
 void main(){
   if (u_Visible < 0.5) {
@@ -63,10 +64,9 @@ void main(){
   }
 
   if (u_IsPicking > 0.5) {
-    outputColor = vec4(v_PickingResult.xyz, 1.0);
-    return;
+    outputColor = vec4(COLOR_SCALE * u_PickingColor.xyz, 1.0);
+  } else {
+    outputColor = u_StrokeColor;
+    outputColor.a *= alpha * u_Opacity * u_StrokeOpacity;
   }
-
-  outputColor = u_StrokeColor;
-  outputColor.a *= alpha * u_Opacity * u_StrokeOpacity;
 }

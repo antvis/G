@@ -22,7 +22,7 @@ export class DynamicUniformBuffer {
     this.uniformBufferMaxPageWordSize = limits.uniformBufferMaxPageWordSize;
   }
 
-  private isSupportedUBO() {
+  isSupportedUBO() {
     // UBO not supported in WebGL1
     return this.device.queryVendorInfo().platformString !== 'WebGL1';
   }

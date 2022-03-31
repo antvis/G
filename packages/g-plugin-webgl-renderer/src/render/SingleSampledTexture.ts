@@ -40,7 +40,7 @@ export class SingleSampledTexture {
     this.age = 0;
   }
 
-  destroy(device: Device): void {
+  destroy(): void {
     this.texture.destroy();
   }
 }

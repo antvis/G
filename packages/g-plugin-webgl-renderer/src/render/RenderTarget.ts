@@ -62,7 +62,7 @@ export class RGRenderTarget {
     this.age = 0;
   }
 
-  destroy(device: Device): void {
+  destroy(): void {
     if (this.texture !== null) {
       this.texture.destroy();
     }

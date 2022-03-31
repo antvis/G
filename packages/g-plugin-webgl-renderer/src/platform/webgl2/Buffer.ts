@@ -1,12 +1,6 @@
 import { isNumber } from '@antv/util';
-import type {
-  Buffer,
-  BufferDescriptor,
-  BufferFrequencyHint} from '../interfaces';
-import {
-  BufferUsage,
-  ResourceType,
-} from '../interfaces';
+import type { Buffer, BufferDescriptor, BufferFrequencyHint } from '../interfaces';
+import { BufferUsage, ResourceType } from '../interfaces';
 import { assert } from '../utils';
 import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
@@ -94,17 +88,18 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
   ): void {
     const gl = this.device.gl;
     const { gl_target, byteSize: dstByteSize, pageByteSize: dstPageByteSize } = this;
-    if (isWebGL2(gl) && gl_target === gl.UNIFORM_BUFFER) {
-      // Manually check asserts for speed.
-      if (!(dstByteOffset % dstPageByteSize === 0))
-        throw new Error(
-          `Assert fail: (dstByteOffset [${dstByteOffset}] % dstPageByteSize [${dstPageByteSize}]) === 0`,
-        );
-      if (!(byteSize % dstPageByteSize === 0))
-        throw new Error(
-          `Assert fail: (byteSize [${byteSize}] % dstPageByteSize [${dstPageByteSize}]) === 0`,
-        );
-    }
+    // Account for setSubData being called with a dstByteOffset that is beyond the end of the buffer.
+    // if (isWebGL2(gl) && gl_target === gl.UNIFORM_BUFFER) {
+    //   // Manually check asserts for speed.
+    //   if (!(dstByteOffset % dstPageByteSize === 0))
+    //     throw new Error(
+    //       `Assert fail: (dstByteOffset [${dstByteOffset}] % dstPageByteSize [${dstPageByteSize}]) === 0`,
+    //     );
+    //   if (!(byteSize % dstPageByteSize === 0))
+    //     throw new Error(
+    //       `Assert fail: (byteSize [${byteSize}] % dstPageByteSize [${dstPageByteSize}]) === 0`,
+    //     );
+    // }
     if (!(dstByteOffset + byteSize <= dstByteSize)) {
       throw new Error(
         `Assert fail: (dstByteOffset [${dstByteOffset}] + byteSize [${byteSize}]) <= dstByteSize [${dstByteSize}], gl_target ${gl_target}`,
