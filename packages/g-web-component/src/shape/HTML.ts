@@ -1,4 +1,5 @@
-import { HTML, HTMLStyleProps } from "@antv/g";
+import type { HTMLStyleProps } from "@antv/g";
+import { HTML } from "@antv/g";
 import { BaseShape } from "./BaseShape";
 
 export class HTMLShape extends BaseShape {

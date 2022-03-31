@@ -1,29 +1,25 @@
 import { inject, singleton } from 'mana-syringe';
 import {
   AABB,
-  RenderingService,
-  RenderingPlugin,
   RenderingPluginContribution,
   SceneGraphService,
   RenderingContext,
   ElementEvent,
+  Shape,
+} from '@antv/g';
+import type {
+  FederatedEvent,
+  ParsedElement,
+  RenderingService,
+  RenderingPlugin,
   MutationEvent,
   DisplayObject,
-  Shape,
   ParsedBaseStyleProps,
   ParsedRectStyleProps,
   ParsedTextStyleProps,
 } from '@antv/g';
-import type { FederatedEvent, ParsedElement } from '@antv/g';
-import Yoga, {
-  FLEX_DIRECTION_ROW,
-  ALIGN_FLEX_START,
+import type {
   YogaFlexDirection,
-  EDGE_TOP,
-  EDGE_RIGHT,
-  EDGE_BOTTOM,
-  EDGE_LEFT,
-  POSITION_TYPE_RELATIVE,
   YogaNode,
   YogaJustifyContent,
   YogaAlign,
@@ -32,11 +28,20 @@ import Yoga, {
   YogaDisplay,
   YogaEdge,
 } from 'yoga-layout-prebuilt';
+import Yoga, {
+  FLEX_DIRECTION_ROW,
+  ALIGN_FLEX_START,
+  EDGE_TOP,
+  EDGE_RIGHT,
+  EDGE_BOTTOM,
+  EDGE_LEFT,
+  POSITION_TYPE_RELATIVE,
+} from 'yoga-layout-prebuilt';
 import { YogaPluginOptions } from './tokens';
 import { YogaConstants } from './constants';
 
 import YogaEdges = YogaConstants.YogaEdges;
-import ComputedLayout = YogaConstants.ComputedLayout;
+// import ComputedLayout = YogaConstants.ComputedLayout;
 import FlexDirection = YogaConstants.FlexDirection;
 import JustifyContent = YogaConstants.JustifyContent;
 import Align = YogaConstants.Align;
@@ -66,57 +71,6 @@ export class YogaPlugin implements RenderingPlugin {
   private needRecalculateLayout = true;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.init.tap(YogaPlugin.tag, () => {
-      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.addEventListener(ElementEvent.INSERTED, handleInserted);
-      this.renderingContext.root.addEventListener(ElementEvent.REMOVED, handleRemoved);
-      this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
-      this.renderingContext.root.addEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-    });
-
-    renderingService.hooks.destroy.tap(YogaPlugin.tag, () => {
-      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.removeEventListener(ElementEvent.INSERTED, handleInserted);
-      this.renderingContext.root.removeEventListener(ElementEvent.REMOVED, handleRemoved);
-      this.renderingContext.root.removeEventListener(
-        ElementEvent.BOUNDS_CHANGED,
-        handleBoundsChanged,
-      );
-      this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-    });
-
-    // const printYogaTree = (node: YogaNode) => {
-    //   console.log(node, node.getComputedLayout());
-
-    //   const num = node.getChildCount();
-    //   for (let i = 0; i < num; i++) {
-    //     const child = node.getChild(i);
-    //     printYogaTree(child);
-    //   }
-    // };
-
-    renderingService.hooks.beginFrame.tap(YogaPlugin.tag, () => {
-      if (this.needRecalculateLayout) {
-        const rootNode = this.nodes[this.renderingContext.root.entity];
-        rootNode.calculateLayout();
-        this.renderingContext.root.forEach((object: DisplayObject) => {
-          const node = this.nodes[object.entity];
-          this.updateDisplayObjectPosition(object, node);
-        });
-        this.needRecalculateLayout = false;
-
-        // printYogaTree(rootNode);
-      }
-    });
-
     /**
      * create YogaNode for every displayObject
      */
@@ -211,6 +165,57 @@ export class YogaPlugin implements RenderingPlugin {
       }
       this.needRecalculateLayout = true;
     };
+
+    renderingService.hooks.init.tap(YogaPlugin.tag, () => {
+      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.addEventListener(ElementEvent.INSERTED, handleInserted);
+      this.renderingContext.root.addEventListener(ElementEvent.REMOVED, handleRemoved);
+      this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      this.renderingContext.root.addEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
+    });
+
+    renderingService.hooks.destroy.tap(YogaPlugin.tag, () => {
+      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.removeEventListener(ElementEvent.INSERTED, handleInserted);
+      this.renderingContext.root.removeEventListener(ElementEvent.REMOVED, handleRemoved);
+      this.renderingContext.root.removeEventListener(
+        ElementEvent.BOUNDS_CHANGED,
+        handleBoundsChanged,
+      );
+      this.renderingContext.root.removeEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
+    });
+
+    // const printYogaTree = (node: YogaNode) => {
+    //   console.log(node, node.getComputedLayout());
+
+    //   const num = node.getChildCount();
+    //   for (let i = 0; i < num; i++) {
+    //     const child = node.getChild(i);
+    //     printYogaTree(child);
+    //   }
+    // };
+
+    renderingService.hooks.beginFrame.tap(YogaPlugin.tag, () => {
+      if (this.needRecalculateLayout) {
+        const rootNode = this.nodes[this.renderingContext.root.entity];
+        rootNode.calculateLayout();
+        this.renderingContext.root.forEach((object: DisplayObject) => {
+          const node = this.nodes[object.entity];
+          this.updateDisplayObjectPosition(object, node);
+        });
+        this.needRecalculateLayout = false;
+
+        // printYogaTree(rootNode);
+      }
+    });
   }
 
   /**
@@ -521,7 +526,8 @@ export class YogaPlugin implements RenderingPlugin {
     const isInFlexContainer = this.isFlex(object?.parentElement as DisplayObject);
     if (isInFlexContainer) {
       const layout = node.getComputedLayout();
-      let { top, left, width, height } = layout;
+      let { top, left } = layout;
+      const { width, height } = layout;
       // update size, only Rect & Image can be updated
       object.style.yogaUpdatingFlag = true;
       object.style.width = width;

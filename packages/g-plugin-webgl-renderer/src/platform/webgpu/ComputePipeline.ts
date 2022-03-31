@@ -1,6 +1,7 @@
-import { ComputePipeline, ComputePipelineDescriptor, ResourceType } from '../interfaces';
-import { IDevice_WebGPU } from './interfaces';
-import { Program_WebGPU } from './Program';
+import type { ComputePipeline, ComputePipelineDescriptor} from '../interfaces';
+import { ResourceType } from '../interfaces';
+import type { IDevice_WebGPU } from './interfaces';
+import type { Program_WebGPU } from './Program';
 import { ResourceBase_WebGPU } from './ResourceBase';
 
 export class ComputePipeline_WebGPU extends ResourceBase_WebGPU implements ComputePipeline {

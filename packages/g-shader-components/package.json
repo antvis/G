@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-shader-components",
-  "version": "1.0.12",
+  "version": "1.0.14",
   "description": "Shader components based on glslify",
   "main": "scene.both.glsl",
   "files": [
@@ -29,5 +29,5 @@
     "glslify": "^7.1.1"
   },
   "homepage": "https://github.com/antvis/g#readme",
-  "gitHead": "0c7b71ca68a0ada7e50c9eeec3c47f9b7de44f01"
+  "gitHead": "ac4d1b7ab482f8ff862c76fb6248ef92b4a8c22d"
 }

@@ -1,21 +1,15 @@
 import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
-import {
-  DisplayObject,
-  ParsedTextStyleProps,
-  PARSED_COLOR_TYPE,
-  Text as TextShape,
-  Tuple4Number,
-} from '@antv/g';
+import type { DisplayObject, ParsedTextStyleProps, Text as TextShape, Tuple4Number } from '@antv/g';
+import { PARSED_COLOR_TYPE } from '@antv/g';
 import { Format, VertexBufferFrequency, CullMode } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
 import { getGlyphQuads } from './symbol/SymbolQuad';
-import GlyphAtlas from './symbol/GlyphAtlas';
+import type GlyphAtlas from './symbol/GlyphAtlas';
 import vert from '../shader/text.vert';
 import frag from '../shader/text.frag';
-import { VertexAttributeLocation } from '../geometries';
-import { Instanced } from './Instanced';
+import { Instanced, VertexAttributeLocation } from './Instanced';
 import { enumToObject } from '../utils/enum';
 
 enum TextVertexAttributeLocation {
@@ -264,7 +258,7 @@ export class TextMesh extends Instanced {
     }
   }
 
-  updateAttribute(object: DisplayObject, name: string, value: any): void {
+  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any): void {
     if (
       name === 'text' ||
       name === 'fontFamily' ||

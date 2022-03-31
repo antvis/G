@@ -1,13 +1,14 @@
 import { Format } from '../format';
-import {
+import type {
   InputLayout,
   InputLayoutBufferDescriptor,
   InputLayoutDescriptor,
-  ResourceType,
-  VertexAttributeDescriptor,
+  VertexAttributeDescriptor} from '../interfaces';
+import {
+  ResourceType
 } from '../interfaces';
 import { assert } from '../utils';
-import { Device_GL } from './Device';
+import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
 
 export class InputLayout_GL extends ResourceBase_GL implements InputLayout {

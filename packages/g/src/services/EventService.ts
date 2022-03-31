@@ -66,6 +66,13 @@ export class EventService extends EventEmitter {
 
   @postConstruct()
   init() {
+    // this.onPointerDown = this.onPointerDown.bind(this);
+    // this.onPointerMove = this.onPointerUp.bind(this);
+    // this.onPointerMove = this.onPointerMove.bind(this);
+    // this.onPointerUp = this.onPointerUp.bind(this);
+    // this.onPointerOut = this.onPointerOut.bind(this);
+    // this.onWheel = this.onWheel.bind(this);
+
     this.rootTarget = this.renderingContext.root.parentNode; // document
     this.addEventMapping('pointerdown', this.onPointerDown);
     this.addEventMapping('pointerup', this.onPointerUp);
@@ -791,13 +798,15 @@ export class EventService extends EventEmitter {
       if (listeners.once) {
         emitter.removeListener(type, listeners.fn, undefined, true);
       }
-      listeners.fn.call(listeners.context, e);
+      listeners.fn.call(e.currentTarget || listeners.context, e);
+      // listeners.fn.call(listeners.context, e);
     } else {
       for (let i = 0; i < listeners.length && !e.propagationImmediatelyStopped; i++) {
         if (listeners[i].once) {
           emitter.removeListener(type, listeners[i].fn, undefined, true);
         }
-        listeners[i].fn.call(listeners[i].context, e);
+        listeners[i].fn.call(e.currentTarget || listeners[i].context, e);
+        // listeners[i].fn.call(listeners[i].context, e);
       }
     }
   }

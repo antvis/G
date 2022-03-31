@@ -1,5 +1,5 @@
-import { ParsedBaseStyleProps, PathCommand } from '@antv/g';
-import { ElementRenderer } from '.';
+import type { ParsedBaseStyleProps, PathCommand } from '@antv/g';
+import type { ElementRenderer } from '.';
 import { singleton } from 'mana-syringe';
 
 @singleton()

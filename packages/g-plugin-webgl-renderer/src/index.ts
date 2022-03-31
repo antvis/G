@@ -1,6 +1,8 @@
 import 'regenerator-runtime/runtime';
-import { globalContainer, RendererPlugin, Shape } from '@antv/g';
-import { Module, Syringe } from 'mana-syringe';
+import type { RendererPlugin, Shape } from '@antv/g';
+import { globalContainer } from '@antv/g';
+import type { Syringe } from 'mana-syringe';
+import { Module } from 'mana-syringe';
 import { Renderable3D } from './components/Renderable3D';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { PickingPlugin } from './PickingPlugin';
@@ -22,7 +24,7 @@ import { GlyphManager } from './meshes/symbol/GlyphManager';
 import { MeshFactory, RendererFactory, ShapeRenderer } from './tokens';
 import { Mesh } from './Mesh';
 import { LightPool } from './LightPool';
-import { TextureDescriptor } from './platform';
+import type { TextureDescriptor } from './platform';
 import {
   FillMesh,
   ImageMesh,
@@ -33,12 +35,6 @@ import {
   MeshMesh,
 } from './meshes';
 import { MeshUpdater } from './MeshUpdater';
-
-let bindFunc: Syringe.Register;
-
-export function registerModelBuilder(builderClazz: new (...args: any[]) => Batch, named: string) {
-  bindFunc({ token: { token: ShapeRenderer, named }, useClass: builderClazz });
-}
 
 export { Renderable3D, Batch, TexturePool, RenderGraphPlugin, Mesh };
 
@@ -51,7 +47,6 @@ export * from './meshes';
 export * from './lights';
 
 export const containerModule = Module((register) => {
-  bindFunc = register;
   register(RenderHelper);
   register(TexturePool);
   register(LightPool);
@@ -94,11 +89,14 @@ export const containerModule = Module((register) => {
   register({
     token: RendererFactory,
     useFactory: (context) => {
+      const cache = {};
       return (tagName: Shape) => {
-        if (context.container.isBoundNamed(ShapeRenderer, tagName)) {
-          return context.container.getNamed(ShapeRenderer, tagName) || null;
+        if (!cache[tagName]) {
+          if (context.container.isBoundNamed(ShapeRenderer, tagName)) {
+            cache[tagName] = context.container.getNamed(ShapeRenderer, tagName);
+          }
         }
-        return null;
+        return cache[tagName] || null;
       };
     },
   });
@@ -110,7 +108,7 @@ export class Plugin implements RendererPlugin {
   private container: Syringe.Container;
 
   init(container: Syringe.Container): void {
-    if (globalContainer.isBound(MeshUpdater)) {
+    if (!globalContainer.isBound(MeshUpdater)) {
       globalContainer.register(MeshUpdater);
     }
     this.container = container;
@@ -128,7 +126,9 @@ export class Plugin implements RendererPlugin {
     container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
-    globalContainer.remove(MeshUpdater);
+    if (globalContainer.isBound(MeshUpdater)) {
+      globalContainer.remove(MeshUpdater);
+    }
     container.remove(WebGLRendererPluginOptions);
     container.unload(containerModule);
   }
@@ -140,10 +140,8 @@ export class Plugin implements RendererPlugin {
   loadTexture(
     src: string | TexImageSource,
     descriptor?: TextureDescriptor,
-    successCallback?: Function,
+    successCallback?: () => void,
   ) {
     return this.container.get(RenderGraphPlugin).loadTexture(src, descriptor, successCallback);
   }
 }
-
-export * from './platform';

@@ -1,5 +1,5 @@
-import { Disposable, Resource, ResourceBase, ResourceType } from '../interfaces';
-import { Device_GL } from './Device';
+import type { Disposable, Resource, ResourceBase } from '../interfaces';
+import type { Device_GL } from './Device';
 
 export class ResourceBase_GL implements ResourceBase, Disposable {
   id: number;

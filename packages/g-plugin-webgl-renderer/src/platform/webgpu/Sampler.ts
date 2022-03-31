@@ -1,13 +1,14 @@
+import type {
+  Sampler,
+  SamplerDescriptor} from '../interfaces';
 import {
   MipFilterMode,
   ResourceType,
-  Sampler,
-  SamplerDescriptor,
   TexFilterMode,
 } from '../interfaces';
 import { assert } from '../utils';
 import { translateMinMagFilter, translateMipFilter, translateWrapMode } from './utils';
-import { IDevice_WebGPU } from './interfaces';
+import type { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 
 export class Sampler_WebGPU extends ResourceBase_WebGPU implements Sampler {
@@ -31,7 +32,7 @@ export class Sampler_WebGPU extends ResourceBase_WebGPU implements Sampler {
     const lodMaxClamp =
       descriptor.mipFilter === MipFilterMode.NoMip ? descriptor.minLOD : descriptor.maxLOD;
 
-    let maxAnisotropy = descriptor.maxAnisotropy ?? 1;
+    const maxAnisotropy = descriptor.maxAnisotropy ?? 1;
     if (maxAnisotropy > 1)
       assert(
         descriptor.minFilter === TexFilterMode.Bilinear &&

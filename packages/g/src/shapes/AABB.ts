@@ -55,6 +55,10 @@ export class AABB {
     if (AABB.isEmpty(aabb)) {
       return;
     }
+    if (AABB.isEmpty(this)) {
+      this.setMinMax(aabb.getMin(), aabb.getMax());
+      return;
+    }
 
     const tc = this.center;
     const tcx = tc[0];

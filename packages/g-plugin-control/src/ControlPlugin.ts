@@ -1,6 +1,6 @@
+import type { RenderingPlugin ,
+  RenderingService} from '@antv/g';
 import {
-  RenderingPlugin,
-  RenderingService,
   RenderingContext,
   RenderingPluginContribution,
   Camera,

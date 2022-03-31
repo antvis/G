@@ -1,5 +1,5 @@
 import { injectable } from 'mana-syringe';
-import { DisplayObject } from '@antv/g';
+import type { DisplayObject } from '@antv/g';
 import { Mesh } from '../Mesh';
 import { Instanced } from './Instanced';
 
@@ -24,11 +24,9 @@ export class MeshMesh extends Instanced {
     return true;
   }
 
-  updateAttribute(object: DisplayObject, name: string, value: any): void {
-    super.updateAttribute(object, name, value);
-
-    const index = this.objects.indexOf(object);
-    this.updateBatchedAttribute(object, index, name, value);
+  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any): void {
+    super.updateAttribute(objects, startIndex, name, value);
+    this.updateBatchedAttribute(objects, startIndex, name, value);
   }
 
   createMaterial(objects: DisplayObject[]): void {

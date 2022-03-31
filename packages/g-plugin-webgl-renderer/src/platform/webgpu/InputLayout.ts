@@ -1,6 +1,7 @@
-import { InputLayout, InputLayoutDescriptor, ResourceType } from '../interfaces';
+import type { InputLayout, InputLayoutDescriptor} from '../interfaces';
+import { ResourceType } from '../interfaces';
 import { assertExists } from '../utils';
-import { IDevice_WebGPU } from './interfaces';
+import type { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 import {
   translateVertexBufferFrequency,

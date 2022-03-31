@@ -53,6 +53,14 @@ describe('Text', () => {
     expect(text.nodeValue).eqls('changed again');
     expect(text.textContent).eqls('changed again');
 
+    // empty text should return empty AABB
+    text.style.text = '';
+    const bounds = text.getBounds();
+    expect(bounds.center[0]).to.almost.eqls(0);
+    expect(bounds.center[1]).to.almost.eqls(0);
+    expect(bounds.halfExtents[0]).to.almost.eqls(0);
+    expect(bounds.halfExtents[1]).to.almost.eqls(0);
+
     // // get bounds
     // let bounds = text.getBounds();
     // if (bounds) {

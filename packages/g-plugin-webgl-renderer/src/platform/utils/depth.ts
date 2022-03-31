@@ -1,4 +1,4 @@
-import { mat4 } from 'gl-matrix';
+import type { mat4 } from 'gl-matrix';
 import { CompareMode } from '../interfaces';
 
 /**
@@ -75,5 +75,5 @@ export function compareDepthValues(
   else if (op === CompareMode.LessEqual) return a <= b;
   else if (op === CompareMode.Greater) return a > b;
   else if (op === CompareMode.GreaterEqual) return a >= b;
-  else throw 'whoops';
+  else throw new Error('whoops');
 }

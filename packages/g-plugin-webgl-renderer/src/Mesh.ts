@@ -1,7 +1,7 @@
-import { DisplayObject, DisplayObjectConfig } from '@antv/g';
-import type { ParsedBaseStyleProps, BaseStyleProps } from '@antv/g';
-import { BufferGeometry } from './geometries';
-import { Material } from './materials';
+import { DisplayObject } from '@antv/g';
+import type { ParsedBaseStyleProps, BaseStyleProps, DisplayObjectConfig } from '@antv/g';
+import type { BufferGeometry } from './geometries';
+import type { Material } from './materials';
 
 export interface MeshStyleProps extends BaseStyleProps {
   geometry: BufferGeometry;
@@ -25,6 +25,8 @@ export class Mesh<GeometryProps = any> extends DisplayObject<GeometryProps & Mes
       },
       ...rest,
     });
+
+    this.cullable.enable = false;
 
     this.style.geometry.meshes.push(this);
     this.style.material.meshes.push(this);

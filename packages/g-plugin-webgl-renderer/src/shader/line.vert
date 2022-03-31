@@ -27,12 +27,6 @@ out vec4 v_Arc;
 out float v_Type;
 out float v_Travel;
 
-out vec4 v_PickingResult;
-#define COLOR_SCALE 1. / 255.
-void setPickingColor(vec3 pickingColor) {
-  v_PickingResult.rgb = pickingColor * COLOR_SCALE;
-}
-
 vec2 doBisect(
   vec2 norm, float len, vec2 norm2, float len2, float dy, float inner
 ) {
@@ -312,6 +306,4 @@ void main() {
   }
 
   gl_Position = u_ProjectionMatrix * u_ViewMatrix * vec4(pos, u_ZIndex, 1.0);
-
-  setPickingColor(u_PickingColor.xyz);
 }

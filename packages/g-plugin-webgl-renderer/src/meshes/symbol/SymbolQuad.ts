@@ -1,6 +1,7 @@
-import { GlyphPosition } from './GlyphAtlas';
-import { Point } from './AlphaImage';
-import { BASE_FONT_BUFFER, PositionedGlyph } from './GlyphManager';
+import type { GlyphPosition } from './GlyphAtlas';
+import type { Point } from './AlphaImage';
+import type { PositionedGlyph } from './GlyphManager';
+import { BASE_FONT_BUFFER } from './GlyphManager';
 
 export type SymbolQuad = {
   tl: Point;
@@ -21,9 +22,9 @@ export type SymbolQuad = {
  */
 export function getGlyphQuads(
   positionedGlyphs: PositionedGlyph[],
-  positions: { [key: string]: { [key: number]: GlyphPosition } },
-): Array<SymbolQuad> {
-  const quads: Array<SymbolQuad> = [];
+  positions: Record<string, Record<number, GlyphPosition>>,
+): SymbolQuad[] {
+  const quads: SymbolQuad[] = [];
 
   for (let k = 0; k < positionedGlyphs.length; k++) {
     const positionedGlyph = positionedGlyphs[k];

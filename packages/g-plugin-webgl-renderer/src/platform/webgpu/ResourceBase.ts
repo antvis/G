@@ -1,5 +1,5 @@
-import { Disposable, ResourceBase, ResourceType } from '../interfaces';
-import { IDevice_WebGPU } from './interfaces';
+import type { Disposable, ResourceBase, ResourceType } from '../interfaces';
+import type { IDevice_WebGPU } from './interfaces';
 
 export abstract class ResourceBase_WebGPU implements ResourceBase, Disposable {
   type: ResourceType;

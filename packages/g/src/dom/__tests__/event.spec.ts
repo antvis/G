@@ -146,7 +146,9 @@ describe('Event API', () => {
     // @ts-ignore
     expect(attributeChangedCallback).to.have.been.called;
 
-    const attributeModifiedCallback = (e: MutationEvent) => {
+    const attributeModifiedCallback = function (e: MutationEvent) {
+      // @see https://github.com/antvis/g/issues/929
+      expect(this).eqls(e.currentTarget);
       expect(e.type).eqls(ElementEvent.ATTR_MODIFIED);
       expect(e.attrChange).eqls(MutationEvent.MODIFICATION);
       expect(e.attrName).eqls('r');

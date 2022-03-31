@@ -5,17 +5,15 @@ in vec4 v_Distance;
 in vec4 v_Arc;
 in float v_Type;
 in float v_Travel;
-in vec4 v_PickingResult;
 
-layout(location = 0) out vec4 gbuf_color;
-layout(location = 1) out vec4 gbuf_picking;
+out vec4 outputColor;
+
+#define COLOR_SCALE 1. / 255.
 
 void main(){
-  if (u_Visible < 1.0) {
+  if (u_Visible < 0.5) {
     discard;
   }
-
-  gbuf_picking = vec4(v_PickingResult.rgb, 1.0);
 
   float alpha = 1.0;
   float lineWidth = v_Distance.w;
@@ -65,6 +63,10 @@ void main(){
     alpha *= max(0.0, right - left);
   }
 
-  gbuf_color = u_StrokeColor;
-  gbuf_color.a *= alpha * u_Opacity * u_StrokeOpacity;
+  if (u_IsPicking > 0.5) {
+    outputColor = vec4(COLOR_SCALE * u_PickingColor.xyz, 1.0);
+  } else {
+    outputColor = u_StrokeColor;
+    outputColor.a *= alpha * u_Opacity * u_StrokeOpacity;
+  }
 }

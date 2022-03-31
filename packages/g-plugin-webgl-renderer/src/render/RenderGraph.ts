@@ -1,9 +1,10 @@
-import { Device, RenderTarget, Texture } from '../platform';
+import type { Device, RenderTarget, Texture } from '../platform';
 import { assert, assertExists, fillArray } from '../platform/utils';
-import { PassSetupFunc, RGAttachmentSlot, RGGraphBuilder, RGGraphBuilderDebug } from './interfaces';
+import type { PassSetupFunc, RGGraphBuilder, RGGraphBuilderDebug } from './interfaces';
+import { RGAttachmentSlot } from './interfaces';
 import { RenderGraphPass } from './RenderGraphPass';
 import { RGRenderTarget } from './RenderTarget';
-import { RGRenderTargetDescription } from './RenderTargetDescription';
+import type { RGRenderTargetDescription } from './RenderTargetDescription';
 import { SingleSampledTexture } from './SingleSampledTexture';
 
 interface ResolveParam {
@@ -83,16 +84,16 @@ export class RenderGraph implements RGGraphBuilder {
   pushPass(setupFunc: PassSetupFunc): void {
     const pass = new RenderGraphPass();
     setupFunc(pass);
-    this.currentGraph!.passes.push(pass);
+    this.currentGraph.passes.push(pass);
   }
 
   createRenderTargetID(desc: Readonly<RGRenderTargetDescription>, debugName: string): number {
-    this.currentGraph!.renderTargetDebugNames.push(debugName);
-    return this.currentGraph!.renderTargetDescriptions.push(desc) - 1;
+    this.currentGraph.renderTargetDebugNames.push(debugName);
+    return this.currentGraph.renderTargetDescriptions.push(desc) - 1;
   }
 
   private createResolveTextureID(renderTargetID: number): number {
-    return this.currentGraph!.resolveTextureRenderTargetIDs.push(renderTargetID) - 1;
+    return this.currentGraph.resolveTextureRenderTargetIDs.push(renderTargetID) - 1;
   }
 
   /**
@@ -101,8 +102,8 @@ export class RenderGraph implements RGGraphBuilder {
   private findMostRecentPassThatAttachedRenderTarget(
     renderTargetID: number,
   ): RenderGraphPass | null {
-    for (let i = this.currentGraph!.passes.length - 1; i >= 0; i--) {
-      const pass = this.currentGraph!.passes[i];
+    for (let i = this.currentGraph.passes.length - 1; i >= 0; i--) {
+      const pass = this.currentGraph.passes[i];
       if (pass.renderTargetIDs.includes(renderTargetID)) return pass;
     }
 
@@ -160,7 +161,7 @@ export class RenderGraph implements RGGraphBuilder {
   }
 
   getRenderTargetDescription(renderTargetID: number): Readonly<RGRenderTargetDescription> {
-    return assertExists(this.currentGraph!.renderTargetDescriptions[renderTargetID]);
+    return assertExists(this.currentGraph.renderTargetDescriptions[renderTargetID]);
   }
   //#endregion
 
@@ -204,7 +205,7 @@ export class RenderGraph implements RGGraphBuilder {
     if (!this.renderTargetAliveForID[renderTargetID]) {
       const desc = graph.renderTargetDescriptions[renderTargetID];
       const newRenderTarget = this.acquireRenderTargetForDescription(desc);
-      newRenderTarget.debugName = graph.renderTargetDebugNames[renderTargetID];
+      newRenderTarget.setDebugName(this.device, graph.renderTargetDebugNames[renderTargetID]);
       this.renderTargetAliveForID[renderTargetID] = newRenderTarget;
     }
 
@@ -453,14 +454,14 @@ export class RenderGraph implements RGGraphBuilder {
 
     for (let i = 0; i < this.renderTargetDeadPool.length; i++) {
       if (this.renderTargetDeadPool[i].age >= ageThreshold) {
-        this.renderTargetDeadPool[i].destroy(this.device);
+        this.renderTargetDeadPool[i].destroy();
         this.renderTargetDeadPool.splice(i--, 1);
       }
     }
 
     for (let i = 0; i < this.singleSampledTextureDeadPool.length; i++) {
       if (this.singleSampledTextureDeadPool[i].age >= ageThreshold) {
-        this.singleSampledTextureDeadPool[i].destroy(this.device);
+        this.singleSampledTextureDeadPool[i].destroy();
         this.singleSampledTextureDeadPool.splice(i--, 1);
       }
     }
@@ -514,7 +515,7 @@ export class RenderGraph implements RGGraphBuilder {
 
   //#region GfxrGraphBuilderDebug
   getPasses(): RenderGraphPass[] {
-    return this.currentGraph!.passes;
+    return this.currentGraph.passes;
   }
 
   getPassDebugThumbnails(pass: RenderGraphPass): boolean[] {
@@ -526,7 +527,7 @@ export class RenderGraph implements RGGraphBuilder {
   }
 
   getRenderTargetIDDebugName(renderTargetID: number): string {
-    return this.currentGraph!.renderTargetDebugNames[renderTargetID];
+    return this.currentGraph.renderTargetDebugNames[renderTargetID];
   }
   //#endregion
 
@@ -566,8 +567,8 @@ export class RenderGraph implements RGGraphBuilder {
       assert(this.singleSampledTextureForResolveTextureID[i] === undefined);
 
     for (let i = 0; i < this.renderTargetDeadPool.length; i++)
-      this.renderTargetDeadPool[i].destroy(this.device);
+      this.renderTargetDeadPool[i].destroy();
     for (let i = 0; i < this.singleSampledTextureDeadPool.length; i++)
-      this.singleSampledTextureDeadPool[i].destroy(this.device);
+      this.singleSampledTextureDeadPool[i].destroy();
   }
 }

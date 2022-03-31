@@ -152,8 +152,6 @@ const drawBars = async () => {
       close: (d) => y.invert(d.y),
     })
     .on('subjectover', function (annotation) {
-      debugger;
-
       //cannot reference this if you are using es6 function syntax
       this.append('text')
         .attr('class', 'hover')
@@ -170,8 +168,6 @@ const drawBars = async () => {
         .attr('x', -15);
     })
     .on('subjectout', function (annotation) {
-      debugger;
-
       this.selectAll('text.hover').remove();
     });
 
@@ -185,8 +181,8 @@ const drawBars = async () => {
 
   svg.select('.annotation.xythreshold').call(
     d3.drag().on('drag', function (d) {
-      const newWidth = Math.max(0, Math.min(maxWidth, d.x + d3.event.dx));
-      d.x = newWidth;
+      const newWidth = Math.max(0, Math.min(maxWidth, d.x + d.dx));
+      // d.x = newWidth;
 
       const threshold = 400;
       if (newWidth < threshold && width >= threshold) {
@@ -208,6 +204,47 @@ const drawBars = async () => {
       svg.select('path.line').attr('d', valueline);
     }),
   );
+
+  // load font
+  // const latoFontFace = new FontFace(
+  //   'Lato',
+  //   'url(https://fonts.gstatic.com/s/lato/v22/S6u9w4BMUTPHh7USSwaPGQ3q5d0N7w.woff2)',
+  // );
+  // window.document.fonts.add(latoFontFace);
+  // latoFontFace.loaded.then((fontFace) => {
+  //   console.log(fontFace.family);
+  //   canvas.document.documentElement.style.fontFamily = 'Lato';
+  // });
+
+  var bitterFontFace = new FontFace(
+    'Lato',
+    'url(https://fonts.gstatic.com/s/lato/v22/S6u9w4BMUTPHh7USSwaPGQ3q5d0N7w.woff2)',
+  );
+  document.fonts.add(bitterFontFace);
+  bitterFontFace.loaded.then((fontFace) => {
+    console.log(fontFace.family);
+  });
+
+  document.fonts.ready.then(function () {
+    for (const c of document.fonts.values()) {
+      console.log(c);
+    }
+
+    canvas.document.documentElement.style.fontFamily = 'Lato';
+  });
+
+  // apply CSS styles
+  canvas.document.querySelectorAll('.annotation path').forEach((path) => {
+    path.style.stroke = '#E8336D';
+  });
+
+  canvas.document.querySelectorAll('.annotation-note-title').forEach((title) => {
+    title.style['font-weight'] = 'bold';
+  });
+
+  const handle = canvas.document.querySelector('.annotation.xythreshold');
+  handle.style.cursor = 'move';
+  // console.log(t, svg.selectAll('.annotation path'));
 };
 
 drawBars();

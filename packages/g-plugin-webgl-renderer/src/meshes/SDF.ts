@@ -1,30 +1,26 @@
-import {
+import type {
   Circle,
   DisplayObject,
-  Shape,
   ParsedBaseStyleProps,
   ParsedCircleStyleProps,
   ParsedEllipseStyleProps,
 } from '@antv/g';
+import { Shape } from '@antv/g';
 import { injectable } from 'mana-syringe';
 import { Format, VertexBufferFrequency } from '../platform';
 import vert from '../shader/sdf.vert';
 import frag from '../shader/sdf.frag';
-import { Instanced, VertexAttributeBufferIndex } from './Instanced';
-import { VertexAttributeLocation } from '../geometries';
+import { Instanced, VertexAttributeBufferIndex, VertexAttributeLocation } from './Instanced';
 import { enumToObject } from '../utils/enum';
 
 enum SDFVertexAttributeBufferIndex {
-  EXTRUDE_UV = VertexAttributeBufferIndex.MAX,
+  PACKED_STYLE3 = VertexAttributeBufferIndex.MAX,
   SIZE,
-  PACKED_STYLE3,
 }
 
 enum SDFVertexAttributeLocation {
-  EXTRUDE = VertexAttributeLocation.MAX,
-  PACKED_STYLE3,
+  PACKED_STYLE3 = VertexAttributeLocation.MAX,
   SIZE,
-  UV,
 }
 
 const SDF_Shape: string[] = [Shape.CIRCLE, Shape.ELLIPSE];
@@ -83,19 +79,19 @@ export class SDFMesh extends Instanced {
     this.geometry.setIndexBuffer(new Uint32Array(indices));
     this.geometry.vertexCount = 6;
     this.geometry.setVertexBuffer({
-      bufferIndex: SDFVertexAttributeBufferIndex.EXTRUDE_UV,
+      bufferIndex: VertexAttributeBufferIndex.POSITION,
       byteStride: 4 * 4,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: SDFVertexAttributeLocation.EXTRUDE,
+          location: VertexAttributeLocation.POSITION,
         },
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 2,
-          location: SDFVertexAttributeLocation.UV,
+          location: VertexAttributeLocation.UV,
         },
       ],
       data: new Float32Array(interleaved),
@@ -130,38 +126,42 @@ export class SDFMesh extends Instanced {
     });
   }
 
-  updateAttribute(object: DisplayObject, name: string, value: any) {
-    super.updateAttribute(object, name, value);
+  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any) {
+    super.updateAttribute(objects, startIndex, name, value);
 
-    const index = this.objects.indexOf(object);
-    this.updateBatchedAttribute(object, index, name, value);
+    this.updateBatchedAttribute(objects, startIndex, name, value);
 
     if (name === 'r' || name === 'rx' || name === 'ry' || name === 'lineWidth') {
-      const [halfWidth, halfHeight] = this.getSize(object.parsedStyle, object.nodeName);
-      const size = [halfWidth, halfHeight];
-
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const [halfWidth, halfHeight] = this.getSize(object.parsedStyle, object.nodeName);
+        const size = [halfWidth, halfHeight];
+        packed.push(...size);
+      });
       this.geometry.updateVertexBuffer(
         SDFVertexAttributeBufferIndex.SIZE,
         SDFVertexAttributeLocation.SIZE,
-        index,
-        new Uint8Array(new Float32Array([...size]).buffer),
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
       );
     } else if (name === 'stroke' || name === 'lineDash' || name === 'strokeOpacity') {
-      const circle = object as Circle;
-      const omitStroke = this.shouldOmitStroke(circle.parsedStyle);
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const circle = object as Circle;
+        const omitStroke = this.shouldOmitStroke(circle.parsedStyle);
+        packed.push(
+          SDF_Shape.indexOf(object.nodeName),
+          object.parsedStyle.radius || 0,
+          omitStroke ? 1 : 0,
+          0,
+        );
+      });
 
       this.geometry.updateVertexBuffer(
         SDFVertexAttributeBufferIndex.PACKED_STYLE3,
         SDFVertexAttributeLocation.PACKED_STYLE3,
-        index,
-        new Uint8Array(
-          new Float32Array([
-            SDF_Shape.indexOf(object.nodeName),
-            object.parsedStyle.radius || 0,
-            omitStroke ? 1 : 0,
-            0,
-          ]).buffer,
-        ),
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
       );
     }
   }

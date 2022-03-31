@@ -1,5 +1,5 @@
 import { isNil } from '@antv/util';
-import {
+import type {
   BufferBinding,
   SamplerBinding,
   BindingLayoutDescriptor,
@@ -15,7 +15,7 @@ import {
   InputLayoutDescriptor,
   SamplerDescriptor,
 } from '..';
-import { BindingLayoutSamplerDescriptor } from '../interfaces';
+import type { BindingLayoutSamplerDescriptor } from '../interfaces';
 import { colorEqual } from './color';
 import { copyMegaState } from './states';
 
@@ -191,7 +191,9 @@ export function samplerDescriptorEquals(
     a.magFilter === b.magFilter &&
     a.mipFilter === b.mipFilter &&
     a.minLOD === b.minLOD &&
-    a.maxLOD === b.maxLOD
+    a.maxLOD === b.maxLOD &&
+    a.maxAnisotropy === b.maxAnisotropy &&
+    a.compareMode === b.compareMode
   );
 }
 

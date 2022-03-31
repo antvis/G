@@ -1,7 +1,7 @@
-import { ParsedTextStyleProps } from '@antv/g';
+import type { ParsedTextStyleProps } from '@antv/g';
 import { detect } from 'detect-browser';
 import { singleton } from 'mana-syringe';
-import { ElementRenderer } from '.';
+import type { ElementRenderer } from '.';
 
 // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/alignment-baseline
 const BASELINE_MAP: Record<string, string> = {
@@ -75,7 +75,7 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
     } else {
       $el.innerHTML = lines
         .map((line: string, i: number) => {
-          let dx = lineWidth.value / 2;
+          const dx = lineWidth.value / 2;
           let dy = 0;
           if (i === 0) {
             // TODO: handle other textBaseline values

@@ -1,7 +1,8 @@
 import { GL } from '../constants';
-import { Format } from '../format';
-import { RenderTarget, RenderTargetDescriptor, ResourceType, Texture } from '../interfaces';
-import { Device_GL } from './Device';
+import type { Format } from '../format';
+import type { RenderTarget, RenderTargetDescriptor, Texture } from '../interfaces';
+import { ResourceType } from '../interfaces';
+import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
 import { isWebGL2 } from './utils';
 
@@ -37,7 +38,7 @@ export class RenderTarget_GL extends ResourceBase_GL implements RenderTarget {
 
       const gl_format = this.device.translateTextureInternalFormat(pixelFormat);
 
-      if (isWebGL2(gl) && sampleCount > 0) {
+      if (isWebGL2(gl)) {
         // @see https://github.com/shrekshao/MoveWebGL1EngineToWebGL2/blob/master/Move-a-WebGL-1-Engine-To-WebGL-2-Blog-2.md#multisampled-renderbuffers
         gl.renderbufferStorageMultisample(GL.RENDERBUFFER, sampleCount, gl_format, width, height);
       } else {

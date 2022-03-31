@@ -2,25 +2,27 @@ import { inject, singleton } from 'mana-syringe';
 import { vec2 } from 'gl-matrix';
 import {
   DisplayObjectPool,
-  RenderingService,
-  RenderingPlugin,
   RenderingPluginContribution,
   SceneGraphService,
   RenderingContext,
   ElementEvent,
-  MutationEvent,
-  DisplayObject,
   CanvasEvent,
   Shape,
-  ParsedLineStyleProps,
-  ParsedCircleStyleProps,
-  ParsedRectStyleProps,
-  ParsedBaseStyleProps,
   rad2deg,
   deg2rad,
   AABB,
 } from '@antv/g';
-import type { FederatedEvent } from '@antv/g';
+import type {
+  FederatedEvent,
+  RenderingService,
+  RenderingPlugin,
+  MutationEvent,
+  DisplayObject,
+  ParsedLineStyleProps,
+  ParsedCircleStyleProps,
+  ParsedRectStyleProps,
+  ParsedBaseStyleProps,
+} from '@antv/g';
 import { Engine, Render, Bodies, Body, Composite, World } from 'matter-js';
 import { MatterJSPluginOptions } from './tokens';
 import { sortPointsInCCW } from './utils';
@@ -47,33 +49,6 @@ export class MatterJSPlugin implements RenderingPlugin {
   private pendingDisplayObjects: DisplayObject[] = [];
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.init.tap(MatterJSPlugin.tag, () => {
-      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.addEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-
-      this.createScene();
-      this.handlePendingDisplayObjects();
-
-      // do simulation each frame
-      this.renderingContext.root.ownerDocument.defaultView.addEventListener(
-        CanvasEvent.BEFORE_RENDER,
-        simulate,
-      );
-    });
-
-    renderingService.hooks.destroy.tap(MatterJSPlugin.tag, () => {
-      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-    });
-
     const simulate = () => {
       if (this.engine) {
         const { timeStep } = this.options;
@@ -90,8 +65,8 @@ export class MatterJSPlugin implements RenderingPlugin {
             const { anchor = [0, 0] } = displayObject.parsedStyle;
             const { halfExtents } = bounds;
             const body = this.bodies[entity] as Body;
-            let x = body.position.x - (1 - anchor[0] * 2) * halfExtents[0];
-            let y = body.position.y - (1 - anchor[1] * 2) * halfExtents[1];
+            const x = body.position.x - (1 - anchor[0] * 2) * halfExtents[0];
+            const y = body.position.y - (1 - anchor[1] * 2) * halfExtents[1];
             const angle = body.angle;
 
             displayObject.setPosition(x, y);
@@ -152,6 +127,33 @@ export class MatterJSPlugin implements RenderingPlugin {
         }
       }
     };
+
+    renderingService.hooks.init.tap(MatterJSPlugin.tag, () => {
+      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.addEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
+
+      this.createScene();
+      this.handlePendingDisplayObjects();
+
+      // do simulation each frame
+      this.renderingContext.root.ownerDocument.defaultView.addEventListener(
+        CanvasEvent.BEFORE_RENDER,
+        simulate,
+      );
+    });
+
+    renderingService.hooks.destroy.tap(MatterJSPlugin.tag, () => {
+      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.removeEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
+    });
   }
 
   /**

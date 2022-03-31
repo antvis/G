@@ -1,5 +1,5 @@
 import { pointAtSegments, angleAtSegments, distanceAtSegment } from './segments';
-import { Point, PointTuple, BBox } from './types';
+import type { Point, PointTuple, BBox } from './types';
 
 function getPoints(x: number, y: number, width: number, height: number): PointTuple[] {
   return [

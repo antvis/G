@@ -5,6 +5,8 @@ module.exports = {
     G: true,
   },
 
+  ignorePatterns: ['packages/g-devtool', 'packages/g-webgpu-compiler', 'packages/site'],
+
   rules: {
     '@typescript-eslint/no-shadow': 0,
     '@typescript-eslint/no-parameter-properties': 0,

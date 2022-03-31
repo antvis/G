@@ -1,5 +1,7 @@
-import { Module, Syringe } from 'mana-syringe';
-import { RendererPlugin, Shape } from '@antv/g';
+import type { Syringe } from 'mana-syringe';
+import { Module } from 'mana-syringe';
+import type { RendererPlugin} from '@antv/g';
+import { Shape } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
 import {
   ElementRendererFactory,

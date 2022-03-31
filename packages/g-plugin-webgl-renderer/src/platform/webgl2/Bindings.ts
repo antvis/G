@@ -1,12 +1,13 @@
-import {
+import type {
   Bindings,
   BindingsDescriptor,
   BufferBinding,
-  ResourceType,
-  SamplerBinding,
+  SamplerBinding} from '../interfaces';
+import {
+  ResourceType
 } from '../interfaces';
 import { assert } from '../utils';
-import { Device_GL } from './Device';
+import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
 
 export class Bindings_GL extends ResourceBase_GL implements Bindings {

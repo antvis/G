@@ -1,9 +1,8 @@
-import { ElementEvent, MutationEvent, Tuple4Number } from '@antv/g';
+import type { Tuple4Number } from '@antv/g';
+import { ElementEvent, MutationEvent } from '@antv/g';
 import { isNil } from '@antv/util';
-import { Mesh } from '../Mesh';
-import {
-  BlendFactor,
-  BlendMode,
+import type { Mesh } from '../Mesh';
+import type {
   CompareMode,
   CullMode,
   Device,
@@ -12,6 +11,7 @@ import {
   StencilOp,
   Texture,
 } from '../platform';
+import { BlendFactor, BlendMode } from '../platform';
 import { copyMegaState, defaultMegaState } from '../platform/utils';
 import { getUniforms } from '../shader/compiler';
 

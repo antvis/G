@@ -1,5 +1,5 @@
 import { distance, piMod } from './util';
-import { BBox, Point } from './types';
+import type { BBox, Point } from './types';
 
 export default {
   /**

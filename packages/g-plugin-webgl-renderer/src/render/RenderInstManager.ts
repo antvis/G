@@ -1,7 +1,8 @@
-import { RenderPass } from '../platform';
+import type { RenderPass } from '../platform';
 import { assert, assertExists } from '../platform/utils';
-import { RenderCache } from './RenderCache';
-import { RenderInst, RenderInstFlags } from './RenderInst';
+import type { RenderCache } from './RenderCache';
+import type { RenderInst } from './RenderInst';
+import { RenderInstFlags } from './RenderInst';
 import { RenderInstList } from './RenderInstList';
 import { RenderInstPool } from './RenderInstPool';
 
@@ -103,14 +104,14 @@ export class RenderInstManager {
     this.simpleRenderInstList = null;
   }
 
-  /**
-   * Execute all scheduled render insts in {@param list} onto the {@param RenderPass},
-   * using {@param device} and {@param cache} to create any device-specific resources
-   * necessary to complete the draws.
-   */
-  drawListOnPassRenderer(list: RenderInstList, passRenderer: RenderPass): void {
-    list.drawOnPassRenderer(this.renderCache, passRenderer);
-  }
+  // /**
+  //  * Execute all scheduled render insts in {@param list} onto the {@param RenderPass},
+  //  * using {@param device} and {@param cache} to create any device-specific resources
+  //  * necessary to complete the draws.
+  //  */
+  // drawListOnPassRenderer(list: RenderInstList, passRenderer: RenderPass): void {
+  //   list.drawOnPassRenderer(this.renderCache, passRenderer);
+  // }
 
   drawOnPassRenderer(passRenderer: RenderPass): void {
     const list = assertExists(this.simpleRenderInstList);

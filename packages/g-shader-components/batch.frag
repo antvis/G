@@ -6,8 +6,6 @@ float u_StrokeOpacity = v_StylePacked1.z;
 float u_StrokeWidth = v_StylePacked1.w;
 float u_Visible = v_StylePacked2.x;
 
-gbuf_picking = vec4(v_PickingResult.rgb, 1.0);
-
-if (u_Visible < 1.0) {
+if (u_Visible < 0.5) {
     discard;
 }

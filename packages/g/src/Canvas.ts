@@ -84,6 +84,7 @@ export class Canvas extends EventTarget implements ICanvas {
       background,
       requestAnimationFrame,
       cancelAnimationFrame,
+      createImage,
     } = config;
 
     cleanExistedCanvas(container, this);
@@ -113,6 +114,7 @@ export class Canvas extends EventTarget implements ICanvas {
       devicePixelRatio: dpr,
       cursor: 'default' as Cursor,
       background,
+      createImage,
       // background: 'white',
     });
 
@@ -312,7 +314,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
     if (this.container.isBound(RenderingService)) {
       const renderingService = this.container.get<RenderingService>(RenderingService);
-      renderingService.render();
+      renderingService.render(this.getConfig());
     }
 
     this.emit(CanvasEvent.AFTER_RENDER, {});

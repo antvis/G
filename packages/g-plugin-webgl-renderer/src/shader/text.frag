@@ -3,12 +3,14 @@
 
 #pragma glslify: import('@antv/g-shader-components/batch.declaration.frag')
 
-in vec2 v_UV;
-in float v_GammaScale;
-
 uniform sampler2D u_SDFMap;
 
 #define SDF_PX 8.0
+
+in vec2 v_UV;
+in float v_GammaScale;
+
+out vec4 outputColor;
 
 void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
@@ -32,10 +34,16 @@ void main() {
   highp float alpha = smoothstep(buff - gamma_scaled, buff + gamma_scaled, dist);
 
   opacity *= alpha * u_Opacity;
-  if (opacity < 0.001) {
-    discard;
-  }
 
-  gbuf_color = color;
-  gbuf_color.a *= opacity;
+  if (u_IsPicking > 0.5) {
+    outputColor = vec4(v_PickingResult.xyz, 1.0);
+  } else {
+
+    if (opacity < 0.001) {
+      discard;
+    }
+
+    outputColor = color;
+    outputColor.a *= opacity;
+  }
 }

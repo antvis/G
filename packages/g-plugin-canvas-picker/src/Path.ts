@@ -1,6 +1,6 @@
 import type { DisplayObject, ParsedBaseStyleProps, PathStyleProps, Point } from '@antv/g';
 import { mat3, vec2 } from 'gl-matrix';
-import { Quad as QuadUtil, Cubic as CubicUtil, Line as LineUtil } from '@antv/g-math';
+import { Quad as QuadUtil, Cubic as CubicUtil } from '@antv/g-math';
 import { inArc, inBox, inLine, inPolygons } from './utils/math';
 
 function isPointInStroke(

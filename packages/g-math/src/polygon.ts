@@ -1,6 +1,6 @@
 import { pointAtSegments, angleAtSegments, distanceAtSegment, lengthOfSegment } from './segments';
 import polyline from './polyline';
-import { PointTuple } from './types';
+import type { PointTuple } from './types';
 
 function getAllPoints(points: PointTuple[]) {
   const tmp = points.slice(0);

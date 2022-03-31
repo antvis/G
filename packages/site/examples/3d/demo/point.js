@@ -43,14 +43,14 @@ const canvas = new Canvas({
   // create buffer geometry
   const bufferGeometry = new BufferGeometry(device);
   bufferGeometry.setVertexBuffer({
-    bufferIndex: VertexAttributeBufferIndex.MAX,
+    bufferIndex: VertexAttributeBufferIndex.POSITION,
     byteStride: 4 * 3,
     frequency: VertexBufferFrequency.PerVertex,
     attributes: [
       {
         format: Format.F32_RGB,
         bufferByteOffset: 4 * 0,
-        location: VertexAttributeLocation.MAX,
+        location: VertexAttributeLocation.POSITION,
       },
     ],
     // use 6 vertices

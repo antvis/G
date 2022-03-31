@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-canvas",
-  "version": "1.0.16",
+  "version": "1.0.18",
   "description": "A renderer implemented by Canvas 2D API",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -37,10 +37,10 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g-plugin-canvas-picker": "^1.0.14",
-    "@antv/g-plugin-canvas-renderer": "^1.0.14",
-    "@antv/g-plugin-dom-interaction": "^1.0.14",
-    "@antv/g-plugin-html-renderer": "^1.0.15",
+    "@antv/g-plugin-canvas-picker": "^1.0.16",
+    "@antv/g-plugin-canvas-renderer": "^1.0.16",
+    "@antv/g-plugin-dom-interaction": "^1.0.16",
+    "@antv/g-plugin-html-renderer": "^1.0.17",
     "@antv/util": "^2.0.13",
     "tslib": "^2.3.1"
   },
@@ -51,5 +51,5 @@
   "scripts": {
     "umd": "webpack"
   },
-  "gitHead": "0c7b71ca68a0ada7e50c9eeec3c47f9b7de44f01"
+  "gitHead": "ac4d1b7ab482f8ff862c76fb6248ef92b4a8c22d"
 }

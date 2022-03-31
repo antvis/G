@@ -1,4 +1,4 @@
-import { Device } from '@antv/g-plugin-webgl-renderer';
+import type { Device } from '@antv/g-plugin-webgl-renderer';
 import { ProceduralGeometry } from './ProceduralGeometry';
 
 export interface SphereGeometryProps {

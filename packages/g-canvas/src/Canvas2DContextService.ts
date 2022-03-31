@@ -1,8 +1,7 @@
-import { CanvasConfig, ContextService } from '@antv/g';
+import { CanvasConfig, ContextService, isBrowser } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { isString } from '@antv/util';
 import { setDOMSize } from './utils/dom';
-import { isBrowser } from './utils/browser';
 
 @singleton({ token: ContextService })
 export class Canvas2DContextService implements ContextService<CanvasRenderingContext2D> {

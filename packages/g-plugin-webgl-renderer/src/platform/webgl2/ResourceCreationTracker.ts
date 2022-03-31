@@ -1,4 +1,4 @@
-import { Resource } from '../interfaces';
+import type { Resource } from '../interfaces';
 
 export class ResourceCreationTracker {
   liveObjects = new Set<Resource>();

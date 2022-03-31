@@ -6,7 +6,7 @@
  */
 
 import { distance, piMod } from './util';
-import { Point, BBox } from './types';
+import type { Point, BBox } from './types';
 
 function copysign(v1: number, v2: number) {
   const absv = Math.abs(v1);

@@ -1,17 +1,10 @@
 import { injectable } from 'mana-syringe';
-import {
-  Line,
-  LineCap,
-  DisplayObject,
-  Shape,
-  ParsedColorStyleProperty,
-  PARSED_COLOR_TYPE,
-} from '@antv/g';
+import type { Line, DisplayObject, ParsedColorStyleProperty } from '@antv/g';
+import { LineCap, Shape, PARSED_COLOR_TYPE } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
 import vert from '../shader/instanced-line.vert';
 import frag from '../shader/instanced-line.frag';
-import { Instanced, VertexAttributeBufferIndex } from './Instanced';
-import { VertexAttributeLocation } from '../geometries';
+import { Instanced, VertexAttributeBufferIndex, VertexAttributeLocation } from './Instanced';
 import { enumToObject } from '../utils/enum';
 
 export const segmentInstanceGeometry = [
@@ -19,17 +12,18 @@ export const segmentInstanceGeometry = [
 ];
 
 enum InstancedLineVertexAttributeBufferIndex {
-  POSITION_UV = VertexAttributeBufferIndex.MAX,
-  POINT_CAP_DASH,
+  POINT = VertexAttributeBufferIndex.MAX,
+  CAP,
+  DASH,
 }
 
 enum InstancedLineVertexAttributeLocation {
-  POSITION = VertexAttributeLocation.MAX,
-  POINTA,
-  POINTB,
-  CAP,
-  UV,
-  DASH,
+  POSITION = VertexAttributeLocation.POSITION,
+  UV = VertexAttributeLocation.UV,
+  POINTA = VertexAttributeLocation.NORMAL,
+  POINTB = VertexAttributeLocation.BARYCENTRIC,
+  CAP = VertexAttributeLocation.MAX,
+  DASH = VertexAttributeLocation.MAX + 1,
 }
 
 const LineCap_MAP = {
@@ -82,8 +76,10 @@ export class InstancedLineMesh extends Instanced {
     // use default common attributes
     super.createGeometry(objects);
 
-    const interleaved = [];
-    const indices = [];
+    const interleaved: number[] = [];
+    const packedCap: number[] = [];
+    const packedDash: number[] = [];
+    const indices: number[] = [];
     let offset = 0;
     objects.forEach((object) => {
       const line = object as Line;
@@ -93,22 +89,19 @@ export class InstancedLineMesh extends Instanced {
         object as Line,
       );
 
-      interleaved.push(
-        x1 - defX,
-        y1 - defY,
-        z1,
-        x2 - defX,
-        y2 - defY,
-        z2,
+      packedCap.push(
         // caps
         LineCap_MAP[lineCap],
-        // dash
+      );
+      packedDash.push(
         dashOffset,
         dashSegmentPercent,
         dashRatioInEachSegment,
         // isBillboard
         isBillboard ? 1 : 0,
       );
+
+      interleaved.push(x1 - defX, y1 - defY, z1, x2 - defX, y2 - defY, z2);
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
       offset += 4;
     });
@@ -116,7 +109,7 @@ export class InstancedLineMesh extends Instanced {
     this.geometry.setIndexBuffer(new Uint32Array(indices));
     this.geometry.vertexCount = 6;
     this.geometry.setVertexBuffer({
-      bufferIndex: InstancedLineVertexAttributeBufferIndex.POSITION_UV,
+      bufferIndex: VertexAttributeBufferIndex.POSITION,
       byteStride: 4 * 5,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
@@ -136,8 +129,8 @@ export class InstancedLineMesh extends Instanced {
       data: new Float32Array(segmentInstanceGeometry),
     });
     this.geometry.setVertexBuffer({
-      bufferIndex: InstancedLineVertexAttributeBufferIndex.POINT_CAP_DASH,
-      byteStride: 4 * (3 + 3 + 1 + 4),
+      bufferIndex: InstancedLineVertexAttributeBufferIndex.POINT,
+      byteStride: 4 * (3 + 3),
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
@@ -152,30 +145,44 @@ export class InstancedLineMesh extends Instanced {
           location: InstancedLineVertexAttributeLocation.POINTB,
           divisor: 1,
         },
+      ],
+      data: new Float32Array(interleaved),
+    });
+
+    this.geometry.setVertexBuffer({
+      bufferIndex: InstancedLineVertexAttributeBufferIndex.CAP,
+      byteStride: 4 * 1,
+      frequency: VertexBufferFrequency.PerInstance,
+      attributes: [
         {
           format: Format.F32_R,
-          bufferByteOffset: 4 * 6,
+          bufferByteOffset: 4 * 0,
           location: InstancedLineVertexAttributeLocation.CAP,
           divisor: 1,
         },
+      ],
+      data: new Float32Array(packedCap),
+    });
+    this.geometry.setVertexBuffer({
+      bufferIndex: InstancedLineVertexAttributeBufferIndex.DASH,
+      byteStride: 4 * 4,
+      frequency: VertexBufferFrequency.PerInstance,
+      attributes: [
         {
           format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 7,
+          bufferByteOffset: 4 * 0,
           location: InstancedLineVertexAttributeLocation.DASH,
           divisor: 1,
         },
       ],
-      data: new Float32Array(interleaved),
+      data: new Float32Array(packedDash),
     });
   }
 
-  updateAttribute(object: DisplayObject, name: string, value: any) {
-    super.updateAttribute(object, name, value);
+  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any) {
+    super.updateAttribute(objects, startIndex, name, value);
 
-    const index = this.objects.indexOf(object);
-    this.updateBatchedAttribute(object, index, name, value);
-
-    const { x1, y1, x2, y2, z1, z2, defX, defY, lineCap } = object.parsedStyle;
+    this.updateBatchedAttribute(objects, startIndex, name, value);
 
     if (
       name === 'x1' ||
@@ -185,32 +192,49 @@ export class InstancedLineMesh extends Instanced {
       name === 'z1' ||
       name === 'z2'
     ) {
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const { x1, y1, x2, y2, z1, z2, defX, defY } = object.parsedStyle;
+        packed.push(x1 - defX, y1 - defY, z1, x2 - defX, y2 - defY, z2);
+      });
+
       this.geometry.updateVertexBuffer(
-        InstancedLineVertexAttributeBufferIndex.POINT_CAP_DASH,
+        InstancedLineVertexAttributeBufferIndex.POINT,
         InstancedLineVertexAttributeLocation.POINTA,
-        index,
-        new Uint8Array(
-          new Float32Array([x1 - defX, y1 - defY, z1, x2 - defX, y2 - defY, z2]).buffer,
-        ),
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
       );
     } else if (name === 'lineDashOffset' || name === 'lineDash') {
-      const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } = this.calcDash(
-        object as Line,
-      );
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } = this.calcDash(
+          object as Line,
+        );
+        packed.push(
+          dashOffset,
+          dashSegmentPercent,
+          dashRatioInEachSegment, // isBillboard
+          object.parsedStyle.isBillboard ? 1 : 0,
+        );
+      });
+
       this.geometry.updateVertexBuffer(
-        InstancedLineVertexAttributeBufferIndex.POINT_CAP_DASH,
+        InstancedLineVertexAttributeBufferIndex.DASH,
         InstancedLineVertexAttributeLocation.DASH,
-        index,
-        new Uint8Array(
-          new Float32Array([dashOffset, dashSegmentPercent, dashRatioInEachSegment]).buffer,
-        ),
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
       );
     } else if (name === 'lineCap') {
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const { lineCap } = object.parsedStyle;
+        packed.push(LineCap_MAP[lineCap]);
+      });
       this.geometry.updateVertexBuffer(
-        InstancedLineVertexAttributeBufferIndex.POINT_CAP_DASH,
+        InstancedLineVertexAttributeBufferIndex.CAP,
         InstancedLineVertexAttributeLocation.CAP,
-        index,
-        new Uint8Array(new Float32Array([LineCap_MAP[lineCap]]).buffer),
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
       );
     }
   }

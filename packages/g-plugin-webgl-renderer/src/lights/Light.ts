@@ -1,5 +1,6 @@
-import { DisplayObject, DisplayObjectConfig, BaseStyleProps } from '@antv/g';
-import { RenderInstUniform } from '../render';
+import type { DisplayObjectConfig, BaseStyleProps } from '@antv/g';
+import { DisplayObject } from '@antv/g';
+import type { RenderInstUniform } from '../render';
 
 export interface LightProps extends BaseStyleProps {
   intensity: number;

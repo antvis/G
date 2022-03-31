@@ -145,19 +145,19 @@ interface GLSLContext {
    * 2. 运行时：例如循环长度需要为常量，但在编译时又无法确定
    * TODO 支持定义函数，例如 tensorflow 中的 DIV_CEIL
    */
-  defines: Array<{
+  defines: {
     name: string;
     type: DataType;
     value: number;
     runtime: boolean; // 是否是运行时生成
-  }>;
-  globalDeclarations: Array<{
+  }[];
+  globalDeclarations: {
     name: string;
     type: DataType;
     value: string;
     shared: boolean;
-  }>;
-  uniforms: Array<{
+  }[];
+  uniforms: {
     name: string;
     type: DataType;
     data?:
@@ -177,7 +177,7 @@ interface GLSLContext {
     isReferer?: boolean;
     group?: number;
     binding?: number;
-  }>;
+  }[];
 }
 
 /**
@@ -201,7 +201,7 @@ interface KernelBundle {
     [Target.GLSL100]: string;
   };
   context?: GLSLContext;
-  toString(): string;
+  toString: () => string;
 }
 
 export {

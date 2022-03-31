@@ -1,33 +1,38 @@
-import {
+import type {
   RenderingService,
   RenderingPlugin,
-  RenderingPluginContribution,
   Rectangle,
+  FederatedEvent,
+  DisplayObject,
+  MutationEvent,
+  Tuple4Number,
+} from '@antv/g';
+import {
+  RenderingPluginContribution,
   ContextService,
   CanvasConfig,
   RenderingContext,
   ElementEvent,
-  FederatedEvent,
-  DisplayObject,
   DefaultCamera,
   Camera,
   CanvasEvent,
-  MutationEvent,
   parseColor,
-  Tuple4Number,
 } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { BatchManager } from './renderer';
 import { Renderable3D } from './components/Renderable3D';
 import { WebGLRendererPluginOptions } from './interfaces';
-import { pushFXAAPass } from './passes/FXAA';
+// import { pushFXAAPass } from './passes/FXAA';
 // import { useCopyPass } from './passes/Copy';
 import { PickingIdGenerator } from './PickingIdGenerator';
-import { BlendFactor, BlendMode, Device, SwapChain, Texture, TextureDescriptor } from './platform';
+import type { Device, SwapChain, TextureDescriptor } from './platform';
+import { ChannelWriteMask } from './platform';
+import { BlendFactor, BlendMode } from './platform';
 import { setAttachmentStateSimple } from './platform/utils';
 import { Device_GL } from './platform/webgl2/Device';
 import { Device_WebGPU } from './platform/webgpu/Device';
-import { RGAttachmentSlot, RGGraphBuilder } from './render/interfaces';
+import type { RGGraphBuilder } from './render/interfaces';
+import { RGAttachmentSlot } from './render/interfaces';
 import { RenderHelper } from './render/RenderHelper';
 import { RenderInstList } from './render/RenderInstList';
 import { TransparentWhite, colorNewFromRGBA } from './utils/color';
@@ -41,6 +46,10 @@ import {
 import { Fog, Light } from './lights';
 import { LightPool } from './LightPool';
 import { TexturePool } from './TexturePool';
+import { TemporalTexture } from './render/TemporalTexture';
+
+// scene uniform block index
+const SceneUniformBufferIndex = 0;
 
 // uniforms in scene level
 export enum SceneUniform {
@@ -50,6 +59,7 @@ export enum SceneUniform {
   DEVICE_PIXEL_RATIO = 'u_DevicePixelRatio',
   VIEWPORT = 'u_Viewport',
   IS_ORTHO = 'u_IsOrtho',
+  IS_PICKING = 'u_IsPicking',
 }
 
 @singleton({ contrib: RenderingPluginContribution })
@@ -93,7 +103,14 @@ export class RenderGraphPlugin implements RenderingPlugin {
   private swapChain: SwapChain;
 
   private renderLists = {
+    /**
+     * used in main forward rendering pass
+     */
     world: new RenderInstList(),
+    /**
+     * used in picking pass, should disable blending
+     */
+    picking: new RenderInstList(),
   };
 
   /**
@@ -101,9 +118,10 @@ export class RenderGraphPlugin implements RenderingPlugin {
    */
   private builder: RGGraphBuilder;
 
-  private pickingTexture: Texture;
-
-  private firstFrame = true;
+  /**
+   * used for reading pixels when picking
+   */
+  private pickingTexture: TemporalTexture;
 
   getDevice(): Device {
     return this.device;
@@ -111,6 +129,69 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     this.renderingService = renderingService;
+
+    const handleMounted = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+
+      // collect lights
+      if (object.nodeName === Light.tag) {
+        this.lightPool.addLight(object as unknown as Light);
+        return;
+      } else if (object.nodeName === Fog.tag) {
+        this.lightPool.addFog(object as Fog);
+        return;
+      }
+
+      const renderable3D = new Renderable3D();
+
+      // add geometry & material required by Renderable3D
+      // object.entity.addComponent(Geometry3D);
+      // object.entity.addComponent(Material3D);
+
+      // generate picking id for later use
+      const pickingId = this.pickingIdGenerator.getId(object);
+      renderable3D.pickingId = pickingId;
+      renderable3D.encodedPickingColor = this.pickingIdGenerator.encodePickingColor(pickingId);
+
+      // @ts-ignore
+      object.renderable3D = renderable3D;
+
+      this.batchManager.add(object);
+    };
+
+    const handleUnmounted = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+
+      if (object.nodeName === Light.tag) {
+        this.lightPool.removeLight(object as unknown as Light);
+        return;
+      } else if (object.nodeName === Fog.tag) {
+        this.lightPool.removeFog(object as Fog);
+        return;
+      }
+
+      this.batchManager.remove(object);
+
+      // @ts-ignore
+      delete object.renderable3D;
+
+      // entity.removeComponent(Geometry3D, true);
+      // entity.removeComponent(Material3D, true);
+      // entity.removeComponent(Renderable3D, true);
+    };
+
+    const handleAttributeChanged = (e: MutationEvent) => {
+      const object = e.target as DisplayObject;
+      const { attrName, newValue } = e;
+      this.batchManager.updateAttribute(object, attrName, newValue);
+    };
+
+    const handleRenderOrderChanged = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+      const { renderOrder } = e.detail;
+      this.batchManager.changeRenderOrder(object, renderOrder);
+    };
+
     renderingService.hooks.init.tapPromise(RenderGraphPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
@@ -124,7 +205,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
       );
       this.canvasConfig.renderer.getConfig().enableDirtyRectangleRendering = false;
 
-      // const dpr = this.contextService.getDPR();
       const $canvas = this.contextService.getDomElement() as HTMLCanvasElement;
 
       const { width, height } = this.canvasConfig;
@@ -136,6 +216,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.renderHelper.setDevice(this.device);
       this.renderHelper.renderInstManager.disableSimpleMode();
       this.swapChain.configureSwapChain($canvas.width, $canvas.height);
+      this.pickingTexture = new TemporalTexture();
 
       this.renderingContext.root.ownerDocument.defaultView.on(CanvasEvent.RESIZE, () => {
         this.swapChain.configureSwapChain($canvas.width, $canvas.height);
@@ -146,7 +227,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
     renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
       this.renderHelper.destroy();
-      // this.batches.forEach((batch) => batch.destroy());
+      this.pickingTexture.destroy();
 
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
@@ -191,30 +272,79 @@ export class RenderGraphPlugin implements RenderingPlugin {
         renderInput,
         opaqueWhiteFullClearRenderPassDescriptor,
       );
-
-      const mainColorTargetID = this.builder.createRenderTargetID(
-        mainRenderDesc,
-        'Main Render Target',
+      const mainPickingDesc = makeBackbufferDescSimple(
+        RGAttachmentSlot.Color0,
+        renderInput,
+        makeAttachmentClearDescriptor(clearColor),
       );
+
+      const mainColorTargetID = this.builder.createRenderTargetID(mainRenderDesc, 'Main Color');
       const mainDepthTargetID = this.builder.createRenderTargetID(mainDepthDesc, 'Main Depth');
       const pickingColorTargetID = this.builder.createRenderTargetID(
-        mainRenderDesc,
-        'Picking Render Target',
+        mainPickingDesc,
+        'Picking Color',
       );
+
+      this.pickingTexture.setDescription(this.device, mainPickingDesc);
 
       // main render pass
       this.builder.pushPass((pass) => {
         pass.setDebugName('Main Render Pass');
         pass.attachRenderTargetID(RGAttachmentSlot.Color0, mainColorTargetID);
-        pass.attachRenderTargetID(RGAttachmentSlot.Color1, pickingColorTargetID);
         pass.attachRenderTargetID(RGAttachmentSlot.DepthStencil, mainDepthTargetID);
         pass.exec((passRenderer) => {
-          renderInstManager.drawListOnPassRenderer(this.renderLists.world, passRenderer);
-        });
-        pass.post((scope) => {
-          this.pickingTexture = scope.getRenderTargetTexture(RGAttachmentSlot.Color1);
+          this.renderLists.world.drawOnPassRenderer(renderInstManager.renderCache, passRenderer);
         });
       });
+
+      // picking pass
+      this.builder.pushPass((pass) => {
+        pass.setDebugName('Picking Pass');
+        pass.attachRenderTargetID(RGAttachmentSlot.Color0, pickingColorTargetID);
+        pass.attachRenderTargetID(RGAttachmentSlot.DepthStencil, mainDepthTargetID);
+        pass.exec((passRenderer) => {
+          this.renderLists.picking.renderInsts.forEach((renderInst) => {
+            // enable uniform: `u_IsPicking`
+
+            const pickingUniform = renderInst.uniforms[SceneUniformBufferIndex].find(
+              ({ name }) => name === SceneUniform.IS_PICKING,
+            );
+            if (pickingUniform) {
+              pickingUniform.value = 1;
+            }
+
+            const uniformBuffer = renderInst.getUniformBuffer();
+            if (uniformBuffer.isSupportedUBO()) {
+              const buffer = uniformBuffer.buffer;
+              buffer.setSubData(4 * 39, new Uint8Array(new Float32Array([1]).buffer));
+            }
+            // disable blending
+            renderInst.setMegaStateFlags({
+              attachmentsState: [
+                {
+                  channelWriteMask: ChannelWriteMask.AllChannels,
+                  rgbBlendState: {
+                    blendMode: BlendMode.Add,
+                    blendSrcFactor: BlendFactor.One,
+                    blendDstFactor: BlendFactor.Zero,
+                  },
+                  alphaBlendState: {
+                    blendMode: BlendMode.Add,
+                    blendSrcFactor: BlendFactor.One,
+                    blendDstFactor: BlendFactor.Zero,
+                  },
+                },
+              ],
+            });
+          });
+          this.renderLists.picking.drawOnPassRenderer(renderInstManager.renderCache, passRenderer);
+        });
+      });
+      // save picking texture
+      this.builder.resolveRenderTargetToExternalTexture(
+        pickingColorTargetID,
+        this.pickingTexture.getTextureForResolving(),
+      );
 
       // TODO: other post-processing passes
       // FXAA
@@ -223,6 +353,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       // output to screen
       this.builder.resolveRenderTargetToExternalTexture(
         mainColorTargetID,
+        // pickingColorTargetID,
         this.swapChain.getOnscreenTexture(),
       );
     });
@@ -255,7 +386,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       // Update Scene Params
       const { width, height } = this.canvasConfig;
-      template.setUniforms(0, [
+      template.setUniforms(SceneUniformBufferIndex, [
         {
           name: SceneUniform.PROJECTION_MATRIX,
           value: this.camera.getPerspective(),
@@ -280,94 +411,24 @@ export class RenderGraphPlugin implements RenderingPlugin {
           name: SceneUniform.IS_ORTHO,
           value: this.camera.isOrtho() ? 1 : 0,
         },
+        {
+          name: SceneUniform.IS_PICKING,
+          value: 0,
+        },
       ]);
 
-      renderInstManager.setCurrentRenderInstList(this.renderLists.world);
-      this.batchManager.render(this.renderLists.world);
+      this.batchManager.render([this.renderLists.world, this.renderLists.picking]);
 
       renderInstManager.popTemplateRenderInst();
 
-      if (this.renderLists.world.renderInsts.length > 0) {
-        this.renderHelper.prepareToRender();
-      }
+      this.renderHelper.prepareToRender();
       this.renderHelper.renderGraph.execute();
 
       renderInstManager.resetRenderInsts();
 
       // output to screen
       this.swapChain.present();
-
-      // @ts-ignore
-      // FIXME: this is a hack to make sure the GPU is done with the previous frame
-      if (this.device.platformString === 'WebGL2' && this.firstFrame) {
-        this.firstFrame = false;
-        setTimeout(() => {
-          this.renderingService.dirtify();
-        });
-      }
     });
-
-    const handleMounted = (e: FederatedEvent) => {
-      const object = e.target as DisplayObject;
-
-      // collect lights
-      if (object.nodeName === Light.tag) {
-        this.lightPool.addLight(object as Light);
-        return;
-      } else if (object.nodeName === Fog.tag) {
-        this.lightPool.addFog(object as Fog);
-        return;
-      }
-
-      const renderable3D = new Renderable3D();
-
-      // add geometry & material required by Renderable3D
-      // object.entity.addComponent(Geometry3D);
-      // object.entity.addComponent(Material3D);
-
-      // generate picking id for later use
-      const pickingId = this.pickingIdGenerator.getId(object);
-      renderable3D.pickingId = pickingId;
-      renderable3D.encodedPickingColor = this.pickingIdGenerator.encodePickingColor(pickingId);
-
-      // @ts-ignore
-      object.renderable3D = renderable3D;
-
-      this.batchManager.add(object);
-    };
-
-    const handleUnmounted = (e: FederatedEvent) => {
-      const object = e.target as DisplayObject;
-
-      if (object.nodeName === Light.tag) {
-        this.lightPool.removeLight(object as Light);
-        return;
-      } else if (object.nodeName === Fog.tag) {
-        this.lightPool.removeFog(object as Fog);
-        return;
-      }
-
-      this.batchManager.remove(object);
-
-      // @ts-ignore
-      delete object.renderable3D;
-
-      // entity.removeComponent(Geometry3D, true);
-      // entity.removeComponent(Material3D, true);
-      // entity.removeComponent(Renderable3D, true);
-    };
-
-    const handleAttributeChanged = (e: MutationEvent) => {
-      const object = e.target as DisplayObject;
-      const { attrName, newValue } = e;
-      this.batchManager.updateAttribute(object, attrName, newValue);
-    };
-
-    const handleRenderOrderChanged = (e: FederatedEvent) => {
-      const object = e.target as DisplayObject;
-      const { renderOrder } = e.detail;
-      this.batchManager.changeRenderOrder(object, renderOrder);
-    };
   }
 
   /**
@@ -478,9 +539,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
     const targets: DisplayObject[] = [];
     const readback = this.device.createReadback();
 
-    if (this.pickingTexture) {
+    const pickingTexture = this.pickingTexture && this.pickingTexture.getTextureForResolving();
+
+    if (pickingTexture) {
       const pickedColors = (await readback.readTexture(
-        this.pickingTexture,
+        pickingTexture,
         rect.x,
         rect.y,
         rect.width,
@@ -513,10 +576,13 @@ export class RenderGraphPlugin implements RenderingPlugin {
     return targets;
   }
 
+  /**
+   * load texture in an async way and render when loaded
+   */
   loadTexture(
     src: string | TexImageSource,
     descriptor?: TextureDescriptor,
-    successCallback?: Function,
+    successCallback?: () => void,
   ) {
     return this.texturePool.getOrCreateTexture(this.device, src, descriptor, () => {
       this.renderingService.dirtify();

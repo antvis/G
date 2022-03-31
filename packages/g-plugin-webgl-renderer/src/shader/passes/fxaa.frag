@@ -1,7 +1,7 @@
 uniform sampler2D u_Texture;
 in vec2 v_TexCoord;
 
-layout(location = 0) out vec4 gbuf_color;
+out vec4 outputColor;
 
 float MonochromeNTSC(vec3 t_Color) {
   // NTSC primaries.
@@ -17,10 +17,10 @@ vec4 FXAA(PD_SAMPLER_2D(t_Texture), in vec2 t_PixelCenter, in vec2 t_InvResoluti
 
   #if 1
     vec2 t_PixelTopLeft = t_PixelCenter.xy - t_InvResolution.xy * 0.5;
-    float lumaNW = MonochromeNTSC(texture      (PU_SAMPLER_2D(t_Texture), t_PixelTopLeft.xy)             .rgb);
-    float lumaNE = MonochromeNTSC(textureOffset(PU_SAMPLER_2D(t_Texture), t_PixelTopLeft.xy, ivec2(1, 0)).rgb);
-    float lumaSW = MonochromeNTSC(textureOffset(PU_SAMPLER_2D(t_Texture), t_PixelTopLeft.xy, ivec2(0, 1)).rgb);
-    float lumaSE = MonochromeNTSC(textureOffset(PU_SAMPLER_2D(t_Texture), t_PixelTopLeft.xy, ivec2(1, 1)).rgb);
+    float lumaNW = MonochromeNTSC(texture(PU_SAMPLER_2D(t_Texture), t_PixelTopLeft.xy)             .rgb);
+    float lumaNE = MonochromeNTSC(texture(PU_SAMPLER_2D(t_Texture), t_PixelTopLeft.xy + vec2(1.0, 0.0)).rgb);
+    float lumaSW = MonochromeNTSC(texture(PU_SAMPLER_2D(t_Texture), t_PixelTopLeft.xy + vec2(0.0, 1.0)).rgb);
+    float lumaSE = MonochromeNTSC(texture(PU_SAMPLER_2D(t_Texture), t_PixelTopLeft.xy + vec2(1.0, 1.0)).rgb);
   #else
     // We're at the pixel center -- pixel edges are 0.5 units away.
     // NOTE(jstpierre): mitsuhiko's port seems to get this wrong?
@@ -63,5 +63,5 @@ vec4 FXAA(PD_SAMPLER_2D(t_Texture), in vec2 t_PixelCenter, in vec2 t_InvResoluti
 }
 
 void main() {
-  gbuf_color = FXAA(PP_SAMPLER_2D(u_Texture), v_TexCoord.xy, u_InvResolution.xy);
+  outputColor = FXAA(PP_SAMPLER_2D(u_Texture), v_TexCoord.xy, u_InvResolution.xy);
 }

@@ -1,6 +1,6 @@
 import { Point } from '../shapes/Point';
 import type { EventService } from '../services';
-import type { IEventTarget, ICanvas } from './interfaces';
+import type { IEventTarget } from './interfaces';
 
 /**
  * An DOM-compatible synthetic event implementation that is "forwarded" on behalf of an original

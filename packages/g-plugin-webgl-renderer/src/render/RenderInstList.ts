@@ -1,7 +1,8 @@
-import { RenderPass, SamplerBinding } from '../platform';
+import type { RenderPass, SamplerBinding } from '../platform';
 import { spliceBisectRight } from '../platform/utils';
-import { RenderCache } from './RenderCache';
-import { RenderInst, RenderInstFlags } from './RenderInst';
+import type { RenderCache } from './RenderCache';
+import type { RenderInst } from './RenderInst';
+import { RenderInstFlags } from './RenderInst';
 
 export const renderInstCompareNone = null;
 
@@ -102,9 +103,8 @@ export class RenderInstList {
     this.renderInsts.length = 0;
   }
 
-  drawOnPassRenderer(cache: RenderCache, passRenderer: RenderPass): number {
-    const numDrawn = this.drawOnPassRendererNoReset(cache, passRenderer);
+  drawOnPassRenderer(cache: RenderCache, passRenderer: RenderPass) {
+    this.drawOnPassRendererNoReset(cache, passRenderer);
     this.reset();
-    return numDrawn;
   }
 }

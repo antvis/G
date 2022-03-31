@@ -1,4 +1,5 @@
-import { ParsedBaseStyleProps, Shape } from '@antv/g';
+import type { ParsedBaseStyleProps } from '@antv/g';
+import { Shape } from '@antv/g';
 import { singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import { StyleRenderer } from './interfaces';
@@ -16,8 +17,8 @@ import { StyleRenderer } from './interfaces';
 })
 export class DefaultRenderer implements StyleRenderer {
   hash(parsedStyle: ParsedBaseStyleProps) {
-    const { fill, opacity, fillOpacity, stroke, strokeOpacity, lineWidth, lineCap, lineJoin } =
-      parsedStyle;
+    // const { fill, opacity, fillOpacity, stroke, strokeOpacity, lineWidth, lineCap, lineJoin } =
+    //   parsedStyle;
 
     // return fill + opacity + fillOpacity + stroke + strokeOpacity + lineWidth + lineCap + lineJoin;
     return '';

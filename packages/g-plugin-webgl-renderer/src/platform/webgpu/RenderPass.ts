@@ -1,12 +1,12 @@
-import { RenderPass, RenderPassDescriptor, RenderPipeline, InputState, Bindings } from '..';
+import type { RenderPass, RenderPassDescriptor, RenderPipeline, InputState, Bindings } from '..';
 import { assert, assertExists } from '../utils';
-import { Bindings_WebGPU } from './Bindings';
+import type { Bindings_WebGPU } from './Bindings';
 import { GPUTextureUsage } from './constants';
-import { InputLayout_WebGPU } from './InputLayout';
-import { InputState_WebGPU } from './InputState';
-import { Attachment_WebGPU, TextureShared_WebGPU } from './interfaces';
-import { RenderPipeline_WebGPU } from './RenderPipeline';
-import { Texture_WebGPU } from './Texture';
+import type { InputLayout_WebGPU } from './InputLayout';
+import type { InputState_WebGPU } from './InputState';
+import type { Attachment_WebGPU, TextureShared_WebGPU } from './interfaces';
+import type { RenderPipeline_WebGPU } from './RenderPipeline';
+import type { Texture_WebGPU } from './Texture';
 import { getPlatformBuffer, getPlatformQuerySet } from './utils';
 
 export class RenderPass_WebGPU implements RenderPass {

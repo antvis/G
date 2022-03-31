@@ -1,21 +1,19 @@
-import {
+import type {
   BindingLayoutDescriptor,
   BindingLayoutSamplerDescriptor,
   Bindings,
   BindingsDescriptor,
-  ResourceType,
-  SamplerFormatKind,
-  TextureDimension,
 } from '../interfaces';
+import { ResourceType, SamplerFormatKind, TextureDimension } from '../interfaces';
 import { assert } from '../utils';
 import { getPlatformBuffer, getPlatformSampler, translateBindGroupTextureBinding } from './utils';
-import { IDevice_WebGPU } from './interfaces';
-import { BindGroupLayout } from './interfaces';
+import type { IDevice_WebGPU } from './interfaces';
+import type { BindGroupLayout } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
-import { Texture_WebGPU } from './Texture';
-import { RenderPipeline_WebGPU } from './RenderPipeline';
+import type { Texture_WebGPU } from './Texture';
+import type { RenderPipeline_WebGPU } from './RenderPipeline';
 import { getFormatSamplerKind } from '../format';
-import { Device_WebGPU } from './Device';
+import type { Device_WebGPU } from './Device';
 
 export const defaultBindingLayoutSamplerDescriptor: BindingLayoutSamplerDescriptor = {
   formatKind: SamplerFormatKind.Float,
@@ -42,7 +40,7 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
     const { pipeline, bindingLayout } = descriptor;
     assert(!!pipeline);
 
-    const bindGroupLayout = this._createBindGroupLayout(bindingLayout);
+    // const bindGroupLayout = this._createBindGroupLayout(bindingLayout);
 
     // entries orders: Storage(read-only storage) Uniform Sampler
     const gpuBindGroupEntries: GPUBindGroupEntry[][] = [[], []];

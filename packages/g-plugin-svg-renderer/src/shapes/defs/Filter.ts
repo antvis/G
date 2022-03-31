@@ -1,5 +1,6 @@
 import { createSVGElement } from '../../utils/dom';
-import { convertAngleUnit, DisplayObject, ParsedElement, ParsedFilterStyleProperty } from '@antv/g';
+import type { DisplayObject, ParsedElement, ParsedFilterStyleProperty } from '@antv/g';
+import { convertAngleUnit } from '@antv/g';
 
 const FILTER_PREFIX = 'g-filter-';
 

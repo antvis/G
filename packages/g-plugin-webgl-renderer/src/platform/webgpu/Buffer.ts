@@ -1,5 +1,6 @@
-import { Buffer, BufferDescriptor, BufferUsage, ResourceType } from '../interfaces';
-import { IDevice_WebGPU } from './interfaces';
+import type { Buffer, BufferDescriptor} from '../interfaces';
+import { BufferUsage, ResourceType } from '../interfaces';
+import type { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 
 function isView(viewOrSize: ArrayBufferView | number): viewOrSize is ArrayBufferView {

@@ -5,6 +5,7 @@ float u_FillOpacity = a_StylePacked1.y;
 float u_StrokeOpacity = a_StylePacked1.z;
 float u_StrokeWidth = a_StylePacked1.w;
 float u_ZIndex = a_PickingColor.w;
+vec2 u_Anchor = a_StylePacked2.yz;
 
 setPickingColor(a_PickingColor.xyz);
 

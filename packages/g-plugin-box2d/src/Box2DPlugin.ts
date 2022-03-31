@@ -1,25 +1,27 @@
 import { inject, singleton } from 'mana-syringe';
-import {
-  DisplayObjectPool,
+import type {
   RenderingService,
   RenderingPlugin,
+  MutationEvent,
+  DisplayObject,
+  ParsedLineStyleProps,
+  ParsedCircleStyleProps,
+  ParsedRectStyleProps,
+  ParsedBaseStyleProps,
+} from '@antv/g';
+import {
+  DisplayObjectPool,
   RenderingPluginContribution,
   SceneGraphService,
   RenderingContext,
   ElementEvent,
-  MutationEvent,
-  DisplayObject,
   CanvasEvent,
   Shape,
-  ParsedLineStyleProps,
-  ParsedPolylineStyleProps,
-  ParsedCircleStyleProps,
-  ParsedRectStyleProps,
-  ParsedBaseStyleProps,
   rad2deg,
   deg2rad,
 } from '@antv/g';
 import type { FederatedEvent } from '@antv/g';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type Box2DFactory from 'box2d-wasm';
 import { Box2DPluginOptions } from './tokens';
 import { createChainShape, createPolygonShape, sortPointsInCCW } from './utils';
@@ -64,43 +66,6 @@ export class Box2DPlugin implements RenderingPlugin {
   private pendingDisplayObjects: DisplayObject[] = [];
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.init.tapPromise(Box2DPlugin.tag, async () => {
-      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.addEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-
-      this.Box2D = await this.loadBox2D();
-
-      this.temp = new this.Box2D.b2Vec2(0, 0);
-      this.temp2 = new this.Box2D.b2Vec2(0, 0);
-      this.createScene();
-      this.handlePendingDisplayObjects();
-
-      // do simulation each frame
-      this.renderingContext.root.ownerDocument.defaultView.addEventListener(
-        CanvasEvent.BEFORE_RENDER,
-        simulate,
-      );
-    });
-
-    renderingService.hooks.destroy.tap(Box2DPlugin.tag, () => {
-      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-
-      if (this.world) {
-        // memory leak
-        // @see https://github.com/Birch-san/box2d-wasm/blob/c04514c040/docs/memory-model.md#every-new-needs-a-corresponding-destroy
-        this.Box2D.destroy(this.world);
-      }
-    });
-
     const simulate = () => {
       if (this.world) {
         const { timeStep, velocityIterations, positionIterations } = this.options;
@@ -195,6 +160,43 @@ export class Box2DPlugin implements RenderingPlugin {
         }
       }
     };
+
+    renderingService.hooks.init.tapPromise(Box2DPlugin.tag, async () => {
+      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.addEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
+
+      this.Box2D = await this.loadBox2D();
+
+      this.temp = new this.Box2D.b2Vec2(0, 0);
+      this.temp2 = new this.Box2D.b2Vec2(0, 0);
+      this.createScene();
+      this.handlePendingDisplayObjects();
+
+      // do simulation each frame
+      this.renderingContext.root.ownerDocument.defaultView.addEventListener(
+        CanvasEvent.BEFORE_RENDER,
+        simulate,
+      );
+    });
+
+    renderingService.hooks.destroy.tap(Box2DPlugin.tag, () => {
+      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.removeEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
+
+      if (this.world) {
+        // memory leak
+        // @see https://github.com/Birch-san/box2d-wasm/blob/c04514c040/docs/memory-model.md#every-new-needs-a-corresponding-destroy
+        this.Box2D.destroy(this.world);
+      }
+    });
   }
 
   applyForce(object: DisplayObject, force: [number, number], point: [number, number]) {
@@ -270,9 +272,9 @@ export class Box2DPlugin implements RenderingPlugin {
       const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
       const pointsInCCW = sortPointsInCCW(points.points);
       const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x - defX, y - defY));
-      const prev = pointsInCCW[0];
-      const next = pointsInCCW[pointsInCCW.length - 1];
-      const eps = 0.1;
+      // const prev = pointsInCCW[0];
+      // const next = pointsInCCW[pointsInCCW.length - 1];
+      // const eps = 0.1;
       shape = createChainShape(
         this.Box2D,
         vertices,

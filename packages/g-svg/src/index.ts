@@ -1,4 +1,5 @@
-import { AbstractRenderer, RendererConfig } from '@antv/g';
+import type { RendererConfig } from '@antv/g';
+import { AbstractRenderer } from '@antv/g';
 import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as SVGRenderer from '@antv/g-plugin-svg-renderer';
 import * as SVGPicker from '@antv/g-plugin-svg-picker';

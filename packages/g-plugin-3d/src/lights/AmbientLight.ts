@@ -1,7 +1,9 @@
-import { DisplayObjectConfig, PARSED_COLOR_TYPE, Tuple3Number } from '@antv/g';
-import { Light, LightProps, RenderInstUniform } from '@antv/g-plugin-webgl-renderer';
+import type { DisplayObjectConfig, Tuple3Number } from '@antv/g';
+import { PARSED_COLOR_TYPE } from '@antv/g';
+import type { LightProps, RenderInstUniform } from '@antv/g-plugin-webgl-renderer';
+import { Light } from '@antv/g-plugin-webgl-renderer';
 
-export interface AmbientLightProps extends LightProps {}
+export type AmbientLightProps = LightProps;
 export class AmbientLight extends Light {
   define = 'NUM_AMBIENT_LIGHTS';
   order = -1;

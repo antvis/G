@@ -1,18 +1,16 @@
 import { TransparentBlack } from '../../utils/color';
+import type { AttachmentState, ChannelBlendState, MegaStateDescriptor } from '../interfaces';
 import {
-  AttachmentState,
   BlendFactor,
   BlendMode,
-  ChannelBlendState,
   ChannelWriteMask,
   CompareMode,
   CullMode,
   FrontFaceMode,
-  MegaStateDescriptor,
   StencilOp,
 } from '../interfaces';
 import { colorCopy, colorNewCopy } from './color';
-import { reverseDepthForCompareMode } from './depth';
+// import { reverseDepthForCompareMode } from './depth';
 
 export function isPowerOfTwo(n: number): boolean {
   return n && (n & (n - 1)) === 0;
@@ -147,15 +145,6 @@ export function copyMegaState(src: MegaStateDescriptor): MegaStateDescriptor {
   return dst;
 }
 
-export function makeMegaState(
-  other: Partial<MegaStateDescriptor> | null = null,
-  src: MegaStateDescriptor = defaultMegaState,
-) {
-  const dst = copyMegaState(src);
-  if (other !== null) setMegaStateFlags(dst, other);
-  return dst;
-}
-
 export interface AttachmentStateSimple {
   channelWriteMask: ChannelWriteMask;
   rgbBlendMode?: BlendMode;
@@ -197,19 +186,6 @@ export function copyAttachmentStateFromSimple(
   }
 }
 
-export function setAttachmentStateSimple(
-  dst: Partial<MegaStateDescriptor>,
-  simple: Partial<AttachmentStateSimple>,
-): Partial<MegaStateDescriptor> {
-  if (dst.attachmentsState === undefined) {
-    dst.attachmentsState = [];
-    copyAttachmentsState(dst.attachmentsState, defaultMegaState.attachmentsState);
-  }
-
-  copyAttachmentStateFromSimple(dst.attachmentsState![0], simple);
-  return dst;
-}
-
 const defaultBlendState: ChannelBlendState = {
   blendMode: BlendMode.Add,
   blendSrcFactor: BlendFactor.One,
@@ -239,7 +215,29 @@ export const defaultMegaState: MegaStateDescriptor = {
   polygonOffset: false,
 };
 
+export function makeMegaState(
+  other: Partial<MegaStateDescriptor> | null = null,
+  src: MegaStateDescriptor = defaultMegaState,
+) {
+  const dst = copyMegaState(src);
+  if (other !== null) setMegaStateFlags(dst, other);
+  return dst;
+}
+
 export const fullscreenMegaState = makeMegaState(
   { depthCompare: CompareMode.Always, depthWrite: false },
   defaultMegaState,
 );
+
+export function setAttachmentStateSimple(
+  dst: Partial<MegaStateDescriptor>,
+  simple: Partial<AttachmentStateSimple>,
+): Partial<MegaStateDescriptor> {
+  if (dst.attachmentsState === undefined) {
+    dst.attachmentsState = [];
+    copyAttachmentsState(dst.attachmentsState, defaultMegaState.attachmentsState);
+  }
+
+  copyAttachmentStateFromSimple(dst.attachmentsState![0], simple);
+  return dst;
+}

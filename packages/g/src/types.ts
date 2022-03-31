@@ -291,6 +291,11 @@ export interface CanvasConfig {
   cancelAnimationFrame?: (id: number) => void;
 
   /**
+   * replace `new window.Image()`
+   */
+  createImage?: () => HTMLImageElement;
+
+  /**
    * 画布宽度
    */
   width?: number;

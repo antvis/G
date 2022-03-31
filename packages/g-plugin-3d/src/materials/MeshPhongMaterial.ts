@@ -1,6 +1,8 @@
-import { parseColor, Tuple4Number } from '@antv/g';
-import { Device, Texture, VertexAttributeLocation } from '@antv/g-plugin-webgl-renderer';
-import { MeshBasicMaterial, IMeshBasicMaterial } from './MeshBasicMaterial';
+import type { Tuple4Number } from '@antv/g';
+import { parseColor } from '@antv/g';
+import type { Device, Texture } from '@antv/g-plugin-webgl-renderer';
+import type { IMeshBasicMaterial } from './MeshBasicMaterial';
+import { MeshBasicMaterial } from './MeshBasicMaterial';
 import vert from '../shaders/material.phong.vert';
 import frag from '../shaders/material.phong.frag';
 
@@ -21,11 +23,6 @@ enum Uniform {
   BUMP_SCALE = 'u_BumpScale',
   SPECULAR_MAP = 'u_SpecularMap',
   BUMP_MAP = 'u_BumpMap',
-}
-
-enum SamplerLocation {
-  BUMP_MAP = 1,
-  SPECULAR_MAP,
 }
 
 export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
@@ -144,7 +141,6 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
 
     this.defines = {
       ...this.defines,
-      NORMAL: VertexAttributeLocation.MAX + 1,
     };
   }
 }

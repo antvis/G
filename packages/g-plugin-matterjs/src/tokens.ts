@@ -1,6 +1,7 @@
 import { Syringe } from 'mana-syringe';
 
 export const MatterJSPluginOptions = Syringe.defineToken('MatterJSPluginOptions');
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface MatterJSPluginOptions {
   debug: boolean;
   debugContainer: HTMLElement;

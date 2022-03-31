@@ -1,30 +1,34 @@
+import type {
+  DisplayObject,
+  RenderingService,
+  RenderingPlugin,
+  ParsedColorStyleProperty,
+  FederatedEvent,
+} from '@antv/g';
 import {
   AABB,
   Shape,
-  DisplayObject,
   DisplayObjectPool,
   CanvasConfig,
   ContextService,
-  RenderingService,
   RenderingContext,
-  RenderingPlugin,
   RenderingPluginContribution,
   getEuler,
   fromRotationTranslationScale,
   Camera,
   DefaultCamera,
-  ParsedColorStyleProperty,
   PARSED_COLOR_TYPE,
   RenderReason,
   ElementEvent,
-  FederatedEvent,
 } from '@antv/g';
 import { isArray, isNil } from '@antv/util';
 import { inject, singleton } from 'mana-syringe';
 import { vec3, mat4, quat } from 'gl-matrix';
 import RBush from 'rbush';
-import { PathGeneratorFactory, PathGenerator } from './shapes/paths';
-import { StyleRenderer, StyleRendererFactory } from './shapes/styles';
+import type { PathGenerator } from './shapes/paths';
+import { PathGeneratorFactory } from './shapes/paths';
+import type { StyleRenderer } from './shapes/styles';
+import { StyleRendererFactory } from './shapes/styles';
 import { GradientPool } from './shapes/GradientPool';
 import { ImagePool } from './shapes/ImagePool';
 import { RBushNode } from './components/RBushNode';
@@ -96,32 +100,36 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private syncRTree() {
     // bounds changed, need re-inserting its children
     const bulk: RBushNodeAABB[] = [];
-    this.toSync.forEach((node: DisplayObject) => {
-      // @ts-ignore
-      const rBushNode = node.rBushNode;
 
-      // clear dirty node
-      if (rBushNode) {
-        this.rBush.remove(rBushNode.aabb);
-      }
+    Array.from(this.toSync)
+      // some objects may be removed since last frame
+      .filter((object) => object.isConnected)
+      .forEach((node: DisplayObject) => {
+        // @ts-ignore
+        const rBushNode = node.rBushNode;
 
-      const renderBounds = node.getRenderBounds();
-      if (renderBounds) {
-        const [minX, minY] = renderBounds.getMin();
-        const [maxX, maxY] = renderBounds.getMax();
-        rBushNode.aabb = {
-          id: node.entity,
-          minX,
-          minY,
-          maxX,
-          maxY,
-        };
-      }
+        // clear dirty node
+        if (rBushNode) {
+          this.rBush.remove(rBushNode.aabb);
+        }
 
-      if (rBushNode.aabb) {
-        bulk.push(rBushNode.aabb);
-      }
-    });
+        const renderBounds = node.getRenderBounds();
+        if (renderBounds) {
+          const [minX, minY] = renderBounds.getMin();
+          const [maxX, maxY] = renderBounds.getMax();
+          rBushNode.aabb = {
+            id: node.entity,
+            minX,
+            minY,
+            maxX,
+            maxY,
+          };
+        }
+
+        if (rBushNode.aabb) {
+          bulk.push(rBushNode.aabb);
+        }
+      });
 
     // use bulk inserting, which is ~2-3 times faster
     // @see https://github.com/mourner/rbush#bulk-inserting-data
@@ -130,6 +138,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     this.toSync.clear();
   }
 
+  /**
+   * sync to RBush later
+   */
   private toSync = new Set<DisplayObject>();
   private pushToSync(list: DisplayObject[]) {
     list.forEach((i) => {
@@ -201,8 +212,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.beginFrame.tap(CanvasRendererPlugin.tag, () => {
       const context = this.contextService.getContext();
 
-      const { enableDirtyRectangleRendering, enableDirtyRectangleRenderingDebug } =
-        this.canvasConfig.renderer.getConfig();
+      const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
 
       // clear fullscreen when:
       // 1. dirty rectangle rendering disabled
@@ -227,7 +237,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
       this.syncRTree();
 
-      const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
+      const { enableDirtyRectangleRendering, enableDirtyRectangleRenderingDebug } =
+        this.canvasConfig.renderer.getConfig();
       const context = this.contextService.getContext()!;
       let dirtyObjects = this.renderQueue;
 
@@ -245,7 +256,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           );
           this.removedRBushNodeAABBs = [];
 
-          if (!dirtyRenderBounds || AABB.isEmpty(dirtyRenderBounds)) {
+          if (AABB.isEmpty(dirtyRenderBounds)) {
             return;
           }
 
@@ -255,6 +266,15 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           context.beginPath();
           context.rect(x, y, width, height);
           context.clip();
+
+          // draw dirty rectangle
+          if (enableDirtyRectangleRenderingDebug) {
+            context.lineWidth = 4;
+            context.strokeStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${
+              Math.random() * 255
+            }, 1)`;
+            context.strokeRect(x, y, width, height);
+          }
 
           // search objects intersect with dirty rectangle
           dirtyObjects = this.searchDirtyObjects(dirtyRenderBounds);
@@ -453,18 +473,18 @@ export class CanvasRendererPlugin implements RenderingPlugin {
    */
   private mergeDirtyAABBs(dirtyObjects: DisplayObject[]): AABB {
     // merge into a big AABB
-    let dirtyRectangle: AABB = new AABB();
+    const aabb = new AABB();
     dirtyObjects.forEach((object) => {
       const renderBounds = object.getRenderBounds();
-      dirtyRectangle.add(renderBounds);
+      aabb.add(renderBounds);
 
       const { dirtyRenderBounds } = object.renderable;
       if (dirtyRenderBounds) {
-        dirtyRectangle.add(dirtyRenderBounds);
+        aabb.add(dirtyRenderBounds);
       }
     });
 
-    return dirtyRectangle;
+    return aabb;
   }
 
   private searchDirtyObjects(dirtyRectangle: AABB): DisplayObject[] {
@@ -497,6 +517,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     const [tx, ty] = mat4.getTranslation(vec3.create(), transform);
     const [sx, sy] = mat4.getScaling(vec3.create(), transform);
     const rotation = mat4.getRotation(quat.create(), transform);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [eux, euy, euz] = getEuler(vec3.create(), rotation);
     // gimbal lock at 90 degrees
     const rts = fromRotationTranslationScale(eux || euz, tx, ty, sx, sy);
@@ -602,7 +623,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private useAnchor(
     context: CanvasRenderingContext2D,
     object: DisplayObject,
-    callback: Function,
+    callback: () => void,
   ): void {
     const contentBounds = object.getGeometryBounds();
     if (contentBounds) {

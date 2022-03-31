@@ -1,10 +1,14 @@
-import { Pattern } from '@antv/g';
-import { singleton } from 'mana-syringe';
+import type { Pattern } from '@antv/g';
+import { CanvasConfig, isBrowser } from '@antv/g';
+import { inject, singleton } from 'mana-syringe';
 
 @singleton()
 export class ImagePool {
   private imageCache: Record<string, HTMLImageElement> = {};
   private patternCache: Record<string, CanvasPattern> = {};
+
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
   getImageSync(src: string) {
     return this.imageCache[src];
@@ -15,17 +19,28 @@ export class ImagePool {
       return Promise.resolve(this.imageCache[src]);
     }
 
+    // @see https://github.com/antvis/g/issues/938
+    const { createImage } = this.canvasConfig;
+
     return new Promise((resolve, reject) => {
-      const image = new window.Image();
-      image.onload = () => {
-        resolve(image);
-      };
-      image.onerror = (ev) => {
-        reject(ev);
-      };
-      image.crossOrigin = 'Anonymous';
-      image.src = src;
-      this.imageCache[src] = image;
+      let image: HTMLImageElement;
+      if (createImage) {
+        image = createImage();
+      } else if (isBrowser) {
+        image = new window.Image();
+      }
+
+      if (image) {
+        image.onload = () => {
+          resolve(image);
+        };
+        image.onerror = (ev) => {
+          reject(ev);
+        };
+        image.crossOrigin = 'Anonymous';
+        image.src = src;
+        this.imageCache[src] = image;
+      }
     });
   }
 

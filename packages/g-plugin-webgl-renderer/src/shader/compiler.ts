@@ -1,10 +1,5 @@
-import {
-  ClipSpaceNearZ,
-  Device,
-  ProgramDescriptorSimple,
-  VendorInfo,
-  ViewportOrigin,
-} from '../platform';
+import type { Device, ProgramDescriptorSimple, VendorInfo } from '../platform';
+import { ClipSpaceNearZ, ViewportOrigin } from '../platform';
 import { assert } from '../platform/utils';
 
 const ES100_REPLACEMENTS: [RegExp, string][] = [
@@ -89,9 +84,11 @@ export function getUniforms(vert: string) {
     uniforms
       .trim()
       .split('\n')
-      .forEach((line) => {
-        let [type = '', name = ''] = line.trim().split(' ');
-        // DirectionalLight directionalLights[ NUM_DIR_LIGHTS ];
+      .forEach((line: string) => {
+        const result = line.trim().split(' ');
+        const type = result[0] || '';
+        let name = result[1] || '';
+        // DirectionalLight directionalLights[  NUM_DIR_LIGHTS ];
         const isArray = name.indexOf('[') > -1;
         name = name.replace(';', '').replace('[', '').trim();
         // ignore conditional comments
@@ -135,8 +132,8 @@ export function preprocessShader_GLSL(
   features: ShaderFeatureMap | null = null,
 ): string {
   const isGLSL100 = vendorInfo.glslVersion === '#version 100';
-  const supportMRT = vendorInfo.supportMRT && !!features.MRT;
-  const needPicking = features.PICKING;
+  // const supportMRT = vendorInfo.supportMRT && !!features.MRT;
+  const supportMRT = false;
 
   const lines = source
     .split('\n')
@@ -250,6 +247,7 @@ ${definesString}
 ${rest}
 `.trim();
 
+  // out vec4 outputColor; -> layout(location = 0) out vec4 outputColor;
   if (vendorInfo.explicitBindingLocations && type === 'frag') {
     concat = concat.replace(/^\b(out)\b/gm, (substr, tok) => {
       return `layout(location = 0) ${tok}`;
@@ -257,6 +255,7 @@ ${rest}
   }
 
   // GLSL 300 -> 100
+  // @see https://webgl2fundamentals.org/webgl/lessons/webgl1-to-webgl2.html
   if (isGLSL100) {
     // in -> varying
     if (type === 'frag') {
@@ -291,31 +290,47 @@ ${rest}
       });
     });
 
-    // MRT
-    if (supportMRT) {
-      if (type === 'frag') {
-        const gBuffers = [];
-        concat = concat.replace(
-          /^\s*layout\(location\s*=\s*\d*\)\s*out\s+vec4\s*(.*);$/gm,
-          (_, buffer) => {
-            gBuffers.push(buffer);
-            return `vec4 ${buffer};\n`;
-          },
-        );
+    if (type === 'frag') {
+      let glFragColor: string;
+      concat = concat.replace(/^\s*out\s+(\S+)\s*(.*);$/gm, (_, dataType, name) => {
+        glFragColor = name;
+        return `${dataType} ${name};\n`;
+      });
 
-        const lastIndexOfMain = concat.lastIndexOf('}');
-        concat =
-          concat.substring(0, lastIndexOfMain) +
-          `
-    ${gBuffers
-      .map(
-        (gBuffer, i) => `gl_FragData[${i}] = ${gBuffer};
-    `,
-      )
-      .join('\n')}` +
-          concat.substring(lastIndexOfMain);
-      }
+      const lastIndexOfMain = concat.lastIndexOf('}');
+      concat =
+        concat.substring(0, lastIndexOfMain) +
+        `
+  gl_FragColor = vec4(${glFragColor});
+` +
+        concat.substring(lastIndexOfMain);
     }
+
+    // MRT
+    // if (supportMRT) {
+    //   if (type === 'frag') {
+    //     const gBuffers = [];
+    //     concat = concat.replace(
+    //       /^\s*layout\(location\s*=\s*\d*\)\s*out\s+vec4\s*(.*);$/gm,
+    //       (_, buffer) => {
+    //         gBuffers.push(buffer);
+    //         return `vec4 ${buffer};\n`;
+    //       },
+    //     );
+
+    //     const lastIndexOfMain = concat.lastIndexOf('}');
+    //     concat =
+    //       concat.substring(0, lastIndexOfMain) +
+    //       `
+    // ${gBuffers
+    //   .map(
+    //     (gBuffer, i) => `gl_FragData[${i}] = ${gBuffer};
+    // `,
+    //   )
+    //   .join('\n')}` +
+    //       concat.substring(lastIndexOfMain);
+    //   }
+    // }
 
     // remove layout(location = 0)
     concat = concat.replace(/^\s*layout\((.*)\)/gm, '');

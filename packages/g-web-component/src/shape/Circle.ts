@@ -1,4 +1,5 @@
-import { Circle, CircleStyleProps } from "@antv/g";
+import type { CircleStyleProps } from "@antv/g";
+import { Circle } from "@antv/g";
 import { BaseShape } from "./BaseShape";
 
 export class CircleShape extends BaseShape {

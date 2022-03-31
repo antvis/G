@@ -1,5 +1,6 @@
 import { inject, singleton } from 'mana-syringe';
-import { SceneGraphSelector, IElement } from '@antv/g';
+import type { IElement } from '@antv/g';
+import { SceneGraphSelector } from '@antv/g';
 import { selectOne, selectAll, is } from 'css-select';
 import { SceneGraphAdapter } from './SceneGraphAdapter';
 

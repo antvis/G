@@ -15,6 +15,18 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
 
     const metrics = this.textService.measureText(text, parsedStyle);
     parsedStyle.metrics = metrics;
+
+    if (!text) {
+      return {
+        width: 0,
+        height: 0,
+        x: 0,
+        y: 0,
+        offsetX: 0,
+        offsetY: 0,
+      };
+    }
+
     const { width, height, lineHeight, fontProperties } = metrics;
 
     // anchor is left-top by default

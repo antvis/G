@@ -1,4 +1,4 @@
-import { Device, Mesh } from '@antv/g-plugin-webgl-renderer';
+import type { Device } from '@antv/g-plugin-webgl-renderer';
 import { ProceduralGeometry } from './ProceduralGeometry';
 
 export interface TorusGeometryProps {
@@ -78,7 +78,7 @@ export class TorusGeometry extends ProceduralGeometry<TorusGeometryProps> {
     const positions: number[] = [];
     const normals: number[] = [];
     const uvs: number[] = [];
-    const uvs1: number[] = [];
+    // const uvs1: number[] = [];
     const indices: number[] = [];
 
     for (i = 0; i <= sides; i++) {
@@ -103,11 +103,10 @@ export class TorusGeometry extends ProceduralGeometry<TorusGeometryProps> {
         uvs.push(u, 1.0 - v);
 
         if (i < sides && j < segments) {
-          let first, second, third, fourth;
-          first = i * (segments + 1) + j;
-          second = (i + 1) * (segments + 1) + j;
-          third = i * (segments + 1) + (j + 1);
-          fourth = (i + 1) * (segments + 1) + (j + 1);
+          const first = i * (segments + 1) + j;
+          const second = (i + 1) * (segments + 1) + j;
+          const third = i * (segments + 1) + (j + 1);
+          const fourth = (i + 1) * (segments + 1) + (j + 1);
 
           indices.push(first, second, third);
           indices.push(second, fourth, third);

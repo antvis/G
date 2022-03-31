@@ -1,4 +1,5 @@
-import { vec3, vec4 } from 'gl-matrix';
+import type { vec4 } from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
 import { isNumber } from '@antv/util';
 
 export function getAngle(angle: number | undefined) {

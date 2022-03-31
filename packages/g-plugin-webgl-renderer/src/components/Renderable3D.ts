@@ -1,4 +1,4 @@
-import { Instanced } from '../meshes';
+import type { Instanced } from '../meshes';
 
 export class Renderable3D {
   static tag = 'c-renderable-3d';

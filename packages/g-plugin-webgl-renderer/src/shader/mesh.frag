@@ -1,18 +1,19 @@
 #pragma glslify: import('@antv/g-shader-components/scene.both.glsl')
 #pragma glslify: import('@antv/g-shader-components/mesh.both.glsl')
 
-in vec4 v_PickingResult;
+out vec4 outputColor;
 
-layout(location = 0) out vec4 gbuf_color;
-layout(location = 1) out vec4 gbuf_picking;
+#define COLOR_SCALE 1. / 255.
 
 void main(){
-  if (u_Visible < 1.0) {
+  if (u_Visible < 0.5) {
     discard;
   }
 
-  gbuf_picking = vec4(v_PickingResult.rgb, 1.0);
-
-  gbuf_color = u_Color;
-  gbuf_color.a = gbuf_color.a * u_Opacity * u_FillOpacity;
+  if (u_IsPicking > 0.5) {
+    outputColor = vec4(COLOR_SCALE * u_PickingColor, 1.0);
+  } else {
+    outputColor = u_Color;
+    outputColor.a = outputColor.a * u_Opacity * u_FillOpacity;
+  }
 }

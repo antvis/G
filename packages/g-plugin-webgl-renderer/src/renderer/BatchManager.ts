@@ -1,13 +1,12 @@
-import { DisplayObject, RenderingService, Shape } from '@antv/g';
+import type { DisplayObject, RenderingService } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-import { Device } from '../platform';
+import type { Device } from '../platform';
 import { MeshFactory, RendererFactory } from '../tokens';
-import { Batch } from './Batch';
-import { Instanced } from '../meshes/Instanced';
-import { RenderHelper, RenderInstList } from '../render';
-import { Renderable3D } from '../components/Renderable3D';
-import { BufferGeometry } from '../geometries';
-import { ShaderMaterial } from '../materials';
+import type { Batch } from './Batch';
+import type { Instanced } from '../meshes/Instanced';
+import type { RenderInstList } from '../render';
+import { RenderHelper } from '../render';
+import type { Renderable3D } from '../components/Renderable3D';
 
 let stencilRefCounter = 1;
 
@@ -33,9 +32,24 @@ export class BatchManager {
    */
   private meshes: Instanced[] = [];
 
+  /**
+   * update patches which can be merged before rendering
+   */
+  private pendingUpdatePatches: Record<
+    string,
+    {
+      instance: Instanced;
+      objectIndices: number[];
+      name: string;
+      value: any;
+    }
+  > = {};
+
   private stencilRefCache: Record<number, number> = {};
 
-  render(list: RenderInstList) {
+  render(lists: RenderInstList[]) {
+    this.updatePendingPatches();
+
     this.meshes.forEach((mesh) => {
       // init rendering service, create geometry & material
       mesh.init(this.device, this.renderingService);
@@ -47,8 +61,12 @@ export class BatchManager {
 
       // new render instance
       const renderInst = this.renderHelper.renderInstManager.newRenderInst();
+      renderInst.setAllowSkippingIfPipelineNotReady(false);
       mesh.applyRenderInst(renderInst, objects);
-      this.renderHelper.renderInstManager.submitRenderInst(renderInst, list);
+
+      lists.forEach((list) => {
+        this.renderHelper.renderInstManager.submitRenderInst(renderInst, list);
+      });
 
       // console.log('submit: ', mesh);
 
@@ -167,7 +185,20 @@ export class BatchManager {
         }
 
         if (shouldSubmit && existedMesh && existedMesh.inited && !existedMesh.geometryDirty) {
-          existedMesh.updateAttribute(object, attributeName, newValue);
+          const patchKey = existedMesh.id + attributeName;
+          if (!this.pendingUpdatePatches[patchKey]) {
+            this.pendingUpdatePatches[patchKey] = {
+              instance: existedMesh,
+              objectIndices: [],
+              name: attributeName,
+              value: newValue,
+            };
+          }
+
+          const objectIdx = existedMesh.objects.indexOf(object);
+          if (this.pendingUpdatePatches[patchKey].objectIndices.indexOf(objectIdx) === -1) {
+            this.pendingUpdatePatches[patchKey].objectIndices.push(objectIdx);
+          }
         }
       });
     }
@@ -193,6 +224,35 @@ export class BatchManager {
       this.stencilRefCache[object.entity] = stencilRefCounter++;
     }
     return this.stencilRefCache[object.entity];
+  }
+
+  private updatePendingPatches() {
+    // merge update patches to reduce `setSubData` calls
+    Object.keys(this.pendingUpdatePatches).forEach((patchKey) => {
+      const { instance, objectIndices, name, value } = this.pendingUpdatePatches[patchKey];
+      objectIndices.sort((a, b) => a - b);
+
+      const updatePatches: number[][] = [];
+      objectIndices.forEach((i) => {
+        const lastUpdateBatch = updatePatches[updatePatches.length - 1];
+
+        if (!lastUpdateBatch || i !== lastUpdateBatch[lastUpdateBatch.length - 1] + 1) {
+          updatePatches.push([i]);
+        } else {
+          lastUpdateBatch.push(i);
+        }
+      });
+
+      updatePatches.forEach((indices) => {
+        instance.updateAttribute(
+          instance.objects.slice(indices[0], indices[0] + indices.length),
+          indices[0],
+          name,
+          value,
+        );
+      });
+    });
+    this.pendingUpdatePatches = {};
   }
 
   // private findClipPath(): DisplayObject | null {

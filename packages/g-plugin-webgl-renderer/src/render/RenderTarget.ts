@@ -1,6 +1,7 @@
-import { Device, Format, RenderTarget, Texture, TextureDimension, TextureUsage } from '../platform';
+import type { Device, Format, RenderTarget, Texture } from '../platform';
+import { TextureDimension, TextureUsage } from '../platform';
 import { assert } from '../platform/utils';
-import { RGRenderTargetDescription } from './RenderTargetDescription';
+import type { RGRenderTargetDescription } from './RenderTargetDescription';
 
 export class RGRenderTarget {
   debugName: string;
@@ -35,11 +36,15 @@ export class RGRenderTarget {
     } else {
       // Single-sampled textures can be backed by regular textures.
       this.texture = device.createTexture(this);
-      device.setResourceName(this.texture, this.debugName);
-
       this.attachment = device.createRenderTargetFromTexture(this.texture);
     }
+  }
 
+  setDebugName(device: Device, debugName: string): void {
+    this.debugName = debugName;
+    if (this.texture !== null) {
+      device.setResourceName(this.texture, this.debugName);
+    }
     device.setResourceName(this.attachment, this.debugName);
   }
 
@@ -57,7 +62,7 @@ export class RGRenderTarget {
     this.age = 0;
   }
 
-  destroy(device: Device): void {
+  destroy(): void {
     if (this.texture !== null) {
       this.texture.destroy();
     }

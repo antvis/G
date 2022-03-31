@@ -1,4 +1,4 @@
-import { Color, Format } from '../platform';
+import type { Color, Format } from '../platform';
 
 export class RGRenderTargetDescription {
   width: number = 0;

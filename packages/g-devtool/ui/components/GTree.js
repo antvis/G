@@ -34,7 +34,7 @@ const AttrsDrawer = ({ hash, getAttrs, onCancel, updateAttrs }) => {
       onCancel();
       getAttrs();
     }
-  }, [hash]);
+  }, [getAttrs, hash, onCancel]);
 
   return (
     <Drawer mask={false} onClose={onCancel} visible={hash}>
@@ -84,7 +84,7 @@ const GTree = (props) => {
     return () => {
       actions.cleanRect('__g_select__')
     }
-  }, [selectedKey])
+  }, [actions, selectedKey])
 
   if (!data) {
     return <Empty />;

@@ -1,8 +1,9 @@
 import { isNil } from '@antv/util';
 import { getAttributeLocations, getDefines } from '../../shader/compiler';
-import { ResourceType, Program, ProgramDescriptorSimple } from '../interfaces';
+import type { Program, ProgramDescriptorSimple } from '../interfaces';
+import { ResourceType } from '../interfaces';
 import { assert, getUniformSetter, parseUniformName } from '../utils';
-import { Device_GL } from './Device';
+import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
 import { Texture_GL } from './Texture';
 import { isWebGL2 } from './utils';

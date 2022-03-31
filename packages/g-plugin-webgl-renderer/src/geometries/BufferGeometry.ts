@@ -1,16 +1,9 @@
+import { AABB } from '@antv/g';
 import { ElementEvent, MutationEvent } from '@antv/g';
 import { EventEmitter } from 'eventemitter3';
-import { Mesh } from '../Mesh';
-import {
-  Buffer,
-  BufferFrequencyHint,
-  BufferUsage,
-  Device,
-  Format,
-  InputLayoutDescriptor,
-  PrimitiveTopology,
-  VertexBufferFrequency,
-} from '../platform';
+import type { Mesh } from '../Mesh';
+import type { Buffer, Device, InputLayoutDescriptor, VertexBufferFrequency } from '../platform';
+import { BufferFrequencyHint, BufferUsage, Format, PrimitiveTopology } from '../platform';
 import { align } from '../platform/utils';
 
 export function makeStaticDataBuffer(
@@ -33,13 +26,13 @@ export interface GeometryVertexBufferDescriptor {
   bufferIndex: number;
   byteStride: number;
   frequency: VertexBufferFrequency;
-  attributes: Array<{
+  attributes: {
     format: Format;
     bufferByteOffset: number;
     byteStride?: number;
     location: number;
     divisor?: number;
-  }>;
+  }[];
   data: ArrayBufferView;
 }
 
@@ -53,22 +46,6 @@ export interface VertexBufferToUpdateDescriptor {
   bufferIndex: number;
   bufferByteOffset?: number;
   data: ArrayBufferView;
-}
-
-export enum VertexAttributeLocation {
-  // TODO: bind mat4 in WebGL2 instead of decomposed 4 * vec4?
-  // @see https://stackoverflow.com/questions/38853096/webgl-how-to-bind-values-to-a-mat4-attribute/38853623#38853623
-  MODEL_MATRIX0,
-  MODEL_MATRIX1,
-  MODEL_MATRIX2,
-  MODEL_MATRIX3,
-  COLOR,
-  STROKE_COLOR,
-  PACKED_STYLE1, // opacity fillOpacity strokeOpacity lineWidth
-  PACKED_STYLE2, // visibility
-  PICKING_COLOR,
-  ANCHOR,
-  MAX,
 }
 
 /**
@@ -124,6 +101,10 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
   }
 
   build(meshes: Mesh<GeometryProps>[]) {}
+
+  computeBoundingBox(): AABB {
+    return new AABB();
+  }
 
   setIndexBuffer(indices: IndicesArray) {
     if (this.indexBuffer) {

@@ -1,10 +1,13 @@
 import { inject, singleton } from 'mana-syringe';
 import { BufferGeometry } from '../geometries';
-import { Format, InputLayout, InputState, Program, VertexBufferFrequency } from '../platform';
+import type { InputLayout, InputState, Program} from '../platform';
+import { Format, VertexBufferFrequency } from '../platform';
 import { fullscreenMegaState } from '../platform/utils';
-import { DeviceProgram, fillVec4, RenderHelper, TextureMapping } from '../render';
-import { RGAttachmentSlot, RGGraphBuilder } from '../render/interfaces';
-import { RenderInput } from '../render/RenderGraphHelpers';
+import type { DeviceProgram, TextureMapping } from '../render';
+import { fillVec4, RenderHelper } from '../render';
+import type { RGGraphBuilder } from '../render/interfaces';
+import { RGAttachmentSlot } from '../render/interfaces';
+import type { RenderInput } from '../render/RenderGraphHelpers';
 
 @singleton()
 export class PostProcessing {
@@ -74,7 +77,7 @@ export class PostProcessing {
       renderInst.setBindingLayouts([{ numUniformBuffers: 1, numSamplers: 1 }]);
 
       // since gl_VertexID is not available in GLSL 100, we need to use a geometry
-      let offs = renderInst.allocateUniformBuffer(0, 4);
+      const offs = renderInst.allocateUniformBuffer(0, 4);
       const d = renderInst.mapUniformBufferF32(0);
       fillVec4(d, offs, 1.0 / renderInput.backbufferWidth, 1.0 / renderInput.backbufferHeight);
 

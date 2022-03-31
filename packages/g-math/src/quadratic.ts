@@ -1,7 +1,7 @@
 import line from './line';
 import { distance, isNumberEqual, getBBoxByArray, piMod } from './util';
 import { nearestPoint } from './bezier';
-import { Point } from './types';
+import type { Point } from './types';
 
 // 差值公式
 function quadraticAt(p0: number, p1: number, p2: number, t: number) {
@@ -64,12 +64,11 @@ function quadraticLength(
     return (distance(x1, y1, x2, y2) + distance(x2, y2, x3, y3) + distance(x1, y1, x3, y3)) / 2;
   }
   const quadratics = divideQuadratic(x1, y1, x2, y2, x3, y3, 0.5);
-  const left = quadratics[0];
-  const right = quadratics[1];
+  const left = quadratics[0] as [number, number, number, number, number, number, number];
+  const right = quadratics[1] as [number, number, number, number, number, number, number];
   left.push(iterationCount - 1);
   right.push(iterationCount - 1);
-  // @ts-ignore
-  return quadraticLength.apply(null, left) + quadraticLength.apply(null, right);
+  return quadraticLength(...left) + quadraticLength(...right);
 }
 
 export default {

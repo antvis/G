@@ -8,25 +8,22 @@ import {
   getFormatTypeFlags,
   Format,
 } from '../format';
+import type { Buffer, ChannelBlendState, Sampler, Texture } from '../interfaces';
 import {
   BlendFactor,
   BlendMode,
-  Buffer,
   BufferFrequencyHint,
   BufferUsage,
-  ChannelBlendState,
   MipFilterMode,
   PrimitiveTopology,
   QueryPoolType,
-  Sampler,
   TexFilterMode,
-  Texture,
   TextureDimension,
   WrapMode,
 } from '../interfaces';
-import { Buffer_GL } from './Buffer';
-import { Sampler_GL } from './Sampler';
-import { Texture_GL } from './Texture';
+import type { Buffer_GL } from './Buffer';
+import type { Sampler_GL } from './Sampler';
+import type { Texture_GL } from './Texture';
 
 // @see https://github.com/visgl/luma.gl/blob/30a1039573576d73641de7c1ba222e8992eb526e/modules/gltools/src/utils/webgl-checks.ts#L22
 export function isWebGL2(
@@ -133,7 +130,7 @@ function translateType(flags: FormatTypeFlags): GLenum {
     case FormatTypeFlags.F32:
       return GL.FLOAT;
     default:
-      throw 'whoops';
+      throw new Error('whoops');
   }
 }
 function translateSize(flags: FormatCompFlags): number {
@@ -146,6 +143,8 @@ function translateSize(flags: FormatCompFlags): number {
       return 3;
     case FormatCompFlags.RGBA:
       return 4;
+    default:
+      return 1;
   }
 }
 export function translateVertexFormat(fmt: Format): {
@@ -172,7 +171,7 @@ export function translateIndexFormat(format: Format): GLenum {
     case Format.U32_R:
       return GL.UNSIGNED_INT;
     default:
-      throw 'whoops';
+      throw new Error('whoops');
   }
 }
 
@@ -185,21 +184,29 @@ export function translateWrapMode(wrapMode: WrapMode): GLenum {
     case WrapMode.Mirror:
       return GL.MIRRORED_REPEAT;
     default:
-      throw 'whoops';
+      throw new Error('whoops');
   }
 }
 
 export function translateFilterMode(filter: TexFilterMode, mipFilter: MipFilterMode): GLenum {
-  if (mipFilter === MipFilterMode.Linear && filter === TexFilterMode.Bilinear)
+  if (mipFilter === MipFilterMode.Linear && filter === TexFilterMode.Bilinear) {
     return GL.LINEAR_MIPMAP_LINEAR;
-  if (mipFilter === MipFilterMode.Linear && filter === TexFilterMode.Point)
+  }
+  if (mipFilter === MipFilterMode.Linear && filter === TexFilterMode.Point) {
     return GL.NEAREST_MIPMAP_LINEAR;
-  if (mipFilter === MipFilterMode.Nearest && filter === TexFilterMode.Bilinear)
+  }
+  if (mipFilter === MipFilterMode.Nearest && filter === TexFilterMode.Bilinear) {
     return GL.LINEAR_MIPMAP_NEAREST;
-  if (mipFilter === MipFilterMode.Nearest && filter === TexFilterMode.Point)
+  }
+  if (mipFilter === MipFilterMode.Nearest && filter === TexFilterMode.Point) {
     return GL.NEAREST_MIPMAP_NEAREST;
-  if (mipFilter === MipFilterMode.NoMip && filter === TexFilterMode.Bilinear) return GL.LINEAR;
-  if (mipFilter === MipFilterMode.NoMip && filter === TexFilterMode.Point) return GL.NEAREST;
+  }
+  if (mipFilter === MipFilterMode.NoMip && filter === TexFilterMode.Bilinear) {
+    return GL.LINEAR;
+  }
+  if (mipFilter === MipFilterMode.NoMip && filter === TexFilterMode.Point) {
+    return GL.NEAREST;
+  }
   throw new Error('Unknown texture filter mode');
 }
 
@@ -246,7 +253,7 @@ export function translateQueryPoolType(type: QueryPoolType): GLenum {
     case QueryPoolType.OcclusionConservative:
       return GL.ANY_SAMPLES_PASSED_CONSERVATIVE;
     default:
-      throw 'whoops';
+      throw new Error('whoops');
   }
 }
 
@@ -255,5 +262,11 @@ export function translateTextureDimension(dimension: TextureDimension): GLenum {
   else if (dimension === TextureDimension.n2DArray) return GL.TEXTURE_2D_ARRAY;
   else if (dimension === TextureDimension.Cube) return GL.TEXTURE_CUBE_MAP;
   else if (dimension === TextureDimension.n3D) return GL.TEXTURE_3D;
-  else throw 'whoops';
+  else throw new Error('whoops');
+}
+
+export function isBlockCompressSized(w: number, h: number, bw: number, bh: number): boolean {
+  if (w % bw !== 0) return false;
+  if (h % bh !== 0) return false;
+  return true;
 }

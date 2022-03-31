@@ -108,7 +108,10 @@ export function parseColor(colorStr: string = ''): ParsedColorStyleProperty {
     type: PARSED_COLOR_TYPE.Constant,
     value: rgba,
     formatted:
-      (color && `rgba(${color.r},${color.g},${color.b},${color.opacity})`) || 'rgba(0,0,0,0)',
+      // rgba(255,255,255,0) -> [NaN, NaN, NaN, 0]
+      // @see https://github.com/d3/d3-color/issues/52
+      (color && `rgba(${color.r || 0},${color.g || 0},${color.b || 0},${color.opacity})`) ||
+      'rgba(0,0,0,0)',
   };
 }
 

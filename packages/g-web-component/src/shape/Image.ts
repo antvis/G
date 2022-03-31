@@ -1,4 +1,5 @@
-import { Image, ImageStyleProps } from "@antv/g";
+import type { ImageStyleProps } from "@antv/g";
+import { Image } from "@antv/g";
 import { BaseShape } from "./BaseShape";
 
 export class ImageShape extends BaseShape {

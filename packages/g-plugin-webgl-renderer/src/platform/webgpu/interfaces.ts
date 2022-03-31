@@ -1,4 +1,4 @@
-import {
+import type {
   TextureDimension,
   TextureUsage,
   RenderTarget,
@@ -6,10 +6,9 @@ import {
   Texture,
   Sampler,
   Device,
-  BindingLayoutDescriptor,
   BindingLayoutSamplerDescriptor,
 } from '../interfaces';
-import { Format } from '../format';
+import type { Format } from '../format';
 
 export interface TextureSharedDescriptor {
   dimension: TextureDimension;
@@ -46,13 +45,13 @@ export interface IDevice_WebGPU extends Device {
   device: GPUDevice;
   fallbackSampler: Sampler;
 
-  getFallbackTexture(samplerEntry: BindingLayoutSamplerDescriptor): Texture;
-  createTextureShared(
+  getFallbackTexture: (samplerEntry: BindingLayoutSamplerDescriptor) => Texture;
+  createTextureShared: (
     descriptor: TextureSharedDescriptor,
     texture: TextureShared_WebGPU,
     skipCreate: boolean,
-  ): void;
-  ensureRenderPipeline(renderPipeline: RenderPipeline): void;
+  ) => void;
+  ensureRenderPipeline: (renderPipeline: RenderPipeline) => void;
   // createBindGroupLayout(bindingLayout: Partial<BindingLayoutDescriptor>): BindGroupLayout;
   // createPipelineLayout(bindingLayouts: BindingLayoutDescriptor[]): GPUPipelineLayout;
 }

@@ -1,4 +1,5 @@
-import { DisplayObject, Shape } from '@antv/g';
+import type { DisplayObject } from '@antv/g';
+import { Shape } from '@antv/g';
 import { injectable } from 'mana-syringe';
 import { InstancedLineMesh } from '../meshes';
 import { ShapeRenderer } from '../tokens';

@@ -1,7 +1,7 @@
 import { distance, isNumberEqual, getBBoxByArray, piMod } from './util';
 import line from './line';
 import { snapLength, nearestPoint } from './bezier';
-import { Point } from './types';
+import type { Point } from './types';
 
 function cubicAt(p0: number, p1: number, p2: number, p3: number, t: number) {
   const onet = 1 - t; // t * t * t 的性能大概是 Math.pow(t, 3) 的三倍
@@ -101,7 +101,7 @@ function cubicLength(
     ...cubics[1],
     iterationCount - 1,
   ];
-  return cubicLength.apply(null, left) + cubicLength.apply(null, right);
+  return cubicLength(...left) + cubicLength(...right);
 }
 
 export default {

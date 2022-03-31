@@ -1,4 +1,5 @@
-import { LinearGradient, RadialGradient, PARSED_COLOR_TYPE } from '@antv/g';
+import type { LinearGradient, RadialGradient} from '@antv/g';
+import { PARSED_COLOR_TYPE } from '@antv/g';
 import { singleton } from 'mana-syringe';
 
 export type GradientParams = (LinearGradient | RadialGradient) & {

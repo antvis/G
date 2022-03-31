@@ -1,4 +1,5 @@
-import { Device, BufferUsage, BufferFrequencyHint, Buffer } from '../platform';
+import type { Device, Buffer } from '../platform';
+import { BufferUsage, BufferFrequencyHint } from '../platform';
 import { alignNonPowerOfTwo, assert, assertExists } from '../platform/utils';
 
 // This is a very basic linear allocator. We allocate offsets in-order.
@@ -21,7 +22,7 @@ export class DynamicUniformBuffer {
     this.uniformBufferMaxPageWordSize = limits.uniformBufferMaxPageWordSize;
   }
 
-  private isSupportedUBO() {
+  isSupportedUBO() {
     // UBO not supported in WebGL1
     return this.device.queryVendorInfo().platformString !== 'WebGL1';
   }

@@ -1,4 +1,4 @@
-import { isBrowser } from './browser';
+import { isBrowser } from '@antv/g';
 
 const PX_SUFFIX = 'px';
 export function setDOMSize($el: HTMLElement | OffscreenCanvas, width: number, height: number) {

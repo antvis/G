@@ -1,5 +1,5 @@
-import { Syringe, Module } from 'mana-syringe';
-import { RendererPlugin } from '@antv/g';
+import type { Syringe } from 'mana-syringe';
+import type { RendererPlugin } from '@antv/g';
 import { BufferUsage } from '@antv/g-plugin-webgl-renderer';
 
 // const containerModule = Module((register) => {

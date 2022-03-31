@@ -1,5 +1,6 @@
-import { Device } from '../platform';
-import { Material, IMaterial } from './Material';
+import type { Device } from '../platform';
+import type { IMaterial } from './Material';
+import { Material } from './Material';
 
 export class ShaderMaterial extends Material {
   constructor(device: Device, props?: Partial<IMaterial>) {

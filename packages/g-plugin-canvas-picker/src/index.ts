@@ -1,5 +1,7 @@
-import { Shape, RendererPlugin } from '@antv/g';
-import { Module, Syringe } from 'mana-syringe';
+import type { RendererPlugin } from '@antv/g';
+import { Shape } from '@antv/g';
+import type { Syringe } from 'mana-syringe';
+import { Module } from 'mana-syringe';
 import { CanvasPickerPlugin, PointInPathPickerFactory } from './CanvasPickerPlugin';
 import { isPointInPath as CirclePicker } from './Circle';
 import { isPointInPath as EllipsePicker } from './Ellipse';

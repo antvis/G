@@ -18,25 +18,25 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-canvas.addEventListener(ElementEvent.INSERTED, (e) => {
-  console.log('inserted', e.target);
-});
-canvas.addEventListener(ElementEvent.MOUNTED, (e) => {
-  console.log('mounted', e.target);
-});
-canvas.addEventListener(ElementEvent.UNMOUNTED, (e) => {
-  console.log('unmounted', e.target);
-});
-canvas.addEventListener(ElementEvent.REMOVED, (e) => {
-  console.log('removed', e.target);
-});
-canvas.addEventListener(ElementEvent.DESTROY, (e) => {
-  console.log('destroyed', e.target);
-});
+// canvas.addEventListener(ElementEvent.INSERTED, (e) => {
+//   console.log('inserted', e.target);
+// });
+// canvas.addEventListener(ElementEvent.MOUNTED, (e) => {
+//   console.log('mounted', e.target);
+// });
+// canvas.addEventListener(ElementEvent.UNMOUNTED, (e) => {
+//   console.log('unmounted', e.target);
+// });
+// canvas.addEventListener(ElementEvent.REMOVED, (e) => {
+//   console.log('removed', e.target);
+// });
+// canvas.addEventListener(ElementEvent.DESTROY, (e) => {
+//   console.log('destroyed', e.target);
+// });
 
 // observe root node
-const observer = new MutationObserver(() => {});
-observer.observe(canvas.document.documentElement, { childList: true });
+// const observer = new MutationObserver(() => {});
+// observer.observe(canvas.document.documentElement, { childList: true });
 
 // stats
 const stats = new Stats();
@@ -99,8 +99,8 @@ const circleConfig = {
     canvas.appendChild(circle);
     circle.setPosition(300 + (circles.length - 1) * 20, 250);
 
-    const records = observer.takeRecords();
-    console.log(records);
+    // const records = observer.takeRecords();
+    // console.log(records);
   },
   remove: () => {
     const circle = circles.pop();
@@ -115,8 +115,8 @@ const circleConfig = {
     if (circle) {
       circles.push(circle);
       canvas.appendChild(circle);
-      const records = observer.takeRecords();
-      console.log(records);
+      // const records = observer.takeRecords();
+      // console.log(records);
     }
   },
   destroy: () => {

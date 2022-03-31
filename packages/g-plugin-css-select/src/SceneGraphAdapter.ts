@@ -1,5 +1,5 @@
 import { singleton } from 'mana-syringe';
-import { IElement } from '@antv/g';
+import type { IElement } from '@antv/g';
 import type { Adapter, Predicate } from 'css-select/lib/types';
 
 /**
@@ -28,7 +28,7 @@ export class SceneGraphAdapter implements Adapter<IElement, IElement> {
     } else if (name === 'class') {
       return node.className;
     }
-    return (node.attributes && `${node.attributes[name]}`) || '';
+    return (node.getAttribute && `${node.getAttribute(name)}`) || '';
   }
 
   getChildren(node: IElement): IElement[] {
@@ -53,11 +53,11 @@ export class SceneGraphAdapter implements Adapter<IElement, IElement> {
   }
 
   getText(node: IElement): string {
-    return '';
+    return node.textContent;
   }
 
   hasAttrib(node: IElement, name: string) {
-    return !!(node.attributes && node.attributes[name]);
+    return !!(node.hasAttribute && node.hasAttribute(name));
   }
 
   removeSubsets(nodes: IElement[]): IElement[] {
