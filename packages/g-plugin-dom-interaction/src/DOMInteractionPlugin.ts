@@ -2,8 +2,9 @@ import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from 
 import {
   ContextService,
   RenderingPluginContribution,
-  supportsPointerEvents,
-  supportsTouchEvents,
+  SUPPORT_POINTER_EVENTS,
+  SUPPORT_ONLY_TOUCH,
+  SUPPORT_TOUCH,
 } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 
@@ -42,30 +43,62 @@ export class DOMInteractionPlugin implements RenderingPlugin {
       renderingService.hooks.pointerWheel.call(ev);
     };
 
+    const addPointerEventListener = ($el: HTMLElement) => {
+      globalThis.document.addEventListener('pointermove', onPointerMove, true);
+      $el.addEventListener('pointerdown', onPointerDown, true);
+      $el.addEventListener('pointerleave', onPointerOut, true);
+      $el.addEventListener('pointerover', onPointerOver, true);
+      globalThis.addEventListener('pointerup', onPointerUp, true);
+    };
+
+    const addTouchEventListener = ($el: HTMLElement) => {
+      $el.addEventListener('touchstart', onPointerDown, true);
+      $el.addEventListener('touchend', onPointerUp, true);
+      $el.addEventListener('touchmove', onPointerMove, true);
+    };
+
+    const addMouseEventListener = ($el: HTMLElement) => {
+      globalThis.document.addEventListener('mousemove', onPointerMove, true);
+      $el.addEventListener('mousedown', onPointerDown, true);
+      $el.addEventListener('mouseout', onPointerOut, true);
+      $el.addEventListener('mouseover', onPointerOver, true);
+      globalThis.addEventListener('mouseup', onPointerUp, true);
+    };
+
+    const removePointerEventListener = ($el: HTMLElement) => {
+      globalThis.document.removeEventListener('pointermove', onPointerMove, true);
+      $el.removeEventListener('pointerdown', onPointerDown, true);
+      $el.removeEventListener('pointerleave', onPointerOut, true);
+      $el.removeEventListener('pointerover', onPointerOver, true);
+      globalThis.removeEventListener('pointerup', onPointerUp, true);
+    };
+
+    const removeTouchEventListener = ($el: HTMLElement) => {
+      $el.removeEventListener('touchstart', onPointerDown, true);
+      $el.removeEventListener('touchend', onPointerUp, true);
+      $el.removeEventListener('touchmove', onPointerMove, true);
+    };
+
+    const removeMouseEventListener = ($el: HTMLElement) => {
+      globalThis.document.removeEventListener('mousemove', onPointerMove, true);
+      $el.removeEventListener('mousedown', onPointerDown, true);
+      $el.removeEventListener('mouseout', onPointerOut, true);
+      $el.removeEventListener('mouseover', onPointerOver, true);
+      globalThis.removeEventListener('mouseup', onPointerUp, true);
+    };
+
     renderingService.hooks.init.tap(DOMInteractionPlugin.tag, () => {
-      const $el = this.contextService.getDomElement()!;
+      const $el = this.contextService.getDomElement() as HTMLElement;
 
-      if (supportsPointerEvents) {
-        globalThis.document.addEventListener('pointermove', onPointerMove, true);
-        $el.addEventListener('pointerdown', onPointerDown, true);
-        $el.addEventListener('pointerleave', onPointerOut, true);
-        $el.addEventListener('pointerover', onPointerOver, true);
-        globalThis.addEventListener('pointerup', onPointerUp, true);
+      if (SUPPORT_POINTER_EVENTS) {
+        addPointerEventListener($el);
+      } else if (SUPPORT_ONLY_TOUCH) {
+        addTouchEventListener($el);
+      } else if (!SUPPORT_TOUCH) {
+        addMouseEventListener($el);
       } else {
-        globalThis.document.addEventListener('mousemove', onPointerMove, true);
-        $el.addEventListener('mousedown', onPointerDown, true);
-        $el.addEventListener('mouseout', onPointerOut, true);
-        $el.addEventListener('mouseover', onPointerOver, true);
-        globalThis.addEventListener('mouseup', onPointerUp, true);
-      }
-
-      // always look directly for touch events so that we can provide original data
-      // In a future version we should change this to being just a fallback and rely solely on
-      // PointerEvents whenever available
-      if (supportsTouchEvents) {
-        $el.addEventListener('touchstart', onPointerDown, true);
-        $el.addEventListener('touchend', onPointerUp, true);
-        $el.addEventListener('touchmove', onPointerMove, true);
+        addTouchEventListener($el);
+        addMouseEventListener($el);
       }
 
       // use passive event listeners
@@ -77,25 +110,16 @@ export class DOMInteractionPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
-      const $el = this.contextService.getDomElement()!;
-      if (supportsPointerEvents) {
-        globalThis.document.removeEventListener('pointermove', onPointerMove, true);
-        $el.removeEventListener('pointerdown', onPointerDown, true);
-        $el.removeEventListener('pointerleave', onPointerOut, true);
-        $el.removeEventListener('pointerover', onPointerOver, true);
-        globalThis.removeEventListener('pointerup', onPointerUp, true);
+      const $el = this.contextService.getDomElement() as HTMLElement;
+      if (SUPPORT_POINTER_EVENTS) {
+        removePointerEventListener($el);
+      } else if (SUPPORT_ONLY_TOUCH) {
+        removeTouchEventListener($el);
+      } else if (!SUPPORT_TOUCH) {
+        removeMouseEventListener($el);
       } else {
-        globalThis.document.removeEventListener('mousemove', onPointerMove, true);
-        $el.removeEventListener('mousedown', onPointerDown, true);
-        $el.removeEventListener('mouseout', onPointerOut, true);
-        $el.removeEventListener('mouseover', onPointerOver, true);
-        globalThis.removeEventListener('mouseup', onPointerUp, true);
-      }
-
-      if (supportsTouchEvents) {
-        $el.removeEventListener('touchstart', onPointerDown, true);
-        $el.removeEventListener('touchend', onPointerUp, true);
-        $el.removeEventListener('touchmove', onPointerMove, true);
+        removeTouchEventListener($el);
+        removeMouseEventListener($el);
       }
 
       $el.removeEventListener('wheel', onPointerWheel, true);

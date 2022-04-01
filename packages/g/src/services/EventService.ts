@@ -1,3 +1,4 @@
+import { mat4, vec3 } from 'gl-matrix';
 import { inject, singleton, postConstruct } from 'mana-syringe';
 import { EventEmitter } from 'eventemitter3';
 import type { Cursor, EventPosition } from '../types';
@@ -13,7 +14,6 @@ import type { IEventTarget, INode, IDocument, ICanvas } from '../dom/interfaces'
 import type { PointLike } from '../shapes';
 import { Point } from '../shapes';
 import { ContextService } from './ContextService';
-import { mat4, vec3 } from 'gl-matrix';
 
 type Picker = (position: EventPosition) => Promise<IEventTarget | null>;
 type TrackingData = {
@@ -66,13 +66,6 @@ export class EventService extends EventEmitter {
 
   @postConstruct()
   init() {
-    // this.onPointerDown = this.onPointerDown.bind(this);
-    // this.onPointerMove = this.onPointerUp.bind(this);
-    // this.onPointerMove = this.onPointerMove.bind(this);
-    // this.onPointerUp = this.onPointerUp.bind(this);
-    // this.onPointerOut = this.onPointerOut.bind(this);
-    // this.onWheel = this.onWheel.bind(this);
-
     this.rootTarget = this.renderingContext.root.parentNode; // document
     this.addEventMapping('pointerdown', this.onPointerDown);
     this.addEventMapping('pointerup', this.onPointerUp);
@@ -614,6 +607,11 @@ export class EventService extends EventEmitter {
     );
   }
 
+  private isNativeEventFromCanvas(event: FederatedEvent) {
+    const $el = this.contextService.getDomElement();
+    return event.nativeEvent.composedPath().indexOf($el) > -1;
+  }
+
   private async createPointerEvent(
     from: FederatedPointerEvent,
     type?: string,
@@ -626,17 +624,20 @@ export class EventService extends EventEmitter {
     this.copyData(from, event);
 
     event.nativeEvent = from.nativeEvent;
-    event._originalEvent = from;
+
+    const isFromCanvas = this.isNativeEventFromCanvas(event);
+    event.originalEvent = from;
     event.target =
       target ??
-      ((await this.hitTest({
-        clientX: event.clientX,
-        clientY: event.clientY,
-        viewportX: event.viewportX,
-        viewportY: event.viewportY,
-        x: event.global.x,
-        y: event.global.y,
-      })) as INode);
+      (isFromCanvas &&
+        ((await this.hitTest({
+          clientX: event.clientX,
+          clientY: event.clientY,
+          viewportX: event.viewportX,
+          viewportY: event.viewportY,
+          x: event.global.x,
+          y: event.global.y,
+        })) as INode));
 
     if (typeof type === 'string') {
       event.type = type;
@@ -653,15 +654,18 @@ export class EventService extends EventEmitter {
     this.copyData(from, event);
 
     event.nativeEvent = from.nativeEvent;
-    event._originalEvent = from;
-    event.target = (await this.hitTest({
-      clientX: event.clientX,
-      clientY: event.clientY,
-      viewportX: event.viewportX,
-      viewportY: event.viewportY,
-      x: event.global.x,
-      y: event.global.y,
-    })) as INode;
+    event.originalEvent = from;
+    const isFromCanvas = this.isNativeEventFromCanvas(event);
+    event.target =
+      isFromCanvas &&
+      ((await this.hitTest({
+        clientX: event.clientX,
+        clientY: event.clientY,
+        viewportX: event.viewportX,
+        viewportY: event.viewportY,
+        x: event.global.x,
+        y: event.global.y,
+      })) as INode);
     return event;
   }
 
@@ -681,7 +685,7 @@ export class EventService extends EventEmitter {
     const event = this.allocateEvent(FederatedPointerEvent);
 
     event.nativeEvent = from.nativeEvent;
-    event._originalEvent = from._originalEvent;
+    event.originalEvent = from.originalEvent;
 
     this.copyPointerData(from, event);
     this.copyMouseData(from, event);

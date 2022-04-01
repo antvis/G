@@ -12,6 +12,4 @@ export interface ContextService<Context> {
   getBoundingClientRect: () => DOMRect | undefined;
   resize: (width: number, height: number) => void;
   applyCursorStyle: (cursor: string) => void;
-  // supportsTouchEvents(): boolean;
-  // supportsPointerEvents(): boolean;
 }

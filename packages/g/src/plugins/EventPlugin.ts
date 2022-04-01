@@ -13,7 +13,7 @@ import {
 import { Point } from '../shapes';
 import type { Cursor, EventPosition, InteractivePointerEvent } from '../types';
 import { CanvasConfig } from '../types';
-import { normalizeToPointerEvent, supportsTouchEvents, TOUCH_TO_POINTER } from '../utils/event';
+import { normalizeToPointerEvent, SUPPORT_TOUCH, TOUCH_TO_POINTER } from '../utils/event';
 
 /**
  * support mouse & touch events
@@ -65,7 +65,7 @@ export class EventPlugin implements RenderingPlugin {
     renderingService.hooks.pointerDown.tap(
       EventPlugin.tag,
       (nativeEvent: InteractivePointerEvent) => {
-        if (supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch') {
+        if (SUPPORT_TOUCH && (nativeEvent as PointerEvent).pointerType === 'touch') {
           return;
         }
 
@@ -95,7 +95,7 @@ export class EventPlugin implements RenderingPlugin {
     renderingService.hooks.pointerUp.tap(
       EventPlugin.tag,
       (nativeEvent: InteractivePointerEvent) => {
-        if (supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch') return;
+        if (SUPPORT_TOUCH && (nativeEvent as PointerEvent).pointerType === 'touch') return;
 
         // account for element in SVG
         const $element = this.contextService.getDomElement();
@@ -133,7 +133,7 @@ export class EventPlugin implements RenderingPlugin {
   }
 
   private onPointerMove = (nativeEvent: InteractivePointerEvent) => {
-    if (supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch') return;
+    if (SUPPORT_TOUCH && (nativeEvent as PointerEvent).pointerType === 'touch') return;
 
     const normalizedEvents = normalizeToPointerEvent(nativeEvent);
 
@@ -156,8 +156,7 @@ export class EventPlugin implements RenderingPlugin {
     view: ICanvas,
   ): FederatedPointerEvent {
     event.view = view;
-    // @ts-ignore
-    event._originalEvent = null;
+    event.originalEvent = null;
     event.nativeEvent = nativeEvent;
 
     event.pointerId = nativeEvent.pointerId;

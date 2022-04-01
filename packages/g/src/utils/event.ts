@@ -1,10 +1,14 @@
 import { isUndefined } from '@antv/util';
 import type { InteractivePointerEvent } from '../types';
-// use `self` instead of `window`, account for non-window contexts, such as in Web Workers
+
+// borrow from hammer.js
+const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
+
+// use `globalThis` instead of `window` or `self`, account for non-window contexts, such as in Web Workers
 // @see https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/globalThis
-// @see https://developer.mozilla.org/en-US/docs/Web/API/Window/self
-export const supportsTouchEvents = !!globalThis.TouchEvent;
-export const supportsPointerEvents = !!globalThis.PointerEvent;
+export const SUPPORT_TOUCH = 'ontouchstart' in globalThis;
+export const SUPPORT_POINTER_EVENTS = !!globalThis.PointerEvent;
+export const SUPPORT_ONLY_TOUCH = SUPPORT_TOUCH && MOBILE_REGEX.test(navigator.userAgent);
 export const MOUSE_POINTER_ID = 1;
 export const TOUCH_TO_POINTER: Record<string, string> = {
   touchstart: 'pointerdown',
@@ -15,14 +19,14 @@ export const TOUCH_TO_POINTER: Record<string, string> = {
 };
 
 export function isTouchEvent(event: InteractivePointerEvent): event is TouchEvent {
-  return supportsTouchEvents && event instanceof TouchEvent;
+  return SUPPORT_TOUCH && event instanceof TouchEvent;
 }
 
 export function isMouseEvent(event: InteractivePointerEvent): event is MouseEvent {
   return (
     !globalThis.MouseEvent ||
     (event instanceof MouseEvent &&
-      (!supportsPointerEvents || !(event instanceof globalThis.PointerEvent)))
+      (!SUPPORT_POINTER_EVENTS || !(event instanceof globalThis.PointerEvent)))
   );
 }
 
@@ -59,6 +63,21 @@ interface FormattedTouch extends Touch {
   offsetY: number;
   isNormalized: boolean;
   type: string;
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent/changedTouches
+   */
+  changedTouches: FormattedTouch[];
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent/touches
+   */
+  touches: FormattedTouch[];
+
+  /**
+   * the final event in touchlist should trigger touch event
+   */
+  isFinal: boolean;
 }
 
 /**
@@ -82,6 +101,7 @@ export function normalizeToPointerEvent(event: InteractivePointerEvent): Pointer
       if (isUndefined(touch.tiltX)) touch.tiltX = 0;
       if (isUndefined(touch.tiltY)) touch.tiltY = 0;
       if (isUndefined(touch.pointerType)) touch.pointerType = 'touch';
+      // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Touch/identifier
       if (isUndefined(touch.pointerId)) touch.pointerId = touch.identifier || 0;
       if (isUndefined(touch.pressure)) touch.pressure = touch.force || 0.5;
       if (isUndefined(touch.twist)) touch.twist = 0;
@@ -89,6 +109,8 @@ export function normalizeToPointerEvent(event: InteractivePointerEvent): Pointer
       touch.isNormalized = true;
       touch.type = event.type;
 
+      // the l
+      touch.isFinal = i === event.changedTouches.length - 1;
       normalizedEvents.push(touch);
     }
   } else if (isMouseEvent(event)) {

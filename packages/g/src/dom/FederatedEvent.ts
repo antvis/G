@@ -67,15 +67,8 @@ export class FederatedEvent<N extends Event = Event, T = any> {
    */
   nativeEvent: N;
 
-  /**
-   * @deprecated
-   */
-  get originalEvent() {
-    return this.nativeEvent;
-  }
-
   /** The original event that caused this event, if any. */
-  _originalEvent: FederatedEvent<N>;
+  originalEvent: FederatedEvent<N>;
 
   /** Flags whether propagation was stopped. */
   propagationStopped = false;
