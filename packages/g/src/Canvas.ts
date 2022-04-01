@@ -77,6 +77,7 @@ export class Canvas extends EventTarget implements ICanvas {
     const {
       container,
       canvas,
+      offscreenCanvas,
       width,
       height,
       devicePixelRatio,
@@ -111,11 +112,11 @@ export class Canvas extends EventTarget implements ICanvas {
       width: canvasWidth,
       height: canvasHeight,
       renderer,
+      offscreenCanvas,
       devicePixelRatio: dpr,
       cursor: 'default' as Cursor,
       background,
       createImage,
-      // background: 'white',
     });
 
     this.initDefaultCamera(canvasWidth, canvasHeight);

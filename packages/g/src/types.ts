@@ -280,6 +280,11 @@ export interface CanvasConfig {
   canvas?: HTMLCanvasElement | OffscreenCanvas;
 
   /**
+   * used in text measurement & texture generation
+   */
+  offscreenCanvas?: HTMLCanvasElement | OffscreenCanvas;
+
+  /**
    * window.devicePixelRatio
    */
   devicePixelRatio?: number;

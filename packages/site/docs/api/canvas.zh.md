@@ -123,6 +123,26 @@ const canvas = new Canvas({
 });
 ```
 
+## offscreenCanvas
+
+可选。返回一个 `HTMLCanvasElement | OffscreenCanvas` 或类似对象。用于生成一个离屏的 Canvas2D 上下文，目前它使用在以下场景：
+
+- g 绘制并调用 `ctx.measureText` 度量文本
+- [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 会在上下文中绘制一遍路径，再调用 `ctx.isPointInPath` Canvas2D API
+- [g-plugin-webgl-renderer](/zh/docs/plugins/webgl-renderer) 会在上下文中调用 `ctx.createLinearGradient` 绘制渐变，再生成纹理
+
+默认不传入时会尝试创建 `OffscreenCanvas`，失败后再使用 DOM API 创建一个 `HTMLCanvasElement`。但在小程序这样非 DOM 环境中，需要手动传入：
+
+```js
+const canvas = new Canvas({
+  // 省略其他参数
+  offscreenCanvas: {
+    // 小程序中创建上下文方法
+    getContext: () => Canvas.createContext(),
+  },
+});
+```
+
 # 坐标系
 
 当我们说起“位置”，一定是相对于某个坐标系下而言，在 G 中我们会使用到 Client、Screen、Page、Canvas 以及 Viewport 坐标系，例如在[事件系统](/zh/docs/api/event)中可以从事件对象上获取不同坐标系下的坐标：

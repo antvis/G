@@ -10,7 +10,6 @@ import type {
 import {
   DisplayObjectPool,
   RenderingPluginContribution,
-  SceneGraphService,
   OffscreenCanvasCreator,
   Point,
 } from '@antv/g';
@@ -36,9 +35,6 @@ export type PointInPathPicker<T extends BaseStyleProps> = (
 @singleton({ contrib: RenderingPluginContribution })
 export class CanvasPickerPlugin implements RenderingPlugin {
   static tag = 'CanvasPickerPlugin';
-
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
 
   @inject(DisplayObjectPool)
   private displayObjectPool: DisplayObjectPool;
