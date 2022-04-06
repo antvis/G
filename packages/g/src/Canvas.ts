@@ -472,4 +472,8 @@ export class Canvas extends EventTarget implements ICanvas {
   getClientByPoint(x: number, y: number): PointLike {
     return this.viewport2Client({ x, y });
   }
+
+  toJson() {
+    return this.document.documentElement;
+  }
 }
