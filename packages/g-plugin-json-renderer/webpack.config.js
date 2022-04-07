@@ -17,7 +17,7 @@ module.exports = {
     },
   },
   output: {
-    library: ['G', 'JSON'],
+    library: ['G', 'JSONRenderer'],
     libraryTarget: 'umd',
     filename: 'index.umd.min.js',
   },

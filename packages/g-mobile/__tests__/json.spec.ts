@@ -1,7 +1,19 @@
 import { Canvas, Circle } from '../src';
-import { Renderer } from '@antv/g-json/src/index';
+import { Renderer } from '@antv/g-json';
 import { createContext } from './util';
 
+function toJSON(node) {
+  const { config, childNodes, nodeName } = node;
+  const { style } = config;
+  let obj = {
+    type: nodeName,
+    props: {
+      style,
+      children: childNodes.map((d) => toJSON(d)),
+    },
+  };
+  return obj;
+}
 describe('json render', () => {
   it('JSONRender', async () => {
     const context = createContext();
@@ -29,6 +41,10 @@ describe('json render', () => {
     });
 
     canvas.appendChild(circle);
-    console.log(canvas.toJson());
+
+    // const text = canvas.getContextService().getContext().getJSON();
+    const root = toJSON(canvas.getRoot());
+    console.log(root);
+    // context.toJSON();
   });
 });

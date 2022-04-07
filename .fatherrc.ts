@@ -32,6 +32,8 @@ export default {
     'g-webgpu-compiler',
     'g-components',
     'react-g',
+    'g-plugin-json-renderer',
+    'g-json',
     'g-mobile',
     'g-mobile-webgl',
     'g-mobile-canvas',

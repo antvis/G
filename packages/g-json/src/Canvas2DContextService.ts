@@ -1,48 +1,20 @@
-import { CanvasConfig, ContextService, isBrowser } from '@antv/g';
+import { CanvasConfig, ContextService } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-import { isString } from '@antv/util';
-import { setDOMSize } from './utils/dom';
+import { isCanvasElement } from './dom';
 
 @singleton({ token: ContextService })
-export class Canvas2DContextService implements ContextService<CanvasRenderingContext2D> {
-  private $container: HTMLElement | null;
-  private $canvas: HTMLCanvasElement | OffscreenCanvas | null;
+export class Canvas2DContextService implements ContextService<null> {
+  private $canvas: HTMLCanvasElement;
   private dpr: number;
-  private context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | null;
 
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
   init() {
-    const { container, canvas, devicePixelRatio } = this.canvasConfig;
-
-    if (canvas) {
-      this.$canvas = canvas;
-
-      if (container && (canvas as HTMLCanvasElement).parentElement !== container) {
-        (container as HTMLElement).appendChild(canvas as HTMLCanvasElement);
-      }
-
-      this.$container = (canvas as HTMLCanvasElement).parentElement;
-      this.canvasConfig.container = this.$container;
-    } else if (container) {
-      // create container
-      this.$container = isString(container) ? document.getElementById(container) : container;
-      if (this.$container) {
-        // create canvas
-        const $canvas = document.createElement('canvas');
-
-        this.$container.appendChild($canvas);
-        if (!this.$container.style.position) {
-          this.$container.style.position = 'relative';
-        }
-        this.$canvas = $canvas;
-      }
-    }
-
-    this.context = this.$canvas.getContext('2d');
+    const { canvas, devicePixelRatio } = this.canvasConfig;
+    this.$canvas = canvas as HTMLCanvasElement;
     // use user-defined dpr first
-    let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
+    let dpr = devicePixelRatio || 1;
     dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
     this.dpr = dpr;
 
@@ -50,7 +22,7 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   }
 
   getContext() {
-    return this.context as CanvasRenderingContext2D;
+    return null;
   }
 
   getDomElement() {
@@ -68,33 +40,30 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   }
 
   destroy() {
-    // @ts-ignore
-    if (this.$container && this.$canvas && this.$canvas.parentNode) {
-      // destroy context
-      // @ts-ignore
-      this.$container.removeChild(this.$canvas);
-    }
+    this.$canvas = null;
   }
 
   resize(width: number, height: number) {
-    if (this.$canvas) {
-      // set canvas width & height
-      this.$canvas.width = this.dpr * width;
-      this.$canvas.height = this.dpr * height;
+    const pixelRatio = devicePixelRatio;
+    const canvasDOM = this.$canvas; // HTMLCanvasElement or canvasElement
 
-      // set CSS style width & height
-      setDOMSize(this.$canvas, width, height);
+    // 浏览器环境设置style样式
+    if (canvasDOM.style) {
+      canvasDOM.style.width = width + 'px';
+      canvasDOM.style.height = height + 'px';
+    }
 
-      const dpr = this.getDPR();
-      // scale all drawing operations by the dpr
-      // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
-      this.context.scale(dpr, dpr);
+    if (isCanvasElement(canvasDOM)) {
+      canvasDOM.width = width * pixelRatio;
+      canvasDOM.height = height * pixelRatio;
+
+      if (pixelRatio !== 1) {
+        // this.context.scale(pixelRatio, pixelRatio);
+      }
     }
   }
 
   applyCursorStyle(cursor: string) {
-    if (this.$container && this.$container.style) {
-      this.$container.style.cursor = cursor;
-    }
+    // 小程序环境无需设置鼠标样式
   }
 }

@@ -1,7 +1,6 @@
 import { CanvasConfig, ContextService } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { isCanvasElement } from './dom';
-
 @singleton({ token: ContextService })
 export class Canvas2DContextService implements ContextService<CanvasRenderingContext2D> {
   private $canvas: HTMLCanvasElement;
@@ -16,7 +15,6 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
     this.$canvas = canvas as HTMLCanvasElement;
     // 实际获取到小程序环境的上下文
     this.context = this.$canvas.getContext('2d');
-
     // use user-defined dpr first
     let dpr = devicePixelRatio || 1;
     dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
