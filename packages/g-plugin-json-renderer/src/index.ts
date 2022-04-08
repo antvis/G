@@ -4,15 +4,16 @@ import { Module } from 'mana-syringe';
 import RBush from 'rbush';
 import { RBushNode } from './RBushNode';
 import type { RBushNodeAABB } from './RBushNode';
-
+import { JsonRendererPlugin, JsonRendering } from './JsonRendererPlugin';
+import type { JsonRenderingContext } from './JsonRendererPlugin';
 const RBushRoot = 'RBushRoot';
-export { RBushNode, RBushRoot, RBush };
+export { RBushNode, RBushRoot, RBush, JsonRendering };
 
-export type { RBushNodeAABB };
+export type { RBushNodeAABB, JsonRenderingContext };
 
 const containerModule = Module((register) => {
   register({ token: RBushRoot, useValue: new RBush<RBushNodeAABB>() });
-  // register(JsonRendererPlugin);
+  register(JsonRendererPlugin);
 });
 
 export class Plugin implements RendererPlugin {
