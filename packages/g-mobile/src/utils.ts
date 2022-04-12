@@ -1,13 +1,3 @@
-function isCanvasElement(el) {
-  if (!el || typeof el !== 'object') return false;
-  if (el.nodeType === 1 && el.nodeName) {
-    // HTMLCanvasElement
-    return true;
-  }
-  // CanvasElement
-  return !!el.isCanvasElement;
-}
-
 function getStyle(el, property) {
   if (el.currentStyle) {
     return el.currentStyle[property];
@@ -33,10 +23,10 @@ function getHeight(el) {
   return parseFloat(height);
 }
 
-function normContext(ctx: CanvasRenderingContext2D, devicePixelRatio: number) {
+function normContext(ctx: RenderingContext, devicePixelRatio: number) {
   ctx.canvas.width = getWidth(ctx.canvas) * devicePixelRatio || ctx.canvas.width || 0;
   ctx.canvas.height = getHeight(ctx.canvas) * devicePixelRatio || ctx.canvas.height || 0;
   return ctx;
 }
 
-export { isCanvasElement, normContext };
+export { normContext };

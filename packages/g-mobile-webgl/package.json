@@ -1,7 +1,7 @@
 {
-  "name": "@antv/g-mobile",
-  "version": "1.0.3",
-  "description": "A renderer implemented with Canvas2D API in mobile environment",
+  "name": "@antv/g-mobile-webgl",
+  "version": "0.0.0",
+  "description": "A renderer implemented by WebGL1/2 & WebGPU in mobile environment",
   "main": "lib/index.js",
   "module": "es/index.js",
   "types": "es/index.d.ts",
@@ -21,7 +21,9 @@
   "keywords": [
     "util",
     "antv",
-    "g"
+    "g",
+    "webgl",
+    "webgpu"
   ],
   "publishConfig": {
     "access": "public"
@@ -33,12 +35,14 @@
   },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
-    "@types/jest": "^25.0.0"
+    "@types/jest": "^25.0.0",
+    "@types/offscreencanvas": "^2019.6.4"
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/util": "^2.0.13",
-    "tslib": "^2.3.1"
+    "@antv/g-plugin-mobile-interaction": "^0.0.5",
+    "@antv/g-plugin-webgl-renderer": "^1.0.22",
+    "@antv/util": "^2.0.13"
   },
   "peerDependencies": {
     "@antv/g": "^5.0.1",
