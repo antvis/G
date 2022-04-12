@@ -1,5 +1,4 @@
 import { EventEmitter } from 'eventemitter3';
-
 class CanvasElement {
   context: CanvasRenderingContext2D;
   width: number;

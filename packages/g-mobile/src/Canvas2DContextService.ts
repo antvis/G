@@ -50,6 +50,7 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   }
 
   resize(width: number, height: number) {
+    const { devicePixelRatio } = this.canvasConfig;
     const pixelRatio = devicePixelRatio;
     const canvasDOM = this.$canvas; // HTMLCanvasElement or canvasElement
 
