@@ -33,5 +33,8 @@ export default {
     'g-components',
     'react-g',
     'g-mobile',
+    'g-mobile-webgl',
+    'g-mobile-canvas',
+    'g-mobile-svg',
   ],
 };

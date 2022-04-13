@@ -1,7 +1,6 @@
 import type { RendererConfig } from '@antv/g';
 import { AbstractRenderer } from '@antv/g';
 import * as MobileInteraction from '@antv/g-plugin-mobile-interaction';
-
 import * as WebGLRenderer from '@antv/g-plugin-webgl-renderer';
 import type { TextureDescriptor } from '@antv/g-plugin-webgl-renderer';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
