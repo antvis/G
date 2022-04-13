@@ -9,7 +9,7 @@ describe('canvas', () => {
     const renderer = new Renderer();
     const canvas = new Canvas({
       context,
-      devicePixelRatio: 2,
+      devicePixelRatio: 4,
       renderer,
     });
 
