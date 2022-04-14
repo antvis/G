@@ -1,7 +1,7 @@
 {
-  "name": "@antv/g-mobile",
-  "version": "1.0.3",
-  "description": "A renderer implemented with Canvas2D API in mobile environment",
+  "name": "@antv/g-mobile-svg",
+  "version": "0.0.0",
+  "description": "A renderer implemented by SVG in mobile environment",
   "main": "lib/index.js",
   "module": "es/index.js",
   "types": "es/index.d.ts",
@@ -37,6 +37,9 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
+    "@antv/g-plugin-mobile-interaction": "^0.0.5",
+    "@antv/g-plugin-svg-picker": "^1.0.16",
+    "@antv/g-plugin-svg-renderer": "^1.0.16",
     "@antv/util": "^2.0.13",
     "tslib": "^2.3.1"
   },

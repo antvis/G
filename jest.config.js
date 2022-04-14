@@ -24,11 +24,16 @@ module.exports = {
     'ts-jest': {
       isolatedModules: true,
       tsConfig: {
+        allowJs: true,
         target: 'ES2019',
       },
     },
   },
-  testMatch: ['**/*/g/**/*/__tests__/*.spec.+(ts|tsx|js)'],
+  testMatch: ['**/*/__tests__/*.spec.+(ts|tsx|js)'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
   modulePathIgnorePatterns: ['dist', '.fatherrc.ts'],
+  transform: {
+    '^.+\\.[tj]s$': 'ts-jest',
+  },
+  transformIgnorePatterns: ['<rootDir>/node_modules/(?!@mapbox)'],
 };

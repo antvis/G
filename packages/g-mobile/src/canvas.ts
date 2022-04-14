@@ -1,19 +1,23 @@
 import type { CanvasConfig as BaseConfig } from '@antv/g';
 import { Canvas } from '@antv/g';
-import { normContext } from './dom';
+import { normContext } from './utils';
 import CanvasElement from './canvas-element';
 
 export interface CanvasConfig extends BaseConfig {
-  context?: CanvasRenderingContext2D;
+  context?: RenderingContext;
   devicePixelRatio: number;
 }
 
 class MobileCanvas extends Canvas {
   constructor(config: CanvasConfig) {
     const { context, devicePixelRatio } = config;
-    const normalContext = normContext(context, devicePixelRatio);
+    let canvas;
 
-    const canvas = CanvasElement.create(normalContext);
+    if (context) {
+      const normalContext = normContext(context, devicePixelRatio);
+      canvas = CanvasElement.create(normalContext);
+    }
+
     super({
       ...config,
       canvas,

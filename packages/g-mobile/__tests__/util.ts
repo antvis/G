@@ -4,7 +4,7 @@ function delay(time) {
   });
 }
 
-const createContext = (title = '', { width = '300px', height = '225px' } = {}) => {
+const createContext = (title = '', { width = '300px', height = '225px' } = {}, type = '2d') => {
   if (title) {
     const titleEl = document.createElement('p');
     titleEl.innerText = title + ':';
@@ -16,7 +16,7 @@ const createContext = (title = '', { width = '300px', height = '225px' } = {}) =
   canvasEl.style.width = width;
   canvasEl.style.height = height;
   document.body.appendChild(canvasEl);
-  const context = canvasEl.getContext('2d');
+  const context = canvasEl.getContext(type);
   return context;
 };
 

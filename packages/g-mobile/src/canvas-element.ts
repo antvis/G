@@ -1,12 +1,12 @@
 import { EventEmitter } from 'eventemitter3';
 class CanvasElement {
-  context: CanvasRenderingContext2D;
+  context: RenderingContext;
   width: number;
   height: number;
   isCanvasElement = true;
   emitter = new EventEmitter();
 
-  constructor(ctx: CanvasRenderingContext2D) {
+  constructor(ctx: RenderingContext) {
     this.context = ctx;
     // canvas实际的宽高 (width/height) * pixelRatio
 
@@ -72,7 +72,7 @@ function supportEventListener(canvas: HTMLCanvasElement) {
 }
 
 export default {
-  create(ctx: CanvasRenderingContext2D): HTMLCanvasElement {
+  create(ctx: RenderingContext): HTMLCanvasElement {
     if (!ctx) {
       return null;
     }
