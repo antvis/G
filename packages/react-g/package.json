@@ -1,6 +1,6 @@
 {
   "name": "@antv/react-g",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "react render for @antv/g",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g": "^5.0.19",
+    "@antv/g": "^5.0.20",
     "react-reconciler": "^0.26.2",
     "scheduler": "^0.20.2",
     "tslib": "^2.3.1"
