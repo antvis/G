@@ -1,8 +1,8 @@
 import type { vec2, vec3 } from 'gl-matrix';
 import type { ParsedPathStyleProps, ParsedPolylineStyleProps } from './display-objects';
 import type { DisplayObject } from './display-objects';
-import type { ParsedColorStyleProperty, ParsedElement } from './property-handlers';
 import type { IRenderer } from './AbstractRenderer';
+import type { CSSGradientValue, CSSKeywordValue, CSSRGB, CSSUnitValue } from './css';
 
 export enum Shape {
   GROUP = 'g',
@@ -74,9 +74,14 @@ export interface BaseStyleProps {
   z?: number;
 
   /**
-   * the origin of rotation and scaling, default to (0, 0)
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform
    */
-  origin?: vec2 | vec3;
+  transform?: string;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
+   */
+  transformOrigin?: string;
 
   /**
    * how do we define the 'position' of a shape?
@@ -85,9 +90,14 @@ export interface BaseStyleProps {
   anchor?: vec2 | vec3;
 
   /**
-   * visibility in CSS
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/visibility
    */
-  visibility?: 'visible' | 'hidden';
+  visibility?: 'visible' | 'hidden' | 'inherit' | 'initial';
+
+  /**
+   * is able to be picked
+   */
+  interactive?: boolean;
 
   /**
    * z-index in CSS
@@ -113,16 +123,6 @@ export interface BaseStyleProps {
   offsetPath?: DisplayObject | null;
   offsetPathTargets?: DisplayObject[];
 
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform
-   */
-  transform?: string;
-
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
-   */
-  transformOrigin?: string;
-
   stroke?: ColorType;
   /** 描边透明度 */
   strokeOpacity?: number;
@@ -141,10 +141,8 @@ export interface BaseStyleProps {
   /**
    * 设置线的虚线样式，可以指定一个数组。一组描述交替绘制线段和间距（坐标空间单位）长度的数字。 如果数组元素的数量是奇数， 数组的元素会被复制并重复。例如， [5, 15, 25] 会变成 [5, 15, 25, 5, 15, 25]。这个属性取决于浏览器是否支持 setLineDash() 函数。
    */
-  lineDash?: number[] | null;
+  lineDash?: string | (string | number)[];
   lineDashOffset?: number;
-
-  // padding?: number[] | number;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/shadowBlur
@@ -178,17 +176,50 @@ export interface BaseStyleProps {
 export interface ParsedBaseStyleProps
   extends Omit<
     BaseStyleProps,
-    'fill' | 'stroke' | 'path' | 'points' | 'lineWidth' | 'shadowColor'
+    | 'anchor'
+    | 'x'
+    | 'y'
+    | 'z'
+    | 'opacity'
+    | 'strokeOpacity'
+    | 'fillOpacity'
+    | 'fill'
+    | 'stroke'
+    | 'lineDash'
+    | 'lineDashOffset'
+    | 'path'
+    | 'points'
+    | 'lineWidth'
+    | 'shadowColor'
+    | 'shadowBlur'
+    | 'shadowOffsetX'
+    | 'shadowOffsetY'
+    | 'visibility'
+    | 'zIndex'
+    | 'transformOrigin'
   > {
-  fill?: ParsedColorStyleProperty;
-  stroke?: ParsedColorStyleProperty;
+  zIndex?: CSSUnitValue;
+  visibility?: CSSKeywordValue;
+  opacity?: CSSUnitValue;
+  fillOpacity?: CSSUnitValue;
+  strokeOpacity?: CSSUnitValue;
+  fill?: CSSRGB | CSSGradientValue;
+  stroke?: CSSRGB | CSSGradientValue;
+  lineDash?: [CSSUnitValue, CSSUnitValue];
+  lineDashOffset?: CSSUnitValue;
+
   path?: ParsedPathStyleProps;
   points?: ParsedPolylineStyleProps;
-  x?: number;
-  y?: number;
-  // width?: ParsedElement;
-  // height?: ParsedElement;
-  lineWidth?: ParsedElement;
+
+  anchor?: [CSSUnitValue, CSSUnitValue, CSSUnitValue];
+  transformOrigin?: [CSSUnitValue, CSSUnitValue, CSSUnitValue];
+
+  x?: CSSUnitValue;
+  y?: CSSUnitValue;
+  z?: CSSUnitValue;
+  width?: CSSUnitValue;
+  height?: CSSUnitValue;
+  lineWidth?: CSSUnitValue;
   /**
    * x according to definition, eg. Line's x1/x2, Polyline's points
    */
@@ -199,7 +230,10 @@ export interface ParsedBaseStyleProps
    */
   offsetX?: number;
   offsetY?: number;
-  shadowColor?: ParsedColorStyleProperty;
+  shadowColor?: CSSRGB;
+  shadowBlur?: CSSUnitValue;
+  shadowOffsetX?: CSSUnitValue;
+  shadowOffsetY?: CSSUnitValue;
 }
 
 // Cursor style

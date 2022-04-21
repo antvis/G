@@ -5,7 +5,7 @@ import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import { isNil } from '@antv/util';
-import type { Rect } from '../shapes/Rect';
+import type { Rectangle } from '../shapes/Rectangle';
 
 export interface PathStyleProps extends BaseStyleProps {
   path?: string | PathCommand[];
@@ -30,7 +30,7 @@ export interface ParsedPathStyleProps {
   totalLength: number;
   curveSegments: number[][];
   zCommandIndexes: number[];
-  rect: Rect;
+  rect: Rectangle;
 }
 export class Path extends DisplayObject<
   PathStyleProps,

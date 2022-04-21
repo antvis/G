@@ -67,7 +67,7 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
 
     const lineNum = lines.length;
 
-    $el.setAttribute('style', `transform:translate(${dx.value}${dx.unit}, ${dy.value}${dy.unit});`);
+    $el.setAttribute('style', `transform:translate(${dx.toString()}, ${dy.toString()});`);
 
     if (lineNum === 1) {
       $el.innerHTML = lines[0];

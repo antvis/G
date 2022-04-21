@@ -1,6 +1,7 @@
 import { inject, singleton, contrib, Syringe, Contribution } from 'mana-syringe';
 import { SyncHook, SyncWaterfallHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from 'tapable';
 import type { CanvasConfig, DisplayObject } from '..';
+import { StyleValueRegistry } from '../css';
 import { ElementEvent } from '../dom';
 import type { EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext, RenderReason } from './RenderingContext';
@@ -37,6 +38,9 @@ export class RenderingService {
   @inject(SceneGraphService)
   private sceneGraphService: SceneGraphService;
 
+  @inject(StyleValueRegistry)
+  private styleValueRegistry: StyleValueRegistry;
+
   private inited = false;
 
   private stats = {
@@ -58,7 +62,8 @@ export class RenderingService {
 
   hooks = {
     init: new AsyncParallelHook<[]>(),
-    prepare: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
+    dirtycheck: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
+    cull: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */
@@ -120,24 +125,34 @@ export class RenderingService {
   }
 
   private renderDisplayObject(displayObject: DisplayObject) {
-    // render itself
-    const objectToRender = this.hooks.prepare.call(displayObject);
+    // recalc style values
+    this.styleValueRegistry.recalc(displayObject);
+
+    // TODO: relayout
+
+    // dirtycheck first
+    const objectChanged = this.hooks.dirtycheck.call(displayObject);
+    if (objectChanged) {
+      const objectToRender = this.hooks.cull.call(objectChanged);
+
+      if (objectToRender) {
+        this.stats.rendered++;
+        if (!this.renderingContext.dirty) {
+          this.renderingContext.dirty = true;
+          this.hooks.beginFrame.call();
+        }
+
+        this.hooks.beforeRender.call(objectToRender);
+        this.hooks.render.call(objectToRender);
+        this.hooks.afterRender.call(objectToRender);
+
+        displayObject.renderable.dirty = false;
+      }
+    }
+
     displayObject.sortable.renderOrder = this.zIndexCounter++;
 
     this.stats.total++;
-    if (objectToRender) {
-      this.stats.rendered++;
-      if (!this.renderingContext.dirty) {
-        this.renderingContext.dirty = true;
-        this.hooks.beginFrame.call();
-      }
-
-      this.hooks.beforeRender.call(objectToRender);
-      this.hooks.render.call(objectToRender);
-      this.hooks.afterRender.call(objectToRender);
-
-      displayObject.renderable.dirty = false;
-    }
 
     // sort is very expensive, use cached result if posible
     const sortable = displayObject.sortable;

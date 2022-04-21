@@ -3,12 +3,12 @@ import type { DisplayObjectConfig } from '../dom/interfaces';
 import { Shape, LineJoin, LineCap } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
-import type { ParsedElement } from '../property-handlers';
+import type { CSSUnitValue } from '../css';
 
 export interface TextStyleProps extends BaseStyleProps {
   text: string;
   /** 设置文本内容的当前对齐方式 */
-  textAlign?: 'inherit' | 'start' | 'center' | 'end' | 'left' | 'right';
+  textAlign?: 'inherit' | 'unset' | 'start' | 'center' | 'end' | 'left' | 'right';
   /** 设置在绘制文本时使用的当前文本基线 */
   textBaseline?: 'top' | 'hanging' | 'middle' | 'alphabetic' | 'ideographic' | 'bottom';
   /** 字体样式 */
@@ -43,7 +43,7 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   /** 字体样式 */
   fontStyle?: 'normal' | 'italic' | 'oblique';
   /** 文本字体大小 */
-  fontSize?: ParsedElement;
+  fontSize?: CSSUnitValue;
   /** 文本字体 */
   fontFamily?: string;
   /** 文本粗细 */
@@ -61,8 +61,8 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   dropShadow?: boolean;
   dropShadowDistance?: number;
   metrics?: TextMetrics;
-  dx?: ParsedElement;
-  dy?: ParsedElement;
+  dx?: CSSUnitValue;
+  dy?: CSSUnitValue;
 }
 
 /**
@@ -81,12 +81,12 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
       type: Shape.TEXT,
       style: {
         text: '',
-        fontSize: 'inherit',
-        fontFamily: 'inherit',
+        fontSize: 'unset',
+        fontFamily: 'unset',
         fontStyle: 'normal',
         fontWeight: 'normal',
         fontVariant: 'normal',
-        textAlign: 'inherit',
+        textAlign: 'unset',
         textBaseline: 'alphabetic',
         dropShadow: false,
         // dropShadowAlpha: 1,

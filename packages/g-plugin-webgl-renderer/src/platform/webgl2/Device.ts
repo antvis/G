@@ -260,7 +260,7 @@ export class Device_GL implements SwapChain, Device {
     this.OES_texture_float_linear = gl.getExtension('OES_texture_float_linear');
     this.OES_texture_half_float_linear = gl.getExtension('OES_texture_half_float_linear');
     this.KHR_parallel_shader_compile = gl.getExtension('KHR_parallel_shader_compile');
-    this.OES_draw_buffers_indexed = gl.getExtension('OES_draw_buffers_indexed');
+    // this.OES_draw_buffers_indexed = gl.getExtension('OES_draw_buffers_indexed');
 
     if (isWebGL2(gl)) {
       this.platformString = 'WebGL2';

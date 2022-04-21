@@ -38,7 +38,8 @@ export class CircleRenderer extends Batch {
     return (
       stroke &&
       lineWidth.value > 0 &&
-      (strokeOpacity < 1 || (lineDash && lineDash.length && lineDash.every((item) => item !== 0)))
+      (strokeOpacity.value < 1 ||
+        (lineDash && lineDash.length && lineDash.every((item) => item.value !== 0)))
     );
   }
 }

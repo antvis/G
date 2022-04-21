@@ -5,7 +5,7 @@ import type {
   FederatedEvent,
   DisplayObject,
   MutationEvent,
-  Tuple4Number,
+  CSSRGB,
 } from '@antv/g';
 import {
   RenderingPluginContribution,
@@ -250,8 +250,14 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
 
       // use canvas.background
+      const backgroundColor = parseColor(this.canvasConfig.background) as CSSRGB;
       const clearColor = this.canvasConfig.background
-        ? colorNewFromRGBA(...(parseColor(this.canvasConfig.background).value as Tuple4Number))
+        ? colorNewFromRGBA(
+            Number(backgroundColor.r) / 255,
+            Number(backgroundColor.g) / 255,
+            Number(backgroundColor.b) / 255,
+            Number(backgroundColor.alpha),
+          )
         : TransparentWhite;
 
       // retrieve at each frame since canvas may resize

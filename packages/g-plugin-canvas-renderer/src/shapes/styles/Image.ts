@@ -17,11 +17,11 @@ export class ImageRenderer implements StyleRenderer {
   }
 
   render(context: CanvasRenderingContext2D, parsedStyle: ParsedImageStyleProps) {
-    const { widthInPixels, heightInPixels, img } = parsedStyle;
+    const { width, height, img } = parsedStyle;
 
     let image: HTMLImageElement;
-    let iw = widthInPixels;
-    let ih = heightInPixels;
+    let iw = width.value;
+    let ih = height.value;
 
     if (isString(img)) {
       // image has been loaded in `mounted` hook

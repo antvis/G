@@ -57,6 +57,8 @@ export enum ElementEvent {
 
   BOUNDS_CHANGED = 'bounds-changed',
 
+  GEOMETRY_BOUNDS_CHANGED = 'geometry-bounds-changed',
+
   /**
    * trigger when z-index changed
    */

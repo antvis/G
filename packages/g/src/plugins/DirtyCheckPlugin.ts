@@ -19,7 +19,7 @@ export class DirtyCheckPlugin implements RenderingPlugin {
   private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.prepare.tap(DirtyCheckPlugin.tag, (object: DisplayObject | null) => {
+    renderingService.hooks.dirtycheck.tap(DirtyCheckPlugin.tag, (object: DisplayObject | null) => {
       if (object) {
         const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
 

@@ -1,10 +1,8 @@
-import { isNil } from '@antv/util';
 import { inject, singleton } from 'mana-syringe';
 import type { DisplayObject } from '..';
+import { StyleValueRegistry } from '../css';
 import type { Element, FederatedEvent } from '../dom';
 import { ElementEvent } from '../dom';
-import { INHERIT_PROPERTIES } from '../global-module';
-import { computeInheritStyleProperty } from '../property-handlers';
 import {
   RenderingContext,
   RenderReason,
@@ -20,6 +18,9 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
+  @inject(StyleValueRegistry)
+  private styleValueRegistry: StyleValueRegistry;
+
   apply(renderingService: RenderingService) {
     const handleAttributeChanged = () => {
       this.renderingContext.renderReasons.add(RenderReason.DISPLAY_OBJECT_CHANGED);
@@ -31,19 +32,8 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
-      // compute some style when mounted
-      INHERIT_PROPERTIES.forEach((name) => {
-        if (object.getAttribute(name) === 'inherit') {
-          const computedValue = computeInheritStyleProperty(object, name);
-
-          if (!isNil(computedValue)) {
-            const oldParsedValue = object.parsedStyle[name];
-            object.parsedStyle[name] = computedValue;
-            object.updateStyleProperty(name, oldParsedValue, computedValue);
-          }
-        }
-      });
-
+      // recalc style values
+      this.styleValueRegistry.recalc(object);
       dirtifyToRoot(object);
       renderingService.dirtify();
     };

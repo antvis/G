@@ -1,8 +1,7 @@
 import 'regenerator-runtime/runtime';
 import type { RendererPlugin, Shape } from '@antv/g';
-import { globalContainer } from '@antv/g';
 import type { Syringe } from 'mana-syringe';
-import { Module } from 'mana-syringe';
+import { Module, GlobalContainer } from 'mana-syringe';
 import { Renderable3D } from './components/Renderable3D';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { PickingPlugin } from './PickingPlugin';
@@ -108,8 +107,8 @@ export class Plugin implements RendererPlugin {
   private container: Syringe.Container;
 
   init(container: Syringe.Container): void {
-    if (!globalContainer.isBound(MeshUpdater)) {
-      globalContainer.register(MeshUpdater);
+    if (!GlobalContainer.isBound(MeshUpdater)) {
+      GlobalContainer.register(MeshUpdater);
     }
     this.container = container;
     container.register({
@@ -126,8 +125,8 @@ export class Plugin implements RendererPlugin {
     container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
-    if (globalContainer.isBound(MeshUpdater)) {
-      globalContainer.remove(MeshUpdater);
+    if (GlobalContainer.isBound(MeshUpdater)) {
+      GlobalContainer.remove(MeshUpdater);
     }
     container.remove(WebGLRendererPluginOptions);
     container.unload(containerModule);

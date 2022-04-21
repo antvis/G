@@ -6,24 +6,18 @@ import { Shape } from '../../types';
 @singleton({ token: { token: GeometryAABBUpdater, named: Shape.CIRCLE } })
 export class CircleUpdater implements GeometryAABBUpdater<ParsedCircleStyleProps> {
   update(parsedStyle: ParsedCircleStyleProps, object: Circle) {
-    const { r, x = 0, y = 0 } = parsedStyle;
-    const { unit, value } = r;
+    const { r, x, y } = parsedStyle;
 
-    let width = 0;
-    let height = 0;
-    // absolute unit
-    if (unit === '' || unit === 'px') {
-      width = value * 2;
-      height = value * 2;
-    }
-
-    object.parsedStyle.rInPixels = width / 2;
+    const width = r.value * 2;
+    const height = r.value * 2;
 
     return {
       width,
       height,
-      x,
-      y,
+      x: x.value || 0,
+      y: y.value || 0,
+      // offsetX: -width / 2,
+      // offsetY: -height / 2,
     };
   }
 }

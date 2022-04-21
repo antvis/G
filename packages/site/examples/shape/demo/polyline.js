@@ -85,8 +85,6 @@ const lineConfig = {
   lineDash: 0,
   lineDashOffset: 0,
   strokeOpacity: 1,
-  anchorX: 0,
-  anchorY: 0,
   firstPointX: 50,
   firstPointY: 50,
   visible: true,
@@ -122,12 +120,6 @@ lineFolder.add(lineConfig, 'lineDashOffset', 0, 100).onChange((lineDashOffset) =
 lineFolder.add(lineConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
   polyline.attr('strokeOpacity', opacity);
 });
-lineFolder.add(lineConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
-  polyline.attr('anchor', [anchorX, lineConfig.anchorY]);
-});
-lineFolder.add(lineConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
-  polyline.attr('anchor', [lineConfig.anchorX, anchorY]);
-});
 lineFolder.add(lineConfig, 'visible').onChange((visible) => {
   if (visible) {
     polyline.style.visibility = 'visible';
@@ -137,4 +129,40 @@ lineFolder.add(lineConfig, 'visible').onChange((visible) => {
     // polyline.hide();
   }
 });
-lineFolder.open();
+
+const transformFolder = gui.addFolder('transform');
+const transformConfig = {
+  x: 200,
+  y: 100,
+  scale: 1,
+  transformOrigin: 'left top',
+  eulerAngles: 0,
+};
+transformFolder
+  .add(transformConfig, 'transformOrigin', [
+    'left top',
+    'center',
+    'right bottom',
+    '50% 50%',
+    '50px 50px',
+  ])
+  .onChange((transformOrigin) => {
+    polyline.style.transformOrigin = transformOrigin;
+  });
+transformFolder.add(transformConfig, 'x', 0, 400).onChange((x) => {
+  polyline.setLocalPosition(x, polyline.style.y);
+  // or
+  // polyline.style.x = x;
+});
+transformFolder.add(transformConfig, 'y', 0, 400).onChange((y) => {
+  polyline.setLocalPosition(polyline.style.x, y);
+  // or
+  // polyline.style.y = y;
+});
+transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
+  polyline.setLocalScale(scaling);
+});
+transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
+  polyline.setLocalEulerAngles(eulerAngles);
+});
+transformFolder.open();

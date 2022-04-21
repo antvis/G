@@ -61,33 +61,17 @@ rendererFolder.open();
 
 const imageFolder = gui.addFolder('image');
 const config = {
-  x: 200,
-  y: 100,
   width: 200,
   height: 200,
   opacity: 1,
-  anchorX: 0,
-  anchorY: 0,
   src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
   visible: true,
 };
-imageFolder.add(config, 'x', 0, 400).onChange((x) => {
-  image.style.x = x;
-});
-imageFolder.add(config, 'y', 0, 400).onChange((y) => {
-  image.style.y = y;
-});
 imageFolder.add(config, 'width', 0, 400).onChange((width) => {
   image.style.width = width;
 });
 imageFolder.add(config, 'height', 0, 400).onChange((height) => {
   image.style.height = height;
-});
-imageFolder.add(config, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
-  image.style.anchor = [anchorX, config.anchorY];
-});
-imageFolder.add(config, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
-  image.style.anchor = [config.anchorX, anchorY];
 });
 imageFolder.add(config, 'opacity', 0, 1, 0.1).onChange((opacity) => {
   image.style.opacity = opacity;
@@ -110,3 +94,40 @@ imageFolder.add(config, 'visible').onChange((visible) => {
   }
 });
 imageFolder.open();
+
+const transformFolder = gui.addFolder('transform');
+const transformConfig = {
+  x: 200,
+  y: 100,
+  scale: 1,
+  transformOrigin: 'left top',
+  eulerAngles: 0,
+};
+transformFolder
+  .add(transformConfig, 'transformOrigin', [
+    'left top',
+    'center',
+    'right bottom',
+    '50% 50%',
+    '50px 50px',
+  ])
+  .onChange((transformOrigin) => {
+    image.style.transformOrigin = transformOrigin;
+  });
+transformFolder.add(transformConfig, 'x', 0, 400).onChange((x) => {
+  image.setLocalPosition(x, image.style.y);
+  // or
+  // image.style.x = x;
+});
+transformFolder.add(transformConfig, 'y', 0, 400).onChange((y) => {
+  image.setLocalPosition(image.style.x, y);
+  // or
+  // image.style.y = y;
+});
+transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
+  image.setLocalScale(scaling);
+});
+transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
+  image.setLocalEulerAngles(eulerAngles);
+});
+transformFolder.open();

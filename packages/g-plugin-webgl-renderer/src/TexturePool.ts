@@ -1,5 +1,5 @@
 import type { LinearGradient, RadialGradient } from '@antv/g';
-import { PARSED_COLOR_TYPE, OffscreenCanvasCreator, CanvasConfig, isBrowser } from '@antv/g';
+import { GradientPatternType, OffscreenCanvasCreator, CanvasConfig, isBrowser } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import type { Device, Texture, TextureDescriptor } from './platform';
 import { Format, TextureDimension, TextureUsage } from './platform';
@@ -7,7 +7,7 @@ import { Format, TextureDimension, TextureUsage } from './platform';
 export type GradientParams = (LinearGradient | RadialGradient) & {
   width: number;
   height: number;
-  type: PARSED_COLOR_TYPE;
+  type: GradientPatternType;
 };
 
 @singleton()
@@ -90,10 +90,10 @@ export class TexturePool {
       canvas.width = width;
       canvas.height = height; // needs only 1px height
 
-      if (type === PARSED_COLOR_TYPE.LinearGradient) {
+      if (type === GradientPatternType.LinearGradient) {
         // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createLinearGradient
         gradient = context.createLinearGradient(x0 * width, y0 * height, x1 * width, y1 * height);
-      } else if (type === PARSED_COLOR_TYPE.RadialGradient) {
+      } else if (type === GradientPatternType.RadialGradient) {
         const r = Math.sqrt(width * width + height * height) / 2;
         // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createRadialGradient
         gradient = context.createRadialGradient(

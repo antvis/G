@@ -125,10 +125,19 @@ describe('Document', () => {
     expect(canvas.document.getElementsByName('ellipse-name')[0]).eqls(ellipse);
     expect(canvas.document.getElementsByTagName(Shape.ELLIPSE)[0]).eqls(ellipse);
     expect(canvas.document.getElementsByClassName('ellipse-classname')[0]).eqls(ellipse);
+    expect(canvas.document.querySelector('[name=ellipse-name]')).eqls(ellipse);
+    expect(canvas.document.querySelectorAll('[name=ellipse-name]')[0]).eqls(ellipse);
+    expect(canvas.document.querySelector(Shape.ELLIPSE)).eqls(ellipse);
+    expect(canvas.document.querySelectorAll(Shape.ELLIPSE)[0]).eqls(ellipse);
     expect(canvas.document.querySelector('#ellipse')).eqls(ellipse);
     expect(canvas.document.querySelectorAll('#ellipse')[0]).eqls(ellipse);
+    expect(canvas.document.querySelector('.ellipse-classname')).eqls(ellipse);
+    expect(canvas.document.querySelectorAll('.ellipse-classname')[0]).eqls(ellipse);
 
     expect(canvas.document.find(({ id }) => id === 'ellipse')).eqls(ellipse);
     expect(canvas.document.findAll(({ id }) => id === 'ellipse')[0]).eqls(ellipse);
+
+    expect(canvas.document.find(({ id }) => id === 'non-existed')).eqls(null);
+    expect(canvas.document.findAll(({ id }) => id === 'non-existed')).eqls([]);
   });
 });

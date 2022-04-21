@@ -5,12 +5,13 @@ import type {
   RenderingPlugin,
   ParsedHTMLStyleProps,
   FederatedEvent,
+  LinearGradient,
 } from '@antv/g';
+import { CSSRGB, CSSGradientValue, GradientPatternType } from '@antv/g';
 import {
   Shape,
   RenderingPluginContribution,
   ContextService,
-  PARSED_COLOR_TYPE,
   RenderingContext,
   ElementEvent,
 } from '@antv/g';
@@ -97,14 +98,13 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     object: DisplayObject,
   ) {
     const {
-      zIndex = 0,
-      visibility = 'visible',
-      opacity = 1,
+      zIndex,
+      visibility,
+      opacity,
       fill,
       lineWidth,
       lineDash,
       stroke,
-      anchor,
       width,
       height,
       style: initialStyle = '',
@@ -113,14 +113,10 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
     let contentWidth = 0;
     let contentHeight = 0;
-    const { unit: widthUnit, value: widthValue } = width;
-    const { unit: heightUnit, value: heightValue } = height;
-    if (widthUnit === '' || widthUnit === 'px') {
-      contentWidth = widthValue;
-    }
-    if (heightUnit === '' || heightUnit === 'px') {
-      contentHeight = heightValue;
-    }
+    const { value: widthValue } = width;
+    const { value: heightValue } = height;
+    contentWidth = widthValue;
+    contentHeight = heightValue;
 
     const style: Record<string, string | number> = {};
     // use absolute position
@@ -133,45 +129,41 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     // use transform
     style.transform = `matrix3d(${object.getWorldTransform().join(',')})`;
 
-    if (anchor) {
-      style.transform += ` translate(${anchor[0] * 100}%, ${anchor[0] * 100}%)`;
-    }
-
     // use unparsed transform origin
     if (object.style.transformOrigin) {
       style['transform-origin'] = object.style.transformOrigin;
     }
 
     // z-index
-    style['z-index'] = zIndex;
+    style['z-index'] = zIndex.value;
     // visibility
-    style.visibility = visibility;
+    style.visibility = visibility.value;
     // opacity
-    style.opacity = opacity;
+    style.opacity = opacity.value;
     // backgroundColor
     if (fill) {
       let color = '';
-      if (fill.type === PARSED_COLOR_TYPE.Constant) {
-        color = fill.formatted;
-      } else if (fill.type === PARSED_COLOR_TYPE.LinearGradient) {
-        const steps = fill.value.steps
-          .map((cur) => {
-            //  ['0', '#ffffff'],
-            return `${cur[1]} ${Number(cur[0]) * 100}%`;
-          })
-          .join(',');
-        // @see https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/linear-gradient()
-        color = `linear-gradient(to right, ${steps});`;
-      } else if (fill.type === PARSED_COLOR_TYPE.RadialGradient) {
-      } else if (fill.type === PARSED_COLOR_TYPE.Pattern) {
+      if (fill instanceof CSSRGB) {
+        color = fill.toString();
+      } else if (fill instanceof CSSGradientValue) {
+        if (fill.type === GradientPatternType.LinearGradient) {
+          const steps = (fill.value as LinearGradient).steps
+            .map((cur) => {
+              //  ['0', '#ffffff'],
+              return `${cur[1]} ${Number(cur[0]) * 100}%`;
+            })
+            .join(',');
+          // @see https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/linear-gradient()
+          color = `linear-gradient(to right, ${steps});`;
+        }
       }
       style.background = color;
     }
 
     // border
-    style['border-width'] = `${lineWidth.value}px`;
-    if (stroke && stroke.type === PARSED_COLOR_TYPE.Constant) {
-      style['border-color'] = stroke.formatted;
+    style['border-width'] = `${lineWidth?.value || 0}px`;
+    if (stroke) {
+      style['border-color'] = stroke.toString();
       style['border-style'] = 'solid';
     }
     if (lineDash) {

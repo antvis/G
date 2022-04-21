@@ -1,3 +1,4 @@
+import { GlobalContainer } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import { SceneGraphService } from '../services/SceneGraphService';
 import { Cullable, Geometry, Renderable, Transform, Sortable } from '../components';
@@ -6,7 +7,6 @@ import { Node } from './Node';
 import type { AABB, Rectangle } from '../shapes';
 import type { IEventTarget, IChildNode, IElement, INode, ICSSStyleDeclaration } from './interfaces';
 import { ElementEvent } from './interfaces';
-import { globalContainer } from '../global-module';
 import { formatAttribute } from '../utils';
 import { MutationEvent } from '..';
 
@@ -29,7 +29,7 @@ export class Element<
     return !!(target as IElement).getAttribute;
   }
 
-  sceneGraphService = globalContainer.get<SceneGraphService>(SceneGraphService);
+  sceneGraphService = GlobalContainer.get<SceneGraphService>(SceneGraphService);
 
   entity = entityCounter++;
 
@@ -75,7 +75,13 @@ export class Element<
     return this.className.split(' ').filter((c) => c !== '');
   }
 
-  interactive: boolean;
+  get interactive() {
+    return this.getAttribute('interactive') || '';
+  }
+
+  set interactive(interactive: boolean) {
+    this.setAttribute('interactive', interactive);
+  }
 
   scrollLeft = 0;
   scrollTop = 0;
@@ -382,7 +388,16 @@ export class Element<
    */
   style: StyleProps & ICSSStyleDeclaration<StyleProps> = {} as StyleProps &
     ICSSStyleDeclaration<StyleProps>;
+  computedStyle: any = {};
   parsedStyle: ParsedStyleProps = {} as ParsedStyleProps;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/computedStyleMap
+   * eg. circle.computedStyleMap().get('fill');
+   */
+  computedStyleMap() {
+    return new Map(Object.entries(this.computedStyle));
+  }
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes

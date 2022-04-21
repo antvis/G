@@ -169,11 +169,11 @@ export class SDFMesh extends Instanced {
   private getSize(parsed: ParsedCircleStyleProps | ParsedEllipseStyleProps, tagName: string) {
     let size: [number, number] = [0, 0];
     if (tagName === Shape.CIRCLE) {
-      const { rInPixels } = parsed as ParsedCircleStyleProps;
-      size = [rInPixels, rInPixels];
+      const { r } = parsed as ParsedCircleStyleProps;
+      size = [r.value, r.value];
     } else if (tagName === Shape.ELLIPSE) {
-      const { rxInPixels, ryInPixels } = parsed as ParsedEllipseStyleProps;
-      size = [rxInPixels, ryInPixels];
+      const { rx, ry } = parsed as ParsedEllipseStyleProps;
+      size = [rx.value, ry.value];
     }
 
     return size;
@@ -183,7 +183,8 @@ export class SDFMesh extends Instanced {
     const { lineDash, stroke, strokeOpacity } = attributes;
     return !!(
       stroke &&
-      ((lineDash && lineDash.length && lineDash.every((item) => item !== 0)) || strokeOpacity !== 1)
+      ((lineDash && lineDash.length && lineDash.every((item) => item.value !== 0)) ||
+        strokeOpacity.value !== 1)
     );
   }
 
@@ -193,7 +194,8 @@ export class SDFMesh extends Instanced {
     return (
       stroke &&
       lineWidth.value > 0 &&
-      (strokeOpacity < 1 || (lineDash && lineDash.length && lineDash.every((item) => item !== 0)))
+      (strokeOpacity.value < 1 ||
+        (lineDash && lineDash.length && lineDash.every((item) => item.value !== 0)))
     );
   }
 }

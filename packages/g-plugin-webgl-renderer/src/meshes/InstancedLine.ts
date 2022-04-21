@@ -1,6 +1,6 @@
 import { injectable } from 'mana-syringe';
-import type { Line, DisplayObject, ParsedColorStyleProperty } from '@antv/g';
-import { LineCap, Shape, PARSED_COLOR_TYPE } from '@antv/g';
+import type { Line, DisplayObject, ParsedLineStyleProps, CSSRGB, CSSGradientValue } from '@antv/g';
+import { LineCap, Shape } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
 import vert from '../shader/instanced-line.vert';
 import frag from '../shader/instanced-line.frag';
@@ -43,20 +43,12 @@ export class InstancedLineMesh extends Instanced {
     // should split when using gradient & pattern
     const instance = this.instance;
     if (instance.nodeName === Shape.LINE) {
-      const source = instance.parsedStyle.stroke as ParsedColorStyleProperty;
-      const target = object.parsedStyle.stroke as ParsedColorStyleProperty;
+      const source = instance.parsedStyle.stroke as CSSRGB | CSSGradientValue;
+      const target = object.parsedStyle.stroke as CSSRGB | CSSGradientValue;
 
       // can't be merged if stroke's types are different
-      if (source.type !== target.type) {
+      if (source.toString() !== target.toString()) {
         return false;
-      }
-
-      // compare hash directly
-      if (
-        source.type !== PARSED_COLOR_TYPE.Constant &&
-        target.type !== PARSED_COLOR_TYPE.Constant
-      ) {
-        return source.value.hash === target.value.hash;
       }
     }
 
@@ -101,7 +93,14 @@ export class InstancedLineMesh extends Instanced {
         isBillboard ? 1 : 0,
       );
 
-      interleaved.push(x1 - defX, y1 - defY, z1, x2 - defX, y2 - defY, z2);
+      interleaved.push(
+        x1.value - defX,
+        y1.value - defY,
+        z1.value,
+        x2.value - defX,
+        y2.value - defY,
+        z2.value,
+      );
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
       offset += 4;
     });
@@ -194,8 +193,15 @@ export class InstancedLineMesh extends Instanced {
     ) {
       const packed: number[] = [];
       objects.forEach((object) => {
-        const { x1, y1, x2, y2, z1, z2, defX, defY } = object.parsedStyle;
-        packed.push(x1 - defX, y1 - defY, z1, x2 - defX, y2 - defY, z2);
+        const { x1, y1, x2, y2, z1, z2, defX, defY } = object.parsedStyle as ParsedLineStyleProps;
+        packed.push(
+          x1.value - defX,
+          y1.value - defY,
+          z1.value,
+          x2.value - defX,
+          y2.value - defY,
+          z2.value,
+        );
       });
 
       this.geometry.updateVertexBuffer(
@@ -240,16 +246,16 @@ export class InstancedLineMesh extends Instanced {
   }
 
   private calcDash(line: Line) {
-    const { lineDash, lineDashOffset = 0 } = line.parsedStyle;
+    const { lineDash, lineDashOffset } = line.parsedStyle as ParsedLineStyleProps;
     const totalLength = line.getTotalLength();
     let dashOffset = 0;
     let dashSegmentPercent = 1;
     let dashRatioInEachSegment = 0;
     if (lineDash && lineDash.length) {
-      dashOffset = lineDashOffset / totalLength;
-      const segmentsLength = lineDash.reduce((cur, prev) => cur + prev, 0);
+      dashOffset = ((lineDashOffset && lineDashOffset.value) || 0) / totalLength;
+      const segmentsLength = lineDash.reduce((cur, prev) => cur + prev.value, 0);
       dashSegmentPercent = segmentsLength / totalLength;
-      dashRatioInEachSegment = lineDash[1] / segmentsLength;
+      dashRatioInEachSegment = lineDash[1].value / segmentsLength;
     }
     return {
       dashOffset,

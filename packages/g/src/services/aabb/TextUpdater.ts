@@ -4,6 +4,7 @@ import { GeometryAABBUpdater } from './interfaces';
 import type { ParsedTextStyleProps } from '../../display-objects/Text';
 import { TextService } from '../text';
 import { Shape } from '../../types';
+import { CSSUnitValue } from '../../css';
 
 @singleton({ token: { token: GeometryAABBUpdater, named: Shape.TEXT } })
 export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
@@ -11,7 +12,7 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   private textService: TextService;
 
   update(parsedStyle: ParsedTextStyleProps) {
-    const { text = '', textAlign, lineWidth, textBaseline, x = 0, y = 0, dx, dy } = parsedStyle;
+    const { text = '', textAlign, lineWidth, textBaseline, x, y, dx, dy } = parsedStyle;
 
     const metrics = this.textService.measureText(text, parsedStyle);
     parsedStyle.metrics = metrics;
@@ -43,7 +44,11 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
       anchor = [1, 1];
     }
     // update anchor
-    parsedStyle.anchor = anchor;
+    parsedStyle.anchor = [
+      new CSSUnitValue(anchor[0]),
+      new CSSUnitValue(anchor[1]),
+      new CSSUnitValue(0),
+    ];
 
     let lineYOffset = 0;
     if (textBaseline === 'middle') {
@@ -58,18 +63,18 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
     }
     // TODO: ideographic & bottom
 
-    if (dx && dx.unit === 'px') {
+    if (dx) {
       lineXOffset += dx.value;
     }
-    if (dy && dy.unit === 'px') {
+    if (dy) {
       lineYOffset += dy.value;
     }
 
     return {
       width: halfExtents[0] * 2,
       height: halfExtents[1] * 2,
-      x,
-      y,
+      x: x.value || 0,
+      y: y.value || 0,
       offsetX: lineXOffset,
       offsetY: lineYOffset,
     };

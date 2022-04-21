@@ -138,3 +138,4 @@ $ yarn test
 - [Sprite.js](https://github.com/spritejs/spritejs)
 - [Pixi.js](https://pixijs.com/)
 - [PlayCanvas](https://playcanvas.com/)
+- [Webkit](https://github.com/WebKit/WebKit/blob/main/Source/WebCore)

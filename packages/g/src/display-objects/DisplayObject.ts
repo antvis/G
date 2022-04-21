@@ -1,3 +1,4 @@
+import { GlobalContainer } from 'mana-syringe';
 import { isEqual, isNil, isObject } from '@antv/util';
 import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
@@ -21,33 +22,38 @@ import {
   getEuler,
   rad2deg,
 } from '../utils';
-import {
-  globalContainer,
-  stylePropertyParserFactory,
-  stylePropertyUpdaterFactory,
-} from '../global-module';
 import { dirtifyToRoot } from '../services';
 import { MutationEvent } from '../dom/MutationEvent';
 import { Rectangle } from '../shapes';
+import { StyleValueRegistry } from '../css/StyleValueRegistry';
+import { CSSUnitValue } from '../css';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
 const DEFAULT_STYLE_PROPS: {
-  anchor: vec2 | vec3;
-  origin: vec2 | vec3;
-  opacity: number;
-  fillOpacity: number;
-  strokeOpacity: number;
+  x: number;
+  y: number;
+  z: number;
+  anchor: [number, number] | [number, number, number];
+  transformOrigin: string;
+  visibility: string;
+  opacity: string;
+  fillOpacity: string;
+  strokeOpacity: string;
   fill: string;
   stroke: string;
 } = {
+  x: 0,
+  y: 0,
+  z: 0,
   anchor: [0, 0, 0],
-  origin: [0, 0, 0],
-  opacity: 1,
-  fillOpacity: 1,
-  strokeOpacity: 1,
-  fill: 'transparent',
-  stroke: 'transparent',
+  opacity: 'unset',
+  fillOpacity: 'unset',
+  strokeOpacity: 'unset',
+  fill: 'unset',
+  stroke: 'unset',
+  transformOrigin: 'left top',
+  visibility: 'unset',
 };
 
 /**
@@ -77,6 +83,8 @@ export class DisplayObject<
    */
   config: DisplayObjectConfig<StyleProps>;
 
+  styleValueRegistry = GlobalContainer.get(StyleValueRegistry);
+
   /**
    * push to active animations after calling `animate()`
    */
@@ -97,17 +105,19 @@ export class DisplayObject<
     if (this.config.className || this.config.class) {
       this.className = this.config.className || this.config.class;
     }
-    this.interactive = this.config.interactive ?? true;
     this.nodeName = this.config.type || Shape.GROUP;
 
     // compatible with G 3.0
     this.config.style = {
       ...DEFAULT_STYLE_PROPS,
       zIndex: this.config.zIndex ?? 0,
-      visibility: this.config.visible === false ? 'hidden' : 'visible',
+      interactive: this.config.interactive ?? true,
       ...this.config.style,
       ...this.config.attrs,
     };
+    if (!isNil(this.config.visible)) {
+      this.config.style.visibility = this.config.visible === false ? 'hidden' : 'visible';
+    }
 
     this.style = new Proxy<StyleProps & ICSSStyleDeclaration<StyleProps>>(
       {
@@ -146,14 +156,14 @@ export class DisplayObject<
     this.initAttributes(this.config.style);
 
     // insert this group into pool
-    globalContainer.get(DisplayObjectPool).add(this.entity, this);
+    GlobalContainer.get(DisplayObjectPool).add(this.entity, this);
   }
 
   destroy() {
     super.destroy();
 
     // remove from into pool
-    globalContainer.get(DisplayObjectPool).remove(this.entity);
+    GlobalContainer.get(DisplayObjectPool).remove(this.entity);
 
     // stop all active animations
     this.getAnimations().forEach((animation) => {
@@ -185,28 +195,7 @@ export class DisplayObject<
   private initAttributes(attributes: StyleProps = {} as StyleProps) {
     const renderable = this.renderable;
 
-    // parse attributes first
-    for (const attributeName in attributes) {
-      const [name, value] = formatAttribute(attributeName, attributes[attributeName]);
-      this.attributes[name] = value;
-      // @ts-ignore
-      this.parseStyleProperty(name, value);
-    }
-
-    const priorities: Record<string, number> = {
-      x: Infinity,
-      y: Infinity,
-    };
-
-    // update x, y at last
-    const sortedNames = Object.keys(attributes).sort(
-      (a, b) => (priorities[a] || 0) - (priorities[b] || 0),
-    );
-    sortedNames.forEach((attributeName) => {
-      const [name] = formatAttribute(attributeName, '');
-      // @ts-ignore
-      this.updateStyleProperty(name, undefined, this.parsedStyle[name]);
-    });
+    this.styleValueRegistry.processProperties(this, attributes);
 
     // redraw at next frame
     renderable.dirty = true;
@@ -219,51 +208,11 @@ export class DisplayObject<
     ];
     if (
       force ||
-      !isEqual(attributeValue, this.attributes[attributeName]) ||
-      attributeName === 'transformOrigin' ||
-      attributeName === 'visibility' // will affect children
+      !isEqual(attributeValue, this.attributes[attributeName])
+      // || attributeName === 'transformOrigin'
     ) {
-      if (attributeName === 'visibility') {
-        // set value cascade
-        this.forEach((object) => {
-          (object as DisplayObject).changeAttribute(attributeName, attributeValue);
-        });
-      } else {
-        this.changeAttribute(attributeName, attributeValue);
-      }
+      this.changeAttribute(attributeName, attributeValue);
       super.setAttribute(attributeName, attributeValue);
-    }
-  }
-
-  /**
-   * parse property, eg.
-   * * fill: 'red' => [1, 0, 0, 1]
-   * * translateX: '10px' => { unit: 'px', value: 10 }
-   * * fontSize: '2em' => { unit: 'px', value: 32 }
-   */
-  parseStyleProperty<Key extends keyof ParsedStyleProps>(name: Key, value: ParsedStyleProps[Key]) {
-    // const stylePropertyParser = this.stylePropertyParserFactory(name);
-    const stylePropertyParser = stylePropertyParserFactory[name as string];
-    if (stylePropertyParser) {
-      // @ts-ignore
-      this.parsedStyle[name] = stylePropertyParser(value, this, name);
-    } else {
-      this.parsedStyle[name] = value;
-    }
-  }
-
-  updateStyleProperty<Key extends keyof ParsedStyleProps>(
-    name: Key,
-    oldParsedValue: ParsedStyleProps[Key],
-    newParsedValue: ParsedStyleProps[Key],
-  ) {
-    // @ts-ignore
-    const stylePropertyUpdaters = stylePropertyUpdaterFactory[name];
-    if (stylePropertyUpdaters) {
-      stylePropertyUpdaters.forEach((updater) => {
-        // @ts-ignore
-        updater(oldParsedValue, newParsedValue, this, this.sceneGraphService, name);
-      });
     }
   }
 
@@ -274,31 +223,16 @@ export class DisplayObject<
     const renderable = this.renderable;
 
     const oldValue = this.attributes[name];
-    // @ts-ignore
-    const oldParsedValue = this.parsedStyle[name];
+    const oldParsedValue = this.parsedStyle[name as string];
 
-    // update value
-    this.attributes[name] = value;
-
-    // @ts-ignore
-    this.parseStyleProperty(name, value);
-
-    // @ts-ignore
-    const newParsedValue = this.parsedStyle[name];
-
-    // @ts-ignore
-    this.updateStyleProperty(name, oldParsedValue, newParsedValue);
+    this.styleValueRegistry.processProperties(this, {
+      [name]: value,
+    });
 
     // inform clip path targets
     if (this.attributes.clipPathTargets && this.attributes.clipPathTargets.length) {
       this.attributes.clipPathTargets.forEach((target) => {
         dirtifyToRoot(target);
-        // target.emit(ElementEvent.ATTR_MODIFIED, {
-        //   attributeName: 'clipPath',
-        //   oldValue: this,
-        //   newValue: this,
-        // });
-
         target.dispatchEvent(
           new MutationEvent(
             ElementEvent.ATTR_MODIFIED,
@@ -326,25 +260,18 @@ export class DisplayObject<
         name as string,
         MutationEvent.MODIFICATION,
         oldParsedValue,
-        newParsedValue,
+        this.parsedStyle[name as string],
       ),
     );
-
-    // this.emit(ElementEvent.ATTR_MODIFIED, {
-    //   attrName: name,
-    //   attributeName: name,
-    //   prevValue: oldValue,
-    //   oldValue,
-    //   newValue: value,
-    //   oldParsedValue,
-    //   newParsedValue,
-    // });
   }
 
   // #region transformable
   /**
    * returns different values than getBoundingClientRect(), as the latter returns value relative to the viewport
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/getBBox
+   *
+   * FIXME: It is worth noting that getBBox responds to original untransformed values of a drawn object.
+   * @see https://www.w3.org/Graphics/SVG/IG/resources/svgprimer.html#getBBox
    */
   getBBox(): DOMRect {
     const aabb = this.getBounds();
@@ -355,9 +282,9 @@ export class DisplayObject<
 
   setOrigin(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
     this.sceneGraphService.setOrigin(this, createVec3(position, y, z));
-    this.attributes.origin = this.getOrigin();
     return this;
   }
+
   getOrigin(): vec3 {
     return this.sceneGraphService.getOrigin(this);
   }
@@ -549,6 +476,11 @@ export class DisplayObject<
     const localPosition = this.getLocalPosition();
     this.attributes.x = localPosition[0];
     this.attributes.y = localPosition[1];
+    this.attributes.z = localPosition[2];
+    // should not affect computed style
+    this.parsedStyle.x = new CSSUnitValue(this.attributes.x, 'px');
+    this.parsedStyle.y = new CSSUnitValue(this.attributes.y, 'px');
+    this.parsedStyle.z = new CSSUnitValue(this.attributes.z, 'px');
   }
   // #endregion transformable
 
@@ -603,12 +535,15 @@ export class DisplayObject<
     this.style.visibility = 'hidden';
   }
 
+  /**
+   * shortcut for Used value of `visibility`
+   */
   isVisible() {
-    const cullable = this.cullable;
-    return (
-      this.getAttribute('visibility') === 'visible' &&
-      (!cullable || (cullable && !cullable.isCulled()))
-    );
+    return this.parsedStyle?.visibility?.value === 'visible';
+  }
+
+  isCulled() {
+    return !!(this.cullable && this.cullable.isCulled());
   }
 
   /**

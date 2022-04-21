@@ -4,7 +4,9 @@ export function generatePath(
   context: CanvasRenderingContext2D,
   parsedStyle: ParsedEllipseStyleProps,
 ) {
-  const { rxInPixels: rx, ryInPixels: ry } = parsedStyle;
+  const { rx: rxInPixels, ry: ryInPixels } = parsedStyle;
+  const rx = rxInPixels.value;
+  const ry = ryInPixels.value;
 
   // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/ellipse
   if (context.ellipse) {

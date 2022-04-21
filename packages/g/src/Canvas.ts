@@ -1,3 +1,4 @@
+import { GlobalContainer } from 'mana-syringe';
 import type { Cursor } from './types';
 import { CanvasConfig } from './types';
 import { cleanExistedCanvas, isBrowser } from './utils/canvas';
@@ -15,7 +16,6 @@ import type { FederatedEvent, Element, IChildNode } from './dom';
 import { Document, EventTarget, ElementEvent } from './dom';
 import type { INode, ICanvas } from './dom/interfaces';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
-import { globalContainer } from './global-module';
 
 export enum CanvasEvent {
   READY = 'ready',
@@ -35,7 +35,7 @@ export class Canvas extends EventTarget implements ICanvas {
   /**
    * child container of current canvas, use hierarchy container
    */
-  container = globalContainer.createChild();
+  container = GlobalContainer.createChild();
 
   /**
    * window.document
@@ -220,7 +220,7 @@ export class Canvas extends EventTarget implements ICanvas {
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Window/getComputedStyle
    */
   getComputedStyle(node: DisplayObject) {
-    return node.parsedStyle;
+    return node.computedStyle;
   }
 
   get ready() {

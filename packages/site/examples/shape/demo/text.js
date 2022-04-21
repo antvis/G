@@ -242,3 +242,40 @@ multilineFolder
   .onChange((whiteSpace) => {
     text.attr('whiteSpace', whiteSpace);
   });
+
+const transformFolder = gui.addFolder('transform');
+const transformConfig = {
+  x: 100,
+  y: 300,
+  scale: 1,
+  transformOrigin: 'left top',
+  eulerAngles: 0,
+};
+transformFolder
+  .add(transformConfig, 'transformOrigin', [
+    'left top',
+    'center',
+    'right bottom',
+    '50% 50%',
+    '50px 50px',
+  ])
+  .onChange((transformOrigin) => {
+    text.style.transformOrigin = transformOrigin;
+  });
+transformFolder.add(transformConfig, 'x', 0, 400).onChange((x) => {
+  text.setLocalPosition(x, text.style.y);
+  // or
+  // text.style.x = x;
+});
+transformFolder.add(transformConfig, 'y', 0, 400).onChange((y) => {
+  text.setLocalPosition(text.style.x, y);
+  // or
+  // text.style.y = y;
+});
+transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
+  text.setLocalScale(scaling);
+});
+transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
+  text.setLocalEulerAngles(eulerAngles);
+});
+transformFolder.open();

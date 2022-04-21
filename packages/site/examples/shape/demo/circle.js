@@ -77,8 +77,6 @@ const circleConfig = {
   lineDashOffset: 0,
   fillOpacity: 1,
   strokeOpacity: 1,
-  anchorX: 0.5,
-  anchorY: 0.5,
   shadowColor: '#000',
   shadowBlur: 20,
   shadowOffsetX: 0,
@@ -120,10 +118,40 @@ circleFolder.add(circleConfig, 'fillOpacity', 0, 1, 0.1).onChange((opacity) => {
 circleFolder.add(circleConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
   circle.attr('strokeOpacity', opacity);
 });
-circleFolder.add(circleConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
-  circle.attr('anchor', [anchorX, circleConfig.anchorY]);
+
+const transformFolder = gui.addFolder('transform');
+const transformConfig = {
+  x: 300,
+  y: 200,
+  scale: 1,
+  transformOrigin: 'center',
+  eulerAngles: 0,
+};
+transformFolder
+  .add(transformConfig, 'transformOrigin', [
+    'left top',
+    'center',
+    'right bottom',
+    '50% 50%',
+    '50px 50px',
+  ])
+  .onChange((transformOrigin) => {
+    circle.style.transformOrigin = transformOrigin;
+  });
+transformFolder.add(transformConfig, 'x', 0, 400).onChange((x) => {
+  circle.setLocalPosition(x, circle.style.y);
+  // or
+  // circle.style.x = x;
 });
-circleFolder.add(circleConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
-  circle.attr('anchor', [circleConfig.anchorX, anchorY]);
+transformFolder.add(transformConfig, 'y', 0, 400).onChange((y) => {
+  circle.setLocalPosition(circle.style.x, y);
+  // or
+  // circle.style.y = y;
 });
-circleFolder.open();
+transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
+  circle.setLocalScale(scaling);
+});
+transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
+  circle.setLocalEulerAngles(eulerAngles);
+});
+transformFolder.open();

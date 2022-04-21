@@ -13,6 +13,13 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZcrHSoLxRS8AAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "boxmodel.js",
+      "title": {
+        "zh": "盒模型",
+        "en": "CSS Box Model"
+      }
+    },
+    {
       "filename": "transform.js",
       "title": {
         "zh": "变换",

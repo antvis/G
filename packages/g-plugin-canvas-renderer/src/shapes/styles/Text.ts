@@ -1,4 +1,4 @@
-import { TextService, Shape } from '@antv/g';
+import { TextService, Shape, UnitType } from '@antv/g';
 import type { ParsedTextStyleProps, Rectangle, DisplayObject } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
@@ -62,10 +62,10 @@ export class TextRenderer implements StyleRenderer {
 
     // account for dx & dy
     let offsetX = 0;
-    if (dx && dx.unit === 'px') {
+    if (dx && dx.unit === UnitType.kPixels) {
       offsetX += dx.value;
     }
-    if (dy && dy.unit === 'px') {
+    if (dy && dy.unit === UnitType.kPixels) {
       linePositionY += dy.value;
     }
 
@@ -85,9 +85,9 @@ export class TextRenderer implements StyleRenderer {
           linePositionX,
           linePositionY,
           letterSpacing,
-          fillOpacity,
-          strokeOpacity,
-          opacity,
+          fillOpacity.value,
+          strokeOpacity.value,
+          opacity.value,
           true,
         );
       }
@@ -100,9 +100,9 @@ export class TextRenderer implements StyleRenderer {
           linePositionX,
           linePositionY,
           letterSpacing,
-          fillOpacity,
-          strokeOpacity,
-          opacity,
+          fillOpacity.value,
+          strokeOpacity.value,
+          opacity.value,
         );
       }
     }

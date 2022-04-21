@@ -6,6 +6,7 @@ import type {
   PickingResult,
   BaseStyleProps,
   Element,
+  ParsedBaseStyleProps,
 } from '@antv/g';
 import {
   DisplayObjectPool,
@@ -121,9 +122,9 @@ export class CanvasPickerPlugin implements RenderingPlugin {
 
       // account for anchor
       const { halfExtents } = displayObject.getGeometryBounds();
-      const { anchor = [0, 0] } = displayObject.parsedStyle;
-      localPosition[0] += anchor[0] * halfExtents[0] * 2;
-      localPosition[1] += anchor[1] * halfExtents[1] * 2;
+      const { anchor } = displayObject.parsedStyle as ParsedBaseStyleProps;
+      localPosition[0] += ((anchor && anchor[0].value) || 0) * halfExtents[0] * 2;
+      localPosition[1] += ((anchor && anchor[1].value) || 0) * halfExtents[1] * 2;
       if (pick(displayObject, new Point(localPosition[0], localPosition[1]), this.isPointInPath)) {
         return true;
       }

@@ -104,7 +104,7 @@ rect.getPosition(); // [200, 200]
 mat4.fromRotationTranslationScaleOrigin();
 ```
 
-### origin
+<!-- ### origin
 
 默认情况下 origin（变换中心）与 anchor（锚点）重合。在这个[示例](/zh/examples/scenegraph#origin)中，一个圆（世界坐标系下位置为 `[100, 100]`）以圆心作为变换中心进行缩放，如果我们想让它以 Geometry Bounds 左上角进行缩放，就可以重新设置 origin，让它相对于 anchor 进行偏移：
 
@@ -134,7 +134,7 @@ circle.style.origin = [-100, -100];
 // 或者直接设置 anchor
 circle.setPosition(0, 0);
 circle.style.anchor = [0, 0];
-```
+``` -->
 
 ### transformOrigin
 

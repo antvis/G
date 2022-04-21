@@ -1,6 +1,6 @@
 import { createSVGElement } from '../../utils/dom';
-import type { DisplayObject, ParsedElement, ParsedFilterStyleProperty } from '@antv/g';
-import { convertAngleUnit } from '@antv/g';
+import type { CSSUnitValue, DisplayObject, ParsedFilterStyleProperty} from '@antv/g';
+import { UnitType } from '@antv/g';
 
 const FILTER_PREFIX = 'g-filter-';
 
@@ -31,23 +31,23 @@ export function createOrUpdateFilter(
     const filterIds = filters.map(({ name, params }, i) => {
       const $filter = createSVGElement('filter') as SVGFilterElement;
       if (name === 'blur') {
-        createBlur($filter, params as ParsedElement[]);
+        createBlur($filter, params);
       } else if (name === 'brightness') {
-        createBrightness($filter, params as ParsedElement[]);
+        createBrightness($filter, params);
       } else if (name === 'drop-shadow') {
-        createDropShadow($filter, params as ParsedElement[]);
+        createDropShadow($filter, params);
       } else if (name === 'contrast') {
-        createContrast($filter, params as ParsedElement[]);
+        createContrast($filter, params);
       } else if (name === 'grayscale') {
-        createGrayscale($filter, params as ParsedElement[]);
+        createGrayscale($filter, params);
       } else if (name === 'sepia') {
-        createSepia($filter, params as ParsedElement[]);
+        createSepia($filter, params);
       } else if (name === 'saturate') {
-        createSaturate($filter, params as ParsedElement[]);
+        createSaturate($filter, params);
       } else if (name === 'hue-rotate') {
-        createHueRotate($filter, params as ParsedElement[]);
+        createHueRotate($filter, params);
       } else if (name === 'invert') {
-        createInvert($filter, params as ParsedElement[]);
+        createInvert($filter, params);
       }
 
       $filter.id = `${filterName}-${i}`;
@@ -61,14 +61,14 @@ export function createOrUpdateFilter(
   }
 }
 
-function convertToAbsoluteValue(param: ParsedElement) {
-  return param.unit === '%' ? param.value / 100 : param.value;
+function convertToAbsoluteValue(param: CSSUnitValue) {
+  return param.unit === UnitType.kPercentage ? param.value / 100 : param.value;
 }
 
 /**
  * @see https://drafts.fxtf.org/filter-effects/#blurEquivalent
  */
-function createBlur($filter: SVGElement, params: ParsedElement[]) {
+function createBlur($filter: SVGElement, params: CSSUnitValue[]) {
   const $feGaussianBlur = createSVGElement('feGaussianBlur');
   $feGaussianBlur.setAttribute('in', 'SourceGraphic');
   $feGaussianBlur.setAttribute('stdDeviation', `${params[0].value}`);
@@ -108,7 +108,7 @@ function createFeComponentTransfer(
   $filter.appendChild($feComponentTransfer);
 }
 
-function createContrast($filter: SVGElement, params: ParsedElement[]) {
+function createContrast($filter: SVGElement, params: CSSUnitValue[]) {
   const slope = convertToAbsoluteValue(params[0]);
   createFeComponentTransfer($filter, {
     type: 'linear',
@@ -117,7 +117,7 @@ function createContrast($filter: SVGElement, params: ParsedElement[]) {
   });
 }
 
-function createInvert($filter: SVGElement, params: ParsedElement[]) {
+function createInvert($filter: SVGElement, params: CSSUnitValue[]) {
   const amount = convertToAbsoluteValue(params[0]);
   createFeComponentTransfer($filter, {
     type: 'table',
@@ -125,7 +125,7 @@ function createInvert($filter: SVGElement, params: ParsedElement[]) {
   });
 }
 
-function createBrightness($filter: SVGElement, params: ParsedElement[]) {
+function createBrightness($filter: SVGElement, params: CSSUnitValue[]) {
   const slope = convertToAbsoluteValue(params[0]);
   createFeComponentTransfer($filter, {
     type: 'linear',
@@ -134,7 +134,7 @@ function createBrightness($filter: SVGElement, params: ParsedElement[]) {
   });
 }
 
-function createSaturate($filter: SVGElement, params: ParsedElement[]) {
+function createSaturate($filter: SVGElement, params: CSSUnitValue[]) {
   const amount = convertToAbsoluteValue(params[0]);
   const $feColorMatrix = createSVGElement('feColorMatrix');
   $feColorMatrix.setAttribute('type', 'saturate');
@@ -142,14 +142,14 @@ function createSaturate($filter: SVGElement, params: ParsedElement[]) {
   $filter.appendChild($feColorMatrix);
 }
 
-function createHueRotate($filter: SVGElement, params: ParsedElement[]) {
+function createHueRotate($filter: SVGElement, params: CSSUnitValue[]) {
   const $feColorMatrix = createSVGElement('feColorMatrix');
   $feColorMatrix.setAttribute('type', 'hueRotate');
-  $feColorMatrix.setAttribute('values', `${convertAngleUnit(params[0])}`);
+  $feColorMatrix.setAttribute('values', `${params[0].to(UnitType.kDegrees).value}`);
   $filter.appendChild($feColorMatrix);
 }
 
-function createDropShadow($filter: SVGElement, params: ParsedElement[]) {
+function createDropShadow($filter: SVGElement, params: CSSUnitValue[]) {
   const shadowOffsetX = params[0].value as number;
   const shadowOffsetY = params[1].value as number;
   const shadowBlur = params[2].value as number;
@@ -195,7 +195,7 @@ function createFeColorMatrix($filter: SVGElement, matrix: number[]) {
 /**
  * @see https://drafts.fxtf.org/filter-effects/#grayscaleEquivalent
  */
-function createGrayscale($filter: SVGElement, params: ParsedElement[]) {
+function createGrayscale($filter: SVGElement, params: CSSUnitValue[]) {
   const amount = convertToAbsoluteValue(params[0]);
   createFeColorMatrix($filter, [
     0.2126 + 0.7874 * (1 - amount),
@@ -224,7 +224,7 @@ function createGrayscale($filter: SVGElement, params: ParsedElement[]) {
 /**
  * @see https://drafts.fxtf.org/filter-effects/#sepiaEquivalent
  */
-function createSepia($filter: SVGElement, params: ParsedElement[]) {
+function createSepia($filter: SVGElement, params: CSSUnitValue[]) {
   const amount = convertToAbsoluteValue(params[0]);
   createFeColorMatrix($filter, [
     0.393 + 0.607 * (1 - amount),

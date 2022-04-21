@@ -46,6 +46,7 @@ const animation = circle.animate(
       opacity: 1,
       shadowColor: 'black',
       shadowBlur: 30,
+      x: 200,
     },
     {
       transform: 'scale(2)',
@@ -54,6 +55,7 @@ const animation = circle.animate(
       opacity: 0.8,
       shadowColor: 'red',
       shadowBlur: 0,
+      x: 400,
     },
   ],
   {

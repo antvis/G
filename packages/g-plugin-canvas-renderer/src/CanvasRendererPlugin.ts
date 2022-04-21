@@ -2,8 +2,12 @@ import type {
   DisplayObject,
   RenderingService,
   RenderingPlugin,
-  ParsedColorStyleProperty,
+  CSSRGB,
   FederatedEvent,
+  Pattern,
+  LinearGradient,
+  RadialGradient,
+  ParsedBaseStyleProps,
 } from '@antv/g';
 import {
   AABB,
@@ -17,7 +21,8 @@ import {
   fromRotationTranslationScale,
   Camera,
   DefaultCamera,
-  PARSED_COLOR_TYPE,
+  CSSGradientValue,
+  GradientPatternType,
   RenderReason,
   ElementEvent,
 } from '@antv/g';
@@ -154,8 +159,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       // @ts-ignore
       object.rBushNode = new RBushNode();
 
-      // @ts-ignore
-      this.pushToSync(e.composedPath().slice(0, -2));
+      this.pushToSync(e.composedPath().slice(0, -2) as DisplayObject[]);
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
@@ -177,21 +181,20 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     const handleBoundsChanged = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
+
       // skip if this object mounted on another scenegraph root
       if (object.ownerDocument?.documentElement !== this.renderingContext.root) {
         return;
       }
 
       const { affectChildren } = e.detail;
-
       if (affectChildren) {
         object.forEach((node: DisplayObject) => {
           this.pushToSync([node]);
         });
       }
 
-      // @ts-ignore
-      this.pushToSync(e.composedPath().slice(0, -2));
+      this.pushToSync(e.composedPath().slice(0, -2) as DisplayObject[]);
     };
 
     renderingService.hooks.init.tap(CanvasRendererPlugin.tag, () => {
@@ -247,7 +250,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         if (!this.clearFullScreen) {
           // merge removed AABB
           const dirtyRenderBounds = this.safeMergeAABB(
-            this.mergeDirtyAABBs(this.renderQueue.filter((o) => o.nodeName !== Shape.GROUP)),
+            this.mergeDirtyAABBs(
+              // should not ignore group since clipPath may affect its children
+              // this.renderQueue.filter((o) => o.nodeName !== Shape.GROUP)),
+              this.renderQueue,
+            ),
             ...this.removedRBushNodeAABBs.map(({ minX, minY, maxX, maxY }) => {
               const aabb = new AABB();
               aabb.setMinMax(vec3.fromValues(minX, minY, 0), vec3.fromValues(maxX, maxY, 0));
@@ -257,6 +264,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           this.removedRBushNodeAABBs = [];
 
           if (AABB.isEmpty(dirtyRenderBounds)) {
+            this.renderQueue = [];
             return;
           }
 
@@ -325,6 +333,22 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         this.renderQueue.push(object);
       }
     });
+
+    // renderingService.hooks.ignore.tap(CanvasRendererPlugin.tag, (object: DisplayObject) => {
+    //   const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
+    //   if (enableDirtyRectangleRendering) {
+    //     // @ts-ignore
+    //     const rBushNode = object.rBushNode;
+    //     if (rBushNode && rBushNode.aabb) {
+    //       this.rBush.remove(rBushNode.aabb);
+
+    //       this.toSync.delete(object);
+
+    //       // save removed aabbs for dirty-rectangle rendering later
+    //       this.removedRBushNodeAABBs.push(rBushNode.aabb);
+    //     }
+    //   }
+    // });
   }
 
   private flush(context: CanvasRenderingContext2D, renderingService: RenderingService) {
@@ -527,42 +551,45 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   }
 
   private getColor(
-    parsedColor: ParsedColorStyleProperty,
+    parsedColor: CSSRGB | CSSGradientValue,
     object: DisplayObject,
     context: CanvasRenderingContext2D,
     renderingService: RenderingService,
   ) {
     let color: CanvasGradient | CanvasPattern | string;
-    if (
-      parsedColor.type === PARSED_COLOR_TYPE.LinearGradient ||
-      parsedColor.type === PARSED_COLOR_TYPE.RadialGradient
-    ) {
-      const bounds = object.getGeometryBounds();
-      const width = (bounds && bounds.halfExtents[0] * 2) || 0;
-      const height = (bounds && bounds.halfExtents[1] * 2) || 0;
-      color = this.gradientPool.getOrCreateGradient(
-        {
-          type: parsedColor.type,
-          ...parsedColor.value,
-          width,
-          height,
-        },
-        context,
-      );
-    } else if (parsedColor.type === PARSED_COLOR_TYPE.Pattern) {
-      const pattern = this.imagePool.getPatternSync(parsedColor.value);
-      if (pattern) {
-        color = pattern;
-      } else {
-        this.imagePool.createPattern(parsedColor.value, context).then(() => {
-          // set dirty rectangle flag
-          object.renderable.dirty = true;
-          renderingService.dirtify();
-        });
+
+    if (parsedColor instanceof CSSGradientValue) {
+      if (
+        parsedColor.type === GradientPatternType.LinearGradient ||
+        parsedColor.type === GradientPatternType.RadialGradient
+      ) {
+        const bounds = object.getGeometryBounds();
+        const width = (bounds && bounds.halfExtents[0] * 2) || 0;
+        const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+        color = this.gradientPool.getOrCreateGradient(
+          {
+            type: parsedColor.type,
+            ...(parsedColor.value as LinearGradient | RadialGradient),
+            width,
+            height,
+          },
+          context,
+        );
+      } else if (parsedColor.type === GradientPatternType.Pattern) {
+        const pattern = this.imagePool.getPatternSync(parsedColor.value as Pattern);
+        if (pattern) {
+          color = pattern;
+        } else {
+          this.imagePool.createPattern(parsedColor.value as Pattern, context).then(() => {
+            // set dirty rectangle flag
+            object.renderable.dirty = true;
+            renderingService.dirtify();
+          });
+        }
       }
     } else {
       // constant, eg. rgba(255,255,255,1)
-      color = parsedColor.formatted;
+      color = parsedColor.toString();
     }
 
     return color;
@@ -584,19 +611,19 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       shadowBlur,
       shadowOffsetX,
       shadowOffsetY,
-    } = object.parsedStyle;
+    } = object.parsedStyle as ParsedBaseStyleProps;
     // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
     if (lineDash && isArray(lineDash)) {
-      context.setLineDash(lineDash);
+      context.setLineDash(lineDash.map((segment) => segment.value));
     }
 
     // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
     if (!isNil(lineDashOffset)) {
-      context.lineDashOffset = lineDashOffset;
+      context.lineDashOffset = lineDashOffset.value;
     }
 
     if (!isNil(opacity)) {
-      context.globalAlpha *= opacity;
+      context.globalAlpha *= opacity.value;
     }
 
     if (!isNil(stroke)) {
@@ -613,10 +640,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
 
     if (!isNil(shadowColor)) {
-      context.shadowColor = (shadowColor as ParsedColorStyleProperty).formatted;
-      context.shadowBlur = shadowBlur;
-      context.shadowOffsetX = shadowOffsetX;
-      context.shadowOffsetY = shadowOffsetY;
+      context.shadowColor = shadowColor.toString();
+      context.shadowBlur = (shadowBlur && shadowBlur.value) || 0;
+      context.shadowOffsetX = (shadowOffsetX && shadowOffsetX.value) || 0;
+      context.shadowOffsetY = (shadowOffsetY && shadowOffsetY.value) || 0;
     }
   }
 
@@ -631,8 +658,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
       // apply anchor, use true size, not include stroke,
       // eg. bounds = true size + half lineWidth
-      const { anchor = [0, 0] } = object.parsedStyle || {};
-      context.translate(-anchor[0] * halfExtents[0] * 2, -anchor[1] * halfExtents[1] * 2);
+      const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
+      context.translate(
+        -((anchor && anchor[0].value) || 0) * halfExtents[0] * 2,
+        -((anchor && anchor[1].value) || 0) * halfExtents[1] * 2,
+      );
 
       callback();
     } else {

@@ -31,6 +31,22 @@ export function rad2deg(rad: number) {
   return rad * (180 / Math.PI);
 }
 
+export function grad2deg(grads: number) {
+  grads = grads % 400;
+  if (grads < 0) {
+    grads += 400;
+  }
+  return (grads / 400) * 360;
+}
+
+export function deg2turn(deg: number) {
+  return deg / 360;
+}
+
+export function turn2deg(turn: number) {
+  return 360 * turn;
+}
+
 /**
  * decompose mat3
  * extract translation/scaling/rotation(in radians)
@@ -179,4 +195,8 @@ export function makePerspective(
   out[14] = d;
   out[15] = 0;
   return out;
+}
+
+export function blend(from: number, to: number, progress: number) {
+  return from + (to - from) * progress;
 }

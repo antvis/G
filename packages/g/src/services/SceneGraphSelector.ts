@@ -11,39 +11,61 @@ export interface SceneGraphSelector {
 }
 
 /**
- * support following DOM API
+ * support the following DOM API:
  * * getElementById
  * * getElementsByClassName
  * * getElementsByName
  * * getElementsByTag
+ * * querySelector
+ * * querySelectorAll
  */
 @singleton({ token: SceneGraphSelector })
 export class DefaultSceneGraphSelector implements SceneGraphSelector {
   selectOne<R extends IElement, T extends IElement>(query: string, root: R): T | null {
-    if (query.startsWith('#')) {
+    if (query.startsWith('.')) {
+      return root.find((node) => {
+        // return !node.shadow && node.id === query.substring(1);
+        return node.className === query.substring(1);
+      });
+    } else if (query.startsWith('#')) {
       // getElementById('id')
       return root.find((node) => {
         // return !node.shadow && node.id === query.substring(1);
         return node.id === query.substring(1);
       });
+    } else if (query.startsWith('[name=')) {
+      // getElementsByName();
+      return root.find(
+        (node) =>
+          (root as unknown as T) !== node && node.name === query.substring(7, query.length - 2),
+      );
+    } else {
+      // getElementsByTag('circle');
+      return root.find((node) => (root as unknown as T) !== node && node.nodeName === query);
     }
-    return null;
   }
 
   selectAll<R extends IElement, T extends IElement>(query: string, root: R): T[] {
-    // TODO: only support `[name="${name}"]` `.className`
+    // only support `[name="${name}"]` `.className` `#id`
     if (query.startsWith('.')) {
       // getElementsByClassName('className');
-      // TODO: should include itself?
-      return root.findAll((node) => node.className === query.substring(1));
+      // should not include itself
+      return root.findAll(
+        (node) => (root as unknown as T) !== node && node.className === query.substring(1),
+      );
     } else if (query.startsWith('#')) {
-      return root.findAll((node) => node.id === query.substring(1));
+      return root.findAll(
+        (node) => (root as unknown as T) !== node && node.id === query.substring(1),
+      );
     } else if (query.startsWith('[name=')) {
       // getElementsByName();
-      return root.findAll((node) => node.name === query.substring(7, query.length - 2));
+      return root.findAll(
+        (node) =>
+          (root as unknown as T) !== node && node.name === query.substring(7, query.length - 2),
+      );
     } else {
       // getElementsByTag('circle');
-      return root.findAll((node) => node.nodeName === query);
+      return root.findAll((node) => (root as unknown as T) !== node && node.nodeName === query);
     }
   }
 

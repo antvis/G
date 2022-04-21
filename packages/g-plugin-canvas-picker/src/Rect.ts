@@ -1,4 +1,5 @@
-import type { DisplayObject, RectStyleProps, Point, ParsedRectStyleProps } from '@antv/g';
+import type { DisplayObject, RectStyleProps, Point, ParsedRectStyleProps} from '@antv/g';
+import { UnitType } from '@antv/g';
 import { inLine, inArc, inBox, inRect } from './utils/math';
 
 export function isPointInPath(
@@ -21,10 +22,10 @@ export function isPointInPath(
   const { unit: heightUnit, value: heightValue } = parsedHeight;
   let width = 0;
   let height = 0;
-  if (widthUnit === '' || widthUnit === 'px') {
+  if (widthUnit === UnitType.kNumber || widthUnit === UnitType.kPixels) {
     width = widthValue;
   }
-  if (heightUnit === '' || heightUnit === 'px') {
+  if (heightUnit === UnitType.kNumber || heightUnit === UnitType.kPixels) {
     height = heightValue;
   }
 
@@ -57,7 +58,7 @@ export function isPointInPath(
         0,
         width,
         height,
-        radius,
+        radius.value,
         lineWidth.value,
         position.x,
         position.y,

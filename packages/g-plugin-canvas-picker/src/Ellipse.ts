@@ -9,14 +9,17 @@ export function isPointInPath(
   { x, y }: { x: number; y: number },
 ): boolean {
   const {
-    rxInPixels: rx,
-    ryInPixels: ry,
+    rx: rxInPixels,
+    ry: ryInPixels,
     fill,
     stroke,
     lineWidth,
     clipPathTargets,
   } = displayObject.parsedStyle as ParsedEllipseStyleProps;
   const isClipPath = !!clipPathTargets?.length;
+
+  const rx = rxInPixels.value;
+  const ry = ryInPixels.value;
 
   const halfLineWith = lineWidth.value / 2;
   const squareX = (x - rx) * (x - rx);

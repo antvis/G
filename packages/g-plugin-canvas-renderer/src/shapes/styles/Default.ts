@@ -40,10 +40,10 @@ export class DefaultRenderer implements StyleRenderer {
     } = parsedStyle;
 
     if (!isNil(fill)) {
-      if (!isNil(fillOpacity) && fillOpacity !== 1) {
-        context.globalAlpha = fillOpacity!;
+      if (!isNil(fillOpacity) && fillOpacity.value !== 1) {
+        context.globalAlpha = fillOpacity.value;
         context.fill();
-        context.globalAlpha = opacity!;
+        context.globalAlpha = opacity.value;
       } else {
         context.fill();
       }
@@ -51,9 +51,9 @@ export class DefaultRenderer implements StyleRenderer {
 
     if (!isNil(stroke)) {
       if (lineWidth && lineWidth.value > 0) {
-        const applyOpacity = !isNil(strokeOpacity) && strokeOpacity !== 1;
+        const applyOpacity = !isNil(strokeOpacity) && strokeOpacity.value !== 1;
         if (applyOpacity) {
-          context.globalAlpha = strokeOpacity;
+          context.globalAlpha = strokeOpacity.value;
         }
         context.lineWidth = lineWidth.value;
         if (!isNil(miterLimit)) {

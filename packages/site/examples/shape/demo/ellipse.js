@@ -70,20 +70,12 @@ const ellipseConfig = {
   lineWidth: 4,
   fillOpacity: 1,
   strokeOpacity: 1,
-  anchorX: 0.5,
-  anchorY: 0.5,
 };
 ellipseFolder.add(ellipseConfig, 'rx', 50, 200).onChange((radius) => {
   ellipse.attr('rx', radius);
 });
 ellipseFolder.add(ellipseConfig, 'ry', 50, 200).onChange((radius) => {
   ellipse.attr('ry', radius);
-});
-ellipseFolder.add(ellipseConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
-  ellipse.attr('anchor', [anchorX, ellipseConfig.anchorY]);
-});
-ellipseFolder.add(ellipseConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
-  ellipse.attr('anchor', [ellipseConfig.anchorX, anchorY]);
 });
 ellipseFolder.addColor(ellipseConfig, 'fill').onChange((color) => {
   ellipse.attr('fill', color);
@@ -101,3 +93,40 @@ ellipseFolder.add(ellipseConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) 
   ellipse.attr('strokeOpacity', opacity);
 });
 ellipseFolder.open();
+
+const transformFolder = gui.addFolder('transform');
+const transformConfig = {
+  x: 300,
+  y: 200,
+  scale: 1,
+  transformOrigin: 'center',
+  eulerAngles: 0,
+};
+transformFolder
+  .add(transformConfig, 'transformOrigin', [
+    'left top',
+    'center',
+    'right bottom',
+    '50% 50%',
+    '50px 50px',
+  ])
+  .onChange((transformOrigin) => {
+    ellipse.style.transformOrigin = transformOrigin;
+  });
+transformFolder.add(transformConfig, 'x', 0, 400).onChange((x) => {
+  ellipse.setLocalPosition(x, ellipse.style.y);
+  // or
+  // ellipse.style.x = x;
+});
+transformFolder.add(transformConfig, 'y', 0, 400).onChange((y) => {
+  ellipse.setLocalPosition(ellipse.style.x, y);
+  // or
+  // ellipse.style.y = y;
+});
+transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
+  ellipse.setLocalScale(scaling);
+});
+transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
+  ellipse.setLocalEulerAngles(eulerAngles);
+});
+transformFolder.open();

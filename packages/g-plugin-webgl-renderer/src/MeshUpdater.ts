@@ -6,7 +6,7 @@ import { Mesh } from './Mesh';
 @singleton({ token: { token: GeometryAABBUpdater, named: Mesh.tag } })
 export class MeshUpdater implements GeometryAABBUpdater<ParsedMeshStyleProps> {
   update(parsedStyle: ParsedMeshStyleProps) {
-    const { geometry, x = 0, y = 0, z = 0 } = parsedStyle;
+    const { geometry, x, y, z } = parsedStyle;
 
     geometry.computeBoundingBox();
     // const minX = Math.min(x1, x2);
@@ -21,9 +21,9 @@ export class MeshUpdater implements GeometryAABBUpdater<ParsedMeshStyleProps> {
       width: 0,
       height: 0,
       depth: 0,
-      x,
-      y,
-      z,
+      x: (x && x.value) || 0,
+      y: (y && y.value) || 0,
+      z: (z && z.value) || 0,
     };
   }
 }

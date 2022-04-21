@@ -63,8 +63,8 @@ export class ImageMesh extends Instanced {
     objects.forEach((object, i) => {
       const image = object as ImageShape;
       const offset = i * 4;
-      const { widthInPixels, heightInPixels } = image.parsedStyle;
-      instanced.push(widthInPixels, heightInPixels);
+      const { width, height } = image.parsedStyle;
+      instanced.push(width.value, height.value);
       interleaved.push(0, 0, 1, 0, 1, 1, 0, 1);
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
     });
@@ -108,8 +108,8 @@ export class ImageMesh extends Instanced {
       const packed: number[] = [];
       objects.forEach((object) => {
         const image = object as ImageShape;
-        const { widthInPixels, heightInPixels } = image.parsedStyle;
-        packed.push(widthInPixels, heightInPixels);
+        const { width, height } = image.parsedStyle;
+        packed.push(width.value, height.value);
       });
 
       this.geometry.updateVertexBuffer(

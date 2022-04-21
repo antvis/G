@@ -6,10 +6,10 @@ import {
   RenderingContext,
   ElementEvent,
   Shape,
+  UnitType,
 } from '@antv/g';
 import type {
   FederatedEvent,
-  ParsedElement,
   RenderingService,
   RenderingPlugin,
   MutationEvent,
@@ -17,7 +17,8 @@ import type {
   ParsedBaseStyleProps,
   ParsedRectStyleProps,
   ParsedTextStyleProps,
-} from '@antv/g';
+
+  CSSUnitValue} from '@antv/g';
 import type {
   YogaFlexDirection,
   YogaNode,
@@ -231,8 +232,7 @@ export class YogaPlugin implements RenderingPlugin {
         object.nodeName === Shape.RECT ||
         object.nodeName === Shape.IMAGE
       ) {
-        const { width = { unit: 'px', value: 0 }, height = { unit: 'px', value: 0 } } =
-          object.parsedStyle as ParsedRectStyleProps;
+        const { width, height } = object.parsedStyle as ParsedRectStyleProps;
         this.setWidth(node, object.style.width, width);
         this.setHeight(node, object.style.height, height);
       } else {
@@ -427,12 +427,12 @@ export class YogaPlugin implements RenderingPlugin {
     node.setFlexShrink(1);
   }
 
-  private setMargin(node: YogaNode, edge: YogaEdge, parsed: ParsedElement) {
+  private setMargin(node: YogaNode, edge: YogaEdge, parsed: CSSUnitValue) {
     const { unit, value } = parsed;
 
-    if (unit === '' || unit === 'px') {
+    if (unit === UnitType.kNumber || unit === UnitType.kPixels) {
       node.setMargin(edge, value);
-    } else if (unit === '%') {
+    } else if (unit === UnitType.kPercentage) {
       node.setMarginPercent(edge, value);
     }
 
@@ -445,79 +445,79 @@ export class YogaPlugin implements RenderingPlugin {
     // }
   }
 
-  private setPadding(node: YogaNode, edge: YogaEdge, parsed: ParsedElement) {
+  private setPadding(node: YogaNode, edge: YogaEdge, parsed: CSSUnitValue) {
     const { unit, value } = parsed;
 
-    if (unit === '' || unit === 'px') {
+    if (unit === UnitType.kNumber || unit === UnitType.kPixels) {
       node.setPadding(edge, value);
-    } else if (unit === '%') {
+    } else if (unit === UnitType.kPercentage) {
       node.setPaddingPercent(edge, value);
     }
   }
 
-  private setPosition(node: YogaNode, edge: YogaEdge, parsed: ParsedElement) {
+  private setPosition(node: YogaNode, edge: YogaEdge, parsed: CSSUnitValue) {
     const { unit, value } = parsed;
-    if (unit === '%') {
-      node.setPositionPercent(edge, value);
-    } else if (unit === '' || unit === 'px') {
+    if (unit === UnitType.kNumber || unit === UnitType.kPixels) {
       node.setPosition(edge, value);
+    } else if (unit === UnitType.kPercentage) {
+      node.setPositionPercent(edge, value);
     }
   }
 
-  private setWidth(node: YogaNode, raw: any, parsed: ParsedElement) {
+  private setWidth(node: YogaNode, raw: any, parsed: CSSUnitValue) {
     if (raw === 'auto') {
       node.setWidthAuto();
     } else {
       const { unit, value } = parsed;
-      if (unit === '' || unit === 'px') {
+      if (unit === UnitType.kNumber || unit === UnitType.kPixels) {
         node.setWidth(value);
-      } else if (unit === '%') {
+      } else if (unit === UnitType.kPercentage) {
         node.setWidthPercent(value);
       }
     }
   }
-  private setHeight(node: YogaNode, raw: any, parsed: ParsedElement) {
+  private setHeight(node: YogaNode, raw: any, parsed: CSSUnitValue) {
     if (raw === 'auto') {
       node.setHeightAuto();
     } else {
       const { unit, value } = parsed;
 
-      if (unit === '' || unit === 'px') {
+      if (unit === UnitType.kNumber || unit === UnitType.kPixels) {
         node.setHeight(value);
-      } else if (unit === '%') {
+      } else if (unit === UnitType.kPercentage) {
         node.setHeightPercent(value);
       }
     }
   }
-  private setMaxWidth(node: YogaNode, parsed: ParsedElement) {
+  private setMaxWidth(node: YogaNode, parsed: CSSUnitValue) {
     const { unit, value } = parsed;
-    if (unit === '' || unit === 'px') {
+    if (unit === UnitType.kNumber || unit === UnitType.kPixels) {
       node.setMaxWidth(value);
-    } else if (unit === '%') {
+    } else if (unit === UnitType.kPercentage) {
       node.setMaxWidthPercent(value);
     }
   }
-  private setMinWidth(node: YogaNode, parsed: ParsedElement) {
+  private setMinWidth(node: YogaNode, parsed: CSSUnitValue) {
     const { unit, value } = parsed;
-    if (unit === '' || unit === 'px') {
+    if (unit === UnitType.kNumber || unit === UnitType.kPixels) {
       node.setMinWidth(value);
-    } else if (unit === '%') {
+    } else if (unit === UnitType.kPercentage) {
       node.setMinWidthPercent(value);
     }
   }
-  private setMaxHeight(node: YogaNode, parsed: ParsedElement) {
+  private setMaxHeight(node: YogaNode, parsed: CSSUnitValue) {
     const { unit, value } = parsed;
-    if (unit === '' || unit === 'px') {
+    if (unit === UnitType.kNumber || unit === UnitType.kPixels) {
       node.setMaxHeight(value);
-    } else if (unit === '%') {
+    } else if (unit === UnitType.kPercentage) {
       node.setMaxHeightPercent(value);
     }
   }
-  private setMinHeight(node: YogaNode, parsed: ParsedElement) {
+  private setMinHeight(node: YogaNode, parsed: CSSUnitValue) {
     const { unit, value } = parsed;
-    if (unit === '' || unit === 'px') {
+    if (unit === UnitType.kNumber || unit === UnitType.kPixels) {
       node.setMinHeight(value);
-    } else if (unit === '%') {
+    } else if (unit === UnitType.kPercentage) {
       node.setMinHeightPercent(value);
     }
   }
@@ -534,11 +534,11 @@ export class YogaPlugin implements RenderingPlugin {
       object.style.height = height;
       object.style.yogaUpdatingFlag = false;
 
-      const { anchor = [0, 0] } = object.parsedStyle as ParsedBaseStyleProps;
+      const { anchor } = object.parsedStyle as ParsedBaseStyleProps;
 
       // calculate local position instead of modify origin directly
-      left += anchor[0] * width;
-      top += anchor[1] * height;
+      left += anchor[0].value * width;
+      top += anchor[1].value * height;
 
       if (object.nodeName === Shape.TEXT) {
         object.style.textBaseline = 'top';

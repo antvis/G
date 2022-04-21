@@ -4,9 +4,6 @@ export function generatePath(
   context: CanvasRenderingContext2D,
   parsedStyle: ParsedCircleStyleProps,
 ) {
-  const { rInPixels: r } = parsedStyle;
-  // context.save();
-  // context.moveTo(2 * r, r);
-  context.arc(r, r, r, 0, Math.PI * 2, false);
-  // context.restore();
+  const { r } = parsedStyle;
+  context.arc(r.value, r.value, r.value, 0, Math.PI * 2, false);
 }

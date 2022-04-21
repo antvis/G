@@ -4,7 +4,7 @@ import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
 import { AABB } from '../shapes';
 import { mat4, vec3 } from 'gl-matrix';
-import type { ParsedElement } from '../property-handlers';
+import type { CSSUnitValue } from '../css';
 
 export interface HTMLStyleProps extends BaseStyleProps {
   innerHTML: string | HTMLElement;
@@ -17,8 +17,8 @@ export interface HTMLStyleProps extends BaseStyleProps {
 export interface ParsedHTMLStyleProps extends ParsedBaseStyleProps {
   $el: HTMLElement;
   innerHTML: string | HTMLElement;
-  width: ParsedElement;
-  height: ParsedElement;
+  width: CSSUnitValue;
+  height: CSSUnitValue;
   className?: string | string[];
   style?: string;
 }
