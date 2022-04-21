@@ -36,10 +36,10 @@ export function createOrUpdateShadow(
     $feDropShadow.setAttribute('stdDeviation', `${((shadowBlur && shadowBlur.value) || 0) / 2}`);
   } else if (name === 'shadowOffsetX') {
     const shadowOffsetX = object.parsedStyle[name] as CSSUnitValue;
-    $feDropShadow.setAttribute('dx', `${(shadowOffsetX && shadowOffsetX.value) || 0}`);
+    $feDropShadow.setAttribute('dx', `${((shadowOffsetX && shadowOffsetX.value) || 0) / 2}`);
   } else if (name === 'shadowOffsetY') {
     const shadowOffsetY = object.parsedStyle[name] as CSSUnitValue;
-    $feDropShadow.setAttribute('dy', `${(shadowOffsetY && shadowOffsetY.value) || 0}`);
+    $feDropShadow.setAttribute('dy', `${((shadowOffsetY && shadowOffsetY.value) || 0) / 2}`);
   }
 
   // use filter <feDropShadow>

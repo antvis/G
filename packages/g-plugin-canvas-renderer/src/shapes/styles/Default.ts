@@ -1,4 +1,4 @@
-import type { ParsedBaseStyleProps } from '@antv/g';
+import type { CSSRGB, ParsedBaseStyleProps } from '@antv/g';
 import { Shape } from '@antv/g';
 import { singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
@@ -38,8 +38,11 @@ export class DefaultRenderer implements StyleRenderer {
       filter,
       miterLimit,
     } = parsedStyle;
+    const hasFill = !isNil(fill);
+    const hasStroke = !isNil(stroke);
+    const isFillTransparent = (fill as CSSRGB).alpha === 0;
 
-    if (!isNil(fill)) {
+    if (hasFill) {
       if (!isNil(fillOpacity) && fillOpacity.value !== 1) {
         context.globalAlpha = fillOpacity.value;
         context.fill();
@@ -49,7 +52,7 @@ export class DefaultRenderer implements StyleRenderer {
       }
     }
 
-    if (!isNil(stroke)) {
+    if (hasStroke) {
       if (lineWidth && lineWidth.value > 0) {
         const applyOpacity = !isNil(strokeOpacity) && strokeOpacity.value !== 1;
         if (applyOpacity) {
@@ -93,7 +96,11 @@ export class DefaultRenderer implements StyleRenderer {
           }
         }
 
-        context.stroke();
+        const drawStroke = hasFill && !isFillTransparent;
+        if (drawStroke) {
+          context.stroke();
+        }
+
         // restore shadow blur
         if (hasShadowColor) {
           context.shadowColor = oldShadowColor;
@@ -102,6 +109,10 @@ export class DefaultRenderer implements StyleRenderer {
         // restore filters
         if (hasFilter) {
           context.filter = oldFilter;
+        }
+
+        if (!drawStroke) {
+          context.stroke();
         }
       }
     }

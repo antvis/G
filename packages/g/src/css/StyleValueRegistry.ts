@@ -410,6 +410,9 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'fontSize',
     interpolable: true,
     inherited: true,
+    /**
+     * @see https://www.w3schools.com/css/css_font_size.asp
+     */
     defaultValue: '16px',
     layoutDependent: true,
     handler: CSSPropertyLengthOrPercentage,

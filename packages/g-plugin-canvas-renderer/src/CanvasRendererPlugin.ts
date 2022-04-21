@@ -640,6 +640,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
 
     if (!isNil(shadowColor)) {
+      debugger;
+
       context.shadowColor = shadowColor.toString();
       context.shadowBlur = (shadowBlur && shadowBlur.value) || 0;
       context.shadowOffsetX = (shadowOffsetX && shadowOffsetX.value) || 0;
