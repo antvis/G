@@ -333,22 +333,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         this.renderQueue.push(object);
       }
     });
-
-    // renderingService.hooks.ignore.tap(CanvasRendererPlugin.tag, (object: DisplayObject) => {
-    //   const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
-    //   if (enableDirtyRectangleRendering) {
-    //     // @ts-ignore
-    //     const rBushNode = object.rBushNode;
-    //     if (rBushNode && rBushNode.aabb) {
-    //       this.rBush.remove(rBushNode.aabb);
-
-    //       this.toSync.delete(object);
-
-    //       // save removed aabbs for dirty-rectangle rendering later
-    //       this.removedRBushNodeAABBs.push(rBushNode.aabb);
-    //     }
-    //   }
-    // });
   }
 
   private flush(context: CanvasRenderingContext2D, renderingService: RenderingService) {

@@ -425,6 +425,11 @@ export interface ICSSStyleDeclaration<StyleProps> {
 export interface ICanvas extends IEventTarget {
   document: IDocument;
   customElements: CustomElementRegistry;
+
+  devicePixelRatio: number;
+  requestAnimationFrame: (callback: FrameRequestCallback) => number;
+  cancelAnimationFrame: (handle: number) => void;
+
   render: () => void;
   destroy: (destroyScenegraph?: boolean) => void;
   resize: (width: number, height: number) => void;

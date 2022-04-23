@@ -19,7 +19,7 @@ export class CSSTranslate extends CSSTransformComponent {
     super(is2D);
   }
 
-  toMatrix(): globalThis.DOMMatrix {
+  toMatrix(): DOMMatrix {
     // const x = this.x.to(UnitType.kPixels);
     // const y = this.y.to(UnitType.kPixels);
     // const z = this.z.to(UnitType.kPixels);

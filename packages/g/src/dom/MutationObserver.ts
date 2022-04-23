@@ -1,4 +1,3 @@
-import 'setimmediate';
 import type { IElement, DisplayObject } from '..';
 import { ElementEvent } from '..';
 import { MutationEvent } from './MutationEvent';
@@ -403,8 +402,12 @@ function scheduleCallback(observer: MutationObserver) {
   scheduledObservers.push(observer);
   if (!isScheduled) {
     isScheduled = true;
-    // @ts-ignore
-    setImmediate(dispatchCallbacks);
+    // setImmediate(dispatchCallbacks);
+    if (typeof globalThis !== 'undefined') {
+      globalThis.setTimeout(dispatchCallbacks);
+    } else {
+      dispatchCallbacks();
+    }
   }
 }
 function dispatchCallbacks() {

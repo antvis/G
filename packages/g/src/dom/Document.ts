@@ -18,7 +18,7 @@ export class Document extends Node implements IDocument {
     this.nodeName = 'document';
 
     // create timeline
-    this.timeline = new AnimationTimeline();
+    this.timeline = new AnimationTimeline(this);
 
     /**
      * for inherited properties, the initial value is used on the root element only,

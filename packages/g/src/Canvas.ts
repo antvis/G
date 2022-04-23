@@ -1,4 +1,8 @@
 import { GlobalContainer } from 'mana-syringe';
+import {
+  requestAnimationFrame as rAF,
+  cancelAnimationFrame as cancelRAF,
+} from 'request-animation-frame-polyfill';
 import type { Cursor } from './types';
 import { CanvasConfig } from './types';
 import { cleanExistedCanvas, isBrowser } from './utils/canvas';
@@ -10,7 +14,6 @@ import { EventService } from './services/EventService';
 import { Camera, CameraEvent, CAMERA_PROJECTION_MODE, DefaultCamera } from './camera';
 import { containerModule as commonContainerModule } from './canvas-module';
 import type { IRenderer } from './AbstractRenderer';
-import { cancelAnimationFrame, requestAnimationFrame, patch } from './utils/raf';
 import type { PointLike } from './shapes';
 import type { FederatedEvent, Element, IChildNode } from './dom';
 import { Document, EventTarget, ElementEvent } from './dom';
@@ -28,6 +31,9 @@ export enum CanvasEvent {
 
 /**
  * can be treated like Window in DOM
+ * provide some extra methods like `window`, such as:
+ * * `window.requestAnimationFrame`
+ * * `window.devicePixelRatio`
  *
  * prototype chains: Canvas(Window) -> EventTarget
  */
@@ -47,6 +53,24 @@ export class Canvas extends EventTarget implements ICanvas {
    */
   customElements: CustomElementRegistry;
 
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+   */
+  requestAnimationFrame: (callback: FrameRequestCallback) => number;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
+   */
+  cancelAnimationFrame: (handle: number) => void;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio
+   */
+  devicePixelRatio: number;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element
+   */
   Element = DisplayObject;
 
   /**
@@ -102,9 +126,12 @@ export class Canvas extends EventTarget implements ICanvas {
       canvasHeight = height || canvas.height / dpr;
     }
 
-    if (requestAnimationFrame && cancelAnimationFrame) {
-      patch(requestAnimationFrame, cancelAnimationFrame);
-    }
+    /**
+     * implements `Window` interface
+     */
+    this.devicePixelRatio = dpr;
+    this.requestAnimationFrame = requestAnimationFrame || rAF.bind(globalThis);
+    this.cancelAnimationFrame = cancelAnimationFrame || cancelRAF.bind(globalThis);
 
     this.initRenderingContext({
       container,
@@ -163,6 +190,9 @@ export class Canvas extends EventTarget implements ICanvas {
       .setPosition(width / 2, height / 2, 500)
       .setFocalPoint(width / 2, height / 2, 0)
       .setOrthographic(width / -2, width / 2, height / 2, height / -2, 0.1, 1000);
+
+    // keep ref since it will use raf in camera animation
+    camera.canvas = this;
 
     // redraw when camera changed
     const context = this.container.get<RenderingContext>(RenderingContext);

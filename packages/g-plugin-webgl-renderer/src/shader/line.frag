@@ -65,7 +65,7 @@ void main(){
 
   if (u_IsPicking > 0.5) {
     vec3 pickingColor = COLOR_SCALE * u_PickingColor;
-    if (pickingColor.x == 0.0 && pickingColor.y = 0.0 && pickingColor.z == 0.0) {
+    if (pickingColor.x == 0.0 && pickingColor.y == 0.0 && pickingColor.z == 0.0) {
       discard;
     }
     outputColor = vec4(pickingColor, 1.0);

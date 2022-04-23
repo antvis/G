@@ -19,13 +19,13 @@ export const TOUCH_TO_POINTER: Record<string, string> = {
 };
 
 export function isTouchEvent(event: InteractivePointerEvent): event is TouchEvent {
-  return SUPPORT_TOUCH && event instanceof TouchEvent;
+  return SUPPORT_TOUCH && event instanceof globalThis.TouchEvent;
 }
 
 export function isMouseEvent(event: InteractivePointerEvent): event is MouseEvent {
   return (
     !globalThis.MouseEvent ||
-    (event instanceof MouseEvent &&
+    (event instanceof globalThis.MouseEvent &&
       (!SUPPORT_POINTER_EVENTS || !(event instanceof globalThis.PointerEvent)))
   );
 }
