@@ -21,12 +21,13 @@ export class DirtyCheckPlugin implements RenderingPlugin {
   apply(renderingService: RenderingService) {
     renderingService.hooks.dirtycheck.tap(DirtyCheckPlugin.tag, (object: DisplayObject | null) => {
       if (object) {
-        const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
+        // const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
 
         const renderable = object.renderable;
         const isDirty =
           renderable.dirty || this.renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED);
-        if (isDirty || !enableDirtyRectangleRendering) {
+        // if (isDirty || !enableDirtyRectangleRendering) {
+        if (isDirty) {
           return object;
         } else {
           return null;

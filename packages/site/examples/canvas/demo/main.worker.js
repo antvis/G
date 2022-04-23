@@ -8,7 +8,12 @@ setupTransferableMethodsOnWorker({
     // specify an instance of the function
     fn: render,
   },
+  triggerEvent: {
+    fn: triggerEvent,
+  },
 });
+
+let canvas;
 
 export function render(offscreenCanvas, devicePixelRatio) {
   // create a renderer
@@ -20,7 +25,7 @@ export function render(offscreenCanvas, devicePixelRatio) {
   });
 
   // create a canvas
-  const canvas = new Canvas({
+  canvas = new Canvas({
     canvas: offscreenCanvas,
     devicePixelRatio,
     renderer,
@@ -66,4 +71,33 @@ export function render(offscreenCanvas, devicePixelRatio) {
       easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
     },
   );
+
+  circle.addEventListener('mouseenter', () => {
+    circle.style.lineWidth = 20;
+  });
+  circle.addEventListener('mouseleave', () => {
+    circle.style.lineWidth = 4;
+  });
+}
+
+/**
+ * receive signals from main thread
+ */
+export function triggerEvent(event, ev) {
+  ev.preventDefault = () => {};
+  ev.composedPath = () => {
+    return [canvas.getContextService().getDomElement()];
+  };
+
+  if (event === 'pointermove') {
+    canvas.getRenderingService().hooks.pointerMove.call(ev);
+  } else if (event === 'pointerdown') {
+    canvas.getRenderingService().hooks.pointerDown.call(ev);
+  } else if (event === 'pointerleave') {
+    canvas.getRenderingService().hooks.pointerOut.call(ev);
+  } else if (event === 'pointerover') {
+    canvas.getRenderingService().hooks.pointerOver.call(ev);
+  } else if (event === 'pointerup') {
+    canvas.getRenderingService().hooks.pointerUp.call(ev);
+  }
 }

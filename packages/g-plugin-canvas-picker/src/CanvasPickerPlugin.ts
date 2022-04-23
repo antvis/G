@@ -54,10 +54,13 @@ export class CanvasPickerPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     renderingService.hooks.pick.tap(CanvasPickerPlugin.tag, (result: PickingResult) => {
+      const {
+        topmost,
+        position: { x, y },
+      } = result;
+
       // position in world space
-      const { x, y } = result.position;
       const position = vec3.fromValues(x, y, 0);
-      const pickedDisplayObjects: DisplayObject[] = [];
 
       // query by AABB first with spatial index(r-tree)
       const rBushNodes = this.rBush.search({
@@ -68,9 +71,10 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       });
 
       const queriedIds = rBushNodes.map((node) => node.id);
+      const hitTestList: DisplayObject[] = [];
       rBushNodes.forEach(({ id }) => {
         const displayObject = this.displayObjectPool.getByEntity(id);
-        if (displayObject.isVisible() && displayObject.interactive) {
+        if (displayObject.isVisible() && !displayObject.isCulled() && displayObject.interactive) {
           // parent is not included, eg. parent is clipped
           if (
             displayObject.parentNode &&
@@ -79,29 +83,38 @@ export class CanvasPickerPlugin implements RenderingPlugin {
             return;
           }
 
-          // test with clip path
-          const objectToTest = displayObject.style.clipPath || displayObject;
-          let worldTransform = displayObject.getWorldTransform();
-
-          // clipped's world matrix * clipPath's local matrix
-          if (displayObject.style.clipPath) {
-            worldTransform = mat4.multiply(
-              mat4.create(),
-              worldTransform,
-              displayObject.style.clipPath.getLocalTransform(),
-            );
-          }
-
-          if (this.isHit(objectToTest, position, worldTransform)) {
-            pickedDisplayObjects.push(displayObject);
-          }
+          hitTestList.push(displayObject);
         }
       });
-
       // find group with max z-index
-      pickedDisplayObjects.sort((a, b) => a.sortable.renderOrder - b.sortable.renderOrder);
+      hitTestList.sort((a, b) => b.sortable.renderOrder - a.sortable.renderOrder);
 
-      result.picked = pickedDisplayObjects[pickedDisplayObjects.length - 1] || null;
+      const pickedDisplayObjects: DisplayObject[] = [];
+      for (const displayObject of hitTestList) {
+        // test with clip path
+        const objectToTest = displayObject.style.clipPath || displayObject;
+        let worldTransform = displayObject.getWorldTransform();
+
+        // clipped's world matrix * clipPath's local matrix
+        if (displayObject.style.clipPath) {
+          worldTransform = mat4.multiply(
+            mat4.create(),
+            worldTransform,
+            displayObject.style.clipPath.getLocalTransform(),
+          );
+        }
+
+        if (this.isHit(objectToTest, position, worldTransform)) {
+          if (topmost) {
+            result.picked = [objectToTest];
+            return result;
+          } else {
+            pickedDisplayObjects.push(objectToTest);
+          }
+        }
+      }
+
+      result.picked = pickedDisplayObjects;
       return result;
     });
   }

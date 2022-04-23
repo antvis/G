@@ -121,6 +121,76 @@ export class Document extends Node implements IDocument {
   }
 
   /**
+   * Do picking with API instead of triggering interactive events.
+   *
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint
+   */
+  async elementFromPoint(x: number, y: number): Promise<DisplayObject> {
+    const { x: viewportX, y: viewportY } = this.defaultView.canvas2Viewport({ x, y });
+    const { width, height } = this.defaultView.getConfig();
+    // outside canvas' viewport
+    if (viewportX < 0 || viewportY < 0 || viewportX > width || viewportY > height) {
+      return null;
+    }
+
+    const { x: clientX, y: clientY } = this.defaultView.viewport2Client({
+      x: viewportX,
+      y: viewportY,
+    });
+
+    const { picked } = await this.defaultView.getRenderingService().hooks.pick.promise({
+      topmost: true,
+      position: {
+        x,
+        y,
+        viewportX,
+        viewportY,
+        clientX,
+        clientY,
+      },
+      picked: [],
+    });
+    return (picked && picked[0]) || this.documentElement;
+  }
+
+  /**
+   * Do picking with API instead of triggering interactive events.
+   *
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementsFromPoint
+   */
+  async elementsFromPoint(x: number, y: number): Promise<DisplayObject[]> {
+    const { x: viewportX, y: viewportY } = this.defaultView.canvas2Viewport({ x, y });
+    const { width, height } = this.defaultView.getConfig();
+    // outside canvas' viewport
+    if (viewportX < 0 || viewportY < 0 || viewportX > width || viewportY > height) {
+      return [];
+    }
+
+    const { x: clientX, y: clientY } = this.defaultView.viewport2Client({
+      x: viewportX,
+      y: viewportY,
+    });
+
+    const { picked } = await this.defaultView.getRenderingService().hooks.pick.promise({
+      topmost: false,
+      position: {
+        x,
+        y,
+        viewportX,
+        viewportY,
+        clientX,
+        clientY,
+      },
+      picked: [],
+    });
+
+    if (picked[picked.length - 1] !== this.documentElement) {
+      picked.push(this.documentElement);
+    }
+    return picked;
+  }
+
+  /**
    * eg. Uncaught DOMException: Failed to execute 'appendChild' on 'Node': Only one element on document allowed.
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

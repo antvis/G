@@ -49,6 +49,13 @@
         "zh": "使用用户创建的 <canvas>",
         "en": "Use user-defined <canvas>"
       }
+    },
+    {
+      "filename": "element-from-point.js",
+      "title": {
+        "zh": "通过 API 方式完成拾取",
+        "en": "Use picking API"
+      }
     }
   ]
 }

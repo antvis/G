@@ -47,8 +47,10 @@ export class BatchManager {
 
   private stencilRefCache: Record<number, number> = {};
 
-  render(lists: RenderInstList[]) {
-    this.updatePendingPatches();
+  render(list: RenderInstList, isPicking = false) {
+    if (!isPicking) {
+      this.updatePendingPatches();
+    }
 
     this.meshes.forEach((mesh) => {
       // init rendering service, create geometry & material
@@ -64,16 +66,16 @@ export class BatchManager {
       renderInst.setAllowSkippingIfPipelineNotReady(false);
       mesh.applyRenderInst(renderInst, objects);
 
-      lists.forEach((list) => {
-        this.renderHelper.renderInstManager.submitRenderInst(renderInst, list);
-      });
+      this.renderHelper.renderInstManager.submitRenderInst(renderInst, list);
 
       // console.log('submit: ', mesh);
 
-      // finish rendering...
-      mesh.objects.forEach((object) => {
-        object.renderable.dirty = false;
-      });
+      if (!isPicking) {
+        // finish rendering...
+        mesh.objects.forEach((object) => {
+          object.renderable.dirty = false;
+        });
+      }
     });
   }
 

@@ -14,8 +14,15 @@ export interface RenderingPlugin {
 export const RenderingPluginContribution = Syringe.defineToken('RenderingPluginContribution');
 
 export interface PickingResult {
+  /**
+   * position in canvas coordinate
+   */
   position: EventPosition;
-  picked: DisplayObject | null;
+  picked: DisplayObject[];
+  /**
+   * only return the topmost object if there are multiple objects overlapped
+   */
+  topmost?: boolean;
 }
 
 /**
@@ -61,19 +68,43 @@ export class RenderingService {
   private zIndexCounter = 0;
 
   hooks = {
+    /**
+     * called before any frame rendered
+     */
     init: new AsyncParallelHook<[]>(),
+    /**
+     * only dirty object which has sth changed will be rendered
+     */
     dirtycheck: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
+    /**
+     * do culling
+     */
     cull: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */
     beginFrame: new SyncHook<[]>([]),
+    /**
+     * called before every dirty object get rendered
+     */
     beforeRender: new SyncHook<[DisplayObject]>(['objectToRender']),
+    /**
+     * called when every dirty object rendering even it's culled
+     */
     render: new SyncHook<[DisplayObject]>(['objectToRender']),
+    /**
+     * called after every dirty object get rendered
+     */
     afterRender: new SyncHook<[DisplayObject]>(['objectToRender']),
     endFrame: new SyncHook<[]>([]),
     destroy: new SyncHook<[]>([]),
+    /**
+     * use async but faster method such as GPU-based picking in `g-plugin-webgl-renderer`
+     */
     pick: new AsyncSeriesWaterfallHook<[PickingResult], PickingResult>(['result']),
+    /**
+     * used in event system
+     */
     pointerDown: new SyncHook<[InteractivePointerEvent]>(['event']),
     pointerUp: new SyncHook<[InteractivePointerEvent]>(['event']),
     pointerMove: new SyncHook<[InteractivePointerEvent]>(['event']),
@@ -133,21 +164,22 @@ export class RenderingService {
     // dirtycheck first
     const objectChanged = this.hooks.dirtycheck.call(displayObject);
     if (objectChanged) {
-      const objectToRender = this.hooks.cull.call(objectChanged);
+      // const objectToRender = this.hooks.cull.call(objectChanged);
+      this.hooks.cull.call(objectChanged);
 
-      if (objectToRender) {
-        this.stats.rendered++;
-        if (!this.renderingContext.dirty) {
-          this.renderingContext.dirty = true;
-          this.hooks.beginFrame.call();
-        }
-
-        this.hooks.beforeRender.call(objectToRender);
-        this.hooks.render.call(objectToRender);
-        this.hooks.afterRender.call(objectToRender);
-
-        displayObject.renderable.dirty = false;
+      // if (objectToRender) {
+      this.stats.rendered++;
+      if (!this.renderingContext.dirty) {
+        this.renderingContext.dirty = true;
+        this.hooks.beginFrame.call();
       }
+
+      this.hooks.beforeRender.call(objectChanged);
+      this.hooks.render.call(objectChanged);
+      this.hooks.afterRender.call(objectChanged);
+      objectChanged;
+      displayObject.renderable.dirty = false;
+      // }
     }
 
     displayObject.sortable.renderOrder = this.zIndexCounter++;

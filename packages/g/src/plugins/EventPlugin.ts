@@ -48,9 +48,9 @@ export class EventPlugin implements RenderingPlugin {
     this.eventService.setPickHandler(async (position: EventPosition) => {
       const { picked } = await this.renderingService.hooks.pick.promise({
         position,
-        picked: null,
+        picked: [],
       });
-      return picked;
+      return picked[0] || null;
     });
 
     renderingService.hooks.pointerWheel.tap(

@@ -3,10 +3,10 @@ import type { AnimationTimeline } from './AnimationTimeline';
 import type { BaseStyleProps, Shape } from '../types';
 import type { FederatedEvent } from './FederatedEvent';
 import type { CustomElementRegistry } from './CustomElementRegistry';
-import type { DisplayObject } from '..';
+import type { CanvasConfig, DisplayObject } from '..';
 import type { PointLike } from '../shapes';
 import type { Camera } from '../camera';
-import type { ContextService } from '../services';
+import type { ContextService, EventService, RenderingService } from '../services';
 
 /**
  * built-in events for element
@@ -429,8 +429,11 @@ export interface ICanvas extends IEventTarget {
   destroy: (destroyScenegraph?: boolean) => void;
   resize: (width: number, height: number) => void;
 
+  getConfig: () => Partial<CanvasConfig>;
   getCamera: () => Camera;
   getContextService: () => ContextService<unknown>;
+  getRenderingService: () => RenderingService;
+  getEventService: () => EventService;
 
   client2Viewport: (client: PointLike) => PointLike;
   viewport2Client: (viewport: PointLike) => PointLike;

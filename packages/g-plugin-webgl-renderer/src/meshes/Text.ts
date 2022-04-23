@@ -1,13 +1,7 @@
 import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
-import type {
-  DisplayObject,
-  ParsedTextStyleProps,
-  Text as TextShape,
-  Tuple4Number} from '@antv/g';
-import {
-  UnitType,
-} from '@antv/g';
+import type { DisplayObject, ParsedTextStyleProps, Text as TextShape, Tuple4Number } from '@antv/g';
+import { UnitType } from '@antv/g';
 import { CSSRGB } from '@antv/g';
 import { Format, VertexBufferFrequency, CullMode } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
@@ -295,7 +289,8 @@ export class TextMesh extends Instanced {
       name === 'strokeOpacity' ||
       name === 'opacity' ||
       name === 'lineWidth' ||
-      name === 'visibility'
+      name === 'visibility' ||
+      name === 'interactive'
     ) {
       this.material.geometryDirty = true;
     }
@@ -331,6 +326,7 @@ export class TextMesh extends Instanced {
       strokeOpacity,
       lineWidth,
       visibility,
+      interactive,
     } = object.parsedStyle as ParsedTextStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (fill instanceof CSSRGB) {
@@ -352,7 +348,9 @@ export class TextMesh extends Instanced {
       ];
     }
     // @ts-ignore
-    const encodedPickingColor = object.renderable3D?.encodedPickingColor || [0, 0, 0];
+    const encodedPickingColor = (interactive && object.renderable3D?.encodedPickingColor) || [
+      0, 0, 0,
+    ];
 
     const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
 

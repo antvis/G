@@ -1304,7 +1304,7 @@ solarSystem.getElementsByName('sun');
 // sun
 
 solarSystem.getElementsByTagName('circle');
-solarSystem.getElementsByTagName(SHAPE.Circle);
+solarSystem.getElementsByTagName(Shape.CIRCLE);
 // [sun, earth, moon]
 
 solarSystem.querySelector('[name=sun]');

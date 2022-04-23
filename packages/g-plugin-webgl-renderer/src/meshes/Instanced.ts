@@ -206,8 +206,17 @@ export abstract class Instanced {
     // const useNormal = this.material.defines.NORMAL;
 
     objects.forEach((object) => {
-      const { fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, anchor, visibility } =
-        object.parsedStyle as ParsedBaseStyleProps;
+      const {
+        fill,
+        stroke,
+        opacity,
+        fillOpacity,
+        strokeOpacity,
+        lineWidth,
+        anchor,
+        visibility,
+        interactive,
+      } = object.parsedStyle as ParsedBaseStyleProps;
       let fillColor: Tuple4Number = [0, 0, 0, 0];
       if (fill instanceof CSSRGB) {
         fillColor = [
@@ -238,7 +247,9 @@ export abstract class Instanced {
       mat4.mul(modelViewMatrix, this.camera.getViewTransform(), modelMatrix);
 
       // @ts-ignore
-      const encodedPickingColor = object.renderable3D?.encodedPickingColor || [0, 0, 0];
+      const encodedPickingColor = (interactive && object.renderable3D?.encodedPickingColor) || [
+        0, 0, 0,
+      ];
 
       packedModelMatrix.push(...modelMatrix);
       packedFill.push(...fillColor);
@@ -684,6 +695,22 @@ export abstract class Instanced {
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
       );
+    } else if (name === 'interactive') {
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const { interactive } = object.parsedStyle as ParsedBaseStyleProps;
+        // @ts-ignore
+        const encodedPickingColor = (interactive && object.renderable3D?.encodedPickingColor) || [
+          0, 0, 0,
+        ];
+        packed.push(...encodedPickingColor, object.sortable.renderOrder * RENDER_ORDER_SCALE);
+      });
+      this.geometry.updateVertexBuffer(
+        VertexAttributeBufferIndex.PICKING_COLOR,
+        VertexAttributeLocation.PICKING_COLOR,
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
+      );
     }
   }
 
@@ -698,8 +725,9 @@ export abstract class Instanced {
   changeRenderOrder(object: DisplayObject, renderOrder: number) {
     const index = this.objects.indexOf(object);
 
-    // @ts-ignore
-    const encodedPickingColor = object.renderable3D?.encodedPickingColor || [0, 0, 0];
+    const encodedPickingColor = (object.parsedStyle.interactive &&
+      // @ts-ignore
+      object.renderable3D?.encodedPickingColor) || [0, 0, 0];
     this.geometry.updateVertexBuffer(
       VertexAttributeBufferIndex.PICKING_COLOR,
       VertexAttributeLocation.PICKING_COLOR,

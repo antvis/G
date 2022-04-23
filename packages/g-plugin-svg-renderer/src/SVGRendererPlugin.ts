@@ -221,7 +221,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
+      // if (!object.isCulled()) {
       this.renderQueue.push(object);
+      // }
     });
 
     renderingService.hooks.endFrame.tap(SVGRendererPlugin.tag, () => {

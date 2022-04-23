@@ -48,8 +48,7 @@ export class FillMesh extends Instanced {
     this.material.fragmentShader = meshFrag;
 
     const instance = objects[0];
-
-    const { fill, opacity, fillOpacity, anchor, visibility } =
+    const { fill, opacity, fillOpacity, anchor, visibility, interactive } =
       instance.parsedStyle as ParsedBaseStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (fill instanceof CSSRGB) {
@@ -62,7 +61,9 @@ export class FillMesh extends Instanced {
     }
 
     // @ts-ignore
-    const encodedPickingColor = instance.renderable3D?.encodedPickingColor || [0, 0, 0];
+    const encodedPickingColor = (interactive && instance.renderable3D?.encodedPickingColor) || [
+      0, 0, 0,
+    ];
     let translateX = 0;
     let translateY = 0;
     const contentBounds = instance.getGeometryBounds();
@@ -94,7 +95,7 @@ export class FillMesh extends Instanced {
     super.updateAttribute(objects, startIndex, name, value);
 
     objects.forEach((object) => {
-      const { fill, opacity, fillOpacity, anchor, visibility } =
+      const { fill, opacity, fillOpacity, anchor, visibility, interactive } =
         object.parsedStyle as ParsedBaseStyleProps;
       if (
         name === 'lineJoin' ||
@@ -152,6 +153,14 @@ export class FillMesh extends Instanced {
       } else if (name === 'visibility') {
         this.material.setUniforms({
           [Uniform.VISIBLE]: visibility.value === 'visible' ? 1 : 0,
+        });
+      } else if (name === 'interactive') {
+        // @ts-ignore
+        const encodedPickingColor = (interactive && object.renderable3D?.encodedPickingColor) || [
+          0, 0, 0,
+        ];
+        this.material.setUniforms({
+          [Uniform.PICKING_COLOR]: encodedPickingColor,
         });
       }
     });
