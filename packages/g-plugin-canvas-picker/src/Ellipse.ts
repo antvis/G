@@ -17,6 +17,8 @@ export function isPointInPath(
     clipPathTargets,
   } = displayObject.parsedStyle as ParsedEllipseStyleProps;
   const isClipPath = !!clipPathTargets?.length;
+  const hasFill = displayObject.attributes.fill !== 'none' && !!fill;
+  const hasStroke = displayObject.attributes.stroke !== 'none' && !!stroke;
 
   const rx = rxInPixels.value;
   const ry = ryInPixels.value;
@@ -25,13 +27,13 @@ export function isPointInPath(
   const squareX = (x - rx) * (x - rx);
   const squareY = (y - ry) * (y - ry);
   // 使用椭圆的公式： x*x/rx*rx + y*y/ry*ry = 1;
-  if ((fill && stroke) || isClipPath) {
+  if ((hasFill && hasStroke) || isClipPath) {
     return ellipseDistance(squareX, squareY, rx + halfLineWith, ry + halfLineWith) <= 1;
   }
-  if (fill) {
+  if (hasFill) {
     return ellipseDistance(squareX, squareY, rx, ry) <= 1;
   }
-  if (stroke) {
+  if (hasStroke) {
     return (
       ellipseDistance(squareX, squareY, rx - halfLineWith, ry - halfLineWith) >= 1 &&
       ellipseDistance(squareX, squareY, rx + halfLineWith, ry + halfLineWith) <= 1

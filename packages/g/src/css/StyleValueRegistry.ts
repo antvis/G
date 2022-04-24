@@ -154,14 +154,14 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'fill',
     interpolable: true,
     inherited: true,
-    defaultValue: 'transparent',
+    defaultValue: 'none',
     handler: CSSPropertyColor,
   },
   {
     name: 'stroke',
     interpolable: true,
     inherited: true,
-    defaultValue: 'transparent',
+    defaultValue: 'none',
     handler: CSSPropertyColor,
   },
   {

@@ -15,12 +15,14 @@ export function isPointInPath(
     clipPathTargets,
   } = displayObject.parsedStyle as ParsedBaseStyleProps;
   const isClipPath = !!clipPathTargets?.length;
+  const hasFill = displayObject.attributes.fill !== 'none' && !!fill;
+  const hasStroke = displayObject.attributes.stroke !== 'none' && !!stroke;
 
   let isHit = false;
-  if (stroke || isClipPath) {
+  if (hasStroke || isClipPath) {
     isHit = inPolyline(points.points, lineWidth.value, position.x + x, position.y + y, true);
   }
-  if (!isHit && (fill || isClipPath)) {
+  if (!isHit && (hasFill || isClipPath)) {
     isHit = inPolygon(points.points, position.x + x, position.y + y);
   }
   return isHit;

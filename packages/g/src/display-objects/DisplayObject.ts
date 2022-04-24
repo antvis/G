@@ -50,8 +50,8 @@ const DEFAULT_STYLE_PROPS: {
   opacity: 'unset',
   fillOpacity: 'unset',
   strokeOpacity: 'unset',
-  fill: 'unset',
-  stroke: 'unset',
+  fill: 'none',
+  stroke: 'none',
   transformOrigin: 'left top',
   visibility: 'unset',
 };

@@ -14,6 +14,7 @@ const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/gi;
  */
 export function parseColor(colorStr: string = ''): CSSRGB | CSSGradientValue {
   if (colorStr === 'transparent') {
+    // transparent black
     return new CSSRGB(0, 0, 0, 0);
   } else if (colorStr === 'currentColor') {
     // @see https://github.com/adobe-webplatform/Snap.svg/issues/526

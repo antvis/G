@@ -465,7 +465,11 @@ export abstract class Instanced {
         this.material.defines.USE_UV = true;
         this.material.defines.USE_MAP = true;
         this.textureMappings.push(fillTextureMapping);
+      } else {
+        this.material.defines.USE_UV = false;
+        this.material.defines.USE_MAP = false;
       }
+      this.materialDirty = true;
     }
 
     // re-compile program, eg. DEFINE changed
@@ -630,6 +634,7 @@ export abstract class Instanced {
         if (i >= 0) {
           // remove original fill texture mapping
           this.textureMappings.splice(i, -1);
+          this.material.textureDirty = true;
         }
       } else {
         const fillTextureMapping = this.createFillGradientTextureMapping([this.instance]);

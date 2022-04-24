@@ -176,12 +176,19 @@ export abstract class CSSNumericValue extends CSSStyleValue {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/to
    * @see https://chromium.googlesource.com/chromium/src/+/refs/heads/main/third_party/blink/renderer/core/css/cssom/css_numeric_value.cc#331
    */
-  to(unit: UnitType): CSSUnitValue {
+  to(unitOrName: UnitType | string): CSSUnitValue {
     const sum = this.sumValue();
     if (sum.length === 0 || sum.length !== 1) return null;
 
     const value: CSSUnitValue = cssNumericSumValueEntryToUnitValue(sum[0]);
     if (!value) return null;
+
+    let unit: UnitType;
+    if (typeof unitOrName === 'string') {
+      unit = CSSUnitValue.unitFromName(unitOrName);
+    } else {
+      unit = unitOrName;
+    }
     return value.convertTo(unit);
   }
 

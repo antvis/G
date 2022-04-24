@@ -1,0 +1,22 @@
+{
+  "title": {
+    "zh": "中文分类",
+    "en": "Category"
+  },
+  "demos": [
+    {
+      "filename": "color.js",
+      "title": {
+        "zh": "<color>",
+        "en": "<color>"
+      }
+    },
+    {
+      "filename": "paint.js",
+      "title": {
+        "zh": "<paint>",
+        "en": "<paint>"
+      }
+    }
+  ]
+}

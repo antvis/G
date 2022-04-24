@@ -318,7 +318,11 @@ export class Canvas extends EventTarget implements ICanvas {
 
     // unmount all children
     const root = this.getRoot();
-    this.unmountChildren(root);
+    // this.unmountChildren(root);
+    root.children.forEach((child: DisplayObject) => {
+      this.unmountChildren(child);
+    });
+
     if (destroyScenegraph) {
       // destroy Document
       this.document.destroy();

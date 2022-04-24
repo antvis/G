@@ -17,14 +17,17 @@ export function isPointInPath(
   const absDistance = distance(r, r, position.x, position.y);
   const isClipPath = !!clipPathTargets?.length;
 
+  const hasFill = displayObject.attributes.fill !== 'none' && !!fill;
+  const hasStroke = displayObject.attributes.stroke !== 'none' && !!stroke;
+
   // 直接用距离，如果同时存在边和填充时，可以减少两次计算
-  if ((fill && stroke) || isClipPath) {
+  if ((hasFill && hasStroke) || isClipPath) {
     return absDistance <= r + halfLineWidth;
   }
-  if (fill) {
+  if (hasFill) {
     return absDistance <= r;
   }
-  if (stroke) {
+  if (hasStroke) {
     return absDistance >= r - halfLineWidth && absDistance <= r + halfLineWidth;
   }
   return false;

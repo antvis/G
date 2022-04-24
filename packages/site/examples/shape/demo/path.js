@@ -47,6 +47,12 @@ const path2 = new Path({
     stroke: '#54BECC',
   },
 });
+path2.addEventListener('mouseenter', () => {
+  path2.style.stroke = 'red';
+});
+path2.addEventListener('mouseleave', () => {
+  path2.style.stroke = '#54BECC';
+});
 
 const path3 = new Path({
   style: {
