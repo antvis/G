@@ -3,7 +3,7 @@ import {
   requestAnimationFrame as rAF,
   cancelAnimationFrame as cancelRAF,
 } from 'request-animation-frame-polyfill';
-import type { Cursor } from './types';
+import type { Cursor, InteractivePointerEvent } from './types';
 import { CanvasConfig } from './types';
 import { cleanExistedCanvas, isBrowser } from './utils/canvas';
 import { DisplayObject } from './display-objects/DisplayObject';
@@ -69,6 +69,28 @@ export class Canvas extends EventTarget implements ICanvas {
   devicePixelRatio: number;
 
   /**
+   * whether the runtime supports PointerEvent?
+   * if not, the event system won't trigger pointer events like `pointerdown`
+   */
+  supportPointerEvent: boolean;
+
+  /**
+   * whether the runtime supports TouchEvent?
+   * if not, the event system won't trigger touch events like `touchstart`
+   */
+  supportTouchEvent: boolean;
+
+  /**
+   * is this native event a TouchEvent?
+   */
+  isTouchEvent: (event: InteractivePointerEvent) => event is TouchEvent;
+
+  /**
+   * is this native event a MouseEvent?
+   */
+  isMouseEvent: (event: InteractivePointerEvent) => event is MouseEvent;
+
+  /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element
    */
   Element = DisplayObject;
@@ -110,6 +132,10 @@ export class Canvas extends EventTarget implements ICanvas {
       requestAnimationFrame,
       cancelAnimationFrame,
       createImage,
+      supportPointerEvent,
+      supportTouchEvent,
+      isTouchEvent,
+      isMouseEvent,
     } = config;
 
     cleanExistedCanvas(container, this);
@@ -132,6 +158,22 @@ export class Canvas extends EventTarget implements ICanvas {
     this.devicePixelRatio = dpr;
     this.requestAnimationFrame = requestAnimationFrame || rAF.bind(globalThis);
     this.cancelAnimationFrame = cancelAnimationFrame || cancelRAF.bind(globalThis);
+
+    /**
+     * limits query
+     */
+    this.supportTouchEvent = supportTouchEvent || 'ontouchstart' in globalThis;
+    this.supportPointerEvent = supportPointerEvent || !!globalThis.PointerEvent;
+    this.isTouchEvent =
+      isTouchEvent ||
+      ((event: InteractivePointerEvent): event is TouchEvent =>
+        this.supportTouchEvent && event instanceof globalThis.TouchEvent);
+    this.isMouseEvent =
+      isMouseEvent ||
+      ((event: InteractivePointerEvent): event is MouseEvent =>
+        !globalThis.MouseEvent ||
+        (event instanceof globalThis.MouseEvent &&
+          (!this.supportPointerEvent || !(event instanceof globalThis.PointerEvent))));
 
     this.initRenderingContext({
       container,

@@ -3,7 +3,7 @@ import type { AnimationTimeline } from './AnimationTimeline';
 import type { BaseStyleProps, Shape } from '../types';
 import type { FederatedEvent } from './FederatedEvent';
 import type { CustomElementRegistry } from './CustomElementRegistry';
-import type { CanvasConfig, DisplayObject } from '..';
+import type { CanvasConfig, DisplayObject, InteractivePointerEvent } from '..';
 import type { PointLike } from '../shapes';
 import type { Camera } from '../camera';
 import type { ContextService, EventService, RenderingService } from '../services';
@@ -429,6 +429,11 @@ export interface ICanvas extends IEventTarget {
   devicePixelRatio: number;
   requestAnimationFrame: (callback: FrameRequestCallback) => number;
   cancelAnimationFrame: (handle: number) => void;
+
+  supportTouchEvent: boolean;
+  supportPointerEvent: boolean;
+  isTouchEvent: (event: InteractivePointerEvent) => event is TouchEvent;
+  isMouseEvent: (event: InteractivePointerEvent) => event is MouseEvent;
 
   render: () => void;
   destroy: (destroyScenegraph?: boolean) => void;

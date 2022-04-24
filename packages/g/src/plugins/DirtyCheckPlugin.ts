@@ -1,5 +1,5 @@
 import { inject, singleton } from 'mana-syringe';
-import { CanvasConfig } from '../types';
+// import { CanvasConfig } from '../types';
 import type { RenderingService, RenderingPlugin } from '../services/RenderingService';
 import { RenderingPluginContribution } from '../services/RenderingService';
 import { RenderingContext, RenderReason } from '../services/RenderingContext';
@@ -12,8 +12,8 @@ import type { DisplayObject } from '../display-objects/DisplayObject';
 export class DirtyCheckPlugin implements RenderingPlugin {
   static tag = 'DirtyCheckPlugin';
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  // @inject(CanvasConfig)
+  // private canvasConfig: CanvasConfig;
 
   @inject(RenderingContext)
   private renderingContext: RenderingContext;

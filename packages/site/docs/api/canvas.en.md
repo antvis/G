@@ -98,6 +98,10 @@ const canvas = new Canvas({
 
 必填，渲染器，目前支持 `g-canvas` `g-svg` 和 `g-webgl`，后续可以在运行时通过 [setRenderer()](/zh/docs/api/canvas#setrendererrenderer-renderer) 切换。
 
+# 特殊运行平台适配
+
+在一些特殊的运行平台（例如小程序）上，无法正常使用类似 [globalThis](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis) 这样的全局变量，而在内部我们又需要依靠它创建图片（`new globalThis.Image()`）、判断是否支持 TouchEvent（`'ontouchstart' in globalThis`）等。因此需要这些特殊平台的使用者手动传入特有的创建以及判断方式。
+
 ## devicePixelRatio
 
 可选。默认将使用 `window.devicePixelRatio`，如果运行环境中无 `window` 对象，例如 WebWorker 中，可以手动传入，如果仍未传入则使用 1。
@@ -122,6 +126,22 @@ const canvas = new Canvas({
   createImage: () => canvas.createImage(),
 });
 ```
+
+## supportPointerEvent
+
+可选。是否支持 PointerEvent，默认将使用 `!!globalThis.PointerEvent` 判断。如果传入 `false` 内部事件系统将不会触发例如 `pointerdown` 等 PointerEvent。
+
+## supportTouchEvent
+
+可选。是否支持 TouchEvent。如果传入 `false` 内部事件系统将不会触发例如 `touchstart` 等 TouchEvent。
+
+## isTouchEvent
+
+可选。判断一个原生事件是否是 TouchEvent，接受原生事件作为参数，返回判定结果。
+
+## isMouseEvent
+
+可选。判断一个原生事件是否是 MouseEvent，接受原生事件作为参数，返回判定结果。
 
 ## offscreenCanvas
 

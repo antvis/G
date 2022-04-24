@@ -43,7 +43,6 @@
     "@types/offscreencanvas": "^2019.6.4",
     "d3-color": "^1.4.0",
     "eventemitter3": "^4.0.0",
-    "geometry-interfaces": "^1.1.4",
     "gl-matrix": "^3.1.0",
     "mana-syringe": "^0.3.0",
     "reflect-metadata": "^0.1.13",

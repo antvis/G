@@ -335,6 +335,15 @@ export interface CanvasConfig {
   createImage?: () => HTMLImageElement;
 
   /**
+   * limits query
+   */
+  supportPointerEvent?: boolean;
+  // supportMouseEvent?: () => boolean;
+  supportTouchEvent?: boolean;
+  isTouchEvent?: (event: InteractivePointerEvent) => event is TouchEvent;
+  isMouseEvent?: (event: InteractivePointerEvent) => event is MouseEvent;
+
+  /**
    * 画布宽度
    */
   width?: number;

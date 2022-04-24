@@ -1,12 +1,13 @@
-import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from '@antv/g';
 import {
-  ContextService,
-  RenderingPluginContribution,
-  SUPPORT_POINTER_EVENTS,
-  SUPPORT_ONLY_TOUCH,
-  SUPPORT_TOUCH,
+  InteractivePointerEvent,
+  RenderingContext,
+  RenderingPlugin,
+  RenderingService,
 } from '@antv/g';
+import { ContextService, RenderingPluginContribution } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
+
+const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
 
 /**
  * listen to mouse/touch/pointer events on DOM wrapper, trigger pointer events
@@ -18,7 +19,13 @@ export class DOMInteractionPlugin implements RenderingPlugin {
   @inject(ContextService)
   private contextService: ContextService<unknown>;
 
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
+
   apply(renderingService: RenderingService) {
+    const canvas = this.renderingContext.root.ownerDocument.defaultView;
+    const SUPPORT_ONLY_TOUCH = canvas.supportTouchEvent && MOBILE_REGEX.test(navigator.userAgent);
+
     const onPointerMove = (ev: InteractivePointerEvent) => {
       renderingService.hooks.pointerMove.call(ev);
     };
@@ -90,11 +97,11 @@ export class DOMInteractionPlugin implements RenderingPlugin {
     renderingService.hooks.init.tap(DOMInteractionPlugin.tag, () => {
       const $el = this.contextService.getDomElement() as HTMLElement;
 
-      if (SUPPORT_POINTER_EVENTS) {
+      if (canvas.supportPointerEvent) {
         addPointerEventListener($el);
       } else if (SUPPORT_ONLY_TOUCH) {
         addTouchEventListener($el);
-      } else if (!SUPPORT_TOUCH) {
+      } else if (!canvas.supportTouchEvent) {
         addMouseEventListener($el);
       } else {
         addTouchEventListener($el);
@@ -111,11 +118,11 @@ export class DOMInteractionPlugin implements RenderingPlugin {
 
     renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
       const $el = this.contextService.getDomElement() as HTMLElement;
-      if (SUPPORT_POINTER_EVENTS) {
+      if (canvas.supportPointerEvent) {
         removePointerEventListener($el);
       } else if (SUPPORT_ONLY_TOUCH) {
         removeTouchEventListener($el);
-      } else if (!SUPPORT_TOUCH) {
+      } else if (!canvas.supportTouchEvent) {
         removeMouseEventListener($el);
       } else {
         removeTouchEventListener($el);

@@ -1,4 +1,5 @@
 import { inject, singleton } from 'mana-syringe';
+import { isUndefined } from '@antv/util';
 import type { ICanvas, FederatedMouseEvent } from '../dom';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
@@ -13,7 +14,8 @@ import {
 import { Point } from '../shapes';
 import type { Cursor, EventPosition, InteractivePointerEvent } from '../types';
 import { CanvasConfig } from '../types';
-import { normalizeToPointerEvent, SUPPORT_TOUCH, TOUCH_TO_POINTER } from '../utils/event';
+import { MOUSE_POINTER_ID, TOUCH_TO_POINTER } from '../utils/event';
+import type { FormattedTouch, FormattedPointerEvent } from '../utils/event';
 
 /**
  * support mouse & touch events
@@ -45,6 +47,8 @@ export class EventPlugin implements RenderingPlugin {
   private rootWheelEvent = new FederatedWheelEvent(null);
 
   apply(renderingService: RenderingService) {
+    const canvas = this.renderingContext.root.ownerDocument.defaultView;
+
     this.eventService.setPickHandler(async (position: EventPosition) => {
       const { picked } = await this.renderingService.hooks.pick.promise({
         position,
@@ -65,11 +69,11 @@ export class EventPlugin implements RenderingPlugin {
     renderingService.hooks.pointerDown.tap(
       EventPlugin.tag,
       (nativeEvent: InteractivePointerEvent) => {
-        if (SUPPORT_TOUCH && (nativeEvent as PointerEvent).pointerType === 'touch') {
+        if (canvas.supportTouchEvent && (nativeEvent as PointerEvent).pointerType === 'touch') {
           return;
         }
 
-        const events = normalizeToPointerEvent(nativeEvent);
+        const events = this.normalizeToPointerEvent(nativeEvent, canvas);
 
         if (this.autoPreventDefault && (events[0] as any).isNormalized) {
           const cancelable = nativeEvent.cancelable || !('cancelable' in nativeEvent);
@@ -80,11 +84,7 @@ export class EventPlugin implements RenderingPlugin {
         }
 
         for (const event of events) {
-          const federatedEvent = this.bootstrapEvent(
-            this.rootPointerEvent,
-            event,
-            this.renderingContext.root?.ownerDocument?.defaultView,
-          );
+          const federatedEvent = this.bootstrapEvent(this.rootPointerEvent, event, canvas);
           this.eventService.mapEvent(federatedEvent);
         }
 
@@ -95,7 +95,8 @@ export class EventPlugin implements RenderingPlugin {
     renderingService.hooks.pointerUp.tap(
       EventPlugin.tag,
       (nativeEvent: InteractivePointerEvent) => {
-        if (SUPPORT_TOUCH && (nativeEvent as PointerEvent).pointerType === 'touch') return;
+        if (canvas.supportTouchEvent && (nativeEvent as PointerEvent).pointerType === 'touch')
+          return;
 
         // account for element in SVG
         const $element = this.contextService.getDomElement();
@@ -109,14 +110,10 @@ export class EventPlugin implements RenderingPlugin {
           !$element.contains(nativeEvent.target)
             ? 'outside'
             : '';
-        const normalizedEvents = normalizeToPointerEvent(nativeEvent);
+        const normalizedEvents = this.normalizeToPointerEvent(nativeEvent, canvas);
 
         for (const normalizedEvent of normalizedEvents) {
-          const event = this.bootstrapEvent(
-            this.rootPointerEvent,
-            normalizedEvent,
-            this.renderingContext.root?.ownerDocument?.defaultView,
-          );
+          const event = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent, canvas);
           event.type += outside;
           this.eventService.mapEvent(event);
         }
@@ -133,16 +130,13 @@ export class EventPlugin implements RenderingPlugin {
   }
 
   private onPointerMove = (nativeEvent: InteractivePointerEvent) => {
-    if (SUPPORT_TOUCH && (nativeEvent as PointerEvent).pointerType === 'touch') return;
+    const canvas = this.renderingContext.root?.ownerDocument?.defaultView;
+    if (canvas.supportTouchEvent && (nativeEvent as PointerEvent).pointerType === 'touch') return;
 
-    const normalizedEvents = normalizeToPointerEvent(nativeEvent);
+    const normalizedEvents = this.normalizeToPointerEvent(nativeEvent, canvas);
 
     for (const normalizedEvent of normalizedEvents) {
-      const event = this.bootstrapEvent(
-        this.rootPointerEvent,
-        normalizedEvent,
-        this.renderingContext.root?.ownerDocument?.defaultView,
-      );
+      const event = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent, canvas);
 
       this.eventService.mapEvent(event);
     }
@@ -249,5 +243,57 @@ export class EventPlugin implements RenderingPlugin {
 
   private setCursor(cursor: Cursor | null) {
     this.contextService.applyCursorStyle(cursor || this.canvasConfig.cursor || 'default');
+  }
+
+  private normalizeToPointerEvent(event: InteractivePointerEvent, canvas: ICanvas): PointerEvent[] {
+    const normalizedEvents = [];
+    if (canvas.isTouchEvent(event)) {
+      for (let i = 0; i < event.changedTouches.length; i++) {
+        const touch = event.changedTouches[i] as FormattedTouch;
+
+        // use changedTouches instead of touches since touchend has no touches
+        // @see https://stackoverflow.com/a/10079076
+        if (isUndefined(touch.button)) touch.button = event.touches.length ? 1 : 0;
+        if (isUndefined(touch.buttons)) touch.buttons = event.touches.length ? 1 : 0;
+        if (isUndefined(touch.isPrimary)) {
+          touch.isPrimary = event.touches.length === 1 && event.type === 'touchstart';
+        }
+        if (isUndefined(touch.width)) touch.width = touch.radiusX || 1;
+        if (isUndefined(touch.height)) touch.height = touch.radiusY || 1;
+        if (isUndefined(touch.tiltX)) touch.tiltX = 0;
+        if (isUndefined(touch.tiltY)) touch.tiltY = 0;
+        if (isUndefined(touch.pointerType)) touch.pointerType = 'touch';
+        // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Touch/identifier
+        if (isUndefined(touch.pointerId)) touch.pointerId = touch.identifier || 0;
+        if (isUndefined(touch.pressure)) touch.pressure = touch.force || 0.5;
+        if (isUndefined(touch.twist)) touch.twist = 0;
+        if (isUndefined(touch.tangentialPressure)) touch.tangentialPressure = 0;
+        touch.isNormalized = true;
+        touch.type = event.type;
+
+        // the l
+        touch.isFinal = i === event.changedTouches.length - 1;
+        normalizedEvents.push(touch);
+      }
+    } else if (canvas.isMouseEvent(event)) {
+      const tempEvent = event as FormattedPointerEvent;
+      if (isUndefined(tempEvent.isPrimary)) tempEvent.isPrimary = true;
+      if (isUndefined(tempEvent.width)) tempEvent.width = 1;
+      if (isUndefined(tempEvent.height)) tempEvent.height = 1;
+      if (isUndefined(tempEvent.tiltX)) tempEvent.tiltX = 0;
+      if (isUndefined(tempEvent.tiltY)) tempEvent.tiltY = 0;
+      if (isUndefined(tempEvent.pointerType)) tempEvent.pointerType = 'mouse';
+      if (isUndefined(tempEvent.pointerId)) tempEvent.pointerId = MOUSE_POINTER_ID;
+      if (isUndefined(tempEvent.pressure)) tempEvent.pressure = 0.5;
+      if (isUndefined(tempEvent.twist)) tempEvent.twist = 0;
+      if (isUndefined(tempEvent.tangentialPressure)) tempEvent.tangentialPressure = 0;
+      tempEvent.isNormalized = true;
+
+      normalizedEvents.push(tempEvent);
+    } else {
+      normalizedEvents.push(event);
+    }
+
+    return normalizedEvents as PointerEvent[];
   }
 }
