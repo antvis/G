@@ -31,9 +31,9 @@ import { CSSUnitValue } from '../css';
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
 const DEFAULT_STYLE_PROPS: {
-  x: number;
-  y: number;
-  z: number;
+  x: number | string;
+  y: number | string;
+  z: number | string;
   anchor: [number, number] | [number, number, number];
   transformOrigin: string;
   visibility: string;
@@ -42,19 +42,33 @@ const DEFAULT_STYLE_PROPS: {
   strokeOpacity: string;
   fill: string;
   stroke: string;
-} = {
-  x: 0,
-  y: 0,
-  z: 0,
-  anchor: [0, 0, 0],
-  opacity: 'unset',
-  fillOpacity: 'unset',
-  strokeOpacity: 'unset',
-  fill: 'none',
-  stroke: 'none',
-  transformOrigin: 'left top',
-  visibility: 'unset',
-};
+} =
+  // = {
+  //   x: 0,
+  //   y: 0,
+  //   z: 0,
+  //   anchor: [0, 0, 0],
+  //   opacity: 'unset',
+  //   fillOpacity: 'unset',
+  //   strokeOpacity: 'unset',
+  //   fill: 'none',
+  //   stroke: 'none',
+  //   transformOrigin: 'left top',
+  //   visibility: 'unset',
+  // };
+  {
+    x: '',
+    y: '',
+    z: '',
+    anchor: [0, 0],
+    opacity: '',
+    fillOpacity: '',
+    strokeOpacity: '',
+    fill: '',
+    stroke: '',
+    transformOrigin: '',
+    visibility: '',
+  };
 
 /**
  * prototype chains: DisplayObject -> Element -> Node -> EventTarget

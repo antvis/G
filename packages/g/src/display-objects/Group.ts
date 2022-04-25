@@ -34,10 +34,10 @@ export class Group extends DisplayObject {
     super({
       type: Shape.GROUP,
       style: {
-        fontSize: 'unset',
-        textAlign: 'unset',
-        // width: 'auto',
-        // height: 'auto',
+        fontSize: '',
+        textAlign: '',
+        width: '',
+        height: '',
         ...style,
       },
       ...rest,

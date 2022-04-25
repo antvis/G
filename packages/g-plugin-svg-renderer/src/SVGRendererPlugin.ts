@@ -335,11 +335,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const { parsedStyle, computedStyle } = object;
     if (SVG_ATTR_MAP[name]) {
       if (name === 'fill' || name === 'stroke') {
-        if (object.attributes[name] === 'none') {
-          $el?.setAttribute(name, 'none');
-          return;
-        }
-
         createOrUpdateGradientAndPattern(
           this.$def,
           object,

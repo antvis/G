@@ -22,9 +22,9 @@ export class Image extends DisplayObject<ImageStyleProps, ParsedImageStyleProps>
       type: Shape.IMAGE,
       style: {
         img: '',
-        width: 'auto',
-        height: 'auto',
-        lineWidth: 0,
+        width: '',
+        height: '',
+        lineWidth: '0',
         ...style,
       },
       ...rest,

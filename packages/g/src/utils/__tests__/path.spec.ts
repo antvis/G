@@ -35,9 +35,9 @@ describe('Path utils', () => {
     expect(convertToPath(line)).to.be.eqls('M200,100L200,200');
 
     // set origin offset [0, 50]
-    line.style.origin = [0, 50];
-    line.scale(2); // length from 100 to 200
-    expect(convertToPath(line)).to.be.eqls('M200,50L200,250');
+    // line.style.origin = [0, 50];
+    // line.scale(2); // length from 100 to 200
+    // expect(convertToPath(line)).to.be.eqls('M200,50L200,250');
 
     // line.style.anchor = [0.5, 0.5];
     // expect(convertToPath(line)).to.be.eqls('M100,0L100,100');

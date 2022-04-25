@@ -1,4 +1,4 @@
-import type { DisplayObject, RectStyleProps, Point, ParsedRectStyleProps } from '@antv/g';
+import type { DisplayObject, RectStyleProps, Point, ParsedRectStyleProps, CSSRGB } from '@antv/g';
 import { UnitType } from '@antv/g';
 import { inLine, inArc, inBox, inRect } from './utils/math';
 
@@ -17,8 +17,8 @@ export function isPointInPath(
     clipPathTargets,
   } = displayObject.parsedStyle as ParsedRectStyleProps;
   const isClipPath = !!clipPathTargets?.length;
-  const hasFill = displayObject.attributes.fill !== 'none' && !!fill;
-  const hasStroke = displayObject.attributes.stroke !== 'none' && !!stroke;
+  const hasFill = fill && !(fill as CSSRGB).isNone;
+  const hasStroke = stroke && !(stroke as CSSRGB).isNone;
 
   const { unit: widthUnit, value: widthValue } = parsedWidth;
   const { unit: heightUnit, value: heightValue } = parsedHeight;

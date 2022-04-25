@@ -13,6 +13,10 @@ export class CSSRGB extends CSSColorValue {
     public g: CSSColorRGBComp,
     public b: CSSColorRGBComp,
     public alpha: CSSColorPercent = 1,
+    /**
+     * 'transparent' & 'none' has the same rgba data
+     */
+    public isNone = false,
   ) {
     super('rgb');
   }

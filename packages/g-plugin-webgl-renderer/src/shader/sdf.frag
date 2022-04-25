@@ -49,9 +49,15 @@ void main() {
   // vec4 texel = texture(SAMPLER_2D(u_Map), imagecoord);
   // u_Color = texel;
 
-  vec4 diffuseColor = u_Color;
-
-  vec4 strokeColor = (u_StrokeColor == vec4(0) || omitStroke) ? vec4(0.0) : u_StrokeColor;
+  vec4 diffuseColor;
+  vec4 strokeColor;
+  if (u_IsPicking > 0.5) {
+    diffuseColor = vec4(u_PickingColor, 1.0);
+    strokeColor = vec4(u_PickingColor, 1.0);
+  } else {
+    diffuseColor = u_Color;
+    strokeColor = (u_StrokeColor == vec4(0) || omitStroke) ? vec4(0.0) : u_StrokeColor;
+  }
 
   outputColor = mix(vec4(diffuseColor.rgb, diffuseColor.a * u_FillOpacity), strokeColor * u_StrokeOpacity, color_t);
   outputColor.a = outputColor.a * u_Opacity * opacity_t;
@@ -63,6 +69,5 @@ void main() {
     if (u_PickingColor.x == 0.0 && u_PickingColor.y == 0.0 && u_PickingColor.z == 0.0) {
       discard;
     }
-    outputColor = vec4(u_PickingColor, 1.0);
   }
 }

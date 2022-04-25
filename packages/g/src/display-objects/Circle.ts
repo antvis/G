@@ -15,10 +15,10 @@ export class Circle extends DisplayObject<CircleStyleProps, ParsedCircleStylePro
     super({
       type: Shape.CIRCLE,
       style: {
-        r: 0,
+        r: '',
         anchor: [0.5, 0.5],
         transformOrigin: 'center',
-        lineWidth: 0,
+        lineWidth: '0',
         ...style,
       },
       ...rest,

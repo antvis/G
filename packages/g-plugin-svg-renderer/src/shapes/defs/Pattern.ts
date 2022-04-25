@@ -26,7 +26,7 @@ export function createOrUpdateGradientAndPattern(
       $el?.setAttribute(name, 'currentColor');
     } else {
       // constant value, eg. '#fff'
-      $el?.setAttribute(name, parsedColor.toString());
+      $el?.setAttribute(name, parsedColor.isNone ? 'none' : parsedColor.toString());
     }
   } else {
     if (parsedColor.type === GradientPatternType.Pattern) {

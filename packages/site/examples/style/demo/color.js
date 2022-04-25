@@ -31,7 +31,7 @@ const circle = new Circle({
     r: 100,
     fill: '#f00',
     stroke: 'black',
-    lineWidth: 2,
+    lineWidth: 10,
   },
 });
 

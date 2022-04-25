@@ -1,5 +1,5 @@
 import type { DisplayObject, ParsedCircleStyleProps } from '@antv/g';
-import { Shape } from '@antv/g';
+import { Shape, CSSRGB } from '@antv/g';
 import { injectable } from 'mana-syringe';
 import { Batch } from './Batch';
 import { ShapeRenderer } from '../tokens';
@@ -20,6 +20,13 @@ export class CircleRenderer extends Batch {
   meshes = [SDFMesh, LineMesh];
 
   shouldSubmitRenderInst(object: DisplayObject, index: number) {
+    if (index === 0) {
+      const { fill } = object.parsedStyle as ParsedCircleStyleProps;
+      if ((fill as CSSRGB).isNone) {
+        return false;
+      }
+    }
+
     if (index === 1) {
       return this.needDrawStrokeSeparately(object);
     }
@@ -31,15 +38,16 @@ export class CircleRenderer extends Batch {
    * need an additional mesh to draw stroke:
    * 1. strokeOpacity < 1
    * 2. lineDash used
+   * 3. stroke is not 'none'
    */
   private needDrawStrokeSeparately(object: DisplayObject) {
-    const { stroke, lineDash, lineWidth, strokeOpacity } =
+    const { fill, stroke, lineDash, lineWidth, strokeOpacity } =
       object.parsedStyle as ParsedCircleStyleProps;
-    return (
-      stroke &&
-      lineWidth.value > 0 &&
-      (strokeOpacity.value < 1 ||
-        (lineDash && lineDash.length && lineDash.every((item) => item.value !== 0)))
-    );
+
+    const hasFill = fill && !(fill as CSSRGB).isNone;
+    const hasStroke = stroke && !(stroke as CSSRGB).isNone;
+    const hasDash = lineDash && lineDash.length && lineDash.every((item) => item.value !== 0);
+
+    return !hasFill || (hasStroke && lineWidth.value > 0 && (strokeOpacity.value < 1 || hasDash));
   }
 }

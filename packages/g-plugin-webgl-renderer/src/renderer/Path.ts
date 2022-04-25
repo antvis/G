@@ -3,7 +3,7 @@
  */
 import { injectable } from 'mana-syringe';
 import type { DisplayObject, ParsedBaseStyleProps } from '@antv/g';
-import { Shape } from '@antv/g';
+import { Shape, CSSRGB } from '@antv/g';
 import { Batch } from './Batch';
 import { ShapeRenderer } from '../tokens';
 import { FillMesh, LineMesh } from '../meshes';
@@ -20,11 +20,11 @@ export class PathRenderer extends Batch {
   meshes = [FillMesh, LineMesh];
 
   shouldSubmitRenderInst(object: DisplayObject, index: number) {
-    const { strokeOpacity, lineDash, lineWidth } = object.parsedStyle as ParsedBaseStyleProps;
+    const { fill, strokeOpacity, lineDash, lineWidth } = object.parsedStyle as ParsedBaseStyleProps;
     const nodeName = object.nodeName;
 
     // Polyline don't need fill
-    if (index === 0 && object.nodeName === Shape.POLYLINE) {
+    if (index === 0 && (object.nodeName === Shape.POLYLINE || (fill as CSSRGB).isNone)) {
       return false;
     }
 

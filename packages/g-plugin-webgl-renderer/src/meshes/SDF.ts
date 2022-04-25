@@ -1,5 +1,6 @@
 import type {
   Circle,
+  CSSRGB,
   DisplayObject,
   ParsedBaseStyleProps,
   ParsedCircleStyleProps,
@@ -39,6 +40,12 @@ export class SDFMesh extends Instanced {
     }
 
     if (this.needDrawStrokeSeparately(object) || this.needDrawStrokeSeparately(this.instance)) {
+      return false;
+    }
+
+    const { fill: instanceFill } = this.instance.parsedStyle as ParsedBaseStyleProps;
+    const { fill } = object.parsedStyle as ParsedBaseStyleProps;
+    if ((instanceFill as CSSRGB).isNone !== (fill as CSSRGB).isNone) {
       return false;
     }
 

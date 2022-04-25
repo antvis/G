@@ -1,11 +1,12 @@
 import chai, { expect } from 'chai';
 import { toFontString } from '../text';
+import { CSS } from '../..';
 
 describe('Text utils', () => {
   it('should convert font string correctly', () => {
     expect(
       toFontString({
-        fontSize: { value: 12, unit: 'px' },
+        fontSize: CSS.px(12),
         fontFamily: 'sans-serif',
         fontStyle: 'normal',
         fontWeight: 'normal',
@@ -15,7 +16,7 @@ describe('Text utils', () => {
 
     expect(
       toFontString({
-        fontSize: { value: 12, unit: 'px' },
+        fontSize: CSS.px(12),
         fontFamily: 'sans-serif',
         fontStyle: 'normal',
         fontWeight: 'normal',
@@ -25,7 +26,7 @@ describe('Text utils', () => {
 
     expect(
       toFontString({
-        fontSize: { value: 12, unit: 'px' },
+        fontSize: CSS.px(12),
         fontFamily: 'sans-serif,Yahei',
         fontStyle: 'normal',
         fontWeight: 'normal',
@@ -35,7 +36,7 @@ describe('Text utils', () => {
 
     expect(
       toFontString({
-        fontSize: { value: 12, unit: 'px' },
+        fontSize: CSS.px(12),
         fontFamily: 'sans-serif,"Yahei"',
         fontStyle: 'normal',
         fontWeight: 'normal',

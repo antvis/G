@@ -61,17 +61,17 @@ export interface BaseStyleProps {
   /**
    * x in local space
    */
-  x?: number;
+  x?: number | string;
 
   /**
    * y in local space
    */
-  y?: number;
+  y?: number | string;
 
   /**
    * z in local space
    */
-  z?: number;
+  z?: number | string;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform

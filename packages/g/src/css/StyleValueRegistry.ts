@@ -80,6 +80,11 @@ export interface PropertyMetadata {
    */
   parsePriority?: number;
 
+  /**
+   * eg. <color> <paint> <number>
+   */
+  syntax?: string;
+
   handler?: any;
 }
 
@@ -100,6 +105,8 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'x',
     interpolable: true,
     alias: ['cx'],
+    defaultValue: '0',
+    syntax: '<length> | <percentage>',
     handler: CSSPropertyLocalPosition,
   },
   {
@@ -107,12 +114,14 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'y',
     interpolable: true,
     alias: ['cy'],
+    defaultValue: '0',
     handler: CSSPropertyLocalPosition,
   },
   {
     // z in local space
     name: 'z',
     interpolable: true,
+    defaultValue: '0',
     handler: CSSPropertyLocalPosition,
   },
   {
@@ -153,14 +162,16 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
      */
     name: 'fill',
     interpolable: true,
-    inherited: true,
+    // inherited: true,
+    keywords: ['none'],
     defaultValue: 'none',
     handler: CSSPropertyColor,
   },
   {
     name: 'stroke',
     interpolable: true,
-    inherited: true,
+    // inherited: true,
+    keywords: ['none'],
     defaultValue: 'none',
     handler: CSSPropertyColor,
   },
@@ -597,6 +608,9 @@ export class StyleValueRegistry {
     const metadata = this.getMetadata(name);
 
     let computed: CSSStyleValue = value;
+    if (value === '') {
+      value = 'unset';
+    }
 
     if (value === 'unset' || value === 'initial' || value === 'inherit') {
       computed = new CSSKeywordValue(value);
@@ -732,7 +746,7 @@ export class StyleValueRegistry {
   recalc(object: DisplayObject) {
     const properties = this.unresolvedProperties[object.entity];
     if (properties && properties.length) {
-      console.log('recalc', object);
+      // console.log('recalc', object);
 
       const attributes = {};
       properties.forEach((property) => {

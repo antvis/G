@@ -1,4 +1,4 @@
-import type { DisplayObject, EllipseStyleProps, ParsedEllipseStyleProps } from '@antv/g';
+import type { DisplayObject, EllipseStyleProps, ParsedEllipseStyleProps, CSSRGB } from '@antv/g';
 
 function ellipseDistance(squareX: number, squareY: number, rx: number, ry: number) {
   return squareX / (rx * rx) + squareY / (ry * ry);
@@ -17,8 +17,9 @@ export function isPointInPath(
     clipPathTargets,
   } = displayObject.parsedStyle as ParsedEllipseStyleProps;
   const isClipPath = !!clipPathTargets?.length;
-  const hasFill = displayObject.attributes.fill !== 'none' && !!fill;
-  const hasStroke = displayObject.attributes.stroke !== 'none' && !!stroke;
+
+  const hasFill = fill && !(fill as CSSRGB).isNone;
+  const hasStroke = stroke && !(stroke as CSSRGB).isNone;
 
   const rx = rxInPixels.value;
   const ry = ryInPixels.value;

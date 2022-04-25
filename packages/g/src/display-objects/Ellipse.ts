@@ -5,8 +5,8 @@ import { DisplayObject } from './DisplayObject';
 import type { CSSUnitValue } from '../css';
 
 export interface EllipseStyleProps extends BaseStyleProps {
-  rx: number;
-  ry: number;
+  rx: number | string;
+  ry: number | string;
 }
 export interface ParsedEllipseStyleProps extends ParsedBaseStyleProps {
   rx: CSSUnitValue;
@@ -17,11 +17,11 @@ export class Ellipse extends DisplayObject<EllipseStyleProps, ParsedEllipseStyle
     super({
       type: Shape.ELLIPSE,
       style: {
-        rx: 0,
-        ry: 0,
+        rx: '',
+        ry: '',
         anchor: [0.5, 0.5],
         transformOrigin: 'center',
-        lineWidth: 0,
+        lineWidth: '0',
         ...style,
       },
       ...rest,
