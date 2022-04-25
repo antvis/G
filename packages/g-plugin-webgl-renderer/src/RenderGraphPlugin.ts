@@ -43,7 +43,6 @@ import {
 import { Fog, Light } from './lights';
 import { LightPool } from './LightPool';
 import { TexturePool } from './TexturePool';
-import { TemporalTexture } from './render/TemporalTexture';
 
 // scene uniform block index
 export const SceneUniformBufferIndex = 0;

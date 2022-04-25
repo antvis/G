@@ -53,6 +53,7 @@ export class EventPlugin implements RenderingPlugin {
       const { picked } = await this.renderingService.hooks.pick.promise({
         position,
         picked: [],
+        topmost: true, // we only concern the topmost element
       });
       return picked[0] || null;
     });

@@ -1,8 +1,9 @@
-import {
+import type {
   InteractivePointerEvent,
-  RenderingContext,
   RenderingPlugin,
-  RenderingService,
+  RenderingService} from '@antv/g';
+import {
+  RenderingContext
 } from '@antv/g';
 import { ContextService, RenderingPluginContribution } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';

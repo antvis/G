@@ -15,6 +15,7 @@ out vec4 outputColor;
 
 void main() {
   int shape = int(floor(v_Data.w + 0.5));
+  float epsilon = 0.00001;
 
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
   #pragma glslify: import('@antv/g-shader-components/map.frag')
@@ -55,7 +56,7 @@ void main() {
   outputColor = mix(vec4(diffuseColor.rgb, diffuseColor.a * u_FillOpacity), strokeColor * u_StrokeOpacity, color_t);
   outputColor.a = outputColor.a * u_Opacity * opacity_t;
 
-  if (outputColor.a < 0.001)
+  if (outputColor.a < epsilon)
     discard;
 
   if (u_IsPicking > 0.5) {

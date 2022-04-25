@@ -994,13 +994,12 @@ export abstract class Instanced {
     ) as CSSRGB | CSSGradientValue;
     // use pattern & gradient
     if (fill && fill instanceof CSSGradientValue) {
-      this.program.setDefineBool('USE_UV', true);
-      this.program.setDefineBool('USE_MAP', true);
       let texImageSource: string | TexImageSource;
       if (
         fill.type === GradientPatternType.LinearGradient ||
         fill.type === GradientPatternType.RadialGradient
       ) {
+        this.program.setDefineBool('USE_PATTERN', false);
         this.texturePool.getOrCreateGradient({
           type: fill.type,
           ...(fill.value as LinearGradient),
@@ -1009,6 +1008,7 @@ export abstract class Instanced {
         });
         texImageSource = this.texturePool.getOrCreateCanvas() as TexImageSource;
       } else {
+        this.program.setDefineBool('USE_PATTERN', true);
         // FIXME: support repeat
         texImageSource = (fill.value as Pattern).src;
       }

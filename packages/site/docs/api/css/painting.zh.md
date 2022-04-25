@@ -60,7 +60,7 @@ stroke: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff';
 fill: 'r(0.5, 0.5, 0.1) 0:#ffffff 1:#1890ff';
 ```
 
-## 纹理
+# \<pattern\>
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8FjsSoqE1mYAAAAAAAAAAABkARQnAQ)
 

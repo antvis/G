@@ -11,17 +11,17 @@ export class ResourceCreationTracker {
   }
 
   trackResourceDestroyed(o: Resource): void {
-    // if (this.deletionStacks.has(o))
-    //   console.warn(
-    //     `Object double freed:`,
-    //     o,
-    //     `\n\nCreation stack: `,
-    //     this.creationStacks.get(o),
-    //     `\n\nDeletion stack: `,
-    //     this.deletionStacks.get(o),
-    //     `\n\nThis stack: `,
-    //     new Error().stack!,
-    //   );
+    if (this.deletionStacks.has(o))
+      console.warn(
+        `Object double freed:`,
+        o,
+        `\n\nCreation stack: `,
+        this.creationStacks.get(o),
+        `\n\nDeletion stack: `,
+        this.deletionStacks.get(o),
+        `\n\nThis stack: `,
+        new Error().stack!,
+      );
     this.deletionStacks.set(o, new Error().stack!);
     this.liveObjects.delete(o);
   }

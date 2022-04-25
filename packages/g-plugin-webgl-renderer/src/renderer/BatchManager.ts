@@ -141,7 +141,12 @@ export class BatchManager {
     }
   }
 
-  updateAttribute(object: DisplayObject, attributeName: string, newValue: any) {
+  updateAttribute(
+    object: DisplayObject,
+    attributeName: string,
+    newValue: any,
+    immediately = false,
+  ) {
     // @ts-ignore
     const renderable3D = object.renderable3D as Renderable3D;
     const renderer = this.rendererFactory(object.nodeName);
@@ -187,19 +192,23 @@ export class BatchManager {
         }
 
         if (shouldSubmit && existedMesh && existedMesh.inited && !existedMesh.geometryDirty) {
-          const patchKey = existedMesh.id + attributeName;
-          if (!this.pendingUpdatePatches[patchKey]) {
-            this.pendingUpdatePatches[patchKey] = {
-              instance: existedMesh,
-              objectIndices: [],
-              name: attributeName,
-              value: newValue,
-            };
-          }
-
           const objectIdx = existedMesh.objects.indexOf(object);
-          if (this.pendingUpdatePatches[patchKey].objectIndices.indexOf(objectIdx) === -1) {
-            this.pendingUpdatePatches[patchKey].objectIndices.push(objectIdx);
+          if (immediately) {
+            object.parsedStyle[attributeName] = newValue;
+            existedMesh.updateAttribute([object], objectIdx, attributeName, newValue);
+          } else {
+            const patchKey = existedMesh.id + attributeName;
+            if (!this.pendingUpdatePatches[patchKey]) {
+              this.pendingUpdatePatches[patchKey] = {
+                instance: existedMesh,
+                objectIndices: [],
+                name: attributeName,
+                value: newValue,
+              };
+            }
+            if (this.pendingUpdatePatches[patchKey].objectIndices.indexOf(objectIdx) === -1) {
+              this.pendingUpdatePatches[patchKey].objectIndices.push(objectIdx);
+            }
           }
         }
       });

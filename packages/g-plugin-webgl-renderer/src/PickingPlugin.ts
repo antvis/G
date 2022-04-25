@@ -1,14 +1,11 @@
-import {
+import type {
   RenderingService,
   RenderingPlugin,
   PickingResult,
-  RenderingContext,
-  ElementEvent,
   FederatedEvent,
   DisplayObject,
-  DefaultCamera,
-  Camera,
 } from '@antv/g';
+import { RenderingContext, ElementEvent, DefaultCamera, Camera } from '@antv/g';
 import {
   RenderingPluginContribution,
   SceneGraphService,
@@ -21,8 +18,8 @@ import { inject, singleton } from 'mana-syringe';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { BlendFactor, BlendMode } from './platform';
 import { setAttachmentStateSimple } from './platform/utils';
-import { RenderHelper, RenderInstList, TemporalTexture } from './render';
-import { RGAttachmentSlot, RGGraphBuilder } from './render/interfaces';
+import { RenderHelper, TemporalTexture } from './render';
+import { RGAttachmentSlot } from './render/interfaces';
 import {
   AntialiasingMode,
   makeAttachmentClearDescriptor,
@@ -32,6 +29,11 @@ import {
 import { BatchManager } from './renderer';
 import { RenderGraphPlugin, SceneUniform, SceneUniformBufferIndex } from './RenderGraphPlugin';
 import { TransparentWhite } from './utils/color';
+
+/**
+ * max depth when doing multi-layer picking
+ */
+const MAX_PICKING_DEPTH = 100;
 
 /**
  * Use color-based picking in GPU
@@ -87,21 +89,14 @@ export class PickingPlugin implements RenderingPlugin {
 
     renderingService.hooks.init.tapPromise(RenderGraphPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-
-      // this.pickingTexture = new TemporalTexture();
     });
 
     renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
-      this.renderHelper.destroy();
-      // this.pickingTexture.destroy();
-
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
     });
 
     renderingService.hooks.pick.tapPromise(PickingPlugin.tag, async (result: PickingResult) => {
       const { topmost, position } = result;
-      // TODO: implements multi-layer picking
-      // @see https://github.com/antvis/g/issues/948
 
       // use viewportX/Y
       const { viewportX: x, viewportY: y } = position;
@@ -122,7 +117,9 @@ export class PickingPlugin implements RenderingPlugin {
         return result;
       }
 
-      const [pickedDisplayObject] = await this.pickByRectangle(
+      // implements multi-layer picking
+      // @see https://github.com/antvis/g/issues/948
+      const pickedDisplayObjects = await this.pickByRectangleInDepth(
         new Rectangle(
           clamp(Math.round(xInDevicePixel), 0, width - 1),
           // flip Y
@@ -130,21 +127,55 @@ export class PickingPlugin implements RenderingPlugin {
           1,
           1,
         ),
+        topmost ? 1 : MAX_PICKING_DEPTH,
       );
 
-      result.picked = pickedDisplayObject ? [pickedDisplayObject] : [];
+      result.picked = pickedDisplayObjects;
       return result;
+    });
+  }
+
+  async pickByRectangleInDepth(
+    rect: Rectangle,
+    depth = MAX_PICKING_DEPTH,
+  ): Promise<DisplayObject[]> {
+    let picked = null;
+    let counter = 1;
+    const targets = [];
+
+    do {
+      picked = await this.pickByRectangle(rect, picked);
+
+      if (picked) {
+        counter++;
+        targets.push(picked);
+      } else {
+        break;
+      }
+    } while (picked && counter <= depth);
+
+    // restore encoded picking color
+    this.restorePickingColor(targets);
+
+    return targets;
+  }
+
+  private restorePickingColor(displayObjects: DisplayObject[]) {
+    displayObjects.forEach((picked) => {
+      this.batchManager.updateAttribute(picked, 'interactive', true, true);
     });
   }
 
   /**
    * return displayobjects in target rectangle
    */
-  async pickByRectangle(rect: Rectangle): Promise<DisplayObject[]> {
+  private async pickByRectangle(
+    rect: Rectangle,
+    picked: DisplayObject,
+  ): Promise<DisplayObject | null> {
     const device = this.renderGraphPlugin.getDevice();
     const canvas = this.renderGraphPlugin.getSwapChain().getCanvas() as HTMLCanvasElement;
     const renderLists = this.renderGraphPlugin.getRenderLists();
-    // const builder = this.renderGraphPlugin.getBuilder();
 
     const renderInstManager = this.renderHelper.renderInstManager;
     const builder = this.renderHelper.renderGraph.newGraphBuilder();
@@ -241,6 +272,9 @@ export class PickingPlugin implements RenderingPlugin {
       },
     ]);
 
+    if (picked) {
+      this.batchManager.updateAttribute(picked, 'interactive', false, true);
+    }
     this.batchManager.render(renderLists.picking, true);
 
     renderInstManager.popTemplateRenderInst();
@@ -250,7 +284,7 @@ export class PickingPlugin implements RenderingPlugin {
 
     renderInstManager.resetRenderInsts();
 
-    const targets: DisplayObject[] = [];
+    let target: DisplayObject;
     const readback = device.createReadback();
 
     const pickingTexture = pickingTemporalTexture.getTextureForResolving();
@@ -280,10 +314,9 @@ export class PickingPlugin implements RenderingPlugin {
         if (
           pickedDisplayObject &&
           pickedDisplayObject.isVisible() &&
-          pickedDisplayObject.interactive &&
-          targets.indexOf(pickedDisplayObject) === -1
+          pickedDisplayObject.interactive
         ) {
-          targets.push(pickedDisplayObject);
+          target = pickedDisplayObject;
         }
       }
       readback.destroy();
@@ -291,6 +324,6 @@ export class PickingPlugin implements RenderingPlugin {
 
     pickingTemporalTexture.destroy();
 
-    return targets;
+    return target;
   }
 }

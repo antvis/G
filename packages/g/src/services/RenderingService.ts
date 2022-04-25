@@ -177,7 +177,6 @@ export class RenderingService {
       this.hooks.beforeRender.call(objectChanged);
       this.hooks.render.call(objectChanged);
       this.hooks.afterRender.call(objectChanged);
-      objectChanged;
       displayObject.renderable.dirty = false;
       // }
     }
