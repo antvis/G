@@ -30,6 +30,8 @@ import {
 import type { CSSProperty } from './CSSProperty';
 import { formatAttribute } from '../utils';
 
+export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
+
 export interface PropertyMetadata {
   name: string;
 
@@ -158,11 +160,11 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
   {
     /**
+     * background-color is not inheritable
      * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Fills_and_Strokes
      */
     name: 'fill',
     interpolable: true,
-    // inherited: true,
     keywords: ['none'],
     defaultValue: 'none',
     handler: CSSPropertyColor,
@@ -170,7 +172,6 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   {
     name: 'stroke',
     interpolable: true,
-    // inherited: true,
     keywords: ['none'],
     defaultValue: 'none',
     handler: CSSPropertyColor,
@@ -209,6 +210,22 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     layoutDependent: true,
     alias: ['strokeWidth'],
     handler: CSSPropertyLengthOrPercentage,
+  },
+  {
+    name: 'lineJoin',
+    inherited: true,
+    layoutDependent: true,
+    alias: ['strokeLinejoin'],
+    keywords: ['miter', 'bevel', 'round'],
+    defaultValue: 'miter',
+  },
+  {
+    name: 'lineCap',
+    inherited: true,
+    layoutDependent: true,
+    alias: ['strokeLinecap'],
+    keywords: ['butt', 'round', 'square'],
+    defaultValue: 'butt',
   },
   {
     name: 'lineDash',
@@ -407,10 +424,14 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'text',
     layoutDependent: true,
     handler: CSSPropertyText,
+    defaultValue: '',
   },
   {
     name: 'textTransform',
     layoutDependent: true,
+    inherited: true,
+    keywords: ['capitalize', 'uppercase', 'lowercase', 'none'],
+    defaultValue: 'none',
     handler: CSSPropertyTextTransform,
   },
   {
@@ -438,16 +459,22 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'fontStyle',
     layoutDependent: true,
     inherited: true,
+    keywords: ['normal', 'italic', 'oblique'],
+    defaultValue: 'normal',
   },
   {
     name: 'fontWeight',
     layoutDependent: true,
     inherited: true,
+    keywords: ['normal', 'bold', 'bolder', 'lighter'],
+    defaultValue: 'normal',
   },
   {
     name: 'fontVariant',
     layoutDependent: true,
     inherited: true,
+    keywords: ['normal', 'small-caps'],
+    defaultValue: 'normal',
   },
   {
     name: 'lineHeight',
@@ -461,6 +488,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     layoutDependent: true,
     // interpolable: true,
     // inherited: true,
+    // defaultValue: '0',
   },
   {
     name: 'wordWrap',
@@ -477,11 +505,15 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   {
     name: 'textBaseline',
     layoutDependent: true,
+    inherited: true,
+    keywords: ['top', 'hanging', 'middle', 'alphabetic', 'ideographic', 'bottom'],
+    defaultValue: 'alphabetic',
   },
   {
     name: 'textAlign',
     layoutDependent: true,
     inherited: true,
+    keywords: ['start', 'center', 'end', 'left', 'right'],
     defaultValue: 'start',
   },
   {
@@ -547,14 +579,20 @@ export class StyleValueRegistry {
   processProperties(
     object: DisplayObject,
     attributes: BaseStyleProps,
-    options: { skipParse: boolean } = { skipParse: false },
+    options: Partial<{ skipUpdateAttribute: boolean; skipParse: boolean }> = {
+      skipUpdateAttribute: false,
+      skipParse: false,
+    },
   ) {
-    const { skipParse } = options;
+    const { skipUpdateAttribute, skipParse } = options;
 
     let needUpdateGeometry = false;
     Object.keys(attributes).forEach((attributeName) => {
       const [name, value] = formatAttribute(attributeName, attributes[attributeName]);
-      object.attributes[name] = value;
+
+      if (!skipUpdateAttribute) {
+        object.attributes[name] = value;
+      }
       if (!needUpdateGeometry && this.getMetadata(name as string)?.layoutDependent) {
         needUpdateGeometry = true;
       }
@@ -566,11 +604,11 @@ export class StyleValueRegistry {
         (this.getMetadata(a)?.parsePriority || 0) - (this.getMetadata(b)?.parsePriority || 0),
     );
 
-    sortedNames.forEach((name) => {
-      if (!skipParse) {
+    if (!skipParse) {
+      sortedNames.forEach((name) => {
         object.computedStyle[name] = this.parseProperty(name as string, object.attributes[name]);
-      }
-    });
+      });
+    }
 
     let hasUnresolvedProperties = false;
     sortedNames.forEach((name) => {
@@ -594,10 +632,24 @@ export class StyleValueRegistry {
       this.updateGeometry(object);
     }
 
+    const inheritableProperties = {};
     sortedNames.forEach((name) => {
       if (name in object.parsedStyle) {
+        if (this.isPropertyInheritable(name)) {
+          inheritableProperties[name] = null;
+        }
         this.postProcessProperty(name as string, object);
       }
+    });
+
+    // update children's inheritable
+    object.children.forEach((child: DisplayObject) => {
+      // only recalc parsed values
+      this.processProperties(child, inheritableProperties, {
+        skipUpdateAttribute: true,
+        skipParse: true,
+      });
+      child.renderable.dirty = true;
     });
   }
 
@@ -615,18 +667,20 @@ export class StyleValueRegistry {
     if (value === 'unset' || value === 'initial' || value === 'inherit') {
       computed = new CSSKeywordValue(value);
     } else {
-      if (metadata && metadata.handler) {
+      if (metadata) {
         const { keywords, handler } = metadata;
-
-        // try to parse value with handler
-        const propertyHandler = GlobalContainer.get(handler) as CSSProperty<any, any>;
 
         // use keywords
         if (keywords && keywords.indexOf(value) > -1) {
           computed = new CSSKeywordValue(value);
-        } else if (propertyHandler && propertyHandler.parser) {
-          // try to parse it to CSSStyleValue, eg. '10px' -> CSS.px(10)
-          computed = propertyHandler.parser(value);
+        } else if (handler) {
+          // try to parse value with handler
+          const propertyHandler = GlobalContainer.get(handler) as CSSProperty<any, any>;
+
+          if (propertyHandler && propertyHandler.parser) {
+            // try to parse it to CSSStyleValue, eg. '10px' -> CSS.px(10)
+            computed = propertyHandler.parser(value);
+          }
         }
       }
     }
@@ -642,7 +696,7 @@ export class StyleValueRegistry {
 
     let used: CSSStyleValue = computed instanceof CSSStyleValue ? computed.clone() : computed;
 
-    if (metadata && metadata.handler) {
+    if (metadata) {
       const { handler, inherited, defaultValue } = metadata;
 
       if (computed instanceof CSSKeywordValue) {
@@ -677,14 +731,16 @@ export class StyleValueRegistry {
         }
       }
 
-      const propertyHandler = GlobalContainer.get(handler) as CSSProperty<any, any>;
+      if (handler) {
+        const propertyHandler = GlobalContainer.get(handler) as CSSProperty<any, any>;
 
-      // convert computed value to used value
-      if (propertyHandler && propertyHandler.calculator) {
-        const oldParsedValue = object.parsedStyle[name];
-        used = propertyHandler.calculator(name, oldParsedValue, computed, object, this);
-      } else {
-        used = computed;
+        // convert computed value to used value
+        if (propertyHandler && propertyHandler.calculator) {
+          const oldParsedValue = object.parsedStyle[name];
+          used = propertyHandler.calculator(name, oldParsedValue, computed, object, this);
+        } else {
+          used = computed;
+        }
       }
     }
 
@@ -732,11 +788,26 @@ export class StyleValueRegistry {
     const { inherited } = options;
 
     if (inherited) {
-      if (object.parentElement) {
-        return (
-          this.isPropertyResolved(object.parentElement as DisplayObject, name) &&
-          (object.parentElement as DisplayObject).parsedStyle[name]
-        );
+      if (
+        object.parentElement &&
+        this.isPropertyResolved(object.parentElement as DisplayObject, name)
+      ) {
+        const usedValue = object.parentElement.parsedStyle[name];
+        if (
+          usedValue instanceof CSSKeywordValue &&
+          (usedValue.value === 'unset' ||
+            usedValue.value === 'initial' ||
+            usedValue.value === 'inherit')
+        ) {
+          return false;
+        } else if (
+          usedValue instanceof CSSUnitValue &&
+          CSSUnitValue.isRelativeUnit(usedValue.unit)
+        ) {
+          return false;
+        }
+
+        return usedValue;
       }
     }
 
@@ -746,105 +817,16 @@ export class StyleValueRegistry {
   recalc(object: DisplayObject) {
     const properties = this.unresolvedProperties[object.entity];
     if (properties && properties.length) {
-      // console.log('recalc', object);
-
       const attributes = {};
       properties.forEach((property) => {
         attributes[property] = object.attributes[property];
       });
+
+      console.log('recalc', object, attributes);
       this.processProperties(object, attributes);
       delete this.unresolvedProperties[object.entity];
     }
   }
-
-  // unregisterParentGeometryBoundsChangedHandler(child: DisplayObject, name: string) {
-  //   const parent = child.parentElement as DisplayObject;
-
-  //   if (parent) {
-  //     if (this.boundsChangeListeners?.[parent.entity]?.[child.entity]) {
-  //       const index = this.boundsChangeListeners[parent.entity][child.entity].indexOf(name);
-  //       if (index > -1) {
-  //         this.boundsChangeListeners[parent.entity][child.entity].splice(index, 1);
-
-  //         // remove if no more listeners
-  //         if (this.boundsChangeListeners[parent.entity][child.entity].length === 0) {
-  //           delete this.boundsChangeListeners[parent.entity][child.entity];
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-  // registerParentGeometryBoundsChangedHandler(child: DisplayObject, name: string) {
-  //   const parent = child.parentElement as DisplayObject;
-  //   if (!this.boundsChangeListeners[parent.entity]) {
-  //     this.boundsChangeListeners[parent.entity] = {};
-  //     // clear all listeners when parent unmounted
-  //     parent.addEventListener(ElementEvent.UNMOUNTED, () => {
-  //       if (this.boundsChangeListeners?.[parent.entity]) {
-  //         delete this.boundsChangeListeners[parent.entity];
-  //       }
-  //     });
-
-  //     // trigger when parent's bounds changed
-  //     parent.addEventListener(ElementEvent.GEOMETRY_BOUNDS_CHANGED, (e: FederatedEvent) => {
-  //       // should inform listeners
-
-  //       if (e.target !== parent) {
-  //         return;
-  //       }
-
-  //       if (this.boundsChangeListeners[parent.entity]) {
-  //         Object.keys(this.boundsChangeListeners[parent.entity]).forEach((entityStr) => {
-  //           const childEntity = Number(entityStr);
-  //           const properties = this.boundsChangeListeners[parent.entity][childEntity];
-  //           // console.log('child informed...', childEntity, properties);
-
-  //           const attributes = {};
-  //           properties.forEach((property) => {
-  //             attributes[property] = child.attributes[property];
-  //           });
-
-  //           // no need to generate computed value cause it's already parsed
-  //           this.processProperties(child, attributes, { skipParse: true });
-  //         });
-  //       }
-  //     });
-  //   }
-
-  //   // clear listeners when child unmounted
-  //   if (!this.boundsChangeListeners[parent.entity][child.entity]) {
-  //     child.addEventListener(ElementEvent.UNMOUNTED, () => {
-  //       if (this.boundsChangeListeners?.[parent.entity]?.[child.entity]) {
-  //         delete this.boundsChangeListeners[parent.entity][child.entity];
-  //       }
-  //     });
-  //     this.boundsChangeListeners[parent.entity][child.entity] = [];
-  //   }
-
-  //   // add to property list
-  //   if (this.boundsChangeListeners[parent.entity][child.entity].indexOf(name) === -1) {
-  //     this.boundsChangeListeners[parent.entity][child.entity].push(name);
-  //   }
-
-  //   //
-  //   this.processProperties(child, { [name]: child.attributes[name] }, { skipParse: true });
-  // }
-
-  // private computeInheritStyleProperty(child: DisplayObject, name: string): CSSStyleValue {
-  //   let ascendant = child.parentElement;
-  //   while (ascendant) {
-  //     if (
-  //       ascendant.getAttribute(name) !== 'inherit' &&
-  //       ascendant.parsedStyle.hasOwnProperty(name)
-  //     ) {
-  //       return ascendant.parsedStyle[name];
-  //     }
-  //     ascendant = ascendant.parentElement;
-  //   }
-
-  //   return null;
-  // }
 
   /**
    * update geometry when relative props changed,
@@ -983,5 +965,14 @@ export class StyleValueRegistry {
 
       dirtifyToRoot(object);
     }
+  }
+
+  private isPropertyInheritable(name: string) {
+    const metadata = this.getMetadata(name);
+    if (!metadata) {
+      return false;
+    }
+
+    return metadata.inherited;
   }
 }

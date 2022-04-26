@@ -1,13 +1,6 @@
 import { singleton } from 'mana-syringe';
-import type {
-  Text,
-  CSSProperty,
-  ParsedPathStyleProps,
-  DisplayObject} from '../..';
-import {
-  TextTransform,
-  Shape,
-} from '../..';
+import type { Text, CSSProperty, ParsedPathStyleProps, DisplayObject } from '../..';
+import { TextTransform, Shape } from '../..';
 
 @singleton()
 export class CSSPropertyTextTransform
@@ -16,7 +9,7 @@ export class CSSPropertyTextTransform
   postProcessor(o: DisplayObject) {
     if (o.nodeName === Shape.TEXT) {
       const object = o as Text;
-      const newTextTransform = object.parsedStyle.textTransform;
+      const newTextTransform = object.parsedStyle.textTransform.value;
       if (newTextTransform === TextTransform.CAPITALIZE) {
         object.style.text = object.style.text.charAt(0).toUpperCase() + object.style.text.slice(1);
       } else if (newTextTransform === TextTransform.LOWERCASE) {

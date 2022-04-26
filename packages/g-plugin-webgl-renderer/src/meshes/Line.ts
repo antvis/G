@@ -9,6 +9,7 @@ import type {
   ParsedPathStyleProps,
   PathCommand,
   ParsedLineStyleProps,
+  ParsedBaseStyleProps,
 } from '@antv/g';
 import { CSSRGB } from '@antv/g';
 import { LineCap, LineJoin, Shape, convertToPath, parsePath } from '@antv/g';
@@ -431,7 +432,7 @@ function segmentsCount(length: number, defaultSegments = 20) {
 }
 
 export function updateBuffer(object: DisplayObject, needEarcut = false) {
-  const { lineCap, lineJoin } = object.parsedStyle;
+  const { lineCap, lineJoin } = object.parsedStyle as ParsedBaseStyleProps;
   let { defX, defY } = object.parsedStyle;
 
   let points: number[] = [];
@@ -521,8 +522,8 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     }
   }
 
-  const jointType = getJointType(lineJoin);
-  const capType = getCapType(lineCap);
+  const jointType = getJointType(lineJoin.value as CanvasLineJoin);
+  const capType = getCapType(lineCap.value as CanvasLineCap);
   let endJoint = capType;
   if (capType === JOINT_TYPE.CAP_ROUND) {
     endJoint = JOINT_TYPE.JOINT_CAP_ROUND;
@@ -586,7 +587,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
   };
 }
 
-function getJointType(lineJoin: LineJoin) {
+function getJointType(lineJoin: CanvasLineJoin) {
   let joint: number;
 
   switch (lineJoin) {
@@ -604,7 +605,7 @@ function getJointType(lineJoin: LineJoin) {
   return joint;
 }
 
-function getCapType(lineCap: LineCap) {
+function getCapType(lineCap: CanvasLineCap) {
   let cap: number;
 
   switch (lineCap) {

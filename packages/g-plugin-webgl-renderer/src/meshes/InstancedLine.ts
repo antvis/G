@@ -75,7 +75,8 @@ export class InstancedLineMesh extends Instanced {
     let offset = 0;
     objects.forEach((object) => {
       const line = object as Line;
-      const { x1, y1, x2, y2, z1, z2, defX, defY, lineCap, isBillboard } = line.parsedStyle;
+      const { x1, y1, x2, y2, z1, z2, defX, defY, lineCap, isBillboard } =
+        line.parsedStyle as ParsedLineStyleProps;
 
       const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } = this.calcDash(
         object as Line,
@@ -83,7 +84,7 @@ export class InstancedLineMesh extends Instanced {
 
       packedCap.push(
         // caps
-        LineCap_MAP[lineCap],
+        LineCap_MAP[lineCap.value],
       );
       packedDash.push(
         dashOffset,

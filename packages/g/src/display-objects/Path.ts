@@ -43,8 +43,6 @@ export class Path extends DisplayObject<
       type: Shape.PATH,
       style: {
         path: '',
-        lineJoin: LineJoin.MITER,
-        lineCap: LineCap.BUTT,
         lineWidth: 1,
         miterLimit: 4,
         ...style,

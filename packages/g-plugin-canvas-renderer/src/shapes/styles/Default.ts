@@ -64,11 +64,11 @@ export class DefaultRenderer implements StyleRenderer {
         }
 
         if (!isNil(lineCap)) {
-          context.lineCap = lineCap;
+          context.lineCap = lineCap.value as CanvasLineCap;
         }
 
         if (!isNil(lineJoin)) {
-          context.lineJoin = lineJoin;
+          context.lineJoin = lineJoin.value as CanvasLineJoin;
         }
 
         let oldShadowBlur: number;

@@ -14,10 +14,22 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   update(parsedStyle: ParsedTextStyleProps) {
     const { text = '', textAlign, lineWidth, textBaseline, x, y, dx, dy } = parsedStyle;
 
-    const metrics = this.textService.measureText(text, parsedStyle);
-    parsedStyle.metrics = metrics;
-
-    if (!text) {
+    if (!text || !textAlign || !textBaseline) {
+      parsedStyle.metrics = {
+        font: '',
+        width: 0,
+        height: 0,
+        lines: [],
+        lineWidths: [],
+        lineHeight: 0,
+        maxLineWidth: 0,
+        fontProperties: {
+          ascent: 0,
+          descent: 0,
+          fontSize: 0,
+        },
+        lineMetrics: [],
+      };
       return {
         width: 0,
         height: 0,
@@ -28,6 +40,9 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
       };
     }
 
+    const metrics = this.textService.measureText(text, parsedStyle);
+    parsedStyle.metrics = metrics;
+
     const { width, height, lineHeight, fontProperties } = metrics;
 
     // anchor is left-top by default
@@ -36,10 +51,10 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
     // default 'left'
     let anchor: [number, number] = [0, 1];
     let lineXOffset = 0;
-    if (textAlign === 'center') {
+    if (textAlign.value === 'center') {
       lineXOffset = lineWidth.value / 2;
       anchor = [0.5, 1];
-    } else if (textAlign === 'right' || textAlign === 'end') {
+    } else if (textAlign.value === 'right' || textAlign.value === 'end') {
       lineXOffset = lineWidth.value;
       anchor = [1, 1];
     }
@@ -51,14 +66,14 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
     ];
 
     let lineYOffset = 0;
-    if (textBaseline === 'middle') {
+    if (textBaseline.value === 'middle') {
       // eslint-disable-next-line prefer-destructuring
       lineYOffset = halfExtents[1];
-    } else if (textBaseline === 'top' || textBaseline === 'hanging') {
+    } else if (textBaseline.value === 'top' || textBaseline.value === 'hanging') {
       lineYOffset = halfExtents[1] * 2;
-    } else if (textBaseline === 'alphabetic') {
+    } else if (textBaseline.value === 'alphabetic') {
       lineYOffset = lineHeight - fontProperties.ascent;
-    } else if (textBaseline === 'bottom' || textBaseline === 'ideographic') {
+    } else if (textBaseline.value === 'bottom' || textBaseline.value === 'ideographic') {
       lineYOffset = 0;
     }
     // TODO: ideographic & bottom

@@ -87,15 +87,15 @@ export class TextMesh extends Instanced {
 
       let linePositionY = 0;
       // handle vertical text baseline
-      if (textBaseline === 'middle') {
+      if (textBaseline.value === 'middle') {
         linePositionY = -height / 2;
-      } else if (textBaseline === 'bottom') {
+      } else if (textBaseline.value === 'bottom') {
         linePositionY = -height;
-      } else if (textBaseline === 'top' || textBaseline === 'hanging') {
+      } else if (textBaseline.value === 'top' || textBaseline.value === 'hanging') {
         linePositionY = 0;
-      } else if (textBaseline === 'alphabetic') {
+      } else if (textBaseline.value === 'alphabetic') {
         linePositionY = -height + lineHeight * 0.25;
-      } else if (textBaseline === 'ideographic') {
+      } else if (textBaseline.value === 'ideographic') {
         linePositionY = -height;
       }
 
@@ -224,17 +224,18 @@ export class TextMesh extends Instanced {
     };
 
     const object = this.instance as TextShape;
-    const {
-      fontSize,
-      fontFamily = '',
-      fontWeight = 'normal',
-      fontStyle,
-      metrics,
-    } = object.parsedStyle;
+    const { fontSize, fontFamily = '', fontWeight, fontStyle, metrics } = object.parsedStyle;
     const { font } = metrics;
     const allText = objects.map((object) => object.parsedStyle.text).join('');
 
-    this.glyphManager.generateAtlas(font, fontFamily, fontWeight, fontStyle, allText, this.device);
+    this.glyphManager.generateAtlas(
+      font,
+      fontFamily,
+      fontWeight.toString(),
+      fontStyle.toString(),
+      allText,
+      this.device,
+    );
     const glyphAtlasTexture = this.glyphManager.getAtlasTexture();
     const glyphAtlas = this.glyphManager.getAtlas();
 
@@ -318,7 +319,7 @@ export class TextMesh extends Instanced {
     indicesOffset: number;
   }) {
     const {
-      textAlign = 'start',
+      textAlign,
       fill,
       stroke,
       opacity,
@@ -363,7 +364,7 @@ export class TextMesh extends Instanced {
       lines,
       fontStack,
       lineHeight,
-      textAlign,
+      textAlign.value as CanvasTextAlign,
       letterSpacing,
       offsetX,
       offsetY,

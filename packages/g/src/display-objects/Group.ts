@@ -1,5 +1,5 @@
 import { Shape } from '../types';
-import type { BaseStyleProps, ParsedBaseStyleProps, TextAlign } from '../types';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
 import type { CSSUnitValue } from '../css';
@@ -7,16 +7,11 @@ import type { CSSUnitValue } from '../css';
 export interface GroupStyleProps extends BaseStyleProps {
   width?: number | string;
   height?: number | string;
-  textAlign?: TextAlign | 'inherit';
-  fontSize?: number | string | 'inherit';
-  fontFamily?: string;
 }
 
 export interface ParsedGroupStyleProps extends ParsedBaseStyleProps {
   width?: CSSUnitValue;
   height?: CSSUnitValue;
-  textAlign?: TextAlign;
-  fontSize?: CSSUnitValue;
 }
 
 /**
@@ -34,8 +29,6 @@ export class Group extends DisplayObject {
     super({
       type: Shape.GROUP,
       style: {
-        fontSize: '',
-        textAlign: '',
         width: '',
         height: '',
         ...style,

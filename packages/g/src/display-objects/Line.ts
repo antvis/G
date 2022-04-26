@@ -37,8 +37,6 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
         y2: 0,
         z1: 0,
         z2: 0,
-        lineJoin: LineJoin.MITER,
-        lineCap: LineCap.BUTT,
         /**
          * @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-width
          */

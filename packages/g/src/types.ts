@@ -135,9 +135,9 @@ export interface BaseStyleProps {
   /** 线宽 */
   lineWidth?: string | number;
   /** 指定如何绘制每一条线段末端 */
-  lineCap?: LineCap;
+  lineCap?: CanvasLineCap;
   /** 用来设置2个长度不为0的相连部分（线段，圆弧，曲线）如何连接在一起的属性（长度为0的变形部分，其指定的末端和控制点在同一位置，会被忽略） */
-  lineJoin?: LineJoin;
+  lineJoin?: CanvasLineJoin;
   /**
    * 设置线的虚线样式，可以指定一个数组。一组描述交替绘制线段和间距（坐标空间单位）长度的数字。 如果数组元素的数量是奇数， 数组的元素会被复制并重复。例如， [5, 15, 25] 会变成 [5, 15, 25, 5, 15, 25]。这个属性取决于浏览器是否支持 setLineDash() 函数。
    */
@@ -165,7 +165,7 @@ export interface BaseStyleProps {
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-transform
    */
-  textTransform?: TextTransform;
+  textTransform?: TextTransform | '';
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/miterLimit
@@ -185,11 +185,13 @@ export interface ParsedBaseStyleProps
     | 'fillOpacity'
     | 'fill'
     | 'stroke'
+    | 'lineWidth'
+    | 'lineJoin'
+    | 'lineCap'
     | 'lineDash'
     | 'lineDashOffset'
     | 'path'
     | 'points'
-    | 'lineWidth'
     | 'shadowColor'
     | 'shadowBlur'
     | 'shadowOffsetX'
@@ -197,6 +199,7 @@ export interface ParsedBaseStyleProps
     | 'visibility'
     | 'zIndex'
     | 'transformOrigin'
+    | 'textTransform'
   > {
   zIndex?: CSSUnitValue;
   visibility?: CSSKeywordValue;
@@ -206,6 +209,8 @@ export interface ParsedBaseStyleProps
   fill?: CSSRGB | CSSGradientValue;
   stroke?: CSSRGB | CSSGradientValue;
   lineDash?: [CSSUnitValue, CSSUnitValue];
+  lineCap?: CSSKeywordValue;
+  lineJoin?: CSSKeywordValue;
   lineDashOffset?: CSSUnitValue;
 
   path?: ParsedPathStyleProps;
@@ -234,6 +239,7 @@ export interface ParsedBaseStyleProps
   shadowBlur?: CSSUnitValue;
   shadowOffsetX?: CSSUnitValue;
   shadowOffsetY?: CSSUnitValue;
+  textTransform?: CSSKeywordValue;
 }
 
 // Cursor style

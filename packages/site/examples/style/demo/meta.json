@@ -5,6 +5,13 @@
   },
   "demos": [
     {
+      "filename": "inheritance.js",
+      "title": {
+        "zh": "属性继承",
+        "en": "Inheritance"
+      }
+    },
+    {
       "filename": "color.js",
       "title": {
         "zh": "<color>",

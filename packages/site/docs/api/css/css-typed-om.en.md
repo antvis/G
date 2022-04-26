@@ -1,11 +1,11 @@
 ---
 title: CSS Typed OM
-order: 10
+order: 1
 ---
 
 在浏览器中，过去很长一段时间 CSS 的解析对于前端开发者都是一个黑盒。我们只能通过 `el.style.width = '50%'` 这样非结构化的字符串与样式系统交互。
 
-[CSS Typed OM API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Typed_OM_API) 允许使用 JS 操作，它也是 [CSS Houdini](https://drafts.css-houdini.org/) 的基础。
+[CSS Typed OM API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Typed_OM_API) 允许使用 JS 操作解析后的属性值，它也是 [CSS Houdini](https://drafts.css-houdini.org/) 的基础。以上面的 `width: '50%'` 为例，字符串形式的属性值会被解析成 `CSS.percent(50)`，方便进行下一步的计算。
 
 # CSS
 

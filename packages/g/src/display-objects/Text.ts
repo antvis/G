@@ -1,26 +1,33 @@
 import type { TextMetrics } from '../services/text';
 import type { DisplayObjectConfig } from '../dom/interfaces';
-import { Shape, LineJoin, LineCap } from '../types';
+import { Shape } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
-import type { CSSUnitValue } from '../css';
+import type { CSSUnitValue, CSSGlobalKeywords, CSSKeywordValue } from '../css';
 
 export interface TextStyleProps extends BaseStyleProps {
   text: string;
   /** 设置文本内容的当前对齐方式 */
-  textAlign?: 'inherit' | 'unset' | 'start' | 'center' | 'end' | 'left' | 'right';
+  textAlign?: CSSGlobalKeywords | 'start' | 'center' | 'end' | 'left' | 'right';
   /** 设置在绘制文本时使用的当前文本基线 */
-  textBaseline?: 'top' | 'hanging' | 'middle' | 'alphabetic' | 'ideographic' | 'bottom';
+  textBaseline?:
+    | CSSGlobalKeywords
+    | 'top'
+    | 'hanging'
+    | 'middle'
+    | 'alphabetic'
+    | 'ideographic'
+    | 'bottom';
   /** 字体样式 */
-  fontStyle?: 'normal' | 'italic' | 'oblique';
+  fontStyle?: CSSGlobalKeywords | 'normal' | 'italic' | 'oblique';
   /** 文本字体大小 */
   fontSize?: number | string;
   /** 文本字体 */
   fontFamily?: string;
   /** 文本粗细 */
-  fontWeight?: 'normal' | 'bold' | 'bolder' | 'lighter' | number;
+  fontWeight?: CSSGlobalKeywords | 'normal' | 'bold' | 'bolder' | 'lighter' | number;
   /** 字体变体 */
-  fontVariant?: 'normal' | 'small-caps' | string;
+  fontVariant?: CSSGlobalKeywords | 'normal' | 'small-caps' | string;
   /** 文本行高 */
   lineHeight?: number;
   letterSpacing?: number;
@@ -29,27 +36,27 @@ export interface TextStyleProps extends BaseStyleProps {
   leading?: number;
   wordWrap?: boolean;
   wordWrapWidth?: number;
-  dropShadow?: boolean;
-  dropShadowDistance?: number;
+  // dropShadow?: boolean;
+  // dropShadowDistance?: number;
   dx?: number | string;
   dy?: number | string;
 }
 export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   text: string;
   /** 设置文本内容的当前对齐方式 */
-  textAlign?: 'start' | 'center' | 'end' | 'left' | 'right';
+  textAlign?: CSSKeywordValue;
   /** 设置在绘制文本时使用的当前文本基线 */
-  textBaseline?: 'top' | 'hanging' | 'middle' | 'alphabetic' | 'ideographic' | 'bottom';
+  textBaseline?: CSSKeywordValue;
   /** 字体样式 */
-  fontStyle?: 'normal' | 'italic' | 'oblique';
+  fontStyle?: CSSKeywordValue;
   /** 文本字体大小 */
   fontSize?: CSSUnitValue;
   /** 文本字体 */
   fontFamily?: string;
   /** 文本粗细 */
-  fontWeight?: 'normal' | 'bold' | 'bolder' | 'lighter' | number;
+  fontWeight?: CSSKeywordValue;
   /** 字体变体 */
-  fontVariant?: 'normal' | 'small-caps' | string;
+  fontVariant?: CSSKeywordValue;
   /** 文本行高 */
   lineHeight?: number;
   letterSpacing?: number;
@@ -58,8 +65,8 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   leading?: number;
   wordWrap?: boolean;
   wordWrapWidth?: number;
-  dropShadow?: boolean;
-  dropShadowDistance?: number;
+  // dropShadow?: boolean;
+  // dropShadowDistance?: number;
   metrics?: TextMetrics;
   dx?: CSSUnitValue;
   dy?: CSSUnitValue;
@@ -81,27 +88,26 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
       type: Shape.TEXT,
       style: {
         text: '',
-        fontSize: 'unset',
-        fontFamily: 'unset',
-        fontStyle: 'normal',
-        fontWeight: 'normal',
-        fontVariant: 'normal',
-        textAlign: 'unset',
-        textBaseline: 'alphabetic',
-        dropShadow: false,
+        fontSize: '',
+        fontFamily: '',
+        fontStyle: '',
+        fontWeight: '',
+        fontVariant: '',
+        textAlign: '',
+        textBaseline: '',
+        textTransform: '',
+        // dropShadow: false,
         // dropShadowAlpha: 1,
         // dropShadowAngle: Math.PI / 6,
         // dropShadowBlur: 0,
         // dropShadowColor: '#000',
-        dropShadowDistance: 5,
-        fill: '#000',
+        // dropShadowDistance: 5,
+        fill: 'black',
+        stroke: 'black',
         letterSpacing: 0,
         lineHeight: 0,
-        lineJoin: LineJoin.MITER,
-        lineCap: LineCap.BUTT,
         lineWidth: 0,
         miterLimit: 10,
-        stroke: '#000',
         whiteSpace: 'pre',
         wordWrap: false,
         wordWrapWidth: 0,

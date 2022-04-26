@@ -63,7 +63,7 @@ export class GlyphManager {
     lines: string[],
     fontStack: string,
     lineHeight: number,
-    textAlign: 'start' | 'center' | 'end' | 'left' | 'right',
+    textAlign: CanvasTextAlign,
     letterSpacing: number,
     offsetX: number,
     offsetY: number,
@@ -115,7 +115,7 @@ export class GlyphManager {
   generateAtlas(
     fontStack: string = '',
     fontFamily: string,
-    fontWeight: 'normal' | 'bold' | 'bolder' | 'lighter' | number,
+    fontWeight: string,
     fontStyle: string = '',
     text: string,
     device: Device,
@@ -135,7 +135,7 @@ export class GlyphManager {
     if (newChars.length) {
       const glyphMap = newChars
         .map((char) => {
-          return this.generateSDF(fontStack, fontFamily, fontWeight.toString(), fontStyle, char);
+          return this.generateSDF(fontStack, fontFamily, fontWeight, fontStyle, char);
         })
         .reduce((prev, cur) => {
           // @ts-ignore

@@ -208,7 +208,7 @@ describe('Canvas', () => {
     );
 
     const $canvas = canvas.getContextService().getDomElement();
-    const { top, left } = $canvas.getBoundingClientRect();
+    const { top, left } = ($canvas as HTMLCanvasElement).getBoundingClientRect();
 
     $canvas.dispatchEvent(
       new PointerEvent('pointerdown', {

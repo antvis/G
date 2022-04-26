@@ -55,11 +55,11 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
       // compatible with FireFox browser, ref: https://github.com/antvis/g/issues/119
       $el.setAttribute(
         'dominant-baseline',
-        BASELINE_MAP_FOR_FIREFOX[textBaseline!] || 'alphabetic',
+        BASELINE_MAP_FOR_FIREFOX[textBaseline.value] || 'alphabetic',
       );
     } else {
-      $el.setAttribute('dominant-baseline', BASELINE_MAP_FOR_FIREFOX[textBaseline!]);
-      $el.setAttribute('alignment-baseline', BASELINE_MAP[textBaseline!]);
+      $el.setAttribute('dominant-baseline', BASELINE_MAP_FOR_FIREFOX[textBaseline.value]);
+      $el.setAttribute('alignment-baseline', BASELINE_MAP[textBaseline.value]);
     }
 
     $el.setAttribute('paint-order', 'stroke');
@@ -79,14 +79,14 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
           let dy = 0;
           if (i === 0) {
             // TODO: handle other textBaseline values
-            if (textBaseline === 'middle') {
+            if (textBaseline.value === 'middle') {
               dy = lineHeight / 2 - height / 2;
-            } else if (textBaseline === 'top' || textBaseline === 'hanging') {
+            } else if (textBaseline.value === 'top' || textBaseline.value === 'hanging') {
               dy = 0;
             } else if (
-              textBaseline === 'bottom' ||
-              textBaseline === 'alphabetic' ||
-              textBaseline === 'ideographic'
+              textBaseline.value === 'bottom' ||
+              textBaseline.value === 'alphabetic' ||
+              textBaseline.value === 'ideographic'
             ) {
               dy = -lineHeight * (lineNum - 1);
             }

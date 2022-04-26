@@ -35,28 +35,28 @@ export class TextRenderer implements StyleRenderer {
       metrics,
       dx,
       dy,
-    } = parsedStyle;
+    } = parsedStyle as ParsedTextStyleProps;
 
     const { font, lines, height, lineHeight, lineMetrics } = metrics;
 
     context.font = font;
     context.lineWidth = lineWidth.value;
-    context.textAlign = textAlign;
-    context.textBaseline = textBaseline!;
-    context.lineJoin = lineJoin!;
+    context.textAlign = textAlign.value as CanvasTextAlign;
+    context.textBaseline = textBaseline.value as CanvasTextBaseline;
+    context.lineJoin = lineJoin.value as CanvasLineJoin;
     context.miterLimit = miterLimit;
 
     let linePositionY = 0;
     // handle vertical text baseline
-    if (textBaseline === 'middle') {
+    if (textBaseline.value === 'middle') {
       linePositionY = -height / 2 - lineHeight / 2;
     } else if (
-      textBaseline === 'bottom' ||
-      textBaseline === 'alphabetic' ||
-      textBaseline === 'ideographic'
+      textBaseline.value === 'bottom' ||
+      textBaseline.value === 'alphabetic' ||
+      textBaseline.value === 'ideographic'
     ) {
       linePositionY = -height;
-    } else if (textBaseline === 'top' || textBaseline === 'hanging') {
+    } else if (textBaseline.value === 'top' || textBaseline.value === 'hanging') {
       linePositionY = -lineHeight;
     }
 
@@ -81,7 +81,7 @@ export class TextRenderer implements StyleRenderer {
           context,
           lines[i],
           lineMetrics[i],
-          textAlign,
+          textAlign.value as CanvasTextAlign,
           linePositionX,
           linePositionY,
           letterSpacing,
@@ -96,7 +96,7 @@ export class TextRenderer implements StyleRenderer {
           context,
           lines[i],
           lineMetrics[i],
-          textAlign,
+          textAlign.value as CanvasTextAlign,
           linePositionX,
           linePositionY,
           letterSpacing,
@@ -112,7 +112,7 @@ export class TextRenderer implements StyleRenderer {
     context: CanvasRenderingContext2D,
     text: string,
     lineMetrics: Rectangle,
-    textAlign: 'start' | 'center' | 'end' | 'left' | 'right',
+    textAlign: CanvasTextAlign,
     x: number,
     y: number,
     letterSpacing: number,

@@ -42,33 +42,39 @@ const DEFAULT_STYLE_PROPS: {
   strokeOpacity: string;
   fill: string;
   stroke: string;
-} =
-  // = {
-  //   x: 0,
-  //   y: 0,
-  //   z: 0,
-  //   anchor: [0, 0, 0],
-  //   opacity: 'unset',
-  //   fillOpacity: 'unset',
-  //   strokeOpacity: 'unset',
-  //   fill: 'none',
-  //   stroke: 'none',
-  //   transformOrigin: 'left top',
-  //   visibility: 'unset',
-  // };
-  {
-    x: '',
-    y: '',
-    z: '',
-    anchor: [0, 0],
-    opacity: '',
-    fillOpacity: '',
-    strokeOpacity: '',
-    fill: '',
-    stroke: '',
-    transformOrigin: '',
-    visibility: '',
-  };
+  lineCap: CanvasLineCap | '';
+  lineJoin: CanvasLineJoin | '';
+  fontSize: string | number;
+  fontFamily: string;
+  fontStyle: string;
+  fontWeight: string;
+  fontVariant: string;
+  textAlign: string;
+  textBaseline: string;
+  textTransform: string;
+} = {
+  x: '',
+  y: '',
+  z: '',
+  anchor: [0, 0],
+  opacity: '',
+  fillOpacity: '',
+  strokeOpacity: '',
+  fill: '',
+  stroke: '',
+  transformOrigin: '',
+  visibility: '',
+  lineCap: '',
+  lineJoin: '',
+  fontSize: '',
+  fontFamily: '',
+  fontStyle: '',
+  fontWeight: '',
+  fontVariant: '',
+  textAlign: '',
+  textBaseline: '',
+  textTransform: '',
+};
 
 /**
  * prototype chains: DisplayObject -> Element -> Node -> EventTarget

@@ -154,7 +154,7 @@ export class TextService {
     return properties;
   }
 
-  measureText(text: string, attributes: ParsedTextStyleProps): TextMetrics {
+  measureText(text: string, parsedStyle: ParsedTextStyleProps): TextMetrics {
     const {
       fontSize,
       wordWrap,
@@ -163,12 +163,12 @@ export class TextService {
       textBaseline,
       textAlign,
       letterSpacing = 0,
-      dropShadow,
-      dropShadowDistance = 0,
+      // dropShadow = 0,
+      // dropShadowDistance = 0,
       leading = 0,
-    } = attributes;
+    } = parsedStyle;
 
-    const font = toFontString(attributes);
+    const font = toFontString(parsedStyle);
     const fontProperties = this.measureFont(font);
     // fallback in case UA disallow canvas data extraction
     // (toDataURI, getImageData functions)
@@ -179,7 +179,7 @@ export class TextService {
 
     const context = this.offscreenCanvas.getOrCreateContext();
     context.font = font;
-    const outputText = wordWrap ? this.wordWrap(text, attributes) : text;
+    const outputText = wordWrap ? this.wordWrap(text, parsedStyle) : text;
 
     const lines = outputText.split(/(?:\r\n|\r|\n)/);
     const lineWidths = new Array<number>(lines.length);
@@ -190,29 +190,29 @@ export class TextService {
       maxLineWidth = Math.max(maxLineWidth, lineWidth);
     }
     let width = maxLineWidth + lineWidth.value;
-    if (dropShadow) {
-      width += dropShadowDistance;
-    }
+    // if (dropShadow) {
+    //   width += dropShadowDistance;
+    // }
     let lineHeight = strokeHeight || fontProperties.fontSize + lineWidth.value;
     let height =
       Math.max(lineHeight, fontProperties.fontSize + lineWidth.value) +
       (lines.length - 1) * (lineHeight + leading);
-    if (dropShadow) {
-      height += dropShadowDistance;
-    }
+    // if (dropShadow) {
+    //   height += dropShadowDistance;
+    // }
     lineHeight += leading;
 
     // handle vertical text baseline
     let offsetY = 0;
-    if (textBaseline === 'middle') {
+    if (textBaseline.value === 'middle') {
       offsetY = -height / 2;
     } else if (
-      textBaseline === 'bottom' ||
-      textBaseline === 'alphabetic' ||
-      textBaseline === 'ideographic'
+      textBaseline.value === 'bottom' ||
+      textBaseline.value === 'alphabetic' ||
+      textBaseline.value === 'ideographic'
     ) {
       offsetY = -height;
-    } else if (textBaseline === 'top' || textBaseline === 'hanging') {
+    } else if (textBaseline.value === 'top' || textBaseline.value === 'hanging') {
       offsetY = 0;
     }
 
@@ -228,9 +228,9 @@ export class TextService {
       lineMetrics: lineWidths.map((width, i) => {
         let offsetX = 0;
         // handle horizontal text align
-        if (textAlign === 'center') {
+        if (textAlign.value === 'center') {
           offsetX -= width / 2;
-        } else if (textAlign === 'right' || textAlign === 'end') {
+        } else if (textAlign.value === 'right' || textAlign.value === 'end') {
           offsetX -= width;
         }
 
