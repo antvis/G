@@ -35,3 +35,20 @@ export function parseRadius(radius: number[] | number) {
     r4,
   };
 }
+
+export function convertHTML(str: string) {
+  const regex = /[&|<|>|"|']/g;
+  return str.replace(regex, function (match) {
+    if (match === '&') {
+      return '&amp;';
+    } else if (match === '<') {
+      return '&lt;';
+    } else if (match === '>') {
+      return '&gt;';
+    } else if (match === '"') {
+      return '&quot;';
+    } else {
+      return '&apos;';
+    }
+  });
+}

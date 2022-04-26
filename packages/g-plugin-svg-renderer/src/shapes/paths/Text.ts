@@ -2,6 +2,7 @@ import type { ParsedTextStyleProps } from '@antv/g';
 import { detect } from 'detect-browser';
 import { singleton } from 'mana-syringe';
 import type { ElementRenderer } from '.';
+import { convertHTML } from '../../utils/format';
 
 // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/alignment-baseline
 const BASELINE_MAP: Record<string, string> = {
@@ -70,7 +71,7 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
     $el.setAttribute('style', `transform:translate(${dx.toString()}, ${dy.toString()});`);
 
     if (lineNum === 1) {
-      $el.innerHTML = lines[0];
+      $el.innerHTML = convertHTML(lines[0]);
       $el.setAttribute('dx', `${lineWidth.value / 2}`);
     } else {
       $el.innerHTML = lines
@@ -93,7 +94,7 @@ export class TextRenderer implements ElementRenderer<ParsedTextStyleProps> {
           } else {
             dy = lineHeight;
           }
-          return `<tspan x="0" dx="${dx}" dy="${dy}">${line}</tspan>`;
+          return `<tspan x="0" dx="${dx}" dy="${dy}">${convertHTML(line)}</tspan>`;
         })
         .join('');
     }
