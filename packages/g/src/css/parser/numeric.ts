@@ -3,7 +3,8 @@ import { CSSUnitValue } from '../cssom';
 
 export function numberToString(x: number) {
   // scale(0.00000001) -> scale(0)
-  return x.toFixed(6).replace(/0+$/, '').replace(/\.$/, '');
+  // return x.toFixed(6).replace(/0+$/, '').replace(/\.$/, '');
+  return x.toString();
 }
 
 /**
