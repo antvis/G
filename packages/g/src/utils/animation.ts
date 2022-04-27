@@ -92,7 +92,7 @@ function calculatePhase(
   if (localTime < Math.min(timing.delay, endTime)) {
     return PhaseBefore;
   }
-  if (localTime >= Math.min(timing.delay + activeDuration, endTime)) {
+  if (localTime >= Math.min(timing.delay + activeDuration + timing.endDelay, endTime)) {
     return PhaseAfter;
   }
 

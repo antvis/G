@@ -23,7 +23,7 @@ import { Renderable3D } from './components/Renderable3D';
 import { WebGLRendererPluginOptions } from './interfaces';
 // import { pushFXAAPass } from './passes/FXAA';
 // import { useCopyPass } from './passes/Copy';
-import type { Device, SwapChain, TextureDescriptor } from './platform';
+import type { Device, SwapChain, Texture, TextureDescriptor } from './platform';
 import { BlendFactor, BlendMode } from './platform';
 import { setAttachmentStateSimple } from './platform/utils';
 import { Device_GL } from './platform/webgl2/Device';
@@ -470,12 +470,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
   loadTexture(
     src: string | TexImageSource,
     descriptor?: TextureDescriptor,
-    successCallback?: () => void,
+    successCallback?: (t: Texture) => void,
   ) {
-    return this.texturePool.getOrCreateTexture(this.device, src, descriptor, () => {
-      this.renderingService.dirtify();
+    return this.texturePool.getOrCreateTexture(this.device, src, descriptor, (t) => {
       if (successCallback) {
-        successCallback();
+        successCallback(t);
       }
     });
   }

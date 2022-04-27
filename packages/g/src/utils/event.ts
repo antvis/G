@@ -51,9 +51,4 @@ export interface FormattedTouch extends Touch {
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent/touches
    */
   touches: FormattedTouch[];
-
-  /**
-   * the final event in touchlist should trigger touch event
-   */
-  isFinal: boolean;
 }

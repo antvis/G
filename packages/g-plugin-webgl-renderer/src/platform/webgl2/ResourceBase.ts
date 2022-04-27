@@ -1,7 +1,8 @@
+import { EventEmitter } from 'eventemitter3';
 import type { Disposable, Resource, ResourceBase } from '../interfaces';
 import type { Device_GL } from './Device';
 
-export class ResourceBase_GL implements ResourceBase, Disposable {
+export class ResourceBase_GL extends EventEmitter implements ResourceBase, Disposable {
   id: number;
 
   name: string;
@@ -9,6 +10,8 @@ export class ResourceBase_GL implements ResourceBase, Disposable {
   device: Device_GL;
 
   constructor({ id, device }: { id: number; device: Device_GL }) {
+    super();
+
     this.id = id;
     this.device = device;
 

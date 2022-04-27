@@ -1,5 +1,5 @@
 import { Line as LineUtil } from '@antv/g-math';
-import { Shape, LineCap, LineJoin } from '../types';
+import { Shape } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';

@@ -164,7 +164,7 @@ export class PickingPlugin implements RenderingPlugin {
 
   private restorePickingColor(displayObjects: DisplayObject[]) {
     displayObjects.forEach((picked) => {
-      this.batchManager.updateAttribute(picked, 'interactive', true, true);
+      this.batchManager.updateAttribute(picked, 'pointerEvents', true, true);
     });
   }
 
@@ -275,7 +275,7 @@ export class PickingPlugin implements RenderingPlugin {
     ]);
 
     if (picked) {
-      this.batchManager.updateAttribute(picked, 'interactive', false, true);
+      this.batchManager.updateAttribute(picked, 'pointerEvents', false, true);
     }
     this.batchManager.render(renderLists.picking, true);
 
@@ -316,7 +316,7 @@ export class PickingPlugin implements RenderingPlugin {
         if (
           pickedDisplayObject &&
           pickedDisplayObject.isVisible() &&
-          pickedDisplayObject.interactive
+          pickedDisplayObject.isInteractive()
         ) {
           target = pickedDisplayObject;
         }

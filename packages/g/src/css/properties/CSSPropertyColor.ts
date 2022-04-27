@@ -1,8 +1,9 @@
 import { singleton } from 'mana-syringe';
 import type { CSSProperty, DisplayObject } from '../..';
 import { parseColor, mergeColors } from '../..';
-import { CSSGradientValue, CSSKeywordValue, CSSRGB } from '../cssom';
-import { StyleValueRegistry } from '../StyleValueRegistry';
+import type { CSSGradientValue} from '../cssom';
+import { CSSKeywordValue, CSSRGB } from '../cssom';
+import type { StyleValueRegistry } from '../StyleValueRegistry';
 
 /**
  * opacity

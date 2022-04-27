@@ -3,9 +3,10 @@ import { vec3 } from 'gl-matrix';
 import type { DisplayObject, ParsedBaseStyleProps, GeometryAABBUpdater, BaseStyleProps } from '..';
 import { ElementEvent } from '..';
 import { dirtifyToRoot, Shape, GeometryUpdaterFactory, AABB } from '..';
-import { CSSStyleValue, CSSUnitValue, UnitType } from './cssom';
+import { CSSStyleValue, CSSUnitValue } from './cssom';
 import { CSSKeywordValue } from './cssom';
-import { convertPercentUnit, ParsedFilterStyleProperty } from './parser';
+import type { ParsedFilterStyleProperty } from './parser';
+import { convertPercentUnit } from './parser';
 import {
   CSSPropertyLocalPosition,
   CSSPropertyOpacity,
@@ -25,7 +26,6 @@ import {
   CSSPropertyPoints,
   CSSPropertyText,
   CSSPropertyTextTransform,
-  CSSPropertyVisibility,
 } from './properties';
 import type { CSSProperty } from './CSSProperty';
 import { formatAttribute } from '../utils';
@@ -300,11 +300,24 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
      */
     // interpolable: true,
     defaultValue: 'visible',
-    handler: CSSPropertyVisibility,
   },
   {
-    name: 'interactive',
-    defaultValue: 'true',
+    name: 'pointerEvents',
+    inherited: true,
+    keywords: [
+      'none',
+      'auto',
+      'stroke',
+      'fill',
+      'painted',
+      'visible',
+      'visiblestroke',
+      'visiblefill',
+      'visiblepainted',
+      'bounding-box',
+      'all',
+    ],
+    defaultValue: 'auto',
   },
   {
     name: 'filter',
@@ -734,6 +747,7 @@ export class StyleValueRegistry {
    */
   computeProperty(name: string, computed: CSSStyleValue, object: DisplayObject) {
     const metadata = this.getMetadata(name);
+    const isDocumentElement = object.id === 'g-root';
 
     let used: CSSStyleValue = computed instanceof CSSStyleValue ? computed.clone() : computed;
 
@@ -746,7 +760,7 @@ export class StyleValueRegistry {
          * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/unset
          */
         if (value === 'unset') {
-          if (inherited) {
+          if (inherited && !isDocumentElement) {
             value = 'inherit';
           } else {
             value = 'initial';
@@ -782,6 +796,8 @@ export class StyleValueRegistry {
         } else {
           used = computed;
         }
+      } else {
+        used = computed;
       }
     }
 

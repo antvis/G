@@ -41,7 +41,6 @@ import {
   CSSPropertyTransformOrigin,
   CSSPropertyZIndex,
   CSSPropertyShadowBlur,
-  CSSPropertyVisibility,
 } from './css';
 
 export const containerModule = Module((register) => {
@@ -110,5 +109,4 @@ export const containerModule = Module((register) => {
   register(CSSPropertyClipPath);
   register(CSSPropertyText);
   register(CSSPropertyTextTransform);
-  register(CSSPropertyVisibility);
 });

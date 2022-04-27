@@ -1,6 +1,6 @@
 import { singleton } from 'mana-syringe';
-import type { CSSProperty } from '../..';
-import { CSSUnitValue, parseTransformOrigin } from '../..';
+import type { CSSProperty , CSSUnitValue} from '../..';
+import { parseTransformOrigin } from '../..';
 
 /**
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin

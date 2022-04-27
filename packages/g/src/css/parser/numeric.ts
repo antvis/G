@@ -2,7 +2,8 @@ import { clamp, isString } from '@antv/util';
 import { CSSUnitValue } from '../cssom';
 
 export function numberToString(x: number) {
-  return x.toFixed(3).replace(/0+$/, '').replace(/\.$/, '');
+  // scale(0.00000001) -> scale(0)
+  return x.toFixed(6).replace(/0+$/, '').replace(/\.$/, '');
 }
 
 /**

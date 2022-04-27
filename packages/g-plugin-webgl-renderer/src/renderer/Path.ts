@@ -2,8 +2,8 @@
  * @see https://www.khronos.org/assets/uploads/developers/presentations/Crazy_Panda_How_to_draw_lines_in_WebGL.pdf
  */
 import { injectable } from 'mana-syringe';
-import type { DisplayObject, ParsedBaseStyleProps } from '@antv/g';
-import { Shape, CSSRGB } from '@antv/g';
+import type { DisplayObject, ParsedBaseStyleProps , CSSRGB } from '@antv/g';
+import { Shape } from '@antv/g';
 import { Batch } from './Batch';
 import { ShapeRenderer } from '../tokens';
 import { FillMesh, LineMesh } from '../meshes';

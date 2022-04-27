@@ -25,6 +25,7 @@ describe('Circle', () => {
       'stroke',
       'transformOrigin',
       'visibility',
+      'pointerEvents',
       'lineCap',
       'lineJoin',
       'fontSize',

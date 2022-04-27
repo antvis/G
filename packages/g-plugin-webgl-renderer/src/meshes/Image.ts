@@ -38,13 +38,12 @@ export class ImageMesh extends Instanced {
     this.material.vertexShader = vert;
     this.material.fragmentShader = frag;
 
-    const map = this.texturePool.getOrCreateTexture(this.device, img, undefined, () => {
+    const map = this.texturePool.getOrCreateTexture(this.device, img);
+    map.on('loaded', () => {
       // need re-render
       objects.forEach((object) => {
         const renderable = object.renderable;
         renderable.dirty = true;
-
-        this.renderingService.dirtify();
       });
     });
 
@@ -119,13 +118,13 @@ export class ImageMesh extends Instanced {
         new Uint8Array(new Float32Array(packed).buffer),
       );
     } else if (name === 'img') {
-      const map = this.texturePool.getOrCreateTexture(this.device, value, undefined, () => {
+      const map = this.texturePool.getOrCreateTexture(this.device, value);
+      map.on('loaded', () => {
         // need re-render
         objects.forEach((object) => {
           const renderable = object.renderable;
           renderable.dirty = true;
         });
-        this.renderingService.dirtify();
       });
       this.material.setUniforms({
         u_Map: map,

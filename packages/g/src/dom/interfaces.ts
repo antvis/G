@@ -316,6 +316,7 @@ export interface DisplayObjectConfig<StyleProps> {
 
   /**
    * enable interaction events for the DisplayObject
+   * @deprecated use `style.pointerEvents = 'auto'` instead
    */
   interactive?: boolean;
 }

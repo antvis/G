@@ -1,4 +1,5 @@
-import type { LinearGradient, RadialGradient } from '@antv/g';
+import type { LinearGradient, RadialGradient} from '@antv/g';
+import { RenderingService } from '@antv/g';
 import { GradientPatternType, OffscreenCanvasCreator, CanvasConfig, isBrowser } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import type { Device, Texture, TextureDescriptor } from './platform';
@@ -15,6 +16,9 @@ export class TexturePool {
   @inject(OffscreenCanvasCreator)
   private offscreenCanvas: OffscreenCanvasCreator;
 
+  @inject(RenderingService)
+  private renderingService: RenderingService;
+
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
@@ -25,7 +29,7 @@ export class TexturePool {
     device: Device,
     src: string | TexImageSource,
     descriptor?: TextureDescriptor,
-    successCallback?: () => void,
+    successCallback?: (t: Texture) => void,
   ): Texture {
     // @ts-ignore
     const id = typeof src === 'string' ? src : src.src || '';
@@ -47,6 +51,8 @@ export class TexturePool {
       });
       if (typeof src !== 'string') {
         this.textureCache[id].setImageData(src);
+        this.textureCache[id].emit('loaded');
+        this.renderingService.dirtify();
       } else {
         // @see https://github.com/antvis/g/issues/938
         const { createImage } = this.canvasConfig;
@@ -61,9 +67,10 @@ export class TexturePool {
         if (image) {
           image.onload = () => {
             this.textureCache[id].setImageData(image);
-
+            this.textureCache[id].emit('loaded');
+            this.renderingService.dirtify();
             if (successCallback) {
-              successCallback();
+              successCallback(this.textureCache[id]);
             }
           };
           image.onerror = () => {};

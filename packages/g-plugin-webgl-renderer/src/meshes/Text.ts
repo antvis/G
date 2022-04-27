@@ -291,7 +291,7 @@ export class TextMesh extends Instanced {
       name === 'opacity' ||
       name === 'lineWidth' ||
       name === 'visibility' ||
-      name === 'interactive'
+      name === 'pointerEvents'
     ) {
       this.material.geometryDirty = true;
     }
@@ -318,17 +318,8 @@ export class TextMesh extends Instanced {
     glyphAtlas: GlyphAtlas;
     indicesOffset: number;
   }) {
-    const {
-      textAlign,
-      fill,
-      stroke,
-      opacity,
-      fillOpacity,
-      strokeOpacity,
-      lineWidth,
-      visibility,
-      interactive,
-    } = object.parsedStyle as ParsedTextStyleProps;
+    const { textAlign, fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, visibility } =
+      object.parsedStyle as ParsedTextStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (fill instanceof CSSRGB) {
       fillColor = [
@@ -348,10 +339,10 @@ export class TextMesh extends Instanced {
         Number(stroke.alpha),
       ];
     }
-    // @ts-ignore
-    const encodedPickingColor = (interactive && object.renderable3D?.encodedPickingColor) || [
-      0, 0, 0,
-    ];
+
+    const encodedPickingColor = (object.isInteractive() &&
+      // @ts-ignore
+      object.renderable3D?.encodedPickingColor) || [0, 0, 0];
 
     const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
 

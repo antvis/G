@@ -1,4 +1,4 @@
-import { Shape, LineCap, LineJoin } from '../types';
+import { Shape } from '../types';
 import type { BaseStyleProps, PathCommand } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';

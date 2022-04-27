@@ -2,7 +2,13 @@ import type { vec2, vec3 } from 'gl-matrix';
 import type { ParsedPathStyleProps, ParsedPolylineStyleProps } from './display-objects';
 import type { DisplayObject } from './display-objects';
 import type { IRenderer } from './AbstractRenderer';
-import type { CSSGradientValue, CSSKeywordValue, CSSRGB, CSSUnitValue } from './css';
+import type {
+  CSSGlobalKeywords,
+  CSSGradientValue,
+  CSSKeywordValue,
+  CSSRGB,
+  CSSUnitValue,
+} from './css';
 
 export enum Shape {
   GROUP = 'g',
@@ -92,12 +98,30 @@ export interface BaseStyleProps {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/visibility
    */
-  visibility?: 'visible' | 'hidden' | 'inherit' | 'initial';
+  visibility?: 'visible' | 'hidden' | CSSGlobalKeywords;
 
   /**
-   * is able to be picked
+   * use `pointerEvents` instead
+   * @deprecated
    */
   interactive?: boolean;
+
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/pointer-events
+   */
+  pointerEvents?:
+    | 'none'
+    | 'auto'
+    | 'stroke'
+    | 'fill'
+    | 'painted'
+    | 'visible'
+    | 'visiblestroke'
+    | 'visiblefill'
+    | 'visiblepainted'
+    | 'bounding-box'
+    | 'all'
+    | CSSGlobalKeywords;
 
   /**
    * z-index in CSS
@@ -197,12 +221,14 @@ export interface ParsedBaseStyleProps
     | 'shadowOffsetX'
     | 'shadowOffsetY'
     | 'visibility'
+    | 'pointerEvents'
     | 'zIndex'
     | 'transformOrigin'
     | 'textTransform'
   > {
   zIndex?: CSSUnitValue;
   visibility?: CSSKeywordValue;
+  pointerEvents?: CSSKeywordValue;
   opacity?: CSSUnitValue;
   fillOpacity?: CSSUnitValue;
   strokeOpacity?: CSSUnitValue;

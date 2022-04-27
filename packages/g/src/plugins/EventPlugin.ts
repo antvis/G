@@ -272,8 +272,6 @@ export class EventPlugin implements RenderingPlugin {
         touch.isNormalized = true;
         touch.type = event.type;
 
-        // the l
-        touch.isFinal = i === event.changedTouches.length - 1;
         normalizedEvents.push(touch);
       }
     } else if (canvas.isMouseEvent(event)) {

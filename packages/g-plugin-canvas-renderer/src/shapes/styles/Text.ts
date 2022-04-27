@@ -1,6 +1,6 @@
 import { Shape, UnitType } from '@antv/g';
 import type { ParsedTextStyleProps, Rectangle, DisplayObject } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
+import { singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import { StyleRenderer } from './interfaces';
 
@@ -8,9 +8,6 @@ import { StyleRenderer } from './interfaces';
   token: { token: StyleRenderer, named: Shape.TEXT },
 })
 export class TextRenderer implements StyleRenderer {
-  // @inject(TextService)
-  // private textService: TextService;
-
   hash(parsedStyle: any): string {
     return '';
   }

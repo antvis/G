@@ -146,6 +146,17 @@ describe('Property Transform', () => {
     expect(format([[1, 2]])).to.be.eqls('scale(1,2)');
   });
 
+  it('should merge transforms(scale & scaley) correctly', () => {
+    const [left, right, format] = mergeTransforms(
+      [{ t: 'scale', d: [new CSSUnitValue(0.0001), new CSSUnitValue(1)] }],
+      [{ t: 'scaley', d: [new CSSUnitValue(1)] }],
+      null,
+    );
+    expect(left).to.be.eqls([[0.0001, 1]]);
+    expect(right).to.be.eqls([[1, 1]]);
+    expect(format([[0.0001, 1]])).to.be.eqls('scale(0.0001,1)');
+  });
+
   it('should merge transforms(translatex) correctly', () => {
     const [left, right, format] = mergeTransforms(
       [{ t: 'translatex', d: [new CSSUnitValue(1, 'px')] }],

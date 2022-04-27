@@ -3,12 +3,7 @@ import type { DisplayObject } from '..';
 import { StyleValueRegistry } from '../css';
 import type { Element, FederatedEvent } from '../dom';
 import { ElementEvent } from '../dom';
-import {
-  RenderingContext,
-  RenderReason,
-  RenderingPluginContribution,
-  dirtifyToRoot,
-} from '../services';
+import { RenderingContext, RenderingPluginContribution, dirtifyToRoot } from '../services';
 import type { RenderingService, RenderingPlugin } from '../services/RenderingService';
 
 @singleton({ contrib: RenderingPluginContribution })
@@ -22,8 +17,11 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   private styleValueRegistry: StyleValueRegistry;
 
   apply(renderingService: RenderingService) {
-    const handleAttributeChanged = () => {
-      this.renderingContext.renderReasons.add(RenderReason.DISPLAY_OBJECT_CHANGED);
+    const handleAttributeChanged = (e: FederatedEvent) => {
+      // this.renderingContext.renderReasons.add(RenderReason.DISPLAY_OBJECT_CHANGED);
+      const object = e.target as DisplayObject;
+      object.renderable.dirty = true;
+      renderingService.dirtify();
     };
 
     const handleBoundsChanged = () => {

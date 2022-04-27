@@ -6,7 +6,7 @@ import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 /**
- * Do picking with calling API instead of triggering interactive events.
+ * Pick target by calling API instead of interactive events.
  * DisplayObject's `interactive` & `visibility` will affect picking but not `opacity`.
  *
  * You can move the red picking point with mouse click or lil-gui.

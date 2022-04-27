@@ -202,6 +202,8 @@ describe('Document', () => {
     });
     canvas.appendChild(circle2);
 
+    await sleep(100);
+
     let target = await canvas.document.elementFromPoint(100, 100);
     let targets = await canvas.document.elementsFromPoint(100, 100);
     expect(target).to.be.eqls(circle2);
@@ -226,7 +228,8 @@ describe('Document', () => {
     expect(targets).to.be.eqls([circle2, circle1, canvas.document.documentElement]);
 
     // make it non-interactive
-    circle2.style.interactive = false;
+    circle2.interactive = false;
+
     target = await canvas.document.elementFromPoint(100, 100);
     targets = await canvas.document.elementsFromPoint(100, 100);
     expect(target).to.be.eqls(circle1);

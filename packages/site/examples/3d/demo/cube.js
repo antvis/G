@@ -95,7 +95,7 @@ const canvas = new Canvas({
     if (stats) {
       stats.update();
     }
-    cube.rotate(0, 1, 0);
+    // cube.rotate(0, 1, 0);
   });
 
   // GUI

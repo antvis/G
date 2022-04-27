@@ -33,12 +33,15 @@ const canvas = new Canvas({
  * * fontStyle: 'normal'
  * * fontWeight: 'normal'
  * * fontVariant: 'normal'
+ * * visibility: 'visible'
+ * * pointerEvents: 'auto'
  */
 const text1 = new Text({
   style: {
     x: 100,
     y: 100,
     text: 'hello',
+    cursor: 'pointer',
   },
 });
 canvas.appendChild(text1);
@@ -52,6 +55,7 @@ const text2 = new Text({
     y: 150,
     text: 'hello',
     fill: 'red',
+    cursor: 'pointer',
   },
 });
 canvas.appendChild(text2);
@@ -66,6 +70,7 @@ const text3 = new Text({
     text: 'hello',
     fill: 'red',
     fontSize: 20, // user-defined
+    cursor: 'pointer',
   },
 });
 canvas.appendChild(text3);
@@ -77,6 +82,7 @@ const rect = new Rect({
     width: 300,
     height: 50,
     fill: 'grey',
+    cursor: 'pointer',
   },
 });
 canvas.appendChild(rect);
@@ -87,6 +93,7 @@ const text4 = new Text({
   style: {
     y: 12,
     text: 'hello from <Rect>',
+    cursor: 'pointer',
   },
 });
 rect.appendChild(text4);
@@ -99,6 +106,7 @@ const group = new Group({
     x: 100,
     y: 400,
     fontSize: 32,
+    cursor: 'pointer',
   },
 });
 canvas.appendChild(group);
@@ -106,6 +114,7 @@ const text5 = new Text({
   style: {
     y: 12,
     text: 'hello from <Group>',
+    cursor: 'pointer',
   },
 });
 group.appendChild(text5);
@@ -113,6 +122,7 @@ const text6 = new Text({
   style: {
     y: 32,
     text: 'hello from <Group>',
+    cursor: 'pointer',
   },
 });
 group.appendChild(text6);
@@ -151,6 +161,8 @@ const documentElementConfig = {
   fontSize: 16,
   fontFamily: 'sans-serif',
   fontStyle: 'normal',
+  visibility: 'unset',
+  pointerEvents: 'unset',
 };
 documentElementFolder.add(documentElementConfig, 'fontSize', 1, 32).onChange((fontSize) => {
   canvas.document.documentElement.style.fontSize = `${fontSize}px`;
@@ -169,14 +181,36 @@ documentElementFolder
 documentElementFolder
   .add(documentElementConfig, 'fontStyle', ['normal', 'italic', 'oblique'])
   .onChange((fontStyle) => {
-    canvas.document.documentElement.attr('fontStyle', fontStyle);
+    canvas.document.documentElement.style.fontStyle = fontStyle;
+  });
+documentElementFolder
+  .add(documentElementConfig, 'visibility', ['unset', 'visible', 'hidden'])
+  .onChange((visibility) => {
+    canvas.document.documentElement.style.visibility = visibility;
+  });
+documentElementFolder
+  .add(documentElementConfig, 'pointerEvents', ['unset', 'auto', 'none'])
+  .onChange((pointerEvents) => {
+    canvas.document.documentElement.style.pointerEvents = pointerEvents;
   });
 
 const groupFolder = gui.addFolder('group');
 const groupConfig = {
   fontSize: 32,
+  visibility: 'unset',
+  pointerEvents: 'unset',
 };
 groupFolder.add(groupConfig, 'fontSize', 1, 32).onChange((fontSize) => {
   group.style.fontSize = `${fontSize}px`;
 });
+groupFolder
+  .add(groupConfig, 'visibility', ['unset', 'visible', 'hidden'])
+  .onChange((visibility) => {
+    group.style.visibility = visibility;
+  });
+groupFolder
+  .add(groupConfig, 'pointerEvents', ['unset', 'auto', 'none'])
+  .onChange((pointerEvents) => {
+    group.style.pointerEvents = pointerEvents;
+  });
 groupFolder.open();

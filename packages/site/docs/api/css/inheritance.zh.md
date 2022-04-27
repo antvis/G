@@ -39,6 +39,8 @@ canvas.document.documentElement.style.fontSize = `32px`;
 
 和浏览器一样，默认值（[initial value](https://developer.mozilla.org/en-US/docs/Web/CSS/initial_value)）会在根节点上应用可继承属性。
 
+例如浏览器默认的 `fontSize` 是 `16px`。我们在 G 中给[根节点]()设置了如下样式：
+
 ```js
 expect(documentElement.style.fill).to.equal('');
 expect(documentElement.style.fillOpacity).to.equal('1');
@@ -60,9 +62,33 @@ expect(documentElement.style.textAlign).to.equal('start');
 expect(documentElement.style.textBaseline).to.equal('alphabetic');
 expect(documentElement.style.transformOrigin).to.equal('');
 expect(documentElement.style.visibility).to.equal('visible');
+expect(documentElement.style.pointerEvents).to.equal('auto');
 expect(documentElement.style.width).to.equal('');
 expect(documentElement.style.x).to.equal(0);
 expect(documentElement.style.y).to.equal(0);
 expect(documentElement.style.z).to.equal(0);
 expect(documentElement.style.zIndex).to.equal(0);
 ```
+
+# 支持继承的属性
+
+目前我们支持的可继承属性如下：
+
+| 属性名         | 初始值       | 适用元素 | 是否可继承 | 是否支持动画 | computed value          |
+| -------------- | ------------ | -------- | ---------- | ------------ | ----------------------- |
+| fillOpacity    | '1'          | 所有     | 是         | 是           | `<number>`              |
+| strokeOpacity  | '1'          | 所有     | 是         | 是           | `<number>`              |
+| lineWidth      | '1'          | 所有     | 是         | 是           | `<length> <percentage>` |
+| lineJoin       | 'miter'      | 所有     | 是         | 否           | `<keywords>`            |
+| lineCap        | 'butt'       | 所有     | 是         | 否           | `<keywords>`            |
+| lineDash       | 无           | 所有     | 是         | 是           | `<array>`               |
+| lineDashOffset | '0'          | 所有     | 是         | 是           | `<length> <percentage>` |
+| visibility     | 'visible'    | 所有     | 是         | 否           | `<keywords>`            |
+| pointerEvents  | 'auto'       | 所有     | 是         | 否           | `<keywords>`            |
+| fontSize       | '16px'       | 所有     | 是         | 是           | `<length> <percentage>` |
+| fontFamily     | 'sans-serif' | 所有     | 是         | 否           | `<keywords>`            |
+| fontStyle      | 'normal'     | 所有     | 是         | 否           | `<keywords>`            |
+| fontWeight     | 'normal'     | 所有     | 是         | 否           | `<keywords>`            |
+| fontVariant    | 'normal'     | 所有     | 是         | 否           | `<keywords>`            |
+| textBaseline   | 'alphabetic' | 所有     | 是         | 否           | `<keywords>`            |
+| textAlign      | 'start'      | 所有     | 是         | 否           | `<keywords>`            |

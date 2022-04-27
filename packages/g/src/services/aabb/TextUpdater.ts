@@ -5,7 +5,7 @@ import type { ParsedTextStyleProps } from '../../display-objects/Text';
 import { TextService } from '../TextService';
 import { Shape } from '../../types';
 import { CSSUnitValue } from '../../css';
-import { DisplayObject } from '../..';
+import type { DisplayObject } from '../..';
 
 @singleton({ token: { token: GeometryAABBUpdater, named: Shape.TEXT } })
 export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {

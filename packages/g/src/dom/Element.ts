@@ -75,14 +75,6 @@ export class Element<
     return this.className.split(' ').filter((c) => c !== '');
   }
 
-  get interactive() {
-    return this.getAttribute('interactive') || '';
-  }
-
-  set interactive(interactive: boolean) {
-    this.setAttribute('interactive', interactive);
-  }
-
   scrollLeft = 0;
   scrollTop = 0;
 

@@ -1,4 +1,4 @@
-import {
+import type {
   Shape,
   DisplayObject,
   RenderingService,
@@ -7,9 +7,9 @@ import {
   BaseStyleProps,
   Element,
   ParsedBaseStyleProps,
-  CanvasConfig,
 } from '@antv/g';
 import {
+  CanvasConfig,
   DisplayObjectPool,
   RenderingPluginContribution,
   OffscreenCanvasCreator,
@@ -78,7 +78,11 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       const hitTestList: DisplayObject[] = [];
       rBushNodes.forEach(({ id }) => {
         const displayObject = this.displayObjectPool.getByEntity(id);
-        if (displayObject.isVisible() && !displayObject.isCulled() && displayObject.interactive) {
+        if (
+          displayObject.isVisible() &&
+          !displayObject.isCulled() &&
+          displayObject.isInteractive()
+        ) {
           // parent is not included, eg. parent is clipped
           if (
             displayObject.parentNode &&

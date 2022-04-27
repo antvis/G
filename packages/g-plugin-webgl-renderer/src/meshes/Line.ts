@@ -99,7 +99,6 @@ export class LineMesh extends Instanced {
         lineDash,
         lineDashOffset,
         visibility,
-        interactive,
       } = object.parsedStyle as ParsedLineStyleProps;
       if (
         name === 'lineJoin' ||
@@ -177,11 +176,10 @@ export class LineMesh extends Instanced {
         this.material.setUniforms({
           [Uniform.DASH_OFFSET]: (lineDashOffset && lineDashOffset.value) || 0,
         });
-      } else if (name === 'interactive') {
-        // @ts-ignore
-        const encodedPickingColor = (interactive && object.renderable3D?.encodedPickingColor) || [
-          0, 0, 0,
-        ];
+      } else if (name === 'pointerEvents') {
+        const encodedPickingColor = (object.isInteractive() &&
+          // @ts-ignore
+          object.renderable3D?.encodedPickingColor) || [0, 0, 0];
         this.material.setUniforms({
           [Uniform.PICKING_COLOR]: encodedPickingColor,
         });
@@ -218,7 +216,6 @@ export class LineMesh extends Instanced {
       lineDash,
       lineDashOffset,
       visibility,
-      interactive,
     } = instance.parsedStyle as ParsedLineStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (fill instanceof CSSRGB) {
@@ -239,10 +236,9 @@ export class LineMesh extends Instanced {
       ];
     }
 
-    // @ts-ignore
-    const encodedPickingColor = (interactive && instance.renderable3D?.encodedPickingColor) || [
-      0, 0, 0,
-    ];
+    const encodedPickingColor = (instance.isInteractive() &&
+      // @ts-ignore
+      instance.renderable3D?.encodedPickingColor) || [0, 0, 0];
     let translateX = 0;
     let translateY = 0;
     const contentBounds = instance.getGeometryBounds();

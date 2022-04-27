@@ -26,7 +26,8 @@ import {
 import { dirtifyToRoot } from '../services';
 import { MutationEvent } from '../dom/MutationEvent';
 import { Rectangle } from '../shapes';
-import { StyleValueRegistry, PropertyParseOptions } from '../css/StyleValueRegistry';
+import type { PropertyParseOptions } from '../css/StyleValueRegistry';
+import { StyleValueRegistry } from '../css/StyleValueRegistry';
 import { CSSUnitValue } from '../css';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
@@ -38,6 +39,7 @@ const DEFAULT_STYLE_PROPS: {
   anchor: [number, number] | [number, number, number];
   transformOrigin: string;
   visibility: string;
+  pointerEvents: string;
   opacity: string;
   fillOpacity: string;
   strokeOpacity: string;
@@ -65,6 +67,7 @@ const DEFAULT_STYLE_PROPS: {
   stroke: '',
   transformOrigin: '',
   visibility: '',
+  pointerEvents: '',
   lineCap: '',
   lineJoin: '',
   fontSize: '',
@@ -138,6 +141,9 @@ export class DisplayObject<
     };
     if (!isNil(this.config.visible)) {
       this.config.style.visibility = this.config.visible === false ? 'hidden' : 'visible';
+    }
+    if (!isNil(this.config.interactive)) {
+      this.config.style.pointerEvents = this.config.interactive === false ? 'none' : 'auto';
     }
 
     this.style = new Proxy<StyleProps & ICSSStyleDeclaration<StyleProps>>(
@@ -534,7 +540,7 @@ export class DisplayObject<
     }
 
     // clear old parsed transform
-    this.parsedStyle.transform = undefined;
+    delete this.parsedStyle.transform;
 
     if (timeline) {
       return timeline.play(new KeyframeEffect(this as IElement, keyframes, options));
@@ -567,6 +573,17 @@ export class DisplayObject<
    */
   isVisible() {
     return this.parsedStyle?.visibility?.value === 'visible';
+  }
+
+  get interactive() {
+    return this.isInteractive();
+  }
+  set interactive(b: boolean) {
+    this.style.pointerEvents = b ? 'auto' : 'none';
+  }
+
+  isInteractive() {
+    return this.parsedStyle?.pointerEvents?.value !== 'none';
   }
 
   isCulled() {

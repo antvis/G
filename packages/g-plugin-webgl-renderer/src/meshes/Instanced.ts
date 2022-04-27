@@ -206,17 +206,8 @@ export abstract class Instanced {
     // const useNormal = this.material.defines.NORMAL;
 
     objects.forEach((object) => {
-      const {
-        fill,
-        stroke,
-        opacity,
-        fillOpacity,
-        strokeOpacity,
-        lineWidth,
-        anchor,
-        visibility,
-        interactive,
-      } = object.parsedStyle as ParsedBaseStyleProps;
+      const { fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, anchor, visibility } =
+        object.parsedStyle as ParsedBaseStyleProps;
       let fillColor: Tuple4Number = [0, 0, 0, 0];
       if (fill instanceof CSSRGB) {
         fillColor = [
@@ -246,10 +237,9 @@ export abstract class Instanced {
       }
       mat4.mul(modelViewMatrix, this.camera.getViewTransform(), modelMatrix);
 
-      // @ts-ignore
-      const encodedPickingColor = (interactive && object.renderable3D?.encodedPickingColor) || [
-        0, 0, 0,
-      ];
+      const encodedPickingColor = (object.isInteractive() &&
+        // @ts-ignore
+        object.renderable3D?.encodedPickingColor) || [0, 0, 0];
 
       packedModelMatrix.push(...modelMatrix);
       packedFill.push(...fillColor);
@@ -700,14 +690,12 @@ export abstract class Instanced {
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
       );
-    } else if (name === 'interactive') {
+    } else if (name === 'pointerEvents') {
       const packed: number[] = [];
       objects.forEach((object) => {
-        const { interactive } = object.parsedStyle as ParsedBaseStyleProps;
-        // @ts-ignore
-        const encodedPickingColor = (interactive && object.renderable3D?.encodedPickingColor) || [
-          0, 0, 0,
-        ];
+        const encodedPickingColor = (object.isInteractive() &&
+          // @ts-ignore
+          object.renderable3D?.encodedPickingColor) || [0, 0, 0];
         packed.push(...encodedPickingColor, object.sortable.renderOrder * RENDER_ORDER_SCALE);
       });
       this.geometry.updateVertexBuffer(
@@ -730,7 +718,7 @@ export abstract class Instanced {
   changeRenderOrder(object: DisplayObject, renderOrder: number) {
     const index = this.objects.indexOf(object);
 
-    const encodedPickingColor = (object.parsedStyle.interactive &&
+    const encodedPickingColor = (object.isInteractive() &&
       // @ts-ignore
       object.renderable3D?.encodedPickingColor) || [0, 0, 0];
     this.geometry.updateVertexBuffer(
@@ -1019,15 +1007,20 @@ export abstract class Instanced {
         this.device,
         texImageSource,
         makeTextureDescriptor2D(Format.U8_RGBA_NORM, 1, 1, 1),
-        () => {
-          // need re-render
-          objects.forEach((object) => {
-            object.renderable.dirty = true;
-
-            this.renderingService.dirtify();
-          });
-        },
+        // () => {
+        //   // need re-render
+        //   objects.forEach((object) => {
+        //     object.renderable.dirty = true;
+        //     this.renderingService.dirtify();
+        //   });
+        // },
       );
+      fillMapping.texture.on('loaded', () => {
+        // need re-render
+        objects.forEach((object) => {
+          object.renderable.dirty = true;
+        });
+      });
       this.device.setResourceName(fillMapping.texture, 'Fill Texture' + this.id);
       fillMapping.sampler = this.renderHelper.getCache().createSampler({
         // wrapS: WrapMode.Clamp,

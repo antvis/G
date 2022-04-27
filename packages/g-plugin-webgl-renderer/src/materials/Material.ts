@@ -380,6 +380,11 @@ export abstract class Material<T extends IMaterial = any> {
       if (isTexture(value)) {
         this.textures[key] = value;
         this.textureDirty = true;
+        value.on('loaded', () => {
+          this.meshes.forEach((mesh) => {
+            mesh.renderable.dirty = true;
+          });
+        });
       } else {
         this.uniforms[key] = value;
       }

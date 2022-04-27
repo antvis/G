@@ -259,6 +259,9 @@ const group = new Group({
 });
 
 group.setAttribute('class', 'my-classname');
+
+// 但不可以使用 class 属性，为保留字
+group.class;
 ```
 
 # interactive
@@ -548,116 +551,45 @@ circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘�
 
 ### opacity
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+图形整体透明度
 
-**类型**： `number`
-
-**默认值**：1
-
-**是否必须**：`false`
-
-**说明**：图形整体透明度，取值范围为 `[0, 1]`
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '1' | 所有 | 否 | 是 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
 
 ### fillOpacity
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+填充色透明度
 
-**类型**： `number`
-
-**默认值**：1
-
-**是否必须**：`false`
-
-**说明**：填充色透明度，取值范围为 `[0, 1]`
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '1' | 所有 | 是 | 是 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
 
 ### fill
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+填充色
 
-**类型**： `string`
-
-**默认值**：无
-
-**是否必须**：`false`
-
-**说明**：填充色
-
-支持以下格式的颜色值：
-
-- `'red'`
-- `'#1890FF'`
-- `'rgba(r, g, b, a)'`
-- `'transparent'` 完全透明，等价于 `'rgba(0,0,0,0)'`
-- `'currentColor'` Canvas / WebGL 渲染环境中等同于 `black`，SVG 中为[同名属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/color)效果
-
-除此之外，支持以下渐变色写法。[示例](/zh/examples/shape#gradient)
-
-### 线性渐变
-
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Z5gpQL9ia9kAAAAAAAAAAABkARQnAQ)
-
-- `l` 表示使用线性渐变，绿色的字体为可变量，由用户自己填写。
-
-```js
-// example
-// 使用渐变色描边，渐变角度为 0，渐变的起始点颜色 #ffffff，中点的渐变色为 #7ec2f3，结束的渐变色为 #1890ff
-stroke: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff';
-```
-
-### 放射状/环形渐变
-
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9sc1SY2d_0AAAAAAAAAAAABkARQnAQ)
-
-- `r` 表示使用放射状渐变，绿色的字体为可变量，由用户自己填写，开始圆的 `x`、`y`、`r` 值均为相对值(0 至 1 范围)。
-
-```js
-// example
-// 使用渐变色填充，渐变起始圆的圆心坐标为被填充物体的包围盒中心点，半径为(包围盒对角线长度 / 2) 的 0.1 倍，渐变的起始点颜色 #ffffff，中点的渐变色为 #7ec2f3，结束的渐变色为 #1890ff
-fill: 'r(0.5, 0.5, 0.1) 0:#ffffff 1:#1890ff';
-```
-
-### 纹理
-
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8FjsSoqE1mYAAAAAAAAAAABkARQnAQ)
-
-- `p`: 表示使用纹理，绿色的字体为可变量，由用户自己填写。
-- `a`: 该模式在水平和垂直方向重复；
-- `x`: 该模式只在水平方向重复；
-- `y`: 该模式只在垂直方向重复；
-- `n`: 该模式只显示一次（不重复）。
-- 纹理的内容可以直接是图片或者 [Data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)。
-
-```js
-// example
-// 使用纹理填充，在水平和垂直方向重复图片
-fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
-```
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 'none' | 所有 | 否 | 是 | [\<paint\>](/zh/docs/api/css/css-properties-values-api#paint) |
 
 ## 描边
 
 ### strokeOpacity
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+描边透明度
 
-**类型**： `number`
-
-**默认值**：1
-
-**是否必须**：`false`
-
-**说明**：描边透明度，取值范围为 `[0, 1]`
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '1' | 所有 | 是 | 是 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
 
 ### stroke
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+描边色
 
-**类型**： `string`
-
-**默认值**：无
-
-**是否必须**：`false`
-
-**说明**：描边色，例如 `'#1890FF'`
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 'none' | 所有 | 否 | 是 | [\<paint\>](/zh/docs/api/css/css-properties-values-api#paint) |
 
 ### strokeWidth
 
@@ -673,17 +605,13 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 ### lineWidth
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+描边宽度。与我们熟悉的 [CSS box model](https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing) 不同，边框的一半宽度在图形内，一半在图形外。例如下面这个圆的包围盒宽度为：`r + lineWidth / 2 = 110`
 
-**类型**： `number`
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*f0-CTpClWkMAAAAAAAAAAAAAARQnAQ" width="300">
 
-**默认值**：[Text](/zh/docs/api/basic/text) 为 `0`，其余图形为 `1`
-
-**是否必须**：`false`
-
-**说明**：描边宽度。与我们熟悉的 [CSS box model](https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing) 不同，边框的一半宽度在图形内，一半在图形外。例如下面这个圆的包围盒宽度为：`r + lineWidth / 2 = 110`
-
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*f0-CTpClWkMAAAAAAAAAAAAAARQnAQ)
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '1' | 所有 | 是 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
 ### lineDash
 
@@ -1094,6 +1022,21 @@ const circle = new Circle({
   },
 });
 ```
+
+## 响应交互事件
+
+### pointerEvents
+
+设置图形如何响应交互事件。目前支持以下关键词：
+
+- auto 响应事件
+- none 不响应事件
+
+后续会增加 `fill` `stroke` 等更多关键词。
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 'auto' | 所有 | 是 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#关键词) |
 
 # 变换操作
 
@@ -1595,6 +1538,10 @@ group.hide();
 group.show();
 // or group.setAttribute('visibility', 'visible');
 ```
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 'visible' | 所有 | 是 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#关键词) |
 
 关于可见性有两点需要注意：
 

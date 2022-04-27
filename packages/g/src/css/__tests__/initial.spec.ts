@@ -62,11 +62,47 @@ describe('StyleValueRegistry initialization', () => {
     expect(documentElement.style.textBaseline).to.equal('alphabetic');
     expect(documentElement.style.transformOrigin).to.equal('');
     expect(documentElement.style.visibility).to.equal('visible');
+    expect(documentElement.style.pointerEvents).to.equal('auto');
     expect(documentElement.style.width).to.equal('');
     expect(documentElement.style.x).to.equal(0);
     expect(documentElement.style.y).to.equal(0);
     expect(documentElement.style.z).to.equal(0);
     expect(documentElement.style.zIndex).to.equal(0);
+
+    // hide all children
+    documentElement.style.visibility = 'hidden';
+    let styleMap = documentElement.computedStyleMap();
+    expect(documentElement.style.visibility).to.equal('hidden');
+    // computed value
+    expect(styleMap.get('visibility').toString()).to.be.eqls('hidden');
+    // used value
+    expect(documentElement.parsedStyle.visibility.toString()).to.be.eqls('hidden');
+
+    documentElement.style.visibility = 'unset';
+    expect(documentElement.style.visibility).to.equal('unset');
+    // computed value
+    styleMap = documentElement.computedStyleMap();
+    expect(styleMap.get('visibility').toString()).to.be.eqls('unset');
+    // used value
+    expect(documentElement.parsedStyle.visibility.toString()).to.be.eqls('visible');
+
+    // disable pointerEvents
+    documentElement.style.pointerEvents = 'none';
+    styleMap = documentElement.computedStyleMap();
+    expect(documentElement.style.pointerEvents).to.equal('none');
+    // computed value
+    expect(styleMap.get('pointerEvents').toString()).to.be.eqls('none');
+    // used value
+    expect(documentElement.parsedStyle.pointerEvents.toString()).to.be.eqls('none');
+
+    // enable pointerEvents
+    documentElement.style.pointerEvents = 'auto';
+    styleMap = documentElement.computedStyleMap();
+    expect(documentElement.style.pointerEvents).to.equal('auto');
+    // computed value
+    expect(styleMap.get('pointerEvents').toString()).to.be.eqls('auto');
+    // used value
+    expect(documentElement.parsedStyle.pointerEvents.toString()).to.be.eqls('auto');
   });
 
   it('should parse & compute CSS properties for Circle correctly.', async () => {
@@ -198,6 +234,7 @@ describe('StyleValueRegistry initialization', () => {
     expect(parsedStyle.lineJoin).to.be.undefined;
     expect(parsedStyle.strokeOpacity).to.be.undefined;
     expect(parsedStyle.visibility).to.be.undefined;
+    expect(parsedStyle.pointerEvents).to.be.undefined;
     // @ts-ignore
     expect(parsedStyle.xxxxx).to.be.undefined;
 
@@ -216,6 +253,7 @@ describe('StyleValueRegistry initialization', () => {
     expect(parsedStyle.lineCap.value).to.be.eqls('butt');
     expect(parsedStyle.lineJoin.value).to.be.eqls('miter');
     expect(parsedStyle.visibility.value).to.be.eqls('visible');
+    expect(parsedStyle.pointerEvents.value).to.be.eqls('auto');
   });
 
   it('should parse & compute CSS properties for Ellipse correctly.', () => {

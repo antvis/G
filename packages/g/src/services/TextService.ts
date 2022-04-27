@@ -192,12 +192,12 @@ export class TextService {
       lineWidths[i] = lineWidth;
       maxLineWidth = Math.max(maxLineWidth, lineWidth);
     }
-    let width = maxLineWidth + lineWidth.value;
+    const width = maxLineWidth + lineWidth.value;
     // if (dropShadow) {
     //   width += dropShadowDistance;
     // }
     let lineHeight = strokeHeight || fontProperties.fontSize + lineWidth.value;
-    let height =
+    const height =
       Math.max(lineHeight, fontProperties.fontSize + lineWidth.value) +
       (lines.length - 1) * (lineHeight + leading);
     // if (dropShadow) {

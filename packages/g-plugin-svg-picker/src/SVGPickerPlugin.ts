@@ -36,7 +36,7 @@ export class SVGPickerPlugin implements RenderingPlugin {
             const target = this.displayObjectPool.getByEntity(Number(id.substring(index + 1)));
 
             // don't need to account for `visibility` since DOM API already does
-            if (target && target.interactive) {
+            if (target && target.isInteractive()) {
               targets.push(target);
 
               if (topmost) {

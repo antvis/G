@@ -1,5 +1,6 @@
 import type { Format } from './format';
 import { GL } from './constants';
+import type EventEmitter from 'eventemitter3';
 
 export enum ResourceType {
   Buffer,
@@ -19,7 +20,8 @@ export enum ResourceType {
 export interface Disposable {
   destroy: () => void;
 }
-export interface ResourceBase extends Disposable {
+
+export interface ResourceBase extends Disposable, EventEmitter {
   id: number;
   name?: string;
 }

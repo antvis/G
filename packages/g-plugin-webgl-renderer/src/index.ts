@@ -23,7 +23,7 @@ import { GlyphManager } from './meshes/symbol/GlyphManager';
 import { MeshFactory, RendererFactory, ShapeRenderer } from './tokens';
 import { Mesh } from './Mesh';
 import { LightPool } from './LightPool';
-import type { TextureDescriptor } from './platform';
+import type { Texture, TextureDescriptor } from './platform';
 import {
   FillMesh,
   ImageMesh,
@@ -139,7 +139,7 @@ export class Plugin implements RendererPlugin {
   loadTexture(
     src: string | TexImageSource,
     descriptor?: TextureDescriptor,
-    successCallback?: () => void,
+    successCallback?: (t: Texture) => void,
   ) {
     return this.container.get(RenderGraphPlugin).loadTexture(src, descriptor, successCallback);
   }
