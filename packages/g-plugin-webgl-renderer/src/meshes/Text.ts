@@ -279,8 +279,6 @@ export class TextMesh extends Instanced {
       name === 'dx' ||
       name === 'dy'
     ) {
-      console.log('geometry changed...');
-
       this.material.programDirty = true;
       this.material.geometryDirty = true;
       // need re-upload SDF texture
@@ -296,8 +294,6 @@ export class TextMesh extends Instanced {
       name === 'interactive'
     ) {
       this.material.geometryDirty = true;
-
-      console.log('geometry changed...', name);
     }
   }
 

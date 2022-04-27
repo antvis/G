@@ -41,8 +41,6 @@ export class CSSPropertyTransform implements Partial<CSSProperty<any[], any[]>> 
   mixer = mergeTransforms;
 
   calculator(name: string, oldValue: any[], newValue: any[], object: DisplayObject) {
-    debugger;
-
     if (newValue instanceof CSSKeywordValue) {
       newValue = [];
     }

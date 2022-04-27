@@ -531,8 +531,6 @@ export abstract class Instanced {
     }
 
     if (this.geometryDirty || this.geometry.dirty) {
-      console.log('geometry dirty...', this);
-
       // destroy first
       if (this.geometry) {
         this.geometry.destroy();
