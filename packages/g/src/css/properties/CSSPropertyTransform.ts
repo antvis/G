@@ -2,6 +2,7 @@
 import { singleton } from 'mana-syringe';
 import type { CSSProperty, DisplayObject } from '../..';
 import { Opx, Odeg, parseTransform, mergeTransforms } from '../..';
+import { CSSKeywordValue } from '../cssom';
 
 /**
  * @see /zh/docs/api/animation#支持变换的属性
@@ -40,6 +41,12 @@ export class CSSPropertyTransform implements Partial<CSSProperty<any[], any[]>> 
   mixer = mergeTransforms;
 
   calculator(name: string, oldValue: any[], newValue: any[], object: DisplayObject) {
+    debugger;
+
+    if (newValue instanceof CSSKeywordValue) {
+      newValue = [];
+    }
+
     // const uniqTypes = uniq([
     //   ...(oldValue || []).map(({ t }) => t),
     //   ...(newValue || []).map(({ t }) => t),

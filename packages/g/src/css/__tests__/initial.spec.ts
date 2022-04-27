@@ -12,14 +12,7 @@ import {
   Canvas,
 } from '../../../lib';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-
-const sleep = (n) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(undefined);
-    }, n);
-  });
-};
+import { sleep } from '../../__tests__/utils';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -37,6 +30,14 @@ const canvas = new Canvas({
  * @see https://developer.mozilla.org/en-US/docs/Web/API/CSS/factory_functions
  */
 describe('StyleValueRegistry initialization', () => {
+  afterEach(() => {
+    canvas.removeChildren();
+  });
+
+  afterAll(() => {
+    canvas.destroy();
+  });
+
   it('should initialize Document correctly.', () => {
     const documentElement = canvas.document.documentElement;
 

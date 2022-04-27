@@ -331,12 +331,35 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/initial_value
 
 ## computed value
 
+对于属性值的解析经历以下阶段：
+
+- 原始值（通常是字符串）转换成 CSSStyleUnit，称作 computed value
+- 将 computed value 计算后得到 used value
+
 https://developer.mozilla.org/en-US/docs/Web/CSS/computed_value
 
 在这一步需要：
 
 - 处理特殊的关键词（通常是通用的），例如 [initial](/zh/docs/api/css/css-properties-values-api#initial) [inherit](/zh/docs/api/css/css-properties-values-api#inherit)
 - 做一些值计算，需要布局阶段参与的除外
+
+通过 [computedStyleMap](/zh/docs/api/builtin-objects/element#computedstylemap) 方法可以获取 computed value map，这是一个 [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) 类型：
+
+```js
+/**
+ * computed values
+ */
+const styleMap = circle.computedStyleMap();
+
+expect((styleMap.get('r') as CSSUnitValue).equals(CSS.px(100))).to.be.true;
+const fill = styleMap.get('fill') as CSSRGB;
+expect(fill.r).to.be.eqls(255);
+expect(fill.g).to.be.eqls(0);
+expect(fill.b).to.be.eqls(0);
+expect(fill.alpha).to.be.eqls(1);
+```
+
+但是 computed value 并不能直接用于渲染，例如百分比、相对长度都需要进一步计算。
 
 ## used value
 
@@ -345,3 +368,20 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
 进一步处理 computed value，得到最终送入渲染管线的值。
 
 例如 `CSS.percent(50)` 需要计算得到 `CSS.px(?)`。
+
+# 自定义属性
+
+在 CSS 中定义新属性方法如下：
+
+https://developer.mozilla.org/en-US/docs/Web/API/CSS/RegisterProperty
+
+```js
+CSS.registerProperty({
+  name: '--my-color',
+  syntax: '<color>',
+  inherits: false,
+  initialValue: '#c0ffee',
+});
+```
+
+随后就可以在 CSS 中使用这个属性。其中比较关键的是 `syntax`，局限性是只能使用浏览器内置的实现，无法做到真正意义上的自定义解析。

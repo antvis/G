@@ -3,9 +3,9 @@ import { vec3 } from 'gl-matrix';
 import type { DisplayObject, ParsedBaseStyleProps, GeometryAABBUpdater, BaseStyleProps } from '..';
 import { ElementEvent } from '..';
 import { dirtifyToRoot, Shape, GeometryUpdaterFactory, AABB } from '..';
-import { CSSStyleValue, CSSUnitValue } from './cssom';
+import { CSSStyleValue, CSSUnitValue, UnitType } from './cssom';
 import { CSSKeywordValue } from './cssom';
-import type { ParsedFilterStyleProperty } from './parser';
+import { convertPercentUnit, ParsedFilterStyleProperty } from './parser';
 import {
   CSSPropertyLocalPosition,
   CSSPropertyOpacity,
@@ -31,6 +31,10 @@ import type { CSSProperty } from './CSSProperty';
 import { formatAttribute } from '../utils';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
+export interface PropertyParseOptions {
+  skipUpdateAttribute: boolean;
+  skipParse: boolean;
+}
 
 export interface PropertyMetadata {
   name: string;
@@ -117,6 +121,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     alias: ['cy'],
     defaultValue: '0',
+    syntax: '<length> | <percentage>',
     handler: CSSPropertyLocalPosition,
   },
   {
@@ -124,6 +129,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'z',
     interpolable: true,
     defaultValue: '0',
+    syntax: '<length> | <percentage>',
     handler: CSSPropertyLocalPosition,
   },
   {
@@ -134,6 +140,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'opacity',
     interpolable: true,
     defaultValue: '1',
+    syntax: '<number>',
     handler: CSSPropertyOpacity,
   },
   {
@@ -145,6 +152,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     inherited: true,
     defaultValue: '1',
+    syntax: '<number>',
     handler: CSSPropertyOpacity,
   },
   {
@@ -156,6 +164,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     inherited: true,
     defaultValue: '1',
+    syntax: '<number>',
     handler: CSSPropertyOpacity,
   },
   {
@@ -167,6 +176,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     keywords: ['none'],
     defaultValue: 'none',
+    syntax: '<paint>',
     handler: CSSPropertyColor,
   },
   {
@@ -174,23 +184,27 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     keywords: ['none'],
     defaultValue: 'none',
+    syntax: '<paint>',
     handler: CSSPropertyColor,
   },
   {
     name: 'shadowColor',
     interpolable: true,
+    syntax: '<color>',
     handler: CSSPropertyColor,
   },
   {
     name: 'shadowOffsetX',
     interpolable: true,
     layoutDependent: true,
+    syntax: '<length> | <percentage>',
     handler: CSSPropertyLengthOrPercentage,
   },
   {
     name: 'shadowOffsetY',
     interpolable: true,
     layoutDependent: true,
+    syntax: '<length> | <percentage>',
     handler: CSSPropertyLengthOrPercentage,
   },
   {
@@ -209,6 +223,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     defaultValue: '1',
     layoutDependent: true,
     alias: ['strokeWidth'],
+    syntax: '<length> | <percentage>',
     handler: CSSPropertyLengthOrPercentage,
   },
   {
@@ -294,6 +309,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   {
     name: 'filter',
     independent: true,
+    layoutDependent: true,
     handler: CSSPropertyFilter,
   },
   {
@@ -304,6 +320,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'transform',
     interpolable: true,
     keywords: ['none'],
+    defaultValue: 'none',
     handler: CSSPropertyTransform,
   },
   {
@@ -311,12 +328,20 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     parsePriority: 100,
     // interpolable: true,
     defaultValue: 'left top',
+    layoutDependent: true,
     handler: CSSPropertyTransformOrigin,
   },
   {
     name: 'anchor',
+    parsePriority: 99,
+    layoutDependent: true,
     handler: CSSPropertyAnchor,
   },
+  // {
+  //   name: 'origin',
+  //   layoutDependent: true,
+  //   handler: CSSPropertyAnchor,
+  // },
   // Circle
   {
     name: 'r',
@@ -411,6 +436,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'path',
     interpolable: true,
     layoutDependent: true,
+    defaultValue: '',
     handler: CSSPropertyPath,
   },
   // Polyline
@@ -533,22 +559,39 @@ export class StyleValueRegistry {
 
   private unresolvedProperties: Record<number, string[]> = {};
 
-  private boundsChangeListeners: Record<
-    /**
-     * parent's entity
-     */
+  /**
+   * eg.
+   *
+   * document: {
+   *   fontSize: [
+   *
+   *   ]
+   * }
+   */
+  private cascadeProperties: Record<
     number,
-    Record<
-      /**
-       * child's entity
-       */
-      number,
-      /**
-       * child properties
-       */
-      string[]
-    >
+    {
+      property: string;
+      listeners: number[];
+    }
   > = {};
+
+  // private boundsChangeListeners: Record<
+  //   /**
+  //    * parent's entity
+  //    */
+  //   number,
+  //   Record<
+  //     /**
+  //      * child's entity
+  //      */
+  //     number,
+  //     /**
+  //      * child properties
+  //      */
+  //     string[]
+  //   >
+  // > = {};
 
   @postConstruct()
   init() {
@@ -579,7 +622,7 @@ export class StyleValueRegistry {
   processProperties(
     object: DisplayObject,
     attributes: BaseStyleProps,
-    options: Partial<{ skipUpdateAttribute: boolean; skipParse: boolean }> = {
+    options: Partial<PropertyParseOptions> = {
       skipUpdateAttribute: false,
       skipParse: false,
     },
@@ -632,24 +675,22 @@ export class StyleValueRegistry {
       this.updateGeometry(object);
     }
 
-    const inheritableProperties = {};
     sortedNames.forEach((name) => {
       if (name in object.parsedStyle) {
-        if (this.isPropertyInheritable(name)) {
-          inheritableProperties[name] = null;
-        }
         this.postProcessProperty(name as string, object);
       }
     });
 
-    // update children's inheritable
-    object.children.forEach((child: DisplayObject) => {
-      // only recalc parsed values
-      this.processProperties(child, inheritableProperties, {
-        skipUpdateAttribute: true,
-        skipParse: true,
-      });
-      child.renderable.dirty = true;
+    sortedNames.forEach((name) => {
+      if (name in object.parsedStyle && this.isPropertyInheritable(name)) {
+        // update children's inheritable
+        object.children.forEach((child: DisplayObject) => {
+          child.internalSetAttribute(name, null, {
+            skipUpdateAttribute: true,
+            skipParse: true,
+          });
+        });
+      }
     });
   }
 
@@ -822,7 +863,6 @@ export class StyleValueRegistry {
         attributes[property] = object.attributes[property];
       });
 
-      console.log('recalc', object, attributes);
       this.processProperties(object, attributes);
       delete this.unresolvedProperties[object.entity];
     }
@@ -884,7 +924,13 @@ export class StyleValueRegistry {
       // init with content box
       const halfExtents = vec3.fromValues(width / 2, height / 2, depth / 2);
       // anchor is center by default, don't account for lineWidth here
-      const { anchor, lineWidth, shadowColor, filter = [] } = parsedStyle as ParsedBaseStyleProps;
+      const {
+        lineWidth,
+        shadowColor,
+        filter = [],
+        transformOrigin,
+      } = parsedStyle as ParsedBaseStyleProps;
+      let anchor = parsedStyle.anchor;
 
       // <Text> use textAlign & textBaseline instead of anchor
       if (object.nodeName === Shape.TEXT) {
@@ -960,6 +1006,17 @@ export class StyleValueRegistry {
           geometry.renderBounds.setMinMax(min, max);
         }
       });
+
+      anchor = parsedStyle.anchor;
+
+      // set transform origin
+      let usedOriginXValue = convertPercentUnit(transformOrigin[0], 0, object);
+      let usedOriginYValue = convertPercentUnit(transformOrigin[1], 1, object);
+      usedOriginXValue -=
+        ((anchor && anchor[0].value) || 0) * geometry.contentBounds.halfExtents[0] * 2;
+      usedOriginYValue -=
+        ((anchor && anchor[1].value) || 0) * geometry.contentBounds.halfExtents[1] * 2;
+      object.setOrigin(usedOriginXValue, usedOriginYValue);
 
       object.emit(ElementEvent.GEOMETRY_BOUNDS_CHANGED, {});
 

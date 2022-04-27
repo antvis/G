@@ -125,6 +125,8 @@ const circleConfig = {
   lineWidth: 1,
   lineDash: 0,
   lineDashOffset: 0,
+  anchorX: 0,
+  anchorY: 0,
 };
 circleFolder.add(circleConfig, 'r', 0, 200).onChange((r) => {
   circlePath.style.path = getCirclePath(0, 0, r, r);
@@ -137,5 +139,11 @@ circleFolder.add(circleConfig, 'lineDash', 0, 100).onChange((lineDash) => {
 });
 circleFolder.add(circleConfig, 'lineDashOffset', 0, 100).onChange((lineDashOffset) => {
   circlePath.style.lineDashOffset = lineDashOffset;
+});
+circleFolder.add(circleConfig, 'anchorX', 0, 1).onChange((anchorX) => {
+  circlePath.style.anchor = [anchorX, circleConfig.anchorY];
+});
+circleFolder.add(circleConfig, 'anchorY', 0, 1).onChange((anchorY) => {
+  circlePath.style.anchor = [circleConfig.anchorX, anchorY];
 });
 circleFolder.open();

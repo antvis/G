@@ -1,5 +1,5 @@
 ---
-title: 继承
+title: 继承机制
 order: 1
 ---
 

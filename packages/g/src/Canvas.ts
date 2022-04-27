@@ -318,10 +318,10 @@ export class Canvas extends EventTarget implements ICanvas {
 
     // unmount all children
     const root = this.getRoot();
-    // this.unmountChildren(root);
-    root.children.forEach((child: DisplayObject) => {
-      this.unmountChildren(child);
-    });
+    this.unmountChildren(root);
+    // root.children.forEach((child: DisplayObject) => {
+    //   this.unmountChildren(child);
+    // });
 
     if (destroyScenegraph) {
       // destroy Document
@@ -503,7 +503,11 @@ export class Canvas extends EventTarget implements ICanvas {
     // unmount from leaf to root
     path.reverse().forEach((child) => {
       child.emit(ElementEvent.UNMOUNTED, {});
-      child.ownerDocument = null;
+
+      // skip document.documentElement
+      if (child !== this.document.documentElement) {
+        child.ownerDocument = null;
+      }
       child.isConnected = false;
     });
   }

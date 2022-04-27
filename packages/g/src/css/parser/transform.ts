@@ -100,7 +100,7 @@ const transformFunctions: Record<
  */
 export function parseTransform(string: string): ParsedTransform[] {
   string = string.toLowerCase().trim();
-  if (string === 'none') {
+  if (string === 'none' || string === '') {
     return [];
   }
   const transformRegExp = /\s*(\w+)\(([^)]*)\)/g;
@@ -324,6 +324,8 @@ export function mergeTransforms(
     leftResult,
     rightResult,
     (list: number[][]) => {
+      debugger;
+
       return list
         .map((args, i: number) => {
           const stringifiedArgs = args

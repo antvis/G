@@ -1,170 +1,159 @@
 import { expect } from 'chai';
-import { Group } from '../..';
-import { DefaultSceneGraphService } from '../../services/SceneGraphService';
+import { Group, Canvas } from '../../../lib';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { sleep } from '../../__tests__/utils';
+
+const $container = document.createElement('div');
+$container.id = 'container';
+document.body.prepend($container);
+
+const renderer = new CanvasRenderer();
+
+// create a canvas
+const canvas = new Canvas({
+  container: 'container',
+  width: 600,
+  height: 500,
+  renderer,
+});
 
 describe('Mixin Visible', () => {
-  const sceneGraphService = new DefaultSceneGraphService();
+  afterEach(() => {
+    canvas.removeChildren();
+  });
 
-  it('should hide/show itself correctly', () => {
+  afterAll(() => {
+    canvas.destroy();
+  });
+
+  it('should hide/show itself correctly', async () => {
     const group = new Group();
-    expect(group.style.visibility).eqls('visible');
+    expect(group.style.visibility).eqls('');
+    expect(group.isVisible()).to.be.false;
+
+    // append to canvas
+    canvas.appendChild(group);
+
+    // wait for next frame
+    await sleep(100);
+
+    // inherit from document.documentElement
+    expect(group.parsedStyle.visibility.toString()).to.be.eqls('visible');
+    expect(group.style.visibility).eqls('');
     expect(group.isVisible()).to.be.true;
 
+    // hide itself
     group.hide();
     expect(group.style.visibility).eqls('hidden');
+    expect(group.isVisible()).to.be.false;
 
     group.show();
     expect(group.style.visibility).eqls('visible');
+    expect(group.isVisible()).to.be.true;
   });
 
-  it('should hide/show itself & its children correctly', () => {
+  it('should hide/show itself & its children correctly', async () => {
     const group = new Group();
     const child1 = new Group();
     const child2 = new Group();
     group.appendChild(child1);
     group.appendChild(child2);
 
-    expect(group.style.visibility).eqls('visible');
-    expect(child1.style.visibility).eqls('visible');
-    expect(child2.style.visibility).eqls('visible');
+    expect(group.style.visibility).eqls('');
+    expect(child1.style.visibility).eqls('');
+    expect(child2.style.visibility).eqls('');
 
+    // append to document
+    canvas.appendChild(group);
+
+    // wait for next frame
+    await sleep(100);
+
+    // visible by default
+    expect(group.isVisible()).to.be.true;
+    expect(child1.isVisible()).to.be.true;
+    expect(child2.isVisible()).to.be.true;
+
+    // hide parent group
     group.hide();
     expect(group.style.visibility).eqls('hidden');
-    expect(child1.style.visibility).eqls('hidden');
-    expect(child2.style.visibility).eqls('hidden');
+    expect(child1.style.visibility).eqls('');
+    expect(child2.style.visibility).eqls('');
+    expect(group.isVisible()).to.be.false;
+    expect(child1.isVisible()).to.be.false;
+    expect(child2.isVisible()).to.be.false;
 
     group.show();
     expect(group.style.visibility).eqls('visible');
-    expect(child1.style.visibility).eqls('visible');
-    expect(child2.style.visibility).eqls('visible');
+    expect(child1.style.visibility).eqls('');
+    expect(child2.style.visibility).eqls('');
+    expect(group.isVisible()).to.be.true;
+    expect(child1.isVisible()).to.be.true;
+    expect(child2.isVisible()).to.be.true;
   });
 
-  it("should toggle child's visibility correctly", () => {
-    const group1 = new Group({
-      id: 'id1',
-      name: 'group1',
-      style: {
-        visibility: 'visible',
-      },
-    });
-    const group2 = new Group({
-      id: 'id2',
-      name: 'group2',
+  it('should hide/show with a deeper hierarchy correctly', async () => {
+    const root = new Group();
+    const group = new Group();
+    const child1 = new Group({
       style: {
         visibility: 'hidden',
       },
     });
-    const group3 = new Group({
-      id: 'id3',
-      name: 'group3',
-    });
-    const group4 = new Group({
-      id: 'id4',
-      name: 'group4',
-    });
+    const child2 = new Group();
+    root.appendChild(group);
+    group.appendChild(child1);
+    group.appendChild(child2);
 
-    // 1 -> 2
-    // 1 -> 3
-    // 1 -> 4
-    group1.appendChild(group2);
-    group1.appendChild(group3);
-    group1.appendChild(group4);
+    expect(root.style.visibility).eqls('');
+    expect(group.style.visibility).eqls('');
+    expect(child1.style.visibility).eqls('hidden');
+    expect(child2.style.visibility).eqls('');
 
-    expect(group1.isVisible()).to.be.true;
+    // append to document
+    canvas.appendChild(root);
 
-    // show group2
-    expect(group2.isVisible()).to.be.false;
-    group2.show();
-    group2.style.visibility = 'visible';
-    expect(group2.isVisible()).to.be.true;
+    // wait for next frame
+    await sleep(100);
 
-    // hide group2
-    group2.hide();
-    group2.style.visibility = 'hidden';
-    expect(group2.isVisible()).to.be.false;
+    // visible by default
+    expect(root.isVisible()).to.be.true;
+    expect(group.isVisible()).to.be.true;
+    expect(child1.isVisible()).to.be.false;
+    expect(child2.isVisible()).to.be.true;
 
-    // hide group1
-    group1.hide();
-    expect(group1.isVisible()).to.be.false;
-    expect(group2.isVisible()).to.be.false;
-    expect(group3.isVisible()).to.be.false;
-    expect(group4.isVisible()).to.be.false;
+    // hide parent group
+    root.hide();
+    expect(root.style.visibility).eqls('hidden');
+    expect(group.style.visibility).eqls('');
+    expect(child1.style.visibility).eqls('hidden');
+    expect(child2.style.visibility).eqls('');
+    expect(root.isVisible()).to.be.false;
+    expect(group.isVisible()).to.be.false;
+    expect(child1.isVisible()).to.be.false;
+    expect(child2.isVisible()).to.be.false;
+
+    root.show();
+    expect(root.style.visibility).eqls('visible');
+    expect(group.style.visibility).eqls('');
+    expect(child1.style.visibility).eqls('hidden');
+    expect(child2.style.visibility).eqls('');
+    expect(root.isVisible()).to.be.true;
+    expect(group.isVisible()).to.be.true;
+    expect(child1.isVisible()).to.be.false;
+    expect(child2.isVisible()).to.be.true;
+
+    child2.hide();
+    expect(child2.style.visibility).eqls('hidden');
+    expect(child2.isVisible()).to.be.false;
+
+    // restore to initial
+    child2.style.visibility = 'initial';
+    expect(child2.style.visibility).eqls('initial');
+    expect(child2.isVisible()).to.be.true; // inherit from parent
+
+    child2.style.visibility = 'unset';
+    expect(child2.style.visibility).eqls('unset');
+    expect(child2.isVisible()).to.be.true;
   });
-
-  // it('should sort children correctly', () => {
-  //   const group1 = new Group({
-  //     id: 'id1',
-  //     name: 'group1',
-  //     style: {
-  //       zIndex: 1,
-  //     },
-  //   });
-  //   const group2 = new Group({
-  //     id: 'id2',
-  //     name: 'group2',
-  //   });
-  //   const group3 = new Group({
-  //     id: 'id3',
-  //     name: 'group3',
-  //   });
-  //   const group4 = new Group({
-  //     id: 'id4',
-  //     name: 'group4',
-  //   });
-
-  //   // 1 -> 2
-  //   // 1 -> 3
-  //   // 1 -> 4
-  //   group1.appendChild(group2);
-  //   group1.appendChild(group3);
-  //   group1.appendChild(group4);
-
-  //   expect(group1.style.zIndex).to.eqls(1);
-  //   expect(group1.getCount()).to.eqls(3);
-  //   expect(group1.getChildren().length).to.eqls(3);
-  //   expect(group1.getFirst()).to.eqls(group2);
-  //   expect(group1.getLast()).to.eqls(group4);
-
-  //   // 2, 3, 4
-  //   const children = [...group1.children];
-  //   children.sort(sceneGraphService.sort);
-  //   expect(children[0]).to.eqls(group2);
-  //   expect(children[2]).to.eqls(group4);
-
-  //   // bring group2 to front
-  //   // 3, 4, 2(1)
-  //   group2.setZIndex(1);
-  //   children.sort(sceneGraphService.sort);
-  //   expect(children[0]).to.eqls(group3);
-  //   expect(children[2]).to.eqls(group2);
-
-  //   // bring group3 to front
-  //   // 4, 2(1), 3(2)
-  //   group3.setZIndex(2);
-  //   children.sort(sceneGraphService.sort);
-  //   expect(children[0]).to.eqls(group4);
-  //   expect(children[2]).to.eqls(group3);
-
-  //   // use stable sort with the same z-index
-  //   // 2(1), 4(1), 3(2)
-  //   group4.setZIndex(1);
-  //   children.sort(sceneGraphService.sort);
-  //   expect(children[0]).to.eqls(group2);
-  //   expect(children[2]).to.eqls(group3);
-
-  //   // bring to front
-  //   // 4(1), 3(2), 2(3)
-  //   group2.toFront();
-  //   children.sort(sceneGraphService.sort);
-  //   expect(children[0]).to.eqls(group4);
-  //   expect(children[2]).to.eqls(group2);
-  //   expect(group2.style.zIndex).to.eqls(3);
-
-  //   // push to back
-  //   group2.toBack();
-  //   children.sort(sceneGraphService.sort);
-  //   expect(children[0]).to.eqls(group2);
-  //   expect(children[2]).to.eqls(group3);
-  //   expect(group2.style.zIndex).to.eqls(0);
-  // });
 });

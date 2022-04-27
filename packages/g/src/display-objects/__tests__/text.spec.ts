@@ -1,5 +1,5 @@
 import chai, { expect } from 'chai';
-import { Text, Group } from '../..';
+import { Text, Group, CSS } from '../..';
 import { vec3 } from 'gl-matrix';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
@@ -15,9 +15,12 @@ describe('Text', () => {
   it('should calc global bounds correctly', () => {
     const text = new Text({
       style: {
-        fontFamily: 'PingFang SC',
         text: '这是测试文本This is text',
+        fontFamily: 'PingFang SC',
         fontSize: 60,
+        fontWeight: 'normal',
+        fontStyle: 'normal',
+        fontVariant: 'normal',
         fill: '#1890FF',
         stroke: '#F04864',
         lineWidth: 5,
@@ -30,7 +33,7 @@ describe('Text', () => {
 
     // parse font size with unit
     text.style.fontSize = '40px';
-    expect(text.parsedStyle.fontSize).to.eqls({ unit: 'px', value: 40 });
+    expect(text.parsedStyle.fontSize.equals(CSS.px(40))).to.be.true;
 
     expect(text.nodeValue).eqls('这是测试文本This is text');
     expect(text.textContent).eqls('这是测试文本This is text');

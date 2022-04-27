@@ -1,13 +1,6 @@
 import { singleton } from 'mana-syringe';
-import type {
-  DisplayObject,
-  ParsedBaseStyleProps,
-  CSSProperty,
-  ParsedPathStyleProps} from '../..';
-import {
-  parsePath,
-  mergePaths
-} from '../..';
+import type { DisplayObject, ParsedBaseStyleProps, CSSProperty, ParsedPathStyleProps } from '../..';
+import { parsePath, mergePaths, CSSKeywordValue, Rectangle } from '../..';
 
 @singleton()
 export class CSSPropertyPath
@@ -17,6 +10,24 @@ export class CSSPropertyPath
    * path2Curve
    */
   parser = parsePath;
+
+  calculator(name: string, oldParsed: ParsedPathStyleProps, parsed: ParsedPathStyleProps) {
+    if (parsed instanceof CSSKeywordValue) {
+      return {
+        absolutePath: [],
+        hasArc: false,
+        segments: [],
+        polygons: [],
+        polylines: [],
+        curve: [],
+        totalLength: 0,
+        curveSegments: [],
+        zCommandIndexes: [],
+        rect: new Rectangle(0, 0, 0, 0),
+      };
+    }
+    return parsed;
+  }
 
   mixer = mergePaths;
 

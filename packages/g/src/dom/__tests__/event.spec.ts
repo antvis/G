@@ -18,6 +18,7 @@ import {
   MutationRecord,
 } from '../../../lib';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { sleep } from '../../__tests__/utils';
 
 let addedNodes: DisplayObject[] = [];
 let removedNodes: DisplayObject[] = [];
@@ -27,14 +28,6 @@ function mergeRecords(records: MutationRecord[]) {
     if (record.removedNodes) removedNodes.push.apply(removedNodes, record.removedNodes);
   });
 }
-
-const sleep = (n) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(undefined);
-    }, n);
-  });
-};
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
@@ -52,6 +45,10 @@ const canvas = new Canvas({
 });
 
 describe('Event API', () => {
+  afterEach(() => {
+    canvas.removeChildren();
+  });
+
   afterAll(() => {
     canvas.destroy();
   });

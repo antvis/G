@@ -1,5 +1,4 @@
-import { inject, singleton } from 'mana-syringe';
-import { CanvasConfig } from '../../types';
+import { singleton } from 'mana-syringe';
 
 /**
  * used in following scenes:
@@ -9,18 +8,16 @@ import { CanvasConfig } from '../../types';
  */
 @singleton()
 export class OffscreenCanvasCreator {
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
-
   private canvas: HTMLCanvasElement | OffscreenCanvas;
   private context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
-  getOrCreateCanvas(): HTMLCanvasElement | OffscreenCanvas {
+  getOrCreateCanvas(
+    offscreenCanvas: HTMLCanvasElement | OffscreenCanvas,
+  ): HTMLCanvasElement | OffscreenCanvas {
     if (this.canvas) {
       return this.canvas;
     }
 
-    const { offscreenCanvas } = this.canvasConfig;
     // user-defined offscreen canvas
     if (offscreenCanvas) {
       this.canvas = offscreenCanvas;
@@ -46,12 +43,12 @@ export class OffscreenCanvasCreator {
     return this.canvas;
   }
 
-  getOrCreateContext() {
+  getOrCreateContext(offscreenCanvas: HTMLCanvasElement | OffscreenCanvas) {
     if (this.context) {
       return this.context;
     }
 
-    this.getOrCreateCanvas();
+    this.getOrCreateCanvas(offscreenCanvas);
     return this.context;
   }
 }

@@ -167,6 +167,8 @@ const transformConfig = {
   scale: 1,
   transformOrigin: 'left top',
   eulerAngles: 0,
+  anchorX: 0,
+  anchorY: 0,
 };
 transformFolder
   .add(transformConfig, 'transformOrigin', [
@@ -194,5 +196,11 @@ transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
 });
 transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
   line1.setLocalEulerAngles(eulerAngles);
+});
+transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
+  line1.style.anchor = [anchorX, transformConfig.anchorY];
+});
+transformFolder.add(transformConfig, 'anchorY', 0, 1).onChange((anchorY) => {
+  line1.style.anchor = [transformConfig.anchorX, anchorY];
 });
 transformFolder.open();

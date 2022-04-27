@@ -10,6 +10,8 @@ export interface SceneGraphSelector {
   is: <T extends IElement>(query: string, element: T) => boolean;
 }
 
+const NAME_REGEXP = /\[\s*name=(.*)\s*\]/;
+
 /**
  * support the following DOM API:
  * * getElementById
@@ -34,11 +36,14 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
         return node.id === query.substring(1);
       });
     } else if (query.startsWith('[name=')) {
-      // getElementsByName();
-      return root.find(
-        (node) =>
-          (root as unknown as T) !== node && node.name === query.substring(7, query.length - 2),
-      );
+      const matches = query.match(NAME_REGEXP);
+      if (matches && matches.length > 1) {
+        const targetName = matches[1].replace(/"/g, '');
+        // getElementByName();
+        return root.find((node) => (root as unknown as T) !== node && node.name === targetName);
+      } else {
+        return null;
+      }
     } else {
       // getElementsByTag('circle');
       return root.find((node) => (root as unknown as T) !== node && node.nodeName === query);
@@ -59,10 +64,14 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
       );
     } else if (query.startsWith('[name=')) {
       // getElementsByName();
-      return root.findAll(
-        (node) =>
-          (root as unknown as T) !== node && node.name === query.substring(7, query.length - 2),
-      );
+      const matches = query.match(NAME_REGEXP);
+      if (matches && matches.length > 1) {
+        const targetName = matches[1].replace(/"/g, '');
+        // getElementByName();
+        return root.findAll((node) => (root as unknown as T) !== node && node.name === targetName);
+      } else {
+        return [];
+      }
     } else {
       // getElementsByTag('circle');
       return root.findAll((node) => (root as unknown as T) !== node && node.nodeName === query);

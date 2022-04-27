@@ -1,4 +1,4 @@
-import type { TextMetrics } from '../services/text';
+import type { TextMetrics } from '../services';
 import type { DisplayObjectConfig } from '../dom/interfaces';
 import { Shape } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';

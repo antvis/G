@@ -76,7 +76,7 @@ export class TexturePool {
   }
 
   getOrCreateCanvas() {
-    return this.offscreenCanvas.getOrCreateCanvas();
+    return this.offscreenCanvas.getOrCreateCanvas(this.canvasConfig.offscreenCanvas);
   }
 
   getOrCreateGradient(params: GradientParams) {
@@ -84,8 +84,8 @@ export class TexturePool {
     const { type, x0, y0, x1, y1, steps, width, height } = params;
 
     let gradient: CanvasGradient | null = this.gradientCache[key];
-    const canvas = this.offscreenCanvas.getOrCreateCanvas();
-    const context = this.offscreenCanvas.getOrCreateContext();
+    const canvas = this.offscreenCanvas.getOrCreateCanvas(this.canvasConfig.offscreenCanvas);
+    const context = this.offscreenCanvas.getOrCreateContext(this.canvasConfig.offscreenCanvas);
     if (!gradient) {
       canvas.width = width;
       canvas.height = height; // needs only 1px height

@@ -13,19 +13,32 @@ describe('Circle', () => {
     });
 
     expect(circle.getAttributeNames()).to.eqls([
+      'x',
+      'y',
+      'z',
       'anchor',
-      'origin',
+      // 'origin',
       'opacity',
       'fillOpacity',
       'strokeOpacity',
       'fill',
       'stroke',
-      'zIndex',
+      'transformOrigin',
       'visibility',
+      'lineCap',
+      'lineJoin',
+      'fontSize',
+      'fontFamily',
+      'fontStyle',
+      'fontWeight',
+      'fontVariant',
+      'textAlign',
+      'textBaseline',
+      'textTransform',
+      'zIndex',
+      'interactive',
       'r',
       'lineWidth',
-      'x',
-      'y',
     ]);
     expect(circle.hasAttribute('r')).to.be.true;
     expect(circle.hasAttributes()).to.be.true;

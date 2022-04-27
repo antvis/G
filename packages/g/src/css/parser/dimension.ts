@@ -1,10 +1,10 @@
 import { isString } from '@antv/util';
 import type { DisplayObject, IElement } from '../..';
+import { AABB } from '../../shapes';
 import { rad2deg, turn2deg } from '../../utils';
-import type { CSSStyleValue} from '../cssom';
+import type { CSSStyleValue } from '../cssom';
 import { UnitType } from '../cssom';
 import { CSSUnitValue } from '../cssom';
-import { convertPercentUnit } from '../properties';
 import type { CSSValueParser } from './types';
 
 type LengthUnit = 'px' | '%' | 'em';
@@ -160,4 +160,23 @@ export function mergeDimensionList(
       return values.map((n) => new CSSUnitValue(n, unit)).join(' ');
     },
   ];
+}
+
+export function convertPercentUnit(
+  valueWithUnit: CSSUnitValue,
+  vec3Index: number,
+  target: DisplayObject,
+): number {
+  if (valueWithUnit.unit === UnitType.kPixels) {
+    return Number(valueWithUnit.value);
+  } else if (valueWithUnit.unit === UnitType.kPercentage && target) {
+    // use bounds
+    const bounds = target.getGeometryBounds();
+    let size = 0;
+    if (!AABB.isEmpty(bounds)) {
+      size = bounds.halfExtents[vec3Index] * 2;
+    }
+    return (Number(valueWithUnit.value) / 100) * size;
+  }
+  return 0;
 }

@@ -2,19 +2,29 @@ import { vec3 } from 'gl-matrix';
 import { singleton, inject } from 'mana-syringe';
 import { GeometryAABBUpdater } from './interfaces';
 import type { ParsedTextStyleProps } from '../../display-objects/Text';
-import { TextService } from '../text';
+import { TextService } from '../TextService';
 import { Shape } from '../../types';
 import { CSSUnitValue } from '../../css';
+import { DisplayObject } from '../..';
 
 @singleton({ token: { token: GeometryAABBUpdater, named: Shape.TEXT } })
 export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   @inject(TextService)
   private textService: TextService;
 
-  update(parsedStyle: ParsedTextStyleProps) {
-    const { text = '', textAlign, lineWidth, textBaseline, x, y, dx, dy } = parsedStyle;
+  private isReadyToMeasure(parsedStyle: ParsedTextStyleProps, object: DisplayObject) {
+    const { text, textAlign, textBaseline, fontSize, fontStyle, fontWeight, fontVariant } =
+      parsedStyle;
 
-    if (!text || !textAlign || !textBaseline) {
+    return text && fontSize && fontStyle && fontWeight && fontVariant && textAlign && textBaseline;
+  }
+
+  update(parsedStyle: ParsedTextStyleProps, object: DisplayObject) {
+    const { text, textAlign, lineWidth, textBaseline, x, y, dx, dy } = parsedStyle;
+    const { offscreenCanvas } = object?.ownerDocument?.defaultView?.getConfig() || {};
+
+    if (!this.isReadyToMeasure(parsedStyle, object)) {
+      // if (!text || !textAlign || !textBaseline ||) {
       parsedStyle.metrics = {
         font: '',
         width: 0,
@@ -40,7 +50,7 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
       };
     }
 
-    const metrics = this.textService.measureText(text, parsedStyle);
+    const metrics = this.textService.measureText(text, parsedStyle, offscreenCanvas);
     parsedStyle.metrics = metrics;
 
     const { width, height, lineHeight, fontProperties } = metrics;
@@ -58,12 +68,6 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
       lineXOffset = lineWidth.value;
       anchor = [1, 1];
     }
-    // update anchor
-    parsedStyle.anchor = [
-      new CSSUnitValue(anchor[0]),
-      new CSSUnitValue(anchor[1]),
-      new CSSUnitValue(0),
-    ];
 
     let lineYOffset = 0;
     if (textBaseline.value === 'middle') {
@@ -84,6 +88,24 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
     if (dy) {
       lineYOffset += dy.value;
     }
+
+    // update anchor
+    parsedStyle.anchor = [
+      new CSSUnitValue(anchor[0]),
+      new CSSUnitValue(anchor[1]),
+      new CSSUnitValue(0),
+    ];
+    // console.log(parsedStyle.anchor);
+
+    // if (!parsedStyle.transformOrigin) {
+    //   parsedStyle.transformOrigin = [
+    //     // new CSSUnitValue(anchor[0] * 100, '%'),
+    //     // new CSSUnitValue(anchor[1] * 100, '%'),
+    //     new CSSUnitValue(0, '%'),
+    //     new CSSUnitValue(0, '%'),
+    //     new CSSUnitValue(0, '%'),
+    //   ];
+    // }
 
     return {
       width: halfExtents[0] * 2,

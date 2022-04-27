@@ -415,7 +415,7 @@ export class Element<
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute
    */
   getAttribute(name: keyof StyleProps) {
-    const [attributeName] = formatAttribute(name as string, '');
+    const [attributeName] = formatAttribute(name.toString(), '');
     const value = this.attributes[attributeName];
     // if the given attribute does not exist, the value returned will either be null or ""
     return isNil(value) ? null : value;

@@ -16,8 +16,6 @@ export class CircleUpdater implements GeometryAABBUpdater<ParsedCircleStyleProps
       height,
       x: x.value || 0,
       y: y.value || 0,
-      // offsetX: -width / 2,
-      // offsetY: -height / 2,
     };
   }
 }

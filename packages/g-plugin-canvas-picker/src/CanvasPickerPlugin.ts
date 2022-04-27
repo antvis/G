@@ -1,4 +1,4 @@
-import type {
+import {
   Shape,
   DisplayObject,
   RenderingService,
@@ -7,6 +7,7 @@ import type {
   BaseStyleProps,
   Element,
   ParsedBaseStyleProps,
+  CanvasConfig,
 } from '@antv/g';
 import {
   DisplayObjectPool,
@@ -39,6 +40,9 @@ export class CanvasPickerPlugin implements RenderingPlugin {
 
   @inject(DisplayObjectPool)
   private displayObjectPool: DisplayObjectPool;
+
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
   @inject(OffscreenCanvasCreator)
   private offscreenCanvas: OffscreenCanvasCreator;
@@ -151,7 +155,9 @@ export class CanvasPickerPlugin implements RenderingPlugin {
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/isPointInPath
    */
   private isPointInPath = (displayObject: DisplayObject, position: Point) => {
-    const context = this.offscreenCanvas.getOrCreateContext() as CanvasRenderingContext2D;
+    const context = this.offscreenCanvas.getOrCreateContext(
+      this.canvasConfig.offscreenCanvas,
+    ) as CanvasRenderingContext2D;
     const generatePath = this.pathGeneratorFactory(displayObject.nodeName);
     if (generatePath) {
       generatePath(context, displayObject.parsedStyle);

@@ -346,7 +346,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
         // use computed value
         // update `visibility` on <group>
         $groupEl?.setAttribute(SVG_ATTR_MAP[name], `${computedStyle.visibility.value}`);
-        // $groupEl?.setAttribute(SVG_ATTR_MAP[name], `${value}`);
       } else if (name === 'clipPath') {
         const clipPath = value as DisplayObject;
         if (clipPath) {

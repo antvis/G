@@ -135,7 +135,7 @@ export class PickingPlugin implements RenderingPlugin {
     });
   }
 
-  async pickByRectangleInDepth(
+  private async pickByRectangleInDepth(
     rect: Rectangle,
     depth = MAX_PICKING_DEPTH,
   ): Promise<DisplayObject[]> {
@@ -154,8 +154,10 @@ export class PickingPlugin implements RenderingPlugin {
       }
     } while (picked && counter <= depth);
 
-    // restore encoded picking color
-    this.restorePickingColor(targets);
+    if (depth > 1) {
+      // restore encoded picking color
+      this.restorePickingColor(targets);
+    }
 
     return targets;
   }

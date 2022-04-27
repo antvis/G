@@ -1,7 +1,6 @@
 import { singleton, inject } from 'mana-syringe';
-import type { ParsedTextStyleProps } from '../../display-objects/Text';
-import { Rectangle } from '../../shapes';
-import { toFontString } from '../../utils/text';
+import type { ParsedTextStyleProps } from '..';
+import { toFontString, Rectangle } from '..';
 import { OffscreenCanvasCreator } from './OffscreenCanvasCreator';
 
 export interface TextMetrics {
@@ -80,7 +79,7 @@ export class TextService {
   @inject(OffscreenCanvasCreator)
   private offscreenCanvas: OffscreenCanvasCreator;
 
-  measureFont(font: string): IFontMetrics {
+  measureFont(font: string, offscreenCanvas: HTMLCanvasElement | OffscreenCanvas): IFontMetrics {
     // as this method is used for preparing assets, don't recalculate things if we don't need to
     if (this.cache[font]) {
       return this.cache[font];
@@ -91,8 +90,8 @@ export class TextService {
       fontSize: 0,
     };
 
-    const canvas = this.offscreenCanvas.getOrCreateCanvas();
-    const context = this.offscreenCanvas.getOrCreateContext();
+    const canvas = this.offscreenCanvas.getOrCreateCanvas(offscreenCanvas);
+    const context = this.offscreenCanvas.getOrCreateContext(offscreenCanvas);
 
     context.font = font;
     const metricsString = TEXT_METRICS.MetricsString + TEXT_METRICS.BaselineSymbol;
@@ -154,7 +153,11 @@ export class TextService {
     return properties;
   }
 
-  measureText(text: string, parsedStyle: ParsedTextStyleProps): TextMetrics {
+  measureText(
+    text: string,
+    parsedStyle: ParsedTextStyleProps,
+    offscreenCanvas: HTMLCanvasElement | OffscreenCanvas,
+  ): TextMetrics {
     const {
       fontSize,
       wordWrap,
@@ -169,7 +172,7 @@ export class TextService {
     } = parsedStyle;
 
     const font = toFontString(parsedStyle);
-    const fontProperties = this.measureFont(font);
+    const fontProperties = this.measureFont(font, offscreenCanvas);
     // fallback in case UA disallow canvas data extraction
     // (toDataURI, getImageData functions)
     if (fontProperties.fontSize === 0) {
@@ -177,9 +180,9 @@ export class TextService {
       fontProperties.ascent = fontSize.value as number;
     }
 
-    const context = this.offscreenCanvas.getOrCreateContext();
+    const context = this.offscreenCanvas.getOrCreateContext(offscreenCanvas);
     context.font = font;
-    const outputText = wordWrap ? this.wordWrap(text, parsedStyle) : text;
+    const outputText = wordWrap ? this.wordWrap(text, parsedStyle, offscreenCanvas) : text;
 
     const lines = outputText.split(/(?:\r\n|\r|\n)/);
     const lineWidths = new Array<number>(lines.length);
@@ -247,8 +250,9 @@ export class TextService {
   private wordWrap(
     text: string,
     { wordWrapWidth = 0, letterSpacing = 0 }: ParsedTextStyleProps,
+    offscreenCanvas: HTMLCanvasElement | OffscreenCanvas,
   ): string {
-    const context = this.offscreenCanvas.getOrCreateContext();
+    const context = this.offscreenCanvas.getOrCreateContext(offscreenCanvas);
     const maxWidth = wordWrapWidth + letterSpacing;
 
     let lines: string[] = [];

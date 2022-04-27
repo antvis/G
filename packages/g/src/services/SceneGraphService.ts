@@ -329,7 +329,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     return (element: INode, position: vec3 | vec2) => {
       const transform = (element as Element).transformable;
-      position = vec3.fromValues(position[0], position[1], position[2] || transform.position[2]);
+      position = vec3.fromValues(position[0], position[1], position[2] || 0);
 
       if (vec3.equals(this.getPosition(element), position)) {
         return;
@@ -355,7 +355,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
    */
   setLocalPosition(element: INode, position: vec3 | vec2) {
     const transform = (element as Element).transformable;
-    position = vec3.fromValues(position[0], position[1], position[2] || transform.localPosition[2]);
+    position = vec3.fromValues(position[0], position[1], position[2] || 0);
     if (vec3.equals(transform.localPosition, position)) {
       return;
     }

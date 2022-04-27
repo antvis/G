@@ -6,7 +6,7 @@ import { mat4, vec3 } from 'gl-matrix';
 
 chai.use(chaiAlmost(0.0001));
 
-describe('Camera landmark', () => {
+describe('Camera', () => {
   it('should create an ortho camera correctly', () => {
     const width = 600;
     const height = 500;

@@ -200,3 +200,40 @@ export function makePerspective(
 export function blend(from: number, to: number, progress: number) {
   return from + (to - from) * progress;
 }
+
+export function decompose(mat: mat3) {
+  let row0x = mat[0];
+  let row0y = mat[3];
+  let row1x = mat[1];
+  let row1y = mat[4];
+  // decompose 3x3 matrix
+  // @see https://www.w3.org/TR/css-transforms-1/#decomposing-a-2d-matrix
+  let scalingX = Math.sqrt(row0x * row0x + row0y * row0y);
+  let scalingY = Math.sqrt(row1x * row1x + row1y * row1y);
+
+  // If determinant is negative, one axis was flipped.
+  const determinant = row0x * row1y - row0y * row1x;
+  if (determinant < 0) {
+    // Flip axis with minimum unit vector dot product.
+    if (row0x < row1y) {
+      scalingX = -scalingX;
+    } else {
+      scalingY = -scalingY;
+    }
+  }
+
+  // Renormalize matrix to remove scale.
+  if (scalingX) {
+    row0x *= 1 / scalingX;
+    row0y *= 1 / scalingX;
+  }
+  if (scalingY) {
+    row1x *= 1 / scalingY;
+    row1y *= 1 / scalingY;
+  }
+
+  // Compute rotation and renormalize matrix.
+  const angle = Math.atan2(row0y, row0x);
+
+  return [mat[6], mat[7], scalingX, scalingY, angle];
+}

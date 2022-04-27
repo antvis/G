@@ -1,6 +1,6 @@
 import chai, { expect } from 'chai';
 import { toFontString } from '../text';
-import { CSS } from '../..';
+import { CSS, CSSKeywordValue } from '../..';
 
 describe('Text utils', () => {
   it('should convert font string correctly', () => {
@@ -8,9 +8,9 @@ describe('Text utils', () => {
       toFontString({
         fontSize: CSS.px(12),
         fontFamily: 'sans-serif',
-        fontStyle: 'normal',
-        fontWeight: 'normal',
-        fontVariant: 'normal',
+        fontStyle: new CSSKeywordValue('normal'),
+        fontWeight: new CSSKeywordValue('normal'),
+        fontVariant: new CSSKeywordValue('normal'),
       }),
     ).eqls('normal normal normal 12px sans-serif');
 
@@ -18,9 +18,9 @@ describe('Text utils', () => {
       toFontString({
         fontSize: CSS.px(12),
         fontFamily: 'sans-serif',
-        fontStyle: 'normal',
-        fontWeight: 'normal',
-        fontVariant: 'normal',
+        fontStyle: new CSSKeywordValue('normal'),
+        fontWeight: new CSSKeywordValue('normal'),
+        fontVariant: new CSSKeywordValue('normal'),
       }),
     ).eqls('normal normal normal 12px sans-serif');
 
@@ -28,9 +28,9 @@ describe('Text utils', () => {
       toFontString({
         fontSize: CSS.px(12),
         fontFamily: 'sans-serif,Yahei',
-        fontStyle: 'normal',
-        fontWeight: 'normal',
-        fontVariant: 'normal',
+        fontStyle: new CSSKeywordValue('normal'),
+        fontWeight: new CSSKeywordValue('normal'),
+        fontVariant: new CSSKeywordValue('normal'),
       }),
     ).eqls('normal normal normal 12px sans-serif,"Yahei"');
 
@@ -38,9 +38,9 @@ describe('Text utils', () => {
       toFontString({
         fontSize: CSS.px(12),
         fontFamily: 'sans-serif,"Yahei"',
-        fontStyle: 'normal',
-        fontWeight: 'normal',
-        fontVariant: 'normal',
+        fontStyle: new CSSKeywordValue('normal'),
+        fontWeight: new CSSKeywordValue('normal'),
+        fontVariant: new CSSKeywordValue('normal'),
       }),
     ).eqls('normal normal normal 12px sans-serif,"Yahei"');
   });

@@ -233,27 +233,27 @@ function commandsToPathString(
   anchor: [number, number],
   parsedStyle: ParsedBaseStyleProps,
 ) {
-  const { x, y } = parsedStyle;
+  const { defX = 0, defY = 0 } = parsedStyle;
   return commands.reduce((prev, cur) => {
     let path = '';
     if (cur[0] === 'M' || cur[0] === 'L') {
-      const p = vec3.fromValues(cur[1] - x.value, cur[2] - y.value, 0);
+      const p = vec3.fromValues(cur[1] - defX, cur[2] - defY, 0);
       vec3.transformMat4(p, p, localTransform);
 
       path = `${cur[0]}${p[0]},${p[1]}`;
     } else if (cur[0] === 'Z') {
       path = cur[0];
     } else if (cur[0] === 'C') {
-      const p1 = vec3.fromValues(cur[1] - x.value, cur[2] - y.value, 0);
-      const p2 = vec3.fromValues(cur[3] - x.value, cur[4] - y.value, 0);
-      const p3 = vec3.fromValues(cur[5] - x.value, cur[6] - y.value, 0);
+      const p1 = vec3.fromValues(cur[1] - defX, cur[2] - defY, 0);
+      const p2 = vec3.fromValues(cur[3] - defX, cur[4] - defY, 0);
+      const p3 = vec3.fromValues(cur[5] - defX, cur[6] - defY, 0);
       vec3.transformMat4(p1, p1, localTransform);
       vec3.transformMat4(p2, p2, localTransform);
       vec3.transformMat4(p3, p3, localTransform);
 
       path = `${cur[0]}${p1[0]},${p1[1]},${p2[0]},${p2[1]},${p3[0]},${p3[1]}`;
     } else if (cur[0] === 'A') {
-      const c = vec3.fromValues(cur[6] - x.value, cur[7] - y.value, 0);
+      const c = vec3.fromValues(cur[6] - defX, cur[7] - defY, 0);
       vec3.transformMat4(c, c, localTransform);
       path = `${cur[0]}${cur[1]},${cur[2]},${cur[3]},${cur[4]},${cur[5]},${c[0]},${c[1]}`;
     }

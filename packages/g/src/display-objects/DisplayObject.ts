@@ -17,6 +17,7 @@ import { Shape } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import {
   createVec3,
+  decompose,
   formatAttribute,
   fromRotationTranslationScale,
   getEuler,
@@ -25,7 +26,7 @@ import {
 import { dirtifyToRoot } from '../services';
 import { MutationEvent } from '../dom/MutationEvent';
 import { Rectangle } from '../shapes';
-import { StyleValueRegistry } from '../css/StyleValueRegistry';
+import { StyleValueRegistry, PropertyParseOptions } from '../css/StyleValueRegistry';
 import { CSSUnitValue } from '../css';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
@@ -226,12 +227,8 @@ export class DisplayObject<
       Key,
       StyleProps[Key],
     ];
-    if (
-      force ||
-      !isEqual(attributeValue, this.attributes[attributeName])
-      // || attributeName === 'transformOrigin'
-    ) {
-      this.changeAttribute(attributeName, attributeValue);
+    if (force || !isEqual(attributeValue, this.attributes[attributeName])) {
+      this.internalSetAttribute(attributeName, attributeValue);
       super.setAttribute(attributeName, attributeValue);
     }
   }
@@ -239,15 +236,23 @@ export class DisplayObject<
   /**
    * called when attributes get changed or initialized
    */
-  private changeAttribute<Key extends keyof StyleProps>(name: Key, value: StyleProps[Key]) {
+  internalSetAttribute<Key extends keyof StyleProps>(
+    name: Key,
+    value: StyleProps[Key],
+    parseOptions: Partial<PropertyParseOptions> = {},
+  ) {
     const renderable = this.renderable;
 
     const oldValue = this.attributes[name];
     const oldParsedValue = this.parsedStyle[name as string];
 
-    this.styleValueRegistry.processProperties(this, {
-      [name]: value,
-    });
+    this.styleValueRegistry.processProperties(
+      this,
+      {
+        [name]: value,
+      },
+      parseOptions,
+    );
 
     // inform clip path targets
     if (this.attributes.clipPathTargets && this.attributes.clipPathTargets.length) {
@@ -542,6 +547,7 @@ export class DisplayObject<
   /**
    * show group, which will also change visibility of its children in sceneGraphNode
    *
+   * @deprecated
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/visibility
    */
   show() {
@@ -549,6 +555,7 @@ export class DisplayObject<
   }
 
   /**
+   * @deprecated
    * hide group, which will also change visibility of its children in sceneGraphNode
    */
   hide() {
@@ -761,8 +768,8 @@ export class DisplayObject<
    * return 3x3 matrix in world space
    * @deprecated
    */
-  getMatrix(): mat3 {
-    const transform = (this as unknown as DisplayObject).getWorldTransform();
+  getMatrix(transformMat4?: mat4): mat3 {
+    const transform = transformMat4 || this.getWorldTransform();
     const [tx, ty] = mat4.getTranslation(vec3.create(), transform);
     const [sx, sy] = mat4.getScaling(vec3.create(), transform);
     const rotation = mat4.getRotation(quat.create(), transform);
@@ -773,44 +780,30 @@ export class DisplayObject<
   }
 
   /**
+   * return 3x3 matrix in local space
+   * @deprecated
+   */
+  getLocalMatrix(): mat3 {
+    return this.getMatrix(this.getLocalTransform());
+  }
+
+  /**
    * set 3x3 matrix in world space
    * @deprecated
    */
   setMatrix(mat: mat3) {
-    let row0x = mat[0];
-    let row0y = mat[3];
-    let row1x = mat[1];
-    let row1y = mat[4];
-    // decompose 3x3 matrix
-    // @see https://www.w3.org/TR/css-transforms-1/#decomposing-a-2d-matrix
-    let scalingX = Math.sqrt(row0x * row0x + row0y * row0y);
-    let scalingY = Math.sqrt(row1x * row1x + row1y * row1y);
-
-    // If determinant is negative, one axis was flipped.
-    const determinant = row0x * row1y - row0y * row1x;
-    if (determinant < 0) {
-      // Flip axis with minimum unit vector dot product.
-      if (row0x < row1y) {
-        scalingX = -scalingX;
-      } else {
-        scalingY = -scalingY;
-      }
-    }
-
-    // Renormalize matrix to remove scale.
-    if (scalingX) {
-      row0x *= 1 / scalingX;
-      row0y *= 1 / scalingX;
-    }
-    if (scalingY) {
-      row1x *= 1 / scalingY;
-      row1y *= 1 / scalingY;
-    }
-
-    // Compute rotation and renormalize matrix.
-    const angle = Math.atan2(row0y, row0x);
-
-    this.setEulerAngles(angle).setPosition(mat[6], mat[7]).setLocalScale(scalingX, scalingY);
+    const [tx, ty, scalingX, scalingY, angle] = decompose(mat);
+    this.setEulerAngles(angle).setPosition(tx, ty).setLocalScale(scalingX, scalingY);
   }
+
+  /**
+   * set 3x3 matrix in local space
+   * @deprecated
+   */
+  setLocalMatrix(mat: mat3) {
+    const [tx, ty, scalingX, scalingY, angle] = decompose(mat);
+    this.setLocalEulerAngles(angle).setLocalPosition(tx, ty).setLocalScale(scalingX, scalingY);
+  }
+
   // #endregion deprecated
 }

@@ -6,6 +6,6 @@ export * from './RenderingContext';
 export * from './RenderingService';
 export * from './EventService';
 export * from './SceneGraphSelector';
-export * from './text/OffscreenCanvasCreator';
-export * from './text';
+export * from './TextService';
+export * from './OffscreenCanvasCreator';
 export * from './aabb';

@@ -1,7 +1,6 @@
 import { Module, injectable, decorate } from 'mana-syringe';
 import { EventEmitter } from 'eventemitter3';
 import { DisplayObjectPool } from './DisplayObjectPool';
-import { DefaultSceneGraphService, SceneGraphService } from './services/SceneGraphService';
 import {
   CircleUpdater,
   EllipseUpdater,
@@ -12,15 +11,15 @@ import {
   PolylineUpdater,
   RectUpdater,
   TextUpdater,
-} from './services/aabb';
-import type { Shape } from './types';
-import { TextService } from './services/text';
-import { OffscreenCanvasCreator } from './services/text/OffscreenCanvasCreator';
-import {
+  TextService,
+  OffscreenCanvasCreator,
+  DefaultSceneGraphService,
+  SceneGraphService,
   DefaultSceneGraphSelector,
   SceneGraphSelector,
   SceneGraphSelectorFactory,
-} from './services/SceneGraphSelector';
+} from './services';
+import type { Shape } from './types';
 import {
   LayoutRegistry,
   StyleValueRegistry,

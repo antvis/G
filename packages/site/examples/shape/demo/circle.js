@@ -126,6 +126,8 @@ const transformConfig = {
   scale: 1,
   transformOrigin: 'center',
   eulerAngles: 0,
+  anchorX: 0.5,
+  anchorY: 0.5,
 };
 transformFolder
   .add(transformConfig, 'transformOrigin', [
@@ -153,5 +155,11 @@ transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
 });
 transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
   circle.setLocalEulerAngles(eulerAngles);
+});
+transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
+  circle.style.anchor = [anchorX, transformConfig.anchorY];
+});
+transformFolder.add(transformConfig, 'anchorY', 0, 1).onChange((anchorY) => {
+  circle.style.anchor = [transformConfig.anchorX, anchorY];
 });
 transformFolder.open();

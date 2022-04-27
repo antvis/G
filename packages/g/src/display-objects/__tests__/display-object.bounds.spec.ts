@@ -5,7 +5,7 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { DisplayObject, Rect, Circle, Group, Line, Polyline, SHAPE } from '../..';
+import { Rect, Circle, Group } from '../..';
 import { vec3 } from 'gl-matrix';
 
 chai.use(chaiAlmost());
