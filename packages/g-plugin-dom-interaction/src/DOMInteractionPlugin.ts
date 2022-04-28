@@ -1,11 +1,14 @@
-import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from '@antv/g';
+import type {
+  InteractivePointerEvent,
+  RenderingPlugin,
+  RenderingService} from '@antv/g';
 import {
-  ContextService,
-  RenderingPluginContribution,
-  supportsPointerEvents,
-  supportsTouchEvents,
+  RenderingContext
 } from '@antv/g';
+import { ContextService, RenderingPluginContribution } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
+
+const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
 
 /**
  * listen to mouse/touch/pointer events on DOM wrapper, trigger pointer events
@@ -17,7 +20,13 @@ export class DOMInteractionPlugin implements RenderingPlugin {
   @inject(ContextService)
   private contextService: ContextService<unknown>;
 
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
+
   apply(renderingService: RenderingService) {
+    const canvas = this.renderingContext.root.ownerDocument.defaultView;
+    const SUPPORT_ONLY_TOUCH = canvas.supportTouchEvent && MOBILE_REGEX.test(navigator.userAgent);
+
     const onPointerMove = (ev: InteractivePointerEvent) => {
       renderingService.hooks.pointerMove.call(ev);
     };
@@ -42,30 +51,62 @@ export class DOMInteractionPlugin implements RenderingPlugin {
       renderingService.hooks.pointerWheel.call(ev);
     };
 
+    const addPointerEventListener = ($el: HTMLElement) => {
+      globalThis.document.addEventListener('pointermove', onPointerMove, true);
+      $el.addEventListener('pointerdown', onPointerDown, true);
+      $el.addEventListener('pointerleave', onPointerOut, true);
+      $el.addEventListener('pointerover', onPointerOver, true);
+      globalThis.addEventListener('pointerup', onPointerUp, true);
+    };
+
+    const addTouchEventListener = ($el: HTMLElement) => {
+      $el.addEventListener('touchstart', onPointerDown, true);
+      $el.addEventListener('touchend', onPointerUp, true);
+      $el.addEventListener('touchmove', onPointerMove, true);
+    };
+
+    const addMouseEventListener = ($el: HTMLElement) => {
+      globalThis.document.addEventListener('mousemove', onPointerMove, true);
+      $el.addEventListener('mousedown', onPointerDown, true);
+      $el.addEventListener('mouseout', onPointerOut, true);
+      $el.addEventListener('mouseover', onPointerOver, true);
+      globalThis.addEventListener('mouseup', onPointerUp, true);
+    };
+
+    const removePointerEventListener = ($el: HTMLElement) => {
+      globalThis.document.removeEventListener('pointermove', onPointerMove, true);
+      $el.removeEventListener('pointerdown', onPointerDown, true);
+      $el.removeEventListener('pointerleave', onPointerOut, true);
+      $el.removeEventListener('pointerover', onPointerOver, true);
+      globalThis.removeEventListener('pointerup', onPointerUp, true);
+    };
+
+    const removeTouchEventListener = ($el: HTMLElement) => {
+      $el.removeEventListener('touchstart', onPointerDown, true);
+      $el.removeEventListener('touchend', onPointerUp, true);
+      $el.removeEventListener('touchmove', onPointerMove, true);
+    };
+
+    const removeMouseEventListener = ($el: HTMLElement) => {
+      globalThis.document.removeEventListener('mousemove', onPointerMove, true);
+      $el.removeEventListener('mousedown', onPointerDown, true);
+      $el.removeEventListener('mouseout', onPointerOut, true);
+      $el.removeEventListener('mouseover', onPointerOver, true);
+      globalThis.removeEventListener('mouseup', onPointerUp, true);
+    };
+
     renderingService.hooks.init.tap(DOMInteractionPlugin.tag, () => {
-      const $el = this.contextService.getDomElement()!;
+      const $el = this.contextService.getDomElement() as HTMLElement;
 
-      if (supportsPointerEvents) {
-        globalThis.document.addEventListener('pointermove', onPointerMove, true);
-        $el.addEventListener('pointerdown', onPointerDown, true);
-        $el.addEventListener('pointerleave', onPointerOut, true);
-        $el.addEventListener('pointerover', onPointerOver, true);
-        globalThis.addEventListener('pointerup', onPointerUp, true);
+      if (canvas.supportPointerEvent) {
+        addPointerEventListener($el);
+      } else if (SUPPORT_ONLY_TOUCH) {
+        addTouchEventListener($el);
+      } else if (!canvas.supportTouchEvent) {
+        addMouseEventListener($el);
       } else {
-        globalThis.document.addEventListener('mousemove', onPointerMove, true);
-        $el.addEventListener('mousedown', onPointerDown, true);
-        $el.addEventListener('mouseout', onPointerOut, true);
-        $el.addEventListener('mouseover', onPointerOver, true);
-        globalThis.addEventListener('mouseup', onPointerUp, true);
-      }
-
-      // always look directly for touch events so that we can provide original data
-      // In a future version we should change this to being just a fallback and rely solely on
-      // PointerEvents whenever available
-      if (supportsTouchEvents) {
-        $el.addEventListener('touchstart', onPointerDown, true);
-        $el.addEventListener('touchend', onPointerUp, true);
-        $el.addEventListener('touchmove', onPointerMove, true);
+        addTouchEventListener($el);
+        addMouseEventListener($el);
       }
 
       // use passive event listeners
@@ -77,25 +118,16 @@ export class DOMInteractionPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
-      const $el = this.contextService.getDomElement()!;
-      if (supportsPointerEvents) {
-        globalThis.document.removeEventListener('pointermove', onPointerMove, true);
-        $el.removeEventListener('pointerdown', onPointerDown, true);
-        $el.removeEventListener('pointerleave', onPointerOut, true);
-        $el.removeEventListener('pointerover', onPointerOver, true);
-        globalThis.removeEventListener('pointerup', onPointerUp, true);
+      const $el = this.contextService.getDomElement() as HTMLElement;
+      if (canvas.supportPointerEvent) {
+        removePointerEventListener($el);
+      } else if (SUPPORT_ONLY_TOUCH) {
+        removeTouchEventListener($el);
+      } else if (!canvas.supportTouchEvent) {
+        removeMouseEventListener($el);
       } else {
-        globalThis.document.removeEventListener('mousemove', onPointerMove, true);
-        $el.removeEventListener('mousedown', onPointerDown, true);
-        $el.removeEventListener('mouseout', onPointerOut, true);
-        $el.removeEventListener('mouseover', onPointerOver, true);
-        globalThis.removeEventListener('mouseup', onPointerUp, true);
-      }
-
-      if (supportsTouchEvents) {
-        $el.removeEventListener('touchstart', onPointerDown, true);
-        $el.removeEventListener('touchend', onPointerUp, true);
-        $el.removeEventListener('touchmove', onPointerMove, true);
+        removeTouchEventListener($el);
+        removeMouseEventListener($el);
       }
 
       $el.removeEventListener('wheel', onPointerWheel, true);

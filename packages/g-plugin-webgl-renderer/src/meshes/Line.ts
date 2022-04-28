@@ -9,8 +9,10 @@ import type {
   ParsedPathStyleProps,
   PathCommand,
   ParsedLineStyleProps,
+  ParsedBaseStyleProps,
 } from '@antv/g';
-import { LineCap, LineJoin, PARSED_COLOR_TYPE, Shape, convertToPath, parsePath } from '@antv/g';
+import { CSSRGB } from '@antv/g';
+import { LineCap, LineJoin, Shape, convertToPath, parsePath } from '@antv/g';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import earcut from 'earcut';
 import { vec3, mat4 } from 'gl-matrix';
@@ -94,14 +96,13 @@ export class LineMesh extends Instanced {
         strokeOpacity,
         lineWidth,
         anchor,
-        lineDash = [],
-        lineDashOffset = 0,
+        lineDash,
+        lineDashOffset,
         visibility,
       } = object.parsedStyle as ParsedLineStyleProps;
       if (
         name === 'lineJoin' ||
         name === 'lineCap' ||
-        name === 'lineDash' ||
         (object.nodeName === Shape.CIRCLE && name === 'r') ||
         (object.nodeName === Shape.ELLIPSE && (name === 'rx' || name === 'ry')) ||
         (object.nodeName === Shape.RECT &&
@@ -117,23 +118,28 @@ export class LineMesh extends Instanced {
         this.material.programDirty = true;
       } else if (name === 'stroke') {
         let strokeColor: Tuple4Number = [0, 0, 0, 0];
-        if (stroke?.type === PARSED_COLOR_TYPE.Constant) {
-          strokeColor = stroke.value;
+        if (stroke instanceof CSSRGB) {
+          strokeColor = [
+            Number(stroke.r) / 255,
+            Number(stroke.g) / 255,
+            Number(stroke.b) / 255,
+            Number(stroke.alpha),
+          ];
         }
         this.material.setUniforms({
           [Uniform.STROKE_COLOR]: strokeColor,
         });
       } else if (name === 'opacity') {
         this.material.setUniforms({
-          [Uniform.OPACITY]: opacity,
+          [Uniform.OPACITY]: opacity.value,
         });
       } else if (name === 'fillOpacity') {
         this.material.setUniforms({
-          [Uniform.FILL_OPACITY]: fillOpacity,
+          [Uniform.FILL_OPACITY]: fillOpacity.value,
         });
       } else if (name === 'strokeOpacity') {
         this.material.setUniforms({
-          [Uniform.STROKE_OPACITY]: strokeOpacity,
+          [Uniform.STROKE_OPACITY]: strokeOpacity.value,
         });
       } else if (name === 'lineWidth') {
         this.material.setUniforms({
@@ -145,8 +151,8 @@ export class LineMesh extends Instanced {
         const contentBounds = object.getGeometryBounds();
         if (contentBounds) {
           const { halfExtents } = contentBounds;
-          translateX = -halfExtents[0] * anchor[0] * 2;
-          translateY = -halfExtents[1] * anchor[1] * 2;
+          translateX = -halfExtents[0] * anchor[0].value * 2;
+          translateY = -halfExtents[1] * anchor[1].value * 2;
         }
         const m = mat4.create();
         mat4.mul(
@@ -159,16 +165,23 @@ export class LineMesh extends Instanced {
         });
       } else if (name === 'visibility') {
         this.material.setUniforms({
-          [Uniform.VISIBLE]: visibility === 'visible' ? 1 : 0,
+          [Uniform.VISIBLE]: visibility.value === 'visible' ? 1 : 0,
         });
       } else if (name === 'lineDash') {
         this.material.setUniforms({
-          [Uniform.DASH]: lineDash[0] || 0,
-          [Uniform.GAP]: lineDash[1] || 0,
+          [Uniform.DASH]: lineDash[0].value || 0,
+          [Uniform.GAP]: lineDash[1].value || 0,
         });
       } else if (name === 'lineDashOffset') {
         this.material.setUniforms({
-          [Uniform.DASH_OFFSET]: lineDashOffset,
+          [Uniform.DASH_OFFSET]: (lineDashOffset && lineDashOffset.value) || 0,
+        });
+      } else if (name === 'pointerEvents') {
+        const encodedPickingColor = (object.isInteractive() &&
+          // @ts-ignore
+          object.renderable3D?.encodedPickingColor) || [0, 0, 0];
+        this.material.setUniforms({
+          [Uniform.PICKING_COLOR]: encodedPickingColor,
         });
       }
     });
@@ -200,28 +213,39 @@ export class LineMesh extends Instanced {
       strokeOpacity,
       lineWidth,
       anchor,
-      lineDash = [],
-      lineDashOffset = 0,
+      lineDash,
+      lineDashOffset,
       visibility,
     } = instance.parsedStyle as ParsedLineStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
-    if (fill?.type === PARSED_COLOR_TYPE.Constant) {
-      fillColor = fill.value;
+    if (fill instanceof CSSRGB) {
+      fillColor = [
+        Number(fill.r) / 255,
+        Number(fill.g) / 255,
+        Number(fill.b) / 255,
+        Number(fill.alpha),
+      ];
     }
     let strokeColor: Tuple4Number = [0, 0, 0, 0];
-    if (stroke?.type === PARSED_COLOR_TYPE.Constant) {
-      strokeColor = stroke.value;
+    if (stroke instanceof CSSRGB) {
+      strokeColor = [
+        Number(stroke.r) / 255,
+        Number(stroke.g) / 255,
+        Number(stroke.b) / 255,
+        Number(stroke.alpha),
+      ];
     }
 
-    // @ts-ignore
-    const encodedPickingColor = instance.renderable3D?.encodedPickingColor || [0, 0, 0];
+    const encodedPickingColor = (instance.isInteractive() &&
+      // @ts-ignore
+      instance.renderable3D?.encodedPickingColor) || [0, 0, 0];
     let translateX = 0;
     let translateY = 0;
     const contentBounds = instance.getGeometryBounds();
     if (contentBounds) {
       const { halfExtents } = contentBounds;
-      translateX = -halfExtents[0] * anchor[0] * 2;
-      translateY = -halfExtents[1] * anchor[1] * 2;
+      translateX = -halfExtents[0] * anchor[0].value * 2;
+      translateY = -halfExtents[1] * anchor[1].value * 2;
     }
 
     const m = mat4.create();
@@ -236,18 +260,18 @@ export class LineMesh extends Instanced {
       [Uniform.COLOR]: fillColor,
       [Uniform.STROKE_COLOR]: strokeColor,
       [Uniform.STROKE_WIDTH]: lineWidth.value,
-      [Uniform.OPACITY]: opacity,
-      [Uniform.FILL_OPACITY]: fillOpacity,
-      [Uniform.STROKE_OPACITY]: strokeOpacity,
+      [Uniform.OPACITY]: opacity.value,
+      [Uniform.FILL_OPACITY]: fillOpacity.value,
+      [Uniform.STROKE_OPACITY]: strokeOpacity.value,
       [Uniform.EXPAND]: 1,
       [Uniform.MITER_LIMIT]: 5,
       [Uniform.SCALE_MODE]: 1,
       [Uniform.ALIGNMENT]: 0.5,
       [Uniform.PICKING_COLOR]: encodedPickingColor,
-      [Uniform.DASH]: lineDash[0] || 0,
-      [Uniform.GAP]: lineDash[1] || 0,
-      [Uniform.DASH_OFFSET]: lineDashOffset,
-      [Uniform.VISIBLE]: visibility === 'visible' ? 1 : 0,
+      [Uniform.DASH]: (lineDash && lineDash[0]?.value) || 0,
+      [Uniform.GAP]: (lineDash && lineDash[1]?.value) || 0,
+      [Uniform.DASH_OFFSET]: (lineDashOffset && lineDashOffset.value) || 0,
+      [Uniform.VISIBLE]: visibility.value === 'visible' ? 1 : 0,
       [Uniform.Z_INDEX]: instance.sortable.renderOrder * RENDER_ORDER_SCALE,
     });
     this.material.cullMode = CullMode.None;
@@ -404,7 +428,7 @@ function segmentsCount(length: number, defaultSegments = 20) {
 }
 
 export function updateBuffer(object: DisplayObject, needEarcut = false) {
-  const { lineCap, lineJoin } = object.parsedStyle;
+  const { lineCap, lineJoin } = object.parsedStyle as ParsedBaseStyleProps;
   let { defX, defY } = object.parsedStyle;
 
   let points: number[] = [];
@@ -494,8 +518,8 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     }
   }
 
-  const jointType = getJointType(lineJoin);
-  const capType = getCapType(lineCap);
+  const jointType = getJointType(lineJoin.value as CanvasLineJoin);
+  const capType = getCapType(lineCap.value as CanvasLineCap);
   let endJoint = capType;
   if (capType === JOINT_TYPE.CAP_ROUND) {
     endJoint = JOINT_TYPE.JOINT_CAP_ROUND;
@@ -559,7 +583,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
   };
 }
 
-function getJointType(lineJoin: LineJoin) {
+function getJointType(lineJoin: CanvasLineJoin) {
   let joint: number;
 
   switch (lineJoin) {
@@ -577,7 +601,7 @@ function getJointType(lineJoin: LineJoin) {
   return joint;
 }
 
-function getCapType(lineCap: LineCap) {
+function getCapType(lineCap: CanvasLineCap) {
   let cap: number;
 
   switch (lineCap) {

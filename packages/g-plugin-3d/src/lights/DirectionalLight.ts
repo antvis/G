@@ -1,5 +1,5 @@
-import type { DisplayObjectConfig, Tuple4Number } from '@antv/g';
-import { PARSED_COLOR_TYPE } from '@antv/g';
+import type { DisplayObjectConfig } from '@antv/g';
+import { CSSRGB } from '@antv/g';
 import type { LightProps, RenderInstUniform } from '@antv/g-plugin-webgl-renderer';
 import { Light } from '@antv/g-plugin-webgl-renderer';
 import { vec3 } from 'gl-matrix';
@@ -29,8 +29,8 @@ export class DirectionalLight extends Light {
   uploadUBO(uniforms: RenderInstUniform[], index: number) {
     const { fill, direction, intensity } = this.parsedStyle;
 
-    if (fill?.type === PARSED_COLOR_TYPE.Constant) {
-      const fillColor = fill.value as Tuple4Number;
+    if (fill instanceof CSSRGB) {
+      const fillColor = [Number(fill.r) / 255, Number(fill.g) / 255, Number(fill.b) / 255];
       uniforms.push({
         name: `directionalLights[${index}].direction`,
         value: direction,
@@ -41,7 +41,7 @@ export class DirectionalLight extends Light {
       });
       uniforms.push({
         name: `directionalLights[${index}].color`,
-        value: fillColor.slice(0, 3),
+        value: fillColor,
       });
     }
   }

@@ -31,6 +31,10 @@ const canvas = new Canvas({
 });
 
 describe('Event API like DOM', () => {
+  afterEach(() => {
+    canvas.removeChildren();
+  });
+
   afterAll(() => {
     canvas.destroy();
   });

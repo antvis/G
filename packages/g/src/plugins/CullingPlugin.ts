@@ -24,7 +24,7 @@ export class CullingPlugin implements RenderingPlugin {
   apply(renderingService: RenderingService) {
     const strategies = this.strategyProvider.getContributions();
 
-    renderingService.hooks.prepare.tap(CullingPlugin.tag, (object: DisplayObject | null) => {
+    renderingService.hooks.cull.tap(CullingPlugin.tag, (object: DisplayObject | null) => {
       if (object) {
         const cullable = object.cullable;
         if (strategies.length === 0) {
@@ -34,7 +34,7 @@ export class CullingPlugin implements RenderingPlugin {
           cullable.visible = strategies.every((strategy) => strategy.isVisible(object));
         }
 
-        if (object.isVisible()) {
+        if (!cullable.isCulled() && object.isVisible()) {
           return object;
         }
         return null;

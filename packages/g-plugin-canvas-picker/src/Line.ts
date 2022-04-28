@@ -18,5 +18,13 @@ export function isPointInPath(
     defY: y = 0,
   } = displayObject.parsedStyle as ParsedLineStyleProps;
 
-  return inLine(x1, y1, x2, y2, lineWidth.value, position.x + x, position.y + y);
+  return inLine(
+    x1.value,
+    y1.value,
+    x2.value,
+    y2.value,
+    lineWidth.value,
+    position.x + x,
+    position.y + y,
+  );
 }

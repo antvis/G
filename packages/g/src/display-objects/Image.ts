@@ -2,7 +2,7 @@ import { Shape } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
-import type { ParsedElement } from '../property-handlers';
+import type { CSSUnitValue } from '../css';
 
 export interface ImageStyleProps extends BaseStyleProps {
   img?: string | HTMLImageElement;
@@ -13,10 +13,8 @@ export interface ImageStyleProps extends BaseStyleProps {
 export interface ParsedImageStyleProps extends ParsedBaseStyleProps {
   img?: string | HTMLImageElement;
   src?: string | HTMLImageElement;
-  width?: ParsedElement;
-  height?: ParsedElement;
-  widthInPixels?: number;
-  heightInPixels?: number;
+  width?: CSSUnitValue;
+  height?: CSSUnitValue;
 }
 export class Image extends DisplayObject<ImageStyleProps, ParsedImageStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<ImageStyleProps> = {}) {
@@ -24,9 +22,9 @@ export class Image extends DisplayObject<ImageStyleProps, ParsedImageStyleProps>
       type: Shape.IMAGE,
       style: {
         img: '',
-        width: 'auto',
-        height: 'auto',
-        lineWidth: 0,
+        width: '',
+        height: '',
+        lineWidth: '0',
         ...style,
       },
       ...rest,

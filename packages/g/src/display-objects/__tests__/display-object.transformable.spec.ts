@@ -5,7 +5,7 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { vec3 } from 'gl-matrix';
+import { mat3, mat4, vec2, vec3 } from 'gl-matrix';
 import { DisplayObject, Group, Circle } from '../..';
 
 chai.use(chaiAlmost());
@@ -66,6 +66,18 @@ describe('Mixin Transformable', () => {
 
     expect(group1.getPosition()).to.eqls(vec3.fromValues(10, 10, 10));
     expect(group2.getPosition()).to.eqls(vec3.fromValues(10, 10, 10));
+
+    group1.resetLocalTransform();
+    expect(group1.getLocalPosition()).to.eqls(vec3.create());
+    expect(group1.getLocalScale()).to.eqls(vec3.fromValues(1, 1, 1));
+    expect(group1.getLocalEulerAngles()).to.eqls(0);
+    expect(group1.getLocalTransform()).to.eqls(mat4.identity(mat4.create()));
+
+    group2.resetLocalTransform();
+    expect(group2.getLocalPosition()).to.eqls(vec3.create());
+    expect(group2.getLocalScale()).to.eqls(vec3.fromValues(1, 1, 1));
+    expect(group2.getLocalEulerAngles()).to.eqls(0);
+    expect(group2.getLocalTransform()).to.eqls(mat4.identity(mat4.create()));
   });
 
   it('should update scaling with its parent group', () => {
@@ -126,39 +138,69 @@ describe('Mixin Transformable', () => {
     expect(group2.getEulerAngles()).to.almost.eqls(30);
   });
 
-  it('should set origin correctly', () => {
-    const circle = new Circle({ style: { r: 100 } });
-    circle.setPosition(100, 100, 0);
-    expect(circle.getOrigin()).to.eqls(vec3.fromValues(0, 0, 0));
-    expect(circle.style.origin).to.eqls(vec3.fromValues(0, 0, 0));
+  it('should get/setMatrix correctly', () => {
+    // compatible with legacy G4.0
 
-    let bounds = circle.getBounds();
-    if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
-    }
+    const group = new Group();
+    expect(group.getMatrix()).to.almost.eqls(mat3.identity(mat3.create()));
+    expect(group.getLocalMatrix()).to.almost.eqls(mat3.identity(mat3.create()));
 
-    // origin: [0, 0]
-    circle.scale(0.5);
+    group.translateLocal(100, 100);
+    expect(group.getMatrix()).to.almost.eqls(
+      mat3.fromTranslation(mat3.create(), vec2.fromValues(100, 100)),
+    );
+    expect(group.getLocalMatrix()).to.almost.eqls(
+      mat3.fromTranslation(mat3.create(), vec2.fromValues(100, 100)),
+    );
 
-    bounds = circle.getBounds();
-    if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(50, 50, 0));
-    }
-    // restore
-    circle.scale(2);
+    let matrix = mat3.fromTranslation(mat3.create(), vec2.fromValues(200, 200));
+    group.setMatrix(matrix);
+    expect(group.getMatrix()).to.almost.eqls(
+      mat3.fromTranslation(mat3.create(), vec2.fromValues(200, 200)),
+    );
+    expect(group.getLocalMatrix()).to.almost.eqls(
+      mat3.fromTranslation(mat3.create(), vec2.fromValues(200, 200)),
+    );
 
-    // origin: [-100, -100]
-    circle.setOrigin(-100, -100);
-    circle.scale(0.5);
-    expect(circle.getPosition()).to.eqls(vec3.fromValues(50, 50, 0));
-    bounds = circle.getBounds();
-    if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(50, 50, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(50, 50, 0));
-    }
+    matrix = mat3.identity(mat3.create());
+    group.setLocalMatrix(matrix);
+    expect(group.getMatrix()).to.almost.eqls(mat3.identity(mat3.create()));
+    expect(group.getLocalMatrix()).to.almost.eqls(mat3.identity(mat3.create()));
   });
+
+  // it('should set origin correctly', () => {
+  //   const circle = new Circle({ style: { r: 100 } });
+  //   circle.setPosition(100, 100, 0);
+  //   expect(circle.getOrigin()).to.eqls(vec3.fromValues(0, 0, 0));
+  //   expect(circle.style.origin).to.eqls(vec3.fromValues(0, 0, 0));
+
+  //   let bounds = circle.getBounds();
+  //   if (bounds) {
+  //     expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+  //     expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+  //   }
+
+  //   // origin: [0, 0]
+  //   circle.scale(0.5);
+
+  //   bounds = circle.getBounds();
+  //   if (bounds) {
+  //     expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+  //     expect(bounds.halfExtents).eqls(vec3.fromValues(50, 50, 0));
+  //   }
+  //   // restore
+  //   circle.scale(2);
+
+  //   // origin: [-100, -100]
+  //   circle.setOrigin(-100, -100);
+  //   circle.scale(0.5);
+  //   expect(circle.getPosition()).to.eqls(vec3.fromValues(50, 50, 0));
+  //   bounds = circle.getBounds();
+  //   if (bounds) {
+  //     expect(bounds.center).eqls(vec3.fromValues(50, 50, 0));
+  //     expect(bounds.halfExtents).eqls(vec3.fromValues(50, 50, 0));
+  //   }
+  // });
 
   // it('should query child correctly', () => {
   //   const group1 = new Group({

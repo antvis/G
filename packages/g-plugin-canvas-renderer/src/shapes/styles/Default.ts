@@ -1,4 +1,4 @@
-import type { ParsedBaseStyleProps } from '@antv/g';
+import type { CSSRGB, ParsedBaseStyleProps } from '@antv/g';
 import { Shape } from '@antv/g';
 import { singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
@@ -38,22 +38,25 @@ export class DefaultRenderer implements StyleRenderer {
       filter,
       miterLimit,
     } = parsedStyle;
+    const hasFill = !isNil(fill);
+    const hasStroke = !isNil(stroke);
+    const isFillTransparent = (fill as CSSRGB).alpha === 0;
 
-    if (!isNil(fill)) {
-      if (!isNil(fillOpacity) && fillOpacity !== 1) {
-        context.globalAlpha = fillOpacity!;
+    if (hasFill) {
+      if (!isNil(fillOpacity) && fillOpacity.value !== 1) {
+        context.globalAlpha = fillOpacity.value;
         context.fill();
-        context.globalAlpha = opacity!;
+        context.globalAlpha = opacity.value;
       } else {
         context.fill();
       }
     }
 
-    if (!isNil(stroke)) {
+    if (hasStroke) {
       if (lineWidth && lineWidth.value > 0) {
-        const applyOpacity = !isNil(strokeOpacity) && strokeOpacity !== 1;
+        const applyOpacity = !isNil(strokeOpacity) && strokeOpacity.value !== 1;
         if (applyOpacity) {
-          context.globalAlpha = strokeOpacity;
+          context.globalAlpha = strokeOpacity.value;
         }
         context.lineWidth = lineWidth.value;
         if (!isNil(miterLimit)) {
@@ -61,11 +64,11 @@ export class DefaultRenderer implements StyleRenderer {
         }
 
         if (!isNil(lineCap)) {
-          context.lineCap = lineCap;
+          context.lineCap = lineCap.value as CanvasLineCap;
         }
 
         if (!isNil(lineJoin)) {
-          context.lineJoin = lineJoin;
+          context.lineJoin = lineJoin.value as CanvasLineJoin;
         }
 
         let oldShadowBlur: number;
@@ -93,7 +96,11 @@ export class DefaultRenderer implements StyleRenderer {
           }
         }
 
-        context.stroke();
+        const drawStroke = hasFill && !isFillTransparent;
+        if (drawStroke) {
+          context.stroke();
+        }
+
         // restore shadow blur
         if (hasShadowColor) {
           context.shadowColor = oldShadowColor;
@@ -102,6 +109,10 @@ export class DefaultRenderer implements StyleRenderer {
         // restore filters
         if (hasFilter) {
           context.filter = oldFilter;
+        }
+
+        if (!drawStroke) {
+          context.stroke();
         }
       }
     }

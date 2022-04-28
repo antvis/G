@@ -1,12 +1,12 @@
 import type { RendererPlugin } from '@antv/g';
-import {
-  addPropertiesHandler,
-  parseNumber,
-  parseLengthOrPercent,
-  parseLengthOrPercentList,
-  clampedMergeNumbers,
-  mergeDimensions,
-} from '@antv/g';
+// import {
+//   addPropertiesHandler,
+//   parseNumber,
+//   parseLengthOrPercent,
+//   parseLengthOrPercentList,
+//   clampedMergeNumbers,
+//   mergeDimensions,
+// } from '@antv/g';
 import type { Syringe } from 'mana-syringe';
 import { Module } from 'mana-syringe';
 import { YogaPlugin } from './YogaPlugin';
@@ -16,48 +16,48 @@ const containerModule = Module((register) => {
   register(YogaPlugin);
 });
 
-addPropertiesHandler<number, number>(
-  [
-    'top',
-    'right',
-    'bottom',
-    'left',
-    'marginAll',
-    'marginTop',
-    'marginRight',
-    'marginBottom',
-    'marginLeft',
-    'paddingAll',
-    'paddingTop',
-    'paddingRight',
-    'paddingBottom',
-    'paddingLeft',
-    'minWidth',
-    'maxWidth',
-    'minHeight',
-    'maxHeight',
-  ],
-  parseLengthOrPercent,
-  // @ts-ignore
-  mergeDimensions,
-  undefined,
-);
-addPropertiesHandler<number[], number[]>(
-  ['margin', 'padding'],
-  // @ts-ignore
-  parseLengthOrPercentList,
-  // @ts-ignore
-  // mergeNumberLists,
-  undefined,
-  undefined,
-);
+// addPropertiesHandler<number, number>(
+//   [
+//     'top',
+//     'right',
+//     'bottom',
+//     'left',
+//     'marginAll',
+//     'marginTop',
+//     'marginRight',
+//     'marginBottom',
+//     'marginLeft',
+//     'paddingAll',
+//     'paddingTop',
+//     'paddingRight',
+//     'paddingBottom',
+//     'paddingLeft',
+//     'minWidth',
+//     'maxWidth',
+//     'minHeight',
+//     'maxHeight',
+//   ],
+//   parseLengthOrPercent,
+//   // @ts-ignore
+//   mergeDimensions,
+//   undefined,
+// );
+// addPropertiesHandler<number[], number[]>(
+//   ['margin', 'padding'],
+//   // @ts-ignore
+//   parseLengthOrPercentList,
+//   // @ts-ignore
+//   // mergeNumberLists,
+//   undefined,
+//   undefined,
+// );
 
-addPropertiesHandler<number, number>(
-  ['flexGrow', 'flexShrink', 'flexBasis'],
-  parseNumber,
-  clampedMergeNumbers(0, Infinity),
-  undefined,
-);
+// addPropertiesHandler<number, number>(
+//   ['flexGrow', 'flexShrink', 'flexBasis'],
+//   parseNumber,
+//   clampedMergeNumbers(0, Infinity),
+//   undefined,
+// );
 
 export class Plugin implements RendererPlugin {
   private container: Syringe.Container;

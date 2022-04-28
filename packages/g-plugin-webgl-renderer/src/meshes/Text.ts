@@ -1,7 +1,8 @@
 import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
 import type { DisplayObject, ParsedTextStyleProps, Text as TextShape, Tuple4Number } from '@antv/g';
-import { PARSED_COLOR_TYPE } from '@antv/g';
+import { UnitType } from '@antv/g';
+import { CSSRGB } from '@antv/g';
 import { Format, VertexBufferFrequency, CullMode } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
@@ -71,30 +72,30 @@ export class TextMesh extends Instanced {
     const packed = [];
     let indicesOff = 0;
     objects.forEach((object) => {
-      const { metrics, dx, dy } = object.parsedStyle;
+      const { metrics, dx, dy } = object.parsedStyle as ParsedTextStyleProps;
       const { font, lines, height, lineHeight } = metrics;
 
       // account for dx & dy
       let offsetX = 0;
       let offsetY = 0;
-      if (dx && dx.unit === 'px') {
+      if (dx && dx.unit === UnitType.kPixels) {
         offsetX += dx.value;
       }
-      if (dy && dy.unit === 'px') {
+      if (dy && dy.unit === UnitType.kPixels) {
         offsetY += dy.value;
       }
 
       let linePositionY = 0;
       // handle vertical text baseline
-      if (textBaseline === 'middle') {
+      if (textBaseline.value === 'middle') {
         linePositionY = -height / 2;
-      } else if (textBaseline === 'bottom') {
+      } else if (textBaseline.value === 'bottom') {
         linePositionY = -height;
-      } else if (textBaseline === 'top' || textBaseline === 'hanging') {
+      } else if (textBaseline.value === 'top' || textBaseline.value === 'hanging') {
         linePositionY = 0;
-      } else if (textBaseline === 'alphabetic') {
+      } else if (textBaseline.value === 'alphabetic') {
         linePositionY = -height + lineHeight * 0.25;
-      } else if (textBaseline === 'ideographic') {
+      } else if (textBaseline.value === 'ideographic') {
         linePositionY = -height;
       }
 
@@ -223,17 +224,18 @@ export class TextMesh extends Instanced {
     };
 
     const object = this.instance as TextShape;
-    const {
-      fontSize,
-      fontFamily = '',
-      fontWeight = 'normal',
-      fontStyle,
-      metrics,
-    } = object.parsedStyle;
+    const { fontSize, fontFamily = '', fontWeight, fontStyle, metrics } = object.parsedStyle;
     const { font } = metrics;
     const allText = objects.map((object) => object.parsedStyle.text).join('');
 
-    this.glyphManager.generateAtlas(font, fontFamily, fontWeight, fontStyle, allText, this.device);
+    this.glyphManager.generateAtlas(
+      font,
+      fontFamily,
+      fontWeight.toString(),
+      fontStyle.toString(),
+      allText,
+      this.device,
+    );
     const glyphAtlasTexture = this.glyphManager.getAtlasTexture();
     const glyphAtlas = this.glyphManager.getAtlas();
 
@@ -288,7 +290,8 @@ export class TextMesh extends Instanced {
       name === 'strokeOpacity' ||
       name === 'opacity' ||
       name === 'lineWidth' ||
-      name === 'visibility'
+      name === 'visibility' ||
+      name === 'pointerEvents'
     ) {
       this.material.geometryDirty = true;
     }
@@ -315,20 +318,31 @@ export class TextMesh extends Instanced {
     glyphAtlas: GlyphAtlas;
     indicesOffset: number;
   }) {
-    const { textAlign = 'start' } = object.parsedStyle;
-
-    const { fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, visibility } =
+    const { textAlign, fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, visibility } =
       object.parsedStyle as ParsedTextStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
-    if (fill?.type === PARSED_COLOR_TYPE.Constant) {
-      fillColor = fill.value;
+    if (fill instanceof CSSRGB) {
+      fillColor = [
+        Number(fill.r) / 255,
+        Number(fill.g) / 255,
+        Number(fill.b) / 255,
+        Number(fill.alpha),
+      ];
     }
+
     let strokeColor: Tuple4Number = [0, 0, 0, 0];
-    if (stroke?.type === PARSED_COLOR_TYPE.Constant) {
-      strokeColor = stroke.value;
+    if (stroke instanceof CSSRGB) {
+      strokeColor = [
+        Number(stroke.r) / 255,
+        Number(stroke.g) / 255,
+        Number(stroke.b) / 255,
+        Number(stroke.alpha),
+      ];
     }
-    // @ts-ignore
-    const encodedPickingColor = object.renderable3D?.encodedPickingColor || [0, 0, 0];
+
+    const encodedPickingColor = (object.isInteractive() &&
+      // @ts-ignore
+      object.renderable3D?.encodedPickingColor) || [0, 0, 0];
 
     const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
 
@@ -341,7 +355,7 @@ export class TextMesh extends Instanced {
       lines,
       fontStack,
       lineHeight,
-      textAlign,
+      textAlign.value as CanvasTextAlign,
       letterSpacing,
       offsetX,
       offsetY,
@@ -355,11 +369,11 @@ export class TextMesh extends Instanced {
         ...modelMatrix,
         ...fillColor,
         ...strokeColor,
-        opacity,
-        fillOpacity,
-        strokeOpacity,
+        opacity.value,
+        fillOpacity.value,
+        strokeOpacity.value,
         lineWidth.value,
-        visibility === 'visible' ? 1 : 0,
+        visibility.value === 'visible' ? 1 : 0,
         0,
         0,
         0,

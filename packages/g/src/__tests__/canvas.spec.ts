@@ -9,6 +9,7 @@ import sinonChai from 'sinon-chai';
 import { Group, Circle, Canvas, Text, Rect, ElementEvent } from '../../lib';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import type { FederatedPointerEvent } from '../dom';
+import { sleep } from './utils';
 
 chai.use(chaiAlmost(0.0001));
 chai.use(sinonChai);
@@ -27,14 +28,6 @@ const canvas = new Canvas({
   renderer,
 });
 
-const sleep = (n) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(undefined);
-    }, n);
-  });
-};
-
 describe('Canvas', () => {
   afterEach(() => {
     canvas.removeChildren();
@@ -45,13 +38,13 @@ describe('Canvas', () => {
   });
 
   it('should generate correct composed path', async () => {
-    // let point = canvas.getClientByPoint(0, 0);
-    // expect(point.x).eqls(8);
-    // expect(point.y).eqls(8);
+    let point = canvas.getClientByPoint(0, 0);
+    expect(point.x).eqls(8);
+    expect(point.y).eqls(8);
 
-    // point = canvas.getPointByClient(8, 8);
-    // expect(point.x).eqls(0);
-    // expect(point.y).eqls(0);
+    point = canvas.getPointByClient(8, 8);
+    expect(point.x).eqls(0);
+    expect(point.y).eqls(0);
 
     const circle = new Circle({
       style: {
@@ -63,9 +56,9 @@ describe('Canvas', () => {
     });
     canvas.appendChild(circle);
 
-    const handlePointerDown = (e) => {
-      const stats = canvas.getStats();
+    await sleep(100);
 
+    const handlePointerDown = (e) => {
       // target
       expect(e.target).to.be.eqls(circle);
 
@@ -112,6 +105,8 @@ describe('Canvas', () => {
       },
     });
     canvas.appendChild(circle);
+
+    await sleep(100);
 
     canvas.addEventListener(
       'pointerdown',
@@ -176,6 +171,9 @@ describe('Canvas', () => {
       },
     });
     canvas.appendChild(circle);
+
+    await sleep(100);
+
     const camera = canvas.getCamera();
 
     canvas.addEventListener(
@@ -208,7 +206,7 @@ describe('Canvas', () => {
     );
 
     const $canvas = canvas.getContextService().getDomElement();
-    const { top, left } = $canvas.getBoundingClientRect();
+    const { top, left } = ($canvas as HTMLCanvasElement).getBoundingClientRect();
 
     $canvas.dispatchEvent(
       new PointerEvent('pointerdown', {

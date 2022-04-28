@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-svg-renderer",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "A G plugin of renderer implementation with SVG",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -46,5 +46,5 @@
     "umd": "webpack"
   },
   "homepage": "https://github.com/antvis/g#readme",
-  "gitHead": "ac4d1b7ab482f8ff862c76fb6248ef92b4a8c22d"
+  "gitHead": "cc8e74c562a0cb5b5fab1063510c4c9fc9aae360"
 }

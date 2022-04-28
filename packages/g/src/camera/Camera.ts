@@ -3,7 +3,7 @@ import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
 import { Landmark } from './Landmark';
 import { Frustum } from '../shapes';
 import { createVec3, getAngle, makePerspective } from '../utils/math';
-import { requestAnimationFrame, cancelAnimationFrame } from '../utils/raf';
+import type { Canvas } from '../Canvas';
 
 export const DefaultCamera = 'DefaultCamera';
 
@@ -46,6 +46,9 @@ export class Camera extends EventEmitter {
     ORTHOGRAPHIC: 'ORTHOGRAPHIC',
     PERSPECTIVE: 'PERSPECTIVE',
   };
+
+  canvas: Canvas;
+
   /**
    * 相机矩阵
    */
@@ -754,7 +757,7 @@ export class Camera extends EventEmitter {
       }
 
       if (this.landmarkAnimationID !== undefined) {
-        cancelAnimationFrame(this.landmarkAnimationID);
+        this.canvas.cancelAnimationFrame(this.landmarkAnimationID);
       }
 
       // TODO: do not process events during animation
@@ -803,11 +806,11 @@ export class Camera extends EventEmitter {
         }
 
         if (elapsed < duration) {
-          this.landmarkAnimationID = requestAnimationFrame(animate);
+          this.landmarkAnimationID = this.canvas.requestAnimationFrame(animate);
         }
       };
 
-      requestAnimationFrame(animate);
+      this.canvas.requestAnimationFrame(animate);
     }
   }
 

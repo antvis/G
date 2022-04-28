@@ -14,7 +14,8 @@ export function isPointInPath(
     clipPathTargets,
   } = displayObject.parsedStyle as ParsedBaseStyleProps;
   const isClipPath = !!clipPathTargets?.length;
-  if ((!stroke && !isClipPath) || !lineWidth) {
+  const hasStroke = displayObject.attributes.stroke !== 'none' && !!stroke;
+  if ((!hasStroke && !isClipPath) || !lineWidth) {
     return false;
   }
 

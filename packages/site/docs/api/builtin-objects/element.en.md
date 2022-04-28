@@ -121,6 +121,38 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getClientRects
 
+## computedStyleMap
+
+获取[样式系统](/zh/docs/api/css/intro)解析后的样式 Map，例如：
+
+```js
+const circle = new Circle({
+  style: {
+    r: 100,
+    fill: '#f00',
+  },
+});
+
+/**
+ * user-defined values
+ */
+expect(circle.getAttribute('r')).to.be.eqls(100);
+expect(circle.getAttribute('fill')).to.be.eqls('#f00');
+
+/**
+ * computed values
+ */
+const styleMap = circle.computedStyleMap();
+expect((styleMap.get('r') as CSSUnitValue).equals(CSS.px(100))).to.be.true;
+const fill = styleMap.get('fill') as CSSRGB;
+expect(fill.r).to.be.eqls(255);
+expect(fill.g).to.be.eqls(0);
+expect(fill.b).to.be.eqls(0);
+expect(fill.alpha).to.be.eqls(1);
+```
+
+https://developer.mozilla.org/en-US/docs/Web/API/Element/computedStyleMap
+
 ## destroy
 
 销毁自身，会移除一切事件监听器，停止正在进行的动画。

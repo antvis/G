@@ -5,7 +5,7 @@ import { Renderer as SVGRenderer } from '@antv/g-svg';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 import Hammer from 'hammerjs';
-// import 'hammer-touchemulator';
+import 'hammer-touchemulator';
 
 /**
  * Pinch Zoom And Pan With HammerJS
@@ -16,7 +16,7 @@ import Hammer from 'hammerjs';
  * Press `shiftKey` to emulate multi-touch on a desktop
  * @see http://hammerjs.github.io/touch-emulator/
  */
-// hammerTouchemulator();
+hammerTouchemulator();
 
 const CANVAS_WIDTH = 600;
 const CANVAS_HEIGHT = 500;

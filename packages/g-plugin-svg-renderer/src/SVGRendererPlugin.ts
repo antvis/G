@@ -18,9 +18,9 @@ import type {
   RenderingService,
   RenderingPlugin,
   DisplayObject,
-  PARSED_COLOR_TYPE,
   MutationEvent,
   FederatedEvent,
+  ParsedBaseStyleProps,
 } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
 import { createSVGElement } from './utils/dom';
@@ -43,14 +43,6 @@ export const Shape_TO_TAGS: Record<Shape | string, string> = {
   [Shape.TEXT]: 'text',
   [Shape.PATH]: 'path',
   [Shape.HTML]: 'foreignObject',
-};
-
-const ATTR_IN_PIXEL_MAP = {
-  r: 'rInPixels',
-  rx: 'rxInPixels',
-  ry: 'ryInPixels',
-  width: 'widthInPixels',
-  height: 'heightInPixels',
 };
 
 export const SVG_ATTR_MAP: Record<string, string> = {
@@ -132,7 +124,7 @@ export const DEFAULT_VALUE_MAP: Record<string, string> = {
   fontFamily: 'inherit',
 };
 
-export type GradientParams = (LinearGradient | RadialGradient) & { type: PARSED_COLOR_TYPE };
+export type GradientParams = LinearGradient | RadialGradient;
 
 const G_SVG_PREFIX = 'g_svg';
 const CLIP_PATH_PREFIX = 'clip-path-';
@@ -229,7 +221,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
+      // if (!object.isCulled()) {
       this.renderQueue.push(object);
+      // }
     });
 
     renderingService.hooks.endFrame.tap(SVGRendererPlugin.tag, () => {
@@ -338,7 +332,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const $el = object.elementSVG?.$el;
     // @ts-ignore
     const $groupEl = object.elementSVG?.$groupEl;
-    const { parsedStyle } = object;
+    const { parsedStyle, computedStyle } = object;
     if (SVG_ATTR_MAP[name]) {
       if (name === 'fill' || name === 'stroke') {
         createOrUpdateGradientAndPattern(
@@ -349,12 +343,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
           SVG_ATTR_MAP[name],
         );
       } else if (name === 'visibility') {
+        // use computed value
         // update `visibility` on <group>
-        $groupEl?.setAttribute(SVG_ATTR_MAP[name], `${value}`);
+        $groupEl?.setAttribute(SVG_ATTR_MAP[name], `${computedStyle.visibility.value}`);
       } else if (name === 'clipPath') {
         const clipPath = value as DisplayObject;
         if (clipPath) {
-          const clipPathId = CLIP_PATH_PREFIX + clipPath.id;
+          const clipPathId = CLIP_PATH_PREFIX + clipPath.entity;
 
           const existed = this.$def.querySelector(`#${clipPathId}`);
           if (!existed) {
@@ -405,21 +400,12 @@ export class SVGRendererPlugin implements RenderingPlugin {
         if (
           // (!object.style.clipPathTargets) &&
           object.nodeName !== Shape.TEXT && // text' anchor is controlled by `textAnchor` property
-          ['anchor', 'width', 'height', 'r', 'rx', 'ry'].indexOf(name) > -1
+          ['width', 'height', 'r', 'rx', 'ry'].indexOf(name) > -1
         ) {
           this.updateAnchorWithTransform(object);
         }
-        if (name !== 'anchor') {
-          let valueStr: string;
-          if (ATTR_IN_PIXEL_MAP[name]) {
-            valueStr = `${parsedStyle[ATTR_IN_PIXEL_MAP[name]]}`;
-          } else {
-            if (name === 'fontSize' || name === 'lineWidth') {
-              valueStr = value.value + value.unit;
-            } else {
-              valueStr = `${value}`;
-            }
-          }
+        if (name !== 'anchor' && value) {
+          const valueStr = value.toString();
 
           if (valueStr !== DEFAULT_VALUE_MAP[name]) {
             const formattedValueStr = FORMAT_VALUE_MAP[name]?.[valueStr] || valueStr;
@@ -499,7 +485,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const bounds = object.getGeometryBounds();
     const width = (bounds && bounds.halfExtents[0] * 2) || 0;
     const height = (bounds && bounds.halfExtents[1] * 2) || 0;
-    const { anchor = [0, 0] } = object.parsedStyle || {};
+    const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
 
     // @ts-ignore
     const $el = object.elementSVG?.$el;
@@ -508,7 +494,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       'transform',
       // can't use percent unit like translate(-50%, -50%)
       // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/transform#translate
-      `translate(-${anchor[0] * width},-${anchor[1] * height})`,
+      `translate(-${anchor[0].value * width},-${anchor[1].value * height})`,
     );
 
     if (object.nodeName === Shape.CIRCLE || object.nodeName === Shape.ELLIPSE) {

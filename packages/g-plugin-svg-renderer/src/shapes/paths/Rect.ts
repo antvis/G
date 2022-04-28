@@ -8,8 +8,12 @@ import type { ElementRenderer } from '.';
 export class RectRenderer implements ElementRenderer<ParsedRectStyleProps> {
   dependencies = ['radius', 'width', 'height'];
 
-  apply($el: SVGElement, attributes: ParsedRectStyleProps) {
-    const { radius = 0, widthInPixels: width, heightInPixels: height } = attributes;
+  apply($el: SVGElement, parsedStyle: ParsedRectStyleProps) {
+    const { radius: radiusUnitValue, width: widthUnitValue, height: heightUnitValue } = parsedStyle;
+
+    const radius = (radiusUnitValue && radiusUnitValue.value) || 0;
+    const width = widthUnitValue.value;
+    const height = heightUnitValue.value;
 
     let d = '';
     if (!radius) {

@@ -1,5 +1,5 @@
 import { createSVGElement } from '../../utils/dom';
-import type { DisplayObject, ParsedColorStyleProperty } from '@antv/g';
+import type { CSSRGB, CSSUnitValue, DisplayObject } from '@antv/g';
 
 const FILTER_DROPSHADOW_PREFIX = 'filter-dropshadow-';
 
@@ -26,17 +26,20 @@ export function createOrUpdateShadow(
   }
   const $feDropShadow = $existedFilter.children[0] as SVGPatternElement;
   if (name === 'shadowColor') {
-    const parsedColor = object.parsedStyle[name] as ParsedColorStyleProperty;
-    $feDropShadow.setAttribute('flood-color', parsedColor.formatted);
+    const parsedColor = object.parsedStyle[name] as CSSRGB;
+    $feDropShadow.setAttribute('flood-color', parsedColor.toString());
   } else if (name === 'shadowBlur') {
+    const shadowBlur = object.parsedStyle[name] as CSSUnitValue;
     // half the blur radius
     // @see https://drafts.csswg.org/css-backgrounds/#shadow-blur
     // @see https://css-tricks.com/breaking-css-box-shadow-vs-drop-shadow/
-    $feDropShadow.setAttribute('stdDeviation', `${Number(object.parsedStyle[name]) / 2}`);
+    $feDropShadow.setAttribute('stdDeviation', `${((shadowBlur && shadowBlur.value) || 0) / 2}`);
   } else if (name === 'shadowOffsetX') {
-    $feDropShadow.setAttribute('dx', object.parsedStyle[name]);
+    const shadowOffsetX = object.parsedStyle[name] as CSSUnitValue;
+    $feDropShadow.setAttribute('dx', `${((shadowOffsetX && shadowOffsetX.value) || 0) / 2}`);
   } else if (name === 'shadowOffsetY') {
-    $feDropShadow.setAttribute('dy', object.parsedStyle[name]);
+    const shadowOffsetY = object.parsedStyle[name] as CSSUnitValue;
+    $feDropShadow.setAttribute('dy', `${((shadowOffsetY && shadowOffsetY.value) || 0) / 2}`);
   }
 
   // use filter <feDropShadow>

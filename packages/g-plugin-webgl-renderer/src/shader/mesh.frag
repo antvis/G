@@ -11,7 +11,11 @@ void main(){
   }
 
   if (u_IsPicking > 0.5) {
-    outputColor = vec4(COLOR_SCALE * u_PickingColor, 1.0);
+    vec3 pickingColor = COLOR_SCALE * u_PickingColor;
+    if (pickingColor.x == 0.0 && pickingColor.y == 0.0 && pickingColor.z == 0.0) {
+      discard;
+    }
+    outputColor = vec4(pickingColor, 1.0);
   } else {
     outputColor = u_Color;
     outputColor.a = outputColor.a * u_Opacity * u_FillOpacity;

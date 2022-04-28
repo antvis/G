@@ -101,6 +101,13 @@
         "zh": "使用 MutationObserver",
         "en": "Use MutationObserver"
       }
+    },
+    {
+      "filename": "pinch-with-pointer.js",
+      "title": {
+        "zh": "使用 pointer 事件实现 Pinch 手势缩放",
+        "en": "Pinch zoom gestures"
+      }
     }
   ]
 }

@@ -2,9 +2,7 @@
 
 # g-core
 
-[![](https://img.shields.io/travis/antvis/g-core.svg)](https://travis-ci.org/antvis/g-core)
-![](https://img.shields.io/badge/language-javascript-red.svg)
-![](https://img.shields.io/badge/license-MIT-000000.svg)
+[![](https://img.shields.io/travis/antvis/g-core.svg)](https://travis-ci.org/antvis/g-core) ![](https://img.shields.io/badge/language-javascript-red.svg) ![](https://img.shields.io/badge/license-MIT-000000.svg)
 
 借助 `g-ecs` 提供的简单 ECS 实现，我们有了将复杂渲染对象及数据处理拆分的能力。在 `g-core` 中我们将定义统一的渲染流程，提供一系列扩展点供 `g-canvas/svg/webgl/mobile` 等上层实现。
 
@@ -65,8 +63,7 @@ export class FrustumCulling implements CullingStrategy {
 
 ### 上下文系统
 
-各个渲染环境的一大差异便是上下文（`Context`），这个上下文不仅仅局限于渲染，也会影响到事件系统。
-例如 `g-canvas` 渲染时使用的是 `CanvasRenderingContext2D`，而 `g-webgl` 使用 `WebGLEngine`。创建、销毁以及重新改变尺寸大小的实现也各不相同，因此我们将上下文服务暴露出来供上层实现。
+各个渲染环境的一大差异便是上下文（`Context`），这个上下文不仅仅局限于渲染，也会影响到事件系统。例如 `g-canvas` 渲染时使用的是 `CanvasRenderingContext2D`，而 `g-webgl` 使用 `WebGLEngine`。创建、销毁以及重新改变尺寸大小的实现也各不相同，因此我们将上下文服务暴露出来供上层实现。
 
 ```typescript
 // g-core/systems/Context
@@ -109,8 +106,7 @@ bind(ContextService).toService(WebGLContextService);
 
 ### 场景图系统
 
-场景图是为了实现渲染对象的层次结构，g 提供的 `Group` 便是如此。父对象的变换（Transform）会影响到子对象。
-旧版 g 的实现将矩阵运算以及 transform 操作放在 `Element` 基类对象上。我们将其拆分到 `Transform` 和 `Hierarchy` 组件并由专门的场景图系统（SceneGraph）负责运算更新。
+场景图是为了实现渲染对象的层次结构，g 提供的 `Group` 便是如此。父对象的变换（Transform）会影响到子对象。旧版 g 的实现将矩阵运算以及 transform 操作放在 `Element` 基类对象上。我们将其拆分到 `Transform` 和 `Hierarchy` 组件并由专门的场景图系统（SceneGraph）负责运算更新。
 
 该系统定义在 `g-core/systems/SceneGraph` 中，暂未提供扩展点。
 
@@ -168,14 +164,13 @@ export class CanvasFrameRenderer implements RendererFrameContribution {
 ```typescript
 bind(CircleRenderer).toSelf().inSingletonScope();
 bind(EllipseRenderer).toSelf().inSingletonScope();
-bind(ShapeRenderer).to(CircleRenderer).whenTargetNamed(SHAPE.Circle);
-bind(ShapeRenderer).to(EllipseRenderer).whenTargetNamed(SHAPE.Ellipse);
+bind(ShapeRenderer).to(CircleRenderer).whenTargetNamed(Shape.CIRCLE);
+bind(ShapeRenderer).to(EllipseRenderer).whenTargetNamed(Shape.ELLIPSE);
 ```
 
 ### 动画系统
 
-渲染系统定义在 `src/systems/Timeline` 中，该系统关注所有包含了 `Animator` 组件的实体。得益于 ECS 中系统会自动在每一帧运行，我们不需要使用例如 `d3-timer` 这样的定时器。
-在每一帧中，对于需要执行动画的属性，我们使用 `d3-ease` 结合传入的缓动方法、当前运行时间进行插值，得到一个 `ratio`，随后交给更新器完成属性的更新。
+渲染系统定义在 `src/systems/Timeline` 中，该系统关注所有包含了 `Animator` 组件的实体。得益于 ECS 中系统会自动在每一帧运行，我们不需要使用例如 `d3-timer` 这样的定时器。在每一帧中，对于需要执行动画的属性，我们使用 `d3-ease` 结合传入的缓动方法、当前运行时间进行插值，得到一个 `ratio`，随后交给更新器完成属性的更新。
 
 提供针对 `Shape` 属性的更新器接口，上层可以任意注册针对任意属性的更新器：
 
@@ -294,7 +289,7 @@ export class LoadImagePlugin implements ShapePlugin {
   apply(shape: Shape) {
     shape.hooks.didMount.tapPromise('LoadImagePlugin', async (context: CanvasRenderingContext2D, entity: Entity) => {
       const { tagName, attributes } = entity.getComponent(SceneGraphNode);
-      if (tagName === SHAPE.Image) {
+      if (tagName === Shape.IMAGE) {
         const { width = 0, height = 0, img } = attributes;
         await this.imagePool.getOrCreateImage(img, width, height);
       }
@@ -302,7 +297,7 @@ export class LoadImagePlugin implements ShapePlugin {
 
     shape.hooks.changeAttribute.tapPromise('LoadImagePlugin', async (entity: Entity, name: string, value: any) => {
       const { tagName } = entity.getComponent(SceneGraphNode);
-      if (tagName === SHAPE.Image) {
+      if (tagName === Shape.IMAGE) {
         if (name === 'img') {
           await this.imagePool.getOrCreateImage(value);
 

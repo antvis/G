@@ -2,20 +2,18 @@ import { Shape } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
-import type { ParsedElement } from '../property-handlers';
+import type { CSSUnitValue } from '../css';
 
 export interface RectStyleProps extends BaseStyleProps {
   width: number | string;
   height: number | string;
-  radius?: number;
+  radius?: number | string;
 }
 
 export interface ParsedRectStyleProps extends ParsedBaseStyleProps {
-  width: ParsedElement;
-  height: ParsedElement;
-  widthInPixels: number;
-  heightInPixels: number;
-  radius?: number;
+  width?: CSSUnitValue;
+  height?: CSSUnitValue;
+  radius?: CSSUnitValue;
 }
 
 export class Rect extends DisplayObject<RectStyleProps, ParsedRectStyleProps> {
@@ -23,9 +21,10 @@ export class Rect extends DisplayObject<RectStyleProps, ParsedRectStyleProps> {
     super({
       type: Shape.RECT,
       style: {
-        width: 'auto',
-        height: 'auto',
-        lineWidth: 0,
+        width: '',
+        height: '',
+        radius: '',
+        lineWidth: '0',
         ...style,
       },
       ...rest,

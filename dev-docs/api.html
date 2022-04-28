@@ -277,7 +277,7 @@
           <h2><dfn>nodeName</dfn> attribute</h2>
           <p>返回节点名称，内置的 2D 图形使用以下枚举值：</p>
           <pre class="idl">
-            enum SHAPE {
+            enum Shape {
               "g",
               "circle",
               "ellipse",
@@ -976,7 +976,7 @@
           <p>参数列表：</p>
           <dl class="def">
             <dt><code>{{DOMString}} tagName</code></dt>
-            <dd>tagName 字符串，支持 {{SHAPE}} 或者自定义图形提供的 tagName</dd>
+            <dd>tagName 字符串，支持 {{Shape}} 或者自定义图形提供的 tagName</dd>
           </dl>
           <p>返回值：</p>
           <dl class="def">
@@ -988,7 +988,7 @@
             <pre class="js">
             // 以下两种写法等价
             document.getElementsByTagName('circle'); // [circle1, circle2]
-            document.getElementsByTagName(SHAPE.Circle); // [circle1, circle2]
+            document.getElementsByTagName(Shape.CIRCLE); // [circle1, circle2]
             </pre>
           </aside>
         </section>
@@ -2470,7 +2470,7 @@
             <p>创建元素</p>
             <pre class="js">
             // 以下写法等价
-            const circle = canvas.document.createElement(SHAPE.Circle, { style: { r: 100 } });
+            const circle = canvas.document.createElement(Shape.CIRCLE, { style: { r: 100 } });
             const circle = new Circle({ style: { r: 100 } });
             </pre>
           </aside>

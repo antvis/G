@@ -1,6 +1,7 @@
 import { inject, singleton, contrib, Syringe, Contribution } from 'mana-syringe';
 import { SyncHook, SyncWaterfallHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from 'tapable';
 import type { CanvasConfig, DisplayObject } from '..';
+import { StyleValueRegistry } from '../css';
 import { ElementEvent } from '../dom';
 import type { EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext, RenderReason } from './RenderingContext';
@@ -13,8 +14,15 @@ export interface RenderingPlugin {
 export const RenderingPluginContribution = Syringe.defineToken('RenderingPluginContribution');
 
 export interface PickingResult {
+  /**
+   * position in canvas coordinate
+   */
   position: EventPosition;
-  picked: DisplayObject | null;
+  picked: DisplayObject[];
+  /**
+   * only return the topmost object if there are multiple objects overlapped
+   */
+  topmost?: boolean;
 }
 
 /**
@@ -37,6 +45,9 @@ export class RenderingService {
   @inject(SceneGraphService)
   private sceneGraphService: SceneGraphService;
 
+  @inject(StyleValueRegistry)
+  private styleValueRegistry: StyleValueRegistry;
+
   private inited = false;
 
   private stats = {
@@ -57,18 +68,43 @@ export class RenderingService {
   private zIndexCounter = 0;
 
   hooks = {
+    /**
+     * called before any frame rendered
+     */
     init: new AsyncParallelHook<[]>(),
-    prepare: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
+    /**
+     * only dirty object which has sth changed will be rendered
+     */
+    dirtycheck: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
+    /**
+     * do culling
+     */
+    cull: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */
     beginFrame: new SyncHook<[]>([]),
+    /**
+     * called before every dirty object get rendered
+     */
     beforeRender: new SyncHook<[DisplayObject]>(['objectToRender']),
+    /**
+     * called when every dirty object rendering even it's culled
+     */
     render: new SyncHook<[DisplayObject]>(['objectToRender']),
+    /**
+     * called after every dirty object get rendered
+     */
     afterRender: new SyncHook<[DisplayObject]>(['objectToRender']),
     endFrame: new SyncHook<[]>([]),
     destroy: new SyncHook<[]>([]),
+    /**
+     * use async but faster method such as GPU-based picking in `g-plugin-webgl-renderer`
+     */
     pick: new AsyncSeriesWaterfallHook<[PickingResult], PickingResult>(['result']),
+    /**
+     * used in event system
+     */
     pointerDown: new SyncHook<[InteractivePointerEvent]>(['event']),
     pointerUp: new SyncHook<[InteractivePointerEvent]>(['event']),
     pointerMove: new SyncHook<[InteractivePointerEvent]>(['event']),
@@ -120,24 +156,34 @@ export class RenderingService {
   }
 
   private renderDisplayObject(displayObject: DisplayObject) {
-    // render itself
-    const objectToRender = this.hooks.prepare.call(displayObject);
-    displayObject.sortable.renderOrder = this.zIndexCounter++;
+    // recalc style values
+    this.styleValueRegistry.recalc(displayObject);
 
-    this.stats.total++;
-    if (objectToRender) {
+    // TODO: relayout
+
+    // dirtycheck first
+    const objectChanged = this.hooks.dirtycheck.call(displayObject);
+    if (objectChanged) {
+      // const objectToRender = this.hooks.cull.call(objectChanged);
+      this.hooks.cull.call(objectChanged);
+
+      // if (objectToRender) {
       this.stats.rendered++;
       if (!this.renderingContext.dirty) {
         this.renderingContext.dirty = true;
         this.hooks.beginFrame.call();
       }
 
-      this.hooks.beforeRender.call(objectToRender);
-      this.hooks.render.call(objectToRender);
-      this.hooks.afterRender.call(objectToRender);
-
+      this.hooks.beforeRender.call(objectChanged);
+      this.hooks.render.call(objectChanged);
+      this.hooks.afterRender.call(objectChanged);
       displayObject.renderable.dirty = false;
+      // }
     }
+
+    displayObject.sortable.renderOrder = this.zIndexCounter++;
+
+    this.stats.total++;
 
     // sort is very expensive, use cached result if posible
     const sortable = displayObject.sortable;

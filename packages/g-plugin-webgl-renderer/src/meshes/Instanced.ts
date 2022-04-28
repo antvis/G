@@ -1,10 +1,19 @@
-import { Camera, DefaultCamera, parseColor, PARSED_COLOR_TYPE, Shape } from '@antv/g';
+import {
+  Camera,
+  CSSGradientValue,
+  CSSRGB,
+  DefaultCamera,
+  GradientPatternType,
+  Shape,
+  parseColor,
+} from '@antv/g';
 import type {
   Tuple4Number,
   DisplayObject,
   ParsedBaseStyleProps,
-  ParsedColorStyleProperty,
   RenderingService,
+  Pattern,
+  LinearGradient,
 } from '@antv/g';
 import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
@@ -200,13 +209,22 @@ export abstract class Instanced {
       const { fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, anchor, visibility } =
         object.parsedStyle as ParsedBaseStyleProps;
       let fillColor: Tuple4Number = [0, 0, 0, 0];
-      if (fill?.type === PARSED_COLOR_TYPE.Constant) {
-        fillColor = fill.value;
+      if (fill instanceof CSSRGB) {
+        fillColor = [
+          Number(fill.r) / 255,
+          Number(fill.g) / 255,
+          Number(fill.b) / 255,
+          Number(fill.alpha),
+        ];
       }
       let strokeColor: Tuple4Number = [0, 0, 0, 0];
-      if (stroke?.type === PARSED_COLOR_TYPE.Constant) {
-        // if (object.)
-        strokeColor = stroke.value;
+      if (stroke instanceof CSSRGB) {
+        strokeColor = [
+          Number(stroke.r) / 255,
+          Number(stroke.g) / 255,
+          Number(stroke.b) / 255,
+          Number(stroke.alpha),
+        ];
       }
 
       if (this.clipPathTarget) {
@@ -219,14 +237,20 @@ export abstract class Instanced {
       }
       mat4.mul(modelViewMatrix, this.camera.getViewTransform(), modelMatrix);
 
-      // @ts-ignore
-      const encodedPickingColor = object.renderable3D?.encodedPickingColor || [0, 0, 0];
+      const encodedPickingColor = (object.isInteractive() &&
+        // @ts-ignore
+        object.renderable3D?.encodedPickingColor) || [0, 0, 0];
 
       packedModelMatrix.push(...modelMatrix);
       packedFill.push(...fillColor);
       packedStroke.push(...strokeColor);
-      packedStyle1.push(opacity, fillOpacity, strokeOpacity, lineWidth.value);
-      packedStyle2.push(visibility === 'visible' ? 1 : 0, anchor[0], anchor[1], 0);
+      packedStyle1.push(opacity.value, fillOpacity.value, strokeOpacity.value, lineWidth.value);
+      packedStyle2.push(
+        visibility.value === 'visible' ? 1 : 0,
+        anchor[0].value,
+        anchor[1].value,
+        0,
+      );
       packedPicking.push(...encodedPickingColor, object.sortable.renderOrder * RENDER_ORDER_SCALE);
 
       // if (useNormal) {
@@ -431,7 +455,11 @@ export abstract class Instanced {
         this.material.defines.USE_UV = true;
         this.material.defines.USE_MAP = true;
         this.textureMappings.push(fillTextureMapping);
+      } else {
+        this.material.defines.USE_UV = false;
+        this.material.defines.USE_MAP = false;
       }
+      this.materialDirty = true;
     }
 
     // re-compile program, eg. DEFINE changed
@@ -575,9 +603,17 @@ export abstract class Instanced {
     if (name === 'fill') {
       const { fill } = this.instance.parsedStyle;
       const i = this.textureMappings.findIndex((m) => m.name === FILL_TEXTURE_MAPPING);
-      if (fill?.type === PARSED_COLOR_TYPE.Constant) {
+      if (fill instanceof CSSRGB) {
         const fillColors: number[] = [];
-        objects.forEach((object) => fillColors.push(...object.parsedStyle.fill.value));
+        objects.forEach((object) => {
+          const fill = (object.parsedStyle as ParsedBaseStyleProps).fill as CSSRGB;
+          fillColors.push(
+            Number(fill.r) / 255,
+            Number(fill.g) / 255,
+            Number(fill.b) / 255,
+            Number(fill.alpha),
+          );
+        });
 
         this.geometry.updateVertexBuffer(
           VertexAttributeBufferIndex.FILL,
@@ -588,6 +624,7 @@ export abstract class Instanced {
         if (i >= 0) {
           // remove original fill texture mapping
           this.textureMappings.splice(i, -1);
+          this.material.textureDirty = true;
         }
       } else {
         const fillTextureMapping = this.createFillGradientTextureMapping([this.instance]);
@@ -598,7 +635,15 @@ export abstract class Instanced {
       }
     } else if (name === 'stroke') {
       const strokeColors: number[] = [];
-      objects.forEach((object) => strokeColors.push(...object.parsedStyle.stroke.value));
+      objects.forEach((object) => {
+        const stroke = (object.parsedStyle as ParsedBaseStyleProps).stroke as CSSRGB;
+        strokeColors.push(
+          Number(stroke.r) / 255,
+          Number(stroke.g) / 255,
+          Number(stroke.b) / 255,
+          Number(stroke.alpha),
+        );
+      });
 
       this.geometry.updateVertexBuffer(
         VertexAttributeBufferIndex.STROKE,
@@ -611,7 +656,7 @@ export abstract class Instanced {
       objects.forEach((object) => {
         const { opacity, fillOpacity, strokeOpacity, lineWidth } =
           object.parsedStyle as ParsedBaseStyleProps;
-        packed.push(opacity, fillOpacity, strokeOpacity, lineWidth.value);
+        packed.push(opacity.value, fillOpacity.value, strokeOpacity.value, lineWidth.value);
       });
 
       this.geometry.updateVertexBuffer(
@@ -636,12 +681,26 @@ export abstract class Instanced {
     } else if (name === 'visibility' || name === 'anchor') {
       const packed: number[] = [];
       objects.forEach((object) => {
-        const { visibility, anchor } = object.parsedStyle;
-        packed.push(visibility === 'visible' ? 1 : 0, anchor[0], anchor[1], 0);
+        const { visibility, anchor } = object.parsedStyle as ParsedBaseStyleProps;
+        packed.push(visibility.value === 'visible' ? 1 : 0, anchor[0].value, anchor[1].value, 0);
       });
       this.geometry.updateVertexBuffer(
         VertexAttributeBufferIndex.PACKED_STYLE2,
         VertexAttributeLocation.PACKED_STYLE2,
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
+      );
+    } else if (name === 'pointerEvents') {
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const encodedPickingColor = (object.isInteractive() &&
+          // @ts-ignore
+          object.renderable3D?.encodedPickingColor) || [0, 0, 0];
+        packed.push(...encodedPickingColor, object.sortable.renderOrder * RENDER_ORDER_SCALE);
+      });
+      this.geometry.updateVertexBuffer(
+        VertexAttributeBufferIndex.PICKING_COLOR,
+        VertexAttributeLocation.PICKING_COLOR,
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
       );
@@ -659,8 +718,9 @@ export abstract class Instanced {
   changeRenderOrder(object: DisplayObject, renderOrder: number) {
     const index = this.objects.indexOf(object);
 
-    // @ts-ignore
-    const encodedPickingColor = object.renderable3D?.encodedPickingColor || [0, 0, 0];
+    const encodedPickingColor = (object.isInteractive() &&
+      // @ts-ignore
+      object.renderable3D?.encodedPickingColor) || [0, 0, 0];
     this.geometry.updateVertexBuffer(
       VertexAttributeBufferIndex.PICKING_COLOR,
       VertexAttributeLocation.PICKING_COLOR,
@@ -781,10 +841,14 @@ export abstract class Instanced {
     // collect uniforms
     const uniforms = [];
     if (useWireframe) {
-      const wireframeColor = parseColor(material.wireframeColor).value as Tuple4Number;
+      const wireframeColor = parseColor(material.wireframeColor) as CSSRGB;
       uniforms.push({
         name: 'u_WireframeLineColor',
-        value: wireframeColor.slice(0, 3),
+        value: [
+          Number(wireframeColor.r) / 255,
+          Number(wireframeColor.g) / 255,
+          Number(wireframeColor.b) / 255,
+        ],
       });
       uniforms.push({
         name: 'u_WireframeLineWidth',
@@ -883,8 +947,13 @@ export abstract class Instanced {
   private uploadFog(uniforms: RenderInstUniform[], fog: Fog) {
     const { type, fill, start, end, density } = fog.parsedStyle;
 
-    if (fill?.type === PARSED_COLOR_TYPE.Constant) {
-      const fillColor = fill.value as Tuple4Number;
+    if (fill instanceof CSSRGB) {
+      const fillColor = [
+        Number(fill.r) / 255,
+        Number(fill.g) / 255,
+        Number(fill.b) / 255,
+        Number(fill.alpha),
+      ];
       uniforms.push({
         name: 'u_FogInfos',
         value: [type, start, end, density],
@@ -910,31 +979,26 @@ export abstract class Instanced {
 
     const fill = (
       instance.nodeName === Shape.LINE ? instance.parsedStyle.stroke : instance.parsedStyle.fill
-    ) as ParsedColorStyleProperty;
+    ) as CSSRGB | CSSGradientValue;
     // use pattern & gradient
-    if (
-      fill &&
-      (fill.type === PARSED_COLOR_TYPE.Pattern ||
-        fill.type === PARSED_COLOR_TYPE.LinearGradient ||
-        fill.type === PARSED_COLOR_TYPE.RadialGradient)
-    ) {
-      this.program.setDefineBool('USE_UV', true);
-      this.program.setDefineBool('USE_MAP', true);
+    if (fill && fill instanceof CSSGradientValue) {
       let texImageSource: string | TexImageSource;
       if (
-        fill.type === PARSED_COLOR_TYPE.LinearGradient ||
-        fill.type === PARSED_COLOR_TYPE.RadialGradient
+        fill.type === GradientPatternType.LinearGradient ||
+        fill.type === GradientPatternType.RadialGradient
       ) {
+        this.program.setDefineBool('USE_PATTERN', false);
         this.texturePool.getOrCreateGradient({
           type: fill.type,
-          ...fill.value,
+          ...(fill.value as LinearGradient),
           width: 128,
           height: 128,
         });
-        texImageSource = this.texturePool.getOrCreateCanvas();
+        texImageSource = this.texturePool.getOrCreateCanvas() as TexImageSource;
       } else {
+        this.program.setDefineBool('USE_PATTERN', true);
         // FIXME: support repeat
-        texImageSource = fill.value.src;
+        texImageSource = (fill.value as Pattern).src;
       }
 
       const fillMapping = new TextureMapping();
@@ -943,15 +1007,20 @@ export abstract class Instanced {
         this.device,
         texImageSource,
         makeTextureDescriptor2D(Format.U8_RGBA_NORM, 1, 1, 1),
-        () => {
-          // need re-render
-          objects.forEach((object) => {
-            object.renderable.dirty = true;
-
-            this.renderingService.dirtify();
-          });
-        },
+        // () => {
+        //   // need re-render
+        //   objects.forEach((object) => {
+        //     object.renderable.dirty = true;
+        //     this.renderingService.dirtify();
+        //   });
+        // },
       );
+      fillMapping.texture.on('loaded', () => {
+        // need re-render
+        objects.forEach((object) => {
+          object.renderable.dirty = true;
+        });
+      });
       this.device.setResourceName(fillMapping.texture, 'Fill Texture' + this.id);
       fillMapping.sampler = this.renderHelper.getCache().createSampler({
         // wrapS: WrapMode.Clamp,

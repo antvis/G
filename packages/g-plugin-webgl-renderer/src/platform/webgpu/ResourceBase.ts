@@ -1,7 +1,8 @@
+import { EventEmitter } from 'eventemitter3';
 import type { Disposable, ResourceBase, ResourceType } from '../interfaces';
 import type { IDevice_WebGPU } from './interfaces';
 
-export abstract class ResourceBase_WebGPU implements ResourceBase, Disposable {
+export abstract class ResourceBase_WebGPU extends EventEmitter implements ResourceBase, Disposable {
   type: ResourceType;
 
   id: number;
@@ -11,6 +12,7 @@ export abstract class ResourceBase_WebGPU implements ResourceBase, Disposable {
   device: IDevice_WebGPU;
 
   constructor({ id, device }: { id: number; device: IDevice_WebGPU }) {
+    super();
     this.id = id;
     this.device = device;
   }

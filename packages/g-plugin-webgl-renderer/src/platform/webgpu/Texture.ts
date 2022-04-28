@@ -9,7 +9,6 @@ import { ResourceBase_WebGPU } from './ResourceBase';
 
 export class Texture_WebGPU extends ResourceBase_WebGPU implements TextureShared_WebGPU, Texture {
   type: ResourceType.Texture = ResourceType.Texture;
-
   pixelFormat: Format;
   dimension: TextureDimension;
   format: GPUTextureFormat;

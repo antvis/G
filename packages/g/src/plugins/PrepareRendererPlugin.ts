@@ -1,16 +1,9 @@
-import { isNil } from '@antv/util';
 import { inject, singleton } from 'mana-syringe';
 import type { DisplayObject } from '..';
+import { StyleValueRegistry } from '../css';
 import type { Element, FederatedEvent } from '../dom';
 import { ElementEvent } from '../dom';
-import { INHERIT_PROPERTIES } from '../global-module';
-import { computeInheritStyleProperty } from '../property-handlers';
-import {
-  RenderingContext,
-  RenderReason,
-  RenderingPluginContribution,
-  dirtifyToRoot,
-} from '../services';
+import { RenderingContext, RenderingPluginContribution, dirtifyToRoot } from '../services';
 import type { RenderingService, RenderingPlugin } from '../services/RenderingService';
 
 @singleton({ contrib: RenderingPluginContribution })
@@ -20,9 +13,15 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
+  @inject(StyleValueRegistry)
+  private styleValueRegistry: StyleValueRegistry;
+
   apply(renderingService: RenderingService) {
-    const handleAttributeChanged = () => {
-      this.renderingContext.renderReasons.add(RenderReason.DISPLAY_OBJECT_CHANGED);
+    const handleAttributeChanged = (e: FederatedEvent) => {
+      // this.renderingContext.renderReasons.add(RenderReason.DISPLAY_OBJECT_CHANGED);
+      const object = e.target as DisplayObject;
+      object.renderable.dirty = true;
+      renderingService.dirtify();
     };
 
     const handleBoundsChanged = () => {
@@ -31,19 +30,8 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
-      // compute some style when mounted
-      INHERIT_PROPERTIES.forEach((name) => {
-        if (object.getAttribute(name) === 'inherit') {
-          const computedValue = computeInheritStyleProperty(object, name);
-
-          if (!isNil(computedValue)) {
-            const oldParsedValue = object.parsedStyle[name];
-            object.parsedStyle[name] = computedValue;
-            object.updateStyleProperty(name, oldParsedValue, computedValue);
-          }
-        }
-      });
-
+      // recalc style values
+      this.styleValueRegistry.recalc(object);
       dirtifyToRoot(object);
       renderingService.dirtify();
     };

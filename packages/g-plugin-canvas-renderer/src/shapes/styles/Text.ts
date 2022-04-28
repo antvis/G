@@ -1,6 +1,6 @@
-import { TextService, Shape } from '@antv/g';
+import { Shape, UnitType } from '@antv/g';
 import type { ParsedTextStyleProps, Rectangle, DisplayObject } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
+import { singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import { StyleRenderer } from './interfaces';
 
@@ -8,9 +8,6 @@ import { StyleRenderer } from './interfaces';
   token: { token: StyleRenderer, named: Shape.TEXT },
 })
 export class TextRenderer implements StyleRenderer {
-  @inject(TextService)
-  private textService: TextService;
-
   hash(parsedStyle: any): string {
     return '';
   }
@@ -35,37 +32,37 @@ export class TextRenderer implements StyleRenderer {
       metrics,
       dx,
       dy,
-    } = parsedStyle;
+    } = parsedStyle as ParsedTextStyleProps;
 
     const { font, lines, height, lineHeight, lineMetrics } = metrics;
 
     context.font = font;
     context.lineWidth = lineWidth.value;
-    context.textAlign = textAlign;
-    context.textBaseline = textBaseline!;
-    context.lineJoin = lineJoin!;
+    context.textAlign = textAlign.value as CanvasTextAlign;
+    context.textBaseline = textBaseline.value as CanvasTextBaseline;
+    context.lineJoin = lineJoin.value as CanvasLineJoin;
     context.miterLimit = miterLimit;
 
     let linePositionY = 0;
     // handle vertical text baseline
-    if (textBaseline === 'middle') {
+    if (textBaseline.value === 'middle') {
       linePositionY = -height / 2 - lineHeight / 2;
     } else if (
-      textBaseline === 'bottom' ||
-      textBaseline === 'alphabetic' ||
-      textBaseline === 'ideographic'
+      textBaseline.value === 'bottom' ||
+      textBaseline.value === 'alphabetic' ||
+      textBaseline.value === 'ideographic'
     ) {
       linePositionY = -height;
-    } else if (textBaseline === 'top' || textBaseline === 'hanging') {
+    } else if (textBaseline.value === 'top' || textBaseline.value === 'hanging') {
       linePositionY = -lineHeight;
     }
 
     // account for dx & dy
     let offsetX = 0;
-    if (dx && dx.unit === 'px') {
+    if (dx && dx.unit === UnitType.kPixels) {
       offsetX += dx.value;
     }
-    if (dy && dy.unit === 'px') {
+    if (dy && dy.unit === UnitType.kPixels) {
       linePositionY += dy.value;
     }
 
@@ -81,13 +78,13 @@ export class TextRenderer implements StyleRenderer {
           context,
           lines[i],
           lineMetrics[i],
-          textAlign,
+          textAlign.value as CanvasTextAlign,
           linePositionX,
           linePositionY,
           letterSpacing,
-          fillOpacity,
-          strokeOpacity,
-          opacity,
+          fillOpacity.value,
+          strokeOpacity.value,
+          opacity.value,
           true,
         );
       }
@@ -96,13 +93,13 @@ export class TextRenderer implements StyleRenderer {
           context,
           lines[i],
           lineMetrics[i],
-          textAlign,
+          textAlign.value as CanvasTextAlign,
           linePositionX,
           linePositionY,
           letterSpacing,
-          fillOpacity,
-          strokeOpacity,
-          opacity,
+          fillOpacity.value,
+          strokeOpacity.value,
+          opacity.value,
         );
       }
     }
@@ -112,7 +109,7 @@ export class TextRenderer implements StyleRenderer {
     context: CanvasRenderingContext2D,
     text: string,
     lineMetrics: Rectangle,
-    textAlign: 'start' | 'center' | 'end' | 'left' | 'right',
+    textAlign: CanvasTextAlign,
     x: number,
     y: number,
     letterSpacing: number,

@@ -8,6 +8,7 @@ import sinonChai from 'sinon-chai';
 
 import { Group, Circle, Canvas, Text, Rect, ElementEvent } from '../../../lib';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { sleep } from '../../__tests__/utils';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
@@ -26,15 +27,11 @@ const canvas = new Canvas({
   renderer,
 });
 
-const sleep = (n) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(undefined);
-    }, n);
-  });
-};
-
 describe('Animation Timeline', () => {
+  afterEach(() => {
+    canvas.removeChildren();
+  });
+
   afterAll(() => {
     canvas.destroy();
   });

@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "5.0.20",
+  "version": "5.0.21",
   "description": "A core module including ECS and DI container.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -37,7 +37,7 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g-math": "^1.0.17",
+    "@antv/g-math": "^1.0.18",
     "@antv/path-util": "^2.0.14",
     "@antv/util": "^2.0.13",
     "@types/offscreencanvas": "^2019.6.4",
@@ -47,12 +47,11 @@
     "mana-syringe": "^0.3.0",
     "reflect-metadata": "^0.1.13",
     "request-animation-frame-polyfill": "^1.1.2",
-    "setimmediate": "^1.0.5",
     "tapable": "^2.2.1",
     "tslib": "^2.3.1"
   },
   "scripts": {
     "umd": "webpack"
   },
-  "gitHead": "ac4d1b7ab482f8ff862c76fb6248ef92b4a8c22d"
+  "gitHead": "cc8e74c562a0cb5b5fab1063510c4c9fc9aae360"
 }

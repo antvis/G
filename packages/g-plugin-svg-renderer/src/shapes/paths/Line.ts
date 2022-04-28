@@ -1,5 +1,5 @@
 import type { ParsedLineStyleProps } from '@antv/g';
-import { PARSED_COLOR_TYPE } from '@antv/g';
+import { CSSRGB } from '@antv/g';
 import type { ElementRenderer } from '.';
 import { singleton } from 'mana-syringe';
 
@@ -9,16 +9,16 @@ export class LineRenderer implements ElementRenderer<ParsedLineStyleProps> {
   apply($el: SVGElement, parsedStyle: ParsedLineStyleProps) {
     const { x1, y1, x2, y2, defX: x = 0, defY: y = 0, stroke } = parsedStyle;
 
-    $el.setAttribute('x1', `${x1 - x}`);
-    $el.setAttribute('y1', `${y1 - y}`);
-    $el.setAttribute('x2', `${x2 - x}`);
+    $el.setAttribute('x1', `${x1.value - x}`);
+    $el.setAttribute('y1', `${y1.value - y}`);
+    $el.setAttribute('x2', `${x2.value - x}`);
 
     // fix horizontal line stroke url bug in Chrome
     // @see https://stackoverflow.com/questions/14680240/did-chrome-break-svg-stroke-url
-    if (y1 === y2 && stroke && stroke.type !== PARSED_COLOR_TYPE.Constant) {
-      $el.setAttribute('y2', `${y2 - y + 0.00001}`);
+    if (y1.value === y2.value && stroke && !(stroke instanceof CSSRGB)) {
+      $el.setAttribute('y2', `${y2.value - y + 0.00001}`);
     } else {
-      $el.setAttribute('y2', `${y2 - y}`);
+      $el.setAttribute('y2', `${y2.value - y}`);
     }
   }
 }

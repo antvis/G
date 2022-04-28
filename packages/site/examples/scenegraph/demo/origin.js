@@ -1,4 +1,4 @@
-import { Rect, Circle, Text, Group, Canvas } from '@antv/g';
+import { Rect, Circle, Text, Group, Polyline, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -18,6 +18,10 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
+/**
+ * Circle
+ */
+
 const circle = new Circle({
   style: {
     x: 100,
@@ -34,6 +38,20 @@ circle.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.5)' }], {
   direction: 'alternate',
 });
 
+const circleOrigin = new Circle({
+  id: 'circleOrigin',
+  style: {
+    r: 10,
+    fill: '#F04864',
+  },
+});
+circleOrigin.setPosition(100, 100);
+canvas.appendChild(circleOrigin);
+
+/**
+ * Group
+ */
+
 const group = new Group({ id: 'group' });
 const child1 = new Rect({
   id: 'rect1',
@@ -49,8 +67,14 @@ const child1 = new Rect({
 group.appendChild(child1);
 group.setPosition(200, 100);
 
-const origin = new Circle({
-  id: 'origin',
+// original position
+const original = child1.cloneNode();
+original.setPosition(200, 100);
+original.style.opacity = 0.5;
+canvas.appendChild(original);
+
+const groupOrigin = new Circle({
+  id: 'group-origin',
   style: {
     r: 30,
     fill: '#F04864',
@@ -68,11 +92,69 @@ const originText = new Text({
   },
 });
 
-origin.appendChild(originText);
-origin.setPosition(200, 100);
+groupOrigin.appendChild(originText);
+groupOrigin.setPosition(200, 100);
 
 canvas.appendChild(group);
-canvas.appendChild(origin);
+canvas.appendChild(groupOrigin);
+
+/**
+ * Text
+ */
+const text = new Text({
+  id: 'rotated-text',
+  style: {
+    fontFamily: 'PingFang SC',
+    text: 'Lorem ipsum',
+    fontSize: 32,
+    fill: '#FFF',
+    stroke: '#1890FF',
+    lineWidth: 5,
+    // textAlign: 'center',
+    // textBaseline: 'middle',
+  },
+});
+text.setPosition(100, 400);
+canvas.appendChild(text);
+const textOrigin = new Circle({
+  id: 'textOrigin',
+  style: {
+    r: 10,
+    fill: '#F04864',
+  },
+});
+textOrigin.setPosition(100, 400);
+canvas.appendChild(textOrigin);
+
+/**
+ * Polyline
+ */
+const points = [
+  [50, 50],
+  [100, 50],
+  [100, 100],
+  [150, 100],
+  [150, 150],
+  [200, 150],
+];
+const polyline = new Polyline({
+  style: {
+    points,
+    stroke: '#1890FF',
+    lineWidth: 2,
+  },
+});
+canvas.appendChild(polyline);
+polyline.setPosition(300, 300);
+const polylineOrigin = new Circle({
+  id: 'polyline-origin',
+  style: {
+    r: 10,
+    fill: '#F04864',
+  },
+});
+polylineOrigin.setPosition(300, 300);
+canvas.appendChild(polylineOrigin);
 
 // stats
 const stats = new Stats();
@@ -88,6 +170,8 @@ canvas.on('afterrender', () => {
     stats.update();
   }
   group.rotateLocal(1);
+  text.rotateLocal(1);
+  polyline.rotateLocal(1);
 });
 
 // GUI
@@ -104,52 +188,14 @@ rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onCha
 });
 rendererFolder.open();
 
-const circleFolder = gui.addFolder('circle');
+const circleFolder = gui.addFolder('animated circle');
 const circleConfig = {
-  originX: 0,
-  originY: 0,
-  transformOrigin: 'left top',
+  transformOriginX: 100,
+  transformOriginY: 100,
+  transformOrigin: 'center',
 };
-circleFolder.add(circleConfig, 'originX', -200, 200).onChange((tx) => {
-  circle.style.origin = [tx, circleConfig.originY];
-});
-circleFolder.add(circleConfig, 'originY', -200, 200).onChange((ty) => {
-  circle.style.origin = [circleConfig.originX, ty];
-});
-circleFolder.open();
-
-let lastCloned = child1;
-const rectFolder = gui.addFolder('group');
-const rectConfig = {
-  originX: 0,
-  originY: 0,
-  transformOrigin: 'left top',
-  appendChild: () => {
-    // reset rotation
-    group.setEulerAngles(0);
-
-    // clone child
-    const cloned = lastCloned.cloneNode();
-    cloned.id = 'cloned';
-    cloned.translateLocal(0, 100);
-    group.appendChild(cloned);
-    lastCloned = cloned;
-
-    // reset transform origin, which will case re-calc origin
-    group.style.transformOrigin = group.style.transformOrigin || 'left top';
-
-    // get calculated origin
-    const [ox, oy, oz] = group.style.origin;
-    const [x, y, z] = group.getPosition(); // left top corner of Bounds
-    origin.setPosition(x + ox, y + oy, z + oz);
-
-    // update dat.gui
-    rectConfig.originX = ox;
-    rectConfig.originY = oy;
-  },
-};
-rectFolder
-  .add(rectConfig, 'transformOrigin', [
+circleFolder
+  .add(circleConfig, 'transformOrigin', [
     'left top',
     'center',
     'right bottom',
@@ -157,34 +203,214 @@ rectFolder
     '50px 50px',
   ])
   .onChange((transformOrigin) => {
-    // reset rotation
-    group.setEulerAngles(0);
+    // set transformOrigin
+    circle.style.transformOrigin = transformOrigin;
 
+    // get calculated origin
+    const [ox, oy] = circle.getOrigin();
+    const x = 100;
+    const y = 100;
+
+    circleOrigin.setPosition(x + ox, y + oy);
+
+    // update dat.gui
+    circleConfig.transformOriginX = ox + x;
+    circleConfig.transformOriginY = oy + y;
+  });
+circleFolder
+  .add(circleConfig, 'transformOriginX', -200, 200)
+  .onChange((tx) => {
+    circle.style.transformOrigin = `${tx} ${circleConfig.transformOriginY}`;
+
+    const [ox, oy] = circle.getOrigin();
+    const x = 100;
+    const y = 100;
+    circleOrigin.setPosition(x + ox, y + oy);
+  })
+  .listen();
+circleFolder
+  .add(circleConfig, 'transformOriginY', -200, 200)
+  .onChange((ty) => {
+    circle.style.transformOrigin = `${circleConfig.transformOriginX}px ${ty}px`;
+
+    const [ox, oy] = circle.getOrigin();
+    const x = 100;
+    const y = 100;
+    circleOrigin.setPosition(x + ox, y + oy);
+  })
+  .listen();
+circleFolder.open();
+
+const textFolder = gui.addFolder('text');
+const textConfig = {
+  transformOriginX: 0,
+  transformOriginY: 0,
+  transformOrigin: 'left top',
+};
+textFolder
+  .add(textConfig, 'transformOrigin', [
+    'left top',
+    'center',
+    'right bottom',
+    '50% 50%',
+    '50px 50px',
+  ])
+  .onChange((transformOrigin) => {
+    // set transformOrigin
+    text.style.transformOrigin = transformOrigin;
+
+    // get calculated origin
+    const [ox, oy, oz] = text.getOrigin();
+    const [x, y, z] = text.getPosition(); // left top corner of Bounds
+
+    textOrigin.setPosition(x + ox, y + oy, z + oz);
+
+    // update dat.gui
+    textConfig.transformOriginX = ox + x;
+    textConfig.transformOriginY = oy + y;
+  });
+textFolder
+  .add(textConfig, 'transformOriginX', -200, 200)
+  .onChange((tx) => {
+    text.style.transformOrigin = `${tx} ${textConfig.transformOriginY}`;
+
+    const [ox, oy] = text.getOrigin();
+    const [lx, ly] = text.getPosition();
+    textOrigin.setPosition(lx + ox, ly + oy);
+  })
+  .listen();
+textFolder
+  .add(textConfig, 'transformOriginY', -200, 200)
+  .onChange((ty) => {
+    text.style.transformOrigin = `${textConfig.transformOriginX}px ${ty}px`;
+
+    const [ox, oy] = text.getOrigin();
+    const [lx, ly] = text.getPosition();
+    textOrigin.setPosition(lx + ox, ly + oy);
+  })
+  .listen();
+textFolder.open();
+
+let lastCloned = child1;
+const groupFolder = gui.addFolder('group');
+const groupConfig = {
+  transformOriginX: 0,
+  transformOriginY: 0,
+  transformOrigin: 'left top',
+  appendChild: () => {
+    // // reset rotation
+    // group.setEulerAngles(0);
+    // // clone child
+    // const cloned = lastCloned.cloneNode();
+    // cloned.id = 'cloned';
+    // cloned.translateLocal(0, 100);
+    // group.appendChild(cloned);
+    // lastCloned = cloned;
+    // // reset transform origin, which will case re-calc origin
+    // group.style.transformOrigin = group.style.transformOrigin || 'left top';
+    // // get calculated origin
+    // const [ox, oy, oz] = group.style.origin;
+    // const [x, y, z] = group.getPosition(); // left top corner of Bounds
+    // origin.setPosition(x + ox, y + oy, z + oz);
+    // // update dat.gui
+    // groupConfig.originX = ox;
+    // groupConfig.originY = oy;
+  },
+};
+groupFolder
+  .add(groupConfig, 'transformOrigin', [
+    'left top',
+    'center',
+    'right bottom',
+    '50% 50%',
+    '50px 50px',
+  ])
+  .onChange((transformOrigin) => {
     // set transformOrigin
     group.style.transformOrigin = transformOrigin;
 
     // get calculated origin
-    const [ox, oy, oz] = group.style.origin;
+    const [ox, oy, oz] = group.getOrigin();
     const [x, y, z] = group.getPosition(); // left top corner of Bounds
-    origin.setPosition(x + ox, y + oy, z + oz);
+
+    groupOrigin.setPosition(x + ox, y + oy, z + oz);
 
     // update dat.gui
-    rectConfig.originX = ox;
-    rectConfig.originY = oy;
+    groupConfig.transformOriginX = ox + x;
+    groupConfig.transformOriginY = oy + y;
   });
-rectFolder
-  .add(rectConfig, 'originX', -200, 200)
+groupFolder
+  .add(groupConfig, 'transformOriginX', -200, 200)
   .onChange((tx) => {
-    group.style.origin = [tx, rectConfig.originY];
-    origin.setPosition(200 + tx, 100 + rectConfig.originY);
+    group.style.transformOrigin = `${tx} ${groupConfig.transformOriginY}`;
+
+    const [ox, oy] = group.getOrigin();
+    const [lx, ly] = group.getPosition();
+    groupOrigin.setPosition(lx + ox, ly + oy);
   })
   .listen();
-rectFolder
-  .add(rectConfig, 'originY', -200, 200)
+groupFolder
+  .add(groupConfig, 'transformOriginY', -200, 200)
   .onChange((ty) => {
-    group.style.origin = [rectConfig.originX, ty];
-    origin.setPosition(200 + rectConfig.originX, 100 + ty);
+    group.style.transformOrigin = `${groupConfig.transformOriginX}px ${ty}px`;
+
+    const [ox, oy] = group.getOrigin();
+    const [lx, ly] = group.getPosition();
+    groupOrigin.setPosition(lx + ox, ly + oy);
   })
   .listen();
-rectFolder.add(rectConfig, 'appendChild');
-rectFolder.open();
+groupFolder.add(groupConfig, 'appendChild');
+groupFolder.open();
+
+const polylineFolder = gui.addFolder('polyline');
+const polylineConfig = {
+  transformOriginX: 0,
+  transformOriginY: 0,
+  transformOrigin: 'left top',
+};
+polylineFolder
+  .add(polylineConfig, 'transformOrigin', [
+    'left top',
+    'center',
+    'right bottom',
+    '50% 50%',
+    '50px 50px',
+  ])
+  .onChange((transformOrigin) => {
+    // set transformOrigin
+    polyline.style.transformOrigin = transformOrigin;
+
+    // get calculated origin
+    const [ox, oy] = polyline.getOrigin();
+    const x = 300;
+    const y = 300;
+
+    polylineOrigin.setPosition(x + ox, y + oy);
+
+    // update dat.gui
+    polylineConfig.transformOriginX = ox + x;
+    polylineConfig.transformOriginY = oy + y;
+  });
+polylineFolder
+  .add(polylineConfig, 'transformOriginX', -200, 200)
+  .onChange((tx) => {
+    polyline.style.transformOrigin = `${tx} ${polylineConfig.transformOriginY}`;
+
+    const [ox, oy] = polyline.getOrigin();
+    const x = 300;
+    const y = 300;
+    polylineOrigin.setPosition(x + ox, y + oy);
+  })
+  .listen();
+polylineFolder
+  .add(polylineConfig, 'transformOriginY', -200, 200)
+  .onChange((ty) => {
+    polyline.style.transformOrigin = `${polylineConfig.transformOriginX}px ${ty}px`;
+
+    const [ox, oy] = polyline.getOrigin();
+    const x = 300;
+    const y = 300;
+    polylineOrigin.setPosition(x + ox, y + oy);
+  })
+  .listen();
+polylineFolder.open();

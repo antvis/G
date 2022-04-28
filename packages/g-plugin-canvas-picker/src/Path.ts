@@ -1,4 +1,4 @@
-import type { DisplayObject, ParsedBaseStyleProps, PathStyleProps, Point } from '@antv/g';
+import type { DisplayObject, ParsedBaseStyleProps, PathStyleProps, Point, CSSRGB } from '@antv/g';
 import { mat3, vec2 } from 'gl-matrix';
 import { Quad as QuadUtil, Cubic as CubicUtil } from '@antv/g-math';
 import { inArc, inBox, inLine, inPolygons } from './utils/math';
@@ -125,12 +125,14 @@ export function isPointInPath(
     clipPathTargets,
     path,
   } = displayObject.parsedStyle as ParsedBaseStyleProps;
+  const hasFill = fill && !(fill as CSSRGB).isNone;
+  const hasStroke = stroke && !(stroke as CSSRGB).isNone;
   const { segments, hasArc, polylines, polygons, totalLength } = path;
 
   const isClipPath = !!clipPathTargets?.length;
 
   let isHit = false;
-  if (stroke || isClipPath) {
+  if (hasStroke || isClipPath) {
     isHit = isPointInStroke(
       segments,
       lineWidth.value,
@@ -141,7 +143,7 @@ export function isPointInPath(
       y,
     );
   }
-  if (!isHit && (fill || isClipPath)) {
+  if (!isHit && (hasFill || isClipPath)) {
     if (hasArc) {
       // 存在曲线时，暂时使用 canvas 的 api 计算，后续可以进行多边形切割
       isHit = isPointInPath(displayObject, position);

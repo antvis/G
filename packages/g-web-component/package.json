@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-web-component",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "index.js",
   "license": "MIT",
   "private": false,
@@ -16,9 +16,9 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "@antv/g": "^5.0.20",
-    "@antv/g-canvas": "^1.0.19",
-    "@antv/g-webgl": "^1.0.23"
+    "@antv/g": "^5.0.21",
+    "@antv/g-canvas": "^1.0.20",
+    "@antv/g-webgl": "^1.0.24"
   },
-  "gitHead": "ac4d1b7ab482f8ff862c76fb6248ef92b4a8c22d"
+  "gitHead": "cc8e74c562a0cb5b5fab1063510c4c9fc9aae360"
 }

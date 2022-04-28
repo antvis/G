@@ -5,6 +5,7 @@
 import { Cubic as CubicUtil } from '@antv/g-math';
 import type { mat4 } from 'gl-matrix';
 import { vec3 } from 'gl-matrix';
+import type { ParsedBaseStyleProps } from '..';
 import type { Circle, Ellipse, Line, Path, Polyline, Rect } from '../display-objects';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { PathCommand } from '../types';
@@ -230,29 +231,29 @@ function commandsToPathString(
   commands: PathCommand[],
   localTransform: mat4,
   anchor: [number, number],
-  parsedStyle: any,
+  parsedStyle: ParsedBaseStyleProps,
 ) {
-  const { x, y } = parsedStyle;
+  const { defX = 0, defY = 0 } = parsedStyle;
   return commands.reduce((prev, cur) => {
     let path = '';
     if (cur[0] === 'M' || cur[0] === 'L') {
-      const p = vec3.fromValues(cur[1] - x, cur[2] - y, 0);
+      const p = vec3.fromValues(cur[1] - defX, cur[2] - defY, 0);
       vec3.transformMat4(p, p, localTransform);
 
       path = `${cur[0]}${p[0]},${p[1]}`;
     } else if (cur[0] === 'Z') {
       path = cur[0];
     } else if (cur[0] === 'C') {
-      const p1 = vec3.fromValues(cur[1] - x, cur[2] - y, 0);
-      const p2 = vec3.fromValues(cur[3] - x, cur[4] - y, 0);
-      const p3 = vec3.fromValues(cur[5] - x, cur[6] - y, 0);
+      const p1 = vec3.fromValues(cur[1] - defX, cur[2] - defY, 0);
+      const p2 = vec3.fromValues(cur[3] - defX, cur[4] - defY, 0);
+      const p3 = vec3.fromValues(cur[5] - defX, cur[6] - defY, 0);
       vec3.transformMat4(p1, p1, localTransform);
       vec3.transformMat4(p2, p2, localTransform);
       vec3.transformMat4(p3, p3, localTransform);
 
       path = `${cur[0]}${p1[0]},${p1[1]},${p2[0]},${p2[1]},${p3[0]},${p3[1]}`;
     } else if (cur[0] === 'A') {
-      const c = vec3.fromValues(cur[6] - x, cur[7] - y, 0);
+      const c = vec3.fromValues(cur[6] - defX, cur[7] - defY, 0);
       vec3.transformMat4(c, c, localTransform);
       path = `${cur[0]}${cur[1]},${cur[2]},${cur[3]},${cur[4]},${cur[5]},${c[0]},${c[1]}`;
     }
@@ -337,16 +338,16 @@ export function convertToPath(object: DisplayObject) {
   switch (object.nodeName) {
     case Shape.LINE:
       const { x1, y1, x2, y2 } = (object as Line).parsedStyle;
-      commands = lineToCommands(x1, y1, x2, y2);
+      commands = lineToCommands(x1.value, y1.value, x2.value, y2.value);
       break;
     case Shape.CIRCLE: {
-      const { rInPixels: r, x = 0, y = 0 } = (object as Circle).parsedStyle;
-      commands = ellipseToCommands(r, r, x, y);
+      const { r, x, y } = (object as Circle).parsedStyle;
+      commands = ellipseToCommands(r.value, r.value, x.value, y.value);
       break;
     }
     case Shape.ELLIPSE: {
-      const { rxInPixels: rx, ryInPixels: ry, x = 0, y = 0 } = (object as Ellipse).parsedStyle;
-      commands = ellipseToCommands(rx, ry, x, y);
+      const { rx, ry, x, y } = (object as Ellipse).parsedStyle;
+      commands = ellipseToCommands(rx.value, ry.value, x.value, y.value);
       break;
     }
     case Shape.POLYLINE:
@@ -355,14 +356,8 @@ export function convertToPath(object: DisplayObject) {
       commands = polygonToCommands(points.points);
       break;
     case Shape.RECT:
-      const {
-        widthInPixels: width,
-        heightInPixels: height,
-        x,
-        y,
-        radius,
-      } = (object as Rect).parsedStyle;
-      commands = rectToCommands(width, height, x, y, radius);
+      const { width, height, x, y, radius } = (object as Rect).parsedStyle;
+      commands = rectToCommands(width.value, height.value, x.value, y.value, radius?.value || 0);
       break;
     case Shape.PATH:
       commands = (object as Path).parsedStyle.path.curve;

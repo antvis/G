@@ -4,7 +4,7 @@ import { Group, Text } from '../display-objects';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { IDocument, IElement, INode, ICanvas, DisplayObjectConfig } from './interfaces';
 import type { BaseStyleProps } from '../types';
-import { TextAlign } from '../types';
+import { BUILT_IN_PROPERTIES } from '../css';
 
 /**
  * the entry of DOM tree
@@ -18,19 +18,24 @@ export class Document extends Node implements IDocument {
     this.nodeName = 'document';
 
     // create timeline
-    this.timeline = new AnimationTimeline();
+    this.timeline = new AnimationTimeline(this);
+
+    /**
+     * for inherited properties, the initial value is used on the root element only,
+     * as long as no specified value is supplied.
+     * @see https://developer.mozilla.org/en-US/docs/Web/CSS/initial_value
+     */
+    const initialStyle = {};
+    BUILT_IN_PROPERTIES.forEach(({ name, inherited, defaultValue }) => {
+      if (inherited && defaultValue) {
+        initialStyle[name] = defaultValue;
+      }
+    });
 
     // like <html> in DOM tree
     this.documentElement = new Group({
       id: 'g-root',
-      style: {
-        textAlign: TextAlign.START,
-        fontSize: '16px',
-        fontFamily: 'sans-serif',
-        // fontStyle: 'normal',
-        // fontWeight: 'normal',
-        // fontVariant: 'normal',
-      },
+      style: initialStyle,
     });
     this.documentElement.ownerDocument = this;
     this.documentElement.parentNode = this;
@@ -104,6 +109,76 @@ export class Document extends Node implements IDocument {
       this.documentElement.destroy();
     } catch (e) {}
     this.timeline.destroy();
+  }
+
+  /**
+   * Do picking with API instead of triggering interactive events.
+   *
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint
+   */
+  async elementFromPoint(x: number, y: number): Promise<DisplayObject> {
+    const { x: viewportX, y: viewportY } = this.defaultView.canvas2Viewport({ x, y });
+    const { width, height } = this.defaultView.getConfig();
+    // outside canvas' viewport
+    if (viewportX < 0 || viewportY < 0 || viewportX > width || viewportY > height) {
+      return null;
+    }
+
+    const { x: clientX, y: clientY } = this.defaultView.viewport2Client({
+      x: viewportX,
+      y: viewportY,
+    });
+
+    const { picked } = await this.defaultView.getRenderingService().hooks.pick.promise({
+      topmost: true,
+      position: {
+        x,
+        y,
+        viewportX,
+        viewportY,
+        clientX,
+        clientY,
+      },
+      picked: [],
+    });
+    return (picked && picked[0]) || this.documentElement;
+  }
+
+  /**
+   * Do picking with API instead of triggering interactive events.
+   *
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementsFromPoint
+   */
+  async elementsFromPoint(x: number, y: number): Promise<DisplayObject[]> {
+    const { x: viewportX, y: viewportY } = this.defaultView.canvas2Viewport({ x, y });
+    const { width, height } = this.defaultView.getConfig();
+    // outside canvas' viewport
+    if (viewportX < 0 || viewportY < 0 || viewportX > width || viewportY > height) {
+      return [];
+    }
+
+    const { x: clientX, y: clientY } = this.defaultView.viewport2Client({
+      x: viewportX,
+      y: viewportY,
+    });
+
+    const { picked } = await this.defaultView.getRenderingService().hooks.pick.promise({
+      topmost: false,
+      position: {
+        x,
+        y,
+        viewportX,
+        viewportY,
+        clientX,
+        clientY,
+      },
+      picked: [],
+    });
+
+    if (picked[picked.length - 1] !== this.documentElement) {
+      picked.push(this.documentElement);
+    }
+    return picked;
   }
 
   /**

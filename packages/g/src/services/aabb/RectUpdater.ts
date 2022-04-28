@@ -1,8 +1,9 @@
 import { singleton } from 'mana-syringe';
 import { isString } from '@antv/util';
 import { GeometryAABBUpdater } from './interfaces';
-import type { Image, ParsedImageStyleProps } from '../../display-objects/Image';
+import type { Image, Rect, Group, ParsedImageStyleProps } from '../../display-objects';
 import { Shape } from '../../types';
+import { CSSUnitValue, UnitType } from '../../css';
 
 @singleton({
   token: [
@@ -12,18 +13,20 @@ import { Shape } from '../../types';
   ],
 })
 export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
-  update(parsedStyle: ParsedImageStyleProps, object: Image) {
-    const { img, x = 0, y = 0, width, height } = parsedStyle;
+  update(parsedStyle: ParsedImageStyleProps, object: Image | Rect | Group) {
+    const { img, x, y, width, height } = parsedStyle;
 
     let contentWidth = 0;
     let contentHeight = 0;
-    const { unit: widthUnit, value: widthValue } = width;
-    const { unit: heightUnit, value: heightValue } = height;
-    if (widthUnit === '' || widthUnit === 'px') {
-      contentWidth = widthValue;
+    if (width instanceof CSSUnitValue) {
+      if (width.unit === UnitType.kPixels) {
+        contentWidth = width.value;
+      }
     }
-    if (heightUnit === '' || heightUnit === 'px') {
-      contentHeight = heightValue;
+    if (height instanceof CSSUnitValue) {
+      if (height.unit === UnitType.kPixels) {
+        contentHeight = height.value;
+      }
     }
 
     // resize with HTMLImageElement's size
@@ -36,14 +39,18 @@ export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
       }
     }
 
-    object.parsedStyle.widthInPixels = contentWidth;
-    object.parsedStyle.heightInPixels = contentHeight;
+    if (width instanceof CSSUnitValue) {
+      width.value = contentWidth;
+    }
+    if (height instanceof CSSUnitValue) {
+      height.value = contentHeight;
+    }
 
     return {
       width: contentWidth,
       height: contentHeight,
-      x,
-      y,
+      x: x.value || 0,
+      y: y.value || 0,
     };
   }
 }

@@ -1,22 +1,21 @@
 import 'reflect-metadata';
 import * as ManaSyringe from 'mana-syringe';
-import { containerModule as globalModule, globalContainer } from './global-module';
+import { containerModule as globalModule } from './global-module';
+import { GlobalContainer } from 'mana-syringe';
 
 export { ManaSyringe };
 
-// bind ECS
-globalContainer.load(globalModule);
+GlobalContainer.load(globalModule);
 
 export * from './types';
-export * from './components';
+export * from './css';
 export * from './dom';
+export * from './camera';
+export * from './display-objects';
+export * from './components';
 export * from './AbstractRenderer';
 export * from './Canvas';
 export * from './DisplayObjectPool';
-export * from './camera';
 export * from './services';
 export * from './shapes';
 export * from './utils';
-export * from './property-handlers';
-export * from './display-objects';
-export * from './global-module';

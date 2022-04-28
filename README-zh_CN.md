@@ -6,15 +6,47 @@
 
 [![npm package](https://img.shields.io/npm/v/@antv/g-canvas.svg)](https://www.npmjs.com/package/@antv/g-canvas) [![npm downloads](http://img.shields.io/npm/dm/@antv/g-canvas.svg)](https://npmjs.org/package/@antv/g-canvas) [![npm package](https://img.shields.io/npm/v/@antv/g-svg.svg)](https://www.npmjs.com/package/@antv/g-svg) [![npm downloads](http://img.shields.io/npm/dm/@antv/g-svg.svg)](https://npmjs.org/package/@antv/g-svg) [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open')
 
--   一款高效易用的可视化 2D 渲染引擎，支持 Web 端 Canvas / SVG / WebGL / WebGPU 渲染 API。
+一款高效易用的可视化渲染引擎。
+
+<p>
+  <a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#box2dt"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/3d#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/3d#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" /></a>
+
+</p>
 
 ## ✨ 特性
 
--   强大、可扩展的渲染能力，并内置常用的基础图形。
--   极致的渲染性能，支持大数据量的可视化场景。
--   完整模拟浏览器 DOM 的事件，与原生事件的表现无差异。
--   流畅的动画实现，以及丰富的配置接口。
--   同时提供 Canvas 和 SVG 版本的实现，且两者的 API 基本保持一致。
+- 更易用的 API。其中图形、事件系统兼容 DOM API，动画系统兼容 Web Animation API。可以以极低的成本适配 Web 端已有的生态例如 D3、Hammer.js 手势库等。
+- 适配 Web 端多种渲染环境。支持 Canvas2D / SVG / WebGL / WebGPU 以及运行时切换。
+- 高性能的渲染与计算。为可并行算法提供基于 WebGPU 的 GPGPU 支持。
+  - [webgpu-graph](https://g-next.antv.vision/zh/docs/api/gpgpu/webgpu-graph) 使用 GPU 加速的图分析算法库
+- 可扩展的插件机制以及丰富的插件集：
+  - 渲染相关
+    - [g-plugin-canvas-renderer](https://g-next.antv.vision/zh/docs/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
+    - [g-plugin-svg-renderer](https://g-next.antv.vision/zh/docs/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
+    - [g-plugin-webgl-renderer](https://g-next.antv.vision/zh/docs/plugins/webgl-renderer) 基于 WebGPU / WebGL 渲染 2D 图形
+    - [g-plugin-html-renderer](https://g-next.antv.vision/zh/docs/plugins/html-renderer) 渲染 DOM 元素
+    - [g-plugin-3d](https://g-next.antv.vision/zh/docs/plugins/3d) 基于 g-plugin-webgl-renderer 扩展 3D 能力
+  - 拾取
+    - [g-plugin-canvas-picker](https://g-next.antv.vision/zh/docs/plugins/canvas-picker) 基于 Canvas2D
+    - [g-plugin-svg-picker](https://g-next.antv.vision/zh/docs/plugins/svg-picker) 基于 SVG
+  - 交互
+    - [g-plugin-dom-interaction](https://g-next.antv.vision/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
+    - [g-plugin-control](https://g-next.antv.vision/zh/docs/plugins/control) 为 3D 场景提供相机交互
+  - 物理引擎
+    - [g-plugin-box2d](https://g-next.antv.vision/zh/docs/plugins/box2d) 基于 Box2D
+    - [g-plugin-matterjs](https://g-next.antv.vision/zh/docs/plugins/matterjs) 基于 matter.js
+    - [g-plugin-physx](https://g-next.antv.vision/zh/docs/plugins/physx) 基于 PhysX
+  - 布局引擎
+    - [g-plugin-yoga](https://g-next.antv.vision/zh/docs/plugins/yoga) 基于 Yoga 提供 Flex 布局能力
+  - GPGPU
+    - [g-plugin-gpgpu](https://g-next.antv.vision/zh/docs/plugins/gpgpu) 基于 WebGPU 提供 GPGPU 能力
+  - CSS 选择器
+    - [g-plugin-css-select](https://g-next.antv.vision/zh/docs/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
 
 ## 📦 安装
 
@@ -44,26 +76,31 @@ import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 
 // 创建画布
 const canvas = new Canvas({
-    container: 'container',
-    width: 500,
-    height: 500,
-    renderer: new CanvasRenderer(), // 选择一个渲染器
+  container: 'container',
+  width: 500,
+  height: 500,
+  renderer: new CanvasRenderer(), // 选择一个渲染器
 });
 
 // 创建一个圆
 const circle = new Circle({
-    style: {
-        x: 100,
-        y: 100,
-        r: 50,
-        fill: 'red',
-        stroke: 'blue',
-        lineWidth: 5,
-    },
+  style: {
+    x: 100,
+    y: 100,
+    r: 50,
+    fill: 'red',
+    stroke: 'blue',
+    lineWidth: 5,
+  },
 });
 
 // 加入画布
 canvas.appendChild(circle);
+
+// 监听 `click` 事件
+circle.addEventListener('click', function () {
+  this.style.fill = 'green';
+});
 ```
 
 ## ⌨️ 开发
@@ -95,3 +132,10 @@ $ http-server -p 9090
 $ yarn build
 $ yarn test
 ```
+
+## Inspired by
+
+- [Sprite.js](https://github.com/spritejs/spritejs)
+- [Pixi.js](https://pixijs.com/)
+- [PlayCanvas](https://playcanvas.com/)
+- [Webkit](https://github.com/WebKit/WebKit/blob/main/Source/WebCore)

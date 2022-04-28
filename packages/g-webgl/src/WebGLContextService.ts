@@ -54,7 +54,9 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
   }
 
   getBoundingClientRect() {
-    return this.$container?.getBoundingClientRect();
+    if ((this.$canvas as HTMLCanvasElement).getBoundingClientRect) {
+      return (this.$canvas as HTMLCanvasElement).getBoundingClientRect();
+    }
   }
 
   destroy() {

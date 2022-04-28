@@ -180,6 +180,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
     return (element as Element).transformable.origin;
   }
 
+  /**
+   * same as pivot in Pixi.js
+   *
+   * @see https://stackoverflow.com/questions/40748452/how-to-change-css-transform-origin-but-preserve-transformation
+   */
   setOrigin(element: INode, origin: vec3 | number, y = 0, z = 0) {
     if (typeof origin === 'number') {
       origin = vec3.fromValues(origin, y, z);
@@ -190,6 +195,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }
 
     const originVec = transform.origin;
+
+    // const delta = vec3.subtract(vec3.create(), origin, originVec);
+    // vec3.add(transform.localPosition, transform.localPosition, delta);
+
+    // update origin
     originVec[0] = origin[0];
     originVec[1] = origin[1];
     originVec[2] = origin[2] || 0;
@@ -319,7 +329,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     return (element: INode, position: vec3 | vec2) => {
       const transform = (element as Element).transformable;
-      position = vec3.fromValues(position[0], position[1], position[2] || transform.position[2]);
+      position = vec3.fromValues(position[0], position[1], position[2] || 0);
 
       if (vec3.equals(this.getPosition(element), position)) {
         return;
@@ -345,7 +355,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
    */
   setLocalPosition(element: INode, position: vec3 | vec2) {
     const transform = (element as Element).transformable;
-    position = vec3.fromValues(position[0], position[1], position[2] || transform.localPosition[2]);
+    position = vec3.fromValues(position[0], position[1], position[2] || 0);
     if (vec3.equals(transform.localPosition, position)) {
       return;
     }
@@ -678,13 +688,6 @@ export class DefaultSceneGraphService implements SceneGraphService {
         renderable.boundsDirty = true;
         renderable.dirty = true;
       }
-
-      // model matrix changed
-      // element.emit(ElementEvent.ATTR_MODIFIED, {
-      //   attributeName: 'modelMatrix',
-      //   oldValue: null,
-      //   newValue: null,
-      // });
 
       element.dispatchEvent(
         new MutationEvent(

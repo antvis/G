@@ -6,11 +6,12 @@ import type {
   PickingResult,
   BaseStyleProps,
   Element,
+  ParsedBaseStyleProps,
 } from '@antv/g';
 import {
+  CanvasConfig,
   DisplayObjectPool,
   RenderingPluginContribution,
-  SceneGraphService,
   OffscreenCanvasCreator,
   Point,
 } from '@antv/g';
@@ -37,11 +38,11 @@ export type PointInPathPicker<T extends BaseStyleProps> = (
 export class CanvasPickerPlugin implements RenderingPlugin {
   static tag = 'CanvasPickerPlugin';
 
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
-
   @inject(DisplayObjectPool)
   private displayObjectPool: DisplayObjectPool;
+
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
   @inject(OffscreenCanvasCreator)
   private offscreenCanvas: OffscreenCanvasCreator;
@@ -57,10 +58,13 @@ export class CanvasPickerPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     renderingService.hooks.pick.tap(CanvasPickerPlugin.tag, (result: PickingResult) => {
+      const {
+        topmost,
+        position: { x, y },
+      } = result;
+
       // position in world space
-      const { x, y } = result.position;
       const position = vec3.fromValues(x, y, 0);
-      const pickedDisplayObjects: DisplayObject[] = [];
 
       // query by AABB first with spatial index(r-tree)
       const rBushNodes = this.rBush.search({
@@ -71,9 +75,14 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       });
 
       const queriedIds = rBushNodes.map((node) => node.id);
+      const hitTestList: DisplayObject[] = [];
       rBushNodes.forEach(({ id }) => {
         const displayObject = this.displayObjectPool.getByEntity(id);
-        if (displayObject.isVisible() && displayObject.interactive) {
+        if (
+          displayObject.isVisible() &&
+          !displayObject.isCulled() &&
+          displayObject.isInteractive()
+        ) {
           // parent is not included, eg. parent is clipped
           if (
             displayObject.parentNode &&
@@ -82,29 +91,38 @@ export class CanvasPickerPlugin implements RenderingPlugin {
             return;
           }
 
-          // test with clip path
-          const objectToTest = displayObject.style.clipPath || displayObject;
-          let worldTransform = displayObject.getWorldTransform();
-
-          // clipped's world matrix * clipPath's local matrix
-          if (displayObject.style.clipPath) {
-            worldTransform = mat4.multiply(
-              mat4.create(),
-              worldTransform,
-              displayObject.style.clipPath.getLocalTransform(),
-            );
-          }
-
-          if (this.isHit(objectToTest, position, worldTransform)) {
-            pickedDisplayObjects.push(displayObject);
-          }
+          hitTestList.push(displayObject);
         }
       });
-
       // find group with max z-index
-      pickedDisplayObjects.sort((a, b) => a.sortable.renderOrder - b.sortable.renderOrder);
+      hitTestList.sort((a, b) => b.sortable.renderOrder - a.sortable.renderOrder);
 
-      result.picked = pickedDisplayObjects[pickedDisplayObjects.length - 1] || null;
+      const pickedDisplayObjects: DisplayObject[] = [];
+      for (const displayObject of hitTestList) {
+        // test with clip path
+        const objectToTest = displayObject.style.clipPath || displayObject;
+        let worldTransform = displayObject.getWorldTransform();
+
+        // clipped's world matrix * clipPath's local matrix
+        if (displayObject.style.clipPath) {
+          worldTransform = mat4.multiply(
+            mat4.create(),
+            worldTransform,
+            displayObject.style.clipPath.getLocalTransform(),
+          );
+        }
+
+        if (this.isHit(objectToTest, position, worldTransform)) {
+          if (topmost) {
+            result.picked = [objectToTest];
+            return result;
+          } else {
+            pickedDisplayObjects.push(objectToTest);
+          }
+        }
+      }
+
+      result.picked = pickedDisplayObjects;
       return result;
     });
   }
@@ -125,9 +143,9 @@ export class CanvasPickerPlugin implements RenderingPlugin {
 
       // account for anchor
       const { halfExtents } = displayObject.getGeometryBounds();
-      const { anchor = [0, 0] } = displayObject.parsedStyle;
-      localPosition[0] += anchor[0] * halfExtents[0] * 2;
-      localPosition[1] += anchor[1] * halfExtents[1] * 2;
+      const { anchor } = displayObject.parsedStyle as ParsedBaseStyleProps;
+      localPosition[0] += ((anchor && anchor[0].value) || 0) * halfExtents[0] * 2;
+      localPosition[1] += ((anchor && anchor[1].value) || 0) * halfExtents[1] * 2;
       if (pick(displayObject, new Point(localPosition[0], localPosition[1]), this.isPointInPath)) {
         return true;
       }
@@ -141,7 +159,9 @@ export class CanvasPickerPlugin implements RenderingPlugin {
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/isPointInPath
    */
   private isPointInPath = (displayObject: DisplayObject, position: Point) => {
-    const context = this.offscreenCanvas.getOrCreateContext() as CanvasRenderingContext2D;
+    const context = this.offscreenCanvas.getOrCreateContext(
+      this.canvasConfig.offscreenCanvas,
+    ) as CanvasRenderingContext2D;
     const generatePath = this.pathGeneratorFactory(displayObject.nodeName);
     if (generatePath) {
       generatePath(context, displayObject.parsedStyle);

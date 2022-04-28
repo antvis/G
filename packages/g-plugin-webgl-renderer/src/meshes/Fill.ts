@@ -1,6 +1,7 @@
 import { injectable } from 'mana-syringe';
-import type { DisplayObject, Tuple4Number } from '@antv/g';
-import { PARSED_COLOR_TYPE, Shape } from '@antv/g';
+import type { DisplayObject, ParsedBaseStyleProps, Tuple4Number } from '@antv/g';
+import { CSSRGB } from '@antv/g';
+import { Shape } from '@antv/g';
 import { vec3, mat4 } from 'gl-matrix';
 import { Format, VertexBufferFrequency } from '../platform';
 import meshVert from '../shader/mesh.vert';
@@ -47,22 +48,28 @@ export class FillMesh extends Instanced {
     this.material.fragmentShader = meshFrag;
 
     const instance = objects[0];
-
-    const { fill, opacity, fillOpacity, anchor, visibility } = instance.parsedStyle;
+    const { fill, opacity, fillOpacity, anchor, visibility } =
+      instance.parsedStyle as ParsedBaseStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
-    if (fill?.type === PARSED_COLOR_TYPE.Constant) {
-      fillColor = fill.value;
+    if (fill instanceof CSSRGB) {
+      fillColor = [
+        Number(fill.r) / 255,
+        Number(fill.g) / 255,
+        Number(fill.b) / 255,
+        Number(fill.alpha),
+      ];
     }
 
-    // @ts-ignore
-    const encodedPickingColor = instance.renderable3D?.encodedPickingColor || [0, 0, 0];
+    const encodedPickingColor = (instance.isInteractive() &&
+      // @ts-ignore
+      instance.renderable3D?.encodedPickingColor) || [0, 0, 0];
     let translateX = 0;
     let translateY = 0;
     const contentBounds = instance.getGeometryBounds();
     if (contentBounds) {
       const { halfExtents } = contentBounds;
-      translateX = -halfExtents[0] * anchor[0] * 2;
-      translateY = -halfExtents[1] * anchor[1] * 2;
+      translateX = -halfExtents[0] * anchor[0].value * 2;
+      translateY = -halfExtents[1] * anchor[1].value * 2;
     }
 
     const m = mat4.create();
@@ -76,9 +83,9 @@ export class FillMesh extends Instanced {
       [Uniform.MODEL_MATRIX]: m,
       [Uniform.COLOR]: fillColor,
       [Uniform.PICKING_COLOR]: encodedPickingColor,
-      [Uniform.OPACITY]: opacity,
-      [Uniform.FILL_OPACITY]: fillOpacity,
-      [Uniform.VISIBLE]: visibility === 'visible' ? 1 : 0,
+      [Uniform.OPACITY]: opacity.value,
+      [Uniform.FILL_OPACITY]: fillOpacity.value,
+      [Uniform.VISIBLE]: visibility.value === 'visible' ? 1 : 0,
       [Uniform.Z_INDEX]: instance.sortable.renderOrder * RENDER_ORDER_SCALE,
     });
   }
@@ -87,7 +94,8 @@ export class FillMesh extends Instanced {
     super.updateAttribute(objects, startIndex, name, value);
 
     objects.forEach((object) => {
-      const { fill, opacity, fillOpacity, anchor, visibility } = object.parsedStyle;
+      const { fill, opacity, fillOpacity, anchor, visibility } =
+        object.parsedStyle as ParsedBaseStyleProps;
       if (
         name === 'lineJoin' ||
         name === 'lineCap' ||
@@ -104,19 +112,24 @@ export class FillMesh extends Instanced {
         this.material.programDirty = true;
       } else if (name === 'fill') {
         let fillColor: Tuple4Number = [0, 0, 0, 0];
-        if (fill?.type === PARSED_COLOR_TYPE.Constant) {
-          fillColor = fill.value;
+        if (fill instanceof CSSRGB) {
+          fillColor = [
+            Number(fill.r) / 255,
+            Number(fill.g) / 255,
+            Number(fill.b) / 255,
+            Number(fill.alpha),
+          ];
         }
         this.material.setUniforms({
           [Uniform.COLOR]: fillColor,
         });
       } else if (name === 'opacity') {
         this.material.setUniforms({
-          [Uniform.OPACITY]: opacity,
+          [Uniform.OPACITY]: opacity.value,
         });
       } else if (name === 'fillOpacity') {
         this.material.setUniforms({
-          [Uniform.FILL_OPACITY]: fillOpacity,
+          [Uniform.FILL_OPACITY]: fillOpacity.value,
         });
       } else if (name === 'anchor' || name === 'modelMatrix') {
         let translateX = 0;
@@ -124,8 +137,8 @@ export class FillMesh extends Instanced {
         const contentBounds = object.getGeometryBounds();
         if (contentBounds) {
           const { halfExtents } = contentBounds;
-          translateX = -halfExtents[0] * anchor[0] * 2;
-          translateY = -halfExtents[1] * anchor[1] * 2;
+          translateX = -halfExtents[0] * anchor[0].value * 2;
+          translateY = -halfExtents[1] * anchor[1].value * 2;
         }
         const m = mat4.create();
         mat4.mul(
@@ -138,7 +151,14 @@ export class FillMesh extends Instanced {
         });
       } else if (name === 'visibility') {
         this.material.setUniforms({
-          [Uniform.VISIBLE]: visibility === 'visible' ? 1 : 0,
+          [Uniform.VISIBLE]: visibility.value === 'visible' ? 1 : 0,
+        });
+      } else if (name === 'pointerEvents') {
+        const encodedPickingColor = (object.isInteractive() &&
+          // @ts-ignore
+          object.renderable3D?.encodedPickingColor) || [0, 0, 0];
+        this.material.setUniforms({
+          [Uniform.PICKING_COLOR]: encodedPickingColor,
         });
       }
     });

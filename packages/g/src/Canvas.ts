@@ -1,4 +1,9 @@
-import type { Cursor } from './types';
+import { GlobalContainer } from 'mana-syringe';
+import {
+  requestAnimationFrame as rAF,
+  cancelAnimationFrame as cancelRAF,
+} from 'request-animation-frame-polyfill';
+import type { Cursor, InteractivePointerEvent } from './types';
 import { CanvasConfig } from './types';
 import { cleanExistedCanvas, isBrowser } from './utils/canvas';
 import { DisplayObject } from './display-objects/DisplayObject';
@@ -9,13 +14,11 @@ import { EventService } from './services/EventService';
 import { Camera, CameraEvent, CAMERA_PROJECTION_MODE, DefaultCamera } from './camera';
 import { containerModule as commonContainerModule } from './canvas-module';
 import type { IRenderer } from './AbstractRenderer';
-import { cancelAnimationFrame, requestAnimationFrame, patch } from './utils/raf';
 import type { PointLike } from './shapes';
 import type { FederatedEvent, Element, IChildNode } from './dom';
 import { Document, EventTarget, ElementEvent } from './dom';
 import type { INode, ICanvas } from './dom/interfaces';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
-import { globalContainer } from './global-module';
 
 export enum CanvasEvent {
   READY = 'ready',
@@ -28,6 +31,9 @@ export enum CanvasEvent {
 
 /**
  * can be treated like Window in DOM
+ * provide some extra methods like `window`, such as:
+ * * `window.requestAnimationFrame`
+ * * `window.devicePixelRatio`
  *
  * prototype chains: Canvas(Window) -> EventTarget
  */
@@ -35,7 +41,7 @@ export class Canvas extends EventTarget implements ICanvas {
   /**
    * child container of current canvas, use hierarchy container
    */
-  container = globalContainer.createChild();
+  container = GlobalContainer.createChild();
 
   /**
    * window.document
@@ -47,6 +53,46 @@ export class Canvas extends EventTarget implements ICanvas {
    */
   customElements: CustomElementRegistry;
 
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+   */
+  requestAnimationFrame: (callback: FrameRequestCallback) => number;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
+   */
+  cancelAnimationFrame: (handle: number) => void;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio
+   */
+  devicePixelRatio: number;
+
+  /**
+   * whether the runtime supports PointerEvent?
+   * if not, the event system won't trigger pointer events like `pointerdown`
+   */
+  supportPointerEvent: boolean;
+
+  /**
+   * whether the runtime supports TouchEvent?
+   * if not, the event system won't trigger touch events like `touchstart`
+   */
+  supportTouchEvent: boolean;
+
+  /**
+   * is this native event a TouchEvent?
+   */
+  isTouchEvent: (event: InteractivePointerEvent) => event is TouchEvent;
+
+  /**
+   * is this native event a MouseEvent?
+   */
+  isMouseEvent: (event: InteractivePointerEvent) => event is MouseEvent;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element
+   */
   Element = DisplayObject;
 
   /**
@@ -77,6 +123,7 @@ export class Canvas extends EventTarget implements ICanvas {
     const {
       container,
       canvas,
+      offscreenCanvas,
       width,
       height,
       devicePixelRatio,
@@ -85,6 +132,10 @@ export class Canvas extends EventTarget implements ICanvas {
       requestAnimationFrame,
       cancelAnimationFrame,
       createImage,
+      supportPointerEvent,
+      supportTouchEvent,
+      isTouchEvent,
+      isMouseEvent,
     } = config;
 
     cleanExistedCanvas(container, this);
@@ -101,9 +152,28 @@ export class Canvas extends EventTarget implements ICanvas {
       canvasHeight = height || canvas.height / dpr;
     }
 
-    if (requestAnimationFrame && cancelAnimationFrame) {
-      patch(requestAnimationFrame, cancelAnimationFrame);
-    }
+    /**
+     * implements `Window` interface
+     */
+    this.devicePixelRatio = dpr;
+    this.requestAnimationFrame = requestAnimationFrame || rAF.bind(globalThis);
+    this.cancelAnimationFrame = cancelAnimationFrame || cancelRAF.bind(globalThis);
+
+    /**
+     * limits query
+     */
+    this.supportTouchEvent = supportTouchEvent || 'ontouchstart' in globalThis;
+    this.supportPointerEvent = supportPointerEvent || !!globalThis.PointerEvent;
+    this.isTouchEvent =
+      isTouchEvent ||
+      ((event: InteractivePointerEvent): event is TouchEvent =>
+        this.supportTouchEvent && event instanceof globalThis.TouchEvent);
+    this.isMouseEvent =
+      isMouseEvent ||
+      ((event: InteractivePointerEvent): event is MouseEvent =>
+        !globalThis.MouseEvent ||
+        (event instanceof globalThis.MouseEvent &&
+          (!this.supportPointerEvent || !(event instanceof globalThis.PointerEvent))));
 
     this.initRenderingContext({
       container,
@@ -111,11 +181,11 @@ export class Canvas extends EventTarget implements ICanvas {
       width: canvasWidth,
       height: canvasHeight,
       renderer,
+      offscreenCanvas,
       devicePixelRatio: dpr,
       cursor: 'default' as Cursor,
       background,
       createImage,
-      // background: 'white',
     });
 
     this.initDefaultCamera(canvasWidth, canvasHeight);
@@ -162,6 +232,9 @@ export class Canvas extends EventTarget implements ICanvas {
       .setPosition(width / 2, height / 2, 500)
       .setFocalPoint(width / 2, height / 2, 0)
       .setOrthographic(width / -2, width / 2, height / 2, height / -2, 0.1, 1000);
+
+    // keep ref since it will use raf in camera animation
+    camera.canvas = this;
 
     // redraw when camera changed
     const context = this.container.get<RenderingContext>(RenderingContext);
@@ -215,12 +288,12 @@ export class Canvas extends EventTarget implements ICanvas {
     return this.getRenderingService().getStats();
   }
 
-  /**
-   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Window/getComputedStyle
-   */
-  getComputedStyle(node: DisplayObject) {
-    return node.parsedStyle;
-  }
+  // /**
+  //  * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Window/getComputedStyle
+  //  */
+  // getComputedStyle(node: DisplayObject) {
+  //   return node.computedStyle;
+  // }
 
   get ready() {
     if (!this.readyPromise) {
@@ -246,6 +319,10 @@ export class Canvas extends EventTarget implements ICanvas {
     // unmount all children
     const root = this.getRoot();
     this.unmountChildren(root);
+    // root.children.forEach((child: DisplayObject) => {
+    //   this.unmountChildren(child);
+    // });
+
     if (destroyScenegraph) {
       // destroy Document
       this.document.destroy();
@@ -426,7 +503,11 @@ export class Canvas extends EventTarget implements ICanvas {
     // unmount from leaf to root
     path.reverse().forEach((child) => {
       child.emit(ElementEvent.UNMOUNTED, {});
-      child.ownerDocument = null;
+
+      // skip document.documentElement
+      if (child !== this.document.documentElement) {
+        child.ownerDocument = null;
+      }
       child.isConnected = false;
     });
   }

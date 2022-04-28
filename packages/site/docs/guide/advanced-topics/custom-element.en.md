@@ -9,17 +9,17 @@ order: 3
 
 在本文中我们将介绍自定义图形的用法，实现一个简单的箭头，其中包含以下步骤：
 
--   设计自定义属性
--   定义场景图
--   使用自定义图形
--   处理属性更新
+- 设计自定义属性
+- 定义场景图
+- 使用自定义图形
+- 处理属性更新
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9Xs4SKUOAxwAAAAAAAAAAAAAARQnAQ)
 
 过程中会涉及[场景图](/zh/docs/guide/diving-deeper/scenegraph)、[动画系统](/zh/docs/api/animation)、[事件系统](/zh/docs/api/event)等。在开始前我们推荐先阅读以上各个系统的文档。
 
--   [完整 DEMO](/zh/examples/shape#arrow)
--   [源码](https://github.com/antvis/g/blob/dev-inversify/packages/g-components/src/Arrow.ts)
+- [完整 DEMO](/zh/examples/shape#arrow)
+- [源码](https://github.com/antvis/g/blob/dev-inversify/packages/g-components/src/Arrow.ts)
 
 # 问题背景
 
@@ -37,22 +37,22 @@ export class Arrow extends CustomElement<ArrowStyleProps> {}
 
 然后可以定义自定义图形的属性，这里我们给箭头提供了以下自定义属性：
 
--   body 躯干部分只能接受 [Line](/zh/docs/api/basic/line) [Path](/zh/docs/api/basic/path) [Polyline](/zh/docs/api/basic/polyline)
--   start/endHead 端点部分可以是任何基础图形，传入布尔值时开启/关闭默认内置端点
--   stroke/lineWidth/opacity 等常规绘图属性
+- body 躯干部分只能接受 [Line](/zh/docs/api/basic/line) [Path](/zh/docs/api/basic/path) [Polyline](/zh/docs/api/basic/polyline)
+- start/endHead 端点部分可以是任何基础图形，传入布尔值时开启/关闭默认内置端点
+- stroke/lineWidth/opacity 等常规绘图属性
 
 ```js
 type ArrowHead = boolean | DisplayObject;
 type ArrowBody = Line | Path | Polyline;
 
 export interface ArrowStyleProps extends BaseStyleProps {
-    body?: ArrowBody; // 躯干
-    startHead?: ArrowHead; // 起始端点
-    endHead?: ArrowHead; // 结束端点
-    stroke?: string; // 颜色
-    lineWidth?: number; // 线宽
-    opacity?: number; // 透明度
-    strokeOpacity?: number;
+  body?: ArrowBody; // 躯干
+  startHead?: ArrowHead; // 起始端点
+  endHead?: ArrowHead; // 结束端点
+  stroke?: string; // 颜色
+  lineWidth?: number; // 线宽
+  opacity?: number; // 透明度
+  strokeOpacity?: number;
 }
 ```
 
@@ -170,11 +170,11 @@ private transformArrowHead(head: DisplayObject, isStart: boolean) {
 
   // 躯干类型
   const bodyType = this.body && this.body.nodeName;
-  if (bodyType === SHAPE.Line) {
+  if (bodyType === Shape.LINE) {
     // 省略计算切线
-  } else if (bodyType === SHAPE.Polyline) {
+  } else if (bodyType === Shape.POLYLINE) {
     // 省略计算切线
-  } else if (bodyType === SHAPE.Path) {
+  } else if (bodyType === Shape.PATH) {
     // 省略计算切线
   }
 
@@ -214,21 +214,21 @@ private getTangent(path: Path, isStart: boolean): number[][] {
 
 ```js
 const lineArrow = new Arrow({
-    id: 'lineArrow',
-    style: {
-        body: new Line({
-            style: {
-                x1: 200,
-                y1: 100,
-                x2: 0,
-                y2: 0,
-            },
-        }),
-        startHead: true,
-        stroke: '#1890FF',
-        lineWidth: 10,
-        cursor: 'pointer',
-    },
+  id: 'lineArrow',
+  style: {
+    body: new Line({
+      style: {
+        x1: 200,
+        y1: 100,
+        x2: 0,
+        y2: 0,
+      },
+    }),
+    startHead: true,
+    stroke: '#1890FF',
+    lineWidth: 10,
+    cursor: 'pointer',
+  },
 });
 
 // 平移
@@ -244,15 +244,15 @@ canvas.document.getElementById('lineArrow'); // Arrow lineArrow
 
 ```js
 lineArrow.animate(
-    [
-        { transform: 'scale(1)', stroke: '#F04864', opacity: 1 },
-        { transform: 'scale(2)', stroke: '#1890FF', opacity: 0.8 },
-    ],
-    {
-        duration: 1500,
-        iterations: Infinity,
-        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-    },
+  [
+    { transform: 'scale(1)', stroke: '#F04864', opacity: 1 },
+    { transform: 'scale(2)', stroke: '#1890FF', opacity: 0.8 },
+  ],
+  {
+    duration: 1500,
+    iterations: Infinity,
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+  },
 );
 ```
 
@@ -264,10 +264,10 @@ lineArrow.animate(
 
 ```js
 lineArrow.addEventListener('mouseenter', () => {
-    lineArrow.style.stroke = '#2FC25B';
+  lineArrow.style.stroke = '#2FC25B';
 });
 lineArrow.addEventListener('mouseleave', () => {
-    lineArrow.style.stroke = '#1890FF';
+  lineArrow.style.stroke = '#1890FF';
 });
 ```
 
@@ -302,12 +302,12 @@ export interface CustomElement<CustomElementStyleProps> {
 
 ```js
 const image = new Image({
-    style: {
-        width: 50,
-        height: 50,
-        anchor: [0.5, 0.5],
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-    },
+  style: {
+    width: 50,
+    height: 50,
+    anchor: [0.5, 0.5],
+    img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+  },
 });
 image.rotateLocal(90);
 // 修改起始端点

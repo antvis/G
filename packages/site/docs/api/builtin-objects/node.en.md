@@ -7,8 +7,8 @@ order: 2
 
 在 G 中有以下继承关系：
 
--   Document -> Node -> EventTarget
--   DisplayObject -> Element -> Node -> EventTarget
+- Document -> Node -> EventTarget
+- DisplayObject -> Element -> Node -> EventTarget
 
 # 继承自
 
@@ -30,19 +30,19 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeName
 G 内置图形名称如下：
 
 ```js
-export enum SHAPE {
-  Group = 'g',
-  Circle = 'circle',
-  Ellipse = 'ellipse',
-  Image = 'image',
-  Rect = 'rect',
-  Line = 'line',
-  Polyline = 'polyline',
-  Polygon = 'polygon',
-  Text = 'text',
-  Path = 'path',
+export enum Shape {
+  GROUP = 'g',
+  CIRCLE = 'circle',
+  ELLIPSE = 'ellipse',
+  IMAGE = 'image',
+  RECT = 'rect',
+  LINE = 'line',
+  POLYLINE = 'polyline',
+  POLYGON = 'polygon',
+  TEXT = 'text',
+  PATH = 'path',
   HTML = 'html',
-  Mesh = 'mesh'
+  MESH = 'mesh'
 }
 ```
 
@@ -180,15 +180,15 @@ clonedCircle.getPosition(); // [10, 20]
 
 注意事项：
 
--   支持深拷贝，即自身以及整棵子树
--   克隆的新节点不会保留原始节点的父子关系，需要使用 `appendChild` 将其加入画布才会被渲染
--   与 [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes) 保持一致，不会拷贝原图形上的事件监听器
+- 支持深拷贝，即自身以及整棵子树
+- 克隆的新节点不会保留原始节点的父子关系，需要使用 `appendChild` 将其加入画布才会被渲染
+- 与 [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes) 保持一致，不会拷贝原图形上的事件监听器
 
 在这个[示例](/zh/examples/scenegraph#clone)中，我们展示了以上特性：
 
--   可以随时更改原始节点的样式属性，得到的拷贝都会是最新的，新节点同样需要被加入到场景图中才会被渲染
--   但由于不会拷贝事件监听器，因此只有原始节点可以进行拖拽
--   非深拷贝模式下，Text（Drag me 文本） 作为 Circle 的子节点不会被拷贝
+- 可以随时更改原始节点的样式属性，得到的拷贝都会是最新的，新节点同样需要被加入到场景图中才会被渲染
+- 但由于不会拷贝事件监听器，因此只有原始节点可以进行拖拽
+- 非深拷贝模式下，Text（Drag me 文本） 作为 Circle 的子节点不会被拷贝
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PwEYSI_ijPEAAAAAAAAAAAAAARQnAQ)
 
@@ -285,9 +285,9 @@ expect(group1.compareDocumentPosition(group1)).to.eqls(0);
 const group1 = new Element();
 const group2 = new Element();
 expect(group1.compareDocumentPosition(group2)).to.eqls(
-    Node.DOCUMENT_POSITION_DISCONNECTED |
-        Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC |
-        Node.DOCUMENT_POSITION_PRECEDING,
+  Node.DOCUMENT_POSITION_DISCONNECTED |
+    Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC |
+    Node.DOCUMENT_POSITION_PRECEDING,
 );
 ```
 
@@ -296,10 +296,10 @@ expect(group1.compareDocumentPosition(group2)).to.eqls(
 ```js
 group1.appendChild(group2);
 expect(group1.compareDocumentPosition(group2)).to.eqls(
-    Node.DOCUMENT_POSITION_CONTAINED_BY | Node.DOCUMENT_POSITION_FOLLOWING,
+  Node.DOCUMENT_POSITION_CONTAINED_BY | Node.DOCUMENT_POSITION_FOLLOWING,
 );
 expect(group2.compareDocumentPosition(group1)).to.eqls(
-    Node.DOCUMENT_POSITION_CONTAINS | Node.DOCUMENT_POSITION_PRECEDING,
+  Node.DOCUMENT_POSITION_CONTAINS | Node.DOCUMENT_POSITION_PRECEDING,
 );
 ```
 

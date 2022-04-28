@@ -15,6 +15,7 @@ out vec4 outputColor;
 
 void main() {
   int shape = int(floor(v_Data.w + 0.5));
+  float epsilon = 0.00001;
 
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
   #pragma glslify: import('@antv/g-shader-components/map.frag')
@@ -48,17 +49,25 @@ void main() {
   // vec4 texel = texture(SAMPLER_2D(u_Map), imagecoord);
   // u_Color = texel;
 
-  vec4 diffuseColor = u_Color;
-
-  vec4 strokeColor = (u_StrokeColor == vec4(0) || omitStroke) ? vec4(0.0) : u_StrokeColor;
+  vec4 diffuseColor;
+  vec4 strokeColor;
+  if (u_IsPicking > 0.5) {
+    diffuseColor = vec4(u_PickingColor, 1.0);
+    strokeColor = vec4(u_PickingColor, 1.0);
+  } else {
+    diffuseColor = u_Color;
+    strokeColor = (u_StrokeColor == vec4(0) || omitStroke) ? vec4(0.0) : u_StrokeColor;
+  }
 
   outputColor = mix(vec4(diffuseColor.rgb, diffuseColor.a * u_FillOpacity), strokeColor * u_StrokeOpacity, color_t);
   outputColor.a = outputColor.a * u_Opacity * opacity_t;
 
-  if (outputColor.a < 0.001)
+  if (outputColor.a < epsilon)
     discard;
 
   if (u_IsPicking > 0.5) {
-    outputColor = vec4(v_PickingResult.xyz, 1.0);
+    if (u_PickingColor.x == 0.0 && u_PickingColor.y == 0.0 && u_PickingColor.z == 0.0) {
+      discard;
+    }
   }
 }

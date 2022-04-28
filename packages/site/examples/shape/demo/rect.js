@@ -64,12 +64,8 @@ rendererFolder.open();
 
 const rectFolder = gui.addFolder('rect');
 const rectConfig = {
-  x: 200,
-  y: 100,
   width: 300,
   height: 200,
-  anchorX: 0,
-  anchorY: 0,
   fill: '#1890FF',
   stroke: '#F04864',
   lineWidth: 4,
@@ -79,18 +75,6 @@ const rectConfig = {
   fillOpacity: 1,
   strokeOpacity: 1,
 };
-rectFolder.add(rectConfig, 'x', 50, 200).onChange((x) => {
-  rect.attr('x', x);
-});
-rectFolder.add(rectConfig, 'y', 50, 200).onChange((y) => {
-  rect.attr('y', y);
-});
-rectFolder.add(rectConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
-  rect.attr('anchor', [anchorX, rectConfig.anchorY]);
-});
-rectFolder.add(rectConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
-  rect.attr('anchor', [rectConfig.anchorX, anchorY]);
-});
 rectFolder.add(rectConfig, 'width', 50, 400).onChange((width) => {
   rect.attr('width', width);
 });
@@ -122,3 +106,48 @@ rectFolder.add(rectConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
   rect.attr('strokeOpacity', opacity);
 });
 rectFolder.open();
+
+const transformFolder = gui.addFolder('transform');
+const transformConfig = {
+  x: 200,
+  y: 100,
+  scale: 1,
+  transformOrigin: 'left top',
+  eulerAngles: 0,
+  anchorX: 0,
+  anchorY: 0,
+};
+transformFolder
+  .add(transformConfig, 'transformOrigin', [
+    'left top',
+    'center',
+    'right bottom',
+    '50% 50%',
+    '50px 50px',
+  ])
+  .onChange((transformOrigin) => {
+    rect.style.transformOrigin = transformOrigin;
+  });
+transformFolder.add(transformConfig, 'x', 0, 400).onChange((x) => {
+  rect.setLocalPosition(x, rect.style.y);
+  // or
+  // rect.style.x = x;
+});
+transformFolder.add(transformConfig, 'y', 0, 400).onChange((y) => {
+  rect.setLocalPosition(rect.style.x, y);
+  // or
+  // rect.style.y = y;
+});
+transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
+  rect.setLocalScale(scaling);
+});
+transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
+  rect.setLocalEulerAngles(eulerAngles);
+});
+transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
+  rect.style.anchor = [anchorX, transformConfig.anchorY];
+});
+transformFolder.add(transformConfig, 'anchorY', 0, 1).onChange((anchorY) => {
+  rect.style.anchor = [transformConfig.anchorX, anchorY];
+});
+transformFolder.open();

@@ -1,7 +1,8 @@
+import { GlobalContainer } from 'mana-syringe';
+import type { CSSProperty, Interpolatable } from '../css';
+import { StyleValueRegistry } from '../css';
 import type { AnimationEffectTiming } from '../dom';
 import type { IElement } from '../dom/interfaces';
-import { stylePropertyMergerFactory, stylePropertyParserFactory } from '../global-module';
-import type { Interpolatable } from '../property-handlers/interfaces';
 import { parseEasingFunction } from './animation';
 import type { TypeEasingFunction } from './custom-easing';
 import { camelCase } from './string';
@@ -130,6 +131,17 @@ function makeInterpolations(
   return interpolations;
 }
 
+const InterpolationFactory = (
+  from: Interpolatable,
+  to: Interpolatable,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  convertToString: Function,
+) => {
+  return (f: number) => {
+    return convertToString(interpolate(from, to, f));
+  };
+};
+
 function propertyInterpolation(
   property: string,
   left: string | number,
@@ -139,35 +151,34 @@ function propertyInterpolation(
   let parsedLeft = left;
   let parsedRight = right;
 
-  // const parserFactory = globalContainer.get<StylePropertyParserFactory>(StylePropertyParserFactory);
-  const parser = stylePropertyParserFactory[property];
-  // const mergerFactory = globalContainer.get<StylePropertyMergerFactory>(StylePropertyMergerFactory);
-  const merger = stylePropertyMergerFactory[property];
+  const registry = GlobalContainer.get(StyleValueRegistry);
+  const metadata = registry.getMetadata(property);
 
-  // if (left == 'initial' || right == 'initial') {
-  //   if (left == 'initial')
-  //     left = initialValues[ucProperty];
-  //   if (right == 'initial')
-  //     right = initialValues[ucProperty];
-  // }
+  if (metadata && metadata.handler && metadata.interpolable) {
+    const propertyHandler = GlobalContainer.get(metadata.handler) as CSSProperty<any, any>;
 
-  if (parser) {
-    // @ts-ignore
-    parsedLeft = parser(left, target, property);
-    // @ts-ignore
-    parsedRight = parser(right, target, property);
-  }
+    if (propertyHandler) {
+      if (propertyHandler.parser) {
+        parsedLeft = propertyHandler.parser(left);
+        parsedRight = propertyHandler.parser(right);
+      }
+      // if (propertyHandler.calculator) {
+      //   parsedLeft = propertyHandler.calculator(parsedLeft);
+      //   // parsedLeft = handler.calculator
+      // }
 
-  // merger [left, right, n2string()]
-  const interpolationArgs = merger && merger(parsedLeft, parsedRight, target);
-  if (interpolationArgs) {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    const interp = InterpolationFactory(...interpolationArgs);
-    return function (t: number) {
-      if (t === 0) return left;
-      if (t === 1) return right;
-      return interp(t);
-    };
+      // merger [left, right, n2string()]
+      const interpolationArgs = propertyHandler.mixer(parsedLeft, parsedRight, target);
+      if (interpolationArgs) {
+        // @ts-ignore
+        const interp = InterpolationFactory(...interpolationArgs);
+        return function (t: number) {
+          if (t === 0) return left;
+          if (t === 1) return right;
+          return interp(t);
+        };
+      }
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -202,17 +213,6 @@ function interpolate(from: Interpolatable, to: Interpolatable, f: number): Inter
   }
   throw new Error('Mismatched interpolation arguments ' + from + ':' + to);
 }
-
-const InterpolationFactory = (
-  from: Interpolatable,
-  to: Interpolatable,
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  convertToString: Function,
-) => {
-  return (f: number) => {
-    return convertToString(interpolate(from, to, f));
-  };
-};
 
 const FORMAT_ATTR_MAP = {
   d: {

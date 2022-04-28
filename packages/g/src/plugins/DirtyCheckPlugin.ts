@@ -1,5 +1,5 @@
 import { inject, singleton } from 'mana-syringe';
-import { CanvasConfig } from '../types';
+// import { CanvasConfig } from '../types';
 import type { RenderingService, RenderingPlugin } from '../services/RenderingService';
 import { RenderingPluginContribution } from '../services/RenderingService';
 import { RenderingContext, RenderReason } from '../services/RenderingContext';
@@ -12,21 +12,22 @@ import type { DisplayObject } from '../display-objects/DisplayObject';
 export class DirtyCheckPlugin implements RenderingPlugin {
   static tag = 'DirtyCheckPlugin';
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  // @inject(CanvasConfig)
+  // private canvasConfig: CanvasConfig;
 
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.prepare.tap(DirtyCheckPlugin.tag, (object: DisplayObject | null) => {
+    renderingService.hooks.dirtycheck.tap(DirtyCheckPlugin.tag, (object: DisplayObject | null) => {
       if (object) {
-        const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
+        // const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
 
         const renderable = object.renderable;
         const isDirty =
           renderable.dirty || this.renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED);
-        if (isDirty || !enableDirtyRectangleRendering) {
+        // if (isDirty || !enableDirtyRectangleRendering) {
+        if (isDirty) {
           return object;
         } else {
           return null;

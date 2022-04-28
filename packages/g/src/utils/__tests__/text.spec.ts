@@ -1,45 +1,46 @@
 import chai, { expect } from 'chai';
 import { toFontString } from '../text';
+import { CSS, CSSKeywordValue } from '../..';
 
 describe('Text utils', () => {
   it('should convert font string correctly', () => {
     expect(
       toFontString({
-        fontSize: { value: 12, unit: 'px' },
+        fontSize: CSS.px(12),
         fontFamily: 'sans-serif',
-        fontStyle: 'normal',
-        fontWeight: 'normal',
-        fontVariant: 'normal',
+        fontStyle: new CSSKeywordValue('normal'),
+        fontWeight: new CSSKeywordValue('normal'),
+        fontVariant: new CSSKeywordValue('normal'),
       }),
     ).eqls('normal normal normal 12px sans-serif');
 
     expect(
       toFontString({
-        fontSize: { value: 12, unit: 'px' },
+        fontSize: CSS.px(12),
         fontFamily: 'sans-serif',
-        fontStyle: 'normal',
-        fontWeight: 'normal',
-        fontVariant: 'normal',
+        fontStyle: new CSSKeywordValue('normal'),
+        fontWeight: new CSSKeywordValue('normal'),
+        fontVariant: new CSSKeywordValue('normal'),
       }),
     ).eqls('normal normal normal 12px sans-serif');
 
     expect(
       toFontString({
-        fontSize: { value: 12, unit: 'px' },
+        fontSize: CSS.px(12),
         fontFamily: 'sans-serif,Yahei',
-        fontStyle: 'normal',
-        fontWeight: 'normal',
-        fontVariant: 'normal',
+        fontStyle: new CSSKeywordValue('normal'),
+        fontWeight: new CSSKeywordValue('normal'),
+        fontVariant: new CSSKeywordValue('normal'),
       }),
     ).eqls('normal normal normal 12px sans-serif,"Yahei"');
 
     expect(
       toFontString({
-        fontSize: { value: 12, unit: 'px' },
+        fontSize: CSS.px(12),
         fontFamily: 'sans-serif,"Yahei"',
-        fontStyle: 'normal',
-        fontWeight: 'normal',
-        fontVariant: 'normal',
+        fontStyle: new CSSKeywordValue('normal'),
+        fontWeight: new CSSKeywordValue('normal'),
+        fontVariant: new CSSKeywordValue('normal'),
       }),
     ).eqls('normal normal normal 12px sans-serif,"Yahei"');
   });

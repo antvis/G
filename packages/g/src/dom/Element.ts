@@ -1,3 +1,4 @@
+import { GlobalContainer } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import { SceneGraphService } from '../services/SceneGraphService';
 import { Cullable, Geometry, Renderable, Transform, Sortable } from '../components';
@@ -6,7 +7,6 @@ import { Node } from './Node';
 import type { AABB, Rectangle } from '../shapes';
 import type { IEventTarget, IChildNode, IElement, INode, ICSSStyleDeclaration } from './interfaces';
 import { ElementEvent } from './interfaces';
-import { globalContainer } from '../global-module';
 import { formatAttribute } from '../utils';
 import { MutationEvent } from '..';
 
@@ -29,7 +29,7 @@ export class Element<
     return !!(target as IElement).getAttribute;
   }
 
-  sceneGraphService = globalContainer.get<SceneGraphService>(SceneGraphService);
+  sceneGraphService = GlobalContainer.get<SceneGraphService>(SceneGraphService);
 
   entity = entityCounter++;
 
@@ -74,8 +74,6 @@ export class Element<
   get classList() {
     return this.className.split(' ').filter((c) => c !== '');
   }
-
-  interactive: boolean;
 
   scrollLeft = 0;
   scrollTop = 0;
@@ -382,7 +380,16 @@ export class Element<
    */
   style: StyleProps & ICSSStyleDeclaration<StyleProps> = {} as StyleProps &
     ICSSStyleDeclaration<StyleProps>;
+  computedStyle: any = {};
   parsedStyle: ParsedStyleProps = {} as ParsedStyleProps;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/computedStyleMap
+   * eg. circle.computedStyleMap().get('fill');
+   */
+  computedStyleMap() {
+    return new Map(Object.entries(this.computedStyle));
+  }
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes
@@ -400,7 +407,7 @@ export class Element<
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute
    */
   getAttribute(name: keyof StyleProps) {
-    const [attributeName] = formatAttribute(name as string, '');
+    const [attributeName] = formatAttribute(name.toString(), '');
     const value = this.attributes[attributeName];
     // if the given attribute does not exist, the value returned will either be null or ""
     return isNil(value) ? null : value;

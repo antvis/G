@@ -3,10 +3,10 @@ import type { AnimationTimeline } from './AnimationTimeline';
 import type { BaseStyleProps, Shape } from '../types';
 import type { FederatedEvent } from './FederatedEvent';
 import type { CustomElementRegistry } from './CustomElementRegistry';
-import type { DisplayObject } from '..';
+import type { CanvasConfig, DisplayObject, InteractivePointerEvent } from '..';
 import type { PointLike } from '../shapes';
 import type { Camera } from '../camera';
-import type { ContextService } from '../services';
+import type { ContextService, EventService, RenderingService } from '../services';
 
 /**
  * built-in events for element
@@ -56,6 +56,8 @@ export enum ElementEvent {
   UNMOUNTED = 'DOMNodeRemovedFromDocument',
 
   BOUNDS_CHANGED = 'bounds-changed',
+
+  GEOMETRY_BOUNDS_CHANGED = 'geometry-bounds-changed',
 
   /**
    * trigger when z-index changed
@@ -314,6 +316,7 @@ export interface DisplayObjectConfig<StyleProps> {
 
   /**
    * enable interaction events for the DisplayObject
+   * @deprecated use `style.pointerEvents = 'auto'` instead
    */
   interactive?: boolean;
 }
@@ -423,12 +426,25 @@ export interface ICSSStyleDeclaration<StyleProps> {
 export interface ICanvas extends IEventTarget {
   document: IDocument;
   customElements: CustomElementRegistry;
+
+  devicePixelRatio: number;
+  requestAnimationFrame: (callback: FrameRequestCallback) => number;
+  cancelAnimationFrame: (handle: number) => void;
+
+  supportTouchEvent: boolean;
+  supportPointerEvent: boolean;
+  isTouchEvent: (event: InteractivePointerEvent) => event is TouchEvent;
+  isMouseEvent: (event: InteractivePointerEvent) => event is MouseEvent;
+
   render: () => void;
   destroy: (destroyScenegraph?: boolean) => void;
   resize: (width: number, height: number) => void;
 
+  getConfig: () => Partial<CanvasConfig>;
   getCamera: () => Camera;
   getContextService: () => ContextService<unknown>;
+  getRenderingService: () => RenderingService;
+  getEventService: () => EventService;
 
   client2Viewport: (client: PointLike) => PointLike;
   viewport2Client: (viewport: PointLike) => PointLike;

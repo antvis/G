@@ -1,3 +1,4 @@
+import { GlobalContainer } from 'mana-syringe';
 import { isEqual, isNil, isObject } from '@antv/util';
 import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
@@ -16,38 +17,67 @@ import { Shape } from '../types';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import {
   createVec3,
+  decompose,
   formatAttribute,
   fromRotationTranslationScale,
   getEuler,
   rad2deg,
 } from '../utils';
-import {
-  globalContainer,
-  stylePropertyParserFactory,
-  stylePropertyUpdaterFactory,
-} from '../global-module';
 import { dirtifyToRoot } from '../services';
 import { MutationEvent } from '../dom/MutationEvent';
 import { Rectangle } from '../shapes';
+import type { PropertyParseOptions } from '../css/StyleValueRegistry';
+import { StyleValueRegistry } from '../css/StyleValueRegistry';
+import { CSSUnitValue } from '../css';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
 const DEFAULT_STYLE_PROPS: {
-  anchor: vec2 | vec3;
-  origin: vec2 | vec3;
-  opacity: number;
-  fillOpacity: number;
-  strokeOpacity: number;
+  x: number | string;
+  y: number | string;
+  z: number | string;
+  anchor: [number, number] | [number, number, number];
+  transformOrigin: string;
+  visibility: string;
+  pointerEvents: string;
+  opacity: string;
+  fillOpacity: string;
+  strokeOpacity: string;
   fill: string;
   stroke: string;
+  lineCap: CanvasLineCap | '';
+  lineJoin: CanvasLineJoin | '';
+  fontSize: string | number;
+  fontFamily: string;
+  fontStyle: string;
+  fontWeight: string;
+  fontVariant: string;
+  textAlign: string;
+  textBaseline: string;
+  textTransform: string;
 } = {
-  anchor: [0, 0, 0],
-  origin: [0, 0, 0],
-  opacity: 1,
-  fillOpacity: 1,
-  strokeOpacity: 1,
-  fill: 'transparent',
-  stroke: 'transparent',
+  x: '',
+  y: '',
+  z: '',
+  anchor: [0, 0],
+  opacity: '',
+  fillOpacity: '',
+  strokeOpacity: '',
+  fill: '',
+  stroke: '',
+  transformOrigin: '',
+  visibility: '',
+  pointerEvents: '',
+  lineCap: '',
+  lineJoin: '',
+  fontSize: '',
+  fontFamily: '',
+  fontStyle: '',
+  fontWeight: '',
+  fontVariant: '',
+  textAlign: '',
+  textBaseline: '',
+  textTransform: '',
 };
 
 /**
@@ -77,6 +107,8 @@ export class DisplayObject<
    */
   config: DisplayObjectConfig<StyleProps>;
 
+  styleValueRegistry = GlobalContainer.get(StyleValueRegistry);
+
   /**
    * push to active animations after calling `animate()`
    */
@@ -97,17 +129,22 @@ export class DisplayObject<
     if (this.config.className || this.config.class) {
       this.className = this.config.className || this.config.class;
     }
-    this.interactive = this.config.interactive ?? true;
     this.nodeName = this.config.type || Shape.GROUP;
 
     // compatible with G 3.0
     this.config.style = {
       ...DEFAULT_STYLE_PROPS,
       zIndex: this.config.zIndex ?? 0,
-      visibility: this.config.visible === false ? 'hidden' : 'visible',
+      interactive: this.config.interactive ?? true,
       ...this.config.style,
       ...this.config.attrs,
     };
+    if (!isNil(this.config.visible)) {
+      this.config.style.visibility = this.config.visible === false ? 'hidden' : 'visible';
+    }
+    if (!isNil(this.config.interactive)) {
+      this.config.style.pointerEvents = this.config.interactive === false ? 'none' : 'auto';
+    }
 
     this.style = new Proxy<StyleProps & ICSSStyleDeclaration<StyleProps>>(
       {
@@ -146,14 +183,14 @@ export class DisplayObject<
     this.initAttributes(this.config.style);
 
     // insert this group into pool
-    globalContainer.get(DisplayObjectPool).add(this.entity, this);
+    GlobalContainer.get(DisplayObjectPool).add(this.entity, this);
   }
 
   destroy() {
     super.destroy();
 
     // remove from into pool
-    globalContainer.get(DisplayObjectPool).remove(this.entity);
+    GlobalContainer.get(DisplayObjectPool).remove(this.entity);
 
     // stop all active animations
     this.getAnimations().forEach((animation) => {
@@ -185,28 +222,7 @@ export class DisplayObject<
   private initAttributes(attributes: StyleProps = {} as StyleProps) {
     const renderable = this.renderable;
 
-    // parse attributes first
-    for (const attributeName in attributes) {
-      const [name, value] = formatAttribute(attributeName, attributes[attributeName]);
-      this.attributes[name] = value;
-      // @ts-ignore
-      this.parseStyleProperty(name, value);
-    }
-
-    const priorities: Record<string, number> = {
-      x: Infinity,
-      y: Infinity,
-    };
-
-    // update x, y at last
-    const sortedNames = Object.keys(attributes).sort(
-      (a, b) => (priorities[a] || 0) - (priorities[b] || 0),
-    );
-    sortedNames.forEach((attributeName) => {
-      const [name] = formatAttribute(attributeName, '');
-      // @ts-ignore
-      this.updateStyleProperty(name, undefined, this.parsedStyle[name]);
-    });
+    this.styleValueRegistry.processProperties(this, attributes);
 
     // redraw at next frame
     renderable.dirty = true;
@@ -217,88 +233,37 @@ export class DisplayObject<
       Key,
       StyleProps[Key],
     ];
-    if (
-      force ||
-      !isEqual(attributeValue, this.attributes[attributeName]) ||
-      attributeName === 'transformOrigin' ||
-      attributeName === 'visibility' // will affect children
-    ) {
-      if (attributeName === 'visibility') {
-        // set value cascade
-        this.forEach((object) => {
-          (object as DisplayObject).changeAttribute(attributeName, attributeValue);
-        });
-      } else {
-        this.changeAttribute(attributeName, attributeValue);
-      }
+    if (force || !isEqual(attributeValue, this.attributes[attributeName])) {
+      this.internalSetAttribute(attributeName, attributeValue);
       super.setAttribute(attributeName, attributeValue);
-    }
-  }
-
-  /**
-   * parse property, eg.
-   * * fill: 'red' => [1, 0, 0, 1]
-   * * translateX: '10px' => { unit: 'px', value: 10 }
-   * * fontSize: '2em' => { unit: 'px', value: 32 }
-   */
-  parseStyleProperty<Key extends keyof ParsedStyleProps>(name: Key, value: ParsedStyleProps[Key]) {
-    // const stylePropertyParser = this.stylePropertyParserFactory(name);
-    const stylePropertyParser = stylePropertyParserFactory[name as string];
-    if (stylePropertyParser) {
-      // @ts-ignore
-      this.parsedStyle[name] = stylePropertyParser(value, this, name);
-    } else {
-      this.parsedStyle[name] = value;
-    }
-  }
-
-  updateStyleProperty<Key extends keyof ParsedStyleProps>(
-    name: Key,
-    oldParsedValue: ParsedStyleProps[Key],
-    newParsedValue: ParsedStyleProps[Key],
-  ) {
-    // @ts-ignore
-    const stylePropertyUpdaters = stylePropertyUpdaterFactory[name];
-    if (stylePropertyUpdaters) {
-      stylePropertyUpdaters.forEach((updater) => {
-        // @ts-ignore
-        updater(oldParsedValue, newParsedValue, this, this.sceneGraphService, name);
-      });
     }
   }
 
   /**
    * called when attributes get changed or initialized
    */
-  private changeAttribute<Key extends keyof StyleProps>(name: Key, value: StyleProps[Key]) {
+  internalSetAttribute<Key extends keyof StyleProps>(
+    name: Key,
+    value: StyleProps[Key],
+    parseOptions: Partial<PropertyParseOptions> = {},
+  ) {
     const renderable = this.renderable;
 
     const oldValue = this.attributes[name];
-    // @ts-ignore
-    const oldParsedValue = this.parsedStyle[name];
+    const oldParsedValue = this.parsedStyle[name as string];
 
-    // update value
-    this.attributes[name] = value;
-
-    // @ts-ignore
-    this.parseStyleProperty(name, value);
-
-    // @ts-ignore
-    const newParsedValue = this.parsedStyle[name];
-
-    // @ts-ignore
-    this.updateStyleProperty(name, oldParsedValue, newParsedValue);
+    this.styleValueRegistry.processProperties(
+      this,
+      {
+        [name]: value,
+      },
+      parseOptions,
+    );
 
     // inform clip path targets
     if (this.attributes.clipPathTargets && this.attributes.clipPathTargets.length) {
       this.attributes.clipPathTargets.forEach((target) => {
         dirtifyToRoot(target);
-        // target.emit(ElementEvent.ATTR_MODIFIED, {
-        //   attributeName: 'clipPath',
-        //   oldValue: this,
-        //   newValue: this,
-        // });
-
         target.dispatchEvent(
           new MutationEvent(
             ElementEvent.ATTR_MODIFIED,
@@ -326,25 +291,18 @@ export class DisplayObject<
         name as string,
         MutationEvent.MODIFICATION,
         oldParsedValue,
-        newParsedValue,
+        this.parsedStyle[name as string],
       ),
     );
-
-    // this.emit(ElementEvent.ATTR_MODIFIED, {
-    //   attrName: name,
-    //   attributeName: name,
-    //   prevValue: oldValue,
-    //   oldValue,
-    //   newValue: value,
-    //   oldParsedValue,
-    //   newParsedValue,
-    // });
   }
 
   // #region transformable
   /**
    * returns different values than getBoundingClientRect(), as the latter returns value relative to the viewport
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/getBBox
+   *
+   * FIXME: It is worth noting that getBBox responds to original untransformed values of a drawn object.
+   * @see https://www.w3.org/Graphics/SVG/IG/resources/svgprimer.html#getBBox
    */
   getBBox(): DOMRect {
     const aabb = this.getBounds();
@@ -355,9 +313,9 @@ export class DisplayObject<
 
   setOrigin(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
     this.sceneGraphService.setOrigin(this, createVec3(position, y, z));
-    this.attributes.origin = this.getOrigin();
     return this;
   }
+
   getOrigin(): vec3 {
     return this.sceneGraphService.getOrigin(this);
   }
@@ -549,6 +507,11 @@ export class DisplayObject<
     const localPosition = this.getLocalPosition();
     this.attributes.x = localPosition[0];
     this.attributes.y = localPosition[1];
+    this.attributes.z = localPosition[2];
+    // should not affect computed style
+    this.parsedStyle.x = new CSSUnitValue(this.attributes.x, 'px');
+    this.parsedStyle.y = new CSSUnitValue(this.attributes.y, 'px');
+    this.parsedStyle.z = new CSSUnitValue(this.attributes.z, 'px');
   }
   // #endregion transformable
 
@@ -577,7 +540,7 @@ export class DisplayObject<
     }
 
     // clear old parsed transform
-    this.parsedStyle.transform = undefined;
+    delete this.parsedStyle.transform;
 
     if (timeline) {
       return timeline.play(new KeyframeEffect(this as IElement, keyframes, options));
@@ -590,6 +553,7 @@ export class DisplayObject<
   /**
    * show group, which will also change visibility of its children in sceneGraphNode
    *
+   * @deprecated
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/visibility
    */
   show() {
@@ -597,18 +561,33 @@ export class DisplayObject<
   }
 
   /**
+   * @deprecated
    * hide group, which will also change visibility of its children in sceneGraphNode
    */
   hide() {
     this.style.visibility = 'hidden';
   }
 
+  /**
+   * shortcut for Used value of `visibility`
+   */
   isVisible() {
-    const cullable = this.cullable;
-    return (
-      this.getAttribute('visibility') === 'visible' &&
-      (!cullable || (cullable && !cullable.isCulled()))
-    );
+    return this.parsedStyle?.visibility?.value === 'visible';
+  }
+
+  get interactive() {
+    return this.isInteractive();
+  }
+  set interactive(b: boolean) {
+    this.style.pointerEvents = b ? 'auto' : 'none';
+  }
+
+  isInteractive() {
+    return this.parsedStyle?.pointerEvents?.value !== 'none';
+  }
+
+  isCulled() {
+    return !!(this.cullable && this.cullable.isCulled());
   }
 
   /**
@@ -806,8 +785,8 @@ export class DisplayObject<
    * return 3x3 matrix in world space
    * @deprecated
    */
-  getMatrix(): mat3 {
-    const transform = (this as unknown as DisplayObject).getWorldTransform();
+  getMatrix(transformMat4?: mat4): mat3 {
+    const transform = transformMat4 || this.getWorldTransform();
     const [tx, ty] = mat4.getTranslation(vec3.create(), transform);
     const [sx, sy] = mat4.getScaling(vec3.create(), transform);
     const rotation = mat4.getRotation(quat.create(), transform);
@@ -818,44 +797,30 @@ export class DisplayObject<
   }
 
   /**
+   * return 3x3 matrix in local space
+   * @deprecated
+   */
+  getLocalMatrix(): mat3 {
+    return this.getMatrix(this.getLocalTransform());
+  }
+
+  /**
    * set 3x3 matrix in world space
    * @deprecated
    */
   setMatrix(mat: mat3) {
-    let row0x = mat[0];
-    let row0y = mat[3];
-    let row1x = mat[1];
-    let row1y = mat[4];
-    // decompose 3x3 matrix
-    // @see https://www.w3.org/TR/css-transforms-1/#decomposing-a-2d-matrix
-    let scalingX = Math.sqrt(row0x * row0x + row0y * row0y);
-    let scalingY = Math.sqrt(row1x * row1x + row1y * row1y);
-
-    // If determinant is negative, one axis was flipped.
-    const determinant = row0x * row1y - row0y * row1x;
-    if (determinant < 0) {
-      // Flip axis with minimum unit vector dot product.
-      if (row0x < row1y) {
-        scalingX = -scalingX;
-      } else {
-        scalingY = -scalingY;
-      }
-    }
-
-    // Renormalize matrix to remove scale.
-    if (scalingX) {
-      row0x *= 1 / scalingX;
-      row0y *= 1 / scalingX;
-    }
-    if (scalingY) {
-      row1x *= 1 / scalingY;
-      row1y *= 1 / scalingY;
-    }
-
-    // Compute rotation and renormalize matrix.
-    const angle = Math.atan2(row0y, row0x);
-
-    this.setEulerAngles(angle).setPosition(mat[6], mat[7]).setLocalScale(scalingX, scalingY);
+    const [tx, ty, scalingX, scalingY, angle] = decompose(mat);
+    this.setEulerAngles(angle).setPosition(tx, ty).setLocalScale(scalingX, scalingY);
   }
+
+  /**
+   * set 3x3 matrix in local space
+   * @deprecated
+   */
+  setLocalMatrix(mat: mat3) {
+    const [tx, ty, scalingX, scalingY, angle] = decompose(mat);
+    this.setLocalEulerAngles(angle).setLocalPosition(tx, ty).setLocalScale(scalingX, scalingY);
+  }
+
   // #endregion deprecated
 }

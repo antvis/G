@@ -1,4 +1,5 @@
-import type { DisplayObject, RectStyleProps, Point, ParsedRectStyleProps } from '@antv/g';
+import type { DisplayObject, RectStyleProps, Point, ParsedRectStyleProps, CSSRGB } from '@antv/g';
+import { UnitType } from '@antv/g';
 import { inLine, inArc, inBox, inRect } from './utils/math';
 
 export function isPointInPath(
@@ -16,15 +17,17 @@ export function isPointInPath(
     clipPathTargets,
   } = displayObject.parsedStyle as ParsedRectStyleProps;
   const isClipPath = !!clipPathTargets?.length;
+  const hasFill = fill && !(fill as CSSRGB).isNone;
+  const hasStroke = stroke && !(stroke as CSSRGB).isNone;
 
   const { unit: widthUnit, value: widthValue } = parsedWidth;
   const { unit: heightUnit, value: heightValue } = parsedHeight;
   let width = 0;
   let height = 0;
-  if (widthUnit === '' || widthUnit === 'px') {
+  if (widthUnit === UnitType.kNumber || widthUnit === UnitType.kPixels) {
     width = widthValue;
   }
-  if (heightUnit === '' || heightUnit === 'px') {
+  if (heightUnit === UnitType.kNumber || heightUnit === UnitType.kPixels) {
     height = heightValue;
   }
 
@@ -32,7 +35,7 @@ export function isPointInPath(
   if (!radius) {
     const halfWidth = lineWidth.value / 2;
     // 同时填充和带有边框
-    if ((fill && stroke) || isClipPath) {
+    if ((hasFill && hasStroke) || isClipPath) {
       return inBox(
         0 - halfWidth,
         0 - halfWidth,
@@ -43,21 +46,21 @@ export function isPointInPath(
       );
     }
     // 仅填充
-    if (fill) {
+    if (hasFill) {
       return inBox(0, 0, width, height, position.x, position.y);
     }
-    if (stroke) {
+    if (hasStroke) {
       return inRect(0, 0, width, height, lineWidth.value, position.x, position.y);
     }
   } else {
     let isHit = false;
-    if (stroke || isClipPath) {
+    if (hasStroke || isClipPath) {
       isHit = inRectWithRadius(
         0,
         0,
         width,
         height,
-        radius,
+        radius.value,
         lineWidth.value,
         position.x,
         position.y,
@@ -65,7 +68,7 @@ export function isPointInPath(
     }
     // 仅填充时带有圆角的矩形直接通过图形拾取
     // 以后可以改成纯数学的近似拾取，将圆弧切割成多边形
-    if (!isHit && (fill || isClipPath)) {
+    if (!isHit && (hasFill || isClipPath)) {
       isHit = isPointInPath(displayObject, position);
     }
     return isHit;

@@ -10,7 +10,7 @@
         "zh": "多个画布",
         "en": "Multiple canvas"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*L3OdRpd5UpIAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*VSOLRbXqEeMAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "resize.tsx",
@@ -48,6 +48,13 @@
       "title": {
         "zh": "使用用户创建的 <canvas>",
         "en": "Use user-defined <canvas>"
+      }
+    },
+    {
+      "filename": "element-from-point.js",
+      "title": {
+        "zh": "通过 API 方式完成拾取",
+        "en": "Use picking API"
       }
     }
   ]

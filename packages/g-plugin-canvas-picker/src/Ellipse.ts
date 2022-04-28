@@ -1,4 +1,4 @@
-import type { DisplayObject, EllipseStyleProps, ParsedEllipseStyleProps } from '@antv/g';
+import type { DisplayObject, EllipseStyleProps, ParsedEllipseStyleProps, CSSRGB } from '@antv/g';
 
 function ellipseDistance(squareX: number, squareY: number, rx: number, ry: number) {
   return squareX / (rx * rx) + squareY / (ry * ry);
@@ -9,8 +9,8 @@ export function isPointInPath(
   { x, y }: { x: number; y: number },
 ): boolean {
   const {
-    rxInPixels: rx,
-    ryInPixels: ry,
+    rx: rxInPixels,
+    ry: ryInPixels,
     fill,
     stroke,
     lineWidth,
@@ -18,17 +18,23 @@ export function isPointInPath(
   } = displayObject.parsedStyle as ParsedEllipseStyleProps;
   const isClipPath = !!clipPathTargets?.length;
 
+  const hasFill = fill && !(fill as CSSRGB).isNone;
+  const hasStroke = stroke && !(stroke as CSSRGB).isNone;
+
+  const rx = rxInPixels.value;
+  const ry = ryInPixels.value;
+
   const halfLineWith = lineWidth.value / 2;
   const squareX = (x - rx) * (x - rx);
   const squareY = (y - ry) * (y - ry);
   // 使用椭圆的公式： x*x/rx*rx + y*y/ry*ry = 1;
-  if ((fill && stroke) || isClipPath) {
+  if ((hasFill && hasStroke) || isClipPath) {
     return ellipseDistance(squareX, squareY, rx + halfLineWith, ry + halfLineWith) <= 1;
   }
-  if (fill) {
+  if (hasFill) {
     return ellipseDistance(squareX, squareY, rx, ry) <= 1;
   }
-  if (stroke) {
+  if (hasStroke) {
     return (
       ellipseDistance(squareX, squareY, rx - halfLineWith, ry - halfLineWith) >= 1 &&
       ellipseDistance(squareX, squareY, rx + halfLineWith, ry + halfLineWith) <= 1

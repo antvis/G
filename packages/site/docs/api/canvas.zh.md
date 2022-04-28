@@ -98,6 +98,10 @@ const canvas = new Canvas({
 
 必填，渲染器，目前支持 `g-canvas` `g-svg` 和 `g-webgl`，后续可以在运行时通过 [setRenderer()](/zh/docs/api/canvas#setrendererrenderer-renderer) 切换。
 
+# 特殊运行平台适配
+
+在一些特殊的运行平台（例如小程序）上，无法正常使用类似 [globalThis](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis) 这样的全局变量，而在内部我们又需要依靠它创建图片（`new globalThis.Image()`）、判断是否支持 TouchEvent（`'ontouchstart' in globalThis`）等。因此需要这些特殊平台的使用者手动传入特有的创建以及判断方式。
+
 ## devicePixelRatio
 
 可选。默认将使用 `window.devicePixelRatio`，如果运行环境中无 `window` 对象，例如 WebWorker 中，可以手动传入，如果仍未传入则使用 1。
@@ -120,6 +124,42 @@ const canvas = new Canvas({
 const canvas = new Canvas({
   // 省略其他参数
   createImage: () => canvas.createImage(),
+});
+```
+
+## supportPointerEvent
+
+可选。是否支持 PointerEvent，默认将使用 `!!globalThis.PointerEvent` 判断。如果传入 `false` 内部事件系统将不会触发例如 `pointerdown` 等 PointerEvent。
+
+## supportTouchEvent
+
+可选。是否支持 TouchEvent。如果传入 `false` 内部事件系统将不会触发例如 `touchstart` 等 TouchEvent。
+
+## isTouchEvent
+
+可选。判断一个原生事件是否是 TouchEvent，接受原生事件作为参数，返回判定结果。
+
+## isMouseEvent
+
+可选。判断一个原生事件是否是 MouseEvent，接受原生事件作为参数，返回判定结果。
+
+## offscreenCanvas
+
+可选。返回一个 `HTMLCanvasElement | OffscreenCanvas` 或类似对象。用于生成一个离屏的 Canvas2D 上下文，目前它使用在以下场景：
+
+- g 绘制并调用 `ctx.measureText` 度量文本
+- [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 会在上下文中绘制一遍路径，再调用 `ctx.isPointInPath` Canvas2D API
+- [g-plugin-webgl-renderer](/zh/docs/plugins/webgl-renderer) 会在上下文中调用 `ctx.createLinearGradient` 绘制渐变，再生成纹理
+
+默认不传入时会尝试创建 `OffscreenCanvas`，失败后再使用 DOM API 创建一个 `HTMLCanvasElement`。但在小程序这样非 DOM 环境中，需要手动传入：
+
+```js
+const canvas = new Canvas({
+  // 省略其他参数
+  offscreenCanvas: {
+    // 小程序中创建上下文方法
+    getContext: () => Canvas.createContext(),
+  },
 });
 ```
 
@@ -507,9 +547,9 @@ canvas.on(CanvasEvent.AFTER_RENDER, () => {
 通常我们建议使用 `new Circle()` 这样的方式创建内置或者自定义图形，但我们也提供了类似 DOM [CustomElementRegistry](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry) API，可以使用 [document.createElement](/zh/docs/api/builtin-objects/document#createelement) 创建完成注册的图形，因此以下写法等价：
 
 ```js
-import { SHAPE, Circle } from '@antv/g';
+import { Shape, Circle } from '@antv/g';
 
-const circle = canvas.document.createElement(SHAPE.Circle, { style: { r: 100 } });
+const circle = canvas.document.createElement(Shape.CIRCLE, { style: { r: 100 } });
 
 // 或者
 const circle = new Circle({ style: { r: 100 } });
@@ -545,9 +585,9 @@ get(name: string): new (...any[]) => DisplayObject
 根据图形注册时提供的字符串，返回构造函数：
 
 ```js
-import { SHAPE } from '@antv/g';
+import { Shape } from '@antv/g';
 
-canvas.customElements.get(SHAPE.Circle); // Circle constructor
+canvas.customElements.get(Shape.CIRCLE); // Circle constructor
 ```
 
 # 注意事项
@@ -574,7 +614,12 @@ const canvas = new Canvas({
 
 ## 在 WebWorker 中使用 OffscreenCanvas
 
-以下两个场景会使用到 OffscreenCanvas，主要利用 Worker 解放主线程压力：
+你可能看到过一些渲染引擎的应用：
+
+- Babylon.js https://doc.babylonjs.com/divingDeeper/scene/offscreenCanvas
+- Three.js https://r105.threejsfundamentals.org/threejs/lessons/threejs-offscreencanvas.html
+
+我们在以下两个场景会使用到 OffscreenCanvas，主要利用 Worker 解放主线程压力：
 
 1. GPGPU 配合 g-webgl 和 g-plugin-gpgpu 使用，例如上层的图分析算法库
 2. g-webgl 在 Worker 中渲染，同步结果到主线程
@@ -601,3 +646,37 @@ const canvas = new Canvas({
   renderer,
 });
 ```
+
+值得注意的是事件交互。OffscreenCanvas 并不具备事件监听能力，我们的交互都发生在主线程的 `<canvas>` 元素上，当鼠标点击事件被监听时，我们如何得知 OffscreenCanvas 中哪个图形命中了呢？
+
+我们可以这样实现：
+
+1. 监听 `<canvas>` 上的交互事件，触发后将事件通过 `postMessage` 传递给 Worker。注意这里并不能直接传递类似 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) 这样的原生事件对象，在序列化时会报如下错误。正确的做法是提取原生事件对象上的关键属性（例如 `clientX/Y`）进行传递：
+
+```
+Uncaught (in promise) DOMException: Failed to execute 'postMessage' on 'Worker': PointerEvent object could not be cloned.
+```
+
+```js
+// 在主线程中监听 `<canvas>` 事件
+$canvas.addEventListener(
+  'pointerdown',
+  (e) => {
+    // 向 WebWorker 传递可序列化的事件对象
+    worker.triggerEvent('pointerdown', clonePointerEvent(e));
+  },
+  true,
+);
+```
+
+2. 在 Worker 中触发 G 渲染服务提供的交互事件 hook，例如接收到主线程传来的 `pointerdown` 信号时调用 `pointerDown` hook：
+
+```js
+export function triggerEvent(event, ev) {
+  if (event === 'pointerdown') {
+    canvas.getRenderingService().hooks.pointerDown.call(ev);
+  }
+}
+```
+
+3. [cursor](/zh/docs/api/basic/display-object#鼠标样式) 鼠标样式显然无法在 Worker 中应用。我们可以在拾取到图形时在 Worker 中通过 `postMessage` 告知主线程修改 `<canvas>` 上的鼠标样式。

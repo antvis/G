@@ -1,4 +1,4 @@
-import type { Tuple4Number } from '@antv/g';
+import type { CSSRGB } from '@antv/g';
 import { parseColor } from '@antv/g';
 import type { Device, Texture } from '@antv/g-plugin-webgl-renderer';
 import type { IMeshBasicMaterial } from './MeshBasicMaterial';
@@ -31,9 +31,13 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
   }
   set emissive(v) {
     this.props.emissive = v;
-    const emissiveColor = parseColor(v).value as Tuple4Number;
+    const emissiveColor = parseColor(v) as CSSRGB;
     this.setUniforms({
-      [Uniform.EMISSIVE]: emissiveColor.slice(0, 3) as [number, number, number],
+      [Uniform.EMISSIVE]: [
+        Number(emissiveColor.r) / 255,
+        Number(emissiveColor.g) / 255,
+        Number(emissiveColor.b) / 255,
+      ],
     });
   }
 
@@ -52,9 +56,13 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
   }
   set specular(v) {
     this.props.specular = v;
-    const specularColor = parseColor(v).value as Tuple4Number;
+    const specularColor = parseColor(v) as CSSRGB;
     this.setUniforms({
-      [Uniform.SPECULAR]: specularColor.slice(0, 3) as [number, number, number],
+      [Uniform.SPECULAR]: [
+        Number(specularColor.r) / 255,
+        Number(specularColor.g) / 255,
+        Number(specularColor.b) / 255,
+      ],
     });
   }
 
@@ -120,13 +128,21 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
 
     const { specularMap, bumpMap, doubleSide, emissive, shininess, specular } = this;
 
-    const emissiveColor = parseColor(emissive).value as Tuple4Number;
-    const specularColor = parseColor(specular).value as Tuple4Number;
+    const emissiveColor = parseColor(emissive) as CSSRGB;
+    const specularColor = parseColor(specular) as CSSRGB;
     this.setUniforms({
       u_Placeholder: null,
-      [Uniform.EMISSIVE]: emissiveColor.slice(0, 3) as [number, number, number],
+      [Uniform.EMISSIVE]: [
+        Number(emissiveColor.r) / 255,
+        Number(emissiveColor.g) / 255,
+        Number(emissiveColor.b) / 255,
+      ],
       [Uniform.SHININESS]: shininess,
-      [Uniform.SPECULAR]: specularColor.slice(0, 3) as [number, number, number],
+      [Uniform.SPECULAR]: [
+        Number(specularColor.r) / 255,
+        Number(specularColor.g) / 255,
+        Number(specularColor.b) / 255,
+      ],
     });
 
     if (specularMap) {

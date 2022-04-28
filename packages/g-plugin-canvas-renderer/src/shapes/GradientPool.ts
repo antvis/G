@@ -1,11 +1,11 @@
-import type { LinearGradient, RadialGradient} from '@antv/g';
-import { PARSED_COLOR_TYPE } from '@antv/g';
+import type { LinearGradient, RadialGradient } from '@antv/g';
+import { GradientPatternType } from '@antv/g';
 import { singleton } from 'mana-syringe';
 
 export type GradientParams = (LinearGradient | RadialGradient) & {
   width: number;
   height: number;
-  type: PARSED_COLOR_TYPE;
+  type: GradientPatternType;
 };
 
 @singleton()
@@ -21,10 +21,10 @@ export class GradientPool {
     }
 
     let gradient: CanvasGradient | null = null;
-    if (type === PARSED_COLOR_TYPE.LinearGradient) {
+    if (type === GradientPatternType.LinearGradient) {
       // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createLinearGradient
       gradient = context.createLinearGradient(x0 * width, y0 * height, x1 * width, y1 * height);
-    } else if (type === PARSED_COLOR_TYPE.RadialGradient) {
+    } else if (type === GradientPatternType.RadialGradient) {
       const r = Math.sqrt(width * width + height * height) / 2;
       // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createRadialGradient
       gradient = context.createRadialGradient(

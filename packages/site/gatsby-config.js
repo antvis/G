@@ -101,6 +101,13 @@ module.exports = {
         order: 2,
       },
       {
+        slug: 'api/css',
+        title: {
+          zh: '样式系统',
+          en: 'Style System',
+        },
+      },
+      {
         slug: 'api/3d',
         title: {
           zh: '三维世界',
@@ -165,10 +172,17 @@ module.exports = {
         },
       },
       {
+        slug: 'style',
+        title: {
+          zh: '样式系统',
+          en: 'Style System',
+        },
+      },
+      {
         slug: 'event',
         title: {
-          zh: '事件',
-          en: 'Event',
+          zh: '事件系统',
+          en: 'Event System',
         },
       },
       {

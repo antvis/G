@@ -109,8 +109,6 @@ const lineConfig = {
   lineJoin: 'miter',
   lineCap: 'butt',
   strokeOpacity: 1,
-  anchorX: 0,
-  anchorY: 0,
   x1: 200,
   y1: 100,
   x2: 400,
@@ -152,12 +150,6 @@ lineFolder.add(lineConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
 lineFolder.add(lineConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
   line1.style.strokeOpacity = opacity;
 });
-lineFolder.add(lineConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
-  line1.attr('anchor', [anchorX, lineConfig.anchorY]);
-});
-lineFolder.add(lineConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
-  line1.attr('anchor', [lineConfig.anchorX, anchorY]);
-});
 lineFolder.add(lineConfig, 'visible').onChange((visible) => {
   if (visible) {
     line1.style.visibility = 'visible';
@@ -167,4 +159,48 @@ lineFolder.add(lineConfig, 'visible').onChange((visible) => {
     // line1.hide();
   }
 });
-lineFolder.open();
+
+const transformFolder = gui.addFolder('transform');
+const transformConfig = {
+  x: 200,
+  y: 100,
+  scale: 1,
+  transformOrigin: 'left top',
+  eulerAngles: 0,
+  anchorX: 0,
+  anchorY: 0,
+};
+transformFolder
+  .add(transformConfig, 'transformOrigin', [
+    'left top',
+    'center',
+    'right bottom',
+    '50% 50%',
+    '50px 50px',
+  ])
+  .onChange((transformOrigin) => {
+    line1.style.transformOrigin = transformOrigin;
+  });
+transformFolder.add(transformConfig, 'x', 0, 400).onChange((x) => {
+  line1.setLocalPosition(x, line1.style.y);
+  // or
+  // line1.style.x = x;
+});
+transformFolder.add(transformConfig, 'y', 0, 400).onChange((y) => {
+  line1.setLocalPosition(line1.style.x, y);
+  // or
+  // line1.style.y = y;
+});
+transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
+  line1.setLocalScale(scaling);
+});
+transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
+  line1.setLocalEulerAngles(eulerAngles);
+});
+transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
+  line1.style.anchor = [anchorX, transformConfig.anchorY];
+});
+transformFolder.add(transformConfig, 'anchorY', 0, 1).onChange((anchorY) => {
+  line1.style.anchor = [transformConfig.anchorX, anchorY];
+});
+transformFolder.open();

@@ -100,10 +100,48 @@ polygonFolder.add(polygonConfig, 'fillOpacity', 0, 1, 0.1).onChange((opacity) =>
 polygonFolder.add(polygonConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
   polygon.style.strokeOpacity = opacity;
 });
-polygonFolder.add(polygonConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
-  polygon.style.anchor = [anchorX, polygonConfig.anchorY];
+
+const transformFolder = gui.addFolder('transform');
+const transformConfig = {
+  x: 200,
+  y: 100,
+  scale: 1,
+  transformOrigin: 'left top',
+  eulerAngles: 0,
+  anchorX: 0,
+  anchorY: 0,
+};
+transformFolder
+  .add(transformConfig, 'transformOrigin', [
+    'left top',
+    'center',
+    'right bottom',
+    '50% 50%',
+    '50px 50px',
+  ])
+  .onChange((transformOrigin) => {
+    polygon.style.transformOrigin = transformOrigin;
+  });
+transformFolder.add(transformConfig, 'x', 0, 400).onChange((x) => {
+  polygon.setLocalPosition(x, polygon.style.y);
+  // or
+  // polygon.style.x = x;
 });
-polygonFolder.add(polygonConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
-  polygon.style.anchor = [polygonConfig.anchorX, anchorY];
+transformFolder.add(transformConfig, 'y', 0, 400).onChange((y) => {
+  polygon.setLocalPosition(polygon.style.x, y);
+  // or
+  // polygon.style.y = y;
 });
-polygonFolder.open();
+transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
+  polygon.setLocalScale(scaling);
+});
+transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
+  polygon.setLocalEulerAngles(eulerAngles);
+});
+transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
+  polygon.style.anchor = [anchorX, transformConfig.anchorY];
+});
+transformFolder.add(transformConfig, 'anchorY', 0, 1).onChange((anchorY) => {
+  polygon.style.anchor = [transformConfig.anchorX, anchorY];
+});
+transformFolder.open();

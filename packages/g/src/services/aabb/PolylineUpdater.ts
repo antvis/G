@@ -11,7 +11,7 @@ import { Shape } from '../../types';
 })
 export class PolylineUpdater implements GeometryAABBUpdater<ParsedBaseStyleProps> {
   update(parsedStyle: ParsedBaseStyleProps) {
-    const { points } = parsedStyle.points!;
+    const { points } = parsedStyle.points;
 
     // FIXME: account for miter lineJoin
     const minX = Math.min(...points.map((point) => point[0]));

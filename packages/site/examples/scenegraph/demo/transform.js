@@ -1,4 +1,4 @@
-import { Ellipse, Canvas } from '@antv/g';
+import { Ellipse, Circle, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -31,6 +31,16 @@ const ellipse = new Ellipse({
 });
 
 canvas.appendChild(ellipse);
+
+// original position
+const origin = new Circle({
+  style: {
+    r: 20,
+    fill: 'red',
+  },
+});
+canvas.appendChild(origin);
+origin.setLocalPosition(300, 200);
 
 // stats
 const stats = new Stats();
@@ -65,8 +75,8 @@ const ellipseFolder = gui.addFolder('Transform');
 const ellipseConfig = {
   translateX: 0,
   translateY: 0,
-  originX: 0,
-  originY: 0,
+  transformOriginX: 100,
+  transformOriginY: 150,
   scale: 1,
   rotate: () => {
     ellipse.rotateLocal(10);
@@ -81,6 +91,10 @@ ellipseFolder.add(ellipseConfig, 'translateX', -200, 200).onChange((tx) => {
   // * ellipse.move(300 + tx, y);
   // * ellipse.moveTo(300 + tx, y);
   ellipse.setPosition(300 + tx, y);
+
+  const [ox, oy] = ellipse.getOrigin();
+  const [lx, ly] = ellipse.getPosition();
+  origin.setPosition(lx + ox, ly + oy);
 });
 ellipseFolder.add(ellipseConfig, 'translateY', -200, 200).onChange((ty) => {
   const [x, y] = ellipse.getPosition();
@@ -88,12 +102,24 @@ ellipseFolder.add(ellipseConfig, 'translateY', -200, 200).onChange((ty) => {
   // * ellipse.move(x, 200 + ty);
   // * ellipse.moveTo(x, 200 + ty);
   ellipse.setPosition(x, 200 + ty);
+
+  const [ox, oy] = ellipse.getOrigin();
+  const [lx, ly] = ellipse.getPosition();
+  origin.setPosition(lx + ox, ly + oy);
 });
-ellipseFolder.add(ellipseConfig, 'originX', -200, 200).onChange((tx) => {
-  ellipse.style.origin = [tx, ellipseConfig.originY];
+ellipseFolder.add(ellipseConfig, 'transformOriginX', -200, 200).onChange((tx) => {
+  ellipse.style.transformOrigin = `${tx}px ${ellipseConfig.transformOriginY}px`;
+
+  const [ox, oy] = ellipse.getOrigin();
+  const [lx, ly] = ellipse.getPosition();
+  origin.setPosition(lx + ox, ly + oy);
 });
-ellipseFolder.add(ellipseConfig, 'originY', -200, 200).onChange((ty) => {
-  ellipse.style.origin = [ellipseConfig.originX, ty];
+ellipseFolder.add(ellipseConfig, 'transformOriginY', -200, 200).onChange((ty) => {
+  ellipse.style.transformOrigin = `${ellipseConfig.transformOriginX}px ${ty}px`;
+
+  const [ox, oy] = ellipse.getOrigin();
+  const [lx, ly] = ellipse.getPosition();
+  origin.setPosition(lx + ox, ly + oy);
 });
 ellipseFolder.add(ellipseConfig, 'rotate').name('rotate');
 ellipseFolder.add(ellipseConfig, 'scale', 0.2, 5).onChange((scaling) => {

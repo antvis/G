@@ -1,11 +1,11 @@
-import { Shape, LineCap, LineJoin } from '../types';
+import { Shape } from '../types';
 import type { BaseStyleProps, PathCommand } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import { isNil } from '@antv/util';
-import type { Rect } from '../shapes/Rect';
+import type { Rectangle } from '../shapes/Rectangle';
 
 export interface PathStyleProps extends BaseStyleProps {
   path?: string | PathCommand[];
@@ -30,7 +30,7 @@ export interface ParsedPathStyleProps {
   totalLength: number;
   curveSegments: number[][];
   zCommandIndexes: number[];
-  rect: Rect;
+  rect: Rectangle;
 }
 export class Path extends DisplayObject<
   PathStyleProps,
@@ -43,8 +43,6 @@ export class Path extends DisplayObject<
       type: Shape.PATH,
       style: {
         path: '',
-        lineJoin: LineJoin.MITER,
-        lineCap: LineCap.BUTT,
         lineWidth: 1,
         miterLimit: 4,
         ...style,

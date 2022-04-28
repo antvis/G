@@ -10,7 +10,6 @@ import { getPlatformTexture, isWebGL2 } from './utils';
 
 export class Texture_GL extends ResourceBase_GL implements Texture {
   type: ResourceType.Texture = ResourceType.Texture;
-
   gl_texture: WebGLTexture;
   gl_target: GLenum;
   pixelFormat: Format;

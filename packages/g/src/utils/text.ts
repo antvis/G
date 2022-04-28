@@ -1,4 +1,4 @@
-import { isNumber } from '@antv/util';
+import { isNumber, isString } from '@antv/util';
 import type { ParsedTextStyleProps } from '../display-objects/Text';
 
 const genericFontFamilies = ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'];
@@ -7,16 +7,13 @@ export function toFontString(attributes: Partial<ParsedTextStyleProps>) {
   const { fontSize, fontFamily, fontStyle, fontVariant, fontWeight } = attributes;
 
   // build canvas api font setting from individual components. Convert a numeric this.fontSize to px
-  const fontSizeString: string = isNumber(fontSize)
-    ? `${fontSize}px`
-    : `${fontSize.value}${fontSize.unit || 'px'}`;
+  const fontSizeString: string = isNumber(fontSize) ? `${fontSize}px` : fontSize.toString();
   // Clean-up fontFamily property by quoting each font name
   // this will support font names with spaces
+
   // @ts-ignore
-  let fontFamilies: string[] | string = fontFamily;
-  if (!Array.isArray(fontFamily)) {
-    fontFamilies = (fontFamily as string).split(',');
-  }
+  const fontFamilies: string[] = isString(fontFamily) ? fontFamily.split(',') : [fontFamily.value];
+
   for (let i = fontFamilies.length - 1; i >= 0; i--) {
     // Trim any extra white-space
     let fontFamily = fontFamilies[i].trim();

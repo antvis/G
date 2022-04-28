@@ -1,5 +1,6 @@
-import type { LinearGradient, RadialGradient } from '@antv/g';
-import { PARSED_COLOR_TYPE, OffscreenCanvasCreator, CanvasConfig, isBrowser } from '@antv/g';
+import type { LinearGradient, RadialGradient} from '@antv/g';
+import { RenderingService } from '@antv/g';
+import { GradientPatternType, OffscreenCanvasCreator, CanvasConfig, isBrowser } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import type { Device, Texture, TextureDescriptor } from './platform';
 import { Format, TextureDimension, TextureUsage } from './platform';
@@ -7,13 +8,16 @@ import { Format, TextureDimension, TextureUsage } from './platform';
 export type GradientParams = (LinearGradient | RadialGradient) & {
   width: number;
   height: number;
-  type: PARSED_COLOR_TYPE;
+  type: GradientPatternType;
 };
 
 @singleton()
 export class TexturePool {
   @inject(OffscreenCanvasCreator)
   private offscreenCanvas: OffscreenCanvasCreator;
+
+  @inject(RenderingService)
+  private renderingService: RenderingService;
 
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
@@ -25,7 +29,7 @@ export class TexturePool {
     device: Device,
     src: string | TexImageSource,
     descriptor?: TextureDescriptor,
-    successCallback?: () => void,
+    successCallback?: (t: Texture) => void,
   ): Texture {
     // @ts-ignore
     const id = typeof src === 'string' ? src : src.src || '';
@@ -47,6 +51,8 @@ export class TexturePool {
       });
       if (typeof src !== 'string') {
         this.textureCache[id].setImageData(src);
+        this.textureCache[id].emit('loaded');
+        this.renderingService.dirtify();
       } else {
         // @see https://github.com/antvis/g/issues/938
         const { createImage } = this.canvasConfig;
@@ -61,9 +67,10 @@ export class TexturePool {
         if (image) {
           image.onload = () => {
             this.textureCache[id].setImageData(image);
-
+            this.textureCache[id].emit('loaded');
+            this.renderingService.dirtify();
             if (successCallback) {
-              successCallback();
+              successCallback(this.textureCache[id]);
             }
           };
           image.onerror = () => {};
@@ -76,7 +83,7 @@ export class TexturePool {
   }
 
   getOrCreateCanvas() {
-    return this.offscreenCanvas.getOrCreateCanvas();
+    return this.offscreenCanvas.getOrCreateCanvas(this.canvasConfig.offscreenCanvas);
   }
 
   getOrCreateGradient(params: GradientParams) {
@@ -84,16 +91,16 @@ export class TexturePool {
     const { type, x0, y0, x1, y1, steps, width, height } = params;
 
     let gradient: CanvasGradient | null = this.gradientCache[key];
-    const canvas = this.offscreenCanvas.getOrCreateCanvas();
-    const context = this.offscreenCanvas.getOrCreateContext();
+    const canvas = this.offscreenCanvas.getOrCreateCanvas(this.canvasConfig.offscreenCanvas);
+    const context = this.offscreenCanvas.getOrCreateContext(this.canvasConfig.offscreenCanvas);
     if (!gradient) {
       canvas.width = width;
       canvas.height = height; // needs only 1px height
 
-      if (type === PARSED_COLOR_TYPE.LinearGradient) {
+      if (type === GradientPatternType.LinearGradient) {
         // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createLinearGradient
         gradient = context.createLinearGradient(x0 * width, y0 * height, x1 * width, y1 * height);
-      } else if (type === PARSED_COLOR_TYPE.RadialGradient) {
+      } else if (type === GradientPatternType.RadialGradient) {
         const r = Math.sqrt(width * width + height * height) / 2;
         // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createRadialGradient
         gradient = context.createRadialGradient(

@@ -1,6 +1,6 @@
 import { Animation } from './Animation';
 import type { KeyframeEffect } from './KeyframeEffect';
-import { requestAnimationFrame, cancelAnimationFrame } from '../utils/raf';
+import type { Document } from './Document';
 
 export function compareAnimations(leftAnimation: Animation, rightAnimation: Animation) {
   return Number(leftAnimation.id) - Number(rightAnimation.id);
@@ -33,6 +33,8 @@ export class AnimationTimeline implements AnimationTimeline {
   private rafCallbacks: [number, (x: number) => void][] = [];
 
   private frameId: number;
+
+  constructor(private document: Document) {}
 
   getAnimations() {
     this.discardAnimations();
@@ -87,7 +89,7 @@ export class AnimationTimeline implements AnimationTimeline {
   }
 
   destroy() {
-    cancelAnimationFrame(this.frameId);
+    this.document.defaultView.cancelAnimationFrame(this.frameId);
   }
 
   applyPendingEffects() {
@@ -142,7 +144,7 @@ export class AnimationTimeline implements AnimationTimeline {
   private rAF(f: (x: number) => void) {
     const id = this.rafId++;
     if (this.rafCallbacks.length === 0) {
-      this.frameId = requestAnimationFrame(this.processRafCallbacks);
+      this.frameId = this.document.defaultView.requestAnimationFrame(this.processRafCallbacks);
     }
     this.rafCallbacks.push([id, f]);
     return id;
