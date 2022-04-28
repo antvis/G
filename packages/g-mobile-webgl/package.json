@@ -1,0 +1,55 @@
+{
+  "name": "@antv/g-mobile-webgl",
+  "version": "0.0.1",
+  "description": "A renderer implemented by WebGL1/2 & WebGPU in mobile environment",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "es/index.d.ts",
+  "unpkg": "dist/index.umd.min.js",
+  "files": [
+    "package.json",
+    "dist",
+    "es",
+    "lib",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antvis/g.git"
+  },
+  "keywords": [
+    "util",
+    "antv",
+    "g",
+    "webgl",
+    "webgpu"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "https://github.com/orgs/antvis/people",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/antvis/g/issues"
+  },
+  "devDependencies": {
+    "@types/gl-matrix": "^2.4.5",
+    "@types/jest": "^25.0.0",
+    "@types/offscreencanvas": "^2019.6.4"
+  },
+  "homepage": "https://github.com/antvis/g#readme",
+  "dependencies": {
+    "@antv/g-plugin-mobile-interaction": "^0.0.6",
+    "@antv/g-plugin-webgl-renderer": "^1.0.23",
+    "@antv/util": "^2.0.13"
+  },
+  "peerDependencies": {
+    "@antv/g": "^5.0.1",
+    "mana-syringe": "^0.3.0"
+  },
+  "scripts": {
+    "umd": "webpack"
+  },
+  "gitHead": "ac4d1b7ab482f8ff862c76fb6248ef92b4a8c22d"
+}
