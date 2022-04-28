@@ -3,7 +3,7 @@ function getStyle(el, property) {
     return el.currentStyle[property];
   }
   if (window && window.document) {
-    document.defaultView.getComputedStyle(el, null).getPropertyValue(property);
+    return document.defaultView.getComputedStyle(el, null).getPropertyValue(property);
   }
 }
 
@@ -26,6 +26,7 @@ function getHeight(el) {
 function normContext(ctx: RenderingContext, devicePixelRatio: number) {
   ctx.canvas.width = getWidth(ctx.canvas) * devicePixelRatio || ctx.canvas.width || 0;
   ctx.canvas.height = getHeight(ctx.canvas) * devicePixelRatio || ctx.canvas.height || 0;
+
   return ctx;
 }
 
