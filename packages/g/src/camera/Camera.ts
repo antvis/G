@@ -5,7 +5,7 @@ import { Frustum } from '../shapes';
 import { createVec3, getAngle, makePerspective } from '../utils/math';
 import type { Canvas } from '../Canvas';
 import { parseEasingFunction } from '../utils/animation';
-import { isString, isUndefined } from '@antv/util';
+import { isNumber, isString, isUndefined } from '@antv/util';
 
 export const DefaultCamera = 'DefaultCamera';
 
@@ -762,14 +762,18 @@ export class Camera extends EventEmitter {
 
   gotoLandmark(
     name: string | Landmark,
-    options: Partial<{
-      easing: string;
-      duration: number;
-    }> = {},
+    options:
+      | number
+      | Partial<{
+          easing: string;
+          duration: number;
+        }> = {},
   ) {
     const landmark = isString(name) ? this.landmarks.find((l) => l.name === name) : name;
     if (landmark) {
-      const { easing = 'ease', duration = 1000 } = options;
+      const { easing = 'ease', duration = 1000 } = isNumber(options)
+        ? { duration: options }
+        : options;
       const epsilon = 0.01;
 
       if (duration === 0) {

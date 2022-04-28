@@ -62,9 +62,7 @@ describe('Camera landmark', () => {
       zoom: 2,
     });
 
-    camera.gotoLandmark('mark1', {
-      duration: 100,
-    });
+    camera.gotoLandmark('mark1', 100);
 
     await sleep(200);
 

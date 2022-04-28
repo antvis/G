@@ -199,9 +199,9 @@ camera.rotate(0, 0, 30);
 创建一个 Landmark，参数包括：
 
 - markName 名称
-- params 相机参数，包括：
-  - position 世界坐标系下的相机位置
-  - focalPoint 世界坐标系下的视点
+- options 相机参数，包括：
+  - position 世界坐标系下的相机位置，类型为 `vec2` 或 `vec3`，前者保持相机当前 `z` 坐标不变
+  - focalPoint 世界坐标系下的视点，类型为 `vec2` 或 `vec3`，前者保持相机当前视点 `z` 坐标不变
   - roll 旋转角度
   - zoom 缩放比例
 
@@ -236,6 +236,13 @@ camera.gotoLandmark(landmark, { duration: 300, easing: 'ease-in' });
 参数列表如下：
 
 - markName 名称或者已创建的 Landmark
-- params 动画参数，包括：
+- options 动画参数，包括：
   - duration 动画持续时间，单位为 `ms`，默认值为 `1000`
   - easing 缓动函数，默认值为 `linear`。和动画系统一致的[内置效果](/zh/docs/api/animation#easing-1)
+
+和动画系统中的 [options](/zh/docs/api/animation#options) 参数一样，传入 `number` 时等同于设置 `duration`：
+
+```js
+camera.gotoLandmark('mark1', { duration: 300 });
+camera.gotoLandmark('mark1', 300);
+```
