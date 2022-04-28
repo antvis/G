@@ -114,32 +114,32 @@ export const parseEasingParameters = (str: string) => {
  * easing functions, because of the nature of the function it can sometimes create an infinite loop, I suggest only using
  * `getEasingDuration` for `spring`, specifically 'out-spring' and 'spring'
  */
-export const getEasingDuration = (easing: string | TypeEasingFunction = 'spring') => {
-  if (EasingDurationCache.has(easing)) return EasingDurationCache.get(easing);
+// export const getEasingDuration = (easing: string | TypeEasingFunction = 'spring') => {
+//   if (EasingDurationCache.has(easing)) return EasingDurationCache.get(easing);
 
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  const easingFunction = typeof easing == 'function' ? easing : getEasingFunction(easing as string);
-  const params = typeof easing == 'function' ? [] : parseEasingParameters(easing);
-  const frame = 1 / 6;
+//   // eslint-disable-next-line @typescript-eslint/no-use-before-define
+//   const easingFunction = typeof easing == 'function' ? easing : getEasingFunction(easing as string);
+//   const params = typeof easing == 'function' ? [] : parseEasingParameters(easing);
+//   const frame = 1 / 6;
 
-  let elapsed = 0;
-  let rest = 0;
-  let count = 0;
+//   let elapsed = 0;
+//   let rest = 0;
+//   let count = 0;
 
-  while (++count < INTINITE_LOOP_LIMIT) {
-    elapsed += frame;
-    if (easingFunction(elapsed, params, undefined) === 1) {
-      rest++;
-      if (rest >= 16) break;
-    } else {
-      rest = 0;
-    }
-  }
+//   while (++count < INTINITE_LOOP_LIMIT) {
+//     elapsed += frame;
+//     if (easingFunction(elapsed, params, undefined) === 1) {
+//       rest++;
+//       if (rest >= 16) break;
+//     } else {
+//       rest = 0;
+//     }
+//   }
 
-  const duration = elapsed * frame * 1000;
-  EasingDurationCache.set(easing, duration);
-  return duration;
-};
+//   const duration = elapsed * frame * 1000;
+//   EasingDurationCache.set(easing, duration);
+//   return duration;
+// };
 
 /** 
   These Easing Functions are based off of the Sozi Project's easing functions 
@@ -269,18 +269,18 @@ export const getEasingFunction = (ease: string) => {
   return EasingFunctions[complexEasingSyntax(ease)] || EasingFunctions.linear;
 };
 
-/**
- * Allows you to register new easing functions
- */
-export const registerEasingFunction = (key: string, fn: TypeEasingFunction) => {
-  Object.assign(EasingFunctions, {
-    [key]: fn,
-  });
-};
+// /**
+//  * Allows you to register new easing functions
+//  */
+// export const registerEasingFunction = (key: string, fn: TypeEasingFunction) => {
+//   Object.assign(EasingFunctions, {
+//     [key]: fn,
+//   });
+// };
 
-/**
- * Allows you to register multiple new easing functions
- */
-export const registerEasingFunctions = (...obj: typeof EasingFunctions[]) => {
-  Object.assign(EasingFunctions, ...obj);
-};
+// /**
+//  * Allows you to register multiple new easing functions
+//  */
+// export const registerEasingFunctions = (...obj: typeof EasingFunctions[]) => {
+//   Object.assign(EasingFunctions, ...obj);
+// };

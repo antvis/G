@@ -22,7 +22,7 @@ export class Landmark {
   private relAzimuth = 0;
   private relElevation = 0;
   private relRoll = 0;
-  // private zoom = 1;
+  private zoom = 1;
 
   constructor(name: string, c: Camera) {
     this.name = name;
@@ -43,7 +43,7 @@ export class Landmark {
     this.relRoll = c.relRoll;
     this.dollyingStep = c.dollyingStep;
     this.distance = c.distance;
-    // this.zoom = c.zoom;
+    this.zoom = c.zoom;
   }
 
   getPosition() {
@@ -56,6 +56,10 @@ export class Landmark {
 
   getRoll() {
     return this.roll;
+  }
+
+  getZoom() {
+    return this.zoom;
   }
 
   retrieve(c: Camera) {
@@ -75,6 +79,6 @@ export class Landmark {
     c.relRoll = this.relRoll;
     c.dollyingStep = this.dollyingStep;
     c.distance = this.distance;
-    // c.zoom = this.zoom;
+    c.zoom = this.zoom;
   }
 }

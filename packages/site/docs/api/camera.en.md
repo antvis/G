@@ -13,9 +13,9 @@ const camera = canvas.getCamera();
 
 目前相机支持以下特性：
 
--   两种投影模式：正交投影（Orthographic）和透视投影（Perspective），默认使用前者。
--   两种观测类型：固定摄像机（Tracking）和固定视点（Orbiting），默认使用后者。
--   自定义相机动画，创建/保存当前相机状态作为一个 Landmark，可在多个 Landmark 间平滑切换。
+- 两种投影模式：正交投影（Orthographic）和透视投影（Perspective），默认使用前者。
+- 两种观测类型：固定摄像机（Tracking）和固定视点（Orbiting），默认使用后者。
+- 自定义相机动画，创建/保存当前相机状态作为一个 Landmark，可在多个 Landmark 间平滑切换。
 
 ## 投影模式
 
@@ -29,12 +29,12 @@ const camera = canvas.getCamera();
 
 参数：
 
--   `left` `number` x 轴负向最大距离
--   `right` `number` x 轴正向最大距离
--   `top` `number` y 轴正向最大距离
--   `bottom` `number` y 轴负向最大距离
--   `near` `number` 近平面
--   `far` `number` 远平面
+- `left` `number` x 轴负向最大距离
+- `right` `number` x 轴正向最大距离
+- `top` `number` y 轴正向最大距离
+- `bottom` `number` y 轴负向最大距离
+- `near` `number` 近平面
+- `far` `number` 远平面
 
 [使用示例](/zh/examples/camera#ortho)：
 
@@ -48,18 +48,18 @@ camera.setOrthographic(-300, 300, -250, 250, 0.1, 1000);
 
 参数：
 
--   `near` `number` 近平面
--   `far` `number` 远平面
--   `fov` `number` 可视角度，越大意味着能容纳场景中的更多对象
--   `aspect` `number` 宽高比
+- `near` `number` 近平面
+- `far` `number` 远平面
+- `fov` `number` 可视角度，越大意味着能容纳场景中的更多对象
+- `aspect` `number` 宽高比
 
 [使用示例](/zh/examples/camera#perspective)：
 
 ```js
 camera
-    .setPosition(300, 100, 500)
-    .setFocalPoint(300, 250, 0)
-    .setPerspective(0.1, 1000, 75, 600 / 500);
+  .setPosition(300, 100, 500)
+  .setFocalPoint(300, 250, 0)
+  .setPerspective(0.1, 1000, 75, 600 / 500);
 ```
 
 ## 相机参数设置
@@ -102,6 +102,24 @@ camera.setPosition([300, 250, 0]);
 
 仅透视投影下生效。大部分情况下不需要手动设置，当画布尺寸发生改变时可以通过调用 `canvas.resize()` 自动更新。
 
+### 设置方位角
+
+在描述旋转时，有时欧拉角理解起来要更直观，因为它更加贴近我们在日常生活中的描述，比如摄像机运动、水平坐标系（也称作地心坐标系）中的经纬度等等。在一些 GIS 类可视化项目（例如 Mapbox）中，经常使用 pitch/yaw/roll 来描述自身的旋转情况。例如下图中的一架飞机。
+
+设置相机方位角，不同相机模式下需要重新计算相机位置或者是视点位置。
+
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*tLc3R7rerqsAAAAAAAAAAAAAARQnAQ)
+
+#### setRoll(angle: number)
+
+```js
+camera.setRoll(30);
+```
+
+#### setElevation(angle: number)
+
+#### setAzimuth(angle: number)
+
 ## 相机类型
 
 在 2D 场景中，如果我们想在场景中移动，通常会使用到平移和缩放。而在 3D 场景下不同的相机类型会带来不同的视觉效果。
@@ -110,13 +128,15 @@ camera.setPosition([300, 250, 0]);
 
 ## 相机动作
 
-在相机坐标系中相机的三轴为 `uvn` ![](https://i.stack.imgur.com/ooEFp.png)
+在相机坐标系中相机的三轴为 `uvn`
+
+<img src="https://i.stack.imgur.com/ooEFp.png" width="200">
 
 后面我们介绍的相机动作实际就是沿这三轴进行移动和旋转。
 
 下图来自 Television Production Handbook p.97。早年的电视台使用的摄像机通过轨道完成移动：
 
-![](https://gw.alipayobjects.com/mdn/rms_4be1e1/afts/img/A*Dm7cQZ6locEAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_4be1e1/afts/img/A*Dm7cQZ6locEAAAAAAAAAAAAAARQnAQ" width="400">
 
 我们不考虑依靠摇臂完成的 crane 和 tongue 动作，沿 uvn 三轴的平移和旋转可总结出以下动作：
 
@@ -138,8 +158,8 @@ camera.setPosition([300, 250, 0]);
 
 参数：
 
--   `tx` 沿 x 轴正向平移
--   `ty` 沿 y 轴正向平移
+- `tx` 沿 x 轴正向平移
+- `ty` 沿 y 轴正向平移
 
 使用示例，下面的操作将导致原本处于视点处的物体展示在左上角：
 
@@ -153,7 +173,7 @@ camera.pan(200, 200);
 
 参数：
 
--   `distance` `number` 移动距离，正向远离视点，负向靠近
+- `distance` `number` 移动距离，正向远离视点，负向靠近
 
 使用示例：
 
@@ -164,40 +184,58 @@ camera.dolly(-10); // 靠近视点
 
 ### rotate(azimuth: number, elevation: number, roll: number)
 
-按相机方位角旋转。
+按相机方位角旋转，逆时针方向为正。2D 场景只需要指定 roll，例如让相机“歪下头”：
+
+```js
+camera.rotate(0, 0, 30);
+```
 
 ## 相机动画
 
 我们可以把相机当前的位置、视点记录下来，保存成一个"地标" Landmark。随后当相机参数发生改变时，可以随时切换到之前保存的任意一个 Landmark，同时带有平滑的切换动画，类似真实片场中的摄像机摇臂，[示例](/zh/examples/camera#landmark)。
 
-### createLandmark(name: string, params: LandmarkParams): Landmark
+### createLandmark()
 
-创建 Landmark，参数包括：
+创建一个 Landmark，参数包括：
 
--   position 相机位置
--   focalPoint 视点
--   roll 旋转角度
+- markName 名称
+- params 相机参数，包括：
+  - position 世界坐标系下的相机位置
+  - focalPoint 世界坐标系下的视点
+  - roll 旋转角度
+  - zoom 缩放比例
 
 ```js
 camera.createLandmark('mark1', {
-    position: [300, 250, 400],
-    focalPoint: [300, 250, 0],
+  position: [300, 250, 400],
+  focalPoint: [300, 250, 0],
 });
 camera.createLandmark('mark2', {
-    position: [300, 600, 500],
-    focalPoint: [300, 250, 0],
+  position: [300, 600, 500],
+  focalPoint: [300, 250, 0],
 });
 camera.createLandmark('mark3', {
-    position: [0, 250, 800],
-    focalPoint: [300, 250, 0],
-    roll: 30,
+  position: [0, 250, 800],
+  focalPoint: [300, 250, 0],
+  roll: 30,
 });
 ```
 
-### gotoLandmark(name: string, duration: number = 1000)
+### gotoLandmark()
 
-切换到之前保存的 Landmark：
+切换到之前保存的 Landmark，[示例](/zh/examples/camera#landmark2)：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*EL2XSL5qSQ8AAAAAAAAAAAAAARQnAQ" width="300">
 
 ```js
-camera.gotoLandmark('mark1', 300);
+camera.gotoLandmark('mark1', { duration: 300, easing: 'ease-in' });
+// or
+camera.gotoLandmark(landmark, { duration: 300, easing: 'ease-in' });
 ```
+
+参数列表如下：
+
+- markName 名称或者已创建的 Landmark
+- params 动画参数，包括：
+  - duration 动画持续时间，单位为 `ms`，默认值为 `1000`
+  - easing 缓动函数，默认值为 `linear`。和动画系统一致的[内置效果](/zh/docs/api/animation#easing-1)

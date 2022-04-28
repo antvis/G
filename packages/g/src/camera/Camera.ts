@@ -1,9 +1,11 @@
 import { EventEmitter } from 'eventemitter3';
-import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
+import { mat3, mat4, quat, vec2, vec3, vec4 } from 'gl-matrix';
 import { Landmark } from './Landmark';
 import { Frustum } from '../shapes';
 import { createVec3, getAngle, makePerspective } from '../utils/math';
 import type { Canvas } from '../Canvas';
+import { parseEasingFunction } from '../utils/animation';
+import { isString, isUndefined } from '@antv/util';
 
 export const DefaultCamera = 'DefaultCamera';
 
@@ -155,7 +157,7 @@ export class Camera extends EventEmitter {
       }
     | undefined;
 
-  private following = undefined;
+  // private following = undefined;
 
   private type = CAMERA_TYPE.EXPLORING;
   private trackingMode = CAMERA_TRACKING_MODE.DEFAULT;
@@ -725,17 +727,27 @@ export class Camera extends EventEmitter {
 
   createLandmark(
     name: string,
-    params: {
-      position: vec3;
-      focalPoint: vec3;
+    params: Partial<{
+      position: vec3 | vec2;
+      focalPoint: vec3 | vec2;
+      zoom?: number;
       roll?: number;
-    },
+    }> = {},
   ): Landmark {
+    const { position, focalPoint, roll, zoom } = params;
+
     const camera = this.clone();
-    camera.setPosition(params.position);
-    camera.setFocalPoint(params.focalPoint);
-    if (params.roll !== undefined) {
-      camera.setRoll(params.roll);
+    camera.setPosition(
+      vec3.fromValues(position[0], position[1], position[2] || camera.position[2]),
+    );
+    camera.setFocalPoint(
+      vec3.fromValues(focalPoint[0], focalPoint[1], focalPoint[2] || camera.focalPoint[2]),
+    );
+    if (!isUndefined(roll)) {
+      camera.setRoll(roll);
+    }
+    if (!isUndefined(zoom)) {
+      camera.setZoom(zoom);
     }
     const landmark = new Landmark(name, camera);
     this.landmarks.push(landmark);
@@ -748,9 +760,18 @@ export class Camera extends EventEmitter {
     return this;
   }
 
-  gotoLandmark(name: string, duration: number = 1000) {
-    const landmark = this.landmarks.find((l) => l.name === name);
+  gotoLandmark(
+    name: string | Landmark,
+    options: Partial<{
+      easing: string;
+      duration: number;
+    }> = {},
+  ) {
+    const landmark = isString(name) ? this.landmarks.find((l) => l.name === name) : name;
     if (landmark) {
+      const { easing = 'ease', duration = 1000 } = options;
+      const epsilon = 0.01;
+
       if (duration === 0) {
         landmark.retrieve(this);
         return;
@@ -765,7 +786,10 @@ export class Camera extends EventEmitter {
 
       const destPosition = landmark.getPosition();
       const destFocalPoint = landmark.getFocalPoint();
+      const destZoom = landmark.getZoom();
       const destRoll = landmark.getRoll();
+
+      const easingFunction = parseEasingFunction(easing);
 
       let timeStart: number | undefined;
       const animate = (timestamp: number) => {
@@ -773,32 +797,35 @@ export class Camera extends EventEmitter {
           timeStart = timestamp;
         }
         const elapsed = timestamp - timeStart;
-        // TODO: use better ease function
-        const t = (1 - Math.cos((elapsed / duration) * Math.PI)) / 2;
+        // use the same ease function in animatio system
+        const t = easingFunction(elapsed / duration);
 
         const interFocalPoint = vec3.create();
         const interPosition = vec3.create();
+        let interZoom = 1;
         let interRoll = 0;
 
         vec3.lerp(interFocalPoint, this.focalPoint, destFocalPoint, t);
         vec3.lerp(interPosition, this.position, destPosition, t);
         interRoll = this.roll * (1 - t) + destRoll * t;
+        interZoom = this.zoom * (1 - t) + destZoom * t;
 
         this.setFocalPoint(interFocalPoint);
         this.setPosition(interPosition);
         this.setRoll(interRoll);
+        this.setZoom(interZoom);
+
         this.computeMatrix();
 
         this.triggerUpdate();
 
         const dist =
           vec3.dist(interFocalPoint, destFocalPoint) + vec3.dist(interPosition, destPosition);
-        if (dist > 0.01) {
-          //
-        } else {
-          this.setFocalPoint(interFocalPoint);
-          this.setPosition(interPosition);
-          this.setRoll(interRoll);
+        if (dist <= epsilon) {
+          this.setFocalPoint(destFocalPoint);
+          this.setPosition(destPosition);
+          this.setRoll(destRoll);
+          this.setZoom(destZoom);
           this.computeMatrix();
           // this.interactor.connect();
 

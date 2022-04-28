@@ -1,5 +1,5 @@
 import { GlobalContainer } from 'mana-syringe';
-import { isEqual, isNil, isObject } from '@antv/util';
+import { isEqual, isNil, isObject, isUndefined } from '@antv/util';
 import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { DisplayObjectPool } from '../DisplayObjectPool';
@@ -233,6 +233,11 @@ export class DisplayObject<
       Key,
       StyleProps[Key],
     ];
+    // ignore undefined value
+    if (isUndefined(value)) {
+      return;
+    }
+
     if (force || !isEqual(attributeValue, this.attributes[attributeName])) {
       this.internalSetAttribute(attributeName, attributeValue);
       super.setAttribute(attributeName, attributeValue);

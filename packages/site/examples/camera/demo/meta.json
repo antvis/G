@@ -29,6 +29,14 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*goX8QqgVSMEAAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "landmark2.js",
+      "title": {
+        "zh": "相机动画",
+        "en": "Landmark"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*EL2XSL5qSQ8AAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "action.js",
       "title": {
         "zh": "相机动作",

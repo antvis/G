@@ -17,174 +17,6 @@ DisplayObject 是所有图形的基类，例如 `Group` `Circle` `Text` 等都�
 
 [Element](/zh/docs/api/builtin-objects/element)
 
-# 基础概念
-
-首先需要明确一些概念，例如包围盒、坐标、锚点、变换中心等。了解它们有助于更好地使用具体的 API。
-
-## 层次结构
-
-在[场景图](/zh/docs/guide/diving-deeper/scenegraph)中我们了解到可以在图形之间构建父子关系，这种父子关系有时会与我们的直觉相悖，例如给一根直线（Line）添加一个子节点文本（Text）：
-
-```js
-line.appendChild(text);
-```
-
-但本质上这种层次结构只是定义了一种父子关系，在计算变换时把它考虑进去。例如我们不需要再单独移动直线以及文本，基于这种父子关系，移动直线即可，文本会跟随它移动。在变换过程中，文本相对于直线的位置始终并没有变，即文本在父节点直线的局部坐标系下的坐标没有变。
-
-## 包围盒
-
-为了简化计算，我们需要用一个规则的几何体包裹住图形，通常使用[轴对齐包围盒](https://developer.mozilla.org/zh-CN/docs/Games/Techniques/3D_collision_detection#axis-aligned_bounding_boxes%EF%BC%88aabb%E5%8C%85%E5%9B%B4%E7%9B%92%EF%BC%89)（Axis Aligned Bounding Box），它是一个非旋转的立方体，下图来自：https://developer.mozilla.org/zh-CN/docs/Games/Techniques/3D_collision_detection#axis-aligned_bounding_boxes%EF%BC%88aabb%E5%8C%85%E5%9B%B4%E7%9B%92%EF%BC%89 ![](https://mdn.mozillademos.org/files/11797/Screen%20Shot%202015-10-16%20at%2015.11.21.png)
-
-我们使用如下定义：
-
-```js
-interface AABB {
-  center: [number, number, number]; // 中心坐标
-  halfExtents: [number, number, number]; // 长宽高的一半
-  min: [number, number, number]; // 左上角坐标
-  max: [number, number, number]; // 右下角坐标
-}
-```
-
-在不同情况下，包围盒有不同的含义。我们先看针对单一图形的包围盒代表什么。下图展示了一个半径为 100，边框宽度为 20 的圆，为了更好的说明我们把边框设置成了半透明，同时它还带有阴影效果。
-
-对于用户而言，通常希望使用图形的几何定义，例如这个圆的尺寸就是 `100 * 100`，我们不希望鼠标滑过阴影区域也判定拾取到这个圆。
-
-而对于渲染管线而言，这些样式属性显然都需要考虑进去，例如：
-
-- 在脏矩形渲染中正确的擦除绘制区域，一旦不考虑阴影带来的包围盒尺寸增加，就会出现擦除不干净的“残影”
-- 剔除插件也需要考虑，例如一个图形即使只有阴影部分出现在视口中，它也不应被剔除
-
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*f0-CTpClWkMAAAAAAAAAAAAAARQnAQ)
-
-我们很容易根据不同类型的图形定义几何包围盒：
-
-- Geometry Bounds。仅由图形的几何定义决定（因此 Group 会返回 null），不考虑绝大部分绘图属性（几何定义必须的除外，例如 Circle 的半径、Rect 的宽高、Path 的路径等），也不考虑变换（例如放大缩小并不会改变）。可通过 [getGeometryBounds](/zh/docs/api/basic/display-object#getgeometrybounds-aabb) 获取
-
-前面介绍过基于场景图的层次结构，一旦一个图形拥有了子节点，它在计算包围盒时也应当考虑，例如我们想对它做整体旋转时，需要找到这个包围盒的中心作为旋转中心。因此以下包围盒都是会考虑层次结构的：
-
-- Bounds。在世界坐标系下计算，合并自身以及所有子节点的 Geometry Bounds 得到。用户通常最常用这个包围盒。可通过 [getBounds](/zh/docs/api/basic/display-object#getbounds-aabb) 获取
-- Local Bounds。和 Bounds 的唯一区别是在父节点的局部坐标系下计算。可通过 [getLocalBounds](/zh/docs/api/basic/display-object#getlocalbounds-aabb) 获取
-- Render Bounds。在世界坐标系下计算，在 Bounds 的基础上，受部分绘图属性影响，例如边框宽度，阴影，部分滤镜等，同时合并所有子节点的 Render Bounds。可通过 [getRenderBounds](/zh/docs/api/basic/display-object#getrenderbounds-aabb) 获取。用户通常不关心这个包围盒。
-
-在下图中，ul1 拥有两个字节点 li1 和 li2，在计算自身的 Geometry Bounds 时不会考虑它们，而在计算 Bounds 时需要。由于 ul1 还有阴影，因此它的 Render Bounds 要大一圈：
-
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*RjRuQ7iMtwgAAAAAAAAAAAAAARQnAQ)
-
-## 锚点
-
-一个图形的锚点（原点）应该如何定义呢？我们可以基于 [Geometry Bounds](/zh/docs/api/basic/display-object#包围盒) 定义，取值范围 `[0, 0] ~ [1, 1]`，其中 `[0, 0]` 代表 Geometry Bounds 左上角，`[1, 1]` 代表右下角。而不同图形由于几何定义不同，默认锚点如下：
-
-- [Circle](/zh/docs/api/circle)，[Ellipse](/zh/docs/api/ellipse) 为圆心位置 `[0.5, 0.5]`
-- [Rect](/zh/docs/api/rect)，[Image](/zh/docs/api/image)，[Line](/zh/docs/api/line)，[Polyline](/zh/docs/api/polyline)，[Polygon](/zh/docs/api/polygon)，[Path](/zh/docs/api/path) 为包围盒左上角顶点位置 `[0, 0]`
-- [Text](/zh/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/docs/api/basic/text#textbaseline) 与 [textAlign](/zh/docs/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
-- [Group](/zh/docs/api/text) 无几何定义，因此锚点始终为 `[0, 0]`，设置此属性也无效
-
-有时我们希望改变一个基础图形的原点定义，例如将 Rect 的原点定义为中心而非左上角，[示例](/zh/examples/shape#rect)：
-
-```js
-rect.style.anchor = [0.5, 0.5];
-```
-
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PamuTYmdbsQAAAAAAAAAAAAAARQnAQ)
-
-那锚点的改变会影响图形在局部/世界坐标系下的坐标吗？答案是不会。我们只是把图形的原点放在这个坐标下而已，无论原点的定义如何修改，这个“位置”坐标始终不会改变：
-
-```js
-rect.getPosition(); // [200, 200]
-rect.style.anchor = [0.5, 0.5];
-rect.getPosition(); // [200, 200]
-```
-
-## 变换中心
-
-对图形进行缩放、旋转变换时，需要指定一个变换中心。例如同样是 `scale(2)`，以圆心作为变换中心与圆的 Geometry Bounds 左上角为变换中心，最终得到的效果完全不一样。在 `gl-matrix` 这样的库中，得到 RTS 变换矩阵通常也需要指定变换中心：
-
-```js
-mat4.fromRotationTranslationScaleOrigin();
-```
-
-<!-- ### origin
-
-默认情况下 origin（变换中心）与 anchor（锚点）重合。在这个[示例](/zh/examples/scenegraph#origin)中，一个圆（世界坐标系下位置为 `[100, 100]`）以圆心作为变换中心进行缩放，如果我们想让它以 Geometry Bounds 左上角进行缩放，就可以重新设置 origin，让它相对于 anchor 进行偏移：
-
-```js
-const circle = new Circle({
-  style: {
-    r: 100,
-    fill: '#1890FF',
-  },
-});
-circle.setPosition(100, 100);
-circle.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.5)' }], {
-  duration: 500,
-});
-
-// 相对于锚点进行偏移
-circle.style.origin = [-100, -100];
-```
-
-或者我们可以直接设置 anchor 为 `[0, 0]`，这样就无需设置 origin，因为默认两者就是重合的，但是由于 anchor 定义发生了变化，为了让圆心在世界坐标系下不变（`[100, 100]`），需要重新设置圆的位置。因此以下两种写法等价：
-
-```js
-// 让 origin 相对于 anchor 偏移
-circle.setPosition(100, 100);
-circle.style.origin = [-100, -100];
-
-// 或者直接设置 anchor
-circle.setPosition(0, 0);
-circle.style.anchor = [0, 0];
-``` -->
-
-### transformOrigin
-
-相对于 anchor 描述 origin 固然直观，但这需要我们计算出偏移距离。例如我们想让一个包含了很多子元素的 Group 绕中心点旋转，就需要先计算这个 Group 的 Bounds：
-
-```js
-group.appendChild(child1);
-group.appendChild(child2);
-group.appendChild(child3);
-
-// 计算 Bounds，考虑所有子元素
-const { halfExtents } = group.getBounds();
-// 设置 origin 从 [0, 0] 偏移 halfExtents 到中心点
-group.style.origin = halfExtents;
-```
-
-另一个问题是，当图形的 Bounds 发生变化后，我们不得不重新设置它。例如我们在设置了 origin 之后，又向 Group 中添加了子元素，这会造成 Group 的 Bounds 发生变化，基于它计算的 origin 就不是最新的了，为了保持 Group “绕中心点旋转”，我们还得手动重新设置一次 origin：
-
-```js
-const { halfExtents } = group.getBounds(); // [100, 100, 0]
-group.style.origin = halfExtents;
-
-// 添加了新的子元素，此时 group 的 Bounds 发生了变化，但 origin 还是 [100, 100, 0]
-group.appendChild(child4);
-
-const { halfExtents } = group.getBounds(); // [200, 200, 0]
-group.style.origin = halfExtents;
-```
-
-因此在某些场景下，用一些字面量或者百分比定义会更方便。例如 CSS 就提供了 transform-origin 属性，它正是相对于 Bounds 进行定义的，下图来自：https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin：
-
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_1WJQLRobtgAAAAAAAAAAAAAARQnAQ)
-
-当我们想实现“绕中心点旋转”时，只需要使用字面量或者百分比，这样就能避免进行 Bounds 的获取：
-
-```js
-group.style.transformOrigin = 'center';
-group.style.transformOrigin = 'center center';
-group.style.transformOrigin = '50% 50%';
-```
-
-在这个[示例](/zh/examples/scenegraph#origin)中，每次向 Group 添加子元素后，我们都会重新设置 transformOrigin，因此这个 Group 会始终绕中心旋转：
-
-```js
-group.appendChild(cloned);
-group.style.transformOrigin = 'center';
-```
-
-我们之所以无法做成根据 Bounds 自动计算，是因为导致 Bounds 发生变化的情况实在太多，甚至目标图形自身进行旋转时，Bounds 都在实时改变。试想一个图形正在绕变换中心进行旋转，Bounds 时时刻刻都在改变，如果根据 Bounds 实时计算变换中心，会导致旋转中心不稳定，出现旋转抖动问题：
-
 # id
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/id
@@ -281,6 +113,12 @@ const circle = new Circle({
 
 // 或者后续禁止
 circle.interactive = false;
+```
+
+推荐使用 [pointerEvents](/zh/docs/api/basic/display-object#pointerevents) 属性，因此上面禁止交互的操作等同于：
+
+```js
+circle.style.pointerEvents = 'none';
 ```
 
 # 绘图属性
@@ -385,88 +223,6 @@ circle.getLocalPosition(); // [100, 100]，此时为圆包围盒左上角位置
 - [Text](/zh/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/docs/api/basic/text#textbaseline) 与 [textAlign](/zh/docs/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
 - [Group](/zh/docs/api/text) 无几何定义，因此设置此属性无效
 
-### origin
-
-**类型**： `[number, number]`
-
-**默认值**：`[0, 0]`
-
-**是否必须**：`false`
-
-**说明** 旋转与缩放中心，也称作变换中心，数值为相对于[锚点](/zh/docs/api/basic/display-object#anchor)的偏移量，默认值为 `[0, 0]`，因此就是锚点位置。
-
-在下面的例子中，我们在 `[100, 100]` 处放置了一个半径为 100 的圆：
-
-```js
-const circle = new Circle({
-  style: {
-    x: 100,
-    y: 100,
-    r: 100,
-  },
-});
-```
-
-如果我们想让圆以圆心作为变换中心进行缩放，由于此时锚点就是圆心，因此缩放前后锚点在世界坐标系下位置不变，发生变化的是包围盒：
-
-```js
-circle.style.origin = [0, 0];
-circle.scale(0.5);
-circle.getPosition(); // [100, 100]
-circle.getBounds(); // { center: [100, 100], halfExtents: [50, 50] }
-```
-
-但假如我们想让这个圆以自身包围盒左上角进行缩放，即相对于当前锚点（圆心）偏移 `[-100, -100]`。缩放之后锚点也会发生偏移，圆在世界坐标系下的位置自然也来到了 `[50, 50]`。同理，包围盒的中心点发生了移动：
-
-```js
-circle.style.origin = [-100, -100];
-circle.scale(0.5);
-circle.getPosition(); // [50, 50]
-circle.getBounds(); // { center: [50, 50], halfExtents: [50, 50] }
-```
-
-在下面的[示例](/zh/examples/scenegraph#origin)中，我们创建了一个矩形，它的默认锚点为局部坐标系下包围盒的左上角。如果我们想让它以包围盒中心进行旋转，就需要设置变换中心相对于锚点偏移长宽各一半，即 `[150, 100]`：
-
-```js
-const rect = new Rect({
-  id: 'rect',
-  style: {
-    width: 300,
-    height: 200,
-    origin: [150, 100], // 设置旋转与缩放中心为自身包围盒中心点
-  },
-});
-```
-
-需要注意的是，变换中心描述的是相对于当前锚点的偏移量，既然是绝对值有时就需要先计算出图形的包围盒，有些基础图形例如 Circle、Rect 可能不需要计算，但如果是一个复杂组合后的图形，例如包含了一大堆自元素的 Group：
-
-```js
-const { halfExtents } = myShape.getBounds();
-myShape.style.origin = halfExtents;
-```
-
-如果可以使用百分比或者字面量表示就会更方便，此时就可以使用 [transformOrigin](/zh/docs/api/basic/display-object#transformorigin) 表示。例如我们想修改一个圆的变换中心到左上角而非圆心，可以这样做：
-
-```js
-const circle = new Circle({
-  style: {
-    x: 100,
-    y: 100,
-    r: 100,
-  },
-});
-
-circle.style.origin = [-100, -100]; // 相对于锚点（圆心）偏移 [-100, -100]
-// 或者
-circle.style.transformOrigin = 'left top'; // 包围盒左上角
-// 或者
-circle.style.transformOrigin = '0px 0px';
-// 或者
-circle.style.transformOrigin = '0% 0%';
-```
-
-两者的区别在于 origin 相对于锚点定义，而 transformOrigin 相对于包围盒定义。
-
 ### transform
 
 <tag color="green" text="可应用动画">可应用动画</tag>
@@ -545,13 +301,18 @@ circle.style.transformOrigin = '0 50%'; // 包围盒水平方向左侧边缘距�
 circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘距离为 0，垂直方向距离顶部 100px
 ```
 
-⚠️ 暂不支持三个值的写法。与 origin 的区别在于，origin 相对于锚点定义，而 transformOrigin 相对于包围盒定义。
+⚠️ 暂不支持三个值的写法。
 
 ## 填充
 
 ### opacity
 
-图形整体透明度
+图形整体透明度，取值范围为 `[0, 1]`，支持 `number` 与 `string` 两种类型，因此以下两种写法等价：
+
+```js
+circle.style.opacity = 0.5;
+circle.style.opacity = '0.5';
+```
 
 | [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
@@ -559,7 +320,12 @@ circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘�
 
 ### fillOpacity
 
-填充色透明度
+填充色透明度，取值范围为 `[0, 1]`，支持 `number` 与 `string` 两种类型，因此以下两种写法等价：
+
+```js
+circle.style.fillOpacity = 0.5;
+circle.style.fillOpacity = '0.5';
+```
 
 | [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
@@ -567,7 +333,12 @@ circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘�
 
 ### fill
 
-填充色
+填充色，支持 `string` 类型，详见 [\<paint\>](/zh/docs/api/css/css-properties-values-api#paint)：
+
+```js
+circle.style.fill = 'red';
+circle.style.fill = 'rgb(255, 0, 0)';
+```
 
 | [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
@@ -577,7 +348,12 @@ circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘�
 
 ### strokeOpacity
 
-描边透明度
+描边透明度，取值范围为 `[0, 1]`，支持 `number` 与 `string` 两种类型，因此以下两种写法等价：
+
+```js
+circle.style.strokeOpacity = 0.5;
+circle.style.strokeOpacity = '0.5';
+```
 
 | [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
@@ -585,7 +361,12 @@ circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘�
 
 ### stroke
 
-描边色
+描边色，支持 `string` 类型，详见 [\<paint\>](/zh/docs/api/css/css-properties-values-api#paint)：
+
+```js
+circle.style.stroke = 'red';
+circle.style.stroke = 'rgb(255, 0, 0)';
+```
 
 | [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
@@ -609,21 +390,21 @@ circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘�
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*f0-CTpClWkMAAAAAAAAAAAAAARQnAQ" width="300">
 
+支持 `number` 和 `string` 类型，前者默认为以 `px` 为单位的长度值，以下写法等价：
+
+```js
+circle.style.lineWidth = 1;
+circle.style.lineWidth = '1';
+circle.style.lineWidth = '1px';
+```
+
 | [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
 | '1' | 所有 | 是 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
 ### lineDash
 
-<tag color="green" text="可应用动画">可应用动画</tag>
-
-**类型**： `number[]`
-
-**默认值**：无
-
-**是否必须**：`false`
-
-**说明**：一个数组，描述交替绘制的线段和间距。可参考：https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
+使用 `number[]` 描述交替绘制的线段和间距。可参考：https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
 
 目前仅支持形如：`[dash, gap]` 的形式，如果数组中仅有一个元素，即 `[dash]` 等价于 `[dash, dash]`。
 
@@ -631,19 +412,19 @@ circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘�
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ)
 
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 无 | 所有 | 是 | 是 |  |
+
 ### lineDashOffset
 
-<tag color="green" text="可应用动画">可应用动画</tag>
-
-**类型**： `number`
-
-**默认值**：0
-
-**是否必须**：`false`
-
-**说明**：虚线偏移量，对它进行变换可以实现[蚂蚁线动画](/zh/docs/api/animation#蚂蚁线)
+虚线偏移量，`number` 类型，对它进行变换可以实现[蚂蚁线动画](/zh/docs/api/animation#蚂蚁线)
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ)
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | 所有 | 是 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
 ## 阴影
 
@@ -663,51 +444,35 @@ circle.getBounds(); // { halfExtents: [100, 100] }
 
 ### shadowColor
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+阴影色，支持 `string` 类型，例如 `'#1890FF'`。不支持渐变或者纹理写法。
 
-**类型**： `string`
-
-**默认值**：无
-
-**是否必须**：`false`
-
-**说明**：阴影色，例如 `'#1890FF'`。不支持渐变或者纹理写法。
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 无 | 所有 | 否 | 是 | [\<color\>](/zh/docs/api/css/css-properties-values-api#color) |
 
 ### shadowBlur
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+阴影效果模糊程度，`number` 类型，不允许为负数。越大代表越模糊，为 0 时无模糊效果。
 
-**类型**： `number`
-
-**默认值**：无
-
-**是否必须**：`false`
-
-**说明**：阴影效果模糊程度，不允许为负数。越大代表越模糊，为 0 时无模糊效果。
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 无 | 所有 | 否 | 是 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
 
 ### shadowOffsetX
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+水平方向偏移量，支持 `number` 或 `string` 类型，例如负数让阴影往左移，正数向右
 
-**类型**： `number`
-
-**默认值**：无
-
-**是否必须**：`false`
-
-**说明**：水平方向偏移量，例如负数让阴影往左移，正数向右
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 无 | 所有 | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
 ### shadowOffsetY
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+垂直方向偏移量，例如负数让阴影往上移，正数向下
 
-**类型**： `number`
-
-**默认值**：无
-
-**是否必须**：`false`
-
-**说明**：垂直方向偏移量，例如负数让阴影往上移，正数向下
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 无 | 所有 | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
 ## 滤镜
 
@@ -862,17 +627,15 @@ circle.style.filter = 'invert(100%)';
 
 ### zIndex
 
-**类型**： `number`
-
-**默认值**：0
-
-**是否必须**：`false`
-
-**说明**：类似 CSS 的 `zIndex` 属性，用于控制渲染次序，需要注意：
+类似 CSS 的 `zIndex` 属性，用于控制渲染次序，需要注意：
 
 1. 只会影响渲染顺序，并不会改变场景图中的节点结构
 2. 只在当前上下文内生效
 3. 默认展示次序为场景图添加顺序，后添加的在之前添加的元素之上
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | 所有 | 否 | 否 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
 
 例如下面的场景图中，由于 li2 在 li1 之后加入画布，因此 li2 默认会展示在 li1 之上。如果希望改变这种展示次序，可以修改 li1 的 zIndex：
 
@@ -1004,9 +767,11 @@ const animation = circle.animate(
 
 ### offsetDistance
 
-<tag color="green" text="可应用动画">可应用动画</tag>
-
 从路径起点出发行进的距离，取值范围为 `[0-1]`，0 代表路径起点，1 代表终点。
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | 所有 | 否 | 是 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
 
 ## 鼠标样式
 
@@ -1033,6 +798,13 @@ const circle = new Circle({
 - none 不响应事件
 
 后续会增加 `fill` `stroke` 等更多关键词。
+
+在该 [示例](/zh/examples/style#inheritance) 中，基于继承机制我们能很方便的控制可交互性：
+
+```js
+// 整个画布不响应交互事件
+canvas.document.documentElement.style.pointerEvents = 'none';
+```
 
 | [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
@@ -1101,11 +873,48 @@ circle.scaleLocal(2); // number
 
 ## 设置缩放和旋转中心
 
-| 名称      | 参数               | 返回值 | 备注                             |
-| --------- | ------------------ | ------ | -------------------------------- |
-| setOrigin | `[number, number]` | 无     | 设置局部坐标系下的缩放和旋转中心 |
+除了使用 [transformOrigin](/zh/docs/api/basic/display-object#transformorigin) 属性，还可以手动计算相对于 [anchor](/zh/docs/api/basic/display-object#anchor) 位置的偏移量，再通过 `setOrigin` 重新设置变换中心。
+
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| setOrigin | `[number, number]` 或 `[number, number, number]` 或 `number, number` 或 `number, number, number` | 无 | 设置局部坐标系下的缩放和旋转中心 |
+| getOrigin | `[number, number, number]` | 无 | 获取局部坐标系下的缩放和旋转中心 |
 
 设置局部坐标系下的缩放和旋转中心，[示例](/zh/examples/scenegraph#origin)
+
+数值为相对于[锚点](/zh/docs/api/basic/display-object#anchor)的偏移量，默认值为 `[0, 0]`，因此就是锚点位置。
+
+在下面的例子中，我们在 `[100, 100]` 处放置了一个半径为 100 的圆：
+
+```js
+const circle = new Circle({
+  style: {
+    x: 100,
+    y: 100,
+    r: 100,
+  },
+});
+```
+
+如果我们想让圆以圆心作为变换中心进行缩放，由于此时锚点就是圆心，因此缩放前后锚点在世界坐标系下位置不变，发生变化的是包围盒：
+
+```js
+circle.setOrigin(0, 0);
+circle.scale(0.5);
+circle.getPosition(); // [100, 100]
+circle.getBounds(); // { center: [100, 100], halfExtents: [50, 50] }
+```
+
+但假如我们想让这个圆以自身包围盒左上角进行缩放，即相对于当前锚点（圆心）偏移 `[-100, -100]`。缩放之后锚点也会发生偏移，圆在世界坐标系下的位置自然也来到了 `[50, 50]`。同理，包围盒的中心点发生了移动：
+
+```js
+circle.setOrigin(-100, -100);
+circle.scale(0.5);
+circle.getPosition(); // [50, 50]
+circle.getBounds(); // { center: [50, 50], halfExtents: [50, 50] }
+```
+
+在下面的[示例](/zh/examples/scenegraph#origin)中，我们创建了一个矩形，它的默认锚点为局部坐标系下包围盒的左上角。如果我们想让它以包围盒中心进行旋转，就需要设置变换中心相对于锚点偏移长宽各一半，即 `[150, 100]`：
 
 ```js
 const rect = new Rect({
@@ -1113,13 +922,32 @@ const rect = new Rect({
   style: {
     width: 300,
     height: 200,
-    origin: [150, 100], // 设置旋转与缩放中心，局部坐标系下的中点
+  },
+});
+rect.setOrigin(150, 100); // 设置旋转与缩放中心为自身包围盒中心点
+```
+
+例如我们想修改一个圆的变换中心到左上角而非圆心，可以这样做：
+
+```js
+const circle = new Circle({
+  style: {
+    x: 100,
+    y: 100,
+    r: 100,
   },
 });
 
-rect.style.origin = [0, 0]; // 设置为左上角
-// 或者 rect.setOrigin(0, 0);
+circle.setOrigin(-100, -100); // 相对于锚点（圆心）偏移 [-100, -100]
+// 或者
+circle.style.transformOrigin = 'left top'; // 包围盒左上角
+// 或者
+circle.style.transformOrigin = '0px 0px';
+// 或者
+circle.style.transformOrigin = '0% 0%';
 ```
+
+两者的区别在于 origin 相对于锚点定义，而 transformOrigin 相对于包围盒定义。
 
 # 获取包围盒
 

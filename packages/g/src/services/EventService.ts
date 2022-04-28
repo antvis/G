@@ -162,7 +162,10 @@ export class EventService extends EventEmitter {
     this.dispatchEvent(e, 'pointerdown');
 
     if (e.pointerType === 'touch') {
+      // only the
+      // if (e.isLast) {
       this.dispatchEvent(e, 'touchstart');
+      // }
     } else if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
       const isRightButton = e.button === 2;
       this.dispatchEvent(e, isRightButton ? 'rightdown' : 'mousedown');
@@ -609,7 +612,24 @@ export class EventService extends EventEmitter {
 
   private isNativeEventFromCanvas(event: FederatedEvent) {
     const $el = this.contextService.getDomElement();
-    return event.nativeEvent.composedPath().indexOf($el) > -1;
+
+    const target = event.nativeEvent?.target;
+
+    if (target) {
+      if (target === $el) {
+        return true;
+      }
+      if ($el && ($el as HTMLCanvasElement).contains) {
+        return ($el as HTMLCanvasElement).contains(target as any);
+      }
+    }
+
+    if (event.nativeEvent.composedPath) {
+      return event.nativeEvent.composedPath().indexOf($el) > -1;
+    }
+
+    // account for Touch
+    return false;
   }
 
   private async createPointerEvent(

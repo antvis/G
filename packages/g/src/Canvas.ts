@@ -156,20 +156,20 @@ export class Canvas extends EventTarget implements ICanvas {
      * implements `Window` interface
      */
     this.devicePixelRatio = dpr;
-    this.requestAnimationFrame = requestAnimationFrame || rAF.bind(globalThis);
-    this.cancelAnimationFrame = cancelAnimationFrame || cancelRAF.bind(globalThis);
+    this.requestAnimationFrame = requestAnimationFrame ?? rAF.bind(globalThis);
+    this.cancelAnimationFrame = cancelAnimationFrame ?? cancelRAF.bind(globalThis);
 
     /**
      * limits query
      */
-    this.supportTouchEvent = supportTouchEvent || 'ontouchstart' in globalThis;
-    this.supportPointerEvent = supportPointerEvent || !!globalThis.PointerEvent;
+    this.supportTouchEvent = supportTouchEvent ?? 'ontouchstart' in globalThis;
+    this.supportPointerEvent = supportPointerEvent ?? !!globalThis.PointerEvent;
     this.isTouchEvent =
-      isTouchEvent ||
+      isTouchEvent ??
       ((event: InteractivePointerEvent): event is TouchEvent =>
         this.supportTouchEvent && event instanceof globalThis.TouchEvent);
     this.isMouseEvent =
-      isMouseEvent ||
+      isMouseEvent ??
       ((event: InteractivePointerEvent): event is MouseEvent =>
         !globalThis.MouseEvent ||
         (event instanceof globalThis.MouseEvent &&
