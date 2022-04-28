@@ -74,6 +74,6 @@ describe('Camera landmark', () => {
     await sleep(200);
 
     expect(camera.getZoom()).to.be.eqls(2);
-    expect(camera.getPosition()).to.be.eqls(vec3.fromValues(100, 100, 0));
+    expect(camera.getPosition()).to.be.eqls(vec3.fromValues(100, 100, 500));
   });
 });

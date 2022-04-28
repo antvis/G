@@ -737,11 +737,9 @@ export class Camera extends EventEmitter {
     const { position, focalPoint, roll, zoom } = params;
 
     const camera = this.clone();
-    camera.setPosition(
-      vec3.fromValues(position[0], position[1], position[2] || camera.position[2]),
-    );
+    camera.setPosition(vec3.fromValues(position[0], position[1], position[2] || this.position[2]));
     camera.setFocalPoint(
-      vec3.fromValues(focalPoint[0], focalPoint[1], focalPoint[2] || camera.focalPoint[2]),
+      vec3.fromValues(focalPoint[0], focalPoint[1], focalPoint[2] || this.focalPoint[2]),
     );
     if (!isUndefined(roll)) {
       camera.setRoll(roll);
