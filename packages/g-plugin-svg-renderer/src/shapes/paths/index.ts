@@ -1,7 +1,8 @@
 import type { ParsedBaseStyleProps } from '@antv/g';
+import { Syringe } from 'mana-syringe';
 
-export const ElementRendererFactory = 'ElementRendererFactory';
-export const ElementRenderer = 'ElementRenderer';
+export const ElementRendererFactory = Syringe.defineToken('ElementRendererFactory');
+export const ElementRenderer = Syringe.defineToken('ElementRenderer');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface ElementRenderer<T extends ParsedBaseStyleProps> {
   dependencies: string[];

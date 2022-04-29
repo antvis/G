@@ -19,9 +19,9 @@ import { PathGeneratorFactory, RBushRoot } from '@antv/g-plugin-canvas-renderer'
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import type { RBush, PathGenerator, RBushNodeAABB } from '@antv/g-plugin-canvas-renderer';
 import { mat4, vec3 } from 'gl-matrix';
-import { inject, singleton } from 'mana-syringe';
+import { inject, singleton, Syringe } from 'mana-syringe';
 
-export const PointInPathPickerFactory = 'PointInPathPicker';
+export const PointInPathPickerFactory = Syringe.defineToken('PointInPathPicker');
 export type PointInPathPicker<T extends BaseStyleProps> = (
   displayObject: DisplayObject<T>,
   point: Point,

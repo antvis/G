@@ -9,6 +9,7 @@ import type {
   CSSRGB,
   CSSUnitValue,
 } from './css';
+import { Syringe } from 'mana-syringe';
 
 export enum Shape {
   GROUP = 'g',
@@ -327,7 +328,7 @@ export interface RendererConfig {
   enableTAA: boolean;
 }
 
-export const CanvasConfig = 'CanvasConfig';
+export const CanvasConfig = Syringe.defineToken('CanvasConfig');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface CanvasConfig {
   /**

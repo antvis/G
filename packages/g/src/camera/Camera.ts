@@ -1,13 +1,15 @@
 import { EventEmitter } from 'eventemitter3';
-import { mat3, mat4, quat, vec2, vec3, vec4 } from 'gl-matrix';
+import type { vec2 } from 'gl-matrix';
+import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
 import { Landmark } from './Landmark';
 import { Frustum } from '../shapes';
 import { createVec3, getAngle, makePerspective } from '../utils/math';
 import type { Canvas } from '../Canvas';
 import { parseEasingFunction } from '../utils/animation';
 import { isNumber, isString, isUndefined } from '@antv/util';
+import { Syringe } from 'mana-syringe';
 
-export const DefaultCamera = 'DefaultCamera';
+export const DefaultCamera = Syringe.defineToken('DefaultCamera');
 
 export enum CAMERA_TYPE {
   ORBITING = 'ORBITING',
