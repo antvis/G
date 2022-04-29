@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-mobile-interaction",
-  "version": "0.0.7",
+  "version": "0.0.8-alpha.0",
   "description": "A G plugin listening events in mobile environment",
   "main": "lib/index.js",
   "module": "es/index.js",
