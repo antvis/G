@@ -2,7 +2,7 @@ import * as d3 from 'd3-color';
 import { clamp, isString } from '@antv/util';
 import type { Pattern, LinearGradient, RadialGradient } from '../cssom';
 import { CSSRGB, CSSGradientValue, GradientPatternType } from '../cssom';
-import type { Tuple4Number } from '../..';
+import type { Tuple4Number } from '../../types';
 
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;

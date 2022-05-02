@@ -1,6 +1,7 @@
 import { singleton } from 'mana-syringe';
-import type { CSSUnitValue, CSSProperty} from '../..';
-import { parseNumber, clampedMergeNumbers } from '../..';
+import type { CSSUnitValue } from '../cssom';
+import type { CSSProperty } from '../CSSProperty';
+import { parseNumber, clampedMergeNumbers } from '../parser';
 
 /**
  * opacity

@@ -1,8 +1,9 @@
 // import { uniq } from '@antv/util';
 import { singleton } from 'mana-syringe';
-import type { CSSProperty, DisplayObject } from '../..';
-import { Opx, Odeg, parseTransform, mergeTransforms } from '../..';
 import { CSSKeywordValue } from '../cssom';
+import type { DisplayObject } from '../../display-objects';
+import type { CSSProperty } from '../CSSProperty';
+import { Opx, Odeg, parseTransform, mergeTransforms } from '../parser';
 
 /**
  * @see /zh/docs/api/animation#支持变换的属性

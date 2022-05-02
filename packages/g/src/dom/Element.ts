@@ -8,7 +8,7 @@ import type { AABB, Rectangle } from '../shapes';
 import type { IEventTarget, IChildNode, IElement, INode, ICSSStyleDeclaration } from './interfaces';
 import { ElementEvent } from './interfaces';
 import { formatAttribute } from '../utils';
-import { MutationEvent } from '..';
+import { MutationEvent } from './MutationEvent';
 
 let entityCounter = 0;
 

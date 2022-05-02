@@ -1,5 +1,6 @@
-import type { IElement, DisplayObject } from '..';
-import { ElementEvent } from '..';
+import type { IElement } from './interfaces';
+import { ElementEvent } from './interfaces';
+import type { DisplayObject } from '../display-objects';
 import { MutationEvent } from './MutationEvent';
 import { MutationRecord } from './MutationRecord';
 

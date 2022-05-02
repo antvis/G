@@ -1,15 +1,14 @@
 import {
-  CSSUnitValue,
   parseNumber,
   mergeNumbers,
   parseAngle,
   parseLength,
   parseLengthOrPercentage,
   mergeDimensions,
-} from '..';
+} from './';
 // import { makeMatrixDecomposition, quat, composeMatrix } from '../utils/matrix-decompose';
 import type { DisplayObject } from '../../display-objects/DisplayObject';
-import { UnitType } from '../cssom';
+import { UnitType, CSSUnitValue } from '../cssom';
 
 // eg. { t: 'scale', d: [CSSUnitValue(1), CSSUnitValue(2)] }
 export interface ParsedTransform {

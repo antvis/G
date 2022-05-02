@@ -1,13 +1,9 @@
 import { singleton } from 'mana-syringe';
-import type {
-  CSSUnitValue,
-  CSSProperty,
-  ParsedBaseStyleProps,
-  DisplayObject} from '../..';
-import {
-  mergeDimensions,
-  parseLengthOrPercentage
-} from '../..';
+import type { ParsedBaseStyleProps } from '../../types';
+import type { DisplayObject } from '../../display-objects';
+import type { CSSProperty } from '../CSSProperty';
+import type { CSSUnitValue } from '../cssom';
+import { mergeDimensions, parseLengthOrPercentage } from '../parser';
 import { CSSPropertyLengthOrPercentage } from './CSSPropertyLengthOrPercentage';
 
 /**

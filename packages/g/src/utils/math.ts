@@ -1,4 +1,4 @@
-import { isNumber } from '@antv/util';
+import { isArray, isNumber } from '@antv/util';
 import type { quat, vec2, vec4 } from 'gl-matrix';
 import { mat3, mat4, vec3 } from 'gl-matrix';
 
@@ -11,16 +11,16 @@ export function getAngle(angle: number | undefined) {
   return angle;
 }
 
-export function createVec3(x: number | vec2 | vec3 | vec4, y?: number, z?: number) {
+export function createVec3(x: number | vec2 | vec3 | vec4, y: number = 0, z: number = 0) {
   if (isNumber(x)) {
-    return vec3.fromValues(x, y as number, z as number);
+    return vec3.fromValues(x, y, z);
   }
 
-  if ((x as vec3).length === 3) {
-    return vec3.clone(x as vec3);
+  if (isArray(x) && x.length === 3) {
+    return vec3.clone(x);
   }
 
-  return vec3.fromValues(x[0], x[1], x[2] || 0);
+  return vec3.fromValues(x[0], x[1] || y, x[2] || z);
 }
 
 export function deg2rad(deg: number) {

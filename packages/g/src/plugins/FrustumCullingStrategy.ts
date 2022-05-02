@@ -6,7 +6,7 @@ import type { Plane } from '../shapes';
 import { DefaultCamera, Camera } from '../camera/Camera';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { Element } from '../dom';
-import { Shape } from '..';
+import { Shape } from '../types';
 
 // group is not a 2d shape
 const shape2D = [

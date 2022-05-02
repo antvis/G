@@ -1,6 +1,7 @@
 import { singleton } from 'mana-syringe';
-import type { CSSProperty, DisplayObject } from '../..';
-import { CSSKeywordValue } from '../..';
+import type { CSSProperty } from '../CSSProperty';
+import { CSSKeywordValue } from '../cssom';
+import type { DisplayObject } from '../../display-objects';
 
 @singleton()
 export class CSSPropertyText implements Partial<CSSProperty<CSSKeywordValue | string, string>> {

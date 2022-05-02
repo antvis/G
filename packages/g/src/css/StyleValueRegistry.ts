@@ -1,10 +1,12 @@
 import { postConstruct, singleton, GlobalContainer } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
-import type { DisplayObject, ParsedBaseStyleProps, GeometryAABBUpdater, BaseStyleProps } from '..';
-import { ElementEvent } from '..';
-import { dirtifyToRoot, Shape, GeometryUpdaterFactory, AABB } from '..';
-import { CSSStyleValue, CSSUnitValue } from './cssom';
-import { CSSKeywordValue } from './cssom';
+import type { DisplayObject } from '../display-objects';
+import type { GeometryAABBUpdater } from '../services';
+import { dirtifyToRoot, GeometryUpdaterFactory } from '../services';
+import { ElementEvent } from '../dom';
+import type { ParsedBaseStyleProps, BaseStyleProps } from '../types';
+import { Shape } from '../types';
+import { CSSKeywordValue, CSSStyleValue, CSSUnitValue } from './cssom';
 import type { ParsedFilterStyleProperty } from './parser';
 import { convertPercentUnit } from './parser';
 import {
@@ -29,6 +31,7 @@ import {
 } from './properties';
 import type { CSSProperty } from './CSSProperty';
 import { formatAttribute } from '../utils';
+import { AABB } from '../shapes';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
 export interface PropertyParseOptions {

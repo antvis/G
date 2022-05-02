@@ -1,4 +1,5 @@
 import { isNil } from '@antv/util';
+import type { Format } from '../format';
 import type {
   BufferBinding,
   SamplerBinding,
@@ -8,13 +9,12 @@ import type {
   AttachmentState,
   MegaStateDescriptor,
   Program,
-  Format,
   RenderPipelineDescriptor,
   VertexAttributeDescriptor,
   InputLayoutBufferDescriptor,
   InputLayoutDescriptor,
   SamplerDescriptor,
-} from '..';
+} from '../interfaces';
 import type { BindingLayoutSamplerDescriptor } from '../interfaces';
 import { colorEqual } from './color';
 import { copyMegaState } from './states';

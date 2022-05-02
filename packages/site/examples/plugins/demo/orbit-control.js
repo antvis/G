@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent } from '@antv/g';
+import { Canvas, CanvasEvent, CameraType } from '@antv/g';
 import { Renderer } from '@antv/g-webgl';
 import { MeshBasicMaterial, CubeGeometry, Mesh, Plugin as Plugin3D } from '@antv/g-plugin-3d';
 import { Plugin as PluginControl } from '@antv/g-plugin-control';
@@ -48,6 +48,8 @@ const canvas = new Canvas({
 
   canvas.appendChild(cube);
 
+  const camera = canvas.getCamera();
+
   // stats
   const stats = new Stats();
   stats.showPanel(0);
@@ -67,4 +69,16 @@ const canvas = new Canvas({
   // GUI
   const gui = new lil.GUI({ autoPlace: false });
   $wrapper.appendChild(gui.domElement);
+
+  const cameraFolder = gui.addFolder('camera');
+  const cameraConfig = {
+    type: 'Exploring',
+  };
+
+  const types = ['Orbiting', 'Exploring', 'Tracking'];
+  const enums = [CameraType.ORBITING, CameraType.EXPLORING, CameraType.TRACKING];
+  cameraFolder.add(cameraConfig, 'type', types).onChange((type) => {
+    const index = types.indexOf(type);
+    camera.setType(enums[index]);
+  });
 })();

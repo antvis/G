@@ -1,6 +1,9 @@
 import type { vec2, vec3 } from 'gl-matrix';
-import type { ParsedPathStyleProps, ParsedPolylineStyleProps } from './display-objects';
-import type { DisplayObject } from './display-objects';
+import type {
+  DisplayObject,
+  ParsedPathStyleProps,
+  ParsedPolylineStyleProps,
+} from './display-objects';
 import type { IRenderer } from './AbstractRenderer';
 import type {
   CSSGlobalKeywords,

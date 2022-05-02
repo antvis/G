@@ -1,4 +1,4 @@
-import type { IElement } from '..';
+import type { IElement } from '../dom';
 import type { StyleValueRegistry } from './StyleValueRegistry';
 
 export type Interpolatable = number | boolean | number[] | boolean[];

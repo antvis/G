@@ -1,5 +1,5 @@
 import { singleton } from 'mana-syringe';
-import { clampedMergeNumbers } from '../..';
+import { clampedMergeNumbers } from '../parser';
 import { CSSPropertyLengthOrPercentage } from './CSSPropertyLengthOrPercentage';
 
 @singleton()

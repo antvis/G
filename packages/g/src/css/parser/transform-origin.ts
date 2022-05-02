@@ -1,6 +1,6 @@
 import { isString } from '@antv/util';
-import { CSSUnitValue } from '..';
-import { parseLengthOrPercentage } from '..';
+import { CSSUnitValue } from '../cssom';
+import { parseLengthOrPercentage } from './dimension';
 
 /**
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin

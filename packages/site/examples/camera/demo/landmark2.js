@@ -88,6 +88,9 @@ const cameraConfig = {
     camera.gotoLandmark('reset', {
       duration: 1000,
       easing: 'ease-in',
+      onfinish: () => {
+        console.log('reset finished');
+      },
     });
   },
   goToMark2: () => {

@@ -1,6 +1,8 @@
 import { singleton } from 'mana-syringe';
-import type { CSSProperty, DisplayObject, ParsedBaseStyleProps } from '../..';
-import { parsePoints } from '../..';
+import type { DisplayObject } from '../../display-objects';
+import type { ParsedBaseStyleProps } from '../../types';
+import type { CSSProperty } from '../CSSProperty';
+import { parsePoints } from '../parser';
 
 @singleton()
 export class CSSPropertyPoints

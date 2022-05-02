@@ -1,6 +1,8 @@
 import { singleton } from 'mana-syringe';
-import type { CSSProperty, DisplayObject } from '../..';
-import { CSSUnitValue, parseNumberList } from '../..';
+import type { CSSProperty } from '../CSSProperty';
+import type { DisplayObject } from '../../display-objects';
+import { CSSUnitValue } from '../cssom';
+import { parseNumberList } from '../parser';
 
 @singleton()
 export class CSSPropertyAnchor implements Partial<CSSProperty<CSSUnitValue[], CSSUnitValue[]>> {

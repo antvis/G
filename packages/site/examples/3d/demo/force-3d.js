@@ -5,7 +5,6 @@ import {
   SphereGeometry,
   DirectionalLight,
   Mesh,
-  FogType,
   Plugin as Plugin3D,
 } from '@antv/g-plugin-3d';
 import { Plugin as PluginControl } from '@antv/g-plugin-control';

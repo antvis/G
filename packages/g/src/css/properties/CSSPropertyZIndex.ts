@@ -1,6 +1,8 @@
 import { singleton } from 'mana-syringe';
-import type { CSSProperty, CSSUnitValue, DisplayObject } from '../..';
-import { parseNumber } from '../..';
+import type { CSSProperty } from '../CSSProperty';
+import type { CSSUnitValue } from '../cssom';
+import type { DisplayObject } from '../../display-objects';
+import { parseNumber } from '../parser';
 
 @singleton()
 export class CSSPropertyZIndex implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> {

@@ -1,6 +1,7 @@
 import { singleton } from 'mana-syringe';
-import type { CSSProperty, DisplayObject} from '../..';
-import { dirtifyToRoot } from '../..';
+import type { CSSProperty } from '../CSSProperty';
+import type { DisplayObject } from '../../display-objects';
+import { dirtifyToRoot } from '../../services';
 
 /**
  * @see /zh/docs/api/basic/display-object#clippath

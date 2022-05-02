@@ -1,4 +1,4 @@
-import type { ElementEvent, IElement } from '..';
+import type { ElementEvent, IElement } from './interfaces';
 import { FederatedEvent } from './FederatedEvent';
 
 export class MutationEvent extends FederatedEvent {

@@ -1,7 +1,8 @@
 import { singleton } from 'mana-syringe';
-import type { CSSProperty, DisplayObject } from '../..';
-import { parseColor, mergeColors } from '../..';
-import type { CSSGradientValue} from '../cssom';
+import type { CSSProperty } from '../CSSProperty';
+import type { DisplayObject } from '../../display-objects';
+import { parseColor, mergeColors } from '../parser';
+import type { CSSGradientValue } from '../cssom';
 import { CSSKeywordValue, CSSRGB } from '../cssom';
 import type { StyleValueRegistry } from '../StyleValueRegistry';
 

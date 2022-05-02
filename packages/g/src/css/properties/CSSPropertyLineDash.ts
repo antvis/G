@@ -1,12 +1,8 @@
 import { singleton } from 'mana-syringe';
-import type {
-  CSSProperty,
-  CSSUnitValue,
-  DisplayObject} from '../..';
-import {
-  parseDimensionArray,
-  mergeDimensionList
-} from '../..';
+import type { DisplayObject } from '../../display-objects';
+import type { CSSProperty } from '../CSSProperty';
+import type { CSSUnitValue } from '../cssom';
+import { parseDimensionArray, mergeDimensionList } from '../parser';
 
 @singleton()
 export class CSSPropertyLineDash implements Partial<CSSProperty<CSSUnitValue[], CSSUnitValue[]>> {
