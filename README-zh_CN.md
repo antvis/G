@@ -2,9 +2,11 @@
 
 # G
 
-[![](https://img.shields.io/travis/antvis/g.svg)](https://travis-ci.org/antvis/g) ![](https://img.shields.io/badge/language-javascript-red.svg) ![](https://img.shields.io/badge/license-MIT-000000.svg)
+[![Build Status](https://img.shields.io/travis/antvis/g)](https://travis-ci.org/antvis/g) ![CI](https://github.com/antvis/g/workflows/CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/antvis/g/badge.svg?branch=next)](https://coveralls.io/github/antvis/g?branch=next)
 
-[![npm package](https://img.shields.io/npm/v/@antv/g-canvas.svg)](https://www.npmjs.com/package/@antv/g-canvas) [![npm downloads](http://img.shields.io/npm/dm/@antv/g-canvas.svg)](https://npmjs.org/package/@antv/g-canvas) [![npm package](https://img.shields.io/npm/v/@antv/g-svg.svg)](https://www.npmjs.com/package/@antv/g-svg) [![npm downloads](http://img.shields.io/npm/dm/@antv/g-svg.svg)](https://npmjs.org/package/@antv/g-svg) [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open')
+![](https://img.shields.io/badge/language-typescript-blue.svg) ![](https://img.shields.io/badge/license-MIT-000000.svg)
+
+[![npm package](https://img.shields.io/npm/v/@antv/g)](https://www.npmjs.com/package/@antv/g) [![npm downloads](http://img.shields.io/npm/dm/@antv/g)](https://www.npmjs.com/package/@antv/g) [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open') [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=shields)](https://github.com/antvis/g/pulls)
 
 一款高效易用的可视化渲染引擎。
 
@@ -20,7 +22,7 @@
 
 ## ✨ 特性
 
-- 更易用的 API。其中图形、事件系统兼容 DOM API，动画系统兼容 Web Animation API。可以以极低的成本适配 Web 端已有的生态例如 D3、Hammer.js 手势库等。
+- 更易用的 API。其中图形、事件系统兼容 DOM Element & Event API，动画系统兼容 Web Animation API。可以以极低的成本适配 Web 端已有的生态例如 D3、Hammer.js 手势库等。
 - 适配 Web 端多种渲染环境。支持 Canvas2D / SVG / WebGL / WebGPU 以及运行时切换。
 - 高性能的渲染与计算。为可并行算法提供基于 WebGPU 的 GPGPU 支持。
   - [webgpu-graph](https://g-next.antv.vision/zh/docs/api/gpgpu/webgpu-graph) 使用 GPU 加速的图分析算法库
