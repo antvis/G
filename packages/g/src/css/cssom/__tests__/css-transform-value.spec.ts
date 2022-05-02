@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { CSSTranslate, CSSUnitValue } from '../../..';
+import { CSSTranslate, CSSUnitValue } from '@antv/g';
 
 describe('CSSTransformValueTest', () => {
   it('should create with translate()', () => {

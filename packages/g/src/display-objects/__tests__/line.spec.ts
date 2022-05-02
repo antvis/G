@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Line } from '../..';
+import { Line } from '@antv/g';
 import { vec3 } from 'gl-matrix';
 
 describe('Line', () => {

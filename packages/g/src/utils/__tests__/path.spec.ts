@@ -5,8 +5,17 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { Rect, Ellipse, Circle, Line, Polyline, Polygon, Path } from '../..';
-import { convertToPath, equalizeSegments } from '../path';
+import {
+  Rect,
+  Ellipse,
+  Circle,
+  Line,
+  Polyline,
+  Polygon,
+  Path,
+  convertToPath,
+  equalizeSegments,
+} from '@antv/g';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);

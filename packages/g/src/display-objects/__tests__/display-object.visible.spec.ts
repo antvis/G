@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Group, Canvas } from '../../../lib';
+import { Group, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { sleep } from '../../__tests__/utils';
 

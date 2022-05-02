@@ -17,7 +17,7 @@
     "watch": "father build -w",
     "test": "jest packages/g/",
     "test-watch": "DEBUG_MODE=1 jest --watch",
-    "cov": "jest --coverage",
+    "cov": "jest packages/g/ --coverage",
     "contributor": "git-contributor",
     "lint": "npm run eslint",
     "eslint": "eslint --ext .ts,.js ./packages",

@@ -6,7 +6,7 @@ import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
 import { vec3 } from 'gl-matrix';
-import { Camera, Canvas } from '../../../lib';
+import { Camera, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { sleep } from '../../__tests__/utils';
 
@@ -80,12 +80,11 @@ describe('Camera landmark', () => {
       duration: 100,
       easing: 'easeOut',
       easingFunction: (t) => t,
-      onfinish: () => {
-        expect(finishCallback).to.have.been.called;
-      },
+      onfinish: finishCallback,
     });
 
     await sleep(300);
+    expect(finishCallback).to.have.been.called;
 
     expect(camera.getPosition()).to.be.eqls(vec3.fromValues(100, 100, 500));
     expect(camera.getFocalPoint()).to.be.eqls(vec3.fromValues(100, 100, 0));

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
-import { BoundingSphere } from '../BoundingSphere';
+import { BoundingSphere } from '@antv/g';
 
 describe('Bounding Sphere', () => {
   test('should overlap with another bounding sphere.', () => {

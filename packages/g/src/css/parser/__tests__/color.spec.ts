@@ -13,7 +13,7 @@ import {
   parseColor,
   mergeColors,
   GradientPatternType,
-} from '../../..';
+} from '@antv/g';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);

@@ -1,8 +1,6 @@
 import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
-import { AABB } from '../AABB';
-import { Plane } from '../Plane';
-import { Ray } from '../Ray';
+import { AABB, Plane, Ray } from '@antv/g';
 
 describe('AABB', () => {
   test('should construct correctly.', () => {

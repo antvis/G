@@ -2,7 +2,7 @@ import { isArray, isNumber } from '@antv/util';
 import type { quat, vec2, vec4 } from 'gl-matrix';
 import { mat3, mat4, vec3 } from 'gl-matrix';
 
-export function getAngle(angle: number | undefined) {
+export function getAngle(angle?: number) {
   if (angle === undefined) {
     return 0;
   } else if (angle > 360 || angle < -360) {
@@ -195,10 +195,6 @@ export function makePerspective(
   out[14] = d;
   out[15] = 0;
   return out;
-}
-
-export function blend(from: number, to: number, progress: number) {
-  return from + (to - from) * progress;
 }
 
 export function decompose(mat: mat3) {

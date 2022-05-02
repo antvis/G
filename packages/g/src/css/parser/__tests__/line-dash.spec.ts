@@ -1,5 +1,5 @@
 import chai, { expect } from 'chai';
-import { parseDimensionArray } from '../../..';
+import { parseDimensionArray } from '@antv/g';
 
 describe('Property LineDash', () => {
   it('parse lineDash with unit', () => {

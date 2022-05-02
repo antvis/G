@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
-import { Plane } from '../Plane';
+import { Plane } from '@antv/g';
 
 describe('Plane', () => {
   test('should generate correct p-vertex & n-vertex flag.', () => {
@@ -39,7 +39,11 @@ describe('Plane', () => {
     const plane = new Plane(2, vec3.fromValues(0, 1, 0));
 
     const intersection = vec3.create();
-    const intersects = plane.intersectsLine(vec3.fromValues(1, 10, 0), vec3.fromValues(1, -10, 0), intersection);
+    const intersects = plane.intersectsLine(
+      vec3.fromValues(1, 10, 0),
+      vec3.fromValues(1, -10, 0),
+      intersection,
+    );
 
     expect(intersects).to.true;
     expect(intersection).to.eqls(vec3.fromValues(1, 2, 0));
@@ -49,7 +53,11 @@ describe('Plane', () => {
     const plane = new Plane(2, vec3.fromValues(0, 1, 0));
 
     const intersection = vec3.create();
-    const intersects = plane.intersectsLine(vec3.fromValues(-1, 10, 0), vec3.fromValues(1, 10, 0), intersection);
+    const intersects = plane.intersectsLine(
+      vec3.fromValues(-1, 10, 0),
+      vec3.fromValues(1, 10, 0),
+      intersection,
+    );
 
     expect(intersects).to.false;
     expect(intersection).to.eqls(vec3.create());

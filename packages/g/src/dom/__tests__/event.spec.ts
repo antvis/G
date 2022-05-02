@@ -16,7 +16,7 @@ import {
   MutationEvent,
   MutationObserver,
   MutationRecord,
-} from '../../../lib';
+} from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { sleep } from '../../__tests__/utils';
 

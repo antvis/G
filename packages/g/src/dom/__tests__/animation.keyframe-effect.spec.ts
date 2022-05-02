@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
-import { KeyframeEffect, Group, Circle } from '../..';
+import { KeyframeEffect, Group, Circle } from '@antv/g';
 import {
   gEmptyKeyframeListTests,
   gGoodKeyframeCompositeValueTests,

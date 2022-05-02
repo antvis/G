@@ -6,7 +6,7 @@ import {
   parseAngle,
   parseLengthOrPercentage,
   mergeDimensions,
-} from '../../..';
+} from '@antv/g';
 
 const circle = new Circle({
   style: {

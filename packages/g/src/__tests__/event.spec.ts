@@ -6,7 +6,7 @@ import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
 // @ts-ignore
-import { Group, Circle, Canvas, Text, Rect, ElementEvent } from '../../lib';
+import { Group, Circle, Canvas, Text, Rect, ElementEvent } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Plugin } from '@antv/g-plugin-css-select';
 import interact from 'interactjs';

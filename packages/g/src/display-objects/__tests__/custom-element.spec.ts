@@ -1,5 +1,5 @@
 import type { DisplayObjectConfig, BaseStyleProps } from '@antv/g';
-import { CustomElement, Circle } from '../../../lib';
+import { CustomElement, Circle } from '@antv/g';
 
 interface AProps extends BaseStyleProps {
   size: number;

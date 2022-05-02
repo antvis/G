@@ -5,7 +5,7 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { Camera, CameraProjectionMode, Canvas } from '../../../lib';
+import { Camera, CameraProjectionMode, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { sleep } from '../../__tests__/utils';
 import { mat4, vec3 } from 'gl-matrix';

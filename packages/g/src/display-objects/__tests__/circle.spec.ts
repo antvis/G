@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Circle } from '../..';
+import { Circle } from '@antv/g';
 import { vec3 } from 'gl-matrix';
 
 describe('Circle', () => {

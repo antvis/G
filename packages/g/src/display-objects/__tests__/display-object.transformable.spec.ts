@@ -6,7 +6,7 @@ import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
 import { mat3, mat4, vec2, vec3 } from 'gl-matrix';
-import { DisplayObject, Group, Circle } from '../..';
+import { DisplayObject, Group, Circle } from '@antv/g';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);

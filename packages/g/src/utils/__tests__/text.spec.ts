@@ -1,6 +1,5 @@
 import chai, { expect } from 'chai';
-import { toFontString } from '../text';
-import { CSS, CSSKeywordValue } from '../..';
+import { toFontString, CSS, CSSKeywordValue } from '@antv/g';
 
 describe('Text utils', () => {
   it('should convert font string correctly', () => {
