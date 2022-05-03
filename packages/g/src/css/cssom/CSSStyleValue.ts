@@ -1,7 +1,7 @@
 // import type { CSSValue } from '../CSSValue';
 // import { CSSPropertyID, cssPropertyID } from '../properties/CSSPropertyNames';
 // import { fromString } from '../parser/StyleValueFactory';
-import { Nested, ParenLess, UnitType, UnitCategory } from '.';
+import { Nested, ParenLess, UnitType, UnitCategory } from './types';
 
 // This file specifies the unit strings used in CSSPrimitiveValues.
 const data = [

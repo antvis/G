@@ -1,6 +1,7 @@
 import { singleton } from 'mana-syringe';
-import type { Text, CSSProperty, ParsedPathStyleProps, DisplayObject } from '../..';
-import { TextTransform, Shape } from '../..';
+import { TextTransform, Shape } from '../../types';
+import type { CSSProperty } from '../CSSProperty';
+import type { Text, DisplayObject, ParsedPathStyleProps } from '../../display-objects';
 
 @singleton()
 export class CSSPropertyTextTransform

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { Path } from '../..';
+import { Path } from '@antv/g';
 import { vec3 } from 'gl-matrix';
-import type { PathCommand } from '../../types';
+import type { PathCommand } from '@antv/g';
 
 describe('Path', () => {
   it('should calc global bounds correctly', () => {

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { KeyframeEffect } from '../..';
+import { KeyframeEffect } from '@antv/g';
 
 interface Test {
   desc: string;

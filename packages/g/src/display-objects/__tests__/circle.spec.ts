@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Circle } from '../..';
+import { Circle } from '@antv/g';
 import { vec3 } from 'gl-matrix';
 
 describe('Circle', () => {
@@ -119,5 +119,10 @@ describe('Circle', () => {
       expect(geometryBounds.center).eqls(vec3.fromValues(-10, -10, 0));
       expect(geometryBounds.halfExtents).eqls(vec3.fromValues(10, 10, 0));
     }
+
+    // ignore undefined
+    circle.setAttribute('r', undefined);
+    circle.style.r = undefined;
+    expect(circle.style.r).to.be.eqls(10);
   });
 });

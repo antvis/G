@@ -1,6 +1,10 @@
 import { singleton } from 'mana-syringe';
-import type { DisplayObject, ParsedBaseStyleProps, CSSProperty, ParsedPathStyleProps } from '../..';
-import { parsePath, mergePaths, CSSKeywordValue, Rectangle } from '../..';
+import type { ParsedBaseStyleProps } from '../../types';
+import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
+import { Rectangle } from '../../shapes';
+import { CSSKeywordValue } from '../cssom';
+import type { CSSProperty } from '../CSSProperty';
+import { parsePath, mergePaths } from '../parser';
 
 @singleton()
 export class CSSPropertyPath

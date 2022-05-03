@@ -126,6 +126,8 @@ rendererFolder.open();
 
 const cameraFolder = gui.addFolder('camera actions');
 const cameraConfig = {
+  x: 300,
+  y: 250,
   panX: 0,
   panY: 0,
   zoom: 1,
@@ -133,6 +135,16 @@ const cameraConfig = {
 };
 
 const origin = camera.getPosition();
+cameraFolder.add(cameraConfig, 'x', 0, 500).onChange((x) => {
+  const current = camera.getPosition();
+  camera.setPosition(x, current[1]);
+  camera.setFocalPoint(x, current[1]);
+});
+cameraFolder.add(cameraConfig, 'y', 0, 500).onChange((y) => {
+  const current = camera.getPosition();
+  camera.setPosition(current[0], y);
+  camera.setFocalPoint(current[0], y);
+});
 cameraFolder.add(cameraConfig, 'panX', -300, 300).onChange((panX) => {
   const current = camera.getPosition();
   camera.pan(origin[0] + panX - current[0], 0);

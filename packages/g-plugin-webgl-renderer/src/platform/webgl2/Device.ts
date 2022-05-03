@@ -6,7 +6,7 @@ import {
   getFormatTypeFlags,
   getFormatFlags,
   FormatFlags,
-} from '..';
+} from '../format';
 import { makeStaticDataBuffer } from '../../geometries';
 import { CopyProgram } from '../../passes/Copy';
 import { preprocessProgramObj_GLSL } from '../../shader/compiler';

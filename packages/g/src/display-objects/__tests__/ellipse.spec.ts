@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Ellipse } from '../..';
+import { Ellipse } from '@antv/g';
 import { vec3 } from 'gl-matrix';
 
 describe('Ellipse', () => {

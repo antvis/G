@@ -1,6 +1,7 @@
 import { singleton, inject } from 'mana-syringe';
-import type { ParsedTextStyleProps } from '..';
-import { toFontString, Rectangle } from '..';
+import { toFontString } from '../utils';
+import type { ParsedTextStyleProps } from '../display-objects';
+import { Rectangle } from '../shapes';
 import { OffscreenCanvasCreator } from './OffscreenCanvasCreator';
 
 export interface TextMetrics {

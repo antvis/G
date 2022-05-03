@@ -6,9 +6,9 @@ import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
 
-import { Group, Circle, Canvas, Text, Rect, ElementEvent } from '../../lib';
+import { Group, Circle, Canvas, Text, Rect, ElementEvent } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import type { FederatedPointerEvent } from '../dom';
+import type { FederatedPointerEvent } from '@antv/g';
 import { sleep } from './utils';
 
 chai.use(chaiAlmost(0.0001));
@@ -61,6 +61,8 @@ describe('Canvas', () => {
     const handlePointerDown = (e) => {
       // target
       expect(e.target).to.be.eqls(circle);
+      // currentTarget
+      expect(e.currentTarget).to.be.eqls(canvas);
 
       // composed path
       const path = e.composedPath();
@@ -113,6 +115,8 @@ describe('Canvas', () => {
       (e) => {
         // target
         expect(e.target).to.be.eqls(canvas.document);
+        // currentTarget
+        expect(e.currentTarget).to.be.eqls(canvas);
 
         // composed path
         const path = e.composedPath();
@@ -174,12 +178,13 @@ describe('Canvas', () => {
 
     await sleep(100);
 
-    const camera = canvas.getCamera();
-
     canvas.addEventListener(
       'pointerdown',
       // @ts-ignore
       (e: FederatedPointerEvent) => {
+        // currentTarget
+        expect(e.currentTarget).to.be.eqls(canvas);
+
         // coordinates
         expect(e.clientX).to.be.eqls(100);
         expect(e.clientY).to.be.eqls(100);
@@ -217,6 +222,24 @@ describe('Canvas', () => {
         screenY: 200,
       }),
     );
+  });
+
+  it("should acount for camera's position when converting", async () => {
+    const camera = canvas.getCamera();
+    const $canvas = canvas.getContextService().getDomElement();
+    const { top, left } = ($canvas as HTMLCanvasElement).getBoundingClientRect();
+
+    const circle = new Circle({
+      style: {
+        x: 100,
+        y: 100,
+        r: 100,
+        fill: 'red',
+      },
+    });
+    canvas.appendChild(circle);
+
+    await sleep(100);
 
     canvas.addEventListener(
       'pointerdown',
@@ -256,4 +279,67 @@ describe('Canvas', () => {
       }),
     );
   });
+
+  // it("should acount for camera's zoom when converting", async () => {
+  //   const camera = canvas.getCamera();
+  //   const $canvas = canvas.getContextService().getDomElement();
+  //   const { top, left } = ($canvas as HTMLCanvasElement).getBoundingClientRect();
+
+  //   const circle = new Circle({
+  //     style: {
+  //       x: 100,
+  //       y: 100,
+  //       r: 100,
+  //       fill: 'red',
+  //     },
+  //   });
+  //   canvas.appendChild(circle);
+
+  //   await sleep(100);
+
+  //   canvas.addEventListener(
+  //     'pointerdown',
+  //     // @ts-ignore
+  //     (e: FederatedPointerEvent) => {
+  //       // currentTarget
+  //       expect(e.currentTarget).to.be.eqls(canvas);
+
+  //       // coordinates
+  //       expect(e.clientX).to.be.eqls(100);
+  //       expect(e.clientY).to.be.eqls(100);
+  //       expect(e.screenX).to.be.eqls(200);
+  //       expect(e.screenY).to.be.eqls(200);
+  //       expect(e.viewportX).to.almost.eqls(100 - left);
+  //       expect(e.viewportY).to.almost.eqls(100 - top);
+  //       expect(e.canvasX).to.almost.eqls(100 - left);
+  //       expect(e.canvasY).to.almost.eqls(100 - top);
+
+  //       const viewport = canvas.canvas2Viewport({ x: e.canvasX, y: e.canvasY });
+
+  //       expect(viewport.x).to.almost.eqls(100 - left);
+  //       expect(viewport.y).to.almost.eqls(100 - top);
+
+  //       const { x: canvasX, y: canvasY } = canvas.viewport2Canvas({
+  //         x: e.viewportX,
+  //         y: e.viewportY,
+  //       });
+  //       expect(canvasX).to.almost.eqls(100 - left);
+  //       expect(canvasY).to.almost.eqls(100 - top);
+  //     },
+  //     { once: true },
+  //   );
+
+  //   // move camera
+  //   camera.setZoom(2);
+
+  //   $canvas.dispatchEvent(
+  //     new PointerEvent('pointerdown', {
+  //       pointerType: 'mouse',
+  //       clientX: 100,
+  //       clientY: 100,
+  //       screenX: 200,
+  //       screenY: 200,
+  //     }),
+  //   );
+  // });
 });

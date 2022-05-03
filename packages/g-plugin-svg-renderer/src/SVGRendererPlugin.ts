@@ -366,17 +366,20 @@ export class SVGRendererPlugin implements RenderingPlugin {
           }
 
           // @ts-ignore
-          const $groupEl = clipPath.elementSVG?.$groupEl;
-          if ($groupEl) {
+          const $clipPathGroupEl = clipPath.elementSVG?.$groupEl;
+          if ($clipPathGroupEl) {
             // apply local RTS transformation to <group> wrapper
-            this.applyTransform($groupEl, clipPath.getLocalTransform());
+            this.applyTransform($clipPathGroupEl, clipPath.getLocalTransform());
           }
           // apply attributes
           this.applyAttributes(clipPath);
-          $el?.setAttribute('clip-path', `url(#${clipPathId})`);
+
+          // apply clipPath to $group
+          // @see https://github.com/antvis/g/issues/961
+          $groupEl?.setAttribute('clip-path', `url(#${clipPathId})`);
         } else {
           // remove clip path
-          $el?.removeAttribute('clip-path');
+          $groupEl?.removeAttribute('clip-path');
         }
       } else if (
         name === 'shadowColor' ||

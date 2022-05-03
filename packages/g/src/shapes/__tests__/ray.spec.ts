@@ -1,8 +1,6 @@
 import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
-import { BoundingSphere } from '../BoundingSphere';
-import { Plane } from '../Plane';
-import { Ray } from '../Ray';
+import { BoundingSphere, Plane, Ray } from '@antv/g';
 
 describe('Ray', () => {
   test('should intersect with plane.', () => {

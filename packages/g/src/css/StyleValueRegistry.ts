@@ -1,10 +1,12 @@
 import { postConstruct, singleton, GlobalContainer } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
-import type { DisplayObject, ParsedBaseStyleProps, GeometryAABBUpdater, BaseStyleProps } from '..';
-import { ElementEvent } from '..';
-import { dirtifyToRoot, Shape, GeometryUpdaterFactory, AABB } from '..';
-import { CSSStyleValue, CSSUnitValue } from './cssom';
-import { CSSKeywordValue } from './cssom';
+import type { DisplayObject } from '../display-objects';
+import type { GeometryAABBUpdater } from '../services';
+import { dirtifyToRoot, GeometryUpdaterFactory } from '../services';
+import { ElementEvent } from '../dom';
+import type { ParsedBaseStyleProps, BaseStyleProps } from '../types';
+import { Shape } from '../types';
+import { CSSKeywordValue, CSSStyleValue, CSSUnitValue } from './cssom';
 import type { ParsedFilterStyleProperty } from './parser';
 import { convertPercentUnit } from './parser';
 import {
@@ -29,12 +31,22 @@ import {
 } from './properties';
 import type { CSSProperty } from './CSSProperty';
 import { formatAttribute } from '../utils';
+import { AABB } from '../shapes';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
 export interface PropertyParseOptions {
   skipUpdateAttribute: boolean;
   skipParse: boolean;
 }
+
+export const PropertySyntax = {
+  COLOR: '<color>',
+  PAINT: '<paint>',
+  NUMBER: '<number>',
+  LENGTH: '<length>',
+  PERCENTAGE: '<percentage>',
+  LENGTH_PERCENTAGE: '<length> | <percentage>',
+};
 
 export interface PropertyMetadata {
   name: string;
@@ -112,7 +124,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     alias: ['cx'],
     defaultValue: '0',
-    syntax: '<length> | <percentage>',
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
     handler: CSSPropertyLocalPosition,
   },
   {
@@ -121,7 +133,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     alias: ['cy'],
     defaultValue: '0',
-    syntax: '<length> | <percentage>',
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
     handler: CSSPropertyLocalPosition,
   },
   {
@@ -129,7 +141,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'z',
     interpolable: true,
     defaultValue: '0',
-    syntax: '<length> | <percentage>',
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
     handler: CSSPropertyLocalPosition,
   },
   {
@@ -140,7 +152,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'opacity',
     interpolable: true,
     defaultValue: '1',
-    syntax: '<number>',
+    syntax: PropertySyntax.NUMBER,
     handler: CSSPropertyOpacity,
   },
   {
@@ -152,7 +164,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     inherited: true,
     defaultValue: '1',
-    syntax: '<number>',
+    syntax: PropertySyntax.NUMBER,
     handler: CSSPropertyOpacity,
   },
   {
@@ -164,7 +176,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     inherited: true,
     defaultValue: '1',
-    syntax: '<number>',
+    syntax: PropertySyntax.NUMBER,
     handler: CSSPropertyOpacity,
   },
   {
@@ -176,7 +188,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     keywords: ['none'],
     defaultValue: 'none',
-    syntax: '<paint>',
+    syntax: PropertySyntax.PAINT,
     handler: CSSPropertyColor,
   },
   {
@@ -184,27 +196,27 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     keywords: ['none'],
     defaultValue: 'none',
-    syntax: '<paint>',
+    syntax: PropertySyntax.PAINT,
     handler: CSSPropertyColor,
   },
   {
     name: 'shadowColor',
     interpolable: true,
-    syntax: '<color>',
+    syntax: PropertySyntax.COLOR,
     handler: CSSPropertyColor,
   },
   {
     name: 'shadowOffsetX',
     interpolable: true,
     layoutDependent: true,
-    syntax: '<length> | <percentage>',
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
     handler: CSSPropertyLengthOrPercentage,
   },
   {
     name: 'shadowOffsetY',
     interpolable: true,
     layoutDependent: true,
-    syntax: '<length> | <percentage>',
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
     handler: CSSPropertyLengthOrPercentage,
   },
   {
@@ -223,7 +235,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     defaultValue: '1',
     layoutDependent: true,
     alias: ['strokeWidth'],
-    syntax: '<length> | <percentage>',
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
     handler: CSSPropertyLengthOrPercentage,
   },
   {
@@ -350,11 +362,6 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     layoutDependent: true,
     handler: CSSPropertyAnchor,
   },
-  // {
-  //   name: 'origin',
-  //   layoutDependent: true,
-  //   handler: CSSPropertyAnchor,
-  // },
   // Circle
   {
     name: 'r',

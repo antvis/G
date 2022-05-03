@@ -1,28 +1,60 @@
+import { isNumber, isString } from '@antv/util';
+import { Syringe } from 'mana-syringe';
 import { EventEmitter } from 'eventemitter3';
+import type { vec2 } from 'gl-matrix';
 import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
-import { Landmark } from './Landmark';
+import type { Landmark } from './Landmark';
 import { Frustum } from '../shapes';
 import { createVec3, getAngle, makePerspective } from '../utils/math';
 import type { Canvas } from '../Canvas';
+import { parseEasingFunction } from '../utils/animation';
+import type { TypeEasingFunction } from '../utils/custom-easing';
+// import { DisplayObject } from '../display-objects';
 
-export const DefaultCamera = 'DefaultCamera';
+export const DefaultCamera = Syringe.defineToken('DefaultCamera');
 
-export enum CAMERA_TYPE {
-  ORBITING = 'ORBITING',
-  EXPLORING = 'EXPLORING',
-  TRACKING = 'TRACKING',
+export enum CameraType {
+  /**
+   * Performs all the rotational operations with the focal point instead of the camera position.
+   * This type of camera is useful in applications(like CAD) where 3D objects are being designed or explored.
+   * Camera cannot orbits over the north & south poles.
+   * @see http://voxelent.com/tutorial-cameras/
+   *
+   * In Three.js it's used in OrbitControls.
+   * @see https://threejs.org/docs/#examples/zh/controls/OrbitControls
+   */
+  ORBITING,
+  /**
+   * It's similar to the ORBITING camera, but it allows the camera to orbit over the north or south poles.
+   *
+   * In Three.js it's used in OrbitControls.
+   * @see https://threejs.org/docs/#examples/en/controls/TrackballControls
+   */
+  EXPLORING,
+  /**
+   * Performs all the rotational operations with the camera position.
+   * It's useful in first person shooting games.
+   * Camera cannot orbits over the north & south poles.
+   *
+   * In Three.js it's used in FirstPersonControls.
+   * @see https://threejs.org/docs/#examples/en/controls/FirstPersonControls
+   */
+  TRACKING,
 }
 
-export enum CAMERA_TRACKING_MODE {
-  DEFAULT = 'DEFAULT',
-  ROTATIONAL = 'ROTATIONAL',
-  TRANSLATIONAL = 'TRANSLATIONAL',
-  CINEMATIC = 'CINEMATIC',
+/**
+ * CameraType must be TRACKING
+ */
+export enum CameraTrackingMode {
+  DEFAULT,
+  ROTATIONAL,
+  TRANSLATIONAL,
+  CINEMATIC,
 }
 
-export enum CAMERA_PROJECTION_MODE {
-  ORTHOGRAPHIC = 'ORTHOGRAPHIC',
-  PERSPECTIVE = 'PERSPECTIVE',
+export enum CameraProjectionMode {
+  ORTHOGRAPHIC,
+  PERSPECTIVE,
 }
 
 export const CameraEvent = {
@@ -31,9 +63,12 @@ export const CameraEvent = {
 
 const DEG_2_RAD = Math.PI / 180;
 const RAD_2_DEG = 180 / Math.PI;
+const MIN_DISTANCE = 0.0002;
 
 /**
  * 参考「WebGL Insights - 23.Designing Cameras for WebGL Applications」，基于 Responsible Camera 思路设计
+ * @see https://github.com/d13g0/nucleo.js/blob/master/source/camera/Camera.js
+ *
  * 保存相机参数，定义相机动作：
  * 1. dolly 沿 n 轴移动
  * 2. pan 沿 u v 轴移动
@@ -42,11 +77,6 @@ const RAD_2_DEG = 180 / Math.PI;
  */
 
 export class Camera extends EventEmitter {
-  static ProjectionMode = {
-    ORTHOGRAPHIC: 'ORTHOGRAPHIC',
-    PERSPECTIVE: 'PERSPECTIVE',
-  };
-
   canvas: Canvas;
 
   /**
@@ -58,70 +88,67 @@ export class Camera extends EventEmitter {
    * u 轴
    * @see http://learnwebgl.brown37.net/07_cameras/camera_introduction.html#a-camera-definition
    */
-  right = vec3.fromValues(1, 0, 0);
+  private right = vec3.fromValues(1, 0, 0);
 
   /**
    * v 轴 +Y is down
    */
-  up = vec3.fromValues(0, 1, 0);
+  private up = vec3.fromValues(0, 1, 0);
 
   /**
    * n 轴 +Z is inside
    */
-  forward = vec3.fromValues(0, 0, 1);
+  private forward = vec3.fromValues(0, 0, 1);
 
   /**
    * 相机位置
    */
-  position = vec3.fromValues(0, 0, 1);
+  private position = vec3.fromValues(0, 0, 1);
 
   /**
    * 视点位置
    */
-  focalPoint = vec3.fromValues(0, 0, 0);
+  private focalPoint = vec3.fromValues(0, 0, 0);
 
   /**
-   * 相机位置到视点向量
+   * 视点到相机位置的向量
    * focalPoint - position
    */
-  distanceVector = vec3.fromValues(0, 0, 0);
+  private distanceVector = vec3.fromValues(0, 0, -1);
 
   /**
    * 相机位置到视点距离
    * length(focalPoint - position)
    */
-  distance = 1;
+  private distance = 1;
 
   /**
    * @see https://en.wikipedia.org/wiki/Azimuth
    */
-  azimuth = 0;
-  elevation = 0;
-  roll = 0;
-  relAzimuth = 0;
-  relElevation = 0;
-  relRoll = 0;
+  private azimuth = 0;
+  private elevation = 0;
+  private roll = 0;
+  private relAzimuth = 0;
+  private relElevation = 0;
+  private relRoll = 0;
 
   /**
    * 沿 n 轴移动时，保证移动速度从快到慢
    */
-  dollyingStep = 0;
-  maxDistance = Infinity;
-  minDistance = -Infinity;
+  private dollyingStep = 0;
+  private maxDistance = Infinity;
+  private minDistance = -Infinity;
 
   /**
    * zoom factor of the camera, default is 1
    * eg. https://threejs.org/docs/#api/en/cameras/OrthographicCamera.zoom
    */
-  zoom = 1;
+  private zoom = 1;
 
   /**
    * invert the horizontal coordinate system HCS
    */
-  rotateWorld = false;
-
-  // @inject(IDENTIFIER.InteractorService)
-  // interactor: IInteractorService;
+  private rotateWorld = false;
 
   /**
    * 投影矩阵参数
@@ -155,11 +182,11 @@ export class Camera extends EventEmitter {
       }
     | undefined;
 
-  private following = undefined;
+  // private following = undefined;
 
-  private type = CAMERA_TYPE.EXPLORING;
-  private trackingMode = CAMERA_TRACKING_MODE.DEFAULT;
-  private projectionMode = CAMERA_PROJECTION_MODE.PERSPECTIVE;
+  private type = CameraType.EXPLORING;
+  private trackingMode = CameraTrackingMode.DEFAULT;
+  private projectionMode = CameraProjectionMode.PERSPECTIVE;
 
   /**
    * for culling use
@@ -177,15 +204,13 @@ export class Camera extends EventEmitter {
    */
   private orthoMatrix: mat4 = mat4.create();
 
-  isOrtho() {
-    return this.projectionMode === CAMERA_PROJECTION_MODE.ORTHOGRAPHIC;
+  constructor(type = CameraType.EXPLORING, trackingMode = CameraTrackingMode.DEFAULT) {
+    super();
+    this.setType(type, trackingMode);
   }
 
-  clone(): Camera {
-    const camera = new Camera();
-    camera.setType(this.type, undefined);
-    // camera.interactor = this.interactor;
-    return camera;
+  isOrtho() {
+    return this.projectionMode === CameraProjectionMode.ORTHOGRAPHIC;
   }
 
   getProjectionMode() {
@@ -213,6 +238,10 @@ export class Camera extends EventEmitter {
     return this.focalPoint;
   }
 
+  getDollyingStep() {
+    return this.dollyingStep;
+  }
+
   getNear() {
     return this.near;
   }
@@ -229,28 +258,28 @@ export class Camera extends EventEmitter {
     return this.orthoMatrix;
   }
 
-  setType(type: CAMERA_TYPE, trackingMode: CAMERA_TRACKING_MODE | undefined) {
+  setType(type: CameraType, trackingMode?: CameraTrackingMode) {
     this.type = type;
-    if (this.type === CAMERA_TYPE.EXPLORING) {
+    if (this.type === CameraType.EXPLORING) {
       this.setWorldRotation(true);
     } else {
       this.setWorldRotation(false);
     }
     this._getAngles();
 
-    if (this.type === CAMERA_TYPE.TRACKING && trackingMode !== undefined) {
+    if (this.type === CameraType.TRACKING && trackingMode !== undefined) {
       this.setTrackingMode(trackingMode);
     }
     return this;
   }
 
-  setProjectionMode(projectionMode: CAMERA_PROJECTION_MODE) {
+  setProjectionMode(projectionMode: CameraProjectionMode) {
     this.projectionMode = projectionMode;
     return this;
   }
 
-  setTrackingMode(trackingMode: CAMERA_TRACKING_MODE) {
-    if (this.type !== CAMERA_TYPE.TRACKING) {
+  setTrackingMode(trackingMode: CameraTrackingMode) {
+    if (this.type !== CameraType.TRACKING) {
       throw new Error('Impossible to set a tracking mode if the camera is not of tracking type');
     }
     this.trackingMode = trackingMode;
@@ -272,6 +301,7 @@ export class Camera extends EventEmitter {
   setWorldRotation(flag: boolean) {
     this.rotateWorld = flag;
     this._getAngles();
+    return this;
   }
 
   /**
@@ -319,7 +349,7 @@ export class Camera extends EventEmitter {
   }
 
   setNear(near: number) {
-    if (this.projectionMode === CAMERA_PROJECTION_MODE.PERSPECTIVE) {
+    if (this.projectionMode === CameraProjectionMode.PERSPECTIVE) {
       this.setPerspective(near, this.far, this.fov, this.aspect);
     } else {
       this.setOrthographic(this.left, this.rright, this.top, this.bottom, near, this.far);
@@ -328,7 +358,7 @@ export class Camera extends EventEmitter {
   }
 
   setFar(far: number) {
-    if (this.projectionMode === CAMERA_PROJECTION_MODE.PERSPECTIVE) {
+    if (this.projectionMode === CameraProjectionMode.PERSPECTIVE) {
       this.setPerspective(this.near, far, this.fov, this.aspect);
     } else {
       this.setOrthographic(this.left, this.rright, this.top, this.bottom, this.near, far);
@@ -368,7 +398,7 @@ export class Camera extends EventEmitter {
     this.view.width = width;
     this.view.height = height;
 
-    if (this.projectionMode === CAMERA_PROJECTION_MODE.PERSPECTIVE) {
+    if (this.projectionMode === CameraProjectionMode.PERSPECTIVE) {
       this.setPerspective(this.near, this.far, this.fov, this.aspect);
     } else {
       this.setOrthographic(this.left, this.rright, this.top, this.bottom, this.near, this.far);
@@ -381,7 +411,7 @@ export class Camera extends EventEmitter {
       this.view.enabled = false;
     }
 
-    if (this.projectionMode === CAMERA_PROJECTION_MODE.PERSPECTIVE) {
+    if (this.projectionMode === CameraProjectionMode.PERSPECTIVE) {
       this.setPerspective(this.near, this.far, this.fov, this.aspect);
     } else {
       this.setOrthographic(this.left, this.rright, this.top, this.bottom, this.near, this.far);
@@ -391,16 +421,16 @@ export class Camera extends EventEmitter {
 
   setZoom(zoom: number) {
     this.zoom = zoom;
-    if (this.projectionMode === CAMERA_PROJECTION_MODE.ORTHOGRAPHIC) {
+    if (this.projectionMode === CameraProjectionMode.ORTHOGRAPHIC) {
       this.setOrthographic(this.left, this.rright, this.top, this.bottom, this.near, this.far);
-    } else if (this.projectionMode === CAMERA_PROJECTION_MODE.PERSPECTIVE) {
+    } else if (this.projectionMode === CameraProjectionMode.PERSPECTIVE) {
       this.setPerspective(this.near, this.far, this.fov, this.aspect);
     }
     return this;
   }
 
   setPerspective(near: number, far: number, fov: number, aspect: number) {
-    this.projectionMode = CAMERA_PROJECTION_MODE.PERSPECTIVE;
+    this.projectionMode = CameraProjectionMode.PERSPECTIVE;
     this.fov = fov;
     this.near = near;
     this.far = far;
@@ -432,7 +462,7 @@ export class Camera extends EventEmitter {
   }
 
   setOrthographic(l: number, r: number, t: number, b: number, near: number, far: number) {
-    this.projectionMode = CAMERA_PROJECTION_MODE.ORTHOGRAPHIC;
+    this.projectionMode = CameraProjectionMode.ORTHOGRAPHIC;
     this.rright = r;
     this.left = l;
     this.top = t;
@@ -473,22 +503,40 @@ export class Camera extends EventEmitter {
   }
 
   /**
-   * 设置相机位置
+   * Move the camera in world coordinates.
+   * It will keep looking at the current focal point.
+   *
+   * support scalars or vectors.
+   * @example
+   * setPosition(1, 2, 3);
+   * setPosition([1, 2, 3]);
    */
-  setPosition(x: number | vec3, y: number = 0, z: number = 0) {
-    this._setPosition(x, y, z);
+  setPosition(x: number | vec2 | vec3, y: number = this.position[1], z: number = this.position[2]) {
+    const position = createVec3(x, y, z);
+    this._setPosition(position);
     this.setFocalPoint(this.focalPoint);
+
+    this.triggerUpdate();
     return this;
   }
 
   /**
-   * 设置视点位置
+   * Sets the focal point of this camera in world coordinates.
+   *
+   * support scalars or vectors.
+   * @example
+   * setFocalPoint(1, 2, 3);
+   * setFocalPoint([1, 2, 3]);
    */
-  setFocalPoint(x: number | vec3, y?: number, z?: number) {
+  setFocalPoint(
+    x: number | vec2 | vec3,
+    y: number = this.focalPoint[1],
+    z: number = this.focalPoint[2],
+  ) {
     let up = vec3.fromValues(0, 1, 0);
     this.focalPoint = createVec3(x, y, z);
 
-    if (this.trackingMode === CAMERA_TRACKING_MODE.CINEMATIC) {
+    if (this.trackingMode === CameraTrackingMode.CINEMATIC) {
       const d = vec3.subtract(vec3.create(), this.focalPoint, this.position);
       x = d[0];
       y = d[1] as number;
@@ -507,21 +555,26 @@ export class Camera extends EventEmitter {
     this._getAxes();
     this._getDistance();
     this._getAngles();
+    this.triggerUpdate();
     return this;
   }
 
+  getDistance() {
+    return this.distance;
+  }
+
   /**
-   * 固定当前视点，按指定距离放置相机
+   * Moves the camera towards/from the focal point.
    */
   setDistance(d: number) {
     if (this.distance === d || d < 0) {
-      return;
+      return this;
     }
 
     this.distance = d;
 
-    if (this.distance < 0.0002) {
-      this.distance = 0.0002;
+    if (this.distance < MIN_DISTANCE) {
+      this.distance = MIN_DISTANCE;
     }
     this.dollyingStep = this.distance / 100;
 
@@ -535,6 +588,7 @@ export class Camera extends EventEmitter {
     pos[2] = d * n[2] + f[2];
 
     this._setPosition(pos);
+    this.triggerUpdate();
     return this;
   }
 
@@ -548,44 +602,49 @@ export class Camera extends EventEmitter {
     return this;
   }
 
-  /**
-   * Changes the initial azimuth of the camera
-   */
-  changeAzimuth(az: number) {
-    this.setAzimuth(this.azimuth + az);
-    return this;
-  }
+  // /**
+  //  * Changes the initial azimuth of the camera
+  //  */
+  // changeAzimuth(az: number) {
+  //   this.setAzimuth(this.azimuth + az);
+  //   this.triggerUpdate();
+  //   return this;
+  // }
 
-  /**
-   * Changes the initial elevation of the camera
-   */
-  changeElevation(el: number) {
-    this.setElevation(this.elevation + el);
-    return this;
-  }
+  // /**
+  //  * Changes the initial elevation of the camera
+  //  */
+  // changeElevation(el: number) {
+  //   this.setElevation(this.elevation + el);
+  //   this.triggerUpdate();
+  //   return this;
+  // }
 
-  /**
-   * Changes the initial roll of the camera
-   */
-  changeRoll(rl: number) {
-    this.setRoll(this.roll + rl);
-    return this;
-  }
+  // /**
+  //  * Changes the initial roll of the camera
+  //  */
+  // changeRoll(rl: number) {
+  //   this.setRoll(this.roll + rl);
+  //   this.triggerUpdate();
+  //   return this;
+  // }
 
   /**
    * 设置相机方位角，不同相机模式下需要重新计算相机位置或者是视点位置
-   * @param {Number} el the azimuth in degrees
+   * the azimuth in degrees
    */
   setAzimuth(az: number) {
     this.azimuth = getAngle(az);
     this.computeMatrix();
 
     this._getAxes();
-    if (this.type === CAMERA_TYPE.ORBITING || this.type === CAMERA_TYPE.EXPLORING) {
+    if (this.type === CameraType.ORBITING || this.type === CameraType.EXPLORING) {
       this._getPosition();
-    } else if (this.type === CAMERA_TYPE.TRACKING) {
+    } else if (this.type === CameraType.TRACKING) {
       this._getFocalPoint();
     }
+
+    this.triggerUpdate();
     return this;
   }
 
@@ -595,36 +654,46 @@ export class Camera extends EventEmitter {
 
   /**
    * 设置相机方位角，不同相机模式下需要重新计算相机位置或者是视点位置
-   * @param {Number} el the elevation in degrees
    */
   setElevation(el: number) {
     this.elevation = getAngle(el);
     this.computeMatrix();
 
     this._getAxes();
-    if (this.type === CAMERA_TYPE.ORBITING || this.type === CAMERA_TYPE.EXPLORING) {
+    if (this.type === CameraType.ORBITING || this.type === CameraType.EXPLORING) {
       this._getPosition();
-    } else if (this.type === CAMERA_TYPE.TRACKING) {
+    } else if (this.type === CameraType.TRACKING) {
       this._getFocalPoint();
     }
+
+    this.triggerUpdate();
     return this;
+  }
+
+  getElevation() {
+    return this.elevation;
   }
 
   /**
    * 设置相机方位角，不同相机模式下需要重新计算相机位置或者是视点位置
-   * @param {Number} angle the roll angle
    */
   setRoll(angle: number) {
     this.roll = getAngle(angle);
     this.computeMatrix();
 
     this._getAxes();
-    if (this.type === CAMERA_TYPE.ORBITING || this.type === CAMERA_TYPE.EXPLORING) {
+    if (this.type === CameraType.ORBITING || this.type === CameraType.EXPLORING) {
       this._getPosition();
-    } else if (this.type === CAMERA_TYPE.TRACKING) {
+    } else if (this.type === CameraType.TRACKING) {
       this._getFocalPoint();
     }
+
+    this.triggerUpdate();
     return this;
+  }
+
+  getRoll() {
+    return this.roll;
   }
 
   /**
@@ -641,7 +710,7 @@ export class Camera extends EventEmitter {
     this.azimuth += this.relAzimuth;
     this.roll += this.relRoll;
 
-    if (this.type === CAMERA_TYPE.EXPLORING) {
+    if (this.type === CameraType.EXPLORING) {
       const rotX = quat.setAxisAngle(
         quat.create(),
         [1, 0, 0],
@@ -662,15 +731,15 @@ export class Camera extends EventEmitter {
       mat4.translate(this.matrix, this.matrix, [0, 0, this.distance]);
     } else {
       if (Math.abs(this.elevation) > 90) {
-        return;
+        return this;
       }
       this.computeMatrix();
     }
 
     this._getAxes();
-    if (this.type === CAMERA_TYPE.ORBITING || this.type === CAMERA_TYPE.EXPLORING) {
+    if (this.type === CameraType.ORBITING || this.type === CameraType.EXPLORING) {
       this._getPosition();
-    } else if (this.type === CAMERA_TYPE.TRACKING) {
+    } else if (this.type === CameraType.TRACKING) {
       this._getFocalPoint();
     }
 
@@ -711,10 +780,10 @@ export class Camera extends EventEmitter {
     pos[2] += step * n[2];
 
     this._setPosition(pos);
-    if (this.type === CAMERA_TYPE.ORBITING || this.type === CAMERA_TYPE.EXPLORING) {
+    if (this.type === CameraType.ORBITING || this.type === CameraType.EXPLORING) {
       // 重新计算视点距离
       this._getDistance();
-    } else if (this.type === CAMERA_TYPE.TRACKING) {
+    } else if (this.type === CameraType.TRACKING) {
       // 保持视距，移动视点位置
       vec3.add(this.focalPoint, pos, this.distanceVector);
     }
@@ -725,85 +794,145 @@ export class Camera extends EventEmitter {
 
   createLandmark(
     name: string,
-    params: {
-      position: vec3;
-      focalPoint: vec3;
-      roll?: number;
-    },
+    params: Partial<{
+      position: vec3 | vec2;
+      focalPoint: vec3 | vec2;
+      zoom: number;
+      roll: number;
+    }> = {},
   ): Landmark {
-    const camera = this.clone();
-    camera.setPosition(params.position);
-    camera.setFocalPoint(params.focalPoint);
-    if (params.roll !== undefined) {
-      camera.setRoll(params.roll);
-    }
-    const landmark = new Landmark(name, camera);
+    const { position = this.position, focalPoint = this.focalPoint, roll, zoom } = params;
+
+    const camera = new Camera();
+    camera.setType(this.type, undefined);
+    camera.setPosition(
+      position[0],
+      position[1] || this.position[1],
+      position[2] || this.position[2],
+    );
+    camera.setFocalPoint(
+      focalPoint[0],
+      focalPoint[1] || this.focalPoint[1],
+      focalPoint[2] || this.focalPoint[2],
+    );
+    camera.setRoll(roll || this.roll);
+    camera.setZoom(zoom || this.zoom);
+
+    const landmark: Landmark = {
+      name,
+      matrix: mat4.clone(camera.matrix),
+      right: vec3.clone(camera.right),
+      up: vec3.clone(camera.up),
+      forward: vec3.clone(camera.forward),
+      position: vec3.clone(camera.position),
+      focalPoint: vec3.clone(camera.focalPoint),
+      distanceVector: vec3.clone(camera.distanceVector),
+      distance: camera.distance,
+      dollyingStep: camera.dollyingStep,
+      azimuth: camera.azimuth,
+      elevation: camera.elevation,
+      roll: camera.roll,
+      relAzimuth: camera.relAzimuth,
+      relElevation: camera.relElevation,
+      relRoll: camera.relRoll,
+      zoom: camera.zoom,
+    };
+
     this.landmarks.push(landmark);
     return landmark;
   }
 
-  setLandmark(name: string) {
-    const landmark = new Landmark(name, this);
-    this.landmarks.push(landmark);
-    return this;
-  }
-
-  gotoLandmark(name: string, duration: number = 1000) {
-    const landmark = this.landmarks.find((l) => l.name === name);
+  gotoLandmark(
+    name: string | Landmark,
+    options:
+      | number
+      | Partial<{
+          easing: string;
+          easingFunction: TypeEasingFunction;
+          duration: number;
+          onfinish: () => void;
+        }> = {},
+  ) {
+    const landmark = isString(name) ? this.landmarks.find((l) => l.name === name) : name;
     if (landmark) {
+      const {
+        easing = 'linear',
+        duration = 100,
+        easingFunction = undefined,
+        onfinish = undefined,
+      } = isNumber(options) ? { duration: options } : options;
+      const epsilon = 0.01;
+
       if (duration === 0) {
-        landmark.retrieve(this);
+        this.syncFromLandmark(landmark);
+        if (onfinish) {
+          onfinish();
+        }
         return;
       }
 
+      // cancel ongoing animation
       if (this.landmarkAnimationID !== undefined) {
         this.canvas.cancelAnimationFrame(this.landmarkAnimationID);
       }
 
-      // TODO: do not process events during animation
-      // this.interactor.disconnect();
+      const destPosition = landmark.position;
+      const destFocalPoint = landmark.focalPoint;
+      const destZoom = landmark.zoom;
+      const destRoll = landmark.roll;
 
-      const destPosition = landmark.getPosition();
-      const destFocalPoint = landmark.getFocalPoint();
-      const destRoll = landmark.getRoll();
+      const easingFunc = easingFunction || parseEasingFunction(easing);
 
       let timeStart: number | undefined;
+      const endAnimation = () => {
+        this.setFocalPoint(destFocalPoint);
+        this.setPosition(destPosition);
+        this.setRoll(destRoll);
+        this.setZoom(destZoom);
+        this.computeMatrix();
+        this.triggerUpdate();
+        if (onfinish) {
+          onfinish();
+        }
+      };
+
       const animate = (timestamp: number) => {
         if (timeStart === undefined) {
           timeStart = timestamp;
         }
         const elapsed = timestamp - timeStart;
-        // TODO: use better ease function
-        const t = (1 - Math.cos((elapsed / duration) * Math.PI)) / 2;
+
+        if (elapsed > duration) {
+          endAnimation();
+          return;
+        }
+        // use the same ease function in animation system
+        const t = easingFunc(elapsed / duration);
 
         const interFocalPoint = vec3.create();
         const interPosition = vec3.create();
+        let interZoom = 1;
         let interRoll = 0;
 
         vec3.lerp(interFocalPoint, this.focalPoint, destFocalPoint, t);
         vec3.lerp(interPosition, this.position, destPosition, t);
         interRoll = this.roll * (1 - t) + destRoll * t;
+        interZoom = this.zoom * (1 - t) + destZoom * t;
 
         this.setFocalPoint(interFocalPoint);
         this.setPosition(interPosition);
         this.setRoll(interRoll);
-        this.computeMatrix();
-
-        this.triggerUpdate();
+        this.setZoom(interZoom);
 
         const dist =
           vec3.dist(interFocalPoint, destFocalPoint) + vec3.dist(interPosition, destPosition);
-        if (dist > 0.01) {
-          //
-        } else {
-          this.setFocalPoint(interFocalPoint);
-          this.setPosition(interPosition);
-          this.setRoll(interRoll);
-          this.computeMatrix();
-          // this.interactor.connect();
-
+        if (dist <= epsilon) {
+          endAnimation();
           return;
         }
+
+        this.computeMatrix();
+        this.triggerUpdate();
 
         if (elapsed < duration) {
           this.landmarkAnimationID = this.canvas.requestAnimationFrame(animate);
@@ -841,8 +970,7 @@ export class Camera extends EventEmitter {
     const rotX = quat.setAxisAngle(
       quat.create(),
       [1, 0, 0],
-      ((this.rotateWorld && this.type !== CAMERA_TYPE.TRACKING) ||
-      this.type === CAMERA_TYPE.TRACKING
+      ((this.rotateWorld && this.type !== CameraType.TRACKING) || this.type === CameraType.TRACKING
         ? 1
         : -1) *
         this.elevation *
@@ -851,8 +979,7 @@ export class Camera extends EventEmitter {
     const rotY = quat.setAxisAngle(
       quat.create(),
       [0, 1, 0],
-      ((this.rotateWorld && this.type !== CAMERA_TYPE.TRACKING) ||
-      this.type === CAMERA_TYPE.TRACKING
+      ((this.rotateWorld && this.type !== CameraType.TRACKING) || this.type === CameraType.TRACKING
         ? 1
         : -1) *
         this.azimuth *
@@ -863,11 +990,11 @@ export class Camera extends EventEmitter {
     rotQ = quat.multiply(quat.create(), rotQ, rotZ);
     const rotMatrix = mat4.fromQuat(mat4.create(), rotQ);
 
-    if (this.type === CAMERA_TYPE.ORBITING || this.type === CAMERA_TYPE.EXPLORING) {
+    if (this.type === CameraType.ORBITING || this.type === CameraType.EXPLORING) {
       mat4.translate(this.matrix, this.matrix, this.focalPoint);
       mat4.multiply(this.matrix, this.matrix, rotMatrix);
       mat4.translate(this.matrix, this.matrix, [0, 0, this.distance]);
-    } else if (this.type === CAMERA_TYPE.TRACKING) {
+    } else if (this.type === CameraType.TRACKING) {
       mat4.translate(this.matrix, this.matrix, this.position);
       mat4.multiply(this.matrix, this.matrix, rotMatrix);
     }
@@ -919,7 +1046,7 @@ export class Camera extends EventEmitter {
       return;
     }
 
-    if (this.type === CAMERA_TYPE.TRACKING) {
+    if (this.type === CameraType.TRACKING) {
       this.elevation = Math.asin(y / r) * RAD_2_DEG;
       this.azimuth = Math.atan2(-x, -z) * RAD_2_DEG;
     } else {
@@ -971,7 +1098,7 @@ export class Camera extends EventEmitter {
   }
 
   private _getOrthoMatrix() {
-    if (this.projectionMode !== CAMERA_PROJECTION_MODE.ORTHOGRAPHIC) {
+    if (this.projectionMode !== CameraProjectionMode.ORTHOGRAPHIC) {
       return;
     }
 
@@ -998,4 +1125,49 @@ export class Camera extends EventEmitter {
 
     this.emit(CameraEvent.UPDATED);
   }
+
+  private syncFromLandmark(landmark: Landmark) {
+    this.matrix = mat4.copy(this.matrix, landmark.matrix);
+    this.right = vec3.copy(this.right, landmark.right);
+    this.up = vec3.copy(this.up, landmark.up);
+    this.forward = vec3.copy(this.forward, landmark.forward);
+    this.position = vec3.copy(this.position, landmark.position);
+    this.focalPoint = vec3.copy(this.focalPoint, landmark.focalPoint);
+    this.distanceVector = vec3.copy(this.distanceVector, landmark.distanceVector);
+
+    this.azimuth = landmark.azimuth;
+    this.elevation = landmark.elevation;
+    this.roll = landmark.roll;
+    this.relAzimuth = landmark.relAzimuth;
+    this.relElevation = landmark.relElevation;
+    this.relRoll = landmark.relRoll;
+    this.dollyingStep = landmark.dollyingStep;
+    this.distance = landmark.distance;
+    this.zoom = landmark.zoom;
+  }
+
+  /**
+   * Sets the camera to a distance such that the area covered by the bounding box is viewed.
+   */
+  // shot(displayObject: DisplayObject) {
+  //   const aabb = displayObject.getBounds();
+
+  //   if (!AABB.isEmpty(aabb)) {
+  //     this.setElevation(0);
+  //     this.setAzimuth(0);
+  //     this.setRoll(0);
+
+  //     const { halfExtents, center } = aabb;
+  //     const maxDim = Math.max(halfExtents[0] * 2, halfExtents[1] * 2);
+
+  //     const cc = center.map((c: number) => Math.round(c * 1000) / 1000) as [number, number, number];
+
+  //     if (maxDim !== 0) {
+  //       const d = (1.5 * maxDim) / Math.tan(this.fov * DEG_2_RAD);
+  //       this.setPosition([cc[0], cc[1], cc[2] + d]);
+  //     }
+
+  //     this.setFocalPoint(cc);
+  //   }
+  // }
 }

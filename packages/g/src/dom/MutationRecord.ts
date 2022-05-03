@@ -1,4 +1,4 @@
-import type { IElement } from '..';
+import type { IElement } from './interfaces';
 
 export class MutationRecord {
   static copy(original: MutationRecord) {

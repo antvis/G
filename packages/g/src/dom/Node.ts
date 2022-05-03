@@ -1,4 +1,4 @@
-import { Shape } from '..';
+import { Shape } from '../types';
 // import { Text } from '../display-objects/Text';
 import { EventTarget } from './EventTarget';
 import type {

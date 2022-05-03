@@ -1,6 +1,9 @@
 import type { vec2, vec3 } from 'gl-matrix';
-import type { ParsedPathStyleProps, ParsedPolylineStyleProps } from './display-objects';
-import type { DisplayObject } from './display-objects';
+import type {
+  DisplayObject,
+  ParsedPathStyleProps,
+  ParsedPolylineStyleProps,
+} from './display-objects';
 import type { IRenderer } from './AbstractRenderer';
 import type {
   CSSGlobalKeywords,
@@ -9,6 +12,7 @@ import type {
   CSSRGB,
   CSSUnitValue,
 } from './css';
+import { Syringe } from 'mana-syringe';
 
 export enum Shape {
   GROUP = 'g',
@@ -158,6 +162,10 @@ export interface BaseStyleProps {
   opacity?: number;
   /** 线宽 */
   lineWidth?: string | number;
+  /**
+   * 交互区域
+   */
+  hitArea?: DisplayObject | null;
   /** 指定如何绘制每一条线段末端 */
   lineCap?: CanvasLineCap;
   /** 用来设置2个长度不为0的相连部分（线段，圆弧，曲线）如何连接在一起的属性（长度为0的变形部分，其指定的末端和控制点在同一位置，会被忽略） */
@@ -327,7 +335,7 @@ export interface RendererConfig {
   enableTAA: boolean;
 }
 
-export const CanvasConfig = 'CanvasConfig';
+export const CanvasConfig = Syringe.defineToken('CanvasConfig');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface CanvasConfig {
   /**

@@ -1,9 +1,9 @@
 import { inject, singleton, contrib, Syringe, Contribution } from 'mana-syringe';
 import { SyncHook, SyncWaterfallHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from 'tapable';
-import type { CanvasConfig, DisplayObject } from '..';
+import type { DisplayObject } from '../display-objects';
 import { StyleValueRegistry } from '../css';
 import { ElementEvent } from '../dom';
-import type { EventPosition, InteractivePointerEvent } from '../types';
+import type { CanvasConfig, EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext, RenderReason } from './RenderingContext';
 import { SceneGraphService, sortByZIndex } from './SceneGraphService';
 

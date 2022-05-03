@@ -1,5 +1,6 @@
 import { singleton } from 'mana-syringe';
-import type { CSSProperty, DisplayObject } from '../..';
+import type { DisplayObject } from '../../display-objects';
+import type { CSSProperty } from '../CSSProperty';
 
 @singleton()
 export class CSSPropertyOffsetPath implements Partial<CSSProperty<DisplayObject, DisplayObject>> {

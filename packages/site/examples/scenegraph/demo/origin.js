@@ -385,11 +385,12 @@ polylineFolder
     const x = 300;
     const y = 300;
 
+    // set origin's position
     polylineOrigin.setPosition(x + ox, y + oy);
 
     // update dat.gui
-    polylineConfig.transformOriginX = ox + x;
-    polylineConfig.transformOriginY = oy + y;
+    polylineConfig.transformOriginX = ox;
+    polylineConfig.transformOriginY = oy;
   });
 polylineFolder
   .add(polylineConfig, 'transformOriginX', -200, 200)

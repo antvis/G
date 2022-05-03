@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import { CSSUnitValue, UnitType, deg2rad, deg2turn } from '../../..';
-import { CSSMathInvert } from '../CSSMathInvert';
+import { CSSUnitValue, UnitType, CSSMathInvert, deg2rad, deg2turn } from '@antv/g';
 
 /**
  * @see https://chromium.googlesource.com/chromium/src/+/refs/heads/main/third_party/blink/renderer/core/css/cssom/css_unit_value_test.cc

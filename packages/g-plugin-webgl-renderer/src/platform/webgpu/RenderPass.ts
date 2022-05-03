@@ -1,4 +1,10 @@
-import type { RenderPass, RenderPassDescriptor, RenderPipeline, InputState, Bindings } from '..';
+import type {
+  RenderPass,
+  RenderPassDescriptor,
+  RenderPipeline,
+  InputState,
+  Bindings,
+} from '../interfaces';
 import { assert, assertExists } from '../utils';
 import type { Bindings_WebGPU } from './Bindings';
 import { GPUTextureUsage } from './constants';

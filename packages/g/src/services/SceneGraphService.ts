@@ -1,4 +1,4 @@
-import { inject, singleton } from 'mana-syringe';
+import { inject, singleton, Syringe } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import type { Transform } from '../components';
 import type { vec2 } from 'gl-matrix';
@@ -40,7 +40,7 @@ export function dirtifyToRoot(element: INode, affectChildren = false) {
   element.emit(ElementEvent.BOUNDS_CHANGED, { affectChildren });
 }
 
-export const SceneGraphService = 'SceneGraphService';
+export const SceneGraphService = Syringe.defineToken('SceneGraphService');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface SceneGraphService {
   matches: <T extends IElement>(query: string, root: T) => boolean;

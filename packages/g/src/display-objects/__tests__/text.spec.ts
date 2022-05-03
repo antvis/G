@@ -1,5 +1,5 @@
 import chai, { expect } from 'chai';
-import { Text, Group, CSS } from '../..';
+import { Text, Group, CSS } from '@antv/g';
 import { vec3 } from 'gl-matrix';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';

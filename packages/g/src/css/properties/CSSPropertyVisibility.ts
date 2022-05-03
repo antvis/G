@@ -1,5 +1,7 @@
 import { singleton } from 'mana-syringe';
-import type { CSSKeywordValue, CSSProperty, DisplayObject } from '../..';
+import type { CSSProperty } from '../CSSProperty';
+import type { CSSKeywordValue } from '../cssom';
+import type { DisplayObject } from '../../display-objects';
 
 /**
  * should

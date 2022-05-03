@@ -5,7 +5,7 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { Node, Element } from '../..';
+import { Node, Element } from '@antv/g';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);

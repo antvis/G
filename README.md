@@ -2,9 +2,11 @@ English | [简体中文](./README-zh_CN.md)
 
 # G
 
-[![](https://img.shields.io/travis/antvis/g.svg)](https://travis-ci.org/antvis/g) ![](https://img.shields.io/badge/language-javascript-red.svg) ![](https://img.shields.io/badge/license-MIT-000000.svg)
+[![Build Status](https://img.shields.io/travis/antvis/g)](https://travis-ci.org/antvis/g) ![CI](https://github.com/antvis/g/workflows/CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/antvis/g/badge.svg?branch=next)](https://coveralls.io/github/antvis/g?branch=next)
 
-[![npm package](https://img.shields.io/npm/v/@antv/g-canvas.svg)](https://www.npmjs.com/package/@antv/g-canvas) [![npm downloads](http://img.shields.io/npm/dm/@antv/g-canvas.svg)](https://npmjs.org/package/@antv/g-canvas) [![npm package](https://img.shields.io/npm/v/@antv/g-svg.svg)](https://www.npmjs.com/package/@antv/g-svg) [![npm downloads](http://img.shields.io/npm/dm/@antv/g-svg.svg)](https://npmjs.org/package/@antv/g-svg) [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open')
+![](https://img.shields.io/badge/language-typescript-blue.svg) ![](https://img.shields.io/badge/license-MIT-000000.svg)
+
+[![npm package](https://img.shields.io/npm/v/@antv/g)](https://www.npmjs.com/package/@antv/g) [![npm downloads](http://img.shields.io/npm/dm/@antv/g)](https://www.npmjs.com/package/@antv/g) [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open') [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=shields)](https://github.com/antvis/g/pulls)
 
 A powerful rendering engine for AntV.
 
@@ -21,12 +23,13 @@ A powerful rendering engine for AntV.
 ## ✨ Features
 
 - Provides a series of easy-to-use APIs.
-  - The graphics and event systems are compatible with the DOM [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) & [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event) API, which means we can take over the default rendering process of [D3](https://github.com/d3/d3) or use gesture libs such as [Hammer.js](http://hammerjs.github.io/).
+  - The graphics and event systems are compatible with the DOM [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) & [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event) API, which means we can take over the default rendering process of [D3](https://github.com/d3/d3) or use gesture libs such as [Hammer.js](http://hammerjs.github.io/) easily.
   - The animation system is compatible with [Web Animation API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API).
+  - The style system is compatible with [CSS Typed OM](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Typed_OM_API) & [CSS Layout API](https://github.com/w3c/css-houdini-drafts/blob/main/css-layout-api/EXPLAINER.md).
 - Provides Canvas2D / SVG / WebGL / WebGPU renderers, you can choose one on demand or switch between them at runtime.
-- Supports visualization scenarios with large amounts of data. In addition to high-performance rendering, we also provide GPGPU capabilities based on [WebGPU](https://www.w3.org/TR/webgpu/).
+- Besides the high-performance rendering, we also provide GPGPU capabilities based on [WebGPU](https://www.w3.org/TR/webgpu/).
   - [webgpu-graph](https://g-next.antv.vision/zh/docs/api/gpgpu/webgpu-graph) A GPU accelerated graph analytics library.
-- Provides a lot of plugins：
+- There're a lot of out-of-the-box plugins：
   - Rendering
     - [g-plugin-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/canvas-renderer) Renders 2D graphics with Canvas2D API.
     - [g-plugin-svg-renderer](https://g-next.antv.vision/en/docs/plugins/svg-renderer) Render 2D graphics with SVG API.

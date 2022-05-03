@@ -1,11 +1,10 @@
 import { vec3 } from 'gl-matrix';
 import { singleton, inject } from 'mana-syringe';
 import { GeometryAABBUpdater } from './interfaces';
-import type { ParsedTextStyleProps } from '../../display-objects/Text';
+import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
 import { TextService } from '../TextService';
 import { Shape } from '../../types';
 import { CSSUnitValue } from '../../css';
-import type { DisplayObject } from '../..';
 
 @singleton({ token: { token: GeometryAABBUpdater, named: Shape.TEXT } })
 export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {

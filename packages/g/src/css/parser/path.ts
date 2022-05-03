@@ -10,7 +10,7 @@ import {
   reverseCurve,
 } from '../../utils/path';
 import { Rectangle } from '../../shapes/Rectangle';
-import type { IElement } from '../..';
+import type { IElement } from '../../dom';
 
 export function parsePath(path: string): ParsedPathStyleProps {
   const absolutePath = path2Absolute(path) as PathCommand[];

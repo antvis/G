@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile",
-  "version": "1.0.5",
+  "version": "1.0.6-alpha.1",
   "description": "A renderer implemented with Canvas2D API in mobile environment",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -47,5 +47,5 @@
   "scripts": {
     "umd": "webpack"
   },
-  "gitHead": "cc8e74c562a0cb5b5fab1063510c4c9fc9aae360"
+  "gitHead": "9d0916ad32f477c1d687c2085e7f5ab37d171649"
 }

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Polyline } from '../..';
+import { Polyline } from '@antv/g';
 import { vec3 } from 'gl-matrix';
 
 describe('Polyline', () => {
