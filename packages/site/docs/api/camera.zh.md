@@ -135,6 +135,13 @@ camera.setPosition(300, 250, 500);
 camera.setPosition([300, 250, 500]);
 ```
 
+需要注意的是，在 2D 场景中当我们设置相机位置时，通常也需要一并设置视点位置，否则使用 `g-webgl` 渲染时会出现非预期的效果：
+
+```js
+camera.setPosition(100, 100, 500);
+camera.setFocalPoint(100, 100, 0);
+```
+
 ### getFocalPoint()
 
 获取视点在世界坐标系下的位置，类型为 `[number, number, number]`。

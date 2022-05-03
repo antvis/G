@@ -162,6 +162,10 @@ export interface BaseStyleProps {
   opacity?: number;
   /** 线宽 */
   lineWidth?: string | number;
+  /**
+   * 交互区域
+   */
+  hitArea?: DisplayObject | null;
   /** 指定如何绘制每一条线段末端 */
   lineCap?: CanvasLineCap;
   /** 用来设置2个长度不为0的相连部分（线段，圆弧，曲线）如何连接在一起的属性（长度为0的变形部分，其指定的末端和控制点在同一位置，会被忽略） */
