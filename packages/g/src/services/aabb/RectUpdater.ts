@@ -1,5 +1,5 @@
 import { singleton } from 'mana-syringe';
-import { isString } from '@antv/util';
+import { isString } from 'lodash-es';
 import { GeometryAABBUpdater } from './interfaces';
 import type { Image, Rect, Group, ParsedImageStyleProps } from '../../display-objects';
 import { Shape } from '../../types';

@@ -1,4 +1,4 @@
-// import { uniq } from '@antv/util';
+// import { uniq } from '@lodash-es';
 import { singleton } from 'mana-syringe';
 import { CSSKeywordValue } from '../cssom';
 import type { DisplayObject } from '../../display-objects';

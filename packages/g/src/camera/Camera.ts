@@ -1,4 +1,4 @@
-import { isNumber, isString } from '@antv/util';
+import { isNumber, isString } from 'lodash-es';
 import { Syringe } from 'mana-syringe';
 import { EventEmitter } from 'eventemitter3';
 import type { vec2 } from 'gl-matrix';

@@ -1,4 +1,4 @@
-import { isArray } from '@antv/util';
+import { isArray } from 'lodash-es';
 
 export function numberToLongString(x: number) {
   return x.toFixed(6).replace('.000000', '');

@@ -42,7 +42,7 @@
   "dependencies": {
     "@antv/g-plugin-mobile-interaction": "^0.0.8-alpha.1",
     "@antv/g-plugin-webgl-renderer": "^1.0.25-alpha.1",
-    "@antv/util": "^2.0.13"
+    "lodash-es": "^4.17.21"
   },
   "peerDependencies": {
     "@antv/g": "^5.0.1",

@@ -1,4 +1,4 @@
-import { flatten, isFinite } from '@antv/util';
+import { flatten, isFinite } from 'lodash-es';
 import { GLSLContext } from '.';
 import {
   AST_NODE_TYPES as SHADER_AST_NODE_TYPES,

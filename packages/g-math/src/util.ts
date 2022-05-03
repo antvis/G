@@ -1,4 +1,4 @@
-import { max, min } from '@antv/util';
+import { max, min } from 'lodash-es';
 import type { BBox } from './types';
 
 /**

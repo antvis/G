@@ -1,4 +1,4 @@
-import { isString } from '@antv/util';
+import { isString } from 'lodash-es';
 import type { IElement } from '../../dom';
 import type { DisplayObject } from '../../display-objects';
 import { AABB } from '../../shapes';

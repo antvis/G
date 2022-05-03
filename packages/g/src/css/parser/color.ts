@@ -1,5 +1,5 @@
 import * as d3 from 'd3-color';
-import { clamp, isString } from '@antv/util';
+import { clamp, isString } from 'lodash-es';
 import type { Pattern, LinearGradient, RadialGradient } from '../cssom';
 import { CSSRGB, CSSGradientValue, GradientPatternType } from '../cssom';
 import type { Tuple4Number } from '../../types';

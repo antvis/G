@@ -4,15 +4,11 @@ import type {
   RenderingService,
   RenderingPlugin,
   FederatedEvent,
-  MutationEvent} from '@antv/g';
-import {
-  Shape,
-  RenderingPluginContribution,
-  RenderingContext,
-  ElementEvent
+  MutationEvent,
 } from '@antv/g';
+import { Shape, RenderingPluginContribution, RenderingContext, ElementEvent } from '@antv/g';
 import { ImagePool } from './shapes/ImagePool';
-import { isString } from '@antv/util';
+import { isString } from 'lodash-es';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class LoadImagePlugin implements RenderingPlugin {

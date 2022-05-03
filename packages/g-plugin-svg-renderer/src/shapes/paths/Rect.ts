@@ -1,5 +1,5 @@
 import type { ParsedRectStyleProps } from '@antv/g';
-import { isArray } from '@antv/util';
+import { isArray } from 'lodash-es';
 import { singleton } from 'mana-syringe';
 import { parseRadius } from '../../utils/format';
 import type { ElementRenderer } from '.';

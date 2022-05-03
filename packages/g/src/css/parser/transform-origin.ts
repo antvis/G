@@ -1,4 +1,4 @@
-import { isString } from '@antv/util';
+import { isString } from 'lodash-es';
 import { CSSUnitValue } from '../cssom';
 import { parseLengthOrPercentage } from './dimension';
 
