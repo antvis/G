@@ -1,4 +1,4 @@
-import { clamp, isString } from '@antv/util';
+import { clamp, isString } from 'lodash-es';
 import { CSSUnitValue } from '../cssom';
 
 export function numberToString(x: number) {

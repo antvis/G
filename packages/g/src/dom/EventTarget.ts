@@ -1,4 +1,4 @@
-import { isBoolean, isFunction, isObject } from '@antv/util';
+import { isBoolean, isFunction, isObject } from 'lodash-es';
 import { EventEmitter } from 'eventemitter3';
 import { CustomEvent } from './CustomEvent';
 import { FederatedEvent } from './FederatedEvent';

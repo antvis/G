@@ -1,4 +1,4 @@
-import { isArray } from '@antv/util';
+import { isArray } from 'lodash-es';
 
 export function parseRadius(radius: number[]) {
   let r1 = 0;

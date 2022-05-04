@@ -1,5 +1,5 @@
 import { GlobalContainer } from 'mana-syringe';
-import { isNil } from '@antv/util';
+import { isNil } from 'lodash-es';
 import { SceneGraphService } from '../services/SceneGraphService';
 import { Cullable, Geometry, Renderable, Transform, Sortable } from '../components';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';

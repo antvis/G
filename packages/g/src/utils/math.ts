@@ -1,4 +1,4 @@
-import { isArray, isNumber } from '@antv/util';
+import { isArray, isNumber } from 'lodash-es';
 import type { quat, vec2, vec4 } from 'gl-matrix';
 import { mat3, mat4, vec3 } from 'gl-matrix';
 

@@ -1,10 +1,10 @@
+import { Cubic as CubicUtil } from '@antv/g-math';
+import { isNil } from 'lodash-es';
 import { Shape } from '../types';
 import type { BaseStyleProps, PathCommand } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
-import { Cubic as CubicUtil } from '@antv/g-math';
-import { isNil } from '@antv/util';
 import type { Rectangle } from '../shapes/Rectangle';
 
 export interface PathStyleProps extends BaseStyleProps {

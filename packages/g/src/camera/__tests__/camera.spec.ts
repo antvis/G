@@ -149,6 +149,124 @@ describe('Camera', () => {
     expect(camera.getDistance()).eqls(400);
   });
 
+  it('should setViewOffset correctly.', () => {
+    const width = 600;
+    const height = 500;
+    const camera = new Camera()
+      .setPosition(width / 2, height / 2, 500)
+      .setFocalPoint(width / 2, height / 2, 0)
+      .setOrthographic(width / -2, width / 2, height / -2, height / 2, 0.1, 1000);
+
+    expect(camera.getPosition()).eqls(vec3.fromValues(300, 250, 500));
+    expect(camera.getFocalPoint()).eqls(vec3.fromValues(300, 250, 0));
+    expect(camera.getDistance()).eqls(500);
+
+    camera.setEnableUpdate(false);
+    camera.setViewOffset(600, 500, 0, 0, 300, 250);
+    camera.setEnableUpdate(true);
+
+    expect(camera.getView()).eqls({
+      enabled: true,
+      fullHeight: 500,
+      fullWidth: 600,
+      height: 250,
+      offsetX: 0,
+      offsetY: 0,
+      width: 300,
+    });
+    expect(camera.getViewTransform()).eqls(
+      mat4.fromValues(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -300, -250, -500, 1),
+    );
+    expect(camera.getWorldTransform()).eqls(
+      mat4.fromValues(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 300, 250, 500, 1),
+    );
+
+    expect(camera.getPerspective()).almost.eqls(
+      mat4.fromValues(
+        0.006666666828095913,
+        0,
+        0,
+        0,
+        -0,
+        0.00800000037997961,
+        -0,
+        -0,
+        0,
+        0,
+        -0.0020002000965178013,
+        0,
+        1,
+        -1,
+        -1.0002000331878662,
+        1,
+      ),
+    );
+
+    camera.clearViewOffset();
+
+    expect(camera.getViewTransform()).eqls(
+      mat4.fromValues(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -300, -250, -500, 1),
+    );
+    expect(camera.getWorldTransform()).eqls(
+      mat4.fromValues(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 300, 250, 500, 1),
+    );
+
+    expect(camera.getPerspective()).almost.eqls(
+      mat4.fromValues(
+        0.0033333334140479565,
+        0,
+        0,
+        0,
+        -0,
+        0.004000000189989805,
+        -0,
+        -0,
+        0,
+        0,
+        -0.0020002000965178013,
+        0,
+        -0,
+        0,
+        -1.0002000331878662,
+        1,
+      ),
+    );
+  });
+
+  it('should jitter camera correctly.', () => {
+    const width = 600;
+    const height = 500;
+    const camera = new Camera()
+      .setPosition(width / 2, height / 2, 500)
+      .setFocalPoint(width / 2, height / 2, 0)
+      .setOrthographic(width / -2, width / 2, height / -2, height / 2, 0.1, 1000);
+
+    camera.jitterProjectionMatrix(1, 1);
+
+    expect(camera.getPerspective()).almost.eqls(
+      mat4.fromValues(
+        0.0033333334140479565,
+        0,
+        0,
+        0,
+        0,
+        0.004000000189989805,
+        0,
+        0,
+        0,
+        0,
+        -0.0020002000965178013,
+        0,
+        1,
+        1,
+        -1.0002000331878662,
+        1,
+      ),
+    );
+
+    camera.clearJitterProjectionMatrix();
+  });
+
   it('should do `pan` action correctly.', () => {
     const camera = canvas.getCamera();
     expect(camera.getFocalPoint()).eqls(vec3.fromValues(300, 250, 0));

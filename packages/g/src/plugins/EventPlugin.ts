@@ -1,5 +1,5 @@
 import { inject, singleton } from 'mana-syringe';
-import { isUndefined } from '@antv/util';
+import { isUndefined } from 'lodash-es';
 import type { ICanvas, FederatedMouseEvent } from '../dom';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';

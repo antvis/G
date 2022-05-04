@@ -100,24 +100,25 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       const pickedDisplayObjects: DisplayObject[] = [];
       for (const displayObject of hitTestList) {
         // test with clip path
-        const objectToTest = displayObject.style.clipPath || displayObject;
+        const clipPath = displayObject.parsedStyle.clipPath;
+        const objectToTest = clipPath || displayObject;
         let worldTransform = displayObject.getWorldTransform();
 
         // clipped's world matrix * clipPath's local matrix
-        if (displayObject.style.clipPath) {
+        if (clipPath) {
           worldTransform = mat4.multiply(
             mat4.create(),
             worldTransform,
-            displayObject.style.clipPath.getLocalTransform(),
+            clipPath.getLocalTransform(),
           );
         }
 
         if (this.isHit(objectToTest, position, worldTransform)) {
           if (topmost) {
-            result.picked = [objectToTest];
+            result.picked = [displayObject];
             return result;
           } else {
-            pickedDisplayObjects.push(objectToTest);
+            pickedDisplayObjects.push(displayObject);
           }
         }
       }

@@ -43,6 +43,13 @@
         "en": "Camera actions"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*goX8QqgVSMEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "view-offset.js",
+      "title": {
+        "zh": "View Offset",
+        "en": "View Offset"
+      }
     }
   ]
 }

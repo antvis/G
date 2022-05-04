@@ -1,5 +1,5 @@
 import { DefineValuePlaceholder, GLSLContext, KernelBundle } from '@antv/g-plugin-gpgpu';
-import { isFinite } from '@antv/util';
+import { isFinite } from 'lodash-es';
 import { AST_TOKEN_TYPES, STORAGE_CLASS } from './ast/glsl-ast-node-types';
 import { DataType, Program as ComputeProgram } from './ast/glsl-tree';
 import { Node, Program as TSProgram } from './ast/ts-estree';

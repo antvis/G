@@ -18,7 +18,11 @@ const moduleNameMapper = {
 };
 
 module.exports = {
-  moduleNameMapper,
+  moduleNameMapper: {
+    ...moduleNameMapper,
+    // @see https://stackoverflow.com/a/54117206
+    '^lodash-es$': 'lodash',
+  },
   collectCoverageFrom: [
     'packages/g/src/**/*.{ts,tsx}',
     '!**/node_modules/**',
@@ -54,5 +58,8 @@ module.exports = {
   transform: {
     '^.+\\.[tj]s$': 'ts-jest',
   },
-  transformIgnorePatterns: ['<rootDir>/node_modules/(?!@mapbox)'],
+  transformIgnorePatterns: [
+    '<rootDir>/node_modules/(?!@mapbox)',
+    '<rootDir>/node_modules/(?!lodash-es)',
+  ],
 };

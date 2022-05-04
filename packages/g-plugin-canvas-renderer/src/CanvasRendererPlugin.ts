@@ -26,7 +26,7 @@ import {
   RenderReason,
   ElementEvent,
 } from '@antv/g';
-import { isArray, isNil } from '@antv/util';
+import { isArray, isNil } from 'lodash-es';
 import { inject, singleton } from 'mana-syringe';
 import { vec3, mat4, quat } from 'gl-matrix';
 import RBush from 'rbush';

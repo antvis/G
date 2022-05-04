@@ -1,6 +1,6 @@
 import { CanvasConfig, ContextService } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-import { isString } from '@antv/util';
+import { isString } from 'lodash-es';
 import { createSVGElement } from '@antv/g-plugin-svg-renderer';
 
 @singleton({ token: ContextService })

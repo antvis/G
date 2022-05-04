@@ -1,4 +1,4 @@
-import { isNumber, isString } from '@antv/util';
+import { isNumber, isString } from 'lodash-es';
 import { Syringe } from 'mana-syringe';
 import { EventEmitter } from 'eventemitter3';
 import type { vec2 } from 'gl-matrix';
@@ -181,6 +181,7 @@ export class Camera extends EventEmitter {
         height: number;
       }
     | undefined;
+  private enableUpdate = true;
 
   // private following = undefined;
 
@@ -256,6 +257,14 @@ export class Camera extends EventEmitter {
 
   getOrthoMatrix() {
     return this.orthoMatrix;
+  }
+
+  getView() {
+    return this.view;
+  }
+
+  setEnableUpdate(enabled: boolean) {
+    this.enableUpdate = enabled;
   }
 
   setType(type: CameraType, trackingMode?: CameraTrackingMode) {
@@ -441,7 +450,7 @@ export class Camera extends EventEmitter {
     let width = this.aspect * height;
     let left = -0.5 * width;
 
-    if (this.view !== undefined && this.view.enabled) {
+    if (this.view?.enabled) {
       const fullWidth = this.view.fullWidth;
       const fullHeight = this.view.fullHeight;
 
@@ -480,7 +489,7 @@ export class Camera extends EventEmitter {
     let top = cy + dy;
     let bottom = cy - dy;
 
-    if (this.view !== undefined && this.view.enabled) {
+    if (this.view?.enabled) {
       const scaleW = (this.rright - this.left) / this.view.fullWidth / this.zoom;
       const scaleH = (this.top - this.bottom) / this.view.fullHeight / this.zoom;
 
@@ -1118,12 +1127,14 @@ export class Camera extends EventEmitter {
   }
 
   private triggerUpdate() {
-    // update frustum
-    const viewMatrix = this.getViewTransform();
-    const vpMatrix = mat4.multiply(mat4.create(), this.getPerspective(), viewMatrix);
-    this.getFrustum().extractFromVPMatrix(vpMatrix);
+    if (this.enableUpdate) {
+      // update frustum
+      const viewMatrix = this.getViewTransform();
+      const vpMatrix = mat4.multiply(mat4.create(), this.getPerspective(), viewMatrix);
+      this.getFrustum().extractFromVPMatrix(vpMatrix);
 
-    this.emit(CameraEvent.UPDATED);
+      this.emit(CameraEvent.UPDATED);
+    }
   }
 
   private syncFromLandmark(landmark: Landmark) {

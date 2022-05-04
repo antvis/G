@@ -1,5 +1,5 @@
 import { inject, singleton, Syringe } from 'mana-syringe';
-import { isNil } from '@antv/util';
+import { isNil } from 'lodash-es';
 import type { Transform } from '../components';
 import type { vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';

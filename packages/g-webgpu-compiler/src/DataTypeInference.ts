@@ -1,4 +1,4 @@
-import { isBoolean, isFinite } from '@antv/util';
+import { isBoolean, isFinite } from 'lodash-es';
 import {
   AST_TOKEN_TYPES,
   AST_TOKEN_TYPES as SHADER_AST_TOKEN_TYPES,

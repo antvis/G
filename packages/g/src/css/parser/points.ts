@@ -1,5 +1,5 @@
 import { Line as LineUtil, Polyline as PolylineUtil } from '@antv/g-math';
-import { isString } from '@antv/util';
+import { isString } from 'lodash-es';
 
 export function parsePoints(points: string | [number, number][]) {
   if (isString(points)) {

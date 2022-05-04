@@ -39,7 +39,7 @@
   "dependencies": {
     "@antv/g-plugin-webgl-renderer": "^1.0.25-alpha.1",
     "@antv/g-shader-components": "^1.0.17-alpha.1",
-    "@antv/util": "^2.0.13",
+    "lodash-es": "^4.17.21",
     "tslib": "^2.3.1"
   },
   "peerDependencies": {

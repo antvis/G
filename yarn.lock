@@ -141,6 +141,56 @@
     "@antv/util" "~2.0.0"
     gl-matrix "^3.0.0"
 
+"@antv/g-math@^1.0.18":
+  version "1.0.18"
+  resolved "https://registry.yarnpkg.com/@antv/g-math/-/g-math-1.0.18.tgz#1fe331e22321ea4246dfb0958b2fc3f140aa83e6"
+  integrity sha512-P2a1T6A/mXwKePXyaEQVp2r+c/DGj2iAl6TyEIIVOxEpJV8ggQsiH79ezWN3GZWw+P47Yw8YyKdVb+14WL32+g==
+  dependencies:
+    "@antv/util" "^2.0.13"
+    gl-matrix "^3.1.0"
+    tslib "^2.3.1"
+
+"@antv/g-plugin-dom-interaction@^1.0.18":
+  version "1.0.18"
+  resolved "https://registry.yarnpkg.com/@antv/g-plugin-dom-interaction/-/g-plugin-dom-interaction-1.0.18.tgz#57327dc825554d82d34750297679ea420bd8173e"
+  integrity sha512-mZNpSB2u1wbNaK+56srsX5/mSZwFvdmu9riuHdg5nXqmkJqLIvQa6ZMHt9e6K0k3SZkwvr1GhUWPygsXaQhMug==
+  dependencies:
+    tslib "^2.3.1"
+
+"@antv/g-plugin-gpgpu@^1.0.14":
+  version "1.0.19"
+  resolved "https://registry.yarnpkg.com/@antv/g-plugin-gpgpu/-/g-plugin-gpgpu-1.0.19.tgz#86f7a09a313a91bf4d0fc671390d3c7bc3ca2945"
+  integrity sha512-xgGH6OoOPKeUkez8xjCx8/WsXkGOJdafmuN4RuN0HW+WfJ+p9jrxnVy4/BJsa5X87OFHn5sG6DOUxwLu9YNJ3w==
+  dependencies:
+    tslib "^2.3.1"
+
+"@antv/g-plugin-html-renderer@^1.0.19":
+  version "1.0.19"
+  resolved "https://registry.yarnpkg.com/@antv/g-plugin-html-renderer/-/g-plugin-html-renderer-1.0.19.tgz#c973c47265404bc50f5f3de884eb7fe65bbef04b"
+  integrity sha512-BuL+S6UWkq6k0wxYNOu+umWBaDuG3nk29WwUwxoHRIjuaL5LmXcaAC5lp9xlEGQf41RAayWBTbEGZ1I1HWqm3A==
+  dependencies:
+    tslib "^2.3.1"
+
+"@antv/g-plugin-webgl-renderer@^1.0.24":
+  version "1.0.24"
+  resolved "https://registry.yarnpkg.com/@antv/g-plugin-webgl-renderer/-/g-plugin-webgl-renderer-1.0.24.tgz#41fbcc073fa43b450933c26a7e3ae1b854f7dc7c"
+  integrity sha512-dO+TR5poD1nxJt1ohDeF8zKUfmQAf98OXGGM7pSHQyyvvECQR4ImfOGEeXWHfNutmgsT5IMSuIdvjib/Q6tG4g==
+  dependencies:
+    "@antv/g-shader-components" "^1.0.16"
+    "@antv/util" "^2.0.13"
+    "@mapbox/tiny-sdf" "^2.0.4"
+    "@types/offscreencanvas" "^2019.6.4"
+    "@webgpu/types" "^0.1.6"
+    earcut "^2.2.3"
+    eventemitter3 "^4.0.0"
+    regenerator-runtime "^0.13.9"
+    tslib "^2.3.1"
+
+"@antv/g-shader-components@^1.0.16":
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/@antv/g-shader-components/-/g-shader-components-1.0.16.tgz#82229a56d6dba5da9e894425040f1e38955b1840"
+  integrity sha512-XnllCdl/ObQC+7uUQ4YlibhuoW2v6UJaguFlpFuzIoFJbS4uy9V+FkGIaUA5gkMCIiIVWF/5Jvfuo61KZ0eAgg==
+
 "@antv/g-svg@^0.5.1", "@antv/g-svg@^0.5.2":
   version "0.5.6"
   resolved "https://registry.npmmirror.com/@antv/g-svg/-/g-svg-0.5.6.tgz#70b2fa980c431b39ad3c5b4b53e36a1d60957d65"
@@ -151,6 +201,16 @@
     "@antv/util" "~2.0.0"
     detect-browser "^5.0.0"
     tslib "^2.0.3"
+
+"@antv/g-webgl@^1.0.19":
+  version "1.0.24"
+  resolved "https://registry.yarnpkg.com/@antv/g-webgl/-/g-webgl-1.0.24.tgz#3febfd06177ad54a65ef7b6b9a70650b8ba44391"
+  integrity sha512-KkS1vETrTtOU18DwhilXe3e6ByiaJ/cE2cNDSTtuALrvrotUY8TPW/tZPPaV9vsakiLtJ9JXTr4YKfm+Qk0FJQ==
+  dependencies:
+    "@antv/g-plugin-dom-interaction" "^1.0.18"
+    "@antv/g-plugin-html-renderer" "^1.0.19"
+    "@antv/g-plugin-webgl-renderer" "^1.0.24"
+    "@antv/util" "^2.0.13"
 
 "@antv/g-webgpu-core@^0.5.5", "@antv/g-webgpu-core@^0.5.6":
   version "0.5.6"
@@ -270,6 +330,24 @@
   integrity sha512-1e2/WLbMqbujerAXXL8TXzB+Q9wIl5M4oqPmwzdjoNBAhTqjGMJ6p+KmXbPX0MHpzmv+k9/XrStxgFglmWf0tw==
   dependencies:
     "@antv/g6-pc" "^0.6.1"
+
+"@antv/g@^5.0.16":
+  version "5.0.21"
+  resolved "https://registry.yarnpkg.com/@antv/g/-/g-5.0.21.tgz#55bfeaca9665dc5aa66ec61b22b768324f453668"
+  integrity sha512-x93HPFOJf2eFu1fDJFQpf6dCeYbnn3PZj02eIgu2w3dhhxCe2+MuKR8UNtYaX1gGCA6j5h3ZNWHOdR1x4LcAmg==
+  dependencies:
+    "@antv/g-math" "^1.0.18"
+    "@antv/path-util" "^2.0.14"
+    "@antv/util" "^2.0.13"
+    "@types/offscreencanvas" "^2019.6.4"
+    d3-color "^1.4.0"
+    eventemitter3 "^4.0.0"
+    gl-matrix "^3.1.0"
+    mana-syringe "^0.3.0"
+    reflect-metadata "^0.1.13"
+    request-animation-frame-polyfill "^1.1.2"
+    tapable "^2.2.1"
+    tslib "^2.3.1"
 
 "@antv/gatsby-theme-antv@^1.1.15":
   version "1.1.17"
@@ -393,6 +471,15 @@
   dependencies:
     "@antv/matrix-util" "^3.0.4"
     "@antv/util" "^2.0.9"
+    tslib "^2.0.3"
+
+"@antv/path-util@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@antv/path-util/-/path-util-3.0.1.tgz#42fd84222824e8ad8d1bde70f164a05924870d4a"
+  integrity sha512-tpvAzMpF9Qm6ik2YSMqICNU5tco5POOW7S4XoxZAI/B0L26adU+Md/SmO0BBo2SpuywKvzPH3hPT3xmoyhr04Q==
+  dependencies:
+    gl-matrix "^3.1.0"
+    lodash-es "^4.17.21"
     tslib "^2.0.3"
 
 "@antv/scale@^0.3.4":
@@ -5908,6 +5995,11 @@
   resolved "https://registry.npmmirror.com/@types/cors/-/cors-2.8.12.tgz#6b2c510a7ad7039e98e7b8d3d6598f4359e5c080"
   integrity sha512-vt+kDhq/M2ayberEtJcIN/hxXy1Pk+59g2FV/ZQceeaTyCtCucjL2Q7FXlFjtWn4n15KCr1NE2lNNFhp0lEThw==
 
+"@types/d3-color@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@types/d3-color/-/d3-color-3.0.2.tgz#53f2d6325f66ee79afd707c05ac849e8ae0edbb0"
+  integrity sha512-WVx6zBiz4sWlboCy7TCgjeyHpNjMsoF36yaagny1uXfbadc9f+5BeBf7U+lRmQqY3EHbGQpP8UdW8AC+cywSwQ==
+
 "@types/d3-timer@^2.0.0":
   version "2.0.1"
   resolved "https://registry.npmmirror.com/@types/d3-timer/-/d3-timer-2.0.1.tgz#ffb6620d290624f3726aa362c0c8a4b44c8d7200"
@@ -6130,6 +6222,18 @@
   version "0.0.29"
   resolved "https://registry.npmmirror.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
+
+"@types/lodash-es@^4.17.6":
+  version "4.17.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash-es/-/lodash-es-4.17.6.tgz#c2ed4c8320ffa6f11b43eb89e9eaeec65966a0a0"
+  integrity sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash@*":
+  version "4.14.182"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.182.tgz#05301a4d5e62963227eaafe0ce04dd77c54ea5c2"
+  integrity sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==
 
 "@types/lodash@^4.14.92":
   version "4.14.179"
@@ -16592,11 +16696,6 @@ gentle-fs@^2.3.0:
     read-cmd-shim "^1.0.1"
     slide "^1.1.6"
 
-geometry-interfaces@^1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/geometry-interfaces/-/geometry-interfaces-1.1.4.tgz#9e82af6700ca639a675299f08e1f5fbc4a79d48d"
-  integrity sha512-qD6OdkT6NcES9l4Xx3auTpwraQruU7dARbQPVO71MKvkGYw5/z/oIiGymuFXrRaEQa5Y67EIojUpaLeGEa5hGA==
-
 get-amd-module-type@^3.0.0:
   version "3.0.2"
   resolved "https://registry.npmmirror.com/get-amd-module-type/-/get-amd-module-type-3.0.2.tgz#46550cee2b8e1fa4c3f2c8a5753c36990aa49ab0"
@@ -21697,10 +21796,17 @@ lock@^1.0.0:
   resolved "https://registry.npmmirror.com/lock/-/lock-1.1.0.tgz#53157499d1653b136ca66451071fca615703fa55"
   integrity sha512-NZQIJJL5Rb9lMJ0Yl1JoVr9GSdo4HTPsUEWsSFzB8dE8DSoiLCVavWZPi7Rnlv/o73u6I24S/XYc/NmG4l8EKA==
 
-lodash-es@^4.17.15:
+lodash-es@^4.17.15, lodash-es@^4.17.21:
   version "4.17.21"
   resolved "https://registry.npmmirror.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
   integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
+
+lodash-webpack-plugin@^0.11.6:
+  version "0.11.6"
+  resolved "https://registry.yarnpkg.com/lodash-webpack-plugin/-/lodash-webpack-plugin-0.11.6.tgz#8204c6b78beb62ce5211217dfe783c21557ecd33"
+  integrity sha512-nsHN/+IxZK/C425vGC8pAxkKJ8KQH2+NJnhDul14zYNWr6HJcA95w+oRR7Cp0oZpOdMplDZXmjVROp8prPk7ig==
+  dependencies:
+    lodash "^4.17.20"
 
 lodash._reinterpolate@^3.0.0:
   version "3.0.0"

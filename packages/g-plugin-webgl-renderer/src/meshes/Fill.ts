@@ -154,7 +154,8 @@ export class FillMesh extends Instanced {
           [Uniform.VISIBLE]: visibility.value === 'visible' ? 1 : 0,
         });
       } else if (name === 'pointerEvents') {
-        const encodedPickingColor = (object.isInteractive() &&
+        const encodedPickingColor = (value &&
+          object.isInteractive() &&
           // @ts-ignore
           object.renderable3D?.encodedPickingColor) || [0, 0, 0];
         this.material.setUniforms({

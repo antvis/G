@@ -1,4 +1,4 @@
-import { isNumber, isString } from '@antv/util';
+import { isNumber, isString } from 'lodash-es';
 import type { ParsedTextStyleProps } from '../display-objects/Text';
 
 const genericFontFamilies = ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'];

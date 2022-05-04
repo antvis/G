@@ -37,7 +37,7 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/util": "^2.0.13",
+    "lodash-es": "^4.17.21",
     "tslib": "^2.3.1"
   },
   "peerDependencies": {

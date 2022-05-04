@@ -177,7 +177,8 @@ export class LineMesh extends Instanced {
           [Uniform.DASH_OFFSET]: (lineDashOffset && lineDashOffset.value) || 0,
         });
       } else if (name === 'pointerEvents') {
-        const encodedPickingColor = (object.isInteractive() &&
+        const encodedPickingColor = (value &&
+          object.isInteractive() &&
           // @ts-ignore
           object.renderable3D?.encodedPickingColor) || [0, 0, 0];
         this.material.setUniforms({

@@ -1,14 +1,7 @@
-import { isNil } from '@antv/util';
+import { isNil } from 'lodash-es';
 import { getFormatCompByteSize } from '../format';
-import type {
-  IndexBufferDescriptor,
-  InputState,
-  VertexBufferDescriptor} from '../interfaces';
-import {
-  BufferUsage,
-  ResourceType,
-  VertexBufferFrequency,
-} from '../interfaces';
+import type { IndexBufferDescriptor, InputState, VertexBufferDescriptor } from '../interfaces';
+import { BufferUsage, ResourceType, VertexBufferFrequency } from '../interfaces';
 import { assert, assertExists } from '../utils';
 import type { Buffer_GL } from './Buffer';
 import type { Device_GL } from './Device';
