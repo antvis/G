@@ -15,7 +15,6 @@ const camera = canvas.getCamera();
 
 - 两种投影模式：正交投影 [Orthographic](/zh/docs/api/camera#投影模式) 和透视投影 [Perspective](/zh/docs/api/camera#投影模式)，默认使用前者。
 - 三种相机类型：[Exploring](/zh/docs/api/camera#exploring)、[Orbiting](/zh/docs/api/camera#orbiting) 和 [Tracking](/zh/docs/api/camera#tracking)，默认使用 Exploring。
-  - Tracking 模式下不同模式。
 - 相机动作。例如 [pan](/zh/docs/api/camera#pan)、[dolly](/zh/docs/api/camera#dolly)、[rotate](/zh/docs/api/camera#rotate)
 - 自定义[相机动画](/zh/docs/api/camera#相机动画)，创建/保存当前相机状态作为一个 Landmark，可在多个 Landmark 间平滑切换。
 
@@ -283,6 +282,37 @@ setAspect(aspect: number)
 设置最大视距。在进行 [dolly](/zh/docs/api/camera#dolly) 操作时不会大于该距离。
 
 默认值为 `Infinity`。
+
+### setViewOffset()
+
+设置视口的偏移量，立刻重新计算投影矩阵。
+
+方法签名为：
+
+```
+setViewOffset(
+  fullWidth: number,
+  fullHeight: number,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+)
+```
+
+其中 `fullWidth/fullHeight` 为原始视口大小，`x/y` 为视口偏移坐标，`width/height` 为偏移后视口大小。
+
+在该[示例](/zh/examples/camera#view-offset)中，[Cube](/zh/docs/api/3d/geometry#cubegeometry) 原本位于视口正中央，通过设置 `x/y` 偏移量到视口中心。
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*U6ELSY2EVNIAAAAAAAAAAAAAARQnAQ" alt="setViewOffset" width="300">
+
+在 [g-plugin-webgl-renderer](/zh/docs/plugins/webgl-renderer) 中拾取时，我们使用该方法设置偏移量（将相机对准拾取区域），仅渲染拾取区域而非整个屏幕以提高性能。
+
+### clearViewOffset()
+
+清除之前设置的视口偏移量，立刻重新计算投影矩阵。
+
+在该[示例](/zh/examples/camera#view-offset)中，点击按钮可以随时移除已设置的偏移量。
 
 ### 设置方位角
 

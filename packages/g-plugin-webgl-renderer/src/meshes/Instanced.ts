@@ -693,7 +693,8 @@ export abstract class Instanced {
     } else if (name === 'pointerEvents') {
       const packed: number[] = [];
       objects.forEach((object) => {
-        const encodedPickingColor = (object.isInteractive() &&
+        const encodedPickingColor = (value &&
+          object.isInteractive() &&
           // @ts-ignore
           object.renderable3D?.encodedPickingColor) || [0, 0, 0];
         packed.push(...encodedPickingColor, object.sortable.renderOrder * RENDER_ORDER_SCALE);

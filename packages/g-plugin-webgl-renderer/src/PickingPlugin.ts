@@ -122,8 +122,7 @@ export class PickingPlugin implements RenderingPlugin {
       const pickedDisplayObjects = await this.pickByRectangleInDepth(
         new Rectangle(
           clamp(Math.round(xInDevicePixel), 0, width - 1),
-          // flip Y
-          clamp(Math.round(height - (y + 1) * dpr), 0, height - 1),
+          clamp(Math.round(yInDevicePixel), 0, height - 1),
           1,
           1,
         ),
@@ -176,7 +175,6 @@ export class PickingPlugin implements RenderingPlugin {
     picked: DisplayObject,
   ): Promise<DisplayObject | null> {
     const device = this.renderGraphPlugin.getDevice();
-    const canvas = this.renderGraphPlugin.getSwapChain().getCanvas() as HTMLCanvasElement;
     const renderLists = this.renderGraphPlugin.getRenderLists();
 
     const renderInstManager = this.renderHelper.renderInstManager;
@@ -184,9 +182,12 @@ export class PickingPlugin implements RenderingPlugin {
     const clearColor = TransparentWhite;
 
     // retrieve at each frame since canvas may resize
+    const { x, y, width, height } = rect;
+
+    // use a small picking area(like 1x1) instead of a fullscreen rt
     const renderInput = {
-      backbufferWidth: canvas.width,
-      backbufferHeight: canvas.height,
+      backbufferWidth: width,
+      backbufferHeight: height,
       antialiasingMode: AntialiasingMode.None,
     };
     const mainPickingDesc = makeBackbufferDescSimple(
@@ -242,7 +243,15 @@ export class PickingPlugin implements RenderingPlugin {
     );
 
     // Update Scene Params
-    const { width, height } = this.canvasConfig;
+    const { width: canvasWidth, height: canvasHeight } = this.canvasConfig;
+    const dpr = this.contextService.getDPR();
+
+    // account for current view offset
+    const currentView = { ...this.camera.getView() };
+
+    this.camera.setEnableUpdate(false);
+    this.camera.setViewOffset(canvasWidth * dpr, canvasHeight * dpr, x, y, width, height);
+
     template.setUniforms(SceneUniformBufferIndex, [
       {
         name: SceneUniform.PROJECTION_MATRIX,
@@ -262,7 +271,7 @@ export class PickingPlugin implements RenderingPlugin {
       },
       {
         name: SceneUniform.VIEWPORT,
-        value: [width, height],
+        value: [canvasWidth, canvasHeight],
       },
       {
         name: SceneUniform.IS_ORTHO,
@@ -291,14 +300,30 @@ export class PickingPlugin implements RenderingPlugin {
 
     const pickingTexture = pickingTemporalTexture.getTextureForResolving();
 
+    // restore previous view
+    if (currentView && currentView.enabled) {
+      this.camera.setViewOffset(
+        currentView.fullWidth,
+        currentView.fullHeight,
+        currentView.offsetX,
+        currentView.offsetY,
+        currentView.width,
+        currentView.height,
+      );
+    } else {
+      this.camera.clearViewOffset();
+    }
+
+    this.camera.setEnableUpdate(true);
+
     if (pickingTexture) {
       const pickedColors = (await readback.readTexture(
         pickingTexture,
-        rect.x,
-        rect.y,
-        rect.width,
-        rect.height,
-        new Uint8Array(rect.width * rect.height * 4),
+        0,
+        0,
+        width,
+        height,
+        new Uint8Array(width * height * 4),
       )) as Uint8Array;
 
       let pickedFeatureIdx = -1;
