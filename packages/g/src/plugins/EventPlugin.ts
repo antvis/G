@@ -234,12 +234,17 @@ export class EventPlugin implements RenderingPlugin {
       const ne = nativeEvent as unknown as TouchEvent;
       const changedTouches = [];
       const touches = [];
-      for (let i = 0; i < ne.changedTouches.length; i++) {
-        changedTouches.push(this.formatTouch(ne.changedTouches[i]));
+
+      if (ne.changedTouches) {
+        for (let i = 0; i < ne.changedTouches.length; i++) {
+          changedTouches.push(this.formatTouch(ne.changedTouches[i]));
+        }
       }
 
-      for (let i = 0; i < ne.touches.length; i++) {
-        touches.push(this.formatTouch(ne.touches[i]));
+      if (ne.touches) {
+        for (let i = 0; i < ne.touches.length; i++) {
+          touches.push(this.formatTouch(ne.touches[i]));
+        }
       }
 
       event.nativeEvent = nativeEvent;
