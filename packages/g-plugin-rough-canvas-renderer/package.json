@@ -1,0 +1,50 @@
+{
+  "name": "@antv/g-plugin-rough-canvas-renderer",
+  "version": "1.0.0",
+  "description": "A G plugin of renderer implementation with rough.js",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "es/index.d.ts",
+  "unpkg": "dist/index.umd.min.js",
+  "files": [
+    "package.json",
+    "dist",
+    "es",
+    "lib",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antvis/g.git"
+  },
+  "keywords": [
+    "util",
+    "antv",
+    "g"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "https://github.com/orgs/antvis/people",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/antvis/g/issues"
+  },
+  "dependencies": {
+    "roughjs": "^4.5.2",
+    "tslib": "^2.3.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.0.0"
+  },
+  "peerDependencies": {
+    "@antv/g": "^5.0.1",
+    "mana-syringe": "^0.3.0"
+  },
+  "scripts": {
+    "umd": "webpack"
+  },
+  "homepage": "https://github.com/antvis/g#readme",
+  "gitHead": "a52a7c8d754925e5732baf3faea156332748365f"
+}
