@@ -16,6 +16,9 @@ const canvas = new Canvas({
   width: 600,
   height: 500,
   renderer: canvasRenderer,
+  // open the following when debugging on PC
+  // supportPointerEvent: false,
+  // supportTouchEvent: true,
 });
 
 // add a circle to canvas
@@ -61,10 +64,14 @@ circle.setPosition(300, 200);
 
 let dragging = false;
 let lastPosition;
+const isTouchEvent = (e) => !!e.changedTouches;
 const onDragStart = (event) => {
   dragging = true;
   circle.attr('opacity', 0.5);
-  lastPosition = [event.x, event.y];
+
+  lastPosition = isTouchEvent(event)
+    ? [event.changedTouches[0].x, event.changedTouches[0].y]
+    : [event.x, event.y];
   text.attr('text', 'Drag me');
 };
 const onDragEnd = () => {
@@ -77,10 +84,14 @@ const onDragMove = (event) => {
     circle.attr('opacity', 0.5);
     text.attr('text', 'Dragging...');
 
-    const offset = [event.x - lastPosition[0], event.y - lastPosition[1]];
+    const eventPosition = isTouchEvent(event)
+      ? [event.changedTouches[0].x, event.changedTouches[0].y]
+      : [event.x, event.y];
+
+    const offset = [eventPosition[0] - lastPosition[0], eventPosition[1] - lastPosition[1]];
     const position = circle.getPosition();
     circle.setPosition(position[0] + offset[0], position[1] + offset[1]);
-    lastPosition = [event.x, event.y];
+    lastPosition = eventPosition;
   }
 };
 

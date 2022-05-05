@@ -36,11 +36,16 @@ export class MobileInteractionPlugin implements RenderingPlugin {
       renderingService.hooks.pointerOut.call(ev);
     };
 
+    const onPointerCancel = (ev: InteractivePointerEvent) => {
+      renderingService.hooks.pointerCancel.call(ev);
+    };
+
     renderingService.hooks.init.tap(MobileInteractionPlugin.tag, () => {
       // 基于小程序上下文的事件监听方式，绑定事件监听，可以参考下面基于 DOM 的方式
       canvasEl.addEventListener('touchstart', onPointerDown, true);
       canvasEl.addEventListener('touchend', onPointerUp, true);
       canvasEl.addEventListener('touchmove', onPointerMove, true);
+      canvasEl.addEventListener('touchcancel', onPointerCancel, true);
 
       canvasEl.addEventListener('mousemove', onPointerMove, true);
       canvasEl.addEventListener('mousedown', onPointerDown, true);
@@ -54,6 +59,7 @@ export class MobileInteractionPlugin implements RenderingPlugin {
       canvasEl.removeEventListener('touchstart', onPointerDown, true);
       canvasEl.removeEventListener('touchend', onPointerUp, true);
       canvasEl.removeEventListener('touchmove', onPointerMove, true);
+      canvasEl.removeEventListener('touchcancel', onPointerCancel, true);
 
       canvasEl.removeEventListener('mousemove', onPointerMove, true);
       canvasEl.removeEventListener('mousedown', onPointerDown, true);

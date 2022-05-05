@@ -42,6 +42,10 @@ export class DOMInteractionPlugin implements RenderingPlugin {
       renderingService.hooks.pointerOut.call(ev);
     };
 
+    const onPointerCancel = (ev: InteractivePointerEvent) => {
+      renderingService.hooks.pointerCancel.call(ev);
+    };
+
     const onPointerWheel = (ev: InteractivePointerEvent) => {
       renderingService.hooks.pointerWheel.call(ev);
     };
@@ -58,6 +62,7 @@ export class DOMInteractionPlugin implements RenderingPlugin {
       $el.addEventListener('touchstart', onPointerDown, true);
       $el.addEventListener('touchend', onPointerUp, true);
       $el.addEventListener('touchmove', onPointerMove, true);
+      $el.addEventListener('touchcancel', onPointerCancel, true);
     };
 
     const addMouseEventListener = ($el: HTMLElement) => {

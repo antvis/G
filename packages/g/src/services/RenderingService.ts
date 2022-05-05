@@ -110,6 +110,7 @@ export class RenderingService {
     pointerMove: new SyncHook<[InteractivePointerEvent]>(['event']),
     pointerOut: new SyncHook<[InteractivePointerEvent]>(['event']),
     pointerOver: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerCancel: new SyncHook<[InteractivePointerEvent]>(['event']),
     pointerWheel: new SyncHook<[InteractivePointerEvent]>(['event']),
   };
 

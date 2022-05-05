@@ -5,7 +5,7 @@ import { Renderer as SVGRenderer } from '@antv/g-svg';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 import Hammer from 'hammerjs';
-import 'hammer-touchemulator';
+// import 'hammer-touchemulator';
 
 /**
  * Pinch Zoom And Pan With HammerJS
@@ -16,10 +16,10 @@ import 'hammer-touchemulator';
  * Press `shiftKey` to emulate multi-touch on a desktop
  * @see http://hammerjs.github.io/touch-emulator/
  */
-hammerTouchemulator();
+// hammerTouchemulator();
 
-const CANVAS_WIDTH = 600;
-const CANVAS_HEIGHT = 500;
+const CANVAS_WIDTH = 300;
+const CANVAS_HEIGHT = 200;
 const MIN_SCALE = 1; // 1=scaling when first loaded
 const MAX_SCALE = 64;
 
@@ -31,7 +31,15 @@ const canvas = new Canvas({
   width: CANVAS_WIDTH,
   height: CANVAS_HEIGHT,
   renderer: canvasRenderer,
+  // open the following when debugging on PC
+  supportPointerEvent: false,
+  supportTouchEvent: true,
 });
+
+// prevent browser default actions
+// @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/touch-action
+const $canvas = canvas.getContextService().getDomElement();
+$canvas.style.touchAction = 'none';
 
 let image;
 
@@ -172,8 +180,8 @@ img.onload = () => {
   // 图片加载成功后创建
   image = new GImage({
     style: {
-      width: 600,
-      height: (119 * 600) / 960,
+      width: CANVAS_WIDTH,
+      height: (CANVAS_WIDTH * 119) / 960,
       src: img, // 传入 Image 对象
     },
   });
@@ -187,7 +195,10 @@ img.onload = () => {
   curHeight = imgHeight * scale;
 
   // use hammer.js
-  const hammer = new Hammer(image);
+  // const hammer = new Hammer(image);
+  const hammer = new Hammer(image, {
+    inputClass: Hammer.TouchInput,
+  });
 
   hammer.get('pinch').set({
     enable: true,

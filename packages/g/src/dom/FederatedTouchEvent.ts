@@ -1,3 +1,4 @@
+import { FormattedTouch } from '../utils';
 import { FederatedEvent } from './FederatedEvent';
 
 /**
@@ -7,12 +8,17 @@ export class FederatedTouchEvent
   extends FederatedEvent<MouseEvent | PointerEvent | TouchEvent>
   implements TouchEvent
 {
+  pointerType: string;
+
   altKey: boolean;
   ctrlKey: boolean;
   metaKey: boolean;
   shiftKey: boolean;
 
-  changedTouches: TouchList;
-  targetTouches: TouchList;
-  touches: TouchList;
+  // @ts-ignore
+  changedTouches: FormattedTouch[];
+  // @ts-ignore
+  targetTouches: FormattedTouch[];
+  // @ts-ignore
+  touches: FormattedTouch[];
 }
