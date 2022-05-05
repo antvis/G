@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-webgl",
-  "version": "0.0.3-alpha.2",
+  "version": "0.0.3",
   "description": "A renderer implemented by WebGL1/2 & WebGPU in mobile environment",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -40,8 +40,8 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g-plugin-mobile-interaction": "^0.0.8-alpha.2",
-    "@antv/g-plugin-webgl-renderer": "^1.0.25-alpha.2",
+    "@antv/g-plugin-mobile-interaction": "^0.0.8",
+    "@antv/g-plugin-webgl-renderer": "^1.0.25",
     "lodash-es": "^4.17.21"
   },
   "peerDependencies": {

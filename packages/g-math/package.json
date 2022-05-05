@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-math",
-  "version": "1.0.19-alpha.2",
+  "version": "1.0.19",
   "description": "Geometry util",
   "main": "lib/index.js",
   "module": "es/index.js",
