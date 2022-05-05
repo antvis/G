@@ -12,8 +12,6 @@ import { isString } from 'lodash-es';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class LoadImagePlugin implements RenderingPlugin {
-  static tag = 'LoadImagePlugin';
-
   @inject(ImagePool)
   private imagePool: ImagePool;
 
@@ -54,7 +52,7 @@ export class LoadImagePlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tap(LoadImagePlugin.tag, () => {
+    renderingService.hooks.init.tapPromise(async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(
         ElementEvent.ATTR_MODIFIED,
@@ -62,7 +60,7 @@ export class LoadImagePlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.hooks.destroy.tap(LoadImagePlugin.tag, () => {
+    renderingService.hooks.destroy.tap(() => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(
         ElementEvent.ATTR_MODIFIED,

@@ -1,5 +1,5 @@
 import { inject, singleton, contrib, Syringe, Contribution } from 'mana-syringe';
-import { SyncHook, SyncWaterfallHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from 'tapable';
+import { SyncHook, SyncWaterfallHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from '../utils';
 import type { DisplayObject } from '../display-objects';
 import { StyleValueRegistry } from '../css';
 import { ElementEvent } from '../dom';
@@ -75,43 +75,43 @@ export class RenderingService {
     /**
      * only dirty object which has sth changed will be rendered
      */
-    dirtycheck: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
+    dirtycheck: new SyncWaterfallHook<[DisplayObject | null], DisplayObject | null>(),
     /**
      * do culling
      */
-    cull: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
+    cull: new SyncWaterfallHook<[DisplayObject | null], DisplayObject | null>(),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */
-    beginFrame: new SyncHook<[]>([]),
+    beginFrame: new SyncHook<[]>(),
     /**
      * called before every dirty object get rendered
      */
-    beforeRender: new SyncHook<[DisplayObject]>(['objectToRender']),
+    beforeRender: new SyncHook<[DisplayObject]>(),
     /**
      * called when every dirty object rendering even it's culled
      */
-    render: new SyncHook<[DisplayObject]>(['objectToRender']),
+    render: new SyncHook<[DisplayObject]>(),
     /**
      * called after every dirty object get rendered
      */
-    afterRender: new SyncHook<[DisplayObject]>(['objectToRender']),
-    endFrame: new SyncHook<[]>([]),
-    destroy: new SyncHook<[]>([]),
+    afterRender: new SyncHook<[DisplayObject]>(),
+    endFrame: new SyncHook<[]>(),
+    destroy: new SyncHook<[]>(),
     /**
      * use async but faster method such as GPU-based picking in `g-plugin-webgl-renderer`
      */
-    pick: new AsyncSeriesWaterfallHook<[PickingResult], PickingResult>(['result']),
+    pick: new AsyncSeriesWaterfallHook<[PickingResult], PickingResult>(),
     /**
      * used in event system
      */
-    pointerDown: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerUp: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerMove: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerOut: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerOver: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerCancel: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerWheel: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerDown: new SyncHook<[InteractivePointerEvent]>(),
+    pointerUp: new SyncHook<[InteractivePointerEvent]>(),
+    pointerMove: new SyncHook<[InteractivePointerEvent]>(),
+    pointerOut: new SyncHook<[InteractivePointerEvent]>(),
+    pointerOver: new SyncHook<[InteractivePointerEvent]>(),
+    pointerCancel: new SyncHook<[InteractivePointerEvent]>(),
+    pointerWheel: new SyncHook<[InteractivePointerEvent]>(),
   };
 
   async init() {
@@ -119,7 +119,7 @@ export class RenderingService {
     this.renderingPluginProvider.getContributions({ cache: false }).forEach((plugin) => {
       plugin.apply(this);
     });
-    await this.hooks.init.promise();
+    await this.hooks.init.callPromise();
     this.inited = true;
   }
 

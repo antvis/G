@@ -17,8 +17,8 @@ import type {
   ParsedBaseStyleProps,
   ParsedRectStyleProps,
   ParsedTextStyleProps,
-
-  CSSUnitValue} from '@antv/g';
+  CSSUnitValue,
+} from '@antv/g';
 import type {
   YogaFlexDirection,
   YogaNode,
@@ -55,8 +55,6 @@ export type YogaSize = PixelsOrPercentage | 'auto';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class YogaPlugin implements RenderingPlugin {
-  static tag = 'YogaPlugin';
-
   @inject(SceneGraphService)
   protected sceneGraphService: SceneGraphService;
 
@@ -167,7 +165,7 @@ export class YogaPlugin implements RenderingPlugin {
       this.needRecalculateLayout = true;
     };
 
-    renderingService.hooks.init.tap(YogaPlugin.tag, () => {
+    renderingService.hooks.init.tapPromise(async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(ElementEvent.INSERTED, handleInserted);
@@ -179,7 +177,7 @@ export class YogaPlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.hooks.destroy.tap(YogaPlugin.tag, () => {
+    renderingService.hooks.destroy.tap(() => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(ElementEvent.INSERTED, handleInserted);
@@ -204,7 +202,7 @@ export class YogaPlugin implements RenderingPlugin {
     //   }
     // };
 
-    renderingService.hooks.beginFrame.tap(YogaPlugin.tag, () => {
+    renderingService.hooks.beginFrame.tap(() => {
       if (this.needRecalculateLayout) {
         const rootNode = this.nodes[this.renderingContext.root.entity];
         rootNode.calculateLayout();

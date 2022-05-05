@@ -29,8 +29,6 @@ import { sortPointsInCCW } from './utils';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class MatterJSPlugin implements RenderingPlugin {
-  static tag = 'MatterJSPlugin';
-
   @inject(SceneGraphService)
   protected sceneGraphService: SceneGraphService;
 
@@ -128,7 +126,7 @@ export class MatterJSPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tap(MatterJSPlugin.tag, () => {
+    renderingService.hooks.init.tapPromise(async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(
@@ -146,7 +144,7 @@ export class MatterJSPlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.hooks.destroy.tap(MatterJSPlugin.tag, () => {
+    renderingService.hooks.destroy.tap(() => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(

@@ -16,15 +16,13 @@ export interface CullingStrategyContribution {
  */
 @singleton({ contrib: RenderingPluginContribution })
 export class CullingPlugin implements RenderingPlugin {
-  static tag = 'CullingPlugin';
-
   @contrib(CullingStrategyContribution)
   private strategyProvider: Contribution.Provider<CullingStrategyContribution>;
 
   apply(renderingService: RenderingService) {
     const strategies = this.strategyProvider.getContributions();
 
-    renderingService.hooks.cull.tap(CullingPlugin.tag, (object: DisplayObject | null) => {
+    renderingService.hooks.cull.tap((object: DisplayObject | null) => {
       if (object) {
         const cullable = object.cullable;
         if (strategies.length === 0) {
@@ -43,7 +41,7 @@ export class CullingPlugin implements RenderingPlugin {
       return object;
     });
 
-    renderingService.hooks.afterRender.tap(CullingPlugin.tag, (object: DisplayObject) => {
+    renderingService.hooks.afterRender.tap((object: DisplayObject) => {
       object.cullable.visibilityPlaneMask = -1;
     });
   }

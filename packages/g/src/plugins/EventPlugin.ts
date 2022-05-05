@@ -14,8 +14,8 @@ import {
 import { Point } from '../shapes';
 import type { Cursor, EventPosition, InteractivePointerEvent } from '../types';
 import { CanvasConfig } from '../types';
-import { MOUSE_POINTER_ID, TOUCH_TO_POINTER } from '../utils/event';
-import type { FormattedTouch, FormattedTouchEvent, FormattedPointerEvent } from '../utils/event';
+import { MOUSE_POINTER_ID } from '../utils/event';
+import type { FormattedTouch, FormattedPointerEvent } from '../utils/event';
 import { FederatedTouchEvent } from '../dom/FederatedTouchEvent';
 
 /**
@@ -26,8 +26,6 @@ import { FederatedTouchEvent } from '../dom/FederatedTouchEvent';
  */
 @singleton({ contrib: RenderingPluginContribution })
 export class EventPlugin implements RenderingPlugin {
-  static tag = 'EventPlugin';
-
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
@@ -51,7 +49,7 @@ export class EventPlugin implements RenderingPlugin {
     const canvas = this.renderingContext.root.ownerDocument.defaultView;
 
     this.eventService.setPickHandler(async (position: EventPosition) => {
-      const { picked } = await this.renderingService.hooks.pick.promise({
+      const { picked } = await this.renderingService.hooks.pick.callPromise({
         position,
         picked: [],
         topmost: true, // we only concern the topmost element
@@ -59,94 +57,81 @@ export class EventPlugin implements RenderingPlugin {
       return picked[0] || null;
     });
 
-    renderingService.hooks.pointerWheel.tap(
-      EventPlugin.tag,
-      (nativeEvent: InteractivePointerEvent) => {
-        const wheelEvent = this.normalizeWheelEvent(nativeEvent as WheelEvent);
+    renderingService.hooks.pointerWheel.tap((nativeEvent: InteractivePointerEvent) => {
+      const wheelEvent = this.normalizeWheelEvent(nativeEvent as WheelEvent);
 
-        this.eventService.mapEvent(wheelEvent);
-      },
-    );
+      this.eventService.mapEvent(wheelEvent);
+    });
 
-    renderingService.hooks.pointerDown.tap(
-      EventPlugin.tag,
-      (nativeEvent: InteractivePointerEvent) => {
-        if (canvas.supportTouchEvent && (nativeEvent as PointerEvent).pointerType === 'touch') {
-          return;
+    renderingService.hooks.pointerDown.tap((nativeEvent: InteractivePointerEvent) => {
+      if (canvas.supportTouchEvent && (nativeEvent as PointerEvent).pointerType === 'touch') {
+        return;
+      }
+
+      const normalizedEvent = this.normalizeToPointerEvent(nativeEvent, canvas);
+
+      if (this.autoPreventDefault && (normalizedEvent as any).isNormalized) {
+        const cancelable = nativeEvent.cancelable || !('cancelable' in nativeEvent);
+
+        if (cancelable) {
+          nativeEvent.preventDefault();
         }
+      }
 
-        const normalizedEvent = this.normalizeToPointerEvent(nativeEvent, canvas);
+      const federatedEvent = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent, canvas);
+      this.eventService.mapEvent(federatedEvent);
 
-        if (this.autoPreventDefault && (normalizedEvent as any).isNormalized) {
-          const cancelable = nativeEvent.cancelable || !('cancelable' in nativeEvent);
+      this.setCursor(this.eventService.cursor);
+    });
 
-          if (cancelable) {
-            nativeEvent.preventDefault();
-          }
+    renderingService.hooks.pointerUp.tap((nativeEvent: InteractivePointerEvent) => {
+      if (canvas.supportTouchEvent && (nativeEvent as PointerEvent).pointerType === 'touch') return;
+
+      // account for element in SVG
+      const $element = this.contextService.getDomElement();
+      const outside =
+        $element &&
+        nativeEvent.target &&
+        nativeEvent.target !== $element &&
+        // @ts-ignore
+        $element.contains &&
+        // @ts-ignore
+        !$element.contains(nativeEvent.target)
+          ? 'outside'
+          : '';
+      const normalizedEvent = this.normalizeToPointerEvent(nativeEvent, canvas);
+      const event = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent, canvas);
+      event.type += outside;
+      this.eventService.mapEvent(event);
+
+      this.setCursor(this.eventService.cursor);
+    });
+
+    renderingService.hooks.pointerMove.tap(this.onPointerMove);
+
+    renderingService.hooks.pointerOver.tap(this.onPointerMove);
+
+    renderingService.hooks.pointerOut.tap(this.onPointerMove);
+    renderingService.hooks.pointerCancel.tap((nativeEvent: InteractivePointerEvent) => {
+      if (canvas.supportTouchEvent && (nativeEvent as PointerEvent).pointerType === 'touch') {
+        return;
+      }
+
+      const normalizedEvent = this.normalizeToPointerEvent(nativeEvent, canvas);
+
+      if (this.autoPreventDefault && (normalizedEvent as any).isNormalized) {
+        const cancelable = nativeEvent.cancelable || !('cancelable' in nativeEvent);
+
+        if (cancelable) {
+          nativeEvent.preventDefault();
         }
+      }
 
-        const federatedEvent = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent, canvas);
-        this.eventService.mapEvent(federatedEvent);
+      const federatedEvent = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent, canvas);
+      this.eventService.mapEvent(federatedEvent);
 
-        this.setCursor(this.eventService.cursor);
-      },
-    );
-
-    renderingService.hooks.pointerUp.tap(
-      EventPlugin.tag,
-      (nativeEvent: InteractivePointerEvent) => {
-        if (canvas.supportTouchEvent && (nativeEvent as PointerEvent).pointerType === 'touch')
-          return;
-
-        // account for element in SVG
-        const $element = this.contextService.getDomElement();
-        const outside =
-          $element &&
-          nativeEvent.target &&
-          nativeEvent.target !== $element &&
-          // @ts-ignore
-          $element.contains &&
-          // @ts-ignore
-          !$element.contains(nativeEvent.target)
-            ? 'outside'
-            : '';
-        const normalizedEvent = this.normalizeToPointerEvent(nativeEvent, canvas);
-        const event = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent, canvas);
-        event.type += outside;
-        this.eventService.mapEvent(event);
-
-        this.setCursor(this.eventService.cursor);
-      },
-    );
-
-    renderingService.hooks.pointerMove.tap(EventPlugin.tag, this.onPointerMove);
-
-    renderingService.hooks.pointerOver.tap(EventPlugin.tag, this.onPointerMove);
-
-    renderingService.hooks.pointerOut.tap(EventPlugin.tag, this.onPointerMove);
-    renderingService.hooks.pointerCancel.tap(
-      EventPlugin.tag,
-      (nativeEvent: InteractivePointerEvent) => {
-        if (canvas.supportTouchEvent && (nativeEvent as PointerEvent).pointerType === 'touch') {
-          return;
-        }
-
-        const normalizedEvent = this.normalizeToPointerEvent(nativeEvent, canvas);
-
-        if (this.autoPreventDefault && (normalizedEvent as any).isNormalized) {
-          const cancelable = nativeEvent.cancelable || !('cancelable' in nativeEvent);
-
-          if (cancelable) {
-            nativeEvent.preventDefault();
-          }
-        }
-
-        const federatedEvent = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent, canvas);
-        this.eventService.mapEvent(federatedEvent);
-
-        this.setCursor(this.eventService.cursor);
-      },
-    );
+      this.setCursor(this.eventService.cursor);
+    });
   }
 
   private onPointerMove = (nativeEvent: InteractivePointerEvent) => {

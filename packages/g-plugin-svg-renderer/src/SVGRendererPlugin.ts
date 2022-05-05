@@ -131,8 +131,6 @@ const CLIP_PATH_PREFIX = 'clip-path-';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class SVGRendererPlugin implements RenderingPlugin {
-  static tag = 'SVGRendererPlugin';
-
   @inject(DefaultCamera)
   private camera: Camera;
 
@@ -190,7 +188,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       this.updateAttribute(object, attrName, object.parsedStyle[attrName]);
     };
 
-    renderingService.hooks.init.tap(SVGRendererPlugin.tag, () => {
+    renderingService.hooks.init.tapPromise(async () => {
       this.$def = createSVGElement('defs') as SVGDefsElement;
       const $svg = this.contextService.getContext()!;
       $svg.appendChild(this.$def);
@@ -211,7 +209,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.hooks.destroy.tap(SVGRendererPlugin.tag, () => {
+    renderingService.hooks.destroy.tap(() => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(
@@ -220,13 +218,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
+    renderingService.hooks.render.tap((object: DisplayObject) => {
       // if (!object.isCulled()) {
       this.renderQueue.push(object);
       // }
     });
 
-    renderingService.hooks.endFrame.tap(SVGRendererPlugin.tag, () => {
+    renderingService.hooks.endFrame.tap(() => {
       if (this.renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)) {
         this.applyTransform(this.$camera, this.camera.getOrthoMatrix());
       }

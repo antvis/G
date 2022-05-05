@@ -40,8 +40,6 @@ const MAX_PICKING_DEPTH = 100;
  */
 @singleton({ contrib: RenderingPluginContribution })
 export class PickingPlugin implements RenderingPlugin {
-  static tag = 'PickingPlugin';
-
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
@@ -87,15 +85,15 @@ export class PickingPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(RenderGraphPlugin.tag, async () => {
+    renderingService.hooks.init.tapPromise(async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
     });
 
-    renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
+    renderingService.hooks.destroy.tap(() => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
     });
 
-    renderingService.hooks.pick.tapPromise(PickingPlugin.tag, async (result: PickingResult) => {
+    renderingService.hooks.pick.tapPromise(async (result: PickingResult) => {
       const { topmost, position } = result;
 
       // use viewportX/Y

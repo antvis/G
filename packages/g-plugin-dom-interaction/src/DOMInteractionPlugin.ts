@@ -10,8 +10,6 @@ const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
  */
 @singleton({ contrib: RenderingPluginContribution })
 export class DOMInteractionPlugin implements RenderingPlugin {
-  static tag = 'DOMInteractionPlugin';
-
   @inject(ContextService)
   private contextService: ContextService<unknown>;
 
@@ -95,7 +93,7 @@ export class DOMInteractionPlugin implements RenderingPlugin {
       globalThis.removeEventListener('mouseup', onPointerUp, true);
     };
 
-    renderingService.hooks.init.tap(DOMInteractionPlugin.tag, () => {
+    renderingService.hooks.init.tapPromise(async () => {
       const $el = this.contextService.getDomElement() as HTMLElement;
 
       if (canvas.supportPointerEvent) {
@@ -117,7 +115,7 @@ export class DOMInteractionPlugin implements RenderingPlugin {
       });
     });
 
-    renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
+    renderingService.hooks.destroy.tap(() => {
       const $el = this.contextService.getDomElement() as HTMLElement;
       if (canvas.supportPointerEvent) {
         removePointerEventListener($el);
