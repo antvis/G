@@ -21,8 +21,6 @@ const HTML_PREFIX = 'g-html-';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class HTMLRenderingPlugin implements RenderingPlugin {
-  static tag = 'HTMLRenderingPlugin';
-
   @inject(ContextService)
   private contextService: ContextService<CanvasRenderingContext2D>;
 
@@ -70,17 +68,17 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tap(HTMLRenderingPlugin.tag, () => {
+    renderingService.hooks.init.tapPromise(async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
     });
 
-    renderingService.hooks.destroy.tap(HTMLRenderingPlugin.tag, () => {
+    renderingService.hooks.destroy.tap(() => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
     });
 
-    renderingService.hooks.render.tap(HTMLRenderingPlugin.tag, (object: DisplayObject) => {
+    renderingService.hooks.render.tap((object: DisplayObject) => {
       if (object.nodeName === Shape.HTML) {
         const existedId = HTML_PREFIX + object.entity;
         const $container = (this.contextService.getDomElement() as HTMLElement).parentNode;

@@ -37,8 +37,6 @@ const BOX2D_UMD_DIR = 'https://unpkg.com/box2d-wasm@7.0.0/dist/umd/';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class Box2DPlugin implements RenderingPlugin {
-  static tag = 'Box2DPlugin';
-
   @inject(SceneGraphService)
   protected sceneGraphService: SceneGraphService;
 
@@ -161,7 +159,7 @@ export class Box2DPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(Box2DPlugin.tag, async () => {
+    renderingService.hooks.init.tapPromise(async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(
@@ -183,7 +181,7 @@ export class Box2DPlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.hooks.destroy.tap(Box2DPlugin.tag, () => {
+    renderingService.hooks.destroy.tap(() => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(

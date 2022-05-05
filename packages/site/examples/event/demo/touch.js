@@ -35,7 +35,6 @@ const circle = new Circle({
 canvas.appendChild(circle);
 
 circle.addEventListener('touchstart', function (e) {
-  debugger;
   circle.style.fill = '#2FC25B';
 });
 

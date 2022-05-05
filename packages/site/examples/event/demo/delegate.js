@@ -76,6 +76,10 @@ ul.addEventListener('click', (e) => {
   console.log('path', e.composedPath());
 });
 
+canvas.addEventListener('click', (e) => {
+  console.log('currentTarget', e.currentTarget);
+});
+
 // stats
 const stats = new Stats();
 stats.showPanel(0);

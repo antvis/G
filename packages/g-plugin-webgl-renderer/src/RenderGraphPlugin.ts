@@ -60,8 +60,6 @@ export enum SceneUniform {
 
 @singleton({ contrib: RenderingPluginContribution })
 export class RenderGraphPlugin implements RenderingPlugin {
-  static tag = 'RenderGraphPlugin';
-
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
@@ -182,7 +180,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.batchManager.changeRenderOrder(object, renderOrder);
     };
 
-    renderingService.hooks.init.tapPromise(RenderGraphPlugin.tag, async () => {
+    renderingService.hooks.init.tapPromise(async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(
@@ -214,7 +212,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.batchManager.attach(this.device, renderingService);
     });
 
-    renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
+    renderingService.hooks.destroy.tap(() => {
       this.renderHelper.destroy();
 
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
@@ -232,7 +230,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
     /**
      * build frame graph at the beginning of each frame
      */
-    renderingService.hooks.beginFrame.tap(RenderGraphPlugin.tag, () => {
+    renderingService.hooks.beginFrame.tap(() => {
       const canvas = this.swapChain.getCanvas() as HTMLCanvasElement;
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
@@ -290,7 +288,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.hooks.endFrame.tap(RenderGraphPlugin.tag, () => {
+    renderingService.hooks.endFrame.tap(() => {
       const renderInstManager = this.renderHelper.renderInstManager;
 
       // TODO: time for GPU Animation

@@ -36,8 +36,6 @@ export type PointInPathPicker<T extends BaseStyleProps> = (
  */
 @singleton({ contrib: RenderingPluginContribution })
 export class CanvasPickerPlugin implements RenderingPlugin {
-  static tag = 'CanvasPickerPlugin';
-
   @inject(DisplayObjectPool)
   private displayObjectPool: DisplayObjectPool;
 
@@ -57,7 +55,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
   private pointInPathPickerFactory: (tagName: Shape | string) => PointInPathPicker<any>;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.pick.tap(CanvasPickerPlugin.tag, (result: PickingResult) => {
+    renderingService.hooks.pick.tapPromise(async (result: PickingResult) => {
       const {
         topmost,
         position: { x, y },

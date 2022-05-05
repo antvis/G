@@ -8,8 +8,6 @@ import { RenderingContext, RenderingPluginContribution, dirtifyToRoot } from '..
 
 @singleton({ contrib: RenderingPluginContribution })
 export class PrepareRendererPlugin implements RenderingPlugin {
-  static tag = 'PrepareRendererPlugin';
-
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
@@ -41,7 +39,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       renderingService.dirtify();
     };
 
-    renderingService.hooks.init.tap(PrepareRendererPlugin.tag, () => {
+    renderingService.hooks.init.tapPromise(async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(
@@ -51,7 +49,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
 
-    renderingService.hooks.destroy.tap(PrepareRendererPlugin.tag, () => {
+    renderingService.hooks.destroy.tap(() => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(

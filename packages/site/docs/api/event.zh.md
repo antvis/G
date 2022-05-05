@@ -432,6 +432,30 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Event/timeStamp
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/CustomEvent/detail
 
+### altKey
+
+事件触发时是否伴随 `alt` 的按下。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/altKey
+
+### metaKey
+
+事件触发时是否伴随 `meta` 的按下。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/metaKey
+
+### ctrlKey
+
+事件触发时是否伴随 `ctrl` 的按下。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/ctrlKey
+
+### shiftKey
+
+事件触发时是否伴随 `shift` 的按下。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/shiftKey
+
 ## 方法
 
 事件对象上的某些方法可以控制事件传播时的行为，例如阻止冒泡等。

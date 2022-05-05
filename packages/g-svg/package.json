@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-svg",
-  "version": "1.0.19-alpha.1",
+  "version": "1.0.19",
   "description": "A renderer implemented by SVG",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -37,9 +37,9 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g-plugin-dom-interaction": "^1.0.19-alpha.1",
-    "@antv/g-plugin-svg-picker": "^1.0.19-alpha.1",
-    "@antv/g-plugin-svg-renderer": "^1.0.19-alpha.1",
+    "@antv/g-plugin-dom-interaction": "^1.0.19",
+    "@antv/g-plugin-svg-picker": "^1.0.19",
+    "@antv/g-plugin-svg-renderer": "^1.0.19",
     "lodash-es": "^4.17.21",
     "tslib": "^2.3.1"
   },
@@ -50,5 +50,5 @@
   "scripts": {
     "umd": "webpack"
   },
-  "gitHead": "9d0916ad32f477c1d687c2085e7f5ab37d171649"
+  "gitHead": "a52a7c8d754925e5732baf3faea156332748365f"
 }
