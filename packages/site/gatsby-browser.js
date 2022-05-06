@@ -36,6 +36,7 @@ window.webgpuGraph = require('@antv/webgpu-graph');
 window.reactG = require('@antv/react-g');
 window.mainWorker = require('./examples/canvas/demo/main.worker.js');
 window.workerizeTransferable = require('@naoak/workerize-transferable');
+window.webfontloader = require('webfontloader');
 
 // origin trial for WebGPU
 // @see https://developer.chrome.com/origintrials/#/trials/my

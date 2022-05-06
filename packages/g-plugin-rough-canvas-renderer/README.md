@@ -48,11 +48,11 @@ const canvas = new Canvas({
 - [x] Group
 - [x] Circle
 - [x] Ellipse
-- [ ] Rect, `radius` won't work
-- [ ] Line
-- [ ] Polyline
-- [ ] Polygon
-- [ ] Path
+- [x] Rect, `radius` won't work
+- [x] Line
+- [x] Polyline
+- [x] Polygon
+- [x] Path
 - [ ] Text
 - [ ] Image
 

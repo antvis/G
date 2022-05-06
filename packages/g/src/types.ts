@@ -1,9 +1,5 @@
 import type { vec2, vec3 } from 'gl-matrix';
-import type {
-  DisplayObject,
-  ParsedPathStyleProps,
-  ParsedPolylineStyleProps,
-} from './display-objects';
+import type { DisplayObject, ParsedPathStyleProps } from './display-objects';
 import type { IRenderer } from './AbstractRenderer';
 import type {
   CSSGlobalKeywords,
@@ -248,7 +244,6 @@ export interface ParsedBaseStyleProps
   lineDashOffset?: CSSUnitValue;
 
   path?: ParsedPathStyleProps;
-  points?: ParsedPolylineStyleProps;
 
   anchor?: [CSSUnitValue, CSSUnitValue, CSSUnitValue];
   transformOrigin?: [CSSUnitValue, CSSUnitValue, CSSUnitValue];
@@ -317,6 +312,11 @@ export type Cursor =
   | 'zoom-out';
 
 export interface RendererConfig {
+  /**
+   * enable dirty check for displayobject
+   */
+  enableDirtyCheck: boolean;
+
   /**
    * enable dirty rectangle rendering
    */

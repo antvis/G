@@ -9,7 +9,7 @@ order: 1
 
 # 继承自
 
--   [DisplayObject](/zh/docs/api/basic/display-object)
+- [DisplayObject](/zh/docs/api/basic/display-object)
 
 文本/文本块的位置通过文本锚点描述，围绕该锚点通过 `textBaseline`（单行/多行）、`textAlign`（多行）等属性调整自身位置。
 
@@ -35,10 +35,10 @@ order: 1
 
 **说明**：与 [CSS text-transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-transform) 一致，对文本内容进行转换，支持以下枚举值：
 
--   'capitalize' 首字母大写
--   'uppercase' 全大写
--   'lowercase' 全小写
--   'none' 不做转换
+- 'capitalize' 首字母大写
+- 'uppercase' 全大写
+- 'lowercase' 全小写
+- 'none' 不做转换
 
 ## dx / dy
 
@@ -54,9 +54,9 @@ order: 1
 
 ```js
 {
-    dx: 10;
-    dx: '10px';
-    dx: '0.5em';
+  dx: 10;
+  dx: '10px';
+  dx: '0.5em';
 }
 ```
 
@@ -223,10 +223,10 @@ text.getLineBoundingRects(); // Rectangle[]
 
 ```js
 interface Rectangle {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 ```
 
@@ -236,16 +236,47 @@ interface Rectangle {
 
 ```js
 text.getLineBoundingRects().forEach(({ x, y, width, height }) => {
-    const block = new Rect({
-        style: {
-            x,
-            y,
-            width,
-            height,
-            stroke: 'black',
-            lineWidth: 2,
-        },
+  const block = new Rect({
+    style: {
+      x,
+      y,
+      width,
+      height,
+      stroke: 'black',
+      lineWidth: 2,
+    },
+  });
+  text.appendChild(block);
+});
+```
+
+# 加载字体
+
+除了系统默认字体，有时我们希望加载第三方字体。
+
+此时可以使用 [Web Font Loader](https://github.com/typekit/webfontloader)，在加载成功的 `active` 回调函数中创建，[示例](/zh/examples/shape#text)：
+
+```js
+import WebFont from 'webfontloader';
+
+WebFont.load({
+  google: {
+    families: ['Gaegu'],
+  },
+  active: () => {
+    const text = new Text({
+      style: {
+        x: 100,
+        y: 100,
+        fontFamily: 'Gaegu',
+        text: 'Almost before we knew it, we had left the ground.',
+        fontSize: 30,
+        fill: '#1890FF',
+        stroke: '#F04864',
+        lineWidth: 5,
+      },
     });
-    text.appendChild(block);
+    canvas.appendChild(text);
+  },
 });
 ```

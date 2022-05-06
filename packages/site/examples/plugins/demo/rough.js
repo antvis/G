@@ -1,8 +1,21 @@
-import { Canvas, CanvasEvent, Circle, Group } from '@antv/g';
+import {
+  Canvas,
+  CanvasEvent,
+  Circle,
+  Group,
+  Rect,
+  Line,
+  Polyline,
+  Polygon,
+  Path,
+  Text,
+  convertToPath,
+} from '@antv/g';
 import { Renderer, CanvasRenderer, CanvasPicker } from '@antv/g-canvas';
 import { Plugin as PluginRoughCanvasRenderer } from '@antv/g-plugin-rough-canvas-renderer';
 import Stats from 'stats.js';
 import * as lil from 'lil-gui';
+import WebFont from 'webfontloader';
 
 // create a renderer
 const renderer = new Renderer();
@@ -91,6 +104,135 @@ earthOrbit.translate(100, 0);
 moonOrbit.translate(100, 0);
 
 canvas.appendChild(solarSystem);
+
+/**
+ * Rect
+ */
+const rect = new Rect({
+  style: {
+    x: 50,
+    y: 50,
+    width: 50,
+    height: 50,
+    fill: '#1890FF',
+    stroke: '#F04864',
+    lineWidth: 4,
+    bowing: 4,
+  },
+});
+canvas.appendChild(rect);
+
+/**
+ * Line
+ */
+const line = new Line({
+  style: {
+    x1: 50,
+    y1: 120,
+    x2: 50,
+    y2: 200,
+    stroke: '#F04864',
+    lineWidth: 4,
+  },
+});
+canvas.appendChild(line);
+
+/**
+ * Polyline
+ */
+const polyline = new Polyline({
+  style: {
+    points: [
+      [50, 250],
+      [50, 300],
+      [100, 300],
+      [100, 350],
+    ],
+    stroke: '#F04864',
+    lineWidth: 4,
+  },
+});
+canvas.appendChild(polyline);
+
+/**
+ * Polygon
+ */
+const polygon = new Polygon({
+  style: {
+    points: [
+      [50, 400],
+      [100, 400],
+      [100, 450],
+    ],
+    fill: '#1890FF',
+    stroke: '#F04864',
+    lineWidth: 4,
+  },
+});
+canvas.appendChild(polygon);
+
+/**
+ * Path
+ */
+const rectPath = convertToPath(
+  new Rect({
+    style: {
+      width: 200,
+      height: 100,
+      transformOrigin: 'center',
+    },
+  }),
+);
+const starPath = new Path({
+  style: {
+    path: 'M301.113,12.011l99.25,179.996l201.864,38.778L461.706,380.808l25.508,203.958l-186.101-87.287L115.01,584.766l25.507-203.958L0,230.785l201.86-38.778L301.113,12.011',
+  },
+});
+starPath.scale(0.2);
+const pathG = new Path({
+  style: {
+    path: rectPath,
+    lineWidth: 2,
+  },
+});
+canvas.appendChild(pathG);
+pathG.animate(
+  [
+    { path: rectPath, stroke: '#F04864', fill: 'blue' },
+    { path: convertToPath(starPath), stroke: 'blue', fill: '#F04864' },
+  ],
+  {
+    duration: 2500,
+    easing: 'ease',
+    iterations: Infinity,
+    direction: 'alternate',
+  },
+);
+pathG.translate(300, 0);
+
+/**
+ * Text
+ */
+WebFont.load({
+  google: {
+    families: ['Gaegu'],
+  },
+  active: () => {
+    const text = new Text({
+      style: {
+        x: 100,
+        y: 100,
+        fontFamily: 'Gaegu',
+        text: 'Almost before we knew it, we had left the ground.',
+        fontSize: 30,
+        fill: '#1890FF',
+        stroke: '#F04864',
+        lineWidth: 5,
+      },
+    });
+    canvas.appendChild(text);
+  },
+});
 
 // stats
 const stats = new Stats();

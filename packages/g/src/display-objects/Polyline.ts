@@ -8,12 +8,14 @@ import { Point } from '../shapes';
 export interface PolylineStyleProps extends BaseStyleProps {
   points: [number, number][];
 }
-export interface ParsedPolylineStyleProps {
-  points: [number, number][];
-  segments: [number, number][];
-  totalLength: number;
+export interface ParsedPolylineStyleProps extends ParsedBaseStyleProps {
+  points: {
+    points: [number, number][];
+    segments: [number, number][];
+    totalLength: number;
+  };
 }
-export class Polyline extends DisplayObject<PolylineStyleProps, ParsedBaseStyleProps> {
+export class Polyline extends DisplayObject<PolylineStyleProps, ParsedPolylineStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<PolylineStyleProps> = {}) {
     super({
       type: Shape.POLYLINE,

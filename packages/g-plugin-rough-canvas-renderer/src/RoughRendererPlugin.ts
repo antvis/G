@@ -2,22 +2,32 @@ import {
   DisplayObject,
   RenderingService,
   RenderingPlugin,
-  ParsedBaseStyleProps,
   DefaultCamera,
   Camera,
   getEuler,
   fromRotationTranslationScale,
+  PathCommand,
+} from '@antv/g';
+import {
+  Shape,
+  CanvasConfig,
+  ContextService,
+  RenderingPluginContribution,
+  ParsedBaseStyleProps,
   ParsedCircleStyleProps,
   ParsedEllipseStyleProps,
   ParsedRectStyleProps,
+  ParsedPolylineStyleProps,
+  ParsedPolygonStyleProps,
+  ParsedLineStyleProps,
 } from '@antv/g';
-import { Shape, CanvasConfig, ContextService, RenderingPluginContribution } from '@antv/g';
 import { vec3, mat4, quat } from 'gl-matrix';
 import { inject, singleton } from 'mana-syringe';
 import type { RoughCanvas } from 'roughjs/bin/canvas';
 import { Options } from 'roughjs/bin/core';
 // @see https://github.com/rough-stuff/rough/issues/145
 import rough from 'roughjs/bin/rough';
+import { formatPath } from './util';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class RoughRendererPlugin implements RenderingPlugin {
@@ -36,6 +46,12 @@ export class RoughRendererPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     renderingService.hooks.init.tapPromise(async () => {
+      /**
+       * disable dirtycheck & dirty rectangle rendering
+       */
+      this.canvasConfig.renderer.getConfig().enableDirtyCheck = false;
+      this.canvasConfig.renderer.getConfig().enableDirtyRectangleRendering = false;
+
       // @see https://github.com/rough-stuff/rough/wiki#roughcanvas-canvaselement--config
       this.roughCanvas = rough.canvas(this.contextService.getDomElement() as HTMLCanvasElement);
     });
@@ -73,21 +89,7 @@ export class RoughRendererPlugin implements RenderingPlugin {
       this.useAnchor(context, object, () => {
         // we only care about visibile and unculled display objects
         if (object.isVisible() && !object.isCulled()) {
-          const options = this.generateRoughOptions(object);
-
-          if (object.nodeName === Shape.CIRCLE) {
-            const { r } = object.parsedStyle as ParsedCircleStyleProps;
-            // rough.js use diameter instead of radius
-            this.roughCanvas.circle(r.value, r.value, r.value * 2, options);
-          } else if (object.nodeName === Shape.ELLIPSE) {
-            const { rx, ry } = object.parsedStyle as ParsedEllipseStyleProps;
-            this.roughCanvas.ellipse(rx.value, ry.value, rx.value * 2, ry.value * 2, options);
-          } else if (object.nodeName === Shape.RECT) {
-            const { width, height } = object.parsedStyle as ParsedRectStyleProps;
-            this.roughCanvas.rectangle(0, 0, width.value, height.value);
-          } else if (object.nodeName === Shape.PATH) {
-          }
-          // TODO: other shapes
+          this.renderDisplayObject(object);
         }
       });
 
@@ -174,6 +176,55 @@ export class RoughRendererPlugin implements RenderingPlugin {
     });
 
     return options;
+  }
+
+  private renderDisplayObject(object: DisplayObject) {
+    const options = this.generateRoughOptions(object);
+
+    if (object.nodeName === Shape.CIRCLE) {
+      const { r } = object.parsedStyle as ParsedCircleStyleProps;
+      // rough.js use diameter instead of radius
+      // @see https://github.com/rough-stuff/rough/wiki#circle-x-y-diameter--options
+      this.roughCanvas.circle(r.value, r.value, r.value * 2, options);
+    } else if (object.nodeName === Shape.ELLIPSE) {
+      const { rx, ry } = object.parsedStyle as ParsedEllipseStyleProps;
+      this.roughCanvas.ellipse(rx.value, ry.value, rx.value * 2, ry.value * 2, options);
+    } else if (object.nodeName === Shape.RECT) {
+      const { width, height } = object.parsedStyle as ParsedRectStyleProps;
+      // @see https://github.com/rough-stuff/rough/wiki#rectangle-x-y-width-height--options
+      this.roughCanvas.rectangle(0, 0, width.value, height.value, options);
+    } else if (object.nodeName === Shape.LINE) {
+      const { x1, y1, x2, y2, defX = 0, defY = 0 } = object.parsedStyle as ParsedLineStyleProps;
+      // @see https://github.com/rough-stuff/rough/wiki#line-x1-y1-x2-y2--options
+      this.roughCanvas.line(
+        x1.value - defX,
+        y1.value - defY,
+        x2.value - defX,
+        y2.value - defY,
+        options,
+      );
+    } else if (object.nodeName === Shape.POLYLINE) {
+      const { points, defX = 0, defY = 0 } = object.parsedStyle as ParsedPolylineStyleProps;
+      // @see https://github.com/rough-stuff/rough/wiki#linearpath-points--options
+      this.roughCanvas.linearPath(
+        points.points.map(([x, y]) => [x - defX, y - defY]),
+        options,
+      );
+    } else if (object.nodeName === Shape.POLYGON) {
+      const { points, defX = 0, defY = 0 } = object.parsedStyle as ParsedPolygonStyleProps;
+      // @see https://github.com/rough-stuff/rough/wiki#polygon-vertices--options
+      this.roughCanvas.polygon(
+        points.points.map(([x, y]) => [x - defX, y - defY]),
+        options,
+      );
+    } else if (object.nodeName === Shape.PATH) {
+      const { path, defX = 0, defY = 0 } = object.parsedStyle as ParsedPolygonStyleProps;
+      const formatted = formatPath(path.absolutePath as PathCommand[], defX, defY);
+      this.roughCanvas.path(formatted, options);
+    } else if (object.nodeName === Shape.IMAGE) {
+    } else if (object.nodeName === Shape.TEXT) {
+    }
+    // TODO: other shapes
   }
 
   /**

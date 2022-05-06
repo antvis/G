@@ -59,7 +59,8 @@
     "simplex-noise": "^3.0.0",
     "stats.js": "^0.17.0",
     "typedoc": "^0.17.6",
-    "typedoc-plugin-markdown": "^2.2.11"
+    "typedoc-plugin-markdown": "^2.2.11",
+    "webfontloader": "1.6.28"
   },
   "homepage": "https://github.com/antvis/g#readme"
 }
