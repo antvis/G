@@ -1,4 +1,4 @@
-import type { DisplayObject, ParsedBaseStyleProps, PathStyleProps, Point, CSSRGB } from '@antv/g';
+import type { DisplayObject, ParsedPathStyleProps, PathStyleProps, Point, CSSRGB } from '@antv/g';
 import { mat3, vec2 } from 'gl-matrix';
 import { Quad as QuadUtil, Cubic as CubicUtil } from '@antv/g-math';
 import { inArc, inBox, inLine, inPolygons } from './utils/math';
@@ -124,7 +124,7 @@ export function isPointInPath(
     defY: y = 0,
     clipPathTargets,
     path,
-  } = displayObject.parsedStyle as ParsedBaseStyleProps;
+  } = displayObject.parsedStyle as ParsedPathStyleProps;
   const hasFill = fill && !(fill as CSSRGB).isNone;
   const hasStroke = stroke && !(stroke as CSSRGB).isNone;
   const { segments, hasArc, polylines, polygons, totalLength } = path;

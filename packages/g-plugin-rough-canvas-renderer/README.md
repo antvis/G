@@ -2,35 +2,22 @@
 
 Use [rough.js](https://roughjs.com/)(Canvas version) to render sketchy styled shapes, inspired by [roughViz](https://github.com/jwilber/roughViz).
 
-<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*BhrwSLGlqXcAAAAAAAAAAAAAARQnAQ" width="300">
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="300">
 
 ## Getting started
 
-To use `g-plugin-rough-canvas-renderer` instead of `g-plugin-canvas-renderer`, we should remove it and `g-plugin-canvas-picker` from `g-canvas` preset first.
+Use `g-canvas` and register this plugin.
 
 The dirty-rectangle rendering won't work in this scenario, any change on display objects will cause fullscreen re-rendering.
 
 ```js
 import { Canvas } from '@antv/g';
-import { Renderer, CanvasRenderer, CanvasPicker } from '@antv/g-canvas';
+import { Renderer } from '@antv/g-canvas';
 import { Plugin as PluginRoughCanvasRenderer } from '@antv/g-plugin-rough-canvas-renderer';
 
 // create a renderer
 const renderer = new Renderer();
-
-// fetch all plugins in `g-canvas` preset
-const plugins = renderer.getPlugins();
-
-// remove `g-plugin-canvas-renderer` & `g-plugin-canvas-picker`
-[CanvasRenderer.Plugin, CanvasPicker.Plugin].forEach((pluginClazz) => {
-  const index = plugins.findIndex((plugin) => plugin instanceof pluginClazz);
-  plugins.splice(index, 1);
-});
-
-// register `g-plugin-rough-canvas-renderer`
-plugins.push(new PluginRoughCanvasRenderer());
-// or
-// renderer.registerPlugin(new PluginRoughCanvasRenderer());
+renderer.registerPlugin(new PluginRoughCanvasRenderer());
 
 // create a canvas & use `g-canvas`
 const canvas = new Canvas({
@@ -54,7 +41,7 @@ const canvas = new Canvas({
 - [x] Polygon
 - [x] Path
 - [x] Text
-- [ ] Image
+- [x] Image
 
 ### Opacity
 
@@ -80,6 +67,10 @@ circle.style.shadowBlur = 0;
 circle.style.shadowOffsetX = 0;
 circle.style.shadowOffsetY = 0;
 ```
+
+### Other rough.js options
+
+https://github.com/rough-stuff/rough/wiki#options
 
 ### Text & Image
 

@@ -15,6 +15,12 @@ module.exports = {
       amd: 'mana-syringe',
       root: ['G', 'ManaSyringe'],
     },
+    '@antv/g-plugin-canvas-renderer': {
+      commonjs: '@antv/g-plugin-canvas-renderer',
+      commonjs2: '@antv/g-plugin-canvas-renderer',
+      amd: '@antv/g-plugin-canvas-renderer',
+      root: ['G', 'CanvasRenderer'],
+    },
   },
   output: {
     library: ['G', 'RoughCanvasRenderer'],

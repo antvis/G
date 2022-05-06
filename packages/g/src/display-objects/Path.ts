@@ -1,6 +1,6 @@
 import { Cubic as CubicUtil } from '@antv/g-math';
 import { Shape } from '../types';
-import type { BaseStyleProps, PathCommand } from '../types';
+import type { BaseStyleProps, PathCommand , ParsedBaseStyleProps} from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
@@ -20,24 +20,21 @@ export interface PathSegment {
   endTangent: [number, number] | null;
   params: PathCommand;
 }
-export interface ParsedPathStyleProps {
-  absolutePath: PathCommand[];
-  hasArc: boolean;
-  segments: PathSegment[];
-  polygons: [number, number][][];
-  polylines: [number, number][][];
-  curve: PathCommand[];
-  totalLength: number;
-  curveSegments: number[][];
-  zCommandIndexes: number[];
-  rect: Rectangle;
+export interface ParsedPathStyleProps extends ParsedBaseStyleProps {
+  path: {
+    absolutePath: PathCommand[];
+    hasArc: boolean;
+    segments: PathSegment[];
+    polygons: [number, number][][];
+    polylines: [number, number][][];
+    curve: PathCommand[];
+    totalLength: number;
+    curveSegments: number[][];
+    zCommandIndexes: number[];
+    rect: Rectangle;
+  };
 }
-export class Path extends DisplayObject<
-  PathStyleProps,
-  {
-    path: ParsedPathStyleProps;
-  }
-> {
+export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<PathStyleProps> = {}) {
     super({
       type: Shape.PATH,

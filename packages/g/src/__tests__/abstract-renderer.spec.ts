@@ -13,6 +13,7 @@ describe('Abstract renderer', () => {
 
     expect(renderer.getConfig()).to.be.eqls({
       enableAutoRendering: true,
+      enableDirtyCheck: true,
       enableDirtyRectangleRendering: true,
       enableDirtyRectangleRenderingDebug: false,
       enableTAA: false,
@@ -21,6 +22,7 @@ describe('Abstract renderer', () => {
     renderer.setConfig({ enableAutoRendering: false });
     expect(renderer.getConfig()).to.be.eqls({
       enableAutoRendering: false,
+      enableDirtyCheck: true,
       enableDirtyRectangleRendering: true,
       enableDirtyRectangleRenderingDebug: false,
       enableTAA: false,

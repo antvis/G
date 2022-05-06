@@ -1,9 +1,9 @@
-import type { ParsedBaseStyleProps } from '@antv/g';
+import type { ParsedPathStyleProps } from '@antv/g';
 
-export function generatePath(context: CanvasRenderingContext2D, parsedStyle: ParsedBaseStyleProps) {
+export function generatePath(context: CanvasRenderingContext2D, parsedStyle: ParsedPathStyleProps) {
   const { defX: x = 0, defY: y = 0 } = parsedStyle;
 
-  const { curve, zCommandIndexes } = parsedStyle.path!;
+  const { curve, zCommandIndexes } = parsedStyle.path;
   const path = curve;
   zCommandIndexes.forEach((zIndex, index) => {
     path.splice(zIndex + index, 0, ['Z']);

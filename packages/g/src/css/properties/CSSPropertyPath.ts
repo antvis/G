@@ -8,14 +8,18 @@ import { parsePath, mergePaths } from '../parser';
 
 @singleton()
 export class CSSPropertyPath
-  implements Partial<CSSProperty<ParsedPathStyleProps, ParsedPathStyleProps>>
+  implements Partial<CSSProperty<ParsedPathStyleProps['path'], ParsedPathStyleProps['path']>>
 {
   /**
    * path2Curve
    */
   parser = parsePath;
 
-  calculator(name: string, oldParsed: ParsedPathStyleProps, parsed: ParsedPathStyleProps) {
+  calculator(
+    name: string,
+    oldParsed: ParsedPathStyleProps['path'],
+    parsed: ParsedPathStyleProps['path'],
+  ) {
     if (parsed instanceof CSSKeywordValue) {
       return {
         absolutePath: [],

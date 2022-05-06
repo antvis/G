@@ -1,5 +1,5 @@
 import type { vec2, vec3 } from 'gl-matrix';
-import type { DisplayObject, ParsedPathStyleProps } from './display-objects';
+import type { DisplayObject } from './display-objects';
 import type { IRenderer } from './AbstractRenderer';
 import type {
   CSSGlobalKeywords,
@@ -242,8 +242,6 @@ export interface ParsedBaseStyleProps
   lineCap?: CSSKeywordValue;
   lineJoin?: CSSKeywordValue;
   lineDashOffset?: CSSUnitValue;
-
-  path?: ParsedPathStyleProps;
 
   anchor?: [CSSUnitValue, CSSUnitValue, CSSUnitValue];
   transformOrigin?: [CSSUnitValue, CSSUnitValue, CSSUnitValue];

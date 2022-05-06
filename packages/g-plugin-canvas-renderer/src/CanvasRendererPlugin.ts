@@ -292,7 +292,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           .sort((a, b) => a.sortable.renderOrder - b.sortable.renderOrder)
           .forEach((object) => {
             // culled object should not be rendered
-            if (object && object.isVisible()) {
+            if (object && object.isVisible() && !object.isCulled()) {
               this.renderDisplayObject(object, renderingService);
             }
           });
@@ -324,8 +324,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.render.tap((object: DisplayObject) => {
       const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
       if (!enableDirtyRectangleRendering) {
-        // render immediately
-        this.renderDisplayObject(object, renderingService);
+        if (object.isVisible() && !object.isCulled()) {
+          // render immediately
+          this.renderDisplayObject(object, renderingService);
+        }
       } else {
         // render at the end of frame
         this.renderQueue.push(object);

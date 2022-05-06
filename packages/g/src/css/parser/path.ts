@@ -1,4 +1,4 @@
-import { path2Absolute, path2Segments, path2Curve } from '@antv/path-util';
+import { path2Absolute, path2Segments, path2Curve } from '@antv/util';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import type { PathCommand } from '../../types';
 import type { ParsedPathStyleProps } from '../../display-objects';
@@ -12,7 +12,7 @@ import {
 import { Rectangle } from '../../shapes/Rectangle';
 import type { IElement } from '../../dom';
 
-export function parsePath(path: string): ParsedPathStyleProps {
+export function parsePath(path: string): ParsedPathStyleProps['path'] {
   const absolutePath = path2Absolute(path) as PathCommand[];
   const hasArc = hasArcOrBezier(absolutePath);
 
@@ -198,8 +198,8 @@ function getPathBBox(segments: PathCommand[]): Rectangle {
 }
 
 export function mergePaths(
-  left: ParsedPathStyleProps,
-  right: ParsedPathStyleProps,
+  left: ParsedPathStyleProps['path'],
+  right: ParsedPathStyleProps['path'],
   object: IElement,
 ): [PathCommand[], PathCommand[], (b: PathCommand[]) => PathCommand[]] {
   const curve1 = left.curve;

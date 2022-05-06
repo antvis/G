@@ -39,7 +39,7 @@
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
     "@antv/g-math": "^1.0.19",
-    "@antv/path-util": "^3.0.1",
+    "@antv/util": "^3.0.0",
     "@types/offscreencanvas": "^2019.6.4",
     "d3-color": "^1.4.0",
     "eventemitter3": "^4.0.0",

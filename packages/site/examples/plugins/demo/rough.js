@@ -2,6 +2,7 @@ import {
   Canvas,
   CanvasEvent,
   Circle,
+  Ellipse,
   Group,
   Rect,
   Line,
@@ -9,9 +10,10 @@ import {
   Polygon,
   Path,
   Text,
+  Image,
   convertToPath,
 } from '@antv/g';
-import { Renderer, CanvasRenderer, CanvasPicker } from '@antv/g-canvas';
+import { Renderer } from '@antv/g-canvas';
 import { Plugin as PluginRoughCanvasRenderer } from '@antv/g-plugin-rough-canvas-renderer';
 import Stats from 'stats.js';
 import * as lil from 'lil-gui';
@@ -19,20 +21,7 @@ import WebFont from 'webfontloader';
 
 // create a renderer
 const renderer = new Renderer();
-
-// fetch all plugins in `g-canvas` preset
-const plugins = renderer.getPlugins();
-
-// remove `g-plugin-canvas-renderer` & `g-plugin-canvas-picker`
-[CanvasRenderer.Plugin, CanvasPicker.Plugin].forEach((pluginClazz) => {
-  const index = plugins.findIndex((plugin) => plugin instanceof pluginClazz);
-  plugins.splice(index, 1);
-});
-
-// register `g-plugin-rough-canvas-renderer`
-plugins.push(new PluginRoughCanvasRenderer());
-// or
-// renderer.registerPlugin(new PluginRoughCanvasRenderer());
+renderer.registerPlugin(new PluginRoughCanvasRenderer());
 
 // create a canvas & use `g-canvas`
 const canvas = new Canvas({
@@ -106,6 +95,23 @@ moonOrbit.translate(100, 0);
 canvas.appendChild(solarSystem);
 
 /**
+ * Ellipse
+ */
+const ellipse = new Ellipse({
+  style: {
+    x: 150,
+    y: 100,
+    rx: 25,
+    ry: 15,
+    fill: '#1890FF',
+    stroke: '#F04864',
+    lineWidth: 4,
+    cursor: 'pointer',
+  },
+});
+canvas.appendChild(ellipse);
+
+/**
  * Rect
  */
 const rect = new Rect({
@@ -118,6 +124,7 @@ const rect = new Rect({
     stroke: '#F04864',
     lineWidth: 4,
     bowing: 4,
+    cursor: 'pointer',
   },
 });
 canvas.appendChild(rect);
@@ -133,6 +140,7 @@ const line = new Line({
     y2: 200,
     stroke: '#F04864',
     lineWidth: 4,
+    cursor: 'pointer',
   },
 });
 canvas.appendChild(line);
@@ -150,6 +158,7 @@ const polyline = new Polyline({
     ],
     stroke: '#F04864',
     lineWidth: 4,
+    cursor: 'pointer',
   },
 });
 canvas.appendChild(polyline);
@@ -167,6 +176,7 @@ const polygon = new Polygon({
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
+    cursor: 'pointer',
   },
 });
 canvas.appendChild(polygon);
@@ -193,6 +203,7 @@ const pathG = new Path({
   style: {
     path: rectPath,
     lineWidth: 2,
+    cursor: 'pointer',
   },
 });
 canvas.appendChild(pathG);
@@ -228,11 +239,23 @@ WebFont.load({
         fill: '#1890FF',
         stroke: '#F04864',
         lineWidth: 5,
+        cursor: 'pointer',
       },
     });
     canvas.appendChild(text);
   },
 });
+
+const image = new Image({
+  style: {
+    x: 90,
+    y: 130,
+    width: 100,
+    height: 100,
+    img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+  },
+});
+canvas.appendChild(image);
 
 // stats
 const stats = new Stats();
@@ -265,7 +288,7 @@ const sunConfig = {
   visibility: true,
   'z-index': 0,
   opacity: 1,
-  shadowColor: '#000',
+  shadowColor: '#fff',
   shadowBlur: 0,
   shadowOffsetX: 0,
   shadowOffsetY: 0,

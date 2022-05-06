@@ -40,6 +40,7 @@
   },
   "peerDependencies": {
     "@antv/g": "^5.0.1",
+    "@antv/g-plugin-canvas-renderer": "^1.0.1",
     "mana-syringe": "^0.3.0"
   },
   "scripts": {

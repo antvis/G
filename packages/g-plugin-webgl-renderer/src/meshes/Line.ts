@@ -462,7 +462,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     object.nodeName === Shape.ELLIPSE ||
     object.nodeName === Shape.RECT
   ) {
-    let path: ParsedPathStyleProps;
+    let path: ParsedPathStyleProps['path'];
     if (object.nodeName !== Shape.PATH) {
       path = parsePath(convertToPath(object));
       defX = path.rect.x;

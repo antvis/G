@@ -3,7 +3,27 @@ import { Shape } from '@antv/g';
 import type { Syringe } from 'mana-syringe';
 import { Module, GlobalContainer } from 'mana-syringe';
 import RBush from 'rbush';
-import { DefaultRenderer, StyleRenderer, StyleRendererFactory } from './shapes/styles';
+import type {
+  StyleRenderer} from './shapes/styles';
+import {
+  CircleRenderer,
+  CircleRendererContribution,
+  EllipseRenderer,
+  EllipseRendererContribution,
+  ImageRendererContribution,
+  LineRenderer,
+  LineRendererContribution,
+  PathRenderer,
+  PathRendererContribution,
+  PolygonRenderer,
+  PolygonRendererContribution,
+  PolylineRenderer,
+  PolylineRendererContribution,
+  RectRenderer,
+  RectRendererContribution,
+  StyleRendererFactory,
+  TextRendererContribution,
+} from './shapes/styles';
 import { ImageRenderer } from './shapes/styles/Image';
 import { GradientPool } from './shapes/GradientPool';
 import { ImagePool } from './shapes/ImagePool';
@@ -24,7 +44,9 @@ import { LoadImagePlugin } from './LoadImagePlugin';
 import { RBushNode } from './components/RBushNode';
 import type { RBushNodeAABB } from './components/RBushNode';
 
-export { PathGeneratorFactory, PathGenerator, StyleRenderer, RBushNode, RBushRoot, RBush };
+export { PathGeneratorFactory, PathGenerator, RBushNode, RBushRoot, RBush };
+
+export * from './shapes/styles';
 
 export type { RBushNodeAABB };
 
@@ -80,17 +102,36 @@ const containerModule = Module((register) => {
   register(ImagePool);
   register({ token: RBushRoot, useValue: new RBush<RBushNodeAABB>() });
 
-  register(DefaultRenderer);
+  register(CircleRenderer);
+  register(EllipseRenderer);
+  register(RectRenderer);
   register(ImageRenderer);
   register(TextRenderer);
+  register(LineRenderer);
+  register(PolylineRenderer);
+  register(PolygonRenderer);
+  register(PathRenderer);
+
+  const shape2Token = {
+    [Shape.CIRCLE]: CircleRendererContribution,
+    [Shape.ELLIPSE]: EllipseRendererContribution,
+    [Shape.RECT]: RectRendererContribution,
+    [Shape.IMAGE]: ImageRendererContribution,
+    [Shape.TEXT]: TextRendererContribution,
+    [Shape.LINE]: LineRendererContribution,
+    [Shape.POLYLINE]: PolylineRendererContribution,
+    [Shape.POLYGON]: PolygonRendererContribution,
+    [Shape.PATH]: PathRendererContribution,
+  };
   register({
     token: StyleRendererFactory,
     useFactory: (ctx) => {
       const cache = {};
-      return (tagName: Shape) => {
-        if (!cache[tagName]) {
-          if (ctx.container.isBoundNamed(StyleRenderer, tagName)) {
-            cache[tagName] = ctx.container.getNamed(StyleRenderer, tagName);
+      return (tagName: Shape): StyleRenderer => {
+        const token = shape2Token[tagName];
+        if (token && !cache[tagName]) {
+          if (ctx.container.isBound(token)) {
+            cache[tagName] = ctx.container.get<StyleRenderer>(token);
           }
         }
 

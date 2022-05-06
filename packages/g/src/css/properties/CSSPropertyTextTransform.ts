@@ -1,12 +1,10 @@
 import { singleton } from 'mana-syringe';
 import { TextTransform, Shape } from '../../types';
 import type { CSSProperty } from '../CSSProperty';
-import type { Text, DisplayObject, ParsedPathStyleProps } from '../../display-objects';
+import type { Text, DisplayObject } from '../../display-objects';
 
 @singleton()
-export class CSSPropertyTextTransform
-  implements Partial<CSSProperty<ParsedPathStyleProps, ParsedPathStyleProps>>
-{
+export class CSSPropertyTextTransform implements Partial<CSSProperty<any, any>> {
   postProcessor(o: DisplayObject) {
     if (o.nodeName === Shape.TEXT) {
       const object = o as Text;
