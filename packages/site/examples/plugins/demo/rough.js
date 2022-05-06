@@ -123,7 +123,9 @@ const sunConfig = {
   visibility: true,
   'z-index': 0,
   fillStyle: 'hachure',
-  fillWeight: 2,
+  fillWeight: 4 / 2,
+  hachureAngle: -41,
+  hachureGap: 4 * 4,
 };
 sunFolder.add(sunConfig, 'r', 50, 200).onChange((radius) => {
   sun.style.r = radius;
@@ -162,5 +164,11 @@ sunFolder
   });
 sunFolder.add(sunConfig, 'fillWeight', 0, 20).onChange((fillWeight) => {
   sun.style.fillWeight = fillWeight;
+});
+sunFolder.add(sunConfig, 'hachureAngle', -50, 50).onChange((hachureAngle) => {
+  sun.style.hachureAngle = hachureAngle;
+});
+sunFolder.add(sunConfig, 'hachureGap', 0, 20).onChange((hachureGap) => {
+  sun.style.hachureAngle = hachureGap;
 });
 sunFolder.open();

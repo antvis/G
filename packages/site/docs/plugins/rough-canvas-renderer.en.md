@@ -1,6 +1,9 @@
-# @antv/g-plugin-rough-canvas-renderer
+---
+title: g-plugin-rough-canvas-renderer
+order: 3
+---
 
-Use [rough.js](https://roughjs.com/)(Canvas version).
+Use [rough.js](https://roughjs.com/)(Canvas version), [demo](/zh/examples/plugins#rough)。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*BhrwSLGlqXcAAAAAAAAAAAAAARQnAQ" width="300">
 

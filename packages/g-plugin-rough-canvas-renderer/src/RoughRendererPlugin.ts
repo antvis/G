@@ -9,6 +9,7 @@ import {
   fromRotationTranslationScale,
   ParsedCircleStyleProps,
   ParsedEllipseStyleProps,
+  ParsedRectStyleProps,
 } from '@antv/g';
 import { Shape, CanvasConfig, ContextService, RenderingPluginContribution } from '@antv/g';
 import { vec3, mat4, quat } from 'gl-matrix';
@@ -81,6 +82,10 @@ export class RoughRendererPlugin implements RenderingPlugin {
           } else if (object.nodeName === Shape.ELLIPSE) {
             const { rx, ry } = object.parsedStyle as ParsedEllipseStyleProps;
             this.roughCanvas.ellipse(rx.value, ry.value, rx.value * 2, ry.value * 2, options);
+          } else if (object.nodeName === Shape.RECT) {
+            const { width, height } = object.parsedStyle as ParsedRectStyleProps;
+            this.roughCanvas.rectangle(0, 0, width.value, height.value);
+          } else if (object.nodeName === Shape.PATH) {
           }
           // TODO: other shapes
         }
@@ -187,6 +192,9 @@ export class RoughRendererPlugin implements RenderingPlugin {
     context.transform(rts[0], rts[1], rts[3], rts[4], rts[6], rts[7]);
   }
 
+  /**
+   * account for `anchor` definition of different shapes
+   */
   private useAnchor(
     context: CanvasRenderingContext2D,
     object: DisplayObject,
