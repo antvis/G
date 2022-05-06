@@ -25,8 +25,8 @@ import {
   GradientPatternType,
   RenderReason,
   ElementEvent,
+  isNil,
 } from '@antv/g';
-import { isArray, isNil } from 'lodash-es';
 import { inject, singleton } from 'mana-syringe';
 import { vec3, mat4, quat } from 'gl-matrix';
 import RBush from 'rbush';
@@ -595,7 +595,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       shadowOffsetY,
     } = object.parsedStyle as ParsedBaseStyleProps;
     // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
-    if (lineDash && isArray(lineDash)) {
+    if (lineDash && Array.isArray(lineDash)) {
       context.setLineDash(lineDash.map((segment) => segment.value));
     }
 

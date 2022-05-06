@@ -34,7 +34,6 @@
   "devDependencies": {
     "@types/d3-color": "^3.0.2",
     "@types/gl-matrix": "^2.4.5",
-    "@types/lodash-es": "^4.17.6",
     "@types/offscreencanvas": "^2019.6.1"
   },
   "homepage": "https://github.com/antvis/g#readme",
@@ -45,7 +44,6 @@
     "d3-color": "^1.4.0",
     "eventemitter3": "^4.0.0",
     "gl-matrix": "^3.1.0",
-    "lodash-es": "^4.17.21",
     "mana-syringe": "^0.3.0",
     "reflect-metadata": "^0.1.13",
     "request-animation-frame-polyfill": "^1.1.2",

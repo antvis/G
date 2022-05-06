@@ -1,7 +1,6 @@
-import { Shape, UnitType } from '@antv/g';
+import { Shape, UnitType, isNil } from '@antv/g';
 import type { ParsedTextStyleProps, Rectangle, DisplayObject } from '@antv/g';
 import { singleton } from 'mana-syringe';
-import { isNil } from 'lodash-es';
 import { StyleRenderer } from './interfaces';
 
 @singleton({

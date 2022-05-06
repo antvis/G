@@ -14,8 +14,8 @@ import {
   ContextService,
   RenderingContext,
   ElementEvent,
+  isString,
 } from '@antv/g';
-import { isString } from 'lodash-es';
 
 const HTML_PREFIX = 'g-html-';
 

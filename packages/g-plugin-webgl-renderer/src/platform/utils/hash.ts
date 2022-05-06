@@ -1,4 +1,4 @@
-import { isNil } from 'lodash-es';
+import { isNil } from '@antv/g';
 import type { Format } from '../format';
 import type {
   BufferBinding,

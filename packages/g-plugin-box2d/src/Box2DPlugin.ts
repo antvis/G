@@ -7,7 +7,8 @@ import type {
   ParsedLineStyleProps,
   ParsedCircleStyleProps,
   ParsedRectStyleProps,
-  ParsedBaseStyleProps,
+  ParsedPolylineStyleProps,
+  ParsedPolygonStyleProps,
 } from '@antv/g';
 import {
   DisplayObjectPool,
@@ -267,7 +268,7 @@ export class Box2DPlugin implements RenderingPlugin {
         new b2Vec2(points[1][0] - defX, points[1][1] - defY),
       );
     } else if (nodeName === Shape.POLYLINE) {
-      const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
+      const { points, defX, defY } = parsedStyle as ParsedPolylineStyleProps;
       const pointsInCCW = sortPointsInCCW(points.points);
       const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x - defX, y - defY));
       // const prev = pointsInCCW[0];
@@ -300,7 +301,7 @@ export class Box2DPlugin implements RenderingPlugin {
     } else if (nodeName === Shape.ELLIPSE) {
       // @see https://stackoverflow.com/questions/10032756/how-to-create-ellipse-shapes-in-box2d
     } else if (nodeName === Shape.POLYGON) {
-      const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
+      const { points, defX, defY } = parsedStyle as ParsedPolygonStyleProps;
 
       const pointsInCCW = sortPointsInCCW(points.points);
       const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x - defX, y - defY));

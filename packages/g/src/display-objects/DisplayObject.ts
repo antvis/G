@@ -1,5 +1,4 @@
 import { GlobalContainer } from 'mana-syringe';
-import { isEqual, isNil, isObject, isUndefined } from 'lodash-es';
 import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { DisplayObjectPool } from '../DisplayObjectPool';
@@ -21,6 +20,9 @@ import {
   formatAttribute,
   fromRotationTranslationScale,
   getEuler,
+  isNil,
+  isObject,
+  isUndefined,
   rad2deg,
 } from '../utils';
 import { dirtifyToRoot } from '../services';
@@ -139,10 +141,10 @@ export class DisplayObject<
       ...this.config.style,
       ...this.config.attrs,
     };
-    if (!isNil(this.config.visible)) {
+    if (this.config.visible != null) {
       this.config.style.visibility = this.config.visible === false ? 'hidden' : 'visible';
     }
-    if (!isNil(this.config.interactive)) {
+    if (this.config.interactive != null) {
       this.config.style.pointerEvents = this.config.interactive === false ? 'none' : 'auto';
     }
 
@@ -238,7 +240,7 @@ export class DisplayObject<
       return;
     }
 
-    if (force || !isEqual(attributeValue, this.attributes[attributeName])) {
+    if (force || attributeValue != this.attributes[attributeName]) {
       this.internalSetAttribute(attributeName, attributeValue);
       super.setAttribute(attributeName, attributeValue);
     }

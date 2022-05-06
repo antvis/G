@@ -1,6 +1,6 @@
 # @antv/g-plugin-rough-canvas-renderer
 
-Use [rough.js](https://roughjs.com/)(Canvas version).
+Use [rough.js](https://roughjs.com/)(Canvas version) to render sketchy styled shapes, inspired by [roughViz](https://github.com/jwilber/roughViz).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*BhrwSLGlqXcAAAAAAAAAAAAAARQnAQ" width="300">
 
@@ -41,7 +41,7 @@ const canvas = new Canvas({
 });
 ```
 
-## TODO
+## Features
 
 ### Basic shapes
 
@@ -53,12 +53,37 @@ const canvas = new Canvas({
 - [x] Polyline
 - [x] Polygon
 - [x] Path
-- [ ] Text
+- [x] Text
 - [ ] Image
 
 ### Opacity
 
 rough.js don't support `opacity` now, but we can augment it with `globalAlpha`.
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gl6ETYiyCCQAAAAAAAAAAAAAARQnAQ" width="200">
+
+We can use `opacity` but not `fillOpacity` or `strokeOpacity` separately:
+
+```js
+circle.style.opacity = 0.5;
+```
+
+### Shadow
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*JKLVSrYk7BYAAAAAAAAAAAAAARQnAQ" width="300">
+
+Shadow can also work:
+
+```js
+circle.style.shadowColor = '#000';
+circle.style.shadowBlur = 0;
+circle.style.shadowOffsetX = 0;
+circle.style.shadowOffsetY = 0;
+```
+
+### Text & Image
+
+Text & Image should be the same in `g-plugin-canvas-renderer`.
 
 ### Picking
 

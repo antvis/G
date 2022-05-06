@@ -3,13 +3,6 @@
  * borrow from https://github.com/funnyecho/hamon
  */
 
-type FixedSizeArray<T extends number, U> = T extends 0
-  ? void[]
-  : readonly U[] & {
-      0: U;
-      length: T;
-    };
-
 type Measure<T extends number> = T extends 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 ? T : never;
 
 type Append<T extends any[], U> = {
@@ -28,15 +21,6 @@ type AsArray<T> = T extends any[] ? T : [];
 
 type Callback<E, T> = (error?: E, result?: T) => void;
 
-type Tap = TapOptions & {
-  name: string;
-  fn: Function;
-};
-
-interface TapOptions {}
-
-type ArgumentNames<T extends any[]> = FixedSizeArray<T['length'], string>;
-
 type ITapID = string;
 
 type IHookBucketType = any;
@@ -48,11 +32,6 @@ type ISyncTapCallback<T, R> = (...args: AsArray<T>) => R;
 type IAsyncTapCallback<T, R> = (...args: IAsyncTapArgs<T, R>) => void;
 type IPromiseTapCallback<T, R> = (...args: AsArray<T>) => Promise<R>;
 
-/**
- * Type of unTap function
- *
- * @public
- * */
 export type ITapDestroy = () => void;
 
 interface ITapOptions<T, R> {
@@ -60,17 +39,20 @@ interface ITapOptions<T, R> {
   bucket: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface IInvokeSeriesObserver<T, R> {
   shouldBail?: boolean;
   shouldWaterfall?: boolean;
   onComplete?: (err: Error, result?: R) => void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface IInvokeParallelObserver<T, R> {
   shouldBail?: boolean;
   onComplete?: (err: Error, result?: R) => void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface IInvokeSynchronouslyObserver<T, R> {
   shouldBail?: boolean;
   shouldWaterfall?: boolean;
@@ -109,12 +91,12 @@ function invokeSeriesNext<T, R>(
     return;
   }
 
-  let tap = list.shift();
-  let downstreamTaps = list;
-  let downstreamArgs = Array.from(args) as AsArray<T>;
+  const tap = list.shift();
+  const downstreamTaps = list;
+  const downstreamArgs = Array.from(args) as AsArray<T>;
 
   // @ts-ignore
-  let nextArgs = [
+  const nextArgs = [
     ...args,
     function onNext(err: Error, result?: R) {
       if (err != null) {
@@ -161,7 +143,7 @@ function invokeParallel<T, R>(
   let parallelSize = list.length;
 
   // @ts-ignore
-  let nextArgs = [
+  const nextArgs = [
     ...args,
     function onNext(err: Error, result?: R) {
       if (err != null) {
@@ -182,7 +164,7 @@ function invokeParallel<T, R>(
     },
   ] as IAsyncTapArgs<T, R>;
 
-  for (let option of list) {
+  for (const option of list) {
     option.fn(...nextArgs);
   }
 }
@@ -197,11 +179,11 @@ function invokeSynchronously<T, R>(
     else return undefined;
   }
 
-  let downstreamArgs = Array.from(args) as AsArray<T>;
+  const downstreamArgs = Array.from(args) as AsArray<T>;
 
-  for (let option of list) {
-    let fn = option.fn as ISyncTapCallback<T, R>;
-    let result = fn(...downstreamArgs);
+  for (const option of list) {
+    const fn = option.fn as ISyncTapCallback<T, R>;
+    const result = fn(...downstreamArgs);
 
     if (result !== undefined && observer.shouldBail === true) {
       return result;
@@ -299,7 +281,7 @@ export abstract class Hook<T, R> {
    * */
   protected insertAsyncTap(fn: IAsyncTapCallback<T, R>, bucket?: IHookBucketType): ITapDestroy {
     function asyncTapFn(...args: IAsyncTapArgs<T, R>) {
-      let invokeCb = args[args.length - 1] as Callback<Error, R>;
+      const invokeCb = args[args.length - 1] as Callback<Error, R>;
 
       try {
         fn(...args);
@@ -319,8 +301,8 @@ export abstract class Hook<T, R> {
     bucket?: IHookBucketType,
   ): ITapDestroy {
     function promiseTapFn(...args) {
-      let invokeCb = args.pop() as Callback<Error, R>;
-      let invokeArgs = args as AsArray<T>;
+      const invokeCb = args.pop() as Callback<Error, R>;
+      const invokeArgs = args as AsArray<T>;
 
       try {
         Promise.resolve(fn(...invokeArgs)).then(
@@ -386,21 +368,21 @@ export abstract class Hook<T, R> {
    * @internal
    * */
   protected getBucketTaps(args: AsArray<T>): Set<ITapOptions<T, R>> {
-    let presetTaps = Array.from(this.presetTapBucket);
+    const presetTaps = Array.from(this.presetTapBucket);
     let bucketTaps: ITapID[] = [];
 
     if (typeof this.bucketHashcode === 'function') {
-      let bucket = this.bucketHashcode(...args);
+      const bucket = this.bucketHashcode(...args);
 
       if (this.tapBuckets.has(bucket)) {
         bucketTaps = Array.from(this.tapBuckets.get(bucket)!);
       }
     }
 
-    let selectedTapIds = new Set<ITapID>([...presetTaps, ...bucketTaps]);
-    let selectedTapOptions = new Set<ITapOptions<T, R>>();
+    const selectedTapIds = new Set<ITapID>([...presetTaps, ...bucketTaps]);
+    const selectedTapOptions = new Set<ITapOptions<T, R>>();
 
-    for (let tapId of selectedTapIds) {
+    for (const tapId of selectedTapIds) {
       selectedTapOptions.add(this.tapOptionsCache.get(tapId));
     }
 
@@ -424,8 +406,8 @@ export abstract class Hook<T, R> {
       tapBucket = this.tapBuckets.get(bucketHash)!;
     }
 
-    let tapId = this.generateTapId();
-    let options: ITapOptions<T, R> = {
+    const tapId = this.generateTapId();
+    const options: ITapOptions<T, R> = {
       fn,
       bucket: bucketHash,
     };
@@ -442,10 +424,10 @@ export abstract class Hook<T, R> {
    * @internal
    * */
   protected popoutTap(tapId: ITapID) {
-    let options = this.tapOptionsCache.get(tapId);
+    const options = this.tapOptionsCache.get(tapId);
     if (!options) return;
 
-    let bucketHash = options.bucket;
+    const bucketHash = options.bucket;
     if (!bucketHash) {
       this.presetTapBucket.delete(tapId);
     } else {
@@ -591,7 +573,7 @@ export class AsyncParallelHook<T, R = void> extends AsyncTapHook<T, R> {
    * The signature of `cb` is `(err?: Error) => void`.
    * */
   public callAsync(...args: IAsyncTapArgs<T, R>): void {
-    let asyncCb = args.pop() as Callback<Error, R>;
+    const asyncCb = args.pop() as Callback<Error, R>;
 
     this.invokeParallel(
       // @ts-ignored
@@ -647,7 +629,7 @@ export class AsyncSeriesWaterfallHook<T, R> extends AsyncTapHook<T, R> {
    * The signature of `cb` is `(err?: Error) => void`.
    * */
   public callAsync(...args: IAsyncTapArgs<T, R>): void {
-    let asyncCb = args.pop() as Callback<Error, R>;
+    const asyncCb = args.pop() as Callback<Error, R>;
 
     this.invokeSeries(
       // @ts-ignored

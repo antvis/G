@@ -1,6 +1,6 @@
 import type { vec4 } from 'gl-matrix';
 import { vec3 } from 'gl-matrix';
-import { isNumber } from 'lodash-es';
+import { isNumber } from '@antv/g';
 
 export function getAngle(angle: number | undefined) {
   if (angle === undefined) {

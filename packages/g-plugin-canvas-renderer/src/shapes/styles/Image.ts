@@ -1,7 +1,6 @@
 import type { ParsedImageStyleProps } from '@antv/g';
-import { Shape } from '@antv/g';
+import { Shape, isString } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-import { isString } from 'lodash-es';
 import { ImagePool } from '../ImagePool';
 import { StyleRenderer } from './interfaces';
 

@@ -221,7 +221,7 @@ WebFont.load({
     const text = new Text({
       style: {
         x: 100,
-        y: 100,
+        y: 450,
         fontFamily: 'Gaegu',
         text: 'Almost before we knew it, we had left the ground.',
         fontSize: 30,
@@ -264,19 +264,39 @@ const sunConfig = {
   lineWidth: 4,
   visibility: true,
   'z-index': 0,
+  opacity: 1,
+  shadowColor: '#000',
+  shadowBlur: 0,
+  shadowOffsetX: 0,
+  shadowOffsetY: 0,
   fillStyle: 'hachure',
   fillWeight: 4 / 2,
   hachureAngle: -41,
   hachureGap: 4 * 4,
 };
-sunFolder.add(sunConfig, 'r', 50, 200).onChange((radius) => {
-  sun.style.r = radius;
+sunFolder.add(sunConfig, 'r', 50, 200).onChange((r) => {
+  sun.style.r = r;
+});
+sunFolder.add(sunConfig, 'opacity', 0, 1).onChange((opacity) => {
+  sun.style.opacity = opacity;
 });
 sunFolder.addColor(sunConfig, 'fill').onChange((color) => {
   sun.style.fill = color;
 });
 sunFolder.addColor(sunConfig, 'stroke').onChange((color) => {
   sun.style.stroke = color;
+});
+sunFolder.addColor(sunConfig, 'shadowColor').onChange((color) => {
+  sun.style.shadowColor = color;
+});
+sunFolder.add(sunConfig, 'shadowBlur', 0, 100).onChange((shadowBlur) => {
+  sun.style.shadowBlur = shadowBlur;
+});
+sunFolder.add(sunConfig, 'shadowOffsetX', -50, 50).onChange((shadowOffsetX) => {
+  sun.style.shadowOffsetX = shadowOffsetX;
+});
+sunFolder.add(sunConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY) => {
+  sun.style.shadowOffsetY = shadowOffsetY;
 });
 sunFolder.add(sunConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
   sun.style.lineWidth = lineWidth;

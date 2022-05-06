@@ -1,5 +1,4 @@
 import { inject, singleton, Syringe } from 'mana-syringe';
-import { isNil } from 'lodash-es';
 import type { Transform } from '../components';
 import type { vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
@@ -10,6 +9,7 @@ import type { IChildNode, IElement, INode, IParentNode } from '../dom/interfaces
 import { ElementEvent } from '../dom/interfaces';
 import type { Element } from '../dom';
 import { MutationEvent } from '../dom/MutationEvent';
+import { isNil } from '../utils';
 
 export function sortByZIndex(o1: IElement, o2: IElement) {
   const zIndex1 = Number(o1.style.zIndex);

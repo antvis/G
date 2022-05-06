@@ -1,11 +1,11 @@
-import type { ParsedBaseStyleProps } from '@antv/g';
+import type { ParsedPolylineStyleProps } from '@antv/g';
 import type { ElementRenderer } from '.';
 import { singleton } from 'mana-syringe';
 
 @singleton()
-export class PolylineRenderer implements ElementRenderer<ParsedBaseStyleProps> {
+export class PolylineRenderer implements ElementRenderer<ParsedPolylineStyleProps> {
   dependencies = ['points'];
-  apply($el: SVGElement, parsedStyle: ParsedBaseStyleProps) {
+  apply($el: SVGElement, parsedStyle: ParsedPolylineStyleProps) {
     const { points, defX: x = 0, defY: y = 0 } = parsedStyle;
 
     if (points && points.points && points.points.length >= 2) {

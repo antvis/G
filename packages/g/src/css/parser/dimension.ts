@@ -1,8 +1,7 @@
-import { isString } from 'lodash-es';
 import type { IElement } from '../../dom';
 import type { DisplayObject } from '../../display-objects';
 import { AABB } from '../../shapes';
-import { rad2deg, turn2deg } from '../../utils';
+import { isString, rad2deg, turn2deg } from '../../utils';
 import type { CSSStyleValue } from '../cssom';
 import { UnitType } from '../cssom';
 import { CSSUnitValue } from '../cssom';

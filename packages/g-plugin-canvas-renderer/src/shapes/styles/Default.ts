@@ -1,7 +1,6 @@
 import type { CSSRGB, ParsedBaseStyleProps } from '@antv/g';
-import { Shape } from '@antv/g';
+import { Shape, isNil } from '@antv/g';
 import { singleton } from 'mana-syringe';
-import { isNil } from 'lodash-es';
 import { StyleRenderer } from './interfaces';
 
 @singleton({

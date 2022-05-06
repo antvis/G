@@ -1,5 +1,3 @@
-import { isArray } from 'lodash-es';
-
 export function numberToLongString(x: number) {
   return x.toFixed(6).replace('.000000', '');
 }
@@ -9,7 +7,7 @@ export function parseRadius(radius: number[] | number) {
   let r2 = 0;
   let r3 = 0;
   let r4 = 0;
-  if (isArray(radius)) {
+  if (Array.isArray(radius)) {
     if (radius.length === 1) {
       r1 = r2 = r3 = r4 = radius[0];
     } else if (radius.length === 2) {

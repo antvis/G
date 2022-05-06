@@ -42,8 +42,7 @@
   "dependencies": {
     "@antv/g-plugin-dom-interaction": "^1.0.19",
     "@antv/g-plugin-html-renderer": "^1.0.20",
-    "@antv/g-plugin-webgl-renderer": "^1.0.25",
-    "lodash-es": "^4.17.21"
+    "@antv/g-plugin-webgl-renderer": "^1.0.25"
   },
   "peerDependencies": {
     "@antv/g": "^5.0.1",

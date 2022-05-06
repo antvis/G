@@ -1,5 +1,4 @@
 import { inject, singleton } from 'mana-syringe';
-import { isUndefined } from 'lodash-es';
 import type { ICanvas, FederatedMouseEvent } from '../dom';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
@@ -16,7 +15,8 @@ import type { Cursor, EventPosition, InteractivePointerEvent } from '../types';
 import { CanvasConfig } from '../types';
 import { MOUSE_POINTER_ID } from '../utils/event';
 import type { FormattedTouch, FormattedPointerEvent } from '../utils/event';
-import { FederatedTouchEvent } from '../dom/FederatedTouchEvent';
+import type { FederatedTouchEvent } from '../dom/FederatedTouchEvent';
+import { isUndefined } from '../utils';
 
 /**
  * support mouse & touch events

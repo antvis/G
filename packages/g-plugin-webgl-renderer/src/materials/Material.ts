@@ -1,6 +1,5 @@
 import type { Tuple4Number } from '@antv/g';
-import { ElementEvent, MutationEvent } from '@antv/g';
-import { isNil } from 'lodash-es';
+import { ElementEvent, MutationEvent, isNil } from '@antv/g';
 import type { Mesh } from '../Mesh';
 import type {
   CompareMode,

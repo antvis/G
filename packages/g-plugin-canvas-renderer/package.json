@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "@antv/g-math": "^1.0.19",
-    "@antv/path-util": "^3.0.1",
     "rbush": "^3.0.1",
     "tslib": "^2.3.1"
   },

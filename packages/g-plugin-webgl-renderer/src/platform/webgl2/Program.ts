@@ -1,4 +1,4 @@
-import { isNil } from 'lodash-es';
+import { isNil } from '@antv/g';
 import { getAttributeLocations, getDefines } from '../../shader/compiler';
 import type { Program, ProgramDescriptorSimple } from '../interfaces';
 import { ResourceType } from '../interfaces';

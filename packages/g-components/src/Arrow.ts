@@ -1,7 +1,6 @@
 import type { DisplayObject, Line, Polyline, BaseStyleProps, DisplayObjectConfig } from '@antv/g';
-import { CustomElement, Path, Shape } from '@antv/g';
+import { CustomElement, Path, Shape, isNil } from '@antv/g';
 import { vec3 } from 'gl-matrix';
-import { isNil } from 'lodash-es';
 
 type ArrowHead = boolean | DisplayObject;
 type ArrowBody = Line | Path | Polyline;

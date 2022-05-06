@@ -41,8 +41,7 @@
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
     "@antv/g-plugin-mobile-interaction": "^0.0.8",
-    "@antv/g-plugin-webgl-renderer": "^1.0.25",
-    "lodash-es": "^4.17.21"
+    "@antv/g-plugin-webgl-renderer": "^1.0.25"
   },
   "peerDependencies": {
     "@antv/g": "^5.0.1",

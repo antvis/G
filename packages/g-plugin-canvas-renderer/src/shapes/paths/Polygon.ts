@@ -1,8 +1,11 @@
-import type { ParsedBaseStyleProps } from '@antv/g';
+import type { ParsedPolygonStyleProps } from '@antv/g';
 
-export function generatePath(context: CanvasRenderingContext2D, parsedStyle: ParsedBaseStyleProps) {
+export function generatePath(
+  context: CanvasRenderingContext2D,
+  parsedStyle: ParsedPolygonStyleProps,
+) {
   const { defX: x = 0, defY: y = 0 } = parsedStyle;
-  const points = parsedStyle.points!.points;
+  const points = parsedStyle.points.points;
   const length = points.length;
 
   const x1 = points[0][0] - x;

@@ -36,7 +36,6 @@
     "@webgpu/types": "^0.1.6",
     "earcut": "^2.2.3",
     "eventemitter3": "^4.0.0",
-    "lodash-es": "^4.17.21",
     "regenerator-runtime": "^0.13.9",
     "tslib": "^2.3.1"
   },

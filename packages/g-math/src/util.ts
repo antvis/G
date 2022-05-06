@@ -1,4 +1,3 @@
-import { max, min } from 'lodash-es';
 import type { BBox } from './types';
 
 /**
@@ -20,10 +19,10 @@ export function isNumberEqual(v1: number, v2: number) {
 }
 
 export function getBBoxByArray(xArr: number[], yArr: number[]): BBox {
-  const minX = min(xArr);
-  const minY = min(yArr);
-  const maxX = max(xArr);
-  const maxY = max(yArr);
+  const minX = Math.min(...xArr);
+  const minY = Math.min(...yArr);
+  const maxX = Math.max(...xArr);
+  const maxY = Math.max(...yArr);
   return {
     x: minX,
     y: minY,
@@ -34,10 +33,10 @@ export function getBBoxByArray(xArr: number[], yArr: number[]): BBox {
 
 export function getBBoxRange(x1: number, y1: number, x2: number, y2: number) {
   return {
-    minX: min([x1, x2]),
-    maxX: max([x1, x2]),
-    minY: min([y1, y2]),
-    maxY: max([y1, y2]),
+    minX: Math.min(x1, x2),
+    maxX: Math.max(x1, x2),
+    minY: Math.min(y1, y2),
+    maxY: Math.max(y1, y2),
   };
 }
 

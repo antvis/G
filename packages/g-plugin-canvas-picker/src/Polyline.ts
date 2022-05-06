@@ -1,4 +1,4 @@
-import type { DisplayObject, PolylineStyleProps, Point, ParsedBaseStyleProps } from '@antv/g';
+import type { DisplayObject, PolylineStyleProps, Point, ParsedPolylineStyleProps } from '@antv/g';
 import { inPolyline } from './utils/math';
 
 export function isPointInPath(
@@ -12,7 +12,7 @@ export function isPointInPath(
     defX: x = 0,
     defY: y = 0,
     clipPathTargets,
-  } = displayObject.parsedStyle as ParsedBaseStyleProps;
+  } = displayObject.parsedStyle as ParsedPolylineStyleProps;
   const isClipPath = !!clipPathTargets?.length;
   const hasStroke = displayObject.attributes.stroke !== 'none' && !!stroke;
   if ((!hasStroke && !isClipPath) || !lineWidth) {

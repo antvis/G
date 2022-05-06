@@ -12,8 +12,8 @@ import {
   Rectangle,
   ContextService,
   CanvasConfig,
+  clamp,
 } from '@antv/g';
-import { clamp } from 'lodash-es';
 import { inject, singleton } from 'mana-syringe';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { BlendFactor, BlendMode } from './platform';

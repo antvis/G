@@ -15,7 +15,7 @@ import type { IEventTarget, INode, IDocument, ICanvas } from '../dom/interfaces'
 import type { PointLike } from '../shapes';
 import { Point } from '../shapes';
 import { ContextService } from './ContextService';
-import { FormattedTouch } from '../utils';
+import type { FormattedTouch } from '../utils';
 
 type Picker = (position: EventPosition) => Promise<IEventTarget | null>;
 type TrackingData = {

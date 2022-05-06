@@ -2,17 +2,14 @@ import {
   DisplayObject,
   RenderingService,
   RenderingPlugin,
-  DefaultCamera,
-  Camera,
-  getEuler,
-  fromRotationTranslationScale,
   PathCommand,
+  ParsedTextStyleProps,
+  UnitType,
+  Rectangle,
+  CSSRGB,
 } from '@antv/g';
-import {
-  Shape,
-  CanvasConfig,
-  ContextService,
-  RenderingPluginContribution,
+import { DefaultCamera, Camera, getEuler, fromRotationTranslationScale, isNil } from '@antv/g';
+import type {
   ParsedBaseStyleProps,
   ParsedCircleStyleProps,
   ParsedEllipseStyleProps,
@@ -21,10 +18,11 @@ import {
   ParsedPolygonStyleProps,
   ParsedLineStyleProps,
 } from '@antv/g';
+import { Shape, CanvasConfig, ContextService, RenderingPluginContribution } from '@antv/g';
 import { vec3, mat4, quat } from 'gl-matrix';
 import { inject, singleton } from 'mana-syringe';
 import type { RoughCanvas } from 'roughjs/bin/canvas';
-import { Options } from 'roughjs/bin/core';
+import type { Options } from 'roughjs/bin/core';
 // @see https://github.com/rough-stuff/rough/issues/145
 import rough from 'roughjs/bin/rough';
 import { formatPath } from './util';
@@ -85,6 +83,7 @@ export class RoughRendererPlugin implements RenderingPlugin {
       this.applyTransform(context, object.getLocalTransform());
 
       context.save();
+      this.applyAttributesToContext(context, object);
 
       this.useAnchor(context, object, () => {
         // we only care about visibile and unculled display objects
@@ -223,8 +222,24 @@ export class RoughRendererPlugin implements RenderingPlugin {
       this.roughCanvas.path(formatted, options);
     } else if (object.nodeName === Shape.IMAGE) {
     } else if (object.nodeName === Shape.TEXT) {
+      // same as `g-plugin-canvas-renderer`
+      this.renderText(object);
     }
-    // TODO: other shapes
+  }
+
+  private applyAttributesToContext(context: CanvasRenderingContext2D, object: DisplayObject) {
+    const { opacity, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY } =
+      object.parsedStyle as ParsedBaseStyleProps;
+    if (!isNil(opacity)) {
+      context.globalAlpha *= opacity.value;
+    }
+
+    if (!isNil(shadowColor)) {
+      context.shadowColor = shadowColor.toString();
+      context.shadowBlur = (shadowBlur && shadowBlur.value) || 0;
+      context.shadowOffsetX = (shadowOffsetX && shadowOffsetX.value) || 0;
+      context.shadowOffsetY = (shadowOffsetY && shadowOffsetY.value) || 0;
+    }
   }
 
   /**
@@ -266,6 +281,194 @@ export class RoughRendererPlugin implements RenderingPlugin {
       callback();
     } else {
       callback();
+    }
+  }
+
+  private renderText(object: DisplayObject) {
+    const context = this.contextService.getContext();
+    const {
+      lineWidth,
+      textAlign,
+      textBaseline,
+      lineJoin,
+      miterLimit = 0,
+      letterSpacing = 0,
+      stroke,
+      fill,
+      fillOpacity,
+      strokeOpacity,
+      opacity,
+      metrics,
+      dx,
+      dy,
+    } = object.parsedStyle as ParsedTextStyleProps;
+
+    const { font, lines, height, lineHeight, lineMetrics } = metrics;
+
+    if (!isNil(stroke) && stroke instanceof CSSRGB) {
+      context.strokeStyle = stroke.toString();
+    }
+
+    if (!isNil(fill) && fill instanceof CSSRGB) {
+      context.fillStyle = fill.toString();
+    }
+    context.font = font;
+    context.lineWidth = lineWidth.value;
+    context.textAlign = textAlign.value as CanvasTextAlign;
+    context.textBaseline = textBaseline.value as CanvasTextBaseline;
+    context.lineJoin = lineJoin.value as CanvasLineJoin;
+    context.miterLimit = miterLimit;
+
+    let linePositionY = 0;
+    // handle vertical text baseline
+    if (textBaseline.value === 'middle') {
+      linePositionY = -height / 2 - lineHeight / 2;
+    } else if (
+      textBaseline.value === 'bottom' ||
+      textBaseline.value === 'alphabetic' ||
+      textBaseline.value === 'ideographic'
+    ) {
+      linePositionY = -height;
+    } else if (textBaseline.value === 'top' || textBaseline.value === 'hanging') {
+      linePositionY = -lineHeight;
+    }
+
+    // account for dx & dy
+    let offsetX = 0;
+    if (dx && dx.unit === UnitType.kPixels) {
+      offsetX += dx.value;
+    }
+    if (dy && dy.unit === UnitType.kPixels) {
+      linePositionY += dy.value;
+    }
+
+    // draw lines line by line
+    for (let i = 0; i < lines.length; i++) {
+      const linePositionX = lineWidth.value / 2 + offsetX;
+      linePositionY += lineHeight;
+
+      // no need to re-position X, cause we already set text align
+      // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/textAlign
+      if (!isNil(stroke) && lineWidth && lineWidth.value) {
+        this.drawLetterSpacing(
+          context,
+          lines[i],
+          lineMetrics[i],
+          textAlign.value as CanvasTextAlign,
+          linePositionX,
+          linePositionY,
+          letterSpacing,
+          fillOpacity.value,
+          strokeOpacity.value,
+          opacity.value,
+          true,
+        );
+      }
+      if (!isNil(fill)) {
+        this.drawLetterSpacing(
+          context,
+          lines[i],
+          lineMetrics[i],
+          textAlign.value as CanvasTextAlign,
+          linePositionX,
+          linePositionY,
+          letterSpacing,
+          fillOpacity.value,
+          strokeOpacity.value,
+          opacity.value,
+        );
+      }
+    }
+  }
+
+  private drawLetterSpacing(
+    context: CanvasRenderingContext2D,
+    text: string,
+    lineMetrics: Rectangle,
+    textAlign: CanvasTextAlign,
+    x: number,
+    y: number,
+    letterSpacing: number,
+    fillOpacity: number | undefined,
+    strokeOpacity: number | undefined,
+    opacity: number | undefined,
+    isStroke = false,
+  ): void {
+    // letterSpacing of 0 means normal, render all texts directly
+    if (letterSpacing === 0) {
+      if (isStroke) {
+        this.strokeText(context, text, x, y, strokeOpacity);
+      } else {
+        this.fillText(context, text, x, y, fillOpacity, opacity);
+      }
+      return;
+    }
+
+    // draw text using left align
+    const currentTextAlign = context.textAlign;
+    context.textAlign = 'left';
+
+    let currentPosition = x;
+    if (textAlign === 'center') {
+      currentPosition = x - lineMetrics.width / 2;
+    } else if (textAlign === 'right' || textAlign === 'end') {
+      currentPosition = x - lineMetrics.width;
+    }
+
+    const stringArray = Array.from(text);
+    let previousWidth = context.measureText(text).width;
+    let currentWidth = 0;
+    for (let i = 0; i < stringArray.length; ++i) {
+      const currentChar = stringArray[i];
+      if (isStroke) {
+        this.strokeText(context, currentChar, currentPosition, y, strokeOpacity);
+      } else {
+        this.fillText(context, currentChar, currentPosition, y, fillOpacity, opacity);
+      }
+      currentWidth = context.measureText(text.substring(i + 1)).width;
+      currentPosition += previousWidth - currentWidth + letterSpacing;
+      previousWidth = currentWidth;
+    }
+
+    context.textAlign = currentTextAlign;
+  }
+
+  private fillText(
+    context: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    y: number,
+    fillOpacity: number | undefined,
+    opacity: number | undefined,
+  ) {
+    let currentGlobalAlpha: number;
+    const applyOpacity = !isNil(fillOpacity) && fillOpacity !== 1;
+    if (applyOpacity) {
+      currentGlobalAlpha = context.globalAlpha;
+      context.globalAlpha = fillOpacity * opacity;
+    }
+    context.fillText(text, x, y);
+    if (applyOpacity) {
+      context.globalAlpha = currentGlobalAlpha;
+    }
+  }
+
+  private strokeText(
+    context: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    y: number,
+    strokeOpacity: number | undefined,
+  ) {
+    let currentGlobalAlpha: number;
+    const applyOpacity = !isNil(strokeOpacity) && strokeOpacity !== 1;
+    if (applyOpacity) {
+      currentGlobalAlpha = context.globalAlpha;
+      context.globalAlpha = strokeOpacity!;
+    }
+    context.strokeText(text, x, y);
+    if (applyOpacity) {
+      context.globalAlpha = currentGlobalAlpha;
     }
   }
 }

@@ -1,9 +1,9 @@
 import { singleton } from 'mana-syringe';
-import { isString } from 'lodash-es';
 import { GeometryAABBUpdater } from './interfaces';
 import type { Image, Rect, Group, ParsedImageStyleProps } from '../../display-objects';
 import { Shape } from '../../types';
 import { CSSUnitValue, UnitType } from '../../css';
+import { isString } from '../../utils';
 
 @singleton({
   token: [
