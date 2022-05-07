@@ -29,6 +29,7 @@ export default {
     'g-plugin-matterjs',
     'g-plugin-yoga',
     'g-plugin-rough-canvas-renderer',
+    'g-plugin-rough-svg-renderer',
     // 'g-plugin-yoga-wasm',
     'g-webgpu-compiler',
     'g-components',
