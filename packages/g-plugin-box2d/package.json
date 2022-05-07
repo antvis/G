@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-box2d",
-  "version": "1.0.12",
+  "version": "1.0.13-alpha.0",
   "description": "A G plugin for Box2D",
   "main": "lib/index.js",
   "module": "es/index.js",
