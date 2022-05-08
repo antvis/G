@@ -1409,3 +1409,6 @@ export class CSSMathProduct extends CSSMathVariadic {
     return result;
   }
 }
+
+export const Opx: CSSUnitValue = new CSSUnitValue(0, 'px');
+export const Odeg: CSSUnitValue = new CSSUnitValue(0, 'deg');

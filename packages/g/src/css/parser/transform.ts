@@ -1,14 +1,8 @@
-import {
-  parseNumber,
-  mergeNumbers,
-  parseAngle,
-  parseLength,
-  parseLengthOrPercentage,
-  mergeDimensions,
-} from './';
 // import { makeMatrixDecomposition, quat, composeMatrix } from '../utils/matrix-decompose';
 import type { DisplayObject } from '../../display-objects/DisplayObject';
-import { UnitType, CSSUnitValue } from '../cssom';
+import { UnitType, CSSUnitValue, Opx, Odeg } from '../cssom';
+import { mergeDimensions, parseAngle, parseLength, parseLengthOrPercentage } from './dimension';
+import { mergeNumbers, parseNumber } from './numeric';
 
 // eg. { t: 'scale', d: [CSSUnitValue(1), CSSUnitValue(2)] }
 export interface ParsedTransform {
@@ -39,9 +33,6 @@ type CastFunction =
   | ((contents: (number | PatternElement)[]) => PatternElement[]);
 
 const _ = null;
-export const Opx: CSSUnitValue = new CSSUnitValue(0, 'px');
-export const Odeg: CSSUnitValue = new CSSUnitValue(0, 'deg');
-
 function cast(pattern: PatternElement[]) {
   return function (contents: PatternElement[]) {
     let i = 0;
