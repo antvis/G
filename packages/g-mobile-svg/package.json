@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-svg",
-  "version": "0.0.4-alpha.0",
+  "version": "0.0.4-alpha.1",
   "description": "A renderer implemented by SVG in mobile environment",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -37,9 +37,9 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g-plugin-mobile-interaction": "^0.0.9-alpha.0",
-    "@antv/g-plugin-svg-picker": "^1.0.20-alpha.0",
-    "@antv/g-plugin-svg-renderer": "^1.0.20-alpha.0",
+    "@antv/g-plugin-mobile-interaction": "^0.0.9-alpha.1",
+    "@antv/g-plugin-svg-picker": "^1.0.20-alpha.1",
+    "@antv/g-plugin-svg-renderer": "^1.0.20-alpha.1",
     "tslib": "^2.3.1"
   },
   "peerDependencies": {

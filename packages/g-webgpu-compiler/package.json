@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgpu-compiler",
-  "version": "1.0.21-alpha.0",
+  "version": "1.0.21-alpha.1",
   "description": "A compiler transpiling *.g to GLSL/WGSL",
   "main": "lib/index.js",
   "module": "es/index.js",
