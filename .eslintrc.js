@@ -13,6 +13,7 @@ module.exports = {
     'no-param-reassign': 0,
     'no-redeclare': 'off',
     '@typescript-eslint/no-invalid-this': 0,
+    '@typescript-eslint/no-use-before-define': ['error', { functions: false, classes: false }],
     '@typescript-eslint/no-redeclare': ['error'],
     '@typescript-eslint/no-unused-vars': [
       'error',

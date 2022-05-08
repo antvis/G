@@ -1,4 +1,4 @@
-import type { Nested, ParenLess } from '.';
+import type { Nested, ParenLess } from './types';
 import { CSSStyleValue, CSSStyleValueType } from './CSSStyleValue';
 
 /**

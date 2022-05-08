@@ -1,5 +1,5 @@
 import { DCHECK_EQ, DCHECK_NE } from '../../utils';
-import { UnitType } from '.';
+import { UnitType } from './types';
 
 // https://drafts.css-houdini.org/css-typed-om/#enumdef-cssnumericbasetype
 export enum BaseType {
