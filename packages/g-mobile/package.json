@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile",
-  "version": "1.0.7-alpha.4",
+  "version": "1.0.7-alpha.5",
   "description": "A renderer implemented with Canvas2D API in mobile environment",
   "main": "lib/index.js",
   "module": "es/index.js",
