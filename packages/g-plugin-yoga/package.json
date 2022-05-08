@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-yoga",
-  "version": "1.0.10-alpha.2",
+  "version": "1.0.10-alpha.3",
   "description": "A G plugin for Yoga layout engine",
   "main": "lib/index.js",
   "module": "es/index.js",
