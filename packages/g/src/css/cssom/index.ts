@@ -13,7 +13,6 @@ export * from './CSSKeywordValue';
 export * from './CSSMathOperator';
 export * from './CSSNumericSumValue';
 export * from './CSSNumericValue';
-export * from './CSSNumericValueType';
 export * from './CSSRGB';
 export * from './CSSGradientValue';
 export * from './CSSStyleValue';

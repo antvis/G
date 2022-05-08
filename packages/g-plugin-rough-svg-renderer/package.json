@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-rough-svg-renderer",
-  "version": "1.0.1-alpha.1",
+  "version": "1.0.1-alpha.2",
   "description": "A G plugin of renderer implementation with rough.js",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -47,5 +47,5 @@
     "umd": "webpack"
   },
   "homepage": "https://github.com/antvis/g#readme",
-  "gitHead": "b382a7445d9fa350107dba29d20eb7e6d6da9e79"
+  "gitHead": "af1c0b90600f8b68d1008877bc98aefa308fefa8"
 }
