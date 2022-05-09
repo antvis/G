@@ -6,6 +6,8 @@ import { inject, singleton } from 'mana-syringe';
  */
 @singleton({ contrib: RenderingPluginContribution })
 export class MobileInteractionPlugin implements RenderingPlugin {
+  static tag = 'MobileInteraction';
+
   @inject(ContextService)
   private contextService: ContextService<CanvasRenderingContext2D>;
 
@@ -38,7 +40,7 @@ export class MobileInteractionPlugin implements RenderingPlugin {
       renderingService.hooks.pointerCancel.call(ev);
     };
 
-    renderingService.hooks.init.tapPromise(async () => {
+    renderingService.hooks.init.tapPromise(MobileInteractionPlugin.tag, async () => {
       // 基于小程序上下文的事件监听方式，绑定事件监听，可以参考下面基于 DOM 的方式
       canvasEl.addEventListener('touchstart', onPointerDown, true);
       canvasEl.addEventListener('touchend', onPointerUp, true);
@@ -52,7 +54,7 @@ export class MobileInteractionPlugin implements RenderingPlugin {
       canvasEl.addEventListener('mouseup', onPointerUp, true);
     });
 
-    renderingService.hooks.destroy.tap(() => {
+    renderingService.hooks.destroy.tap(MobileInteractionPlugin.tag, () => {
       // 基于小程序上下文的事件监听方式，移除事件监听
       canvasEl.removeEventListener('touchstart', onPointerDown, true);
       canvasEl.removeEventListener('touchend', onPointerUp, true);

@@ -36,6 +36,8 @@ export type PointInPathPicker<T extends BaseStyleProps> = (
  */
 @singleton({ contrib: RenderingPluginContribution })
 export class CanvasPickerPlugin implements RenderingPlugin {
+  static tag = 'CanvasPicker';
+
   @inject(DisplayObjectPool)
   private displayObjectPool: DisplayObjectPool;
 
@@ -55,75 +57,78 @@ export class CanvasPickerPlugin implements RenderingPlugin {
   private pointInPathPickerFactory: (tagName: Shape | string) => PointInPathPicker<any>;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.pick.tapPromise(async (result: PickingResult) => {
-      const {
-        topmost,
-        position: { x, y },
-      } = result;
+    renderingService.hooks.pick.tapPromise(
+      CanvasPickerPlugin.tag,
+      async (result: PickingResult) => {
+        const {
+          topmost,
+          position: { x, y },
+        } = result;
 
-      // position in world space
-      const position = vec3.fromValues(x, y, 0);
+        // position in world space
+        const position = vec3.fromValues(x, y, 0);
 
-      // query by AABB first with spatial index(r-tree)
-      const rBushNodes = this.rBush.search({
-        minX: position[0],
-        minY: position[1],
-        maxX: position[0],
-        maxY: position[1],
-      });
+        // query by AABB first with spatial index(r-tree)
+        const rBushNodes = this.rBush.search({
+          minX: position[0],
+          minY: position[1],
+          maxX: position[0],
+          maxY: position[1],
+        });
 
-      const queriedIds = rBushNodes.map((node) => node.id);
-      const hitTestList: DisplayObject[] = [];
-      rBushNodes.forEach(({ id }) => {
-        const displayObject = this.displayObjectPool.getByEntity(id);
-        if (
-          displayObject.isVisible() &&
-          !displayObject.isCulled() &&
-          displayObject.isInteractive()
-        ) {
-          // parent is not included, eg. parent is clipped
+        const queriedIds = rBushNodes.map((node) => node.id);
+        const hitTestList: DisplayObject[] = [];
+        rBushNodes.forEach(({ id }) => {
+          const displayObject = this.displayObjectPool.getByEntity(id);
           if (
-            displayObject.parentNode &&
-            queriedIds.indexOf((displayObject.parentNode as Element).entity) === -1
+            displayObject.isVisible() &&
+            !displayObject.isCulled() &&
+            displayObject.isInteractive()
           ) {
-            return;
+            // parent is not included, eg. parent is clipped
+            if (
+              displayObject.parentNode &&
+              queriedIds.indexOf((displayObject.parentNode as Element).entity) === -1
+            ) {
+              return;
+            }
+
+            hitTestList.push(displayObject);
+          }
+        });
+        // find group with max z-index
+        hitTestList.sort((a, b) => b.sortable.renderOrder - a.sortable.renderOrder);
+
+        const pickedDisplayObjects: DisplayObject[] = [];
+        for (const displayObject of hitTestList) {
+          // test with clip path
+          const clipPath = displayObject.parsedStyle.clipPath;
+          const objectToTest = clipPath || displayObject;
+          let worldTransform = displayObject.getWorldTransform();
+
+          // clipped's world matrix * clipPath's local matrix
+          if (clipPath) {
+            worldTransform = mat4.multiply(
+              mat4.create(),
+              worldTransform,
+              clipPath.getLocalTransform(),
+            );
           }
 
-          hitTestList.push(displayObject);
-        }
-      });
-      // find group with max z-index
-      hitTestList.sort((a, b) => b.sortable.renderOrder - a.sortable.renderOrder);
-
-      const pickedDisplayObjects: DisplayObject[] = [];
-      for (const displayObject of hitTestList) {
-        // test with clip path
-        const clipPath = displayObject.parsedStyle.clipPath;
-        const objectToTest = clipPath || displayObject;
-        let worldTransform = displayObject.getWorldTransform();
-
-        // clipped's world matrix * clipPath's local matrix
-        if (clipPath) {
-          worldTransform = mat4.multiply(
-            mat4.create(),
-            worldTransform,
-            clipPath.getLocalTransform(),
-          );
-        }
-
-        if (this.isHit(objectToTest, position, worldTransform)) {
-          if (topmost) {
-            result.picked = [displayObject];
-            return result;
-          } else {
-            pickedDisplayObjects.push(displayObject);
+          if (this.isHit(objectToTest, position, worldTransform)) {
+            if (topmost) {
+              result.picked = [displayObject];
+              return result;
+            } else {
+              pickedDisplayObjects.push(displayObject);
+            }
           }
         }
-      }
 
-      result.picked = pickedDisplayObjects;
-      return result;
-    });
+        result.picked = pickedDisplayObjects;
+        return result;
+      },
+    );
   }
 
   private isHit = (displayObject: DisplayObject, position: vec3, worldTransform: mat4) => {

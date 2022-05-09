@@ -14,7 +14,6 @@ import {
   TextService,
   OffscreenCanvasCreator,
   DefaultSceneGraphService,
-  SceneGraphService,
   DefaultSceneGraphSelector,
   SceneGraphSelector,
   SceneGraphSelectorFactory,
@@ -22,7 +21,6 @@ import {
 import type { Shape } from './types';
 import {
   LayoutRegistry,
-  StyleValueRegistry,
   CSSPropertyLocalPosition,
   CSSPropertyLengthOrPercentage,
   CSSPropertyAnchor,

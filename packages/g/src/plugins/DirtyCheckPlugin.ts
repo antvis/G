@@ -10,6 +10,8 @@ import type { DisplayObject } from '../display-objects/DisplayObject';
  */
 @singleton({ contrib: RenderingPluginContribution })
 export class DirtyCheckPlugin implements RenderingPlugin {
+  static tag = 'DirtyCheck';
+
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
@@ -17,7 +19,7 @@ export class DirtyCheckPlugin implements RenderingPlugin {
   private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.dirtycheck.tap((object: DisplayObject | null) => {
+    renderingService.hooks.dirtycheck.tap(DirtyCheckPlugin.tag, (object: DisplayObject | null) => {
       if (object) {
         const { enableDirtyCheck } = this.canvasConfig.renderer.getConfig();
 

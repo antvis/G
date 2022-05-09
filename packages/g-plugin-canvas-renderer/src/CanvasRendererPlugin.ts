@@ -55,6 +55,8 @@ interface Rect {
  */
 @singleton({ contrib: RenderingPluginContribution })
 export class CanvasRendererPlugin implements RenderingPlugin {
+  static tag = 'CanvasRenderer';
+
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
@@ -195,13 +197,13 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       this.pushToSync(e.composedPath().slice(0, -2) as DisplayObject[]);
     };
 
-    renderingService.hooks.init.tapPromise(async () => {
+    renderingService.hooks.init.tapPromise(CanvasRendererPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
 
-    renderingService.hooks.destroy.tap(() => {
+    renderingService.hooks.destroy.tap(CanvasRendererPlugin.tag, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(
@@ -210,7 +212,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.hooks.beginFrame.tap(() => {
+    renderingService.hooks.beginFrame.tap(CanvasRendererPlugin.tag, () => {
       const context = this.contextService.getContext();
 
       const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
@@ -235,7 +237,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     });
 
     // render at the end of frame
-    renderingService.hooks.endFrame.tap(() => {
+    renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
       this.syncRTree();
 
       const { enableDirtyRectangleRendering, enableDirtyRectangleRenderingDebug } =
@@ -321,7 +323,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       context.restore();
     });
 
-    renderingService.hooks.render.tap((object: DisplayObject) => {
+    renderingService.hooks.render.tap(CanvasRendererPlugin.tag, (object: DisplayObject) => {
       const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
       if (!enableDirtyRectangleRendering) {
         if (object.isVisible() && !object.isCulled()) {

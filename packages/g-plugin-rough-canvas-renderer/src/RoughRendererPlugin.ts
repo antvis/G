@@ -6,6 +6,8 @@ import rough from 'roughjs/bin/rough';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class RoughRendererPlugin implements RenderingPlugin {
+  static tag = 'RoughCanvasRenderer';
+
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
@@ -13,7 +15,7 @@ export class RoughRendererPlugin implements RenderingPlugin {
   private contextService: ContextService<CanvasRenderingContext2D>;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.init.tapPromise(async () => {
+    renderingService.hooks.init.tapPromise(RoughRendererPlugin.tag, async () => {
       /**
        * disable dirtycheck & dirty rectangle rendering
        */
@@ -25,7 +27,5 @@ export class RoughRendererPlugin implements RenderingPlugin {
       // @ts-ignore
       context.roughCanvas = rough.canvas(this.contextService.getDomElement() as HTMLCanvasElement);
     });
-
-    renderingService.hooks.destroy.tap(() => {});
   }
 }

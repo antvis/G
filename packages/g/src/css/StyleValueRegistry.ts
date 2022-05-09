@@ -1,4 +1,4 @@
-import { postConstruct, singleton, GlobalContainer, Syringe } from 'mana-syringe';
+import { postConstruct, singleton, GlobalContainer } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects';
 import type { GeometryAABBUpdater } from '../services/aabb/interfaces';
@@ -237,6 +237,15 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     defaultValue: '1',
     layoutDependent: true,
     alias: ['strokeWidth'],
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
+    handler: CSSPropertyLengthOrPercentage,
+  },
+  {
+    name: 'increasedLineWidthForHitTesting',
+    inherited: true,
+    defaultValue: '0',
+    layoutDependent: true,
+    alias: ['lineAppendWidth'],
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
     handler: CSSPropertyLengthOrPercentage,
   },
@@ -911,6 +920,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       if (!geometry.renderBounds) {
         geometry.renderBounds = new AABB();
       }
+      if (!geometry.hitAreaBounds) {
+        geometry.hitAreaBounds = new AABB();
+      }
 
       const parsedStyle = object.parsedStyle as ParsedBaseStyleProps;
 
@@ -953,6 +965,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       // anchor is center by default, don't account for lineWidth here
       const {
         lineWidth,
+        increasedLineWidthForHitTesting,
         shadowColor,
         filter = [],
         transformOrigin,
@@ -980,8 +993,21 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           halfExtents,
           vec3.fromValues(lineWidth.value / 2, lineWidth.value / 2, 0),
         );
+        geometry.renderBounds.update(center, halfExtents);
       }
-      geometry.renderBounds.update(center, halfExtents);
+
+      if (increasedLineWidthForHitTesting) {
+        vec3.add(
+          halfExtents,
+          halfExtents,
+          vec3.fromValues(
+            increasedLineWidthForHitTesting.value / 2,
+            increasedLineWidthForHitTesting.value / 2,
+            0,
+          ),
+        );
+        geometry.hitAreaBounds.update(center, halfExtents);
+      }
 
       // account for shadow, only support constant value now
       if (shadowColor) {

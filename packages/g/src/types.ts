@@ -159,6 +159,10 @@ export interface BaseStyleProps {
   /** 线宽 */
   lineWidth?: string | number;
   /**
+   * increased line width when hitting test
+   */
+  increasedLineWidthForHitTesting?: string | number;
+  /**
    * 交互区域
    */
   hitArea?: DisplayObject | null;
@@ -214,6 +218,7 @@ export interface ParsedBaseStyleProps
     | 'fill'
     | 'stroke'
     | 'lineWidth'
+    | 'increasedLineWidthForHitTesting'
     | 'lineJoin'
     | 'lineCap'
     | 'lineDash'
@@ -252,6 +257,7 @@ export interface ParsedBaseStyleProps
   width?: CSSUnitValue;
   height?: CSSUnitValue;
   lineWidth?: CSSUnitValue;
+  increasedLineWidthForHitTesting?: CSSUnitValue;
   /**
    * x according to definition, eg. Line's x1/x2, Polyline's points
    */

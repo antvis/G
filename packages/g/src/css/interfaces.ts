@@ -4,5 +4,5 @@ import type { DisplayObject } from '../display-objects';
 export const StyleValueRegistry = Syringe.defineToken('StyleValueRegistry');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface StyleValueRegistry {
-  recalc(displayObject: DisplayObject): void;
+  recalc: (displayObject: DisplayObject) => void;
 }

@@ -129,7 +129,7 @@ export class Document extends Node implements IDocument {
       y: viewportY,
     });
 
-    const { picked } = await this.defaultView.getRenderingService().hooks.pick.callPromise({
+    const { picked } = await this.defaultView.getRenderingService().hooks.pick.promise({
       topmost: true,
       position: {
         x,
@@ -162,7 +162,7 @@ export class Document extends Node implements IDocument {
       y: viewportY,
     });
 
-    const { picked } = await this.defaultView.getRenderingService().hooks.pick.callPromise({
+    const { picked } = await this.defaultView.getRenderingService().hooks.pick.promise({
       topmost: false,
       position: {
         x,

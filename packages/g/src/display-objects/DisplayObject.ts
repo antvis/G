@@ -49,6 +49,7 @@ const DEFAULT_STYLE_PROPS: {
   stroke: string;
   lineCap: CanvasLineCap | '';
   lineJoin: CanvasLineJoin | '';
+  increasedLineWidthForHitTesting: string | number;
   fontSize: string | number;
   fontFamily: string;
   fontStyle: string;
@@ -72,6 +73,7 @@ const DEFAULT_STYLE_PROPS: {
   pointerEvents: '',
   lineCap: '',
   lineJoin: '',
+  increasedLineWidthForHitTesting: '0',
   fontSize: '',
   fontFamily: '',
   fontStyle: '',

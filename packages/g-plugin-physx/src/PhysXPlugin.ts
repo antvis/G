@@ -24,6 +24,8 @@ export enum PhysXRuntimeMode {
 
 @singleton({ contrib: RenderingPluginContribution })
 export class PhysXPlugin implements RenderingPlugin {
+  static tag = 'PhysX';
+
   @inject(SceneGraphService)
   protected sceneGraphService: SceneGraphService;
 
@@ -51,7 +53,7 @@ export class PhysXPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(async () => {
+    renderingService.hooks.init.tapPromise(PhysXPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
 
       this.PhysX = (await this.initPhysX()) as any;
@@ -79,7 +81,7 @@ export class PhysXPlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.hooks.destroy.tap(() => {
+    renderingService.hooks.destroy.tap(PhysXPlugin.tag, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
     });
   }

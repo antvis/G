@@ -471,9 +471,33 @@ TouchEvent 是一类描述手指在触摸平面（触摸屏、触摸板等）的
 
 每个 Touch 对象代表一个触点。每个触点都由其位置，大小，形状，压力大小，和 `target` 描述。`TouchList` 对象代表多个触点的一个列表.
 
+在该[示例](/zh/examples/event#hammer-zoom)中，我们使用 Hammer.js 提供的 `pinch` `pan` `doubletap` 手势实现了一个简单的图片浏览器，通过 `pinch` 手势对图片进行缩放：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*tn-ATJRUUv4AAAAAAAAAAAAAARQnAQ" width="300">
+
+得益于对于原生 TouchEvent 对象的兼容，我们可以把 [Image](/zh/docs/api/basic/image) 直接传给 Hammer.js：
+
+```js
+const hammer = new Hammer(image, {
+  inputClass: Hammer.TouchInput,
+});
+
+// 开启 pinch 手势
+hammer.get('pinch').set({
+  enable: true,
+});
+
+// 省略手势处理逻辑
+hammer.on('pan', function (e) {});
+hammer.on('panend', function (e) {});
+hammer.on('pinch', function (e) {});
+hammer.on('pinchend', function (e) {});
+hammer.on('doubletap', function (e) {});
+```
+
 ### Touch 对象
 
-该对象代表设备上的触摸点。上面有很多类似 Pointer/MouseEvent 中的坐标属性，还有一些特有的例如 [radiusX]() 等接触面相关的属性。由于原生 Touch 对象上很多属性（`target` `changedTouches` 等）都是只读不可修改的，我们只能
+该对象代表设备上的触摸点。上面有很多类似 Pointer/MouseEvent 中的坐标属性，还有一些特有的例如 [radiusX]() 等接触面相关的属性。由于原生 Touch 对象上很多属性（`target` `changedTouches` 等）都是只读不可修改的，我们只能自定义一个类 `Touch` 对象，同时保留对于原生对象的引用。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Touch
 

@@ -6,6 +6,8 @@ import rough from 'roughjs/bin/rough';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class RoughRendererPlugin implements RenderingPlugin {
+  static tag = 'RoughSVGRenderer';
+
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
@@ -13,7 +15,7 @@ export class RoughRendererPlugin implements RenderingPlugin {
   private contextService: ContextService<SVGSVGElement>;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.init.tapPromise(async () => {
+    renderingService.hooks.init.tapPromise(RoughRendererPlugin.tag, async () => {
       /**
        * disable dirtycheck & dirty rectangle rendering
        */
@@ -27,6 +29,6 @@ export class RoughRendererPlugin implements RenderingPlugin {
       rough.svg($svg);
     });
 
-    renderingService.hooks.destroy.tap(() => {});
+    renderingService.hooks.destroy.tap(RoughRendererPlugin.tag, () => {});
   }
 }

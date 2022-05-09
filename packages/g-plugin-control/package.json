@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-control",
-  "version": "1.0.21-alpha.15",
+  "version": "1.0.21-alpha.16",
   "description": "A G plugin for orbit control",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -47,5 +47,5 @@
     "umd": "webpack"
   },
   "homepage": "https://github.com/antvis/g#readme",
-  "gitHead": "8c28e04155e41a948c323161a35aeda63c2294a4"
+  "gitHead": "5917b66cd22e8351f0ba54f3d08c884abac3a1a0"
 }
