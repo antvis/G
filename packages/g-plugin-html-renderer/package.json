@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-html-renderer",
-  "version": "1.0.21-alpha.5",
+  "version": "1.0.21-alpha.15",
   "description": "A G plugin for rendering HTML",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -45,5 +45,5 @@
     "umd": "webpack"
   },
   "homepage": "https://github.com/antvis/g#readme",
-  "gitHead": "07a45d1dcaeda55f64acd5486b1c19d132fac8bc"
+  "gitHead": "8c28e04155e41a948c323161a35aeda63c2294a4"
 }

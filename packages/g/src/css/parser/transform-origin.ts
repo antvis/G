@@ -1,5 +1,5 @@
 import { isString } from '../../utils';
-import { CSSUnitValue } from '../cssom';
+import { CSSUnitValue } from '../cssom/CSSNumericValue';
 import { parseLengthOrPercentage } from './dimension';
 
 /**

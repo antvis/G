@@ -99,7 +99,9 @@ export interface SceneGraphService {
  *
  * @see https://community.khronos.org/t/scene-graphs/50542/7
  */
-@singleton()
+@singleton({
+  token: SceneGraphService,
+})
 export class DefaultSceneGraphService implements SceneGraphService {
   @inject(SceneGraphSelectorFactory)
   private sceneGraphSelectorFactory: () => SceneGraphSelector;

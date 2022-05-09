@@ -2,9 +2,9 @@
 title: 介绍
 order: 0
 redirect_from:
-    - /zh
-    - /zh/docs
-    - /zh/docs/guide
+  - /zh
+  - /zh/docs
+  - /zh/docs/guide
 ---
 
 G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高性能的 2D / 3D 图形渲染能力，适配 Web 端全部底层渲染 API（Canvas2D / SVG / WebGL / WebGPU）。
@@ -13,10 +13,10 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 
 ## 特性
 
--   更易用的 API。其中图形、事件系统兼容 DOM API，动画兼容 Web Animation API，自定义图形 CustomElement API。
--   适配 Web 端全部渲染环境。支持 Canvas2D / SVG / WebGL / WebGPU。
--   高性能的渲染与计算。为可并行算法提供 GPGPU 支持。
--   可扩展插件机制。
+- 更易用的 API。其中图形、事件系统兼容 DOM API，动画兼容 Web Animation API，自定义图形 CustomElement API。
+- 适配 Web 端全部渲染环境。支持 Canvas2D / SVG / WebGL / WebGPU。
+- 高性能的渲染与计算。为可并行算法提供 GPGPU 支持。
+- 可扩展插件机制。
 
 完整 [API Spec](/api.html)。
 
@@ -31,13 +31,13 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 ```html
 <!-- G 核心 -->
 <script
-    src="https://unpkg.com/@antv/g/dist/index.umd.min.js"
-    type="application/javascript"
+  src="https://unpkg.com/@antv/g/dist/index.umd.min.js"
+  type="application/javascript"
 ></script>
 <!-- G 渲染器，支持 Canvas2D/SVG/WebGL -->
 <script
-    src="https://unpkg.com/@antv/g-canvas/dist/index.umd.min.js"
-    type="application/javascript"
+  src="https://unpkg.com/@antv/g-canvas/dist/index.umd.min.js"
+  type="application/javascript"
 ></script>
 <!-- <script src="https://unpkg.com/@antv/g-svg/dist/index.umd.min.js" type="application/javascript"></script>
 <script src="https://unpkg.com/@antv/g-webgl/dist/index.umd.min.js" type="application/javascript"></script> -->
@@ -54,21 +54,21 @@ const canvasRenderer = new window.G.Canvas2D.Renderer();
 
 // 创建画布
 const canvas = new Canvas({
-    container: 'container',
-    width: 600,
-    height: 500,
-    renderer: canvasRenderer,
+  container: 'container',
+  width: 600,
+  height: 500,
+  renderer: canvasRenderer,
 });
 
 // 创建一个 Circle
 const circle = new Circle({
-    style: {
-        r: 50,
-        fill: '#1890FF',
-        stroke: '#F04864',
-        lineWidth: 4,
-        cursor: 'pointer',
-    },
+  style: {
+    r: 50,
+    fill: '#1890FF',
+    stroke: '#F04864',
+    lineWidth: 4,
+    cursor: 'pointer',
+  },
 });
 
 // 向画布中加入 Circle
@@ -100,23 +100,25 @@ import { Canvas, Circle } from '@antv/g';
 import { Renderer } from '@antv/g-canvas';
 
 const canvas = new Canvas({
-    container: 'container',
-    width: 600,
-    height: 500,
-    renderer: new Renderer(),
+  container: 'container',
+  width: 600,
+  height: 500,
+  renderer: new Renderer(),
 });
 
 const circle = new Circle({
-    style: {
-        r: 50,
-        fill: '#1890FF',
-        stroke: '#F04864',
-        lineWidth: 4,
-        cursor: 'pointer',
-    },
+  style: {
+    r: 50,
+    fill: '#1890FF',
+    stroke: '#F04864',
+    lineWidth: 4,
+    cursor: 'pointer',
+  },
 });
 
 canvas.appendChild(circle);
 ```
 
 [完整 CodeSandbox 例子](https://codesandbox.io/s/yi-npm-module-xing-shi-shi-yong-g-wjfux?file=/index.js)
+
+[完整 Stackblitz 例子](https://stackblitz.com/edit/vitejs-vite-nnas74?file=src/main.ts)

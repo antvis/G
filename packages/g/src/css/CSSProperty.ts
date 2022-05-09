@@ -1,5 +1,5 @@
 import type { IElement } from '../dom';
-import type { StyleValueRegistry } from './StyleValueRegistry';
+import type { StyleValueRegistry } from './interfaces';
 
 export type Interpolatable = number | boolean | number[] | boolean[];
 type CSSPropertyMixer<Parsed = any, T extends Interpolatable = any> = (

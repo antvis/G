@@ -1,8 +1,9 @@
-import { postConstruct, singleton, GlobalContainer } from 'mana-syringe';
+import { postConstruct, singleton, GlobalContainer, Syringe } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects';
-import type { GeometryAABBUpdater } from '../services';
-import { dirtifyToRoot, GeometryUpdaterFactory } from '../services';
+import type { GeometryAABBUpdater } from '../services/aabb/interfaces';
+import { GeometryUpdaterFactory } from '../services/aabb/interfaces';
+import { dirtifyToRoot } from '../services/SceneGraphService';
 import { ElementEvent } from '../dom';
 import type { ParsedBaseStyleProps, BaseStyleProps } from '../types';
 import { Shape } from '../types';
@@ -32,6 +33,7 @@ import {
 import type { CSSProperty } from './CSSProperty';
 import { formatAttribute } from '../utils';
 import { AABB } from '../shapes';
+import { StyleValueRegistry } from './interfaces';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
 export interface PropertyParseOptions {
@@ -568,8 +570,10 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
 ];
 
-@singleton()
-export class StyleValueRegistry {
+@singleton({
+  token: StyleValueRegistry,
+})
+export class DefaultStyleValueRegistry implements StyleValueRegistry {
   /**
    * need recalc later
    */

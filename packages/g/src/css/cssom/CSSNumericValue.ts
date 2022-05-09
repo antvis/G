@@ -1,4 +1,4 @@
-import { DCHECK, DCHECK_EQ, DCHECK_NE } from '../../utils';
+import { DCHECK, DCHECK_EQ, DCHECK_NE } from '../../utils/assert';
 import { CSSMathOperator } from './CSSMathOperator';
 import type { CSSNumericSumValue, Term, UnitMap } from './CSSNumericSumValue';
 import { CSSStyleValue, CSSStyleValueType } from './CSSStyleValue';

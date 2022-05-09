@@ -1,8 +1,10 @@
 // import { makeMatrixDecomposition, quat, composeMatrix } from '../utils/matrix-decompose';
 import type { DisplayObject } from '../../display-objects/DisplayObject';
-import { UnitType, CSSUnitValue, Opx, Odeg } from '../cssom';
+import { UnitType } from '../cssom/types';
+import { CSSUnitValue, Opx, Odeg } from '../cssom/CSSNumericValue';
 import { mergeDimensions, parseAngle, parseLength, parseLengthOrPercentage } from './dimension';
 import { mergeNumbers, parseNumber } from './numeric';
+import { CSS } from '../CSS';
 
 // eg. { t: 'scale', d: [CSSUnitValue(1), CSSUnitValue(2)] }
 export interface ParsedTransform {
@@ -60,18 +62,10 @@ const transformFunctions: Record<
   rotatez: ['A'],
   rotate3d: ['NNNA'],
   // perspective: ['L'],
-  scale: ['Nn', cast([_, _, new CSSUnitValue(1)]), id],
-  scalex: [
-    'N',
-    cast([_, new CSSUnitValue(1), new CSSUnitValue(1)]),
-    cast([_, new CSSUnitValue(1)]),
-  ],
-  scaley: [
-    'N',
-    cast([new CSSUnitValue(1), _, new CSSUnitValue(1)]),
-    cast([new CSSUnitValue(1), _]),
-  ],
-  scalez: ['N', cast([new CSSUnitValue(1), new CSSUnitValue(1), _])],
+  scale: ['Nn', cast([_, _, CSS.number(1)]), id],
+  scalex: ['N', cast([_, CSS.number(1), CSS.number(1)]), cast([_, CSS.number(1)])],
+  scaley: ['N', cast([CSS.number(1), _, CSS.number(1)]), cast([CSS.number(1), _])],
+  scalez: ['N', cast([CSS.number(1), CSS.number(1), _])],
   scale3d: ['NNN', id],
   // skew: ['Aa', null, id],
   // skewx: ['A', null, cast([_, Odeg])],

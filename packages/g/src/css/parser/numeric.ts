@@ -1,5 +1,5 @@
 import { clamp, isString } from '../../utils';
-import { CSSUnitValue } from '../cssom';
+import { CSSUnitValue } from '../cssom/CSSNumericValue';
 
 export function numberToString(x: number) {
   // scale(0.00000001) -> scale(0)

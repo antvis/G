@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgpu-compiler",
-  "version": "1.0.21-alpha.5",
+  "version": "1.0.21-alpha.15",
   "description": "A compiler transpiling *.g to GLSL/WGSL",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -56,5 +56,5 @@
   "scripts": {
     "pegjs": "node scripts/generate-parser"
   },
-  "gitHead": "07a45d1dcaeda55f64acd5486b1c19d132fac8bc"
+  "gitHead": "8c28e04155e41a948c323161a35aeda63c2294a4"
 }

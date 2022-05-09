@@ -29,7 +29,7 @@ import { dirtifyToRoot } from '../services';
 import { MutationEvent } from '../dom/MutationEvent';
 import { Rectangle } from '../shapes';
 import type { PropertyParseOptions } from '../css/StyleValueRegistry';
-import { StyleValueRegistry } from '../css/StyleValueRegistry';
+import { StyleValueRegistry } from '../css/interfaces';
 import { CSSUnitValue } from '../css';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;

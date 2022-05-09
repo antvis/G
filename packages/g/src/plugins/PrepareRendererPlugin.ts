@@ -1,6 +1,6 @@
 import { inject, singleton } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects';
-import { StyleValueRegistry } from '../css';
+import { StyleValueRegistry } from '../css/interfaces';
 import type { Element, FederatedEvent } from '../dom';
 import { ElementEvent } from '../dom';
 import type { RenderingService, RenderingPlugin } from '../services';

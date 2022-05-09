@@ -1,6 +1,6 @@
 import { GlobalContainer } from 'mana-syringe';
-import type { CSSProperty, Interpolatable } from '../css';
-import { StyleValueRegistry } from '../css';
+import { CSSProperty, Interpolatable } from '../css';
+import { StyleValueRegistry } from '../css/interfaces';
 import type { AnimationEffectTiming } from '../dom';
 import type { IElement } from '../dom/interfaces';
 import { parseEasingFunction } from './animation';

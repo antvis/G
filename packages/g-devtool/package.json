@@ -1,7 +1,7 @@
 {
   "name": "@antv/g-devtool",
   "private": true,
-  "version": "0.3.6-alpha.4",
+  "version": "0.3.6-alpha.14",
   "description": "devtool for g in browser",
   "main": "index.js",
   "license": "MIT",

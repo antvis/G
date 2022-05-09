@@ -1,6 +1,6 @@
 {
   "name": "@antv/react-g",
-  "version": "1.0.16-alpha.5",
+  "version": "1.0.16-alpha.15",
   "description": "react render for @antv/g",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g": "^5.0.23-alpha.5",
+    "@antv/g": "^5.0.23-alpha.15",
     "react-reconciler": "^0.26.2",
     "scheduler": "^0.20.2",
     "tslib": "^2.3.1"
@@ -51,5 +51,5 @@
   "scripts": {
     "umd": "webpack"
   },
-  "gitHead": "07a45d1dcaeda55f64acd5486b1c19d132fac8bc"
+  "gitHead": "8c28e04155e41a948c323161a35aeda63c2294a4"
 }

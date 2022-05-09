@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-rough-canvas-renderer",
-  "version": "1.0.1-alpha.5",
+  "version": "1.0.1-alpha.15",
   "description": "A G plugin of renderer implementation with rough.js",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -47,5 +47,5 @@
     "umd": "webpack"
   },
   "homepage": "https://github.com/antvis/g#readme",
-  "gitHead": "07a45d1dcaeda55f64acd5486b1c19d132fac8bc"
+  "gitHead": "8c28e04155e41a948c323161a35aeda63c2294a4"
 }
