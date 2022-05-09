@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-canvas",
-  "version": "0.0.4-alpha.16",
+  "version": "0.0.4",
   "description": "A renderer implemented with Canvas2D API in mobile environment",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -37,9 +37,9 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g-plugin-canvas-picker": "^1.0.20-alpha.16",
-    "@antv/g-plugin-canvas-renderer": "^1.0.20-alpha.16",
-    "@antv/g-plugin-mobile-interaction": "^0.0.9-alpha.16",
+    "@antv/g-plugin-canvas-picker": "^1.0.20",
+    "@antv/g-plugin-canvas-renderer": "^1.0.20",
+    "@antv/g-plugin-mobile-interaction": "^0.0.9",
     "tslib": "^2.3.1"
   },
   "peerDependencies": {
