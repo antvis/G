@@ -1,5 +1,4 @@
 import { GlobalContainer } from 'mana-syringe';
-import { isEqual, isNil, isObject, isUndefined } from 'lodash-es';
 import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { DisplayObjectPool } from '../DisplayObjectPool';
@@ -21,13 +20,16 @@ import {
   formatAttribute,
   fromRotationTranslationScale,
   getEuler,
+  isNil,
+  isObject,
+  isUndefined,
   rad2deg,
 } from '../utils';
 import { dirtifyToRoot } from '../services';
 import { MutationEvent } from '../dom/MutationEvent';
 import { Rectangle } from '../shapes';
 import type { PropertyParseOptions } from '../css/StyleValueRegistry';
-import { StyleValueRegistry } from '../css/StyleValueRegistry';
+import { StyleValueRegistry } from '../css/interfaces';
 import { CSSUnitValue } from '../css';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
@@ -47,6 +49,7 @@ const DEFAULT_STYLE_PROPS: {
   stroke: string;
   lineCap: CanvasLineCap | '';
   lineJoin: CanvasLineJoin | '';
+  increasedLineWidthForHitTesting: string | number;
   fontSize: string | number;
   fontFamily: string;
   fontStyle: string;
@@ -70,6 +73,7 @@ const DEFAULT_STYLE_PROPS: {
   pointerEvents: '',
   lineCap: '',
   lineJoin: '',
+  increasedLineWidthForHitTesting: '0',
   fontSize: '',
   fontFamily: '',
   fontStyle: '',
@@ -139,10 +143,10 @@ export class DisplayObject<
       ...this.config.style,
       ...this.config.attrs,
     };
-    if (!isNil(this.config.visible)) {
+    if (this.config.visible != null) {
       this.config.style.visibility = this.config.visible === false ? 'hidden' : 'visible';
     }
-    if (!isNil(this.config.interactive)) {
+    if (this.config.interactive != null) {
       this.config.style.pointerEvents = this.config.interactive === false ? 'none' : 'auto';
     }
 
@@ -238,7 +242,7 @@ export class DisplayObject<
       return;
     }
 
-    if (force || !isEqual(attributeValue, this.attributes[attributeName])) {
+    if (force || attributeValue != this.attributes[attributeName]) {
       this.internalSetAttribute(attributeName, attributeValue);
       super.setAttribute(attributeName, attributeValue);
     }

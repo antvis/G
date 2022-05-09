@@ -1,8 +1,9 @@
 import { postConstruct, singleton, GlobalContainer } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects';
-import type { GeometryAABBUpdater } from '../services';
-import { dirtifyToRoot, GeometryUpdaterFactory } from '../services';
+import type { GeometryAABBUpdater } from '../services/aabb/interfaces';
+import { GeometryUpdaterFactory } from '../services/aabb/interfaces';
+import { dirtifyToRoot } from '../services/SceneGraphService';
 import { ElementEvent } from '../dom';
 import type { ParsedBaseStyleProps, BaseStyleProps } from '../types';
 import { Shape } from '../types';
@@ -32,6 +33,7 @@ import {
 import type { CSSProperty } from './CSSProperty';
 import { formatAttribute } from '../utils';
 import { AABB } from '../shapes';
+import { StyleValueRegistry } from './interfaces';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
 export interface PropertyParseOptions {
@@ -235,6 +237,15 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     defaultValue: '1',
     layoutDependent: true,
     alias: ['strokeWidth'],
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
+    handler: CSSPropertyLengthOrPercentage,
+  },
+  {
+    name: 'increasedLineWidthForHitTesting',
+    inherited: true,
+    defaultValue: '0',
+    layoutDependent: true,
+    alias: ['lineAppendWidth'],
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
     handler: CSSPropertyLengthOrPercentage,
   },
@@ -568,8 +579,10 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
 ];
 
-@singleton()
-export class StyleValueRegistry {
+@singleton({
+  token: StyleValueRegistry,
+})
+export class DefaultStyleValueRegistry implements StyleValueRegistry {
   /**
    * need recalc later
    */
@@ -907,6 +920,9 @@ export class StyleValueRegistry {
       if (!geometry.renderBounds) {
         geometry.renderBounds = new AABB();
       }
+      if (!geometry.hitAreaBounds) {
+        geometry.hitAreaBounds = new AABB();
+      }
 
       const parsedStyle = object.parsedStyle as ParsedBaseStyleProps;
 
@@ -949,6 +965,7 @@ export class StyleValueRegistry {
       // anchor is center by default, don't account for lineWidth here
       const {
         lineWidth,
+        increasedLineWidthForHitTesting,
         shadowColor,
         filter = [],
         transformOrigin,
@@ -976,8 +993,21 @@ export class StyleValueRegistry {
           halfExtents,
           vec3.fromValues(lineWidth.value / 2, lineWidth.value / 2, 0),
         );
+        geometry.renderBounds.update(center, halfExtents);
       }
-      geometry.renderBounds.update(center, halfExtents);
+
+      if (increasedLineWidthForHitTesting) {
+        vec3.add(
+          halfExtents,
+          halfExtents,
+          vec3.fromValues(
+            increasedLineWidthForHitTesting.value / 2,
+            increasedLineWidthForHitTesting.value / 2,
+            0,
+          ),
+        );
+        geometry.hitAreaBounds.update(center, halfExtents);
+      }
 
       // account for shadow, only support constant value now
       if (shadowColor) {

@@ -27,6 +27,7 @@ window.gPluginPhysx = require('@antv/g-plugin-physx');
 window.gPluginBox2d = require('@antv/g-plugin-box2d');
 window.gPluginMatterjs = require('@antv/g-plugin-matterjs');
 window.gPluginYoga = require('@antv/g-plugin-yoga');
+window.gPluginRoughCanvasRenderer = require('@antv/g-plugin-rough-canvas-renderer');
 // window.gPluginYogaWasm = require('@antv/g-plugin-yoga-wasm');
 // compiler for GPGPU
 window.gWebgpuCompiler = require('@antv/g-webgpu-compiler');
@@ -35,6 +36,7 @@ window.webgpuGraph = require('@antv/webgpu-graph');
 window.reactG = require('@antv/react-g');
 window.mainWorker = require('./examples/canvas/demo/main.worker.js');
 window.workerizeTransferable = require('@naoak/workerize-transferable');
+window.webfontloader = require('webfontloader');
 
 // origin trial for WebGPU
 // @see https://developer.chrome.com/origintrials/#/trials/my

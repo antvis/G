@@ -1,6 +1,5 @@
-import { CanvasConfig, ContextService, isBrowser } from '@antv/g';
+import { CanvasConfig, ContextService, isBrowser, isString } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-import { isString } from 'lodash-es';
 import { setDOMSize } from './utils/dom';
 
 @singleton({ token: ContextService })

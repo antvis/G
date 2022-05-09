@@ -6,12 +6,19 @@ import type {
   FederatedEvent,
   MutationEvent,
 } from '@antv/g';
-import { Shape, RenderingPluginContribution, RenderingContext, ElementEvent } from '@antv/g';
+import {
+  Shape,
+  RenderingPluginContribution,
+  RenderingContext,
+  ElementEvent,
+  isString,
+} from '@antv/g';
 import { ImagePool } from './shapes/ImagePool';
-import { isString } from 'lodash-es';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class LoadImagePlugin implements RenderingPlugin {
+  static tag = 'LoadImage';
+
   @inject(ImagePool)
   private imagePool: ImagePool;
 
@@ -52,7 +59,7 @@ export class LoadImagePlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(async () => {
+    renderingService.hooks.init.tapPromise(LoadImagePlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(
         ElementEvent.ATTR_MODIFIED,
@@ -60,7 +67,7 @@ export class LoadImagePlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.hooks.destroy.tap(() => {
+    renderingService.hooks.destroy.tap(LoadImagePlugin.tag, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(
         ElementEvent.ATTR_MODIFIED,

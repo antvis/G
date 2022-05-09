@@ -1,20 +1,9 @@
 import type { CSSRGB, ParsedBaseStyleProps } from '@antv/g';
-import { Shape } from '@antv/g';
+import { isNil } from '@antv/g';
 import { singleton } from 'mana-syringe';
-import { isNil } from 'lodash-es';
-import { StyleRenderer } from './interfaces';
+import type { StyleRenderer } from './interfaces';
 
-@singleton({
-  token: [
-    { token: StyleRenderer, named: Shape.CIRCLE },
-    { token: StyleRenderer, named: Shape.ELLIPSE },
-    { token: StyleRenderer, named: Shape.RECT },
-    { token: StyleRenderer, named: Shape.LINE },
-    { token: StyleRenderer, named: Shape.POLYLINE },
-    { token: StyleRenderer, named: Shape.POLYGON },
-    { token: StyleRenderer, named: Shape.PATH },
-  ],
-})
+@singleton()
 export class DefaultRenderer implements StyleRenderer {
   hash(parsedStyle: ParsedBaseStyleProps) {
     // const { fill, opacity, fillOpacity, stroke, strokeOpacity, lineWidth, lineCap, lineJoin } =

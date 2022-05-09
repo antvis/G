@@ -1,5 +1,4 @@
 import type { ParsedRectStyleProps } from '@antv/g';
-import { isArray } from 'lodash-es';
 import { singleton } from 'mana-syringe';
 import { parseRadius } from '../../utils/format';
 import type { ElementRenderer } from '.';
@@ -20,7 +19,7 @@ export class RectRenderer implements ElementRenderer<ParsedRectStyleProps> {
       d = `M 0,0 l ${width},0 l 0,${height} l${-width} 0 z`;
     } else {
       const r = parseRadius(radius);
-      if (isArray(radius)) {
+      if (Array.isArray(radius)) {
         if (radius.length === 1) {
           r.r1 = r.r2 = r.r3 = r.r4 = radius[0];
         } else if (radius.length === 2) {

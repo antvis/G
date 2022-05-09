@@ -1,7 +1,8 @@
 import { inject, singleton, contrib, Syringe, Contribution } from 'mana-syringe';
-import { SyncHook, SyncWaterfallHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from '../utils';
+// import { SyncHook, SyncWaterfallHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from '../utils';
+import { SyncHook, SyncWaterfallHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from 'tapable';
 import type { DisplayObject } from '../display-objects';
-import { StyleValueRegistry } from '../css';
+import { StyleValueRegistry } from '../css/interfaces';
 import { ElementEvent } from '../dom';
 import type { CanvasConfig, EventPosition, InteractivePointerEvent } from '../types';
 import { RenderingContext, RenderReason } from './RenderingContext';
@@ -75,43 +76,43 @@ export class RenderingService {
     /**
      * only dirty object which has sth changed will be rendered
      */
-    dirtycheck: new SyncWaterfallHook<[DisplayObject | null], DisplayObject | null>(),
+    dirtycheck: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
     /**
      * do culling
      */
-    cull: new SyncWaterfallHook<[DisplayObject | null], DisplayObject | null>(),
+    cull: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */
-    beginFrame: new SyncHook<[]>(),
+    beginFrame: new SyncHook<[]>([]),
     /**
      * called before every dirty object get rendered
      */
-    beforeRender: new SyncHook<[DisplayObject]>(),
+    beforeRender: new SyncHook<[DisplayObject]>(['objectToRender']),
     /**
      * called when every dirty object rendering even it's culled
      */
-    render: new SyncHook<[DisplayObject]>(),
+    render: new SyncHook<[DisplayObject]>(['objectToRender']),
     /**
      * called after every dirty object get rendered
      */
-    afterRender: new SyncHook<[DisplayObject]>(),
-    endFrame: new SyncHook<[]>(),
-    destroy: new SyncHook<[]>(),
+    afterRender: new SyncHook<[DisplayObject]>(['objectToRender']),
+    endFrame: new SyncHook<[]>([]),
+    destroy: new SyncHook<[]>([]),
     /**
      * use async but faster method such as GPU-based picking in `g-plugin-webgl-renderer`
      */
-    pick: new AsyncSeriesWaterfallHook<[PickingResult], PickingResult>(),
+    pick: new AsyncSeriesWaterfallHook<[PickingResult], PickingResult>(['result']),
     /**
      * used in event system
      */
-    pointerDown: new SyncHook<[InteractivePointerEvent]>(),
-    pointerUp: new SyncHook<[InteractivePointerEvent]>(),
-    pointerMove: new SyncHook<[InteractivePointerEvent]>(),
-    pointerOut: new SyncHook<[InteractivePointerEvent]>(),
-    pointerOver: new SyncHook<[InteractivePointerEvent]>(),
-    pointerCancel: new SyncHook<[InteractivePointerEvent]>(),
-    pointerWheel: new SyncHook<[InteractivePointerEvent]>(),
+    pointerDown: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerUp: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerMove: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerOut: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerOver: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerWheel: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerCancel: new SyncHook<[InteractivePointerEvent]>(['event']),
   };
 
   async init() {
@@ -119,7 +120,8 @@ export class RenderingService {
     this.renderingPluginProvider.getContributions({ cache: false }).forEach((plugin) => {
       plugin.apply(this);
     });
-    await this.hooks.init.callPromise();
+    // await this.hooks.init.callPromise();
+    await this.hooks.init.promise();
     this.inited = true;
   }
 

@@ -1,4 +1,4 @@
-import type { UnitType } from '.';
+import type { UnitType } from './types';
 
 export type UnitMap = Record<UnitType, number>;
 

@@ -1,6 +1,17 @@
-import { isArray, isNumber } from 'lodash-es';
 import type { quat, vec2, vec4 } from 'gl-matrix';
 import { mat3, mat4, vec3 } from 'gl-matrix';
+import { isNumber } from './assert';
+
+export function clamp(number: number, boundOne: number, boundTwo: number) {
+  if (!boundTwo) {
+    return Math.max(number, boundOne) === boundOne ? number : boundOne;
+  } else if (Math.min(number, boundOne) === number) {
+    return boundOne;
+  } else if (Math.max(number, boundTwo) === number) {
+    return boundTwo;
+  }
+  return number;
+}
 
 export function getAngle(angle?: number) {
   if (angle === undefined) {
@@ -16,7 +27,7 @@ export function createVec3(x: number | vec2 | vec3 | vec4, y: number = 0, z: num
     return vec3.fromValues(x, y, z);
   }
 
-  if (isArray(x) && x.length === 3) {
+  if (Array.isArray(x) && x.length === 3) {
     return vec3.clone(x);
   }
 

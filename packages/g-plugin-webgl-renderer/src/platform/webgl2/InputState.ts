@@ -1,4 +1,4 @@
-import { isNil } from 'lodash-es';
+import { isNil } from '@antv/g';
 import { getFormatCompByteSize } from '../format';
 import type { IndexBufferDescriptor, InputState, VertexBufferDescriptor } from '../interfaces';
 import { BufferUsage, ResourceType, VertexBufferFrequency } from '../interfaces';

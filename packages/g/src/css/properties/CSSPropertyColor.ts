@@ -4,7 +4,7 @@ import type { DisplayObject } from '../../display-objects';
 import { parseColor, mergeColors } from '../parser';
 import type { CSSGradientValue } from '../cssom';
 import { CSSKeywordValue, CSSRGB } from '../cssom';
-import type { StyleValueRegistry } from '../StyleValueRegistry';
+import type { StyleValueRegistry } from '../interfaces';
 
 /**
  * opacity

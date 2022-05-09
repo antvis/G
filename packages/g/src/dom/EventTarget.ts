@@ -1,8 +1,8 @@
-import { isBoolean, isFunction, isObject } from 'lodash-es';
 import { EventEmitter } from 'eventemitter3';
 import { CustomEvent } from './CustomEvent';
 import { FederatedEvent } from './FederatedEvent';
 import type { IElement, INode, IEventTarget } from './interfaces';
+import { isFunction, isBoolean, isObject } from '../utils';
 
 export const DELEGATION_SPLITTER = ':';
 

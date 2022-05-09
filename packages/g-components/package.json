@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-components",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Components for g",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -32,7 +32,6 @@
     "url": "https://github.com/antvis/g/issues"
   },
   "dependencies": {
-    "lodash-es": "^4.17.21",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
@@ -47,5 +46,5 @@
     "umd": "webpack"
   },
   "homepage": "https://github.com/antvis/g#readme",
-  "gitHead": "a52a7c8d754925e5732baf3faea156332748365f"
+  "gitHead": "e2325a6285d12ef05abd9f9e12cf095280006167"
 }

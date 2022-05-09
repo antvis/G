@@ -10,6 +10,8 @@ import { DisplayObjectPool, RenderingPluginContribution, SceneGraphService } fro
  */
 @singleton({ contrib: RenderingPluginContribution })
 export class SVGPickerPlugin implements RenderingPlugin {
+  static tag = 'SVGPicker';
+
   @inject(SceneGraphService)
   protected sceneGraphService: SceneGraphService;
 
@@ -17,7 +19,7 @@ export class SVGPickerPlugin implements RenderingPlugin {
   private displayObjectPool: DisplayObjectPool;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.pick.tapPromise(async (result: PickingResult) => {
+    renderingService.hooks.pick.tapPromise(SVGPickerPlugin.tag, async (result: PickingResult) => {
       const {
         topmost,
         position: { clientX, clientY },

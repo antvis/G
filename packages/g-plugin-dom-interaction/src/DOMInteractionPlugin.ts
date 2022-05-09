@@ -10,6 +10,8 @@ const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
  */
 @singleton({ contrib: RenderingPluginContribution })
 export class DOMInteractionPlugin implements RenderingPlugin {
+  static tag = 'DOMInteraction';
+
   @inject(ContextService)
   private contextService: ContextService<unknown>;
 
@@ -93,18 +95,24 @@ export class DOMInteractionPlugin implements RenderingPlugin {
       globalThis.removeEventListener('mouseup', onPointerUp, true);
     };
 
-    renderingService.hooks.init.tapPromise(async () => {
+    renderingService.hooks.init.tapPromise(DOMInteractionPlugin.tag, async () => {
       const $el = this.contextService.getDomElement() as HTMLElement;
 
       if (canvas.supportPointerEvent) {
         addPointerEventListener($el);
-      } else if (SUPPORT_ONLY_TOUCH) {
+      }
+
+      if (SUPPORT_ONLY_TOUCH) {
         addTouchEventListener($el);
       } else if (!canvas.supportTouchEvent) {
-        addMouseEventListener($el);
+        if (!canvas.supportPointerEvent) {
+          addMouseEventListener($el);
+        }
       } else {
         addTouchEventListener($el);
-        addMouseEventListener($el);
+        if (!canvas.supportPointerEvent) {
+          addMouseEventListener($el);
+        }
       }
 
       // use passive event listeners
@@ -115,17 +123,23 @@ export class DOMInteractionPlugin implements RenderingPlugin {
       });
     });
 
-    renderingService.hooks.destroy.tap(() => {
+    renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
       const $el = this.contextService.getDomElement() as HTMLElement;
       if (canvas.supportPointerEvent) {
         removePointerEventListener($el);
-      } else if (SUPPORT_ONLY_TOUCH) {
+      }
+
+      if (SUPPORT_ONLY_TOUCH) {
         removeTouchEventListener($el);
       } else if (!canvas.supportTouchEvent) {
-        removeMouseEventListener($el);
+        if (!canvas.supportPointerEvent) {
+          removeMouseEventListener($el);
+        }
       } else {
         removeTouchEventListener($el);
-        removeMouseEventListener($el);
+        if (!canvas.supportPointerEvent) {
+          removeMouseEventListener($el);
+        }
       }
 
       $el.removeEventListener('wheel', onPointerWheel, true);

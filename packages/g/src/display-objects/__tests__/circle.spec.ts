@@ -28,6 +28,7 @@ describe('Circle', () => {
       'pointerEvents',
       'lineCap',
       'lineJoin',
+      'increasedLineWidthForHitTesting',
       'fontSize',
       'fontFamily',
       'fontStyle',

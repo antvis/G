@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgl",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "description": "A renderer implemented by WebGL1/2 & WebGPU",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -40,10 +40,9 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g-plugin-dom-interaction": "^1.0.19",
-    "@antv/g-plugin-html-renderer": "^1.0.20",
-    "@antv/g-plugin-webgl-renderer": "^1.0.25",
-    "lodash-es": "^4.17.21"
+    "@antv/g-plugin-dom-interaction": "^1.0.20",
+    "@antv/g-plugin-html-renderer": "^1.0.21",
+    "@antv/g-plugin-webgl-renderer": "^1.0.26"
   },
   "peerDependencies": {
     "@antv/g": "^5.0.1",
@@ -52,5 +51,5 @@
   "scripts": {
     "umd": "webpack"
   },
-  "gitHead": "a52a7c8d754925e5732baf3faea156332748365f"
+  "gitHead": "e2325a6285d12ef05abd9f9e12cf095280006167"
 }

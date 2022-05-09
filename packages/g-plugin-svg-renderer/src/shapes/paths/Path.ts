@@ -1,11 +1,11 @@
-import type { ParsedBaseStyleProps, PathCommand } from '@antv/g';
+import type { ParsedPathStyleProps, PathCommand } from '@antv/g';
 import type { ElementRenderer } from '.';
 import { singleton } from 'mana-syringe';
 
 @singleton()
-export class PathRenderer implements ElementRenderer<ParsedBaseStyleProps> {
+export class PathRenderer implements ElementRenderer<ParsedPathStyleProps> {
   dependencies = ['path'];
-  apply($el: SVGElement, parsedStyle: ParsedBaseStyleProps) {
+  apply($el: SVGElement, parsedStyle: ParsedPathStyleProps) {
     const { path, defX: x = 0, defY: y = 0 } = parsedStyle;
     $el.setAttribute('d', this.formatPath(path!.absolutePath as PathCommand[], x, y));
   }

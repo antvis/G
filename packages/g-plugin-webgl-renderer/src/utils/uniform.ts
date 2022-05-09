@@ -1,4 +1,3 @@
-// import { isPlainObject } from 'lodash-es';
 // import { isTypedArray } from './is-typedarray';
 // import { IUniform } from '../services/renderer';
 

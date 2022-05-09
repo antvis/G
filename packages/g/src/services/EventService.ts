@@ -15,7 +15,7 @@ import type { IEventTarget, INode, IDocument, ICanvas } from '../dom/interfaces'
 import type { PointLike } from '../shapes';
 import { Point } from '../shapes';
 import { ContextService } from './ContextService';
-import { FormattedTouch } from '../utils';
+import type { FormattedTouch } from '../utils';
 
 type Picker = (position: EventPosition) => Promise<IEventTarget | null>;
 type TrackingData = {
@@ -218,7 +218,7 @@ export class EventService extends EventEmitter {
     this.dispatchEvent(e, 'pointerdown');
 
     if (e.pointerType === 'touch') {
-      this.dispatchEvent(e, 'touchstart');
+      // this.dispatchEvent(e, 'touchstart');
     } else if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
       const isRightButton = e.button === 2;
       this.dispatchEvent(e, isRightButton ? 'rightdown' : 'mousedown');
@@ -242,7 +242,7 @@ export class EventService extends EventEmitter {
     this.dispatchEvent(e, 'pointerup');
 
     if (e.pointerType === 'touch') {
-      this.dispatchEvent(e, 'touchend');
+      // this.dispatchEvent(e, 'touchend');
     } else if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
       const isRightButton = e.button === 2;
       this.dispatchEvent(e, isRightButton ? 'rightup' : 'mouseup');
@@ -425,7 +425,7 @@ export class EventService extends EventEmitter {
     // Then pointermove
     this.dispatchEvent(e, 'pointermove');
 
-    if (e.pointerType === 'touch') this.dispatchEvent(e, 'touchmove');
+    // if (e.pointerType === 'touch') this.dispatchEvent(e, 'touchmove');
 
     if (isMouse) {
       this.dispatchEvent(e, 'mousemove');
@@ -548,7 +548,7 @@ export class EventService extends EventEmitter {
         this.notifyTarget(e, 'pointerupoutside');
 
         if (e.pointerType === 'touch') {
-          this.notifyTarget(e, 'touchendoutside');
+          // this.notifyTarget(e, 'touchendoutside');
         } else if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
           this.notifyTarget(e, e.button === 2 ? 'rightupoutside' : 'mouseupoutside');
         }

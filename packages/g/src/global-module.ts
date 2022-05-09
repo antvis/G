@@ -14,7 +14,6 @@ import {
   TextService,
   OffscreenCanvasCreator,
   DefaultSceneGraphService,
-  SceneGraphService,
   DefaultSceneGraphSelector,
   SceneGraphSelector,
   SceneGraphSelectorFactory,
@@ -22,7 +21,6 @@ import {
 import type { Shape } from './types';
 import {
   LayoutRegistry,
-  StyleValueRegistry,
   CSSPropertyLocalPosition,
   CSSPropertyLengthOrPercentage,
   CSSPropertyAnchor,
@@ -41,6 +39,7 @@ import {
   CSSPropertyTransformOrigin,
   CSSPropertyZIndex,
   CSSPropertyShadowBlur,
+  DefaultStyleValueRegistry,
 } from './css';
 
 export const containerModule = Module((register) => {
@@ -59,7 +58,7 @@ export const containerModule = Module((register) => {
   });
 
   // bind scenegraph service
-  register({ token: SceneGraphService, useClass: DefaultSceneGraphService });
+  register(DefaultSceneGraphService);
 
   // bind text service
   register(OffscreenCanvasCreator);
@@ -90,7 +89,7 @@ export const containerModule = Module((register) => {
 
   // bind CSS property handlers
   register(LayoutRegistry);
-  register(StyleValueRegistry);
+  register(DefaultStyleValueRegistry);
   register(CSSPropertyLengthOrPercentage);
   register(CSSPropertyLocalPosition);
   register(CSSPropertyOpacity);

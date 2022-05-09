@@ -12,8 +12,8 @@ import {
   Rectangle,
   ContextService,
   CanvasConfig,
+  clamp,
 } from '@antv/g';
-import { clamp } from 'lodash-es';
 import { inject, singleton } from 'mana-syringe';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { BlendFactor, BlendMode } from './platform';
@@ -40,6 +40,8 @@ const MAX_PICKING_DEPTH = 100;
  */
 @singleton({ contrib: RenderingPluginContribution })
 export class PickingPlugin implements RenderingPlugin {
+  static tag = 'WebGLPicker';
+
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
@@ -85,15 +87,15 @@ export class PickingPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(async () => {
+    renderingService.hooks.init.tapPromise(PickingPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
     });
 
-    renderingService.hooks.destroy.tap(() => {
+    renderingService.hooks.destroy.tap(PickingPlugin.tag, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
     });
 
-    renderingService.hooks.pick.tapPromise(async (result: PickingResult) => {
+    renderingService.hooks.pick.tapPromise(PickingPlugin.tag, async (result: PickingResult) => {
       const { topmost, position } = result;
 
       // use viewportX/Y

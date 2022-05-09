@@ -1,6 +1,6 @@
 import { GlobalContainer } from 'mana-syringe';
 import { CSSUnitValue } from './cssom';
-import { StyleValueRegistry } from './StyleValueRegistry';
+import { StyleValueRegistry } from './interfaces';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/CSS/RegisterProperty#parameters

@@ -1,9 +1,5 @@
 import type { vec2, vec3 } from 'gl-matrix';
-import type {
-  DisplayObject,
-  ParsedPathStyleProps,
-  ParsedPolylineStyleProps,
-} from './display-objects';
+import type { DisplayObject } from './display-objects';
 import type { IRenderer } from './AbstractRenderer';
 import type {
   CSSGlobalKeywords,
@@ -163,6 +159,10 @@ export interface BaseStyleProps {
   /** 线宽 */
   lineWidth?: string | number;
   /**
+   * increased line width when hitting test
+   */
+  increasedLineWidthForHitTesting?: string | number;
+  /**
    * 交互区域
    */
   hitArea?: DisplayObject | null;
@@ -218,6 +218,7 @@ export interface ParsedBaseStyleProps
     | 'fill'
     | 'stroke'
     | 'lineWidth'
+    | 'increasedLineWidthForHitTesting'
     | 'lineJoin'
     | 'lineCap'
     | 'lineDash'
@@ -247,9 +248,6 @@ export interface ParsedBaseStyleProps
   lineJoin?: CSSKeywordValue;
   lineDashOffset?: CSSUnitValue;
 
-  path?: ParsedPathStyleProps;
-  points?: ParsedPolylineStyleProps;
-
   anchor?: [CSSUnitValue, CSSUnitValue, CSSUnitValue];
   transformOrigin?: [CSSUnitValue, CSSUnitValue, CSSUnitValue];
 
@@ -259,6 +257,7 @@ export interface ParsedBaseStyleProps
   width?: CSSUnitValue;
   height?: CSSUnitValue;
   lineWidth?: CSSUnitValue;
+  increasedLineWidthForHitTesting?: CSSUnitValue;
   /**
    * x according to definition, eg. Line's x1/x2, Polyline's points
    */
@@ -317,6 +316,11 @@ export type Cursor =
   | 'zoom-out';
 
 export interface RendererConfig {
+  /**
+   * enable dirty check for displayobject
+   */
+  enableDirtyCheck: boolean;
+
   /**
    * enable dirty rectangle rendering
    */

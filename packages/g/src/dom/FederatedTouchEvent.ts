@@ -1,4 +1,4 @@
-import { FormattedTouch } from '../utils';
+import type { FormattedTouch } from '../utils';
 import { FederatedEvent } from './FederatedEvent';
 
 /**

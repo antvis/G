@@ -1,4 +1,4 @@
-import { isNumber } from 'lodash-es';
+import { isNumber } from '@antv/g';
 import type { Buffer, BufferDescriptor, BufferFrequencyHint } from '../interfaces';
 import { BufferUsage, ResourceType } from '../interfaces';
 import { assert } from '../utils';

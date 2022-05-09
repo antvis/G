@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-math",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Geometry util",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "gl-matrix": "^3.1.0",
-    "lodash-es": "^4.17.21",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
@@ -43,5 +42,5 @@
     "umd": "webpack"
   },
   "homepage": "https://github.com/antvis/g#readme",
-  "gitHead": "a52a7c8d754925e5732baf3faea156332748365f"
+  "gitHead": "e2325a6285d12ef05abd9f9e12cf095280006167"
 }

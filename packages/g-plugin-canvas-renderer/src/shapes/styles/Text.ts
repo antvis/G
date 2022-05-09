@@ -1,11 +1,11 @@
-import { Shape, UnitType } from '@antv/g';
+import { UnitType, isNil } from '@antv/g';
 import type { ParsedTextStyleProps, Rectangle, DisplayObject } from '@antv/g';
 import { singleton } from 'mana-syringe';
-import { isNil } from 'lodash-es';
-import { StyleRenderer } from './interfaces';
+import type { StyleRenderer } from './interfaces';
+import { TextRendererContribution } from './interfaces';
 
 @singleton({
-  token: { token: StyleRenderer, named: Shape.TEXT },
+  token: TextRendererContribution,
 })
 export class TextRenderer implements StyleRenderer {
   hash(parsedStyle: any): string {

@@ -54,6 +54,7 @@ describe('StyleValueRegistry initialization', () => {
     expect(documentElement.style.lineDashOffset).to.equal('0');
     expect(documentElement.style.lineJoin).to.equal('miter');
     expect(documentElement.style.lineWidth).to.equal('1');
+    expect(documentElement.style.increasedLineWidthForHitTesting).to.equal('0');
     expect(documentElement.style.opacity).to.equal('');
     expect(documentElement.style.stroke).to.equal('');
     expect(documentElement.style.strokeOpacity).to.equal('1');

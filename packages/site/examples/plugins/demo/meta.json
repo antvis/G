@@ -5,6 +5,14 @@
   },
   "demos": [
     {
+      "filename": "rough.js",
+      "title": {
+        "zh": "使用 rough.js 手绘风格渲染",
+        "en": "Use rough.js"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "css-select.js",
       "title": {
         "zh": "CSS 选择器插件",

@@ -1,5 +1,5 @@
-import { isString } from 'lodash-es';
-import { CSSUnitValue } from '../cssom';
+import { isString } from '../../utils';
+import { CSSUnitValue } from '../cssom/CSSNumericValue';
 import { parseLengthOrPercentage } from './dimension';
 
 /**

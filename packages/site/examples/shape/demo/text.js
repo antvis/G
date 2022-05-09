@@ -4,6 +4,7 @@ import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
+import WebFont from 'webfontloader';
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
@@ -52,6 +53,27 @@ const bounds = new Rect({
 canvas.appendChild(bounds);
 canvas.appendChild(text);
 canvas.appendChild(origin);
+
+WebFont.load({
+  google: {
+    families: ['Gaegu'],
+  },
+  active: () => {
+    const text = new Text({
+      style: {
+        x: 100,
+        y: 100,
+        fontFamily: 'Gaegu',
+        text: 'Almost before we knew it, we had left the ground.',
+        fontSize: 30,
+        fill: '#1890FF',
+        stroke: '#F04864',
+        lineWidth: 5,
+      },
+    });
+    canvas.appendChild(text);
+  },
+});
 
 // stats
 const stats = new Stats();

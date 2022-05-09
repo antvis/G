@@ -21,6 +21,7 @@ import type {
   ParsedLineStyleProps,
   ParsedCircleStyleProps,
   ParsedRectStyleProps,
+  ParsedPolygonStyleProps,
   ParsedBaseStyleProps,
 } from '@antv/g';
 import { Engine, Render, Bodies, Body, Composite, World } from 'matter-js';
@@ -29,6 +30,8 @@ import { sortPointsInCCW } from './utils';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class MatterJSPlugin implements RenderingPlugin {
+  static tag = 'MatterJS';
+
   @inject(SceneGraphService)
   protected sceneGraphService: SceneGraphService;
 
@@ -126,7 +129,7 @@ export class MatterJSPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(async () => {
+    renderingService.hooks.init.tapPromise(MatterJSPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(
@@ -144,7 +147,7 @@ export class MatterJSPlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.hooks.destroy.tap(() => {
+    renderingService.hooks.destroy.tap(MatterJSPlugin.tag, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(
@@ -288,7 +291,7 @@ export class MatterJSPlugin implements RenderingPlugin {
         // @see https://stackoverflow.com/questions/10032756/how-to-create-ellipse-shapes-in-box2d
       } else if (nodeName === Shape.POLYGON) {
         // @see https://brm.io/matter-js/docs/classes/Bodies.html#method_polygon
-        const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
+        const { points, defX, defY } = parsedStyle as ParsedPolygonStyleProps;
         const pts = sortPointsInCCW(points.points.map(([x, y]) => [x - defX, y - defY]));
         target.style.transformOrigin = 'center center';
         body = Bodies.fromVertices(0, 0, [pts.map(([x, y]) => ({ x, y }))], config);

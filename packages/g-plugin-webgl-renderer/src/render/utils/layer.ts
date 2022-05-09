@@ -1,4 +1,4 @@
-import { clamp } from 'lodash-es';
+import { clamp } from '@antv/g';
 import { assert } from '../../platform/utils';
 
 // Suggested values for the "layer" of makeSortKey. These are rough groups, and you can define your own

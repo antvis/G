@@ -15,6 +15,8 @@ const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
 @singleton({ contrib: RenderingPluginContribution })
 export class ControlPlugin implements RenderingPlugin {
+  static tag = 'Control';
+
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
@@ -34,7 +36,7 @@ export class ControlPlugin implements RenderingPlugin {
   private altKey: boolean;
 
   apply(renderingService: RenderingService) {
-    renderingService.hooks.init.tapPromise(async () => {
+    renderingService.hooks.init.tapPromise(ControlPlugin.tag, async () => {
       const root = this.renderingContext.root.ownerDocument.defaultView;
       // @ts-ignore
       this.hammertime = new Hammer(root);
@@ -49,7 +51,7 @@ export class ControlPlugin implements RenderingPlugin {
       root.addEventListener('wheel', this.onMousewheel);
     });
 
-    renderingService.hooks.destroy.tap(() => {
+    renderingService.hooks.destroy.tap(ControlPlugin.tag, () => {
       this.hammertime.off('panstart', this.onPanstart);
       this.hammertime.off('panmove', this.onPanmove);
       this.hammertime.off('panend', this.onPanend);

@@ -70,6 +70,7 @@ Touch 系列：
 - touchend
 - touchendoutside
 - touchmove
+- touchcancel
 
 ## 场景图事件
 
@@ -238,19 +239,21 @@ circle.emit('build', { prop1: 'xx' });
 
 在事件监听器的回调函数中，我们可以取得事件对象并访问其上的属性和方法。这些属性和方法和 DOM Event API 保持一致，因此可以直接参考它们的文档。
 
-我们会将原生事件规范化到 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) 事件对象后统一处理，可以在 [nativeEvent](/zh/docs/api/event#nativeevent) 上访问原生事件。
+我们会尽量将原生事件规范化到 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) 事件对象后统一处理，可以在 [nativeEvent](/zh/docs/api/event#nativeevent) 上访问原生事件。
 
-## 属性
+对于特殊的 [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent)，由于多个触控点的存在，一些重要的属性例如 [target]() [canvasX/Y]() 都存储在 [Touch]() 对象上，可以通过 [changedTouches](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent/changedTouches)，[touches](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent/touches) 访问触点列表。
+
+## 通用属性
 
 事件对象上常用的属性包括事件类型、当前触发事件的图形、位置等，其中位置和[坐标系](/zh/docs/api/canvas#坐标系)相关。
 
 ### pointerType
 
-返回 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) 的设备类型，返回值如下：
+返回事件的设备类型，返回值如下：
 
-- pointer
-- mouse
-- touch
+- pointer 代表 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent)
+- mouse 代表 [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent)
+- touch 代表 [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent)
 
 https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType
 
@@ -265,6 +268,56 @@ https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType
 - pointercancel
 
 https://developer.mozilla.org/en-US/docs/Web/API/Event/type
+
+### nativeEvent
+
+原生事件对象。当我们调用 [preventDefault](/zh/docs/api/event#preventdefault) 方法时，回调用原生事件对象上的同名方法。
+
+### view
+
+指向 [Canvas](/zh/docs/api/canvas)。
+
+https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/view
+
+### altKey
+
+事件触发时是否伴随 `alt` 的按下。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/altKey
+
+### metaKey
+
+事件触发时是否伴随 `meta` 的按下。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/metaKey
+
+### ctrlKey
+
+事件触发时是否伴随 `ctrl` 的按下。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/ctrlKey
+
+### shiftKey
+
+事件触发时是否伴随 `shift` 的按下。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/shiftKey
+
+### timeStamp
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/Event/timeStamp
+
+事件创建时的时间戳
+
+### detail
+
+事件对象携带的数据对象。例如在触发 click 时，会带上点击次数。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/CustomEvent/detail
+
+## PointerEvent & MouseEvent 属性
+
+以下属性只有 PointerEvent 和 MouseEvent 拥有。对于 TouchEvent，类似的属性在 Touch 对象上。
 
 ### target
 
@@ -307,19 +360,17 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Event/currentTarget
 
 总是指向事件绑定的元素。
 
-### nativeEvent
-
-原生事件对象。
-
-### view
-
-指向 [Canvas](/zh/docs/api/canvas)。
-
-https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/view
+```js
+ul.addEventListener(
+  'click',
+  (e) => {
+    e.currentTarget; // ul
+  },
+  false,
+);
+```
 
 ### canvasX/Y
-
-<tag color="green" text="MouseEvent">MouseEvent</tag> <tag color="red" text="TouchEvent">TouchEvent</tag>
 
 在 [Canvas 坐标系/世界坐标系](/zh/docs/api/canvas#canvas)下，以画布 DOM 元素的左上角为原点，X 轴正向指向屏幕右侧，Y 轴正向指向屏幕下方。可以与 [viewportX/Y](/zh/docs/api/event#viewportxy) 互相转换，[详见](/zh/docs/api/canvas#canvas---viewport)：
 
@@ -328,7 +379,7 @@ canvas.canvas2Viewport({ x: e.canvasX, y: e.canvasY }); // Point { x: 100, y: 10
 canvas.viewport2Canvas({ x: e.viewportX, y: e.viewportY }); // Point { x: 0, y: 0 }
 ```
 
-别名为 x/y：
+别名为 x/y，因此以下写法等价：
 
 ```js
 e.canvasX;
@@ -339,8 +390,6 @@ e.y;
 ```
 
 ### viewportX/Y
-
-<tag color="green" text="MouseEvent">MouseEvent</tag> <tag color="red" text="TouchEvent">TouchEvent</tag>
 
 在 [Viewport 坐标系](/zh/docs/api/canvas#viewport)下，考虑相机变换。
 
@@ -360,8 +409,6 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 ### clientX/Y
 
-<tag color="green" text="MouseEvent">MouseEvent</tag> <tag color="red" text="TouchEvent">TouchEvent</tag>
-
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX
 
 在[浏览器坐标系](/zh/docs/api/canvas#client)下，左上角为 `(0, 0)`。G 不会修改原生事件上的该属性，因此两者完全相同：
@@ -380,8 +427,6 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 ### screenX/Y
 
-<tag color="green" text="MouseEvent">MouseEvent</tag> <tag color="red" text="TouchEvent">TouchEvent</tag>
-
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/screenX
 
 在[屏幕坐标系](/zh/docs/api/canvas#screen)下，不考虑页面滚动。G 不会修改原生事件上的该属性，因此两者完全相同：
@@ -392,8 +437,6 @@ e.nativeEvent.screenX;
 ```
 
 ### pageX/Y
-
-<tag color="green" text="MouseEvent">MouseEvent</tag> <tag color="red" text="TouchEvent">TouchEvent</tag>
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX
 
@@ -406,11 +449,13 @@ e.nativeEvent.pageX;
 
 ### movementX/Y
 
-<tag color="green" text="MouseEvent">MouseEvent</tag> <tag color="red" text="TouchEvent">TouchEvent</tag>
-
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/movementX
 
 当前事件和上一个 `mousemove` 事件之间鼠标在水平方向上的移动值。换句话说，这个值是这样计算的: `currentEvent.movementX = currentEvent.screenX - previousEvent.screenX`
+
+## WheelEvent 属性
+
+在鼠标滚轮事件中，可以获取滚动量。
 
 ### deltaX/Y/Z
 
@@ -420,41 +465,228 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/WheelEvent
 
 滚轮的横向/纵向/Z 轴的滚动量。
 
-### timeStamp
+## TouchEvent 属性
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/timeStamp
+TouchEvent 是一类描述手指在触摸平面（触摸屏、触摸板等）的状态变化的事件。这类事件用于描述一个或多个触点，使开发者可以检测触点的移动，触点的增加和减少等等。
 
-事件创建时的时间戳
+每个 Touch 对象代表一个触点。每个触点都由其位置，大小，形状，压力大小，和 `target` 描述。`TouchList` 对象代表多个触点的一个列表.
 
-### detail
+在该[示例](/zh/examples/event#hammer-zoom)中，我们使用 Hammer.js 提供的 `pinch` `pan` `doubletap` 手势实现了一个简单的图片浏览器，通过 `pinch` 手势对图片进行缩放：
 
-事件对象携带的数据对象。例如在触发 click 时，会带上点击次数。
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*tn-ATJRUUv4AAAAAAAAAAAAAARQnAQ" width="300">
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/CustomEvent/detail
+得益于对于原生 TouchEvent 对象的兼容，我们可以把 [Image](/zh/docs/api/basic/image) 直接传给 Hammer.js：
 
-### altKey
+```js
+const hammer = new Hammer(image, {
+  inputClass: Hammer.TouchInput,
+});
 
-事件触发时是否伴随 `alt` 的按下。
+// 开启 pinch 手势
+hammer.get('pinch').set({
+  enable: true,
+});
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/altKey
+// 省略手势处理逻辑
+hammer.on('pan', function (e) {});
+hammer.on('panend', function (e) {});
+hammer.on('pinch', function (e) {});
+hammer.on('pinchend', function (e) {});
+hammer.on('doubletap', function (e) {});
+```
 
-### metaKey
+### Touch 对象
 
-事件触发时是否伴随 `meta` 的按下。
+该对象代表设备上的触摸点。上面有很多类似 Pointer/MouseEvent 中的坐标属性，还有一些特有的例如 [radiusX]() 等接触面相关的属性。由于原生 Touch 对象上很多属性（`target` `changedTouches` 等）都是只读不可修改的，我们只能自定义一个类 `Touch` 对象，同时保留对于原生对象的引用。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/metaKey
+https://developer.mozilla.org/zh-CN/docs/Web/API/Touch
 
-### ctrlKey
+#### canvasX/Y
 
-事件触发时是否伴随 `ctrl` 的按下。
+在原生 Touch 对象上并没有该属性。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/ctrlKey
+含义同 [canvasX/Y](/zh/docs/api/event#canvasxy)。同样可以通过 `x/y` 方法访问：
 
-### shiftKey
+```js
+const firstTouch = e.touches[0];
 
-事件触发时是否伴随 `shift` 的按下。
+firstTouch.canvasX;
+firstTouch.x;
+```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/shiftKey
+#### viewportX/Y
+
+在原生 Touch 对象上并没有该属性。
+
+含义同 [viewportX/Y](/zh/docs/api/event#viewportxy)。
+
+```js
+const firstTouch = e.touches[0];
+
+firstTouch.viewportX;
+```
+
+#### clientX/Y
+
+原生 Touch 对象上就有该属性： https://developer.mozilla.org/zh-CN/docs/Web/API/Touch/clientX
+
+含义同 [clientX/Y](/zh/docs/api/event#clientxy)。因此也可以直接从原生 Touch 对象上获取：
+
+```js
+const firstTouch = e.touches[0];
+
+firstTouch.clientX;
+firstTouch.nativeTouch.clientX;
+```
+
+#### pageX/Y
+
+原生 Touch 对象上就有该属性：https://developer.mozilla.org/zh-CN/docs/Web/API/Touch/pageX
+
+含义同 [pageX/Y](/zh/docs/api/event#pagexy)。因此也可以直接从原生 Touch 对象上获取：
+
+```js
+const firstTouch = e.touches[0];
+
+firstTouch.pageX;
+firstTouch.nativeTouch.pageX;
+```
+
+#### screenX/Y
+
+原生 Touch 对象上就有该属性：https://developer.mozilla.org/zh-CN/docs/Web/API/Touch/screenX
+
+含义同 [screenX/Y](/zh/docs/api/event#screenxy)。因此也可以直接从原生 Touch 对象上获取：
+
+```js
+const firstTouch = e.touches[0];
+
+firstTouch.screenX;
+firstTouch.nativeTouch.screenX;
+```
+
+#### target
+
+返回触摸点接触的图形。原生 Touch 对象上的同名属性通常不可用（根据渲染器不同，永远会返回 `<canvas>/<svg>`），我们需要根据坐标拾取场景中的图形。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/Touch/target
+
+```js
+const firstTouch = e.touches[0];
+
+firstTouch.target;
+```
+
+#### identifier
+
+返回一个可以唯一地识别和触摸平面接触的点的值。这个值在这根手指（或触摸笔等）所引发的所有事件中保持一致，直到它离开触摸平面。
+
+原生 Touch 对象上就有该属性：https://developer.mozilla.org/zh-CN/docs/Web/API/Touch/identifier
+
+```js
+const firstTouch = e.touches[0];
+
+firstTouch.identifier;
+firstTouch.nativeTouch.identifier;
+```
+
+#### radiusX/Y
+
+能够包围用户和触摸平面的接触面的最小椭圆的水平轴半径。
+
+这个属性和 [rotationAngle]() 一起, 描述了用户和触摸平面的接触面。这在面向非精确触摸设备(由手指直接操作的触摸屏)开发时非常有用。这些值描述了一个尽可能接近实际接触面(例如用户的指尖)的椭圆。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/Touch/radiusX
+
+```js
+const firstTouch = e.touches[0];
+
+firstTouch.radiusX;
+firstTouch.nativeTouch.radiusX;
+```
+
+#### rotationAngle
+
+返回以度为单位的旋转角。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/Touch/rotationAngle
+
+```js
+const firstTouch = e.touches[0];
+
+firstTouch.rotationAngle;
+firstTouch.nativeTouch.rotationAngle;
+```
+
+#### force
+
+返回对应的手指挤压触摸平面的压力大小，从 0.0(没有压力)到 1.0(最大压力)的浮点数。
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/Touch/force
+
+```js
+const firstTouch = e.touches[0];
+
+firstTouch.force;
+firstTouch.nativeTouch.force;
+```
+
+#### nativeTouch
+
+和 [nativeEvent](/zh/docs/api/event#nativeevent) 一样，我们保存了对原生 Touch 对象的引用。
+
+### changedTouches
+
+返回改变的触摸点信息，注意仅仅是 `Touch[]` 而不是规范中原生的 [TouchList](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchList)，因此以下访问方式不可用：
+
+```js
+e.changedTouches; // Touch[]
+
+// 可用
+const firstTouch = e.changedTouches[0];
+
+// 不可用
+const firstTouch = e.changedTouches.item(0);
+```
+
+按照规范定义：https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent/changedTouches
+
+- 对于 `touchstart` 事件，返回此次事件中新增加的触点
+- 对于 `touchmove` 事件，返回和上一次事件相比较，发生了变化的触点
+- 对于 `touchend` 事件，返回已经从触摸面的离开的触点的集合
+
+### targetTouches
+
+按照规范定义：https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent/targetTouches
+
+返回仍与触摸面接触的所有触摸点的 `Touch[]`。
+
+### touches
+
+按照规范定义：https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent/touches
+
+返回所有当前在与触摸表面接触的 `Touch[]`，不管触摸点是否已经改变或其目标元素是在处于 `touchstart` 阶段。
+
+可以通过该属性确定应该使用“单指”、“双指” 处理：
+
+```js
+circle.addEventListener('touchstart', (e) => {
+  switch (e.touches.length) {
+    case 1:
+      handle_one_touch(e);
+      break;
+    case 2:
+      handle_two_touches(e);
+      break;
+    case 3:
+      handle_three_touches(e);
+      break;
+    default:
+      console.log('Not supported');
+      break;
+  }
+});
+```
 
 ## 方法
 

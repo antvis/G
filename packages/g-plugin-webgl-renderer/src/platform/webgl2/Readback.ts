@@ -1,4 +1,4 @@
-import { clamp } from 'lodash-es';
+import { clamp } from '@antv/g';
 import { GL } from '../constants';
 import { getFormatByteSize } from '../format';
 import type { Buffer, Readback, Texture } from '../interfaces';

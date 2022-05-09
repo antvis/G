@@ -27,6 +27,10 @@ export class AbstractRenderer implements IRenderer {
   constructor(config?: Partial<RendererConfig>) {
     this.config = {
       /**
+       * only dirty object will cause re-render
+       */
+      enableDirtyCheck: true,
+      /**
        * enable auto rendering by default
        */
       enableAutoRendering: true,

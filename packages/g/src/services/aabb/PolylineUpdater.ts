@@ -1,7 +1,7 @@
 import { singleton } from 'mana-syringe';
 import { GeometryAABBUpdater } from './interfaces';
-import type { ParsedBaseStyleProps } from '../../types';
 import { Shape } from '../../types';
+import type { ParsedPolylineStyleProps } from '../../display-objects';
 
 @singleton({
   token: [
@@ -9,8 +9,8 @@ import { Shape } from '../../types';
     { token: GeometryAABBUpdater, named: Shape.POLYGON },
   ],
 })
-export class PolylineUpdater implements GeometryAABBUpdater<ParsedBaseStyleProps> {
-  update(parsedStyle: ParsedBaseStyleProps) {
+export class PolylineUpdater implements GeometryAABBUpdater<ParsedPolylineStyleProps> {
+  update(parsedStyle: ParsedPolylineStyleProps) {
     const { points } = parsedStyle.points;
 
     // FIXME: account for miter lineJoin

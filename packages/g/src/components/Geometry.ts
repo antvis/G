@@ -12,4 +12,9 @@ export class Geometry {
    * including extra rendering effects, eg. shadowBlur filters(drop-shadow, blur)
    */
   renderBounds: AABB | undefined;
+
+  /**
+   * account for `hitArea` & `increasedLineWidthForHitTesting`
+   */
+  hitAreaBounds: AABB | undefined;
 }

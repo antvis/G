@@ -7,7 +7,8 @@ import type {
   ParsedLineStyleProps,
   ParsedCircleStyleProps,
   ParsedRectStyleProps,
-  ParsedBaseStyleProps,
+  ParsedPolylineStyleProps,
+  ParsedPolygonStyleProps,
 } from '@antv/g';
 import {
   DisplayObjectPool,
@@ -37,6 +38,8 @@ const BOX2D_UMD_DIR = 'https://unpkg.com/box2d-wasm@7.0.0/dist/umd/';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class Box2DPlugin implements RenderingPlugin {
+  static tag = 'Box2D';
+
   @inject(SceneGraphService)
   protected sceneGraphService: SceneGraphService;
 
@@ -159,7 +162,7 @@ export class Box2DPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(async () => {
+    renderingService.hooks.init.tapPromise(Box2DPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(
@@ -181,7 +184,7 @@ export class Box2DPlugin implements RenderingPlugin {
       );
     });
 
-    renderingService.hooks.destroy.tap(() => {
+    renderingService.hooks.destroy.tap(Box2DPlugin.tag, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(
@@ -267,7 +270,7 @@ export class Box2DPlugin implements RenderingPlugin {
         new b2Vec2(points[1][0] - defX, points[1][1] - defY),
       );
     } else if (nodeName === Shape.POLYLINE) {
-      const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
+      const { points, defX, defY } = parsedStyle as ParsedPolylineStyleProps;
       const pointsInCCW = sortPointsInCCW(points.points);
       const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x - defX, y - defY));
       // const prev = pointsInCCW[0];
@@ -300,7 +303,7 @@ export class Box2DPlugin implements RenderingPlugin {
     } else if (nodeName === Shape.ELLIPSE) {
       // @see https://stackoverflow.com/questions/10032756/how-to-create-ellipse-shapes-in-box2d
     } else if (nodeName === Shape.POLYGON) {
-      const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
+      const { points, defX, defY } = parsedStyle as ParsedPolygonStyleProps;
 
       const pointsInCCW = sortPointsInCCW(points.points);
       const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x - defX, y - defY));

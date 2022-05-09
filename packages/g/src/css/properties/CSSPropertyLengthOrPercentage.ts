@@ -1,7 +1,7 @@
 import { singleton } from 'mana-syringe';
 import { UnitType, CSSUnitValue } from '../cssom';
 import { parseLengthOrPercentage, mergeDimensions } from '../parser';
-import type { StyleValueRegistry } from '../StyleValueRegistry';
+import type { StyleValueRegistry } from '../interfaces';
 import type { DisplayObject } from '../../display-objects';
 import type { CSSProperty } from '../CSSProperty';
 

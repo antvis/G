@@ -1,5 +1,4 @@
 import { GlobalContainer } from 'mana-syringe';
-import { isNil } from 'lodash-es';
 import { SceneGraphService } from '../services/SceneGraphService';
 import { Cullable, Geometry, Renderable, Transform, Sortable } from '../components';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
@@ -7,7 +6,7 @@ import { Node } from './Node';
 import type { AABB, Rectangle } from '../shapes';
 import type { IEventTarget, IChildNode, IElement, INode, ICSSStyleDeclaration } from './interfaces';
 import { ElementEvent } from './interfaces';
-import { formatAttribute } from '../utils';
+import { formatAttribute, isNil } from '../utils';
 import { MutationEvent } from './MutationEvent';
 
 let entityCounter = 0;

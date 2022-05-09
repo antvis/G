@@ -1,6 +1,6 @@
 import { inject, singleton } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects';
-import { StyleValueRegistry } from '../css';
+import { StyleValueRegistry } from '../css/interfaces';
 import type { Element, FederatedEvent } from '../dom';
 import { ElementEvent } from '../dom';
 import type { RenderingService, RenderingPlugin } from '../services';
@@ -8,6 +8,8 @@ import { RenderingContext, RenderingPluginContribution, dirtifyToRoot } from '..
 
 @singleton({ contrib: RenderingPluginContribution })
 export class PrepareRendererPlugin implements RenderingPlugin {
+  static tag = 'Prepare';
+
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
@@ -39,7 +41,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       renderingService.dirtify();
     };
 
-    renderingService.hooks.init.tapPromise(async () => {
+    renderingService.hooks.init.tapPromise(PrepareRendererPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(
@@ -49,7 +51,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
 
-    renderingService.hooks.destroy.tap(() => {
+    renderingService.hooks.destroy.tap(PrepareRendererPlugin.tag, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.removeEventListener(

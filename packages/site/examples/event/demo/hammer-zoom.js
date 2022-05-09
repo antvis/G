@@ -5,18 +5,11 @@ import { Renderer as SVGRenderer } from '@antv/g-svg';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 import Hammer from 'hammerjs';
-// import 'hammer-touchemulator';
 
 /**
  * Pinch Zoom And Pan With HammerJS
  * @see https://bl.ocks.org/redgeoff/6be0295e6ebf18649966d48768398252
  */
-
-/**
- * Press `shiftKey` to emulate multi-touch on a desktop
- * @see http://hammerjs.github.io/touch-emulator/
- */
-// hammerTouchemulator();
 
 const CANVAS_WIDTH = 300;
 const CANVAS_HEIGHT = 200;
@@ -31,9 +24,6 @@ const canvas = new Canvas({
   width: CANVAS_WIDTH,
   height: CANVAS_HEIGHT,
   renderer: canvasRenderer,
-  // open the following when debugging on PC
-  supportPointerEvent: false,
-  supportTouchEvent: true,
 });
 
 // prevent browser default actions
@@ -55,6 +45,7 @@ let lastX = 0;
 let y = 0;
 let lastY = 0;
 let pinchCenter = null;
+let pinchCenterOffset = null;
 let curWidth;
 let curHeight;
 
@@ -195,7 +186,6 @@ img.onload = () => {
   curHeight = imgHeight * scale;
 
   // use hammer.js
-  // const hammer = new Hammer(image);
   const hammer = new Hammer(image, {
     inputClass: Hammer.TouchInput,
   });

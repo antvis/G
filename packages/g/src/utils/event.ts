@@ -25,8 +25,8 @@ export interface FormattedPointerEvent extends PointerEvent {
   type: string;
 }
 
-// @ts-ignore
-export interface FormattedTouchEvent extends TouchEvent {
+// export interface FormattedTouchEvent extends TouchEvent {
+export interface FormattedTouchEvent {
   isNormalized: boolean;
   type: string;
   /**

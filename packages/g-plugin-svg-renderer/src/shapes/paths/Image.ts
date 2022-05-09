@@ -1,5 +1,5 @@
 import type { ParsedImageStyleProps } from '@antv/g';
-import { isString } from 'lodash-es';
+import { isString } from '@antv/g';
 import { singleton } from 'mana-syringe';
 import type { ElementRenderer } from '.';
 
