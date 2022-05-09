@@ -17,6 +17,7 @@ A powerful rendering engine for AntV.
 <a href="https://g-next.antv.vision/en/examples/plugins#box2dt"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" /></a>
 <a href="https://g-next.antv.vision/en/examples/3d#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" /></a>
 <a href="https://g-next.antv.vision/en/examples/3d#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#rough"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" /></a>
 
 </p>
 
@@ -36,6 +37,7 @@ A powerful rendering engine for AntV.
     - [g-plugin-webgl-renderer](https://g-next.antv.vision/en/docs/plugins/webgl-renderer) Render 2D graphics with WebGL 1/2 and WebGPU API.
     - [g-plugin-html-renderer](https://g-next.antv.vision/en/docs/plugins/html-renderer) Provides raw HTML elements.
     - [g-plugin-3d](https://g-next.antv.vision/en/docs/plugins/3d) Expanded 3D rendering capabilities such as Geometry, Material, Mesh and Lights.
+    - [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) Render sketchy styled shapes with [rough.js](https://roughjs.com/).
   - Picking
     - [g-plugin-canvas-picker](https://g-next.antv.vision/en/docs/plugins/canvas-picker) Implements graphics picking with Canvas2D API.
     - [g-plugin-svg-picker](https://g-next.antv.vision/en/docs/plugins/svg-picker) Implements graphics picking with SVG API.
