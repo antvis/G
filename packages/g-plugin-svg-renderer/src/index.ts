@@ -1,6 +1,6 @@
 import type { Syringe } from 'mana-syringe';
 import { Module } from 'mana-syringe';
-import type { RendererPlugin} from '@antv/g';
+import type { RendererPlugin } from '@antv/g';
 import { Shape } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
 import {
@@ -15,6 +15,7 @@ import {
 import { SVGRendererPlugin } from './SVGRendererPlugin';
 
 export { ElementSVG };
+export * from './SVGRendererPlugin';
 export * from './utils/dom';
 
 export const containerModule = Module((register) => {

@@ -27,6 +27,7 @@ const ellipse = new Ellipse({
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
+    cursor: 'pointer',
   },
 });
 
@@ -70,29 +71,41 @@ const ellipseConfig = {
   lineWidth: 4,
   fillOpacity: 1,
   strokeOpacity: 1,
+  increasedLineWidthForHitTesting: 0,
+  cursor: 'pointer',
 };
 ellipseFolder.add(ellipseConfig, 'rx', 50, 200).onChange((radius) => {
-  ellipse.attr('rx', radius);
+  ellipse.style.rx = radius;
 });
 ellipseFolder.add(ellipseConfig, 'ry', 50, 200).onChange((radius) => {
-  ellipse.attr('ry', radius);
+  ellipse.style.ry = radius;
 });
 ellipseFolder.addColor(ellipseConfig, 'fill').onChange((color) => {
-  ellipse.attr('fill', color);
+  ellipse.style.fill = color;
 });
 ellipseFolder.addColor(ellipseConfig, 'stroke').onChange((color) => {
-  ellipse.attr('stroke', color);
+  ellipse.style.stroke = color;
 });
 ellipseFolder.add(ellipseConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
-  ellipse.attr('lineWidth', lineWidth);
+  ellipse.style.lineWidth = lineWidth;
 });
 ellipseFolder.add(ellipseConfig, 'fillOpacity', 0, 1, 0.1).onChange((opacity) => {
-  ellipse.attr('fillOpacity', opacity);
+  ellipse.style.fillOpacity = opacity;
 });
 ellipseFolder.add(ellipseConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
-  ellipse.attr('strokeOpacity', opacity);
+  ellipse.style.strokeOpacity = opacity;
 });
 ellipseFolder.open();
+ellipseFolder
+  .add(ellipseConfig, 'increasedLineWidthForHitTesting', 0, 200)
+  .onChange((increasedLineWidthForHitTesting) => {
+    ellipse.style.increasedLineWidthForHitTesting = increasedLineWidthForHitTesting;
+  });
+ellipseFolder
+  .add(ellipseConfig, 'cursor', ['default', 'pointer', 'help', 'progress', 'text', 'move'])
+  .onChange((cursor) => {
+    ellipse.style.cursor = cursor;
+  });
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {

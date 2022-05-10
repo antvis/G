@@ -19,10 +19,17 @@ void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.vert')
   #pragma glslify: import('@antv/g-shader-components/uv.vert')
 
-  float antialiasblur = 1.0 / (a_Size.x + u_StrokeWidth);
+  float strokeWidth;
+  if (u_IsPicking > 0.5) {
+    strokeWidth = u_IncreasedLineWidthForHitTesting + u_StrokeWidth;
+  } else {
+    strokeWidth = u_StrokeWidth;
+  }
+
+  float antialiasblur = 1.0 / (a_Size.x + strokeWidth);
 
   bool omitStroke = a_StylePacked3.z == 1.0;
-  vec2 radius = a_Size + vec2(omitStroke ? 0.0 : u_StrokeWidth / 2.0);
+  vec2 radius = a_Size + vec2(omitStroke ? 0.0 : strokeWidth / 2.0);
   vec2 offset = (a_Extrude + vec2(1.0) - 2.0 * u_Anchor.xy) * radius;
 
   gl_Position = project(vec4(offset, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);

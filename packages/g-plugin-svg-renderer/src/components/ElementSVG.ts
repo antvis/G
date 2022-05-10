@@ -11,4 +11,11 @@ export class ElementSVG {
    * if current element is <group>, same as `$el`
    */
   $groupEl: SVGElement | null;
+
+  /**
+   * hitArea:
+   * $groupEl -> $el
+   *          -> $hitTestingEl
+   */
+  $hitTestingEl: SVGElement | null;
 }

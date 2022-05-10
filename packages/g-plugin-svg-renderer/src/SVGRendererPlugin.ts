@@ -31,7 +31,7 @@ import { createOrUpdateFilter } from './shapes/defs/Filter';
 import { createOrUpdateGradientAndPattern } from './shapes/defs/Pattern';
 import { createOrUpdateShadow } from './shapes/defs/Shadow';
 
-export const Shape_TO_TAGS: Record<Shape | string, string> = {
+export const SHAPE2TAGS: Record<Shape | string, string> = {
   [Shape.RECT]: 'path',
   [Shape.CIRCLE]: 'circle',
   [Shape.ELLIPSE]: 'ellipse',
@@ -59,10 +59,6 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   ry: 'ry',
   width: 'width',
   height: 'height',
-  // x1: 'x1',
-  // x2: 'x2',
-  // y1: 'y1',
-  // y2: 'y2',
   lineCap: 'stroke-linecap',
   lineJoin: 'stroke-linejoin',
   lineWidth: 'stroke-width',
@@ -78,7 +74,6 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   letterSpacing: 'letter-spacing',
   startArrow: 'marker-start',
   endArrow: 'marker-end',
-  // path: 'd',
   class: 'class',
   id: 'id',
   style: 'style',
@@ -126,7 +121,12 @@ export const DEFAULT_VALUE_MAP: Record<string, string> = {
 
 export type GradientParams = LinearGradient | RadialGradient;
 
-const G_SVG_PREFIX = 'g_svg';
+/**
+ * G_SVG_PREFIX + nodeName + entity
+ *
+ * eg. g_svg_circle_345
+ */
+export const G_SVG_PREFIX = 'g_svg';
 const CLIP_PATH_PREFIX = 'clip-path-';
 
 @singleton({ contrib: RenderingPluginContribution })
@@ -185,9 +185,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
         if ($groupEl) {
           this.reorderChildren($groupEl, children as DisplayObject[]);
         }
+      } else if (attrName === 'increasedLineWidthForHitTesting') {
+        // @ts-ignore
+        const svgElement = object.elementSVG as ElementSVG;
+        this.createOrUpdateHitArea(object, svgElement.$el, svgElement.$groupEl);
       }
 
-      this.updateAttribute(object, attrName, object.parsedStyle[attrName]);
+      this.updateAttribute(object, [attrName]);
     };
 
     renderingService.hooks.init.tapPromise(SVGRendererPlugin.tag, async () => {
@@ -298,11 +302,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
   private applyAttributes(object: DisplayObject) {
     // @ts-ignore
-    const $el = object.elementSVG?.$el;
-    // @ts-ignore
-    const $groupEl = object.elementSVG?.$groupEl;
+    const elementSVG = object.elementSVG as ElementSVG;
+    const $el = elementSVG?.$el;
+    const $groupEl = elementSVG?.$groupEl;
     if ($el && $groupEl) {
-      const { nodeName, attributes, parsedStyle } = object;
+      const { nodeName, attributes } = object;
 
       $el.setAttribute('fill', 'none');
       if (nodeName === Shape.IMAGE) {
@@ -310,95 +314,46 @@ export class SVGRendererPlugin implements RenderingPlugin {
       }
 
       // apply attributes
-      for (const name in attributes) {
-        this.updateAttribute(object, name, parsedStyle[name], true);
-      }
-
-      // generate path
-      const elementRenderer = this.elementRendererFactory(nodeName);
-      if (elementRenderer) {
-        elementRenderer.apply($el, parsedStyle);
-      }
+      this.updateAttribute(object, Object.keys(attributes));
     }
   }
 
-  private updateAttribute(
-    object: DisplayObject,
-    name: string,
-    value: any,
-    skipGeneratePath = false,
-  ) {
+  private updateAttribute(object: DisplayObject, attributes: string[]) {
+    let needGeneratePath = false;
     // @ts-ignore
-    const $el = object.elementSVG?.$el;
-    // @ts-ignore
-    const $groupEl = object.elementSVG?.$groupEl;
+    const { $el, $groupEl, $hitTestingEl } = object.elementSVG as ElementSVG;
     const { parsedStyle, computedStyle } = object;
-    if (SVG_ATTR_MAP[name]) {
+    const elementRenderer = this.elementRendererFactory(object.nodeName);
+
+    attributes.forEach((name) => {
+      const usedName = SVG_ATTR_MAP[name];
+      const computedValue = computedStyle[name];
+      const usedValue = parsedStyle[name];
+
+      // generate path only once
+      if (!needGeneratePath && elementRenderer && elementRenderer.dependencies.indexOf(name) > -1) {
+        needGeneratePath = true;
+      }
+
       if (name === 'fill' || name === 'stroke') {
-        createOrUpdateGradientAndPattern(
-          this.$def,
-          object,
-          $el!,
-          parsedStyle[name],
-          SVG_ATTR_MAP[name],
-        );
+        createOrUpdateGradientAndPattern(this.$def, object, $el!, usedValue, usedName);
       } else if (name === 'visibility') {
         // use computed value
         // update `visibility` on <group>
-        $groupEl?.setAttribute(SVG_ATTR_MAP[name], `${computedStyle.visibility.value}`);
+        $groupEl?.setAttribute(usedName, `${computedValue.value}`);
       } else if (name === 'clipPath') {
-        const clipPath = value as DisplayObject;
-        if (clipPath) {
-          const clipPathId = CLIP_PATH_PREFIX + clipPath.entity;
-
-          const existed = this.$def.querySelector(`#${clipPathId}`);
-          if (!existed) {
-            // create <clipPath> dom node, append it to <defs>
-            const $clipPath = createSVGElement('clipPath');
-            $clipPath.id = clipPathId;
-            this.$def.appendChild($clipPath);
-
-            // <clipPath><circle /></clipPath>
-            this.createSVGDom(clipPath, $clipPath, true);
-
-            // @ts-ignore
-            clipPath.elementSVG.$groupEl = $clipPath;
-          }
-
-          // @ts-ignore
-          const $clipPathGroupEl = clipPath.elementSVG?.$groupEl;
-          if ($clipPathGroupEl) {
-            // apply local RTS transformation to <group> wrapper
-            this.applyTransform($clipPathGroupEl, clipPath.getLocalTransform());
-          }
-          // apply attributes
-          this.applyAttributes(clipPath);
-
-          // apply clipPath to $group
-          // @see https://github.com/antvis/g/issues/961
-          $groupEl?.setAttribute('clip-path', `url(#${clipPathId})`);
-        } else {
-          // remove clip path
-          $groupEl?.removeAttribute('clip-path');
-        }
+        this.createOrUpdateClipPath(usedValue, $groupEl);
       } else if (
         name === 'shadowColor' ||
         name === 'shadowBlur' ||
         name === 'shadowOffsetX' ||
         name === 'shadowOffsetY'
       ) {
-        createOrUpdateShadow(this.$def, object, $el!, name);
+        createOrUpdateShadow(this.$def, object, $el, name);
       } else if (name === 'filter') {
-        createOrUpdateFilter(this.$def, object, $el!, parsedStyle[name]);
+        createOrUpdateFilter(this.$def, object, $el, usedValue);
       } else if (name === 'innerHTML') {
-        const $div = document.createElement('div');
-        if (typeof value === 'string') {
-          $div.innerHTML = value;
-        } else {
-          $div.appendChild(value);
-        }
-        $el!.innerHTML = '';
-        $el!.appendChild($div);
+        this.createOrUpdateInnerHTML($el, usedValue);
       } else {
         if (
           // (!object.style.clipPathTargets) &&
@@ -407,23 +362,31 @@ export class SVGRendererPlugin implements RenderingPlugin {
         ) {
           this.updateAnchorWithTransform(object);
         }
-        if (name !== 'anchor' && value) {
-          const valueStr = value.toString();
+        if (name !== 'anchor' && computedValue) {
+          // use computed value so that we can use cascaded effect in SVG
+          const valueStr = computedValue.toString();
 
-          if (valueStr !== DEFAULT_VALUE_MAP[name]) {
+          // ignore 'unset' and default value
+          if (valueStr !== 'unset' && valueStr !== DEFAULT_VALUE_MAP[name]) {
             const formattedValueStr = FORMAT_VALUE_MAP[name]?.[valueStr] || valueStr;
-            $el?.setAttribute(SVG_ATTR_MAP[name], formattedValueStr);
+
+            [$el, $hitTestingEl].forEach(($el: SVGElement) => {
+              if ($el && usedName) {
+                $el.setAttribute(usedName, formattedValueStr);
+              }
+            });
           }
         }
       }
-    }
+    });
 
     // need re-generate path
-    if (!skipGeneratePath && $el) {
-      const elementRenderer = this.elementRendererFactory(object.nodeName);
-      if (elementRenderer && elementRenderer.dependencies.indexOf(name) > -1) {
-        elementRenderer.apply($el, object.parsedStyle);
-      }
+    if (needGeneratePath && $el) {
+      [$el, $hitTestingEl].forEach(($el) => {
+        if ($el) {
+          elementRenderer.apply($el, object.parsedStyle);
+        }
+      });
     }
   }
 
@@ -435,9 +398,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const svgElement = object.elementSVG;
 
     // use <group> as default, eg. CustomElement
-    const type = Shape_TO_TAGS[object.nodeName] || 'g';
+    const type = SHAPE2TAGS[object.nodeName] || 'g';
     if (type) {
-      let $groupEl;
+      let $groupEl: SVGElement;
 
       const $el = createSVGElement(type);
 
@@ -468,6 +431,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       // apply attributes at first time
       this.applyAttributes(object);
+
+      // create hitArea if necessary
+      this.createOrUpdateHitArea(object, $el, $groupEl);
     }
   }
 
@@ -481,6 +447,92 @@ export class SVGRendererPlugin implements RenderingPlugin {
     }
   }
 
+  private createOrUpdateHitArea(object: DisplayObject, $el: SVGElement, $groupEl: SVGElement) {
+    // @ts-ignore
+    const svgElement = object.elementSVG as ElementSVG;
+    let $hitTestingEl = svgElement.$hitTestingEl;
+    const increasedLineWidthForHitTesting =
+      object.parsedStyle.increasedLineWidthForHitTesting?.value;
+
+    // account for hitArea
+    if (increasedLineWidthForHitTesting) {
+      if (!$hitTestingEl) {
+        $hitTestingEl = $el.cloneNode() as SVGElement;
+
+        // use the entity suffix, so that `g-plugin-svg-picker` can extract
+        $hitTestingEl.id = `${G_SVG_PREFIX}_${object.nodeName}_hittesting_${object.entity}`;
+        // clear attributes like `filter` `font-size`
+        ['filter'].forEach((attribute) => {
+          $hitTestingEl.removeAttribute(attribute);
+        });
+        // hitArea should be 'transparent' but not 'none'
+        const hasFill = $el.getAttribute('fill') !== 'none';
+        $hitTestingEl.setAttribute('fill', hasFill ? 'transparent' : 'none');
+        $hitTestingEl.setAttribute('stroke', 'transparent');
+        $groupEl.appendChild($hitTestingEl);
+        svgElement.$hitTestingEl = $hitTestingEl;
+      }
+
+      // increase interactive line width
+      $hitTestingEl.setAttribute(
+        'stroke-width',
+        `${increasedLineWidthForHitTesting + object.parsedStyle.lineWidth?.value}`,
+      );
+    } else {
+      if ($hitTestingEl) {
+        $groupEl.removeChild($hitTestingEl);
+        svgElement.$hitTestingEl = null;
+      }
+    }
+  }
+
+  private createOrUpdateInnerHTML($el: SVGElement, usedValue: any) {
+    const $div = document.createElement('div');
+    if (typeof usedValue === 'string') {
+      $div.innerHTML = usedValue;
+    } else {
+      $div.appendChild(usedValue);
+    }
+    $el.innerHTML = '';
+    $el.appendChild($div);
+  }
+
+  private createOrUpdateClipPath(clipPath: DisplayObject, $groupEl: SVGElement) {
+    if (clipPath) {
+      const clipPathId = CLIP_PATH_PREFIX + clipPath.entity;
+
+      const existed = this.$def.querySelector(`#${clipPathId}`);
+      if (!existed) {
+        // create <clipPath> dom node, append it to <defs>
+        const $clipPath = createSVGElement('clipPath');
+        $clipPath.id = clipPathId;
+        this.$def.appendChild($clipPath);
+
+        // <clipPath><circle /></clipPath>
+        this.createSVGDom(clipPath, $clipPath, true);
+
+        // @ts-ignore
+        clipPath.elementSVG.$groupEl = $clipPath;
+      }
+
+      // @ts-ignore
+      const $clipPathGroupEl = clipPath.elementSVG?.$groupEl;
+      if ($clipPathGroupEl) {
+        // apply local RTS transformation to <group> wrapper
+        this.applyTransform($clipPathGroupEl, clipPath.getLocalTransform());
+      }
+      // apply attributes
+      this.applyAttributes(clipPath);
+
+      // apply clipPath to $group
+      // @see https://github.com/antvis/g/issues/961
+      $groupEl.setAttribute('clip-path', `url(#${clipPathId})`);
+    } else {
+      // remove clip path
+      $groupEl.removeAttribute('clip-path');
+    }
+  }
+
   /**
    * the origin is bounding box's top left corner
    */
@@ -491,18 +543,21 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
 
     // @ts-ignore
-    const $el = object.elementSVG?.$el;
-    // apply anchor to element's `transform` property
-    $el?.setAttribute(
-      'transform',
-      // can't use percent unit like translate(-50%, -50%)
-      // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/transform#translate
-      `translate(-${anchor[0].value * width},-${anchor[1].value * height})`,
-    );
+    [object.elementSVG?.$el, object.elementSVG?.$hitTestingEl].forEach(($el: SVGElement) => {
+      if ($el) {
+        // apply anchor to element's `transform` property
+        $el.setAttribute(
+          'transform',
+          // can't use percent unit like translate(-50%, -50%)
+          // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/transform#translate
+          `translate(-${anchor[0].value * width},-${anchor[1].value * height})`,
+        );
 
-    if (object.nodeName === Shape.CIRCLE || object.nodeName === Shape.ELLIPSE) {
-      $el?.setAttribute('cx', `${width / 2}`);
-      $el?.setAttribute('cy', `${height / 2}`);
-    }
+        if (object.nodeName === Shape.CIRCLE || object.nodeName === Shape.ELLIPSE) {
+          $el.setAttribute('cx', `${width / 2}`);
+          $el.setAttribute('cy', `${height / 2}`);
+        }
+      }
+    });
   }
 }

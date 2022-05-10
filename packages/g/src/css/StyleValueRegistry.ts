@@ -245,7 +245,6 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     inherited: true,
     defaultValue: '0',
     layoutDependent: true,
-    alias: ['lineAppendWidth'],
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
     handler: CSSPropertyLengthOrPercentage,
   },
@@ -920,9 +919,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       if (!geometry.renderBounds) {
         geometry.renderBounds = new AABB();
       }
-      if (!geometry.hitAreaBounds) {
-        geometry.hitAreaBounds = new AABB();
-      }
 
       const parsedStyle = object.parsedStyle as ParsedBaseStyleProps;
 
@@ -986,28 +982,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       // update geometry's AABB
       geometry.contentBounds.update(center, halfExtents);
 
-      if (lineWidth) {
-        // append border
-        vec3.add(
-          halfExtents,
-          halfExtents,
-          vec3.fromValues(lineWidth.value / 2, lineWidth.value / 2, 0),
-        );
-        geometry.renderBounds.update(center, halfExtents);
-      }
-
-      if (increasedLineWidthForHitTesting) {
-        vec3.add(
-          halfExtents,
-          halfExtents,
-          vec3.fromValues(
-            increasedLineWidthForHitTesting.value / 2,
-            increasedLineWidthForHitTesting.value / 2,
-            0,
-          ),
-        );
-        geometry.hitAreaBounds.update(center, halfExtents);
-      }
+      const halfLineWidth =
+        ((lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0)) / 2;
+      // append border
+      vec3.add(halfExtents, halfExtents, vec3.fromValues(halfLineWidth, halfLineWidth, 0));
+      geometry.renderBounds.update(center, halfExtents);
 
       // account for shadow, only support constant value now
       if (shadowColor) {

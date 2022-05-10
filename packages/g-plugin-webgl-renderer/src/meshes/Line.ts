@@ -64,6 +64,7 @@ export enum Uniform {
   COLOR = 'u_Color',
   STROKE_COLOR = 'u_StrokeColor',
   STROKE_WIDTH = 'u_StrokeWidth',
+  INCREASED_LINE_WIDTH_FOR_HIT_TESTING = 'u_IncreasedLineWidthForHitTesting',
   OPACITY = 'u_Opacity',
   FILL_OPACITY = 'u_FillOpacity',
   STROKE_OPACITY = 'u_StrokeOpacity',
@@ -95,6 +96,7 @@ export class LineMesh extends Instanced {
         fillOpacity,
         strokeOpacity,
         lineWidth,
+        increasedLineWidthForHitTesting,
         anchor,
         lineDash,
         lineDashOffset,
@@ -144,6 +146,10 @@ export class LineMesh extends Instanced {
       } else if (name === 'lineWidth') {
         this.material.setUniforms({
           [Uniform.STROKE_WIDTH]: lineWidth.value,
+        });
+      } else if (name === 'increasedLineWidthForHitTesting') {
+        this.material.setUniforms({
+          [Uniform.INCREASED_LINE_WIDTH_FOR_HIT_TESTING]: increasedLineWidthForHitTesting.value,
         });
       } else if (name === 'anchor' || name === 'modelMatrix') {
         let translateX = 0;
@@ -213,6 +219,7 @@ export class LineMesh extends Instanced {
       fillOpacity,
       strokeOpacity,
       lineWidth,
+      increasedLineWidthForHitTesting,
       anchor,
       lineDash,
       lineDashOffset,
@@ -261,6 +268,7 @@ export class LineMesh extends Instanced {
       [Uniform.COLOR]: fillColor,
       [Uniform.STROKE_COLOR]: strokeColor,
       [Uniform.STROKE_WIDTH]: lineWidth.value,
+      [Uniform.INCREASED_LINE_WIDTH_FOR_HIT_TESTING]: increasedLineWidthForHitTesting.value,
       [Uniform.OPACITY]: opacity.value,
       [Uniform.FILL_OPACITY]: fillOpacity.value,
       [Uniform.STROKE_OPACITY]: strokeOpacity.value,

@@ -57,7 +57,13 @@ void main() {
   vec2 norm = vec2(forward.y, -forward.x);
 
   float type = a_VertexJoint;
-  float lineWidth = u_StrokeWidth;
+
+  float lineWidth;
+  if (u_IsPicking > 0.5) {
+    lineWidth = u_IncreasedLineWidthForHitTesting + u_StrokeWidth;
+  } else {
+    lineWidth = u_StrokeWidth;
+  }
 
   if (u_ScaleMode > 2.5) {
       lineWidth *= length(u_ModelMatrix * vec4(1.0, 0.0, 0.0, 0.0));

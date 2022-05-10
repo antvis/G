@@ -118,6 +118,7 @@ export function isPointInPath(
 ): boolean {
   const {
     lineWidth,
+    increasedLineWidthForHitTesting,
     stroke,
     fill,
     defX: x = 0,
@@ -135,7 +136,7 @@ export function isPointInPath(
   if (hasStroke || isClipPath) {
     isHit = isPointInStroke(
       segments,
-      lineWidth.value,
+      lineWidth.value + increasedLineWidthForHitTesting.value,
       position.x + x,
       position.y + y,
       totalLength,

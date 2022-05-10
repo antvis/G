@@ -32,6 +32,7 @@ const polygon = new Polygon({
     fill: '#C6E5FF',
     stroke: '#1890FF',
     lineWidth: 2,
+    cursor: 'pointer',
   },
 });
 
@@ -78,6 +79,8 @@ const polygonConfig = {
   anchorY: 0,
   lineDash: 0,
   lineDashOffset: 0,
+  increasedLineWidthForHitTesting: 0,
+  cursor: 'pointer',
 };
 polygonFolder.addColor(polygonConfig, 'fill').onChange((color) => {
   polygon.style.fill = color;
@@ -100,6 +103,16 @@ polygonFolder.add(polygonConfig, 'fillOpacity', 0, 1, 0.1).onChange((opacity) =>
 polygonFolder.add(polygonConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
   polygon.style.strokeOpacity = opacity;
 });
+polygonFolder
+  .add(polygonConfig, 'increasedLineWidthForHitTesting', 0, 200)
+  .onChange((increasedLineWidthForHitTesting) => {
+    polygon.style.increasedLineWidthForHitTesting = increasedLineWidthForHitTesting;
+  });
+polygonFolder
+  .add(polygonConfig, 'cursor', ['default', 'pointer', 'help', 'progress', 'text', 'move'])
+  .onChange((cursor) => {
+    polygon.style.cursor = cursor;
+  });
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {

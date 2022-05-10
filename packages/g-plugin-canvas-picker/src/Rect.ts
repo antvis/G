@@ -12,6 +12,7 @@ export function isPointInPath(
     fill,
     stroke,
     lineWidth,
+    increasedLineWidthForHitTesting,
     width: parsedWidth,
     height: parsedHeight,
     clipPathTargets,
@@ -31,9 +32,11 @@ export function isPointInPath(
     height = heightValue;
   }
 
+  const increasedLineWidthForHitTesting = lineWidth.value + increasedLineWidthForHitTesting.value;
+
   // 无圆角时的策略
   if (!radius) {
-    const halfWidth = lineWidth.value / 2;
+    const halfWidth = increasedLineWidthForHitTesting / 2;
     // 同时填充和带有边框
     if ((hasFill && hasStroke) || isClipPath) {
       return inBox(
@@ -50,7 +53,7 @@ export function isPointInPath(
       return inBox(0, 0, width, height, position.x, position.y);
     }
     if (hasStroke) {
-      return inRect(0, 0, width, height, lineWidth.value, position.x, position.y);
+      return inRect(0, 0, width, height, increasedLineWidthForHitTesting, position.x, position.y);
     }
   } else {
     let isHit = false;
@@ -61,7 +64,7 @@ export function isPointInPath(
         width,
         height,
         radius.value,
-        lineWidth.value,
+        increasedLineWidthForHitTesting,
         position.x,
         position.y,
       );

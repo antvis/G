@@ -29,6 +29,7 @@ const circle = new Circle({
     lineWidth: 4,
     shadowColor: 'black',
     shadowBlur: 20,
+    cursor: 'pointer',
   },
 });
 
@@ -81,6 +82,8 @@ const circleConfig = {
   shadowBlur: 20,
   shadowOffsetX: 0,
   shadowOffsetY: 0,
+  increasedLineWidthForHitTesting: 0,
+  cursor: 'pointer',
 };
 circleFolder.add(circleConfig, 'r', 50, 200).onChange((radius) => {
   circle.style.r = radius;
@@ -104,7 +107,7 @@ circleFolder.add(circleConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY
   circle.style.shadowOffsetY = shadowOffsetY;
 });
 circleFolder.add(circleConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
-  circle.attr('lineWidth', lineWidth);
+  circle.style.lineWidth = lineWidth;
 });
 circleFolder.add(circleConfig, 'lineDash', 0, 100).onChange((lineDash) => {
   circle.style.lineDash = [lineDash];
@@ -113,11 +116,21 @@ circleFolder.add(circleConfig, 'lineDashOffset', 0, 100).onChange((lineDashOffse
   circle.style.lineDashOffset = lineDashOffset;
 });
 circleFolder.add(circleConfig, 'fillOpacity', 0, 1, 0.1).onChange((opacity) => {
-  circle.attr('fillOpacity', opacity);
+  circle.style.fillOpacity = opacity;
 });
 circleFolder.add(circleConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
-  circle.attr('strokeOpacity', opacity);
+  circle.style.strokeOpacity = opacity;
 });
+circleFolder
+  .add(circleConfig, 'increasedLineWidthForHitTesting', 0, 200)
+  .onChange((increasedLineWidthForHitTesting) => {
+    circle.style.increasedLineWidthForHitTesting = increasedLineWidthForHitTesting;
+  });
+circleFolder
+  .add(circleConfig, 'cursor', ['default', 'pointer', 'help', 'progress', 'text', 'move'])
+  .onChange((cursor) => {
+    circle.style.cursor = cursor;
+  });
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {

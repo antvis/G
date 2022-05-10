@@ -14,6 +14,7 @@ export function isPointInPath(
     x2,
     y2,
     lineWidth,
+    increasedLineWidthForHitTesting,
     defX: x = 0,
     defY: y = 0,
   } = displayObject.parsedStyle as ParsedLineStyleProps;
@@ -23,7 +24,7 @@ export function isPointInPath(
     y1.value,
     x2.value,
     y2.value,
-    lineWidth.value,
+    lineWidth.value + increasedLineWidthForHitTesting.value,
     position.x + x,
     position.y + y,
   );

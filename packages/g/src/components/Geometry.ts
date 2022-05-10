@@ -16,5 +16,5 @@ export class Geometry {
   /**
    * account for `hitArea` & `increasedLineWidthForHitTesting`
    */
-  hitAreaBounds: AABB | undefined;
+  // hitAreaBounds: AABB | undefined;
 }

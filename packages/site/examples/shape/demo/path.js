@@ -45,6 +45,7 @@ const path2 = new Path({
     lineWidth: 10,
     lineJoin: 'round',
     stroke: '#54BECC',
+    cursor: 'pointer',
   },
 });
 path2.addEventListener('mouseenter', () => {
@@ -147,3 +148,19 @@ circleFolder.add(circleConfig, 'anchorY', 0, 1).onChange((anchorY) => {
   circlePath.style.anchor = [circleConfig.anchorX, anchorY];
 });
 circleFolder.open();
+
+const pathFolder = gui.addFolder('path');
+const pathConfig = {
+  increasedLineWidthForHitTesting: 0,
+  cursor: 'pointer',
+};
+pathFolder
+  .add(pathConfig, 'increasedLineWidthForHitTesting', 0, 200)
+  .onChange((increasedLineWidthForHitTesting) => {
+    path2.style.increasedLineWidthForHitTesting = increasedLineWidthForHitTesting;
+  });
+pathFolder
+  .add(pathConfig, 'cursor', ['default', 'pointer', 'help', 'progress', 'text', 'move'])
+  .onChange((cursor) => {
+    path2.style.cursor = cursor;
+  });

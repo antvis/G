@@ -16,7 +16,6 @@ import {
   Point,
 } from '@antv/g';
 import { PathGeneratorFactory, RBushRoot } from '@antv/g-plugin-canvas-renderer';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import type { RBush, PathGenerator, RBushNodeAABB } from '@antv/g-plugin-canvas-renderer';
 import { mat4, vec3 } from 'gl-matrix';
 import { inject, singleton, Syringe } from 'mana-syringe';

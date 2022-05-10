@@ -7,15 +7,15 @@ order: 6
 
 ```javascript
 const line1 = new Line({
-    style: {
-        x1: 200,
-        y1: 100,
-        x2: 400,
-        y2: 100,
-        stroke: '#1890FF',
-        lineWidth: 2,
-        lineDash: [10, 10],
-    },
+  style: {
+    x1: 200,
+    y1: 100,
+    x2: 400,
+    y2: 100,
+    stroke: '#1890FF',
+    lineWidth: 2,
+    lineDash: [10, 10],
+  },
 });
 ```
 
@@ -27,9 +27,9 @@ line1.getLocalPosition(); // [200, 100]
 
 对于上面的直线为 `(200, 100)`。当我们想沿 X 轴向右移动该直线 100 距离时，可以有以下三种做法：
 
--   使用 translate 在世界坐标系下平移一段相对距离
--   使用 setPosition 设置世界坐标系下的绝对坐标
--   直接修改直线定义中的 x1/x2 属性
+- 使用 translate 在世界坐标系下平移一段相对距离
+- 使用 setPosition 设置世界坐标系下的绝对坐标
+- 直接修改直线定义中的 x1/x2 属性
 
 ```javascript
 // 平移相对距离，此时 x1/x2 不变
@@ -38,8 +38,8 @@ line1.translate(100, 0);
 line1.setPosition(200 + 100, 0);
 // 或者，直接移动两个端点
 line1.attr({
-    x1: 200 + 100,
-    x2: 400 + 100,
+  x1: 200 + 100,
+  x2: 400 + 100,
 });
 ```
 
@@ -52,7 +52,7 @@ line.getLocalPosition(); // [200, 100]
 
 # 继承自
 
--   [DisplayObject](/zh/docs/api/basic/display-object)
+- [DisplayObject](/zh/docs/api/basic/display-object)
 
 默认锚点定义的位置为包围盒左上角顶点，可以通过 [anchor](/zh/docs/api/display-object#anchor) 改变。
 
@@ -118,6 +118,16 @@ line.getLocalPosition(); // [200, 100]
 
 **是否必须**：`false`
 
+## lineWidth
+
+<tag color="green" text="可应用动画">可应用动画</tag>
+
+**类型**： `number`
+
+**默认值**：`1`
+
+**是否必须**：`false`
+
 ## lineCap
 
 **类型**： `string`
@@ -128,9 +138,9 @@ line.getLocalPosition(); // [200, 100]
 
 端点样式，支持以下取值：
 
--   'butt' 默认值
--   'round'
--   'square'
+- 'butt' 默认值
+- 'round'
+- 'square'
 
 可参考 Canvas2D [同名属性](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineCap)。
 
@@ -162,8 +172,8 @@ line.getTotalLength(); // 200
 
 ```ts
 export type Point = {
-    x: number;
-    y: number;
+  x: number;
+  y: number;
 };
 ```
 
@@ -181,14 +191,14 @@ line.getPoint(0.5); // Point {x: 300, y: 100}
 
 ```js
 new Line({
-    style: {
-        x1: 200,
-        y1: 100,
-        z1: 0, // Z 轴坐标
-        x2: 400,
-        y2: 100,
-        z2: 100, // Z 轴坐标
-    },
+  style: {
+    x1: 200,
+    y1: 100,
+    z1: 0, // Z 轴坐标
+    x2: 400,
+    y2: 100,
+    z2: 100, // Z 轴坐标
+  },
 });
 ```
 

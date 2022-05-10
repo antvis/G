@@ -790,6 +790,8 @@ const circle = new Circle({
 
 ## 响应交互事件
 
+我们可以设置图形如何响应交互事件，例如命中拾取时展示鼠标样式，或者增大拾取区域。
+
 ### pointerEvents
 
 设置图形如何响应交互事件。目前支持以下关键词：
@@ -809,6 +811,24 @@ canvas.document.documentElement.style.pointerEvents = 'none';
 | [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
 | 'auto' | 所有 | 是 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#关键词) |
+
+### increasedLineWidthForHitTesting
+
+当 [lineWidth](/zh/docs/api/basic/display-object#linewidth) 较小时，可交互区域也随之变小，有时我们想增大这个区域，让“细线”更容易被拾取到。注意该属性并不会影响渲染效果。
+
+在下图中，我们设置该属性为 `50`，在进行拾取时线宽相当于 `50 + 原始线宽`，这样靠近时就更容易拾取到了： <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*0ISzTIiefZ0AAAAAAAAAAAAAARQnAQ">
+
+```js
+line.style.increasedLineWidthForHitTesting = 50;
+```
+
+另外和 [lineWidth](/zh/docs/api/basic/display-object#linewidth) 一样，该属性同样会向两侧延展，下图中无填充的 [Path](/zh/docs/api/basic/path) 内部拾取区域也变大了：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ude1Qo6PVNYAAAAAAAAAAAAAARQnAQ">
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | 所有 | 否 | 否 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
 # 变换操作
 

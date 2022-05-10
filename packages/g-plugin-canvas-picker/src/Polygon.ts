@@ -15,6 +15,7 @@ export function isPointInPath(
     stroke,
     fill,
     lineWidth,
+    increasedLineWidthForHitTesting,
     points,
     defX: x = 0,
     defY: y = 0,
@@ -26,7 +27,13 @@ export function isPointInPath(
 
   let isHit = false;
   if (hasStroke || isClipPath) {
-    isHit = inPolyline(points.points, lineWidth.value, position.x + x, position.y + y, true);
+    isHit = inPolyline(
+      points.points,
+      lineWidth.value + increasedLineWidthForHitTesting.value,
+      position.x + x,
+      position.y + y,
+      true,
+    );
   }
   if (!isHit && (hasFill || isClipPath)) {
     isHit = inPolygon(points.points, position.x + x, position.y + y);

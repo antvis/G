@@ -79,7 +79,7 @@ export enum VertexAttributeLocation {
   COLOR,
   STROKE_COLOR,
   PACKED_STYLE1, // opacity fillOpacity strokeOpacity lineWidth
-  PACKED_STYLE2, // visibility anchorX anchorY
+  PACKED_STYLE2, // visibility anchorX anchorY increasedLineWidthForHitTesting
   PICKING_COLOR,
   POSITION,
   NORMAL,
@@ -206,8 +206,17 @@ export abstract class Instanced {
     // const useNormal = this.material.defines.NORMAL;
 
     objects.forEach((object) => {
-      const { fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, anchor, visibility } =
-        object.parsedStyle as ParsedBaseStyleProps;
+      const {
+        fill,
+        stroke,
+        opacity,
+        fillOpacity,
+        strokeOpacity,
+        lineWidth,
+        anchor,
+        visibility,
+        increasedLineWidthForHitTesting,
+      } = object.parsedStyle as ParsedBaseStyleProps;
       let fillColor: Tuple4Number = [0, 0, 0, 0];
       if (fill instanceof CSSRGB) {
         fillColor = [
@@ -249,7 +258,7 @@ export abstract class Instanced {
         visibility.value === 'visible' ? 1 : 0,
         anchor[0].value,
         anchor[1].value,
-        0,
+        increasedLineWidthForHitTesting?.value || 0,
       );
       packedPicking.push(...encodedPickingColor, object.sortable.renderOrder * RENDER_ORDER_SCALE);
 
@@ -678,11 +687,22 @@ export abstract class Instanced {
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
       );
-    } else if (name === 'visibility' || name === 'anchor') {
+    } else if (
+      name === 'visibility' ||
+      name === 'anchor' ||
+      name === 'increasedLineWidthForHitTesting'
+    ) {
       const packed: number[] = [];
       objects.forEach((object) => {
-        const { visibility, anchor } = object.parsedStyle as ParsedBaseStyleProps;
-        packed.push(visibility.value === 'visible' ? 1 : 0, anchor[0].value, anchor[1].value, 0);
+        const { visibility, anchor, increasedLineWidthForHitTesting } =
+          object.parsedStyle as ParsedBaseStyleProps;
+
+        packed.push(
+          visibility.value === 'visible' ? 1 : 0,
+          anchor[0].value,
+          anchor[1].value,
+          increasedLineWidthForHitTesting?.value || 0,
+        );
       });
       this.geometry.updateVertexBuffer(
         VertexAttributeBufferIndex.PACKED_STYLE2,
