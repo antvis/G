@@ -53,7 +53,7 @@ export const reconcilor = ReactReconciler<
   ): HostContext {},
 
   prepareForCommit(containerInfo: Container): Record<string, any> {
-    return {};
+    return null;
   },
   resetAfterCommit(containerInfo: Container): void {},
   preparePortalMount(containerInfo: Container): void {},
