@@ -816,7 +816,7 @@ canvas.document.documentElement.style.pointerEvents = 'none';
 
 当 [lineWidth](/zh/docs/api/basic/display-object#linewidth) 较小时，可交互区域也随之变小，有时我们想增大这个区域，让“细线”更容易被拾取到。注意该属性并不会影响渲染效果。
 
-在下图中，我们设置该属性为 `50`，在进行拾取时线宽相当于 `50 + 原始线宽`，这样靠近时就更容易拾取到了： <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*0ISzTIiefZ0AAAAAAAAAAAAAARQnAQ">
+在下面的 [示例](/zh/examples/shape#polyline) 中，我们设置该属性为 `50`，在进行拾取时线宽相当于 `50 + 原始线宽`，这样靠近时就更容易拾取到了： <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*0ISzTIiefZ0AAAAAAAAAAAAAARQnAQ">
 
 ```js
 line.style.increasedLineWidthForHitTesting = 50;
