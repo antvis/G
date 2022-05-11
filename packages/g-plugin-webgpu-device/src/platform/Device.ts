@@ -84,7 +84,7 @@ import {
 import { ComputePass_WebGPU } from './ComputePass';
 import { ComputePipeline_WebGPU } from './ComputePipeline';
 // import type { glsl_compile as glsl_compile_ } from '../../../../../rust/pkg/glsl_wgsl_compiler';
-import { FullscreenAlphaClear } from './FullscreenAlphaClear';
+// import { FullscreenAlphaClear } from './FullscreenAlphaClear';
 import { QueryPool_WebGPU } from './QueryPool';
 
 export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
@@ -109,7 +109,7 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
   fallbackSampler: Sampler;
   private featureTextureCompressionBC: boolean = false;
 
-  private fullscreenAlphaClear: FullscreenAlphaClear;
+  // private fullscreenAlphaClear: FullscreenAlphaClear;
 
   // VendorInfo
   readonly platformString: string = 'WebGPU';
@@ -178,7 +178,7 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
       console.error(event.error);
     };
 
-    this.fullscreenAlphaClear = new FullscreenAlphaClear(this.device);
+    // this.fullscreenAlphaClear = new FullscreenAlphaClear(this.device);
   }
 
   // SwapChain
@@ -193,6 +193,8 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
       usage: this.swapChainTextureUsage,
       // @see https://developer.chrome.com/blog/new-in-chrome-94/#canvas-colorspace
       // colorSpace: 'srgb',
+      // @see https://www.w3.org/TR/webgpu/#enumdef-gpucanvascompositingalphamode
+      compositingAlphaMode: 'premultiplied',
     });
   }
 
@@ -233,10 +235,10 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
   }
 
   present(): void {
-    this.fullscreenAlphaClear.render(
-      this.device,
-      this.canvasContext.getCurrentTexture().createView(),
-    );
+    // this.fullscreenAlphaClear.render(
+    //   this.device,
+    //   this.canvasContext.getCurrentTexture().createView(),
+    // );
   }
 
   private getNextUniqueId(): number {

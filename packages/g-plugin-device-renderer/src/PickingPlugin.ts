@@ -21,7 +21,7 @@ import { inject, singleton } from 'mana-syringe';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { BlendFactor, BlendMode } from './platform';
 import { setAttachmentStateSimple } from './platform/utils';
-import { RenderHelper, TemporalTexture } from './render';
+import { RenderHelper, SingleSampledTexture } from './render';
 import { RGAttachmentSlot } from './render/interfaces';
 import {
   AntialiasingMode,
@@ -71,11 +71,6 @@ export class PickingPlugin implements RenderingPlugin {
 
   @inject(BatchManager)
   private batchManager: BatchManager;
-
-  /**
-   * used for reading pixels when picking
-   */
-  // private pickingTexture: TemporalTexture;
 
   apply(renderingService: RenderingService) {
     const handleMounted = (e: FederatedEvent) => {
@@ -207,8 +202,7 @@ export class PickingPlugin implements RenderingPlugin {
     );
     const mainDepthTargetID = builder.createRenderTargetID(mainDepthDesc, 'Picking Depth');
 
-    const pickingTemporalTexture = new TemporalTexture();
-    pickingTemporalTexture.setDescription(device, mainPickingDesc);
+    const texture = new SingleSampledTexture(device, mainPickingDesc);
 
     // picking pass
     builder.pushPass((pass) => {
@@ -220,10 +214,7 @@ export class PickingPlugin implements RenderingPlugin {
       });
     });
     // save picking texture
-    builder.resolveRenderTargetToExternalTexture(
-      pickingColorTargetID,
-      pickingTemporalTexture.getTextureForResolving(),
-    );
+    builder.resolveRenderTargetToExternalTexture(pickingColorTargetID, texture.texture);
 
     // Push our outer template, which contains the dynamic UBO bindings...
     const template = this.renderHelper.pushTemplateRenderInst();
@@ -301,8 +292,6 @@ export class PickingPlugin implements RenderingPlugin {
     let target: DisplayObject;
     const readback = device.createReadback();
 
-    const pickingTexture = pickingTemporalTexture.getTextureForResolving();
-
     // restore previous view
     if (currentView && currentView.enabled) {
       this.camera.setViewOffset(
@@ -319,9 +308,9 @@ export class PickingPlugin implements RenderingPlugin {
 
     this.camera.setEnableUpdate(true);
 
-    if (pickingTexture) {
+    if (texture.texture) {
       const pickedColors = (await readback.readTexture(
-        pickingTexture,
+        texture.texture,
         0,
         0,
         width,
@@ -352,7 +341,7 @@ export class PickingPlugin implements RenderingPlugin {
       readback.destroy();
     }
 
-    pickingTemporalTexture.destroy();
+    texture.destroy();
 
     return target;
   }

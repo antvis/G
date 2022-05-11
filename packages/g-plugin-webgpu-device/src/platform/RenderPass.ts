@@ -76,7 +76,13 @@ export class RenderPass_WebGPU implements RenderPass {
 
         const dstAttachment = this.gpuColorAttachments[i];
         dstAttachment.view = colorAttachment.gpuTextureView;
-        dstAttachment.loadValue = descriptor.colorClearColor[i];
+        const clearColor = descriptor.colorClearColor[i];
+        if (clearColor === 'load') {
+          dstAttachment.loadOp = 'load';
+        } else {
+          dstAttachment.loadOp = 'clear';
+          dstAttachment.clearValue = clearColor;
+        }
         dstAttachment.storeOp = descriptor.colorStore[i] ? 'store' : 'discard';
         dstAttachment.resolveTarget = undefined;
         if (colorResolveTo !== null) {
@@ -102,8 +108,20 @@ export class RenderPass_WebGPU implements RenderPass {
       const dsAttachment = descriptor.depthStencilAttachment as Attachment_WebGPU;
       const dstAttachment = this.gpuDepthStencilAttachment;
       dstAttachment.view = dsAttachment.gpuTextureView;
-      dstAttachment.depthLoadValue = descriptor.depthClearValue;
-      dstAttachment.stencilLoadValue = descriptor.stencilClearValue;
+
+      if (descriptor.depthClearValue === 'load') {
+        dstAttachment.depthLoadOp = 'load';
+      } else {
+        dstAttachment.depthLoadOp = 'clear';
+        dstAttachment.depthClearValue = descriptor.depthClearValue;
+      }
+
+      if (descriptor.stencilClearValue === 'load') {
+        dstAttachment.stencilLoadOp = 'load';
+      } else {
+        dstAttachment.stencilLoadOp = 'clear';
+        dstAttachment.stencilClearValue = descriptor.stencilClearValue;
+      }
       dstAttachment.depthStoreOp = descriptor.depthStencilStore ? 'store' : 'discard';
       dstAttachment.stencilStoreOp = descriptor.depthStencilStore ? 'store' : 'discard';
       this.gpuRenderPassDescriptor.depthStencilAttachment = this.gpuDepthStencilAttachment;
@@ -211,7 +229,7 @@ export class RenderPass_WebGPU implements RenderPass {
   }
 
   finish(): GPUCommandBuffer {
-    this.gpuRenderPassEncoder.endPass();
+    this.gpuRenderPassEncoder.end();
     this.gpuRenderPassEncoder = null;
 
     // Fake a resolve with a copy for non-MSAA.

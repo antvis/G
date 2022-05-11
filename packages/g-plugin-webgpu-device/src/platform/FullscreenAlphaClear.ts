@@ -51,7 +51,7 @@ fn fs() -> FragmentOutput {
     });
     renderPass.setPipeline(this.pipeline);
     renderPass.draw(3);
-    renderPass.endPass();
+    renderPass.end();
     device.queue.submit([encoder.finish()]);
   }
 }

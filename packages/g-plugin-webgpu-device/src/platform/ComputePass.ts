@@ -23,7 +23,7 @@ export class ComputePass_WebGPU implements ComputePass {
   }
 
   finish() {
-    this.gpuComputePassEncoder.endPass();
+    this.gpuComputePassEncoder.end();
     this.gpuComputePassEncoder = null;
 
     return this.commandEncoder.finish();

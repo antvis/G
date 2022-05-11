@@ -8,6 +8,17 @@
 
 ## 扩展点
 
-### Device
+### DeviceContribution
 
-根据运行平台选择 WebGL 1/2 或者 WebGPU
+```js
+import { DeviceContribution } from '@antv/g-plugin-device-renderer';
+
+@singleton({
+    token: DeviceContribution,
+})
+export class WebGLDeviceContribution implements DeviceContribution {
+    async createSwapChain($canvas: HTMLCanvasElement) {
+        // 创建基于 WebGL 的 Device
+    }
+}
+```
