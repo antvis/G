@@ -6,3 +6,5 @@ export * from './text';
 export * from './string';
 export * from './event';
 export * from './canvas';
+export * from './deferred';
+export * from './dom';

@@ -80,7 +80,15 @@ module.exports = {
         slug: 'api/canvas',
         title: {
           zh: '画布',
-          en: 'Canavs',
+          en: 'Canvas',
+        },
+        order: 0,
+      },
+      {
+        slug: 'api/renderer',
+        title: {
+          zh: '渲染器',
+          en: 'Renderer',
         },
         order: 0,
       },

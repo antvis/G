@@ -52,6 +52,7 @@ export const containerModule = Module((register) => {
 });
 
 export class Plugin implements RendererPlugin {
+  name = 'svg-renderer';
   init(container: Syringe.Container): void {
     container.load(containerModule, true);
   }

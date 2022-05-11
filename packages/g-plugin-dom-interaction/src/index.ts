@@ -8,6 +8,7 @@ const containerModule = Module((register) => {
 });
 
 export class Plugin implements RendererPlugin {
+  name = 'dom-interaction';
   init(container: Syringe.Container): void {
     container.load(containerModule, true);
   }

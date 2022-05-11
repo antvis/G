@@ -31,10 +31,11 @@ const canvas = new Canvas({
   await canvas.ready;
 
   // use GPU device
-  const device = renderer.getDevice();
+  const plugin = renderer.getPlugin('device-renderer');
+  const device = plugin.getDevice();
 
   // 1. load texture with URL
-  const map = renderer.loadTexture(
+  const map = plugin.loadTexture(
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
   );
 

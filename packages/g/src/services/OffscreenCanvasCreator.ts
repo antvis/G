@@ -4,7 +4,7 @@ import { singleton } from 'mana-syringe';
  * used in following scenes:
  * - g `ctx.measureText`
  * - g-plugin-canvas-picker `ctx.isPointInPath`
- * - g-plugin-webgl-renderer `ctx.createLinearGradient` and generate texture
+ * - g-plugin-device-renderer `ctx.createLinearGradient` and generate texture
  */
 @singleton()
 export class OffscreenCanvasCreator {

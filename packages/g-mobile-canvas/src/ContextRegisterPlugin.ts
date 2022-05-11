@@ -11,6 +11,7 @@ const containerModule = Module((register) => {
 });
 
 export class ContextRegisterPlugin implements RendererPlugin {
+  name = 'mobile-canvas-context-register';
   init(container: Syringe.Container): void {
     container.load(containerModule, true);
   }

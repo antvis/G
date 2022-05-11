@@ -23,7 +23,8 @@ const canvas = new Canvas({
   await canvas.ready;
 
   // use GPU device
-  const device = renderer.getDevice();
+  const plugin = renderer.getPlugin('device-renderer');
+  const device = plugin.getDevice();
 
   const planeGeometry = new PlaneGeometry(device, {
     width: 200,

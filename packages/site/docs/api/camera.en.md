@@ -13,10 +13,10 @@ const camera = canvas.getCamera();
 
 目前相机支持以下特性：
 
-- 两种投影模式：正交投影 [Orthographic](/zh/docs/api/camera#投影模式) 和透视投影 [Perspective](/zh/docs/api/camera#投影模式)，默认使用前者。
-- 三种相机类型：[Exploring](/zh/docs/api/camera#exploring)、[Orbiting](/zh/docs/api/camera#orbiting) 和 [Tracking](/zh/docs/api/camera#tracking)，默认使用 Exploring。
-- 相机动作。例如 [pan](/zh/docs/api/camera#pan)、[dolly](/zh/docs/api/camera#dolly)、[rotate](/zh/docs/api/camera#rotate)
-- 自定义[相机动画](/zh/docs/api/camera#相机动画)，创建/保存当前相机状态作为一个 Landmark，可在多个 Landmark 间平滑切换。
+-   两种投影模式：正交投影 [Orthographic](/zh/docs/api/camera#投影模式) 和透视投影 [Perspective](/zh/docs/api/camera#投影模式)，默认使用前者。
+-   三种相机类型：[Exploring](/zh/docs/api/camera#exploring)、[Orbiting](/zh/docs/api/camera#orbiting) 和 [Tracking](/zh/docs/api/camera#tracking)，默认使用 Exploring。
+-   相机动作。例如 [pan](/zh/docs/api/camera#pan)、[dolly](/zh/docs/api/camera#dolly)、[rotate](/zh/docs/api/camera#rotate)
+-   自定义[相机动画](/zh/docs/api/camera#相机动画)，创建/保存当前相机状态作为一个 Landmark，可在多个 Landmark 间平滑切换。
 
 ## 投影模式
 
@@ -55,20 +55,20 @@ setOrthographic(left: number, right: number,
 
 参数列表如下：
 
-- `left` x 轴负向最大距离
-- `right` x 轴正向最大距离
-- `top` y 轴正向最大距离
-- `bottom` y 轴负向最大距离
-- `near` 近平面
-- `far` 远平面
+-   `left` x 轴负向最大距离
+-   `right` x 轴正向最大距离
+-   `top` y 轴正向最大距离
+-   `bottom` y 轴负向最大距离
+-   `near` 近平面
+-   `far` 远平面
 
 G 的默认相机设置如下，其中 `width/height` 为 [Canvas](/zh/docs/api/canvas) 的尺寸，[使用示例](/zh/examples/camera#ortho)：
 
 ```js
 const camera = new Camera()
-  .setPosition(width / 2, height / 2, 500)
-  .setFocalPoint(width / 2, height / 2, 0)
-  .setOrthographic(width / -2, width / 2, height / 2, height / -2, 0.1, 1000);
+    .setPosition(width / 2, height / 2, 500)
+    .setFocalPoint(width / 2, height / 2, 0)
+    .setOrthographic(width / -2, width / 2, height / 2, height / -2, 0.1, 1000);
 ```
 
 ### setPerspective()
@@ -83,18 +83,18 @@ setPerspective(near: number, far: number, fov: number, aspect: number)
 
 参数：
 
-- `near` 近平面
-- `far` 远平面
-- `fov` 可视角度，越大意味着能容纳场景中的更多对象
-- `aspect` 宽高比
+-   `near` 近平面
+-   `far` 远平面
+-   `fov` 可视角度，越大意味着能容纳场景中的更多对象
+-   `aspect` 宽高比
 
 [使用示例](/zh/examples/camera#perspective)：
 
 ```js
 camera
-  .setPosition(300, 100, 500)
-  .setFocalPoint(300, 250, 0)
-  .setPerspective(0.1, 1000, 75, 600 / 500);
+    .setPosition(300, 100, 500)
+    .setFocalPoint(300, 250, 0)
+    .setPerspective(0.1, 1000, 75, 600 / 500);
 ```
 
 ## 相机参数
@@ -306,7 +306,7 @@ setViewOffset(
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*U6ELSY2EVNIAAAAAAAAAAAAAARQnAQ" alt="setViewOffset" width="300">
 
-在 [g-plugin-webgl-renderer](/zh/docs/plugins/webgl-renderer) 中拾取时，我们使用该方法设置偏移量（将相机对准拾取区域），仅渲染拾取区域而非整个屏幕以提高性能。
+在 [g-plugin-device-renderer](/zh/docs/plugins/device-renderer) 中拾取时，我们使用该方法设置偏移量（将相机对准拾取区域），仅渲染拾取区域而非整个屏幕以提高性能。
 
 ### clearViewOffset()
 
@@ -459,8 +459,8 @@ pan(tx: number, ty: number)
 
 参数：
 
-- `tx` 沿 u 轴正向平移
-- `ty` 沿 v 轴正向平移
+-   `tx` 沿 u 轴正向平移
+-   `ty` 沿 v 轴正向平移
 
 在该[示例](/zh/examples/camera#action) 中，下面的操作将导致原本处于视点处的物体展示在左上角：
 
@@ -484,7 +484,7 @@ dolly(value: number)
 
 参数：
 
-- `value` 以 `dollyingStep` 为单位，正向远离视点，负向靠近
+-   `value` 以 `dollyingStep` 为单位，正向远离视点，负向靠近
 
 使用示例：
 
@@ -521,26 +521,26 @@ camera.rotate(0, 0, 30);
 
 创建一个 Landmark，参数包括：
 
-- markName 名称
-- options 相机参数，包括：
-  - position 世界坐标系下的相机位置，取值类型参考 [setPosition](/zh/docs/api/camera#setposition)
-  - focalPoint 世界坐标系下的视点，取值类型参考 [setFocalPoint](/zh/docs/api/camera#setfocalpoint)
-  - roll 旋转角度，取值类型参考 [setRoll](/zh/docs/api/camera#setroll)
-  - zoom 缩放比例，取值类型参考 [setZoom](/zh/docs/api/camera#setzoom)
+-   markName 名称
+-   options 相机参数，包括：
+    -   position 世界坐标系下的相机位置，取值类型参考 [setPosition](/zh/docs/api/camera#setposition)
+    -   focalPoint 世界坐标系下的视点，取值类型参考 [setFocalPoint](/zh/docs/api/camera#setfocalpoint)
+    -   roll 旋转角度，取值类型参考 [setRoll](/zh/docs/api/camera#setroll)
+    -   zoom 缩放比例，取值类型参考 [setZoom](/zh/docs/api/camera#setzoom)
 
 ```js
 camera.createLandmark('mark1', {
-  position: [300, 250, 400],
-  focalPoint: [300, 250, 0],
+    position: [300, 250, 400],
+    focalPoint: [300, 250, 0],
 });
 camera.createLandmark('mark2', {
-  position: [300, 600, 500],
-  focalPoint: [300, 250, 0],
+    position: [300, 600, 500],
+    focalPoint: [300, 250, 0],
 });
 camera.createLandmark('mark3', {
-  position: [0, 250, 800],
-  focalPoint: [300, 250, 0],
-  roll: 30,
+    position: [0, 250, 800],
+    focalPoint: [300, 250, 0],
+    roll: 30,
 });
 ```
 
@@ -559,12 +559,12 @@ camera.gotoLandmark(landmark, { duration: 300, easing: 'ease-in' });
 
 参数列表如下：
 
-- markName 名称或者已创建的 Landmark
-- options 动画参数，包括：
-  - duration 动画持续时间，单位为 `ms`，默认值为 `100`
-  - easing 缓动函数，默认值为 `linear`。和动画系统一致的[内置效果](/zh/docs/api/animation#easing-1)
-  - easingFunction 自定义缓动函数，当内置的缓动函数无法满足要求时，可以[自定义](/zh/docs/api/animation#easingfunction)
-  - onfinish 动画结束后的回调函数
+-   markName 名称或者已创建的 Landmark
+-   options 动画参数，包括：
+    -   duration 动画持续时间，单位为 `ms`，默认值为 `100`
+    -   easing 缓动函数，默认值为 `linear`。和动画系统一致的[内置效果](/zh/docs/api/animation#easing-1)
+    -   easingFunction 自定义缓动函数，当内置的缓动函数无法满足要求时，可以[自定义](/zh/docs/api/animation#easingfunction)
+    -   onfinish 动画结束后的回调函数
 
 和动画系统中的 [options](/zh/docs/api/animation#options) 参数一样，传入 `number` 时等同于设置 `duration`：
 

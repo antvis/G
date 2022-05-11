@@ -11,10 +11,10 @@ IoC(Inversion of Control) 控制反转这种设计模式将对象的创建销毁
 
 我们选择了 [mana-syringe](https://github.com/umijs/mana/tree/master/packages/mana-syringe) 作为轻量的 IoC 容器，统一管理各类复杂的服务，实现松耦合的代码结构，同时具有以下收益：
 
-- 提供高扩展性：
-  - 支持上层 `g-canvas/svg/webgl` 替换上下文与渲染服务，实现渲染器运行时可切换
-  - 核心层暴露扩展点，内部默认实现可替换，插件系统也正是基于此设计
-- 便于测试。例如 `g-webgl` 测试用例中替换渲染引擎服务为基于 `headless-gl` 的渲染服务。
+-   提供高扩展性：
+    -   支持上层 `g-canvas/svg/webgl` 替换上下文与渲染服务，实现渲染器运行时可切换
+    -   核心层暴露扩展点，内部默认实现可替换，插件系统也正是基于此设计
+-   便于测试。例如 `g-webgl` 测试用例中替换渲染引擎服务为基于 `headless-gl` 的渲染服务。
 
 下面我们简单介绍下 G 目前对于容器的使用情况。
 
@@ -52,7 +52,7 @@ GlobalContainer 全局容器
 
 ## DisplayObjectPool
 
-一个全局对象池，可以通过实体 id 获取。例如在 [g-plugin-webgl-renderer](/zh/docs/plugins/webgl-renderer) 基于 GPU 颜色编码的拾取过程中，会通过读取纹理获取到的 id 反查命中对象。
+一个全局对象池，可以通过实体 id 获取。例如在 [g-plugin-device-renderer](/zh/docs/plugins/device-renderer) 基于 GPU 颜色编码的拾取过程中，会通过读取纹理获取到的 id 反查命中对象。
 
 ## SceneGraphSelector
 
@@ -62,9 +62,9 @@ GlobalContainer 全局容器
 
 ```ts
 export interface SceneGraphSelector {
-  selectOne<R extends IElement, T extends IElement>(query: string, root: R): T | null;
-  selectAll<R extends IElement, T extends IElement>(query: string, root: R): T[];
-  is<T extends IElement>(query: string, element: T): boolean;
+    selectOne<R extends IElement, T extends IElement>(query: string, root: R): T | null;
+    selectAll<R extends IElement, T extends IElement>(query: string, root: R): T[];
+    is<T extends IElement>(query: string, element: T): boolean;
 }
 ```
 
@@ -101,15 +101,15 @@ solarSystem.querySelectorAll('[r=25]');
 ```js
 @singleton({ token: { token: GeometryAABBUpdater, named: Shape.CIRCLE } })
 export class CircleUpdater implements GeometryAABBUpdater<ParsedCircleStyleProps> {
-  update(parsedStyle: ParsedCircleStyleProps) {
-    const { r = 0, x = 0, y = 0 } = parsedStyle;
-    return {
-      width: r * 2,
-      height: r * 2,
-      x,
-      y,
-    };
-  }
+    update(parsedStyle: ParsedCircleStyleProps) {
+        const { r = 0, x = 0, y = 0 } = parsedStyle;
+        return {
+            width: r * 2,
+            height: r * 2,
+            x,
+            y,
+        };
+    }
 }
 ```
 
@@ -119,8 +119,8 @@ export class CircleUpdater implements GeometryAABBUpdater<ParsedCircleStyleProps
 
 负责解析图形的属性，例如：
 
-- 将 [Path](/zh/docs/api/basic/path) 的 [path](/zh/docs/api/basic/path#path) 属性解析成可供后续渲染的结构
-- 将 [transform](/zh/docs/api/basic/display-object#transform) 属性由 `translate(0, 0)` 这样的字符串解析成变换矩阵
+-   将 [Path](/zh/docs/api/basic/path) 的 [path](/zh/docs/api/basic/path#path) 属性解析成可供后续渲染的结构
+-   将 [transform](/zh/docs/api/basic/display-object#transform) 属性由 `translate(0, 0)` 这样的字符串解析成变换矩阵
 
 ## StylePropertyUpdaterFactory
 
@@ -201,14 +201,14 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
 ```js
 interface ContextService<Context> {
-  init(): void;
-  destroy(): void;
-  getContext(): Context | null;
-  getDomElement(): HTMLElement | null;
-  getDPR(): number;
-  getBoundingClientRect(): DOMRect | undefined;
-  resize(width: number, height: number): void;
-  applyCursorStyle(cursor: string): void;
+    init(): void;
+    destroy(): void;
+    getContext(): Context | null;
+    getDomElement(): HTMLElement | null;
+    getDPR(): number;
+    getBoundingClientRect(): DOMRect | undefined;
+    resize(width: number, height: number): void;
+    applyCursorStyle(cursor: string): void;
 }
 ```
 
@@ -256,24 +256,24 @@ renderingService.hooks.init.tap(CanvasRendererPlugin.tag, () => {});
 
 ```js
 interface RenderingContext {
-  /**
-   * root of scenegraph
-   */
-  root: Group;
+    /**
+     * root of scenegraph
+     */
+    root: Group;
 
-  /**
-   * force rendering at next frame
-   */
-  force: boolean;
+    /**
+     * force rendering at next frame
+     */
+    force: boolean;
 
-  removedRenderBoundsList: AABB[];
+    removedRenderBoundsList: AABB[];
 
-  /**
-   * reason of re-render, reset after every renderred frame
-   */
-  renderReasons: Set<RENDER_REASON>;
+    /**
+     * reason of re-render, reset after every renderred frame
+     */
+    renderReasons: Set<RENDER_REASON>;
 
-  dirty: boolean;
+    dirty: boolean;
 }
 ```
 

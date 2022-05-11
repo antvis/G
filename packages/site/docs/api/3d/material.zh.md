@@ -25,7 +25,8 @@ import {
 // 等待画布初始化完成
 await canvas.ready;
 // 获取 GPU Device
-const device = renderer.getDevice();
+const plugin = renderer.getPlugin('device-renderer');
+const device = plugin.getDevice();
 
 const sphereGeometry = new SphereGeometry(device, {
     radius: 200,

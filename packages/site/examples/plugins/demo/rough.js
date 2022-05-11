@@ -13,22 +13,24 @@ import {
   Image,
   convertToPath,
 } from '@antv/g';
-import { Renderer } from '@antv/g-canvas';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Plugin as PluginRoughCanvasRenderer } from '@antv/g-plugin-rough-canvas-renderer';
 import Stats from 'stats.js';
 import * as lil from 'lil-gui';
 import WebFont from 'webfontloader';
 
 // create a renderer
-const renderer = new Renderer();
-renderer.registerPlugin(new PluginRoughCanvasRenderer());
+const canvasRenderer = new CanvasRenderer();
+const svgRenderer = new SVGRenderer();
+canvasRenderer.registerPlugin(new PluginRoughCanvasRenderer());
 
 // create a canvas & use `g-canvas`
 const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer,
+  renderer: canvasRenderer,
 });
 
 /**
@@ -278,6 +280,15 @@ canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
 // GUI
 const gui = new lil.GUI({ autoPlace: false });
 $wrapper.appendChild(gui.domElement);
+
+const rendererFolder = gui.addFolder('renderer');
+const rendererConfig = {
+  renderer: 'canvas',
+};
+rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'svg']).onChange((renderer) => {
+  canvas.setRenderer(renderer === 'canvas' ? canvasRenderer : svgRenderer);
+});
+rendererFolder.open();
 
 const sunFolder = gui.addFolder('sun');
 const sunConfig = {

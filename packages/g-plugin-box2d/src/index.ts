@@ -9,6 +9,7 @@ const containerModule = Module((register) => {
 });
 
 export class Plugin implements RendererPlugin {
+  name = 'box2d';
   private container: Syringe.Container;
 
   constructor(private options: Partial<Box2DPluginOptions>) {}

@@ -15,11 +15,11 @@ module.exports = {
       amd: 'mana-syringe',
       root: ['G', 'ManaSyringe'],
     },
-    '@antv/g-plugin-webgl-renderer': {
-      commonjs: '@antv/g-plugin-webgl-renderer',
-      commonjs2: '@antv/g-plugin-webgl-renderer',
-      amd: '@antv/g-plugin-webgl-renderer',
-      root: ['G', 'WebGL', 'WebGLRenderer'],
+    '@antv/g-plugin-device-renderer': {
+      commonjs: '@antv/g-plugin-device-renderer',
+      commonjs2: '@antv/g-plugin-device-renderer',
+      amd: '@antv/g-plugin-device-renderer',
+      root: ['G', 'DeviceRenderer'],
     },
   },
   output: {

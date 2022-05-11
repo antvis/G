@@ -24,8 +24,11 @@ const group = new Group();
 
 (async () => {
   await canvas.ready;
-  const device = webglRenderer.getDevice();
-  const map = webglRenderer.loadTexture(
+
+  const plugin = webglRenderer.getPlugin('device-renderer');
+  const device = plugin.getDevice();
+
+  const map = plugin.loadTexture(
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
   );
 

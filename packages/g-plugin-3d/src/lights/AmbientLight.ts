@@ -1,7 +1,7 @@
 import type { DisplayObjectConfig } from '@antv/g';
 import { CSSRGB } from '@antv/g';
-import type { LightProps, RenderInstUniform } from '@antv/g-plugin-webgl-renderer';
-import { Light } from '@antv/g-plugin-webgl-renderer';
+import type { LightProps, RenderInstUniform } from '@antv/g-plugin-device-renderer';
+import { Light } from '@antv/g-plugin-device-renderer';
 
 export type AmbientLightProps = LightProps;
 export class AmbientLight extends Light {

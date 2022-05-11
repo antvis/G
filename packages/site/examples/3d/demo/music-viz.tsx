@@ -64,7 +64,8 @@ const App = function MusicViz() {
     (async () => {
       await canvas.ready;
 
-      const device = renderer.getDevice();
+      const plugin = renderer.getPlugin('device-renderer');
+      const device = plugin.getDevice();
 
       const sphereGeometry = new SphereGeometry(device, {
         radius: 100,

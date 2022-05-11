@@ -22,8 +22,9 @@ const canvas = new Canvas({
 
 (async () => {
   await canvas.ready;
-  const device = renderer.getDevice();
-  const map = renderer.loadTexture(
+  const plugin = renderer.getPlugin('device-renderer');
+  const device = plugin.getDevice();
+  const map = plugin.loadTexture(
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
   );
 

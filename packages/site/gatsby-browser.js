@@ -17,6 +17,7 @@ window.g = require('@antv/g');
 window.gCanvas = require('@antv/g-canvas');
 window.gWebgl = require('@antv/g-webgl');
 window.gSvg = require('@antv/g-svg');
+window.gWebgpu = require('@antv/g-webgpu');
 window.gComponents = require('@antv/g-components');
 // plugins
 window.gPluginCssSelect = require('@antv/g-plugin-css-select');
@@ -28,9 +29,7 @@ window.gPluginBox2d = require('@antv/g-plugin-box2d');
 window.gPluginMatterjs = require('@antv/g-plugin-matterjs');
 window.gPluginYoga = require('@antv/g-plugin-yoga');
 window.gPluginRoughCanvasRenderer = require('@antv/g-plugin-rough-canvas-renderer');
-// window.gPluginYogaWasm = require('@antv/g-plugin-yoga-wasm');
 // compiler for GPGPU
-window.gWebgpuCompiler = require('@antv/g-webgpu-compiler');
 window.webgpuGraph = require('@antv/webgpu-graph');
 
 window.reactG = require('@antv/react-g');

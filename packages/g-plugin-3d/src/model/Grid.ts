@@ -9,7 +9,7 @@
 //   Format,
 //   RenderInst,
 //   VertexBufferFrequency,
-// } from '@antv/g-plugin-webgl-renderer';
+// } from '@antv/g-plugin-device-renderer';
 // import { GridStyleProps } from '../Grid';
 
 // class GridProgram extends DeviceProgram {

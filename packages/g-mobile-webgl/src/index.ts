@@ -1,48 +1,33 @@
 import type { RendererConfig } from '@antv/g';
 import { AbstractRenderer } from '@antv/g';
-import * as MobileInteraction from '@antv/g-plugin-mobile-interaction';
-import * as WebGLRenderer from '@antv/g-plugin-webgl-renderer';
-import type { TextureDescriptor } from '@antv/g-plugin-webgl-renderer';
+import * as DomInteraction from '@antv/g-plugin-dom-interaction';
+import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
+import * as WebGLDevice from '@antv/g-plugin-webgl-device';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
-export { MobileInteraction, WebGLRenderer };
+export { DomInteraction, DeviceRenderer, WebGLDevice };
 
 interface WebGLRendererConfig extends RendererConfig {
-  targets: ('webgl1' | 'webgl2' | 'webgpu')[];
-  plugins: {
-    enableDOMInteraction: boolean;
-  };
+  targets: ('webgl1' | 'webgl2')[];
 }
 
 export class Renderer extends AbstractRenderer {
-  private renderGraphPlugin: WebGLRenderer.Plugin;
-
   constructor(config?: Partial<WebGLRendererConfig>) {
     super(config);
 
     this.registerPlugin(new ContextRegisterPlugin());
-    this.renderGraphPlugin = new WebGLRenderer.Plugin(
-      config?.targets
-        ? {
-            targets: config.targets,
-          }
-        : {},
+    this.registerPlugin(
+      new WebGLDevice.Plugin(
+        config?.targets
+          ? {
+              targets: config.targets,
+            }
+          : {
+              targets: ['webgl2', 'webgl1'],
+            },
+      ),
     );
-    this.registerPlugin(this.renderGraphPlugin);
-    if (config?.plugins?.enableDOMInteraction !== false) {
-      this.registerPlugin(new MobileInteraction.Plugin());
-    }
-  }
-
-  getDevice() {
-    return this.renderGraphPlugin.getDevice();
-  }
-
-  loadTexture(
-    src: string | TexImageSource,
-    descriptor?: TextureDescriptor,
-    successCallback?: () => void,
-  ) {
-    return this.renderGraphPlugin.loadTexture(src, descriptor, successCallback);
+    this.registerPlugin(new DeviceRenderer.Plugin());
+    this.registerPlugin(new DomInteraction.Plugin());
   }
 }

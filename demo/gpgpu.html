@@ -28,6 +28,7 @@
 
     <script src="../packages/g/dist/index.umd.min.js" type="application/javascript"></script>
     <script src="../packages/g-webgl/dist/index.umd.min.js" type="application/javascript"></script>
+    <script src="../packages/g-webgpu/dist/index.umd.min.js" type="application/javascript"></script>
     <script
       src="../packages/g-plugin-gpgpu/dist/index.umd.min.js"
       type="application/javascript"
@@ -45,7 +46,8 @@
     </script>
     <script>
       const { Canvas, Circle, Line } = window.G;
-      const { Renderer } = window.G.WebGL;
+      const { Renderer: WebGLRenderer } = window.G.WebGL;
+      const { Renderer: WebGPURenderer } = window.G.WebGPU;
       const { Plugin, Kernel, BufferUsage } = window.G.GPGPU;
 
       /**
@@ -60,7 +62,7 @@
       const CANVAS_SIZE = 600;
 
       // use WebGPU
-      const renderer = new Renderer({ targets: ['webgpu'] });
+      const renderer = new WebGPURenderer();
       renderer.registerPlugin(new Plugin());
 
       // create a canvas
@@ -104,7 +106,8 @@
         const k2 = area / (nodes.length + 1);
         const k = Math.sqrt(k2);
 
-        const device = renderer.getDevice();
+        const plugin = renderer.getPlugin('device-renderer');
+        const device = plugin.getDevice();
         const kernel = new Kernel(device, {
           computeShader: `
       struct Buffer {
@@ -311,7 +314,7 @@
         const $canvasContainer = document.createElement('div');
         $wrapper.appendChild($canvasContainer);
 
-        const renderer = new Renderer({ targets: ['webgl2', 'webgl1'] });
+        const renderer = new WebGLRenderer({ targets: ['webgl2', 'webgl1'] });
         const canvas = new Canvas({
           container: $canvasContainer,
           width: CANVAS_SIZE,

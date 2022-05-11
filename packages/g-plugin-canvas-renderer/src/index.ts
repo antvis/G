@@ -3,8 +3,7 @@ import { Shape } from '@antv/g';
 import type { Syringe } from 'mana-syringe';
 import { Module, GlobalContainer } from 'mana-syringe';
 import RBush from 'rbush';
-import type {
-  StyleRenderer} from './shapes/styles';
+import type { StyleRenderer } from './shapes/styles';
 import {
   CircleRenderer,
   CircleRendererContribution,
@@ -147,6 +146,7 @@ const containerModule = Module((register) => {
 });
 
 export class Plugin implements RendererPlugin {
+  name = 'canvas-renderer';
   init(container: Syringe.Container): void {
     container.load(containerModule, true);
   }

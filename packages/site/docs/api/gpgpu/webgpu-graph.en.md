@@ -90,7 +90,7 @@ const graph = new WebGPUGraph();
 
 -   注册 [g-plugin-gpgpu](/zh/docs/plugins/gpgpu) 插件
 -   等待画布初始化
--   获取 GPU [Device](/zh/docs/plugins/webgl-renderer#device)
+-   获取 GPU [Device](/zh/docs/plugins/device-renderer#device)
 -   调用算法，此时算法的第一个参数为上一步获取到的 Device
 
 ```js
@@ -114,7 +114,8 @@ const canvas = new Canvas({
     await canvas.ready;
 
     // 通过渲染器获取 Device
-    const device = renderer.getDevice();
+    const plugin = renderer.getPlugin('device-renderer');
+    const device = plugin.getDevice();
 
     // 调用算法，传入 device 和图数据
     const result = await pageRank(device, data);

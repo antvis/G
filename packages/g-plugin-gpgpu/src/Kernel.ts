@@ -1,6 +1,5 @@
-import type { Buffer } from '@antv/g-plugin-webgl-renderer';
-import { BufferUsage } from '@antv/g-plugin-webgl-renderer';
-import type { Device, ComputePipeline } from '@antv/g-plugin-webgl-renderer';
+import type { Buffer, Device, ComputePipeline } from '@antv/g-plugin-device-renderer';
+import { BufferUsage } from '@antv/g-plugin-device-renderer';
 import type { KernelBundle } from './interface';
 import { Target } from './interface';
 

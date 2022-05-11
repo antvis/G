@@ -100,7 +100,7 @@ export class RenderingService {
     endFrame: new SyncHook<[]>([]),
     destroy: new SyncHook<[]>([]),
     /**
-     * use async but faster method such as GPU-based picking in `g-plugin-webgl-renderer`
+     * use async but faster method such as GPU-based picking in `g-plugin-device-renderer`
      */
     pick: new AsyncSeriesWaterfallHook<[PickingResult], PickingResult>(['result']),
     /**

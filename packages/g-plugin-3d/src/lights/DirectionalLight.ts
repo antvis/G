@@ -1,7 +1,7 @@
 import type { DisplayObjectConfig } from '@antv/g';
 import { CSSRGB } from '@antv/g';
-import type { LightProps, RenderInstUniform } from '@antv/g-plugin-webgl-renderer';
-import { Light } from '@antv/g-plugin-webgl-renderer';
+import type { LightProps, RenderInstUniform } from '@antv/g-plugin-device-renderer';
+import { Light } from '@antv/g-plugin-device-renderer';
 import { vec3 } from 'gl-matrix';
 
 export interface DirectionalLightProps extends LightProps {

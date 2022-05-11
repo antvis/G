@@ -26,6 +26,7 @@ const containerModule = Module((register) => {
 });
 
 export class Plugin implements RendererPlugin {
+  name = 'rough-svg-renderer';
   init(container: Syringe.Container): void {
     container.load(containerModule, true);
 
