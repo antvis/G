@@ -32,7 +32,8 @@ const canvas = new Canvas({
   await canvas.ready;
 
   // use GPU device
-  const device = renderer.getDevice();
+  const plugin = renderer.getPlugin('device-renderer');
+  const device = plugin.getDevice();
 
   // create buffer geometry
   const bufferGeometry = new BufferGeometry(device);

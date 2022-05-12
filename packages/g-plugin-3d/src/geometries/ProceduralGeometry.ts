@@ -5,7 +5,7 @@ import {
   VertexAttributeBufferIndex,
   VertexBufferFrequency,
   VertexAttributeLocation,
-} from '@antv/g-plugin-webgl-renderer';
+} from '@antv/g-plugin-device-renderer';
 import { mat4, vec3, vec4 } from 'gl-matrix';
 
 export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<GeometryProps> {

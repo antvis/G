@@ -27,6 +27,7 @@ const line1 = new Line({
     y2: 100,
     stroke: '#1890FF',
     lineWidth: 2,
+    cursor: 'pointer',
   },
 });
 
@@ -116,6 +117,8 @@ const lineConfig = {
   lineDash: 0,
   lineDashOffset: 0,
   visible: true,
+  increasedLineWidthForHitTesting: 0,
+  cursor: 'pointer',
 };
 lineFolder.add(lineConfig, 'lineJoin', ['miter', 'round', 'bevel']).onChange((lineJoin) => {
   line1.style.lineJoin = lineJoin;
@@ -159,6 +162,16 @@ lineFolder.add(lineConfig, 'visible').onChange((visible) => {
     // line1.hide();
   }
 });
+lineFolder
+  .add(lineConfig, 'increasedLineWidthForHitTesting', 0, 200)
+  .onChange((increasedLineWidthForHitTesting) => {
+    line1.style.increasedLineWidthForHitTesting = increasedLineWidthForHitTesting;
+  });
+lineFolder
+  .add(lineConfig, 'cursor', ['default', 'pointer', 'help', 'progress', 'text', 'move'])
+  .onChange((cursor) => {
+    line1.style.cursor = cursor;
+  });
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {

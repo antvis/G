@@ -23,13 +23,21 @@ import { RoughRendererPlugin } from './RoughRendererPlugin';
 
 const containerModule = Module((register) => {
   register(RoughRendererPlugin);
+
+  // replace them with our 'rough' styled renderer
+  register(CircleRoughRenderer);
+  register(EllipseRoughRenderer);
+  register(RectRoughRenderer);
+  register(LineRoughRenderer);
+  register(PolylineRoughRenderer);
+  register(PolygonRoughRenderer);
+  register(PathRoughRenderer);
 });
 
 export class Plugin implements RendererPlugin {
+  name = 'rough-canvas-renderer';
   init(container: Syringe.Container): void {
-    container.load(containerModule, true);
-
-    // unregister default renderer in `g-plugin-canvas-renderer`suoyi
+    // unregister default renderer in `g-plugin-canvas-renderer`
     container.remove(CircleRenderer);
     container.remove(EllipseRenderer);
     container.remove(RectRenderer);
@@ -38,16 +46,17 @@ export class Plugin implements RendererPlugin {
     container.remove(PolygonRenderer);
     container.remove(PathRenderer);
 
-    // replace them with our 'rough' styled renderer
-    container.register(CircleRoughRenderer);
-    container.register(EllipseRoughRenderer);
-    container.register(RectRoughRenderer);
-    container.register(LineRoughRenderer);
-    container.register(PolylineRoughRenderer);
-    container.register(PolygonRoughRenderer);
-    container.register(PathRoughRenderer);
+    container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
     container.unload(containerModule);
+
+    container.register(CircleRenderer);
+    container.register(EllipseRenderer);
+    container.register(RectRenderer);
+    container.register(LineRenderer);
+    container.register(PolylineRenderer);
+    container.register(PolygonRenderer);
+    container.register(PathRenderer);
   }
 }

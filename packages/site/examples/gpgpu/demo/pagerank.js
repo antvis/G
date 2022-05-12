@@ -1,6 +1,6 @@
 import { Algorithm } from '@antv/g6';
 import { Canvas, CanvasEvent } from '@antv/g';
-import { Renderer } from '@antv/g-webgl';
+import { Renderer } from '@antv/g-webgpu';
 import { Plugin, Kernel, BufferUsage } from '@antv/g-plugin-gpgpu';
 
 /**
@@ -32,7 +32,7 @@ $text.textContent = 'Please open the devtools, the top nodes will be printed in 
 $wrapper.appendChild($text);
 
 // use WebGPU
-const renderer = new Renderer({ targets: ['webgpu'] });
+const renderer = new Renderer();
 renderer.registerPlugin(new Plugin());
 
 // create a canvas
@@ -44,7 +44,8 @@ const canvas = new Canvas({
 });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
-  const device = renderer.getDevice();
+  const plugin = renderer.getPlugin('device-renderer');
+  const device = plugin.getDevice();
   const storeKernel = new Kernel(device, {
     computeShader: `
 struct Buffer {

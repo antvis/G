@@ -46,6 +46,7 @@ const containerModule = Module((register) => {
 });
 
 export class Plugin implements RendererPlugin {
+  name = 'canvas-picker';
   init(container: Syringe.Container): void {
     container.load(containerModule, true);
   }

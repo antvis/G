@@ -28,6 +28,7 @@ const rect = new Rect({
     stroke: '#F04864',
     lineWidth: 4,
     radius: 8,
+    cursor: 'pointer',
   },
 });
 
@@ -74,24 +75,26 @@ const rectConfig = {
   radius: 8,
   fillOpacity: 1,
   strokeOpacity: 1,
+  increasedLineWidthForHitTesting: 0,
+  cursor: 'pointer',
 };
 rectFolder.add(rectConfig, 'width', 50, 400).onChange((width) => {
-  rect.attr('width', width);
+  rect.style.width = width;
 });
 rectFolder.add(rectConfig, 'height', 50, 400).onChange((height) => {
-  rect.attr('height', height);
+  rect.style.height = height;
 });
 rectFolder.addColor(rectConfig, 'fill').onChange((color) => {
-  rect.attr('fill', color);
+  rect.style.fill = color;
 });
 rectFolder.addColor(rectConfig, 'stroke').onChange((color) => {
-  rect.attr('stroke', color);
+  rect.style.stroke = color;
 });
 rectFolder.add(rectConfig, 'radius', 0, 20).onChange((radius) => {
-  rect.attr('radius', radius);
+  rect.style.radius = radius;
 });
 rectFolder.add(rectConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
-  rect.attr('lineWidth', lineWidth);
+  rect.style.lineWidth = lineWidth;
 });
 rectFolder.add(rectConfig, 'lineDash', 0, 100).onChange((lineDash) => {
   rect.style.lineDash = [lineDash];
@@ -100,11 +103,21 @@ rectFolder.add(rectConfig, 'lineDashOffset', 0, 100).onChange((lineDashOffset) =
   rect.style.lineDashOffset = lineDashOffset;
 });
 rectFolder.add(rectConfig, 'fillOpacity', 0, 1, 0.1).onChange((opacity) => {
-  rect.attr('fillOpacity', opacity);
+  rect.style.fillOpacity = opacity;
 });
 rectFolder.add(rectConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
-  rect.attr('strokeOpacity', opacity);
+  rect.style.strokeOpacity = opacity;
 });
+rectFolder
+  .add(rectConfig, 'increasedLineWidthForHitTesting', 0, 200)
+  .onChange((increasedLineWidthForHitTesting) => {
+    rect.style.increasedLineWidthForHitTesting = increasedLineWidthForHitTesting;
+  });
+rectFolder
+  .add(rectConfig, 'cursor', ['default', 'pointer', 'help', 'progress', 'text', 'move'])
+  .onChange((cursor) => {
+    rect.style.cursor = cursor;
+  });
 rectFolder.open();
 
 const transformFolder = gui.addFolder('transform');

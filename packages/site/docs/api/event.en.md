@@ -5,14 +5,14 @@ order: -3
 
 事件系统能提供丰富的交互，在设计时我们遵循两个原则：
 
-- 尽可能和 DOM API 保持一致，除了能降低学习成本，最重要的是能接入已有生态（例如手势库）。
-- 仅提供标准事件。拖拽、手势等高级事件通过扩展方式定义。
+-   尽可能和 DOM API 保持一致，除了能降低学习成本，最重要的是能接入已有生态（例如手势库）。
+-   仅提供标准事件。拖拽、手势等高级事件通过扩展方式定义。
 
 熟悉 [DOM 事件流](https://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-flow-h2) 的开发者对以下概念肯定不陌生：
 
-- 事件对象上有一个指向 EventTarget 的引用，在 DOM 中自然是 DOM 元素，在 G 中是 [EventTarget](/zh/docs/api/builtin-objects/event-target)
-- 事件流包含捕获和冒泡阶段，可以通过事件对象上的某些方法介入它们
-- 可以为某个事件添加一个或多个监听器，它们按照注册顺序依次触发
+-   事件对象上有一个指向 EventTarget 的引用，在 DOM 中自然是 DOM 元素，在 G 中是 [EventTarget](/zh/docs/api/builtin-objects/event-target)
+-   事件流包含捕获和冒泡阶段，可以通过事件对象上的某些方法介入它们
+-   可以为某个事件添加一个或多个监听器，它们按照注册顺序依次触发
 
 目前我们支持以下[基础事件](/zh/docs/api/event#type)，尽可能兼容了 DOM 事件流，因此在下面的很多 API 介绍中我们都附上了 DOM Event API 对应的参考链接。
 
@@ -20,10 +20,10 @@ order: -3
 
 ```js
 circle.addEventListener('mouseenter', () => {
-  circle.attr('fill', '#2FC25B');
+    circle.attr('fill', '#2FC25B');
 });
 circle.addEventListener('mouseleave', () => {
-  circle.attr('fill', '#1890FF');
+    circle.attr('fill', '#1890FF');
 });
 ```
 
@@ -39,38 +39,38 @@ circle.addEventListener('mouseleave', () => {
 
 Pointer 系列：
 
-- pointerdown
-- pointerup
-- pointerupoutside
-- pointertap
-- pointerover
-- pointerenter
-- pointerleave
-- pointerout
+-   pointerdown
+-   pointerup
+-   pointerupoutside
+-   pointertap
+-   pointerover
+-   pointerenter
+-   pointerleave
+-   pointerout
 
 Mouse 系列：
 
-- mousedown 鼠标左键按下
-- rightdown 鼠标右键按下
-- mouseup 鼠标左键抬起
-- rightup 鼠标右键抬起
-- mouseupoutside 鼠标左键抬起时与按下时图形不同
-- rightupoutside 鼠标右键抬起与按下时图形不同
-- click 单击 & 双击 [如何区分?](/zh/docs/api/event#鼠标双击事件)
-- mousemove 鼠标持续在该图形上移动
-- mouseover 鼠标从该图形上移入，会冒泡
-- mouseout 鼠标从该图形上移出，会冒泡
-- mouseenter 鼠标从该图形上移入，不会冒泡
-- mouseleave 鼠标从该图形上移出，不会冒泡
-- wheel 滚轮
+-   mousedown 鼠标左键按下
+-   rightdown 鼠标右键按下
+-   mouseup 鼠标左键抬起
+-   rightup 鼠标右键抬起
+-   mouseupoutside 鼠标左键抬起时与按下时图形不同
+-   rightupoutside 鼠标右键抬起与按下时图形不同
+-   click 单击 & 双击 [如何区分?](/zh/docs/api/event#鼠标双击事件)
+-   mousemove 鼠标持续在该图形上移动
+-   mouseover 鼠标从该图形上移入，会冒泡
+-   mouseout 鼠标从该图形上移出，会冒泡
+-   mouseenter 鼠标从该图形上移入，不会冒泡
+-   mouseleave 鼠标从该图形上移出，不会冒泡
+-   wheel 滚轮
 
 Touch 系列：
 
-- touchstart
-- touchend
-- touchendoutside
-- touchmove
-- touchcancel
+-   touchstart
+-   touchend
+-   touchendoutside
+-   touchmove
+-   touchcancel
 
 ## 场景图事件
 
@@ -80,26 +80,26 @@ Touch 系列：
 import { ElementEvent } from '@antv/g';
 
 canvas.addEventListener(ElementEvent.MOUNTED, (e) => {
-  e.target;
+    e.target;
 });
 ```
 
 目前我们支持如下场景图相关事件：
 
-- CHILD_INSERTED 作为父节点有子节点添加时触发
-- INSERTED 作为子节点被添加时触发
-- CHILD_REMOVED 作为父节点有子节点移除时触发
-- REMOVED 作为子节点被移除时触发
-- MOUNTED 首次进入画布时触发
-- UNMOUNTED 从画布中移除时触发
-- ATTR_MODIFIED 修改属性时触发
-- DESTROY 销毁时触发
+-   CHILD_INSERTED 作为父节点有子节点添加时触发
+-   INSERTED 作为子节点被添加时触发
+-   CHILD_REMOVED 作为父节点有子节点移除时触发
+-   REMOVED 作为子节点被移除时触发
+-   MOUNTED 首次进入画布时触发
+-   UNMOUNTED 从画布中移除时触发
+-   ATTR_MODIFIED 修改属性时触发
+-   DESTROY 销毁时触发
 
 在下面的例子中，画布监听 INSERTED REMOVED MOUNTED 和 UNMOUNTED 事件。在加入、移除场景图时，以下事件会依次触发：
 
 ```js
 canvas.addEventListener(ElementEvent.INSERTED, (e) => {
-  console.log(ElementEvent.INSERTED, e.target);
+    console.log(ElementEvent.INSERTED, e.target);
 });
 // 省略其他事件监听器
 
@@ -130,14 +130,14 @@ target.addEventListener(type, listener, useCapture);
 
 其中参数为：
 
-- type 事件名称，[内置标准事件](/zh/docs/api/event#type) 或[自定义事件名]()
-- listener 事件监听器，支持以下两种写法：
-  - 处理函数 `Function`
-  - [EventListener](https://developer.mozilla.org/zh-CN/docs/Web/API/EventListener/handleEvent) 对象，形如 `{ handleEvent: Function }`
-- options `可选`
-  - capture `boolean`，表示 listener 会在该类型的事件捕获阶段传播到该 EventTarget 时触发。
-  - once `boolean`，表示 listener 在添加之后最多只调用一次。如果是 `true`， listener 会在其被调用之后自动移除。
-- useCapture `可选` `boolean` 默认为 `false`。如果是 `true`，向上冒泡的事件不会触发 listener。
+-   type 事件名称，[内置标准事件](/zh/docs/api/event#type) 或[自定义事件名]()
+-   listener 事件监听器，支持以下两种写法：
+    -   处理函数 `Function`
+    -   [EventListener](https://developer.mozilla.org/zh-CN/docs/Web/API/EventListener/handleEvent) 对象，形如 `{ handleEvent: Function }`
+-   options `可选`
+    -   capture `boolean`，表示 listener 会在该类型的事件捕获阶段传播到该 EventTarget 时触发。
+    -   once `boolean`，表示 listener 在添加之后最多只调用一次。如果是 `true`， listener 会在其被调用之后自动移除。
+-   useCapture `可选` `boolean` 默认为 `false`。如果是 `true`，向上冒泡的事件不会触发 listener。
 
 ```js
 // 二者等价
@@ -212,8 +212,8 @@ import { CustomEvent } from '@antv/g';
 
 const event = new CustomEvent('build', { detail: { prop1: 'xx' } });
 circle.addEventListener('build', (e) => {
-  e.target; // circle
-  e.detail; // { prop1: 'xx' }
+    e.target; // circle
+    e.detail; // { prop1: 'xx' }
 });
 
 circle.dispatchEvent(event);
@@ -221,16 +221,16 @@ circle.dispatchEvent(event);
 
 其中 CustomEvent 构造函数参数如下：
 
-- eventName 事件名 `string` `必填`
-- eventObject 事件对象 `选填` 包含以下属性：
-  - detail 自定义数据 `any`
+-   eventName 事件名 `string` `必填`
+-   eventObject 事件对象 `选填` 包含以下属性：
+    -   detail 自定义数据 `any`
 
 为了兼容旧版 G API，也支持使用 `emit`：
 
 ```js
 circle.on('build', (e) => {
-  e.target; // circle
-  e.detail; // { prop1: 'xx' }
+    e.target; // circle
+    e.detail; // { prop1: 'xx' }
 });
 circle.emit('build', { prop1: 'xx' });
 ```
@@ -251,9 +251,9 @@ circle.emit('build', { prop1: 'xx' });
 
 返回事件的设备类型，返回值如下：
 
-- pointer 代表 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent)
-- mouse 代表 [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent)
-- touch 代表 [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent)
+-   pointer 代表 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent)
+-   mouse 代表 [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent)
+-   touch 代表 [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent)
 
 https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType
 
@@ -261,11 +261,11 @@ https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType
 
 事件类型：
 
-- pointerup
-- pointerdown
-- pointerupoutside
-- pointermove
-- pointercancel
+-   pointerup
+-   pointerdown
+-   pointerupoutside
+-   pointermove
+-   pointercancel
 
 https://developer.mozilla.org/en-US/docs/Web/API/Event/type
 
@@ -343,12 +343,12 @@ ul.appendChild(li1);
 ul.appendChild(li2);
 
 ul.addEventListener(
-  'click',
-  (e) => {
-    e.target; // li1 或者 li2
-    e.currentTarget; // ul
-  },
-  false,
+    'click',
+    (e) => {
+        e.target; // li1 或者 li2
+        e.currentTarget; // ul
+    },
+    false,
 );
 ```
 
@@ -362,11 +362,11 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Event/currentTarget
 
 ```js
 ul.addEventListener(
-  'click',
-  (e) => {
-    e.currentTarget; // ul
-  },
-  false,
+    'click',
+    (e) => {
+        e.currentTarget; // ul
+    },
+    false,
 );
 ```
 
@@ -479,12 +479,12 @@ TouchEvent 是一类描述手指在触摸平面（触摸屏、触摸板等）的
 
 ```js
 const hammer = new Hammer(image, {
-  inputClass: Hammer.TouchInput,
+    inputClass: Hammer.TouchInput,
 });
 
 // 开启 pinch 手势
 hammer.get('pinch').set({
-  enable: true,
+    enable: true,
 });
 
 // 省略手势处理逻辑
@@ -651,9 +651,9 @@ const firstTouch = e.changedTouches.item(0);
 
 按照规范定义：https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent/changedTouches
 
-- 对于 `touchstart` 事件，返回此次事件中新增加的触点
-- 对于 `touchmove` 事件，返回和上一次事件相比较，发生了变化的触点
-- 对于 `touchend` 事件，返回已经从触摸面的离开的触点的集合
+-   对于 `touchstart` 事件，返回此次事件中新增加的触点
+-   对于 `touchmove` 事件，返回和上一次事件相比较，发生了变化的触点
+-   对于 `touchend` 事件，返回已经从触摸面的离开的触点的集合
 
 ### targetTouches
 
@@ -671,20 +671,20 @@ const firstTouch = e.changedTouches.item(0);
 
 ```js
 circle.addEventListener('touchstart', (e) => {
-  switch (e.touches.length) {
-    case 1:
-      handle_one_touch(e);
-      break;
-    case 2:
-      handle_two_touches(e);
-      break;
-    case 3:
-      handle_three_touches(e);
-      break;
-    default:
-      console.log('Not supported');
-      break;
-  }
+    switch (e.touches.length) {
+        case 1:
+            handle_one_touch(e);
+            break;
+        case 2:
+            handle_two_touches(e);
+            break;
+        case 3:
+            handle_three_touches(e);
+            break;
+        default:
+            console.log('Not supported');
+            break;
+    }
 });
 ```
 
@@ -704,36 +704,36 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Event/stopImmediatePropagation
 // group -> circle
 
 circle.on(
-  'click',
-  () => {
-    // 正常执行
-  },
-  false,
+    'click',
+    () => {
+        // 正常执行
+    },
+    false,
 );
 
 circle.on(
-  'click',
-  (e) => {
-    // 正常执行
-    e.stopImmediatePropagation();
-  },
-  false,
+    'click',
+    (e) => {
+        // 正常执行
+        e.stopImmediatePropagation();
+    },
+    false,
 );
 
 circle.on(
-  'click',
-  () => {
-    // 之后注册的监听器，不会执行
-  },
-  false,
+    'click',
+    () => {
+        // 之后注册的监听器，不会执行
+    },
+    false,
 );
 
 group.on(
-  'click',
-  () => {
-    // 由于阻止了向上冒泡，同样不会执行
-  },
-  false,
+    'click',
+    () => {
+        // 由于阻止了向上冒泡，同样不会执行
+    },
+    false,
 );
 ```
 
@@ -777,11 +777,11 @@ ul.appendChild(li1);
 ul.appendChild(li2);
 
 ul.addEventListener(
-  'click',
-  (e) => {
-    const path = e.composedPath(); // [li1, ul, Group, Document, Canvas];
-  },
-  false,
+    'click',
+    (e) => {
+        const path = e.composedPath(); // [li1, ul, Group, Document, Canvas];
+    },
+    false,
 );
 ```
 
@@ -800,8 +800,8 @@ import Hammer from 'hammerjs';
 
 const hammer = new Hammer(circle);
 hammer.on('press', (e) => {
-  console.log("You're pressing me!");
-  console.log(e.target); // circle
+    console.log("You're pressing me!");
+    console.log(e.target); // circle
 });
 ```
 
@@ -819,17 +819,17 @@ hammer.on('press', (e) => {
 import interact from 'interactjs';
 
 interact(
-  circle, // 待拖拽对象
-  {
-    context: canvas.document, // 将画布 document 传入
-  },
+    circle, // 待拖拽对象
+    {
+        context: canvas.document, // 将画布 document 传入
+    },
 ).draggable({
-  startAxis: 'xy', // 允许水平垂直两个方向的拖拽
-  lockAxis: 'start', // 锁定拖拽方向为初始设定
-  onmove: function (event) {
-    const { dx, dy } = event; // interact.js 将 dx/dy 挂载在事件对象上
-    circle.translateLocal(dx, dy); // 移动该对象
-  },
+    startAxis: 'xy', // 允许水平垂直两个方向的拖拽
+    lockAxis: 'start', // 锁定拖拽方向为初始设定
+    onmove: function (event) {
+        const { dx, dy } = event; // interact.js 将 dx/dy 挂载在事件对象上
+        circle.translateLocal(dx, dy); // 移动该对象
+    },
 });
 ```
 
@@ -845,40 +845,40 @@ interact(
 let dragging = false; // 拖拽状态
 let lastPosition; // 保存上次位置
 const onDragStart = (event) => {
-  dragging = true;
-  circle.attr('opacity', 0.5);
-  lastPosition = [event.x, event.y];
-  text.attr('text', 'Drag me');
+    dragging = true;
+    circle.attr('opacity', 0.5);
+    lastPosition = [event.x, event.y];
+    text.attr('text', 'Drag me');
 };
 const onDragEnd = () => {
-  dragging = false;
-  circle.attr('opacity', 1);
-  text.attr('text', 'Drag me');
+    dragging = false;
+    circle.attr('opacity', 1);
+    text.attr('text', 'Drag me');
 };
 const onDragMove = (event) => {
-  if (dragging) {
-    circle.attr('opacity', 0.5);
-    text.attr('text', 'Dragging...');
+    if (dragging) {
+        circle.attr('opacity', 0.5);
+        text.attr('text', 'Dragging...');
 
-    const offset = [event.x - lastPosition[0], event.y - lastPosition[1]];
-    const position = circle.getPosition();
-    circle.setPosition(position[0] + offset[0], position[1] + offset[1]);
-    lastPosition = [event.x, event.y];
-  }
+        const offset = [event.x - lastPosition[0], event.y - lastPosition[1]];
+        const position = circle.getPosition();
+        circle.setPosition(position[0] + offset[0], position[1] + offset[1]);
+        lastPosition = [event.x, event.y];
+    }
 };
 
 circle
-  // events for drag start
-  .on('mousedown', onDragStart)
-  .on('touchstart', onDragStart)
-  // events for drag end
-  .on('mouseup', onDragEnd)
-  .on('mouseupoutside', onDragEnd)
-  .on('touchend', onDragEnd)
-  .on('touchendoutside', onDragEnd)
-  // events for drag move
-  .on('mousemove', onDragMove)
-  .on('touchmove', onDragMove);
+    // events for drag start
+    .on('mousedown', onDragStart)
+    .on('touchstart', onDragStart)
+    // events for drag end
+    .on('mouseup', onDragEnd)
+    .on('mouseupoutside', onDragEnd)
+    .on('touchend', onDragEnd)
+    .on('touchendoutside', onDragEnd)
+    // events for drag move
+    .on('mousemove', onDragMove)
+    .on('touchmove', onDragMove);
 ```
 
 [示例](/zh/examples/event#drag)
@@ -895,26 +895,26 @@ circle
 // g-plugin-dom-interaction
 
 const onPointerDown = (ev: InteractivePointerEvent) => {
-  renderingService.hooks.pointerDown.call(ev);
+    renderingService.hooks.pointerDown.call(ev);
 };
 
 renderingService.hooks.init.tap(DOMInteractionPlugin.tag, () => {
-  // 事件绑定，使用 DOM API
-  $el.addEventListener(
-    'pointerdown', // 原生事件
-    onPointerDown, // G 标准事件处理器
-    true,
-  );
+    // 事件绑定，使用 DOM API
+    $el.addEventListener(
+        'pointerdown', // 原生事件
+        onPointerDown, // G 标准事件处理器
+        true,
+    );
 
-  // 如果需要支持移动端
-  if (supportsTouchEvents) {
-    $el.addEventListener('touchstart', onPointerDown, true);
-  }
-  // 省略其他
+    // 如果需要支持移动端
+    if (supportsTouchEvents) {
+        $el.addEventListener('touchstart', onPointerDown, true);
+    }
+    // 省略其他
 });
 
 renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
-  // 事件解绑
+    // 事件解绑
 });
 ```
 
@@ -922,9 +922,9 @@ renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
 
 不同渲染环境使用不同的拾取插件，用于判定原生事件的 EventTarget：
 
-- [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 主要使用数学运算
-- [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 使用现成 SVG API
-- [g-plugin-webgl-renderer](/zh/docs/plugins/webgl-renderer) 使用 GPU 颜色编码
+-   [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 主要使用数学运算
+-   [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 使用现成 SVG API
+-   [g-plugin-device-renderer](/zh/docs/plugins/device-renderer) 使用 GPU 颜色编码
 
 ## A11y 无障碍插件
 
@@ -938,12 +938,12 @@ renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
 
 ```js
 circle.addEventListener('mouseenter', function (e) {
-  console.log(this); // circle
-  console.log(e.currentTarget === this); // true
+    console.log(this); // circle
+    console.log(e.currentTarget === this); // true
 });
 
 circle.addEventListener('mouseleave', () => {
-  console.log(this); // undefined
+    console.log(this); // undefined
 });
 ```
 
@@ -959,9 +959,9 @@ mouseenter 不会冒泡，而 mouseover 会。同理 mouseleave 不会冒泡，�
 
 ```js
 canvas.addEventListener('mousemove', (e) => {
-  if (e.target.nodeName === 'document') {
-    // 在空白区域移动
-  }
+    if (e.target.nodeName === 'document') {
+        // 在空白区域移动
+    }
 });
 ```
 
@@ -986,8 +986,8 @@ canvas.addEventListener('wheel', (e) => {
 ```js
 // $el 为画布的 DOM 元素，g-canvas/webgl 为 <canvas>，g-svg 为 <svg>
 $el.addEventListener('wheel', onPointerWheel, {
-  passive: true,
-  capture: true,
+    passive: true,
+    capture: true,
 });
 ```
 
@@ -997,15 +997,15 @@ $el.addEventListener('wheel', onPointerWheel, {
 
 ```js
 canvas
-  .getContextService()
-  .getDomElement() // g-canvas/webgl 为 <canvas>，g-svg 为 <svg>
-  .addEventListener(
-    'wheel',
-    (e) => {
-      e.preventDefault();
-    },
-    { passive: false },
-  );
+    .getContextService()
+    .getDomElement() // g-canvas/webgl 为 <canvas>，g-svg 为 <svg>
+    .addEventListener(
+        'wheel',
+        (e) => {
+            e.preventDefault();
+        },
+        { passive: false },
+    );
 ```
 
 ## 其他事件
@@ -1043,11 +1043,11 @@ circle.addEventListener('blur', () => {});
 
 ```js
 canvas.addEventListener('click', (e) => {
-  if (e.detail === 2) {
-    // 双击
-  } else if (e.detail === 1) {
-    // 单击
-  }
+    if (e.detail === 2) {
+        // 双击
+    } else if (e.detail === 1) {
+        // 单击
+    }
 });
 ```
 
@@ -1061,7 +1061,7 @@ graph.on('node:click', () => {});
 
 // 等价于
 graph.addEventListener('click', (e) => {
-  if (e.target.name === 'node') {
-  }
+    if (e.target.name === 'node') {
+    }
 });
 ```

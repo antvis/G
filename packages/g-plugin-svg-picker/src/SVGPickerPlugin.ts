@@ -1,6 +1,7 @@
 import { inject, singleton } from 'mana-syringe';
 import type { RenderingService, RenderingPlugin, PickingResult, DisplayObject } from '@antv/g';
 import { DisplayObjectPool, RenderingPluginContribution, SceneGraphService } from '@antv/g';
+import { G_SVG_PREFIX } from '@antv/g-plugin-svg-renderer';
 
 /**
  * pick shape(s) with Mouse/Touch event
@@ -31,7 +32,7 @@ export class SVGPickerPlugin implements RenderingPlugin {
         for (const element of document.elementsFromPoint(clientX, clientY)) {
           // eg. g_svg_circle_345
           const id = element && element.getAttribute('id');
-          if (id && id.startsWith('g_')) {
+          if (id && id.startsWith(G_SVG_PREFIX)) {
             const index = id.lastIndexOf('_');
             const target = this.displayObjectPool.getByEntity(Number(id.substring(index + 1)));
 

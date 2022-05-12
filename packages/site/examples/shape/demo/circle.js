@@ -1,14 +1,16 @@
 import { Circle, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
-const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
+const webglRenderer = new WebGLRenderer();
+const webgpuRenderer = new WebGPURenderer();
 
 // create a canvas
 const canvas = new Canvas({
@@ -29,6 +31,7 @@ const circle = new Circle({
     lineWidth: 4,
     shadowColor: 'black',
     shadowBlur: 20,
+    cursor: 'pointer',
   },
 });
 
@@ -60,11 +63,21 @@ const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
   renderer: 'canvas',
 };
-rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setRenderer(
-    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  );
-});
+rendererFolder
+  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu'])
+  .onChange((rendererName) => {
+    let renderer;
+    if (rendererName === 'canvas') {
+      renderer = canvasRenderer;
+    } else if (rendererName === 'svg') {
+      renderer = svgRenderer;
+    } else if (rendererName === 'webgl') {
+      renderer = webglRenderer;
+    } else if (rendererName === 'webgpu') {
+      renderer = webgpuRenderer;
+    }
+    canvas.setRenderer(renderer);
+  });
 rendererFolder.open();
 
 const circleFolder = gui.addFolder('circle');
@@ -81,6 +94,8 @@ const circleConfig = {
   shadowBlur: 20,
   shadowOffsetX: 0,
   shadowOffsetY: 0,
+  increasedLineWidthForHitTesting: 0,
+  cursor: 'pointer',
 };
 circleFolder.add(circleConfig, 'r', 50, 200).onChange((radius) => {
   circle.style.r = radius;
@@ -104,7 +119,7 @@ circleFolder.add(circleConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY
   circle.style.shadowOffsetY = shadowOffsetY;
 });
 circleFolder.add(circleConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
-  circle.attr('lineWidth', lineWidth);
+  circle.style.lineWidth = lineWidth;
 });
 circleFolder.add(circleConfig, 'lineDash', 0, 100).onChange((lineDash) => {
   circle.style.lineDash = [lineDash];
@@ -113,11 +128,21 @@ circleFolder.add(circleConfig, 'lineDashOffset', 0, 100).onChange((lineDashOffse
   circle.style.lineDashOffset = lineDashOffset;
 });
 circleFolder.add(circleConfig, 'fillOpacity', 0, 1, 0.1).onChange((opacity) => {
-  circle.attr('fillOpacity', opacity);
+  circle.style.fillOpacity = opacity;
 });
 circleFolder.add(circleConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
-  circle.attr('strokeOpacity', opacity);
+  circle.style.strokeOpacity = opacity;
 });
+circleFolder
+  .add(circleConfig, 'increasedLineWidthForHitTesting', 0, 200)
+  .onChange((increasedLineWidthForHitTesting) => {
+    circle.style.increasedLineWidthForHitTesting = increasedLineWidthForHitTesting;
+  });
+circleFolder
+  .add(circleConfig, 'cursor', ['default', 'pointer', 'help', 'progress', 'text', 'move'])
+  .onChange((cursor) => {
+    circle.style.cursor = cursor;
+  });
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {

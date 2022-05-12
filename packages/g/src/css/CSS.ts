@@ -1,6 +1,8 @@
 import { GlobalContainer } from 'mana-syringe';
 import { CSSUnitValue } from './cssom';
 import { StyleValueRegistry } from './interfaces';
+import type { LayoutDefinitionCtor } from './layout';
+import { LayoutRegistry } from './layout';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/CSS/RegisterProperty#parameters
@@ -124,5 +126,8 @@ export const CSS = {
    * @see https://github.com/w3c/css-houdini-drafts/blob/main/css-layout-api/EXPLAINER.md
    * @see https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini#css_layout_api
    */
-  registerLayout: (name: string) => {},
+  registerLayout: (name: string, clazz: LayoutDefinitionCtor) => {
+    const layoutRegistry = GlobalContainer.get(LayoutRegistry);
+    layoutRegistry.registerLayout(name, clazz);
+  },
 };

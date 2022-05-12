@@ -11,6 +11,7 @@ const containerModule = Module((register) => {
 export interface PhysXPluginOptions {}
 
 export class Plugin implements RendererPlugin {
+  name = 'physx';
   constructor(private options: Partial<PhysXPluginOptions>) {}
 
   init(container: Syringe.Container): void {

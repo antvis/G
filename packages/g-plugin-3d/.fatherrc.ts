@@ -16,7 +16,7 @@ export default {
     globals: {
       '@antv/g': 'window.G',
       'mana-syringe': 'window.G.ManaSyringe',
-      '@antv/g-plugin-webgl-renderer': 'window.G.WebGL.WebGLRenderer',
+      '@antv/g-plugin-device-renderer': 'window.G.DeviceRenderer',
     },
   },
 };

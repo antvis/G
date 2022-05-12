@@ -4,7 +4,7 @@
 
 基于 glslify 提供 chunks。
 
-目前在 G 中 `g-plugin-3d` `g-plugin-webgl-renderer` 会使用该包，在使用时需要配合 rollup-plugin-glslify，例如下面是 MeshBasicMaterial 使用的 FS：
+目前在 G 中 `g-plugin-3d` `g-plugin-device-renderer` 会使用该包，在使用时需要配合 rollup-plugin-glslify，例如下面是 MeshBasicMaterial 使用的 FS：
 
 ```glsl
 // material.basic.frag

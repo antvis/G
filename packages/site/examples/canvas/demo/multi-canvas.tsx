@@ -57,13 +57,16 @@ const App = function MultiWorld() {
 
     (async () => {
       await canvas1.ready;
-      const device1 = webglRenderer1.getDevice();
-      const map = webglRenderer1.loadTexture(
+
+      const plugin1 = webglRenderer1.getPlugin('device-renderer');
+      const device1 = plugin1.getDevice();
+      const map = plugin1.loadTexture(
         'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
       );
 
       await canvas2.ready;
-      const device2 = webglRenderer2.getDevice();
+      const plugin2 = webglRenderer2.getPlugin('device-renderer');
+      const device2 = plugin2.getDevice();
 
       const group1 = new Group();
       const cubeGeometry = new CubeGeometry(device1, {
@@ -92,7 +95,7 @@ const App = function MultiWorld() {
       const camera2 = canvas2.getCamera();
       camera2.setPosition(150, 20, 500).setFocalPoint(150, 250, 0);
 
-      const map2 = webglRenderer2.loadTexture(
+      const map2 = device2.loadTexture(
         'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
       );
 

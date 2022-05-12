@@ -1,4 +1,4 @@
-import type { Device } from '@antv/g-plugin-webgl-renderer';
+import type { Device } from '@antv/g-plugin-device-renderer';
 import { vec3 } from 'gl-matrix';
 import { ProceduralGeometry } from './ProceduralGeometry';
 

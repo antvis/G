@@ -28,7 +28,7 @@
             "path": "../g"
         },
         {
-            "path": "../g-plugin-webgl-renderer"
+            "path": "../g-plugin-device-renderer"
         },
         {
             "path": "../g-plugin-dom-interaction"

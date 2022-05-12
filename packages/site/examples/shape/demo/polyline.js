@@ -42,6 +42,7 @@ const polyline = new Polyline({
     points,
     stroke: '#1890FF',
     lineWidth: 2,
+    cursor: 'pointer',
   },
 });
 
@@ -88,6 +89,8 @@ const lineConfig = {
   firstPointX: 50,
   firstPointY: 50,
   visible: true,
+  increasedLineWidthForHitTesting: 0,
+  cursor: 'pointer',
 };
 lineFolder.add(lineConfig, 'firstPointX', 0, 200).onChange((firstPointX) => {
   const newPoints = [...points];
@@ -129,6 +132,16 @@ lineFolder.add(lineConfig, 'visible').onChange((visible) => {
     // polyline.hide();
   }
 });
+lineFolder
+  .add(lineConfig, 'increasedLineWidthForHitTesting', 0, 50)
+  .onChange((increasedLineWidthForHitTesting) => {
+    polyline.style.increasedLineWidthForHitTesting = increasedLineWidthForHitTesting;
+  });
+lineFolder
+  .add(lineConfig, 'cursor', ['default', 'pointer', 'help', 'progress', 'text', 'move'])
+  .onChange((cursor) => {
+    polyline.style.cursor = cursor;
+  });
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {

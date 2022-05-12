@@ -2,10 +2,14 @@ import 'reflect-metadata';
 import * as ManaSyringe from 'mana-syringe';
 import { containerModule as globalModule } from './global-module';
 import { GlobalContainer } from 'mana-syringe';
+import { LayoutEngine } from './css/layout';
 
 export { ManaSyringe };
 
 GlobalContainer.load(globalModule);
+
+const layoutEngine = GlobalContainer.get(LayoutEngine);
+export { layoutEngine };
 
 export * from './types';
 export * from './css';

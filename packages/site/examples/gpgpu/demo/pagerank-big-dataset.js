@@ -1,6 +1,6 @@
 import { Algorithm } from '@antv/g6';
 import { Canvas } from '@antv/g';
-import { Renderer } from '@antv/g-webgl';
+import { Renderer } from '@antv/g-webgpu';
 import { Plugin, Kernel, BufferUsage } from '@antv/g-plugin-gpgpu';
 
 /**
@@ -77,7 +77,7 @@ const calculateInGPU = async (V, From, To) => {
   let maxIteration = 1000;
 
   // use WebGPU
-  const renderer = new Renderer({ targets: ['webgpu'] });
+  const renderer = new Renderer();
   renderer.registerPlugin(new Plugin());
 
   // create a canvas
@@ -91,7 +91,8 @@ const calculateInGPU = async (V, From, To) => {
   // wait for canvas' services ready
   await canvas.ready;
 
-  const device = renderer.getDevice();
+  const plugin = renderer.getPlugin('device-renderer');
+  const device = plugin.getDevice();
   const n = V.length;
   const graph = new Float32Array(new Array(n * n).fill((1 - d) / n));
   const r = new Float32Array(new Array(n).fill(1 / n));

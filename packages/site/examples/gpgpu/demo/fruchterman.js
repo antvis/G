@@ -1,5 +1,6 @@
 import { Canvas, Circle, Line } from '@antv/g';
-import { Renderer } from '@antv/g-webgl';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import { Plugin, Kernel, BufferUsage } from '@antv/g-plugin-gpgpu';
 
 /**
@@ -14,7 +15,7 @@ const MAX_ITERATION = 1000;
 const CANVAS_SIZE = 600;
 
 // use WebGPU
-const renderer = new Renderer({ targets: ['webgpu'] });
+const renderer = new WebGPURenderer();
 renderer.registerPlugin(new Plugin());
 
 // create a canvas
@@ -57,7 +58,8 @@ const canvas = new Canvas({
   const k2 = area / (nodes.length + 1);
   const k = Math.sqrt(k2);
 
-  const device = renderer.getDevice();
+  const plugin = renderer.getPlugin('device-renderer');
+  const device = plugin.getDevice();
   const kernel = new Kernel(device, {
     computeShader: `
 struct Buffer {
@@ -253,7 +255,7 @@ function renderCircles(edges, indices, positions) {
   const $canvasContainer = document.createElement('div');
   $wrapper.appendChild($canvasContainer);
 
-  const renderer = new Renderer({ targets: ['webgl2', 'webgl1'] });
+  const renderer = new WebGLRenderer({ targets: ['webgl2', 'webgl1'] });
   const canvas = new Canvas({
     container: $canvasContainer,
     width: CANVAS_SIZE,

@@ -3,7 +3,7 @@ title: g-plugin-gpgpu
 order: -1
 ---
 
-基于 WebGL 和 WebGPU 提供 GPGPU 能力。前者依靠纹理映射，但部分计算能力（共享内存、同步）受限，后者可以直接使用 WGSL 编写 Compute Shader，非常适合移植已有的 CUDA 算法。
+基于 WebGPU 提供 GPGPU 能力。直接使用 WGSL 编写 Compute Shader，非常适合移植已有的 CUDA 算法。
 
 例如在图场景中有非常多适合并行的布局和分析算法：
 
@@ -15,14 +15,14 @@ order: -1
 
 # 安装方式
 
-只能配合 `g-webgl` 渲染器使用：
+只能配合 `g-webgpu` 渲染器使用：
 
 ```js
-import { Renderer } from '@antv/g-webgl';
+import { Renderer } from '@antv/g-webgpu';
 import { Plugin } from '@antv/g-plugin-gpgpu';
 
-const webglRenderer = new Renderer();
-webglRenderer.registerPlugin(new Plugin());
+const webgpuRenderer = new Renderer();
+webgpuRenderer.registerPlugin(new Plugin());
 ```
 
 # 获取 Device
@@ -35,7 +35,8 @@ import { CanvasEvent } from '@antv/g';
 // 等待画布准备就绪
 canvas.addEventListener(CanvasEvent.READY, () => {
     // 通过渲染器获取 Device
-    const device = renderer.getDevice();
+    const plugin = renderer.getPlugin('device-renderer');
+    const device = plugin.getDevice();
 
     // 使用 Device 创建 GPU 相关对象，见下节
 });

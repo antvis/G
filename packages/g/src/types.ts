@@ -203,6 +203,8 @@ export interface BaseStyleProps {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/miterLimit
    */
   miterLimit?: number;
+
+  display?: string;
 }
 
 export interface ParsedBaseStyleProps
@@ -333,10 +335,7 @@ export interface RendererConfig {
    */
   enableAutoRendering: boolean;
 
-  /**
-   * enable TAA in WebGL
-   */
-  enableTAA: boolean;
+  // plugins:
 }
 
 export const CanvasConfig = Syringe.defineToken('CanvasConfig');

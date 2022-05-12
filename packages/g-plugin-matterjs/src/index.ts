@@ -9,6 +9,7 @@ const containerModule = Module((register) => {
 });
 
 export class Plugin implements RendererPlugin {
+  name = 'matterjs';
   private container: Syringe.Container;
 
   constructor(private options: Partial<MatterJSPluginOptions>) {}

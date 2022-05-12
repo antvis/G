@@ -6,6 +6,7 @@ import { CSSSceneGraphSelector } from './CSSSceneGraphSelector';
 import { SceneGraphAdapter } from './SceneGraphAdapter';
 
 export class Plugin implements RendererPlugin {
+  name = 'css-select';
   init(container: Syringe.Container): void {
     if (GlobalContainer.isBound(DefaultSceneGraphSelector)) {
       GlobalContainer.remove(DefaultSceneGraphSelector);

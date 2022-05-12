@@ -2,7 +2,7 @@
 
 # G
 
-[![Build Status](https://img.shields.io/travis/antvis/g)](https://travis-ci.org/antvis/g) ![CI](https://github.com/antvis/g/workflows/CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/antvis/g/badge.svg?branch=next)](https://coveralls.io/github/antvis/g?branch=next)
+![CI](https://github.com/antvis/g/workflows/CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/antvis/g/badge.svg?branch=next)](https://coveralls.io/github/antvis/g?branch=next)
 
 ![](https://img.shields.io/badge/language-typescript-blue.svg) ![](https://img.shields.io/badge/license-MIT-000000.svg)
 
@@ -23,34 +23,34 @@
 
 ## ✨ 特性
 
-- 更易用的 API。其中图形、事件系统兼容 DOM Element & Event API，动画系统兼容 Web Animation API。可以以极低的成本适配 Web 端已有的生态例如 D3、Hammer.js 手势库等。
-- 适配 Web 端多种渲染环境。支持 Canvas2D / SVG / WebGL / WebGPU 以及运行时切换。
-- 高性能的渲染与计算。为可并行算法提供基于 WebGPU 的 GPGPU 支持。
-  - [webgpu-graph](https://g-next.antv.vision/zh/docs/api/gpgpu/webgpu-graph) 使用 GPU 加速的图分析算法库
-- 可扩展的插件机制以及丰富的插件集：
-  - 渲染相关
-    - [g-plugin-canvas-renderer](https://g-next.antv.vision/zh/docs/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
-    - [g-plugin-svg-renderer](https://g-next.antv.vision/zh/docs/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
-    - [g-plugin-webgl-renderer](https://g-next.antv.vision/zh/docs/plugins/webgl-renderer) 基于 WebGPU / WebGL 渲染 2D 图形
-    - [g-plugin-html-renderer](https://g-next.antv.vision/zh/docs/plugins/html-renderer) 渲染 DOM 元素
-    - [g-plugin-3d](https://g-next.antv.vision/zh/docs/plugins/3d) 基于 g-plugin-webgl-renderer 扩展 3D 能力
-    - [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) 使用 [rough.js](https://roughjs.com/) 进行手绘风格渲染
-  - 拾取
-    - [g-plugin-canvas-picker](https://g-next.antv.vision/zh/docs/plugins/canvas-picker) 基于 Canvas2D
-    - [g-plugin-svg-picker](https://g-next.antv.vision/zh/docs/plugins/svg-picker) 基于 SVG
-  - 交互
-    - [g-plugin-dom-interaction](https://g-next.antv.vision/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
-    - [g-plugin-control](https://g-next.antv.vision/zh/docs/plugins/control) 为 3D 场景提供相机交互
-  - 物理引擎
-    - [g-plugin-box2d](https://g-next.antv.vision/zh/docs/plugins/box2d) 基于 Box2D
-    - [g-plugin-matterjs](https://g-next.antv.vision/zh/docs/plugins/matterjs) 基于 matter.js
-    - [g-plugin-physx](https://g-next.antv.vision/zh/docs/plugins/physx) 基于 PhysX
-  - 布局引擎
-    - [g-plugin-yoga](https://g-next.antv.vision/zh/docs/plugins/yoga) 基于 Yoga 提供 Flex 布局能力
-  - GPGPU
-    - [g-plugin-gpgpu](https://g-next.antv.vision/zh/docs/plugins/gpgpu) 基于 WebGPU 提供 GPGPU 能力
-  - CSS 选择器
-    - [g-plugin-css-select](https://g-next.antv.vision/zh/docs/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
+-   更易用的 API。其中图形、事件系统兼容 DOM Element & Event API，动画系统兼容 Web Animation API。可以以极低的成本适配 Web 端已有的生态例如 D3、Hammer.js 手势库等。
+-   适配 Web 端多种渲染环境。支持 Canvas2D / SVG / WebGL / WebGPU 以及运行时切换。
+-   高性能的渲染与计算。为可并行算法提供基于 WebGPU 的 GPGPU 支持。
+    -   [webgpu-graph](https://g-next.antv.vision/zh/docs/api/gpgpu/webgpu-graph) 使用 GPU 加速的图分析算法库
+-   可扩展的插件机制以及丰富的插件集：
+    -   渲染相关
+        -   [g-plugin-canvas-renderer](https://g-next.antv.vision/zh/docs/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
+        -   [g-plugin-svg-renderer](https://g-next.antv.vision/zh/docs/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
+        -   [g-plugin-device-renderer](https://g-next.antv.vision/zh/docs/plugins/device-renderer) 基于 GPUDevice 渲染 2D 图形
+        -   [g-plugin-html-renderer](https://g-next.antv.vision/zh/docs/plugins/html-renderer) 渲染 DOM 元素
+        -   [g-plugin-3d](https://g-next.antv.vision/zh/docs/plugins/3d) 基于 g-plugin-device-renderer 扩展 3D 能力
+        -   [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) 使用 [rough.js](https://roughjs.com/) 进行手绘风格渲染
+    -   拾取
+        -   [g-plugin-canvas-picker](https://g-next.antv.vision/zh/docs/plugins/canvas-picker) 基于 Canvas2D
+        -   [g-plugin-svg-picker](https://g-next.antv.vision/zh/docs/plugins/svg-picker) 基于 SVG
+    -   交互
+        -   [g-plugin-dom-interaction](https://g-next.antv.vision/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
+        -   [g-plugin-control](https://g-next.antv.vision/zh/docs/plugins/control) 为 3D 场景提供相机交互
+    -   物理引擎
+        -   [g-plugin-box2d](https://g-next.antv.vision/zh/docs/plugins/box2d) 基于 Box2D
+        -   [g-plugin-matterjs](https://g-next.antv.vision/zh/docs/plugins/matterjs) 基于 matter.js
+        -   [g-plugin-physx](https://g-next.antv.vision/zh/docs/plugins/physx) 基于 PhysX
+    -   布局引擎
+        -   [g-plugin-yoga](https://g-next.antv.vision/zh/docs/plugins/yoga) 基于 Yoga 提供 Flex 布局能力
+    -   GPGPU
+        -   [g-plugin-gpgpu](https://g-next.antv.vision/zh/docs/plugins/gpgpu) 基于 WebGPU 提供 GPGPU 能力
+    -   CSS 选择器
+        -   [g-plugin-css-select](https://g-next.antv.vision/zh/docs/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
 
 ## 📦 安装
 
@@ -80,22 +80,22 @@ import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 
 // 创建画布
 const canvas = new Canvas({
-  container: 'container',
-  width: 500,
-  height: 500,
-  renderer: new CanvasRenderer(), // 选择一个渲染器
+    container: 'container',
+    width: 500,
+    height: 500,
+    renderer: new CanvasRenderer(), // 选择一个渲染器
 });
 
 // 创建一个圆
 const circle = new Circle({
-  style: {
-    x: 100,
-    y: 100,
-    r: 50,
-    fill: 'red',
-    stroke: 'blue',
-    lineWidth: 5,
-  },
+    style: {
+        x: 100,
+        y: 100,
+        r: 50,
+        fill: 'red',
+        stroke: 'blue',
+        lineWidth: 5,
+    },
 });
 
 // 加入画布
@@ -103,7 +103,7 @@ canvas.appendChild(circle);
 
 // 监听 `click` 事件
 circle.addEventListener('click', function () {
-  this.style.fill = 'green';
+    this.style.fill = 'green';
 });
 ```
 
@@ -139,7 +139,7 @@ $ yarn test
 
 ## Inspired by
 
-- [Sprite.js](https://github.com/spritejs/spritejs)
-- [Pixi.js](https://pixijs.com/)
-- [PlayCanvas](https://playcanvas.com/)
-- [Webkit](https://github.com/WebKit/WebKit/blob/main/Source/WebCore)
+-   [Sprite.js](https://github.com/spritejs/spritejs)
+-   [Pixi.js](https://pixijs.com/)
+-   [PlayCanvas](https://playcanvas.com/)
+-   [Webkit](https://github.com/WebKit/WebKit/blob/main/Source/WebCore)

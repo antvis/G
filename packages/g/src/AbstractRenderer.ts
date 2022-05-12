@@ -2,6 +2,7 @@ import type { Syringe } from 'mana-syringe';
 import type { RendererConfig } from './types';
 
 export interface RendererPlugin {
+  name: string;
   init: (container: Syringe.Container) => void;
   destroy: (container: Syringe.Container) => void;
 }
@@ -13,6 +14,16 @@ export interface IRenderer {
    * register plugin at runtime
    */
   registerPlugin: (plugin: RendererPlugin) => void;
+
+  /**
+   * unregister plugin at runtime
+   */
+  unregisterPlugin: (plugin: RendererPlugin) => void;
+
+  /**
+   * get plugin by name
+   */
+  getPlugin: (name: string) => RendererPlugin;
 
   /**
    * return all registered plugins
@@ -39,7 +50,6 @@ export class AbstractRenderer implements IRenderer {
        */
       enableDirtyRectangleRendering: true,
       enableDirtyRectangleRenderingDebug: false,
-      enableTAA: false,
       ...config,
     };
   }
@@ -48,8 +58,19 @@ export class AbstractRenderer implements IRenderer {
     this.plugins.push(plugin);
   }
 
+  unregisterPlugin(plugin: RendererPlugin) {
+    const index = this.plugins.findIndex((p) => p === plugin);
+    if (index > -1) {
+      this.plugins.splice(index, 1);
+    }
+  }
+
   getPlugins() {
     return this.plugins;
+  }
+
+  getPlugin(name: string) {
+    return this.plugins.find((plugin) => plugin.name === name);
   }
 
   getConfig() {

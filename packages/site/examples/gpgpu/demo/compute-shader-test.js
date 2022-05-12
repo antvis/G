@@ -1,5 +1,5 @@
 import { Canvas, CanvasEvent } from '@antv/g';
-import { Renderer } from '@antv/g-webgl';
+import { Renderer } from '@antv/g-webgpu';
 import { Plugin, Kernel, BufferUsage } from '@antv/g-plugin-gpgpu';
 
 /**
@@ -11,7 +11,7 @@ const CANVAS_SIZE = 1;
 const $canvas = document.createElement('canvas');
 
 // use WebGPU
-const renderer = new Renderer({ targets: ['webgpu'] });
+const renderer = new Renderer();
 renderer.registerPlugin(new Plugin());
 
 // create a canvas
@@ -23,7 +23,8 @@ const canvas = new Canvas({
 });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
-  const device = renderer.getDevice();
+  const plugin = renderer.getPlugin('device-renderer');
+  const device = plugin.getDevice();
 
   const kernel = new Kernel(device, {
     computeShader: `

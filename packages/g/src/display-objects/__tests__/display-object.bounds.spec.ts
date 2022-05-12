@@ -88,6 +88,31 @@ describe('DisplayObject Bounds API', () => {
       expect(renderBounds.halfExtents).eqls(vec3.fromValues(105, 105, 0));
     }
 
+    // increasedLineWidthForHitTesting
+    circle.setAttribute('increasedLineWidthForHitTesting', 10);
+    bounds = circle.getBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(200, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+    }
+    localBounds = circle.getLocalBounds();
+    if (localBounds) {
+      expect(localBounds.center).eqls(vec3.fromValues(200, 100, 0));
+      expect(localBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+    }
+    geometryBounds = circle.getGeometryBounds();
+    if (geometryBounds) {
+      expect(geometryBounds.center).eqls(vec3.fromValues(0, 0, 0));
+      expect(geometryBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+    }
+    renderBounds = circle.getRenderBounds();
+    if (renderBounds) {
+      expect(renderBounds.center).eqls(vec3.fromValues(200, 100, 0));
+      // r + halfLineWith
+      expect(renderBounds.halfExtents).eqls(vec3.fromValues(110, 110, 0));
+    }
+    circle.setAttribute('increasedLineWidthForHitTesting', 0);
+
     // change r
     circle.setAttribute('r', 10);
     bounds = circle.getBounds();

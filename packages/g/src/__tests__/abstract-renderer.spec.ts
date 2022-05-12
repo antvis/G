@@ -16,7 +16,6 @@ describe('Abstract renderer', () => {
       enableDirtyCheck: true,
       enableDirtyRectangleRendering: true,
       enableDirtyRectangleRenderingDebug: false,
-      enableTAA: false,
     });
 
     renderer.setConfig({ enableAutoRendering: false });
@@ -25,16 +24,22 @@ describe('Abstract renderer', () => {
       enableDirtyCheck: true,
       enableDirtyRectangleRendering: true,
       enableDirtyRectangleRenderingDebug: false,
-      enableTAA: false,
     });
 
     expect(renderer.getPlugins().length).to.be.eqls(0);
 
-    renderer.registerPlugin({
+    const plugin = {
+      name: 'test',
       init: () => {},
       destroy: () => {},
-    });
+    };
 
+    renderer.registerPlugin(plugin);
     expect(renderer.getPlugins().length).to.be.eqls(1);
+
+    expect(renderer.getPlugin('test')).to.be.eqls(plugin);
+
+    renderer.unregisterPlugin(plugin);
+    expect(renderer.getPlugins().length).to.be.eqls(0);
   });
 });

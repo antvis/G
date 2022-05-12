@@ -20,15 +20,15 @@ order: 10
 
 # 创建画布、渲染器与 GPGPU 插件
 
-创建画布，使用渲染器的方式和之前渲染相关的教程并无差别，只是在创建渲染器时，需要指定 `targets: ['webgpu']` 确认在支持 WebGPU 的浏览器环境下运行。另外由于不涉及渲染，画布大小我们选择长宽为 1 即可。
+创建画布，使用渲染器的方式和之前渲染相关的教程并无差别，只是在创建渲染器时，需要确认在支持 WebGPU 的浏览器环境下运行。另外由于不涉及渲染，画布大小我们选择长宽为 1 即可。
 
 ```js
 import { Canvas, CanvasEvent } from '@antv/g';
-import { Renderer } from '@antv/g-webgl';
+import { Renderer } from '@antv/g-webgpu';
 import { Plugin, Kernel, BufferUsage } from '@antv/g-plugin-gpgpu';
 
 // 选择目标平台为 WebGPU
-const renderer = new Renderer({ targets: ['webgpu'] });
+const renderer = new Renderer();
 // 注册 GPGPU 插件
 renderer.registerPlugin(new Plugin());
 
@@ -57,14 +57,16 @@ import { CanvasEvent } from '@antv/g';
 // 等待画布准备就绪
 canvas.addEventListener(CanvasEvent.READY, () => {
     // 通过渲染器获取 Device
-    const device = renderer.getDevice();
+    const plugin = renderer.getPlugin('device-renderer');
+    const device = plugin.getDevice();
 
     // 使用 Device 创建 GPU 相关对象，见下节
 });
 
 // 或者
 await canvas.ready;
-const device = renderer.getDevice();
+const plugin = renderer.getPlugin('device-renderer');
+const device = plugin.getDevice();
 ```
 
 # 创建 Kernel
@@ -142,7 +144,7 @@ fn main(
 
 # 输入与输出
 
-定义好了 Kernel，我们需要向它传递输入，结束后获取输出结果。分配内存的工作在 Host 侧执行，通过 Device 创建 Buffer([createBuffer](/zh/docs/plugins/webgl-renderer#createbuffer))，其中 `usage` 需要与 Compute Shader 中定义的内存用途对应，同时进行内存初始数据的写入。
+定义好了 Kernel，我们需要向它传递输入，结束后获取输出结果。分配内存的工作在 Host 侧执行，通过 Device 创建 Buffer([createBuffer](/zh/docs/plugins/device-renderer#createbuffer))，其中 `usage` 需要与 Compute Shader 中定义的内存用途对应，同时进行内存初始数据的写入。
 
 ```js
 const firstMatrixBuffer = device.createBuffer({

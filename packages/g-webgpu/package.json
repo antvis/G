@@ -1,0 +1,53 @@
+{
+  "name": "@antv/g-webgpu",
+  "version": "1.0.1",
+  "description": "A renderer implemented by WebGPU",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "es/index.d.ts",
+  "unpkg": "dist/index.umd.min.js",
+  "files": [
+    "package.json",
+    "dist",
+    "es",
+    "lib",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antvis/g.git"
+  },
+  "keywords": [
+    "antv",
+    "g"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "https://github.com/orgs/antvis/people",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/antvis/g/issues"
+  },
+  "devDependencies": {
+    "@types/gl-matrix": "^2.4.5",
+    "@types/jest": "^25.0.0",
+    "@types/offscreencanvas": "^2019.6.4"
+  },
+  "homepage": "https://github.com/antvis/g#readme",
+  "dependencies": {
+    "@antv/g-plugin-device-renderer": "^1.0.1",
+    "@antv/g-plugin-dom-interaction": "^1.0.21",
+    "@antv/g-plugin-html-renderer": "^1.0.22",
+    "@antv/g-plugin-webgpu-device": "^1.0.1"
+  },
+  "peerDependencies": {
+    "@antv/g": "^5.0.1",
+    "mana-syringe": "^0.3.0"
+  },
+  "scripts": {
+    "umd": "webpack"
+  },
+  "gitHead": "e2325a6285d12ef05abd9f9e12cf095280006167"
+}

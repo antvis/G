@@ -1,0 +1,64 @@
+{
+  "name": "@antv/g-plugin-device-renderer",
+  "version": "1.0.1",
+  "description": "A G plugin of renderer implementation with GPUDevice",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.umd.min.js",
+  "files": [
+    "package.json",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antvis/g.git"
+  },
+  "keywords": [
+    "util",
+    "antv",
+    "g"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "https://github.com/orgs/antvis/people",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/antvis/g/issues"
+  },
+  "dependencies": {
+    "@antv/g-shader-components": "^1.0.19",
+    "@mapbox/tiny-sdf": "^2.0.4",
+    "@types/offscreencanvas": "^2019.6.4",
+    "@webgpu/types": "^0.1.6",
+    "earcut": "^2.2.3",
+    "eventemitter3": "^4.0.0",
+    "regenerator-runtime": "^0.13.9",
+    "tslib": "^2.3.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-wasm": "^5.1.2",
+    "@types/earcut": "^2.1.1",
+    "@types/jest": "^25.0.0",
+    "glslify-import": "3.1.0",
+    "rollup-plugin-glslify": "^1.2.1"
+  },
+  "peerDependencies": {
+    "@antv/g": "^5.0.1",
+    "mana-syringe": "^0.3.0"
+  },
+  "browser": {
+    "fs": false,
+    "path": false
+  },
+  "glslify": {
+    "transform": [
+      "glslify-import"
+    ]
+  },
+  "homepage": "https://github.com/antvis/g#readme",
+  "gitHead": "e2325a6285d12ef05abd9f9e12cf095280006167"
+}

@@ -13,8 +13,6 @@ import {
   FogType,
   Format,
   FrontFaceMode,
-  GPUMapMode,
-  GPUTextureUsage,
   Light,
   Material,
   Mesh,
@@ -30,7 +28,7 @@ import {
   VertexAttributeLocation,
   VertexBufferFrequency,
   WrapMode,
-} from '@antv/g-plugin-webgl-renderer';
+} from '@antv/g-plugin-device-renderer';
 
 export * from './geometries';
 export * from './materials';
@@ -47,8 +45,6 @@ export {
   FogType,
   Format,
   FrontFaceMode,
-  GPUMapMode,
-  GPUTextureUsage,
   Light,
   Material,
   Mesh,
@@ -69,6 +65,8 @@ export {
 export const containerModule = Module((register) => {});
 
 export class Plugin implements RendererPlugin {
+  name = '3d';
+
   init(container: Syringe.Container): void {
     container.load(containerModule, true);
   }

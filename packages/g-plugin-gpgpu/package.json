@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-gpgpu",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "A G plugin for GPGPU based on WebGL & WebGPU",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -39,7 +39,7 @@
   },
   "peerDependencies": {
     "@antv/g": "^5.0.1",
-    "@antv/g-plugin-webgl-renderer": "^1.0.1",
+    "@antv/g-plugin-device-renderer": "^1.0.1",
     "mana-syringe": "^0.3.0"
   },
   "scripts": {

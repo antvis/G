@@ -60,6 +60,7 @@ const containerModule = Module((register) => {
 // );
 
 export class Plugin implements RendererPlugin {
+  name = 'yoga';
   private container: Syringe.Container;
 
   constructor(private options: Partial<YogaPluginOptions>) {}

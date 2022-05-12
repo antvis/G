@@ -16,10 +16,11 @@ export function isPointInPath(
     fill,
     stroke,
     lineWidth,
+    increasedLineWidthForHitTesting,
     clipPathTargets,
   } = displayObject.parsedStyle as ParsedCircleStyleProps;
   const r = rInPixels.value;
-  const halfLineWidth = lineWidth.value / 2;
+  const halfLineWidth = (lineWidth.value + increasedLineWidthForHitTesting.value) / 2;
   const absDistance = distance(r, r, position.x, position.y);
   const isClipPath = !!clipPathTargets?.length;
 

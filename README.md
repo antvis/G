@@ -2,7 +2,7 @@ English | [简体中文](./README-zh_CN.md)
 
 # G
 
-[![Build Status](https://img.shields.io/travis/antvis/g)](https://travis-ci.org/antvis/g) ![CI](https://github.com/antvis/g/workflows/CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/antvis/g/badge.svg?branch=next)](https://coveralls.io/github/antvis/g?branch=next)
+![CI](https://github.com/antvis/g/workflows/CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/antvis/g/badge.svg?branch=next)](https://coveralls.io/github/antvis/g?branch=next)
 
 ![](https://img.shields.io/badge/language-typescript-blue.svg) ![](https://img.shields.io/badge/license-MIT-000000.svg)
 
@@ -23,37 +23,37 @@ A powerful rendering engine for AntV.
 
 ## ✨ Features
 
-- Provides a series of easy-to-use APIs.
-  - The graphics and event systems are compatible with the DOM [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) & [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event) API, which means we can take over the default rendering process of [D3](https://github.com/d3/d3) or use gesture libs such as [Hammer.js](http://hammerjs.github.io/) easily.
-  - The animation system is compatible with [Web Animation API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API).
-  - The style system is compatible with [CSS Typed OM](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Typed_OM_API) & [CSS Layout API](https://github.com/w3c/css-houdini-drafts/blob/main/css-layout-api/EXPLAINER.md).
-- Provides Canvas2D / SVG / WebGL / WebGPU renderers, you can choose one on demand or switch between them at runtime.
-- Besides the high-performance rendering, we also provide GPGPU capabilities based on [WebGPU](https://www.w3.org/TR/webgpu/).
-  - [webgpu-graph](https://g-next.antv.vision/zh/docs/api/gpgpu/webgpu-graph) A GPU accelerated graph analytics library.
-- There're a lot of out-of-the-box plugins：
-  - Rendering
-    - [g-plugin-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/canvas-renderer) Renders 2D graphics with Canvas2D API.
-    - [g-plugin-svg-renderer](https://g-next.antv.vision/en/docs/plugins/svg-renderer) Render 2D graphics with SVG API.
-    - [g-plugin-webgl-renderer](https://g-next.antv.vision/en/docs/plugins/webgl-renderer) Render 2D graphics with WebGL 1/2 and WebGPU API.
-    - [g-plugin-html-renderer](https://g-next.antv.vision/en/docs/plugins/html-renderer) Provides raw HTML elements.
-    - [g-plugin-3d](https://g-next.antv.vision/en/docs/plugins/3d) Expanded 3D rendering capabilities such as Geometry, Material, Mesh and Lights.
-    - [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) Render sketchy styled shapes with [rough.js](https://roughjs.com/).
-  - Picking
-    - [g-plugin-canvas-picker](https://g-next.antv.vision/en/docs/plugins/canvas-picker) Implements graphics picking with Canvas2D API.
-    - [g-plugin-svg-picker](https://g-next.antv.vision/en/docs/plugins/svg-picker) Implements graphics picking with SVG API.
-  - Interaction
-    - [g-plugin-dom-interaction](https://g-next.antv.vision/en/docs/plugins/dom-interaction) Register event listeners with DOM API.
-    - [g-plugin-control](https://g-next.antv.vision/en/docs/plugins/control) Provides controls such as orbit based on [Camera](https://g-next.antv.vision/en/docs/api/camera).
-  - Physics engine
-    - [g-plugin-box2d](https://g-next.antv.vision/en/docs/plugins/box2d) Based on [Box2D](https://box2d.org/).
-    - [g-plugin-matterjs](https://g-next.antv.vision/en/docs/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
-    - [g-plugin-physx](https://g-next.antv.vision/en/docs/plugins/physx) Based on [PhysX](https://github.com/ashconnell/physx-js).
-  - Layout engine
-    - [g-plugin-yoga](https://g-next.antv.vision/en/docs/plugins/yoga) Based on [Yoga](https://yogalayout.com/).
-  - GPGPU
-    - [g-plugin-gpgpu](https://g-next.antv.vision/en/docs/plugins/gpgpu) Provides GPGPU capabilities based on WebGPU.
-  - CSS select
-    - [g-plugin-css-select](https://g-next.antv.vision/en/docs/plugins/css-select) Query graphics in scenegraph with CSS select syntax.
+-   Provides a series of easy-to-use APIs.
+    -   The graphics and event systems are compatible with the DOM [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) & [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event) API, which means we can take over the default rendering process of [D3](https://github.com/d3/d3) or use gesture libs such as [Hammer.js](http://hammerjs.github.io/) easily.
+    -   The animation system is compatible with [Web Animation API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API).
+    -   The style system is compatible with [CSS Typed OM](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Typed_OM_API) & [CSS Layout API](https://github.com/w3c/css-houdini-drafts/blob/main/css-layout-api/EXPLAINER.md).
+-   Provides Canvas2D / SVG / WebGL / WebGPU renderers, you can choose one on demand or switch between them at runtime.
+-   Besides the high-performance rendering, we also provide GPGPU capabilities based on [WebGPU](https://www.w3.org/TR/webgpu/).
+    -   [webgpu-graph](https://g-next.antv.vision/zh/docs/api/gpgpu/webgpu-graph) A GPU accelerated graph analytics library.
+-   There're a lot of out-of-the-box plugins：
+    -   Rendering
+        -   [g-plugin-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/canvas-renderer) Renders 2D graphics with Canvas2D API.
+        -   [g-plugin-svg-renderer](https://g-next.antv.vision/en/docs/plugins/svg-renderer) Render 2D graphics with SVG API.
+        -   [g-plugin-device-renderer](https://g-next.antv.vision/en/docs/plugins/device-renderer) Render 2D graphics with WebGL 1/2 and WebGPU API.
+        -   [g-plugin-html-renderer](https://g-next.antv.vision/en/docs/plugins/html-renderer) Provides raw HTML elements.
+        -   [g-plugin-3d](https://g-next.antv.vision/en/docs/plugins/3d) Expanded 3D rendering capabilities such as Geometry, Material, Mesh and Lights.
+        -   [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) Render sketchy styled shapes with [rough.js](https://roughjs.com/).
+    -   Picking
+        -   [g-plugin-canvas-picker](https://g-next.antv.vision/en/docs/plugins/canvas-picker) Implements graphics picking with Canvas2D API.
+        -   [g-plugin-svg-picker](https://g-next.antv.vision/en/docs/plugins/svg-picker) Implements graphics picking with SVG API.
+    -   Interaction
+        -   [g-plugin-dom-interaction](https://g-next.antv.vision/en/docs/plugins/dom-interaction) Register event listeners with DOM API.
+        -   [g-plugin-control](https://g-next.antv.vision/en/docs/plugins/control) Provides controls such as orbit based on [Camera](https://g-next.antv.vision/en/docs/api/camera).
+    -   Physics engine
+        -   [g-plugin-box2d](https://g-next.antv.vision/en/docs/plugins/box2d) Based on [Box2D](https://box2d.org/).
+        -   [g-plugin-matterjs](https://g-next.antv.vision/en/docs/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
+        -   [g-plugin-physx](https://g-next.antv.vision/en/docs/plugins/physx) Based on [PhysX](https://github.com/ashconnell/physx-js).
+    -   Layout engine
+        -   [g-plugin-yoga](https://g-next.antv.vision/en/docs/plugins/yoga) Based on [Yoga](https://yogalayout.com/).
+    -   GPGPU
+        -   [g-plugin-gpgpu](https://g-next.antv.vision/en/docs/plugins/gpgpu) Provides GPGPU capabilities based on WebGPU.
+    -   CSS select
+        -   [g-plugin-css-select](https://g-next.antv.vision/en/docs/plugins/css-select) Query graphics in scenegraph with CSS select syntax.
 
 ## 📦 Install
 
@@ -83,22 +83,22 @@ import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 
 // create a canvas
 const canvas = new Canvas({
-  container: 'container',
-  width: 500,
-  height: 500,
-  renderer: new CanvasRenderer(), // select a renderer
+    container: 'container',
+    width: 500,
+    height: 500,
+    renderer: new CanvasRenderer(), // select a renderer
 });
 
 // create a circle
 const circle = new Circle({
-  style: {
-    x: 100,
-    y: 100,
-    r: 50,
-    fill: 'red',
-    stroke: 'blue',
-    lineWidth: 5,
-  },
+    style: {
+        x: 100,
+        y: 100,
+        r: 50,
+        fill: 'red',
+        stroke: 'blue',
+        lineWidth: 5,
+    },
 });
 
 // append to canvas
@@ -106,7 +106,7 @@ canvas.appendChild(circle);
 
 // add listener for `click` event
 circle.addEventListener('click', function () {
-  this.style.fill = 'green';
+    this.style.fill = 'green';
 });
 ```
 
@@ -142,10 +142,10 @@ $ yarn test
 
 ## Inspired by
 
-- [Sprite.js](https://github.com/spritejs/spritejs)
-- [Pixi.js](https://pixijs.com/)
-- [PlayCanvas](https://playcanvas.com/)
-- [Webkit](https://github.com/WebKit/WebKit/blob/main/Source/WebCore)
+-   [Sprite.js](https://github.com/spritejs/spritejs)
+-   [Pixi.js](https://pixijs.com/)
+-   [PlayCanvas](https://playcanvas.com/)
+-   [Webkit](https://github.com/WebKit/WebKit/blob/main/Source/WebCore)
 
 <!-- GITCONTRIBUTOR_START -->
 

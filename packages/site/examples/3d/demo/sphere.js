@@ -32,18 +32,19 @@ const canvas = new Canvas({
   // wait for canvas' initialization complete
   await canvas.ready;
   // use GPU device
-  const device = renderer.getDevice();
+  const plugin = renderer.getPlugin('device-renderer');
+  const device = plugin.getDevice();
 
-  const map = renderer.loadTexture(
+  const map = plugin.loadTexture(
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*npAsSLPX4A4AAAAAAAAAAAAAARQnAQ',
   );
-  const specularMap = renderer.loadTexture(
+  const specularMap = plugin.loadTexture(
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8wz0QaP_bjoAAAAAAAAAAAAAARQnAQ',
   );
-  const bumpMap = renderer.loadTexture(
+  const bumpMap = plugin.loadTexture(
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kuUITY47ZhMAAAAAAAAAAAAAARQnAQ',
   );
-  const cloudMap = renderer.loadTexture(
+  const cloudMap = plugin.loadTexture(
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N2ooTq4cQroAAAAAAAAAAAAAARQnAQ',
   );
 
@@ -254,7 +255,7 @@ const canvas = new Canvas({
       if (mapURL === 'none') {
         sphere.style.material.map = null;
       } else {
-        const map = renderer.loadTexture(mapURL);
+        const map = plugin.loadTexture(mapURL);
         sphere.style.material.map = map;
       }
     });
@@ -273,7 +274,7 @@ const canvas = new Canvas({
       if (specularMapURL === 'none') {
         sphere.style.material.specularMap = null;
       } else {
-        const specularMap = renderer.loadTexture(specularMapURL);
+        const specularMap = plugin.loadTexture(specularMapURL);
         sphere.style.material.specularMap = specularMap;
       }
     });
@@ -289,7 +290,7 @@ const canvas = new Canvas({
       if (bumpMapURL === 'none') {
         sphere.style.material.bumpMap = null;
       } else {
-        const bumpMap = renderer.loadTexture(bumpMapURL);
+        const bumpMap = plugin.loadTexture(bumpMapURL);
         sphere.style.material.bumpMap = bumpMap;
       }
     });

@@ -1,6 +1,6 @@
 import type { CSSRGB } from '@antv/g';
 import { parseColor } from '@antv/g';
-import type { Device, Texture } from '@antv/g-plugin-webgl-renderer';
+import type { Device, Texture } from '@antv/g-plugin-device-renderer';
 import type { IMeshBasicMaterial } from './MeshBasicMaterial';
 import { MeshBasicMaterial } from './MeshBasicMaterial';
 import vert from '../shaders/material.phong.vert';
