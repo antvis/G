@@ -40,7 +40,7 @@ module.exports = {
   projects: [
     {
       displayName: 'node-canvas',
-      testMatch: ['**/*/__node__tests__/*.spec.+(ts|tsx|js)'],
+      testMatch: ['<rootDir>/integration/__node__tests__/**/*/*.spec.+(ts|tsx|js)'],
     },
     {
       displayName: 'browser',
@@ -65,5 +65,4 @@ module.exports = {
       transformIgnorePatterns: ['<rootDir>/node_modules/(?!@mapbox)'],
     },
   ],
-  roots: ['<rootDir>packages'],
 };

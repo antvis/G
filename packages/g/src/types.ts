@@ -375,7 +375,7 @@ export interface CanvasConfig {
   /**
    * replace `new window.Image()`
    */
-  createImage?: () => HTMLImageElement;
+  createImage?: (src: string) => HTMLImageElement;
 
   /**
    * limits query

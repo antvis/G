@@ -19,6 +19,8 @@ redirect_from:
 
 我们选择尽可能兼容 DOM API，一方面降低了前端使用者的记忆学习成本，另一方面可以充分利用现有的 Web 生态，例如可以无缝接入[现有的手势和拖拽库](/zh/docs/api/event#手势和拖拽)。
 
+对于非常规浏览器环境，我们也提供了例如 [WebWorker 中使用 OffscreenCanvas](/zh/docs/api/canvas#在-webworker-中使用-offscreencanvas)、[服务端渲染](/zh/docs/api/canvas#服务端渲染)等方案。
+
 # 继承自
 
 [EventTarget](/zh/docs/api/builtin-objects/event-target)
@@ -50,7 +52,8 @@ const canvas = new Canvas({
 以上初始化方式只需要提供一个承载 `<canvas>/<svg>` 的容器 `container`，但有时我们有如下自定义需求：
 
 -   自行创建 `<canvas>`，[详见](/zh/docs/api/canvas#使用创建好的-canvas-元素)
--   或者在 WebWorker 中使用 OffscreenCanvas，[详见](/zh/docs/api/canvas#在-webworker-中使用-offscreencanvas)
+-   在 WebWorker 中使用 OffscreenCanvas，[详见](/zh/docs/api/canvas#在-webworker-中使用-offscreencanvas)
+-   在 Node 端使用 node-canvas 进行服务端渲染，[详见](/zh/docs/api/canvas#服务端渲染)
 
 此时可以使用 `canvas` 代替 `container`，更多初始化参数如下。
 
@@ -60,7 +63,7 @@ const canvas = new Canvas({
 
 ## canvas
 
-可选，`HTMLCanvasElement | OffscreenCanvas`，已创建好的 `<canvas>` 元素或者 OffscreenCanvas。
+可选，`HTMLCanvasElement | OffscreenCanvas | NodeCanvas`，已创建好的 `<canvas>` 元素或者 OffscreenCanvas。
 
 当传入此参数时，[container](/zh/docs/api/canvas#container) 参数将被忽略，我们假定 `<canvas>` 已经创建完毕并且加入到文档中，例如：
 
@@ -83,7 +86,10 @@ const canvas = new Canvas({
 });
 ```
 
-除了 `<canvas>`，还可以使用 OffscreenCanvas，甚至在 WebWorker 中运行，[详见](/zh/docs/api/canvas#在-webworker-中使用-offscreencanvas)。
+除了浏览器环境下的 `HTMLCanvasElement`，还可以使用：
+
+-   `OffscreenCanvas` 在 WebWorker 中运行，[详见](/zh/docs/api/canvas#在-webworker-中使用-offscreencanvas)
+-   `NodeCanvas` 在 Node 端使用 node-canvas 进行服务端渲染，[详见](/zh/docs/api/canvas#服务端渲染)
 
 需要注意的是，一旦使用了该参数，就不再支持运行时切换渲染器了。
 
@@ -680,3 +686,47 @@ export function triggerEvent(event, ev) {
 ```
 
 3. [cursor](/zh/docs/api/basic/display-object#鼠标样式) 鼠标样式显然无法在 Worker 中应用。我们可以在拾取到图形时在 Worker 中通过 `postMessage` 告知主线程修改 `<canvas>` 上的鼠标样式。
+
+## 服务端渲染
+
+在我们的集成测试中，会在 Node 端配合 [node-canvas](https://github.com/Automattic/node-canvas) 渲染结果图片，与基准图片进行比对。其他服务端渲染场景也可以按照以下步骤进行：
+
+1. 使用 [unregisterPlugin](/zh/docs/api/renderer/renderer#unregisterplugin) 卸载掉 [g-canvas](/zh/docs/api/renderer/canvas) 中内置的与 DOM API 相关的插件，例如负责事件绑定的 [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction)
+2. 使用 [node-canvas](https://github.com/Automattic/node-canvas) 创建一个类 `Canvas` 对象，通过 [canvas](/zh/docs/api/canvas#canvas) 属性传入画布
+3. 正常使用 [g-canvas](/zh/docs/api/renderer/canvas) 渲染器，通过 G 的 API 创建场景
+4. 使用 [node-canvas](https://github.com/Automattic/node-canvas) 提供的方法（例如 [createPNGStream](https://github.com/Automattic/node-canvas#canvascreatepngstream)）输出结果图片
+
+```js
+const { createCanvas } = require('canvas');
+const { Circle, Canvas } = require('@antv/g');
+const { Renderer } = require('@antv/g-canvas');
+
+// create a node-canvas
+const nodeCanvas = createCanvas(200, 200);
+
+// create a renderer, unregister plugin relative to DOM
+const renderer = new Renderer();
+const domInteractionPlugin = renderer.getPlugin('dom-interaction');
+renderer.unregisterPlugin(domInteractionPlugin);
+
+const canvas = new Canvas({
+    width: 200,
+    height: 200,
+    canvas: nodeCanvas, // use node-canvas
+    renderer,
+});
+
+const circle = new Circle({
+    style: {
+        r: 10,
+        fill: 'red',
+    },
+});
+canvas.appendChild(circle);
+
+// output image
+const out = fs.createWriteStream(__dirname + RESULT_IMAGE);
+const stream = nodeCanvas.createPNGStream();
+stream.pipe(out);
+out.on('finish', () => {});
+```

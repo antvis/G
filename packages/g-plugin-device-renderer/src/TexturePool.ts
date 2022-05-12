@@ -59,7 +59,7 @@ export class TexturePool {
 
         let image: HTMLImageElement;
         if (createImage) {
-          image = createImage();
+          image = createImage(src);
         } else if (isBrowser) {
           image = new window.Image();
         }
