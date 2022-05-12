@@ -2,7 +2,7 @@ import { DeviceContribution } from '@antv/g-plugin-device-renderer';
 import { inject, singleton } from 'mana-syringe';
 import { WebGPUDeviceOptions } from './interfaces';
 import { Device_WebGPU } from './platform/Device';
-// import init, { glsl_compile } from '../../../rust/pkg/glsl_wgsl_compiler';
+import init, { glsl_compile } from '../../../rust/pkg/glsl_wgsl_compiler';
 
 @singleton({
   token: DeviceContribution,
@@ -38,10 +38,10 @@ export class WebGPUDeviceContribution implements DeviceContribution {
 
     if (!context) return null;
 
-    // try {
-    //   await init('/glsl_wgsl_compiler_bg.wasm');
-    // } catch (e) {}
-    // return new Device_WebGPU(adapter, device, canvas, context, glsl_compile);
-    return new Device_WebGPU(adapter, device, $canvas, context, () => {});
+    try {
+      await init('/glsl_wgsl_compiler_bg.wasm');
+    } catch (e) {}
+    return new Device_WebGPU(adapter, device, $canvas, context, glsl_compile);
+    // return new Device_WebGPU(adapter, device, $canvas, context, () => {});
   }
 }

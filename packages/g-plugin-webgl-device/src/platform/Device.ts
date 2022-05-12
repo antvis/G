@@ -2078,7 +2078,7 @@ export class Device_GL implements SwapChain, Device {
     if (!this.blitRenderPipeline) {
       const vertexBuffer = makeStaticDataBuffer(
         this,
-        BufferUsage.VERTEX,
+        BufferUsage.VERTEX | BufferUsage.COPY_DST,
         new Float32Array([-4, -4, 4, -4, 0, 4]).buffer,
       );
       const inputLayout = this.createInputLayout({

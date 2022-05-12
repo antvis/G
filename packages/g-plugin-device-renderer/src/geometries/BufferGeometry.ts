@@ -113,7 +113,7 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
 
     this.indexBuffer = makeStaticDataBuffer(
       this.device,
-      BufferUsage.INDEX,
+      BufferUsage.INDEX | BufferUsage.COPY_DST,
       new Uint32Array(ArrayBuffer.isView(indices) ? indices.buffer : indices).buffer,
     );
 
@@ -158,7 +158,11 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
       this.vertexBuffers[bufferIndex].destroy();
     }
 
-    const buffer = makeStaticDataBuffer(this.device, BufferUsage.VERTEX, data.buffer);
+    const buffer = makeStaticDataBuffer(
+      this.device,
+      BufferUsage.VERTEX | BufferUsage.COPY_DST,
+      data.buffer,
+    );
     this.vertexBuffers[bufferIndex] = buffer;
 
     return this;
