@@ -9,13 +9,11 @@ import {
   assert,
   defaultBindingLayoutSamplerDescriptor,
 } from '@antv/g-plugin-device-renderer';
-import { getPlatformBuffer, getPlatformSampler, translateBindGroupTextureBinding } from './utils';
+import { getPlatformBuffer, getPlatformSampler } from './utils';
 import type { IDevice_WebGPU } from './interfaces';
-import type { BindGroupLayout } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 import type { Texture_WebGPU } from './Texture';
 import type { RenderPipeline_WebGPU } from './RenderPipeline';
-import type { Device_WebGPU } from './Device';
 
 export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
   type: ResourceType.Bindings = ResourceType.Bindings;
