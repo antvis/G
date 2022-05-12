@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgpu",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A renderer implemented by WebGPU",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -37,10 +37,10 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g-plugin-dom-interaction": "^1.0.20",
-    "@antv/g-plugin-html-renderer": "^1.0.21",
-    "@antv/g-plugin-device-renderer": "^1.0.0",
-    "@antv/g-plugin-webgpu-device": "^1.0.0"
+    "@antv/g-plugin-device-renderer": "^1.0.1",
+    "@antv/g-plugin-dom-interaction": "^1.0.21",
+    "@antv/g-plugin-html-renderer": "^1.0.22",
+    "@antv/g-plugin-webgpu-device": "^1.0.1"
   },
   "peerDependencies": {
     "@antv/g": "^5.0.1",
