@@ -1,5 +1,5 @@
 import { GlobalContainer } from 'mana-syringe';
-import type { mat3, vec2 } from 'gl-matrix';
+import { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { DisplayObjectPool } from '../DisplayObjectPool';
 import type { Animation } from '../dom/Animation';

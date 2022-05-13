@@ -27,7 +27,7 @@ const canvas = new Canvas({
 const RESULT_IMAGE = '/image.png';
 const BASELINE_IMAGE_DIR = '/snapshots';
 
-describe('Render <Circle> with g-canvas', () => {
+describe('Render <Image> with g-canvas', () => {
   afterEach(() => {
     canvas.removeChildren();
     fs.rmSync(__dirname + RESULT_IMAGE);

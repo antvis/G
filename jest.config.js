@@ -39,8 +39,25 @@ module.exports = {
   // @see https://jestjs.io/docs/configuration#projects-arraystring--projectconfig
   projects: [
     {
-      displayName: 'node-canvas',
+      // use node-canvas & headless-gl
+      displayName: 'server-side',
       testMatch: ['<rootDir>/integration/__node__tests__/**/*/*.spec.+(ts|tsx|js)'],
+      preset: 'ts-jest',
+      globals: {
+        'ts-jest': {
+          isolatedModules: true,
+          tsConfig: {
+            allowJs: true,
+            target: 'ES2019',
+          },
+        },
+      },
+      moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
+      modulePathIgnorePatterns: ['dist', '.fatherrc.ts'],
+      transform: {
+        '^.+\\.[tj]s$': 'ts-jest',
+      },
+      transformIgnorePatterns: ['<rootDir>/node_modules/(?!@mapbox)'],
     },
     {
       displayName: 'browser',

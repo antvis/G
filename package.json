@@ -62,6 +62,7 @@
     "eslint-plugin-jest": "24.3.6",
     "father": "^2.30.13",
     "git-contributor": "~1.0.8",
+    "gl": "^5.0.0",
     "husky": "^4.2.5",
     "is-ci": "2.0.0",
     "jest": "^26.6.3",
