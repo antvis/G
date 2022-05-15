@@ -145,8 +145,8 @@ lineFolder
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  x: 200,
-  y: 100,
+  x: 50,
+  y: 50,
   scale: 1,
   transformOrigin: 'left top',
   eulerAngles: 0,

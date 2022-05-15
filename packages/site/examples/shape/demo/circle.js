@@ -9,7 +9,7 @@ import Stats from 'stats.js';
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
 const svgRenderer = new SVGRenderer();
-const webglRenderer = new WebGLRenderer();
+const webglRenderer = new WebGLRenderer({ targets: ['webgl1'] });
 const webgpuRenderer = new WebGPURenderer();
 
 // create a canvas
@@ -17,7 +17,7 @@ const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: canvasRenderer,
+  renderer: webglRenderer,
 });
 
 // create a circle

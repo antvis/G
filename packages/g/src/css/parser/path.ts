@@ -1,7 +1,7 @@
 import { path2Absolute, path2Segments, path2Curve } from '@antv/util';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import type { PathCommand } from '../../types';
-import type { ParsedPathStyleProps } from '../../display-objects';
+import type { ParsedPathStyleProps, DisplayObject } from '../../display-objects';
 import {
   clonePath,
   equalizeSegments,
@@ -12,7 +12,7 @@ import {
 import { Rectangle } from '../../shapes/Rectangle';
 import type { IElement } from '../../dom';
 
-export function parsePath(path: string): ParsedPathStyleProps['path'] {
+export function parsePath(path: string, object: DisplayObject): ParsedPathStyleProps['path'] {
   const absolutePath = path2Absolute(path) as PathCommand[];
   const hasArc = hasArcOrBezier(absolutePath);
 
@@ -27,6 +27,10 @@ export function parsePath(path: string): ParsedPathStyleProps['path'] {
   ];
   const segments = path2Segments(clonedAbsolutePath);
   const { totalLength, curveSegments } = calcLength(curve);
+  const rect = getPathBBox(curve);
+
+  object.parsedStyle.defX = rect.x;
+  object.parsedStyle.defY = rect.y;
 
   return {
     absolutePath,
@@ -38,7 +42,7 @@ export function parsePath(path: string): ParsedPathStyleProps['path'] {
     totalLength,
     curveSegments,
     zCommandIndexes,
-    rect: getPathBBox(curve),
+    rect,
   };
 }
 

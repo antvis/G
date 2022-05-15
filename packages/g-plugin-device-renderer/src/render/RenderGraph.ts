@@ -31,7 +31,7 @@ export class RenderGraph implements RGGraphBuilder {
   private currentPass: RenderGraphPass | null = null;
 
   //#region Resource Creation & Caching
-  private renderTargetDeadPool: RGRenderTarget[] = [];
+  renderTargetDeadPool: RGRenderTarget[] = [];
   private singleSampledTextureDeadPool: SingleSampledTexture[] = [];
 
   constructor(device: Device) {

@@ -19,8 +19,6 @@ export class LineUpdater implements GeometryAABBUpdater<ParsedLineStyleProps> {
     return {
       width,
       height,
-      x: minX,
-      y: minY,
     };
   }
 }

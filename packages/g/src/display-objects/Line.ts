@@ -49,12 +49,14 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
   }
 
   getPoint(ratio: number): Point {
+    // TODO: account for z1/z2 in 3D line
     const { x1, y1, x2, y2 } = this.parsedStyle;
     const point = LineUtil.pointAt(x1.value, y1.value, x2.value, y2.value, ratio);
     return new Point(point.x, point.y);
   }
 
   getTotalLength() {
+    // TODO: account for z1/z2 in 3D line
     const { x1, y1, x2, y2 } = this.parsedStyle;
     return LineUtil.length(x1.value, y1.value, x2.value, y2.value);
   }

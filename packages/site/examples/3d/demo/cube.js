@@ -148,7 +148,7 @@ const canvas = new Canvas({
   const materialFolder = gui.addFolder('material');
   const materialConfig = {
     wireframe: false,
-    map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
+    map: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
   };
   materialFolder.add(materialConfig, 'wireframe').onChange((wireframe) => {
     cube.style.material.wireframe = !!wireframe;
@@ -164,7 +164,7 @@ const canvas = new Canvas({
       if (mapURL === 'none') {
         cube.style.material.map = null;
       } else {
-        cube.style.material.map = renderer.loadTexture(mapURL);
+        cube.style.material.map = plugin.loadTexture(mapURL);
       }
     });
   materialFolder.open();

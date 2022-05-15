@@ -13,9 +13,6 @@ describe('Circle', () => {
     });
 
     expect(circle.getAttributeNames()).to.eqls([
-      'x',
-      'y',
-      'z',
       'anchor',
       // 'origin',
       'opacity',
@@ -41,6 +38,9 @@ describe('Circle', () => {
       'interactive',
       'r',
       'lineWidth',
+      'x',
+      'y',
+      'z',
     ]);
     expect(circle.hasAttribute('r')).to.be.true;
     expect(circle.hasAttributes()).to.be.true;

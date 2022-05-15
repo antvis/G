@@ -1,7 +1,8 @@
 import { Line as LineUtil, Polyline as PolylineUtil } from '@antv/g-math';
+import type { DisplayObject } from '../..';
 import { isString } from '../../utils';
 
-export function parsePoints(points: string | [number, number][]) {
+export function parsePoints(points: string | [number, number][], object: DisplayObject) {
   if (isString(points)) {
     return null;
   }
@@ -23,6 +24,12 @@ export function parsePoints(points: string | [number, number][]) {
       segments.push(segmentT);
     }
   });
+
+  const minX = Math.min(...points.map((point) => point[0]));
+  const minY = Math.min(...points.map((point) => point[1]));
+
+  object.parsedStyle.defX = minX;
+  object.parsedStyle.defY = minY;
 
   return {
     points,

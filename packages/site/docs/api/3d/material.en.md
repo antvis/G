@@ -241,7 +241,7 @@ uniform sampler2D u_Map;
 一个特殊的情况是纹理，例如上面的例子中 `u_Map` 为采样器，在设置时就需要使用纹理：
 
 ```js
-const mapTexture = renderer.loadTexture(
+const mapTexture = plugin.loadTexture(
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
 );
 material.setUniform({
@@ -330,7 +330,7 @@ void main() {
 漫反射贴图，例如：
 
 ```js
-const map = renderer.loadTexture(
+const map = plugin.loadTexture(
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
 );
 const basicMaterial = new MeshBasicMaterial({

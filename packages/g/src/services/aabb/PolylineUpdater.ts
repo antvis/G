@@ -25,8 +25,6 @@ export class PolylineUpdater implements GeometryAABBUpdater<ParsedPolylineStyleP
     return {
       width,
       height,
-      x: minX,
-      y: minY,
     };
   }
 }

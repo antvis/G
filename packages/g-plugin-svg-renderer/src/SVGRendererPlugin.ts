@@ -358,7 +358,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         if (
           // (!object.style.clipPathTargets) &&
           object.nodeName !== Shape.TEXT && // text' anchor is controlled by `textAnchor` property
-          ['width', 'height', 'r', 'rx', 'ry'].indexOf(name) > -1
+          ['width', 'height', 'r', 'rx', 'ry', 'anchor'].indexOf(name) > -1
         ) {
           this.updateAnchorWithTransform(object);
         }

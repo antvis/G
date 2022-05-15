@@ -5,6 +5,8 @@ order: 1
 
 使用 [SVG](https://developer.mozilla.org/zh-CN/docs/Web/SVG) 绘制 2D 图形。会在容器中创建一个 `<svg>` 元素。
 
+SVG 在文本渲染上直接依赖浏览器的能力，因而有独特的优势。另外通过 `<foreignObject>` 也可以嵌入 HTML 片段。
+
 # 使用方式
 
 和 `@antv/g` 一样，也有以下两种使用方式。

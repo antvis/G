@@ -11,6 +11,7 @@ export * from './CSSPropertyAnchor';
 export * from './CSSPropertyZIndex';
 export * from './CSSPropertyTransform';
 export * from './CSSPropertyTransformOrigin';
+export * from './CSSPropertyX1Y1X2Y2';
 export * from './CSSPropertyPath';
 export * from './CSSPropertyPoints';
 export * from './CSSPropertyClipPath';

@@ -10,6 +10,7 @@ import type {
   StencilOp,
   Texture,
 } from '../platform';
+import { TextureEvent } from '../platform';
 import { BlendFactor, BlendMode } from '../platform';
 import { copyMegaState, defaultMegaState } from '../platform/utils';
 import { getUniforms } from '../shader/compiler';
@@ -227,6 +228,8 @@ export abstract class Material<T extends IMaterial = any> {
       this.geometryDirty = true;
       this.programDirty = true;
       this.props.wireframe = value;
+
+      this.dispatchMutationEvent();
     }
 
     this.defines.USE_WIREFRAME = !!value;
@@ -379,13 +382,12 @@ export abstract class Material<T extends IMaterial = any> {
       if (isTexture(value)) {
         this.textures[key] = value;
         this.textureDirty = true;
-        value.on('loaded', () => {
-          this.meshes.forEach((mesh) => {
-            mesh.renderable.dirty = true;
-          });
+        value.on(TextureEvent.LOADED, () => {
+          this.dispatchMutationEvent();
         });
       } else {
         this.uniforms[key] = value;
+        this.dispatchMutationEvent();
       }
 
       if (isNil(uniforms[key])) {
@@ -393,12 +395,11 @@ export abstract class Material<T extends IMaterial = any> {
         delete this.uniforms[key];
       }
     });
+  }
 
+  private dispatchMutationEvent() {
     // trigger re-render
     this.meshes.forEach((mesh) => {
-      // mesh.emit(ElementEvent.ATTR_MODIFIED, {
-      //   attributeName: 'material',
-      // });
       mesh.dispatchEvent(
         new MutationEvent(
           ElementEvent.ATTR_MODIFIED,

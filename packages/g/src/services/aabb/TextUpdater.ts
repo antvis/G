@@ -19,7 +19,7 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   }
 
   update(parsedStyle: ParsedTextStyleProps, object: DisplayObject) {
-    const { text, textAlign, lineWidth, textBaseline, x, y, dx, dy } = parsedStyle;
+    const { text, textAlign, lineWidth, textBaseline, dx, dy } = parsedStyle;
     const { offscreenCanvas } = object?.ownerDocument?.defaultView?.getConfig() || {};
 
     if (!this.isReadyToMeasure(parsedStyle, object)) {
@@ -109,8 +109,6 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
     return {
       width: halfExtents[0] * 2,
       height: halfExtents[1] * 2,
-      x: x.value || 0,
-      y: y.value || 0,
       offsetX: lineXOffset,
       offsetY: lineYOffset,
     };

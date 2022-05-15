@@ -1,5 +1,5 @@
 import { GlobalContainer } from 'mana-syringe';
-import { mat3, vec2 } from 'gl-matrix';
+import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { DisplayObjectPool } from '../DisplayObjectPool';
 import type { Animation } from '../dom/Animation';
@@ -35,9 +35,9 @@ import { CSSUnitValue } from '../css';
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
 const DEFAULT_STYLE_PROPS: {
-  x: number | string;
-  y: number | string;
-  z: number | string;
+  // x: number | string;
+  // y: number | string;
+  // z: number | string;
   anchor: [number, number] | [number, number, number];
   transformOrigin: string;
   visibility: string;
@@ -59,9 +59,9 @@ const DEFAULT_STYLE_PROPS: {
   textBaseline: string;
   textTransform: string;
 } = {
-  x: '',
-  y: '',
-  z: '',
+  // x: '',
+  // y: '',
+  // z: '',
   anchor: [0, 0],
   opacity: '',
   fillOpacity: '',
@@ -507,10 +507,7 @@ export class DisplayObject<
   }
 
   /**
-   * sync style.x/y when local position changed
-   *
-   * Mixins may not declare private/protected properties
-   * however, you can use ES2020 private fields
+   * sync attributes.x/y when local position changed
    */
   private syncLocalPosition() {
     const localPosition = this.getLocalPosition();

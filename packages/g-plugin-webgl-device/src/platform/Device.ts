@@ -234,6 +234,7 @@ export class Device_GL implements SwapChain, Device {
       this.ANGLE_instanced_arrays = gl.getExtension('ANGLE_instanced_arrays');
       this.OES_texture_float = gl.getExtension('OES_texture_float');
       // this.WEBGL_draw_buffers = gl.getExtension('WEBGL_draw_buffers');
+      // @see https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_depth_texture
       this.WEBGL_depth_texture = gl.getExtension('WEBGL_depth_texture');
       // @see https://developer.mozilla.org/en-US/docs/Web/API/EXT_frag_depth
       gl.getExtension('EXT_frag_depth');
@@ -568,7 +569,7 @@ export class Device_GL implements SwapChain, Device {
       case FormatTypeFlags.U16_PACKED_5551:
         return GL.UNSIGNED_SHORT_5_5_5_1;
       case FormatTypeFlags.D32F:
-        return GL.FLOAT;
+        return isWebGL2(this.gl) ? GL.FLOAT : GL.UNSIGNED_INT;
       case FormatTypeFlags.D24:
         return isWebGL2(this.gl) ? GL.UNSIGNED_INT_24_8 : GL.UNSIGNED_SHORT;
       case FormatTypeFlags.D24S8:
@@ -957,11 +958,6 @@ export class Device_GL implements SwapChain, Device {
       program.compileState === ProgramCompileState_GL.NeedsBind ||
       program.compileState === ProgramCompileState_GL.ReadyToUse
     );
-  }
-
-  queryPipelineReady(o: RenderPipeline): boolean {
-    const pipeline = o as RenderPipeline_GL;
-    return this.queryProgramReady(pipeline.program);
   }
 
   queryPlatformAvailable(): boolean {

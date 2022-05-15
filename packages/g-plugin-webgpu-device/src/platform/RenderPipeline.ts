@@ -23,7 +23,7 @@ export class RenderPipeline_WebGPU extends ResourceBase_WebGPU implements Render
     super({ id, device });
 
     this.descriptor = descriptor;
-    this.device.ensureRenderPipeline(this);
+    this.device._createRenderPipeline(this, false);
   }
 
   getBindGroupLayout(index: number) {

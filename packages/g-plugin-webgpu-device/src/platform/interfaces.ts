@@ -8,6 +8,7 @@ import type {
   Sampler,
   Device,
   BindingLayoutSamplerDescriptor,
+  BindingLayoutDescriptor,
 } from '@antv/g-plugin-device-renderer';
 
 export interface TextureSharedDescriptor {
@@ -51,7 +52,9 @@ export interface IDevice_WebGPU extends Device {
     texture: TextureShared_WebGPU,
     skipCreate: boolean,
   ) => void;
-  ensureRenderPipeline: (renderPipeline: RenderPipeline) => void;
+  _createRenderPipeline: (renderPipeline: RenderPipeline, async?: boolean) => void;
+  _createBindGroupLayout: (bindingLayout: BindingLayoutDescriptor) => BindGroupLayout;
+  // ensureRenderPipeline: (renderPipeline: RenderPipeline) => void;
   // createBindGroupLayout(bindingLayout: Partial<BindingLayoutDescriptor>): BindGroupLayout;
   // createPipelineLayout(bindingLayouts: BindingLayoutDescriptor[]): GPUPipelineLayout;
 }

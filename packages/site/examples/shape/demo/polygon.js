@@ -116,7 +116,7 @@ polygonFolder
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  x: 200,
+  x: 100,
   y: 100,
   scale: 1,
   transformOrigin: 'left top',

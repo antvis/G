@@ -1,3 +1,4 @@
+import type { DisplayObject } from '../display-objects';
 import type { IElement } from '../dom';
 import type { StyleValueRegistry } from './interfaces';
 
@@ -8,7 +9,7 @@ type CSSPropertyMixer<Parsed = any, T extends Interpolatable = any> = (
   displayObject: IElement | null,
 ) => [T, T, (i: T) => string | any] | undefined;
 
-type CSSPropertyParser<Parsed> = (value: string | any) => Parsed;
+type CSSPropertyParser<Parsed> = (value: string | any, object: DisplayObject) => Parsed;
 
 type CSSPropertyCalculator<Parsed, Used> = (
   name: string,

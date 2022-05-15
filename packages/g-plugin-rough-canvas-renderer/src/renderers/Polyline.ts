@@ -1,6 +1,6 @@
 import { singleton } from 'mana-syringe';
 import type { DisplayObject, ParsedBaseStyleProps, ParsedPolylineStyleProps } from '@antv/g';
-import type { StyleRenderer} from '@antv/g-plugin-canvas-renderer';
+import type { StyleRenderer } from '@antv/g-plugin-canvas-renderer';
 import { PolylineRendererContribution } from '@antv/g-plugin-canvas-renderer';
 import { generateRoughOptions } from '../util';
 

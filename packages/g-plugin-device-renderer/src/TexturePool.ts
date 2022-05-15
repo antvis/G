@@ -3,7 +3,7 @@ import { RenderingService } from '@antv/g';
 import { GradientPatternType, OffscreenCanvasCreator, CanvasConfig, isBrowser } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import type { Device, Texture, TextureDescriptor } from './platform';
-import { Format, TextureDimension, TextureUsage } from './platform';
+import { TextureEvent, Format, TextureDimension, TextureUsage } from './platform';
 
 export type GradientParams = (LinearGradient | RadialGradient) & {
   width: number;
@@ -51,7 +51,7 @@ export class TexturePool {
       });
       if (typeof src !== 'string') {
         this.textureCache[id].setImageData(src);
-        this.textureCache[id].emit('loaded');
+        this.textureCache[id].emit(TextureEvent.LOADED);
         this.renderingService.dirtify();
       } else {
         // @see https://github.com/antvis/g/issues/938
@@ -67,7 +67,7 @@ export class TexturePool {
         if (image) {
           image.onload = () => {
             this.textureCache[id].setImageData(image);
-            this.textureCache[id].emit('loaded');
+            this.textureCache[id].emit(TextureEvent.LOADED);
             this.renderingService.dirtify();
             if (successCallback) {
               successCallback(this.textureCache[id]);
@@ -78,6 +78,8 @@ export class TexturePool {
           image.src = src;
         }
       }
+    } else {
+      this.textureCache[id].emit(TextureEvent.LOADED);
     }
     return this.textureCache[id];
   }
