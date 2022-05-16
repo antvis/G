@@ -50,8 +50,8 @@ const App = function MultiWorld() {
 
     const circle1 = new Circle({
       style: {
-        x: 100,
-        y: 100,
+        cx: 100,
+        cy: 100,
         r: 100,
         fill: 'blue',
       },
@@ -66,8 +66,8 @@ const App = function MultiWorld() {
 
     const circle2 = new Circle({
       style: {
-        x: 100,
-        y: 100,
+        cx: 100,
+        cy: 100,
         r: 100,
         fill: 'red',
       },

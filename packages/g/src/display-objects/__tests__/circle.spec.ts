@@ -6,20 +6,20 @@ describe('Circle', () => {
   it("should calc Circle's GeometryBounds, RenderBounds, Bounds and LocalBounds correctly", () => {
     const circle = new Circle({
       style: {
-        x: 100,
-        y: 100,
+        cx: 100,
+        cy: 100,
         r: 100,
       },
     });
 
     expect(circle.getAttributeNames()).to.eqls([
       'anchor',
-      // 'origin',
       'opacity',
       'fillOpacity',
       'strokeOpacity',
       'fill',
       'stroke',
+      'transform',
       'transformOrigin',
       'visibility',
       'pointerEvents',
@@ -36,11 +36,10 @@ describe('Circle', () => {
       'textTransform',
       'zIndex',
       'interactive',
+      'cx',
+      'cy',
       'r',
       'lineWidth',
-      'x',
-      'y',
-      'z',
     ]);
     expect(circle.hasAttribute('r')).to.be.true;
     expect(circle.hasAttributes()).to.be.true;

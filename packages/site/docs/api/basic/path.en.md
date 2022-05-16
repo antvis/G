@@ -21,7 +21,7 @@ const line = new Path({
 
 # 继承自
 
--   [DisplayObject](/zh/docs/api/basic/display-object)
+继承了 [DisplayObject](/zh/docs/api/basic/display-object) 的 [样式属性](/zh/docs/api/basic/display-object#绘图属性)。
 
 默认锚点定义的位置为包围盒左上角顶点，可以通过 [anchor](/zh/docs/api/display-object#anchor) 改变。
 
@@ -47,6 +47,22 @@ line.getBounds(); // 包围盒 { min: [100, 100], max: [200, 200] }
 line.translateLocal(100, 0); // 沿 X 轴平移
 ```
 
+## anchor
+
+默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/docs/api/basic/display-object#anchor)
+
+## transformOrigin
+
+默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/docs/api/basic/display-object#transformOrigin)
+
+## lineWidth
+
+默认值为 `'1'`。详见 [DisplayObject lineWidth](/zh/docs/api/basic/display-object#lineWidth)
+
+## miterLimit
+
+默认值 `4`。详见 [DisplayObject miterLimit](/zh/docs/api/basic/display-object#miterLimit)
+
 # 额外属性
 
 ## path
@@ -56,59 +72,11 @@ line.translateLocal(100, 0); // 沿 X 轴平移
 -   字符串形式: `M 100,100 L 200,200`
 -   数组形式: `[ [ 'M', 100, 100 ], [ 'L', 200, 200 ] ]`
 
-**类型**： `string | [string, number, number][]`
-
-**默认值**：无
-
-**是否必须**：`true`
+https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/path
 
 ## d
 
 [path](/zh/docs/api/basic/path#path) 属性的别名，与 SVG 中的 `<path>` 命名保持一致。
-
-## lineJoin
-
-**类型**： `string`
-
-**默认值**：`miter`
-
-**是否必须**：`false`
-
-相邻两个线段的接头样式，支持以下取值：
-
--   'miter' 默认值
--   'bevel'
--   'round'
-
-效果可参考 Canvas2D [同名属性](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineJoin)。
-
-## lineCap
-
-**类型**： `string`
-
-**默认值**：`miter`
-
-**是否必须**：`false`
-
-端点样式，支持以下取值：
-
--   'butt' 默认值
--   'round'
--   'square'
-
-可参考 Canvas2D [同名属性](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineCap)。
-
-## miterLimit
-
-**类型**： `number`
-
-**默认值**：`4`
-
-**是否必须**：`false`
-
-miter 接头斜接面限制比例，SVG 和 Canvas2D 的默认值不同，前者为 4 而后者为 10。
-
-可参考 Canvas2D [同名属性](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterLimit)。
 
 # 方法
 

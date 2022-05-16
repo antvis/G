@@ -31,8 +31,8 @@ const canvas = new Canvas({
 const circle1 = new Circle({
   id: 'circle1',
   style: {
-    x: 100,
-    y: 100,
+    cx: 100,
+    cy: 100,
     r: 100,
     fill: '#1890FF',
     stroke: '#F04864',
@@ -62,8 +62,8 @@ canvas.appendChild(result);
 const pickingPoint = new Circle({
   interactive: false, // we don't want picking itself
   style: {
-    x: 150,
-    y: 150,
+    cx: 150,
+    cy: 150,
     r: 20,
     fill: '#F04864',
   },

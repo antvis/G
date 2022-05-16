@@ -5,11 +5,15 @@ import type { DisplayObjectConfig } from '../dom';
 import type { CSSUnitValue } from '../css';
 
 export interface GroupStyleProps extends BaseStyleProps {
+  x?: number | string;
+  y?: number | string;
   width?: number | string;
   height?: number | string;
 }
 
 export interface ParsedGroupStyleProps extends ParsedBaseStyleProps {
+  x: CSSUnitValue;
+  y: CSSUnitValue;
   width?: CSSUnitValue;
   height?: CSSUnitValue;
 }
@@ -29,6 +33,8 @@ export class Group extends DisplayObject {
     super({
       type: Shape.GROUP,
       style: {
+        x: '',
+        y: '',
         width: '',
         height: '',
         ...style,

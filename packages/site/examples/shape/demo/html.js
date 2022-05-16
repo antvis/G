@@ -30,6 +30,9 @@ const line = new Line({
   },
 });
 const p1 = new HTML({
+  id: 'p1',
+  name: 'p1-name',
+  className: 'p1-classname',
   style: {
     x: 200,
     y: 100,
@@ -39,6 +42,9 @@ const p1 = new HTML({
   },
 });
 const p2 = new HTML({
+  id: 'p2',
+  name: 'p2-name',
+  className: 'p2-classname',
   style: {
     x: 400,
     y: 100,
@@ -52,7 +58,7 @@ const rect = new Rect({
   name: 'test-name',
   style: {
     x: 200,
-    y: 100,
+    y: 200,
     width: 300,
     height: 100,
     fill: '#1890FF',
@@ -62,11 +68,12 @@ const text = new Text({
   style: {
     x: 150,
     y: 50,
-    text: 'Click me!',
+    text: 'Hover me!',
     fontSize: 22,
     fill: '#000',
     textAlign: 'center',
     textBaseline: 'middle',
+    pointerEvents: 'none',
   },
 });
 rect.appendChild(text);
@@ -75,9 +82,13 @@ const tooltip = new HTML({
     x: 0,
     y: 0,
     innerHTML: 'Tooltip',
+    fill: 'white',
+    stroke: 'black',
+    lineWidth: 6,
     width: 100,
     height: 30,
-    // visibility: 'hidden',
+    pointerEvents: 'none',
+    visibility: 'hidden',
   },
 });
 
@@ -87,15 +98,13 @@ canvas.appendChild(p2);
 canvas.appendChild(rect);
 canvas.appendChild(tooltip);
 
-rect.addEventListener('mouseenter', (e) => {
+rect.addEventListener('mousemove', (e) => {
   tooltip.setPosition(e.x, e.y);
-  tooltip.show();
-  console.log('enter...', e.target);
+  tooltip.style.visibility = 'visible';
 });
-rect.addEventListener('mouseleave', (e) => {
+rect.addEventListener('mouseleave', () => {
   tooltip.setPosition(0, 0);
-  tooltip.hide();
-  console.log('leave...', e.target);
+  tooltip.style.visibility = 'hidden';
 });
 
 // stats

@@ -31,7 +31,6 @@ import {
   CSSPropertyOffsetDistance,
   CSSPropertyOffsetPath,
   CSSPropertyOpacity,
-  CSSPropertyX1Y1X2Y2,
   CSSPropertyPath,
   CSSPropertyPoints,
   CSSPropertyText,
@@ -123,7 +122,6 @@ export const containerModule = Module((register) => {
   register(CSSPropertyZIndex);
   register(CSSPropertyTransform);
   register(CSSPropertyTransformOrigin);
-  register(CSSPropertyX1Y1X2Y2);
   register(CSSPropertyPath);
   register(CSSPropertyPoints);
   register(CSSPropertyClipPath);

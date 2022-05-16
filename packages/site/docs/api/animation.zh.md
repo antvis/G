@@ -883,8 +883,8 @@ import { Circle, convertToPath } from '@antv/g';
 
 const circle = new Circle({
     style: {
-        x: 50,
-        y: 50,
+        cx: 50,
+        cy: 50,
         r: 50,
     },
 });

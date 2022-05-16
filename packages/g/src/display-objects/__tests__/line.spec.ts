@@ -65,8 +65,6 @@ describe('Line', () => {
   it('should compare with initial x1 when x1 changed', () => {
     const line = new Line({
       style: {
-        x: 99999,
-        y: 99999,
         x1: 200,
         y1: 100,
         x2: 400,
@@ -75,23 +73,16 @@ describe('Line', () => {
       },
     });
 
-    // x1/y1/x2/y2 should override x/y
-    expect(line.attributes.x).eqls(200);
-    expect(line.attributes.y).eqls(100);
-    expect(line.attributes.z).eqls(0);
+    expect(line.getLocalPosition()).eqls(vec3.fromValues(200, 100, 0));
 
     // move right 100px
     line.translate(100, 0);
     expect(line.getLocalPosition()).eqls(vec3.fromValues(300, 100, 0));
-    expect(line.attributes.x).eqls(300);
-    expect(line.attributes.y).eqls(100);
 
     // change x1 now, should reset x/y
     line.style.x1 += 100;
     line.style.x2 += 100;
     expect(line.getLocalPosition()).eqls(vec3.fromValues(300, 100, 0));
-    expect(line.attributes.x).eqls(300);
-    expect(line.attributes.y).eqls(100);
   });
 
   it('should create a 3D line', () => {
@@ -107,13 +98,10 @@ describe('Line', () => {
       },
     });
 
-    // x1/y1/x2/y2 should override x/y
-    expect(line.attributes.x).eqls(200);
-    expect(line.attributes.y).eqls(100);
-    expect(line.attributes.z).eqls(100);
+    expect(line.getLocalPosition()).eqls(vec3.fromValues(200, 100, 100));
 
     line.style.z1 -= 200;
-    expect(line.attributes.z).eqls(-100);
+    expect(line.getLocalPosition()).eqls(vec3.fromValues(200, 100, -100));
   });
 
   it('should getPoint at ratio correctly', () => {

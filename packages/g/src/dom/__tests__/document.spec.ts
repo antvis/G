@@ -161,8 +161,8 @@ describe('Document', () => {
     const circle = new Circle({
       style: {
         r: 100,
-        x: 100,
-        y: 100,
+        cx: 100,
+        cy: 100,
         fill: 'red',
       },
     });
@@ -186,8 +186,8 @@ describe('Document', () => {
     const circle1 = new Circle({
       style: {
         r: 100,
-        x: 100,
-        y: 100,
+        cx: 100,
+        cy: 100,
         fill: 'red',
       },
     });
@@ -195,8 +195,8 @@ describe('Document', () => {
     const circle2 = new Circle({
       style: {
         r: 100,
-        x: 100,
-        y: 100,
+        cx: 100,
+        cy: 100,
         fill: 'green',
       },
     });

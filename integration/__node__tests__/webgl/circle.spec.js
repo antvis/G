@@ -47,8 +47,8 @@ describe('Render <Circle> with g-canvas', () => {
   it('should render circle on server-side correctly.', async () => {
     const circle1 = new Circle({
       style: {
-        x: 10,
-        y: 10,
+        cx: 10,
+        cy: 10,
         r: 10,
         fill: 'green',
       },

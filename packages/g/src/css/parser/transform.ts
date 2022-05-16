@@ -83,7 +83,7 @@ const transformFunctions: Record<
  * scaleX(1)
  */
 export function parseTransform(string: string): ParsedTransform[] {
-  string = string.toLowerCase().trim();
+  string = (string || 'none').toLowerCase().trim();
   if (string === 'none') {
     return [];
   }

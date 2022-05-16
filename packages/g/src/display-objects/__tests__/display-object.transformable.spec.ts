@@ -207,4 +207,17 @@ describe('Mixin Transformable', () => {
       expect(bounds.halfExtents).eqls(vec3.fromValues(50, 50, 0));
     }
   });
+
+  it('should apply transform attribute correctly', () => {
+    const circle = new Circle({
+      style: {
+        cx: 100,
+        cy: 100,
+        r: 100,
+        transform: 'translate(100px, 100px)',
+      },
+    });
+
+    expect(circle.getLocalPosition()).to.eqls(vec3.fromValues(200, 200, 0));
+  });
 });

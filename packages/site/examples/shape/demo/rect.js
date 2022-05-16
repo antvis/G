@@ -65,6 +65,8 @@ rendererFolder.open();
 
 const rectFolder = gui.addFolder('rect');
 const rectConfig = {
+  x: 200,
+  y: 100,
   width: 300,
   height: 200,
   fill: '#1890FF',
@@ -78,6 +80,12 @@ const rectConfig = {
   increasedLineWidthForHitTesting: 0,
   cursor: 'pointer',
 };
+rectFolder.add(rectConfig, 'x', 0, 400).onChange((x) => {
+  rect.style.x = x;
+});
+rectFolder.add(rectConfig, 'y', 0, 400).onChange((y) => {
+  rect.style.y = y;
+});
 rectFolder.add(rectConfig, 'width', 50, 400).onChange((width) => {
   rect.style.width = width;
 });
@@ -122,11 +130,11 @@ rectFolder.open();
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  x: 200,
-  y: 100,
-  scale: 1,
+  localPositionX: 200,
+  localPositionY: 100,
+  localScale: 1,
+  localEulerAngles: 0,
   transformOrigin: 'left top',
-  eulerAngles: 0,
   anchorX: 0,
   anchorY: 0,
 };
@@ -141,21 +149,19 @@ transformFolder
   .onChange((transformOrigin) => {
     rect.style.transformOrigin = transformOrigin;
   });
-transformFolder.add(transformConfig, 'x', 0, 400).onChange((x) => {
-  rect.setLocalPosition(x, rect.style.y);
-  // or
-  // rect.style.x = x;
+transformFolder.add(transformConfig, 'localPositionX', 0, 600).onChange((localPositionX) => {
+  const [lx, ly] = rect.getLocalPosition();
+  rect.setLocalPosition(localPositionX, ly);
 });
-transformFolder.add(transformConfig, 'y', 0, 400).onChange((y) => {
-  rect.setLocalPosition(rect.style.x, y);
-  // or
-  // rect.style.y = y;
+transformFolder.add(transformConfig, 'localPositionY', 0, 500).onChange((localPositionY) => {
+  const [lx, ly] = rect.getLocalPosition();
+  rect.setLocalPosition(lx, localPositionY);
 });
-transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
-  rect.setLocalScale(scaling);
+transformFolder.add(transformConfig, 'localScale', 0.2, 5).onChange((localScale) => {
+  rect.setLocalScale(localScale);
 });
-transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
-  rect.setLocalEulerAngles(eulerAngles);
+transformFolder.add(transformConfig, 'localEulerAngles', 0, 360).onChange((localEulerAngles) => {
+  rect.setLocalEulerAngles(localEulerAngles);
 });
 transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
   rect.style.anchor = [anchorX, transformConfig.anchorY];

@@ -6,6 +6,8 @@ import { DisplayObject } from './DisplayObject';
 import type { CSSUnitValue, CSSGlobalKeywords, CSSKeywordValue } from '../css';
 
 export interface TextStyleProps extends BaseStyleProps {
+  x?: number | string;
+  y?: number | string;
   text: string;
   /** 设置文本内容的当前对齐方式 */
   textAlign?: CSSGlobalKeywords | 'start' | 'center' | 'end' | 'left' | 'right';
@@ -42,6 +44,8 @@ export interface TextStyleProps extends BaseStyleProps {
   dy?: number | string;
 }
 export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
+  x: CSSUnitValue;
+  y: CSSUnitValue;
   text: string;
   /** 设置文本内容的当前对齐方式 */
   textAlign?: CSSKeywordValue;
@@ -87,6 +91,8 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
     super({
       type: Shape.TEXT,
       style: {
+        x: '',
+        y: '',
         text: '',
         fontSize: '',
         fontFamily: '',

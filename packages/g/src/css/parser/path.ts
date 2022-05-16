@@ -29,8 +29,10 @@ export function parsePath(path: string, object: DisplayObject): ParsedPathStyleP
   const { totalLength, curveSegments } = calcLength(curve);
   const rect = getPathBBox(curve);
 
-  object.parsedStyle.defX = rect.x;
-  object.parsedStyle.defY = rect.y;
+  if (object) {
+    object.parsedStyle.defX = rect.x;
+    object.parsedStyle.defY = rect.y;
+  }
 
   return {
     absolutePath,

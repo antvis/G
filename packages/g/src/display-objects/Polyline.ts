@@ -20,7 +20,7 @@ export class Polyline extends DisplayObject<PolylineStyleProps, ParsedPolylineSt
     super({
       type: Shape.POLYLINE,
       style: {
-        points: [],
+        points: '',
         lineWidth: 1,
         miterLimit: 4,
         ...style,

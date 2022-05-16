@@ -3,6 +3,8 @@ title: Image 图片
 order: 5
 ---
 
+可以参考 SVG 的 [\<image\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/image) 元素。
+
 如下 [示例](/zh/examples/shape#image) 定义了一个图片，左上角顶点位置为 `(200, 100)`：
 
 ```javascript
@@ -30,21 +32,41 @@ const image = new Image({
 
 # 继承自
 
--   [DisplayObject](/zh/docs/api/basic/display-object)
+继承了 [DisplayObject](/zh/docs/api/basic/display-object) 的 [样式属性](/zh/docs/api/basic/display-object#绘图属性)。
 
-通过 `(x, y)` 定义的位置为左上角顶点，可以通过锚点位置 [anchor](/zh/docs/api/display-object#anchor) 改变。
+## anchor
+
+默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/docs/api/basic/display-object#anchor)
+
+## transformOrigin
+
+默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/docs/api/basic/display-object#transformOrigin)
 
 # 额外属性
 
+## x
+
+局部坐标系下，图片左上角顶点的 x 轴坐标。
+
+https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+
+## y
+
+局部坐标系下，图片左上角顶点的 y 轴坐标。
+
+https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+
 ## img
 
-**类型**： `string | Image`
-
-**默认值**：无
-
-**是否必须**：`true`
-
-**说明**：图片来源，支持以下两种：
+图片来源，支持以下两种：
 
 -   图片地址字符串，加载成功后展示
 -   自行创建 [Image](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image) 对象，在 `onload` 回调中创建 G Image，示例如下：
@@ -73,24 +95,24 @@ img.onload = () => {
 
 ## src
 
-该属性为 [img](/zh/docs/api/basic/image) 的别名。
+该属性为 [img](/zh/docs/api/basic/image) 的别名。
 
 ## width
 
-**类型**： `number`
+图片宽度。
 
-**默认值**：无
+https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
-**是否必须**：`false`
-
-**说明**：图片宽度
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
 ## height
 
-**类型**： `number`
+图片高度。
 
-**默认值**：无
+https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
 
-**是否必须**：`false`
-
-**说明**：图片高度
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |

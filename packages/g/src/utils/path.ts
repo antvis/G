@@ -3,7 +3,7 @@
  * @see http://thednp.github.io/kute.js/svgCubicMorph.html
  */
 import { Cubic as CubicUtil } from '@antv/g-math';
-import type { mat4 } from 'gl-matrix';
+import { mat4 } from 'gl-matrix';
 import { vec3 } from 'gl-matrix';
 import type {
   Circle,
@@ -14,6 +14,7 @@ import type {
   Rect,
   DisplayObject,
 } from '../display-objects';
+import type { AABB } from '../shapes';
 import type { PathCommand, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 
@@ -235,16 +236,24 @@ export function getRotatedCurve(a: PathCommand[], b: PathCommand[]) {
 
 function commandsToPathString(
   commands: PathCommand[],
-  localTransform: mat4,
   anchor: [number, number],
   parsedStyle: ParsedBaseStyleProps,
+  bounds: AABB,
 ) {
   const { defX = 0, defY = 0 } = parsedStyle;
+  const width = (bounds && bounds.halfExtents[0] * 2) || 0;
+  const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+  const transform = mat4.translate(
+    mat4.create(),
+    mat4.identity(mat4.create()),
+    vec3.fromValues((-width * anchor[0]) / 2, (-height * anchor[1]) / 2, 0),
+  );
+
   return commands.reduce((prev, cur) => {
     let path = '';
     if (cur[0] === 'M' || cur[0] === 'L') {
       const p = vec3.fromValues(cur[1] - defX, cur[2] - defY, 0);
-      vec3.transformMat4(p, p, localTransform);
+      vec3.transformMat4(p, p, transform);
 
       path = `${cur[0]}${p[0]},${p[1]}`;
     } else if (cur[0] === 'Z') {
@@ -253,14 +262,14 @@ function commandsToPathString(
       const p1 = vec3.fromValues(cur[1] - defX, cur[2] - defY, 0);
       const p2 = vec3.fromValues(cur[3] - defX, cur[4] - defY, 0);
       const p3 = vec3.fromValues(cur[5] - defX, cur[6] - defY, 0);
-      vec3.transformMat4(p1, p1, localTransform);
-      vec3.transformMat4(p2, p2, localTransform);
-      vec3.transformMat4(p3, p3, localTransform);
+      vec3.transformMat4(p1, p1, transform);
+      vec3.transformMat4(p2, p2, transform);
+      vec3.transformMat4(p3, p3, transform);
 
       path = `${cur[0]}${p1[0]},${p1[1]},${p2[0]},${p2[1]},${p3[0]},${p3[1]}`;
     } else if (cur[0] === 'A') {
       const c = vec3.fromValues(cur[6] - defX, cur[7] - defY, 0);
-      vec3.transformMat4(c, c, localTransform);
+      vec3.transformMat4(c, c, transform);
       path = `${cur[0]}${cur[1]},${cur[2]},${cur[3]},${cur[4]},${cur[5]},${c[0]},${c[1]}`;
     }
 
@@ -338,7 +347,6 @@ function rectToCommands(
  * * lineWidth
  */
 export function convertToPath(object: DisplayObject) {
-  const localTransform = object.getLocalTransform();
   const anchor = object.style.anchor;
   let commands: PathCommand[] = [];
   switch (object.nodeName) {
@@ -347,13 +355,13 @@ export function convertToPath(object: DisplayObject) {
       commands = lineToCommands(x1.value, y1.value, x2.value, y2.value);
       break;
     case Shape.CIRCLE: {
-      const { r, x, y } = (object as Circle).parsedStyle;
-      commands = ellipseToCommands(r.value, r.value, x.value, y.value);
+      const { r, cx, cy } = (object as Circle).parsedStyle;
+      commands = ellipseToCommands(r.value, r.value, cx.value, cy.value);
       break;
     }
     case Shape.ELLIPSE: {
-      const { rx, ry, x, y } = (object as Ellipse).parsedStyle;
-      commands = ellipseToCommands(rx.value, ry.value, x.value, y.value);
+      const { rx, ry, cx, cy } = (object as Ellipse).parsedStyle;
+      commands = ellipseToCommands(rx.value, ry.value, cx.value, cy.value);
       break;
     }
     case Shape.POLYLINE:
@@ -371,6 +379,7 @@ export function convertToPath(object: DisplayObject) {
   }
 
   if (commands.length) {
-    return commandsToPathString(commands, localTransform, anchor, object.parsedStyle);
+    const bounds = object.getGeometryBounds();
+    return commandsToPathString(commands, anchor, object.parsedStyle, bounds);
   }
 }

@@ -145,11 +145,11 @@ lineFolder
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  x: 50,
-  y: 50,
-  scale: 1,
+  localPositionX: 50,
+  localPositionY: 50,
+  localScale: 1,
+  localEulerAngles: 0,
   transformOrigin: 'left top',
-  eulerAngles: 0,
   anchorX: 0,
   anchorY: 0,
 };
@@ -164,21 +164,19 @@ transformFolder
   .onChange((transformOrigin) => {
     polyline.style.transformOrigin = transformOrigin;
   });
-transformFolder.add(transformConfig, 'x', 0, 400).onChange((x) => {
-  polyline.setLocalPosition(x, polyline.style.y);
-  // or
-  // polyline.style.x = x;
+transformFolder.add(transformConfig, 'localPositionX', 0, 600).onChange((localPositionX) => {
+  const [lx, ly] = polyline.getLocalPosition();
+  polyline.setLocalPosition(localPositionX, ly);
 });
-transformFolder.add(transformConfig, 'y', 0, 400).onChange((y) => {
-  polyline.setLocalPosition(polyline.style.x, y);
-  // or
-  // polyline.style.y = y;
+transformFolder.add(transformConfig, 'localPositionY', 0, 500).onChange((localPositionY) => {
+  const [lx, ly] = polyline.getLocalPosition();
+  polyline.setLocalPosition(lx, localPositionY);
 });
-transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
-  polyline.setLocalScale(scaling);
+transformFolder.add(transformConfig, 'localScale', 0.2, 5).onChange((localScale) => {
+  polyline.setLocalScale(localScale);
 });
-transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
-  polyline.setLocalEulerAngles(eulerAngles);
+transformFolder.add(transformConfig, 'localEulerAngles', 0, 360).onChange((localEulerAngles) => {
+  polyline.setLocalEulerAngles(localEulerAngles);
 });
 transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
   polyline.style.anchor = [anchorX, transformConfig.anchorY];

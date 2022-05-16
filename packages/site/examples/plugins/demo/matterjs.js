@@ -99,8 +99,8 @@ const circle = new Circle({
     rigid: 'dynamic',
     density: 0.1,
     restitution: 0.5,
-    x: 300,
-    y: 0,
+    cx: 300,
+    cy: 0,
   },
 });
 canvas.appendChild(circle);

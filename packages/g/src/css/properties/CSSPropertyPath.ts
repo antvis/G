@@ -19,7 +19,8 @@ export class CSSPropertyPath
     oldParsed: ParsedPathStyleProps['path'],
     parsed: ParsedPathStyleProps['path'],
   ) {
-    if (parsed instanceof CSSKeywordValue) {
+    // unset
+    if (parsed instanceof CSSKeywordValue && parsed.value === 'unset') {
       return {
         absolutePath: [],
         hasArc: false,
@@ -42,7 +43,7 @@ export class CSSPropertyPath
    * update local position
    */
   postProcessor(object: DisplayObject) {
-    const { defX, defY } = object.parsedStyle as ParsedPathStyleProps;
+    const { defX = 0, defY = 0 } = object.parsedStyle as ParsedPathStyleProps;
     object.setLocalPosition(defX, defY);
   }
 }

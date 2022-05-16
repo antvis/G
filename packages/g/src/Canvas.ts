@@ -162,6 +162,8 @@ export class Canvas extends EventTarget implements ICanvas {
     /**
      * limits query
      */
+    // the following feature-detect from hammer.js
+    // @see https://github.com/hammerjs/hammer.js/blob/master/src/inputjs/input-consts.js#L5
     this.supportTouchEvent = supportTouchEvent ?? 'ontouchstart' in globalThis;
     this.supportPointerEvent = supportPointerEvent ?? !!globalThis.PointerEvent;
     this.isTouchEvent =

@@ -6,8 +6,8 @@ describe('Ellipse', () => {
   it('should calc global bounds correctly', () => {
     const ellipse = new Ellipse({
       style: {
-        x: 100,
-        y: 100,
+        cx: 100,
+        cy: 100,
         rx: 100,
         ry: 100,
       },

@@ -25,8 +25,8 @@ const canvas = new Canvas({
 // create a circle
 const circle = new Circle({
   style: {
-    x: 200,
-    y: 200,
+    cx: 200,
+    cy: 200,
     r: 100,
     fill: '#f00',
     stroke: 'black',

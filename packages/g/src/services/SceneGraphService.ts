@@ -86,6 +86,7 @@ export interface SceneGraphService {
   getLocalRotation: (element: INode) => quat;
   getWorldTransform: (element: INode, transform?: Transform) => mat4;
   getLocalTransform: (element: INode, transform?: Transform) => mat4;
+  setLocalTransform: (element: INode, transform: mat4) => void;
   resetLocalTransform: (element: INode) => void;
   getBounds: (element: INode, render?: boolean) => AABB;
   getLocalBounds: (element: INode, render?: boolean) => AABB;
@@ -527,6 +528,15 @@ export class DefaultSceneGraphService implements SceneGraphService {
       transform.localDirtyFlag = false;
     }
     return transform.localTransform;
+  }
+
+  setLocalTransform(element: INode, transform: mat4) {
+    const t = mat4.getTranslation(vec3.create(), transform);
+    const r = mat4.getRotation(quat.create(), transform);
+    const s = mat4.getScaling(vec3.create(), transform);
+    this.setLocalScale(element, s);
+    this.setLocalPosition(element, t);
+    this.setLocalRotation(element, r);
   }
 
   resetLocalTransform(element: INode) {

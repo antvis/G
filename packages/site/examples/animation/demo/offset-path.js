@@ -74,8 +74,8 @@ const offsetPathPath = new Path({
 
 const circle1 = new Circle({
   style: {
-    x: 200,
-    y: 200,
+    cx: 200,
+    cy: 200,
     r: 60,
     fill: '#1890FF',
     stroke: '#F04864',
@@ -85,8 +85,8 @@ const circle1 = new Circle({
 });
 const circle2 = new Circle({
   style: {
-    x: 200,
-    y: 200,
+    cx: 200,
+    cy: 200,
     r: 10,
     fill: '#1890FF',
     stroke: '#F04864',
@@ -96,8 +96,8 @@ const circle2 = new Circle({
 });
 const circle3 = new Circle({
   style: {
-    x: 200,
-    y: 300,
+    cx: 200,
+    cy: 300,
     r: 60,
     fill: '#1890FF',
     stroke: '#F04864',

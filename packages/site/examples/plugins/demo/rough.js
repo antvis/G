@@ -101,8 +101,8 @@ canvas.appendChild(solarSystem);
  */
 const ellipse = new Ellipse({
   style: {
-    x: 150,
-    y: 100,
+    cx: 150,
+    cy: 100,
     rx: 25,
     ry: 15,
     fill: '#1890FF',

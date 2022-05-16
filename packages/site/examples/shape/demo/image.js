@@ -61,12 +61,20 @@ rendererFolder.open();
 
 const imageFolder = gui.addFolder('image');
 const config = {
+  x: 200,
+  y: 100,
   width: 200,
   height: 200,
   opacity: 1,
   src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
   visible: true,
 };
+imageFolder.add(config, 'x', 0, 400).onChange((x) => {
+  image.style.x = x;
+});
+imageFolder.add(config, 'y', 0, 400).onChange((y) => {
+  image.style.y = y;
+});
 imageFolder.add(config, 'width', 0, 400).onChange((width) => {
   image.style.width = width;
 });
@@ -97,11 +105,11 @@ imageFolder.open();
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  x: 200,
-  y: 100,
-  scale: 1,
+  localPositionX: 200,
+  localPositionY: 100,
+  localScale: 1,
+  localEulerAngles: 0,
   transformOrigin: 'left top',
-  eulerAngles: 0,
   anchorX: 0,
   anchorY: 0,
 };
@@ -116,21 +124,19 @@ transformFolder
   .onChange((transformOrigin) => {
     image.style.transformOrigin = transformOrigin;
   });
-transformFolder.add(transformConfig, 'x', 0, 400).onChange((x) => {
-  image.setLocalPosition(x, image.style.y);
-  // or
-  // image.style.x = x;
+transformFolder.add(transformConfig, 'localPositionX', 0, 600).onChange((localPositionX) => {
+  const [lx, ly] = image.getLocalPosition();
+  image.setLocalPosition(localPositionX, ly);
 });
-transformFolder.add(transformConfig, 'y', 0, 400).onChange((y) => {
-  image.setLocalPosition(image.style.x, y);
-  // or
-  // image.style.y = y;
+transformFolder.add(transformConfig, 'localPositionY', 0, 500).onChange((localPositionY) => {
+  const [lx, ly] = image.getLocalPosition();
+  image.setLocalPosition(lx, localPositionY);
 });
-transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
-  image.setLocalScale(scaling);
+transformFolder.add(transformConfig, 'localScale', 0.2, 5).onChange((localScale) => {
+  image.setLocalScale(localScale);
 });
-transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
-  image.setLocalEulerAngles(eulerAngles);
+transformFolder.add(transformConfig, 'localEulerAngles', 0, 360).onChange((localEulerAngles) => {
+  image.setLocalEulerAngles(localEulerAngles);
 });
 transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
   image.style.anchor = [anchorX, transformConfig.anchorY];
