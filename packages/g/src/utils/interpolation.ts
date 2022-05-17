@@ -1,4 +1,5 @@
 import { GlobalContainer } from 'mana-syringe';
+import type { DisplayObject } from '../display-objects';
 import type { CSSProperty, Interpolatable } from '../css';
 import { StyleValueRegistry } from '../css/interfaces';
 import type { AnimationEffectTiming } from '../dom';
@@ -159,8 +160,8 @@ function propertyInterpolation(
 
     if (propertyHandler) {
       if (propertyHandler.parser) {
-        parsedLeft = propertyHandler.parser(left);
-        parsedRight = propertyHandler.parser(right);
+        parsedLeft = propertyHandler.parser(left, target as DisplayObject);
+        parsedRight = propertyHandler.parser(right, target as DisplayObject);
       }
       // if (propertyHandler.calculator) {
       //   parsedLeft = propertyHandler.calculator(parsedLeft);
@@ -217,12 +218,6 @@ function interpolate(from: Interpolatable, to: Interpolatable, f: number): Inter
 const FORMAT_ATTR_MAP = {
   d: {
     alias: 'path',
-  },
-  cx: {
-    alias: 'x',
-  },
-  cy: {
-    alias: 'y',
   },
   strokeDasharray: {
     alias: 'lineDash',

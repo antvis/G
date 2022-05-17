@@ -3,9 +3,10 @@ import type {
   DisplayObject,
   RenderingService,
   RenderingPlugin,
-  ParsedHTMLStyleProps,
   FederatedEvent,
   LinearGradient,
+  MutationEvent,
+  HTML,
 } from '@antv/g';
 import { CSSRGB, CSSGradientValue, GradientPatternType } from '@antv/g';
 import {
@@ -35,31 +36,23 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       if (object.nodeName === Shape.HTML) {
-        const { innerHTML } = object.parsedStyle;
-        const existedId = HTML_PREFIX + object.entity;
-        const $container = (this.contextService.getDomElement() as HTMLElement).parentNode;
+        const $el = this.getOrCreateEl(object);
+        // apply documentElement's style
+        const { attributes } = object.ownerDocument.documentElement;
+        Object.keys(attributes).forEach((name) => {
+          $el.style[name] = attributes[name];
+        });
 
-        if ($container) {
-          const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
-          if (!$existedElement) {
-            const $div = document.createElement('div');
-            object.parsedStyle.$el = $div;
-            $div.id = existedId;
-            if (isString(innerHTML)) {
-              $div.innerHTML = innerHTML;
-            } else {
-              $div.appendChild(innerHTML);
-            }
-            $container.appendChild($div);
-          }
-        }
+        Object.keys(object.attributes).forEach((name) => {
+          this.updateAttribute(name, object as HTML);
+        });
       }
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       if (object.nodeName === Shape.HTML) {
-        const existedId = HTML_PREFIX + object.entity;
+        const existedId = this.getId(object);
         const $container = (this.contextService.getDomElement() as HTMLElement).parentNode;
         if ($container) {
           const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
@@ -70,126 +63,162 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       }
     };
 
+    const handleAttributeChanged = (e: MutationEvent) => {
+      const object = e.target as HTML;
+      if (object.nodeName === Shape.HTML) {
+        const { attrName } = e;
+        this.updateAttribute(attrName, object);
+      }
+    };
+
     renderingService.hooks.init.tapPromise(HTMLRenderingPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.addEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
     });
 
     renderingService.hooks.destroy.tap(HTMLRenderingPlugin.tag, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-    });
-
-    renderingService.hooks.render.tap(HTMLRenderingPlugin.tag, (object: DisplayObject) => {
-      if (object.nodeName === Shape.HTML) {
-        const existedId = HTML_PREFIX + object.entity;
-        const $container = (this.contextService.getDomElement() as HTMLElement).parentNode;
-        if ($container) {
-          const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
-          this.updateCSSStyle($existedElement!, object.parsedStyle, object);
-        }
-      }
+      this.renderingContext.root.removeEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
     });
   }
 
-  private updateCSSStyle(
-    $el: HTMLElement,
-    parsedStyle: ParsedHTMLStyleProps,
-    object: DisplayObject,
-  ) {
-    const {
-      zIndex,
-      visibility,
-      opacity,
-      fill,
-      lineWidth,
-      lineDash,
-      stroke,
-      width,
-      height,
-      style: initialStyle = '',
-      className = '',
-    } = parsedStyle;
+  private getId(object: DisplayObject) {
+    return object.id || HTML_PREFIX + object.entity;
+  }
 
-    let contentWidth = 0;
-    let contentHeight = 0;
-    const { value: widthValue } = width;
-    const { value: heightValue } = height;
-    contentWidth = widthValue;
-    contentHeight = heightValue;
-
-    const style: Record<string, string | number> = {};
-    // use absolute position
-    style.position = 'absolute';
-    style.top = 0;
-    style.left = 0;
-    style.width = `${contentWidth}px`;
-    style.height = `${contentHeight}px`;
-
-    // use transform
-    style.transform = `matrix3d(${object.getWorldTransform().join(',')})`;
-
-    // use unparsed transform origin
-    if (object.style.transformOrigin) {
-      style['transform-origin'] = object.style.transformOrigin;
-    }
-
-    // z-index
-    style['z-index'] = zIndex.value;
-    // visibility
-    style.visibility = visibility.value;
-    // opacity
-    style.opacity = opacity.value;
-    // backgroundColor
-    if (fill) {
-      let color = '';
-      if (fill instanceof CSSRGB) {
-        color = fill.toString();
-      } else if (fill instanceof CSSGradientValue) {
-        if (fill.type === GradientPatternType.LinearGradient) {
-          const steps = (fill.value as LinearGradient).steps
-            .map((cur) => {
-              //  ['0', '#ffffff'],
-              return `${cur[1]} ${Number(cur[0]) * 100}%`;
-            })
-            .join(',');
-          // @see https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/linear-gradient()
-          color = `linear-gradient(to right, ${steps});`;
+  private getOrCreateEl(object: DisplayObject) {
+    const existedId = this.getId(object);
+    const $container = (this.contextService.getDomElement() as HTMLElement).parentNode;
+    if ($container) {
+      let $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
+      if (!$existedElement) {
+        $existedElement = document.createElement('div');
+        object.parsedStyle.$el = $existedElement;
+        $existedElement.id = existedId;
+        if (object.name) {
+          $existedElement.setAttribute('name', object.name);
         }
+        if (object.className) {
+          $existedElement.setAttribute('className', object.className);
+        }
+
+        $container.appendChild($existedElement);
+
+        // use absolute position
+        $existedElement.style.position = 'absolute';
+        $existedElement.style.left = '0';
+        $existedElement.style.top = '0';
+        $existedElement.style['will-change'] = 'transform';
+        const worldTransform = object.getWorldTransform();
+        $existedElement.style.transform = `matrix(${[
+          worldTransform[0],
+          worldTransform[1],
+          worldTransform[4],
+          worldTransform[5],
+          worldTransform[12],
+          worldTransform[13],
+        ].join(',')})`;
       }
-      style.background = color;
+
+      return $existedElement;
     }
 
-    // border
-    style['border-width'] = `${lineWidth?.value || 0}px`;
-    if (stroke) {
-      style['border-color'] = stroke.toString();
-      style['border-style'] = 'solid';
-    }
-    if (lineDash) {
-      style['border-style'] = 'dashed';
-    }
+    return null;
+  }
 
-    // filters
-    if (object.style.filter) {
-      // use unparsed filter directly
-      style.filter = object.style.filter;
+  private updateAttribute(name: string, object: HTML) {
+    const $el = this.getOrCreateEl(object);
+    switch (name) {
+      case 'innerHTML':
+        const { innerHTML } = object.parsedStyle;
+        if (isString(innerHTML)) {
+          $el.innerHTML = innerHTML;
+        } else {
+          $el.innerHTML = '';
+          $el.appendChild(innerHTML);
+        }
+        break;
+      case 'modelMatrix':
+      case 'transformOrigin':
+        const { transformOrigin } = object.parsedStyle;
+        $el.style['transform-origin'] = `${transformOrigin[0].value} ${transformOrigin[1].value}`;
+        const worldTransform = object.getWorldTransform();
+        $el.style.transform = `matrix(${[
+          worldTransform[0],
+          worldTransform[1],
+          worldTransform[4],
+          worldTransform[5],
+          worldTransform[12],
+          worldTransform[13],
+        ].join(',')})`;
+        break;
+      case 'width':
+        const { width } = object.parsedStyle;
+        $el.style.width = `${width?.value || 0}px`;
+        break;
+      case 'height':
+        const { height } = object.parsedStyle;
+        $el.style.height = `${height?.value || 0}px`;
+        break;
+      case 'zIndex':
+        const { zIndex } = object.parsedStyle;
+        $el.style['z-index'] = `${zIndex.value}`;
+        break;
+      case 'visibility':
+        const { visibility } = object.parsedStyle;
+        $el.style.visibility = visibility.value;
+        break;
+      case 'pointerEvents':
+        const { pointerEvents } = object.parsedStyle;
+        $el.style.pointerEvents = pointerEvents.value;
+        break;
+      case 'opacity':
+        const { opacity } = object.parsedStyle;
+        $el.style.opacity = `${opacity.value}`;
+        break;
+      case 'fill':
+        const { fill } = object.parsedStyle;
+        let color = '';
+        if (fill instanceof CSSRGB) {
+          color = fill.toString();
+        } else if (fill instanceof CSSGradientValue) {
+          if (fill.type === GradientPatternType.LinearGradient) {
+            const steps = (fill.value as LinearGradient).steps
+              .map((cur) => {
+                //  ['0', '#ffffff'],
+                return `${cur[1]} ${Number(cur[0]) * 100}%`;
+              })
+              .join(',');
+            // @see https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/linear-gradient()
+            color = `linear-gradient(to right, ${steps});`;
+          }
+        }
+        $el.style.background = color;
+        break;
+      case 'stroke':
+        const { stroke } = object.parsedStyle;
+        $el.style['border-color'] = stroke.toString();
+        $el.style['border-style'] = 'solid';
+        break;
+      case 'lineWidth':
+        const { lineWidth } = object.parsedStyle;
+        $el.style['border-width'] = `${lineWidth.value || 0}px`;
+        break;
+      case 'lineDash':
+        $el.style['border-style'] = 'dashed';
+        break;
+      case 'filter':
+        const { filter } = object.parsedStyle;
+        $el.style.filter = filter;
+        break;
     }
-
-    if (className) {
-      if (Array.isArray(className)) {
-        className.forEach((c) => {
-          $el.classList.add(c);
-        });
-      } else {
-        $el.classList.add(className);
-      }
-    }
-    $el.setAttribute(
-      'style',
-      Object.keys(style)
-        .map((key) => `${key}:${style[key]}`)
-        .join(';') + initialStyle,
-    );
   }
 }

@@ -1,6 +1,6 @@
 import { Cubic as CubicUtil } from '@antv/g-math';
 import { Shape } from '../types';
-import type { BaseStyleProps, PathCommand , ParsedBaseStyleProps} from '../types';
+import type { BaseStyleProps, PathCommand, ParsedBaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
@@ -8,8 +8,8 @@ import type { Rectangle } from '../shapes/Rectangle';
 import { isNil } from '../utils';
 
 export interface PathStyleProps extends BaseStyleProps {
-  path?: string | PathCommand[];
-  d?: string | PathCommand[];
+  path?: string | PathCommand[] | DisplayObject;
+  d?: string | PathCommand[] | DisplayObject;
 }
 export interface PathSegment {
   command: PathCommand[0];

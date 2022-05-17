@@ -15,8 +15,7 @@ import { Instanced, VertexAttributeBufferIndex, VertexAttributeLocation } from '
 import { enumToObject } from '../utils/enum';
 
 enum SDFVertexAttributeBufferIndex {
-  PACKED_STYLE3 = VertexAttributeBufferIndex.MAX,
-  SIZE,
+  PACKED_STYLE = VertexAttributeBufferIndex.POSITION + 1,
 }
 
 enum SDFVertexAttributeLocation {
@@ -67,7 +66,6 @@ export class SDFMesh extends Instanced {
 
     const interleaved = [];
     const instanced = [];
-    const instanced2 = [];
     const indices = [];
     objects.forEach((object, i) => {
       const circle = object as Circle;
@@ -76,9 +74,13 @@ export class SDFMesh extends Instanced {
       const { radius } = circle.parsedStyle;
       const omitStroke = this.shouldOmitStroke(circle.parsedStyle);
       const size = this.getSize(object.parsedStyle, circle.nodeName);
-      instanced.push(...size);
-      instanced2.push(SDF_Shape.indexOf(circle.nodeName), radius || 0, omitStroke ? 1 : 0, 0);
-
+      instanced.push(
+        ...size,
+        SDF_Shape.indexOf(circle.nodeName),
+        radius || 0,
+        omitStroke ? 1 : 0,
+        0,
+      );
       interleaved.push(-1, -1, 0, 0, 1, -1, 1, 0, 1, 1, 1, 1, -1, 1, 0, 1);
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
     });
@@ -104,8 +106,8 @@ export class SDFMesh extends Instanced {
       data: new Float32Array(interleaved),
     });
     this.geometry.setVertexBuffer({
-      bufferIndex: SDFVertexAttributeBufferIndex.SIZE,
-      byteStride: 4 * 2,
+      bufferIndex: SDFVertexAttributeBufferIndex.PACKED_STYLE,
+      byteStride: 4 * 6,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
@@ -114,22 +116,14 @@ export class SDFMesh extends Instanced {
           location: SDFVertexAttributeLocation.SIZE,
           divisor: 1,
         },
-      ],
-      data: new Float32Array(instanced),
-    });
-    this.geometry.setVertexBuffer({
-      bufferIndex: SDFVertexAttributeBufferIndex.PACKED_STYLE3,
-      byteStride: 4 * 4,
-      frequency: VertexBufferFrequency.PerInstance,
-      attributes: [
         {
           format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 0,
+          bufferByteOffset: 4 * 2,
           location: SDFVertexAttributeLocation.PACKED_STYLE3,
           divisor: 1,
         },
       ],
-      data: new Float32Array(instanced2),
+      data: new Float32Array(instanced),
     });
   }
 
@@ -138,35 +132,33 @@ export class SDFMesh extends Instanced {
 
     this.updateBatchedAttribute(objects, startIndex, name, value);
 
-    if (name === 'r' || name === 'rx' || name === 'ry' || name === 'lineWidth') {
-      const packed: number[] = [];
-      objects.forEach((object) => {
-        const [halfWidth, halfHeight] = this.getSize(object.parsedStyle, object.nodeName);
-        const size = [halfWidth, halfHeight];
-        packed.push(...size);
-      });
-      this.geometry.updateVertexBuffer(
-        SDFVertexAttributeBufferIndex.SIZE,
-        SDFVertexAttributeLocation.SIZE,
-        startIndex,
-        new Uint8Array(new Float32Array(packed).buffer),
-      );
-    } else if (name === 'stroke' || name === 'lineDash' || name === 'strokeOpacity') {
+    if (
+      name === 'r' ||
+      name === 'rx' ||
+      name === 'ry' ||
+      name === 'lineWidth' ||
+      name === 'stroke' ||
+      name === 'lineDash' ||
+      name === 'strokeOpacity'
+    ) {
       const packed: number[] = [];
       objects.forEach((object) => {
         const circle = object as Circle;
         const omitStroke = this.shouldOmitStroke(circle.parsedStyle);
+
+        const [halfWidth, halfHeight] = this.getSize(object.parsedStyle, object.nodeName);
+        const size = [halfWidth, halfHeight];
         packed.push(
+          ...size,
           SDF_Shape.indexOf(object.nodeName),
           object.parsedStyle.radius || 0,
           omitStroke ? 1 : 0,
           0,
         );
       });
-
       this.geometry.updateVertexBuffer(
-        SDFVertexAttributeBufferIndex.PACKED_STYLE3,
-        SDFVertexAttributeLocation.PACKED_STYLE3,
+        SDFVertexAttributeBufferIndex.PACKED_STYLE,
+        SDFVertexAttributeLocation.SIZE,
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
       );

@@ -335,6 +335,20 @@ export class SVGRendererPlugin implements RenderingPlugin {
         needGeneratePath = true;
       }
 
+      // <foreignObject>
+      if (object.nodeName === Shape.HTML) {
+        if (name === 'fill') {
+          $el.style.background = usedValue.toString();
+        } else if (name === 'stroke') {
+          $el.style['border-color'] = usedValue.toString();
+          $el.style['border-style'] = 'solid';
+        } else if (name === 'lineWidth') {
+          $el.style['border-width'] = `${usedValue.value || 0}px`;
+        } else if (name === 'lineDash') {
+          $el.style['border-style'] = 'dashed';
+        }
+      }
+
       if (name === 'fill' || name === 'stroke') {
         createOrUpdateGradientAndPattern(this.$def, object, $el!, usedValue, usedName);
       } else if (name === 'visibility') {
@@ -358,7 +372,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         if (
           // (!object.style.clipPathTargets) &&
           object.nodeName !== Shape.TEXT && // text' anchor is controlled by `textAnchor` property
-          ['width', 'height', 'r', 'rx', 'ry'].indexOf(name) > -1
+          ['width', 'height', 'r', 'rx', 'ry', 'anchor'].indexOf(name) > -1
         ) {
           this.updateAnchorWithTransform(object);
         }

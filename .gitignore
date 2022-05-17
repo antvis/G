@@ -76,3 +76,6 @@ packages/**/*/pkg/
 
 .umi
 .umi-production
+
+# ignore generated image by node-canvas
+packages/**/*/__node__tests__/*.png

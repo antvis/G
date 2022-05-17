@@ -6,7 +6,7 @@ import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
 import { mat3, mat4, vec2, vec3 } from 'gl-matrix';
-import { DisplayObject, Group, Circle } from '@antv/g';
+import { DisplayObject, Group, Circle, deg2rad } from '@antv/g';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
@@ -155,12 +155,18 @@ describe('Mixin Transformable', () => {
 
     let matrix = mat3.fromTranslation(mat3.create(), vec2.fromValues(200, 200));
     group.setMatrix(matrix);
-    expect(group.getMatrix()).to.almost.eqls(
-      mat3.fromTranslation(mat3.create(), vec2.fromValues(200, 200)),
-    );
-    expect(group.getLocalMatrix()).to.almost.eqls(
-      mat3.fromTranslation(mat3.create(), vec2.fromValues(200, 200)),
-    );
+    expect(group.getMatrix()).to.almost.eqls(matrix);
+    expect(group.getLocalMatrix()).to.almost.eqls(matrix);
+
+    matrix = mat3.fromRotation(mat3.create(), deg2rad(90));
+    group.setMatrix(matrix);
+    expect(group.getMatrix()).to.almost.eqls(matrix);
+    expect(group.getLocalMatrix()).to.almost.eqls(matrix);
+
+    matrix = mat3.fromScaling(mat3.create(), vec2.fromValues(2, 2));
+    group.setMatrix(matrix);
+    expect(group.getMatrix()).to.almost.eqls(matrix);
+    expect(group.getLocalMatrix()).to.almost.eqls(matrix);
 
     matrix = mat3.identity(mat3.create());
     group.setLocalMatrix(matrix);
@@ -200,5 +206,18 @@ describe('Mixin Transformable', () => {
       expect(bounds.center).eqls(vec3.fromValues(50, 50, 0));
       expect(bounds.halfExtents).eqls(vec3.fromValues(50, 50, 0));
     }
+  });
+
+  it('should apply transform attribute correctly', () => {
+    const circle = new Circle({
+      style: {
+        cx: 100,
+        cy: 100,
+        r: 100,
+        transform: 'translate(100px, 100px)',
+      },
+    });
+
+    expect(circle.getLocalPosition()).to.eqls(vec3.fromValues(200, 200, 0));
   });
 });

@@ -3,6 +3,7 @@ import { AbstractRenderer } from '@antv/g';
 import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import * as WebGPUDevice from '@antv/g-plugin-webgpu-device';
+import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export { DomInteraction, DeviceRenderer, WebGPUDevice };
@@ -17,5 +18,6 @@ export class Renderer extends AbstractRenderer {
     this.registerPlugin(new WebGPUDevice.Plugin());
     this.registerPlugin(new DeviceRenderer.Plugin());
     this.registerPlugin(new DomInteraction.Plugin());
+    this.registerPlugin(new HTMLRenderer.Plugin());
   }
 }

@@ -1,5 +1,6 @@
 import type { Tuple4Number } from '@antv/g';
-import { ElementEvent, MutationEvent, isNil } from '@antv/g';
+import { isNil } from '@antv/g';
+import { EventEmitter } from 'eventemitter3';
 import type { Mesh } from '../Mesh';
 import type {
   CompareMode,
@@ -10,6 +11,7 @@ import type {
   StencilOp,
   Texture,
 } from '../platform';
+import { TextureEvent } from '../platform';
 import { BlendFactor, BlendMode } from '../platform';
 import { copyMegaState, defaultMegaState } from '../platform/utils';
 import { getUniforms } from '../shader/compiler';
@@ -87,11 +89,15 @@ function isTexture(t: any): t is Texture {
   return !!(t && t.type);
 }
 
+export enum MaterialEvent {
+  CHANGED = 'changed',
+}
+
 /**
  * an encapsulation on top of shaders
  * @see https://doc.babylonjs.com/divingDeeper/materials/using/materials_introduction
  */
-export abstract class Material<T extends IMaterial = any> {
+export abstract class Material<T extends IMaterial = any> extends EventEmitter {
   protected device: Device;
   protected props: T = {} as T;
 
@@ -227,6 +233,8 @@ export abstract class Material<T extends IMaterial = any> {
       this.geometryDirty = true;
       this.programDirty = true;
       this.props.wireframe = value;
+
+      this.dispatchMutationEvent();
     }
 
     this.defines.USE_WIREFRAME = !!value;
@@ -294,6 +302,7 @@ export abstract class Material<T extends IMaterial = any> {
   geometryDirty = true;
 
   constructor(device: Device, props: Partial<IMaterial>) {
+    super();
     const {
       cullMode,
       depthCompare,
@@ -368,6 +377,7 @@ export abstract class Material<T extends IMaterial = any> {
    * })
    */
   setUniforms(uniforms: Record<string, null | number | number[] | Float32Array | Texture>) {
+    let shoudDispatchMutationEvent = false;
     Object.keys(uniforms).forEach((key) => {
       const value = uniforms[key];
       const existedTexture = this.textures[key];
@@ -379,13 +389,12 @@ export abstract class Material<T extends IMaterial = any> {
       if (isTexture(value)) {
         this.textures[key] = value;
         this.textureDirty = true;
-        value.on('loaded', () => {
-          this.meshes.forEach((mesh) => {
-            mesh.renderable.dirty = true;
-          });
+        value.on(TextureEvent.LOADED, () => {
+          this.dispatchMutationEvent();
         });
       } else {
         this.uniforms[key] = value;
+        shoudDispatchMutationEvent = true;
       }
 
       if (isNil(uniforms[key])) {
@@ -394,23 +403,12 @@ export abstract class Material<T extends IMaterial = any> {
       }
     });
 
-    // trigger re-render
-    this.meshes.forEach((mesh) => {
-      // mesh.emit(ElementEvent.ATTR_MODIFIED, {
-      //   attributeName: 'material',
-      // });
-      mesh.dispatchEvent(
-        new MutationEvent(
-          ElementEvent.ATTR_MODIFIED,
-          mesh,
-          null,
-          null,
-          'material',
-          MutationEvent.MODIFICATION,
-          null,
-          null,
-        ),
-      );
-    });
+    if (shoudDispatchMutationEvent) {
+      this.dispatchMutationEvent();
+    }
+  }
+
+  private dispatchMutationEvent() {
+    this.emit(MaterialEvent.CHANGED);
   }
 }

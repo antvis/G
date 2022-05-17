@@ -65,9 +65,6 @@ describe('StyleValueRegistry initialization', () => {
     expect(documentElement.style.visibility).to.equal('visible');
     expect(documentElement.style.pointerEvents).to.equal('auto');
     expect(documentElement.style.width).to.equal('');
-    expect(documentElement.style.x).to.equal(0);
-    expect(documentElement.style.y).to.equal(0);
-    expect(documentElement.style.z).to.equal(0);
     expect(documentElement.style.zIndex).to.equal(0);
 
     // hide all children
@@ -109,8 +106,8 @@ describe('StyleValueRegistry initialization', () => {
   it('should parse & compute CSS properties for Circle correctly.', async () => {
     const circle = new Circle({
       style: {
-        x: 200,
-        y: 200,
+        cx: 200,
+        cy: 200,
         r: 100,
         fill: '#f00',
         stroke: 'black',
@@ -122,15 +119,15 @@ describe('StyleValueRegistry initialization', () => {
      * user-defined values
      */
     // use `getAttribute` to access
-    expect(circle.getAttribute('x')).to.be.eqls(200);
-    expect(circle.getAttribute('y')).to.be.eqls(200);
+    expect(circle.getAttribute('cx')).to.be.eqls(200);
+    expect(circle.getAttribute('cy')).to.be.eqls(200);
     expect(circle.getAttribute('r')).to.be.eqls(100);
     expect(circle.getAttribute('fill')).to.be.eqls('#f00');
     expect(circle.getAttribute('stroke')).to.be.eqls('black');
     expect(circle.getAttribute('lineWidth')).to.be.eqls(2);
     // use `style` to access
-    expect(circle.style.x).to.be.eqls(200);
-    expect(circle.style.y).to.be.eqls(200);
+    expect(circle.style.cx).to.be.eqls(200);
+    expect(circle.style.cy).to.be.eqls(200);
     expect(circle.style.r).to.be.eqls(100);
     expect(circle.style.fill).to.be.eqls('#f00');
     expect(circle.style.stroke).to.be.eqls('black');
@@ -142,7 +139,7 @@ describe('StyleValueRegistry initialization', () => {
     /**
      * initial values
      */
-    expect(circle.getAttribute('z')).to.be.eqls(0);
+    expect(circle.getAttribute('z')).to.be.null;
     expect(circle.getAttribute('opacity')).to.be.eqls('');
     expect(circle.getAttribute('fillOpacity')).to.be.eqls('');
     expect(circle.getAttribute('strokeOpacity')).to.be.eqls('');
@@ -158,8 +155,8 @@ describe('StyleValueRegistry initialization', () => {
      */
     const styleMap = circle.computedStyleMap();
     // user-defined
-    expect((styleMap.get('x') as CSSUnitValue).equals(CSS.px(200))).to.be.true;
-    expect((styleMap.get('y') as CSSUnitValue).equals(CSS.px(200))).to.be.true;
+    expect((styleMap.get('cx') as CSSUnitValue).equals(CSS.px(200))).to.be.true;
+    expect((styleMap.get('cy') as CSSUnitValue).equals(CSS.px(200))).to.be.true;
     // expect((styleMap.get('z') as CSSUnitValue).equals(CSS.px(0))).to.be.true;
     expect((styleMap.get('r') as CSSUnitValue).equals(CSS.px(100))).to.be.true;
     const fill = styleMap.get('fill') as CSSRGB;
@@ -206,9 +203,9 @@ describe('StyleValueRegistry initialization', () => {
      * parsed values, will be used in internal renderers such as `g-canvas`
      */
     let parsedStyle = circle.parsedStyle;
-    expect(parsedStyle.x.equals(CSS.px(200))).to.be.true;
-    expect(parsedStyle.y.equals(CSS.px(200))).to.be.true;
-    expect(parsedStyle.z.equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.cx.equals(CSS.px(200))).to.be.true;
+    expect(parsedStyle.cy.equals(CSS.px(200))).to.be.true;
+    expect(parsedStyle.cz).to.be.undefined;
     expect(parsedStyle.r.equals(CSS.px(100))).to.be.true;
     expect(parsedStyle.fill instanceof CSSRGB).to.be.true;
     expect((parsedStyle.fill as CSSRGB).r).to.be.eqls(255);
@@ -274,9 +271,8 @@ describe('StyleValueRegistry initialization', () => {
      * user-defined values
      */
     // use `getAttribute` to access
-    expect(ellipse.getAttribute('x')).to.be.eqls(0);
-    expect(ellipse.getAttribute('y')).to.be.eqls(0);
-    expect(ellipse.getAttribute('z')).to.be.eqls(0);
+    expect(ellipse.getAttribute('cx')).to.be.eqls('');
+    expect(ellipse.getAttribute('cy')).to.be.eqls('');
     expect(ellipse.getAttribute('opacity')).to.be.eqls(0.5);
     expect(ellipse.getAttribute('fillOpacity')).to.be.eqls(0.5);
     expect(ellipse.getAttribute('rx')).to.be.eqls(200);
@@ -343,9 +339,8 @@ describe('StyleValueRegistry initialization', () => {
      * parsed values, will be used in internal renderers such as `g-canvas`
      */
     const parsedStyle = ellipse.parsedStyle;
-    expect(parsedStyle.x.equals(CSS.px(0))).to.be.true;
-    expect(parsedStyle.y.equals(CSS.px(0))).to.be.true;
-    expect(parsedStyle.z.equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.cx.equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.cy.equals(CSS.px(0))).to.be.true;
     expect(parsedStyle.rx.equals(CSS.px(200))).to.be.true;
     expect(parsedStyle.ry.equals(CSS.px(100))).to.be.true;
     // 'transparent'
@@ -394,9 +389,9 @@ describe('StyleValueRegistry initialization', () => {
     /**
      * user-defined values
      */
-    expect(rect.getAttribute('x')).to.be.eqls(100);
-    expect(rect.getAttribute('y')).to.be.eqls(100);
-    expect(rect.getAttribute('z')).to.be.eqls(0);
+    expect(rect.getAttribute('x')).to.be.eqls('');
+    expect(rect.getAttribute('y')).to.be.eqls('');
+    expect(rect.getAttribute('z')).to.be.null;
     expect(rect.getAttribute('width')).to.be.eqls(200);
     expect(rect.getAttribute('height')).to.be.eqls('100px');
     expect(rect.getAttribute('fill')).to.be.eqls('none');
@@ -458,9 +453,9 @@ describe('StyleValueRegistry initialization', () => {
      * parsed values, will be used in internal renderers such as `g-canvas`
      */
     const parsedStyle = rect.parsedStyle;
-    expect(parsedStyle.x.equals(CSS.px(100))).to.be.true;
-    expect(parsedStyle.y.equals(CSS.px(100))).to.be.true;
-    expect(parsedStyle.z.equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.x.equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.y.equals(CSS.px(0))).to.be.true;
+    // expect(parsedStyle.z.equals(CSS.px(0))).to.be.true;
     expect(parsedStyle.width.equals(CSS.px(200))).to.be.true;
     expect(parsedStyle.height.equals(CSS.px(100))).to.be.true;
     expect(parsedStyle.radius.equals(CSS.px(0))).to.be.true;
@@ -506,9 +501,9 @@ describe('StyleValueRegistry initialization', () => {
     /**
      * user-defined values
      */
-    expect(image.getAttribute('x')).to.be.eqls(100);
-    expect(image.getAttribute('y')).to.be.eqls(100);
-    expect(image.getAttribute('z')).to.be.eqls(0);
+    expect(image.getAttribute('x')).to.be.eqls('');
+    expect(image.getAttribute('y')).to.be.eqls('');
+    expect(image.getAttribute('z')).to.be.null;
     expect(image.getAttribute('width')).to.be.eqls(200);
     expect(image.getAttribute('height')).to.be.eqls('100px');
     expect(image.getAttribute('img')).to.be.eqls('url');
@@ -555,9 +550,9 @@ describe('StyleValueRegistry initialization', () => {
      */
     const parsedStyle = image.parsedStyle;
     expect(parsedStyle.img).to.be.eqls('url');
-    expect(parsedStyle.x.equals(CSS.px(100))).to.be.true;
-    expect(parsedStyle.y.equals(CSS.px(100))).to.be.true;
-    expect(parsedStyle.z.equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.x.equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.y.equals(CSS.px(0))).to.be.true;
+    // expect(parsedStyle.z.equals(CSS.px(0))).to.be.true;
     expect(parsedStyle.width.equals(CSS.px(200))).to.be.true;
     expect(parsedStyle.height.equals(CSS.px(100))).to.be.true;
     expect(parsedStyle.fill instanceof CSSRGB).to.be.true;

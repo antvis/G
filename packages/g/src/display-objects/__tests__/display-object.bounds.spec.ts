@@ -15,8 +15,8 @@ describe('DisplayObject Bounds API', () => {
   it('should calc GeometryBounds, RenderBounds, Bounds, LocalBounds correctly', () => {
     const circle = new Circle({
       style: {
-        x: 100,
-        y: 100,
+        cx: 100,
+        cy: 100,
         r: 100,
       },
     });
@@ -321,8 +321,8 @@ describe('DisplayObject Bounds API', () => {
 
     const circle = new Circle({
       style: {
-        x: 100,
-        y: 100,
+        cx: 100,
+        cy: 100,
         r: 100,
       },
     });
@@ -368,16 +368,16 @@ describe('DisplayObject Bounds API', () => {
 
     const circle1 = new Circle({
       style: {
-        x: 100,
-        y: 100,
+        cx: 100,
+        cy: 100,
         r: 100,
       },
     });
 
     const circle2 = new Circle({
       style: {
-        x: 200,
-        y: 100,
+        cx: 200,
+        cy: 100,
         r: 100,
       },
     });

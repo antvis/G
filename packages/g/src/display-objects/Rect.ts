@@ -5,14 +5,18 @@ import type { DisplayObjectConfig } from '../dom';
 import type { CSSUnitValue } from '../css';
 
 export interface RectStyleProps extends BaseStyleProps {
+  x?: number | string;
+  y?: number | string;
   width: number | string;
   height: number | string;
   radius?: number | string;
 }
 
 export interface ParsedRectStyleProps extends ParsedBaseStyleProps {
-  width?: CSSUnitValue;
-  height?: CSSUnitValue;
+  x: CSSUnitValue;
+  y: CSSUnitValue;
+  width: CSSUnitValue;
+  height: CSSUnitValue;
   radius?: CSSUnitValue;
 }
 
@@ -21,6 +25,8 @@ export class Rect extends DisplayObject<RectStyleProps, ParsedRectStyleProps> {
     super({
       type: Shape.RECT,
       style: {
+        x: '',
+        y: '',
         width: '',
         height: '',
         radius: '',

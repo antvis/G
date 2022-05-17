@@ -6,7 +6,7 @@ order: 9
 有时我们需要在画布上增加一些 HUD（Head-Up Display），例如 Tooltip。此时用 HTML + CSS 展现相比使用基础图形绘制有以下优势：
 
 -   很多原生 HTML 组件难以绘制，例如一些输入类组件 `<input>` `<select>`
--   部分 HTML 原生特性难以实现，例如使用 g-canvas/webgl 绘制文本后无法选中，而如果用 HTML 展示文本就可以，下图展示了文本选中效果
+-   部分 HTML 原生特性难以实现，例如使用 g-canvas/webgl 绘制文本后无法选中，而如果用 HTML 展示文本就可以，下图展示了文本选中效果，[示例](/zh/examples/shape#html)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qGIRSaeHsTQAAAAAAAAAAAAAARQnAQ)
 
@@ -15,6 +15,8 @@ HTML 内容以及宽高为必填项，其中 HTML 内容可以为字符串或者
 ```js
 const html = new HTML({
     style: {
+        x: 0,
+        y: 0,
         width: 100,
         height: 100,
         innerHTML: '<h1>This is Title</h1>',
@@ -50,7 +52,93 @@ canvas.appendChild(html);
 
 -   [DisplayObject](/zh/docs/api/basic/display-object)
 
+其中的 [id](/zh/docs/api/basic/display-object#id)，[name](/zh/docs/api/basic/display-object#name)，[className](/zh/docs/api/basic/display-object#classname) 如果传入都会被应用在容器元素上，因此有两种方式获取到容器元素：
+
+-   通过类似 `getElementById` 这样的 DOM API 获取
+-   使用 [getDomElement()](/zh/docs/api/basic/html#getdomelement)
+
+其他样式属性通过 CSS 应用。
+
+## fill
+
+对应 CSS [background](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background) 属性。
+
+## stroke
+
+对应 CSS [border-color](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-color) 属性。
+
+## lineWidth
+
+对应 CSS [border-width](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-width) 属性。
+
+## lineDash
+
+对应 CSS [border-style](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-style) 属性。
+
+使用 `dashed` 值，但无法精确控制 `dash` 和 `gap` 的长度。
+
+## opacity
+
+对应 CSS [opacity](https://developer.mozilla.org/zh-CN/docs/Web/CSS/opacity) 属性。
+
+## visibility
+
+对应 CSS [visibility](https://developer.mozilla.org/zh-CN/docs/Web/CSS/visibility) 属性。
+
+## pointerEvents
+
+对应 CSS [pointer-events](https://developer.mozilla.org/zh-CN/docs/Web/CSS/pointer-events) 属性。
+
+当我们在实现类似 tooltip 这样的需求时，可以让鼠标事件穿透它，[示例](/zh/examples/shape#html)：
+
+```js
+const tooltip = new HTML({
+    style: {
+        x: 0,
+        y: 0,
+        innerHTML: 'Tooltip',
+        fill: 'white',
+        stroke: 'black',
+        lineWidth: 6,
+        width: 100,
+        height: 30,
+        pointerEvents: 'none', // 让事件穿透它
+        visibility: 'hidden',
+    },
+});
+```
+
+## transform
+
+对应 CSS [transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 属性。
+
+使用生成全局坐标系下的 matrix 字符串形式。
+
+## transformOrigin
+
+对应 CSS [transform-origin](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin) 属性。
+
 # 额外属性
+
+## x
+
+局部坐标系下，容器左上角顶点的 x 轴坐标。
+
+https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+
+## y
+
+局部坐标系下，容器左上角顶点的 y 轴坐标。
+
+https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
 ## innerHTML
 
@@ -78,52 +166,25 @@ html.style.innerHTML = '<h1>This is Title</h1>';
 
 ## width
 
-**类型**： `number`
+容器宽度。
 
-**默认值**：无
+https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
-**是否必须**：`true`
-
-**说明**：内容宽度
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
 ## height
 
-**类型**： `number`
+容器高度。
 
-**默认值**：无
+https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
 
-**是否必须**：`true`
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-**说明**：内容高度
-
-## className
-
-**类型**： `string | string[]`
-
-**默认值**：无
-
-**是否必须**：`false`
-
-**说明**：给容器元素增加 CSS 类
-
-```js
-html.style.className = 'my-class';
-html.style.className = ['my-class1', 'my-class2'];
-```
-
-## style
-
-**类型**： `string`
-
-**默认值**：无
-
-**是否必须**：`false`
-
-**说明**：给容器元素增加样式
-
-```js
-html.style.style = 'color:black;';
-```
+# 额外方法
 
 ## getDomElement()
 

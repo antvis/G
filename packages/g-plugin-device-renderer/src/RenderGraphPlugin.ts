@@ -21,20 +21,24 @@ import { inject, singleton } from 'mana-syringe';
 import { BatchManager } from './renderer';
 import { Renderable3D } from './components/Renderable3D';
 // import { pushFXAAPass } from './passes/FXAA';
-// import { useCopyPass } from './passes/Copy';
 import type { Device, SwapChain, Texture, TextureDescriptor } from './platform';
-import { BlendFactor, BlendMode } from './platform';
-import { setAttachmentStateSimple, TransparentWhite, colorNewFromRGBA } from './platform/utils';
-import type { RGGraphBuilder } from './render/interfaces';
-import { RGAttachmentSlot } from './render/interfaces';
-import { RenderHelper } from './render/RenderHelper';
-import { RenderInstList } from './render/RenderInstList';
 import {
+  BlendFactor,
+  BlendMode,
+  setAttachmentStateSimple,
+  TransparentWhite,
+  colorNewFromRGBA,
+} from './platform';
+import type { RGGraphBuilder } from './render';
+import {
+  RGAttachmentSlot,
+  RenderHelper,
+  RenderInstList,
   AntialiasingMode,
   makeAttachmentClearDescriptor,
   makeBackbufferDescSimple,
   opaqueWhiteFullClearRenderPassDescriptor,
-} from './render/RenderGraphHelpers';
+} from './render';
 import { Fog, Light } from './lights';
 import { LightPool } from './LightPool';
 import { TexturePool } from './TexturePool';
@@ -192,8 +196,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const { width, height } = this.canvasConfig;
       this.contextService.resize(width, height);
 
-      await this.createSwapChain($canvas);
-
+      // create swap chain and get device
+      this.swapChain = await this.deviceContribution.createSwapChain($canvas);
       this.device = this.swapChain.getDevice();
       this.renderHelper.setDevice(this.device);
       this.renderHelper.renderInstManager.disableSimpleMode();
@@ -353,13 +357,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
       // output to screen
       this.swapChain.present();
     });
-  }
-
-  /**
-   * auto downgrade from WebGPU to WebGL2 & 1
-   */
-  private async createSwapChain($canvas: HTMLCanvasElement) {
-    this.swapChain = await this.deviceContribution.createSwapChain($canvas);
   }
 
   /**

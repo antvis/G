@@ -66,12 +66,14 @@ describe('Polyline', () => {
 
     // restore
     newPoints = [...points];
+
+    // should override x/y when points changed
     newPoints[0] = [50, 50];
     polyline.style.points = newPoints;
-    expect(polyline.getLocalPosition()).eqls(vec3.fromValues(150, 50, 0));
+    expect(polyline.getLocalPosition()).eqls(vec3.fromValues(50, 50, 0));
     bounds = polyline.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(350, 225, 0));
+      expect(bounds.center).eqls(vec3.fromValues(250, 225, 0));
       expect(bounds.halfExtents).eqls(vec3.fromValues(200, 175, 0));
     }
     expect(polyline.getTotalLength()).eqls(750);

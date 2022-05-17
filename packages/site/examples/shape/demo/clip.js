@@ -13,8 +13,8 @@ const svgRenderer = new SVGRenderer();
 // clip path shape
 const clipPathCircle = new Circle({
   style: {
-    x: 100,
-    y: 100,
+    cx: 100,
+    cy: 100,
     r: 50,
   },
 });

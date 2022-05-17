@@ -37,7 +37,6 @@ export class MeshBasicMaterial<T extends IMeshBasicMaterial> extends Material<T>
       this.programDirty = true;
     }
 
-    this.defines.USE_MAP = !!v;
     this.setUniforms({
       [Uniform.MAP]: v,
     });

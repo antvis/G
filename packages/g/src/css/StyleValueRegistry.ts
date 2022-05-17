@@ -31,7 +31,7 @@ import {
   CSSPropertyTextTransform,
 } from './properties';
 import type { CSSProperty } from './CSSProperty';
-import { formatAttribute } from '../utils';
+import { formatAttribute, isNil } from '../utils';
 import { AABB } from '../shapes';
 import { StyleValueRegistry } from './interfaces';
 
@@ -48,6 +48,7 @@ export const PropertySyntax = {
   LENGTH: '<length>',
   PERCENTAGE: '<percentage>',
   LENGTH_PERCENTAGE: '<length> | <percentage>',
+  LIST_OF_POINTS: '<list-of-points>',
 };
 
 export interface PropertyMetadata {
@@ -119,32 +120,6 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
      */
     name: 'display',
     keywords: ['none'],
-  },
-  {
-    // x in local space
-    name: 'x',
-    interpolable: true,
-    alias: ['cx'],
-    defaultValue: '0',
-    syntax: PropertySyntax.LENGTH_PERCENTAGE,
-    handler: CSSPropertyLocalPosition,
-  },
-  {
-    // y in local space
-    name: 'y',
-    interpolable: true,
-    alias: ['cy'],
-    defaultValue: '0',
-    syntax: PropertySyntax.LENGTH_PERCENTAGE,
-    handler: CSSPropertyLocalPosition,
-  },
-  {
-    // z in local space
-    name: 'z',
-    interpolable: true,
-    defaultValue: '0',
-    syntax: PropertySyntax.LENGTH_PERCENTAGE,
-    handler: CSSPropertyLocalPosition,
   },
   {
     /**
@@ -353,6 +328,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
   {
     name: 'transform',
+    parsePriority: 100,
     interpolable: true,
     keywords: ['none'],
     defaultValue: 'none',
@@ -372,7 +348,21 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     layoutDependent: true,
     handler: CSSPropertyAnchor,
   },
-  // Circle
+  // <circle> & <ellipse>
+  {
+    name: 'cx',
+    interpolable: true,
+    defaultValue: '0',
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
+    handler: CSSPropertyLocalPosition,
+  },
+  {
+    name: 'cy',
+    interpolable: true,
+    defaultValue: '0',
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
+    handler: CSSPropertyLocalPosition,
+  },
   {
     name: 'r',
     interpolable: true,
@@ -394,7 +384,31 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     defaultValue: 'auto',
     handler: CSSPropertyLengthOrPercentage,
   },
-  // Rect Image
+  // Rect Image Group
+  {
+    // x in local space
+    name: 'x',
+    interpolable: true,
+    defaultValue: '0',
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
+    handler: CSSPropertyLocalPosition,
+  },
+  {
+    // y in local space
+    name: 'y',
+    interpolable: true,
+    defaultValue: '0',
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
+    handler: CSSPropertyLocalPosition,
+  },
+  {
+    // z in local space
+    name: 'z',
+    interpolable: true,
+    defaultValue: '0',
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
+    handler: CSSPropertyLocalPosition,
+  },
   {
     name: 'width',
     interpolable: true,
@@ -467,12 +481,14 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     layoutDependent: true,
     defaultValue: '',
+    alias: ['d'],
     handler: CSSPropertyPath,
   },
-  // Polyline
+  // Polyline & Polygon
   {
     name: 'points',
     layoutDependent: true,
+    syntax: PropertySyntax.LIST_OF_POINTS,
     handler: CSSPropertyPoints,
   },
   // Text
@@ -681,7 +697,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
     if (!skipParse) {
       sortedNames.forEach((name) => {
-        object.computedStyle[name] = this.parseProperty(name as string, object.attributes[name]);
+        object.computedStyle[name] = this.parseProperty(
+          name as string,
+          object.attributes[name],
+          object,
+        );
       });
     }
 
@@ -729,11 +749,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   /**
    * string -> parsed value
    */
-  parseProperty(name: string, value: any): CSSStyleValue {
+  parseProperty(name: string, value: any, object: DisplayObject): CSSStyleValue {
     const metadata = this.getMetadata(name);
 
     let computed: CSSStyleValue = value;
-    if (value === '') {
+    if (value === '' || isNil(value)) {
       value = 'unset';
     }
 
@@ -752,7 +772,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
           if (propertyHandler && propertyHandler.parser) {
             // try to parse it to CSSStyleValue, eg. '10px' -> CSS.px(10)
-            computed = propertyHandler.parser(value);
+            computed = propertyHandler.parser(value, object);
           }
         }
       }
@@ -788,8 +808,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
         if (value === 'initial') {
           // @see https://developer.mozilla.org/en-US/docs/Web/CSS/initial
-          if (defaultValue) {
-            computed = this.parseProperty(name, defaultValue);
+          if (!isNil(defaultValue)) {
+            computed = this.parseProperty(name, defaultValue, object);
           }
         } else if (value === 'inherit') {
           // @see https://developer.mozilla.org/en-US/docs/Web/CSS/inherit
@@ -926,35 +946,10 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         width,
         height,
         depth = 0,
-        x = 0,
-        y = 0,
-        // z = 0,
         offsetX = 0,
         offsetY = 0,
         offsetZ = 0,
       } = geometryUpdater.update(parsedStyle, object);
-
-      if (
-        object.nodeName === Shape.LINE ||
-        object.nodeName === Shape.POLYLINE ||
-        object.nodeName === Shape.POLYGON ||
-        object.nodeName === Shape.PATH
-      ) {
-        parsedStyle.offsetX = x - (parsedStyle.defX || 0);
-        parsedStyle.offsetY = y - (parsedStyle.defY || 0);
-        parsedStyle.defX = x;
-        parsedStyle.defY = y;
-
-        // modify x/y/z
-        object.attributes.x += parsedStyle.offsetX;
-        object.attributes.y += parsedStyle.offsetY;
-        parsedStyle.x = parsedStyle.x.add(
-          new CSSUnitValue(parsedStyle.offsetX, 'px'),
-        ) as CSSUnitValue;
-        parsedStyle.y = parsedStyle.y.add(
-          new CSSUnitValue(parsedStyle.offsetY, 'px'),
-        ) as CSSUnitValue;
-      }
 
       // init with content box
       const halfExtents = vec3.fromValues(width / 2, height / 2, depth / 2);

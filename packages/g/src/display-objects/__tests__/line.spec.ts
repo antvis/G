@@ -73,14 +73,35 @@ describe('Line', () => {
       },
     });
 
+    expect(line.getLocalPosition()).eqls(vec3.fromValues(200, 100, 0));
+
     // move right 100px
     line.translate(100, 0);
     expect(line.getLocalPosition()).eqls(vec3.fromValues(300, 100, 0));
 
-    // change x1 now, should
+    // change x1 now, should reset x/y
     line.style.x1 += 100;
     line.style.x2 += 100;
-    expect(line.getLocalPosition()).eqls(vec3.fromValues(400, 100, 0));
+    expect(line.getLocalPosition()).eqls(vec3.fromValues(300, 100, 0));
+  });
+
+  it('should create a 3D line', () => {
+    const line = new Line({
+      style: {
+        x1: 200,
+        y1: 100,
+        z1: 100,
+        x2: 400,
+        y2: 100,
+        z2: 100,
+        lineWidth: 10,
+      },
+    });
+
+    expect(line.getLocalPosition()).eqls(vec3.fromValues(200, 100, 0));
+
+    line.style.z1 -= 200;
+    expect(line.getLocalPosition()).eqls(vec3.fromValues(200, 100, 0));
   });
 
   it('should getPoint at ratio correctly', () => {

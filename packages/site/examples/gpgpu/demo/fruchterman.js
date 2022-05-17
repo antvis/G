@@ -294,8 +294,8 @@ function renderCircles(edges, indices, positions) {
     canvas.appendChild(
       new Circle({
         style: {
-          x,
-          y,
+          cx: x,
+          cy: y,
           r: 5,
           fill: 'red',
           stroke: 'blue',

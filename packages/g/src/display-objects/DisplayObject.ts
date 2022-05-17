@@ -30,16 +30,13 @@ import { MutationEvent } from '../dom/MutationEvent';
 import { Rectangle } from '../shapes';
 import type { PropertyParseOptions } from '../css/StyleValueRegistry';
 import { StyleValueRegistry } from '../css/interfaces';
-import { CSSUnitValue } from '../css';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
 const DEFAULT_STYLE_PROPS: {
-  x: number | string;
-  y: number | string;
-  z: number | string;
   anchor: [number, number] | [number, number, number];
   transformOrigin: string;
+  transform: string;
   visibility: string;
   pointerEvents: string;
   opacity: string;
@@ -59,15 +56,13 @@ const DEFAULT_STYLE_PROPS: {
   textBaseline: string;
   textTransform: string;
 } = {
-  x: '',
-  y: '',
-  z: '',
   anchor: [0, 0],
   opacity: '',
   fillOpacity: '',
   strokeOpacity: '',
   fill: '',
   stroke: '',
+  transform: '',
   transformOrigin: '',
   visibility: '',
   pointerEvents: '',
@@ -334,7 +329,6 @@ export class DisplayObject<
    */
   setPosition(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
     this.sceneGraphService.setPosition(this, createVec3(position, y, z));
-    this.syncLocalPosition();
     return this;
   }
 
@@ -343,7 +337,6 @@ export class DisplayObject<
    */
   setLocalPosition(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
     this.sceneGraphService.setLocalPosition(this, createVec3(position, y, z));
-    this.syncLocalPosition();
     return this;
   }
 
@@ -352,7 +345,6 @@ export class DisplayObject<
    */
   translate(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
     this.sceneGraphService.translate(this, createVec3(position, y, z));
-    this.syncLocalPosition();
     return this;
   }
 
@@ -361,7 +353,6 @@ export class DisplayObject<
    */
   translateLocal(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
     this.sceneGraphService.translateLocal(this, createVec3(position, y, z));
-    this.syncLocalPosition();
     return this;
   }
 
@@ -502,25 +493,13 @@ export class DisplayObject<
     return this.sceneGraphService.getWorldTransform(this);
   }
 
-  resetLocalTransform(): void {
-    this.sceneGraphService.resetLocalTransform(this);
+  setLocalTransform(transform: mat4) {
+    this.sceneGraphService.setLocalTransform(this, transform);
+    return this;
   }
 
-  /**
-   * sync style.x/y when local position changed
-   *
-   * Mixins may not declare private/protected properties
-   * however, you can use ES2020 private fields
-   */
-  private syncLocalPosition() {
-    const localPosition = this.getLocalPosition();
-    this.attributes.x = localPosition[0];
-    this.attributes.y = localPosition[1];
-    this.attributes.z = localPosition[2];
-    // should not affect computed style
-    this.parsedStyle.x = new CSSUnitValue(this.attributes.x, 'px');
-    this.parsedStyle.y = new CSSUnitValue(this.attributes.y, 'px');
-    this.parsedStyle.z = new CSSUnitValue(this.attributes.z, 'px');
+  resetLocalTransform(): void {
+    this.sceneGraphService.resetLocalTransform(this);
   }
   // #endregion transformable
 

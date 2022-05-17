@@ -175,11 +175,11 @@ lineFolder
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  x: 200,
-  y: 100,
-  scale: 1,
+  localPositionX: 200,
+  localPositionY: 100,
+  localScale: 1,
+  localEulerAngles: 0,
   transformOrigin: 'left top',
-  eulerAngles: 0,
   anchorX: 0,
   anchorY: 0,
 };
@@ -194,21 +194,19 @@ transformFolder
   .onChange((transformOrigin) => {
     line1.style.transformOrigin = transformOrigin;
   });
-transformFolder.add(transformConfig, 'x', 0, 400).onChange((x) => {
-  line1.setLocalPosition(x, line1.style.y);
-  // or
-  // line1.style.x = x;
+transformFolder.add(transformConfig, 'localPositionX', 0, 600).onChange((localPositionX) => {
+  const [lx, ly] = line1.getLocalPosition();
+  line1.setLocalPosition(localPositionX, ly);
 });
-transformFolder.add(transformConfig, 'y', 0, 400).onChange((y) => {
-  line1.setLocalPosition(line1.style.x, y);
-  // or
-  // line1.style.y = y;
+transformFolder.add(transformConfig, 'localPositionY', 0, 500).onChange((localPositionY) => {
+  const [lx, ly] = line1.getLocalPosition();
+  line1.setLocalPosition(lx, localPositionY);
 });
-transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
-  line1.setLocalScale(scaling);
+transformFolder.add(transformConfig, 'localScale', 0.2, 5).onChange((localScale) => {
+  line1.setLocalScale(localScale);
 });
-transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
-  line1.setLocalEulerAngles(eulerAngles);
+transformFolder.add(transformConfig, 'localEulerAngles', 0, 360).onChange((localEulerAngles) => {
+  line1.setLocalEulerAngles(localEulerAngles);
 });
 transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
   line1.style.anchor = [anchorX, transformConfig.anchorY];

@@ -5,8 +5,17 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { vec3 } from 'gl-matrix';
-import { rad2deg, deg2rad, grad2deg, deg2turn, turn2deg, getAngle, createVec3 } from '@antv/g';
+import { mat3, vec2, vec3 } from 'gl-matrix';
+import {
+  rad2deg,
+  deg2rad,
+  grad2deg,
+  deg2turn,
+  turn2deg,
+  getAngle,
+  createVec3,
+  decompose,
+} from '@antv/g';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
@@ -33,5 +42,16 @@ describe('Math utils', () => {
     expect(turn2deg(2)).to.be.eqls(360 * 2);
     expect(grad2deg(400)).to.be.almost.eqls(0);
     expect(grad2deg(-400)).to.be.almost.eqls(0);
+  });
+
+  it('should decompose mat3 correctly', () => {
+    const rotationMatrix = mat3.fromRotation(mat3.create(), deg2rad(90));
+    expect(decompose(rotationMatrix)).to.be.eqls([0, 0, 1, 1, 90]);
+
+    const translationMatrix = mat3.fromTranslation(mat3.create(), vec2.fromValues(10, 10));
+    expect(decompose(translationMatrix)).to.be.eqls([10, 10, 1, 1, 0]);
+
+    const scalingMatrix = mat3.fromScaling(mat3.create(), vec2.fromValues(2, 2));
+    expect(decompose(scalingMatrix)).to.be.eqls([0, 0, 2, 2, 0]);
   });
 });

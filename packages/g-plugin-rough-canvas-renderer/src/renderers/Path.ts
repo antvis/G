@@ -1,6 +1,6 @@
 import { singleton } from 'mana-syringe';
 import type { DisplayObject, ParsedBaseStyleProps, ParsedPathStyleProps } from '@antv/g';
-import type { StyleRenderer} from '@antv/g-plugin-canvas-renderer';
+import type { StyleRenderer } from '@antv/g-plugin-canvas-renderer';
 import { PathRendererContribution } from '@antv/g-plugin-canvas-renderer';
 import { formatPath, generateRoughOptions } from '../util';
 

@@ -5,6 +5,28 @@ order: 3
 
 基于 [WebGPU](https://www.w3.org/TR/webgpu/) 提供渲染和计算能力。
 
+特别是利用 GPU 进行并行计算的能力，是 WebGL 所不具备的，我们提供了 [g-plugin-gpgpu](/zh/docs/plugins/gpgpu) 帮助简化这一过程。
+
+# 前置条件
+
+以下前置条件需要满足。
+
+## 特性检测
+
+在使用时需要判断当前环境是否支持 WebGPU，下面特性检测代码来自：https://web.dev/gpu/#feature-detection：
+
+```js
+if ('gpu' in navigator) {
+    // WebGPU is supported! 🎉
+}
+```
+
+目前在 Chrome 最新版本（101）中可以通过 Open Trial 开启。
+
+## WASM 支持
+
+在运行时我们使用 [wgpu naga](https://github.com/gfx-rs/naga) 进行 Shader 转译（GLSL 300 -> WGSL），因此需要运行环境支持 WASM。
+
 # 使用方式
 
 和 `@antv/g` 一样，也有以下两种使用方式。

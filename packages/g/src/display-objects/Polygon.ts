@@ -19,7 +19,7 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
     super({
       type: Shape.POLYGON,
       style: {
-        points: [],
+        points: '',
         miterLimit: 4,
         lineWidth: 1,
         ...style,

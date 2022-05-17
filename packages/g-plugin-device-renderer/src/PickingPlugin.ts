@@ -19,19 +19,17 @@ import {
 } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { PickingIdGenerator } from './PickingIdGenerator';
-import { BlendFactor, BlendMode } from './platform';
-import { setAttachmentStateSimple } from './platform/utils';
-import { RenderHelper, SingleSampledTexture } from './render';
-import { RGAttachmentSlot } from './render/interfaces';
+import { BlendFactor, BlendMode, TransparentWhite, setAttachmentStateSimple } from './platform';
 import {
+  RenderHelper,
+  RGAttachmentSlot,
   AntialiasingMode,
   makeAttachmentClearDescriptor,
   makeBackbufferDescSimple,
   opaqueWhiteFullClearRenderPassDescriptor,
-} from './render/RenderGraphHelpers';
+} from './render';
 import { BatchManager } from './renderer';
 import { RenderGraphPlugin, SceneUniform, SceneUniformBufferIndex } from './RenderGraphPlugin';
-import { TransparentWhite } from './platform';
 
 /**
  * max depth when doing multi-layer picking
@@ -168,10 +166,7 @@ export class PickingPlugin implements RenderingPlugin {
   /**
    * return displayobjects in target rectangle
    */
-  private async pickByRectangle(
-    rect: Rectangle,
-    picked: DisplayObject,
-  ): Promise<DisplayObject | null> {
+  private pickByRectangle(rect: Rectangle, picked: DisplayObject): Promise<DisplayObject | null> {
     const device = this.renderGraphPlugin.getDevice();
     const renderLists = this.renderGraphPlugin.getRenderLists();
 
@@ -202,147 +197,144 @@ export class PickingPlugin implements RenderingPlugin {
     );
     const mainDepthTargetID = builder.createRenderTargetID(mainDepthDesc, 'Picking Depth');
 
-    const texture = new SingleSampledTexture(device, mainPickingDesc);
-
-    // picking pass
-    builder.pushPass((pass) => {
-      pass.setDebugName('Picking Pass');
-      pass.attachRenderTargetID(RGAttachmentSlot.Color0, pickingColorTargetID);
-      pass.attachRenderTargetID(RGAttachmentSlot.DepthStencil, mainDepthTargetID);
-      pass.exec((passRenderer) => {
-        renderLists.picking.drawOnPassRenderer(renderInstManager.renderCache, passRenderer);
-      });
-    });
-    // save picking texture
-    builder.resolveRenderTargetToExternalTexture(pickingColorTargetID, texture.texture);
-
-    // Push our outer template, which contains the dynamic UBO bindings...
-    const template = this.renderHelper.pushTemplateRenderInst();
-    // SceneParams: binding = 0, ObjectParams: binding = 1
-    template.setBindingLayouts([{ numUniformBuffers: 2, numSamplers: 0 }]);
-    template.setMegaStateFlags(
-      setAttachmentStateSimple(
-        {
-          depthWrite: true,
-        },
-        {
-          rgbBlendMode: BlendMode.Add,
-          rgbBlendSrcFactor: BlendFactor.One,
-          rgbBlendDstFactor: BlendFactor.Zero,
-          alphaBlendMode: BlendMode.Add,
-          alphaBlendSrcFactor: BlendFactor.One,
-          alphaBlendDstFactor: BlendFactor.Zero,
-        },
-      ),
-    );
-
-    // Update Scene Params
-    const { width: canvasWidth, height: canvasHeight } = this.canvasConfig;
-    const dpr = this.contextService.getDPR();
-
     // account for current view offset
     const currentView = { ...this.camera.getView() };
 
-    this.camera.setEnableUpdate(false);
-    this.camera.setViewOffset(canvasWidth * dpr, canvasHeight * dpr, x, y, width, height);
+    return new Promise((resolve) => {
+      // prevent unsed RTs like main color being destroyed
+      this.renderHelper.renderGraph.renderTargetDeadPool.forEach((rt) => {
+        rt.age = -1;
+      });
 
-    template.setUniforms(SceneUniformBufferIndex, [
-      {
-        name: SceneUniform.PROJECTION_MATRIX,
-        value: this.camera.getPerspective(),
-      },
-      {
-        name: SceneUniform.VIEW_MATRIX,
-        value: this.camera.getViewTransform(),
-      },
-      {
-        name: SceneUniform.CAMERA_POSITION,
-        value: this.camera.getPosition(),
-      },
-      {
-        name: SceneUniform.DEVICE_PIXEL_RATIO,
-        value: this.contextService.getDPR(),
-      },
-      {
-        name: SceneUniform.VIEWPORT,
-        value: [canvasWidth, canvasHeight],
-      },
-      {
-        name: SceneUniform.IS_ORTHO,
-        value: this.camera.isOrtho() ? 1 : 0,
-      },
-      {
-        name: SceneUniform.IS_PICKING,
-        value: 1,
-      },
-    ]);
+      // picking pass
+      builder.pushPass((pass) => {
+        pass.setDebugName('Picking Pass');
+        pass.attachRenderTargetID(RGAttachmentSlot.Color0, pickingColorTargetID);
+        pass.attachRenderTargetID(RGAttachmentSlot.DepthStencil, mainDepthTargetID);
+        pass.exec((passRenderer) => {
+          renderLists.picking.drawOnPassRenderer(renderInstManager.renderCache, passRenderer);
+        });
+        pass.post((scope) => {
+          const texture = scope.getRenderTargetTexture(RGAttachmentSlot.Color0);
 
-    if (picked) {
-      this.batchManager.updateAttribute(picked, 'pointerEvents', false, true);
-    }
-    this.batchManager.render(renderLists.picking, true);
+          const readback = device.createReadback();
 
-    renderInstManager.popTemplateRenderInst();
+          // restore previous view
+          if (currentView && currentView.enabled) {
+            this.camera.setViewOffset(
+              currentView.fullWidth,
+              currentView.fullHeight,
+              currentView.offsetX,
+              currentView.offsetY,
+              currentView.width,
+              currentView.height,
+            );
+          } else {
+            this.camera.clearViewOffset();
+          }
 
-    this.renderHelper.prepareToRender();
-    this.renderHelper.renderGraph.execute();
+          this.camera.setEnableUpdate(true);
 
-    renderInstManager.resetRenderInsts();
+          readback
+            .readTexture(texture, 0, 0, width, height, new Uint8Array(width * height * 4))
+            .then((pickedColors: Uint8Array) => {
+              let target: DisplayObject;
+              let pickedFeatureIdx = -1;
 
-    let target: DisplayObject;
-    const readback = device.createReadback();
+              if (
+                pickedColors &&
+                (pickedColors[0] !== 0 || pickedColors[1] !== 0 || pickedColors[2] !== 0)
+              ) {
+                pickedFeatureIdx = this.pickingIdGenerator.decodePickingColor(pickedColors);
+              }
 
-    // restore previous view
-    if (currentView && currentView.enabled) {
-      this.camera.setViewOffset(
-        currentView.fullWidth,
-        currentView.fullHeight,
-        currentView.offsetX,
-        currentView.offsetY,
-        currentView.width,
-        currentView.height,
+              if (pickedFeatureIdx > -1) {
+                const pickedDisplayObject = this.pickingIdGenerator.getById(pickedFeatureIdx);
+
+                if (
+                  pickedDisplayObject &&
+                  pickedDisplayObject.isVisible() &&
+                  pickedDisplayObject.isInteractive()
+                ) {
+                  target = pickedDisplayObject;
+                }
+              }
+              readback.destroy();
+
+              resolve(target);
+            });
+        });
+      });
+
+      // Push our outer template, which contains the dynamic UBO bindings...
+      const template = this.renderHelper.pushTemplateRenderInst();
+      // SceneParams: binding = 0, ObjectParams: binding = 1
+      template.setBindingLayouts([{ numUniformBuffers: 2, numSamplers: 0 }]);
+      template.setMegaStateFlags(
+        setAttachmentStateSimple(
+          {
+            depthWrite: true,
+          },
+          {
+            rgbBlendMode: BlendMode.Add,
+            rgbBlendSrcFactor: BlendFactor.One,
+            rgbBlendDstFactor: BlendFactor.Zero,
+            alphaBlendMode: BlendMode.Add,
+            alphaBlendSrcFactor: BlendFactor.One,
+            alphaBlendDstFactor: BlendFactor.Zero,
+          },
+        ),
       );
-    } else {
-      this.camera.clearViewOffset();
-    }
 
-    this.camera.setEnableUpdate(true);
+      // Update Scene Params
+      const { width: canvasWidth, height: canvasHeight } = this.canvasConfig;
+      const dpr = this.contextService.getDPR();
 
-    if (texture.texture) {
-      const pickedColors = (await readback.readTexture(
-        texture.texture,
-        0,
-        0,
-        width,
-        height,
-        new Uint8Array(width * height * 4),
-      )) as Uint8Array;
+      this.camera.setEnableUpdate(false);
+      this.camera.setViewOffset(canvasWidth * dpr, canvasHeight * dpr, x, y, width, height);
 
-      let pickedFeatureIdx = -1;
+      template.setUniforms(SceneUniformBufferIndex, [
+        {
+          name: SceneUniform.PROJECTION_MATRIX,
+          value: this.camera.getPerspective(),
+        },
+        {
+          name: SceneUniform.VIEW_MATRIX,
+          value: this.camera.getViewTransform(),
+        },
+        {
+          name: SceneUniform.CAMERA_POSITION,
+          value: this.camera.getPosition(),
+        },
+        {
+          name: SceneUniform.DEVICE_PIXEL_RATIO,
+          value: this.contextService.getDPR(),
+        },
+        {
+          name: SceneUniform.VIEWPORT,
+          value: [canvasWidth, canvasHeight],
+        },
+        {
+          name: SceneUniform.IS_ORTHO,
+          value: this.camera.isOrtho() ? 1 : 0,
+        },
+        {
+          name: SceneUniform.IS_PICKING,
+          value: 1,
+        },
+      ]);
 
-      if (
-        pickedColors &&
-        (pickedColors[0] !== 0 || pickedColors[1] !== 0 || pickedColors[2] !== 0)
-      ) {
-        pickedFeatureIdx = this.pickingIdGenerator.decodePickingColor(pickedColors);
+      if (picked) {
+        this.batchManager.updateAttribute(picked, 'pointerEvents', false, true);
       }
+      this.batchManager.render(renderLists.picking, true);
 
-      if (pickedFeatureIdx > -1) {
-        const pickedDisplayObject = this.pickingIdGenerator.getById(pickedFeatureIdx);
+      renderInstManager.popTemplateRenderInst();
 
-        if (
-          pickedDisplayObject &&
-          pickedDisplayObject.isVisible() &&
-          pickedDisplayObject.isInteractive()
-        ) {
-          target = pickedDisplayObject;
-        }
-      }
-      readback.destroy();
-    }
+      this.renderHelper.prepareToRender();
+      this.renderHelper.renderGraph.execute();
 
-    texture.destroy();
-
-    return target;
+      renderInstManager.resetRenderInsts();
+    });
   }
 }

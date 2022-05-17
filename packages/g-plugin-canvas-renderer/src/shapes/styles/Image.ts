@@ -33,7 +33,11 @@ export class ImageRenderer implements StyleRenderer {
     }
 
     if (image) {
-      context.drawImage(image, 0, 0, iw, ih);
+      // node-canvas will throw the following err:
+      // Error: Image given has not completed loading
+      try {
+        context.drawImage(image, 0, 0, iw, ih);
+      } catch (e) {}
     }
   }
 }

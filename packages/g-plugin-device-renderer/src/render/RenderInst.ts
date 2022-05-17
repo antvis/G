@@ -407,18 +407,6 @@ export class RenderInst {
       }
     }
   }
-
-  /**
-   * Tests whether the underlying pipeline for this {@see RenderInst} is ready.
-   *
-   * By default, {@see RenderInstManager} will skip any insts with non-ready pipelines. If you wish
-   * to override this and force the render inst to draw, please use {@see setAllowSkippingIfPipelineNotReady}.
-   */
-  queryPipelineReady(cache: RenderCache): boolean {
-    const gfxPipeline = cache.createRenderPipeline(this.renderPipelineDescriptor);
-    return cache.device.queryPipelineReady(gfxPipeline);
-  }
-
   /**
    * Sets whether this render inst should be skipped if the render pipeline isn't ready.
    *
@@ -471,7 +459,7 @@ export class RenderInst {
 
     const gfxPipeline = cache.createRenderPipeline(this.renderPipelineDescriptor);
 
-    const pipelineReady = device.queryPipelineReady(gfxPipeline);
+    const pipelineReady = device.pipelineQueryReady(gfxPipeline);
     if (!pipelineReady) {
       if (!!(this.flags & RenderInstFlags.AllowSkippingIfPipelineNotReady)) {
         return false;

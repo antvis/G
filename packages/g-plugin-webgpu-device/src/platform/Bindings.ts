@@ -10,7 +10,7 @@ import {
   defaultBindingLayoutSamplerDescriptor,
 } from '@antv/g-plugin-device-renderer';
 import { getPlatformBuffer, getPlatformSampler } from './utils';
-import type { IDevice_WebGPU } from './interfaces';
+import type { BindGroupLayout, IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 import type { Texture_WebGPU } from './Texture';
 import type { RenderPipeline_WebGPU } from './RenderPipeline';
@@ -20,6 +20,7 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
 
   bindingLayout: BindingLayoutDescriptor;
   gpuBindGroup: GPUBindGroup[];
+  bindGroupLayout: BindGroupLayout;
 
   constructor({
     id,
@@ -35,20 +36,23 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
     const { pipeline, bindingLayout } = descriptor;
     assert(!!pipeline);
 
-    // const bindGroupLayout = this._createBindGroupLayout(bindingLayout);
+    const bindGroupLayout = this.device._createBindGroupLayout(bindingLayout);
 
     // entries orders: Storage(read-only storage) Uniform Sampler
     const gpuBindGroupEntries: GPUBindGroupEntry[][] = [[], []];
     let numBindings = 0;
-    for (let i = 0; i < bindingLayout.storageEntries.length; i++) {
-      const binding = descriptor.storageBufferBindings[i];
-      assert(binding.wordCount > 0);
-      const gpuBufferBinding: GPUBufferBinding = {
-        buffer: getPlatformBuffer(binding.buffer),
-        offset: 0,
-        size: binding.wordCount << 2,
-      };
-      gpuBindGroupEntries[0].push({ binding: numBindings++, resource: gpuBufferBinding });
+
+    if (bindingLayout.storageEntries) {
+      for (let i = 0; i < bindingLayout.storageEntries.length; i++) {
+        const binding = descriptor.storageBufferBindings[i];
+        assert(binding.wordCount > 0);
+        const gpuBufferBinding: GPUBufferBinding = {
+          buffer: getPlatformBuffer(binding.buffer),
+          offset: 0,
+          size: binding.wordCount << 2,
+        };
+        gpuBindGroupEntries[0].push({ binding: numBindings++, resource: gpuBufferBinding });
+      }
     }
 
     for (let i = 0; i < bindingLayout.numUniformBuffers; i++) {
@@ -92,57 +96,6 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
       }),
     );
     this.bindingLayout = descriptor.bindingLayout;
+    this.bindGroupLayout = bindGroupLayout;
   }
-
-  // private _createBindGroupLayout(bindingLayout: BindingLayoutDescriptor): BindGroupLayout {
-  //   let gpuBindGroupLayout = (this.device as Device_WebGPU).bindGroupLayoutCache.get(bindingLayout);
-  //   if (gpuBindGroupLayout === null) {
-  //     gpuBindGroupLayout = this._createBindGroupLayoutInternal(bindingLayout);
-  //     (this.device as Device_WebGPU).bindGroupLayoutCache.add(bindingLayout, gpuBindGroupLayout);
-  //   }
-  //   return gpuBindGroupLayout;
-  // }
-
-  // private _createBindGroupLayoutInternal(bindingLayout: BindingLayoutDescriptor): BindGroupLayout {
-  //   const entries: GPUBindGroupLayoutEntry[][] = [[], []];
-
-  //   if (bindingLayout.storageEntries) {
-  //     for (let i = 0; i < bindingLayout.storageEntries.length; i++) {
-  //       entries[0].push({
-  //         binding: entries[0].length,
-  //         visibility: GPUShaderStage.COMPUTE,
-  //         buffer: { type: bindingLayout.storageEntries[i].type },
-  //       });
-  //     }
-  //   }
-
-  //   for (let i = 0; i < bindingLayout.numUniformBuffers; i++)
-  //     entries[0].push({
-  //       binding: entries[0].length,
-  //       visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
-  //       buffer: { type: 'uniform', hasDynamicOffset: true },
-  //     });
-
-  //   for (let i = 0; i < bindingLayout.numSamplers; i++) {
-  //     const samplerEntry =
-  //       bindingLayout.samplerEntries !== undefined
-  //         ? bindingLayout.samplerEntries[i]
-  //         : defaultBindingLayoutSamplerDescriptor;
-  //     entries[1].push({
-  //       binding: entries[1].length,
-  //       visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
-  //       texture: translateBindGroupTextureBinding(samplerEntry),
-  //     });
-  //     entries[1].push({
-  //       binding: entries[1].length,
-  //       visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
-  //       sampler: { type: 'filtering' },
-  //     });
-  //   }
-
-  //   const gpuBindGroupLayout = entries.map((entries) =>
-  //     this.device.device.createBindGroupLayout({ entries }),
-  //   );
-  //   return { gpuBindGroupLayout };
-  // }
 }

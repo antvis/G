@@ -92,8 +92,8 @@ const canvas = new Canvas({
 // create a circle
 const circle = new Circle({
     style: {
-        x: 100,
-        y: 100,
+        cx: 100,
+        cy: 100,
         r: 50,
         fill: 'red',
         stroke: 'blue',

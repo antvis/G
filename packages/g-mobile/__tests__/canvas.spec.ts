@@ -19,8 +19,8 @@ describe('canvas', () => {
     // create a circle
     const circle = new Circle({
       style: {
-        x: 20,
-        y: 20,
+        cx: 20,
+        cy: 20,
         r: 10,
         fill: '#1890FF',
         stroke: '#F04864',
@@ -64,8 +64,8 @@ describe('canvas', () => {
     // create a circle
     const circle = new Circle({
       style: {
-        x: 20,
-        y: 20,
+        cx: 20,
+        cy: 20,
         r: 10,
         fill: '#1890FF',
         stroke: '#F04864',
@@ -111,8 +111,8 @@ describe('canvas', () => {
     // create a circle
     const circle = new Circle({
       style: {
-        x: 20,
-        y: 20,
+        cx: 20,
+        cy: 20,
         r: 10,
         fill: '#1890FF',
         stroke: '#F04864',

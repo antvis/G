@@ -63,8 +63,8 @@ fetch('https://gw.alipayobjects.com/os/bmw-prod/f1565312-d537-4231-adf5-81cb1cd3
     data.nodes.forEach(({ size, x, y }) => {
       const circle = new Circle({
         style: {
-          x,
-          y,
+          cx: x,
+          cy: y,
           fill: '#C6E5FF',
           stroke: '#5B8FF9',
           r: size,

@@ -38,7 +38,6 @@ export class PointMaterial<T extends IPointMaterial> extends Material<T> {
       this.programDirty = true;
     }
 
-    this.defines.USE_MAP = !!v;
     this.setUniforms({
       [Uniform.MAP]: v,
     });

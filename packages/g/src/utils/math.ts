@@ -210,8 +210,8 @@ export function makePerspective(
 
 export function decompose(mat: mat3) {
   let row0x = mat[0];
-  let row0y = mat[3];
-  let row1x = mat[1];
+  let row0y = mat[1];
+  let row1x = mat[3];
   let row1y = mat[4];
   // decompose 3x3 matrix
   // @see https://www.w3.org/TR/css-transforms-1/#decomposing-a-2d-matrix
@@ -240,7 +240,9 @@ export function decompose(mat: mat3) {
   }
 
   // Compute rotation and renormalize matrix.
-  const angle = Math.atan2(row0y, row0x);
+  const rotation = Math.atan2(row0y, row0x);
+
+  const angle = rad2deg(rotation);
 
   return [mat[6], mat[7], scalingX, scalingY, angle];
 }

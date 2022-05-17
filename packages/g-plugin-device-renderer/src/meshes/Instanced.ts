@@ -17,8 +17,9 @@ import type {
 } from '@antv/g';
 import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
-import { BufferGeometry } from '../geometries';
+import { BufferGeometry, GeometryEvent } from '../geometries';
 import type { Material } from '../materials';
+import { MaterialEvent } from '../materials';
 import { ShaderMaterial } from '../materials';
 import type { BindingLayoutSamplerDescriptor, Device, InputState } from '../platform';
 import {
@@ -47,17 +48,18 @@ import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import { TexturePool } from '../TexturePool';
 import type { Fog } from '../lights';
 import { LightPool } from '../LightPool';
-import { enumToObject } from '../utils/enum';
+import { enumToObject, compareDefines } from '../utils/enum';
 
 let counter = 1;
 const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
 
+/**
+ * WebGPU has max vertex attribute num(8)
+ */
 export enum VertexAttributeBufferIndex {
   MODEL_MATRIX = 0,
-  FILL,
-  STROKE,
-  PACKED_STYLE1,
-  PACKED_STYLE2,
+  FILL_STROKE,
+  PACKED_STYLE,
   PICKING_COLOR, // built-in
   POSITION,
   NORMAL,
@@ -168,8 +170,34 @@ export abstract class Instanced {
       ...this.material.defines,
     };
     this.geometry = new BufferGeometry(this.device);
+
+    // make refs so that we can trigger MutationEvent on every object
+    this.geometry.meshes = this.objects;
+    this.material.meshes = this.objects;
+
+    this.observeGeometryChanged();
+    this.observeMaterialChanged();
+
     this.inited = true;
     this.renderer.afterInitMesh(this);
+  }
+
+  observeGeometryChanged() {
+    this.geometry.on(GeometryEvent.CHANGED, () => {
+      this.geometry.meshes.forEach((mesh) => {
+        mesh.renderable.dirty = true;
+      });
+      this.renderingService.dirtify();
+    });
+  }
+
+  observeMaterialChanged() {
+    this.material.on(MaterialEvent.CHANGED, () => {
+      this.material.meshes.forEach((mesh) => {
+        mesh.renderable.dirty = true;
+      });
+      this.renderingService.dirtify();
+    });
   }
 
   /**
@@ -197,10 +225,8 @@ export abstract class Instanced {
     const modelViewMatrix = mat4.create();
     // const normalMatrix = mat3.create();
     const packedModelMatrix: number[] = [];
-    const packedFill: number[] = [];
-    const packedStroke: number[] = [];
-    const packedStyle1: number[] = [];
-    const packedStyle2: number[] = [];
+    const packedFillStroke: number[] = [];
+    const packedStyle: number[] = [];
     const packedPicking: number[] = [];
 
     // const useNormal = this.material.defines.NORMAL;
@@ -251,10 +277,12 @@ export abstract class Instanced {
         object.renderable3D?.encodedPickingColor) || [0, 0, 0];
 
       packedModelMatrix.push(...modelMatrix);
-      packedFill.push(...fillColor);
-      packedStroke.push(...strokeColor);
-      packedStyle1.push(opacity.value, fillOpacity.value, strokeOpacity.value, lineWidth.value);
-      packedStyle2.push(
+      packedFillStroke.push(...fillColor, ...strokeColor);
+      packedStyle.push(
+        opacity.value,
+        fillOpacity.value,
+        strokeOpacity.value,
+        lineWidth.value,
         visibility.value === 'visible' ? 1 : 0,
         anchor[0].value,
         anchor[1].value,
@@ -335,8 +363,8 @@ export abstract class Instanced {
     });
 
     this.geometry.setVertexBuffer({
-      bufferIndex: VertexAttributeBufferIndex.FILL,
-      byteStride: 4 * 4,
+      bufferIndex: VertexAttributeBufferIndex.FILL_STROKE,
+      byteStride: 4 * 8,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
@@ -345,28 +373,19 @@ export abstract class Instanced {
           location: VertexAttributeLocation.COLOR,
           divisor: 1,
         },
-      ],
-      data: new Float32Array(packedFill),
-    });
-
-    this.geometry.setVertexBuffer({
-      bufferIndex: VertexAttributeBufferIndex.STROKE,
-      byteStride: 4 * 4,
-      frequency: VertexBufferFrequency.PerInstance,
-      attributes: [
         {
           format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 0,
+          bufferByteOffset: 4 * 4,
           location: VertexAttributeLocation.STROKE_COLOR,
           divisor: 1,
         },
       ],
-      data: new Float32Array(packedStroke),
+      data: new Float32Array(packedFillStroke),
     });
 
     this.geometry.setVertexBuffer({
-      bufferIndex: VertexAttributeBufferIndex.PACKED_STYLE1,
-      byteStride: 4 * 4,
+      bufferIndex: VertexAttributeBufferIndex.PACKED_STYLE,
+      byteStride: 4 * 8,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
@@ -375,23 +394,14 @@ export abstract class Instanced {
           location: VertexAttributeLocation.PACKED_STYLE1,
           divisor: 1,
         },
-      ],
-      data: new Float32Array(packedStyle1),
-    });
-
-    this.geometry.setVertexBuffer({
-      bufferIndex: VertexAttributeBufferIndex.PACKED_STYLE2,
-      byteStride: 4 * 4,
-      frequency: VertexBufferFrequency.PerInstance,
-      attributes: [
         {
           format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 0,
+          bufferByteOffset: 4 * 4,
           location: VertexAttributeLocation.PACKED_STYLE2,
           divisor: 1,
         },
       ],
-      data: new Float32Array(packedStyle2),
+      data: new Float32Array(packedStyle),
     });
 
     this.geometry.setVertexBuffer({
@@ -426,10 +436,8 @@ export abstract class Instanced {
     const useFog = !!fog;
     const useLight = !!lights.length;
 
-    // toggle fog, need re-compile material
-    if (useFog !== this.material.defines.USE_FOG || useLight !== this.material.defines.USE_LIGHT) {
-      this.material.programDirty = true;
-    }
+    const oldDefines = { ...this.material.defines };
+
     this.material.defines.USE_FOG = useFog;
     this.material.defines.USE_LIGHT = useLight;
     this.material.defines = {
@@ -454,26 +462,55 @@ export abstract class Instanced {
       this.material.stencilWrite = false;
     }
 
+    if (this.materialDirty || this.material.programDirty) {
+      this.createMaterial(objects);
+    }
+
     // re-upload textures
-    if (this.material.textureDirty || this.materialDirty) {
+    if (this.material.textureDirty) {
       this.textureMappings = [];
 
       // set texture mappings
       const fillTextureMapping = this.createFillGradientTextureMapping(objects);
       if (fillTextureMapping) {
+        this.textureMappings.push(fillTextureMapping);
+      }
+
+      Object.keys(this.material.textures)
+        .sort((a, b) => this.material.samplers.indexOf(a) - this.material.samplers.indexOf(b))
+        .forEach((key) => {
+          const mapping = new TextureMapping();
+          mapping.name = key;
+          mapping.texture = this.material.textures[key];
+          this.device.setResourceName(mapping.texture, 'Material Texture ' + key);
+          mapping.sampler = this.renderHelper.getCache().createSampler({
+            wrapS: WrapMode.Clamp,
+            wrapT: WrapMode.Clamp,
+            minFilter: TexFilterMode.Point,
+            magFilter: TexFilterMode.Bilinear,
+            mipFilter: MipFilterMode.Linear,
+            minLOD: 0,
+            maxLOD: 0,
+          });
+
+          this.textureMappings.push(mapping);
+        });
+
+      if (this.textureMappings.length) {
         this.material.defines.USE_UV = true;
         this.material.defines.USE_MAP = true;
-        this.textureMappings.push(fillTextureMapping);
       } else {
         this.material.defines.USE_UV = false;
         this.material.defines.USE_MAP = false;
       }
-      this.materialDirty = true;
+
+      this.material.textureDirty = false;
     }
 
+    const needRecompileProgram = compareDefines(oldDefines, this.material.defines);
+
     // re-compile program, eg. DEFINE changed
-    if (this.material.programDirty || this.materialDirty) {
-      this.createMaterial(objects);
+    if (needRecompileProgram || this.material.programDirty || this.materialDirty) {
       // set defines
       this.material.defines = {
         ...this.material.defines,
@@ -494,31 +531,6 @@ export abstract class Instanced {
       // use cached program
       this.programDescriptorSimpleWithOrig = preprocessProgramObj_GLSL(this.device, this.program);
       this.material.programDirty = false;
-    }
-
-    if (this.material.textureDirty || this.materialDirty) {
-      Object.keys(this.material.textures)
-        .sort((a, b) => this.material.samplers.indexOf(a) - this.material.samplers.indexOf(b))
-        .forEach((key) => {
-          const mapping = new TextureMapping();
-          mapping.name = key;
-          mapping.texture = this.material.textures[key];
-
-          this.device.setResourceName(mapping.texture, 'Material Texture ' + key);
-          mapping.sampler = this.renderHelper.getCache().createSampler({
-            wrapS: WrapMode.Clamp,
-            wrapT: WrapMode.Clamp,
-            minFilter: TexFilterMode.Point,
-            magFilter: TexFilterMode.Bilinear,
-            mipFilter: MipFilterMode.Linear,
-            minLOD: 0,
-            maxLOD: 0,
-          });
-
-          this.textureMappings.push(mapping);
-        });
-
-      this.material.textureDirty = false;
       this.materialDirty = false;
     }
 
@@ -607,29 +619,54 @@ export abstract class Instanced {
     name: string,
     value: any,
   ) {
-    const stylePacked1 = ['opacity', 'fillOpacity', 'strokeOpacity', 'lineWidth'];
+    const stylePacked = [
+      'opacity',
+      'fillOpacity',
+      'strokeOpacity',
+      'lineWidth',
+      'visibility',
+      'anchor',
+      'increasedLineWidthForHitTesting',
+    ];
 
-    if (name === 'fill') {
-      const { fill } = this.instance.parsedStyle;
-      const i = this.textureMappings.findIndex((m) => m.name === FILL_TEXTURE_MAPPING);
-      if (fill instanceof CSSRGB) {
-        const fillColors: number[] = [];
-        objects.forEach((object) => {
-          const fill = (object.parsedStyle as ParsedBaseStyleProps).fill as CSSRGB;
-          fillColors.push(
+    if (name === 'fill' || name === 'stroke') {
+      const packedFillStroke: number[] = [];
+
+      objects.forEach((object) => {
+        const { fill, stroke } = object.parsedStyle as ParsedBaseStyleProps;
+
+        let fillColor: Tuple4Number = [0, 0, 0, 0];
+        if (fill instanceof CSSRGB) {
+          fillColor = [
             Number(fill.r) / 255,
             Number(fill.g) / 255,
             Number(fill.b) / 255,
             Number(fill.alpha),
-          );
-        });
+          ];
+        }
+        let strokeColor: Tuple4Number = [0, 0, 0, 0];
+        if (stroke instanceof CSSRGB) {
+          strokeColor = [
+            Number(stroke.r) / 255,
+            Number(stroke.g) / 255,
+            Number(stroke.b) / 255,
+            Number(stroke.alpha),
+          ];
+        }
 
-        this.geometry.updateVertexBuffer(
-          VertexAttributeBufferIndex.FILL,
-          VertexAttributeLocation.COLOR,
-          startIndex,
-          new Uint8Array(new Float32Array(fillColors).buffer),
-        );
+        packedFillStroke.push(...fillColor, ...strokeColor);
+      });
+
+      this.geometry.updateVertexBuffer(
+        VertexAttributeBufferIndex.FILL_STROKE,
+        VertexAttributeLocation.COLOR,
+        startIndex,
+        new Uint8Array(new Float32Array(packedFillStroke).buffer),
+      );
+
+      const { fill } = this.instance.parsedStyle;
+      const i = this.textureMappings.findIndex((m) => m.name === FILL_TEXTURE_MAPPING);
+      if (fill instanceof CSSRGB) {
         if (i >= 0) {
           // remove original fill texture mapping
           this.textureMappings.splice(i, -1);
@@ -642,34 +679,32 @@ export abstract class Instanced {
         }
         this.material.textureDirty = true;
       }
-    } else if (name === 'stroke') {
-      const strokeColors: number[] = [];
+    } else if (stylePacked.indexOf(name) > -1) {
+      const packed: number[] = [];
       objects.forEach((object) => {
-        const stroke = (object.parsedStyle as ParsedBaseStyleProps).stroke as CSSRGB;
-        strokeColors.push(
-          Number(stroke.r) / 255,
-          Number(stroke.g) / 255,
-          Number(stroke.b) / 255,
-          Number(stroke.alpha),
+        const {
+          opacity,
+          fillOpacity,
+          strokeOpacity,
+          lineWidth,
+          visibility,
+          anchor,
+          increasedLineWidthForHitTesting,
+        } = object.parsedStyle as ParsedBaseStyleProps;
+        packed.push(
+          opacity.value,
+          fillOpacity.value,
+          strokeOpacity.value,
+          lineWidth.value,
+          visibility.value === 'visible' ? 1 : 0,
+          anchor[0].value,
+          anchor[1].value,
+          increasedLineWidthForHitTesting?.value || 0,
         );
       });
 
       this.geometry.updateVertexBuffer(
-        VertexAttributeBufferIndex.STROKE,
-        VertexAttributeLocation.STROKE_COLOR,
-        startIndex,
-        new Uint8Array(new Float32Array(strokeColors).buffer),
-      );
-    } else if (stylePacked1.indexOf(name) > -1) {
-      const packed: number[] = [];
-      objects.forEach((object) => {
-        const { opacity, fillOpacity, strokeOpacity, lineWidth } =
-          object.parsedStyle as ParsedBaseStyleProps;
-        packed.push(opacity.value, fillOpacity.value, strokeOpacity.value, lineWidth.value);
-      });
-
-      this.geometry.updateVertexBuffer(
-        VertexAttributeBufferIndex.PACKED_STYLE1,
+        VertexAttributeBufferIndex.PACKED_STYLE,
         VertexAttributeLocation.PACKED_STYLE1,
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
@@ -684,29 +719,6 @@ export abstract class Instanced {
       this.geometry.updateVertexBuffer(
         VertexAttributeBufferIndex.MODEL_MATRIX,
         VertexAttributeLocation.MODEL_MATRIX0,
-        startIndex,
-        new Uint8Array(new Float32Array(packed).buffer),
-      );
-    } else if (
-      name === 'visibility' ||
-      name === 'anchor' ||
-      name === 'increasedLineWidthForHitTesting'
-    ) {
-      const packed: number[] = [];
-      objects.forEach((object) => {
-        const { visibility, anchor, increasedLineWidthForHitTesting } =
-          object.parsedStyle as ParsedBaseStyleProps;
-
-        packed.push(
-          visibility.value === 'visible' ? 1 : 0,
-          anchor[0].value,
-          anchor[1].value,
-          increasedLineWidthForHitTesting?.value || 0,
-        );
-      });
-      this.geometry.updateVertexBuffer(
-        VertexAttributeBufferIndex.PACKED_STYLE2,
-        VertexAttributeLocation.PACKED_STYLE2,
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
       );
@@ -786,10 +798,14 @@ export abstract class Instanced {
       cursor++;
     }
 
-    for (let i = VertexAttributeBufferIndex.PICKING_COLOR; i < geometry.vertexBuffers.length; i++) {
-      if (i === 4) {
-        continue;
-      }
+    for (
+      let i = VertexAttributeBufferIndex.PICKING_COLOR + 1;
+      i < geometry.vertexBuffers.length;
+      i++
+    ) {
+      // if (i === 3) {
+      //   continue;
+      // }
 
       const { frequency, byteStride } = geometry.inputLayoutDescriptor.vertexBufferDescriptors[i];
 
@@ -813,13 +829,6 @@ export abstract class Instanced {
           ],
           data: geometry.vertices[i],
         });
-
-        // geometry.updateVertexBuffer(
-        //   bufferIndex,
-        //   location,
-        //   0,
-        //   new Uint8Array(geometry.vertices[i].buffer),
-        // );
       }
     }
 
@@ -1028,13 +1037,6 @@ export abstract class Instanced {
         this.device,
         texImageSource,
         makeTextureDescriptor2D(Format.U8_RGBA_NORM, 1, 1, 1),
-        // () => {
-        //   // need re-render
-        //   objects.forEach((object) => {
-        //     object.renderable.dirty = true;
-        //     this.renderingService.dirtify();
-        //   });
-        // },
       );
       fillMapping.texture.on('loaded', () => {
         // need re-render
@@ -1044,8 +1046,6 @@ export abstract class Instanced {
       });
       this.device.setResourceName(fillMapping.texture, 'Fill Texture' + this.id);
       fillMapping.sampler = this.renderHelper.getCache().createSampler({
-        // wrapS: WrapMode.Clamp,
-        // wrapT: WrapMode.Clamp,
         wrapS: WrapMode.Repeat,
         wrapT: WrapMode.Repeat,
         minFilter: TexFilterMode.Point,

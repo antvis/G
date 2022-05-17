@@ -6,7 +6,7 @@ import { Shape } from '../../types';
 @singleton({ token: { token: GeometryAABBUpdater, named: Shape.CIRCLE } })
 export class CircleUpdater implements GeometryAABBUpdater<ParsedCircleStyleProps> {
   update(parsedStyle: ParsedCircleStyleProps, object: Circle) {
-    const { r, x, y } = parsedStyle;
+    const { r } = parsedStyle;
 
     const width = r.value * 2;
     const height = r.value * 2;
@@ -14,8 +14,6 @@ export class CircleUpdater implements GeometryAABBUpdater<ParsedCircleStyleProps
     return {
       width,
       height,
-      x: x.value || 0,
-      y: y.value || 0,
     };
   }
 }

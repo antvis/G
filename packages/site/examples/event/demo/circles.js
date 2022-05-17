@@ -22,8 +22,8 @@ const camera = canvas.getCamera();
 for (let i = 0; i < 1000; i++) {
   const circle = new Circle({
     style: {
-      x: Math.random() * 600,
-      y: Math.random() * 500,
+      cx: Math.random() * 600,
+      cy: Math.random() * 500,
       r: 20 + Math.random() * 10,
       fill: '#1890FF',
       stroke: '#F04864',

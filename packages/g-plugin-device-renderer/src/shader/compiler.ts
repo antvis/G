@@ -237,8 +237,9 @@ layout(set = ${set}, binding = ${binding++}) uniform sampler S_${samplerName};
   //   ${isGLSL100 && type === 'vert' ? '#define in attribute\n#define out varying' : ''}
   // ${isGLSL100 && type === 'frag' ? '#define in varying' : ''}
 
-  let concat = `
-${vendorInfo.glslVersion}
+  // headless-gl will throw the following error if we prepend `#version 100`:
+  // #version directive must occur before anything else, except for comments and white space
+  let concat = `${isGLSL100 ? '' : vendorInfo.glslVersion}
 ${isGLSL100 && supportMRT ? '#extension GL_EXT_draw_buffers : require' : ''}
 ${isGLSL100 && type === 'frag' ? '#extension GL_OES_standard_derivatives : enable' : ''}
 ${precision}

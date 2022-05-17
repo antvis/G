@@ -20,8 +20,8 @@ const canvas = new Canvas({
 
 const ellipse = new Ellipse({
   style: {
-    x: 300,
-    y: 200,
+    cx: 300,
+    cy: 200,
     rx: 100,
     ry: 150,
     fill: '#1890FF',

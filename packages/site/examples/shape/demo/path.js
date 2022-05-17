@@ -131,6 +131,7 @@ const circleConfig = {
 };
 circleFolder.add(circleConfig, 'r', 0, 200).onChange((r) => {
   circlePath.style.path = getCirclePath(0, 0, r, r);
+  circlePath.setPosition(100, 300);
 });
 circleFolder.add(circleConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
   circlePath.style.lineWidth = lineWidth;

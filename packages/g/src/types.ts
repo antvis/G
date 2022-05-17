@@ -7,6 +7,7 @@ import type {
   CSSKeywordValue,
   CSSRGB,
   CSSUnitValue,
+  ParsedTransform,
 } from './css';
 import { Syringe } from 'mana-syringe';
 
@@ -22,6 +23,7 @@ export enum Shape {
   TEXT = 'text',
   PATH = 'path',
   HTML = 'html',
+  MESH = 'mesh',
 }
 
 type ColorType = string | null;
@@ -64,21 +66,6 @@ export enum TextAlign {
 
 export interface BaseStyleProps {
   class?: string;
-  /**
-   * x in local space
-   */
-  x?: number | string;
-
-  /**
-   * y in local space
-   */
-  y?: number | string;
-
-  /**
-   * z in local space
-   */
-  z?: number | string;
-
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform
    */
@@ -234,6 +221,7 @@ export interface ParsedBaseStyleProps
     | 'visibility'
     | 'pointerEvents'
     | 'zIndex'
+    | 'transform'
     | 'transformOrigin'
     | 'textTransform'
   > {
@@ -251,11 +239,9 @@ export interface ParsedBaseStyleProps
   lineDashOffset?: CSSUnitValue;
 
   anchor?: [CSSUnitValue, CSSUnitValue, CSSUnitValue];
+  transform: ParsedTransform[];
   transformOrigin?: [CSSUnitValue, CSSUnitValue, CSSUnitValue];
 
-  x?: CSSUnitValue;
-  y?: CSSUnitValue;
-  z?: CSSUnitValue;
   width?: CSSUnitValue;
   height?: CSSUnitValue;
   lineWidth?: CSSUnitValue;
@@ -375,7 +361,7 @@ export interface CanvasConfig {
   /**
    * replace `new window.Image()`
    */
-  createImage?: () => HTMLImageElement;
+  createImage?: (src: string) => HTMLImageElement;
 
   /**
    * limits query

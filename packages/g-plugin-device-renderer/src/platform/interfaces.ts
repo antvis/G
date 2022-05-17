@@ -202,6 +202,10 @@ export enum VertexBufferFrequency {
   PerInstance = 0x02,
 }
 
+export enum TextureEvent {
+  LOADED = 'loaded',
+}
+
 export enum TextureDimension {
   n2D,
   n2DArray,
@@ -594,7 +598,6 @@ export interface Device {
   // Information queries.
   queryLimits: () => DeviceLimits;
   queryTextureFormatSupported: (format: Format, width: number, height: number) => boolean;
-  queryPipelineReady: (o: RenderPipeline) => boolean;
   queryPlatformAvailable: () => boolean;
   queryVendorInfo: () => VendorInfo;
   queryRenderPass: (o: RenderPass) => Readonly<RenderPassDescriptor>;

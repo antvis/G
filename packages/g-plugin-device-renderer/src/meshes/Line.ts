@@ -472,7 +472,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
   ) {
     let path: ParsedPathStyleProps['path'];
     if (object.nodeName !== Shape.PATH) {
-      path = parsePath(convertToPath(object));
+      path = parsePath(convertToPath(object, false), object);
       defX = path.rect.x;
       defY = path.rect.y;
     } else {

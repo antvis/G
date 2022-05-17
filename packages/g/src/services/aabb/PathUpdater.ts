@@ -8,13 +8,11 @@ export class PathUpdater implements GeometryAABBUpdater<ParsedPathStyleProps> {
   update(parsedStyle: ParsedPathStyleProps) {
     const { path } = parsedStyle;
 
-    const { x: minX, y: minY, width, height } = path.rect;
+    const { width, height } = path.rect;
 
     return {
       width,
       height,
-      x: minX,
-      y: minY,
     };
   }
 }

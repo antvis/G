@@ -2,7 +2,7 @@ import * as d3 from 'd3-color';
 import type { Pattern, LinearGradient, RadialGradient } from '../cssom';
 import { CSSRGB, CSSGradientValue, GradientPatternType } from '../cssom';
 import type { Tuple4Number } from '../../types';
-import { clamp, isString } from '../../utils';
+import { clamp, isNil, isString } from '../../utils';
 
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;
@@ -12,7 +12,11 @@ const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/gi;
 /**
  * @see https://github.com/WebKit/WebKit/blob/main/Source/WebCore/css/parser/CSSParser.cpp#L97
  */
-export function parseColor(colorStr: string = ''): CSSRGB | CSSGradientValue {
+export function parseColor(colorStr: string): CSSRGB | CSSGradientValue {
+  if (isNil(colorStr)) {
+    colorStr = '';
+  }
+
   if (colorStr === 'transparent') {
     // transparent black
     return new CSSRGB(0, 0, 0, 0);

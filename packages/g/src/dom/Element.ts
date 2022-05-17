@@ -431,6 +431,7 @@ export class Element<
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
    */
   removeAttribute(attributeName: keyof StyleProps) {
+    this.setAttribute(attributeName, null);
     delete this.attributes[attributeName];
   }
 

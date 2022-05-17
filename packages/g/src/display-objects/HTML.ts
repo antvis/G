@@ -7,20 +7,20 @@ import { mat4, vec3 } from 'gl-matrix';
 import type { CSSUnitValue } from '../css';
 
 export interface HTMLStyleProps extends BaseStyleProps {
+  x?: number | string;
+  y?: number | string;
   innerHTML: string | HTMLElement;
   width: number;
   height: number;
-  className?: string | string[];
-  style?: string;
 }
 
 export interface ParsedHTMLStyleProps extends ParsedBaseStyleProps {
+  x: CSSUnitValue;
+  y: CSSUnitValue;
   $el: HTMLElement;
   innerHTML: string | HTMLElement;
   width: CSSUnitValue;
   height: CSSUnitValue;
-  className?: string | string[];
-  style?: string;
 }
 
 /**
@@ -32,9 +32,11 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
     super({
       type: Shape.HTML,
       style: {
+        x: '',
+        y: '',
+        width: '',
+        height: '',
         innerHTML: '',
-        className: '',
-        style: '',
         ...style,
       },
       ...rest,

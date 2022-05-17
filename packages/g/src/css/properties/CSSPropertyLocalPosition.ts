@@ -1,10 +1,10 @@
 import { singleton } from 'mana-syringe';
-import type { ParsedBaseStyleProps } from '../../types';
-import type { DisplayObject } from '../../display-objects';
+import type { DisplayObject, Circle, Rect, Line } from '../../display-objects';
 import type { CSSProperty } from '../CSSProperty';
 import type { CSSUnitValue } from '../cssom';
-import { mergeDimensions, parseLengthOrPercentage } from '../parser';
 import { CSSPropertyLengthOrPercentage } from './CSSPropertyLengthOrPercentage';
+import { isNil } from '../../utils';
+import { Shape } from '../../types';
 
 /**
  * local position
@@ -15,20 +15,53 @@ export class CSSPropertyLocalPosition
   implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>>
 {
   /**
-   * <length> & <percentage>
-   */
-  parser = parseLengthOrPercentage;
-
-  /**
-   * mix between CSS.px(x)
-   */
-  mixer = mergeDimensions;
-
-  /**
    * update local position
    */
   postProcessor(object: DisplayObject) {
-    const { x, y, z } = object.parsedStyle as ParsedBaseStyleProps;
-    object.setLocalPosition((x && x.value) || 0, (y && y.value) || 0, (z && z.value) || 0);
+    let x: number;
+    let y: number;
+    let z: number;
+
+    switch (object.nodeName) {
+      case Shape.CIRCLE:
+      case Shape.ELLIPSE:
+        const { cx, cy } = (object as Circle).parsedStyle;
+        if (!isNil(cx)) {
+          x = cx.value;
+        }
+        if (!isNil(cy)) {
+          y = cy.value;
+        }
+
+        break;
+      case Shape.RECT:
+      case Shape.GROUP:
+      case Shape.IMAGE:
+      case Shape.HTML:
+      case Shape.TEXT:
+      case Shape.MESH:
+        if (!isNil((object as Rect).parsedStyle.x)) {
+          x = (object as Rect).parsedStyle.x.value;
+        }
+
+        if (!isNil((object as Rect).parsedStyle.y)) {
+          y = (object as Rect).parsedStyle.y.value;
+        }
+        break;
+      case Shape.LINE:
+        const { x1, x2, y1, y2 } = (object as Line).parsedStyle;
+        const minX = Math.min(x1.value, x2.value);
+        const minY = Math.min(y1.value, y2.value);
+        x = minX;
+        y = minY;
+        z = 0;
+        break;
+    }
+
+    object.parsedStyle.defX = x || 0;
+    object.parsedStyle.defY = y || 0;
+
+    const [ox, oy, oz] = object.getLocalPosition();
+    object.setLocalPosition(isNil(x) ? ox : x, isNil(y) ? oy : y, isNil(z) ? oz : z);
   }
 }

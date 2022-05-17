@@ -94,3 +94,7 @@ const renderer = new Renderer({
 [示例](/zh/examples/plugins#rough)效果如下：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
+
+# 服务端渲染
+
+该渲染器依赖 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 渲染能力，并不局限在浏览器端，因此也可以使用 [node-canvas](https://github.com/Automattic/node-canvas) 进行[服务端渲染](/zh/docs/api/canvas#服务端渲染)。

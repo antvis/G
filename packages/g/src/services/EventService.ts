@@ -356,7 +356,10 @@ export class EventService extends EventEmitter {
           leaveEvent.currentTarget = leaveEvent.target;
 
           this.notifyTarget(leaveEvent);
-          if (isMouse) this.notifyTarget(leaveEvent, 'mouseleave');
+          if (isMouse) {
+            // console.error(leaveEvent.target);
+            this.notifyTarget(leaveEvent, 'mouseleave');
+          }
 
           if (Node.isNode(leaveEvent.target)) {
             leaveEvent.target = leaveEvent.target.parentNode;
@@ -471,7 +474,10 @@ export class EventService extends EventEmitter {
         leaveEvent.currentTarget = leaveEvent.target;
 
         this.notifyTarget(leaveEvent);
-        if (isMouse) this.notifyTarget(leaveEvent, 'mouseleave');
+        if (isMouse) {
+          // console.error(leaveEvent.target, 'out');
+          this.notifyTarget(leaveEvent, 'mouseleave');
+        }
 
         if (Node.isNode(leaveEvent.target)) {
           leaveEvent.target = leaveEvent.target.parentNode;

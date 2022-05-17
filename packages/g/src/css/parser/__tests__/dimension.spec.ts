@@ -10,8 +10,8 @@ import {
 
 const circle = new Circle({
   style: {
-    x: 100,
-    y: 100,
+    cx: 100,
+    cy: 100,
     r: 100,
   },
 });
@@ -28,6 +28,12 @@ describe('Property Dimension', () => {
     expect(result.toString()).to.be.eqls('0.5px');
 
     result = parseLength('0');
+    expect(result.toString()).to.be.eqls('0px');
+
+    result = parseLength(null);
+    expect(result.toString()).to.be.eqls('0px');
+
+    result = parseLength(undefined);
     expect(result.toString()).to.be.eqls('0px');
   });
 

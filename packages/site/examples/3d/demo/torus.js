@@ -140,7 +140,7 @@ const canvas = new Canvas({
       if (mapURL === 'none') {
         torus.style.material.map = null;
       } else {
-        const map = renderer.loadTexture(mapURL);
+        const map = plugin.loadTexture(mapURL);
         torus.style.material.map = map;
       }
     });

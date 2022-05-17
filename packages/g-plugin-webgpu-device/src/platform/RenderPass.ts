@@ -1,3 +1,4 @@
+import { isNil } from '@antv/g';
 import type {
   RenderPass,
   RenderPassDescriptor,
@@ -175,7 +176,7 @@ export class RenderPass_WebGPU implements RenderPass {
 
     for (let i = 0; i < inputState.vertexBuffers.length; i++) {
       const b = inputState.vertexBuffers[i];
-      if (b === null) continue;
+      if (isNil(b)) continue;
       this.gpuRenderPassEncoder.setVertexBuffer(i, getPlatformBuffer(b.buffer), b.byteOffset);
     }
   }

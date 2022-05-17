@@ -1,3 +1,4 @@
+import { isNil } from '@antv/g';
 import type { InputLayout, InputLayoutDescriptor } from '@antv/g-plugin-device-renderer';
 import { ResourceType, assertExists } from '@antv/g-plugin-device-renderer';
 import type { IDevice_WebGPU } from './interfaces';
@@ -28,7 +29,7 @@ export class InputLayout_WebGPU extends ResourceBase_WebGPU implements InputLayo
     const buffers: GPUVertexBufferLayout[] = [];
     for (let i = 0; i < descriptor.vertexBufferDescriptors.length; i++) {
       const b = descriptor.vertexBufferDescriptors[i];
-      if (b === null) continue;
+      if (isNil(b)) continue;
       const arrayStride = b.byteStride;
       const stepMode = translateVertexBufferFrequency(b.frequency);
       const attributes: GPUVertexAttribute[] = [];

@@ -66,8 +66,8 @@ fetch('https://gw.alipayobjects.com/os/basement_prod/0b9730ff-0850-46ff-84d0-1d4
     data.nodes.forEach(({ size, x, y, label }) => {
       const circle = new Circle({
         style: {
-          x: x * 10,
-          y: y * 10,
+          cx: x * 10,
+          cy: y * 10,
           fill: '#C6E5FF',
           stroke: '#5B8FF9',
           r: size * 10,

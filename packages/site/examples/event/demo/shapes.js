@@ -142,8 +142,8 @@ const clippedText = new Text({
     lineWidth: 5,
     clipPath: new Circle({
       style: {
-        x: 20,
-        y: -10,
+        cx: 20,
+        cy: -10,
         r: 20,
       },
     }),

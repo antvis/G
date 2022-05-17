@@ -28,7 +28,7 @@ const rect = new Rect({
 
 const circle1 = new Circle({
   style: {
-    y: 20,
+    cy: 20,
     r: 20,
     fill: '#1890FF',
     stroke: '#F04864',
@@ -37,8 +37,8 @@ const circle1 = new Circle({
 });
 const circle2 = new Circle({
   style: {
-    x: 100,
-    y: 20,
+    cx: 100,
+    cy: 20,
     r: 20,
     fill: '#1890FF',
     stroke: '#F04864',

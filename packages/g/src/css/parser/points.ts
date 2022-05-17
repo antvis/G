@@ -1,15 +1,28 @@
 import { Line as LineUtil, Polyline as PolylineUtil } from '@antv/g-math';
+import type { DisplayObject } from '../..';
 import { isString } from '../../utils';
 
-export function parsePoints(points: string | [number, number][]) {
-  if (isString(points)) {
-    return null;
+/**
+ * @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points
+ *
+ * @example
+ * points="100,10 250,150 200,110"
+ */
+export function parsePoints(pointsOrStr: string | [number, number][], object: DisplayObject) {
+  let points: [number, number][];
+  if (isString(pointsOrStr)) {
+    points = pointsOrStr.split(' ').map((pointStr) => {
+      const [x, y] = pointStr.split(',');
+      return [Number(x), Number(y)];
+    });
+  } else {
+    points = pointsOrStr;
   }
 
   const segments: [number, number][] = [];
   let tempLength = 0;
   let segmentT: [number, number];
-  let segmentL;
+  let segmentL: number;
 
   const totalLength = PolylineUtil.length(points);
 
@@ -23,6 +36,14 @@ export function parsePoints(points: string | [number, number][]) {
       segments.push(segmentT);
     }
   });
+
+  const minX = Math.min(...points.map((point) => point[0]));
+  const minY = Math.min(...points.map((point) => point[1]));
+
+  if (object) {
+    object.parsedStyle.defX = minX;
+    object.parsedStyle.defY = minY;
+  }
 
   return {
     points,

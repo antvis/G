@@ -101,8 +101,8 @@ canvas.appendChild(solarSystem);
  */
 const ellipse = new Ellipse({
   style: {
-    x: 150,
-    y: 100,
+    cx: 150,
+    cy: 100,
     rx: 25,
     ry: 15,
     fill: '#1890FF',
@@ -189,6 +189,8 @@ canvas.appendChild(polygon);
 const rectPath = convertToPath(
   new Rect({
     style: {
+      x: 100,
+      y: 0,
       width: 200,
       height: 100,
       transformOrigin: 'center',
@@ -200,6 +202,7 @@ const starPath = new Path({
     path: 'M301.113,12.011l99.25,179.996l201.864,38.778L461.706,380.808l25.508,203.958l-186.101-87.287L115.01,584.766l25.507-203.958L0,230.785l201.86-38.778L301.113,12.011',
   },
 });
+starPath.translate(200, 0);
 starPath.scale(0.2);
 const pathG = new Path({
   style: {

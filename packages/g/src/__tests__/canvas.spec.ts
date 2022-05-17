@@ -48,8 +48,8 @@ describe('Canvas', () => {
 
     const circle = new Circle({
       style: {
-        x: 100,
-        y: 100,
+        cx: 100,
+        cy: 100,
         r: 100,
         fill: 'red',
       },
@@ -100,8 +100,8 @@ describe('Canvas', () => {
   it('should return Document & Canvas when hit nothing', async () => {
     const circle = new Circle({
       style: {
-        x: 100,
-        y: 100,
+        cx: 100,
+        cy: 100,
         r: 100,
         fill: 'red',
       },
@@ -168,8 +168,8 @@ describe('Canvas', () => {
   it('should convert client & viewport coordinates correctly', async () => {
     const circle = new Circle({
       style: {
-        x: 100,
-        y: 100,
+        cx: 100,
+        cy: 100,
         r: 100,
         fill: 'red',
       },
@@ -231,8 +231,8 @@ describe('Canvas', () => {
 
     const circle = new Circle({
       style: {
-        x: 100,
-        y: 100,
+        cx: 100,
+        cy: 100,
         r: 100,
         fill: 'red',
       },
@@ -287,8 +287,8 @@ describe('Canvas', () => {
 
   //   const circle = new Circle({
   //     style: {
-  //       x: 100,
-  //       y: 100,
+  //       cx: 100,
+  //       cy: 100,
   //       r: 100,
   //       fill: 'red',
   //     },

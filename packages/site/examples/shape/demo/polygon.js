@@ -116,11 +116,11 @@ polygonFolder
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  x: 200,
-  y: 100,
-  scale: 1,
+  localPositionX: 100,
+  localPositionY: 100,
+  localScale: 1,
+  localEulerAngles: 0,
   transformOrigin: 'left top',
-  eulerAngles: 0,
   anchorX: 0,
   anchorY: 0,
 };
@@ -135,21 +135,19 @@ transformFolder
   .onChange((transformOrigin) => {
     polygon.style.transformOrigin = transformOrigin;
   });
-transformFolder.add(transformConfig, 'x', 0, 400).onChange((x) => {
-  polygon.setLocalPosition(x, polygon.style.y);
-  // or
-  // polygon.style.x = x;
+transformFolder.add(transformConfig, 'localPositionX', 0, 600).onChange((localPositionX) => {
+  const [lx, ly] = polygon.getLocalPosition();
+  polygon.setLocalPosition(localPositionX, ly);
 });
-transformFolder.add(transformConfig, 'y', 0, 400).onChange((y) => {
-  polygon.setLocalPosition(polygon.style.x, y);
-  // or
-  // polygon.style.y = y;
+transformFolder.add(transformConfig, 'localPositionY', 0, 500).onChange((localPositionY) => {
+  const [lx, ly] = polygon.getLocalPosition();
+  polygon.setLocalPosition(lx, localPositionY);
 });
-transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
-  polygon.setLocalScale(scaling);
+transformFolder.add(transformConfig, 'localScale', 0.2, 5).onChange((localScale) => {
+  polygon.setLocalScale(localScale);
 });
-transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
-  polygon.setLocalEulerAngles(eulerAngles);
+transformFolder.add(transformConfig, 'localEulerAngles', 0, 360).onChange((localEulerAngles) => {
+  polygon.setLocalEulerAngles(localEulerAngles);
 });
 transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
   polygon.style.anchor = [anchorX, transformConfig.anchorY];

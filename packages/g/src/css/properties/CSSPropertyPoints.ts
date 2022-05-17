@@ -28,7 +28,7 @@ export class CSSPropertyPoints
    * update local position
    */
   postProcessor(object: DisplayObject) {
-    const { x, y, z } = object.parsedStyle as ParsedBaseStyleProps;
-    object.setLocalPosition((x && x.value) || 0, (y && y.value) || 0, (z && z.value) || 0);
+    const { defX, defY } = object.parsedStyle as ParsedBaseStyleProps;
+    object.setLocalPosition(defX, defY);
   }
 }

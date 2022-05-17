@@ -23,8 +23,8 @@ const canvas = new Canvas({
 // create a circle
 const circle = new Circle({
   style: {
-    x: 300,
-    y: 200,
+    cx: 300,
+    cy: 200,
     r: 100,
     fill: '#1890FF',
     stroke: '#F04864',
@@ -82,6 +82,8 @@ rendererFolder.open();
 
 const circleFolder = gui.addFolder('circle');
 const circleConfig = {
+  cx: 300,
+  cy: 200,
   r: 100,
   fill: '#1890FF',
   stroke: '#F04864',
@@ -97,8 +99,14 @@ const circleConfig = {
   increasedLineWidthForHitTesting: 0,
   cursor: 'pointer',
 };
-circleFolder.add(circleConfig, 'r', 50, 200).onChange((radius) => {
-  circle.style.r = radius;
+circleFolder.add(circleConfig, 'cx', 0, 600).onChange((cx) => {
+  circle.style.cx = cx;
+});
+circleFolder.add(circleConfig, 'cy', 0, 600).onChange((cy) => {
+  circle.style.cy = cy;
+});
+circleFolder.add(circleConfig, 'r', 50, 200).onChange((r) => {
+  circle.style.r = r;
 });
 circleFolder.addColor(circleConfig, 'fill').onChange((color) => {
   circle.style.fill = color;
@@ -146,11 +154,11 @@ circleFolder
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  x: 300,
-  y: 200,
-  scale: 1,
+  localPositionX: 300,
+  localPositionY: 200,
+  localScale: 1,
+  localEulerAngles: 0,
   transformOrigin: 'center',
-  eulerAngles: 0,
   anchorX: 0.5,
   anchorY: 0.5,
 };
@@ -165,21 +173,19 @@ transformFolder
   .onChange((transformOrigin) => {
     circle.style.transformOrigin = transformOrigin;
   });
-transformFolder.add(transformConfig, 'x', 0, 400).onChange((x) => {
-  circle.setLocalPosition(x, circle.style.y);
-  // or
-  // circle.style.x = x;
+transformFolder.add(transformConfig, 'localPositionX', 0, 600).onChange((localPositionX) => {
+  const [lx, ly] = circle.getLocalPosition();
+  circle.setLocalPosition(localPositionX, ly);
 });
-transformFolder.add(transformConfig, 'y', 0, 400).onChange((y) => {
-  circle.setLocalPosition(circle.style.x, y);
-  // or
-  // circle.style.y = y;
+transformFolder.add(transformConfig, 'localPositionY', 0, 500).onChange((localPositionY) => {
+  const [lx, ly] = circle.getLocalPosition();
+  circle.setLocalPosition(lx, localPositionY);
 });
-transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
-  circle.setLocalScale(scaling);
+transformFolder.add(transformConfig, 'localScale', 0.2, 5).onChange((localScale) => {
+  circle.setLocalScale(localScale);
 });
-transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
-  circle.setLocalEulerAngles(eulerAngles);
+transformFolder.add(transformConfig, 'localEulerAngles', 0, 360).onChange((localEulerAngles) => {
+  circle.setLocalEulerAngles(localEulerAngles);
 });
 transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
   circle.style.anchor = [anchorX, transformConfig.anchorY];

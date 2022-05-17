@@ -38,6 +38,7 @@ import type {
   Resource,
   Texture,
 } from '@antv/g-plugin-device-renderer';
+import { defaultBindingLayoutSamplerDescriptor } from '@antv/g-plugin-device-renderer';
 import {
   ResourceType,
   ViewportOrigin,
@@ -74,6 +75,7 @@ import { Readback_WebGPU } from './Readback';
 import {
   getFormatBlockSize,
   isFormatTextureCompressionBC,
+  translateBindGroupTextureBinding,
   translateDepthStencilState,
   translatePrimitiveState,
   translateTargets,
@@ -83,11 +85,11 @@ import {
 } from './utils';
 import { ComputePass_WebGPU } from './ComputePass';
 import { ComputePipeline_WebGPU } from './ComputePipeline';
-// import type { glsl_compile as glsl_compile_ } from '../../../../../rust/pkg/glsl_wgsl_compiler';
+import type { glsl_compile as glsl_compile_ } from '../../../../rust/pkg/glsl_wgsl_compiler';
 // import { FullscreenAlphaClear } from './FullscreenAlphaClear';
 import { QueryPool_WebGPU } from './QueryPool';
 
-export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
+export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   private swapChainWidth = 0;
   private swapChainHeight = 0;
   private swapChainTextureUsage = GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_DST;
@@ -125,14 +127,14 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
   device: GPUDevice;
   private canvas: HTMLCanvasElement | OffscreenCanvas;
   private canvasContext: GPUCanvasContext;
-  glsl_compile: any;
+  glsl_compile: typeof glsl_compile_;
 
   constructor(
     adapter: GPUAdapter,
     device: GPUDevice,
     canvas: HTMLCanvasElement | OffscreenCanvas,
     canvasContext: GPUCanvasContext,
-    glsl_compile: any,
+    glsl_compile: typeof glsl_compile_,
   ) {
     this.adapter = adapter;
     this.device = device;
@@ -325,7 +327,7 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     attachment.sampleCount = sampleCount;
     attachment.gpuTexture = gpuTexture;
     attachment.gpuTextureView = gpuTextureView;
-    return attachment;
+    return attachment as unknown as RenderTarget;
   }
 
   createProgram(descriptor: ProgramDescriptor): Program {
@@ -411,9 +413,6 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
   }
 
   createBindings(descriptor: BindingsDescriptor): Bindings {
-    if (descriptor.pipeline) {
-    }
-
     return new Bindings_WebGPU({
       id: this.getNextUniqueId(),
       device: this,
@@ -474,7 +473,66 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     });
   }
 
-  ensureRenderPipeline(renderPipeline: RenderPipeline_WebGPU) {
+  _createBindGroupLayout(bindingLayout: BindingLayoutDescriptor): BindGroupLayout {
+    let gpuBindGroupLayout = this.bindGroupLayoutCache.get(bindingLayout);
+    if (gpuBindGroupLayout === null) {
+      gpuBindGroupLayout = this._createBindGroupLayoutInternal(bindingLayout);
+      this.bindGroupLayoutCache.add(bindingLayout, gpuBindGroupLayout);
+    }
+    return gpuBindGroupLayout;
+  }
+
+  private _createBindGroupLayoutInternal(bindingLayout: BindingLayoutDescriptor): BindGroupLayout {
+    const entries: GPUBindGroupLayoutEntry[][] = [[], []];
+
+    if (bindingLayout.storageEntries) {
+      for (let i = 0; i < bindingLayout.storageEntries.length; i++) {
+        entries[0].push({
+          binding: entries[0].length,
+          visibility: GPUShaderStage.COMPUTE,
+          buffer: { type: bindingLayout.storageEntries[i].type },
+        });
+      }
+    }
+
+    for (let i = 0; i < bindingLayout.numUniformBuffers; i++)
+      entries[0].push({
+        binding: entries[0].length,
+        visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
+        buffer: { type: 'uniform', hasDynamicOffset: true },
+      });
+
+    for (let i = 0; i < bindingLayout.numSamplers; i++) {
+      const samplerEntry =
+        bindingLayout.samplerEntries !== undefined
+          ? bindingLayout.samplerEntries[i]
+          : defaultBindingLayoutSamplerDescriptor;
+      entries[1].push({
+        binding: entries[1].length,
+        visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
+        texture: translateBindGroupTextureBinding(samplerEntry),
+      });
+      entries[1].push({
+        binding: entries[1].length,
+        visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
+        sampler: { type: 'filtering' },
+      });
+    }
+
+    const gpuBindGroupLayout = entries.map((entries) =>
+      this.device.createBindGroupLayout({ entries }),
+    );
+    return { gpuBindGroupLayout };
+  }
+
+  private _createPipelineLayout(bindingLayouts: BindingLayoutDescriptor[]): GPUPipelineLayout {
+    const bindGroupLayouts = bindingLayouts.flatMap(
+      (bindingLayout) => this._createBindGroupLayout(bindingLayout).gpuBindGroupLayout,
+    );
+    return this.device.createPipelineLayout({ bindGroupLayouts });
+  }
+
+  _createRenderPipeline(renderPipeline: RenderPipeline_WebGPU, async = false) {
     if (renderPipeline.isCreating) return;
 
     if (renderPipeline.gpuRenderPipeline !== null) return;
@@ -485,6 +543,7 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
       fragmentStage = program.fragmentStage;
     if (vertexStage === null || fragmentStage === null) return;
 
+    const layout = this._createPipelineLayout(descriptor.bindingLayouts);
     const primitive = translatePrimitiveState(descriptor.topology, descriptor.megaStateDescriptor);
     const targets = translateTargets(
       descriptor.colorAttachmentFormats,
@@ -503,6 +562,7 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     renderPipeline.isCreating = true;
 
     const gpuRenderPipeline: GPURenderPipelineDescriptor = {
+      layout,
       vertex: {
         ...vertexStage,
         buffers,
@@ -534,7 +594,7 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
   }
 
   destroyRenderTarget(o: RenderTarget): void {
-    const attachment = o as Attachment_WebGPU;
+    const attachment = o as unknown as Attachment_WebGPU;
     attachment.gpuTexture.destroy();
   }
 
@@ -613,12 +673,6 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
     return true;
   }
 
-  queryPipelineReady(o: RenderPipeline): boolean {
-    const renderPipeline = o as RenderPipeline_WebGPU;
-    this.ensureRenderPipeline(renderPipeline);
-    return renderPipeline.gpuRenderPipeline !== null;
-  }
-
   queryPlatformAvailable(): boolean {
     return true;
   }
@@ -633,7 +687,7 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
   }
 
   queryRenderTarget(o: RenderTarget): Readonly<RenderTargetDescriptor> {
-    const attachment = o as Attachment_WebGPU;
+    const attachment = o as unknown as Attachment_WebGPU;
     return attachment;
   }
 
@@ -648,7 +702,7 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
       r.gpuTexture.label = s;
       r.gpuTextureView.label = s;
     } else if (o.type === ResourceType.RenderTarget) {
-      const r = o as Attachment_WebGPU;
+      const r = o as unknown as Attachment_WebGPU;
       r.gpuTexture.label = s;
       r.gpuTextureView.label = s;
     } else if (o.type === ResourceType.Sampler) {
@@ -676,7 +730,7 @@ export class Device_WebGPU implements SwapChain, Device, IDevice_WebGPU {
   }
 
   pipelineForceReady(o: RenderPipeline): void {
-    // const renderPipeline = o as RenderPipeline_WebGPU;
-    // this._createRenderPipeline(renderPipeline, false);
+    const renderPipeline = o as RenderPipeline_WebGPU;
+    this._createRenderPipeline(renderPipeline, false);
   }
 }

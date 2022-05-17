@@ -176,6 +176,9 @@ describe('DisplayObject Node API', () => {
     group3.setAttribute('class', '');
     expect(group3.classList).to.eqls([]);
 
+    group3.removeAttribute('class');
+    expect(group3.getAttribute('class')).to.be.null;
+
     // search in scene graph
     expect(
       group1.find((group) => {

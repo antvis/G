@@ -14,7 +14,7 @@ import { isString } from '../../utils';
 })
 export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
   update(parsedStyle: ParsedImageStyleProps, object: Image | Rect | Group) {
-    const { img, x, y, width, height } = parsedStyle;
+    const { img, width, height } = parsedStyle;
 
     let contentWidth = 0;
     let contentHeight = 0;
@@ -49,8 +49,6 @@ export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
     return {
       width: contentWidth,
       height: contentHeight,
-      x: x.value || 0,
-      y: y.value || 0,
     };
   }
 }
