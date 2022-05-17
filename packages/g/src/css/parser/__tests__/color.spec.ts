@@ -56,6 +56,12 @@ describe('Property Color', () => {
     // invalid color
     result = parseColor('xxx');
     expect(result.toString()).to.be.eqls('rgba(0,0,0,0)');
+
+    result = parseColor(null);
+    expect(result.toString()).to.be.eqls('rgba(0,0,0,0)');
+
+    result = parseColor(undefined);
+    expect(result.toString()).to.be.eqls('rgba(0,0,0,0)');
   });
 
   it('should parse linear gradient color correctly', () => {

@@ -124,5 +124,17 @@ describe('Circle', () => {
     circle.setAttribute('r', undefined);
     circle.style.r = undefined;
     expect(circle.style.r).to.be.eqls(10);
+
+    circle.removeAttribute('r');
+    expect(circle.getAttribute('r')).to.be.null;
+
+    circle.removeAttribute('fill');
+    expect(circle.getAttribute('fill')).to.be.null;
+
+    circle.removeAttribute('stroke');
+    expect(circle.getAttribute('stroke')).to.be.null;
+
+    circle.removeAttribute('opacity');
+    expect(circle.getAttribute('opacity')).to.be.null;
   });
 });

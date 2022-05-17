@@ -29,6 +29,12 @@ describe('Property Dimension', () => {
 
     result = parseLength('0');
     expect(result.toString()).to.be.eqls('0px');
+
+    result = parseLength(null);
+    expect(result.toString()).to.be.eqls('0px');
+
+    result = parseLength(undefined);
+    expect(result.toString()).to.be.eqls('0px');
   });
 
   // it('parse length with percent', () => {

@@ -753,7 +753,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     const metadata = this.getMetadata(name);
 
     let computed: CSSStyleValue = value;
-    if (value === '') {
+    if (value === '' || isNil(value)) {
       value = 'unset';
     }
 

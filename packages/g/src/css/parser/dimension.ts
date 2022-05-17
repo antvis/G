@@ -1,7 +1,7 @@
 import type { IElement } from '../../dom';
 import type { DisplayObject } from '../../display-objects';
 import { AABB } from '../../shapes';
-import { isString, rad2deg, turn2deg } from '../../utils';
+import { isNil, isString, rad2deg, turn2deg } from '../../utils';
 import type { CSSStyleValue } from '../cssom';
 import { UnitType } from '../cssom';
 import { CSSUnitValue } from '../cssom';
@@ -12,6 +12,10 @@ type AngleUnit = 'deg' | 'rad' | 'turn';
 type Unit = LengthUnit | AngleUnit | '';
 
 export function parseDimension(unitRegExp: RegExp, string: string): CSSStyleValue | undefined {
+  if (isNil(string)) {
+    return new CSSUnitValue(0, 'px');
+  }
+
   string = `${string}`.trim().toLowerCase();
 
   if (isFinite(Number(string))) {
