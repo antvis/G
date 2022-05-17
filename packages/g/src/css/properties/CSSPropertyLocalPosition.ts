@@ -32,21 +32,6 @@ export class CSSPropertyLocalPosition
         if (!isNil(cy)) {
           y = cy.value;
         }
-
-        break;
-      case Shape.RECT:
-      case Shape.GROUP:
-      case Shape.IMAGE:
-      case Shape.HTML:
-      case Shape.TEXT:
-      case Shape.MESH:
-        if (!isNil((object as Rect).parsedStyle.x)) {
-          x = (object as Rect).parsedStyle.x.value;
-        }
-
-        if (!isNil((object as Rect).parsedStyle.y)) {
-          y = (object as Rect).parsedStyle.y.value;
-        }
         break;
       case Shape.LINE:
         const { x1, x2, y1, y2 } = (object as Line).parsedStyle;
@@ -55,6 +40,14 @@ export class CSSPropertyLocalPosition
         x = minX;
         y = minY;
         z = 0;
+        break;
+      default:
+        if (!isNil((object as Rect).parsedStyle.x)) {
+          x = (object as Rect).parsedStyle.x.value;
+        }
+        if (!isNil((object as Rect).parsedStyle.y)) {
+          y = (object as Rect).parsedStyle.y.value;
+        }
         break;
     }
 
