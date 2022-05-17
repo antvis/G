@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgl",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A renderer implemented by WebGL1/2",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -37,10 +37,10 @@
   },
   "homepage": "https://github.com/antvis/g#readme",
   "dependencies": {
-    "@antv/g-plugin-device-renderer": "^1.1.0",
-    "@antv/g-plugin-dom-interaction": "^1.1.0",
-    "@antv/g-plugin-html-renderer": "^1.1.0",
-    "@antv/g-plugin-webgl-device": "^1.1.0"
+    "@antv/g-plugin-device-renderer": "^1.1.1",
+    "@antv/g-plugin-dom-interaction": "^1.1.1",
+    "@antv/g-plugin-html-renderer": "^1.1.1",
+    "@antv/g-plugin-webgl-device": "^1.1.1"
   },
   "peerDependencies": {
     "@antv/g": "^5.0.1",
