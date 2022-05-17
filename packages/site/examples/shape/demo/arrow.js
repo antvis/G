@@ -165,7 +165,10 @@ const lineArrowConfig = {
   strokeOpacity: 1,
   startHead: 'default',
   endHead: 'none',
+  startHeadOffset: 0,
+  endHeadOffset: 0,
 };
+
 lineArrowFolder.addColor(lineArrowConfig, 'stroke').onChange((color) => {
   lineArrow.setAttribute('stroke', color);
 });
@@ -225,6 +228,12 @@ lineArrowFolder
       lineArrow.setAttribute('endHead', new MyCustomArrowHead({ style: {} }));
     }
   });
+lineArrowFolder.add(lineArrowConfig, 'startHeadOffset', -20, 20).onChange((startHeadOffset) => {
+  lineArrow.setAttribute('startHeadOffset', startHeadOffset);
+});
+lineArrowFolder.add(lineArrowConfig, 'endHeadOffset', -20, 20).onChange((endHeadOffset) => {
+  lineArrow.setAttribute('endHeadOffset', endHeadOffset);
+});
 lineArrowFolder.open();
 
 const polylineArrowFolder = gui.addFolder('polyline arrow');
@@ -234,6 +243,8 @@ const polylineArrowConfig = {
   strokeOpacity: 1,
   startHead: 'default',
   endHead: 'none',
+  startHeadOffset: 0,
+  endHeadOffset: 0,
 };
 polylineArrowFolder.addColor(polylineArrowConfig, 'stroke').onChange((color) => {
   polylineArrow.setAttribute('stroke', color);
@@ -294,6 +305,14 @@ polylineArrowFolder
       polylineArrow.setAttribute('endHead', new MyCustomArrowHead({ style: {} }));
     }
   });
+polylineArrowFolder
+  .add(polylineArrowConfig, 'startHeadOffset', -20, 20)
+  .onChange((startHeadOffset) => {
+    polylineArrow.setAttribute('startHeadOffset', startHeadOffset);
+  });
+polylineArrowFolder.add(polylineArrowConfig, 'endHeadOffset', -20, 20).onChange((endHeadOffset) => {
+  polylineArrow.setAttribute('endHeadOffset', endHeadOffset);
+});
 
 const pathArrowFolder = gui.addFolder('path arrow');
 const pathArrowConfig = {
@@ -302,6 +321,8 @@ const pathArrowConfig = {
   strokeOpacity: 1,
   startHead: 'default',
   endHead: 'none',
+  startHeadOffset: 0,
+  endHeadOffset: 0,
 };
 pathArrowFolder.addColor(pathArrowConfig, 'stroke').onChange((color) => {
   pathArrow.setAttribute('stroke', color);
@@ -362,3 +383,9 @@ pathArrowFolder
       pathArrow.setAttribute('endHead', new MyCustomArrowHead({ style: {} }));
     }
   });
+pathArrowFolder.add(pathArrowConfig, 'startHeadOffset', -20, 20).onChange((startHeadOffset) => {
+  pathArrow.setAttribute('startHeadOffset', startHeadOffset);
+});
+pathArrowFolder.add(pathArrowConfig, 'endHeadOffset', -20, 20).onChange((endHeadOffset) => {
+  pathArrow.setAttribute('endHeadOffset', endHeadOffset);
+});

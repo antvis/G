@@ -9,6 +9,14 @@ export interface ArrowStyleProps extends BaseStyleProps {
   body?: ArrowBody;
   startHead?: ArrowHead;
   endHead?: ArrowHead;
+  /**
+   * offset along tangent for start head
+   */
+  startHeadOffset?: number;
+  /**
+   * offset along tangent for end head
+   */
+  endHeadOffset?: number;
   stroke?: string;
   lineWidth?: number;
   opacity?: number;
@@ -31,6 +39,10 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
   private body: Line | Path | Polyline;
   private startHead?: DisplayObject;
   private endHead?: DisplayObject;
+  private startHeadPosition: vec3;
+  private startHeadRad: number;
+  private endHeadPosition: vec3;
+  private endHeadRad: number;
 
   constructor(config: DisplayObjectConfig<ArrowStyleProps>) {
     super({
@@ -38,7 +50,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       type: Arrow.tag,
     });
 
-    const { body, startHead, endHead, ...rest } = this.attributes;
+    const { body, startHead, endHead, startHeadOffset, endHeadOffset, ...rest } = this.attributes;
 
     if (!body) {
       throw new Error("Arrow's body is required");
@@ -79,7 +91,8 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       name === 'opacity' ||
       name === 'strokeOpacity' ||
       name === 'stroke' ||
-      name === 'lineWidth'
+      name === 'lineWidth' ||
+      name === 'increasedLineWidthForHitTesting'
     ) {
       this.applyArrowStyle({ [name]: newValue }, [this.body, this.startHead, this.endHead]);
     } else if (name === 'startHead' || name === 'endHead') {
@@ -89,7 +102,8 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
 
       if (newValue) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { body, startHead, endHead, ...rest } = this.attributes;
+        const { body, startHead, endHead, startHeadOffset, endHeadOffset, ...rest } =
+          this.attributes;
         // append new arrow head
 
         this.appendArrowHead(this.getArrowHeadType(newValue as ArrowHead), isStart);
@@ -97,13 +111,22 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       }
     } else if (name === 'body') {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { body, startHead, endHead, ...rest } = this.attributes;
+      const { body, startHead, endHead, startHeadOffset, endHeadOffset, ...rest } = this.attributes;
       this.removeChild(this.body, true);
       // @ts-ignore
       this.body = newValue;
       this.appendChild(this.body);
       this.applyArrowStyle(rest, [this.body]);
+    } else if (name === 'startHeadOffset') {
+      this.moveArrowHeadAlongTangent(newValue as number, true);
+    } else if (name === 'endHeadOffset') {
+      this.moveArrowHeadAlongTangent(newValue as number, false);
     }
+  }
+
+  private getInheritableAttributes(attributes: ArrowStyleProps) {
+    const { body, startHead, endHead, startHeadOffset, endHeadOffset, ...rest } = attributes;
+    return rest;
   }
 
   private getArrowHeadType(head: ArrowHead): ArrowHeadType {
@@ -135,6 +158,11 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     }
 
     this.appendChild(head);
+
+    const offset = isStart ? this.attributes.startHeadOffset : this.attributes.endHeadOffset;
+    if (offset) {
+      this.moveArrowHeadAlongTangent(offset, isStart);
+    }
   }
 
   /**
@@ -176,8 +204,33 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     rad = Math.atan2(y, x);
     position = vec3.fromValues(x2, y2, 0);
 
+    if (isStart) {
+      this.startHeadPosition = position;
+      this.startHeadRad = rad;
+    } else {
+      this.endHeadPosition = position;
+      this.endHeadRad = rad;
+    }
+
     head.setLocalPosition(position);
     head.setLocalEulerAngles((rad * 180) / Math.PI + head.getLocalEulerAngles());
+  }
+
+  private moveArrowHeadAlongTangent(offset: number, isStart: boolean) {
+    const head = isStart ? this.startHead : this.endHead;
+    if (head) {
+      head.setLocalPosition(
+        vec3.sub(
+          vec3.create(),
+          isStart ? this.startHeadPosition : this.endHeadPosition,
+          vec3.fromValues(
+            Math.cos(isStart ? this.startHeadRad : this.endHeadRad) * offset,
+            Math.sin(isStart ? this.startHeadRad : this.endHeadRad) * offset,
+            0,
+          ),
+        ),
+      );
+    }
   }
 
   private destroyArrowHead(isStart: boolean) {
