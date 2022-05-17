@@ -12,7 +12,6 @@ export interface HTMLStyleProps extends BaseStyleProps {
   innerHTML: string | HTMLElement;
   width: number;
   height: number;
-  style?: string;
 }
 
 export interface ParsedHTMLStyleProps extends ParsedBaseStyleProps {
@@ -22,7 +21,6 @@ export interface ParsedHTMLStyleProps extends ParsedBaseStyleProps {
   innerHTML: string | HTMLElement;
   width: CSSUnitValue;
   height: CSSUnitValue;
-  style?: string;
 }
 
 /**
@@ -39,7 +37,6 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
         width: '',
         height: '',
         innerHTML: '',
-        style: '',
         ...style,
       },
       ...rest,

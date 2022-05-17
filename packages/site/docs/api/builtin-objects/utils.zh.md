@@ -108,7 +108,10 @@ getEuler(out: vec3, quat: quat | mat4): vec3
 方法签名如下：
 
 ```js
-convertToPath(object: Circle | Ellipse | Rect | Line | Polyline | Polygon | Path): string;
+convertToPath(
+    object: Circle | Ellipse | Rect | Line | Polyline | Polygon | Path,
+    applyLocalTransformation = true
+): string;
 ```
 
 该方法支持以下基础图形，不支持 [Group](/zh/docs/api/basic/group) 或者其他自定义图形：
@@ -152,3 +155,5 @@ const circlePath = new Path({
 // 不需要再进行以下变换
 // circlePath.translate(100, 0);
 ```
+
+在某些情况下不需要考虑局部坐标系下的变换，可以传入第二个参数为 `false`。

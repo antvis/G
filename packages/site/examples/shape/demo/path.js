@@ -19,8 +19,6 @@ const canvas = new Canvas({
 
 const path1 = new Path({
   style: {
-    x: 0,
-    y: 0,
     path: [
       ['M', 100, 100],
       ['L', 200, 100],

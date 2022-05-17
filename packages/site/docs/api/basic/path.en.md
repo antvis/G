@@ -5,7 +5,7 @@ order: 8
 
 使用 Path 可以定义直线、折线、圆弧、贝塞尔曲线等。路径中包含一组命令与参数，这些命令有不同的语义，具体用法可以参考：https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
 
-如下 [示例](/zh/examples/shape#path) 定义了一条直线：
+如下 [示例](/zh/examples/shape#path) 定义了一条直线，在局部坐标系下从 `[100, 100]` 到 `[200, 200]`：
 
 ```javascript
 const line = new Path({

@@ -217,6 +217,4 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         break;
     }
   }
-
-  // .join(';') + (initialStyle.toString() === 'unset' ? '' : initialStyle.toString()),
 }

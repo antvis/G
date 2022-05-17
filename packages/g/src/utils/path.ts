@@ -6,7 +6,7 @@ import { Cubic as CubicUtil } from '@antv/g-math';
 import type { mat4 } from 'gl-matrix';
 import { vec3 } from 'gl-matrix';
 import type { Circle, Ellipse, Line, Path, Polyline, Polygon, Rect } from '../display-objects';
-import type { PathCommand, ParsedBaseStyleProps } from '../types';
+import type { PathCommand } from '../types';
 import { Shape } from '../types';
 
 function midPoint(a: [number, number], b: [number, number], t: number): [number, number] {
@@ -227,17 +227,23 @@ export function getRotatedCurve(a: PathCommand[], b: PathCommand[]) {
 
 function commandsToPathString(
   commands: PathCommand[],
-  localTransform: mat4,
-  parsedStyle: ParsedBaseStyleProps,
+  object: Circle | Ellipse | Rect | Line | Polyline | Polygon | Path,
+  applyLocalTransform = true,
 ) {
-  const { defX = 0, defY = 0 } = parsedStyle;
-  const transform = localTransform;
+  let transform: mat4;
+  if (applyLocalTransform) {
+    transform = object.getLocalTransform();
+  }
 
+  const { defX = 0, defY = 0 } = object.parsedStyle;
   return commands.reduce((prev, cur) => {
     let path = '';
     if (cur[0] === 'M' || cur[0] === 'L') {
       const p = vec3.fromValues(cur[1] - defX, cur[2] - defY, 0);
-      vec3.transformMat4(p, p, transform);
+
+      if (applyLocalTransform) {
+        vec3.transformMat4(p, p, transform);
+      }
 
       path = `${cur[0]}${p[0]},${p[1]}`;
     } else if (cur[0] === 'Z') {
@@ -246,14 +252,19 @@ function commandsToPathString(
       const p1 = vec3.fromValues(cur[1] - defX, cur[2] - defY, 0);
       const p2 = vec3.fromValues(cur[3] - defX, cur[4] - defY, 0);
       const p3 = vec3.fromValues(cur[5] - defX, cur[6] - defY, 0);
-      vec3.transformMat4(p1, p1, transform);
-      vec3.transformMat4(p2, p2, transform);
-      vec3.transformMat4(p3, p3, transform);
+
+      if (applyLocalTransform) {
+        vec3.transformMat4(p1, p1, transform);
+        vec3.transformMat4(p2, p2, transform);
+        vec3.transformMat4(p3, p3, transform);
+      }
 
       path = `${cur[0]}${p1[0]},${p1[1]},${p2[0]},${p2[1]},${p3[0]},${p3[1]}`;
     } else if (cur[0] === 'A') {
       const c = vec3.fromValues(cur[6] - defX, cur[7] - defY, 0);
-      vec3.transformMat4(c, c, transform);
+      if (applyLocalTransform) {
+        vec3.transformMat4(c, c, transform);
+      }
       path = `${cur[0]}${cur[1]},${cur[2]},${cur[3]},${cur[4]},${cur[5]},${c[0]},${c[1]}`;
     }
 
@@ -336,8 +347,10 @@ function rectToCommands(
  * * anchor
  * * lineWidth
  */
-export function convertToPath(object: Circle | Ellipse | Rect | Line | Polyline | Polygon | Path) {
-  const localTransform = object.getLocalTransform();
+export function convertToPath(
+  object: Circle | Ellipse | Rect | Line | Polyline | Polygon | Path,
+  applyLocalTransform = true,
+) {
   let commands: PathCommand[] = [];
   switch (object.nodeName) {
     case Shape.LINE:
@@ -375,6 +388,6 @@ export function convertToPath(object: Circle | Ellipse | Rect | Line | Polyline 
   }
 
   if (commands.length) {
-    return commandsToPathString(commands, localTransform, object.parsedStyle);
+    return commandsToPathString(commands, object, applyLocalTransform);
   }
 }
