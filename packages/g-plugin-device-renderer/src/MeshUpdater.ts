@@ -1,12 +1,11 @@
-import { GeometryAABBUpdater } from '@antv/g';
+import { GeometryAABBUpdater, Shape } from '@antv/g';
 import { singleton } from 'mana-syringe';
 import type { ParsedMeshStyleProps } from './Mesh';
-import { Mesh } from './Mesh';
 
-@singleton({ token: { token: GeometryAABBUpdater, named: Mesh.tag } })
+@singleton({ token: { token: GeometryAABBUpdater, named: Shape.MESH } })
 export class MeshUpdater implements GeometryAABBUpdater<ParsedMeshStyleProps> {
   update(parsedStyle: ParsedMeshStyleProps) {
-    const { geometry, x, y, z } = parsedStyle;
+    const { geometry } = parsedStyle;
 
     geometry.computeBoundingBox();
     // const minX = Math.min(x1, x2);
@@ -21,9 +20,6 @@ export class MeshUpdater implements GeometryAABBUpdater<ParsedMeshStyleProps> {
       width: 0,
       height: 0,
       depth: 0,
-      x: (x && x.value) || 0,
-      y: (y && y.value) || 0,
-      z: (z && z.value) || 0,
     };
   }
 }

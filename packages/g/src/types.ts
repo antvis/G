@@ -23,6 +23,7 @@ export enum Shape {
   TEXT = 'text',
   PATH = 'path',
   HTML = 'html',
+  MESH = 'mesh',
 }
 
 type ColorType = string | null;

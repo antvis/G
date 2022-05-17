@@ -68,18 +68,21 @@ describe('Path utils', () => {
         y2: 100,
       },
     });
-    expect(convertToPath(line)).to.be.eqls('M0,0L0,100');
+    expect(convertToPath(line)).to.be.eqls('M100,0L100,100');
 
     // translate line
     line.translate(100, 100);
-    expect(convertToPath(line)).to.be.eqls('M0,0L0,100');
+    expect(convertToPath(line)).to.be.eqls('M200,100L200,200');
 
     // scale line
     line.scale(0.5);
-    expect(convertToPath(line)).to.be.eqls('M0,0L0,100');
+    expect(convertToPath(line)).to.be.eqls('M200,100L200,150');
 
     line.scale(2);
-    expect(convertToPath(line)).to.be.eqls('M0,0L0,100');
+    expect(convertToPath(line)).to.be.eqls('M200,100L200,200');
+
+    line.style.transform = 'translate(100, 100)';
+    expect(convertToPath(line)).to.be.eqls('M200,100L200,200');
   });
 
   it('should convert Polyline to Path string correctly', () => {
@@ -104,7 +107,7 @@ describe('Path utils', () => {
         ],
       },
     });
-    expect(convertToPath(polygon)).to.be.eqls('M0,0L0,100L100,100');
+    expect(convertToPath(polygon)).to.be.eqls('M0,0L0,100L100,100Z');
   });
 
   it('should convert Path to Path string correctly', () => {
@@ -114,6 +117,13 @@ describe('Path utils', () => {
       },
     });
     expect(convertToPath(path)).to.be.eqls('M0,0C0,0,0,100,0,100C0,100,100,100,100,100');
+
+    const path2 = new Path({
+      style: {
+        path: 'M0,0L0,100L100,100Z',
+      },
+    });
+    expect(convertToPath(path2)).to.be.eqls('M0,0C0,0,0,100,0,100C0,100,100,100,100,100Z');
   });
 
   // it('should equalizeSegments correctly', () => {

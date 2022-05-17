@@ -28,21 +28,19 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
+/**
+ * show converted path in blue
+ */
 const showConvertedPath = (object) => {
   const pathStr = convertToPath(object);
   const objectPath = new Path({
     style: {
-      path: pathStr,
-      // anchor: object.style.anchor,
-      // transform: object.style.transform,
-      // transformOrigin: object.style.transformOrigin,
+      d: pathStr,
       fill: 'none',
       stroke: 'blue',
       lineWidth: 10,
     },
   });
-  objectPath.setOrigin(object.getOrigin());
-  objectPath.setLocalTransform(object.getLocalTransform());
   canvas.appendChild(objectPath);
 };
 
@@ -134,16 +132,31 @@ showConvertedPath(polyline);
 /**
  * Polyline -> Path
  */
-//  const polygon = new Polygon({
-//   style: {
-//     points: '100,360 100,400, 50,400',
-//     lineWidth: 30,
-//     stroke: 'red',
-//     opacity: 0.5,
-//   },
-// });
-// canvas.appendChild(polyline);
-// showConvertedPath(polyline);
+const polygon = new Polygon({
+  style: {
+    points: '200,360 200,400, 250,400',
+    fill: 'red',
+    transform: 'scale(2)',
+    opacity: 0.5,
+  },
+});
+canvas.appendChild(polygon);
+showConvertedPath(polygon);
+
+/**
+ * Path -> Path
+ */
+const path = new Path({
+  style: {
+    d: 'M301.113,12.011l99.25,179.996l201.864,38.778L461.706,380.808l25.508,203.958l-186.101-87.287L115.01,584.766l25.507-203.958L0,230.785l201.86-38.778L301.113,12.011Z',
+    fill: 'red',
+    opacity: 0.5,
+  },
+});
+path.translate(300, 250);
+path.scale(0.2);
+canvas.appendChild(path);
+showConvertedPath(path);
 
 // stats
 const stats = new Stats();

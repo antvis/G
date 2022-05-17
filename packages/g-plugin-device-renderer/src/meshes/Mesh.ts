@@ -1,6 +1,7 @@
 import { injectable } from 'mana-syringe';
 import type { DisplayObject } from '@antv/g';
-import { Mesh } from '../Mesh';
+import { Shape } from '@antv/g';
+import type { Mesh } from '../Mesh';
 import { Instanced } from './Instanced';
 
 @injectable()
@@ -12,7 +13,7 @@ export class MeshMesh extends Instanced {
       return false;
     }
 
-    if (this.instance.nodeName === Mesh.tag) {
+    if (this.instance.nodeName === Shape.MESH) {
       if (
         this.instance.parsedStyle.material !== object.parsedStyle.material ||
         this.instance.parsedStyle.geometry !== object.parsedStyle.geometry

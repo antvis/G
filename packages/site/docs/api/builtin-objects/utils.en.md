@@ -100,3 +100,55 @@ getEuler(out: vec3, quat: quat | mat4): vec3
 大部分涉及 path 的计算都依赖于 `@antv/util`。
 
 ## convertToPath
+
+[Morph 形变动画](/zh/docs/api/animation#形变动画)是通过对 [Path](/zh/docs/api/basic/path) 的 [path/d](/zh/docs/api/basic/path#d) 属性进行插值实现的。
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qCHaTJUg_aEAAAAAAAAAAAAAARQnAQ">
+
+方法签名如下：
+
+```js
+convertToPath(object: Circle | Ellipse | Rect | Line | Polyline | Polygon | Path): string;
+```
+
+该方法支持以下基础图形，不支持 [Group](/zh/docs/api/basic/group) 或者其他自定义图形：
+
+-   [Circle](/zh/docs/api/basic/circle)
+-   [Ellipse](/zh/docs/api/basic/ellipse)
+-   [Rect](/zh/docs/api/basic/rect)
+-   [Line](/zh/docs/api/basic/line)
+-   [Polyline](/zh/docs/api/basic/polyline)
+-   [Polygon](/zh/docs/api/basic/polygon)
+-   [Path](/zh/docs/api/basic/path)
+
+转换结果为字符串形式的三阶贝塞尔曲线，利用它易于分割的特性，将变换前后的路径规范到相同数目的分段，最后对各个分段中的控制点进行插值实现动画效果。
+
+在转换过程中会考虑输入图形在局部坐标系下的变换（使用 [transform](/zh/docs/api/basic/display-object#transform) 进行的声明式变换或者[命令式的变换方法](/zh/docs/api/basic/display-object#变换操作)），因此生成的路径定义已经包含了变换信息，可以直接基于该路径定义创建 [Path](/zh/docs/api/basic/path)。[示例](/zh/examples/animation#convert-to-path)：
+
+```js
+const circle = new Circle({
+    style: {
+        cx: 100,
+        cy: 100,
+        r: 100,
+        transform: 'translate(20px, 20px)', // 声明式变换
+    },
+});
+// 对源图形应用变换，命令式
+circle.translate(100, 0);
+circle.scale(0.5);
+
+// 转换得到路径，已经包含了全部变换信息
+const pathStr = convertToPath(circle);
+
+// 创建新图形
+const circlePath = new Path({
+    style: {
+        d: pathStr,
+        fill: 'red',
+    },
+});
+
+// 不需要再进行以下变换
+// circlePath.translate(100, 0);
+```

@@ -3,7 +3,6 @@ import type {
   DisplayObject,
   RenderingService,
   RenderingPlugin,
-  ParsedHTMLStyleProps,
   FederatedEvent,
   LinearGradient,
   MutationEvent,

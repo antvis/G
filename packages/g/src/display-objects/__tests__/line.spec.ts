@@ -98,10 +98,10 @@ describe('Line', () => {
       },
     });
 
-    expect(line.getLocalPosition()).eqls(vec3.fromValues(200, 100, 100));
+    expect(line.getLocalPosition()).eqls(vec3.fromValues(200, 100, 0));
 
     line.style.z1 -= 200;
-    expect(line.getLocalPosition()).eqls(vec3.fromValues(200, 100, -100));
+    expect(line.getLocalPosition()).eqls(vec3.fromValues(200, 100, 0));
   });
 
   it('should getPoint at ratio correctly', () => {

@@ -1,25 +1,37 @@
-import { DisplayObject } from '@antv/g';
-import type { ParsedBaseStyleProps, BaseStyleProps, DisplayObjectConfig } from '@antv/g';
+import { DisplayObject, Shape } from '@antv/g';
+import type {
+  ParsedBaseStyleProps,
+  BaseStyleProps,
+  DisplayObjectConfig,
+  CSSUnitValue,
+} from '@antv/g';
 import type { BufferGeometry } from './geometries';
 import type { Material } from './materials';
 
 export interface MeshStyleProps extends BaseStyleProps {
+  x?: number | string;
+  y?: number | string;
+  z?: number | string;
   geometry: BufferGeometry;
   material: Material;
 }
 
 export interface ParsedMeshStyleProps extends ParsedBaseStyleProps {
+  x: CSSUnitValue;
+  y: CSSUnitValue;
+  z: CSSUnitValue;
   geometry: BufferGeometry;
   material: Material;
 }
 
 export class Mesh<GeometryProps = any> extends DisplayObject<GeometryProps & MeshStyleProps> {
-  static tag = 'mesh';
-
   constructor({ style, ...rest }: DisplayObjectConfig<GeometryProps & MeshStyleProps>) {
     super({
-      type: Mesh.tag,
+      type: Shape.MESH,
       style: {
+        x: '',
+        y: '',
+        z: '',
         lineWidth: 0,
         ...style,
       },

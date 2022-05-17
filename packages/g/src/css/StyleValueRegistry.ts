@@ -481,6 +481,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     layoutDependent: true,
     defaultValue: '',
+    alias: ['d'],
     handler: CSSPropertyPath,
   },
   // Polyline & Polygon

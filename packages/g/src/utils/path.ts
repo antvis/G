@@ -3,18 +3,9 @@
  * @see http://thednp.github.io/kute.js/svgCubicMorph.html
  */
 import { Cubic as CubicUtil } from '@antv/g-math';
-import { mat4 } from 'gl-matrix';
+import type { mat4 } from 'gl-matrix';
 import { vec3 } from 'gl-matrix';
-import type {
-  Circle,
-  Ellipse,
-  Line,
-  Path,
-  Polyline,
-  Rect,
-  DisplayObject,
-} from '../display-objects';
-import type { AABB } from '../shapes';
+import type { Circle, Ellipse, Line, Path, Polyline, Polygon, Rect } from '../display-objects';
 import type { PathCommand, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 
@@ -236,18 +227,11 @@ export function getRotatedCurve(a: PathCommand[], b: PathCommand[]) {
 
 function commandsToPathString(
   commands: PathCommand[],
-  anchor: [number, number],
+  localTransform: mat4,
   parsedStyle: ParsedBaseStyleProps,
-  bounds: AABB,
 ) {
   const { defX = 0, defY = 0 } = parsedStyle;
-  const width = (bounds && bounds.halfExtents[0] * 2) || 0;
-  const height = (bounds && bounds.halfExtents[1] * 2) || 0;
-  const transform = mat4.translate(
-    mat4.create(),
-    mat4.identity(mat4.create()),
-    vec3.fromValues((-width * anchor[0]) / 2, (-height * anchor[1]) / 2, 0),
-  );
+  const transform = localTransform;
 
   return commands.reduce((prev, cur) => {
     let path = '';
@@ -303,10 +287,16 @@ function ellipseToCommands(rx: number, ry: number, cx: number, cy: number): Path
   ];
 }
 
-function polygonToCommands(points: [number, number][]): PathCommand[] {
-  return points.map((point, i) => {
+function polygonToCommands(points: [number, number][], closed: boolean): PathCommand[] {
+  const result = points.map((point, i) => {
     return [i === 0 ? 'M' : 'L', point[0], point[1]];
   });
+
+  if (closed) {
+    result.push(['Z']);
+  }
+
+  return result as PathCommand[];
 }
 
 function rectToCommands(
@@ -346,8 +336,8 @@ function rectToCommands(
  * * anchor
  * * lineWidth
  */
-export function convertToPath(object: DisplayObject) {
-  const anchor = object.style.anchor;
+export function convertToPath(object: Circle | Ellipse | Rect | Line | Polyline | Polygon | Path) {
+  const localTransform = object.getLocalTransform();
   let commands: PathCommand[] = [];
   switch (object.nodeName) {
     case Shape.LINE:
@@ -367,19 +357,24 @@ export function convertToPath(object: DisplayObject) {
     case Shape.POLYLINE:
     case Shape.POLYGON:
       const { points } = (object as Polyline).parsedStyle;
-      commands = polygonToCommands(points.points);
+      commands = polygonToCommands(points.points, object.nodeName === Shape.POLYGON);
       break;
     case Shape.RECT:
       const { width, height, x, y, radius } = (object as Rect).parsedStyle;
       commands = rectToCommands(width.value, height.value, x.value, y.value, radius?.value || 0);
       break;
     case Shape.PATH:
-      commands = (object as Path).parsedStyle.path.curve;
+      const { curve, zCommandIndexes } = (object as Path).parsedStyle.path;
+
+      commands = [...curve];
+      zCommandIndexes.forEach((zIndex, index) => {
+        commands.splice(zIndex + index, 1, ['Z']);
+      });
+
       break;
   }
 
   if (commands.length) {
-    const bounds = object.getGeometryBounds();
-    return commandsToPathString(commands, anchor, object.parsedStyle, bounds);
+    return commandsToPathString(commands, localTransform, object.parsedStyle);
   }
 }

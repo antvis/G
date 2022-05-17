@@ -89,7 +89,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
 
       if (newValue) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { body, startHead, endHead, x, y, ...rest } = this.attributes;
+        const { body, startHead, endHead, ...rest } = this.attributes;
         // append new arrow head
 
         this.appendArrowHead(this.getArrowHeadType(newValue as ArrowHead), isStart);
@@ -97,7 +97,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       }
     } else if (name === 'body') {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { body, startHead, endHead, x, y, ...rest } = this.attributes;
+      const { body, startHead, endHead, ...rest } = this.attributes;
       this.removeChild(this.body, true);
       // @ts-ignore
       this.body = newValue;

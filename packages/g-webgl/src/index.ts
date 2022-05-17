@@ -3,6 +3,7 @@ import { AbstractRenderer } from '@antv/g';
 import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import * as WebGLDevice from '@antv/g-plugin-webgl-device';
+import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export { DomInteraction, DeviceRenderer, WebGLDevice };
@@ -29,5 +30,6 @@ export class Renderer extends AbstractRenderer {
     );
     this.registerPlugin(new DeviceRenderer.Plugin());
     this.registerPlugin(new DomInteraction.Plugin());
+    this.registerPlugin(new HTMLRenderer.Plugin());
   }
 }

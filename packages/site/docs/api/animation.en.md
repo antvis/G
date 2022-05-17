@@ -876,7 +876,7 @@ path.animate([{ path: path1 }, { path: path2 }], {
 
 ## 基础图形变换
 
-由于只能对 path 属性进行变换，对于其他基础图形例如 Circle、Rect、Line，我们提供了工具方法 `convertToPath` 进行转换：
+由于只能对 path 属性进行变换，对于其他基础图形例如 Circle、Rect、Line，我们提供了工具方法 [convertToPath](/zh/docs/api/builtin-objects/utils#converttopath) 进行转换：
 
 ```js
 import { Circle, convertToPath } from '@antv/g';

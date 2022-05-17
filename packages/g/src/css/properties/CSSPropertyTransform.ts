@@ -3,7 +3,7 @@ import { Opx, Odeg } from '../cssom';
 import type { DisplayObject } from '../../display-objects';
 import type { CSSProperty } from '../CSSProperty';
 import { parseTransform, mergeTransforms } from '../parser';
-import { ParsedBaseStyleProps } from '../..';
+import type { ParsedBaseStyleProps } from '../..';
 
 /**
  * @see /zh/docs/api/animation#支持变换的属性

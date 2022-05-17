@@ -101,10 +101,14 @@ canvas.appendChild(tooltip);
 rect.addEventListener('mousemove', (e) => {
   tooltip.setPosition(e.x, e.y);
   tooltip.style.visibility = 'visible';
+
+  console.log('move', e.target);
 });
-rect.addEventListener('mouseleave', () => {
+rect.addEventListener('mouseleave', (e) => {
   tooltip.setPosition(0, 0);
   tooltip.style.visibility = 'hidden';
+
+  console.log('leave', e.target);
 });
 
 // stats
