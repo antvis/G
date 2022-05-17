@@ -17,8 +17,9 @@ import type {
 } from '@antv/g';
 import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
-import { BufferGeometry } from '../geometries';
+import { BufferGeometry, GeometryEvent } from '../geometries';
 import type { Material } from '../materials';
+import { MaterialEvent } from '../materials';
 import { ShaderMaterial } from '../materials';
 import type { BindingLayoutSamplerDescriptor, Device, InputState } from '../platform';
 import {
@@ -174,8 +175,29 @@ export abstract class Instanced {
     this.geometry.meshes = this.objects;
     this.material.meshes = this.objects;
 
+    this.observeGeometryChanged();
+    this.observeMaterialChanged();
+
     this.inited = true;
     this.renderer.afterInitMesh(this);
+  }
+
+  observeGeometryChanged() {
+    this.geometry.on(GeometryEvent.CHANGED, () => {
+      this.geometry.meshes.forEach((mesh) => {
+        mesh.renderable.dirty = true;
+      });
+      this.renderingService.dirtify();
+    });
+  }
+
+  observeMaterialChanged() {
+    this.material.on(MaterialEvent.CHANGED, () => {
+      this.material.meshes.forEach((mesh) => {
+        mesh.renderable.dirty = true;
+      });
+      this.renderingService.dirtify();
+    });
   }
 
   /**

@@ -33,6 +33,7 @@ export class MeshMesh extends Instanced {
   createMaterial(objects: DisplayObject[]): void {
     const { material } = (this.instance as Mesh).parsedStyle;
     this.material = material;
+    this.observeMaterialChanged();
   }
 
   createGeometry(objects: DisplayObject[]): void {
@@ -43,5 +44,8 @@ export class MeshMesh extends Instanced {
     super.createGeometry(objects);
 
     this.geometry.build(objects as Mesh[]);
+
+    // TODO: clear dirty listener
+    this.observeGeometryChanged();
   }
 }

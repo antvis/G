@@ -1,5 +1,4 @@
 import { AABB } from '@antv/g';
-import { ElementEvent, MutationEvent } from '@antv/g';
 import { EventEmitter } from 'eventemitter3';
 import type { Mesh } from '../Mesh';
 import type { Buffer, Device, InputLayoutDescriptor, VertexBufferFrequency } from '../platform';
@@ -46,6 +45,10 @@ export interface VertexBufferToUpdateDescriptor {
   bufferIndex: number;
   bufferByteOffset?: number;
   data: ArrayBufferView;
+}
+
+export enum GeometryEvent {
+  CHANGED = 'changed',
 }
 
 /**
@@ -188,24 +191,7 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
       // this.vertices[bufferIndex] = data;
     }
 
-    // trigger re-render
-    this.meshes.forEach((mesh) => {
-      // mesh.emit(ElementEvent.ATTR_MODIFIED, {
-      //   attributeName: 'geometry',
-      // });
-      mesh.dispatchEvent(
-        new MutationEvent(
-          ElementEvent.ATTR_MODIFIED,
-          mesh,
-          null,
-          null,
-          'geometry',
-          MutationEvent.MODIFICATION,
-          null,
-          null,
-        ),
-      );
-    });
+    this.emit(GeometryEvent.CHANGED);
   }
 
   updateIndices(indices: IndicesArray, offset: number = 0) {
