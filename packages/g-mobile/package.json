@@ -46,5 +46,5 @@
   "scripts": {
     "umd": "webpack"
   },
-  "gitHead": "98a28060c701e8c9c6c23fca672534677c4401b3"
+  "gitHead": "ffbd006ec52c899e53e84671ca160d49dd63f3e9"
 }
