@@ -50,6 +50,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       type: Arrow.tag,
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { body, startHead, endHead, startHeadOffset, endHeadOffset, ...rest } = this.attributes;
 
     if (!body) {
@@ -122,11 +123,6 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     } else if (name === 'endHeadOffset') {
       this.moveArrowHeadAlongTangent(newValue as number, false);
     }
-  }
-
-  private getInheritableAttributes(attributes: ArrowStyleProps) {
-    const { body, startHead, endHead, startHeadOffset, endHeadOffset, ...rest } = attributes;
-    return rest;
   }
 
   private getArrowHeadType(head: ArrowHead): ArrowHeadType {

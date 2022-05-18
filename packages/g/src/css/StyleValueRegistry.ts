@@ -29,6 +29,7 @@ import {
   CSSPropertyPoints,
   CSSPropertyText,
   CSSPropertyTextTransform,
+  CSSPropertyRadius,
 } from './properties';
 import type { CSSProperty } from './CSSProperty';
 import { formatAttribute, isNil } from '../utils';
@@ -436,7 +437,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     layoutDependent: true,
     defaultValue: '0',
-    handler: CSSPropertyLengthOrPercentage,
+    handler: CSSPropertyRadius,
   },
   // Line
   {

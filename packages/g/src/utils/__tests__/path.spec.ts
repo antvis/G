@@ -59,6 +59,26 @@ describe('Path utils', () => {
     expect(convertToPath(rect)).to.be.eqls(
       'M0,10A10,10,0,0,1,10,0L90,0A10,10,0,0,1,100,10L100,90A10,10,0,0,1,90,100L10,100A10,10,0,0,1,0,90Z',
     );
+
+    rect.style.radius = '0 10 10 10';
+    expect(convertToPath(rect)).to.be.eqls(
+      'M0,0L90,0A10,10,0,0,1,100,10L100,90A10,10,0,0,1,90,100L10,100A10,10,0,0,1,0,90Z',
+    );
+
+    rect.style.radius = '10 0 10 10';
+    expect(convertToPath(rect)).to.be.eqls(
+      'M0,10A10,10,0,0,1,10,0L100,0L100,90A10,10,0,0,1,90,100L10,100A10,10,0,0,1,0,90Z',
+    );
+
+    rect.style.radius = '10 10 0 10';
+    expect(convertToPath(rect)).to.be.eqls(
+      'M0,10A10,10,0,0,1,10,0L90,0A10,10,0,0,1,100,10L100,100L10,100A10,10,0,0,1,0,90Z',
+    );
+
+    rect.style.radius = '10 10 10 0';
+    expect(convertToPath(rect)).to.be.eqls(
+      'M0,10A10,10,0,0,1,10,0L90,0A10,10,0,0,1,100,10L100,90A10,10,0,0,1,90,100L0,100Z',
+    );
   });
 
   it('should convert Line to Path string correctly', () => {

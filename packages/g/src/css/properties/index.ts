@@ -16,3 +16,4 @@ export * from './CSSPropertyPoints';
 export * from './CSSPropertyClipPath';
 export * from './CSSPropertyText';
 export * from './CSSPropertyTextTransform';
+export * from './CSSPropertyRadius';

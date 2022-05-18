@@ -27,7 +27,7 @@ const rect = new Rect({
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
-    radius: 8,
+    radius: [0, 4, 8, 16],
     cursor: 'pointer',
   },
 });
@@ -74,7 +74,10 @@ const rectConfig = {
   lineWidth: 4,
   lineDash: 0,
   lineDashOffset: 0,
-  radius: 8,
+  radiusTL: 0,
+  radiusTR: 4,
+  radiusBR: 8,
+  radiusBL: 16,
   fillOpacity: 1,
   strokeOpacity: 1,
   increasedLineWidthForHitTesting: 0,
@@ -98,8 +101,17 @@ rectFolder.addColor(rectConfig, 'fill').onChange((color) => {
 rectFolder.addColor(rectConfig, 'stroke').onChange((color) => {
   rect.style.stroke = color;
 });
-rectFolder.add(rectConfig, 'radius', 0, 20).onChange((radius) => {
-  rect.style.radius = radius;
+rectFolder.add(rectConfig, 'radiusTL', 0, 20).onChange((radiusTL) => {
+  rect.style.radius = [radiusTL, rectConfig.radiusTR, rectConfig.radiusBR, rectConfig.radiusBL];
+});
+rectFolder.add(rectConfig, 'radiusTR', 0, 20).onChange((radiusTR) => {
+  rect.style.radius = [rectConfig.radiusTL, radiusTR, rectConfig.radiusBR, rectConfig.radiusBL];
+});
+rectFolder.add(rectConfig, 'radiusBR', 0, 20).onChange((radiusBR) => {
+  rect.style.radius = [rectConfig.radiusTL, rectConfig.radiusTR, radiusBR, rectConfig.radiusBL];
+});
+rectFolder.add(rectConfig, 'radiusBL', 0, 20).onChange((radiusBL) => {
+  rect.style.radius = [rectConfig.radiusTL, rectConfig.radiusTR, rectConfig.radiusBR, radiusBL];
 });
 rectFolder.add(rectConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
   rect.style.lineWidth = lineWidth;

@@ -39,6 +39,7 @@ import {
   CSSPropertyTransformOrigin,
   CSSPropertyZIndex,
   CSSPropertyShadowBlur,
+  CSSPropertyRadius,
   DefaultStyleValueRegistry,
 } from './css';
 import {
@@ -127,6 +128,7 @@ export const containerModule = Module((register) => {
   register(CSSPropertyClipPath);
   register(CSSPropertyText);
   register(CSSPropertyTextTransform);
+  register(CSSPropertyRadius);
 
   // bind layout engine
   register(LayoutEngine);

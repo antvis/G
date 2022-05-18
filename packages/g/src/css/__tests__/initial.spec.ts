@@ -458,7 +458,10 @@ describe('StyleValueRegistry initialization', () => {
     // expect(parsedStyle.z.equals(CSS.px(0))).to.be.true;
     expect(parsedStyle.width.equals(CSS.px(200))).to.be.true;
     expect(parsedStyle.height.equals(CSS.px(100))).to.be.true;
-    expect(parsedStyle.radius.equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.radius[0].equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.radius[1].equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.radius[2].equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.radius[3].equals(CSS.px(0))).to.be.true;
     expect(parsedStyle.lineWidth.equals(CSS.px(0))).to.be.true;
     expect(parsedStyle.fill instanceof CSSRGB).to.be.true;
     expect((parsedStyle.fill as CSSRGB).r).to.be.eqls(0);

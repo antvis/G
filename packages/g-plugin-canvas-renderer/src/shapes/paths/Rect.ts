@@ -1,17 +1,16 @@
 import type { ParsedRectStyleProps } from '@antv/g';
-import { parseRadius } from '../../utils/parse';
 
 export function generatePath(context: CanvasRenderingContext2D, parsedStyle: ParsedRectStyleProps) {
   const { radius, width, height } = parsedStyle;
 
   const w = width.value;
   const h = height.value;
-  const r = (radius && radius.value) || 0;
+  const hasRadius = radius && radius.some((r) => r.value !== 0);
 
-  if (r === 0) {
+  if (!hasRadius) {
     context.rect(0, 0, w, h);
   } else {
-    const [r1, r2, r3, r4] = parseRadius(r);
+    const [r1, r2, r3, r4] = radius.map((r) => r.value);
     context.moveTo(r1, 0);
     context.lineTo(w - r2, 0);
     if (r2 !== 0) {

@@ -20,6 +20,7 @@ export function isPointInPath(
   const isClipPath = !!clipPathTargets?.length;
   const hasFill = fill && !(fill as CSSRGB).isNone;
   const hasStroke = stroke && !(stroke as CSSRGB).isNone;
+  const hasRadius = radius && radius.some((r) => r.value !== 0);
 
   const { unit: widthUnit, value: widthValue } = parsedWidth;
   const { unit: heightUnit, value: heightValue } = parsedHeight;
@@ -35,7 +36,7 @@ export function isPointInPath(
   const lineWidthForHitTesting = lineWidth.value + increasedLineWidthForHitTesting.value;
 
   // 无圆角时的策略
-  if (!radius) {
+  if (!hasRadius) {
     const halfWidth = lineWidthForHitTesting / 2;
     // 同时填充和带有边框
     if ((hasFill && hasStroke) || isClipPath) {
@@ -63,7 +64,7 @@ export function isPointInPath(
         0,
         width,
         height,
-        radius.value,
+        radius.map((r) => r.value) as [number, number, number, number],
         lineWidthForHitTesting,
         position.x,
         position.y,
@@ -85,37 +86,20 @@ function inRectWithRadius(
   minY: number,
   width: number,
   height: number,
-  radius: number,
+  radiusArray: [number, number, number, number],
   lineWidth: number,
   x: number,
   y: number,
 ) {
+  const [tlr, trr, brr, blr] = radiusArray;
   return (
-    inLine(minX + radius, minY, minX + width - radius, minY, lineWidth, x, y) ||
-    inLine(minX + width, minY + radius, minX + width, minY + height - radius, lineWidth, x, y) ||
-    inLine(minX + width - radius, minY + height, minX + radius, minY + height, lineWidth, x, y) ||
-    inLine(minX, minY + height - radius, minX, minY + radius, lineWidth, x, y) ||
-    inArc(
-      minX + width - radius,
-      minY + radius,
-      radius,
-      1.5 * Math.PI,
-      2 * Math.PI,
-      lineWidth,
-      x,
-      y,
-    ) ||
-    inArc(
-      minX + width - radius,
-      minY + height - radius,
-      radius,
-      0,
-      0.5 * Math.PI,
-      lineWidth,
-      x,
-      y,
-    ) ||
-    inArc(minX + radius, minY + height - radius, radius, 0.5 * Math.PI, Math.PI, lineWidth, x, y) ||
-    inArc(minX + radius, minY + radius, radius, Math.PI, 1.5 * Math.PI, lineWidth, x, y)
+    inLine(minX + tlr, minY, minX + width - trr, minY, lineWidth, x, y) ||
+    inLine(minX + width, minY + trr, minX + width, minY + height - brr, lineWidth, x, y) ||
+    inLine(minX + width - brr, minY + height, minX + blr, minY + height, lineWidth, x, y) ||
+    inLine(minX, minY + height - blr, minX, minY + tlr, lineWidth, x, y) ||
+    inArc(minX + width - trr, minY + trr, trr, 1.5 * Math.PI, 2 * Math.PI, lineWidth, x, y) ||
+    inArc(minX + width - brr, minY + height - brr, brr, 0, 0.5 * Math.PI, lineWidth, x, y) ||
+    inArc(minX + blr, minY + height - blr, blr, 0.5 * Math.PI, Math.PI, lineWidth, x, y) ||
+    inArc(minX + tlr, minY + tlr, tlr, Math.PI, 1.5 * Math.PI, lineWidth, x, y)
   );
 }
