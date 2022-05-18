@@ -33,7 +33,8 @@ import {
 import type { CSSProperty } from './CSSProperty';
 import { formatAttribute, isNil } from '../utils';
 import { AABB } from '../shapes';
-import { StyleValueRegistry, PropertySyntax, PropertyMetadata } from './interfaces';
+import type { PropertyMetadata } from './interfaces';
+import { StyleValueRegistry, PropertySyntax } from './interfaces';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
 export interface PropertyParseOptions {
@@ -41,7 +42,7 @@ export interface PropertyParseOptions {
   skipParse: boolean;
 }
 
-const PROPERTY_HANDLERS = {
+export const PROPERTY_HANDLERS = {
   [PropertySyntax.COORDINATE]: CSSPropertyLocalPosition,
   [PropertySyntax.COLOR]: CSSPropertyColor,
   [PropertySyntax.PAINT]: CSSPropertyColor,
@@ -356,7 +357,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
      * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/width
      */
     keywords: ['auto', 'fit-content', 'min-content', 'max-content'],
-    defaultValue: '0',
+    defaultValue: 'auto',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
@@ -367,7 +368,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
      * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/height
      */
     keywords: ['auto', 'fit-content', 'min-content', 'max-content'],
-    defaultValue: '0',
+    defaultValue: 'auto',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
@@ -590,6 +591,10 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     [metadata.name, ...(metadata.alias || [])].forEach((name) => {
       this.cache[name] = metadata;
     });
+  }
+
+  unregisterMetadata(name: string) {
+    delete this.cache[name];
   }
 
   getMetadata(name: string) {

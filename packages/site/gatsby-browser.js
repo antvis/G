@@ -44,14 +44,14 @@ const tokenElement1 = document.createElement('meta');
 tokenElement1.httpEquiv = 'origin-trial';
 tokenElement1.content =
   // https://localhost:8000
-  'AkIL+/THBoi1QEsWbX5SOuMpL6+KGAXKrZE5Bz6yHTuijzvKz2MznuLqE+MH4YSqRi/v1fDK/6JyFzgibTTeNAsAAABJeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjgwMDAiLCJmZWF0dXJlIjoiV2ViR1BVIiwiZXhwaXJ5IjoxNjUyODMxOTk5fQ==';
+  'AskBFhwWdwJJX7fGMNV72Pzx17Ie+rnFLgcF3UiQpX+j+eb7P23/I84lXdRPBPE5KOkTnyil7Rstt1Ucd0EmhAgAAABJeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjgwMDAiLCJmZWF0dXJlIjoiV2ViR1BVIiwiZXhwaXJ5IjoxNjYzNzE4Mzk5fQ==';
 document.head.appendChild(tokenElement1);
 
 const tokenElement2 = document.createElement('meta');
 tokenElement2.httpEquiv = 'origin-trial';
 tokenElement2.content =
   // https://g-next.antv.vision
-  'Amsjy75wNj7v/xw4rTYvcjRgIQ6pnKefOdDfTPW4HwfoL56EI30QWNZBnfOu+fBlb65rnSEhyQmxfdc3KF3wIAYAAABleyJvcmlnaW4iOiJodHRwczovL2ctbmV4dC5hbnR2LnZpc2lvbjo0NDMiLCJmZWF0dXJlIjoiV2ViR1BVIiwiZXhwaXJ5IjoxNjUyODMxOTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZX0=';
+  'AtkT/ddy5T9TSuIvZIIt7os30Ic3WI9YWIkksJTuNMn0Sa7n7CJzr2iSwwQVxFEduHqO0jnjb+7q8+KPGMVuHgYAAABleyJvcmlnaW4iOiJodHRwczovL2ctbmV4dC5hbnR2LnZpc2lvbjo0NDMiLCJmZWF0dXJlIjoiV2ViR1BVIiwiZXhwaXJ5IjoxNjYzNzE4Mzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZX0=';
 document.head.appendChild(tokenElement2);
 
 const tokenElement3 = document.createElement('meta');

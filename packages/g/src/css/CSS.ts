@@ -1,6 +1,7 @@
 import { GlobalContainer } from 'mana-syringe';
 import { CSSUnitValue } from './cssom';
-import { StyleValueRegistry, PropertySyntax } from './interfaces';
+import type { PropertySyntax } from './interfaces';
+import { StyleValueRegistry } from './interfaces';
 import type { LayoutDefinitionCtor } from './layout';
 import { LayoutRegistry } from './layout';
 
@@ -12,11 +13,12 @@ export interface PropertyDefinition {
   /**
    * representing the expected syntax of the defined property. Defaults to "*".
    */
-  syntax?: PropertySyntax;
+  syntax: PropertySyntax;
   /**
    * A boolean value defining whether the defined property should be inherited (true), or not (false). Defaults to false.
    */
-  inherits: boolean;
+  inherits?: boolean;
+  interpolable?: boolean;
   initialValue?: string;
 }
 
@@ -109,12 +111,13 @@ export const CSS = {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CSS/RegisterProperty
    */
   registerProperty: (definition: PropertyDefinition) => {
-    const { name, inherits, initialValue, syntax } = definition;
+    const { name, inherits, interpolable, initialValue, syntax } = definition;
 
     const registry = GlobalContainer.get<StyleValueRegistry>(StyleValueRegistry);
     registry.registerMetadata({
       name,
-      interpolable: inherits,
+      inherited: inherits,
+      interpolable,
       defaultValue: initialValue,
       syntax,
     });

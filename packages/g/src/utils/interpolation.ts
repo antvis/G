@@ -2,6 +2,7 @@ import { GlobalContainer } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects';
 import type { CSSProperty, Interpolatable } from '../css';
 import { StyleValueRegistry } from '../css/interfaces';
+import { PROPERTY_HANDLERS } from '../css/StyleValueRegistry';
 import type { AnimationEffectTiming } from '../dom';
 import type { IElement } from '../dom/interfaces';
 import { parseEasingFunction } from './animation';
@@ -152,11 +153,14 @@ function propertyInterpolation(
   let parsedLeft = left;
   let parsedRight = right;
 
-  const registry = GlobalContainer.get(StyleValueRegistry);
+  const registry = GlobalContainer.get<StyleValueRegistry>(StyleValueRegistry);
   const metadata = registry.getMetadata(property);
 
-  if (metadata && metadata.handler && metadata.interpolable) {
-    const propertyHandler = GlobalContainer.get(metadata.handler) as CSSProperty<any, any>;
+  if (metadata && metadata.syntax && metadata.interpolable && PROPERTY_HANDLERS[metadata.syntax]) {
+    const propertyHandler = GlobalContainer.get(PROPERTY_HANDLERS[metadata.syntax]) as CSSProperty<
+      any,
+      any
+    >;
 
     if (propertyHandler) {
       if (propertyHandler.parser) {

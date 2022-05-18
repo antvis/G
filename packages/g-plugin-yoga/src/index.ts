@@ -1,12 +1,5 @@
 import type { RendererPlugin } from '@antv/g';
-// import {
-//   addPropertiesHandler,
-//   parseNumber,
-//   parseLengthOrPercent,
-//   parseLengthOrPercentList,
-//   clampedMergeNumbers,
-//   mergeDimensions,
-// } from '@antv/g';
+import { CSS, PropertySyntax } from '@antv/g';
 import type { Syringe } from 'mana-syringe';
 import { Module } from 'mana-syringe';
 import { YogaPlugin } from './YogaPlugin';
@@ -15,49 +8,6 @@ import { YogaPluginOptions } from './tokens';
 const containerModule = Module((register) => {
   register(YogaPlugin);
 });
-
-// addPropertiesHandler<number, number>(
-//   [
-//     'top',
-//     'right',
-//     'bottom',
-//     'left',
-//     'marginAll',
-//     'marginTop',
-//     'marginRight',
-//     'marginBottom',
-//     'marginLeft',
-//     'paddingAll',
-//     'paddingTop',
-//     'paddingRight',
-//     'paddingBottom',
-//     'paddingLeft',
-//     'minWidth',
-//     'maxWidth',
-//     'minHeight',
-//     'maxHeight',
-//   ],
-//   parseLengthOrPercent,
-//   // @ts-ignore
-//   mergeDimensions,
-//   undefined,
-// );
-// addPropertiesHandler<number[], number[]>(
-//   ['margin', 'padding'],
-//   // @ts-ignore
-//   parseLengthOrPercentList,
-//   // @ts-ignore
-//   // mergeNumberLists,
-//   undefined,
-//   undefined,
-// );
-
-// addPropertiesHandler<number, number>(
-//   ['flexGrow', 'flexShrink', 'flexBasis'],
-//   parseNumber,
-//   clampedMergeNumbers(0, Infinity),
-//   undefined,
-// );
 
 export class Plugin implements RendererPlugin {
   name = 'yoga';
@@ -71,9 +21,60 @@ export class Plugin implements RendererPlugin {
       },
     });
     container.load(containerModule, true);
+
+    [
+      'top',
+      'right',
+      'bottom',
+      'left',
+      'marginAll',
+      'marginTop',
+      'marginRight',
+      'marginBottom',
+      'marginLeft',
+      'paddingAll',
+      'paddingTop',
+      'paddingRight',
+      'paddingBottom',
+      'paddingLeft',
+      'minWidth',
+      'maxWidth',
+      'minHeight',
+      'maxHeight',
+    ].forEach((name) => {
+      CSS.registerProperty({
+        name,
+        inherits: false,
+        initialValue: '0',
+        interpolable: true,
+        syntax: PropertySyntax.LENGTH_PERCENTAGE,
+      });
+    });
+
+    ['margin', 'padding'].forEach((name) => {
+      CSS.registerProperty({
+        name,
+        inherits: false,
+        initialValue: '0',
+        interpolable: true,
+        syntax: PropertySyntax.LENGTH_PERCENTAGE_14,
+      });
+    });
+
+    ['flexGrow', 'flexShrink', 'flexBasis'].forEach((name) => {
+      CSS.registerProperty({
+        name,
+        inherits: false,
+        initialValue: '0',
+        interpolable: true,
+        syntax: PropertySyntax.SHADOW_BLUR,
+      });
+    });
   }
   destroy(container: Syringe.Container): void {
     container.remove(YogaPluginOptions);
     container.unload(containerModule);
+
+    // TODO: unregister CSS properties
   }
 }

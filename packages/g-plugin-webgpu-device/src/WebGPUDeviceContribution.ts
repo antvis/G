@@ -42,6 +42,5 @@ export class WebGPUDeviceContribution implements DeviceContribution {
       await init('/glsl_wgsl_compiler_bg.wasm');
     } catch (e) {}
     return new Device_WebGPU(adapter, device, $canvas, context, glsl_compile);
-    // return new Device_WebGPU(adapter, device, $canvas, context, () => {});
   }
 }

@@ -20,7 +20,8 @@ export function render(offscreenCanvas, devicePixelRatio) {
   const renderer = new WebGLRenderer({
     targets: ['webgl1'], // webgl2 seems not support transferable
   });
-  renderer.unregisterPlugin('dom-interaction');
+  const domInteractionPlugin = renderer.getPlugin('dom-interaction');
+  renderer.unregisterPlugin(domInteractionPlugin);
 
   // create a canvas
   canvas = new Canvas({

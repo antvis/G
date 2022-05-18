@@ -125,4 +125,6 @@ export const StyleValueRegistry = Syringe.defineToken('StyleValueRegistry');
 export interface StyleValueRegistry {
   recalc: (displayObject: DisplayObject) => void;
   registerMetadata: (metadata: PropertyMetadata) => void;
+  unregisterMetadata: (name: string) => void;
+  getMetadata: (name: string) => PropertyMetadata;
 }

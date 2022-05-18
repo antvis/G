@@ -95,7 +95,7 @@ const App = function MultiWorld() {
       const camera2 = canvas2.getCamera();
       camera2.setPosition(150, 20, 500).setFocalPoint(150, 250, 0);
 
-      const map2 = device2.loadTexture(
+      const map2 = plugin2.loadTexture(
         'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
       );
 
