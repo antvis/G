@@ -174,6 +174,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
     const handleAttributeChanged = (e: MutationEvent) => {
       const object = e.target as DisplayObject;
+
+      // @see https://github.com/antvis/g/issues/994
+      // @ts-ignore
+      if (!object.elementSVG) {
+        return;
+      }
+
       const { attrName } = e;
 
       if (attrName === 'zIndex') {

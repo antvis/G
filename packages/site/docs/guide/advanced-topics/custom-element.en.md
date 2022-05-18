@@ -5,21 +5,28 @@ order: 3
 
 我们提供了一些[基础图形](/zh/docs/api/basic/display-object)，例如 [Circle](/zh/docs/api/basic/circle)、[Path](/zh/docs/api/basic/path) 等等。通过[场景图](/zh/docs/guide/diving-deeper/scenegraph)能力也能构建它们之间的层次关系。但当场景层次嵌套较深又需要复用时，我们便需要一种自定义组件机制，能把这些基础图形封装成高级图形。
 
-类似的问题在 Web Components 中是通过 [Custom Element](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components/Using_custom_elements) 实现的。
+类似的问题在 Web Components 中是通过 [Custom Element](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components/Using_custom_elements) 实现的。在[官方示例](https://github.com/mdn/web-components-examples/blob/main/life-cycle-callbacks/main.js)中我们能看到一个自定义图形的注册过程按照如下步骤进行：
+
+-   在构造函数中创建内部 DOM 结构
+-   在 [connectedCallback()](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components/Using_custom_elements#%E4%BD%BF%E7%94%A8%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0) 即元素首次插入文档后，设置样式
+-   在 [attributeChangedCallback()](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components/Using_custom_elements#%E4%BD%BF%E7%94%A8%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0) 中处理属性更新，重新设置样式
+-   使用 [customElements.define()](https://developer.mozilla.org/zh-CN/docs/Web/API/CustomElementRegistry/define) 完成自定义图形的注册
+
+我们沿用了这样的设计。
 
 在本文中我们将介绍自定义图形的用法，实现一个简单的箭头，其中包含以下步骤：
 
-- 设计自定义属性
-- 定义场景图
-- 使用自定义图形
-- 处理属性更新
+-   设计自定义属性
+-   定义场景图
+-   使用自定义图形
+-   处理属性更新
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9Xs4SKUOAxwAAAAAAAAAAAAAARQnAQ)
 
 过程中会涉及[场景图](/zh/docs/guide/diving-deeper/scenegraph)、[动画系统](/zh/docs/api/animation)、[事件系统](/zh/docs/api/event)等。在开始前我们推荐先阅读以上各个系统的文档。
 
-- [完整 DEMO](/zh/examples/shape#arrow)
-- [源码](https://github.com/antvis/g/blob/dev-inversify/packages/g-components/src/Arrow.ts)
+-   [完整 DEMO](/zh/examples/shape#arrow)
+-   [源码](https://github.com/antvis/g/blob/next/packages/g-components/src/Arrow.ts)
 
 # 问题背景
 
@@ -37,22 +44,22 @@ export class Arrow extends CustomElement<ArrowStyleProps> {}
 
 然后可以定义自定义图形的属性，这里我们给箭头提供了以下自定义属性：
 
-- body 躯干部分只能接受 [Line](/zh/docs/api/basic/line) [Path](/zh/docs/api/basic/path) [Polyline](/zh/docs/api/basic/polyline)
-- start/endHead 端点部分可以是任何基础图形，传入布尔值时开启/关闭默认内置端点
-- stroke/lineWidth/opacity 等常规绘图属性
+-   body 躯干部分只能接受 [Line](/zh/docs/api/basic/line) [Path](/zh/docs/api/basic/path) [Polyline](/zh/docs/api/basic/polyline)
+-   start/endHead 端点部分可以是任何基础图形，传入布尔值时开启/关闭默认内置端点
+-   stroke/lineWidth/opacity 等常规绘图属性
 
 ```js
 type ArrowHead = boolean | DisplayObject;
 type ArrowBody = Line | Path | Polyline;
 
 export interface ArrowStyleProps extends BaseStyleProps {
-  body?: ArrowBody; // 躯干
-  startHead?: ArrowHead; // 起始端点
-  endHead?: ArrowHead; // 结束端点
-  stroke?: string; // 颜色
-  lineWidth?: number; // 线宽
-  opacity?: number; // 透明度
-  strokeOpacity?: number;
+    body?: ArrowBody; // 躯干
+    startHead?: ArrowHead; // 起始端点
+    endHead?: ArrowHead; // 结束端点
+    stroke?: string; // 颜色
+    lineWidth?: number; // 线宽
+    opacity?: number; // 透明度
+    strokeOpacity?: number;
 }
 ```
 
@@ -214,21 +221,21 @@ private getTangent(path: Path, isStart: boolean): number[][] {
 
 ```js
 const lineArrow = new Arrow({
-  id: 'lineArrow',
-  style: {
-    body: new Line({
-      style: {
-        x1: 200,
-        y1: 100,
-        x2: 0,
-        y2: 0,
-      },
-    }),
-    startHead: true,
-    stroke: '#1890FF',
-    lineWidth: 10,
-    cursor: 'pointer',
-  },
+    id: 'lineArrow',
+    style: {
+        body: new Line({
+            style: {
+                x1: 200,
+                y1: 100,
+                x2: 0,
+                y2: 0,
+            },
+        }),
+        startHead: true,
+        stroke: '#1890FF',
+        lineWidth: 10,
+        cursor: 'pointer',
+    },
 });
 
 // 平移
@@ -244,15 +251,15 @@ canvas.document.getElementById('lineArrow'); // Arrow lineArrow
 
 ```js
 lineArrow.animate(
-  [
-    { transform: 'scale(1)', stroke: '#F04864', opacity: 1 },
-    { transform: 'scale(2)', stroke: '#1890FF', opacity: 0.8 },
-  ],
-  {
-    duration: 1500,
-    iterations: Infinity,
-    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-  },
+    [
+        { transform: 'scale(1)', stroke: '#F04864', opacity: 1 },
+        { transform: 'scale(2)', stroke: '#1890FF', opacity: 0.8 },
+    ],
+    {
+        duration: 1500,
+        iterations: Infinity,
+        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+    },
 );
 ```
 
@@ -264,10 +271,10 @@ lineArrow.animate(
 
 ```js
 lineArrow.addEventListener('mouseenter', () => {
-  lineArrow.style.stroke = '#2FC25B';
+    lineArrow.style.stroke = '#2FC25B';
 });
 lineArrow.addEventListener('mouseleave', () => {
-  lineArrow.style.stroke = '#1890FF';
+    lineArrow.style.stroke = '#1890FF';
 });
 ```
 
@@ -302,12 +309,12 @@ export interface CustomElement<CustomElementStyleProps> {
 
 ```js
 const image = new Image({
-  style: {
-    width: 50,
-    height: 50,
-    anchor: [0.5, 0.5],
-    img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-  },
+    style: {
+        width: 50,
+        height: 50,
+        anchor: [0.5, 0.5],
+        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    },
 });
 image.rotateLocal(90);
 // 修改起始端点
