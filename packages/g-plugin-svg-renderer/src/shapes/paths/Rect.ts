@@ -13,7 +13,7 @@ export class RectRenderer implements ElementRenderer<ParsedRectStyleProps> {
 
     let d = '';
     if (!hasRadius) {
-      d = `M 0,0 l ${width},0 l 0,${height} l${-width} 0 z`;
+      d = `M 0,0 l ${width.value},0 l 0,${height.value} l${-width.value} 0 z`;
     } else {
       const [tlr, trr, brr, blr] = radius.map((r) => r.value);
       d = [

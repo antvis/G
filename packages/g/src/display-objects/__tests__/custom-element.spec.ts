@@ -31,8 +31,13 @@ interface AProps extends BaseCustomElementStyleProps {
   size: number;
 }
 
+interface BProps extends BaseCustomElementStyleProps {
+  size: number;
+  path: string;
+}
+
 describe('CustomElement', () => {
-  it('create custom element', async () => {
+  it('should create custom element correctly.', async () => {
     const connectedCallback = sinon.spy();
     const disconnectedCallback = sinon.spy();
     const attributeChangedCallback = sinon.spy();
@@ -86,5 +91,25 @@ describe('CustomElement', () => {
     canvas.removeChild(a);
     // @ts-ignore
     expect(disconnectedCallback).to.have.been.called;
+  });
+
+  it('should use built-in attributes correctly.', async () => {
+    class ElementB extends CustomElement<BProps> {
+      constructor(options: DisplayObjectConfig<BProps>) {
+        super(options);
+        const circle = new Circle({ style: { r: options.style?.size || 0, fill: 'red' } });
+        this.appendChild(circle);
+      }
+      connectedCallback() {}
+      disconnectedCallback() {}
+      attributeChangedCallback<Key extends never>(
+        name: Key,
+        oldValue: {}[Key],
+        newValue: {}[Key],
+      ) {}
+    }
+    const a = new ElementB({ style: { size: 10, path: 'M100,100 L200,200' } });
+    // conflict with built-in props
+    expect(a.getLocalPosition()).to.be.eqls(vec3.fromValues(0, 0, 0));
   });
 });

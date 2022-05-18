@@ -61,12 +61,10 @@ const containerModule = Module((register) => {
 
 export class Plugin implements RendererPlugin {
   name = 'yoga';
-  private container: Syringe.Container;
 
   constructor(private options: Partial<YogaPluginOptions>) {}
 
   init(container: Syringe.Container): void {
-    this.container = container;
     container.register(YogaPluginOptions, {
       useValue: {
         ...this.options,

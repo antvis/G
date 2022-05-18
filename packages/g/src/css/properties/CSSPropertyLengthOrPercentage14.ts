@@ -13,7 +13,7 @@ import { isNumber } from '../../utils';
  * rect.style.radius = '10 10 10 10';
  */
 @singleton()
-export class CSSPropertyRadius
+export class CSSPropertyLengthOrPercentage14
   implements
     Partial<
       CSSProperty<

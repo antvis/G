@@ -1,4 +1,5 @@
 import { singleton } from 'mana-syringe';
+import { Shape } from '../..';
 import type { DisplayObject } from '../../display-objects';
 import type { ParsedBaseStyleProps } from '../../types';
 import type { CSSProperty } from '../CSSProperty';
@@ -28,7 +29,9 @@ export class CSSPropertyPoints
    * update local position
    */
   postProcessor(object: DisplayObject) {
-    const { defX, defY } = object.parsedStyle as ParsedBaseStyleProps;
-    object.setLocalPosition(defX, defY);
+    if (object.nodeName === Shape.POLYGON || object.nodeName === Shape.POLYLINE) {
+      const { defX, defY } = object.parsedStyle as ParsedBaseStyleProps;
+      object.setLocalPosition(defX, defY);
+    }
   }
 }

@@ -1,4 +1,5 @@
 import { singleton } from 'mana-syringe';
+import { Shape } from '../..';
 import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
 import { Rectangle } from '../../shapes';
 import { CSSKeywordValue } from '../cssom';
@@ -43,7 +44,9 @@ export class CSSPropertyPath
    * update local position
    */
   postProcessor(object: DisplayObject) {
-    const { defX = 0, defY = 0 } = object.parsedStyle as ParsedPathStyleProps;
-    object.setLocalPosition(defX, defY);
+    if (object.nodeName === Shape.PATH) {
+      const { defX = 0, defY = 0 } = object.parsedStyle as ParsedPathStyleProps;
+      object.setLocalPosition(defX, defY);
+    }
   }
 }
