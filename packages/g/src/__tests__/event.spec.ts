@@ -6,10 +6,21 @@ import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
 // @ts-ignore
-import { Group, Circle, Canvas, Text, Rect, ElementEvent } from '@antv/g';
+import {
+  Group,
+  Circle,
+  Canvas,
+  Text,
+  Rect,
+  ElementEvent,
+  DisplayObject,
+  FederatedEvent,
+  CustomEvent,
+} from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Plugin } from '@antv/g-plugin-css-select';
 import interact from 'interactjs';
+import { sleep } from './utils';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
@@ -29,6 +40,10 @@ const canvas = new Canvas({
   height: 500,
   renderer,
 });
+
+const CAPTURING_PHASE = 1;
+const AT_TARGET = 2;
+const BUBBLING_PHASE = 3;
 
 describe('Event API like DOM', () => {
   afterEach(() => {
@@ -172,9 +187,85 @@ describe('Event API like DOM', () => {
     circle.destroy();
   });
 
-  // it('should capture in event flow', () => {
+  it('should use event delegation correctly.', async () => {
+    const parent = new Group({ id: 'parent' });
+    const child = new Group({ id: 'child' });
 
-  // });
+    const eventStack = [];
+    parent.addEventListener(ElementEvent.MOUNTED, (e: FederatedEvent) => {
+      eventStack.push([e.target, e.eventPhase]);
+    });
+
+    parent.appendChild(child);
+    canvas.appendChild(parent);
+
+    await sleep(200);
+
+    expect(eventStack.length).to.be.eqls(2);
+    expect(eventStack[0]).to.be.eqls([parent, AT_TARGET]);
+    expect(eventStack[1]).to.be.eqls([child, BUBBLING_PHASE]);
+  });
+
+  it('should use event delegation with capture correctly.', async () => {
+    const parent = new Group({ id: 'parent' });
+    const child = new Group({ id: 'child' });
+
+    const eventStack = [];
+    parent.addEventListener(
+      ElementEvent.MOUNTED,
+      (e: FederatedEvent) => {
+        eventStack.push([e.target, e.eventPhase]);
+      },
+      { capture: true },
+    );
+
+    parent.appendChild(child);
+    canvas.appendChild(parent);
+
+    await sleep(200);
+
+    expect(eventStack.length).to.be.eqls(2);
+    expect(eventStack[0]).to.be.eqls([parent, AT_TARGET]);
+    expect(eventStack[1]).to.be.eqls([child, CAPTURING_PHASE]);
+  });
+
+  it('should keep order in event phases', async () => {
+    // @see https://javascript.info/bubbling-and-capturing#capturing
+    const form = new Group({ id: 'form' });
+    const div = new Group({ id: 'div' });
+    const p = new Group({ id: 'p' });
+
+    form.appendChild(div);
+    div.appendChild(p);
+    canvas.appendChild(form);
+
+    const event = new CustomEvent('build', { detail: { prop1: 'xx' } });
+    const eventStack = [];
+    [form, div, p].forEach((el) => {
+      el.addEventListener(
+        'build',
+        (e: FederatedEvent) => {
+          eventStack.push([e.currentTarget, CAPTURING_PHASE]);
+        },
+        { capture: true },
+      );
+      el.addEventListener('build', (e: FederatedEvent) => {
+        eventStack.push([e.currentTarget, BUBBLING_PHASE]);
+      });
+    });
+
+    p.dispatchEvent(event);
+
+    await sleep(400);
+
+    expect(eventStack.length).to.be.eqls(6);
+    expect(eventStack[0]).to.be.eqls([form, CAPTURING_PHASE]);
+    expect(eventStack[1]).to.be.eqls([div, CAPTURING_PHASE]);
+    expect(eventStack[2]).to.be.eqls([p, CAPTURING_PHASE]);
+    expect(eventStack[3]).to.be.eqls([p, BUBBLING_PHASE]);
+    expect(eventStack[4]).to.be.eqls([div, BUBBLING_PHASE]);
+    expect(eventStack[5]).to.be.eqls([form, BUBBLING_PHASE]);
+  });
 
   // it('should emit inserted event correctly', () => {
   //   // const rect = new Rect({

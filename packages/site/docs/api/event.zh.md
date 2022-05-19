@@ -14,6 +14,10 @@ order: -3
 -   事件流包含捕获和冒泡阶段，可以通过事件对象上的某些方法介入它们
 -   可以为某个事件添加一个或多个监听器，它们按照注册顺序依次触发
 
+下图展示了事件传播的三个阶段，在捕获阶段自顶向下依次触发监听器，到达目标节点后向上冒泡。在监听器中可以通过 [eventPhase](/zh/docs/api/event#eventphase) 获取当前所处的阶段。下图来自 https://javascript.info/bubbling-and-capturing#capturing
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zJBbSL2D5mkAAAAAAAAAAAAAARQnAQ" width="500" alt="event capture">
+
 目前我们支持以下[基础事件](/zh/docs/api/event#type)，尽可能兼容了 DOM 事件流，因此在下面的很多 API 介绍中我们都附上了 DOM Event API 对应的参考链接。
 
 例如我们想给这个圆形增加简单的鼠标移入/移出的交互效果，[示例](/zh/examples/event#shapes)
@@ -308,6 +312,28 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/shiftKey
 https://developer.mozilla.org/zh-CN/docs/Web/API/Event/timeStamp
 
 事件创建时的时间戳
+
+### eventPhase
+
+当前所处的事件阶段。有以下三个枚举值：
+
+```
+CAPTURING_PHASE = 1;
+AT_TARGET = 2;
+BUBBLING_PHASE = 3;
+```
+
+例如配合 `capture` 配置项，仅在捕获阶段处理事件：
+
+```js
+circle.addEventListener(
+    'click',
+    (e: FederatedEvent) => {
+        console.log(e.eventPhase); // e.CAPTURING_PHASE
+    },
+    { capture: true },
+);
+```
 
 ### detail
 
