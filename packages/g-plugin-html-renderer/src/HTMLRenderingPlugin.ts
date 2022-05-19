@@ -107,7 +107,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
           $existedElement.setAttribute('name', object.name);
         }
         if (object.className) {
-          $existedElement.setAttribute('className', object.className);
+          $existedElement.className = object.className;
         }
 
         $container.appendChild($existedElement);
