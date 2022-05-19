@@ -1,7 +1,7 @@
 {
   "name": "@antv/g-plugin-gpgpu",
   "version": "1.1.1",
-  "description": "A G plugin for GPGPU based on WebGL & WebGPU",
+  "description": "A G plugin for GPGPU based on WebGPU",
   "main": "lib/index.js",
   "module": "es/index.js",
   "types": "es/index.d.ts",
@@ -19,7 +19,8 @@
     "url": "git+https://github.com/antvis/g.git"
   },
   "keywords": [
-    "util",
+    "webgpu",
+    "gpgpu",
     "antv",
     "g"
   ],

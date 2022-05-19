@@ -102,7 +102,18 @@ const canvas = new Canvas({
 
 ## renderer
 
-必填，渲染器，目前支持 `g-canvas` `g-svg` 和 `g-webgl`，后续可以在运行时通过 [setRenderer()](/zh/docs/api/canvas#setrendererrenderer-renderer) 切换。
+必填，目前支持以下渲染器:
+
+-   基于 Canvas2D 的 [g-canvas](/zh/docs/api/renderer/canvas)
+-   基于 SVG 的 [g-svg](/zh/docs/api/renderer/svg)
+-   基于 WebGL 2/1 的 [g-webgl](/zh/docs/api/renderer/webgl)
+-   基于 WebGPU 的 [g-webgpu](/zh/docs/api/renderer/webgpu)
+
+后续可以在运行时通过 [setRenderer()](/zh/docs/api/canvas#setrendererrenderer-renderer) 切换。
+
+## background
+
+选填，画布初始化时用于清除的颜色。类似 WebGL 中的 [clearColor](https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/clearColor)。支持 [\<color\>](/zh/docs/api/css/css-properties-values-api#color) 取值。
 
 # 特殊运行平台适配
 
