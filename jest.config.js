@@ -20,9 +20,10 @@ const moduleNameMapper = {
 module.exports = {
   moduleNameMapper: moduleNameMapper,
   collectCoverageFrom: [
-    'packages/g/src/**/*.{ts,tsx}',
+    '<rootDir>/packages/g/lib/**/*.{js,jsx}',
     '!**/node_modules/**',
     '!**/__tests__/**',
+    '!**/__node__tests__/**',
     '!**/*.d.ts',
   ],
   coverageDirectory: 'coverage',
@@ -63,7 +64,7 @@ module.exports = {
       displayName: 'browser',
       runner: 'jest-electron/runner',
       testEnvironment: 'jest-electron/environment',
-      testMatch: ['**/*/__tests__/*.spec.+(ts|tsx|js)'],
+      testMatch: ['<rootDir>/packages/**/*/__tests__/*.spec.+(ts|tsx|js)'],
       preset: 'ts-jest',
       globals: {
         'ts-jest': {
