@@ -8,8 +8,8 @@ import type { Rectangle } from '../shapes/Rectangle';
 import { isNil } from '../utils';
 
 export interface PathStyleProps extends BaseStyleProps {
-  path?: string | PathCommand[] | DisplayObject;
-  d?: string | PathCommand[] | DisplayObject;
+  path?: string | PathCommand[];
+  d?: string | PathCommand[];
 }
 export interface PathSegment {
   command: PathCommand[0];

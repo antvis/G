@@ -9,7 +9,10 @@ export interface RectStyleProps extends BaseStyleProps {
   y?: number | string;
   width: number | string;
   height: number | string;
-  radius?: number | string;
+  /**
+   * top-left, top-right, bottom-right, bottom-left
+   */
+  radius?: number | string | number[];
 }
 
 export interface ParsedRectStyleProps extends ParsedBaseStyleProps {
@@ -17,7 +20,7 @@ export interface ParsedRectStyleProps extends ParsedBaseStyleProps {
   y: CSSUnitValue;
   width: CSSUnitValue;
   height: CSSUnitValue;
-  radius?: CSSUnitValue;
+  radius?: [CSSUnitValue, CSSUnitValue, CSSUnitValue, CSSUnitValue];
 }
 
 export class Rect extends DisplayObject<RectStyleProps, ParsedRectStyleProps> {

@@ -78,8 +78,25 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
 
 ## radius
 
-圆角半径
+圆角半径，不同于 SVG `<rect>` 仅支持 `cx/cy` 统一设置，这里可以分别指定四个角的圆角半径，[示例](/zh/examples/shape#rect)：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_pegTqJKe54AAAAAAAAAAAAAARQnAQ" alt="rounded rect">
+
+```js
+rect.style.radius = [0, 4, 8, 16];
+rect.style.radius = '0 4px 8px 16px';
+```
+
+支持以下取值，设置顺序依次为 左上，右上，右下，左下：
+
+-   `number` 统一设置四个圆角半径
+-   `number[]` 分别设置四个圆角半径，会补足缺省的分量：
+    -   `[ 1 ]` 相当于 `[ 1, 1, 1, 1 ]`
+    -   `[ 1, 2 ]` 相当于 `[ 1, 2, 1, 2 ]`
+    -   `[ 1, 2, 3 ]` 相当于 `[ 1, 2, 3, 2 ]`
+    -   `[ 1, 2, 3, 4 ]`
+-   `string` 与 CSS [padding](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding) 属性类似，使用空格分隔
 
 | [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | 否 | 是 | ([\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length)) {1, 4} |

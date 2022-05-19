@@ -315,21 +315,22 @@ function rectToCommands(
   height: number,
   x: number,
   y: number,
-  radius: number,
+  radius?: [number, number, number, number],
 ): PathCommand[] {
   // @see https://gist.github.com/danielpquinn/dd966af424030d47e476
   if (radius) {
+    const [tlr, trr, brr, blr] = radius;
     return [
-      ['M', x, radius + y],
-      ['A', radius, radius, 0, 0, 1, radius + x, y],
-      ['L', width - radius + x, y],
-      ['A', radius, radius, 0, 0, 1, width + x, radius + y],
-      ['L', width + x, height - radius + y],
-      ['A', radius, radius, 0, 0, 1, width - radius + x, height + y],
-      ['L', radius + x, height + y],
-      ['A', radius, radius, 0, 0, 1, x, height - radius + y],
+      ['M', x, tlr + y],
+      tlr ? ['A', tlr, tlr, 0, 0, 1, tlr + x, y] : null,
+      ['L', width - trr + x, y],
+      trr ? ['A', trr, trr, 0, 0, 1, width + x, trr + y] : null,
+      ['L', width + x, height - brr + y],
+      brr ? ['A', brr, brr, 0, 0, 1, width - brr + x, height + y] : null,
+      ['L', blr + x, height + y],
+      blr ? ['A', blr, blr, 0, 0, 1, x, height - blr + y] : null,
       ['Z'],
-    ];
+    ].filter((command) => command) as PathCommand[];
   }
 
   return [
@@ -374,7 +375,14 @@ export function convertToPath(
       break;
     case Shape.RECT:
       const { width, height, x, y, radius } = (object as Rect).parsedStyle;
-      commands = rectToCommands(width.value, height.value, x.value, y.value, radius?.value || 0);
+      const hasRadius = radius && radius.some((r) => r.value !== 0);
+      commands = rectToCommands(
+        width.value,
+        height.value,
+        x.value,
+        y.value,
+        hasRadius && (radius.map((r) => r.value) as [number, number, number, number]),
+      );
       break;
     case Shape.PATH:
       const { curve, zCommandIndexes } = (object as Path).parsedStyle.path;

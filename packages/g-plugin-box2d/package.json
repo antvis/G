@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-box2d",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "A G plugin for Box2D",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -46,5 +46,5 @@
     "umd": "webpack"
   },
   "homepage": "https://github.com/antvis/g#readme",
-  "gitHead": "ffbd006ec52c899e53e84671ca160d49dd63f3e9"
+  "gitHead": "633cec1df324421b0c0821cb18d3ee351c1a47f3"
 }

@@ -201,6 +201,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+
+      // clear fullscreen
+      const { width, height } = this.canvasConfig;
+      const context = this.contextService.getContext();
+      this.clearRect(context, 0, 0, width, height);
     });
 
     renderingService.hooks.destroy.tap(CanvasRendererPlugin.tag, () => {
@@ -215,7 +220,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.beginFrame.tap(CanvasRendererPlugin.tag, () => {
       const context = this.contextService.getContext();
 
-      const { enableDirtyRectangleRendering } = this.canvasConfig.renderer.getConfig();
+      const { renderer, width, height } = this.canvasConfig;
+      const { enableDirtyRectangleRendering } = renderer.getConfig();
 
       // clear fullscreen when:
       // 1. dirty rectangle rendering disabled
@@ -228,7 +234,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         context.save();
 
         if (this.clearFullScreen) {
-          context.clearRect(0, 0, this.canvasConfig.width, this.canvasConfig.height);
+          this.clearRect(context, 0, 0, width, height);
         }
 
         // account for camera's world matrix
@@ -270,7 +276,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
           // clear & clip dirty rectangle
           const { x, y, width, height } = this.convertAABB2Rect(dirtyRenderBounds);
-          context.clearRect(x, y, width, height);
+          this.clearRect(context, x, y, width, height);
           context.beginPath();
           context.rect(x, y, width, height);
           context.clip();
@@ -335,6 +341,21 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         this.renderQueue.push(object);
       }
     });
+  }
+
+  private clearRect(
+    context: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ) {
+    context.clearRect(x, y, width, height);
+    const { background } = this.canvasConfig;
+    if (background) {
+      context.fillStyle = background;
+      context.fillRect(x, y, width, height);
+    }
   }
 
   private flush(context: CanvasRenderingContext2D, renderingService: RenderingService) {

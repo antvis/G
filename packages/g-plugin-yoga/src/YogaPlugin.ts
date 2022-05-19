@@ -7,6 +7,7 @@ import {
   ElementEvent,
   Shape,
   UnitType,
+  CSSKeywordValue,
 } from '@antv/g';
 import type {
   FederatedEvent,
@@ -85,7 +86,7 @@ export class YogaPlugin implements RenderingPlugin {
       this.setDefaultValues(node);
 
       // sync YogaNode attributes
-      this.syncAttributes(target, target.attributes, target.parsedStyle);
+      this.syncAttributes(target, target.computedStyle);
 
       // mount to parent
       const parent = target.parentElement as DisplayObject;
@@ -141,17 +142,11 @@ export class YogaPlugin implements RenderingPlugin {
 
     const handleAttributeChanged = (e: MutationEvent) => {
       const target = e.target as DisplayObject;
-      // use parsed value, eg. `top: 10` instead of `top: '10'`
-      const { attrName, newValue, newParsedValue } = e;
-      const needRecalculateLayout = this.syncAttributes(
-        target,
-        {
-          [attrName]: newValue,
-        },
-        {
-          [attrName]: newParsedValue,
-        },
-      );
+      // use parsed value instead of used value, eg. `top: 10` instead of `top: '10'`
+      const { attrName } = e;
+      const needRecalculateLayout = this.syncAttributes(target, {
+        [attrName]: target.computedStyle[attrName],
+      });
 
       if (needRecalculateLayout) {
         this.needRecalculateLayout = true;
@@ -232,9 +227,9 @@ export class YogaPlugin implements RenderingPlugin {
         object.nodeName === Shape.RECT ||
         object.nodeName === Shape.IMAGE
       ) {
-        const { width, height } = object.parsedStyle as ParsedRectStyleProps;
-        this.setWidth(node, object.style.width, width);
-        this.setHeight(node, object.style.height, height);
+        const { width, height } = object.computedStyle as ParsedRectStyleProps;
+        this.setWidth(node, width);
+        this.setHeight(node, height);
       } else {
         let bounds: AABB;
         // flex container
@@ -250,11 +245,10 @@ export class YogaPlugin implements RenderingPlugin {
         }
 
         if (object.nodeName === Shape.TEXT) {
-          // @ts-ignore
-          const { wordWrap, width } = object.parsedStyle as ParsedTextStyleProps;
+          const { wordWrap, width } = object.computedStyle as ParsedTextStyleProps;
 
           if (wordWrap) {
-            this.setWidth(node, object.style.width, width);
+            this.setWidth(node, width);
             node.setHeightAuto();
           }
         }
@@ -265,11 +259,7 @@ export class YogaPlugin implements RenderingPlugin {
   /**
    * sync YogaNode
    */
-  private syncAttributes(
-    object: DisplayObject,
-    raw: Record<string, any>,
-    parsed: Record<string, any>,
-  ): boolean {
+  private syncAttributes(object: DisplayObject, parsed: Record<string, any>): boolean {
     const node = this.nodes[object.entity];
     const { yogaUpdatingFlag } = object.style;
 
@@ -301,13 +291,13 @@ export class YogaPlugin implements RenderingPlugin {
         node.setFlexWrap(<YogaFlexWrap>YogaConstants.FlexWrap[newValue as keyof typeof FlexWrap]);
         needRecalculateLayout = true;
       } else if (attributeName === 'flexGrow') {
-        node.setFlexGrow(newValue as number);
+        node.setFlexGrow((newValue as CSSUnitValue).value);
         needRecalculateLayout = true;
       } else if (attributeName === 'flexShrink') {
-        node.setFlexShrink(newValue as number);
+        node.setFlexShrink((newValue as CSSUnitValue).value);
         needRecalculateLayout = true;
       } else if (attributeName === 'flexBasis') {
-        node.setFlexBasis(newValue as number);
+        node.setFlexBasis((newValue as CSSUnitValue).value);
         needRecalculateLayout = true;
       } else if (attributeName === 'position') {
         node.setPositionType(
@@ -315,88 +305,98 @@ export class YogaPlugin implements RenderingPlugin {
         );
         needRecalculateLayout = true;
       } else if (attributeName === 'padding') {
-        const margin = newValue;
+        const margin = newValue as [CSSUnitValue, CSSUnitValue, CSSUnitValue, CSSUnitValue];
         YogaEdges.forEach((edge, index) => {
           const value = margin[index];
           this.setPadding(node, edge, value);
         });
         needRecalculateLayout = true;
       } else if (attributeName === 'paddingAll') {
-        const padding = [newValue, newValue, newValue, newValue];
+        const padding = [newValue, newValue, newValue, newValue] as [
+          CSSUnitValue,
+          CSSUnitValue,
+          CSSUnitValue,
+          CSSUnitValue,
+        ];
         YogaEdges.forEach((edge, index) => {
           const value = padding[index];
           this.setPadding(node, edge, value);
         });
         needRecalculateLayout = true;
       } else if (attributeName === 'paddingTop') {
-        this.setPadding(node, EDGE_TOP, newValue);
+        this.setPadding(node, EDGE_TOP, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'paddingRight') {
-        this.setPadding(node, EDGE_RIGHT, newValue);
+        this.setPadding(node, EDGE_RIGHT, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'paddingBottom') {
-        this.setPadding(node, EDGE_BOTTOM, newValue);
+        this.setPadding(node, EDGE_BOTTOM, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'paddingLeft') {
-        this.setPadding(node, EDGE_LEFT, newValue);
+        this.setPadding(node, EDGE_LEFT, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'margin') {
-        const margin = newValue;
+        const margin = newValue as [CSSUnitValue, CSSUnitValue, CSSUnitValue, CSSUnitValue];
         YogaEdges.forEach((edge, index) => {
           const value = margin[index];
           this.setMargin(node, edge, value);
         });
         needRecalculateLayout = true;
       } else if (attributeName === 'marginAll') {
-        const margin = [newValue, newValue, newValue, newValue];
+        const margin = [newValue, newValue, newValue, newValue] as [
+          CSSUnitValue,
+          CSSUnitValue,
+          CSSUnitValue,
+          CSSUnitValue,
+        ];
         YogaEdges.forEach((edge, index) => {
           const value = margin[index];
           this.setMargin(node, edge, value);
         });
         needRecalculateLayout = true;
       } else if (attributeName === 'marginTop') {
-        this.setMargin(node, EDGE_TOP, newValue);
+        this.setMargin(node, EDGE_TOP, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'marginRight') {
-        this.setMargin(node, EDGE_RIGHT, newValue);
+        this.setMargin(node, EDGE_RIGHT, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'marginBottom') {
-        this.setMargin(node, EDGE_BOTTOM, newValue);
+        this.setMargin(node, EDGE_BOTTOM, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'marginLeft') {
-        this.setMargin(node, EDGE_LEFT, newValue);
+        this.setMargin(node, EDGE_LEFT, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'top') {
-        this.setPosition(node, EDGE_TOP, newValue);
+        this.setPosition(node, EDGE_TOP, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'right') {
-        this.setPosition(node, EDGE_RIGHT, newValue);
+        this.setPosition(node, EDGE_RIGHT, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'bottom') {
-        this.setPosition(node, EDGE_BOTTOM, newValue);
+        this.setPosition(node, EDGE_BOTTOM, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'left') {
-        this.setPosition(node, EDGE_LEFT, newValue);
+        this.setPosition(node, EDGE_LEFT, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'minWidth') {
-        this.setMinWidth(node, newValue);
+        this.setMinWidth(node, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'minHeight') {
-        this.setMinHeight(node, newValue);
+        this.setMinHeight(node, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'maxWidth') {
-        this.setMaxWidth(node, newValue);
+        this.setMaxWidth(node, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'maxHeight') {
-        this.setMaxHeight(node, newValue);
+        this.setMaxHeight(node, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'display') {
         node.setDisplay(<YogaDisplay>YogaConstants.Display[newValue as keyof typeof Display]);
         needRecalculateLayout = true;
       } else if (attributeName === 'width' && !yogaUpdatingFlag) {
-        this.setWidth(node, raw.width, newValue);
+        this.setWidth(node, newValue as CSSUnitValue | CSSKeywordValue);
       } else if (attributeName === 'height' && !yogaUpdatingFlag) {
-        this.setHeight(node, raw.height, newValue);
+        this.setHeight(node, newValue as CSSUnitValue | CSSKeywordValue);
       }
     });
 
@@ -464,9 +464,11 @@ export class YogaPlugin implements RenderingPlugin {
     }
   }
 
-  private setWidth(node: YogaNode, raw: any, parsed: CSSUnitValue) {
-    if (raw === 'auto') {
-      node.setWidthAuto();
+  private setWidth(node: YogaNode, parsed: CSSUnitValue | CSSKeywordValue) {
+    if (parsed instanceof CSSKeywordValue) {
+      if (parsed.value === 'auto') {
+        node.setWidthAuto();
+      }
     } else {
       const { unit, value } = parsed;
       if (unit === UnitType.kNumber || unit === UnitType.kPixels) {
@@ -476,9 +478,11 @@ export class YogaPlugin implements RenderingPlugin {
       }
     }
   }
-  private setHeight(node: YogaNode, raw: any, parsed: CSSUnitValue) {
-    if (raw === 'auto') {
-      node.setHeightAuto();
+  private setHeight(node: YogaNode, parsed: CSSUnitValue | CSSKeywordValue) {
+    if (parsed instanceof CSSKeywordValue) {
+      if (parsed.value === 'auto') {
+        node.setHeightAuto();
+      }
     } else {
       const { unit, value } = parsed;
 
@@ -535,10 +539,11 @@ export class YogaPlugin implements RenderingPlugin {
       object.style.yogaUpdatingFlag = false;
 
       const { anchor } = object.parsedStyle as ParsedBaseStyleProps;
-
-      // calculate local position instead of modify origin directly
-      left += anchor[0].value * width;
-      top += anchor[1].value * height;
+      if (anchor) {
+        // calculate local position instead of modify origin directly
+        left += anchor[0].value * width;
+        top += anchor[1].value * height;
+      }
 
       if (object.nodeName === Shape.TEXT) {
         object.style.textBaseline = 'top';

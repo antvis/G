@@ -1,28 +1,14 @@
-# @antv/g-plugin-html-renderer
+# @antv/g-plugin-gpgpu
 
-Render HTML for g-canvas/svg/webgl.
+Provide GPGPU capabilities based on [WebGPU](https://www.w3.org/TR/webgpu/).
+
+## Getting Started
 
 ```js
-const p1 = new HTML({
-    style: {
-        x: 200,
-        y: 100,
-        html: 'p1',
-    },
-});
-const p2 = new HTML({
-    style: {
-        x: 400,
-        y: 100,
-        html: 'p2',
-    },
-});
+import { Canvas, CanvasEvent } from '@antv/g';
+import { Renderer } from '@antv/g-webgpu';
+import { Plugin, Kernel, BufferUsage } from '@antv/g-plugin-gpgpu';
 
-// 修改属性
-p1.style.x = x1;
-p1.style.filter = 'blur(5px)';
-
-// 变换
-p1.translate(100, 0);
-p1.scale(2);
+const renderer = new Renderer();
+renderer.registerPlugin(new Plugin());
 ```

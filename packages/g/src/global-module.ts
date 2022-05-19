@@ -23,11 +23,10 @@ import {
   LayoutRegistry,
   CSSPropertyLocalPosition,
   CSSPropertyLengthOrPercentage,
-  CSSPropertyAnchor,
   CSSPropertyClipPath,
   CSSPropertyColor,
   CSSPropertyFilter,
-  CSSPropertyLineDash,
+  CSSPropertyLengthOrPercentage12,
   CSSPropertyOffsetDistance,
   CSSPropertyOffsetPath,
   CSSPropertyOpacity,
@@ -39,6 +38,7 @@ import {
   CSSPropertyTransformOrigin,
   CSSPropertyZIndex,
   CSSPropertyShadowBlur,
+  CSSPropertyLengthOrPercentage14,
   DefaultStyleValueRegistry,
 } from './css';
 import {
@@ -114,11 +114,10 @@ export const containerModule = Module((register) => {
   register(CSSPropertyOpacity);
   register(CSSPropertyColor);
   register(CSSPropertyFilter);
-  register(CSSPropertyLineDash);
+  register(CSSPropertyLengthOrPercentage12);
   register(CSSPropertyShadowBlur);
   register(CSSPropertyOffsetPath);
   register(CSSPropertyOffsetDistance);
-  register(CSSPropertyAnchor);
   register(CSSPropertyZIndex);
   register(CSSPropertyTransform);
   register(CSSPropertyTransformOrigin);
@@ -127,6 +126,7 @@ export const containerModule = Module((register) => {
   register(CSSPropertyClipPath);
   register(CSSPropertyText);
   register(CSSPropertyTextTransform);
+  register(CSSPropertyLengthOrPercentage14);
 
   // bind layout engine
   register(LayoutEngine);

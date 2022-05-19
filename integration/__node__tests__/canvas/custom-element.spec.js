@@ -1,57 +1,43 @@
-import type { DisplayObject, Line, Polyline, BaseStyleProps, DisplayObjectConfig } from '@antv/g';
-import { CustomElement, Path, Shape, isNil } from '@antv/g';
-import { vec3 } from 'gl-matrix';
+const { createCanvas } = require('canvas');
+const fs = require('fs');
+const { vec3 } = require('gl-matrix');
+const { CustomElement, Line, Path, Canvas, Shape, isNil } = require('@antv/g');
+const { Renderer } = require('@antv/g-canvas');
+const { sleep, diff } = require('../../util');
 
-type ArrowHead = boolean | DisplayObject;
-type ArrowBody = Line | Path | Polyline;
-type ArrowHeadType = 'default' | 'custom';
-export interface ArrowStyleProps extends BaseStyleProps {
-  body?: ArrowBody;
-  startHead?: ArrowHead;
-  endHead?: ArrowHead;
-  /**
-   * offset along tangent for start head
-   */
-  startHeadOffset?: number;
-  /**
-   * offset along tangent for end head
-   */
-  endHeadOffset?: number;
-  stroke?: string;
-  lineWidth?: number;
-  opacity?: number;
-  strokeOpacity?: number;
-}
+// create a node-canvas
+const nodeCanvas = createCanvas(200, 200);
 
-/**
- * support 3 types of arrow line:
- * 1. Line
- * 2. Polyline
- * 3. Path
- *
- * support 2 types of arrow head:
- * 1. default(Path)
- * 2. custom
- */
-export class Arrow extends CustomElement<ArrowStyleProps> {
+// create a renderer, unregister plugin relative to DOM
+const renderer = new Renderer();
+const domInteractionPlugin = renderer.getPlugin('dom-interaction');
+renderer.unregisterPlugin(domInteractionPlugin);
+
+const SIZE = 200;
+const canvas = new Canvas({
+  width: SIZE,
+  height: SIZE,
+  canvas: nodeCanvas, // use node-canvas
+  renderer,
+});
+
+const RESULT_IMAGE = '/custom-element.png';
+const BASELINE_IMAGE_DIR = '/snapshots';
+
+class Arrow extends CustomElement {
   static tag = 'arrow';
 
-  private body: Line | Path | Polyline;
-  private startHead?: DisplayObject;
-  private endHead?: DisplayObject;
-  private startHeadPosition: vec3;
-  private startHeadRad: number;
-  private endHeadPosition: vec3;
-  private endHeadRad: number;
+  body;
+  startHead;
+  endHead;
 
-  constructor(config: DisplayObjectConfig<ArrowStyleProps>) {
+  constructor(config) {
     super({
       ...config,
       type: Arrow.tag,
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { body, startHead, endHead, startHeadOffset, endHeadOffset, ...rest } = this.attributes;
+    const { body, startHead, endHead, ...rest } = this.attributes;
 
     if (!body) {
       throw new Error("Arrow's body is required");
@@ -83,17 +69,12 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     return this.endHead;
   }
 
-  attributeChangedCallback<Key extends keyof ArrowStyleProps>(
-    name: Key,
-    oldValue: ArrowStyleProps[Key],
-    newValue: ArrowStyleProps[Key],
-  ) {
+  attributeChangedCallback(name, oldValue, newValue) {
     if (
       name === 'opacity' ||
       name === 'strokeOpacity' ||
       name === 'stroke' ||
-      name === 'lineWidth' ||
-      name === 'increasedLineWidthForHitTesting'
+      name === 'lineWidth'
     ) {
       this.applyArrowStyle({ [name]: newValue }, [this.body, this.startHead, this.endHead]);
     } else if (name === 'startHead' || name === 'endHead') {
@@ -103,37 +84,32 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
 
       if (newValue) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { body, startHead, endHead, startHeadOffset, endHeadOffset, ...rest } =
-          this.attributes;
+        const { body, startHead, endHead, ...rest } = this.attributes;
         // append new arrow head
 
-        this.appendArrowHead(this.getArrowHeadType(newValue as ArrowHead), isStart);
+        this.appendArrowHead(this.getArrowHeadType(newValue), isStart);
         this.applyArrowStyle(rest, [isStart ? this.startHead : this.endHead]);
       }
     } else if (name === 'body') {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { body, startHead, endHead, startHeadOffset, endHeadOffset, ...rest } = this.attributes;
+      const { body, startHead, endHead, ...rest } = this.attributes;
       this.removeChild(this.body, true);
       // @ts-ignore
       this.body = newValue;
       this.appendChild(this.body);
       this.applyArrowStyle(rest, [this.body]);
-    } else if (name === 'startHeadOffset') {
-      this.moveArrowHeadAlongTangent(newValue as number, true);
-    } else if (name === 'endHeadOffset') {
-      this.moveArrowHeadAlongTangent(newValue as number, false);
     }
   }
 
-  private getArrowHeadType(head: ArrowHead): ArrowHeadType {
+  getArrowHeadType(head) {
     if (typeof head === 'boolean') {
       return 'default';
     }
     return 'custom';
   }
 
-  private appendArrowHead(type: ArrowHeadType, isStart: boolean) {
-    let head: DisplayObject;
+  appendArrowHead(type, isStart) {
+    let head;
     if (type === 'default') {
       head = this.createDefaultArrowHead();
     } else {
@@ -154,17 +130,12 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     }
 
     this.appendChild(head);
-
-    const offset = isStart ? this.attributes.startHeadOffset : this.attributes.endHeadOffset;
-    if (offset) {
-      this.moveArrowHeadAlongTangent(offset, isStart);
-    }
   }
 
   /**
    * transform arrow head according to arrow line
    */
-  private transformArrowHead(head: DisplayObject, isStart: boolean) {
+  transformArrowHead(head, isStart) {
     let position = vec3.create();
     let rad = 0;
     let x1 = 0;
@@ -175,20 +146,20 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     const bodyType = this.body && this.body.nodeName;
 
     if (bodyType === Shape.LINE) {
-      const { x1: _x1, x2: _x2, y1: _y1, y2: _y2 } = (this.body as Line).attributes;
-      x1 = isStart ? _x2 : _x1;
-      x2 = isStart ? _x1 : _x2;
-      y1 = isStart ? _y2 : _y1;
-      y2 = isStart ? _y1 : _y2;
+      const { x1: _x1, x2: _x2, y1: _y1, y2: _y2 } = this.body.attributes;
+      x1 = isStart ? _x1 : _x2;
+      x2 = isStart ? _x2 : _x1;
+      y1 = isStart ? _y1 : _y2;
+      y2 = isStart ? _y2 : _y1;
     } else if (bodyType === Shape.POLYLINE) {
-      const points = (this.body as Polyline).attributes.points;
+      const points = this.body.attributes.points;
       const { length } = points;
       x1 = isStart ? points[1][0] : points[length - 2][0];
       y1 = isStart ? points[1][1] : points[length - 2][1];
       x2 = isStart ? points[0][0] : points[length - 1][0];
       y2 = isStart ? points[0][1] : points[length - 1][1];
     } else if (bodyType === Shape.PATH) {
-      const [p1, p2] = this.getTangent(this.body as Path, isStart);
+      const [p1, p2] = this.getTangent(this.body, isStart);
       x1 = p1[0];
       y1 = p1[1];
       x2 = p2[0];
@@ -200,36 +171,11 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     rad = Math.atan2(y, x);
     position = vec3.fromValues(x2, y2, 0);
 
-    if (isStart) {
-      this.startHeadPosition = position;
-      this.startHeadRad = rad;
-    } else {
-      this.endHeadPosition = position;
-      this.endHeadRad = rad;
-    }
-
     head.setLocalPosition(position);
     head.setLocalEulerAngles((rad * 180) / Math.PI + head.getLocalEulerAngles());
   }
 
-  private moveArrowHeadAlongTangent(offset: number, isStart: boolean) {
-    const head = isStart ? this.startHead : this.endHead;
-    if (head) {
-      head.setLocalPosition(
-        vec3.sub(
-          vec3.create(),
-          isStart ? this.startHeadPosition : this.endHeadPosition,
-          vec3.fromValues(
-            Math.cos(isStart ? this.startHeadRad : this.endHeadRad) * offset,
-            Math.sin(isStart ? this.startHeadRad : this.endHeadRad) * offset,
-            0,
-          ),
-        ),
-      );
-    }
-  }
-
-  private destroyArrowHead(isStart: boolean) {
+  destroyArrowHead(isStart) {
     if (isStart && this.startHead) {
       // @ts-ignore
       this.removeChild(this.startHead, true);
@@ -242,11 +188,11 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     }
   }
 
-  private getTangent(path: Path, isStart: boolean): number[][] {
+  getTangent(path, isStart) {
     return isStart ? path.getStartTangent() : path.getEndTangent();
   }
 
-  private createDefaultArrowHead() {
+  createDefaultArrowHead() {
     const { stroke, lineWidth } = this.attributes;
     const { sin, cos, PI } = Math;
     return new Path({
@@ -263,9 +209,8 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     });
   }
 
-  private applyArrowStyle(attributes: ArrowStyleProps, objects: (DisplayObject | undefined)[]) {
-    const { opacity, stroke, strokeOpacity, lineWidth, increasedLineWidthForHitTesting } =
-      attributes;
+  applyArrowStyle(attributes, objects) {
+    const { opacity, stroke, strokeOpacity, lineWidth } = attributes;
     objects.forEach((shape) => {
       if (shape) {
         if (!isNil(opacity)) {
@@ -283,11 +228,72 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
         if (!isNil(lineWidth)) {
           shape.style.lineWidth = lineWidth;
         }
-
-        if (!isNil(increasedLineWidthForHitTesting)) {
-          shape.style.increasedLineWidthForHitTesting = increasedLineWidthForHitTesting;
-        }
       }
     });
   }
 }
+
+describe('Render <CustomElement> with g-canvas', () => {
+  afterEach(() => {
+    canvas.removeChildren();
+    fs.rmSync(__dirname + RESULT_IMAGE);
+  });
+
+  afterAll(() => {
+    canvas.destroy();
+  });
+
+  it('should render image on server-side correctly.', async () => {
+    const lineArrow = new Arrow({
+      id: 'lineArrow',
+      style: {
+        body: new Line({
+          style: {
+            x1: 100,
+            y1: 100,
+            x2: 0,
+            y2: 0,
+          },
+        }),
+        startHead: true,
+        stroke: '#1890FF',
+        lineWidth: 10,
+        cursor: 'pointer',
+      },
+    });
+    lineArrow.translate(50, 50);
+    lineArrow.scale(0.5);
+    canvas.appendChild(lineArrow);
+
+    const pathArrow = new Arrow({
+      id: 'pathArrow',
+      style: {
+        body: new Path({
+          style: {
+            path: 'M 100,100' + 'l 50,-25' + 'a25,25 -30 0,1 50,-80',
+          },
+        }),
+        startHead: true,
+        stroke: '#1890FF',
+        lineWidth: 10,
+        cursor: 'pointer',
+      },
+    });
+    pathArrow.translate(0, 50);
+    pathArrow.scale(0.5);
+    canvas.appendChild(pathArrow);
+
+    await sleep(300);
+
+    await new Promise((resolve) => {
+      const out = fs.createWriteStream(__dirname + RESULT_IMAGE);
+      const stream = nodeCanvas.createPNGStream();
+      stream.pipe(out);
+      out.on('finish', () => {
+        resolve(undefined);
+      });
+    });
+
+    expect(diff(__dirname + RESULT_IMAGE, __dirname + BASELINE_IMAGE_DIR + RESULT_IMAGE)).toBe(0);
+  });
+});

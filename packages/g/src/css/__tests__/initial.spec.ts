@@ -195,8 +195,8 @@ describe('StyleValueRegistry initialization', () => {
     expect(transformOrigin[1].equals(CSS.percent(50))).to.be.true;
     const anchor = styleMap.get('anchor') as [CSSUnitValue, CSSUnitValue];
     expect(anchor.length).to.be.eqls(2);
-    expect(anchor[0].equals(CSS.number(0.5))).to.be.true;
-    expect(anchor[1].equals(CSS.number(0.5))).to.be.true;
+    expect(anchor[0].equals(CSS.px(0.5))).to.be.true;
+    expect(anchor[1].equals(CSS.px(0.5))).to.be.true;
     expect(styleMap.get('xxxx')).to.be.undefined;
 
     /**
@@ -222,10 +222,9 @@ describe('StyleValueRegistry initialization', () => {
     expect(parsedStyle.transformOrigin[0].equals(CSS.percent(50))).to.be.true;
     expect(parsedStyle.transformOrigin[1].equals(CSS.percent(50))).to.be.true;
     // [x, y] -> [x, y, z]
-    expect(parsedStyle.anchor.length).to.be.eqls(3);
-    expect(parsedStyle.anchor[0].equals(CSS.number(0.5))).to.be.true;
-    expect(parsedStyle.anchor[1].equals(CSS.number(0.5))).to.be.true;
-    expect(parsedStyle.anchor[2].equals(CSS.number(0))).to.be.true;
+    expect(parsedStyle.anchor.length).to.be.eqls(2);
+    expect(parsedStyle.anchor[0].equals(CSS.px(0.5))).to.be.true;
+    expect(parsedStyle.anchor[1].equals(CSS.px(0.5))).to.be.true;
     // these inheritable props should get re-calculated after appended to document
     expect(parsedStyle.fillOpacity).to.be.undefined;
     expect(parsedStyle.lineCap).to.be.undefined;
@@ -331,8 +330,8 @@ describe('StyleValueRegistry initialization', () => {
     expect(transformOrigin[1].equals(CSS.percent(50))).to.be.true;
     const anchor = styleMap.get('anchor') as [CSSUnitValue, CSSUnitValue];
     expect(anchor.length).to.be.eqls(2);
-    expect(anchor[0].equals(CSS.number(0.5))).to.be.true;
-    expect(anchor[1].equals(CSS.number(0.5))).to.be.true;
+    expect(anchor[0].equals(CSS.px(0.5))).to.be.true;
+    expect(anchor[1].equals(CSS.px(0.5))).to.be.true;
     expect(styleMap.get('xxxx')).to.be.undefined;
 
     /**
@@ -363,10 +362,9 @@ describe('StyleValueRegistry initialization', () => {
     expect(parsedStyle.transformOrigin[0].equals(CSS.percent(50))).to.be.true;
     expect(parsedStyle.transformOrigin[1].equals(CSS.percent(50))).to.be.true;
     // [x, y] -> [x, y, z]
-    expect(parsedStyle.anchor.length).to.be.eqls(3);
-    expect(parsedStyle.anchor[0].equals(CSS.number(0.5))).to.be.true;
-    expect(parsedStyle.anchor[1].equals(CSS.number(0.5))).to.be.true;
-    expect(parsedStyle.anchor[2].equals(CSS.number(0))).to.be.true;
+    expect(parsedStyle.anchor.length).to.be.eqls(2);
+    expect(parsedStyle.anchor[0].equals(CSS.px(0.5))).to.be.true;
+    expect(parsedStyle.anchor[1].equals(CSS.px(0.5))).to.be.true;
     // these inheritable props should get re-calculated after appended to document
     expect(parsedStyle.visibility).to.be.undefined;
     expect(parsedStyle.lineCap).to.be.undefined;
@@ -445,8 +443,8 @@ describe('StyleValueRegistry initialization', () => {
     expect(transformOrigin.value).to.be.eqls('unset');
     const anchor = styleMap.get('anchor') as [CSSUnitValue, CSSUnitValue];
     expect(anchor.length).to.be.eqls(2);
-    expect(anchor[0].equals(CSS.number(0))).to.be.true;
-    expect(anchor[1].equals(CSS.number(0))).to.be.true;
+    expect(anchor[0].equals(CSS.px(0))).to.be.true;
+    expect(anchor[1].equals(CSS.px(0))).to.be.true;
     expect(styleMap.get('xxxx')).to.be.undefined;
 
     /**
@@ -458,7 +456,10 @@ describe('StyleValueRegistry initialization', () => {
     // expect(parsedStyle.z.equals(CSS.px(0))).to.be.true;
     expect(parsedStyle.width.equals(CSS.px(200))).to.be.true;
     expect(parsedStyle.height.equals(CSS.px(100))).to.be.true;
-    expect(parsedStyle.radius.equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.radius[0].equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.radius[1].equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.radius[2].equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.radius[3].equals(CSS.px(0))).to.be.true;
     expect(parsedStyle.lineWidth.equals(CSS.px(0))).to.be.true;
     expect(parsedStyle.fill instanceof CSSRGB).to.be.true;
     expect((parsedStyle.fill as CSSRGB).r).to.be.eqls(0);
@@ -475,10 +476,9 @@ describe('StyleValueRegistry initialization', () => {
     expect(parsedStyle.transformOrigin[0].equals(CSS.px(0))).to.be.true;
     expect(parsedStyle.transformOrigin[1].equals(CSS.px(0))).to.be.true;
     // [x, y] -> [x, y, z]
-    expect(parsedStyle.anchor.length).to.be.eqls(3);
-    expect(parsedStyle.anchor[0].equals(CSS.number(0))).to.be.true;
-    expect(parsedStyle.anchor[1].equals(CSS.number(0))).to.be.true;
-    expect(parsedStyle.anchor[2].equals(CSS.number(0))).to.be.true;
+    expect(parsedStyle.anchor.length).to.be.eqls(2);
+    expect(parsedStyle.anchor[0].equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.anchor[1].equals(CSS.px(0))).to.be.true;
     // these inheritable props should get re-calculated after appended to document
     expect(parsedStyle.fillOpacity).to.be.undefined;
     expect(parsedStyle.strokeOpacity).to.be.undefined;
@@ -541,8 +541,8 @@ describe('StyleValueRegistry initialization', () => {
     expect(transformOrigin.value).to.be.eqls('unset');
     const anchor = styleMap.get('anchor') as [CSSUnitValue, CSSUnitValue];
     expect(anchor.length).to.be.eqls(2);
-    expect(anchor[0].equals(CSS.number(0))).to.be.true;
-    expect(anchor[1].equals(CSS.number(0))).to.be.true;
+    expect(anchor[0].equals(CSS.px(0))).to.be.true;
+    expect(anchor[1].equals(CSS.px(0))).to.be.true;
     expect(styleMap.get('xxxx')).to.be.undefined;
 
     /**
@@ -572,10 +572,9 @@ describe('StyleValueRegistry initialization', () => {
     expect(parsedStyle.transformOrigin[0].equals(CSS.px(0))).to.be.true;
     expect(parsedStyle.transformOrigin[1].equals(CSS.px(0))).to.be.true;
     // [x, y] -> [x, y, z]
-    expect(parsedStyle.anchor.length).to.be.eqls(3);
-    expect(parsedStyle.anchor[0].equals(CSS.number(0))).to.be.true;
-    expect(parsedStyle.anchor[1].equals(CSS.number(0))).to.be.true;
-    expect(parsedStyle.anchor[2].equals(CSS.number(0))).to.be.true;
+    expect(parsedStyle.anchor.length).to.be.eqls(2);
+    expect(parsedStyle.anchor[0].equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.anchor[1].equals(CSS.px(0))).to.be.true;
     // these inheritable props should get re-calculated after appended to document
     expect(parsedStyle.fillOpacity).to.be.undefined;
     expect(parsedStyle.strokeOpacity).to.be.undefined;
@@ -610,8 +609,8 @@ describe('StyleValueRegistry initialization', () => {
     expect(text.getAttribute('whiteSpace')).to.be.eqls('pre');
     expect(text.getAttribute('wordWrap')).to.be.eqls(false);
     expect(text.getAttribute('leading')).to.be.eqls(0);
-    expect(text.getAttribute('dx')).to.be.eqls(0);
-    expect(text.getAttribute('dy')).to.be.eqls(0);
+    expect(text.getAttribute('dx')).to.be.eqls('');
+    expect(text.getAttribute('dy')).to.be.eqls('');
 
     /**
      * computed values

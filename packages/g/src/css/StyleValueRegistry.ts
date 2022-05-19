@@ -16,11 +16,11 @@ import {
   CSSPropertyColor,
   CSSPropertyFilter,
   CSSPropertyLengthOrPercentage,
-  CSSPropertyLineDash,
+  CSSPropertyLengthOrPercentage12,
+  CSSPropertyLengthOrPercentage14,
   CSSPropertyShadowBlur,
   CSSPropertyOffsetPath,
   CSSPropertyOffsetDistance,
-  CSSPropertyAnchor,
   CSSPropertyZIndex,
   CSSPropertyTransform,
   CSSPropertyTransformOrigin,
@@ -33,7 +33,8 @@ import {
 import type { CSSProperty } from './CSSProperty';
 import { formatAttribute, isNil } from '../utils';
 import { AABB } from '../shapes';
-import { StyleValueRegistry } from './interfaces';
+import type { PropertyMetadata } from './interfaces';
+import { StyleValueRegistry, PropertySyntax } from './interfaces';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
 export interface PropertyParseOptions {
@@ -41,73 +42,27 @@ export interface PropertyParseOptions {
   skipParse: boolean;
 }
 
-export const PropertySyntax = {
-  COLOR: '<color>',
-  PAINT: '<paint>',
-  NUMBER: '<number>',
-  LENGTH: '<length>',
-  PERCENTAGE: '<percentage>',
-  LENGTH_PERCENTAGE: '<length> | <percentage>',
-  LIST_OF_POINTS: '<list-of-points>',
+export const PROPERTY_HANDLERS = {
+  [PropertySyntax.COORDINATE]: CSSPropertyLocalPosition,
+  [PropertySyntax.COLOR]: CSSPropertyColor,
+  [PropertySyntax.PAINT]: CSSPropertyColor,
+  [PropertySyntax.OPACITY_VALUE]: CSSPropertyOpacity,
+  [PropertySyntax.LENGTH_PERCENTAGE]: CSSPropertyLengthOrPercentage,
+  [PropertySyntax.LENGTH_PERCENTAGE_12]: CSSPropertyLengthOrPercentage12,
+  [PropertySyntax.LENGTH_PERCENTAGE_14]: CSSPropertyLengthOrPercentage14,
+  [PropertySyntax.SHADOW_BLUR]: CSSPropertyShadowBlur,
+  [PropertySyntax.LIST_OF_POINTS]: CSSPropertyPoints,
+  [PropertySyntax.PATH]: CSSPropertyPath,
+  [PropertySyntax.FILTER]: CSSPropertyFilter,
+  [PropertySyntax.Z_INDEX]: CSSPropertyZIndex,
+  [PropertySyntax.OFFSET_PATH]: CSSPropertyOffsetPath,
+  [PropertySyntax.OFFSET_DISTANCE]: CSSPropertyOffsetDistance,
+  [PropertySyntax.CLIP_PATH]: CSSPropertyClipPath,
+  [PropertySyntax.TRANSFORM]: CSSPropertyTransform,
+  [PropertySyntax.TRANSFORM_ORIGIN]: CSSPropertyTransformOrigin,
+  [PropertySyntax.TEXT]: CSSPropertyText,
+  [PropertySyntax.TEXT_TRANSFORM]: CSSPropertyTextTransform,
 };
-
-export interface PropertyMetadata {
-  name: string;
-
-  /**
-   * The interpolable flag indicates whether a property can be animated smoothly.
-   * Default to `false`.
-   */
-  interpolable?: boolean;
-
-  /**
-   * The property will inherit by default if no value is specified.
-   * Default to `false`.
-   */
-  inherited?: boolean;
-
-  /**
-   * This property affects only one field on ComputedStyle, and can be set
-   * directly during inheritance instead of forcing a recalc.
-   */
-  independent?: boolean;
-
-  /**
-   * This specifies the default value for this field.
-   * - for keyword fields, this is the initial keyword
-   * - for other fields, this is a string containg the C++ expression that is used to initialise the field.
-   */
-  defaultValue?: string;
-
-  /**
-   * The resolved value used for getComputedStyle() depends on layout for this
-   * property, which means we may need to update layout to return the correct
-   * value from getComputedStyle().
-   */
-  layoutDependent?: boolean;
-
-  /**
-   * This specifies all valid keyword values for the property.
-   */
-  keywords?: string[];
-
-  /**
-   * eg. strokeWidth is an alias of lineWidth
-   */
-  alias?: string[];
-
-  /**
-   * sort before init attributes according to this priority
-   */
-  parsePriority?: number;
-
-  /**
-   * eg. <color> <paint> <number>
-   */
-  syntax?: string;
-
-  handler?: any;
-}
 
 /**
  * Blink used them in code generation(css_properties.json5)
@@ -129,8 +84,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'opacity',
     interpolable: true,
     defaultValue: '1',
-    syntax: PropertySyntax.NUMBER,
-    handler: CSSPropertyOpacity,
+    syntax: PropertySyntax.OPACITY_VALUE,
   },
   {
     /**
@@ -141,8 +95,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     inherited: true,
     defaultValue: '1',
-    syntax: PropertySyntax.NUMBER,
-    handler: CSSPropertyOpacity,
+    syntax: PropertySyntax.OPACITY_VALUE,
   },
   {
     /**
@@ -153,8 +106,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     inherited: true,
     defaultValue: '1',
-    syntax: PropertySyntax.NUMBER,
-    handler: CSSPropertyOpacity,
+    syntax: PropertySyntax.OPACITY_VALUE,
   },
   {
     /**
@@ -166,7 +118,6 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     keywords: ['none'],
     defaultValue: 'none',
     syntax: PropertySyntax.PAINT,
-    handler: CSSPropertyColor,
   },
   {
     name: 'stroke',
@@ -174,33 +125,29 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     keywords: ['none'],
     defaultValue: 'none',
     syntax: PropertySyntax.PAINT,
-    handler: CSSPropertyColor,
   },
   {
     name: 'shadowColor',
     interpolable: true,
     syntax: PropertySyntax.COLOR,
-    handler: CSSPropertyColor,
   },
   {
     name: 'shadowOffsetX',
     interpolable: true,
     layoutDependent: true,
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
-    handler: CSSPropertyLengthOrPercentage,
   },
   {
     name: 'shadowOffsetY',
     interpolable: true,
     layoutDependent: true,
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
-    handler: CSSPropertyLengthOrPercentage,
   },
   {
     name: 'shadowBlur',
     interpolable: true,
     layoutDependent: true,
-    handler: CSSPropertyShadowBlur,
+    syntax: PropertySyntax.SHADOW_BLUR,
   },
   {
     /**
@@ -213,7 +160,6 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     layoutDependent: true,
     alias: ['strokeWidth'],
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
-    handler: CSSPropertyLengthOrPercentage,
   },
   {
     name: 'increasedLineWidthForHitTesting',
@@ -221,7 +167,6 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     defaultValue: '0',
     layoutDependent: true,
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
-    handler: CSSPropertyLengthOrPercentage,
   },
   {
     name: 'lineJoin',
@@ -245,7 +190,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     inherited: true,
     keywords: ['none'],
     alias: ['strokeDasharray'],
-    handler: CSSPropertyLineDash,
+    syntax: PropertySyntax.LENGTH_PERCENTAGE_12,
   },
   {
     name: 'lineDashOffset',
@@ -253,30 +198,30 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     inherited: true,
     defaultValue: '0',
     alias: ['strokeDashoffset'],
-    handler: CSSPropertyLengthOrPercentage,
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
     name: 'offsetPath',
-    handler: CSSPropertyOffsetPath,
+    syntax: PropertySyntax.OFFSET_PATH,
   },
   {
     name: 'offsetDistance',
     interpolable: true,
-    handler: CSSPropertyOffsetDistance,
+    syntax: PropertySyntax.OFFSET_DISTANCE,
   },
   {
     name: 'dx',
     interpolable: true,
     layoutDependent: true,
     defaultValue: '0',
-    handler: CSSPropertyLengthOrPercentage,
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
     name: 'dy',
     interpolable: true,
     layoutDependent: true,
     defaultValue: '0',
-    handler: CSSPropertyLengthOrPercentage,
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
     name: 'zIndex',
@@ -284,7 +229,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     defaultValue: '0',
     keywords: ['auto'],
-    handler: CSSPropertyZIndex,
+    syntax: PropertySyntax.Z_INDEX,
   },
   {
     name: 'visibility',
@@ -320,11 +265,11 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'filter',
     independent: true,
     layoutDependent: true,
-    handler: CSSPropertyFilter,
+    syntax: PropertySyntax.FILTER,
   },
   {
     name: 'clipPath',
-    handler: CSSPropertyClipPath,
+    syntax: PropertySyntax.CLIP_PATH,
   },
   {
     name: 'transform',
@@ -332,7 +277,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     interpolable: true,
     keywords: ['none'],
     defaultValue: 'none',
-    handler: CSSPropertyTransform,
+    syntax: PropertySyntax.TRANSFORM,
   },
   {
     name: 'transformOrigin',
@@ -340,49 +285,47 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     // interpolable: true,
     defaultValue: 'left top',
     layoutDependent: true,
-    handler: CSSPropertyTransformOrigin,
+    syntax: PropertySyntax.TRANSFORM_ORIGIN,
   },
   {
     name: 'anchor',
     parsePriority: 99,
     layoutDependent: true,
-    handler: CSSPropertyAnchor,
+    syntax: PropertySyntax.LENGTH_PERCENTAGE_12,
   },
   // <circle> & <ellipse>
   {
     name: 'cx',
     interpolable: true,
     defaultValue: '0',
-    syntax: PropertySyntax.LENGTH_PERCENTAGE,
-    handler: CSSPropertyLocalPosition,
+    syntax: PropertySyntax.COORDINATE,
   },
   {
     name: 'cy',
     interpolable: true,
     defaultValue: '0',
-    syntax: PropertySyntax.LENGTH_PERCENTAGE,
-    handler: CSSPropertyLocalPosition,
+    syntax: PropertySyntax.COORDINATE,
   },
   {
     name: 'r',
     interpolable: true,
     layoutDependent: true,
     defaultValue: '0',
-    handler: CSSPropertyLengthOrPercentage,
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
     name: 'rx',
     interpolable: true,
     layoutDependent: true,
     defaultValue: 'auto',
-    handler: CSSPropertyLengthOrPercentage,
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
     name: 'ry',
     interpolable: true,
     layoutDependent: true,
     defaultValue: 'auto',
-    handler: CSSPropertyLengthOrPercentage,
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   // Rect Image Group
   {
@@ -390,24 +333,21 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'x',
     interpolable: true,
     defaultValue: '0',
-    syntax: PropertySyntax.LENGTH_PERCENTAGE,
-    handler: CSSPropertyLocalPosition,
+    syntax: PropertySyntax.COORDINATE,
   },
   {
     // y in local space
     name: 'y',
     interpolable: true,
     defaultValue: '0',
-    syntax: PropertySyntax.LENGTH_PERCENTAGE,
-    handler: CSSPropertyLocalPosition,
+    syntax: PropertySyntax.COORDINATE,
   },
   {
     // z in local space
     name: 'z',
     interpolable: true,
     defaultValue: '0',
-    syntax: PropertySyntax.LENGTH_PERCENTAGE,
-    handler: CSSPropertyLocalPosition,
+    syntax: PropertySyntax.COORDINATE,
   },
   {
     name: 'width',
@@ -417,8 +357,8 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
      * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/width
      */
     keywords: ['auto', 'fit-content', 'min-content', 'max-content'],
-    defaultValue: '0',
-    handler: CSSPropertyLengthOrPercentage,
+    defaultValue: 'auto',
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
     name: 'height',
@@ -428,52 +368,52 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
      * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/height
      */
     keywords: ['auto', 'fit-content', 'min-content', 'max-content'],
-    defaultValue: '0',
-    handler: CSSPropertyLengthOrPercentage,
+    defaultValue: 'auto',
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
     name: 'radius',
     interpolable: true,
     layoutDependent: true,
     defaultValue: '0',
-    handler: CSSPropertyLengthOrPercentage,
+    syntax: PropertySyntax.LENGTH_PERCENTAGE_14,
   },
   // Line
   {
     name: 'x1',
     interpolable: true,
     layoutDependent: true,
-    handler: CSSPropertyLocalPosition,
+    syntax: PropertySyntax.COORDINATE,
   },
   {
     name: 'y1',
     interpolable: true,
     layoutDependent: true,
-    handler: CSSPropertyLocalPosition,
+    syntax: PropertySyntax.COORDINATE,
   },
   {
     name: 'z1',
     interpolable: true,
     layoutDependent: true,
-    handler: CSSPropertyLocalPosition,
+    syntax: PropertySyntax.COORDINATE,
   },
   {
     name: 'x2',
     interpolable: true,
     layoutDependent: true,
-    handler: CSSPropertyLocalPosition,
+    syntax: PropertySyntax.COORDINATE,
   },
   {
     name: 'y2',
     interpolable: true,
     layoutDependent: true,
-    handler: CSSPropertyLocalPosition,
+    syntax: PropertySyntax.COORDINATE,
   },
   {
     name: 'z2',
     interpolable: true,
     layoutDependent: true,
-    handler: CSSPropertyLocalPosition,
+    syntax: PropertySyntax.COORDINATE,
   },
   // Path
   {
@@ -482,21 +422,20 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     layoutDependent: true,
     defaultValue: '',
     alias: ['d'],
-    handler: CSSPropertyPath,
+    syntax: PropertySyntax.PATH,
   },
   // Polyline & Polygon
   {
     name: 'points',
     layoutDependent: true,
     syntax: PropertySyntax.LIST_OF_POINTS,
-    handler: CSSPropertyPoints,
   },
   // Text
   {
     name: 'text',
     layoutDependent: true,
-    handler: CSSPropertyText,
     defaultValue: '',
+    syntax: PropertySyntax.TEXT,
   },
   {
     name: 'textTransform',
@@ -504,7 +443,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     inherited: true,
     keywords: ['capitalize', 'uppercase', 'lowercase', 'none'],
     defaultValue: 'none',
-    handler: CSSPropertyTextTransform,
+    syntax: PropertySyntax.TEXT_TRANSFORM,
   },
   {
     name: 'font',
@@ -519,7 +458,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
      */
     defaultValue: '16px',
     layoutDependent: true,
-    handler: CSSPropertyLengthOrPercentage,
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
     name: 'fontFamily',
@@ -654,6 +593,10 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     });
   }
 
+  unregisterMetadata(name: string) {
+    delete this.cache[name];
+  }
+
   getMetadata(name: string) {
     return this.cache[name];
   }
@@ -761,7 +704,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       computed = new CSSKeywordValue(value);
     } else {
       if (metadata) {
-        const { keywords, handler } = metadata;
+        const { keywords, syntax } = metadata;
+        const handler = syntax && PROPERTY_HANDLERS[syntax];
 
         // use keywords
         if (keywords && keywords.indexOf(value) > -1) {
@@ -791,7 +735,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     let used: CSSStyleValue = computed instanceof CSSStyleValue ? computed.clone() : computed;
 
     if (metadata) {
-      const { handler, inherited, defaultValue } = metadata;
+      const { syntax, inherited, defaultValue } = metadata;
 
       if (computed instanceof CSSKeywordValue) {
         let value = computed.value;
@@ -825,6 +769,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         }
       }
 
+      const handler = syntax && PROPERTY_HANDLERS[syntax];
       if (handler) {
         const propertyHandler = GlobalContainer.get(handler) as CSSProperty<any, any>;
 
@@ -847,8 +792,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   postProcessProperty(name: string, object: DisplayObject) {
     const metadata = this.getMetadata(name);
 
-    if (metadata && metadata.handler) {
-      const propertyHandler = GlobalContainer.get(metadata.handler) as CSSProperty<any, any>;
+    if (metadata && metadata.syntax) {
+      const handler = metadata.syntax && PROPERTY_HANDLERS[metadata.syntax];
+      const propertyHandler = GlobalContainer.get(handler) as CSSProperty<any, any>;
 
       if (propertyHandler && propertyHandler.postProcessor) {
         propertyHandler.postProcessor(object);

@@ -10,6 +10,7 @@ renderer.unregisterPlugin(domInteractionPlugin);
 const width = 200;
 const height = 200;
 const gl = require('gl')(width, height, {
+  debug: true,
   antialias: false,
   preserveDrawingBuffer: false,
   stencil: true,
@@ -47,19 +48,21 @@ describe('Render <Circle> with g-canvas', () => {
   it('should render circle on server-side correctly.', async () => {
     const circle1 = new Circle({
       style: {
-        cx: 10,
-        cy: 10,
-        r: 10,
+        cx: 100,
+        cy: 100,
+        r: 100,
         fill: 'green',
       },
     });
     canvas.appendChild(circle1);
 
-    await sleep(200);
+    await sleep(300);
 
     const pixels = new Uint8Array(width * height * 4);
     gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 
     await createPNGFromRawdata(__dirname + '/test.png', width, height, pixels);
+
+    expect(pixels[0]).toBe(0);
   });
 });

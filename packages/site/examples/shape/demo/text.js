@@ -267,11 +267,15 @@ multilineFolder
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  x: 100,
-  y: 300,
-  scale: 1,
+  localPositionX: 100,
+  localPositionY: 300,
+  localScale: 1,
+  localEulerAngles: 0,
   transformOrigin: 'left top',
-  eulerAngles: 0,
+  anchorX: 0,
+  anchorY: 0,
+  dx: 0,
+  dy: 0,
 };
 transformFolder
   .add(transformConfig, 'transformOrigin', [
@@ -284,20 +288,33 @@ transformFolder
   .onChange((transformOrigin) => {
     text.style.transformOrigin = transformOrigin;
   });
-transformFolder.add(transformConfig, 'x', 0, 400).onChange((x) => {
-  text.setLocalPosition(x, text.style.y);
-  // or
-  // text.style.x = x;
+transformFolder.add(transformConfig, 'localPositionX', 0, 600).onChange((localPositionX) => {
+  const [lx, ly] = text.getLocalPosition();
+  text.setLocalPosition(localPositionX, ly);
 });
-transformFolder.add(transformConfig, 'y', 0, 400).onChange((y) => {
-  text.setLocalPosition(text.style.x, y);
-  // or
-  // text.style.y = y;
+transformFolder.add(transformConfig, 'localPositionY', 0, 500).onChange((localPositionY) => {
+  const [lx, ly] = text.getLocalPosition();
+  text.setLocalPosition(lx, localPositionY);
 });
-transformFolder.add(transformConfig, 'scale', 0.2, 5).onChange((scaling) => {
-  text.setLocalScale(scaling);
+transformFolder.add(transformConfig, 'localScale', 0.2, 5).onChange((localScale) => {
+  text.setLocalScale(localScale);
 });
-transformFolder.add(transformConfig, 'eulerAngles', 0, 360).onChange((eulerAngles) => {
-  text.setLocalEulerAngles(eulerAngles);
+transformFolder.add(transformConfig, 'localEulerAngles', 0, 360).onChange((localEulerAngles) => {
+  text.setLocalEulerAngles(localEulerAngles);
+});
+transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
+  text.style.anchor = [anchorX, transformConfig.anchorY];
+});
+transformFolder.add(transformConfig, 'anchorY', 0, 1).onChange((anchorY) => {
+  text.style.anchor = [transformConfig.anchorX, anchorY];
+});
+transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
+  text.style.anchor = [anchorX, transformConfig.anchorY];
+});
+transformFolder.add(transformConfig, 'dx', -100, 100).onChange((dx) => {
+  text.style.dx = dx;
+});
+transformFolder.add(transformConfig, 'dy', -100, 100).onChange((dy) => {
+  text.style.dy = dy;
 });
 transformFolder.open();

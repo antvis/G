@@ -11,6 +11,7 @@ import {
   RenderReason,
   DefaultCamera,
   ElementEvent,
+  CanvasConfig,
 } from '@antv/g';
 import type {
   LinearGradient,
@@ -133,6 +134,9 @@ const CLIP_PATH_PREFIX = 'clip-path-';
 export class SVGRendererPlugin implements RenderingPlugin {
   static tag = 'SVGRenderer';
 
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
+
   @inject(DefaultCamera)
   private camera: Camera;
 
@@ -174,6 +178,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
     const handleAttributeChanged = (e: MutationEvent) => {
       const object = e.target as DisplayObject;
+
+      // @see https://github.com/antvis/g/issues/994
+      // @ts-ignore
+      if (!object.elementSVG) {
+        return;
+      }
+
       const { attrName } = e;
 
       if (attrName === 'zIndex') {
@@ -197,6 +208,12 @@ export class SVGRendererPlugin implements RenderingPlugin {
     renderingService.hooks.init.tapPromise(SVGRendererPlugin.tag, async () => {
       this.$def = createSVGElement('defs') as SVGDefsElement;
       const $svg = this.contextService.getContext()!;
+
+      const { background } = this.canvasConfig;
+      if (background) {
+        $svg.style.background = background;
+      }
+
       $svg.appendChild(this.$def);
 
       // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color-interpolation-filters

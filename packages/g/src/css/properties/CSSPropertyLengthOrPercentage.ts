@@ -2,7 +2,7 @@ import { singleton } from 'mana-syringe';
 import { UnitType, CSSUnitValue } from '../cssom';
 import { parseLengthOrPercentage, mergeDimensions } from '../parser';
 import type { StyleValueRegistry } from '../interfaces';
-import type { DisplayObject } from '../../display-objects';
+import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
 import type { CSSProperty } from '../CSSProperty';
 
 /**
@@ -49,7 +49,14 @@ export class CSSPropertyLengthOrPercentage
         // }
         return new CSSUnitValue(0, 'px');
       } else if (computed.unit === UnitType.kEms) {
-        // TODO: handle ems
+        if (object.parentNode) {
+          return this.getFontSize(object.parentNode as DisplayObject);
+        }
+        return new CSSUnitValue(0, 'px');
+      } else if (computed.unit === UnitType.kRems) {
+        if (object?.ownerDocument?.documentElement) {
+          return this.getFontSize(object.ownerDocument.documentElement as DisplayObject);
+        }
         return new CSSUnitValue(0, 'px');
       }
     } else {
@@ -61,22 +68,30 @@ export class CSSPropertyLengthOrPercentage
     }
   }
 
-  private nameToBoundsIndex(name: string): number {
-    if (name === 'x' || name === 'cx' || name === 'width') {
-      return 0;
-    } else if (name === 'y' || name === 'cy' || name === 'height') {
-      return 1;
+  private getFontSize(object: DisplayObject): CSSUnitValue {
+    const { fontSize } = object.parsedStyle as ParsedTextStyleProps;
+    if (fontSize && !CSSUnitValue.isRelativeUnit(fontSize.unit)) {
+      return fontSize.clone();
     }
-
-    return 2;
+    return new CSSUnitValue(0, 'px');
   }
 
-  private calculateUsedValueWithParentBounds(object: DisplayObject, name: string) {
-    const bounds = (object.parentElement as DisplayObject).getGeometryBounds();
-    const computedValue = object.computedStyle[name].value;
-    return new CSSUnitValue(
-      (bounds.halfExtents[this.nameToBoundsIndex(name)] * 2 * computedValue) / 100,
-      'px',
-    );
-  }
+  // private nameToBoundsIndex(name: string): number {
+  //   if (name === 'x' || name === 'cx' || name === 'width') {
+  //     return 0;
+  //   } else if (name === 'y' || name === 'cy' || name === 'height') {
+  //     return 1;
+  //   }
+
+  //   return 2;
+  // }
+
+  // private calculateUsedValueWithParentBounds(object: DisplayObject, name: string) {
+  //   const bounds = (object.parentElement as DisplayObject).getGeometryBounds();
+  //   const computedValue = object.computedStyle[name].value;
+  //   return new CSSUnitValue(
+  //     (bounds.halfExtents[this.nameToBoundsIndex(name)] * 2 * computedValue) / 100,
+  //     'px',
+  //   );
+  // }
 }

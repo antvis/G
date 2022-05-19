@@ -5,17 +5,29 @@ import type { FederatedEvent } from '../dom/FederatedEvent';
 import type { BaseStyleProps } from '../types';
 import type { MutationEvent } from '../dom/MutationEvent';
 
+export interface BaseCustomElementStyleProps extends BaseStyleProps {
+  x?: number | string;
+  y?: number | string;
+}
+
 /**
  * shadow root
  * @see https://yuque.antfin-inc.com/antv/czqvg5/pgqipg
  */
 export abstract class CustomElement<
-  CustomElementStyleProps extends BaseStyleProps,
+  CustomElementStyleProps extends BaseCustomElementStyleProps,
 > extends DisplayObject<CustomElementStyleProps> {
   // private shadowNodes: DisplayObject[] = [];
 
-  constructor(config: DisplayObjectConfig<CustomElementStyleProps> = {}) {
-    super(config);
+  constructor({ style, ...rest }: DisplayObjectConfig<CustomElementStyleProps> = {}) {
+    super({
+      style: {
+        x: '',
+        y: '',
+        ...style,
+      },
+      ...rest,
+    });
 
     // this.addEventListener(ElementEvent.CHILD_INSERTED, this.handleChildInserted);
     // this.addEventListener(ElementEvent.CHILD_REMOVED, this.handleChildRemoved);

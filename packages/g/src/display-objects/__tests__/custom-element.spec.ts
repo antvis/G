@@ -5,9 +5,10 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import type { DisplayObjectConfig, BaseStyleProps } from '@antv/g';
+import type { DisplayObjectConfig, BaseCustomElementStyleProps } from '@antv/g';
 import { CustomElement, Circle, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { vec3 } from 'gl-matrix';
 
 chai.use(chaiAlmost(0.0001));
 chai.use(sinonChai);
@@ -26,12 +27,17 @@ const canvas = new Canvas({
   renderer,
 });
 
-interface AProps extends BaseStyleProps {
+interface AProps extends BaseCustomElementStyleProps {
   size: number;
 }
 
+interface BProps extends BaseCustomElementStyleProps {
+  size: number;
+  path: string;
+}
+
 describe('CustomElement', () => {
-  it('create custom element', async () => {
+  it('should create custom element correctly.', async () => {
     const connectedCallback = sinon.spy();
     const disconnectedCallback = sinon.spy();
     const attributeChangedCallback = sinon.spy();
@@ -55,6 +61,10 @@ describe('CustomElement', () => {
     }
     const a = new ElementA({ style: { size: 10 } });
     a.setPosition(100, 100);
+
+    a.style.x = 50;
+    a.style.y = 50;
+    expect(a.getLocalPosition()).to.be.eqls(vec3.fromValues(50, 50, 0));
 
     expect(a.style.size).to.be.eqls(10);
     a.setAttribute('size', 20);
@@ -81,5 +91,25 @@ describe('CustomElement', () => {
     canvas.removeChild(a);
     // @ts-ignore
     expect(disconnectedCallback).to.have.been.called;
+  });
+
+  it('should use built-in attributes correctly.', async () => {
+    class ElementB extends CustomElement<BProps> {
+      constructor(options: DisplayObjectConfig<BProps>) {
+        super(options);
+        const circle = new Circle({ style: { r: options.style?.size || 0, fill: 'red' } });
+        this.appendChild(circle);
+      }
+      connectedCallback() {}
+      disconnectedCallback() {}
+      attributeChangedCallback<Key extends never>(
+        name: Key,
+        oldValue: {}[Key],
+        newValue: {}[Key],
+      ) {}
+    }
+    const a = new ElementB({ style: { size: 10, path: 'M100,100 L200,200' } });
+    // conflict with built-in props
+    expect(a.getLocalPosition()).to.be.eqls(vec3.fromValues(0, 0, 0));
   });
 });

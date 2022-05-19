@@ -35,6 +35,7 @@ const lineArrow = new Arrow({
     stroke: '#1890FF',
     lineWidth: 10,
     cursor: 'pointer',
+    increasedLineWidthForHitTesting: 40,
   },
 });
 lineArrow.translate(200, 100);
@@ -81,18 +82,6 @@ pathArrow.translate(100, 150);
 canvas.appendChild(lineArrow);
 canvas.appendChild(polylineArrow);
 canvas.appendChild(pathArrow);
-
-lineArrow.animate(
-  [
-    { transform: 'scale(1)', stroke: '#F04864', opacity: 1 },
-    { transform: 'scale(2)', stroke: '#1890FF', opacity: 0.8 },
-  ],
-  {
-    duration: 1500,
-    iterations: Infinity,
-    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-  },
-);
 
 lineArrow.addEventListener('mouseenter', () => {
   lineArrow.setAttribute('stroke', '#2FC25B');
@@ -176,7 +165,10 @@ const lineArrowConfig = {
   strokeOpacity: 1,
   startHead: 'default',
   endHead: 'none',
+  startHeadOffset: 0,
+  endHeadOffset: 0,
 };
+
 lineArrowFolder.addColor(lineArrowConfig, 'stroke').onChange((color) => {
   lineArrow.setAttribute('stroke', color);
 });
@@ -201,6 +193,7 @@ lineArrowFolder
           width: 50,
           height: 50,
           anchor: [0.5, 0.5],
+          transformOrigin: 'center',
           img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
         },
       });
@@ -225,6 +218,7 @@ lineArrowFolder
           width: 50,
           height: 50,
           anchor: [0.5, 0.5],
+          transformOrigin: 'center',
           img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
         },
       });
@@ -234,6 +228,12 @@ lineArrowFolder
       lineArrow.setAttribute('endHead', new MyCustomArrowHead({ style: {} }));
     }
   });
+lineArrowFolder.add(lineArrowConfig, 'startHeadOffset', -20, 20).onChange((startHeadOffset) => {
+  lineArrow.setAttribute('startHeadOffset', startHeadOffset);
+});
+lineArrowFolder.add(lineArrowConfig, 'endHeadOffset', -20, 20).onChange((endHeadOffset) => {
+  lineArrow.setAttribute('endHeadOffset', endHeadOffset);
+});
 lineArrowFolder.open();
 
 const polylineArrowFolder = gui.addFolder('polyline arrow');
@@ -243,6 +243,8 @@ const polylineArrowConfig = {
   strokeOpacity: 1,
   startHead: 'default',
   endHead: 'none',
+  startHeadOffset: 0,
+  endHeadOffset: 0,
 };
 polylineArrowFolder.addColor(polylineArrowConfig, 'stroke').onChange((color) => {
   polylineArrow.setAttribute('stroke', color);
@@ -268,6 +270,7 @@ polylineArrowFolder
           width: 50,
           height: 50,
           anchor: [0.5, 0.5],
+          transformOrigin: 'center',
           img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
         },
       });
@@ -292,6 +295,7 @@ polylineArrowFolder
           width: 50,
           height: 50,
           anchor: [0.5, 0.5],
+          transformOrigin: 'center',
           img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
         },
       });
@@ -301,6 +305,14 @@ polylineArrowFolder
       polylineArrow.setAttribute('endHead', new MyCustomArrowHead({ style: {} }));
     }
   });
+polylineArrowFolder
+  .add(polylineArrowConfig, 'startHeadOffset', -20, 20)
+  .onChange((startHeadOffset) => {
+    polylineArrow.setAttribute('startHeadOffset', startHeadOffset);
+  });
+polylineArrowFolder.add(polylineArrowConfig, 'endHeadOffset', -20, 20).onChange((endHeadOffset) => {
+  polylineArrow.setAttribute('endHeadOffset', endHeadOffset);
+});
 
 const pathArrowFolder = gui.addFolder('path arrow');
 const pathArrowConfig = {
@@ -309,6 +321,8 @@ const pathArrowConfig = {
   strokeOpacity: 1,
   startHead: 'default',
   endHead: 'none',
+  startHeadOffset: 0,
+  endHeadOffset: 0,
 };
 pathArrowFolder.addColor(pathArrowConfig, 'stroke').onChange((color) => {
   pathArrow.setAttribute('stroke', color);
@@ -334,6 +348,7 @@ pathArrowFolder
           width: 50,
           height: 50,
           anchor: [0.5, 0.5],
+          transformOrigin: 'center',
           img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
         },
       });
@@ -358,6 +373,7 @@ pathArrowFolder
           width: 50,
           height: 50,
           anchor: [0.5, 0.5],
+          transformOrigin: 'center',
           img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
         },
       });
@@ -367,3 +383,9 @@ pathArrowFolder
       pathArrow.setAttribute('endHead', new MyCustomArrowHead({ style: {} }));
     }
   });
+pathArrowFolder.add(pathArrowConfig, 'startHeadOffset', -20, 20).onChange((startHeadOffset) => {
+  pathArrow.setAttribute('startHeadOffset', startHeadOffset);
+});
+pathArrowFolder.add(pathArrowConfig, 'endHeadOffset', -20, 20).onChange((endHeadOffset) => {
+  pathArrow.setAttribute('endHeadOffset', endHeadOffset);
+});
