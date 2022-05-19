@@ -5,6 +5,13 @@
   },
   "demos": [
     {
+      "filename": "canvas-circle-path.js",
+      "title": {
+        "zh": "g-canvas 渲染 Circle 和 Path",
+        "en": "Render Circle & Path with g-canvas"
+      }
+    },
+    {
       "filename": "vs-g4.0.js",
       "title": {
         "zh": "与 G 4.0 对比",
