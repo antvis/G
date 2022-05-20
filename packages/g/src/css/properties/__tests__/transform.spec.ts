@@ -17,7 +17,7 @@ const canvas = new Canvas({
 });
 
 /**
- * @see https://developer.mozilla.org/en-US/docs/Web/API/CSS/factory_functions
+ * <transform>
  */
 describe('CSSPropertyTransform', () => {
   afterEach(() => {

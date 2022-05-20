@@ -1,4 +1,3 @@
-import { singleton } from 'mana-syringe';
 import type { CSSProperty } from '../CSSProperty';
 import type { DisplayObject } from '../../display-objects';
 import { dirtifyToRoot } from '../../services';
@@ -21,8 +20,7 @@ import { CSSKeywordValue } from '../cssom';
     }
   });
  */
-@singleton()
-export class CSSPropertyClipPath implements Partial<CSSProperty<DisplayObject, DisplayObject>> {
+export const CSSPropertyClipPath: Partial<CSSProperty<DisplayObject, DisplayObject>> = {
   calculator(
     name: string,
     oldClipPath: DisplayObject,
@@ -50,5 +48,5 @@ export class CSSPropertyClipPath implements Partial<CSSProperty<DisplayObject, D
     dirtifyToRoot(object);
 
     return newClipPath;
-  }
-}
+  },
+};

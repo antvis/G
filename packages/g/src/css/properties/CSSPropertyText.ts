@@ -1,10 +1,8 @@
-import { singleton } from 'mana-syringe';
 import type { CSSProperty } from '../CSSProperty';
 import { CSSKeywordValue } from '../cssom';
 import type { DisplayObject } from '../../display-objects';
 
-@singleton()
-export class CSSPropertyText implements Partial<CSSProperty<CSSKeywordValue | string, string>> {
+export const CSSPropertyText: Partial<CSSProperty<CSSKeywordValue | string, string>> = {
   calculator(
     name: string,
     oldParsed: CSSKeywordValue | string,
@@ -19,9 +17,9 @@ export class CSSPropertyText implements Partial<CSSProperty<CSSKeywordValue | st
       }
     }
     return parsed;
-  }
+  },
 
   postProcessor(object: DisplayObject) {
     object.nodeValue = `${object.parsedStyle.text}` || '';
-  }
-}
+  },
+};

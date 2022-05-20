@@ -83,7 +83,7 @@ describe('Camera landmark', () => {
       onfinish: finishCallback,
     });
 
-    await sleep(300);
+    await sleep(500);
     expect(finishCallback).to.have.been.called;
 
     expect(camera.getPosition()).to.be.eqls(vec3.fromValues(100, 100, 500));
@@ -100,7 +100,7 @@ describe('Camera landmark', () => {
     expect(landmark2.focalPoint).to.be.eqls(vec3.fromValues(100, 100, 0));
 
     camera.gotoLandmark(landmark2, 100);
-    await sleep(200);
+    await sleep(500);
     expect(camera.getPosition()).to.be.eqls(vec3.fromValues(100, 100, 500));
     expect(camera.getFocalPoint()).to.be.eqls(vec3.fromValues(100, 100, 0));
     expect(camera.getRoll()).to.be.eqls(30);

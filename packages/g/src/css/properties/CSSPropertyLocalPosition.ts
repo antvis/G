@@ -1,4 +1,3 @@
-import { singleton } from 'mana-syringe';
 import type { DisplayObject, Circle, Rect, Line } from '../../display-objects';
 import type { CSSProperty } from '../CSSProperty';
 import type { CSSUnitValue } from '../cssom';
@@ -9,11 +8,10 @@ import { Shape } from '../../types';
 /**
  * local position
  */
-@singleton()
-export class CSSPropertyLocalPosition
-  extends CSSPropertyLengthOrPercentage
-  implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>>
-{
+export const CSSPropertyLocalPosition: Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> = {
+  parser: CSSPropertyLengthOrPercentage.parser,
+  mixer: CSSPropertyLengthOrPercentage.mixer,
+  calculator: CSSPropertyLengthOrPercentage.calculator,
   /**
    * update local position
    */
@@ -56,5 +54,5 @@ export class CSSPropertyLocalPosition
 
     const [ox, oy, oz] = object.getLocalPosition();
     object.setLocalPosition(isNil(x) ? ox : x, isNil(y) ? oy : y, isNil(z) ? oz : z);
-  }
-}
+  },
+};

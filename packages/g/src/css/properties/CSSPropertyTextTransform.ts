@@ -1,22 +1,28 @@
-import { singleton } from 'mana-syringe';
-import { TextTransform, Shape } from '../../types';
 import type { CSSProperty } from '../CSSProperty';
-import type { Text, DisplayObject } from '../../display-objects';
+import type { DisplayObject } from '../../display-objects';
+import type { CSSKeywordValue } from '../cssom';
 
-@singleton()
-export class CSSPropertyTextTransform implements Partial<CSSProperty<any, any>> {
-  postProcessor(o: DisplayObject) {
-    if (o.nodeName === Shape.TEXT) {
-      const object = o as Text;
-      const newTextTransform = object.parsedStyle.textTransform.value;
-      if (newTextTransform === TextTransform.CAPITALIZE) {
-        object.style.text = object.style.text.charAt(0).toUpperCase() + object.style.text.slice(1);
-      } else if (newTextTransform === TextTransform.LOWERCASE) {
-        object.style.text = object.style.text.toLowerCase();
-      } else if (newTextTransform === TextTransform.UPPERCASE) {
-        object.style.text = object.style.text.toUpperCase();
-        // } else if (newTextTransform === TextTransform.NONE) {
+export const CSSPropertyTextTransform: Partial<CSSProperty<CSSKeywordValue, CSSKeywordValue>> = {
+  calculator(
+    name: string,
+    oldParsed: CSSKeywordValue,
+    parsed: CSSKeywordValue,
+    object: DisplayObject,
+  ) {
+    const rawText = object.getAttribute('text');
+    if (rawText) {
+      let transformedText = rawText;
+      if (parsed.value === 'capitalize') {
+        transformedText = rawText.charAt(0).toUpperCase() + rawText.slice(1);
+      } else if (parsed.value === 'lowercase') {
+        transformedText = rawText.toLowerCase();
+      } else if (parsed.value === 'uppercase') {
+        transformedText = rawText.toUpperCase();
       }
+
+      object.parsedStyle.text = transformedText;
     }
-  }
-}
+
+    return parsed;
+  },
+};

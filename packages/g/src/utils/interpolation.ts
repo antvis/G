@@ -157,10 +157,7 @@ function propertyInterpolation(
   const metadata = registry.getMetadata(property);
 
   if (metadata && metadata.syntax && metadata.interpolable && PROPERTY_HANDLERS[metadata.syntax]) {
-    const propertyHandler = GlobalContainer.get(PROPERTY_HANDLERS[metadata.syntax]) as CSSProperty<
-      any,
-      any
-    >;
+    const propertyHandler = PROPERTY_HANDLERS[metadata.syntax] as CSSProperty<any, any>;
 
     if (propertyHandler) {
       if (propertyHandler.parser) {

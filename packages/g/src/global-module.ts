@@ -19,28 +19,7 @@ import {
   SceneGraphSelectorFactory,
 } from './services';
 import type { Shape } from './types';
-import {
-  LayoutRegistry,
-  CSSPropertyLocalPosition,
-  CSSPropertyLengthOrPercentage,
-  CSSPropertyClipPath,
-  CSSPropertyColor,
-  CSSPropertyFilter,
-  CSSPropertyLengthOrPercentage12,
-  CSSPropertyOffsetDistance,
-  CSSPropertyOffsetPath,
-  CSSPropertyOpacity,
-  CSSPropertyPath,
-  CSSPropertyPoints,
-  CSSPropertyText,
-  CSSPropertyTextTransform,
-  CSSPropertyTransform,
-  CSSPropertyTransformOrigin,
-  CSSPropertyZIndex,
-  CSSPropertyShadowBlur,
-  CSSPropertyLengthOrPercentage14,
-  DefaultStyleValueRegistry,
-} from './css';
+import { LayoutRegistry, DefaultStyleValueRegistry } from './css';
 import {
   ContextNode,
   FragmentResult,
@@ -109,24 +88,6 @@ export const containerModule = Module((register) => {
   // bind CSS property handlers
   register(LayoutRegistry);
   register(DefaultStyleValueRegistry);
-  register(CSSPropertyLengthOrPercentage);
-  register(CSSPropertyLocalPosition);
-  register(CSSPropertyOpacity);
-  register(CSSPropertyColor);
-  register(CSSPropertyFilter);
-  register(CSSPropertyLengthOrPercentage12);
-  register(CSSPropertyShadowBlur);
-  register(CSSPropertyOffsetPath);
-  register(CSSPropertyOffsetDistance);
-  register(CSSPropertyZIndex);
-  register(CSSPropertyTransform);
-  register(CSSPropertyTransformOrigin);
-  register(CSSPropertyPath);
-  register(CSSPropertyPoints);
-  register(CSSPropertyClipPath);
-  register(CSSPropertyText);
-  register(CSSPropertyTextTransform);
-  register(CSSPropertyLengthOrPercentage14);
 
   // bind layout engine
   register(LayoutEngine);

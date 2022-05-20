@@ -1,6 +1,6 @@
 import { injectable } from 'mana-syringe';
 import type { Line, DisplayObject, ParsedLineStyleProps, CSSRGB, CSSGradientValue } from '@antv/g';
-import { LineCap, Shape } from '@antv/g';
+import { Shape } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
 import vert from '../shader/instanced-line.vert';
 import frag from '../shader/instanced-line.frag';
@@ -27,9 +27,9 @@ enum InstancedLineVertexAttributeLocation {
 }
 
 const LineCap_MAP = {
-  [LineCap.BUTT]: 1,
-  [LineCap.ROUND]: 2,
-  [LineCap.SQUARE]: 3,
+  butt: 1,
+  round: 2,
+  square: 3,
 };
 
 @injectable()

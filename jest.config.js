@@ -20,7 +20,7 @@ const moduleNameMapper = {
 module.exports = {
   moduleNameMapper: moduleNameMapper,
   collectCoverageFrom: [
-    '<rootDir>/packages/g/lib/**/*.{js,jsx}',
+    '<rootDir>/packages/g/src/**/*.{ts,tsx}',
     '!**/node_modules/**',
     '!**/__tests__/**',
     '!**/__node__tests__/**',
@@ -38,49 +38,69 @@ module.exports = {
   // },
 
   // @see https://jestjs.io/docs/configuration#projects-arraystring--projectconfig
-  projects: [
-    {
-      // use node-canvas & headless-gl
-      displayName: 'server-side',
-      testMatch: ['<rootDir>/integration/__node__tests__/**/*/*.spec.+(ts|tsx|js)'],
-      preset: 'ts-jest',
-      globals: {
-        'ts-jest': {
-          isolatedModules: true,
-          tsConfig: {
-            allowJs: true,
-            target: 'ES2019',
-          },
-        },
+  // projects: [
+  //   {
+  //     // use node-canvas & headless-gl
+  //     displayName: 'server-side',
+  //     testMatch: ['<rootDir>/integration/__node__tests__/**/*/*.spec.+(ts|tsx|js)'],
+  //     preset: 'ts-jest',
+  //     globals: {
+  //       'ts-jest': {
+  //         isolatedModules: true,
+  //         tsConfig: {
+  //           allowJs: true,
+  //           target: 'ES2019',
+  //         },
+  //       },
+  //     },
+  //     moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
+  //     modulePathIgnorePatterns: ['dist', '.fatherrc.ts'],
+  //     transform: {
+  //       '^.+\\.[tj]s$': 'ts-jest',
+  //     },
+  //     transformIgnorePatterns: ['<rootDir>/node_modules/(?!@mapbox)'],
+  //   },
+  //   {
+  //     displayName: 'browser',
+  //     runner: 'jest-electron/runner',
+  //     testEnvironment: 'jest-electron/environment',
+  //     testMatch: ['<rootDir>/packages/**/*/__tests__/*.spec.+(ts|tsx|js)'],
+  //     preset: 'ts-jest',
+  //     globals: {
+  //       'ts-jest': {
+  //         isolatedModules: true,
+  //         tsConfig: {
+  //           allowJs: true,
+  //           target: 'ES2019',
+  //         },
+  //       },
+  //     },
+  //     moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
+  //     modulePathIgnorePatterns: ['dist', '.fatherrc.ts'],
+  //     transform: {
+  //       '^.+\\.[tj]s$': 'ts-jest',
+  //     },
+  //     transformIgnorePatterns: ['<rootDir>/node_modules/(?!@mapbox)'],
+  //   },
+  // ],
+
+  runner: 'jest-electron/runner',
+  testEnvironment: 'jest-electron/environment',
+  testMatch: ['<rootDir>/packages/**/*/__tests__/*.spec.+(ts|tsx|js)'],
+  preset: 'ts-jest',
+  globals: {
+    'ts-jest': {
+      isolatedModules: true,
+      tsConfig: {
+        allowJs: true,
+        target: 'ES2019',
       },
-      moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
-      modulePathIgnorePatterns: ['dist', '.fatherrc.ts'],
-      transform: {
-        '^.+\\.[tj]s$': 'ts-jest',
-      },
-      transformIgnorePatterns: ['<rootDir>/node_modules/(?!@mapbox)'],
     },
-    {
-      displayName: 'browser',
-      runner: 'jest-electron/runner',
-      testEnvironment: 'jest-electron/environment',
-      testMatch: ['<rootDir>/packages/**/*/__tests__/*.spec.+(ts|tsx|js)'],
-      preset: 'ts-jest',
-      globals: {
-        'ts-jest': {
-          isolatedModules: true,
-          tsConfig: {
-            allowJs: true,
-            target: 'ES2019',
-          },
-        },
-      },
-      moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
-      modulePathIgnorePatterns: ['dist', '.fatherrc.ts'],
-      transform: {
-        '^.+\\.[tj]s$': 'ts-jest',
-      },
-      transformIgnorePatterns: ['<rootDir>/node_modules/(?!@mapbox)'],
-    },
-  ],
+  },
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
+  modulePathIgnorePatterns: ['dist', '.fatherrc.ts'],
+  transform: {
+    '^.+\\.[tj]s$': 'ts-jest',
+  },
+  transformIgnorePatterns: ['<rootDir>/node_modules/(?!@mapbox)'],
 };
