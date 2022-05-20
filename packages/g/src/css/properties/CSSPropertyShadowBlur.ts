@@ -1,8 +1,8 @@
-import { singleton } from 'mana-syringe';
 import { clampedMergeNumbers } from '../parser';
 import { CSSPropertyLengthOrPercentage } from './CSSPropertyLengthOrPercentage';
 
-@singleton()
-export class CSSPropertyShadowBlur extends CSSPropertyLengthOrPercentage {
-  mixer = clampedMergeNumbers(0, Infinity);
-}
+export const CSSPropertyShadowBlur: typeof CSSPropertyLengthOrPercentage = {
+  parser: CSSPropertyLengthOrPercentage.parser,
+  mixer: clampedMergeNumbers(0, Infinity),
+  calculator: CSSPropertyLengthOrPercentage.calculator,
+};

@@ -1,9 +1,8 @@
-import { singleton } from 'mana-syringe';
 import { Opx, Odeg } from '../cssom';
 import type { DisplayObject } from '../../display-objects';
 import type { CSSProperty } from '../CSSProperty';
 import { parseTransform, mergeTransforms } from '../parser';
-import type { ParsedBaseStyleProps } from '../..';
+import type { ParsedBaseStyleProps } from '../../types';
 
 /**
  * @see /zh/docs/api/animation#支持变换的属性
@@ -35,11 +34,10 @@ import type { ParsedBaseStyleProps } from '../..';
  * * skew/skewX/skewY
  * * perspective
  */
-@singleton()
-export class CSSPropertyTransform implements Partial<CSSProperty<any[], any[]>> {
-  parser = parseTransform;
+export const CSSPropertyTransform: Partial<CSSProperty<any[], any[]>> = {
+  parser: parseTransform,
 
-  mixer = mergeTransforms;
+  mixer: mergeTransforms,
 
   postProcessor(object: DisplayObject) {
     const { transform, defX, defY } = object.parsedStyle as ParsedBaseStyleProps;
@@ -109,5 +107,5 @@ export class CSSPropertyTransform implements Partial<CSSProperty<any[], any[]>> 
         }
       });
     }
-  }
-}
+  },
+};

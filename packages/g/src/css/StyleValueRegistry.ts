@@ -712,7 +712,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           computed = new CSSKeywordValue(value);
         } else if (handler) {
           // try to parse value with handler
-          const propertyHandler = GlobalContainer.get(handler) as CSSProperty<any, any>;
+          const propertyHandler = handler as CSSProperty<any, any>;
 
           if (propertyHandler && propertyHandler.parser) {
             // try to parse it to CSSStyleValue, eg. '10px' -> CSS.px(10)
@@ -771,7 +771,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
       const handler = syntax && PROPERTY_HANDLERS[syntax];
       if (handler) {
-        const propertyHandler = GlobalContainer.get(handler) as CSSProperty<any, any>;
+        const propertyHandler = handler as CSSProperty<any, any>;
 
         // convert computed value to used value
         if (propertyHandler && propertyHandler.calculator) {
@@ -794,7 +794,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
     if (metadata && metadata.syntax) {
       const handler = metadata.syntax && PROPERTY_HANDLERS[metadata.syntax];
-      const propertyHandler = GlobalContainer.get(handler) as CSSProperty<any, any>;
+      const propertyHandler = handler as CSSProperty<any, any>;
 
       if (propertyHandler && propertyHandler.postProcessor) {
         propertyHandler.postProcessor(object);

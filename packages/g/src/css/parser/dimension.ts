@@ -7,7 +7,7 @@ import { UnitType } from '../cssom';
 import { CSSUnitValue } from '../cssom';
 import type { CSSValueParser } from './types';
 
-type LengthUnit = 'px' | '%' | 'em';
+type LengthUnit = 'px' | '%' | 'em' | 'rem';
 type AngleUnit = 'deg' | 'rad' | 'turn';
 type Unit = LengthUnit | AngleUnit | '';
 
@@ -68,7 +68,7 @@ export const parserPercentage: (css: string) => CSSUnitValue = parseDimension.bi
  */
 export const parseLengthOrPercentage: (css: string) => CSSUnitValue = parseDimension.bind(
   null,
-  new RegExp('px|%|em', 'g'),
+  new RegExp('px|%|em|rem', 'g'),
 );
 
 export const parseAngle: (css: string) => CSSUnitValue = parseDimension.bind(

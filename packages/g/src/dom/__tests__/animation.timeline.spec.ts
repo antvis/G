@@ -82,6 +82,17 @@ describe('Animation Timeline', () => {
       expect(computedTiming.currentIteration).to.be.eqls(null);
     });
 
+    animation.onfinish = (ev) => {
+      expect(ev.currentTime).to.be.eqls(500);
+      expect(animation.playState).to.be.eqls('finished');
+
+      expect(computedTiming.endTime).to.be.eqls(500);
+      expect(computedTiming.activeDuration).to.be.eqls(500);
+      // not running
+      expect(computedTiming.progress).to.be.eqls(null);
+      expect(computedTiming.currentIteration).to.be.eqls(null);
+    };
+
     await sleep(1000);
   });
 });

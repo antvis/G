@@ -41,5 +41,9 @@ describe('Abstract renderer', () => {
 
     renderer.unregisterPlugin(plugin);
     expect(renderer.getPlugins().length).to.be.eqls(0);
+
+    // @ts-ignore
+    renderer.unregisterPlugin({ name: 'xx' });
+    expect(renderer.getPlugins().length).to.be.eqls(0);
   });
 });

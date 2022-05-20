@@ -61,6 +61,10 @@ export const CSS = {
     return new CSSUnitValue(n, 'em');
   },
 
+  rem: (n: number) => {
+    return new CSSUnitValue(n, 'rem');
+  },
+
   /**
    * <angle>
    */

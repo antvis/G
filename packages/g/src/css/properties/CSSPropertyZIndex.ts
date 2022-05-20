@@ -1,12 +1,10 @@
-import { singleton } from 'mana-syringe';
 import type { CSSProperty } from '../CSSProperty';
 import type { CSSUnitValue } from '../cssom';
 import type { DisplayObject } from '../../display-objects';
 import { parseNumber } from '../parser';
 
-@singleton()
-export class CSSPropertyZIndex implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> {
-  parser = parseNumber;
+export const CSSPropertyZIndex: Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> = {
+  parser: parseNumber,
 
   postProcessor(object: DisplayObject) {
     if (object.parentNode) {
@@ -21,5 +19,5 @@ export class CSSPropertyZIndex implements Partial<CSSProperty<CSSUnitValue, CSSU
         parentSortable.dirty = true;
       }
     }
-  }
-}
+  },
+};

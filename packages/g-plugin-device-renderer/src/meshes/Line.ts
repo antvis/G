@@ -12,7 +12,7 @@ import type {
   ParsedBaseStyleProps,
 } from '@antv/g';
 import { CSSRGB } from '@antv/g';
-import { LineCap, LineJoin, Shape, convertToPath, parsePath } from '@antv/g';
+import { Shape, convertToPath, parsePath } from '@antv/g';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import earcut from 'earcut';
 import { vec3, mat4 } from 'gl-matrix';
@@ -596,10 +596,10 @@ function getJointType(lineJoin: CanvasLineJoin) {
   let joint: number;
 
   switch (lineJoin) {
-    case LineJoin.BEVEL:
+    case 'bevel':
       joint = JOINT_TYPE.JOINT_BEVEL;
       break;
-    case LineJoin.ROUND:
+    case 'round':
       joint = JOINT_TYPE.JOINT_ROUND;
       break;
     default:
@@ -614,10 +614,10 @@ function getCapType(lineCap: CanvasLineCap) {
   let cap: number;
 
   switch (lineCap) {
-    case LineCap.SQUARE:
+    case 'square':
       cap = JOINT_TYPE.CAP_SQUARE;
       break;
-    case LineCap.ROUND:
+    case 'round':
       cap = JOINT_TYPE.CAP_ROUND;
       break;
     default:

@@ -1,19 +1,23 @@
-import { singleton } from 'mana-syringe';
 import { UnitType, CSSUnitValue } from '../cssom';
 import { parseLengthOrPercentage, mergeDimensions } from '../parser';
 import type { StyleValueRegistry } from '../interfaces';
 import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
 import type { CSSProperty } from '../CSSProperty';
 
+function getFontSize(object: DisplayObject): CSSUnitValue {
+  const { fontSize } = object.parsedStyle as ParsedTextStyleProps;
+  if (fontSize && !CSSUnitValue.isRelativeUnit(fontSize.unit)) {
+    return fontSize.clone();
+  }
+  return new CSSUnitValue(0, 'px');
+}
+
 /**
  * <length> & <percentage>
  */
-@singleton()
-export class CSSPropertyLengthOrPercentage
-  implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>>
-{
-  parser = parseLengthOrPercentage;
-  mixer = mergeDimensions;
+export const CSSPropertyLengthOrPercentage: Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> = {
+  parser: parseLengthOrPercentage,
+  mixer: mergeDimensions,
 
   /**
    * according to parent's bounds
@@ -50,12 +54,16 @@ export class CSSPropertyLengthOrPercentage
         return new CSSUnitValue(0, 'px');
       } else if (computed.unit === UnitType.kEms) {
         if (object.parentNode) {
-          return this.getFontSize(object.parentNode as DisplayObject);
+          const fontSize = getFontSize(object.parentNode as DisplayObject);
+          fontSize.value *= computed.value;
+          return fontSize;
         }
         return new CSSUnitValue(0, 'px');
       } else if (computed.unit === UnitType.kRems) {
         if (object?.ownerDocument?.documentElement) {
-          return this.getFontSize(object.ownerDocument.documentElement as DisplayObject);
+          const fontSize = getFontSize(object.ownerDocument.documentElement as DisplayObject);
+          fontSize.value *= computed.value;
+          return fontSize;
         }
         return new CSSUnitValue(0, 'px');
       }
@@ -66,15 +74,7 @@ export class CSSPropertyLengthOrPercentage
       // return absolute value
       return computed.clone();
     }
-  }
-
-  private getFontSize(object: DisplayObject): CSSUnitValue {
-    const { fontSize } = object.parsedStyle as ParsedTextStyleProps;
-    if (fontSize && !CSSUnitValue.isRelativeUnit(fontSize.unit)) {
-      return fontSize.clone();
-    }
-    return new CSSUnitValue(0, 'px');
-  }
+  },
 
   // private nameToBoundsIndex(name: string): number {
   //   if (name === 'x' || name === 'cx' || name === 'width') {
@@ -94,4 +94,4 @@ export class CSSPropertyLengthOrPercentage
   //     'px',
   //   );
   // }
-}
+};

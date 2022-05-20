@@ -1,4 +1,3 @@
-import { singleton } from 'mana-syringe';
 import type { CSSProperty } from '../CSSProperty';
 import type { CSSUnitValue } from '../cssom';
 import { parseDimensionArray, mergeDimensionList } from '../parser';
@@ -12,10 +11,9 @@ import { isNumber } from '../../utils';
  * rect.style.lineDash = [10, 10];
  * rect.style.lineDash = '10 10';
  */
-@singleton()
-export class CSSPropertyLengthOrPercentage12
-  implements Partial<CSSProperty<[CSSUnitValue, CSSUnitValue], [CSSUnitValue, CSSUnitValue]>>
-{
+export const CSSPropertyLengthOrPercentage12: Partial<
+  CSSProperty<[CSSUnitValue, CSSUnitValue], [CSSUnitValue, CSSUnitValue]>
+> = {
   parser(radius: string | number | number[]) {
     const parsed = parseDimensionArray(isNumber(radius) ? [radius] : radius);
 
@@ -27,7 +25,7 @@ export class CSSPropertyLengthOrPercentage12
     }
 
     return formatted;
-  }
+  },
 
-  mixer = mergeDimensionList;
-}
+  mixer: mergeDimensionList,
+};

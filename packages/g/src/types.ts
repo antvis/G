@@ -37,32 +37,7 @@ export interface EventPosition {
   y: number;
 }
 
-export enum LineCap {
-  BUTT = 'butt',
-  ROUND = 'round',
-  SQUARE = 'square',
-}
-
-export enum LineJoin {
-  BEVEL = 'bevel',
-  ROUND = 'round',
-  MITER = 'miter',
-}
-
-export enum TextTransform {
-  CAPITALIZE = 'capitalize',
-  UPPERCASE = 'uppercase',
-  LOWERCASE = 'lowercase',
-  NONE = 'none',
-}
-
-export enum TextAlign {
-  START = 'start',
-  CENTER = 'center',
-  END = 'end',
-  LEFT = 'left',
-  RIGHT = 'right',
-}
+export type TextTransform = 'capitalize' | 'uppercase' | 'lowercase' | 'none';
 
 export interface BaseStyleProps {
   class?: string;
@@ -133,6 +108,7 @@ export interface BaseStyleProps {
    */
   offsetPath?: DisplayObject | null;
   offsetPathTargets?: DisplayObject[];
+  offsetDistance?: number;
 
   stroke?: ColorType;
   /** 描边透明度 */
@@ -224,6 +200,7 @@ export interface ParsedBaseStyleProps
     | 'transform'
     | 'transformOrigin'
     | 'textTransform'
+    | 'offsetDistance'
   > {
   zIndex?: CSSUnitValue;
   visibility?: CSSKeywordValue;
@@ -237,6 +214,7 @@ export interface ParsedBaseStyleProps
   lineCap?: CSSKeywordValue;
   lineJoin?: CSSKeywordValue;
   lineDashOffset?: CSSUnitValue;
+  offsetDistance?: CSSUnitValue;
 
   anchor?: [CSSUnitValue, CSSUnitValue, CSSUnitValue];
   transform: ParsedTransform[];
