@@ -8,3 +8,4 @@ export * from './event';
 export * from './canvas';
 export * from './deferred';
 export * from './dom';
+export * from './custom-easing';
