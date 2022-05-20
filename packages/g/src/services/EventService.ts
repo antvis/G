@@ -9,13 +9,11 @@ import type { FederatedEvent } from '../dom/FederatedEvent';
 import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
-import { FederatedTouchEvent } from '../dom/FederatedTouchEvent';
 import { RenderingContext } from './RenderingContext';
 import type { IEventTarget, INode, IDocument, ICanvas } from '../dom/interfaces';
 import type { PointLike } from '../shapes';
 import { Point } from '../shapes';
 import { ContextService } from './ContextService';
-import type { FormattedTouch } from '../utils';
 
 type Picker = (position: EventPosition) => Promise<IEventTarget | null>;
 type TrackingData = {
@@ -77,10 +75,6 @@ export class EventService extends EventEmitter {
     this.addEventMapping('pointerover', this.onPointerOver);
     this.addEventMapping('pointerupoutside', this.onPointerUpOutside);
     this.addEventMapping('wheel', this.onWheel);
-    this.addEventMapping('touchstart', this.onTouchStart);
-    this.addEventMapping('touchmove', this.onTouchMove);
-    this.addEventMapping('touchend', this.onTouchEnd);
-    this.addEventMapping('touchcancel', this.onTouchCancel);
   }
 
   client2Viewport(client: PointLike): PointLike {
@@ -158,56 +152,6 @@ export class EventService extends EventEmitter {
     }
   }
 
-  private handleTouchEvent = async (from: FederatedEvent, name: string) => {
-    const e = await this.createTouchEvent(from as unknown as FederatedTouchEvent);
-
-    const uniqTargets = [];
-    for (const touch of e.changedTouches) {
-      if (uniqTargets.indexOf(touch.target) === -1) {
-        uniqTargets.push(touch.target);
-      }
-    }
-
-    for (const target of uniqTargets) {
-      e.target = target;
-      e.targetTouches = e.touches.filter((t) => t.target === target);
-      this.dispatchEvent(e, name);
-      this.freeEvent(e);
-    }
-  };
-
-  onTouchStart = async (from: FederatedEvent) => {
-    if (!(from instanceof FederatedPointerEvent)) {
-      return;
-    }
-
-    this.handleTouchEvent(from, 'touchstart');
-  };
-
-  onTouchMove = async (from: FederatedEvent) => {
-    if (!(from instanceof FederatedPointerEvent)) {
-      return;
-    }
-
-    this.handleTouchEvent(from, 'touchmove');
-  };
-
-  onTouchEnd = async (from: FederatedEvent) => {
-    if (!(from instanceof FederatedPointerEvent)) {
-      return;
-    }
-
-    this.handleTouchEvent(from, 'touchend');
-  };
-
-  onTouchCancel = async (from: FederatedEvent) => {
-    if (!(from instanceof FederatedPointerEvent)) {
-      return;
-    }
-
-    this.handleTouchEvent(from, 'touchcancel');
-  };
-
   onPointerDown = async (from: FederatedEvent) => {
     if (!(from instanceof FederatedPointerEvent)) {
       return;
@@ -218,7 +162,7 @@ export class EventService extends EventEmitter {
     this.dispatchEvent(e, 'pointerdown');
 
     if (e.pointerType === 'touch') {
-      // this.dispatchEvent(e, 'touchstart');
+      this.dispatchEvent(e, 'touchstart');
     } else if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
       const isRightButton = e.button === 2;
       this.dispatchEvent(e, isRightButton ? 'rightdown' : 'mousedown');
@@ -242,7 +186,7 @@ export class EventService extends EventEmitter {
     this.dispatchEvent(e, 'pointerup');
 
     if (e.pointerType === 'touch') {
-      // this.dispatchEvent(e, 'touchend');
+      this.dispatchEvent(e, 'touchend');
     } else if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
       const isRightButton = e.button === 2;
       this.dispatchEvent(e, isRightButton ? 'rightup' : 'mouseup');
@@ -357,7 +301,6 @@ export class EventService extends EventEmitter {
 
           this.notifyTarget(leaveEvent);
           if (isMouse) {
-            // console.error(leaveEvent.target);
             this.notifyTarget(leaveEvent, 'mouseleave');
           }
 
@@ -428,7 +371,7 @@ export class EventService extends EventEmitter {
     // Then pointermove
     this.dispatchEvent(e, 'pointermove');
 
-    // if (e.pointerType === 'touch') this.dispatchEvent(e, 'touchmove');
+    if (e.pointerType === 'touch') this.dispatchEvent(e, 'touchmove');
 
     if (isMouse) {
       this.dispatchEvent(e, 'mousemove');
@@ -475,7 +418,6 @@ export class EventService extends EventEmitter {
 
         this.notifyTarget(leaveEvent);
         if (isMouse) {
-          // console.error(leaveEvent.target, 'out');
           this.notifyTarget(leaveEvent, 'mouseleave');
         }
 
@@ -669,6 +611,10 @@ export class EventService extends EventEmitter {
     );
   }
 
+  /**
+   * whether the native event trigger came from Canvas,
+   * should account for HTML shape
+   */
   private isNativeEventFromCanvas(event: FederatedEvent) {
     const $el = this.contextService.getDomElement();
 
@@ -691,9 +637,7 @@ export class EventService extends EventEmitter {
     return false;
   }
 
-  private async pickTarget(
-    event: FederatedPointerEvent | FederatedWheelEvent | FormattedTouch,
-  ): Promise<INode> {
+  private async pickTarget(event: FederatedPointerEvent | FederatedWheelEvent): Promise<INode> {
     return this.hitTest({
       clientX: event.clientX,
       clientY: event.clientY,
@@ -725,34 +669,6 @@ export class EventService extends EventEmitter {
       event.type = type;
     }
 
-    return event;
-  }
-
-  private async createTouchEvent(from: FederatedTouchEvent): Promise<FederatedTouchEvent> {
-    const event = this.allocateEvent(FederatedTouchEvent);
-
-    event.isTrusted = from.isTrusted;
-    event.timeStamp = performance.now();
-    event.type = from.type;
-    event.detail = from.detail;
-
-    event.nativeEvent = from.nativeEvent;
-    event.originalEvent = from;
-
-    this.copyTouchData(from, event);
-
-    for (let i = 0; i < from.changedTouches.length; i++) {
-      const touch = from.changedTouches[i];
-      const isFromCanvas = this.isNativeEventFromCanvas(from);
-      touch.target = isFromCanvas && (await this.pickTarget(touch));
-    }
-    for (let i = 0; i < from.touches.length; i++) {
-      const touch = from.touches[i];
-      const isFromCanvas = this.isNativeEventFromCanvas(from);
-      touch.target = isFromCanvas && (await this.pickTarget(touch));
-    }
-    event.touches = from.touches;
-    event.changedTouches = from.changedTouches;
     return event;
   }
 
@@ -829,13 +745,6 @@ export class EventService extends EventEmitter {
     to.screen.copyFrom(from.screen);
     to.global.copyFrom(from.global);
     to.offset.copyFrom(from.offset);
-  }
-
-  private async copyTouchData(from: FederatedTouchEvent, to: FederatedTouchEvent) {
-    to.altKey = from.altKey;
-    to.ctrlKey = from.ctrlKey;
-    to.metaKey = from.metaKey;
-    to.shiftKey = from.shiftKey;
   }
 
   private copyWheelData(from: FederatedWheelEvent, to: FederatedWheelEvent) {

@@ -36,27 +36,15 @@ canvas.appendChild(circle);
 
 circle.addEventListener('touchstart', function (e) {
   console.log('touchstart');
-  console.log('touches', e.touches);
-  console.log('changedTouches', e.changedTouches);
-  console.log('targetTouches', e.targetTouches);
-  console.log('nativeEvent', e.nativeEvent);
   circle.style.fill = '#2FC25B';
 });
 
 circle.addEventListener('touchmove', (e) => {
   console.log('touchmove');
-  console.log('touches', e.touches);
-  console.log('changedTouches', e.changedTouches);
-  console.log('targetTouches', e.targetTouches);
-  console.log('nativeEvent', e.nativeEvent);
 });
 
 circle.addEventListener('touchend', function (e) {
   console.log('touchend');
-  console.log('touches', e.touches);
-  console.log('changedTouches', e.changedTouches);
-  console.log('targetTouches', e.targetTouches);
-  console.log('nativeEvent', e.nativeEvent);
   circle.style.fill = '#1890FF';
 });
 

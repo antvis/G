@@ -64,14 +64,11 @@ circle.setPosition(300, 200);
 
 let dragging = false;
 let lastPosition;
-const isTouchEvent = (e) => !!e.changedTouches;
 const onDragStart = (event) => {
   dragging = true;
   circle.attr('opacity', 0.5);
 
-  lastPosition = isTouchEvent(event)
-    ? [event.changedTouches[0].x, event.changedTouches[0].y]
-    : [event.x, event.y];
+  lastPosition = [event.x, event.y];
   text.attr('text', 'Drag me');
 };
 const onDragEnd = () => {
@@ -84,9 +81,7 @@ const onDragMove = (event) => {
     circle.attr('opacity', 0.5);
     text.attr('text', 'Dragging...');
 
-    const eventPosition = isTouchEvent(event)
-      ? [event.changedTouches[0].x, event.changedTouches[0].y]
-      : [event.x, event.y];
+    const eventPosition = [event.x, event.y];
 
     const offset = [eventPosition[0] - lastPosition[0], eventPosition[1] - lastPosition[1]];
     const position = circle.getPosition();

@@ -187,7 +187,7 @@ img.onload = () => {
 
   // use hammer.js
   const hammer = new Hammer(image, {
-    inputClass: Hammer.TouchInput,
+    inputClass: Hammer.PointerEventInput,
   });
 
   hammer.get('pinch').set({
