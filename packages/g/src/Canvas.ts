@@ -1,24 +1,27 @@
 import { GlobalContainer } from 'mana-syringe';
 import {
-  requestAnimationFrame as rAF,
   cancelAnimationFrame as cancelRAF,
+  requestAnimationFrame as rAF,
 } from 'request-animation-frame-polyfill';
-import type { Cursor, InteractivePointerEvent } from './types';
-import { CanvasConfig } from './types';
-import { cleanExistedCanvas, isBrowser } from './utils/canvas';
-import { DisplayObject } from './display-objects/DisplayObject';
-import { ContextService } from './services';
-import { RenderingService } from './services/RenderingService';
-import { RenderingContext, RenderReason } from './services/RenderingContext';
-import { EventService } from './services/EventService';
+import type { IRenderer } from './AbstractRenderer';
 import { Camera, CameraEvent, CameraProjectionMode, DefaultCamera } from './camera';
 import { containerModule as commonContainerModule } from './canvas-module';
-import type { IRenderer } from './AbstractRenderer';
-import type { PointLike } from './shapes';
-import type { FederatedEvent, Element, IChildNode } from './dom';
-import { Document, EventTarget, ElementEvent } from './dom';
-import type { INode, ICanvas } from './dom/interfaces';
+import { CustomElement, DisplayObject } from './display-objects';
+import type { Element, FederatedEvent, IChildNode } from './dom';
+import { Document, ElementEvent, EventTarget } from './dom';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
+import type { ICanvas, INode } from './dom/interfaces';
+import {
+  ContextService,
+  EventService,
+  RenderingContext,
+  RenderingService,
+  RenderReason,
+} from './services';
+import type { PointLike } from './shapes';
+import type { Cursor, InteractivePointerEvent } from './types';
+import { CanvasConfig } from './types';
+import { cleanExistedCanvas, isBrowser } from './utils';
 
 export enum CanvasEvent {
   READY = 'ready',
@@ -503,7 +506,14 @@ export class Canvas extends EventTarget implements ICanvas {
     });
 
     // unmount from leaf to root
-    path.reverse().forEach((child) => {
+    path.reverse().forEach((child: DisplayObject) => {
+      // trigger before unmounted
+      if (child instanceof CustomElement) {
+        if (child.disconnectedCallback) {
+          child.disconnectedCallback();
+        }
+      }
+
       child.emit(ElementEvent.UNMOUNTED, {});
 
       // skip document.documentElement
@@ -520,6 +530,13 @@ export class Canvas extends EventTarget implements ICanvas {
         child.ownerDocument = this.document;
         child.isConnected = true;
         child.emit(ElementEvent.MOUNTED, {});
+
+        // trigger after mounted
+        if (child instanceof CustomElement) {
+          if (child.connectedCallback) {
+            child.connectedCallback();
+          }
+        }
       }
     });
   }

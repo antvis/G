@@ -1,4 +1,4 @@
-import { Canvas, HTML, Line, Rect, Text } from '@antv/g';
+import { Canvas, CustomElement, HTML, Line, Rect, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -109,6 +109,31 @@ rect.addEventListener('mouseleave', (e) => {
 
   console.log('leave', e.target);
 });
+
+class Custom extends CustomElement {
+  connectedCallback() {
+    const tooltip = new HTML({
+      style: {
+        x: 0,
+        y: 0,
+        innerHTML: 'Tooltip',
+        fill: 'white',
+        stroke: 'black',
+        lineWidth: 6,
+        width: 100,
+        height: 30,
+      },
+    });
+    this.appendChild(tooltip);
+    this.appendChild(new Rect({ style: { width: 100, height: 100, x: 0, y: 40, fill: 'red' } }));
+  }
+}
+const customEl = new Custom({
+  style: {
+    transform: 'translate(200, 330)',
+  },
+});
+canvas.appendChild(customEl);
 
 // stats
 const stats = new Stats();

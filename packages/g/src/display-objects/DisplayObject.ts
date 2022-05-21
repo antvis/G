@@ -1,19 +1,21 @@
-import { GlobalContainer } from 'mana-syringe';
 import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
+import { GlobalContainer } from 'mana-syringe';
+import type { PropertyParseOptions } from '../css';
+import { StyleValueRegistry } from '../css';
 import { DisplayObjectPool } from '../DisplayObjectPool';
-import type { Animation } from '../dom/Animation';
-import { KeyframeEffect } from '../dom/KeyframeEffect';
-import { Element } from '../dom/Element';
-import { ElementEvent } from '../dom/interfaces';
 import type {
+  Animation,
   DisplayObjectConfig,
-  IElement,
   IChildNode,
   ICSSStyleDeclaration,
-} from '../dom/interfaces';
-import { Shape } from '../types';
+  IElement,
+} from '../dom';
+import { Element, ElementEvent, KeyframeEffect, MutationEvent } from '../dom';
+import { dirtifyToRoot } from '../services';
+import { Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import { Shape } from '../types';
 import {
   createVec3,
   decompose,
@@ -25,11 +27,7 @@ import {
   isUndefined,
   rad2deg,
 } from '../utils';
-import { dirtifyToRoot } from '../services';
-import { MutationEvent } from '../dom/MutationEvent';
-import { Rectangle } from '../shapes';
-import type { PropertyParseOptions } from '../css/StyleValueRegistry';
-import { StyleValueRegistry } from '../css/interfaces';
+import type { CustomElement } from './CustomElement';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
@@ -107,6 +105,8 @@ export class DisplayObject<
   config: DisplayObjectConfig<StyleProps>;
 
   styleValueRegistry = GlobalContainer.get(StyleValueRegistry);
+
+  isCustomElement = false;
 
   /**
    * push to active animations after calling `animate()`
@@ -280,6 +280,12 @@ export class DisplayObject<
             this,
           ),
         );
+
+        if (target.isCustomElement) {
+          if ((target as CustomElement<any>).attributeChangedCallback) {
+            (target as CustomElement<any>).attributeChangedCallback('clipPath', this, this);
+          }
+        }
       });
     }
 
@@ -298,6 +304,12 @@ export class DisplayObject<
         this.parsedStyle[name as string],
       ),
     );
+
+    if (this.isCustomElement) {
+      if ((this as CustomElement<any>).attributeChangedCallback) {
+        (this as CustomElement<any>).attributeChangedCallback(name as Key, oldValue, value);
+      }
+    }
   }
 
   // #region transformable
