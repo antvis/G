@@ -1,17 +1,17 @@
-import { Shape } from '../types';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { DisplayObject } from './DisplayObject';
-import type { DisplayObjectConfig } from '../dom';
-import { AABB } from '../shapes';
 import { mat4, vec3 } from 'gl-matrix';
 import type { CSSUnitValue } from '../css';
+import type { DisplayObjectConfig } from '../dom';
+import { AABB } from '../shapes';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import { Shape } from '../types';
+import { DisplayObject } from './DisplayObject';
 
 export interface HTMLStyleProps extends BaseStyleProps {
   x?: number | string;
   y?: number | string;
   innerHTML: string | HTMLElement;
-  width: number;
-  height: number;
+  width?: number | string;
+  height?: number | string;
 }
 
 export interface ParsedHTMLStyleProps extends ParsedBaseStyleProps {
@@ -34,8 +34,8 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
       style: {
         x: '',
         y: '',
-        width: '',
-        height: '',
+        width: 'auto',
+        height: 'auto',
         innerHTML: '',
         ...style,
       },

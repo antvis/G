@@ -1,13 +1,11 @@
+import { Canvas, DisplayObjectPool, HTML } from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinon from 'sinon';
+import { GlobalContainer } from 'mana-syringe';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-
-import { HTML, Canvas } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { sleep } from '../../__tests__/utils';
 
 chai.use(chaiAlmost(0.0001));
@@ -37,6 +35,9 @@ describe('HTML', () => {
   });
 
   it('should create HTML correctly.', async () => {
+    const pool = GlobalContainer.get(DisplayObjectPool);
+    expect(pool.getHTMLs().length).to.be.eqls(0);
+
     const html = new HTML({
       id: 'id',
       name: 'name',
@@ -50,6 +51,8 @@ describe('HTML', () => {
       },
     });
     canvas.appendChild(html);
+
+    expect(pool.getHTMLs().length).to.be.eqls(1);
 
     await sleep(100);
 
