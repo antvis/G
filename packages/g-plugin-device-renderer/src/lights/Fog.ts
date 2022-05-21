@@ -1,4 +1,4 @@
-import type { DisplayObjectConfig, BaseStyleProps } from '@antv/g';
+import type { BaseStyleProps, DisplayObjectConfig } from '@antv/g';
 import { DisplayObject } from '@antv/g';
 
 export enum FogType {

@@ -126,7 +126,7 @@ $ yarn start
 $ http-server -p 9090
 ```
 
-访问 `localhost:9090/dev-docs/api.html` 即可预览 API Spec。
+访问 `localhost:9090/spec/api.html` 即可预览 API Spec。
 
 ### 运行测试用例
 

@@ -1,37 +1,36 @@
 {
-  "private": true,
   "name": "@antv/g-site",
   "version": "1.1.2",
+  "private": true,
   "description": "G sites deployed on gh-pages",
-  "files": [
-    "package.json",
-    "dist",
-    "es",
-    "lib",
-    "LICENSE",
-    "README.md"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/antvis/g.git"
-  },
   "keywords": [
     "g",
     "antv",
     "site"
   ],
-  "scripts": {
-    "site:build": "npm run site:clean && GATSBY=true gatsby build --prefix-paths && cp ../../dev-docs/api.html public",
-    "site:clean": "gatsby clean",
-    "site:develop": "GATSBY=true gatsby develop --open",
-    "site:deploy": "npm run site:build && npm run site:copy-mirror-action && gh-pages -d public",
-    "site:copy-mirror-action": "mkdir -p public/.github/workflows && cp .github/workflows/mirror.yml public/.github/workflows",
-    "start": "npm run site:clean && npm run site:develop"
-  },
-  "author": "https://github.com/orgs/antvis/people",
-  "license": "ISC",
+  "homepage": "https://github.com/antvis/g#readme",
   "bugs": {
     "url": "https://github.com/antvis/g/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antvis/g.git"
+  },
+  "license": "ISC",
+  "author": "https://github.com/orgs/antvis/people",
+  "files": [
+    "package.json",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "site:build": "npm run site:clean && GATSBY=true gatsby build --prefix-paths && cp ../../spec/api.html public",
+    "site:clean": "gatsby clean",
+    "site:copy-mirror-action": "mkdir -p public/.github/workflows && cp .github/workflows/mirror.yml public/.github/workflows",
+    "site:deploy": "npm run site:build && npm run site:copy-mirror-action && gh-pages -d public",
+    "site:develop": "GATSBY=true gatsby develop --open",
+    "start": "npm run site:clean && npm run site:develop"
   },
   "dependencies": {
     "@antv/g6": "^4.5.2",
@@ -61,6 +60,5 @@
     "typedoc": "^0.17.6",
     "typedoc-plugin-markdown": "^2.2.11",
     "webfontloader": "1.6.28"
-  },
-  "homepage": "https://github.com/antvis/g#readme"
+  }
 }

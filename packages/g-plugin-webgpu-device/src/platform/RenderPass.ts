@@ -1,12 +1,12 @@
 import { isNil } from '@antv/g';
 import type {
+  Bindings,
+  InputState,
   RenderPass,
   RenderPassDescriptor,
   RenderPipeline,
-  InputState,
-  Bindings,
 } from '@antv/g-plugin-device-renderer';
-import { assert, assertExists } from '@antv/g-plugin-device-renderer/';
+import { assert, assertExists } from '@antv/g-plugin-device-renderer';
 import type { Bindings_WebGPU } from './Bindings';
 import { GPUTextureUsage } from './constants';
 import type { InputLayout_WebGPU } from './InputLayout';
@@ -33,9 +33,9 @@ export class RenderPass_WebGPU implements RenderPass {
 
     this.gpuDepthStencilAttachment = {
       view: null!,
-      depthLoadValue: 'load',
+      depthLoadOp: 'load',
       depthStoreOp: 'store',
-      stencilLoadValue: 'load',
+      stencilLoadOp: 'load',
       stencilStoreOp: 'store',
     };
 

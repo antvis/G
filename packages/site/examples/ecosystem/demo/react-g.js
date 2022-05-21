@@ -1,17 +1,17 @@
+import { Renderer as CanvasRenderer } from '@antv/g-webgl';
+import { Canvas, Circle } from '@antv/react-g';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import { Canvas, Circle } from '@antv/react-g';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 
-const renderer = new WebGLRenderer();
+const renderer = new CanvasRenderer();
 
 const App = () => {
   const [size, setSize] = useState(50);
   return (
     <Canvas width={600} height={400} renderer={renderer}>
       <Circle
-        x={100}
-        y={200}
+        cx={100}
+        cy={200}
         r={size}
         fill="#1890FF"
         stroke="#F04864"

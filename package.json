@@ -1,35 +1,42 @@
 {
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:antvis/g.git"
   },
-  "author": "",
   "license": "MIT",
+  "author": "xiaoiver",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "build": "father build && lerna run umd",
-    "umd": "lerna run umd",
-    "limit-size": "limit-size",
-    "wasm": "wasm-pack build ./rust --target web",
-    "watch": "father build -w",
-    "test": "jest",
-    "test-watch": "DEBUG_MODE=1 jest --watch",
-    "cov": "jest packages/g/ --coverage",
+    "build": "father build",
+    "check-circular-deps": "madge --circular --extensions ts ./packages/",
     "contributor": "git-contributor",
-    "lint": "npm run eslint",
+    "cov": "jest --config jest.config.js --coverage",
+    "doc": "dumi dev",
     "eslint": "eslint --ext .ts,.js ./packages",
     "eslint-fix": "eslint --fix --ext .ts,.js ./packages",
+    "limit-size": "limit-size",
+    "lint": "npm run eslint",
     "lint-staged": "lint-staged",
-    "prettier": "prettier --write './packages/**/*.{js,ts,md}'",
     "pre-publish": "yarn build",
+    "prettier": "prettier --write './packages/**/*.{js,ts,md}'",
     "publish": "lerna publish",
     "publish:next": "lerna publish prerelease --dist-tag next",
     "start": "cd ./packages/site && npm run start",
-    "check-circular-deps": "madge --circular --extensions ts ./packages/",
-    "doc": "dumi dev"
+    "test": "npm run test:browser & npm run test:serverside",
+    "test-watch": "DEBUG_MODE=1 jest --watch",
+    "test:browser": "jest --config jest.config.js",
+    "test:serverside": "jest --config jest.node.config.js",
+    "wasm": "wasm-pack build ./rust --target web",
+    "watch": "father build -w"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   },
   "lint-staged": {
     "**/*.{js,ts,md}": [
@@ -37,11 +44,12 @@
       "git add"
     ]
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
+  "resolutions": {
+    "monaco-editor": "0.20.0",
+    "monaco-editor-webpack-plugin": "1.9.1",
+    "normalize-url": "^4.0.1",
+    "react-monaco-editor": "0.34.0",
+    "signal-exit": "3.0.3"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
@@ -71,24 +79,14 @@
     "limit-size": "^0.1.4",
     "lint-staged": "^10.2.2",
     "madge": "^5.0.0",
-    "prettier": "^2.0.5",
     "pixelmatch": "5.3.0",
     "pngjs": "^6.0.0",
+    "prettier": "^2.0.5",
     "sinon": "^11.1.1",
     "sinon-chai": "^3.7.0",
     "ts-jest": "^26.4.4",
     "ts-loader": "8.2.0",
-    "typescript": "^4.3.4",
-    "webpack": "^4.20.2",
-    "webpack-bundle-analyzer": "^4.5.0",
-    "webpack-cli": "^3.1.2"
-  },
-  "resolutions": {
-    "signal-exit": "3.0.3",
-    "react-monaco-editor": "0.34.0",
-    "monaco-editor": "0.20.0",
-    "monaco-editor-webpack-plugin": "1.9.1",
-    "normalize-url": "^4.0.1"
+    "typescript": "^4.3.4"
   },
   "limit-size": [
     {

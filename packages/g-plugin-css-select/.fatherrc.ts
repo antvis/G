@@ -1,9 +1,9 @@
 export default {
-  // umd: {
-  //   name: 'G.Plugin.CSSSelect',
-  //   globals: {
-  //     '@antv/g': 'window.G',
-  //     'mana-syringe': 'window.G.ManaSyringe',
-  //   },
-  // },
+  umd: {
+    name: 'G.CSSSelect',
+    globals: {
+      '@antv/g': 'window.G',
+      'mana-syringe': 'window.G.ManaSyringe',
+    },
+  },
 };

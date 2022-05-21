@@ -1,10 +1,10 @@
-import { DisplayObject, Shape } from '@antv/g';
 import type {
-  ParsedBaseStyleProps,
   BaseStyleProps,
-  DisplayObjectConfig,
   CSSUnitValue,
+  DisplayObjectConfig,
+  ParsedBaseStyleProps,
 } from '@antv/g';
+import { DisplayObject, Shape } from '@antv/g';
 import type { BufferGeometry } from './geometries';
 import type { Material } from './materials';
 

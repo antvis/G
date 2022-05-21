@@ -2,34 +2,36 @@
   "name": "@antv/react-g",
   "version": "1.1.2",
   "description": "react render for @antv/g",
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "types": "es/index.d.ts",
-  "unpkg": "dist/index.umd.min.js",
-  "files": [
-    "package.json",
-    "dist",
-    "es",
-    "lib",
-    "LICENSE",
-    "README.md"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/antvis/g.git"
-  },
   "keywords": [
     "react",
     "antv",
     "g"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "author": "https://github.com/orgs/antvis/people",
-  "license": "MIT",
+  "homepage": "https://github.com/antvis/g#readme",
   "bugs": {
     "url": "https://github.com/antvis/g/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antvis/g.git"
+  },
+  "license": "MIT",
+  "author": "https://github.com/orgs/antvis/people",
+  "main": "dist/index.js",
+  "unpkg": "dist/index.umd.min.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "package.json",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "dependencies": {
+    "@antv/g": "^5.1.2",
+    "react-reconciler": "^0.26.2",
+    "scheduler": "^0.20.2",
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@types/jest": "^25.0.0",
@@ -37,19 +39,12 @@
     "@types/react-reconciler": "^0.26.0",
     "@types/scheduler": "^0.16.0"
   },
-  "homepage": "https://github.com/antvis/g#readme",
-  "dependencies": {
-    "@antv/g": "^5.1.2",
-    "react-reconciler": "^0.26.2",
-    "scheduler": "^0.20.2",
-    "tslib": "^2.3.1"
-  },
   "peerDependencies": {
     "@types/react": "^16.9.32",
     "react": "^16.13.1"
   },
-  "scripts": {
-    "umd": "webpack"
+  "publishConfig": {
+    "access": "public"
   },
   "gitHead": "633cec1df324421b0c0821cb18d3ee351c1a47f3"
 }

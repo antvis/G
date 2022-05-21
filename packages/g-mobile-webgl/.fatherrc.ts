@@ -1,9 +1,9 @@
 export default {
-  // umd: {
-  //   name: 'G.WebGL',
-  //   globals: {
-  //     '@antv/g': 'window.G',
-  //     'mana-syringe': 'window.G.ManaSyringe',
-  //   },
-  // },
+  umd: {
+    name: 'G.MobileWebGL',
+    globals: {
+      '@antv/g': 'window.G',
+      'mana-syringe': 'window.G.ManaSyringe',
+    },
+  },
 };
