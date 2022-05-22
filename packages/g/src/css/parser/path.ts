@@ -1,7 +1,9 @@
-import { path2Absolute, path2Segments, path2Curve } from '@antv/util';
 import { Cubic as CubicUtil } from '@antv/g-math';
+import { path2Absolute, path2Curve, path2Segments } from '@antv/util';
+import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
+import type { IElement } from '../../dom';
+import { Rectangle } from '../../shapes/Rectangle';
 import type { PathCommand } from '../../types';
-import type { ParsedPathStyleProps, DisplayObject } from '../../display-objects';
 import {
   clonePath,
   equalizeSegments,
@@ -9,8 +11,6 @@ import {
   getRotatedCurve,
   reverseCurve,
 } from '../../utils/path';
-import { Rectangle } from '../../shapes/Rectangle';
-import type { IElement } from '../../dom';
 
 export function parsePath(path: string, object: DisplayObject): ParsedPathStyleProps['path'] {
   const absolutePath = path2Absolute(path) as PathCommand[];
