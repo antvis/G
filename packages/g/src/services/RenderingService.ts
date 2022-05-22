@@ -1,10 +1,10 @@
 import { contrib, Contribution, inject, singleton, Syringe } from 'mana-syringe';
-// import { SyncHook, SyncWaterfallHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from '../utils';
-import { AsyncParallelHook, AsyncSeriesWaterfallHook, SyncHook, SyncWaterfallHook } from 'tapable';
+// import { AsyncParallelHook, AsyncSeriesWaterfallHook, SyncHook, SyncWaterfallHook } from 'tapable';
 import { StyleValueRegistry } from '../css/interfaces';
 import type { DisplayObject } from '../display-objects';
 import { ElementEvent } from '../dom';
 import type { CanvasConfig, EventPosition, InteractivePointerEvent } from '../types';
+import { AsyncParallelHook, AsyncSeriesWaterfallHook, SyncHook, SyncWaterfallHook } from '../utils';
 import { RenderingContext, RenderReason } from './RenderingContext';
 import { SceneGraphService, sortByZIndex } from './SceneGraphService';
 
