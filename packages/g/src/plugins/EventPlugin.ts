@@ -1,21 +1,21 @@
 import { inject, singleton } from 'mana-syringe';
-import type { ICanvas, FederatedMouseEvent } from '../dom';
+import type { FederatedMouseEvent, ICanvas } from '../dom';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
-import { RenderingContext } from '../services';
 import type { RenderingPlugin } from '../services';
 import {
   ContextService,
-  RenderingService,
   EventService,
+  RenderingContext,
   RenderingPluginContribution,
+  RenderingService,
 } from '../services';
 import { Point } from '../shapes';
 import type { Cursor, EventPosition, InteractivePointerEvent } from '../types';
 import { CanvasConfig } from '../types';
-import { MOUSE_POINTER_ID, TOUCH_TO_POINTER } from '../utils/event';
-import type { FormattedTouch, FormattedPointerEvent } from '../utils/event';
 import { isUndefined } from '../utils';
+import type { FormattedPointerEvent, FormattedTouch } from '../utils/event';
+import { MOUSE_POINTER_ID, TOUCH_TO_POINTER } from '../utils/event';
 
 /**
  * support mouse & touch events
@@ -70,6 +70,9 @@ export class EventPlugin implements RenderingPlugin {
     renderingService.hooks.pointerDown.tap(
       EventPlugin.tag,
       (nativeEvent: InteractivePointerEvent) => {
+        if (canvas.supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch')
+          return;
+
         const events = this.normalizeToPointerEvent(nativeEvent, canvas);
 
         if (this.autoPreventDefault && (events[0] as any).isNormalized) {
@@ -92,7 +95,7 @@ export class EventPlugin implements RenderingPlugin {
     renderingService.hooks.pointerUp.tap(
       EventPlugin.tag,
       (nativeEvent: InteractivePointerEvent) => {
-        if (canvas.supportTouchEvent && (nativeEvent as PointerEvent).pointerType === 'touch')
+        if (canvas.supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch')
           return;
 
         // account for element in SVG
@@ -124,34 +127,11 @@ export class EventPlugin implements RenderingPlugin {
     renderingService.hooks.pointerOver.tap(EventPlugin.tag, this.onPointerMove);
 
     renderingService.hooks.pointerOut.tap(EventPlugin.tag, this.onPointerMove);
-    // renderingService.hooks.pointerCancel.tap(
-    //   EventPlugin.tag,
-    //   (nativeEvent: InteractivePointerEvent) => {
-    //     if (canvas.supportTouchEvent && (nativeEvent as PointerEvent).pointerType === 'touch') {
-    //       return;
-    //     }
-
-    //     const normalizedEvent = this.normalizeToPointerEvent(nativeEvent, canvas);
-
-    //     if (this.autoPreventDefault && (normalizedEvent as any).isNormalized) {
-    //       const cancelable = nativeEvent.cancelable || !('cancelable' in nativeEvent);
-
-    //       if (cancelable) {
-    //         nativeEvent.preventDefault();
-    //       }
-    //     }
-
-    //     const federatedEvent = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent, canvas);
-    //     this.eventService.mapEvent(federatedEvent);
-
-    //     this.setCursor(this.eventService.cursor);
-    //   },
-    // );
   }
 
   private onPointerMove = (nativeEvent: InteractivePointerEvent) => {
     const canvas = this.renderingContext.root?.ownerDocument?.defaultView;
-    if (canvas.supportTouchEvent && (nativeEvent as PointerEvent).pointerType === 'touch') return;
+    if (canvas.supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch') return;
 
     const normalizedEvents = this.normalizeToPointerEvent(nativeEvent, canvas);
 

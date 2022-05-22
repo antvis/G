@@ -1,6 +1,5 @@
 import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from '@antv/g';
-import { RenderingContext } from '@antv/g';
-import { ContextService, RenderingPluginContribution } from '@antv/g';
+import { ContextService, RenderingContext, RenderingPluginContribution } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 
 const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
@@ -20,7 +19,7 @@ export class DOMInteractionPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     const canvas = this.renderingContext.root.ownerDocument.defaultView;
-    const SUPPORT_ONLY_TOUCH = canvas.supportTouchEvent && MOBILE_REGEX.test(navigator.userAgent);
+    const SUPPORT_ONLY_TOUCH = canvas.supportsTouchEvents && MOBILE_REGEX.test(navigator.userAgent);
 
     const onPointerMove = (ev: InteractivePointerEvent) => {
       renderingService.hooks.pointerMove.call(ev);
@@ -98,21 +97,24 @@ export class DOMInteractionPlugin implements RenderingPlugin {
     renderingService.hooks.init.tapPromise(DOMInteractionPlugin.tag, async () => {
       const $el = this.contextService.getDomElement() as HTMLElement;
 
-      if (canvas.supportPointerEvent) {
-        addPointerEventListener($el);
+      // @ts-ignore
+      if (globalThis.navigator.msPointerEnabled) {
+        // @ts-ignore
+        $el.style.msContentZooming = 'none';
+        // @ts-ignore
+        $el.style.msTouchAction = 'none';
+      } else if (canvas.supportsPointerEvents) {
+        $el.style.touchAction = 'none';
       }
 
-      if (SUPPORT_ONLY_TOUCH) {
-        addTouchEventListener($el);
-      } else if (!canvas.supportTouchEvent) {
-        if (!canvas.supportPointerEvent) {
-          addMouseEventListener($el);
-        }
+      if (canvas.supportsPointerEvents) {
+        addPointerEventListener($el);
       } else {
+        addMouseEventListener($el);
+      }
+
+      if (canvas.supportsTouchEvents) {
         addTouchEventListener($el);
-        if (!canvas.supportPointerEvent) {
-          addMouseEventListener($el);
-        }
       }
 
       // use passive event listeners
@@ -125,21 +127,14 @@ export class DOMInteractionPlugin implements RenderingPlugin {
 
     renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
       const $el = this.contextService.getDomElement() as HTMLElement;
-      if (canvas.supportPointerEvent) {
+      if (canvas.supportsPointerEvents) {
         removePointerEventListener($el);
+      } else {
+        removeMouseEventListener($el);
       }
 
-      if (SUPPORT_ONLY_TOUCH) {
+      if (canvas.supportsTouchEvents) {
         removeTouchEventListener($el);
-      } else if (!canvas.supportTouchEvent) {
-        if (!canvas.supportPointerEvent) {
-          removeMouseEventListener($el);
-        }
-      } else {
-        removeTouchEventListener($el);
-        if (!canvas.supportPointerEvent) {
-          removeMouseEventListener($el);
-        }
       }
 
       $el.removeEventListener('wheel', onPointerWheel, true);

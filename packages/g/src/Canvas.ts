@@ -75,13 +75,13 @@ export class Canvas extends EventTarget implements ICanvas {
    * whether the runtime supports PointerEvent?
    * if not, the event system won't trigger pointer events like `pointerdown`
    */
-  supportPointerEvent: boolean;
+  supportsPointerEvents: boolean;
 
   /**
    * whether the runtime supports TouchEvent?
    * if not, the event system won't trigger touch events like `touchstart`
    */
-  supportTouchEvent: boolean;
+  supportsTouchEvents: boolean;
 
   /**
    * is this native event a TouchEvent?
@@ -135,8 +135,8 @@ export class Canvas extends EventTarget implements ICanvas {
       requestAnimationFrame,
       cancelAnimationFrame,
       createImage,
-      supportPointerEvent,
-      supportTouchEvent,
+      supportsPointerEvents,
+      supportsTouchEvents,
       isTouchEvent,
       isMouseEvent,
     } = config;
@@ -167,18 +167,18 @@ export class Canvas extends EventTarget implements ICanvas {
      */
     // the following feature-detect from hammer.js
     // @see https://github.com/hammerjs/hammer.js/blob/master/src/inputjs/input-consts.js#L5
-    this.supportTouchEvent = supportTouchEvent ?? 'ontouchstart' in globalThis;
-    this.supportPointerEvent = supportPointerEvent ?? !!globalThis.PointerEvent;
+    this.supportsTouchEvents = supportsTouchEvents ?? 'ontouchstart' in globalThis;
+    this.supportsPointerEvents = supportsPointerEvents ?? !!globalThis.PointerEvent;
     this.isTouchEvent =
       isTouchEvent ??
       ((event: InteractivePointerEvent): event is TouchEvent =>
-        this.supportTouchEvent && event instanceof globalThis.TouchEvent);
+        this.supportsTouchEvents && event instanceof globalThis.TouchEvent);
     this.isMouseEvent =
       isMouseEvent ??
       ((event: InteractivePointerEvent): event is MouseEvent =>
         !globalThis.MouseEvent ||
         (event instanceof globalThis.MouseEvent &&
-          (!this.supportPointerEvent || !(event instanceof globalThis.PointerEvent))));
+          (!this.supportsPointerEvents || !(event instanceof globalThis.PointerEvent))));
 
     this.initRenderingContext({
       container,
