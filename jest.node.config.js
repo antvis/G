@@ -36,5 +36,9 @@ module.exports = {
   transform: {
     '^.+\\.[tj]s$': 'ts-jest',
   },
-  transformIgnorePatterns: ['<rootDir>/node_modules/(?!@mapbox)'],
+  transformIgnorePatterns: [
+    // '<rootDir>/node_modules/(?!@mapbox)',
+    // @see https://stackoverflow.com/a/69179139
+    '/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates)',
+  ],
 };

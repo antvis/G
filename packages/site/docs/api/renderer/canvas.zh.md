@@ -38,7 +38,7 @@ const canvas = new Canvas({
 从 `G.Canvas` 命名空间下可以获取渲染器：
 
 ```js
-const canvasRenderer = new window.G.Canvas.Renderer();
+const canvasRenderer = new window.G.Canvas2D.Renderer();
 ```
 
 # 初始化配置
