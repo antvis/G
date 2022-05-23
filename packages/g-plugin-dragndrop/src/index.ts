@@ -11,7 +11,7 @@ const containerModule = Module((register) => {
 export class Plugin implements RendererPlugin {
   name = 'dragndrop';
 
-  constructor(private options: Partial<DragndropPluginOptions>) {}
+  constructor(private options: Partial<DragndropPluginOptions> = {}) {}
 
   init(container: Syringe.Container): void {
     container.register(DragndropPluginOptions, {
