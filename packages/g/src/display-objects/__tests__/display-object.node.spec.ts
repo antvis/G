@@ -1,12 +1,10 @@
+import { DisplayObject, Group, Shape } from '@antv/g';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinon from 'sinon';
+import { vec3 } from 'gl-matrix';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { DisplayObject, Group, Shape } from '@antv/g';
-import { vec3 } from 'gl-matrix';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
@@ -166,6 +164,7 @@ describe('DisplayObject Node API', () => {
     expect(group4.classList).to.eqls(['className4']);
     expect(group3.className).to.eqls('c1 c2 c3');
     expect(group3.classList).to.eqls(['c1', 'c2', 'c3']);
+    expect(group2.matches('[name=group2]')).to.be.true;
 
     group3.className = 'c1 c2';
     expect(group3.classList).to.eqls(['c1', 'c2']);

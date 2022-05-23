@@ -1,5 +1,6 @@
 import { singleton, Syringe } from 'mana-syringe';
 import type { IElement } from '../dom/interfaces';
+import { isNil } from '../utils';
 
 export const SceneGraphSelectorFactory = Syringe.defineToken('SceneGraphSelectorFactory');
 export const SceneGraphSelector = Syringe.defineToken('SceneGraphSelector', { multiple: false });
@@ -10,7 +11,7 @@ export interface SceneGraphSelector {
   is: <T extends IElement>(query: string, element: T) => boolean;
 }
 
-const NAME_REGEXP = /\[\s*name=(.*)\s*\]/;
+const ATTRIBUTE_REGEXP = /\[\s*(.*)=(.*)\s*\]/;
 
 /**
  * support the following DOM API:
@@ -27,20 +28,23 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
     if (query.startsWith('.')) {
       return root.find((node) => {
         // return !node.shadow && node.id === query.substring(1);
-        return node.className === query.substring(1);
+        return node.className === this.getIdOrClassname(query);
       });
     } else if (query.startsWith('#')) {
       // getElementById('id')
       return root.find((node) => {
         // return !node.shadow && node.id === query.substring(1);
-        return node.id === query.substring(1);
+        return node.id === this.getIdOrClassname(query);
       });
-    } else if (query.startsWith('[name=')) {
-      const matches = query.match(NAME_REGEXP);
-      if (matches && matches.length > 1) {
-        const targetName = matches[1].replace(/"/g, '');
+    } else if (query.startsWith('[')) {
+      const { name, value } = this.getAttribute(query);
+      if (name) {
         // getElementByName();
-        return root.find((node) => (root as unknown as T) !== node && node.name === targetName);
+        return root.find(
+          (node) =>
+            (root as unknown as T) !== node &&
+            (name === 'name' ? node.name === value : this.attributeToString(node, name) === value),
+        );
       } else {
         return null;
       }
@@ -56,19 +60,22 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
       // getElementsByClassName('className');
       // should not include itself
       return root.findAll(
-        (node) => (root as unknown as T) !== node && node.className === query.substring(1),
+        (node) =>
+          (root as unknown as T) !== node && node.className === this.getIdOrClassname(query),
       );
     } else if (query.startsWith('#')) {
       return root.findAll(
-        (node) => (root as unknown as T) !== node && node.id === query.substring(1),
+        (node) => (root as unknown as T) !== node && node.id === this.getIdOrClassname(query),
       );
-    } else if (query.startsWith('[name=')) {
-      // getElementsByName();
-      const matches = query.match(NAME_REGEXP);
-      if (matches && matches.length > 1) {
-        const targetName = matches[1].replace(/"/g, '');
-        // getElementByName();
-        return root.findAll((node) => (root as unknown as T) !== node && node.name === targetName);
+    } else if (query.startsWith('[')) {
+      const { name, value } = this.getAttribute(query);
+      if (name) {
+        // getElementsByName();
+        return root.findAll(
+          (node) =>
+            (root as unknown as T) !== node &&
+            (name === 'name' ? node.name === value : this.attributeToString(node, name) === value),
+        );
       } else {
         return [];
       }
@@ -79,8 +86,50 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  is<T extends IElement>(): boolean {
-    // TODO: need a simple `matches` implementation
-    return true;
+  is<T extends IElement>(query: string, node: T): boolean {
+    // a simple `matches` implementation
+    if (query.startsWith('.')) {
+      return node.className === this.getIdOrClassname(query);
+    } else if (query.startsWith('#')) {
+      return node.id === this.getIdOrClassname(query);
+    } else if (query.startsWith('[')) {
+      const { name, value } = this.getAttribute(query);
+      return name === 'name' ? node.name === value : this.attributeToString(node, name) === value;
+    } else {
+      return node.nodeName === query;
+    }
+  }
+
+  private getIdOrClassname(query: string): string {
+    return query.substring(1);
+  }
+
+  private getAttribute(query: string): Record<string, string> {
+    const matches = query.match(ATTRIBUTE_REGEXP);
+    let name = '';
+    let value = '';
+    if (matches && matches.length > 2) {
+      name = matches[1].replace(/"/g, '');
+      value = matches[2].replace(/"/g, '');
+    }
+    return { name, value };
+  }
+
+  private attributeToString(node: IElement, name: string): string {
+    if (!node.getAttribute) {
+      return '';
+    }
+
+    const value = node.getAttribute(name);
+
+    if (isNil(value)) {
+      return '';
+    }
+
+    if (value.toString) {
+      return value.toString();
+    }
+
+    return '';
   }
 }

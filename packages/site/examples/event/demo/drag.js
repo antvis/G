@@ -1,9 +1,14 @@
-import { Canvas, Circle, Text } from '@antv/g';
+import { Canvas, Image } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
+
+/**
+ * Drag'n'Drop with PointerEvents
+ * @see https://javascript.info/mouse-drag-and-drop
+ */
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
@@ -18,87 +23,54 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-// add a circle to canvas
-const circle = new Circle({
-  id: 'circle',
+const gate = new Image({
+  className: 'droppable',
   style: {
-    fill: 'rgb(239, 244, 255)',
-    fillOpacity: 1,
-    lineWidth: 1,
-    opacity: 1,
-    r: 100,
-    stroke: 'rgb(95, 149, 255)',
-    strokeOpacity: 1,
+    width: 200,
+    height: 100,
+    src: 'https://en.js.cx/clipart/soccer-gate.svg',
+  },
+});
+
+const ball = new Image({
+  style: {
+    x: 300,
+    y: 200,
+    width: 100,
+    height: 100,
+    src: 'https://en.js.cx/clipart/ball.svg',
     cursor: 'pointer',
   },
 });
 
-const text = new Text({
-  id: 'text',
-  style: {
-    fill: '#000',
-    font: `normal normal normal 12px Avenir, -apple-system, system-ui, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
-    // fontFamily: `Avenir, -apple-system, system-ui, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
-    // fontFamily: 'Arial, sans-serif',
-    // fontFamily: 'sans-serif',
-    fontFamily: 'Avenir',
-    // fontFamily: 'Times',
-    // fontFamily: 'Microsoft YaHei',
-    fontSize: 22,
-    fontStyle: 'normal',
-    fontVariant: 'normal',
-    fontWeight: 'normal',
-    text: 'Drag me',
-    textAlign: 'center',
-    textBaseline: 'middle',
-  },
-});
+canvas.appendChild(gate);
+canvas.appendChild(ball);
 
-circle.appendChild(text);
-canvas.appendChild(circle);
+ball.addEventListener('pointerdown', function (event) {
+  let shiftX = event.clientX - ball.getBoundingClientRect().left;
+  let shiftY = event.clientY - ball.getBoundingClientRect().top;
 
-circle.setPosition(300, 200);
+  moveAt(event.canvasX, event.canvasY);
 
-let dragging = false;
-let lastPosition;
-const onDragStart = (event) => {
-  dragging = true;
-  circle.attr('opacity', 0.5);
-
-  lastPosition = [event.x, event.y];
-  text.attr('text', 'Drag me');
-};
-const onDragEnd = () => {
-  dragging = false;
-  circle.attr('opacity', 1);
-  text.attr('text', 'Drag me');
-};
-const onDragMove = (event) => {
-  if (dragging) {
-    circle.attr('opacity', 0.5);
-    text.attr('text', 'Dragging...');
-
-    const eventPosition = [event.x, event.y];
-
-    const offset = [eventPosition[0] - lastPosition[0], eventPosition[1] - lastPosition[1]];
-    const position = circle.getPosition();
-    circle.setPosition(position[0] + offset[0], position[1] + offset[1]);
-    lastPosition = eventPosition;
+  function moveAt(canvasX, canvasY) {
+    ball.style.x = canvasX - shiftX + 'px';
+    ball.style.y = canvasY - shiftY + 'px';
   }
-};
 
-circle
-  // events for drag start
-  .on('mousedown', onDragStart)
-  .on('touchstart', onDragStart)
-  // events for drag end
-  .on('mouseup', onDragEnd)
-  .on('mouseupoutside', onDragEnd)
-  .on('touchend', onDragEnd)
-  .on('touchendoutside', onDragEnd)
-  // events for drag move
-  .on('mousemove', onDragMove)
-  .on('touchmove', onDragMove);
+  async function onMouseMove(event) {
+    moveAt(event.canvasX, event.canvasY);
+  }
+
+  canvas.document.addEventListener('pointermove', onMouseMove);
+
+  ball.addEventListener(
+    'pointerup',
+    function () {
+      canvas.document.removeEventListener('pointermove', onMouseMove);
+    },
+    { once: true },
+  );
+});
 
 // stats
 const stats = new Stats();

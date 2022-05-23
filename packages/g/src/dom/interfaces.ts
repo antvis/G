@@ -407,6 +407,9 @@ export interface IDocument extends INode, IParentNode {
     tagName: string,
     options: DisplayObjectConfig<StyleProps>,
   ) => T;
+
+  elementFromPoint(x: number, y: number): Promise<DisplayObject>;
+  elementsFromPoint(x: number, y: number): Promise<DisplayObject[]>;
 }
 
 /**

@@ -1,11 +1,9 @@
+import { Element, Node } from '@antv/g';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
 // @ts-ignore
-import sinon from 'sinon';
-// @ts-ignore
 import sinonChai from 'sinon-chai';
-import { Node, Element } from '@antv/g';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
@@ -86,6 +84,13 @@ describe('DOM Element API', () => {
     expect(group6.previousSibling).to.eqls(group5);
     expect(group6.nextSibling).to.eqls(group7);
     expect(group7.nextSibling).to.eqls(group4);
+    // expect(group6.getAttribute('name')).to.be.eqls('group6');
+    expect(group6.matches('[name=group6]')).to.be.true;
+    expect(group6.matches('[name=group7]')).to.be.false;
+    expect(group6.matches('.c')).to.be.false;
+    expect(group6.matches('#c')).to.be.false;
+    expect(group7.matches('[name=group7]')).to.be.true;
+    expect(group6.closest('[name=group6]')).to.be.eqls(group6);
 
     // remove group6 & group7
     group6.remove(false);

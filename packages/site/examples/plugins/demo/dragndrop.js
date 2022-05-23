@@ -1,5 +1,6 @@
-import { Canvas, Image } from '@antv/g';
+import { Canvas, Image, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Plugin } from '@antv/g-plugin-dragndrop';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
@@ -12,8 +13,11 @@ import Stats from 'stats.js';
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
+canvasRenderer.registerPlugin(new Plugin());
 const webglRenderer = new WebGLRenderer();
+webglRenderer.registerPlugin(new Plugin());
 const svgRenderer = new SVGRenderer();
+svgRenderer.registerPlugin(new Plugin());
 
 // create a canvas
 const canvas = new Canvas({
@@ -24,8 +28,10 @@ const canvas = new Canvas({
 });
 
 const gate = new Image({
-  className: 'droppable',
   style: {
+    droppable: true,
+    x: 50,
+    y: 100,
     width: 200,
     height: 100,
     src: 'https://en.js.cx/clipart/soccer-gate.svg',
@@ -34,6 +40,7 @@ const gate = new Image({
 
 const ball = new Image({
   style: {
+    draggable: true,
     x: 300,
     y: 200,
     width: 100,
@@ -46,50 +53,54 @@ const ball = new Image({
 canvas.appendChild(gate);
 canvas.appendChild(ball);
 
-let currentDroppable = null;
+const gateText = new Text({
+  style: {
+    x: 50,
+    y: 350,
+    fill: 'black',
+    text: '',
+    pointerEvents: 'none',
+  },
+});
+const ballText = new Text({
+  style: {
+    x: 50,
+    y: 400,
+    fill: 'black',
+    text: '',
+    pointerEvents: 'none',
+  },
+});
+canvas.appendChild(gateText);
+canvas.appendChild(ballText);
 
-ball.addEventListener('pointerdown', function (event) {
-  let shiftX = event.clientX - ball.getBoundingClientRect().left;
-  let shiftY = event.clientY - ball.getBoundingClientRect().top;
+ball.addEventListener('dragstart', function (e) {
+  e.target.style.opacity = 0.5;
+  ballText.style.text = 'ball dragstart';
+});
+ball.addEventListener('drag', function (e) {
+  ballText.style.text = `ball drag movement: ${e.movementX}, ${e.movementY}`;
+});
+ball.addEventListener('dragend', function (e) {
+  e.target.style.opacity = 1;
+  ballText.style.text = 'ball dragend';
+});
 
-  moveAt(event.canvasX, event.canvasY);
-
-  function moveAt(canvasX, canvasY) {
-    ball.style.x = canvasX - shiftX + 'px';
-    ball.style.y = canvasY - shiftY + 'px';
-  }
-
-  async function onMouseMove(event) {
-    moveAt(event.canvasX, event.canvasY);
-
-    // ball.style.visibility = 'hidden';
-    // let elemBelow = await document.elementFromPoint(event.clientX, event.clientY);
-    // ball.style.visibility = 'visible';
-
-    // if (!elemBelow) return;
-
-    // let droppableBelow = elemBelow.closest('.droppable');
-    // if (currentDroppable != droppableBelow) {
-    //   if (currentDroppable) { // null when we were not over a droppable before this event
-    //     leaveDroppable(currentDroppable);
-    //   }
-    //   currentDroppable = droppableBelow;
-    //   if (currentDroppable) { // null if we're not coming over a droppable now
-    //     // (maybe just left the droppable)
-    //     enterDroppable(currentDroppable);
-    //   }
-    // }
-  }
-
-  canvas.document.addEventListener('pointermove', onMouseMove);
-
-  ball.addEventListener(
-    'pointerup',
-    function () {
-      canvas.document.removeEventListener('pointermove', onMouseMove);
-    },
-    { once: true },
-  );
+gate.addEventListener('dragenter', function (e) {
+  e.target.style.opacity = 0.6;
+  gateText.style.text = 'gate dragenter';
+});
+gate.addEventListener('dragleave', function (e) {
+  e.target.style.opacity = 1;
+  gateText.style.text = 'gate dragleave';
+});
+gate.addEventListener('dragover', function (e) {
+  e.target.style.opacity = 0.6;
+  gateText.style.text = 'gate dragover';
+});
+gate.addEventListener('drop', function (e) {
+  e.target.style.opacity = 1;
+  gateText.style.text = 'gate drop';
 });
 
 // stats

@@ -5,13 +5,6 @@
   },
   "demos": [
     {
-      "filename": "dragndrop.js",
-      "title": {
-        "zh": "使用 PointerEvents 实现拖拽",
-        "en": "Drag'n'Drop with PointerEvents"
-      }
-    },
-    {
       "filename": "pinch-with-pointer.js",
       "title": {
         "zh": "使用 PointerEvents 实现 Pinch 手势",
@@ -75,12 +68,10 @@
     {
       "filename": "drag.js",
       "title": {
-        "zh": "拖拽",
-        "en": "Dragging"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gYBQQph9kkUAAAAAAAAAAAAAARQnAQ"
+        "zh": "使用 PointerEvents 实现拖拽",
+        "en": "Drag with PointerEvents"
+      }
     },
-
     {
       "filename": "custom.js",
       "title": {
