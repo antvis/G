@@ -1,5 +1,5 @@
-import { expect } from 'chai';
 import { Circle } from '@antv/g';
+import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
 
 describe('Circle', () => {
@@ -11,6 +11,11 @@ describe('Circle', () => {
         r: 100,
       },
     });
+
+    expect(circle.matches('[cx=100]')).to.be.true;
+    expect(circle.matches('[cy=100]')).to.be.true;
+    expect(circle.matches('[r=100]')).to.be.true;
+    expect(circle.matches('[cx=200]')).to.be.false;
 
     expect(circle.getAttributeNames()).to.eqls([
       'anchor',

@@ -19,6 +19,7 @@ redirect_from:
     -   [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 基于 SVG
 -   交互
     -   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
+    -   [g-plugin-dragndrop](/zh/docs/plugins/dragndrop) 基于 PointerEvents 实现拖放功能
     -   [g-plugin-control](/zh/docs/plugins/control) 为 3D 场景提供相机交互
 -   物理引擎
     -   [g-plugin-box2d](/zh/docs/plugins/box2d) 基于 Box2D

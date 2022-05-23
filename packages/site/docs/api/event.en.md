@@ -694,7 +694,15 @@ hammer.on('press', (e) => {
 });
 ```
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*i7SaRaYw0YcAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*i7SaRaYw0YcAAAAAAAAAAAAAARQnAQ" width="400">
+
+## 使用 PointerEvents 实现 Pinch 手势
+
+在该[示例](/zh/examples/event#pinch-with-pointer)中实现了 Pinch 手势，参考 https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events/Pinch_zoom_gestures
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*MkM3TYXZsHsAAAAAAAAAAAAAARQnAQ" width="300">
+
+核心思路是无需关心 Mouse/TouchEvent，通过监听 PointerEvents 根据事件对象上的 [pointerId](/zh/docs/api/event#pointerid) 跟踪管理屏幕上的触控点。
 
 ## 直接使用 Interact.js
 
@@ -722,50 +730,46 @@ interact(
 
 [示例](/zh/examples/event#interact)
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ" width="400">
+
+## 使用 g-plugin-dragndrop
+
+如果觉得 interact.js 太重，可以选择使用我们提供的简单拖放插件：[g-plugin-dragndrop](/zh/docs/plugins/dragndrop)。
+
+该插件完全基于 [PointerEvents](/zh/docs/api/event#交互事件) 实现拖放功能。在该[示例](/zh/examples/plugins#dragndrop)中，我们监听了足球的 drag 事件，用以移动它到正确的位置，同时监听了球门的 dragover 事件，当足球划过球门区域时改变透明度：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*A14uTY9_5UEAAAAAAAAAAAAAARQnAQ" alt="dragndrop">
 
 ## 实现简单的拖拽
 
-除了使用以上现成的库，我们还可以通过组合监听 `mousedown/up/move/ouside` 实现简单的拖拽效果：
+除了使用以上现成的库，我们还可以通过组合监听 PointerEvents 实现简单的拖拽效果，[g-plugin-dragndrop](/zh/docs/plugins/dragndrop) 内部就是这么实现的，参考了 [Drag'n'Drop with mouse events](https://javascript.info/mouse-drag-and-drop)：
 
 ```js
-let dragging = false; // 拖拽状态
-let lastPosition; // 保存上次位置
-const onDragStart = (event) => {
-    dragging = true;
-    circle.attr('opacity', 0.5);
-    lastPosition = [event.x, event.y];
-    text.attr('text', 'Drag me');
-};
-const onDragEnd = () => {
-    dragging = false;
-    circle.attr('opacity', 1);
-    text.attr('text', 'Drag me');
-};
-const onDragMove = (event) => {
-    if (dragging) {
-        circle.attr('opacity', 0.5);
-        text.attr('text', 'Dragging...');
+ball.addEventListener('pointerdown', function (event) {
+    let shiftX = event.clientX - ball.getBoundingClientRect().left;
+    let shiftY = event.clientY - ball.getBoundingClientRect().top;
 
-        const offset = [event.x - lastPosition[0], event.y - lastPosition[1]];
-        const position = circle.getPosition();
-        circle.setPosition(position[0] + offset[0], position[1] + offset[1]);
-        lastPosition = [event.x, event.y];
+    moveAt(event.canvasX, event.canvasY);
+
+    function moveAt(canvasX, canvasY) {
+        ball.style.x = canvasX - shiftX + 'px';
+        ball.style.y = canvasY - shiftY + 'px';
     }
-};
 
-circle
-    // events for drag start
-    .on('mousedown', onDragStart)
-    .on('touchstart', onDragStart)
-    // events for drag end
-    .on('mouseup', onDragEnd)
-    .on('mouseupoutside', onDragEnd)
-    .on('touchend', onDragEnd)
-    .on('touchendoutside', onDragEnd)
-    // events for drag move
-    .on('mousemove', onDragMove)
-    .on('touchmove', onDragMove);
+    async function onMouseMove(event) {
+        moveAt(event.canvasX, event.canvasY);
+    }
+
+    canvas.document.addEventListener('pointermove', onMouseMove);
+
+    ball.addEventListener(
+        'pointerup',
+        function () {
+            canvas.document.removeEventListener('pointermove', onMouseMove);
+        },
+        { once: true },
+    );
+});
 ```
 
 [示例](/zh/examples/event#drag)

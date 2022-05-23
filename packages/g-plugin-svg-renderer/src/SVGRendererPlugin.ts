@@ -1,36 +1,36 @@
-import { inject, singleton } from 'mana-syringe';
-import { vec3, mat4, quat } from 'gl-matrix';
+import type {
+  DisplayObject,
+  FederatedEvent,
+  LinearGradient,
+  MutationEvent,
+  ParsedBaseStyleProps,
+  RadialGradient,
+  RenderingPlugin,
+  RenderingService,
+} from '@antv/g';
 import {
-  ContextService,
-  RenderingContext,
-  RenderingPluginContribution,
-  Shape,
-  fromRotationTranslationScale,
-  getEuler,
   Camera,
-  RenderReason,
+  CanvasConfig,
+  ContextService,
   DefaultCamera,
   ElementEvent,
-  CanvasConfig,
+  fromRotationTranslationScale,
+  getEuler,
+  RenderingContext,
+  RenderingPluginContribution,
+  RenderReason,
+  Shape,
 } from '@antv/g';
-import type {
-  LinearGradient,
-  RadialGradient,
-  RenderingService,
-  RenderingPlugin,
-  DisplayObject,
-  MutationEvent,
-  FederatedEvent,
-  ParsedBaseStyleProps,
-} from '@antv/g';
+import { mat4, quat, vec3 } from 'gl-matrix';
+import { inject, singleton } from 'mana-syringe';
 import { ElementSVG } from './components/ElementSVG';
-import { createSVGElement } from './utils/dom';
-import { numberToLongString } from './utils/format';
-import type { ElementRenderer } from './shapes/paths';
-import { ElementRendererFactory } from './shapes/paths';
 import { createOrUpdateFilter } from './shapes/defs/Filter';
 import { createOrUpdateGradientAndPattern } from './shapes/defs/Pattern';
 import { createOrUpdateShadow } from './shapes/defs/Shadow';
+import type { ElementRenderer } from './shapes/paths';
+import { ElementRendererFactory } from './shapes/paths';
+import { createSVGElement } from './utils/dom';
+import { numberToLongString } from './utils/format';
 
 export const SHAPE2TAGS: Record<Shape | string, string> = {
   [Shape.RECT]: 'path',
@@ -398,15 +398,16 @@ export class SVGRendererPlugin implements RenderingPlugin {
           const valueStr = computedValue.toString();
 
           // ignore 'unset' and default value
-          if (valueStr !== 'unset' && valueStr !== DEFAULT_VALUE_MAP[name]) {
-            const formattedValueStr = FORMAT_VALUE_MAP[name]?.[valueStr] || valueStr;
-
-            [$el, $hitTestingEl].forEach(($el: SVGElement) => {
-              if ($el && usedName) {
+          [$el, $hitTestingEl].forEach(($el: SVGElement) => {
+            if ($el && usedName) {
+              if (valueStr !== 'unset' && valueStr !== DEFAULT_VALUE_MAP[name]) {
+                const formattedValueStr = FORMAT_VALUE_MAP[name]?.[valueStr] || valueStr;
                 $el.setAttribute(usedName, formattedValueStr);
+              } else {
+                $el.removeAttribute(usedName);
               }
-            });
-          }
+            }
+          });
         }
       }
     });

@@ -1,13 +1,13 @@
 import { GlobalContainer } from 'mana-syringe';
+import { Cullable, Geometry, Renderable, Sortable, Transform } from '../components';
 import { SceneGraphService } from '../services/SceneGraphService';
-import { Cullable, Geometry, Renderable, Transform, Sortable } from '../components';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { Node } from './Node';
 import type { AABB, Rectangle } from '../shapes';
-import type { IEventTarget, IChildNode, IElement, INode, ICSSStyleDeclaration } from './interfaces';
-import { ElementEvent } from './interfaces';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { formatAttribute, isNil } from '../utils';
+import type { IChildNode, ICSSStyleDeclaration, IElement, IEventTarget, INode } from './interfaces';
+import { ElementEvent } from './interfaces';
 import { MutationEvent } from './MutationEvent';
+import { Node } from './Node';
 
 let entityCounter = 0;
 
@@ -228,6 +228,21 @@ export class Element<
   }
   querySelectorAll<E extends IElement = IElement>(selectors: string): E[] {
     return this.sceneGraphService.querySelectorAll<IElement, E>(selectors, this as IElement);
+  }
+
+  /**
+   * should traverses the element and its parents (heading toward the document root)
+   * until it finds a node that matches the specified CSS selector.
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/closest
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/closest#polyfill
+   */
+  closest<E extends IElement = IElement>(selectors: string): E | null {
+    let el = this as unknown as E;
+    do {
+      if (this.sceneGraphService.matches(selectors, el)) return el;
+      el = el.parentElement as E;
+    } while (el !== null);
+    return null;
   }
 
   /**

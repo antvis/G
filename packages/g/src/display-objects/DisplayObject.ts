@@ -306,8 +306,12 @@ export class DisplayObject<
     );
 
     if (this.isCustomElement) {
-      if ((this as CustomElement<any>).attributeChangedCallback) {
-        (this as CustomElement<any>).attributeChangedCallback(name as Key, oldValue, value);
+      if ((this as unknown as CustomElement<any>).attributeChangedCallback) {
+        (this as unknown as CustomElement<any>).attributeChangedCallback(
+          name as Key,
+          oldValue,
+          value,
+        );
       }
     }
   }
