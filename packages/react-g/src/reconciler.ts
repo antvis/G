@@ -1,31 +1,26 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import type { Canvas, Element } from '@antv/g';
+import React from 'react';
 import type { OpaqueHandle } from 'react-reconciler';
 import ReactReconciler from 'react-reconciler';
-import React from 'react';
-import {
-  unstable_scheduleCallback as scheduleDeferredCallback,
-  unstable_cancelCallback as cancelDeferredCallback,
-  unstable_now as now,
-  unstable_shouldYield as shouldYield,
-} from 'scheduler';
+import { unstable_now as now } from 'scheduler';
 import { bindShapeEvent, updateProps } from './processProps';
-import { log } from './util/debug';
 import type {
-  Type,
-  Props,
-  Instance,
-  TextInstance,
-  HydratableInstance,
-  PublicInstance,
-  HostContext,
-  UpdatePayload,
   ChildSet,
-  TimeoutHandle,
-  NoTimeout,
   Container,
+  HostContext,
+  HydratableInstance,
+  Instance,
+  NoTimeout,
+  Props,
+  PublicInstance,
   SuspenseInstance,
+  TextInstance,
+  TimeoutHandle,
+  Type,
+  UpdatePayload,
 } from './types';
-import type { Canvas, Element } from '@antv/g';
+import { log } from './util/debug';
 
 export const reconcilor = ReactReconciler<
   Type,
@@ -67,8 +62,10 @@ export const reconcilor = ReactReconciler<
   ): Instance {
     const canvas = rootContainerInstance as unknown as Canvas;
     const instance = canvas.document.createElement(type, { style: props }) as unknown as Element;
+    // @ts-ignore
     bindShapeEvent(props, instance);
     log('createInstance ', type, instance);
+    // @ts-ignore
     return instance;
   },
   appendInitialChild(parentInstance: Instance, child: Instance | TextInstance): void {
@@ -334,6 +331,7 @@ export const render = (
   target: Element | Canvas,
   callback?: (() => void) | null,
 ) => {
+  // @ts-ignore
   const container = reconcilor.createContainer(target as any, 1, false, null);
   reconcilor.updateContainer(component, container, null, callback);
 };

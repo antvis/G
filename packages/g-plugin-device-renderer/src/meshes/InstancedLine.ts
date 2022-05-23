@@ -1,18 +1,18 @@
-import { injectable } from 'mana-syringe';
-import type { Line, DisplayObject, ParsedLineStyleProps, CSSRGB, CSSGradientValue } from '@antv/g';
+import type { CSSGradientValue, CSSRGB, DisplayObject, Line, ParsedLineStyleProps } from '@antv/g';
 import { Shape } from '@antv/g';
+import { injectable } from 'mana-syringe';
 import { Format, VertexBufferFrequency } from '../platform';
-import vert from '../shader/instanced-line.vert';
 import frag from '../shader/instanced-line.frag';
-import { Instanced, VertexAttributeBufferIndex, VertexAttributeLocation } from './Instanced';
+import vert from '../shader/instanced-line.vert';
 import { enumToObject } from '../utils/enum';
+import { Instanced, VertexAttributeBufferIndex, VertexAttributeLocation } from './Instanced';
 
 export const segmentInstanceGeometry = [
   0, -0.5, 0, 0, 0, 1, -0.5, 1, 1, 0, 1, 0.5, 1, 1, 1, 0, 0.5, 0, 0, 1,
 ];
 
 enum InstancedLineVertexAttributeBufferIndex {
-  POINT = VertexAttributeBufferIndex.MAX,
+  POINT = VertexAttributeBufferIndex.POSITION + 1,
   CAP,
   DASH,
 }

@@ -1,5 +1,5 @@
 export default {
-  // umd: {
-  //   name: 'G.Math',
-  // },
+  umd: {
+    name: 'G.Math',
+  },
 };

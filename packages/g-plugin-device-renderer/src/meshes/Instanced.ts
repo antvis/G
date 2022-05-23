@@ -1,26 +1,27 @@
+import type {
+  DisplayObject,
+  LinearGradient,
+  ParsedBaseStyleProps,
+  Pattern,
+  RenderingService,
+  Tuple4Number,
+} from '@antv/g';
 import {
   Camera,
   CSSGradientValue,
   CSSRGB,
   DefaultCamera,
   GradientPatternType,
-  Shape,
   parseColor,
+  Shape,
 } from '@antv/g';
-import type {
-  Tuple4Number,
-  DisplayObject,
-  ParsedBaseStyleProps,
-  RenderingService,
-  Pattern,
-  LinearGradient,
-} from '@antv/g';
-import { inject, injectable } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
+import { inject, injectable } from 'mana-syringe';
 import { BufferGeometry, GeometryEvent } from '../geometries';
+import { LightPool } from '../LightPool';
+import type { Fog } from '../lights';
 import type { Material } from '../materials';
-import { MaterialEvent } from '../materials';
-import { ShaderMaterial } from '../materials';
+import { MaterialEvent, ShaderMaterial } from '../materials';
 import type { BindingLayoutSamplerDescriptor, Device, InputState } from '../platform';
 import {
   ChannelWriteMask,
@@ -41,14 +42,12 @@ import {
   RenderHelper,
   TextureMapping,
 } from '../render';
-import type { ProgramDescriptorSimpleWithOrig } from '../shader/compiler';
-import { preprocessProgramObj_GLSL } from '../shader/compiler';
 import type { Batch } from '../renderer/Batch';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
+import type { ProgramDescriptorSimpleWithOrig } from '../shader/compiler';
+import { preprocessProgramObj_GLSL } from '../shader/compiler';
 import { TexturePool } from '../TexturePool';
-import type { Fog } from '../lights';
-import { LightPool } from '../LightPool';
-import { enumToObject, compareDefines } from '../utils/enum';
+import { compareDefines, enumToObject } from '../utils/enum';
 
 let counter = 1;
 const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
@@ -516,6 +515,7 @@ export abstract class Instanced {
         ...this.material.defines,
         ...enumToObject(VertexAttributeLocation),
       };
+
       Object.keys(this.material.defines).forEach((key) => {
         const value = this.material.defines[key];
         if (typeof value === 'number') {

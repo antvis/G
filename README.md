@@ -129,7 +129,7 @@ Start a dev-server on root dir, eg. `http-server`:
 $ http-server -p 9090
 ```
 
-Open api.html on `localhost:9090/dev-docs/api.html`.
+Open api.html on `localhost:9090/spec/api.html`.
 
 ### Run test cases
 

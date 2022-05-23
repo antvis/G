@@ -1,19 +1,21 @@
-import { mat4, vec3 } from 'gl-matrix';
-import { inject, singleton, postConstruct } from 'mana-syringe';
 import { EventEmitter } from 'eventemitter3';
-import type { Cursor, EventPosition } from '../types';
-import { CanvasConfig } from '../types';
+import { mat4, vec3 } from 'gl-matrix';
+import { inject, postConstruct, singleton } from 'mana-syringe';
+import type { HTML } from '../display-objects';
+import { DisplayObjectPool } from '../DisplayObjectPool';
 import { Element } from '../dom/Element';
-import { Node } from '../dom/Node';
 import type { FederatedEvent } from '../dom/FederatedEvent';
 import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
-import { RenderingContext } from './RenderingContext';
-import type { IEventTarget, INode, IDocument, ICanvas } from '../dom/interfaces';
+import type { ICanvas, IDocument, IEventTarget, INode } from '../dom/interfaces';
+import { Node } from '../dom/Node';
 import type { PointLike } from '../shapes';
 import { Point } from '../shapes';
+import type { Cursor, EventPosition } from '../types';
+import { CanvasConfig } from '../types';
 import { ContextService } from './ContextService';
+import { RenderingContext } from './RenderingContext';
 
 type Picker = (position: EventPosition) => Promise<IEventTarget | null>;
 type TrackingData = {
@@ -44,7 +46,10 @@ export class EventService extends EventEmitter {
   private contextService: ContextService<any>;
 
   @inject(CanvasConfig)
-  protected canvasConfig: CanvasConfig;
+  private canvasConfig: CanvasConfig;
+
+  @inject(DisplayObjectPool)
+  private displayObjectPool: DisplayObjectPool;
 
   private rootTarget: IEventTarget;
 
@@ -621,9 +626,12 @@ export class EventService extends EventEmitter {
     const target = event.nativeEvent?.target;
 
     if (target) {
+      // from <canvas>
       if (target === $el) {
         return true;
       }
+
+      // from <svg>
       if ($el && ($el as HTMLCanvasElement).contains) {
         return ($el as HTMLCanvasElement).contains(target as any);
       }
@@ -635,6 +643,19 @@ export class EventService extends EventEmitter {
 
     // account for Touch
     return false;
+  }
+
+  private getExistedHTML(event: FederatedEvent): HTML {
+    if (event.nativeEvent.composedPath) {
+      const htmls = this.displayObjectPool.getHTMLs();
+      for (const html of htmls) {
+        if (event.nativeEvent.composedPath().indexOf(html) > -1) {
+          return html;
+        }
+      }
+    }
+
+    return null;
   }
 
   private async pickTarget(event: FederatedPointerEvent | FederatedWheelEvent): Promise<INode> {
@@ -660,10 +681,12 @@ export class EventService extends EventEmitter {
     this.copyData(from, event);
 
     event.nativeEvent = from.nativeEvent;
-
-    const isFromCanvas = this.isNativeEventFromCanvas(event);
     event.originalEvent = from;
-    event.target = target ?? (isFromCanvas && (await this.pickTarget(event)));
+
+    const existedHTML = this.getExistedHTML(event);
+    event.target =
+      target ??
+      (existedHTML || (this.isNativeEventFromCanvas(event) && (await this.pickTarget(event))));
 
     if (typeof type === 'string') {
       event.type = type;
@@ -681,8 +704,9 @@ export class EventService extends EventEmitter {
 
     event.nativeEvent = from.nativeEvent;
     event.originalEvent = from;
-    const isFromCanvas = this.isNativeEventFromCanvas(event);
-    event.target = isFromCanvas && (await this.pickTarget(event));
+    const existedHTML = this.getExistedHTML(event);
+    event.target =
+      existedHTML || (this.isNativeEventFromCanvas(event) && (await this.pickTarget(event)));
     return event;
   }
 

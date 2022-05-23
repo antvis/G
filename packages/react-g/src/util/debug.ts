@@ -1,6 +1,7 @@
-import debug from 'debug';
+// import debug from 'debug';
 
 // localStorage.debug = 'react-g';
-localStorage.debug = '__disable_debug';
+// localStorage.debug = '__disable_debug';
 
-export const log = debug('react-g');
+// export const log = debug('react-g');
+export const log = console.log;

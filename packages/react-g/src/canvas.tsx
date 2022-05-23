@@ -39,6 +39,7 @@ export const Canvas = forwardRef<GCanvas, CanvasProps>(
 
       canvasRef.current = canvas;
 
+      // @ts-ignore
       container.current = reconcilor.createContainer(canvas as any, 1, false, null);
 
       return () => {

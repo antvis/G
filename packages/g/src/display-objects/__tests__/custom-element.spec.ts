@@ -1,14 +1,14 @@
+import type { BaseCustomElementStyleProps, DisplayObjectConfig } from '@antv/g';
+import { Canvas, Circle, CustomElement } from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
+import { vec3 } from 'gl-matrix';
 // @ts-ignore
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import type { DisplayObjectConfig, BaseCustomElementStyleProps } from '@antv/g';
-import { CustomElement, Circle, Canvas } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { vec3 } from 'gl-matrix';
 
 chai.use(chaiAlmost(0.0001));
 chai.use(sinonChai);
@@ -76,7 +76,7 @@ describe('CustomElement', () => {
     // @ts-ignore
     expect(disconnectedCallback).to.have.been.not.called;
     // @ts-ignore
-    expect(attributeChangedCallback).to.have.been.not.called;
+    expect(attributeChangedCallback).to.have.been.called;
 
     // append to canvas
     canvas.appendChild(a);

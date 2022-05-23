@@ -1,17 +1,21 @@
-import { inject, injectable } from 'mana-syringe';
-import { mat4 } from 'gl-matrix';
 import type { DisplayObject, ParsedTextStyleProps, Text as TextShape, Tuple4Number } from '@antv/g';
-import { UnitType } from '@antv/g';
-import { CSSRGB } from '@antv/g';
-import { Format, VertexBufferFrequency, CullMode } from '../platform';
+import { CSSRGB, UnitType } from '@antv/g';
+import { mat4 } from 'gl-matrix';
+import { inject, injectable } from 'mana-syringe';
+import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
+import frag from '../shader/text.frag';
+import vert from '../shader/text.vert';
+import { enumToObject } from '../utils/enum';
+import { Instanced, VertexAttributeBufferIndex, VertexAttributeLocation } from './Instanced';
+import type GlyphAtlas from './symbol/GlyphAtlas';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
 import { getGlyphQuads } from './symbol/SymbolQuad';
-import type GlyphAtlas from './symbol/GlyphAtlas';
-import vert from '../shader/text.vert';
-import frag from '../shader/text.frag';
-import { Instanced, VertexAttributeLocation } from './Instanced';
-import { enumToObject } from '../utils/enum';
+
+enum TextVertexAttributeBufferIndex {
+  INSTANCED = VertexAttributeBufferIndex.POSITION + 1,
+  TEX,
+}
 
 enum TextVertexAttributeLocation {
   TEX = VertexAttributeLocation.MAX,
@@ -122,7 +126,7 @@ export class TextMesh extends Instanced {
     this.geometry.vertexCount = indices.length;
     this.geometry.setIndexBuffer(new Uint32Array(indices));
     this.geometry.setVertexBuffer({
-      bufferIndex: 0,
+      bufferIndex: TextVertexAttributeBufferIndex.INSTANCED,
       byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4 + 4),
       // frequency: VertexBufferFrequency.PerInstance,
       frequency: VertexBufferFrequency.PerVertex,
@@ -195,7 +199,7 @@ export class TextMesh extends Instanced {
     });
 
     this.geometry.setVertexBuffer({
-      bufferIndex: 1,
+      bufferIndex: TextVertexAttributeBufferIndex.TEX,
       byteStride: 4 * (2 + 2),
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
@@ -365,8 +369,11 @@ export class TextMesh extends Instanced {
     const glyphQuads = getGlyphQuads(positionedGlyphs, glyphAtlas.positions);
 
     glyphQuads.forEach((quad) => {
+      // rollup will use `concat`
+      const temp = [];
+      temp.push(...modelMatrix);
       const packed: number[] = [
-        ...modelMatrix,
+        ...temp,
         ...fillColor,
         ...strokeColor,
         opacity.value,

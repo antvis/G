@@ -1,5 +1,5 @@
 ---
-title: 画布
+title: Canvas
 order: -100
 redirect_from:
     - /en/docs/api
@@ -144,13 +144,13 @@ const canvas = new Canvas({
 });
 ```
 
-## supportPointerEvent
+## supportsPointerEvents
 
-可选。是否支持 PointerEvent，默认将使用 `!!globalThis.PointerEvent` 判断。如果传入 `false` 内部事件系统将不会触发例如 `pointerdown` 等 PointerEvent。
+可选。是否支持 PointerEvent，默认将使用 `!!globalThis.PointerEvent` 判断。如果传入 `false`，事件监听插件将不会监听例如 `pointerdown` 等 PointerEvent。
 
-## supportTouchEvent
+## supportsTouchEvents
 
-可选。是否支持 TouchEvent。如果传入 `false` 内部事件系统将不会触发例如 `touchstart` 等 TouchEvent。
+可选。是否支持 TouchEvent。如果传入 `false`，事件监听插件将不会监听例如 `touchstart` 等 TouchEvent。
 
 ## isTouchEvent
 

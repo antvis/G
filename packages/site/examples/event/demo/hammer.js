@@ -1,10 +1,10 @@
-import { Circle, Text, Canvas } from '@antv/g';
+import { Canvas, Circle, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import Hammer from 'hammerjs';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
-import Hammer from 'hammerjs';
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
@@ -59,7 +59,9 @@ canvas.appendChild(circle);
 circle.setPosition(300, 200);
 
 // use hammer.js
-const hammer = new Hammer(circle);
+const hammer = new Hammer(circle, {
+  inputClass: Hammer.PointerEventInput,
+});
 hammer.on('panleft panright tap press', (ev) => {
   text.attr('text', `${ev.type} gesture detected.`);
 });

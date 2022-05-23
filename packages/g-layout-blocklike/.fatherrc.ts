@@ -1,9 +1,9 @@
 export default {
-  // umd: {
-  //   name: 'G.Canvas2D',
-  //   globals: {
-  //     '@antv/g': 'window.G',
-  //     'mana-syringe': 'window.G.ManaSyringe',
-  //   },
-  // },
+  umd: {
+    name: 'G.Layout.Blocklike',
+    globals: {
+      '@antv/g': 'window.G',
+      'mana-syringe': 'window.G.ManaSyringe',
+    },
+  },
 };

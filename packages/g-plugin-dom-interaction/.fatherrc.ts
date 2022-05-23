@@ -1,9 +1,9 @@
 export default {
-  // umd: {
-  //   name: 'G.Plugin.DOMInteraction',
-  //   globals: {
-  //     '@antv/g': 'window.G',
-  //     'mana-syringe': 'window.G.ManaSyringe',
-  //   },
-  // },
+  umd: {
+    name: 'G.DOMInteraction',
+    globals: {
+      '@antv/g': 'window.G',
+      'mana-syringe': 'window.G.ManaSyringe',
+    },
+  },
 };

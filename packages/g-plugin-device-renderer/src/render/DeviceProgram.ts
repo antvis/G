@@ -1,3 +1,4 @@
+import { isNil } from '@antv/g';
 import type { VendorInfo } from '../platform';
 import { assert, nullify } from '../platform/utils';
 import type { ShaderFeatureMap } from '../shader/compiler';
@@ -14,7 +15,7 @@ export class DeviceProgram {
   both: string = '';
   vert: string = '';
   frag: string = '';
-  defines = new Map<string, string>();
+  defines: Record<string, string> = {};
   features: ShaderFeatureMap = {
     MRT: true,
   };
@@ -26,11 +27,11 @@ export class DeviceProgram {
 
   setDefineString(name: string, v: string | null): boolean {
     if (v !== null) {
-      if (this.defines.get(name) === v) return false;
-      this.defines.set(name, v);
+      if (this.defines[name] === v) return false;
+      this.defines[name] = v;
     } else {
-      if (!this.defines.has(name)) return false;
-      this.defines.delete(name);
+      if (isNil(this.defines[name])) return false;
+      delete this.defines[name];
     }
     this.definesChanged();
     return true;
@@ -41,7 +42,7 @@ export class DeviceProgram {
   }
 
   getDefineString(name: string): string | null {
-    return nullify(this.defines.get(name));
+    return nullify(this.defines[name]);
   }
 
   getDefineBool(name: string): boolean {

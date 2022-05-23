@@ -1,5 +1,5 @@
 import type { vec2, vec3 } from 'gl-matrix';
-import type { DisplayObject } from './display-objects';
+import { Syringe } from 'mana-syringe';
 import type { IRenderer } from './AbstractRenderer';
 import type {
   CSSGlobalKeywords,
@@ -9,7 +9,7 @@ import type {
   CSSUnitValue,
   ParsedTransform,
 } from './css';
-import { Syringe } from 'mana-syringe';
+import type { DisplayObject } from './display-objects';
 
 export enum Shape {
   GROUP = 'g',
@@ -344,9 +344,9 @@ export interface CanvasConfig {
   /**
    * limits query
    */
-  supportPointerEvent?: boolean;
+  supportsPointerEvents?: boolean;
   // supportMouseEvent?: () => boolean;
-  supportTouchEvent?: boolean;
+  supportsTouchEvents?: boolean;
   isTouchEvent?: (event: InteractivePointerEvent) => event is TouchEvent;
   isMouseEvent?: (event: InteractivePointerEvent) => event is MouseEvent;
 

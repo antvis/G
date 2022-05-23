@@ -1,24 +1,27 @@
 import { GlobalContainer } from 'mana-syringe';
 import {
-  requestAnimationFrame as rAF,
   cancelAnimationFrame as cancelRAF,
+  requestAnimationFrame as rAF,
 } from 'request-animation-frame-polyfill';
-import type { Cursor, InteractivePointerEvent } from './types';
-import { CanvasConfig } from './types';
-import { cleanExistedCanvas, isBrowser } from './utils/canvas';
-import { DisplayObject } from './display-objects/DisplayObject';
-import { ContextService } from './services';
-import { RenderingService } from './services/RenderingService';
-import { RenderingContext, RenderReason } from './services/RenderingContext';
-import { EventService } from './services/EventService';
+import type { IRenderer } from './AbstractRenderer';
 import { Camera, CameraEvent, CameraProjectionMode, DefaultCamera } from './camera';
 import { containerModule as commonContainerModule } from './canvas-module';
-import type { IRenderer } from './AbstractRenderer';
-import type { PointLike } from './shapes';
-import type { FederatedEvent, Element, IChildNode } from './dom';
-import { Document, EventTarget, ElementEvent } from './dom';
-import type { INode, ICanvas } from './dom/interfaces';
+import { CustomElement, DisplayObject } from './display-objects';
+import type { Element, FederatedEvent, IChildNode } from './dom';
+import { Document, ElementEvent, EventTarget } from './dom';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
+import type { ICanvas, INode } from './dom/interfaces';
+import {
+  ContextService,
+  EventService,
+  RenderingContext,
+  RenderingService,
+  RenderReason,
+} from './services';
+import type { PointLike } from './shapes';
+import type { Cursor, InteractivePointerEvent } from './types';
+import { CanvasConfig } from './types';
+import { cleanExistedCanvas, isBrowser } from './utils';
 
 export enum CanvasEvent {
   READY = 'ready',
@@ -72,13 +75,13 @@ export class Canvas extends EventTarget implements ICanvas {
    * whether the runtime supports PointerEvent?
    * if not, the event system won't trigger pointer events like `pointerdown`
    */
-  supportPointerEvent: boolean;
+  supportsPointerEvents: boolean;
 
   /**
    * whether the runtime supports TouchEvent?
    * if not, the event system won't trigger touch events like `touchstart`
    */
-  supportTouchEvent: boolean;
+  supportsTouchEvents: boolean;
 
   /**
    * is this native event a TouchEvent?
@@ -132,8 +135,8 @@ export class Canvas extends EventTarget implements ICanvas {
       requestAnimationFrame,
       cancelAnimationFrame,
       createImage,
-      supportPointerEvent,
-      supportTouchEvent,
+      supportsPointerEvents,
+      supportsTouchEvents,
       isTouchEvent,
       isMouseEvent,
     } = config;
@@ -164,18 +167,18 @@ export class Canvas extends EventTarget implements ICanvas {
      */
     // the following feature-detect from hammer.js
     // @see https://github.com/hammerjs/hammer.js/blob/master/src/inputjs/input-consts.js#L5
-    this.supportTouchEvent = supportTouchEvent ?? 'ontouchstart' in globalThis;
-    this.supportPointerEvent = supportPointerEvent ?? !!globalThis.PointerEvent;
+    this.supportsTouchEvents = supportsTouchEvents ?? 'ontouchstart' in globalThis;
+    this.supportsPointerEvents = supportsPointerEvents ?? !!globalThis.PointerEvent;
     this.isTouchEvent =
       isTouchEvent ??
       ((event: InteractivePointerEvent): event is TouchEvent =>
-        this.supportTouchEvent && event instanceof globalThis.TouchEvent);
+        this.supportsTouchEvents && event instanceof globalThis.TouchEvent);
     this.isMouseEvent =
       isMouseEvent ??
       ((event: InteractivePointerEvent): event is MouseEvent =>
         !globalThis.MouseEvent ||
         (event instanceof globalThis.MouseEvent &&
-          (!this.supportPointerEvent || !(event instanceof globalThis.PointerEvent))));
+          (!this.supportsPointerEvents || !(event instanceof globalThis.PointerEvent))));
 
     this.initRenderingContext({
       container,
@@ -503,7 +506,14 @@ export class Canvas extends EventTarget implements ICanvas {
     });
 
     // unmount from leaf to root
-    path.reverse().forEach((child) => {
+    path.reverse().forEach((child: DisplayObject) => {
+      // trigger before unmounted
+      if (child instanceof CustomElement) {
+        if (child.disconnectedCallback) {
+          child.disconnectedCallback();
+        }
+      }
+
       child.emit(ElementEvent.UNMOUNTED, {});
 
       // skip document.documentElement
@@ -520,6 +530,13 @@ export class Canvas extends EventTarget implements ICanvas {
         child.ownerDocument = this.document;
         child.isConnected = true;
         child.emit(ElementEvent.MOUNTED, {});
+
+        // trigger after mounted
+        if (child instanceof CustomElement) {
+          if (child.connectedCallback) {
+            child.connectedCallback();
+          }
+        }
       }
     });
   }

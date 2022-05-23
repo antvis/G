@@ -1,13 +1,12 @@
 import type EventEmitter from 'eventemitter3';
-import type { AnimationTimeline } from './AnimationTimeline';
-import type { BaseStyleProps, Shape } from '../types';
-import type { FederatedEvent } from './FederatedEvent';
-import type { CustomElementRegistry } from './CustomElementRegistry';
-import type { CanvasConfig, InteractivePointerEvent } from '../types';
-import type { DisplayObject } from '../display-objects';
-import type { PointLike } from '../shapes';
 import type { Camera } from '../camera';
+import type { DisplayObject } from '../display-objects';
 import type { ContextService, EventService, RenderingService } from '../services';
+import type { PointLike } from '../shapes';
+import type { BaseStyleProps, CanvasConfig, InteractivePointerEvent, Shape } from '../types';
+import type { AnimationTimeline } from './AnimationTimeline';
+import type { CustomElementRegistry } from './CustomElementRegistry';
+import type { FederatedEvent } from './FederatedEvent';
 
 /**
  * built-in events for element
@@ -432,8 +431,8 @@ export interface ICanvas extends IEventTarget {
   requestAnimationFrame: (callback: FrameRequestCallback) => number;
   cancelAnimationFrame: (handle: number) => void;
 
-  supportTouchEvent: boolean;
-  supportPointerEvent: boolean;
+  supportsTouchEvents: boolean;
+  supportsPointerEvents: boolean;
   isTouchEvent: (event: InteractivePointerEvent) => event is TouchEvent;
   isMouseEvent: (event: InteractivePointerEvent) => event is MouseEvent;
 

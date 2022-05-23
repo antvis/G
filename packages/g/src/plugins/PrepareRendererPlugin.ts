@@ -1,10 +1,10 @@
 import { inject, singleton } from 'mana-syringe';
+import { StyleValueRegistry } from '../css';
 import type { DisplayObject } from '../display-objects';
-import { StyleValueRegistry } from '../css/interfaces';
 import type { Element, FederatedEvent } from '../dom';
 import { ElementEvent } from '../dom';
-import type { RenderingService, RenderingPlugin } from '../services';
-import { RenderingContext, RenderingPluginContribution, dirtifyToRoot } from '../services';
+import type { RenderingPlugin, RenderingService } from '../services';
+import { dirtifyToRoot, RenderingContext, RenderingPluginContribution } from '../services';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class PrepareRendererPlugin implements RenderingPlugin {

@@ -1,7 +1,8 @@
-import { Circle, Canvas } from '@antv/g';
+import { Canvas, Circle, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 
 /**
+ * Implements Pinch zoom gestures with PointerEvent
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events/Pinch_zoom_gestures
  */
 
@@ -11,22 +12,34 @@ const canvasRenderer = new CanvasRenderer();
 // create a canvas
 const canvas = new Canvas({
   container: 'container',
-  width: 600,
-  height: 500,
+  width: 300,
+  height: 300,
   renderer: canvasRenderer,
 });
 
 // add a circle to canvas
 const circle = new Circle({
   style: {
-    cx: 300,
+    cx: 200,
     cy: 200,
-    r: 100,
+    r: 200,
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
   },
 });
+const text = new Text({
+  style: {
+    x: -150,
+    y: -100,
+    fill: 'black',
+    text: 'Pinch',
+    wordWrap: true,
+    wordWrapWidth: 160,
+    pointerEvents: 'none',
+  },
+});
+circle.appendChild(text);
 
 canvas.appendChild(circle);
 
@@ -35,7 +48,7 @@ var evCache = new Array();
 var prevDiff = -1;
 
 function log(prefix, ev) {
-  var s =
+  text.style.text =
     prefix +
     ': pointerID = ' +
     ev.pointerId +
@@ -43,13 +56,17 @@ function log(prefix, ev) {
     ev.pointerType +
     ' ; isPrimary = ' +
     ev.isPrimary;
-  console.log(s);
 }
 
 function pointerdown_handler(ev) {
   // The pointerdown event signals the start of a touch interaction.
   // This event is cached to support 2-finger gestures
-  evCache.push(ev);
+  evCache.push({
+    pointerId: ev.pointerId,
+    clientX: ev.clientX,
+    clientY: ev.clientY,
+  });
+
   log('pointerDown', ev);
 }
 
@@ -68,7 +85,11 @@ function pointermove_handler(ev) {
   // Find this event in the cache and update its record with this event
   for (var i = 0; i < evCache.length; i++) {
     if (ev.pointerId == evCache[i].pointerId) {
-      evCache[i] = ev;
+      evCache[i] = {
+        pointerId: ev.pointerId,
+        clientX: ev.clientX,
+        clientY: ev.clientY,
+      };
       break;
     }
   }

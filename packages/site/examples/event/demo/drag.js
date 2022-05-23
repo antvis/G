@@ -1,7 +1,7 @@
-import { Circle, Text, Canvas } from '@antv/g';
+import { Canvas, Circle, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -16,9 +16,6 @@ const canvas = new Canvas({
   width: 600,
   height: 500,
   renderer: canvasRenderer,
-  // open the following when debugging on PC
-  // supportPointerEvent: false,
-  // supportTouchEvent: true,
 });
 
 // add a circle to canvas

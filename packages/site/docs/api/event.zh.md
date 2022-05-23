@@ -680,19 +680,19 @@ ul.addEventListener(
 
 ## 直接使用 Hammer.js
 
-以 [Hammer.js](https://github.com/hammerjs/hammer.js) 这样的手势库为例，我们可以直接把 `DisplayObject` 传入：
+以 [Hammer.js](https://github.com/hammerjs/hammer.js) 这样的手势库为例，由于完全兼容 DOM API，我们可以直接把 `DisplayObject` 传入。另外需要通过 [inputClass](https://hammerjs.github.io/jsdoc/Hammer.defaults.html#.inputClass) 告知 Hammer.js 我们的输入事件为 PointerEvent，无需考虑例如 TouchEvent 等交互事件，[示例](/zh/examples/event#hammer)：
 
 ```js
 import Hammer from 'hammerjs';
 
-const hammer = new Hammer(circle);
+const hammer = new Hammer(circle, {
+    inputClass: Hammer.PointerEventInput, // 告知 Hammer.js 我们的输入事件为 PointerEvent
+});
 hammer.on('press', (e) => {
     console.log("You're pressing me!");
     console.log(e.target); // circle
 });
 ```
-
-[示例](/zh/examples/event#hammer)
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*i7SaRaYw0YcAAAAAAAAAAAAAARQnAQ)
 

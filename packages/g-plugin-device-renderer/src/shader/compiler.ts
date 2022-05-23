@@ -12,7 +12,6 @@ const ES100_REPLACEMENTS: [RegExp, string][] = [
   [/\btextureLod\(/g, 'texture2DLodEXT('],
 ];
 
-type DefineMap = Map<string, string>;
 export type ShaderFeature = 'MRT' | 'PICKING';
 export type ShaderFeatureMap = Partial<Record<ShaderFeature, boolean>>;
 
@@ -128,7 +127,7 @@ export function preprocessShader_GLSL(
   vendorInfo: VendorInfo,
   type: 'vert' | 'frag',
   source: string,
-  defines: DefineMap | null = null,
+  defines: Record<string, string> | null = null,
   features: ShaderFeatureMap | null = null,
 ): string {
   const isGLSL100 = vendorInfo.glslVersion === '#version 100';
@@ -150,7 +149,9 @@ export function preprocessShader_GLSL(
   // #define KEY VAR
   let definesString: string = '';
   if (defines !== null)
-    definesString = [...defines.entries()].map(([k, v]) => defineStr(k, v)).join('\n');
+    definesString = Object.keys(defines)
+      .map((key) => defineStr(key, defines[key]))
+      .join('\n');
 
   const precision =
     lines.find((line) => line.startsWith('precision')) || 'precision mediump float;';
@@ -354,7 +355,7 @@ export function preprocessProgram_GLSL(
   vendorInfo: VendorInfo,
   vert: string,
   frag: string,
-  defines: DefineMap | null = null,
+  defines: Record<string, string> | null = null,
   features: ShaderFeatureMap | null = null,
 ): ProgramDescriptorSimpleWithOrig {
   const preprocessedVert = preprocessShader_GLSL(vendorInfo, 'vert', vert, defines, features);
@@ -366,7 +367,7 @@ export interface ProgramObjBag {
   both?: string;
   vert: string;
   frag: string;
-  defines?: DefineMap;
+  defines?: Record<string, string>;
   features?: ShaderFeatureMap;
 }
 

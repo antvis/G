@@ -25,6 +25,8 @@ const html = new HTML({
 canvas.appendChild(html);
 ```
 
+之所以一定要指定宽高（至少是初始宽高），是由于 SVG 的 [\<foreignObject\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject) 元素必须指定否则无法显示。
+
 # DOM 结构
 
 在实现中 g-canvas/webgl 会将 HTML 内容包裹在 `<div>` 中，以 `<canvas>` 的兄弟节点放在容器内。而在 g-svg 中使用 `<foreignObject>` 包裹内容：
@@ -166,7 +168,7 @@ html.style.innerHTML = '<h1>This is Title</h1>';
 
 ## width
 
-容器宽度。
+容器宽度，默认值为 `'auto'`。
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
@@ -176,7 +178,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
 ## height
 
-容器高度。
+容器宽度，默认值为 `'auto'`。
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
 

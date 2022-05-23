@@ -1,22 +1,24 @@
-import { inject, singleton } from 'mana-syringe';
 import type {
   DisplayObject,
-  RenderingService,
-  RenderingPlugin,
   FederatedEvent,
+  HTML,
   LinearGradient,
   MutationEvent,
-  HTML,
+  RenderingPlugin,
+  RenderingService,
 } from '@antv/g';
-import { CSSRGB, CSSGradientValue, GradientPatternType } from '@antv/g';
 import {
-  Shape,
-  RenderingPluginContribution,
   ContextService,
-  RenderingContext,
+  CSSGradientValue,
+  CSSRGB,
   ElementEvent,
+  GradientPatternType,
   isString,
+  RenderingContext,
+  RenderingPluginContribution,
+  Shape,
 } from '@antv/g';
+import { inject, singleton } from 'mana-syringe';
 
 const HTML_PREFIX = 'g-html-';
 
@@ -161,12 +163,12 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         ].join(',')})`;
         break;
       case 'width':
-        const { width } = object.parsedStyle;
-        $el.style.width = `${width?.value || 0}px`;
+        const width = object.computedStyleMap().get('width');
+        $el.style.width = width.toString();
         break;
       case 'height':
-        const { height } = object.parsedStyle;
-        $el.style.height = `${height?.value || 0}px`;
+        const height = object.computedStyleMap().get('height');
+        $el.style.height = height.toString();
         break;
       case 'zIndex':
         const { zIndex } = object.parsedStyle;
