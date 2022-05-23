@@ -32,8 +32,8 @@ export class DragndropPlugin implements RenderingPlugin {
         event.type = 'dragstart';
         target.dispatchEvent(event);
 
-        let shiftX = event.clientX - target.getBoundingClientRect().left;
-        let shiftY = event.clientY - target.getBoundingClientRect().top;
+        const shiftX = event.clientX - target.getBoundingClientRect().left;
+        const shiftY = event.clientY - target.getBoundingClientRect().top;
 
         moveAt(event.canvasX, event.canvasY);
 
@@ -57,12 +57,12 @@ export class DragndropPlugin implements RenderingPlugin {
 
           const point =
             overlap === 'pointer' ? [event.canvasX, event.canvasY] : target.getBounds().center;
-          let elemBelow = await document.elementFromPoint(point[0], point[1]);
+          const elemBelow = await document.elementFromPoint(point[0], point[1]);
           target.style.pointerEvents = pointerEventsOldValue;
 
           if (!elemBelow) return;
 
-          let droppableBelow = elemBelow.closest('[droppable=true]');
+          const droppableBelow = elemBelow.closest('[droppable=true]');
           if (currentDroppable !== droppableBelow) {
             if (currentDroppable) {
               // null when we were not over a droppable before this event

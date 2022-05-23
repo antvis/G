@@ -2,7 +2,7 @@ import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from 
 import { ContextService, RenderingContext, RenderingPluginContribution } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 
-const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
+// const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
 
 /**
  * listen to mouse/touch/pointer events on DOM wrapper, trigger pointer events
@@ -19,7 +19,7 @@ export class DOMInteractionPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     const canvas = this.renderingContext.root.ownerDocument.defaultView;
-    const SUPPORT_ONLY_TOUCH = canvas.supportsTouchEvents && MOBILE_REGEX.test(navigator.userAgent);
+    // const SUPPORT_ONLY_TOUCH = canvas.supportsTouchEvents && MOBILE_REGEX.test(navigator.userAgent);
 
     const onPointerMove = (ev: InteractivePointerEvent) => {
       renderingService.hooks.pointerMove.call(ev);

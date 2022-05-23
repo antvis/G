@@ -408,8 +408,8 @@ export interface IDocument extends INode, IParentNode {
     options: DisplayObjectConfig<StyleProps>,
   ) => T;
 
-  elementFromPoint(x: number, y: number): Promise<DisplayObject>;
-  elementsFromPoint(x: number, y: number): Promise<DisplayObject[]>;
+  elementFromPoint: (x: number, y: number) => Promise<DisplayObject>;
+  elementsFromPoint: (x: number, y: number) => Promise<DisplayObject[]>;
 }
 
 /**
