@@ -36,6 +36,7 @@ const text = new Text({
     text: 'Pinch',
     wordWrap: true,
     wordWrapWidth: 160,
+    pointerEvents: 'none',
   },
 });
 circle.appendChild(text);

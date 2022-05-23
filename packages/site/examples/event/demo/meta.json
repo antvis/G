@@ -5,6 +5,43 @@
   },
   "demos": [
     {
+      "filename": "dragndrop.js",
+      "title": {
+        "zh": "使用 PointerEvents 实现拖拽",
+        "en": "Drag'n'Drop with PointerEvents"
+      }
+    },
+    {
+      "filename": "pinch-with-pointer.js",
+      "title": {
+        "zh": "使用 PointerEvents 实现 Pinch 手势",
+        "en": "Pinch zoom gestures with PointerEvents"
+      }
+    },
+    {
+      "filename": "hammer.js",
+      "title": {
+        "zh": "使用 Hammer.js 手势库",
+        "en": "Gesture with Hammer.js"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*i7SaRaYw0YcAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "hammer-zoom.js",
+      "title": {
+        "zh": "使用 Hammer.js 手势库实现图片缩放",
+        "en": "Gesture with Hammer.js"
+      }
+    },
+    {
+      "filename": "interact.js",
+      "title": {
+        "zh": "使用 Interact.js 拖拽库",
+        "en": "Drag&Drop with Interact.js"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "delegate.js",
       "title": {
         "zh": "事件委托",
@@ -43,29 +80,7 @@
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gYBQQph9kkUAAAAAAAAAAAAAARQnAQ"
     },
-    {
-      "filename": "hammer.js",
-      "title": {
-        "zh": "使用 Hammer.js 手势库",
-        "en": "Gesture with Hammer.js"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*i7SaRaYw0YcAAAAAAAAAAAAAARQnAQ"
-    },
-    {
-      "filename": "hammer-zoom.js",
-      "title": {
-        "zh": "使用 Hammer.js 手势库实现图片缩放",
-        "en": "Gesture with Hammer.js"
-      }
-    },
-    {
-      "filename": "interact.js",
-      "title": {
-        "zh": "使用 Interact.js 拖拽库",
-        "en": "Drag&Drop with Interact.js"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ"
-    },
+
     {
       "filename": "custom.js",
       "title": {
@@ -103,10 +118,10 @@
       }
     },
     {
-      "filename": "pinch-with-pointer.js",
+      "filename": "touch.js",
       "title": {
-        "zh": "使用 pointer 事件实现 Pinch 手势缩放",
-        "en": "Pinch zoom gestures"
+        "zh": "TouchEvents",
+        "en": "TouchEvents"
       }
     }
   ]

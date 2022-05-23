@@ -16,9 +16,6 @@ const canvas = new Canvas({
   width: 600,
   height: 500,
   renderer: canvasRenderer,
-  // open the following when debugging on PC
-  // supportsPointerEvents: false,
-  // supportsTouchEvents: true,
 });
 
 // add a circle to canvas
