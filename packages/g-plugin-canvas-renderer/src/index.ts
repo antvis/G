@@ -1,8 +1,25 @@
 import type { RendererPlugin } from '@antv/g';
 import { Shape } from '@antv/g';
 import type { Syringe } from 'mana-syringe';
-import { Module, GlobalContainer } from 'mana-syringe';
+import { GlobalContainer, Module } from 'mana-syringe';
 import RBush from 'rbush';
+import { CanvasRendererPlugin, RBushRoot } from './CanvasRendererPlugin';
+import type { RBushNodeAABB } from './components/RBushNode';
+import { RBushNode } from './components/RBushNode';
+import { LoadImagePlugin } from './LoadImagePlugin';
+import { GradientPool } from './shapes/GradientPool';
+import { ImagePool } from './shapes/ImagePool';
+import {
+  CirclePath,
+  EllipsePath,
+  LinePath,
+  PathGenerator,
+  PathGeneratorFactory,
+  PathPath,
+  PolygonPath,
+  PolylinePath,
+  RectPath,
+} from './shapes/paths';
 import type { StyleRenderer } from './shapes/styles';
 import {
   CircleRenderer,
@@ -24,29 +41,10 @@ import {
   TextRendererContribution,
 } from './shapes/styles';
 import { ImageRenderer } from './shapes/styles/Image';
-import { GradientPool } from './shapes/GradientPool';
-import { ImagePool } from './shapes/ImagePool';
-import {
-  PathGeneratorFactory,
-  PathGenerator,
-  CirclePath,
-  EllipsePath,
-  RectPath,
-  LinePath,
-  PolylinePath,
-  PolygonPath,
-  PathPath,
-} from './shapes/paths';
 import { TextRenderer } from './shapes/styles/Text';
-import { CanvasRendererPlugin, RBushRoot } from './CanvasRendererPlugin';
-import { LoadImagePlugin } from './LoadImagePlugin';
-import { RBushNode } from './components/RBushNode';
-import type { RBushNodeAABB } from './components/RBushNode';
-
-export { PathGeneratorFactory, PathGenerator, RBushNode, RBushRoot, RBush };
 
 export * from './shapes/styles';
-
+export { PathGeneratorFactory, PathGenerator, RBushNode, RBushRoot, RBush };
 export type { RBushNodeAABB };
 
 /**

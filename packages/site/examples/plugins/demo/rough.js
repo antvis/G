@@ -2,22 +2,22 @@ import {
   Canvas,
   CanvasEvent,
   Circle,
+  convertToPath,
   Ellipse,
   Group,
-  Rect,
-  Line,
-  Polyline,
-  Polygon,
-  Path,
-  Text,
   Image,
-  convertToPath,
+  Line,
+  Path,
+  Polygon,
+  Polyline,
+  Rect,
+  Text,
 } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Plugin as PluginRoughCanvasRenderer } from '@antv/g-plugin-rough-canvas-renderer';
-import Stats from 'stats.js';
+import { Renderer as SVGRenderer } from '@antv/g-svg';
 import * as lil from 'lil-gui';
+import Stats from 'stats.js';
 import WebFont from 'webfontloader';
 
 // create a renderer
@@ -130,6 +130,12 @@ const rect = new Rect({
   },
 });
 canvas.appendChild(rect);
+rect.addEventListener('pointerenter', function () {
+  rect.style.fill = 'yellow';
+});
+rect.addEventListener('pointerleave', function () {
+  rect.style.fill = '#1890FF';
+});
 
 /**
  * Line
