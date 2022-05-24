@@ -1,5 +1,5 @@
 {
-  "name": "@antv/g-web-component",
+  "name": "@antv/g-web-components",
   "version": "1.1.4",
   "description": "A renderer implemented by SVG",
   "keywords": [

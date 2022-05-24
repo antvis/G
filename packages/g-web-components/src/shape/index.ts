@@ -1,6 +1,7 @@
 export * from './BaseShape';
 export * from './Circle';
 export * from './Ellipse';
+export * from './Group';
 export * from './HTML';
 export * from './Image';
 export * from './Line';

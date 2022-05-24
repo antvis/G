@@ -1,6 +1,6 @@
-import type { PathStyleProps } from "@antv/g";
-import { Path } from "@antv/g";
-import { BaseShape } from "./BaseShape";
+import type { PathStyleProps } from '@antv/g';
+import { Path } from '@antv/g';
+import { BaseShape } from './BaseShape';
 
 export class PathShape extends BaseShape {
   getElementInstance() {
@@ -10,4 +10,3 @@ export class PathShape extends BaseShape {
     return shape;
   }
 }
-

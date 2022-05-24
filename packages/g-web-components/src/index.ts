@@ -3,6 +3,7 @@ import { registerGWebComponent } from './register';
 import {
   CircleShape,
   EllipseShape,
+  GroupShape,
   HTMLShape,
   ImageShape,
   LineShape,
@@ -22,6 +23,7 @@ registerGWebComponent('image', ImageShape);
 registerGWebComponent('line', LineShape);
 registerGWebComponent('polyline', PolylineShape);
 registerGWebComponent('html', HTMLShape);
+registerGWebComponent('group', GroupShape);
 
 export * from './GCanvas';
 export * from './GElement';

@@ -1,14 +1,14 @@
-import type { TextStyleProps } from "@antv/g";
-import { Text } from "@antv/g";
-import { BaseShape } from "./BaseShape";
+import type { TextStyleProps } from '@antv/g';
+import { Text } from '@antv/g';
+import { BaseShape } from './BaseShape';
 
 export class TextShape extends BaseShape {
   connectedCallback(): void {
     super.connectedCallback();
     const observer = new MutationObserver(() => {
-      this.gElement?.setAttribute('text', this.innerText)
-    })
-    observer.observe(this, {characterData: true, childList: true, characterDataOldValue: true})
+      this.gElement?.setAttribute('text', this.innerText);
+    });
+    observer.observe(this, { characterData: true, childList: true, characterDataOldValue: true });
   }
 
   getElementInstance() {
@@ -18,10 +18,9 @@ export class TextShape extends BaseShape {
       style: {
         textBaseline: 'hanging',
 
-        ...style
-      }
+        ...style,
+      },
     });
     return shape;
   }
 }
-

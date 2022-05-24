@@ -1,6 +1,6 @@
-import type { ImageStyleProps } from "@antv/g";
-import { Image } from "@antv/g";
-import { BaseShape } from "./BaseShape";
+import type { ImageStyleProps } from '@antv/g';
+import { Image } from '@antv/g';
+import { BaseShape } from './BaseShape';
 
 export class ImageShape extends BaseShape {
   getElementInstance() {
@@ -10,4 +10,3 @@ export class ImageShape extends BaseShape {
     return shape;
   }
 }
-

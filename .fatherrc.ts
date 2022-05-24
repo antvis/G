@@ -36,7 +36,7 @@ export default {
     'g-plugin-rough-canvas-renderer',
     'g-plugin-rough-svg-renderer',
     'g-components',
-    'g-web-component',
+    'g-web-components',
     'react-g',
     'g-mobile',
     'g-mobile-webgl',

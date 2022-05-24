@@ -1,6 +1,6 @@
-import type { HTMLStyleProps } from "@antv/g";
-import { HTML } from "@antv/g";
-import { BaseShape } from "./BaseShape";
+import type { HTMLStyleProps } from '@antv/g';
+import { HTML } from '@antv/g';
+import { BaseShape } from './BaseShape';
 
 export class HTMLShape extends BaseShape {
   connectedCallback(): void {
@@ -21,7 +21,7 @@ export class HTMLShape extends BaseShape {
   getElementInstance() {
     const shape = new HTML({
       style: {
-        innerHTML: "<div></div>",
+        innerHTML: '<div></div>',
         ...this.getAttrsData(),
       } as HTMLStyleProps,
     });
