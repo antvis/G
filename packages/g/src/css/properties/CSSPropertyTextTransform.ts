@@ -1,7 +1,11 @@
-import type { CSSProperty } from '../CSSProperty';
 import type { DisplayObject } from '../../display-objects';
 import type { CSSKeywordValue } from '../cssom';
+import type { CSSProperty } from '../CSSProperty';
 
+/**
+ * it must transform after text get parsed
+ * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-transform
+ */
 export const CSSPropertyTextTransform: Partial<CSSProperty<CSSKeywordValue, CSSKeywordValue>> = {
   calculator(
     name: string,

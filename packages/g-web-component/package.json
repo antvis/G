@@ -1,24 +1,43 @@
 {
   "name": "@antv/g-web-component",
   "version": "1.1.4",
-  "main": "index.js",
+  "description": "A renderer implemented by SVG",
+  "keywords": [
+    "antv",
+    "g"
+  ],
+  "homepage": "https://github.com/antvis/g#readme",
+  "bugs": {
+    "url": "https://github.com/antvis/g/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antvis/g.git"
+  },
   "license": "MIT",
-  "private": false,
-  "scripts": {
-    "start": "webpack --watch",
-    "build": "webpack --mode production"
-  },
+  "author": "https://github.com/orgs/antvis/people",
+  "main": "dist/index.js",
+  "unpkg": "dist/index.umd.min.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "package.json",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "devDependencies": {
-    "reflect-metadata": "^0.1.13",
-    "ts-loader": "^9.2.8",
-    "typescript": "^4.6.2",
-    "webpack": "^5.70.0",
-    "webpack-cli": "^4.9.2"
+    "@types/gl-matrix": "^2.4.5",
+    "@types/jest": "^25.0.0"
   },
-  "dependencies": {
-    "@antv/g": "^5.1.4",
+  "peerDependencies": {
+    "@antv/g": "^5.0.1",
     "@antv/g-canvas": "^1.1.4",
-    "@antv/g-webgl": "^1.1.4"
+    "@antv/g-webgl": "^1.1.4",
+    "mana-syringe": "^0.3.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "gitHead": "8c7cefec629c4a036903a55e9b435ef4ddbcf9c3"
 }

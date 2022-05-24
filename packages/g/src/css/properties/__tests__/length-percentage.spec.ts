@@ -1,6 +1,6 @@
-import chai, { expect } from 'chai';
-import { Circle, CSS, Canvas, CSSUnitValue } from '@antv/g';
+import { Canvas, Circle, CSS, CSSUnitValue } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { expect } from 'chai';
 import { sleep } from '../../../__tests__/utils';
 
 const $container = document.createElement('div');
@@ -48,6 +48,11 @@ describe('CSSPropertyLengthOrPercentage', () => {
     // computed value
     let computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
     expect(computed.equals(CSS.px(10))).to.be.true;
+
+    circle.style.cx = 30;
+    expect(circle.getAttribute('cx')).to.be.eqls(30);
+    computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
+    expect(computed.equals(CSS.px(30))).to.be.true;
 
     circle.style.cx = '20px';
     expect(circle.getAttribute('cx')).to.be.eqls('20px');

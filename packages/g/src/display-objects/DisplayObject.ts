@@ -281,7 +281,7 @@ export class DisplayObject<
           ),
         );
 
-        if (target.isCustomElement) {
+        if (target.isCustomElement && target.isConnected) {
           if ((target as CustomElement<any>).attributeChangedCallback) {
             (target as CustomElement<any>).attributeChangedCallback('clipPath', this, this);
           }
@@ -305,7 +305,7 @@ export class DisplayObject<
       ),
     );
 
-    if (this.isCustomElement) {
+    if (this.isCustomElement && this.isConnected) {
       if ((this as unknown as CustomElement<any>).attributeChangedCallback) {
         (this as unknown as CustomElement<any>).attributeChangedCallback(
           name as Key,

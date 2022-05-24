@@ -22,6 +22,10 @@ export enum PropertySyntax {
    */
   NUMBER = '<number>',
   /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/angle
+   */
+  ANGLE = '<angle>',
+  /**
    * <number> with range 0..1
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Content_type#opacity_value
    */
