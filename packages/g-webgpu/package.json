@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgpu",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "A renderer implemented by WebGPU",
   "keywords": [
     "antv",
@@ -27,10 +27,10 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-plugin-device-renderer": "^1.1.4",
-    "@antv/g-plugin-dom-interaction": "^1.1.4",
-    "@antv/g-plugin-html-renderer": "^1.1.4",
-    "@antv/g-plugin-webgpu-device": "^1.1.4"
+    "@antv/g-plugin-device-renderer": "^1.1.5",
+    "@antv/g-plugin-dom-interaction": "^1.1.5",
+    "@antv/g-plugin-html-renderer": "^1.1.5",
+    "@antv/g-plugin-webgpu-device": "^1.1.5"
   },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
