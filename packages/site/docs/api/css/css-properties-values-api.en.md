@@ -11,10 +11,10 @@ order: 2
 
 ```js
 window.CSS.registerProperty({
-  name: '--my-color',
-  syntax: '<color>',
-  inherits: false,
-  initialValue: '#c0ffee',
+    name: '--my-color',
+    syntax: '<color>',
+    inherits: false,
+    initialValue: '#c0ffee',
 });
 ```
 
@@ -26,14 +26,14 @@ CSS 属性值包含各种类型：https://drafts.csswg.org/css-values-4/
 
 在 G 中我们支持以下类型：
 
-- 关键词，例如 `unset` `center`
-- 数值
-  - \<color\> 颜色值，例如 `red`
-  - \<paint\> 绘制，包含颜色值
-  - \<percentage\> 百分比，例如 `%`
-  - \<number\> 纯数字
-  - \<length\> 带单位的长度值 `px` `em` `rem`
-  - \<angle\> 带单位的角度值，例如 `deg` `rad` `turn`
+-   关键词，例如 `unset` `center`
+-   数值
+    -   \<color\> 颜色值，例如 `red`
+    -   \<paint\> 绘制，包含颜色值
+    -   \<percentage\> 百分比，例如 `%`
+    -   \<number\> 纯数字
+    -   \<length\> 带单位的长度值 `px` `em` `rem`
+    -   \<angle\> 带单位的角度值，例如 `deg` `rad` `turn`
 
 在部分场景下，这些类型可以进行组合，例如：\<length-percentage\> 就是 \<length\> 和 \<percentage\> 的组合。
 
@@ -89,9 +89,9 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/unset
 
 目前使用该类型的属性值包括：
 
-- [opacity]()
-- [fillOpacity]()
-- [strokeOpacity]()
+-   [opacity]()
+-   [fillOpacity]()
+-   [strokeOpacity]()
 
 ```js
 circle.style.opacity = '0.5';
@@ -149,7 +149,7 @@ https://drafts.csswg.org/css-values-4/#angle-value
 
 目前会使用该类型的属性有：
 
-- [shadowColor]() 阴影色
+-   [shadowColor]() 阴影色
 
 ### 基础颜色关键词
 
@@ -226,8 +226,8 @@ Canvas / WebGL 渲染环境中等同于 black，SVG 中为同名属性效果。
 
 目前使用的属性有：
 
-- [fill]() 填充色
-- [stroke]() 描边色
+-   [fill]() 填充色
+-   [stroke]() 描边色
 
 ### none
 
@@ -237,7 +237,7 @@ Canvas / WebGL 渲染环境中等同于 black，SVG 中为同名属性效果。
 
 ```js
 const circle = new Circle({
-  r: 150,
+    r: 150,
 });
 
 circle.style.fill = 'none';
@@ -253,7 +253,7 @@ circle.style.fill = 'none';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Z5gpQL9ia9kAAAAAAAAAAABkARQnAQ)
 
-- `l` 表示使用线性渐变，绿色的字体为可变量，由用户自己填写。
+-   `l` 表示使用线性渐变，绿色的字体为可变量，由用户自己填写。
 
 ```js
 // example
@@ -265,7 +265,7 @@ stroke: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9sc1SY2d_0AAAAAAAAAAAABkARQnAQ)
 
-- `r` 表示使用放射状渐变，绿色的字体为可变量，由用户自己填写，开始圆的 `x`、`y`、`r` 值均为相对值(0 至 1 范围)。
+-   `r` 表示使用放射状渐变，绿色的字体为可变量，由用户自己填写，开始圆的 `x`、`y`、`r` 值均为相对值(0 至 1 范围)。
 
 ```js
 // example
@@ -277,12 +277,12 @@ fill: 'r(0.5, 0.5, 0.1) 0:#ffffff 1:#1890ff';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8FjsSoqE1mYAAAAAAAAAAABkARQnAQ)
 
-- `p`: 表示使用纹理，绿色的字体为可变量，由用户自己填写。
-- `a`: 该模式在水平和垂直方向重复；
-- `x`: 该模式只在水平方向重复；
-- `y`: 该模式只在垂直方向重复；
-- `n`: 该模式只显示一次（不重复）。
-- 纹理的内容可以直接是图片或者 [Data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)。
+-   `p`: 表示使用纹理，绿色的字体为可变量，由用户自己填写。
+-   `a`: 该模式在水平和垂直方向重复；
+-   `x`: 该模式只在水平方向重复；
+-   `y`: 该模式只在垂直方向重复；
+-   `n`: 该模式只显示一次（不重复）。
+-   纹理的内容可以直接是图片或者 [Data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)。
 
 ```js
 // example
@@ -296,14 +296,14 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 属性的元数据包含以下关键信息：
 
-- 属性名。例如 fill width r
-- 值解析器。从字符串到 CSSStyleValue。不同属性值自然需要不同的解析器，例如 fill stroke 可以共享颜色解析器。注意我们只需要实现对于 “值” 的解析，而非类似 https://github.com/csstree/csstree 这样的实现。
-- 是否支持插值。不支持则无法在动画系统中进行平滑过渡。https://drafts.csswg.org/css-values-4/#combining-values
-- 是否支持继承。例如 font-size 需要支持。在 D3 中有大量类似的技巧。
-- 是否独立。例如 visibility 就不是，需要考虑祖先节点才能得到最终的计算值。
-- 默认值。例如 fill 的默认值为 black（SVG 规范）
-- 关键词列表。例如 width 属性支持 auto 关键词。
-- 别名列表。例如 line-width 的别名 stroke-width。
+-   属性名。例如 fill width r
+-   值解析器。从字符串到 CSSStyleValue。不同属性值自然需要不同的解析器，例如 fill stroke 可以共享颜色解析器。注意我们只需要实现对于 “值” 的解析，而非类似 https://github.com/csstree/csstree 这样的实现。
+-   是否支持插值。不支持则无法在动画系统中进行平滑过渡。https://drafts.csswg.org/css-values-4/#combining-values
+-   是否支持继承。例如 font-size 需要支持。在 D3 中有大量类似的技巧。
+-   是否独立。例如 visibility 就不是，需要考虑祖先节点才能得到最终的计算值。
+-   默认值。例如 fill 的默认值为 black（SVG 规范）
+-   关键词列表。例如 width 属性支持 auto 关键词。
+-   别名列表。例如 line-width 的别名 stroke-width。
 
 ## initial value
 
@@ -311,8 +311,8 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 https://developer.mozilla.org/en-US/docs/Web/CSS/initial_value
 
-> - For inherited properties, the initial value is used on the root element only, as long as no specified value is supplied.
-> - For non-inherited properties, the initial value is used on all elements, as long as no specified value is supplied.
+> -   For inherited properties, the initial value is used on the root element only, as long as no specified value is supplied.
+> -   For non-inherited properties, the initial value is used on all elements, as long as no specified value is supplied.
 
 因此对于 G 的根节点，在创建时需要设置所有 `inherited` 属性的默认值，例如 `visibility` 在属性元数据中定义如下，它支持继承：
 
@@ -333,15 +333,15 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/initial_value
 
 对于属性值的解析经历以下阶段：
 
-- 原始值（通常是字符串）转换成 CSSStyleUnit，称作 computed value
-- 将 computed value 计算后得到 used value
+-   原始值（通常是字符串）转换成 CSSStyleUnit，称作 computed value
+-   将 computed value 计算后得到 used value
 
 https://developer.mozilla.org/en-US/docs/Web/CSS/computed_value
 
 在这一步需要：
 
-- 处理特殊的关键词（通常是通用的），例如 [initial](/zh/docs/api/css/css-properties-values-api#initial) [inherit](/zh/docs/api/css/css-properties-values-api#inherit)
-- 做一些值计算，需要布局阶段参与的除外
+-   处理特殊的关键词（通常是通用的），例如 [initial](/zh/docs/api/css/css-properties-values-api#initial) [inherit](/zh/docs/api/css/css-properties-values-api#inherit)
+-   做一些值计算，需要布局阶段参与的除外
 
 通过 [computedStyleMap](/zh/docs/api/builtin-objects/element#computedstylemap) 方法可以获取 computed value map，这是一个 [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) 类型：
 
@@ -377,11 +377,111 @@ https://developer.mozilla.org/en-US/docs/Web/API/CSS/RegisterProperty
 
 ```js
 CSS.registerProperty({
-  name: '--my-color',
-  syntax: '<color>',
-  inherits: false,
-  initialValue: '#c0ffee',
+    name: '--my-color',
+    syntax: '<color>',
+    inherits: false,
+    initialValue: '#c0ffee',
 });
 ```
 
 随后就可以在 CSS 中使用这个属性。其中比较关键的是 `syntax`，局限性是只能使用浏览器内置的实现，无法做到真正意义上的自定义解析。
+
+## name
+
+字符串形式的属性名。
+
+## inherits
+
+是否支持继承。
+
+## initialValue
+
+默认值。
+
+## interpolate
+
+是否支持插值。只有支持才能应用[动画](/zh/docs/api/animation)。
+
+例如在下面的自定义元素中，我们定义了自定义属性 `angle`，它使用 `<angle>` 解析器并支持插值：
+
+```js
+CSS.registerProperty({
+    name: 'angle',
+    syntax: PropertySyntax.ANGLE,
+    initialValue: '0',
+    interpolable: true,
+});
+```
+
+## syntax
+
+目前我们支持的解析器如下：
+
+```js
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Content_type
+ */
+export enum PropertySyntax {
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Content_type#coordinate
+   */
+  COORDINATE = '<coordinate>',
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Content_type#color
+   */
+  COLOR = '<color>',
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Content_type#paint
+   */
+  PAINT = '<paint>',
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Content_type#number
+   */
+  NUMBER = '<number>',
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/angle
+   */
+  ANGLE = '<angle>',
+  /**
+   * <number> with range 0..1
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Content_type#opacity_value
+   */
+  OPACITY_VALUE = '<opacity-value>',
+  /**
+   * <number> with range 0..Infinity
+   */
+  SHADOW_BLUR = '<shadow-blur>',
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Content_type#length
+   */
+  LENGTH = '<length>',
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Content_type#percentage
+   */
+  PERCENTAGE = '<percentage>',
+  LENGTH_PERCENTAGE = '<length> | <percentage>',
+
+  LENGTH_PERCENTAGE_12 = '[<length> | <percentage>]{1,2}',
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/margin#formal_syntax
+   */
+  LENGTH_PERCENTAGE_14 = '[<length> | <percentage>]{1,4}',
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Content_type#list-of-ts
+   */
+  LIST_OF_POINTS = '<list-of-points>',
+  PATH = '<path>',
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/filter#formal_syntax
+   */
+  FILTER = '<filter>',
+  Z_INDEX = '<z-index>',
+  OFFSET_PATH = '<offset-path>',
+  OFFSET_DISTANCE = '<offset-distance>',
+  CLIP_PATH = '<clip-path>',
+  TRANSFORM = '<transform>',
+  TRANSFORM_ORIGIN = '<transform-origin>',
+  TEXT = '<text>',
+  TEXT_TRANSFORM = '<text-transform>',
+}
+```
