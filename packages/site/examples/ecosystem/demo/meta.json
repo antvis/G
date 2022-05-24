@@ -5,6 +5,20 @@
   },
   "demos": [
     {
+      "filename": "web-components.js",
+      "title": {
+        "zh": "使用 Web Components",
+        "en": "Use Web Components"
+      }
+    },
+    {
+      "filename": "web-components-react.tsx",
+      "title": {
+        "zh": "使用 Web Components 和 React",
+        "en": "Use Web Components and React"
+      }
+    },
+    {
       "filename": "d3-piechart.js",
       "title": {
         "zh": "替换 D3 渲染层 - 饼图",
@@ -51,6 +65,7 @@
         "en": "D3's Annotation"
       }
     },
+
     {
       "filename": "react-g.js",
       "title": {

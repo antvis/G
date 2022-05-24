@@ -1,7 +1,7 @@
-import { singleton } from 'mana-syringe';
 import type { DisplayObject, ParsedBaseStyleProps, ParsedEllipseStyleProps } from '@antv/g';
-import type { StyleRenderer} from '@antv/g-plugin-canvas-renderer';
+import type { StyleRenderer } from '@antv/g-plugin-canvas-renderer';
 import { EllipseRendererContribution } from '@antv/g-plugin-canvas-renderer';
+import { singleton } from 'mana-syringe';
 import { generateRoughOptions } from '../util';
 
 @singleton({

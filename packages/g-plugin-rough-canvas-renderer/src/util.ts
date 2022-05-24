@@ -1,4 +1,4 @@
-import type { PathCommand, DisplayObject, ParsedBaseStyleProps } from '@antv/g';
+import type { DisplayObject, ParsedBaseStyleProps, PathCommand } from '@antv/g';
 import type { Options } from 'roughjs/bin/core';
 
 export function generateRoughOptions(object: DisplayObject) {

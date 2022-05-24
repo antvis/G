@@ -1,10 +1,9 @@
-import type { IElement } from '../../dom';
 import type { DisplayObject } from '../../display-objects';
+import type { IElement } from '../../dom';
 import { AABB } from '../../shapes';
 import { isNil, isString, rad2deg, turn2deg } from '../../utils';
 import type { CSSStyleValue } from '../cssom';
-import { UnitType } from '../cssom';
-import { CSSUnitValue } from '../cssom';
+import { CSSUnitValue, UnitType } from '../cssom';
 import type { CSSValueParser } from './types';
 
 type LengthUnit = 'px' | '%' | 'em' | 'rem';
@@ -21,6 +20,8 @@ export function parseDimension(unitRegExp: RegExp, string: string): CSSStyleValu
   if (isFinite(Number(string))) {
     if ('px'.search(unitRegExp) >= 0) {
       return new CSSUnitValue(Number(string), 'px');
+    } else if ('deg'.search(unitRegExp) >= 0) {
+      return new CSSUnitValue(Number(string), 'deg');
     }
   }
 

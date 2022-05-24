@@ -1,7 +1,7 @@
-import type { Syringe } from 'mana-syringe';
-import { Module } from 'mana-syringe';
 import type { RendererPlugin } from '@antv/g';
 import { Shape } from '@antv/g';
+import type { Syringe } from 'mana-syringe';
+import { Module } from 'mana-syringe';
 import { ElementSVG } from './components/ElementSVG';
 import {
   ElementRendererFactory,
@@ -13,10 +13,11 @@ import {
   TextRenderer,
 } from './shapes/paths';
 import { SVGRendererPlugin } from './SVGRendererPlugin';
+import { DefaultElementContribution } from './tokens';
 
-export { ElementSVG };
 export * from './SVGRendererPlugin';
 export * from './utils/dom';
+export { ElementSVG };
 
 export const containerModule = Module((register) => {
   /**
@@ -48,6 +49,7 @@ export const containerModule = Module((register) => {
     },
   });
 
+  register(DefaultElementContribution);
   register(SVGRendererPlugin);
 });
 

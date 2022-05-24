@@ -482,13 +482,10 @@ export class Canvas extends EventTarget implements ICanvas {
     // keep all children undestroyed
     this.destroy(false);
 
-    // destroy all plugins
-    oldRenderer
-      ?.getPlugins()
-      .reverse()
-      .forEach((plugin) => {
-        plugin.destroy(this.container);
-      });
+    // destroy all plugins, reverse will mutate origin array
+    [...oldRenderer?.getPlugins()].reverse().forEach((plugin) => {
+      plugin.destroy(this.container);
+    });
 
     this.initRenderer(renderer);
   }

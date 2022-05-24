@@ -74,11 +74,23 @@ const ballText = new Text({
 canvas.appendChild(gateText);
 canvas.appendChild(ballText);
 
+let shiftX = 0;
+let shiftY = 0;
+function moveAt(target, canvasX, canvasY) {
+  target.setPosition(canvasX - shiftX, canvasY - shiftY);
+}
+
 ball.addEventListener('dragstart', function (e) {
   e.target.style.opacity = 0.5;
   ballText.style.text = 'ball dragstart';
+
+  shiftX = e.clientX - e.target.getBoundingClientRect().left;
+  shiftY = e.clientY - e.target.getBoundingClientRect().top;
+
+  moveAt(e.target, e.canvasX, e.canvasY);
 });
 ball.addEventListener('drag', function (e) {
+  moveAt(e.target, e.canvasX, e.canvasY);
   ballText.style.text = `ball drag movement: ${e.movementX}, ${e.movementY}`;
 });
 ball.addEventListener('dragend', function (e) {

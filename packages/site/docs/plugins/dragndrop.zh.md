@@ -62,12 +62,32 @@ const ball = new Image({
 -   drag 在拖拽中频繁触发 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event
 -   dragend 在拖拽结束后触发 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event
 
+drag 相关事件都是 [PointerEvents](/zh/docs/api/event#交互事件)，因此可以在事件监听器中访问事件对象上的属性。
+
+例如开始拖拽时，我们记录下鼠标位置到被拖拽元素包围盒左上角的偏移量 `shiftX/Y`。在 `drag` 事件中我们调用 [setPosition](/zh/docs/api/basic/display-object#平移) 完成被拖拽图形的平移。
+
+https://javascript.info/mouse-drag-and-drop#correct-positioning
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1121Q7T2TDAAAAAAAAAAAAAAARQnAQ" width="200">
+
 ```js
+let shiftX = 0;
+let shiftY = 0;
+function moveAt(target, canvasX, canvasY) {
+    target.setPosition(canvasX - shiftX, canvasY - shiftY);
+}
+
 ball.addEventListener('dragstart', function (e) {
     e.target.style.opacity = 0.5;
     ballText.style.text = 'ball dragstart';
+
+    shiftX = e.clientX - e.target.getBoundingClientRect().left;
+    shiftY = e.clientY - e.target.getBoundingClientRect().top;
+
+    moveAt(e.target, e.canvasX, e.canvasY);
 });
 ball.addEventListener('drag', function (e) {
+    moveAt(e.target, e.canvasX, e.canvasY);
     ballText.style.text = `ball drag movement: ${e.movementX}, ${e.movementY}`;
 });
 ball.addEventListener('dragend', function (e) {
@@ -75,8 +95,6 @@ ball.addEventListener('dragend', function (e) {
     ballText.style.text = 'ball dragend';
 });
 ```
-
-drag 相关事件都是 [PointerEvents](/zh/docs/api/event#交互事件)，因此可以在事件监听器中访问事件对象上的属性。例如在 `drag` 事件中我们通过 [movementX/Y](/zh/docs/api/event#movementxy) 获取拖拽的偏移量。
 
 ## Drop
 

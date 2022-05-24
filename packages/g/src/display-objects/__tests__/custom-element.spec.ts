@@ -76,7 +76,7 @@ describe('CustomElement', () => {
     // @ts-ignore
     expect(disconnectedCallback).to.have.been.not.called;
     // @ts-ignore
-    expect(attributeChangedCallback).to.have.been.called;
+    expect(attributeChangedCallback).to.have.been.not.called;
 
     // append to canvas
     canvas.appendChild(a);

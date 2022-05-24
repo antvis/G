@@ -19,6 +19,7 @@ window.gWebgl = require('@antv/g-webgl');
 window.gSvg = require('@antv/g-svg');
 window.gWebgpu = require('@antv/g-webgpu');
 window.gComponents = require('@antv/g-components');
+window.gWebComponents = require('@antv/g-web-components');
 // plugins
 window.gPluginCssSelect = require('@antv/g-plugin-css-select');
 window.gPlugin3d = require('@antv/g-plugin-3d');

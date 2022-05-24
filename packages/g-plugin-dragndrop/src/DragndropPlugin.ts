@@ -32,24 +32,12 @@ export class DragndropPlugin implements RenderingPlugin {
         event.type = 'dragstart';
         target.dispatchEvent(event);
 
-        const shiftX = event.clientX - target.getBoundingClientRect().left;
-        const shiftY = event.clientY - target.getBoundingClientRect().top;
-
-        moveAt(event.canvasX, event.canvasY);
-
-        // @ts-ignore
-        function moveAt(canvasX: number, canvasY: number) {
-          target.setPosition(canvasX - shiftX, canvasY - shiftY);
-        }
-
         let currentDroppable = null;
         // @ts-ignore
         async function onMouseMove(event: FederatedPointerEvent) {
           // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event
           event.type = 'drag';
           target.dispatchEvent(event);
-
-          moveAt(event.canvasX, event.canvasY);
 
           // prevent from picking the dragging element
           const pointerEventsOldValue = target.style.pointerEvents;
@@ -62,7 +50,7 @@ export class DragndropPlugin implements RenderingPlugin {
 
           if (!elemBelow) return;
 
-          const droppableBelow = elemBelow.closest('[droppable=true]');
+          const droppableBelow = elemBelow?.closest('[droppable=true]') || null;
           if (currentDroppable !== droppableBelow) {
             if (currentDroppable) {
               // null when we were not over a droppable before this event

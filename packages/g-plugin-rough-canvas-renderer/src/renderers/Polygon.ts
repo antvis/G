@@ -1,7 +1,7 @@
-import { singleton } from 'mana-syringe';
 import type { DisplayObject, ParsedBaseStyleProps, ParsedPolygonStyleProps } from '@antv/g';
 import type { StyleRenderer } from '@antv/g-plugin-canvas-renderer';
 import { PolygonRendererContribution } from '@antv/g-plugin-canvas-renderer';
+import { singleton } from 'mana-syringe';
 import { generateRoughOptions } from '../util';
 
 @singleton({

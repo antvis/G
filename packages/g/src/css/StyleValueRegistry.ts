@@ -1,40 +1,41 @@
-import { postConstruct, singleton, GlobalContainer } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
+import { GlobalContainer, postConstruct, singleton } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects';
+import { ElementEvent } from '../dom';
 import type { GeometryAABBUpdater } from '../services/aabb/interfaces';
 import { GeometryUpdaterFactory } from '../services/aabb/interfaces';
 import { dirtifyToRoot } from '../services/SceneGraphService';
-import { ElementEvent } from '../dom';
-import type { ParsedBaseStyleProps, BaseStyleProps } from '../types';
+import { AABB } from '../shapes';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
+import { formatAttribute, isNil } from '../utils';
 import { CSSKeywordValue, CSSStyleValue, CSSUnitValue } from './cssom';
+import type { CSSProperty } from './CSSProperty';
+import type { PropertyMetadata } from './interfaces';
+import { PropertySyntax, StyleValueRegistry } from './interfaces';
 import type { ParsedFilterStyleProperty } from './parser';
 import { convertPercentUnit } from './parser';
 import {
-  CSSPropertyLocalPosition,
-  CSSPropertyOpacity,
+  CSSPropertyAngle,
+  CSSPropertyClipPath,
   CSSPropertyColor,
   CSSPropertyFilter,
   CSSPropertyLengthOrPercentage,
   CSSPropertyLengthOrPercentage12,
   CSSPropertyLengthOrPercentage14,
-  CSSPropertyShadowBlur,
-  CSSPropertyOffsetPath,
+  CSSPropertyLocalPosition,
   CSSPropertyOffsetDistance,
-  CSSPropertyZIndex,
-  CSSPropertyTransform,
-  CSSPropertyTransformOrigin,
+  CSSPropertyOffsetPath,
+  CSSPropertyOpacity,
   CSSPropertyPath,
-  CSSPropertyClipPath,
   CSSPropertyPoints,
+  CSSPropertyShadowBlur,
   CSSPropertyText,
   CSSPropertyTextTransform,
+  CSSPropertyTransform,
+  CSSPropertyTransformOrigin,
+  CSSPropertyZIndex,
 } from './properties';
-import type { CSSProperty } from './CSSProperty';
-import { formatAttribute, isNil } from '../utils';
-import { AABB } from '../shapes';
-import type { PropertyMetadata } from './interfaces';
-import { StyleValueRegistry, PropertySyntax } from './interfaces';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
 export interface PropertyParseOptions {
@@ -44,6 +45,7 @@ export interface PropertyParseOptions {
 
 export const PROPERTY_HANDLERS = {
   [PropertySyntax.COORDINATE]: CSSPropertyLocalPosition,
+  [PropertySyntax.ANGLE]: CSSPropertyAngle,
   [PropertySyntax.COLOR]: CSSPropertyColor,
   [PropertySyntax.PAINT]: CSSPropertyColor,
   [PropertySyntax.OPACITY_VALUE]: CSSPropertyOpacity,
@@ -436,6 +438,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     layoutDependent: true,
     defaultValue: '',
     syntax: PropertySyntax.TEXT,
+    parsePriority: 50,
   },
   {
     name: 'textTransform',
@@ -444,6 +447,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     keywords: ['capitalize', 'uppercase', 'lowercase', 'none'],
     defaultValue: 'none',
     syntax: PropertySyntax.TEXT_TRANSFORM,
+    parsePriority: 51, // it must get parsed after text
   },
   {
     name: 'font',

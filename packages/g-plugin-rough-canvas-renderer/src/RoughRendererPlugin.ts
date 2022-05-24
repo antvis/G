@@ -1,4 +1,4 @@
-import type { RenderingService, RenderingPlugin } from '@antv/g';
+import type { RenderingPlugin, RenderingService } from '@antv/g';
 import { CanvasConfig, ContextService, RenderingPluginContribution } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 // @see https://github.com/rough-stuff/rough/issues/145

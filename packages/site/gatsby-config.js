@@ -140,6 +140,14 @@ module.exports = {
         order: 4,
       },
       {
+        slug: 'api/declarative',
+        title: {
+          zh: '声明式用法',
+          en: 'Declarative programming',
+        },
+        order: 4,
+      },
+      {
         slug: 'api/devtools',
         title: {
           zh: '开发调试工具',

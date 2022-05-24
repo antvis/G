@@ -1,23 +1,23 @@
-import type { Syringe } from 'mana-syringe';
-import { Module } from 'mana-syringe';
 import type { RendererPlugin } from '@antv/g';
 import {
   CircleRenderer,
   EllipseRenderer,
-  RectRenderer,
   LineRenderer,
-  PolylineRenderer,
-  PolygonRenderer,
   PathRenderer,
+  PolygonRenderer,
+  PolylineRenderer,
+  RectRenderer,
 } from '@antv/g-plugin-canvas-renderer';
+import type { Syringe } from 'mana-syringe';
+import { Module } from 'mana-syringe';
 import {
   CircleRenderer as CircleRoughRenderer,
   EllipseRenderer as EllipseRoughRenderer,
-  RectRenderer as RectRoughRenderer,
   LineRenderer as LineRoughRenderer,
-  PolylineRenderer as PolylineRoughRenderer,
-  PolygonRenderer as PolygonRoughRenderer,
   PathRenderer as PathRoughRenderer,
+  PolygonRenderer as PolygonRoughRenderer,
+  PolylineRenderer as PolylineRoughRenderer,
+  RectRenderer as RectRoughRenderer,
 } from './renderers';
 import { RoughRendererPlugin } from './RoughRendererPlugin';
 

@@ -29,6 +29,7 @@ import { createOrUpdateGradientAndPattern } from './shapes/defs/Pattern';
 import { createOrUpdateShadow } from './shapes/defs/Shadow';
 import type { ElementRenderer } from './shapes/paths';
 import { ElementRendererFactory } from './shapes/paths';
+import { CreateElementContribution } from './tokens';
 import { createSVGElement } from './utils/dom';
 import { numberToLongString } from './utils/format';
 
@@ -146,6 +147,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
+  @inject(CreateElementContribution)
+  private createElementContribution: CreateElementContribution;
+
   @inject(ElementRendererFactory)
   private elementRendererFactory: (tagName: string) => ElementRenderer<any>;
 
@@ -262,9 +266,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
           // apply local RTS transformation to <group> wrapper
           // account for anchor
           this.applyTransform($groupEl, object.getLocalTransform());
-
-          const children = (object?.children || []).slice() as DisplayObject[];
-          this.reorderChildren($groupEl, children || []);
           // finish rendering, clear dirty flag
           object.renderable.dirty = false;
         }
@@ -281,10 +282,12 @@ export class SVGRendererPlugin implements RenderingPlugin {
       // create empty fragment
       const fragment = document.createDocumentFragment();
       children.forEach((child: DisplayObject) => {
-        // @ts-ignore
-        const $el = child.elementSVG.$groupEl;
-        if ($el) {
-          fragment.appendChild($el);
+        if (child.isConnected) {
+          // @ts-ignore
+          const $el = child.elementSVG.$groupEl;
+          if ($el) {
+            fragment.appendChild($el);
+          }
         }
       });
 
@@ -459,6 +462,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       if ($parentGroupEl) {
         $parentGroupEl.appendChild($groupEl);
+        const children = (object.parentNode?.children || []).slice() as DisplayObject[];
+        this.reorderChildren($parentGroupEl, children || []);
       }
 
       // apply attributes at first time
