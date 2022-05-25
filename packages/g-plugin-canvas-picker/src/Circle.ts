@@ -1,9 +1,9 @@
 import type {
   CircleStyleProps,
+  CSSRGB,
   DisplayObject,
   ParsedCircleStyleProps,
   Point,
-  CSSRGB,
 } from '@antv/g';
 import { distance } from './utils/math';
 
@@ -20,7 +20,7 @@ export function isPointInPath(
     clipPathTargets,
   } = displayObject.parsedStyle as ParsedCircleStyleProps;
   const r = rInPixels.value;
-  const halfLineWidth = (lineWidth.value + increasedLineWidthForHitTesting.value) / 2;
+  const halfLineWidth = ((lineWidth?.value || 0) + increasedLineWidthForHitTesting.value) / 2;
   const absDistance = distance(r, r, position.x, position.y);
   const isClipPath = !!clipPathTargets?.length;
 

@@ -42,6 +42,7 @@ const DEFAULT_STYLE_PROPS: {
   strokeOpacity: string;
   fill: string;
   stroke: string;
+  lineWidth: string | number;
   lineCap: CanvasLineCap | '';
   lineJoin: CanvasLineJoin | '';
   increasedLineWidthForHitTesting: string | number;
@@ -64,6 +65,7 @@ const DEFAULT_STYLE_PROPS: {
   transformOrigin: '',
   visibility: '',
   pointerEvents: '',
+  lineWidth: '',
   lineCap: '',
   lineJoin: '',
   increasedLineWidthForHitTesting: '0',

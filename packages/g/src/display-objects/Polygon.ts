@@ -1,7 +1,7 @@
-import { Shape } from '../types';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import { Shape } from '../types';
+import { DisplayObject } from './DisplayObject';
 
 export interface PolygonStyleProps extends BaseStyleProps {
   points: [number, number][];
@@ -21,7 +21,6 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
       style: {
         points: '',
         miterLimit: 4,
-        lineWidth: 1,
         ...style,
       },
       ...rest,

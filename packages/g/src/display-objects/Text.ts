@@ -1,9 +1,9 @@
-import type { TextMetrics } from '../services';
+import type { CSSGlobalKeywords, CSSKeywordValue, CSSUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom/interfaces';
-import { Shape } from '../types';
+import type { TextMetrics } from '../services';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
-import type { CSSUnitValue, CSSGlobalKeywords, CSSKeywordValue } from '../css';
 
 export interface TextStyleProps extends BaseStyleProps {
   x?: number | string;
@@ -109,10 +109,9 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
         // dropShadowColor: '#000',
         // dropShadowDistance: 5,
         fill: 'black',
-        stroke: 'black',
+        // stroke: 'black',
         letterSpacing: 0,
         lineHeight: 0,
-        lineWidth: 0,
         miterLimit: 10,
         whiteSpace: 'pre',
         wordWrap: false,

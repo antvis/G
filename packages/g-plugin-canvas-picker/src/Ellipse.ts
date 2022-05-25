@@ -1,4 +1,4 @@
-import type { DisplayObject, EllipseStyleProps, ParsedEllipseStyleProps, CSSRGB } from '@antv/g';
+import type { CSSRGB, DisplayObject, EllipseStyleProps, ParsedEllipseStyleProps } from '@antv/g';
 
 function ellipseDistance(squareX: number, squareY: number, rx: number, ry: number) {
   return squareX / (rx * rx) + squareY / (ry * ry);
@@ -25,7 +25,7 @@ export function isPointInPath(
   const rx = rxInPixels.value;
   const ry = ryInPixels.value;
 
-  const halfLineWith = (lineWidth.value + increasedLineWidthForHitTesting.value) / 2;
+  const halfLineWith = ((lineWidth?.value || 0) + increasedLineWidthForHitTesting.value) / 2;
   const squareX = (x - rx) * (x - rx);
   const squareY = (y - ry) * (y - ry);
   // 使用椭圆的公式： x*x/rx*rx + y*y/ry*ry = 1;

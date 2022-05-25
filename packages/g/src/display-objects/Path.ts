@@ -1,11 +1,11 @@
 import { Cubic as CubicUtil } from '@antv/g-math';
-import { Shape } from '../types';
-import type { BaseStyleProps, PathCommand, ParsedBaseStyleProps } from '../types';
-import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 import type { Rectangle } from '../shapes/Rectangle';
+import type { BaseStyleProps, ParsedBaseStyleProps, PathCommand } from '../types';
+import { Shape } from '../types';
 import { isNil } from '../utils';
+import { DisplayObject } from './DisplayObject';
 
 export interface PathStyleProps extends BaseStyleProps {
   path?: string | PathCommand[];
@@ -40,7 +40,6 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
       type: Shape.PATH,
       style: {
         path: '',
-        lineWidth: 1,
         miterLimit: 4,
         ...style,
       },

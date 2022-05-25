@@ -28,6 +28,7 @@ describe('Circle', () => {
       'transformOrigin',
       'visibility',
       'pointerEvents',
+      'lineWidth',
       'lineCap',
       'lineJoin',
       'increasedLineWidthForHitTesting',
@@ -44,7 +45,6 @@ describe('Circle', () => {
       'cx',
       'cy',
       'r',
-      'lineWidth',
     ]);
     expect(circle.hasAttribute('r')).to.be.true;
     expect(circle.hasAttributes()).to.be.true;
