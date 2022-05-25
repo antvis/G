@@ -1,5 +1,5 @@
-import type { DisplayObject, ParsedTextStyleProps, Rectangle } from '@antv/g';
-import { CSSRGB, isNil, UnitType } from '@antv/g';
+import type { CSSRGB, DisplayObject, ParsedTextStyleProps, Rectangle } from '@antv/g';
+import { isNil, UnitType } from '@antv/g';
 import { singleton } from 'mana-syringe';
 import type { StyleRenderer } from './interfaces';
 import { TextRendererContribution } from './interfaces';

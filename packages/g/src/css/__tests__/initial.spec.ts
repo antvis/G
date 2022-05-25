@@ -148,7 +148,7 @@ describe('StyleValueRegistry initialization', () => {
     expect(circle.getAttribute('lineCap')).to.be.eqls('');
     // expect(circle.getAttribute('transform')).to.be.eqls('');
     expect(circle.getAttribute('transformOrigin')).to.be.eqls('center');
-    expect(circle.getAttribute('anchor')).to.be.eqls([0.5, 0.5]);
+    expect(circle.getAttribute('anchor')).to.be.eqls('0.5 0.5');
 
     /**
      * computed values
@@ -441,10 +441,8 @@ describe('StyleValueRegistry initialization', () => {
     const transformOrigin = styleMap.get('transformOrigin') as CSSKeywordValue;
     expect(transformOrigin instanceof CSSKeywordValue).to.be.true;
     expect(transformOrigin.value).to.be.eqls('unset');
-    const anchor = styleMap.get('anchor') as [CSSUnitValue, CSSUnitValue];
-    expect(anchor.length).to.be.eqls(2);
-    expect(anchor[0].equals(CSS.px(0))).to.be.true;
-    expect(anchor[1].equals(CSS.px(0))).to.be.true;
+    const anchor = styleMap.get('anchor') as CSSKeywordValue;
+    expect(anchor.value).to.be.eqls('unset');
     expect(styleMap.get('xxxx')).to.be.undefined;
 
     /**
@@ -553,10 +551,8 @@ describe('StyleValueRegistry initialization', () => {
     const transformOrigin = styleMap.get('transformOrigin') as CSSKeywordValue;
     expect(transformOrigin instanceof CSSKeywordValue).to.be.true;
     expect(transformOrigin.value).to.be.eqls('unset');
-    const anchor = styleMap.get('anchor') as [CSSUnitValue, CSSUnitValue];
-    expect(anchor.length).to.be.eqls(2);
-    expect(anchor[0].equals(CSS.px(0))).to.be.true;
-    expect(anchor[1].equals(CSS.px(0))).to.be.true;
+    const anchor = styleMap.get('anchor') as CSSKeywordValue;
+    expect(anchor.value).to.be.eqls('unset');
     expect(styleMap.get('xxxx')).to.be.undefined;
 
     /**

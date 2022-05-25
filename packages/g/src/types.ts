@@ -55,7 +55,7 @@ export interface BaseStyleProps {
    * how do we define the 'position' of a shape?
    * eg. the default anchor of a Rect is top-left, we can change it to its' center [0.5, 0.5].
    */
-  anchor?: vec2 | vec3;
+  anchor?: vec2 | vec3 | string;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/visibility

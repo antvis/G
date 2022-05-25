@@ -298,6 +298,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   {
     name: 'anchor',
     parsePriority: 99,
+    defaultValue: '0 0',
     layoutDependent: true,
     syntax: PropertySyntax.LENGTH_PERCENTAGE_12,
   },

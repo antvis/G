@@ -1,10 +1,10 @@
 import { vec3 } from 'gl-matrix';
-import { singleton, inject } from 'mana-syringe';
-import { GeometryAABBUpdater } from './interfaces';
-import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
-import { TextService } from '../TextService';
-import { Shape } from '../../types';
+import { inject, singleton } from 'mana-syringe';
 import { CSSUnitValue } from '../../css';
+import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
+import { Shape } from '../../types';
+import { TextService } from '../TextService';
+import { GeometryAABBUpdater } from './interfaces';
 
 @singleton({ token: { token: GeometryAABBUpdater, named: Shape.TEXT } })
 export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
@@ -12,10 +12,27 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   private textService: TextService;
 
   private isReadyToMeasure(parsedStyle: ParsedTextStyleProps, object: DisplayObject) {
-    const { text, textAlign, textBaseline, fontSize, fontStyle, fontWeight, fontVariant } =
-      parsedStyle;
+    const {
+      text,
+      textAlign,
+      textBaseline,
+      fontSize,
+      fontStyle,
+      fontWeight,
+      fontVariant,
+      lineWidth,
+    } = parsedStyle;
 
-    return text && fontSize && fontStyle && fontWeight && fontVariant && textAlign && textBaseline;
+    return (
+      text &&
+      fontSize &&
+      fontStyle &&
+      fontWeight &&
+      fontVariant &&
+      textAlign &&
+      textBaseline &&
+      lineWidth
+    );
   }
 
   update(parsedStyle: ParsedTextStyleProps, object: DisplayObject) {

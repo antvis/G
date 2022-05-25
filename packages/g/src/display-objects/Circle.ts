@@ -22,7 +22,7 @@ export class Circle extends DisplayObject<CircleStyleProps, ParsedCircleStylePro
         cx: '',
         cy: '',
         r: '',
-        anchor: [0.5, 0.5],
+        anchor: '0.5 0.5',
         transformOrigin: 'center',
         ...style,
       },

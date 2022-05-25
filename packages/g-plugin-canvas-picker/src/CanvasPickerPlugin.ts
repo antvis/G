@@ -1,22 +1,22 @@
 import type {
-  Shape,
-  DisplayObject,
-  RenderingService,
-  RenderingPlugin,
-  PickingResult,
   BaseStyleProps,
+  DisplayObject,
   Element,
   ParsedBaseStyleProps,
+  PickingResult,
+  RenderingPlugin,
+  RenderingService,
+  Shape,
 } from '@antv/g';
 import {
   CanvasConfig,
   DisplayObjectPool,
-  RenderingPluginContribution,
   OffscreenCanvasCreator,
   Point,
+  RenderingPluginContribution,
 } from '@antv/g';
-import { PathGeneratorFactory, RBushRoot , RBush} from '@antv/g-plugin-canvas-renderer';
 import type { PathGenerator, RBushNodeAABB } from '@antv/g-plugin-canvas-renderer';
+import { PathGeneratorFactory, RBush, RBushRoot } from '@antv/g-plugin-canvas-renderer';
 import { mat4, vec3 } from 'gl-matrix';
 import { inject, singleton, Syringe } from 'mana-syringe';
 
