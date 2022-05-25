@@ -1,5 +1,5 @@
-import { createSVGElement } from '../../utils/dom';
 import type { CSSRGB, CSSUnitValue, DisplayObject } from '@antv/g';
+import { createSVGElement } from '../../utils/dom';
 
 const FILTER_DROPSHADOW_PREFIX = 'filter-dropshadow-';
 
@@ -42,7 +42,12 @@ export function createOrUpdateShadow(
     $feDropShadow.setAttribute('dy', `${((shadowOffsetY && shadowOffsetY.value) || 0) / 2}`);
   }
 
-  // use filter <feDropShadow>
-  // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDropShadow
-  $el?.setAttribute('filter', `url(#${shadowId})`);
+  // only apply shadow when blur > 0
+  if (object.parsedStyle.shadowBlur && object.parsedStyle.shadowBlur.value > 0) {
+    // use filter <feDropShadow>
+    // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDropShadow
+    $el?.setAttribute('filter', `url(#${shadowId})`);
+  } else {
+    $el?.removeAttribute('filter');
+  }
 }
