@@ -326,6 +326,11 @@ export interface CanvasConfig {
   offscreenCanvas?: HTMLCanvasElement | OffscreenCanvas;
 
   /**
+   * support RenderingContext
+   */
+  context?: CanvasRenderingContext2D | WebGLRenderingContext;
+
+  /**
    * window.devicePixelRatio
    */
   devicePixelRatio?: number;

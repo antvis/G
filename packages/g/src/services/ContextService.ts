@@ -11,5 +11,7 @@ export interface ContextService<Context> {
   getDPR: () => number;
   getBoundingClientRect: () => DOMRect | undefined;
   resize: (width: number, height: number) => void;
+  getWidth: () => number | undefined;
+  getHeight: () => number | undefined;
   applyCursorStyle: (cursor: string) => void;
 }

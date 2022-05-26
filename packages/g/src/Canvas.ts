@@ -21,7 +21,7 @@ import {
 import type { PointLike } from './shapes';
 import type { Cursor, InteractivePointerEvent } from './types';
 import { CanvasConfig } from './types';
-import { cleanExistedCanvas, isBrowser } from './utils';
+import { cleanExistedCanvas } from './utils';
 
 export enum CanvasEvent {
   READY = 'ready',
@@ -127,6 +127,7 @@ export class Canvas extends EventTarget implements ICanvas {
       container,
       canvas,
       offscreenCanvas,
+      context,
       width,
       height,
       devicePixelRatio,
@@ -143,18 +144,8 @@ export class Canvas extends EventTarget implements ICanvas {
 
     cleanExistedCanvas(container, this);
 
-    let canvasWidth = width;
-    let canvasHeight = height;
-    let dpr = devicePixelRatio;
-    // use user-defined <canvas> or OffscreenCanvas
-    if (canvas) {
-      // infer width & height with dpr
-      dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
-      dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
-      canvasWidth = width || canvas.width / dpr;
-      canvasHeight = height || canvas.height / dpr;
-    }
-
+    let dpr = devicePixelRatio || (window && window.devicePixelRatio) || 1;
+    dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
     /**
      * implements `Window` interface
      */
@@ -183,8 +174,9 @@ export class Canvas extends EventTarget implements ICanvas {
     this.initRenderingContext({
       container,
       canvas,
-      width: canvasWidth,
-      height: canvasHeight,
+      context,
+      width,
+      height,
       renderer,
       offscreenCanvas,
       devicePixelRatio: dpr,
@@ -193,7 +185,6 @@ export class Canvas extends EventTarget implements ICanvas {
       createImage,
     });
 
-    this.initDefaultCamera(canvasWidth, canvasHeight);
     this.initRenderer(renderer);
   }
 
@@ -423,12 +414,17 @@ export class Canvas extends EventTarget implements ICanvas {
     this.loadRendererContainerModule(renderer);
 
     // init context
-    const contextService = this.container.get<ContextService<unknown>>(ContextService);
+    const contextService = this.getContextService();
 
     this.renderingService = this.container.get<RenderingService>(RenderingService);
     this.eventService = this.container.get<EventService>(EventService);
 
     contextService.init();
+
+    const canvasWidth = contextService.getWidth();
+    const canvasHeight = contextService.getHeight();
+    this.initDefaultCamera(canvasWidth, canvasHeight);
+
     this.renderingService.init().then(() => {
       this.emit(CanvasEvent.READY, {});
 

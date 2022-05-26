@@ -45,9 +45,6 @@ export class EventService extends EventEmitter {
   @inject(ContextService)
   private contextService: ContextService<any>;
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
-
   @inject(DisplayObjectPool)
   private displayObjectPool: DisplayObjectPool;
 
@@ -96,7 +93,8 @@ export class EventService extends EventEmitter {
     const canvas = (this.rootTarget as IDocument).defaultView;
     const camera = canvas.getCamera();
 
-    const { width, height } = this.canvasConfig;
+    const width = this.contextService.getWidth();
+    const height = this.contextService.getHeight();
 
     const projectionMatrixInverse = camera.getPerspectiveInverse();
     const worldMatrix = camera.getWorldTransform();
@@ -121,7 +119,8 @@ export class EventService extends EventEmitter {
     vec3.transformMat4(clip, clip, vpMatrix);
 
     // Clip -> NDC -> Viewport, flip Y
-    const { width, height } = this.canvasConfig;
+    const width = this.contextService.getWidth();
+    const height = this.contextService.getHeight();
     return new Point(((clip[0] + 1) / 2) * width, (1 - (clip[1] + 1) / 2) * height);
   }
 
@@ -603,7 +602,8 @@ export class EventService extends EventEmitter {
 
   async hitTest(position: EventPosition): Promise<IEventTarget | null> {
     const { viewportX, viewportY } = position;
-    const { width, height } = this.canvasConfig;
+    const width = this.contextService.getWidth();
+    const height = this.contextService.getHeight();
     // outside canvas
     if (viewportX < 0 || viewportY < 0 || viewportX > width || viewportY > height) {
       return null;

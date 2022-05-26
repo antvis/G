@@ -1,4 +1,4 @@
-import { CanvasConfig, ContextService, isBrowser, isString, setDOMSize } from '@antv/g';
+import { CanvasConfig, ContextService, isString, setDOMSize } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 
 @singleton({ token: ContextService })
@@ -6,13 +6,15 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
   private $container: HTMLElement | null;
   private $canvas: HTMLCanvasElement | OffscreenCanvas | null;
   private dpr: number;
+  private width: number;
+  private height: number;
   private context: WebGLRenderingContext | null;
 
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
   init() {
-    const { container, canvas, devicePixelRatio } = this.canvasConfig;
+    const { container, canvas, devicePixelRatio, width, height } = this.canvasConfig;
 
     if (canvas) {
       this.$canvas = canvas;
@@ -37,10 +39,12 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
       }
     }
 
-    // use user-defined dpr first
-    let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
-    dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
-    this.dpr = dpr;
+    const $canvas = this.$canvas;
+    this.dpr = devicePixelRatio;
+
+    const canvasWidth = width || $canvas.width / devicePixelRatio;
+    const canvasHeight = height || $canvas.height / devicePixelRatio;
+    this.resize(canvasWidth, canvasHeight);
   }
 
   getDomElement() {
@@ -76,10 +80,21 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
       // set CSS style width & height
       setDOMSize(this.$canvas, width, height);
     }
+
+    this.width = width;
+    this.height = height;
   }
 
   getDPR() {
     return this.dpr;
+  }
+
+  getWidth() {
+    return this.width;
+  }
+
+  getHeight() {
+    return this.height;
   }
 
   applyCursorStyle(cursor: string) {

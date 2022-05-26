@@ -1,28 +1,44 @@
 import { CanvasConfig, ContextService } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-import { isCanvasElement } from './dom';
+import CanvasElement from './canvas-element';
+import { getWidth, getHeight, isCanvasElement } from './dom';
 
 @singleton({ token: ContextService })
 export class Canvas2DContextService implements ContextService<CanvasRenderingContext2D> {
   private $canvas: HTMLCanvasElement;
   private dpr: number;
+  private width: number;
+  private height: number;
   private context: CanvasRenderingContext2D;
 
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
   init() {
-    const { canvas, devicePixelRatio } = this.canvasConfig;
-    this.$canvas = canvas as HTMLCanvasElement;
-    // 实际获取到小程序环境的上下文
-    this.context = this.$canvas.getContext('2d');
+    const { canvas, context, devicePixelRatio, width, height } = this.canvasConfig;
+    if (!canvas && !context) {
+      throw new Error('Please specify the canvas or context');
+    }
 
-    // use user-defined dpr first
-    let dpr = devicePixelRatio || 1;
-    dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
-    this.dpr = dpr;
+    let $canvas = canvas as HTMLCanvasElement;
+    if (!$canvas) {
+      $canvas = CanvasElement.create(context);
+      if (!$canvas.getContext) {
+        // @ts-ignore
+        canvas.getContext = function () {
+          return context;
+        };
+      }
+    }
 
-    this.resize(this.canvasConfig.width, this.canvasConfig.height);
+    const canvasWidth = width || getWidth($canvas) || $canvas.width;
+    const canvasHeight = height || getHeight($canvas) || $canvas.height;
+
+    this.$canvas = $canvas;
+    this.context = (context as CanvasRenderingContext2D) || $canvas.getContext('2d');
+    this.dpr = devicePixelRatio;
+
+    this.resize(canvasWidth, canvasHeight);
   }
 
   getContext() {
@@ -44,15 +60,20 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   }
 
   destroy() {
-    // TODO: 小程序环境销毁 context
+    // 需要清理 canvas 画布内容，否则会导致 spa 应用 ios 下 canvas 白屏
+    // https://stackoverflow.com/questions/52532614/total-canvas-memory-use-exceeds-the-maximum-limit-safari-12
+    // https://github.com/antvis/F2/issues/630
+    const $canvas = this.$canvas;
+    $canvas.width = 0;
+    $canvas.height = 0;
+
     this.context = null;
     this.$canvas = null;
   }
 
   resize(width: number, height: number) {
-    const { devicePixelRatio } = this.canvasConfig;
-    const pixelRatio = devicePixelRatio;
-    const canvasDOM = this.$canvas; // HTMLCanvasElement or canvasElement
+    const pixelRatio = this.getDPR();
+    const canvasDOM = this.$canvas; // HTMLCanvasElement
 
     // 浏览器环境设置style样式
     if (canvasDOM.style) {
@@ -68,6 +89,17 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
         this.context.scale(pixelRatio, pixelRatio);
       }
     }
+
+    this.width = width;
+    this.height = height;
+  }
+
+  getWidth() {
+    return this.width;
+  }
+
+  getHeight() {
+    return this.height;
   }
 
   applyCursorStyle(cursor: string) {

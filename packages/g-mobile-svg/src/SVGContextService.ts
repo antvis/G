@@ -7,12 +7,14 @@ export class SVGContextService implements ContextService<SVGElement> {
   private $container: HTMLElement | null;
   private $namespace: SVGElement | null;
   private dpr: number;
+  private width: number;
+  private height: number;
 
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
   init() {
-    const { container } = this.canvasConfig;
+    const { container, width, height } = this.canvasConfig;
 
     // create container
     this.$container = isString(container) ? document.getElementById(container) : container;
@@ -21,8 +23,8 @@ export class SVGContextService implements ContextService<SVGElement> {
         this.$container.style.position = 'relative';
       }
       const $namespace = createSVGElement('svg');
-      $namespace.setAttribute('width', `${this.canvasConfig.width}`);
-      $namespace.setAttribute('height', `${this.canvasConfig.height}`);
+      $namespace.setAttribute('width', `${width}`);
+      $namespace.setAttribute('height', `${height}`);
 
       this.$container.appendChild($namespace);
 
@@ -32,6 +34,7 @@ export class SVGContextService implements ContextService<SVGElement> {
     let dpr = window.devicePixelRatio || 1;
     dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
     this.dpr = dpr;
+    this.resize(width, height);
   }
 
   // @ts-ignore
@@ -63,6 +66,16 @@ export class SVGContextService implements ContextService<SVGElement> {
       this.$namespace.setAttribute('width', `${width}`);
       this.$namespace.setAttribute('height', `${height}`);
     }
+    this.width = width;
+    this.height = height;
+  }
+
+  getWidth() {
+    return this.width;
+  }
+
+  getHeight() {
+    return this.height;
   }
 
   applyCursorStyle(cursor: string) {
