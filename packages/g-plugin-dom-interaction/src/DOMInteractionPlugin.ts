@@ -95,7 +95,7 @@ export class DOMInteractionPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(DOMInteractionPlugin.tag, async () => {
-      const $el = this.contextService.getDomElement() as HTMLElement;
+      const $el = this.contextService.getDomElement() as unknown as HTMLElement;
 
       // @ts-ignore
       if (globalThis.navigator.msPointerEnabled) {
@@ -126,7 +126,7 @@ export class DOMInteractionPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
-      const $el = this.contextService.getDomElement() as HTMLElement;
+      const $el = this.contextService.getDomElement() as unknown as HTMLElement;
       if (canvas.supportsPointerEvents) {
         removePointerEventListener($el);
       } else {

@@ -8,7 +8,7 @@ import { Camera, CameraEvent, CameraProjectionMode, DefaultCamera } from './came
 import { containerModule as commonContainerModule } from './canvas-module';
 import { CustomElement, DisplayObject } from './display-objects';
 import type { Element, FederatedEvent, IChildNode } from './dom';
-import { Document, ElementEvent, EventTarget } from './dom';
+import { CustomEvent, Document, ElementEvent, EventTarget } from './dom';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
 import type { ICanvas, INode } from './dom/interfaces';
 import {
@@ -526,7 +526,7 @@ export class Canvas extends EventTarget implements ICanvas {
       if (!child.isConnected) {
         child.ownerDocument = this.document;
         child.isConnected = true;
-        child.emit(ElementEvent.MOUNTED, {});
+        child.dispatchEvent(new CustomEvent(ElementEvent.MOUNTED));
 
         // trigger after mounted
         if (child instanceof CustomElement) {

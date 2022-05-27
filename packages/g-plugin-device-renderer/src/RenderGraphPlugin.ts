@@ -1,48 +1,48 @@
 import type {
-  RenderingService,
-  RenderingPlugin,
-  FederatedEvent,
-  DisplayObject,
-  MutationEvent,
   CSSRGB,
+  DisplayObject,
+  FederatedEvent,
+  MutationEvent,
+  RenderingPlugin,
+  RenderingService,
 } from '@antv/g';
 import {
-  RenderingPluginContribution,
-  ContextService,
-  CanvasConfig,
-  RenderingContext,
-  ElementEvent,
-  DefaultCamera,
   Camera,
+  CanvasConfig,
   CanvasEvent,
+  ContextService,
+  DefaultCamera,
+  ElementEvent,
   parseColor,
+  RenderingContext,
+  RenderingPluginContribution,
 } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-import { BatchManager } from './renderer';
 import { Renderable3D } from './components/Renderable3D';
+import { DeviceContribution } from './interfaces';
+import { LightPool } from './LightPool';
+import { Fog, Light } from './lights';
 // import { pushFXAAPass } from './passes/FXAA';
 import type { Device, SwapChain, Texture, TextureDescriptor } from './platform';
 import {
   BlendFactor,
   BlendMode,
+  colorNewFromRGBA,
   setAttachmentStateSimple,
   TransparentWhite,
-  colorNewFromRGBA,
 } from './platform';
 import type { RGGraphBuilder } from './render';
 import {
-  RGAttachmentSlot,
-  RenderHelper,
-  RenderInstList,
   AntialiasingMode,
   makeAttachmentClearDescriptor,
   makeBackbufferDescSimple,
   opaqueWhiteFullClearRenderPassDescriptor,
+  RenderHelper,
+  RenderInstList,
+  RGAttachmentSlot,
 } from './render';
-import { Fog, Light } from './lights';
-import { LightPool } from './LightPool';
+import { BatchManager } from './renderer';
 import { TexturePool } from './TexturePool';
-import { DeviceContribution } from './interfaces';
 
 // scene uniform block index
 export const SceneUniformBufferIndex = 0;
@@ -203,9 +203,12 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.renderHelper.renderInstManager.disableSimpleMode();
       this.swapChain.configureSwapChain($canvas.width, $canvas.height);
 
-      this.renderingContext.root.ownerDocument.defaultView.on(CanvasEvent.RESIZE, () => {
-        this.swapChain.configureSwapChain($canvas.width, $canvas.height);
-      });
+      this.renderingContext.root.ownerDocument.defaultView.addEventListener(
+        CanvasEvent.RESIZE,
+        () => {
+          this.swapChain.configureSwapChain($canvas.width, $canvas.height);
+        },
+      );
 
       this.batchManager.attach(this.device, renderingService);
     });

@@ -1,14 +1,11 @@
+import type { FederatedPointerEvent } from '@antv/g';
+import { Canvas, Circle } from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
 // @ts-ignore
-import sinon from 'sinon';
-// @ts-ignore
 import sinonChai from 'sinon-chai';
-
-import { Group, Circle, Canvas, Text, Rect, ElementEvent } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import type { FederatedPointerEvent } from '@antv/g';
 import { sleep } from './utils';
 
 chai.use(chaiAlmost(0.0001));

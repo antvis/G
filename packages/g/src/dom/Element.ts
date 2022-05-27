@@ -4,6 +4,7 @@ import { SceneGraphService } from '../services/SceneGraphService';
 import type { AABB, Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { formatAttribute, isNil } from '../utils';
+import { CustomEvent } from './CustomEvent';
 import type { IChildNode, ICSSStyleDeclaration, IElement, IEventTarget, INode } from './interfaces';
 import { ElementEvent } from './interfaces';
 import { MutationEvent } from './MutationEvent';
@@ -132,9 +133,11 @@ export class Element<
   appendChild<T extends INode>(child: T, index?: number): T {
     this.sceneGraphService.attach(child, this, index);
 
-    this.emit(ElementEvent.CHILD_INSERTED, {
-      child,
-    });
+    this.dispatchEvent(
+      new CustomEvent(ElementEvent.CHILD_INSERTED, {
+        child,
+      }),
+    );
     // child.emit(ElementEvent.INSERTED, {
     //   parent: this,
     //   index,
@@ -175,14 +178,16 @@ export class Element<
 
     // emit destroy event
     if (destroy) {
-      child.emit(ElementEvent.DESTROY, {});
+      child.dispatchEvent(new CustomEvent(ElementEvent.DESTROY));
       (child as unknown as Element).destroyed = true;
     }
 
     // emit on parent
-    this.emit(ElementEvent.CHILD_REMOVED, {
-      child,
-    });
+    this.dispatchEvent(
+      new CustomEvent(ElementEvent.CHILD_REMOVED, {
+        child,
+      }),
+    );
 
     // remove from scene graph
     this.sceneGraphService.detach(child);
@@ -191,6 +196,7 @@ export class Element<
     if (destroy) {
       // this.removeChildren();
       // remove event listeners
+      // @ts-ignore
       child.emitter.removeAllListeners();
     }
     return child;
@@ -339,7 +345,7 @@ export class Element<
   destroyed = false;
   destroy() {
     // destroy itself before remove
-    this.emit(ElementEvent.DESTROY, {});
+    this.dispatchEvent(new CustomEvent(ElementEvent.DESTROY));
 
     // remove from scenegraph first
     this.remove(false);

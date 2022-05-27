@@ -1,7 +1,7 @@
 import type { RendererConfig } from '@antv/g';
 import { AbstractRenderer } from '@antv/g';
-import * as CanvasRenderer from '@antv/g-plugin-canvas-renderer';
 import * as CanvasPicker from '@antv/g-plugin-canvas-picker';
+import * as CanvasRenderer from '@antv/g-plugin-canvas-renderer';
 import * as MobileInteraction from '@antv/g-plugin-mobile-interaction';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 

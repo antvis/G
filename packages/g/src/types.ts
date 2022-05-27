@@ -1,5 +1,6 @@
 import type { vec2, vec3 } from 'gl-matrix';
 import { Syringe } from 'mana-syringe';
+import type { IEventTarget } from '.';
 import type { IRenderer } from './AbstractRenderer';
 import type {
   CSSGlobalKeywords,
@@ -302,6 +303,48 @@ export interface RendererConfig {
   // plugins:
 }
 
+/**
+ * eg. NodeCanvas, OffscreenCanvas, HTMLCanvasElement
+ */
+export interface CanvasLike extends IEventTarget {
+  width: number;
+  height: number;
+
+  getContext: ((
+    contextId: '2d',
+    contextAttributes?: CanvasRenderingContext2DSettings,
+  ) => CanvasRenderingContext2D | null) &
+    ((
+      contextId: 'webgl',
+      contextAttributes?: WebGLContextAttributes,
+    ) => WebGLRenderingContext | null) &
+    ((
+      contextId: 'webgl2',
+      contextAttributes?: WebGLContextAttributes,
+    ) => WebGL2RenderingContext | null);
+
+  addEventListener: (<K extends keyof HTMLElementEventMap>(
+    type: K,
+    listener: (this: HTMLCanvasElement, ev: HTMLElementEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions,
+  ) => void) &
+    ((
+      type: string,
+      listener: EventListenerOrEventListenerObject,
+      options?: boolean | AddEventListenerOptions,
+    ) => void);
+  removeEventListener: (<K extends keyof HTMLElementEventMap>(
+    type: K,
+    listener: (this: HTMLCanvasElement, ev: HTMLElementEventMap[K]) => any,
+    options?: boolean | EventListenerOptions,
+  ) => void) &
+    ((
+      type: string,
+      listener: EventListenerOrEventListenerObject,
+      options?: boolean | EventListenerOptions,
+    ) => void);
+}
+
 export const CanvasConfig = Syringe.defineToken('CanvasConfig');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface CanvasConfig {
@@ -318,12 +361,12 @@ export interface CanvasConfig {
   /**
    * support OffscreenCanvas
    */
-  canvas?: HTMLCanvasElement | OffscreenCanvas;
+  canvas?: CanvasLike;
 
   /**
    * used in text measurement & texture generation
    */
-  offscreenCanvas?: HTMLCanvasElement | OffscreenCanvas;
+  offscreenCanvas?: CanvasLike;
 
   /**
    * window.devicePixelRatio
