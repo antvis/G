@@ -1,7 +1,7 @@
 {
-  "name": "@antv/g-mobile",
-  "version": "1.1.5",
-  "description": "A renderer implemented with Canvas2D API in mobile environment",
+  "name": "@antv/g-mobile-canvas-element",
+  "version": "0.0.2",
+  "description": "Create a CanvasLike element from existed context in mobile environment",
   "keywords": [
     "antv",
     "g"
@@ -31,7 +31,6 @@
     "tslib": "^2.3.1"
   },
   "devDependencies": {
-    "@types/gl-matrix": "^2.4.5",
     "@types/jest": "^25.0.0"
   },
   "peerDependencies": {

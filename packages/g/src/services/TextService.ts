@@ -1,7 +1,8 @@
-import { singleton, inject } from 'mana-syringe';
-import { toFontString } from '../utils';
+import { inject, singleton } from 'mana-syringe';
+import type { CanvasLike } from '..';
 import type { ParsedTextStyleProps } from '../display-objects';
 import { Rectangle } from '../shapes';
+import { toFontString } from '../utils';
 import { OffscreenCanvasCreator } from './OffscreenCanvasCreator';
 
 export interface TextMetrics {
@@ -80,7 +81,7 @@ export class TextService {
   @inject(OffscreenCanvasCreator)
   private offscreenCanvas: OffscreenCanvasCreator;
 
-  measureFont(font: string, offscreenCanvas: HTMLCanvasElement | OffscreenCanvas): IFontMetrics {
+  measureFont(font: string, offscreenCanvas: CanvasLike): IFontMetrics {
     // as this method is used for preparing assets, don't recalculate things if we don't need to
     if (this.cache[font]) {
       return this.cache[font];
@@ -157,7 +158,7 @@ export class TextService {
   measureText(
     text: string,
     parsedStyle: ParsedTextStyleProps,
-    offscreenCanvas: HTMLCanvasElement | OffscreenCanvas,
+    offscreenCanvas: CanvasLike,
   ): TextMetrics {
     const {
       fontSize,
@@ -251,7 +252,7 @@ export class TextService {
   private wordWrap(
     text: string,
     { wordWrapWidth = 0, letterSpacing = 0 }: ParsedTextStyleProps,
-    offscreenCanvas: HTMLCanvasElement | OffscreenCanvas,
+    offscreenCanvas: CanvasLike,
   ): string {
     const context = this.offscreenCanvas.getOrCreateContext(offscreenCanvas);
     const maxWidth = wordWrapWidth + letterSpacing;

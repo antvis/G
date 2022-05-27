@@ -1,5 +1,5 @@
-import { UnitType, isNil } from '@antv/g';
-import type { ParsedTextStyleProps, Rectangle, DisplayObject } from '@antv/g';
+import type { CSSRGB, DisplayObject, ParsedTextStyleProps, Rectangle } from '@antv/g';
+import { isNil, UnitType } from '@antv/g';
 import { singleton } from 'mana-syringe';
 import type { StyleRenderer } from './interfaces';
 import { TextRendererContribution } from './interfaces';
@@ -73,7 +73,7 @@ export class TextRenderer implements StyleRenderer {
 
       // no need to re-position X, cause we already set text align
       // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/textAlign
-      if (!isNil(stroke) && lineWidth && lineWidth.value) {
+      if (!isNil(stroke) && !(stroke as CSSRGB).isNone && lineWidth && lineWidth.value) {
         this.drawLetterSpacing(
           context,
           lines[i],

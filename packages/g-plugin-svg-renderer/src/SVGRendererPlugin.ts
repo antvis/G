@@ -371,7 +371,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       if (name === 'fill' || name === 'stroke') {
         createOrUpdateGradientAndPattern(this.$def, object, $el!, usedValue, usedName);
-      } else if (name === 'visibility') {
+      } else if (name === 'visibility' && computedValue.value !== 'unset') {
         // use computed value
         // update `visibility` on <group>
         $groupEl?.setAttribute(usedName, `${computedValue.value}`);

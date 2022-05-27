@@ -1,8 +1,8 @@
-import type { DisplayObjectConfig } from '../dom/interfaces';
-import { Shape } from '../types';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { DisplayObject } from './DisplayObject';
 import type { CSSUnitValue } from '../css';
+import type { DisplayObjectConfig } from '../dom/interfaces';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import { Shape } from '../types';
+import { DisplayObject } from './DisplayObject';
 
 export interface CircleStyleProps extends BaseStyleProps {
   cx?: number | string;
@@ -22,9 +22,8 @@ export class Circle extends DisplayObject<CircleStyleProps, ParsedCircleStylePro
         cx: '',
         cy: '',
         r: '',
-        anchor: [0.5, 0.5],
+        anchor: '0.5 0.5',
         transformOrigin: 'center',
-        lineWidth: '0',
         ...style,
       },
       ...rest,

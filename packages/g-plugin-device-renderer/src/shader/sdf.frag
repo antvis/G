@@ -15,7 +15,7 @@ out vec4 outputColor;
 
 void main() {
   int shape = int(floor(v_Data.w + 0.5));
-  float epsilon = 0.00001;
+  float epsilon = 0.000001;
 
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
   #pragma glslify: import('@antv/g-shader-components/map.frag')

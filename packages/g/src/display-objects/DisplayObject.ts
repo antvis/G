@@ -32,7 +32,7 @@ import type { CustomElement } from './CustomElement';
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
 const DEFAULT_STYLE_PROPS: {
-  anchor: [number, number] | [number, number, number];
+  anchor: string;
   transformOrigin: string;
   transform: string;
   visibility: string;
@@ -42,6 +42,7 @@ const DEFAULT_STYLE_PROPS: {
   strokeOpacity: string;
   fill: string;
   stroke: string;
+  lineWidth: string | number;
   lineCap: CanvasLineCap | '';
   lineJoin: CanvasLineJoin | '';
   increasedLineWidthForHitTesting: string | number;
@@ -54,7 +55,7 @@ const DEFAULT_STYLE_PROPS: {
   textBaseline: string;
   textTransform: string;
 } = {
-  anchor: [0, 0],
+  anchor: '',
   opacity: '',
   fillOpacity: '',
   strokeOpacity: '',
@@ -64,9 +65,10 @@ const DEFAULT_STYLE_PROPS: {
   transformOrigin: '',
   visibility: '',
   pointerEvents: '',
+  lineWidth: '',
   lineCap: '',
   lineJoin: '',
-  increasedLineWidthForHitTesting: '0',
+  increasedLineWidthForHitTesting: '',
   fontSize: '',
   fontFamily: '',
   fontStyle: '',

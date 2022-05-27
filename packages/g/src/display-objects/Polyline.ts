@@ -1,9 +1,9 @@
 import { Line as LineUtil } from '@antv/g-math';
-import { Shape } from '../types';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { DisplayObject } from './DisplayObject';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import { Shape } from '../types';
+import { DisplayObject } from './DisplayObject';
 
 export interface PolylineStyleProps extends BaseStyleProps {
   points: [number, number][];
@@ -21,7 +21,6 @@ export class Polyline extends DisplayObject<PolylineStyleProps, ParsedPolylineSt
       type: Shape.POLYLINE,
       style: {
         points: '',
-        lineWidth: 1,
         miterLimit: 4,
         ...style,
       },

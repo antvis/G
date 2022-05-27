@@ -1,4 +1,5 @@
 import { singleton } from 'mana-syringe';
+import type { CanvasLike } from '..';
 
 /**
  * used in following scenes:
@@ -8,12 +9,10 @@ import { singleton } from 'mana-syringe';
  */
 @singleton()
 export class OffscreenCanvasCreator {
-  private canvas: HTMLCanvasElement | OffscreenCanvas;
+  private canvas: CanvasLike;
   private context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
-  getOrCreateCanvas(
-    offscreenCanvas: HTMLCanvasElement | OffscreenCanvas,
-  ): HTMLCanvasElement | OffscreenCanvas {
+  getOrCreateCanvas(offscreenCanvas: CanvasLike): CanvasLike {
     if (this.canvas) {
       return this.canvas;
     }
@@ -25,6 +24,7 @@ export class OffscreenCanvasCreator {
     } else {
       try {
         // OffscreenCanvas2D measureText can be up to 40% faster.
+        // @ts-ignore
         this.canvas = new window.OffscreenCanvas(0, 0);
         this.context = this.canvas.getContext('2d')!;
         if (!this.context || !this.context.measureText) {
@@ -43,7 +43,7 @@ export class OffscreenCanvasCreator {
     return this.canvas;
   }
 
-  getOrCreateContext(offscreenCanvas: HTMLCanvasElement | OffscreenCanvas) {
+  getOrCreateContext(offscreenCanvas: CanvasLike) {
     if (this.context) {
       return this.context;
     }

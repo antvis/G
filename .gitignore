@@ -79,3 +79,6 @@ packages/**/*/pkg/
 
 # ignore generated image by node-canvas
 packages/**/*/__node__tests__/*.png
+
+# ignore bundleviz stats.html
+stats.html

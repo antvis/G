@@ -1,15 +1,16 @@
-import { inject, singleton, Syringe } from 'mana-syringe';
-import type { Transform } from '../components';
 import type { vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
-import { AABB, Rectangle } from '../shapes';
-import type { SceneGraphSelector } from './SceneGraphSelector';
-import { SceneGraphSelectorFactory } from './SceneGraphSelector';
+import { inject, singleton, Syringe } from 'mana-syringe';
+import type { Transform } from '../components';
+import type { Element } from '../dom';
+import { CustomEvent } from '../dom';
 import type { IChildNode, IElement, INode, IParentNode } from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
-import type { Element } from '../dom';
 import { MutationEvent } from '../dom/MutationEvent';
+import { AABB, Rectangle } from '../shapes';
 import { isNil } from '../utils';
+import type { SceneGraphSelector } from './SceneGraphSelector';
+import { SceneGraphSelectorFactory } from './SceneGraphSelector';
 
 export function sortByZIndex(o1: IElement, o2: IElement) {
   const zIndex1 = Number(o1.style.zIndex);
@@ -37,7 +38,7 @@ export function dirtifyToRoot(element: INode, affectChildren = false) {
     p = p.parentNode;
   }
 
-  element.emit(ElementEvent.BOUNDS_CHANGED, { affectChildren });
+  element.dispatchEvent(new CustomEvent(ElementEvent.BOUNDS_CHANGED, { affectChildren }));
 }
 
 export const SceneGraphService = Syringe.defineToken('SceneGraphService');

@@ -15,6 +15,8 @@ Import from CDN:
 Use NPM module:
 
 ```js
+import from '@antv/g';
+import from '@antv/g-canvas';
 import from '@antv/g-web-components';
 ```
 
@@ -41,6 +43,42 @@ https://g-next.antv.vision/zh/docs/api/basic/circle
 <g-circle fill="#adc6ff" r="16px" cx="25" cy="25"></g-circle>
 ```
 
+### g-ellipse
+
+https://g-next.antv.vision/zh/docs/api/basic/ellipse
+
+### g-rect
+
+https://g-next.antv.vision/zh/docs/api/basic/rect
+
+### g-image
+
+https://g-next.antv.vision/zh/docs/api/basic/image
+
+### g-line
+
+https://g-next.antv.vision/zh/docs/api/basic/line
+
+### g-polyline
+
+https://g-next.antv.vision/zh/docs/api/basic/polyline
+
+### g-polygon
+
+https://g-next.antv.vision/zh/docs/api/basic/polygon
+
+### g-path
+
+https://g-next.antv.vision/zh/docs/api/basic/path
+
+### g-html
+
+https://g-next.antv.vision/zh/docs/api/basic/html
+
 ## Polyfill for Web Component
 
 https://github.com/webcomponents/polyfills/tree/master/packages/webcomponentsjs
+
+## Limitations
+
+-   Props accept only strings or booleans, eg. `radius='0 20 20'`.

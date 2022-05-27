@@ -1,27 +1,26 @@
 /**
  * @see https://www.khronos.org/assets/uploads/developers/presentations/Crazy_Panda_How_to_draw_lines_in_WebGL.pdf
  */
-import { injectable } from 'mana-syringe';
 import type {
-  Polyline,
   DisplayObject,
-  Tuple4Number,
+  ParsedBaseStyleProps,
+  ParsedLineStyleProps,
   ParsedPathStyleProps,
   PathCommand,
-  ParsedLineStyleProps,
-  ParsedBaseStyleProps,
+  Polyline,
+  Tuple4Number,
 } from '@antv/g';
-import { CSSRGB } from '@antv/g';
-import { Shape, convertToPath, parsePath } from '@antv/g';
+import { convertToPath, CSSRGB, parsePath, Shape } from '@antv/g';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import earcut from 'earcut';
-import { vec3, mat4 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
+import { injectable } from 'mana-syringe';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
-import vert from '../shader/line.vert';
-import frag from '../shader/line.frag';
-import { Instanced } from './Instanced';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
+import frag from '../shader/line.frag';
+import vert from '../shader/line.vert';
 import { enumToObject } from '../utils/enum';
+import { Instanced } from './Instanced';
 
 export enum JOINT_TYPE {
   NONE = 0,
@@ -503,7 +502,15 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
         command === 'Z' &&
         (object.nodeName === Shape.PATH || object.nodeName === Shape.RECT)
       ) {
-        points.push(points[startPointIndex], points[startPointIndex + 1]);
+        const epsilon = 0.0001;
+        // skip if already closed
+        if (
+          Math.abs(points[points.length - 2] - points[startPointIndex]) > epsilon ||
+          Math.abs(points[points.length - 1] - points[startPointIndex + 1]) > epsilon
+        ) {
+          points.push(points[startPointIndex], points[startPointIndex + 1]);
+        }
+
         points.push(
           ...addTailSegment(
             points[startPointIndex],

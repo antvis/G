@@ -27,7 +27,7 @@ A powerful rendering engine for AntV.
     -   The graphics and event systems are compatible with the DOM [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) & [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event) API, which means we can take over the default rendering process of [D3](https://github.com/d3/d3) or use gesture libs such as [Hammer.js](http://hammerjs.github.io/) easily.
     -   The animation system is compatible with [Web Animation API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API).
     -   The style system is compatible with [CSS Typed OM](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Typed_OM_API) & [CSS Layout API](https://github.com/w3c/css-houdini-drafts/blob/main/css-layout-api/EXPLAINER.md).
--   Provides Canvas2D / SVG / WebGL / WebGPU renderers, you can choose one on demand or switch between them at runtime.
+-   Provides Canvas2D / SVG / WebGL / WebGPU renderers, you can choose one on demand or switch between them at runtime. We also support server-side rendering with [node-canvas](https://github.com/Automattic/node-canvas).
 -   Besides the high-performance rendering, we also provide GPGPU capabilities based on [WebGPU](https://www.w3.org/TR/webgpu/).
     -   [webgpu-graph](https://g-next.antv.vision/zh/docs/api/gpgpu/webgpu-graph) A GPU accelerated graph analytics library.
 -   There're a lot of out-of-the-box plugins：

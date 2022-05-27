@@ -1,7 +1,7 @@
-import { Canvas, Path } from '@antv/g';
+import { Canvas, Group, Path } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -89,6 +89,48 @@ canvas.appendChild(path2);
 canvas.appendChild(path3);
 canvas.appendChild(circlePath);
 circlePath.setPosition(100, 300);
+
+const g = new Group({
+  style: {
+    transform: 'translate(400, 400) scale(0.5)',
+  },
+});
+const p1 = new Path({
+  style: {
+    d: 'M1.2858791391047205e-14,-209.99999999999994A209.99999999999994,209.99999999999994,0,0,1,207.94618110413055,29.298221178223883L0,0Z',
+    fill: 'red',
+  },
+});
+const p2 = new Path({
+  style: {
+    d: 'M207.94618110413066,29.298221178223898A210.00000000000006,210.00000000000006,0,0,1,137.74500635698746,158.512817222184L0,0Z',
+    fill: 'green',
+  },
+});
+const p3 = new Path({
+  style: {
+    d: 'M137.7450063569874,158.51281722218394A209.99999999999997,209.99999999999997,0,0,1,-6.530971076665772,209.89841928131747L0,0Z',
+    fill: 'blue',
+  },
+});
+const p4 = new Path({
+  style: {
+    d: 'M-6.530971076665824,209.8984192813175A210,210,0,0,1,-168.7343604741219,-125.01486149809983L0,0Z',
+    fill: 'yellow',
+  },
+});
+const p5 = new Path({
+  style: {
+    d: 'M-168.7343604741219,-125.01486149809983A210,210,0,0,1,-3.377057564320937e-14,-210L0,0Z',
+    fill: 'black',
+  },
+});
+g.appendChild(p1);
+g.appendChild(p2);
+g.appendChild(p3);
+g.appendChild(p4);
+g.appendChild(p5);
+canvas.appendChild(g);
 
 // stats
 const stats = new Stats();

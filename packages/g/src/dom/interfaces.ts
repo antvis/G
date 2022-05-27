@@ -1,4 +1,3 @@
-import type EventEmitter from 'eventemitter3';
 import type { Camera } from '../camera';
 import type { DisplayObject } from '../display-objects';
 import type { ContextService, EventService, RenderingService } from '../services';
@@ -66,35 +65,35 @@ export enum ElementEvent {
 }
 
 export interface IEventTarget {
-  emitter: EventEmitter;
+  // emitter: EventEmitter;
 
-  on: (
-    type: string,
-    listener: EventListenerOrEventListenerObject | ((...args: any[]) => void),
-    options?: boolean | AddEventListenerOptions,
-  ) => this;
+  // on: (
+  //   type: string,
+  //   listener: EventListenerOrEventListenerObject | ((...args: any[]) => void),
+  //   options?: boolean | AddEventListenerOptions,
+  // ) => void;
   addEventListener: (
     type: string,
     listener: EventListenerOrEventListenerObject,
     options?: boolean | AddEventListenerOptions,
-  ) => this;
+  ) => void;
 
-  off: (
-    type: string,
-    listener: EventListenerOrEventListenerObject | ((...args: any[]) => void),
-    options?: boolean | AddEventListenerOptions,
-  ) => this;
+  // off: (
+  //   type: string,
+  //   listener: EventListenerOrEventListenerObject | ((...args: any[]) => void),
+  //   options?: boolean | AddEventListenerOptions,
+  // ) => void;
   removeEventListener: (
     type: string,
     listener: EventListenerOrEventListenerObject,
     options?: boolean | AddEventListenerOptions,
-  ) => this;
-  removeAllEventListeners: () => void;
+  ) => void;
+  // removeAllEventListeners: () => void;
 
   dispatchEvent: <T extends FederatedEvent>(e: T) => boolean;
 
   // eslint-disable-next-line @typescript-eslint/ban-types
-  emit: (eventName: string, object: object) => void;
+  // emit: (eventName: string, object: object) => void;
 }
 
 export interface INode extends IEventTarget {

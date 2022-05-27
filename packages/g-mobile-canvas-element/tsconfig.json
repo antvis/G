@@ -30,11 +30,5 @@
         {
             "path": "../g"
         },
-        {
-            "path": "../g-plugin-canvas-renderer"
-        },
-        {
-            "path": "../g-plugin-canvas-picker"
-        }
     ]
 }

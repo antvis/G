@@ -1,10 +1,11 @@
+import type { CanvasLike } from '@antv/g';
 import { CanvasConfig, ContextService } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { isCanvasElement } from './dom';
 
 @singleton({ token: ContextService })
 export class WebGLContextService implements ContextService<WebGLRenderingContext> {
-  private $canvas: HTMLCanvasElement | OffscreenCanvas | null;
+  private $canvas: CanvasLike | null;
   private dpr: number;
   private context: WebGLRenderingContext | null;
 
@@ -13,7 +14,7 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
 
   init() {
     const { canvas, devicePixelRatio } = this.canvasConfig;
-    this.$canvas = canvas as HTMLCanvasElement;
+    this.$canvas = canvas;
     // 实际获取到小程序环境的上下文
     this.context = this.$canvas.getContext('webgl');
 
@@ -38,8 +39,8 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
   }
 
   getBoundingClientRect() {
-    if ((this.$canvas as HTMLCanvasElement).getBoundingClientRect) {
-      return (this.$canvas as HTMLCanvasElement).getBoundingClientRect();
+    if ((this.$canvas as unknown as HTMLCanvasElement).getBoundingClientRect) {
+      return (this.$canvas as unknown as HTMLCanvasElement).getBoundingClientRect();
     }
   }
 

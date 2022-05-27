@@ -55,7 +55,8 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       const object = e.target as DisplayObject;
       if (object.nodeName === Shape.HTML) {
         const existedId = this.getId(object);
-        const $container = (this.contextService.getDomElement() as HTMLElement).parentNode;
+        const $container = (this.contextService.getDomElement() as unknown as HTMLElement)
+          .parentNode;
         if ($container) {
           const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
           if ($existedElement) {
@@ -98,7 +99,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
   private getOrCreateEl(object: DisplayObject) {
     const existedId = this.getId(object);
-    const $container = (this.contextService.getDomElement() as HTMLElement).parentNode;
+    const $container = (this.contextService.getDomElement() as unknown as HTMLElement).parentNode;
     if ($container) {
       let $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
       if (!$existedElement) {

@@ -200,9 +200,16 @@ circle.getLocalPosition(); // [100, 100]，此时为圆包围盒左上角位置
 -   [Text](/zh/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/docs/api/basic/text#textbaseline) 与 [textAlign](/zh/docs/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
 -   [Group](/zh/docs/api/text) 无几何定义，因此设置此属性无效
 
+除了使用数组，还可以使用空格分隔的数组字符串，因此以下两种写法等价：
+
+```js
+circle.style.anchor = [0.5, 0.5];
+circle.style.anchor = '0.5 0.5';
+```
+
 | [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 不同图形各异 | 所有 | 否 | 否 | `[number, number]` |
+| `'0 0'` | 所有 | 否 | 否 | `<array>` |
 
 ### transform
 

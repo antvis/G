@@ -1,10 +1,11 @@
+import type { CanvasLike } from '@antv/g';
 import { CanvasConfig, ContextService, isBrowser, isString, setDOMSize } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 
 @singleton({ token: ContextService })
 export class WebGLContextService implements ContextService<WebGLRenderingContext> {
   private $container: HTMLElement | null;
-  private $canvas: HTMLCanvasElement | OffscreenCanvas | null;
+  private $canvas: CanvasLike | null;
   private dpr: number;
   private context: WebGLRenderingContext | null;
 

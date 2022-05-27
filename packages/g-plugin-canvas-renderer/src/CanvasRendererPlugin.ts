@@ -1,43 +1,43 @@
 import type {
-  DisplayObject,
-  RenderingService,
-  RenderingPlugin,
   CSSRGB,
+  DisplayObject,
   FederatedEvent,
-  Pattern,
   LinearGradient,
-  RadialGradient,
   ParsedBaseStyleProps,
+  Pattern,
+  RadialGradient,
+  RenderingPlugin,
+  RenderingService,
 } from '@antv/g';
 import {
   AABB,
-  Shape,
-  DisplayObjectPool,
+  Camera,
   CanvasConfig,
   ContextService,
+  CSSGradientValue,
+  DefaultCamera,
+  DisplayObjectPool,
+  ElementEvent,
+  fromRotationTranslationScale,
+  getEuler,
+  GradientPatternType,
+  isNil,
   RenderingContext,
   RenderingPluginContribution,
-  getEuler,
-  fromRotationTranslationScale,
-  Camera,
-  DefaultCamera,
-  CSSGradientValue,
-  GradientPatternType,
   RenderReason,
-  ElementEvent,
-  isNil,
+  Shape,
 } from '@antv/g';
+import { mat4, quat, vec3 } from 'gl-matrix';
 import { inject, singleton } from 'mana-syringe';
-import { vec3, mat4, quat } from 'gl-matrix';
 import RBush from 'rbush';
+import type { RBushNodeAABB } from './components/RBushNode';
+import { RBushNode } from './components/RBushNode';
+import { GradientPool } from './shapes/GradientPool';
+import { ImagePool } from './shapes/ImagePool';
 import type { PathGenerator } from './shapes/paths';
 import { PathGeneratorFactory } from './shapes/paths';
 import type { StyleRenderer } from './shapes/styles';
 import { StyleRendererFactory } from './shapes/styles';
-import { GradientPool } from './shapes/GradientPool';
-import { ImagePool } from './shapes/ImagePool';
-import { RBushNode } from './components/RBushNode';
-import type { RBushNodeAABB } from './components/RBushNode';
 
 export const RBushRoot = 'RBushRoot';
 
@@ -633,11 +633,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       context.globalAlpha *= opacity.value;
     }
 
-    if (!isNil(stroke)) {
+    if (!isNil(stroke) && !(stroke as CSSRGB).isNone) {
       context.strokeStyle = this.getColor(stroke, object, context, renderingService);
     }
 
-    if (!isNil(fill)) {
+    if (!isNil(fill) && !(fill as CSSRGB).isNone) {
       context.fillStyle = this.getColor(fill, object, context, renderingService);
     }
 

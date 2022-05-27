@@ -632,8 +632,8 @@ export class EventService extends EventEmitter {
       }
 
       // from <svg>
-      if ($el && ($el as HTMLCanvasElement).contains) {
-        return ($el as HTMLCanvasElement).contains(target as any);
+      if ($el && ($el as unknown as HTMLCanvasElement).contains) {
+        return ($el as unknown as HTMLCanvasElement).contains(target as any);
       }
     }
 
@@ -834,6 +834,7 @@ export class EventService extends EventEmitter {
 
   private notifyListeners(e: FederatedEvent, type: string) {
     // hack EventEmitter, stops if the `propagationImmediatelyStopped` flag is set
+    // @ts-ignore
     const emitter = e.currentTarget.emitter;
     // @ts-ignore
     const listeners = (emitter._events as EmitterListeners)[type];

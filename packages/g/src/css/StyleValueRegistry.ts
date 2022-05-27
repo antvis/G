@@ -90,8 +90,9 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
   {
     /**
-     * range [0.0, 1.0]
+     * inheritable, range [0.0, 1.0]
      * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity
+     * @see https://svgwg.org/svg2-draft/painting.html#FillOpacity
      */
     name: 'fillOpacity',
     interpolable: true,
@@ -101,8 +102,9 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
   {
     /**
-     * range [0.0, 1.0]
+     * inheritable, range [0.0, 1.0]
      * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-opacity
+     * @see https://svgwg.org/svg2-draft/painting.html#StrokeOpacity
      */
     name: 'strokeOpacity',
     interpolable: true,
@@ -121,6 +123,10 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     defaultValue: 'none',
     syntax: PropertySyntax.PAINT,
   },
+  /**
+   * default to none
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke#usage_notes
+   */
   {
     name: 'stroke',
     interpolable: true,
@@ -292,6 +298,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   {
     name: 'anchor',
     parsePriority: 99,
+    defaultValue: '0 0',
     layoutDependent: true,
     syntax: PropertySyntax.LENGTH_PERCENTAGE_12,
   },

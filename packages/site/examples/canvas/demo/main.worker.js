@@ -1,6 +1,6 @@
-import { setupTransferableMethodsOnWorker } from '@naoak/workerize-transferable';
-import { Circle, Canvas } from '@antv/g';
+import { Canvas, Circle } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { setupTransferableMethodsOnWorker } from '@naoak/workerize-transferable';
 
 setupTransferableMethodsOnWorker({
   // the name of function which use some transferables
@@ -71,10 +71,10 @@ export function render(offscreenCanvas, devicePixelRatio) {
     },
   );
 
-  circle.addEventListener('mouseenter', () => {
+  circle.addEventListener('pointerenter', () => {
     circle.style.lineWidth = 20;
   });
-  circle.addEventListener('mouseleave', () => {
+  circle.addEventListener('pointerleave', () => {
     circle.style.lineWidth = 4;
   });
 }
@@ -83,6 +83,7 @@ export function render(offscreenCanvas, devicePixelRatio) {
  * receive signals from main thread
  */
 export function triggerEvent(event, ev) {
+  ev.target = canvas.getContextService().getDomElement();
   ev.preventDefault = () => {};
   ev.composedPath = () => {
     return [canvas.getContextService().getDomElement()];

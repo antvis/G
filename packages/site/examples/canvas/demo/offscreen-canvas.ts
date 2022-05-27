@@ -1,6 +1,6 @@
 // @ts-ignore
-import Worker from './main.worker.js';
 import { setupTransferableMethodsOnMain } from '@naoak/workerize-transferable';
+import Worker from './main.worker.js';
 
 const worker = new Worker();
 
@@ -42,7 +42,6 @@ const clonePointerEvent = (e: PointerEvent) => {
     pageY: e.pageY,
     screenX: e.screenX,
     screenY: e.screenY,
-    nativeEvent: {},
   };
 };
 

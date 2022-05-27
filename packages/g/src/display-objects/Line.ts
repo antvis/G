@@ -1,10 +1,10 @@
 import { Line as LineUtil } from '@antv/g-math';
-import { Shape } from '../types';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { DisplayObject } from './DisplayObject';
+import type { CSSUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
-import type { CSSUnitValue } from '../css';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import { Shape } from '../types';
+import { DisplayObject } from './DisplayObject';
 
 export interface LineStyleProps extends BaseStyleProps {
   x1: number;
@@ -37,10 +37,6 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
         y2: 0,
         z1: 0,
         z2: 0,
-        /**
-         * @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-width
-         */
-        lineWidth: 1,
         isBillboard: false,
         ...style,
       },

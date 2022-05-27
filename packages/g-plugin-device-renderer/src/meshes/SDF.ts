@@ -9,10 +9,10 @@ import type {
 import { Shape } from '@antv/g';
 import { injectable } from 'mana-syringe';
 import { Format, VertexBufferFrequency } from '../platform';
-import vert from '../shader/sdf.vert';
 import frag from '../shader/sdf.frag';
-import { Instanced, VertexAttributeBufferIndex, VertexAttributeLocation } from './Instanced';
+import vert from '../shader/sdf.vert';
 import { enumToObject } from '../utils/enum';
+import { Instanced, VertexAttributeBufferIndex, VertexAttributeLocation } from './Instanced';
 
 enum SDFVertexAttributeBufferIndex {
   PACKED_STYLE = VertexAttributeBufferIndex.POSITION + 1,
@@ -38,7 +38,10 @@ export class SDFMesh extends Instanced {
       return false;
     }
 
-    if (this.needDrawStrokeSeparately(object) || this.needDrawStrokeSeparately(this.instance)) {
+    if (
+      this.needDrawStrokeSeparately(object.parsedStyle) ||
+      this.needDrawStrokeSeparately(this.instance.parsedStyle)
+    ) {
       return false;
     }
 
@@ -178,23 +181,19 @@ export class SDFMesh extends Instanced {
     return size;
   }
 
-  private shouldOmitStroke(attributes: ParsedBaseStyleProps) {
-    const { lineDash, stroke, strokeOpacity } = attributes;
-    return !!(
-      stroke &&
-      ((lineDash && lineDash.length && lineDash.every((item) => item.value !== 0)) ||
-        strokeOpacity.value !== 1)
-    );
+  private shouldOmitStroke(parsedStyle: ParsedBaseStyleProps) {
+    const { lineDash, stroke, strokeOpacity } = parsedStyle;
+    const hasStroke = stroke && !(stroke as CSSRGB).isNone;
+    const hasLineDash = lineDash && lineDash.length && lineDash.every((item) => item.value !== 0);
+    const hasStrokeOpacity = strokeOpacity.value < 1;
+    return !hasStroke || (hasStroke && (hasLineDash || hasStrokeOpacity));
   }
 
-  private needDrawStrokeSeparately(object: DisplayObject) {
-    const { stroke, lineDash, lineWidth, strokeOpacity } =
-      object.parsedStyle as ParsedBaseStyleProps;
-    return (
-      stroke &&
-      lineWidth.value > 0 &&
-      (strokeOpacity.value < 1 ||
-        (lineDash && lineDash.length && lineDash.every((item) => item.value !== 0)))
-    );
+  private needDrawStrokeSeparately(parsedStyle: ParsedBaseStyleProps) {
+    const { stroke, lineDash, lineWidth, strokeOpacity } = parsedStyle;
+    const hasStroke = stroke && !(stroke as CSSRGB).isNone;
+    const hasLineDash = lineDash && lineDash.length && lineDash.every((item) => item.value !== 0);
+    const hasStrokeOpacity = strokeOpacity.value < 1;
+    return hasStroke && lineWidth.value > 0 && (hasLineDash || hasStrokeOpacity);
   }
 }

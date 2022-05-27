@@ -47,6 +47,8 @@ export class MobileInteractionPlugin implements RenderingPlugin {
       canvasEl.addEventListener('touchmove', onPointerMove, true);
       canvasEl.addEventListener('touchcancel', onPointerCancel, true);
 
+      // FIXME: 这里不应该只在 canvasEl 上监听 mousemove 和 mouseup，而应该在更高层级的节点上例如 document 监听。
+      // 否则无法判断是否移出了 canvasEl
       canvasEl.addEventListener('mousemove', onPointerMove, true);
       canvasEl.addEventListener('mousedown', onPointerDown, true);
       canvasEl.addEventListener('mouseout', onPointerOut, true);
