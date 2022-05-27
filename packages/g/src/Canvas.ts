@@ -21,7 +21,7 @@ import {
 import type { PointLike } from './shapes';
 import type { Cursor, InteractivePointerEvent } from './types';
 import { CanvasConfig } from './types';
-import { cleanExistedCanvas, isBrowser } from './utils';
+import { cleanExistedCanvas, isBrowser, getWidth, getHeight } from './utils';
 
 export enum CanvasEvent {
   READY = 'ready',
@@ -151,8 +151,8 @@ export class Canvas extends EventTarget implements ICanvas {
       // infer width & height with dpr
       dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
       dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
-      canvasWidth = width || canvas.width / dpr;
-      canvasHeight = height || canvas.height / dpr;
+      canvasWidth = width || getWidth(canvas) || canvas.width / dpr;
+      canvasHeight = height || getHeight(canvas) || canvas.height / dpr;
     }
 
     /**
