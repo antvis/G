@@ -509,15 +509,16 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
           Math.abs(points[points.length - 1] - points[startPointIndex + 1]) > epsilon
         ) {
           points.push(points[startPointIndex], points[startPointIndex + 1]);
-          points.push(
-            ...addTailSegment(
-              points[startPointIndex],
-              points[startPointIndex + 1],
-              points[startPointIndex + 2],
-              points[startPointIndex + 3],
-            ),
-          );
         }
+
+        points.push(
+          ...addTailSegment(
+            points[startPointIndex],
+            points[startPointIndex + 1],
+            points[startPointIndex + 2],
+            points[startPointIndex + 3],
+          ),
+        );
       }
     });
 
@@ -587,8 +588,6 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
   pointsBuffer[3] = points[2];
   pointsBuffer[4] = points[3];
   pointsBuffer[5] = capType === JOINT_TYPE.CAP_ROUND ? capType : 0;
-
-  console.log(points, pointsBuffer);
 
   const instancedCount = Math.round(points.length / stridePoints);
 
