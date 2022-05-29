@@ -15,6 +15,7 @@ import {
 } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Plugin as PluginRoughCanvasRenderer } from '@antv/g-plugin-rough-canvas-renderer';
+import { Plugin as PluginRoughSVGRenderer } from '@antv/g-plugin-rough-svg-renderer';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
@@ -22,8 +23,9 @@ import WebFont from 'webfontloader';
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
-const svgRenderer = new SVGRenderer();
 canvasRenderer.registerPlugin(new PluginRoughCanvasRenderer());
+const svgRenderer = new SVGRenderer();
+svgRenderer.registerPlugin(new PluginRoughSVGRenderer());
 
 // create a canvas & use `g-canvas`
 const canvas = new Canvas({

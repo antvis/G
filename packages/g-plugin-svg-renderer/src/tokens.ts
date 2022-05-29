@@ -1,6 +1,5 @@
 import type { DisplayObject } from '@antv/g';
-import { singleton, Syringe } from 'mana-syringe';
-import { createSVGElement } from './utils/dom';
+import { Syringe } from 'mana-syringe';
 
 export const CreateElementContribution = Syringe.defineToken('CreateElementContribution', {
   multiple: false,
@@ -8,11 +7,6 @@ export const CreateElementContribution = Syringe.defineToken('CreateElementContr
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface CreateElementContribution {
   createElement: (object: DisplayObject) => SVGElement;
-}
-
-@singleton({ token: CreateElementContribution })
-export class DefaultElementContribution implements CreateElementContribution {
-  createElement(object: DisplayObject<any, any>, document?: Document): SVGElement {
-    return createSVGElement(object.nodeName, document);
-  }
+  shouldUpdateElementAttribute: (object: DisplayObject, attributeName: string) => boolean;
+  updateElementAttribute: (object: DisplayObject<any, any>, $el: SVGElement) => void;
 }

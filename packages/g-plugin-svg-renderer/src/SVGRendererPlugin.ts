@@ -27,25 +27,9 @@ import { ElementSVG } from './components/ElementSVG';
 import { createOrUpdateFilter } from './shapes/defs/Filter';
 import { createOrUpdateGradientAndPattern } from './shapes/defs/Pattern';
 import { createOrUpdateShadow } from './shapes/defs/Shadow';
-import type { ElementRenderer } from './shapes/paths';
-import { ElementRendererFactory } from './shapes/paths';
 import { CreateElementContribution } from './tokens';
 import { createSVGElement } from './utils/dom';
 import { numberToLongString } from './utils/format';
-
-export const SHAPE2TAGS: Record<Shape | string, string> = {
-  [Shape.RECT]: 'path',
-  [Shape.CIRCLE]: 'circle',
-  [Shape.ELLIPSE]: 'ellipse',
-  [Shape.IMAGE]: 'image',
-  [Shape.GROUP]: 'g',
-  [Shape.LINE]: 'line',
-  [Shape.POLYLINE]: 'polyline',
-  [Shape.POLYGON]: 'polygon',
-  [Shape.TEXT]: 'text',
-  [Shape.PATH]: 'path',
-  [Shape.HTML]: 'foreignObject',
-};
 
 export const SVG_ATTR_MAP: Record<string, string> = {
   opacity: 'opacity',
@@ -149,9 +133,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
   @inject(CreateElementContribution)
   private createElementContribution: CreateElementContribution;
-
-  @inject(ElementRendererFactory)
-  private elementRendererFactory: (tagName: string) => ElementRenderer<any>;
 
   /**
    * container for <gradient> <clipPath>...
@@ -344,21 +325,30 @@ export class SVGRendererPlugin implements RenderingPlugin {
   private updateAttribute(object: DisplayObject, attributes: string[]) {
     const { document } = this.canvasConfig;
 
-    let needGeneratePath = false;
     // @ts-ignore
     const { $el, $groupEl, $hitTestingEl } = object.elementSVG as ElementSVG;
     const { parsedStyle, computedStyle } = object;
-    const elementRenderer = this.elementRendererFactory(object.nodeName);
+    const shouldUpdateElementAttribute = attributes.some((name) =>
+      this.createElementContribution.shouldUpdateElementAttribute(object, name),
+    );
 
+    // need re-generate path
+    if (shouldUpdateElementAttribute && $el) {
+      [$el, $hitTestingEl].forEach(($el) => {
+        if ($el) {
+          this.createElementContribution.updateElementAttribute(object, $el);
+          if (object.nodeName !== Shape.TEXT) {
+            this.updateAnchorWithTransform(object);
+          }
+        }
+      });
+    }
+
+    // update common attributes
     attributes.forEach((name) => {
       const usedName = SVG_ATTR_MAP[name];
       const computedValue = computedStyle[name];
       const usedValue = parsedStyle[name];
-
-      // generate path only once
-      if (!needGeneratePath && elementRenderer && elementRenderer.dependencies.indexOf(name) > -1) {
-        needGeneratePath = true;
-      }
 
       // <foreignObject>
       if (object.nodeName === Shape.HTML) {
@@ -393,15 +383,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
         createOrUpdateFilter(document, this.$def, object, $el, usedValue);
       } else if (name === 'innerHTML') {
         this.createOrUpdateInnerHTML(document, $el, usedValue);
-      } else {
-        if (
-          // (!object.style.clipPathTargets) &&
-          object.nodeName !== Shape.TEXT && // text' anchor is controlled by `textAnchor` property
-          ['width', 'height', 'r', 'rx', 'ry', 'anchor'].indexOf(name) > -1
-        ) {
+      } else if (name === 'anchor') {
+        // text' anchor is controlled by `textAnchor` property
+        if (object.nodeName !== Shape.TEXT) {
           this.updateAnchorWithTransform(object);
         }
-        if (name !== 'anchor' && computedValue) {
+      } else {
+        if (computedValue) {
           // use computed value so that we can use cascaded effect in SVG
           const valueStr = computedValue.toString();
 
@@ -419,15 +407,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
         }
       }
     });
-
-    // need re-generate path
-    if (needGeneratePath && $el) {
-      [$el, $hitTestingEl].forEach(($el) => {
-        if ($el) {
-          elementRenderer.apply($el, object.parsedStyle);
-        }
-      });
-    }
   }
 
   private createSVGDom(
@@ -443,11 +422,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const svgElement = object.elementSVG;
 
     // use <group> as default, eg. CustomElement
-    const type = SHAPE2TAGS[object.nodeName] || 'g';
-    if (type) {
+    const $el = this.createElementContribution.createElement(object);
+    if ($el) {
       let $groupEl: SVGElement;
-
-      const $el = createSVGElement(type, document);
 
       // save $el on parsedStyle, which will be returned in getDomElement()
       if (object.nodeName === Shape.HTML) {
@@ -456,7 +433,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       $el.id = `${G_SVG_PREFIX}_${object.nodeName}_${object.entity}`;
 
-      if (type !== 'g' && !noWrapWithGroup) {
+      if (($el.hasAttribute('data-wrapgroup') || $el.nodeName !== 'g') && !noWrapWithGroup) {
         $groupEl = createSVGElement('g', document);
         $groupEl.appendChild($el);
       } else {
@@ -465,6 +442,12 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       svgElement.$el = $el;
       svgElement.$groupEl = $groupEl;
+
+      // apply attributes at first time
+      this.applyAttributes(object);
+
+      // create hitArea if necessary
+      this.createOrUpdateHitArea(object, $el, $groupEl);
 
       const $parentGroupEl =
         // @ts-ignore
@@ -475,12 +458,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
         const children = (object.parentNode?.children || []).slice() as DisplayObject[];
         this.reorderChildren(document, $parentGroupEl, children || []);
       }
-
-      // apply attributes at first time
-      this.applyAttributes(object);
-
-      // create hitArea if necessary
-      this.createOrUpdateHitArea(object, $el, $groupEl);
     }
   }
 
