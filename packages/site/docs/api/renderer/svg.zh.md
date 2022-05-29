@@ -50,3 +50,61 @@ const svgRenderer = new window.G.SVG.Renderer();
 -   [g-plugin-svg-renderer](/zh/docs/plugins/svg-renderer) 使用 SVG 元素绘制图形，例如 `<circle>` `<rect>` 等
 -   [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 基于 [elementFromPoint](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint) DOM API 拾取图形
 -   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
+
+# 服务端渲染
+
+该渲染器依赖 SVG DOM API 的渲染能力，并不局限在浏览器端，因此也可以使用 [JSDOM](https://github.com/jsdom/node-jsdom) 进行服务端渲染。
+
+在我们的[集成测试](https://github.com/antvis/g/tree/next/integration/__node__tests__/svg)中，会在 Node 端配合 [JSDOM](https://github.com/jsdom/node-jsdom) 与 [node-canvas](https://github.com/Automattic/node-canvas) 渲染结果图片，与基准图片进行比对。其他服务端渲染场景也可以按照以下步骤进行：
+
+1. 使用 [unregisterPlugin](/zh/docs/api/renderer/renderer#unregisterplugin) 卸载掉 [g-svg](/zh/docs/api/renderer/svg) 中内置的与 DOM API 相关的插件，例如负责事件绑定的 [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction)
+2. 使用 JSDOM 创建一个画布容器
+3. 使用上一步的容器创建画布，同时传入 JSDOM 创建的 `document`，代替浏览器环境中的 `window.document`，`raf` 同理。
+4. 正常使用 [g-svg](/zh/docs/api/renderer/svg) 渲染器，通过 G 的 API 创建场景
+5. 使用 [xmlserializer](https://www.npmjs.com/package/xmlserializer) 将 JSDOM 序列化成字符串，保存成 SVG 图片
+
+https://github.com/antvis/g/blob/next/integration/__node__tests__/svg/circle.spec.js
+
+```js
+const fs = require('fs');
+const { JSDOM } = require('jsdom');
+const xmlserializer = require('xmlserializer');
+const { Circle, Canvas } = require('@antv/g');
+const { Renderer } = require('@antv/g-svg');
+
+// create a renderer, unregister plugin relative to DOM
+const renderer = new Renderer();
+const domInteractionPlugin = renderer.getPlugin('dom-interaction');
+renderer.unregisterPlugin(domInteractionPlugin);
+
+// create JSDOM
+const dom = new JSDOM(`
+<div id="container">
+</div>
+`);
+
+const SIZE = 200;
+const canvas = new Canvas({
+    container: 'container',
+    width: SIZE,
+    height: SIZE,
+    renderer,
+    document: dom.window.document, // use document created by JSDOM
+    requestAnimationFrame: dom.window.requestAnimationFrame,
+    cancelAnimationFrame: dom.window.cancelAnimationFrame,
+});
+
+// use G API constructing scene graph
+const circle1 = new Circle({
+    style: {
+        cx: 10,
+        cy: 10,
+        r: 10,
+        fill: 'red',
+    },
+});
+canvas.appendChild(circle1);
+
+// serialize JSDOM to SVG string
+xmlserializer.serializeToString(dom.window.document.getElementById('container').children[0]);
+```

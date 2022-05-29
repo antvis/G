@@ -1,5 +1,5 @@
 ---
-title: Canvas
+title: 画布
 order: -100
 redirect_from:
     - /en/docs/api
@@ -118,6 +118,10 @@ const canvas = new Canvas({
 # 特殊运行平台适配
 
 在一些特殊的运行平台（例如小程序）上，无法正常使用类似 [globalThis](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis) 这样的全局变量，而在内部我们又需要依靠它创建图片（`new globalThis.Image()`）、判断是否支持 TouchEvent（`'ontouchstart' in globalThis`）等。因此需要这些特殊平台的使用者手动传入特有的创建以及判断方式。
+
+## document
+
+可选。默认将使用 `window.document`。在[基于 g-svg 的服务端渲染方案](/zh/docs/api/renderer/svg#服务端渲染)中，需要将 `window.document` 替换成 [JSDOM](https://github.com/jsdom/jsdom) 提供的对应元素，以便创建对应 SVG 元素。
 
 ## devicePixelRatio
 
@@ -700,46 +704,10 @@ export function triggerEvent(event, ev) {
 
 ## 服务端渲染
 
-在我们的[集成测试](https://github.com/antvis/g/tree/next/integration/__node__tests__/canvas)中，会在 Node 端配合 [node-canvas](https://github.com/Automattic/node-canvas) 渲染结果图片，与基准图片进行比对。其他服务端渲染场景也可以按照以下步骤进行：
+依据不同的渲染器，我们提供了以下服务端渲染方案：
 
-1. 使用 [unregisterPlugin](/zh/docs/api/renderer/renderer#unregisterplugin) 卸载掉 [g-canvas](/zh/docs/api/renderer/canvas) 中内置的与 DOM API 相关的插件，例如负责事件绑定的 [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction)
-2. 使用 [node-canvas](https://github.com/Automattic/node-canvas) 创建一个类 `Canvas` 对象，通过 [canvas](/zh/docs/api/canvas#canvas) 属性传入画布
-3. 正常使用 [g-canvas](/zh/docs/api/renderer/canvas) 渲染器，通过 G 的 API 创建场景
-4. 使用 [node-canvas](https://github.com/Automattic/node-canvas) 提供的方法（例如 [createPNGStream](https://github.com/Automattic/node-canvas#canvascreatepngstream)）输出结果图片
+-   [g-canvas + node-canvas](/zh/docs/api/renderer/canvas#服务端渲染)
+-   [g-svg + JSDOM](/zh/docs/api/renderer/svg#服务端渲染)
+-   [g-webgl + headless-gl]()
 
-https://github.com/antvis/g/blob/next/integration/__node__tests__/canvas/circle.spec.js
-
-```js
-const { createCanvas } = require('canvas');
-const { Circle, Canvas } = require('@antv/g');
-const { Renderer } = require('@antv/g-canvas');
-
-// create a node-canvas
-const nodeCanvas = createCanvas(200, 200);
-
-// create a renderer, unregister plugin relative to DOM
-const renderer = new Renderer();
-const domInteractionPlugin = renderer.getPlugin('dom-interaction');
-renderer.unregisterPlugin(domInteractionPlugin);
-
-const canvas = new Canvas({
-    width: 200,
-    height: 200,
-    canvas: nodeCanvas, // use node-canvas
-    renderer,
-});
-
-const circle = new Circle({
-    style: {
-        r: 10,
-        fill: 'red',
-    },
-});
-canvas.appendChild(circle);
-
-// output image
-const out = fs.createWriteStream(__dirname + RESULT_IMAGE);
-const stream = nodeCanvas.createPNGStream();
-stream.pipe(out);
-out.on('finish', () => {});
-```
+目前我们在[集成测试](https://github.com/antvis/g/tree/next/integration/__node__tests__/)中使用它们。
