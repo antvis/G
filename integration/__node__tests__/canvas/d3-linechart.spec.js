@@ -12,7 +12,7 @@ const { Canvas } = require('@antv/g');
 const { Renderer } = require('@antv/g-canvas');
 const d3 = require('d3');
 const { sleep, diff } = require('../../util');
-const weatherDataset = require('./data/weather.json');
+const weatherDataset = require('../../data/weather.json');
 
 const WIDTH = 600;
 const HEIGHT = 500;

@@ -35,7 +35,7 @@ describe('HTML', () => {
   });
 
   it('should create HTML correctly.', async () => {
-    const pool = GlobalContainer.get(DisplayObjectPool);
+    const pool = GlobalContainer.get<DisplayObjectPool>(DisplayObjectPool);
     expect(pool.getHTMLs().length).to.be.eqls(0);
 
     const html = new HTML({

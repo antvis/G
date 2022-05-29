@@ -1,5 +1,5 @@
 import { vec3 } from 'gl-matrix';
-import { GlobalContainer, postConstruct, singleton } from 'mana-syringe';
+import { GlobalContainer, inject, postConstruct, singleton } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects';
 import { ElementEvent } from '../dom';
 import type { GeometryAABBUpdater } from '../services/aabb/interfaces';
@@ -10,32 +10,11 @@ import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { formatAttribute, isNil } from '../utils';
 import { CSSKeywordValue, CSSStyleValue, CSSUnitValue } from './cssom';
-import type { CSSProperty } from './CSSProperty';
+import { CSSPropertySyntaxFactory } from './CSSProperty';
 import type { PropertyMetadata } from './interfaces';
 import { PropertySyntax, StyleValueRegistry } from './interfaces';
 import type { ParsedFilterStyleProperty } from './parser';
 import { convertPercentUnit } from './parser';
-import {
-  CSSPropertyAngle,
-  CSSPropertyClipPath,
-  CSSPropertyColor,
-  CSSPropertyFilter,
-  CSSPropertyLengthOrPercentage,
-  CSSPropertyLengthOrPercentage12,
-  CSSPropertyLengthOrPercentage14,
-  CSSPropertyLocalPosition,
-  CSSPropertyOffsetDistance,
-  CSSPropertyOffsetPath,
-  CSSPropertyOpacity,
-  CSSPropertyPath,
-  CSSPropertyPoints,
-  CSSPropertyShadowBlur,
-  CSSPropertyText,
-  CSSPropertyTextTransform,
-  CSSPropertyTransform,
-  CSSPropertyTransformOrigin,
-  CSSPropertyZIndex,
-} from './properties';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
 export interface PropertyParseOptions {
@@ -43,28 +22,28 @@ export interface PropertyParseOptions {
   skipParse: boolean;
 }
 
-export const PROPERTY_HANDLERS = {
-  [PropertySyntax.COORDINATE]: CSSPropertyLocalPosition,
-  [PropertySyntax.ANGLE]: CSSPropertyAngle,
-  [PropertySyntax.COLOR]: CSSPropertyColor,
-  [PropertySyntax.PAINT]: CSSPropertyColor,
-  [PropertySyntax.OPACITY_VALUE]: CSSPropertyOpacity,
-  [PropertySyntax.LENGTH_PERCENTAGE]: CSSPropertyLengthOrPercentage,
-  [PropertySyntax.LENGTH_PERCENTAGE_12]: CSSPropertyLengthOrPercentage12,
-  [PropertySyntax.LENGTH_PERCENTAGE_14]: CSSPropertyLengthOrPercentage14,
-  [PropertySyntax.SHADOW_BLUR]: CSSPropertyShadowBlur,
-  [PropertySyntax.LIST_OF_POINTS]: CSSPropertyPoints,
-  [PropertySyntax.PATH]: CSSPropertyPath,
-  [PropertySyntax.FILTER]: CSSPropertyFilter,
-  [PropertySyntax.Z_INDEX]: CSSPropertyZIndex,
-  [PropertySyntax.OFFSET_PATH]: CSSPropertyOffsetPath,
-  [PropertySyntax.OFFSET_DISTANCE]: CSSPropertyOffsetDistance,
-  [PropertySyntax.CLIP_PATH]: CSSPropertyClipPath,
-  [PropertySyntax.TRANSFORM]: CSSPropertyTransform,
-  [PropertySyntax.TRANSFORM_ORIGIN]: CSSPropertyTransformOrigin,
-  [PropertySyntax.TEXT]: CSSPropertyText,
-  [PropertySyntax.TEXT_TRANSFORM]: CSSPropertyTextTransform,
-};
+// export const PROPERTY_HANDLERS = {
+//   [PropertySyntax.COORDINATE]: CSSPropertyLocalPosition,
+//   [PropertySyntax.ANGLE]: CSSPropertyAngle,
+//   [PropertySyntax.COLOR]: CSSPropertyColor,
+//   [PropertySyntax.PAINT]: CSSPropertyColor,
+//   [PropertySyntax.OPACITY_VALUE]: CSSPropertyOpacity,
+//   [PropertySyntax.LENGTH_PERCENTAGE]: CSSPropertyLengthOrPercentage,
+//   [PropertySyntax.LENGTH_PERCENTAGE_12]: CSSPropertyLengthOrPercentage12,
+//   [PropertySyntax.LENGTH_PERCENTAGE_14]: CSSPropertyLengthOrPercentage14,
+//   [PropertySyntax.SHADOW_BLUR]: CSSPropertyShadowBlur,
+//   [PropertySyntax.LIST_OF_POINTS]: CSSPropertyPoints,
+//   [PropertySyntax.PATH]: CSSPropertyPath,
+//   [PropertySyntax.FILTER]: CSSPropertyFilter,
+//   [PropertySyntax.Z_INDEX]: CSSPropertyZIndex,
+//   [PropertySyntax.OFFSET_PATH]: CSSPropertyOffsetPath,
+//   [PropertySyntax.OFFSET_DISTANCE]: CSSPropertyOffsetDistance,
+//   [PropertySyntax.CLIP_PATH]: CSSPropertyClipPath,
+//   [PropertySyntax.TRANSFORM]: CSSPropertyTransform,
+//   [PropertySyntax.TRANSFORM_ORIGIN]: CSSPropertyTransformOrigin,
+//   [PropertySyntax.TEXT]: CSSPropertyText,
+//   [PropertySyntax.TEXT_TRANSFORM]: CSSPropertyTextTransform,
+// };
 
 /**
  * Blink used them in code generation(css_properties.json5)
@@ -557,6 +536,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
   private unresolvedProperties: Record<number, string[]> = {};
 
+  @inject(CSSPropertySyntaxFactory)
+  private propertySyntaxFactory: CSSPropertySyntaxFactory;
+
   /**
    * eg.
    *
@@ -610,6 +592,10 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
   getMetadata(name: string) {
     return this.cache[name];
+  }
+
+  getPropertySyntax(syntax: string) {
+    return this.propertySyntaxFactory<any, any>(syntax);
   }
 
   /**
@@ -716,14 +702,14 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     } else {
       if (metadata) {
         const { keywords, syntax } = metadata;
-        const handler = syntax && PROPERTY_HANDLERS[syntax];
+        const handler = syntax && this.getPropertySyntax(syntax);
 
         // use keywords
         if (keywords && keywords.indexOf(value) > -1) {
           computed = new CSSKeywordValue(value);
         } else if (handler) {
           // try to parse value with handler
-          const propertyHandler = handler as CSSProperty<any, any>;
+          const propertyHandler = handler;
 
           if (propertyHandler && propertyHandler.parser) {
             // try to parse it to CSSStyleValue, eg. '10px' -> CSS.px(10)
@@ -780,14 +766,12 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         }
       }
 
-      const handler = syntax && PROPERTY_HANDLERS[syntax];
+      const handler = syntax && this.getPropertySyntax(syntax);
       if (handler) {
-        const propertyHandler = handler as CSSProperty<any, any>;
-
         // convert computed value to used value
-        if (propertyHandler && propertyHandler.calculator) {
+        if (handler.calculator) {
           const oldParsedValue = object.parsedStyle[name];
-          used = propertyHandler.calculator(name, oldParsedValue, computed, object, this);
+          used = handler.calculator(name, oldParsedValue, computed, object, this);
         } else {
           used = computed;
         }
@@ -804,8 +788,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     const metadata = this.getMetadata(name);
 
     if (metadata && metadata.syntax) {
-      const handler = metadata.syntax && PROPERTY_HANDLERS[metadata.syntax];
-      const propertyHandler = handler as CSSProperty<any, any>;
+      const handler = metadata.syntax && this.getPropertySyntax(metadata.syntax);
+      const propertyHandler = handler;
 
       if (propertyHandler && propertyHandler.postProcessor) {
         propertyHandler.postProcessor(object);

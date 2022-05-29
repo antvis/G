@@ -1,17 +1,25 @@
-import type { DisplayObject, Circle, Rect, Line } from '../../display-objects';
-import type { CSSProperty } from '../CSSProperty';
-import type { CSSUnitValue } from '../cssom';
-import { CSSPropertyLengthOrPercentage } from './CSSPropertyLengthOrPercentage';
-import { isNil } from '../../utils';
+import { singleton } from 'mana-syringe';
+import type { Circle, DisplayObject, Line, Rect } from '../../display-objects';
 import { Shape } from '../../types';
+import { isNil } from '../../utils';
+import type { CSSUnitValue } from '../cssom';
+import { CSSProperty } from '../CSSProperty';
+import { PropertySyntax } from '../interfaces';
+import { CSSPropertyLengthOrPercentage } from './CSSPropertyLengthOrPercentage';
 
 /**
  * local position
  */
-export const CSSPropertyLocalPosition: Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> = {
-  parser: CSSPropertyLengthOrPercentage.parser,
-  mixer: CSSPropertyLengthOrPercentage.mixer,
-  calculator: CSSPropertyLengthOrPercentage.calculator,
+@singleton({
+  token: {
+    token: CSSProperty,
+    named: PropertySyntax.COORDINATE,
+  },
+})
+export class CSSPropertyLocalPosition
+  extends CSSPropertyLengthOrPercentage
+  implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>>
+{
   /**
    * update local position
    */
@@ -54,5 +62,5 @@ export const CSSPropertyLocalPosition: Partial<CSSProperty<CSSUnitValue, CSSUnit
 
     const [ox, oy, oz] = object.getLocalPosition();
     object.setLocalPosition(isNil(x) ? ox : x, isNil(y) ? oy : y, isNil(z) ? oz : z);
-  },
-};
+  }
+}

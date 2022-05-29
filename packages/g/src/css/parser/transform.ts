@@ -1,10 +1,9 @@
 // import { makeMatrixDecomposition, quat, composeMatrix } from '../utils/matrix-decompose';
-import type { DisplayObject } from '../../display-objects/DisplayObject';
-import { UnitType } from '../cssom/types';
-import { CSSUnitValue, Opx, Odeg } from '../cssom/CSSNumericValue';
+import type { DisplayObject } from '../../display-objects';
+import { CSS } from '../CSS';
+import { CSSUnitValue, Odeg, Opx, UnitType } from '../cssom';
 import { mergeDimensions, parseAngle, parseLength, parseLengthOrPercentage } from './dimension';
 import { mergeNumbers, parseNumber } from './numeric';
-import { CSS } from '../CSS';
 
 // eg. { t: 'scale', d: [CSSUnitValue(1), CSSUnitValue(2)] }
 export interface ParsedTransform {

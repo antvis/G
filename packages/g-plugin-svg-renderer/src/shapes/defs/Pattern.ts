@@ -1,11 +1,12 @@
-import type { DisplayObject, Pattern, LinearGradient, RadialGradient } from '@antv/g';
-import { CSSGradientValue, GradientPatternType, CSSRGB } from '@antv/g';
+import type { DisplayObject, LinearGradient, Pattern, RadialGradient } from '@antv/g';
+import { CSSGradientValue, CSSRGB, GradientPatternType } from '@antv/g';
 import { createSVGElement } from '../../utils/dom';
 
 const cacheKey2IDMap: Record<string, string> = {};
 let counter = 0;
 
 export function createOrUpdateGradientAndPattern(
+  document: Document,
   $def: SVGDefsElement,
   object: DisplayObject,
   $el: SVGElement,
@@ -31,12 +32,12 @@ export function createOrUpdateGradientAndPattern(
   } else {
     if (parsedColor.type === GradientPatternType.Pattern) {
       if (!existed) {
-        createPattern($def, parsedColor, gradientId);
+        createPattern(document, $def, parsedColor, gradientId);
       }
       $el?.setAttribute(name, `url(#${gradientId})`);
     } else {
       if (!existed) {
-        createGradient($def, parsedColor, gradientId);
+        createGradient(document, $def, parsedColor, gradientId);
       }
       $el?.setAttribute(name, `url(#${gradientId})`);
     }
@@ -71,12 +72,17 @@ function generateCacheKey(params: CSSGradientValue | CSSRGB): string {
   return cacheKey2IDMap[cacheKey];
 }
 
-function createPattern($def: SVGDefsElement, parsedColor: CSSGradientValue, patternId: string) {
+function createPattern(
+  document: Document,
+  $def: SVGDefsElement,
+  parsedColor: CSSGradientValue,
+  patternId: string,
+) {
   const { src } = parsedColor.value as Pattern;
   // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/pattern
-  const $pattern = createSVGElement('pattern') as SVGPatternElement;
+  const $pattern = createSVGElement('pattern', document) as SVGPatternElement;
   $pattern.setAttribute('patternUnits', 'userSpaceOnUse');
-  const $image = createSVGElement('image');
+  const $image = createSVGElement('image', document);
   $pattern.appendChild($image);
   $pattern.id = patternId;
   $def.appendChild($pattern);
@@ -101,12 +107,18 @@ function createPattern($def: SVGDefsElement, parsedColor: CSSGradientValue, patt
   }
 }
 
-function createGradient($def: SVGDefsElement, parsedColor: CSSGradientValue, gradientId: string) {
+function createGradient(
+  document: Document,
+  $def: SVGDefsElement,
+  parsedColor: CSSGradientValue,
+  gradientId: string,
+) {
   // <linearGradient> <radialGradient>
   // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/linearGradient
   // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/radialGradient
   const $gradient = createSVGElement(
     parsedColor.type === GradientPatternType.LinearGradient ? 'linearGradient' : 'radialGradient',
+    document,
   );
   if (parsedColor.type === GradientPatternType.LinearGradient) {
     const { x0, y0, x1, y1 } = parsedColor.value as LinearGradient;

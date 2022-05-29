@@ -1,7 +1,15 @@
+import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
-import type { CSSProperty } from '../CSSProperty';
+import { CSSProperty } from '../CSSProperty';
+import { PropertySyntax } from '../interfaces';
 
-export const CSSPropertyOffsetPath: Partial<CSSProperty<DisplayObject, DisplayObject>> = {
+@singleton({
+  token: {
+    token: CSSProperty,
+    named: PropertySyntax.OFFSET_PATH,
+  },
+})
+export class CSSPropertyOffsetPath implements Partial<CSSProperty<DisplayObject, DisplayObject>> {
   calculator(
     name: string,
     oldOffsetPath: DisplayObject,
@@ -22,5 +30,5 @@ export const CSSPropertyOffsetPath: Partial<CSSProperty<DisplayObject, DisplayOb
     }
 
     return newOffsetPath;
-  },
-};
+  }
+}

@@ -12,7 +12,7 @@ export interface CreateElementContribution {
 
 @singleton({ token: CreateElementContribution })
 export class DefaultElementContribution implements CreateElementContribution {
-  createElement(object: DisplayObject<any, any>): SVGElement {
-    return createSVGElement(object.nodeName);
+  createElement(object: DisplayObject<any, any>, document?: Document): SVGElement {
+    return createSVGElement(object.nodeName, document);
   }
 }

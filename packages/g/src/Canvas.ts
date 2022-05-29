@@ -132,6 +132,7 @@ export class Canvas extends EventTarget implements ICanvas {
       devicePixelRatio,
       renderer,
       background,
+      document,
       requestAnimationFrame,
       cancelAnimationFrame,
       createImage,
@@ -191,6 +192,7 @@ export class Canvas extends EventTarget implements ICanvas {
       cursor: 'default' as Cursor,
       background,
       createImage,
+      document,
     });
 
     this.initDefaultCamera(canvasWidth, canvasHeight);

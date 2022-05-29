@@ -354,7 +354,7 @@ export interface CanvasConfig {
   renderer: IRenderer;
 
   /**
-   * 容器
+   * document.getElementById(container);
    */
   container?: string | HTMLElement;
 
@@ -362,6 +362,11 @@ export interface CanvasConfig {
    * support OffscreenCanvas
    */
   canvas?: CanvasLike;
+
+  /**
+   * used in JSDOM
+   */
+  document?: Document;
 
   /**
    * used in text measurement & texture generation

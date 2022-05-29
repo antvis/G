@@ -1,7 +1,9 @@
-import type { CSSProperty } from '../CSSProperty';
+import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
 import { dirtifyToRoot } from '../../services';
 import { CSSKeywordValue } from '../cssom';
+import { CSSProperty } from '../CSSProperty';
+import { PropertySyntax } from '../interfaces';
 
 /**
  * @see /zh/docs/api/basic/display-object#clippath
@@ -20,7 +22,13 @@ import { CSSKeywordValue } from '../cssom';
     }
   });
  */
-export const CSSPropertyClipPath: Partial<CSSProperty<DisplayObject, DisplayObject>> = {
+@singleton({
+  token: {
+    token: CSSProperty,
+    named: PropertySyntax.CLIP_PATH,
+  },
+})
+export class CSSPropertyClipPath implements Partial<CSSProperty<DisplayObject, DisplayObject>> {
   calculator(
     name: string,
     oldClipPath: DisplayObject,
@@ -48,5 +56,5 @@ export const CSSPropertyClipPath: Partial<CSSProperty<DisplayObject, DisplayObje
     dirtifyToRoot(object);
 
     return newClipPath;
-  },
-};
+  }
+}

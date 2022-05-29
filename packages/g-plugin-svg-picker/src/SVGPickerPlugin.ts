@@ -1,7 +1,7 @@
-import { inject, singleton } from 'mana-syringe';
-import type { RenderingService, RenderingPlugin, PickingResult, DisplayObject } from '@antv/g';
-import { DisplayObjectPool, RenderingPluginContribution, SceneGraphService } from '@antv/g';
+import type { DisplayObject, PickingResult, RenderingPlugin, RenderingService } from '@antv/g';
+import { CanvasConfig, DisplayObjectPool, RenderingPluginContribution } from '@antv/g';
 import { G_SVG_PREFIX } from '@antv/g-plugin-svg-renderer';
+import { inject, singleton } from 'mana-syringe';
 
 /**
  * pick shape(s) with Mouse/Touch event
@@ -13,13 +13,15 @@ import { G_SVG_PREFIX } from '@antv/g-plugin-svg-renderer';
 export class SVGPickerPlugin implements RenderingPlugin {
   static tag = 'SVGPicker';
 
-  @inject(SceneGraphService)
-  protected sceneGraphService: SceneGraphService;
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
   @inject(DisplayObjectPool)
   private displayObjectPool: DisplayObjectPool;
 
   apply(renderingService: RenderingService) {
+    const { document: doc } = this.canvasConfig;
+
     renderingService.hooks.pick.tapPromise(SVGPickerPlugin.tag, async (result: PickingResult) => {
       const {
         topmost,
@@ -29,7 +31,7 @@ export class SVGPickerPlugin implements RenderingPlugin {
       try {
         const targets: DisplayObject[] = [];
         // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementsFromPoint
-        for (const element of document.elementsFromPoint(clientX, clientY)) {
+        for (const element of (doc || document).elementsFromPoint(clientX, clientY)) {
           // eg. g_svg_circle_345
           const id = element && element.getAttribute('id');
           if (id && id.startsWith(G_SVG_PREFIX)) {

@@ -169,10 +169,12 @@ export class SVGRendererPlugin implements RenderingPlugin {
   private renderQueue: DisplayObject[] = [];
 
   apply(renderingService: RenderingService) {
+    const { document } = this.canvasConfig;
+
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       // create SVG DOM Node
-      this.createSVGDom(object, this.$camera);
+      this.createSVGDom(document, object, this.$camera);
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
@@ -198,7 +200,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         const children = (parent?.children || []).slice();
 
         if ($groupEl) {
-          this.reorderChildren($groupEl, children as DisplayObject[]);
+          this.reorderChildren(document, $groupEl, children as DisplayObject[]);
         }
       } else if (attrName === 'increasedLineWidthForHitTesting') {
         // @ts-ignore
@@ -210,10 +212,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(SVGRendererPlugin.tag, async () => {
-      this.$def = createSVGElement('defs') as SVGDefsElement;
+      const { background, document } = this.canvasConfig;
+
+      this.$def = createSVGElement('defs', document) as SVGDefsElement;
       const $svg = this.contextService.getContext()!;
 
-      const { background } = this.canvasConfig;
       if (background) {
         $svg.style.background = background;
       }
@@ -223,7 +226,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color-interpolation-filters
       $svg.setAttribute('color-interpolation-filters', 'sRGB');
 
-      this.$camera = createSVGElement('g');
+      this.$camera = createSVGElement('g', document);
       this.$camera.id = `${G_SVG_PREFIX}_camera`;
       this.applyTransform(this.$camera, this.camera.getOrthoMatrix());
       $svg.appendChild(this.$camera);
@@ -274,13 +277,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
     });
   }
 
-  private reorderChildren($groupEl: SVGElement, children: DisplayObject[]) {
+  private reorderChildren(doc: Document, $groupEl: SVGElement, children: DisplayObject[]) {
     // need to reorder parent's children
     children.sort((a, b) => a.sortable.renderOrder - b.sortable.renderOrder);
 
     if (children.length) {
       // create empty fragment
-      const fragment = document.createDocumentFragment();
+      const fragment = (doc || document).createDocumentFragment();
       children.forEach((child: DisplayObject) => {
         if (child.isConnected) {
           // @ts-ignore
@@ -339,6 +342,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private updateAttribute(object: DisplayObject, attributes: string[]) {
+    const { document } = this.canvasConfig;
+
     let needGeneratePath = false;
     // @ts-ignore
     const { $el, $groupEl, $hitTestingEl } = object.elementSVG as ElementSVG;
@@ -370,24 +375,24 @@ export class SVGRendererPlugin implements RenderingPlugin {
       }
 
       if (name === 'fill' || name === 'stroke') {
-        createOrUpdateGradientAndPattern(this.$def, object, $el!, usedValue, usedName);
+        createOrUpdateGradientAndPattern(document, this.$def, object, $el!, usedValue, usedName);
       } else if (name === 'visibility' && computedValue.value !== 'unset') {
         // use computed value
         // update `visibility` on <group>
         $groupEl?.setAttribute(usedName, `${computedValue.value}`);
       } else if (name === 'clipPath') {
-        this.createOrUpdateClipPath(usedValue, $groupEl);
+        this.createOrUpdateClipPath(document, usedValue, $groupEl);
       } else if (
         name === 'shadowColor' ||
         name === 'shadowBlur' ||
         name === 'shadowOffsetX' ||
         name === 'shadowOffsetY'
       ) {
-        createOrUpdateShadow(this.$def, object, $el, name);
+        createOrUpdateShadow(document, this.$def, object, $el, name);
       } else if (name === 'filter') {
-        createOrUpdateFilter(this.$def, object, $el, usedValue);
+        createOrUpdateFilter(document, this.$def, object, $el, usedValue);
       } else if (name === 'innerHTML') {
-        this.createOrUpdateInnerHTML($el, usedValue);
+        this.createOrUpdateInnerHTML(document, $el, usedValue);
       } else {
         if (
           // (!object.style.clipPathTargets) &&
@@ -425,7 +430,12 @@ export class SVGRendererPlugin implements RenderingPlugin {
     }
   }
 
-  private createSVGDom(object: DisplayObject, root: SVGElement, noWrapWithGroup = false) {
+  private createSVGDom(
+    document: Document,
+    object: DisplayObject,
+    root: SVGElement,
+    noWrapWithGroup = false,
+  ) {
     // create svg element
     // @ts-ignore
     object.elementSVG = new ElementSVG();
@@ -437,7 +447,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     if (type) {
       let $groupEl: SVGElement;
 
-      const $el = createSVGElement(type);
+      const $el = createSVGElement(type, document);
 
       // save $el on parsedStyle, which will be returned in getDomElement()
       if (object.nodeName === Shape.HTML) {
@@ -447,7 +457,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       $el.id = `${G_SVG_PREFIX}_${object.nodeName}_${object.entity}`;
 
       if (type !== 'g' && !noWrapWithGroup) {
-        $groupEl = createSVGElement('g');
+        $groupEl = createSVGElement('g', document);
         $groupEl.appendChild($el);
       } else {
         $groupEl = $el;
@@ -463,7 +473,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       if ($parentGroupEl) {
         $parentGroupEl.appendChild($groupEl);
         const children = (object.parentNode?.children || []).slice() as DisplayObject[];
-        this.reorderChildren($parentGroupEl, children || []);
+        this.reorderChildren(document, $parentGroupEl, children || []);
       }
 
       // apply attributes at first time
@@ -523,8 +533,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
     }
   }
 
-  private createOrUpdateInnerHTML($el: SVGElement, usedValue: any) {
-    const $div = document.createElement('div');
+  private createOrUpdateInnerHTML(doc: Document, $el: SVGElement, usedValue: any) {
+    const $div = (doc || document).createElement('div');
     if (typeof usedValue === 'string') {
       $div.innerHTML = usedValue;
     } else {
@@ -534,19 +544,23 @@ export class SVGRendererPlugin implements RenderingPlugin {
     $el.appendChild($div);
   }
 
-  private createOrUpdateClipPath(clipPath: DisplayObject, $groupEl: SVGElement) {
+  private createOrUpdateClipPath(
+    document: Document,
+    clipPath: DisplayObject,
+    $groupEl: SVGElement,
+  ) {
     if (clipPath) {
       const clipPathId = CLIP_PATH_PREFIX + clipPath.entity;
 
       const existed = this.$def.querySelector(`#${clipPathId}`);
       if (!existed) {
         // create <clipPath> dom node, append it to <defs>
-        const $clipPath = createSVGElement('clipPath');
+        const $clipPath = createSVGElement('clipPath', document);
         $clipPath.id = clipPathId;
         this.$def.appendChild($clipPath);
 
         // <clipPath><circle /></clipPath>
-        this.createSVGDom(clipPath, $clipPath, true);
+        this.createSVGDom(document, clipPath, $clipPath, true);
 
         // @ts-ignore
         clipPath.elementSVG.$groupEl = $clipPath;

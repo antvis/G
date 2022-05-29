@@ -1,12 +1,22 @@
+import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
 import type { CSSKeywordValue } from '../cssom';
-import type { CSSProperty } from '../CSSProperty';
+import { CSSProperty } from '../CSSProperty';
+import { PropertySyntax } from '../interfaces';
 
 /**
  * it must transform after text get parsed
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-transform
  */
-export const CSSPropertyTextTransform: Partial<CSSProperty<CSSKeywordValue, CSSKeywordValue>> = {
+@singleton({
+  token: {
+    token: CSSProperty,
+    named: PropertySyntax.TEXT_TRANSFORM,
+  },
+})
+export class CSSPropertyTextTransform
+  implements Partial<CSSProperty<CSSKeywordValue, CSSKeywordValue>>
+{
   calculator(
     name: string,
     oldParsed: CSSKeywordValue,
@@ -28,5 +38,5 @@ export const CSSPropertyTextTransform: Partial<CSSProperty<CSSKeywordValue, CSSK
     }
 
     return parsed;
-  },
-};
+  }
+}

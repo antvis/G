@@ -4,5 +4,6 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  }
+  },
+  "svg.preview.background": "dark-transparent"
 }

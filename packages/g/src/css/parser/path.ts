@@ -2,7 +2,7 @@ import { Cubic as CubicUtil } from '@antv/g-math';
 import { path2Absolute, path2Curve, path2Segments } from '@antv/util';
 import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
 import type { IElement } from '../../dom';
-import { Rectangle } from '../../shapes/Rectangle';
+import { Rectangle } from '../../shapes';
 import type { PathCommand } from '../../types';
 import {
   clonePath,

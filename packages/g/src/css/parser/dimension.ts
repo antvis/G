@@ -4,7 +4,6 @@ import { AABB } from '../../shapes';
 import { isNil, isString, rad2deg, turn2deg } from '../../utils';
 import type { CSSStyleValue } from '../cssom';
 import { CSSUnitValue, UnitType } from '../cssom';
-import type { CSSValueParser } from './types';
 
 type LengthUnit = 'px' | '%' | 'em' | 'rem';
 type AngleUnit = 'deg' | 'rad' | 'turn';
@@ -50,16 +49,17 @@ export function parseDimension(unitRegExp: RegExp, string: string): CSSStyleValu
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/length
  * length with only absolute unit, eg. 1px
  */
-export const parseLength: CSSValueParser = parseDimension.bind(null, new RegExp('px', 'g'));
+export function parseLength(css: string) {
+  return parseDimension(new RegExp('px', 'g'), css);
+}
 
 /**
  * <percentage>
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/percentage
  */
-export const parserPercentage: (css: string) => CSSUnitValue = parseDimension.bind(
-  null,
-  new RegExp('%', 'g'),
-);
+export function parserPercentage(css: string) {
+  return parseDimension(new RegExp('%', 'g'), css);
+}
 
 /**
  * length with absolute or relative unit,
@@ -67,15 +67,13 @@ export const parserPercentage: (css: string) => CSSUnitValue = parseDimension.bi
  *
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/length-percentage
  */
-export const parseLengthOrPercentage: (css: string) => CSSUnitValue = parseDimension.bind(
-  null,
-  new RegExp('px|%|em|rem', 'g'),
-);
+export function parseLengthOrPercentage(css: string): CSSUnitValue {
+  return parseDimension(new RegExp('px|%|em|rem', 'g'), css) as CSSUnitValue;
+}
 
-export const parseAngle: (css: string) => CSSUnitValue = parseDimension.bind(
-  null,
-  new RegExp('deg|rad|grad|turn', 'g'),
-);
+export function parseAngle(css: string): CSSUnitValue {
+  return parseDimension(new RegExp('deg|rad|grad|turn', 'g'), css) as CSSUnitValue;
+}
 
 /**
  * merge CSSUnitValue

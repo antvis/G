@@ -1,11 +1,10 @@
-import { Module, Contribution } from 'mana-syringe';
-import { DirtyCheckPlugin } from './plugins/DirtyCheckPlugin';
+import { Contribution, Module } from 'mana-syringe';
 import { CullingPlugin, CullingStrategyContribution } from './plugins/CullingPlugin';
-import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
-import { FrustumCullingStrategy } from './plugins/FrustumCullingStrategy';
-import { RenderingPluginContribution, RenderingService } from './services';
+import { DirtyCheckPlugin } from './plugins/DirtyCheckPlugin';
 import { EventPlugin } from './plugins/EventPlugin';
-import { EventService } from './services';
+import { FrustumCullingStrategy } from './plugins/FrustumCullingStrategy';
+import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
+import { EventService, RenderingPluginContribution, RenderingService } from './services';
 
 export const containerModule = Module((register) => {
   Contribution.register(register, RenderingPluginContribution, { cache: false });

@@ -1,10 +1,18 @@
-import type { CSSProperty } from '../CSSProperty';
-import type { CSSUnitValue } from '../cssom';
+import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
-import { parseNumber } from '../parser';
+import type { CSSUnitValue } from '../cssom';
+import { CSSProperty } from '../CSSProperty';
+import { PropertySyntax } from '../interfaces';
+import { parseNumber } from '../parser/numeric';
 
-export const CSSPropertyZIndex: Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> = {
-  parser: parseNumber,
+@singleton({
+  token: {
+    token: CSSProperty,
+    named: PropertySyntax.Z_INDEX,
+  },
+})
+export class CSSPropertyZIndex implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> {
+  parser = parseNumber;
 
   postProcessor(object: DisplayObject) {
     if (object.parentNode) {
@@ -19,5 +27,5 @@ export const CSSPropertyZIndex: Partial<CSSProperty<CSSUnitValue, CSSUnitValue>>
         parentSortable.dirty = true;
       }
     }
-  },
-};
+  }
+}
