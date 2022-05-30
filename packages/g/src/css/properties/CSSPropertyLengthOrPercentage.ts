@@ -2,7 +2,8 @@ import { singleton } from 'mana-syringe';
 import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
 import { CSSUnitValue, UnitType } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
-import { PropertySyntax, StyleValueRegistry } from '../interfaces';
+import type { StyleValueRegistry } from '../interfaces';
+import { PropertySyntax } from '../interfaces';
 import { mergeDimensions, parseLengthOrPercentage } from '../parser/dimension';
 
 function getFontSize(object: DisplayObject): CSSUnitValue {

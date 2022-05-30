@@ -13,7 +13,8 @@ redirect_from:
     -   [g-plugin-device-renderer](/zh/docs/plugins/device-renderer) 基于 WebGPU / WebGL 渲染 2D 图形
     -   [g-plugin-html-renderer](/zh/docs/plugins/html-renderer) 渲染 DOM 元素
     -   [g-plugin-3d](/zh/docs/plugins/3d) 基于 g-plugin-device-renderer 扩展 3D 能力
-    -   [g-plugin-rough-canvas-renderer](/zh/docs/plugins/rough-canvas-renderer) 基于 rough.js 渲染手绘风格图形
+    -   [g-plugin-rough-canvas-renderer](/zh/docs/plugins/rough-canvas-renderer) 基于 rough.js 和 Canvas2D 渲染手绘风格图形
+    -   [g-plugin-rough-svg-renderer](/zh/docs/plugins/rough-svg-renderer) 基于 rough.js 和 SVG 渲染手绘风格图形
 -   拾取
     -   [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 基于 Canvas2D
     -   [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 基于 SVG

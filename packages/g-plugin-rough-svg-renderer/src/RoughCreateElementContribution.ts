@@ -9,10 +9,11 @@ import type {
   ParsedRectStyleProps,
 } from '@antv/g';
 import { CanvasConfig, ContextService, Shape } from '@antv/g';
+import type { ElementSVG } from '@antv/g-plugin-svg-renderer';
 import {
   CreateElementContribution,
   createSVGElement,
-  ElementSVG,
+  G_SVG_PREFIX,
   SHAPE2TAGS,
   SHAPE_UPDATE_DEPS,
   updateImageElementAttribute,
@@ -100,62 +101,80 @@ export class RoughCreateElementContribution implements CreateElementContribution
     const { nodeName, parsedStyle } = object;
     // @ts-ignore
     const roughSVG = this.contextService.getContext().roughSVG as unknown as RoughSVG;
+
+    let $roughG: SVGGElement = null;
+
     switch (nodeName) {
       case Shape.CIRCLE: {
         const { r } = parsedStyle as ParsedCircleStyleProps;
         // rough.js use diameter instead of radius
         // @see https://github.com/rough-stuff/rough/wiki#circle-x-y-diameter--options
-        return roughSVG.circle(r.value, r.value, r.value * 2, generateRoughOptions(object));
+        $roughG = roughSVG.circle(r.value, r.value, r.value * 2, generateRoughOptions(object));
+        break;
       }
       case Shape.ELLIPSE: {
         const { rx, ry } = parsedStyle as ParsedEllipseStyleProps;
-        return roughSVG.ellipse(
+        $roughG = roughSVG.ellipse(
           rx.value,
           ry.value,
           rx.value * 2,
           ry.value * 2,
           generateRoughOptions(object),
         );
+        break;
       }
       case Shape.RECT: {
         const { width, height } = parsedStyle as ParsedRectStyleProps;
         // @see https://github.com/rough-stuff/rough/wiki#rectangle-x-y-width-height--options
-        return roughSVG.rectangle(0, 0, width.value, height.value, generateRoughOptions(object));
+        $roughG = roughSVG.rectangle(0, 0, width.value, height.value, generateRoughOptions(object));
+        break;
       }
       case Shape.LINE: {
         const { x1, y1, x2, y2, defX = 0, defY = 0 } = parsedStyle as ParsedLineStyleProps;
         // @see https://github.com/rough-stuff/rough/wiki#line-x1-y1-x2-y2--options
-        return roughSVG.line(
+        $roughG = roughSVG.line(
           x1.value - defX,
           y1.value - defY,
           x2.value - defX,
           y2.value - defY,
           generateRoughOptions(object),
         );
+        break;
       }
       case Shape.POLYLINE: {
         const { points, defX = 0, defY = 0 } = parsedStyle as ParsedPolylineStyleProps;
         // @see https://github.com/rough-stuff/rough/wiki#linearpath-points--options
-        return this.wrapGroup(
-          roughSVG.linearPath(
-            points.points.map(([x, y]) => [x - defX, y - defY]),
-            generateRoughOptions(object),
-          ),
+        $roughG = roughSVG.linearPath(
+          points.points.map(([x, y]) => [x - defX, y - defY]),
+          generateRoughOptions(object),
         );
+        break;
       }
       case Shape.POLYGON: {
         const { points, defX = 0, defY = 0 } = parsedStyle as ParsedPolygonStyleProps;
         // @see https://github.com/rough-stuff/rough/wiki#polygon-vertices--options
-        return roughSVG.polygon(
+        $roughG = roughSVG.polygon(
           points.points.map(([x, y]) => [x - defX, y - defY]),
           generateRoughOptions(object),
         );
+        break;
       }
       case Shape.PATH: {
         const { path, defX = 0, defY = 0 } = parsedStyle as ParsedPathStyleProps;
         const formatted = formatPath(path.absolutePath, defX, defY);
-        return roughSVG.path(formatted, generateRoughOptions(object));
+        $roughG = roughSVG.path(formatted, generateRoughOptions(object));
+        break;
       }
     }
+
+    if ($roughG) {
+      for (let i = 0; i < $roughG.children.length; i++) {
+        // <g> cannot be a target for hit testing
+        // @see https://bugzilla.mozilla.org/show_bug.cgi?id=1428780
+        $roughG.children[i].id = `${G_SVG_PREFIX}_${object.nodeName}_rough${i}_${object.entity}`;
+      }
+    }
+
+    return $roughG;
   }
 }

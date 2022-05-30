@@ -1,26 +1,26 @@
 ---
-title: g-plugin-rough-canvas-renderer
+title: g-plugin-rough-svg-renderer
 order: 3
 ---
 
-使用 [rough.js](https://roughjs.com/) 的 Canvas 版本进行手绘风格的渲染，[示例](/zh/examples/plugins#rough)。
+使用 [rough.js](https://roughjs.com/) 的 SVG 版本进行手绘风格的渲染，[示例](/zh/examples/plugins#rough)。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
 
 # 安装方式
 
-首先需要使用 `g-canvas` 渲染器，注册该插件，它会替换掉 [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 中对于 2D 图形的渲染效果：
+首先需要使用 `g-svg` 渲染器，注册该插件，它会替换掉 [g-plugin-svg-renderer](/zh/docs/plugins/svg-renderer) 中对于 2D 图形的渲染效果：
 
 ```js
 import { Canvas } from '@antv/g';
-import { Renderer } from '@antv/g-canvas';
-import { Plugin as PluginRoughCanvasRenderer } from '@antv/g-plugin-rough-canvas-renderer';
+import { Renderer } from '@antv/g-svg';
+import { Plugin as PluginRoughSVGRenderer } from '@antv/g-plugin-rough-svg-renderer';
 
 // create a renderer
 const renderer = new Renderer();
-renderer.registerPlugin(new PluginRoughCanvasRenderer());
+renderer.registerPlugin(new PluginRoughSVGRenderer());
 
-// create a canvas & use `g-canvas`
+// create a canvas & use `g-svg`
 const canvas = new Canvas({
     container: 'container',
     width: 600,
@@ -28,8 +28,6 @@ const canvas = new Canvas({
     renderer,
 });
 ```
-
-需要注意的是一旦使用该插件，“脏矩形渲染”便无法使用，这意味着任何图形的任何样式属性改变，都会导致画布的全量重绘。
 
 另外，我们支持所有 2D 图形，其中 [Text](/zh/docs/api/basic/text)、[Image](/zh/docs/api/basic/image) 和 [HTML](/zh/docs/api/basic/html) 无手绘风格。
 
@@ -39,7 +37,7 @@ const canvas = new Canvas({
 
 ## opacity
 
-rough.js 并不支持 `opacity`，但我们可以通过 `globalAlpha` 实现，这一点和 [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 一样。
+rough.js 并不支持 `opacity`，这一点和 [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 一样。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gl6ETYiyCCQAAAAAAAAAAAAAARQnAQ" width="200">
 
@@ -75,9 +73,3 @@ https://github.com/rough-stuff/rough/wiki#options
 ```js
 circle.style.fillStyle = 'zigzag';
 ```
-
-# 拾取
-
-在 [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 中我们使用空间索引快速过滤，再配合图形几何定义的数学计算完成精确拾取。
-
-但在手绘风格下，似乎无法也没必要做精确拾取，因此我们仍使用该插件。

@@ -51,6 +51,20 @@ const svgRenderer = new window.G.SVG.Renderer();
 -   [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 基于 [elementFromPoint](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint) DOM API 拾取图形
 -   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
 
+# 可选插件
+
+除了内置插件，还有以下可选插件。
+
+## 手绘风格渲染
+
+使用 [rough.js](https://roughjs.com/) 的 SVG 版本进行手绘风格的渲染。
+
+我们提供了 [g-plugin-rough-svg-renderer](/zh/docs/plugins/rough-svg-renderer) 插件，注册后会替换掉 [g-plugin-svg-renderer](/zh/docs/plugins/svg-renderer) 对于部分 2D 图形的渲染能力。
+
+[示例](/zh/examples/plugins#rough)效果如下：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
+
 # 服务端渲染
 
 该渲染器依赖 SVG DOM API 的渲染能力，并不局限在浏览器端，因此也可以使用 [JSDOM](https://github.com/jsdom/node-jsdom) 进行服务端渲染。

@@ -47,54 +47,6 @@ export * from './shapes/styles';
 export { PathGeneratorFactory, PathGenerator, RBushNode, RBushRoot, RBush };
 export type { RBushNodeAABB };
 
-/**
- * register shape renderers
- */
-GlobalContainer.register({
-  token: { token: PathGenerator, named: Shape.CIRCLE },
-  useValue: CirclePath,
-});
-GlobalContainer.register({
-  token: { token: PathGenerator, named: Shape.ELLIPSE },
-  useValue: EllipsePath,
-});
-GlobalContainer.register({
-  token: { token: PathGenerator, named: Shape.RECT },
-  useValue: RectPath,
-});
-GlobalContainer.register({
-  token: { token: PathGenerator, named: Shape.LINE },
-  useValue: LinePath,
-});
-GlobalContainer.register({
-  token: { token: PathGenerator, named: Shape.POLYLINE },
-  useValue: PolylinePath,
-});
-GlobalContainer.register({
-  token: { token: PathGenerator, named: Shape.POLYGON },
-  useValue: PolygonPath,
-});
-GlobalContainer.register({
-  token: { token: PathGenerator, named: Shape.PATH },
-  useValue: PathPath,
-});
-
-GlobalContainer.register({
-  token: PathGeneratorFactory,
-  useFactory: (ctx) => {
-    const cache = {};
-    return (tagName: Shape) => {
-      if (!cache[tagName]) {
-        if (ctx.container.isBoundNamed(PathGenerator, tagName)) {
-          cache[tagName] = ctx.container.getNamed(PathGenerator, tagName);
-        }
-      }
-
-      return cache[tagName];
-    };
-  },
-});
-
 const containerModule = Module((register) => {
   register(ImagePool);
   register({ token: RBushRoot, useValue: new RBush<RBushNodeAABB>() });
@@ -146,6 +98,56 @@ const containerModule = Module((register) => {
 export class Plugin implements RendererPlugin {
   name = 'canvas-renderer';
   init(container: Syringe.Container): void {
+    if (!GlobalContainer.isBound(PathGeneratorFactory)) {
+      /**
+       * register shape renderers
+       */
+      GlobalContainer.register({
+        token: { token: PathGenerator, named: Shape.CIRCLE },
+        useValue: CirclePath,
+      });
+      GlobalContainer.register({
+        token: { token: PathGenerator, named: Shape.ELLIPSE },
+        useValue: EllipsePath,
+      });
+      GlobalContainer.register({
+        token: { token: PathGenerator, named: Shape.RECT },
+        useValue: RectPath,
+      });
+      GlobalContainer.register({
+        token: { token: PathGenerator, named: Shape.LINE },
+        useValue: LinePath,
+      });
+      GlobalContainer.register({
+        token: { token: PathGenerator, named: Shape.POLYLINE },
+        useValue: PolylinePath,
+      });
+      GlobalContainer.register({
+        token: { token: PathGenerator, named: Shape.POLYGON },
+        useValue: PolygonPath,
+      });
+      GlobalContainer.register({
+        token: { token: PathGenerator, named: Shape.PATH },
+        useValue: PathPath,
+      });
+
+      GlobalContainer.register({
+        token: PathGeneratorFactory,
+        useFactory: (ctx) => {
+          const cache = {};
+          return (tagName: Shape) => {
+            if (!cache[tagName]) {
+              if (ctx.container.isBoundNamed(PathGenerator, tagName)) {
+                cache[tagName] = ctx.container.getNamed(PathGenerator, tagName);
+              }
+            }
+
+            return cache[tagName];
+          };
+        },
+      });
+    }
+
     container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
