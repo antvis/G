@@ -58,6 +58,8 @@ export function generateRoughOptions(object: DisplayObject) {
   const options: Options = {
     bowing,
     roughness,
+    // If seed is not defined, or set to 0, no seed is used when computing random values.
+    // @see https://github.com/rough-stuff/rough/wiki#seed
     seed: seed || object.entity,
     fill: fill.toString(),
     stroke: stroke.toString(),

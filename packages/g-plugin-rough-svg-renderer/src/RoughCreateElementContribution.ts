@@ -9,7 +9,6 @@ import type {
   ParsedRectStyleProps,
 } from '@antv/g';
 import { CanvasConfig, ContextService, Shape } from '@antv/g';
-import type { ElementSVG } from '@antv/g-plugin-svg-renderer';
 import {
   CreateElementContribution,
   createSVGElement,
@@ -79,11 +78,12 @@ export class RoughCreateElementContribution implements CreateElementContribution
       case Shape.PATH: {
         // regenerate rough path
         const $updatedEl = this.generateSVGElement(object);
-
-        // replace old element
-        $el.parentElement.replaceChild($updatedEl, $el);
-        // @ts-ignore
-        (object.elementSVG as ElementSVG).$el = $updatedEl;
+        let $updatedChildren = [];
+        for (let i = 0; i < $updatedEl.childNodes.length; i++) {
+          $updatedChildren.push($updatedEl.childNodes[i]);
+        }
+        // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceChildren
+        $el.replaceChildren(...$updatedChildren);
         break;
       }
       case Shape.IMAGE: {
