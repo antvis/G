@@ -30,6 +30,7 @@ export default {
     'g-mobile-canvas',
     'g-mobile-svg',
     'g-mobile-webgl',
+    'g-gesture',
     'g-plugin-3d',
     'g-plugin-control',
     'g-plugin-gpgpu',
