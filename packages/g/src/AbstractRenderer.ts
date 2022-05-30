@@ -41,6 +41,7 @@ export class AbstractRenderer implements IRenderer {
        * only dirty object will cause re-render
        */
       enableDirtyCheck: true,
+      enableCulling: true,
       /**
        * enable auto rendering by default
        */

@@ -13,6 +13,14 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "rough-d3-barchart.js",
+      "title": {
+        "zh": "手绘风格的 D3 条形图",
+        "en": "Use rough.js and D3 barchart"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*j_F5Saag18oAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "dragndrop.js",
       "title": {
         "zh": "使用拖放",

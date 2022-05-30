@@ -289,6 +289,11 @@ export interface RendererConfig {
   enableDirtyCheck: boolean;
 
   /**
+   * enable culling
+   */
+  enableCulling: boolean;
+
+  /**
    * enable dirty rectangle rendering
    */
   enableDirtyRectangleRendering: boolean;
