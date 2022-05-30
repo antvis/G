@@ -78,7 +78,7 @@ export class RoughCreateElementContribution implements CreateElementContribution
       case Shape.PATH: {
         // regenerate rough path
         const $updatedEl = this.generateSVGElement(object);
-        let $updatedChildren = [];
+        const $updatedChildren = [];
         for (let i = 0; i < $updatedEl.childNodes.length; i++) {
           $updatedChildren.push($updatedEl.childNodes[i]);
         }

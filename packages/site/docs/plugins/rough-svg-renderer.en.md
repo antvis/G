@@ -73,3 +73,7 @@ https://github.com/rough-stuff/rough/wiki#options
 ```js
 circle.style.fillStyle = 'zigzag';
 ```
+
+# 拾取行为
+
+非 `solid` 的填充样式会留下很多空白，这些空白区域并不会触发交互事件。这一点和 [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 不一致。
