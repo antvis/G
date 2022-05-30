@@ -1,8 +1,8 @@
 import * as d3 from 'd3-color';
-import type { Pattern, LinearGradient, RadialGradient } from '../cssom';
-import { CSSRGB, CSSGradientValue, GradientPatternType } from '../cssom';
 import type { Tuple4Number } from '../../types';
 import { clamp, isNil, isString } from '../../utils';
+import type { LinearGradient, Pattern, RadialGradient } from '../cssom';
+import { CSSGradientValue, CSSRGB, GradientPatternType } from '../cssom';
 
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;

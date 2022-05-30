@@ -1,5 +1,6 @@
 import { Syringe } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects';
+import type { CSSProperty } from './CSSProperty';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Content_type
@@ -131,4 +132,5 @@ export interface StyleValueRegistry {
   registerMetadata: (metadata: PropertyMetadata) => void;
   unregisterMetadata: (name: string) => void;
   getMetadata: (name: string) => PropertyMetadata;
+  getPropertySyntax: (syntax: string) => CSSProperty<any, any>;
 }

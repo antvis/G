@@ -1,9 +1,14 @@
 import type { LinearGradient, RadialGradient } from '@antv/g';
-import { RenderingService } from '@antv/g';
-import { GradientPatternType, OffscreenCanvasCreator, CanvasConfig, isBrowser } from '@antv/g';
+import {
+  CanvasConfig,
+  GradientPatternType,
+  isBrowser,
+  OffscreenCanvasCreator,
+  RenderingService,
+} from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import type { Device, Texture, TextureDescriptor } from './platform';
-import { TextureEvent, Format, TextureDimension, TextureUsage } from './platform';
+import { Format, TextureDimension, TextureEvent, TextureUsage } from './platform';
 
 export type GradientParams = (LinearGradient | RadialGradient) & {
   width: number;

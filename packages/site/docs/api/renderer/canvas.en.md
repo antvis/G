@@ -97,4 +97,48 @@ const renderer = new Renderer({
 
 # 服务端渲染
 
-该渲染器依赖 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 渲染能力，并不局限在浏览器端，也可以使用 [node-canvas](https://github.com/Automattic/node-canvas) 进行[服务端渲染](/zh/docs/api/canvas#服务端渲染)。
+该渲染器依赖 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 渲染能力，并不局限在浏览器端，因此也可以使用 [node-canvas](https://github.com/Automattic/node-canvas) 进行服务端渲染。
+
+在我们的[集成测试](https://github.com/antvis/g/tree/next/integration/__node__tests__/canvas)中，会在 Node 端配合 [node-canvas](https://github.com/Automattic/node-canvas) 渲染结果图片，与基准图片进行比对。其他服务端渲染场景也可以按照以下步骤进行：
+
+1. 使用 [unregisterPlugin](/zh/docs/api/renderer/renderer#unregisterplugin) 卸载掉 [g-canvas](/zh/docs/api/renderer/canvas) 中内置的与 DOM API 相关的插件，例如负责事件绑定的 [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction)
+2. 使用 [node-canvas](https://github.com/Automattic/node-canvas) 创建一个类 `Canvas` 对象，通过 [canvas](/zh/docs/api/canvas#canvas) 属性传入画布
+3. 正常使用 [g-canvas](/zh/docs/api/renderer/canvas) 渲染器，通过 G 的 API 创建场景
+4. 使用 [node-canvas](https://github.com/Automattic/node-canvas) 提供的方法（例如 [createPNGStream](https://github.com/Automattic/node-canvas#canvascreatepngstream)）输出结果图片
+
+https://github.com/antvis/g/blob/next/integration/__node__tests__/canvas/circle.spec.js
+
+```js
+const { createCanvas } = require('canvas');
+const { Circle, Canvas } = require('@antv/g');
+const { Renderer } = require('@antv/g-canvas');
+
+// create a node-canvas
+const nodeCanvas = createCanvas(200, 200);
+
+// create a renderer, unregister plugin relative to DOM
+const renderer = new Renderer();
+const domInteractionPlugin = renderer.getPlugin('dom-interaction');
+renderer.unregisterPlugin(domInteractionPlugin);
+
+const canvas = new Canvas({
+    width: 200,
+    height: 200,
+    canvas: nodeCanvas, // use node-canvas
+    renderer,
+});
+
+const circle = new Circle({
+    style: {
+        r: 10,
+        fill: 'red',
+    },
+});
+canvas.appendChild(circle);
+
+// output image
+const out = fs.createWriteStream(__dirname + RESULT_IMAGE);
+const stream = nodeCanvas.createPNGStream();
+stream.pipe(out);
+out.on('finish', () => {});
+```

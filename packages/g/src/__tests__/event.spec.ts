@@ -1,3 +1,6 @@
+import { Canvas, Circle, CustomEvent, ElementEvent, FederatedEvent, Group } from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Plugin } from '@antv/g-plugin-css-select';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
@@ -5,21 +8,6 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-// @ts-ignore
-import {
-  Group,
-  Circle,
-  Canvas,
-  Text,
-  Rect,
-  ElementEvent,
-  DisplayObject,
-  FederatedEvent,
-  CustomEvent,
-} from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Plugin } from '@antv/g-plugin-css-select';
-import interact from 'interactjs';
 import { sleep } from './utils';
 
 chai.use(chaiAlmost());
@@ -39,6 +27,7 @@ const canvas = new Canvas({
   width: 600,
   height: 500,
   renderer,
+  supportsTouchEvents: true,
 });
 
 const CAPTURING_PHASE = 1;
@@ -267,100 +256,59 @@ describe('Event API like DOM', () => {
     expect(eventStack[5]).to.be.eqls([form, BUBBLING_PHASE]);
   });
 
-  // it('should emit inserted event correctly', () => {
-  //   // const rect = new Rect({
-  //   //   style: {
-  //   //     fill: 'rgb(239, 244, 255)',
-  //   //     fillOpacity: 1,
-  //   //     lineWidth: 1,
-  //   //     opacity: 1,
-  //   //     width: 300,
-  //   //     height: 300,
-  //   //     stroke: 'rgb(95, 149, 255)',
-  //   //     strokeOpacity: 1,
-  //   //   },
-  //   // });
+  it('should emit pointerdown correctly', async () => {
+    const circle = new Circle({
+      id: 'circle',
+      style: {
+        fill: 'rgb(239, 244, 255)',
+        fillOpacity: 1,
+        lineWidth: 1,
+        opacity: 1,
+        r: 50,
+        stroke: 'rgb(95, 149, 255)',
+        strokeOpacity: 1,
+        cursor: 'pointer',
+      },
+    });
+    circle.setPosition(300, 200);
+    canvas.appendChild(circle);
 
-  //   // add a circle to canvas
-  //   const circle = new Circle({
-  //     className: 'draggable',
-  //     style: {
-  //       fill: 'rgb(239, 244, 255)',
-  //       fillOpacity: 1,
-  //       lineWidth: 1,
-  //       opacity: 1,
-  //       r: 60,
-  //       stroke: 'rgb(95, 149, 255)',
-  //       strokeOpacity: 1,
-  //     },
-  //   });
+    const pointerdownCallback = sinon.spy();
+    circle.addEventListener('pointerdown', pointerdownCallback);
 
-  //   // const text = new Text({
-  //   //   style: {
-  //   //     text: 'move',
-  //   //     fontSize: 22,
-  //   //     fill: '#000',
-  //   //     textAlign: 'center',
-  //   //     textBaseline: 'middle',
-  //   //   },
-  //   // });
+    const $canvas = canvas.getContextService().getDomElement() as HTMLCanvasElement;
 
-  //   // rect.appendChild(circle);
-  //   // circle.appendChild(text);
-  //   // canvas.appendChild(rect);
-  //   // rect.setPosition(200, 200);
-  //   circle.translateLocal(150, 150);
-  //   canvas.appendChild(circle);
+    const touch = new Touch({
+      target: $canvas,
+      clientX: 300,
+      clientY: 200,
+      force: 1,
+      identifier: 0,
+      pageX: 300,
+      pageY: 200,
+      radiusX: 27.777774810791016,
+      radiusY: 27.777774810791016,
+      rotationAngle: 0,
+      screenX: 300,
+      screenY: 200,
+    });
+    const touchEvent = new TouchEvent('touchstart', {
+      cancelable: true,
+      bubbles: true,
+      touches: [touch],
+      targetTouches: [touch],
+      changedTouches: [touch],
+    });
 
-  //   // @ts-ignore
-  //   interact(circle, {
-  //     context: canvas.document,
-  //   }).draggable({
-  //     // modifiers: [
-  //     //   // interact.modifiers.snap({
-  //     //   //   targets: [
-  //     //   //     interact.snappers.grid({ x: 30, y: 30 })
-  //     //   //   ],
-  //     //   //   range: Infinity,
-  //     //   //   relativePoints: [{ x: 0, y: 0 }]
-  //     //   // }),
-  //     //   interact.modifiers.restrict({
-  //     //     // @ts-ignore
-  //     //     restriction: circle.parentNode,
-  //     //     elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
-  //     //     endOnly: true
-  //     //   })
-  //     // ],
-  //     // inertia: true,
-  //     onmove: function (event) {
-  //       const { dx, dy } = event;
-  //       console.log(dx, dy);
-  //       circle.translateLocal(dx, dy);
-  //     },
-  //   });
+    // wait for rendering at next frame
+    await sleep(20);
 
-  //   // // @ts-ignore
-  //   // interact(dropZone, {
-  //   //   context: canvas.document,
-  //   // }).dropzone({
-  //   //   accept: '.draggable',
-  //   //   overlap: 0.75,
-  //   //   ondragenter: function (event) {
-  //   //     text.style.text = 'Dragged in';
-  //   //   },
-  //   //   ondragleave: function (event) {
-  //   //     text.style.text = 'Dragged out';
-  //   //   },
-  //   //   ondrop: function (event) {
-  //   //     text.style.text = 'Dropped';
-  //   //   },
-  //   //   ondropactivate: function (event) {
-  //   //     // add active dropzone feedback
-  //   //     event.target.style.fill = '#4e4';
-  //   //   },
-  //   //   ondropdeactivate: function (event) {
-  //   //     event.target.style.fill = '#1890FF';
-  //   //   }
-  //   // });
-  // });
+    $canvas.dispatchEvent(touchEvent);
+
+    // wait event propgation, especially for picking in an async way
+    await sleep(100);
+
+    // @ts-ignore
+    expect(pointerdownCallback).to.have.been.called;
+  });
 });

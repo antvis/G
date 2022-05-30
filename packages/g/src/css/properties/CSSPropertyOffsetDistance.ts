@@ -1,13 +1,21 @@
-import { Shape } from '../../types';
+import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
-import type { CSSProperty } from '../CSSProperty';
+import { Shape } from '../../types';
 import type { CSSUnitValue } from '../cssom';
-import { parseNumber, clampedMergeNumbers } from '../parser';
+import { CSSProperty } from '../CSSProperty';
+import { PropertySyntax } from '../interfaces';
+import { clampedMergeNumbers, parseNumber } from '../parser/numeric';
 
-export const CSSPropertyOffsetDistance: Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> = {
-  parser: parseNumber,
+@singleton({
+  token: {
+    token: CSSProperty,
+    named: PropertySyntax.OFFSET_DISTANCE,
+  },
+})
+export class CSSPropertyOffsetDistance implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> {
+  parser = parseNumber;
 
-  mixer: clampedMergeNumbers(0, 1),
+  mixer = clampedMergeNumbers(0, 1);
 
   postProcessor(object: DisplayObject) {
     if (!object.attributes.offsetPath) {
@@ -25,5 +33,5 @@ export const CSSPropertyOffsetDistance: Partial<CSSProperty<CSSUnitValue, CSSUni
         object.setLocalPosition(point.x, point.y);
       }
     }
-  },
-};
+  }
+}

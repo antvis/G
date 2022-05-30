@@ -1,24 +1,35 @@
-import { Shape } from '../../types';
+import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
 import type { ParsedBaseStyleProps } from '../../types';
-import type { CSSProperty } from '../CSSProperty';
-import { parsePoints } from '../parser';
+import { Shape } from '../../types';
+import { CSSProperty } from '../CSSProperty';
+import { PropertySyntax } from '../interfaces';
+import { parsePoints } from '../parser/points';
 
-export const CSSPropertyPoints: Partial<
-  CSSProperty<
-    {
-      points: [number, number][];
-      totalLength: number;
-      segments: [number, number][];
-    },
-    {
-      points: [number, number][];
-      totalLength: number;
-      segments: [number, number][];
-    }
-  >
-> = {
-  parser: parsePoints,
+@singleton({
+  token: {
+    token: CSSProperty,
+    named: PropertySyntax.LIST_OF_POINTS,
+  },
+})
+export class CSSPropertyPoints
+  implements
+    Partial<
+      CSSProperty<
+        {
+          points: [number, number][];
+          totalLength: number;
+          segments: [number, number][];
+        },
+        {
+          points: [number, number][];
+          totalLength: number;
+          segments: [number, number][];
+        }
+      >
+    >
+{
+  parser = parsePoints;
 
   /**
    * update local position
@@ -28,5 +39,5 @@ export const CSSPropertyPoints: Partial<
       const { defX, defY } = object.parsedStyle as ParsedBaseStyleProps;
       object.setLocalPosition(defX, defY);
     }
-  },
-};
+  }
+}

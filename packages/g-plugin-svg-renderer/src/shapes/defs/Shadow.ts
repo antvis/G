@@ -8,6 +8,7 @@ const FILTER_DROPSHADOW_PREFIX = 'filter-dropshadow-';
  * @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/filter
  */
 export function createOrUpdateShadow(
+  document: Document,
   $def: SVGDefsElement,
   object: DisplayObject,
   $el: SVGElement,
@@ -16,8 +17,8 @@ export function createOrUpdateShadow(
   const shadowId = FILTER_DROPSHADOW_PREFIX + object.entity;
   let $existedFilter = $def.querySelector(`#${shadowId}`);
   if (!$existedFilter) {
-    $existedFilter = createSVGElement('filter') as SVGFilterElement;
-    const $feDropShadow = createSVGElement('feDropShadow');
+    $existedFilter = createSVGElement('filter', document) as SVGFilterElement;
+    const $feDropShadow = createSVGElement('feDropShadow', document);
     $feDropShadow.setAttribute('dx', '0');
     $feDropShadow.setAttribute('dy', '0');
     $existedFilter.appendChild($feDropShadow);

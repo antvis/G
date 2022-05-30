@@ -22,16 +22,16 @@ renderer.registerPlugin(new PluginRoughCanvasRenderer());
 
 // create a canvas & use `g-canvas`
 const canvas = new Canvas({
-  container: 'container',
-  width: 600,
-  height: 500,
-  renderer,
+    container: 'container',
+    width: 600,
+    height: 500,
+    renderer,
 });
 ```
 
 需要注意的是一旦使用该插件，“脏矩形渲染”便无法使用，这意味着任何图形的任何样式属性改变，都会导致画布的全量重绘。
 
-另外，我们支持所有 2D 图形，其中 [Text]() 和 [Image]() 无手绘风格。
+另外，我们支持所有 2D 图形，其中 [Text](/zh/docs/api/basic/text)、[Image](/zh/docs/api/basic/image) 和 [HTML](/zh/docs/api/basic/html) 无手绘风格。
 
 # 样式属性
 

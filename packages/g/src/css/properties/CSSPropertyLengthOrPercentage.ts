@@ -1,8 +1,10 @@
-import { UnitType, CSSUnitValue } from '../cssom';
-import { parseLengthOrPercentage, mergeDimensions } from '../parser';
-import type { StyleValueRegistry } from '../interfaces';
+import { singleton } from 'mana-syringe';
 import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
-import type { CSSProperty } from '../CSSProperty';
+import { CSSUnitValue, UnitType } from '../cssom';
+import { CSSProperty } from '../CSSProperty';
+import type { StyleValueRegistry } from '../interfaces';
+import { PropertySyntax } from '../interfaces';
+import { mergeDimensions, parseLengthOrPercentage } from '../parser/dimension';
 
 function getFontSize(object: DisplayObject): CSSUnitValue {
   const { fontSize } = object.parsedStyle as ParsedTextStyleProps;
@@ -15,9 +17,17 @@ function getFontSize(object: DisplayObject): CSSUnitValue {
 /**
  * <length> & <percentage>
  */
-export const CSSPropertyLengthOrPercentage: Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> = {
-  parser: parseLengthOrPercentage,
-  mixer: mergeDimensions,
+@singleton({
+  token: {
+    token: CSSProperty,
+    named: PropertySyntax.LENGTH_PERCENTAGE,
+  },
+})
+export class CSSPropertyLengthOrPercentage
+  implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>>
+{
+  parser = parseLengthOrPercentage;
+  mixer = mergeDimensions;
 
   /**
    * according to parent's bounds
@@ -74,7 +84,7 @@ export const CSSPropertyLengthOrPercentage: Partial<CSSProperty<CSSUnitValue, CS
       // return absolute value
       return computed.clone();
     }
-  },
+  }
 
   // private nameToBoundsIndex(name: string): number {
   //   if (name === 'x' || name === 'cx' || name === 'width') {
@@ -94,4 +104,4 @@ export const CSSPropertyLengthOrPercentage: Partial<CSSProperty<CSSUnitValue, CS
   //     'px',
   //   );
   // }
-};
+}

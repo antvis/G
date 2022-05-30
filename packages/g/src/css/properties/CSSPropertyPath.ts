@@ -1,17 +1,25 @@
-import { Shape } from '../../types';
+import { singleton } from 'mana-syringe';
 import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
 import { Rectangle } from '../../shapes';
+import { Shape } from '../../types';
 import { CSSKeywordValue } from '../cssom';
-import type { CSSProperty } from '../CSSProperty';
-import { parsePath, mergePaths } from '../parser';
+import { CSSProperty } from '../CSSProperty';
+import { PropertySyntax } from '../interfaces';
+import { mergePaths, parsePath } from '../parser/path';
 
-export const CSSPropertyPath: Partial<
-  CSSProperty<ParsedPathStyleProps['path'], ParsedPathStyleProps['path']>
-> = {
+@singleton({
+  token: {
+    token: CSSProperty,
+    named: PropertySyntax.PATH,
+  },
+})
+export class CSSPropertyPath
+  implements Partial<CSSProperty<ParsedPathStyleProps['path'], ParsedPathStyleProps['path']>>
+{
   /**
    * path2Curve
    */
-  parser: parsePath,
+  parser = parsePath;
 
   calculator(
     name: string,
@@ -34,9 +42,9 @@ export const CSSPropertyPath: Partial<
       };
     }
     return parsed;
-  },
+  }
 
-  mixer: mergePaths,
+  mixer = mergePaths;
 
   /**
    * update local position
@@ -46,5 +54,5 @@ export const CSSPropertyPath: Partial<
       const { defX = 0, defY = 0 } = object.parsedStyle as ParsedPathStyleProps;
       object.setLocalPosition(defX, defY);
     }
-  },
-};
+  }
+}

@@ -1,25 +1,11 @@
-import { Module, injectable, decorate } from 'mana-syringe';
 import { EventEmitter } from 'eventemitter3';
-import { DisplayObjectPool } from './DisplayObjectPool';
+import { decorate, injectable, Module } from 'mana-syringe';
 import {
-  CircleUpdater,
-  EllipseUpdater,
-  GeometryAABBUpdater,
-  GeometryUpdaterFactory,
-  LineUpdater,
-  PathUpdater,
-  PolylineUpdater,
-  RectUpdater,
-  TextUpdater,
-  TextService,
-  OffscreenCanvasCreator,
-  DefaultSceneGraphService,
-  DefaultSceneGraphSelector,
-  SceneGraphSelector,
-  SceneGraphSelectorFactory,
-} from './services';
-import type { Shape } from './types';
-import { LayoutRegistry, DefaultStyleValueRegistry } from './css';
+  CSSProperty,
+  CSSPropertySyntaxFactory,
+  DefaultStyleValueRegistry,
+  LayoutRegistry,
+} from './css';
 import {
   ContextNode,
   FragmentResult,
@@ -39,6 +25,46 @@ import {
   LayoutFragmentFactory,
   LayoutFragmentOptions,
 } from './css/layout';
+import {
+  CSSPropertyAngle,
+  CSSPropertyClipPath,
+  CSSPropertyColor,
+  CSSPropertyFilter,
+  CSSPropertyLengthOrPercentage,
+  CSSPropertyLengthOrPercentage12,
+  CSSPropertyLengthOrPercentage14,
+  CSSPropertyLocalPosition,
+  CSSPropertyOffsetDistance,
+  CSSPropertyOffsetPath,
+  CSSPropertyOpacity,
+  CSSPropertyPath,
+  CSSPropertyPoints,
+  CSSPropertyShadowBlur,
+  CSSPropertyText,
+  CSSPropertyTextTransform,
+  CSSPropertyTransform,
+  CSSPropertyTransformOrigin,
+  CSSPropertyZIndex,
+} from './css/properties';
+import { DisplayObjectPool } from './DisplayObjectPool';
+import {
+  CircleUpdater,
+  DefaultSceneGraphSelector,
+  DefaultSceneGraphService,
+  EllipseUpdater,
+  GeometryAABBUpdater,
+  GeometryUpdaterFactory,
+  LineUpdater,
+  OffscreenCanvasCreator,
+  PathUpdater,
+  PolylineUpdater,
+  RectUpdater,
+  SceneGraphSelector,
+  SceneGraphSelectorFactory,
+  TextService,
+  TextUpdater,
+} from './services';
+import type { Shape } from './types';
 
 export const containerModule = Module((register) => {
   decorate(injectable(), EventEmitter);
@@ -86,10 +112,43 @@ export const containerModule = Module((register) => {
   });
 
   // bind CSS property handlers
-  register(LayoutRegistry);
+  register(CSSPropertyAngle);
+  register(CSSPropertyClipPath);
+  register(CSSPropertyColor);
+  register(CSSPropertyFilter);
+  register(CSSPropertyLengthOrPercentage);
+  register(CSSPropertyLengthOrPercentage12);
+  register(CSSPropertyLengthOrPercentage14);
+  register(CSSPropertyLocalPosition);
+  register(CSSPropertyOffsetDistance);
+  register(CSSPropertyOffsetPath);
+  register(CSSPropertyOpacity);
+  register(CSSPropertyPath);
+  register(CSSPropertyPoints);
+  register(CSSPropertyShadowBlur);
+  register(CSSPropertyText);
+  register(CSSPropertyTextTransform);
+  register(CSSPropertyTransform);
+  register(CSSPropertyTransformOrigin);
+  register(CSSPropertyZIndex);
+  register({
+    token: CSSPropertySyntaxFactory,
+    useFactory: (context) => {
+      const cache = {};
+      return (propertySyntax: string) => {
+        if (!cache[propertySyntax]) {
+          if (context.container.isBoundNamed(CSSProperty, propertySyntax)) {
+            cache[propertySyntax] = context.container.getNamed(CSSProperty, propertySyntax);
+          }
+        }
+        return cache[propertySyntax];
+      };
+    },
+  });
   register(DefaultStyleValueRegistry);
 
   // bind layout engine
+  register(LayoutRegistry);
   register(LayoutEngine);
   register(LayoutEdges);
   register({

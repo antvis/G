@@ -1,12 +1,20 @@
+import { singleton } from 'mana-syringe';
 import type { CSSUnitValue } from '../cssom';
-import type { CSSProperty } from '../CSSProperty';
-import { parseNumber, clampedMergeNumbers } from '../parser';
+import { CSSProperty } from '../CSSProperty';
+import { PropertySyntax } from '../interfaces';
+import { clampedMergeNumbers, parseNumber } from '../parser/numeric';
 
 /**
  * opacity
  */
-export const CSSPropertyOpacity: Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> = {
-  parser: parseNumber,
+@singleton({
+  token: {
+    token: CSSProperty,
+    named: PropertySyntax.OPACITY_VALUE,
+  },
+})
+export class CSSPropertyOpacity implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> {
+  parser = parseNumber;
 
-  mixer: clampedMergeNumbers(0, 1),
-};
+  mixer = clampedMergeNumbers(0, 1);
+}

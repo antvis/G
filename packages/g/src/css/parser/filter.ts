@@ -7,10 +7,7 @@ export interface ParsedFilterStyleProperty {
   params: CSSUnitValue[];
 }
 
-export const parseParam: (css: string) => CSSUnitValue = parseDimension.bind(
-  null,
-  /deg|rad|grad|turn|px|%/g,
-);
+export const parseParam = (css: string) => parseDimension(/deg|rad|grad|turn|px|%/g, css);
 
 const supportedFilters = [
   'blur',

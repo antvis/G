@@ -3,7 +3,6 @@ import { CanvasConfig, ContextService, RenderingPluginContribution } from '@antv
 import { inject, singleton } from 'mana-syringe';
 // @see https://github.com/rough-stuff/rough/issues/145
 import rough from 'roughjs/bin/rough';
-import type { RoughSVG } from 'roughjs/bin/svg';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class RoughRendererPlugin implements RenderingPlugin {
@@ -14,8 +13,6 @@ export class RoughRendererPlugin implements RenderingPlugin {
 
   @inject(ContextService)
   private contextService: ContextService<SVGSVGElement>;
-
-  private roughSVG: RoughSVG;
 
   apply(renderingService: RenderingService) {
     renderingService.hooks.init.tapPromise(RoughRendererPlugin.tag, async () => {
@@ -28,7 +25,9 @@ export class RoughRendererPlugin implements RenderingPlugin {
       // @see https://github.com/rough-stuff/rough/wiki#roughsvg-svgroot--config
 
       const $svg = this.contextService.getContext();
-      this.roughSVG = rough.svg($svg);
+
+      // @ts-ignore
+      $svg.roughSVG = rough.svg($svg);
     });
 
     renderingService.hooks.destroy.tap(RoughRendererPlugin.tag, () => {});

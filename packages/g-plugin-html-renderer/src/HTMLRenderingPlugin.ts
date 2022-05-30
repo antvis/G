@@ -8,6 +8,7 @@ import type {
   RenderingService,
 } from '@antv/g';
 import {
+  CanvasConfig,
   ContextService,
   CSSGradientValue,
   CSSRGB,
@@ -31,6 +32,9 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
+
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
   private $camera: HTMLDivElement;
 
@@ -98,12 +102,13 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
   }
 
   private getOrCreateEl(object: DisplayObject) {
+    const { document: doc } = this.canvasConfig;
     const existedId = this.getId(object);
     const $container = (this.contextService.getDomElement() as unknown as HTMLElement).parentNode;
     if ($container) {
       let $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
       if (!$existedElement) {
-        $existedElement = document.createElement('div');
+        $existedElement = (doc || document).createElement('div');
         object.parsedStyle.$el = $existedElement;
         $existedElement.id = existedId;
         if (object.name) {

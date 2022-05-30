@@ -1,6 +1,6 @@
 import { CanvasConfig, ContextService, isString } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
 import { createSVGElement } from '@antv/g-plugin-svg-renderer';
+import { inject, singleton } from 'mana-syringe';
 
 @singleton({ token: ContextService })
 export class SVGContextService implements ContextService<SVGElement> {
@@ -12,15 +12,15 @@ export class SVGContextService implements ContextService<SVGElement> {
   private canvasConfig: CanvasConfig;
 
   init() {
-    const { container } = this.canvasConfig;
+    const { container, document: doc } = this.canvasConfig;
 
     // create container
-    this.$container = isString(container) ? document.getElementById(container) : container;
+    this.$container = isString(container) ? (doc || document).getElementById(container) : container;
     if (this.$container) {
       if (!this.$container.style.position) {
         this.$container.style.position = 'relative';
       }
-      const $namespace = createSVGElement('svg');
+      const $namespace = createSVGElement('svg', doc);
       $namespace.setAttribute('width', `${this.canvasConfig.width}`);
       $namespace.setAttribute('height', `${this.canvasConfig.height}`);
 
