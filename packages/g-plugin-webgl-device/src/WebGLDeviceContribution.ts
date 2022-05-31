@@ -12,13 +12,14 @@ export class WebGLDeviceContribution implements DeviceContribution {
 
   async createSwapChain($canvas: HTMLCanvasElement) {
     const options: WebGLContextAttributes = {
+      // alpha: true,
       antialias: false,
       // @see https://stackoverflow.com/questions/27746091/preservedrawingbuffer-false-is-it-worth-the-effort
       preserveDrawingBuffer: false,
       // @see https://webglfundamentals.org/webgl/lessons/webgl-qna-how-to-use-the-stencil-buffer.html
       stencil: true,
       // @see https://webglfundamentals.org/webgl/lessons/webgl-and-alpha.html
-      // premultipliedAlpha: false,
+      // premultipliedAlpha: true,
     };
     // this.handleContextEvents($canvas);
 

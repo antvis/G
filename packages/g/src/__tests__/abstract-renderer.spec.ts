@@ -1,11 +1,5 @@
-import chai, { expect } from 'chai';
-// @ts-ignore
-import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinon from 'sinon';
-// @ts-ignore
-import sinonChai from 'sinon-chai';
 import { AbstractRenderer } from '@antv/g';
+import { expect } from 'chai';
 
 describe('Abstract renderer', () => {
   it('should generate correct composed path', () => {
@@ -14,6 +8,7 @@ describe('Abstract renderer', () => {
     expect(renderer.getConfig()).to.be.eqls({
       enableAutoRendering: true,
       enableDirtyCheck: true,
+      enableCulling: true,
       enableDirtyRectangleRendering: true,
       enableDirtyRectangleRenderingDebug: false,
     });
@@ -22,6 +17,7 @@ describe('Abstract renderer', () => {
     expect(renderer.getConfig()).to.be.eqls({
       enableAutoRendering: false,
       enableDirtyCheck: true,
+      enableCulling: true,
       enableDirtyRectangleRendering: true,
       enableDirtyRectangleRenderingDebug: false,
     });

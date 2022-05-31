@@ -37,7 +37,8 @@ A powerful rendering engine for AntV.
         -   [g-plugin-device-renderer](https://g-next.antv.vision/en/docs/plugins/device-renderer) Render 2D graphics with WebGL 1/2 and WebGPU API.
         -   [g-plugin-html-renderer](https://g-next.antv.vision/en/docs/plugins/html-renderer) Provides raw HTML elements.
         -   [g-plugin-3d](https://g-next.antv.vision/en/docs/plugins/3d) Expanded 3D rendering capabilities such as Geometry, Material, Mesh and Lights.
-        -   [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) Render sketchy styled shapes with [rough.js](https://roughjs.com/).
+        -   [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) Render sketchy styled shapes with [rough.js](https://roughjs.com/) and Canvas2D.
+        -   [g-plugin-rough-svg-renderer](https://g-next.antv.vision/en/docs/plugins/rough-svg-renderer) Render sketchy styled shapes with [rough.js](https://roughjs.com/) and SVG.
     -   Picking
         -   [g-plugin-canvas-picker](https://g-next.antv.vision/en/docs/plugins/canvas-picker) Implements graphics picking with Canvas2D API.
         -   [g-plugin-svg-picker](https://g-next.antv.vision/en/docs/plugins/svg-picker) Implements graphics picking with SVG API.

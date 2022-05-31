@@ -24,6 +24,13 @@
         "zh": "<paint>",
         "en": "<paint>"
       }
+    },
+    {
+      "filename": "length.js",
+      "title": {
+        "zh": "<length>",
+        "en": "<length>"
+      }
     }
   ]
 }

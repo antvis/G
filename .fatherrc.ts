@@ -18,6 +18,7 @@ export default {
     'g-plugin-canvas-picker',
     'g-plugin-html-renderer',
     'g-canvas',
+    'g-canvaskit',
     'g-plugin-svg-renderer',
     'g-plugin-svg-picker',
     'g-svg',

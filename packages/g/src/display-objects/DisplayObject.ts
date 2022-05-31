@@ -210,6 +210,9 @@ export class DisplayObject<
       style: { ...this.attributes },
     });
 
+    // apply transform
+    cloned.setLocalTransform(this.getLocalTransform());
+
     if (deep) {
       this.children.forEach((child) => {
         const clonedChild = child.cloneNode(deep);

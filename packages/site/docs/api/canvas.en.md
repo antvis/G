@@ -113,7 +113,13 @@ const canvas = new Canvas({
 
 ## background
 
-选填，画布初始化时用于清除的颜色。类似 WebGL 中的 [clearColor](https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/clearColor)。支持 [\<color\>](/zh/docs/api/css/css-properties-values-api#color) 取值。
+选填，画布初始化时用于清除的颜色。类似 WebGL 中的 [clearColor](https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/clearColor)。
+
+支持 [\<color\>](/zh/docs/api/css/css-properties-values-api#color) 取值，默认值为 `'transparent'`。
+
+在该[示例](/zh/examples/canvas#background)中，我们为 Canvas 设置了一个半透明的红色，而最底层的 `<div>` 通过 CSS 设置了背景灰色：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4QY6Rb9jIy8AAAAAAAAAAAAAARQnAQ" width="300" alt="canvas's background">
 
 # 特殊运行平台适配
 

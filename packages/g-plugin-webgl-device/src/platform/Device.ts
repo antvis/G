@@ -1,26 +1,3 @@
-import {
-  Format,
-  FormatCompFlags,
-  getFormatCompFlags,
-  FormatTypeFlags,
-  getFormatTypeFlags,
-  getFormatFlags,
-  FormatFlags,
-  makeStaticDataBuffer,
-  CopyProgram,
-  preprocessProgramObj_GLSL,
-  OpaqueBlack,
-  OpaqueWhite,
-  colorCopy,
-  colorEqual,
-  copyMegaState,
-  defaultMegaState,
-  nullify,
-  assert,
-  assertExists,
-  prependLineNo,
-  GL,
-} from '@antv/g-plugin-device-renderer';
 import type {
   AttachmentState,
   BindingLayoutDescriptor,
@@ -63,16 +40,36 @@ import type {
   VertexBufferDescriptor,
 } from '@antv/g-plugin-device-renderer';
 import {
+  assert,
+  assertExists,
   BufferUsage,
   ChannelWriteMask,
   ClipSpaceNearZ,
+  colorCopy,
+  colorEqual,
   CompareMode,
+  copyMegaState,
+  CopyProgram,
   CullMode,
+  defaultMegaState,
+  Format,
+  FormatCompFlags,
+  FormatFlags,
+  FormatTypeFlags,
+  getFormatCompFlags,
+  getFormatFlags,
+  getFormatTypeFlags,
+  GL,
+  makeStaticDataBuffer,
+  nullify,
+  prependLineNo,
+  preprocessProgramObj_GLSL,
   PrimitiveTopology,
   ResourceType,
   SamplerFormatKind,
   TextureDimension,
   TextureUsage,
+  TransparentBlack,
   VertexBufferFrequency,
   ViewportOrigin,
 } from '@antv/g-plugin-device-renderer';
@@ -97,16 +94,16 @@ import { ResourceCreationTracker } from './ResourceCreationTracker';
 import { Sampler_GL } from './Sampler';
 import { Texture_GL } from './Texture';
 import {
-  isFormatSizedInteger,
-  getPlatformBuffer,
-  getPlatformTexture,
-  getPlatformSampler,
   assignPlatformName,
   findall,
+  getPlatformBuffer,
+  getPlatformSampler,
+  getPlatformTexture,
   isBlendStateNone,
+  isBlockCompressSized,
+  isFormatSizedInteger,
   isTextureFormatCompressed,
   isWebGL2,
-  isBlockCompressSized,
 } from './utils';
 
 // This is a workaround for ANGLE not supporting UBOs greater than 64kb (the limit of D3D).
@@ -439,25 +436,21 @@ export class Device_GL implements SwapChain, Device {
   }
 
   present(): void {
-    const gl = this.gl;
-
-    // Force alpha to white.
-    if (this.currentMegaState.attachmentsState[0].channelWriteMask !== ChannelWriteMask.Alpha) {
-      gl.colorMask(false, false, false, true);
-      this.currentMegaState.attachmentsState[0].channelWriteMask = ChannelWriteMask.Alpha;
-    }
-
-    // TODO: clear depth & stencil
-    // @see https://github.com/visgl/luma.gl/blob/30a1039573/modules/webgl/src/classes/clear.ts
-
-    const { r, g, b, a } = OpaqueWhite;
-    if (isWebGL2(gl)) {
-      gl.clearBufferfv(gl.COLOR, 0, [r, g, b, a]);
-    } else {
-      gl.clearColor(r, g, b, a);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-    }
-
+    // const gl = this.gl;
+    // // Force alpha to white.
+    // if (this.currentMegaState.attachmentsState[0].channelWriteMask !== ChannelWriteMask.Alpha) {
+    //   gl.colorMask(false, false, false, true);
+    //   this.currentMegaState.attachmentsState[0].channelWriteMask = ChannelWriteMask.Alpha;
+    // }
+    // // TODO: clear depth & stencil
+    // // @see https://github.com/visgl/luma.gl/blob/30a1039573/modules/webgl/src/classes/clear.ts
+    // const { r, g, b, a } = OpaqueBlack;
+    // if (isWebGL2(gl)) {
+    //   gl.clearBufferfv(gl.COLOR, 0, [r, g, b, a]);
+    // } else {
+    //   gl.clearColor(r, g, b, a);
+    //   gl.clear(gl.COLOR_BUFFER_BIT);
+    // }
     // @see https://stackoverflow.com/questions/2143240/opengl-glflush-vs-glfinish
     // gl.flush();
   }
@@ -2111,7 +2104,8 @@ export class Device_GL implements SwapChain, Device {
         colorAttachmentFormats: [Format.U8_RGBA_RT],
         depthStencilAttachmentFormat: null,
         inputLayout,
-        megaStateDescriptor: copyMegaState(defaultMegaState),
+        // megaStateDescriptor: copyMegaState(defaultMegaState),
+        megaStateDescriptor: this.currentMegaState,
       });
 
       // const colorTexture = this.currentColorAttachments[0].texture;
@@ -2141,7 +2135,7 @@ export class Device_GL implements SwapChain, Device {
     const blitRenderPass = this.createRenderPass({
       colorAttachment: [resolveFrom],
       colorResolveTo: [resolveTo],
-      colorClearColor: [OpaqueBlack],
+      colorClearColor: [TransparentBlack],
       colorStore: [true],
       depthStencilAttachment: null,
       depthStencilResolveTo: null,
@@ -2156,7 +2150,11 @@ export class Device_GL implements SwapChain, Device {
     blitRenderPass.setBindings(0, this.blitBindings, [0]);
     blitRenderPass.setInputState(this.blitInputState);
     blitRenderPass.setViewport(0, 0, width, height);
+
+    // disable blending for blit
+    this.gl.disable(this.gl.BLEND);
     blitRenderPass.draw(3, 0);
+    this.gl.enable(this.gl.BLEND);
 
     // restore
     this.currentRenderPassDescriptor = currentRenderPassDescriptor;

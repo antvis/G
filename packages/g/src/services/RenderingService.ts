@@ -137,7 +137,7 @@ export class RenderingService {
     this.sceneGraphService.syncHierarchy(this.renderingContext.root);
 
     if (this.renderingContext.renderReasons.size && this.inited) {
-      this.renderDisplayObject(this.renderingContext.root);
+      this.renderDisplayObject(this.renderingContext.root, canvasConfig);
 
       if (
         this.renderingContext.dirty ||
@@ -158,30 +158,32 @@ export class RenderingService {
     // console.log('stats', this.stats);
   }
 
-  private renderDisplayObject(displayObject: DisplayObject) {
+  private renderDisplayObject(displayObject: DisplayObject, canvasConfig: Partial<CanvasConfig>) {
+    const { enableDirtyCheck, enableCulling } = canvasConfig.renderer.getConfig();
     // recalc style values
     this.styleValueRegistry.recalc(displayObject);
 
     // TODO: relayout
 
     // dirtycheck first
-    const objectChanged = this.hooks.dirtycheck.call(displayObject);
+    const objectChanged = enableDirtyCheck
+      ? this.hooks.dirtycheck.call(displayObject)
+      : displayObject;
     if (objectChanged) {
-      // const objectToRender = this.hooks.cull.call(objectChanged);
-      this.hooks.cull.call(objectChanged);
+      const objectToRender = enableCulling ? this.hooks.cull.call(objectChanged) : objectChanged;
 
-      // if (objectToRender) {
-      this.stats.rendered++;
-      if (!this.renderingContext.dirty) {
-        this.renderingContext.dirty = true;
-        this.hooks.beginFrame.call();
+      if (objectToRender) {
+        this.stats.rendered++;
+        if (!this.renderingContext.dirty) {
+          this.renderingContext.dirty = true;
+          this.hooks.beginFrame.call();
+        }
+
+        this.hooks.beforeRender.call(objectToRender);
+        this.hooks.render.call(objectToRender);
+        this.hooks.afterRender.call(objectToRender);
+        displayObject.renderable.dirty = false;
       }
-
-      this.hooks.beforeRender.call(objectChanged);
-      this.hooks.render.call(objectChanged);
-      this.hooks.afterRender.call(objectChanged);
-      displayObject.renderable.dirty = false;
-      // }
     }
 
     displayObject.sortable.renderOrder = this.zIndexCounter++;
@@ -199,7 +201,7 @@ export class RenderingService {
 
     // recursive rendering its children
     (sortable.sorted || displayObject.childNodes).forEach((child: DisplayObject) => {
-      this.renderDisplayObject(child);
+      this.renderDisplayObject(child, canvasConfig);
     });
 
     if (renderOrderChanged) {

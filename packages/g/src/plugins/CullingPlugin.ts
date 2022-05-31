@@ -1,6 +1,6 @@
-import { singleton, contrib, Syringe, Contribution } from 'mana-syringe';
+import { contrib, Contribution, singleton, Syringe } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects/DisplayObject';
-import type { RenderingService, RenderingPlugin } from '../services/RenderingService';
+import type { RenderingPlugin, RenderingService } from '../services/RenderingService';
 import { RenderingPluginContribution } from '../services/RenderingService';
 
 export const CullingStrategyContribution = Syringe.defineToken('CullingStrategyContribution');
