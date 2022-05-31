@@ -281,4 +281,48 @@ describe('DisplayObject Node API', () => {
     group.style.removeProperty('width');
     expect(group.style.getPropertyValue('width')).to.null;
   });
+
+  it('should (deep) cloneNode correctly', () => {
+    const group1 = new Group({
+      id: 'id1',
+      name: 'group1',
+      className: 'c1',
+      style: {
+        fontSize: 10,
+      },
+    });
+    group1.setPosition(100, 100);
+
+    let cloned = group1.cloneNode();
+    expect(cloned.id).to.be.eqls(group1.id);
+    expect(cloned.name).to.be.eqls(group1.name);
+    expect(cloned.className).to.be.eqls(group1.className);
+    expect(cloned.getPosition()).to.be.eqls(group1.getPosition());
+    expect(cloned.style.fontSize).to.be.eqls(group1.style.fontSize);
+
+    // deep clone
+    const group2 = new Group({
+      id: 'id2',
+      name: 'group2',
+      className: 'c2',
+      style: {
+        fontSize: 20,
+        transform: 'translate(100, 100)',
+      },
+    });
+    group1.appendChild(group2);
+    cloned = group1.cloneNode(true);
+    expect(cloned.id).to.be.eqls(group1.id);
+    expect(cloned.name).to.be.eqls(group1.name);
+    expect(cloned.className).to.be.eqls(group1.className);
+    expect(cloned.getPosition()).to.be.eqls(group1.getPosition());
+    expect(cloned.style.fontSize).to.be.eqls(group1.style.fontSize);
+    expect(cloned.children.length).to.be.eqls(1);
+    expect(cloned.children[0].id).to.be.eqls(group2.id);
+    expect(cloned.children[0].name).to.be.eqls(group2.name);
+    expect(cloned.children[0].className).to.be.eqls(group2.className);
+    expect(cloned.children[0].getPosition()).to.be.eqls(group2.getPosition());
+    expect(cloned.children[0].style.fontSize).to.be.eqls(group2.style.fontSize);
+    expect(cloned.children[0].style.transform).to.be.eqls(group2.style.transform);
+  });
 });

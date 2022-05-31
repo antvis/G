@@ -64,7 +64,7 @@ const ball = new Image({
 
 drag 相关事件都是 [PointerEvents](/zh/docs/api/event#交互事件)，因此可以在事件监听器中访问事件对象上的属性。
 
-例如开始拖拽时，我们记录下鼠标位置到被拖拽元素包围盒左上角的偏移量 `shiftX/Y`。在 `drag` 事件中我们调用 [setPosition](/zh/docs/api/basic/display-object#平移) 完成被拖拽图形的平移。
+例如开始拖拽时，我们记录下鼠标位置到被拖拽元素位置的偏移量 `shiftX/Y`，两者都在[Canvas/世界坐标系](/zh/docs/api/canvas#canvas-1)下。在 `drag` 事件中我们调用 [setPosition](/zh/docs/api/basic/display-object#平移) 完成被拖拽图形的平移。
 
 https://javascript.info/mouse-drag-and-drop#correct-positioning
 
@@ -81,8 +81,9 @@ ball.addEventListener('dragstart', function (e) {
     e.target.style.opacity = 0.5;
     ballText.style.text = 'ball dragstart';
 
-    shiftX = e.clientX - e.target.getBoundingClientRect().left;
-    shiftY = e.clientY - e.target.getBoundingClientRect().top;
+    const [x, y] = e.target.getPosition();
+    shiftX = e.canvasX - x;
+    shiftY = e.canvasY - y;
 
     moveAt(e.target, e.canvasX, e.canvasY);
 });

@@ -84,8 +84,9 @@ ball.addEventListener('dragstart', function (e) {
   e.target.style.opacity = 0.5;
   ballText.style.text = 'ball dragstart';
 
-  shiftX = e.clientX - e.target.getBoundingClientRect().left;
-  shiftY = e.clientY - e.target.getBoundingClientRect().top;
+  const [x, y] = e.target.getPosition();
+  shiftX = e.canvasX - x;
+  shiftY = e.canvasY - y;
 
   moveAt(e.target, e.canvasX, e.canvasY);
 });
