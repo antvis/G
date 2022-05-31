@@ -4,7 +4,6 @@ import type {
   ChannelBlendState,
   MegaStateDescriptor,
 } from '../interfaces';
-import { SamplerFormatKind, TextureDimension } from '../interfaces';
 import {
   BlendFactor,
   BlendMode,
@@ -12,7 +11,9 @@ import {
   CompareMode,
   CullMode,
   FrontFaceMode,
+  SamplerFormatKind,
   StencilOp,
+  TextureDimension,
 } from '../interfaces';
 import { colorCopy, colorNewCopy, TransparentBlack } from './color';
 // import { reverseDepthForCompareMode } from './depth';

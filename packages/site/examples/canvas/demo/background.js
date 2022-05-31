@@ -5,6 +5,10 @@ import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
+// set container's background
+const $wrapper = document.getElementById('container');
+$wrapper.style.background = 'grey';
+
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
 const svgRenderer = new SVGRenderer();
@@ -16,7 +20,7 @@ const canvas = new Canvas({
   width: 600,
   height: 500,
   renderer: canvasRenderer,
-  //   background: 'rgba(255, 0, 0, 0.5)',
+  background: 'rgba(255, 0, 0, 0.5)',
 });
 
 // create a circle
@@ -42,8 +46,6 @@ const $stats = stats.dom;
 $stats.style.position = 'absolute';
 $stats.style.left = '0px';
 $stats.style.top = '0px';
-const $wrapper = document.getElementById('container');
-$wrapper.style.background = 'grey';
 $wrapper.appendChild($stats);
 canvas.on('afterrender', () => {
   if (stats) {

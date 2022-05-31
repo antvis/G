@@ -3,6 +3,9 @@ import { isNil } from '@antv/g';
 import { EventEmitter } from 'eventemitter3';
 import type { Mesh } from '../Mesh';
 import type {
+  BlendFactor,
+  BlendMode,
+  Color,
   CompareMode,
   CullMode,
   Device,
@@ -12,13 +15,13 @@ import type {
   Texture,
 } from '../platform';
 import { TextureEvent } from '../platform';
-import { BlendFactor, BlendMode } from '../platform';
 import { copyMegaState, defaultMegaState } from '../platform/utils';
 import { getUniforms } from '../shader/compiler';
 
 export interface IMaterial {
   cullMode: CullMode;
 
+  blendConstant: Color;
   blendEquation: BlendMode;
   blendEquationAlpha: BlendMode;
   blendSrc: BlendFactor;
@@ -126,6 +129,12 @@ export abstract class Material<T extends IMaterial = any> extends EventEmitter {
   /**
    * Blending state
    */
+  get blendConstant() {
+    return this.props.blendConstant;
+  }
+  set blendConstant(value) {
+    this.props.blendConstant = value;
+  }
   get blendEquation() {
     return this.props.blendEquation;
   }
@@ -329,12 +338,6 @@ export abstract class Material<T extends IMaterial = any> extends EventEmitter {
       frontFace,
       polygonOffset,
       attachmentsState,
-      blendEquation: BlendMode.Add,
-      blendEquationAlpha: BlendMode.Add,
-      blendSrc: BlendFactor.SrcAlpha,
-      blendDst: BlendFactor.OneMinusSrcAlpha,
-      blendSrcAlpha: BlendFactor.Zero,
-      blendDstAlpha: BlendFactor.One,
       dithering: false,
       wireframe: false,
       wireframeColor: 'black',

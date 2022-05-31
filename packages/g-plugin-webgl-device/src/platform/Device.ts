@@ -62,8 +62,6 @@ import {
   GL,
   makeStaticDataBuffer,
   nullify,
-  OpaqueBlack,
-  OpaqueWhite,
   prependLineNo,
   preprocessProgramObj_GLSL,
   PrimitiveTopology,
@@ -71,6 +69,7 @@ import {
   SamplerFormatKind,
   TextureDimension,
   TextureUsage,
+  TransparentBlack,
   VertexBufferFrequency,
   ViewportOrigin,
 } from '@antv/g-plugin-device-renderer';
@@ -437,25 +436,21 @@ export class Device_GL implements SwapChain, Device {
   }
 
   present(): void {
-    const gl = this.gl;
-
-    // Force alpha to white.
-    if (this.currentMegaState.attachmentsState[0].channelWriteMask !== ChannelWriteMask.Alpha) {
-      gl.colorMask(false, false, false, true);
-      this.currentMegaState.attachmentsState[0].channelWriteMask = ChannelWriteMask.Alpha;
-    }
-
-    // TODO: clear depth & stencil
-    // @see https://github.com/visgl/luma.gl/blob/30a1039573/modules/webgl/src/classes/clear.ts
-
-    const { r, g, b, a } = OpaqueWhite;
-    if (isWebGL2(gl)) {
-      gl.clearBufferfv(gl.COLOR, 0, [r, g, b, a]);
-    } else {
-      gl.clearColor(r, g, b, a);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-    }
-
+    // const gl = this.gl;
+    // // Force alpha to white.
+    // if (this.currentMegaState.attachmentsState[0].channelWriteMask !== ChannelWriteMask.Alpha) {
+    //   gl.colorMask(false, false, false, true);
+    //   this.currentMegaState.attachmentsState[0].channelWriteMask = ChannelWriteMask.Alpha;
+    // }
+    // // TODO: clear depth & stencil
+    // // @see https://github.com/visgl/luma.gl/blob/30a1039573/modules/webgl/src/classes/clear.ts
+    // const { r, g, b, a } = OpaqueBlack;
+    // if (isWebGL2(gl)) {
+    //   gl.clearBufferfv(gl.COLOR, 0, [r, g, b, a]);
+    // } else {
+    //   gl.clearColor(r, g, b, a);
+    //   gl.clear(gl.COLOR_BUFFER_BIT);
+    // }
     // @see https://stackoverflow.com/questions/2143240/opengl-glflush-vs-glfinish
     // gl.flush();
   }
@@ -2109,7 +2104,8 @@ export class Device_GL implements SwapChain, Device {
         colorAttachmentFormats: [Format.U8_RGBA_RT],
         depthStencilAttachmentFormat: null,
         inputLayout,
-        megaStateDescriptor: copyMegaState(defaultMegaState),
+        // megaStateDescriptor: copyMegaState(defaultMegaState),
+        megaStateDescriptor: this.currentMegaState,
       });
 
       // const colorTexture = this.currentColorAttachments[0].texture;
@@ -2139,7 +2135,7 @@ export class Device_GL implements SwapChain, Device {
     const blitRenderPass = this.createRenderPass({
       colorAttachment: [resolveFrom],
       colorResolveTo: [resolveTo],
-      colorClearColor: [OpaqueBlack],
+      colorClearColor: [TransparentBlack],
       colorStore: [true],
       depthStencilAttachment: null,
       depthStencilResolveTo: null,
@@ -2154,7 +2150,11 @@ export class Device_GL implements SwapChain, Device {
     blitRenderPass.setBindings(0, this.blitBindings, [0]);
     blitRenderPass.setInputState(this.blitInputState);
     blitRenderPass.setViewport(0, 0, width, height);
+
+    // disable blending for blit
+    this.gl.disable(this.gl.BLEND);
     blitRenderPass.draw(3, 0);
+    this.gl.enable(this.gl.BLEND);
 
     // restore
     this.currentRenderPassDescriptor = currentRenderPassDescriptor;

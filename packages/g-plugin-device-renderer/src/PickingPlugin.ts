@@ -19,7 +19,7 @@ import {
 } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { PickingIdGenerator } from './PickingIdGenerator';
-import { BlendFactor, BlendMode, setAttachmentStateSimple, TransparentWhite } from './platform';
+import { BlendFactor, BlendMode, setAttachmentStateSimple, TransparentBlack } from './platform';
 import {
   AntialiasingMode,
   makeAttachmentClearDescriptor,
@@ -172,7 +172,7 @@ export class PickingPlugin implements RenderingPlugin {
 
     const renderInstManager = this.renderHelper.renderInstManager;
     const builder = this.renderHelper.renderGraph.newGraphBuilder();
-    const clearColor = TransparentWhite;
+    const clearColor = TransparentBlack;
 
     // retrieve at each frame since canvas may resize
     const { x, y, width, height } = rect;

@@ -19,7 +19,7 @@ export class WebGLDeviceContribution implements DeviceContribution {
       // @see https://webglfundamentals.org/webgl/lessons/webgl-qna-how-to-use-the-stencil-buffer.html
       stencil: true,
       // @see https://webglfundamentals.org/webgl/lessons/webgl-and-alpha.html
-      // premultipliedAlpha: false,
+      // premultipliedAlpha: true,
     };
     // this.handleContextEvents($canvas);
 

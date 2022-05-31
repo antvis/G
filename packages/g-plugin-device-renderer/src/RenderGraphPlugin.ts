@@ -29,7 +29,7 @@ import {
   BlendMode,
   colorNewFromRGBA,
   setAttachmentStateSimple,
-  TransparentWhite,
+  TransparentBlack,
 } from './platform';
 import type { RGGraphBuilder } from './render';
 import {
@@ -239,13 +239,15 @@ export class RenderGraphPlugin implements RenderingPlugin {
       // use canvas.background
       const backgroundColor = parseColor(this.canvasConfig.background) as CSSRGB;
       const clearColor = this.canvasConfig.background
-        ? colorNewFromRGBA(
-            Number(backgroundColor.r) / 255,
-            Number(backgroundColor.g) / 255,
-            Number(backgroundColor.b) / 255,
+        ? // use premultipliedAlpha
+          // @see https://canvatechblog.com/alpha-blending-and-webgl-99feb392779e
+          colorNewFromRGBA(
+            (Number(backgroundColor.r) / 255) * Number(backgroundColor.alpha),
+            (Number(backgroundColor.g) / 255) * Number(backgroundColor.alpha),
+            (Number(backgroundColor.b) / 255) * Number(backgroundColor.alpha),
             Number(backgroundColor.alpha),
           )
-        : TransparentWhite;
+        : TransparentBlack;
 
       // retrieve at each frame since canvas may resize
       const renderInput = {
@@ -303,14 +305,15 @@ export class RenderGraphPlugin implements RenderingPlugin {
         setAttachmentStateSimple(
           {
             depthWrite: true,
+            blendConstant: TransparentBlack,
           },
           {
             rgbBlendMode: BlendMode.Add,
             alphaBlendMode: BlendMode.Add,
             rgbBlendSrcFactor: BlendFactor.SrcAlpha,
-            alphaBlendSrcFactor: BlendFactor.Zero,
+            alphaBlendSrcFactor: BlendFactor.One,
             rgbBlendDstFactor: BlendFactor.OneMinusSrcAlpha,
-            alphaBlendDstFactor: BlendFactor.One,
+            alphaBlendDstFactor: BlendFactor.OneMinusSrcAlpha,
           },
         ),
       );

@@ -5,6 +5,13 @@
   },
   "demos": [
     {
+      "filename": "background.js",
+      "title": {
+        "zh": "设置画布背景色",
+        "en": "Set background of Canvas"
+      }
+    },
+    {
       "filename": "multi-canvas.tsx",
       "title": {
         "zh": "多个画布",

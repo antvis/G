@@ -47,7 +47,7 @@ import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import type { ProgramDescriptorSimpleWithOrig } from '../shader/compiler';
 import { preprocessProgramObj_GLSL } from '../shader/compiler';
 import { TexturePool } from '../TexturePool';
-import { compareDefines, enumToObject } from '../utils/enum';
+import { compareDefines, definedProps, enumToObject } from '../utils/enum';
 
 let counter = 1;
 const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
@@ -923,6 +923,7 @@ export abstract class Instanced {
       cullMode,
       frontFace,
       polygonOffset,
+      blendConstant,
       blendEquation,
       blendEquationAlpha,
       blendSrc,
@@ -930,6 +931,21 @@ export abstract class Instanced {
       blendSrcAlpha,
       blendDstAlpha,
     } = material;
+
+    const materialMegaState = definedProps({
+      blendConstant,
+      depthCompare,
+      depthWrite,
+      stencilCompare,
+      stencilWrite,
+      stencilPassOp,
+      stencilRef,
+      cullMode,
+      frontFace,
+      polygonOffset,
+    });
+
+    const currentAttachmentsState = renderInst.getMegaStateFlags().attachmentsState[0];
 
     renderInst.setMegaStateFlags({
       attachmentsState: [
@@ -940,27 +956,24 @@ export abstract class Instanced {
             : ChannelWriteMask.AllChannels,
           // channelWriteMask: ChannelWriteMask.AllChannels,
           rgbBlendState: {
-            blendMode: blendEquation,
-            blendSrcFactor: blendSrc,
-            blendDstFactor: blendDst,
+            ...currentAttachmentsState.rgbBlendState,
+            ...definedProps({
+              blendMode: blendEquation,
+              blendSrcFactor: blendSrc,
+              blendDstFactor: blendDst,
+            }),
           },
           alphaBlendState: {
-            blendMode: blendEquationAlpha,
-            blendSrcFactor: blendSrcAlpha,
-            blendDstFactor: blendDstAlpha,
+            ...currentAttachmentsState.alphaBlendState,
+            ...definedProps({
+              blendMode: blendEquationAlpha,
+              blendSrcFactor: blendSrcAlpha,
+              blendDstFactor: blendDstAlpha,
+            }),
           },
         },
       ],
-      // blendConstant: Color;
-      depthCompare,
-      depthWrite,
-      stencilCompare,
-      stencilWrite,
-      stencilPassOp,
-      stencilRef,
-      cullMode,
-      frontFace,
-      polygonOffset,
+      ...materialMegaState,
     });
 
     renderInst.setBindingLayouts([
