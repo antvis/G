@@ -21,7 +21,7 @@ import {
 import type { PointLike } from './shapes';
 import type { Cursor, InteractivePointerEvent } from './types';
 import { CanvasConfig } from './types';
-import { cleanExistedCanvas, isBrowser, getWidth, getHeight } from './utils';
+import { cleanExistedCanvas, getHeight, getWidth, isBrowser } from './utils';
 
 export enum CanvasEvent {
   READY = 'ready',
@@ -412,7 +412,7 @@ export class Canvas extends EventTarget implements ICanvas {
     tick();
   }
 
-  private initRenderer(renderer: IRenderer) {
+  private async initRenderer(renderer: IRenderer) {
     if (!renderer) {
       throw new Error('Renderer is required.');
     }
@@ -431,15 +431,15 @@ export class Canvas extends EventTarget implements ICanvas {
     this.eventService = this.container.get<EventService>(EventService);
 
     contextService.init();
-    this.renderingService.init().then(() => {
-      this.emit(CanvasEvent.READY, {});
+    await this.renderingService.init();
 
-      if (this.readyPromise) {
-        this.resolveReadyPromise();
-      }
+    this.emit(CanvasEvent.READY, {});
 
-      this.inited = true;
-    });
+    if (this.readyPromise) {
+      this.resolveReadyPromise();
+    }
+
+    this.inited = true;
 
     if (renderer.getConfig().enableAutoRendering) {
       this.run();

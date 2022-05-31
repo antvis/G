@@ -50,6 +50,10 @@ const webglRenderer = new WebGLRenderer({
 
 是否开启脏检查，默认开启。开启后只有图形发生变化才会触发画布重绘。
 
+## enableCulling
+
+是否开启视锥剔除，默认开启。开启后只有视口范围内的图形才会被绘制。
+
 # 修改配置
 
 通过 `setConfig` 可以修改初始化配置，例如再次开启自动渲染：

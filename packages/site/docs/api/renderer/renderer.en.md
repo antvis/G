@@ -2,7 +2,7 @@
 title: 简介
 order: -99
 redirect_from:
-    - /zh/docs/api/renderer
+    - /en/docs/api/renderer
 ---
 
 渲染器使用底层渲染 API 绘制各类图形，目前我们提供了以下渲染器，分别是：
@@ -49,6 +49,10 @@ const webglRenderer = new WebGLRenderer({
 ## enableDirtyCheck
 
 是否开启脏检查，默认开启。开启后只有图形发生变化才会触发画布重绘。
+
+## enableCulling
+
+是否开启视锥剔除，默认开启。开启后只有视口范围内的图形才会被绘制。
 
 # 修改配置
 

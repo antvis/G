@@ -1,32 +1,32 @@
 import type {
-  RenderingService,
-  RenderingPlugin,
-  PickingResult,
-  FederatedEvent,
   DisplayObject,
+  FederatedEvent,
+  PickingResult,
+  RenderingPlugin,
+  RenderingService,
 } from '@antv/g';
 import {
-  RenderingContext,
-  ElementEvent,
-  DefaultCamera,
   Camera,
-  RenderingPluginContribution,
-  SceneGraphService,
-  Rectangle,
-  ContextService,
   CanvasConfig,
   clamp,
+  ContextService,
+  DefaultCamera,
+  ElementEvent,
+  Rectangle,
+  RenderingContext,
+  RenderingPluginContribution,
+  SceneGraphService,
 } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import { PickingIdGenerator } from './PickingIdGenerator';
-import { BlendFactor, BlendMode, TransparentWhite, setAttachmentStateSimple } from './platform';
+import { BlendFactor, BlendMode, setAttachmentStateSimple, TransparentWhite } from './platform';
 import {
-  RenderHelper,
-  RGAttachmentSlot,
   AntialiasingMode,
   makeAttachmentClearDescriptor,
   makeBackbufferDescSimple,
   opaqueWhiteFullClearRenderPassDescriptor,
+  RenderHelper,
+  RGAttachmentSlot,
 } from './render';
 import { BatchManager } from './renderer';
 import { RenderGraphPlugin, SceneUniform, SceneUniformBufferIndex } from './RenderGraphPlugin';

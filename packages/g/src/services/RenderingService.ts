@@ -3,7 +3,7 @@ import { contrib, Contribution, inject, singleton, Syringe } from 'mana-syringe'
 import { StyleValueRegistry } from '../css/interfaces';
 import type { DisplayObject } from '../display-objects';
 import { ElementEvent } from '../dom';
-import { CanvasConfig, EventPosition, InteractivePointerEvent } from '../types';
+import type { CanvasConfig, EventPosition, InteractivePointerEvent } from '../types';
 import { AsyncParallelHook, AsyncSeriesWaterfallHook, SyncHook, SyncWaterfallHook } from '../utils';
 import { RenderingContext, RenderReason } from './RenderingContext';
 import { SceneGraphService, sortByZIndex } from './SceneGraphService';

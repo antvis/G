@@ -13,13 +13,14 @@ window.simplexNoise = require('simplex-noise');
 window.d3 = require('d3');
 window.d3Force3d = require('d3-force-3d');
 window.d3SvgAnnotation = require('d3-svg-annotation');
+// core
 window.g = require('@antv/g');
+// renderers
 window.gCanvas = require('@antv/g-canvas');
 window.gWebgl = require('@antv/g-webgl');
 window.gSvg = require('@antv/g-svg');
 window.gWebgpu = require('@antv/g-webgpu');
-window.gComponents = require('@antv/g-components');
-window.gWebComponents = require('@antv/g-web-components');
+window.gCanvaskit = require('@antv/g-canvaskit');
 // plugins
 window.gPluginCssSelect = require('@antv/g-plugin-css-select');
 window.gPlugin3d = require('@antv/g-plugin-3d');
@@ -34,6 +35,8 @@ window.gPluginRoughSvgRenderer = require('@antv/g-plugin-rough-svg-renderer');
 window.gPluginDragndrop = require('@antv/g-plugin-dragndrop');
 // compiler for GPGPU
 // window.webgpuGraph = require('@antv/webgpu-graph');
+window.gComponents = require('@antv/g-components');
+window.gWebComponents = require('@antv/g-web-components');
 
 window.reactG = require('@antv/react-g');
 window.mainWorker = require('./examples/canvas/demo/main.worker.js');

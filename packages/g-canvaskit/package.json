@@ -1,10 +1,12 @@
 {
-  "name": "@antv/g",
-  "version": "5.1.6",
-  "description": "A core module implements DOM API.",
+  "name": "@antv/g-canvaskit",
+  "version": "0.0.0",
+  "description": "A renderer implemented by CanvasKit",
   "keywords": [
     "antv",
-    "g"
+    "g",
+    "renderer",
+    "CanvasKit"
   ],
   "homepage": "https://github.com/antvis/g#readme",
   "bugs": {
@@ -16,7 +18,6 @@
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
-  "sideEffects": true,
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
@@ -28,21 +29,16 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-math": "^1.1.6",
-    "@antv/util": "^3.0.2",
-    "@types/offscreencanvas": "^2019.6.4",
-    "d3-color": "^1.4.0",
-    "eventemitter3": "^4.0.0",
-    "gl-matrix": "^3.1.0",
-    "mana-syringe": "^0.3.0",
-    "reflect-metadata": "^0.1.13",
-    "request-animation-frame-polyfill": "^1.1.2",
+    "canvaskit-wasm": "^0.28.1",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
-    "@types/d3-color": "^3.0.2",
     "@types/gl-matrix": "^2.4.5",
-    "@types/offscreencanvas": "^2019.6.1"
+    "@types/jest": "^25.0.0"
+  },
+  "peerDependencies": {
+    "@antv/g": "^5.0.1",
+    "mana-syringe": "^0.3.0"
   },
   "publishConfig": {
     "access": "public"

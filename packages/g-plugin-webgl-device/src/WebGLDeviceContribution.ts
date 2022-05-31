@@ -12,6 +12,7 @@ export class WebGLDeviceContribution implements DeviceContribution {
 
   async createSwapChain($canvas: HTMLCanvasElement) {
     const options: WebGLContextAttributes = {
+      // alpha: true,
       antialias: false,
       // @see https://stackoverflow.com/questions/27746091/preservedrawingbuffer-false-is-it-worth-the-effort
       preserveDrawingBuffer: false,
