@@ -1,7 +1,7 @@
 import { vec3 } from 'gl-matrix';
 import { GlobalContainer, inject, postConstruct, singleton } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects';
-import { ElementEvent } from '../dom';
+import { CustomEvent, ElementEvent } from '../dom';
 import type { GeometryAABBUpdater } from '../services/aabb/interfaces';
 import { GeometryUpdaterFactory } from '../services/aabb/interfaces';
 import { dirtifyToRoot } from '../services/SceneGraphService';
@@ -986,7 +986,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         ((anchor && anchor[1].value) || 0) * geometry.contentBounds.halfExtents[1] * 2;
       object.setOrigin(usedOriginXValue, usedOriginYValue);
 
-      object.emit(ElementEvent.GEOMETRY_BOUNDS_CHANGED, {});
+      object.dispatchEvent(new CustomEvent(ElementEvent.GEOMETRY_BOUNDS_CHANGED));
 
       dirtifyToRoot(object);
     }

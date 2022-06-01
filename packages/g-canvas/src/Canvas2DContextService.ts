@@ -12,7 +12,7 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
-  init() {
+  async init() {
     const { container, canvas, devicePixelRatio } = this.canvasConfig;
 
     if (canvas) {

@@ -11,7 +11,7 @@ export class SVGContextService implements ContextService<SVGElement> {
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
-  init() {
+  async init() {
     const { container, document: doc } = this.canvasConfig;
 
     // create container

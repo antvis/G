@@ -1,4 +1,4 @@
-import { Canvas, Circle } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -55,7 +55,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

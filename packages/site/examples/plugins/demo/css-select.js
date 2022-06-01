@@ -1,4 +1,4 @@
-import { Canvas, Group, Circle } from '@antv/g';
+import { Canvas, Circle, Group } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Plugin } from '@antv/g-plugin-css-select';
 import * as lil from 'lil-gui';
@@ -93,7 +93,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

@@ -1,8 +1,8 @@
-import { Canvas, Circle, Path, Image, Line, Polyline, CustomElement } from '@antv/g';
-import { Arrow } from '@antv/g-components';
+import { Canvas, Circle, CustomElement, Image, Line, Path, Polyline } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Arrow } from '@antv/g-components';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -138,7 +138,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

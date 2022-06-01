@@ -242,7 +242,7 @@ export class DisplayObject<
       return;
     }
 
-    if (force || attributeValue != this.attributes[attributeName]) {
+    if (force || attributeValue !== this.attributes[attributeName]) {
       this.internalSetAttribute(attributeName, attributeValue);
       super.setAttribute(attributeName, attributeValue);
     }
@@ -542,7 +542,7 @@ export class DisplayObject<
   ): Animation | null {
     let timeline = this.ownerDocument?.timeline;
 
-    // accounte for clip path, use target's timeline
+    // account for clip path, use target's timeline
     if (this.attributes.clipPathTargets && this.attributes.clipPathTargets.length) {
       const target = this.attributes.clipPathTargets[0];
       timeline = target.ownerDocument?.timeline;

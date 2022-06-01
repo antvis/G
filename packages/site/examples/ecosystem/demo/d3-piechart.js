@@ -1,9 +1,9 @@
 import { Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
-import * as lil from 'lil-gui';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as d3 from 'd3';
+import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 /**

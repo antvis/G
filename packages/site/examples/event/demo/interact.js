@@ -1,11 +1,11 @@
-import { Circle, Text, Rect, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Rect, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Plugin } from '@antv/g-plugin-css-select';
+import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import interact from 'interactjs';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
-import interact from 'interactjs';
 
 /**
  * use interact.js
@@ -253,7 +253,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

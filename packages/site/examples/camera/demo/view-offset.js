@@ -1,7 +1,7 @@
-import { Canvas, Group } from '@antv/g';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { MeshBasicMaterial, CubeGeometry, Mesh, Plugin as Plugin3D } from '@antv/g-plugin-3d';
+import { Canvas, CanvasEvent, Group } from '@antv/g';
+import { CubeGeometry, Mesh, MeshBasicMaterial, Plugin as Plugin3D } from '@antv/g-plugin-3d';
 import { Plugin as PluginControl } from '@antv/g-plugin-control';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -61,7 +61,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

@@ -1,7 +1,7 @@
-import { Text, Canvas } from '@antv/g';
+import { Canvas, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -43,7 +43,7 @@ const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
 
 const camera = canvas.getCamera();
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

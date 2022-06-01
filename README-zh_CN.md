@@ -34,14 +34,16 @@
         -   [g-plugin-device-renderer](https://g-next.antv.vision/zh/docs/plugins/device-renderer) 基于 GPUDevice 渲染 2D 图形
         -   [g-plugin-html-renderer](https://g-next.antv.vision/zh/docs/plugins/html-renderer) 渲染 DOM 元素
         -   [g-plugin-3d](https://g-next.antv.vision/zh/docs/plugins/3d) 基于 g-plugin-device-renderer 扩展 3D 能力
-        -   [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) 使用 [rough.js](https://roughjs.com/) 和 Canvs2D 进行手绘风格渲染
-        -   [g-plugin-rough-svg-renderer](https://g-next.antv.vision/en/docs/plugins/rough-svg-renderer) 使用 [rough.js](https://roughjs.com/) 和 SVG 进行手绘风格渲染
+        -   [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/zh/docs/plugins/rough-canvas-renderer) 使用 [rough.js](https://roughjs.com/) 和 Canvs2D 进行手绘风格渲染
+        -   [g-plugin-rough-svg-renderer](https://g-next.antv.vision/zh/docs/plugins/rough-svg-renderer) 使用 [rough.js](https://roughjs.com/) 和 SVG 进行手绘风格渲染
+        -   [g-plugin-canvaskit](https://g-next.antv.vision/zh/docs/plugins/canvaskit-renderer) 基于 [Skia](https://skia.org/docs/user/modules/quickstart) 渲染 2D 图形
     -   拾取
         -   [g-plugin-canvas-picker](https://g-next.antv.vision/zh/docs/plugins/canvas-picker) 基于 Canvas2D
         -   [g-plugin-svg-picker](https://g-next.antv.vision/zh/docs/plugins/svg-picker) 基于 SVG
     -   交互
         -   [g-plugin-dom-interaction](https://g-next.antv.vision/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
         -   [g-plugin-control](https://g-next.antv.vision/zh/docs/plugins/control) 为 3D 场景提供相机交互
+        -   [g-plugin-dragndrop](https://g-next.antv.vision/en/docs/plugins/dragndrop) 基于 PointerEvents 提供 Drag 'n' Drop
     -   物理引擎
         -   [g-plugin-box2d](https://g-next.antv.vision/zh/docs/plugins/box2d) 基于 Box2D
         -   [g-plugin-matterjs](https://g-next.antv.vision/zh/docs/plugins/matterjs) 基于 matter.js
@@ -73,7 +75,7 @@ $ npm install @antv/g-webgl --save
 ```
 
 ```js
-import { Circle, Canvas } from '@antv/g';
+import { Circle, Canvas, CanvasEvent } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 // or
 // import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -99,12 +101,14 @@ const circle = new Circle({
     },
 });
 
-// 加入画布
-canvas.appendChild(circle);
+canvas.addEventListener(CanvasEvent.READY, function () {
+    // 加入画布
+    canvas.appendChild(circle);
 
-// 监听 `click` 事件
-circle.addEventListener('click', function () {
-    this.style.fill = 'green';
+    // 监听 `click` 事件
+    circle.addEventListener('click', function () {
+        this.style.fill = 'green';
+    });
 });
 ```
 

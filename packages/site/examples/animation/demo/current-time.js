@@ -1,7 +1,7 @@
-import { Circle, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -29,17 +29,17 @@ const circle = new Circle({
   },
 });
 
-canvas.appendChild(circle);
+let animation;
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(circle);
 
-const animation = circle.animate(
-  [{ transform: 'translateX(0)' }, { transform: 'translateX(200px)' }],
-  {
+  animation = circle.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(200px)' }], {
     duration: 2500,
     easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
     iterations: Infinity,
     direction: 'alternate',
-  },
-);
+  });
+});
 
 // stats
 const stats = new Stats();
@@ -50,7 +50,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

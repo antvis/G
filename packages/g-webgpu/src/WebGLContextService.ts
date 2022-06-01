@@ -12,7 +12,7 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
-  init() {
+  async init() {
     const { container, canvas, devicePixelRatio } = this.canvasConfig;
 
     if (canvas) {

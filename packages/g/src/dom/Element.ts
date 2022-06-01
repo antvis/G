@@ -131,6 +131,10 @@ export class Element<
   }
 
   appendChild<T extends INode>(child: T, index?: number): T {
+    child.forEach((node) => {
+      node.ownerDocument = this.ownerDocument;
+    });
+
     this.sceneGraphService.attach(child, this, index);
 
     this.dispatchEvent(
@@ -167,6 +171,9 @@ export class Element<
   }
 
   removeChild<T extends INode>(child: T, destroy = true): T {
+    child.forEach((node) => {
+      node.ownerDocument = null;
+    });
     // should emit on itself before detach
     // child.emit(ElementEvent.REMOVED, {
     //   parent: this,

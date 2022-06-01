@@ -1,7 +1,7 @@
-import { Circle, Text, Group, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Group, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -191,36 +191,38 @@ const effects = [
   }),
 ];
 
-effects.forEach((f, i) => {
-  const { name, keyframes, animationOptions } = f();
-  const row = Math.floor(i / 4);
-  const group = new Group();
-  const circle = new Circle({
-    style: {
-      r: 50,
-      fill: '#1890FF',
-      stroke: '#F04864',
-      lineWidth: 4,
-    },
-  });
-  const text = new Text({
-    style: {
-      text: name,
-      fontSize: 10,
-      fill: '#000',
-      textAlign: 'center',
-      textBaseline: 'middle',
-    },
-  });
-  circle.appendChild(text);
-  group.appendChild(circle);
-  canvas.appendChild(group);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  effects.forEach((f, i) => {
+    const { name, keyframes, animationOptions } = f();
+    const row = Math.floor(i / 4);
+    const group = new Group();
+    const circle = new Circle({
+      style: {
+        r: 50,
+        fill: '#1890FF',
+        stroke: '#F04864',
+        lineWidth: 4,
+      },
+    });
+    const text = new Text({
+      style: {
+        text: name,
+        fontSize: 10,
+        fill: '#000',
+        textAlign: 'center',
+        textBaseline: 'middle',
+      },
+    });
+    circle.appendChild(text);
+    group.appendChild(circle);
+    canvas.appendChild(group);
 
-  group.setPosition(50 + 150 * (i % 4), 50 + 150 * row);
+    group.setPosition(50 + 150 * (i % 4), 50 + 150 * row);
 
-  circle.animate(keyframes, {
-    ...animationOptions,
-    iterations: Infinity,
+    circle.animate(keyframes, {
+      ...animationOptions,
+      iterations: Infinity,
+    });
   });
 });
 
@@ -233,7 +235,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

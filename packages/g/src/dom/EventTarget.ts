@@ -1,8 +1,8 @@
 import { EventEmitter } from 'eventemitter3';
+import { isBoolean, isFunction, isObject } from '../utils';
 import { CustomEvent } from './CustomEvent';
 import { FederatedEvent } from './FederatedEvent';
-import type { IElement, INode, IEventTarget } from './interfaces';
-import { isFunction, isBoolean, isObject } from '../utils';
+import type { IElement, IEventTarget, INode } from './interfaces';
 
 export const DELEGATION_SPLITTER = ':';
 

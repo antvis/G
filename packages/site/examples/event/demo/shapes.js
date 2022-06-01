@@ -1,7 +1,7 @@
-import { Circle, Rect, Ellipse, Image, Line, Polyline, Path, Polygon, Text, Canvas } from '@antv/g';
+import { Canvas, Circle, Ellipse, Image, Line, Path, Polygon, Polyline, Rect, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 

@@ -1,10 +1,10 @@
-import { Circle, Line, Text, Canvas } from '@antv/g';
+import { Canvas, Circle, Line, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import Hammer from 'hammerjs';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
-import Hammer from 'hammerjs';
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
@@ -117,7 +117,7 @@ $wrapper.appendChild($stats);
 const camera = canvas.getCamera();
 camera.pan(1000, 800);
 camera.setZoom(0.05);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

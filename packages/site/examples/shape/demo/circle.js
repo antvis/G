@@ -1,4 +1,4 @@
-import { Circle, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -35,8 +35,10 @@ const circle = new Circle({
   },
 });
 
-// add a circle to canvas
-canvas.appendChild(circle);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  // add a circle to canvas
+  canvas.appendChild(circle);
+});
 
 // use AntV G devtools
 window.__g_instances__ = [canvas];
@@ -50,7 +52,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

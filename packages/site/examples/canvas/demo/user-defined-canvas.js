@@ -1,4 +1,4 @@
-import { Circle, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import Stats from 'stats.js';
 
@@ -47,7 +47,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

@@ -428,6 +428,7 @@ export interface ICSSStyleDeclaration<StyleProps> {
 export interface ICanvas extends IEventTarget {
   document: IDocument;
   customElements: CustomElementRegistry;
+  isInited: boolean;
 
   devicePixelRatio: number;
   requestAnimationFrame: (callback: FrameRequestCallback) => number;

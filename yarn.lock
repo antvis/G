@@ -10040,10 +10040,10 @@ canvas@^2.9.1:
     nan "^2.15.0"
     simple-get "^3.0.3"
 
-canvaskit-wasm@^0.28.1:
-  version "0.28.1"
-  resolved "https://registry.yarnpkg.com/canvaskit-wasm/-/canvaskit-wasm-0.28.1.tgz#a773cef0016ce8f91484a6fd5da1f4a07db1d8e0"
-  integrity sha512-f5nt1T00MXGVvs+7c7DRA8YoFAbd0ABgzd2sZvikqefWrxveh29BWprl043r/bCggDbpMu1XpCz86fdVDH041g==
+canvaskit-wasm@^0.34.0:
+  version "0.34.0"
+  resolved "https://registry.yarnpkg.com/canvaskit-wasm/-/canvaskit-wasm-0.34.0.tgz#047d73a59168d32295834a817f1f871fe8cadeb2"
+  integrity sha512-THKk3f4AQsN0tEygu/yI/vvIChm6gNg/V80174V1x54Uk1RHADRqG5a/Iq425l8NY3lk1bon0/gpeE7yQKqFQQ==
 
 capitalize@^2.0.0:
   version "2.0.4"

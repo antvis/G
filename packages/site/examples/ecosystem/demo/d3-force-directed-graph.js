@@ -1,10 +1,10 @@
-import { Canvas } from '@antv/g';
+import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Plugin as PluginCSSSelect } from '@antv/g-plugin-css-select';
-import * as lil from 'lil-gui';
+import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as d3 from 'd3';
+import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 /**
@@ -512,18 +512,18 @@ const miserables = {
   ],
 };
 
-const chart = ForceGraph(miserables, {
-  nodeId: (d) => d.id,
-  nodeGroup: (d) => d.group,
-  nodeTitle: (d) => `${d.id}\n${d.group}`,
-  linkStroke: () => '#999',
-  linkStrokeWidth: (l) => Math.sqrt(l.value),
-  width: 600,
-  height: 600,
-  invalidation: null, // a promise to stop the simulation when the cell is re-run
+canvas.addEventListener(CanvasEvent.READY, () => {
+  const chart = ForceGraph(miserables, {
+    nodeId: (d) => d.id,
+    nodeGroup: (d) => d.group,
+    nodeTitle: (d) => `${d.id}\n${d.group}`,
+    linkStroke: () => '#999',
+    linkStrokeWidth: (l) => Math.sqrt(l.value),
+    width: 600,
+    height: 600,
+    invalidation: null, // a promise to stop the simulation when the cell is re-run
+  });
 });
-
-console.log(chart);
 
 // stats
 const stats = new Stats();
@@ -534,7 +534,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }
