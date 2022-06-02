@@ -1,4 +1,4 @@
-import { Canvas, Circle } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -18,28 +18,30 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-for (let i = 0; i < 1000; i++) {
-  const circle = new Circle({
-    style: {
-      cx: Math.random() * 600,
-      cy: Math.random() * 500,
-      r: 20 + Math.random() * 10,
-      fill: '#1890FF',
-      stroke: '#F04864',
-      lineWidth: 4,
-    },
-  });
+canvas.addEventListener(CanvasEvent.READY, () => {
+  for (let i = 0; i < 1000; i++) {
+    const circle = new Circle({
+      style: {
+        cx: Math.random() * 600,
+        cy: Math.random() * 500,
+        r: 20 + Math.random() * 10,
+        fill: '#1890FF',
+        stroke: '#F04864',
+        lineWidth: 4,
+      },
+    });
 
-  canvas.appendChild(circle);
+    canvas.appendChild(circle);
 
-  circle.on('mouseenter', () => {
-    circle.attr('fill', '#2FC25B');
-  });
+    circle.on('mouseenter', () => {
+      circle.attr('fill', '#2FC25B');
+    });
 
-  circle.on('mouseleave', () => {
-    circle.attr('fill', '#1890FF');
-  });
-}
+    circle.on('mouseleave', () => {
+      circle.attr('fill', '#1890FF');
+    });
+  }
+});
 
 // stats
 const stats = new Stats();

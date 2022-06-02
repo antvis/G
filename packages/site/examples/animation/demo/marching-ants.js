@@ -28,12 +28,6 @@ const circle = new Circle({
     lineDash: [10, 10],
   },
 });
-canvas.appendChild(circle);
-
-circle.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
-  duration: 500,
-  iterations: Infinity,
-});
 
 const rect = new Rect({
   style: {
@@ -47,10 +41,19 @@ const rect = new Rect({
     lineDash: [10, 10],
   },
 });
-canvas.appendChild(rect);
-rect.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
-  duration: 500,
-  iterations: Infinity,
+
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(circle);
+  circle.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
+    duration: 500,
+    iterations: Infinity,
+  });
+
+  canvas.appendChild(rect);
+  rect.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
+    duration: 500,
+    iterations: Infinity,
+  });
 });
 
 // stats

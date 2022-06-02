@@ -38,6 +38,7 @@ describe('Render <Image> with g-canvas', () => {
   });
 
   it('should render image on server-side correctly.', async () => {
+    await canvas.ready;
     const image = new Image({
       style: {
         width: 100,

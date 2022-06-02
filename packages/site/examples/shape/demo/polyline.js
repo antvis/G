@@ -1,4 +1,4 @@
-import { Canvas, Polyline } from '@antv/g';
+import { Canvas, CanvasEvent, Polyline } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -46,7 +46,9 @@ const polyline = new Polyline({
   },
 });
 
-canvas.appendChild(polyline);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(polyline);
+});
 
 // stats
 const stats = new Stats();

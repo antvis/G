@@ -1,5 +1,5 @@
 import { Syringe } from 'mana-syringe';
-import type { Group } from '../display-objects';
+import type { DisplayObject, Group } from '../display-objects';
 
 /**
  * why we need re-render
@@ -26,6 +26,9 @@ export interface RenderingContext {
    * reason of re-render, reset after every renderred frame
    */
   renderReasons: Set<RenderReason>;
+
+  renderListLastFrame: DisplayObject[];
+  renderListCurrentFrame: DisplayObject[];
 
   dirty: boolean;
 }

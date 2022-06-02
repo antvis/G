@@ -1,4 +1,4 @@
-import { Canvas, Image, Text } from '@antv/g';
+import { Canvas, CanvasEvent, Image, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Plugin } from '@antv/g-plugin-dragndrop';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -27,93 +27,95 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const gate = new Image({
-  style: {
-    droppable: true,
-    x: 50,
-    y: 100,
-    width: 200,
-    height: 100,
-    src: 'https://en.js.cx/clipart/soccer-gate.svg',
-  },
-});
+canvas.addEventListener(CanvasEvent.READY, () => {
+  const gate = new Image({
+    style: {
+      droppable: true,
+      x: 50,
+      y: 100,
+      width: 200,
+      height: 100,
+      src: 'https://en.js.cx/clipart/soccer-gate.svg',
+    },
+  });
 
-const ball = new Image({
-  style: {
-    draggable: true,
-    x: 300,
-    y: 200,
-    width: 100,
-    height: 100,
-    src: 'https://en.js.cx/clipart/ball.svg',
-    cursor: 'pointer',
-  },
-});
+  const ball = new Image({
+    style: {
+      draggable: true,
+      x: 300,
+      y: 200,
+      width: 100,
+      height: 100,
+      src: 'https://en.js.cx/clipart/ball.svg',
+      cursor: 'pointer',
+    },
+  });
 
-canvas.appendChild(gate);
-canvas.appendChild(ball);
+  canvas.appendChild(gate);
+  canvas.appendChild(ball);
 
-const gateText = new Text({
-  style: {
-    x: 50,
-    y: 350,
-    fill: 'black',
-    text: '',
-    pointerEvents: 'none',
-  },
-});
-const ballText = new Text({
-  style: {
-    x: 50,
-    y: 400,
-    fill: 'black',
-    text: '',
-    pointerEvents: 'none',
-  },
-});
-canvas.appendChild(gateText);
-canvas.appendChild(ballText);
+  const gateText = new Text({
+    style: {
+      x: 50,
+      y: 350,
+      fill: 'black',
+      text: '',
+      pointerEvents: 'none',
+    },
+  });
+  const ballText = new Text({
+    style: {
+      x: 50,
+      y: 400,
+      fill: 'black',
+      text: '',
+      pointerEvents: 'none',
+    },
+  });
+  canvas.appendChild(gateText);
+  canvas.appendChild(ballText);
 
-let shiftX = 0;
-let shiftY = 0;
-function moveAt(target, canvasX, canvasY) {
-  target.setPosition(canvasX - shiftX, canvasY - shiftY);
-}
+  let shiftX = 0;
+  let shiftY = 0;
+  function moveAt(target, canvasX, canvasY) {
+    target.setPosition(canvasX - shiftX, canvasY - shiftY);
+  }
 
-ball.addEventListener('dragstart', function (e) {
-  e.target.style.opacity = 0.5;
-  ballText.style.text = 'ball dragstart';
+  ball.addEventListener('dragstart', function (e) {
+    e.target.style.opacity = 0.5;
+    ballText.style.text = 'ball dragstart';
 
-  const [x, y] = e.target.getPosition();
-  shiftX = e.canvasX - x;
-  shiftY = e.canvasY - y;
+    const [x, y] = e.target.getPosition();
+    shiftX = e.canvasX - x;
+    shiftY = e.canvasY - y;
 
-  moveAt(e.target, e.canvasX, e.canvasY);
-});
-ball.addEventListener('drag', function (e) {
-  moveAt(e.target, e.canvasX, e.canvasY);
-  ballText.style.text = `ball drag movement: ${e.movementX}, ${e.movementY}`;
-});
-ball.addEventListener('dragend', function (e) {
-  e.target.style.opacity = 1;
-  ballText.style.text = 'ball dragend';
-});
+    moveAt(e.target, e.canvasX, e.canvasY);
+  });
+  ball.addEventListener('drag', function (e) {
+    moveAt(e.target, e.canvasX, e.canvasY);
+    ballText.style.text = `ball drag movement: ${e.movementX}, ${e.movementY}`;
+  });
+  ball.addEventListener('dragend', function (e) {
+    e.target.style.opacity = 1;
+    ballText.style.text = 'ball dragend';
+  });
 
-gate.addEventListener('dragenter', function (e) {
-  e.target.style.opacity = 0.6;
-  gateText.style.text = 'gate dragenter';
-});
-gate.addEventListener('dragleave', function (e) {
-  e.target.style.opacity = 1;
-  gateText.style.text = 'gate dragleave';
-});
-gate.addEventListener('dragover', function (e) {
-  e.target.style.opacity = 0.6;
-  gateText.style.text = 'gate dragover';
-});
-gate.addEventListener('drop', function (e) {
-  e.target.style.opacity = 1;
-  gateText.style.text = 'gate drop';
+  gate.addEventListener('dragenter', function (e) {
+    e.target.style.opacity = 0.6;
+    gateText.style.text = 'gate dragenter';
+  });
+  gate.addEventListener('dragleave', function (e) {
+    e.target.style.opacity = 1;
+    gateText.style.text = 'gate dragleave';
+  });
+  gate.addEventListener('dragover', function (e) {
+    e.target.style.opacity = 0.6;
+    gateText.style.text = 'gate dragover';
+  });
+  gate.addEventListener('drop', function (e) {
+    e.target.style.opacity = 1;
+    gateText.style.text = 'gate drop';
+  });
 });
 
 // stats

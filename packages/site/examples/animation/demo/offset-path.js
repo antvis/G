@@ -106,29 +106,32 @@ const circle3 = new Circle({
   },
 });
 
-canvas.appendChild(offsetPathPolyline);
-canvas.appendChild(circle1);
-canvas.appendChild(circle2);
-canvas.appendChild(circle3);
+let animation;
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(offsetPathPolyline);
+  canvas.appendChild(circle1);
+  canvas.appendChild(circle2);
+  canvas.appendChild(circle3);
 
-circle1.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
-  duration: 2500,
-  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-  iterations: Infinity,
-  direction: 'alternate',
-});
-const animation = circle2.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
-  duration: 3500,
-  easing: 'linear',
-  iterations: Infinity,
-  direction: 'alternate',
-});
+  circle1.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
+    duration: 2500,
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+    iterations: Infinity,
+    direction: 'alternate',
+  });
+  animation = circle2.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
+    duration: 3500,
+    easing: 'linear',
+    iterations: Infinity,
+    direction: 'alternate',
+  });
 
-circle3.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
-  duration: 4500,
-  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-  iterations: Infinity,
-  direction: 'alternate',
+  circle3.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
+    duration: 4500,
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+    iterations: Infinity,
+    direction: 'alternate',
+  });
 });
 
 // stats

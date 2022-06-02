@@ -43,33 +43,35 @@ const ball = new Image({
   },
 });
 
-canvas.appendChild(gate);
-canvas.appendChild(ball);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(gate);
+  canvas.appendChild(ball);
 
-ball.addEventListener('pointerdown', function (event) {
-  let shiftX = event.clientX - ball.getBoundingClientRect().left;
-  let shiftY = event.clientY - ball.getBoundingClientRect().top;
+  ball.addEventListener('pointerdown', function (event) {
+    let shiftX = event.clientX - ball.getBoundingClientRect().left;
+    let shiftY = event.clientY - ball.getBoundingClientRect().top;
 
-  moveAt(event.canvasX, event.canvasY);
-
-  function moveAt(canvasX, canvasY) {
-    ball.style.x = canvasX - shiftX + 'px';
-    ball.style.y = canvasY - shiftY + 'px';
-  }
-
-  async function onMouseMove(event) {
     moveAt(event.canvasX, event.canvasY);
-  }
 
-  canvas.document.addEventListener('pointermove', onMouseMove);
+    function moveAt(canvasX, canvasY) {
+      ball.style.x = canvasX - shiftX + 'px';
+      ball.style.y = canvasY - shiftY + 'px';
+    }
 
-  ball.addEventListener(
-    'pointerup',
-    function () {
-      canvas.document.removeEventListener('pointermove', onMouseMove);
-    },
-    { once: true },
-  );
+    async function onMouseMove(event) {
+      moveAt(event.canvasX, event.canvasY);
+    }
+
+    canvas.document.addEventListener('pointermove', onMouseMove);
+
+    ball.addEventListener(
+      'pointerup',
+      function () {
+        canvas.document.removeEventListener('pointermove', onMouseMove);
+      },
+      { once: true },
+    );
+  });
 });
 
 // stats

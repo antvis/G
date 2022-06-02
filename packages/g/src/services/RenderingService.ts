@@ -60,10 +60,6 @@ export class RenderingService {
      * number of display objects need to render in current frame
      */
     rendered: 0,
-    /**
-     * number of display objects displayed on screen
-     */
-    renderedOnscreen: 0,
   };
 
   private zIndexCounter = 0;
@@ -140,18 +136,23 @@ export class RenderingService {
       this.renderDisplayObject(this.renderingContext.root, canvasConfig);
 
       if (
-        this.renderingContext.dirty ||
-        (canvasConfig.renderer.getConfig().enableDirtyRectangleRendering && this.stats.total === 1)
+        this.renderingContext.renderListCurrentFrame.length ||
+        this.renderingContext.renderListLastFrame.length !==
+          this.renderingContext.renderListCurrentFrame.length
       ) {
-        if (!this.renderingContext.dirty) {
-          this.hooks.beginFrame.call();
-        }
+        this.hooks.beginFrame.call();
 
-        this.stats.renderedOnscreen = this.stats.rendered;
+        this.renderingContext.renderListCurrentFrame.forEach((object) => {
+          this.hooks.beforeRender.call(object);
+          this.hooks.render.call(object);
+          this.hooks.afterRender.call(object);
+        });
+
         this.hooks.endFrame.call();
-        this.renderingContext.dirty = false;
       }
 
+      this.renderingContext.renderListLastFrame = [...this.renderingContext.renderListCurrentFrame];
+      this.renderingContext.renderListCurrentFrame = [];
       this.renderingContext.renderReasons.clear();
     }
 
@@ -174,18 +175,11 @@ export class RenderingService {
 
       if (objectToRender) {
         this.stats.rendered++;
-        if (!this.renderingContext.dirty) {
-          this.renderingContext.dirty = true;
-          this.hooks.beginFrame.call();
-        }
-
-        this.hooks.beforeRender.call(objectToRender);
-        this.hooks.render.call(objectToRender);
-        this.hooks.afterRender.call(objectToRender);
-        displayObject.renderable.dirty = false;
+        this.renderingContext.renderListCurrentFrame.push(objectToRender);
       }
     }
 
+    displayObject.renderable.dirty = false;
     displayObject.sortable.renderOrder = this.zIndexCounter++;
 
     this.stats.total++;

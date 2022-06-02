@@ -1,4 +1,4 @@
-import { Circle, Line, Text, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Line, Text } from '@antv/g';
 import { Renderer } from '@antv/g-canvas';
 import interact from 'interactjs';
 
@@ -70,33 +70,35 @@ const edge = new Line({
   },
 });
 
-// 向画布中添加图形
-canvas.appendChild(edge);
-canvas.appendChild(node1);
-canvas.appendChild(node2);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  // 向画布中添加图形
+  canvas.appendChild(edge);
+  canvas.appendChild(node1);
+  canvas.appendChild(node2);
 
-// 为节点1添加交互，鼠标悬停改变颜色
-node1.addEventListener('mouseenter', () => {
-  node1.style.fill = 'red';
-});
-node1.addEventListener('mouseleave', () => {
-  node1.style.fill = '#1890FF';
-});
+  // 为节点1添加交互，鼠标悬停改变颜色
+  node1.addEventListener('mouseenter', () => {
+    node1.style.fill = 'red';
+  });
+  node1.addEventListener('mouseleave', () => {
+    node1.style.fill = '#1890FF';
+  });
 
-// 使用 interact.js 实现拖拽
-interact(node1, {
-  // 直接传入节点1
-  context: canvas.document, // 传入上下文
-}).draggable({
-  onmove: function (event) {
-    // interact.js 告诉我们的偏移量
-    const { dx, dy } = event;
-    // 改变节点1位置
-    node1.translateLocal(dx, dy);
-    // 获取节点1位置
-    const [nx, ny] = node1.getLocalPosition();
-    // 改变边的端点位置
-    edge.style.x1 = nx;
-    edge.style.y1 = ny;
-  },
+  // 使用 interact.js 实现拖拽
+  interact(node1, {
+    // 直接传入节点1
+    context: canvas.document, // 传入上下文
+  }).draggable({
+    onmove: function (event) {
+      // interact.js 告诉我们的偏移量
+      const { dx, dy } = event;
+      // 改变节点1位置
+      node1.translateLocal(dx, dy);
+      // 获取节点1位置
+      const [nx, ny] = node1.getLocalPosition();
+      // 改变边的端点位置
+      edge.style.x1 = nx;
+      edge.style.y1 = ny;
+    },
+  });
 });

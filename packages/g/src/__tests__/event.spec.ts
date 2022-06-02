@@ -42,7 +42,7 @@ describe('Event API like DOM', () => {
   afterAll(() => {
     canvas.destroy();
   });
-  it('pointerdown/mousedown/touchstart/rightdown', () => {
+  it('pointerdown/mousedown/touchstart/rightdown', async () => {
     const circle = new Circle({
       id: 'circle',
       style: {
@@ -57,6 +57,8 @@ describe('Event API like DOM', () => {
       },
     });
     circle.setPosition(300, 200);
+
+    await canvas.ready;
     canvas.appendChild(circle);
 
     const pointerdownCallback = sinon.spy();
@@ -109,7 +111,7 @@ describe('Event API like DOM', () => {
     circle.destroy();
   });
 
-  it('pointerup/mouseup/touchend/rightup', () => {
+  it('pointerup/mouseup/touchend/rightup', async () => {
     const circle = new Circle({
       id: 'circle',
       style: {
@@ -124,6 +126,8 @@ describe('Event API like DOM', () => {
       },
     });
     circle.setPosition(300, 200);
+
+    await canvas.ready;
     canvas.appendChild(circle);
 
     const pointerdownCallback = sinon.spy();
@@ -186,9 +190,9 @@ describe('Event API like DOM', () => {
     });
 
     parent.appendChild(child);
-    canvas.appendChild(parent);
 
-    await sleep(200);
+    await canvas.ready;
+    canvas.appendChild(parent);
 
     expect(eventStack.length).to.be.eqls(2);
     expect(eventStack[0]).to.be.eqls([parent, AT_TARGET]);
@@ -209,9 +213,9 @@ describe('Event API like DOM', () => {
     );
 
     parent.appendChild(child);
-    canvas.appendChild(parent);
 
-    await sleep(200);
+    await canvas.ready;
+    canvas.appendChild(parent);
 
     expect(eventStack.length).to.be.eqls(2);
     expect(eventStack[0]).to.be.eqls([parent, AT_TARGET]);
@@ -226,6 +230,8 @@ describe('Event API like DOM', () => {
 
     form.appendChild(div);
     div.appendChild(p);
+
+    await canvas.ready;
     canvas.appendChild(form);
 
     const event = new CustomEvent('build', { detail: { prop1: 'xx' } });
@@ -244,8 +250,6 @@ describe('Event API like DOM', () => {
     });
 
     p.dispatchEvent(event);
-
-    await sleep(400);
 
     expect(eventStack.length).to.be.eqls(6);
     expect(eventStack[0]).to.be.eqls([form, CAPTURING_PHASE]);
@@ -271,6 +275,8 @@ describe('Event API like DOM', () => {
       },
     });
     circle.setPosition(300, 200);
+
+    await canvas.ready;
     canvas.appendChild(circle);
 
     const pointerdownCallback = sinon.spy();
@@ -300,8 +306,7 @@ describe('Event API like DOM', () => {
       changedTouches: [touch],
     });
 
-    // wait for rendering at next frame
-    await sleep(20);
+    await sleep(100);
 
     $canvas.dispatchEvent(touchEvent);
 

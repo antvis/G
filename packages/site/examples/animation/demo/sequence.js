@@ -31,77 +31,79 @@ const circle = new Circle({
   },
 });
 
-canvas.appendChild(circle);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(circle);
 
-(async () => {
-  const moveRight = circle.animate(
-    [
+  (async () => {
+    const moveRight = circle.animate(
+      [
+        {
+          transform: 'translate(0)',
+        },
+        {
+          transform: 'translate(100px)',
+        },
+      ],
       {
-        transform: 'translate(0)',
+        duration: 1000,
+        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+        fill: 'both',
       },
-      {
-        transform: 'translate(100px)',
-      },
-    ],
-    {
-      duration: 1000,
-      easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-      fill: 'both',
-    },
-  );
-  await moveRight.finished;
+    );
+    await moveRight.finished;
 
-  const moveDown = circle.animate(
-    [
+    const moveDown = circle.animate(
+      [
+        {
+          transform: 'translate(100px)',
+        },
+        {
+          transform: 'translate(100px, 100px)',
+        },
+      ],
       {
-        transform: 'translate(0)',
+        duration: 1000,
+        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+        fill: 'both',
       },
-      {
-        transform: 'translate(0, 100px)',
-      },
-    ],
-    {
-      duration: 1000,
-      easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-      fill: 'both',
-    },
-  );
-  await moveDown.finished;
+    );
+    await moveDown.finished;
 
-  const moveLeft = circle.animate(
-    [
+    const moveLeft = circle.animate(
+      [
+        {
+          transform: 'translate(100px, 100px)',
+        },
+        {
+          transform: 'translate(0, 100px)',
+        },
+      ],
       {
-        transform: 'translate(0)',
+        duration: 1000,
+        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+        fill: 'both',
       },
-      {
-        transform: 'translate(-100px)',
-      },
-    ],
-    {
-      duration: 1000,
-      easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-      fill: 'both',
-    },
-  );
-  await moveLeft.finished;
+    );
+    await moveLeft.finished;
 
-  const moveUp = circle.animate(
-    [
+    const moveUp = circle.animate(
+      [
+        {
+          transform: 'translate(0, 100px)',
+        },
+        {
+          transform: 'translate(0, 0)',
+        },
+      ],
       {
-        transform: 'translate(0)',
+        duration: 1000,
+        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+        fill: 'both',
       },
-      {
-        transform: 'translate(0, -100px)',
-      },
-    ],
-    {
-      duration: 1000,
-      easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-      fill: 'both',
-    },
-  );
-  await moveUp.finished;
-})();
+    );
+    await moveUp.finished;
+  })();
+});
 
 // stats
 const stats = new Stats();

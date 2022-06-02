@@ -12,7 +12,6 @@ import {
 } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { expect } from 'chai';
-import { sleep } from '../../__tests__/utils';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -235,13 +234,11 @@ describe('StyleValueRegistry initialization', () => {
     // @ts-ignore
     expect(parsedStyle.xxxxx).to.be.undefined;
 
+    await canvas.ready;
     /**
      * append it to document
      */
     canvas.appendChild(circle);
-
-    // wait until next frame
-    await sleep(100);
 
     parsedStyle = circle.parsedStyle;
     // inherit from document.documentElement
@@ -483,13 +480,12 @@ describe('StyleValueRegistry initialization', () => {
     // @ts-ignore
     expect(parsedStyle.xxxxx).to.be.undefined;
 
+    await canvas.ready;
     /**
      * append it to document
      */
     canvas.appendChild(rect);
 
-    // wait until next frame
-    await sleep(100);
     // inherit from document.documentElement
     expect(parsedStyle.lineWidth.equals(CSS.px(1))).to.be.true;
     expect(parsedStyle.fillOpacity.equals(CSS.number(1))).to.be.true;
@@ -674,13 +670,11 @@ describe('StyleValueRegistry initialization', () => {
     expect(parsedStyle.textAlign).to.be.undefined;
     expect(parsedStyle.textBaseline).to.be.undefined;
 
+    await canvas.ready;
     /**
      * append it to document
      */
     canvas.appendChild(text);
-
-    // wait until next frame
-    await sleep(100);
 
     parsedStyle = text.parsedStyle;
     // inherit from document.documentElement

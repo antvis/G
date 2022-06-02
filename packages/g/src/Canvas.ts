@@ -109,14 +109,9 @@ export class Canvas extends EventTarget implements ICanvas {
   private eventService: EventService;
   private renderingService: RenderingService;
 
-  isInited = false;
+  private inited = false;
   private readyPromise: Promise<any> | undefined;
   private resolveReadyPromise: () => void;
-
-  /**
-   * some tasks pending before initialization
-   */
-  private pendingTasks: Function[] = [];
 
   constructor(config: CanvasConfig) {
     super();
@@ -224,6 +219,8 @@ export class Canvas extends EventTarget implements ICanvas {
          * the root node in scene graph
          */
         root: this.document.documentElement,
+        renderListLastFrame: [],
+        renderListCurrentFrame: [],
 
         renderReasons: new Set(),
 
@@ -323,7 +320,7 @@ export class Canvas extends EventTarget implements ICanvas {
           resolve(this);
         };
       });
-      if (this.isInited) {
+      if (this.inited) {
         this.resolveReadyPromise();
       }
     }
@@ -436,22 +433,21 @@ export class Canvas extends EventTarget implements ICanvas {
     }
 
     // reset
-    this.isInited = false;
+    this.inited = false;
     this.readyPromise = undefined;
 
     this.loadCommonContainerModule();
     this.loadRendererContainerModule(renderer);
 
-    // init context
+    // init services
     const contextService = this.container.get<ContextService<unknown>>(ContextService);
-
     this.renderingService = this.container.get<RenderingService>(RenderingService);
-    this.eventService = this.container.get<EventService>(EventService);
+    this.eventService = this.container.get<EventService>(EventService); // auto init post-contruct
 
     await contextService.init();
     await this.renderingService.init();
 
-    this.isInited = true;
+    this.inited = true;
 
     this.getRoot().forEach((node) => {
       const renderable = (node as Element).renderable;
@@ -464,14 +460,6 @@ export class Canvas extends EventTarget implements ICanvas {
 
     // keep current scenegraph unchanged, just trigger mounted event
     this.mountChildren(this.getRoot());
-
-    // execute pending tasks before inited
-    if (this.pendingTasks.length) {
-      this.pendingTasks.forEach((executeTask) => {
-        executeTask();
-      });
-      this.pendingTasks = [];
-    }
 
     if (renderer.getConfig().enableAutoRendering) {
       this.run();
@@ -517,7 +505,7 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   private unmountChildren(parent: DisplayObject) {
-    if (this.isInited) {
+    if (this.inited) {
       const path = [];
       parent.forEach((child) => {
         if (child.isConnected) {
@@ -542,15 +530,11 @@ export class Canvas extends EventTarget implements ICanvas {
         }
         child.isConnected = false;
       });
-    } else {
-      this.pendingTasks.push(() => {
-        this.unmountChildren(parent);
-      });
     }
   }
 
   private mountChildren(parent: DisplayObject) {
-    if (this.isInited) {
+    if (this.inited) {
       parent.forEach((child) => {
         if (!child.isConnected) {
           child.ownerDocument = this.document;
@@ -566,9 +550,11 @@ export class Canvas extends EventTarget implements ICanvas {
         }
       });
     } else {
-      this.pendingTasks.push(() => {
-        this.mountChildren(parent);
-      });
+      console.error(
+        "[g]: You are trying to call `canvas.appendChild` before canvas' initialization finished. You can either await `canvas.ready` or listen to `CanvasEvent.READY` manually.",
+        'appended child: ',
+        parent,
+      );
     }
   }
 

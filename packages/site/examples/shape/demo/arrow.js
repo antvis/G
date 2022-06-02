@@ -1,4 +1,4 @@
-import { Canvas, Circle, CustomElement, Image, Line, Path, Polyline } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, CustomElement, Image, Line, Path, Polyline } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Arrow } from '@antv/g-components';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -79,9 +79,11 @@ const pathArrow = new Arrow({
 });
 pathArrow.translate(100, 150);
 
-canvas.appendChild(lineArrow);
-canvas.appendChild(polylineArrow);
-canvas.appendChild(pathArrow);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(lineArrow);
+  canvas.appendChild(polylineArrow);
+  canvas.appendChild(pathArrow);
+});
 
 lineArrow.addEventListener('mouseenter', () => {
   lineArrow.setAttribute('stroke', '#2FC25B');

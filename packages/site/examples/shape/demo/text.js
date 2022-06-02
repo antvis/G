@@ -1,4 +1,4 @@
-import { Canvas, Circle, Rect, Text } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Rect, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -50,29 +50,31 @@ const bounds = new Rect({
   },
 });
 
-canvas.appendChild(bounds);
-canvas.appendChild(text);
-canvas.appendChild(origin);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(bounds);
+  canvas.appendChild(text);
+  canvas.appendChild(origin);
 
-WebFont.load({
-  google: {
-    families: ['Gaegu'],
-  },
-  active: () => {
-    const text = new Text({
-      style: {
-        x: 100,
-        y: 100,
-        fontFamily: 'Gaegu',
-        text: 'Almost before we knew it, we had left the ground.',
-        fontSize: 30,
-        fill: '#1890FF',
-        stroke: '#F04864',
-        lineWidth: 5,
-      },
-    });
-    canvas.appendChild(text);
-  },
+  WebFont.load({
+    google: {
+      families: ['Gaegu'],
+    },
+    active: () => {
+      const text = new Text({
+        style: {
+          x: 100,
+          y: 100,
+          fontFamily: 'Gaegu',
+          text: 'Almost before we knew it, we had left the ground.',
+          fontSize: 30,
+          fill: '#1890FF',
+          stroke: '#F04864',
+          lineWidth: 5,
+        },
+      });
+      canvas.appendChild(text);
+    },
+  });
 });
 
 // stats

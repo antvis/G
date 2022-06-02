@@ -42,6 +42,7 @@ describe('Render <Circle> with g-canvas', () => {
         fill: 'red',
       },
     });
+    await canvas.ready;
     canvas.appendChild(circle1);
 
     const circle2 = circle1.cloneNode();

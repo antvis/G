@@ -1,4 +1,4 @@
-import { Canvas, Group, Path } from '@antv/g';
+import { Canvas, CanvasEvent, Group, Path } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -84,11 +84,13 @@ const circlePath = new Path({
   },
 });
 
-canvas.appendChild(path1);
-canvas.appendChild(path2);
-canvas.appendChild(path3);
-canvas.appendChild(circlePath);
-circlePath.setPosition(100, 300);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(path1);
+  canvas.appendChild(path2);
+  canvas.appendChild(path3);
+  canvas.appendChild(circlePath);
+  circlePath.setPosition(100, 300);
+});
 
 const g = new Group({
   style: {
@@ -130,7 +132,10 @@ g.appendChild(p2);
 g.appendChild(p3);
 g.appendChild(p4);
 g.appendChild(p5);
-canvas.appendChild(g);
+
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(g);
+});
 
 // stats
 const stats = new Stats();

@@ -26,58 +26,60 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const ul = new Group({
-  id: 'ul',
-});
-const li1 = new Rect({
-  id: 'li1',
-  style: {
-    x: 200,
-    y: 100,
-    width: 300,
-    height: 100,
-    fill: '#1890FF',
-  },
-});
-const text = new Text({
-  style: {
-    x: 150,
-    y: 50,
-    text: 'Click me!',
-    fontSize: 22,
-    fill: '#000',
-    textAlign: 'center',
-    textBaseline: 'middle',
-  },
-});
-li1.appendChild(text);
-const li2 = new Rect({
-  id: 'li2',
-  style: {
-    x: 200,
-    y: 300,
-    width: 300,
-    height: 100,
-    fill: '#1890FF',
-  },
-});
+canvas.addEventListener(CanvasEvent.READY, () => {
+  const ul = new Group({
+    id: 'ul',
+  });
+  const li1 = new Rect({
+    id: 'li1',
+    style: {
+      x: 200,
+      y: 100,
+      width: 300,
+      height: 100,
+      fill: '#1890FF',
+    },
+  });
+  const text = new Text({
+    style: {
+      x: 150,
+      y: 50,
+      text: 'Click me!',
+      fontSize: 22,
+      fill: '#000',
+      textAlign: 'center',
+      textBaseline: 'middle',
+    },
+  });
+  li1.appendChild(text);
+  const li2 = new Rect({
+    id: 'li2',
+    style: {
+      x: 200,
+      y: 300,
+      width: 300,
+      height: 100,
+      fill: '#1890FF',
+    },
+  });
 
-canvas.appendChild(ul);
-ul.appendChild(li1);
-ul.appendChild(li2);
+  canvas.appendChild(ul);
+  ul.appendChild(li1);
+  ul.appendChild(li2);
 
-ul.addEventListener('click', (e) => {
-  console.log('currentTarget', e.currentTarget);
-  console.log('target', e.target);
-  console.log('clientX', e.clientX);
-  console.log('clientY', e.clientY);
-  console.log('x', e.x);
-  console.log('y', e.y);
-  console.log('path', e.composedPath());
-});
+  ul.addEventListener('click', (e) => {
+    console.log('currentTarget', e.currentTarget);
+    console.log('target', e.target);
+    console.log('clientX', e.clientX);
+    console.log('clientY', e.clientY);
+    console.log('x', e.x);
+    console.log('y', e.y);
+    console.log('path', e.composedPath());
+  });
 
-canvas.addEventListener('click', (e) => {
-  console.log('currentTarget', e.currentTarget);
+  canvas.addEventListener('click', (e) => {
+    console.log('currentTarget', e.currentTarget);
+  });
 });
 
 // stats

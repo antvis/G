@@ -35,6 +35,8 @@ describe('Render <CustomElement> with g-canvas', () => {
   });
 
   it('should render image on server-side correctly.', async () => {
+    await canvas.ready;
+
     const lineArrow = new Arrow({
       id: 'lineArrow',
       style: {

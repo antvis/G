@@ -1,7 +1,6 @@
-import { expect } from 'chai';
-import { Group, Canvas } from '@antv/g';
+import { Canvas, Group } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { sleep } from '../../__tests__/utils';
+import { expect } from 'chai';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -31,11 +30,9 @@ describe('Mixin Visible', () => {
     expect(group.style.visibility).eqls('');
     expect(group.isVisible()).to.be.false;
 
+    await canvas.ready;
     // append to canvas
     canvas.appendChild(group);
-
-    // wait for next frame
-    await sleep(100);
 
     // inherit from document.documentElement
     expect(group.parsedStyle.visibility.toString()).to.be.eqls('visible');
@@ -63,11 +60,9 @@ describe('Mixin Visible', () => {
     expect(child1.style.visibility).eqls('');
     expect(child2.style.visibility).eqls('');
 
+    await canvas.ready;
     // append to document
     canvas.appendChild(group);
-
-    // wait for next frame
-    await sleep(100);
 
     // visible by default
     expect(group.isVisible()).to.be.true;
@@ -110,11 +105,9 @@ describe('Mixin Visible', () => {
     expect(child1.style.visibility).eqls('hidden');
     expect(child2.style.visibility).eqls('');
 
+    await canvas.ready;
     // append to document
     canvas.appendChild(root);
-
-    // wait for next frame
-    await sleep(100);
 
     // visible by default
     expect(root.isVisible()).to.be.true;

@@ -51,6 +51,7 @@ describe('Render <Polyline> with g-svg', () => {
   });
 
   it('should render polyline on server-side correctly.', async () => {
+    await canvas.ready;
     const polyline = new Polyline({
       style: {
         points: [

@@ -50,8 +50,10 @@ const circle2 = circle1.cloneNode();
 circle2.setPosition(400, 400);
 circle2.style.fill = 'green';
 
-canvas.appendChild(circle1);
-canvas.appendChild(circle2);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(circle1);
+  canvas.appendChild(circle2);
+});
 
 // stats
 const stats = new Stats();

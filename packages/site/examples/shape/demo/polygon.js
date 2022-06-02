@@ -1,4 +1,4 @@
-import { Canvas, Polygon } from '@antv/g';
+import { Canvas, CanvasEvent, Polygon } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -36,8 +36,10 @@ const polygon = new Polygon({
   },
 });
 
-// add a polygon to canvas
-canvas.appendChild(polygon);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  // add a polygon to canvas
+  canvas.appendChild(polygon);
+});
 
 // stats
 const stats = new Stats();

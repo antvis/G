@@ -149,6 +149,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
    */
   private renderQueue: DisplayObject[] = [];
 
+  /**
+   * reorder after mounted
+   */
+  private pendingReorderQueue: Set<DisplayObject> = new Set();
+
   apply(renderingService: RenderingService) {
     const { document } = this.canvasConfig;
 
@@ -233,6 +238,24 @@ export class SVGRendererPlugin implements RenderingPlugin {
       // if (!object.isCulled()) {
       this.renderQueue.push(object);
       // }
+    });
+
+    renderingService.hooks.beginFrame.tap(SVGRendererPlugin.tag, () => {
+      const { document: doc } = this.canvasConfig;
+
+      if (this.pendingReorderQueue.size) {
+        this.pendingReorderQueue.forEach((object) => {
+          const children = (object?.children || []).slice() as DisplayObject[];
+          const $parentGroupEl =
+            // @ts-ignore
+            object?.elementSVG?.$groupEl;
+
+          if ($parentGroupEl) {
+            this.reorderChildren(doc || document, $parentGroupEl, children || []);
+          }
+        });
+        this.pendingReorderQueue.clear();
+      }
     });
 
     renderingService.hooks.endFrame.tap(SVGRendererPlugin.tag, () => {
@@ -455,8 +478,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       if ($parentGroupEl) {
         $parentGroupEl.appendChild($groupEl);
-        const children = (object.parentNode?.children || []).slice() as DisplayObject[];
-        this.reorderChildren(document, $parentGroupEl, children || []);
+
+        // need reorder children later
+        this.pendingReorderQueue.add(object.parentNode as DisplayObject);
       }
     }
   }

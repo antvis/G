@@ -29,26 +29,28 @@ const circle = new Circle({
   },
 });
 
-canvas.appendChild(circle);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(circle);
 
-circle.on('mouseenter', () => {
-  circle.attr('fill', '#2FC25B');
-});
+  circle.addEventListener('mouseenter', () => {
+    circle.attr('fill', '#2FC25B');
+  });
 
-circle.on('mouseleave', () => {
-  circle.attr('fill', '#1890FF');
-});
+  circle.addEventListener('mouseleave', () => {
+    circle.attr('fill', '#1890FF');
+  });
 
-// use mutation observer
-const config = { attributes: true, childList: true, subtree: true, attributeOldValue: true };
-const observer = new MutationObserver((mutationsList, observer) => {
-  for (const mutation of mutationsList) {
-    console.log(mutation);
-    if (mutation.type === 'attributes') {
+  // use mutation observer
+  const config = { attributes: true, childList: true, subtree: true, attributeOldValue: true };
+  const observer = new MutationObserver((mutationsList, observer) => {
+    for (const mutation of mutationsList) {
+      console.log(mutation);
+      if (mutation.type === 'attributes') {
+      }
     }
-  }
+  });
+  observer.observe(circle, config);
 });
-observer.observe(circle, config);
 
 // stats
 const stats = new Stats();

@@ -1,4 +1,4 @@
-import { Canvas, CustomElement, HTML, Line, Rect, Text } from '@antv/g';
+import { Canvas, CanvasEvent, CustomElement, HTML, Line, Rect, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -91,11 +91,13 @@ const tooltip = new HTML({
   },
 });
 
-canvas.appendChild(line);
-canvas.appendChild(p1);
-canvas.appendChild(p2);
-canvas.appendChild(rect);
-canvas.appendChild(tooltip);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(line);
+  canvas.appendChild(p1);
+  canvas.appendChild(p2);
+  canvas.appendChild(rect);
+  canvas.appendChild(tooltip);
+});
 
 rect.addEventListener('mousemove', (e) => {
   tooltip.setPosition(e.x, e.y);
@@ -133,7 +135,10 @@ const customEl = new Custom({
     transform: 'translate(200, 330)',
   },
 });
-canvas.appendChild(customEl);
+
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(customEl);
+});
 
 // stats
 const stats = new Stats();

@@ -62,6 +62,8 @@ export enum ElementEvent {
    * trigger when z-index changed
    */
   RENDER_ORDER_CHANGED = 'render-order-changed',
+
+  CULLED = 'culled',
 }
 
 export interface IEventTarget {
@@ -428,7 +430,6 @@ export interface ICSSStyleDeclaration<StyleProps> {
 export interface ICanvas extends IEventTarget {
   document: IDocument;
   customElements: CustomElementRegistry;
-  isInited: boolean;
 
   devicePixelRatio: number;
   requestAnimationFrame: (callback: FrameRequestCallback) => number;

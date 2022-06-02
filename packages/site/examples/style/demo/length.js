@@ -1,4 +1,4 @@
-import { Canvas, Circle, Group } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Group } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -43,9 +43,11 @@ const circle = new Circle({
   },
 });
 
-// add a circle to canvas
-canvas.appendChild(group);
-group.appendChild(circle);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  // add a circle to canvas
+  canvas.appendChild(group);
+  group.appendChild(circle);
+});
 
 // stats
 const stats = new Stats();

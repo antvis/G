@@ -56,6 +56,7 @@ describe('Render <Text> with g-svg', () => {
   });
 
   it('should render text on server-side correctly.', async () => {
+    await canvas.ready;
     const text1 = new Text({
       style: {
         x: 10,

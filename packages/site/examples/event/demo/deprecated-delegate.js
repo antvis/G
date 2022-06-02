@@ -26,51 +26,53 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const ul = new Group({
-  id: 'ul',
-});
-const li1 = new Rect({
-  id: 'li1',
-  name: 'test-name',
-  style: {
-    x: 200,
-    y: 100,
-    width: 300,
-    height: 100,
-    fill: '#1890FF',
-  },
-});
-const text = new Text({
-  style: {
-    x: 150,
-    y: 50,
-    text: 'Click me!',
-    fontSize: 22,
-    fill: '#000',
-    textAlign: 'center',
-    textBaseline: 'middle',
-  },
-});
-li1.appendChild(text);
-const li2 = new Rect({
-  id: 'li2',
-  name: 'test-name',
-  style: {
-    x: 200,
-    y: 300,
-    width: 300,
-    height: 100,
-    fill: '#1890FF',
-  },
-});
+canvas.addEventListener(CanvasEvent.READY, () => {
+  const ul = new Group({
+    id: 'ul',
+  });
+  const li1 = new Rect({
+    id: 'li1',
+    name: 'test-name',
+    style: {
+      x: 200,
+      y: 100,
+      width: 300,
+      height: 100,
+      fill: '#1890FF',
+    },
+  });
+  const text = new Text({
+    style: {
+      x: 150,
+      y: 50,
+      text: 'Click me!',
+      fontSize: 22,
+      fill: '#000',
+      textAlign: 'center',
+      textBaseline: 'middle',
+    },
+  });
+  li1.appendChild(text);
+  const li2 = new Rect({
+    id: 'li2',
+    name: 'test-name',
+    style: {
+      x: 200,
+      y: 300,
+      width: 300,
+      height: 100,
+      fill: '#1890FF',
+    },
+  });
 
-canvas.appendChild(ul);
-ul.appendChild(li1);
-ul.appendChild(li2);
+  canvas.appendChild(ul);
+  ul.appendChild(li1);
+  ul.appendChild(li2);
 
-ul.addEventListener('test-name:click', (e) => {
-  console.log('target', e.target);
-  console.log('path', e.composedPath());
+  ul.addEventListener('test-name:click', (e) => {
+    console.log('target', e.target);
+    console.log('path', e.composedPath());
+  });
 });
 
 // stats

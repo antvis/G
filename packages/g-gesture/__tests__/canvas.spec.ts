@@ -4,36 +4,41 @@ import { createMobileCanvasElement } from '@antv/g-mobile-canvas-element';
 import Gesture from '../src';
 import { createContext, delay, gestureSimulator } from './util';
 
-jest.setTimeout(10000);
+const context = createContext();
+const canvasElement = createMobileCanvasElement(context);
+// 创建渲染器
+const renderer = new Renderer();
+const canvas = new Canvas({
+  canvas: canvasElement,
+  renderer,
+  supportsTouchEvents: true,
+  width: 300,
+  height: 225,
+});
+
+// create a circle
+const circle = new Circle({
+  style: {
+    cx: 100,
+    cy: 100,
+    r: 100,
+    fill: '#1890FF',
+    stroke: '#F04864',
+    lineWidth: 2,
+    shadowColor: 'black',
+    shadowBlur: 20,
+  },
+});
 
 describe('gesture', () => {
-  const context = createContext();
-  const canvasElement = createMobileCanvasElement(context);
-  // 创建渲染器
-  const renderer = new Renderer();
-  const canvas = new Canvas({
-    canvas: canvasElement,
-    renderer,
-    supportsTouchEvents: true,
-    width: 300,
-    height: 225,
+  beforeAll(async () => {
+    await canvas.ready;
+    canvas.appendChild(circle);
   });
 
-  // create a circle
-  const circle = new Circle({
-    style: {
-      cx: 100,
-      cy: 100,
-      r: 100,
-      fill: '#1890FF',
-      stroke: '#F04864',
-      lineWidth: 2,
-      shadowColor: 'black',
-      shadowBlur: 20,
-    },
+  afterAll(() => {
+    canvas.destroy();
   });
-
-  canvas.appendChild(circle);
 
   describe('基础事件', () => {
     it('基础事件', async () => {
@@ -45,6 +50,7 @@ describe('gesture', () => {
       circle.addEventListener('pointermove', pointermoveCallback);
       circle.addEventListener('pointerup', pointerupCallback);
 
+      // 考虑 WebGL / WebGPU 实现，拾取是异步的
       await delay(100);
       gestureSimulator(context.canvas, 'touchstart', { x: 60, y: 60, identifier: 0 });
       gestureSimulator(context.canvas, 'touchmove', { x: 60, y: 80, identifier: 0 });

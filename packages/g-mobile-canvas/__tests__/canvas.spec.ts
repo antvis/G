@@ -30,6 +30,7 @@ describe('canvas', () => {
       },
     });
 
+    await canvas.ready;
     canvas.appendChild(circle);
 
     circle.addEventListener('pointerdown', (e) => {

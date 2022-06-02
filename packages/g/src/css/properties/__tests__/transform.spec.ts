@@ -1,8 +1,7 @@
-import chai, { expect } from 'chai';
-import { Circle, CSS, Canvas, ParsedTransform } from '@antv/g';
+import { Canvas, Circle, CSS, ParsedTransform } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
-import { sleep } from '../../../__tests__/utils';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -38,9 +37,8 @@ describe('CSSPropertyTransform', () => {
       },
     });
 
+    await canvas.ready;
     canvas.appendChild(circle);
-
-    await sleep(100);
 
     // attribute
     expect(circle.getAttribute('transform')).to.be.eqls('translate(10, 10)');
@@ -224,9 +222,9 @@ describe('CSSPropertyTransform', () => {
       },
     });
 
+    await canvas.ready;
     canvas.appendChild(circle);
 
-    await sleep(100);
     expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 0));
     expect(circle.getLocalBounds().center).to.be.eqls(vec3.fromValues(10, 10, 0));
     expect(circle.getLocalBounds().halfExtents).to.be.eqls(vec3.fromValues(25, 25, 0));

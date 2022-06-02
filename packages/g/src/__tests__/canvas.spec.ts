@@ -1,5 +1,5 @@
 import type { FederatedPointerEvent } from '@antv/g';
-import { Canvas, Circle } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import chai, { expect } from 'chai';
@@ -9,8 +9,6 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { CanvasEvent } from '../Canvas';
-import { sleep } from './utils';
 
 chai.use(chaiAlmost(0.0001));
 chai.use(sinonChai);
@@ -69,9 +67,10 @@ describe('Canvas', () => {
         fill: 'red',
       },
     });
-    canvas.appendChild(circle);
 
-    await sleep(100);
+    canvas.addEventListener(CanvasEvent.READY, () => {
+      canvas.appendChild(circle);
+    });
 
     const handlePointerDown = (e) => {
       // target
@@ -121,9 +120,10 @@ describe('Canvas', () => {
         fill: 'red',
       },
     });
-    canvas.appendChild(circle);
 
-    await sleep(100);
+    canvas.addEventListener(CanvasEvent.READY, () => {
+      canvas.appendChild(circle);
+    });
 
     canvas.addEventListener(
       'pointerdown',
@@ -189,9 +189,10 @@ describe('Canvas', () => {
         fill: 'red',
       },
     });
-    canvas.appendChild(circle);
 
-    await sleep(100);
+    canvas.addEventListener(CanvasEvent.READY, () => {
+      canvas.appendChild(circle);
+    });
 
     canvas.addEventListener(
       'pointerdown',
@@ -252,9 +253,9 @@ describe('Canvas', () => {
         fill: 'red',
       },
     });
-    canvas.appendChild(circle);
-
-    await sleep(100);
+    canvas.addEventListener(CanvasEvent.READY, () => {
+      canvas.appendChild(circle);
+    });
 
     canvas.addEventListener(
       'pointerdown',

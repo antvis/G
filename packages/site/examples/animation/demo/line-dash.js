@@ -36,14 +36,17 @@ const path = new Path({
       'z',
   },
 });
-canvas.appendChild(path);
 
-const length = path.getTotalLength();
-path.animate([{ lineDash: [0, length] }, { lineDash: [length, 0] }], {
-  duration: 3500,
-  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-  iterations: Infinity,
-  direction: 'alternate',
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(path);
+
+  const length = path.getTotalLength();
+  path.animate([{ lineDash: [0, length] }, { lineDash: [length, 0] }], {
+    duration: 3500,
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+    iterations: Infinity,
+    direction: 'alternate',
+  });
 });
 
 // stats

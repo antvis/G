@@ -46,24 +46,26 @@ const rect3 = new Rect({
   },
 });
 
-canvas.appendChild(rect);
-canvas.appendChild(rect2);
-canvas.appendChild(rect3);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(rect);
+  canvas.appendChild(rect2);
+  canvas.appendChild(rect3);
 
-rect.animate([{ transform: 'scale(0.0001, 1)' }, { transform: 'scale(1, 1)' }], {
-  duration: 1000,
-  //   delay: 0,
-  fill: 'both',
-});
-rect2.animate([{ transform: 'scale(0.0001, 1)' }, { transform: 'scaleY(1)' }], {
-  duration: 1000,
-  delay: 1000,
-  fill: 'both',
-});
-rect3.animate([{ transform: 'scale(0.0001, 1)' }, { transform: 'scale(1, 1)' }], {
-  duration: 1000,
-  delay: 2000,
-  fill: 'both',
+  rect.animate([{ transform: 'scale(0.0001, 1)' }, { transform: 'scale(1, 1)' }], {
+    duration: 1000,
+    //   delay: 0,
+    fill: 'both',
+  });
+  rect2.animate([{ transform: 'scale(0.0001, 1)' }, { transform: 'scaleY(1)' }], {
+    duration: 1000,
+    delay: 1000,
+    fill: 'both',
+  });
+  rect3.animate([{ transform: 'scale(0.0001, 1)' }, { transform: 'scale(1, 1)' }], {
+    duration: 1000,
+    delay: 2000,
+    fill: 'both',
+  });
 });
 
 // stats

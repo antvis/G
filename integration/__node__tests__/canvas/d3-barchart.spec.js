@@ -48,6 +48,8 @@ describe('Render d3 barchart with g-canvas', () => {
   });
 
   it('should render d3 barchart on server-side correctly.', async () => {
+    await canvas.ready;
+
     const drawBars = async () => {
       // 1. Access data
       const dataset = weatherDataset;

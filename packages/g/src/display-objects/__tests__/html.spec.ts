@@ -6,7 +6,6 @@ import chaiAlmost from 'chai-almost';
 import { GlobalContainer } from 'mana-syringe';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { sleep } from '../../__tests__/utils';
 
 chai.use(chaiAlmost(0.0001));
 chai.use(sinonChai);
@@ -50,11 +49,11 @@ describe('HTML', () => {
         innerHTML: '<h1>This is Title</h1>',
       },
     });
+
+    await canvas.ready;
     canvas.appendChild(html);
 
     expect(pool.getHTMLs().length).to.be.eqls(1);
-
-    await sleep(100);
 
     expect(html.getAttribute('x')).to.be.eqls(100);
     expect(html.getAttribute('y')).to.be.eqls(100);

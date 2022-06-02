@@ -29,13 +29,16 @@ const circle = new Circle({
     lineWidth: 4,
   },
 });
-canvas.appendChild(circle);
-circle.on('mouseenter', () => {
-  circle.attr('fill', '#2FC25B');
-});
 
-circle.on('mouseleave', () => {
-  circle.attr('fill', '#1890FF');
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(circle);
+  circle.addEventListener('pointerenter', () => {
+    circle.attr('fill', '#2FC25B');
+  });
+
+  circle.addEventListener('pointerleave', () => {
+    circle.attr('fill', '#1890FF');
+  });
 });
 
 // stats

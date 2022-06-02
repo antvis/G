@@ -69,9 +69,8 @@ describe('CSSPropertyAngle', () => {
       },
     });
 
+    await canvas.ready;
     canvas.appendChild(circle);
-
-    await sleep(100);
 
     // attribute
     expect(circle.getAttribute('angle')).to.be.eqls('30deg');

@@ -49,27 +49,30 @@ const circle2 = new Circle({
 rect.setPosition(100, 100);
 rect.appendChild(circle1);
 rect.appendChild(circle2);
-canvas.appendChild(rect);
 
-const animation = rect.animate(
-  [
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(rect);
+
+  const animation = rect.animate(
+    [
+      {
+        width: 100,
+      },
+      {
+        width: 400,
+      },
+    ],
     {
-      width: 100,
+      duration: 1500,
+      iterations: Infinity,
     },
-    {
-      width: 400,
-    },
-  ],
-  {
-    duration: 1500,
-    iterations: Infinity,
-  },
-);
-animation.onframe = () => {
-  // use parsed value here
-  circle2.setLocalPosition(rect.parsedStyle.width.value, 20);
-  // circle2.setLocalPosition(Number(`${rect.style.width}`.replace('px', '')), 20);
-};
+  );
+  animation.onframe = () => {
+    // use parsed value here
+    circle2.setLocalPosition(rect.parsedStyle.width.value, 20);
+    // circle2.setLocalPosition(Number(`${rect.style.width}`.replace('px', '')), 20);
+  };
+});
 
 // stats
 const stats = new Stats();

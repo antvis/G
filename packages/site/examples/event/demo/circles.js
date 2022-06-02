@@ -19,28 +19,30 @@ const canvas = new Canvas({
 });
 const camera = canvas.getCamera();
 
-for (let i = 0; i < 1000; i++) {
-  const circle = new Circle({
-    style: {
-      cx: Math.random() * 600,
-      cy: Math.random() * 500,
-      r: 20 + Math.random() * 10,
-      fill: '#1890FF',
-      stroke: '#F04864',
-      lineWidth: 4,
-    },
-  });
+canvas.addEventListener(CanvasEvent.READY, () => {
+  for (let i = 0; i < 1000; i++) {
+    const circle = new Circle({
+      style: {
+        cx: Math.random() * 600,
+        cy: Math.random() * 500,
+        r: 20 + Math.random() * 10,
+        fill: '#1890FF',
+        stroke: '#F04864',
+        lineWidth: 4,
+      },
+    });
 
-  canvas.appendChild(circle);
+    canvas.appendChild(circle);
 
-  circle.on('mouseenter', () => {
-    circle.attr('fill', '#2FC25B');
-  });
+    circle.on('mouseenter', () => {
+      circle.attr('fill', '#2FC25B');
+    });
 
-  circle.on('mouseleave', () => {
-    circle.attr('fill', '#1890FF');
-  });
-}
+    circle.on('mouseleave', () => {
+      circle.attr('fill', '#1890FF');
+    });
+  }
+});
 
 // stats
 const stats = new Stats();

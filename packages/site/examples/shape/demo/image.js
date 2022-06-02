@@ -1,4 +1,4 @@
-import { Canvas, Image } from '@antv/g';
+import { Canvas, CanvasEvent, Image } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -28,7 +28,9 @@ const image = new Image({
   },
 });
 
-canvas.appendChild(image);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(image);
+});
 
 // stats
 const stats = new Stats();

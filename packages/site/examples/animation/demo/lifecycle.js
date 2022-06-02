@@ -33,25 +33,28 @@ const circle = new Circle({
   },
 });
 
-canvas.appendChild(circle);
+let animation;
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(circle);
 
-const animation = circle.animate([{ transform: 'scale(1)' }, { transform: 'scale(2)' }], {
-  duration: 500,
-  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-});
+  animation = circle.animate([{ transform: 'scale(1)' }, { transform: 'scale(2)' }], {
+    duration: 500,
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+  });
 
-// get triggered when animation finished
-animation.onfinish = (e) => {
-  console.log('finish!', e.target, e.target.playState);
-};
-animation.finished.then(() => {
-  console.log('finish promise resolved');
+  // get triggered when animation finished
+  animation.onfinish = (e) => {
+    console.log('finish!', e.target, e.target.playState);
+  };
+  animation.finished.then(() => {
+    console.log('finish promise resolved');
+  });
+  // get triggered at the end of each frame in a running animation
+  animation.onframe = (e) => {
+    console.log(e.target.effect.getComputedTiming().progress);
+    console.log('frame ended!', e.target, e.target.playState);
+  };
 });
-// get triggered at the end of each frame in a running animation
-animation.onframe = (e) => {
-  console.log(e.target.effect.getComputedTiming().progress);
-  console.log('frame ended!', e.target, e.target.playState);
-};
 
 // stats
 const stats = new Stats();

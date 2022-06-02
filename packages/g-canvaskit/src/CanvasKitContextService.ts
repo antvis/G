@@ -5,7 +5,6 @@ import {
   isBrowser,
   isString,
   RenderingContext,
-  RenderReason,
   setDOMSize,
 } from '@antv/g';
 import type { CanvasKitContext } from '@antv/g-plugin-canvaskit-renderer';
@@ -70,10 +69,6 @@ export class CanvasKitContextService implements ContextService<CanvasKitContext>
     this.dpr = dpr;
 
     this.resize(this.canvasConfig.width, this.canvasConfig.height);
-
-    // force re-render
-    this.renderingContext.renderReasons.add(RenderReason.DISPLAY_OBJECT_CHANGED);
-    this.renderingContext.dirty = true;
   }
 
   getContext() {

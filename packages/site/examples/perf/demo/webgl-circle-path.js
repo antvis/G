@@ -1,4 +1,4 @@
-import { Circle, Canvas, Text, Line } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Line, Text } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import Stats from 'stats.js';
 
@@ -19,52 +19,54 @@ const canvas = new Canvas({
   renderer,
 });
 
-let edgesNum = 2742;
-for (let i = 0; i < edgesNum; i++) {
-  const x = Math.random() * 600;
-  const y = Math.random() * 500;
-  canvas.appendChild(
-    new Line({
-      attrs: {
-        x1: x,
-        y1: y,
-        x2: x + Math.random() * 100,
-        y2: y + Math.random() * 50,
-        lineWidth: 1,
-        stroke: '#000',
-        lineWidth: 0.3,
-      },
-    }),
-  );
-}
-let nodesNum = 1589;
-for (let i = 0; i < nodesNum; i++) {
-  const x = Math.random() * 600;
-  const y = Math.random() * 500;
-  canvas.appendChild(
-    new Circle({
-      attrs: {
-        fill: '#C6E5FF',
-        stroke: '#5B8FF9',
-        r: 2,
-        cx: x,
-        cy: y,
-        lineWidth: 0.3,
-      },
-    }),
-  );
-  canvas.appendChild(
-    new Text({
-      attrs: {
-        text: 'ccc',
-        x,
-        y,
-        fill: '#ccc',
-        fontSize: 12,
-      },
-    }),
-  );
-}
+canvas.addEventListener(CanvasEvent.READY, () => {
+  let edgesNum = 2742;
+  for (let i = 0; i < edgesNum; i++) {
+    const x = Math.random() * 600;
+    const y = Math.random() * 500;
+    canvas.appendChild(
+      new Line({
+        attrs: {
+          x1: x,
+          y1: y,
+          x2: x + Math.random() * 100,
+          y2: y + Math.random() * 50,
+          lineWidth: 1,
+          stroke: '#000',
+          lineWidth: 0.3,
+        },
+      }),
+    );
+  }
+  let nodesNum = 1589;
+  for (let i = 0; i < nodesNum; i++) {
+    const x = Math.random() * 600;
+    const y = Math.random() * 500;
+    canvas.appendChild(
+      new Circle({
+        attrs: {
+          fill: '#C6E5FF',
+          stroke: '#5B8FF9',
+          r: 2,
+          cx: x,
+          cy: y,
+          lineWidth: 0.3,
+        },
+      }),
+    );
+    canvas.appendChild(
+      new Text({
+        attrs: {
+          text: 'ccc',
+          x,
+          y,
+          fill: '#ccc',
+          fontSize: 12,
+        },
+      }),
+    );
+  }
+});
 
 const camera = canvas.getCamera();
 let count = 0;

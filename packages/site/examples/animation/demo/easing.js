@@ -33,15 +33,19 @@ const image = new Image({
   },
 });
 
-canvas.appendChild(image);
+let animation;
+let timing;
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(image);
 
-const animation = image.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }], {
-  duration: 1500,
-  iterations: Infinity,
-  // delay: 3000,
-  // direction: 'alternate',
+  animation = image.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }], {
+    duration: 1500,
+    iterations: Infinity,
+    // delay: 3000,
+    // direction: 'alternate',
+  });
+  timing = animation.effect.getTiming();
 });
-const timing = animation.effect.getTiming();
 
 // stats
 const stats = new Stats();

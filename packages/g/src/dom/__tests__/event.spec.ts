@@ -1,3 +1,16 @@
+import {
+  Canvas,
+  Circle,
+  CustomEvent,
+  DisplayObject,
+  ElementEvent,
+  Group,
+  MutationEvent,
+  MutationObserver,
+  MutationRecord,
+  Rect,
+} from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
@@ -5,19 +18,6 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import {
-  Group,
-  Canvas,
-  Circle,
-  Rect,
-  DisplayObject,
-  CustomEvent,
-  ElementEvent,
-  MutationEvent,
-  MutationObserver,
-  MutationRecord,
-} from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { sleep } from '../../__tests__/utils';
 
 let addedNodes: DisplayObject[] = [];
@@ -53,8 +53,9 @@ describe('Event API', () => {
     canvas.destroy();
   });
 
-  it('should emit Inserted & ChildInserted event correctly', () => {
+  it('should emit Inserted & ChildInserted event correctly', async () => {
     const group = new Group();
+    await canvas.ready;
     canvas.appendChild(group);
 
     const childInsertedCallback = (e) => {
@@ -79,8 +80,9 @@ describe('Event API', () => {
     group.destroy();
   });
 
-  it('should emit Removed & ChildRemoved event correctly', () => {
+  it('should emit Removed & ChildRemoved event correctly', async () => {
     const group = new Group();
+    await canvas.ready;
     canvas.appendChild(group);
 
     const childRemovedCallbackSpy = sinon.spy();
@@ -128,6 +130,7 @@ describe('Event API', () => {
         r: 10,
       },
     });
+    await canvas.ready;
     canvas.appendChild(circle);
 
     const attributeChangedCallback = sinon.spy();
@@ -178,12 +181,13 @@ describe('Event API', () => {
     await sleep(500);
   });
 
-  it('should emit destroy event correctly', () => {
+  it('should emit destroy event correctly', async () => {
     const circle = new Circle({
       style: {
         r: 10,
       },
     });
+    await canvas.ready;
     canvas.appendChild(circle);
 
     const destroyChangedCallback = sinon.spy();
@@ -194,7 +198,7 @@ describe('Event API', () => {
     expect(destroyChangedCallback).to.have.been.called;
   });
 
-  it('should dispatch custom event in delegation correctly', () => {
+  it('should dispatch custom event in delegation correctly', async () => {
     const ul = new Group({
       id: 'ul',
     });
@@ -219,6 +223,7 @@ describe('Event API', () => {
       },
     });
 
+    await canvas.ready;
     canvas.appendChild(ul);
     ul.appendChild(li1);
     ul.appendChild(li2);
@@ -235,7 +240,7 @@ describe('Event API', () => {
     li1.emit('build', { prop1: 'xx' });
   });
 
-  it('should compatible with G 3.0 in delegation correctly', () => {
+  it('should compatible with G 3.0 in delegation correctly', async () => {
     const ul = new Group({
       id: 'ul',
     });
@@ -262,6 +267,7 @@ describe('Event API', () => {
       },
     });
 
+    await canvas.ready;
     canvas.appendChild(ul);
     ul.appendChild(li1);
     ul.appendChild(li2);
@@ -277,11 +283,12 @@ describe('Event API', () => {
     expect(callback).to.have.been.called;
   });
 
-  it('should record childList mutations when appendChild correctly', () => {
+  it('should record childList mutations when appendChild correctly', async () => {
     const group1 = new Group();
     const group2 = new Group();
     const group3 = new Group();
 
+    await canvas.ready;
     canvas.appendChild(group1);
 
     const observer = new MutationObserver(() => {});
@@ -305,12 +312,13 @@ describe('Event API', () => {
     expect(records[1].previousSibling).to.eqls(group2);
   });
 
-  it('should record childList mutations when removeChild correctly', () => {
+  it('should record childList mutations when removeChild correctly', async () => {
     const div = new Group();
     const a = new Group();
     const b = new Group();
     const c = new Group();
 
+    await canvas.ready;
     canvas.appendChild(div);
     div.appendChild(a);
     div.appendChild(b);
@@ -340,11 +348,12 @@ describe('Event API', () => {
   });
 
   // @see https://github.com/googlearchive/MutationObservers/blob/master/test/childList.js#L137
-  it('should record childList mutations when removeChild correctly', () => {
+  it('should record childList mutations when removeChild correctly', async () => {
     const div = new Group();
     const a = new Group();
     const b = new Group();
 
+    await canvas.ready;
     canvas.appendChild(div);
     const observer = new MutationObserver(() => {});
     observer.observe(div, { childList: true });
@@ -374,12 +383,13 @@ describe('Event API', () => {
     expect(records[2].nextSibling).to.eqls(a);
   });
 
-  it('should record childList but not subtree mutations correctly', () => {
+  it('should record childList but not subtree mutations correctly', async () => {
     const div = new Group();
     const child = new Group();
     const a = new Group();
     const b = new Group();
 
+    await canvas.ready;
     canvas.appendChild(div);
     div.appendChild(child);
     const observer = new MutationObserver(() => {});
@@ -410,12 +420,13 @@ describe('Event API', () => {
     expect(records[2].nextSibling).to.eqls(a);
   });
 
-  it('should record childList & subtree mutations correctly', () => {
+  it('should record childList & subtree mutations correctly', async () => {
     const div = new Group();
     const child = new Group();
     const a = new Group();
     const b = new Group();
 
+    await canvas.ready;
     canvas.appendChild(div);
     div.appendChild(child);
     const observer = new MutationObserver(() => {});
@@ -445,12 +456,13 @@ describe('Event API', () => {
     expect(records[1].previousSibling).to.eqls(child);
   });
 
-  it('should remove all children', () => {
+  it('should remove all children', async () => {
     const div = new Group();
     const a = new Group();
     const b = new Group();
     const c = new Group();
 
+    await canvas.ready;
     canvas.appendChild(div);
     div.appendChild(a);
     div.appendChild(b);

@@ -1,4 +1,4 @@
-import { Canvas, Rect } from '@antv/g';
+import { Canvas, CanvasEvent, Rect } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -44,8 +44,10 @@ const culledRect = new Rect({
   },
 });
 
-canvas.appendChild(rect);
-canvas.appendChild(culledRect);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(rect);
+  canvas.appendChild(culledRect);
+});
 
 // stats
 const stats = new Stats();

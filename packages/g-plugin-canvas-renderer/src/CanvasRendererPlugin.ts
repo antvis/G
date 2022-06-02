@@ -179,6 +179,17 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       }
     };
 
+    const handleCulled = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+      // @ts-ignore
+      const rBushNode = object.rBushNode;
+
+      if (rBushNode.aabb) {
+        // save removed aabbs for dirty-rectangle rendering later
+        this.removedRBushNodeAABBs.push(rBushNode.aabb);
+      }
+    };
+
     const handleBoundsChanged = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
 
@@ -200,6 +211,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.init.tapPromise(CanvasRendererPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.addEventListener(ElementEvent.CULLED, handleCulled);
       this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
 
       // clear fullscreen
@@ -211,6 +223,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.destroy.tap(CanvasRendererPlugin.tag, () => {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      this.renderingContext.root.removeEventListener(ElementEvent.CULLED, handleCulled);
       this.renderingContext.root.removeEventListener(
         ElementEvent.BOUNDS_CHANGED,
         handleBoundsChanged,

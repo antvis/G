@@ -247,7 +247,9 @@ const drawBars = async () => {
   // console.log(t, svg.selectAll('.annotation path'));
 };
 
-drawBars();
+canvas.addEventListener(CanvasEvent.READY, () => {
+  drawBars();
+});
 
 // stats
 const stats = new Stats();

@@ -1,4 +1,4 @@
-import { Canvas, Text } from '@antv/g';
+import { Canvas, CanvasEvent, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -18,19 +18,21 @@ const canvas = new Canvas({
   renderer: webglRenderer,
 });
 
-for (let i = 0; i < 100; i++) {
-  const text = new Text({
-    style: {
-      x: Math.random() * 600,
-      y: Math.random() * 500,
-      fontFamily: 'PingFang SC',
-      text: '测试文本' + i,
-      fontSize: 50 + Math.random() * 10,
-      fill: i % 2 === 0 ? '#1890FF' : 'red',
-    },
-  });
-  canvas.appendChild(text);
-}
+canvas.addEventListener(CanvasEvent.READY, () => {
+  for (let i = 0; i < 100; i++) {
+    const text = new Text({
+      style: {
+        x: Math.random() * 600,
+        y: Math.random() * 500,
+        fontFamily: 'PingFang SC',
+        text: '测试文本' + i,
+        fontSize: 50 + Math.random() * 10,
+        fill: i % 2 === 0 ? '#1890FF' : 'red',
+      },
+    });
+    canvas.appendChild(text);
+  }
+});
 
 // stats
 const stats = new Stats();

@@ -1,4 +1,16 @@
-import { Canvas, Circle, Ellipse, Image, Line, Path, Polygon, Polyline, Rect, Text } from '@antv/g';
+import {
+  Canvas,
+  CanvasEvent,
+  Circle,
+  Ellipse,
+  Image,
+  Line,
+  Path,
+  Polygon,
+  Polyline,
+  Rect,
+  Text,
+} from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -151,93 +163,95 @@ const clippedText = new Text({
   },
 });
 
-circle.setPosition(100, 100);
-canvas.appendChild(circle);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  circle.setPosition(100, 100);
+  canvas.appendChild(circle);
 
-ellipse.setPosition(220, 100);
-canvas.appendChild(ellipse);
+  ellipse.setPosition(220, 100);
+  canvas.appendChild(ellipse);
 
-rect.setPosition(300, 100);
-canvas.appendChild(rect);
+  rect.setPosition(300, 100);
+  canvas.appendChild(rect);
 
-image.setPosition(400, 100);
-canvas.appendChild(image);
+  image.setPosition(400, 100);
+  canvas.appendChild(image);
 
-line.setPosition(100, 200);
-canvas.appendChild(line);
+  line.setPosition(100, 200);
+  canvas.appendChild(line);
 
-polyline.setPosition(0, 200);
-polyline.rotate(20);
-canvas.appendChild(polyline);
+  polyline.setPosition(0, 200);
+  polyline.rotate(20);
+  canvas.appendChild(polyline);
 
-path.setPosition(160, 200);
-path.rotate(20);
-path.scale(0.5);
-canvas.appendChild(path);
+  path.setPosition(160, 200);
+  path.rotate(20);
+  path.scale(0.5);
+  canvas.appendChild(path);
 
-polygon.setPosition(340, 200);
-polygon.scale(0.3);
-canvas.appendChild(polygon);
+  polygon.setPosition(340, 200);
+  polygon.scale(0.3);
+  canvas.appendChild(polygon);
 
-text.setPosition(160, 450);
-canvas.appendChild(text);
+  text.setPosition(160, 450);
+  canvas.appendChild(text);
 
-clippedText.setPosition(160, 500);
-canvas.appendChild(clippedText);
+  clippedText.setPosition(160, 500);
+  canvas.appendChild(clippedText);
 
-circle.addEventListener('mouseenter', () => {
-  circle.style.fill = '#2FC25B';
-});
-circle.addEventListener('mouseleave', () => {
-  circle.style.fill = '#1890FF';
-});
-ellipse.addEventListener('mouseenter', () => {
-  ellipse.style.fill = '#2FC25B';
-});
-ellipse.addEventListener('mouseleave', () => {
-  ellipse.style.fill = '#1890FF';
-});
-rect.addEventListener('mouseenter', () => {
-  rect.style.fill = '#2FC25B';
-});
-rect.addEventListener('mouseleave', () => {
-  rect.style.fill = '#1890FF';
-});
-line.addEventListener('mouseenter', () => {
-  line.style.stroke = '#2FC25B';
-});
-line.addEventListener('mouseleave', () => {
-  line.style.stroke = '#1890FF';
-});
-polyline.addEventListener('mouseenter', () => {
-  polyline.style.stroke = '#2FC25B';
-});
-polyline.addEventListener('mouseleave', () => {
-  polyline.style.stroke = '#1890FF';
-});
-path.addEventListener('mouseenter', () => {
-  path.style.stroke = '#2FC25B';
-});
-path.addEventListener('mouseleave', () => {
-  path.style.stroke = '#1890FF';
-});
-polygon.addEventListener('mouseenter', () => {
-  polygon.style.stroke = '#2FC25B';
-});
-polygon.addEventListener('mouseleave', () => {
-  polygon.style.stroke = '#1890FF';
-});
-text.addEventListener('mouseenter', () => {
-  text.attr('stroke', '#2FC25B');
-});
-text.addEventListener('mouseleave', () => {
-  text.attr('stroke', '#F04864');
-});
-clippedText.addEventListener('mouseenter', () => {
-  clippedText.attr('stroke', '#2FC25B');
-});
-clippedText.addEventListener('mouseleave', () => {
-  clippedText.attr('stroke', '#F04864');
+  circle.addEventListener('mouseenter', () => {
+    circle.style.fill = '#2FC25B';
+  });
+  circle.addEventListener('mouseleave', () => {
+    circle.style.fill = '#1890FF';
+  });
+  ellipse.addEventListener('mouseenter', () => {
+    ellipse.style.fill = '#2FC25B';
+  });
+  ellipse.addEventListener('mouseleave', () => {
+    ellipse.style.fill = '#1890FF';
+  });
+  rect.addEventListener('mouseenter', () => {
+    rect.style.fill = '#2FC25B';
+  });
+  rect.addEventListener('mouseleave', () => {
+    rect.style.fill = '#1890FF';
+  });
+  line.addEventListener('mouseenter', () => {
+    line.style.stroke = '#2FC25B';
+  });
+  line.addEventListener('mouseleave', () => {
+    line.style.stroke = '#1890FF';
+  });
+  polyline.addEventListener('mouseenter', () => {
+    polyline.style.stroke = '#2FC25B';
+  });
+  polyline.addEventListener('mouseleave', () => {
+    polyline.style.stroke = '#1890FF';
+  });
+  path.addEventListener('mouseenter', () => {
+    path.style.stroke = '#2FC25B';
+  });
+  path.addEventListener('mouseleave', () => {
+    path.style.stroke = '#1890FF';
+  });
+  polygon.addEventListener('mouseenter', () => {
+    polygon.style.stroke = '#2FC25B';
+  });
+  polygon.addEventListener('mouseleave', () => {
+    polygon.style.stroke = '#1890FF';
+  });
+  text.addEventListener('mouseenter', () => {
+    text.attr('stroke', '#2FC25B');
+  });
+  text.addEventListener('mouseleave', () => {
+    text.attr('stroke', '#F04864');
+  });
+  clippedText.addEventListener('mouseenter', () => {
+    clippedText.attr('stroke', '#2FC25B');
+  });
+  clippedText.addEventListener('mouseleave', () => {
+    clippedText.attr('stroke', '#F04864');
+  });
 });
 
 // stats

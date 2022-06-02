@@ -54,16 +54,18 @@ const text = new Text({
   },
 });
 
-circle.appendChild(text);
-canvas.appendChild(circle);
-circle.setPosition(300, 200);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  circle.appendChild(text);
+  canvas.appendChild(circle);
+  circle.setPosition(300, 200);
 
-// use hammer.js
-const hammer = new Hammer(circle, {
-  inputClass: Hammer.PointerEventInput,
-});
-hammer.on('panleft panright tap press', (ev) => {
-  text.attr('text', `${ev.type} gesture detected.`);
+  // use hammer.js
+  const hammer = new Hammer(circle, {
+    inputClass: Hammer.PointerEventInput,
+  });
+  hammer.on('panleft panright tap press', (ev) => {
+    text.attr('text', `${ev.type} gesture detected.`);
+  });
 });
 
 // stats

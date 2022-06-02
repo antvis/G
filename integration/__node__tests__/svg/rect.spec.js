@@ -51,6 +51,7 @@ describe('Render <Rect> with g-svg', () => {
   });
 
   it('should render rect on server-side correctly.', async () => {
+    await canvas.ready;
     const rect1 = new Rect({
       style: {
         x: 10,
@@ -70,24 +71,24 @@ describe('Render <Rect> with g-svg', () => {
 
     const rect3 = rect2.cloneNode();
     rect3.style.fill = 'transparent';
-    rect3.translate(60, 0);
+    rect3.translate(30, 0);
     canvas.appendChild(rect3);
 
     // none fill
     const rect4 = rect2.cloneNode();
     rect4.style.fill = 'none';
-    rect4.translate(90, 0);
+    rect4.translate(60, 0);
     canvas.appendChild(rect4);
 
     // dashed
     const rect5 = rect2.cloneNode();
     rect5.style.lineDash = [2, 2];
-    rect5.translate(120, 0);
+    rect5.translate(90, 0);
     canvas.appendChild(rect5);
 
     const rect6 = rect2.cloneNode();
     rect6.style.opacity = 0.5;
-    rect6.translate(150, 0);
+    rect6.translate(120, 0);
     canvas.appendChild(rect6);
 
     // with shadow

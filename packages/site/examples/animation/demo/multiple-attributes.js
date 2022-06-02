@@ -35,42 +35,45 @@ const circle = new Circle({
   },
 });
 
-canvas.appendChild(circle);
+let animation;
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(circle);
 
-const animation = circle.animate(
-  [
+  animation = circle.animate(
+    [
+      {
+        transform: 'scale(1)',
+        fill: '#1890FF',
+        stroke: '#F04864',
+        opacity: 1,
+        shadowColor: 'black',
+        shadowBlur: 30,
+        x: 200,
+      },
+      {
+        transform: 'scale(2)',
+        fill: 'red',
+        stroke: '#1890FF',
+        opacity: 0.8,
+        shadowColor: 'red',
+        shadowBlur: 0,
+        x: 400,
+      },
+    ],
     {
-      transform: 'scale(1)',
-      fill: '#1890FF',
-      stroke: '#F04864',
-      opacity: 1,
-      shadowColor: 'black',
-      shadowBlur: 30,
-      x: 200,
+      duration: 1500,
+      iterations: Infinity,
+      easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
     },
-    {
-      transform: 'scale(2)',
-      fill: 'red',
-      stroke: '#1890FF',
-      opacity: 0.8,
-      shadowColor: 'red',
-      shadowBlur: 0,
-      x: 400,
-    },
-  ],
-  {
-    duration: 1500,
-    iterations: Infinity,
-    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-  },
-);
+  );
 
-// get triggerred when animation finished
-animation.onfinish = (e) => {
-  console.log('finish!', e.target, e.target.playState);
-};
-animation.finished.then(() => {
-  console.log('finish promise resolved');
+  // get triggerred when animation finished
+  animation.onfinish = (e) => {
+    console.log('finish!', e.target, e.target.playState);
+  };
+  animation.finished.then(() => {
+    console.log('finish promise resolved');
+  });
 });
 
 // stats

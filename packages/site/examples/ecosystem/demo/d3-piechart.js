@@ -1,4 +1,4 @@
-import { Canvas } from '@antv/g';
+import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -29,23 +29,12 @@ const canvas = new Canvas({
 
 const data = [38024.7, 209484.6, 6201.2, 17741.9, 24377.7];
 const total = d3.sum(data);
-
-const width = 600;
-
-const wrapper = d3.select(
-  canvas.document.documentElement, // use GCanvas' document element instead of a real DOM
-);
-
-const bounds = wrapper.append('g').style('transform', `translate(${width / 2}px, ${width / 2}px)`);
-const svg = bounds.append('g');
-
 const colors = 'blue red maroon gray orange'.split(' ');
-
+const width = 600;
 const sectorArc = d3
   .arc()
   .innerRadius(width / 8)
   .outerRadius(width / 5);
-
 const tweens = [
   function (sectorData) {
     const currentPath = this.getAttribute('d');
@@ -57,6 +46,7 @@ const tweens = [
     return (t) => sectorArc(interpolator(t));
   },
 ];
+let svg;
 
 function drawCharts(data) {
   const pieData = d3.pie().sort(null)(data);
@@ -72,7 +62,18 @@ function drawCharts(data) {
   sectors.transition().duration(1000).attrTween('d', tweens[1]);
 }
 
-drawCharts(data);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  const wrapper = d3.select(
+    canvas.document.documentElement, // use GCanvas' document element instead of a real DOM
+  );
+
+  const bounds = wrapper
+    .append('g')
+    .style('transform', `translate(${width / 2}px, ${width / 2}px)`);
+  svg = bounds.append('g');
+
+  drawCharts(data);
+});
 
 // stats
 const stats = new Stats();
